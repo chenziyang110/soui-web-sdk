@@ -4,7 +4,7 @@
 
 SDK 修改放 sdk/，通用接入放 templates/desktop-app/，演示业务放 demos/workbench/。SDK 不反向依赖 Demo。保持公开接口、文档和版本一致，不使用开发机绝对路径作为构建输入。
 
-桥接与安装器修改需补充有意义的异常输入验证。提交前完成相关配置构建及 tools/Test.ps1。第三方修改保留来源、补丁与授权。不要提交 out、node_modules、私钥或用户数据。
+桥接与安装器修改需补充有意义的异常输入验证。提交前完成相关配置构建及 tools/Test.ps1。Web 工程统一使用 npm 和 package-lock.json。第三方修改保留来源、补丁与授权。不要提交 out、node_modules、私钥或用户数据。
 
 CI 可复用 tools 入口，在具备工具链和交互桌面的 Windows runner 执行；无交互服务会话不能替代真实宿主验收。
 

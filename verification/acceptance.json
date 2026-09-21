@@ -1,11 +1,12 @@
 {
   "schema": "soui.source-delivery-acceptance/v1",
   "version": "0.2.0-preview.2",
-  "finishedAt": "2026-09-21T08:07:12.187Z",
+  "finishedAt": "2026-09-21T08:46:35.542Z",
   "sourceDeliveryVerified": true,
   "releaseReady": false,
   "toolchain": {
     "node": "v24.14.0",
+    "nodeSupported": true,
     "cmake": "cmake version 4.2.3",
     "visualStudio": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community",
     "windowsSdk19041": true,
@@ -119,25 +120,25 @@
     "template-web": {
       "info": 0,
       "low": 0,
-      "moderate": 1,
-      "high": 1,
+      "moderate": 0,
+      "high": 0,
       "critical": 0,
-      "total": 2
+      "total": 0
     },
     "demo-web": {
       "info": 0,
       "low": 0,
-      "moderate": 1,
-      "high": 2,
+      "moderate": 0,
+      "high": 0,
       "critical": 0,
-      "total": 3
+      "total": 0
     }
   },
   "firstPartySourceHashes": "first-party-source-hashes.json",
   "limitations": [
     "Preview only; production acceptance remains incomplete.",
     "Long-run memory, shutdown stability, target OS matrix and Electron performance parity are not closed.",
-    "Web build dependency advisories and complete binary redistribution review remain open.",
-    "Remote CI, signing, installer and product-specific update/rollback were not executed."
+    "Complete binary redistribution review remains open.",
+    "Hosted CI runner allocation is blocked by GitHub account billing/spending settings; signing, installer and product-specific update/rollback were not executed."
   ]
 }

@@ -1,10 +1,12 @@
 {
   "name": "soui-miniblink-ai-web",
   "private": true,
-  "packageManager": "pnpm@10.31.0",
   "version": "0.1.0",
   "description": "Offline React/Vue web surfaces for the SOUI + Miniblink AI dev kit.",
   "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "scripts": {
     "prebuild": "node ../tools/web-build/generate-component-loaders.cjs",
     "prebuild:legacy": "node ../tools/web-build/generate-component-loaders.cjs",
@@ -27,14 +29,14 @@
     "@types/node": "20.17.30",
     "@types/react": "18.3.12",
     "@types/react-dom": "18.3.1",
-    "@vitejs/plugin-legacy": "5.4.2",
-    "@vitejs/plugin-react": "4.3.4",
-    "@vitejs/plugin-vue": "5.1.4",
+    "@vitejs/plugin-legacy": "6.1.1",
+    "@vitejs/plugin-react": "5.2.0",
+    "@vitejs/plugin-vue": "6.0.9",
     "autoprefixer": "10.4.20",
-    "postcss": "8.4.49",
+    "postcss": "8.5.23",
     "sass": "1.79.3",
     "tailwindcss": "3.4.17",
     "typescript": "5.5.4",
-    "vite": "5.4.8"
+    "vite": "6.4.3"
   }
 }

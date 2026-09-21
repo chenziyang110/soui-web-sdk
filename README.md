@@ -26,7 +26,7 @@ soui-sdk/
 
 ## 首次编译
 
-准备 Windows x64 开发机、Visual Studio 2022 的 C++ 桌面开发组件和 ATL、Windows SDK 10.0.19041.0、CMake 3.24 或以上、Node.js 20 或以上。当前实际验证的工具版本见 `verification/acceptance.json`。
+准备 Windows x64 开发机、Visual Studio 2022 的 C++ 桌面开发组件和 ATL、Windows SDK 10.0.19041.0、CMake 3.24 或以上、Node.js 20.19 LTS 或 22.12 以上。当前实际验证的工具版本见 `verification/acceptance.json`。
 
 在本目录执行：
 

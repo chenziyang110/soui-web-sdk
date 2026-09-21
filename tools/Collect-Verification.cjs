@@ -74,7 +74,7 @@ const acceptance={schema:'soui.source-delivery-acceptance/v1',version,finishedAt
  dependencies,dependencyAudit:audits,firstPartySourceHashes:'first-party-source-hashes.json',
  limitations:['Preview only; production acceptance remains incomplete.',
  'Long-run memory, shutdown stability, target OS matrix and Electron performance parity are not closed.',
- 'Web build dependency advisories and complete binary redistribution review remain open.',
- 'Remote CI, signing, installer and product-specific update/rollback were not executed.']};
+ 'Complete binary redistribution review remains open.',
+ 'Hosted CI runner allocation is blocked by GitHub account billing/spending settings; signing, installer and product-specific update/rollback were not executed.']};
 save('acceptance.json',acceptance);
 console.log(JSON.stringify({version,sourceDeliveryVerified:true,releaseReady:false,nativeConfigurations:matrix.length,rebuiltArchitectures:dependencies.length}));

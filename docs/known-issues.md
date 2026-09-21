@@ -12,7 +12,8 @@
 | 不可信网页 | 模板面向本地受控页面；远程不可信内容需专项评估内核与原生能力边界 |
 | API / ABI | preview 接口可能迁移，不保证跨编译器 C++ ABI |
 | 依赖授权 | 已保留来源、散列及授权文本；精确二进制再分发审核尚未完成 |
-| Web 构建依赖审计 | 本次 npm audit：SDK 0 项；模板 2 项（1 high、1 moderate）；Demo 3 项（2 high、1 moderate）。主要涉及 Vite/esbuild 开发服务器及 PostCSS 工具链，完整结果在 verification/*-audit.json；尚未完成兼容性升级与复验 |
+| Web 构建依赖审计 | Vite 6.4.3 / PostCSS 8.5.23 兼容性升级后，本次 npm audit：SDK、模板、Demo 均为 0 项；完整结果在 verification/*-audit.json。后续更新继续由锁文件、Dependabot 和发布验收共同约束 |
+| GitHub 托管 CI / 分支保护 | 工作流已配置；首次运行因账户付款或 Actions 支出上限未能分配 Runner。当前私有仓库方案不支持分支保护；处理账户方案后启用必需检查与 main 保护 |
 | 安装、更新、签名 | 由实际项目配置，并验证升级和回退 |
 
 发布负责人应针对具体产品逐项补证据、处理未关闭缺陷，再确定生产版本。验收结果保持 `releaseReady: false`。
