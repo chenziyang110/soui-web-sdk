@@ -4,8 +4,8 @@
 
 在内部 preview.1 验证基线上补充 Web SDK 响应结构校验，并验证业务项目从 preview.1 升级到 preview.2。
 
-- 建立独立 GitHub 仓库维护基线：AI Agent 规范、ADR、Issue/PR 模板、CODEOWNERS、Dependabot 和四组 Windows CI。
-- CI 使用无交互安全的单元/契约测试模式；真实桌面 smoke 继续作为发布前目标机验收。
+- 建立独立 GitHub 仓库维护基线：AI Agent 规范、ADR、Issue/PR 模板、CODEOWNERS、Dependabot 和本机验收流程。
+- 按维护决策不配置远程 CI；PR 必须记录本机单元、契约和真实桌面验证证据。
 - Dependabot 按模块合并兼容的小版本与补丁更新，大版本升级必须经过显式规划和验证。
 - 升级模板和 Demo 的 Vite/PostCSS 构建链，统一 npm 锁文件并清零当前 npm audit 告警。
 

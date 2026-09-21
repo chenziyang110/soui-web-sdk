@@ -74,7 +74,7 @@ ADR 必须说明背景、决定、备选方案、兼容性、迁移和验证。�
 7. 底层依赖变化：两架构执行 `Build-Dependencies.ps1 -Component All`，再执行 `Test-Dependencies.ps1`。
 8. 汇总：`node tools/Collect-Verification.cjs`。只有该工具成功且证据齐全，才可更新验收结论。
 
-GitHub Actions 的无交互 Windows Runner 只执行构建与单元/契约测试。真实窗口、输入、DPI、多屏、长期内存和关闭稳定性必须在可交互目标机执行。
+本仓库不配置远程 CI。维护者必须在具备完整工具链的 Windows 开发机执行适用验证，并在 PR 中记录命令、架构、配置和结果。真实窗口、输入、DPI、多屏、长期内存和关闭稳定性必须在可交互目标机执行。
 
 ### 3.5 完成定义
 
