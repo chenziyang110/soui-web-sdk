@@ -1,0 +1,143 @@
+{
+  "schema": "soui.source-delivery-acceptance/v1",
+  "version": "0.2.0-preview.2",
+  "finishedAt": "2026-09-21T08:07:12.187Z",
+  "sourceDeliveryVerified": true,
+  "releaseReady": false,
+  "toolchain": {
+    "node": "v24.14.0",
+    "cmake": "cmake version 4.2.3",
+    "visualStudio": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community",
+    "windowsSdk19041": true,
+    "manifestTool": true,
+    "atl": true,
+    "miniblinkSource": true,
+    "souiSource": true,
+    "validationHost": {
+      "version": "10.0.26200",
+      "architecture": "64 位",
+      "caption": "Microsoft Windows 11 专业版"
+    },
+    "msvcVersion": "19.44.35226.0"
+  },
+  "nativeApplicationMatrix": [
+    {
+      "architecture": "x86",
+      "configuration": "Debug",
+      "buildPassed": true,
+      "templateAndDemoPassed": true,
+      "evidence": "native-x86-Debug.json"
+    },
+    {
+      "architecture": "x86",
+      "configuration": "Release",
+      "buildPassed": true,
+      "templateAndDemoPassed": true,
+      "evidence": "native-x86-Release.json"
+    },
+    {
+      "architecture": "x64",
+      "configuration": "Debug",
+      "buildPassed": true,
+      "templateAndDemoPassed": true,
+      "evidence": "native-x64-Debug.json"
+    },
+    {
+      "architecture": "x64",
+      "configuration": "Release",
+      "buildPassed": true,
+      "templateAndDemoPassed": true,
+      "evidence": "native-x64-Release.json"
+    }
+  ],
+  "unitTests": {
+    "package": {
+      "passed": true,
+      "exitCode": 0,
+      "log": "sdk-package-tests.log"
+    },
+    "web": {
+      "passed": true,
+      "exitCode": 0,
+      "log": "web-sdk-tests.log"
+    },
+    "nativeX64": {
+      "passed": true,
+      "exitCode": 0,
+      "log": "native-contract-x64.log"
+    },
+    "nativeX86": {
+      "passed": true,
+      "exitCode": 0,
+      "log": "native-contract-x86.log"
+    }
+  },
+  "sdkOnly": {
+    "passed": true,
+    "architecture": "x64",
+    "configuration": "Release"
+  },
+  "externalCmakeConsumer": {
+    "passed": true,
+    "exitCode": 0,
+    "log": "cmake-consumer.log"
+  },
+  "generatedApplication": {
+    "passed": true,
+    "upgradeTested": true,
+    "evidence": "generated-project.json",
+    "freshProjectEvidence": "fresh-project.json"
+  },
+  "relocatedDistribution": {
+    "passed": true,
+    "evidence": "relocation.json",
+    "nativeEvidence": "relocated-native-smoke.json"
+  },
+  "dependencies": [
+    {
+      "architecture": "x86",
+      "sourceBuildPassed": true,
+      "rebuiltRuntimePassed": true,
+      "evidence": "dependencies-x86.json"
+    },
+    {
+      "architecture": "x64",
+      "sourceBuildPassed": true,
+      "rebuiltRuntimePassed": true,
+      "evidence": "dependencies-x64.json"
+    }
+  ],
+  "dependencyAudit": {
+    "web-sdk": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "template-web": {
+      "info": 0,
+      "low": 0,
+      "moderate": 1,
+      "high": 1,
+      "critical": 0,
+      "total": 2
+    },
+    "demo-web": {
+      "info": 0,
+      "low": 0,
+      "moderate": 1,
+      "high": 2,
+      "critical": 0,
+      "total": 3
+    }
+  },
+  "firstPartySourceHashes": "first-party-source-hashes.json",
+  "limitations": [
+    "Preview only; production acceptance remains incomplete.",
+    "Long-run memory, shutdown stability, target OS matrix and Electron performance parity are not closed.",
+    "Web build dependency advisories and complete binary redistribution review remain open.",
+    "Remote CI, signing, installer and product-specific update/rollback were not executed."
+  ]
+}

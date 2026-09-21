@@ -1,0 +1,54 @@
+name: Bug 报告
+description: 报告可复现的 SDK、模板、Demo 或构建问题
+title: "[Bug] "
+labels: ["bug", "needs-triage"]
+body:
+  - type: markdown
+    attributes:
+      value: 请勿提交密钥、用户数据或未公开的安全漏洞；安全问题请按 SECURITY.md 私下报告。
+  - type: input
+    id: version
+    attributes:
+      label: SDK 版本
+      placeholder: 0.2.0-preview.2
+    validations:
+      required: true
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: 架构
+      options: [x86, x64, 两者, 不适用]
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: 环境
+      description: Windows 版本、VS/MSVC、Windows SDK、Node/CMake 版本
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 最小复现步骤
+      placeholder: 从干净目录开始列出命令和操作
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望行为
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际行为和日志
+      description: 提供退出码和首个有效错误，删除敏感信息
+    validations:
+      required: true
+  - type: textarea
+    id: regression
+    attributes:
+      label: 回归信息
+      description: 已知最后正常版本、是否可稳定复现、临时绕过方式

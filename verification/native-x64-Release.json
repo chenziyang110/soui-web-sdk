@@ -1,0 +1,27 @@
+{
+  "schema": "soui.native-smoke/v1",
+  "architecture": "x64",
+  "configuration": "Release",
+  "releaseReady": false,
+  "runs": [
+    {
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "executableSha256": "97F8BC8A4015B3D61E08853F4AA4615CBF83C8110EC1F5E027CB0A703FF29CED",
+      "kernelSha256": "8F155E8466E82099F64334BBC56DB35368E0F85D44ED38E11A13768EDD1AF199",
+      "target": "SouiStarter",
+      "log": "process-start\r\nhost-started\r\napplication-ready\r\nhost-close-complete\r\n"
+    },
+    {
+      "passed": true,
+      "exitCode": 0,
+      "timedOut": false,
+      "executableSha256": "CCC390548081833B7A378907BA1342A5540669862C36CC778131C90FEFC83906",
+      "kernelSha256": "8F155E8466E82099F64334BBC56DB35368E0F85D44ED38E11A13768EDD1AF199",
+      "target": "SouiWorkbench",
+      "log": "process-start\r\nwindow-constructed\r\nhost-started\r\ntimer-waiting-document\r\ndocument=waiting,bridge=waiting,draw_interval_ms=-1\r\ndocument=ready,bridge=ready,draw_interval_ms=0,probe=script/json/event/error/local/proxy/promise/symbol/reflect/vue/reactivity/dom/bridge\r\napplication-ready\r\nhost-close-start\r\nadapter-unmount-start\r\nadapter-bridge-shutdown\r\nadapter-events-drained\r\nadapter-webview-destroyed\r\nadapter-engine-shutdown\r\nadapter-module-released-by-engine\r\nhost-close-complete\r\nwindow-destroyed\r\n"
+    }
+  ],
+  "passed": true
+}

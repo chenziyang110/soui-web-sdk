@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.24)
+project(SouiExternalConsumer LANGUAGES CXX)
+find_package(SouiSdk CONFIG REQUIRED)
+add_executable(soui_consumer main.cpp)
+target_link_libraries(soui_consumer PRIVATE Soui::Sdk)
+set_property(TARGET soui_consumer PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)

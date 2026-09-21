@@ -1,0 +1,24 @@
+{
+  "schema": "soui.binary-license-review/v1",
+  "status": "unverified",
+  "releaseReady": false,
+  "scope": "Exact preview Miniblink binaries and their linked third-party configuration",
+  "binaries": [
+    {
+      "architecture": "x86",
+      "sha256": "1233a8542de4f6891e09b14e49270ddb0dabea703e387fe256dbacb716dc5978"
+    },
+    {
+      "architecture": "x64",
+      "sha256": "8f155e8466e82099f64334bbc56db35368e0f85d44ed38e11a13768edd1af199"
+    }
+  ],
+  "evidence_refs": [
+    "third_party/sources/miniblink/SOURCE-MANIFEST.json",
+    "third_party/sources/miniblink/LOCAL-CHANGES.patch"
+  ],
+  "required_evidence": [
+    "Applicable redistribution terms for complete binaries",
+    "Linked third-party notices and build configuration review"
+  ]
+}

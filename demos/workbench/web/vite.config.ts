@@ -1,0 +1,47 @@
+import { defineConfig } from 'vite';
+import path from 'node:path';
+import vue from '@vitejs/plugin-vue';
+import legacy from '@vitejs/plugin-legacy';
+import react from '@vitejs/plugin-react';
+import { vueMiniblinkCompat } from './build/vue-miniblink-compat';
+
+export default defineConfig(({ mode }) => ({
+  base: './',
+  plugins: [
+    vueMiniblinkCompat(),
+    vue(),
+    react(),
+    legacy({
+      // The isolated Miniblink source identifies itself as the Chrome 49 era
+      // (Blink build 98096 / V8 5.7). Keep the emitted classic bundle inside
+      // that parser/runtime envelope; developers can still write modern Vue
+      // and TypeScript because this target is applied after bundling.
+      targets: ['Chrome 49'],
+      modernPolyfills: true,
+      renderLegacyChunks: true,
+    }),
+  ],
+  build: {
+    outDir: mode === 'legacy' ? 'dist-legacy' : 'dist',
+    emptyOutDir: true,
+    manifest: true,
+    cssCodeSplit: true,
+    // plugin-legacy owns the legacy target; setting build.target here causes
+    // Vite to emit a warning that the unified validation entry treats as a failure.
+    sourcemap: false,
+    rollupOptions: {
+      input: {
+        index: path.resolve(__dirname, 'index.html'),
+        react: path.resolve(__dirname, 'react.html'),
+      },
+      output: {
+        entryFileNames: 'assets/[name]-[hash].js',
+        chunkFileNames: 'assets/[name]-[hash].js',
+        assetFileNames: 'assets/[name]-[hash][extname]',
+      },
+    },
+  },
+  css: {
+    preprocessorOptions: { scss: { api: 'modern-compiler' } },
+  },
+}));

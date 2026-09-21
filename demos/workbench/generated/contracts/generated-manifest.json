@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "protocol": "soui.bridge/1",
+  "source": "contracts/soui-native.contract.json",
+  "source_sha256": "d021b171628bb8b7ca7e3e415620a326604a66cbd6d900ca4b63c0c40fc6ae98",
+  "outputs": {
+    "cpp": {
+      "path": "generated/contracts/soui_native.generated.h",
+      "sha256": "0cc44b84ab787dcd7cd7e114ba39be23ac0bde21330ef7f89c485a5d8d792fd1"
+    },
+    "typescript": {
+      "path": "generated/contracts/soui_native.generated.ts",
+      "sha256": "8f524f526a1c8c7ad9cbd90b0418c457298b8956494d8ba677cacf7c9e3608df"
+    }
+  },
+  "method_count": 33,
+  "errors": [
+    "E_INVALID_PARAMS",
+    "E_UNKNOWN_METHOD",
+    "E_UNAUTHORIZED",
+    "E_SESSION_EXPIRED",
+    "E_UNIMPLEMENTED",
+    "E_TIMEOUT",
+    "E_CANCELLED",
+    "E_LIMIT_MESSAGE_SIZE",
+    "E_MALFORMED_JSON",
+    "E_SCHEMA_INVALID",
+    "E_SCHEMA_VERSION_UNSUPPORTED",
+    "E_OPERATION_CONFLICT",
+    "E_PERMISSION_DENIED",
+    "E_GESTURE_REQUIRED",
+    "E_TASK_NOT_FOUND",
+    "E_INVALID_CURSOR",
+    "E_NATIVE_FAILURE",
+    "E_USER_CANCELLED",
+    "E_RESOURCE_MISSING",
+    "E_WRONG_ARCHITECTURE",
+    "E_COMPATIBILITY_UNSUPPORTED",
+    "E_SUBSCRIPTION_NOT_FOUND",
+    "E_TASK_TERMINAL",
+    "E_LIMIT_RATE",
+    "E_BUSY",
+    "E_RESULT_LIMIT",
+    "E_UNTRUSTED_FRAME"
+  ],
+  "status": "generated"
+}

@@ -1,0 +1,40 @@
+{
+  "name": "soui-miniblink-ai-web",
+  "private": true,
+  "packageManager": "pnpm@10.31.0",
+  "version": "0.1.0",
+  "description": "Offline React/Vue web surfaces for the SOUI + Miniblink AI dev kit.",
+  "type": "module",
+  "scripts": {
+    "prebuild": "node ../tools/web-build/generate-component-loaders.cjs",
+    "prebuild:legacy": "node ../tools/web-build/generate-component-loaders.cjs",
+    "build": "vite build && node ../tools/web-build/create-miniblink-entry.js dist",
+    "build:legacy": "vite build --mode legacy && node ../tools/web-build/create-miniblink-entry.js dist-legacy",
+    "check:dist": "powershell -NoProfile -ExecutionPolicy Bypass -File ../tools/web-build/Verify-LocalDist.ps1"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "5.62.8",
+    "element-plus": "2.11.1",
+    "primeicons": "7.0.0",
+    "primereact": "10.9.7",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "resize-observer-polyfill": "1.5.1",
+    "vue": "3.4.38",
+    "zustand": "5.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "20.17.30",
+    "@types/react": "18.3.12",
+    "@types/react-dom": "18.3.1",
+    "@vitejs/plugin-legacy": "5.4.2",
+    "@vitejs/plugin-react": "4.3.4",
+    "@vitejs/plugin-vue": "5.1.4",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.49",
+    "sass": "1.79.3",
+    "tailwindcss": "3.4.17",
+    "typescript": "5.5.4",
+    "vite": "5.4.8"
+  }
+}

@@ -1,0 +1,80 @@
+'use strict';
+const fs=require('node:fs'), path=require('node:path'), crypto=require('node:crypto'), cp=require('node:child_process');
+const root=path.resolve(__dirname,'..'), output=path.join(root,'verification');
+const read=name=>JSON.parse(fs.readFileSync(path.join(root,name),'utf8').replace(/^\uFEFF/,''));
+const digest=name=>crypto.createHash('sha256').update(fs.readFileSync(path.resolve(root,name))).digest('hex');
+const save=(name,value)=>fs.writeFileSync(path.join(output,name),JSON.stringify(value,null,2)+'\n');
+fs.mkdirSync(output,{recursive:true});
+const version=fs.readFileSync(path.join(root,'VERSION'),'utf8').trim();
+function requirePassed(condition,message){if(!condition)throw new Error(message);}
+function run(name,executable,args) {
+ const result=cp.spawnSync(executable,args,{cwd:root,encoding:'utf8',windowsHide:true});
+ fs.writeFileSync(path.join(output,name+'.log'),(result.stdout||'')+(result.stderr||''));
+ requirePassed(result.status===0, name+' failed: inspect verification/'+name+'.log');
+ return {passed:true,exitCode:result.status,log:name+'.log'};
+}
+const unit={
+ package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),
+ web:run('web-sdk-tests',process.execPath,['--test','tests/web/sdk-client.test.mjs']),
+ nativeX64:run('native-contract-x64',path.join(root,'out/x64/tests/native/Release/soui_sdk_contract_tests.exe'),[]),
+ nativeX86:run('native-contract-x86',path.join(root,'out/x86/tests/native/Release/soui_sdk_contract_tests.exe'),[])
+};
+const matrix=[];
+for(const arch of ['x86','x64'])for(const config of ['Debug','Release']){
+ const build=read('out/'+arch+'/build-'+config+'.json');
+ const smoke=read('out/'+arch+'/smoke-'+config+'.json');
+ requirePassed(build.nativeBuild==='passed' && smoke.passed,arch+' '+config+' was not verified');
+ for(const row of smoke.runs){
+  const base='out/'+arch+'/bin/'+config+'/'+row.target+'/';
+  requirePassed(digest(base+row.target+'.exe')===row.executableSha256.toLowerCase(), 'Executable drift');
+  requirePassed(digest(base+'node.dll')===row.kernelSha256.toLowerCase(), 'Kernel drift');
+ }
+ save('native-'+arch+'-'+config+'.json',smoke);
+ matrix.push({architecture:arch,configuration:config,buildPassed:true,templateAndDemoPassed:true,evidence:'native-'+arch+'-'+config+'.json'});
+}
+const dependencies=[];
+for(const arch of ['x86','x64']){
+ const build=read('out/dependencies/'+arch+'/build-All.json');
+ const smoke=read('out/dependencies/'+arch+'/rebuilt-smoke.json');
+ requirePassed(build.status==='built' && build.artifacts.length===6 && smoke.passed,arch+' dependency build/smoke incomplete');
+ for(const artifact of build.artifacts){
+  requirePassed(digest(artifact.path)===artifact.sha256.toLowerCase(),'Rebuilt dependency drift');
+  artifact.path=path.relative(root,artifact.path).replace(/\\/g,'/');
+ }
+ save('dependencies-'+arch+'.json',{build,smoke});
+ dependencies.push({architecture:arch,sourceBuildPassed:true,rebuiltRuntimePassed:true,evidence:'dependencies-'+arch+'.json'});
+}
+const generated=read('verification/generated-project.json');
+const fresh=read('verification/fresh-project.json');
+const relocated=read('verification/relocation.json');
+const relocationSmoke=read('verification/relocated-native-smoke.json');
+requirePassed(generated.passed && generated.sdkVersion===version && relocated.passed && relocated.sdkVersion===version && relocationSmoke.passed,'Independent application evidence missing');
+requirePassed(fresh.passed && fresh.sdkVersion===version,'Fresh project verification missing');
+const sdkOnly=read('out/sdk-x64/build-Release.json');
+requirePassed(sdkOnly.sdkOnly && sdkOnly.nativeBuild==='passed','SDK independent build missing');
+const consumer=run('cmake-consumer',path.join(root,'out/consumer-vs2022/Release/soui_consumer.exe'),[]);
+const sources=[];
+function walk(relative){
+ for(const entry of fs.readdirSync(path.join(root,relative),{withFileTypes:true}).sort((a,b)=>a.name.localeCompare(b.name))){
+  if(['node_modules','dist','out','.vs'].includes(entry.name))continue;
+  const name=relative+'/'+entry.name;
+  if(entry.isDirectory())walk(name);else if(entry.isFile())sources.push({path:name,sha256:digest(name)});
+ }
+}
+for(const dir of ['sdk','templates','demos','cmake','tools','tests'])walk(dir);
+sources.push({path:'CMakeLists.txt',sha256:digest('CMakeLists.txt')});
+save('first-party-source-hashes.json',sources);
+const audits={};
+for(const scope of ['web-sdk','template-web','demo-web']) audits[scope]=read('verification/'+scope+'-audit.json').metadata.vulnerabilities;
+const acceptance={schema:'soui.source-delivery-acceptance/v1',version,finishedAt:new Date().toISOString(),
+ sourceDeliveryVerified:true,releaseReady:false,toolchain:read('verification/toolchain.json'),
+ nativeApplicationMatrix:matrix,unitTests:unit,sdkOnly:{passed:true,architecture:'x64',configuration:'Release'},externalCmakeConsumer:consumer,
+ generatedApplication:{passed:true,upgradeTested:true,evidence:'generated-project.json',freshProjectEvidence:'fresh-project.json'},
+ relocatedDistribution:{passed:true,evidence:'relocation.json',nativeEvidence:'relocated-native-smoke.json'},
+ dependencies,dependencyAudit:audits,firstPartySourceHashes:'first-party-source-hashes.json',
+ limitations:['Preview only; production acceptance remains incomplete.',
+ 'Long-run memory, shutdown stability, target OS matrix and Electron performance parity are not closed.',
+ 'Web build dependency advisories and complete binary redistribution review remain open.',
+ 'Remote CI, signing, installer and product-specific update/rollback were not executed.']};
+save('acceptance.json',acceptance);
+console.log(JSON.stringify({version,sourceDeliveryVerified:true,releaseReady:false,nativeConfigurations:matrix.length,rebuiltArchitectures:dependencies.length}));

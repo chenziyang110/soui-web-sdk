@@ -1,0 +1,305 @@
+{
+  "build": {
+    "schema": "soui.dependency-build/v1",
+    "architecture": "x86",
+    "component": "All",
+    "startedAt": "2026-09-21T15:13:25.1717103+08:00",
+    "finishedAt": "2026-09-21T16:05:11.6632558+08:00",
+    "status": "built",
+    "releaseReady": false,
+    "artifacts": [
+      {
+        "kind": "miniblink",
+        "path": "out/dependencies/x86/miniblink/bin/node.dll",
+        "sha256": "AB74728491CD8A48EDE0F9E16878A7F89BDB9F927FC24EBA5E951C3375F163CB"
+      },
+      {
+        "path": "third_party/sources/soui/bin/soui.dll",
+        "sha256": "67AAB5702CFAD856ACBC8ACA7EF8129E485339A7A226638F07044213A4F97637",
+        "kind": "soui"
+      },
+      {
+        "path": "third_party/sources/soui/bin/utilities.dll",
+        "sha256": "ABF78BCCCC46B7C75FDB366A83385BEDDDF738D72A401E765A7C675E2015FF6D",
+        "kind": "utilities"
+      },
+      {
+        "path": "third_party/sources/soui/bin/render-gdi.dll",
+        "sha256": "311FC97BB30C3CE38ECA2761786D678E0CAEC0490C56B803C5CF15C2883157F8",
+        "kind": "render-gdi"
+      },
+      {
+        "path": "third_party/sources/soui/bin/imgdecoder-gdip.dll",
+        "sha256": "650AC7EE497A904C351545E537A0FF267F117F685C8B1B9109F5362B31883E05",
+        "kind": "imgdecoder-gdip"
+      },
+      {
+        "path": "third_party/sources/soui/bin/soui-sys-resource.dll",
+        "sha256": "8612738D79B425F5683B930D25AECAB197FCB08B1243705AA51294F391A2DE3B",
+        "kind": "soui-sys-resource"
+      }
+    ],
+    "artifactMetadataCorrection": "The x86 project emits node.dll although its MSBuild summary prints miniblink.dll. Artifact identity corrected from the completed build output; no source or binary was changed."
+  },
+  "smoke": {
+    "schema": "soui.rebuilt-dependency-smoke/v1",
+    "architecture": "x86",
+    "releaseReady": false,
+    "kernelAndSouiBuiltFromBundledSource": true,
+    "passed": true,
+    "runs": [
+      {
+        "passed": true,
+        "exitCode": 0,
+        "target": "SouiStarter",
+        "log": "process-start\r\nhost-started\r\napplication-ready\r\nhost-close-complete\r\n",
+        "timedOut": false
+      },
+      {
+        "passed": true,
+        "exitCode": 0,
+        "target": "SouiWorkbench",
+        "log": "process-start\r\nwindow-constructed\r\nhost-started\r\ntimer-waiting-document\r\ndocument=waiting,bridge=waiting,draw_interval_ms=-1\r\ndocument=ready,bridge=ready,draw_interval_ms=0,probe=script/json/event/error/local/proxy/promise/symbol/reflect/vue/reactivity/dom/bridge\r\napplication-ready\r\nhost-close-start\r\nadapter-unmount-start\r\nadapter-bridge-shutdown\r\nadapter-events-drained\r\nadapter-webview-destroyed\r\nadapter-engine-shutdown\r\nadapter-module-released-by-engine\r\nhost-close-complete\r\nwindow-destroyed\r\n",
+        "timedOut": false
+      }
+    ],
+    "runtimeHashes": [
+      {
+        "sha256": "35E4308351BEC766EEC1DFB5BC9B6ACA4417D6D822FDFF7C779618EBFC2C2652",
+        "file": "api-ms-win-core-console-l1-1-0.dll"
+      },
+      {
+        "sha256": "72023DD72F20D305286CA64E188F3A1B58F8ADEC8934778E50CC20E4D6793956",
+        "file": "api-ms-win-core-console-l1-2-0.dll"
+      },
+      {
+        "sha256": "CBEB3FCE4B9067AEFBE995970D39CD2498270E4929AE2E367AC15D3CB9EBAC06",
+        "file": "api-ms-win-core-datetime-l1-1-0.dll"
+      },
+      {
+        "sha256": "6A168C94D5194D63F2D80F905AB9339E01AFECC757AF44B6658943FD369AFD89",
+        "file": "api-ms-win-core-debug-l1-1-0.dll"
+      },
+      {
+        "sha256": "45757A42A31D519B0E6B2CF031352DCEACE039E69A65119B506E332FC2628FBD",
+        "file": "api-ms-win-core-errorhandling-l1-1-0.dll"
+      },
+      {
+        "sha256": "E3EB59F334848B30E3271D9236404A9E4DF711409894E4880C4CEEC080707014",
+        "file": "api-ms-win-core-file-l1-1-0.dll"
+      },
+      {
+        "sha256": "0777622B3487106F4EC764E415E3796A3C6ED2E0EBF799219B9A864DFE04735C",
+        "file": "api-ms-win-core-file-l1-2-0.dll"
+      },
+      {
+        "sha256": "26C7C62D033F50AC68A6C5A953816B2614EFEA1A123FECD66A0423DA08769A54",
+        "file": "api-ms-win-core-file-l2-1-0.dll"
+      },
+      {
+        "sha256": "D4244D9CA65CA5C1A9DE9E37D2839262C61099FC92E6728E0AEB6DA988B28E78",
+        "file": "api-ms-win-core-handle-l1-1-0.dll"
+      },
+      {
+        "sha256": "E4A9C2EBAEBCEC78EEAEF566F30AF26FBBB04005650A342AA47C0DF941197218",
+        "file": "api-ms-win-core-heap-l1-1-0.dll"
+      },
+      {
+        "sha256": "A5B9AC82F8564D3062F26C02C2C7A29B34EE8A5391831276C9BC4B8C911B015A",
+        "file": "api-ms-win-core-interlocked-l1-1-0.dll"
+      },
+      {
+        "sha256": "FE748C3A751DE4E25AFB1D66DE0459917EAE079FBBD5A75515B179057B012049",
+        "file": "api-ms-win-core-libraryloader-l1-1-0.dll"
+      },
+      {
+        "sha256": "E84B59C4D0371A701A11732C6DB4AD47EA735D5EAD7B7ED697C9E7B5E267D5B6",
+        "file": "api-ms-win-core-localization-l1-2-0.dll"
+      },
+      {
+        "sha256": "60A8F25EE3942F2DBA151E9676FA858A034FF090767A80D1A3A986B77FA7C94A",
+        "file": "api-ms-win-core-memory-l1-1-0.dll"
+      },
+      {
+        "sha256": "1380AE17C1C21764D1677A59A95A8302C17F2AC7676CC96921747476595E30AB",
+        "file": "api-ms-win-core-namedpipe-l1-1-0.dll"
+      },
+      {
+        "sha256": "C0E71C61FEC11988CE93F6524E98544F3CF71A55086365D9D40029CC16ED1B94",
+        "file": "api-ms-win-core-processenvironment-l1-1-0.dll"
+      },
+      {
+        "sha256": "9CB774AA46CD16E17D78D1EE939279CD69D68BA7445E90EBDD186BD02F0BB415",
+        "file": "api-ms-win-core-processthreads-l1-1-0.dll"
+      },
+      {
+        "sha256": "471FF523E741D4C16EB843B2820D6D9BE42CDA4C4B13C7C06F45E55BFA39B2E3",
+        "file": "api-ms-win-core-processthreads-l1-1-1.dll"
+      },
+      {
+        "sha256": "615693905133A17D9D72D8B46FD9AE85443BAC5990E11A2E7AE8B405E10D56C0",
+        "file": "api-ms-win-core-profile-l1-1-0.dll"
+      },
+      {
+        "sha256": "B7A2F47B389A8D0F2D1F1279516F99FBFF399AED485D522472F373265CB99D46",
+        "file": "api-ms-win-core-rtlsupport-l1-1-0.dll"
+      },
+      {
+        "sha256": "6BAC726DE58D5305F13A55D7DD83769E20536362C18A07262747C4B4A73C79DF",
+        "file": "api-ms-win-core-string-l1-1-0.dll"
+      },
+      {
+        "sha256": "61D44DCDE3AF12CDF8F545FCE458610496D699A2658C28E280FA715999FA8F3E",
+        "file": "api-ms-win-core-synch-l1-1-0.dll"
+      },
+      {
+        "sha256": "0F8BAC3BC17C6A03D090C59A7B24958FD9A732CB82EA82F223EE1C5D7C6C2448",
+        "file": "api-ms-win-core-synch-l1-2-0.dll"
+      },
+      {
+        "sha256": "91C2F53D2078142F0ED742B0DBAC94C2B2006D15285753BE70F3B28E0AEBDBD7",
+        "file": "api-ms-win-core-sysinfo-l1-1-0.dll"
+      },
+      {
+        "sha256": "150E57CAB3E9E7B443050B13418F5F6E93A2D2C7E6AB5B8A06962D9D9DF820D0",
+        "file": "api-ms-win-core-timezone-l1-1-0.dll"
+      },
+      {
+        "sha256": "C1B7D839923EE2ECD91246335BDE6A39C65C088B61566C694AB6BA318476B7C6",
+        "file": "api-ms-win-core-util-l1-1-0.dll"
+      },
+      {
+        "sha256": "F0619ECD237FEB5287C10F283994B470E6EFD3C008392E8372A9A29F29B94AD2",
+        "file": "API-MS-Win-core-xstate-l2-1-0.dll"
+      },
+      {
+        "sha256": "78398B9E78680CFA705104EED73B59CD0C5208298BDEAD11CB778C11BF4EB3C0",
+        "file": "api-ms-win-crt-conio-l1-1-0.dll"
+      },
+      {
+        "sha256": "CE26C495F3682F728CD783C4703E709A817355AC9C996713562B9C6EC4A64855",
+        "file": "api-ms-win-crt-convert-l1-1-0.dll"
+      },
+      {
+        "sha256": "29CB4C12407E87D1CFB2073C9D856BBDEC8D29F2190A6E2EB762ED2C14B75869",
+        "file": "api-ms-win-crt-environment-l1-1-0.dll"
+      },
+      {
+        "sha256": "31011ADFBE20D6004532A56937349B98AE2913AE0996E88236E4D2DB37F0D19E",
+        "file": "api-ms-win-crt-filesystem-l1-1-0.dll"
+      },
+      {
+        "sha256": "06E35112D8B3D1D98566BB75B0F586E457783AF8F981C2C1FB97BED11D7C4030",
+        "file": "api-ms-win-crt-heap-l1-1-0.dll"
+      },
+      {
+        "sha256": "7347BDCFEF657D6DC57C74ABE2969632F96D8E1F1228C0D6B405B56A3CBCB3AC",
+        "file": "api-ms-win-crt-locale-l1-1-0.dll"
+      },
+      {
+        "sha256": "EFC419F701C15228DB2CD8347EE030515DFD3FF9B6C13F6C0B50E207313DC6CF",
+        "file": "api-ms-win-crt-math-l1-1-0.dll"
+      },
+      {
+        "sha256": "B2EDD6F49B474303A40150B6F44CDEB7B4954BB7C53407D82B69D13E2908699F",
+        "file": "api-ms-win-crt-multibyte-l1-1-0.dll"
+      },
+      {
+        "sha256": "2AB1FA504D082E7DD4565ACFEFB15B86D1711C86D5FA0D7867BBB8AF1D8F4F45",
+        "file": "api-ms-win-crt-private-l1-1-0.dll"
+      },
+      {
+        "sha256": "FC8AFF5EB737F42742790E0B1A62F1368296E54FFA141AC75491EBD561B588FE",
+        "file": "api-ms-win-crt-process-l1-1-0.dll"
+      },
+      {
+        "sha256": "C68C494549D7891A37B9E5FE6E172AF1A1DA88AC20E7DB951D2F51E6A69DF3D8",
+        "file": "api-ms-win-crt-runtime-l1-1-0.dll"
+      },
+      {
+        "sha256": "E116C1689A811DD9740EEBA6F4EA200C54A685F716E5AE2E8526EC18A3973E53",
+        "file": "api-ms-win-crt-stdio-l1-1-0.dll"
+      },
+      {
+        "sha256": "FE123C4190422CDA976253EC952AB0BA37C3BCA66BC428DCAAB5B9E69E769A8E",
+        "file": "api-ms-win-crt-string-l1-1-0.dll"
+      },
+      {
+        "sha256": "F9914B9AA16678157AA8BD5203D383A08D5E1DF3FD54FD8858D7BCEED04BE65D",
+        "file": "api-ms-win-crt-time-l1-1-0.dll"
+      },
+      {
+        "sha256": "55B9E24759C65A74A3DC6422F9E2E796B42B61B1090DAC2776DF07F568F50582",
+        "file": "api-ms-win-crt-utility-l1-1-0.dll"
+      },
+      {
+        "sha256": "A2B04C69868B08A600518EBBAD1661D38DE4DD0E0A8E638C22D4641D410E50B1",
+        "file": "concrt140.dll"
+      },
+      {
+        "sha256": "650AC7EE497A904C351545E537A0FF267F117F685C8B1B9109F5362B31883E05",
+        "file": "imgdecoder-gdip.dll"
+      },
+      {
+        "sha256": "97E71A3C697FB1AB3AF777DB39009E4602525E8C3AFF0837ECC7031CBA188165",
+        "file": "msvcp140.dll"
+      },
+      {
+        "sha256": "01A58552686D0C6B9FD67A7AC81169FC0013AEDF59A8EFDC611F94907489A31C",
+        "file": "msvcp140_1.dll"
+      },
+      {
+        "sha256": "2A5365E03CC6E78B408DFCA81537F3734BF3D7CF9CC13AE33204DFBC641DBE43",
+        "file": "msvcp140_2.dll"
+      },
+      {
+        "sha256": "C4A2BAE74E008A5BB2445F9078C14DF9DCB03267248DFA64E7D04CDC8AF5208E",
+        "file": "msvcp140_atomic_wait.dll"
+      },
+      {
+        "sha256": "A5CBECFD9B8892EC9A60E30FEF7EF2158032C6D91EFDFBACA87C082BCD48BFA9",
+        "file": "msvcp140_codecvt_ids.dll"
+      },
+      {
+        "sha256": "AB74728491CD8A48EDE0F9E16878A7F89BDB9F927FC24EBA5E951C3375F163CB",
+        "file": "node.dll"
+      },
+      {
+        "sha256": "311FC97BB30C3CE38ECA2761786D678E0CAEC0490C56B803C5CF15C2883157F8",
+        "file": "render-gdi.dll"
+      },
+      {
+        "sha256": "8612738D79B425F5683B930D25AECAB197FCB08B1243705AA51294F391A2DE3B",
+        "file": "soui-sys-resource.dll"
+      },
+      {
+        "sha256": "67AAB5702CFAD856ACBC8ACA7EF8129E485339A7A226638F07044213A4F97637",
+        "file": "soui.dll"
+      },
+      {
+        "sha256": "D7A94EABF4109BB5A2E381A603BEE5E398A81F23894E1764170399EC83AD2541",
+        "file": "ucrtbase.dll"
+      },
+      {
+        "sha256": "ABF78BCCCC46B7C75FDB366A83385BEDDDF738D72A401E765A7C675E2015FF6D",
+        "file": "utilities.dll"
+      },
+      {
+        "sha256": "89ED5A6877A87EC3EC9FE4A0FB14DC950599F0B67318E746084A0C333A6C865F",
+        "file": "vccorlib140.dll"
+      },
+      {
+        "sha256": "A9D7732A3C3DE09F0601A7FA2555093DCB49F08E2FC62A86091461F0F38393ED",
+        "file": "vcruntime140.dll"
+      },
+      {
+        "sha256": "BB2B1D16187562376FC888059E2CBBF26C5404F6A4BB7197D1D01B970F199667",
+        "file": "vcruntime140_threads.dll"
+      },
+      {
+        "sha256": "39611555CC1BA130A88CC3B32835207004DAC7915D2FDA42186C75B7743908EE",
+        "file": "zlib1.dll"
+      }
+    ]
+  }
+}

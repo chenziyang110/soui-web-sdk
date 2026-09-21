@@ -1,0 +1,6 @@
+add_executable(soui_sdk_contract_tests sdk_contract_tests.cpp)
+target_link_libraries(soui_sdk_contract_tests PRIVATE Soui::Sdk)
+target_compile_options(soui_sdk_contract_tests PRIVATE /utf-8 /U_DEBUG)
+target_include_directories(soui_sdk_contract_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
+set_property(TARGET soui_sdk_contract_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.contract COMMAND soui_sdk_contract_tests)

@@ -1,0 +1,8 @@
+{
+  "protocol":"soui.bridge/1",
+  "origin":"app://starter",
+  "methods":{
+    "app.greet":{"capability":"app.greet","params":{"name":"string, <=128 UTF-8 bytes"},"result":{"message":"string"}},
+    "bridge.probe.report":{"capability":"bridge.probe","params":{"ready":"true"},"result":{"ready":"true"}}
+  }
+}

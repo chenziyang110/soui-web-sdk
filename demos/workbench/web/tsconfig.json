@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "target": "ES2018",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["vite/client"]
+  },
+  "include": ["apps/**/*.ts", "apps/**/*.d.ts", "apps/**/*.tsx", "apps/**/*.vue", "packages/**/*.ts", "../tests/system/second-module/**/*.ts", "vite.config.ts"]
+}
