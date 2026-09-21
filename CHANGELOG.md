@@ -6,6 +6,7 @@
 
 - 建立独立 GitHub 仓库维护基线：AI Agent 规范、ADR、Issue/PR 模板、CODEOWNERS、Dependabot 和四组 Windows CI。
 - CI 使用无交互安全的单元/契约测试模式；真实桌面 smoke 继续作为发布前目标机验收。
+- Dependabot 按模块合并兼容的小版本与补丁更新，大版本升级必须经过显式规划和验证。
 
 - 独立 SDK、最小模板和完整 Workbench Demo 分层。
 - 提供 C++ 静态 SDK、CMake 导出、TypeScript SDK 和类型产物。
