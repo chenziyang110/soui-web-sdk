@@ -1,6 +1,6 @@
 {
   "schema": "soui.dependencies/v2",
-  "sdkVersion": "0.2.0-preview.2",
+  "sdkVersion": "0.3.0-preview.1",
   "releaseReady": false,
   "dependencies": [
     {
@@ -8,6 +8,7 @@
       "source": "third_party/sources/soui/SOURCE-MANIFEST.json",
       "version": "SOUI 2.9.0.3 lineage",
       "license": "upstream source notices",
+      "sourceNormalization": "lf",
       "sha256": "cdb534f9d6e90f1f96e447064392ef7c5f8d7e1566ebbccb0f2c1722d6263348"
     },
     {
@@ -15,6 +16,7 @@
       "source": "third_party/sources/miniblink/SOURCE-MANIFEST.json",
       "version": "Miniblink49 VS2022 working snapshot",
       "license": "upstream and bundled dependency notices",
+      "sourceNormalization": "lf",
       "sha256": "9ce3172a363d7be251bdf60d3a7dbd8cf70cf7df80e114bad0f8742177cedb75"
     },
     {
@@ -22,20 +24,23 @@
       "source": "third_party/sources/zlib/source-manifest.json",
       "version": "1.2.11",
       "license": "Zlib",
-      "sha256": "3ef0e4e94c307e421773109e0444c318d8b63f7c9de093fce7fec6ad18272bea"
+      "sourceNormalization": "lf",
+      "sha256": "90ae57c39397f7eb1f13742f68d0276247f0e9f5402eeac647b60b0fb4ff9921"
     },
     {
       "id": "json",
       "source": "third_party/include/json/json.hpp",
       "version": "pinned single header",
       "license": "MIT",
-      "sha256": "853b2eb3bf7632c949f4a2dd6fb8a629c5ff25cc0059d29c7d21915dc719487f"
+      "sourceNormalization": "lf",
+      "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
     },
     {
       "id": "miniblink-x86",
       "source": "third_party/prebuilt/x86/miniblink/node.dll",
       "version": "source-consistent preview 2026-09-21",
       "license": "binary redistribution review incomplete",
+      "sourceNormalization": "none",
       "sha256": "1233a8542de4f6891e09b14e49270ddb0dabea703e387fe256dbacb716dc5978"
     },
     {
@@ -43,6 +48,7 @@
       "source": "third_party/prebuilt/x86/runtime/vc/zlib1.dll",
       "version": "1.2.11 app-local",
       "license": "Zlib",
+      "sourceNormalization": "none",
       "sha256": "39611555cc1ba130a88cc3b32835207004dac7915d2fda42186c75b7743908ee"
     },
     {
@@ -50,6 +56,7 @@
       "source": "third_party/prebuilt/x64/miniblink/node.dll",
       "version": "source-consistent preview 2026-09-21",
       "license": "binary redistribution review incomplete",
+      "sourceNormalization": "none",
       "sha256": "8f155e8466e82099f64334bbc56db35368e0f85d44ed38e11a13768edd1af199"
     },
     {
@@ -57,6 +64,7 @@
       "source": "third_party/prebuilt/x64/runtime/vc/zlib1.dll",
       "version": "1.2.11 app-local",
       "license": "Zlib",
+      "sourceNormalization": "none",
       "sha256": "fb6726dbcd7bb3659ca126ef4d5c7f83de46ab5e2b470316925e1d5873ec9045"
     },
     {
@@ -64,13 +72,15 @@
       "source": "sdk/web/package-lock.json",
       "version": "lockfile",
       "license": "resolved package licenses",
-      "sha256": "80581b59b3597ca51dadfdc837a78e7abbdc741e938b48e80292f49ae7e36272"
+      "sourceNormalization": "lf",
+      "sha256": "075d354c6818bb1badba3a09377ee4a8f1edc9b032c392b902aae7e3a3788226"
     },
     {
       "id": "template-web",
       "source": "templates/desktop-app/web/package-lock.json",
       "version": "lockfile",
       "license": "resolved package licenses",
+      "sourceNormalization": "lf",
       "sha256": "8fe6b1e6386cccfb071b26ee5fd7ab3ba426b3a2efb14365c20b5e37f91e47d1"
     },
     {
@@ -78,6 +88,7 @@
       "source": "demos/workbench/web/package-lock.json",
       "version": "lockfile",
       "license": "resolved package licenses",
+      "sourceNormalization": "lf",
       "sha256": "530a7b639facadb78de45ed9b5c3648988fd99d3fe9577bae8cd904e2631481d"
     }
   ],

@@ -6,6 +6,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const identity = require('../internal/delivery-identity.cjs');
 
 const PACKAGE = 'soui.source-sdk/v1';
 const LOCK = 'soui.sdk-lock/v1';
@@ -62,7 +63,8 @@ function validateManifest(manifest) {
   for (const file of manifest.files) {
     relativeName(file.path);
     if (!managed(file.path) || seen.has(file.path.toLowerCase()) ||
-        !/^[a-f0-9]{64}$/.test(file.sha256) || !Number.isSafeInteger(file.bytes) || file.bytes < 0) {
+        !/^[a-f0-9]{64}$/.test(file.sha256) || !Number.isSafeInteger(file.bytes) || file.bytes < 0 ||
+        (file.sourceNormalization !== undefined && !['lf', 'none'].includes(file.sourceNormalization))) {
       throw new Error(`Invalid or duplicate SDK entry: ${file.path}`);
     }
     seen.add(file.path.toLowerCase());
@@ -70,11 +72,12 @@ function validateManifest(manifest) {
   return manifest;
 }
 
-function verifyFiles(root, manifest) {
+function verifyFiles(root, manifest, source = false) {
   for (const file of manifest.files) {
     const full = safePath(root, file.path);
-    if (!fs.existsSync(full) || !fs.statSync(full).isFile() ||
-        fs.statSync(full).size !== file.bytes || fileHash(full) !== file.sha256) {
+    if (!fs.existsSync(full) || !fs.statSync(full).isFile()) throw new Error(`SDK file missing or modified: ${file.path}`);
+    const data = identity.normalize(fs.readFileSync(full), source ? file.sourceNormalization || 'none' : 'none');
+    if (data.length !== file.bytes || hash(data) !== file.sha256) {
       throw new Error(`SDK file missing or modified: ${file.path}`);
     }
   }
@@ -109,14 +112,18 @@ function pack(source, output, version) {
   const manifest = validateManifest({schema: PACKAGE, id: sdkId, version, channel: 'preview', releaseReady: false,
     format: 'source-with-native-dependencies',
     applicationContract: 'Applications own app, web, contracts and resources. SDK builds independently using CMake and links through Soui::Sdk.',
-    files: files.map(relative => ({path: relative, bytes: fs.statSync(safePath(source, relative)).size,
-      sha256: fileHash(safePath(source, relative))}))});
+    files: files.map(relative => {
+      const raw = fs.readFileSync(safePath(source, relative));
+      const sourceNormalization = identity.normalization(relative, raw);
+      const data = identity.normalize(raw, sourceNormalization);
+      return {path: relative, bytes: data.length, sha256: hash(data), sourceNormalization};
+    })});
   const stage = `${output}.staging-${crypto.randomUUID()}`;
   try {
     for (const file of manifest.files) {
       const target = safePath(stage, `payload/${file.path}`);
       fs.mkdirSync(path.dirname(target), {recursive: true});
-      fs.copyFileSync(safePath(source, file.path), target);
+      fs.writeFileSync(target, identity.normalize(fs.readFileSync(safePath(source, file.path)), file.sourceNormalization), {flag: 'wx'});
     }
     fs.writeFileSync(safePath(stage, 'sdk-manifest.json'), encoded(manifest), {flag: 'wx'});
     readPackage(stage);
@@ -221,7 +228,7 @@ function main(argv) {
   if (command === 'verify-source') {
     const manifest = readPackage(options['--package']);
     const source = safePath(options['--source']);
-    verifyFiles(source, manifest);
+    verifyFiles(source, manifest, true);
     const paths = [...managedRoots, ...managedFiles].flatMap(relative => walk(source, relative)).sort();
     if (JSON.stringify(paths) !== JSON.stringify(manifest.files.map(file => file.path))) {
       throw new Error('SDK source file set changed; create a new SDK version');

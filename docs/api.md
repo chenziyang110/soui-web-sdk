@@ -51,7 +51,7 @@ const result = await client.call('app.ping', {});
 安装后在外部工程使用：
 
 ```cmake
-find_package(SouiSdk 0.2.0 EXACT CONFIG REQUIRED)
+find_package(SouiSdk 0.3.0 EXACT CONFIG REQUIRED)
 target_link_libraries(MyTarget PRIVATE Soui::Sdk)
 ```
 
