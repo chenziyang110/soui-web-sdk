@@ -1,61 +1,21 @@
 {
-  "schema": "soui.source-delivery-acceptance/v1",
-  "version": "0.2.0-preview.2",
-  "finishedAt": "2026-09-21T08:55:27.976Z",
-  "sourceDeliveryVerified": true,
+  "schema": "soui.source-delivery-acceptance/v2",
+  "version": "0.3.0-preview.2",
+  "scope": "foundation",
+  "status": "passed",
+  "sourceDeliveryVerified": false,
   "releaseReady": false,
-  "toolchain": {
-    "node": "v24.14.0",
-    "nodeSupported": true,
-    "cmake": "cmake version 4.2.3",
-    "visualStudio": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community",
-    "windowsSdk19041": true,
-    "manifestTool": true,
-    "atl": true,
-    "miniblinkSource": true,
-    "souiSource": true,
-    "validationHost": {
-      "version": "10.0.26200",
-      "architecture": "64 位",
-      "caption": "Microsoft Windows 11 专业版"
-    },
-    "msvcVersion": "19.44.35226.0"
-  },
-  "nativeApplicationMatrix": [
-    {
-      "architecture": "x86",
-      "configuration": "Debug",
-      "buildPassed": true,
-      "templateAndDemoPassed": true,
-      "evidence": "native-x86-Debug.json"
-    },
-    {
-      "architecture": "x86",
-      "configuration": "Release",
-      "buildPassed": true,
-      "templateAndDemoPassed": true,
-      "evidence": "native-x86-Release.json"
-    },
-    {
-      "architecture": "x64",
-      "configuration": "Debug",
-      "buildPassed": true,
-      "templateAndDemoPassed": true,
-      "evidence": "native-x64-Debug.json"
-    },
-    {
-      "architecture": "x64",
-      "configuration": "Release",
-      "buildPassed": true,
-      "templateAndDemoPassed": true,
-      "evidence": "native-x64-Release.json"
-    }
-  ],
+  "finishedAt": "2026-09-22T07:36:37.304Z",
   "unitTests": {
     "package": {
       "passed": true,
       "exitCode": 0,
       "log": "sdk-package-tests.log"
+    },
+    "delivery": {
+      "passed": true,
+      "exitCode": 0,
+      "log": "delivery-identity-tests.log"
     },
     "web": {
       "passed": true,
@@ -73,72 +33,90 @@
       "log": "native-contract-x86.log"
     }
   },
-  "sdkOnly": {
-    "passed": true,
-    "architecture": "x64",
-    "configuration": "Release"
-  },
-  "externalCmakeConsumer": {
-    "passed": true,
-    "exitCode": 0,
-    "log": "cmake-consumer.log"
-  },
-  "generatedApplication": {
-    "passed": true,
-    "upgradeTested": true,
-    "evidence": "generated-project.json",
-    "freshProjectEvidence": "fresh-project.json"
-  },
-  "relocatedDistribution": {
-    "passed": true,
-    "evidence": "relocation.json",
-    "nativeEvidence": "relocated-native-smoke.json"
-  },
-  "dependencies": [
+  "nativeApplicationMatrix": [
     {
       "architecture": "x86",
-      "sourceBuildPassed": true,
-      "rebuiltRuntimePassed": true,
-      "evidence": "dependencies-x86.json"
+      "configuration": "Release",
+      "buildId": "bd00fee0-51bc-4a0c-957a-19d4d0cf6b63",
+      "sourceSha256": "4ff406792e19d03812585d3cffb94418c11f0ee0733790e0181a52ef6b82ca93",
+      "scenarios": [
+        {
+          "target": "SouiStarter",
+          "scenario": "default",
+          "passed": true
+        },
+        {
+          "target": "SouiWorkbench",
+          "scenario": "default",
+          "passed": true
+        },
+        {
+          "target": "SouiWorkbench",
+          "scenario": "react",
+          "passed": true
+        }
+      ],
+      "evidence": "native-x86-Release.json"
     },
     {
       "architecture": "x64",
-      "sourceBuildPassed": true,
-      "rebuiltRuntimePassed": true,
-      "evidence": "dependencies-x64.json"
+      "configuration": "Release",
+      "buildId": "2030abe9-d573-44df-8c77-b5ed856c0a1e",
+      "sourceSha256": "4ff406792e19d03812585d3cffb94418c11f0ee0733790e0181a52ef6b82ca93",
+      "scenarios": [
+        {
+          "target": "SouiStarter",
+          "scenario": "default",
+          "passed": true
+        },
+        {
+          "target": "SouiWorkbench",
+          "scenario": "default",
+          "passed": true
+        },
+        {
+          "target": "SouiWorkbench",
+          "scenario": "react",
+          "passed": true
+        }
+      ],
+      "evidence": "native-x64-Release.json"
     }
   ],
-  "dependencyAudit": {
-    "web-sdk": {
-      "info": 0,
-      "low": 0,
-      "moderate": 0,
-      "high": 0,
-      "critical": 0,
-      "total": 0
+  "sizes": [
+    {
+      "target": "SouiStarter",
+      "architecture": "x86",
+      "bytes": 28355640,
+      "compressedBytes": 11913638,
+      "evidence": "size-SouiStarter-x86.json"
     },
-    "template-web": {
-      "info": 0,
-      "low": 0,
-      "moderate": 0,
-      "high": 0,
-      "critical": 0,
-      "total": 0
+    {
+      "target": "SouiWorkbench",
+      "architecture": "x86",
+      "bytes": 39209739,
+      "compressedBytes": 18233863,
+      "evidence": "size-SouiWorkbench-x86.json"
     },
-    "demo-web": {
-      "info": 0,
-      "low": 0,
-      "moderate": 0,
-      "high": 0,
-      "critical": 0,
-      "total": 0
+    {
+      "target": "SouiStarter",
+      "architecture": "x64",
+      "bytes": 41784168,
+      "compressedBytes": 15916679,
+      "evidence": "size-SouiStarter-x64.json"
+    },
+    {
+      "target": "SouiWorkbench",
+      "architecture": "x64",
+      "bytes": 52691003,
+      "compressedBytes": 22256336,
+      "evidence": "size-SouiWorkbench-x64.json"
     }
-  },
-  "firstPartySourceHashes": "first-party-source-hashes.json",
+  ],
   "limitations": [
-    "Preview only; production acceptance remains incomplete.",
-    "Long-run memory, shutdown stability, target OS matrix and Electron performance parity are not closed.",
-    "Complete binary redistribution review remains open.",
-    "Remote CI is intentionally not configured; signing, installer and product-specific update/rollback were not executed."
+    "Foundation checks only, not a complete 0.3 release acceptance.",
+    "Clean clone/archive builds are recorded separately; full dependency rebuild and four-configuration matrix are still required.",
+    "Electron performance comparison, long-run lifecycle tests and 0.3 desktop capability work remain open.",
+    "No remote CI; production, signing and binary redistribution gates remain open."
   ]
 }
