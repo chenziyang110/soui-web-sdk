@@ -1,8 +1,8 @@
 {
   "schema": "soui.full-source/v2",
-  "version": "0.3.0-preview.1",
+  "version": "0.3.0-preview.2",
   "releaseReady": false,
-  "identity": "Tracked source; text CRLF normalized to LF; binaries unchanged.",
+  "identity": "Git index blob bytes; checkout CRLF tolerated for text; binaries unchanged.",
   "files": [
     {
       "path": ".gitattributes",
@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 1903,
-      "sha256": "3ab5bf0c900c81f3f3b4ef92cf2a6ad6dc2b1e78daf433c3b06a06fd0e12ef52"
+      "bytes": 2059,
+      "sha256": "6f6f63d752a9472c41897ccffa68d8028583adf3e60d9df844578912804bfd4b"
     },
     {
       "path": "CMakeLists.txt",
@@ -92,7 +92,7 @@
       "path": "README.md",
       "normalization": "lf",
       "bytes": 4680,
-      "sha256": "28eeab7830998352f7e7fac7e4f97be3a73b151f2b980f6fac72dd844c50c4c5"
+      "sha256": "0b3cf622173e3565d030f1564021ce4aff9ab87251388d2ac1d3de647054417d"
     },
     {
       "path": "SECURITY.md",
@@ -110,7 +110,7 @@
       "path": "VERSION",
       "normalization": "lf",
       "bytes": 16,
-      "sha256": "a9863a06224300baff36fe1b67e0adea77f6fb8d50bc562501343c3f7679ce9c"
+      "sha256": "8fe650362479b562b6bca0c076b5ff597d02ff59adc0100b2a550a08ad116b1e"
     },
     {
       "path": "cmake/SouiApplication.cmake",
@@ -1279,8 +1279,8 @@
     {
       "path": "docs/adr/0001-source-and-runtime-identity.md",
       "normalization": "lf",
-      "bytes": 3792,
-      "sha256": "5b99c58f7583b35ddedc27be8975e5a860593bc27a3a0cc983e1458f2bd3dcf9"
+      "bytes": 3901,
+      "sha256": "eacfe60aa2e2c14c56a1825e36d94e8b8c6dbb12b9fdefe1ab55450ab095b5d2"
     },
     {
       "path": "docs/adr/README.md",
@@ -1321,8 +1321,8 @@
     {
       "path": "docs/releasing.md",
       "normalization": "lf",
-      "bytes": 2862,
-      "sha256": "c1ee43d1cd096c467e672076c9a14d31402e1a415e0ec4d712ba6ad41deb788c"
+      "bytes": 3024,
+      "sha256": "38f7abc84ccfc9b66485c7eccf1474873199c9d944219823583633af6e1a19fe"
     },
     {
       "path": "docs/roadmap/0.3-foundation-issue.md",
@@ -1333,8 +1333,8 @@
     {
       "path": "docs/roadmap/0.3-foundation.md",
       "normalization": "lf",
-      "bytes": 1325,
-      "sha256": "73e3714ba7c096f7ffb6414f69460af499bc82de0756ec506172ca78b5e26b22"
+      "bytes": 1446,
+      "sha256": "e8d2aa8bdb705fa69fabd1cbbd934c6405fbab5229ba836a2810059bc4d80fe2"
     },
     {
       "path": "docs/roadmap/0.3.0.md",
@@ -1358,7 +1358,7 @@
       "path": "docs/versioning.md",
       "normalization": "lf",
       "bytes": 2618,
-      "sha256": "bd2c5aad1a7a09fbfedac8c624c7a5458804c35a437b0398592ea9eedffe3b37"
+      "sha256": "2cd2cfb951f7e5c09c3f0e1590fa220fe4bcfb8625eac5ca31bb551e35c95cab"
     },
     {
       "path": "sdk/CMakeLists.txt",
@@ -1496,7 +1496,7 @@
       "path": "sdk/include/soui/version.h",
       "normalization": "lf",
       "bytes": 250,
-      "sha256": "46a8c6148b30a285353a7f9ff18420069dd7b59c07b19a809ffea209d1aae88f"
+      "sha256": "9a5ea6f9923bd97869f69102b58fb07de43bc2f501254edf8c4895bac22f6574"
     },
     {
       "path": "sdk/src/host/engine_thread.cpp",
@@ -1586,13 +1586,13 @@
       "path": "sdk/web/package-lock.json",
       "normalization": "lf",
       "bytes": 735,
-      "sha256": "075d354c6818bb1badba3a09377ee4a8f1edc9b032c392b902aae7e3a3788226"
+      "sha256": "fadc52ae0f558db396f7cd007642f0c44fac4491cc371a4a439e8da48e8b1114"
     },
     {
       "path": "sdk/web/package.json",
       "normalization": "lf",
       "bytes": 372,
-      "sha256": "e48f2d0c727b4dff654adaf7e6772cb30ca16e74b9d8e0794e4134547cc80926"
+      "sha256": "8949afd7d8360419d7ace58f3faf6018df6ad66d27f3e31b75d0a41362d2d764"
     },
     {
       "path": "sdk/web/src/contracts.ts",
@@ -1729,8 +1729,8 @@
     {
       "path": "tests/sdk/delivery-identity.test.cjs",
       "normalization": "lf",
-      "bytes": 8913,
-      "sha256": "f6bc574ecbd55c4a91ffd466c550288ea9ef53f6c343f8d3a59d5e99f6a0a027"
+      "bytes": 9120,
+      "sha256": "78a9728f321b423d8b9a6e51001a339bd4c231146f7d2836d775eda9340f60f3"
     },
     {
       "path": "tests/sdk/sdk-package-smoke.cjs",
@@ -2780,7 +2780,7 @@
       "path": "third_party/manifests/dependencies.json",
       "normalization": "lf",
       "bytes": 32092,
-      "sha256": "ff60dc7fc1e086a264ab07c8593ac2c62f38037573035a297c0a94e675e785e5"
+      "sha256": "4738258a5868862c5ba859c40291320fb675581f6d0d231557f82d011eb8aa54"
     },
     {
       "path": "third_party/manifests/license-review.json",
@@ -172621,8 +172621,8 @@
     {
       "path": "tools/internal/source-archive.cjs",
       "normalization": "lf",
-      "bytes": 4713,
-      "sha256": "645acc3c9fff1d21a07fcb09412d5a6283d7357f02036281a3f78c3ad29c03d3"
+      "bytes": 6697,
+      "sha256": "69849371301075a3357d08d86860ffdfa60b300d6579225113f0ddd5fdf9a8a7"
     },
     {
       "path": "tools/sdk/soui-sdk.cjs",

@@ -34,15 +34,50 @@ function create(root) {
   const entries = tracked(root);
   if (!entries || !entries.length) throw new Error('Manifest generation requires a Git checkout with added source files');
   checkFileSet(root, entries);
-  const files = entries.map(file => {
-    const data = id.normalize(fs.readFileSync(id.safePath(root, file.path)), file.normalization);
-    return {...file, bytes: data.length, sha256: id.hash(data)};
-  });
+  git(root, ['diff', '--quiet', '--', '.', ':(exclude)source-manifest.json']);
+  const index = new Map(git(root, ['ls-files', '--stage', '-z']).split('\0').filter(Boolean).map(row => {
+    const [mode, oid, stage] = row.slice(0, row.indexOf('\t')).split(' ');
+    if (!['100644', '100755'].includes(mode) || stage !== '0') throw new Error('Linked, nested or unmerged source entry');
+    return [row.slice(row.indexOf('\t') + 1), oid];
+  }));
+  const oids = entries.map(file => index.get(file.path));
+  const sizes = cp.execFileSync('git', ['-C', root, 'cat-file', '--batch-check'],
+    {input: oids.join('\n') + '\n', encoding: 'utf8', maxBuffer: 16 * 1024 * 1024, windowsHide: true})
+    .trim().split('\n').map(row => Number(row.split(' ')[2]));
+  const files = [];
+  // Read canonical index blobs in bounded batches instead of normalizing already-normalized text twice.
+  for (let start = 0; start < entries.length;) {
+    let end = start, bytes = 0;
+    do { bytes += sizes[end++]; } while (end < entries.length && bytes + sizes[end] < 8 * 1024 * 1024 && end - start < 512);
+    const data = cp.execFileSync('git', ['-C', root, 'cat-file', '--batch'], {input: oids.slice(start, end).join('\n') + '\n',
+      maxBuffer: bytes + (end - start) * 128 + 1024, windowsHide: true});
+    let offset = 0;
+    for (let i = start; i < end; ++i) {
+      const newline = data.indexOf(10, offset);
+      const header = data.subarray(offset, newline).toString('ascii').split(' ');
+      if (header[0] !== oids[i] || header[1] !== 'blob' || Number(header[2]) !== sizes[i]) throw new Error('Unexpected Git source blob');
+      offset = newline + 1;
+      files.push({...entries[i], bytes: sizes[i], sha256: id.hash(data.subarray(offset, offset + sizes[i]))});
+      offset += sizes[i] + 1;
+    }
+    start = end;
+  }
   id.validateFiles(files);
   const manifest = {schema, version: fs.readFileSync(path.join(root, 'VERSION'), 'utf8').trim(), releaseReady: false,
-    identity: 'Tracked source; text CRLF normalized to LF; binaries unchanged.', files};
+    identity: 'Git index blob bytes; checkout CRLF tolerated for text; binaries unchanged.', files};
   fs.writeFileSync(path.join(root, manifestName), id.encoded(manifest));
   return manifest;
+}
+function content(root, file, format) {
+  const full = id.safePath(root, file.path);
+  if (!fs.existsSync(full)) throw new Error(`Missing source file: ${file.path}`);
+  const raw = fs.readFileSync(full);
+  const matches = data => data.length === file.bytes && id.hash(data) === file.sha256;
+  // Exact canonical blobs can legitimately contain mixed line endings; preserve them as-is.
+  if (matches(raw)) return raw;
+  const normalized = id.normalize(raw, format === schema ? file.normalization : 'none');
+  if (!matches(normalized)) throw new Error(`Source missing or modified: ${file.path}`);
+  return normalized;
 }
 function verify(root) {
   const manifest = id.readJson(id.safePath(root, manifestName));
@@ -51,10 +86,8 @@ function verify(root) {
   id.validateFiles(manifest.files);
   if (manifest.schema === schema) checkFileSet(root, manifest.files);
   for (const file of manifest.files) {
-    const full = id.safePath(root, file.path);
-    if (!fs.existsSync(full)) throw new Error(`Missing source file: ${file.path}`);
-    const data = id.normalize(fs.readFileSync(full), manifest.schema === schema ? file.normalization : 'none');
-    if (data.length !== file.bytes || id.hash(data) !== file.sha256) throw new Error(`Source missing or modified: ${file.path}`);
+    if (manifest.schema === schema && !['lf', 'none'].includes(file.normalization)) throw new Error('Invalid source normalization');
+    content(root, file, manifest.schema);
   }
   return manifest;
 }
@@ -65,7 +98,7 @@ function stage(root, output) {
   if (fs.existsSync(output)) throw new Error('Source stage already exists');
   for (const file of manifest.files) {
     const target = id.safePath(output, file.path);
-    const data = id.normalize(fs.readFileSync(id.safePath(root, file.path)), file.normalization);
+    const data = content(root, file, manifest.schema);
     fs.mkdirSync(path.dirname(target), {recursive: true});
     fs.writeFileSync(target, data, {flag: 'wx'});
   }

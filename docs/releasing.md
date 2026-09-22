@@ -11,7 +11,7 @@
 
 `verification/sbom-*.cdx.json` 是从三个 npm 锁文件生成的 CycloneDX 依赖清单；原生依赖身份见 `third_party/manifests/dependencies.json`，底层源代码来源见各源码目录的 `SOURCE-MANIFEST.json`。这些清单不等同于漏洞已清零或授权审核完成。
 
-源码维护者先将审查过的源码加入 Git 跟踪，再执行 `node tools/internal/source-archive.cjs create` 和 `node tools/internal/source-archive.cjs verify`。v2 清单按 Git 跟踪集合生成，文本记录 CRLF→LF 规范，二进制不转换；上游导入清单中的历史缓存不决定发布内容。
+源码维护者先将审查过的源码加入 Git 暂存区，再执行 `node tools/internal/source-archive.cjs create` 和 `node tools/internal/source-archive.cjs verify`。除清单自身外存在未暂存修改时生成器会失败。v2 清单从 Git index blob 的原始字节生成；验证先比较原字节，再允许文本 checkout 的 CRLF 转换，保留 Git 中原有的特殊混合换行。二进制不转换；上游导入清单中的历史缓存不决定发布内容。
 
 使用 `powershell.exe -File tools/Package.ps1` 生成源码归档及 SHA-256。它先校验当前清单，将固定内容复制到新的 `out/package/source-*`，再次校验再压缩；不会隐式刷新已失效清单。解压后无须 Git 也可执行 `node tools/internal/source-archive.cjs verify`。源码改变后回到维护者 checkout 更新清单，不能在解压目录中无依据重建发布集合。编译工具和 npm 包需要另行准备。
 

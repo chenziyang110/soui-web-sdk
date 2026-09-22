@@ -34,6 +34,7 @@ test('source snapshot excludes ignored cache, works with CRLF checkout and witho
   write(root, 'tools/test.ps1', 'Write-Output hello\r\n');
   write(root, 'binary.dll', Buffer.from([0, 13, 10, 255]));
   write(root, 'textual.dll', 'MZ\r\ntext-like binary\r\n');
+  write(root, 'mixed.txt', 'first\r\r\nsecond\r\n');
   write(root, 'ignored.cache', 'not source');
   git(root, 'add', '.');
   const manifest = archive.create(root);
@@ -43,6 +44,10 @@ test('source snapshot excludes ignored cache, works with CRLF checkout and witho
   archive.stage(root, stage);
   assert.equal(fs.existsSync(path.join(stage, '.git')), false);
   archive.verify(stage);
+  git(stage, 'init', '-q');
+  git(stage, 'add', '.');
+  const regenerated = archive.create(stage);
+  assert.deepEqual(regenerated.files, manifest.files);
   assert.deepEqual(fs.readFileSync(path.join(stage, 'binary.dll')), Buffer.from([0, 13, 10, 255]));
   assert.equal(fs.readFileSync(path.join(stage, 'textual.dll'), 'utf8'), 'MZ\r\ntext-like binary\r\n');
   write(stage, 'tools/test.ps1', 'Write-Output hello\r\n');

@@ -1,6 +1,6 @@
 # 版本与升级
 
-版本入口是根目录 `VERSION`，当前为 `0.3.0-preview.1`。构建工具检查 C++ 版本字符串、Web 包和锁文件保持一致，CMake 从该版本推导数值版本。生成项目以 `sdk-lock.json` 确认 SDK 版本，升级不覆盖业务项目自己的 VERSION。C++ API 使用源码编译，不承诺不同编译器、工具集或配置之间的稳定二进制 ABI。
+版本入口是根目录 `VERSION`，当前为 `0.3.0-preview.2`。构建工具检查 C++ 版本字符串、Web 包和锁文件保持一致，CMake 从该版本推导数值版本。生成项目以 `sdk-lock.json` 确认 SDK 版本，升级不覆盖业务项目自己的 VERSION。C++ API 使用源码编译，不承诺不同编译器、工具集或配置之间的稳定二进制 ABI。
 
 `tools/New-Project.ps1` 把模板与固定 SDK 包组合，生成 `project.json` 和 `sdk-lock.json`。默认 SDK 包位于 `dist/sdk/<版本>/`，包含 SDK 源码、接入工具和应用必需的固定依赖；完整底层源码保留在完整交付包中。
 
@@ -9,7 +9,7 @@
 ## 升级
 
 1. 修改 SDK 后更新 VERSION，记录兼容性变化并完成验证。
-2. 按当前 VERSION 生成新包，例如 `node tools/sdk/soui-sdk.cjs pack --source . --output dist/sdk/0.3.0-preview.1 --version 0.3.0-preview.1`；已生成的同版本包不允许覆盖。
+2. 按当前 VERSION 生成新包，例如 `node tools/sdk/soui-sdk.cjs pack --source . --output dist/sdk/0.3.0-preview.2 --version 0.3.0-preview.2`；已生成的同版本包不允许覆盖。
 3. 在业务项目中提交或备份修改。
 4. 执行 `node tools/sdk/soui-sdk.cjs install --package <新SDK包目录> --project <业务项目目录>`。
 5. 重新编译、回归业务，保留旧包用于回退。
