@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>SDK 公共接口验证</title>
+<style>body{font:18px sans-serif;padding:32px;background:#f4f7fb;color:#16243b}#state{padding:16px;background:white}</style>
+</head><body><h1>独立 SDK 测试窗口 @ACCEPTANCE_WINDOW_ID@</h1><p id="state">连接原生服务…</p>
+<script>
+(function () {
+  'use strict';
+  var count = 0;
+  var credentials = { sessionId: '', origin: '', token: '' };
+  function call(method, params) {
+    var requestId = 'acceptance:@ACCEPTANCE_WINDOW_ID@:' + (++count);
+    return Promise.resolve(window.__souiNativePostMessage(JSON.stringify({
+      requestId: requestId, sessionId: credentials.sessionId, origin: credentials.origin,
+      token: credentials.token, method: method, params: params
+    }))).then(function (raw) {
+      var result = JSON.parse(raw);
+      if (result.requestId !== requestId || !result.ok) throw new Error('Native call failed: ' + method);
+      return result.result;
+    });
+  }
+  Promise.resolve().then(function () {
+    return call('bridge.bootstrap', { protocol: 'soui.bridge/1' });
+  }).then(function (result) {
+    credentials = result;
+    return call('acceptance.echo', {});
+  }).then(function (identity) {
+    if (identity.window !== @ACCEPTANCE_WINDOW_ID@) throw new Error('Message reached the wrong native window');
+    return call('bridge.probe.report', { ready: true });
+  }).then(function () {
+    return call('acceptance.ready', {});
+  }).then(function () {
+    document.getElementById('state').textContent = '原生连接、窗口身份和页面就绪验证通过';
+  }).catch(function (error) {
+    document.getElementById('state').textContent = '失败：' + error.message;
+    document.title = 'SDK acceptance failed';
+  });
+})();
+</script></body></html>

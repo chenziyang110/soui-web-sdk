@@ -1,0 +1,12 @@
+diff --git a/content/browser/WebPageImpl.cpp b/content/browser/WebPageImpl.cpp
+--- a/content/browser/WebPageImpl.cpp
++++ b/content/browser/WebPageImpl.cpp
+@@ -308,6 +308,8 @@ WebPageImpl::~WebPageImpl()
+ 
+     delete m_toolTip;
+     delete m_validationMessageTip;
++    if (m_draggableRegion)
++        ::DeleteObject(m_draggableRegion);
+ 
+     if (m_memoryCanvasForUi)
+         delete m_memoryCanvasForUi;

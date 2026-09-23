@@ -1,0 +1,45 @@
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  GpuSkiaSurface.cpp
+  LayerTreeHost.cpp
+F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\cc\trees\LayerTreeHost.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+  (编译源文件“/cc/trees/LayerTreeHost.cpp”)
+  
+F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\cc\tiles\TileGrid.h(1,1): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+  (编译源文件“/cc/trees/LayerTreeHost.cpp”)
+  
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1402,5): warning MSB8012: TargetPath(F:\work\SOUI_WEB\soui-sdk\out\dependencies\x86\miniblink\bin\miniblink.dll) 与 Linker 的 OutputFile 属性值(F:\work\SOUI_WEB\soui-sdk\out\dependencies\x86\miniblink\bin\node.dll)不匹配。这可能导致项目生成不正确。若要更正此问题，请确保 $(OutDir)、$(TargetName) 和 $(TargetExt) 属性值与 %(Link.OutputFile) 中指定的值匹配。 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1404,5): warning MSB8012: TargetName(miniblink) 与 Linker 的 OutputFile 属性值(node)不匹配。这可能导致项目生成不正确。若要更正此问题，请确保 $(OutDir)、$(TargetName) 和 $(TargetExt) 属性值与 %(Link.OutputFile) 中指定的值匹配。 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4075: 忽略“/INCREMENTAL”(由于“/LTCG”规范) [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+    正在创建库 F:\work\SOUI_WEB\soui-sdk\out\dependencies\x86\miniblink/bin/node.lib 和对象 F:\work\SOUI_WEB\soui-sdk\out\dependencies\x86\miniblink/bin/node.exp
+  正在生成代码
+F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\third_party\libxml\src\xpath.c(2769): warning C4789: 函数“xmlXPathFormatNumber”中的缓冲区“work”(大小为 28 字节)将溢出；从偏移 1 时开始，将会写入 98 字节 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+  已完成代码的生成
+LINK : warning LNK4286: 符号“_curl_global_init”(在“libcurl.lib(easy.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_global_cleanup”(在“libcurl.lib(easy.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_slist_append”(在“libcurl.lib(slist.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_slist_free_all”(在“libcurl.lib(slist.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_slist_free_all”(在“libcurl.lib(slist.obj)”中定义)已由“WebCookieJarCurlImpl.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_version_info”(在“libcurl.lib(version.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_easy_strerror”(在“libcurl.lib(strerror.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_easy_pause”(在“libcurl.lib(easy.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_easy_init”(在“libcurl.lib(easy.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_easy_init”(在“libcurl.lib(easy.obj)”中定义)已由“WebCookieJarCurlImpl.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_easy_setopt”(在“libcurl.lib(setopt.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_easy_setopt”(在“libcurl.lib(setopt.obj)”中定义)已由“WebCookieJarCurlImpl.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_easy_perform”(在“libcurl.lib(easy.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_easy_cleanup”(在“libcurl.lib(easy.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_easy_cleanup”(在“libcurl.lib(easy.obj)”中定义)已由“WebCookieJarCurlImpl.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_easy_getinfo”(在“libcurl.lib(easy.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_easy_getinfo”(在“libcurl.lib(easy.obj)”中定义)已由“WebCookieJarCurlImpl.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_multi_init”(在“libcurl.lib(multi.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_multi_add_handle”(在“libcurl.lib(multi.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_multi_remove_handle”(在“libcurl.lib(multi.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_multi_fdset”(在“libcurl.lib(multi.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_multi_perform”(在“libcurl.lib(multi.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_multi_cleanup”(在“libcurl.lib(multi.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_multi_info_read”(在“libcurl.lib(multi.obj)”中定义)已由“WebURLLoaderManager.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_share_init”(在“libcurl.lib(share.obj)”中定义)已由“WebCookieJarCurlImpl.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_share_setopt”(在“libcurl.lib(share.obj)”中定义)已由“WebCookieJarCurlImpl.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+LINK : warning LNK4286: 符号“_curl_share_cleanup”(在“libcurl.lib(share.obj)”中定义)已由“WebCookieJarCurlImpl.obj”导入 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\build\miniblink\miniblink.vcxproj]
+  miniblink.vcxproj -> F:\work\SOUI_WEB\soui-sdk\out\dependencies\x86\miniblink\bin\miniblink.dll

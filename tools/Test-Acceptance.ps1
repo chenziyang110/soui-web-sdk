@@ -1,0 +1,59 @@
+[CmdletBinding()]
+param(
+  [ValidateSet('x86','x64')][string]$Architecture='x64',
+  [ValidateSet('Debug','Release')][string]$Configuration='Release',
+  [ValidateSet('all','reload','recreate','multiwindow','bridge')][string]$Scenario='all',
+  [ValidateRange(1,10000)][int]$Cycles=3,
+  [ValidateRange(0,100)][int]$Warmup=0,
+  [ValidateRange(0,60000)][int]$SettleMs=500,
+  [ValidateRange(1,120000)][int]$StepTimeoutMs=20000,
+  [string]$RuntimeBinary,
+  [switch]$PrepareOnly,
+  [switch]$SkipSdkBuild
+)
+$ErrorActionPreference='Stop'
+$root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$runner=Join-Path $root 'tests/acceptance/runner.cjs'
+New-Item -ItemType Directory -Force -Path (Join-Path $root 'out') | Out-Null
+& npm.cmd --prefix (Join-Path $root 'tests/acceptance') ci --no-audit --no-fund *> (Join-Path $root 'out/acceptance-toolchain-install.log')
+if($LASTEXITCODE -ne 0){throw 'Independent Web consumer toolchain install failed'}
+if(-not $SkipSdkBuild){
+  & (Join-Path $PSScriptRoot 'Build.ps1') -SdkOnly -Architecture $Architecture -Configuration $Configuration
+  if($LASTEXITCODE -ne 0){throw 'SDK build failed'}
+}
+$suite=Join-Path $root ('out/acceptance/'+[guid]::NewGuid().ToString())
+New-Item -ItemType Directory -Path $suite | Out-Null
+$runtime=if($RuntimeBinary){[IO.Path]::GetFullPath($RuntimeBinary)}else{Join-Path $root "third_party/prebuilt/$Architecture/miniblink/node.dll"}
+& node $runner prepare $suite $Architecture $Configuration $runtime
+if($LASTEXITCODE -ne 0){throw 'Current SDK build evidence is required'}
+$ErrorActionPreference='Continue'
+& node (Join-Path $root 'tests/acceptance/build-web.mjs') $suite *> (Join-Path $suite 'web-build.log')
+$ErrorActionPreference='Stop'
+if($LASTEXITCODE -ne 0){throw "Independent public Web SDK consumer build failed: $suite"}
+$sdkBuild=Join-Path $root "out/sdk-$Architecture"
+$install=Join-Path $suite 'install'
+& cmake --install $sdkBuild --config $Configuration --prefix $install *> (Join-Path $suite 'install.log')
+if($LASTEXITCODE -ne 0){throw "SDK install failed: $suite"}
+$platform=if($Architecture -eq 'x86'){'Win32,version=10.0.19041.0'}else{'x64,version=10.0.19041.0'}
+$consumer=Join-Path $suite 'consumer'
+& cmake -S (Join-Path $suite 'consumer-source') -B $consumer -G 'Visual Studio 17 2022' -A $platform "-DSouiSdk_DIR=$install/lib/cmake/SouiSdk" "-DSOUI_ACCEPTANCE_WEB_ROOT=$suite/web-output" *> (Join-Path $suite 'configure.log')
+if($LASTEXITCODE -ne 0){throw "Independent consumer configure failed: $suite"}
+& cmake --build $consumer --config $Configuration --parallel 2 *> (Join-Path $suite 'compile.log')
+if($LASTEXITCODE -ne 0){throw "Independent consumer build failed: $suite"}
+& node $runner stage $suite
+if($LASTEXITCODE -ne 0){throw 'Acceptance build/source identity failed'}
+if($PrepareOnly){Write-Output "Acceptance build prepared; no desktop scenarios executed: $suite";exit 0}
+$lease=[Threading.Mutex]::new($false,'Local\SouiDevKit.DesktopValidation')
+$acquired=$false
+$failed=$false
+try {
+  try{$acquired=$lease.WaitOne(0)}catch [Threading.AbandonedMutexException]{$acquired=$true}
+  if(-not $acquired){throw 'Another SOUI desktop validation is running'}
+  $modes=if($Scenario -eq 'all'){@('reload','recreate','multiwindow','bridge')}else{@($Scenario)}
+  foreach($mode in $modes){
+    & node $runner run $suite $mode $Cycles $Warmup $SettleMs $StepTimeoutMs
+    if($LASTEXITCODE -ne 0){$failed=$true}
+  }
+} finally {if($acquired){$lease.ReleaseMutex()};$lease.Dispose()}
+Write-Output "Acceptance evidence: $suite"
+if($failed){throw 'One or more real SDK acceptance scenarios failed; see retained reports'}

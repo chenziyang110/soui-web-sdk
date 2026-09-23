@@ -1,6 +1,6 @@
 # SouiStarter
 
-最小模板：标准窗口、React 页面、C++ app.greet 方法和自动启动验证。
+最小模板：标准窗口、React 页面、C++ app.greet 方法和自动启动验证。默认使用已通过关闭回归的软件呈现路径；GPU compositor 仍是内核专项实验，不进入新项目默认配置。
 
 通过交付根目录 tools/New-Project.ps1 生成独立工程后，在新项目根目录执行：
 

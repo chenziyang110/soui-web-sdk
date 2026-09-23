@@ -1,0 +1,55 @@
+{
+  "schema": "soui.reload-resource-observation/v1",
+  "runId": "c4134f7c-1363-4579-ba6c-99ffcc195ada",
+  "sourceSha256": "e29dc0d908c741642615b27d98f0d50d262131b10d0094d8b8c140660021027f",
+  "payloadSha256": "4fd908df8db348e65812f05c406a0cd542236c0e8d6103726c4dcf81d0c607e2",
+  "kernel": {
+    "kind": "explicit-candidate",
+    "bytes": 35851264,
+    "sha256": "2ed34e54c26fe074e020cee6d179ba2330dff7865db6fb3b75df039f4c69e565"
+  },
+  "logSha256": "0b135b082bfe788df847be85e9b97ed74cd907de30ac2f61e87315c1ad4b9aa7",
+  "config": {
+    "mode": "reload",
+    "cycles": 100,
+    "warmup": 3,
+    "settleMs": 1000,
+    "timeoutMs": 10000
+  },
+  "baseline": {
+    "event": "sample",
+    "elapsedMs": 5771,
+    "phase": "cycle",
+    "cycle": 3,
+    "privateBytes": 30699520,
+    "workingSetBytes": 45445120,
+    "handles": 296,
+    "threads": 14,
+    "gdiObjects": 60,
+    "userObjects": 23
+  },
+  "last": {
+    "event": "sample",
+    "elapsedMs": 130996,
+    "phase": "cycle",
+    "cycle": 103,
+    "privateBytes": 40546304,
+    "workingSetBytes": 53399552,
+    "handles": 295,
+    "threads": 18,
+    "gdiObjects": 32,
+    "userObjects": 23
+  },
+  "privateBytesBudget": {
+    "maximumIncrease": 16777216,
+    "observedIncrease": 9846784,
+    "numericBudgetMet": true
+  },
+  "peakPrivateBytes": 68771840,
+  "resourceGate": "not-evaluated",
+  "releaseReady": false,
+  "limitations": [
+    "Numeric terminal memory budget only; residual thread/resource ownership and long-run trend still need assessment.",
+    "Original operation result is unchanged."
+  ]
+}

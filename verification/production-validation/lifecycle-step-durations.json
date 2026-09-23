@@ -1,0 +1,48 @@
+{
+  "schema": "soui.lifecycle-step-durations/v1",
+  "observedAt": "2026-09-22T10:03:56.442Z",
+  "scope": "30 measured recreate cycles after 3 warmups; in-process log timestamps; not user input-to-presentation timing or Electron comparison",
+  "reports": [
+    {
+      "file": "verification/production-validation/e1661d6d-8f09-45f3-9340-02dd29551669/recreate-df48bf74-f999-4425-999b-5c67fb6a8ee9/events.ndjson",
+      "sha256": "e8a161720897538e539117fe18742f1747133a5ab310e090583bb442728ff638",
+      "metrics": {
+        "mount": {
+          "n": 30,
+          "minMs": 150,
+          "p50Ms": 160,
+          "p95Ms": 210,
+          "maxMs": 212
+        },
+        "close": {
+          "n": 30,
+          "minMs": 323,
+          "p50Ms": 348,
+          "p95Ms": 372,
+          "maxMs": 384
+        }
+      }
+    },
+    {
+      "file": "verification/production-validation/07fe23af-c09e-4845-8415-12bf8db672f4/recreate-4a9e0c5a-8af8-49a1-a6f9-7a9a76c3553f/events.ndjson",
+      "sha256": "41467006333a620c32d533b38e737e605b28f232d8cffc10de7d74df1b7bb3ea",
+      "metrics": {
+        "mount": {
+          "n": 30,
+          "minMs": 153,
+          "p50Ms": 163,
+          "p95Ms": 208,
+          "maxMs": 223
+        },
+        "close": {
+          "n": 30,
+          "minMs": 318,
+          "p50Ms": 340,
+          "p95Ms": 376,
+          "maxMs": 383
+        }
+      }
+    }
+  ],
+  "releaseReady": false
+}

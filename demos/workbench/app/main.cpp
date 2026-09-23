@@ -557,10 +557,9 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
   const bool gpu_readback = std::find(args.begin(), args.end(), L"--gpu-readback") != args.end() ||
                             renderer_option == L"readback";
   const bool auto_renderer = std::find(args.begin(), args.end(), L"--auto-renderer") != args.end() ||
-                             renderer_option == L"auto" ||
-                             (renderer_option.empty() &&
-                              std::find(args.begin(), args.end(), L"--cpu-high-refresh") == args.end());
-  const bool software_renderer = renderer_option == L"cpu" || renderer_option == L"software";
+                             renderer_option == L"auto";
+  const bool software_renderer = renderer_option == L"cpu" || renderer_option == L"software" ||
+                                 (!gpu_renderer && !gpu_readback && !auto_renderer);
   const bool cpu_high_refresh = std::find(args.begin(), args.end(), L"--cpu-high-refresh") != args.end();
   if (!renderer_option.empty() && renderer_option != L"auto" && renderer_option != L"gpu" &&
       renderer_option != L"readback" && !software_renderer) {
@@ -774,8 +773,9 @@ int APIENTRY wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
   }
   const HRESULT com_result = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
   const int result = run_gui(instance, args);
+  const auto shutdown = soui::sdk::shutdown_miniblink_runtime();
   if (SUCCEEDED(com_result)) CoUninitialize();
-  return result;
+  return result == 0 && !shutdown.ok ? 7 : result;
 }
 
 #else

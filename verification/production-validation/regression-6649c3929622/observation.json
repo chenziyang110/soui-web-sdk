@@ -1,0 +1,18 @@
+{
+  "schema": "soui.regression-observation/v1",
+  "sourceSha256": "6649c39296227b4cb0adb74ab5b585c9001896c71e24de603f0334c0569330c7",
+  "configuration": "Release",
+  "architectures": ["x64", "x86"],
+  "applicationScenarios": [
+    "starter/default",
+    "workbench/default",
+    "workbench/react"
+  ],
+  "passed": true,
+  "releaseReady": false,
+  "limitations": [
+    "The stable software presentation path is the template and Workbench default.",
+    "The GPU compositor experiment still exits with 0xC0000005 during WebView destruction and is excluded from production acceptance.",
+    "Short application smoke does not satisfy lifecycle, resource, soak, platform, security, licensing, or Electron comparison gates."
+  ]
+}

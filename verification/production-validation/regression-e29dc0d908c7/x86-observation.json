@@ -1,0 +1,20 @@
+{
+  "schema": "soui.regression-observation/v1",
+  "sourceSha256": "e29dc0d908c741642615b27d98f0d50d262131b10d0094d8b8c140660021027f",
+  "architecture": "x86",
+  "configuration": "Release",
+  "applicationScenarios": [
+    "starter/default",
+    "workbench/default",
+    "workbench/react"
+  ],
+  "rebuiltDependencyScenarios": [
+    "starter/default",
+    "workbench/react"
+  ],
+  "releaseReady": false,
+  "limitations": [
+    "The rebuilt-dependency smoke tool currently emits v1 evidence with DLL hashes only. This retained execution does not satisfy v2 source and complete-payload identity gates.",
+    "The ordinary three-scenario smoke uses fixed prebuilt DLLs; the separate dependency smoke uses the rebuilt candidate."
+  ]
+}
