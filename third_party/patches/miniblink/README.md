@@ -4,12 +4,12 @@
 
 | 补丁 | 原因 | 当前验证状态 |
 |---|---|---|
-| `0001-release-validation-tooltip.patch` | 每个 WebView 创建普通及表单校验两个 ToolTip，析构仅释放普通实例。公共消费者连续销毁重建时观察到数百个 `MbToolTip` 窗口残留。补齐校验提示对象释放。 | x64 重编译及三模式各 30 轮通过；重建 USER 对象增长由逐轮累积变为 0，但 GDI 每轮仍增 1。x86 和长循环待完成；固定 prebuilt 尚未替换。 |
+| `0001-release-validation-tooltip.patch` | 每个 WebView 创建普通及表单校验两个 ToolTip，析构仅释放普通实例。公共消费者连续销毁重建时观察到数百个 `MbToolTip` 窗口残留。补齐校验提示对象释放。 | x64 早期重编译及三模式各 30 轮通过；后续与其他补丁组合进入 preview.4 固定 DLL。当前固定包的长循环资源门槛仍待完成。 |
 | `0002-release-draggable-region.patch` | 每个 WebView 的 `CreateRectRgn` 结果 `m_draggableRegion` 未在析构释放，与首个补丁后每轮 GDI 增 1 一致。补齐对应 `DeleteObject`。 | 在补丁 0001 之后应用；x64 重新编译并完成重建 30 轮，USER/GDI 增量均为 0，普通句柄仍增 30。更长运行及 x86 待完成。 |
 | `0003-close-thread-wake-event.patch` | 非主线程创建唤醒事件，析构已等待工作线程并关闭线程句柄，却遗漏事件句柄。在线程真正退出并 join 之后关闭事件。 | 三补丁组合已完成 x64 全依赖重编译及三模式各 30 轮。重建普通句柄增量由 30 变为 0，USER/GDI 同样无增长；x86 及长循环待完成。该源文件含旧编码，使用 ASCII 上下文补丁应用，保持其余字节不变。 |
 | `0004-align-dynamic-binding-bool-abi.patch` | 交付的动态绑定头把 54 个实际导出为 C++ `bool` 的返回类型声明成 `BOOL`，x86 因返回 ABI 不一致把 Promise 误判为字符串。按同一内核源码的 `wkedefine.h` 对齐全部共享符号。 | ABI 契约测试覆盖全部共享返回类型；修复后的 x86/x64 公共消费者 reload/recreate/multiwindow/bridge 各 3 轮通过。根因、失败实验和诊断链见[归档](../../../verification/production-validation/x86-bool-abi-root-cause/README.md)。 |
-| `0005-gpu-surface-lifecycle.patch` | GPU 表面在合成线程创建，却原先在该线程退出后于 UI 线程析构；`GrGLCreateNativeInterface()` 返回的引用也未释放。把表面释放移回合成线程，并补齐 Skia 接口引用释放；保留可选关闭诊断。 | x86/x64 候选内核均已编译并完成 GPU 重建 30 轮，正常退出但 USER 对象仍逐轮增长；x64 软件对照的句柄和内存在 100 轮出现回收，不能把其 30 轮端点误判为线性泄漏。详情见 [GPU 生命周期记录](../../../docs/acceptance/gpu-lifecycle.md)。GPU 长循环待验证，不更新固定 prebuilt。 |
-| `0006-verify-tls-peer-and-host.patch` | Miniblink 网络句柄原先关闭 TLS 证书链和主机名校验。移除不安全默认值；允许宿主选择信任根后，强制启用链和主机名校验。 | x86/x64 候选内核重编译，回环 HTTPS 各六项通过，包括错误证书、主机名不匹配、重定向和回调试图关闭两种校验；公共消费者 Bridge 短回归通过。[原始证据](../../../verification/production-validation/tls-kernel-2026-09-23/README.md)保留。固定 prebuilt 未替换，信任根交付和旧 TLS 组件维护仍未验收。 |
+| `0005-gpu-surface-lifecycle.patch` | GPU 表面在合成线程创建，却原先在该线程退出后于 UI 线程析构；`GrGLCreateNativeInterface()` 返回的引用也未释放。把表面释放移回合成线程，并补齐 Skia 接口引用释放；保留可选关闭诊断。 | x86/x64 历史候选 GPU 重建 30 轮正常退出但 USER 对象仍逐轮增长；x64 软件对照的句柄和内存在 100 轮出现回收，不能把其 30 轮端点误判为线性泄漏。详情见 [GPU 生命周期记录](../../../docs/acceptance/gpu-lifecycle.md)。修补已进入 preview.4 固定 DLL，GPU 仍是实验模式。 |
+| `0006-verify-tls-peer-and-host.patch` | Miniblink 网络句柄原先关闭 TLS 证书链和主机名校验。移除不安全默认值；允许宿主选择信任根后，强制启用链和主机名校验。 | x86/x64 重编译候选及 preview.4 固定 DLL 均完成回环 HTTPS 各六项，包括错误证书、主机名不匹配、重定向和回调试图关闭两种校验；公共消费者四模式短回归通过。[固定包原始证据](../../../verification/production-validation/preview4-fixed-2026-09-23/README.md)保留。信任根交付和旧 TLS 组件维护仍未验收。 |
 
 补丁前文件原始字节 SHA-256 为 `d9c3a403e43493cdc13344781eb680c838ab68695e7c2119829ecb11313662da`；新源码由 SDK 的全源码清单记录。修改原生依赖后，必须以隔离目录的新 DLL 运行既有复现和真实应用，再更新预编译依赖身份、来源说明及许可核查对象。
 

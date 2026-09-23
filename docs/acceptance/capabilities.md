@@ -1,6 +1,6 @@
 # 公共能力与验收映射
 
-日期：2026-09-23。开发版本：`0.3.0-preview.3`。这是[完整方案](../roadmap/0.3-sdk-validation.md)的逐项执行入口，不是生产支持声明。最新双架构完整应用回归对应 SDK/工具源码指纹 `b565bd098865886d0382321eb43a5df9177fa99d1a395c094f592746a3f5724f`；独立消费者的实际内核另由[生命周期报告](lifecycle.md)和[GPU 专项](gpu-lifecycle.md)中的 DLL 散列区分。
+日期：2026-09-23。开发版本：`0.3.0-preview.4`。这是[完整方案](../roadmap/0.3-sdk-validation.md)的逐项执行入口，不是生产支持声明。新固定包的双架构完整应用和独立消费者回归源码指纹为 `f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9`，实际 DLL 散列见[固定包归档](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)；旧生命周期和 GPU 样本保持历史候选身份。
 
 状态为“待实现、部分实现、已实现待验收、通过当前范围、失败、待外部验证”。`通过当前范围` 只对应本行所列场景；同组尚有缺口时，整组不通过。不把 Demo 的注册或 TypeScript 声明当作公共模块实现。
 
@@ -35,18 +35,18 @@
 
 | ID | 公共入口/所有权 | 当前状态与证据 | 下一项必需验证 |
 |---|---|---|---|
-| V05-01 同进程重建 | Host `destroy/start` + 进程 Runtime | 通过当前范围：preview.2 崩溃/挂起已复现，当前标准连接器的软件路径 x86/x64 各 1,000 次重建正常退出 | 其他模式各 1,000 次及资源门槛，不用进程重启代替 |
+| V05-01 同进程重建 | Host `destroy/start` + 进程 Runtime | preview.2 崩溃/挂起已复现；preview.3 候选的软件路径 x86/x64 各 1,000 次重建正常退出；preview.4 固定包各三轮短回归通过 | 新固定包各模式 1,000 次及资源门槛，不用进程重启代替 |
 | V05-02 Runtime 最终退出 | `shutdown_miniblink_runtime` | 通过当前范围：有 Host 时拒绝、全部关闭后成功、重复关闭幂等、关闭后拒绝重启 | 残留任务、事件回调及并发关闭压力；单独进程启动退出模式 |
-| V05-03 窗口级对象释放 | Host + Miniblink 补丁 0001–0005 | 旧固定 DLL 失败；当前公共连接器的软件路径两架构重建各 1,000 轮显示内存/句柄回收，重载各 100 轮的 Private Bytes 末点增量低于 16 MiB。GPU 两架构 30 轮 USER 持续增长且 Runtime 关闭后残留 | GPU USER 对象所有权、软件路径线程/USER 残留、其他模式与 8 小时混合负载；全部 `resourceGate` 仍未评估 |
+| V05-03 窗口级对象释放 | Host + Miniblink 补丁 0001–0005 | preview.4 已换入修补内核并通过短回归；旧候选的两架构重建/重载资源样本有回收，不能当作新包资源门槛。历史 GPU 两架构 30 轮 USER 持续增长且 Runtime 关闭后残留 | 新固定包资源趋势、GPU USER 对象所有权、软件路径线程/USER 残留、其他模式与 8 小时混合负载；全部 `resourceGate` 仍未评估 |
 | V05-04 故障与恢复 | 监督器已有退出码/超时/缺步骤检查 | 部分实现：`tests/acceptance/runner.test.cjs` 7 项通过；原生失败记录保留 | DLL/资源缺失、服务失败、迟到响应、崩溃诊断、重启后业务恢复 |
 | V05-05 8 小时业务运行 | 固定混合负载及分时采样 | 待实现和执行 | 操作/任务/重载/最小化/空闲组合，无无界积压或响应持续恶化 |
-| V05-06 网络与内容边界 | Host 可信文档与底层网络 | 新候选的[回环 HTTPS 十二项](../../verification/production-validation/tls-kernel-2026-09-23/README.md)覆盖证书链、主机名及重定向，固定 prebuilt 仍未替换；[内核核对](kernel-maintenance.md)保留生产阻塞项 | 实际信任根/代理、动态子资源、注入内容、越权、来源边界与持续维护 |
+| V05-06 网络与内容边界 | Host 可信文档与底层网络 | preview.4 固定包的[回环 HTTPS 十二项](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)覆盖证书链、主机名及重定向；[内核核对](kernel-maintenance.md)保留生产阻塞项 | 实际信任根/代理、动态子资源、注入内容、越权、来源边界与持续维护 |
 
 ## V06 独立接入、维护与最终价值
 
 | ID | 公共入口/所有权 | 当前状态与证据 | 下一项必需验证 |
 |---|---|---|---|
-| V06-01 仓库外新项目 | `New-Project.ps1`、模板、`sdk-lock.json` | 当前 preview.3 的[独立项目](../../verification/production-validation/independent-project-b565/README.md)完成干净包校验、仓库外生成、x86/x64 Release 编译和真实启动 | 加入真实业务方法的小样、Debug 与目标设备运行 |
+| V06-01 仓库外新项目 | `New-Project.ps1`、模板、`sdk-lock.json` | preview.4 的[独立项目](../../verification/production-validation/preview4-independent-2026-09-23/README.md)完成包校验、仓库外生成、x86/x64 Release 编译和真实启动 | 加入真实业务方法的小样、Debug 与目标设备运行 |
 | V06-02 升级与回退 | `tools/sdk/soui-sdk.cjs` | 包层已有冲突/回退测试；不是候选业务升级通过 | 业务文件保留；升级、中断、回退后重新编译运行，再次升级 |
 | V06-03 依赖及源码交付 | 构建/打包/证据工具 | 两架构依赖已重建；完整源码清单仍待更新 | 当前源码包重建、四组配置、精确载荷绑定、依赖 smoke v2 补齐 |
 | V06-04 系统和安装 | [支持矩阵](support-matrix.md) | 待外部验证的组合保持空缺；本机结果不推广 | 指定系统、DPI、多屏、IME、签名安装、受限账户及回退 |

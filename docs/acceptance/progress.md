@@ -1,6 +1,6 @@
 # SDK 生产验证执行记录
 
-关联：[完整方案](../roadmap/0.3-sdk-validation.md)、[中期准入判定](interim-decision.md)、[ADR-0002](../adr/0002-public-sdk-acceptance.md)。开始日期：2026-09-22。完整目标持续进行，未生成正式生产准入结论。
+关联：[完整方案](../roadmap/0.3-sdk-validation.md)、[中期准入判定](interim-decision.md)、[ADR-0002](../adr/0002-public-sdk-acceptance.md)、[ADR-0007](../adr/0007-rebuilt-miniblink-preview-binary.md)。开始日期：2026-09-22。完整目标持续进行，未生成正式生产准入结论。下文早期“当前候选”描述为当次实验的历史身份；preview.4 的新固定包证据在文末单列。
 
 逐能力的公共入口、当前证据与剩余条件见[能力映射](capabilities.md)；设备和内核维护分别见[支持矩阵](support-matrix.md)、[内核准入核对](kernel-maintenance.md)。
 
@@ -12,19 +12,19 @@
 | V03 桌面工作台 | 待将通用注册归入公共 SDK，完成对话框/剪贴板/多屏/shell 验收 |
 | V04 多窗口与驻留 | 已复现旧版第二窗口挂载卡住并修复进程级内核所有权；三窗口隔离及关闭后重建短测试通过；公共窗口/托盘/菜单/快捷键仍待完成 |
 | V05 资源与故障 | 已修复逐窗口初始化导致的访问冲突；长循环进一步暴露 ToolTip、拖拽区域和线程唤醒事件三处释放遗漏。三补丁 x64 组合短回归通过，重建 30 轮的 USER/GDI/普通句柄增量均为 0；长循环与完整故障恢复、诊断仍待完成 |
-| V06 接入与维护 | 当前候选的源码包校验、仓库外项目生成、x86/x64 Release 独立编译及真实启动已完成；业务小样、升级/回退后运行及 Debug 仍待完成 |
-| 每种模式 1,000 次 | 旧三补丁候选的 x64 三模式均完成；当前标准连接器的软件路径 x86/x64 重建、重载各 1,000 次完成并正常退出。当前多窗口、Bridge 等模式仍待执行；资源门槛未通过，旧固定内核的失败记录保留 |
-| 100 次重载资源趋势 | 当前连接器的 x64/x86 软件路径均操作通过；预热 3 次、静置 1 秒，末次 Private Bytes 分别增加 6.0/7.2 MiB，低于 16 MiB 数值线；对象所有权与长期趋势仍未验收 |
+| V06 接入与维护 | preview.4 的[仓库外生成项目](../../verification/production-validation/preview4-independent-2026-09-23/README.md)完成包校验、x86/x64 Release 独立编译及真实启动；业务小样、升级/回退后运行及 Debug 仍待完成 |
+| 每种模式 1,000 次 | preview.3 旧候选的软件路径 x86/x64 重建、重载各 1,000 次完成并正常退出；preview.4 新固定包四模式各三轮短回归通过，但未重跑千次门槛，资源门槛仍未通过 |
+| 100 次重载资源趋势 | preview.3 候选的 x64/x86 软件路径操作通过；预热 3 次、静置 1 秒，末次 Private Bytes 分别增加 6.0/7.2 MiB，低于 16 MiB 数值线。preview.4 尚未复测，对象所有权与长期趋势仍未验收 |
 | 8 小时混合负载 | 未执行 |
 | 系统、DPI、多屏、IME | 已登记本机精确系统与驱动；[支持矩阵](support-matrix.md)中的 DPI、多屏、IME 等仍未验证 |
-| 内核维护、安全、授权、发布责任 | HTTPS 身份校验源码候选已重编译，x86/x64 回环正负向各六项通过；固定包更新、信任根与代理、完整安全维护、授权及发布责任仍未关闭 |
+| 内核维护、安全、授权、发布责任 | preview.4 固定包已换入重编译内核，x86/x64 回环正负向各六项再次通过；实际信任根与代理、完整安全维护、授权及发布责任仍未关闭 |
 | Electron 性能与体积对照 | 共享场景、宿主、原始样本和报告待实现 |
 | 接入、兼容和维护成本 | 待通过实际小样与升级记录采集 |
 | 最终交付与三个结论 | SDK、模板、Demo、测试、benchmark、支持表、迁移/诊断手册和工程/生产/价值判定均须逐项验收 |
 
 本文件记录执行进度，不能代替机器报告或修改 `releaseReady`。新增阶段证据应链接实际 run-id、源码与载荷身份，并列出未执行项。
 
-当前开发版本为 `0.3.0-preview.3`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。x86 首次完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
+当前开发版本为 `0.3.0-preview.4`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。x86 首次完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
 
 ToolTip 修补后的 x64 内核及全部原生依赖已重新编译；候选 SHA-256 为 `32d37e6399bc04e2a8d909c4021f49e3b8f21521b805f9f118f15e111ea0e59f`，三模式各 30 轮加 3 次预热全部完成。重建 USER 不再增长，但 GDI/普通句柄仍增长，缺陷未关闭。随后定位到拖拽区域和工作线程唤醒事件的释放遗漏，保留为两个后续补丁。
 
@@ -75,3 +75,5 @@ GPU 专项继续验证了公共 SDK 消费者的 x64 重建 30 轮：固定内�
 当前包的[仓库外生成项目](../../verification/production-validation/independent-project-b565/README.md)已分别完成 x64/x86 Release 编译、真实启动和正常关闭，包清单、项目锁、构建身份及原始启动日志均已归档。这证明模板不靠原仓库直接链接运行；仍未完成业务小样与升级/回退运行链。
 
 [HTTPS 身份校验候选](../../verification/production-validation/tls-kernel-2026-09-23/README.md)在 x86/x64 各完成六项本地正负向测试，重编译 DLL 与公共消费者 Bridge 短回归绑定。旧固定 prebuilt 尚未替换；系统信任根、代理、动态子资源和旧 TLS 组件维护没有因该小范围测试而通过。
+
+随后按 [ADR-0007](../adr/0007-rebuilt-miniblink-preview-binary.md) 将相同散列的双架构候选 DLL 放入 `0.3.0-preview.4` 固定包。[新包回归](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)绑定 x86/x64 完整 Release 构建、SDK/Web/原生契约、模板与 Workbench 三入口真实 smoke、独立公共消费者四模式各三轮，以及固定 DLL 的回环 HTTPS 各六项测试，均通过。新包[仓库外项目](../../verification/production-validation/preview4-independent-2026-09-23/README.md)通过包/锁校验、双架构 Release 编译和真实启动关闭。旧 preview.3 千次与 100 次资源结果仅作历史比较；preview.4 尚未重跑长循环、资源和 8 小时门槛，`releaseReady` 保持 false。

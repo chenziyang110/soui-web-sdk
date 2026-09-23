@@ -1,5 +1,10 @@
 # 变更记录
 
+## 0.3.0-preview.4（开发中：内核候选纳入固定包）
+
+- x86/x64 固定 Miniblink DLL 改用六项源码补丁后的重编译候选，修正 HTTPS 证书链及主机名校验；错误证书将被拒绝。两个架构各六项本地 HTTPS 正负向测试通过，四种独立消费者场景各三轮与实际模板/Workbench 短启动通过。证据及限制见 [ADR-0007](docs/adr/0007-rebuilt-miniblink-preview-binary.md)。
+- 新固定内核仍是 preview：系统信任根与代理、旧 TLS 组件维护、授权、GPU 资源、完整长稳和目标平台门槛未关闭；不宣称生产可用。历史 preview.3 包不可用于需要可信 HTTPS 的产品。
+
 ## 0.3.0-preview.3（开发中：生产验证）
 
 - 新增公共 `connectSouiNative`、文档连接所有权、客户端 dispose、请求/订阅容量和可观察的订阅建立/注销结果；模板使用标准异步连接器。新增连接器默认类型仅包含公共 core 方法，兼容构造器保留旧 Demo 方法表。

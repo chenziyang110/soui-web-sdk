@@ -1,5 +1,7 @@
 # HTTPS 身份校验候选验证
 
+本归档保留 preview.3 阶段固定 prebuilt 尚未替换时的历史结果；后续 preview.4 固定包验证见[新归档](../preview4-fixed-2026-09-23/README.md)。
+
 日期：2026-09-23。仅针对重新编译的 Miniblink 候选；固定 prebuilt 没有替换。x64 DLL SHA-256 为 `0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816`，x86 为 `3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7`。编译时 `WebURLLoaderManager.cpp` 工作树原始字节 SHA-256 为 `16e95cf1fe4f2e13429bc300e77062965bb1dfab28be243784c905415ea48079`（CRLF），Git 规范化源码 SHA-256 为 `cc873d772f9cf8057bb501b13b2605f43d3ccda7d5ba248cbc3b28c73ac2edcb`（LF）；对应[补丁 0006](../../../third_party/patches/miniblink/0006-verify-tls-peer-and-host.patch)。[构建日志](x64-kernel-build.log)与[32 位构建日志](x86-kernel-build.log)留存。
 
 使用 `tests/diagnostics/https_server.py` 在本机回环地址提供测试页面，证书临时生成于忽略目录 `out/tls/`：自签、SAN 为 `DNS:localhost`，私钥没有归档。[公开证书](cert.pem)及 [12 项原始结果](validation.json)绑定这次运行。`tools/Test-TlsKernel.ps1` 对 x86/x64 各执行六项：未受信链拒绝、显式信任且主机匹配成功、主机不匹配拒绝、宿主回调分别尝试关闭证书链或主机名校验仍拒绝、从匹配主机重定向到不匹配主机仍拒绝。十二项均通过；对应 libcurl 错误分别为 60 和 51。测试不使用外部服务或生产凭据。
