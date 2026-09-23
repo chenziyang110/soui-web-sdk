@@ -17,7 +17,7 @@
 | 100 次重载资源趋势 | 当前连接器的 x64/x86 软件路径均操作通过；预热 3 次、静置 1 秒，末次 Private Bytes 分别增加 6.0/7.2 MiB，低于 16 MiB 数值线；对象所有权与长期趋势仍未验收 |
 | 8 小时混合负载 | 未执行 |
 | 系统、DPI、多屏、IME | 已登记本机精确系统与驱动；[支持矩阵](support-matrix.md)中的 DPI、多屏、IME 等仍未验证 |
-| 内核维护、安全、授权、发布责任 | 已完成[初步来源与配置核对](kernel-maintenance.md)，发现网络边界需专项处理；完整安全维护、授权与发布责任仍未关闭 |
+| 内核维护、安全、授权、发布责任 | HTTPS 身份校验源码候选已重编译，x86/x64 回环正负向各六项通过；固定包更新、信任根与代理、完整安全维护、授权及发布责任仍未关闭 |
 | Electron 性能与体积对照 | 共享场景、宿主、原始样本和报告待实现 |
 | 接入、兼容和维护成本 | 待通过实际小样与升级记录采集 |
 | 最终交付与三个结论 | SDK、模板、Demo、测试、benchmark、支持表、迁移/诊断手册和工程/生产/价值判定均须逐项验收 |
@@ -73,3 +73,5 @@ GPU 专项继续验证了公共 SDK 消费者的 x64 重建 30 轮：固定内�
 当前三个 JavaScript 锁文件分别执行了 [SDK](../../verification/production-validation/regression-b565bd098865/npm-audit-sdk-web.json)、[模板](../../verification/production-validation/regression-b565bd098865/npm-audit-starter-web.json)和[Workbench](../../verification/production-validation/regression-b565bd098865/npm-audit-workbench-web.json)的 `npm audit`，报告均为 0 条。这个结果仅覆盖 npm 依赖，不替代内核、TLS、授权及发布审查。
 
 当前包的[仓库外生成项目](../../verification/production-validation/independent-project-b565/README.md)已分别完成 x64/x86 Release 编译、真实启动和正常关闭，包清单、项目锁、构建身份及原始启动日志均已归档。这证明模板不靠原仓库直接链接运行；仍未完成业务小样与升级/回退运行链。
+
+[HTTPS 身份校验候选](../../verification/production-validation/tls-kernel-2026-09-23/README.md)在 x86/x64 各完成六项本地正负向测试，重编译 DLL 与公共消费者 Bridge 短回归绑定。旧固定 prebuilt 尚未替换；系统信任根、代理、动态子资源和旧 TLS 组件维护没有因该小范围测试而通过。

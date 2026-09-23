@@ -18,6 +18,8 @@ powershell.exe -File tools/Test.ps1 -Architecture x64 -Configuration Release
 
 GPU 内核候选应通过 `Test-Acceptance.ps1 -RuntimeBinary <候选 DLL> -Scenario recreate` 在隔离消费者中验证，分别设置 `SOUI_GPU_COMPOSITOR=1` 与需要的 `SOUI_GPU_DIRECT_PRESENT` 值，并保留 `build.json`、`result.json`、逐轮 `events.ndjson`。设置 `SOUI_GPU_SHUTDOWN_TRACE` 为绝对文件路径可记录 WGL 上下文及 DC 释放返回值；诊断默认关闭。当前结果与软件路径对照见 [GPU 专项记录](acceptance/gpu-lifecycle.md)。`tests/diagnostics/wgl-context-lifecycle.cpp` 是隔离系统 WGL 行为的手动探针，不代替 SDK/Skia 整体路径。
 
+HTTPS 内核候选的[回环证书验证](../verification/production-validation/tls-kernel-2026-09-23/README.md)使用 `tests/diagnostics/tls-loader.cpp`、`https_server.py` 和 `tools/Test-TlsKernel.ps1`：证书及私钥仅生成于忽略目录，分别检验未受信链、受信主机、错误主机、回调试图关闭校验及重定向。该专项必须绑定实际重编译 DLL；固定 prebuilt 尚未替换，测试通过不代表旧 TLS 依赖已有持续安全维护。
+
 桌面测试需要可交互 Windows 会话，脚本串行运行并使用互斥锁。结果在 `out/<架构>/smoke-<配置>.json`，绑定构建 ID、源码身份及全部 EXE/DLL/HTML/JS/CSS 资源。模板、Demo 默认入口、Demo React 入口分别验证。单元测试不能替代真实宿主启动。
 
 `tools/Build.ps1` 在开始构建时使旧成功记录失效；结束时检查编译输入未改变并记录载荷。`-SkipWeb` 只接受源码及 Web 输出均与上次构建匹配的记录，首次构建或文件改变后必须完整构建。通过 CMake 直接编译可以调试，但不能代替这些打包所需证据。改变页面、DLL、编译输入或目标集合后，测试和打包都会要求重新构建。

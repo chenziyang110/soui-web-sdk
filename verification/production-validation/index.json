@@ -1,6 +1,6 @@
 {
   "schema": "soui.production-validation-index/v1",
-  "archivedAt": "2026-09-23T03:17:10.183Z",
+  "archivedAt": "2026-09-23T03:48:27.596Z",
   "scope": "lifecycle-probes",
   "releaseReady": false,
   "runs": [
@@ -973,6 +973,40 @@
       "passed": true,
       "resourceGate": "not-evaluated",
       "report": "gpu-lifecycle-2026-09-23/cpu-x86-1000-reload/result.json"
+    },
+    {
+      "suite": "tls-kernel-2026-09-23/bridge-x64",
+      "version": "0.3.0-preview.3",
+      "architecture": "x64",
+      "sourceSha256": "0128d6dcb5c60518a22cdefac4c1c0d7663a2719bad7a1da22bed28155b12e44",
+      "kernel": {
+        "kind": "explicit-candidate",
+        "bytes": 35853824,
+        "sha256": "0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816"
+      },
+      "consumerBuildId": "1275be0c-0bc1-4800-b4c2-ac0ffb04db11",
+      "mode": "bridge",
+      "cycles": 3,
+      "passed": true,
+      "resourceGate": "not-evaluated",
+      "report": "tls-kernel-2026-09-23/bridge-x64/result.json"
+    },
+    {
+      "suite": "tls-kernel-2026-09-23/bridge-x86",
+      "version": "0.3.0-preview.3",
+      "architecture": "x86",
+      "sourceSha256": "0128d6dcb5c60518a22cdefac4c1c0d7663a2719bad7a1da22bed28155b12e44",
+      "kernel": {
+        "kind": "explicit-candidate",
+        "bytes": 22976000,
+        "sha256": "3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7"
+      },
+      "consumerBuildId": "a9e4e02d-d8c5-49f6-9cce-d3e508cfb34c",
+      "mode": "bridge",
+      "cycles": 3,
+      "passed": true,
+      "resourceGate": "not-evaluated",
+      "report": "tls-kernel-2026-09-23/bridge-x86/result.json"
     }
   ],
   "regressions": [

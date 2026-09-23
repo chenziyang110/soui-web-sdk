@@ -1726,8 +1726,6 @@ InitializeHandleInfo* WebURLLoaderManager::preInitializeHandleOnMainThread(WebUR
     return info;
 }
 
-extern "C" CURLcode curl_ssl_cert_verify(CURL * curl, void* sslctx, void* parm);
-
 static int debugCallback(CURL* handle, curl_infotype type, char* data, size_t size, void* clientp)
 {
     std::string output(data, size);
@@ -1757,8 +1755,6 @@ void WebURLLoaderManager::initializeHandleOnIoThread(int jobId, InitializeHandle
 #endif
     curl_easy_setopt(job->m_handle, CURLOPT_TIMEOUT, 120);
     curl_easy_setopt(job->m_handle, CURLOPT_CONNECTTIMEOUT, 30);
-    curl_easy_setopt(job->m_handle, CURLOPT_SSL_VERIFYPEER, false); // ignoreSSLErrors
-    curl_easy_setopt(job->m_handle, CURLOPT_SSL_VERIFYHOST, FALSE);
     curl_easy_setopt(job->m_handle, CURLOPT_PRIVATE, jobId);
     curl_easy_setopt(job->m_handle, CURLOPT_ERRORBUFFER, m_curlErrorBuffer);
     curl_easy_setopt(job->m_handle, CURLOPT_WRITEFUNCTION, writeCallbackOnIoThread);
@@ -1857,31 +1853,14 @@ void WebURLLoaderManager::initializeHandleOnIoThread(int jobId, InitializeHandle
     if (info->wkeNetInterface.size())
         curl_easy_setopt(job->m_handle, CURLOPT_INTERFACE, info->wkeNetInterface.c_str());
 #endif
-    // CURLOPT_SSL_VERIFYPEER： cURL 是否验证对等证书（peer's certificate），值为 1，则验证，为 0 则不验证。要验证的交换证书可以在 CURLOPT_CAINFO 选项中设置，或在 CURLOPT_CAPATH中设置证书目录。
-    // CURLOPT_SSL_VERIFYHOST：值为1 ： cURL 检查服务器SSL证书中是否存在一个公用名(common name)；值为2： cURL 会检查公用名是否存在，并且是否与提供的主机名匹配；0 为不检查名称。这里的 common name 是在创建证书过程中指定，例如 subj 选项值中的 / CN 值； openssl req - subj "/C=CN/ST=IL/L=ShenZhen/O=Tencent/OU=Tencent/CN=luffichen_server.tencent.com/emailAddress=luffichen@www.tencent.com" ...
-    // CURLOPT_CAINFO：一个保存着1个或多个用来让服务端验证的证书的文件名。这个参数仅仅在和CURLOPT_SSL_VERIFYPEER一起使用时才有意义。
-    // CURLOPT_CAPATH：一个保存着多个CA证书的目录。这个选项是和CURLOPT_SSL_VERIFYPEER一起使用的。
-    // 与 SSL 双向认证相关的 curl_easy_setopt 选项有以下几个：
-    // 
-    // CURLOPT_SSLCERT：客户端证书路径
-    // CURLOPT_SSLCERTTYPE：证书的类型。支持的格式有"PEM" (默认值), "DER"和"ENG"。
-    // CURLOPT_SSLKEY：客户端私钥的文件路径
-    // CURLOPT_SSLKEYTYPE：客户端私钥类型，支持的私钥类型为"PEM"(默认值)、"DER"和"ENG"。
-    // CURLOPT_KEYPASSWD：客户端私钥密码，私钥在创建时可以选择加密。
-    // 见curl_ssl_cert_verify
 
-#if 0
-    curl_easy_setopt(job->m_handle, CURLOPT_CAINFO, NULL);
-    curl_easy_setopt(job->m_handle, CURLOPT_CAPATH, NULL);
-
-    curl_easy_setopt(job->m_handle, CURLOPT_SSL_CTX_FUNCTION, curl_ssl_cert_verify);
-    curl_easy_setopt(job->m_handle, CURLOPT_SSLCERTTYPE, "PEM");
-
-    curl_easy_setopt(job->m_handle, CURLOPT_SSL_VERIFYPEER, 1L);
-    curl_easy_setopt(job->m_handle, CURLOPT_SSL_VERIFYHOST, 2L);
-#endif
     if (wke::g_curlSetoptCallback)
         wke::g_curlSetoptCallback(job->m_handle, wke::curlSetopt);
+
+    // A host callback may select a trust store, but it must not disable TLS
+    // peer or hostname authentication for page requests and subresources.
+    curl_easy_setopt(job->m_handle, CURLOPT_SSL_VERIFYPEER, 1L);
+    curl_easy_setopt(job->m_handle, CURLOPT_SSL_VERIFYHOST, 2L);
 
     job->m_initializeHandleInfo = nullptr;
     delete info;
