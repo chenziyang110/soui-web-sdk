@@ -1,0 +1,152 @@
+{
+  "schema": "soui.lifecycle-observation/v1",
+  "label": "x64-1000-multiwindow",
+  "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+  "consumerBuildId": "97f81f83-eb66-4435-bebf-bf5cf4812a88",
+  "payloadSha256": "d824ef64899096bfb9c4ce32a3ed99459b907f046559be6e508f151fea7b209d",
+  "kernel": {
+    "kind": "prebuilt",
+    "bytes": 35853824,
+    "sha256": "0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816"
+  },
+  "config": {
+    "mode": "multiwindow",
+    "cycles": 1000,
+    "warmup": 3,
+    "settleMs": 20,
+    "timeoutMs": 20000
+  },
+  "passed": true,
+  "first": {
+    "event": "sample",
+    "elapsedMs": 8134,
+    "phase": "cycle",
+    "cycle": 3,
+    "privateBytes": 82006016,
+    "workingSetBytes": 97107968,
+    "handles": 408,
+    "threads": 15,
+    "gdiObjects": 36,
+    "userObjects": 12,
+    "windowClasses": {
+      "CicMarshalWndClass": 1,
+      "IME": 1,
+      "MiniBlinkTimerWindowClass": 1,
+      "OleMainThreadWndClass": 2,
+      "SystemUserAdapterWindowClass": 1
+    }
+  },
+  "last": {
+    "event": "sample",
+    "elapsedMs": 2737934,
+    "phase": "cycle",
+    "cycle": 1003,
+    "privateBytes": 148246528,
+    "workingSetBytes": 167870464,
+    "handles": 483,
+    "threads": 15,
+    "gdiObjects": 22,
+    "userObjects": 14,
+    "windowClasses": {
+      "CicMarshalWndClass": 1,
+      "IME": 1,
+      "MiniBlinkTimerWindowClass": 1,
+      "OleMainThreadWndClass": 2,
+      "SystemUserAdapterWindowClass": 1
+    }
+  },
+  "runtimeClosed": {
+    "event": "sample",
+    "elapsedMs": 2738416,
+    "phase": "runtime-closed",
+    "cycle": 1004,
+    "privateBytes": 49299456,
+    "workingSetBytes": 81661952,
+    "handles": 271,
+    "threads": 11,
+    "gdiObjects": 14,
+    "userObjects": 8,
+    "windowClasses": {
+      "CicMarshalWndClass": 1,
+      "OleMainThreadWndClass": 1,
+      "SystemUserAdapterWindowClass": 1
+    }
+  },
+  "peakPrivateBytes": 222638080,
+  "peakHandles": 853,
+  "windows": [
+    {
+      "startCycle": 4,
+      "endCycle": 103,
+      "medianPrivateBytes": 124534784,
+      "medianHandles": 574.5,
+      "medianUserObjects": 12
+    },
+    {
+      "startCycle": 104,
+      "endCycle": 203,
+      "medianPrivateBytes": 130605056,
+      "medianHandles": 586,
+      "medianUserObjects": 13
+    },
+    {
+      "startCycle": 204,
+      "endCycle": 303,
+      "medianPrivateBytes": 138686464,
+      "medianHandles": 563,
+      "medianUserObjects": 13
+    },
+    {
+      "startCycle": 304,
+      "endCycle": 403,
+      "medianPrivateBytes": 140718080,
+      "medianHandles": 584,
+      "medianUserObjects": 13
+    },
+    {
+      "startCycle": 404,
+      "endCycle": 503,
+      "medianPrivateBytes": 144484352,
+      "medianHandles": 557,
+      "medianUserObjects": 13
+    },
+    {
+      "startCycle": 504,
+      "endCycle": 603,
+      "medianPrivateBytes": 148379648,
+      "medianHandles": 558,
+      "medianUserObjects": 14
+    },
+    {
+      "startCycle": 604,
+      "endCycle": 703,
+      "medianPrivateBytes": 154128384,
+      "medianHandles": 551,
+      "medianUserObjects": 13
+    },
+    {
+      "startCycle": 704,
+      "endCycle": 803,
+      "medianPrivateBytes": 153714688,
+      "medianHandles": 555,
+      "medianUserObjects": 13
+    },
+    {
+      "startCycle": 804,
+      "endCycle": 903,
+      "medianPrivateBytes": 157237248,
+      "medianHandles": 566,
+      "medianUserObjects": 13
+    },
+    {
+      "startCycle": 904,
+      "endCycle": 1003,
+      "medianPrivateBytes": 158992384,
+      "medianHandles": 556,
+      "medianUserObjects": 13
+    }
+  ],
+  "memoryNumericLine": null,
+  "resourceGate": "not-evaluated",
+  "releaseReady": false
+}

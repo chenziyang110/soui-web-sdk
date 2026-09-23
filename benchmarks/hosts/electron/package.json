@@ -1,0 +1,14 @@
+{
+  "name": "soui-electron-comparison-host",
+  "private": true,
+  "version": "0.3.0",
+  "description": "Pinned Electron host for the shared SOUI SDK benchmark page",
+  "main": "main.cjs",
+  "scripts": {
+    "start": "electron .",
+    "check": "node --check main.cjs && node --check preload.cjs"
+  },
+  "devDependencies": {
+    "electron": "44.4.4"
+  }
+}

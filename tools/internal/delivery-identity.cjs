@@ -6,7 +6,7 @@ const {isUtf8} = require('node:buffer');
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');
 const encoded = value => JSON.stringify(value, null, 2) + '\n';
 const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
-const skipped = new Set(['out', 'dist', 'node_modules', '.git', '.vs']);
+const skipped = new Set(['out', 'dist', 'dist-legacy', 'node_modules', '.git', '.vs']);
 
 function safePath(root, name = '') {
   if (name && (typeof name !== 'string' || name.includes('\\') || name.includes(':') ||
@@ -67,9 +67,10 @@ function snapshot(root, names, source = false) {
 function source(root) {
   const generated = fs.existsSync(safePath(root, 'project.json'));
   const roots = ['sdk', 'cmake', 'tools', 'third_party/include', 'third_party/prebuilt', 'third_party/sources/zlib',
-    ...(generated ? ['app', 'web', 'contracts', 'resources'] : ['templates', 'demos', 'tests'])];
+    ...(generated ? ['app', 'web', 'contracts', 'resources'] : ['templates', 'demos', 'tests', 'benchmarks'])];
   const names = roots.filter(name => fs.existsSync(safePath(root, name)))
-    .flatMap(name => walk(root, name, (_, leaf) => skipped.has(leaf)));
+    .flatMap(name => walk(root, name, (relative, leaf) => skipped.has(leaf) ||
+      relative === 'demos/workbench/web/benchmarks/electron-smoothness/source-navigation.log'));
   for (const name of ['VERSION', 'CMakeLists.txt', 'project.json', 'sdk-lock.json']) {
     if (fs.existsSync(safePath(root, name))) names.push(name);
   }

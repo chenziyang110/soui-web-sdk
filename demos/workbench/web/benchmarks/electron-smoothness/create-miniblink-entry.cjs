@@ -52,4 +52,16 @@ fs.writeFileSync(path.join(distRoot, 'benchmark.html'), html, 'utf8');
 // when --entry selects another local page. Keep this alias byte-identical so
 // validation does not change which benchmark document is loaded.
 fs.writeFileSync(path.join(distRoot, 'index.html'), html, 'utf8');
+// Probe-only entry: write one S01 result and let the native host exit. It is
+// deliberately separate from benchmark.html and never used for comparison.
+const smoke = html.replace('</body>', `    <script>(function(){
+      var timer = setInterval(function(){
+        if(window.__souiBenchmarkReady && window.__souiBenchmark){
+          clearInterval(timer);
+          setTimeout(function(){window.__souiBenchmark.finish();},500);
+        }
+      },50);
+      setTimeout(function(){clearInterval(timer);},15000);
+    })();</script>\n  </body>`);
+fs.writeFileSync(path.join(distRoot, 'benchmark-smoke.html'), smoke, 'utf8');
 console.log(`Miniblink benchmark entry generated: ${path.join(distRoot, 'benchmark.html')}`);
