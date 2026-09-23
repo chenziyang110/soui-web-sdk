@@ -11,10 +11,10 @@
 | V02 数据与交互 | 待完成共享万条列表、输入、动画、resize、后台场景 |
 | V03 桌面工作台 | 待将通用注册归入公共 SDK，完成对话框/剪贴板/多屏/shell 验收 |
 | V04 多窗口与驻留 | 已复现旧版第二窗口挂载卡住并修复进程级内核所有权；三窗口隔离及关闭后重建短测试通过；公共窗口/托盘/菜单/快捷键仍待完成 |
-| V05 资源与故障 | 已修复逐窗口初始化导致的访问冲突；长循环进一步暴露 ToolTip、拖拽区域和线程唤醒事件三处释放遗漏。三补丁 x64 组合短回归通过，重建 30 轮的 USER/GDI/普通句柄增量均为 0；长循环与完整故障恢复、诊断仍待完成 |
+| V05 资源与故障 | 已修复逐窗口初始化导致的访问冲突，以及 ToolTip、拖拽区域和线程唤醒事件释放遗漏；preview.4 双架构重载/重建千次操作通过。资源所有权、三窗口/Bridge 千次、完整故障恢复与诊断仍待完成 |
 | V06 接入与维护 | preview.4 的[仓库外生成项目](../../verification/production-validation/preview4-independent-2026-09-23/README.md)完成包校验、x86/x64 Release 独立编译及真实启动；业务小样、升级/回退后运行及 Debug 仍待完成 |
-| 每种模式 1,000 次 | preview.3 旧候选的软件路径 x86/x64 重建、重载各 1,000 次完成并正常退出；preview.4 新固定包四模式各三轮短回归通过，但未重跑千次门槛，资源门槛仍未通过 |
-| 100 次重载资源趋势 | preview.3 候选的 x64/x86 软件路径操作通过；预热 3 次、静置 1 秒，末次 Private Bytes 分别增加 6.0/7.2 MiB，低于 16 MiB 数值线。preview.4 尚未复测，对象所有权与长期趋势仍未验收 |
+| 每种模式 1,000 次 | preview.4 固定包的软件路径 x64/x86 重载及销毁重建各 1,000 次完成并正常退出；双架构三窗口、Bridge 尚未完成，资源门槛仍未评估 |
+| 100 次重载资源趋势 | preview.4 固定包 x64/x86 均完成预热 3 次、静置 1 秒的 100 次重载；末点 Private Bytes 分别增加约 7.0/4.4 MiB，低于 16 MiB 数值线。分段趋势与对象所有权尚未验收 |
 | 8 小时混合负载 | 未执行 |
 | 系统、DPI、多屏、IME | 已登记本机精确系统与驱动；[支持矩阵](support-matrix.md)中的 DPI、多屏、IME 等仍未验证 |
 | 内核维护、安全、授权、发布责任 | preview.4 固定包已换入重编译内核，x86/x64 回环正负向各六项再次通过；实际信任根与代理、完整安全维护、授权及发布责任仍未关闭 |
@@ -76,6 +76,8 @@ GPU 专项继续验证了公共 SDK 消费者的 x64 重建 30 轮：固定内�
 
 [HTTPS 身份校验候选](../../verification/production-validation/tls-kernel-2026-09-23/README.md)在 x86/x64 各完成六项本地正负向测试，重编译 DLL 与公共消费者 Bridge 短回归绑定。旧固定 prebuilt 尚未替换；系统信任根、代理、动态子资源和旧 TLS 组件维护没有因该小范围测试而通过。
 
-随后按 [ADR-0007](../adr/0007-rebuilt-miniblink-preview-binary.md) 将相同散列的双架构候选 DLL 放入 `0.3.0-preview.4` 固定包。[新包回归](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)绑定 x86/x64 完整 Release 构建、SDK/Web/原生契约、模板与 Workbench 三入口真实 smoke、独立公共消费者四模式各三轮，以及固定 DLL 的回环 HTTPS 各六项测试，均通过。新包[仓库外项目](../../verification/production-validation/preview4-independent-2026-09-23/README.md)通过包/锁校验、双架构 Release 编译和真实启动关闭。旧 preview.3 千次与 100 次资源结果仅作历史比较；preview.4 尚未重跑长循环、资源和 8 小时门槛，`releaseReady` 保持 false。
+随后按 [ADR-0007](../adr/0007-rebuilt-miniblink-preview-binary.md) 将相同散列的双架构候选 DLL 放入 `0.3.0-preview.4` 固定包。[新包回归](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)绑定 x86/x64 完整 Release 构建、SDK/Web/原生契约、模板与 Workbench 三入口真实 smoke、独立公共消费者四模式各三轮，以及固定 DLL 的回环 HTTPS 各六项测试，均通过。新包[仓库外项目](../../verification/production-validation/preview4-independent-2026-09-23/README.md)通过包/锁校验、双架构 Release 编译和真实启动关闭。旧 preview.3 千次与 100 次资源结果仅作历史比较；preview.4 的长循环在下文单独列出，完整资源和 8 小时门槛未通过，`releaseReady` 保持 false。
 
-[preview.4 完整源码包搬移实验](../../verification/production-validation/preview4-source-2026-09-23/README.md)在无 Git 的仓库外解压目录通过逐文件校验、x64/x86 Release 完整应用编译与三个入口启动关闭；这是当次源码快照的证据。新增文档和证据后需刷新最终清单与 ZIP，底层 Miniblink/SOUI 在搬移目录的源码重编译仍待执行。
+[preview.4 完整源码包搬移实验](../../verification/production-validation/preview4-source-2026-09-23/README.md)在无 Git 的仓库外解压目录通过逐文件校验、x64/x86 Release 完整应用编译与三个入口启动关闭；这是当次源码快照的证据。最终源码清单和 ZIP 必须匹配纳入新证据后的提交；底层 Miniblink/SOUI 在搬移目录的源码重编译仍待执行。
+
+preview.4 固定包的[新生命周期归档](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)已保存 x64/x86 各 100 次重载、各 1,000 次重载，以及两架构各 1,000 次销毁重建，均正常退出且无监督超时。100 次重载 Private Bytes 末点相对预热增加 7,368,704 / 4,648,960 字节，分别低于 16 MiB 数值线；20 ms 高频重载的峰值和句柄明显更高，不用它代替资源验收。各次 `resourceGate` 均为 `not-evaluated`。为使后续长测在开发树变化时仍绑定同一载荷，已另建隔离副本并核对两架构源码指纹、SDK build-id 及公共消费者身份；该副本仅服务测试，不等同完整第三方源码交付。三窗口与 Bridge 千次、8 小时混合业务仍需执行。

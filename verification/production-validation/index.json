@@ -1,6 +1,6 @@
 {
   "schema": "soui.production-validation-index/v1",
-  "archivedAt": "2026-09-23T04:15:51.132Z",
+  "archivedAt": "2026-09-23T05:29:46.014Z",
   "scope": "lifecycle-probes",
   "releaseReady": false,
   "runs": [
@@ -1279,6 +1279,108 @@
       "passed": true,
       "resourceGate": "not-evaluated",
       "report": "preview4-fixed-2026-09-23/x86/bridge-63b9dd88-6383-42ae-a712-f6c6c41bc533/result.json"
+    },
+    {
+      "suite": "preview4-lifecycle-2026-09-23/x64-100-reload",
+      "version": "0.3.0-preview.4",
+      "architecture": "x64",
+      "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+      "kernel": {
+        "kind": "prebuilt",
+        "bytes": 35853824,
+        "sha256": "0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816"
+      },
+      "consumerBuildId": "b2a865f2-8e65-4bf1-874d-08bfc576cef8",
+      "mode": "reload",
+      "cycles": 100,
+      "passed": true,
+      "resourceGate": "not-evaluated",
+      "report": "preview4-lifecycle-2026-09-23/x64-100-reload/result.json"
+    },
+    {
+      "suite": "preview4-lifecycle-2026-09-23/x86-100-reload",
+      "version": "0.3.0-preview.4",
+      "architecture": "x86",
+      "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+      "kernel": {
+        "kind": "prebuilt",
+        "bytes": 22976000,
+        "sha256": "3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7"
+      },
+      "consumerBuildId": "d3a1c833-38da-4313-b774-331f56debe6c",
+      "mode": "reload",
+      "cycles": 100,
+      "passed": true,
+      "resourceGate": "not-evaluated",
+      "report": "preview4-lifecycle-2026-09-23/x86-100-reload/result.json"
+    },
+    {
+      "suite": "preview4-lifecycle-2026-09-23/x64-1000-reload",
+      "version": "0.3.0-preview.4",
+      "architecture": "x64",
+      "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+      "kernel": {
+        "kind": "prebuilt",
+        "bytes": 35853824,
+        "sha256": "0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816"
+      },
+      "consumerBuildId": "97f81f83-eb66-4435-bebf-bf5cf4812a88",
+      "mode": "reload",
+      "cycles": 1000,
+      "passed": true,
+      "resourceGate": "not-evaluated",
+      "report": "preview4-lifecycle-2026-09-23/x64-1000-reload/result.json"
+    },
+    {
+      "suite": "preview4-lifecycle-2026-09-23/x86-1000-reload",
+      "version": "0.3.0-preview.4",
+      "architecture": "x86",
+      "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+      "kernel": {
+        "kind": "prebuilt",
+        "bytes": 22976000,
+        "sha256": "3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7"
+      },
+      "consumerBuildId": "662719be-30b5-450a-805f-3c04f184eee8",
+      "mode": "reload",
+      "cycles": 1000,
+      "passed": true,
+      "resourceGate": "not-evaluated",
+      "report": "preview4-lifecycle-2026-09-23/x86-1000-reload/result.json"
+    },
+    {
+      "suite": "preview4-lifecycle-2026-09-23/x64-1000-recreate",
+      "version": "0.3.0-preview.4",
+      "architecture": "x64",
+      "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+      "kernel": {
+        "kind": "prebuilt",
+        "bytes": 35853824,
+        "sha256": "0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816"
+      },
+      "consumerBuildId": "dc153516-493b-4057-b260-4ff6a78cc4b3",
+      "mode": "recreate",
+      "cycles": 1000,
+      "passed": true,
+      "resourceGate": "not-evaluated",
+      "report": "preview4-lifecycle-2026-09-23/x64-1000-recreate/result.json"
+    },
+    {
+      "suite": "preview4-lifecycle-2026-09-23/x86-1000-recreate",
+      "version": "0.3.0-preview.4",
+      "architecture": "x86",
+      "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+      "kernel": {
+        "kind": "prebuilt",
+        "bytes": 22976000,
+        "sha256": "3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7"
+      },
+      "consumerBuildId": "662719be-30b5-450a-805f-3c04f184eee8",
+      "mode": "recreate",
+      "cycles": 1000,
+      "passed": true,
+      "resourceGate": "not-evaluated",
+      "report": "preview4-lifecycle-2026-09-23/x86-1000-recreate/result.json"
     }
   ],
   "regressions": [

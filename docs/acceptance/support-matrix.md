@@ -12,9 +12,9 @@
 
 | 组合或能力 | 当前证据 | 状态与缺口 |
 |---|---|---|
-| 本机 x64 Release | 当前公共消费者软件路径重建/重载各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；GPU 重建 30 轮暴露 USER 残留 | [生命周期](lifecycle.md)、[GPU 专项](gpu-lifecycle.md)和[完整应用回归](../../verification/production-validation/regression-b565bd098865/)分别绑定身份；其他模式、资源总体与业务长稳未通过 |
-| 本机 x86 Release | 当前模板及 Demo 默认/React 回归；软件路径重建/重载各 1,000 轮、另有静置 1 秒的重载 100 轮，均正常退出但资源门未评估；重编译候选 GPU 重建 30 轮暴露 USER 残留 | [生命周期](lifecycle.md)与[GPU 专项](gpu-lifecycle.md)分别记录；不是独立 32 位系统的兼容结论 |
-| 本机 x86/x64 Debug | 无 preview.3 当前源码新报告 | 待验证 |
+| 本机 x64 Release | preview.4 固定包公共消费者软件路径重建/重载各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)、[GPU 专项](gpu-lifecycle.md)和[当前应用回归](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)分别绑定身份；其他模式、资源总体与业务长稳未通过 |
+| 本机 x86 Release | preview.4 固定包公共消费者软件路径重载/销毁重建各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)与[GPU 专项](gpu-lifecycle.md)分别记录；资源门和其他模式未通过，也不是独立 32 位系统的兼容结论 |
+| 本机 x86/x64 Debug | 无 preview.4 当前源码新报告 | 待验证 |
 | Windows 10 指定版本/补丁 | 无本轮目标机报告 | 待登记设备和执行；不得推广本机结果 |
 | 其他 Windows 11 版本/补丁 | 无本轮目标机报告 | 待登记设备和执行 |
 | 100/125/150/200% DPI | 未执行控件、坐标和输入定位验收 | 未验证 |
