@@ -2,6 +2,7 @@
 #include "../../third_party/include/json/json.hpp"
 #include <windows.h>
 #include <objbase.h>
+#include <array>
 #include <stdexcept>
 #include <utility>
 
@@ -11,6 +12,10 @@ namespace {
 std::string error(const std::string& id, const char* code, const char* message) {
   return json{{"requestId",id},{"ok",false},{"error",{{"code",code},{"message",message}}}}.dump();
 }
+std::string payload_error(const std::string& code, const std::string& message) {
+  return json{{"error",code},{"message",message}}.dump();
+}
+enum class window_action { set_title, begin_drag, minimize, toggle_maximize, close };
 std::string new_session() {
   GUID id{};
   if (FAILED(CoCreateGuid(&id))) throw std::runtime_error("Session identity unavailable");
@@ -87,6 +92,54 @@ bool json_bridge::enable_clipboard_service() {
       });
   if (registered) capabilities_.emplace_back(method);
   return registered;
+}
+bool json_bridge::enable_window_service() {
+  std::lock_guard<std::mutex> lock(mutex_);
+  constexpr std::array<std::pair<const char*, window_action>, 5> methods{{
+      {"desktop.window.setTitle", window_action::set_title},
+      {"desktop.window.beginDrag", window_action::begin_drag},
+      {"desktop.window.minimize", window_action::minimize},
+      {"desktop.window.toggleMaximize", window_action::toggle_maximize},
+      {"desktop.window.close", window_action::close},
+  }};
+  if (registration_closed_) return false;
+  for (const auto& method : methods)
+    if (registry_.contains(method.first)) return false;
+  for (const auto& method : methods) {
+    const bool registered = registry_.register_contextual_method(method.first, method.first,
+        [this, action = method.second](const soui::runtime::bridge_request& request) -> std::string {
+          const auto params = json::parse(request.params_json, nullptr, false);
+          if (!params.is_object())
+            return payload_error("E_INVALID_PARAMS", "Expected window method parameters.");
+          if (action == window_action::set_title) {
+            if (params.size() != 1U || !params.contains("title") || !params["title"].is_string() ||
+                params["title"].get_ref<const std::string&>().size() > 512U)
+              return payload_error("E_INVALID_PARAMS", "Expected only a title of at most 512 bytes.");
+          } else if (!params.empty()) {
+            return payload_error("E_INVALID_PARAMS", "This window method takes no parameters.");
+          }
+          const soui::runtime::desktop_request_context context{
+              request.session_id, request.origin, request.token, request.native_user_gesture};
+          const auto owner = owner_window_.load();
+          soui::runtime::desktop_response response;
+          switch (action) {
+            case window_action::set_title:
+              response = windows_.set_title(owner, context, params["title"].get_ref<const std::string&>());
+              break;
+            case window_action::begin_drag: response = windows_.begin_drag(owner, context); break;
+            case window_action::minimize: response = windows_.minimize(owner, context); break;
+            case window_action::toggle_maximize: response = windows_.toggle_maximize(owner, context); break;
+            case window_action::close: response = windows_.close(owner, context); break;
+          }
+          if (!response.ok()) return payload_error(response.code, response.message);
+          if (action == window_action::set_title) return R"({"applied":true})";
+          if (action == window_action::begin_drag) return R"({"started":true})";
+          return response.value;
+        });
+    if (!registered) return false;
+    capabilities_.emplace_back(method.first);
+  }
+  return true;
 }
 void json_bridge::set_event_sink(event_sink sink) { tasks_.set_event_sink(std::move(sink)); }
 std::string json_bridge::handle_json(std::string_view request, bool native_user_gesture) {

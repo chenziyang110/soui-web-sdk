@@ -49,6 +49,15 @@ export interface SouiClipboardMethodMap {
   'desktop.clipboard.writeText': { params: { text: string }; result: { applied: true } };
 }
 
+/** Optional window capability installed by json_bridge::enable_window_service(). */
+export interface SouiWindowMethodMap {
+  'desktop.window.setTitle': { params: { title: string }; result: { applied: true } };
+  'desktop.window.beginDrag': { params: {}; result: { started: true } };
+  'desktop.window.minimize': { params: {}; result: { minimized: true } };
+  'desktop.window.toggleMaximize': { params: {}; result: { maximized: boolean } };
+  'desktop.window.close': { params: {}; result: { accepted: true } };
+}
+
 export class SouiBridgeError extends Error {
   public constructor(public readonly code: string, message: string, public readonly requestId = '') {
     super(message);

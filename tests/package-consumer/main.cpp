@@ -2,5 +2,6 @@
 int main(){
   soui::sdk::json_bridge bridge("app://external-consumer");
   if(!bridge.enable_clipboard_service())return 1;
-  return bridge.handle_json("null").empty()?2:0;
+  if(!bridge.enable_window_service())return 2;
+  return bridge.handle_json("null").empty()?3:0;
 }

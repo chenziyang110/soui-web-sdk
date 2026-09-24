@@ -40,6 +40,16 @@ desktop_response require_gesture(const desktop_request_context& context) {
   return {result_kind::success, {}, {}, {}};
 }
 
+#ifdef _WIN32
+bool owned_window(void* window) {
+  const auto hwnd = static_cast<HWND>(window);
+  DWORD process_id = 0;
+  return hwnd != nullptr && IsWindow(hwnd) &&
+         GetWindowThreadProcessId(hwnd, &process_id) != 0 &&
+         process_id == GetCurrentProcessId();
+}
+#endif
+
 }  // namespace
 
 desktop_response directory_picker::open(void* owner, const desktop_request_context& context,
@@ -78,9 +88,10 @@ desktop_response window_service::set_title(void* window, const desktop_request_c
   const auto capability = require_capability(permissions_, context, "desktop.window.setTitle");
   if (!capability.ok()) return capability;
 #ifdef _WIN32
-  if (window == nullptr) return denied("E_INVALID_ARGUMENT", "A window handle is required.");
   const auto wide_title = detail::utf8_to_wide(title);
   if (!wide_title) return denied("E_INVALID_ARGUMENT", "The window title must be valid UTF-8 text.");
+  if (!owned_window(window))
+    return denied("E_INVALID_ARGUMENT", "A live application window is required.");
   if (!SetWindowTextW(static_cast<HWND>(window), wide_title->c_str())) {
     return denied("E_NATIVE_FAILURE", "The native window title could not be updated.");
   }
@@ -99,7 +110,7 @@ desktop_response window_service::begin_drag(void* window, const desktop_request_
   if (!gesture.ok()) return gesture;
 #ifdef _WIN32
   const auto hwnd = static_cast<HWND>(window);
-  if (hwnd == nullptr || !IsWindow(hwnd)) return denied("E_INVALID_ARGUMENT", "A valid window handle is required.");
+  if (!owned_window(window)) return denied("E_INVALID_ARGUMENT", "A live application window is required.");
   if (!PostMessageW(hwnd, window_command_message,
                     static_cast<WPARAM>(window_command::begin_drag), 0))
     return denied("E_NATIVE_FAILURE", "The native window drag was not accepted.");
@@ -117,7 +128,7 @@ desktop_response window_service::minimize(void* window, const desktop_request_co
   if (!gesture.ok()) return gesture;
 #ifdef _WIN32
   const auto hwnd = static_cast<HWND>(window);
-  if (hwnd == nullptr || !IsWindow(hwnd)) return denied("E_INVALID_ARGUMENT", "A valid window handle is required.");
+  if (!owned_window(window)) return denied("E_INVALID_ARGUMENT", "A live application window is required.");
   DWORD_PTR applied = 0;
   if (!SendMessageTimeoutW(hwnd, window_command_message,
                           static_cast<WPARAM>(window_command::minimize), 0,
@@ -137,7 +148,7 @@ desktop_response window_service::toggle_maximize(void* window, const desktop_req
   if (!gesture.ok()) return gesture;
 #ifdef _WIN32
   const auto hwnd = static_cast<HWND>(window);
-  if (hwnd == nullptr || !IsWindow(hwnd)) return denied("E_INVALID_ARGUMENT", "A valid window handle is required.");
+  if (!owned_window(window)) return denied("E_INVALID_ARGUMENT", "A live application window is required.");
   DWORD_PTR applied = 0;
   if (!SendMessageTimeoutW(hwnd, window_command_message,
                           static_cast<WPARAM>(window_command::toggle_maximize), 0,
@@ -157,7 +168,7 @@ desktop_response window_service::close(void* window, const desktop_request_conte
   if (!gesture.ok()) return gesture;
 #ifdef _WIN32
   const auto hwnd = static_cast<HWND>(window);
-  if (hwnd == nullptr || !IsWindow(hwnd)) return denied("E_INVALID_ARGUMENT", "A valid window handle is required.");
+  if (!owned_window(window)) return denied("E_INVALID_ARGUMENT", "A live application window is required.");
   if (!PostMessageW(hwnd, WM_CLOSE, 0, 0)) return denied("E_NATIVE_FAILURE", "The native window close was not accepted.");
   return {result_kind::success, {}, {}, R"({"accepted":true})"};
 #else
@@ -171,7 +182,8 @@ desktop_response window_service::set_foreground(void* window,
   const auto capability = require_capability(permissions_, context, "window.control");
   if (!capability.ok()) return capability;
 #ifdef _WIN32
-  if (window == nullptr) return denied("E_INVALID_ARGUMENT", "A window handle is required.");
+  if (!owned_window(window))
+    return denied("E_INVALID_ARGUMENT", "A live application window is required.");
   if (!SetForegroundWindow(static_cast<HWND>(window))) {
     return denied("E_NATIVE_FAILURE", "The native window could not be focused.");
   }
@@ -192,10 +204,7 @@ desktop_response clipboard_service::write_text(void* owner, const desktop_reques
   const auto wide_text = detail::utf8_to_wide(text);
   if (!wide_text) return denied("E_INVALID_ARGUMENT", "Clipboard text must be valid UTF-8 text.");
   const auto window = static_cast<HWND>(owner);
-  DWORD process_id = 0;
-  if (window == nullptr || !IsWindow(window) ||
-      GetWindowThreadProcessId(window, &process_id) == 0 ||
-      process_id != GetCurrentProcessId())
+  if (!owned_window(owner))
     return denied("E_INVALID_ARGUMENT", "A live application window is required for clipboard ownership.");
   const SIZE_T bytes = (wide_text->size() + 1U) * sizeof(wchar_t);
   HGLOBAL memory = GlobalAlloc(GMEM_MOVEABLE, bytes);

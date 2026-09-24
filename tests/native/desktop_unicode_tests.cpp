@@ -45,6 +45,9 @@ void test_public_services_reject_malformed_text_before_native_io() {
   const auto title = windows.set_title(reinterpret_cast<void*>(1), context, malformed);
   require(!title.ok() && title.code == "E_INVALID_ARGUMENT",
           "A malformed UTF-8 title must fail before touching an HWND");
+  const auto invalid_window = windows.set_title(reinterpret_cast<void*>(1), context, "valid title");
+  require(!invalid_window.ok() && invalid_window.code == "E_INVALID_ARGUMENT",
+          "A valid title must not target an invalid window");
   const auto copied = clipboard.write_text(reinterpret_cast<void*>(1), context, malformed);
   require(!copied.ok() && copied.code == "E_INVALID_ARGUMENT",
           "Malformed UTF-8 must be rejected before clipboard work");

@@ -76,7 +76,45 @@ int main(){
     const auto no_owner=json::parse(desktop.handle_json(copy.dump(),true));
     require(!no_owner.at("ok").get<bool>() && no_owner.at("error").at("code")=="E_INVALID_ARGUMENT",
             "native gesture must reach the public service without inventing an owner window");
-    std::cout<<"Native SDK contract: 21 checks passed\n";
+    soui::sdk::json_bridge window_bridge("app://test");
+    require(window_bridge.enable_window_service() && !window_bridge.enable_window_service(),
+            "public window service must opt in exactly once");
+    const auto window_boot=json::parse(window_bridge.handle_json(bootstrap.dump()));
+    require(window_boot.at("ok").get<bool>() && !window_bridge.enable_window_service(),
+            "window service registration must freeze after bootstrap");
+    const auto window_auth=window_boot.at("result");
+    auto window_request=request;
+    window_request["requestId"]="window:1";
+    window_request["sessionId"]=window_auth.at("sessionId");
+    window_request["origin"]=window_auth.at("origin");
+    window_request["token"]=window_auth.at("token");
+    window_request["method"]="desktop.window.setTitle";
+    window_request["params"]={{"title",u8"窗口标题"},{"userGesture",true}};
+    auto window_result=json::parse(window_bridge.handle_json(window_request.dump(),true));
+    require(!window_result.at("ok").get<bool>() && window_result.at("error").at("code")=="E_INVALID_PARAMS",
+            "window title rejects untrusted gesture fields");
+    window_request["params"]={{"title",u8"窗口标题"}};
+    window_result=json::parse(window_bridge.handle_json(window_request.dump(),false));
+    require(!window_result.at("ok").get<bool>() && window_result.at("error").at("code")=="E_INVALID_ARGUMENT",
+            "window title reaches the owner check without a gesture requirement");
+    window_request["method"]="desktop.window.minimize";
+    window_request["params"]=json::object();
+    window_result=json::parse(window_bridge.handle_json(window_request.dump(),false));
+    require(!window_result.at("ok").get<bool>() && window_result.at("error").at("code")=="E_GESTURE_REQUIRED",
+            "window actions require native gesture evidence");
+    window_request["params"]={{"userGesture",true}};
+    window_result=json::parse(window_bridge.handle_json(window_request.dump(),true));
+    require(!window_result.at("ok").get<bool>() && window_result.at("error").at("code")=="E_INVALID_PARAMS",
+            "window actions reject a forged JSON gesture");
+    window_request["params"]=json::object();
+    for(const char* method : {"desktop.window.beginDrag","desktop.window.minimize",
+                              "desktop.window.toggleMaximize","desktop.window.close"}){
+      window_request["method"]=method;
+      window_result=json::parse(window_bridge.handle_json(window_request.dump(),true));
+      require(!window_result.at("ok").get<bool>() && window_result.at("error").at("code")=="E_INVALID_ARGUMENT",
+              "public window action must reject a missing owner");
+    }
+    std::cout<<"Native SDK contract checks passed\n";
     return 0;
   } catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 1;}
 }

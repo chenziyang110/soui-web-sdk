@@ -19,6 +19,7 @@ class json_bridge final : public bridge_adapter {
                                   soui::runtime::capability_registry::contextual_handler handler);
   bool register_task_handler(std::string kind, soui::runtime::task_service::handler handler);
   bool enable_clipboard_service();
+  bool enable_window_service();
   std::string handle_json(std::string_view request, bool native_user_gesture = false) override;
   void shutdown_session(const std::string& session_id) override;
   void set_event_sink(event_sink sink) override;
@@ -28,6 +29,7 @@ class json_bridge final : public bridge_adapter {
   std::string origin_;
   soui::runtime::permission_store permissions_;
   soui::runtime::clipboard_service clipboard_{permissions_};
+  soui::runtime::window_service windows_{permissions_};
   soui::runtime::capability_registry registry_;
   soui::runtime::bridge_transport transport_{registry_, permissions_};
   soui::runtime::task_service tasks_;
