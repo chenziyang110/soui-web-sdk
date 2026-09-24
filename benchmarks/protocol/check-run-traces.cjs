@@ -17,6 +17,46 @@ function readLines(filename) {
     fail('Trace must be nonempty, newline-terminated, and at most 32 MiB');
   return raw.toString('utf8').trimEnd().split('\n').map(line => JSON.parse(line));
 }
+function validateActions(records, scene) {
+  const actions = records.slice(1, -1).map(record => record.action);
+  if (actions[0] !== 'select-scene' || actions[1] !== 'select-scene-confirm' ||
+      actions.at(-1) !== 'finish-scene')
+    fail('Input trace is missing scene selection or completion');
+  const work = actions.slice(2, -1);
+  if (scene === 'S05') {
+    if (work.length !== 1 || work[0] !== 'start-motion')
+      fail('S05 input trace is missing motion start');
+    return;
+  }
+  // The frozen full driver issues one operation per second for these scenes.
+  // Allow time spent delivering input, but reject an otherwise 61-second idle run.
+  const minimumOperations = 50;
+  if (scene === 'S01') {
+    if (work.length < minimumOperations ||
+        work.some((action, index) => action !== (index % 2 ? 'expand' : 'switch')))
+      fail('S01 input trace is missing switch/expand operations');
+  } else if (scene === 'S02') {
+    const wheel = work.filter(action => action === 'wheel-up' || action === 'wheel-down');
+    const expected = [];
+    for (let index = 0; index < wheel.length; ++index) {
+      expected.push(index % 8 < 4 ? 'wheel-down' : 'wheel-up');
+      if (index % 12 === 11) expected.push('reset-scroll');
+    }
+    if (wheel.length < minimumOperations || JSON.stringify(work) !== JSON.stringify(expected))
+      fail('S02 input trace is missing scroll/reset operations');
+  } else if (scene === 'S04') {
+    const resizes = records.slice(4, -2);
+    if (work[0] !== 'arm-window' || resizes.length < minimumOperations + 1 ||
+        resizes.some((record, index) => record.action !== 'window-resize' ||
+          (index < resizes.length - 1 && (record.clientX !== (index % 2 ? 1100 : 1060) ||
+            record.clientY !== (index % 2 ? 720 : 700)))))
+      fail('S04 input trace is missing resize operations');
+    const restored = records.at(-2);
+    if (restored?.action !== 'finish-scene' ||
+        records.at(-3)?.clientX !== 1100 || records.at(-3)?.clientY !== 720)
+      fail('S04 input trace did not restore the content area');
+  }
+}
 function validateInput(records, scene) {
   const first = records[0];
   const last = records.at(-1);
@@ -47,6 +87,7 @@ function validateInput(records, scene) {
   // The current driver emits Unicode key events, never an IME composition.
   // A writable flag in this trace cannot prove a real IME path.
   if (scene === 'S03') fail('S03 requires real IME composition evidence');
+  validateActions(records, scene);
   return {pid:first.pid, creation:first.processCreationTime100ns,
     started:first.startedAtUtcFiletime100ns, durationMs:last.elapsedMs,
     actions:last.actions};
