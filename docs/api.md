@@ -57,9 +57,9 @@ Web 方法类型为 `SouiClipboardMethodMap`，与 `SouiCoreMethodMap` 组合使
 
 ## 可选窗口模块
 
-在首次 bootstrap 前调用 `bridge.enable_window_service()`，并将 `soui::runtime::window_command_message` 交给窗口所有者线程的消息处理器执行。模板的 `starter_window` 提供了接线示例。该调用一次性注册 `desktop.window.setTitle`、`beginDrag`、`minimize`、`toggleMaximize`、`close`；重复启用或 bootstrap 后启用返回 `false`。页面以 `SouiWindowMethodMap` 组合方法类型。所有方法只使用 Host 配置的同进程有效窗口，页面不能传入 HWND、session 或手势标志。`setTitle` 接受唯一的 UTF-8 `title` 字段（最多 512 字节），其余方法只接受空对象。拖动、最小化、最大化和关闭要求原生绑定捕获的用户手势；`userGesture` JSON 字段会被拒绝。
+在首次 bootstrap 前调用 `bridge.enable_window_service()`，并在窗口所有者线程收到 `soui::runtime::window_command_message` 时将 `WPARAM` 命令和 `LPARAM` 数字请求 ID 一并交给 `execute_window_command(hwnd, command, lParam)`；模板的 `starter_window` 提供了接线示例。该调用一次性注册 `desktop.window.setTitle`、`beginDrag`、`minimize`、`toggleMaximize`、`close`；重复启用或 bootstrap 后启用返回 `false`。页面以 `SouiWindowMethodMap` 组合方法类型。所有方法只使用 Host 配置的同进程有效窗口，页面不能传入 HWND、session 或手势标志。`setTitle` 接受唯一的 UTF-8 `title` 字段（最多 512 字节），其余方法只接受空对象。拖动、最小化、最大化和关闭要求原生绑定捕获的用户手势；`userGesture` JSON 字段会被拒绝。
 
-`setTitle` 当前在 Bridge 工作线程同步调用 Win32，因此宿主窗口线程若挂起，该调用仍可能阻塞；它尚未通过关闭竞态与长稳门槛。`beginDrag` 和 `close` 是排队操作，返回的是接受请求，不保证之后的交互或页面 Promise 一定能在窗口销毁前完成。`minimize` 和 `toggleMaximize` 在当前窗口线程确认后返回。真实点击、旧版 Windows、多窗口及关闭中的响应仍须验收；不要把无窗口契约测试视为这些结果。
+跨线程 `setTitle` 通过 SDK 的数字请求 ID 投递到窗口线程，最多等待 250 ms 的实际执行确认；超过时限返回 `E_WINDOW_TIMEOUT`，待处理表最多 64 项。若窗口线程已开始处理，超时后的最终结果可能未知，调用方不能据此断言标题未变化。窗口所有者线程直接调用仍按 Win32 同步执行。`beginDrag` 和 `close` 是排队操作，返回的是接受请求，不保证之后的交互或页面 Promise 一定能在窗口销毁前完成。`minimize` 和 `toggleMaximize` 在当前窗口线程确认后返回。真实点击、旧版 Windows、多窗口及关闭中的响应仍须验收；不要把无窗口契约测试视为这些结果。
 
 ## 公共长任务
 

@@ -4,6 +4,11 @@
 #include "unicode_conversion.h"
 
 #include <cstring>
+#include <chrono>
+#include <condition_variable>
+#include <memory>
+#include <mutex>
+#include <unordered_map>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -48,9 +53,64 @@ bool owned_window(void* window) {
          GetWindowThreadProcessId(hwnd, &process_id) != 0 &&
          process_id == GetCurrentProcessId();
 }
+
+struct pending_title {
+  HWND window{nullptr};
+  std::wstring title;
+  std::mutex mutex;
+  std::condition_variable finished;
+  bool completed{false};
+  bool cancelled{false};
+  bool applied{false};
+};
+
+struct title_dispatcher {
+  std::mutex mutex;
+  std::unordered_map<std::uintptr_t, std::shared_ptr<pending_title>> pending;
+  std::uintptr_t next_id{1};
+};
+
+title_dispatcher& titles() {
+  static title_dispatcher dispatcher;
+  return dispatcher;
+}
+
+void remove_pending_title(std::uintptr_t id) {
+  auto& dispatcher = titles();
+  std::lock_guard<std::mutex> lock(dispatcher.mutex);
+  dispatcher.pending.erase(id);
+}
 #endif
 
 }  // namespace
+
+#ifdef _WIN32
+bool execute_pending_title_command(HWND window, std::uintptr_t request_id) {
+  if (!IsWindow(window) || GetWindowThreadProcessId(window, nullptr) != GetCurrentThreadId())
+    return false;
+  std::shared_ptr<pending_title> request;
+  {
+    auto& dispatcher = titles();
+    std::lock_guard<std::mutex> lock(dispatcher.mutex);
+    const auto found = dispatcher.pending.find(request_id);
+    if (found == dispatcher.pending.end() || found->second->window != window) return false;
+    request = std::move(found->second);
+    dispatcher.pending.erase(found);
+  }
+  {
+    std::lock_guard<std::mutex> lock(request->mutex);
+    if (request->cancelled) return false;
+  }
+  const bool applied = SetWindowTextW(window, request->title.c_str()) != FALSE;
+  {
+    std::lock_guard<std::mutex> lock(request->mutex);
+    request->applied = applied;
+    request->completed = true;
+  }
+  request->finished.notify_one();
+  return applied;
+}
+#endif
 
 desktop_response directory_picker::open(void* owner, const desktop_request_context& context,
                                         const std::string& initial_directory) const {
@@ -88,13 +148,49 @@ desktop_response window_service::set_title(void* window, const desktop_request_c
   const auto capability = require_capability(permissions_, context, "desktop.window.setTitle");
   if (!capability.ok()) return capability;
 #ifdef _WIN32
+  if (title.size() > 512U)
+    return denied("E_INVALID_ARGUMENT", "The window title exceeds the 512-byte limit.");
   const auto wide_title = detail::utf8_to_wide(title);
   if (!wide_title) return denied("E_INVALID_ARGUMENT", "The window title must be valid UTF-8 text.");
   if (!owned_window(window))
     return denied("E_INVALID_ARGUMENT", "A live application window is required.");
-  if (!SetWindowTextW(static_cast<HWND>(window), wide_title->c_str())) {
-    return denied("E_NATIVE_FAILURE", "The native window title could not be updated.");
+  const auto hwnd = static_cast<HWND>(window);
+  if (GetWindowThreadProcessId(hwnd, nullptr) == GetCurrentThreadId()) {
+    if (!SetWindowTextW(hwnd, wide_title->c_str()))
+      return denied("E_NATIVE_FAILURE", "The native window title could not be updated.");
+    return {result_kind::success, {}, {}, {}};
   }
+
+  auto request = std::make_shared<pending_title>();
+  request->window = hwnd;
+  request->title = *wide_title;
+  std::uintptr_t id = 0;
+  {
+    auto& dispatcher = titles();
+    std::lock_guard<std::mutex> lock(dispatcher.mutex);
+    if (dispatcher.pending.size() >= 64U)
+      return denied("E_LIMIT_PENDING", "Too many window title updates are pending.");
+    do {
+      id = dispatcher.next_id++;
+      if (dispatcher.next_id == 0) dispatcher.next_id = 1;
+    } while (id == 0 || dispatcher.pending.find(id) != dispatcher.pending.end());
+    dispatcher.pending.emplace(id, request);
+  }
+  if (!PostMessageW(hwnd, window_command_message, static_cast<WPARAM>(window_command::set_title),
+                    static_cast<LPARAM>(id))) {
+    remove_pending_title(id);
+    return denied("E_NATIVE_FAILURE", "The native window title update was not accepted.");
+  }
+  std::unique_lock<std::mutex> lock(request->mutex);
+  if (!request->finished.wait_for(lock, std::chrono::milliseconds(250),
+                                  [&request] { return request->completed; })) {
+    request->cancelled = true;
+    lock.unlock();
+    remove_pending_title(id);
+    return denied("E_WINDOW_TIMEOUT", "The native window did not confirm the title update in time.");
+  }
+  if (!request->applied)
+    return denied("E_NATIVE_FAILURE", "The native window title could not be updated.");
   return {result_kind::success, {}, {}, {}};
 #else
   (void)window;

@@ -3,14 +3,15 @@
 #include <cstdint>
 
 namespace soui::runtime {
-// Payload-free UI commands: no borrowed pointer can outlive a closed window.
+// UI commands carry only values or numeric request IDs, never borrowed pointers.
 inline constexpr unsigned window_command_message = 0x84D4U;
-enum class window_command : std::uintptr_t { begin_drag = 1, minimize, toggle_maximize };
+enum class window_command : std::uintptr_t { begin_drag = 1, minimize, toggle_maximize, set_title };
 }
 
 #ifdef _WIN32
 #include <windows.h>
 namespace soui::runtime {
+[[nodiscard]] bool execute_pending_title_command(HWND window, std::uintptr_t request_id);
 inline LRESULT resize_border_hit(HWND window, LPARAM screen_position) {
   if (IsZoomed(window) || !(GetWindowLongPtrW(window, GWL_STYLE) & WS_THICKFRAME)) return HTCLIENT;
   POINT point{static_cast<short>(LOWORD(screen_position)), static_cast<short>(HIWORD(screen_position))};
@@ -32,7 +33,7 @@ inline LRESULT resize_border_hit(HWND window, LPARAM screen_position) {
 }
 
 // Must run in the HWND-owning thread, never under a Bridge/engine lock.
-inline bool execute_window_command(HWND window, window_command command) {
+inline bool execute_window_command(HWND window, window_command command, LPARAM payload = 0) {
   if (!IsWindow(window) || GetWindowThreadProcessId(window, nullptr) != GetCurrentThreadId())
     return false;
   switch (command) {
@@ -46,6 +47,8 @@ inline bool execute_window_command(HWND window, window_command command) {
     case window_command::toggle_maximize:
       ShowWindow(window, IsZoomed(window) ? SW_RESTORE : SW_MAXIMIZE);
       return true;
+    case window_command::set_title:
+      return execute_pending_title_command(window, static_cast<std::uintptr_t>(payload));
   }
   return false;
 }

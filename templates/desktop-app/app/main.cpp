@@ -43,10 +43,10 @@ class starter_window final : public SOUI::SHostWnd {
     if(rect)::SetWindowPos(m_hWnd,nullptr,rect->left,rect->top,rect->right-rect->left,rect->bottom-rect->top,SWP_NOZORDER|SWP_NOACTIVATE);
   }
   LRESULT OnBridgeEvent(UINT,WPARAM,LPARAM value){host_.deliver_posted_event(reinterpret_cast<void*>(value));return 0;}
-  LRESULT OnWindowCommand(UINT,WPARAM command,LPARAM){
+  LRESULT OnWindowCommand(UINT,WPARAM command,LPARAM payload){
     const auto action=static_cast<soui::runtime::window_command>(command);
     if(action==soui::runtime::window_command::begin_drag && !(GetAsyncKeyState(VK_LBUTTON)&0x8000))return 0;
-    return soui::runtime::execute_window_command(m_hWnd,action)?1:0;
+    return soui::runtime::execute_window_command(m_hWnd,action,payload)?1:0;
   }
   void OnClose(){KillTimer(1);(void)host_.destroy();append("host-close-complete");DestroyWindow();PostQuitMessage(exit_code_);}
   BEGIN_MSG_MAP_EX(starter_window)

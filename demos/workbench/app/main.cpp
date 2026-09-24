@@ -431,12 +431,12 @@ class demo_soui_window final : public SOUI::SHostWnd {
     return 0;
   }
 
-  LRESULT OnWindowCommand(UINT, WPARAM command, LPARAM) {
+  LRESULT OnWindowCommand(UINT, WPARAM command, LPARAM payload) {
     const auto action = static_cast<soui::runtime::window_command>(command);
     // A delayed Bridge request must not start a move after the button is up.
     if (action != soui::runtime::window_command::begin_drag ||
         (GetAsyncKeyState(VK_LBUTTON) & 0x8000))
-      return soui::runtime::execute_window_command(m_hWnd, action) ? 1 : 0;
+      return soui::runtime::execute_window_command(m_hWnd, action, payload) ? 1 : 0;
     return 0;
   }
 

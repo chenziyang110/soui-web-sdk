@@ -4,8 +4,12 @@
 #include <soui/runtime/services/permissions/permission_store.h>
 
 #include <iostream>
+#include <atomic>
+#include <chrono>
+#include <future>
 #include <stdexcept>
 #include <string>
+#include <thread>
 
 namespace {
 void require(bool condition, const char* message) {
@@ -49,6 +53,9 @@ void test_public_services_reject_malformed_text_before_native_io() {
   const auto invalid_window = windows.set_title(reinterpret_cast<void*>(1), context, "valid title");
   require(!invalid_window.ok() && invalid_window.code == "E_INVALID_ARGUMENT",
           "A valid title must not target an invalid window");
+  const auto long_title = windows.set_title(reinterpret_cast<void*>(1), context, std::string(513, 'x'));
+  require(!long_title.ok() && long_title.code == "E_INVALID_ARGUMENT",
+          "An oversized title must fail before touching an HWND");
   const auto copied = clipboard.write_text(reinterpret_cast<void*>(1), context, malformed);
   require(!copied.ok() && copied.code == "E_INVALID_ARGUMENT",
           "Malformed UTF-8 must be rejected before clipboard work");
@@ -86,7 +93,7 @@ void test_clipboard_round_trip() {
 LRESULT CALLBACK test_window_proc(HWND window, UINT message, WPARAM first, LPARAM second) {
   if (message == soui::runtime::window_command_message)
     return soui::runtime::execute_window_command(
-        window, static_cast<soui::runtime::window_command>(first)) ? 1 : 0;
+        window, static_cast<soui::runtime::window_command>(first), second) ? 1 : 0;
   return DefWindowProcW(window, message, first, second);
 }
 
@@ -136,6 +143,66 @@ void test_window_round_trip() {
   require(!IsWindow(owner), "Public window close did not destroy its owner");
   require(UnregisterClassW(class_name, module) != FALSE, "Cannot release the test window class");
 }
+
+void test_bounded_title_when_window_thread_stalls() {
+  const HINSTANCE module = GetModuleHandleW(nullptr);
+  constexpr const wchar_t* class_name = L"SouiSdkTitleTimeout";
+  std::promise<HWND> ready;
+  auto created = ready.get_future();
+  std::promise<void> pumping;
+  auto pump_started = pumping.get_future();
+  std::atomic<bool> stop{false};
+  std::thread ui([&] {
+    WNDCLASSW kind{};
+    kind.lpfnWndProc = test_window_proc;
+    kind.hInstance = module;
+    kind.lpszClassName = class_name;
+    if (!RegisterClassW(&kind)) { ready.set_value(nullptr); return; }
+    const HWND window = CreateWindowExW(0, class_name, L"Original", WS_OVERLAPPEDWINDOW,
+                                        0, 0, 320, 240, nullptr, nullptr, module, nullptr);
+    ready.set_value(window);
+    if (window) {
+      Sleep(1200);  // Do not process the first title command during its deadline.
+      pumping.set_value();
+      MSG message{};
+      while (!stop.load()) {
+        while (PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) {
+          TranslateMessage(&message);
+          DispatchMessageW(&message);
+        }
+        Sleep(1);
+      }
+      DestroyWindow(window);
+    }
+    UnregisterClassW(class_name, module);
+  });
+  const HWND window = created.get();
+  if (!window) { stop = true; ui.join(); throw std::runtime_error("Cannot create stalled test window"); }
+  soui::runtime::permission_store permissions;
+  const auto token = permissions.issue("session", "app://desktop-test", {"desktop.window.setTitle"});
+  const soui::runtime::desktop_request_context context{"session", "app://desktop-test", token, false};
+  const soui::runtime::window_service windows(permissions);
+  const auto start = std::chrono::steady_clock::now();
+  const auto stalled = windows.set_title(window, context, u8"不应延迟应用");
+  const auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(
+      std::chrono::steady_clock::now() - start).count();
+  const bool resumed = pump_started.wait_for(std::chrono::seconds(5)) == std::future_status::ready;
+  if (resumed) Sleep(30);  // Give the queued, cancelled command a chance to drain.
+  wchar_t cancelled_title[64]{};
+  const bool cancelled_unchanged = resumed && GetWindowTextW(window, cancelled_title, 64) > 0 &&
+                                    std::wstring(cancelled_title) == L"Original";
+  const auto recovered = resumed ? windows.set_title(window, context, u8"恢复后标题")
+                                 : soui::runtime::desktop_response{};
+  wchar_t title[64]{};
+  const bool matches = resumed && GetWindowTextW(window, title, 64) > 0 &&
+                       std::wstring(title) == L"恢复后标题";
+  stop = true;
+  ui.join();
+  require(!stalled.ok() && stalled.code == "E_WINDOW_TIMEOUT" && elapsed < 600,
+          "A blocked owner must not hold the Bridge worker indefinitely");
+  require(cancelled_unchanged && recovered.ok() && matches,
+          "A cancelled title must not apply, and a later request must recover");
+}
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -148,6 +215,8 @@ int main(int argc, char** argv) {
       test_clipboard_round_trip();
       test_window_round_trip();
     }
+    else if (argc == 2 && std::string(argv[1]) == "--window-thread-timeout")
+      test_bounded_title_when_window_thread_stalls();
     else if (argc != 1) throw std::runtime_error("Unknown desktop Unicode test argument");
     std::cout << "desktop unicode conversion passed\n";
     return 0;
