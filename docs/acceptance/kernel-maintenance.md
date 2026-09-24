@@ -19,6 +19,8 @@
 
 [源码声明材料定位](../../verification/production-validation/kernel-notice-inventory-2026-09-25/README.md)把这两份精确 DLL 的显式库参数与源码树中可见的候选声明文件及 SHA-256 对齐，并标出若干库源码根目录缺少顶层许可证/声明文件的事实。该定位未穷尽嵌套组件，不能替代实际链接成员、运行载荷和再分发条款审阅；二进制授权仍为 `unverified`。
 
+进一步核对发现导入源码内已有 `libxml/src/Copyright`、`libpng/png.h` 的许可正文及 `node/LICENSE-nodejs` 的 c-ares 段落；与此同时，导入的 libcurl、libjpeg、OTS 文件明确指向未随该源码根目录提供的 `COPYING`、`README`、`LICENSE`。这些缺失的配套文本须按精确来源补齐并核对后才能审阅运行包声明，不能根据头文件注释自行代写。
+
 OpenSSL 官方将 1.0.2 列为已结束常规支持的分支，另有扩展支持渠道。当前项目没有扩展支持或完整安全补丁覆盖的证据，因此不能把“能自行编译”解释为“有持续安全维护”。[OpenSSL 发布策略](https://openssl-library.org/policies/releasestrat/)（访问日期：2026-09-22）
 
 ## 阻止生产放行的缺口

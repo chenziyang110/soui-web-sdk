@@ -12,7 +12,18 @@
 | x86 命令显式列出的 `openssl.lib` | `third_party/sources/miniblink/node/openssl/openssl/LICENSE` | `0885ecb3437fc1178a62ee58ba3030e48cafab77dc31607e91208476338e0222` |
 | `ots.lib` 工程引用的 Brotli 源码 | `third_party/sources/miniblink/third_party/brotli/LICENSE` | `cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30` |
 
-`libcurl.lib`、`ots.lib`、`libxml.lib`、`libjpeg.lib`、`libpng.lib` 的候选源码根目录下未发现顶层 `LICENSE`、`COPYING` 或 `NOTICE` 文件；`libcurl` 工程还引用 `node/cares`，该根目录也未发现上述名称的顶层文件。这**不等于**源码没有文件头或上级目录的有效声明；需要逐组件核对并决定随包声明。`libxml` 根目录仅看到 `README.chromium`，不能将其直接当作许可证文本。V8、Skia、HarfBuzz 等目录还存在子项目或其他声明文件，上表不是穷尽清单。
+`libcurl.lib`、`ots.lib`、`libxml.lib`、`libjpeg.lib`、`libpng.lib` 的候选源码根目录下未发现顶层 `LICENSE`、`COPYING` 或 `NOTICE` 文件；`libcurl` 工程还引用 `node/cares`，该根目录也未发现上述名称的顶层文件。这**不等于**源码没有文件头或上级目录的有效声明；需要逐组件核对并决定随包声明。V8、Skia、HarfBuzz 等目录还存在子项目或其他声明文件，上表不是穷尽清单。
+
+进一步在同一已交付源码树中定位到下列材料。散列仍取根源码清单的 Git 索引 blob；它们只证明本仓库存在对应文本，不证明内容已随二进制运行包分发，也不证明实际链接成员或适用条款已审完。
+
+| 组件 | 本地材料及其实际内容线索 | SHA-256 | 待处理 |
+|---|---|---|---|
+| `libxml.lib` | `third_party/sources/miniblink/third_party/libxml/src/Copyright` 含版权/许可正文，并明确部分文件另有声明；同目录上级的 `README.chromium` 指向它 | `013556ff1aa847ac0e365337321c200eee1c69051db8870db37002c852a4e98d` | 核对文件例外与链接范围，再确定运行包声明 |
+| `libpng.lib` | `third_party/sources/miniblink/third_party/libpng/png.h` 前部含版权、免责声明和许可正文，标注 1.6.28 | `4574c38e2688e9d7b49f1dd865e4130bee4bae55906fde3a02bbf120b8cc9a92` | 确认链接范围并纳入运行包声明 |
+| `node/cares` | `third_party/sources/miniblink/node/LICENSE-nodejs` 含专门的 c-ares 条款段落 | `48c3b5ba35c8f6b670d6f9b554a0204fc42c14eedf2431bbf2418a407feb9f4d` | 核对 `node/cares` 与该条款所指来源是否一致 |
+| `libcurl.lib` | `third_party/sources/miniblink/third_party/libcurl/include/curl/curl.h` 明确要求随附 `COPYING`，但本次导入的 libcurl 根目录未找到该文件 | `7ef280780f9b89ee7b70d389a70a75ac4ddd33387fbee8647a1f3ed836533b40` | 找回与精确源码版本匹配的完整 `COPYING` |
+| `libjpeg.lib` | `third_party/sources/miniblink/third_party/libjpeg/jpeglib.h` 指向随附 `README` 的分发条件，但本次导入的 libjpeg 根目录未找到该文件 | `8e264a2a2b5aca66919d539ce8c401d468db8752e6b0e754dbba761745d92c2e` | 找回与精确源码版本匹配的完整 `README` |
+| `ots.lib` | `third_party/sources/miniblink/third_party/ots/include/opentype-sanitiser.h` 指向 `LICENSE`，但本次导入的 OTS 根目录未找到该文件 | `9f255a62df0fe07f350deab5735116438f99a527286ccaa893cb10889ac4d025` | 找回与精确源码版本匹配的完整 `LICENSE`，另核对 Brotli |
 
 尤其不能混淆两个 zlib 输入：上述 `zlib.lib` 工程引用 Miniblink 内部的 `third_party/zlib`，该目录的 `LICENSE` 开头写 `version 1.2.4`；独立随包 `zlib1.dll` 在[依赖清单](../../../third_party/manifests/dependencies.json)中标为 1.2.11。单凭许可证开头或链接参数，仍无法断定最终 DLL 中实际选择的 zlib 对象版本。
 
