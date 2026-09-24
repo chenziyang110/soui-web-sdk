@@ -52,6 +52,29 @@ class log_writer {
   clock_type::time_point started_{clock_type::now()};
 };
 
+class mount_phase_writer {
+ public:
+  explicit mount_phase_writer(const std::filesystem::path& report) {
+    char enabled[2]{};
+    if (GetEnvironmentVariableA("SOUI_ACCEPTANCE_MOUNT_TRACE", enabled, sizeof(enabled)) != 1 || enabled[0] != '1')
+      return;
+    auto file = report;
+    file += L".phases.ndjson";
+    output_.open(file, std::ios::binary);
+    if (!output_) throw std::runtime_error("Cannot create acceptance mount phase log");
+  }
+  void emit(unsigned cycle, unsigned window, const char* phase) {
+    if (!output_.is_open()) return;
+    output_ << "{\"event\":\"mount.phase\",\"tickMs\":" << GetTickCount64()
+            << ",\"cycle\":" << cycle << ",\"window\":" << window
+            << ",\"phase\":" << quote(phase) << "}\n";
+    output_.flush();
+    if (!output_) throw std::runtime_error("Cannot persist acceptance mount phase log");
+  }
+ private:
+  std::ofstream output_;
+};
+
 using window_counts = std::map<std::string, unsigned>;
 
 BOOL CALLBACK count_child_window(HWND window, LPARAM state) {
@@ -170,11 +193,14 @@ class test_window final {
   test_window& operator=(const test_window&) = delete;
   ~test_window() { (void)host_.destroy(); if (handle_) DestroyWindow(handle_); }
 
-  soui::sdk::host_result mount(const std::filesystem::path& root) {
+  soui::sdk::host_result mount(const std::filesystem::path& root,
+                               mount_phase_writer* phases = nullptr, unsigned cycle = 0) {
+    if (phases) phases->emit(cycle, id_, "window.create.begin");
     handle_ = CreateWindowExW(0, window_class, L"SDK independent acceptance", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
         80 + static_cast<int>(id_) * 50, 80 + static_cast<int>(id_) * 40, 640, 480,
         nullptr, nullptr, GetModuleHandleW(nullptr), this);
     if (!handle_) throw std::runtime_error("Cannot create acceptance parent window");
+    if (phases) phases->emit(cycle, id_, "window.create.end");
     soui::sdk::host_config config;
 #ifdef _WIN64
     config.architecture = "x64";
@@ -185,8 +211,14 @@ class test_window final {
     config.resource_root = root / "resources" / ("window-" + std::to_string(id_));
     config.owner_window = handle_;
     config.bridge_adapter = &bridge_;
+    if (phases) phases->emit(cycle, id_, "host.start.begin");
     const auto result = host_.start(config);
-    if (result.ok) ShowWindow(handle_, SW_SHOWNOACTIVATE);
+    if (phases) phases->emit(cycle, id_, "host.start.end");
+    if (result.ok) {
+      if (phases) phases->emit(cycle, id_, "window.show.begin");
+      ShowWindow(handle_, SW_SHOWNOACTIVATE);
+      if (phases) phases->emit(cycle, id_, "window.show.end");
+    }
     return result;
   }
   soui::sdk::host_result reload() { return host_.reload(); }
@@ -222,7 +254,8 @@ class test_window final {
 
 class runner final {
  public:
-  runner(const options& settings, log_writer& log) : settings_(settings), log_(log), root_(executable_directory()) {}
+  runner(const options& settings, log_writer& log)
+      : settings_(settings), log_(log), phases_(settings.report), root_(executable_directory()) {}
   void execute() {
     log_.emit("run.begin", "\"mode\":" + quote(settings_.mode) + ",\"cycles\":" + std::to_string(settings_.cycles)
       + ",\"warmup\":" + std::to_string(settings_.warmup) + ",\"settleMs\":" + std::to_string(settings_.settle_ms)
@@ -302,9 +335,15 @@ class runner final {
     step("mount", id, cycle, [&] {
       auto& window = windows_.at(id - 1);
       if (window) throw std::runtime_error("Window slot is already occupied");
+      phases_.emit(cycle, id, "construct.begin");
       window = std::make_unique<test_window>(id, settings_.mode == "bridge");
-      const auto result = window->mount(root_);
-      if (result.ok) until([&] { return window->ready(1); });
+      phases_.emit(cycle, id, "construct.end");
+      const auto result = window->mount(root_, &phases_, cycle);
+      if (result.ok) {
+        phases_.emit(cycle, id, "ready.wait.begin");
+        until([&] { return window->ready(1); });
+        phases_.emit(cycle, id, "ready.wait.end");
+      }
       return result;
     });
   }
@@ -353,6 +392,7 @@ class runner final {
   }
   const options& settings_;
   log_writer& log_;
+  mount_phase_writer phases_;
   std::filesystem::path root_;
   std::array<std::unique_ptr<test_window>, 3> windows_;
 };
