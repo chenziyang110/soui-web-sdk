@@ -21,10 +21,11 @@ task_snapshot task_store::start(std::string operation_id) {
 }
 
 task_snapshot task_store::start_scoped(std::string operation_id, std::string scope_key,
-                                       bool* duplicate, bool* conflict) {
+                                       bool* duplicate, bool* conflict, bool* capacity) {
   std::lock_guard<std::mutex> lock(mutex_);
   if (duplicate) *duplicate = false;
   if (conflict) *conflict = false;
+  if (capacity) *capacity = false;
   const auto existing = operation_to_task_.find(operation_id);
   if (existing != operation_to_task_.end()) {
     const auto scope = operation_to_scope_.find(operation_id);
@@ -40,7 +41,7 @@ task_snapshot task_store::start_scoped(std::string operation_id, std::string sco
     if (duplicate) *duplicate = true;
     return tasks_.at(existing->second);
   }
-  if (tasks_.size() >= 1024U) {
+  if (tasks_.size() >= max_tasks) {
     auto oldest = tasks_.end();
     for (auto iterator = tasks_.begin(); iterator != tasks_.end(); ++iterator) {
       if (!is_terminal(iterator->second.state)) continue;
@@ -50,6 +51,14 @@ task_snapshot task_store::start_scoped(std::string operation_id, std::string sco
       operation_to_task_.erase(oldest->second.operation_id);
       operation_to_scope_.erase(oldest->second.operation_id);
       tasks_.erase(oldest);
+    } else {
+      if (capacity) *capacity = true;
+      task_snapshot rejected;
+      rejected.operation_id = std::move(operation_id);
+      rejected.state = task_state::failed;
+      rejected.message = "The native task store capacity is exhausted.";
+      rejected.result = operation_result{result_kind::failure, {}, rejected.message};
+      return rejected;
     }
   }
 

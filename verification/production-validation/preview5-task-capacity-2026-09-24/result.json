@@ -1,0 +1,73 @@
+{
+  "schema": "soui.preview5-task-capacity/v1",
+  "version": "0.3.0-preview.5",
+  "sourceSha256": "16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237",
+  "releaseReady": false,
+  "packageVerified": true,
+  "projectVerified": true,
+  "packageFiles": 402,
+  "packageManifestSha256": "420023b743560b375f5e32f7fe04f60c4e241106ef7227420868b1b3e74e8156",
+  "projectLockSha256": "523004f84d5db88a3d8e62ce90ac28b3408667824eb9ff01a0b6f87824c5a684",
+  "relocatedSource": {
+    "sourceManifestVersion": "0.3.0-preview.5",
+    "sourceFilesVerifiedBeforeBuild": 29823,
+    "gitlessExtract": true,
+    "architectures": [
+      {"architecture": "x86", "buildId": "8a10f5ad-6f3e-4d39-8923-d912f8462889", "buildReport": "x86-relocated-build.json", "smokeReport": "x86-relocated-smoke.json", "ctestLog": "x86-relocated-ctest.log", "smokeScenarios": 3, "passed": true},
+      {"architecture": "x64", "buildId": "ab03f895-cd78-4789-8efc-bef0b6bf74d2", "buildReport": "x64-relocated-build.json", "smokeReport": "x64-relocated-smoke.json", "ctestLog": "x64-relocated-ctest.log", "smokeScenarios": 3, "passed": true}
+    ]
+  },
+  "architectureRuns": [
+    {
+      "architecture": "x86",
+      "sdkBuildId": "426d9be7-c49a-43df-a4c1-7532087a23e2",
+      "sdkBuildReport": "x86-sdk-build.json",
+      "sdkSmokeReport": "x86-sdk-smoke.json",
+      "sdkSmokeScenarios": 3,
+      "nativeCapacityTest": "passed",
+      "nativeCTestLog": "x86-ctest.log",
+      "independentBuildId": "4c395e6b-3ed3-4848-b101-5cfcb9cf5d3b",
+      "independentSourceSha256": "c32e1b5c817ba8c49624dd897bb3c2bea4198f4dd4b077be9e10845d2d388793",
+      "independentBuildReport": "x86-independent-build.json",
+      "independentExeSha256": "dfc09e0f4a2588e9b016b6b3e0cd3e769a8434182987d3c0f8c9f69528592305",
+      "independentSmokeExitCode": 0,
+      "independentSmokeLog": "x86-independent-smoke.log",
+      "passed": true
+    },
+    {
+      "architecture": "x64",
+      "sdkBuildId": "3da04ff0-8e3d-45af-a9d7-2724f273b9da",
+      "sdkBuildReport": "x64-sdk-build.json",
+      "sdkSmokeReport": "x64-sdk-smoke.json",
+      "sdkSmokeScenarios": 3,
+      "nativeCapacityTest": "passed",
+      "nativeCTestLog": "x64-ctest.log",
+      "independentBuildId": "7fea0214-140a-44c9-853e-4b744639fd22",
+      "independentSourceSha256": "c32e1b5c817ba8c49624dd897bb3c2bea4198f4dd4b077be9e10845d2d388793",
+      "independentBuildReport": "x64-independent-build.json",
+      "independentExeSha256": "2809c0d7bc9c7ef15b721a796648fcadd4e59295c3a9e949ce64b011bbc428f2",
+      "independentSmokeExitCode": 0,
+      "independentSmokeLog": "x64-independent-smoke.log",
+      "passed": true
+    }
+  ],
+  "npmAudits": [
+    {
+      "package": "sdk",
+      "vulnerabilities": 0,
+      "report": "npm-audit-sdk.json"
+    },
+    {
+      "package": "template",
+      "vulnerabilities": 0,
+      "report": "npm-audit-template.json"
+    },
+    {
+      "package": "workbench",
+      "vulnerabilities": 0,
+      "report": "npm-audit-workbench.json"
+    }
+  ],
+  "testScope": "native capacity boundary, cancellation, parallel admission, scanner E_BUSY; SDK contracts and three desktop smoke scenarios per architecture; independent generated app build and smoke",
+  "passed": true
+}

@@ -33,6 +33,41 @@ try {
     assert.equal(fs.existsSync(path.join(first, 'payload/web/apps/business.tsx')), false);
     assert.throws(() => sdk.pack(source, first, '0.1.0-preview.1'), /already exists/);
   });
+  if (process.platform === 'win32') check(() => {
+    const transient = path.join(root, 'sdk-transient');
+    const denied = path.join(root, 'sdk-denied');
+    const rename = fs.renameSync;
+    let injected = 0;
+    fs.renameSync = (from, to) => {
+      if (to === transient && injected < 2) {
+        ++injected;
+        const error = new Error('temporary Windows rename denial');
+        error.code = 'EPERM';
+        throw error;
+      }
+      return rename(from, to);
+    };
+    try { sdk.pack(source, transient, '0.1.0-preview.1'); }
+    finally { fs.renameSync = rename; }
+    assert.equal(injected, 2);
+    sdk.readPackage(transient);
+
+    let attempts = 0;
+    fs.renameSync = (from, to) => {
+      if (to === denied) {
+        ++attempts;
+        const error = new Error('persistent Windows rename denial');
+        error.code = 'EACCES';
+        throw error;
+      }
+      return rename(from, to);
+    };
+    try { assert.throws(() => sdk.pack(source, denied, '0.1.0-preview.1'), {code: 'EACCES'}); }
+    finally { fs.renameSync = rename; }
+    assert.equal(attempts, 6);
+    assert.equal(fs.existsSync(denied), false);
+    assert.equal(fs.readdirSync(root).some(name => name.startsWith('sdk-denied.staging-')), false);
+  });
   check(() => {
     write(path.join(project, 'web/apps/business.tsx'), 'business custom');
     sdk.install(first, project);

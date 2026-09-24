@@ -1168,10 +1168,12 @@ std::string demo_bridge_adapter::start_media_job(
 
   bool duplicate = false;
   bool conflict = false;
+  bool capacity = false;
   const auto scope = context.session_id + "|" + context.origin + "|media|" + source + "|" +
                      operation + "|" + format + "|" + codec + "|" + std::to_string(quality);
-  const auto snapshot = tasks_.start_scoped(operation_id, scope, &duplicate, &conflict);
+  const auto snapshot = tasks_.start_scoped(operation_id, scope, &duplicate, &conflict, &capacity);
   if (conflict) return payload_error("E_OPERATION_CONFLICT", "operationId is already used by another media request.");
+  if (capacity) return payload_error("E_BUSY", "The native task store capacity is exhausted.");
   if (duplicate) {
     const auto existing = json::parse(media_task_json(context, snapshot.task_id), nullptr, false);
     if (!existing.is_object() || existing.value("error", "") != "") {
@@ -1361,9 +1363,11 @@ void demo_bridge_adapter::register_methods() {
         join_finished_media_preview_jobs();
         bool duplicate = false;
         bool conflict = false;
+        bool capacity = false;
         const auto snapshot = tasks_.start_scoped(operation, context.session_id + "|" + context.origin + "|media-preview",
-                                                  &duplicate, &conflict);
+                                                  &duplicate, &conflict, &capacity);
         if (conflict) return payload_error("E_OPERATION_CONFLICT", "operationId is already used for another preview.");
+        if (capacity) return payload_error("E_BUSY", "The native task store capacity is exhausted.");
         if (duplicate) return json{{"taskId", snapshot.task_id}, {"accepted", true}}.dump();
         auto job = std::make_unique<media_preview_job>();
         job->context = context;
@@ -1372,7 +1376,12 @@ void demo_bridge_adapter::register_methods() {
         media_preview_job* raw = job.get();
         {
           std::lock_guard<std::mutex> lock(media_preview_mutex_);
-          if (media_preview_jobs_.size() >= 8U) return payload_error("E_BUSY", "Too many retained media preview tasks.");
+          if (media_preview_jobs_.size() >= 8U) {
+            (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure,
+                                  "Media preview capacity reached.");
+            (void)tasks_.erase(snapshot.task_id);
+            return payload_error("E_BUSY", "Too many retained media preview tasks.");
+          }
           media_preview_jobs_.emplace(snapshot.task_id, std::move(job));
         }
         try {
@@ -1450,16 +1459,31 @@ void demo_bridge_adapter::register_methods() {
         GUID id{}; if (FAILED(CoCreateGuid(&id))) return payload_error("E_NATIVE_FAILURE", "Could not allocate save task.");
         wchar_t suffix[40]{}; StringFromGUID2(id, suffix, 40);
         const auto operation = wide_to_utf8(suffix);
-        const auto task = tasks_.start_scoped(operation, context.session_id + "|media-save");
+        bool capacity = false;
+        bool conflict = false;
+        const auto task = tasks_.start_scoped(operation, context.session_id + "|media-save",
+                                             nullptr, &conflict, &capacity);
+        if (conflict) return payload_error("E_OPERATION_CONFLICT", "The generated save operationId is already in use.");
+        if (capacity) return payload_error("E_BUSY", "The native task store capacity is exhausted.");
         auto job = std::make_unique<media_job>();
         job->context = context; job->task_id = task.task_id; job->source = source;
         job->save_destination = destination;
         job->output = destination.parent_path() / (std::wstring(L".soui-save-") + suffix + L".tmp");
         auto* raw = job.get();
-        { std::lock_guard<std::mutex> lock(media_mutex_); media_jobs_.emplace(task.task_id, std::move(job)); }
+        {
+          std::lock_guard<std::mutex> lock(media_mutex_);
+          if (media_jobs_.size() >= 32U) {
+            (void)tasks_.complete(task.task_id, soui::runtime::result_kind::failure, "Media capacity reached.");
+            (void)tasks_.erase(task.task_id);
+            return payload_error("E_BUSY", "Too many retained media tasks; query or restart the session first.");
+          }
+          media_jobs_.emplace(task.task_id, std::move(job));
+        }
         try { raw->worker = std::thread([this, raw] { run_media_job(raw); }); }
         catch (...) {
           std::lock_guard<std::mutex> lock(media_mutex_); media_jobs_.erase(task.task_id);
+          (void)tasks_.complete(task.task_id, soui::runtime::result_kind::failure,
+                                "The native media save worker could not be started.");
           (void)tasks_.erase(task.task_id);
           return payload_error("E_NATIVE_FAILURE", "Could not start save worker.");
         }
@@ -1574,9 +1598,11 @@ void demo_bridge_adapter::register_methods() {
         }
         bool duplicate = false;
         bool conflict = false;
+        bool capacity = false;
         const auto snapshot = tasks_.start_scoped(
-            operation, context.session_id + "|" + context.origin + "|media|" + source + "|" + format + "|" + codec + "|" + std::to_string(quality), &duplicate, &conflict);
+            operation, context.session_id + "|" + context.origin + "|media|" + source + "|" + format + "|" + codec + "|" + std::to_string(quality), &duplicate, &conflict, &capacity);
         if (conflict) return payload_error("E_OPERATION_CONFLICT", "operationId is already used by another media request.");
+        if (capacity) return payload_error("E_BUSY", "The native task store capacity is exhausted.");
         if (duplicate) {
           const auto existing = json::parse(media_task_json(context, snapshot.task_id), nullptr, false);
           if (!existing.is_object() || existing.value("error", "") != "") {
@@ -1634,6 +1660,11 @@ void demo_bridge_adapter::register_methods() {
         {
           std::lock_guard<std::mutex> lock(media_mutex_);
           if (media_jobs_.size() >= 32U) {
+            std::error_code ignored;
+            std::filesystem::remove_all(output_directory, ignored);
+            (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure,
+                                  "Media capacity reached.");
+            (void)tasks_.erase(snapshot.task_id);
             return payload_error("E_BUSY", "Too many retained media tasks; query or restart the session first.");
           }
           media_jobs_.emplace(snapshot.task_id, std::move(job));
@@ -1700,9 +1731,11 @@ void demo_bridge_adapter::register_methods() {
         join_finished_workload_jobs();
         bool duplicate = false;
         bool conflict = false;
+        bool capacity = false;
         const auto snapshot = tasks_.start_scoped(operation, context.session_id + "|" + context.origin + "|workload",
-                                                  &duplicate, &conflict);
+                                                  &duplicate, &conflict, &capacity);
         if (conflict) return payload_error("E_OPERATION_CONFLICT", "operationId is already used for another workload.");
+        if (capacity) return payload_error("E_BUSY", "The native task store capacity is exhausted.");
         if (duplicate) return json{{"taskId", snapshot.task_id}, {"accepted", true}}.dump();
         auto job = std::make_unique<workload_job>();
         job->context = context;
@@ -1712,7 +1745,12 @@ void demo_bridge_adapter::register_methods() {
         workload_job* raw = job.get();
         {
           std::lock_guard<std::mutex> lock(workload_mutex_);
-          if (workload_jobs_.size() >= 16U) return payload_error("E_BUSY", "Too many retained workload tasks.");
+          if (workload_jobs_.size() >= 16U) {
+            (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure,
+                                  "Workload capacity reached.");
+            (void)tasks_.erase(snapshot.task_id);
+            return payload_error("E_BUSY", "Too many retained workload tasks.");
+          }
           workload_jobs_.emplace(snapshot.task_id, std::move(job));
         }
         try {

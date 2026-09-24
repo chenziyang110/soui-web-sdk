@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <cstdint>
 #include <mutex>
 #include <optional>
@@ -33,13 +34,16 @@ struct task_snapshot {
 
 class task_store {
  public:
+  static constexpr std::size_t max_tasks{1024};
+
   task_store() = default;
   task_store(const task_store&) = delete;
   task_store& operator=(const task_store&) = delete;
 
   [[nodiscard]] task_snapshot start(std::string operation_id);
   [[nodiscard]] task_snapshot start_scoped(std::string operation_id, std::string scope_key,
-                                           bool* duplicate = nullptr, bool* conflict = nullptr);
+                                           bool* duplicate = nullptr, bool* conflict = nullptr,
+                                           bool* capacity = nullptr);
   [[nodiscard]] bool mark_running(const std::string& task_id);
   [[nodiscard]] bool update_progress(const std::string& task_id, std::uint32_t progress);
   [[nodiscard]] bool observe_timeout(const std::string& task_id, std::string message = {});

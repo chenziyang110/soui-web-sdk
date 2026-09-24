@@ -24,7 +24,7 @@
 
 本文件记录执行进度，不能代替机器报告或修改 `releaseReady`。新增阶段证据应链接实际 run-id、源码与载荷身份，并列出未执行项。
 
-当前开发版本为 `0.3.0-preview.4`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。x86 首次完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
+当前开发版本为 `0.3.0-preview.5`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
 
 ToolTip 修补后的 x64 内核及全部原生依赖已重新编译；候选 SHA-256 为 `32d37e6399bc04e2a8d909c4021f49e3b8f21521b805f9f118f15e111ea0e59f`，三模式各 30 轮加 3 次预热全部完成。重建 USER 不再增长，但 GDI/普通句柄仍增长，缺陷未关闭。随后定位到拖拽区域和工作线程唤醒事件的释放遗漏，保留为两个后续补丁。
 
@@ -95,3 +95,5 @@ preview.4 固定包的[新生命周期归档](../../verification/production-vali
 [Windows 7 SP1 x86 QEMU 目标系统短验收](../../verification/production-validation/win7-sp1-x86-qemu-2026-09-24/README.md)使用相同 preview.4 冻结源码指纹的独立公共消费者，在 6.1.7601/32-bit 上完成 Bridge、重载、销毁重建、三窗口各三轮，退出码 0，串口导出 17 个文件的长度和散列均通过，并验证每个事件流以 `run.complete` 结束。初次 QEMU 共享 FAT 盘报告截断后，所有有效结果均在来宾 NTFS 上重新运行；短验收只说明软件路径启动与基本生命周期可工作，不覆盖物理设备、资源门槛、真实业务、IME/DPI、TLS/代理、安装升级或 8 小时。
 
 [同一 Win7 SP1 x86 虚拟机的模板与 Workbench 短验收](../../verification/production-validation/win7-sp1-x86-qemu-apps-2026-09-24/README.md)进一步使用同一冻结源码指纹的 Release 载荷。模板及 Workbench 默认/React 三项烟测均退出 0，日志确认页面和桥接就绪、关闭完成；两个 ZIP、541 个载荷文件、中文文件名和四个关键二进制散列经来宾校验，24 个串口导出文件经宿主重验。正常模式下的默认/React 界面已留截图。该结果尚不足以宣布 Demo V01–V06 或指定平台的生产通过。
+
+preview.5 的[任务容量修复证据](../../verification/production-validation/preview5-task-capacity-2026-09-24/README.md)绑定源码指纹 `16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237`：x86/x64 Release 完整构建、三项实际应用 smoke、原生任务容量/并发/取消/扫描错误传播测试均通过；由当前 SDK 包生成的仓库外项目也在双架构完成 Release 编译与实际启动/关闭。无 Git 完整源码解压目录经逐文件验证后也在两架构重新完成应用构建、测试和三项 smoke。三个 Web 锁文件本轮 `npm audit` 均为 0 项。打包发布目录的 Windows 短暂 `EPERM/EACCES` 有界重试经过注入测试与本机反复打包；实际锁持有者仍未确认。preview.4 的 Win7 与长循环数据不能直接升级为 preview.5 的通过结论，完整业务链和资源门槛继续待验收。

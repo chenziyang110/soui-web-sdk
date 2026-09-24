@@ -217,8 +217,10 @@ scan_response directory_scanner::start(const scan_request_context& context, std:
   const std::string scope_key = context.session_id + "|" + context.origin + "|" + operation_scope + "|" + root_reference + "|" + filter;
   bool duplicate = false;
   bool conflict = false;
-  const auto task = tasks_.start_scoped(std::move(operation_id), scope_key, &duplicate, &conflict);
+  bool capacity = false;
+  const auto task = tasks_.start_scoped(std::move(operation_id), scope_key, &duplicate, &conflict, &capacity);
   if (conflict) return error("E_OPERATION_CONFLICT", "operationId already belongs to a different request.", task.task_id);
+  if (capacity) return error("E_BUSY", "The native task store capacity is exhausted.");
   {
     std::lock_guard<std::mutex> lock(mutex_);
     if (scans_.find(task.task_id) != scans_.end()) {
