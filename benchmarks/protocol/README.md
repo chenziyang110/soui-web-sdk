@@ -17,3 +17,12 @@ out/benchmark-sampler/Release/ProcessTreeSampler.exe <PID> 1000 65000 <新的绝
 $env:PROCESS_TREE_SAMPLER_EXE = (Resolve-Path out/benchmark-sampler/Release/ProcessTreeSampler.exe).Path
 node --test tests/benchmark/process-tree-sampler.test.cjs
 ```
+
+`InputTrace` 是正式宿主外部的 Win32 输入驱动，接受宿主 PID、`S01`–`S05`、新的绝对 NDJSON 路径和 `full`/`probe` 模式。它先定位可见的 1100×720 内容区窗口，固定窗口位置并要求其处于前台；通过 `SendInput` 发出鼠标点击、滚轮及 Unicode 按键，同时保留每次输入前后的 QPC 时间。S04 的窗口尺寸变化单独标为 Win32 操作。`full` 为 S01–S04 保留至少 61 秒、S05 至少 123 秒；`probe` 仅持续 3 秒，不能进入性能样本。输出只是外部注入轨迹；页面事件、动作、视口与结果须单独核对。S03 的 Unicode 按键**绕过中文 IME composition**，因此 S03 的 IME 门槛仍需真实输入法专项验证；驱动本身不能提供物理呈现时间。
+
+```powershell
+cmake --build out/benchmark-sampler --config Release --target InputTrace
+$env:BENCHMARK_INPUT_TRACE_EXE = (Resolve-Path out/benchmark-sampler/Release/InputTrace.exe).Path
+node --test tests/benchmark/input-trace.test.cjs
+out/benchmark-sampler/Release/InputTrace.exe <宿主PID> S01 <新的绝对结果路径> full
+```
