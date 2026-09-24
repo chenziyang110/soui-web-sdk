@@ -81,6 +81,7 @@ int run(HINSTANCE instance,bool smoke) {
   app.AddResProvider(resources);
 
   soui::sdk::json_bridge bridge("app://starter");
+  if(!bridge.enable_clipboard_service())return 8;
   (void)bridge.register_method("app.greet","app.greet",[](std::string_view params) {
     const auto value=json::parse(params);
     if(!value.is_object() || value.size()!=1 || !value.contains("name") || !value["name"].is_string() || value["name"].get_ref<const std::string&>().size()>128)

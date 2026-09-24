@@ -44,6 +44,11 @@ export interface SouiCoreMethodMap {
   'task.unsubscribe': { params: { subscriptionId: string }; result: { removed: boolean } };
 }
 
+/** Optional desktop capability installed by json_bridge::enable_clipboard_service(). */
+export interface SouiClipboardMethodMap {
+  'desktop.clipboard.writeText': { params: { text: string }; result: { applied: true } };
+}
+
 export class SouiBridgeError extends Error {
   public constructor(public readonly code: string, message: string, public readonly requestId = '') {
     super(message);

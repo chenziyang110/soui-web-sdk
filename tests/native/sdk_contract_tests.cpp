@@ -51,7 +51,32 @@ int main(){
     require(!json::parse(bridge.handle_json(request.dump())).at("ok").get<bool>(),"revoked session");
     const auto replacement=json::parse(bridge.handle_json(bootstrap.dump()));
     require(replacement.at("ok").get<bool>() && replacement.at("result").at("sessionId")!=auth.at("sessionId"),"navigation creates new session");
-    std::cout<<"Native SDK contract: 16 checks passed\n";
+    soui::sdk::json_bridge desktop("app://test");
+    require(desktop.enable_clipboard_service() && !desktop.enable_clipboard_service(),
+            "public clipboard service must opt in exactly once");
+    const auto desktop_boot=json::parse(desktop.handle_json(bootstrap.dump()));
+    require(desktop_boot.at("ok").get<bool>() && !desktop.enable_clipboard_service(),
+            "desktop registration must freeze after bootstrap");
+    const auto desktop_auth=desktop_boot.at("result");
+    auto copy=request;
+    copy["requestId"]="desktop:1";
+    copy["sessionId"]=desktop_auth.at("sessionId");
+    copy["origin"]=desktop_auth.at("origin");
+    copy["token"]=desktop_auth.at("token");
+    copy["method"]="desktop.clipboard.writeText";
+    copy["params"]={{"text","native-only gesture"}};
+    const auto no_gesture=json::parse(desktop.handle_json(copy.dump(),false));
+    require(!no_gesture.at("ok").get<bool>() && no_gesture.at("error").at("code")=="E_GESTURE_REQUIRED",
+            "Web JSON cannot claim a native user gesture");
+    copy["params"]["userGesture"]=true;
+    const auto forged=json::parse(desktop.handle_json(copy.dump(),true));
+    require(!forged.at("ok").get<bool>() && forged.at("error").at("code")=="E_INVALID_PARAMS",
+            "untrusted userGesture parameter must be rejected");
+    copy["params"]={{"text","native-only gesture"}};
+    const auto no_owner=json::parse(desktop.handle_json(copy.dump(),true));
+    require(!no_owner.at("ok").get<bool>() && no_owner.at("error").at("code")=="E_INVALID_ARGUMENT",
+            "native gesture must reach the public service without inventing an owner window");
+    std::cout<<"Native SDK contract: 21 checks passed\n";
     return 0;
   } catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 1;}
 }

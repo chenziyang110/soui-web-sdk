@@ -115,7 +115,8 @@ bridge_response bridge_transport::handle(const bridge_request& request) const {
   return response;
 }
 
-std::string bridge_transport::handle_json(std::string_view json_text) const {
+std::string bridge_transport::handle_json(std::string_view json_text,
+                                          bool native_user_gesture) const {
   if (json_text.empty() || json_text.size() > max_message_bytes) {
     return serialize(make_error({}, {}, {}, "E_LIMIT_MESSAGE_SIZE", "Bridge message exceeds the allowed size."));
   }
@@ -160,6 +161,7 @@ std::string bridge_transport::handle_json(std::string_view json_text) const {
   request.token = string_value("token");
   request.method = string_value("method");
   request.operation_id = string_value("operationId");
+  request.native_user_gesture = native_user_gesture;
   const auto timeout = envelope.find("timeoutMs");
   if (timeout != envelope.end()) {
     if (!timeout->is_number_unsigned() || timeout->get<std::uint64_t>() == 0U ||

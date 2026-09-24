@@ -66,8 +66,30 @@ bool json_bridge::register_task_handler(std::string kind, soui::runtime::task_se
   std::lock_guard<std::mutex> lock(mutex_);
   return !registration_closed_ && tasks_.register_handler(std::move(kind), std::move(handler));
 }
+bool json_bridge::enable_clipboard_service() {
+  std::lock_guard<std::mutex> lock(mutex_);
+  constexpr const char* method = "desktop.clipboard.writeText";
+  if (registration_closed_ || registry_.contains(method)) return false;
+  const bool registered = registry_.register_contextual_method(method, method,
+      [this](const soui::runtime::bridge_request& request) -> std::string {
+        const auto params = json::parse(request.params_json, nullptr, false);
+        if (!params.is_object() || params.size() != 1U || !params.contains("text") ||
+            !params["text"].is_string())
+          return json{{"error", "E_INVALID_PARAMS"},
+                      {"message", "Expected only a text string."}}.dump();
+        const soui::runtime::desktop_request_context context{
+            request.session_id, request.origin, request.token, request.native_user_gesture};
+        const auto response = clipboard_.write_text(owner_window_.load(), context,
+                                                     params["text"].get_ref<const std::string&>());
+        if (!response.ok())
+          return json{{"error", response.code}, {"message", response.message}}.dump();
+        return R"({"applied":true})";
+      });
+  if (registered) capabilities_.emplace_back(method);
+  return registered;
+}
 void json_bridge::set_event_sink(event_sink sink) { tasks_.set_event_sink(std::move(sink)); }
-std::string json_bridge::handle_json(std::string_view request, bool) {
+std::string json_bridge::handle_json(std::string_view request, bool native_user_gesture) {
   if (request.empty() || request.size() > soui::runtime::bridge_transport::max_message_bytes)
     return error({},"E_LIMIT_MESSAGE_SIZE","Bridge message is too large.");
   std::string request_id;
@@ -78,7 +100,8 @@ std::string json_bridge::handle_json(std::string_view request, bool) {
     });
     if(!packet.is_object())return error({},"E_INVALID_PARAMS","Expected a JSON object.");
     request_id=packet.value("requestId",std::string{});
-    if(packet.value("method",std::string{}) != "bridge.bootstrap") return transport_.handle_json(request);
+    if(packet.value("method",std::string{}) != "bridge.bootstrap")
+      return transport_.handle_json(request, native_user_gesture);
     if(packet.size()!=6 || !packet.contains("requestId") || !packet.contains("sessionId") ||
        !packet.contains("origin") || !packet.contains("token") || !packet.contains("params") ||
        request_id.empty() || request_id.size()>512 ||

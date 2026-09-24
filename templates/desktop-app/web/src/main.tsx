@@ -15,6 +15,7 @@ function App(){
   const [taskId,setTaskId]=useState('');
   const [taskBusy,setTaskBusy]=useState(false);
   const [taskStatus,setTaskStatus]=useState('尚未启动');
+  const [clipboardStatus,setClipboardStatus]=useState('等待点击复制');
   useEffect(()=>{
     let active=true;
     void connectNative().then(async connected=>{
@@ -57,6 +58,13 @@ function App(){
     try{await client.call('task.cancel',{taskId});setTaskStatus('正在取消…');}
     catch(error){setTaskStatus(describeError(error));}
   }
+  async function copyText(){
+    if(!client)return;
+    try{
+      await client.call('desktop.clipboard.writeText',{text:'SOUI SDK 中文剪贴板验证'});
+      setClipboardStatus('已复制中文文本到系统剪贴板');
+    }catch(error){setClipboardStatus(describeError(error));}
+  }
   return <main><div className="eyebrow">SOUI SDK · DESKTOP STARTER</div><h1>SouiStarter</h1>
     <p className="intro">从这里开始构建你的桌面应用。</p><section><h2>{client?'原生服务已接入':'连接原生服务'}</h2>
       <p>页面通过 SDK 调用 C++，输入你的名字试一试。</p>
@@ -66,6 +74,9 @@ function App(){
       <div className="row"><button onClick={()=>void runTask()} disabled={!client||taskBusy}>开始计数</button>
         <button onClick={()=>void cancelTask()} disabled={!client||!taskBusy||!taskId}>取消任务</button></div>
       <div className="result" role="status">{taskStatus}</div></section>
+    <section><h2>公共桌面能力</h2><p>点击后由 SDK 写入系统剪贴板；原生侧验证窗口、权限和用户操作。</p>
+      <button onClick={()=>void copyText()} disabled={!client}>复制中文测试文本</button>
+      <div className="result" role="status">{clipboardStatus}</div></section>
     <footer>React 页面 · C++ 服务 · 离线桌面应用</footer></main>;
 }
 createRoot(document.getElementById('app')!).render(<App/>);

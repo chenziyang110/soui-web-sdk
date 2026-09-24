@@ -47,6 +47,14 @@ const result = await client.call('app.ping', {});
 
 新连接器默认的 `SouiCoreMethodMap` 声明 `json_bridge` 自带的 probe 与 `task.*` 方法。兼容构造器默认的 `SouiMethodMap` 仍对应工作台服务；业务工程可以传入自己的方法表。最小模板演示公共任务模块，不开放扫描或媒体权限。
 
+## 可选剪贴板模块
+
+在首次 `bridge.bootstrap` 前调用 `bridge.enable_clipboard_service()`；重复启用或 bootstrap 后启用返回 `false`。此操作只为当前 `json_bridge` 注册 `desktop.clipboard.writeText` 并给该文档会话授权。Host 挂载时传入 `host_config.owner_window`，卸载时撤销窗口引用。应用必须保持窗口有效，不能用空句柄代替。
+
+Web 方法类型为 `SouiClipboardMethodMap`，与 `SouiCoreMethodMap` 组合使用。页面在实际点击回调中直接调用 `client.call('desktop.clipboard.writeText', {text})`，成功返回 `{applied:true}`。原生 Host 在接收调用时记录引擎报告的用户手势；JSON 中的 `userGesture` 参数不会授予权限，并会被拒绝为 `E_INVALID_PARAMS`。缺少真实手势返回 `E_GESTURE_REQUIRED`，窗口失效或文本编码无效返回 `E_INVALID_ARGUMENT`，剪贴板占用或提交失败返回 `E_NATIVE_FAILURE`。文本为 UTF-8，受 Bridge 消息和参数大小限制。模板提供可点击的中文复制入口。
+
+该模块目前只有双架构编译、契约与参数拒绝测试；模板按钮、Win7 x86 真实写入读回、占用竞态及受限账户仍待独立验收。其他 V03 桌面能力仍未纳入此 opt-in 模块。
+
 ## 公共长任务
 
 应用在首次 bootstrap 前调用 `bridge.register_task_handler(kind, handler)`，在处理器中通过 `task_control::report_progress(0..100, message)` 报告进度、定期检查 `cancellation_requested()` 并返回 `task_outcome`。处理器运行在 SDK 的后台工作线程，不能直接修改窗口控件。模板的 `app.count` 展示完整调用。页面以 `client.call('task.start', {kind, operationId, input})` 启动，随后以 `task.query` 读取状态、`client.subscribe(taskId, 'task.progress', listener)` 订阅进度，必要时调用 `task.cancel`，最后等待 `unsubscribe()` 确认。`task.start` 要求三个字段且 `input` 为对象；`kind` 和 `operationId` 只能包含 ASCII 字母、数字、连字符、下划线、点和冒号，长度为 1–128。

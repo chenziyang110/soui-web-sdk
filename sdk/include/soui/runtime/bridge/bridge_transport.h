@@ -20,6 +20,8 @@ struct bridge_request {
   std::string params_json;
   std::string operation_id;
   std::uint32_t timeout_ms{10000};
+  // Set only by the native host at the JS binding; never parsed from JSON.
+  bool native_user_gesture{false};
 };
 
 struct bridge_response {
@@ -64,7 +66,8 @@ class bridge_transport {
       : registry_{registry}, permissions_{permissions} {}
 
   [[nodiscard]] bridge_response handle(const bridge_request& request) const;
-  [[nodiscard]] std::string handle_json(std::string_view json_text) const;
+  [[nodiscard]] std::string handle_json(std::string_view json_text,
+                                        bool native_user_gesture = false) const;
 
  private:
   [[nodiscard]] bridge_response validate(const bridge_request& request) const;
