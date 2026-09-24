@@ -26,3 +26,5 @@ $env:BENCHMARK_INPUT_TRACE_EXE = (Resolve-Path out/benchmark-sampler/Release/Inp
 node --test tests/benchmark/input-trace.test.cjs
 out/benchmark-sampler/Release/InputTrace.exe <宿主PID> S01 <新的绝对结果路径> full
 ```
+
+一轮宿主正常退出后，用 `node benchmarks/protocol/check-run-traces.cjs S01 <input-trace.ndjson> <process-tree.ndjson>` 复核两份原始轨迹。检查要求完整时长、相同 PID/进程创建时间、输入落在采样区间内、连续完整的资源样本、宿主退出码 0，并拒绝短探针和超时。当前 S03 一律拒绝，直到补上真实 IME composition 证据链；单改轨迹里的布尔字段不能证明输入法路径。该检查不读取页面结果，也不测物理呈现；必须再运行页面配对检查，并补足散列、运行顺序、重复次数与呈现追踪。
