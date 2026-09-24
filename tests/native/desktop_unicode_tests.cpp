@@ -1,5 +1,6 @@
 #include <runtime/services/desktop/unicode_conversion.h>
 #include <soui/runtime/services/desktop/desktop_services.h>
+#include <soui/runtime/services/desktop/window_commands.h>
 #include <soui/runtime/services/permissions/permission_store.h>
 
 #include <iostream>
@@ -81,6 +82,60 @@ void test_clipboard_round_trip() {
   DestroyWindow(owner);
   require(matches, "Clipboard Unicode text differs from the input");
 }
+
+LRESULT CALLBACK test_window_proc(HWND window, UINT message, WPARAM first, LPARAM second) {
+  if (message == soui::runtime::window_command_message)
+    return soui::runtime::execute_window_command(
+        window, static_cast<soui::runtime::window_command>(first)) ? 1 : 0;
+  return DefWindowProcW(window, message, first, second);
+}
+
+void test_window_round_trip() {
+  const HINSTANCE module = GetModuleHandleW(nullptr);
+  constexpr const wchar_t* class_name = L"SouiSdkWindowRoundTrip";
+  WNDCLASSW kind{};
+  kind.lpfnWndProc = test_window_proc;
+  kind.hInstance = module;
+  kind.lpszClassName = class_name;
+  require(RegisterClassW(&kind) != 0, "Cannot register the test window class");
+  const HWND owner = CreateWindowExW(0, class_name, L"Original", WS_OVERLAPPEDWINDOW,
+                                      0, 0, 320, 240, nullptr, nullptr, module, nullptr);
+  require(owner != nullptr, "Cannot create the test window");
+  soui::runtime::permission_store permissions;
+  const auto token = permissions.issue("session", "app://desktop-test",
+                                       {"desktop.window.setTitle", "desktop.window.minimize",
+                                        "desktop.window.toggleMaximize", "desktop.window.close"});
+  const soui::runtime::desktop_request_context gesture{"session", "app://desktop-test", token, true};
+  const soui::runtime::desktop_request_context no_gesture{"session", "app://desktop-test", token, false};
+  const soui::runtime::window_service windows(permissions);
+  require(windows.set_title(owner, no_gesture, u8"窗口验证").ok(),
+          "Public window title update failed");
+  wchar_t title[64]{};
+  require(GetWindowTextW(owner, title, 64) > 0 && std::wstring(title) == L"窗口验证",
+          "Public window title differs from the input");
+  const auto denied = windows.minimize(owner, no_gesture);
+  require(!denied.ok() && denied.code == "E_GESTURE_REQUIRED",
+          "Window minimize must reject a missing native gesture");
+  ShowWindow(owner, SW_SHOWNA);
+  require(windows.minimize(owner, gesture).ok() && IsIconic(owner),
+          "Public window minimize did not update the owner window");
+  require(windows.toggle_maximize(owner, gesture).ok() && IsZoomed(owner),
+          "Public window maximize did not update the owner window");
+  require(windows.toggle_maximize(owner, gesture).ok() && !IsZoomed(owner),
+          "Public window restore did not update the owner window");
+  require(windows.close(owner, gesture).ok(), "Public window close was not accepted");
+  MSG message{};
+  const ULONGLONG deadline = GetTickCount64() + 1000;
+  while (IsWindow(owner) && GetTickCount64() < deadline) {
+    while (PeekMessageW(&message, owner, 0, 0, PM_REMOVE)) {
+      TranslateMessage(&message);
+      DispatchMessageW(&message);
+    }
+    Sleep(1);
+  }
+  require(!IsWindow(owner), "Public window close did not destroy its owner");
+  require(UnregisterClassW(class_name, module) != FALSE, "Cannot release the test window class");
+}
 }  // namespace
 
 int main(int argc, char** argv) {
@@ -89,6 +144,10 @@ int main(int argc, char** argv) {
     test_empty_and_invalid_inputs();
     test_public_services_reject_malformed_text_before_native_io();
     if (argc == 2 && std::string(argv[1]) == "--clipboard-roundtrip") test_clipboard_round_trip();
+    else if (argc == 2 && std::string(argv[1]) == "--desktop-roundtrip") {
+      test_clipboard_round_trip();
+      test_window_round_trip();
+    }
     else if (argc != 1) throw std::runtime_error("Unknown desktop Unicode test argument");
     std::cout << "desktop unicode conversion passed\n";
     return 0;
