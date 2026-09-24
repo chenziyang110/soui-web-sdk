@@ -1,0 +1,62 @@
+{
+  "schema": "soui.kernel-dynamic-import-observation/v1",
+  "observedAt": "2026-09-24T20:04:13.4339496+00:00",
+  "tool": "llvm-readobj --coff-imports",
+  "toolVersion": "LLVM version 22.1.8",
+  "scope": "Direct PE import directory names only; excludes statically linked code, delay-load/runtime-loaded libraries and redistribution terms",
+  "releaseReady": false,
+  "binaries": [
+    {
+      "architecture": "x86",
+      "path": "third_party/prebuilt/x86/miniblink/node.dll",
+      "bytes": 22976000,
+      "sha256": "3B9071413F704958FB5708B8BB065785A6C3ED03B7FD0FB04F5952201E5FE4F7",
+      "importedDllNames": [
+        "OPENGL32.dll",
+        "WINMM.dll",
+        "WS2_32.dll",
+        "USP10.dll",
+        "SHLWAPI.dll",
+        "VERSION.dll",
+        "IMM32.dll",
+        "KERNEL32.dll",
+        "USER32.dll",
+        "GDI32.dll",
+        "COMDLG32.dll",
+        "ADVAPI32.dll",
+        "SHELL32.dll",
+        "ole32.dll",
+        "IPHLPAPI.DLL",
+        "USERENV.dll",
+        "PSAPI.DLL"
+      ]
+    },
+    {
+      "architecture": "x64",
+      "path": "third_party/prebuilt/x64/miniblink/node.dll",
+      "bytes": 35853824,
+      "sha256": "0801AA929336168C851DF4A3F245F5984A88BD01AF585AEA752404FA07774816",
+      "importedDllNames": [
+        "OPENGL32.dll",
+        "VERSION.dll",
+        "ADVAPI32.dll",
+        "IMM32.dll",
+        "WINMM.dll",
+        "WS2_32.dll",
+        "USP10.dll",
+        "SHLWAPI.dll",
+        "WININET.dll",
+        "gdiplus.dll",
+        "KERNEL32.dll",
+        "USER32.dll",
+        "GDI32.dll",
+        "COMDLG32.dll",
+        "SHELL32.dll",
+        "ole32.dll",
+        "IPHLPAPI.DLL",
+        "USERENV.dll",
+        "PSAPI.DLL"
+      ]
+    }
+  ]
+}

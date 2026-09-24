@@ -13,6 +13,8 @@
 | HTTP 源码 | `third_party/sources/miniblink/third_party/libcurl/include/curl/curlver.h` | 版本标记为 libcurl 7.61.1；网络配置及错误路径需要独立真实测试 |
 | 精确二进制授权 | `third_party/manifests/license-review.json` | 现有状态是 `unverified`，已重新绑定 preview.4 固定 DLL；完整链接组成与再分发要求仍须维护者审阅 |
 
+[两架构固定 DLL 的直接 PE 导入记录](../../verification/production-validation/kernel-imports-2026-09-25/README.md)已与待审阅散列核对：x86 为 17 个、x64 为 19 个直接导入 DLL 名称。它只补足动态导入这一层的机械证据，不覆盖静态链接、延迟/运行时加载，也不改变二进制授权 `unverified` 状态。
+
 OpenSSL 官方将 1.0.2 列为已结束常规支持的分支，另有扩展支持渠道。当前项目没有扩展支持或完整安全补丁覆盖的证据，因此不能把“能自行编译”解释为“有持续安全维护”。[OpenSSL 发布策略](https://openssl-library.org/policies/releasestrat/)（访问日期：2026-09-22）
 
 ## 阻止生产放行的缺口
