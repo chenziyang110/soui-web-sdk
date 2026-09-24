@@ -18,6 +18,7 @@ class json_bridge final : public bridge_adapter {
   bool register_contextual_method(std::string name, std::string capability,
                                   soui::runtime::capability_registry::contextual_handler handler);
   bool register_task_handler(std::string kind, soui::runtime::task_service::handler handler);
+  bool enable_directory_service();
   bool enable_clipboard_service();
   bool enable_window_service();
   std::string handle_json(std::string_view request, bool native_user_gesture = false) override;
@@ -28,6 +29,7 @@ class json_bridge final : public bridge_adapter {
  private:
   std::string origin_;
   soui::runtime::permission_store permissions_;
+  soui::runtime::directory_picker directory_{permissions_};
   soui::runtime::clipboard_service clipboard_{permissions_};
   soui::runtime::window_service windows_{permissions_};
   soui::runtime::capability_registry registry_;

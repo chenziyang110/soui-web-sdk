@@ -29,7 +29,7 @@
 | V02-02 中文输入与 resize | Host 输入/坐标/呈现 | 已实现待验收；无本轮完整实机结果 | 组合输入、候选框、光标、连续缩放、任务期间输入和滚动 |
 | V02-03 后台效率 | Host 显示状态与调度 | 已实现待验收；无候选性能结论 | 可见空闲、最小化、恢复、CPU 与帧间隔；GPU/CPU 路径分别登记 |
 | V03-01 窗口操作 | SDK `json_bridge.enable_window_service()` 显式注册五项公共窗口方法；模板接入窗口消息与可见按钮 | 已实现待验收：x86/x64 SDK/模板编译、Web 类型检查及无窗口契约、仓库外安装消费者通过；跨线程 `setTitle` 现最多等待 250 ms 的窗口线程确认，超时后的最终效果在已开始执行时仍可能未知；[Win7 x86 停滞短测](../../verification/production-validation/win7-sp1-x86-qemu-title-timeout-2026-09-25/README.md)仅已冻结，尚未运行 | 真实窗口点击、状态事件、关闭中重复请求、线程挂起/超时、Win7 x86 与多窗口隔离 |
-| V03-02 对话框 | SDK 有 `directory_picker`，注册/部分服务仍在 Demo | 部分实现；目录路径 Unicode 转换已修复并通过 x86/x64 原生边界测试 | 公共文件/目录选择的真实 UI、用户取消、受限账户、Owner 与线程归属 |
+| V03-02 对话框 | SDK `directory_picker` 与可选 `json_bridge.enable_directory_service()`；模板提供目录选择按钮，Demo 扫描根令牌仍由 Demo 业务侧注册 | 已实现待验收：x86/x64 SDK、模板编译、仓库外消费者和无窗口契约通过，覆盖假手势、无效窗口及 MTA 拒绝；尚未运行真实目录对话框 | 公共文件/目录选择的真实 UI、取消、中文路径、受限账户、关闭/导航竞态、Win7 x86；Demo 业务令牌不得由页面路径伪造 |
 | V03-03 剪贴板 | SDK `json_bridge.enable_clipboard_service()` 显式注册 `desktop.clipboard.writeText`；模板启用并提供按钮 | 已实现待验收：x86/x64 SDK 与模板编译、Web 类型检查及构建、原生契约中的假手势/缺手势/缺窗口拒绝通过；尚未真实点击或写入读回 | Win7 客体真实按钮/写入读回、占用失败、Unicode、大文本、受限账户与关闭竞态 |
 | V03-04 屏幕与外部打开 | 公共 screen/shell 模块 | 待完成统一公共契约及消费者 | 混合 DPI、多屏移动/断连、URL/路径校验与操作结果 |
 | V04-01 三窗口独立工作 | 进程 Runtime + 各窗口 Host/Bridge/session | 通过当前范围：preview.4 固定包 x64/x86 各 1,000 轮正常退出，关闭中间窗、另两窗重载和中间窗重建 | 资源所有权、任务和事件并存时关闭隔离；目标 32 位与旧版 Windows 实机 |

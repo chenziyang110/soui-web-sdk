@@ -16,6 +16,7 @@ function App(){
   const [taskBusy,setTaskBusy]=useState(false);
   const [taskStatus,setTaskStatus]=useState('尚未启动');
   const [clipboardStatus,setClipboardStatus]=useState('等待点击复制');
+  const [directoryStatus,setDirectoryStatus]=useState('等待选择目录');
   const [windowTitle,setWindowTitle]=useState('SouiStarter');
   const [windowStatus,setWindowStatus]=useState('可修改原生窗口');
   useEffect(()=>{
@@ -67,6 +68,13 @@ function App(){
       setClipboardStatus('已复制中文文本到系统剪贴板');
     }catch(error){setClipboardStatus(describeError(error));}
   }
+  async function pickDirectory(){
+    if(!client)return;
+    try{
+      const result=await client.call('desktop.dialog.pickDirectory',{});
+      setDirectoryStatus(result.cancelled?'已取消选择':`已选择：${result.path}`);
+    }catch(error){setDirectoryStatus(describeError(error));}
+  }
   async function updateWindowTitle(){
     if(!client)return;
     try{await client.call('desktop.window.setTitle',{title:windowTitle});setWindowStatus('窗口标题已更新');}
@@ -100,7 +108,9 @@ function App(){
       <div className="row"><button onClick={()=>void toggleWindowMaximize()} disabled={!client}>最大化或还原</button>
         <button onClick={()=>void minimizeWindow()} disabled={!client}>最小化</button></div>
       <div className="result" role="status">{windowStatus}</div></section>
-    <section><h2>公共桌面能力</h2><p>点击后由 SDK 写入系统剪贴板；原生侧验证窗口、权限和用户操作。</p>
+    <section><h2>公共桌面能力</h2><p>点击后由 SDK 打开目录选择器或写入系统剪贴板；原生侧验证窗口、权限和用户操作。</p>
+      <button onClick={()=>void pickDirectory()} disabled={!client}>选择目录</button>
+      <div className="result" role="status">{directoryStatus}</div>
       <button onClick={()=>void copyText()} disabled={!client}>复制中文测试文本</button>
       <div className="result" role="status">{clipboardStatus}</div></section>
     <footer>React 页面 · C++ 服务 · 离线桌面应用</footer></main>;

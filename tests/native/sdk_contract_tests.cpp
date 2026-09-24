@@ -76,6 +76,34 @@ int main(){
     const auto no_owner=json::parse(desktop.handle_json(copy.dump(),true));
     require(!no_owner.at("ok").get<bool>() && no_owner.at("error").at("code")=="E_INVALID_ARGUMENT",
             "native gesture must reach the public service without inventing an owner window");
+    soui::sdk::json_bridge directory_bridge("app://test");
+    require(directory_bridge.enable_directory_service() && !directory_bridge.enable_directory_service(),
+            "public directory service must opt in exactly once");
+    const auto directory_boot=json::parse(directory_bridge.handle_json(bootstrap.dump()));
+    require(directory_boot.at("ok").get<bool>() && !directory_bridge.enable_directory_service(),
+            "directory registration must freeze after bootstrap");
+    const auto directory_auth=directory_boot.at("result");
+    auto directory_request=request;
+    directory_request["requestId"]="directory:1";
+    directory_request["sessionId"]=directory_auth.at("sessionId");
+    directory_request["origin"]=directory_auth.at("origin");
+    directory_request["token"]=directory_auth.at("token");
+    directory_request["method"]="desktop.dialog.pickDirectory";
+    directory_request["params"]=json::object();
+    auto directory_result=json::parse(directory_bridge.handle_json(directory_request.dump(),false));
+    require(!directory_result.at("ok").get<bool>() &&
+            directory_result.at("error").at("code")=="E_GESTURE_REQUIRED",
+            "directory picker requires a native user gesture");
+    directory_request["params"]={{"userGesture",true}};
+    directory_result=json::parse(directory_bridge.handle_json(directory_request.dump(),true));
+    require(!directory_result.at("ok").get<bool>() &&
+            directory_result.at("error").at("code")=="E_INVALID_PARAMS",
+            "directory picker rejects a forged JSON gesture");
+    directory_request["params"]=json::object();
+    directory_result=json::parse(directory_bridge.handle_json(directory_request.dump(),true));
+    require(!directory_result.at("ok").get<bool>() &&
+            directory_result.at("error").at("code")=="E_INVALID_ARGUMENT",
+            "directory picker rejects a missing owner before opening native UI");
     soui::sdk::json_bridge window_bridge("app://test");
     require(window_bridge.enable_window_service() && !window_bridge.enable_window_service(),
             "public window service must opt in exactly once");

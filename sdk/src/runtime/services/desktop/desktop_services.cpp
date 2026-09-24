@@ -12,6 +12,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
+#include <objbase.h>
 #include <shlobj.h>
 #pragma comment(lib, "shell32.lib")
 #pragma comment(lib, "ole32.lib")
@@ -120,6 +121,12 @@ desktop_response directory_picker::open(void* owner, const desktop_request_conte
   if (!gesture.ok()) return gesture;
 #ifdef _WIN32
   (void)initial_directory;
+  if (!owned_window(owner))
+    return denied("E_INVALID_ARGUMENT", "A live application window is required for the directory picker.");
+  const HRESULT com = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+  if (FAILED(com))
+    return denied("E_THREAD_APARTMENT", "The directory picker requires an STA thread.");
+  struct com_scope final { ~com_scope() { CoUninitialize(); } } apartment;
   BROWSEINFOW browse{};
   browse.hwndOwner = static_cast<HWND>(owner);
   browse.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;

@@ -2,6 +2,7 @@
 #include <soui/runtime/services/desktop/desktop_services.h>
 #include <soui/runtime/services/desktop/window_commands.h>
 #include <soui/runtime/services/permissions/permission_store.h>
+#include <objbase.h>
 
 #include <iostream>
 #include <atomic>
@@ -42,10 +43,12 @@ void test_empty_and_invalid_inputs() {
 void test_public_services_reject_malformed_text_before_native_io() {
   soui::runtime::permission_store permissions;
   const auto token = permissions.issue("session", "app://desktop-test",
-                                       {"desktop.window.setTitle", "desktop.clipboard.writeText"});
+                                       {"desktop.window.setTitle", "desktop.clipboard.writeText",
+                                        "desktop.dialog.pickDirectory"});
   const soui::runtime::desktop_request_context context{"session", "app://desktop-test", token, true};
   const soui::runtime::window_service windows(permissions);
   const soui::runtime::clipboard_service clipboard(permissions);
+  const soui::runtime::directory_picker picker(permissions);
   const std::string malformed("\xC3\x28", 2);
   const auto title = windows.set_title(reinterpret_cast<void*>(1), context, malformed);
   require(!title.ok() && title.code == "E_INVALID_ARGUMENT",
@@ -65,6 +68,25 @@ void test_public_services_reject_malformed_text_before_native_io() {
   const auto invalid_owner = clipboard.write_text(reinterpret_cast<void*>(1), context, "valid text");
   require(!invalid_owner.ok() && invalid_owner.code == "E_INVALID_ARGUMENT",
           "Clipboard write must reject an invalid HWND before opening the clipboard");
+  const auto invalid_dialog_owner = picker.open(reinterpret_cast<void*>(1), context);
+  require(!invalid_dialog_owner.ok() && invalid_dialog_owner.code == "E_INVALID_ARGUMENT",
+          "Directory picker must reject an invalid HWND before opening native UI");
+}
+
+void test_directory_picker_rejects_mta_without_opening_ui() {
+  const HRESULT apartment = CoInitializeEx(nullptr, COINIT_MULTITHREADED);
+  require(SUCCEEDED(apartment), "Cannot establish an MTA for the directory picker test");
+  const HWND owner = CreateWindowExW(0, L"STATIC", L"SOUI directory apartment test", 0,
+                                      0, 0, 1, 1, HWND_MESSAGE, nullptr, GetModuleHandleW(nullptr), nullptr);
+  if (!owner) { CoUninitialize(); throw std::runtime_error("Cannot create the directory test owner"); }
+  soui::runtime::permission_store permissions;
+  const auto token = permissions.issue("session", "app://desktop-test", {"desktop.dialog.pickDirectory"});
+  const soui::runtime::desktop_request_context context{"session", "app://desktop-test", token, true};
+  const auto result = soui::runtime::directory_picker(permissions).open(owner, context);
+  DestroyWindow(owner);
+  CoUninitialize();
+  require(!result.ok() && result.code == "E_THREAD_APARTMENT",
+          "Directory picker must reject MTA before opening native UI");
 }
 
 void test_clipboard_round_trip() {
@@ -210,6 +232,7 @@ int main(int argc, char** argv) {
     test_round_trip();
     test_empty_and_invalid_inputs();
     test_public_services_reject_malformed_text_before_native_io();
+    test_directory_picker_rejects_mta_without_opening_ui();
     if (argc == 2 && std::string(argv[1]) == "--clipboard-roundtrip") test_clipboard_round_trip();
     else if (argc == 2 && std::string(argv[1]) == "--desktop-roundtrip") {
       test_clipboard_round_trip();

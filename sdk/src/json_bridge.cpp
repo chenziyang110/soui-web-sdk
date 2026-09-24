@@ -71,6 +71,26 @@ bool json_bridge::register_task_handler(std::string kind, soui::runtime::task_se
   std::lock_guard<std::mutex> lock(mutex_);
   return !registration_closed_ && tasks_.register_handler(std::move(kind), std::move(handler));
 }
+bool json_bridge::enable_directory_service() {
+  std::lock_guard<std::mutex> lock(mutex_);
+  constexpr const char* method = "desktop.dialog.pickDirectory";
+  if (registration_closed_ || registry_.contains(method)) return false;
+  const bool registered = registry_.register_contextual_method(method, method,
+      [this](const soui::runtime::bridge_request& request) -> std::string {
+        const auto params = json::parse(request.params_json, nullptr, false);
+        if (!params.is_object() || !params.empty())
+          return payload_error("E_INVALID_PARAMS", "This dialog method takes no parameters.");
+        const soui::runtime::desktop_request_context context{
+            request.session_id, request.origin, request.token, request.native_user_gesture};
+        const auto response = directory_.open(owner_window_.load(), context);
+        if (response.kind == soui::runtime::result_kind::user_cancelled)
+          return R"({"cancelled":true,"path":""})";
+        if (!response.ok()) return payload_error(response.code, response.message);
+        return json{{"cancelled", false}, {"path", response.value}}.dump();
+      });
+  if (registered) capabilities_.emplace_back(method);
+  return registered;
+}
 bool json_bridge::enable_clipboard_service() {
   std::lock_guard<std::mutex> lock(mutex_);
   constexpr const char* method = "desktop.clipboard.writeText";

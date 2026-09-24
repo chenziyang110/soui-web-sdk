@@ -49,6 +49,11 @@ export interface SouiClipboardMethodMap {
   'desktop.clipboard.writeText': { params: { text: string }; result: { applied: true } };
 }
 
+/** Optional directory picker installed by json_bridge::enable_directory_service(). */
+export interface SouiDirectoryMethodMap {
+  'desktop.dialog.pickDirectory': { params: {}; result: { cancelled: boolean; path: string } };
+}
+
 /** Optional window capability installed by json_bridge::enable_window_service(). */
 export interface SouiWindowMethodMap {
   'desktop.window.setTitle': { params: { title: string }; result: { applied: true } };

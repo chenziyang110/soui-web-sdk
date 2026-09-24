@@ -88,6 +88,7 @@ int run(HINSTANCE instance,bool smoke) {
   app.AddResProvider(resources);
 
   soui::sdk::json_bridge bridge("app://starter");
+  if(!bridge.enable_directory_service())return 10;
   if(!bridge.enable_clipboard_service())return 8;
   if(!bridge.enable_window_service())return 9;
   (void)bridge.register_method("app.greet","app.greet",[](std::string_view params) {
