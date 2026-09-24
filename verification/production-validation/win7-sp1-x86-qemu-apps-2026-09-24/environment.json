@@ -1,0 +1,56 @@
+{
+  "schema": "soui.win7-x86-qemu-apps-validation/v1",
+  "date": "2026-09-24",
+  "guest": {
+    "caption": "Microsoft Windows 7 Enterprise",
+    "version": "6.1.7601",
+    "servicePackMajorVersion": 1,
+    "architecture": "32-bit",
+    "network": "none",
+    "applicationFileSystem": "guest C: NTFS"
+  },
+  "hypervisor": {
+    "name": "QEMU",
+    "version": "11.1.0",
+    "binarySha256": "DBBF7242E5B0D295E54336C69034A266EE1CC117D7AC6E3060E38BB61651200B",
+    "machine": "pc",
+    "accelerator": "tcg",
+    "cpu": "core2duo",
+    "virtualCpus": 2,
+    "memoryMiB": 2048,
+    "display": "std VGA",
+    "transfer": "ZIPs on QEMU vvfat E:, extracted to guest C: NTFS; result files exported over COM1"
+  },
+  "installer": {
+    "image": "Windows 7 Enterprise with SP1 x86 zh-CN",
+    "isoSha256": "BB62560314372343C8221D3BCF3039E66197E1394158CA99FE005D084A0A59A6"
+  },
+  "candidate": {
+    "version": "0.3.0-preview.4",
+    "architecture": "x86",
+    "configuration": "Release",
+    "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+    "buildId": "1bd8a83f-4707-4e6e-9f73-6dd6fc70152f",
+    "starterExeSha256": "EEFEC4030ECAF5545D5232A23FE004A96A78F57D0EECA63101D24C83DBEF8C04",
+    "workbenchExeSha256": "E1D8E7689DFD5103543642F601BB4436E90F9F01A38039459FDB017F2A76DF29",
+    "souiDllSha256": "1EA0FF009B1EA6B513EE94A252BE059A9A755DF75A67043B25FF2F5394F040DE",
+    "webEngineDllSha256": "3B9071413F704958FB5708B8BB065785A6C3ED03B7FD0FB04F5952201E5FE4F7"
+  },
+  "transfer": {
+    "starterZipSha256": "595EB2170176A417E22A49674A006AC9DB2F64D737F75132A683F2FB11E38E97",
+    "workbenchZipSha256": "7CD01F92494B9DCB4C1036C1A1C8DB2AFA898EB5298FBF1BA8B98BD96D3573FA",
+    "extractor": "7-Zip 19.00 Extra, x86 7za.exe",
+    "extractorSha256": "EA308C76A2F927B160A143D94072B0DCE232E04B751F0C6432A94E05164E716D",
+    "starterFiles": 68,
+    "workbenchFiles": 473,
+    "unicodeFixtureNamesPreserved": true
+  },
+  "run": {
+    "scenarios": ["starter-smoke", "workbench-default-smoke", "workbench-react-smoke"],
+    "serialFilesVerified": 24,
+    "visibleModes": ["workbench-default", "workbench-react"],
+    "result": "short-smoke-passed",
+    "resourceGate": "not-evaluated",
+    "releaseReady": false
+  }
+}
