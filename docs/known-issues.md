@@ -7,7 +7,7 @@
 | x64 重载内存与关闭稳定性 | 独立消费者已复现并修复逐窗口初始化导致的重建崩溃/多窗口挂起；100 次重载操作通过，资源和长期稳定门槛仍未关闭，见 [本轮记录](acceptance/lifecycle.md) |
 | 资源部署改名失败 | 本轮 x86 构建有一次 `EPERM`；旧资源恢复、未改源码重试及后续启动通过，失败日志保留，具体占用原因未确认 |
 | x86 公共连接器 ABI | 已修正交付动态绑定头中 54 个 `bool`/`BOOL` 返回类型不一致；preview.4 x86 软件路径四模式各 1,000 轮正常退出。[preview.5 Win7 SP1 x86 QEMU 公共消费者四模式](../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)各 3 轮通过，[三应用入口](../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)也短测通过。preview.5 x86 Bridge 千次循环两次超时，完整资源门槛、物理目标机和业务链仍缺失 |
-| preview.5 x86 Bridge 长循环超时 | [独立公共消费者复测](../verification/production-validation/preview5-lifecycle-2026-09-24/README.md)的目标 1,000 轮两次分别在第 86、977 轮挂载阶段由监督器终止；同载荷 100 轮复测通过。两次失败都与其他 QEMU 负载重叠，但根因未确定；受控复现、原生线程栈和监督器读日志状态缺失。此项阻止生产准入 |
+| preview.5 x86 Bridge 长循环超时 | [独立公共消费者复测](../verification/production-validation/preview5-lifecycle-2026-09-24/README.md)的目标 1,000 轮两次分别在第 86、977 轮挂载阶段由监督器终止；同载荷另三次诊断跑满。两次失败与其他 QEMU 负载重叠，但自有 QEMU 快照并行的诊断也跑满，不能据此认定因果。未抓到停滞原生线程栈和监督器读日志状态，根因未确定。此项阻止生产准入 |
 | 反复销毁重建后的资源累积 | 已修补 ToolTip、拖拽 HRGN、线程唤醒事件三处遗漏；preview.4 固定包两架构软件路径重载、销毁重建和三窗口各 1,000 轮正常退出。内存/句柄有回收波动，两架构三窗口分段内存中位数总体上升；资源所有权、GPU 和 8 小时门槛未通过，见[生命周期记录](acceptance/lifecycle.md) |
 | 公共任务表背压 | preview.5 在 1,024 条任务全未结束时拒绝新任务，文件扫描与 Workbench 返回 `E_BUSY`；x86/x64 原生边界、并发、取消及扫描错误传播测试通过。仍需直接公共服务消费、真实排队超时、关窗竞态及 Win7 上此版本的完整业务验证，不能把这一局部修复当作公共任务能力整体通过 |
 | Electron 流畅性对标 | 尚无完整同负载、实机输入、长期帧延迟的等价验收，不能宣称追平 |

@@ -156,4 +156,4 @@ x64 候选 `2ed34e54c26fe074e020cee6d179ba2330dff7865db6fb3b75df039f4c69e565` �
 
 ## preview.5 x86 固定包长循环复测
 
-2026-09-24 的 [preview.5 x86 固定包复测](../../verification/production-validation/preview5-lifecycle-2026-09-24/README.md)在独立公共消费者上完成 3 次预热加 100 次、每轮静置 1 秒的重载，exit 0；Private Bytes 从 37,027,840 增至 44,335,104 字节，末点增量低于 16 MiB 数值线。另两次 Bridge 100 轮正常退出。然而目标 1,000 轮 Bridge 两次分别在第 86、977 轮挂载阶段超时并由监督器终止，没有任何一次完成。此失败属于当前候选，不能沿用 preview.4 的 1,000 轮通过结果。当前 `resourceGate: not-evaluated`、`releaseReady: false`；受控复现和原生线程栈诊断仍待执行。
+2026-09-24 的 [preview.5 x86 固定包复测](../../verification/production-validation/preview5-lifecycle-2026-09-24/README.md)在独立公共消费者上完成 3 次预热加 100 次、每轮静置 1 秒的重载，exit 0；Private Bytes 从 37,027,840 增至 44,335,104 字节，末点增量低于 16 MiB 数值线。另两次 Bridge 100 轮正常退出。目标 1,000 轮 Bridge 两次分别在第 86、977 轮挂载阶段超时并由监督器终止；后续同载荷三次诊断跑满，但未复现、未抓到停滞线程栈。此失败属于当前候选，不能沿用 preview.4 的通过结果或用成功诊断覆盖。三次诊断的每百轮 Private Bytes 中位数从约 80 MiB 升至约 93–95 MiB，资源所有权仍需分析。当前 `resourceGate: not-evaluated`、`releaseReady: false`。

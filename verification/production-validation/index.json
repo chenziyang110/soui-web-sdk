@@ -1565,8 +1565,10 @@
       "platform": "Windows 11 x64 host, x86 public SDK consumer",
       "reload100Passed": true,
       "bridge100Passed": true,
-      "bridge1000Attempts": 2,
-      "bridge1000Passed": false,
+      "bridge1000Attempts": 5,
+      "bridge1000Passes": 3,
+      "bridge1000Failures": 2,
+      "productionLifecycleGate": "failed",
       "resourceGate": "not-evaluated",
       "releaseReady": false
     }
