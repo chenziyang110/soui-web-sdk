@@ -45,17 +45,48 @@ void test_public_services_reject_malformed_text_before_native_io() {
   const auto title = windows.set_title(reinterpret_cast<void*>(1), context, malformed);
   require(!title.ok() && title.code == "E_INVALID_ARGUMENT",
           "A malformed UTF-8 title must fail before touching an HWND");
-  const auto copied = clipboard.write_text(context, malformed);
+  const auto copied = clipboard.write_text(reinterpret_cast<void*>(1), context, malformed);
   require(!copied.ok() && copied.code == "E_INVALID_ARGUMENT",
-          "Malformed UTF-8 must not clear or replace the clipboard");
+          "Malformed UTF-8 must be rejected before clipboard work");
+  const auto missing_owner = clipboard.write_text(nullptr, context, "valid text");
+  require(!missing_owner.ok() && missing_owner.code == "E_INVALID_ARGUMENT",
+          "Clipboard write must reject a missing owner before opening the clipboard");
+  const auto invalid_owner = clipboard.write_text(reinterpret_cast<void*>(1), context, "valid text");
+  require(!invalid_owner.ok() && invalid_owner.code == "E_INVALID_ARGUMENT",
+          "Clipboard write must reject an invalid HWND before opening the clipboard");
+}
+
+void test_clipboard_round_trip() {
+  const HWND owner = CreateWindowExW(0, L"STATIC", L"SOUI clipboard test", WS_POPUP,
+                                     0, 0, 1, 1, nullptr, nullptr, GetModuleHandleW(nullptr), nullptr);
+  require(owner != nullptr, "Cannot create the clipboard owner window");
+  soui::runtime::permission_store permissions;
+  const auto token = permissions.issue("session", "app://desktop-test",
+                                       {"desktop.clipboard.writeText"});
+  const soui::runtime::desktop_request_context context{"session", "app://desktop-test", token, true};
+  const soui::runtime::clipboard_service clipboard(permissions);
+  const auto result = clipboard.write_text(owner, context, u8"剪贴板验证");
+  require(result.ok(), "Public clipboard service must commit Unicode text with a live owner");
+  require(OpenClipboard(owner) != FALSE, "Cannot reopen the clipboard for verification");
+  const HANDLE data = GetClipboardData(CF_UNICODETEXT);
+  require(data != nullptr, "Clipboard contains no Unicode text");
+  const auto* value = static_cast<const wchar_t*>(GlobalLock(data));
+  require(value != nullptr, "Cannot lock clipboard text");
+  const bool matches = std::wstring(value) == L"剪贴板验证";
+  GlobalUnlock(data);
+  CloseClipboard();
+  DestroyWindow(owner);
+  require(matches, "Clipboard Unicode text differs from the input");
 }
 }  // namespace
 
-int main() {
+int main(int argc, char** argv) {
   try {
     test_round_trip();
     test_empty_and_invalid_inputs();
     test_public_services_reject_malformed_text_before_native_io();
+    if (argc == 2 && std::string(argv[1]) == "--clipboard-roundtrip") test_clipboard_round_trip();
+    else if (argc != 1) throw std::runtime_error("Unknown desktop Unicode test argument");
     std::cout << "desktop unicode conversion passed\n";
     return 0;
   } catch (const std::exception& error) {

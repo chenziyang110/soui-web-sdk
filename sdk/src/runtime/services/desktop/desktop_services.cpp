@@ -182,7 +182,7 @@ desktop_response window_service::set_foreground(void* window,
 #endif
 }
 
-desktop_response clipboard_service::write_text(const desktop_request_context& context,
+desktop_response clipboard_service::write_text(void* owner, const desktop_request_context& context,
                                                const std::string& text) const {
   const auto capability = require_capability(permissions_, context, "desktop.clipboard.writeText");
   if (!capability.ok()) return capability;
@@ -191,21 +191,28 @@ desktop_response clipboard_service::write_text(const desktop_request_context& co
 #ifdef _WIN32
   const auto wide_text = detail::utf8_to_wide(text);
   if (!wide_text) return denied("E_INVALID_ARGUMENT", "Clipboard text must be valid UTF-8 text.");
-  if (!OpenClipboard(nullptr)) return denied("E_NATIVE_FAILURE", "The clipboard is busy.");
+  const auto window = static_cast<HWND>(owner);
+  DWORD process_id = 0;
+  if (window == nullptr || !IsWindow(window) ||
+      GetWindowThreadProcessId(window, &process_id) == 0 ||
+      process_id != GetCurrentProcessId())
+    return denied("E_INVALID_ARGUMENT", "A live application window is required for clipboard ownership.");
   const SIZE_T bytes = (wide_text->size() + 1U) * sizeof(wchar_t);
   HGLOBAL memory = GlobalAlloc(GMEM_MOVEABLE, bytes);
   if (memory == nullptr) {
-    CloseClipboard();
     return denied("E_NATIVE_FAILURE", "Clipboard memory could not be allocated.");
   }
   void* target = GlobalLock(memory);
   if (target == nullptr) {
     GlobalFree(memory);
-    CloseClipboard();
     return denied("E_NATIVE_FAILURE", "Clipboard memory could not be locked.");
   }
   std::memcpy(target, wide_text->c_str(), bytes);
   GlobalUnlock(memory);
+  if (!OpenClipboard(window)) {
+    GlobalFree(memory);
+    return denied("E_NATIVE_FAILURE", "The clipboard is busy.");
+  }
   if (!EmptyClipboard() || SetClipboardData(CF_UNICODETEXT, memory) == nullptr) {
     GlobalFree(memory);
     CloseClipboard();
@@ -214,6 +221,7 @@ desktop_response clipboard_service::write_text(const desktop_request_context& co
   CloseClipboard();
   return {result_kind::success, {}, {}, {}};
 #else
+  (void)owner;
   (void)text;
   return denied("E_UNSUPPORTED", "Clipboard services are available on Windows hosts only.");
 #endif

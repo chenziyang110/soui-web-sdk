@@ -2099,7 +2099,7 @@ void demo_bridge_adapter::register_methods() {
         soui::runtime::desktop_request_context context{
             string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"),
             bool_param(value, "userGesture")};
-        const auto response = clipboard_.write_text(context, string_param(value, "text"));
+        const auto response = clipboard_.write_text(owner_window_, context, string_param(value, "text"));
         if (!response.ok()) return payload_error(response.code, response.message);
         return "{\"applied\":true}";
       });
