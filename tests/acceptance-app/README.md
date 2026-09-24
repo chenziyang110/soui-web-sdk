@@ -20,7 +20,7 @@ powershell.exe -File tools/Test-Acceptance.ps1 -Architecture x64 -Scenario all -
 
 混合模式改用单调时长及空闲间隔，不接受 `-Cycles`/`-Warmup`。先用 `-Scenario mixed -DurationMs 60000 -IdleMs 10000` 短测；8 小时请求使用 `-DurationMs 28800000`。监督器要求总时长、每轮步骤和空闲区间完整，始终输出 `longRunGate: not-evaluated`，直到另行审查分时资源与响应指标。完成后可用 `node tests/acceptance/mixed-analysis.cjs <result.json> <analysis.json>` 重新核对原始事件散列并按小时汇总资源和操作耗时；分析报告本身仍不放行。长测应使用隔离且指纹固定的源码/SDK/消费者/内核/运行载荷，避免开发树变化导致结果身份漂移。
 
-每个 suite 的 `consumer-source/` 保存实际编译的独立消费者源码，`kernel-input/node.dll` 保存本次测试的内核输入。v3 还复制同次构建的公共 Web SDK 到 `web-sdk/`，使用 `tests/acceptance` 自己锁定的 Vite/legacy 工具链生成 `web-output/`；C++ 仍只引用安装的公共 SDK。构建和运行前后核对消费者、Web SDK、Web 输出、原生安装与最终载荷。默认使用固定 prebuilt；测试新编译内核时可显式指定 `-RuntimeBinary out/dependencies/x64/miniblink/bin/miniblink.dll`。候选只复制到新 suite 并记录为 `explicit-candidate`，不会替换固定依赖。旧 v1/v2 记录继续保留为历史证据，新的运行需要重新构建 v3 suite。
+每个 suite 的 `consumer-source/` 保存实际编译的独立消费者源码，`kernel-input/node.dll` 保存本次测试的内核输入。v3 还复制同次构建的公共 Web SDK 到 `web-sdk/`，先使用固定 TypeScript 版本对该 SDK 的声明文件执行严格类型检查，再用固定 Vite/legacy 工具链生成 `web-output/`；`web-build.json` 记录类型检查版本、配置和日志散列，运行前复核。C++ 仍只引用安装的公共 SDK。构建和运行前后核对消费者、Web SDK、Web 输出、原生安装与最终载荷。默认使用固定 prebuilt；测试新编译内核时可显式指定 `-RuntimeBinary out/dependencies/x64/miniblink/bin/miniblink.dll`。候选只复制到新 suite 并记录为 `explicit-candidate`，不会替换固定依赖。旧 v1/v2 记录继续保留为历史证据，新的运行需要重新构建 v3 suite。
 
 `-Scenario bridge` 通过真实公共连接器验证重复连接复用、32 个请求身份关联、200 ms 原生延时期间页面计时器继续推进、业务失败、超大响应与随后正常调用。客户端容量特意高于 Host，通过 257 个普通请求检查原生 256 上限；普通槽位占满时对不存在任务的取消应进入公共服务并返回 `E_TASK_NOT_FOUND`。随后由安装的 SDK 执行真实后台计数任务，页面确认进度事件、查询结果、订阅注销，以及运行中请求取消后的终态。`all` 包含此探针和三个生命周期模式。`-PrepareOnly` 只编译并记录身份；退出码 0 表示准备成功，不表示执行场景通过。
 
