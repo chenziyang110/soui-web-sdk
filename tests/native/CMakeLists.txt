@@ -28,6 +28,13 @@ target_include_directories(soui_desktop_unicode_tests PRIVATE "${SOUI_DISTRIBUTI
 target_compile_options(soui_desktop_unicode_tests PRIVATE /utf-8 /W4 /U_DEBUG)
 set_property(TARGET soui_desktop_unicode_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.desktop-unicode COMMAND soui_desktop_unicode_tests)
+add_executable(soui_directory_dialog_tests directory_dialog_tests.cpp)
+target_link_libraries(soui_directory_dialog_tests PRIVATE Soui::Sdk)
+target_compile_features(soui_directory_dialog_tests PRIVATE cxx_std_17)
+target_include_directories(soui_directory_dialog_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
+target_compile_options(soui_directory_dialog_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET soui_directory_dialog_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+# This opens a real Shell dialog and is run explicitly in a visible desktop session.
 if(TARGET SouiWorkbench)
   add_test(NAME demo.native.public-task COMMAND $<TARGET_FILE:SouiWorkbench> --task-service-self-test)
   set_tests_properties(demo.native.public-task PROPERTIES TIMEOUT 10)
