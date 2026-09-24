@@ -39,7 +39,10 @@ fs.writeFileSync(path.join(root,'third_party/manifests/dependencies.json'),JSON.
 const review = {schema:'soui.binary-license-review/v1',status:'unverified',releaseReady:false,
  scope:'Exact preview Miniblink binaries and their linked third-party configuration',
  binaries:dependencies.filter(x=>/^miniblink-x/.test(x.id)).map(x=>({architecture:x.id.slice(10),sha256:x.sha256})),
- evidence_refs:['third_party/sources/miniblink/SOURCE-MANIFEST.json','third_party/sources/miniblink/LOCAL-CHANGES.patch'],
+ evidence_refs:['third_party/sources/miniblink/SOURCE-MANIFEST.json','third_party/sources/miniblink/LOCAL-CHANGES.patch',
+ 'verification/production-validation/kernel-link-inputs-2026-09-25/observation.json',
+ 'verification/production-validation/kernel-notice-inventory-2026-09-25/README.md',
+ 'verification/production-validation/kernel-notice-recovery-2026-09-25/README.md'],
  required_evidence:['Applicable redistribution terms for complete binaries','Linked third-party notices and build configuration review']};
 fs.writeFileSync(path.join(root,'third_party/manifests/license-review.json'),JSON.stringify(review,null,2)+'\n');
 console.log(JSON.stringify({dependencies:dependencies.length,nativeFiles:nativeFiles.length}));

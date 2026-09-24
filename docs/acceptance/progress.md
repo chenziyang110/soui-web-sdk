@@ -24,7 +24,7 @@
 
 本文件记录执行进度，不能代替机器报告或修改 `releaseReady`。新增阶段证据应链接实际 run-id、源码与载荷身份，并列出未执行项。
 
-当前开发版本为 `0.3.0-preview.5`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
+当前开发版本为 `0.3.0-preview.6`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
 
 ToolTip 修补后的 x64 内核及全部原生依赖已重新编译；候选 SHA-256 为 `32d37e6399bc04e2a8d909c4021f49e3b8f21521b805f9f118f15e111ea0e59f`，三模式各 30 轮加 3 次预热全部完成。重建 USER 不再增长，但 GDI/普通句柄仍增长，缺陷未关闭。随后定位到拖拽区域和工作线程唤醒事件的释放遗漏，保留为两个后续补丁。
 
@@ -165,3 +165,5 @@ V02 Workbench 现提供可从首页和菜单进入的数据交互页，复用 El
 2026-09-25 通过仓库所有者的 GitHub CLI [查询](../../verification/production-validation/repository-visibility-2026-09-25/observation.json)到 `chenziyang110/soui-web-sdk` 的可见性仍为 `PRIVATE`。[首方许可状态](../../LICENSE.md)也尚未选定；若以后公开，公开可见仍不等于获得 SDK/模板/Demo 的通用复用或再分发许可。生产交付及对外采用结论须把这一所有者决策列为独立发布门槛，不能由第三方声明文本的补录代替。
 
 导入的 OTS `ots.cc` 与官方 v5.0.0 仅有少量 Miniblink 适配差异；相应 [OTS 原版 `LICENSE` 已补录](../../verification/production-validation/kernel-notice-recovery-2026-09-25/README.md)。三份新增文本仍未完成整包授权审阅；`releaseReady=false`。
+
+[第三方声明材料交付路径](../../verification/production-validation/license-delivery-2026-09-25/README.md)已补齐并在 preview.6 完整构建后复核：源码 SDK 包和安装项目、双架构 CMake 安装目录、Starter/Workbench 双架构输出均保留同一份声明与四份许可文本，32 份许可副本的原始 SHA-256 均一致。交付身份证明也纳入许可目录及声明文件，防止改动后沿用旧构建记录。此项测试没有运行应用或审完实际链接成员；运行包声明仍不完整，不能将其作为生产授权通过。

@@ -37,6 +37,8 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfigVersi
   VERSION ${PROJECT_VERSION} COMPATIBILITY ExactVersion)
 install(TARGETS soui_sdk EXPORT SouiSdkTargets ARCHIVE DESTINATION lib/$<CONFIG>)
 install(DIRECTORY include/ DESTINATION include)
+install(FILES "${SOUI_DISTRIBUTION_ROOT}/THIRD_PARTY_NOTICES.md" DESTINATION share/SouiSdk)
+install(DIRECTORY "${SOUI_DISTRIBUTION_ROOT}/third_party/licenses/" DESTINATION share/SouiSdk/licenses)
 install(EXPORT SouiSdkTargets NAMESPACE Soui:: DESTINATION lib/cmake/SouiSdk)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfig.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfigVersion.cmake" DESTINATION lib/cmake/SouiSdk)

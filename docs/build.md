@@ -15,11 +15,11 @@ powershell.exe -File tools/Build.ps1 -Architecture x86 -Configuration Debug
 powershell.exe -File tools/Build.ps1 -SdkOnly -Architecture x64 -Install
 ```
 
-日志在 `out/<架构>/`，SDK 单独构建日志在 `out/sdk-<架构>/`。`-SkipWeb` 仅供已有最新 Web 产物时使用。默认构建会刷新运行目录中的 Web 文件，即使 C++ 无需重新链接。运行时复制整个应用输出目录。
+日志在 `out/<架构>/`，SDK 单独构建日志在 `out/sdk-<架构>/`。`-SkipWeb` 仅供已有最新 Web 产物时使用。默认构建会刷新运行目录中的 Web 文件和 `resources/legal/` 声明材料，即使 C++ 无需重新链接。运行时复制整个应用输出目录；声明材料属于载荷身份和体积统计。它们仍须与实际链接成员和再分发要求逐项核对，不能代替许可审查。
 
 应用和 SDK 的 Debug 配置保留调试信息，但为匹配固定 SOUI 运行库仍使用 `/MD` 和相同的发布版运行库边界，且定义 `NDEBUG`。它不代表底层依赖也以 Debug CRT 编译；不要混入其他配置的 SOUI DLL/LIB。
 
-安装后的 SDK 位于 `out/install/<架构>/`，外部项目通过 `find_package(SouiSdk CONFIG REQUIRED)` 和 `Soui::Sdk` 引用。此导出包支持 SDK 核心链接；完整应用的资源与运行库部署使用源码包里的 `cmake/SouiApplication.cmake`。
+安装后的 SDK 位于 `out/install/<架构>/`，第三方声明在 `share/SouiSdk/`；外部项目通过 `find_package(SouiSdk CONFIG REQUIRED)` 和 `Soui::Sdk` 引用。此导出包支持 SDK 核心链接；完整应用的资源与运行库部署使用源码包里的 `cmake/SouiApplication.cmake`。
 
 ## 底层源码重编译
 

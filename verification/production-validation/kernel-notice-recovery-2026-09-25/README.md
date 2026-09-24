@@ -12,4 +12,4 @@ IJG 压缩包的 SHA-256 为 `C133068C1ADEBED7C36B95445FCA78CF74849CD3FED0D05C5D
 
 OTS v5.0.0 的 `src/ots.cc` 与导入文件比较为 10 行新增、5 行删除，差异集中在 Miniblink 的 zlib 引用及 WOFF2 路径；`include/opentype-sanitiser.h` 另有 Windows 字节序宏和 VC6 兼容修改。v5.0.0 标签及其不可变提交的 `LICENSE` SHA-256 相同。这支持用该版本原文补足缺失的 OTS 文本，但没有证明整个 OTS 源树或实际链接成员逐字相同。
 
-仍须核对固定 DLL 的实际链接成员和完整运行载荷、嵌套组件声明，决定这三份文本如何随各运行包交付，并由维护者审阅实际适用的再分发要求。`third_party/manifests/license-review.json` 继续是 `unverified`，`releaseReady=false`。
+这三份文本现已通过[交付路径校验](../license-delivery-2026-09-25/README.md)按原始字节进入源码 SDK、安装项目和应用资源目录。仍须核对固定 DLL 的实际链接成员和完整运行载荷、嵌套组件声明，完成全部适用材料的运行包汇总，并由维护者审阅实际再分发要求。`third_party/manifests/license-review.json` 继续是 `unverified`，`releaseReady=false`。

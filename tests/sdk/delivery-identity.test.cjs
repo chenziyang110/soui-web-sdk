@@ -102,41 +102,64 @@ test('deployment replaces stale Web assets and preserves app data outside resour
   const app = path.join(root, 'app');
   write(source, 'index.html', 'new');
   write(source, 'assets/current.js', 'current');
+  write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
+  write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
   write(app, 'resources/index.html', 'old');
   write(app, 'resources/assets/obsolete.js', 'obsolete');
+  write(app, 'resources/legal/stale.txt', 'stale notice');
   write(app, 'user-data/preferences.json', '{}');
-  deploy.replace(source, app);
+  deploy.replace(source, app, root);
   assert.equal(fs.existsSync(path.join(app, 'resources/assets/obsolete.js')), false);
+  assert.equal(fs.existsSync(path.join(app, 'resources/legal/stale.txt')), false);
   assert.equal(fs.readFileSync(path.join(app, 'resources/index.html'), 'utf8'), 'new');
+  assert.equal(fs.readFileSync(path.join(app, 'resources/legal/THIRD_PARTY_NOTICES.md'), 'utf8'), 'SDK notices');
+  assert.equal(fs.readFileSync(path.join(app, 'resources/legal/third_party/licenses/example-LICENSE.txt'), 'utf8'), 'Dependency license');
   assert.equal(fs.readFileSync(path.join(app, 'user-data/preferences.json'), 'utf8'), '{}');
-  assert.throws(() => deploy.replace(path.join(root, 'missing'), app), /ENOENT|missing/);
+  assert.throws(() => deploy.replace(path.join(root, 'missing'), app, root), /ENOENT|missing/);
   assert.equal(fs.readFileSync(path.join(app, 'resources/index.html'), 'utf8'), 'new');
+  write(source, 'legal/unreviewed.txt', 'collision');
+  assert.throws(() => deploy.replace(source, app, root), /reserved legal path/);
+  fs.unlinkSync(path.join(source, 'legal/unreviewed.txt'));
+  fs.unlinkSync(path.join(root, 'THIRD_PARTY_NOTICES.md'));
+  assert.throws(() => deploy.replace(source, app, root), /ENOENT|missing/);
+  assert.equal(fs.readFileSync(path.join(app, 'resources/legal/THIRD_PARTY_NOTICES.md'), 'utf8'), 'SDK notices');
+  write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
+  const before = identity.source(root).sha256;
+  fs.writeFileSync(path.join(root, 'third_party/licenses/example-LICENSE.txt'), 'Altered license');
+  assert.notEqual(identity.source(root).sha256, before);
 });
 
 test('linked resource directories are rejected before deployment changes', t => {
   const root = fixture(t);
   write(root, 'source/index.html', 'new');
+  write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
+  write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
   write(root, 'outside/protected.txt', 'keep');
   fs.mkdirSync(path.join(root, 'app'));
   fs.symlinkSync(path.join(root, 'outside'), path.join(root, 'app/resources'), 'junction');
-  assert.throws(() => deploy.replace(path.join(root, 'source'), path.join(root, 'app')), /Linked/);
+  assert.throws(() => deploy.replace(path.join(root, 'source'), path.join(root, 'app'), root), /Linked/);
   assert.equal(fs.readFileSync(path.join(root, 'outside/protected.txt'), 'utf8'), 'keep');
 });
 
 test('SDK packages are identical across source EOLs but installed bytes remain pinned', t => {
   const root = fixture(t);
   const source = path.join(root, 'source');
-  for (const name of sdk.managedRoots) write(source, `${name}/fixture.txt`, 'one\r\ntwo\r\n');
+  const licenseBytes = Buffer.from([0x4c, 0x69, 0x63, 0x65, 0x6e, 0x73, 0x65, 13, 10, 0xa9, 13, 10]);
+  for (const name of sdk.managedRoots) write(source, `${name}/fixture.txt`,
+    name === 'third_party/licenses' ? licenseBytes : 'one\r\ntwo\r\n');
   for (const name of sdk.managedFiles) write(source, name, 'tool\r\n');
   write(source, 'sdk/legacy.h', Buffer.from([0xd6, 0xd0, 0xce, 0xc4, 13, 10]));
   sdk.pack(source, path.join(root, 'crlf'), '0.3.0-preview.1');
-  for (const name of sdk.managedRoots) write(source, `${name}/fixture.txt`, 'one\ntwo\n');
+  for (const name of sdk.managedRoots) write(source, `${name}/fixture.txt`,
+    name === 'third_party/licenses' ? licenseBytes : 'one\ntwo\n');
   for (const name of sdk.managedFiles) write(source, name, 'tool\n');
   write(source, 'sdk/legacy.h', Buffer.from([0xd6, 0xd0, 0xce, 0xc4, 10]));
   sdk.pack(source, path.join(root, 'lf'), '0.3.0-preview.1');
   assert.deepEqual(sdk.readPackage(path.join(root, 'crlf')), sdk.readPackage(path.join(root, 'lf')));
   const project = path.join(root, 'app');
   sdk.install(path.join(root, 'lf'), project);
+  assert.deepEqual(fs.readFileSync(path.join(root, 'lf/payload/third_party/licenses/fixture.txt')), licenseBytes);
+  assert.deepEqual(fs.readFileSync(path.join(project, 'third_party/licenses/fixture.txt')), licenseBytes);
   write(project, 'sdk/fixture.txt', 'one\r\ntwo\r\n');
   assert.throws(() => sdk.readLock(project), /modified/);
 });
