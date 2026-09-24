@@ -1,6 +1,6 @@
 # 候选支持范围与设备矩阵
 
-日期：2026-09-23。状态：采集中，不是正式支持声明。
+日期：2026-09-23。状态：采集中，不是正式支持声明。首批真实项目要求最低 Windows 7 SP1，包含 x86；不能仅凭本机 Windows 11 上的 x86 进程结果放行。
 
 ## 已使用的设备
 
@@ -12,10 +12,12 @@
 
 | 组合或能力 | 当前证据 | 状态与缺口 |
 |---|---|---|
-| 本机 x64 Release | preview.4 固定包公共消费者软件路径重建/重载/三窗口各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)、[GPU 专项](gpu-lifecycle.md)和[当前应用回归](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)分别绑定身份；Bridge、资源总体与业务长稳未通过 |
-| 本机 x86 Release | preview.4 固定包公共消费者软件路径重载/销毁重建各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)与[GPU 专项](gpu-lifecycle.md)分别记录；资源门和其他模式未通过，也不是独立 32 位系统的兼容结论 |
+| 本机 x64 Release | preview.4 固定包公共消费者软件路径重建/重载/三窗口/Bridge 各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)、[GPU 专项](gpu-lifecycle.md)和[当前应用回归](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)分别绑定身份；资源总体与业务长稳未通过 |
+| 本机 x86 Release | preview.4 固定包公共消费者软件路径重载/销毁重建/三窗口/Bridge 各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)与[GPU 专项](gpu-lifecycle.md)分别记录；资源门和业务长稳未通过，也不是独立 32 位系统的兼容结论 |
 | 本机 x86/x64 Debug | 无 preview.4 当前源码新报告 | 待验证 |
 | Windows 10 指定版本/补丁 | 无本轮目标机报告 | 待登记设备和执行；不得推广本机结果 |
+| Windows 7 SP1 x86 | 首批目标已锁定；当前无目标机报告 | 必须在目标系统上验证完整源码/运行载荷适配、安装/签名、启动关闭、Bridge、TLS 信任根/代理、中文 IME、DPI 与升级回退；当前为未验证 |
+| Windows 7 SP1 x64 | 只锁定了最低系统与 x86 必需组合；x64 是否为首批必需尚待产品矩阵确定 | 若列入支持，须另行完成目标机验收；不能沿用 x86 或 Windows 11 结果 |
 | 其他 Windows 11 版本/补丁 | 无本轮目标机报告 | 待登记设备和执行 |
 | 100/125/150/200% DPI | 未执行控件、坐标和输入定位验收 | 未验证 |
 | 混合 DPI 多屏 | 系统枚举有两种活动显卡输出；未做窗口移动/缩放/断连 | 未验证 |
