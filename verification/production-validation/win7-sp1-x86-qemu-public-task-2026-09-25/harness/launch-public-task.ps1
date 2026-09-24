@@ -51,24 +51,4 @@ $process=Start-Process -FilePath $qemu -ArgumentList $arguments -PassThru -Windo
 $record=[ordered]@{pid=$process.Id;startedAt=[DateTimeOffset]::UtcNow.ToString('o');arguments=$arguments;
   sourceSha256=$inputRecord.sourceSha256;zipSha256=$inputRecord.zipSha256;releaseReady=$false}
 [IO.File]::WriteAllText($launch,($record | ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))
-$client=$null
-for($attempt=0;$attempt -lt 20 -and $null -eq $client;$attempt++){
-  try {$client=[Net.Sockets.TcpClient]::new('127.0.0.1',4445)}
-  catch {Start-Sleep -Milliseconds 500}
-}
-if($null -eq $client){throw 'QEMU monitor did not become available; inspect the QEMU log'}
-try {
-  $stream=$client.GetStream()
-  $writer=[IO.StreamWriter]::new($stream,[Text.Encoding]::ASCII)
-  $writer.AutoFlush=$true
-  $writer.WriteLine('sendkey meta_l-r')
-  Start-Sleep -Milliseconds 900
-  foreach($character in 'd:\run-public-task.cmd'.ToCharArray()){
-    $key=if($character -eq ':'){'shift-semicolon'} elseif($character -eq [char]92){'backslash'}
-      elseif($character -eq '-'){'minus'} elseif($character -eq '.'){'dot'} else{[string]$character}
-    $writer.WriteLine('sendkey '+$key)
-    Start-Sleep -Milliseconds 90
-  }
-  $writer.WriteLine('sendkey ret')
-} finally {$client.Dispose()}
-Write-Output ("QEMU public-task guest launched: PID $($process.Id)")
+Write-Output ("QEMU public-task guest launched: PID $($process.Id). Verify the Win7 desktop, then run run-public-task-keys.ps1.")
