@@ -115,6 +115,8 @@ struct options {
   std::string mode;
   unsigned cycles{0};
   unsigned warmup{0};
+  unsigned duration_ms{0};
+  unsigned idle_ms{0};
   unsigned settle_ms{0};
   unsigned timeout_ms{0};
   std::filesystem::path report;
@@ -132,7 +134,7 @@ options parse(int argc, wchar_t** argv) {
   options result;
   // Exactly these arguments are required; duplicates and unknown arguments fail.
   if (argc != 7) throw std::runtime_error("Expected --mode --cycles --warmup --settle-ms --timeout-ms --report");
-  std::array<bool, 6> seen{};
+  std::array<bool, 8> seen{};
   for (int i = 1; i < argc; ++i) {
     const std::wstring arg{argv[i]};
     const auto separator = arg.find(L'=');
@@ -141,19 +143,27 @@ options parse(int argc, wchar_t** argv) {
     const auto value = arg.substr(separator + 1);
     unsigned index = 0;
     if (key == L"--mode") {
-      if (value != L"reload" && value != L"recreate" && value != L"multiwindow" && value != L"bridge")
+      if (value != L"reload" && value != L"recreate" && value != L"multiwindow" &&
+          value != L"bridge" && value != L"mixed")
         throw std::runtime_error("Unknown scenario");
-      result.mode = value == L"reload" ? "reload" : value == L"recreate" ? "recreate" : value == L"bridge" ? "bridge" : "multiwindow";
+      result.mode = value == L"reload" ? "reload" : value == L"recreate" ? "recreate" :
+          value == L"bridge" ? "bridge" : value == L"mixed" ? "mixed" : "multiwindow";
     } else if (key == L"--cycles") { index = 1; result.cycles = number(value, 10000); }
     else if (key == L"--warmup") { index = 2; result.warmup = number(value, 100); }
     else if (key == L"--settle-ms") { index = 3; result.settle_ms = number(value, 60000); }
     else if (key == L"--timeout-ms") { index = 4; result.timeout_ms = number(value, 120000); }
     else if (key == L"--report") { index = 5; result.report = value; }
+    else if (key == L"--duration-ms") { index = 6; result.duration_ms = number(value, 43200000); }
+    else if (key == L"--idle-ms") { index = 7; result.idle_ms = number(value, 60000); }
     else throw std::runtime_error("Unknown argument");
     if (seen[index]) throw std::runtime_error("Duplicate argument");
     seen[index] = true;
   }
-  if (!result.cycles || !result.timeout_ms || result.report.empty()) throw std::runtime_error("Required argument is empty");
+  if (!seen[0] || !seen[3] || !seen[4] || !seen[5] ||
+      !result.timeout_ms || result.report.empty() ||
+      (result.mode == "mixed" ? (!result.duration_ms || !result.idle_ms || seen[1] || seen[2] ||
+          result.idle_ms >= result.timeout_ms)
+        : (!result.cycles || seen[6] || seen[7]))) throw std::runtime_error("Invalid scenario arguments");
   return result;
 }
 
@@ -223,6 +233,13 @@ class test_window final {
   }
   soui::sdk::host_result reload() { return host_.reload(); }
   soui::sdk::host_result close() { return host_.destroy(); }
+  soui::sdk::host_result set_minimized(bool minimized) {
+    if (!handle_ || !IsWindow(handle_)) return {false, "E_WINDOW_MISSING", "Acceptance window is missing"};
+    ShowWindow(handle_, minimized ? SW_MINIMIZE : SW_RESTORE);
+    if (static_cast<bool>(IsIconic(handle_)) != minimized)
+      return {false, "E_WINDOW_STATE", "Acceptance window state did not change"};
+    return {true, "", ""};
+  }
   void pump() { host_.pump(); }
   bool ready(unsigned expected) {
     return ready_count_.load(std::memory_order_acquire) == expected && host_.application_ready();
@@ -257,12 +274,20 @@ class runner final {
   runner(const options& settings, log_writer& log)
       : settings_(settings), log_(log), phases_(settings.report), root_(executable_directory()) {}
   void execute() {
-    log_.emit("run.begin", "\"mode\":" + quote(settings_.mode) + ",\"cycles\":" + std::to_string(settings_.cycles)
-      + ",\"warmup\":" + std::to_string(settings_.warmup) + ",\"settleMs\":" + std::to_string(settings_.settle_ms)
-      + ",\"timeoutMs\":" + std::to_string(settings_.timeout_ms) + ",\"pid\":" + std::to_string(GetCurrentProcessId()));
+    const auto scenario = settings_.mode == "mixed" ?
+      ",\"durationMs\":" + std::to_string(settings_.duration_ms) +
+      ",\"idleMs\":" + std::to_string(settings_.idle_ms) :
+      ",\"cycles\":" + std::to_string(settings_.cycles) +
+      ",\"warmup\":" + std::to_string(settings_.warmup);
+    log_.emit("run.begin", "\"mode\":" + quote(settings_.mode) + scenario +
+      ",\"settleMs\":" + std::to_string(settings_.settle_ms) +
+      ",\"timeoutMs\":" + std::to_string(settings_.timeout_ms) +
+      ",\"pid\":" + std::to_string(GetCurrentProcessId()));
     sample(0, "process");
-    const auto total = settings_.warmup + settings_.cycles;
-    if (settings_.mode == "reload") {
+    auto total = settings_.warmup + settings_.cycles;
+    if (settings_.mode == "mixed") {
+      total = run_mixed();
+    } else if (settings_.mode == "reload") {
       mount(1, 0);
       reject_busy(0);
       settle(); sample(0, "mounted");
@@ -296,6 +321,35 @@ class runner final {
     log_.emit("run.complete");
   }
  private:
+  unsigned run_mixed() {
+    const auto deadline = clock_type::now() + std::chrono::milliseconds(settings_.duration_ms);
+    unsigned cycle = 0;
+    do {
+      ++cycle;
+      log_.emit("cycle.begin", "\"cycle\":" + std::to_string(cycle));
+      mount(1, cycle);
+      if (cycle == 1) reject_busy(cycle);
+      reload(1, cycle);
+      step("minimize", 1, cycle, [this] { return windows_[0]->set_minimized(true); });
+      settle();
+      step("restore", 1, cycle, [this] { return windows_[0]->set_minimized(false); });
+      mount(2, cycle); mount(3, cycle);
+      close(2, cycle);
+      reload(1, cycle); reload(3, cycle);
+      mount(2, cycle);
+      close(3, cycle); close(2, cycle); close(1, cycle);
+      step("idle", 0, cycle, [this] {
+        const auto idle_deadline = clock_type::now() + std::chrono::milliseconds(settings_.idle_ms);
+        while (clock_type::now() < idle_deadline) {
+          service(); MsgWaitForMultipleObjectsEx(0, nullptr, 10, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
+        }
+        return soui::sdk::host_result{true, "", ""};
+      });
+      sample(cycle, "cycle");
+      log_.emit("cycle.complete", "\"cycle\":" + std::to_string(cycle));
+    } while (clock_type::now() < deadline);
+    return cycle;
+  }
   void service() {
     MSG message{};
     for (unsigned n = 0; n < 32 && PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE); ++n) {
@@ -336,7 +390,7 @@ class runner final {
       auto& window = windows_.at(id - 1);
       if (window) throw std::runtime_error("Window slot is already occupied");
       phases_.emit(cycle, id, "construct.begin");
-      window = std::make_unique<test_window>(id, settings_.mode == "bridge");
+      window = std::make_unique<test_window>(id, settings_.mode == "bridge" || settings_.mode == "mixed");
       phases_.emit(cycle, id, "construct.end");
       const auto result = window->mount(root_, &phases_, cycle);
       if (result.ok) {

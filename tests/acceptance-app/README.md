@@ -14,8 +14,11 @@ powershell.exe -File tools/Test-Acceptance.ps1 -Architecture x64 -Scenario all -
 - `recreate`：同一进程销毁窗口/Host，再创建新的窗口/Host。
 - `multiwindow`：三个窗口同时存在，关闭中间窗口后重载另两个窗口，再创建中间窗口并退出。
 - `bridge`：公共连接器、并发关联、原生等待、容量上限和错误恢复。
+- `mixed`：单进程固定顺序循环 Bridge 探针、重载、最小化/恢复、三窗口及空闲，用于长时生命周期诊断；不代替真实业务任务或外部输入。
 
 `-Cycles` 是被测轮数，`-Warmup` 是额外预热轮数；每轮按照 `-SettleMs` 等待后采样。`-SkipSdkBuild` 只接受源码和 SDK 载荷仍与最近 SDK-only 构建记录一致的情况。测试编译输出和每次运行的原始记录保存在新建的 `out/acceptance/<suite-id>/`，失败样本不覆盖。
+
+混合模式改用单调时长及空闲间隔，不接受 `-Cycles`/`-Warmup`。先用 `-Scenario mixed -DurationMs 60000 -IdleMs 10000` 短测；8 小时请求使用 `-DurationMs 28800000`。监督器要求总时长、每轮步骤和空闲区间完整，始终输出 `longRunGate: not-evaluated`，直到另行审查分时资源与响应指标。长测应使用隔离且指纹固定的源码/SDK/消费者/内核/运行载荷，避免开发树变化导致结果身份漂移。
 
 每个 suite 的 `consumer-source/` 保存实际编译的独立消费者源码，`kernel-input/node.dll` 保存本次测试的内核输入。v3 还复制同次构建的公共 Web SDK 到 `web-sdk/`，使用 `tests/acceptance` 自己锁定的 Vite/legacy 工具链生成 `web-output/`；C++ 仍只引用安装的公共 SDK。构建和运行前后核对消费者、Web SDK、Web 输出、原生安装与最终载荷。默认使用固定 prebuilt；测试新编译内核时可显式指定 `-RuntimeBinary out/dependencies/x64/miniblink/bin/miniblink.dll`。候选只复制到新 suite 并记录为 `explicit-candidate`，不会替换固定依赖。旧 v1/v2 记录继续保留为历史证据，新的运行需要重新构建 v3 suite。
 

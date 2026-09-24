@@ -39,7 +39,7 @@
 | V05-02 Runtime 最终退出 | `shutdown_miniblink_runtime` | 通过当前范围：有 Host 时拒绝、全部关闭后成功、重复关闭幂等、关闭后拒绝重启 | 残留任务、事件回调及并发关闭压力；单独进程启动退出模式 |
 | V05-03 窗口级对象释放 | Host + Miniblink 补丁 0001–0005 | preview.4 双架构各 100 次重载末点内存增量低于 16 MiB 数值线；双架构千次重载/重建正常退出。preview.5 [Win7 SP1 x86 QEMU 100 次重载](../../verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/README.md)也低于 16 MiB 数值线，但句柄和线程末点增加。历史 GPU 两架构 30 轮 USER 持续增长且 Runtime 关闭后残留 | 分段资源趋势、GPU USER 对象所有权、软件路径线程/USER 残留、其他模式与 8 小时混合负载；全部 `resourceGate` 仍未评估 |
 | V05-04 故障与恢复 | 监督器已有退出码/超时/缺步骤检查 | 部分实现：[超时诊断](../../verification/production-validation/preview5-timeout-diagnostics-2026-09-24/README.md)现记录已读日志偏移与未读内容，并可选抓取 x86 原生栈/转储；受控进程验证抓取链路，SDK 故障尚未复现；原始失败记录保留 | DLL/资源缺失、服务失败、迟到响应、真实挂载故障栈、重启后业务恢复 |
-| V05-05 8 小时业务运行 | 固定混合负载及分时采样 | 待实现和执行 | 操作/任务/重载/最小化/空闲组合，无无界积压或响应持续恶化 |
+| V05-05 8 小时业务运行 | 固定混合负载及分时采样 | [独立消费者混合生命周期预检](../../verification/production-validation/preview5-mixed-soak-preflight-2026-09-24/README.md)已在 x86/x64 完成短测，覆盖 Bridge、重载、最小化/恢复、三窗口和空闲；真实公共任务及 8 小时结果未完成 | 操作/公共任务进度与取消/重载/最小化/空闲组合，连续 8 小时无无界积压或响应持续恶化 |
 | V05-06 网络与内容边界 | Host 可信文档与底层网络 | preview.4 固定包的[回环 HTTPS 十二项](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)覆盖证书链、主机名及重定向；[内核核对](kernel-maintenance.md)保留生产阻塞项 | 实际信任根/代理、动态子资源、注入内容、越权、来源边界与持续维护 |
 
 ## V06 独立接入、维护与最终价值

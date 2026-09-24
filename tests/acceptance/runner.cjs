@@ -8,6 +8,7 @@ const {spawn} = require('node:child_process');
 const identity = require('../../tools/internal/delivery-identity.cjs');
 const builds = require('../../tools/internal/build-evidence.cjs');
 const {captureTimeout} = require('./timeout-diagnostics.cjs');
+const {mixedSettings, validateMixedRecords} = require('./mixed-validation.cjs');
 const root = path.resolve(__dirname, '../..');
 const modes = ['reload', 'recreate', 'multiwindow', 'bridge'];
 
@@ -205,9 +206,14 @@ async function run(suite,config) {
   const stdout=fs.openSync(path.join(output,'stdout.log'),'wx');
   const stderr=fs.openSync(path.join(output,'stderr.log'),'wx');
   const bin=path.join(suite,'runtime');
-  const args=[`--mode=${config.mode}`,`--cycles=${config.cycles}`,`--warmup=${config.warmup}`,`--settle-ms=${config.settleMs}`,
-    `--timeout-ms=${config.timeoutMs}`,`--report=${log}`];
-  const processTimeoutMs=Math.min(12*60*60*1000,Math.max(60000,expectedSteps(config).length*(config.timeoutMs+config.settleMs)+30000));
+  const mixed=config.mode==='mixed';
+  const args=mixed?
+    [`--mode=mixed`,`--duration-ms=${config.durationMs}`,`--idle-ms=${config.idleMs}`,
+      `--settle-ms=${config.settleMs}`,`--timeout-ms=${config.timeoutMs}`,`--report=${log}`]:
+    [`--mode=${config.mode}`,`--cycles=${config.cycles}`,`--warmup=${config.warmup}`,
+      `--settle-ms=${config.settleMs}`,`--timeout-ms=${config.timeoutMs}`,`--report=${log}`];
+  const processTimeoutMs=mixed?config.durationMs+Math.max(180000,2*config.timeoutMs+config.idleMs):
+    Math.min(12*60*60*1000,Math.max(60000,expectedSteps(config).length*(config.timeoutMs+config.settleMs)+30000));
   let timedOut=false;
   let timeoutReason=null;
   let child;
@@ -281,19 +287,20 @@ async function run(suite,config) {
     result.logSha256=identity.hash(bytes);
     if (!bytes.toString('utf8').endsWith('\n')) throw new Error('Truncated native log');
     const records=bytes.toString('utf8').trimEnd().split('\n').map(line=>JSON.parse(line));
-    result.validation=validateRecords(records,config,outcome);
+    result.validation=mixed?validateMixedRecords(records,config,outcome):validateRecords(records,config,outcome);
     result.passed=true;
   } catch(error) { result.failure=error.message; }
   write(path.join(output,'result.json'),result);
   return {passed:result.passed,mode:config.mode,runId,result:path.relative(root,path.join(output,'result.json')).replaceAll('\\','/'),failure:result.failure,outcome};
 }
-module.exports={settings,expectedSteps,validateRecords};
+module.exports={settings,expectedSteps,validateRecords,mixedSettings,validateMixedRecords};
 if(require.main===module) (async()=>{
   const [command,suite,...args]=process.argv.slice(2);
   let result;
   if(command==='prepare'&&(args.length===2||args.length===3))result=prepare(suite,...args);
   else if(command==='stage'&&!args.length)result=stage(suite);
   else if(command==='run'&&args.length===5)result=await run(suite,settings(args[0],...args.slice(1).map(Number)));
+  else if(command==='run-mixed'&&args.length===4)result=await run(suite,mixedSettings(...args.map(Number)));
   else throw new Error('Invalid acceptance command');
   console.log(identity.encoded(result));
   if(result.passed===false)process.exitCode=1;
