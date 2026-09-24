@@ -167,3 +167,5 @@ V02 Workbench 现提供可从首页和菜单进入的数据交互页，复用 El
 导入的 OTS `ots.cc` 与官方 v5.0.0 仅有少量 Miniblink 适配差异；相应 [OTS 原版 `LICENSE` 已补录](../../verification/production-validation/kernel-notice-recovery-2026-09-25/README.md)。三份新增文本仍未完成整包授权审阅；`releaseReady=false`。
 
 [第三方声明材料交付路径](../../verification/production-validation/license-delivery-2026-09-25/README.md)已补齐并在 preview.6 完整构建后复核：源码 SDK 包和安装项目、双架构 CMake 安装目录、Starter/Workbench 双架构输出均保留同一份声明与四份许可文本，32 份许可副本的原始 SHA-256 均一致。交付身份证明也纳入许可目录及声明文件，防止改动后沿用旧构建记录。此项测试没有运行应用或审完实际链接成员；运行包声明仍不完整，不能将其作为生产授权通过。
+
+当前 preview.6 的 x86 Starter/Workbench [Win7 SP1 QEMU 短测输入](../../verification/production-validation/win7-sp1-x86-qemu-preview6-apps-2026-09-25/README.md)已冻结：从现行构建载荷重新压缩并解压核对 71/475 个文件，宿主运行来宾检查脚本确认两套法务文件哈希与中文路径，串口校验器合成成功/篡改样本自检通过。宿主八小时长测和其他 QEMU 尚占用，客体未执行；不能据此填写 preview.6 的 Win7 支持结论。
