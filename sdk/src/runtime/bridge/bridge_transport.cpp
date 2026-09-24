@@ -50,6 +50,15 @@ bool valid_origin(std::string_view value) {
 }  // namespace
 
 bool capability_registry::register_method(std::string method, std::string permission_name, handler callback) {
+  if (!callback) return false;
+  return register_contextual_method(std::move(method), std::move(permission_name),
+      [callback = std::move(callback)](const bridge_request& request) {
+        return callback(request.params_json);
+      });
+}
+
+bool capability_registry::register_contextual_method(std::string method, std::string permission_name,
+                                                       contextual_handler callback) {
   if (method.empty() || permission_name.empty() || !callback || methods_.find(method) != methods_.end()) {
     return false;
   }
@@ -66,7 +75,7 @@ const std::string* capability_registry::capability_for(const std::string& method
   return found == methods_.end() ? nullptr : &found->second.permission;
 }
 
-const capability_registry::handler* capability_registry::handler_for(const std::string& method) const {
+const capability_registry::contextual_handler* capability_registry::handler_for(const std::string& method) const {
   const auto found = methods_.find(method);
   return found == methods_.end() ? nullptr : &found->second.callback;
 }
@@ -84,7 +93,7 @@ bridge_response bridge_transport::handle(const bridge_request& request) const {
     return response;
   }
   response.ok = true;
-  response.payload_json = (*callback)(request.params_json);
+  response.payload_json = (*callback)(request);
   try {
     const auto payload = response.payload_json.empty() ? json::object() : json::parse(response.payload_json);
     const auto error = payload.find("error");

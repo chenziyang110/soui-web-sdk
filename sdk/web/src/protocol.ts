@@ -33,6 +33,15 @@ export interface SouiBridgeResponse {
 /** Methods installed by json_bridge itself, without Workbench services. */
 export interface SouiCoreMethodMap {
   'bridge.probe.report': { params: { ready: true }; result: { ready: true } };
+  'task.start': { params: { kind: string; operationId: string; input: Record<string, unknown> };
+    result: { taskId: string; accepted: boolean; duplicate: boolean } };
+  'task.query': { params: { taskId: string }; result: { taskId: string; state: string;
+    progress: number; message: string; sequence: number; result?: Record<string, unknown> } };
+  'task.cancel': { params: { taskId: string }; result: { taskId: string;
+    state: string; cancelRequested: boolean } };
+  'task.subscribe': { params: { taskId: string; eventName: 'task.progress' };
+    result: { subscriptionId: string } };
+  'task.unsubscribe': { params: { subscriptionId: string }; result: { removed: boolean } };
 }
 
 export class SouiBridgeError extends Error {

@@ -8,6 +8,13 @@ int main(){
   try {
     soui::sdk::json_bridge bridge("app://test");
     require(bridge.register_method("app.echo","app.echo",[](std::string_view value){return std::string(value);}),"method registration");
+    unsigned contextual_calls=0;
+    require(bridge.register_contextual_method("app.context","app.context",
+        [&](const soui::runtime::bridge_request& request){
+          ++contextual_calls;
+          return json{{"session",request.session_id},{"origin",request.origin},
+                      {"operationId",request.operation_id},{"params",json::parse(request.params_json)}}.dump();
+        }),"contextual method registration");
     json bootstrap{{"requestId","boot:1"},{"sessionId",""},{"origin",""},{"token",""},{"method","bridge.bootstrap"},{"params",{{"protocol","soui.bridge/1"}}}};
     auto invalid=bootstrap;invalid.erase("origin");invalid["extra"]="";
     require(!json::parse(bridge.handle_json(invalid.dump())).at("ok").get<bool>(),"missing field must not become anonymous bootstrap");
@@ -21,6 +28,19 @@ int main(){
     json request{{"requestId","call:1"},{"sessionId",auth.at("sessionId")},{"origin",auth.at("origin")},{"token",auth.at("token")},{"method","app.echo"},{"params",{{"message","hello"}}},{"timeoutMs",10000}};
     auto echo=json::parse(bridge.handle_json(request.dump()));
     require(echo.at("ok").get<bool>() && echo.at("result").at("message")=="hello","native dispatch");
+    auto context_request=request;
+    context_request["method"]="app.context";
+    context_request["operationId"]="op-1";
+    context_request["params"]={{"sessionId","forged-param"}};
+    const auto contextual=json::parse(bridge.handle_json(context_request.dump()));
+    require(contextual.at("ok").get<bool>() && contextual.at("result").at("session")==auth.at("sessionId") &&
+            contextual.at("result").at("origin")==auth.at("origin") &&
+            contextual.at("result").at("operationId")=="op-1" &&
+            contextual.at("result").at("params").at("sessionId")=="forged-param" &&
+            contextual_calls==1,"context is bound to the authorized envelope, not untrusted params");
+    invalid=context_request;invalid["token"]="forged";
+    require(!json::parse(bridge.handle_json(invalid.dump())).at("ok").get<bool>() &&
+            contextual_calls==1,"unauthorized contextual method must not run");
     invalid=request;invalid["token"]="forged";
     require(!json::parse(bridge.handle_json(invalid.dump())).at("ok").get<bool>(),"reject forged grant");
     invalid=request;invalid["origin"]="app://other";
@@ -31,7 +51,7 @@ int main(){
     require(!json::parse(bridge.handle_json(request.dump())).at("ok").get<bool>(),"revoked session");
     const auto replacement=json::parse(bridge.handle_json(bootstrap.dump()));
     require(replacement.at("ok").get<bool>() && replacement.at("result").at("sessionId")!=auth.at("sessionId"),"navigation creates new session");
-    std::cout<<"Native SDK contract: 13 checks passed\n";
+    std::cout<<"Native SDK contract: 16 checks passed\n";
     return 0;
   } catch(const std::exception& error){std::cerr<<error.what()<<'\n';return 1;}
 }

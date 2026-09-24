@@ -36,16 +36,19 @@ struct bridge_response {
 class capability_registry {
  public:
   using handler = std::function<std::string(std::string_view)>;
+  using contextual_handler = std::function<std::string(const bridge_request&)>;
 
   [[nodiscard]] bool register_method(std::string method, std::string permission_name, handler callback);
+  [[nodiscard]] bool register_contextual_method(std::string method, std::string permission_name,
+                                                contextual_handler callback);
   [[nodiscard]] bool contains(const std::string& method) const;
   [[nodiscard]] const std::string* capability_for(const std::string& method) const;
-  [[nodiscard]] const handler* handler_for(const std::string& method) const;
+  [[nodiscard]] const contextual_handler* handler_for(const std::string& method) const;
 
  private:
   struct capability {
     std::string permission;
-    handler callback;
+    contextual_handler callback;
   };
   std::unordered_map<std::string, capability> methods_;
 };

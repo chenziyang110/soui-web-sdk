@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <objbase.h>
 #include <stdexcept>
+#include <utility>
 
 namespace soui::sdk {
 using json = nlohmann::json;
@@ -29,6 +30,21 @@ json_bridge::json_bridge(std::string origin) : origin_{std::move(origin)} {
       ? std::string{"{\"ready\":true}"}
       : std::string{"{\"error\":\"E_INVALID_PARAMS\",\"message\":\"Expected ready=true.\"}"};
   });
+  (void)register_contextual_method("task.start", "task.start", [this](const soui::runtime::bridge_request& request) {
+    return tasks_.start(request);
+  });
+  (void)register_contextual_method("task.query", "task.query", [this](const soui::runtime::bridge_request& request) {
+    return tasks_.query(request);
+  });
+  (void)register_contextual_method("task.cancel", "task.cancel", [this](const soui::runtime::bridge_request& request) {
+    return tasks_.cancel(request);
+  });
+  (void)register_contextual_method("task.subscribe", "task.subscribe", [this](const soui::runtime::bridge_request& request) {
+    return tasks_.subscribe(request);
+  });
+  (void)register_contextual_method("task.unsubscribe", "task.subscribe", [this](const soui::runtime::bridge_request& request) {
+    return tasks_.unsubscribe(request);
+  });
 }
 bool json_bridge::register_method(std::string name, std::string capability,
                                  soui::runtime::capability_registry::handler handler) {
@@ -38,6 +54,19 @@ bool json_bridge::register_method(std::string name, std::string capability,
   capabilities_.push_back(std::move(capability));
   return true;
 }
+bool json_bridge::register_contextual_method(std::string name, std::string capability,
+                                             soui::runtime::capability_registry::contextual_handler handler) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (registration_closed_) return false;
+  if (!registry_.register_contextual_method(std::move(name), capability, std::move(handler))) return false;
+  capabilities_.push_back(std::move(capability));
+  return true;
+}
+bool json_bridge::register_task_handler(std::string kind, soui::runtime::task_service::handler handler) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  return !registration_closed_ && tasks_.register_handler(std::move(kind), std::move(handler));
+}
+void json_bridge::set_event_sink(event_sink sink) { tasks_.set_event_sink(std::move(sink)); }
 std::string json_bridge::handle_json(std::string_view request, bool) {
   if (request.empty() || request.size() > soui::runtime::bridge_transport::max_message_bytes)
     return error({},"E_LIMIT_MESSAGE_SIZE","Bridge message is too large.");
@@ -67,6 +96,7 @@ std::string json_bridge::handle_json(std::string_view request, bool) {
   }
 }
 void json_bridge::shutdown_session(const std::string& session_id) {
+  tasks_.shutdown_session(session_id);
   std::lock_guard<std::mutex> lock(mutex_);
   permissions_.revoke_session(session_id);
   if(active_session_==session_id)active_session_.clear();

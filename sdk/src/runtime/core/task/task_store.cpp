@@ -87,7 +87,8 @@ bool task_store::mark_running(const std::string& task_id) {
   return true;
 }
 
-bool task_store::update_progress(const std::string& task_id, std::uint32_t progress) {
+bool task_store::update_progress(const std::string& task_id, std::uint32_t progress,
+                                 std::optional<std::string> message) {
   std::lock_guard<std::mutex> lock(mutex_);
   const auto found = tasks_.find(task_id);
   if (found == tasks_.end() || is_terminal(found->second.state) ||
@@ -96,7 +97,8 @@ bool task_store::update_progress(const std::string& task_id, std::uint32_t progr
   }
   found->second.state = task_state::running;
   found->second.progress = std::min<std::uint32_t>(progress, 100U);
-  found->second.result = operation_result{result_kind::timeout_observed, task_id};
+  if (message) found->second.message = std::move(*message);
+  found->second.result = operation_result{result_kind::timeout_observed, task_id, found->second.message};
   found->second.sequence = next_sequence_++;
   return true;
 }

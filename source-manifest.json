@@ -1363,8 +1363,8 @@
     {
       "path": "docs/acceptance/progress.md",
       "normalization": "lf",
-      "bytes": 28288,
-      "sha256": "d49ed17558f38ccc547af28bd4b1f9b9b18a06db1dc05889ec42d7430cd607c6"
+      "bytes": 28957,
+      "sha256": "4b3964a1c4f36000511c6fff3542fec6eb8c24db2b4ee5d8342dd89d4930034a"
     },
     {
       "path": "docs/acceptance/support-matrix.md",
@@ -1421,6 +1421,12 @@
       "sha256": "8c46ccf1cf241aa66b86e44856dbdbf04cee262a624cfaf84e8cec3430e0c365"
     },
     {
+      "path": "docs/adr/0008-public-task-service.md",
+      "normalization": "lf",
+      "bytes": 2805,
+      "sha256": "5e0cf93afb32e205594481d2e47777c00f9e76259c3a9355058950a00aed53a9"
+    },
+    {
       "path": "docs/adr/README.md",
       "normalization": "lf",
       "bytes": 533,
@@ -1429,8 +1435,8 @@
     {
       "path": "docs/api.md",
       "normalization": "lf",
-      "bytes": 6159,
-      "sha256": "49fcf3b6fdfb00361aa5c285c7aded76a54d9b575b7cad288a40648c05a4422f"
+      "bytes": 8024,
+      "sha256": "dd0d352c5f33376ba6157e6d6788e3c8ef0d3e76e210424f195e2706050fa1a4"
     },
     {
       "path": "docs/architecture.md",
@@ -1561,14 +1567,14 @@
     {
       "path": "sdk/include/soui/json_bridge.h",
       "normalization": "lf",
-      "bytes": 1076,
-      "sha256": "1aac2388101e31a23a49d1185f731d283c73b7dc6eb919dd5827385a3749da1f"
+      "bytes": 1485,
+      "sha256": "2cf0a41a3b6d142a9027dd68fad005fa5f47e0d9b95c8759db8a5d0d1badb6b9"
     },
     {
       "path": "sdk/include/soui/runtime/bridge/bridge_transport.h",
       "normalization": "lf",
-      "bytes": 2120,
-      "sha256": "23ea7716af94b6bb8f5365689f53f5d90f453139430a2cc6dbf21064418be596"
+      "bytes": 2397,
+      "sha256": "4d8fc4f7f7be1091c9cadc1ff2dab217693e7405adeb305dae48c496d3fc95fe"
     },
     {
       "path": "sdk/include/soui/runtime/core/events/event_bus.h",
@@ -1585,8 +1591,8 @@
     {
       "path": "sdk/include/soui/runtime/core/task/task_store.h",
       "normalization": "lf",
-      "bytes": 2273,
-      "sha256": "fc2fe3d2c990795aadda3096ee9e4ce56e8244d42cff2fe5c9997f886f98bcbb"
+      "bytes": 2361,
+      "sha256": "9be4993578eafe86b877566ff474b3dcc82eae3a11ac1b4a2d307c65353b2c09"
     },
     {
       "path": "sdk/include/soui/runtime/host/session/webview_session.h",
@@ -1629,6 +1635,12 @@
       "normalization": "lf",
       "bytes": 1771,
       "sha256": "1a4390b28381ceab7c0a688ddb2dbf0981ff2ada7ca3811748af58f5e54a6060"
+    },
+    {
+      "path": "sdk/include/soui/runtime/services/task/task_service.h",
+      "normalization": "lf",
+      "bytes": 2467,
+      "sha256": "5a60c97362a98ae28bf2cc395991a2a449880a92f19bd58b8cb3418c75b789a8"
     },
     {
       "path": "sdk/include/soui/version.h",
@@ -1675,14 +1687,14 @@
     {
       "path": "sdk/src/json_bridge.cpp",
       "normalization": "lf",
-      "bytes": 3862,
-      "sha256": "aaf65e88f13cec3f2ff541403fcc0faa0941af2c027a32241f4817f4d8a4e55f"
+      "bytes": 5542,
+      "sha256": "67d89e1e69f35c0abf276eb18175718d024bb18509505f3ff24c1ab30c50056e"
     },
     {
       "path": "sdk/src/runtime/bridge/bridge_transport.cpp",
       "normalization": "lf",
-      "bytes": 10100,
-      "sha256": "73b7217c3b7ebec9b444af21e3b7417bf8a163f23a4fe36ef53957987730f526"
+      "bytes": 10532,
+      "sha256": "40adf47fb4a7bc7d90fad79a52f20ed8b75ae714546ca37eeb5be799397094a4"
     },
     {
       "path": "sdk/src/runtime/core/events/event_bus.cpp",
@@ -1699,8 +1711,8 @@
     {
       "path": "sdk/src/runtime/core/task/task_store.cpp",
       "normalization": "lf",
-      "bytes": 7335,
-      "sha256": "8077ae07b5e039e2c3ef4055c359b6c34d7090961aa94a8c057256e7553bffbf"
+      "bytes": 7487,
+      "sha256": "30b41792a217b12e8b536df48d56f024f659b8b912d0d106fbbc9acf878025c2"
     },
     {
       "path": "sdk/src/runtime/host/session/webview_session.cpp",
@@ -1731,6 +1743,12 @@
       "normalization": "lf",
       "bytes": 2356,
       "sha256": "67227790c0c5563c38e29609a3b549815644560b5c77c323e01141a03e7a3109"
+    },
+    {
+      "path": "sdk/src/runtime/services/task/task_service.cpp",
+      "normalization": "lf",
+      "bytes": 16601,
+      "sha256": "98ae0939c3a10dd8d645243845e8350ac77c2f49e3a689fea63a8ed4f170f535"
     },
     {
       "path": "sdk/web/package-lock.json",
@@ -1771,8 +1789,8 @@
     {
       "path": "sdk/web/src/protocol.ts",
       "normalization": "lf",
-      "bytes": 3764,
-      "sha256": "7149e827db4cafbf18725bf7f82d7cf5ffa9e3a137c8a1c52ae1346deb9cfdf9"
+      "bytes": 4450,
+      "sha256": "964ce7a6ba92f696e98854e3b4bab52820791b93c0f1099ac228345bd66bfe8c"
     },
     {
       "path": "sdk/web/tsconfig.json",
@@ -1789,20 +1807,20 @@
     {
       "path": "templates/desktop-app/README.md",
       "normalization": "lf",
-      "bytes": 717,
-      "sha256": "ec47ca941a083873c54a6b861d9d4338a235f41cf378a651e48ab8a3e570c8b4"
+      "bytes": 1137,
+      "sha256": "d9c41a5af25ad80149c360488c7f29459e504b1ab515c1d10580bb9279979e01"
     },
     {
       "path": "templates/desktop-app/app/main.cpp",
       "normalization": "lf",
-      "bytes": 5503,
-      "sha256": "10eb86909dba16f3ef4ae729708ade1e7f21c645317656019834b64091826b8e"
+      "bytes": 6790,
+      "sha256": "8e76226b8767d5075ead973291d5920d4aa0d4344fb14c6df585d0c6b9bdb599"
     },
     {
       "path": "templates/desktop-app/contracts/app.contract.json",
       "normalization": "lf",
-      "bytes": 308,
-      "sha256": "c34d0cba5aa1efbee4c90fd91ebfb19a8dfe468a4dbe8bc2d6e72130524c1370"
+      "bytes": 1066,
+      "sha256": "b5ded2e0b57b759aee222622be556fd8a7c401030595b1fcc17b64d67c34aa39"
     },
     {
       "path": "templates/desktop-app/resources/app.manifest",
@@ -1843,8 +1861,8 @@
     {
       "path": "templates/desktop-app/web/src/main.tsx",
       "normalization": "lf",
-      "bytes": 2185,
-      "sha256": "a01c7ebd25eefdf10797f96d66cb8d58e7bbc94eac9139057d0a2b4e438b84d2"
+      "bytes": 4296,
+      "sha256": "ee8d45663f61bf383f62134dcbb6a1e11f009a31be73a4660d40ff4fdb07b9c0"
     },
     {
       "path": "templates/desktop-app/web/src/native.ts",
@@ -1999,8 +2017,8 @@
     {
       "path": "tests/native/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 1340,
-      "sha256": "5962cfd3a65f91f6c0f5becd2d7bc1e7fad88bdd65e3f368ff2b71ef973e5326"
+      "bytes": 1816,
+      "sha256": "2de1fc363d1b2d1fb36d60ba6918dd626bb5b773adba55a5a9ac3c04dd9706e9"
     },
     {
       "path": "tests/native/bridge_budget_tests.cpp",
@@ -2017,8 +2035,14 @@
     {
       "path": "tests/native/sdk_contract_tests.cpp",
       "normalization": "lf",
-      "bytes": 2803,
-      "sha256": "0b4d6a0cb7c8e5fb6321967249016bfa14265fa9fec23c3fe9f582410d04c020"
+      "bytes": 4157,
+      "sha256": "c43ed29ff7b04bb90359a5ca48eef3a6c4a7456d9a98d89e837bb065b2c58819"
+    },
+    {
+      "path": "tests/native/task_service_tests.cpp",
+      "normalization": "lf",
+      "bytes": 10782,
+      "sha256": "c41970c07f83e309387d9f20ee8ace8aad305ba7554effc210c23afac4ba92e1"
     },
     {
       "path": "tests/native/task_store_capacity_tests.cpp",

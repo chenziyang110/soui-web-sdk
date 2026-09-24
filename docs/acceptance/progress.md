@@ -111,3 +111,5 @@ preview.5 固定载荷的[x86 Bridge 长循环复测](../../verification/product
 [preview.5 原生任务容量测试](../../verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/README.md)进一步在 Win7 SP1 x86 QEMU 客体执行：来宾 6.1.7601/32-bit/SP1 身份、测试 EXE SHA-256、退出码 0 与标准输出由五个串口文件逐项复核。它覆盖原生任务表 1,024 上限、取消回收、并发准入和扫描拒绝；首次临时载荷缺 DLL 的加载失败已保留并在补齐后重跑。公共任务业务链、长稳与物理目标机仍未通过。
 
 [preview.5 最小宿主包体积测量](../../verification/production-validation/benchmark-size-preview5-2026-09-24/README.md)把同一份页面装入 x64 Release SOUI 和 Electron 44.4.4 的独立运行目录，逐文件核对散列，使用相同 ZIP 算法并测试压缩包。SOUI/Electron 解压大小为 38,765,828/386,055,337 字节，ZIP 为 14,533,916/154,312,842 字节。两端从打包目录执行 S01 结果落盘探针并退出 0。探针不含真实交互或呈现，Electron 标准错误有 GPU 状态告警；该测量只支持最小宿主体积差异，不能作为性能或生产通过结论。
+
+公共 SDK 长任务服务开发分支新增已认证任务启动、查询、订阅、协作取消与有界工作队列，并在模板接入可取消计数任务。x86/x64 Release 原生任务契约、模板 x86/x64 编译、模板 Chrome 49 页面构建、TypeScript 检查和 Web 客户端单元测试通过；这些是开发树验证，不属于 preview.5 冻结包。真实页面操作、独立安装工程、Demo V01、Win7 SP1 x86 客体及长时负载尚未对这份新源码执行，`releaseReady` 保持 false。宿主 preview.5 的 8 小时诊断与已准备的客体混合场景也仍分别按原载荷身份判定，不合并为新功能的通过结果。

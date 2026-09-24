@@ -12,6 +12,8 @@
 #include <fstream>
 #include <memory>
 #include <algorithm>
+#include <chrono>
+#include <thread>
 
 namespace {
 using json=nlohmann::json;
@@ -84,6 +86,24 @@ int run(HINSTANCE instance,bool smoke) {
     if(!value.is_object() || value.size()!=1 || !value.contains("name") || !value["name"].is_string() || value["name"].get_ref<const std::string&>().size()>128)
       return std::string{"{\"error\":\"E_INVALID_PARAMS\",\"message\":\"Expected a name of at most 128 bytes.\"}"};
     return json{{"message","Hello, "+value["name"].get<std::string>()+". This response came from C++."}}.dump();
+  });
+  (void)bridge.register_task_handler("app.count", [](const soui::runtime::task_invocation& invocation,
+                                                     const soui::runtime::task_control& control) {
+    const auto input=json::parse(invocation.parameters_json, nullptr, false);
+    if(!input.is_object() || input.size()!=1 || !input.contains("steps") ||
+       !input["steps"].is_number_integer() || input["steps"].get<int>()<1 ||
+       input["steps"].get<int>()>20)
+      return soui::runtime::task_outcome{soui::runtime::result_kind::failure,"{}","Expected 1–20 steps."};
+    const int steps=input["steps"].get<int>();
+    for(int index=1;index<=steps;++index){
+      if(control.cancellation_requested())
+        return soui::runtime::task_outcome{soui::runtime::result_kind::task_cancelled,"{}","Cancelled."};
+      std::this_thread::sleep_for(std::chrono::milliseconds(50));
+      if(!control.report_progress(static_cast<std::uint32_t>(index*100/steps),"Counting"))
+        return soui::runtime::task_outcome{soui::runtime::result_kind::task_cancelled,"{}","Cancelled."};
+    }
+    return soui::runtime::task_outcome{soui::runtime::result_kind::success,
+                                      json{{"count",steps}}.dump(),"Completed."};
   });
   soui::sdk::soui_miniblink_host host(std::make_unique<soui::sdk::dynamic_miniblink_adapter>());
   starter_window window(host,smoke,log);

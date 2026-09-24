@@ -45,7 +45,8 @@ class task_store {
                                            bool* duplicate = nullptr, bool* conflict = nullptr,
                                            bool* capacity = nullptr);
   [[nodiscard]] bool mark_running(const std::string& task_id);
-  [[nodiscard]] bool update_progress(const std::string& task_id, std::uint32_t progress);
+  [[nodiscard]] bool update_progress(const std::string& task_id, std::uint32_t progress,
+                                     std::optional<std::string> message = std::nullopt);
   [[nodiscard]] bool observe_timeout(const std::string& task_id, std::string message = {});
   [[nodiscard]] bool request_cancel(const std::string& task_id);
   [[nodiscard]] bool confirm_cancelled(const std::string& task_id, std::string message = {});
