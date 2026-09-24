@@ -163,3 +163,5 @@ V02 Workbench 现提供可从首页和菜单进入的数据交互页，复用 El
 又从 curl 官方 7.61.1 标签和 IJG 官方 9a 压缩包[补录](../../verification/production-validation/kernel-notice-recovery-2026-09-25/README.md)两份原版配套文本，并保留原始散列及导入头文件的差异核对。OTS 等剩余声明、运行包实际链接组成及维护者审阅仍未完成，不能把源码文本补齐等同于二进制授权通过。
 
 2026-09-25 通过仓库所有者的 GitHub CLI [查询](../../verification/production-validation/repository-visibility-2026-09-25/observation.json)到 `chenziyang110/soui-web-sdk` 的可见性仍为 `PRIVATE`。[首方许可状态](../../LICENSE.md)也尚未选定；若以后公开，公开可见仍不等于获得 SDK/模板/Demo 的通用复用或再分发许可。生产交付及对外采用结论须把这一所有者决策列为独立发布门槛，不能由第三方声明文本的补录代替。
+
+导入的 OTS `ots.cc` 与官方 v5.0.0 仅有少量 Miniblink 适配差异；相应 [OTS 原版 `LICENSE` 已补录](../../verification/production-validation/kernel-notice-recovery-2026-09-25/README.md)。三份新增文本仍未完成整包授权审阅；`releaseReady=false`。

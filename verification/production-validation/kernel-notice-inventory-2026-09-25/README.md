@@ -23,7 +23,7 @@
 | `node/cares` | `third_party/sources/miniblink/node/LICENSE-nodejs` 含专门的 c-ares 条款段落 | `48c3b5ba35c8f6b670d6f9b554a0204fc42c14eedf2431bbf2418a407feb9f4d` | 核对 `node/cares` 与该条款所指来源是否一致 |
 | `libcurl.lib` | `third_party/sources/miniblink/third_party/libcurl/include/curl/curl.h` 明确要求随附 `COPYING`，导入的源码根目录原来未提供；[同版本上游原文现已补录](../kernel-notice-recovery-2026-09-25/README.md) | `7ef280780f9b89ee7b70d389a70a75ac4ddd33387fbee8647a1f3ed836533b40` | 核对实际链接、嵌套依赖与运行包声明 |
 | `libjpeg.lib` | `third_party/sources/miniblink/third_party/libjpeg/jpeglib.h` 指向随附 `README` 的分发条件，导入的源码根目录原来未提供；[IJG 9a 原文现已补录](../kernel-notice-recovery-2026-09-25/README.md) | `8e264a2a2b5aca66919d539ce8c401d468db8752e6b0e754dbba761745d92c2e` | 核对实际链接与运行包声明 |
-| `ots.lib` | `third_party/sources/miniblink/third_party/ots/include/opentype-sanitiser.h` 指向 `LICENSE`，但本次导入的 OTS 根目录未找到该文件 | `9f255a62df0fe07f350deab5735116438f99a527286ccaa893cb10889ac4d025` | 找回与精确源码版本匹配的完整 `LICENSE`，另核对 Brotli |
+| `ots.lib` | `third_party/sources/miniblink/third_party/ots/include/opentype-sanitiser.h` 指向 `LICENSE`，导入的 OTS 根目录原来未提供；[v5.0.0 上游原文现已补录](../kernel-notice-recovery-2026-09-25/README.md) | `9f255a62df0fe07f350deab5735116438f99a527286ccaa893cb10889ac4d025` | 核对实际链接、Brotli 及其他嵌套组件声明 |
 
 尤其不能混淆两个 zlib 输入：上述 `zlib.lib` 工程引用 Miniblink 内部的 `third_party/zlib`，该目录的 `LICENSE` 开头写 `version 1.2.4`；独立随包 `zlib1.dll` 在[依赖清单](../../../third_party/manifests/dependencies.json)中标为 1.2.11。单凭许可证开头或链接参数，仍无法断定最终 DLL 中实际选择的 zlib 对象版本。
 
