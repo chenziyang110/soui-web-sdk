@@ -14,7 +14,7 @@ foreach($path in @($qemu,$disk,(Join-Path $transfer 'SouiAcceptance.zip'),(Join-
 if(-not (Test-Path -LiteralPath (Join-Path $root 'mixed-soak-20260924\status.json') -PathType Leaf)){
   throw 'The host eight-hour validation has no terminal result yet'
 }
-if(Get-Process -Name SouiAcceptance,qemu-system-i386 -ErrorAction SilentlyContinue){
+if(Get-Process -Name SouiAcceptance,qemu-system-i386,qemu-system-x86_64 -ErrorAction SilentlyContinue){
   throw 'Another host acceptance or QEMU process is still running'
 }
 foreach($path in @($serial,$stdout,$stderr,$launch)){
