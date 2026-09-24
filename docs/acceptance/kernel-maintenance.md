@@ -15,6 +15,8 @@
 
 [两架构固定 DLL 的直接 PE 导入记录](../../verification/production-validation/kernel-imports-2026-09-25/README.md)已与待审阅散列核对：x86 为 17 个、x64 为 19 个直接导入 DLL 名称。它只补足动态导入这一层的机械证据，不覆盖静态链接、延迟/运行时加载，也不改变二进制授权 `unverified` 状态。
 
+[同散列 DLL 的链接参数记录](../../verification/production-validation/kernel-link-inputs-2026-09-25/README.md)从原始双架构 MSBuild 日志回放提取各 36 个库参数。x86 显式传入 `openssl.lib`，x64 没有显式传入；这不是 OpenSSL 在 x64 中缺席的证明，仍须分析默认库指令、实际链接成员与完整运行载荷。原始日志只在本地保留，公开记录保存其 SHA-256。
+
 OpenSSL 官方将 1.0.2 列为已结束常规支持的分支，另有扩展支持渠道。当前项目没有扩展支持或完整安全补丁覆盖的证据，因此不能把“能自行编译”解释为“有持续安全维护”。[OpenSSL 发布策略](https://openssl-library.org/policies/releasestrat/)（访问日期：2026-09-22）
 
 ## 阻止生产放行的缺口
