@@ -6,4 +6,4 @@
 
 [原始串口流](serial-export.txt)含 24 个文件及各自长度、SHA-256、Base64；[宿主校验脚本](Verify-AppSerial.ps1)复核帧、文件集、系统身份、关键载荷散列、退出码和日志终点，还原文件在 [results](results)。复核命令：`powershell -NoProfile -ExecutionPolicy Bypass -File Verify-AppSerial.ps1`。来宾[运行脚本](harness/run-preview5.cmd)、[文件/中文路径校验](harness/verify-apps.ps1)及[串口导出脚本](harness/export-serial.ps1)一并归档。来宾通过 ACPI 正常关机，QEMU 进程退出 0。
 
-这关闭 preview.5 在 Win7 SP1 x86 QEMU 的三项应用短启动/关闭切片。该虚拟机的四模式公共消费者结果仍对应 preview.4，不能沿用到新版；本次也未执行任务容量满载业务、物理设备、资源趋势、中文 IME/DPI、TLS/代理、完整 Demo V01–V06、安装升级、签名、8 小时混合负载或 Electron 等负载对照。`releaseReady=false`。
+这关闭 preview.5 在 Win7 SP1 x86 QEMU 的三项应用短启动/关闭切片；同版[四模式公共消费者三轮短测](../win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)另行归档。本次未执行任务容量满载业务、物理设备、资源趋势、中文 IME/DPI、TLS/代理、完整 Demo V01–V06、安装升级、签名、8 小时混合负载或 Electron 等负载对照。`releaseReady=false`。

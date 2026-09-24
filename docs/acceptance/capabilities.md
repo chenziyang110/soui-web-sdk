@@ -1,6 +1,6 @@
 # 公共能力与验收映射
 
-日期：2026-09-24。开发版本：`0.3.0-preview.5`。这是[完整方案](../roadmap/0.3-sdk-validation.md)的逐项执行入口，不是生产支持声明。preview.5 双架构构建与短测源码指纹为 `16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237`，见[任务容量证据](../../verification/production-validation/preview5-task-capacity-2026-09-24/README.md)；[本版 Win7 x86 三应用短测](../../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)独立归档。preview.4 固定包的四模式 Win7 QEMU 及生命周期证据保留原候选身份，不跨版本视为通过。
+日期：2026-09-24。开发版本：`0.3.0-preview.5`。这是[完整方案](../roadmap/0.3-sdk-validation.md)的逐项执行入口，不是生产支持声明。preview.5 双架构构建与短测源码指纹为 `16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237`，见[任务容量证据](../../verification/production-validation/preview5-task-capacity-2026-09-24/README.md)；本版 Win7 x86 的[三应用](../../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)与[四模式公共消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)短测独立归档。preview.4 的千次生命周期证据保留原候选身份，不跨版本视为通过。
 
 状态为“待实现、部分实现、已实现待验收、通过当前范围、失败、待外部验证”。`通过当前范围` 只对应本行所列场景；同组尚有缺口时，整组不通过。不把 Demo 的注册或 TypeScript 声明当作公共模块实现。
 
@@ -8,7 +8,7 @@
 
 | ID | 公共入口/所有权 | 当前状态与证据 | 下一项必需验证 |
 |---|---|---|---|
-| V01-01 连接与关联 | `json_bridge`、`connectSouiNative`、`SouiNativeClientImpl.call` | 已修复 x86 `bool` 返回 ABI；preview.4 固定包两架构 Bridge 1,000 轮及四模式短回归通过，模板/Demo 双架构完整应用短回归通过；[Win7 SP1 x86 QEMU Bridge 3 轮](../../verification/production-validation/win7-sp1-x86-qemu-2026-09-24/README.md)通过 | 真实业务方法、资源关闭门槛、物理 Win7 x86 设备与完整业务链 |
+| V01-01 连接与关联 | `json_bridge`、`connectSouiNative`、`SouiNativeClientImpl.call` | 已修复 x86 `bool` 返回 ABI；preview.4 固定包两架构 Bridge 1,000 轮及四模式短回归通过。preview.5 [Win7 SP1 x86 QEMU Bridge 3 轮](../../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)与模板/Demo 三入口短测通过 | 真实业务方法、资源关闭门槛、物理 Win7 x86 设备与完整业务链 |
 | V01-02 异步响应 | Host Bridge worker | 双架构公共消费者短测通过 32 并发关联、200 ms 原生等待期间页面定时器推进；这不等于已测输入延迟或公共长任务 | 真实输入/呈现延迟、公共任务服务、长时间会话 |
 | V01-03 事件与释放 | `SouiNativePort.onEvent`；Host event sink | 部分实现：模板已接入真实事件连接器；统一 dispose、可观察订阅、迟到建立补偿和幂等移除已有单元验证 | 原生任务服务的真实事件、重载/关闭竞态、丢失确认后的会话清理 |
 | V01-04 任务与取消 | `task_store` 为底层状态；Demo 注册 `task.*` | 部分实现：不是开箱可用的公共任务模块 | 公共服务独立消费、进度、取消/完成竞态、原生终态、任务中关窗 |
