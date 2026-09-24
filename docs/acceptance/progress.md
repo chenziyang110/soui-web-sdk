@@ -151,3 +151,5 @@ V03 目录选择器现作为可选公共 Web 模块注册，模板提供真实�
 为目录模块另编译了 x86/x64 可选 `soui_directory_dialog_tests --cancel`：真实 HWND 由 UI 线程持有，独立 STA 线程经公共 `json_bridge` 打开 Shell 对话框，观察到对话框后发送关闭并核对取消返回；15 秒无终态时进程失败退出，防止客体脚本无限挂住。该可选 GUI 场景在宿主长测期间只完成编译，尚无实际运行证据；正向中文目录选择仍待模板和 Win7 客体验证。
 
 上述 x86 可选程序已冻结为[Win7 SP1 x86 目录对话框客体短测](../../verification/production-validation/win7-sp1-x86-qemu-directory-2026-09-25/README.md)，传输散列、脚本语法、串口校验合成样本和宿主未结束时拒绝启动均已核对。真实客体尚未运行；它仅覆盖取消路径，不替代模板实际点击或正向中文路径验收。
+
+V02 Workbench 现提供可从首页和菜单进入的数据交互页，复用 Electron 对照页的确定性万条数据生成器，组合虚拟滚动、中文输入事件、动效、窗口尺寸和公共 SDK 长任务入口。严格 TypeScript、legacy 与普通 Web 构建均退出 0，原始日志及产物散列见[编译预检](../../verification/production-validation/v02-workbench-preflight-2026-09-25/README.md)；宿主八小时长测期间没有执行另一场 GUI，因此实际滚动、IME、缩放、任务并行和 Win7 x86 仍待验收，不能把编译算作 V02 通过。

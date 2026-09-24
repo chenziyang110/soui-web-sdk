@@ -20,6 +20,7 @@ import 'primereact/resources/themes/lara-light-blue/theme.css';
 import './styles.css';
 import { ProductHome, type ProductPage } from './product-home';
 import { ProductTitlebar, ProductFeedback, type WindowAction } from './product-shell';
+import { DataInteractionLab } from './data-interaction-lab';
 import './product.css';
 import type { MediaPreset } from './media-workbench';
 import { FileInsight } from '../fileinsight/src/FileInsight';
@@ -33,7 +34,7 @@ type WorkloadResult = { state?: string; progress?: number; message?: string; met
 const initialReactPage = (): Page => {
   if (typeof window === 'undefined') return 'home';
   const requested = (window as Window & { __souiInitialPage?: string }).__souiInitialPage;
-  const allowed: Page[] = ['home', 'converter', 'video4k', 'components', 'motion', 'cad', 'compat', 'fileinsight'];
+  const allowed: Page[] = ['home', 'converter', 'video4k', 'components', 'motion', 'data', 'cad', 'compat', 'fileinsight'];
   if (requested === 'fileinsight-sample' || requested === 'fileinsight-sample-alt') {
     const host = window as Window & { __souiFileInsightAutoSample?: boolean; __souiFileInsightAutoAlternateSample?: boolean };
     host.__souiFileInsightAutoSample = true;
@@ -389,7 +390,7 @@ function App() {
     if (!nativeClient) return;
     const labels: Record<Page, string> = {
       home: '首页', converter: '视频转换', video4k: '4K 播放器', components: '组件展厅',
-      motion: '动效体验', cad: 'CAD 工作台', compat: '运行环境', fileinsight: '文件洞察',
+      motion: '动效体验', data: '万条数据', cad: 'CAD 工作台', compat: '运行环境', fileinsight: '文件洞察',
     };
     // Keep the Windows caption owned by the native host while navigation stays
     // in React. This exercises the standard window contract without exposing
@@ -397,7 +398,7 @@ function App() {
     void nativeClient.call('desktop.window.setTitle', { title: `迅捷视频转换器 · ${labels[page]}` }).catch(() => undefined);
   }, [page]);
   const componentsFallback = <main className="rx-page rx-components"><div className="rx-component-head"><div><small>COMPONENT GALLERY</small><h1>组件工作台加载中…</h1></div></div></main>;
-  return <><ProductTitlebar page={page} navigate={setPage} action={(method) => { void windowAction(method); }} notify={setNotice} />{page === 'home' ? <ProductHome navigate={setPage} notify={setNotice} openMedia={useAppStore.getState().openMedia} /> : page === 'converter' ? <Converter /> : page === 'video4k' ? <VideoStudio /> : page === 'motion' ? <MotionLab /> : page === 'cad' ? <CadStudio /> : page === 'compat' ? <WebCompat /> : page === 'fileinsight' ? <FileInsight client={nativeClient} onBack={() => setPage('home')} /> : <Suspense fallback={componentsFallback}><LazyComponentsPage renderer={renderer} client={nativeClient} onNotice={setNotice} /></Suspense>}<ProductFeedback notice={notice} clear={clearNotice} /></>;
+  return <><ProductTitlebar page={page} navigate={setPage} action={(method) => { void windowAction(method); }} notify={setNotice} />{page === 'home' ? <ProductHome navigate={setPage} notify={setNotice} openMedia={useAppStore.getState().openMedia} /> : page === 'converter' ? <Converter /> : page === 'video4k' ? <VideoStudio /> : page === 'motion' ? <MotionLab /> : page === 'data' ? <DataInteractionLab task={<PublicSdkTask />} /> : page === 'cad' ? <CadStudio /> : page === 'compat' ? <WebCompat /> : page === 'fileinsight' ? <FileInsight client={nativeClient} onBack={() => setPage('home')} /> : <Suspense fallback={componentsFallback}><LazyComponentsPage renderer={renderer} client={nativeClient} onNotice={setNotice} /></Suspense>}<ProductFeedback notice={notice} clear={clearNotice} /></>;
 }
 
 export function mountReactSurface(client?: SouiNativeClientImpl | null): void {

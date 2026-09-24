@@ -8,6 +8,7 @@ export const productPages: { id: ProductPage; label: string; detail: string; ico
   { id: 'video4k', label: '4K 播放器', detail: '本地播放与预览', icon: 'play' },
   { id: 'components', label: '组件展厅', detail: '表单、表格与常用控件', icon: 'ratio' },
   { id: 'motion', label: '动效体验', detail: '交互与帧率观察', icon: 'speed' },
+  { id: 'data', label: '万条数据', detail: '滚动、输入与后台任务', icon: 'ratio' },
   { id: 'cad', label: 'CAD 工作台', detail: '图形视口', icon: 'shape' },
   { id: 'compat', label: '运行环境', detail: '兼容能力与版本', icon: 'record' },
   { id: 'fileinsight', label: '文件洞察', detail: '原生目录统计', icon: 'insight' },
