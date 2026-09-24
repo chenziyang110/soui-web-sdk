@@ -102,6 +102,12 @@ preview.5 的[任务容量修复证据](../../verification/production-validation
 
 preview.5 固定载荷的[x86 Bridge 长循环复测](../../verification/production-validation/preview5-lifecycle-2026-09-24/README.md)有两次千轮目标失败、三次同载荷诊断成功；失败时未抓到线程栈。为缩小下次复现范围，公共验收消费者增加可选的挂载阶段日志。另一源码指纹的[x86 1,000 轮阶段诊断](../../verification/production-validation/preview5-mount-phase-2026-09-24/README.md)完成全部操作且无超时，10,030 条阶段事件和观察器报告均归档；它不替代原载荷失败样本。生产零超时、内存/句柄所有权及 Win7 客体长稳仍未通过。
 
+随后监督器增加[超时现场保存](../../verification/production-validation/preview5-timeout-diagnostics-2026-09-24/README.md)：记录已读日志偏移、未读内容和最后原生事件；配置 x86 调试器时，在终止进程前尝试抓所有线程栈及完整转储。受控进程的抓取测试通过。该新来源的 x86 Bridge 长测连续两次完成 1,000 轮，均未触发故障抓取，因此原两次超时的根因和生产门槛没有改变。
+
+原失败源码在独立目录重新编译后又完成一次 x86 Bridge 1,000 轮，外部 8 秒观察器未见停滞；新构建载荷 SHA-256 与失败载荷不同，不能合并为原载荷成功样本。原失败保持两个，故障线程栈仍缺失。
+
+[preview.5 新诊断源码的 Win7 SP1 x86 QEMU 100 次重载](../../verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/README.md)进一步在来宾 NTFS 完成 3 次预热 + 100 次测量、109 个生命周期步骤，退出码 0；15 个串口文件及系统/二进制身份经宿主复核。Private Bytes 预热末点到最后一轮增量 14,876,672 字节，低于 16 MiB 数值线，但句柄与线程分别增加 57、4，资源门仍未评估。这是虚拟机与不同源码指纹的重载证据，不能替代原 Bridge 失败定位或物理设备验收。
+
 [preview.5 原生任务容量测试](../../verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/README.md)进一步在 Win7 SP1 x86 QEMU 客体执行：来宾 6.1.7601/32-bit/SP1 身份、测试 EXE SHA-256、退出码 0 与标准输出由五个串口文件逐项复核。它覆盖原生任务表 1,024 上限、取消回收、并发准入和扫描拒绝；首次临时载荷缺 DLL 的加载失败已保留并在补齐后重跑。公共任务业务链、长稳与物理目标机仍未通过。
 
 [preview.5 最小宿主包体积测量](../../verification/production-validation/benchmark-size-preview5-2026-09-24/README.md)把同一份页面装入 x64 Release SOUI 和 Electron 44.4.4 的独立运行目录，逐文件核对散列，使用相同 ZIP 算法并测试压缩包。SOUI/Electron 解压大小为 38,765,828/386,055,337 字节，ZIP 为 14,533,916/154,312,842 字节。两端从打包目录执行 S01 结果落盘探针并退出 0。探针不含真实交互或呈现，Electron 标准错误有 GPU 状态告警；该测量只支持最小宿主体积差异，不能作为性能或生产通过结论。

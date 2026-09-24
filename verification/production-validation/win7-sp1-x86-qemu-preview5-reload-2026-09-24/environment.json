@@ -1,0 +1,55 @@
+{
+  "schema": "soui.win7-x86-qemu-validation.v1",
+  "date": "2026-09-24",
+  "guest": {
+    "caption": "Microsoft Windows 7 Enterprise",
+    "version": "6.1.7601",
+    "servicePackMajorVersion": 1,
+    "architecture": "32-bit",
+    "network": "none",
+    "reportFileSystem": "guest C: NTFS"
+  },
+  "hypervisor": {
+    "name": "QEMU",
+    "version": "11.1.0",
+    "binarySha256": "DBBF7242E5B0D295E54336C69034A266EE1CC117D7AC6E3060E38BB61651200B",
+    "machine": "pc",
+    "accelerator": "tcg",
+    "cpu": "core2duo",
+    "virtualCpus": 2,
+    "memoryMiB": 2048,
+    "display": "std VGA",
+    "systemDisk": "32 GiB qcow2, IDE, snapshot mode",
+    "transfer": "read-only QEMU vvfat D: ZIP; guest C: NTFS runtime and results; COM1 serial export"
+  },
+  "candidate": {
+    "version": "0.3.0-preview.5",
+    "architecture": "x86",
+    "configuration": "Release",
+    "sourceSha256": "9c2fbfe61094b2a5dbf86e58c010736df2c772aed40295a3103ad12d17005d3c",
+    "sdkBuildId": "5ecdd31c-2a38-4e77-b662-80c1fa98d975",
+    "consumerBuildId": "d0e3b526-2cd7-4ae6-9b22-e929c3c806f9",
+    "payloadSha256": "ed3c7c823b6afa3a42d0fa7786f512d1425447c687750aedf9db1e660707cb15",
+    "acceptanceExeSha256": "38127DB6630750B9FB1F71C66995F993879482E0CD60DA0833486D5F0C2AD0F8",
+    "souiDllSha256": "1EA0FF009B1EA6B513EE94A252BE059A9A755DF75A67043B25FF2F5394F040DE",
+    "webEngineDllSha256": "3B9071413F704958FB5708B8BB065785A6C3ED03B7FD0FB04F5952201E5FE4F7"
+  },
+  "transfer": {
+    "runtimeZipSha256": "66BAC212641EC7D9EA4066F1CCA8C724A5CD241DF0A86CBE1ED4619A3E37D8FA",
+    "runtimeFiles": 76,
+    "serialFilesVerified": 15,
+    "serialExportSha256": "FAC4BD6F4189BAA6ACE0480CAEC8A02C6621B65B7D39E46A2F1F66F2FFD805D6"
+  },
+  "run": {
+    "mode": "reload",
+    "cycles": 100,
+    "warmup": 3,
+    "settleMs": 1000,
+    "stepTimeoutMs": 60000,
+    "exitCode": 0,
+    "completedSteps": 109,
+    "elapsedMs": 271974,
+    "resourceGate": "not-evaluated",
+    "releaseReady": false
+  }
+}

@@ -145,6 +145,10 @@ x64 候选 `2ed34e54c26fe074e020cee6d179ba2330dff7865db6fb3b75df039f4c69e565` �
 
 监督器现于超时瞬间保存 `timeout-observation.json`，记录其已读原生日志偏移、磁盘文件长度、最后解析事件及末尾内容，以区分原生停滞与观察延迟。可选的 x86 `cdb.exe` 抓取配置和数据范围见[独立消费者说明](../../tests/acceptance-app/README.md)。真实 x86 调试器已在受控临时进程生成 dump 和线程栈；它尚未捕获 SDK 挂载失败现场，因此仍不能定位前述两次超时根因。抓取失败、未配置和超时均保持失败判定。
 
+[现场保存诊断及两次新载荷复测](../../verification/production-validation/preview5-timeout-diagnostics-2026-09-24/README.md)均保留原 20 秒门限，分别完成 1,000 次 Bridge、无超时；新源码指纹与最初失败的冻结载荷不同。复测没有触发调试器，原故障仍未定位。分段 Private Bytes 中位数在两次复测中均从首百轮到末百轮上行，资源门继续为 `not-evaluated`。
+
+同一诊断记录还保留原失败源码重新编译后的另一个 x86 二进制载荷千轮成功对照，其八秒旁路观察器未触发；原两次失败仍然有效。随后[Win7 SP1 x86 QEMU 新载荷 100 次重载](../../verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/README.md)完成 3 次预热、100 次测量与 109 个步骤，Private Bytes 预热末点 28,459,008→最后 43,335,680 字节，增量低于 16 MiB 数值线；句柄 188→245、线程 10→14，Runtime 关闭后 Private Bytes 6,270,976。它仅关闭 Win7 x86 虚拟机中这一来源的重载操作和内存端点数值观察，整体 `resourceGate` 仍为 `not-evaluated`。
+
 ## preview.4 固定包的生命周期复测
 
 `0.3.0-preview.4` 固定包源码指纹 `f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9`，x64/x86 内核分别为 `0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816` / `3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7`。新[原始证据及分段观察](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)与上面的 preview.3 候选分开，不跨内核混算。
