@@ -155,3 +155,5 @@ V03 目录选择器现作为可选公共 Web 模块注册，模板提供真实�
 V02 Workbench 现提供可从首页和菜单进入的数据交互页，复用 Electron 对照页的确定性万条数据生成器，组合虚拟滚动、中文输入事件、动效、窗口尺寸和公共 SDK 长任务入口。严格 TypeScript、legacy 与普通 Web 构建均退出 0，原始日志及产物散列见[编译预检](../../verification/production-validation/v02-workbench-preflight-2026-09-25/README.md)；宿主八小时长测期间没有执行另一场 GUI，因此实际滚动、IME、缩放、任务并行和 Win7 x86 仍待验收，不能把编译算作 V02 通过。
 
 最新工作树上的[双架构非桌面回归](../../verification/production-validation/latest-unit-regression-2026-09-25/README.md)各有 9 项包/交付身份测试通过、59 项 Web/协议测试中 58 项通过且 1 项因调试器缺失跳过、6 项 CTest 通过，均为 0 失败。原生二进制沿用既有构建，本轮未重编译；未运行桌面或 Win7 客体，因此仅记录回归范围内的通过，不改变生产准入状态。
+
+05:54 宿主八小时测试仍在执行第 1,300 轮之后的混合循环，另有外部 x64 QEMU 正运行，约 5.0 GB 工作集。[第七次外部负载观察](../../verification/production-validation/preview5-mixed-soak-interference-2026-09-25/external-load-observation-7.json)已保留精确进程身份和时间；该长测只能继续用于操作完成率与终态判定，隔离资源及性能门槛仍须重新运行。
