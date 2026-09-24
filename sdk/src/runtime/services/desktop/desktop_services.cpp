@@ -1,7 +1,8 @@
 #include <soui/runtime/services/desktop/desktop_services.h>
 #include <soui/runtime/services/desktop/window_commands.h>
 
-#include <cstddef>
+#include "unicode_conversion.h"
+
 #include <cstring>
 
 #ifdef _WIN32
@@ -39,31 +40,6 @@ desktop_response require_gesture(const desktop_request_context& context) {
   return {result_kind::success, {}, {}, {}};
 }
 
-#ifdef _WIN32
-std::wstring utf8_to_wide(const std::string& value) {
-  if (value.empty()) return {};
-  const int length = MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, value.data(),
-                                        static_cast<int>(value.size()), nullptr, 0);
-  if (length <= 0) return {};
-  std::wstring result(static_cast<std::size_t>(length), L'\0');
-  MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS, value.data(), static_cast<int>(value.size()),
-                      result.data(), length);
-  return result;
-}
-
-std::string wide_to_utf8(const wchar_t* value) {
-  if (value == nullptr) return {};
-  const int length = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, value, -1, nullptr, 0,
-                                        nullptr, nullptr);
-  if (length <= 1) return {};
-  std::string result(static_cast<std::size_t>(length - 1), '\0');
-  WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, value, -1, result.data(), length - 1, nullptr,
-                      nullptr);
-  return result;
-}
-
-#endif
-
 }  // namespace
 
 desktop_response directory_picker::open(void* owner, const desktop_request_context& context,
@@ -87,7 +63,9 @@ desktop_response directory_picker::open(void* owner, const desktop_request_conte
   const bool resolved = SHGetPathFromIDListW(selected, path) != FALSE;
   CoTaskMemFree(selected);
   if (!resolved) return denied("E_NATIVE_FAILURE", "The selected folder could not be resolved.");
-  return {result_kind::success, {}, {}, wide_to_utf8(path)};
+  const auto utf8_path = detail::wide_to_utf8(path);
+  if (!utf8_path) return denied("E_NATIVE_FAILURE", "The selected folder path is not valid Unicode.");
+  return {result_kind::success, {}, {}, *utf8_path};
 #else
   (void)owner;
   (void)initial_directory;
@@ -101,8 +79,9 @@ desktop_response window_service::set_title(void* window, const desktop_request_c
   if (!capability.ok()) return capability;
 #ifdef _WIN32
   if (window == nullptr) return denied("E_INVALID_ARGUMENT", "A window handle is required.");
-  const std::wstring wide_title = utf8_to_wide(title);
-  if (!SetWindowTextW(static_cast<HWND>(window), wide_title.c_str())) {
+  const auto wide_title = detail::utf8_to_wide(title);
+  if (!wide_title) return denied("E_INVALID_ARGUMENT", "The window title must be valid UTF-8 text.");
+  if (!SetWindowTextW(static_cast<HWND>(window), wide_title->c_str())) {
     return denied("E_NATIVE_FAILURE", "The native window title could not be updated.");
   }
   return {result_kind::success, {}, {}, {}};
@@ -210,9 +189,10 @@ desktop_response clipboard_service::write_text(const desktop_request_context& co
   const auto gesture = require_gesture(context);
   if (!gesture.ok()) return gesture;
 #ifdef _WIN32
-  const std::wstring wide_text = utf8_to_wide(text);
+  const auto wide_text = detail::utf8_to_wide(text);
+  if (!wide_text) return denied("E_INVALID_ARGUMENT", "Clipboard text must be valid UTF-8 text.");
   if (!OpenClipboard(nullptr)) return denied("E_NATIVE_FAILURE", "The clipboard is busy.");
-  const SIZE_T bytes = (wide_text.size() + 1U) * sizeof(wchar_t);
+  const SIZE_T bytes = (wide_text->size() + 1U) * sizeof(wchar_t);
   HGLOBAL memory = GlobalAlloc(GMEM_MOVEABLE, bytes);
   if (memory == nullptr) {
     CloseClipboard();
@@ -224,7 +204,7 @@ desktop_response clipboard_service::write_text(const desktop_request_context& co
     CloseClipboard();
     return denied("E_NATIVE_FAILURE", "Clipboard memory could not be locked.");
   }
-  std::memcpy(target, wide_text.c_str(), bytes);
+  std::memcpy(target, wide_text->c_str(), bytes);
   GlobalUnlock(memory);
   if (!EmptyClipboard() || SetClipboardData(CF_UNICODETEXT, memory) == nullptr) {
     GlobalFree(memory);
