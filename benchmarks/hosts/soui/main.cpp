@@ -233,10 +233,21 @@ int run(int argc, wchar_t** argv) {
   description.lpszClassName = window_class;
   description.hCursor = LoadCursorW(nullptr, IDC_ARROW);
   if (!RegisterClassExW(&description)) throw std::runtime_error("Cannot register benchmark window class");
+  // Electron requests a 1100 x 720 content area. Win32 CreateWindowExW takes
+  // outer dimensions, so include the non-client frame before creating ours.
+  RECT outer{0, 0, 1100, 720};
+  if (!AdjustWindowRectEx(&outer, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, FALSE, 0))
+    throw std::runtime_error("Cannot size benchmark content area");
   const auto handle = CreateWindowExW(0, window_class, L"SOUI SDK benchmark", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                                      CW_USEDEFAULT, CW_USEDEFAULT, 1100, 720, nullptr, nullptr,
+                                      CW_USEDEFAULT, CW_USEDEFAULT, outer.right - outer.left,
+                                      outer.bottom - outer.top, nullptr, nullptr,
                                       GetModuleHandleW(nullptr), &window);
   if (!handle) throw std::runtime_error("Cannot create benchmark window");
+  RECT content{};
+  if (!GetClientRect(handle, &content) || content.right != 1100 || content.bottom != 720) {
+    DestroyWindow(handle);
+    throw std::runtime_error("Benchmark content area differs from the paired Electron host");
+  }
   window.set_handle(handle);
   soui::sdk::host_config config;
 #ifdef _WIN64
