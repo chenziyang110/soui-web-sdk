@@ -159,3 +159,5 @@ V02 Workbench 现提供可从首页和菜单进入的数据交互页，复用 El
 05:54 宿主八小时测试仍在执行第 1,300 轮之后的混合循环，另有外部 x64 QEMU 正运行，约 5.0 GB 工作集。[第七次外部负载观察](../../verification/production-validation/preview5-mixed-soak-interference-2026-09-25/external-load-observation-7.json)已保留精确进程身份和时间；该长测只能继续用于操作完成率与终态判定，隔离资源及性能门槛仍须重新运行。
 
 [固定内核的源码声明材料清单](../../verification/production-validation/kernel-notice-inventory-2026-09-25/README.md)现补充定位到 libxml、libpng 和 Node c-ares 的仓内文本，同时确认导入的 libcurl、libjpeg、OTS 头文件指向本次导入源码缺少的配套许可文件。此发现只缩小再分发审查的待办范围；实际链接成员、缺失文本的精确来源、运行包声明和维护者签署仍未完成，二进制授权状态维持 `unverified`。
+
+又从 curl 官方 7.61.1 标签和 IJG 官方 9a 压缩包[补录](../../verification/production-validation/kernel-notice-recovery-2026-09-25/README.md)两份原版配套文本，并保留原始散列及导入头文件的差异核对。OTS 等剩余声明、运行包实际链接组成及维护者审阅仍未完成，不能把源码文本补齐等同于二进制授权通过。
