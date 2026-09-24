@@ -1,6 +1,6 @@
 # 公共能力与验收映射
 
-日期：2026-09-24。开发版本：`0.3.0-preview.5`。这是[完整方案](../roadmap/0.3-sdk-validation.md)的逐项执行入口，不是生产支持声明。preview.5 双架构构建与短测源码指纹为 `16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237`，见[任务容量证据](../../verification/production-validation/preview5-task-capacity-2026-09-24/README.md)；preview.4 固定包的内核散列及 Win7 QEMU、生命周期证据保留原候选身份，不跨版本视为通过。
+日期：2026-09-24。开发版本：`0.3.0-preview.5`。这是[完整方案](../roadmap/0.3-sdk-validation.md)的逐项执行入口，不是生产支持声明。preview.5 双架构构建与短测源码指纹为 `16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237`，见[任务容量证据](../../verification/production-validation/preview5-task-capacity-2026-09-24/README.md)；[本版 Win7 x86 三应用短测](../../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)独立归档。preview.4 固定包的四模式 Win7 QEMU 及生命周期证据保留原候选身份，不跨版本视为通过。
 
 状态为“待实现、部分实现、已实现待验收、通过当前范围、失败、待外部验证”。`通过当前范围` 只对应本行所列场景；同组尚有缺口时，整组不通过。不把 Demo 的注册或 TypeScript 声明当作公共模块实现。
 
@@ -12,7 +12,7 @@
 | V01-02 异步响应 | Host Bridge worker | 双架构公共消费者短测通过 32 并发关联、200 ms 原生等待期间页面定时器推进；这不等于已测输入延迟或公共长任务 | 真实输入/呈现延迟、公共任务服务、长时间会话 |
 | V01-03 事件与释放 | `SouiNativePort.onEvent`；Host event sink | 部分实现：模板已接入真实事件连接器；统一 dispose、可观察订阅、迟到建立补偿和幂等移除已有单元验证 | 原生任务服务的真实事件、重载/关闭竞态、丢失确认后的会话清理 |
 | V01-04 任务与取消 | `task_store` 为底层状态；Demo 注册 `task.*` | 部分实现：不是开箱可用的公共任务模块 | 公共服务独立消费、进度、取消/完成竞态、原生终态、任务中关窗 |
-| V01-05 容量与错误 | Bridge 参数边界；Host 请求预算和 resolver；客户端等待上限 | preview.5 的 `task_store` 硬上限、重复/冲突、取消占位、并发准入和扫描 `E_BUSY` 的 x86/x64 测试通过；模板/Workbench 三入口短测也通过。此前公共消费者覆盖 256 普通请求上限、控制容量和错误恢复 | 直接公共服务消费、实际排队超时与关闭竞态、Win7 上新版任务业务链 |
+| V01-05 容量与错误 | Bridge 参数边界；Host 请求预算和 resolver；客户端等待上限 | preview.5 的 `task_store` 硬上限、重复/冲突、取消占位、并发准入和扫描 `E_BUSY` 的 x86/x64 测试通过；模板/Workbench 三入口在[Win7 SP1 x86 QEMU](../../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)短测通过，但未在来宾触发满载。此前公共消费者覆盖 256 普通请求上限、控制容量和错误恢复 | 直接公共服务消费、实际排队超时与关闭竞态、Win7 上新版任务满载业务链 |
 | V01-06 会话长寿命 | `permission_store` / `json_bridge` | 已实现待验收：凭据存在期限，长会话恢复契约未闭环 | 超过 30 分钟的过期、续接与原任务归属；8 小时不能靠重载规避 |
 
 连接器与业务方法类型拆分按 [ADR-0004](../adr/0004-web-connection-lifecycle.md) 实施。默认 `SouiMethodMap` 仍包含 Demo 服务字段，最小模板通过自己的 `AppMethods` 接入；后续迁移须保留明确兼容说明。

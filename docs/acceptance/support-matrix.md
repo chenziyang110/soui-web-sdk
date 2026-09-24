@@ -16,7 +16,7 @@
 | 本机 x86 Release | preview.4 固定包公共消费者软件路径重载/销毁重建/三窗口/Bridge 各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)与[GPU 专项](gpu-lifecycle.md)分别记录；资源门和业务长稳未通过，也不是独立 32 位系统的兼容结论 |
 | 本机 x86/x64 Debug | 无 preview.4 当前源码新报告 | 待验证 |
 | Windows 10 指定版本/补丁 | 无本轮目标机报告 | 待登记设备和执行；不得推广本机结果 |
-| Windows 7 SP1 x86 | [QEMU 公共消费者短测](../../verification/production-validation/win7-sp1-x86-qemu-2026-09-24/README.md)：6.1.7601/32-bit、固定 preview.4 x86 Release，Bridge/重载/销毁重建/三窗口各 3 轮；[模板与 Workbench 短测](../../verification/production-validation/win7-sp1-x86-qemu-apps-2026-09-24/README.md)：模板、默认页、React 模式三项退出码 0，载荷散列、中文文件名和可见界面已核对 | 虚拟机软件路径、短生命周期及应用启动通过；物理设备、资源趋势、完整业务 Demo、安装签名、TLS 信任根/代理、中文 IME、DPI 与升级回退仍未通过或未验证，不能生产放行 |
+| Windows 7 SP1 x86 | [preview.5 QEMU 应用短测](../../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)：6.1.7601/32-bit、模板与 Workbench 默认/React 三项退出码 0，24 个串口导出文件及载荷散列已核对。此前[preview.4 公共消费者短测](../../verification/production-validation/win7-sp1-x86-qemu-2026-09-24/README.md)的 Bridge/重载/销毁重建/三窗口各 3 轮只对旧候选有效 | 新版虚拟机软件路径短启动/关闭通过；新版四模式公共消费者、任务满载业务、物理设备、资源趋势、完整 Demo、安装签名、TLS 信任根/代理、中文 IME、DPI 与升级回退仍未通过或未验证，不能生产放行 |
 | Windows 7 SP1 x64 | 只锁定了最低系统与 x86 必需组合；x64 是否为首批必需尚待产品矩阵确定 | 若列入支持，须另行完成目标机验收；不能沿用 x86 或 Windows 11 结果 |
 | 其他 Windows 11 版本/补丁 | 无本轮目标机报告 | 待登记设备和执行 |
 | 100/125/150/200% DPI | 未执行控件、坐标和输入定位验收 | 未验证 |
