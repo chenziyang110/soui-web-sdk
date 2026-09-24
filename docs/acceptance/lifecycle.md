@@ -143,6 +143,8 @@ x64 候选 `2ed34e54c26fe074e020cee6d179ba2330dff7865db6fb3b75df039f4c69e565` �
 
 独立消费者可在启动前设置 `SOUI_ACCEPTANCE_MOUNT_TRACE=1`。开启后，它在常规 `events.ndjson` 旁写入 `events.ndjson.phases.ndjson`，逐窗口、逐轮记录构造、原生窗口创建、Host 启动、窗口显示及页面 ready 等待的开始和结束；每条记录立即刷新，并包含 `GetTickCount64` 单调毫秒值。未设置时不创建阶段文件，常规验收事件及通过条件不变。此诊断只标出测试程序所在阶段，不能单独证明 SDK 或浏览器内核的根因；若挂载停滞，还须在监督超时前抓取原生线程栈，并与事件偏移和阶段末条记录对应。
 
+监督器现于超时瞬间保存 `timeout-observation.json`，记录其已读原生日志偏移、磁盘文件长度、最后解析事件及末尾内容，以区分原生停滞与观察延迟。可选的 x86 `cdb.exe` 抓取配置和数据范围见[独立消费者说明](../../tests/acceptance-app/README.md)。真实 x86 调试器已在受控临时进程生成 dump 和线程栈；它尚未捕获 SDK 挂载失败现场，因此仍不能定位前述两次超时根因。抓取失败、未配置和超时均保持失败判定。
+
 ## preview.4 固定包的生命周期复测
 
 `0.3.0-preview.4` 固定包源码指纹 `f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9`，x64/x86 内核分别为 `0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816` / `3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7`。新[原始证据及分段观察](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)与上面的 preview.3 候选分开，不跨内核混算。

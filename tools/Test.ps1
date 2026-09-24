@@ -13,7 +13,7 @@ if(-not $NativeOnly){
   if($LASTEXITCODE -ne 0){throw 'SDK package tests failed'}
   & node --test (Join-Path $root 'tests/sdk/delivery-identity.test.cjs') (Join-Path $root 'tests/native/miniblink_header_abi.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'Delivery identity tests failed'}
-  & node --test (Join-Path $root 'tests/web/sdk-client.test.mjs') (Join-Path $root 'tests/web/native-resolvers.test.mjs') (Join-Path $root 'tests/acceptance/runner.test.cjs')
+  & node --test (Join-Path $root 'tests/web/sdk-client.test.mjs') (Join-Path $root 'tests/web/native-resolvers.test.mjs') (Join-Path $root 'tests/acceptance/runner.test.cjs') (Join-Path $root 'tests/acceptance/timeout-diagnostics.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'Web SDK tests failed'}
   & ctest --test-dir $output -C $Configuration --output-on-failure
   if($LASTEXITCODE -ne 0){throw 'Native SDK contract tests failed'}

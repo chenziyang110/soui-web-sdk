@@ -23,4 +23,6 @@ powershell.exe -File tools/Test-Acceptance.ps1 -Architecture x64 -Scenario all -
 
 `node --test tests/acceptance/runner.test.cjs` 验证结果核验器拒绝崩溃、超时、缺失或重复步骤、错误窗口、参数不符和缺失采样。采样必须出现在对应步骤完成之后，提前记录 closed 样本不能通过。核验器通过本身不证明真实 SDK 场景通过。
 
+监督器一旦判定超时，会先写入 `timeout-observation.json`：超时原因、最后已解析事件、已读字节数、当时日志长度及末尾内容。需要在终止前抓取线程现场时，可选地设置 `SOUI_ACCEPTANCE_DEBUGGER` 为与被测进程同架构的 `cdb.exe` 绝对路径，并设置 `SOUI_ACCEPTANCE_DUMP_ROOT` 为有足够空间的仓库外绝对目录。监督器以本地符号路径附加，最多等待 20 秒，在该目录的 run-id 子目录保存完整 dump 和线程栈日志；结果中记录状态、长度及 SHA-256。未配置或抓取失败仍按原超时判失败并终止进程，不能将 dump 视作测试通过。dump 可能包含进程内数据，不进入公开源码包；本验收夹具仅用确定性测试数据。`node --test tests/acceptance/timeout-diagnostics.test.cjs` 默认测日志偏移；设置 `SOUI_TEST_CDB_X86` 和 `SOUI_TEST_DUMP_ROOT` 后会另用临时 x86 进程验证真实抓取链路。
+
 结果包含操作完成和资源采样，资源/长稳准入必须独立判定；3 轮探针不代表 100 次重载、1,000 次生命周期或 8 小时浸泡完成。当前公开原生入口的 bootstrap 返回字符串，普通调用返回 Promise，页面按该实际契约等待响应；取消、事件和完整释放能力仍需独立验收。
