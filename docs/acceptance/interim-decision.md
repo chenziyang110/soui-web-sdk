@@ -12,4 +12,6 @@ preview.5 的[固定载荷 x86 生命周期复测](../../verification/production
 
 [带阶段日志的另一诊断载荷](../../verification/production-validation/preview5-mount-phase-2026-09-24/README.md)在 x86 宿主完成 3 次预热加 1,000 次 Bridge、无超时，并保留 10,030 条逐阶段事件；第 977 轮这次通过，8 秒停滞观察器未触发。其源码/消费者载荷与上述冻结失败样本不同，不能用这次成功消除生产阻塞。该诊断运行的每百轮 Private Bytes 中位数约 79.4→96.0 MiB，资源归属仍未解释。
 
+[preview.5 原生任务容量测试](../../verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/README.md)已直接在 Win7 SP1 x86 QEMU 来宾退出 0，串口证据核对系统身份与测试 EXE 散列。这只关闭原生容量边界单测；公共任务服务的满载业务链、长时并发和物理设备仍待验收。
+
 下一阶段按风险顺序收敛：先定位 x86 Bridge 长循环超时和 GPU USER 残留，完成当前公共连接器的双架构生命周期/资源门槛；并行补齐公共任务、桌面模块与六组 Demo 场景；随后冻结共享负载与 Electron 宿主，完成同机性能/体积对照；最后跑 8 小时、目标设备与安装升级回退、安全授权和发布责任审核。每阶段保留失败样本，改变源码或内核后重跑受影响项。正式报告仍分别给出工程交付、指定范围生产和采用价值三个结论。

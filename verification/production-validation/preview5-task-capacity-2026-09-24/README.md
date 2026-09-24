@@ -10,4 +10,4 @@
 
 SDK 打包的 Windows 发布目录重命名偶发 `EPERM`：改动前默认临时目录 12 次中失败 6 次，另一磁盘临时目录 12 次均通过，不能据此判定具体锁持有者。现在仅在暂存目录仍存在、目标尚不存在的 `EPERM/EACCES` 上做最多五次有界重试；注入测试确认瞬时拒绝后成功、持续拒绝仍失败并清理暂存目录，本机默认临时目录 12 次均通过。该修复只降低已观察到的偶发打包失败，不掩盖永久权限错误。
 
-这是容量与独立模板的短验收，不覆盖完整公共任务服务、六组 Demo 业务、并发关窗长稳、8 小时混合负载、资源收敛、目标机性能或 Electron 同负载对照。新版的 Windows 7 SP1 x86 QEMU [三应用入口](../win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)及[四模式公共消费者](../win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)三轮短测另行归档；这两项也不构成生产放行。`releaseReady=false`。
+这是容量与独立模板的短验收，不覆盖完整公共任务服务、六组 Demo 业务、并发关窗长稳、8 小时混合负载、资源收敛、目标机性能或 Electron 同负载对照。新版的 Windows 7 SP1 x86 QEMU [三应用入口](../win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)、[四模式公共消费者](../win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)三轮短测及[原生容量测试](../win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/README.md)另行归档；这些结果也不构成生产放行。`releaseReady=false`。

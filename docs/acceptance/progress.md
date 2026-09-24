@@ -101,3 +101,5 @@ preview.5 的[任务容量修复证据](../../verification/production-validation
 [preview.5 Win7 SP1 x86 QEMU 公共消费者四模式短测](../../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)随后使用独立安装的 SDK 与公共 Web 连接器重新编译，在 6.1.7601/32-bit 来宾分别完成 Bridge、重载、销毁重建、三窗口各 3 轮，退出码均为 0。26 个串口文件的长度与 SHA-256、来宾身份、运行载荷、完整事件步骤及资源采样顺序经宿主复核。该结果只关闭新版的四模式短操作门；任务容量满载业务、千次循环、资源所有权与 8 小时混合负载尚未通过。
 
 preview.5 固定载荷的[x86 Bridge 长循环复测](../../verification/production-validation/preview5-lifecycle-2026-09-24/README.md)有两次千轮目标失败、三次同载荷诊断成功；失败时未抓到线程栈。为缩小下次复现范围，公共验收消费者增加可选的挂载阶段日志。另一源码指纹的[x86 1,000 轮阶段诊断](../../verification/production-validation/preview5-mount-phase-2026-09-24/README.md)完成全部操作且无超时，10,030 条阶段事件和观察器报告均归档；它不替代原载荷失败样本。生产零超时、内存/句柄所有权及 Win7 客体长稳仍未通过。
+
+[preview.5 原生任务容量测试](../../verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/README.md)进一步在 Win7 SP1 x86 QEMU 客体执行：来宾 6.1.7601/32-bit/SP1 身份、测试 EXE SHA-256、退出码 0 与标准输出由五个串口文件逐项复核。它覆盖原生任务表 1,024 上限、取消回收、并发准入和扫描拒绝；首次临时载荷缺 DLL 的加载失败已保留并在补齐后重跑。公共任务业务链、长稳与物理目标机仍未通过。
