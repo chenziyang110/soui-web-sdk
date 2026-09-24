@@ -1,6 +1,6 @@
 {
   "schema": "soui.production-validation-index/v1",
-  "archivedAt": "2026-09-24T02:28:03.962Z",
+  "archivedAt": "2026-09-24T04:13:02.306Z",
   "scope": "lifecycle-probes",
   "releaseReady": false,
   "runs": [
@@ -1491,6 +1491,19 @@
       ],
       "applicationScenarios": 3,
       "passed": true,
+      "releaseReady": false
+    },
+    {
+      "directory": "win7-sp1-x86-qemu-2026-09-24",
+      "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+      "architectures": [
+        "x86"
+      ],
+      "platform": "Windows 7 SP1 6.1.7601 32-bit, QEMU TCG",
+      "applicationScenarios": 4,
+      "cyclesPerScenario": 3,
+      "passed": true,
+      "resourceGate": "not-evaluated",
       "releaseReady": false
     }
   ]

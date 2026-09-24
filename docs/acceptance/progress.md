@@ -12,11 +12,11 @@
 | V03 桌面工作台 | 待将通用注册归入公共 SDK，完成对话框/剪贴板/多屏/shell 验收 |
 | V04 多窗口与驻留 | 已复现旧版第二窗口挂载卡住并修复进程级内核所有权；三窗口隔离及关闭后重建短测试通过；公共窗口/托盘/菜单/快捷键仍待完成 |
 | V05 资源与故障 | 已修复逐窗口初始化导致的访问冲突，以及 ToolTip、拖拽区域和线程唤醒事件释放遗漏；preview.4 双架构四种模式千次操作通过。资源所有权、完整故障恢复与诊断仍待完成 |
-| V06 接入与维护 | preview.4 的[仓库外生成项目](../../verification/production-validation/preview4-independent-2026-09-23/README.md)完成包校验、x86/x64 Release 独立编译及真实启动；[业务小样四段升级回退](../../verification/production-validation/preview4-upgrade-2026-09-23/README.md)完成本机 x64 Release 的逐段重新编译、实际启动及业务文件保留；Debug、x86 升级链和目标机仍待完成 |
+| V06 接入与维护 | preview.4 的[仓库外生成项目](../../verification/production-validation/preview4-independent-2026-09-23/README.md)完成包校验、x86/x64 Release 独立编译及真实启动；[业务小样四段升级回退](../../verification/production-validation/preview4-upgrade-2026-09-23/README.md)完成本机 x64 Release 的逐段重新编译、实际启动及业务文件保留；Win7 SP1 x86 QEMU 独立消费者四模式各三轮通过。Debug、x86 升级链和真实目标设备仍待完成 |
 | 每种模式 1,000 次 | preview.4 固定包的软件路径 x64/x86 重载、销毁重建、三窗口及 Bridge 各 1,000 次完成并正常退出；资源门槛仍未评估 |
 | 100 次重载资源趋势 | preview.4 固定包 x64/x86 均完成预热 3 次、静置 1 秒的 100 次重载；末点 Private Bytes 分别增加约 7.0/4.4 MiB，低于 16 MiB 数值线。分段趋势与对象所有权尚未验收 |
 | 8 小时混合负载 | 未执行 |
-| 系统、DPI、多屏、IME | 已登记本机精确系统与驱动；[支持矩阵](support-matrix.md)中的 DPI、多屏、IME 等仍未验证 |
+| 系统、DPI、多屏、IME | 已登记本机精确系统与驱动；[Win7 SP1 x86 QEMU 短验收](../../verification/production-validation/win7-sp1-x86-qemu-2026-09-24/README.md)完成公共消费者四模式各三轮并以串口校验原始日志；物理设备及[支持矩阵](support-matrix.md)中的 DPI、多屏、IME 等仍未验证 |
 | 内核维护、安全、授权、发布责任 | preview.4 固定包已换入重编译内核，x86/x64 回环正负向各六项再次通过；实际信任根与代理、完整安全维护、授权及发布责任仍未关闭 |
 | Electron 性能与体积对照 | 共享页面、双端最小宿主和[结果落盘探针](../../verification/production-validation/benchmark-host-smoke-2026-09-23/README.md)已实现；真实输入、性能原始样本和报告待完成 |
 | 接入、兼容和维护成本 | 待通过实际小样与升级记录采集 |
@@ -91,3 +91,5 @@ preview.4 固定包的[新生命周期归档](../../verification/production-vali
 共享性能页面及双端最小宿主已落到 [`benchmarks/`](../../benchmarks/README.md)；页面 TypeScript 检查与构建、Electron 精确版本 `44.4.4` 安装/语法检查、公开 SDK 的 x86/x64 C++ 宿主编译已执行。[结果落盘探针](../../verification/production-validation/benchmark-host-smoke-2026-09-23/README.md)实际运行了两架构 SOUI 和 Electron，三份 S01 输出可校验，但自动完成探针没有真实交互、帧样本或完整采样区间，不能作为同机同负载性能对照。
 
 [独立业务项目四段升级回退](../../verification/production-validation/preview4-upgrade-2026-09-23/README.md)在仓库外完成 preview.3 → preview.4 → preview.3 → preview.4，每段锁校验、x64 Release 重新编译、实际启动/关闭及业务标记均通过；五个业务文件散列不变，四个 build-id 与载荷身份已交叉核对。第一次尝试误用未随生成项目交付的 `tools/Test.ps1`，首段编译虽通过但无有效启动结论；失败日志保存，全新目录修正验证驱动并重跑四段。该证据不覆盖 Debug、x86 升级链、安装签名及目标机。
+
+[Windows 7 SP1 x86 QEMU 目标系统短验收](../../verification/production-validation/win7-sp1-x86-qemu-2026-09-24/README.md)使用相同 preview.4 冻结源码指纹的独立公共消费者，在 6.1.7601/32-bit 上完成 Bridge、重载、销毁重建、三窗口各三轮，退出码 0，串口导出 17 个文件的长度和散列均通过，并验证每个事件流以 `run.complete` 结束。初次 QEMU 共享 FAT 盘报告截断后，所有有效结果均在来宾 NTFS 上重新运行；短验收只说明软件路径启动与基本生命周期可工作，不覆盖物理设备、资源门槛、真实业务、IME/DPI、TLS/代理、安装升级或 8 小时。
