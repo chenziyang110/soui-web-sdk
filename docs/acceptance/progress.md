@@ -18,7 +18,7 @@
 | 8 小时混合负载 | 未执行 |
 | 系统、DPI、多屏、IME | 已登记本机精确系统与驱动；[Win7 SP1 x86 QEMU 公共消费者短验收](../../verification/production-validation/win7-sp1-x86-qemu-2026-09-24/README.md)完成四模式各三轮；[模板与 Workbench 短验收](../../verification/production-validation/win7-sp1-x86-qemu-apps-2026-09-24/README.md)完成三项应用启动/关闭、载荷校验及两种模式的可见界面；物理设备及[支持矩阵](support-matrix.md)中的 DPI、多屏、IME 等仍未验证 |
 | 内核维护、安全、授权、发布责任 | preview.4 固定包已换入重编译内核，x86/x64 回环正负向各六项再次通过；实际信任根与代理、完整安全维护、授权及发布责任仍未关闭 |
-| Electron 性能与体积对照 | 共享页面、双端最小宿主和[结果落盘探针](../../verification/production-validation/benchmark-host-smoke-2026-09-23/README.md)已实现；真实输入、性能原始样本和报告待完成 |
+| Electron 性能与体积对照 | 共享页面、双端最小宿主和[结果落盘探针](../../verification/production-validation/benchmark-host-smoke-2026-09-23/README.md)已实现；[x64 同页面最小运行包测量](../../verification/production-validation/benchmark-size-preview5-2026-09-24/README.md)已归档完整文件清单、两份 ZIP 和各自交付目录启动探针。真实输入、呈现、进程树性能原始样本及完整业务包体积待完成 |
 | 接入、兼容和维护成本 | 待通过实际小样与升级记录采集 |
 | 最终交付与三个结论 | SDK、模板、Demo、测试、benchmark、支持表、迁移/诊断手册和工程/生产/价值判定均须逐项验收 |
 
@@ -103,3 +103,5 @@ preview.5 的[任务容量修复证据](../../verification/production-validation
 preview.5 固定载荷的[x86 Bridge 长循环复测](../../verification/production-validation/preview5-lifecycle-2026-09-24/README.md)有两次千轮目标失败、三次同载荷诊断成功；失败时未抓到线程栈。为缩小下次复现范围，公共验收消费者增加可选的挂载阶段日志。另一源码指纹的[x86 1,000 轮阶段诊断](../../verification/production-validation/preview5-mount-phase-2026-09-24/README.md)完成全部操作且无超时，10,030 条阶段事件和观察器报告均归档；它不替代原载荷失败样本。生产零超时、内存/句柄所有权及 Win7 客体长稳仍未通过。
 
 [preview.5 原生任务容量测试](../../verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/README.md)进一步在 Win7 SP1 x86 QEMU 客体执行：来宾 6.1.7601/32-bit/SP1 身份、测试 EXE SHA-256、退出码 0 与标准输出由五个串口文件逐项复核。它覆盖原生任务表 1,024 上限、取消回收、并发准入和扫描拒绝；首次临时载荷缺 DLL 的加载失败已保留并在补齐后重跑。公共任务业务链、长稳与物理目标机仍未通过。
+
+[preview.5 最小宿主包体积测量](../../verification/production-validation/benchmark-size-preview5-2026-09-24/README.md)把同一份页面装入 x64 Release SOUI 和 Electron 44.4.4 的独立运行目录，逐文件核对散列，使用相同 ZIP 算法并测试压缩包。SOUI/Electron 解压大小为 38,765,828/386,055,337 字节，ZIP 为 14,533,916/154,312,842 字节。两端从打包目录执行 S01 结果落盘探针并退出 0。探针不含真实交互或呈现，Electron 标准错误有 GPU 状态告警；该测量只支持最小宿主体积差异，不能作为性能或生产通过结论。
