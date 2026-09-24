@@ -7,3 +7,13 @@
 页面 `eventLog` 是渲染器收到事件的时间，`rafIntervalsMs` 是 JS 回调间隔；二者都不是物理输入到屏幕呈现时间。未取得系统输入到呈现追踪时，该指标标为“未验证”。必须另外采集实际呈现、整进程树 Private Bytes/CPU、可见与最小化空闲、冷/热启动至可交互，以及包含全部运行依赖的压缩和解压包大小。
 
 只有场景完整、输入和视口匹配、版本与载荷可追溯、无超时且原始文件可校验的配对轮次才进入比较。无法等价运行的功能标记“不可比”，失败和缺失标记“未通过/未测”；不得把小包或主观流畅性折算成生产准入。
+
+`ProcessTreeSampler` 是独立的 Win32 原始采样器，不链接 SDK 或 Electron。以进程 PID、采样间隔（毫秒）、最长时长（毫秒）、新的绝对 NDJSON 路径启动；每轮枚举该进程及后代，并继续追踪已观察到、但父进程先退出的后代，记录逐进程和整树 Private Bytes、工作集、句柄、线程，以及相邻样本的整机容量 CPU 百分比。首个样本 CPU 为 `null`；进程无法读取时 `complete=false` 并以非零码结束，超时以码 2 结束。采样器正常结束仅证明原始记录完整，应用退出码仍须由监督器单独判定。短命子进程仍可能在两次采样之间完整创建并退出，因此还需检查宿主进程事件与采样间隔；结果不得单独充当完整性能报告。
+
+```powershell
+cmake -S benchmarks/protocol -B out/benchmark-sampler -G "Visual Studio 17 2022" -A x64
+cmake --build out/benchmark-sampler --config Release
+out/benchmark-sampler/Release/ProcessTreeSampler.exe <PID> 1000 65000 <新的绝对结果路径>
+$env:PROCESS_TREE_SAMPLER_EXE = (Resolve-Path out/benchmark-sampler/Release/ProcessTreeSampler.exe).Path
+node --test tests/benchmark/process-tree-sampler.test.cjs
+```
