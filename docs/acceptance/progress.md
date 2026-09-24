@@ -149,3 +149,5 @@ V03 剪贴板进一步发现原实现以空窗口所有者打开剪贴板，按 
 V03 目录选择器现作为可选公共 Web 模块注册，模板提供真实点击入口，返回用户选择的 UTF-8 路径或取消状态。SDK 原生服务在弹窗前核对同进程有效窗口和 STA，拒绝 MTA 调用；宿主 Bridge 工作线程原本已以 STA 初始化。x86/x64 SDK、模板 Release、Web 类型检查/构建及各六项无窗口 CTest 均通过，包括伪造手势、无效参数、缺失窗口和 MTA 拒绝。安装后的两个架构 SDK 还分别由仓库外独立消费者只用公开头文件和库编译、运行并退出 0，产物散列与 CTest 原始日志见[目录模块记录](../../verification/production-validation/directory-module-2026-09-25/README.md)。当前没有打开真实对话框，且模态调用会占用 Bridge 工作线程；Win7 x86、取消/中文路径、受限账户、导航/关窗竞态和 Demo 扫描令牌隔离仍待验收，V03 不据此放行。设计见 [ADR-0011](../adr/0011-public-directory-dialog.md)。
 
 为目录模块另编译了 x86/x64 可选 `soui_directory_dialog_tests --cancel`：真实 HWND 由 UI 线程持有，独立 STA 线程经公共 `json_bridge` 打开 Shell 对话框，观察到对话框后发送关闭并核对取消返回；15 秒无终态时进程失败退出，防止客体脚本无限挂住。该可选 GUI 场景在宿主长测期间只完成编译，尚无实际运行证据；正向中文目录选择仍待模板和 Win7 客体验证。
+
+上述 x86 可选程序已冻结为[Win7 SP1 x86 目录对话框客体短测](../../verification/production-validation/win7-sp1-x86-qemu-directory-2026-09-25/README.md)，传输散列、脚本语法、串口校验合成样本和宿主未结束时拒绝启动均已核对。真实客体尚未运行；它仅覆盖取消路径，不替代模板实际点击或正向中文路径验收。
