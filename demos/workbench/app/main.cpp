@@ -15,17 +15,22 @@
 #endif
 
 #include <algorithm>
+#include <atomic>
+#include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <memory>
 #include <string>
+#include <thread>
+#include <utility>
 #include <vector>
 
 #include <soui/host/soui_miniblink_host.h>
 #include <soui/host/frame_pacer.h>
 #include <soui/runtime/services/desktop/window_commands.h>
 #include "../integration/demo_bridge_adapter.h"
+#include "../../../third_party/include/json/json.hpp"
 
 #if defined(SOUI_SOURCE_OVERRIDE)
 #define SOUI_DEVKIT_HAS_REAL_SOUI 1
@@ -531,6 +536,65 @@ bool run_self_test(const std::filesystem::path& kit_root, const std::filesystem:
   return ok;
 }
 
+bool run_public_task_self_test() {
+  using json = nlohmann::json;
+  try {
+    std::atomic<unsigned> events{0};
+    soui::demo::demo_bridge_adapter bridge;
+    bridge.set_event_sink([&events](std::string_view text) {
+      const auto event = json::parse(text.begin(), text.end(), nullptr, false);
+      if (event.is_object() && event.value("eventName", "") == "task.progress" &&
+          event.value("taskId", "").rfind("sdk-task-", 0) == 0) ++events;
+    });
+    const auto bootstrap = json::parse(bridge.handle_json(json{{"requestId", "demo-task-bootstrap"},
+        {"sessionId", ""}, {"origin", ""}, {"token", ""}, {"method", "bridge.bootstrap"},
+        {"params", {{"protocol", "soui.bridge/1"}}}}.dump()));
+    if (!bootstrap.value("ok", false)) return false;
+    const auto auth = bootstrap.at("result");
+    unsigned request_number = 0;
+    const auto call = [&](const char* method, json params) {
+      return json::parse(bridge.handle_json(json{{"requestId", "demo-task-" + std::to_string(++request_number)},
+          {"sessionId", auth.at("sessionId")}, {"origin", auth.at("origin")},
+          {"token", auth.at("token")}, {"method", method}, {"params", std::move(params)}}.dump()));
+    };
+    const auto started = call("task.start", {{"kind", "demo.count"}, {"operationId", "count-success"},
+        {"input", {{"steps", 20}}}});
+    if (!started.value("ok", false)) return false;
+    const auto id = started.at("result").at("taskId").get<std::string>();
+    if (id.rfind("sdk-task-", 0) != 0) return false;
+    const auto subscribed = call("task.subscribe", {{"taskId", id}, {"eventName", "task.progress"}});
+    if (!subscribed.value("ok", false)) return false;
+    const auto subscription_id = subscribed.at("result").at("subscriptionId").get<std::string>();
+    if (subscription_id.rfind("sdk-subscription-", 0) != 0) return false;
+    bool complete = false;
+    for (unsigned attempt = 0; attempt < 200; ++attempt) {
+      const auto queried = call("task.query", {{"taskId", id}});
+      if (!queried.value("ok", false)) return false;
+      if (queried.at("result").value("state", "") == "succeeded") {
+        complete = queried.at("result").at("result").at("sum") == 210;
+        break;
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    if (!complete || events.load() == 0 ||
+        !call("task.unsubscribe", {{"subscriptionId", subscription_id}}).value("ok", false)) return false;
+    const auto cancellable = call("task.start", {{"kind", "demo.count"}, {"operationId", "count-cancel"},
+        {"input", {{"steps", 200}}}});
+    if (!cancellable.value("ok", false)) return false;
+    const auto cancel_id = cancellable.at("result").at("taskId").get<std::string>();
+    if (!call("task.cancel", {{"taskId", cancel_id}}).value("ok", false)) return false;
+    bool cancelled = false;
+    for (unsigned attempt = 0; attempt < 200; ++attempt) {
+      const auto queried = call("task.query", {{"taskId", cancel_id}});
+      if (!queried.value("ok", false)) return false;
+      if (queried.at("result").value("state", "") == "cancelled") { cancelled = true; break; }
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    bridge.shutdown_session(auth.at("sessionId").get<std::string>());
+    return cancelled && !call("task.query", {{"taskId", id}}).value("ok", true);
+  } catch (...) { return false; }
+}
+
 int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
   enable_system_dpi_awareness();
   const auto executable = executable_path();
@@ -653,6 +717,9 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
 
   if (std::find(args.begin(), args.end(), L"--self-test") != args.end()) {
     return run_self_test(kit_root, output_root, architecture, miniblink, resources) ? 0 : 1;
+  }
+  if (std::find(args.begin(), args.end(), L"--task-service-self-test") != args.end()) {
+    return run_public_task_self_test() ? 0 : 1;
   }
 
   const auto repository_renderer = kit_root / "third_party" / "soui" /

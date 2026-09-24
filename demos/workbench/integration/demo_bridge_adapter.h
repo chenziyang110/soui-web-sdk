@@ -19,6 +19,7 @@
 #include <soui/runtime/core/task/task_store.h>
 #include <soui/runtime/services/desktop/desktop_services.h>
 #include <soui/runtime/services/filesystem-readonly/directory_scanner.h>
+#include <soui/runtime/services/task/task_service.h>
 #include "native_media_preview.h"
 
 namespace soui::demo {
@@ -179,6 +180,7 @@ class demo_bridge_adapter : public soui::sdk::bridge_adapter {
   std::unordered_map<std::string, std::unique_ptr<workload_job>> workload_jobs_;
   mutable std::mutex media_preview_mutex_;
   std::unordered_map<std::string, std::unique_ptr<media_preview_job>> media_preview_jobs_;
+  soui::runtime::task_service public_tasks_;
 };
 
 }  // namespace soui::demo

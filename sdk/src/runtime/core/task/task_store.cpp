@@ -3,14 +3,15 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
+#include <string_view>
 #include <utility>
 
 namespace soui::runtime {
 namespace {
 
-std::string make_task_id(std::uint64_t number) {
+std::string make_task_id(std::string_view prefix, std::uint64_t number) {
   std::ostringstream stream;
-  stream << "task-" << std::setw(6) << std::setfill('0') << number;
+  stream << prefix << std::setw(6) << std::setfill('0') << number;
   return stream.str();
 }
 
@@ -63,7 +64,7 @@ task_snapshot task_store::start_scoped(std::string operation_id, std::string sco
   }
 
   task_snapshot snapshot;
-  snapshot.task_id = make_task_id(next_task_number_++);
+  snapshot.task_id = make_task_id(id_prefix_, next_task_number_++);
   snapshot.operation_id = std::move(operation_id);
   snapshot.state = task_state::queued;
   snapshot.sequence = next_sequence_++;

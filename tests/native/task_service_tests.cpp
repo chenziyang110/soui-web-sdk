@@ -85,9 +85,12 @@ int main() {
 
     const auto progress_id = task_id(call(bridge, auth, "task.start",
         {{"kind", "interactive"}, {"operationId", "progress-1"}, {"input", {{"value", 7}}}}));
+    require(progress_id.rfind("sdk-task-", 0) == 0, "public task IDs must not overlap app task IDs");
     const auto subscription = call(bridge, auth, "task.subscribe",
         {{"taskId", progress_id}, {"eventName", "task.progress"}});
     require(subscription.at("ok").get<bool>(), "task subscription failed");
+    require(subscription.at("result").at("subscriptionId").get<std::string>().rfind("sdk-subscription-", 0) == 0,
+            "public subscription IDs must not overlap app subscriptions");
     allow_progress.store(true);
     wait_until([&] {
       const auto query = call(bridge, auth, "task.query", {{"taskId", progress_id}});

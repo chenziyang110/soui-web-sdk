@@ -95,6 +95,13 @@
       "result": {"taskId": "string", "accepted": "boolean"}
     },
     {
+      "name": "task.start",
+      "permission": "task.start",
+      "lifecycle": "task",
+      "params": {"kind": "string", "operationId": "string", "input": "object"},
+      "result": {"taskId": "string", "accepted": "boolean", "duplicate": "boolean"}
+    },
+    {
       "name": "task.query",
       "permission": "task.query",
       "lifecycle": "task",

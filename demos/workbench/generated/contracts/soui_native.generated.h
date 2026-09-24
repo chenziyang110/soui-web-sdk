@@ -24,6 +24,7 @@ inline constexpr MethodDescriptor kMethods[] = {
   {"demo.scan.start", "demo.scan", "task"},
   {"filesystem.scan.start", "filesystem.scan", "task"},
   {"fileinsight.scan.start", "filesystem.scan", "task"},
+  {"task.start", "task.start", "task"},
   {"task.query", "task.query", "task"},
   {"demo.scan.page", "task.query", "task"},
   {"filesystem.scan.page", "task.query", "task"},
@@ -45,7 +46,7 @@ inline constexpr MethodDescriptor kMethods[] = {
   {"desktop.window.close", "desktop.window.close", "request"},
   {"desktop.clipboard.writeText", "desktop.clipboard.writeText", "request"},
 };
-inline constexpr std::size_t kMethodCount = 33;
+inline constexpr std::size_t kMethodCount = 34;
 inline constexpr ParamDescriptor kParams[] = {
   {"desktop.rendering.setTargetRate", "targetHz", "number"},
   {"desktop.media.pickFile", "userGesture", "boolean"},
@@ -78,6 +79,9 @@ inline constexpr ParamDescriptor kParams[] = {
   {"fileinsight.scan.start", "rootToken", "string"},
   {"fileinsight.scan.start", "filter", "string"},
   {"fileinsight.scan.start", "operationId", "string"},
+  {"task.start", "kind", "string"},
+  {"task.start", "operationId", "string"},
+  {"task.start", "input", "object"},
   {"task.query", "taskId", "string"},
   {"demo.scan.page", "taskId", "string"},
   {"demo.scan.page", "cursor", "string"},
@@ -118,6 +122,6 @@ inline constexpr ParamDescriptor kParams[] = {
   {"desktop.clipboard.writeText", "text", "string"},
   {"desktop.clipboard.writeText", "userGesture", "boolean"},
 };
-inline constexpr std::size_t kParamCount = 70;
+inline constexpr std::size_t kParamCount = 73;
 } // namespace soui::generated
 // </soui-generated>

@@ -11,13 +11,15 @@
 | V01-01 连接与关联 | `json_bridge`、`connectSouiNative`、`SouiNativeClientImpl.call` | 已修复 x86 `bool` 返回 ABI；preview.4 固定包两架构 Bridge 1,000 轮及四模式短回归通过。preview.5 [Win7 SP1 x86 QEMU Bridge 3 轮](../../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)与模板/Demo 三入口短测通过 | 真实业务方法、资源关闭门槛、物理 Win7 x86 设备与完整业务链 |
 | V01-02 异步响应 | Host Bridge worker | 双架构公共消费者短测通过 32 并发关联、200 ms 原生等待期间页面定时器推进；这不等于已测输入延迟或公共长任务 | 真实输入/呈现延迟、公共任务服务、长时间会话 |
 | V01-03 事件与释放 | `SouiNativePort.onEvent`；Host event sink | 部分实现：模板已接入真实事件连接器；统一 dispose、可观察订阅、迟到建立补偿和幂等移除已有单元验证 | 原生任务服务的真实事件、重载/关闭竞态、丢失确认后的会话清理 |
-| V01-04 任务与取消 | `task_store` 为底层状态；待审查分支新增公共 `task_service`，Demo 仍有独立适配 | 已实现待验收：公共注册、2 个工作线程、32 个未完成任务、进度和协作取消通过 x86/x64 原生契约；独立安装消费者仅完成双架构编译与类型检查 | 独立页面真实运行、Demo 迁移、取消/完成竞态、任务中关窗与 Win7 x86 |
+| V01-04 任务与取消 | `task_store` 为底层状态；待审查分支新增公共 `task_service`，Demo 的既有业务适配仍独立 | 已实现待验收：公共注册、2 个工作线程、32 个未完成任务、进度和协作取消通过 x86/x64 原生契约；Demo 新增公开 `task.start/query/subscribe/cancel` 计数场景，双架构无窗口适配器测试通过；独立安装消费者仅完成双架构编译与类型检查 | 独立页面和 Demo 页面真实运行、取消/完成竞态、任务中关窗与 Win7 x86 |
 | V01-05 容量与错误 | Bridge 参数边界；Host 请求预算和 resolver；客户端等待上限 | preview.5 的 `task_store` 硬上限、重复/冲突、取消占位、并发准入和扫描 `E_BUSY` 的 x86/x64 测试通过；[Win7 SP1 x86 QEMU 原生容量测试](../../verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/README.md)同样退出 0。模板/Workbench 三入口也在该系统短测通过；此前公共消费者覆盖 256 普通请求上限、控制容量和错误恢复 | 直接公共服务消费、实际排队超时与关闭竞态、Win7 上新版任务满载业务链 |
 | V01-06 会话长寿命 | `permission_store` / `json_bridge` | 已实现待验收：凭据存在期限，长会话恢复契约未闭环 | 超过 30 分钟的过期、续接与原任务归属；8 小时不能靠重载规避 |
 
 连接器与业务方法类型拆分按 [ADR-0004](../adr/0004-web-connection-lifecycle.md) 实施。默认 `SouiMethodMap` 仍包含 Demo 服务字段，最小模板通过自己的 `AppMethods` 接入；后续迁移须保留明确兼容说明。
 
 2026-09-25 增量：V01-02/03/05 的公共任务处理器、进度事件及 32 项准入已在[待审查 PR #26](https://github.com/chenziyang110/soui-web-sdk/pull/26)完成双架构原生契约；独立消费者的 Web/原生载荷准备通过，且 Web 类型检查现绑定已安装 SDK 的声明文件。以上仍不构成真实桌面、Demo 或目标系统通过证据，表中 preview.5 冻结包的结果继续按原身份引用。
+
+同一开发分支的 Demo 已加可见公开任务场景，公开任务和旧业务任务使用不同 ID 前缀；x86/x64 的 `demo.native.public-task` 无窗口测试覆盖启动、订阅事件、成功结果、取消及会话撤销。Web 构建和严格 TypeScript 检查通过。该测试没有创建 WebView，不能替代 Demo 页面交互或 Win7 客体验收。
 
 ## V02–V04 交互与桌面
 

@@ -90,6 +90,7 @@ function Converter() {
       <LazyMediaWorkbench key={`${mediaPreset.title}:${mediaPreset.operation || ''}`} client={nativeClient} preset={mediaPreset} home={() => setPage('home')} />
     </Suspense>
     <NativeWorkloads />
+    <PublicSdkTask />
   </>;
 }
 
@@ -195,6 +196,81 @@ function NativeWorkloads() {
     catch (error) { activeStateRef.current = 'failed'; setTask(previous => ({ ...previous, state: 'failed', message: error instanceof Error ? error.message : '取消任务失败' })); }
   };
   return <section className="rx-workloads"><header><div><small>NATIVE WORKLOAD LAB</small><h2>让重客户端产品也能落地</h2></div><span>{capabilities?.video4kNativeFrame ? '4K MF frame online · ' : ''}{capabilities?.zipDeflate ? 'zlib DEFLATE online' : 'native adapter boundary'}</span></header><div className="rx-workload-grid">{workloadCards.map((card) => <button key={card.kind} className={selected === card.kind ? 'selected' : ''} disabled={task.state === 'running' || task.state === 'cancel-pending'} onClick={() => void run(card.kind, card.complexity)}><i>{card.kind === 'video4k' ? '◉' : card.kind === 'cad' ? '⌁' : '▣'}</i><span><small>{card.eyebrow}</small><strong>{card.title}</strong><em>{card.detail}</em></span><b>{selected === card.kind && ['running', 'cancel-pending'].includes(task.state ?? '') ? `${task.progress ?? 0}%` : 'RUN'}</b></button>)}</div><div className="rx-workload-result"><span>{task.message || capabilities?.note || 'Bridge 只传句柄、进度和有界 metrics JSON'}</span>{task.metrics && <code>{task.metrics}</code>}{['running', 'cancel-pending'].includes(task.state ?? '') && <button type="button" onClick={() => void cancel()} disabled={task.state === 'cancel-pending'}>取消</button>}</div></section>;
+}
+
+function PublicSdkTask() {
+  const [task, setTask] = useState<WorkloadResult>({ state: 'idle' });
+  const timer = React.useRef<number | null>(null);
+  const activeId = React.useRef('');
+  const starting = React.useRef(false);
+  const activeState = React.useRef('idle');
+  const subscription = React.useRef<ReturnType<SouiNativeClientImpl['subscribe']> | null>(null);
+  const live = React.useRef(true);
+  const stopWatching = () => {
+    if (timer.current !== null) window.clearInterval(timer.current);
+    timer.current = null;
+    if (subscription.current) void subscription.current.unsubscribe().catch(() => undefined);
+    subscription.current = null;
+  };
+  useEffect(() => () => {
+    live.current = false;
+    stopWatching();
+    if (activeId.current && ['queued', 'running', 'cancel-pending'].includes(activeState.current))
+      void nativeClient?.call('task.cancel', { taskId: activeId.current }).catch(() => undefined);
+  }, []);
+  const refresh = async (taskId: string) => {
+    if (!nativeClient) return;
+    try {
+      const next = await nativeClient.call('task.query', { taskId });
+      if (!live.current || activeId.current !== taskId) return;
+      activeState.current = next.state;
+      setTask({ state: next.state, progress: next.progress, message: next.message });
+      if (['succeeded', 'failed', 'cancelled', 'partial'].includes(next.state)) {
+        stopWatching();
+        activeId.current = '';
+      }
+    } catch (error) {
+      if (!live.current || activeId.current !== taskId) return;
+      stopWatching();
+      activeId.current = '';
+      activeState.current = 'failed';
+      setTask({ state: 'failed', message: error instanceof Error ? error.message : 'SDK 任务查询失败' });
+    }
+  };
+  const start = async () => {
+    if (!nativeClient || activeId.current || starting.current) return;
+    starting.current = true;
+    setTask({ state: 'queued', progress: 0, message: 'SDK 任务正在入队' });
+    try {
+      const started = await nativeClient.call('task.start', {
+        kind: 'demo.count', operationId: `demo-count-${Date.now()}`, input: { steps: 200 },
+      });
+      starting.current = false;
+      if (!live.current) { void nativeClient.call('task.cancel', { taskId: started.taskId }).catch(() => undefined); return; }
+      activeId.current = started.taskId;
+      activeState.current = 'queued';
+      subscription.current = nativeClient.subscribe(started.taskId, 'task.progress', () => { void refresh(started.taskId); });
+      void subscription.current.ready.catch(() => undefined);
+      timer.current = window.setInterval(() => { void refresh(started.taskId); }, 150);
+      void refresh(started.taskId);
+    } catch (error) {
+      starting.current = false;
+      activeState.current = 'failed';
+      setTask({ state: 'failed', message: error instanceof Error ? error.message : 'SDK 任务启动失败' });
+    }
+  };
+  const cancel = async () => {
+    const taskId = activeId.current;
+    if (!nativeClient || !taskId) return;
+    try {
+      await nativeClient.call('task.cancel', { taskId });
+      activeState.current = 'cancel-pending';
+      setTask(previous => ({ ...previous, state: 'cancel-pending' }));
+    } catch (error) {
+      setTask(previous => ({ ...previous, message: error instanceof Error ? error.message : 'SDK 任务取消失败' }));
+    }
+  };
+  return <section className="rx-workloads"><header><div><small>PUBLIC SDK TASK</small><h2>公开任务接口验证</h2></div><span>task.start → progress → query / cancel</span></header><div className="rx-workload-result"><span>{task.message || '从 Demo 页面启动 SDK 原生有界任务'}</span><code>{task.state} · {task.progress ?? 0}%</code><button type="button" onClick={() => void start()} disabled={!nativeClient || starting.current || Boolean(activeId.current)}>运行</button>{activeId.current && <button type="button" onClick={() => void cancel()} disabled={task.state === 'cancel-pending'}>取消</button>}</div></section>;
 }
 
 const LazyComponentsPage = lazy(() => import('./components-page').then((module) => ({ default: module.ComponentsPage })));

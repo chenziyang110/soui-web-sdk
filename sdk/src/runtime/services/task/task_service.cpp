@@ -110,7 +110,7 @@ struct task_service::impl {
   std::unordered_map<std::string, std::string> operations;
   std::unordered_map<std::string, subscription> subscriptions;
   std::vector<std::thread> workers;
-  task_store tasks;
+  task_store tasks{"sdk-task-"};
   event_sink sink;
 
   void emit(const std::string& task_id) {
@@ -352,7 +352,7 @@ std::string task_service::subscribe(const bridge_request& request) {
       !impl_->tasks.query(task_id)) return error("E_TASK_NOT_FOUND", "The task is not valid for this session.");
   if (impl_->subscriptions.size() >= max_subscriptions)
     return error("E_BUSY", "Native task subscription capacity is exhausted.");
-  const auto id = "subscription-" + std::to_string(impl_->next_subscription++);
+  const auto id = "sdk-subscription-" + std::to_string(impl_->next_subscription++);
   impl_->subscriptions.emplace(id, impl::subscription{{request.session_id, request.origin, request.token}, task_id});
   return json{{"subscriptionId", id}}.dump();
 }

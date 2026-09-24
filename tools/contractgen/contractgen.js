@@ -27,7 +27,7 @@ function cppType(type) {
   return type === 'boolean' ? 'bool' : type === 'number' ? 'double' : 'std::string';
 }
 function tsType(type) {
-  return type === 'boolean' ? 'boolean' : type === 'number' ? 'number' : type === 'array' ? 'unknown[]' : 'string';
+  return type === 'boolean' ? 'boolean' : type === 'number' ? 'number' : type === 'array' ? 'unknown[]' : type === 'object' ? 'Record<string, unknown>' : 'string';
 }
 function safeName(name) { return name.replace(/[^A-Za-z0-9]+/g, '_').replace(/^_+|_+$/g, ''); }
 const generatedHeader = [];

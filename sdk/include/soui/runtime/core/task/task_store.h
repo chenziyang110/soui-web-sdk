@@ -6,6 +6,7 @@
 #include <optional>
 #include <string>
 #include <unordered_map>
+#include <utility>
 
 #include <soui/runtime/core/result/result.h>
 
@@ -36,7 +37,7 @@ class task_store {
  public:
   static constexpr std::size_t max_tasks{1024};
 
-  task_store() = default;
+  explicit task_store(std::string id_prefix = "task-") : id_prefix_{std::move(id_prefix)} {}
   task_store(const task_store&) = delete;
   task_store& operator=(const task_store&) = delete;
 
@@ -60,6 +61,7 @@ class task_store {
   [[nodiscard]] static task_state state_for(result_kind kind) noexcept;
 
   mutable std::mutex mutex_;
+  std::string id_prefix_;
   std::uint64_t next_task_number_{1};
   std::uint64_t next_sequence_{1};
   std::unordered_map<std::string, task_snapshot> tasks_;
