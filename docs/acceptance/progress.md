@@ -30,6 +30,8 @@ preview.7 的[源码编码修复诊断](../../verification/production-validation
 
 [preview.7 无 Git 完整源码快照](../../verification/production-validation/preview7-full-source-stage-2026-09-25/README.md)经源清单逐文件验证，在仓库外完成 x86/x64 Release 应用重编、完整测试和三项桌面 smoke；SDK 新包的 408 个文件也通过包内完整性、源匹配及 14 项包行为测试。该快照使用固定运行依赖；最终原封整包的底层依赖全量重编继续待验收，不改变 `sourceDeliveryVerified=false`。
 
+后续已从 SHA-256 `A4F0703A4C6F6E13DC4A07BC59174D347487622143AAB51E82B3D3F4190D802E` 的[最终 preview.7 原封完整源码 ZIP](../../verification/production-validation/preview7-final-source-bottom-rebuild-2026-09-25/README.md)分别全新解压 x86/x64 无 Git 目录。编译前两目录清单验证均通过 30,719 文件；各自重编所有底层依赖、应用 Release、完整测试和重编 DLL 启动，均退出 0。[同一 x86 来源的 Win7 SP1 x86 QEMU 三入口](../../verification/production-validation/win7-sp1-x86-qemu-preview7-final-source-2026-09-25/README.md)也通过 24 份串口结果校验。旧 SOUI 工程会在源码树产生 112 个额外编译产物，故编译后原封文件集合复验失败，但逐文件比对确认清单源码内容未改；交付流程仍需修正。Debug、目标设备、资源、实际呈现、完整业务与安全授权未通过，`sourceDeliveryVerified=false`、`releaseReady=false`。
+
 ToolTip 修补后的 x64 内核及全部原生依赖已重新编译；候选 SHA-256 为 `32d37e6399bc04e2a8d909c4021f49e3b8f21521b805f9f118f15e111ea0e59f`，三模式各 30 轮加 3 次预热全部完成。重建 USER 不再增长，但 GDI/普通句柄仍增长，缺陷未关闭。随后定位到拖拽区域和工作线程唤醒事件的释放遗漏，保留为两个后续补丁。
 
 v2 驱动对应 SDK/工具源码指纹为 `e29dc0d908c741642615b27d98f0d50d262131b10d0094d8b8c140660021027f`；它同时冻结消费者源码和实际候选内核输入，区别于历史 SDK 构建指纹。固定 prebuilt 始终未替换；候选压力验收仍待完成。

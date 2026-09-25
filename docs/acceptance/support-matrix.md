@@ -2,6 +2,8 @@
 
 日期：2026-09-24。状态：采集中，不是正式支持声明。首批真实项目要求最低 Windows 7 SP1，包含 x86；不能仅凭本机 Windows 11 上的 x86 进程结果放行。
 
+2026-09-25 增补：[preview.7 最终完整源码重编 x86 载荷](../../verification/production-validation/win7-sp1-x86-qemu-preview7-final-source-2026-09-25/README.md)已在 Windows 7 SP1 x86 QEMU 通过 Starter、Workbench 默认页和 React 页短启动，且来宾系统身份、载荷散列、退出码和 24 份串口结果复核通过。它不扩展为物理设备、完整业务或性能结论；下表各旧版本证据仍保留原身份。
+
 ## 已使用的设备
 
 当前实际设备为 Windows 11 Pro 25H2，`10.0.26200.9457`，AMD Ryzen 9 9950X（16 核/32 逻辑处理器）。系统同时枚举 AMD Radeon、Intel Arc A380 及虚拟显示适配器；实际呈现所用设备、显示输出和 DPI 仍须逐个测试确认。不能从枚举到显卡或装有中文输入法直接推断功能已经通过。

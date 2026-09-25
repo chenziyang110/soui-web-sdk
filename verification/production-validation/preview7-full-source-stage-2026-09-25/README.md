@@ -4,4 +4,4 @@
 
 同一份快照分别执行 x86/x64 Release `Build.ps1` 和完整 `Test.ps1`，所有命令退出 0。x86 构建 ID `d63ce8ab-acba-46b4-a52a-86d77dd6dfa0`，x64 构建 ID `41d261ea-3057-4542-8fb1-d2218bc4b12f`；两者构建源码指纹同为 `7b3813eb4516f4e4870040840343cbe8a661c59a744853d4e5cd32f1b2af419a`。原始[构建报告 x86](x86-build-Release.json)、[x64](x64-build-Release.json)和[三入口 smoke x86](x86-smoke-Release.json)、[x64](x64-smoke-Release.json)保留完整载荷身份。两架构[测试日志 x86](x86-test.log)、[x64](x64-test.log)均记录 SDK 包 14/14、Web/监督器测试 58 通过和 1 项因未配置 x86 调试器跳过、原生 CTest 6/6、Starter/Workbench 默认页/React 页 smoke 3/3。
 
-这是应用与固定预编译运行依赖的完整源码搬移重编，和[修改过的 preview.6 目录里重编底层依赖](../preview6-relocated-dependency-encoding-2026-09-25/README.md)分别统计。添加本证据后清单会重新冻结；代码未因此修改。最终 preview.7 原封完整源码包尚未在全新目录从零完成 **底层依赖** 双架构重编，Debug、长期资源、物理 Win7 x86 与授权核查也未关闭。因此 `sourceDeliveryVerified=false`、`releaseReady=false`。
+这是应用与固定预编译运行依赖的完整源码搬移重编，和[修改过的 preview.6 目录里重编底层依赖](../preview6-relocated-dependency-encoding-2026-09-25/README.md)分别统计。添加本证据后清单重新冻结；代码未因此修改。本记录形成时最终原封整包的底层依赖重编尚未完成；后续[同一 preview.7 最终源码包双架构底层重编](../preview7-final-source-bottom-rebuild-2026-09-25/README.md)已通过。Debug、长期资源、物理 Win7 x86 与授权核查仍未关闭，`sourceDeliveryVerified=false`、`releaseReady=false`。
