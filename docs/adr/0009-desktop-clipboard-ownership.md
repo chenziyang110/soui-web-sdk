@@ -17,4 +17,4 @@
 
 ## 验证与限制
 
-x86/x64 Release 已重新编译 SDK、Workbench 和启用模块的模板；纯转换及空窗口/无效窗口/无效文本拒绝测试通过，公共 Bridge 契约还覆盖缺少原生手势、伪造 JSON 手势和缺少所有者。模板 Web 类型检查及构建通过。可选的 `--clipboard-roundtrip` 测试会在隔离的 Win7 SP1 x86 QEMU 客体运行，读取实际提交的中文文本；本机长测期间不改动宿主剪贴板。真实 UI、剪贴板占用竞态、受限账户、断开远程会话和长文本仍待独立验收。
+x86/x64 Release 已重新编译 SDK、Workbench 和启用模块的模板；纯转换及空窗口/无效窗口/无效文本拒绝测试通过，公共 Bridge 契约还覆盖缺少原生手势、伪造 JSON 手势和缺少所有者。模板 Web 类型检查及构建通过。[Win7 SP1 x86 QEMU 公共服务短测](../../verification/production-validation/win7-sp1-x86-qemu-desktop-v2-2026-09-25/README.md)已在隔离的客体中读取实际提交的中文文本，退出 0；原始串口、系统和程序身份已校验。模板真实 UI、剪贴板占用竞态、受限账户、断开远程会话和长文本仍待独立验收。

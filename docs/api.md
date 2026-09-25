@@ -51,7 +51,7 @@ const result = await client.call('app.ping', {});
 
 在首次 `bridge.bootstrap` 前调用 `bridge.enable_directory_service()`；重复启用或 bootstrap 后启用返回 `false`。该模块只注册 `desktop.dialog.pickDirectory`，页面在点击回调中调用 `client.call('desktop.dialog.pickDirectory', {})`。返回 `{cancelled:false,path}` 表示用户选定的 UTF-8 目录，`{cancelled:true,path:""}` 表示取消。`SouiDirectoryMethodMap` 可与 Core 等方法表组合。页面不能传入窗口句柄、默认路径、session、token 或 `userGesture` 字段；原生 Host 提供同进程有效窗口，并验证绑定捕获的真实手势。
 
-无手势返回 `E_GESTURE_REQUIRED`，失效窗口返回 `E_INVALID_ARGUMENT`，非 STA 线程返回 `E_THREAD_APARTMENT`。目录对话框是模态调用，会占用当前 Bridge 工作线程直到选择或取消；页面导航、关窗、并发调用及超时尚未完成真实验收。所返回路径不是任意目录的扫描授权，业务扫描根令牌必须由可信原生侧管理。双架构编译与无窗口契约已通过，模板真实点击、Win7 SP1 x86 和其他 V03 门槛仍未通过；设计见 [ADR-0011](adr/0011-public-directory-dialog.md)。
+无手势返回 `E_GESTURE_REQUIRED`，失效窗口返回 `E_INVALID_ARGUMENT`，非 STA 线程返回 `E_THREAD_APARTMENT`。目录对话框是模态调用，会占用当前 Bridge 工作线程直到选择或取消；页面导航、关窗、并发调用及超时尚未完成真实验收。所返回路径不是任意目录的扫描授权，业务扫描根令牌必须由可信原生侧管理。双架构编译、无窗口契约及[Win7 SP1 x86 QEMU 公共取消短测](../verification/production-validation/win7-sp1-x86-qemu-directory-v2-2026-09-25/README.md)已通过；模板真实点击、正向中文路径及其他 V03 门槛仍未通过。设计见 [ADR-0011](adr/0011-public-directory-dialog.md)。
 
 ## 可选剪贴板模块
 
@@ -59,7 +59,7 @@ const result = await client.call('app.ping', {});
 
 Web 方法类型为 `SouiClipboardMethodMap`，与 `SouiCoreMethodMap` 组合使用。页面在实际点击回调中直接调用 `client.call('desktop.clipboard.writeText', {text})`，成功返回 `{applied:true}`。原生 Host 在接收调用时记录引擎报告的用户手势；JSON 中的 `userGesture` 参数不会授予权限，并会被拒绝为 `E_INVALID_PARAMS`。缺少真实手势返回 `E_GESTURE_REQUIRED`，窗口失效或文本编码无效返回 `E_INVALID_ARGUMENT`，剪贴板占用或提交失败返回 `E_NATIVE_FAILURE`。文本为 UTF-8，受 Bridge 消息和参数大小限制。模板提供可点击的中文复制入口。
 
-该模块目前只有双架构编译、契约与参数拒绝测试；模板按钮、Win7 x86 真实写入读回、占用竞态及受限账户仍待独立验收。其他 V03 桌面能力仍未纳入此 opt-in 模块。
+该模块已有双架构编译、契约与参数拒绝测试；[Win7 SP1 x86 QEMU 公共服务短测](../verification/production-validation/win7-sp1-x86-qemu-desktop-v2-2026-09-25/README.md)也完成中文写入读回并退出 0。模板真实按钮、剪贴板占用竞态、长文本及受限账户仍待独立验收。其他 V03 桌面能力仍未纳入此 opt-in 模块。
 
 ## 可选窗口模块
 

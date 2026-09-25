@@ -4,4 +4,6 @@
 
 测试程序在实际窗口与 STA 工作线程上打开 Shell 目录对话框，观察到对话框后发出取消，并要求公共 Bridge 返回取消状态。宿主无其他 QEMU 时先运行[启动器](harness/launch-directory.ps1)，确认 Win7 桌面后只运行一次[命令发送器](harness/run-directory-keys.ps1)，最终用[串口校验器](Verify-SerialExport.ps1)核对系统、EXE、退出码、输出和逐文件哈希。使用 `-snapshot`、只读 FAT 传输盘和无网卡；`releaseReady=false`。
 
-当前状态：独立传输已准备，56 个文件及脚本散列已冻结；**客体尚未执行**。即使取消短测通过，也未覆盖模板点击、正向中文路径、受限账户、网络路径、关窗/导航竞态或生产门槛。
+2026-09-25 已在实际 Win7 Enterprise SP1 x86 QEMU 客机执行：独立传输 56 个文件与脚本散列由启动器核对，确认[桌面截图](evidence/boot.png)后一次性发送命令。程序实际打开并取消 Shell 目录对话框，输出 `public directory dialog cancellation passed`、退出码 0。[串口校验器](Verify-SerialExport.ps1)核对完整帧、5 份结果文件哈希、系统/EXE 身份与成功标记，生成[验证结果](results/verification.json)。[原始串口](serial-export.txt)、[原始输出](results/directory-stdout.log)、[执行后截图](evidence/after.png)、QEMU 启动和按键记录均已归档；快照客机已退出。同一冻结 EXE 在当前宿主 Windows 的取消预检也退出 0。
+
+此短测仍未覆盖模板点击、正向中文路径、受限账户、网络路径、关窗/导航竞态或生产门槛。

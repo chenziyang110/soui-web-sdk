@@ -2,6 +2,14 @@
 
 日期：2026-09-24。候选：`0.3.0-preview.5`。本文件只汇总已执行证据；不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
 
+## 2026-09-25 preview.6 增补判定
+
+本增补沿用下方三项问题，保留 preview.5 原判定与失败样本。**独立交付部分通过、指定范围生产未通过、相对 Electron 的整体采用价值未判定**；`sourceDeliveryVerified=false`、`releaseReady=false`。
+
+- preview.6 [双架构安装包独立消费者](../../verification/production-validation/preview6-independent-consumer-2026-09-25/README.md)、[无 Git 的完整源码搬移与双架构重编](../../verification/production-validation/preview6-source-relocation-2026-09-25/README.md)已通过。搬移后底层依赖未重编且 GUI 未在该目录启动，不能将源码交付门槛写成完全通过。
+- 实际 Win7 SP1 x86 QEMU 上，[preview.6 三应用入口](../../verification/production-validation/win7-sp1-x86-qemu-preview6-apps-v4-2026-09-25/README.md)、[冻结公共任务消费者](../../verification/production-validation/win7-sp1-x86-qemu-public-task-2026-09-25/README.md)、[公共剪贴板/窗口中文往返](../../verification/production-validation/win7-sp1-x86-qemu-desktop-v2-2026-09-25/README.md)、[窗口线程停滞后的超时恢复](../../verification/production-validation/win7-sp1-x86-qemu-title-timeout-v2-2026-09-25/README.md)及[目录对话框实际打开并取消](../../verification/production-validation/win7-sp1-x86-qemu-directory-v2-2026-09-25/README.md)各自的短测通过。它们来源不同，不能跨候选合成一个完整通过版本。
+- preview.5 [八小时混合运行](../../verification/production-validation/preview5-eight-hour-soak-2026-09-25/README.md)完成 1,690 轮、23,664 步、退出 0，但私有内存每小时中位数由约 64.1 MiB 升至 136.7 MiB，且与外部负载重叠；资源/时延门槛未评估，亦不能覆盖 preview.6。真实页面交互、完整业务、物理 Win7 x86、隔离的最终候选长测和 SOUI/Electron 同机配对性能仍待执行。
+
 | 必须回答的问题 | 当前判定 | 决定性的现有证据与缺口 |
 |---|---|---|
 | SDK 能否独立交付 | **部分通过，尚未形成完整交付通过** | preview.5 [双架构完整构建、三项 smoke、仓库外生成项目及无 Git 完整源码搬移后重新构建](../../verification/production-validation/preview5-task-capacity-2026-09-24/README.md)已通过。preview.5 的[Win7 x86 QEMU 四模式公共消费者短测](../../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)已通过；preview.4 的[x64 Release 业务小样](../../verification/production-validation/preview4-upgrade-2026-09-23/README.md)升级回退仍保留原候选身份；新版 x86 Bridge 长循环两次超时，物理目标机尚未执行。底层依赖的搬移后源码重编译、Debug 和目标机交付仍未闭环。 |
