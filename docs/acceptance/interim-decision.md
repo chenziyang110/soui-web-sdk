@@ -1,6 +1,17 @@
 # 0.3 SDK 中期准入判定
 
-日期：2026-09-24。候选：`0.3.0-preview.5`。本文件只汇总已执行证据；不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
+初始判定日期：2026-09-24，候选 `0.3.0-preview.5`；后续增补按各自版本分别判定。本文件只汇总已执行证据，不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
+
+## 2026-09-25 preview.7 增补判定
+
+**工程交付部分通过；指定范围生产未通过；相对 Electron 的整体采用价值未判定。** `sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。本节只新增 preview.7 的结果；下方 preview.5/.6 结果仍以各自来源为准。
+
+- [搬移源码的底层重编诊断](../../verification/production-validation/preview6-relocated-dependency-encoding-2026-09-25/README.md)发现 preview.6 无 Git 源包在本机 CP936 下重编 x86 Miniblink 会因 UTF-8 文件误读失败；全局 `/utf-8` 则令旧源码产生大量编码警告。preview.7 给五个文件定点添加 BOM，新增构建告警门槛。修改后的搬移目录中，x86/x64 SOUI、Skia、Miniblink 重编及两架构 Starter/Workbench 启动均通过；该目录已被诊断性修改，不等于最终 preview.7 整包的原封重建。
+- [preview.7 双架构 Release 回归](../../verification/production-validation/preview6-relocated-dependency-encoding-2026-09-25/README.md)完成完整应用编译、Web/原生契约与三入口 smoke；固定运行包与上述重编内核分开记录。[重编 x86 内核的 Win7 SP1 x86 QEMU 三入口短测](../../verification/production-validation/win7-sp1-x86-qemu-preview7-rebuilt-source-2026-09-25/README.md)再次通过：Starter、Workbench 默认页和 React 页退出 0，24 份串口结果经长度、散列、系统身份与日志内容复核。这是诊断组合，未覆盖新版公共消费者、八小时或物理 Win7 设备。
+- [无 Git 完整源码快照](../../verification/production-validation/preview7-full-source-stage-2026-09-25/README.md)在清单验证后重新完成 x86/x64 Release 应用构建、完整测试与三项真实桌面 smoke；preview.7 SDK 包 408 文件可与工作树源逐项比对，安装/升级/回退包测试 14/14。这关闭应用源码搬移短验收，但不等于从最终原封源码包完成底层依赖全量重建。
+- [S02 交替配对记录](../../verification/production-validation/benchmark-s02-series-interference-2026-09-25/README.md)仍受外部 QEMU 干扰，未取得五对隔离样本，也缺实际呈现；最小包体积历史样本只能支持体积差异，不能推断流畅性或总体采用价值。
+
+下一步用刷新后的 preview.7 源码清单冻结最终整包，在原封目录完成底层依赖双架构全量重建；随后继续关闭资源增长、Bridge/GPU 生命周期、同机呈现性能、目标物理机、安全维护和授权门槛。未完成这些证据前不得发布为生产就绪。
 
 ## 2026-09-25 preview.6 增补判定
 

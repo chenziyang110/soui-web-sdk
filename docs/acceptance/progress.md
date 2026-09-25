@@ -24,7 +24,11 @@
 
 本文件记录执行进度，不能代替机器报告或修改 `releaseReady`。新增阶段证据应链接实际 run-id、源码与载荷身份，并列出未执行项。
 
-当前开发版本为 `0.3.0-preview.6`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
+当前开发版本为 `0.3.0-preview.7`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
+
+preview.7 的[源码编码修复诊断](../../verification/production-validation/preview6-relocated-dependency-encoding-2026-09-25/README.md)确认 preview.6 无 Git 源包在 CP936 环境重编 x86 Miniblink 失败；定点 BOM 补丁后，修改过的仓库外目录里 x86/x64 SOUI、Skia、Miniblink 源码重编与两架构真实应用启动均通过。当前 preview.7 的双架构 Release 构建、契约测试和三入口 smoke 也通过，但它们使用固定运行包，不能和新内核结果合并。[Win7 SP1 x86 QEMU 重编内核短测](../../verification/production-validation/win7-sp1-x86-qemu-preview7-rebuilt-source-2026-09-25/README.md)完成三入口启动/关闭，24 份串口文件、来宾身份和载荷散列复核通过。诊断目录不是最终 preview.7 原封整包；最终整包重建、Debug、物理设备、长期资源、实际呈现性能与安全授权仍未完成，`sourceDeliveryVerified=false`、`releaseReady=false`。
+
+[preview.7 无 Git 完整源码快照](../../verification/production-validation/preview7-full-source-stage-2026-09-25/README.md)经源清单逐文件验证，在仓库外完成 x86/x64 Release 应用重编、完整测试和三项桌面 smoke；SDK 新包的 408 个文件也通过包内完整性、源匹配及 14 项包行为测试。该快照使用固定运行依赖；最终原封整包的底层依赖全量重编继续待验收，不改变 `sourceDeliveryVerified=false`。
 
 ToolTip 修补后的 x64 内核及全部原生依赖已重新编译；候选 SHA-256 为 `32d37e6399bc04e2a8d909c4021f49e3b8f21521b805f9f118f15e111ea0e59f`，三模式各 30 轮加 3 次预热全部完成。重建 USER 不再增长，但 GDI/普通句柄仍增长，缺陷未关闭。随后定位到拖拽区域和工作线程唤醒事件的释放遗漏，保留为两个后续补丁。
 

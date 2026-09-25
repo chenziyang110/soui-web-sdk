@@ -10,6 +10,11 @@ $toolchain=Get-SouiToolchain
 $output=Join-Path $root "out/dependencies/$Architecture"
 New-Item -ItemType Directory -Force -Path $output | Out-Null
 $start=Get-Date
+function Assert-SourceEncoding([string]$LogPath) {
+  if(Select-String -LiteralPath $LogPath -Pattern 'warning C4819','warning C4828' -Quiet){
+    throw "Source encoding warning; see $LogPath"
+  }
+}
 if($Component -in @('All','Miniblink')) {
   $source=Join-Path $root 'third_party/sources/miniblink'
   if(-not(Test-Path -LiteralPath (Join-Path $source 'SOURCE-MANIFEST.json'))){throw 'Miniblink source bundle is required.'}
@@ -17,17 +22,24 @@ if($Component -in @('All','Miniblink')) {
   New-Item -ItemType Directory -Force -Path $deps | Out-Null
   foreach($library in @('zlib','libjpeg','libpng','harfbuzz','libxml','ots','openssl','libcurl','v8_5_7','v8_5_7_1','skia')) {
     Write-Output "Building Miniblink dependency: $library / $Architecture"
-    & (Join-Path $PSScriptRoot 'internal/Build-KernelLibraryArch.cmd') $toolchain.DevCmd $source $deps $library $Architecture *> (Join-Path $output "$library.log")
+    $logPath=Join-Path $output "$library.log"
+    & (Join-Path $PSScriptRoot 'internal/Build-KernelLibraryArch.cmd') $toolchain.DevCmd $source $deps $library $Architecture *> $logPath
     if($LASTEXITCODE -ne 0){throw "Dependency failed: $library; see $output/$library.log"}
+    Assert-SourceEncoding $logPath
   }
   # A fresh GPU output prevents stale objects after source files are removed.
   $gpu=Join-Path $output ('gpu-'+[Guid]::NewGuid().ToString('N'))
-  & (Join-Path $PSScriptRoot 'internal/Build-SkiaGpuLibrary.ps1') -VsDevCmd $toolchain.DevCmd -SourceRoot $source -OutputRoot $gpu -Architecture $Architecture *> (Join-Path $output 'skia-gpu.log')
+  $gpuLog=Join-Path $output 'skia-gpu.log'
+  & (Join-Path $PSScriptRoot 'internal/Build-SkiaGpuLibrary.ps1') -VsDevCmd $toolchain.DevCmd -SourceRoot $source -OutputRoot $gpu -Architecture $Architecture *> $gpuLog
+  if($LASTEXITCODE -ne 0){throw "Skia GPU failed; see $gpuLog"}
+  Assert-SourceEncoding $gpuLog
   Write-Output "Building Miniblink kernel / $Architecture"
   $kernel=Join-Path $output 'miniblink'
   New-Item -ItemType Directory -Force -Path $kernel | Out-Null
-  & (Join-Path $PSScriptRoot 'internal/Build-KernelMainArch.cmd') $toolchain.DevCmd $source $kernel (Join-Path $deps 'lib') (Join-Path $gpu 'lib') $Architecture *> (Join-Path $output 'miniblink.log')
+  $kernelLog=Join-Path $output 'miniblink.log'
+  & (Join-Path $PSScriptRoot 'internal/Build-KernelMainArch.cmd') $toolchain.DevCmd $source $kernel (Join-Path $deps 'lib') (Join-Path $gpu 'lib') $Architecture *> $kernelLog
   if($LASTEXITCODE -ne 0){throw "Miniblink failed; see $output/miniblink.log"}
+  Assert-SourceEncoding $kernelLog
 }
 if($Component -in @('All','SOUI')) {
   $source=Join-Path $root 'third_party/sources/soui'
@@ -38,8 +50,10 @@ if($Component -in @('All','SOUI')) {
       "soui-sys-resource/soui-sys-resource$suffix.vcxproj")) {
     $name=[IO.Path]::GetFileNameWithoutExtension($componentPath)
     Write-Output "Building SOUI component: $name / $Architecture"
-    & (Join-Path $PSScriptRoot 'internal/Build-SouiComponent.cmd') $toolchain.DevCmd (Join-Path $source $componentPath) $Architecture (Join-Path $output "soui/obj/$name") *> (Join-Path $output "$name.log")
+    $logPath=Join-Path $output "$name.log"
+    & (Join-Path $PSScriptRoot 'internal/Build-SouiComponent.cmd') $toolchain.DevCmd (Join-Path $source $componentPath) $Architecture (Join-Path $output "soui/obj/$name") *> $logPath
     if($LASTEXITCODE -ne 0){throw "SOUI component failed: $name; see $output/$name.log"}
+    Assert-SourceEncoding $logPath
   }
 }
 $artifacts=@()

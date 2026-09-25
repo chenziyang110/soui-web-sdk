@@ -6,6 +6,7 @@ const sha = name => crypto.createHash('sha256').update(fs.readFileSync(path.join
 const definitions = [
  ['soui-source', 'third_party/sources/soui/SOURCE-MANIFEST.json', 'SOUI 2.9.0.3 lineage', 'upstream source notices'],
  ['miniblink-source', 'third_party/sources/miniblink/SOURCE-MANIFEST.json', 'Miniblink49 VS2022 working snapshot', 'upstream and bundled dependency notices'],
+ ['miniblink-encoding-patch', 'third_party/patches/miniblink/0007-mark-utf8-source-encoding.patch', 'preview.7 post-import patch', 'same terms as Miniblink source'],
  ['zlib-source', 'third_party/sources/zlib/source-manifest.json', '1.2.11', 'Zlib'],
  ['json', 'third_party/include/json/json.hpp', 'pinned single header', 'MIT'],
  ...['x86','x64'].flatMap(arch => [
@@ -40,6 +41,7 @@ const review = {schema:'soui.binary-license-review/v1',status:'unverified',relea
  scope:'Exact preview Miniblink binaries and their linked third-party configuration',
  binaries:dependencies.filter(x=>/^miniblink-x/.test(x.id)).map(x=>({architecture:x.id.slice(10),sha256:x.sha256})),
  evidence_refs:['third_party/sources/miniblink/SOURCE-MANIFEST.json','third_party/sources/miniblink/LOCAL-CHANGES.patch',
+ 'third_party/patches/miniblink/README.md','third_party/patches/miniblink/0007-mark-utf8-source-encoding.patch',
  'verification/production-validation/kernel-link-inputs-2026-09-25/observation.json',
  'verification/production-validation/kernel-notice-inventory-2026-09-25/README.md',
  'verification/production-validation/kernel-notice-recovery-2026-09-25/README.md'],
