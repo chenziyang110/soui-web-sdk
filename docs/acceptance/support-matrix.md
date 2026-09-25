@@ -4,7 +4,7 @@
 
 2026-09-25 增补：[preview.7 最终完整源码重编 x86 载荷](../../verification/production-validation/win7-sp1-x86-qemu-preview7-final-source-2026-09-25/README.md)已在 Windows 7 SP1 x86 QEMU 通过 Starter、Workbench 默认页和 React 页短启动，且来宾系统身份、载荷散列、退出码和 24 份串口结果复核通过。它不扩展为物理设备、完整业务或性能结论；下表各旧版本证据仍保留原身份。
 
-preview.8 [无 Git 候选源码包双架构重编与四组应用构建](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)通过；[同源重编 x86 载荷](../../verification/production-validation/win7-sp1-x86-qemu-preview8-isolated-source-2026-09-25/README.md)也在 QEMU 的 Windows 7 SP1 x86 完成三入口短测、24 份串口结果与篡改反例。另有[最终源码包生成的独立项目 Win7 SP1 x86 QEMU 短测](../../verification/production-validation/win7-sp1-x86-qemu-preview8-independent-consumer-2026-09-25/README.md) 完成模板工程实际运行；首次脚本校验失败保留，修正后复测通过。以下物理设备与体验要求不因虚拟机短测而降低。
+preview.8 [无 Git 候选源码包双架构重编与四组应用构建](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)通过；[同源重编 x86 载荷](../../verification/production-validation/win7-sp1-x86-qemu-preview8-isolated-source-2026-09-25/README.md)也在 QEMU 的 Windows 7 SP1 x86 完成三入口短测、24 份串口结果与篡改反例。另有[最终源码包生成的独立项目 Win7 SP1 x86 QEMU 短测](../../verification/production-validation/win7-sp1-x86-qemu-preview8-independent-consumer-2026-09-25/README.md)完成模板工程实际运行；首次脚本校验失败保留，修正后复测通过。[同一源码包构建的独立公共 SDK 页面消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview8-public-task-2026-09-25/README.md)在 Win7 x86 QEMU 完成公开任务进度、取消、容量与恢复三轮短测。以下物理设备与体验要求不因虚拟机短测而降低。
 
 ## 已使用的设备
 

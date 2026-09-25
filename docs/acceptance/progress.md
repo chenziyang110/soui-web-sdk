@@ -191,3 +191,5 @@ preview.6 [Win7 x86 应用短测 v3](../../verification/production-validation/wi
 [窗口线程停滞 v2 短测](../../verification/production-validation/win7-sp1-x86-qemu-title-timeout-v2-2026-09-25/README.md)保持原候选 EXE 身份，额外锁定上述 52 个应用本地运行库，在实际 Win7 SP1 x86 QEMU 上验证超时返回、未执行命令撤销及恢复后的中文标题设置，客体退出 0。五份串口文件、系统/EXE 身份及哈希均通过校验；此结果不跨候选合并到 preview.6，也不放行模板页面或生产资源门槛。
 
 [目录对话框取消 v2 短测](../../verification/production-validation/win7-sp1-x86-qemu-directory-v2-2026-09-25/README.md)同样保持原候选 EXE 身份、补入冻结的 52 个运行库，在真实 Win7 SP1 x86 QEMU 中打开并取消 Shell 目录对话框，退出 0。五份串口结果的系统/EXE 身份、逐文件散列及成功标记通过独立校验；快照客机已退出。它只证明公共取消路径，不涵盖模板真实点击、正向中文路径、关窗竞态或完整生产验收。
+
+preview.8 [最终完整源码包的独立公共 SDK 页面消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview8-public-task-2026-09-25/README.md)先在本机完成 x86 Release Bridge 三轮，再以同一 76 文件载荷进入 Win7 SP1 x86 QEMU。客体逐文件散列、进程退出 0、17 份串口文件、10 个完整生命周期步骤、3 轮资源采样以及页面的公开任务进度/取消、容量与错误恢复均通过独立核验；伪造内核散列和截断事件流的反例被拒绝。此结果不代表 Demo 页面真实操作或生产资源门槛，虚拟机历时也不作性能对标。
