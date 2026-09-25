@@ -38,3 +38,11 @@ node benchmarks/protocol/check-pair-runs.cjs <SOUI输出目录> <Electron输出�
 ```
 
 组合检查重新计算两端轨迹、原始页面文件哈希、完整页面资源、输入动作序列、运行机器和宿主身份，再调用页面配对检查。它通过仍只表示配对**预检**成立；呈现、启动、重复性和目标平台仍是独立门槛。2026-09-25 首对 S01 完整时长样本的页面和轨迹均通过，但因当时未冻结全部页面资源和宿主身份，组合检查明确拒绝，见[原始归档](../../verification/production-validation/benchmark-s01-preflight-2026-09-25/README.md)。随后 [S02 三对预检](../../verification/production-validation/benchmark-s02-full-preflight-2026-09-25/README.md)通过，两对无 QEMU 并行负载，但仍未达到五对重复及物理呈现门槛。
+
+`run-series.cjs` 在一台 Windows 设备上按 SOUI→Electron、Electron→SOUI 交替执行指定场景，默认五对；系列开始时先冻结完整共享页面，每个宿主都从该副本运行上述单轮监督器，每对重新计算完整预检，并跨轮核对机器、页面、宿主与工具身份。输出是新的绝对目录，保留每轮原始结果、逐对预检和 `series.json`，失败或中途停止不会补写未执行轮次。它在每轮开始和结束时查询已知会干扰的 QEMU、验收应用及其他基准宿主进程，发现后拒绝继续；这只是边界检查，不能发现两个检查点之间启动又结束的其他负载，仍需人工隔离设备。S03 的外部驱动尚不能证明真实中文 IME composition，因此系列入口明确拒绝 S03。
+
+首次系列实跑在 Electron 结束前约 0.67 秒检测到另一个 QEMU 启动，[保留的停止证据](../../verification/production-validation/benchmark-s02-series-interference-2026-09-25/README.md)显示两端单轮完整但系列拒绝计数。完成五对且无已知并行负载仍只是系列预检，不能自动关闭物理呈现或生产门槛。
+
+```powershell
+node benchmarks/protocol/run-series.cjs S02 <共享页面目录> <SouiBenchmark.exe> <node.dll> <electron.exe> <Electron应用目录> <ProcessTreeSampler.exe> <InputTrace.exe> <新的系列输出目录> <已安装的soui_sdk.lib> <package-lock.json> 5
+```

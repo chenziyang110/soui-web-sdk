@@ -6,6 +6,7 @@ const fs = require('node:fs');
 const os = require('node:os');
 const path = require('node:path');
 const {compare, loadRun} = require('../../benchmarks/protocol/check-pair-runs.cjs');
+const {frozenIdentity} = require('../../benchmarks/protocol/run-series.cjs');
 
 const evidence = path.resolve(__dirname,
   '../../verification/production-validation/benchmark-s02-full-preflight-2026-09-25/raw');
@@ -33,6 +34,14 @@ test('historical completed S01 runs without frozen inputs remain rejected', () =
   assert.equal(result.preflightAccepted, false);
   assert.equal(result.checks.samePageBundle, false);
   assert.equal(result.checks.hostIdentity, false);
+});
+
+test('independently collected S02 rounds retain the same machine and payload identities', () => {
+  for (const host of ['soui', 'electron']) {
+    const second = loadRun(path.join(evidence, `benchmark-s02-${host}-20260925-run2`), host);
+    const third = loadRun(path.join(evidence, `benchmark-s02-${host}-20260925-run3`), host);
+    assert.deepEqual(frozenIdentity(second), frozenIdentity(third));
+  }
 });
 
 test('changed non-entry page asset invalidates a completed run', () => {

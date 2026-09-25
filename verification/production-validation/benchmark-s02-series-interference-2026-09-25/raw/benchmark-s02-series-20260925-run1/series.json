@@ -1,0 +1,45 @@
+{
+  "schema": "soui.benchmark-series/v1",
+  "seriesId": "0aa10619-9cc5-49e1-a5e8-21110c489772",
+  "scene": "S02",
+  "plannedPairs": 1,
+  "startedAt": "2026-09-25T01:56:33.590Z",
+  "order": "alternating-soui-electron-and-electron-soui",
+  "checks": [
+    {
+      "checkedAt": "2026-09-25T01:56:33.588Z",
+      "competingProcesses": []
+    },
+    {
+      "checkedAt": "2026-09-25T01:56:34.350Z",
+      "competingProcesses": []
+    },
+    {
+      "checkedAt": "2026-09-25T01:57:39.064Z",
+      "competingProcesses": []
+    },
+    {
+      "checkedAt": "2026-09-25T01:57:39.866Z",
+      "competingProcesses": []
+    }
+  ],
+  "pairs": [
+    {
+      "number": 1,
+      "order": [
+        "soui",
+        "electron"
+      ],
+      "runs": {
+        "soui": "pair-1-soui",
+        "electron": "pair-1-electron"
+      }
+    }
+  ],
+  "benchmarkValid": false,
+  "releaseReady": false,
+  "pageBundle": "frozen-page",
+  "status": "stopped",
+  "error": "Competing process is running: qemu-system-x86_64.exe",
+  "finishedAt": "2026-09-25T01:58:43.766Z"
+}
