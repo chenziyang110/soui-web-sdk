@@ -181,7 +181,13 @@ int run(int argc, wchar_t** argv) {
   if (!GetProcessTimes(process.value, &creation, &process_exit, &kernel, &user))
     throw std::runtime_error("Cannot read benchmark process identity");
   window_search search{pid};
-  EnumWindows(find_window, reinterpret_cast<LPARAM>(&search));
+  const auto window_deadline = GetTickCount64() + 45000;
+  while (!search.found && GetTickCount64() < window_deadline) {
+    if (WaitForSingleObject(process.value, 0) != WAIT_TIMEOUT)
+      throw std::runtime_error("Benchmark process exited before its window appeared");
+    EnumWindows(find_window, reinterpret_cast<LPARAM>(&search));
+    if (!search.found) Sleep(100);
+  }
   if (!search.found) throw std::runtime_error("A visible 1100 x 720 benchmark window is required");
   const int screen_width = GetSystemMetrics(SM_CXSCREEN);
   const int screen_height = GetSystemMetrics(SM_CYSCREEN);

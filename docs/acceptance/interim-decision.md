@@ -9,6 +9,7 @@
 - preview.6 [双架构安装包独立消费者](../../verification/production-validation/preview6-independent-consumer-2026-09-25/README.md)、[无 Git 的完整源码搬移与双架构重编](../../verification/production-validation/preview6-source-relocation-2026-09-25/README.md)已通过。搬移后底层依赖未重编且 GUI 未在该目录启动，不能将源码交付门槛写成完全通过。
 - 实际 Win7 SP1 x86 QEMU 上，[preview.6 三应用入口](../../verification/production-validation/win7-sp1-x86-qemu-preview6-apps-v4-2026-09-25/README.md)、[冻结公共任务消费者](../../verification/production-validation/win7-sp1-x86-qemu-public-task-2026-09-25/README.md)、[公共剪贴板/窗口中文往返](../../verification/production-validation/win7-sp1-x86-qemu-desktop-v2-2026-09-25/README.md)、[窗口线程停滞后的超时恢复](../../verification/production-validation/win7-sp1-x86-qemu-title-timeout-v2-2026-09-25/README.md)及[目录对话框实际打开并取消](../../verification/production-validation/win7-sp1-x86-qemu-directory-v2-2026-09-25/README.md)各自的短测通过。它们来源不同，不能跨候选合成一个完整通过版本。
 - preview.5 [八小时混合运行](../../verification/production-validation/preview5-eight-hour-soak-2026-09-25/README.md)完成 1,690 轮、23,664 步、退出 0，但私有内存每小时中位数由约 64.1 MiB 升至 136.7 MiB，且与外部负载重叠；资源/时延门槛未评估，亦不能覆盖 preview.6。真实页面交互、完整业务、物理 Win7 x86、隔离的最终候选长测和 SOUI/Electron 同机配对性能仍待执行。
+- [同机 SOUI/Electron S02 配对链路预检](../../verification/production-validation/benchmark-s02-full-preflight-2026-09-25/README.md)已有三对真实 61 秒滚动样本，页面、输入、完整资源副本、进程树和身份预检通过；第 1 对与 QEMU 并行，只保留诊断。另两对无 QEMU 的样本给出初步内存/CPU 分布，但缺实际屏幕呈现、五对重复、冷/热启动和目标系统验证，`benchmarkValid=false`，不能判定相对 Electron 的整体价值。
 
 | 必须回答的问题 | 当前判定 | 决定性的现有证据与缺口 |
 |---|---|---|

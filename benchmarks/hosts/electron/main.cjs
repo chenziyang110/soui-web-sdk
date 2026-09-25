@@ -1,6 +1,6 @@
 'use strict';
 
-const {app, BrowserWindow, ipcMain, session} = require('electron');
+const {app, BrowserWindow, Menu, ipcMain, session} = require('electron');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
@@ -35,8 +35,11 @@ function validateResult(value) {
 
 async function main() {
   const smoke = process.argv.includes('--smoke');
+  const exitOnResult = process.argv.includes('--exit-on-result');
   if (process.argv.filter(arg => arg === '--smoke').length > 1)
     throw new Error('Duplicate --smoke option');
+  if (process.argv.filter(arg => arg === '--exit-on-result').length > 1 || (smoke && exitOnResult))
+    throw new Error('Expected at most one of --smoke or --exit-on-result');
   const page = option('benchmark-page');
   const resultDir = option('result-dir');
   if (path.basename(page).toLowerCase() !== 'benchmark.html' || !fs.statSync(page).isFile())
@@ -61,13 +64,14 @@ async function main() {
   };
   fs.writeFileSync(path.join(resultDir, `${runId}-host.json`), `${JSON.stringify(metadata, null, 2)}\n`, {flag: 'wx'});
   session.defaultSession.setPermissionRequestHandler((_webContents, _permission, callback) => callback(false));
+  Menu.setApplicationMenu(null);
   ipcMain.handle('benchmark:write-result', (event, result) => {
     if (event.sender !== window.webContents || event.sender.getURL().split('?')[0] !== pageUrl)
       throw new Error('Unrecognized benchmark sender');
     const body = validateResult(result);
     const name = `${runId}-${result.scene}-${crypto.randomUUID()}.json`;
     fs.writeFileSync(path.join(resultDir, name), body, {flag: 'wx'});
-    if (smoke) {
+    if (smoke || exitOnResult) {
       clearTimeout(watchdog);
       setTimeout(() => app.quit(), 100);
     }

@@ -1,6 +1,6 @@
 # 性能对照协议草案
 
-当前状态：测量协议，尚未执行。固定 SDK 源码/运行包、Electron 精确版本与 lockfile、共享页面逐文件散列、设备系统与驱动、电源计划、刷新率、DPI、窗口内容区尺寸、输入轨迹、场景顺序及采样工具版本。两端均使用发布构建和正常安全设置，在同一设备上交替执行；未对齐的输入或视口使该轮不可比。
+当前状态：已执行 S01、S02 配对链路预检，正式性能验收尚未完成。固定 SDK 源码/运行包、Electron 精确版本与 lockfile、共享页面逐文件散列、设备系统与驱动、电源计划、刷新率、DPI、窗口内容区尺寸、输入轨迹、场景顺序及采样工具版本。两端均使用发布构建和正常安全设置，在同一设备上交替执行；未对齐的输入或视口使该轮不可比。
 
 每轮保存宿主元数据、页面原始结果、外部输入时间戳、进程树资源样本、退出码与超时、运行包文件清单及散列。启动冷态至少 10 次、热态至少 30 次；交互每场景至少 5 轮、每轮 60 秒。报告 p50/p95/p99、样本数、分布和异常样本，不只给平均值。S05 的 120 秒动效检查应独立保留，不能用不足时长的样本填补 60 秒交互结果。
 
@@ -28,3 +28,13 @@ out/benchmark-sampler/Release/InputTrace.exe <宿主PID> S01 <新的绝对结果
 ```
 
 一轮宿主正常退出后，用 `node benchmarks/protocol/check-run-traces.cjs S01 <input-trace.ndjson> <process-tree.ndjson>` 复核两份原始轨迹。检查要求完整时长、相同 PID/进程创建时间、输入落在采样区间内、连续完整的资源样本、宿主退出码 0，并拒绝短探针和超时。S01/S02/S04 还要求场景操作实际持续执行，S05 要求启动动效；仅等待足够时长后点“结束”不能算有效输入。当前 S03 一律拒绝，直到补上真实 IME composition 证据链；单改轨迹里的布尔字段不能证明输入法路径。该检查不读取页面结果，也不测物理呈现；必须再运行页面配对检查，并补足散列、运行顺序、重复次数与呈现追踪。
+
+`run-one.cjs` 将一个可见的宿主、`ProcessTreeSampler` 和 `InputTrace` 串行绑定为一轮真实场景；输出目录必须是新的绝对路径。每轮先复制共享页面到独立目录，逐文件验证副本与输入相同，宿主只加载副本，结束后再次验证副本未变。宿主仅在页面提交完整结果后正常退出，工具保存三个退出码、原始日志、页面结果和逐文件页面身份，失败时也保留独立目录。SOUI 的最后一个可选参数是已安装 SDK 静态库，Electron 的是 `package-lock.json`；正式身份预检必须提供它。两端按同一页面目录交替执行，例如：
+
+```powershell
+node benchmarks/protocol/run-one.cjs soui S01 <同一页面目录> <SouiBenchmark.exe> <node.dll> <ProcessTreeSampler.exe> <InputTrace.exe> <新的SOUI输出目录> <已安装的soui_sdk.lib>
+node benchmarks/protocol/run-one.cjs electron S01 <同一页面目录> <electron.exe> <Electron应用目录> <ProcessTreeSampler.exe> <InputTrace.exe> <新的Electron输出目录> <package-lock.json>
+node benchmarks/protocol/check-pair-runs.cjs <SOUI输出目录> <Electron输出目录>
+```
+
+组合检查重新计算两端轨迹、原始页面文件哈希、完整页面资源、输入动作序列、运行机器和宿主身份，再调用页面配对检查。它通过仍只表示配对**预检**成立；呈现、启动、重复性和目标平台仍是独立门槛。2026-09-25 首对 S01 完整时长样本的页面和轨迹均通过，但因当时未冻结全部页面资源和宿主身份，组合检查明确拒绝，见[原始归档](../../verification/production-validation/benchmark-s01-preflight-2026-09-25/README.md)。随后 [S02 三对预检](../../verification/production-validation/benchmark-s02-full-preflight-2026-09-25/README.md)通过，两对无 QEMU 并行负载，但仍未达到五对重复及物理呈现门槛。
