@@ -171,3 +171,11 @@ V02 Workbench 现提供可从首页和菜单进入的数据交互页，复用 El
 当前 preview.6 的 x86 Starter/Workbench [Win7 SP1 QEMU 短测输入](../../verification/production-validation/win7-sp1-x86-qemu-preview6-apps-2026-09-25/README.md)已冻结：从现行构建载荷重新压缩并解压核对 71/475 个文件，宿主运行来宾检查脚本确认两套法务文件哈希与中文路径，串口校验器合成成功/篡改样本自检通过。宿主八小时长测和其他 QEMU 尚占用，客体未执行；不能据此填写 preview.6 的 Win7 支持结论。
 
 preview.6 [独立安装消费者预检](../../verification/production-validation/preview6-independent-consumer-2026-09-25/README.md)在 x86/x64 均通过：`find_package(SouiSdk)` 的外部控制台工程只链接安装后的公开库并退出 0；`Test-Acceptance -PrepareOnly` 又从本版源码独立编译 SDK、安装包、TypeScript 页面和桌面消费者，记录各自 32 文件安装快照与 75 文件载荷。两套安装库与各自 SDK-only 构建字节散列一致，第三方声明和四份许可进入安装目录。此项只通过构建与无窗口调用，不增加真实桌面、Win7 或长稳通过项；`releaseReady=false`。
+
+[preview.5 x86 八小时混合生命周期](../../verification/production-validation/preview5-eight-hour-soak-2026-09-25/README.md)已经正式结束：单进程 1,690 轮、23,664 步、28,802,459 ms，监督器判定退出 0、无超时、操作完整。分时分析同时发现私有内存中位数由首小时约 64.1 MiB 升至第八小时约 136.7 MiB；运行与外部 QEMU 及本机编译交叠，资源和时延门槛均不能用本次数据放行。应定位增长来源，在隔离条件下用最终候选重跑；此结果也不能跨版本计入 preview.6。
+
+preview.6 的[完整源码搬移](../../verification/production-validation/preview6-source-relocation-2026-09-25/README.md)已在无 Git 元数据的仓库外目录重新校验 30,190 个文件、打出一致的 408 文件 SDK 包，并由该包生成独立项目。完整源码与生成项目的 x86/x64 Release Web/原生编译均通过；搬移源码两架构非桌面测试通过。底层依赖未从搬移目录重编，两个项目均未在该目录启动 GUI，因此 `sourceDeliveryVerified` 仍为 false。
+
+preview.6 [Win7 x86 应用短测 v3](../../verification/production-validation/win7-sp1-x86-qemu-preview6-apps-2026-09-25/README.md)已进入客体并验证两个 ZIP 的解包、数量和中文路径，但来宾 PowerShell 2 在许可散列校验器的 `SHA256Managed.Dispose()` 报错，三项应用 smoke 没有执行；串口校验器正确拒绝仅 14/24 文件的失败帧。原样本保留。[v4 独立客体](../../verification/production-validation/win7-sp1-x86-qemu-preview6-apps-v4-2026-09-25/README.md)只修正脚本清理调用，冻结应用载荷不变；实际 Win7 SP1 x86 短测的 24 个串口文件、法务材料散列及 Starter/Workbench 默认/React 三项启动和关闭均通过，退出码 0。该短测不覆盖真实交互、物理设备或长期资源门槛。
+
+[Win7 SP1 x86 公共任务短测](../../verification/production-validation/win7-sp1-x86-qemu-public-task-2026-09-25/README.md)也已在冻结独立消费者上完成：14 个串口文件、系统/二进制身份、Bridge 三轮与 10 个完整步骤均通过，退出码 0；资源门槛仍未评估。随后[公共桌面服务短测 v1](../../verification/production-validation/win7-sp1-x86-qemu-desktop-2026-09-25/README.md)因测试 EXE 未附带 `MSVCP140.dll` 在进程加载前失败，客体退出码 `0xC0000135`；原样本保留。保持 EXE 字节不变、锁定 preview.6 应用本地 VC/UCRT 运行库的[v2 输入](../../verification/production-validation/win7-sp1-x86-qemu-desktop-v2-2026-09-25/README.md)已准备，仍待实际重测。v1 不构成桌面服务功能结论。
