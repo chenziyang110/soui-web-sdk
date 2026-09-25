@@ -37,10 +37,10 @@ Miniblink 主内核含数千个编译单元，完整构建可能持续较长时�
 | 新 x64 内核 | `out/dependencies/x64/miniblink/bin/miniblink.dll` |
 | 新 x86 内核 | `out/dependencies/x86/miniblink/bin/node.dll` |
 | 依赖与日志 | `out/dependencies/<架构>/` |
-| SOUI DLL / LIB | `third_party/sources/soui/bin/` 或 `bin64/` |
+| SOUI DLL / LIB | `out/dependencies/<架构>/soui-source-<构建 ID>/bin/` 或 `bin64/` |
 | 构建记录 | `out/dependencies/<架构>/build-All.json` |
 
-源码构建不会覆盖 `third_party/prebuilt/`。验证新 DLL 时先构建应用，将应用输出目录复制到隔离目录，用新内核替换 `node.dll`、同架构新 SOUI 组件替换对应 DLL，再执行模板 `--smoke-test` 与 Demo `--webview-smoke-test --arch=x64 --react`。短测通过后仍需长期内存、关闭稳定性和兼容性验收。
+源码构建不会覆盖 `third_party/prebuilt/`。SOUI 的旧工程有写入自身源码目录的硬编码规则，构建入口先将 Git 管理或完整源码清单列出的文件复制到新的 `out/dependencies/<架构>/soui-source-*` 目录；其构建产物和实际路径写入报告。验证新 DLL 时先构建应用，将应用输出目录复制到隔离目录，用新内核替换 `node.dll`、同架构新 SOUI 组件替换对应 DLL，再执行模板 `--smoke-test` 与 Demo `--webview-smoke-test --arch=x64 --react`。短测通过后仍需长期内存、关闭稳定性和兼容性验收。
 
 以上隔离替换与启动验证已封装为 `powershell.exe -File tools/Test-Dependencies.ps1 -Architecture x64`，结果在 `out/dependencies/x64/rebuilt-smoke.json`。
 

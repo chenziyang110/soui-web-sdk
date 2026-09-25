@@ -1,0 +1,312 @@
+{
+  "schema": "soui.upgrade-trial-verification/v2",
+  "passed": true,
+  "versions": [
+    "0.3.0-preview.7",
+    "0.3.0-preview.8"
+  ],
+  "stages": [
+    "old-initial",
+    "new-upgraded",
+    "old-rolled-back",
+    "new-restored"
+  ],
+  "architectures": [
+    "x86",
+    "x64"
+  ],
+  "distinctBuildIds": 8,
+  "files": [
+    {
+      "path": "business-source/app/business_marker.h",
+      "bytes": 84,
+      "sha256": "b0e5b2883a9a922cb10cf8a51a3a389bcaef3b363ddde235038dc78924d51987"
+    },
+    {
+      "path": "business-source/app/main.cpp",
+      "bytes": 7473,
+      "sha256": "daaccd45682b4ad0213dc56e086f3688501daa5d0e1606330ae93446a3ae62d0"
+    },
+    {
+      "path": "new-restored/sdk-lock.json",
+      "bytes": 98324,
+      "sha256": "bb163422a41ccb5745bd533f312028aa2be8a7635bfc8c4a7302253aeff12be4"
+    },
+    {
+      "path": "new-restored/verify-project.log",
+      "bytes": 214,
+      "sha256": "ec2780e42ba9cfe751dec118e07fb93644e932df5cb85a7fc9ea4220cb9717b0"
+    },
+    {
+      "path": "new-restored/x64/build-Release.json",
+      "bytes": 112351,
+      "sha256": "0d71e117625d1f1d71aa18ad65023a7d43aea3323529241950566ad176ad1e11"
+    },
+    {
+      "path": "new-restored/x64/build.log",
+      "bytes": 1788,
+      "sha256": "8e1e2bdb915caf32b9374b1b3169b0f45272ce8565b6507d2805868416f0de03"
+    },
+    {
+      "path": "new-restored/x64/smoke-Release.json",
+      "bytes": 14138,
+      "sha256": "17caf94924494602ba53eab3f70d5a5ef7968fc2cf30d349b47483fc9294e7f7"
+    },
+    {
+      "path": "new-restored/x64/smoke.log",
+      "bytes": 106,
+      "sha256": "f2e26ce6ac683d72799f7e0457b4fb277d39fd708119df5123bbb5fc88bee5e9"
+    },
+    {
+      "path": "new-restored/x64/test.log",
+      "bytes": 252,
+      "sha256": "8a6c21286a22953b4e5992b41ff5a675b115ba5aef957486f7ca2184f6140434"
+    },
+    {
+      "path": "new-restored/x86/build-Release.json",
+      "bytes": 112363,
+      "sha256": "42b9f50c7ce13917add3944bce72fb25797f798879c6818c8bf297ee739ddecf"
+    },
+    {
+      "path": "new-restored/x86/build.log",
+      "bytes": 1788,
+      "sha256": "4d28915b03b19573b251bc7ddbb353cce9216e618b21fda212957b13dc72ddcc"
+    },
+    {
+      "path": "new-restored/x86/smoke-Release.json",
+      "bytes": 14150,
+      "sha256": "0915069d5ea14fc656377cbb0de1d878d5b2170fe464cb296a5a5c414b45407b"
+    },
+    {
+      "path": "new-restored/x86/smoke.log",
+      "bytes": 106,
+      "sha256": "f2e26ce6ac683d72799f7e0457b4fb277d39fd708119df5123bbb5fc88bee5e9"
+    },
+    {
+      "path": "new-restored/x86/test.log",
+      "bytes": 252,
+      "sha256": "26750c25b0e46fa5d38e865c9e0474a15ddce0717e7d767cb94bc2b2829a9ab6"
+    },
+    {
+      "path": "new-upgraded/sdk-lock.json",
+      "bytes": 98324,
+      "sha256": "bb163422a41ccb5745bd533f312028aa2be8a7635bfc8c4a7302253aeff12be4"
+    },
+    {
+      "path": "new-upgraded/verify-project.log",
+      "bytes": 214,
+      "sha256": "ec2780e42ba9cfe751dec118e07fb93644e932df5cb85a7fc9ea4220cb9717b0"
+    },
+    {
+      "path": "new-upgraded/x64/build-Release.json",
+      "bytes": 112351,
+      "sha256": "030cee604b8cb7bff20699a5e793ef030719487aea85f5f8c792e22aa1bc858c"
+    },
+    {
+      "path": "new-upgraded/x64/build.log",
+      "bytes": 1788,
+      "sha256": "1bbcfe26e4fdf98729fc8b2a458084de130634f41c926b9c5a57ea958f5fb6a1"
+    },
+    {
+      "path": "new-upgraded/x64/smoke-Release.json",
+      "bytes": 14138,
+      "sha256": "6fd2df7dcaff0e3f32e619a82596237036a48ce09200b7ba9f76747bfaacbccb"
+    },
+    {
+      "path": "new-upgraded/x64/smoke.log",
+      "bytes": 106,
+      "sha256": "f2e26ce6ac683d72799f7e0457b4fb277d39fd708119df5123bbb5fc88bee5e9"
+    },
+    {
+      "path": "new-upgraded/x64/test.log",
+      "bytes": 252,
+      "sha256": "d7ad598ad25a0ec3f2d180dc677bd9ba2697830b7535fa6fa434f500f30a0636"
+    },
+    {
+      "path": "new-upgraded/x86/build-Release.json",
+      "bytes": 112363,
+      "sha256": "a84530c947d52d2c53d437259ede4955755b998fad510c0a3c73eec117250f23"
+    },
+    {
+      "path": "new-upgraded/x86/build.log",
+      "bytes": 1788,
+      "sha256": "8b730234112885672a3d329670861ed3af4d338beffac6a818acffc0fe129d8f"
+    },
+    {
+      "path": "new-upgraded/x86/smoke-Release.json",
+      "bytes": 14150,
+      "sha256": "78816c4d808176f922dfe31e8a1fb05d39004408aa36a707dc54c8fd55c57c79"
+    },
+    {
+      "path": "new-upgraded/x86/smoke.log",
+      "bytes": 106,
+      "sha256": "f2e26ce6ac683d72799f7e0457b4fb277d39fd708119df5123bbb5fc88bee5e9"
+    },
+    {
+      "path": "new-upgraded/x86/test.log",
+      "bytes": 252,
+      "sha256": "dd89d888c0b65d0ed857dd74c2f33c0cd6f278f75ee6dbb9e64b04708c8cde1f"
+    },
+    {
+      "path": "old-initial/sdk-lock.json",
+      "bytes": 98324,
+      "sha256": "143bc7e71a9318a5a3062b53fffbc4f2fec7ea7afa457be469e2793e638eafbd"
+    },
+    {
+      "path": "old-initial/verify-project.log",
+      "bytes": 214,
+      "sha256": "cfc6769bc14a32a67b63761a63185447c6340e54619fd6584f061ac921b15f18"
+    },
+    {
+      "path": "old-initial/x64/build-Release.json",
+      "bytes": 112351,
+      "sha256": "6fff549710c11822c4d47005335bc5895048990ae9c0e1fbe401ceac40d7ad16"
+    },
+    {
+      "path": "old-initial/x64/build.log",
+      "bytes": 1788,
+      "sha256": "a0cd836f40f1ce0b43b597eff92ba0ff5f63f5f97326bcbb0d62d6d658fe70d2"
+    },
+    {
+      "path": "old-initial/x64/smoke-Release.json",
+      "bytes": 14138,
+      "sha256": "b9692036c72e08aab36160f889db831f878b841c33714a5b8ec3fa337379b61f"
+    },
+    {
+      "path": "old-initial/x64/smoke.log",
+      "bytes": 106,
+      "sha256": "f2e26ce6ac683d72799f7e0457b4fb277d39fd708119df5123bbb5fc88bee5e9"
+    },
+    {
+      "path": "old-initial/x64/test.log",
+      "bytes": 252,
+      "sha256": "b9897b165ab4c21561defbf0da74bedc93e730b9545965fe795a857dd5d8d5b7"
+    },
+    {
+      "path": "old-initial/x86/build-Release.json",
+      "bytes": 112363,
+      "sha256": "d7df95769d02b50705bc5a06e1db1c5545f5c065ca840e36ba8d79b3fb127f1a"
+    },
+    {
+      "path": "old-initial/x86/build.log",
+      "bytes": 1788,
+      "sha256": "a638b1163cc7167de11549de445a8fc753ba24c5e3439b489a6a1315220b984b"
+    },
+    {
+      "path": "old-initial/x86/smoke-Release.json",
+      "bytes": 14150,
+      "sha256": "b68ddf9971ad63aec87a72f79f69c9905c996bc08169143963f12d2eee28f0ee"
+    },
+    {
+      "path": "old-initial/x86/smoke.log",
+      "bytes": 106,
+      "sha256": "f2e26ce6ac683d72799f7e0457b4fb277d39fd708119df5123bbb5fc88bee5e9"
+    },
+    {
+      "path": "old-initial/x86/test.log",
+      "bytes": 252,
+      "sha256": "768320cf0cdc57348bf3966d93e2cae5bf19cbd1e59656a921bd8852eac2ca67"
+    },
+    {
+      "path": "old-rolled-back/sdk-lock.json",
+      "bytes": 98324,
+      "sha256": "143bc7e71a9318a5a3062b53fffbc4f2fec7ea7afa457be469e2793e638eafbd"
+    },
+    {
+      "path": "old-rolled-back/verify-project.log",
+      "bytes": 214,
+      "sha256": "cfc6769bc14a32a67b63761a63185447c6340e54619fd6584f061ac921b15f18"
+    },
+    {
+      "path": "old-rolled-back/x64/build-Release.json",
+      "bytes": 112351,
+      "sha256": "8fe6ad589167436aac3c0ed7a8e8ec0196db03a82df1ef87b781dce27052d0bb"
+    },
+    {
+      "path": "old-rolled-back/x64/build.log",
+      "bytes": 1788,
+      "sha256": "32ae9cc5d9d8a463c86727fdd2039265754a9096f327ffdc8df149698e9b6da5"
+    },
+    {
+      "path": "old-rolled-back/x64/smoke-Release.json",
+      "bytes": 14138,
+      "sha256": "b5c7d67fd58c12c7428753c6ebd5524e4205651520c8173dfe552221761e3ede"
+    },
+    {
+      "path": "old-rolled-back/x64/smoke.log",
+      "bytes": 106,
+      "sha256": "f2e26ce6ac683d72799f7e0457b4fb277d39fd708119df5123bbb5fc88bee5e9"
+    },
+    {
+      "path": "old-rolled-back/x64/test.log",
+      "bytes": 252,
+      "sha256": "7b3fafdd62d13293769a94281e8dfc5bf8217ccedcfe9fe6657ec91490f13607"
+    },
+    {
+      "path": "old-rolled-back/x86/build-Release.json",
+      "bytes": 112363,
+      "sha256": "0ba56660e745ef5f83bc38e1183358884f80344e9298faaf3c9a24c882f1cdd2"
+    },
+    {
+      "path": "old-rolled-back/x86/build.log",
+      "bytes": 1788,
+      "sha256": "56694800f6f66acd6738c5c9b7b70ea42cad5c0e2acf790a972b5f35d23fc1e5"
+    },
+    {
+      "path": "old-rolled-back/x86/smoke-Release.json",
+      "bytes": 14150,
+      "sha256": "6ad177ba177e1359b7adef58bad6b1675471dfbcadcf98eb92d7aa7204bc5b02"
+    },
+    {
+      "path": "old-rolled-back/x86/smoke.log",
+      "bytes": 106,
+      "sha256": "f2e26ce6ac683d72799f7e0457b4fb277d39fd708119df5123bbb5fc88bee5e9"
+    },
+    {
+      "path": "old-rolled-back/x86/test.log",
+      "bytes": 252,
+      "sha256": "b2a73c3d0f811fadea5e1e348bac7db2fc6141f05638947f1c6d684bf579120e"
+    },
+    {
+      "path": "procedure-as-run.ps1",
+      "bytes": 6318,
+      "sha256": "6870aa6ab576261c19fbce98a92048a93651e0bc1636f8dc279b461afe700ab4"
+    },
+    {
+      "path": "README.md",
+      "bytes": 1514,
+      "sha256": "7a9a565c4d3065974ead1c8b161a129eeae59cd4d15f80c5d4d451becfec14a2"
+    },
+    {
+      "path": "result.json",
+      "bytes": 6664,
+      "sha256": "5b415952e6bd02271d54b9623c79e7c7c5b50f42b6043e1dbaf4dfb270ed016f"
+    },
+    {
+      "path": "reupgrade.log",
+      "bytes": 394,
+      "sha256": "f1dfccc61cfc77c29bc4764420d997d18c4f7d196172ea93255fed123ecc87a2"
+    },
+    {
+      "path": "rollback.log",
+      "bytes": 394,
+      "sha256": "4732bae82d8f9363e57cb9b79a84d5032b88ce3f51080c7c1a209d0b18467bd7"
+    },
+    {
+      "path": "self-test-output.txt",
+      "bytes": 1009,
+      "sha256": "967f97ae3329699a8f0c67ac77bbbab46905352c3d832f08a6a65cfdf0b4f5aa"
+    },
+    {
+      "path": "upgrade.log",
+      "bytes": 394,
+      "sha256": "f1dfccc61cfc77c29bc4764420d997d18c4f7d196172ea93255fed123ecc87a2"
+    },
+    {
+      "path": "Verify-Upgrade.cjs",
+      "bytes": 4895,
+      "sha256": "4af2b9abf28ca13b1efa25f0b0cb9a5286a4d3f4ace39b7f97ea890f7a32c156"
+    }
+  ],
+  "releaseReady": false
+}

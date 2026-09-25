@@ -2,6 +2,14 @@
 
 初始判定日期：2026-09-24，候选 `0.3.0-preview.5`；后续增补按各自版本分别判定。本文件只汇总已执行证据，不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
 
+## 2026-09-25 preview.8 增补判定
+
+**候选源码工程复现通过；指定范围生产未通过；相对 Electron 的整体采用价值未判定。** `sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。本节只评估 preview.8，旧版结果仍按各自来源保留。
+
+- [冻结候选完整源码包](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)从两个全新无 Git 解压目录完成 x86/x64 全量底层依赖重编。SOUI 编译改在 `out/` 副本进行，重编后两目录的完整源码清单仍分别通过 30,794 文件；四组 x86/x64 × Release/Debug 应用构建、完整测试与三入口真实桌面短测均通过，重编 DLL 的两架构启动也通过。候选 ZIP 之后会因加入证据文档而重新打包，最终包需单独核对代码等价。
+- [仓库外新项目](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)在 x86/x64 Release 构建并真实启动；[独立业务项目升级、回退、再升级](../../verification/production-validation/preview8-independent-upgrade-2026-09-25/README.md)的四阶段在两架构都通过，业务文件散列保持不变。[重编 x86 DLL 的 Win7 SP1 x86 QEMU 三入口](../../verification/production-validation/win7-sp1-x86-qemu-preview8-isolated-source-2026-09-25/README.md)经 24 份串口结果及反例自检通过。
+- 工程短测不关闭物理 Windows 7 SP1 x86、完整 Demo/公共任务业务链、Bridge 超时根因、GPU 与长期资源、同机实际呈现性能、内核安全维护、授权、签名安装与正式发布责任。先完成这些门槛，再决定是否向首批生产项目推荐。
+
 ## 2026-09-25 preview.7 增补判定
 
 **工程交付部分通过；指定范围生产未通过；相对 Electron 的整体采用价值未判定。** `sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。本节只新增 preview.7 的结果；下方 preview.5/.6 结果仍以各自来源为准。

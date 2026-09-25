@@ -24,13 +24,15 @@
 
 本文件记录执行进度，不能代替机器报告或修改 `releaseReady`。新增阶段证据应链接实际 run-id、源码与载荷身份，并列出未执行项。
 
-当前开发版本为 `0.3.0-preview.7`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
+当前开发版本为 `0.3.0-preview.8`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
 
 preview.7 的[源码编码修复诊断](../../verification/production-validation/preview6-relocated-dependency-encoding-2026-09-25/README.md)确认 preview.6 无 Git 源包在 CP936 环境重编 x86 Miniblink 失败；定点 BOM 补丁后，修改过的仓库外目录里 x86/x64 SOUI、Skia、Miniblink 源码重编与两架构真实应用启动均通过。当前 preview.7 的双架构 Release 构建、契约测试和三入口 smoke 也通过，但它们使用固定运行包，不能和新内核结果合并。[Win7 SP1 x86 QEMU 重编内核短测](../../verification/production-validation/win7-sp1-x86-qemu-preview7-rebuilt-source-2026-09-25/README.md)完成三入口启动/关闭，24 份串口文件、来宾身份和载荷散列复核通过。诊断目录不是最终 preview.7 原封整包；最终整包重建、Debug、物理设备、长期资源、实际呈现性能与安全授权仍未完成，`sourceDeliveryVerified=false`、`releaseReady=false`。
 
 [preview.7 无 Git 完整源码快照](../../verification/production-validation/preview7-full-source-stage-2026-09-25/README.md)经源清单逐文件验证，在仓库外完成 x86/x64 Release 应用重编、完整测试和三项桌面 smoke；SDK 新包的 408 个文件也通过包内完整性、源匹配及 14 项包行为测试。该快照使用固定运行依赖；最终原封整包的底层依赖全量重编继续待验收，不改变 `sourceDeliveryVerified=false`。
 
 后续已从 SHA-256 `A4F0703A4C6F6E13DC4A07BC59174D347487622143AAB51E82B3D3F4190D802E` 的[最终 preview.7 原封完整源码 ZIP](../../verification/production-validation/preview7-final-source-bottom-rebuild-2026-09-25/README.md)分别全新解压 x86/x64 无 Git 目录。编译前两目录清单验证均通过 30,719 文件；各自重编所有底层依赖、应用 Release、完整测试和重编 DLL 启动，均退出 0。[同一 x86 来源的 Win7 SP1 x86 QEMU 三入口](../../verification/production-validation/win7-sp1-x86-qemu-preview7-final-source-2026-09-25/README.md)也通过 24 份串口结果校验。旧 SOUI 工程会在源码树产生 112 个额外编译产物，故编译后原封文件集合复验失败，但逐文件比对确认清单源码内容未改；交付流程仍需修正。Debug、目标设备、资源、实际呈现、完整业务与安全授权未通过，`sourceDeliveryVerified=false`、`releaseReady=false`。
+
+preview.8 的[无 Git 候选完整源码包](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)在 x86/x64 全新目录完成全部底层重编后，30,794 文件清单依然通过；四组 Release/Debug 应用构建、完整测试与三入口桌面短测、双架构重编 DLL 短启动均通过。[仓库外新项目](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)双架构 Release 实际运行，[独立业务项目四阶段升级/回退](../../verification/production-validation/preview8-independent-upgrade-2026-09-25/README.md)双架构通过。[同源 x86 重编载荷的 Win7 SP1 x86 QEMU 三入口](../../verification/production-validation/win7-sp1-x86-qemu-preview8-isolated-source-2026-09-25/README.md)已核验 24 份客体文件。最终源码包与候选代码等价、物理目标设备、八小时资源、Bridge/GPU、Electron 呈现、安全授权仍需收敛；`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
 
 ToolTip 修补后的 x64 内核及全部原生依赖已重新编译；候选 SHA-256 为 `32d37e6399bc04e2a8d909c4021f49e3b8f21521b805f9f118f15e111ea0e59f`，三模式各 30 轮加 3 次预热全部完成。重建 USER 不再增长，但 GDI/普通句柄仍增长，缺陷未关闭。随后定位到拖拽区域和工作线程唤醒事件的释放遗漏，保留为两个后续补丁。
 

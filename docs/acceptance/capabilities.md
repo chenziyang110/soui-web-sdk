@@ -1,6 +1,6 @@
 # 公共能力与验收映射
 
-更新：2026-09-25。开发候选：`0.3.0-preview.6`；逐行保留 preview.5/preview.4 冻结证据原身份。这是[完整方案](../roadmap/0.3-sdk-validation.md)的逐项执行入口，不是生产支持声明。preview.5 双架构构建与短测源码指纹为 `16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237`，见[任务容量证据](../../verification/production-validation/preview5-task-capacity-2026-09-24/README.md)；该版 Win7 x86 的[三应用](../../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)与[四模式公共消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)短测独立归档。带超时诊断的新源码又在[Win7 SP1 x86 QEMU 完成 100 次重载](../../verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/README.md)，来源不同，不与原失败载荷混算。preview.4 的千次生命周期证据保留原候选身份，不跨版本视为通过。
+更新：2026-09-25。开发候选：`0.3.0-preview.8`；逐行保留 preview.5/preview.4 冻结证据原身份。这是[完整方案](../roadmap/0.3-sdk-validation.md)的逐项执行入口，不是生产支持声明。preview.5 双架构构建与短测源码指纹为 `16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237`，见[任务容量证据](../../verification/production-validation/preview5-task-capacity-2026-09-24/README.md)；该版 Win7 x86 的[三应用](../../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)与[四模式公共消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)短测独立归档。带超时诊断的新源码又在[Win7 SP1 x86 QEMU 完成 100 次重载](../../verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/README.md)，来源不同，不与原失败载荷混算。preview.4 的千次生命周期证据保留原候选身份，不跨版本视为通过。
 
 状态为“待实现、部分实现、已实现待验收、通过当前范围、失败、待外部验证”。`通过当前范围` 只对应本行所列场景；同组尚有缺口时，整组不通过。不把 Demo 的注册或 TypeScript 声明当作公共模块实现。
 
@@ -50,12 +50,12 @@
 
 | ID | 公共入口/所有权 | 当前状态与证据 | 下一项必需验证 |
 |---|---|---|---|
-| V06-01 仓库外新项目 | `New-Project.ps1`、模板、`sdk-lock.json` | preview.4 的[独立项目](../../verification/production-validation/preview4-independent-2026-09-23/README.md)完成包校验、仓库外生成、x86/x64 Release 编译和真实启动 | 加入真实业务方法的小样、Debug 与目标设备运行 |
-| V06-02 升级与回退 | `tools/sdk/soui-sdk.cjs` | [仓库外业务小样](../../verification/production-validation/preview4-upgrade-2026-09-23/README.md)本机 x64 Release 完成 preview.3 → preview.4 → 回退 → 再升级，每段重编译、实际启动关闭及五个业务文件保留 | 中断/冲突安全失败、x86/Debug 与目标机升级链 |
-| V06-03 依赖及源码交付 | 构建/打包/证据工具 | [preview.7 最终完整源码 ZIP](../../verification/production-validation/preview7-final-source-bottom-rebuild-2026-09-25/README.md)在两个无 Git 新目录通过清单验证，分别重建 x86/x64 全部底层依赖与应用，完整测试和重编 DLL 启动通过；[同一来源 x86 载荷的 Win7 QEMU 三入口](../../verification/production-validation/win7-sp1-x86-qemu-preview7-final-source-2026-09-25/README.md)通过；[preview.6 独立安装消费者](../../verification/production-validation/preview6-independent-consumer-2026-09-25/README.md)仍单独按旧版本计 | 旧 SOUI 工程在源码树生成额外文件，编译后清单复验失败；Debug/四组配置、最终包升级链、物理目标机与完整交付门仍缺，`sourceDeliveryVerified=false` |
+| V06-01 仓库外新项目 | `New-Project.ps1`、模板、`sdk-lock.json` | [preview.8 独立生成项目](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)从已核验的 408 文件 SDK 包在仓库外生成，在本机 x86/x64 Release 分别编译并真实启动/关闭；旧版结果保留原身份 | 加入真实业务方法、独立项目 Debug、物理 Windows 7 x86 与安装体验 |
+| V06-02 升级与回退 | `tools/sdk/soui-sdk.cjs` | [preview.7 → preview.8 独立业务小样](../../verification/production-validation/preview8-independent-upgrade-2026-09-25/README.md)在本机 x86/x64 Release 完成旧版、升级、回退、再升级四阶段，逐段重新编译并真实启动，业务文件散列不变 | 安装中断/冲突、受限账户、签名、Debug 和目标机升级链 |
+| V06-03 依赖及源码交付 | 构建/打包/证据工具 | [preview.8 无 Git 候选完整源码包](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)在两个全新目录完成 x86/x64 全量依赖重编、四组应用构建与测试、重编 DLL 启动；SOUI 编译隔离在 `out/`，编译后两架构完整清单仍通过；[同源 x86 载荷的 Win7 QEMU 三入口](../../verification/production-validation/win7-sp1-x86-qemu-preview8-isolated-source-2026-09-25/README.md)通过 | 最终包与候选代码等价核对、物理目标机、完整交付/恢复及安全授权门，`sourceDeliveryVerified=false` |
 | V06-04 系统和安装 | [支持矩阵](support-matrix.md) | Win7 SP1 x86 QEMU 已有三应用、公共消费者四模式短测、原生任务容量及另一个来源的 100 次重载；不推广到物理机 | 指定系统物理设备、DPI、多屏、IME、签名安装、受限账户及回退 |
 | V06-05 可持续维护 | [内核核对](kernel-maintenance.md)、许可与发布流程 | 部分来源已识别；维护/授权/负责人门槛未关闭 | 组件维护台账、依赖升级演练、许可审阅、实际发布责任确认 |
 | VALUE-01 Electron 对照 | 两端共享负载和原生宿主 | [最小宿主体积](../../verification/production-validation/benchmark-size-preview5-2026-09-24/README.md)及[三对 S02 完整输入预检](../../verification/production-validation/benchmark-s02-full-preflight-2026-09-25/README.md)已归档；其中两对无 QEMU 并行但不足五对，缺物理呈现和启动数据，`benchmarkValid=false` | 五对隔离交替轮次、启动/物理输入到呈现/帧/CPU/内存/完整产品体积与维护成本报告 |
-| VALUE-02 采用成本 | 独立业务小样与升级记录 | 待采集 | 实际接入工时、原生适配量、兼容补丁、升级/调试及长期维护成本 |
+| VALUE-02 采用成本 | 独立业务小样与升级记录 | preview.8 双架构四阶段升级回退已有可重放操作与构建记录；尚未记录人员接入工时或长期维护成本 | 实际接入工时、原生适配量、兼容补丁、升级/调试及长期维护成本 |
 
 最终分别生成工程交付、指定范围生产验收、相对 Electron 采用价值三个结论。任何一行的短样本通过都不能直接设置 `releaseReady`。负责人以仓库 CODEOWNERS 和后续维护者确认记录为准，本表只标技术所有权，不虚构人员承诺。
