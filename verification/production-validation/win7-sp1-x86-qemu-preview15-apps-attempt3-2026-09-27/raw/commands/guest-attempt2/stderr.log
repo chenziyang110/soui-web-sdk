@@ -1,0 +1,8 @@
+Get-FileHash : 无法将“Get-FileHash”项识别为 cmdlet、函数、脚本文件或可运行程序的名称。请检查名称的拼写，如果包括路径，请确
+保路径正确，然后再试一次。
+所在位置 C:\SOUI-SDK-production-validation\preview15-win7-driver-20260927\Launch-Current.ps1:20 字符: 14
++ $diskBefore=(Get-FileHash -LiteralPath $disk -Algorithm SHA256).Hash. ...
++              ~~~~~~~~~~~~
+    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 

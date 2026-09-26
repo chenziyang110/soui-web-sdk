@@ -1,5 +1,11 @@
 # SDK 生产验证执行记录
 
+## 2026-09-27 preview.15 Win7 当前三入口短测完成
+
+[Win7 SP1 x86 attempt3](../../verification/production-validation/win7-sp1-x86-qemu-preview15-apps-attempt3-2026-09-27/README.md)在同一 v3 冻结输入和原 60 秒期限下完成 Starter、Workbench 默认/React 三项，原生均退出 0。完整就绪/卸载/关闭、客体身份、传输及运行前后 resources/legal 通过；37 帧串口、63 次隔离采样、基础盘和冻结输入前后核验均保留，89 份原始记录已归档。只读严格校验器、宿主复核和客体驱动均退出 0。
+
+attempt2 的宿主模块路径启动失败也原样保留，没有启动客体。修正仅限宿主驱动进程环境。旧 preview.11 关闭停滞在本次当前输入中未重现，但短测不能替代 V02 真实交互、重复关闭、长稳、物理机或性能验收；生产状态仍为 preview。
+
 ## 2026-09-27 preview.15 解压版桌面完成与 Win7 中断
 
 [无 Git 解压版桌面验证](../../verification/production-validation/preview15-relocated-desktop-2026-09-27/README.md)补齐两架构新编 EXE 的六个入口：Starter、默认/React Workbench 原生均退出 0、就绪和关闭完整，构建 ID、完整载荷/资源/legal 和运行期间门禁通过。初次外部 QEMU 门禁拒绝仍保留，31 份原始文件独立归档。短测不关闭源码交付、长稳或生产总门槛。
