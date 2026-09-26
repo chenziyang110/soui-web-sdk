@@ -2,6 +2,8 @@
 
 ## 2026-09-26 preview.11 同文档授权续期预检
 
+当前候选另已完成 [Win7 SP1 x86 三应用输入冻结](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-2026-09-26/README.md)：Starter 71 文件、Workbench 475 文件与 legal 材料复制核对完成，串口校验器拒绝 17 个负例；尚未运行客体，等待其他 QEMU 空闲。准备检查不计为 Win7 通过。
+
 当前开发版本为 `0.3.0-preview.11`。按 [ADR-0014](../adr/0014-same-document-session-renewal.md)新增显式启用的同文档授权续期、稳定授权资源归属和有界确认重取；任务与订阅保留身份，普通业务调用保持同步发送，不因续期自动重放。Demo 同时补齐订阅容量、事件监听器异常隔离及所有已发行会话的撤销与 worker 关闭顺序。
 
 [本轮预检归档](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)记录 x86/x64 Release 的 SDK、Starter、Workbench 完整编译、独立 SDK 安装及仓库外 `session-consumer` 编译/运行，均退出 0；每架构 10 项 CTest 通过，其中原生授权续期包含 14 组契约。最终汇总已核验 Web 62 项、包行为 14 项、交付身份 7 项通过，以及五份锁文件的全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包成功，包内散列及源码匹配通过。由包生成的仓库外 `RenewalStarter` 也完成 x86/x64 Release 编译与项目校验，均退出 0；尚未运行该新项目的 GUI。

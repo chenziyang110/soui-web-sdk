@@ -1,0 +1,112 @@
+param([Parameter(Mandatory=$true)][string]$Transfer)
+# Windows 7 inbox PowerShell 2.0 / .NET 2.0-compatible guest harness.
+$ErrorActionPreference='Stop'
+$Target='C:\soui-app-validation-preview11'
+$Results='C:\soui-app-results-preview11'
+$Transfer=[IO.Path]::GetFullPath($Transfer)
+if((Test-Path -LiteralPath $Target) -or (Test-Path -LiteralPath $Results)) {
+  Write-Output 'Refuse to replace prior guest target/results; use a fresh snapshot for a new attempt.'
+  exit 10
+}
+[IO.Directory]::CreateDirectory($Results) | Out-Null
+[IO.Directory]::CreateDirectory($Target) | Out-Null
+$script:exitCode=1
+$script:trace=New-Object 'System.Collections.Generic.List[string]'
+function Write-New([string]$Name,[string]$Text) {
+  $file=Join-Path $Results $Name
+  $stream=New-Object IO.FileStream($file,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::Read)
+  try {$bytes=[Text.Encoding]::UTF8.GetBytes($Text+"`r`n");$stream.Write($bytes,0,$bytes.Length)} finally {$stream.Close()}
+}
+function Get-Sha256([string]$File) {
+  $h=[Security.Cryptography.SHA256]::Create();$s=[IO.File]::OpenRead($File)
+  try {return [BitConverter]::ToString($h.ComputeHash($s)).Replace('-','').ToLowerInvariant()}
+  finally {$s.Close();$h.Clear()}
+}
+function Run-Archive([string]$Name,[string[]]$Arguments) {
+  & (Join-Path $Transfer '7za.exe') @Arguments > (Join-Path $Results ($Name+'.log')) 2>&1
+  $code=$LASTEXITCODE
+  Write-New ($Name+'-exitcode.txt') ([string]$code)
+  if($code -ne 0){throw ($Name+' failed: '+$code)}
+}
+function Verify-Payload([string]$Phase) {
+  & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Transfer 'verify-apps.ps1') -Target $Target -Transfer $Transfer -Results $Results -Phase $Phase > (Join-Path $Results ('payload-'+$Phase+'.log')) 2>&1
+  $code=$LASTEXITCODE
+  Write-New ('payload-'+$Phase+'-exitcode.txt') ([string]$code)
+  if($code -ne 0){throw ('Payload '+$Phase+' verification failed')}
+}
+function Run-App([string]$Name,[string]$App,[string]$Arguments,[string]$LogName) {
+  $working=Join-Path $Target $App
+  $exe=Join-Path $working ($App+'.exe')
+  $log=Join-Path $working $LogName
+  if(Test-Path -LiteralPath $log){throw ('Unexpected pre-existing application log: '+$log)}
+  $psi=New-Object Diagnostics.ProcessStartInfo
+  $psi.FileName=$exe;$psi.Arguments=$Arguments;$psi.WorkingDirectory=$working
+  $psi.UseShellExecute=$false
+  # Inherited experiment flags must not silently change the three frozen modes.
+  $keys=@($psi.EnvironmentVariables.Keys)
+  foreach($key in $keys){if($key.StartsWith('SOUI_')){$psi.EnvironmentVariables.Remove($key)}}
+  $process=New-Object Diagnostics.Process
+  $process.StartInfo=$psi
+  $timedOut=$false;$stillRunning=$false;$code=-1;$pidValue=0;$start=''
+  try {
+    if(-not $process.Start()){throw ('Cannot start '+$Name)}
+    $pidValue=$process.Id;$start=$process.StartTime.ToUniversalTime().ToString('o')
+    $watch=[Diagnostics.Stopwatch]::StartNew()
+    while(-not $process.WaitForExit(250)) {
+      if($watch.ElapsedMilliseconds -ge 60000){$timedOut=$true;break}
+    }
+    if($timedOut){$process.Kill();if(-not $process.WaitForExit(5000)){$stillRunning=$true}}
+    if(-not $stillRunning){$code=$process.ExitCode}
+    Write-New ($Name+'-run.txt') ('Name='+$Name+"`r`nApplication="+$App+"`r`nArguments="+$Arguments+"`r`nPID="+$pidValue+"`r`nStartUtc="+$start+"`r`nTimeoutMs=60000`r`nTimedOut="+$timedOut+"`r`nRemainingProcess="+$stillRunning+"`r`nExitCode="+$code)
+    Write-New ($Name+'-exitcode.txt') ([string]$code)
+    if(Test-Path -LiteralPath $log){[IO.File]::Move($log,(Join-Path $Results ($Name+'-smoke.log')))}
+    $navigation=Join-Path $working 'source-navigation.log'
+    if(Test-Path -LiteralPath $navigation){[IO.File]::Move($navigation,(Join-Path $Results ($Name+'-navigation.log')))}
+    if($timedOut -or $stillRunning -or $code -ne 0){throw ($Name+' failed or timed out: '+$code)}
+    if(-not(Test-Path -LiteralPath (Join-Path $Results ($Name+'-smoke.log')))){throw ($Name+' smoke log missing')}
+    $script:trace.Add($Name+' exit=0')
+  } finally {$process.Close()}
+}
+try {
+  $os=Get-WmiObject Win32_OperatingSystem
+  Write-New 'guest-identity.txt' ('Version='+$os.Version+"`r`nServicePackMajorVersion="+$os.ServicePackMajorVersion+"`r`nOSArchitecture="+$os.OSArchitecture+"`r`nPointerBytes="+[IntPtr]::Size+"`r`nPowerShellMajor="+$PSVersionTable.PSVersion.Major+"`r`nCaption="+$os.Caption)
+  if($os.Version -ne '6.1.7601' -or $os.ServicePackMajorVersion -ne 1 -or [IntPtr]::Size -ne 4){throw 'Guest must be Win7 SP1 x86'}
+  $transferLines=@(Get-Content -LiteralPath (Join-Path $Transfer 'transfer-files.tsv') -Encoding UTF8 | Where-Object {$_ -ne ''})
+  $files=@(Get-ChildItem -LiteralPath $Transfer -Force)
+  if(@($files | Where-Object {$_.PSIsContainer}).Count -ne 0 -or $files.Count -ne $transferLines.Count+1){throw 'Transfer file set differs'}
+  $seen=@{};$observed=New-Object 'System.Collections.Generic.List[string]'
+  foreach($line in $transferLines) {
+    $f=$line.Split([char]9)
+    if($f.Count -ne 3 -or $f[0] -cnotmatch '^[a-f0-9]{64}$' -or $f[1] -notmatch '^\d+$' -or $f[2] -notmatch '^[A-Za-z0-9][A-Za-z0-9._-]*$' -or $seen.ContainsKey($f[2])){throw 'Invalid transfer manifest'}
+    $seen[$f[2]]=$true;$file=Get-Item -LiteralPath (Join-Path $Transfer $f[2])
+    $hash=Get-Sha256 $file.FullName
+    if($file.Length -ne [long]$f[1] -or $hash -cne $f[0]){throw ('Transfer hash differs: '+$f[2])}
+    $observed.Add($hash+"`t"+$file.Length+"`t"+$f[2])
+  }
+  $manifestFile=Get-Item -LiteralPath (Join-Path $Transfer 'transfer-files.tsv')
+  $observed.Add((Get-Sha256 $manifestFile.FullName)+"`t"+$manifestFile.Length+"`ttransfer-files.tsv")
+  Write-New 'transfer-observed.tsv' ([string]::Join("`r`n",$observed.ToArray()))
+  $script:trace.Add('transfer verified')
+  Run-Archive 'starter-zip-test' @('t',(Join-Path $Transfer 'SouiStarter.zip'))
+  Run-Archive 'workbench-zip-test' @('t',(Join-Path $Transfer 'SouiWorkbench.zip'))
+  Run-Archive 'starter-extract' @('x','-y',('-o'+(Join-Path $Target 'SouiStarter')),(Join-Path $Transfer 'SouiStarter.zip'))
+  Run-Archive 'workbench-extract' @('x','-y',('-o'+(Join-Path $Target 'SouiWorkbench')),(Join-Path $Transfer 'SouiWorkbench.zip'))
+  Verify-Payload 'pre'
+  $script:trace.Add('payload pre verified')
+  Run-App 'starter' 'SouiStarter' '--smoke-test' 'smoke.log'
+  Run-App 'workbench-default' 'SouiWorkbench' '--webview-smoke-test --arch=x86 --renderer=cpu' 'webview-smoke.log'
+  Run-App 'workbench-react' 'SouiWorkbench' '--webview-smoke-test --arch=x86 --renderer=cpu --react' 'webview-smoke.log'
+  Verify-Payload 'post'
+  $script:trace.Add('payload post verified')
+  Write-New 'run-complete.txt' 'version=0.3.0-preview.11;buildId=7e000158-98f0-4349-854e-15c581663737;source=a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550;apps=3;status=completed'
+  $script:exitCode=0
+} catch {
+  Write-New 'harness-exception.txt' $_.ToString()
+  $script:trace.Add('failed: '+$_.ToString())
+} finally {
+  Write-New 'harness.log' ([string]::Join("`r`n",$script:trace.ToArray()))
+  Write-New 'run-exitcode.txt' ([string]$script:exitCode)
+  & powershell.exe -NoProfile -ExecutionPolicy Bypass -File (Join-Path $Transfer 'export-serial.ps1') -Results $Results
+  if($LASTEXITCODE -ne 0){$script:exitCode=20}
+}
+exit $script:exitCode
