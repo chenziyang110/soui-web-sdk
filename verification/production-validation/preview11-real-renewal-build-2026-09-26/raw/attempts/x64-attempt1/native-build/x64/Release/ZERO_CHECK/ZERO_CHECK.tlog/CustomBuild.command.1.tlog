@@ -1,0 +1,10 @@
+^C:\SOUI-SDK-PRODUCTION-VALIDATION\PREVIEW11-REAL-RENEWAL-PREPARATION-20260926\ATTEMPTS\X64-ATTEMPT1\NATIVE-BUILD\CMAKEFILES\15A2A5F1FB625816C84D07359D0FC8F6\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/SOUI-SDK-production-validation/preview11-real-renewal-preparation-20260926/attempts/x64-attempt1/consumer-source -BC:/SOUI-SDK-production-validation/preview11-real-renewal-preparation-20260926/attempts/x64-attempt1/native-build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/SOUI-SDK-production-validation/preview11-real-renewal-preparation-20260926/attempts/x64-attempt1/native-build/InstalledRenewalProbe.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

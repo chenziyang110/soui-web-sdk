@@ -1,14 +1,34 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 preview.11 Win7 客体首次执行与传输目录诊断
+
+桌面空闲后串行运行了两次独立 Win7 SP1 x86 snapshot：[attempt1](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt1-2026-09-26/README.md)与带诊断的 [attempt2](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt2-2026-09-26/README.md)都在传输集合检查退出 1，三个应用均未启动。两次均确认桌面及 D: 盘后只发送一次测试命令，完整串口分别有 4/8 帧；QEMU 正常关闭且基础磁盘、冻结输入未变。第二次明确枚举到卷根 `$RECYCLE.BIN`，实际 11 项中有一个目录，触发预期 10 个普通文件的严格检查；不能据此断言目录创建者，也不能称其他普通文件已逐项散列通过。
+
+[v3 准备](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-v3-preparation-2026-09-26/README.md)把完全相同的 10 个传输文件放入卷内 `soui-input` 子目录，原集合与逐文件散列规则不变；两个 ZIP 和 546 个应用文件保持原字节。冻结 SHA `10c9a4e90cf5e25a2c98d0f6107eb7881a5ab39caf768973d761a1045566826d`。第三次启动前新出现其他任务的 QEMU，门禁拒绝且未创建 attempt3；尚不能宣布布局修正或当前 Win7 三入口通过。已有真实失败均保留，不重跑旧版通过样本。
+
+## 2026-09-26 preview.11 续期夹具真实启动失败
+
+双架构编译后，首次[本机 x86 续期夹具短测](../../verification/production-validation/preview11-real-renewal-smoke-attempt1-2026-09-26/README.md)真实启动 GUI，但在页面就绪前因 session shutdown 退出 1，ready 和两类任务调用计数均为 0；非超时，无外部桌面负载，退出清理完整。冻结分析器退出 1，原始样本保留。源码审查确认夹具把初次 Host 生命周期退役与实际授权会话关闭混为一谈，但实际日志缺少回调身份，尚不足断言本次精确调用来源。需在新夹具中从唯一成功 bootstrap 时立即绑定真实会话，保持绑定后的所有关闭、换会话和重 bootstrap 严格失败；不修改 SDK 或原冻结输入。x64 尚未运行，真实超过 30 分钟及八小时均未开始。
+
+## 2026-09-26 preview.11 真实时钟续期消费者编译
+
+本节保留编译与冻结时点，后续 GUI 失败见上一节。
+
+[独立消费者构建证据](../../verification/production-validation/preview11-real-renewal-build-2026-09-26/README.md)新增两架构真实编译及无窗口自检：`x86-attempt4`、`x64-attempt1` 各 13 个原始步骤均退出 0，包含严格 TypeScript、Chrome 49 页面构建、安装后 SDK 链接及八条日志的无窗口自检。前三次 x86 失败及其源码快照完整保留，修正仅位于外部验证夹具；SDK 的 711 文件输入 SHA `a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550` 未变。
+
+两架构运行输入已经冻结，`freeze.json` SHA 为 `7e45bc6158db50362e088ba8a97a08e42e7e63e398dde62df1dbe6ce6721620d`。链接记录仍包含宿主 vcpkg 搜索路径及未冻结的外部库参数，因此不把此结果称为干净机器可复现构建。已有其他 QEMU 运行期间未启动该消费者的 GUI；30 秒夹具 smoke、真实超过 30 分钟保留原任务/订阅及八小时续期均未执行。分析器 88 项合成自检只验证分析规则。完整 SDK 交付、隔离性能及生产门槛保持未通过。
+
 ## 2026-09-26 preview.11 本机桌面执行
 
 [本轮原始证据](../../verification/production-validation/preview11-desktop-execution-2026-09-26/README.md)沿用同一 711 文件编译输入：x86/x64 窗口线程停滞与目录取消四项均退出 0；Starter、Workbench 默认/React 两架构六入口及仓库外生成项目两架构启动/就绪/关闭短测通过。首次无退出码记录及生成项目测试入口路径错误均保留；修正外部启动器没有改变 SDK 内容。
 
 发现两项真实失败：x86 公共菜单自动请求返回 `E_MENU_FOREGROUND`、退出 1；x86 Workbench 三窗口驻留的第二窗未在 45 秒内达到页面就绪、退出 3。两者清理完整但功能未通过，根因尚待带诊断复测，x64 对应场景尚未执行。启动 Win7 前其他 QEMU 再次占用，门禁阻止平行客体。当前版 Win7、V02 和实际续期长测仍待执行；短测不关闭生产、资源或性能门槛。
 
-另已准备[真实时钟续期独立消费者](../../verification/production-validation/preview11-real-renewal-preparation-2026-09-26/README.md)及完整输入校验、监督和分析脚本。88 项校验器合成自检通过；尚未编译消费者或运行真实 GUI。旧混合驱动反复重载、V02 短任务都不能证明同一页面超过原 30 分钟期限后仍保留任务/订阅，此准备专门补该缺口，不改变 SDK 冻结输入。
+该次桌面归档时另已准备[真实时钟续期独立消费者](../../verification/production-validation/preview11-real-renewal-preparation-2026-09-26/README.md)及完整输入校验、监督和分析脚本。88 项校验器合成自检通过；当时尚未编译消费者或运行真实 GUI，后续编译结果见本页首节。旧混合驱动反复重载、V02 短任务都不能证明同一页面超过原 30 分钟期限后仍保留任务/订阅，此准备专门补该缺口，不改变 SDK 冻结输入。
 
 ## 2026-09-26 preview.11 同文档授权续期预检
+
+以下保留预检当时的结果；后续本机桌面与消费者编译证据见本页前两节。
 
 当前候选另已完成 [Win7 SP1 x86 三应用输入冻结](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-2026-09-26/README.md)：Starter 71 文件、Workbench 475 文件与 legal 材料复制核对完成，串口校验器拒绝 17 个负例；尚未运行客体，等待其他 QEMU 空闲。准备检查不计为 Win7 通过。
 

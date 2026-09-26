@@ -2,11 +2,15 @@
 
 初始判定日期：2026-09-24，候选 `0.3.0-preview.5`；后续增补按各自版本分别判定。本文件只汇总已执行证据，不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
 
-## 2026-09-26 preview.11 预检
+## 2026-09-26 preview.11 预检与桌面短测
 
-**双架构 Release 编译、安装消费与无 GUI 契约通过；指定范围生产未通过；相对 Electron 的整体采用价值未判定。** [本轮预检归档](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)记录 SDK、Starter、Workbench 的 x86/x64 完整编译、独立 SDK 安装和仓库外 `session-consumer` 编译/运行均退出 0；每架构 10 项 CTest 通过，其中原生授权续期为 14 组契约。最终汇总确认 Web 62 项、包行为 14 项、交付身份 7 项通过，五份锁文件的全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包、包内散列与源码匹配通过。生成的仓库外 `RenewalStarter` 双架构 Release 编译与项目校验均退出 0，尚无该项目 GUI 结果。
+**双架构 Release 编译、安装消费、无 GUI 契约与所列桌面短测通过；驻留切片存在真实失败，指定范围生产未通过；相对 Electron 的整体采用价值未判定。** [本轮预检归档](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)记录 SDK、Starter、Workbench 的 x86/x64 完整编译、独立 SDK 安装和仓库外 `session-consumer` 编译/运行均退出 0；每架构 10 项 CTest 通过，其中原生授权续期为 14 组契约。最终汇总确认 Web 62 项、包行为 14 项、交付身份 7 项通过，五份锁文件的全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包、包内散列与源码匹配通过。生成的仓库外 `RenewalStarter` 双架构 Release 编译与项目校验均退出 0。
 
-本版按 [ADR-0014](../adr/0014-same-document-session-renewal.md)补足续期、稳定资源归属、有限重试和关闭清理契约。模拟八小时轮换不能证明真实长稳；前序版本的桌面、Win7、完整源码重编和受干扰八小时记录不迁移到 preview.11。首次 x86 窗口线程超时探针因监督器缺少退出码而不计通过，成功输出不能补齐该证据；外部 QEMU 再次占用，修正采集后的补测等待空闲。真实桌面、同文档超过 30 分钟与八小时运行、Win7 SP1 x86、当前完整源码交付及资源/性能门槛继续待验收，后续桌面与客体结果另档。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
+[后续桌面归档](../../verification/production-validation/preview11-desktop-execution-2026-09-26/README.md)沿用相同编译输入：本机 x86/x64 的窗口线程停滞、目录程序化取消共四项，Starter/Workbench 默认与 React 共六入口，以及 `RenewalStarter` 两项真实短启动均退出 0。生成项目直接监督器仅对 EXE 做运行前后采样；另有完整载荷复核，不能当作每轮退出时逐文件采样或文件锁定。首次缺退出码的窗口探针和错误生成项目脚本入口均保留为失败样本，不由后续成功覆盖。
+
+x86 托盘消费者在菜单显示前返回 `E_MENU_FOREGROUND`、退出 1；x86 Workbench 驻留的 slot 2 达到内部 45 秒就绪期限、退出 3，尚未进入 smoke 阶段，slot 3 状态未判定。两项均完成清理；x64 菜单/驻留、实际菜单/快捷键输入、Explorer 重建、三窗任务隔离和空窗驻留仍未执行，完整 V04 不通过。
+
+本版按 [ADR-0014](../adr/0014-same-document-session-renewal.md)补足续期、稳定资源归属、有限重试和关闭清理契约。[真实时钟续期独立消费者](../../verification/production-validation/preview11-real-renewal-build-2026-09-26/README.md)的 x86/x64 编译与无窗口自检通过；随后[本机 x86 GUI 首次短测](../../verification/production-validation/preview11-real-renewal-smoke-attempt1-2026-09-26/README.md)在页面就绪前因会话关闭退出 1，任务未启动，x64 GUI 与真实超过 30 分钟/八小时运行未执行；模拟八小时轮换仍不能证明真实长稳。前序版本的桌面、Win7、完整源码重编和受干扰八小时记录不迁移到 preview.11。本轮 Win7 两次客体均在传输集合检查阶段退出 1，[第二次诊断](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt2-2026-09-26/README.md)确认卷根多出系统目录，三个应用均未启动；[v3 输入子目录布局](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-v3-preparation-2026-09-26/README.md)已冻结，第三轮因其他 QEMU 占用而尚未启动；同文档超过 30 分钟与八小时运行、完整 V02、Win7 SP1 x86、物理设备、当前完整源码交付及资源/性能门槛继续待验收。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
 
 ## 2026-09-26 preview.10 预检
 

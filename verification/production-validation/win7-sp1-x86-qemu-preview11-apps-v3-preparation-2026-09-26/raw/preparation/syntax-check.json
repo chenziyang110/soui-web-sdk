@@ -1,0 +1,70 @@
+{
+  "schema": "soui.win7-layout-host-check/v1",
+  "checkedAt": "2026-09-26T08:05:03.1969121Z",
+  "layoutVersion": 3,
+  "powershell": [
+    {
+      "path": "harness/export-serial.ps1",
+      "sha256": "1e15c52937b9c41f4d33cb1bb8f818ccc8de1a2e9aa0f5baa7272c63b0eba023",
+      "parseErrors": 0
+    },
+    {
+      "path": "harness/run-apps.ps1",
+      "sha256": "5795d4b384b00e181080db8b8a4be56935314063511441023a99d68144161888",
+      "parseErrors": 0
+    },
+    {
+      "path": "harness/verify-apps.ps1",
+      "sha256": "f9dae77aff5a044ca9906b5cdc4e52c7fce6401aa28545dc98190725981f44f3",
+      "parseErrors": 0
+    },
+    {
+      "path": "volume/soui-input/export-serial.ps1",
+      "sha256": "1e15c52937b9c41f4d33cb1bb8f818ccc8de1a2e9aa0f5baa7272c63b0eba023",
+      "parseErrors": 0
+    },
+    {
+      "path": "volume/soui-input/run-apps.ps1",
+      "sha256": "5795d4b384b00e181080db8b8a4be56935314063511441023a99d68144161888",
+      "parseErrors": 0
+    },
+    {
+      "path": "volume/soui-input/verify-apps.ps1",
+      "sha256": "f9dae77aff5a044ca9906b5cdc4e52c7fce6401aa28545dc98190725981f44f3",
+      "parseErrors": 0
+    }
+  ],
+  "javascript": [
+    {
+      "path": "Prepare-Layout.cjs",
+      "sha256": "9fdf6db79c91c94e369fd2e51bf32e7aab6eac5056622e4a58c4dfaab9e8f01e",
+      "exitCode": 0
+    },
+    {
+      "path": "Verify-AppSerial.cjs",
+      "sha256": "c7d70345e81b63b5c361cc367de4f6a4e56240cc7f4cdc5991cdb326279d4d8f",
+      "exitCode": 0
+    },
+    {
+      "path": "SelfTest-Serial.cjs",
+      "sha256": "a23222abb32f62be834eb15a624bdacefd979de5e52a3ce010a0d0365efb8e41",
+      "exitCode": 0
+    },
+    {
+      "path": "Verify-Frozen.cjs",
+      "sha256": "53fbd8bc01b0dab67ffacd87bfe548549fca27c909b014800597ebf9f49b4a15",
+      "exitCode": 0
+    },
+    {
+      "path": "Freeze-Preparation.cjs",
+      "sha256": "477282189f7164e9506675338901ae3c965cf4caaf7e4f97b5ce5270bd4ed845",
+      "exitCode": 0
+    }
+  ],
+  "hostHelperExitCode": 0,
+  "extraFileRejected": true,
+  "extraDirectoryRejected": true,
+  "guestExecuted": false,
+  "applicationsStarted": false,
+  "releaseReady": false
+}

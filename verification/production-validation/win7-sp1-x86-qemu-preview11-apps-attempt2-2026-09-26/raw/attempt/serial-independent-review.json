@@ -1,0 +1,214 @@
+{
+  "schema": "soui.win7-attempt-independent-serial-review/v1",
+  "reviewedAt": "2026-09-26T08:03:55.665Z",
+  "stage": "failed-before-apps",
+  "method": "After qemu-result terminal exit, execute frozen v2 serial verifier once, separately decode strict ASCII/Base64/declared-size/SHA256/END framing and preserve all eight frames byte-for-byte. Compare diagnostic records to frozen input without executing guest apps or modifying prior attempts.",
+  "serial": {
+    "path": "C:\\SOUI-SDK-production-validation\\preview11-win7-apps-attempt2\\serial-export.txt",
+    "bytes": 5978,
+    "sha256": "3984889246a74c24d67dbd8775a7198af16852e3ba36da046dab2c9f736dfd94"
+  },
+  "frames": [
+    {
+      "name": "guest-identity.txt",
+      "bytes": 143,
+      "sha256": "bb7571212bd610b0af9edcf4bebdef3c106ce50e04e17adc03fee43aa0c15364"
+    },
+    {
+      "name": "harness.log",
+      "bytes": 35,
+      "sha256": "37b1793eaa150db07c12519366a44731cf668c3c41ce0e0d2f0d62bd71d93eec"
+    },
+    {
+      "name": "harness-exception.txt",
+      "bytes": 27,
+      "sha256": "0b594060c87c80d27a5526daf85f7e224432b39afedf7a298ac5c7d9ee9b68b1"
+    },
+    {
+      "name": "run-exitcode.txt",
+      "bytes": 3,
+      "sha256": "f1b2f662800122bed0ff255693df89c4487fbdcf453d3524a42d4ec20c3d9c04"
+    },
+    {
+      "name": "transfer-diagnostics.txt",
+      "bytes": 552,
+      "sha256": "5e11a494d682d810d311820dde16c2f6d64e9f053a78a8ba3374de5edf480987"
+    },
+    {
+      "name": "transfer-entries.tsv",
+      "bytes": 1171,
+      "sha256": "e7ba6d6f54b94863681818062cf6475d32bf0f76f4b506b477d6b4e7a9d721da"
+    },
+    {
+      "name": "transfer-lines.tsv",
+      "bytes": 1145,
+      "sha256": "41a332cc44bafe2d417a1b49326b8cb877ad43e8216d30c60ede394c0733b8f2"
+    },
+    {
+      "name": "transfer-manifest-raw.tsv",
+      "bytes": 809,
+      "sha256": "efefe1f6cc26fd47d32520841e5063ff9b64e0f81d7580d0cd9364fce5f20338"
+    }
+  ],
+  "frameCount": 8,
+  "framingComplete": true,
+  "guestIdentity": {
+    "Version": "6.1.7601",
+    "ServicePackMajorVersion": "1",
+    "OSArchitecture": "32-bit",
+    "PointerBytes": "4",
+    "PowerShellMajor": "2",
+    "Caption": "Microsoft Windows 7 企业版"
+  },
+  "transferDiagnostics": {
+    "DiagnosticsVersion": "2",
+    "Transfer": "d:\\",
+    "PowerShellVersion": "2.0",
+    "ClrVersion": "2.0.50727.5420",
+    "ManifestBytes": "809",
+    "ManifestSha256": "efefe1f6cc26fd47d32520841e5063ff9b64e0f81d7580d0cd9364fce5f20338",
+    "ManifestPrefixHex": "EF-BB-BF-65-61-33-30-38-63-37-36-61-32-66-39-32-37-62-31-36-30-61-31-34-33-64-39-34-30-37-32-62-30-64-63-65-32-33-32-65-30-34-62-37-35-31-66-30-63-36-34-33-32-61-39-34-65-30-35-31-36-34-65-37",
+    "RawLineCount": "9",
+    "FilteredLineCount": "9",
+    "EnumeratedCount": "11",
+    "DirectoryCount": "1",
+    "ExpectedCount": "10",
+    "FilesType": "System.Object[]",
+    "FilteredLinesType": "System.Object[]"
+  },
+  "observedEntries": [
+    {
+      "index": 0,
+      "name": "$RECYCLE.BIN",
+      "fullName": "D:\\$RECYCLE.BIN",
+      "attributes": "Hidden, System, Directory",
+      "isDirectory": "True",
+      "length": "",
+      "type": "System.IO.DirectoryInfo"
+    },
+    {
+      "index": 1,
+      "name": "7za.exe",
+      "fullName": "D:\\7za.exe",
+      "attributes": "Archive",
+      "isDirectory": "False",
+      "length": "739840",
+      "type": "System.IO.FileInfo"
+    },
+    {
+      "index": 2,
+      "name": "export-serial.ps1",
+      "fullName": "D:\\export-serial.ps1",
+      "attributes": "Archive",
+      "isDirectory": "False",
+      "length": "1275",
+      "type": "System.IO.FileInfo"
+    },
+    {
+      "index": 3,
+      "name": "run-apps.ps1",
+      "fullName": "D:\\run-apps.ps1",
+      "attributes": "Archive",
+      "isDirectory": "False",
+      "length": "9625",
+      "type": "System.IO.FileInfo"
+    },
+    {
+      "index": 4,
+      "name": "run-preview11.cmd",
+      "fullName": "D:\\run-preview11.cmd",
+      "attributes": "Archive",
+      "isDirectory": "False",
+      "length": "231",
+      "type": "System.IO.FileInfo"
+    },
+    {
+      "index": 5,
+      "name": "SouiStarter-payload.tsv",
+      "fullName": "D:\\SouiStarter-payload.tsv",
+      "attributes": "Archive",
+      "isDirectory": "False",
+      "length": "7392",
+      "type": "System.IO.FileInfo"
+    },
+    {
+      "index": 6,
+      "name": "SouiStarter.zip",
+      "fullName": "D:\\SouiStarter.zip",
+      "attributes": "Archive",
+      "isDirectory": "False",
+      "length": "28585055",
+      "type": "System.IO.FileInfo"
+    },
+    {
+      "index": 7,
+      "name": "SouiWorkbench-payload.tsv",
+      "fullName": "D:\\SouiWorkbench-payload.tsv",
+      "attributes": "Archive",
+      "isDirectory": "False",
+      "length": "53028",
+      "type": "System.IO.FileInfo"
+    },
+    {
+      "index": 8,
+      "name": "SouiWorkbench.zip",
+      "fullName": "D:\\SouiWorkbench.zip",
+      "attributes": "Archive",
+      "isDirectory": "False",
+      "length": "39597080",
+      "type": "System.IO.FileInfo"
+    },
+    {
+      "index": 9,
+      "name": "transfer-files.tsv",
+      "fullName": "D:\\transfer-files.tsv",
+      "attributes": "Archive",
+      "isDirectory": "False",
+      "length": "809",
+      "type": "System.IO.FileInfo"
+    },
+    {
+      "index": 10,
+      "name": "verify-apps.ps1",
+      "fullName": "D:\\verify-apps.ps1",
+      "attributes": "Archive",
+      "isDirectory": "False",
+      "length": "2558",
+      "type": "System.IO.FileInfo"
+    }
+  ],
+  "ordinaryFileNamesAndLengthsMatchFrozenInput": true,
+  "ordinaryFileGuestHashesVerified": false,
+  "manifestRawBytesAndHashMatch": true,
+  "manifestLinesMatch": true,
+  "unchangedStrictGuard": true,
+  "directFailure": "Guest root enumeration contains $RECYCLE.BIN as Hidden, System, Directory in addition to ten ordinary files. The original no-directory/exact-count guard rejects 11 entries/1 directory versus expected 10 before file-hash loop, archive extraction or applications.",
+  "directoryCreator": "not established",
+  "guestHarnessExitCode": 1,
+  "guestApplicationsStarted": 0,
+  "guestApplicationsPassed": 0,
+  "qemuLifecycle": {
+    "pid": 51832,
+    "startedAt": "2026-09-26T07:55:34.7243166Z",
+    "finishedAt": "2026-09-26T07:59:51.8562765Z",
+    "exitCode": 0,
+    "timedOut": false,
+    "diskSha256Before": "fdf5eb826c9868622e218d1d54f328970ad190f848cd0777174885b1d072ddb4",
+    "diskSha256After": "fdf5eb826c9868622e218d1d54f328970ad190f848cd0777174885b1d072ddb4",
+    "diskUnchanged": true,
+    "frozenCheckExitCode": 0,
+    "releaseReady": false
+  },
+  "originalFilesPreserved": 18,
+  "limitations": [
+    "Diagnostic ordinary-file names and lengths are observations, not verified content hashes. The strict guard aborts before the guest file-hash loop.",
+    "Only the 809-byte transfer manifest itself has a guest hash and raw byte export matching the frozen host file; nine parsed lines match.",
+    "The evidence identifies the immediate extra-directory condition but does not establish who created $RECYCLE.BIN or when.",
+    "A new transfer-subdirectory proposal is future work in a separate preparation/attempt; this evidence makes no claim that it resolves execution.",
+    "QEMU exit 0 and unchanged base disk/frozen inputs are lifecycle checks, not successful applications."
+  ],
+  "functionalSmokePassed": false,
+  "realRenewalVerified": false,
+  "releaseReady": false,
+  "productionReady": false
+}

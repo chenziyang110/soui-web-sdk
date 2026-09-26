@@ -1,0 +1,66 @@
+{
+  "schema": "soui.win7-serial-verifier-recapture/v1",
+  "startedAt": "2026-09-26T07:51:57.534Z",
+  "finishedAt": "2026-09-26T07:51:57.669Z",
+  "program": "C:\\nvm4w\\nodejs\\node.exe",
+  "programIdentity": {
+    "path": "C:\\nvm4w\\nodejs\\node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "arguments": [
+    "C:\\SOUI-SDK-production-validation\\preview11-win7-preparation-20260926\\Verify-AppSerial.cjs",
+    "C:\\SOUI-SDK-production-validation\\preview11-win7-apps-attempt1\\serial-export.txt"
+  ],
+  "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-win7-preparation-20260926",
+  "processId": 7580,
+  "exitCode": 1,
+  "signal": null,
+  "timedOut": false,
+  "error": null,
+  "serialBefore": {
+    "path": "C:\\SOUI-SDK-production-validation\\preview11-win7-apps-attempt1\\serial-export.txt",
+    "bytes": 677,
+    "sha256": "d8666e5559484693e12e14fb1501c8b639ba8c76179ca56acec603dc9c8c45cf"
+  },
+  "serialAfter": {
+    "path": "C:\\SOUI-SDK-production-validation\\preview11-win7-apps-attempt1\\serial-export.txt",
+    "bytes": 677,
+    "sha256": "d8666e5559484693e12e14fb1501c8b639ba8c76179ca56acec603dc9c8c45cf"
+  },
+  "verifierBefore": {
+    "path": "C:\\SOUI-SDK-production-validation\\preview11-win7-preparation-20260926\\Verify-AppSerial.cjs",
+    "bytes": 10853,
+    "sha256": "c0f3051f459b343bf6f7d6330652ce3b3f0e857fa459522e7eb7e7cd1b320060"
+  },
+  "verifierAfter": {
+    "path": "C:\\SOUI-SDK-production-validation\\preview11-win7-preparation-20260926\\Verify-AppSerial.cjs",
+    "bytes": 10853,
+    "sha256": "c0f3051f459b343bf6f7d6330652ce3b3f0e857fa459522e7eb7e7cd1b320060"
+  },
+  "inputBefore": {
+    "path": "C:\\SOUI-SDK-production-validation\\preview11-win7-preparation-20260926\\input.json",
+    "bytes": 110161,
+    "sha256": "84f275ea91aa5af51b8844724ec1dc4d70d0a2116268a4d1070f9539266863b0"
+  },
+  "inputAfter": {
+    "path": "C:\\SOUI-SDK-production-validation\\preview11-win7-preparation-20260926\\input.json",
+    "bytes": 110161,
+    "sha256": "84f275ea91aa5af51b8844724ec1dc4d70d0a2116268a4d1070f9539266863b0"
+  },
+  "stdout": {
+    "path": "verify-recapture.stdout.log",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "path": "verify-recapture.stderr.log",
+    "bytes": 49,
+    "sha256": "8910dfc8207fdf708163323566bbfda61976d7d845067e03d3712c75ee051695"
+  },
+  "stage": "failed-before-apps",
+  "guestApplicationsPassed": 0,
+  "releaseReady": false,
+  "realRenewalVerified": false,
+  "productionReady": false
+}
