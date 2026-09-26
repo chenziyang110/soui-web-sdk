@@ -2,7 +2,9 @@
 
 本交付解决分层、接入、自行构建和验证的问题，仍为预览版本。
 
-preview.11 Win7 SP1 x86 两次客体在传输集合检查阶段失败，尚未启动三个应用；[诊断确认卷根系统目录造成额外项](../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt2-2026-09-26/README.md)。输入子目录布局已冻结，仍待空闲后复测；原有 Win7 通过仅对应各自历史版本。
+preview.11 [真实安装中断](../verification/production-validation/preview11-upgrade-interruption-2026-09-26/README.md)暴露恢复缺陷：安装进程在旧文件已移入备份后退出，正式校验与重新安装均失败。旧 SDK 字节和业务数据未丢失，但当前 CLI 无法自动恢复。须补齐持久事务记录、恢复入口与冲突处理；原有可捕获 I/O 异常回滚测试不能关闭此门槛。
+
+preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt3-2026-09-26/README.md)已通过传输与运行前文件身份检查，Starter 就绪并退出 0；Workbench 默认入口在就绪后关闭超时，React 和运行后载荷校验未执行。三入口整体仍失败，前两轮传输失败保留。
 
 2026-09-26 preview.11 [本机桌面记录](../verification/production-validation/preview11-desktop-execution-2026-09-26/README.md)已补足 x86/x64 四项原生桌面探针、Starter/Workbench 默认与 React 六入口及独立生成项目两项短启动，均取得退出码 0。x86 公共菜单前台激活与 Workbench 驻留就绪仍有真实失败；这些短测不关闭完整 V02/V04、Win7、真实长时续期或资源/性能门槛。
 
@@ -25,7 +27,7 @@ preview.11 Win7 SP1 x86 两次客体在传输集合检查阶段失败，尚未�
 | 内核网络及安全维护 | preview.4 固定 DLL 已换入双架构重编译候选并再次完成回环 HTTPS 正负向测试；系统信任根、代理、动态子资源、逐组件补丁覆盖及维护责任仍未闭环，见[核对记录](acceptance/kernel-maintenance.md) |
 | API / ABI | preview 接口可能迁移，不保证跨编译器 C++ ABI |
 | 公共驻留能力 | preview.10 在托盘基础上增加公共菜单、全局快捷键及显式 Workbench 三窗口驻留。preview.11 [真实 x86 短测](../verification/production-validation/preview11-desktop-execution-2026-09-26/README.md)中，托盘消费者在菜单显示前返回 `E_MENU_FOREGROUND`、退出 1；Workbench 驻留 slot 2 达到内部 45 秒就绪期限、退出 3，尚未进入 smoke 阶段，slot 3 未判定。两项清理完成，根因尚未确证；x64 菜单/驻留、实际菜单/快捷键输入、Explorer 重启、三窗任务隔离、模态关闭、空窗驻留及 Win7 x86 仍未执行，V04 不通过。此前 preview.9 短测不覆盖这些新增行为 |
-| 同文档长会话续接 | preview.11 已实现显式公共续期、稳定授权资源归属与 Web 自动续期，[原生契约及安装后独立消费者](../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)在两架构通过，设计见 [ADR-0014](adr/0014-same-document-session-renewal.md)。[真实时钟续期独立消费者](../verification/production-validation/preview11-real-renewal-build-2026-09-26/README.md)的 x86/x64 编译与无窗口自检通过；随后[本机 x86 GUI 首次短测](../verification/production-validation/preview11-real-renewal-smoke-attempt1-2026-09-26/README.md)在页面就绪前因会话关闭退出 1，任务未启动，x64 GUI 与真实超过 30 分钟/八小时运行未执行。[v2 修正夹具](../verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/README.md)已完成两架构编译、每架构 45 项无窗口阶段自检、106 项分析器合成检查及 8 项运行输入绑定检查；尚未运行 v2 GUI，不计为续期通过；模拟时钟和短测不能替代任务/订阅跨轮换保留的真实长时验收。长模态或休眠跨过期限仍明确失败，完整门槛未关闭 |
+| 同文档长会话续接 | preview.11 已实现显式公共续期、稳定授权资源归属与 Web 自动续期，[原生契约及安装后独立消费者](../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)在两架构通过，设计见 [ADR-0014](adr/0014-same-document-session-renewal.md)。[真实时钟续期独立消费者](../verification/production-validation/preview11-real-renewal-build-2026-09-26/README.md)的 x86/x64 编译与无窗口自检通过；随后[本机 x86 GUI 首次短测](../verification/production-validation/preview11-real-renewal-smoke-attempt1-2026-09-26/README.md)在页面就绪前因会话关闭退出 1，任务未启动，x64 GUI 与真实超过 30 分钟/八小时运行未执行。[v2 修正夹具](../verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/README.md)已完成两架构编译、每架构 45 项无窗口阶段自检、106 项分析器合成检查及 8 项运行输入绑定检查；随后[两架构首次 GUI](../verification/production-validation/preview11-real-renewal-v2-smoke-2026-09-26/README.md)均因初始 60 秒未就绪退出 1，bootstrap 和任务调用为 0，真实续期未通过；模拟时钟和短测不能替代任务/订阅跨轮换保留的真实长时验收。长模态或休眠跨过期限仍明确失败，完整门槛未关闭 |
 | 依赖授权 | 已保留来源、散列及授权文本；精确二进制再分发审核尚未完成 |
 | Web 构建依赖审计 | Vite 6.4.3 / PostCSS 8.5.23 兼容性升级后，本次 npm audit：SDK、模板、Demo 均为 0 项；完整结果在 verification/*-audit.json。后续更新继续由锁文件、Dependabot 和发布验收共同约束 |
 | 自动验证 | 按当前维护决策不配置远程 CI；每个 PR 必须提供适用的本机构建、测试和真实桌面验收证据 |

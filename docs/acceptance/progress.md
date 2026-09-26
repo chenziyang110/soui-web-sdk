@@ -1,5 +1,17 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 preview.11 新增实际桌面失败
+
+其他 QEMU 退出后，串行执行 [Win7 第三轮](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt3-2026-09-26/README.md)：v3 传输集合、546 个运行前载荷文件及 legal 身份通过，Starter 就绪并退出 0；Workbench 默认入口就绪后停在关闭开始，达到原 60 秒期限，被客体驱动终止。React 和运行后载荷检查未执行。29 帧完整串口和冻结校验器退出 1 保留，QEMU 正常退出且基础盘及输入未变。下一项是关闭阶段/线程栈诊断，不放宽期限。
+
+随后 [v2 续期夹具](../../verification/production-validation/preview11-real-renewal-v2-smoke-2026-09-26/README.md)本机 x86/x64 首次 GUI 均因初始 60 秒未就绪退出 1，bootstrap、ready、任务调用为 0；一次初始生命周期退役分类正确，关闭完整、无外部桌面负载、输入前后一致。独立页面诊断副本仍只显示静态初始化内容，尚未确定 classic script/polyfill/System.import 的实际停止点。原冻结失败不覆盖，35 分钟和八小时不启动，生产结论保持未通过。
+
+## 2026-09-26 preview.11 四阶段独立升级构建与中断缺陷
+
+[V06 原始证据](../../verification/production-validation/preview11-upgrade-interruption-2026-09-26/README.md)记录仓库外账本项目的 preview.10 初始、升级 preview.11、回退和再升级：八次 x86/x64 Release 构建均退出 0；22 个应用及数据文件在每段安装前后、构建后保持原字节，八份 71 文件运行载荷另存并复核。其他 QEMU 持续占用，尚未执行这些新载荷的 GUI，不能称四阶段业务运行通过。
+
+独立副本的真实进程终止探针发现安装恢复缺陷：旧文件重命名到事务备份后终止子进程，正式项目校验与重新安装均退出 1。业务数据与旧锁未改，417 个旧 SDK 文件可从现有内容和备份逐项恢复；CLI 未提供自动恢复。当前安装器只在进程内 catch 回滚，内存中的进度不能跨退出恢复，已有模拟 I/O 异常测试不覆盖该场景。失败现场原样保留，后续须补齐持久事务与冲突/恢复契约后再验收。完整 V06、源码交付、生产准入仍未通过。
+
 ## 2026-09-26 preview.11 续期夹具 v2 编译与输入绑定
 
 [v2 独立构建记录](../../verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/README.md)修正外部夹具的阶段观察：bootstrap 调用前最多记录一次生命周期退役；唯一成功 bootstrap 响应返回给页面前绑定可信 session/origin，绑定后包括 describe/ready 之前的意外关闭、身份变化和重 bootstrap 均失败。未改变 SDK 的 711 文件输入，也未覆盖 v1 失败样本。
