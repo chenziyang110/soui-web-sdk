@@ -1,5 +1,11 @@
 # SDK 生产验证执行记录
 
+## 2026-09-27 preview.15 解压版桌面完成与 Win7 中断
+
+[无 Git 解压版桌面验证](../../verification/production-validation/preview15-relocated-desktop-2026-09-27/README.md)补齐两架构新编 EXE 的六个入口：Starter、默认/React Workbench 原生均退出 0、就绪和关闭完整，构建 ID、完整载荷/资源/legal 和运行期间门禁通过。初次外部 QEMU 门禁拒绝仍保留，31 份原始文件独立归档。短测不关闭源码交付、长稳或生产总门槛。
+
+[Win7 当前输入 attempt1](../../verification/production-validation/win7-sp1-x86-qemu-preview15-apps-attempt1-2026-09-27/README.md)已显示桌面，但命令发送前另一个 QEMU 启动，驱动保护性停止自己的客体。驱动退出 1，QEMU 退出 -1；没有 SDK 命令或串口结果，不算应用失败或通过。基础盘和冻结输入前后不变，36 份原始记录保留。等待其他负载结束后使用新的 attempt2，不覆盖失败原件或扩大结论。
+
 ## 2026-09-27 preview.15 原动画真实续期准备
 
 [当前版本续期夹具准备](../../verification/production-validation/preview15-real-renewal-preparation-2026-09-27/README.md)已匹配实际 419 文件 SDK 包，暂存 720 文件；构建身份仍为同一 717 文件输入。保留原 HTML/CSS 动画和 Web 逻辑，以及已修正的监督器取快照/计时顺序。新校验器 106 项合成边界测试通过；实际运行器校验代码的两个独立命令正确拒绝旧冻结和错误来源，122 份原始记录保留。
