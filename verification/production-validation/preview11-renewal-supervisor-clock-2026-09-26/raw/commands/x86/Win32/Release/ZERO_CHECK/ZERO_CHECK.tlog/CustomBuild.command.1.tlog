@@ -1,0 +1,10 @@
+^C:\SOUI-SDK-PRODUCTION-VALIDATION\PREVIEW11-RENEWAL-SUPERVISOR-RACE-20260926\BUILDS\X86-GREEN\CMAKEFILES\F0E755754205F555061363168091415F\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/SOUI-SDK-production-validation/preview11-renewal-supervisor-race-20260926/source-snapshots/x86-green -BC:/SOUI-SDK-production-validation/preview11-renewal-supervisor-race-20260926/builds/x86-green --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/SOUI-SDK-production-validation/preview11-renewal-supervisor-race-20260926/builds/x86-green/InstalledRenewalProbe.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

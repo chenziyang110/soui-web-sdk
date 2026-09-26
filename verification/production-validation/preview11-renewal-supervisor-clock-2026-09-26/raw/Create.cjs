@@ -1,0 +1,14 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const repo='C:/SOUI-SDK-development/preview9-tray',id=require(path.join(repo,'tools/internal/delivery-identity.cjs'));
+const parent='C:/SOUI-SDK-production-validation/preview11-real-renewal-preparation-v2-20260926',root=__dirname;
+const freezeBytes=fs.readFileSync(path.join(parent,'freeze.json'));assert.equal(id.hash(freezeBytes),'80d19d4e2008a505bbb8a9293849f3756d4bf07ad7838ad38aa5bb054ac0ee3a');const freeze=JSON.parse(freezeBytes),prepared=id.readJson(path.join(parent,'prepared.json'));
+function copy(from,to,expected){const b=fs.readFileSync(from);if(expected){assert.equal(b.length,expected.bytes);assert.equal(id.hash(b),expected.sha256);}fs.mkdirSync(path.dirname(to),{recursive:true});fs.writeFileSync(to,b,{flag:'wx'});}
+for(const f of prepared.inputs.files.filter(f=>f.path.startsWith('install/')))copy(path.join(parent,'inputs',f.path),path.join(root,'inputs',f.path),f);
+for(const name of id.walk(path.join(parent,'consumer')))copy(path.join(parent,'consumer',name),path.join(root,'consumer',name));
+copy(path.join(parent,'freeze.json'),path.join(root,'provenance/parent-freeze.json'));copy(path.join(root,'consumer/main.cpp'),path.join(root,'provenance/main-before.cpp'));
+copy('C:/SOUI-SDK-production-validation/preview13-full-source-build-attempt2-20260926/Capture-Command.cjs',path.join(root,'Capture-Command.cjs'));
+let main=fs.readFileSync(path.join(root,'consumer/main.cpp'),'utf8');const old='      const auto now = state_.now();\n      auto observed = state_.snapshot();';assert.equal(main.split(old).length,2);main='#include "supervisor_clock.h"\n'+main.replace(old,'      const auto sampled = renewal_probe::sample_clock(state_);\n      const auto now = sampled.now;\n      const auto& observed = sampled.observed;');fs.writeFileSync(path.join(root,'consumer/main.cpp'),main);
+fs.appendFileSync(path.join(root,'consumer/CMakeLists.txt'),'\nadd_executable(SupervisorClockTests supervisor_clock_tests.cpp)\ntarget_compile_features(SupervisorClockTests PRIVATE cxx_std_17)\ntarget_compile_options(SupervisorClockTests PRIVATE /W4 /utf-8)\nset_property(TARGET SupervisorClockTests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)\n');
+fs.writeFileSync(path.join(root,'input.json'),id.encoded({parent,parentFreezeSha256:id.hash(freezeBytes),version:'0.3.0-preview.11',purpose:'Repair only the external supervisor sampling race; preserve original frozen SDK and all GUI failures. Initial readiness, record gap and close grace deadlines remain unchanged.',sourceFiles:prepared.inputs.files.filter(f=>f.path.startsWith('install/')),guiExecuted:false,realRenewalVerified:false,releaseReady:false}),{flag:'wx'});
+console.log(id.encoded({copiedInstalledFiles:prepared.inputs.files.filter(f=>f.path.startsWith('install/')).length,fixtureOnly:true,guiExecuted:false}));
