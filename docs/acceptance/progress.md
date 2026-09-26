@@ -1,5 +1,11 @@
 # SDK 生产验证执行记录
 
+## 2026-09-27 preview.15 完整源码重编与 Win7 新冻结
+
+[完整源码 ZIP 的无 Git 独立解压和四配置构建](../../verification/production-validation/preview15-full-source-build-2026-09-27/README.md)已完成：34,612 文件完整清单、同版 419 文件 SDK 匹配在构建前后通过；x86/x64 × Debug/Release 原始退出 0，完整单元/契约入口和合计 48 项 CTest 通过。八份运行载荷、每份 60 个 PE 及实际编译命令复核通过。解压版 GUI 启动被外部 QEMU 门禁拒绝，退出 2、未启动应用；239 份原始文件保留。
+
+[当前 Win7 x86 的 v3 输入](../../verification/production-validation/win7-sp1-x86-qemu-preview15-apps-v3-preparation-2026-09-27/README.md)已冻结到 SHA `47e463d7746dd9824a6083d3e12b26d0910ac79a35bd7d69060b1ffe62b9e005`，绑定 preview.15 原仓库 x86 Release 构建。串口校验器 1 个完整合成样本和 27 个拒绝样本、传输/进程诊断宿主辅助函数自测均通过，84 份原始记录归档。60 秒期限不变，新增一次 55 秒未退出时的线程状态记录。客体尚未运行，原关闭失败未关闭；等其他虚拟机退出后串行执行。完整生产门槛继续待验收。
+
 ## 2026-09-27 preview.15 本机桌面短测
 
 [当前候选的串行桌面证据](../../verification/production-validation/preview15-desktop-2026-09-27/README.md)完成两架构窗口线程超时、目录取消、新编 SOUI/内核组合的模板与 Workbench React，以及固定包的模板、默认/React 六入口，合计 14 次原生退出 0，页面就绪与关闭、完整运行载荷核验通过。第一次命令因编译节点尚未退出被拒绝，未启动 GUI；原样保留。717 文件源码输入不变。Win7、真实长会话、V02、驻留/多窗、资源和生产门槛继续待验收。
