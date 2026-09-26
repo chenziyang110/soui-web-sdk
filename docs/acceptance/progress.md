@@ -193,3 +193,5 @@ preview.6 [Win7 x86 应用短测 v3](../../verification/production-validation/wi
 [目录对话框取消 v2 短测](../../verification/production-validation/win7-sp1-x86-qemu-directory-v2-2026-09-25/README.md)同样保持原候选 EXE 身份、补入冻结的 52 个运行库，在真实 Win7 SP1 x86 QEMU 中打开并取消 Shell 目录对话框，退出 0。五份串口结果的系统/EXE 身份、逐文件散列及成功标记通过独立校验；快照客机已退出。它只证明公共取消路径，不涵盖模板真实点击、正向中文路径、关窗竞态或完整生产验收。
 
 preview.8 [最终完整源码包的独立公共 SDK 页面消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview8-public-task-2026-09-25/README.md)先在本机完成 x86 Release Bridge 三轮，再以同一 76 文件载荷进入 Win7 SP1 x86 QEMU。客体逐文件散列、进程退出 0、17 份串口文件、10 个完整生命周期步骤、3 轮资源采样以及页面的公开任务进度/取消、容量与错误恢复均通过独立核验；伪造内核散列和截断事件流的反例被拒绝。此结果不代表 Demo 页面真实操作或生产资源门槛，虚拟机历时也不作性能对标。
+
+随后 [preview.8 Workbench Demo GUI 短测](../../verification/production-validation/win7-sp1-x86-qemu-preview8-demo-ui-2026-09-25/README.md)在另一轮 Win7 SP1 x86 QEMU 快照中完成：475 项运行载荷及五份许可逐文件校验、15 份串口结果和正常退出通过；真实页面显示 10,000 行数据，滚动到第 9,988 行附近，公开 SDK 任务分别呈现 `succeeded · 100%` 与 `cancelled · 5%`。GUI 状态由截图人工核对，不是自动交互回归或性能测量。初始落到首页的原因已定位为原测试命令缺少 `--page=data`，启动入口会清除单独继承的环境变量；已通过首页链接进入数据页，原脚本与偏离截图保留。物理 Win7、IME/DPI、长稳资源和同机 Electron 对照仍未关闭，`releaseReady=false`。
