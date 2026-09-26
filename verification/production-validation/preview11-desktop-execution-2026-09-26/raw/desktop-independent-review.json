@@ -1,0 +1,1050 @@
+{
+  "schema": "soui.desktop-independent-review/v1",
+  "reviewedAt": "2026-09-26T06:22:48.542Z",
+  "reviewType": "Read-only independent inspection of already-recorded executions and current file bytes; no GUI/build/test launched by reviewer.",
+  "version": "0.3.0-preview.11",
+  "host": {
+    "Caption": "Microsoft Windows 11 专业版",
+    "Version": "10.0.26200",
+    "BuildNumber": "26200",
+    "OSArchitecture": "64 位"
+  },
+  "source": {
+    "sha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+    "files": 711,
+    "currentMatchesFrozenPreflight": true
+  },
+  "overall": "bounded-native-and-startup-smoke-passed-with-two-functional-failures-retained",
+  "nativeProbes": [
+    {
+      "name": "x86-window-thread-timeout",
+      "architecture": "x86",
+      "exitCode": 0,
+      "command": [
+        "--window-thread-timeout"
+      ],
+      "exeSha256": "b0ad70ebe0e3105b10424d8215f889afa75b68835cb1873c9ae2d99f20b4d740",
+      "peMachine": "014c",
+      "fullBuildLog": "x86-attempt1/full-build-native-Release.log",
+      "scope": "Real owner-window stall, bounded E_WINDOW_TIMEOUT, cancelled title not applied and later title recovery; stdout label alone is generic."
+    },
+    {
+      "name": "x86-directory-cancel",
+      "architecture": "x86",
+      "exitCode": 0,
+      "command": [
+        "--cancel"
+      ],
+      "exeSha256": "305ec151de25f9596fcb5d45fb68a234120894414fc2915e1d775ff4b0bc0eda",
+      "peMachine": "014c",
+      "fullBuildLog": "x86-attempt1/full-build-native-Release.log",
+      "scope": "Real public directory picker observed and programmatically cancelled; not genuine human input."
+    },
+    {
+      "name": "x64-window-thread-timeout",
+      "architecture": "x64",
+      "exitCode": 0,
+      "command": [
+        "--window-thread-timeout"
+      ],
+      "exeSha256": "e05258902c9986c119b388fd16239a05764d107f9a773649e31efa98cb285dec",
+      "peMachine": "8664",
+      "fullBuildLog": "x64-attempt1/full-build-native-Release.log",
+      "scope": "Real owner-window stall, bounded E_WINDOW_TIMEOUT, cancelled title not applied and later title recovery; stdout label alone is generic."
+    },
+    {
+      "name": "x64-directory-cancel",
+      "architecture": "x64",
+      "exitCode": 0,
+      "command": [
+        "--cancel"
+      ],
+      "exeSha256": "fe4cdce83f49132a0da2d7b741372da7542c1dd0028c6543f6398150d72ddae9",
+      "peMachine": "8664",
+      "fullBuildLog": "x64-attempt1/full-build-native-Release.log",
+      "scope": "Real public directory picker observed and programmatically cancelled; not genuine human input."
+    }
+  ],
+  "applicationSmokes": [
+    {
+      "architecture": "x86",
+      "target": "SouiStarter",
+      "scenario": "default",
+      "exitCode": 0,
+      "timedOut": false,
+      "orderedReadyClose": true,
+      "smokePath": "desktop-smoke-attempt1/x86-smoke-Release.json",
+      "buildId": "7e000158-98f0-4349-854e-15c581663737",
+      "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550"
+    },
+    {
+      "architecture": "x86",
+      "target": "SouiWorkbench",
+      "scenario": "default",
+      "exitCode": 0,
+      "timedOut": false,
+      "orderedReadyClose": true,
+      "smokePath": "desktop-smoke-attempt1/x86-smoke-Release.json",
+      "buildId": "7e000158-98f0-4349-854e-15c581663737",
+      "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550"
+    },
+    {
+      "architecture": "x86",
+      "target": "SouiWorkbench",
+      "scenario": "react",
+      "exitCode": 0,
+      "timedOut": false,
+      "orderedReadyClose": true,
+      "smokePath": "desktop-smoke-attempt1/x86-smoke-Release.json",
+      "buildId": "7e000158-98f0-4349-854e-15c581663737",
+      "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550"
+    },
+    {
+      "architecture": "x64",
+      "target": "SouiStarter",
+      "scenario": "default",
+      "exitCode": 0,
+      "timedOut": false,
+      "orderedReadyClose": true,
+      "smokePath": "desktop-direct-smoke-attempt1/x64-smoke-Release.json",
+      "buildId": "6c61f9e3-065a-40c5-b281-ace7ca80df02",
+      "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550"
+    },
+    {
+      "architecture": "x64",
+      "target": "SouiWorkbench",
+      "scenario": "default",
+      "exitCode": 0,
+      "timedOut": false,
+      "orderedReadyClose": true,
+      "smokePath": "desktop-direct-smoke-attempt1/x64-smoke-Release.json",
+      "buildId": "6c61f9e3-065a-40c5-b281-ace7ca80df02",
+      "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550"
+    },
+    {
+      "architecture": "x64",
+      "target": "SouiWorkbench",
+      "scenario": "react",
+      "exitCode": 0,
+      "timedOut": false,
+      "orderedReadyClose": true,
+      "smokePath": "desktop-direct-smoke-attempt1/x64-smoke-Release.json",
+      "buildId": "6c61f9e3-065a-40c5-b281-ace7ca80df02",
+      "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550"
+    }
+  ],
+  "applicationPayloads": [
+    {
+      "architecture": "x86",
+      "target": "SouiStarter",
+      "files": 71,
+      "sha256": "f269573f9382019706a98a4720a99097814550bd7b354dfff1cb54bbfc5b03d8",
+      "bytes": 28571761,
+      "buildId": "7e000158-98f0-4349-854e-15c581663737",
+      "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+      "currentCompletePayloadMatches": true,
+      "runBoundaryValidation": "Test.ps1 begin-smoke and finish-smoke both verify the full build payload; archived report binds same payload.",
+      "peMachine": "014c"
+    },
+    {
+      "architecture": "x86",
+      "target": "SouiWorkbench",
+      "files": 475,
+      "sha256": "401da4b44cef63d5958a04d6b740440074b825fa4d09af7d631d1971b3bdc1df",
+      "bytes": 39504344,
+      "buildId": "7e000158-98f0-4349-854e-15c581663737",
+      "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+      "currentCompletePayloadMatches": true,
+      "runBoundaryValidation": "Test.ps1 begin-smoke and finish-smoke both verify the full build payload; archived report binds same payload.",
+      "peMachine": "014c"
+    },
+    {
+      "architecture": "x64",
+      "target": "SouiStarter",
+      "files": 71,
+      "sha256": "416875d08fffd49561363f582c1d4896d39c006b7a1fb945aeae8a5665a59169",
+      "bytes": 42035105,
+      "buildId": "6c61f9e3-065a-40c5-b281-ace7ca80df02",
+      "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+      "currentCompletePayloadMatches": true,
+      "runBoundaryValidation": "Test.ps1 begin-smoke and finish-smoke both verify the full build payload; archived report binds same payload.",
+      "peMachine": "8664"
+    },
+    {
+      "architecture": "x64",
+      "target": "SouiWorkbench",
+      "files": 475,
+      "sha256": "94969b72c8a1184c2cbb4a82b9fc6fb702cd2cf2f847ee88fb1f51798969ff74",
+      "bytes": 53041416,
+      "buildId": "6c61f9e3-065a-40c5-b281-ace7ca80df02",
+      "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+      "currentCompletePayloadMatches": true,
+      "runBoundaryValidation": "Test.ps1 begin-smoke and finish-smoke both verify the full build payload; archived report binds same payload.",
+      "peMachine": "8664"
+    }
+  ],
+  "generatedDirectSmokes": [
+    {
+      "architecture": "x86",
+      "exitCode": 0,
+      "command": [
+        "--smoke-test"
+      ],
+      "buildId": "7a63e310-fb52-43a7-bb34-b878b157930e",
+      "sourceSha256": "3d2a2d8dc89dad00b63ac2012f95a5cff5f7d02b3dd2c4095083aa762a435d3c",
+      "sdkLockFiles": 418,
+      "sdkManifestSha256": "539c6fdff96f615eac38a815c9babb554be98091b8b1da0e5d332833da898f3d",
+      "exeSha256": "3674f2dfa531ed0536217569fd9c03941fb2b00d0c315ba1469fb42b39a8153e",
+      "peMachine": "014c",
+      "orderedReadyClose": true,
+      "logPath": "desktop-direct-smoke-attempt1/x86-generated-smoke.log",
+      "payload": {
+        "files": 71,
+        "sha256": "21d9399fdd4c79f7074544cc899532317da9b1aa42fed002364c8424aed5fe84",
+        "bytes": 28571776
+      },
+      "currentCompletePayloadMatches": true,
+      "runBoundaryValidation": "Supervisor captured EXE hash before/after. Full payload was captured in preflight and independently re-read at reviewedAt; no per-run immediate whole-payload after manifest is present."
+    },
+    {
+      "architecture": "x64",
+      "exitCode": 0,
+      "command": [
+        "--smoke-test"
+      ],
+      "buildId": "a7f4078b-a80d-47c4-ad86-62314ea908c0",
+      "sourceSha256": "3d2a2d8dc89dad00b63ac2012f95a5cff5f7d02b3dd2c4095083aa762a435d3c",
+      "sdkLockFiles": 418,
+      "sdkManifestSha256": "539c6fdff96f615eac38a815c9babb554be98091b8b1da0e5d332833da898f3d",
+      "exeSha256": "00c31654aa178c15383417f5195e59db591c92400402ba973a6f818fc1fd2b20",
+      "peMachine": "8664",
+      "orderedReadyClose": true,
+      "logPath": "desktop-direct-smoke-attempt1/x64-generated-smoke.log",
+      "payload": {
+        "files": 71,
+        "sha256": "dcba9f80dd02b2750eac0bb1b3b6f4569a1946b0d7b192c752f569286a6f5a6b",
+        "bytes": 42035120
+      },
+      "currentCompletePayloadMatches": true,
+      "runBoundaryValidation": "Supervisor captured EXE hash before/after. Full payload was captured in preflight and independently re-read at reviewedAt; no per-run immediate whole-payload after manifest is present."
+    }
+  ],
+  "executions": [
+    {
+      "name": "x86-window-thread-timeout",
+      "program": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_desktop_unicode_tests.exe",
+      "arguments": [
+        "--window-thread-timeout"
+      ],
+      "pid": 41352,
+      "startedAt": "2026-09-26T05:53:01.4371288Z",
+      "finishedAt": "2026-09-26T05:53:03.1364077Z",
+      "exitCode": 0,
+      "timedOut": false,
+      "exeSha256": "b0ad70ebe0e3105b10424d8215f889afa75b68835cb1873c9ae2d99f20b4d740",
+      "exeUnchanged": true,
+      "remainingDesktopProcesses": [],
+      "releaseReady": false,
+      "resultPath": "desktop-attempt2/x86-window-thread-timeout.result.json",
+      "gatePath": "desktop-attempt2/x86-window-thread-timeout.gate.json",
+      "rawExitType": "number",
+      "currentExecutableHashMatchesLaunchRecord": true,
+      "currentPeMachine": "014c",
+      "reviewedAt": "2026-09-26T06:22:48.542Z",
+      "interpretation": "bounded command succeeded"
+    },
+    {
+      "name": "x86-directory-cancel",
+      "program": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_directory_dialog_tests.exe",
+      "arguments": [
+        "--cancel"
+      ],
+      "pid": 33524,
+      "startedAt": "2026-09-26T05:53:03.3822466Z",
+      "finishedAt": "2026-09-26T05:53:05.0270007Z",
+      "exitCode": 0,
+      "timedOut": false,
+      "exeSha256": "305ec151de25f9596fcb5d45fb68a234120894414fc2915e1d775ff4b0bc0eda",
+      "exeUnchanged": true,
+      "remainingDesktopProcesses": [],
+      "releaseReady": false,
+      "resultPath": "desktop-attempt2/x86-directory-cancel.result.json",
+      "gatePath": "desktop-attempt2/x86-directory-cancel.gate.json",
+      "rawExitType": "number",
+      "currentExecutableHashMatchesLaunchRecord": true,
+      "currentPeMachine": "014c",
+      "reviewedAt": "2026-09-26T06:22:48.542Z",
+      "interpretation": "bounded command succeeded"
+    },
+    {
+      "name": "x64-window-thread-timeout",
+      "program": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_desktop_unicode_tests.exe",
+      "arguments": [
+        "--window-thread-timeout"
+      ],
+      "pid": 46860,
+      "startedAt": "2026-09-26T05:53:05.2577098Z",
+      "finishedAt": "2026-09-26T05:53:07.0485109Z",
+      "exitCode": 0,
+      "timedOut": false,
+      "exeSha256": "e05258902c9986c119b388fd16239a05764d107f9a773649e31efa98cb285dec",
+      "exeUnchanged": true,
+      "remainingDesktopProcesses": [],
+      "releaseReady": false,
+      "resultPath": "desktop-attempt2/x64-window-thread-timeout.result.json",
+      "gatePath": "desktop-attempt2/x64-window-thread-timeout.gate.json",
+      "rawExitType": "number",
+      "currentExecutableHashMatchesLaunchRecord": true,
+      "currentPeMachine": "8664",
+      "reviewedAt": "2026-09-26T06:22:48.542Z",
+      "interpretation": "bounded command succeeded"
+    },
+    {
+      "name": "x64-directory-cancel",
+      "program": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_directory_dialog_tests.exe",
+      "arguments": [
+        "--cancel"
+      ],
+      "pid": 37028,
+      "startedAt": "2026-09-26T05:53:07.3048360Z",
+      "finishedAt": "2026-09-26T05:53:08.7602535Z",
+      "exitCode": 0,
+      "timedOut": false,
+      "exeSha256": "fe4cdce83f49132a0da2d7b741372da7542c1dd0028c6543f6398150d72ddae9",
+      "exeUnchanged": true,
+      "remainingDesktopProcesses": [],
+      "releaseReady": false,
+      "resultPath": "desktop-attempt2/x64-directory-cancel.result.json",
+      "gatePath": "desktop-attempt2/x64-directory-cancel.gate.json",
+      "rawExitType": "number",
+      "currentExecutableHashMatchesLaunchRecord": true,
+      "currentPeMachine": "8664",
+      "reviewedAt": "2026-09-26T06:22:48.542Z",
+      "interpretation": "bounded command succeeded"
+    },
+    {
+      "name": "x86-tray-menu-shortcut",
+      "program": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\tray-x86-attempt1\\build\\bin\\Release\\SouiTrayConsumer.exe",
+      "arguments": [
+        "--smoke-test"
+      ],
+      "pid": 16560,
+      "startedAt": "2026-09-26T05:53:09.0009274Z",
+      "finishedAt": "2026-09-26T05:53:09.9973878Z",
+      "exitCode": 1,
+      "timedOut": false,
+      "exeSha256": "652ee10628806a4121e33c8f8f3327794d5a2a61588eceede4e36f5c174db008",
+      "exeUnchanged": true,
+      "remainingDesktopProcesses": [],
+      "releaseReady": false,
+      "resultPath": "desktop-attempt2/x86-tray-menu-shortcut.result.json",
+      "gatePath": "desktop-attempt2/x86-tray-menu-shortcut.gate.json",
+      "rawExitType": "number",
+      "currentExecutableHashMatchesLaunchRecord": true,
+      "currentPeMachine": "014c",
+      "reviewedAt": "2026-09-26T06:22:48.542Z",
+      "interpretation": "original failure retained"
+    },
+    {
+      "name": "x86-resident",
+      "program": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe",
+      "arguments": [
+        "--resident",
+        "--resident-smoke-test",
+        "--react",
+        "--page=data",
+        "--resident-log=C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-applications-attempt1\\x86-resident.ndjson"
+      ],
+      "pid": 28112,
+      "startedAt": "2026-09-26T05:55:46.4403735Z",
+      "finishedAt": "2026-09-26T05:56:39.2042649Z",
+      "exitCode": 3,
+      "timedOut": false,
+      "exeSha256": "38de6db3f2ebb76175658f4443ef1be73e1dacaca4a28d0667db8185b7b829c4",
+      "exeUnchanged": true,
+      "remainingDesktopProcesses": [],
+      "releaseReady": false,
+      "resultPath": "desktop-applications-attempt1/x86-resident.result.json",
+      "gatePath": "desktop-applications-attempt1/x86-resident.gate.json",
+      "rawExitType": "number",
+      "currentExecutableHashMatchesLaunchRecord": true,
+      "currentPeMachine": "014c",
+      "reviewedAt": "2026-09-26T06:22:48.542Z",
+      "interpretation": "original failure retained"
+    },
+    {
+      "name": "x86-app-smoke",
+      "program": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "arguments": [
+        "-NoProfile",
+        "-File",
+        "C:\\SOUI-SDK-development\\preview9-tray\\tools\\Test.ps1",
+        "-Architecture",
+        "x86",
+        "-Configuration",
+        "Release",
+        "-NativeOnly"
+      ],
+      "pid": 34872,
+      "startedAt": "2026-09-26T05:57:39.0029663Z",
+      "finishedAt": "2026-09-26T05:57:49.2513291Z",
+      "exitCode": 0,
+      "timedOut": false,
+      "exeSha256": "8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e",
+      "exeUnchanged": true,
+      "remainingDesktopProcesses": [],
+      "releaseReady": false,
+      "resultPath": "desktop-smoke-attempt1/x86-app-smoke.result.json",
+      "gatePath": "desktop-smoke-attempt1/x86-app-smoke.gate.json",
+      "rawExitType": "number",
+      "currentExecutableHashMatchesLaunchRecord": true,
+      "currentPeMachine": "8664",
+      "reviewedAt": "2026-09-26T06:22:48.542Z",
+      "interpretation": "bounded command succeeded"
+    },
+    {
+      "name": "x86-generated-smoke",
+      "program": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "arguments": [
+        "-NoProfile",
+        "-File",
+        "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\generated-project-attempt1\\tools\\Test.ps1",
+        "-Architecture",
+        "x86",
+        "-Configuration",
+        "Release",
+        "-NativeOnly"
+      ],
+      "pid": 67896,
+      "startedAt": "2026-09-26T05:57:49.5418089Z",
+      "finishedAt": "2026-09-26T05:57:50.0755381Z",
+      "exitCode": -196608,
+      "timedOut": false,
+      "exeSha256": "8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e",
+      "exeUnchanged": true,
+      "remainingDesktopProcesses": [],
+      "releaseReady": false,
+      "resultPath": "desktop-smoke-attempt1/x86-generated-smoke.result.json",
+      "gatePath": "desktop-smoke-attempt1/x86-generated-smoke.gate.json",
+      "rawExitType": "number",
+      "currentExecutableHashMatchesLaunchRecord": true,
+      "currentPeMachine": "8664",
+      "reviewedAt": "2026-09-26T06:22:48.542Z",
+      "interpretation": "original failure retained"
+    },
+    {
+      "name": "x64-app-smoke",
+      "program": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "arguments": [
+        "-NoProfile",
+        "-File",
+        "C:\\SOUI-SDK-development\\preview9-tray\\tools\\Test.ps1",
+        "-Architecture",
+        "x64",
+        "-Configuration",
+        "Release",
+        "-NativeOnly"
+      ],
+      "pid": 76508,
+      "startedAt": "2026-09-26T06:13:00.3780041Z",
+      "finishedAt": "2026-09-26T06:13:07.8863123Z",
+      "exitCode": 0,
+      "timedOut": false,
+      "exeSha256": "8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e",
+      "exeUnchanged": true,
+      "remainingDesktopProcesses": [],
+      "releaseReady": false,
+      "resultPath": "desktop-direct-smoke-attempt1/x64-app-smoke.result.json",
+      "gatePath": "desktop-direct-smoke-attempt1/x64-app-smoke.gate.json",
+      "rawExitType": "number",
+      "currentExecutableHashMatchesLaunchRecord": true,
+      "currentPeMachine": "8664",
+      "reviewedAt": "2026-09-26T06:22:48.542Z",
+      "interpretation": "bounded command succeeded"
+    },
+    {
+      "name": "x86-generated-direct-smoke",
+      "program": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\generated-project-attempt1\\out\\x86\\bin\\Release\\RenewalStarter\\RenewalStarter.exe",
+      "arguments": [
+        "--smoke-test"
+      ],
+      "pid": 63264,
+      "startedAt": "2026-09-26T06:13:08.1614799Z",
+      "finishedAt": "2026-09-26T06:13:09.8295312Z",
+      "exitCode": 0,
+      "timedOut": false,
+      "exeSha256": "3674f2dfa531ed0536217569fd9c03941fb2b00d0c315ba1469fb42b39a8153e",
+      "exeUnchanged": true,
+      "remainingDesktopProcesses": [],
+      "releaseReady": false,
+      "resultPath": "desktop-direct-smoke-attempt1/x86-generated-direct-smoke.result.json",
+      "gatePath": "desktop-direct-smoke-attempt1/x86-generated-direct-smoke.gate.json",
+      "rawExitType": "number",
+      "currentExecutableHashMatchesLaunchRecord": true,
+      "currentPeMachine": "014c",
+      "reviewedAt": "2026-09-26T06:22:48.542Z",
+      "interpretation": "bounded command succeeded"
+    },
+    {
+      "name": "x64-generated-direct-smoke",
+      "program": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\generated-project-attempt1\\out\\x64\\bin\\Release\\RenewalStarter\\RenewalStarter.exe",
+      "arguments": [
+        "--smoke-test"
+      ],
+      "pid": 52996,
+      "startedAt": "2026-09-26T06:13:10.0639525Z",
+      "finishedAt": "2026-09-26T06:13:11.6640276Z",
+      "exitCode": 0,
+      "timedOut": false,
+      "exeSha256": "00c31654aa178c15383417f5195e59db591c92400402ba973a6f818fc1fd2b20",
+      "exeUnchanged": true,
+      "remainingDesktopProcesses": [],
+      "releaseReady": false,
+      "resultPath": "desktop-direct-smoke-attempt1/x64-generated-direct-smoke.result.json",
+      "gatePath": "desktop-direct-smoke-attempt1/x64-generated-direct-smoke.gate.json",
+      "rawExitType": "number",
+      "currentExecutableHashMatchesLaunchRecord": true,
+      "currentPeMachine": "8664",
+      "reviewedAt": "2026-09-26T06:22:48.542Z",
+      "interpretation": "bounded command succeeded"
+    }
+  ],
+  "failures": [
+    {
+      "name": "x86-tray-menu-shortcut",
+      "exitCode": 1,
+      "errorCode": "E_MENU_FOREGROUND",
+      "cleanupConfirmed": true,
+      "menuObservationPassed": false,
+      "genuineShortcutTriggerObserved": false,
+      "taskbarRestartObserved": false,
+      "scope": "Foreground acquisition failed; no successful menu selection/cancel coverage. Tray/shortcut registered, conflict returned nativeError 1409, ordered cleanup succeeded."
+    },
+    {
+      "name": "x86-resident",
+      "exitCode": 3,
+      "failedSlot": 2,
+      "diagnostics": "document=waiting,bridge=waiting,draw_interval_ms=17",
+      "orderedShutdown": true,
+      "liveWindowsAfter": 0,
+      "smokeCompleted": false,
+      "scope": "Three Hosts started, only slot 1 readiness observed. Slot 2 timed out; this does not prove slot 3 ready or identify root cause."
+    },
+    {
+      "name": "x86-generated-smoke-old-entry",
+      "exitCode": -196608,
+      "classification": "launcher-error-missing-tools/Test.ps1",
+      "applicationWasNotTestedByThisAttempt": true
+    },
+    {
+      "name": "desktop-attempt1-x86-window-thread-timeout",
+      "exitCode": null,
+      "classification": "supervisor-exit-code-unavailable",
+      "countedAsPass": false,
+      "replacedForPassOnlyByDistinctDesktopAttempt2": true
+    }
+  ],
+  "limits": [
+    "This review verifies recorded Windows 11 short functional/startup runs. It does not establish Win7, V02 real scrolling/IME/zoom, original-token-expiry crossing, real 35-minute renewal, real 8-hour stability, performance, resource isolation or production readiness.",
+    "Supervisor EXE hashes are separate before/after reads, not a locked atomic file-to-process attestation. Direct generated smoke and resident have no per-run immediate full-payload after sample; complete current bytes were re-read during this review and match the earlier frozen build/preflight.",
+    "The four native probe EXEs appear in both full-build logs and their launch/current hashes and PE architecture agree. Their hashes were not included in the original 9 pure-test EXE preflight snapshot; no contemporaneous completed-build EXE hash is invented.",
+    "Outer app-smoke program is x64 PowerShell for both architectures; actual Starter/Workbench payload EXEs were independently checked as x86/x64.",
+    "Smoke logs prove ordered ready-to-close behavior; the app harness stores child exit codes and logs but no per-child PID/timestamp. Generated direct smoke has a numeric child exit and archived log; no new compile or GUI action occurred in this review.",
+    "Gate snapshots are empty before each recorded run and selected processes absent afterward; these are point-in-time checks, not continuous external-load monitoring. They do not establish performance isolation."
+  ],
+  "qemuResumption": {
+    "status": "Parent reports another QEMU prevented Win7 start before attempt creation; no new guest evidence is accepted here.",
+    "independentlyVerifiedGateFile": false
+  },
+  "conclusions": {
+    "nativeProbesPassed": 4,
+    "applicationEntrySmokesPassed": 6,
+    "generatedDirectSmokesPassed": 2,
+    "trayFunctionalPassed": false,
+    "residentFunctionalPassed": false,
+    "win7ExecutedInReviewedAttempts": false,
+    "realTimeRenewalVerified": false,
+    "eightHourVerified": false,
+    "benchmarkValid": false,
+    "resourceGate": false,
+    "releaseReady": false,
+    "productionReady": false
+  },
+  "evidenceFiles": [
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\bin\\Release\\SouiStarter\\SouiStarter.exe",
+      "bytes": 604672,
+      "sha256": "f43128236a96efafa636abf188290acf532666ce4270afcf5656bec0aa7a6d80"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe",
+      "bytes": 1218048,
+      "sha256": "6995440a10ef4ff10307f8e13687f71850b6313d3986eeba246c4995528aa4d9"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_desktop_unicode_tests.exe",
+      "bytes": 104960,
+      "sha256": "e05258902c9986c119b388fd16239a05764d107f9a773649e31efa98cb285dec"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_directory_dialog_tests.exe",
+      "bytes": 331776,
+      "sha256": "fe4cdce83f49132a0da2d7b741372da7542c1dd0028c6543f6398150d72ddae9"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\bin\\Release\\SouiStarter\\SouiStarter.exe",
+      "bytes": 526336,
+      "sha256": "9a335bb861d28719d8b786c923555cfb14cd61802f56227c2c437bbe166fffc3"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe",
+      "bytes": 1065984,
+      "sha256": "38de6db3f2ebb76175658f4443ef1be73e1dacaca4a28d0667db8185b7b829c4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_desktop_unicode_tests.exe",
+      "bytes": 86528,
+      "sha256": "b0ad70ebe0e3105b10424d8215f889afa75b68835cb1873c9ae2d99f20b4d740"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_directory_dialog_tests.exe",
+      "bytes": 285696,
+      "sha256": "305ec151de25f9596fcb5d45fb68a234120894414fc2915e1d775ff4b0bc0eda"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\tests\\native\\desktop_unicode_tests.cpp",
+      "bytes": 13500,
+      "sha256": "980c56190072d41dd329e4ab971e71257475c5491b871fc37521902a7788a8ac"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\tests\\native\\directory_dialog_tests.cpp",
+      "bytes": 4730,
+      "sha256": "f6540e451fc3e025d813f37f45fddd0dce89183c5f303ec3314de368c7532e54"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\tests\\tray-consumer\\CMakeLists.txt",
+      "bytes": 616,
+      "sha256": "3a9d492c7e548fe1e008be2197572c4540d277f20102b8f35e47a62c8dc7b668"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\tests\\tray-consumer\\main.cpp",
+      "bytes": 19725,
+      "sha256": "6c62349eb7fa11730dbd0e566404ba31658707680d146c1c997672849c72fa34"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\tests\\tray-consumer\\README.md",
+      "bytes": 5293,
+      "sha256": "51da512cc64af948f890775a1c8c0592d7ddbe16f0c2e729a02862850aeff0e4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\tools\\internal\\build-evidence.cjs",
+      "bytes": 10438,
+      "sha256": "c3c80320d6fd68411dc776faae1e57dc6500d455ae4b258c940be3fa6f2cf087"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\tools\\internal\\delivery-identity.cjs",
+      "bytes": 5269,
+      "sha256": "951aec3fdc3f6dae6bccc00c42cf98e85b8165f78dd11944435d5ec0933a2b6b"
+    },
+    {
+      "path": "C:\\SOUI-SDK-development\\preview9-tray\\tools\\Test.ps1",
+      "bytes": 4048,
+      "sha256": "855242b751cd5184edaa4b695e0115624074de60fb94f85b54ee0e9dab35dbb3"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-applications-attempt1\\x86-resident.gate.json",
+      "bytes": 104,
+      "sha256": "a15bd47156d8a39e9f4011028e5fe8771bec22d4cad011505fa61df0e109ad33"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-applications-attempt1\\x86-resident.ndjson",
+      "bytes": 7942,
+      "sha256": "906443faf6144262ce75d448516b4243c6582d889f647c47d260e369d6d2147b"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-applications-attempt1\\x86-resident.result.json",
+      "bytes": 909,
+      "sha256": "4dc4106b55f84247f970a85526048ed9557c73e967d2e319a3147883d006fb75"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-applications-attempt1\\x86-resident.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-applications-attempt1\\x86-resident.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt1\\x86-window-thread-timeout.result.json",
+      "bytes": 662,
+      "sha256": "05e61043324f46b9bb2b07c203a906fc2bd47a9c0d75e4d75fe5fa6b526637a6"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt1\\x86-window-thread-timeout.stdout.log",
+      "bytes": 35,
+      "sha256": "fd50d9da8b757219774c8e680435854b164da159d116f429b851f7524e374100"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2-preflight.json",
+      "bytes": 835,
+      "sha256": "651f40280d7c1d2e61ac18f4cbe0bf6ed2b5ec42cd3ca076ba1aeb8dfc071e17"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\run-desktop-original.ps1",
+      "bytes": 5130,
+      "sha256": "c1f9db575cc3a65793b681f6c73bd3371713fa30b602c4dedf183ff3b53862b4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x64-directory-cancel.gate.json",
+      "bytes": 104,
+      "sha256": "55742dcbf684ed37a7b1db642614dfb917828a46611896520cea2d0917fe0219"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x64-directory-cancel.result.json",
+      "bytes": 640,
+      "sha256": "93b8aa6742de4aefa3b464501b0be76d56cee88482d50576a836c69cd53cc4e7"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x64-directory-cancel.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x64-directory-cancel.stdout.log",
+      "bytes": 45,
+      "sha256": "9dc3bc80be34771e6cd4a05a8ca78d4297cdf595cfb037a215b7e6752bc5835d"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x64-window-thread-timeout.gate.json",
+      "bytes": 104,
+      "sha256": "680cfbca3b9118e6889894c6cce2b54e85b0196334c2d3ce18bbb92b009c8fcb"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x64-window-thread-timeout.result.json",
+      "bytes": 659,
+      "sha256": "0db6b8c2786b91e3873dc251e279cd802878b20aca86c73816c799e62de1abaf"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x64-window-thread-timeout.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x64-window-thread-timeout.stdout.log",
+      "bytes": 35,
+      "sha256": "fd50d9da8b757219774c8e680435854b164da159d116f429b851f7524e374100"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x86-directory-cancel.gate.json",
+      "bytes": 104,
+      "sha256": "5cac3b9c6e4e31e0ee2527c005ec563b4d0b0e6e8632665c4a740d111739d7d3"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x86-directory-cancel.result.json",
+      "bytes": 640,
+      "sha256": "70b2af244e6f6dab30809e2c0d73275ad4e6c64cd41655a310e4f02cb72612a4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x86-directory-cancel.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x86-directory-cancel.stdout.log",
+      "bytes": 45,
+      "sha256": "9dc3bc80be34771e6cd4a05a8ca78d4297cdf595cfb037a215b7e6752bc5835d"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x86-tray-menu-shortcut.gate.json",
+      "bytes": 104,
+      "sha256": "02d16a65b64b9df1c07ae569d9396969fca151f7e57b87bb31ccf1b8c5cee3f3"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x86-tray-menu-shortcut.result.json",
+      "bytes": 672,
+      "sha256": "1fbdbf76acfa23a16a548c61762b516344269b4e55b56fd1aba973dd6f50a754"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x86-tray-menu-shortcut.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x86-tray-menu-shortcut.stdout.log",
+      "bytes": 2963,
+      "sha256": "e2d8cab95ffdec2dfe415575810d6169916c0c722b2907044aee7db37be54283"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x86-window-thread-timeout.gate.json",
+      "bytes": 104,
+      "sha256": "cd54f1f3fe00727860f3ca1cdcf438a0abcbb5ab20829a19691baad76aae854e"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x86-window-thread-timeout.result.json",
+      "bytes": 659,
+      "sha256": "79ef2d6dbeaa4f563498a0677ff6f40f12f42f654abccbe466ca44233910bfe3"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x86-window-thread-timeout.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-attempt2\\x86-window-thread-timeout.stdout.log",
+      "bytes": 35,
+      "sha256": "fd50d9da8b757219774c8e680435854b164da159d116f429b851f7524e374100"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x64-app-smoke.gate.json",
+      "bytes": 104,
+      "sha256": "bb37efed0c2ac826f6087e522f862de7b69afb3adcc1d16a9ef86f5f305c4bba"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x64-app-smoke.result.json",
+      "bytes": 889,
+      "sha256": "21d240ca2b5decd13f3f02443811f5b23419943528702981d080258996bf536b"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x64-app-smoke.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x64-app-smoke.stdout.log",
+      "bytes": 118,
+      "sha256": "bb988e1eb15b20f7fda7307d28f7944c714ef6bf97f5cb7c2dc3235173cd3885"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x64-generated-direct-smoke.gate.json",
+      "bytes": 104,
+      "sha256": "704f4b8cbc37875605e3818d77df56df8eb737d9283241b9de45dcd26bf70a4a"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x64-generated-direct-smoke.result.json",
+      "bytes": 702,
+      "sha256": "882bf6fdc6308f609fa3921aa0335899fe358c4148bf35c3090f95bd38e2152c"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x64-generated-direct-smoke.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x64-generated-direct-smoke.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x64-generated-smoke.log",
+      "bytes": 69,
+      "sha256": "6fa0f0fc6be7cba2d5051667c10f4f1b5a66c99ef1eabe261a6ae32c58bb6ef9"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x64-smoke-Release.json",
+      "bytes": 107952,
+      "sha256": "d118f44e9174239f91a88693d667710e31efc1a29c7aaf3d3aebdffc862002e3"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x86-generated-direct-smoke.gate.json",
+      "bytes": 104,
+      "sha256": "1afc423ef3e1ca3a2277b80f50035edceca0f0093391ed245f34ed9cdd66114d"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x86-generated-direct-smoke.result.json",
+      "bytes": 702,
+      "sha256": "7fb3ae420b61acd15493e46ce51c72a08b64426855c7a1f184047f491ea32eb5"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x86-generated-direct-smoke.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x86-generated-direct-smoke.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-direct-smoke-attempt1\\x86-generated-smoke.log",
+      "bytes": 69,
+      "sha256": "6fa0f0fc6be7cba2d5051667c10f4f1b5a66c99ef1eabe261a6ae32c58bb6ef9"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-smoke-attempt1\\x86-app-smoke.gate.json",
+      "bytes": 104,
+      "sha256": "e0388d859b836d06ac5067045948b6ed9e73f8c059d0fb491d66bf2c6e67b79a"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-smoke-attempt1\\x86-app-smoke.result.json",
+      "bytes": 889,
+      "sha256": "989d25c7c3554321abd6ad2923e39a953362f01671e1e51b913ed2d045a3b8df"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-smoke-attempt1\\x86-app-smoke.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-smoke-attempt1\\x86-app-smoke.stdout.log",
+      "bytes": 118,
+      "sha256": "13d038e3a734aa643c99f495da53885aeed03fecf12af83991ad3d1c0b9063da"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-smoke-attempt1\\x86-generated-smoke.gate.json",
+      "bytes": 104,
+      "sha256": "1aa47ea1815d7d9edf0d7eeac19c15992a4aa39bb898665bc771dd24e2075e6d"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-smoke-attempt1\\x86-generated-smoke.result.json",
+      "bytes": 960,
+      "sha256": "8118c19e83605297fc319bdd45bb1eef10bb23efb26311aa0ba1b5e6e0c20351"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-smoke-attempt1\\x86-generated-smoke.stderr.log",
+      "bytes": 327,
+      "sha256": "f54892f4dfcc5e0843c234150808082afc55c3565928e120599bcc8a8942e2d0"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-smoke-attempt1\\x86-generated-smoke.stdout.log",
+      "bytes": 81,
+      "sha256": "a759e0dfa252be28b89838671cb3973170e9b28f5e7063d474661b81edc3316f"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\desktop-smoke-attempt1\\x86-smoke-Release.json",
+      "bytes": 107976,
+      "sha256": "36ac9455af159f0fed73ebdfcc7f8533798e55e27b1bcdb2bff8b2f146076f32"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\generated-desktop-preflight.json",
+      "bytes": 27230,
+      "sha256": "d9d02c0f01e0429935ad9d1c0046c7c4269cb291267bec2c50563d66e3f60408"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\generated-project-attempt1\\out\\x64\\bin\\Release\\RenewalStarter\\RenewalStarter.exe",
+      "bytes": 604672,
+      "sha256": "00c31654aa178c15383417f5195e59db591c92400402ba973a6f818fc1fd2b20"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\generated-project-attempt1\\out\\x86\\bin\\Release\\RenewalStarter\\RenewalStarter.exe",
+      "bytes": 526336,
+      "sha256": "3674f2dfa531ed0536217569fd9c03941fb2b00d0c315ba1469fb42b39a8153e"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\generated-project-attempt1\\sdk-lock.json",
+      "bytes": 100647,
+      "sha256": "9418f6351af77474beb6cb0cfbef7fe2619218d5d387c418a82edef21e47807e"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\host-os.json",
+      "bytes": 139,
+      "sha256": "b6b2dbe7a4300ef0c6d0668ca899f4563f9f1241f2bb05275d4a97879e55c667"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\prepare-tray.ps1",
+      "bytes": 1397,
+      "sha256": "beb3aecddd39dfd630856d96ed899c87f7c819552bbee6e6def1250fe63dc126"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\run-desktop-applications.ps1",
+      "bytes": 4539,
+      "sha256": "aed6ee4e0a77a6a9c6965bbab9905248a91b1622088890d2e4ad53df20e06782"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\run-desktop-smoke.ps1",
+      "bytes": 4240,
+      "sha256": "a2dbf1637c178d5def32315e415fadcc2d7f5e1467fdf967cd488812b3a3d708"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\run-desktop.ps1",
+      "bytes": 5130,
+      "sha256": "c1f9db575cc3a65793b681f6c73bd3371713fa30b602c4dedf183ff3b53862b4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\run-direct-smoke.ps1",
+      "bytes": 4086,
+      "sha256": "268a0c3e51b9df213c77a7574780d5c455c63d7baa1b11d8495d3994a379bcb6"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\summary-generated.json",
+      "bytes": 207219,
+      "sha256": "27d21565b00a7ad83185dba3cbc29e60b007f80017be351bec99b2b75f1ee6e2"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\summary.json",
+      "bytes": 141965,
+      "sha256": "452205179bc2f07ecaf2bb07bf60a105545994972b624a0f05e5092d75509e2d"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\tray-x86-attempt1\\build.result.json",
+      "bytes": 495,
+      "sha256": "b0b45190b6a8ebc066b33def2583cfee8bfec82954926d0793650f3af6465dd7"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\tray-x86-attempt1\\build\\bin\\Release\\SouiTrayConsumer.exe",
+      "bytes": 107008,
+      "sha256": "652ee10628806a4121e33c8f8f3327794d5a2a61588eceede4e36f5c174db008"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\tray-x86-attempt1\\build\\SouiTrayConsumer.vcxproj",
+      "bytes": 62021,
+      "sha256": "2cac4a096a937ef52769b48c457f788a6520365c856e7d8bf4b99ced1dfd528e"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\tray-x86-attempt1\\configure.result.json",
+      "bytes": 868,
+      "sha256": "605d912094e0fc281377b302a44c8aefda11b64901a5442193492fd3f44860da"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\tray-x86-attempt1\\source\\CMakeLists.txt",
+      "bytes": 616,
+      "sha256": "3a9d492c7e548fe1e008be2197572c4540d277f20102b8f35e47a62c8dc7b668"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\tray-x86-attempt1\\source\\main.cpp",
+      "bytes": 19725,
+      "sha256": "6c62349eb7fa11730dbd0e566404ba31658707680d146c1c997672849c72fa34"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\tray-x86-attempt1\\source\\README.md",
+      "bytes": 5293,
+      "sha256": "51da512cc64af948f890775a1c8c0592d7ddbe16f0c2e729a02862850aeff0e4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\x64-attempt1\\full-build-build-Release.json",
+      "bytes": 270157,
+      "sha256": "332ec024c1ffdabf9705b30da9ea21ecc90171c9fe4c2fc898a2ace23003fffa"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\x64-attempt1\\full-build-native-Release.log",
+      "bytes": 23814,
+      "sha256": "cf6bbf6a387957a8a704b6b86b665ece54d16e4b5216d81cee3fecbf94397358"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\x64-attempt1\\full-build.result.json",
+      "bytes": 460,
+      "sha256": "f177e10574bb0b00abe40ce756e9863198d50b55c5ad90d206c31ded6158ff7c"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\x86-attempt1\\full-build-build-Release.json",
+      "bytes": 270181,
+      "sha256": "22221fc5a265e3f130a6bf48ec209ed543bb49a5c6542291179b9b055afe00fc"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\x86-attempt1\\full-build-native-Release.log",
+      "bytes": 23814,
+      "sha256": "87cb34ab72ad917b4785976a4603d124a96df1bd1a02e3758aebbe8180a757dd"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\x86-attempt1\\full-build.result.json",
+      "bytes": 460,
+      "sha256": "4960e40500f98e093f7743c65a9d79b2ea18c66accf1ee4535fe213ef378d90c"
+    },
+    {
+      "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "bytes": 495616,
+      "sha256": "8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e"
+    }
+  ]
+}

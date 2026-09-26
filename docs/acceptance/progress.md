@@ -1,5 +1,13 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 preview.11 本机桌面执行
+
+[本轮原始证据](../../verification/production-validation/preview11-desktop-execution-2026-09-26/README.md)沿用同一 711 文件编译输入：x86/x64 窗口线程停滞与目录取消四项均退出 0；Starter、Workbench 默认/React 两架构六入口及仓库外生成项目两架构启动/就绪/关闭短测通过。首次无退出码记录及生成项目测试入口路径错误均保留；修正外部启动器没有改变 SDK 内容。
+
+发现两项真实失败：x86 公共菜单自动请求返回 `E_MENU_FOREGROUND`、退出 1；x86 Workbench 三窗口驻留的第二窗未在 45 秒内达到页面就绪、退出 3。两者清理完整但功能未通过，根因尚待带诊断复测，x64 对应场景尚未执行。启动 Win7 前其他 QEMU 再次占用，门禁阻止平行客体。当前版 Win7、V02 和实际续期长测仍待执行；短测不关闭生产、资源或性能门槛。
+
+另已准备[真实时钟续期独立消费者](../../verification/production-validation/preview11-real-renewal-preparation-2026-09-26/README.md)及完整输入校验、监督和分析脚本。88 项校验器合成自检通过；尚未编译消费者或运行真实 GUI。旧混合驱动反复重载、V02 短任务都不能证明同一页面超过原 30 分钟期限后仍保留任务/订阅，此准备专门补该缺口，不改变 SDK 冻结输入。
+
 ## 2026-09-26 preview.11 同文档授权续期预检
 
 当前候选另已完成 [Win7 SP1 x86 三应用输入冻结](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-2026-09-26/README.md)：Starter 71 文件、Workbench 475 文件与 legal 材料复制核对完成，串口校验器拒绝 17 个负例；尚未运行客体，等待其他 QEMU 空闲。准备检查不计为 Win7 通过。

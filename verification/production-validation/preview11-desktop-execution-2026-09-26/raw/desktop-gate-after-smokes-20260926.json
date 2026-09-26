@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-09-26T06:20:37.5032358Z",
+  "processes": [
+    {
+      "ProcessId": 15852,
+      "Name": "qemu-system-x86_64.exe",
+      "ParentProcessId": 65420,
+      "CreationDate": "2026-09-26T14:14:39.479565+08:00",
+      "CommandLine": "\"C:\\Program Files\\qemu\\qemu-system-x86_64.exe\" -name ifs-media-integration-20260926 -machine pc,accel=tcg -cpu max -m 4096 -smp 4 -drive file=C:\\VM-lab-independent-20260925\\ifs-media-child-v1-20260926.qcow2,if=ide,index=0,format=qcow2 -drive file=C:\\VM-lab-independent-20260925\\ifs-media-data-v1-20260926.iso,if=ide,index=1,media=cdrom,format=raw,readonly=on -drive file=C:\\VM-lab-independent-20260925\\ifs-media-target-1536m-20260926.img,if=none,id=usbtarget,format=raw -boot order=c -rtc base=localtime -display none -vnc 127.0.0.1:51 -monitor tcp:127.0.0.1:10551,server=on,wait=off -net none -usb -device usb-tablet -no-reboot -chardev file,id=labserial,path=C:\\VM-lab-independent-20260925\\ifs-media-serial-20260926.log -serial chardev:labserial -device usb-ehci,id=ehci -device usb-storage,bus=ehci.0,drive=usbtarget,serial=rk-lab-usb "
+    }
+  ],
+  "action": "guest-launch-rejected-before-creation",
+  "guestExecuted": false,
+  "releaseReady": false
+}
