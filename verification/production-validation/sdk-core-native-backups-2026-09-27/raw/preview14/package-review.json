@@ -1,0 +1,85 @@
+{
+  "schema": "soui.sdk-native-backups-validation/v1",
+  "version": "0.3.0-preview.14",
+  "oldManifestSha256": "139e42ecf2f6b61ffa2fbfcba62557996535d64cd2da60b84989ca74ebd8b70b",
+  "newManifestSha256": "34ab82261f278df2e3830ee163f12ae20ddce1d088cdcd67f6e97dcebb59591f",
+  "oldFiles": 419,
+  "newFiles": 419,
+  "oldPayloadBytes": 143796118,
+  "newPayloadBytes": 85138789,
+  "netReductionBytes": 58657329,
+  "removedHistoricalBackupBytes": 58685440,
+  "historicalSourceBackupsUnchanged": [
+    {
+      "path": "third_party/prebuilt/x64/miniblink/node.dll.before-gpu-lcd",
+      "bytes": 35761152,
+      "sha256": "2277bd68d25c4fb7930cc9a1f54679556e4f21db7d35adf76db965e130f323b0",
+      "sourceNormalization": "none"
+    },
+    {
+      "path": "third_party/prebuilt/x86/miniblink/node.dll.before-gpu-lcd",
+      "bytes": 22924288,
+      "sha256": "1ea6c567a3082d417f95563ebe851d7e08096c9a29f18499d3dacc73787d895c",
+      "sourceNormalization": "none"
+    }
+  ],
+  "activeNativeFiles": 136,
+  "legalFiles": 4,
+  "steps": [
+    {
+      "label": "old",
+      "status": "installed",
+      "version": "0.3.0-preview.13",
+      "files": 419,
+      "projectRoot": "C:\\SOUI-SDK-production-validation\\sdk-core-native-backups-20260927\\independent-project",
+      "releaseReady": false,
+      "lockSha256": "2dcdb0cbaba2950ee19ff9ca6e4e411e8c5e9922eb88be023267c0afe1204749",
+      "businessUnchanged": true
+    },
+    {
+      "label": "upgrade",
+      "status": "updated",
+      "version": "0.3.0-preview.14",
+      "files": 419,
+      "projectRoot": "C:\\SOUI-SDK-production-validation\\sdk-core-native-backups-20260927\\independent-project",
+      "releaseReady": false,
+      "lockSha256": "c8f1fb64feaf328446c5c5d49f5b3655ddaf05616c7ca0be24144b15e43d96e9",
+      "businessUnchanged": true
+    },
+    {
+      "label": "rollback",
+      "status": "updated",
+      "version": "0.3.0-preview.13",
+      "files": 419,
+      "projectRoot": "C:\\SOUI-SDK-production-validation\\sdk-core-native-backups-20260927\\independent-project",
+      "releaseReady": false,
+      "lockSha256": "2dcdb0cbaba2950ee19ff9ca6e4e411e8c5e9922eb88be023267c0afe1204749",
+      "businessUnchanged": true
+    },
+    {
+      "label": "upgrade-again",
+      "status": "updated",
+      "version": "0.3.0-preview.14",
+      "files": 419,
+      "projectRoot": "C:\\SOUI-SDK-production-validation\\sdk-core-native-backups-20260927\\independent-project",
+      "releaseReady": false,
+      "lockSha256": "c8f1fb64feaf328446c5c5d49f5b3655ddaf05616c7ca0be24144b15e43d96e9",
+      "businessUnchanged": true
+    }
+  ],
+  "sourcePackage": "C:\\SOUI-SDK-production-validation\\sdk-core-native-backups-20260927\\sdk-package",
+  "business": {
+    "sha256": "b91e75255923e2010c3de4024d4cd50dbd430ddae12c5deed64b578a1a7e01e8",
+    "bytes": 38,
+    "files": [
+      {
+        "path": "app/business.json",
+        "bytes": 38,
+        "sha256": "d017fe5ccf7b8027a37213ba63a24a04bacae1227b4c5d051514b3296d458db0"
+      }
+    ]
+  },
+  "applicationRuntimeSizeReductionClaimed": false,
+  "currentSdkGuiValidated": false,
+  "releaseReady": false
+}

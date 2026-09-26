@@ -1,0 +1,45 @@
+{
+  "schema": "soui.kernel-import/v1",
+  "sdkVersion": "0.3.0-preview.14",
+  "sourceCommit": "be1a70872682cb25acbcbfc96fb7fe46bb322667",
+  "imports": [
+    {
+      "architecture": "x86",
+      "path": "third_party/prebuilt/x86/miniblink/node.dll",
+      "bytes": 22988288,
+      "sha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3",
+      "previousSha256": "3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7",
+      "sourceInputSha256": "012bfc5c482f59dc14452a76cc13e7536662950e218ada4e888ad475a8d7d652",
+      "buildEvidence": "verification/production-validation/scheduler-fairness-x86-rebuild-2026-09-26/raw/build/build-All.json",
+      "originalAnimationEvidence": "verification/production-validation/scheduler-fairness-x86-rebuild-2026-09-26/raw/animated/review.json"
+    },
+    {
+      "architecture": "x64",
+      "path": "third_party/prebuilt/x64/miniblink/node.dll",
+      "bytes": 35865600,
+      "sha256": "fe4160a70587d027504c409b8fd2bc5c87d78392811bff0c969f69c41a44d951",
+      "previousSha256": "0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816",
+      "sourceInputSha256": "012bfc5c482f59dc14452a76cc13e7536662950e218ada4e888ad475a8d7d652",
+      "buildEvidence": "verification/production-validation/scheduler-fairness-x64-rebuild-2026-09-27/raw/build/build-All.json",
+      "originalAnimationEvidence": "verification/production-validation/scheduler-fairness-x64-rebuild-2026-09-27/raw/animated/review.json"
+    }
+  ],
+  "unchangedHistoricalBackups": [
+    {
+      "path": "third_party/prebuilt/x64/miniblink/node.dll.before-gpu-lcd",
+      "bytes": 35761152,
+      "sha256": "2277bd68d25c4fb7930cc9a1f54679556e4f21db7d35adf76db965e130f323b0"
+    },
+    {
+      "path": "third_party/prebuilt/x86/miniblink/node.dll.before-gpu-lcd",
+      "bytes": 22924288,
+      "sha256": "1ea6c567a3082d417f95563ebe851d7e08096c9a29f18499d3dacc73787d895c"
+    }
+  ],
+  "patches": [
+    "third_party/patches/miniblink/0008-bound-ready-task-priority-wait.patch"
+  ],
+  "currentSdkApplicationValidationComplete": false,
+  "binaryLicenseReviewComplete": false,
+  "releaseReady": false
+}

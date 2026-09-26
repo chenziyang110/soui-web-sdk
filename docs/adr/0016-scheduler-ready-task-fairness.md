@@ -2,7 +2,7 @@
 
 - 状态：proposed，内核候选需两架构重编、运行回归和维护者评审。
 - 日期：2026-09-26。
-- 关联：Issue #35；尚未替换固定 DLL 或批准新版本。
+- 关联：Issue #35；当前 preview.15 候选已导入两份重编内核，尚未批准生产发布。
 
 ## 背景
 
@@ -31,4 +31,4 @@
 
 ## 当前执行结果
 
-[x86 完整底层重编](../../verification/production-validation/scheduler-fairness-x86-rebuild-2026-09-26/README.md)已退出 0；冻结消费者只替换新内核、保持原动画和期限，真实短测完成公共任务及关闭、退出 0。策略的实际调用点已通过内核编译和这个复现验证。x64 重编及其他应用/平台/资源回归仍待完成，固定包未替换，决定继续为 proposed。
+[x86 完整底层重编](../../verification/production-validation/scheduler-fairness-x86-rebuild-2026-09-26/README.md)与 [x64 重编](../../verification/production-validation/scheduler-fairness-x64-rebuild-2026-09-27/README.md)均退出 0；两个冻结消费者只替换新内核、保持原动画和期限，真实短测完成公共任务及关闭、退出 0。策略实际调用点已通过双架构内核编译和这个复现验证。新内核已导入独立新版本候选，完整当前 SDK 应用、Win7、平台/资源回归及维护者评审仍待完成，决定继续为 proposed。

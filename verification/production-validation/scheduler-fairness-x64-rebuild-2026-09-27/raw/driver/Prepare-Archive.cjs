@@ -1,0 +1,14 @@
+'use strict';
+const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
+let script = fs.readFileSync('C:/SOUI-SDK-production-validation/preview14-scheduler-policy-20260926/Archive-Dependencies.cjs', 'utf8');
+script = script.replaceAll('x86', 'x64').replaceAll('0x14c', '0x8664').replaceAll('0x014c', '0x8664');
+const start = script.indexOf('const animatedReview ='), end = script.indexOf('const review =');
+assert(start > 0 && end > start);
+script = script.slice(0, start) + "const animationPending = true;\n" + script.slice(end);
+assert(script.includes('fixedPrebuiltUnchanged: true, animatedReview,'));
+script = script.replace('fixedPrebuiltUnchanged: true, animatedReview,', 'fixedPrebuiltUnchanged: true, animationPending,');
+script = script.replace('applicationSmokeVerified: false, x64Verified: false,', 'applicationSmokeVerified: false, actualAnimationVerified: false,');
+script = script.replace('scheduler-fairness-x64-rebuild-2026-09-26', 'scheduler-fairness-x64-rebuild-2026-09-27');
+script = script.replace("['Archive-Dependencies.cjs', 'Start-Dependencies.cjs'", "['Prepare-Archive.cjs', 'Archive-Dependencies.cjs', 'Start-Dependencies.cjs'");
+assert(!script.includes('animatedReview'));
+fs.writeFileSync(path.join(__dirname, 'Archive-Dependencies.cjs'), script, {flag: 'wx'});

@@ -22,6 +22,7 @@ function run(name,executable,args) {
 }
 const unit={
  package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),
+ nativePayload:run('sdk-native-payload-tests',process.execPath,['--test','tests/sdk/sdk-native-payload.test.cjs']),
  interruption:run('sdk-installation-interruption-tests',process.execPath,['--test','tests/sdk/installation-interruption.test.cjs']),
  delivery:run('delivery-identity-tests',process.execPath,['--test','tests/sdk/delivery-identity.test.cjs']),
  web:run('web-sdk-tests',process.execPath,['--test','tests/web/sdk-client.test.mjs']),

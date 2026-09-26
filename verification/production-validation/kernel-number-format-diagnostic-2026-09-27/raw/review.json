@@ -1,0 +1,99 @@
+{
+  "reviewedAt": "2026-09-26T16:30:42.292Z",
+  "warning": "C4789",
+  "status": "not-resolved",
+  "sourceSha256": "ebe13f4bf4fc5d59a27468a4159655ae2184f5bf6b6a964d5c19edd48987147a",
+  "probeSha256": "93a53178ad5949d43f42f20bc56323d3151afb6577a0e897c44a6f8ababd91ec",
+  "architecture": "x86",
+  "bufferSize": 99,
+  "cases": 833668,
+  "locales": [
+    "C",
+    "en-US",
+    "zh-CN",
+    "de-DE"
+  ],
+  "longestObservedOutput": 22,
+  "addressSanitizerLinked": true,
+  "asanFindingsInThisRun": 0,
+  "exactFormattingBodyExtracted": true,
+  "classificationAdapters": "std::isinf, std::isnan, std::signbit; not actual trio implementation",
+  "limits": [
+    "Extracted formatting function only; not the complete libxml/SDK binary",
+    "No exhaustive floating-point or custom-locale proof",
+    "No production or broad native security verdict"
+  ],
+  "commands": {
+    "build-x86-asan": {
+      "program": "cmd.exe",
+      "args": [
+        "/c",
+        "C:\\SOUI-SDK-production-validation\\kernel-warning-triage-20260927\\Build.cmd"
+      ],
+      "cwd": "C:\\SOUI-SDK-production-validation\\kernel-warning-triage-20260927",
+      "startedAt": "2026-09-26T16:28:40.569Z",
+      "pid": 34836,
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "error": null,
+      "finishedAt": "2026-09-26T16:28:43.629Z",
+      "stdout": {
+        "bytes": 25,
+        "sha256": "ab29efd230ad625c3aa77f8db4ccefb4f935f00c643354b644a8de4f2aaa9bb1"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "run-x86-asan": {
+      "program": "cmd.exe",
+      "args": [
+        "/c",
+        "C:\\SOUI-SDK-production-validation\\kernel-warning-triage-20260927\\Run.cmd"
+      ],
+      "cwd": "C:\\SOUI-SDK-production-validation\\kernel-warning-triage-20260927",
+      "startedAt": "2026-09-26T16:29:37.418Z",
+      "pid": 10588,
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "error": null,
+      "finishedAt": "2026-09-26T16:29:40.606Z",
+      "stdout": {
+        "bytes": 225,
+        "sha256": "ad67fc335ce8b107fff860faa5e199b1c3d42aa4a0f89a560e5cde1ebd2a01a7"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    "imports-x86": {
+      "program": "llvm-readobj.exe",
+      "args": [
+        "--coff-imports",
+        ".\\format-number-probe.exe"
+      ],
+      "cwd": "C:\\SOUI-SDK-production-validation\\kernel-warning-triage-20260927",
+      "startedAt": "2026-09-26T16:30:41.614Z",
+      "pid": 79564,
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "error": null,
+      "finishedAt": "2026-09-26T16:30:41.688Z",
+      "stdout": {
+        "bytes": 6905,
+        "sha256": "229b8d850623e5a35dd12034e1c971205ce9f236c8192d91b8fd9555a5d3d257"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  },
+  "fullKernelSecurityVerified": false,
+  "productionPass": false
+}

@@ -11,6 +11,8 @@ $evidence=Join-Path $root 'tools/internal/build-evidence.cjs'
 if(-not $NativeOnly){
   & node (Join-Path $root 'tests/sdk/sdk-package-smoke.cjs')
   if($LASTEXITCODE -ne 0){throw 'SDK package tests failed'}
+  & node --test (Join-Path $root 'tests/sdk/sdk-native-payload.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'SDK native payload tests failed'}
   & node --test (Join-Path $root 'tests/sdk/installation-interruption.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'SDK installation interruption tests failed'}
   & node --test (Join-Path $root 'tests/sdk/delivery-identity.test.cjs') (Join-Path $root 'tests/sdk/stage-soui-source.test.cjs') (Join-Path $root 'tests/native/miniblink_header_abi.test.cjs')

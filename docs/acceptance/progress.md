@@ -1,5 +1,13 @@
 # SDK 生产验证执行记录
 
+## 2026-09-27 双架构原动画修复与新包候选
+
+[x64 完整重编与原动画实测](../../verification/production-validation/scheduler-fairness-x64-rebuild-2026-09-27/README.md)补齐另一架构：构建退出 0、六份 DLL 身份通过，原动画消费者 76 条事件、退出 0，任务结果、取消、退订及关闭完成，完整载荷和门禁复核通过。首个命令被外部 QEMU 门禁拒绝，未启动 GUI；失败样本保留。结合既有 x86 记录，实际修复覆盖两架构的这一启动复现。
+
+[SDK Core 包验证](../../verification/production-validation/sdk-core-native-backups-2026-09-27/README.md)发现两份历史内核备份进入活动包，修正后旧包安装、新包升级、旧包回退和再次升级保留业务内容。内部 preview.14 的源码匹配仍失败，原件保留；preview.15 统一文件选择后，实际新包与源码匹配通过。两份新内核及授权核查对象、版本和清单已同步；[四配置应用构建和 48 项 CTest](../../verification/production-validation/preview15-app-matrix-2026-09-27/README.md)已退出 0，当前 GUI、Win7、真实续期和生产门槛继续待验收。
+
+[数值格式警告的限定诊断](../../verification/production-validation/kernel-number-format-diagnostic-2026-09-27/README.md)完成 833,668 次 x86 ASan 调用，没有报告内存错误；它只覆盖提取函数和记录的输入/区域设置，未关闭完整内核的安全或编译警告风险。
+
 ## 2026-09-26 x86 实际内核修复复现通过
 
 [x86 完整底层重编及原动画实测](../../verification/production-validation/scheduler-fairness-x86-rebuild-2026-09-26/README.md)已完成：`-Component All` 原始退出 0、28,163 文件输入不变，六份 DLL 身份通过。冻结消费者只替换新内核，保持原页面动画、EXE、JS 与期限；真实运行完成两类任务、结果 42、取消、退订和关闭，76 条原生事件、退出 0，载荷和门禁复核通过。新内核 SHA 为 `2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3`。
