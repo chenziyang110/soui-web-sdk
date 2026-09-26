@@ -22,6 +22,8 @@ preview.10 增加同线程的 `menu_service` 和 `global_shortcut`，不向 Web 
 
 ## 目录所有权
 
+preview.11 将文档的稳定授权身份与访问令牌分开。原生 `permission_store` 管理不可扩大的能力集、令牌轮换和撤销；`bridge_transport` 只把本次验证得到的 scope 传给处理器。公共任务、目录扫描与 Demo 资源归属保留 scope，轮换不会更换 Host 文档代际、任务或订阅。关闭先撤销，再在各资源锁下回收，资源提交在自己的锁内检查授权，权限锁不跨业务回调和工作线程 join。Web 连接器在同一客户端内续期，业务调用仍同步进入原生绑定以保留输入手势。详见 [ADR-0014](adr/0014-same-document-session-renewal.md)。
+
 | 目录 | 维护责任 | 是否随 SDK 安装器更新 |
 |---|---|---|
 | `sdk/` | SDK 公共接口与实现 | 是 |

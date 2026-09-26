@@ -1,12 +1,20 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 preview.11 同文档授权续期预检
+
+当前开发版本为 `0.3.0-preview.11`。按 [ADR-0014](../adr/0014-same-document-session-renewal.md)新增显式启用的同文档授权续期、稳定授权资源归属和有界确认重取；任务与订阅保留身份，普通业务调用保持同步发送，不因续期自动重放。Demo 同时补齐订阅容量、事件监听器异常隔离及所有已发行会话的撤销与 worker 关闭顺序。
+
+[本轮预检归档](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)记录 x86/x64 Release 的 SDK、Starter、Workbench 完整编译、独立 SDK 安装及仓库外 `session-consumer` 编译/运行，均退出 0；每架构 10 项 CTest 通过，其中原生授权续期包含 14 组契约。最终汇总已核验 Web 62 项、包行为 14 项、交付身份 7 项通过，以及五份锁文件的全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包成功，包内散列及源码匹配通过。由包生成的仓库外 `RenewalStarter` 也完成 x86/x64 Release 编译与项目校验，均退出 0；尚未运行该新项目的 GUI。
+
+可控时钟的八小时轮换仅验证期限、授权隔离和固定容量契约，不是实际运行八小时的稳定性证据；原生扫描与 CAD worker 的故障回归也不代替媒体引擎或真实页面验收。本版真实桌面有效结论、超过 30 分钟的同文档任务/订阅保留、八小时资源趋势和 Win7 SP1 x86 证据仍待补齐。首次 x86 窗口线程超时桌面探针输出成功标记，但监督器未取得退出码；原样本保留且不计通过，退出码采集修正未改变冻结源码。外部 QEMU 再次占用，后续补测等待空闲后串行执行，桌面/客体结果另档绑定输入，不能并入本次无 GUI 预检。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
 ## 2026-09-26 preview.10 公共菜单、快捷键与显式驻留
 
 新增 [ADR-0013](../adr/0013-public-menu-shortcut-and-residency.md)、公共 `menu_service` / `global_shortcut`，独立安装消费者接入三项原生服务。Workbench 提供三窗口控制器、`--resident` 与有限 `--resident --resident-smoke-test`，关闭按业务窗口消息栈和代际延迟释放，日志在载荷外独占创建。默认单窗路径保留。
 
 [冻结预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)包含同一输入的 x86/x64 Release SDK/Starter/Workbench 编译、独立 SDK 安装、仓库外消费者编译、各8项非桌面交互 CTest。菜单15组、快捷键9组故障契约通过；Web35、包测试14、身份测试7及五锁文件全依赖审计通过。417 文件 SDK 包校验与源码匹配通过；首次 rename `EPERM` 失败保留，原因未确证。
 
-其他 QEMU 仍运行，本版尚无真实桌面或 Win7 结果。下一步串行补消费者菜单/快捷键、Workbench 三窗及模态关闭/空窗驻留，以及 V02 IME/缩放/任务同时响应。旧版本、短测和受干扰八小时数据不迁移为本版通过；完整目标和三个准入标志未关闭。
+当次预检时其他 QEMU 仍运行，preview.10 尚无真实桌面或 Win7 结果。下一步串行补消费者菜单/快捷键、Workbench 三窗及模态关闭/空窗驻留，以及 V02 IME/缩放/任务同时响应。旧版本、短测和受干扰八小时数据不迁移为本版通过；完整目标和三个准入标志未关闭。
 
 ## 2026-09-26 preview.9 公共托盘切片
 
@@ -40,7 +48,7 @@
 
 本文件记录执行进度，不能代替机器报告或修改 `releaseReady`。新增阶段证据应链接实际 run-id、源码与载荷身份，并列出未执行项。
 
-当前开发版本为 `0.3.0-preview.9`，托盘切片正在独立验证；下述 preview.8 及更早结果只属于原版本。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
+以下为 preview.9 托盘切片及更早阶段的历史记录，preview.11 当前范围见本文件首节。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；后续记录在 `verification/production-validation/`，不能互相替代。下述模板和 Demo 默认/React 的 x86/x64 Release 回归按各自原版本判定。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
 
 preview.7 的[源码编码修复诊断](../../verification/production-validation/preview6-relocated-dependency-encoding-2026-09-25/README.md)确认 preview.6 无 Git 源包在 CP936 环境重编 x86 Miniblink 失败；定点 BOM 补丁后，修改过的仓库外目录里 x86/x64 SOUI、Skia、Miniblink 源码重编与两架构真实应用启动均通过。当前 preview.7 的双架构 Release 构建、契约测试和三入口 smoke 也通过，但它们使用固定运行包，不能和新内核结果合并。[Win7 SP1 x86 QEMU 重编内核短测](../../verification/production-validation/win7-sp1-x86-qemu-preview7-rebuilt-source-2026-09-25/README.md)完成三入口启动/关闭，24 份串口文件、来宾身份和载荷散列复核通过。诊断目录不是最终 preview.7 原封整包；最终整包重建、Debug、物理设备、长期资源、实际呈现性能与安全授权仍未完成，`sourceDeliveryVerified=false`、`releaseReady=false`。
 

@@ -13,6 +13,7 @@
 #include <string_view>
 #include <thread>
 #include <unordered_map>
+#include <unordered_set>
 #include <vector>
 
 #include <soui/runtime/bridge/bridge_transport.h>
@@ -28,7 +29,7 @@ class demo_bridge_adapter : public soui::sdk::bridge_adapter {
  public:
   using event_sink = std::function<void(std::string_view)>;
 
-  demo_bridge_adapter();
+  explicit demo_bridge_adapter(soui::runtime::permission_store::clock_source now = nullptr);
   ~demo_bridge_adapter();
   demo_bridge_adapter(const demo_bridge_adapter&) = delete;
   demo_bridge_adapter& operator=(const demo_bridge_adapter&) = delete;
@@ -56,6 +57,7 @@ class demo_bridge_adapter : public soui::sdk::bridge_adapter {
                                                              std::size_t page_size = 100);
 
  private:
+  friend struct demo_bridge_test_access;
   struct subscription_binding {
     soui::runtime::scan_request_context context;
     std::string task_id;
@@ -156,12 +158,6 @@ class demo_bridge_adapter : public soui::sdk::bridge_adapter {
   std::atomic<unsigned> preferred_frame_rate_{120};
   mutable soui::runtime::permission_store permissions_;
   mutable soui::runtime::task_store tasks_;
-  mutable soui::runtime::directory_scanner scanner_;
-  mutable soui::runtime::directory_picker picker_;
-  mutable soui::runtime::window_service windows_;
-  mutable soui::runtime::clipboard_service clipboard_;
-  mutable soui::runtime::capability_registry registry_;
-  mutable soui::runtime::bridge_transport transport_;
   mutable std::mutex subscription_mutex_;
   std::unordered_map<std::string, subscription_binding> subscriptions_;
 #ifdef SOUI_PROGRESS_DEDUP
@@ -170,16 +166,25 @@ class demo_bridge_adapter : public soui::sdk::bridge_adapter {
   std::uint64_t next_subscription_{1};
   event_sink event_sink_;
   std::string active_bootstrap_session_;
+  std::unordered_set<std::string> issued_sessions_;
   std::unordered_map<std::string, request_rate_window> request_rates_;
   mutable std::mutex media_mutex_;
-  std::unordered_map<std::string, std::unique_ptr<media_job>> media_jobs_;
+  std::unordered_map<std::string, std::shared_ptr<media_job>> media_jobs_;
   std::unordered_map<std::string, media_file_binding> media_files_;
   std::uint64_t next_media_file_{1};
   mutable std::uint64_t next_media_event_sequence_{1};
   mutable std::mutex workload_mutex_;
-  std::unordered_map<std::string, std::unique_ptr<workload_job>> workload_jobs_;
+  std::unordered_map<std::string, std::shared_ptr<workload_job>> workload_jobs_;
   mutable std::mutex media_preview_mutex_;
-  std::unordered_map<std::string, std::unique_ptr<media_preview_job>> media_preview_jobs_;
+  std::unordered_map<std::string, std::shared_ptr<media_preview_job>> media_preview_jobs_;
+  // Services join their workers before captured callback state above is torn
+  // down. Authority and task storage outlive both services and their callbacks.
+  mutable soui::runtime::directory_scanner scanner_;
+  mutable soui::runtime::directory_picker picker_;
+  mutable soui::runtime::window_service windows_;
+  mutable soui::runtime::clipboard_service clipboard_;
+  mutable soui::runtime::capability_registry registry_;
+  mutable soui::runtime::bridge_transport transport_;
   soui::runtime::task_service public_tasks_;
 };
 

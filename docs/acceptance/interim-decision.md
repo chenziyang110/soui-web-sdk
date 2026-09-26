@@ -2,9 +2,15 @@
 
 初始判定日期：2026-09-24，候选 `0.3.0-preview.5`；后续增补按各自版本分别判定。本文件只汇总已执行证据，不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
 
+## 2026-09-26 preview.11 预检
+
+**双架构 Release 编译、安装消费与无 GUI 契约通过；指定范围生产未通过；相对 Electron 的整体采用价值未判定。** [本轮预检归档](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)记录 SDK、Starter、Workbench 的 x86/x64 完整编译、独立 SDK 安装和仓库外 `session-consumer` 编译/运行均退出 0；每架构 10 项 CTest 通过，其中原生授权续期为 14 组契约。最终汇总确认 Web 62 项、包行为 14 项、交付身份 7 项通过，五份锁文件的全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包、包内散列与源码匹配通过。生成的仓库外 `RenewalStarter` 双架构 Release 编译与项目校验均退出 0，尚无该项目 GUI 结果。
+
+本版按 [ADR-0014](../adr/0014-same-document-session-renewal.md)补足续期、稳定资源归属、有限重试和关闭清理契约。模拟八小时轮换不能证明真实长稳；前序版本的桌面、Win7、完整源码重编和受干扰八小时记录不迁移到 preview.11。首次 x86 窗口线程超时探针因监督器缺少退出码而不计通过，成功输出不能补齐该证据；外部 QEMU 再次占用，修正采集后的补测等待空闲。真实桌面、同文档超过 30 分钟与八小时运行、Win7 SP1 x86、当前完整源码交付及资源/性能门槛继续待验收，后续桌面与客体结果另档。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
 ## 2026-09-26 preview.10 预检
 
-2026-09-26 当前开发版已进入 preview.10 公共菜单、快捷键和显式驻留切片；[预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)仅通过双架构 Release 编译、原生契约和独立安装消费。本版真实桌面、Win7、无 Git 完整源码复现和完整 V04 均待执行，未形成新的生产准入批准。下方 preview.8 判定保持原输入范围。
+2026-09-26 当次开发版为 preview.10 公共菜单、快捷键和显式驻留切片；[预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)仅通过双架构 Release 编译、原生契约和独立安装消费。本版真实桌面、Win7、无 Git 完整源码复现和完整 V04 均待执行，未形成新的生产准入批准。下方 preview.8 判定保持原输入范围。
 
 ## 2026-09-25 preview.8 增补判定
 

@@ -1,0 +1,10 @@
+'use strict';
+const fs = require('node:fs');
+const path = require('node:path');
+const root = 'C:/SOUI-SDK-development/preview9-tray';
+const id = require(path.join(root, 'tools/internal/delivery-identity.cjs'));
+const source = id.source(root);
+const filename = path.join(__dirname, 'source-inputs.json');
+if (fs.existsSync(filename)) throw new Error('Frozen identity exists; do not overwrite it');
+fs.writeFileSync(filename, JSON.stringify(source, null, 2) + '\n');
+console.log(JSON.stringify({sourceSha256:source.sha256, files:source.files.length, version:fs.readFileSync(path.join(root,'VERSION'),'utf8').trim()}));

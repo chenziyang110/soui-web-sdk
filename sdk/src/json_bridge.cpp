@@ -71,6 +71,12 @@ bool json_bridge::register_task_handler(std::string kind, soui::runtime::task_se
   std::lock_guard<std::mutex> lock(mutex_);
   return !registration_closed_ && tasks_.register_handler(std::move(kind), std::move(handler));
 }
+bool json_bridge::enable_session_renewal() {
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (registration_closed_ || !transport_.enable_session_renewal()) return false;
+  capabilities_.emplace_back("bridge.session.renew");
+  return true;
+}
 bool json_bridge::enable_directory_service() {
   std::lock_guard<std::mutex> lock(mutex_);
   constexpr const char* method = "desktop.dialog.pickDirectory";
@@ -184,17 +190,27 @@ std::string json_bridge::handle_json(std::string_view request, bool native_user_
     std::lock_guard<std::mutex> lock(mutex_);
     if(!active_session_.empty())return error(request_id,"E_UNAUTHORIZED","The document already has an active session.");
     registration_closed_=true;
-    active_session_=new_session();
-    const auto token=permissions_.issue(active_session_,origin_,capabilities_);
-    return json{{"requestId",request_id},{"ok",true},{"result",{{"sessionId",active_session_},{"origin",origin_},{"token",token}}}}.dump();
+    const auto session=new_session();
+    const auto token=permissions_.issue(session,origin_,capabilities_);
+    active_session_=session;
+    json result{{"sessionId",session},{"origin",origin_},{"token",token}};
+    if (registry_.contains("bridge.session.renew")) {
+      const auto lease=permissions_.lease(session,origin_,token);
+      if (!lease.ok()) { permissions_.revoke_session(session); active_session_.clear();
+        return error(request_id,lease.error_code.c_str(),"Session lease unavailable."); }
+      result=json::parse(soui::runtime::bridge_transport::serialize_lease(lease));
+    }
+    return json{{"requestId",request_id},{"ok",true},{"result",std::move(result)}}.dump();
   } catch(const std::exception&) {
     return error(request_id,"E_INVALID_PARAMS","Malformed bridge request or method parameters.");
   }
 }
 void json_bridge::shutdown_session(const std::string& session_id) {
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    permissions_.revoke_session(session_id);
+    if(active_session_==session_id)active_session_.clear();
+  }
   tasks_.shutdown_session(session_id);
-  std::lock_guard<std::mutex> lock(mutex_);
-  permissions_.revoke_session(session_id);
-  if(active_session_==session_id)active_session_.clear();
 }
 }  // namespace soui::sdk

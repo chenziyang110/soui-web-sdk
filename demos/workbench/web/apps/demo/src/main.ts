@@ -8,12 +8,14 @@ import {
   SouiNativeClientImpl,
   type SouiNativeEvent,
   type SouiNativePort,
+  type SouiSessionLease,
 } from '../../../packages/sdk/soui_native_client';
 
 type NativeBootstrapResult = {
   sessionId?: string;
   origin?: string;
   token?: string;
+  lease?: SouiSessionLease;
   benchmarkRootToken?: string;
   reactMode?: boolean;
 };
@@ -29,6 +31,30 @@ let probeSessionId = '';
 class SynchronousNativePort implements SouiNativePort {
   public dispatchedEvents = 0;
   private readonly listeners = new Set<(event: SouiNativeEvent) => void>();
+  private releaseDocument?: () => void;
+
+  public bindDocument(client: SouiNativeClientImpl, dispatch: (event: SouiNativeEvent) => void): void {
+    const previous = host.__souiNativeDispatchEvent;
+    const close = () => client.dispose();
+    this.releaseDocument = () => {
+      host.removeEventListener('pagehide', close);
+      host.removeEventListener('beforeunload', close);
+      if (host.__souiNativeDispatchEvent === dispatch) {
+        if (previous) host.__souiNativeDispatchEvent = previous;
+        else delete host.__souiNativeDispatchEvent;
+      }
+    };
+    host.__souiNativeDispatchEvent = dispatch;
+    host.addEventListener('pagehide', close);
+    host.addEventListener('beforeunload', close);
+  }
+
+  public dispose(): void {
+    this.listeners.clear();
+    const release = this.releaseDocument;
+    this.releaseDocument = undefined;
+    release?.();
+  }
 
   public request(envelope: string): Promise<string> {
     const postMessage = host.__souiNativePostMessage;
@@ -88,6 +114,7 @@ function normalizeEvent(value: unknown): SouiNativeEvent | null {
 function createNativeClient(port: SynchronousNativePort): SouiNativeClientImpl | null {
   if (typeof host.__souiNativePostMessage !== 'function') return null;
   const requestId = 'bridge-bootstrap:1';
+  const bootstrapStartedAt = performance.now();
   const raw = host.__souiNativePostMessage(JSON.stringify({
     requestId,
     sessionId: '',
@@ -108,15 +135,18 @@ function createNativeClient(port: SynchronousNativePort): SouiNativeClientImpl |
   if (!bootstrap.sessionId || !bootstrap.origin || !bootstrap.token) {
     throw new SouiBridgeError('E_INVALID_RESPONSE', 'Native bootstrap did not issue a complete session.', requestId);
   }
-  host.__souiNativeDispatchEvent = (value) => {
-    const event = normalizeEvent(value);
-    if (event) port.dispatch(event);
-  };
-  return new SouiNativeClientImpl(port, {
+  const client = new SouiNativeClientImpl(port, {
     sessionId: bootstrap.sessionId,
     origin: bootstrap.origin,
     token: bootstrap.token,
+    lease: bootstrap.lease,
+    leaseElapsedMs: bootstrap.lease === undefined ? 0 : performance.now() - bootstrapStartedAt,
   });
+  port.bindDocument(client, value => {
+    const event = normalizeEvent(value);
+    if (event) port.dispatch(event);
+  });
+  return client;
 }
 
 const port = new SynchronousNativePort();

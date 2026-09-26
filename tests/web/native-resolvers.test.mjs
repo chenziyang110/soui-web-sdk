@@ -11,7 +11,7 @@ function fixture(t) {
   const close=()=>{for(const listener of listeners.get('pagehide')||[])listener();};
   // Match jsEval's function body, including the native return statement. A
   // leading newline after return would otherwise silently produce undefined.
-  const create=vm.runInNewContext('(function(id, timeoutMs){return '+source+'(id,timeoutMs);})',{window:target,
+  const create=vm.runInNewContext('(function(id, timeoutMs, renewal){return '+source+'(id,timeoutMs,renewal);})',{window:target,
     setTimeout:(fn,ms)=>{const timer=setTimeout(()=>{timers.delete(timer);fn();},ms);timers.add(timer);return timer;},
     clearTimeout:timer=>{clearTimeout(timer);timers.delete(timer);}});
   t.after(()=>{close();assert.equal(timers.size,0);});
@@ -41,4 +41,30 @@ test('document exit resolves all waits, is idempotent and blocks future resolver
   const f=fixture(t),a=f.create('__proto__',1000),b=f.create('constructor',1000);
   f.close();f.close();for(const result of await Promise.all([a,b]))assert.equal(JSON.parse(result).error.code,'E_DISPOSED');
   assert.equal(JSON.parse(f.create('after-close',1000)).error.code,'E_DISPOSED');assert.equal(f.pending(),0);assert.equal(f.timers.size,0);
+});
+
+test('a reserved renewal resolver survives all 384 ordinary waits and releases independently',async t=>{
+  const f=fixture(t),ordinary=[];
+  for(let i=0;i<384;i++)ordinary.push(f.create('ordinary:'+i,1000));
+  const renewal=f.create('renew:1',1000,true);assert.equal(typeof renewal.then,'function');
+  assert.equal(f.pending(),385);assert.equal(f.timers.size,385);
+  assert.equal(JSON.parse(f.create('renew:2',1000,true)).error.code,'E_BUSY');
+  assert.equal(JSON.parse(f.create('ordinary-overflow',1000,false)).error.code,'E_BUSY');
+  assert.equal(JSON.parse(f.create('ordinary:0',1000,true)).error.code,'E_DUPLICATE_REQUEST');
+  assert.equal(JSON.parse(f.create('renew:1',1000,false)).error.code,'E_DUPLICATE_REQUEST');
+  const stale=f.target.__souiBridgePending['renew:1'];stale.finish('renewed');assert.equal(await renewal,'renewed');
+  assert.equal(f.pending(),384);const replacement=f.create('renew:1',1000,true);stale.finish('obsolete');assert.equal(f.pending(),385);
+  f.target.__souiBridgePending['ordinary:0'].finish('ordinary done');assert.equal(await ordinary[0],'ordinary done');
+  assert.equal(f.pending(),384);const nextOrdinary=f.create('new-ordinary',1000,false);assert.equal(f.pending(),385);
+  f.close();for(const raw of await Promise.all([...ordinary.slice(1),replacement,nextOrdinary]))
+    assert.equal(JSON.parse(raw).error.code,'E_DISPOSED');
+  assert.equal(f.pending(),0);assert.equal(f.timers.size,0);
+  assert.equal(JSON.parse(f.create('closed-renew',1000,true)).error.code,'E_DISPOSED');
+});
+
+test('renewal resolver timeout releases its reserved slot without releasing business waits',async t=>{
+  const f=fixture(t),ordinary=f.create('business',1000),renewal=f.create('renew-timeout',15,true);
+  assert.equal(JSON.parse(await renewal).error.code,'E_TIMEOUT');assert.equal(f.pending(),1);
+  const next=f.create('renew-next',1000,true);f.target.__souiBridgePending['renew-next'].finish('ok');assert.equal(await next,'ok');
+  assert.equal(f.pending(),1);f.close();assert.equal(JSON.parse(await ordinary).error.code,'E_DISPOSED');
 });

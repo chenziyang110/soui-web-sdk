@@ -1,0 +1,223 @@
+{
+  "schema": "soui.native-execution-review/v1",
+  "reviewedAt": "2026-09-26T05:15:44.040Z",
+  "version": "0.3.0-preview.11",
+  "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+  "summarySha256": "452205179bc2f07ecaf2bb07bf60a105545994972b624a0f05e5092d75509e2d",
+  "reviewMode": "Independent read-only review of saved CTest verbose commands and current executable bytes. No tests, builds, GUI or VM were executed by this review.",
+  "limitation": "Current hashes and PE identities were inspected at reviewedAt, not sampled when CTest originally ran. The main collector does not itself assert the verbose executable paths or these nine test PE identities; this separate review checks this archived run.",
+  "architectures": [
+    {
+      "architecture": "x86",
+      "fullBuildId": "7e000158-98f0-4349-854e-15c581663737",
+      "ctestLog": {
+        "path": "x86-attempt1/no-desktop-tests.log",
+        "sha256": "8b0008fff26027e9729e03e9e9a326368d176bd7a17b1efcfc4f21151e2f62e5"
+      },
+      "exactRecordedCommandCount": 10,
+      "currentPeArchitecturesMatch": true,
+      "nineTestExecutablesMatchSummary": true,
+      "items": [
+        {
+          "test": "sdk.native.contract",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_sdk_contract_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_sdk_contract_tests.exe",
+          "bytes": 317440,
+          "currentSha256": "f0f2e954b9df06799e940422feb58a93e771f7730ca42e5c6d029516c387d582",
+          "peMachine": "014c",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.session-renewal",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_session_renewal_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_session_renewal_tests.exe",
+          "bytes": 266752,
+          "currentSha256": "293d55e91bf5ef052d6847dc4f8616e5c229e4f0ddd869d689177685926adca2",
+          "peMachine": "014c",
+          "arguments": []
+        },
+        {
+          "test": "demo.native.session-renewal",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_demo_session_renewal_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_demo_session_renewal_tests.exe",
+          "bytes": 832000,
+          "currentSha256": "b2c7e09eb72c70cb7f4689464073f9fe7211b71d2ffc663dfe76b47d67df73eb",
+          "peMachine": "014c",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.task-service",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_task_service_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_task_service_tests.exe",
+          "bytes": 354816,
+          "currentSha256": "431ef6dbaa629d09b3a545f4d9278946e97cabeb1d55535c33d8a687d38c2eba",
+          "peMachine": "014c",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.bridge-budget",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_bridge_budget_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_bridge_budget_tests.exe",
+          "bytes": 33792,
+          "currentSha256": "e5c36fe3af0c13680659eacbb7c614574c8eaeb6d204fccaa891ae36180a9db7",
+          "peMachine": "014c",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.task-store-capacity",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_task_store_capacity_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_task_store_capacity_tests.exe",
+          "bytes": 245760,
+          "currentSha256": "81a3a97a5378c7433344b533de40ac49c3f08b1af94460ae18088f81e0b5ef36",
+          "peMachine": "014c",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.tray-service",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_tray_service_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_tray_service_tests.exe",
+          "bytes": 71168,
+          "currentSha256": "3124f89642bb72eee1445193c2f92786b2fb640e8ca75304e77b9657a30fde22",
+          "peMachine": "014c",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.menu_service",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_menu_service_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_menu_service_tests.exe",
+          "bytes": 93696,
+          "currentSha256": "519dfcd25d472c60ec49abbfb211b5a861d1724af6647b341f8d088e9fbc21ae",
+          "peMachine": "014c",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.global_shortcut",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_global_shortcut_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\tests\\native\\Release\\soui_global_shortcut_tests.exe",
+          "bytes": 51200,
+          "currentSha256": "bf3fff94090328bdb4706210d880e1ca6d3e80b8747a5a6e485a9e081712f0c2",
+          "peMachine": "014c",
+          "arguments": []
+        },
+        {
+          "test": "demo.native.public-task",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe \"--task-service-self-test\"",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x86\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe",
+          "bytes": 1065984,
+          "currentSha256": "38de6db3f2ebb76175658f4443ef1be73e1dacaca4a28d0667db8185b7b829c4",
+          "peMachine": "014c",
+          "arguments": [
+            "--task-service-self-test"
+          ]
+        }
+      ]
+    },
+    {
+      "architecture": "x64",
+      "fullBuildId": "6c61f9e3-065a-40c5-b281-ace7ca80df02",
+      "ctestLog": {
+        "path": "x64-attempt1/no-desktop-tests.log",
+        "sha256": "07a1969084423e25e0b60f5c2788f0f88e39b4666746455ec9afbc38c7b49ef6"
+      },
+      "exactRecordedCommandCount": 10,
+      "currentPeArchitecturesMatch": true,
+      "nineTestExecutablesMatchSummary": true,
+      "items": [
+        {
+          "test": "sdk.native.contract",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_sdk_contract_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_sdk_contract_tests.exe",
+          "bytes": 368128,
+          "currentSha256": "cf50668248f50708508da2f4007ab72a60f5cde30366bd7aa1a8ae0e067dee72",
+          "peMachine": "8664",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.session-renewal",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_session_renewal_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_session_renewal_tests.exe",
+          "bytes": 288256,
+          "currentSha256": "adf0fb49bbc56d6231a413bf7c0f60316b490cb6fc9a65d7601a550390a35721",
+          "peMachine": "8664",
+          "arguments": []
+        },
+        {
+          "test": "demo.native.session-renewal",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_demo_session_renewal_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_demo_session_renewal_tests.exe",
+          "bytes": 943616,
+          "currentSha256": "ab9fe2896906ec9b9b7a98732ac0d009eb2240ca718dcd8cda0123f5b45e0723",
+          "peMachine": "8664",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.task-service",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_task_service_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_task_service_tests.exe",
+          "bytes": 405504,
+          "currentSha256": "f059033c0977940fcd088ea002187928b4f39af0c630c27ed3d9b049179ace04",
+          "peMachine": "8664",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.bridge-budget",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_bridge_budget_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_bridge_budget_tests.exe",
+          "bytes": 40960,
+          "currentSha256": "7c2d51c430522e758cc25c20e402a968456e122f758a7547c41babb213b35d70",
+          "peMachine": "8664",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.task-store-capacity",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_task_store_capacity_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_task_store_capacity_tests.exe",
+          "bytes": 290816,
+          "currentSha256": "e67aec2c23c89ba74ff775487ef79570cfe25ae6053a4c64786fbdf41746a1c9",
+          "peMachine": "8664",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.tray-service",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_tray_service_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_tray_service_tests.exe",
+          "bytes": 86528,
+          "currentSha256": "839fce40ff1eb8708006025db957e9e939015da85f65589375cff4031ceb4bc7",
+          "peMachine": "8664",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.menu_service",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_menu_service_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_menu_service_tests.exe",
+          "bytes": 113664,
+          "currentSha256": "b593c27b60fb8222e3794afd89b53e8ede9a72073c2feee08d5d89afb4dc71d7",
+          "peMachine": "8664",
+          "arguments": []
+        },
+        {
+          "test": "sdk.native.global_shortcut",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_global_shortcut_tests.exe",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\tests\\native\\Release\\soui_global_shortcut_tests.exe",
+          "bytes": 57344,
+          "currentSha256": "95aad3384b608d5a176a3eab3dec49168ac71d17f86cbf031dd8f903babef89a",
+          "peMachine": "8664",
+          "arguments": []
+        },
+        {
+          "test": "demo.native.public-task",
+          "recordedCommand": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe \"--task-service-self-test\"",
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\x64\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe",
+          "bytes": 1218048,
+          "currentSha256": "6995440a10ef4ff10307f8e13687f71850b6313d3986eeba246c4995528aa4d9",
+          "peMachine": "8664",
+          "arguments": [
+            "--task-service-self-test"
+          ]
+        }
+      ]
+    }
+  ],
+  "desktopAndGuestExecutedByReview": false,
+  "releaseReady": false
+}

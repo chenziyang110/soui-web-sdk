@@ -1,6 +1,10 @@
 # 候选支持范围与设备矩阵
 
-2026-09-26 增补：开发版 preview.10 完成[本机 x86/x64 Release 编译、安装消费与非桌面交互预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)。新增公共菜单/快捷键/驻留尚无本版真实桌面或 Win7 结果，下述历史载荷不自动授予本版兼容通过。
+2026-09-26 preview.11 增补：[当前预检](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)完成本机 x86/x64 Release SDK、Starter、Workbench 编译、独立 SDK 安装与仓库外 `session-consumer` 编译/运行，每架构 10 项 CTest 通过，其中原生续期包含 14 组契约。最终汇总核验 Web 62 项、包行为 14 项、交付身份 7 项通过、五份锁文件全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包、包内散列及源码匹配通过。生成的独立 `RenewalStarter` 两架构 Release 编译与项目校验均退出 0，尚无 GUI 结果。
+
+本版真实桌面、Win7 或真实长时间续期尚无通过结论；可控时钟的八小时轮换不改变设备支持状态。首次 x86 窗口线程超时探针虽输出成功标记，但监督器未取得退出码，不能计为通过。外部 QEMU 再次占用，后续补测等待空闲后串行执行，目标机与桌面结果另档，不纳入本次无 GUI 预检。
+
+2026-09-26 preview.10 历史增补：[本机 x86/x64 Release 编译、安装消费与非桌面交互预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)通过。新增公共菜单/快捷键/驻留当时尚无本版真实桌面或 Win7 结果，下述历史载荷不自动授予新版本兼容通过。
 
 日期：2026-09-24。状态：采集中，不是正式支持声明。首批真实项目要求最低 Windows 7 SP1，包含 x86；不能仅凭本机 Windows 11 上的 x86 进程结果放行。
 
@@ -18,6 +22,7 @@ preview.8 [无 Git 候选源码包双架构重编与四组应用构建](../../ve
 
 | 组合或能力 | 当前证据 | 状态与缺口 |
 |---|---|---|
+| preview.11 本机 x86/x64 Release | [当前预检](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)：SDK/Starter/Workbench 编译、安装后独立消费者运行、各 10 项 CTest、418 文件 SDK 校验及生成项目双架构编译/项目校验均通过 | 仅本机编译与无 GUI 契约；首次桌面探针缺有效退出码不计通过；当前 Debug、真实桌面、Win7、超过 30 分钟同文档续期、八小时资源与完整交付仍待验收，不扩大支持声明 |
 | 本机 x64 Release | preview.4 固定包公共消费者软件路径重建/重载/三窗口/Bridge 各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)、[GPU 专项](gpu-lifecycle.md)和[当前应用回归](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)分别绑定身份；资源总体与业务长稳未通过 |
 | 本机 x86 Release | preview.4 固定包公共消费者软件路径重载/销毁重建/三窗口/Bridge 各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)与[GPU 专项](gpu-lifecycle.md)分别记录；资源门和业务长稳未通过，也不是独立 32 位系统的兼容结论 |
 | 本机 x86/x64 Debug | preview.8 完整源码候选在本机两架构的 Debug 应用编译、完整测试和三入口桌面短测均通过，见[四组构建证据](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md) | 仅此候选的本机 Debug 短验收通过；目标系统 Debug、独立项目 Debug、资源与长期稳定仍未验证 |

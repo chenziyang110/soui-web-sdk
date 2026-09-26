@@ -21,6 +21,8 @@ class json_bridge final : public bridge_adapter {
   bool enable_directory_service();
   bool enable_clipboard_service();
   bool enable_window_service();
+  // Opt in before bootstrap; the Web SDK renews without creating a new session.
+  bool enable_session_renewal();
   std::string handle_json(std::string_view request, bool native_user_gesture = false) override;
   void shutdown_session(const std::string& session_id) override;
   void set_event_sink(event_sink sink) override;

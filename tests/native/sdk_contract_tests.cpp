@@ -23,6 +23,7 @@ int main(){
     const auto response=json::parse(bridge.handle_json(bootstrap.dump()));
     require(response.at("ok").get<bool>(),"bootstrap");
     const auto auth=response.at("result");
+    require(!auth.contains("lease"),"finite session is default without explicit opt-in");
     require(!bridge.register_method("late","late",[](std::string_view){return "{}";}),"registration freezes after bootstrap");
     require(!json::parse(bridge.handle_json(bootstrap.dump())).at("ok").get<bool>(),"one session per document");
     json request{{"requestId","call:1"},{"sessionId",auth.at("sessionId")},{"origin",auth.at("origin")},{"token",auth.at("token")},{"method","app.echo"},{"params",{{"message","hello"}}},{"timeoutMs",10000}};
@@ -51,6 +52,28 @@ int main(){
     require(!json::parse(bridge.handle_json(request.dump())).at("ok").get<bool>(),"revoked session");
     const auto replacement=json::parse(bridge.handle_json(bootstrap.dump()));
     require(replacement.at("ok").get<bool>() && replacement.at("result").at("sessionId")!=auth.at("sessionId"),"navigation creates new session");
+    soui::sdk::json_bridge renewable("app://test");
+    require(renewable.enable_session_renewal() && !renewable.enable_session_renewal(), "renewal explicitly registered once");
+    const auto renewable_boot=json::parse(renewable.handle_json(bootstrap.dump()));
+    const auto renewal_auth=renewable_boot.at("result");
+    require(renewal_auth.at("lease").at("generation")==1 &&
+            renewal_auth.at("lease").at("expiresInMs").get<unsigned>()<=1800000 &&
+            !renewable.enable_session_renewal(),"lease metadata and registration freeze");
+    auto renew_request=request;
+    renew_request["sessionId"]=renewal_auth.at("sessionId");
+    renew_request["token"]=renewal_auth.at("token");
+    renew_request["method"]="bridge.session.renew";
+    renew_request["params"]={{"operationId","first"}};
+    const auto too_early=json::parse(renewable.handle_json(renew_request.dump()));
+    require(!too_early.at("ok").get<bool>() && too_early.at("error").at("code")=="E_RENEW_TOO_EARLY",
+            "real clock cannot mint a lease before the renewal window");
+    renew_request["params"]["capabilities"]={"extra"};
+    require(json::parse(renewable.handle_json(renew_request.dump())).at("error").at("code")=="E_INVALID_PARAMS",
+            "renewal cannot accept altered authority");
+    renewable.shutdown_session(renewal_auth.at("sessionId").get<std::string>());
+    renew_request["params"]={{"operationId","first"}};
+    require(json::parse(renewable.handle_json(renew_request.dump())).at("error").at("code")=="E_UNAUTHORIZED",
+            "document close revokes renewal as well as business requests");
     soui::sdk::json_bridge desktop("app://test");
     require(desktop.enable_clipboard_service() && !desktop.enable_clipboard_service(),
             "public clipboard service must opt in exactly once");

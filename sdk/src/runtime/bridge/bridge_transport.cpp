@@ -81,7 +81,9 @@ const capability_registry::contextual_handler* capability_registry::handler_for(
 }
 
 bridge_response bridge_transport::handle(const bridge_request& request) const {
-  bridge_response response = validate(request);
+  bridge_request authorized_request = request;
+  authorized_request.authorization.reset();
+  bridge_response response = validate(authorized_request);
   if (!response.error_code.empty()) {
     return response;
   }
@@ -93,7 +95,7 @@ bridge_response bridge_transport::handle(const bridge_request& request) const {
     return response;
   }
   response.ok = true;
-  response.payload_json = (*callback)(request);
+  response.payload_json = (*callback)(authorized_request);
   try {
     const auto payload = response.payload_json.empty() ? json::object() : json::parse(response.payload_json);
     const auto error = payload.find("error");
@@ -177,7 +179,7 @@ std::string bridge_transport::handle_json(std::string_view json_text,
   return serialize(handle(request));
 }
 
-bridge_response bridge_transport::validate(const bridge_request& request) const {
+bridge_response bridge_transport::validate(bridge_request& request) const {
   bridge_response response;
   response.request_id = request.request_id;
   response.correlation_id = request.request_id;
@@ -217,15 +219,35 @@ bridge_response bridge_transport::validate(const bridge_request& request) const 
     response.error_message = "Requested method is not registered.";
     return response;
   }
-  const auto authorization = permissions_.check(request.session_id, request.origin, request.token, *capability);
-  if (authorization != authorization_result::authorized) {
-    response.error_code = authorization == authorization_result::expired ? "E_SESSION_EXPIRED" : "E_UNAUTHORIZED";
-    response.error_message = authorization == authorization_result::expired
+  const auto authorization = permissions_.resolve(request.session_id, request.origin, request.token, *capability);
+  if (authorization.result != authorization_result::authorized) {
+    response.error_code = authorization.result == authorization_result::expired ? "E_SESSION_EXPIRED" : "E_UNAUTHORIZED";
+    response.error_message = authorization.result == authorization_result::expired
         ? "Session authorization has expired. A new authorized session is required."
         : "Session token is not authorized for this method.";
     return response;
   }
+  request.authorization = authorization.scope;
   return response;
+}
+
+bool bridge_transport::enable_session_renewal() {
+  return registry_.register_contextual_method("bridge.session.renew", "bridge.session.renew",
+      [this](const bridge_request& request) {
+        const auto params = json::parse(request.params_json, nullptr, false);
+        if (!params.is_object() || params.size() != 1U || !params.contains("operationId") ||
+            !params["operationId"].is_string())
+          return std::string{R"({"error":"E_INVALID_PARAMS","message":"Expected only operationId."})"};
+        return serialize_lease(permissions_.renew(request.session_id, request.origin, request.token,
+                                                  params["operationId"].get<std::string>()));
+      });
+}
+
+std::string bridge_transport::serialize_lease(const permission_lease& lease) {
+  if (!lease.ok()) return json{{"error", lease.error_code}, {"message", "Session lease operation rejected."}}.dump();
+  return json{{"sessionId", lease.session_id}, {"origin", lease.origin}, {"token", lease.token},
+              {"lease", {{"generation", lease.generation}, {"expiresInMs", lease.expires_in_ms},
+                         {"renewAfterMs", lease.renew_after_ms}}}}.dump();
 }
 
 std::string bridge_transport::serialize(const bridge_response& response) {
