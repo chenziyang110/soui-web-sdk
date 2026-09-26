@@ -1,5 +1,11 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 preview.13 旧现场副本恢复与四配置构建
+
+[本轮证据](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)在独立副本中从逐项核验的备份恢复 7 个文件，旧 preview.10 的 417 文件校验通过，再升级 preview.13 的 419 文件包；22 个业务文件保持原字节，原失败现场 858 文件完全未变。旧无 journal 的自动恢复仍拒绝，本结果仅适用于这一已知现场的手工恢复。
+
+仓库外账本项目 x86/x64 × Debug/Release 四次编译退出 0。发现宿主全局 vcpkg 输入后，新副本只在子进程中关闭自动接入并重编四组，均退出 0；实际 CL/link 命令已无 vcpkg 路径。八份 71 文件运行载荷及每份 60 个 PE 架构复核，完整原始日志归档。SDK 输入仍为 714 文件、SHA `f2ca9f2ca470c5886cda1456b31b4260795667eb4df65d4c679d8acd80f2a788`，没有改源码或版本。其他 QEMU 仍占用，GUI 未执行；本候选完整应用、底层依赖、目标平台和生产门槛继续待验收。
+
 ## 2026-09-26 preview.13 安装事务恢复
 
 [新候选证据](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)记录持久事务、`recover` 和启动恢复：真实终止子进程回归及交付身份共 30 项通过，原包行为 14/14；419 文件包与当前源码匹配。两个完整包业务副本分别在文件替换后和锁提交后被终止，新的恢复进程核验为旧 preview.11 / 新 preview.13，再执行升级、回退和再升级，22 个应用/数据文件保持原字节。

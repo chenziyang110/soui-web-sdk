@@ -1,6 +1,6 @@
 # 候选支持范围与设备矩阵
 
-当前开发候选 preview.13 的[安装事务恢复](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)仅取得本机文件/进程测试及真实包升级回退证据；原生应用尚未为本候选重编、桌面及 Win7 未重验，不扩大设备支持状态。下述 preview.11 及以前的结果均为各自冻结输入。
+当前开发候选 preview.13 已取得[安装事务恢复](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)及[已知旧现场副本恢复、独立账本 x86/x64 Debug/Release 编译](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)证据；本版桌面、Win7 和完整应用矩阵未重验，不扩大设备支持状态。下述 preview.11 及以前的结果均为各自冻结输入。
 
 2026-09-26 preview.11 增补：[当前预检](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)完成本机 x86/x64 Release SDK、Starter、Workbench 编译、独立 SDK 安装与仓库外 `session-consumer` 编译/运行，每架构 10 项 CTest 通过，其中原生续期包含 14 组契约。最终汇总核验 Web 62 项、包行为 14 项、交付身份 7 项通过、五份锁文件全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包、包内散列及源码匹配通过。生成的独立 `RenewalStarter` 两架构 Release 编译与项目校验均退出 0。
 
