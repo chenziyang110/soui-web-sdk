@@ -40,7 +40,9 @@ function safePath(root, relative = '') {
   // Reject links/junctions in both payloads and installation destinations.
   let cursor = full;
   while (true) {
-    if (fs.existsSync(cursor) && fs.lstatSync(cursor).isSymbolicLink()) throw new Error(`Linked path: ${cursor}`);
+    try {
+      if (fs.lstatSync(cursor).isSymbolicLink()) throw new Error(`Linked path: ${cursor}`);
+    } catch (error) { if (error.code !== 'ENOENT') throw error; }
     const parent = path.dirname(cursor);
     if (parent === cursor) break;
     cursor = parent;
@@ -90,7 +92,7 @@ function readPackage(directory) {
   return manifest;
 }
 
-function readLock(directory) {
+function readInstalledLock(directory) {
   const lock = json(safePath(directory, 'sdk-lock.json'));
   if (lock.schema !== LOCK || lock.manifestSha256 !== hash(encoded(lock.manifest))) {
     throw new Error('Invalid SDK lock identity');
@@ -98,6 +100,13 @@ function readLock(directory) {
   validateManifest(lock.manifest);
   verifyFiles(directory, lock.manifest);
   return lock;
+}
+
+const transaction = require('./install-transaction.cjs')({safePath, validateManifest, verifyFiles, hash, encoded, sdkId,
+  publishDirectory: publishStagedDirectory});
+function readLock(directory) {
+  transaction.assertSettled(safePath(directory));
+  return readInstalledLock(directory);
 }
 
 function publishStagedDirectory(stage, output) {
@@ -157,67 +166,26 @@ function install(packageRoot, projectRoot) {
     throw new Error('Package and project must be separate trees');
   }
   const manifest = readPackage(packageRoot);
-  const lockPath = safePath(projectRoot, 'sdk-lock.json');
-  const previous = fs.existsSync(lockPath) ? readLock(projectRoot) : null;
-  if (previous && previous.manifest.version === manifest.version &&
-      previous.manifestSha256 !== hash(encoded(manifest))) throw new Error('SDK version cannot identify different contents');
-  const oldFiles = new Map((previous ? previous.manifest.files : []).map(file => [file.path, file]));
-  const newFiles = new Map(manifest.files.map(file => [file.path, file]));
-  // An unowned file is always a collision, even when the bytes happen to match.
-  for (const file of manifest.files) {
-    const target = safePath(projectRoot, file.path);
-    if (!oldFiles.has(file.path) && fs.existsSync(target)) throw new Error(`SDK installation collision: ${file.path}`);
-  }
-  for (const name of oldFiles.keys()) safePath(projectRoot, name);
-  fs.mkdirSync(projectRoot, {recursive: true});
-  const stage = fs.mkdtempSync(path.join(projectRoot, '.sdk-install-'));
-  const touched = [];
-  let cleanupStage = true;
-  const previousLock = previous ? fs.readFileSync(lockPath) : null;
+  transaction.recover(projectRoot);
+  const context = transaction.acquire(projectRoot, true);
+  let previous;
   try {
-    for (const file of manifest.files) {
-      const staged = safePath(stage, `new/${file.path}`);
-      fs.mkdirSync(path.dirname(staged), {recursive: true});
-      fs.copyFileSync(safePath(packageRoot, `payload/${file.path}`), staged);
-    }
-    verifyFiles(path.join(stage, 'new'), manifest);
-    if (previous) readLock(projectRoot);
-    for (const name of new Set([...oldFiles.keys(), ...newFiles.keys()])) {
-      const target = safePath(projectRoot, name);
-      const backup = safePath(stage, `old/${name}`);
-      const existed = oldFiles.has(name);
-      cleanupStage = false;
-      if (existed) {
-        fs.mkdirSync(path.dirname(backup), {recursive: true});
-        fs.renameSync(target, backup);
-      } else if (fs.existsSync(target)) throw new Error(`SDK installation collision: ${name}`);
-      touched.push({target, backup, existed});
-      if (newFiles.has(name)) {
-        fs.mkdirSync(path.dirname(target), {recursive: true});
-        fs.renameSync(safePath(stage, `new/${name}`), target);
-      }
-    }
-    verifyFiles(projectRoot, manifest);
+    const lockPath = safePath(projectRoot, 'sdk-lock.json');
+    previous = fs.existsSync(lockPath) ? readInstalledLock(projectRoot) : null;
+    if (previous && previous.manifest.version === manifest.version &&
+        previous.manifestSha256 !== hash(encoded(manifest))) throw new Error('SDK version cannot identify different contents');
+    const previousLock = previous ? fs.readFileSync(lockPath, 'utf8') : null;
     const nextLock = {schema: LOCK, manifestSha256: hash(encoded(manifest)), manifest};
-    fs.writeFileSync(path.join(stage, 'sdk-lock.json'), encoded(nextLock), {flag: 'wx'});
-    fs.renameSync(path.join(stage, 'sdk-lock.json'), lockPath);
-    cleanupStage = true;
+    const plan = transaction.prepare(context, previousLock, encoded(nextLock), packageRoot);
+    transaction.apply(context, plan);
+    transaction.recoverOwned(context);
   } catch (error) {
     try {
-      for (const change of touched.reverse()) {
-        if (fs.existsSync(change.target)) fs.unlinkSync(change.target);
-        if (change.existed) fs.renameSync(change.backup, change.target);
-      }
-      if (previousLock) fs.writeFileSync(lockPath, previousLock);
-      else if (fs.existsSync(lockPath)) fs.unlinkSync(lockPath);
-      cleanupStage = true;
+      transaction.recoverOwned(context);
     } catch (recoveryError) {
-      cleanupStage = false;
-      throw new Error(`${error.message}; rollback needs recovery from ${stage}: ${recoveryError.message}`);
+      throw new Error(`${error.message}; recovery required at ${context.root}: ${recoveryError.message}`);
     }
     throw error;
-  } finally {
-    if (cleanupStage) fs.rmSync(stage, {recursive: true});
   }
   return {status: previous ? 'updated' : 'installed', version: manifest.version,
     files: manifest.files.length, projectRoot, releaseReady: false};
@@ -233,14 +201,15 @@ function main(argv) {
     options[rest[i]] = rest[i + 1];
   }
   const surfaces = {pack: ['--source', '--output', '--version'], verify: ['--package'],
-    install: ['--package', '--project'], 'verify-project': ['--project'],
+    install: ['--package', '--project'], recover: ['--project'], 'verify-project': ['--project'],
     'verify-source': ['--package', '--source']};
   const keys = surfaces[command];
   if (!keys || keys.some(key => !options[key]) || Object.keys(options).some(key => !keys.includes(key))) {
-    throw new Error('Commands: pack --source DIR --output DIR --version X.Y.Z-preview.N | verify --package DIR | install --package DIR --project DIR | verify-project --project DIR');
+    throw new Error('Commands: pack --source DIR --output DIR --version X.Y.Z-preview.N | verify --package DIR | install --package DIR --project DIR | recover --project DIR | verify-project --project DIR');
   }
   if (command === 'pack') return pack(options['--source'], options['--output'], options['--version']);
   if (command === 'install') return install(options['--package'], options['--project']);
+  if (command === 'recover') return transaction.recover(safePath(options['--project']));
   if (command === 'verify-source') {
     const manifest = readPackage(options['--package']);
     const source = safePath(options['--source']);
@@ -255,7 +224,7 @@ function main(argv) {
   return {status: 'verified', version: manifest.version, files: manifest.files.length, releaseReady: false};
 }
 
-module.exports = {pack, install, readPackage, readLock, managedRoots, managedFiles};
+module.exports = {pack, install, recover: transaction.recover, readPackage, readLock, managedRoots, managedFiles};
 if (require.main === module) {
   try { process.stdout.write(encoded(main(process.argv.slice(2)))); }
   catch (error) { process.stderr.write(`SDK: ${error.message}\n`); process.exitCode = 1; }

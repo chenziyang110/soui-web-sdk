@@ -1,0 +1,54 @@
+Raw interruption samples retained: C:\SOUI-SDK-development\preview9-tray\out\sdk-recovery\attempt-a581bf14-343c-4bc7-bb48-021b1623c6c0
+▶ process termination and new-process recovery
+  ✔ prepare (927.8699ms)
+  ✔ journal (1102.8181ms)
+  ✔ replace (1140.4114ms)
+  ✔ delete (1168.9973ms)
+  ✔ add (1217.1896ms)
+  ✔ commit (1169.6581ms)
+  ✔ cleanup (1134.2474ms)
+  ✔ first install rolls back to no SDK, then install automatically recovers (1019.3426ms)
+  ✔ rollback is restartable and a competing recovery is refused (1259.9357ms)
+  ✔ active installer blocks verify, install and recover (965.8791ms)
+  ✔ reject target conflict without partial recovery (758.7683ms)
+  ✔ reject backup conflict without partial recovery (613.9865ms)
+  ✔ reject new-backup conflict without partial recovery (638.0998ms)
+  ✔ reject lock conflict without partial recovery (683.4517ms)
+  ✔ reject journal conflict without partial recovery (692.7351ms)
+  ✔ committed but modified payload is preserved, never rolled back (746.2601ms)
+  ✔ old lock BOM and whitespace survive rollback byte for byte (625.6635ms)
+  ✔ recovery refuses a junction without writing outside the project (680.1584ms)
+  ✔ old unjournaled transaction is preserved and rejected (331.1168ms)
+  ✔ upgrade rollback to older package also recovers (1323.8877ms)
+  ✖ file-directory transitions fail before installed bytes change (518.2117ms)
+✖ process termination and new-process recovery (18723.2797ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 20
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18908.9022
+
+✖ failing tests:
+
+test at ..\..\SOUI-SDK-development\preview9-tray\tests\sdk\installation-interruption.test.cjs:197:11
+✖ file-directory transitions fail before installed bytes change (518.2117ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\preview9-tray\tests\sdk\installation-interruption.test.cjs:207:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at TestContext.test (node:internal/test_runner/test:368:20)
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\preview9-tray\tests\sdk\installation-interruption.test.cjs:197:11)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /path shape/,
+    operator: 'throws',
+    diff: 'simple'
+  }

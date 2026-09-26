@@ -2,6 +2,8 @@
 
 本交付解决分层、接入、自行构建和验证的问题，仍为预览版本。
 
+当前 preview.13 的[新事务协议](../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)已通过真实进程终止和完整 SDK 包文件恢复测试；旧无 journal 现场仍未自动恢复，文件/目录形态迁移明确拒绝，原生编译、业务 GUI、受限账户及目标平台尚未在本候选重验。以下 preview.11 失败仍按其原输入保留，不能由安装器修复视为全部关闭。
+
 preview.11 [真实安装中断](../verification/production-validation/preview11-upgrade-interruption-2026-09-26/README.md)暴露恢复缺陷：安装进程在旧文件已移入备份后退出，正式校验与重新安装均失败。旧 SDK 字节和业务数据未丢失，但当前 CLI 无法自动恢复。须补齐持久事务记录、恢复入口与冲突处理；原有可捕获 I/O 异常回滚测试不能关闭此门槛。
 
 preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt3-2026-09-26/README.md)已通过传输与运行前文件身份检查，Starter 就绪并退出 0；Workbench 默认入口在就绪后关闭超时，React 和运行后载荷校验未执行。三入口整体仍失败，前两轮传输失败保留。

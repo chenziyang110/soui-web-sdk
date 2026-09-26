@@ -126,7 +126,7 @@ try {
     const rename = fs.renameSync;
     let injected = false;
     fs.renameSync = (from, to) => {
-      if (!injected && from.includes(`${path.sep}new${path.sep}sdk${path.sep}`)) {
+      if (!injected && to === touchedPath) {
         injected = true;
         throw new Error('simulated installation IO failure');
       }

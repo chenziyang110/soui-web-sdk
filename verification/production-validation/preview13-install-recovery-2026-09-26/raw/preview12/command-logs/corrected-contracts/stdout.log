@@ -1,0 +1,33 @@
+Raw interruption samples retained: C:\SOUI-SDK-development\preview9-tray\out\sdk-recovery\attempt-8c1da9b2-719d-4d7f-bd81-1997f5f7244d
+▶ process termination and new-process recovery
+  ✔ prepare (1018.3035ms)
+  ✔ journal (1175.0337ms)
+  ✔ replace (1115.8048ms)
+  ✔ delete (1238.0896ms)
+  ✔ add (1356.5871ms)
+  ✔ commit (1277.2322ms)
+  ✔ cleanup (1284.5831ms)
+  ✔ first install rolls back to no SDK, then install automatically recovers (1061.7309ms)
+  ✔ rollback is restartable and a competing recovery is refused (1360.9567ms)
+  ✔ active installer blocks verify, install and recover (968.4951ms)
+  ✔ reject target conflict without partial recovery (807.1693ms)
+  ✔ reject backup conflict without partial recovery (708.8328ms)
+  ✔ reject new-backup conflict without partial recovery (824.2702ms)
+  ✔ reject lock conflict without partial recovery (769.3734ms)
+  ✔ reject journal conflict without partial recovery (743.1639ms)
+  ✔ committed but modified payload is preserved, never rolled back (788.6966ms)
+  ✔ old lock BOM and whitespace survive rollback byte for byte (760.7355ms)
+  ✔ recovery refuses a junction without writing outside the project (751.409ms)
+  ✔ old unjournaled transaction is preserved and rejected (339.2802ms)
+  ✔ upgrade rollback to older package also recovers (1522.675ms)
+  ✔ file-directory transitions fail before installed bytes change (549.5966ms)
+  ✔ retirement retries transient denial and preserves permanent failures (1770.6337ms)
+✔ process termination and new-process recovery (22198.9529ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 22371.9135

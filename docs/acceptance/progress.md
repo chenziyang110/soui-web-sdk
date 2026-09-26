@@ -1,5 +1,11 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 preview.13 安装事务恢复
+
+[新候选证据](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)记录持久事务、`recover` 和启动恢复：真实终止子进程回归及交付身份共 30 项通过，原包行为 14/14；419 文件包与当前源码匹配。两个完整包业务副本分别在文件替换后和锁提交后被终止，新的恢复进程核验为旧 preview.11 / 新 preview.13，再执行升级、回退和再升级，22 个应用/数据文件保持原字节。
+
+内部 preview.12 真实包回退的目录退休 EPERM 及路径形态负例失败均保留；preview.13 增加有界重试和提前拒绝文件/目录形态变化。旧无 journal 失败现场迁移、当前原生编译及 GUI 尚未验证。下一步继续旧失败现场受控恢复、本版安装后独立编译与业务运行；Win7 关闭、续期夹具启动、V02/V04、长稳、Electron 与发布责任等完整门槛保持未通过。
+
 ## 2026-09-26 preview.11 新增实际桌面失败
 
 其他 QEMU 退出后，串行执行 [Win7 第三轮](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt3-2026-09-26/README.md)：v3 传输集合、546 个运行前载荷文件及 legal 身份通过，Starter 就绪并退出 0；Workbench 默认入口就绪后停在关闭开始，达到原 60 秒期限，被客体驱动终止。React 和运行后载荷检查未执行。29 帧完整串口和冻结校验器退出 1 保留，QEMU 正常退出且基础盘及输入未变。下一项是关闭阶段/线程栈诊断，不放宽期限。

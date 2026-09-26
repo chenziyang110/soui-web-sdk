@@ -1,5 +1,7 @@
 # 测试与验收
 
+preview.13 的 `node --test tests/sdk/installation-interruption.test.cjs` 真正终止独立安装子进程，再由新进程恢复。覆盖准备、journal、替换、删除、新增、锁提交、清理、恢复再次中断，以及并发、文件/备份/锁/journal 冲突和链接。原始边界与退出记录保存在每次独立的 `out/sdk-recovery/attempt-*/`，故障样本不删除。`Test.ps1` 和交付汇总入口均执行此回归；小文件事务通过不能代替真实 SDK 包、业务编译、旧无 journal 现场或目标平台验收。
+
 preview.11 增加 `sdk.native.session-renewal` 与安装后独立 [session-consumer](../tests/session-consumer/README.md)，验证授权期限、轮换、重取、撤销、稳定归属与公开接入。Web 续期测试使用模拟时间并覆盖连接器与真实注入 resolver 的容量；这些测试不启动窗口，不证明真实八小时、模态响应、休眠或 Win7。真实长测必须在同一版本载荷上跨越多次 25 分钟续期，保留任务、订阅、输入响应和资源轨迹，不能用反复重载绕过授权期限。
 
 preview.10 新增 `sdk.native.menu_service` 和 `sdk.native.global_shortcut`，通过未安装的平台替换边界验证参数、状态、故障及资源所有权，不调用真实菜单或注册快捷键。安装后独立消费者同时使用三项公共服务；`--smoke-test` 的菜单程序取消与快捷键冲突也是实际桌面负载，必须串行。Workbench `--resident --resident-smoke-test` 是三窗口关闭、重载、重建和无窗口驻留的有限短测，不能证明真实快捷键、任务隔离、Explorer 重启或长期稳定。实际证据需绑定当前源码与完整载荷，历史版本结果不自动继承。
