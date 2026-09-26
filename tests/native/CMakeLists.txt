@@ -30,6 +30,18 @@ target_include_directories(soui_demo_session_renewal_tests PRIVATE "${SOUI_DISTR
 set_property(TARGET soui_demo_session_renewal_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME demo.native.session-renewal COMMAND soui_demo_session_renewal_tests)
 set_tests_properties(demo.native.session-renewal PROPERTIES TIMEOUT 30)
+add_executable(soui_workbench_interaction_tests workbench_interaction_tests.cpp
+  "${SOUI_DISTRIBUTION_ROOT}/demos/workbench/integration/demo_bridge_adapter.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/demos/workbench/integration/native_media_preview.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/demos/workbench/integration/native_media_encoder.cpp")
+target_link_libraries(soui_workbench_interaction_tests PRIVATE Soui::Sdk soui_zlib
+  comdlg32 mfplat mfreadwrite mfuuid propsys shlwapi windowscodecs psapi)
+target_compile_options(soui_workbench_interaction_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+target_compile_definitions(soui_workbench_interaction_tests PRIVATE NDEBUG _CRT_SECURE_NO_WARNINGS)
+target_include_directories(soui_workbench_interaction_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
+set_property(TARGET soui_workbench_interaction_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME demo.native.interaction-task COMMAND soui_workbench_interaction_tests)
+set_tests_properties(demo.native.interaction-task PROPERTIES TIMEOUT 30)
 add_executable(soui_task_service_tests task_service_tests.cpp)
 target_link_libraries(soui_task_service_tests PRIVATE Soui::Sdk)
 target_compile_options(soui_task_service_tests PRIVATE /utf-8 /U_DEBUG)

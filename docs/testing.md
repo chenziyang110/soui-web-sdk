@@ -1,5 +1,7 @@
 # 测试与验收
 
+`demo.native.interaction-task` 通过真实 Workbench adapter 和公开 JSON Bridge 验证有界 `demo.interaction`：单调时钟计时、后台进度事件、运行中取消、会话隔离、非法类型/整数范围与溢出、关闭会话清理，以及原快速任务兼容。构建后可运行 `ctest --test-dir out/x64 -C Release -R demo.native.interaction-task --output-on-failure`，x86 使用对应目录。这是无窗口的原生集成回归；V02 仍需新构建上真实滚动、IME、缩放和公共任务并发的桌面证据，不能继承旧应用载荷的短测结果。
+
 `node --test tests/sdk/sdk-native-payload.test.cjs` 验证 SDK Core 排除已知历史内核备份，保留有效 DLL/LIB 和许可材料，并执行旧包安装、新包升级、旧包回退。原始源码备份和业务文件必须保持原字节；`Test.ps1` 和交付汇总均包含此回归。
 
 `kernel.native.scheduler-fairness` 编译内核实际调用的内部选择策略，覆盖新任务优先级、同级先后、长期等待、连续普通任务、未来任务资格和退出清理。它是策略回归；修改此策略仍必须在两架构完整重编底层依赖，运行保持原动画的独立消费者及真实应用，不能仅凭该测试放行 DLL。首次红绿结果见[原始记录](../verification/production-validation/scheduler-fairness-policy-2026-09-26/README.md)。
