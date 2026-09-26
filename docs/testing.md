@@ -1,5 +1,7 @@
 # 测试与验收
 
+preview.10 新增 `sdk.native.menu_service` 和 `sdk.native.global_shortcut`，通过未安装的平台替换边界验证参数、状态、故障及资源所有权，不调用真实菜单或注册快捷键。安装后独立消费者同时使用三项公共服务；`--smoke-test` 的菜单程序取消与快捷键冲突也是实际桌面负载，必须串行。Workbench `--resident --resident-smoke-test` 是三窗口关闭、重载、重建和无窗口驻留的有限短测，不能证明真实快捷键、任务隔离、Explorer 重启或长期稳定。实际证据需绑定当前源码与完整载荷，历史版本结果不自动继承。
+
 preview.9 的 `sdk.native.tray-service` 使用未安装的私有平台边界测试托盘故障和资源状态，不创建窗口或调用真实 Shell。独立 [tray-consumer](../tests/tray-consumer/README.md) 必须只从安装后的 SDK 构建，其 `--smoke-test` 会使用真实桌面，须与其他桌面/QEMU 负载串行。编译、模拟故障、Shell API 返回成功均不能替代图标可见、真实点击、Explorer 重启和目标平台验证。
 
 0.3 后续的场景、公共 SDK 消费者、Electron 对照及生产准入设计见 [SDK 生产能力与价值验证方案](roadmap/0.3-sdk-validation.md)。其中独立消费者与生命周期驱动已落地，混合负载、完整 Electron 对照及生产准入档尚未实现；下文是当前可用入口。

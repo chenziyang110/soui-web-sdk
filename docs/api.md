@@ -87,7 +87,17 @@ Web 方法类型为 `SouiClipboardMethodMap`，与 `SouiCoreMethodMap` 组合使
 - 菜单等托盘 UI 操作完成或取消后，调用并检查 `return_focus()`，请求 Shell 将焦点交回通知区。它要求已安装状态，不改变图标生命周期；真实键盘操作仍需桌面验证。
 - `remove()` 立即取消恢复意图，再尝试删除；返回失败时可在原线程重试。应用在 HWND 存活时明确移除，随后销毁服务，最后销毁 HWND。析构只做尽力清理。所有操作和状态查询须遵守线程及无重入契约。
 
-服务不创建原生菜单、不注册快捷键、不修改模板最后窗口关闭策略。完整驻留由应用控制器负责。独立接入和待执行的真实 Shell 验收见 [tray-consumer](../tests/tray-consumer/README.md)；设计及失败语义见 [ADR-0012](adr/0012-public-tray-service.md)。
+托盘服务只管理图标；菜单与快捷键由下面的独立服务负责。完整驻留由应用控制器负责。独立接入见 [tray-consumer](../tests/tray-consumer/README.md)；托盘语义见 [ADR-0012](adr/0012-public-tray-service.md)。
+
+## 原生菜单与全局快捷键（preview.10）
+
+`<soui/runtime/services/desktop/menu_service.h>` 的 `menu_service::show(owner, items, x, y)` 接收 `menu_item` 值树并同步返回 `menu_result`。命令、分隔线、子菜单分别使用 `menu_item_kind`；命令 ID 为全树唯一的 1–65535，子菜单/分隔线 ID 为 0。支持 UTF-8 标签、禁用、勾选；最多 256 项、8 层，每标签 1,024 UTF-16 单元、全树标签 64 KiB UTF-16 字节。分隔线不得附带文本、子项、勾选或禁用状态。owner 属于当前进程和构造线程；若为 child，服务激活其顶层父窗口。
+
+检查 `response.ok()` 后才可消费 `has_selection` / `command_id`；返回 ID 还经过启用祖先检查。无选择不等于已确认取消或菜单曾可见，`native_error` 保留原生诊断。菜单运行时会分派应用消息，期间不能销毁 owner 或服务。只有同服务的 `cancel()` 可在跟踪期间重入；其他同线程菜单弹出返回 `E_BUSY`。失败清理留在 `cleanup_pending()` 中，先检查 `cleanup()`，再销毁服务。托盘入口完成菜单后另行调用 `tray_service::return_focus()`。
+
+`<soui/runtime/services/desktop/global_shortcut.h>` 的 `global_shortcut` 拥有一项注册。`register_shortcut({owner, id, modifiers, virtual_key, no_repeat})` 的 ID 为 0–0xBFFF，修饰键为 `shortcut_modifiers` 中 ALT/CONTROL/SHIFT/WIN 的组合，键码 1–254 且不得为 F12。默认禁止按住重复触发。检查响应的 `ok()`、`code` 和 `native_error`；系统保留或占用的组合不保证注册成功，也不能把所有错误都称为冲突。
+
+WndProc 将 WM_HOTKEY 的完整参数交给 `dispatch_message()`，仅在 `activated` 为真时执行应用动作；匹配消息不是可信手势。`unregister_shortcut()` 立即停止事件消费；失败保留 `cleanup_pending()` 供重试。成功注销后 `retired()` 为真，同一对象不再注册；新对象使用新 ID，不得在同一 HWND 生命周期内复用注销过的 ID，以免接收排队旧消息。先确认注销，再析构服务及销毁 owner。设计及限制见 [ADR-0013](adr/0013-public-menu-shortcut-and-residency.md)。
 
 ## 错误与超时
 

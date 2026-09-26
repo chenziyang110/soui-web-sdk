@@ -2,6 +2,10 @@
 
 初始判定日期：2026-09-24，候选 `0.3.0-preview.5`；后续增补按各自版本分别判定。本文件只汇总已执行证据，不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
 
+## 2026-09-26 preview.10 预检
+
+2026-09-26 当前开发版已进入 preview.10 公共菜单、快捷键和显式驻留切片；[预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)仅通过双架构 Release 编译、原生契约和独立安装消费。本版真实桌面、Win7、无 Git 完整源码复现和完整 V04 均待执行，未形成新的生产准入批准。下方 preview.8 判定保持原输入范围。
+
 ## 2026-09-25 preview.8 增补判定
 
 2026-09-26 开发进入 preview.9 公共托盘切片；本节 preview.8 工程和桌面证据保持原身份，不转移为新版本通过。[preview.8 Win7 x86 Demo GUI](../../verification/production-validation/win7-sp1-x86-qemu-preview8-demo-ui-2026-09-25/README.md)另已补足列表滚动、公共任务完成/取消的人工截图与串口核验；完整 V02 和 V04 仍未完成。

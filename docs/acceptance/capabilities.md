@@ -35,7 +35,7 @@ preview.8 的 [Win7 SP1 x86 Demo GUI 记录](../../verification/production-valid
 | V03-03 剪贴板 | SDK `json_bridge.enable_clipboard_service()` 显式注册 `desktop.clipboard.writeText`；模板启用并提供按钮 | 已实现待验收：x86/x64 SDK 与模板编译、Web 类型检查及构建、原生契约中的假手势/缺手势/缺窗口拒绝通过；[Win7 SP1 x86 QEMU 公共服务中文写入读回](../../verification/production-validation/win7-sp1-x86-qemu-desktop-v2-2026-09-25/README.md)退出 0 | 模板真实点击、占用失败、大文本、受限账户与关闭竞态 |
 | V03-04 屏幕与外部打开 | 公共 screen/shell 模块 | 待完成统一公共契约及消费者 | 混合 DPI、多屏移动/断连、URL/路径校验与操作结果 |
 | V04-01 三窗口独立工作 | 进程 Runtime + 各窗口 Host/Bridge/session | 通过当前范围：preview.4 固定包 x64/x86 各 1,000 轮正常退出，关闭中间窗、另两窗重载和中间窗重建 | 资源所有权、任务和事件并存时关闭隔离；目标 32 位与旧版 Windows 实机 |
-| V04-02 驻留能力 | 公共原生 `tray_service`；菜单、快捷键仍待实现 | 部分实现：[preview.9 冻结记录](../../verification/production-validation/preview9-public-tray-preflight-2026-09-26/README.md)包含双架构 SDK/独立消费者编译、14 组托盘契约和宿主安装/提示更新/移除短测；真实通知数为 0，不能替代交互证据 | 真实图标/通知、Explorer 重启、Win7 x86；公共菜单/快捷键、Workbench 无窗口驻留、最后退出回收 |
+| V04-02 驻留能力 | 公共 `tray_service`、`menu_service`、`global_shortcut`；Workbench 显式驻留 | 已实现待验收：[preview.10 预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)通过双架构编译/安装消费与菜单15组、快捷键9组、托盘14组模拟契约；本版未跑真实桌面，preview.9 短测保持原身份 | 实际菜单/快捷键、真实图标/通知、Explorer 重启、Win7 x86；三窗任务隔离、模态期间关闭、空窗驻留及退出回收 |
 
 ## V05 资源、故障与安全边界
 

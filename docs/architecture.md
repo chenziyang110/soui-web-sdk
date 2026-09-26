@@ -18,6 +18,8 @@ flowchart LR
 
 preview.9 的原生 `tray_service` 属于应用级桌面服务，由应用的隐藏顶层窗口及其线程持有，寿命独立于任一 Host/文档会话。服务不启动 WebView、不另起线程，也不决定最后业务窗口关闭后的进程策略。应用先明确移除托盘并销毁服务，再销毁其所有者窗口；详细状态和恢复边界见 [ADR-0012](adr/0012-public-tray-service.md)。
 
+preview.10 增加同线程的 `menu_service` 和 `global_shortcut`，不向 Web 注入权限。Workbench 的显式 `--resident` 控制器持有这三项服务；三个业务槽位各有独立 adapter、Host、窗口和会话，共享进程 Runtime。SOUI 业务窗明确使用普通窗口类型，关闭请求延迟到控制器处理；销毁单窗不会自动结束消息循环。全部业务窗关闭后仍驻留，可由托盘菜单或 Ctrl+Alt+W 恢复；显式退出按菜单、快捷键、托盘、业务窗、Runtime、控制器顺序清理。默认单窗方式保留。实现与验证边界见 [ADR-0013](adr/0013-public-menu-shortcut-and-residency.md)。
+
 ## 目录所有权
 
 | 目录 | 维护责任 | 是否随 SDK 安装器更新 |
