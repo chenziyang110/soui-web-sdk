@@ -1,0 +1,48 @@
+{
+  "schema": "soui.runner-binding-cli-case/v1",
+  "name": "synthetic-x86-build-parent",
+  "architecture": "x86",
+  "program": "C:\\nvm4w\\nodejs\\node.exe",
+  "arguments": [
+    "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1\\check-inputs.cjs",
+    "before",
+    "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1\\cases\\synthetic-x86-build-parent\\fake-fixture",
+    "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1\\cases\\synthetic-x86-build-parent\\output",
+    "x86",
+    "C:\\nvm4w\\nodejs\\node.exe"
+  ],
+  "startedAt": "2026-09-26T08:56:24.952Z",
+  "finishedAt": "2026-09-26T08:56:26.417Z",
+  "pid": 24848,
+  "exitCode": 1,
+  "signal": null,
+  "error": null,
+  "productionCheckerSha256": "33bfdf9330019da5188e992b3ad90b309638964f7e031f4d2fd6eb2aabedc9ec",
+  "productionRunSha256": "bcfa7c7a712db96053297c633321e2074a2c38e36f39d90eca199ef1f8089b49",
+  "inputKind": "synthetic-mutated-freeze-or-build-record",
+  "mutation": {
+    "kind": "synthetic-build-identity-mutation",
+    "architecture": "x86",
+    "field": "parent",
+    "originalBuildPath": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\build.json",
+    "originalBuildSha256": "583a44c61a74a5ab9c142e0b5899915fffaf2a35ff389cf2045961a52430e6b2",
+    "mutatedBuildPath": "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1\\cases\\synthetic-x86-build-parent\\fake-fixture\\mutated-builds\\x86\\build.json",
+    "mutatedBuildSha256": "87ea53f5b1efef3318a913f3c368b4710171b6d8e7f0e93153ecaa8c30eb2cdf",
+    "freezeBuildRecordHashRecomputed": true,
+    "unchangedSourceAndOtherBuildPathsReferenceRealReadOnlyInputs": true
+  },
+  "expectedRejection": "Wrong v2 build revision or parent freeze",
+  "stdout": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "stderr": {
+    "bytes": 1059,
+    "sha256": "4c7263909e8a4912fe419db0c150fb644fc5673b7db2445ab13869643b409470"
+  },
+  "guiExecuted": false,
+  "nativeExecuted": false,
+  "networkExecuted": false,
+  "passed": true,
+  "validationError": null
+}

@@ -1,0 +1,109 @@
+{
+  "schema": "soui.real-renewal-v2-source-preparation/v1",
+  "createdAt": "2026-09-26T08:15:36.309Z",
+  "status": "source-prepared-awaiting-review-and-build",
+  "fixtureRevision": 2,
+  "parent": {
+    "preparationRoot": "C:/SOUI-SDK-production-validation/preview11-real-renewal-preparation-20260926",
+    "freezeSha256": "7e45bc6158db50362e088ba8a97a08e42e7e63e398dde62df1dbe6ce6721620d",
+    "failureRunRoot": "C:/SOUI-SDK-production-validation/preview11-real-renewal-runs-20260926/x86-smoke-attempt1",
+    "failureReportSha256": "215d46601c76a042e0d6798f93547cd37f8463c7588db030b41d3deb231b8eb2",
+    "failureSupervisorSha256": "2e969de9be541ffedc68a793066689b0751cd499178231a405f0399a8024db8d"
+  },
+  "inputFiles": 937,
+  "inputSha256": "29548090b14d3e8da3ef5524bdd413911db039a22b5d4d1732ddc39f651b6574",
+  "originalsUnchanged": true,
+  "immutableCopiesUnchanged": true,
+  "changedBaselineFiles": [
+    "consumer/main.cpp",
+    "Prepare.cjs",
+    "Verify-Run.cjs",
+    "PROTOCOL.md",
+    "SelfTest-Verify-Run.cjs"
+  ],
+  "files": [
+    {
+      "path": "Build-Web.mjs",
+      "bytes": 6802,
+      "sha256": "c0d82dd25e25f459d093c25e7141083ce235fc62612405e4f13d2b427c9d1e3b"
+    },
+    {
+      "path": "Build.ps1",
+      "bytes": 9469,
+      "sha256": "c2a726de9de951cb883064082112deae82638d7b8b2510dfab9acfe44610ecef"
+    },
+    {
+      "path": "Clone-V1.cjs",
+      "bytes": 4998,
+      "sha256": "308739bcf0d11977d28152733c86934980ec47a9b3c3a3bd40fc2bef708d9cbb"
+    },
+    {
+      "path": "PROTOCOL.md",
+      "bytes": 11705,
+      "sha256": "a3acf97765d45478cebfe9bd2e80f0afb49c237725bc979b8c01fae463bf2964"
+    },
+    {
+      "path": "Prepare.cjs",
+      "bytes": 22432,
+      "sha256": "a2aef139650aebd435261893a8214935aeafd848b48d754650fc49fbd31f6cb2"
+    },
+    {
+      "path": "README.md",
+      "bytes": 4782,
+      "sha256": "d4449280cc2edfbcec87428bd8fd6227fc01082fb41f96ab76bb39dde691ecb3"
+    },
+    {
+      "path": "Run.ps1",
+      "bytes": 27618,
+      "sha256": "40e748f45f9fcdff07cdae2123e674eaf1775d7f7f3e60bf1526f9b76f6d410f"
+    },
+    {
+      "path": "SelfTest-Verify-Run.cjs",
+      "bytes": 34469,
+      "sha256": "40ce2a9797817390423f346134133be6588d4e55c821c265ed07d5d680c24aab"
+    },
+    {
+      "path": "Verify-Run.cjs",
+      "bytes": 39016,
+      "sha256": "882f540bda7ab6f82e5dd60d97b0e5187f287a58078cd27c8ac4bac692e00ea7"
+    },
+    {
+      "path": "consumer/main.cpp",
+      "bytes": 38771,
+      "sha256": "ef8297ac04c1178c26cac5a7ad66d1b17297e4d34af90769a0ed3bd21ae309e1"
+    },
+    {
+      "path": "consumer/session_observation.h",
+      "bytes": 10072,
+      "sha256": "dfbb8eed1a43e16569076edcab3953030c5cc75da4151e5382ce741ebde242de"
+    },
+    {
+      "path": "consumer/session_observation_tests.h",
+      "bytes": 5889,
+      "sha256": "ea1332587987d89113b6f436a2ad34d5e8bab96f221fc22a33fc5ba45a7a3d3c"
+    },
+    {
+      "path": "prepared.json",
+      "bytes": 233109,
+      "sha256": "cfb2ab07bed35e637274dd66fdd52ece2ed014fe9c3de259eb8fd659e53c79b4"
+    }
+  ],
+  "compiled": false,
+  "nativeSelfCheckExecuted": false,
+  "syntheticSelfTestExecuted": false,
+  "guiExecuted": false,
+  "networkUsed": false,
+  "realRenewalVerified": false,
+  "releaseReady": false,
+  "pending": [
+    "Independent static review of parser and phase ordering",
+    "Synthetic verifier self-test (expected count must be observed, not assumed)",
+    "x86/x64 build and native 45-case parser/phase self-check",
+    "New compiled-inputs freeze",
+    "Gated serial real smoke and duration tests"
+  ],
+  "knownLimits": [
+    "Native parser/phase code is uncompiled; execution results are not claimed",
+    "Ambient vcpkg link integration from the v1 toolchain remains an unresolved reproducibility constraint"
+  ]
+}

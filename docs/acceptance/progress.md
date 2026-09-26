@@ -1,5 +1,13 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 preview.11 续期夹具 v2 编译与输入绑定
+
+[v2 独立构建记录](../../verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/README.md)修正外部夹具的阶段观察：bootstrap 调用前最多记录一次生命周期退役；唯一成功 bootstrap 响应返回给页面前绑定可信 session/origin，绑定后包括 describe/ready 之前的意外关闭、身份变化和重 bootstrap 均失败。未改变 SDK 的 711 文件输入，也未覆盖 v1 失败样本。
+
+两架构各 13 个构建步骤及外层构建均取得原始退出码 0；每架构 native self-check 完成 45 项解析/阶段检查及 8 条日志写入检查。106 项分析器合成自检通过；运行脚本的生产输入校验代码完成 2 个真实 v2 输入正例、6 个旧版/篡改记录负例，全部符合预期。运行脚本已隔离 v2 结果目录并验证 freeze 和两个 build 的 revision/父冻结身份。最终 freeze SHA `80d19d4e2008a505bbb8a9293849f3756d4bf07ad7838ad38aa5bb054ac0ee3a`，独立复核两架构各 70 个运行文件和 PE 架构、安装 SDK 及新头文件的实际编译输入。
+
+首次命令采集器在只读日志描述符上 fsync 失败，未保存子进程数值退出码，原样保留且不计通过；修正采集后另建样本重试。当前工具链审计因 TLS 建连中断退出 1，没有漏洞统计，不能写为 0 项漏洞；两架构锁文件一致且工具链前后未变。宿主 vcpkg 未冻结链接输入的限制仍在。其他 QEMU 持续占用，本轮尚未执行 v2 GUI、35 分钟或八小时真实续期；上述自检不能关闭资源、性能或生产门槛。
+
 ## 2026-09-26 preview.11 Win7 客体首次执行与传输目录诊断
 
 桌面空闲后串行运行了两次独立 Win7 SP1 x86 snapshot：[attempt1](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt1-2026-09-26/README.md)与带诊断的 [attempt2](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt2-2026-09-26/README.md)都在传输集合检查退出 1，三个应用均未启动。两次均确认桌面及 D: 盘后只发送一次测试命令，完整串口分别有 4/8 帧；QEMU 正常关闭且基础磁盘、冻结输入未变。第二次明确枚举到卷根 `$RECYCLE.BIN`，实际 11 项中有一个目录，触发预期 10 个普通文件的严格检查；不能据此断言目录创建者，也不能称其他普通文件已逐项散列通过。

@@ -1,0 +1,60 @@
+{
+  "schema": "soui.real-renewal-independent-static-review/v1",
+  "fixtureRevision": 2,
+  "reviewedAt": "2026-09-26T08:24:54.568Z",
+  "reviewer": "independent review agent",
+  "status": "no-explicit-static-blocker-found",
+  "scope": "Narrow read-only review of the correction for the observed initial Host session retirement: bind the unique successful public bootstrap response, preserve stable authorization acquisition at describe, reject later premature shutdown/rebootstrap, and validate projected JSON metadata. No broad API, compiler or runtime verification.",
+  "files": [
+    {
+      "path": "consumer/session_observation.h",
+      "bytes": 10072,
+      "sha256": "dfbb8eed1a43e16569076edcab3953030c5cc75da4151e5382ce741ebde242de",
+      "hashSampledAt": "2026-09-26T08:24:54.568Z",
+      "reviewScope": "Full bounded JSON metadata parser and session_phase transitions; lines 1-183."
+    },
+    {
+      "path": "consumer/session_observation_tests.h",
+      "bytes": 5889,
+      "sha256": "ea1332587987d89113b6f436a2ad34d5e8bab96f221fc22a33fc5ba45a7a3d3c",
+      "hashSampledAt": "2026-09-26T08:24:54.568Z",
+      "reviewScope": "Read proposed pure parser/phase checks; no execution."
+    },
+    {
+      "path": "consumer/main.cpp",
+      "bytes": 38771,
+      "sha256": "ef8297ac04c1178c26cac5a7ad66d1b17297e4d34af90769a0ed3bd21ae309e1",
+      "hashSampledAt": "2026-09-26T08:24:54.568Z",
+      "reviewScope": "Bootstrap begin/bind wrapper, first describe authorization acquisition, shutdown observation and cleanup: lines 207-324, 390-489, 553-590; final count wiring located statically."
+    },
+    {
+      "path": "Verify-Run.cjs",
+      "bytes": 39016,
+      "sha256": "882f540bda7ab6f82e5dd60d97b0e5187f287a58078cd27c8ac4bac692e00ea7",
+      "hashSampledAt": "2026-09-26T08:24:54.568Z",
+      "reviewScope": "Native event whitelist and bootstrap/retirement/close identity, order and count assertions: lines 72-146."
+    }
+  ],
+  "findings": [],
+  "staticConclusions": [
+    "The wrapper enters bootstrap-in-flight before calling the real SDK, binds session/origin from its successful correlated response before returning that same response, and does not copy bearer tokens into observation metadata.",
+    "The phase guard permits at most one nonempty opaque lifecycle retirement before bootstrap and before probe work; in-flight or bound premature shutdown, repeated bootstrap, wrong closing identity and duplicate bound close are rejected.",
+    "The first describe still requires an active matching authorization scope; later requests require the same scope pointer and session/origin.",
+    "The metadata reader bounds bytes/depth/node count, validates JSON syntax and UTF-8/escapes/surrogate pairs, rejects duplicate keys including escaped equivalents, and requires correctly typed projected fields.",
+    "The analyzer requires exactly one bootstrap begin and binding, at most one pre-bootstrap retirement, and one bound close after finish and before host destruction, with matching identities and final counts."
+  ],
+  "evidenceBoundary": [
+    "This records a static review, not a successful test run or a prediction that the fixture will work.",
+    "SHA-256 values are current review-time file reads, not execution-time measurements or an atomic snapshot of the whole directory.",
+    "The proposed native self-check and updated synthetic analyzer cases have been read where scoped but were not compiled or executed by this review.",
+    "The next stage still needs a new recorded build/self-check and, only when the desktop gate allows, a separate actual runtime attempt.",
+    "The pre-existing preparation-status record and all other files remain untouched."
+  ],
+  "compiled": false,
+  "selfTestExecuted": false,
+  "guiExecuted": false,
+  "productionVerified": false,
+  "testPassed": false,
+  "realRenewalVerified": false,
+  "releaseReady": false
+}

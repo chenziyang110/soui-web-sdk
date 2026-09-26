@@ -1,0 +1,16 @@
+C:\SOUI-SDK-production-validation\runner-binding-self-test-only\revision2-parent-binding-20260926-attempt1\check-inputs.cjs:7
+const assert=(ok,message)=>{if(!ok)throw Error(message);};
+                                   ^
+
+Error: Wrong v2 fixture revision or parent freeze
+    at assert (C:\SOUI-SDK-production-validation\runner-binding-self-test-only\revision2-parent-binding-20260926-attempt1\check-inputs.cjs:7:42)
+    at Object.<anonymous> (C:\SOUI-SDK-production-validation\runner-binding-self-test-only\revision2-parent-binding-20260926-attempt1\check-inputs.cjs:57:1)
+    at Module._compile (node:internal/modules/cjs/loader:1812:14)
+    at Object..js (node:internal/modules/cjs/loader:1943:10)
+    at Module.load (node:internal/modules/cjs/loader:1533:32)
+    at Module._load (node:internal/modules/cjs/loader:1335:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.14.0
