@@ -1,5 +1,7 @@
 # 原动画加载停滞的 x86 原生调度证据
 
+后续修复候选的 [x86 完整重编与原动画实测](../scheduler-fairness-x86-rebuild-2026-09-26/README.md)已退出 0。下面的旧内核失败样本保持原样，二者各自绑定输入。
+
 本轮保持 preview.11 外部消费者的原页面动画、二进制和 60 秒就绪期限，使用[已修正计时竞态的监督器](../preview11-renewal-supervisor-clock-2026-09-26/README.md)。冻结文件 SHA-256 为 `8615b71960b35aa074553efd3ba6c4a7c91af594e88427cc1e59b153ec993749`，父冻结为 `b58de0c44a2ae96a12aa144f4d8607b800415c40b1311591e05b91f67486faef`。未修改旧输入。
 
 ## 观察

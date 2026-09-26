@@ -2,7 +2,7 @@
 
 本交付解决分层、接入、自行构建和验证的问题，仍为预览版本。
 
-[原生调度快照](../verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/README.md)已补充动画加载停滞的证据：x86 主线程的低优先级解析任务相对上一帧时钟迟约 10.28 秒，队列仍有更高优先级就绪提交任务。[候选策略](../verification/production-validation/scheduler-fairness-policy-2026-09-26/README.md)的旧行为回归失败，修正后两架构各十二项通过；真实内核重编和原动画运行尚未完成。固定二进制仍包含旧策略，不能把单元测试视为实际 SDK 已修复。
+[原生调度快照](../verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/README.md)确认 x86 低优先级解析任务相对上一帧时钟迟约 10.28 秒。[策略回归](../verification/production-validation/scheduler-fairness-policy-2026-09-26/README.md)先失败、后两架构各十二项通过；随后 [x86 完整重编和原动画短测](../verification/production-validation/scheduler-fairness-x86-rebuild-2026-09-26/README.md)退出 0，公共任务、取消、退订和关闭完成。该冻结消费者只替换内核，实际消除了这一个启动失败复现；x64 重编仍在进行，当前 SDK 整包和 Win7 等后续未通过。固定二进制尚未替换，不把新候选结果转为既有包已修复。
 
 冻结 preview.11 的[页面动画诊断](../verification/production-validation/preview11-renewal-animation-diagnostic-2026-09-26/README.md)中，相同输入只关闭旋转动画即可完成任务短测；动画开启时解析持续停滞，尚需原生调度证据。另一已就绪运行在页面记录后 15 ms 被监督器判定为“30 秒无记录”。[新外部夹具](../verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26/README.md)已复现并修正先采样时钟、后读跨线程快照导致的无符号差值风险；两架构边界测试、自检及关闭动画的诊断短测通过。原失败保留，关闭动画不作为 SDK 修复，真实续期和生产门槛继续未通过。
 
