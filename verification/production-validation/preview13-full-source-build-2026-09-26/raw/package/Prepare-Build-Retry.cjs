@@ -1,0 +1,12 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const root='C:/SOUI-SDK-production-validation/preview13-full-source-build-attempt2-20260926',previous='C:/SOUI-SDK-production-validation/preview13-full-source-build-20260926',repo='C:/SOUI-SDK-development/preview9-tray';
+const zip=path.join(repo,'dist/soui-sdk-0.3.0-preview.13-legal-identity-full-source.zip');
+const result=JSON.parse(fs.readFileSync(path.join(__dirname,'command-logs/source-package/result.json'),'utf8'));assert.equal(result.exitCode,0);assert.equal(result.timedOut,false);assert.equal(result.error,null);
+const sha=crypto.createHash('sha256').update(fs.readFileSync(zip)).digest('hex');assert.equal(fs.readFileSync(zip+'.sha256','utf8').split(/\s+/)[0],sha);assert(!fs.existsSync(root));fs.mkdirSync(root);
+let stage=fs.readFileSync(path.join(previous,'Stage.py'),'utf8').replace('soui-sdk-0.3.0-preview.13-independent-build-attempt2-full-source.zip','soui-sdk-0.3.0-preview.13-legal-identity-full-source.zip').replace('7ddafb54fdf2bb41f0aa3faeaad72d74b6de018d6e7435c307b803866dcc64b5',sha).replace('== 33103','== 33200');
+fs.writeFileSync(path.join(root,'Stage.py'),stage,{flag:'wx'});
+let build=fs.readFileSync(path.join(previous,'Build-Matrix.cjs'),'utf8').replace('assert.equal(full.files.length,33102)','assert.equal(full.files.length,33199)').replace('f2ca9f2ca470c5886cda1456b31b4260795667eb4df65d4c679d8acd80f2a788','a1007f2188102dfa4de4e79f73a4e0b2c2b8b99cf3e892a3d1e1e3794fd51e68');
+fs.writeFileSync(path.join(root,'Build-Matrix.cjs'),build,{flag:'wx'});fs.copyFileSync(path.join(previous,'Capture-Command.cjs'),path.join(root,'Capture-Command.cjs'),fs.constants.COPYFILE_EXCL);
+fs.writeFileSync(path.join(__dirname,'new-source-archive.json'),JSON.stringify({path:zip,sha256:sha,bytes:fs.statSync(zip).size,expectedManifestFiles:33199,sourceSha256:'a1007f2188102dfa4de4e79f73a4e0b2c2b8b99cf3e892a3d1e1e3794fd51e68',buildRoot:root,releaseReady:false},null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({archiveSha256:sha,buildRoot:root,releaseReady:false}));

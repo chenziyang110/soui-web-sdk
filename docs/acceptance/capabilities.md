@@ -1,6 +1,6 @@
 # 公共能力与验收映射
 
-当前开发候选为 preview.13。已完成[安装恢复](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)以及[已知旧现场副本恢复、独立账本四配置编译](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)；本版业务 GUI、完整应用与目标平台矩阵尚未执行。以下 preview.11 开发快照及各历史结果保留原输入身份。
+当前开发候选为 preview.13。已完成[安装恢复](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)、[已知旧现场副本恢复及独立账本四配置编译](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)，以及[完整源码无 Git 解压、SDK/Starter/Workbench 四配置构建、44 项原生与 8 项交付身份测试](../../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)。本版业务与应用 GUI、目标平台、底层完整重编仍待验证。以下 preview.11 开发快照及各历史结果保留原输入身份。
 
 更新：2026-09-26。开发候选：`0.3.0-preview.11`；逐行保留 preview.5/preview.4 冻结证据原身份。这是[完整方案](../roadmap/0.3-sdk-validation.md)的逐项执行入口，不是生产支持声明。preview.5 双架构构建与短测源码指纹为 `16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237`，见[任务容量证据](../../verification/production-validation/preview5-task-capacity-2026-09-24/README.md)；该版 Win7 x86 的[三应用](../../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)与[四模式公共消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)短测独立归档。带超时诊断的新源码又在[Win7 SP1 x86 QEMU 完成 100 次重载](../../verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/README.md)，来源不同，不与原失败载荷混算。preview.4 的千次生命周期证据保留原候选身份，不跨版本视为通过。
 

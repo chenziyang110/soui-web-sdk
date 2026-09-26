@@ -1,5 +1,17 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 冻结 preview.11 动画与监督器诊断
+
+[五份诊断副本](../../verification/production-validation/preview11-renewal-animation-diagnostic-2026-09-26/README.md)保留原二进制、JS 和期限。字符集位置不变仍未就绪，1 秒及 20 秒都只解析出两段诊断脚本。相同页面仅关闭旋转动画后，bootstrap/ready、两类公共任务、订阅和取消完成，原生退出 0；这是诊断短测，不是生产修复。另一次定时关闭动画的运行已就绪，却在新页面记录后 15 ms 报“30 秒无记录”退出 1。源码轮询先读时钟后读跨线程快照存在无符号减法下溢风险，需另建修正夹具；原失败仍保留。
+
+连续动画与低优先级加载任务饥饿尚待原生调度证据确证，不能直接删除动画或宣称 DOMException 为根因。35 分钟及八小时真实续期仍未执行，本轮证据不转移为当前 preview.13 通过。
+
+## 2026-09-26 preview.13 完整源码四配置构建完成
+
+[修正后的新完整源码包](../../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)在独立无 Git 解压目录通过同版 419 文件 SDK 匹配；x86/x64 × Debug/Release 的 SDK、Starter、Workbench 四次构建均退出 0。44 项原生契约测试和解压目录内 8 项交付身份测试通过，完整源码清单在构建及测试后保持一致。八份运行载荷及各 60 个 PE 架构已独立复核，实际编译/链接无 vcpkg 路径。
+
+本轮绑定 ZIP SHA `bbd0aa35d66ae85662fff9e4047598f82507974fb9ee48bffd2c99d9d95de9fd` 和 714 文件输入 `a1007f2188102dfa4de4e79f73a4e0b2c2b8b99cf3e892a3d1e1e3794fd51e68`。未执行这些新载荷的 GUI，也未重编本候选全部底层依赖或完成干净机器复现；完整交付、设备与生产门槛继续未通过。以下记录保留各自执行时点。
+
 ## 2026-09-26 源码交付身份修正与页面脚本定位
 
 [完整源码解压预检](../../verification/production-validation/preview13-legal-identity-2026-09-26/README.md)发现 Element Plus 许可证被 Git 从 CRLF 转成 LF，同版 SDK 匹配失败，尚未编译。全源码清单自身通过不能替代 SDK 包匹配。Git 规则已覆盖全部许可证原始字节，交付身份回归先失败、后 8/8 通过；现有 419 文件 SDK 包与工作区匹配退出 0，SDK 实现及版本不变。新增回归后的 714 文件验证输入 SHA 为 `a1007f2188102dfa4de4e79f73a4e0b2c2b8b99cf3e892a3d1e1e3794fd51e68`，下一轮须用新完整源码包重新解压并构建，原失败目录不改。
