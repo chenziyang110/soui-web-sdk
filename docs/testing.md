@@ -1,5 +1,7 @@
 # 测试与验收
 
+preview.9 的 `sdk.native.tray-service` 使用未安装的私有平台边界测试托盘故障和资源状态，不创建窗口或调用真实 Shell。独立 [tray-consumer](../tests/tray-consumer/README.md) 必须只从安装后的 SDK 构建，其 `--smoke-test` 会使用真实桌面，须与其他桌面/QEMU 负载串行。编译、模拟故障、Shell API 返回成功均不能替代图标可见、真实点击、Explorer 重启和目标平台验证。
+
 0.3 后续的场景、公共 SDK 消费者、Electron 对照及生产准入设计见 [SDK 生产能力与价值验证方案](roadmap/0.3-sdk-validation.md)。其中独立消费者与生命周期驱动已落地，混合负载、完整 Electron 对照及生产准入档尚未实现；下文是当前可用入口。
 
 独立公共 SDK 消费者现有入口为 `powershell.exe -File tools/Test-Acceptance.ps1 -Architecture x64 -Scenario all -Cycles 3`。支持 reload/recreate/multiwindow 的真实 Host 生命周期与 Runtime 退出边界，以及 `bridge` 的标准连接器/32 并发/延时/错误恢复探针；说明见 [测试应用](../tests/acceptance-app/README.md)。`-PrepareOnly` 只生成已绑定身份的消费者，不执行任何桌面场景。该入口不包含方案中的全部场景，不授予生产或长稳通过结论。

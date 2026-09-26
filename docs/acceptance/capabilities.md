@@ -1,6 +1,6 @@
 # 公共能力与验收映射
 
-更新：2026-09-25。开发候选：`0.3.0-preview.8`；逐行保留 preview.5/preview.4 冻结证据原身份。这是[完整方案](../roadmap/0.3-sdk-validation.md)的逐项执行入口，不是生产支持声明。preview.5 双架构构建与短测源码指纹为 `16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237`，见[任务容量证据](../../verification/production-validation/preview5-task-capacity-2026-09-24/README.md)；该版 Win7 x86 的[三应用](../../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)与[四模式公共消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)短测独立归档。带超时诊断的新源码又在[Win7 SP1 x86 QEMU 完成 100 次重载](../../verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/README.md)，来源不同，不与原失败载荷混算。preview.4 的千次生命周期证据保留原候选身份，不跨版本视为通过。
+更新：2026-09-26。开发候选：`0.3.0-preview.9`；逐行保留 preview.5/preview.4 冻结证据原身份。这是[完整方案](../roadmap/0.3-sdk-validation.md)的逐项执行入口，不是生产支持声明。preview.5 双架构构建与短测源码指纹为 `16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237`，见[任务容量证据](../../verification/production-validation/preview5-task-capacity-2026-09-24/README.md)；该版 Win7 x86 的[三应用](../../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)与[四模式公共消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)短测独立归档。带超时诊断的新源码又在[Win7 SP1 x86 QEMU 完成 100 次重载](../../verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/README.md)，来源不同，不与原失败载荷混算。preview.4 的千次生命周期证据保留原候选身份，不跨版本视为通过。
 
 状态为“待实现、部分实现、已实现待验收、通过当前范围、失败、待外部验证”。`通过当前范围` 只对应本行所列场景；同组尚有缺口时，整组不通过。不把 Demo 的注册或 TypeScript 声明当作公共模块实现。
 
@@ -13,7 +13,7 @@
 | V01-03 事件与释放 | `SouiNativePort.onEvent`；Host event sink | 部分实现：模板已接入真实事件连接器；统一 dispose、可观察订阅、迟到建立补偿和幂等移除已有单元验证；preview.8 [独立消费者 Win7 x86 页面](../../verification/production-validation/win7-sp1-x86-qemu-preview8-public-task-2026-09-25/README.md)每轮收到公开任务进度并解除订阅 | 重载/关闭竞态、丢失确认后的会话清理 |
 | V01-04 任务与取消 | `task_store` 为底层状态；待审查分支新增公共 `task_service`，Demo 的既有业务适配仍独立 | 已实现待验收：公共注册、2 个工作线程、32 个未完成任务、进度和协作取消通过 x86/x64 原生契约；Demo 公开任务场景双架构无窗口适配器测试通过；preview.6 [独立消费者](../../verification/production-validation/preview6-independent-consumer-2026-09-25/README.md)及[Win7 短测](../../verification/production-validation/win7-sp1-x86-qemu-public-task-2026-09-25/README.md)通过；preview.8 [独立页面 Win7 x86 QEMU 三轮](../../verification/production-validation/win7-sp1-x86-qemu-preview8-public-task-2026-09-25/README.md)完成进度、结果、取消与恢复 | Demo 页面真实交互、取消/完成竞态、任务中关窗、Win7 x86 长时业务链 |
 | V01-05 容量与错误 | Bridge 参数边界；Host 请求预算和 resolver；客户端等待上限 | preview.5 的 `task_store` 硬上限、重复/冲突、取消占位、并发准入和扫描 `E_BUSY` 的 x86/x64 测试通过；[Win7 SP1 x86 QEMU 原生容量测试](../../verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/README.md)同样退出 0；preview.8 [独立页面消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview8-public-task-2026-09-25/README.md)在 Win7 x86 验证 256 普通请求、控制槽位及错误恢复 | 实际排队超时与关闭竞态、Win7 上长时任务满载业务链 |
-| V01-06 会话长寿命 | `permission_store` / `json_bridge` | 已实现待验收：凭据存在期限，长会话恢复契约未闭环 | 超过 30 分钟的过期、续接与原任务归属；8 小时不能靠重载规避 |
+| V01-06 会话长寿命 | `permission_store` / `json_bridge` | 部分实现：30 分钟凭据过期会拒绝新调用，但 Web 无续接路径，任务/订阅归属精确绑定 token，不能简单替换凭据；同文档续接尚未实现 | 安全轮换、不扩权、原任务/订阅保留及撤销竞态；超过 30 分钟与跨轮换八小时验证，不能靠重载规避 |
 
 连接器与业务方法类型拆分按 [ADR-0004](../adr/0004-web-connection-lifecycle.md) 实施。默认 `SouiMethodMap` 仍包含 Demo 服务字段，最小模板通过自己的 `AppMethods` 接入；后续迁移须保留明确兼容说明。
 
@@ -22,6 +22,8 @@
 同一开发分支的 Demo 已加可见公开任务场景，公开任务和旧业务任务使用不同 ID 前缀；x86/x64 的 `demo.native.public-task` 无窗口测试覆盖启动、订阅事件、成功结果、取消及会话撤销。Web 构建和严格 TypeScript 检查通过。该测试没有创建 WebView，不能替代 Demo 页面交互或 Win7 客体验收。
 
 ## V02–V04 交互与桌面
+
+preview.8 的 [Win7 SP1 x86 Demo GUI 记录](../../verification/production-validation/win7-sp1-x86-qemu-preview8-demo-ui-2026-09-25/README.md)已人工核对万条列表滚动至末段、公共任务完成和取消；475 文件载荷、15 份串口结果及退出序列均按原身份核验。它补足部分真实页面操作，仍不覆盖 IME、缩放和任务同时响应、输入到呈现时延或 preview.9。
 
 | ID | 公共入口/所有权 | 当前状态与证据 | 下一项必需验证 |
 |---|---|---|---|
@@ -33,7 +35,7 @@
 | V03-03 剪贴板 | SDK `json_bridge.enable_clipboard_service()` 显式注册 `desktop.clipboard.writeText`；模板启用并提供按钮 | 已实现待验收：x86/x64 SDK 与模板编译、Web 类型检查及构建、原生契约中的假手势/缺手势/缺窗口拒绝通过；[Win7 SP1 x86 QEMU 公共服务中文写入读回](../../verification/production-validation/win7-sp1-x86-qemu-desktop-v2-2026-09-25/README.md)退出 0 | 模板真实点击、占用失败、大文本、受限账户与关闭竞态 |
 | V03-04 屏幕与外部打开 | 公共 screen/shell 模块 | 待完成统一公共契约及消费者 | 混合 DPI、多屏移动/断连、URL/路径校验与操作结果 |
 | V04-01 三窗口独立工作 | 进程 Runtime + 各窗口 Host/Bridge/session | 通过当前范围：preview.4 固定包 x64/x86 各 1,000 轮正常退出，关闭中间窗、另两窗重载和中间窗重建 | 资源所有权、任务和事件并存时关闭隔离；目标 32 位与旧版 Windows 实机 |
-| V04-02 驻留能力 | 公共托盘、菜单、快捷键模块 | 待实现并独立验收 | 冲突/失败、Explorer 重启、无窗口驻留、最后退出回收 |
+| V04-02 驻留能力 | 公共原生 `tray_service`；菜单、快捷键仍待实现 | 部分实现：[preview.9 冻结记录](../../verification/production-validation/preview9-public-tray-preflight-2026-09-26/README.md)包含双架构 SDK/独立消费者编译、14 组托盘契约和宿主安装/提示更新/移除短测；真实通知数为 0，不能替代交互证据 | 真实图标/通知、Explorer 重启、Win7 x86；公共菜单/快捷键、Workbench 无窗口驻留、最后退出回收 |
 
 ## V05 资源、故障与安全边界
 

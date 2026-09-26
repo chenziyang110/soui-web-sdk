@@ -77,6 +77,18 @@ Web 方法类型为 `SouiClipboardMethodMap`，与 `SouiCoreMethodMap` 组合使
 
 `subscribe(taskId, eventName, listener)` 保留可调用的移除句柄，同时提供 `ready`、`closed` 和 `unsubscribe(): Promise<void>`。建立失败会拒绝 `ready`；注销立即停止本地回调，等待 `unsubscribe()` 才能判断是否收到原生成功确认。重复移除共享同一次结果；建立期间移除或本地超时后收到迟到成功，会尽力补做一次注销。若传输已丢失确认或文档销毁，原生服务仍须按会话回收自己的订阅，不能依赖页面补偿保证释放。可选 `onError` 观察异步错误及被隔离的业务回调异常。
 
+## 原生应用级托盘（preview.9）
+
+`<soui/runtime/services/desktop/tray_service.h>` 提供可选 `soui::runtime::tray_service`，只链接 `Soui::Sdk` 即可使用，无需 WebView。应用创建隐藏顶层 HWND 和消息循环，在该窗口线程构造、操作及销毁服务；`tray_options` 指定借用的 `owner_window`、待复制的 `icon`、1–65535 的 `icon_id`、应用独占的 `callback_message`（`WM_APP` 范围）以及 UTF-8 `tooltip`。
+
+- `install(options)` 检查窗口归属、复制图标并安装 v4 Shell 图标；重复安装需先 `remove()`。`update_tooltip(text)` 只更新已安装图标，拒绝无效 UTF-8、嵌入 NUL 和超过 127 个 UTF-16 单元的提示，不静默截断。
+- WndProc 将消息交给 `dispatch_message(message, wparam, lparam)`；它返回 `handled`、`response` 和 `tray_event::activated/context_menu/none`。只有 `position_valid` 时可用 `x/y`；上下文菜单事件须由应用选择菜单位置。事件仅表示收到匹配通知，不能作为 Web 授权或可信手势凭据。重建消息也通过该入口处理并报告恢复结果。
+- `installed()` 表示最近增加图标和 v4 设置均成功，不能证明图标对用户可见；`desired()` 表示 Shell 重建后仍应尝试恢复；`cleanup_pending()` 表示清理尚未确认。安装失败仍须检查返回值和状态，不能仅凭期望状态继续交互。
+- 菜单等托盘 UI 操作完成或取消后，调用并检查 `return_focus()`，请求 Shell 将焦点交回通知区。它要求已安装状态，不改变图标生命周期；真实键盘操作仍需桌面验证。
+- `remove()` 立即取消恢复意图，再尝试删除；返回失败时可在原线程重试。应用在 HWND 存活时明确移除，随后销毁服务，最后销毁 HWND。析构只做尽力清理。所有操作和状态查询须遵守线程及无重入契约。
+
+服务不创建原生菜单、不注册快捷键、不修改模板最后窗口关闭策略。完整驻留由应用控制器负责。独立接入和待执行的真实 Shell 验收见 [tray-consumer](../tests/tray-consumer/README.md)；设计及失败语义见 [ADR-0012](adr/0012-public-tray-service.md)。
+
 ## 错误与超时
 
 `SouiBridgeError` 包含 `code` 和 `requestId`。非法响应、相关 ID 不匹配、权限拒绝、会话失效和页面等待超时都有独立错误。页面超时不代表原生任务已经取消；需要调用服务自己的取消接口。
