@@ -1,5 +1,11 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 原生加载任务饥饿与策略候选
+
+[匹配符号的 x86 队列快照](../../verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/README.md)确认主线程加载任务相对上一帧时钟已迟约 10.28 秒，队列仍有已就绪、更高优先级的页面提交任务。原动画、二进制和期限未改，原生仍退出 1、bootstrap/任务为 0。全部原始记录和失败保留，调试器样本不作性能证据。
+
+[候选策略回归](../../verification/production-validation/scheduler-fairness-policy-2026-09-26/README.md)在旧策略实际失败；加入就绪任务等待补偿后，x86/x64 各十二项通过。设计见 [ADR-0016](../adr/0016-scheduler-ready-task-fairness.md)。完整依赖重编仍在进行，尚未替换固定 DLL、增加交付版本或证明原动画恢复。源码候选与既有 preview.13 发布输入分别保留，续期、V02 和生产门槛不放行。
+
 ## 2026-09-26 外部监督器计时竞态修正
 
 [新的独立夹具](../../verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26/README.md)已确定性复现“先读时钟、后取快照”导致无符号差值下溢，旧顺序运行退出 1。改为先取快照、再读单调时钟后，x86/x64 各 8 项计时边界检查、45 项阶段自检及 8 条日志检查通过；真实消费者也重编完成，SDK 与父冻结未改。新冻结 SHA 为 `b58de0c44a2ae96a12aa144f4d8607b800415c40b1311591e05b91f67486faef`。

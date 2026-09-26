@@ -1,0 +1,9 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process'),assert=require('node:assert/strict');
+const repo='C:/SOUI-SDK-development/preview14-scheduler',root=__dirname,arch=process.argv[2],phase=process.argv[3];assert(['x86','x64'].includes(arch));assert(['red','green'].includes(phase));
+const build=path.join(root,'builds',arch+'-'+phase),snapshot=path.join(root,'snapshots',arch+'-'+phase),env={...process.env,VcpkgEnabled:'false',VcpkgAutoLink:'false',VcpkgEnableManifest:'false'};
+for(const file of ['tests/native/scheduler_fairness_tests.cpp','tests/native/CMakeLists.txt','third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h','third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp']){const dest=path.join(snapshot,file);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.copyFileSync(path.join(repo,file),dest,fs.constants.COPYFILE_EXCL);}
+function run(name,program,args,expected=0){const r=cp.spawnSync(process.execPath,[path.join(root,'Capture-Command.cjs'),arch+'-'+phase+'-'+name,'180000',program,...args],{env,stdio:'inherit',windowsHide:true});assert.equal(r.status,expected,name);const recorded=JSON.parse(fs.readFileSync(path.join(root,'command-logs',arch+'-'+phase+'-'+name,'result.json')));assert.equal(recorded.exitCode,expected);assert.equal(recorded.timedOut,false);assert.equal(recorded.error,null);}
+run('configure','cmake.exe',['-S',repo,'-B',build,'-G','Visual Studio 17 2022','-A',arch==='x86'?'Win32':'x64','-T','v143','-DCMAKE_SYSTEM_VERSION=10.0.19041.0','-DSOUI_BUILD_TEMPLATE=OFF','-DSOUI_BUILD_DEMOS=OFF']);
+run('build','cmake.exe',['--build',build,'--config','Release','--target','soui_scheduler_fairness_tests','--parallel','2']);
+run('execute',path.join(build,'tests/native/Release/soui_scheduler_fairness_tests.exe'),[],phase==='red'?1:0);

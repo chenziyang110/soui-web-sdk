@@ -11,6 +11,7 @@
 | `0005-gpu-surface-lifecycle.patch` | GPU 表面在合成线程创建，却原先在该线程退出后于 UI 线程析构；`GrGLCreateNativeInterface()` 返回的引用也未释放。把表面释放移回合成线程，并补齐 Skia 接口引用释放；保留可选关闭诊断。 | x86/x64 历史候选 GPU 重建 30 轮正常退出但 USER 对象仍逐轮增长；x64 软件对照的句柄和内存在 100 轮出现回收，不能把其 30 轮端点误判为线性泄漏。详情见 [GPU 生命周期记录](../../../docs/acceptance/gpu-lifecycle.md)。修补已进入 preview.4 固定 DLL，GPU 仍是实验模式。 |
 | `0006-verify-tls-peer-and-host.patch` | Miniblink 网络句柄原先关闭 TLS 证书链和主机名校验。移除不安全默认值；允许宿主选择信任根后，强制启用链和主机名校验。 | x86/x64 重编译候选及 preview.4 固定 DLL 均完成回环 HTTPS 各六项，包括错误证书、主机名不匹配、重定向和回调试图关闭两种校验；公共消费者四模式短回归通过。[固定包原始证据](../../../verification/production-validation/preview4-fixed-2026-09-23/README.md)保留。信任根交付和旧 TLS 组件维护仍未验收。 |
 | `0007-mark-utf8-source-encoding.patch` | 独立源码包使用 LF 行尾，四个无 BOM 的 UTF-8 内核文件在代码页 936 下出现 C4819 和 `TileGrid` 编译错误；Skia 另有同类警告。仅增加五个 UTF-8 BOM，保留正文原始字节和其余旧编码源码。 | 补丁可在仓库根目录正向及反向校验；双架构底层重编与实际启动的结果见[独立源码编码复测](../../../verification/production-validation/preview6-relocated-dependency-encoding-2026-09-25/README.md)。未替换固定 DLL，生产门槛不变。 |
+| `0008-bound-ready-task-priority-wait.patch` | 连续动画提交可使严格低优先级的已就绪解析任务长期饥饿。提取实际选择策略，对等待达到 50 ms 的就绪任务按到期先后优先，保留未来任务资格和退出原规则；50 ms 不是执行时延保证。 | x86 匹配符号队列证明加载任务已迟约 10.28 秒；两架构策略测试先失败、后各十二项通过。补丁正反向检查通过，完整依赖重编及原动画运行仍待完成，未替换固定 DLL。见[原生证据](../../../verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/README.md)和 [ADR-0016](../../../docs/adr/0016-scheduler-ready-task-fairness.md)。 |
 
 补丁前文件原始字节 SHA-256 为 `d9c3a403e43493cdc13344781eb680c838ab68695e7c2119829ecb11313662da`；新源码由 SDK 的全源码清单记录。修改原生依赖后，必须以隔离目录的新 DLL 运行既有复现和真实应用，再更新预编译依赖身份、来源说明及许可核查对象。
 

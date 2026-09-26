@@ -7,8 +7,8 @@
     {
       "path": ".gitattributes",
       "normalization": "lf",
-      "bytes": 12598,
-      "sha256": "f3a8b71b47c4b80154f49477a62ad66150b8eb16de752083a338b973441b2144"
+      "bytes": 12983,
+      "sha256": "f923ec078e82ea8dfa3a15bccca8c481ca44ee25a0b748295bc026b5542388e6"
     },
     {
       "path": ".github/CODEOWNERS",
@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 11046,
-      "sha256": "3a8a9717fa2324c765901e84749a96ccd76019605ff7035576fea9dfcf108b61"
+      "bytes": 11634,
+      "sha256": "f1db61c1d26f7e1be3e4d5e31a8f88baae239c9c9c12ea4042b40c5f4b264ff1"
     },
     {
       "path": "CMakeLists.txt",
@@ -1429,8 +1429,8 @@
     {
       "path": "docs/acceptance/progress.md",
       "normalization": "lf",
-      "bytes": 72824,
-      "sha256": "18c60fe526ceae96636d33995492e9cd8caab10012c6554089230c16b9adabb4"
+      "bytes": 73775,
+      "sha256": "f156b8ccd236fbfa0a61d4bcec43c37869d4ab75e616c4f15535ae643a7f1e4d"
     },
     {
       "path": "docs/acceptance/support-matrix.md",
@@ -1535,6 +1535,12 @@
       "sha256": "bb0b14eb698f155c726113d52e92d4550c8c5f1d126e704907cdf19beba32ab4"
     },
     {
+      "path": "docs/adr/0016-scheduler-ready-task-fairness.md",
+      "normalization": "lf",
+      "bytes": 2803,
+      "sha256": "957336d8165cb6c7b4545a0c33e65f6dbf0d771de71846540f22409eb9774e7d"
+    },
+    {
       "path": "docs/adr/README.md",
       "normalization": "lf",
       "bytes": 533,
@@ -1567,8 +1573,8 @@
     {
       "path": "docs/known-issues.md",
       "normalization": "lf",
-      "bytes": 12131,
-      "sha256": "410d64641bb7a214ebcd557ab5588270ae3effc24d00367ea707cb302374b220"
+      "bytes": 12717,
+      "sha256": "2c31eafc8c392c1f6396f49223277c03bf93448406252b16a89c0a25c6f1e5ad"
     },
     {
       "path": "docs/releasing.md",
@@ -1597,8 +1603,8 @@
     {
       "path": "docs/testing.md",
       "normalization": "lf",
-      "bytes": 7693,
-      "sha256": "ae75e54b15b7835cadc162ef9c23929e937e9aa3e9442f91bb923e485e79e197"
+      "bytes": 8191,
+      "sha256": "274697a1bfc47d6510e90edc9ff3383c429451b7e6b045b4dc8b39aafdbb2b63"
     },
     {
       "path": "docs/troubleshooting.md",
@@ -2221,8 +2227,8 @@
     {
       "path": "tests/native/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 6040,
-      "sha256": "9a084d699e537d8a4d1cb918b30109fd59019b254a489a3a40e0567a8541b8da"
+      "bytes": 6647,
+      "sha256": "5be174e43f18c32ee97f968ccc51758ee8bf9bfdbb8a7cf9defb17b20b6bc3ad"
     },
     {
       "path": "tests/native/bridge_budget_tests.cpp",
@@ -2265,6 +2271,12 @@
       "normalization": "lf",
       "bytes": 1577,
       "sha256": "e8b08bf76bd93a02da851f3e6a26d4ab1c6b19924568af6141793febbbf06b4c"
+    },
+    {
+      "path": "tests/native/scheduler_fairness_tests.cpp",
+      "normalization": "lf",
+      "bytes": 3230,
+      "sha256": "b4bddb35fc2dc19894a5669b730a87bab532db0c9929c48453d3851eea553422"
     },
     {
       "path": "tests/native/sdk_contract_tests.cpp",
@@ -3497,10 +3509,16 @@
       "sha256": "7a4cd0cd788e87e9d0ae2d42b5fe55fb6800ee7a2df8e858e8932b78dbaefbce"
     },
     {
+      "path": "third_party/patches/miniblink/0008-bound-ready-task-priority-wait.patch",
+      "normalization": "lf",
+      "bytes": 3778,
+      "sha256": "77956f5cbce1a5d2316e64bfba5d8ed72f0f26f5b58f5d9e20538f8d2636c801"
+    },
+    {
       "path": "third_party/patches/miniblink/README.md",
       "normalization": "lf",
-      "bytes": 4986,
-      "sha256": "adc3237643460e05d6ea1ed88cf4fdd40376f08f3642b61282d713e05ff1cc6a"
+      "bytes": 5700,
+      "sha256": "21701b717cb22253f5973fc2092edf3fdbe9ca1810686963975fb8a343fcf8f2"
     },
     {
       "path": "third_party/prebuilt/x64/miniblink/node.dll",
@@ -5987,6 +6005,12 @@
       "sha256": "ab1eeb803d8985e9f70b8f2db9439f163b9071e0bd7fabbd030e8d5da9dc0ac0"
     },
     {
+      "path": "third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h",
+      "normalization": "lf",
+      "bytes": 1599,
+      "sha256": "1db945b69bb97d90b0d3b9dd8b3e8cc84ff82bed6b58ab598d884866be3ceb84"
+    },
+    {
       "path": "third_party/sources/miniblink/content/web_impl_win/WaitableEvent.h",
       "normalization": "lf",
       "bytes": 7263,
@@ -6121,8 +6145,8 @@
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
       "normalization": "lf",
-      "bytes": 16672,
-      "sha256": "bf7d452636858bb76b58f13e483e4d8111b148abbe73f1bf417b1aff986b97ce"
+      "bytes": 16415,
+      "sha256": "c70af246c7b68ef02129dde47fa7a93adce746ce96e7a5cf174220cc162e71bd"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
@@ -185195,6 +185219,216 @@
       "sha256": "7d21412be2253c5fcabeeef710c43418b1539b22f7d55cd0cb3cb2ef729d4598"
     },
     {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/README.md",
+      "normalization": "lf",
+      "bytes": 2629,
+      "sha256": "2774369482601f804c64fd207c6e58e03da25f9203e39d0d757ba1d7f94ab7c6"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw-manifest.json",
+      "normalization": "lf",
+      "bytes": 10516,
+      "sha256": "514396dee32af52e4d4440ea5d043f408841d9b9b53f90172c7ada3badf8b5cd"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/Capture-Command.cjs",
+      "normalization": "none",
+      "bytes": 2235,
+      "sha256": "1b5344feee4a7f1018d6470cb905dd982bd009701cb930b2c3c3f99b7dc65530"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/Prepare.cjs",
+      "normalization": "none",
+      "bytes": 5246,
+      "sha256": "06a407ba79c30ac0e0647400f855a3585c15468170a00f901868fd29482a7d90"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/Review-Archive-attempt1.cjs",
+      "normalization": "none",
+      "bytes": 5677,
+      "sha256": "8c428f11ccf33ddd422818b55e696d11ebc1cfa3a5c22157f5c970e1b96fd982"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/Review-Archive.cjs",
+      "normalization": "none",
+      "bytes": 5684,
+      "sha256": "12c6e0c7562fcc3df30c70e04b55f2d4933f17213be436d115b834d2b3bca51a"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/Run.cjs",
+      "normalization": "none",
+      "bytes": 6434,
+      "sha256": "7e0315c53a81dc3fd6c1083c1a5bb2c15c68f2a15a557eb8f5a970c6acb7297f"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/command-logs/archive-review-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 583,
+      "sha256": "d7a7b89e3f14c04d8d6eec46cce0765e3391d04bc15dfc787198c3b922cd820f"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/command-logs/archive-review-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 918,
+      "sha256": "28b4326ab1d298250ad1578f3772943f5e641da510fca606ffab3915f65408ee"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/command-logs/archive-review-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/command-logs/scheduler-stack-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 642,
+      "sha256": "acbdd26a6f23bf2b1a877b891440f6c71f8cc2ed1aa1cf17652c592db861d642"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/command-logs/scheduler-stack-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/command-logs/scheduler-stack-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 302,
+      "sha256": "cd5bc6fa1c05d1ef8ef23b903ab12174dfce7850ac46fa5989916c3c9429ba2b"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/dll-debug-directory.txt",
+      "normalization": "none",
+      "bytes": 5444,
+      "sha256": "720f6d28e498ce5d26b8963ad38fcb5fbf43cb3e37e03d8b80711c888f1f9354"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/freeze.json",
+      "normalization": "none",
+      "bytes": 17238,
+      "sha256": "8615b71960b35aa074553efd3ba6c4a7c91af594e88427cc1e59b153ec993749"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/issue.md",
+      "normalization": "none",
+      "bytes": 1609,
+      "sha256": "f1e5367fdb52b0882a56f33543ab1fb715fbf9b568e76b5d326877359b6d5e6a"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/pdb-summary.txt",
+      "normalization": "none",
+      "bytes": 475,
+      "sha256": "a5bd7aebbf5ba7963a5857d05a175e8b54cbb8b7464e4c5354feee4fdba9d6b1"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/review.json",
+      "normalization": "none",
+      "bytes": 2371,
+      "sha256": "4571669575f5bc5a6feb5cd6a9bdaf289d5edbfe69f0e0f3c1bdad600382e277"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/debugger-launch.json",
+      "normalization": "none",
+      "bytes": 715,
+      "sha256": "01005879f491c140e9b3a63b5a5896736c5195345481e51336e90d33463022b2"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/debugger-result.json",
+      "normalization": "none",
+      "bytes": 135,
+      "sha256": "a6232fb6cf6998bdefd1c6b3a90a778aa8bb066a3d9f83d1a4ec2b556ad823ad"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/debugger.log",
+      "normalization": "none",
+      "bytes": 41909,
+      "sha256": "77ee1c4eaa02e5122e29d8975c1b3a63a38ea8f7bbb00547aa6f21088f8a4ad3"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/debugger.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/debugger.stdout.log",
+      "normalization": "none",
+      "bytes": 39915,
+      "sha256": "24ef7589b5600392f98c8914c7d46a1fc70aa472eb22bf9b9b10dcf41b71521c"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/gate-after.json",
+      "normalization": "none",
+      "bytes": 105,
+      "sha256": "6b5d85931c7fe9833ee483cdcdd4c1c5bc2c6996661f8c83e38f3f447d7934f6"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/gate-before.json",
+      "normalization": "none",
+      "bytes": 105,
+      "sha256": "17da6beae811f366a355a4fd7dab3680069ce2506067e2baa68a4c30c7f25732"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/gate-prelaunch.json",
+      "normalization": "none",
+      "bytes": 105,
+      "sha256": "9d4848f21923b188f960bc50b0af202dc50312b34c20ac4b2de8e5dfd9affbe1"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/gates-during.json",
+      "normalization": "none",
+      "bytes": 1203,
+      "sha256": "33c6c6170e07ff86b77719e8783213e7a1d1fc53d5c0ca54ecb5459f231b55b4"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/launch.json",
+      "normalization": "none",
+      "bytes": 701,
+      "sha256": "92566d1b184c27a8b86e32dc6dcaeea7d77b5cd6fd753aa0e820bb6fbf1a3782"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/native.ndjson",
+      "normalization": "none",
+      "bytes": 3998,
+      "sha256": "49f2ccc413b98aeb07bf5c468fb412dd06c1c05226ceae27f87c20ea6eb1e7e4"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/payload-after.json",
+      "normalization": "none",
+      "bytes": 11148,
+      "sha256": "9cf21598bd337450d17442e2da8c6d8a80d5effeb5ddda4e183385c429de81bb"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/payload-before.json",
+      "normalization": "none",
+      "bytes": 11003,
+      "sha256": "838305f7f6d15793a53b84a0f0b46d9d0e7297541746708423af05773aac24af"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/result.json",
+      "normalization": "none",
+      "bytes": 457,
+      "sha256": "2fb4027473d1a6f41cd2265572d8b24eb0508589da92a769b88df2566ca5d898"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/runs/x86-2026-09-26T14-23-43-468Z/stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/raw/scheduler.cdb",
+      "normalization": "none",
+      "bytes": 456,
+      "sha256": "4b722b0c751d4bdd4e9f157c258ac16dba08a36c9309fd23a0d4257e142f343e"
+    },
+    {
       "path": "verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26/README.md",
       "normalization": "lf",
       "bytes": 3220,
@@ -196833,6 +197067,582 @@
       "normalization": "lf",
       "bytes": 424,
       "sha256": "3f8928fdec66ef9de5e2f70887c0ed0da93a4d2e4e4f154bb70f56eb6ba1dea1"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/README.md",
+      "normalization": "lf",
+      "bytes": 1941,
+      "sha256": "7965e49d9083de8bc4ea2b9402354f9bc08ff0b8e42d65262e3f86ae1c53a324"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw-manifest.json",
+      "normalization": "lf",
+      "bytes": 33518,
+      "sha256": "37b496ae375edc546700b8cb1e4f0f29a1fa81b9945c81b6af74b7f8a16f3159"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/Capture-Command.cjs",
+      "normalization": "none",
+      "bytes": 2235,
+      "sha256": "1b5344feee4a7f1018d6470cb905dd982bd009701cb930b2c3c3f99b7dc65530"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/Integrate.cjs",
+      "normalization": "none",
+      "bytes": 1842,
+      "sha256": "225357f0cd2bf0d08e5e4d5a5f40c91f09fdeaccd92f2c34eb41e5f034bc18ba"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/Review-Policy.cjs",
+      "normalization": "none",
+      "bytes": 4110,
+      "sha256": "64b7ae5722a4dbb734a893c8d529a6615a3047d7260d9514a5688cbad81c381d"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/Test.cjs",
+      "normalization": "none",
+      "bytes": 1857,
+      "sha256": "2ca82b1ced35d4b51ff38fee030e329697f18f4314454d24850dd9ff56bb0069"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/WebThreadImpl-before.cpp",
+      "normalization": "none",
+      "bytes": 16672,
+      "sha256": "bf7d452636858bb76b58f13e483e4d8111b148abbe73f1bf417b1aff986b97ce"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-green/CMakeCache.txt",
+      "normalization": "none",
+      "bytes": 15539,
+      "sha256": "b7005d8a8b79806e3f7e177e53cd3bb9d9f8d54d91c215e5b542e97b43c868ad"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-green/CMakeFiles/4.2.3/CompilerIdC/Debug/CompilerIdC.tlog/CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 920,
+      "sha256": "0ed1a73a5109ab5f5f5491eab2235ec99549393e76940f58c2895334718505e8"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-green/CMakeFiles/4.2.3/CompilerIdC/Debug/CompilerIdC.tlog/link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1114,
+      "sha256": "11fa95417d7b28b30416368eb64c6279a0c805dc5eb473880f002c9a0763d33a"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-green/CMakeFiles/4.2.3/CompilerIdCXX/Debug/CompilerIdCXX.tlog/CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 944,
+      "sha256": "d0b9ad222651c5178c84949cf3e8b12ed0db1cd3ae7ecb6217c2cb9546637dd1"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-green/CMakeFiles/4.2.3/CompilerIdCXX/Debug/CompilerIdCXX.tlog/link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1138,
+      "sha256": "0bd08a678bcc93f36cbec87d4ff1715e03fab850a895a023b8cced4f40041163"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-green/CMakeFiles/CMakeConfigureLog.yaml",
+      "normalization": "none",
+      "bytes": 168411,
+      "sha256": "72dd869c68f393a7eef256a8d52cbd9f5f1f9488f3fe5e6098ec5928485ee432"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-green/tests/native/soui_scheduler_fairness_tests.dir/Release/soui_sch.F03CDBD0.tlog/CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1050,
+      "sha256": "c79b4c5f320878ca6c4d999b20b80244c4917ced8ccb6e4f1357cd75971489fb"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-green/tests/native/soui_scheduler_fairness_tests.dir/Release/soui_sch.F03CDBD0.tlog/link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1936,
+      "sha256": "422355972b7735e724c4712f088d3f1db76ce97f2fbcd0f4ad65ff5c89868981"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-green/tests/native/soui_scheduler_fairness_tests.vcxproj",
+      "normalization": "none",
+      "bytes": 27748,
+      "sha256": "650b68df9224b6f3c6d89565fa7338b9f54bb132980e7be31cc05f094cdbd160"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-red/CMakeCache.txt",
+      "normalization": "none",
+      "bytes": 15529,
+      "sha256": "6ec49aab7a6ba397e99415fd1bff86b6c7831aa8ea63c9a7518447a3d99777a0"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-red/CMakeFiles/4.2.3/CompilerIdC/Debug/CompilerIdC.tlog/CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 912,
+      "sha256": "50100a33759bd466559042bdf39193ffe6bab6a6d694f2683194a1eaa00f4e63"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-red/CMakeFiles/4.2.3/CompilerIdC/Debug/CompilerIdC.tlog/link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1110,
+      "sha256": "7d82bfe4eca0589d1de01070158f83c3928379351a0418f676a98e4d1a6a49fe"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-red/CMakeFiles/4.2.3/CompilerIdCXX/Debug/CompilerIdCXX.tlog/CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 936,
+      "sha256": "a13be9f4adaadfdd919457ec5fce79000d3f9d17dea346d4f5e73216e5e3c6cc"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-red/CMakeFiles/4.2.3/CompilerIdCXX/Debug/CompilerIdCXX.tlog/link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1134,
+      "sha256": "7c1d00e13c5e5268358cbe1bd14f64c07eab3c2df185130c59e2f96e02aff4eb"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-red/CMakeFiles/CMakeConfigureLog.yaml",
+      "normalization": "none",
+      "bytes": 168355,
+      "sha256": "90c9e18f106c20716ffd143a4903dd354fafedd26ad8cc2fdc6e4c41dde19d28"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-red/tests/native/soui_scheduler_fairness_tests.dir/Release/soui_sch.C36E23FB.tlog/CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1050,
+      "sha256": "c79b4c5f320878ca6c4d999b20b80244c4917ced8ccb6e4f1357cd75971489fb"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-red/tests/native/soui_scheduler_fairness_tests.dir/Release/soui_sch.C36E23FB.tlog/link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1920,
+      "sha256": "e77b3550f1b0947eb32cbb787f4deef85c485b02308d0ca25227c55bcb41713f"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x64-red/tests/native/soui_scheduler_fairness_tests.vcxproj",
+      "normalization": "none",
+      "bytes": 27690,
+      "sha256": "4184c6092aaff7a685083b57c74ce0e102a430420632a97bf84000f9dedd185d"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-green/CMakeCache.txt",
+      "normalization": "none",
+      "bytes": 15547,
+      "sha256": "556b9f7f30ce468cfaa4000795dac1fdd3dcfc449f806e3ad558eb1eb66c399f"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-green/CMakeFiles/4.2.3/CompilerIdC/Debug/CompilerIdC.tlog/CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 950,
+      "sha256": "1e8e921336d325966799a8b9a5b32ae1c5c30947b70ad759e3a6501b67a6b19c"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-green/CMakeFiles/4.2.3/CompilerIdC/Debug/CompilerIdC.tlog/link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1132,
+      "sha256": "c290c37dc0b2bc02d178b39d24b81d86686ca3ac6492f70ea95853f59d7cb707"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-green/CMakeFiles/4.2.3/CompilerIdCXX/Debug/CompilerIdCXX.tlog/CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 974,
+      "sha256": "86554d38508e24d4da50b46efcb881c3451e5fe8531a4c176cc310916fdbd26f"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-green/CMakeFiles/4.2.3/CompilerIdCXX/Debug/CompilerIdCXX.tlog/link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1156,
+      "sha256": "1e64a98aa402a87fc636db3511a517c08dce3f2dafd61d5f38466819969359ab"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-green/CMakeFiles/CMakeConfigureLog.yaml",
+      "normalization": "none",
+      "bytes": 168607,
+      "sha256": "37be7389bc26f5ad4a5353e207c644c23c8bf92d6c722e7ef52f8a40e4c26d86"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-green/tests/native/soui_scheduler_fairness_tests.dir/Release/soui_sch.405CD301.tlog/CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1080,
+      "sha256": "e8e62d1d6556b4cce4305deb5e584dd7d3f7c2fbdb24cb35c0ef070405164d52"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-green/tests/native/soui_scheduler_fairness_tests.dir/Release/soui_sch.405CD301.tlog/link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1936,
+      "sha256": "c24675426e3d7429b4e0771ebaf6590e90757da62cac70bb4650d83fa2ebe96b"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-green/tests/native/soui_scheduler_fairness_tests.vcxproj",
+      "normalization": "none",
+      "bytes": 27870,
+      "sha256": "f662fe10d5a18ea0cf19f4ef2f7987e68774ea1a81eed1ee2b7427e1c5b86720"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-red/CMakeCache.txt",
+      "normalization": "none",
+      "bytes": 15537,
+      "sha256": "7a80a41f2c62f0ff9f328f30138a257ff496a9cf5981e78a6267d3ed98f790ea"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-red/CMakeFiles/4.2.3/CompilerIdC/Debug/CompilerIdC.tlog/CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 942,
+      "sha256": "c78b251447c521bec714506d9259ea40c4d39794b38e699156ed04490114775d"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-red/CMakeFiles/4.2.3/CompilerIdC/Debug/CompilerIdC.tlog/link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1128,
+      "sha256": "77f2eaa40ca7335df6c6bcef21490f029094683602756bbe6504dd6ec5f249a4"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-red/CMakeFiles/4.2.3/CompilerIdCXX/Debug/CompilerIdCXX.tlog/CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 966,
+      "sha256": "f344b93e22b5d49be18e64431a4c5731d7c4c97d4e2cddcfd50a9007c9cdb0e2"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-red/CMakeFiles/4.2.3/CompilerIdCXX/Debug/CompilerIdCXX.tlog/link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1152,
+      "sha256": "9b82051506f13ca32380de40b46ff06b41e615c41a39ae900d8d4e5a2c71758a"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-red/CMakeFiles/CMakeConfigureLog.yaml",
+      "normalization": "none",
+      "bytes": 168551,
+      "sha256": "c13d7f35e034d1af1ec4a12f2c2d13d4f226cf53304918fafbb041824b28901d"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-red/tests/native/soui_scheduler_fairness_tests.dir/Release/soui_sch.75C6C5EE.tlog/CL.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1080,
+      "sha256": "e8e62d1d6556b4cce4305deb5e584dd7d3f7c2fbdb24cb35c0ef070405164d52"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-red/tests/native/soui_scheduler_fairness_tests.dir/Release/soui_sch.75C6C5EE.tlog/link.command.1.tlog",
+      "normalization": "none",
+      "bytes": 1920,
+      "sha256": "418690c2419a370773287453277281ce2167bac9a7bdee373e65d410a177bbf2"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/builds/x86-red/tests/native/soui_scheduler_fairness_tests.vcxproj",
+      "normalization": "none",
+      "bytes": 27812,
+      "sha256": "237f2f21cb3146940c296d4548bf06af2c8530410bee3502423fda9440356955"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-green-build/result.json",
+      "normalization": "none",
+      "bytes": 763,
+      "sha256": "49bd07af37df03abfb9cc24029cd81ba32f362be5973d61a25437c8173c82521"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-green-build/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-green-build/stdout.log",
+      "normalization": "none",
+      "bytes": 426,
+      "sha256": "7c500ca8c57f56963048f92bae3191186ae206f3cc8db3c3d4b906e1903a1d1c"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-green-configure/result.json",
+      "normalization": "none",
+      "bytes": 896,
+      "sha256": "8b08c2ea0359a69a89717d081ded8712631fa76eaa084b59ede14fb02fd4268a"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-green-configure/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-green-configure/stdout.log",
+      "normalization": "none",
+      "bytes": 883,
+      "sha256": "8a7ea3fce9351679ab4aaae5be7131b142bb50377e790be47a36c138a31d8465"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-green-execute/result.json",
+      "normalization": "none",
+      "bytes": 676,
+      "sha256": "f4c54d30dfc76de52142637054adf6ea30ab2045942fcf8884092353fe1a49db"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-green-execute/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-green-execute/stdout.log",
+      "normalization": "none",
+      "bytes": 42,
+      "sha256": "9510b4b18dd02832887e3a9a32398fd756779af4cb096eddd47c4a05e825e12c"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-red-build/result.json",
+      "normalization": "none",
+      "bytes": 761,
+      "sha256": "4d46037096a79453f9474deb7e7ce4c4e45f8a9338faee661a466850f62731a7"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-red-build/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-red-build/stdout.log",
+      "normalization": "none",
+      "bytes": 424,
+      "sha256": "a4b75fc87988b779ce23e72c6395a72a4f1ab14d814390dfbd6047b46f28a29b"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-red-configure/result.json",
+      "normalization": "none",
+      "bytes": 894,
+      "sha256": "e6c4f0c4503d917aa3e8a035d5425c01e198714cf05e5741fdf857224f506b62"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-red-configure/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-red-configure/stdout.log",
+      "normalization": "none",
+      "bytes": 881,
+      "sha256": "7bd0f292bc70f5313de39f967fa4ca0471ecca25b2cf98ed2f7dd36810325880"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-red-execute/result.json",
+      "normalization": "none",
+      "bytes": 674,
+      "sha256": "9e27c8b14deaa96c9bcc1985829bb28c9360050fe5fcf349192185388879cd9c"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-red-execute/stderr.log",
+      "normalization": "none",
+      "bytes": 55,
+      "sha256": "1879bfe139bd14430c3850803cb7ced561a963b6a2004daaebf7c674572ebb87"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x64-red-execute/stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-green-build/result.json",
+      "normalization": "none",
+      "bytes": 762,
+      "sha256": "6d15bf9642822784c11a0d0da0c48449bc920f05834a8241537bc64a206a7181"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-green-build/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-green-build/stdout.log",
+      "normalization": "none",
+      "bytes": 426,
+      "sha256": "d4960a937caba614b2a852fa580ad8daa230a05cbba5eda5482b6912168732b4"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-green-configure/result.json",
+      "normalization": "none",
+      "bytes": 898,
+      "sha256": "39a062ceaf128e745e24a7adfca2747f8750bda1cab0f700b4b547ac61a7c579"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-green-configure/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-green-configure/stdout.log",
+      "normalization": "none",
+      "bytes": 883,
+      "sha256": "ff67dc10605acbcefe0316231aa88e77ddf6a787a38a8d2509113341c48838e1"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-green-execute/result.json",
+      "normalization": "none",
+      "bytes": 676,
+      "sha256": "fdf5583157e8f79c9d2bd148e6d778d383fba2e8a081b7d556efab56d83dbd8d"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-green-execute/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-green-execute/stdout.log",
+      "normalization": "none",
+      "bytes": 42,
+      "sha256": "9510b4b18dd02832887e3a9a32398fd756779af4cb096eddd47c4a05e825e12c"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-red-build/result.json",
+      "normalization": "none",
+      "bytes": 761,
+      "sha256": "d4162f407235471c6d5105c12c512cfb42cfbc636e99c47a101f36b33e7f9e72"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-red-build/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-red-build/stdout.log",
+      "normalization": "none",
+      "bytes": 424,
+      "sha256": "2db845fd23b43e6627c79087d5bedf48496214a65d01ab4303fb4f91737c99ad"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-red-configure/result.json",
+      "normalization": "none",
+      "bytes": 896,
+      "sha256": "0a7d74df5c6e6acd9c9cf6529a5b328ceca2085602cc0d121dbb7a3c8171edc1"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-red-configure/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-red-configure/stdout.log",
+      "normalization": "none",
+      "bytes": 881,
+      "sha256": "8899e245b1080da39925b41c9f69f12343c1af691ad9a0e8d5abbd3d616201d6"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-red-execute/result.json",
+      "normalization": "none",
+      "bytes": 676,
+      "sha256": "6dee172e9aca8b93aa24e54b3e7f6fb62ac889db0f04ab5bf55f83b464b919b3"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-red-execute/stderr.log",
+      "normalization": "none",
+      "bytes": 225,
+      "sha256": "19f3e227124ad579bd2ccce163697bef9a8836b5a8c9e7052598968b23102b71"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/command-logs/x86-red-execute/stdout.log",
+      "normalization": "none",
+      "bytes": 42,
+      "sha256": "ebbe9fcf12128effb0cdc01105808bc00d32895cb46063be6dab0990c6f0ac18"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/policy-review.json",
+      "normalization": "none",
+      "bytes": 14677,
+      "sha256": "68260aa3d4610b06254270912405204e226c795850bced22a9174db7f7267cdd"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x64-green/tests/native/CMakeLists.txt",
+      "normalization": "none",
+      "bytes": 6732,
+      "sha256": "dad21dcdd9559ebb6559ca07d61d19298739995d4fa03401b7ed38feb708d5b9"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x64-green/tests/native/scheduler_fairness_tests.cpp",
+      "normalization": "none",
+      "bytes": 3230,
+      "sha256": "b4bddb35fc2dc19894a5669b730a87bab532db0c9929c48453d3851eea553422"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x64-green/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h",
+      "normalization": "none",
+      "bytes": 1599,
+      "sha256": "1db945b69bb97d90b0d3b9dd8b3e8cc84ff82bed6b58ab598d884866be3ceb84"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x64-green/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "normalization": "none",
+      "bytes": 16415,
+      "sha256": "c70af246c7b68ef02129dde47fa7a93adce746ce96e7a5cf174220cc162e71bd"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x64-red/tests/native/CMakeLists.txt",
+      "normalization": "none",
+      "bytes": 6732,
+      "sha256": "dad21dcdd9559ebb6559ca07d61d19298739995d4fa03401b7ed38feb708d5b9"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x64-red/tests/native/scheduler_fairness_tests.cpp",
+      "normalization": "none",
+      "bytes": 2841,
+      "sha256": "6d88603370ae079090adcac47346c936a5bf3cdbc1ab1f02fa69f8103b0e7210"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x64-red/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h",
+      "normalization": "none",
+      "bytes": 1039,
+      "sha256": "714f1ee8039e4e885e365b50261ac10b96a77f81befb8497d5770cb847f526ae"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x64-red/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "normalization": "none",
+      "bytes": 16415,
+      "sha256": "c70af246c7b68ef02129dde47fa7a93adce746ce96e7a5cf174220cc162e71bd"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x86-green/tests/native/CMakeLists.txt",
+      "normalization": "none",
+      "bytes": 6732,
+      "sha256": "dad21dcdd9559ebb6559ca07d61d19298739995d4fa03401b7ed38feb708d5b9"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x86-green/tests/native/scheduler_fairness_tests.cpp",
+      "normalization": "none",
+      "bytes": 3230,
+      "sha256": "b4bddb35fc2dc19894a5669b730a87bab532db0c9929c48453d3851eea553422"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x86-green/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h",
+      "normalization": "none",
+      "bytes": 1599,
+      "sha256": "1db945b69bb97d90b0d3b9dd8b3e8cc84ff82bed6b58ab598d884866be3ceb84"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x86-green/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "normalization": "none",
+      "bytes": 16415,
+      "sha256": "c70af246c7b68ef02129dde47fa7a93adce746ce96e7a5cf174220cc162e71bd"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x86-red/tests/native/CMakeLists.txt",
+      "normalization": "none",
+      "bytes": 6732,
+      "sha256": "dad21dcdd9559ebb6559ca07d61d19298739995d4fa03401b7ed38feb708d5b9"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x86-red/tests/native/scheduler_fairness_tests.cpp",
+      "normalization": "none",
+      "bytes": 3230,
+      "sha256": "b4bddb35fc2dc19894a5669b730a87bab532db0c9929c48453d3851eea553422"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x86-red/third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h",
+      "normalization": "none",
+      "bytes": 1039,
+      "sha256": "714f1ee8039e4e885e365b50261ac10b96a77f81befb8497d5770cb847f526ae"
+    },
+    {
+      "path": "verification/production-validation/scheduler-fairness-policy-2026-09-26/raw/snapshots/x86-red/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "normalization": "none",
+      "bytes": 16415,
+      "sha256": "c70af246c7b68ef02129dde47fa7a93adce746ce96e7a5cf174220cc162e71bd"
     },
     {
       "path": "verification/production-validation/tls-kernel-2026-09-23/README.md",

@@ -2,6 +2,8 @@
 
 本交付解决分层、接入、自行构建和验证的问题，仍为预览版本。
 
+[原生调度快照](../verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/README.md)已补充动画加载停滞的证据：x86 主线程的低优先级解析任务相对上一帧时钟迟约 10.28 秒，队列仍有更高优先级就绪提交任务。[候选策略](../verification/production-validation/scheduler-fairness-policy-2026-09-26/README.md)的旧行为回归失败，修正后两架构各十二项通过；真实内核重编和原动画运行尚未完成。固定二进制仍包含旧策略，不能把单元测试视为实际 SDK 已修复。
+
 冻结 preview.11 的[页面动画诊断](../verification/production-validation/preview11-renewal-animation-diagnostic-2026-09-26/README.md)中，相同输入只关闭旋转动画即可完成任务短测；动画开启时解析持续停滞，尚需原生调度证据。另一已就绪运行在页面记录后 15 ms 被监督器判定为“30 秒无记录”。[新外部夹具](../verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26/README.md)已复现并修正先采样时钟、后读跨线程快照导致的无符号差值风险；两架构边界测试、自检及关闭动画的诊断短测通过。原失败保留，关闭动画不作为 SDK 修复，真实续期和生产门槛继续未通过。
 
 preview.13 [完整源码解压身份检查](../verification/production-validation/preview13-legal-identity-2026-09-26/README.md)发现一份许可证的 Git 换行转换，使旧源码 ZIP 与同版 419 文件 SDK 包不一致。Git 规则和回归已修正，旧包/失败目录保留。[新完整源码包](../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)已在无 Git 解压目录匹配同版 SDK，完成 SDK/Starter/Workbench 四配置构建、44 项原生及 8 项交付身份测试；新载荷 GUI、底层完整重编及干净机器复现仍待执行。验证输入是 `a1007f2188102dfa4de4e79f73a4e0b2c2b8b99cf3e892a3d1e1e3794fd51e68`；SDK 实现与既有安装包字节不变。
