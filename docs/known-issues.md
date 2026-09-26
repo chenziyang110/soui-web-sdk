@@ -2,6 +2,8 @@
 
 本交付解决分层、接入、自行构建和验证的问题，仍为预览版本。
 
+preview.13 [完整源码解压身份检查](../verification/production-validation/preview13-legal-identity-2026-09-26/README.md)发现一份许可证的 Git 换行转换，使旧源码 ZIP 与同版 419 文件 SDK 包不一致。Git 规则和回归已修正，旧包/失败目录保留，新源码包的解压匹配与构建待验收。新增测试后的验证输入是 `a1007f2188102dfa4de4e79f73a4e0b2c2b8b99cf3e892a3d1e1e3794fd51e68`；SDK 实现与既有安装包字节不变。
+
 当前 preview.13 的[新事务协议](../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)已通过真实进程终止和完整 SDK 包文件恢复测试；[已知旧现场的独立副本](../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)已手工恢复并升级，原件未变，独立账本 x86/x64 Debug/Release 编译通过。旧无 journal 自动恢复仍拒绝，文件/目录形态迁移明确拒绝；本候选业务 GUI、完整应用、受限账户及目标平台尚未重验。以下 preview.11 失败仍按其原输入保留，不能由安装器修复视为全部关闭。
 
 preview.11 [真实安装中断](../verification/production-validation/preview11-upgrade-interruption-2026-09-26/README.md)暴露恢复缺陷：安装进程在旧文件已移入备份后退出，正式校验与重新安装均失败。旧 SDK 字节和业务数据未丢失，当时 CLI 无法自动恢复。preview.13 已补齐新协议的持久事务、恢复入口与冲突处理；旧现场仅有上述确切副本的手工恢复证据，不能扩展为通用旧格式恢复。

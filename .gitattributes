@@ -31,9 +31,8 @@
 *.jpeg binary
 *.ico binary
 *.zip binary
-third_party/licenses/ijg-jpeg-9a-README.txt -text
-third_party/licenses/libcurl-7.61.1-COPYING.txt -text
-third_party/licenses/ots-5.0.0-LICENSE.txt -text
+# SDK and deployed legal manifests bind the original license bytes.
+third_party/licenses/** -text whitespace=cr-at-eol
 verification/production-validation/**/events.ndjson -text
 verification/production-validation/**/events.ndjson.phases.ndjson -text
 verification/production-validation/**/*.log -text
@@ -139,3 +138,5 @@ verification/production-validation/preview11-real-renewal-v2-smoke-2026-09-26/ra
 verification/production-validation/preview11-followup-audit-2026-09-26/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/preview13-install-recovery-2026-09-26/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/preview13-legacy-recovery-build-2026-09-26/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/preview13-legal-identity-2026-09-26/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/preview11-renewal-page-stages-2026-09-26/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol

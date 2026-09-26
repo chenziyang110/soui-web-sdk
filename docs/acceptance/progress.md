@@ -1,5 +1,11 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 源码交付身份修正与页面脚本定位
+
+[完整源码解压预检](../../verification/production-validation/preview13-legal-identity-2026-09-26/README.md)发现 Element Plus 许可证被 Git 从 CRLF 转成 LF，同版 SDK 匹配失败，尚未编译。全源码清单自身通过不能替代 SDK 包匹配。Git 规则已覆盖全部许可证原始字节，交付身份回归先失败、后 8/8 通过；现有 419 文件 SDK 包与工作区匹配退出 0，SDK 实现及版本不变。新增回归后的 714 文件验证输入 SHA 为 `a1007f2188102dfa4de4e79f73a4e0b2c2b8b99cf3e892a3d1e1e3794fd51e68`，下一轮须用新完整源码包重新解压并构建，原失败目录不改。
+
+[冻结 preview.11 页面诊断](../../verification/production-validation/preview11-renewal-page-stages-2026-09-26/README.md)在桌面空闲后真实运行 x64，仍未就绪退出 1。两秒/四十秒截图显示兼容补丁前标记和一秒定时器，未出现补丁后标记，缩小了观察范围；尚未确定 DOMException 内部停止点。进一步分段副本已准备，其他 QEMU 再次运行时门禁拒绝启动。当前 GUI、长稳和生产结论不扩大。
+
 ## 2026-09-26 preview.13 旧现场副本恢复与四配置构建
 
 [本轮证据](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)在独立副本中从逐项核验的备份恢复 7 个文件，旧 preview.10 的 417 文件校验通过，再升级 preview.13 的 419 文件包；22 个业务文件保持原字节，原失败现场 858 文件完全未变。旧无 journal 的自动恢复仍拒绝，本结果仅适用于这一已知现场的手工恢复。
