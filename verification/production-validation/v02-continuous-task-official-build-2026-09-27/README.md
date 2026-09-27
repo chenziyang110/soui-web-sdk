@@ -8,4 +8,6 @@
 
 宿主再次空闲后，`official-x86-attempt1` 使用同一源码及已构建 Web 执行正式 `tools/Build.ps1 -Architecture x86 -Configuration Release -SkipWeb`。外层驱动与正式构建原始退出码均为 0；构建前后 718 文件源码 SHA-256 仍为 `15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d`。新构建 ID `f0c38056-058a-456e-be99-17446127f7ec`；Starter 71 文件载荷 SHA-256 `bbc99238c309ddc2cc8431c79170312b7444b107e250bab0702706b799470022`；Workbench 475 文件载荷 SHA-256 `7ee53c78a1c5c0c2deecfbb38f70d443d3315d6d420ec756c1b5113ccc7cbffb`。09:19:34Z/09:19:43Z 的前后负载门禁均为空，11 份 x86 原件与本目录副本逐字节一致，连同 x64 共 26 份 raw 文件纳入清单。
 
+载荷清单按所有部署文件的原始字节求和，给出当前候选的**未压缩应用目录**体积：x64 Starter `42,046,881` 字节（40.10 MiB）、Workbench `53,059,977` 字节（50.60 MiB）；x86 Starter `28,584,049` 字节（27.26 MiB）、Workbench `39,522,905` 字节（37.69 MiB）。这些值来自对应 `after-official-input.json` 的 `payloads.*.bytes`，包含 EXE、DLL 和 `resources/`，不等于安装包或压缩下载体积。尚无同源码、同页面、同交付口径的当前 Electron 对照包，因此不计算体积优势比例。
+
 下一步为这两份当前构建建立本机和 Win7 SP1 x86 的真实滚动、中文 IME、缩放与公共任务并行验收。正式编译通过不等于启动、交互或长期稳定性通过。`releaseReady=false`。
