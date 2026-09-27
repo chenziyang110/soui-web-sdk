@@ -1,8 +1,12 @@
 # SDK 生产验证执行记录
 
+## 2026-09-27 V02 持续任务 x64 正式应用构建
+
+[原始构建记录](../../verification/production-validation/v02-continuous-task-official-build-2026-09-27/README.md)显示当前 718 文件源码的正式 `tools/Build.ps1` x64 Release（含完整 Web）及外层驱动原始退出码均为 0。构建 ID `5ddcec93-d244-456c-877b-1bdeabee568d`，前后源码 SHA-256 一致，Starter/Workbench 完整运行载荷各有独立散列。前后负载门禁为空，其他 QEMU 在结束后三秒才启动。x86 正式构建、当前 Demo 真实 GUI/Win7 V02 验收仍待执行；此项只证明 x64 构建，不放行生产门槛。
+
 ## 2026-09-27 V02 持续任务两架构原生回归
 
-[本次原始记录](../../verification/production-validation/v02-continuous-task-native-2026-09-27/README.md)保存 x64 两次未通过的原样本、修正测试夹具后的 x64/x86 真实 adapter/Bridge 双测试退出 0，以及 Web TypeScript 类型检查退出 0。第二次失败来自同一适配器重复可信 bootstrap，测试改用具备有效权限的另一会话验证任务归属；SDK Core 和 Demo 运行实现没有因此修改。当前输入 718 文件 SHA-256 `15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d`。新正式应用构建、真实 V02 交互与 Win7 x86 尚未执行，不能继承旧应用短测，生产门槛未关闭。
+[本次原始记录](../../verification/production-validation/v02-continuous-task-native-2026-09-27/README.md)保存 x64 两次未通过的原样本、修正测试夹具后的 x64/x86 真实 adapter/Bridge 双测试退出 0，以及 Web TypeScript 类型检查退出 0。第二次失败来自同一适配器重复可信 bootstrap，测试改用具备有效权限的另一会话验证任务归属；SDK Core 和 Demo 运行实现没有因此修改。当前输入 718 文件 SHA-256 `15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d`。在该阶段，新正式应用构建、真实 V02 交互与 Win7 x86 尚未执行；后续 x64 构建见上节。旧应用短测不能继承，生产门槛未关闭。
 
 ## 2026-09-27 V02 持续任务首次准备（历史状态）
 
