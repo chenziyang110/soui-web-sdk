@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-27 当前 V02 应用双架构本机短测
+
+[x86/x64 三入口原始记录](../../verification/production-validation/v02-current-desktop-smoke-2026-09-27/README.md)已绑定当前 718 文件源码、两份正式 Release 构建 ID 和完整载荷：Starter 默认、Workbench 默认/React 在两个架构各原生退出 0，就绪及完整关闭日志齐全，前/中/后负载门禁为空。一次性等待器于宿主空闲后串行执行，另一台 QEMU 在全部短测结束后才出现。短测使用隐藏窗口且未进入 V02 数据页，真实滚动、中文 IME、缩放、公共任务并行和 Win7 x86 仍未验证；生产准入保持 false。
+
 ## 2026-09-27 当前 V02 GUI 输入验收准备
 
 [输入探针和 GUI 预检](../../verification/production-validation/v02-current-gui-preparation-2026-09-27/README.md)已保存宿主中文输入法、当前双架构应用身份、V02 页面观察点，以及只对已核对 PID/HWND 自然前台发送 Win32 输入的辅助程序源码。准备时独立 QEMU 仍运行，探针未编译、当前 GUI 未启动，中文 IME 组合和任务并行没有获得通过证据。`releaseReady=false`。
