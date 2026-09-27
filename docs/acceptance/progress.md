@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-28 当前 V02 Win7 SP1 x86 Workbench 短测
+
+[当前构建的客体短测原始记录](../../verification/production-validation/win7-sp1-x86-v02-current-app-smoke-2026-09-28/README.md)绑定 718 文件 Demo 源码与正式 x86 Release 构建，在 Win7 SP1 x86 用 `--react --page=data --width=700 --height=500` 启动 Workbench 的 60 秒短测入口。真实客体中应用原生退出 0，日志按序记录 `application-ready`、Bridge 就绪、adapter 卸载、host 完整关闭和窗口销毁；载荷 71/475 文件及各 5 份法律声明前后均与冻结清单逐字节匹配。29 帧串口严格校验，62 次宿主门禁未见外部桌面负载，QEMU/驱动退出 0，基础盘及 11 文件只读输入冻结前后不变。78 份原始文件独立归档，包括随后一次源码清单生成因新出现的外部 QEMU 中断的原始退出码；该中断不改变先前客体短测结论。短测日志的 `--page=data` 参数不证明 V02 页面在屏幕可见，也未执行滚动、中文 IME、缩放和长任务并行；`win7CurrentV02Verified=false`、`releaseReady=false`。
+
 ## 2026-09-27 当前 V02 Win7 SP1 x86 客体环境预检
 
 [冻结输入与客体原始记录](../../verification/production-validation/win7-sp1-x86-v02-current-preflight-2026-09-27/README.md)完成当前 718 文件源码、正式 x86 Release 构建绑定的 563 文件预检输入冻结；宿主观察桌面后仅发一次命令。客体报告 6.1.7601/SP1/32 位/PowerShell 2，静态输入探针实际加载至自身参数校验；9 帧串口严格校验、115 次宿主门禁、基础盘与冻结输入前后检查均通过，QEMU/驱动退出 0。客体显示为 800×600，中文键盘布局已预载但真实 IME 组合未验证。此次**没有启动 Workbench 或运行 V02 交互**，Win7 当前版本、DPI 多屏及生产支持继续未通过；先前一次源码清单刷新受外部 QEMU 中断的原样本保留。
