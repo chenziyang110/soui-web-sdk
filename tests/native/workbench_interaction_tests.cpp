@@ -131,13 +131,21 @@ void succeeds_with_elapsed_time_and_events() {
 
 void cancels_active_task_and_enforces_ownership() {
   fixture app;
-  const auto owner = app.bootstrap(), stranger = app.bootstrap();
+  const auto owner = app.bootstrap();
+  // One adapter models one trusted WebView bootstrap. Give a different
+  // session a live grant so the checks reach task ownership, not bootstrap.
+  auto stranger = owner;
+  stranger["sessionId"] = "v02-stranger";
+  stranger["token"] = app.bridge.issue_session("v02-stranger", owner.at("origin"),
+      {"task.query", "task.cancel"});
   const auto task = app.start(owner, "demo.interaction", {{"durationMs", 60000}});
   const auto subscription = app.subscribe(owner, task);
   app.running_progress(task);
   require(app.query(owner, task).value("state", "") == "running", "Long task already ended");
-  require(!app.call(stranger, "task.query", {{"taskId", task}}).value("ok", true), "Cross-session query accepted");
-  require(!app.call(stranger, "task.cancel", {{"taskId", task}}).value("ok", true), "Cross-session cancel accepted");
+  require(app.call(stranger, "task.query", {{"taskId", task}}).at("error").at("code") == "E_TASK_NOT_FOUND",
+          "Cross-session query bypassed task ownership");
+  require(app.call(stranger, "task.cancel", {{"taskId", task}}).at("error").at("code") == "E_TASK_NOT_FOUND",
+          "Cross-session cancel bypassed task ownership");
   require(app.call(owner, "task.cancel", {{"taskId", task}}).value("ok", false), "Owned cancellation rejected");
   require(app.terminal(owner, task).value("state", "") == "cancelled", "Active task ignored cancellation");
   require(app.call(owner, "task.unsubscribe", {{"subscriptionId", subscription}}).value("ok", false), "Cancel unsubscribe rejected");

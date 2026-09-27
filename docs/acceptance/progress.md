@@ -1,6 +1,10 @@
 # SDK 生产验证执行记录
 
-## 2026-09-27 V02 持续任务实现，等待修复后验证
+## 2026-09-27 V02 持续任务两架构原生回归
+
+[本次原始记录](../../verification/production-validation/v02-continuous-task-native-2026-09-27/README.md)保存 x64 两次未通过的原样本、修正测试夹具后的 x64/x86 真实 adapter/Bridge 双测试退出 0，以及 Web TypeScript 类型检查退出 0。第二次失败来自同一适配器重复可信 bootstrap，测试改用具备有效权限的另一会话验证任务归属；SDK Core 和 Demo 运行实现没有因此修改。当前输入 718 文件 SHA-256 `15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d`。新正式应用构建、真实 V02 交互与 Win7 x86 尚未执行，不能继承旧应用短测，生产门槛未关闭。
+
+## 2026-09-27 V02 持续任务首次准备（历史状态）
 
 [V02 持续任务准备](../../verification/production-validation/v02-continuous-task-preparation-2026-09-27/README.md)保留原快速任务，新增 Demo 自有的 30 秒原生计时任务，通过公开任务接口观察进度、查询与取消。先编译的新 x64 回归在旧实现上实际退出 1，确认缺少该任务；源码仍匹配冻结 SDK Core，Demo 生产依赖审计退出 0、报告漏洞 0。
 
