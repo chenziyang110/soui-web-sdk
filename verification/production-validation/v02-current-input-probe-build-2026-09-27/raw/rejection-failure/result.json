@@ -1,0 +1,16 @@
+{
+  "schema": "soui.v02.probe-rejections/v1",
+  "architecture": "x64",
+  "attemptName": "probe-rejections-x64-attempt1",
+  "executable": {
+    "path": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-build-queued-attempt1\\build\\x64\\Release\\V02InputProbe.exe",
+    "sha256": "f58219498883c31729414d51a48a3ec89cd4a5105d4e5f5b39c7919fefd664c7",
+    "bytes": 47104
+  },
+  "startedAt": "2026-09-27T10:15:07.439Z",
+  "cases": [],
+  "status": "failed",
+  "releaseReady": false,
+  "error": "Error: EEXIST: file already exists, open 'C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-rejections-x64-attempt1\\gate-0.json'\n    at Object.openSync (node:fs:560:18)\n    at Object.writeFileSync (node:fs:2427:35)\n    at gate (C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Test-ProbeRejections.cjs:51:6)\n    at negativeCase (C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Test-ProbeRejections.cjs:56:3)\n    at Object.<anonymous> (C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Test-ProbeRejections.cjs:76:3)\n    at Module._compile (node:internal/modules/cjs/loader:1812:14)\n    at Object..js (node:internal/modules/cjs/loader:1943:10)\n    at Module.load (node:internal/modules/cjs/loader:1533:32)\n    at Module._load (node:internal/modules/cjs/loader:1335:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)",
+  "finishedAt": "2026-09-27T10:15:08.875Z"
+}

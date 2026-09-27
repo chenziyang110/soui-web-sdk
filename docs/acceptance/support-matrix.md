@@ -1,6 +1,19 @@
 # 候选支持范围与设备矩阵
 
-当前开发候选 preview.13 已取得[安装事务恢复](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)、[已知旧现场副本恢复及独立账本四配置编译](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)，以及[完整源码解压后 SDK/Starter/Workbench x86/x64 Debug/Release 构建、44 项原生与 8 项交付身份测试](../../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)证据。本版应用 GUI、Win7 和完整交互矩阵未重验，不扩大设备支持状态。下述 preview.11 及以前的结果均为各自冻结输入。
+## 2026-09-27 preview.15 当前候选判定
+
+状态：**预览，尚无生产支持组合**。当前 SDK Core 419 文件身份保持冻结；Demo 的 V02 持续任务使用 718 文件源码 SHA-256 `15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d`。下表只陈述已绑定该输入或明确标出的旧输入结果；不同源码的短测不合并为一个通过项。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+| 组合 | 当前原始证据 | 可成立的范围与未完成项 |
+| --- | --- | --- |
+| Windows 11 开发机 x64 Release | [正式应用构建](../../verification/production-validation/v02-continuous-task-official-build-2026-09-27/README.md) buildId `5ddcec93-d244-456c-877b-1bdeabee568d`；[三入口本机短测](../../verification/production-validation/v02-current-desktop-smoke-2026-09-27/README.md) | 当前 Demo 的 Starter 默认、Workbench 默认/React 启动、就绪和完整关闭各一次，原生退出 0。隐藏窗口短测未进入 V02 数据页；真实滚动、中文 IME、缩放、任务并行、资源和长稳未通过。 |
+| Windows 11 开发机 x86 Release | 同一[正式构建和三入口短测](../../verification/production-validation/v02-current-desktop-smoke-2026-09-27/README.md)，buildId `f0c38056-058a-456e-be99-17446127f7ec` | 当前 Demo 三入口各一次短启动/关闭退出 0；这仍是在 64 位 Windows 上运行的 x86 进程，不证明独立 32 位系统。V02 真实交互、IME/DPI/多屏、长稳和安装策略未验。 |
+| Windows 7 SP1 x86 QEMU | [preview.15 旧 Demo 输入的三入口客体短测](../../verification/production-validation/win7-sp1-x86-qemu-preview15-apps-attempt3-2026-09-27/README.md)绑定 717 文件源码及 buildId `b8c26d8d-7144-4eb0-b889-0034ec8029fb`，三项原生退出 0、客体身份及运行载荷核验通过 | 仅证明该冻结旧输入的短启动/关闭。当前 718 文件 V02 Demo、真实交互、IME、DPI、长期资源和独立业务运行需另建冻结客体输入，不能继承旧短测。 |
+| Windows 7 SP1 x86 物理机及其他目标系统 | 无当前候选的目标设备全矩阵记录 | 未验证；QEMU 短测不能代替物理输入、显示、安装、网络和系统策略。 |
+
+当前 V02 [输入探针准备](../../verification/production-validation/v02-current-gui-preparation-2026-09-27/README.md)、[双架构编译](../../verification/production-validation/v02-current-input-probe-build-2026-09-27/README.md)和[各五项错误输入拒绝](../../verification/production-validation/v02-current-input-probe-rejections-2026-09-27/README.md)只建立真实输入的验收手段，不能把辅助程序检查当作 GUI 通过。当前同机 Electron 的 ≥5 对交替性能、完整运行包比较、独立安装消费者真实续期、每模式 1,000 轮、100 次重载、隔离 8 小时混合负载、内核安全与授权责任均未形成准入证据。以下旧版本矩阵保留用于回溯，不作为 preview.15 的放行依据。
+
+历史 preview.13 候选已取得[安装事务恢复](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)、[已知旧现场副本恢复及独立账本四配置编译](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)，以及[完整源码解压后 SDK/Starter/Workbench x86/x64 Debug/Release 构建、44 项原生与 8 项交付身份测试](../../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)证据。该版应用 GUI、Win7 和完整交互矩阵未重验，不扩大设备支持状态。下述 preview.11 及以前的结果均为各自冻结输入。
 
 2026-09-26 preview.11 增补：[当前预检](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)完成本机 x86/x64 Release SDK、Starter、Workbench 编译、独立 SDK 安装与仓库外 `session-consumer` 编译/运行，每架构 10 项 CTest 通过，其中原生续期包含 14 组契约。最终汇总核验 Web 62 项、包行为 14 项、交付身份 7 项通过、五份锁文件全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包、包内散列及源码匹配通过。生成的独立 `RenewalStarter` 两架构 Release 编译与项目校验均退出 0。
 
@@ -22,7 +35,7 @@ preview.8 [无 Git 候选源码包双架构重编与四组应用构建](../../ve
 
 [设备观察记录](../../verification/production-validation/environment-windows11-26200.json)包含系统、补丁号、CPU、显卡及驱动。性能采样还须登记电源计划、实际显示刷新率、当前 DPI、远程会话状态和活动 GPU；当前窗口生命周期结果不提供这些指标的通过结论。
 
-## 本轮状态
+## 历史组合与待验收项（非 preview.15 支持声明）
 
 | 组合或能力 | 当前证据 | 状态与缺口 |
 |---|---|---|

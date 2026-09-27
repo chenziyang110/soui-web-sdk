@@ -1,0 +1,81 @@
+{
+  "schema": "soui.v02.probe-rejections-review/v1",
+  "status": "both-rejections-passed",
+  "startedAt": "2026-09-27T10:28:45.751Z",
+  "finishedAt": "2026-09-27T10:47:44.144Z",
+  "outerGateSamples": 203,
+  "outerBusySamplesBeforeRun": 196,
+  "outerEmptySamplesAfterLastBusy": 7,
+  "reviews": [
+    {
+      "architecture": "x64",
+      "attemptName": "probe-rejections-x64-attempt2",
+      "driverExitCode": 0,
+      "nativeRejections": [
+        {
+          "name": "missing-arguments",
+          "exitCode": 1,
+          "stderr": "usage: V02InputProbe PID EXPECTED_CREATION_FILETIME inspect|click|wheel|pinyin|resize-drag ARG ABSOLUTE_NEW_RESULT.json"
+        },
+        {
+          "name": "non-absolute-output",
+          "exitCode": 1,
+          "stderr": "output must be an absolute Windows path"
+        },
+        {
+          "name": "wrong-process-identity",
+          "exitCode": 1,
+          "stderr": "target process creation identity differs"
+        },
+        {
+          "name": "unavailable-process",
+          "exitCode": 1,
+          "stderr": "target process unavailable"
+        },
+        {
+          "name": "existing-output",
+          "exitCode": 1,
+          "stderr": "output already exists"
+        }
+      ],
+      "internalEmptyGates": 7,
+      "preexistingOutputUnchanged": true
+    },
+    {
+      "architecture": "x86",
+      "attemptName": "probe-rejections-x86-attempt1",
+      "driverExitCode": 0,
+      "nativeRejections": [
+        {
+          "name": "missing-arguments",
+          "exitCode": 1,
+          "stderr": "usage: V02InputProbe PID EXPECTED_CREATION_FILETIME inspect|click|wheel|pinyin|resize-drag ARG ABSOLUTE_NEW_RESULT.json"
+        },
+        {
+          "name": "non-absolute-output",
+          "exitCode": 1,
+          "stderr": "output must be an absolute Windows path"
+        },
+        {
+          "name": "wrong-process-identity",
+          "exitCode": 1,
+          "stderr": "target process creation identity differs"
+        },
+        {
+          "name": "unavailable-process",
+          "exitCode": 1,
+          "stderr": "target process unavailable"
+        },
+        {
+          "name": "existing-output",
+          "exitCode": 1,
+          "stderr": "output already exists"
+        }
+      ],
+      "internalEmptyGates": 7,
+      "preexistingOutputUnchanged": true
+    }
+  ],
+  "realGuiExecuted": false,
+  "releaseReady": false
+}

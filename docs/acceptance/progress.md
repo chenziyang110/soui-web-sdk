@@ -1,5 +1,17 @@
 # SDK 生产验证执行记录
 
+## 2026-09-27 当前 V02 x64 可见页面首轮中断
+
+[首轮原始记录](../../verification/production-validation/v02-current-visible-interrupted-2026-09-27/README.md)绑定当前正式 Release Workbench，真实启动 `--react --page=data` 并通过目标进程、窗口和自然前台核对。截图可见 10,000 行已载入，系统滚轮输入后的列表首行由第 1 行变为第 4 行。随后外部 QEMU 启动，监督器仅清理自己的应用，外层驱动退出 1；本轮受干扰且未执行中文 IME、30 秒任务并行、缩放或自然关闭，不计完整 V02 通过。后续另用新 attempt，旧原件不覆盖。
+
+## 2026-09-27 当前 V02 输入探针双架构拒绝路径
+
+[x64/x86 原始结果](../../verification/production-validation/v02-current-input-probe-rejections-2026-09-27/README.md)显示已编译探针各自真实执行五项错误输入，原生均退出 1，拒绝原因与预期一致，不存在意外结果文件，预存文件前后散列不变。一次性等待器在其他 QEMU 运行时仅查询负载，连续空闲后串行执行两个架构，外层驱动均退出 0。该结果关闭错误目标/输出的局部拒绝路径，不证明任何正向 GUI 或中文输入。
+
+## 2026-09-27 当前 V02 输入探针双架构编译
+
+[原始构建和首次拒绝路径记录](../../verification/production-validation/v02-current-input-probe-build-2026-09-27/README.md)显示已在其他 QEMU 退出后串行编译冻结的 x64/x86 操作系统输入探针，四个配置/编译阶段原始退出 0、EXE 散列已绑定。首轮 x64 拒绝路径测试因测试夹具门禁文件重名在探针启动前退出 1，原样本保留；修正版运行结果见上节。新外部 QEMU 随后启动，未并行做桌面输入。探针编译不证明 `--page=data` 真实滚动、中文 IME、窗口缩放或公共任务并行，生产准入仍为 false。
+
 ## 2026-09-27 当前 V02 应用双架构本机短测
 
 [x86/x64 三入口原始记录](../../verification/production-validation/v02-current-desktop-smoke-2026-09-27/README.md)已绑定当前 718 文件源码、两份正式 Release 构建 ID 和完整载荷：Starter 默认、Workbench 默认/React 在两个架构各原生退出 0，就绪及完整关闭日志齐全，前/中/后负载门禁为空。一次性等待器于宿主空闲后串行执行，另一台 QEMU 在全部短测结束后才出现。短测使用隐藏窗口且未进入 V02 数据页，真实滚动、中文 IME、缩放、公共任务并行和 Win7 x86 仍未验证；生产准入保持 false。
