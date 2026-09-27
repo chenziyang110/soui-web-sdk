@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-28 当前 V02 Win7 SP1 x86 v4 交互的隔离中断
+
+[v4 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v4-interrupted-2026-09-28/README.md)绑定当前 Demo 的正式 x86 Release 构建：x86 探针真实编译，静态 MSVC 运行库命令已核验；13 文件输入冻结且验证。客体进入真实 Win7 桌面后只收到一次命令，但串口没有输出。另一台 QEMU 在命令执行期间启动，门禁只终止我方客体；我方驱动原始退出 1、QEMU 退出 -1，基础盘和冻结输入复核正常。20 份复制原件已核对外部原件，客体临时磁盘快照只留外部。此次既不证明应用通过，也不证明应用失败；中文 IME、缩放和任务并行仍未验收。新客体尝试必须用新编号，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
 ## 2026-09-28 当前 V02 Win7 SP1 x86 交互第二次隔离中断
 
 [第二次新输入尝试](../../verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-attempt2-2026-09-28/README.md)使用不变的 13 文件冻结输入和正式 x86 Release 构建。我方客体还在 Win7 欢迎界面，尚未发送应用命令，另一台 QEMU 随后启动；门禁只停止我方客体。驱动退出 1、QEMU 退出 -1、串口 0 字节，基础盘和冻结输入前后不变。19 份复制原件含欢迎界面截图与关闭后的 monitor 错误；两份可能包含客体磁盘片段的临时快照只留在外部。此样本不证明应用兼容性成败；下次用新的尝试编号，`win7CurrentV02Verified=false`、`releaseReady=false`。
