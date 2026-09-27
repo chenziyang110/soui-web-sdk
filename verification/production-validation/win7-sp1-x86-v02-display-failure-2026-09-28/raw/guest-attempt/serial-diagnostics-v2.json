@@ -1,0 +1,127 @@
+{
+  "attempt": "guest-display-explore-attempt3",
+  "serialBytes": 95737,
+  "hasEnd": true,
+  "frames": [
+    {
+      "name": "display-mode.log",
+      "bytes": 418,
+      "text": "before width=800 height=600 bpp=32 refresh=1 metrics=800x600\r\ntarget=1024x768 candidates=4 matchingCurrentDepth=1\r\ntestResult=0\r\nchangeResult=0\r\nafter width=1024 height=768 bpp=32 refresh=1 metrics=1024x768\r\n"
+    },
+    {
+      "name": "display-mode-exitcode.txt",
+      "bytes": 3,
+      "text": "0\r\n"
+    },
+    {
+      "name": "guest-identity.txt",
+      "bytes": 143,
+      "text": null
+    },
+    {
+      "name": "harness.log",
+      "bytes": 125,
+      "text": "transfer verified\r\n1024x768 display verified\r\npayload pre verified\r\nfailed: visible unowned top-level target window missing\r\n"
+    },
+    {
+      "name": "harness-exception.txt",
+      "bytes": 49,
+      "text": "visible unowned top-level target window missing\r\n"
+    },
+    {
+      "name": "payload-pre.log",
+      "bytes": 224,
+      "text": "SouiStarter=71,legal=5,all-hashes=matched\r\nSouiWorkbench=475,legal=5,all-hashes=matched\r\nPayload pre complete\r\n"
+    },
+    {
+      "name": "payload-pre-exitcode.txt",
+      "bytes": 3,
+      "text": "0\r\n"
+    },
+    {
+      "name": "run-exitcode.txt",
+      "bytes": 3,
+      "text": "1\r\n"
+    },
+    {
+      "name": "souistarter-payload-pre.tsv",
+      "bytes": 7392,
+      "text": null
+    },
+    {
+      "name": "souiworkbench-payload-pre.tsv",
+      "bytes": 53028,
+      "text": null
+    },
+    {
+      "name": "starter-extract.log",
+      "bytes": 736,
+      "text": "\r\n7-Zip (a) 19.00 (x86) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21\r\n\r\nScanning the drive for archives:\r\n1 file, 28597343 bytes (28 MiB)\r\n\r\nExtracting archive: D:\\soui-input\\SouiStarter.zip\r\n--\r\nPath = D:\\soui-input\\SouiStarter.zip\r\nType = zip\r\nPhysical Size = 28597343\r\n\r\nEverything is Ok\r\n\r\nFolders: 6\r\nFiles: 71\r\nSize:       28584049\r\nCompressed: 28597343\r\n"
+    },
+    {
+      "name": "starter-extract-exitcode.txt",
+      "bytes": 3,
+      "text": "0\r\n"
+    },
+    {
+      "name": "starter-zip-test.log",
+      "bytes": 730,
+      "text": "\r\n7-Zip (a) 19.00 (x86) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21\r\n\r\nScanning the drive for archives:\r\n1 file, 28597343 bytes (28 MiB)\r\n\r\nTesting archive: D:\\soui-input\\SouiStarter.zip\r\n--\r\nPath = D:\\soui-input\\SouiStarter.zip\r\nType = zip\r\nPhysical Size = 28597343\r\n\r\nEverything is Ok\r\n\r\nFolders: 6\r\nFiles: 71\r\nSize:       28584049\r\nCompressed: 28597343\r\n"
+    },
+    {
+      "name": "starter-zip-test-exitcode.txt",
+      "bytes": 3,
+      "text": "0\r\n"
+    },
+    {
+      "name": "transfer-diagnostics.txt",
+      "bytes": 565,
+      "text": null
+    },
+    {
+      "name": "transfer-entries.tsv",
+      "bytes": 1521,
+      "text": null
+    },
+    {
+      "name": "transfer-lines.tsv",
+      "bytes": 1436,
+      "text": null
+    },
+    {
+      "name": "transfer-manifest-raw.tsv",
+      "bytes": 1015,
+      "text": null
+    },
+    {
+      "name": "transfer-observed.tsv",
+      "bytes": 1102,
+      "text": null
+    },
+    {
+      "name": "window-inspect-command.log",
+      "bytes": 0,
+      "text": ""
+    },
+    {
+      "name": "workbench-extract.log",
+      "bytes": 748,
+      "text": "\r\n7-Zip (a) 19.00 (x86) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21\r\n\r\nScanning the drive for archives:\r\n1 file, 39615641 bytes (38 MiB)\r\n\r\nExtracting archive: D:\\soui-input\\SouiWorkbench.zip\r\n--\r\nPath = D:\\soui-input\\SouiWorkbench.zip\r\nType = zip\r\nPhysical Size = 39615641\r\n\r\nEverything is Ok\r\n\r\nFolders: 12\r\nFiles: 475\r\nSize:       39522905\r\nCompressed: 39615641\r\n"
+    },
+    {
+      "name": "workbench-extract-exitcode.txt",
+      "bytes": 3,
+      "text": "0\r\n"
+    },
+    {
+      "name": "workbench-zip-test.log",
+      "bytes": 742,
+      "text": "\r\n7-Zip (a) 19.00 (x86) : Copyright (c) 1999-2018 Igor Pavlov : 2019-02-21\r\n\r\nScanning the drive for archives:\r\n1 file, 39615641 bytes (38 MiB)\r\n\r\nTesting archive: D:\\soui-input\\SouiWorkbench.zip\r\n--\r\nPath = D:\\soui-input\\SouiWorkbench.zip\r\nType = zip\r\nPhysical Size = 39615641\r\n\r\nEverything is Ok\r\n\r\nFolders: 12\r\nFiles: 475\r\nSize:       39522905\r\nCompressed: 39615641\r\n"
+    },
+    {
+      "name": "workbench-zip-test-exitcode.txt",
+      "bytes": 3,
+      "text": "0\r\n"
+    }
+  ]
+}

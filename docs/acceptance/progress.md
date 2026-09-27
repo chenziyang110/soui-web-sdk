@@ -1,5 +1,23 @@
 # SDK 生产验证执行记录
 
+## 2026-09-28 当前锁文件的提交前依赖公告核查
+
+[六次原始核查及锁文件散列](../../verification/production-validation/preview15-precommit-npm-audit-2026-09-28/README.md)覆盖 SDK Web、Starter Web、Workbench Web 的生产依赖和完整依赖：每次 `npm audit` 原始退出 0、stderr 为空、报告漏洞数 0。此结果只反映执行时 npm 公告服务答复，不覆盖原生内核、依赖再分发条款或未来公告；授权及生产门槛继续未关闭。
+
+## 2026-09-28 当前 V02 Win7 可见页面显示模式探索
+
+[显示模式探针与冻结输入](../../verification/production-validation/win7-sp1-x86-v02-display-preparation-2026-09-28/README.md)绑定当前 718 文件源码和正式 x86 Release 构建。Win7 客体预检桌面为 800×600，而 Workbench 的 `--height` 最小被限制为 640；因此本轮准备了静态 x86 探针，仅在快照客体临时尝试 1024×768，再观察正常可见窗口。13 文件冻结输入、探针编译及直接依赖核查已通过；准备本身不证明客体显示模式可用。
+
+[第一次可见探索原始记录](../../verification/production-validation/win7-sp1-x86-v02-display-interrupted-2026-09-28/README.md)显示，我方 QEMU 启动后只到 Win7 欢迎界面，另一台独立 QEMU 随后出现。宿主门禁只终止我方客体；驱动原始退出 1、QEMU 退出 -1，基础盘和冻结输入前后不变。客体命令未发送，串口 0 字节，显示探针和 Workbench 均未执行。该样本不能判定 Win7 可见页面或 V02 交互成败；下次空闲需使用新尝试编号，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
+[第二次启动前拒绝原件](../../verification/production-validation/win7-sp1-x86-v02-display-prelaunch-refusal-2026-09-28/README.md)表明，短暂空闲后再次出现外部桌面负载，驱动在创建客体目录和启动 QEMU 前原始退出 1。该轮没有自身虚拟机、串口、显示探针或应用，不能计为客体兼容失败；后续使用第三个独立尝试编号。
+
+[第三次客体原样本](../../verification/production-validation/win7-sp1-x86-v02-display-failure-2026-09-28/README.md)证明 Win7 SP1 x86 快照桌面可临时切换至 1024×768，传输、完整载荷前置核查和宿主隔离门禁通过；但普通 Workbench 启动后第 10 秒未找到可见的无 owner 顶层窗口，客体 `run-exitcode.txt=1`、严格成功校验退出 1。没有应用原生退出码、自然关闭或 V02 页面可见证据；我方 QEMU/外层驱动退出 0 只表明虚拟机流程正常结束。保留 24 帧串口与截图，不把此失败覆盖或解释成生产通过；需以新冻结输入查明可见窗口出现时序。
+
+[新夹具冻结与首次中断](../../verification/production-validation/win7-sp1-x86-v02-display-v2-interrupted-2026-09-28/README.md)保留原 60 秒应用期限，拟在 10–40 秒持续观察窗口并捕获探针错误；13 文件新输入已冻结验证。其第一次客体启动后外部 QEMU 出现，门禁只停止我方虚拟机，命令未发送、串口 0 字节；因此尚无新夹具的客体执行结论，下一次使用独立尝试编号。
+
+[第二次 v2 客体原始记录](../../verification/production-validation/win7-sp1-x86-v02-visible-page-2026-09-28/README.md)在 Win7 SP1 x86 1024×768 快照桌面执行了普通可见 Workbench。第 10、15、20、25、30 秒的窗口探测均未发现目标，第 35 秒探测成功；截图可见 V02 数据交互页、万条载入指标及虚拟列表。应用在原 60 秒期限内原生退出 0，窗口正常关闭，完整载荷与法律声明前后核对通过。此结果解释了先前第 10 秒单次探测的局限，只证明当前构建在该分辨率下页面可见；真实滚动、中文 IME 组合、缩放及公共任务并行仍未执行，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
 ## 2026-09-28 当前 V02 Win7 SP1 x86 Workbench 短测
 
 [当前构建的客体短测原始记录](../../verification/production-validation/win7-sp1-x86-v02-current-app-smoke-2026-09-28/README.md)绑定 718 文件 Demo 源码与正式 x86 Release 构建，在 Win7 SP1 x86 用 `--react --page=data --width=700 --height=500` 启动 Workbench 的 60 秒短测入口。真实客体中应用原生退出 0，日志按序记录 `application-ready`、Bridge 就绪、adapter 卸载、host 完整关闭和窗口销毁；载荷 71/475 文件及各 5 份法律声明前后均与冻结清单逐字节匹配。29 帧串口严格校验，62 次宿主门禁未见外部桌面负载，QEMU/驱动退出 0，基础盘及 11 文件只读输入冻结前后不变。78 份原始文件独立归档，包括随后一次源码清单生成因新出现的外部 QEMU 中断的原始退出码；该中断不改变先前客体短测结论。短测日志的 `--page=data` 参数不证明 V02 页面在屏幕可见，也未执行滚动、中文 IME、缩放和长任务并行；`win7CurrentV02Verified=false`、`releaseReady=false`。
