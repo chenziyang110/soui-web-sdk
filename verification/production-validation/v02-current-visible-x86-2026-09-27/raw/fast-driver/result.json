@@ -1,0 +1,588 @@
+{
+  "schema": "soui.v02.fast-visible/v1",
+  "architecture": "x86",
+  "attemptName": "visible-v02-x86-attempt4",
+  "sourceSha256": "15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d",
+  "buildId": "f0c38056-058a-456e-be99-17446127f7ec",
+  "probeSha256": "929ecfcb2d842b1639b31a349ca83bd2f037d2111600526e1aa9cdb0001ab26e",
+  "startedAt": "2026-09-27T12:53:37.007Z",
+  "status": "actions-and-natural-close",
+  "actions": [
+    {
+      "label": "inspect",
+      "at": "2026-09-27T12:53:43.519Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "0",
+        "inspect",
+        "-",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\inspect.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"inspect\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "baseline",
+      "at": "2026-09-27T12:53:44.955Z",
+      "program": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Capture-V02Window.ps1",
+        "-TargetProcessId",
+        "75264",
+        "-ExpectedCreationFiletime",
+        "134349872198666776",
+        "-ExpectedHwnd",
+        "247735646",
+        "-OutputPng",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\baseline.png",
+        "-OutputJson",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\baseline.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\r\n    \"schema\":  \"soui.v02.target-window-screenshot/v1\",\r\n    \"at\":  \"2026-09-27T12:53:44.8887515Z\",\r\n    \"pid\":  75264,\r\n    \"creationFiletime\":  \"134349872198666776\",\r\n    \"hwnd\":  \"247735646\",\r\n    \"naturallyForeground\":  true,\r\n    \"rect\":  [\r\n                 234,\r\n                 234,\r\n                 1334,\r\n                 954\r\n             ],\r\n    \"imagePath\":  \"C:\\\\SOUI-SDK-production-validation\\\\preview15-v02-interaction-20260927\\\\visible-v02-x86-attempt4-fast-driver\\\\baseline.png\",\r\n    \"imageBytes\":  50266,\r\n    \"imageSha256\":  \"d7494e3418ced3563a973d1573275eef5dd00669a0744c35d0fcf71b244b74b3\",\r\n    \"pageStateVerified\":  false,\r\n    \"imeCompositionVerified\":  false,\r\n    \"releaseReady\":  false\r\n}\n\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-down-1",
+      "at": "2026-09-27T12:53:45.897Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel",
+        "1060,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-down-1.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-down-2",
+      "at": "2026-09-27T12:53:46.867Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel",
+        "1060,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-down-2.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-down-3",
+      "at": "2026-09-27T12:53:47.791Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel",
+        "1060,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-down-3.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-down-4",
+      "at": "2026-09-27T12:53:48.645Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel",
+        "1060,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-down-4.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-down-5",
+      "at": "2026-09-27T12:53:49.528Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel",
+        "1060,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-down-5.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-down-6",
+      "at": "2026-09-27T12:53:50.423Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel",
+        "1060,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-down-6.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-down-7",
+      "at": "2026-09-27T12:53:51.219Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel",
+        "1060,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-down-7.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-down-8",
+      "at": "2026-09-27T12:53:51.991Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel",
+        "1060,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-down-8.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "task-location",
+      "at": "2026-09-27T12:53:53.705Z",
+      "program": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Capture-V02Window.ps1",
+        "-TargetProcessId",
+        "75264",
+        "-ExpectedCreationFiletime",
+        "134349872198666776",
+        "-ExpectedHwnd",
+        "247735646",
+        "-OutputPng",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\task-location.png",
+        "-OutputJson",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\task-location.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\r\n    \"schema\":  \"soui.v02.target-window-screenshot/v1\",\r\n    \"at\":  \"2026-09-27T12:53:53.6397507Z\",\r\n    \"pid\":  75264,\r\n    \"creationFiletime\":  \"134349872198666776\",\r\n    \"hwnd\":  \"247735646\",\r\n    \"naturallyForeground\":  true,\r\n    \"rect\":  [\r\n                 234,\r\n                 234,\r\n                 1334,\r\n                 954\r\n             ],\r\n    \"imagePath\":  \"C:\\\\SOUI-SDK-production-validation\\\\preview15-v02-interaction-20260927\\\\visible-v02-x86-attempt4-fast-driver\\\\task-location.png\",\r\n    \"imageBytes\":  54642,\r\n    \"imageSha256\":  \"c6e3651f1d7a453926cd4b7a51d047772996760d8b5ac694aaa874d5877b2a81\",\r\n    \"pageStateVerified\":  false,\r\n    \"imeCompositionVerified\":  false,\r\n    \"releaseReady\":  false\r\n}\n\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "start-task",
+      "at": "2026-09-27T12:53:54.528Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "click",
+        "740,650",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\start-task.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"click\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "focus-input",
+      "at": "2026-09-27T12:53:55.413Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "click",
+        "500,130",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\focus-input.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"click\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "pinyin",
+      "at": "2026-09-27T12:53:56.580Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "pinyin",
+        "zhongwen",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\pinyin.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"pinyin\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "commit-space",
+      "at": "2026-09-27T12:53:57.557Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "key-space",
+        "-",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\commit-space.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"key-space\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1334,954],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "resize",
+      "at": "2026-09-27T12:53:58.823Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "resize-drag",
+        "80,60",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\resize.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"resize-drag\",\"foregroundBefore\":true,\"before\":[234,234,1334,954],\"after\":[234,234,1414,1014],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "concurrent-input-resize",
+      "at": "2026-09-27T12:54:00.357Z",
+      "program": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Capture-V02Window.ps1",
+        "-TargetProcessId",
+        "75264",
+        "-ExpectedCreationFiletime",
+        "134349872198666776",
+        "-ExpectedHwnd",
+        "247735646",
+        "-OutputPng",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\concurrent-input-resize.png",
+        "-OutputJson",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\concurrent-input-resize.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\r\n    \"schema\":  \"soui.v02.target-window-screenshot/v1\",\r\n    \"at\":  \"2026-09-27T12:54:00.2859438Z\",\r\n    \"pid\":  75264,\r\n    \"creationFiletime\":  \"134349872198666776\",\r\n    \"hwnd\":  \"247735646\",\r\n    \"naturallyForeground\":  true,\r\n    \"rect\":  [\r\n                 234,\r\n                 234,\r\n                 1414,\r\n                 1014\r\n             ],\r\n    \"imagePath\":  \"C:\\\\SOUI-SDK-production-validation\\\\preview15-v02-interaction-20260927\\\\visible-v02-x86-attempt4-fast-driver\\\\concurrent-input-resize.png\",\r\n    \"imageBytes\":  57270,\r\n    \"imageSha256\":  \"87787f105b7c4b31a6bd5df1d79efea3d9ef4408c1c0f0cdb5c9afe497aa21d9\",\r\n    \"pageStateVerified\":  false,\r\n    \"imeCompositionVerified\":  false,\r\n    \"releaseReady\":  false\r\n}\n\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-up-1",
+      "at": "2026-09-27T12:54:01.210Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel-up",
+        "1140,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-up-1.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel-up\",\"foregroundBefore\":true,\"before\":[234,234,1414,1014],\"after\":[234,234,1414,1014],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-up-2",
+      "at": "2026-09-27T12:54:02.043Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel-up",
+        "1140,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-up-2.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel-up\",\"foregroundBefore\":true,\"before\":[234,234,1414,1014],\"after\":[234,234,1414,1014],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-up-3",
+      "at": "2026-09-27T12:54:02.959Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel-up",
+        "1140,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-up-3.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel-up\",\"foregroundBefore\":true,\"before\":[234,234,1414,1014],\"after\":[234,234,1414,1014],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-up-4",
+      "at": "2026-09-27T12:54:03.900Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel-up",
+        "1140,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-up-4.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel-up\",\"foregroundBefore\":true,\"before\":[234,234,1414,1014],\"after\":[234,234,1414,1014],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-up-5",
+      "at": "2026-09-27T12:54:04.853Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel-up",
+        "1140,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-up-5.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel-up\",\"foregroundBefore\":true,\"before\":[234,234,1414,1014],\"after\":[234,234,1414,1014],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-up-6",
+      "at": "2026-09-27T12:54:05.869Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel-up",
+        "1140,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-up-6.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel-up\",\"foregroundBefore\":true,\"before\":[234,234,1414,1014],\"after\":[234,234,1414,1014],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-up-7",
+      "at": "2026-09-27T12:54:06.834Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel-up",
+        "1140,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-up-7.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel-up\",\"foregroundBefore\":true,\"before\":[234,234,1414,1014],\"after\":[234,234,1414,1014],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "outer-up-8",
+      "at": "2026-09-27T12:54:07.777Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel-up",
+        "1140,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\outer-up-8.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel-up\",\"foregroundBefore\":true,\"before\":[234,234,1414,1014],\"after\":[234,234,1414,1014],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "list-return",
+      "at": "2026-09-27T12:54:09.354Z",
+      "program": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Capture-V02Window.ps1",
+        "-TargetProcessId",
+        "75264",
+        "-ExpectedCreationFiletime",
+        "134349872198666776",
+        "-ExpectedHwnd",
+        "247735646",
+        "-OutputPng",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\list-return.png",
+        "-OutputJson",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\list-return.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\r\n    \"schema\":  \"soui.v02.target-window-screenshot/v1\",\r\n    \"at\":  \"2026-09-27T12:54:09.2784121Z\",\r\n    \"pid\":  75264,\r\n    \"creationFiletime\":  \"134349872198666776\",\r\n    \"hwnd\":  \"247735646\",\r\n    \"naturallyForeground\":  true,\r\n    \"rect\":  [\r\n                 234,\r\n                 234,\r\n                 1414,\r\n                 1014\r\n             ],\r\n    \"imagePath\":  \"C:\\\\SOUI-SDK-production-validation\\\\preview15-v02-interaction-20260927\\\\visible-v02-x86-attempt4-fast-driver\\\\list-return.png\",\r\n    \"imageBytes\":  54849,\r\n    \"imageSha256\":  \"314f83dea45dabff5899d3f04f3f08cbebc1ca3343c79cfaab8658062b8338e8\",\r\n    \"pageStateVerified\":  false,\r\n    \"imeCompositionVerified\":  false,\r\n    \"releaseReady\":  false\r\n}\n\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "inner-list-wheel",
+      "at": "2026-09-27T12:54:10.096Z",
+      "program": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "args": [
+        "75264",
+        "134349872198666776",
+        "wheel",
+        "500,450",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\inner-list-wheel.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.v02.os-input/v1\",\"pid\":75264,\"creationFiletime\":134349872198666776,\"hwnd\":247735646,\"action\":\"wheel\",\"foregroundBefore\":true,\"before\":[234,234,1414,1014],\"after\":[234,234,1414,1014],\"keyboardLayout\":134481924,\"focusedHwnd\":53290764,\"imeCompositionVerified\":false,\"releaseReady\":false}\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "concurrent-list-scroll",
+      "at": "2026-09-27T12:54:11.681Z",
+      "program": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Capture-V02Window.ps1",
+        "-TargetProcessId",
+        "75264",
+        "-ExpectedCreationFiletime",
+        "134349872198666776",
+        "-ExpectedHwnd",
+        "247735646",
+        "-OutputPng",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\concurrent-list-scroll.png",
+        "-OutputJson",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\concurrent-list-scroll.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\r\n    \"schema\":  \"soui.v02.target-window-screenshot/v1\",\r\n    \"at\":  \"2026-09-27T12:54:11.6059240Z\",\r\n    \"pid\":  75264,\r\n    \"creationFiletime\":  \"134349872198666776\",\r\n    \"hwnd\":  \"247735646\",\r\n    \"naturallyForeground\":  true,\r\n    \"rect\":  [\r\n                 234,\r\n                 234,\r\n                 1414,\r\n                 1014\r\n             ],\r\n    \"imagePath\":  \"C:\\\\SOUI-SDK-production-validation\\\\preview15-v02-interaction-20260927\\\\visible-v02-x86-attempt4-fast-driver\\\\concurrent-list-scroll.png\",\r\n    \"imageBytes\":  55434,\r\n    \"imageSha256\":  \"96283cac16ad88ab581d844a31f7643eba8b234d89dc23cb533fe6b2dfd3d422\",\r\n    \"pageStateVerified\":  false,\r\n    \"imeCompositionVerified\":  false,\r\n    \"releaseReady\":  false\r\n}\n\r\n",
+      "stderr": ""
+    },
+    {
+      "label": "natural-close",
+      "at": "2026-09-27T12:54:13.797Z",
+      "program": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Close-V02Window.ps1",
+        "-TargetProcessId",
+        "75264",
+        "-ExpectedCreationFiletime",
+        "134349872198666776",
+        "-ExpectedHwnd",
+        "247735646",
+        "-OutputJson",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\visible-v02-x86-attempt4-fast-driver\\natural-close.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\r\n    \"schema\":  \"soui.v02.native-close/v1\",\r\n    \"at\":  \"2026-09-27T12:54:13.7098746Z\",\r\n    \"pid\":  75264,\r\n    \"creationFiletime\":  \"134349872198666776\",\r\n    \"hwnd\":  \"247735646\",\r\n    \"naturallyForegroundBeforeClose\":  true,\r\n    \"message\":  \"WM_CLOSE\",\r\n    \"posted\":  true,\r\n    \"postError\":  0,\r\n    \"waitResult\":  0,\r\n    \"elapsedMs\":  633,\r\n    \"processExited\":  true,\r\n    \"windowDestroyed\":  true,\r\n    \"nativeExitCode\":  0,\r\n    \"forcedTermination\":  false,\r\n    \"releaseReady\":  false\r\n}\n\r\n",
+      "stderr": ""
+    }
+  ],
+  "target": {
+    "pid": 75264,
+    "creationFiletime": "134349872198666776",
+    "hwnd": 247735646
+  },
+  "runner": {
+    "pid": 83124,
+    "startedAt": "2026-09-27T12:53:37.796Z",
+    "programSha256": "6ee083107a49f548f9c6a482fb4601967e8852dda4d5fe9590430315afd26757",
+    "exitCode": 0,
+    "signal": null,
+    "error": null
+  },
+  "forcedCleanup": null,
+  "realInputVerified": false,
+  "releaseReady": false,
+  "application": {
+    "schema": "soui.v02.visible-run/v2",
+    "architecture": "x86",
+    "attemptName": "visible-v02-x86-attempt4",
+    "startedAt": "2026-09-27T12:53:38.511Z",
+    "status": "native-exit-zero",
+    "beforeGate": {
+      "at": "2026-09-27T12:53:38.510Z",
+      "busy": []
+    },
+    "buildBefore": {
+      "buildId": "f0c38056-058a-456e-be99-17446127f7ec",
+      "sourceSha256": "15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d",
+      "payloadSha256": "7ee53c78a1c5c0c2deecfbb38f70d443d3315d6d420ec756c1b5113ccc7cbffb",
+      "executable": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\x86\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe",
+      "executableSha256": "e564358d5cba2956053068900a80eaaef8ad646e2e6f3c8095288ba7c175531c"
+    },
+    "launch": {
+      "program": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\x86\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe",
+      "args": [
+        "--react",
+        "--page=data"
+      ],
+      "pid": 75264,
+      "at": "2026-09-27T12:53:39.912Z",
+      "supervisorSha256": "6ee083107a49f548f9c6a482fb4601967e8852dda4d5fe9590430315afd26757"
+    },
+    "interference": null,
+    "gateError": null,
+    "timedOut": false,
+    "nativeExitCode": 0,
+    "signal": null,
+    "forcedCleanup": null,
+    "buildAfter": {
+      "buildId": "f0c38056-058a-456e-be99-17446127f7ec",
+      "sourceSha256": "15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d",
+      "payloadSha256": "7ee53c78a1c5c0c2deecfbb38f70d443d3315d6d420ec756c1b5113ccc7cbffb",
+      "executable": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\x86\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe",
+      "executableSha256": "e564358d5cba2956053068900a80eaaef8ad646e2e6f3c8095288ba7c175531c"
+    },
+    "afterGate": {
+      "at": "2026-09-27T12:54:14.618Z",
+      "busy": []
+    },
+    "realInputVerified": false,
+    "releaseReady": false,
+    "spawnError": null,
+    "finishedAt": "2026-09-27T12:54:15.288Z"
+  },
+  "finishedAt": "2026-09-27T12:54:16.092Z"
+}
