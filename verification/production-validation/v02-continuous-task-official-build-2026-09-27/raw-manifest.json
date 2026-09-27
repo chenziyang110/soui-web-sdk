@@ -1,7 +1,10 @@
 {
   "schemaVersion": 1,
-  "attempt": "official-x64-attempt1",
-  "fileCount": 15,
+  "attempts": [
+    "official-x64-attempt1",
+    "official-x86-attempt1"
+  ],
+  "fileCount": 26,
   "files": [
     {
       "path": "Bind-OfficialBuild.cjs",
@@ -54,6 +57,41 @@
       "sha256": "01950e4b37aac8ee82079c61a86515eb295df9d3331b6a1ebc7d5c60949d545f"
     },
     {
+      "path": "command-logs/official-x86-attempt1-driver/result.json",
+      "bytes": 699,
+      "sha256": "ddcd94f1ae50eb9b787e5f5648347e8115aede0de2e687262f63d4687bf2fc79"
+    },
+    {
+      "path": "command-logs/official-x86-attempt1-driver/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "command-logs/official-x86-attempt1-driver/stdout.log",
+      "bytes": 910,
+      "sha256": "3ce73dc92c2bed9ef2dfd42f5a50806686524100bc89857f526030418ab2d0de"
+    },
+    {
+      "path": "command-logs/official-x86-attempt1-official-build/external-gates.ndjson",
+      "bytes": 49,
+      "sha256": "c6f0bd96b1156cd2283593412c7267a29595dcf90f02c446fe804eef5fbcc1bf"
+    },
+    {
+      "path": "command-logs/official-x86-attempt1-official-build/result.json",
+      "bytes": 900,
+      "sha256": "49e0746268391050f840cbbaaa886332082ef8ffc42c33e479071f7509568dcf"
+    },
+    {
+      "path": "command-logs/official-x86-attempt1-official-build/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "command-logs/official-x86-attempt1-official-build/stdout.log",
+      "bytes": 680,
+      "sha256": "3f189900ab2bcd22cf722616dbda345b4cdfffd39bad3075a177c83e6a94fe2e"
+    },
+    {
       "path": "official-x64-attempt1-after-official-gate.json",
       "bytes": 97,
       "sha256": "062d1f25afa5e5a394e7efb3da8a95294c027a6177bb217f2cd339b5c2dfd8f3"
@@ -72,6 +110,26 @@
       "path": "official-x64-attempt1-before-official-input.json",
       "bytes": 165420,
       "sha256": "0850c828eeb83f6c03cf500c6c663298a434eacdffc59f2e8ba0319a43bf3bfb"
+    },
+    {
+      "path": "official-x86-attempt1-after-official-gate.json",
+      "bytes": 97,
+      "sha256": "4f4655dbc92538973ae2071c3077318b9616fb7181ff3de2da01c59f7758db13"
+    },
+    {
+      "path": "official-x86-attempt1-after-official-input.json",
+      "bytes": 165805,
+      "sha256": "31c8803f5fa1dc4d2e765b9aa4c7ba2a6bbd77a123a07d532e419739dd2f30cd"
+    },
+    {
+      "path": "official-x86-attempt1-before-official-gate.json",
+      "bytes": 97,
+      "sha256": "fe4aea72e0fada0bbe03a40a35227c43755aa06ad72eadc0855313c7303eaabf"
+    },
+    {
+      "path": "official-x86-attempt1-before-official-input.json",
+      "bytes": 165420,
+      "sha256": "3c8b26e0d78fa802fbb9fae08bcfc50ba6771a44be8ffd5ec0f30cbcec2b945c"
     },
     {
       "path": "Run-OfficialBuild.ps1",
