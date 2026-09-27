@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-27 当前内核直接依赖复核
+
+[当前 x86/x64 内核导入记录](../../verification/production-validation/preview15-current-kernel-imports-2026-09-27/README.md)绑定待审二进制清单中的精确 SHA-256，`dumpbin /dependents` 均原始退出 0，分别列出 17/19 个直接 DLL 依赖。它不揭示静态链接成员或运行时加载，更不能替代再分发条件审核；依赖授权仍为 `unverified`，生产准入未关闭。
+
 ## 2026-09-27 V02 持续任务 x64 正式应用构建
 
 [原始构建记录](../../verification/production-validation/v02-continuous-task-official-build-2026-09-27/README.md)显示当前 718 文件源码的正式 `tools/Build.ps1` x64 Release（含完整 Web）及外层驱动原始退出码均为 0。构建 ID `5ddcec93-d244-456c-877b-1bdeabee568d`，前后源码 SHA-256 一致，Starter/Workbench 完整运行载荷各有独立散列。前后负载门禁为空，其他 QEMU 在结束后三秒才启动。x86 正式构建、当前 Demo 真实 GUI/Win7 V02 验收仍待执行；此项只证明 x64 构建，不放行生产门槛。
