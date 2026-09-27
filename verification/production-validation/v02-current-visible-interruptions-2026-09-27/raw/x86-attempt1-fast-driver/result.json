@@ -1,0 +1,17 @@
+{
+  "schema": "soui.v02.fast-visible/v1",
+  "architecture": "x86",
+  "attemptName": "visible-v02-x86-attempt1",
+  "sourceSha256": "15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d",
+  "buildId": "f0c38056-058a-456e-be99-17446127f7ec",
+  "probeSha256": "929ecfcb2d842b1639b31a349ca83bd2f037d2111600526e1aa9cdb0001ab26e",
+  "startedAt": "2026-09-27T11:48:20.830Z",
+  "status": "driver-error",
+  "actions": [],
+  "target": null,
+  "runner": null,
+  "forcedCleanup": null,
+  "realInputVerified": false,
+  "releaseReady": false,
+  "error": "Error: External workload detected: [{\"ProcessId\":79256,\"ParentProcessId\":82208,\"Name\":\"qemu-system-x86_64.exe\",\"CreationDate\":\"/Date(1790509697442)/\"}]\n    at gate (C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Run-V02FastVisible.cjs:54:33)\n    at main (C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Run-V02FastVisible.cjs:109:18)\n    at Object.<anonymous> (C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Run-V02FastVisible.cjs:196:6)\n    at Module._compile (node:internal/modules/cjs/loader:1812:14)\n    at Object..js (node:internal/modules/cjs/loader:1943:10)\n    at Module.load (node:internal/modules/cjs/loader:1533:32)\n    at Module._load (node:internal/modules/cjs/loader:1335:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47"
+}

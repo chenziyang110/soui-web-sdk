@@ -1,0 +1,116 @@
+{
+  "schema": "soui.v02.probe-build/v2",
+  "startedAt": "2026-09-27T11:32:08.259Z",
+  "status": "built-x64-x86",
+  "stages": [
+    {
+      "name": "x64-configure",
+      "program": "cmake.exe",
+      "args": [
+        "-S",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-build-input-v2-attempt1",
+        "-B",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x64",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64"
+      ],
+      "pid": 56216,
+      "startedAt": "2026-09-27T11:33:28.510Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interference": null,
+      "gateError": null,
+      "spawnError": null,
+      "finishedAt": "2026-09-27T11:33:31.922Z"
+    },
+    {
+      "name": "x64-build",
+      "program": "cmake.exe",
+      "args": [
+        "--build",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x64",
+        "--config",
+        "Release",
+        "--target",
+        "V02InputProbe",
+        "--",
+        "/m:1"
+      ],
+      "pid": 12376,
+      "startedAt": "2026-09-27T11:33:32.573Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interference": null,
+      "gateError": null,
+      "spawnError": null,
+      "finishedAt": "2026-09-27T11:33:34.739Z"
+    },
+    {
+      "name": "x86-configure",
+      "program": "cmake.exe",
+      "args": [
+        "-S",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-build-input-v2-attempt1",
+        "-B",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32"
+      ],
+      "pid": 60016,
+      "startedAt": "2026-09-27T11:33:35.371Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interference": null,
+      "gateError": null,
+      "spawnError": null,
+      "finishedAt": "2026-09-27T11:33:38.446Z"
+    },
+    {
+      "name": "x86-build",
+      "program": "cmake.exe",
+      "args": [
+        "--build",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86",
+        "--config",
+        "Release",
+        "--target",
+        "V02InputProbe",
+        "--",
+        "/m:1"
+      ],
+      "pid": 42172,
+      "startedAt": "2026-09-27T11:33:39.183Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interference": null,
+      "gateError": null,
+      "spawnError": null,
+      "finishedAt": "2026-09-27T11:33:41.234Z"
+    }
+  ],
+  "executables": [
+    {
+      "architecture": "x64",
+      "path": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x64\\Release\\V02InputProbe.exe",
+      "bytes": 47104,
+      "sha256": "4bd647c75f08e1f14b5ae4418e30c1c7c480e69e07bc425988cad09128826ecd"
+    },
+    {
+      "architecture": "x86",
+      "path": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-v2-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "bytes": 41984,
+      "sha256": "929ecfcb2d842b1639b31a349ca83bd2f037d2111600526e1aa9cdb0001ab26e"
+    }
+  ],
+  "releaseReady": false,
+  "finishedAt": "2026-09-27T11:33:41.235Z",
+  "updatedAt": "2026-09-27T11:33:41.235Z"
+}
