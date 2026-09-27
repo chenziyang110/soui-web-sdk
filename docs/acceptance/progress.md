@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-28 当前 V02 Win7 SP1 x86 IME/缩放/任务探索的隔离中断
+
+[第一次新输入尝试](../../verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-2026-09-28/README.md)已绑定当前 718 文件 Demo 源码、正式 x86 Release 构建和 13 文件冻结输入。我方客体启动后，另一台 QEMU 在客体命令发送前出现；宿主门禁只停止我方虚拟机。驱动原始退出 1、QEMU 退出 -1，串口 0 字节，无应用或中文输入/缩放/任务并行结果。47 份复制原件和严格中断复核保留；两份 QEMU 临时快照只留在外部原件，不进入公开仓库。后续须在环境空闲时用新尝试编号执行，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
 ## 2026-09-28 当前 V02 Win7 SP1 x86 滚轮前后截图
 
 [新客体原件](../../verification/production-validation/win7-sp1-x86-v02-layout-wheel-before-after-2026-09-28/README.md)绑定当前 718 文件 Demo 源码、正式 x86 Release 构建和新 13 文件只读输入。Win7 SP1 x86 普通可见 Workbench 在 1024×768 快照桌面中，从万条列表顶部显示移动到下方的中文输入状态、动效及公共任务区；前后原始 PPM/PNG 时间线、十二次绑定进程及自然前台的系统滚轮、61 帧串口均保留。应用原生退出 0、自然关窗，载荷及法律声明前后匹配，宿主 60 次采样未见外部桌面负载。客体与宿主时钟存在偏差，不据此计算精确输入延迟或逐帧因果。中文 IME 组合、窗口缩放及 30 秒公共任务并行仍未在 Win7 执行，`win7CurrentV02Verified=false`、`releaseReady=false`。两份应用 ZIP 原字节仍在外部冻结输入，仓库不能独立重建完整冻结输入。

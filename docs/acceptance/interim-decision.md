@@ -1,5 +1,13 @@
 # 0.3 SDK 中期准入判定
 
+## 2026-09-28 preview.15 当前输入的三项结论
+
+**工程交付：部分通过，完整独立交付未通过。** 当前 419 文件 SDK Core 的构建与包身份、此前完整源码无 Git 解压编译、独立接入等局部证据已保存；V02 Demo 更新后的 718 文件源码已完成[双架构正式 Release 应用构建](../../verification/production-validation/v02-continuous-task-official-build-2026-09-27/README.md)和本机[两架构可见单轮交互](../../verification/production-validation/v02-current-visible-x64-2026-09-27/README.md)、[x86 单轮](../../verification/production-validation/v02-current-visible-x86-2026-09-27/README.md)。旧完整源码 ZIP 不包含这次新 Demo 输入，不能据此宣布当前整套交付已从原封包独立重建；`sourceDeliveryVerified=false`。
+
+**指定范围生产：未通过。** 当前构建在 Win7 SP1 x86 QEMU 有[应用短测](../../verification/production-validation/win7-sp1-x86-v02-current-app-smoke-2026-09-28/README.md)和[可见滚轮前后截图](../../verification/production-validation/win7-sp1-x86-v02-layout-wheel-before-after-2026-09-28/README.md)，但中文 IME、缩放及同一 30 秒任务并行仍待测；下一份新输入[首次客体尝试](../../verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-2026-09-28/README.md)在发命令前因外部虚拟机被门禁中止，不能算功能失败或通过。真实同页续期、V04 驻留、每模式千轮、百次重载资源门、隔离八小时、物理目标机与内核安全授权责任等仍未关闭；[支持矩阵](support-matrix.md)没有生产组合，`releaseReady=false`。
+
+**相对 Electron 的采用价值：未判定。** 历史最小宿主体积与三对预检均绑定旧输入；当前 Demo 尚缺至少五对隔离交替、输入到实际呈现/帧间隔、完整进程树资源与维护工时的同口径结果。不能由体积优势或本机短测推导整体价值，`benchmarkValid=false`。
+
 2026-09-26 当前开发候选 preview.13：[安装恢复文件链](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)、[已知旧现场副本手工恢复与独立账本四配置编译](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)，以及[完整源码无 Git 解压后的应用四配置构建和 44+8 项测试](../../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)通过所列范围。自动旧格式恢复仍拒绝；本候选业务与应用 GUI、目标平台、底层完整重编待验证。独立完整交付、指定范围生产与 Electron 整体价值三个结论均未通过或未判定，历史版本结果保持原身份。
 
 初始判定日期：2026-09-24，候选 `0.3.0-preview.5`；后续增补按各自版本分别判定。本文件只汇总已执行证据，不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
