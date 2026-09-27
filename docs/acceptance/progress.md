@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-27 当前 V02 GUI 输入验收准备
+
+[输入探针和 GUI 预检](../../verification/production-validation/v02-current-gui-preparation-2026-09-27/README.md)已保存宿主中文输入法、当前双架构应用身份、V02 页面观察点，以及只对已核对 PID/HWND 自然前台发送 Win32 输入的辅助程序源码。准备时独立 QEMU 仍运行，探针未编译、当前 GUI 未启动，中文 IME 组合和任务并行没有获得通过证据。`releaseReady=false`。
+
 ## 2026-09-27 当前内核直接依赖复核
 
 [当前 x86/x64 内核导入记录](../../verification/production-validation/preview15-current-kernel-imports-2026-09-27/README.md)绑定待审二进制清单中的精确 SHA-256，`dumpbin /dependents` 均原始退出 0，分别列出 17/19 个直接 DLL 依赖。它不揭示静态链接成员或运行时加载，更不能替代再分发条件审核；依赖授权仍为 `unverified`，生产准入未关闭。
