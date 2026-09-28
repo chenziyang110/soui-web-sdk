@@ -10,6 +10,10 @@
 
 新 [Win7 v7 交互尝试](../verification/production-validation/win7-sp1-x86-v02-interaction-v7-resize-blocked-2026-09-28/README.md)在无外部 QEMU 干扰时完成 12 次原生外层滚轮，但 Workbench 默认窗口右下边框落在 1024×768 桌面的任务栏下；真实缩放探针拒绝被覆盖的边框，客体退出 1。任务、中文 IME、内层滚动及完整关闭检查未执行，V02 仍不通过。当前问题按 [Issue #42](https://github.com/chenziyang110/soui-web-sdk/issues/42) 继续处理，不得把驱动/QEMU 正常退出当成应用交互通过。
 
+[Win7 v8 输入](../verification/production-validation/win7-sp1-x86-v02-v8-prelaunch-refusal-2026-09-28/README.md)新增原生标题栏拖动后再缩放，x86 探针编译和冻结检查通过；客体第一次尝试在自身 QEMU 启动前遇到外部 VM，保护性退出 1，未产生交互结果。v8 的固定任务点击位置也未确认，后续即使结构检查通过，仍需用页面状态、进度事件和查询原件证明任务启动及并行，并单独证明真实 IME 组合。默认窗口位置的产品修复位于独立工作树，尚未编译或验收；Issue #42 仍开放。
+
+[Win7 v8 第二次客体](../verification/production-validation/win7-sp1-x86-v02-v8-command-interrupted-2026-09-28/README.md)确认真实桌面后向 QEMU 发送一次冻结命令按键，但串口 0 字节且没有客体原生结果；外部 QEMU 随后出现，门禁只停我方客体。驱动退出 1、我方 QEMU 退出 -1。不能把按键已发送解释为应用已运行，也不能据此关闭 v7 窗口问题或中文 IME/任务/缩放门槛。下一轮使用独立 attempt 和修复后的新构建。
+
 [SDK Core 体积修正](../verification/production-validation/sdk-core-native-backups-2026-09-27/README.md)排除两份历史内核备份，并保留完整源码原件。内部 preview.14 的源码匹配失败后，preview.15 统一打包和校验筛选，真实新包匹配及安装往返通过，净减少约 55.94 MiB；不据此扩大应用运行体积或 Electron 对标结论。
 
 冻结 preview.11 的[页面动画诊断](../verification/production-validation/preview11-renewal-animation-diagnostic-2026-09-26/README.md)中，相同输入只关闭旋转动画即可完成任务短测；动画开启时解析持续停滞，尚需原生调度证据。另一已就绪运行在页面记录后 15 ms 被监督器判定为“30 秒无记录”。[新外部夹具](../verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26/README.md)已复现并修正先采样时钟、后读跨线程快照导致的无符号差值风险；两架构边界测试、自检及关闭动画的诊断短测通过。原失败保留，关闭动画不作为 SDK 修复，真实续期和生产门槛继续未通过。
