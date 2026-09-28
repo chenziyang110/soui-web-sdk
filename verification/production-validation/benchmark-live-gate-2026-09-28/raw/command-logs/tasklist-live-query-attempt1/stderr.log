@@ -1,0 +1,17 @@
+C:\SOUI-SDK-development\benchmark-realtime-gate\benchmarks\protocol\run-series.cjs:63
+      throw new Error(`Tasklist returned an invalid process row: ${row}`);
+      ^
+
+Error: Tasklist returned an invalid process row: "System Idle Process","0","Services","0","8 K"
+    at C:\SOUI-SDK-development\benchmark-realtime-gate\benchmarks\protocol\run-series.cjs:63:13
+    at Array.map (<anonymous>)
+    at parseTasklistCsv (C:\SOUI-SDK-development\benchmark-realtime-gate\benchmarks\protocol\run-series.cjs:59:15)
+    at competingProcesses (C:\SOUI-SDK-development\benchmark-realtime-gate\benchmarks\protocol\run-series.cjs:73:10)
+    at [eval]:1:150
+    at runScriptInThisContext (node:internal/vm:219:10)
+    at node:internal/process/execution:451:12
+    at [eval]-wrapper:6:24
+    at runScriptInContext (node:internal/process/execution:449:60)
+    at evalFunction (node:internal/process/execution:283:30)
+
+Node.js v24.14.0

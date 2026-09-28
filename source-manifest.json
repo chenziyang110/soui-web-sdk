@@ -7,8 +7,8 @@
     {
       "path": ".gitattributes",
       "normalization": "lf",
-      "bytes": 21228,
-      "sha256": "a4579de77c68b0fc2b549fac51fc7cb7c936c2f7a478c8accd271f0d0946aae7"
+      "bytes": 21357,
+      "sha256": "6e8af35189dacdb4de7f93644649eb4961fe1311f1a136b4f9ca6c453d64ee1f"
     },
     {
       "path": ".github/CODEOWNERS",
@@ -163,8 +163,8 @@
     {
       "path": "benchmarks/protocol/README.md",
       "normalization": "lf",
-      "bytes": 8037,
-      "sha256": "fd4add719349a93f98c19eba3c68b35d9d90de7b20f1cee93572574759194d11"
+      "bytes": 10153,
+      "sha256": "af1726f3e24e1e1fdd10f2a0043a7026bd3ea3e56a20a36bdb9eb0f0ff1bc6de"
     },
     {
       "path": "benchmarks/protocol/check-page-pair.cjs",
@@ -199,14 +199,20 @@
     {
       "path": "benchmarks/protocol/run-one.cjs",
       "normalization": "lf",
-      "bytes": 9710,
-      "sha256": "2fae99f1f34845fa0e6cbed3481d94e079364df7ae50d12d8b01d5d16f2b813e"
+      "bytes": 12700,
+      "sha256": "a8d038733ccacec8480ad639f9095082677717fcf227432b0217b82bd90f2ca9"
     },
     {
       "path": "benchmarks/protocol/run-series.cjs",
       "normalization": "lf",
-      "bytes": 8378,
-      "sha256": "d7f7a8cc9a599763bbc3b81ce9b71b0e1aa0d5cf5eaba42defb652bf83f03c55"
+      "bytes": 16128,
+      "sha256": "bb66b661345817c7712f531ca3dacadf9aac4fdb38e2c29ef537332e891695e9"
+    },
+    {
+      "path": "benchmarks/protocol/summarize-series.cjs",
+      "normalization": "lf",
+      "bytes": 14371,
+      "sha256": "254a528cac1c4a9a24110b0d187e77441fa938e19805c8b393b81b2856bb100b"
     },
     {
       "path": "benchmarks/size/README.md",
@@ -2201,10 +2207,28 @@
       "sha256": "459655fa9d83a31e8676edc1bc5744d3bc6d9a8712db357d5ecfb13910c986b5"
     },
     {
+      "path": "tests/benchmark/run-one-cleanup.test.cjs",
+      "normalization": "lf",
+      "bytes": 4942,
+      "sha256": "d15555bd4d7423e849848db339e0dd8481181c15fe0c038e4e3fca629892fc95"
+    },
+    {
       "path": "tests/benchmark/run-traces.test.cjs",
       "normalization": "lf",
       "bytes": 6671,
       "sha256": "2662e58aaa334fafe4004c8c6677438a48db6b67e862453b2460fd5850e68b1c"
+    },
+    {
+      "path": "tests/benchmark/series-interference.test.cjs",
+      "normalization": "lf",
+      "bytes": 13850,
+      "sha256": "092e2c6df5ce03910737d3b7b6d5098d6540c06eb7e4c2a8ac4c5fd5d6e61f58"
+    },
+    {
+      "path": "tests/benchmark/series-summary.test.cjs",
+      "normalization": "lf",
+      "bytes": 10516,
+      "sha256": "842fdfa775ce0d421718454975bcb936759efcf10b324b84e51ecde9b791d3cf"
     },
     {
       "path": "tests/diagnostics/https_server.py",
@@ -175701,6 +175725,768 @@
       "normalization": "lf",
       "bytes": 5209,
       "sha256": "4f85b58a547bab7b6251545ae403e585b4399c9068b17d608e55a0a92f6bcbc4"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/Archive.cjs",
+      "normalization": "lf",
+      "bytes": 8856,
+      "sha256": "f1b40a749eb2f34594fdebe30c93e8c26d595517b05348b1d4faade0dfedfb28"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/README.md",
+      "normalization": "lf",
+      "bytes": 10384,
+      "sha256": "b53074166ff407711d444271ebdfb298d6b1efe291b073529efe0acc46b5d0a1"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/Verify-Index.cjs",
+      "normalization": "lf",
+      "bytes": 2352,
+      "sha256": "d76876360943670d4c2e42b85203d0cd3c94625f0b3d172013f8ee5123ae02f5"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt10.json",
+      "normalization": "lf",
+      "bytes": 1811,
+      "sha256": "4001e5679804738c8006bbcd8bb75a67e05fadcae81cacc50d82d6916f961f72"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt11.json",
+      "normalization": "lf",
+      "bytes": 1254,
+      "sha256": "7c0d58f3618b452ea592d5ae2b5de0fa7ac9b6fb9798a055aabc775ff895d3ae"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt12.json",
+      "normalization": "lf",
+      "bytes": 675,
+      "sha256": "1b4c7ae1da689db7d52dcc48feb5200e1f40aae2489946f2e0eb35378e07f423"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt13.json",
+      "normalization": "lf",
+      "bytes": 1275,
+      "sha256": "fa5da8f6e4ed82ee92ff98d6131c587ad6a2562fe21088c88134382daa92defc"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt14.json",
+      "normalization": "lf",
+      "bytes": 2911,
+      "sha256": "2274bf44e37f401ac99fbe3b6795fbe3f6baaa0b6f0ad01b001845a14d5b5427"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt15.json",
+      "normalization": "lf",
+      "bytes": 692,
+      "sha256": "f55201b625497d0573084a04a83cd18bbee55bd35139ce48023a7005cc756871"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt16.json",
+      "normalization": "lf",
+      "bytes": 1227,
+      "sha256": "2ac882de298e376b19b4323aa99e64a18ecb847f0f84ce3e6da895c03c5cc2e3"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt17.json",
+      "normalization": "lf",
+      "bytes": 2428,
+      "sha256": "f77fd0ca810eb63b01af1cd10d21160003b50dcd3ad381ca0671d2c8187c5232"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt18.json",
+      "normalization": "lf",
+      "bytes": 1868,
+      "sha256": "eee871b3fc9ba5f2e4a774b3ee132731f416b20490b117fd1d8072159fe756e8"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt2.json",
+      "normalization": "lf",
+      "bytes": 686,
+      "sha256": "62badbddb4dea138355e17fc554605d63e36cf3fcd8c4fa5ac9aa1fb82d0595d"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt3.json",
+      "normalization": "lf",
+      "bytes": 676,
+      "sha256": "9a5ed3322070c90c9f8884ed3be968946ec0632f14450bcfd54bfe4aedefbe3f"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt4.json",
+      "normalization": "lf",
+      "bytes": 706,
+      "sha256": "29e5d5221f57e046c88cb71d2ad3ab612b74a1ead8a062ccad5901126d55bec7"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt5.json",
+      "normalization": "lf",
+      "bytes": 671,
+      "sha256": "b9cae002af455821078b00ec42607dd496d604a47df7a9062d0173102f1b0d66"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt6.json",
+      "normalization": "lf",
+      "bytes": 1226,
+      "sha256": "9140a137bed1b57efe933277f1f636c761f696e8d942e61ef9ccc36070c28d2e"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt7.json",
+      "normalization": "lf",
+      "bytes": 1226,
+      "sha256": "e90b73d4600044440ce8ac503ad8e3f47093d9641188bf56dea4137c89da74cf"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt8.json",
+      "normalization": "lf",
+      "bytes": 1220,
+      "sha256": "d7841a98b5109d4b631861983a121ed6f0d844ec5e5f674c25b6b1d0c1526afb"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest-attempt9.json",
+      "normalization": "lf",
+      "bytes": 697,
+      "sha256": "08bc6fcdfeef8812645886b80b356402d5a66bdd021bc74da6a484f143b9e26e"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw-manifest.json",
+      "normalization": "lf",
+      "bytes": 861,
+      "sha256": "76380dcd5383881a0ae097c22076bbe60f5b95f15e4e2662d05042aa1f4f4844"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/Capture-Command.cjs",
+      "normalization": "none",
+      "bytes": 2235,
+      "sha256": "1b5344feee4a7f1018d6470cb905dd982bd009701cb930b2c3c3f99b7dc65530"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/chronology-tests-attempt3/result.json",
+      "normalization": "none",
+      "bytes": 645,
+      "sha256": "63b5ea5ed05e1404d4b825b5e336d18e6b135c1e748b919f87cbd7c0fd775440"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/chronology-tests-attempt3/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/chronology-tests-attempt3/stdout.log",
+      "normalization": "none",
+      "bytes": 678,
+      "sha256": "1e29cc528ec2ffdae1cd3d987bfa5559085eeaddeecfe1630739b20f1afcd99b"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/combined-tests-attempt12/result.json",
+      "normalization": "none",
+      "bytes": 806,
+      "sha256": "31760fe28df9701d60d4a2fd9b934b773d461f332a017ec673165069dbcd9b7a"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/combined-tests-attempt12/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/combined-tests-attempt12/stdout.log",
+      "normalization": "none",
+      "bytes": 2141,
+      "sha256": "016f86eedd1675377efb971228797bcf63656767f97abb78a9493b85c963d30d"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/combined-tests-attempt14/result.json",
+      "normalization": "none",
+      "bytes": 852,
+      "sha256": "7144d245e03fcbd1718f555fdbb39935e94558299cfc6d0a0b83c75b44d6ac2b"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/combined-tests-attempt14/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/combined-tests-attempt14/stdout.log",
+      "normalization": "none",
+      "bytes": 2394,
+      "sha256": "2b63d587018c2574d97d144025d5de88d25373c300db24a8615c3651247d31c0"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/combined-tests-attempt5/result.json",
+      "normalization": "none",
+      "bytes": 751,
+      "sha256": "3a73b1e724946bc6267084e6abe4754873020a20b2fb6743c65db6d8dbcf96df"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/combined-tests-attempt5/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/combined-tests-attempt5/stdout.log",
+      "normalization": "none",
+      "bytes": 2059,
+      "sha256": "8c9337bd68fff14d0b6f97ea9fdf46f80e2c173714ace3dbff694943b5b0d261"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/gate-coverage-tests-attempt2/result.json",
+      "normalization": "none",
+      "bytes": 751,
+      "sha256": "3495a1218a2c886c8809b38b823a25196e48c8efd58a096d396e31f570fd6674"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/gate-coverage-tests-attempt2/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/gate-coverage-tests-attempt2/stdout.log",
+      "normalization": "none",
+      "bytes": 1897,
+      "sha256": "ef4de958309d3235c39a82f1e9cdaaef5d5671b298dee0cc694cdd52bb8fcedd"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/helper-name-green-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 852,
+      "sha256": "6afe1b86db6bf4cec66bbb5c8278bdf75a21484e3bd45f7cef0718ae8bca6ab0"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/helper-name-green-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/helper-name-green-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 2394,
+      "sha256": "03e536cc476bbff62ada8ed8a90106f2fd953d79d621132257e0486039eff7fe"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/helper-name-red-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 650,
+      "sha256": "28d018a65b0c1b896ffdfa3b021e72a0af0911099fb1cebdb29bd82e7b6fd0ce"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/helper-name-red-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/helper-name-red-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 2474,
+      "sha256": "6ec3161dce03a1bbe9fcef53d3b02c670ffccd3b9310705f0f258caab511f0b1"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/in-run-gate-green-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 751,
+      "sha256": "7e21e04ca445c881c165181fb8f23ba6a144937c6dd753dc5d514f2903d0cacc"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/in-run-gate-green-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/in-run-gate-green-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 2061,
+      "sha256": "a37817bb9f53d599729de137e414c0b78233f8fcd03881ff80f9f8c360fe046f"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/in-run-gate-red-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 646,
+      "sha256": "e8aa4a875d6c86483ea06369ded88491e16a8df44f519ab722a399fede6b9c19"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/in-run-gate-red-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/in-run-gate-red-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 1714,
+      "sha256": "1df412031855d737ed304afb27118ddd18b6cb7768ee3de9667ad31d035b9c63"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/launch-time-identity-combined-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 907,
+      "sha256": "f7d2b0ed9c0cc4a1ebc82fb952a457d5aa625643318291f4a19bbcfd58c2f8cd"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/launch-time-identity-combined-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/launch-time-identity-combined-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 2476,
+      "sha256": "6e13c1021fc5e9e69bd050d2ba69a91efe9840704daaebbf50a9890844bad01b"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/launch-time-identity-green-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 687,
+      "sha256": "140b5b8f0d24c866a4fe0b8bf514493ce2bc405935f76d4128074aed4a688dc4"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/launch-time-identity-green-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/launch-time-identity-green-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 296,
+      "sha256": "d29a8519b49bdbf31a43ad85dea4d741bac842ce1dbaa3506674e8a561c97f44"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/launch-time-identity-red-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 687,
+      "sha256": "c55bbdc7dc0ba3e68f455ff60f9441fd2c4a856b6ad8fae114978d0814808518"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/launch-time-identity-red-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/launch-time-identity-red-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 1110,
+      "sha256": "971f388b553e5c59653bb0468deeefff6b83b54dd8d1e29aa0b35fd69939d4dc"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/owned-infrastructure-full-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 907,
+      "sha256": "b0bfb9b8f80a6b02b4b01fc59c6124caa6c96c6e6f1daaf16e06ae5c0a4de768"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/owned-infrastructure-full-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/owned-infrastructure-full-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 2477,
+      "sha256": "ebab463d312300fd7d2ff0e782f88b560a15175527b219f3b4c0d7375f802841"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/owned-infrastructure-green-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 801,
+      "sha256": "2cbd3b265cdb269eb4d8457987cf00fe5816409d7cc5d73cc5ffb3323056e8ff"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/owned-infrastructure-green-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/owned-infrastructure-green-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 195,
+      "sha256": "e92497e3a302275da3adf5ac00592880c096efa9d87453d9560805010322c20d"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/owned-infrastructure-red-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 882,
+      "sha256": "e7a8ce6d331087555d43dad5a660b21f025940b67169434871c57b57d0a6779a"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/owned-infrastructure-red-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 660,
+      "sha256": "77c22b88f5c3f18c26c1a9e9803fb3a49ef251744734b0e3b26e388b0ec17549"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/owned-infrastructure-red-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/owned-infrastructure-red-attempt2/result.json",
+      "normalization": "none",
+      "bytes": 802,
+      "sha256": "ead59c7a3735ee7a9ae9906924d6198f986d7d3f3d3afc397608a4cd6768ac32"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/owned-infrastructure-red-attempt2/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/owned-infrastructure-red-attempt2/stdout.log",
+      "normalization": "none",
+      "bytes": 1062,
+      "sha256": "1a8a292a673e9cf7f12f07bc699b7651997ed44792b5c3d40267b335ab2ec1ea"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/preflight-chronology-tests-attempt4/result.json",
+      "normalization": "none",
+      "bytes": 645,
+      "sha256": "947cef64358e3fda2fb6243d136026b498d0e572831e8c5f58a412dd774e70be"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/preflight-chronology-tests-attempt4/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/preflight-chronology-tests-attempt4/stdout.log",
+      "normalization": "none",
+      "bytes": 755,
+      "sha256": "8c1902b489a225af0e4a7fcc5f3be9f7c99e12e0fb31ab03a622529fa05a62f8"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/preflight-freshness-green-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 751,
+      "sha256": "731cf52c9329dda2f92b4d08f19ea9e8682ed549023c4c43931a053b184e0cc7"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/preflight-freshness-green-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/preflight-freshness-green-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 2214,
+      "sha256": "c37fd5d638be79c22377196b6a486744f7de0b2888215bb5ce0633fe9a79a443"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/preflight-freshness-red-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 646,
+      "sha256": "34d6f3ffdaadf6fdf8456650adf8cf127d168aae0b64bcdaeb65ff887b4db437"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/preflight-freshness-red-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/preflight-freshness-red-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 1779,
+      "sha256": "b6812581de18e7550a787c11b22c205e3890395b36f6a8e4824ccae870bbf62c"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/qemu-family-green-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 751,
+      "sha256": "6aadf7a2e22f2ea2e9be5ce6e2a04c39f59c3ab2835b55b453edcc079d52e314"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/qemu-family-green-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/qemu-family-green-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 2059,
+      "sha256": "8c88b498dade9b47c5d19a4f6945739e7d656b1c58069fd77765ebf87b7df76d"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/qemu-family-red-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 651,
+      "sha256": "9120528ea4e9694a9ecde83891ad9ecc7e0547ad74ecf6c894663112122a7a9c"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/qemu-family-red-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/qemu-family-red-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 2249,
+      "sha256": "80a746cafdd81a99f05908533ce154873a70b6f2bcb10804190dbb671c98ebe5"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 647,
+      "sha256": "2b46e61a0f06bd82b56e7ffc8ccb20f443b75301aecf5ee73aca745784b07c57"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 2207,
+      "sha256": "771320077df0da203f5f804b9565a4864b1d15dd785d77bec34d669dd572528d"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-first-attempt2/result.json",
+      "normalization": "none",
+      "bytes": 706,
+      "sha256": "209954ceef0994d566e9b3e795d4c7be08de14c2bbcf8059094c6b246368217c"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-first-attempt2/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-first-attempt2/stdout.log",
+      "normalization": "none",
+      "bytes": 1320,
+      "sha256": "2c7028c149c5261863fb345854898a3c7b6cc50d79c07573224e6d1258b559b5"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-first-attempt3/result.json",
+      "normalization": "none",
+      "bytes": 705,
+      "sha256": "fb956533b8b61a4cf2aa5d35655f9a442779d4c34cbceee94c4cdf23249f9fbb"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-first-attempt3/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-first-attempt3/stdout.log",
+      "normalization": "none",
+      "bytes": 773,
+      "sha256": "b7cb06be61bf2c7869dc80a848868662779dcdd0f2cd8e208f85ab30ab87a8c0"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-green-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 645,
+      "sha256": "83514c966c5ce3d5a65b10d6be8da43fdbd85a1da5bb32c1da118427484ac38c"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-green-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-green-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 296,
+      "sha256": "c02e5b221427e67210bfba31577945a7cf95e4a424d3de93a6b486e0e1c49304"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-green-attempt2/result.json",
+      "normalization": "none",
+      "bytes": 646,
+      "sha256": "93efff7e595f5ddf27087b7f5549b957e830873d13697f47ab3211566a4bca5e"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-green-attempt2/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/run-one-cleanup-green-attempt2/stdout.log",
+      "normalization": "none",
+      "bytes": 295,
+      "sha256": "b436afc1b547a53f1623024b110dc3ed00da5c3664556f92825bc7f4778668f8"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/runner-identity-gate-tests-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 751,
+      "sha256": "c349ff628d26b687f37fc347c5e3627e78e5f872bc72b76469f4c56a08532eae"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/runner-identity-gate-tests-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/runner-identity-gate-tests-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 1819,
+      "sha256": "0cb94929ee8539aca55e259ee61da4a4f644f20f4d4b162886158d181234da20"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/runner-pid-green-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 751,
+      "sha256": "4a1b309b0b9cd845bbeedeede57dd227ab0b7b752d8cb271afa425255b7691d9"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/runner-pid-green-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/runner-pid-green-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 2059,
+      "sha256": "3c6d26c8ac0f5d8495bec1ab03005de8742dfc9ab5486f11f90f221a4bb5d72b"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/runner-pid-red-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 646,
+      "sha256": "fcb7b4f5e02c78b5f5efdbc00814f5bf18bc850f477af9fbab76e4f112481124"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/runner-pid-red-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/runner-pid-red-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 1703,
+      "sha256": "490d138a10e85c6f5137519af00209f35e818e71b9874b97bfdf29eae4a2a778"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-live-query-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 775,
+      "sha256": "f0d2b170e9bc631987ffa44e696cd7b03db308fafb8355b0df26c0272028e016"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-live-query-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 937,
+      "sha256": "d09a2388f8c57affadf7c8b9940bf2623681641b3cbcb6e192a7f160591ecc3a"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-live-query-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-live-query-attempt2/result.json",
+      "normalization": "none",
+      "bytes": 774,
+      "sha256": "866f752bf60768d9423f32ed55cc48b86feff1adaf667f73b1d71d16c265853d"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-live-query-attempt2/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-live-query-attempt2/stdout.log",
+      "normalization": "none",
+      "bytes": 48,
+      "sha256": "4d95df2823fceb565dddc6c6b3ae34c33e10267273ad272842db42e0884bf33a"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-live-query-attempt3/result.json",
+      "normalization": "none",
+      "bytes": 774,
+      "sha256": "eca756e1d7ef3d59260bbe32cb119ae700ad58f33d369f14b9480d4c24f096d7"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-live-query-attempt3/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-live-query-attempt3/stdout.log",
+      "normalization": "none",
+      "bytes": 48,
+      "sha256": "4d95df2823fceb565dddc6c6b3ae34c33e10267273ad272842db42e0884bf33a"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-preflight-test-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 762,
+      "sha256": "6c8fb76730b3fcc725f171895350ddf220e1db434b7b7f757c9bdd9852a92ae8"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-preflight-test-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-preflight-test-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 194,
+      "sha256": "d67663b5e65b3bda604638d95f3e284920856045f5cd1a9b47aa1b10a3e91b58"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-preflight-test-attempt2/result.json",
+      "normalization": "none",
+      "bytes": 763,
+      "sha256": "bc29a10e86f7732735665ffc4138864d466dfec3f8325ff1d8204eb70efcb53d"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-preflight-test-attempt2/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-preflight-test-attempt2/stdout.log",
+      "normalization": "none",
+      "bytes": 193,
+      "sha256": "7f30b4ca6a30db2c6aa6354d94a2214d5d616669499b30520a940fb5c3145ecb"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-preflight-test-attempt3/result.json",
+      "normalization": "none",
+      "bytes": 763,
+      "sha256": "7a7edee9294e75f045ae31c1eec70654f2f56bf2243cbc9333b5f96341f802d6"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-preflight-test-attempt3/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/benchmark-live-gate-2026-09-28/raw/command-logs/tasklist-preflight-test-attempt3/stdout.log",
+      "normalization": "none",
+      "bytes": 194,
+      "sha256": "35fffddd94135d9d6970c8603099b986d80b12319d09ebb60376995be16d977c"
     },
     {
       "path": "verification/production-validation/benchmark-s01-preflight-2026-09-25/README.md",

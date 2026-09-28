@@ -31,6 +31,8 @@
 *.jpeg binary
 *.ico binary
 *.zip binary
+
+verification/production-validation/benchmark-live-gate-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 # SDK and deployed legal manifests bind the original license bytes.
 third_party/licenses/** -text whitespace=cr-at-eol
 verification/production-validation/**/events.ndjson -text
