@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-28 普通窗口工作区定位的本机原生输入
+
+[76 份 GUI、负载门禁、构建身份及失败原件](../../verification/production-validation/work-area-placement-gui-2026-09-28/README.md)绑定源码 SHA-256 `60d729c8c0fe55dcabd72bf3a1aa2255af42017c10c63151a880fecd7d511640` 和正式 x64/x86 Release 构建。首次 x64 探针在窗口就绪前错误终止，原样本保留；修正等待后用新编号串行运行，两架构均在自然前台将 850×640 窗口以真实鼠标拖拽扩大 80×60，正常关闭、原生退出 0，完整载荷前后匹配，14/16 次门禁无外部负载。此结果仅证明现代 Windows 本机普通窗口初始边框可操作，Win7 x86 新输入仍未冻结或运行；真实中文 IME 组合、任务并行、800×600、DPI/多屏及全量 V02 继续未通过，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
 ## 2026-09-28 Win7 V02 v6 第二次客体交互中断
 
 [第二次 v6 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/README.md)绑定不变的 13 文件冻结输入、当前 Demo 源码与正式 x86 Release 构建。宿主空闲后启动我方 QEMU，真实 Win7 桌面截图确认后只发一次命令；可见当前数据页和公共任务区。42 次时间线采样前 41 次取得截图，但尚无完整串口导出或客体原生动作日志。外部 QEMU 在交互期间启动，实时门禁仅停我方客体：驱动退出 1、QEMU 退出 -1、串口 0 字节，基础盘及冻结输入前后匹配。关键帧与控制原件已归档，其余原始图像和客体临时快照保留在外部目录并记录散列。这次既不能证明应用通过，也不能证明失败；截图中公共任务仍为 `idle`，点击坐标需结合真实窗口客户区核对，不能将其当作任务启动结论。真实中文 IME、30 秒任务并行和隔离资源/时延仍未通过，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
