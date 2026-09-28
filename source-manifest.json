@@ -7,8 +7,8 @@
     {
       "path": ".gitattributes",
       "normalization": "lf",
-      "bytes": 23087,
-      "sha256": "f4ea4d4fd8dce2d47ecc0d6d04395eb586c03e7c6707ef8fda1fd11a2b86062f"
+      "bytes": 23222,
+      "sha256": "85e791d6abf8509eebb97862fbe1d42953fb3d3ce7e6356abb6dfe78685a93d0"
     },
     {
       "path": ".github/CODEOWNERS",
@@ -241,14 +241,20 @@
     {
       "path": "demos/workbench/app/main.cpp",
       "normalization": "lf",
-      "bytes": 46807,
-      "sha256": "0d28a4685e95a53baa525ac4ffce25c39be750d9200296d906fab0159110c446"
+      "bytes": 47740,
+      "sha256": "987a429f2dcccc1dd75509caa2aac32e367b931fe0d633df6f29eacd89f97e6a"
     },
     {
       "path": "demos/workbench/app/resident_controller.h",
       "normalization": "lf",
       "bytes": 28150,
       "sha256": "c437549e08499a6f5c6a39622e9711e68338716d8e780768bc9ec7a02d3e2ebb"
+    },
+    {
+      "path": "demos/workbench/app/work_area_placement.h",
+      "normalization": "lf",
+      "bytes": 2680,
+      "sha256": "dfd882934a6a4b32866f0781960f38900869f3e664a8666bc0cc6ad69f73d3d5"
     },
     {
       "path": "demos/workbench/contracts/soui-native.contract.json",
@@ -1573,8 +1579,8 @@
     {
       "path": "docs/known-issues.md",
       "normalization": "lf",
-      "bytes": 15804,
-      "sha256": "b924d6c9ccb0f8ee5a8534b3461a7d4684f2aea3a42f57a7203695d2fc0cf869"
+      "bytes": 16145,
+      "sha256": "57a443f739e7102a67eb6aae60920ef99f49e7f2251d0a0e6f5f33c62718b733"
     },
     {
       "path": "docs/releasing.md",
@@ -1603,8 +1609,8 @@
     {
       "path": "docs/testing.md",
       "normalization": "lf",
-      "bytes": 9082,
-      "sha256": "181f7809cf142fcada77e1e9258b3226260bac5348994208c2feb9fb4778e3bd"
+      "bytes": 9899,
+      "sha256": "be1b2203869dbc7e67cccf5290801364943afb88769539acaf575229c7fbfeca"
     },
     {
       "path": "docs/troubleshooting.md",
@@ -2227,8 +2233,8 @@
     {
       "path": "tests/native/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 7699,
-      "sha256": "2cd92018e40392b5a93e5b03620a90ad06c4b3666dbd70f1ddae22f931948543"
+      "bytes": 8149,
+      "sha256": "f6892a9e1c548139a7459ba6556b6550e33486c6b1ed4b56a4baec551b7c2ca1"
     },
     {
       "path": "tests/native/bridge_budget_tests.cpp",
@@ -2313,6 +2319,12 @@
       "normalization": "lf",
       "bytes": 9547,
       "sha256": "977a09b3a2c34e2569d0babe4ea7f5d50ee4ce9c9d273da7eced38156b466e73"
+    },
+    {
+      "path": "tests/native/workbench_window_placement_tests.cpp",
+      "normalization": "lf",
+      "bytes": 2486,
+      "sha256": "d1bccdf831b07c1e0a48d382c98d8303c7ce564d9ae45cfe0a3c17f426e70a45"
     },
     {
       "path": "tests/package-consumer/CMakeLists.txt",
@@ -221877,6 +221889,282 @@
       "normalization": "lf",
       "bytes": 939,
       "sha256": "adc6780302a40f2ee5672cd801101929a42885bcfd01f040a4f392ffe78c306e"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/Archive.cjs",
+      "normalization": "lf",
+      "bytes": 5963,
+      "sha256": "f04f71b8b7a6aa4bf82cd4e71c5cce6f2437807e04efb80937d7d74b177a6879"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/README.md",
+      "normalization": "lf",
+      "bytes": 1914,
+      "sha256": "3ff592a7782bd60fe45bb7e302abb3755e211cb24b7662e2878f057d65310568"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/Verify-Index.cjs",
+      "normalization": "lf",
+      "bytes": 1133,
+      "sha256": "dc40f10ad822ee59f7b8204656e8b014bcfbb46b32c8faf2379e690c89c678f0"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw-manifest.json",
+      "normalization": "lf",
+      "bytes": 14141,
+      "sha256": "6df27e2109c6b904b6187909ac7836087b95647232297bf9598bd6761112e445"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/Bind-OfficialBuild.cjs",
+      "normalization": "none",
+      "bytes": 2124,
+      "sha256": "a262f0fa5e76a0b79f283d131acaddf4317d58e0427d29c8232096e263cc6593"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/Capture-IsolatedBuild.cjs",
+      "normalization": "none",
+      "bytes": 4735,
+      "sha256": "a20c15ccb225307ddb0f6ff3579d6288dedab19039918144a455bd475d27e655"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/Run-OfficialBuild.ps1",
+      "normalization": "none",
+      "bytes": 1697,
+      "sha256": "4b93fda7f38a4640e5764be7838069c1cc7879e76d18c723b59d8fe8d68af690"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/Run-Placement-Test.ps1",
+      "normalization": "none",
+      "bytes": 1791,
+      "sha256": "45943e290f52067371153d5a834ab2af479cb04e15c720a77e20126a87a61574"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x64-attempt2-driver/external-gates.ndjson",
+      "normalization": "none",
+      "bytes": 1029,
+      "sha256": "b33ed59d36455ad030ebc94825bef803b363bd3ac6e9650326f50b768f94e162"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x64-attempt2-driver/result.json",
+      "normalization": "none",
+      "bytes": 912,
+      "sha256": "32be02d48652fdbb21d35a60acca63cc6f88f37880b5ef0acd26d381a64a7dfb"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x64-attempt2-driver/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x64-attempt2-driver/stdout.log",
+      "normalization": "none",
+      "bytes": 904,
+      "sha256": "d164672c4d11a7d59edec2d895a02bacdccced8d81c40ee5f85e5d54c0629d07"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x64-attempt2-official-build/external-gates.ndjson",
+      "normalization": "none",
+      "bytes": 980,
+      "sha256": "a8e3349c19c06bb01c4b6d26cfa1c159cda825376944aed7d427faddc8690889"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x64-attempt2-official-build/result.json",
+      "normalization": "none",
+      "bytes": 880,
+      "sha256": "c7e1e236e145d56ec8df80eba9d37aeafc186597e58c43cb50aa37372bef7a8d"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x64-attempt2-official-build/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x64-attempt2-official-build/stdout.log",
+      "normalization": "none",
+      "bytes": 1509,
+      "sha256": "6b86e68f8118bab92349158c54e763d45cd75e3f519d9ed6bfcc9c9d8d2293ae"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x64-placement-attempt1/external-gates.ndjson",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x64-placement-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 919,
+      "sha256": "fe6155b26b3e74cfdcd31c77f992b541370269659675b258921f3368c166b42b"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x64-placement-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x64-placement-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 257,
+      "sha256": "4bff267ea5322453370de5b376f0aa138be2531270a4554e3b22b26f72bcc46d"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x86-attempt1-driver/external-gates.ndjson",
+      "normalization": "none",
+      "bytes": 490,
+      "sha256": "e3b7f106128fbea61d3cf0fe1c55303d7fbc2a4f45e3091a7e3f42c0516a69c6"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x86-attempt1-driver/result.json",
+      "normalization": "none",
+      "bytes": 927,
+      "sha256": "70f7ed64b36835599776de8064d1052b1b007027517f6d5cb19ef2c5a9094239"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x86-attempt1-driver/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x86-attempt1-driver/stdout.log",
+      "normalization": "none",
+      "bytes": 904,
+      "sha256": "30318b6e3937f2a19c8317c440628e4e1e2c474f768849c3cb2a919f2cb188c5"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x86-attempt1-official-build/external-gates.ndjson",
+      "normalization": "none",
+      "bytes": 490,
+      "sha256": "634a39adb00bf4963c3dd07f73d773b0ac3bce960ab8db0293cf55970f641be1"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x86-attempt1-official-build/result.json",
+      "normalization": "none",
+      "bytes": 896,
+      "sha256": "38ee0770a7e39c048b18450a453cf47bdb1b999774eed2630577482e09288f7a"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x86-attempt1-official-build/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x86-attempt1-official-build/stdout.log",
+      "normalization": "none",
+      "bytes": 1386,
+      "sha256": "af4d718a208ff0333a39355bbd8118616de04aba70005f8e9f3660a743cb8489"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x86-placement-attempt1/external-gates.ndjson",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x86-placement-attempt1/result.json",
+      "normalization": "none",
+      "bytes": 920,
+      "sha256": "1cc7b6a301352dc8d8cd910afb7acd3b553ebb120f1d1c7dcdfc2e44345482c0"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x86-placement-attempt1/stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/command-logs/workarea-x86-placement-attempt1/stdout.log",
+      "normalization": "none",
+      "bytes": 257,
+      "sha256": "80c1d6bbe81c4b36d8a1af117bce334800de07ec45d143bb6eb53496f881e963"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x64-attempt2-after-official-gate.json",
+      "normalization": "none",
+      "bytes": 97,
+      "sha256": "fb25c37bb04af1cd708edcd462b0a19b7b85a0f65702face77bf759789c96695"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x64-attempt2-after-official-input.json",
+      "normalization": "none",
+      "bytes": 166247,
+      "sha256": "1f7753de20ab941421fe88740c092a5784f1ae7bb043c0fa3f32f8b3e6ac6a3b"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x64-attempt2-before-official-gate.json",
+      "normalization": "none",
+      "bytes": 97,
+      "sha256": "1b129776d9b372cf5331ec9750cfc633ee0f7cf64c8c0cc5359d056df425e6c9"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x64-attempt2-before-official-input.json",
+      "normalization": "none",
+      "bytes": 165862,
+      "sha256": "da6cda908df77ceac84b0b8ad999cfb943d2dd145b73a8d220d07d68b3de1a0d"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x64-placement-attempt1-after-test-gate.json",
+      "normalization": "none",
+      "bytes": 97,
+      "sha256": "8315bbf363c1e6a6faf80039dc7f73108a20b5c346b8dcaa5e4ff5f1d1f0c1fd"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x64-placement-attempt1-before-test-gate.json",
+      "normalization": "none",
+      "bytes": 97,
+      "sha256": "7eef3617849e192617ac079ce897fdb9261f1b05846ff2bb8af501bcc8fb03a8"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x64-placement-attempt1-test-identity.json",
+      "normalization": "none",
+      "bytes": 429,
+      "sha256": "e071391443be81139585808ec8311c70ff04e62c41ad9d40863c744033c33a0f"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x86-attempt1-after-official-gate.json",
+      "normalization": "none",
+      "bytes": 97,
+      "sha256": "b6af977900ccd25ac9b53d775aa37a36a33eeb9689e8c1d237d5b131641bb25c"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x86-attempt1-after-official-input.json",
+      "normalization": "none",
+      "bytes": 166247,
+      "sha256": "934cdd5fec71883c3bd9051362237513a7993a4b7616d7dc1a21782f447a66d7"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x86-attempt1-before-official-gate.json",
+      "normalization": "none",
+      "bytes": 97,
+      "sha256": "6f769d89f42d778166c7ed2bc676d3994e07767b41bb2f66ac49d9472fb71e42"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x86-attempt1-before-official-input.json",
+      "normalization": "none",
+      "bytes": 165862,
+      "sha256": "ec10156b102c7214c98dbd5856532bed62406861ffea4ad74303665ef39c939c"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x86-placement-attempt1-after-test-gate.json",
+      "normalization": "none",
+      "bytes": 97,
+      "sha256": "4983ba889ca17269c2ffc0e15ba5fe0c1db558e1b9e7be8d6f4b6fbd60ab9085"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x86-placement-attempt1-before-test-gate.json",
+      "normalization": "none",
+      "bytes": 97,
+      "sha256": "11537e56f32037b1e9c202614c3637c04ff2231661112ebe11af0745eda7b40b"
+    },
+    {
+      "path": "verification/production-validation/work-area-placement-native-2026-09-28/raw/workarea-x86-placement-attempt1-test-identity.json",
+      "normalization": "none",
+      "bytes": 429,
+      "sha256": "77ad969d6d1a0196477f6a28978b248cfc72d9428ee8b1afa9b060a83870a285"
     },
     {
       "path": "verification/production-validation/x86-bool-abi-root-cause/README.md",
