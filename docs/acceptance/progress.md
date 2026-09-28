@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-28 Win7 V02 v6 客体启动中断
+
+[v6 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v6-interrupted-2026-09-28/README.md)绑定当前 Demo 的正式 x86 Release 构建，修正了上一份未执行冻结输入的越界滚轮坐标；新 13 文件输入冻结与只读验证通过。我方 QEMU 启动后，外部 QEMU 在客体命令发送前出现，实时门禁仅停我方客体。原始驱动退出 1、QEMU 退出 -1，串口 0 字节，无命令发送；基础盘和冻结输入前后身份一致。17 份非专有快照原件已逐字节归档。此次不能判定 Win7 应用兼容性，真实中文 IME、30 秒公共任务并行及隔离性能仍未通过，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
 ## 2026-09-28 当前 V02 Win7 SP1 x86 v4 功能探索
 
 [第二次 v4 客体原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v4-attempt2-2026-09-28/README.md)绑定当前 Demo 正式 x86 Release 构建和已冻结的 13 文件输入。真实 Win7 桌面确认后只发一次命令；96 帧串口通过严格校验，客体 6.1.7601 SP1 32 位/PowerShell 2，资源及 legal 前后身份一致。V02 万行数据页出现，原生探针发送 29 次输入，缩放后窗口边界变化，应用原生退出 0、正常关闭，客体及基础盘检查退出 0。外部 QEMU 在最后一次五秒门禁采样后 71 毫秒、我方客体退出前启动；串口写入早于外部负载，但整段宿主隔离不成立，资源/时延不能作隔离结论。中文 IME 组合、公共任务确实启动及并行响应尚未证明，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
