@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-28 Win7 V02 v7 客体交互在真实缩放前失败
+
+[v7 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v7-resize-blocked-2026-09-28/README.md)绑定当前 718 文件 Demo 源码、正式 x86 Release buildId `f0c38056-058a-456e-be99-17446127f7ec` 和新 13 文件冻结输入。第一次输入准备因漏放探针源码退出 1、未启动虚拟机；保留失败后，第二次准备/冻结/核验退出 0。在确认 Win7 SP1 x86 桌面后只发送一次命令；我方 QEMU/驱动退出 0，五秒门禁未观察到外部 QEMU，基础盘及冻结输入不变。客体通过自然前台鼠标发送 12 次外层滚轮，但窗口 `[100,100,950,740]` 的右下边框被 1024×768 桌面任务栏覆盖，原生缩放探针拒绝输入、客体脚本退出 1。串口 51 帧，严格复核原始退出 1，少于冻结要求 116 帧；任务、中文 IME、内层滚动和完整关闭检查未到达。42 份精选原件和关键截图已归档，外部全部 29 帧保留；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`，按 [Issue #42](https://github.com/chenziyang110/soui-web-sdk/issues/42) 继续处理。
+
 ## 2026-09-28 Win7 V02 v6 第二次客体交互中断
 
 [第二次 v6 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/README.md)绑定不变的 13 文件冻结输入、当前 Demo 源码与正式 x86 Release 构建。宿主空闲后启动我方 QEMU，真实 Win7 桌面截图确认后只发一次命令；可见当前数据页和公共任务区。42 次时间线采样前 41 次取得截图，但尚无完整串口导出或客体原生动作日志。外部 QEMU 在交互期间启动，实时门禁仅停我方客体：驱动退出 1、QEMU 退出 -1、串口 0 字节，基础盘及冻结输入前后匹配。关键帧与控制原件已归档，其余原始图像和客体临时快照保留在外部目录并记录散列。这次既不能证明应用通过，也不能证明失败；截图中公共任务仍为 `idle`，点击坐标需结合真实窗口客户区核对，不能将其当作任务启动结论。真实中文 IME、30 秒任务并行和隔离资源/时延仍未通过，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
