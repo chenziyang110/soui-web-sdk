@@ -1,0 +1,30 @@
+{
+  "program": "powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-File",
+    "C:\\SOUI-SDK-production-validation\\preview15-v02-win7-current-20260927\\Run-LayoutInteractionV6.ps1",
+    "-Attempt",
+    "guest-layout-interaction-v6-attempt2",
+    "-InputName",
+    "layout-interaction-v6-attempt1",
+    "-ExpectedFreezeSha256",
+    "8e9b6d96266e3f72af6e49c498efd942886266bd9fbfdbc71d6e9f58df5b830f"
+  ],
+  "cwd": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927",
+  "startedAt": "2026-09-28T00:22:59.116Z",
+  "pid": 79384,
+  "exitCode": 1,
+  "signal": null,
+  "timedOut": false,
+  "error": null,
+  "finishedAt": "2026-09-28T00:27:23.266Z",
+  "stdout": {
+    "bytes": 602,
+    "sha256": "3b8838ed495957916617c4915baff17f675462ff7ffd16ccfa8e00548f99a98e"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

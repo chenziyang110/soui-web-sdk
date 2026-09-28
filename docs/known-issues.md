@@ -6,6 +6,8 @@
 
 当前 preview.15 已补齐[原仓库双架构 14 次桌面短测](../verification/production-validation/preview15-desktop-2026-09-27/README.md)、[完整源码无 Git 解压四配置构建](../verification/production-validation/preview15-full-source-build-2026-09-27/README.md)及[新编 EXE 六入口短测](../verification/production-validation/preview15-relocated-desktop-2026-09-27/README.md)。[Win7 SP1 x86 当前三入口](../verification/production-validation/win7-sp1-x86-qemu-preview15-apps-attempt3-2026-09-27/README.md)也在原 60 秒期限内原生退出 0，完整关闭、客体身份和运行前后资源/legal 通过，未观察到外部负载。旧 preview.11 关闭停滞未在本次当前输入重现；V02 真实交互、重复生命周期、真实续期、隔离长稳、干净机器及物理目标机仍未通过。以下历史失败按各自输入保留。
 
+当前 V02 的 [Win7 v6 第二次交互](../verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/README.md)在真实桌面发出一次冻结命令后遭外部 QEMU 打断；我方门禁仅停自身，驱动退出 1、客体无串口导出。关键帧可见页面和仍为 `idle` 的任务区，但缺完整客体结果，不能判断任务、中文 IME 或缩放验收，也不能将此次作为隔离性能样本。旧短测不覆盖此场景；后续须先复核客户区点击坐标，另用新 attempt 完成客体验收。
+
 [SDK Core 体积修正](../verification/production-validation/sdk-core-native-backups-2026-09-27/README.md)排除两份历史内核备份，并保留完整源码原件。内部 preview.14 的源码匹配失败后，preview.15 统一打包和校验筛选，真实新包匹配及安装往返通过，净减少约 55.94 MiB；不据此扩大应用运行体积或 Electron 对标结论。
 
 冻结 preview.11 的[页面动画诊断](../verification/production-validation/preview11-renewal-animation-diagnostic-2026-09-26/README.md)中，相同输入只关闭旋转动画即可完成任务短测；动画开启时解析持续停滞，尚需原生调度证据。另一已就绪运行在页面记录后 15 ms 被监督器判定为“30 秒无记录”。[新外部夹具](../verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26/README.md)已复现并修正先采样时钟、后读跨线程快照导致的无符号差值风险；两架构边界测试、自检及关闭动画的诊断短测通过。原失败保留，关闭动画不作为 SDK 修复，真实续期和生产门槛继续未通过。

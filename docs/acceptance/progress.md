@@ -1,5 +1,11 @@
 # SDK 生产验证执行记录
 
+## 2026-09-28 Win7 V02 v6 第二次客体交互中断
+
+[第二次 v6 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/README.md)绑定不变的 13 文件冻结输入、当前 Demo 源码与正式 x86 Release 构建。宿主空闲后启动我方 QEMU，真实 Win7 桌面截图确认后只发一次命令；可见当前数据页和公共任务区。42 次时间线采样前 41 次取得截图，但尚无完整串口导出或客体原生动作日志。外部 QEMU 在交互期间启动，实时门禁仅停我方客体：驱动退出 1、QEMU 退出 -1、串口 0 字节，基础盘及冻结输入前后匹配。关键帧与控制原件已归档，其余原始图像和客体临时快照保留在外部目录并记录散列。这次既不能证明应用通过，也不能证明失败；截图中公共任务仍为 `idle`，点击坐标需结合真实窗口客户区核对，不能将其当作任务启动结论。真实中文 IME、30 秒任务并行和隔离资源/时延仍未通过，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+归档后的首次完整源码清单生成被新外部 QEMU 保护性中断，驱动退出 1、清单原文件不变；四份驱动/门禁原件已单独复制复核。之后空闲时的生成与独立验证均退出 0，覆盖当时暂存的 37,015 个文件；归档说明和复核器后来又更新，最终提交仍以针对最终暂存输入重新执行的清单生成及独立验证为准。
+
 ## 2026-09-28 Win7 V02 v6 客体启动中断
 
 [v6 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v6-interrupted-2026-09-28/README.md)绑定当前 Demo 的正式 x86 Release 构建，修正了上一份未执行冻结输入的越界滚轮坐标；新 13 文件输入冻结与只读验证通过。我方 QEMU 启动后，外部 QEMU 在客体命令发送前出现，实时门禁仅停我方客体。原始驱动退出 1、QEMU 退出 -1，串口 0 字节，无命令发送；基础盘和冻结输入前后身份一致。17 份非专有快照原件已逐字节归档。此次不能判定 Win7 应用兼容性，真实中文 IME、30 秒公共任务并行及隔离性能仍未通过，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
