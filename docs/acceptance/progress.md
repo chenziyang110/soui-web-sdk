@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-29 Win7 V11 当前构建原生缩放通过
+
+[第三次 V11 客体原件](../../verification/production-validation/win7-v11-native-resize-2026-09-29/README.md)沿用不变的 13 文件冻结输入和正式 x86 Release 构建。确认真实 Win7 SP1 x86 桌面后只发送一次命令，原生探针在 1024×768 下把普通 Workbench 从 `[87,24,937,664]` 拖拽为 `[87,24,1017,724]`，再次检查一致；应用、我方 QEMU、驱动和严格校验器原始退出均为 0。54 帧串口、完整载荷及 legal、客体身份和冻结输入均核对通过；95 次宿主采样未见外部受控桌面负载，基础盘前后身份不变，原始屏幕帧可见放大后的边框仍在任务栏上方。此次只关闭 Win7 当前显示条件下的工作区缩放症状；截图人工观察不替代原生矩形，五秒采样不证明绝对隔离。真实中文 IME、滚动与公共任务并行、800×600、DPI/多屏、长稳和 Electron 对照仍待，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
 ## 2026-09-29 Win7 V11 命令后外部负载中断
 
 [第二次 V11 客体原件](../../verification/production-validation/win7-v11-command-interrupted-2026-09-29/README.md)沿用不变的 13 文件冻结输入。真实 Win7 桌面截图确认后，向我方 QEMU 只发送一次冻结命令；后一截图可见命令提示符。外部 QEMU 在串口结果产生前启动，实时门禁只停我方虚拟机：驱动退出 1、QEMU 退出 -1，串口 0 字节。冻结输入与基础盘前后身份相符，25 份精选原件已归档，失败不覆盖。没有客体身份、原生缩放或应用退出结果，此次不算兼容性失败或通过，也没有隔离资源/时延结论。后续必须新建 attempt；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
