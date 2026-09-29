@@ -1,0 +1,48 @@
+{
+  "program": "powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-File",
+    "C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\generated\\gen-idle-attempt1\\tools\\Build.ps1",
+    "-Architecture",
+    "x64",
+    "-Configuration",
+    "Release"
+  ],
+  "cwd": "C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929",
+  "startedAt": "2026-09-29T16:45:54.805Z",
+  "pid": 61476,
+  "exitCode": 0,
+  "signal": null,
+  "timedOut": false,
+  "interruptedByExternal": null,
+  "gateError": null,
+  "error": null,
+  "preflight": {
+    "at": "2026-09-29T16:45:54.806Z",
+    "processes": []
+  },
+  "childIdentity": {
+    "ProcessId": 61476,
+    "ParentProcessId": 77780,
+    "Name": "powershell.exe",
+    "CreationDate": "/Date(1790700356223)/"
+  },
+  "afterClose": {
+    "at": "2026-09-29T16:46:56.562Z",
+    "processes": []
+  },
+  "finishedAt": "2026-09-29T16:46:58.336Z",
+  "stdout": {
+    "bytes": 1643,
+    "sha256": "74e451c07e316ecafa2284d382aa0393df9d24d9d33f94f684039e95ac9974e6"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "gates": {
+    "bytes": 539,
+    "sha256": "a8f8713ce40d2a84c40cfd539478425b9e45611b41b75ba2c8246cfc0b08277f"
+  }
+}
