@@ -1,0 +1,53 @@
+✔ one clean host sample just after QEMU exit is accepted (1.1373ms)
+✔ a missing terminal phase cannot close the isolation gate (1.0591ms)
+✔ a sample before QEMU exit cannot close the isolation gate (0.4991ms)
+✖ a stale sample cannot close the isolation gate (1.3116ms)
+✔ an external process at the terminal sample rejects isolation (2.6427ms)
+✔ a failed terminal process query rejects isolation (0.9925ms)
+✔ a delayed first host sample cannot close isolation (0.4321ms)
+✔ a long gap between host samples cannot close isolation (0.3982ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 102.6956
+
+✖ failing tests:
+
+test at Test-Review-V11-TerminalGate.cjs:40:1
+✖ a stale sample cannot close the isolation gate (1.3116ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /Missing timely terminal/. Input:
+  
+  'AssertionError [ERR_ASSERTION]: Host interference sample gap is too long'
+  
+      at TestContext.<anonymous> (C:\SOUI-SDK-production-validation\work-area-placement-20260928\Test-Review-V11-TerminalGate.cjs:41:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: node:internal/assert/utils:77
+        throw err;
+        ^
+    
+    AssertionError [ERR_ASSERTION]: Host interference sample gap is too long
+        at Review-V11.cjs:terminal-gate:11:3
+        at Script.runInContext (node:vm:149:12)
+        at Script.runInNewContext (node:vm:154:17)
+        at Object.runInNewContext (node:vm:310:38)
+        at review (C:\SOUI-SDK-production-validation\work-area-placement-20260928\Test-Review-V11-TerminalGate.cjs:24:6)
+        at C:\SOUI-SDK-production-validation\work-area-placement-20260928\Test-Review-V11-TerminalGate.cjs:41:23
+        at getActual (node:assert:611:5)
+        at strict.throws (node:assert:759:24)
+        at TestContext.<anonymous> (C:\SOUI-SDK-production-validation\work-area-placement-20260928\Test-Review-V11-TerminalGate.cjs:41:10)
+        at Test.runInAsyncScope (node:async_hooks:228:14),
+    expected: /Missing timely terminal/,
+    operator: 'throws',
+    diff: 'simple'
+  }

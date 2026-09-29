@@ -1,5 +1,13 @@
 # SDK 生产验证执行记录
 
+## 2026-09-29 Win7 V11 宿主采样覆盖率准备
+
+[V11 校验器及原始正反例](../../verification/production-validation/v11-host-coverage-preparation-2026-09-29/README.md)增加了首个样本和相邻样本间隔约束。首次合成测试因夹具预期旧错误消息退出 1，原件保留；修正夹具后的 8/8 检查和语法检查原始退出 0。V11 客体输入尚未冻结，Win7 未运行，五秒采样仍可能漏掉短暂外部进程；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-29 Win7 V11 宿主终态门禁准备
+
+[V11 静态原件](../../verification/production-validation/v11-host-terminal-preparation-2026-09-29/README.md)保存了未冻结客体输入前的驱动与校验器修正：QEMU 退出后补一次实时进程查询，校验器要求 15 秒内取得无外部负载的终态样本。PowerShell 解析与 JavaScript 语法检查原始退出 0；校验器六个合成正反例 6/6、退出 0。宿主外部 QEMU 持续运行，V11 传输尚未冻结，客体未启动；这不能代替真实 Win7 缩放、IME、任务或隔离性能验收。`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
 ## 2026-09-28 普通窗口工作区定位的本机原生输入
 
 [76 份 GUI、负载门禁、构建身份及失败原件](../../verification/production-validation/work-area-placement-gui-2026-09-28/README.md)绑定源码 SHA-256 `60d729c8c0fe55dcabd72bf3a1aa2255af42017c10c63151a880fecd7d511640` 和正式 x64/x86 Release 构建。首次 x64 探针在窗口就绪前错误终止，原样本保留；修正等待后用新编号串行运行，两架构均在自然前台将 850×640 窗口以真实鼠标拖拽扩大 80×60，正常关闭、原生退出 0，完整载荷前后匹配，14/16 次门禁无外部负载。此结果仅证明现代 Windows 本机普通窗口初始边框可操作，Win7 x86 新输入仍未冻结或运行；真实中文 IME 组合、任务并行、800×600、DPI/多屏及全量 V02 继续未通过，`win7CurrentV02Verified=false`、`releaseReady=false`。
