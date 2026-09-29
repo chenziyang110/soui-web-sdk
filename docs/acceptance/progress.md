@@ -1,5 +1,13 @@
 # SDK 生产验证执行记录
 
+## 2026-09-29 Win7 V11 命令后外部负载中断
+
+[第二次 V11 客体原件](../../verification/production-validation/win7-v11-command-interrupted-2026-09-29/README.md)沿用不变的 13 文件冻结输入。真实 Win7 桌面截图确认后，向我方 QEMU 只发送一次冻结命令；后一截图可见命令提示符。外部 QEMU 在串口结果产生前启动，实时门禁只停我方虚拟机：驱动退出 1、QEMU 退出 -1，串口 0 字节。冻结输入与基础盘前后身份相符，25 份精选原件已归档，失败不覆盖。没有客体身份、原生缩放或应用退出结果，此次不算兼容性失败或通过，也没有隔离资源/时延结论。后续必须新建 attempt；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-29 Win7 V11 原生缩放输入与启动前拒绝
+
+V11 的 [13 文件输入](../../verification/production-validation/win7-v11-prelaunch-refusal-2026-09-29/README.md)已按正式 x86 构建准备、冻结并只读复核，冻结 SHA-256 为 `6d712b263f6318aacd8077418d1906aa013104ed6c7113ca2faf98c637716aa2`，三步安全捕获原始退出 0。第一次客体启动尝试在基础盘核验期间遇到外部 QEMU，二次门禁拒绝启动我方虚拟机；驱动退出 1，没有 `launch.json`、命令发送、串口或应用结果。十份非专有原件与外部原件及 Git index 逐字节核对，旧失败不覆盖。下一次须使用新 attempt；当前只证明门禁按预期拒绝，Win7 原生缩放、中文 IME、任务并行和生产门槛仍未通过。
+
 ## 2026-09-29 Win7 V11 宿主采样覆盖率准备
 
 [V11 校验器及原始正反例](../../verification/production-validation/v11-host-coverage-preparation-2026-09-29/README.md)增加了首个样本和相邻样本间隔约束。首次合成测试因夹具预期旧错误消息退出 1，原件保留；修正夹具后的 8/8 检查和语法检查原始退出 0。V11 客体输入尚未冻结，Win7 未运行，五秒采样仍可能漏掉短暂外部进程；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
