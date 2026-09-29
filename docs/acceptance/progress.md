@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-29 Workbench 滚动条外观
+
+[本机双架构原始记录](../../verification/production-validation/scrollbar-style-modern-2026-09-29/README.md)绑定同一份 Demo 源码的正式 x64/x86 Release 构建；两次真实窗口的只读截图显示页面与 V02 列表滚动条使用窄轨道、圆角滑块，应用均原生退出 0。第一次 x64 前台条件不成立的失败样本保留，不能计作可视通过。Win7 SP1 x86 的本次新载荷、实际滚轮/拖动/键盘交互和生产 V02 场景仍待验收；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
 ## 2026-09-29 Win7 V11 当前构建原生缩放通过
 
 [第三次 V11 客体原件](../../verification/production-validation/win7-v11-native-resize-2026-09-29/README.md)沿用不变的 13 文件冻结输入和正式 x86 Release 构建。确认真实 Win7 SP1 x86 桌面后只发送一次命令，原生探针在 1024×768 下把普通 Workbench 从 `[87,24,937,664]` 拖拽为 `[87,24,1017,724]`，再次检查一致；应用、我方 QEMU、驱动和严格校验器原始退出均为 0。54 帧串口、完整载荷及 legal、客体身份和冻结输入均核对通过；95 次宿主采样未见外部受控桌面负载，基础盘前后身份不变，原始屏幕帧可见放大后的边框仍在任务栏上方。此次只关闭 Win7 当前显示条件下的工作区缩放症状；截图人工观察不替代原生矩形，五秒采样不证明绝对隔离。真实中文 IME、滚动与公共任务并行、800×600、DPI/多屏、长稳和 Electron 对照仍待，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
