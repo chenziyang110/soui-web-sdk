@@ -1,0 +1,69 @@
+{
+  "schema": "soui.v02.probe-build/v8",
+  "startedAt": "2026-09-28T05:11:46.863Z",
+  "status": "built-x86",
+  "stages": [
+    {
+      "name": "x86-configure",
+      "program": "cmake.exe",
+      "args": [
+        "-S",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-win7-current-20260927\\layout-interaction-v8-source",
+        "-B",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-win7-current-20260927\\probe-v8-build-attempt1\\build\\x86",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32"
+      ],
+      "pid": 72944,
+      "startedAt": "2026-09-28T05:11:59.601Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interference": null,
+      "gateError": null,
+      "spawnError": null,
+      "finishedAt": "2026-09-28T05:12:03.279Z"
+    },
+    {
+      "name": "x86-build",
+      "program": "cmake.exe",
+      "args": [
+        "--build",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-win7-current-20260927\\probe-v8-build-attempt1\\build\\x86",
+        "--config",
+        "Release",
+        "--target",
+        "V02InputProbe",
+        "--",
+        "/m:1"
+      ],
+      "pid": 67432,
+      "startedAt": "2026-09-28T05:12:03.983Z",
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "interference": null,
+      "gateError": null,
+      "spawnError": null,
+      "finishedAt": "2026-09-28T05:12:06.439Z"
+    }
+  ],
+  "executables": [
+    {
+      "architecture": "x86",
+      "path": "C:\\SOUI-SDK-production-validation\\preview15-v02-win7-current-20260927\\probe-v8-build-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "bytes": 190464,
+      "sha256": "2ad0e9eb92c7ef7b2ba8e72c672db58fd9fa250f5dbbb1698795c359cb0e5d96"
+    }
+  ],
+  "releaseReady": false,
+  "staticRuntime": {
+    "projectSha256": "2c0e4a1643a3069d2c754158c263346a5a0b9a0b7c6884f204bf1886f0354658",
+    "commandSha256": "14d0c3d3753a839c5aa655a23b31683aef310dd3fb1336f413f8a44e1b7869b4",
+    "releaseWin32StaticRuntime": true
+  },
+  "finishedAt": "2026-09-28T05:12:06.442Z",
+  "updatedAt": "2026-09-28T05:12:06.442Z"
+}
