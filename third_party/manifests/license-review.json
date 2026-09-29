@@ -24,8 +24,13 @@
     "verification/production-validation/kernel-notice-inventory-2026-09-25/README.md",
     "verification/production-validation/kernel-notice-recovery-2026-09-25/README.md"
   ],
+  "evidence_limitations": [
+    "kernel-link-inputs-2026-09-25 and kernel-notice-inventory-2026-09-25 describe the previous x86 3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7 and x64 0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816 binaries, not the current binaries listed above",
+    "Current rebuild output hashes do not by themselves identify all linked archive members or applicable redistribution terms"
+  ],
   "required_evidence": [
     "Applicable redistribution terms for complete binaries",
-    "Linked third-party notices and build configuration review"
+    "Linked third-party notices and build configuration review",
+    "Current-binary-bound import, linker input, default-library and linked-member evidence for both architectures"
   ]
 }
