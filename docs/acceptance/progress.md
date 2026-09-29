@@ -2,7 +2,9 @@
 
 ## 2026-09-29 Workbench 滚动条外观
 
-[本机双架构原始记录](../../verification/production-validation/scrollbar-style-modern-2026-09-29/README.md)绑定同一份 Demo 源码的正式 x64/x86 Release 构建；两次真实窗口的只读截图显示页面与 V02 列表滚动条使用窄轨道、圆角滑块，应用均原生退出 0。第一次 x64 前台条件不成立的失败样本保留，不能计作可视通过。Win7 SP1 x86 的本次新载荷、实际滚轮/拖动/键盘交互和生产 V02 场景仍待验收；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+[本机双架构原始记录](../../verification/production-validation/scrollbar-style-modern-2026-09-29/README.md)绑定同一份 Demo 源码的正式 x64/x86 Release 构建；两次真实窗口的只读截图显示页面与 V02 列表滚动条使用窄轨道、圆角滑块，应用均原生退出 0。第一次 x64 前台条件不成立的失败样本保留，不能计作可视通过。实际滚轮/拖动/键盘交互和生产 V02 场景仍待验收；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+[Win7 SP1 x86 本次构建的实际显示记录](../../verification/production-validation/scrollbar-style-win7-2026-09-29/README.md)随后确认：在真实客体桌面上只发送一次冻结命令，Workbench 数据页外层和万行列表滚动条均显示窄蓝灰色样式、没有旧式箭头。x86 原生应用、我方 QEMU、驱动和严格串口校验器均退出 0；51 帧与构建、载荷及法律文件前后身份相符。这个结果只关闭**本次 Win7 静态外观**问题；真实滚轮/拖动/键盘、中文 IME、公共任务并行与长稳仍未执行，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
 
 ## 2026-09-29 Win7 V11 当前构建原生缩放通过
 
