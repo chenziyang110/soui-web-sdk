@@ -108,6 +108,24 @@ test('live gate rejects a reused PID with a different creation identity', () => 
   assert.deepEqual(result.competingProcesses.map(process => process.pid), [200]);
 });
 
+test('live gate does not adopt an older process after its parent PID is reused', () => {
+  const rootCreated = '/Date(1790621962781)/';
+  const olderChildCreated = '/Date(1790621961781)/';
+  const result = classifyLiveProcesses([
+    {pid: 100, parentPid: 1, name: 'node.exe', createdAt: rootCreated},
+    {pid: 200, parentPid: 100, name: 'electron.exe', createdAt: olderChildCreated},
+  ], 100, new Map());
+  assert.deepEqual([...result.owned.keys()], [100]);
+  assert.deepEqual(result.competingProcesses.map(process => process.pid), [200]);
+  const realChild = classifyLiveProcesses([
+    {pid: 100, parentPid: 1, name: 'node.exe', createdAt: rootCreated},
+    {pid: 201, parentPid: 100, name: 'electron.exe',
+      createdAt: '/Date(1790621963781)/'},
+  ], 100, new Map());
+  assert.deepEqual([...realChild.owned.keys()].sort((a, b) => a - b), [100, 201]);
+  assert.deepEqual(realChild.competingProcesses, []);
+});
+
 test('live gate fails closed if the runner PID changes identity', () => {
   assert.throws(() => classifyLiveProcesses([
     {pid: 100, parentPid: 1, name: 'node.exe', createdAt: 'new'},
@@ -153,7 +171,7 @@ test('live gate stops only its own runner when external workload appears',
     }
   });
 
-test('live gate checks the real runner identity before stopping its process tree',
+test('live gate stops its own runner handle even after verifying its process identity',
   {skip: process.platform !== 'win32'}, async () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-series-gate-'));
     const gateFile = path.join(root, 'gates.ndjson');
@@ -166,8 +184,8 @@ test('live gate checks the real runner identity before stopping its process tree
         competingProcesses: [{pid: 98765, name: 'qemu-system-x86_64.exe'}],
       }), 5000), /External workload appeared/);
       const rows = fs.readFileSync(gateFile, 'utf8').trim().split('\n').map(JSON.parse);
-      assert.equal(rows[1].cleanupMethod, 'verified-tree');
-      assert.equal(rows[1].cleanupCompletenessUnverified, false);
+      assert.equal(rows[1].cleanupMethod, 'process-handle');
+      assert.equal(rows[1].cleanupCompletenessUnverified, true);
       assert.equal(rows[1].ownRunPid, child.pid);
     } finally {
       if (child.exitCode === null && child.signalCode === null) child.kill();
@@ -193,6 +211,27 @@ test('live gate fails closed and stops its runner when the process query fails',
       assert.equal(rows[1].cleanupReason, 'gate-error');
       assert.equal(rows[1].ownRunPid, child.pid);
       assert.equal(rows[1].cleanupMethod, 'process-handle');
+    } finally {
+      if (child.exitCode === null && child.signalCode === null) child.kill();
+      assert.equal(path.dirname(root), os.tmpdir());
+      assert.match(path.basename(root), /^soui-series-gate-/);
+      fs.rmSync(root, {recursive: true, force: true});
+    }
+  });
+
+test('live gate stops its runner if the gate log cannot be written',
+  {skip: process.platform !== 'win32'}, async () => {
+    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-series-gate-'));
+    const gateFile = path.join(root, 'missing', 'gates.ndjson');
+    const child = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'],
+      {stdio: 'ignore', windowsHide: true});
+    try {
+      await assert.rejects(monitorChild(child, gateFile, 2, 'electron', pid => ({
+        checkedAt: new Date().toISOString(), owned: new Map([[pid, 'owned']]),
+        rootPresent: true, competingProcesses: [],
+      }), 5000), /ENOENT/);
+      assert.equal(child.killed, true);
+      assert.equal(fs.existsSync(gateFile), false);
     } finally {
       if (child.exitCode === null && child.signalCode === null) child.kill();
       assert.equal(path.dirname(root), os.tmpdir());

@@ -107,14 +107,12 @@ function stop(runs, cleanup) {
         run.stopRequested) continue;
     run.stopRequested = true;
     const verified = verifiedDirectChild(run);
-    const killed = verified ? spawnSync('taskkill.exe', ['/PID', String(run.child.pid),
-      '/T', '/F'], {encoding: 'utf8', windowsHide: true, timeout: 15000}) : null;
-    const treeStopped = killed && !killed.error && killed.status === 0;
-    if (!treeStopped) run.child.kill();
+    // A verified parent PID does not prove that every process taskkill /T would
+    // follow still belongs to this run: Windows may reuse a former parent's PID.
+    const killRequested = run.child.kill();
     if (cleanup) cleanup.push({name: run.name, pid: run.child.pid,
-      method: treeStopped ? 'verified-tree' : 'process-handle',
-      treeCleanupVerified: !!treeStopped,
-      taskkillExitCode: killed?.status ?? null,
+      method: 'process-handle', treeCleanupVerified: false,
+      killRequested, taskkillExitCode: null,
       queryIdentityVerified: verified});
   }
 }

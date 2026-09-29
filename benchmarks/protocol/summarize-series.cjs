@@ -117,6 +117,29 @@ function validatePreflightChronology(series, orderedRuns) {
   return checks;
 }
 
+function assertRunnerBinding(pair, host, record, gates) {
+  const runner = pair.runnerProcesses?.[host];
+  assert(Number.isSafeInteger(runner?.pid) && runner.pid > 0,
+    'Series runner PID is missing');
+  assert.equal(record.runnerPid, runner.pid,
+    'Single-run process differs from the series runner');
+  const legacyDate = typeof runner.createdAt === 'string'
+    ? /^\/Date\(([0-9]+)(?:[+-][0-9]+)?\)\/$/.exec(runner.createdAt) : null;
+  assert(typeof runner.createdAt === 'string' &&
+    (Number.isFinite(Date.parse(runner.createdAt)) ||
+      (legacyDate && Number.isSafeInteger(Number(legacyDate[1])) &&
+        Number(legacyDate[1]) > 0)),
+  'Series runner creation identity is missing');
+  const samples = gates.filter(gate => gate.pairNumber === pair.number && gate.host === host);
+  assert(samples.length > 0, 'Series runner has no live gate samples');
+  for (const sample of samples) {
+    assert.equal(sample.ownRunPid, runner.pid,
+      'Live gate PID differs from the series runner');
+    assert.equal(sample.ownRunCreatedAt, runner.createdAt,
+      'Live gate creation identity differs from the series runner');
+  }
+}
+
 function summarizeSeriesRecord(series, gates, reports) {
   assert.equal(series.schema, 'soui.benchmark-series/v1');
   assert(['S01', 'S02', 'S04', 'S05'].includes(series.scene));
@@ -231,11 +254,13 @@ function summarizeDirectory(root) {
     const runs = {};
     for (const host of ['soui', 'electron'])
       runs[host] = loadRun(path.join(root, `pair-${number}-${host}`), host);
-    for (const host of ['soui', 'electron'])
+    for (const host of ['soui', 'electron']) {
+      assertRunnerBinding(series.pairs[number - 1], host, runs[host].record, gates);
       runTimes.push({pairNumber: number, host,
         startedAt: runs[host].record.startedAt,
         finishedAt: runs[host].record.finishedAt,
         runnerPid: runs[host].record.runnerPid});
+    }
     const identity = {soui: frozenIdentity(runs.soui),
       electron: frozenIdentity(runs.electron)};
     if (frozen) assert.deepEqual(identity, frozen, 'Frozen identity changed across pairs');
@@ -277,4 +302,4 @@ if (require.main === module) {
 }
 
 module.exports = {summarizeSeriesRecord, summarizeDirectory, validateGateCoverage,
-  validateRunChronology, validatePreflightChronology};
+  validateRunChronology, validatePreflightChronology, assertRunnerBinding};

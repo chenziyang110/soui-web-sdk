@@ -1,0 +1,19 @@
+✔ preflight process list rejects missing or malformed tasklist rows (1.1697ms)
+✔ preflight and live gate share the full SOUI workload classification (0.1595ms)
+✔ live gate excludes the benchmark run and its descendants while finding external load (0.1566ms)
+✔ live gate rejects infrastructure started inside its own process tree (0.1093ms)
+✔ live gate remembers observed child identity after its parent exits (0.1142ms)
+✔ live gate does not trust a new child of an absent parent PID (0.0584ms)
+✔ live gate records when the runner has disappeared (0.5119ms)
+✔ live gate treats a benchmark host outside the owned tree as interference (0.0778ms)
+✔ live gate catches other SOUI tests and build drivers (0.0627ms)
+✔ live gate rejects a reused PID with a different creation identity (0.0897ms)
+✔ live gate fails closed if the runner PID changes identity (0.0883ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 96.0166

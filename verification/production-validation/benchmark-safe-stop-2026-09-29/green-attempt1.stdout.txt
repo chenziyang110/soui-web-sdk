@@ -1,0 +1,47 @@
+✖ failure cleanup stops its owned process handle without following a reused parent PID (12703.7066ms)
+✔ failed identity verification falls back to the owned process handle (5486.4325ms)
+✔ preflight process list rejects missing or malformed tasklist rows (1.1414ms)
+✔ preflight and live gate share the full SOUI workload classification (0.1527ms)
+✔ live gate excludes the benchmark run and its descendants while finding external load (0.2185ms)
+✔ live gate rejects infrastructure started inside its own process tree (0.1241ms)
+✔ live gate remembers observed child identity after its parent exits (0.1064ms)
+✔ live gate does not trust a new child of an absent parent PID (0.0603ms)
+✔ live gate records when the runner has disappeared (0.4698ms)
+✔ live gate treats a benchmark host outside the owned tree as interference (0.0816ms)
+✔ live gate catches other SOUI tests and build drivers (0.0717ms)
+✔ live gate rejects a reused PID with a different creation identity (0.1004ms)
+✔ live gate does not adopt an older process after its parent PID is reused (0.1259ms)
+✔ live gate fails closed if the runner PID changes identity (0.0707ms)
+✔ Windows live gate obtains process identities with a fail-closed query (1754.2847ms)
+✔ live gate stops only its own runner when external workload appears (41.9028ms)
+✔ live gate stops its own runner handle even after verifying its process identity (1815.7311ms)
+✔ live gate fails closed and stops its runner when the process query fails (47.1223ms)
+✔ live gate stops its runner if the gate log cannot be written (46.8011ms)
+✔ live gate lets an isolated runner exit normally (267.6148ms)
+✔ live gate refuses a sample that cannot identify its own runner (48.9985ms)
+✔ live gate catches interference that starts after a clean initial sample (103.8122ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 21
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18289.2514
+
+✖ failing tests:
+
+test at tests\benchmark\run-one-cleanup.test.cjs:37:1
+✖ failure cleanup stops its owned process handle without following a reused parent PID (12703.7066ms)
+  AssertionError [ERR_ASSERTION]: Descendant cleanup remains unverified until a separately safe mechanism owns its handle
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\benchmark-realtime-gate\tests\benchmark\run-one-cleanup.test.cjs:62:7)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: null,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

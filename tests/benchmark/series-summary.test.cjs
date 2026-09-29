@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const {test} = require('node:test');
 const {summarizeSeriesRecord, validateGateCoverage, validateRunChronology,
-  validatePreflightChronology} =
+  validatePreflightChronology, assertRunnerBinding} =
   require('../../benchmarks/protocol/summarize-series.cjs');
 
 function acceptedSeries(count = 5) {
@@ -219,4 +219,29 @@ test('preflight gates too far from a measured run are rejected', () => {
   series.startedAt = '2026-09-28T00:00:30.000Z';
   assert.throws(() => validatePreflightChronology(series, run),
     /Preflight chronology/);
+});
+
+test('series, single-run and live gate must identify the same runner', () => {
+  const pair = {number: 1, runnerProcesses: {
+    soui: {pid: 41, createdAt: '2026-09-28T00:00:00.000Z'}}};
+  const record = {runnerPid: 41};
+  const gates = [{pairNumber: 1, host: 'soui', ownRunPid: 41,
+    ownRunCreatedAt: '2026-09-28T00:00:00.000Z'}];
+  assert.doesNotThrow(() => assertRunnerBinding(pair, 'soui', record, gates));
+  assert.throws(() => assertRunnerBinding(pair, 'soui', {runnerPid: 42}, gates),
+    /Single-run process differs/);
+  assert.throws(() => assertRunnerBinding(pair, 'soui', record,
+    [{...gates[0], ownRunPid: 42}]), /Live gate PID differs/);
+  assert.throws(() => assertRunnerBinding(pair, 'soui', record,
+    [{...gates[0], ownRunCreatedAt: '2026-09-28T00:01:00.000Z'}]),
+  /Live gate creation identity differs/);
+  const powershellDate = '/Date(1790562756903)/';
+  assert.doesNotThrow(() => assertRunnerBinding(
+    {number: 1, runnerProcesses: {soui: {pid: 41, createdAt: powershellDate}}},
+    'soui', record, [{...gates[0], ownRunCreatedAt: powershellDate}]));
+  const powershellDateWithOffset = '/Date(1790562756903+0800)/';
+  assert.doesNotThrow(() => assertRunnerBinding(
+    {number: 1, runnerProcesses: {soui: {pid: 41,
+      createdAt: powershellDateWithOffset}}}, 'soui', record,
+    [{...gates[0], ownRunCreatedAt: powershellDateWithOffset}]));
 });

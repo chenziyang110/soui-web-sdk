@@ -6,6 +6,8 @@
 
 当前 preview.15 已补齐[原仓库双架构 14 次桌面短测](../verification/production-validation/preview15-desktop-2026-09-27/README.md)、[完整源码无 Git 解压四配置构建](../verification/production-validation/preview15-full-source-build-2026-09-27/README.md)及[新编 EXE 六入口短测](../verification/production-validation/preview15-relocated-desktop-2026-09-27/README.md)。[Win7 SP1 x86 当前三入口](../verification/production-validation/win7-sp1-x86-qemu-preview15-apps-attempt3-2026-09-27/README.md)也在原 60 秒期限内原生退出 0，完整关闭、客体身份和运行前后资源/legal 通过，未观察到外部负载。旧 preview.11 关闭停滞未在本次当前输入重现；V02 真实交互、重复生命周期、真实续期、隔离长稳、干净机器及物理目标机仍未通过。以下历史失败按各自输入保留。
 
+当前 V02 的 [Win7 v6 第二次交互](../verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/README.md)在真实桌面发出一次冻结命令后遭外部 QEMU 打断；我方门禁仅停自身，驱动退出 1、客体无串口导出。关键帧可见页面和仍为 `idle` 的任务区，但缺完整客体结果，不能判断任务、中文 IME 或缩放验收，也不能将此次作为隔离性能样本。旧短测不覆盖此场景；后续须先复核客户区点击坐标，另用新 attempt 完成客体验收。
+
 [SDK Core 体积修正](../verification/production-validation/sdk-core-native-backups-2026-09-27/README.md)排除两份历史内核备份，并保留完整源码原件。内部 preview.14 的源码匹配失败后，preview.15 统一打包和校验筛选，真实新包匹配及安装往返通过，净减少约 55.94 MiB；不据此扩大应用运行体积或 Electron 对标结论。
 
 冻结 preview.11 的[页面动画诊断](../verification/production-validation/preview11-renewal-animation-diagnostic-2026-09-26/README.md)中，相同输入只关闭旋转动画即可完成任务短测；动画开启时解析持续停滞，尚需原生调度证据。另一已就绪运行在页面记录后 15 ms 被监督器判定为“30 秒无记录”。[新外部夹具](../verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26/README.md)已复现并修正先采样时钟、后读跨线程快照导致的无符号差值风险；两架构边界测试、自检及关闭动画的诊断短测通过。原失败保留，关闭动画不作为 SDK 修复，真实续期和生产门槛继续未通过。
@@ -31,6 +33,7 @@ preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/
 | 反复销毁重建后的资源累积 | 已修补 ToolTip、拖拽 HRGN、线程唤醒事件三处遗漏；preview.4 固定包两架构软件路径重载、销毁重建和三窗口各 1,000 轮正常退出。内存/句柄有回收波动，两架构三窗口分段内存中位数总体上升；资源所有权、GPU 和 8 小时门槛未通过，见[生命周期记录](acceptance/lifecycle.md) |
 | 公共任务表背压 | preview.5 在 1,024 条任务全未结束时拒绝新任务，文件扫描与 Workbench 返回 `E_BUSY`；x86/x64 原生边界、并发、取消及扫描错误传播测试通过。仍需直接公共服务消费、真实排队超时、关窗竞态及 Win7 上此版本的完整业务验证，不能把这一局部修复当作公共任务能力整体通过 |
 | Electron 流畅性对标 | 尚无完整同负载、实机输入、长期帧延迟的等价验收，不能宣称追平 |
+| 基准失败清理 | [失败清理回归](../verification/production-validation/benchmark-safe-stop-2026-09-29/README.md)已将两级监督器限制为只停止持有的直接子进程；Windows 父 PID 可能复用，不能仅凭直接子进程身份安全终止整棵树。失败后的后代清理仍未证实，正式下一轮前必须核查残留；尚无可靠的身份绑定整树清理机制，也没有隔离的五对性能结论。 |
 | GPU compositor 生命周期 | 旧默认 GPU 应用曾在 `wkeDestroyWebView` 阶段以 `0xC0000005` 退出；当前显式 GPU 短测未复现该退出，但独立消费者双架构 30 轮重建的 USER 对象每轮约增 1，Runtime 关闭后仍残留。普通句柄的短期上升在软件路径也出现并有后续回收，不能混为同一个缺陷。合成线程释放与 Skia 接口引用修补降低了内存末点，仍未关闭 GPU 资源门槛，见[专项记录](acceptance/gpu-lifecycle.md)。模板和 Workbench 默认软件路径；GPU 模式仅为实验 |
 | 目标系统 | 开发机通过不代表 Windows 7/10/11 全矩阵；各系统与补丁级别独立验证 |
 | V02 低分辨率窗口 | Workbench 的 `--height` 当前至少取 640，而 Win7 x86 客体预检桌面为 800×600；这组原始显示条件下完整可见页面尚未验收。[第一次可见探索](../verification/production-validation/win7-sp1-x86-v02-display-failure-2026-09-28/README.md)在第 10 秒检查过早；[第二次探索](../verification/production-validation/win7-sp1-x86-v02-visible-page-2026-09-28/README.md)在临时 1024×768 下第 35 秒探测到窗口并拍到 V02 数据页，应用原生退出 0、正常关闭。[第一轮滚轮探索](../verification/production-validation/win7-sp1-x86-v02-layout-wheel-2026-09-28/README.md)发送八次原生滚轮但缺滚前截图；[新一轮前后截图](../verification/production-validation/win7-sp1-x86-v02-layout-wheel-before-after-2026-09-28/README.md)显示列表顶部移动到下方公共任务区，并有十二次自然前台原生滚轮原件。中文 IME 组合、缩放及公共任务并行未执行；原 800×600 条件和完整 V02 交互仍未放行。 |

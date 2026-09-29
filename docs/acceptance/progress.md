@@ -1,5 +1,51 @@
 # SDK 生产验证执行记录
 
+## 2026-09-29 性能运行器时间戳绑定回归
+
+[原始 RED/GREEN 与 41 项无窗口回归](../../verification/production-validation/benchmark-date-offset-2026-09-29/README.md)确认系列汇总原先拒绝运行时门禁已经接受的 PowerShell 带时区后缀时间戳，新增用例先真实退出 1，修复后定向 10/10、合并回归 41/41 均原始退出 0，失败和成功原件分开保存。此项只修复运行器身份汇总，不是实际 Electron 五对、隔离性能或生产验收；`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-29 性能监督器失败清理边界
+
+[原始 RED/GREEN 记录](../../verification/production-validation/benchmark-safe-stop-2026-09-29/README.md)显示，两级监督器原先在核验直接子进程身份后仍调用 `taskkill /T`；Windows 父 PID 复用使这个核验不足以证明整棵树属于本轮。现改为失败时只停止持有的直接子进程，并在记录中明确标记后代清理未证实。新增边界修复前两项失败；第一次修复后 21/22，通过保留了夹具对后代存活的错误假设；修正夹具后 22/22 无窗口测试原始退出 0。外部 QEMU 运行期间未进行隔离性能或正式五对；合并分支完整源码清单仍待空闲后刷新并验证，`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-29 性能系列父 PID 复用边界
+
+[实时门禁回归原件](../../verification/production-validation/benchmark-pid-chronology-2026-09-29/README.md)证明旧分类器会把一个早于本轮运行器创建、但 `ParentProcessId` 恰好等于其复用 PID 的外部 Electron 进程误归为本轮子进程：新增用例修复前原始退出 1。分类器现核对父子创建时序，真实 CIM 时间戳不能解析时拒绝扫描；定向测试原始退出 0，完整无图形门禁 20/20 原始退出 0，失败原样本保留。当前代码的实际只读进程查询也识别了正在运行的其他 QEMU；这些都只算门禁功能回归，没有实际五对对照或隔离性能结论。合并分支待空闲时对最终暂存输入刷新完整源码清单、验证后提交；`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-28 Win7 V02 v6 第二次客体交互中断
+
+[第二次 v6 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/README.md)绑定不变的 13 文件冻结输入、当前 Demo 源码与正式 x86 Release 构建。宿主空闲后启动我方 QEMU，真实 Win7 桌面截图确认后只发一次命令；可见当前数据页和公共任务区。42 次时间线采样前 41 次取得截图，但尚无完整串口导出或客体原生动作日志。外部 QEMU 在交互期间启动，实时门禁仅停我方客体：驱动退出 1、QEMU 退出 -1、串口 0 字节，基础盘及冻结输入前后匹配。关键帧与控制原件已归档，其余原始图像和客体临时快照保留在外部目录并记录散列。这次既不能证明应用通过，也不能证明失败；截图中公共任务仍为 `idle`，点击坐标需结合真实窗口客户区核对，不能将其当作任务启动结论。真实中文 IME、30 秒任务并行和隔离资源/时延仍未通过，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+归档后的首次完整源码清单生成被新外部 QEMU 保护性中断，驱动退出 1、清单原文件不变；四份驱动/门禁原件已单独复制复核。之后空闲时的生成与独立验证均退出 0，覆盖当时暂存的 37,015 个文件；归档说明和复核器后来又更新，最终提交仍以针对最终暂存输入重新执行的清单生成及独立验证为准。
+
+## 2026-09-28 Win7 V02 v6 客体启动中断
+
+[v6 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v6-interrupted-2026-09-28/README.md)绑定当前 Demo 的正式 x86 Release 构建，修正了上一份未执行冻结输入的越界滚轮坐标；新 13 文件输入冻结与只读验证通过。我方 QEMU 启动后，外部 QEMU 在客体命令发送前出现，实时门禁仅停我方客体。原始驱动退出 1、QEMU 退出 -1，串口 0 字节，无命令发送；基础盘和冻结输入前后身份一致。17 份非专有快照原件已逐字节归档。此次不能判定 Win7 应用兼容性，真实中文 IME、30 秒公共任务并行及隔离性能仍未通过，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-28 当前 V02 Win7 SP1 x86 v4 功能探索
+
+[第二次 v4 客体原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v4-attempt2-2026-09-28/README.md)绑定当前 Demo 正式 x86 Release 构建和已冻结的 13 文件输入。真实 Win7 桌面确认后只发一次命令；96 帧串口通过严格校验，客体 6.1.7601 SP1 32 位/PowerShell 2，资源及 legal 前后身份一致。V02 万行数据页出现，原生探针发送 29 次输入，缩放后窗口边界变化，应用原生退出 0、正常关闭，客体及基础盘检查退出 0。外部 QEMU 在最后一次五秒门禁采样后 71 毫秒、我方客体退出前启动；串口写入早于外部负载，但整段宿主隔离不成立，资源/时延不能作隔离结论。中文 IME 组合、公共任务确实启动及并行响应尚未证明，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-28 当前 V02 Win7 SP1 x86 v4 交互的隔离中断
+
+[v4 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v4-interrupted-2026-09-28/README.md)绑定当前 Demo 的正式 x86 Release 构建：x86 探针真实编译，静态 MSVC 运行库命令已核验；13 文件输入冻结且验证。客体进入真实 Win7 桌面后只收到一次命令，但串口没有输出。另一台 QEMU 在命令执行期间启动，门禁只终止我方客体；我方驱动原始退出 1、QEMU 退出 -1，基础盘和冻结输入复核正常。20 份复制原件已核对外部原件，客体临时磁盘快照只留外部。此次既不证明应用通过，也不证明应用失败；中文 IME、缩放和任务并行仍未验收。新客体尝试必须用新编号，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
+## 2026-09-28 当前 V02 Win7 SP1 x86 交互第二次隔离中断
+
+[第二次新输入尝试](../../verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-attempt2-2026-09-28/README.md)使用不变的 13 文件冻结输入和正式 x86 Release 构建。我方客体还在 Win7 欢迎界面，尚未发送应用命令，另一台 QEMU 随后启动；门禁只停止我方客体。驱动退出 1、QEMU 退出 -1、串口 0 字节，基础盘和冻结输入前后不变。19 份复制原件含欢迎界面截图与关闭后的 monitor 错误；两份可能包含客体磁盘片段的临时快照只留在外部。此样本不证明应用兼容性成败；下次用新的尝试编号，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
+同一轮归档后的源码清单刷新也在执行时遇到新外部 QEMU，门禁停止我方清单子进程并记录原始退出 1；原 `source-manifest.json` 未变，四份失败原件单独复制复核。该次既不算清单生成，也不算完整源码验证通过，后续空闲时须用新尝试编号重做。
+
+对未执行的 v3 客体脚本和冻结的 `V02InputProbe.exe` 源码作静态核查，发现脚本会调用探针不支持的 `wheel-up` 和 `key-space` 动作；且拼音动作自身已经发送空格提交。即使客体启动，v3 也无法完成预定的 30 项输入序列。两次已冻结输入和中断原件保持不变，停止将 v3 作为完整交互验收候选；另建 v4 输入与探针，重新冻结、编译和验证后再运行客体。此发现属于测试夹具缺陷，当前没有应用兼容性结论。
+
+新一轮空闲窗口中，完整源码清单生成原始退出 0、覆盖 36,840 个文件；随后的独立验证遇到新出现的外部 QEMU，门禁只停我方验证子进程，原始退出 1。八份原始命令/门禁记录已单独复制和核查；清单虽写入工作树，尚无本轮完整验证通过结论，不能据此放行源码交付。v4 夹具源码静态检查已退出 0，仍待真实 x86 编译、全新输入冻结及客体运行。
+
+之后一次空闲时的清单验证原始退出 1，错误为 `Source file set differs from manifest`：清单创建后追加了本轮原始记录，暂存文件集比清单多十项。该失败和空闲门禁的四份原件已另存并复核，不能解释为验证成功。待此次全部原件和文档暂存后，从最终暂存输入重新生成、验证清单，再提交。
+
+再一次刷新先被新外部 QEMU 保护性中断；空闲后生成 36,856 项清单并独立验证，两个驱动原始退出均为 0。该成功只对应当时的暂存输入，随后本说明更新使文件集再次变化，提交前须重新生成、验证最终暂存集。v4 交互探针的静态验证已通过，并改为静态链接 MSVC 运行库以避免 Win7 缺失动态运行库；真实编译、客体输入和中文 IME/缩放/任务并行仍未通过。
+
+本次提交的源码清单仍须对应最终暂存输入重新生成和独立验证，不跨输入集复用成功结果；各次原始命令保留在外部验证目录。清单验证不代表 v4 探针已编译，也不代表 Win7 交互验收通过。
+
 ## 2026-09-28 当前 V02 Win7 SP1 x86 IME/缩放/任务探索的隔离中断
 
 [第一次新输入尝试](../../verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-2026-09-28/README.md)已绑定当前 718 文件 Demo 源码、正式 x86 Release 构建和 13 文件冻结输入。我方客体启动后，另一台 QEMU 在客体命令发送前出现；宿主门禁只停止我方虚拟机。驱动原始退出 1、QEMU 退出 -1，串口 0 字节，无应用或中文输入/缩放/任务并行结果。47 份复制原件和严格中断复核保留；两份 QEMU 临时快照只留在外部原件，不进入公开仓库。后续须在环境空闲时用新尝试编号执行，`win7CurrentV02Verified=false`、`releaseReady=false`。

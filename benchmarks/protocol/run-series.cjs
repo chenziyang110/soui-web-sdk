@@ -89,6 +89,12 @@ function interferenceCheck() {
   return {checkedAt: new Date().toISOString(), competingProcesses: competingProcesses()};
 }
 
+function creationTimestamp(value) {
+  if (typeof value !== 'string') return NaN;
+  const powershell = /^\/Date\(([0-9]+)(?:[+-][0-9]+)?\)\/$/.exec(value);
+  return powershell ? Number(powershell[1]) : Date.parse(value);
+}
+
 function classifyLiveProcesses(processes, rootPid, observedOwned) {
   const owned = new Map(observedOwned);
   const present = new Map(processes.map(process => [process.pid, process.createdAt]));
@@ -108,6 +114,10 @@ function classifyLiveProcesses(processes, rootPid, observedOwned) {
       if (owned.has(process.parentPid) &&
           present.get(process.parentPid) === owned.get(process.parentPid) &&
           !owned.has(process.pid)) {
+        const parentTime = creationTimestamp(owned.get(process.parentPid));
+        const childTime = creationTimestamp(process.createdAt);
+        if (Number.isFinite(parentTime) && Number.isFinite(childTime) &&
+            childTime < parentTime) continue;
         owned.set(process.pid, process.createdAt);
         changed = true;
       }
@@ -144,7 +154,8 @@ function liveInterferenceCheck(rootPid, observedOwned) {
   if (processes.some(row => !Number.isSafeInteger(row.pid) || row.pid <= 0 ||
       !Number.isSafeInteger(row.parentPid) || row.parentPid < 0 ||
       typeof row.name !== 'string' || !row.name ||
-      !row.createdAt || row.createdAt === 'undefined' || row.createdAt === 'null'))
+      !Number.isSafeInteger(creationTimestamp(row.createdAt)) ||
+      creationTimestamp(row.createdAt) <= 0))
     throw new Error('Live process query returned invalid identity');
   const result = classifyLiveProcesses(processes, rootPid, observedOwned);
   return {checkedAt: new Date().toISOString(), owned: result.owned,
@@ -163,38 +174,46 @@ function monitorChild(child, gateFile, pairNumber, host,
     const observedOwned = new Map();
     let failure = null;
     let stopping = false;
+    const appendGate = row => {
+      try {
+        fs.appendFileSync(gateFile, `${JSON.stringify(row)}\n`);
+        return true;
+      } catch (error) {
+        if (!failure) failure = error;
+        return false;
+      }
+    };
     const stopOwnRun = reason => {
       if (stopping || child.exitCode !== null || child.signalCode !== null || !child.pid) return;
       stopping = true;
-      let identityCheckError = null;
-      let rootPresent = false;
-      try {
-        if (observedOwned.has(child.pid))
-          rootPresent = liveInterferenceCheck(child.pid,
-            new Map([[child.pid, observedOwned.get(child.pid)]])).rootPresent;
-      } catch (error) { identityCheckError = String(error); }
-      const killed = rootPresent
-        ? spawnSync('taskkill.exe', ['/PID', String(child.pid), '/T', '/F'],
-          {windowsHide: true, timeout: 15000})
-        : null;
-      const treeStopped = killed && !killed.error && killed.status === 0;
-      if (!treeStopped) child.kill();
-      fs.appendFileSync(gateFile, `${JSON.stringify({checkedAt: new Date().toISOString(),
-        pairNumber, host, ownRunPid: child.pid, cleanupReason: reason,
-        cleanupMethod: treeStopped ? 'verified-tree' : 'process-handle',
-        cleanupCompletenessUnverified: !treeStopped,
-        cleanupExitCode: killed?.status ?? null,
-        cleanupError: killed?.error ? String(killed.error) : identityCheckError})}\n`);
+      // The owned ChildProcess is safe to stop; /T can traverse a stale parent
+      // PID that now names this runner and reach an unrelated older process.
+      let killRequested = false;
+      let cleanupError = null;
+      try { killRequested = child.kill(); }
+      catch (error) { cleanupError = String(error); }
+      appendGate({checkedAt: new Date().toISOString(),
+        pairNumber, host, ownRunPid: child.pid,
+        ownRunCreatedAt: observedOwned.get(child.pid) ?? null, cleanupReason: reason,
+        cleanupMethod: 'process-handle', cleanupCompletenessUnverified: true,
+        cleanupSignalRequested: killRequested, cleanupError});
     };
     const poll = () => {
       if (stopping || child.exitCode !== null || child.signalCode !== null || !child.pid) return;
       try {
         const check = scan(child.pid, observedOwned);
         for (const [pid, createdAt] of check.owned) observedOwned.set(pid, createdAt);
-        fs.appendFileSync(gateFile, `${JSON.stringify({checkedAt: check.checkedAt,
-          pairNumber, host, ownRunPid: child.pid, ownedPidCount: observedOwned.size,
+        if (!observedOwned.has(child.pid))
+          throw new Error('Live gate did not observe the runner process identity');
+        if (!appendGate({checkedAt: check.checkedAt,
+          pairNumber, host, ownRunPid: child.pid,
+          ownRunCreatedAt: observedOwned.get(child.pid),
+          ownedPidCount: observedOwned.size,
           rootPresent: check.rootPresent,
-          competingProcesses: check.competingProcesses})}\n`);
+          competingProcesses: check.competingProcesses})) {
+          stopOwnRun('gate-log-write-failed');
+          return;
+        }
         if (check.rootPresent !== true) {
           failure = new Error(`Benchmark runner process identity was absent during ${host} run`);
           stopOwnRun('runner-identity-absent');
@@ -206,9 +225,9 @@ function monitorChild(child, gateFile, pairNumber, host,
           stopOwnRun('external-workload');
         }
       } catch (error) {
-        failure = error;
-        fs.appendFileSync(gateFile, `${JSON.stringify({checkedAt: new Date().toISOString(),
-          pairNumber, host, ownRunPid: child.pid, gateError: String(error)})}\n`);
+        if (!failure) failure = error;
+        appendGate({checkedAt: new Date().toISOString(),
+          pairNumber, host, ownRunPid: child.pid, gateError: String(error)});
         stopOwnRun('gate-error');
       }
     };
@@ -218,7 +237,9 @@ function monitorChild(child, gateFile, pairNumber, host,
     child.once('close', (code, signal) => {
       clearInterval(timer);
       if (failure) reject(failure);
-      else if (code === 0) resolve();
+      else if (code === 0 && observedOwned.has(child.pid))
+        resolve({pid: child.pid, createdAt: observedOwned.get(child.pid)});
+      else if (code === 0) reject(new Error('Runner exited without a verified live process identity'));
       else reject(new Error(`Single run failed: code=${code}, signal=${signal}`));
     });
   });
@@ -291,7 +312,9 @@ async function main() {
         const args = host === 'soui'
           ? ['soui', scene, frozenPage, souiExe, nodeDll, sampler, input, runPath, library]
           : ['electron', scene, frozenPage, electronExe, app, sampler, input, runPath, lock];
-        await runOne(args, liveGateFile, index + 1, host);
+        const runner = await runOne(args, liveGateFile, index + 1, host);
+        if (!pair.runnerProcesses) pair.runnerProcesses = {};
+        pair.runnerProcesses[host] = runner;
         pair.runs[host] = path.basename(runPath);
         const after = interferenceCheck();
         record.checks.push(after);

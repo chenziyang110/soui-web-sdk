@@ -34,7 +34,7 @@ async function until(check) {
   }
   throw new Error('Timed out waiting for the owned process fixture');
 }
-test('failure cleanup verifies direct child identity and stops its own process tree',
+test('failure cleanup stops its owned process handle without following a reused parent PID',
   {skip: process.platform !== 'win32'}, async () => {
     const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-run-one-cleanup-'));
     const grandchildFile = path.join(root, 'grandchild.json');
@@ -58,8 +58,8 @@ test('failure cleanup verifies direct child identity and stops its own process t
       stop([run], cleanup);
       await run.finished;
       assert.deepEqual(cleanup.map(item => [item.method, item.treeCleanupVerified]),
-        [['verified-tree', true]]);
-      await until(() => !query(grandchildPid));
+        [['process-handle', false]]);
+      assert.equal(cleanup[0].killRequested, true);
     } finally {
       if (run.child.exitCode === null && !run.child.killed) run.child.kill();
       await run.finished;
