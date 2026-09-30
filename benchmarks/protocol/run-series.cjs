@@ -11,7 +11,8 @@ const {compare, loadRun} = require('./check-pair-runs.cjs');
 const prohibited = new Set([
   'souiacceptance.exe', 'souibenchmark.exe', 'electron.exe',
   'souistarter.exe', 'souiworkbench.exe', 'installedrenewalprobe.exe',
-  'renewalstarter.exe', 'upgradeledger.exe', 'cmake.exe', 'ninja.exe',
+  'renewalstarter.exe', 'upgradeledger.exe', 'scrollstarter.exe',
+  'v02inputprobe.exe', 'git.exe', 'cmake.exe', 'ninja.exe',
   'msbuild.exe', 'cl.exe', 'link.exe', 'cdb.exe',
   'processtreesampler.exe', 'inputtrace.exe',
 ]);

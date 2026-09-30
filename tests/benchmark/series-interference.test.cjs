@@ -25,7 +25,8 @@ test('preflight and live gate share the full SOUI workload classification', () =
   for (const name of ['qemu-system-x86_64.exe', 'qemu-system-x86_64w.exe',
     'qemu-system-aarch64.exe', 'Electron.exe',
     'soui_bridge_tests.exe', 'SouiWorkbench.exe', 'cl.exe',
-    'ProcessTreeSampler.exe', 'InputTrace.exe'])
+    'ProcessTreeSampler.exe', 'InputTrace.exe', 'Git.exe',
+    'ScrollStarter.exe', 'V02InputProbe.exe'])
     assert.equal(isProhibitedProcessName(name), true, name);
   assert.equal(isProhibitedProcessName('notepad.exe'), false);
 });
@@ -52,6 +53,25 @@ test('live gate rejects infrastructure started inside its own process tree', () 
     {pid: 500, parentPid: 100, name: 'cl.exe', createdAt: 'e'},
   ], 100, new Map());
   assert.deepEqual(result.competingProcesses.map(process => process.pid), [400, 500]);
+});
+
+test('live gate rejects Git, independent template and probe load regardless of ownership', () => {
+  for (const parentPid of [1, 200]) {
+    const result = classifyLiveProcesses([
+      {pid: 100, parentPid: 1, name: 'node.exe', createdAt: '/Date(1790720000000)/'},
+      {pid: 200, parentPid: 100, name: 'SouiBenchmark.exe',
+        createdAt: '/Date(1790720001000)/'},
+      {pid: 300, parentPid: 100, name: 'ProcessTreeSampler.exe',
+        createdAt: '/Date(1790720001000)/'},
+      {pid: 400, parentPid: 100, name: 'InputTrace.exe',
+        createdAt: '/Date(1790720001000)/'},
+      ...['Git.exe', 'ScrollStarter.exe', 'V02InputProbe.exe'].map((name, index) => ({
+        pid: 500 + index, parentPid, name, createdAt: '/Date(1790720002000)/',
+      })),
+    ], 100, new Map());
+    assert.equal(result.rootPresent, true);
+    assert.deepEqual(result.competingProcesses.map(process => process.pid), [500, 501, 502]);
+  }
 });
 
 test('live gate remembers observed child identity after its parent exits', () => {

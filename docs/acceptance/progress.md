@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-30 基准系列 Git 与独立交互负载分类
+
+[21 项门禁回归与原始记录](../../verification/production-validation/benchmark-git-load-gate-2026-09-30/README.md)确认新增 Git、ScrollStarter 和 V02InputProbe 分类后，外部进程及本轮后代均被拒绝，预期基准宿主、采样器与 InputTrace 仍允许。实际定向回归 21/21、原始退出 0；SDK Web 依赖审计退出 0、报告零漏洞。此项只验证门禁分类，不构成五对正式性能、真实滚动或生产验收。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
 ## 2026-09-29 性能运行器时间戳绑定回归
 
 [原始 RED/GREEN 与 41 项无窗口回归](../../verification/production-validation/benchmark-date-offset-2026-09-29/README.md)确认系列汇总原先拒绝运行时门禁已经接受的 PowerShell 带时区后缀时间戳，新增用例先真实退出 1，修复后定向 10/10、合并回归 41/41 均原始退出 0，失败和成功原件分开保存。此项只修复运行器身份汇总，不是实际 Electron 五对、隔离性能或生产验收；`benchmarkValid=false`、`releaseReady=false`。

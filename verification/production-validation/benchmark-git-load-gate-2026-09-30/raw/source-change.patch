@@ -1,0 +1,67 @@
+diff --git a/benchmarks/protocol/README.md b/benchmarks/protocol/README.md
+index 68f260fe..d7908b68 100644
+--- a/benchmarks/protocol/README.md
++++ b/benchmarks/protocol/README.md
+@@ -41,6 +41,8 @@ node benchmarks/protocol/check-pair-runs.cjs <SOUI输出目录> <Electron输出
+ 
+ `run-series.cjs` 在一台 Windows 设备上按 SOUI→Electron、Electron→SOUI 交替执行指定场景，默认五对；系列开始时先冻结完整共享页面，每个宿主都从该副本运行上述单轮监督器，每对重新计算完整预检，并跨轮核对机器、页面、宿主与工具身份。输出是新的绝对目录，保留每轮原始结果、逐对预检和 `series.json`，失败或中途停止不会补写未执行轮次。它在每轮开始和结束时查询已知会干扰的 QEMU、验收应用、编译器、独立采样器、输入驱动及其他基准宿主进程；进程清单为空或含无法解析的行时拒绝继续。单轮运行期间还每五秒按进程父子身份识别本轮预期的 SOUI/Electron 宿主、采样器与输入器；收养子进程时核对其创建时间不早于父进程，避免复用的父 PID 将旧外部负载误记为本轮子进程。即使 QEMU 或编译器由本轮子进程启动，也判作干扰，并将观察结果写入 `live-interference-gates.ndjson`。每次实时检查还须确认本轮运行器的 PID 与创建身份，查询不到运行器或门禁日志无法写入都拒绝该轮。发现外部负载或查询失败时，系列保留失败原件并拒绝计入有效配对；清理时仅停止已持有的本轮运行器句柄，并在记录中标记后代清理未证实，下一轮前须人工核查和确认没有残留；PID 与创建时间核验仍用于隔离判定，不授权整树终止。五秒采样仍可能漏掉在两次采样间完整启动并退出的短负载，正式性能结论仍须人工隔离设备。S03 的外部驱动尚不能证明真实中文 IME composition，因此系列入口明确拒绝 S03。
+ 
++门禁也将 `Git.exe`、独立模板应用 `ScrollStarter.exe` 和验收输入探针 `V02InputProbe.exe` 视为竞争负载。这三类进程即使来自本轮进程树，也不能按预期基准宿主、采样器或输入器豁免。系列首尾和轮内检查使用同一分类，防止开始时空闲而后续 Git 操作或其他交互验收混入样本。进程名门禁不能发现所有未知负载，仍需人工隔离设备；旧记录不能因为后来补齐分类而追认为隔离通过。
++
+ 首次系列实跑在 Electron 结束前约 0.67 秒检测到另一个 QEMU 启动，[保留的停止证据](../../verification/production-validation/benchmark-s02-series-interference-2026-09-25/README.md)显示两端单轮完整但系列拒绝计数。完成五对且无已知并行负载仍只是系列预检，不能自动关闭物理呈现或生产门槛。
+ 
+ ```powershell
+diff --git a/benchmarks/protocol/run-series.cjs b/benchmarks/protocol/run-series.cjs
+index 58ded817..8c57c42f 100644
+--- a/benchmarks/protocol/run-series.cjs
++++ b/benchmarks/protocol/run-series.cjs
+@@ -11,7 +11,8 @@ const {compare, loadRun} = require('./check-pair-runs.cjs');
+ const prohibited = new Set([
+   'souiacceptance.exe', 'souibenchmark.exe', 'electron.exe',
+   'souistarter.exe', 'souiworkbench.exe', 'installedrenewalprobe.exe',
+-  'renewalstarter.exe', 'upgradeledger.exe', 'cmake.exe', 'ninja.exe',
++  'renewalstarter.exe', 'upgradeledger.exe', 'scrollstarter.exe',
++  'v02inputprobe.exe', 'git.exe', 'cmake.exe', 'ninja.exe',
+   'msbuild.exe', 'cl.exe', 'link.exe', 'cdb.exe',
+   'processtreesampler.exe', 'inputtrace.exe',
+ ]);
+diff --git a/tests/benchmark/series-interference.test.cjs b/tests/benchmark/series-interference.test.cjs
+index b9606a87..f3ae0f17 100644
+--- a/tests/benchmark/series-interference.test.cjs
++++ b/tests/benchmark/series-interference.test.cjs
+@@ -25,7 +25,8 @@ test('preflight and live gate share the full SOUI workload classification', () =
+   for (const name of ['qemu-system-x86_64.exe', 'qemu-system-x86_64w.exe',
+     'qemu-system-aarch64.exe', 'Electron.exe',
+     'soui_bridge_tests.exe', 'SouiWorkbench.exe', 'cl.exe',
+-    'ProcessTreeSampler.exe', 'InputTrace.exe'])
++    'ProcessTreeSampler.exe', 'InputTrace.exe', 'Git.exe',
++    'ScrollStarter.exe', 'V02InputProbe.exe'])
+     assert.equal(isProhibitedProcessName(name), true, name);
+   assert.equal(isProhibitedProcessName('notepad.exe'), false);
+ });
+@@ -54,6 +55,25 @@ test('live gate rejects infrastructure started inside its own process tree', ()
+   assert.deepEqual(result.competingProcesses.map(process => process.pid), [400, 500]);
+ });
+ 
++test('live gate rejects Git, independent template and probe load regardless of ownership', () => {
++  for (const parentPid of [1, 200]) {
++    const result = classifyLiveProcesses([
++      {pid: 100, parentPid: 1, name: 'node.exe', createdAt: '/Date(1790720000000)/'},
++      {pid: 200, parentPid: 100, name: 'SouiBenchmark.exe',
++        createdAt: '/Date(1790720001000)/'},
++      {pid: 300, parentPid: 100, name: 'ProcessTreeSampler.exe',
++        createdAt: '/Date(1790720001000)/'},
++      {pid: 400, parentPid: 100, name: 'InputTrace.exe',
++        createdAt: '/Date(1790720001000)/'},
++      ...['Git.exe', 'ScrollStarter.exe', 'V02InputProbe.exe'].map((name, index) => ({
++        pid: 500 + index, parentPid, name, createdAt: '/Date(1790720002000)/',
++      })),
++    ], 100, new Map());
++    assert.equal(result.rootPresent, true);
++    assert.deepEqual(result.competingProcesses.map(process => process.pid), [500, 501, 502]);
++  }
++});
++
+ test('live gate remembers observed child identity after its parent exits', () => {
+   const result = classifyLiveProcesses([
+     {pid: 100, parentPid: 1, name: 'node.exe', createdAt: 'a'},
