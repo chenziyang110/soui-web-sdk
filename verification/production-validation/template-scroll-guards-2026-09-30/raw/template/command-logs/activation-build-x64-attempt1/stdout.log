@@ -1,0 +1,51 @@
+-- Building for: Visual Studio 18 2026
+-- Selecting Windows SDK version 10.0.26100.0 to target Windows 10.0.26200.
+-- The CXX compiler identification is MSVC 19.51.36260.0
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.51.36231/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Configuring done (6.8s)
+-- Generating done (0.1s)
+-- Build files have been written to: C:/SOUI-SDK-production-validation/template-scrollbar-preparation-20260929/activation-probe-input-attempt1/build/x64
+适用于 .NET Framework MSBuild 版本 18.10.1-1.26427.6+3cd27c13e
+
+  1>Checking Build System
+  Building Custom Rule C:/SOUI-SDK-production-validation/template-scrollbar-preparation-20260929/activation-probe-input-attempt1/CMakeLists.txt
+  V02InputProbe.cpp
+C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\xutility(5094,18): warning C4244: “=”: 从“const wchar_t”转换到“char”，可能丢失数据 [C:\SOUI-SDK-production-validation\template-scrollbar-preparation-20260929\activation-probe-input-attempt1\build\x64\V02InputProbe.vcxproj]
+  (编译源文件“../../V02InputProbe.cpp”)
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\xutility(5094,18):
+      模板实例化上下文(最早的实例化上下文)为
+          C:\SOUI-SDK-production-validation\template-scrollbar-preparation-20260929\activation-probe-input-attempt1\V02InputProbe.cpp(198,37):
+          查看对正在编译的函数 模板 实例化“std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)”的引用
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_const_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+              C:\SOUI-SDK-production-validation\template-scrollbar-preparation-20260929\activation-probe-input-attempt1\V02InputProbe.cpp(195,26):
+              请参阅 "`anonymous-namespace'::run" 中对 "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string" 的第一个引用
+          C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\xstring(862,17):
+          查看对正在编译的函数 模板 实例化“void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<const wchar_t*,const wchar_t*,_Size_type>(_Iter,const _Sent,_Size)”的引用
+          with
+          [
+              _Size_type=unsigned __int64,
+              _Iter=const wchar_t *,
+              _Sent=const wchar_t *,
+              _Size=unsigned __int64
+          ]
+          C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\xstring(1018,18):
+          查看对正在编译的函数 模板 实例化“_OutIt *std::_Copy_n_unchecked4<const wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)”的引用
+          with
+          [
+              _OutIt=char *,
+              _Size=unsigned __int64,
+              _InIt=const wchar_t *,
+              _SizeTy=unsigned __int64
+          ]
+  
+  V02InputProbe.vcxproj -> C:\SOUI-SDK-production-validation\template-scrollbar-preparation-20260929\activation-probe-input-attempt1\build\x64\Release\V02InputProbe.exe
+{"architecture":"x64","sourceSha256":"788785ffd296190c5a7d67741c4a8c6f15cd788001975ac66de3dc19db2e6437","executable":"C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\activation-probe-input-attempt1\\build\\x64\\Release\\V02InputProbe.exe","executableSha256":"2f693ff73673c492459ea3fa6fa1656f2329c64c4c095566a1afc958ea0d69ca","executableBytes":50688}

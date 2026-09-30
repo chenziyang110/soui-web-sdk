@@ -1,0 +1,20 @@
+{
+  "schema": "soui.title-cover-selftest/v1",
+  "inspectorSha256": "9161f19afbab8ede78676c1a5a818d63d3dcfe5a8ea4b0e9942eda67c30c9436",
+  "startedAt": "2026-09-30T01:48:36.948Z",
+  "cases": [
+    {
+      "name": "idle-gate",
+      "script": "$ErrorActionPreference='Stop'; $busy=@(Get-CimInstance Win32_Process -ErrorAction Stop | Where-Object { $_.Name -match 'qemu|soui|ScrollStarter|msbuild|^cl\\.exe$|^link\\.exe$|cdb|InputTrace|ProcessTreeSampler|electron|git\\.exe' }); [ordered]@{busy=$busy.Count}|ConvertTo-Json -Compress; if($busy.Count){exit 2}",
+      "startedAt": "2026-09-30T01:48:36.951Z",
+      "finishedAt": "2026-09-30T01:48:38.339Z",
+      "exitCode": 2,
+      "signal": null,
+      "error": null
+    }
+  ],
+  "passed": false,
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n2 !== 0\n\n    at Object.<anonymous> (C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\Test-TitleCover.cjs:29:10)\n    at Module._compile (node:internal/modules/cjs/loader:1812:14)\n    at Object..js (node:internal/modules/cjs/loader:1943:10)\n    at Module.load (node:internal/modules/cjs/loader:1533:32)\n    at Module._load (node:internal/modules/cjs/loader:1335:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47",
+  "finishedAt": "2026-09-30T01:48:38.340Z",
+  "inspectorSha256After": "9161f19afbab8ede78676c1a5a818d63d3dcfe5a8ea4b0e9942eda67c30c9436"
+}

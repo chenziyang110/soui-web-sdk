@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-30 独立模板交互门禁与拒绝证据
+
+[模板输入前验证原件](../../verification/production-validation/template-scroll-guards-2026-09-30/README.md)记录两架构标题点击探针的冻结编译身份、实际只读遮挡检测正负控，以及载荷校验器 13/13 原始退出 0。x64 attempt3 在启动前被旧校验器误拒正常重复导航；v5 attempt4 核对 71 文件和五份 legal 后启动，但标题点仍被 GameViewer 遮挡，未发送点击或滚轮，原始退出 1，且未取得原生完整关闭。80 份精选原件保留；另附 SDK Web 依赖审计原始退出 0、零漏洞记录。这些结果不能计为产品滚动失败或通过。真实滚动、Win7 模板、IME、长期资源与性能仍待验收，三个生产结论均保持 false。
+
 ## 2026-09-29 Workbench 滚动条外观
 
 [本机双架构原始记录](../../verification/production-validation/scrollbar-style-modern-2026-09-29/README.md)绑定同一份 Demo 源码的正式 x64/x86 Release 构建；两次真实窗口的只读截图显示页面与 V02 列表滚动条使用窄轨道、圆角滑块，应用均原生退出 0。第一次 x64 前台条件不成立的失败样本保留，不能计作可视通过。实际滚轮/拖动/键盘交互和生产 V02 场景仍待验收；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
