@@ -1,5 +1,7 @@
 # 性能对照协议草案
 
+直接 CMake 示例按 3.27 以上准确选择 Windows SDK 10.0.19041.0；3.24–3.26 改用 `-A x64`（x86 为 `-A Win32`），仍保留完整引号的 `-DCMAKE_SYSTEM_VERSION=10.0.19041.0`。已有生成平台不同的目录请选新目录，或检查其所有权后显式 `--fresh`；不能在旧缓存中直接切换平台。
+
 当前状态：已执行 S01、S02 配对链路预检，正式性能验收尚未完成。固定 SDK 源码/运行包、Electron 精确版本与 lockfile、共享页面逐文件散列、设备系统与驱动、电源计划、刷新率、DPI、窗口内容区尺寸、输入轨迹、场景顺序及采样工具版本。两端均使用发布构建和正常安全设置，在同一设备上交替执行；未对齐的输入或视口使该轮不可比。
 
 每轮保存宿主元数据、页面原始结果、外部输入时间戳、进程树资源样本、退出码与超时、运行包文件清单及散列。启动冷态至少 10 次、热态至少 30 次；交互每场景至少 5 轮、每轮 60 秒。报告 p50/p95/p99、样本数、分布和异常样本，不只给平均值。S05 的 120 秒动效检查应独立保留，不能用不足时长的样本填补 60 秒交互结果。
@@ -11,7 +13,7 @@
 `ProcessTreeSampler` 是独立的 Win32 原始采样器，不链接 SDK 或 Electron。以进程 PID、采样间隔（毫秒）、最长时长（毫秒）、新的绝对 NDJSON 路径启动；每轮枚举该进程及后代，并继续追踪已观察到、但父进程先退出的后代，记录逐进程和整树 Private Bytes、工作集、句柄、线程，以及相邻样本的整机容量 CPU 百分比。首个样本 CPU 为 `null`；进程无法读取时 `complete=false` 并以非零码结束，超时以码 2 结束。采样器正常结束仅证明原始记录完整，应用退出码仍须由监督器单独判定。短命子进程仍可能在两次采样之间完整创建并退出，因此还需检查宿主进程事件与采样间隔；结果不得单独充当完整性能报告。
 
 ```powershell
-cmake -S benchmarks/protocol -B out/benchmark-sampler -G "Visual Studio 17 2022" -A x64
+cmake -S benchmarks/protocol -B out/benchmark-sampler -G "Visual Studio 17 2022" -A 'x64,version=10.0.19041.0' '-DCMAKE_SYSTEM_VERSION=10.0.19041.0'
 cmake --build out/benchmark-sampler --config Release
 out/benchmark-sampler/Release/ProcessTreeSampler.exe <PID> 1000 65000 <新的绝对结果路径>
 $env:PROCESS_TREE_SAMPLER_EXE = (Resolve-Path out/benchmark-sampler/Release/ProcessTreeSampler.exe).Path
@@ -29,7 +31,7 @@ out/benchmark-sampler/Release/InputTrace.exe <宿主PID> S01 <新的绝对结果
 
 一轮宿主正常退出后，用 `node benchmarks/protocol/check-run-traces.cjs S01 <input-trace.ndjson> <process-tree.ndjson>` 复核两份原始轨迹。检查要求完整时长、相同 PID/进程创建时间、输入落在采样区间内、连续完整的资源样本、宿主退出码 0，并拒绝短探针和超时。S01/S02/S04 还要求场景操作实际持续执行，S05 要求启动动效；仅等待足够时长后点“结束”不能算有效输入。当前 S03 一律拒绝，直到补上真实 IME composition 证据链；单改轨迹里的布尔字段不能证明输入法路径。该检查不读取页面结果，也不测物理呈现；必须再运行页面配对检查，并补足散列、运行顺序、重复次数与呈现追踪。
 
-`run-one.cjs` 将一个可见的宿主、`ProcessTreeSampler` 和 `InputTrace` 串行绑定为一轮真实场景；输出目录必须是新的绝对路径。每轮先复制共享页面到独立目录，逐文件验证副本与输入相同，宿主只加载副本，结束后再次验证副本未变。宿主仅在页面提交完整结果后正常退出，工具保存三个退出码、原始日志、页面结果和逐文件页面身份，失败时也保留独立目录。失败清理可核对本轮直接子进程的 PID、父进程和可执行文件身份，但一律只停止已持有的子进程句柄，并在 `run.json.cleanup` 标明后代清理未证实；父 PID 可能复用，不能仅凭直接子进程身份安全使用整树终止。等待子进程 `close` 后才固定退出记录，避免过早读取未关闭的日志。SOUI 的最后一个可选参数是已安装 SDK 静态库，Electron 的是 `package-lock.json`；正式身份预检必须提供它。两端按同一页面目录交替执行，例如：
+`run-one.cjs` 要求采样器目录内同时提供 `OwnedProcessRunner.exe`。可见宿主、采样器和输入器分别由持有的 Job 监督；先记录真实宿主 PID 与创建身份，再用该 PID 采集。每轮复制并复验共享页面，保存程序和工具散列、原始日志、页面结果及 Job 原生终态。失败通过专用控制管道清理整个自有 Job，根进程退出 0 但后代未退出仍判失败；清理确认不改变原始失败。历史直接子进程清理不能继承为当前整树证明。SOUI 最后可选参数为已安装 SDK 静态库，Electron 为 `package-lock.json`；正式身份预检必须提供它。两端按同一页面目录交替执行，例如：
 
 ```powershell
 node benchmarks/protocol/run-one.cjs soui S01 <同一页面目录> <SouiBenchmark.exe> <node.dll> <ProcessTreeSampler.exe> <InputTrace.exe> <新的SOUI输出目录> <已安装的soui_sdk.lib>

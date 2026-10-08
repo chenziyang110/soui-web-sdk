@@ -9,7 +9,7 @@ SDK 源码根目录执行（仅选择需要的绑定）：
 ```powershell
 npm ci --prefix sdk/web
 npm run build --prefix sdk/web
-npm ci --prefix sdk/bindings/react
+npm ci --prefix sdk/bindings/react --install-links
 npm run build --prefix sdk/bindings/react
 # Vue 应用改为 sdk/bindings/vue。
 ```
@@ -20,11 +20,15 @@ npm run build --prefix sdk/bindings/react
 npm install ../sdk/web ../sdk/bindings/react --install-links
 ```
 
-这是按需使用；完整 SDK 源码交付可能包含两套模块目录，并不表示安装器已按框架裁剪源码。`--install-links` 将本地模块打包复制，避免绑定通过源码目录解析到另一份开发用框架。也可在已编译模块中运行 `npm pack`，将 tarball 交给独立工程安装；运行文件和类型声明包含私有 shared 实现，不引用相邻源码。模块没有 runtime `dependencies`，框架与 SDK 通过 peer 提供；构建开发依赖单独锁定。此切片的两个模块版本为 `0.1.0`，SDK 交付身份由根版本控制。
+这是按需使用；完整 SDK 源码交付可能包含两套模块目录，并不表示安装器已按框架裁剪源码。`--install-links` 将本地模块打包复制，避免绑定通过源码目录解析到另一份开发用框架。也可在已编译模块中运行 `npm pack`，将 tarball 交给独立工程安装；运行文件和类型声明包含私有 shared 实现，不引用相邻源码。模块没有 runtime `dependencies`，框架与 SDK 通过 peer 提供；构建开发依赖单独锁定。两个模块的版本与根 `VERSION` 和本地 Web SDK 完全一致，编译不借用其他 SDK 版本。
+
+标准入口显式使用 `tools/Build.ps1 -WithGuiBindings` 和 `tools/Test.ps1 -UnitOnly -WithGuiBindings`。默认构建不安装 React/Vue。仅验证绑定而不编译 C++ 时，使用 `node tools/sdk/gui-bindings-delivery.cjs build --root .`，随后 `node tools/sdk/gui-bindings-delivery.cjs test --root .`。`-SkipWeb -WithGuiBindings` 必须有匹配当前源码与输出的编译记录，或来自已安装 SDK 的可选交付声明。
+
+需要交付已编译绑定时，在完整编译之后运行 `node tools/sdk/soui-sdk.cjs pack --source . --output dist/sdk/<VERSION> --version <VERSION> --with-gui-bindings`，以实际版本替换占位符。可选声明列出 Web SDK、React 和 Vue 的 ESM 与类型入口，并将三套 `dist` 纳入 SDK 清单；安装与目录搬移后可以直接从这些目录 `npm pack`，不依赖原仓库或源码 alias。默认 source-only 包不包含这些编译输出。同版本的不同清单不能互换，固定发布必须选择一份最终内容；已有 SDK 锁仍拒绝同版本不同内容。
 
 应用必须把所有 `@soui/native-sdk` 导入指向同一实例。不要让现有 SDK 源码 alias 和 bare package 指向两份 SDK；可统一使用 package 或统一应用的 alias/dedupe 配置。绑定只使用 SDK 类型并借用传入对象，不创建客户端或 GUI。不要导入绑定包内部 `dist` 路径。
 
-SDK peer 明确为 `>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0`：支持 0.4/0.5 稳定线以及 0.4.0/0.5.0 这两个版本 tuple 的预发行，不自动承诺其他 minor/patch tuple 的预发行（例如 0.4.1-preview.1、0.5.1-preview.1）或 0.6。包测试的 0.5 元数据夹具只证明 npm peer 解析/包消费，不是实际 0.5 源码、身份或平台认证。
+SDK peer 明确为 `>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0`：支持 0.4/0.5 稳定线以及 0.4.0/0.5.0 这两个版本 tuple 的预发行，不自动承诺其他 minor/patch tuple 的预发行（例如 0.4.1-preview.1、0.5.1-preview.1）或 0.6。包测试分别验证本次真实同版本源码的 tarball 消费，以及临时元数据夹具的 npm peer 解析；后者不认证相应 SDK 源码或平台。
 
 输出是 ES2015 ESM，由应用构建为目标页面载荷。兼容应用仍须执行现有 Chrome 49 转换和所需 polyfill；React 19 属于现代档。本次 DOM 组件测试不证明 Win7/PE 或旧引擎认证。
 
@@ -98,8 +102,8 @@ await gui.waitFor({ id: 'order:42:approve', state: { phase: 'done' }, timeoutMs:
 两个绑定构建后，从交付根执行：
 
 ```powershell
-npm ci --prefix tests/gui-bindings
-npm ci --prefix tests/gui-bindings/react18
+npm ci --prefix tests/gui-bindings --install-links
+npm ci --prefix tests/gui-bindings/react18 --install-links
 npm run typecheck --prefix tests/gui-bindings
 npm run typecheck:react18 --prefix tests/gui-bindings
 npm run test --prefix tests/gui-bindings
@@ -110,6 +114,6 @@ npm audit --prefix tests/gui-bindings
 npm audit --prefix tests/gui-bindings/react18
 ```
 
-测试使用固定依赖与 jsdom 连接 DOM、真实 createRoot/createApp/SouiGui；框架和 GUI 注册器没有 mock。原生传输模拟只验证拒绝/取消传播，原生权限实现另有 SDK 契约测试。包测试在临时仓库外工程安装真实 tarball，用本次缓存离线恢复固定框架依赖并检查类型；首次运行前应完成以上 `npm ci`。测试不用真实桌面窗口，不能替代 Chrome 49/Win7/PE、UIA、手势或长期目标机矩阵。
+测试使用固定依赖与 jsdom 连接 DOM、真实 createRoot/createApp/SouiGui；框架和 GUI 注册器没有 mock。原生传输模拟只验证拒绝/取消传播，原生权限实现另有 SDK 契约测试。包测试在临时仓库外工程安装真实 tarball，用本次缓存离线恢复固定框架依赖并检查类型、实际 ESM 导入和 SDK 安装搬移；首次运行前应完成以上 `npm ci`，源码交付回归还要求匹配的可选构建记录。`Collect-Verification.cjs --with-gui-bindings` 可显式附加相同测试与审计，普通采集不处理框架依赖。测试不用真实桌面窗口，不能替代 Chrome 49/Win7/PE、UIA、手势或长期目标机矩阵。
 
 生命周期依据：[React useLayoutEffect](https://react.dev/reference/react/useLayoutEffect)、[StrictMode](https://react.dev/reference/react/StrictMode)、[Vue 生命周期](https://vuejs.org/api/composition-api-lifecycle.html)、[KeepAlive](https://vuejs.org/guide/built-ins/keep-alive.html)。

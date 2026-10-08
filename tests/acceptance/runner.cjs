@@ -4,7 +4,7 @@ const path = require('node:path');
 const os = require('node:os');
 const crypto = require('node:crypto');
 const {StringDecoder} = require('node:string_decoder');
-const {spawn} = require('node:child_process');
+const {launchOwned} = require('../../tools/internal/owned-process.cjs');
 const identity = require('../../tools/internal/delivery-identity.cjs');
 const builds = require('../../tools/internal/build-evidence.cjs');
 const {captureTimeout} = require('./timeout-diagnostics.cjs');
@@ -227,10 +227,14 @@ async function run(suite,config) {
   let child;
   let outcome;
   let timeoutDiagnosticPromise=Promise.resolve(null);
+  let timer;
+  let monitor;
   try {
-    outcome=await new Promise(resolve=>{
-      child=spawn(path.join(bin,'SouiAcceptance.exe'),args,{cwd:bin,windowsHide:true,stdio:['ignore',stdout,stderr]});
-      let spawnError=null;
+      child=launchOwned(path.join(bin,'SouiAcceptance.exe'),args,{
+        runner:process.env.SOUI_OWNED_PROCESS_RUNNER || path.join(root,'out/benchmark-protocol/Release/OwnedProcessRunner.exe'),
+        cwd:bin,report:path.join(output,'owned-process.ndjson'),
+        timeoutMs:processTimeoutMs+180000,stdout,stderr});
+      await child.ready;
       let observedBytes=0;
       let partial='';
       const decoder=new StringDecoder('utf8');
@@ -245,12 +249,12 @@ async function run(suite,config) {
           debuggerExe:process.env.SOUI_ACCEPTANCE_DEBUGGER,
           dumpRoot:process.env.SOUI_ACCEPTANCE_DUMP_ROOT})
           .catch(error=>({debugger:{status:'failed',error:error.message}}))
-          .finally(()=>child.kill());
+          .finally(()=>child.stop());
       };
-      const timer=setTimeout(()=>expire('process-deadline'),processTimeoutMs);
+      timer=setTimeout(()=>expire('process-deadline'),processTimeoutMs);
       // Per-step supervision also covers a blocked native mount/destroy where
       // the in-process readiness timer cannot run. Read only appended bytes.
-      const monitor=setInterval(()=>{
+      monitor=setInterval(()=>{
         try {
           if(fs.existsSync(log)) {
             const size=fs.statSync(log).size;
@@ -271,15 +275,23 @@ async function run(suite,config) {
           if(reason)expire(reason);
         } catch(error){expire('native-observation-failed:'+error.message);}
       },250);
-      child.once('error',error=>{spawnError=error.message;});
-      child.once('close',(exitCode,signal)=>{clearTimeout(timer);clearInterval(monitor);resolve({pid:child.pid??null,exitCode,signal,timedOut,timeoutReason,spawnError,processTimeoutMs});});
-    });
-  } finally { fs.closeSync(stdout); fs.closeSync(stderr); }
+      const owned=await child.finished;
+      outcome={pid:owned.pid,exitCode:owned.exitCode,signal:owned.signal,
+        timedOut:timedOut || owned.terminal?.reason==='timeout',timeoutReason,
+        spawnError:owned.spawnError,processTimeoutMs,ownedProcess:owned};
+  } catch(error) {
+      child?.stop();
+      const owned=child?await child.finished:null;
+      outcome={pid:owned?.pid??null,exitCode:owned?.exitCode??null,signal:owned?.signal??null,
+        timedOut,timeoutReason,spawnError:error.message,processTimeoutMs,ownedProcess:owned};
+  } finally { clearTimeout(timer);clearInterval(monitor);fs.closeSync(stdout);fs.closeSync(stderr); }
   outcome.timeoutDiagnostic=await timeoutDiagnosticPromise;
   const result={schema:'soui.acceptance-run/v1',runId,config,consumerBuildId:build.consumerBuildId,
     sourceSha256:build.sourceSha256,payloadSha256:build.payload.sha256,outcome,passed:false,releaseReady:false,
     finishedAt:new Date().toISOString()};
   try {
+    if(outcome.spawnError || outcome.timedOut || outcome.ownedProcess?.passed!==true)
+      throw new Error('Owned process exit, supervision or complete Job cleanup was not verified');
     verify(suite);
     const bytes=fs.readFileSync(log);
     result.logSha256=identity.hash(bytes);

@@ -1,12 +1,14 @@
 # 同页面运行包体积测量
 
+直接 CMake 示例按 3.27 以上准确选择 Windows SDK 10.0.19041.0；3.24–3.26 改用 `-A x64`（x86 为 `-A Win32`），仍保留完整引号的 `-DCMAKE_SYSTEM_VERSION=10.0.19041.0`。已有生成平台不同的目录请选新目录，或检查其所有权后显式 `--fresh`；不能在旧缓存中直接切换平台。
+
 本工具把 x64 Release 的两个最小宿主和同一份 `dist-legacy` 页面分别装入独立目录，生成完整文件散列清单、解压大小和同算法 ZIP 大小。SOUI 包包含宿主 EXE、Miniblink、SOUI、应用本地 VC/UCRT DLL 和现有声明文件；Electron 包从锁定的 `electron` 发行目录构造 `resources/app`，保留其发行文件和许可材料。两端页面目录的逐文件散列必须相同。它测的是当前最小宿主运行包，不是正式安装程序或六组业务 Demo。
 
 先按 [双端宿主说明](../README.md)构建共享页面，并执行：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File tools/Build.ps1 -Architecture x64 -Configuration Release -SdkOnly -Install
-cmake -S benchmarks/hosts/soui -B out/benchmark-soui-x64-19041 -G 'Visual Studio 17 2022' -A x64 '-DCMAKE_SYSTEM_VERSION=10.0.19041.0' "-DSouiSdk_DIR=$((Resolve-Path out/install/x64/lib/cmake/SouiSdk).Path)"
+cmake -S benchmarks/hosts/soui -B out/benchmark-soui-x64-19041 -G 'Visual Studio 17 2022' -A 'x64,version=10.0.19041.0' '-DCMAKE_SYSTEM_VERSION=10.0.19041.0' "-DSouiSdk_DIR=$((Resolve-Path out/install/x64/lib/cmake/SouiSdk).Path)"
 cmake --build out/benchmark-soui-x64-19041 --config Release
 npm --prefix benchmarks/hosts/electron ci
 node benchmarks/hosts/electron/node_modules/electron/install.js

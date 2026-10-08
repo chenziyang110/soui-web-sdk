@@ -25,7 +25,19 @@ SDK 源码中两个模块分别显式安装开发依赖并编译；应用按需�
 
 SDK peer 使用 `>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0` 两个显式分支，允许 0.4/0.5 稳定线和 0.4.0/0.5.0 tuple 的预发行，其他 tuple 的预发行不自动接受。临时只改 SDK package 版本的夹具验证 npm 解析，不等同于该版本源码认证；修前 ERESOLVE 证据与回归在 `tests/gui-bindings/peer-range-regression.md`。
 
-## 验证
+## 0.5 可选交付整合
+
+两个绑定的包版本跟随本地 SDK `VERSION`，开发锁中的 SDK 和绑定版本必须完全一致。公开 peer 范围保持原有兼容声明；它不允许构建时借用另一版本的 SDK。业务生命周期实现保持独立模块，不将 React、Vue 或绑定运行依赖加入 Core。
+
+标准 `Build.ps1 -WithGuiBindings` 显式安装并编译 Web SDK 和两个绑定，记录编译前后相同的源码身份以及三套编译输出；`-SkipWeb -WithGuiBindings` 必须验证该记录或已安装 SDK 的可选交付声明。默认构建不安装框架。`Test.ps1 -WithGuiBindings` 和 `Collect-Verification.cjs --with-gui-bindings` 执行绑定的 DOM、类型、真实 tarball 消费及四个当前锁的审计；它们不升级桌面或平台验收。
+
+存在 `sdk-lock.json` 时始终校验固定清单及其中的可选源码/输出身份，编译记录只能追加验证，不能替代该锁；source-only 锁仍允许生成清单未管理的 `dist`。
+
+`soui-sdk.cjs pack --with-gui-bindings` 保持 source-sdk/v1 格式，新增可选模块声明，将 Web SDK 与两个绑定的 `dist` 明确列入原文件清单，并声明包名、相同版本和 ESM/类型入口。打包前校验源码与输出记录；源搬移、安装和复验仍按清单检查字节。默认 source-only 包继续过滤构建输出。同版本的两种不同清单不能互换：既有 SDK 锁仍拒绝相同版本对应不同内容，发布者必须选择并冻结一份最终内容。
+
+编译记录通过文件身份与实际命令绑定，不能认证拥有相同用户权限且重写整套源码、记录与输出的攻击者。实际 npm tarball、离开仓库的消费者、完整入口导入和类型检查验证可消费性；metadata-only peer 夹具只验证版本解析。没有执行旧归档依赖锁的安装。
+
+## 首批接口验证
 
 锁定测试依赖，使用真实 React `createRoot`（18.3 与 19.3）和 Vue `createApp`、连接 DOM 容器与真实 `SouiGui`，不假造 register/unregister。验证 StrictMode、KeepAlive、ref 替换、ID 重排、状态观察、已提交回调、暴露关闭、卸载及旧完成拒绝；验证 DOM 值不泄漏、原生拒绝、超时不取消实际工作和显式 task.cancel 边界。各模块编译和独立安装包消费者类型检查，检查 peer-only 包内容与适用 npm audit。不启动桌面 GUI；实际 Chrome 49/Win7/PE、UIA、原生手势和长期矩阵由独立 P0 验收。
 

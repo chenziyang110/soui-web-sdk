@@ -1,0 +1,98 @@
+✖ owned runner preserves Unicode, spaces, quotes, empty args and trailing slashes (2854.9635ms)
+✔ native nonzero exit is retained as failure even when the Job closes normally (1883.6404ms)
+✖ timeout closes all three owned generations and leaves an unrelated process alive (3263.6284ms)
+✖ a root that exits zero cannot hide a still-running detached descendant (303.2451ms)
+✖ owned descendants may finish naturally within the explicit drain budget (416.581ms)
+✔ an existing report or invalid limits cannot launch a child or overwrite evidence (179.9072ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 2
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9043.6707
+
+✖ failing tests:
+
+test at tests\benchmark\owned-process-runner.test.cjs:34:1
+✖ owned runner preserves Unicode, spaces, quotes, empty args and trailing slashes (2854.9635ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (F:\work\sm05\tests\benchmark\owned-process-runner.test.cjs:50:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\owned-process-runner.test.cjs:67:1
+✖ timeout closes all three owned generations and leaves an unrelated process alive (3263.6284ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  6 !== 3
+  
+      at TestContext.<anonymous> (F:\work\sm05\tests\benchmark\owned-process-runner.test.cjs:86:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 6,
+    expected: 3,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\owned-process-runner.test.cjs:94:1
+✖ a root that exits zero cannot hide a still-running detached descendant (303.2451ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (F:\work\sm05\tests\benchmark\owned-process-runner.test.cjs:106:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\owned-process-runner.test.cjs:113:1
+✖ owned descendants may finish naturally within the explicit drain budget (416.581ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (F:\work\sm05\tests\benchmark\owned-process-runner.test.cjs:121:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

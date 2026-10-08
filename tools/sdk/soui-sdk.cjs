@@ -8,6 +8,7 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const identity = require('../internal/delivery-identity.cjs');
 const {isHistoricalNativeBackup} = require('../internal/native-payload.cjs');
+const guiBindings = require('./gui-bindings-delivery.cjs');
 
 const PACKAGE = 'soui.source-sdk/v1';
 const LOCK = 'soui.sdk-lock/v1';
@@ -61,7 +62,8 @@ function walk(root, relative) {
 function sourceFiles(source, manifest) {
   const historical = new Set(manifest ? manifest.files.map(file => file.path) : []);
   return [...managedRoots, ...managedFiles].flatMap(relative => walk(source, relative))
-    .filter(relative => !isHistoricalNativeBackup(relative) || historical.has(relative)).sort();
+    .filter(relative => !isHistoricalNativeBackup(relative) || historical.has(relative))
+    .concat(manifest?.optionalGuiBindings ? guiBindings.outputs(source).files.map(file => file.path) : []).sort();
 }
 
 function validateManifest(manifest) {
@@ -78,6 +80,7 @@ function validateManifest(manifest) {
     }
     seen.add(file.path.toLowerCase());
   }
+  if (manifest.optionalGuiBindings !== undefined) guiBindings.validateDeclaration(manifest.optionalGuiBindings, manifest);
   return manifest;
 }
 
@@ -96,6 +99,7 @@ function readPackage(directory) {
   const root = safePath(directory);
   const manifest = validateManifest(json(safePath(root, 'sdk-manifest.json')));
   verifyFiles(safePath(root, 'payload'), manifest);
+  if (manifest.optionalGuiBindings) guiBindings.verifyDelivered(safePath(root, 'payload'), manifest.optionalGuiBindings);
   return manifest;
 }
 
@@ -106,6 +110,7 @@ function readInstalledLock(directory) {
   }
   validateManifest(lock.manifest);
   verifyFiles(directory, lock.manifest);
+  if (lock.manifest.optionalGuiBindings) guiBindings.verifyDelivered(directory, lock.manifest.optionalGuiBindings);
   return lock;
 }
 
@@ -132,7 +137,7 @@ function publishStagedDirectory(stage, output) {
   }
 }
 
-function pack(source, output, version) {
+function pack(source, output, version, options = {}) {
   source = safePath(source);
   output = safePath(output);
   if (comparable(output) === comparable(source) ||
@@ -140,13 +145,16 @@ function pack(source, output, version) {
     throw new Error('Package output must be outside source or under dist/sdk');
   }
   if (fs.existsSync(output)) throw new Error('Package output already exists');
-  const files = sourceFiles(source);
+  const optionalGuiBindings = options.withGuiBindings ? guiBindings.verify(source, version) : undefined;
+  const compiled = new Set(optionalGuiBindings?.output.files.map(file => file.path) || []);
+  const files = sourceFiles(source).concat([...compiled]).sort();
   const manifest = validateManifest({schema: PACKAGE, id: sdkId, version, channel: 'preview', releaseReady: false,
     format: 'source-with-native-dependencies',
+    ...(optionalGuiBindings ? {optionalGuiBindings} : {}),
     applicationContract: 'Applications own app, web, contracts and resources. SDK builds independently using CMake and links through Soui::Sdk.',
     files: files.map(relative => {
       const raw = fs.readFileSync(safePath(source, relative));
-      const sourceNormalization = identity.normalization(relative, raw);
+      const sourceNormalization = compiled.has(relative) ? 'none' : identity.normalization(relative, raw);
       const data = identity.normalize(raw, sourceNormalization);
       return {path: relative, bytes: data.length, sha256: hash(data), sourceNormalization};
     })});
@@ -214,20 +222,24 @@ function install(packageRoot, projectRoot) {
 function main(argv) {
   const [command, ...rest] = argv;
   const options = {};
-  for (let i = 0; i < rest.length; i += 2) {
+  for (let i = 0; i < rest.length; ++i) {
+    if (rest[i] === '--with-gui-bindings') {
+      if (command !== 'pack' || options[rest[i]]) throw new Error('GUI bindings flag is unique and only valid for pack');
+      options[rest[i]] = true; continue;
+    }
     if (!/^--[a-z-]+$/.test(rest[i]) || !rest[i + 1] || rest[i + 1].startsWith('--') || options[rest[i]]) {
       throw new Error('Expected unique --name value arguments');
     }
-    options[rest[i]] = rest[i + 1];
+    options[rest[i]] = rest[++i];
   }
   const surfaces = {pack: ['--source', '--output', '--version'], verify: ['--package'],
     install: ['--package', '--project'], recover: ['--project'], 'verify-project': ['--project'],
     'verify-source': ['--package', '--source'], 'verify-profile': ['--package', '--profile']};
   const keys = surfaces[command];
-  if (!keys || keys.some(key => !options[key]) || Object.keys(options).some(key => !keys.includes(key))) {
-    throw new Error('Commands: pack --source DIR --output DIR --version X.Y.Z-preview.N | verify --package DIR | install --package DIR --project DIR | recover --project DIR | verify-project --project DIR | verify-source --package DIR --source DIR | verify-profile --package DIR --profile compatibility|modern');
+  if (!keys || keys.some(key => !options[key]) || Object.keys(options).some(key => !keys.includes(key) && !(command === 'pack' && key === '--with-gui-bindings'))) {
+    throw new Error('Commands: pack --source DIR --output DIR --version X.Y.Z-preview.N [--with-gui-bindings] | verify --package DIR | install --package DIR --project DIR | recover --project DIR | verify-project --project DIR | verify-source --package DIR --source DIR | verify-profile --package DIR --profile compatibility|modern');
   }
-  if (command === 'pack') return pack(options['--source'], options['--output'], options['--version']);
+  if (command === 'pack') return pack(options['--source'], options['--output'], options['--version'], {withGuiBindings: options['--with-gui-bindings'] === true});
   if (command === 'install') return install(options['--package'], options['--project']);
   if (command === 'verify-profile') {
     requireProfile(readPackage(options['--package']), options['--profile']);

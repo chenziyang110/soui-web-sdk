@@ -5,9 +5,12 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { createRequire } from 'node:module';
 
 const directory = fileURLToPath(new URL('./', import.meta.url));
 const repository = path.resolve(directory, '../..');
+const require = createRequire(import.meta.url);
+const sdkDelivery = require('../../tools/sdk/soui-sdk.cjs');
 const read = file => JSON.parse(fs.readFileSync(file, 'utf8'));
 const npmCli = process.env.npm_execpath || path.join(path.dirname(process.execPath), 'node_modules/npm/bin/npm-cli.js');
 function run(script, args, cwd) {
@@ -21,6 +24,7 @@ test('binding delivery is peer-only and local installed consumers have no source
     const name = `@soui/gui-${framework}`;
     const folder = path.join(repository, 'sdk/bindings', framework);
     const metadata = read(path.join(folder, 'package.json'));
+    assert.equal(metadata.version, fs.readFileSync(path.join(repository, 'VERSION'), 'utf8').trim());
     assert.equal(metadata.dependencies, undefined);
     assert.deepEqual(Object.keys(metadata.peerDependencies).sort(), ['@soui/native-sdk', framework].sort());
     const installed = path.join(directory, 'node_modules', name);
@@ -41,6 +45,7 @@ test('packed bindings compile in an offline consumer outside the SDK tree', t =>
   const packages = {};
   for (const [name, relative] of [['@soui/native-sdk', 'sdk/web'], ['@soui/gui-react', 'sdk/bindings/react'], ['@soui/gui-vue', 'sdk/bindings/vue']]) {
     const packed = JSON.parse(run(npmCli, ['pack', path.join(repository, relative), '--pack-destination', root, '--json', '--ignore-scripts'], directory))[0];
+    assert.equal(packed.version, fs.readFileSync(path.join(repository, 'VERSION'), 'utf8').trim(), 'Consumer uses actual same-version source builds');
     assert.ok(packed.files.some(file => file.path.endsWith('index.d.ts')));
     if (name !== '@soui/native-sdk') {
       assert.ok(packed.files.some(file => file.path === 'dist/shared/controller.js'));
@@ -58,6 +63,43 @@ test('packed bindings compile in an offline consumer outside the SDK tree', t =>
   run(npmCli, ['install', '--offline', '--ignore-scripts', '--no-audit', '--no-fund'], root);
   for (const name of Object.keys(packages)) assert.equal(fs.lstatSync(path.join(root, 'node_modules', name)).isSymbolicLink(), false);
   run(path.join(root, 'node_modules/typescript/bin/tsc'), ['-p', path.join(root, 'tsconfig.json')], root);
+  fs.writeFileSync(path.join(root, 'imports.mjs'), "import * as sdk from '@soui/native-sdk'; import {useSouiGuiNode as react} from '@soui/gui-react'; import {useSouiGuiNode as vue} from '@soui/gui-vue'; if(typeof sdk.SouiGui !== 'function' || typeof react !== 'function' || typeof vue !== 'function') throw Error('Missing delivered imports');\n");
+  run(path.join(root, 'imports.mjs'), [], root);
+});
+
+test('optional SDK source package imports and types survive installation outside the repository', t => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-gui-source-delivery-'));
+  t.after(() => {
+    assert.ok(fs.realpathSync(root).startsWith(fs.realpathSync(os.tmpdir()) + path.sep));
+    fs.rmSync(root, {recursive: true, force: true});
+  });
+  const version = fs.readFileSync(path.join(repository, 'VERSION'), 'utf8').trim();
+  const packed = path.join(root, 'sdk-package'), installed = path.join(root, 'installed'), moved = path.join(root, 'moved');
+  sdkDelivery.pack(repository, packed, version, {withGuiBindings: true});
+  sdkDelivery.install(packed, installed);
+  fs.renameSync(installed, moved);
+  const manifest = sdkDelivery.readLock(moved).manifest;
+  assert.equal(manifest.optionalGuiBindings.sdkVersion, version);
+  const consumer = path.join(root, 'consumer'); fs.mkdirSync(consumer);
+  const dependencies = {};
+  for (const entry of manifest.optionalGuiBindings.packages) {
+    const tarball = JSON.parse(run(npmCli, ['pack', path.join(moved, entry.root), '--pack-destination', consumer, '--json', '--ignore-scripts'], consumer))[0];
+    assert.equal(tarball.version, version);
+    assert.ok(tarball.files.some(file => file.path === entry.import));
+    assert.ok(tarball.files.some(file => file.path === entry.types));
+    dependencies[entry.name] = `file:${path.join(consumer, tarball.filename).replaceAll('\\', '/')}`;
+  }
+  const metadata = read(path.join(directory, 'package.json'));
+  Object.assign(dependencies, {react: metadata.dependencies.react, 'react-dom': metadata.dependencies['react-dom'], vue: metadata.dependencies.vue,
+    '@types/react': metadata.devDependencies['@types/react'], '@types/react-dom': metadata.devDependencies['@types/react-dom'], typescript: metadata.devDependencies.typescript});
+  fs.writeFileSync(path.join(consumer, 'package.json'), JSON.stringify({name: 'relocated-gui-consumer', version: '0.1.0', private: true, type: 'module', dependencies}));
+  fs.copyFileSync(path.join(directory, 'consumer.ts'), path.join(consumer, 'consumer.ts'));
+  fs.copyFileSync(path.join(directory, 'tsconfig.json'), path.join(consumer, 'tsconfig.json'));
+  run(npmCli, ['install', '--offline', '--ignore-scripts', '--no-audit', '--no-fund'], consumer);
+  for (const name of manifest.optionalGuiBindings.packages.map(entry => entry.name)) assert.equal(fs.lstatSync(path.join(consumer, 'node_modules', name)).isSymbolicLink(), false);
+  run(path.join(consumer, 'node_modules/typescript/bin/tsc'), ['-p', path.join(consumer, 'tsconfig.json')], consumer);
+  fs.writeFileSync(path.join(consumer, 'imports.mjs'), "import {useSouiGuiNode as react} from '@soui/gui-react'; import {useSouiGuiNode as vue} from '@soui/gui-vue'; import {SouiGui} from '@soui/native-sdk'; if([react,vue,SouiGui].some(value=>typeof value!=='function')) throw Error('Missing relocated imports');\n");
+  run(path.join(consumer, 'imports.mjs'), [], consumer);
 });
 
 test('npm peers accept the promised 0.5 tuple and reject unpromised prerelease tuples', t => {

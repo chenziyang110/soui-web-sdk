@@ -1,0 +1,754 @@
+{
+  "schema": "soui.local-foundation-post-cancel-evidence/v1",
+  "version": "0.5.0-preview.1",
+  "channel": "unfrozen-development",
+  "sourceGitBase": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+  "sourceSha256": "e7519638abe291a21f9b03764677dd1ead8f6e27ede7a0df206de7d676477ff9",
+  "releaseReady": false,
+  "sourceDeliveryVerified": false,
+  "status": "partial-with-retained-failures",
+  "statements": {
+    "fourConfigurationsCompilationCompleted": true,
+    "fourConfigurationsGenericBuildSupervisionPassed": false,
+    "compilerTailAcceptance": false,
+    "compilerForcedOwnedCleanupConfirmed": true,
+    "x64ReleaseStandardUnitPassed": true,
+    "nativeCtestPerConfiguration": 23,
+    "nativeConfigurations": 4,
+    "nativeRuntimeNaturalOwnedClosure": true,
+    "nativeDrainMs": 2000,
+    "softwareDesktopAllConfigurationsPassed": true,
+    "modernOriginalStandardAllConfigurationsPassed": true,
+    "modernOriginalStandardDrainMs": 30000,
+    "modernStrictTwoSecondSupplementPassed": false,
+    "fullSourceArchiveRebuildVerified": false,
+    "allTargetOsVerified": false,
+    "formalCandidateVerified": false
+  },
+  "limitations": [
+    "Compiler vctip remained after every final build; original generic passed=false and forced cleanup are retained.",
+    "Legacy member records cannot meet the proposed exact image-hash/complete-snapshot compiler-tail policy.",
+    "Stale SkipWeb attempts were rejected before native build; final attempts actually rebuilt Web in every configuration.",
+    "Supplementary 2s Modern shutdown probes failed; existing 30s local desktop standard remained unchanged and passed naturally at about 9-10s elapsed.",
+    "Native preparation cancellation tests and CTest retained their 2s Job drain; no additional drain was introduced for that fix.",
+    "Legacy desktop scripts retain direct-child handling; enclosing held Job supplements this run, not migration of every entry point.",
+    "Developer workstation had a foreign VM; no isolated physical presentation/performance/long-load claim.",
+    "Not a frozen SDK package, independent no-Git rebuild, target-system matrix, license/signature or formal release evidence."
+  ],
+  "files": [
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x86-Release/build.json",
+      "source": "out/0.5.0-preview.1-build-x86-Release-73d4e3a3-b92b-44ef-b117-dc66edc9b6b2/build.json",
+      "bytes": 302327,
+      "sha256": "ea1aead82a23cea80f3d20d2a17f71a1ab6a2c18e9bef8c31f99f250d5575fe8"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x86-Release/build.log",
+      "source": "out/0.5.0-preview.1-build-x86-Release-73d4e3a3-b92b-44ef-b117-dc66edc9b6b2/build.log",
+      "bytes": 840,
+      "sha256": "5eae9298d863ad15dff8acf5fc8f037e8c1edef3f38b28d2856d41654eaf3a5b"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x86-Release/owned.ndjson",
+      "source": "out/0.5.0-preview.1-build-x86-Release-73d4e3a3-b92b-44ef-b117-dc66edc9b6b2/owned.ndjson",
+      "bytes": 716665,
+      "sha256": "26fff60175ab199cf4cffea30746b9b2c6508dbbf87b18eb32e526a34c7c38a0"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x86-Release/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-build-x86-Release-73d4e3a3-b92b-44ef-b117-dc66edc9b6b2/owned.ndjson.context.json",
+      "bytes": 575,
+      "sha256": "c1cf481c471a9859c1572132cfdeccf50dcad424faaa67203dc9cdd35d360415"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x86-Release/result.json",
+      "source": "out/0.5.0-preview.1-build-x86-Release-73d4e3a3-b92b-44ef-b117-dc66edc9b6b2/result.json",
+      "bytes": 1277,
+      "sha256": "e46e1891284248edd76695aba7bfe4df8782fb090c40977799a1b9d083d3095b"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x64-Release/build.json",
+      "source": "out/0.5.0-preview.1-build-x64-Release-5e919296-83e4-4cd8-ae82-b1be1a5e8120/build.json",
+      "bytes": 302289,
+      "sha256": "993e1a089706077e9f1da914a8f65185800195c1dd5be174a55af5ef40449f32"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x64-Release/build.log",
+      "source": "out/0.5.0-preview.1-build-x64-Release-5e919296-83e4-4cd8-ae82-b1be1a5e8120/build.log",
+      "bytes": 840,
+      "sha256": "70d2641ed3dde79ebf8626a506bb391692e45c21d382a252dc06e3ab1757a9c2"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x64-Release/owned.ndjson",
+      "source": "out/0.5.0-preview.1-build-x64-Release-5e919296-83e4-4cd8-ae82-b1be1a5e8120/owned.ndjson",
+      "bytes": 754216,
+      "sha256": "42ad508faec758cb95130c305eb399babe6615e35341187475b3260815192b19"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x64-Release/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-build-x64-Release-5e919296-83e4-4cd8-ae82-b1be1a5e8120/owned.ndjson.context.json",
+      "bytes": 575,
+      "sha256": "d4911138687dd76728e973d54b99e367e43b942a22d20585213211d9a274b73b"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x64-Release/result.json",
+      "source": "out/0.5.0-preview.1-build-x64-Release-5e919296-83e4-4cd8-ae82-b1be1a5e8120/result.json",
+      "bytes": 1278,
+      "sha256": "156ee7ab61c61d1c0ac1abbe6d73ce19f09da9cc911dcfd2097c195e3f26dd8b"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x86-Debug/build.json",
+      "source": "out/0.5.0-preview.1-build-x86-Debug-0690d6d3-2081-487b-b28c-1f550940af37/build.json",
+      "bytes": 302325,
+      "sha256": "ff7c3dcfbcb9093c4493ecd3b5a9ea6239abdc4806dc54a09fa67f688562a637"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x86-Debug/build.log",
+      "source": "out/0.5.0-preview.1-build-x86-Debug-0690d6d3-2081-487b-b28c-1f550940af37/build.log",
+      "bytes": 838,
+      "sha256": "a90087e01d609ff328e2dd96ce0943b39d3ed0a15adced1dc3e7794320c0de29"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x86-Debug/owned.ndjson",
+      "source": "out/0.5.0-preview.1-build-x86-Debug-0690d6d3-2081-487b-b28c-1f550940af37/owned.ndjson",
+      "bytes": 1481690,
+      "sha256": "5522d83be4a16e0c911ea0fb8e2356f624fa11bdd6d94153980066b6f50cee5c"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x86-Debug/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-build-x86-Debug-0690d6d3-2081-487b-b28c-1f550940af37/owned.ndjson.context.json",
+      "bytes": 573,
+      "sha256": "dfc7702c5eb808df4c7b8444193b29899585aea4719d52b7ae5e41b13c5628a4"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x86-Debug/result.json",
+      "source": "out/0.5.0-preview.1-build-x86-Debug-0690d6d3-2081-487b-b28c-1f550940af37/result.json",
+      "bytes": 1275,
+      "sha256": "6a31b2221120188eb581994add40ea6ad14ab256231cfa03740ce5df75b3fce0"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x64-Debug/build.json",
+      "source": "out/0.5.0-preview.1-build-x64-Debug-72835510-2842-44ac-b1a3-0019cd762843/build.json",
+      "bytes": 302289,
+      "sha256": "e170f543d877e33b9a3a5950dc8379ba0bf5e968bc786fe9566204448e26ff72"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x64-Debug/build.log",
+      "source": "out/0.5.0-preview.1-build-x64-Debug-72835510-2842-44ac-b1a3-0019cd762843/build.log",
+      "bytes": 838,
+      "sha256": "ffd347032e8578bddd8f9fe3b201da315152d3c5a846b6d8b2ba6b94d3e5f64c"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x64-Debug/owned.ndjson",
+      "source": "out/0.5.0-preview.1-build-x64-Debug-72835510-2842-44ac-b1a3-0019cd762843/owned.ndjson",
+      "bytes": 262567,
+      "sha256": "d157c05d3030b6a2354f74f82d3d073c08d28d6eca29a0c25e9bfb49b527e7d0"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x64-Debug/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-build-x64-Debug-72835510-2842-44ac-b1a3-0019cd762843/owned.ndjson.context.json",
+      "bytes": 573,
+      "sha256": "e377103bf10557cc3642cdca3bf927ca26a4e49ca927070d2f969670314fe43b"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/builds/x64-Debug/result.json",
+      "source": "out/0.5.0-preview.1-build-x64-Debug-72835510-2842-44ac-b1a3-0019cd762843/result.json",
+      "bytes": 1275,
+      "sha256": "97918918789f8e76c8e7bb145d2499289a226f49c762a5b11aea910e0b103317"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x86-Release/build.json",
+      "source": "out/0.5.0-preview.1-build-x86-Release-f6436648-6df1-40fa-953d-a530f9339f06/build.json",
+      "bytes": 182167,
+      "sha256": "59d8f471d140408f5469fd65b31c5ce01332f75d0e6e98009e6ac42ce3a70668"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x86-Release/build.log",
+      "source": "out/0.5.0-preview.1-build-x86-Release-f6436648-6df1-40fa-953d-a530f9339f06/build.log",
+      "bytes": 670,
+      "sha256": "b4d8e9f58423ed8fe60f490a9768cd20aade4f4a014f9b3739e3251c98f51f5e"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x86-Release/owned.ndjson",
+      "source": "out/0.5.0-preview.1-build-x86-Release-f6436648-6df1-40fa-953d-a530f9339f06/owned.ndjson",
+      "bytes": 4938,
+      "sha256": "7fd6924868aebbeefcf5f146a12a8c270bf40af31d73da01fa1476d1bfd0c7ee"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x86-Release/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-build-x86-Release-f6436648-6df1-40fa-953d-a530f9339f06/owned.ndjson.context.json",
+      "bytes": 591,
+      "sha256": "cb71cabb8508201756c20476b3c2d2c359f199ac6b216f0fe2560f5a27e7a4d5"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x86-Release/result.json",
+      "source": "out/0.5.0-preview.1-build-x86-Release-f6436648-6df1-40fa-953d-a530f9339f06/result.json",
+      "bytes": 1260,
+      "sha256": "23d310ebeee8589ef4c2bf993630f7c842b59f3bd0f9ede939c7fe0e770b9abc"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x64-Release/build.json",
+      "source": "out/0.5.0-preview.1-build-x64-Release-8a48113d-9922-4ba8-a563-552664d078e9/build.json",
+      "bytes": 182167,
+      "sha256": "90b8208b07f2084b2643df38e6010e33e83a3045fd97dd92c2656bd817dfbaff"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x64-Release/build.log",
+      "source": "out/0.5.0-preview.1-build-x64-Release-8a48113d-9922-4ba8-a563-552664d078e9/build.log",
+      "bytes": 670,
+      "sha256": "b69883bbfb97c35bef37867166580a3559d19f456508c20689f9691c4d018cb4"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x64-Release/owned.ndjson",
+      "source": "out/0.5.0-preview.1-build-x64-Release-8a48113d-9922-4ba8-a563-552664d078e9/owned.ndjson",
+      "bytes": 4891,
+      "sha256": "b16ee79b005f4934e5610c0406b361138f6476bbe17b319f256e1f1e9fc2458e"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x64-Release/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-build-x64-Release-8a48113d-9922-4ba8-a563-552664d078e9/owned.ndjson.context.json",
+      "bytes": 591,
+      "sha256": "568fe73407734c96dd544264ff68efb2a7c79adb7d683b24b6ae9c47ed30a86d"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x64-Release/result.json",
+      "source": "out/0.5.0-preview.1-build-x64-Release-8a48113d-9922-4ba8-a563-552664d078e9/result.json",
+      "bytes": 1258,
+      "sha256": "c3f11d105e2e19a23cb7cf75060678a9ced927f35b13159aeac2b4b9c89a2d67"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x86-Debug/build.json",
+      "source": "out/0.5.0-preview.1-build-x86-Debug-50165426-9c8d-4a32-a35c-6b6ba8573f05/build.json",
+      "bytes": 182165,
+      "sha256": "e162734919238724fecda97aa19d74e0cf4d65bba4590b12e0c56cd930727695"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x86-Debug/build.log",
+      "source": "out/0.5.0-preview.1-build-x86-Debug-50165426-9c8d-4a32-a35c-6b6ba8573f05/build.log",
+      "bytes": 670,
+      "sha256": "13f0ad235e7b72435a8b188a3839b2b3020f61e8c14ebcf322ce267b0a849b96"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x86-Debug/owned.ndjson",
+      "source": "out/0.5.0-preview.1-build-x86-Debug-50165426-9c8d-4a32-a35c-6b6ba8573f05/owned.ndjson",
+      "bytes": 4398,
+      "sha256": "cc388fdd497a5799993281a2d009405b55989791cbbfc46748e24f077daed1c7"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x86-Debug/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-build-x86-Debug-50165426-9c8d-4a32-a35c-6b6ba8573f05/owned.ndjson.context.json",
+      "bytes": 589,
+      "sha256": "16e4f7a1a4ddb9c59dbc649b227b02574783cc96edad334021908f8c213ac11a"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x86-Debug/result.json",
+      "source": "out/0.5.0-preview.1-build-x86-Debug-50165426-9c8d-4a32-a35c-6b6ba8573f05/result.json",
+      "bytes": 1257,
+      "sha256": "3c06870fcf39cbacfd35386af691e2e85bfd8b5eedcdd2d8466c7781061768da"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x64-Debug/build.json",
+      "source": "out/0.5.0-preview.1-build-x64-Debug-8e917e42-f77f-45c5-a150-dbaba890dda0/build.json",
+      "bytes": 182165,
+      "sha256": "7627397c5cc7e799666194664ed515117e478db60158ab3cab5c265dc4d6d6c1"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x64-Debug/build.log",
+      "source": "out/0.5.0-preview.1-build-x64-Debug-8e917e42-f77f-45c5-a150-dbaba890dda0/build.log",
+      "bytes": 670,
+      "sha256": "e2f5682fa5f64b3314edb7e78b60aa46098ddbaf7c48d563397ffb94856facc7"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x64-Debug/owned.ndjson",
+      "source": "out/0.5.0-preview.1-build-x64-Debug-8e917e42-f77f-45c5-a150-dbaba890dda0/owned.ndjson",
+      "bytes": 4390,
+      "sha256": "5deee62cebe00c478d2dbb92e8d30a38247dc1f776ea279204da44b38f5324b7"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x64-Debug/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-build-x64-Debug-8e917e42-f77f-45c5-a150-dbaba890dda0/owned.ndjson.context.json",
+      "bytes": 589,
+      "sha256": "da991c64baa2dd8864e193c61357bd092ac52128899578030ef724163370ad6f"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/failed-stale-web/x64-Debug/result.json",
+      "source": "out/0.5.0-preview.1-build-x64-Debug-8e917e42-f77f-45c5-a150-dbaba890dda0/result.json",
+      "bytes": 1257,
+      "sha256": "2ee9147e9dd4bc168c7e90e44795d6004c2cded682dbe8bab50b24411360c43e"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/ctest-x64-Debug/LastTest.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/ctest-x64-Debug/LastTest.log",
+      "bytes": 17133,
+      "sha256": "e21201e5645d519b3a7003baafeb8438ef1d5d13b29d0df876c4ded923da8de2"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/ctest-x64-Debug/owned.ndjson",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/ctest-x64-Debug/owned.ndjson",
+      "bytes": 77837,
+      "sha256": "7807e7724250d4229235102f554702142c2ea5cdab10e1be48270389e4e297f8"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/ctest-x64-Debug/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/ctest-x64-Debug/owned.ndjson.context.json",
+      "bytes": 546,
+      "sha256": "19c668dd571058bbe26808b25885cd6c8339c60f508a25f5f0810ba35677a820"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/ctest-x64-Debug/run.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/ctest-x64-Debug/run.log",
+      "bytes": 3016,
+      "sha256": "7c484c9747ea70bb534bbf11faf1f3fbdf305936ecf6b2cad99c651ec81c0ee6"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/ctest-x86-Debug/LastTest.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/ctest-x86-Debug/LastTest.log",
+      "bytes": 17133,
+      "sha256": "1244acc9f2053b32434ad1038c27d07d4954239365307a44169da255f6638e2b"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/ctest-x86-Debug/owned.ndjson",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/ctest-x86-Debug/owned.ndjson",
+      "bytes": 75280,
+      "sha256": "3068b3f07ea8323648f902554acd3d661bd795c834f5d0b94fa8caa2f4edf9c8"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/ctest-x86-Debug/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/ctest-x86-Debug/owned.ndjson.context.json",
+      "bytes": 546,
+      "sha256": "91934afb08b9f2cf5e8284ab1b18156f72bb51250bd084030ae566f41f7eb4e6"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/ctest-x86-Debug/run.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/ctest-x86-Debug/run.log",
+      "bytes": 3016,
+      "sha256": "968d6348a2d250fded9c9330e956efc23e6eb5cdb7cf59968960f57a34c6c6a6"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/ctest-x86-Release/LastTest.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/ctest-x86-Release/LastTest.log",
+      "bytes": 17179,
+      "sha256": "659d32472aec378b2e8012d085d310f615d95e677670e90f366b9538f0e84432"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/ctest-x86-Release/owned.ndjson",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/ctest-x86-Release/owned.ndjson",
+      "bytes": 74925,
+      "sha256": "ffca689a5fe68141946dfaf5df335d75470285890ca2785548646b786dd29a32"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/ctest-x86-Release/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/ctest-x86-Release/owned.ndjson.context.json",
+      "bytes": 548,
+      "sha256": "19657351c72c9e7137a0c7db18785187281d1c17b60979a05ab9dec1cdeec5aa"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/ctest-x86-Release/run.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/ctest-x86-Release/run.log",
+      "bytes": 3016,
+      "sha256": "d8b22dd742ce1a96f30b902d41a069b649f9b9bc7d5b104ace91fc04ea684ca2"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x64-Debug/modern-smoke-Debug.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x64-Debug/modern-smoke-Debug.json",
+      "bytes": 23623,
+      "sha256": "3814bac00cfb512da920d293485383f578a79e5d31a09b8f6788336af452ed7f"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x64-Debug/owned.ndjson",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x64-Debug/owned.ndjson",
+      "bytes": 16172,
+      "sha256": "9e6430b3c16b232ff4b46364a8a334713ee4015fb7dfc3bc24336577d86d2330"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x64-Debug/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x64-Debug/owned.ndjson.context.json",
+      "bytes": 556,
+      "sha256": "14e643e0038938b1d0248ec897fb08678d866fc01c669172e2bd208f6f8f875f"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x64-Debug/run.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x64-Debug/run.log",
+      "bytes": 40,
+      "sha256": "006d3ce9273321e755945c2f3fd0aabed2b18f4ede0daf59095ea444d031eb89"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x64-Release/modern-smoke-Release.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x64-Release/modern-smoke-Release.json",
+      "bytes": 23624,
+      "sha256": "a38c29dbc0cc7346c79bf384e7dbca33378fb2d40ff0e045c8b6dc2c9d408d7a"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x64-Release/owned.ndjson",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x64-Release/owned.ndjson",
+      "bytes": 16181,
+      "sha256": "ce9da606569e4832d3f5bdddfefeeef4323377443ece1e3d7d2502b32ef06444"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x64-Release/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x64-Release/owned.ndjson.context.json",
+      "bytes": 558,
+      "sha256": "f785a91887b72d2d0875249e831aef27c63bf251f93b419852736a08c7d8faf8"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x64-Release/run.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x64-Release/run.log",
+      "bytes": 42,
+      "sha256": "f48bf5045da1595dd2d16a7b333ae6dc1f1c62862a4ceb465785eb8ef1621a37"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x86-Debug/modern-smoke-Debug.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x86-Debug/modern-smoke-Debug.json",
+      "bytes": 23638,
+      "sha256": "0483634264eede42efa6e914d847289d3aa084e202ff47435fe6e63b3493641f"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x86-Debug/owned.ndjson",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x86-Debug/owned.ndjson",
+      "bytes": 15085,
+      "sha256": "3993227d1d4645400bd82b53e56f9946228327ab94ffdb6314318f6ec93d264d"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x86-Debug/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x86-Debug/owned.ndjson.context.json",
+      "bytes": 556,
+      "sha256": "1190cb74447a999c351d548fd83ad44789ee2d1efc34b3ebd38f4f317933f1a8"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x86-Debug/run.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x86-Debug/run.log",
+      "bytes": 40,
+      "sha256": "f19255f8f204bac01f10a81ef4b1a7cb5165e1205a6898e12ac254bec52ff0a2"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x86-Release/modern-smoke-Release.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x86-Release/modern-smoke-Release.json",
+      "bytes": 23638,
+      "sha256": "6328b1dedaf3a956acc6128be8f18283066a30596e543895565aa73b2218cd82"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x86-Release/owned.ndjson",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x86-Release/owned.ndjson",
+      "bytes": 15086,
+      "sha256": "81c20a230658d0f500aac691d99e040b94cc5ec84fa8d7ddecd9b3e513941f40"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x86-Release/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x86-Release/owned.ndjson.context.json",
+      "bytes": 558,
+      "sha256": "0c32397898fdac45875bfe140d3bd8d68d9a4b38228e5f82522aea6458252f2f"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/modern-x86-Release/run.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/modern-x86-Release/run.log",
+      "bytes": 42,
+      "sha256": "fdb8fb1fc3a177d94b4dd0c141c6c6ca97185eefd14a81d7e902b256ff7d165c"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/results.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/results.json",
+      "bytes": 547421,
+      "sha256": "4ccff9e4efaa64a65767455885bfa6809548c1534c103e9e388359b458958a61"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x64-Debug/owned.ndjson",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x64-Debug/owned.ndjson",
+      "bytes": 5741,
+      "sha256": "a970a8a0555d5ca178f5de2948638116278547eae04a510136230e775752972a"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x64-Debug/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x64-Debug/owned.ndjson.context.json",
+      "bytes": 568,
+      "sha256": "4b4b8f96d6588dddd09931783d163ca1af0f5fa709e21a27771dcca383ae6899"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x64-Debug/run.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x64-Debug/run.log",
+      "bytes": 118,
+      "sha256": "244ebdb33d9fd8f885d54e4cc8d8eb956e31ae21e3d2d0647a1956bf2d6ad569"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x64-Debug/smoke-Debug.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x64-Debug/smoke-Debug.json",
+      "bytes": 108418,
+      "sha256": "8bf520e6f700f0e65618826f14974a88e043ebf06cbcfaac39358aab8fca9cc5"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x64-Release/owned.ndjson",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x64-Release/owned.ndjson",
+      "bytes": 5721,
+      "sha256": "02aaa1e7508fde938862bfecbfc881a7514cbf080c8df3d528d002ca8e89c559"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x64-Release/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x64-Release/owned.ndjson.context.json",
+      "bytes": 570,
+      "sha256": "b120fec72d56c30f7f5e9a463ed7583ae3602382a235e855fb50ad77bff9c091"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x64-Release/run.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x64-Release/run.log",
+      "bytes": 118,
+      "sha256": "824004976fe62bab7732046590eeb8ca56da979379980d89acb0a00fb0893291"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x64-Release/smoke-Release.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x64-Release/smoke-Release.json",
+      "bytes": 108419,
+      "sha256": "4fb98217f71da6d5c145f5cfc479b7bf27c1baafc80c191f9e9e4411b8812103"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x86-Debug/owned.ndjson",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x86-Debug/owned.ndjson",
+      "bytes": 5716,
+      "sha256": "e97279e177c3902dbf4dad1de11921101dd3be03a0da27d35b7bde854fc3a5d2"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x86-Debug/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x86-Debug/owned.ndjson.context.json",
+      "bytes": 568,
+      "sha256": "0582b44158cd6bedd7d4dda911a13427b6afa02c7fa944f5a85fe0d306bc0cf1"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x86-Debug/run.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x86-Debug/run.log",
+      "bytes": 118,
+      "sha256": "6898bf007a5b8a3ea277f4bf3bcfcf01a05fb2c8b7d144bb6ddd319999d75daf"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x86-Debug/smoke-Debug.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x86-Debug/smoke-Debug.json",
+      "bytes": 108442,
+      "sha256": "8d06b660f18cde9fedf1951b743102a1b8848a8e77638ff1f6a4733949a4c0ea"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x86-Release/owned.ndjson",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x86-Release/owned.ndjson",
+      "bytes": 5746,
+      "sha256": "f8ba34c3505b57c91e7cc260fd66fb83202d0144479c0bb0f37bd99549e08efd"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x86-Release/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x86-Release/owned.ndjson.context.json",
+      "bytes": 570,
+      "sha256": "f337d42e6c10ecb96d95301c91ba3df08fab25133de86b17088bbbc08cb0fd84"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x86-Release/run.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x86-Release/run.log",
+      "bytes": 118,
+      "sha256": "f9e107d87735bbb2253a3ddb9ee88096d617ebeb2c2efd7ca6b1e167ce9246a5"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/smoke-x86-Release/smoke-Release.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/smoke-x86-Release/smoke-Release.json",
+      "bytes": 108443,
+      "sha256": "562a89cf920bd1296949104593b53eaa63516d4c18b9eec937df43ab0d7fcd12"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/unit-x64-Release/LastTest.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/unit-x64-Release/LastTest.log",
+      "bytes": 17180,
+      "sha256": "1c362a9af391244808b58f16b54776e8ce5a6720383893eaf7a838814d2f4263"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/unit-x64-Release/owned.ndjson",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/unit-x64-Release/owned.ndjson",
+      "bytes": 728292,
+      "sha256": "0d7eb79f27fed01e2096864be5c58c590f36026d86f00c7e490e9a5a676e9a10"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/unit-x64-Release/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/unit-x64-Release/owned.ndjson.context.json",
+      "bytes": 569,
+      "sha256": "56612c139425cdb9957ed247295f4dfa5abd13d77582ba78e517c40d350be813"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/standard-unit-native-and-strict-desktop/unit-x64-Release/run.log",
+      "source": "out/0.5.0-preview.1-post-cancel-0f4f367d-08e9-445e-be9d-f18a473036b4/unit-x64-Release/run.log",
+      "bytes": 26705,
+      "sha256": "d2762cfa2fab1c0b6b85ac90c2802b9ac6601bddbaeb26d782f5b8aeb9c1311d"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x64-Debug/modern-smoke-Debug.json",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x64-Debug/modern-smoke-Debug.json",
+      "bytes": 23623,
+      "sha256": "664c86fed71c327dcdbb583b74c2df84f4602994a321561a36f50f1c6600635a"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x64-Debug/owned.ndjson",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x64-Debug/owned.ndjson",
+      "bytes": 17106,
+      "sha256": "7224f838cec169422cfcd883698012fd1ad06acf058300b428c3eb1b937d138b"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x64-Debug/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x64-Debug/owned.ndjson.context.json",
+      "bytes": 557,
+      "sha256": "58b2170bf17b7c5eb6f4db5acb7a659e6b1c3758bf8f6b09915e458c4fd7854f"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x64-Debug/run.log",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x64-Debug/run.log",
+      "bytes": 40,
+      "sha256": "006d3ce9273321e755945c2f3fd0aabed2b18f4ede0daf59095ea444d031eb89"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x64-Release/modern-smoke-Release.json",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x64-Release/modern-smoke-Release.json",
+      "bytes": 23625,
+      "sha256": "bdfd5e24aef38b0a1e8440a4ccc90309fcb1836370e80eb86cff4f2c3b8522bc"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x64-Release/owned.ndjson",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x64-Release/owned.ndjson",
+      "bytes": 17112,
+      "sha256": "79118f7ef5bc7e30c380eb3390c13b1a5e2572debb4640532bf366d649a7e30b"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x64-Release/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x64-Release/owned.ndjson.context.json",
+      "bytes": 559,
+      "sha256": "0441581a149f9dd46d1314c294da2c095a5832f7f85b5bd3ab982982ca6a9d3e"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x64-Release/run.log",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x64-Release/run.log",
+      "bytes": 42,
+      "sha256": "f48bf5045da1595dd2d16a7b333ae6dc1f1c62862a4ceb465785eb8ef1621a37"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x86-Debug/modern-smoke-Debug.json",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x86-Debug/modern-smoke-Debug.json",
+      "bytes": 23637,
+      "sha256": "8a18747bfbd777b51e22020a09717266fdac1d19c94a46e1d7f9b62b23014cf2"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x86-Debug/owned.ndjson",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x86-Debug/owned.ndjson",
+      "bytes": 17887,
+      "sha256": "d971161281d0799196d7f2b7ac4dba937a89c16b5a5ffeaf1f659e78bc5db012"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x86-Debug/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x86-Debug/owned.ndjson.context.json",
+      "bytes": 557,
+      "sha256": "0861a09d8c7b0e496fe2813f1e5f67eba2b88a9ab716d70136ffa09cf9f0278b"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x86-Debug/run.log",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x86-Debug/run.log",
+      "bytes": 40,
+      "sha256": "f19255f8f204bac01f10a81ef4b1a7cb5165e1205a6898e12ac254bec52ff0a2"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x86-Release/modern-smoke-Release.json",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x86-Release/modern-smoke-Release.json",
+      "bytes": 23638,
+      "sha256": "a590d541ce4149ec56326e2ca9ea22841271bd6e9f6241185da7702333c15488"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x86-Release/owned.ndjson",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x86-Release/owned.ndjson",
+      "bytes": 16268,
+      "sha256": "4894984031cf6bc9f1f562a19b62d444d9266067d0e4db812fab00dbcc64bb72"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x86-Release/owned.ndjson.context.json",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x86-Release/owned.ndjson.context.json",
+      "bytes": 559,
+      "sha256": "67ca9121f48c07e9d00a229b037fe1b8591647a7ba525f47fbc94ecb69511a2d"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/modern-x86-Release/run.log",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/modern-x86-Release/run.log",
+      "bytes": 42,
+      "sha256": "fdb8fb1fc3a177d94b4dd0c141c6c6ca97185eefd14a81d7e902b256ff7d165c"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/modern-original-standard/results.json",
+      "source": "out/0.5.0-preview.1-modern-standard-d42aa48a-826b-476c-a995-5b8fe6fd8df2/results.json",
+      "bytes": 6207,
+      "sha256": "c1e7f9f3ee88531543b5c38dd1cee4345d6dff839248f8bb94cc8e89311eb293"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/native-compile/x86-Release.log",
+      "source": "out/x86/native-Release.log",
+      "bytes": 7122,
+      "sha256": "40b6c6eec010d9126052132154eba8287a14aa69a878f8af412f67f1a5cd3a59"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/payload-identities/x86-Release.json",
+      "source": "out/x86/build-Release.json",
+      "bytes": 302327,
+      "sha256": "ea1aead82a23cea80f3d20d2a17f71a1ab6a2c18e9bef8c31f99f250d5575fe8"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/native-compile/x86-Debug.log",
+      "source": "out/x86/native-Debug.log",
+      "bytes": 32666,
+      "sha256": "258f763448cbffafaa338a79b454efff905931bbbd3b233ab95a792bad86822b"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/payload-identities/x86-Debug.json",
+      "source": "out/x86/build-Debug.json",
+      "bytes": 302325,
+      "sha256": "ff7c3dcfbcb9093c4493ecd3b5a9ea6239abdc4806dc54a09fa67f688562a637"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/native-compile/x64-Release.log",
+      "source": "out/x64/native-Release.log",
+      "bytes": 7122,
+      "sha256": "3b50a34647efb5bfa97171a94f0294ce0f9eccec64f957691e8f0d7b224c0274"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/payload-identities/x64-Release.json",
+      "source": "out/x64/build-Release.json",
+      "bytes": 302289,
+      "sha256": "993e1a089706077e9f1da914a8f65185800195c1dd5be174a55af5ef40449f32"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/native-compile/x64-Debug.log",
+      "source": "out/x64/native-Debug.log",
+      "bytes": 7156,
+      "sha256": "668affce6a281de5603b2359ca509ce26a1a11467b2289204856d04f4ec3dc66"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/payload-identities/x64-Debug.json",
+      "source": "out/x64/build-Debug.json",
+      "bytes": 302289,
+      "sha256": "e170f543d877e33b9a3a5950dc8379ba0bf5e968bc786fe9566204448e26ff72"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/audits/benchmark-electron.json",
+      "source": "out/audit-05-benchmark-electron.json",
+      "bytes": 382,
+      "sha256": "95252d029819b315ba8130de47ceca5111e4464bdad7abbc7de6da39ffbc0b11"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/audits/acceptance.json",
+      "source": "out/audit-05-acceptance.json",
+      "bytes": 385,
+      "sha256": "e3566fbf81d267baa1117a6be7a9c87276b2723af5138629bf6e5bb16e9a0191"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/drivers/run-post-cancel-checks.cjs",
+      "source": "out/run-post-cancel-checks.cjs",
+      "bytes": 5704,
+      "sha256": "3228890809f525d4152798e268536fcc0ef0d1c301633057df46474d4f9f7708"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/drivers/run-post-cancel-modern-standard.cjs",
+      "source": "out/run-post-cancel-modern-standard.cjs",
+      "bytes": 4065,
+      "sha256": "bf54127461d4c7b17ef6cbc57c083e9ef551316339c4644e23a1edc464b8492e"
+    },
+    {
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/post-cancel/drivers/run-foundation-build.cjs",
+      "source": "out/run-foundation-build.cjs",
+      "bytes": 2716,
+      "sha256": "5298b4d87c626902a4a1ec79d2dc0fb1db087dc68f8542d3d83115fcbcd1afe4"
+    }
+  ]
+}
