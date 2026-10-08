@@ -28,6 +28,7 @@ const unit={
  measurementProtocol:run('measurement-protocol-tests',process.execPath,['tools/internal/measurement-validation.cjs','protocol']),
  nativeMeasurementX64:run('native-measurement-x64',process.execPath,['tools/internal/measurement-validation.cjs','native','x64']),
  nativeMeasurementX86:run('native-measurement-x86',process.execPath,['tools/internal/measurement-validation.cjs','native','x86']),
+ actionGeneration:run('action-generation-tests',process.execPath,['--test','tests/sdk/actiongen.test.mjs','tests/web/generated-actions.test.mjs']),
  package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),
  nativePayload:run('sdk-native-payload-tests',process.execPath,['--test','tests/sdk/sdk-native-payload.test.cjs']),
  interruption:run('sdk-installation-interruption-tests',process.execPath,['--test','tests/sdk/installation-interruption.test.cjs','tests/sdk/profile-installation-integration.test.cjs']),

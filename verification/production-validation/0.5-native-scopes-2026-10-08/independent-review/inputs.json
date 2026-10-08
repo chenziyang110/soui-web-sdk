@@ -1,0 +1,134 @@
+{
+  "root": "F:\\work\\sm05-scopes",
+  "identity": {
+    "client": "F:/work/sm05/tools/internal/owned-process.cjs",
+    "clientSha256": "aa160d64892294eb3e65f27f29d554020dd10ea0704f6d0a669fa83184054753",
+    "runner": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+  },
+  "inputs": [
+    {
+      "path": "docs/api.md",
+      "sha256": "eedbf47c9557dc7ec971523d8ea0faf5e6302ef53fc9f0af9a8fac825d9c499e",
+      "bytes": 25635
+    },
+    {
+      "path": "sdk/include/soui/runtime/services/permissions/permission_store.h",
+      "sha256": "052419de7a352ca8d331d15eb1caad58d88839add2c65696b6b1dd3969913155",
+      "bytes": 4093
+    },
+    {
+      "path": "sdk/include/soui/runtime/services/task/task_service.h",
+      "sha256": "1fbf99650c1735495a69447a17ce9870c5525aaa5f7ccfc3ae2dae0e6b5ec041",
+      "bytes": 3112
+    },
+    {
+      "path": "sdk/src/runtime/services/permissions/permission_store.cpp",
+      "sha256": "39691d3c6ce6904d814381d0d7eaa6348d20bf0bc3bdfd58c3e56195c287b427",
+      "bytes": 10579
+    },
+    {
+      "path": "sdk/src/runtime/services/permissions/scope_id_sequence.h",
+      "sha256": "da8ddba81e066354401b09b317c94ca1aa07701162c44ca31afe33908ac0599e",
+      "bytes": 892
+    },
+    {
+      "path": "sdk/src/runtime/services/task/task_service.cpp",
+      "sha256": "b2176b95457c81f4dd768adda31c1ada0061ac41ecd9efab2fdef436e5a35e6b",
+      "bytes": 20185
+    },
+    {
+      "path": "tests/native/CMakeLists.txt",
+      "sha256": "6c28d43b8f4bde422f3409dd82c4187e85059e62f59d719cb238df64560d020d",
+      "bytes": 11859
+    },
+    {
+      "path": "tests/native/task_service_tests.cpp",
+      "sha256": "f280a239c9adaefd74a53a2ee38611cf7e5297fc939c60b34756ef8cdc2fc9a9",
+      "bytes": 21663
+    },
+    {
+      "path": "tests/native/task_scope_tests.cpp",
+      "sha256": "4a84c17f3465b5f86d39914f8fa2511882bef4a0ee4c2c99997ccc40485a860e",
+      "bytes": 28528
+    },
+    {
+      "path": "tests/native/task-scope-regression.md",
+      "sha256": "496680378377424ebf156b752e7a294f36e5bfcc2c40c9dee9b0ba496ff8e0ce",
+      "bytes": 3478
+    },
+    {
+      "path": "docs/adr/0027-native-authorization-scope-and-task-ownership.md",
+      "sha256": "2b396a5ce0c8d51708877dda2e1385fbde6a6438df8ba6dd5092d88409f871cf",
+      "bytes": 9018
+    },
+    {
+      "path": "sdk/src/runtime/core/task/task_store.cpp",
+      "sha256": "678509bbffcfe1a5363dda9c1db08504a6c55faa35ac2db7f145d3a1807ea3f3",
+      "bytes": 7546
+    }
+  ],
+  "executableInputs": [
+    {
+      "arch": "x86",
+      "name": "soui_task_scope_tests",
+      "executable": "F:\\work\\sm05-scopes\\out\\scopes-x86\\tests\\native\\Release\\soui_task_scope_tests.exe",
+      "machine": 332,
+      "sha256": "90303a5493b730f74a05ab6e9dde50e43a67137270c3a46efe66d98cdc6c7f8e"
+    },
+    {
+      "arch": "x86",
+      "name": "soui_task_service_tests",
+      "executable": "F:\\work\\sm05-scopes\\out\\scopes-x86\\tests\\native\\Release\\soui_task_service_tests.exe",
+      "machine": 332,
+      "sha256": "a5ea4cb57a49fc12d4af6fbd592c2e7d80af038a938ecf18d1007cfef7c887fc"
+    },
+    {
+      "arch": "x86",
+      "name": "soui_session_renewal_tests",
+      "executable": "F:\\work\\sm05-scopes\\out\\scopes-x86\\tests\\native\\Release\\soui_session_renewal_tests.exe",
+      "machine": 332,
+      "sha256": "15033da98b8631b9ea860352023292c133a061522dd94e5057ecd18200f0b9dc"
+    },
+    {
+      "arch": "x86",
+      "name": "soui_task_store_capacity_tests",
+      "executable": "F:\\work\\sm05-scopes\\out\\scopes-x86\\tests\\native\\Release\\soui_task_store_capacity_tests.exe",
+      "machine": 332,
+      "sha256": "b4977e003ac7c733ebcaab8d6fdf36d82111cf41521e5545883588ecba2a32f7"
+    },
+    {
+      "arch": "x64",
+      "name": "soui_task_scope_tests",
+      "executable": "F:\\work\\sm05-scopes\\out\\scopes-x64\\tests\\native\\Release\\soui_task_scope_tests.exe",
+      "machine": 34404,
+      "sha256": "e4532b8dafca581b377d7d066c94f45329ecda410637fb4715c9c6fc3c19b246"
+    },
+    {
+      "arch": "x64",
+      "name": "soui_task_service_tests",
+      "executable": "F:\\work\\sm05-scopes\\out\\scopes-x64\\tests\\native\\Release\\soui_task_service_tests.exe",
+      "machine": 34404,
+      "sha256": "efc33dcb6603c5cd169301ddf3f6898f5abef361a0e21a820ab5ab2f00ab70e0"
+    },
+    {
+      "arch": "x64",
+      "name": "soui_session_renewal_tests",
+      "executable": "F:\\work\\sm05-scopes\\out\\scopes-x64\\tests\\native\\Release\\soui_session_renewal_tests.exe",
+      "machine": 34404,
+      "sha256": "a721cad4617d8e878b613d1b594571beed6c1f307064243b92b166d54cc2eea4"
+    },
+    {
+      "arch": "x64",
+      "name": "soui_task_store_capacity_tests",
+      "executable": "F:\\work\\sm05-scopes\\out\\scopes-x64\\tests\\native\\Release\\soui_task_store_capacity_tests.exe",
+      "machine": 34404,
+      "sha256": "5fd157c6fb5d08766b0dcc722b41ee66b2a7ca1d98bc67f7e316b3c36b1317fa"
+    }
+  ],
+  "environment": {
+    "MSBUILDDISABLENODEREUSE": "1",
+    "PSModulePath": "C:/Windows/system32/WindowsPowerShell/v1.0/Modules"
+  },
+  "method": "Existing four Release test executables, each in a new owned Job; no build, CTest sweep or GUI"
+}

@@ -1,0 +1,2 @@
+const child=require('node:child_process').spawn(process.execPath,
+      ['-e','setTimeout(()=>{},150)'],{detached:true,windowsHide:true,stdio:'ignore'});child.unref();

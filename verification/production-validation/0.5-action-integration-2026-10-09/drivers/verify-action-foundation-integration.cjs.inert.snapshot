@@ -1,0 +1,63 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {launchOwned}=require('../tools/internal/owned-process.cjs');
+const root=path.resolve(__dirname,'..'),id=require('../tools/internal/delivery-identity.cjs');
+const source=id.source(root),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const attempt=path.join(root,'out','action-foundation-integration-'+crypto.randomUUID());fs.mkdirSync(attempt);
+const external=path.join('F:/work','soui-05-action-integration-'+crypto.randomUUID());fs.mkdirSync(external);
+const bootstrap='F:/work/sm05/out/validation-bootstrap/1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f/OwnedProcessRunner.exe';
+if(sha(bootstrap)!=='1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f')throw Error('Bootstrap changed');
+const ps=path.join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/powershell.exe');
+const env={...process.env,MSBUILDDISABLENODEREUSE:'1',PSModulePath:path.join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/Modules')};
+const results=[],consumers=[];
+const report={schema:'soui.action-foundation-integration/v1',foundationCommit:'b185bacd224ea8632a2fa21224065971475188c6',
+ version:'0.5.0-preview.1',source,attempt,external,results,consumers,completed:false,releaseReady:false};
+const save=()=>fs.writeFileSync(path.join(attempt,'report.json'),JSON.stringify(report,null,2)+'\n');
+const q=s=>"'"+s.replaceAll("'","''")+"'";
+async function run(name,exe,args,cwd,compile=false){
+ const folder=path.join(attempt,name);fs.mkdirSync(folder);
+ const log=fs.openSync(path.join(folder,'run.log'),'wx');
+ const owned=launchOwned(exe,args,{runner:bootstrap,cwd,report:path.join(folder,'owned.ndjson'),env,
+  timeoutMs:compile?1200000:180000,drainMs:compile?30000:2000,stdout:log,stderr:log});
+ const result=await owned.finished;fs.closeSync(log);results.push({name,exe,args,cwd,compile,...result});save();
+ console.log(JSON.stringify({name,exitCode:result.exitCode,passed:result.passed,closureConfirmed:result.closureConfirmed}));
+ if(result.exitCode!==0||!result.closureConfirmed||result.spawnError||result.reportError||result.fallbackUsed||(!compile&&!result.passed))
+  throw Error('Failed phase: '+name);
+ return result;
+}
+(async()=>{console.log('Integration evidence: '+attempt);save();
+ await run('full-build-x64',ps,['-NoProfile','-ExecutionPolicy','Bypass','-File','tools/Build.ps1',
+  '-Architecture','x64','-Configuration','Release','-WithWebView2','-Install'],root,true);
+ await run('sdk-build-x86',ps,['-NoProfile','-ExecutionPolicy','Bypass','-File','tools/Build.ps1',
+  '-Architecture','x86','-Configuration','Release','-SdkOnly','-Install'],root,true);
+ for(const arch of ['x86','x64']){
+  const prefix=path.join(external,'installed-'+arch),oldPrefix=path.join(root,'out/install',arch);
+  if(fs.existsSync(prefix))throw Error('Existing relocation');fs.renameSync(oldPrefix,prefix);
+  const consumer=path.join(external,'consumer-'+arch);fs.cpSync(path.join(root,'tests/action-consumer'),consumer,{recursive:true,errorOnExist:true,force:false});
+  const build=path.join(consumer,'out/native'),script=path.join(attempt,'consumer-'+arch+'.ps1');
+  fs.writeFileSync(script,["$ErrorActionPreference='Stop'",'. '+q(path.join(root,'tools/internal/CMake-Configure.ps1')),
+   '$workspace='+q(consumer),'$build='+q(build),"$cmake=(Get-Command cmake.exe -ErrorAction Stop).Source",
+   '$configureArguments=@(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $workspace -SourceDirectory $workspace -BuildDirectory $build -Architecture '+q(arch)+')',
+   '& $cmake @configureArguments '+q('-DCMAKE_PREFIX_PATH='+prefix),"if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}",
+   '& $cmake --build $build --config Release --parallel 2',"exit $LASTEXITCODE"].join('\r\n')+'\r\n',{flag:'wx'});
+  const compile=await run('consumer-build-'+arch,ps,['-NoProfile','-ExecutionPolicy','Bypass','-File',script],consumer,true);
+  const project=path.join(build,'soui_action_consumer.vcxproj'),text=fs.readFileSync(project,'utf8');
+  if(!text.includes('<WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>')||!text.includes('<PlatformToolset>v143</PlatformToolset>'))throw Error('Wrong consumer SDK/toolset');
+  const exe=path.join(build,'Release/soui_action_consumer.exe'),bytes=fs.readFileSync(exe),offset=bytes.readUInt32LE(0x3c),machine=bytes.readUInt16LE(offset+4);
+  if(machine!==(arch==='x86'?0x14c:0x8664))throw Error('Wrong consumer PE');
+  const execution=await run('consumer-run-'+arch,exe,[],path.dirname(exe));
+  consumers.push({architecture:arch,peMachine:machine,exeSha256:sha(exe),projectSha256:sha(project),
+   installedPrefix:prefix,originalPrefixAbsent:!fs.existsSync(oldPrefix),sdkLibrarySha256:sha(path.join(prefix,'lib/Release/soui_sdk.lib')),
+   actionJsonHeaderSha256:sha(path.join(prefix,'include/soui/action-json/json.hpp')),compilePassed:compile.passed,executionPassed:execution.passed});save();
+ }
+ await run('node-actions-and-gui',process.execPath,['--test','tests/sdk/actiongen.test.mjs','tests/web/generated-actions.test.mjs',
+  'tests/web/action-contracts.test.mjs','tests/web/gui.test.mjs','tests/web/sdk-client.test.mjs'],root);
+ const parser=path.join(attempt,'parse-powershell.ps1');fs.writeFileSync(parser,
+  '$errors=$null\r\n$tokens=$null\r\n[Management.Automation.Language.Parser]::ParseFile('+q(path.join(root,'tools/Build.ps1'))+',[ref]$tokens,[ref]$errors)|Out-Null\r\nif($errors.Count -ne 0){$errors|Out-String|Write-Error;exit 1}\r\n'+
+  '[Management.Automation.Language.Parser]::ParseFile('+q(path.join(root,'tools/Test.ps1'))+',[ref]$tokens,[ref]$errors)|Out-Null\r\nif($errors.Count -ne 0){$errors|Out-String|Write-Error;exit 1}\r\n');
+ await run('powershell-entry-syntax',ps,['-NoProfile','ExecutionPolicy','Bypass','-File',parser],root);
+ report.sourceInputsUnchanged=id.source(root).sha256===source.sha256;
+ if(!report.sourceInputsUnchanged)throw Error('Integrated source changed during validation');
+ report.completed=true;report.allCompilationCompleted=true;report.allRuntimeJobsNaturallyClosed=true;
+ report.allGenericSupervisionPassed=results.every(r=>r.passed);save();console.log(JSON.stringify({completed:true,report:path.join(attempt,'report.json')}));
+})().catch(error=>{report.error=error.stack;save();console.error(error.stack);process.exitCode=1;});

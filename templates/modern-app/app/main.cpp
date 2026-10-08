@@ -1,16 +1,15 @@
 #include <soui/host/webview2_host.h>
 #include <soui/json_bridge.h>
+#include "generated/actions.hpp"
 #include <windows.h>
 #include <shlobj.h>
 #include <shellapi.h>
-#include <json.hpp>
 #include <filesystem>
 #include <fstream>
 #include <memory>
 #include <string>
 
 namespace {
-using json = nlohmann::json;
 struct application {
   HWND window{};
   bool smoke{false}, closing{false};
@@ -92,13 +91,9 @@ int run(HINSTANCE instance, bool smoke) {
   if (smoke) app.profile /= std::wstring(L"smoke-") + std::to_wstring(GetCurrentProcessId());
   std::filesystem::create_directories(app.profile);
   app.log("process-start");
-  const auto contract = json{{"protocol", "soui.action/1"}, {"title", "问候"}, {"description", "由 C++ 返回问候消息。"},
-    {"inputSchema", {{"type", "object"}, {"properties", {{"name", {{"type", "string"}, {"minLength", 1}, {"maxLength", 32}}}}},
-      {"required", json::array({"name"})}, {"additionalProperties", false}}},
-    {"outputSchema", {{"type", "object"}, {"properties", {{"message", {{"type", "string"}, {"maxLength", 200}}}}},
-      {"required", json::array({"message"})}, {"additionalProperties", false}}}}.dump();
-  if (!app.bridge.register_action("app.greet", "app.greet", contract, [](const auto& request) {
-        return json{{"message", "你好，" + json::parse(request.params_json).at("name").template get<std::string>() + "。"}}.dump();
+  if (!app_actions::register_Greet(app.bridge, [](const app_actions::GreetInput& input,
+                                                const soui::runtime::bridge_request&) {
+        return app_actions::GreetOutput{"你好，" + input.name + "。"};
       })) { app.log("E_ACTION_REGISTRATION: Invalid application action contract."); return 1; }
   if (!app.bridge.enable_session_renewal() ||
       !app.bridge.set_session_capabilities({"bridge.describe", "bridge.probe", "app.greet", "bridge.session.renew"})) {

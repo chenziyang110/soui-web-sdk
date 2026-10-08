@@ -16,6 +16,8 @@
 
 ## 背景
 
+主线整合后的测量工具准备指纹同时包含 `owned-tail-evidence.cpp`、`owned-tail-evidence.h` 与 `cmake/SouiWindowsSdk.cmake`。任一实际编译输入缺失或变更都会在启动标准测量组前拒绝旧准备记录；两架构的纯夹具回归只证明这一拒绝边界，合成 PE 不构成真实工具链或源码编译证明。实际工具重编译、输出 COFF/SHA、原生 Job 与标准组结果另行保留。编译退出 0、通用监督失败以及受控尾进程闭合仍是分别记录的结论；测量准入不继承编译器尾进程例外。
+
 现有两个 collector 的 v1 记录将进程创建 FILETIME 与开始时 UTC FILETIME 输出为 JSON Number。当前 FILETIME 大于 JavaScript 的最大安全整数；两个实际相差少量 100ns tick 的创建身份可能在 JSON.parse 后相等。现有分析器明示只在 JSON Number 精度下比较，但报告没有机器可读字段阻止该结果被当作原生精确身份绑定。
 
 测量工具需要区分精确的原始值存储、同一实际进程的绑定和测量精度。保留 FILETIME 的全部位数不提高 GetSystemTimeAsFileTime 的时间分辨率，也不把 UTC 变成单调时间。进程 PID 可以复用，不能单凭 PID 或时间容差识别本轮宿主，更不能据此授权终止其他任务。

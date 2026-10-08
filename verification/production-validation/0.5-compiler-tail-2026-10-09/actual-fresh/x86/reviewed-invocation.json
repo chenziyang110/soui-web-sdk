@@ -1,0 +1,63 @@
+{
+  "schema": "soui.reviewed-compiler-invocation/v1",
+  "executable": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "F:\\work\\sm05-compiler-tail\\tools\\Build.ps1",
+    "-Architecture",
+    "x86",
+    "-Configuration",
+    "Release",
+    "-SdkOnly",
+    "-WithWebView2",
+    "-Install"
+  ],
+  "cwd": "F:\\work\\sm05-compiler-tail",
+  "architecture": "x86",
+  "configuration": "Release",
+  "sdkOnly": true,
+  "version": "0.5.0-preview.1",
+  "scriptSha256": "db9a923575a7158a642995cb91391604ffc8051861fa575b0005f68771c38143",
+  "sourceSha256": "08c40b4c71e6bbd2a2ac7b009b80145cb6c1bd005309ce71cf350b2ab1aca8e3",
+  "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+  "executableSha256": "8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e",
+  "tailImagePin": {
+    "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe",
+    "sha256": "1c1ca5f9c04171c02caca6863e29eca3550333219486d23e65bf01fb02951311",
+    "nonce": "6f99a762b55f055d90673e15ea3094a6"
+  },
+  "contextSha256": "3dca72beb9e75837431d991183d6521b4d8202b17f6480ab1ee0ab3129994d81",
+  "reportSha256": "495bb08c4cfc91070893f60fd92deed89dfd536da519be04302caf4ce1f89e10",
+  "buildReportSha256": "ec11dd65cc42252990a66d4a6a62d6259d41c2a9b772616457d3a3fca1ad25ab",
+  "buildId": "0dd314b5-f4f9-41cb-8a02-2b59b1314bf0",
+  "artifacts": {
+    "payloads": {},
+    "optionalLibraries": {
+      "webview2": {
+        "sha256": "6b8d3beedb07465ef40c24de876675026eb33235a648d4a9f0555addd25c6d0d",
+        "bytes": 5366506,
+        "files": [
+          {
+            "path": "renderers/webview2/Release/soui_webview2.lib",
+            "bytes": 5366506,
+            "sha256": "40d3d77e349b5a3954399ce48837cd040f8ecfd74b3516dbee1ea923cb4724c7"
+          }
+        ]
+      }
+    },
+    "library": {
+      "sha256": "366012afc1cd64123e21c87fd7a2e231e7b4ff2600b2b1cc6158df4bd55cd5a4",
+      "bytes": 24407392,
+      "files": [
+        {
+          "path": "Release/soui_sdk.lib",
+          "bytes": 24407392,
+          "sha256": "1a1ffd241d0f78770aeca1deb7e087d4f266d36b5112e4efb1546592c5247fa4"
+        }
+      ]
+    }
+  }
+}

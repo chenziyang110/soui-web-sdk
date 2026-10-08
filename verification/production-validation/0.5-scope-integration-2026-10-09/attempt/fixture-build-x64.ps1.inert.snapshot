@@ -1,0 +1,10 @@
+$ErrorActionPreference='Stop'
+. 'F:\work\sm05-scopes\tools\internal\CMake-Configure.ps1'
+$taskWorkspace='F:\work\soui-05-scope-integration-641bcba5-58e3-4fba-a5ad-3e9f3fc46683\tests-x64'
+$taskBinary='F:\work\soui-05-scope-integration-641bcba5-58e3-4fba-a5ad-3e9f3fc46683\tests-x64\out\native'
+$taskCMake=(Get-Command cmake.exe -ErrorAction Stop).Source
+$taskConfigure=@(Get-SouiCMakeConfigureArguments -CMake $taskCMake -WorkspaceRoot $taskWorkspace -SourceDirectory $taskWorkspace -BuildDirectory $taskBinary -Architecture 'x64')
+& $taskCMake @taskConfigure '-DCMAKE_PREFIX_PATH=F:\work\sm05-scopes\out\install\x64'
+if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}
+& $taskCMake --build $taskBinary --config Release --parallel 2
+exit $LASTEXITCODE

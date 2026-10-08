@@ -1,0 +1,58 @@
+{
+  "schema": "soui.compiler-tail-policy/v1",
+  "compilationCompleted": true,
+  "genericSupervisionPassed": false,
+  "compilerTailAcceptance": true,
+  "failure": null,
+  "diskBytesOnly": true,
+  "tailEvidence": {
+    "schema": "soui.owned-tail-verdict/v1",
+    "available": true,
+    "accepted": true,
+    "failure": null,
+    "diskBytesOnly": true,
+    "reportSha256": "495bb08c4cfc91070893f60fd92deed89dfd536da519be04302caf4ce1f89e10",
+    "nonce": "6f99a762b55f055d90673e15ea3094a6",
+    "root": {
+      "pid": 63576,
+      "creationFileTime": "134359525509093155"
+    },
+    "pin": {
+      "canonicalPath": "\\\\?\\C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe",
+      "volumePath": "\\\\?\\Volume{152496b5-b675-42a4-88a1-4fda55c7706c}\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe",
+      "volumeSerialNumber": "505631073",
+      "fileId": "3096224746500260",
+      "size": "335560",
+      "sha256": "1c1ca5f9c04171c02caca6863e29eca3550333219486d23e65bf01fb02951311"
+    },
+    "member": {
+      "pid": 102968,
+      "creationFileTime": "134359525589659690",
+      "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe"
+    },
+    "fixedTotalProcesses": 128,
+    "preCleanupSnapshotSequence": 6,
+    "historicalDiagnostics": {
+      "imageReadFailures": 8,
+      "unavailableMembers": 10,
+      "noLongerOwnedMembers": 0,
+      "pidReuses": 0
+    },
+    "terminal": {
+      "event": "terminal",
+      "reason": "owned-descendants-remain",
+      "elapsedMs": 73860,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 1,
+      "terminatedOwnedJob": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 128,
+      "limitTerminatedProcesses": 0,
+      "passed": false,
+      "preCleanupSnapshotSequence": 6,
+      "tailEvidenceComplete": true
+    }
+  }
+}

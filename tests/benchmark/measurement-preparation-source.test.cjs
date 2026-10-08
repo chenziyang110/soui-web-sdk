@@ -11,6 +11,7 @@ const repository = path.resolve(__dirname, '../..');
 const helperPath = path.join(repository, 'tools/internal/measurement-validation.cjs');
 const helperSource = fs.readFileSync(helperPath, 'utf8');
 const sdkCheck = 'cmake/SouiWindowsSdk.cmake';
+const tailInputs = ['benchmarks/protocol/owned-tail-evidence.cpp', 'benchmarks/protocol/owned-tail-evidence.h'];
 const toolNames = ['OwnedProcessRunner', 'OwnedProcessAssignmentFixture', 'ProcessTreeSampler', 'InputTrace', 'NativeTraceIdentity'];
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 
@@ -45,6 +46,7 @@ function fixture(t, architecture) {
   const existing = load(repository, {count: 0}).fingerprint();
   for (const entry of existing.files) write(entry.path, fs.readFileSync(path.join(repository, entry.path)));
   write(sdkCheck, fs.readFileSync(path.join(repository, sdkCheck)));
+  for (const name of tailInputs) write(name, fs.readFileSync(path.join(repository, name)));
   write('tools/internal/owned-process.cjs', '// pure fixture client\n');
   for (const name of ['process-tree-sampler', 'run-traces']) write(`tests/benchmark/${name}.test.cjs`, '// pure fixture test\n');
   const launches = {count: 0}, validation = load(workspace, launches);
@@ -99,4 +101,32 @@ for (const architecture of ['x86', 'x64']) {
       assert.equal(f.launches.count, 0, `${mode} SDK input must fail before any owned subject is started`);
     }
   });
+
+  for (const input of tailInputs) {
+    test(`${architecture}: changed ${input} invalidates preparation`, t => {
+      const f = fixture(t, architecture), before = f.validation.fingerprint().sha256;
+      fs.appendFileSync(path.join(f.workspace, input), '\n// changed Tail compilation input fixture\n');
+      assert.notEqual(f.validation.fingerprint().sha256, before, 'Every actual Runner compilation dependency is a build input');
+      assert.throws(() => f.validation.prepared(architecture), /missing or stale/);
+      assert.equal(f.launches.count, 0);
+    });
+
+    test(`${architecture}: missing ${input} cannot reuse prepared tools`, t => {
+      const f = fixture(t, architecture);
+      fs.unlinkSync(path.join(f.workspace, input));
+      assert.throws(() => f.validation.fingerprint(), /ENOENT/);
+      assert.throws(() => f.validation.prepared(architecture), /ENOENT/);
+      assert.equal(f.launches.count, 0);
+    });
+
+    test(`${architecture}: changed or missing ${input} rejects the native group before launch`, async t => {
+      for (const mode of ['changed', 'missing']) {
+        const f = fixture(t, architecture), filename = path.join(f.workspace, input);
+        if (mode === 'changed') fs.appendFileSync(filename, '\n// changed Tail compilation input fixture\n');
+        else fs.unlinkSync(filename);
+        await assert.rejects(f.validation.runGroup('native', architecture), /missing or stale|ENOENT/);
+        assert.equal(f.launches.count, 0, `${mode} Tail input must fail before any owned subject is started`);
+      }
+    });
+  }
 }

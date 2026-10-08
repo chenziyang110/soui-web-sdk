@@ -22,6 +22,8 @@ if(-not $NativeOnly){
     $env:SOUI_OWNED_PROCESS_RUNNER=$previousOwnedRunner
     $env:BENCHMARK_OWNED_RUNNER_EXE=$previousBenchmarkRunner
   }
+  & node --test (Join-Path $root 'tests/sdk/actiongen.test.mjs') (Join-Path $root 'tests/web/generated-actions.test.mjs')
+  if($LASTEXITCODE -ne 0){throw 'Single-source action generation or generated Web contract tests failed'}
   & node (Join-Path $root 'tests/sdk/sdk-package-smoke.cjs')
   if($LASTEXITCODE -ne 0){throw 'SDK package tests failed'}
   & node --test (Join-Path $root 'tests/sdk/sdk-native-payload.test.cjs')

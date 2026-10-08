@@ -1,0 +1,51 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {launchOwned}=require('../tools/internal/owned-process.cjs');
+const identity=require('../tools/internal/delivery-identity.cjs');
+const root=path.resolve(__dirname,'..'),hash=b=>crypto.createHash('sha256').update(b).digest('hex'),sha=p=>hash(fs.readFileSync(p));
+const priorRoot=path.join(root,'out/action-foundation-integration-fac60169-3daf-429b-9458-360c4a5b8a60');
+const priorBytes=fs.readFileSync(path.join(priorRoot,'report.json')),prior=JSON.parse(priorBytes);
+const regressionRoot='F:/work/sm05-mi/out/action-hook-regression';
+const regressionBytes=fs.readFileSync(path.join(regressionRoot,'final-red-green.json')),regression=JSON.parse(regressionBytes);
+const oldBuild=fs.readFileSync(path.join(regression.oldRoot,'Build.ps1'));
+const source=identity.source(root),before=new Map(prior.source.files.map(f=>[f.path,f]));
+const changed=source.files.filter(f=>JSON.stringify(f)!==JSON.stringify(before.get(f.path))).map(f=>f.path);
+if(source.files.length!==prior.source.files.length||changed.length!==1||changed[0]!=='tools/Build.ps1')
+ throw Error('Continuation expected only the reviewed Build hook change');
+const oldBuildEntry=before.get('tools/Build.ps1');
+if(hash(identity.normalize(oldBuild,oldBuildEntry.normalization))!==oldBuildEntry.sha256||sha(path.join(root,'tools/Build.ps1'))!==regression.sourceSha256||!regression.onlyHookChanged)
+ throw Error('Old/new hook identities differ from the actual source inputs');
+const compilePhases=prior.results.filter(r=>r.compile),runtimePhases=prior.results.filter(r=>!r.compile&&r.name!=='powershell-entry-syntax');
+if(prior.completed||compilePhases.length!==4||compilePhases.some(r=>r.exitCode!==0||!r.closureConfirmed||r.fallbackUsed||r.spawnError||r.reportError)||
+ runtimePhases.length!==3||runtimePhases.some(r=>!r.passed||r.stopRequested)||
+ prior.results.at(-1).name!=='powershell-entry-syntax'||prior.results.at(-1).exitCode!==1)
+ throw Error('Prior actual phases or preserved parser failure differ');
+const attempt=path.join(priorRoot,'continuation-'+crypto.randomUUID());fs.mkdirSync(attempt);
+fs.copyFileSync(__filename,path.join(attempt,'driver-at-launch.cjs.inert.snapshot'),fs.constants.COPYFILE_EXCL);
+const runner='F:/work/sm05/out/validation-bootstrap/1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f/OwnedProcessRunner.exe';
+if(sha(runner)!=='1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f')throw Error('Bootstrap changed');
+const ps=path.join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/powershell.exe'),q=s=>"'"+s.replaceAll("'","''")+"'";
+const parser=path.join(attempt,'parse-powershell.ps1');
+fs.writeFileSync(parser,['$errors=$null','$tokens=$null',...['Build.ps1','Test.ps1'].flatMap(name=>[
+ '[Management.Automation.Language.Parser]::ParseFile('+q(path.join(root,'tools',name))+',[ref]$tokens,[ref]$errors)|Out-Null',
+ 'if($errors.Count -ne 0){$errors|Out-String|Write-Error;exit 1}']),"Write-Output 'Both standard entry points parsed successfully.'"].join('\r\n')+'\r\n',{flag:'wx'});
+const report={schema:'soui.action-foundation-integration-continuation/v1',attempt,priorReportSha256:hash(priorBytes),
+ priorSourceSha256:prior.source.sha256,currentSource:source,changedSourcePaths:changed,
+ hookRegressionSha256:hash(regressionBytes),hookRegressionCases:regression.cases,
+ sameNativeAndWebInputs:true,priorActualCompilationCompleted:true,priorActualConsumersRan:true,
+ priorGenericCompilationSupervisionPassed:compilePhases.every(r=>r.passed),
+ correctedPrivateParserArgument:true,completed:false,releaseReady:false,
+ limitations:['The four prior compilation Jobs exited root 0 but required forced owned-Job cleanup for their compiler tail; no historical compiler-tail exception is asserted.',
+ 'Prior binaries bind the pre-fix Build hook source identity. Only the reviewed hook changed, with actual read-only branch regressions; the current whole source was not rebuilt.',
+ 'This is integration evidence, not final candidate, GUI, target-system or production acceptance.']};
+const save=()=>fs.writeFileSync(path.join(attempt,'report.json'),JSON.stringify(report,null,2)+'\n');
+(async()=>{save();const stdout=fs.openSync(path.join(attempt,'stdout.log'),'wx'),stderr=fs.openSync(path.join(attempt,'stderr.log'),'wx');
+ try{report.parser=await launchOwned(ps,['-NoProfile','-ExecutionPolicy','Bypass','-File',parser],{
+  runner,cwd:root,report:path.join(attempt,'owned.ndjson'),timeoutMs:180000,drainMs:2000,stdout,stderr,
+  env:{...process.env,MSBUILDDISABLENODEREUSE:'1',PSModulePath:path.join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/Modules')}}).finished;}
+ finally{fs.closeSync(stdout);fs.closeSync(stderr);}
+ if(!report.parser.passed||report.parser.stopRequested||report.parser.fallbackUsed)throw Error('Corrected parser failed');
+ report.currentSourceUnchanged=identity.source(root).sha256===source.sha256;
+ if(!report.currentSourceUnchanged)throw Error('Source changed during corrected parser validation');
+ report.completed=true;save();console.log(JSON.stringify({completed:true,report:path.join(attempt,'report.json'),source:source.sha256}));
+})().catch(error=>{report.error=error.stack;save();console.error(error.stack);process.exitCode=1;});

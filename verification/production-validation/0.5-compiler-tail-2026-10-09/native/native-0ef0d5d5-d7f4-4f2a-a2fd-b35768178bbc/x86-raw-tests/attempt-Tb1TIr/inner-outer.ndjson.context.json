@@ -1,0 +1,27 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+  "executableSha256": "d5dd77c1c63c1c0597d6fe103f10d5f1c8028b48cf1625cf7835861cd4285709",
+  "executable": "F:\\work\\sm05-compiler-tail\\out\\tail-x86\\Release\\OwnedProcessRunner.exe",
+  "args": [
+    "--timeout-ms",
+    "8000",
+    "--report",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-validation\\native-0ef0d5d5-d7f4-4f2a-a2fd-b35768178bbc\\x86-raw-tests\\attempt-Tb1TIr\\inner.ndjson",
+    "--cwd",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-validation\\native-0ef0d5d5-d7f4-4f2a-a2fd-b35768178bbc\\x86-raw-tests\\attempt-Tb1TIr",
+    "--pin-tail-image",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-validation\\native-0ef0d5d5-d7f4-4f2a-a2fd-b35768178bbc\\x86-raw-tests\\attempt-Tb1TIr\\junction\\helper.exe",
+    "--pin-tail-sha256",
+    "69e790a603b9c0f5d10e3ede3553715473dbdf958fd405adf31f36b4ea1d8e56",
+    "--snapshot-nonce",
+    "0a36ad687d87c08c3c42ab63e125ad3c",
+    "--",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-x86\\Release\\OwnedTailProcessFixture.exe",
+    "external",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-validation\\native-0ef0d5d5-d7f4-4f2a-a2fd-b35768178bbc\\x86-raw-tests\\attempt-Tb1TIr"
+  ],
+  "cwd": "F:\\work\\sm05-compiler-tail\\out\\tail-validation\\native-0ef0d5d5-d7f4-4f2a-a2fd-b35768178bbc\\x86-raw-tests\\attempt-Tb1TIr",
+  "timeoutMs": 15000,
+  "drainMs": 2500
+}

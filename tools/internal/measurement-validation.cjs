@@ -8,6 +8,7 @@ const protocolTests=['page-pair','run-traces','owned-trace-subject','pair-prefli
 const nativeTests=['process-tree-sampler','run-traces'];
 const names=['OwnedProcessRunner','OwnedProcessAssignmentFixture','ProcessTreeSampler','InputTrace','NativeTraceIdentity'];
 const sourceNames=['benchmarks/protocol/CMakeLists.txt','benchmarks/protocol/owned-process-runner.cpp',
+ 'benchmarks/protocol/owned-tail-evidence.cpp','benchmarks/protocol/owned-tail-evidence.h',
  'tests/benchmark/owned-process-assignment-fixture.cpp','benchmarks/protocol/process-tree-sampler.cpp','benchmarks/protocol/input-trace.cpp',
  'benchmarks/protocol/trace-identity.h','tests/benchmark/native-trace-identity.cpp','tools/internal/CMake-Configure.ps1',
  'cmake/SouiWindowsSdk.cmake','tools/internal/Build-ValidationTools.ps1','tools/internal/measurement-validation.cjs'];

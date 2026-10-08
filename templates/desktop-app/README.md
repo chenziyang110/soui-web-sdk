@@ -9,7 +9,16 @@ powershell.exe -File tools/Build.ps1 -Architecture x64
 .\out\x64\bin\Release\SouiStarter\SouiStarter.exe
 ```
 
-业务修改放 app/、web/、contracts/、resources/；SDK 由 sdk-lock.json 管理。新增方法同时维护 contracts/app.contract.json、TypeScript 类型和 C++ 注册实现。在完整交付仓库直接使用模板时，从交付根目录构建。
+业务修改放 app/、web/、contracts/、resources/；SDK 由 sdk-lock.json 管理。问候动作唯一来源是 `contracts/actions.json`；`app.contract.json` 仅说明公共服务和计数任务。在完整交付仓库直接使用模板时，从交付根目录构建。
+
+修改动作源后，在生成项目根目录先生成，再构建：
+
+```powershell
+node tools/sdk/actiongen.cjs --source contracts/actions.json --root .
+node tools/sdk/actiongen.cjs --source contracts/actions.json --root . --check
+```
+
+原仓库使用 `node tools/sdk/actiongen.cjs --source templates/desktop-app/contracts/actions.json --root templates/desktop-app`。CMake 只检查，不自动写入；输出有散列保护，不要直接编辑。C++ 使用 `app/generated/actions.hpp` 的 `register_Greet`，前端使用 `web/src/generated/actions.ts` 的 `callAction`。可选 `Soui::ActionJson` 提供 JSON 头文件。非法输入不发请求，成功结果仍检查；原生验证是最终边界。Agent 描述不授予权限、不自动重试。契约文档见 `docs/generated/actions.md`。
 
 页面滚动条的颜色、宽度和滑块形状定义在 `web/src/style.css` 的 `::-webkit-scrollbar` 规则中，兼容当前 Miniblink 页面目标。新项目可按品牌调整这些规则；改动外观后仍需在目标 Windows 版本上实际检查滚轮、拖动和键盘滚动。
 

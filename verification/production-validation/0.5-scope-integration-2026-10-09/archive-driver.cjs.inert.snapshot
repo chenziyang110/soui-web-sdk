@@ -1,0 +1,42 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..'),identity=require('../tools/internal/delivery-identity.cjs');
+const attempt=path.join(root,'out/scope-foundation-integration-27e6bbab-423c-45c3-8de1-c7cf7184949b');
+const base='verification/production-validation/0.5-scope-integration-2026-10-09';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex'),sha=p=>hash(fs.readFileSync(p));
+const r=JSON.parse(fs.readFileSync(path.join(attempt,'report.json'))),files=[];
+if(!r.completed||!r.sourceInputsUnchanged||!r.allCompilationCompleted||!r.allNativeTestsNaturallyClosed||
+ identity.source(root).sha256!==r.source.sha256||r.results.length!==12||r.binaries.length!==8)throw Error('Integration prerequisites differ');
+function inert(name){return /\.(?:cjs|mjs|ps1|cpp|hpp|h|ts|cmake|vcxproj|txt)$/i.test(name)||name==='CMakeLists.txt'?name+'.inert.snapshot':name;}
+function copy(input,relative){
+ const st=fs.lstatSync(input);if(!st.isFile()||st.isSymbolicLink()||st.nlink!==1)throw Error('Not plain evidence '+input);
+ const bytes=fs.readFileSync(input),output=path.join(root,base,relative);fs.mkdirSync(path.dirname(output),{recursive:true});
+ fs.writeFileSync(output,bytes,{flag:'wx'});files.push({path:base+'/'+relative,source:input,bytes:bytes.length,sha256:hash(bytes)});
+}
+function tree(input,relative){for(const e of fs.readdirSync(input,{withFileTypes:true})){
+ if(e.isSymbolicLink())throw Error('Linked evidence');const full=path.join(input,e.name);
+ if(e.isDirectory())tree(full,relative+'/'+e.name);else copy(full,relative+'/'+inert(e.name));}}
+for(const phase of r.results){
+ if(phase.exitCode!==0||!phase.closureConfirmed||phase.spawnError||phase.reportError||phase.fallbackUsed||
+  (!phase.compile&&(!phase.passed||phase.terminal.terminatedOwnedJob||phase.terminal.reason!=='completed'))||
+  sha(phase.report)!==phase.reportSha256||sha(phase.exe)!==phase.executableSha256)throw Error('Phase identity or result differs '+phase.name);
+}
+for(const b of r.binaries){if(sha(b.exe)!==b.sha256)throw Error('Test executable changed '+b.name);}
+tree(attempt,'attempt');
+for(const architecture of ['x86','x64']){
+ const output=path.join(root,'out/sdk-'+architecture),fixture=path.join(r.external,'tests-'+architecture);
+ for(const name of ['build-Release.json','native-Release.log','CMakeCache.txt','soui_sdk.vcxproj'])
+  copy(path.join(output,name),'builds/'+architecture+'/'+inert(name));
+ copy(path.join(fixture,'CMakeLists.txt'),'internal-fixture/'+architecture+'/CMakeLists.txt.inert.snapshot');
+ for(const name of ['CMakeCache.txt',...r.binaries.filter(b=>b.architecture===architecture).map(b=>b.name+'.vcxproj')])
+  copy(path.join(fixture,'out/native',name),'internal-fixture/'+architecture+'/'+inert(name));
+}
+for(const name of ['task_scope_tests.cpp','task_service_tests.cpp','task_store_capacity_tests.cpp','session_renewal_tests.cpp'])
+ copy(path.join(root,'tests/native',name),'test-inputs/'+name+'.inert.snapshot');
+copy(__filename,'archive-driver.cjs.inert.snapshot');
+const record={schema:'soui.scope-foundation-integration-evidence/v1',mainCommit:'e4ff7f9d1e670550a62a402bd1bf1888c0a7546d',version:r.version,
+ compiledSourceSha256:r.source.sha256,sourceUnchangedAtArchival:true,compilationArchitectures:['x86','x64'],nativeTestsNaturallyClosed:8,
+ allCompilationCompleted:true,genericCompilationSupervisionPassed:r.genericCompilationSupervisionPassed,compilerTailExceptionAccepted:false,
+ releaseReady:false,limitations:r.limitations.concat(['The executable and installed library bytes remain local; exact hashes and build metadata are archived.']),files};
+fs.writeFileSync(path.join(root,base,'index.json'),JSON.stringify(record,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({path:base+'/index.json',files:files.length,bytes:files.reduce((n,f)=>n+f.bytes,0),source:r.source.sha256}));

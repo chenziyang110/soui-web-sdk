@@ -1,0 +1,70 @@
+{
+  "schema": "soui.actiongen-local-evidence/v1",
+  "targetVersion": "0.5.0",
+  "checkoutVersion": "0.4.0-preview.3",
+  "sourceGitBase": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+  "sourceSha256": "1973b33ef419ba10d4b8f1dd8efed34d855880e7abaeee4bf6b39a58b05b0d93",
+  "sourceState": "uncommitted isolated implementation codex/sdk-05-actions",
+  "releaseReady": false,
+  "results": {
+    "rootNodeRegressions": {
+      "passed": 25,
+      "total": 25,
+      "raw": "root-regressions-25.log"
+    },
+    "workerRelatedSuites": {
+      "passed": 80,
+      "total": 80,
+      "evidence": "Worker completed tool execution; full TAP is in task history."
+    },
+    "independentReview": {
+      "blockingFindings": 0,
+      "nodeTestsPassed": 80,
+      "nodeTestsTotal": 80,
+      "fixtures": "All five outputs hard-link rejection; UTF8 bytes with forged matching hash; injected staging fsync failure."
+    },
+    "installedConsumer": {
+      "architecture": "x64",
+      "configuration": "Release",
+      "windowsSdk": "10.0.19041.0",
+      "toolset": "v143",
+      "testsPassed": 1,
+      "testsTotal": 1,
+      "scope": "Relocated installed SDK prefix and external CMake consumer; no GUI."
+    }
+  },
+  "limitations": [
+    "Not a frozen SDK package or formal release.",
+    "VERSION/package identity will be integrated with the 0.5 reliability base before shipping; historical packages are not overwritten.",
+    "No x86 native consumer, complete template C++ startup, new-project package or target-system acceptance yet.",
+    "Atomic replacement is per file; group publication is detectably interrupted but is not a transaction.",
+    "Macro deny-list does not cover every application header; directory structure must not be concurrently replaced."
+  ],
+  "files": [
+    {
+      "path": "verification/production-validation/0.5-actiongen-2026-10-08/root-regressions-25.log",
+      "bytes": 2556,
+      "sha256": "acf4b55752f59cec29c89ae29539549e617bcb982ac6223ce0f51be6e3aaeb18"
+    },
+    {
+      "path": "verification/production-validation/0.5-actiongen-2026-10-08/audit-sdk-web.json",
+      "bytes": 380,
+      "sha256": "9eb873e86a9736534b3f2dac887f18523d452211ddd058faa3ad016439916915"
+    },
+    {
+      "path": "verification/production-validation/0.5-actiongen-2026-10-08/audit-templates-desktop-app-web.json",
+      "bytes": 385,
+      "sha256": "068b20fa86297f8dc878b5aea09b72203f277c65a8faf1a813e93178b240665e"
+    },
+    {
+      "path": "verification/production-validation/0.5-actiongen-2026-10-08/audit-templates-modern-app-web.json",
+      "bytes": 383,
+      "sha256": "dea100fd677ac5226415d74d7716285920cbac92dd44b9399de08e0cf6518a73"
+    },
+    {
+      "path": "verification/production-validation/0.5-actiongen-2026-10-08/installed-consumer-ctest.log",
+      "bytes": 995,
+      "sha256": "3dfa483a7278fd6bf1c2512e43e79e6d5caf8824d741818d45d8759e9a377ece"
+    }
+  ]
+}

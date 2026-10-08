@@ -1,0 +1,3 @@
+require('node:fs').writeFileSync('ready.pid',String(process.pid));
+      process.stdin.resume();process.stdin.on('data',()=>require('node:fs').writeFileSync('leaked-control','bad'));
+      setTimeout(()=>{},30000);

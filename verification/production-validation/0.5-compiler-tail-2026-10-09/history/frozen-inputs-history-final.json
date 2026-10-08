@@ -1,0 +1,239 @@
+{
+  "schema": "soui.compiler-tail-history-freeze/v1",
+  "createdAt": "2026-10-08T16:56:18.335Z",
+  "base": "2154ed80ebe5825e398b87992d0f666d28bab260",
+  "source": [
+    {
+      "path": "tools/internal/owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7",
+      "baselineSha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7",
+      "modifiedInThisSlice": false
+    },
+    {
+      "path": "tools/internal/owned-tail-evidence.cjs",
+      "bytes": 20024,
+      "sha256": "61bceb766ecdfae0552c26212b332c8d7dbd0c2f24833cf7d27d59932f2b23cd",
+      "baselineSha256": "623674358191e199f2b8df60ca4ca5f46206748499b13ed9d848cbd4cc269f9f",
+      "modifiedInThisSlice": true
+    },
+    {
+      "path": "tools/internal/compiler-tail-policy.cjs",
+      "bytes": 11520,
+      "sha256": "1458497d5701833cf83033aa05c2861b1a30accbc653cf0c2c244692c16034d6",
+      "baselineSha256": "1458497d5701833cf83033aa05c2861b1a30accbc653cf0c2c244692c16034d6",
+      "modifiedInThisSlice": false
+    },
+    {
+      "path": "tests/benchmark/tail-evidence-fixtures.cjs",
+      "bytes": 4569,
+      "sha256": "b8e27d32bd8b454368c97c1e9c33d40e4aed684ea4a8e88a38785b931f7761aa",
+      "baselineSha256": "b8e27d32bd8b454368c97c1e9c33d40e4aed684ea4a8e88a38785b931f7761aa",
+      "modifiedInThisSlice": false
+    },
+    {
+      "path": "tests/benchmark/owned-tail-evidence-reader.test.cjs",
+      "bytes": 12763,
+      "sha256": "cb0b795e66dbda2a18054780c886505e603b01c90d89096d26096154de0a54f0",
+      "baselineSha256": "d50f92e0f8a48599230bd4aa72c6178e27636707601c13951895d25d890a9233",
+      "modifiedInThisSlice": true
+    },
+    {
+      "path": "tests/benchmark/compiler-tail-policy.test.cjs",
+      "bytes": 9000,
+      "sha256": "7147eedfde2c4cad364cafe7a2eba011bbb255a97d5939d4703917bf3bf75458",
+      "baselineSha256": "7147eedfde2c4cad364cafe7a2eba011bbb255a97d5939d4703917bf3bf75458",
+      "modifiedInThisSlice": false
+    },
+    {
+      "path": "tests/benchmark/owned-tail-client-boundaries.test.cjs",
+      "bytes": 4219,
+      "sha256": "f58dc889e07f5874273bd276ef4e7e593d3f5a425ee539ad92a5a098cbbdc429",
+      "baselineSha256": "f58dc889e07f5874273bd276ef4e7e593d3f5a425ee539ad92a5a098cbbdc429",
+      "modifiedInThisSlice": false
+    },
+    {
+      "path": "tests/benchmark/owned-tail-client-native.test.cjs",
+      "bytes": 3900,
+      "sha256": "8b75d19910197ed460ac18a1640cd068522c4f20b4ee4e020cc75b7418ecbfa3",
+      "baselineSha256": "8b75d19910197ed460ac18a1640cd068522c4f20b4ee4e020cc75b7418ecbfa3",
+      "modifiedInThisSlice": false
+    },
+    {
+      "path": "docs/adr/0031-compiler-tail-snapshot.md",
+      "bytes": 17616,
+      "sha256": "8d6e6092e42b15a2d11a8141ac58a4d4b9bcb95cb774b2fcb78576f21067497d",
+      "baselineSha256": "04064201136f3276054bc99eaf1742febafe37a9c333d7f2ed6caf846da4ef6f",
+      "modifiedInThisSlice": true
+    },
+    {
+      "path": "docs/acceptance/0.5-compiler-tail-evidence.md",
+      "bytes": 7901,
+      "sha256": "b1a5c593c4938927740c46cae07812eda1649ec8d2c10930b54c873f6de6e455",
+      "modifiedInThisSlice": true
+    }
+  ],
+  "inherited": [
+    {
+      "path": "benchmarks/protocol/owned-process-runner.cpp",
+      "bytes": 24220,
+      "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0",
+      "unchanged": true
+    },
+    {
+      "path": "benchmarks/protocol/owned-tail-evidence.cpp",
+      "bytes": 31483,
+      "sha256": "6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3",
+      "unchanged": true
+    },
+    {
+      "path": "benchmarks/protocol/owned-tail-evidence.h",
+      "bytes": 971,
+      "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790",
+      "unchanged": true
+    },
+    {
+      "path": "benchmarks/protocol/CMakeLists.txt",
+      "bytes": 2613,
+      "sha256": "b513efcd15f09f1022bc93a370e7fdca1522a1642dfeceb04ee0a30a73fee012",
+      "unchanged": true
+    },
+    {
+      "path": "tests/benchmark/owned-tail-process-fixture.cpp",
+      "bytes": 4875,
+      "sha256": "b3f83a2f7f4b175f237c10ee8a9d9b0961c758f5e9d8a977e8a3eb64f228692a",
+      "unchanged": true
+    },
+    {
+      "path": "tests/benchmark/owned-tail-mutation-fixture.cpp",
+      "bytes": 1648,
+      "sha256": "49c6b1d1bbe91f94d2982dc2abe8acf3fb373583d71dc1e343c0f1d92b130fbc",
+      "unchanged": true
+    },
+    {
+      "path": "tests/benchmark/owned-tail-api-fixture.cpp",
+      "bytes": 2446,
+      "sha256": "1d6050f0859ae1357b672c106233a44474a277bacb0ee0e48aa1900ed96977f1",
+      "unchanged": true
+    },
+    {
+      "path": "tests/benchmark/owned-process-tail-snapshot.test.cjs",
+      "bytes": 18714,
+      "sha256": "b30df47d24193c64d56eeb273bd0d0e78fe2dce62886f00f27e7bf9f846d5593",
+      "unchanged": true
+    },
+    {
+      "path": "F:\\work\\sm05-compiler-tail\\out\\tail-x86\\Release\\OwnedProcessRunner.exe",
+      "bytes": 127488,
+      "sha256": "6a27c80706696d19131537edc08aee75f8e816247d1f27acd2cf917462bc3293",
+      "coffMachine": 332,
+      "unchanged": true
+    },
+    {
+      "path": "F:\\work\\sm05-compiler-tail\\out\\tail-x86\\Release\\OwnedTailProcessFixture.exe",
+      "bytes": 24064,
+      "sha256": "69e790a603b9c0f5d10e3ede3553715473dbdf958fd405adf31f36b4ea1d8e56",
+      "coffMachine": 332,
+      "unchanged": true
+    },
+    {
+      "path": "F:\\work\\sm05-compiler-tail\\out\\tail-x86\\Release\\OwnedTailMutationFixture.exe",
+      "bytes": 128512,
+      "sha256": "6b866e6adf28aa0af6f724f06ffa7f53711de4057d866b4fb6c13034dc106cf5",
+      "coffMachine": 332,
+      "unchanged": true
+    },
+    {
+      "path": "F:\\work\\sm05-compiler-tail\\out\\tail-x86\\Release\\OwnedTailApiFixture.exe",
+      "bytes": 128512,
+      "sha256": "fee7e11cd75a6bb264f6b3db3dbf88887d8dc614009acb84b44d457e1575e795",
+      "coffMachine": 332,
+      "unchanged": true
+    },
+    {
+      "path": "F:\\work\\sm05-compiler-tail\\out\\tail-x86\\Release\\OwnedProcessAssignmentFixture.exe",
+      "bytes": 76288,
+      "sha256": "e56a866d1a8471ac9c38bba83ace0fcbce3dc2aec6a00f3bcdeb268c77cec813",
+      "coffMachine": 332,
+      "unchanged": true
+    },
+    {
+      "path": "F:\\work\\sm05-compiler-tail\\out\\tail-x64\\Release\\OwnedProcessRunner.exe",
+      "bytes": 150016,
+      "sha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+      "coffMachine": 34404,
+      "unchanged": true
+    },
+    {
+      "path": "F:\\work\\sm05-compiler-tail\\out\\tail-x64\\Release\\OwnedTailProcessFixture.exe",
+      "bytes": 31232,
+      "sha256": "bcfb1c756afb6150f3070057594cd45792e121d5b98ca7d57be9c6d13a5719fd",
+      "coffMachine": 34404,
+      "unchanged": true
+    },
+    {
+      "path": "F:\\work\\sm05-compiler-tail\\out\\tail-x64\\Release\\OwnedTailMutationFixture.exe",
+      "bytes": 151552,
+      "sha256": "e1af93de6eaeecf3b4fa5c45553c6384252157ee769ad79a24e7d6e96acc80ae",
+      "coffMachine": 34404,
+      "unchanged": true
+    },
+    {
+      "path": "F:\\work\\sm05-compiler-tail\\out\\tail-x64\\Release\\OwnedTailApiFixture.exe",
+      "bytes": 152064,
+      "sha256": "309d770980502cb6ae801c072706ecf85a30395b8b0cb3fec6f3eb6b05818911",
+      "coffMachine": 34404,
+      "unchanged": true
+    },
+    {
+      "path": "F:\\work\\sm05-compiler-tail\\out\\tail-x64\\Release\\OwnedProcessAssignmentFixture.exe",
+      "bytes": 87040,
+      "sha256": "cc410233129e0a7d6ed7e980a7cc57b82dd2947c70d2214d99601268618bc27a",
+      "coffMachine": 34404,
+      "unchanged": true
+    }
+  ],
+  "immutableInputs": [
+    {
+      "path": "tools/Build.ps1",
+      "bytes": 3886,
+      "sha256": "db9a923575a7158a642995cb91391604ffc8051861fa575b0005f68771c38143"
+    },
+    {
+      "path": "tools/internal/compiler-tail-policy.cjs",
+      "bytes": 11520,
+      "sha256": "1458497d5701833cf83033aa05c2861b1a30accbc653cf0c2c244692c16034d6"
+    },
+    {
+      "path": "tools/internal/owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+    }
+  ],
+  "baselineJsFreeze": {
+    "path": "F:\\work\\sm05-compiler-tail\\out\\tail-js-validation\\frozen-js-inputs-final.json",
+    "bytes": 8648,
+    "sha256": "ceecd9d732d4b78d742cadf41cda08af68813461f64473c844ced11494bebbc2"
+  },
+  "baselineNativeFreeze": {
+    "path": "F:\\work\\sm05-compiler-tail\\out\\tail-validation\\frozen-inputs-final.json",
+    "bytes": 4378,
+    "sha256": "4fd28e004cd226fddff5871cfaaee6e1089742a1522465080b3c1e73073342b2"
+  },
+  "runs": {
+    "red": "red-6c393bca-3723-4936-8c28-f3a6af5687c3",
+    "green": "green-bb48c234-9093-4375-ab8a-efe1523a5135",
+    "native": "native-70eb61ae-36f2-4a1e-8c82-e857ead58ce4",
+    "old": "old-ef1bc0bd-36f6-4edd-9161-f9fa0bb4fcdd"
+  },
+  "sourceSha256": "08c40b4c71e6bbd2a2ac7b009b80145cb6c1bd005309ce71cf350b2ab1aca8e3",
+  "oldActualSourceSha256": "a52029fd86a9c0a3b983c9a775cebe3ba8601e0db0db60bf4a6daeb0c2fcc774",
+  "noBuild": true,
+  "noGui": true,
+  "noVm": true,
+  "noGitWrites": true,
+  "noNativeChanges": true,
+  "noClientChanges": true,
+  "noCompilerPolicyChanges": true,
+  "actualFreshCompilerAcceptance": false
+}
