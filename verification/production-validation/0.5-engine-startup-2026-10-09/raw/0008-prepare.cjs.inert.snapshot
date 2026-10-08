@@ -1,0 +1,139 @@
+'use strict';
+
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const root = path.resolve(__dirname, '../..');
+const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const write = (name, content) => fs.writeFileSync(path.join(__dirname, name), content, {flag: 'wx'});
+const original = fs.readFileSync(path.join(__dirname, 'sdk_src_host_engine_thread.cpp.inert.snapshot'));
+if (hash(original) !== 'e5c325bf88352627093cfe435731f6e1a6f59f7a520ab17fe4c972cd493bbfa7')
+  throw new Error('Original engine body differs');
+const current = fs.readFileSync(path.join(root, 'sdk/src/host/engine_thread.cpp'), 'utf8');
+const helpers = current.slice(current.indexOf('#ifdef SOUI_ENGINE_STARTUP_TEST_ONLY'),
+  current.indexOf('engine_thread::~engine_thread()'));
+if (!helpers.endsWith('#endif\n\n') || !helpers.includes('namespace soui::sdk {'))
+  throw new Error('Private seam prefix was not recognized');
+let red = original.toString('utf8').replace(/\r\n/g, '\n');
+const replaceExactly = (before, after, count) => {
+  const pieces = red.split(before);
+  if (pieces.length !== count + 1) throw new Error('Old-body seam substitution differs');
+  red = pieces.join(after);
+};
+replaceExactly('namespace soui::sdk {\n\n', helpers, 1);
+replaceExactly('const HANDLE wake_event = CreateEventW(nullptr, FALSE, FALSE, nullptr);',
+  'const HANDLE wake_event = create_engine_wake_event();', 1);
+replaceExactly('CloseHandle(wake_event);', 'close_engine_wake_event(wake_event);', 2);
+replaceExactly('CloseHandle(failed_event);', 'close_engine_wake_event(failed_event);', 1);
+replaceExactly('    worker_ = std::thread(&engine_thread::run, this, std::move(initialize),',
+  '#ifdef SOUI_ENGINE_STARTUP_TEST_ONLY\n    detail::engine_startup_test::before_worker_launch();\n#endif\n' +
+  '    worker_ = std::thread(&engine_thread::run, this, std::move(initialize),', 1);
+if (red.includes('launch_failed') || red.includes('No worker exists to publish'))
+  throw new Error('RED copy accidentally contains rollback');
+write('red-engine_thread.cpp.inert.snapshot', red);
+
+const cmakeSource = fs.readFileSync(path.join(root, 'tests/native/CMakeLists.txt'), 'utf8');
+const start = cmakeSource.indexOf('add_executable(soui_engine_thread_startup_tests ');
+const endLine = 'set_tests_properties(sdk.native.engine-startup-rollback PROPERTIES TIMEOUT 30)';
+const end = cmakeSource.indexOf(endLine, start);
+if (start < 0 || end < start) throw new Error('Actual public regression CMake block is missing');
+const green = cmakeSource.slice(start, end + endLine.length).replace(
+  'add_executable(soui_engine_thread_startup_tests engine_thread_startup_tests.cpp',
+  'add_executable(soui_engine_thread_startup_tests "${SOUI_DISTRIBUTION_ROOT}/tests/native/engine_thread_startup_tests.cpp"');
+const cmakeRoot = '${SOUI_DISTRIBUTION_ROOT}';
+const cmakeSourceDir = '${CMAKE_CURRENT_SOURCE_DIR}';
+write('CMakeLists.txt', `cmake_minimum_required(VERSION 3.24)
+project(EngineStartupBoundary LANGUAGES CXX)
+if(NOT MSVC OR NOT WIN32)
+  message(FATAL_ERROR "The private startup fixture requires Windows MSVC")
+endif()
+set(SOUI_DISTRIBUTION_ROOT "${root.replace(/\\/g, '/')}")
+enable_testing()
+# The actual public regression block is copied with only its local source path made absolute.
+${green}
+add_executable(EngineStartupRed "${cmakeRoot}/tests/native/engine_thread_startup_tests.cpp"
+  "${cmakeSourceDir}/red-engine_thread.cpp.inert.snapshot")
+set_source_files_properties("${cmakeSourceDir}/red-engine_thread.cpp.inert.snapshot" PROPERTIES LANGUAGE CXX)
+target_include_directories(EngineStartupRed PRIVATE "${cmakeRoot}/sdk/include" "${cmakeRoot}/sdk/src/host")
+target_link_libraries(EngineStartupRed PRIVATE user32)
+target_compile_features(EngineStartupRed PRIVATE cxx_std_17)
+target_compile_definitions(EngineStartupRed PRIVATE SOUI_ENGINE_STARTUP_TEST_ONLY SOUI_ENGINE_STARTUP_RED_FIXTURE
+  UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+target_compile_options(EngineStartupRed PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET EngineStartupRed PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_executable(EngineStartupProduction "${cmakeSourceDir}/production-control.cpp"
+  "${cmakeRoot}/sdk/src/host/engine_thread.cpp")
+target_include_directories(EngineStartupProduction PRIVATE "${cmakeRoot}/sdk/include")
+target_link_libraries(EngineStartupProduction PRIVATE user32)
+target_compile_features(EngineStartupProduction PRIVATE cxx_std_17)
+target_compile_definitions(EngineStartupProduction PRIVATE UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+target_compile_options(EngineStartupProduction PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET EngineStartupProduction PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.engine-startup-production-control COMMAND EngineStartupProduction)
+set_tests_properties(sdk.native.engine-startup-production-control PROPERTIES TIMEOUT 10)
+`);
+write('production-control.cpp', `#include <soui/host/engine_thread.h>
+#include <iostream>
+#include <stdexcept>
+#include <thread>
+
+int main() {
+  try {
+    unsigned initialized = 0;
+    unsigned shutdowns = 0;
+    std::thread::id owner;
+    std::thread::id shutdown_owner;
+    soui::sdk::engine_thread engine;
+    if (!engine.start([&] { ++initialized; owner = std::this_thread::get_id(); return true; },
+                      [&] { ++shutdowns; shutdown_owner = std::this_thread::get_id(); }))
+      throw std::runtime_error("production start failed");
+    if (!engine.invoke([&] {
+      if (std::this_thread::get_id() != owner || !engine.is_owner_thread())
+        throw std::runtime_error("production owner differs");
+    })) throw std::runtime_error("production invoke failed");
+    engine.stop();
+    if (initialized != 1 || shutdowns != 1 || shutdown_owner != owner ||
+        owner == std::this_thread::get_id() || engine.is_owner_thread(owner) ||
+        engine.state() != soui::sdk::engine_thread_state::stopped)
+      throw std::runtime_error("production stop/owner differs");
+    std::cout << "Production engine implementation without TEST_ONLY hook definitions passed\\n";
+    return 0;
+  } catch (const std::exception& error) {
+    std::cerr << error.what() << '\\n';
+    return 1;
+  }
+}
+`);
+
+const sources = ['sdk/src/host/engine_thread.cpp', 'sdk/src/host/engine_startup_test_hooks.h',
+  'sdk/include/soui/host/engine_thread.h', 'tests/native/engine_thread_startup_tests.cpp',
+  'tests/native/CMakeLists.txt', 'docs/adr/0038-engine-thread-launch-rollback.md',
+  'tools/internal/owned-process.cjs', 'cmake/SouiWindowsSdk.cmake'];
+const privateNames = ['prepare.cjs', 'validate.cjs', 'CMakeLists.txt', 'production-control.cpp',
+  'red-engine_thread.cpp.inert.snapshot', 'baseline-inputs.json',
+  'sdk_src_host_engine_thread.cpp.inert.snapshot', 'sdk_include_soui_host_engine_thread.h.inert.snapshot',
+  'tests_native_CMakeLists.txt.inert.snapshot'];
+const tools = {runner: 'F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe',
+  node: 'C:/nvm4w/nodejs/node.exe', cmake: 'C:/Program Files/CMake/bin/cmake.exe',
+  ctest: 'C:/Program Files/CMake/bin/ctest.exe'};
+for (const arch of ['x64', 'x86']) {
+  const bin = `C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/${arch}`;
+  tools['cl-' + arch] = bin + '/cl.exe';
+  tools['dumpbin-' + arch] = bin + '/dumpbin.exe';
+}
+const record = file => {
+  const bytes = fs.readFileSync(file);
+  return {path: file, bytes: bytes.length, sha256: hash(bytes)};
+};
+const frozen = {schema: 'soui.engine-startup-frozen-inputs/v1', root,
+  baseCommit: 'f6720b4936e488ae3edd9deb02ebf2613b5eba6c',
+  executed: false, controlledFaultsOnly: true, noGui: true, noVendorChanges: true,
+  sources: sources.map(relativePath => ({relativePath, ...record(path.join(root, relativePath))})),
+  privateInputs: privateNames.map(name => ({relativePath: name, ...record(path.join(__dirname, name))})),
+  tools: Object.fromEntries(Object.entries(tools).map(([name, file]) => [name, record(file)]))};
+if (frozen.tools.runner.sha256 !== '1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f')
+  throw new Error('Foundation provider changed');
+write('frozen-inputs.json', JSON.stringify(frozen, null, 2) + '\n');
+console.log(JSON.stringify({preparedOnly: true, frozenInputPath: path.join(__dirname, 'frozen-inputs.json'),
+  sourceCount: frozen.sources.length, privateInputCount: frozen.privateInputs.length,
+  tools: Object.keys(frozen.tools)}, null, 2));

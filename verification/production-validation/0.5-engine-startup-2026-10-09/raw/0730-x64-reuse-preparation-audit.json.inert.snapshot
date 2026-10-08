@@ -1,0 +1,813 @@
+{
+  "preparedOnly": true,
+  "executedNativeTests": false,
+  "originalIndex": {
+    "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\index.json",
+    "bytes": 118203,
+    "sha256": "092c59c35d2dcf962a3a3347a1e283980b8ded995f7c6b402a6fa72390c6ac9b"
+  },
+  "originalResults": {
+    "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\results.json",
+    "bytes": 8203,
+    "sha256": "3f9db61711e306f184f375beb1620e8b1112cb7fe57ddabd91ab2bcb3122bbc0"
+  },
+  "sourceCount": 8,
+  "nativeCompileInputCount": 66,
+  "actualRootZeroCompilationNotGenericPass": true,
+  "toolchain": {
+    "architecture": "x64",
+    "actualCompiler": {
+      "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
+      "bytes": 677968,
+      "sha256": "a80f5e7a24049a8f9a8931f83fc3d13ca417ad901e074c50cca71fcb12ba10be"
+    },
+    "compilerMetadata": {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\CMakeFiles\\4.2.3\\CMakeCXXCompiler.cmake",
+      "bytes": 6508,
+      "sha256": "1b080885144120f43636716a60139852ad7dd840aad639de4664d4253f8a63f8"
+    },
+    "cache": {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\CMakeCache.txt",
+      "bytes": 15962,
+      "sha256": "9173bebe8fde8a80c930aaab230bccbc05a8f00b65172f3e375eb97dfd81e54f"
+    },
+    "observedTools": [
+      {
+        "key": "cl-x64",
+        "diskObject": {
+          "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
+          "bytes": 677968,
+          "sha256": "a80f5e7a24049a8f9a8931f83fc3d13ca417ad901e074c50cca71fcb12ba10be"
+        },
+        "observedProcesses": [
+          {
+            "pid": 34440,
+            "creationFileTime": "134359719263763363",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe"
+          },
+          {
+            "pid": 85836,
+            "creationFileTime": "134359719324684184",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe"
+          },
+          {
+            "pid": 22880,
+            "creationFileTime": "134359719607896413",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe"
+          },
+          {
+            "pid": 91500,
+            "creationFileTime": "134359719658529639",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe"
+          },
+          {
+            "pid": 83592,
+            "creationFileTime": "134359719723763393",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe"
+          }
+        ]
+      },
+      {
+        "key": "link-x64",
+        "diskObject": {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe",
+          "bytes": 3252808,
+          "sha256": "e388eb34fe4d280633609f6acec12a3e73c288f8b69ce402c3d24c0d0f5524f3"
+        },
+        "observedProcesses": [
+          {
+            "pid": 37676,
+            "creationFileTime": "134359719286489896",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe"
+          },
+          {
+            "pid": 28900,
+            "creationFileTime": "134359719295454774",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe"
+          },
+          {
+            "pid": 63820,
+            "creationFileTime": "134359719603477340",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe"
+          },
+          {
+            "pid": 81196,
+            "creationFileTime": "134359719618901919",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe"
+          },
+          {
+            "pid": 85852,
+            "creationFileTime": "134359719628092036",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe"
+          },
+          {
+            "pid": 91508,
+            "creationFileTime": "134359719682817641",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe"
+          },
+          {
+            "pid": 41380,
+            "creationFileTime": "134359719693206695",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe"
+          },
+          {
+            "pid": 76404,
+            "creationFileTime": "134359719742952413",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe"
+          },
+          {
+            "pid": 20344,
+            "creationFileTime": "134359719753019390",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe"
+          }
+        ]
+      },
+      {
+        "key": "lib-x64",
+        "diskObject": {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\lib.exe",
+          "bytes": 23608,
+          "sha256": "0185f55b7f5eb8752f3de620cd4018126a91d4adf6f02ae16623315f7800411a"
+        },
+        "observedProcesses": [
+          {
+            "pid": 6564,
+            "creationFileTime": "134359719603156179",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\lib.exe"
+          }
+        ]
+      },
+      {
+        "key": "msbuild",
+        "diskObject": {
+          "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+          "bytes": 436024,
+          "sha256": "58fbe0acac5265fe9a93acb291e1dbd50432c4ebf00ff9b9fb4c34bc0f247c73"
+        },
+        "observedProcesses": [
+          {
+            "pid": 37876,
+            "creationFileTime": "134359719235772789",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe"
+          },
+          {
+            "pid": 109816,
+            "creationFileTime": "134359719299203245",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe"
+          },
+          {
+            "pid": 35656,
+            "creationFileTime": "134359719631413654",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe"
+          },
+          {
+            "pid": 113988,
+            "creationFileTime": "134359719699924746",
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe"
+          }
+        ]
+      }
+    ],
+    "projects": [
+      {
+        "target": "soui_engine_thread_startup_tests",
+        "macroEnabled": true,
+        "project": {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.vcxproj",
+          "bytes": 61230,
+          "sha256": "3393117ea3da8f06c4fe326c3ef65bb0456a29c6b75745821f4de7756b867379"
+        },
+        "tlogs": [
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\CL.command.1.tlog",
+            "bytes": 2466,
+            "sha256": "53afd9ba828b68d2214a5cd0f8c71fd991e75fde74ccc1ba36c1e4f441a49863"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\Cl.items.tlog",
+            "bytes": 544,
+            "sha256": "9f62f81140b240990601682a50ee0764df518987118a50673e335a5cfbb5a672"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\CL.read.1.tlog",
+            "bytes": 98432,
+            "sha256": "beb59488c3bdaf3f3e48fb4b6581cc39ec2890833cca1bf07c354494b2219dda"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\CL.write.1.tlog",
+            "bytes": 1094,
+            "sha256": "b003fdcd6ac7e9ae098eac65120bc79128af425e33f4d0f90a7c1b92d725c317"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\CustomBuild.command.1.tlog",
+            "bytes": 757,
+            "sha256": "afdfba39ef3e5288650a255f38951bc1787648d00d988b990ec52b43f44abfc0"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\CustomBuild.read.1.tlog",
+            "bytes": 8143,
+            "sha256": "2f02ddead68e16dcd36a74e108fab15dc358ca69637b5f24acd6542668014948"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\CustomBuild.write.1.tlog",
+            "bytes": 278,
+            "sha256": "b1717729b7b814964c2f1fb0f8c957370bd489031089d34d66b4e4dd7f7b3679"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\link.command.1.tlog",
+            "bytes": 3210,
+            "sha256": "d4c51a8ebbaa07eeda501116beb7e3775c49d84d30cf6a5d7f45ed5f0d4337a4"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\link.read.1.tlog",
+            "bytes": 5988,
+            "sha256": "d785aaefbef100e61b6821ef2d84bdd38e7021b069f0de62d90a66a8c47a0360"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\link.secondary.1.tlog",
+            "bytes": 426,
+            "sha256": "93f3015d7bccaf850adb07ec28eec9e07e0bb49cedabde448744bf1865ca672b"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\link.write.1.tlog",
+            "bytes": 1230,
+            "sha256": "16885421709187f2985517cd4ed83c541d02afff4820295b9f89ccd2061a42be"
+          }
+        ],
+        "externalVcpkgIntegrationObserved": true
+      },
+      {
+        "target": "EngineStartupRed",
+        "macroEnabled": true,
+        "project": {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.vcxproj",
+          "bytes": 62127,
+          "sha256": "64467681b01a1c73ff8f6b68384ed925e0a391f3b0a8e474d7cee11208c9e6e1"
+        },
+        "tlogs": [
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\CL.command.1.tlog",
+            "bytes": 2938,
+            "sha256": "2e7df91003448befccab287e3b4bd75cec9fbf816d0b7a4c49b557923b4097e0"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\Cl.items.tlog",
+            "bytes": 603,
+            "sha256": "e23e4acc0ed63310e5471103e9052ab775c82e6467afdd74c696e8fe36a4a0bf"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\CL.read.1.tlog",
+            "bytes": 98586,
+            "sha256": "deb3371fcc757a884dcdef46c25ad3a13957f0b81dfaf662a169246e3f403045"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\CL.write.1.tlog",
+            "bytes": 1212,
+            "sha256": "e952423ae6384b1d0e53a24352cdbe4f00d0f81b51d79811a1c0c9ad20704579"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\CustomBuild.command.1.tlog",
+            "bytes": 757,
+            "sha256": "afdfba39ef3e5288650a255f38951bc1787648d00d988b990ec52b43f44abfc0"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\CustomBuild.read.1.tlog",
+            "bytes": 8143,
+            "sha256": "2f02ddead68e16dcd36a74e108fab15dc358ca69637b5f24acd6542668014948"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\CustomBuild.write.1.tlog",
+            "bytes": 278,
+            "sha256": "b1717729b7b814964c2f1fb0f8c957370bd489031089d34d66b4e4dd7f7b3679"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\link.command.1.tlog",
+            "bytes": 3046,
+            "sha256": "18c14f90717e4a1e2c11c24a298904d556672da148a3bac0e431cd1a2bbcb25b"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\link.read.1.tlog",
+            "bytes": 5916,
+            "sha256": "3b58c9ff620ff00a31106facf1157bfd5c7ad5737d6610767a2ab6d5e8ed6e09"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\link.secondary.1.tlog",
+            "bytes": 408,
+            "sha256": "dc7b770d8a0271859fd4dc2686dc5f3a117e4471eabb1b4daabbeca48673708d"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\link.write.1.tlog",
+            "bytes": 1162,
+            "sha256": "34e0fe919db16e177584f88f9ae97dbad609f6e3c118bd213180334657171104"
+          }
+        ],
+        "externalVcpkgIntegrationObserved": true
+      },
+      {
+        "target": "EngineStartupProduction",
+        "macroEnabled": false,
+        "project": {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.vcxproj",
+          "bytes": 60886,
+          "sha256": "ccef5efcf1e6c6fdf047bee441613c948ea2dc7f641254831c5caac7c211b465"
+        },
+        "tlogs": [
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\CL.command.1.tlog",
+            "bytes": 2458,
+            "sha256": "8a5d4d2eff0a2f68f7a383d6dc8c254777cc57719a3f28bfa9349576b5344ced"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\Cl.items.tlog",
+            "bytes": 566,
+            "sha256": "a95ba1416ca08b23df5870e3355fa72cd9f32324b632187338e5950c11847e3a"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\CL.read.1.tlog",
+            "bytes": 71722,
+            "sha256": "4603ec8006a843838e94e0d16b8e0c133c346e61793f74c3dd705d4d14202c72"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\CL.write.1.tlog",
+            "bytes": 1138,
+            "sha256": "d0f9c539c61b7cbbbd51ce97e894c36dc4359cb560d9701623649f1086df5c73"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\CustomBuild.command.1.tlog",
+            "bytes": 757,
+            "sha256": "afdfba39ef3e5288650a255f38951bc1787648d00d988b990ec52b43f44abfc0"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\CustomBuild.read.1.tlog",
+            "bytes": 8143,
+            "sha256": "2f02ddead68e16dcd36a74e108fab15dc358ca69637b5f24acd6542668014948"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\CustomBuild.write.1.tlog",
+            "bytes": 278,
+            "sha256": "b1717729b7b814964c2f1fb0f8c957370bd489031089d34d66b4e4dd7f7b3679"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\link.command.1.tlog",
+            "bytes": 3052,
+            "sha256": "c6279f15d437095be23dbe7b72bc4a724915fb9223f49222734b8291f8439afa"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\link.read.1.tlog",
+            "bytes": 5880,
+            "sha256": "05c3661d2edec35e09904ceb2b5c19b88396d76653ff2dee62a671cd2b03840f"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\link.secondary.1.tlog",
+            "bytes": 399,
+            "sha256": "4a50da48933103a6bfd7ecda732df8b26f3671d43bec110560edca387ed8965e"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\link.write.1.tlog",
+            "bytes": 1158,
+            "sha256": "bf2afdac0aaee2b6765d47cd889ce81af7822954bfb934da3cbd97d095800417"
+          }
+        ],
+        "externalVcpkgIntegrationObserved": true
+      },
+      {
+        "target": "soui_engine_thread_timeout_tests",
+        "macroEnabled": false,
+        "project": {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.vcxproj",
+          "bytes": 61812,
+          "sha256": "1ac6f6c36a81f70785a337585e2c251ad639f81504f90580c3cd8fb3fa874291"
+        },
+        "tlogs": [
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\CL.command.1.tlog",
+            "bytes": 1196,
+            "sha256": "e71a9a41b912a8122e9b646bde98535155e119ed8fa2627630422dcd56e59d30"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\Cl.items.tlog",
+            "bytes": 286,
+            "sha256": "fa2b0eee776ada954adcc736a32c5e62cd656f3f161a524279c8192cd0a23306"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\CL.read.1.tlog",
+            "bytes": 32868,
+            "sha256": "524b6053061d5f17b361022cca21ae8a5dae2072d094ca6d5ae97ad933723ef6"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\CL.write.1.tlog",
+            "bytes": 578,
+            "sha256": "d205ad9962ca99d3385b57616228642a6435240ad5015a13078935e8afcd068c"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\CustomBuild.command.1.tlog",
+            "bytes": 757,
+            "sha256": "afdfba39ef3e5288650a255f38951bc1787648d00d988b990ec52b43f44abfc0"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\CustomBuild.read.1.tlog",
+            "bytes": 8143,
+            "sha256": "2f02ddead68e16dcd36a74e108fab15dc358ca69637b5f24acd6542668014948"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\CustomBuild.write.1.tlog",
+            "bytes": 278,
+            "sha256": "b1717729b7b814964c2f1fb0f8c957370bd489031089d34d66b4e4dd7f7b3679"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\link.command.1.tlog",
+            "bytes": 2962,
+            "sha256": "0a1276a0248084c862264501ae7b143d3b274533bfcf73cd21d55adb100be636"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\link.read.1.tlog",
+            "bytes": 6116,
+            "sha256": "8b8907220be1bb4e1988b6e040fec217c91d6fca4e1680a704a14c165e6295d2"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\link.secondary.1.tlog",
+            "bytes": 221,
+            "sha256": "ca28768a22f71793946b987fc82ebe6b742bbe6baf93c8e18c42fabb21f58603"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\link.write.1.tlog",
+            "bytes": 820,
+            "sha256": "01e487bb62597bc2a42cbf26b7b9258f82d26303e97afd00e3b895e51794400b"
+          }
+        ],
+        "externalVcpkgIntegrationObserved": true
+      },
+      {
+        "target": "actual-sdk/soui_sdk",
+        "macroEnabled": false,
+        "project": {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.vcxproj",
+          "bytes": 52840,
+          "sha256": "09999abf3348942330c3a46284c3a6cb37f4ae62b2041fc64d706241e2d2ac22"
+        },
+        "tlogs": [
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.command.1.tlog",
+            "bytes": 29014,
+            "sha256": "bca34e94d875cb1c2819162518be06f9351c2b0433d53e2f89e0b108852d7524"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\Cl.items.tlog",
+            "bytes": 4956,
+            "sha256": "0f52c5f5048bded537be3e9a8d241a1c92534f5a076d181e1b76f34fb206502f"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.read.1.tlog",
+            "bytes": 682738,
+            "sha256": "c6dd85d16b0fef604e3b8b852fd733e73c8c087423b5afd7a53e1fb37f6269fe"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.write.1.tlog",
+            "bytes": 9918,
+            "sha256": "f01175eef040f06ed31fda803115c56a0e96f089bb5909df6bfefbd3cc943a6c"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CustomBuild.command.1.tlog",
+            "bytes": 701,
+            "sha256": "de8445fa86ccd8c18839dabda2e986d07954bb421f103e41db00e47015ff0035"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CustomBuild.read.1.tlog",
+            "bytes": 7116,
+            "sha256": "86c3fd062745f38abc23102abf9d33e2239ad269f31c2e7a16f94f414d642c48"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CustomBuild.write.1.tlog",
+            "bytes": 222,
+            "sha256": "f158091162ce5e2a876eb04ffe4d2af83564cfdd16ee5fd7a1e2bf4d9a921ba5"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\Lib-link.read.1.tlog",
+            "bytes": 14882,
+            "sha256": "685c09bcb5e8275ae07da679128ce9a7e51a6f13ed6d5237233cd23ec4da2ddd"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\Lib-link.write.1.tlog",
+            "bytes": 7694,
+            "sha256": "4f352952e81b6170d49f83320b98a8b6b8f262b16c7ed31bf22077b700edc120"
+          },
+          {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\Lib.command.1.tlog",
+            "bytes": 9578,
+            "sha256": "c308e43fea06448345490628bf6f4243190226fc7a82571bb2384983eb0f2077"
+          }
+        ],
+        "externalVcpkgIntegrationObserved": true
+      }
+    ],
+    "generated": [
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\CMakeCache.txt",
+        "bytes": 15962,
+        "sha256": "9173bebe8fde8a80c930aaab230bccbc05a8f00b65172f3e375eb97dfd81e54f"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\CMakeFiles\\4.2.3\\CMakeCXXCompiler.cmake",
+        "bytes": 6508,
+        "sha256": "1b080885144120f43636716a60139852ad7dd840aad639de4664d4253f8a63f8"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.vcxproj",
+        "bytes": 61230,
+        "sha256": "3393117ea3da8f06c4fe326c3ef65bb0456a29c6b75745821f4de7756b867379"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\CL.command.1.tlog",
+        "bytes": 2466,
+        "sha256": "53afd9ba828b68d2214a5cd0f8c71fd991e75fde74ccc1ba36c1e4f441a49863"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\Cl.items.tlog",
+        "bytes": 544,
+        "sha256": "9f62f81140b240990601682a50ee0764df518987118a50673e335a5cfbb5a672"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\CL.read.1.tlog",
+        "bytes": 98432,
+        "sha256": "beb59488c3bdaf3f3e48fb4b6581cc39ec2890833cca1bf07c354494b2219dda"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\CL.write.1.tlog",
+        "bytes": 1094,
+        "sha256": "b003fdcd6ac7e9ae098eac65120bc79128af425e33f4d0f90a7c1b92d725c317"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\CustomBuild.command.1.tlog",
+        "bytes": 757,
+        "sha256": "afdfba39ef3e5288650a255f38951bc1787648d00d988b990ec52b43f44abfc0"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\CustomBuild.read.1.tlog",
+        "bytes": 8143,
+        "sha256": "2f02ddead68e16dcd36a74e108fab15dc358ca69637b5f24acd6542668014948"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\CustomBuild.write.1.tlog",
+        "bytes": 278,
+        "sha256": "b1717729b7b814964c2f1fb0f8c957370bd489031089d34d66b4e4dd7f7b3679"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\link.command.1.tlog",
+        "bytes": 3210,
+        "sha256": "d4c51a8ebbaa07eeda501116beb7e3775c49d84d30cf6a5d7f45ed5f0d4337a4"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\link.read.1.tlog",
+        "bytes": 5988,
+        "sha256": "d785aaefbef100e61b6821ef2d84bdd38e7021b069f0de62d90a66a8c47a0360"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\link.secondary.1.tlog",
+        "bytes": 426,
+        "sha256": "93f3015d7bccaf850adb07ec28eec9e07e0bb49cedabde448744bf1865ca672b"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_startup_tests.dir\\Release\\soui_eng.9A5A456A.tlog\\link.write.1.tlog",
+        "bytes": 1230,
+        "sha256": "16885421709187f2985517cd4ed83c541d02afff4820295b9f89ccd2061a42be"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.vcxproj",
+        "bytes": 62127,
+        "sha256": "64467681b01a1c73ff8f6b68384ed925e0a391f3b0a8e474d7cee11208c9e6e1"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\CL.command.1.tlog",
+        "bytes": 2938,
+        "sha256": "2e7df91003448befccab287e3b4bd75cec9fbf816d0b7a4c49b557923b4097e0"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\Cl.items.tlog",
+        "bytes": 603,
+        "sha256": "e23e4acc0ed63310e5471103e9052ab775c82e6467afdd74c696e8fe36a4a0bf"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\CL.read.1.tlog",
+        "bytes": 98586,
+        "sha256": "deb3371fcc757a884dcdef46c25ad3a13957f0b81dfaf662a169246e3f403045"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\CL.write.1.tlog",
+        "bytes": 1212,
+        "sha256": "e952423ae6384b1d0e53a24352cdbe4f00d0f81b51d79811a1c0c9ad20704579"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\CustomBuild.command.1.tlog",
+        "bytes": 757,
+        "sha256": "afdfba39ef3e5288650a255f38951bc1787648d00d988b990ec52b43f44abfc0"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\CustomBuild.read.1.tlog",
+        "bytes": 8143,
+        "sha256": "2f02ddead68e16dcd36a74e108fab15dc358ca69637b5f24acd6542668014948"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\CustomBuild.write.1.tlog",
+        "bytes": 278,
+        "sha256": "b1717729b7b814964c2f1fb0f8c957370bd489031089d34d66b4e4dd7f7b3679"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\link.command.1.tlog",
+        "bytes": 3046,
+        "sha256": "18c14f90717e4a1e2c11c24a298904d556672da148a3bac0e431cd1a2bbcb25b"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\link.read.1.tlog",
+        "bytes": 5916,
+        "sha256": "3b58c9ff620ff00a31106facf1157bfd5c7ad5737d6610767a2ab6d5e8ed6e09"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\link.secondary.1.tlog",
+        "bytes": 408,
+        "sha256": "dc7b770d8a0271859fd4dc2686dc5f3a117e4471eabb1b4daabbeca48673708d"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupRed.dir\\Release\\EngineStartupRed.tlog\\link.write.1.tlog",
+        "bytes": 1162,
+        "sha256": "34e0fe919db16e177584f88f9ae97dbad609f6e3c118bd213180334657171104"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.vcxproj",
+        "bytes": 60886,
+        "sha256": "ccef5efcf1e6c6fdf047bee441613c948ea2dc7f641254831c5caac7c211b465"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\CL.command.1.tlog",
+        "bytes": 2458,
+        "sha256": "8a5d4d2eff0a2f68f7a383d6dc8c254777cc57719a3f28bfa9349576b5344ced"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\Cl.items.tlog",
+        "bytes": 566,
+        "sha256": "a95ba1416ca08b23df5870e3355fa72cd9f32324b632187338e5950c11847e3a"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\CL.read.1.tlog",
+        "bytes": 71722,
+        "sha256": "4603ec8006a843838e94e0d16b8e0c133c346e61793f74c3dd705d4d14202c72"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\CL.write.1.tlog",
+        "bytes": 1138,
+        "sha256": "d0f9c539c61b7cbbbd51ce97e894c36dc4359cb560d9701623649f1086df5c73"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\CustomBuild.command.1.tlog",
+        "bytes": 757,
+        "sha256": "afdfba39ef3e5288650a255f38951bc1787648d00d988b990ec52b43f44abfc0"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\CustomBuild.read.1.tlog",
+        "bytes": 8143,
+        "sha256": "2f02ddead68e16dcd36a74e108fab15dc358ca69637b5f24acd6542668014948"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\CustomBuild.write.1.tlog",
+        "bytes": 278,
+        "sha256": "b1717729b7b814964c2f1fb0f8c957370bd489031089d34d66b4e4dd7f7b3679"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\link.command.1.tlog",
+        "bytes": 3052,
+        "sha256": "c6279f15d437095be23dbe7b72bc4a724915fb9223f49222734b8291f8439afa"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\link.read.1.tlog",
+        "bytes": 5880,
+        "sha256": "05c3661d2edec35e09904ceb2b5c19b88396d76653ff2dee62a671cd2b03840f"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\link.secondary.1.tlog",
+        "bytes": 399,
+        "sha256": "4a50da48933103a6bfd7ecda732df8b26f3671d43bec110560edca387ed8965e"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\EngineStartupProduction.dir\\Release\\EngineSt.89903F0C.tlog\\link.write.1.tlog",
+        "bytes": 1158,
+        "sha256": "bf2afdac0aaee2b6765d47cd889ce81af7822954bfb934da3cbd97d095800417"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.vcxproj",
+        "bytes": 61812,
+        "sha256": "1ac6f6c36a81f70785a337585e2c251ad639f81504f90580c3cd8fb3fa874291"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\CL.command.1.tlog",
+        "bytes": 1196,
+        "sha256": "e71a9a41b912a8122e9b646bde98535155e119ed8fa2627630422dcd56e59d30"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\Cl.items.tlog",
+        "bytes": 286,
+        "sha256": "fa2b0eee776ada954adcc736a32c5e62cd656f3f161a524279c8192cd0a23306"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\CL.read.1.tlog",
+        "bytes": 32868,
+        "sha256": "524b6053061d5f17b361022cca21ae8a5dae2072d094ca6d5ae97ad933723ef6"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\CL.write.1.tlog",
+        "bytes": 578,
+        "sha256": "d205ad9962ca99d3385b57616228642a6435240ad5015a13078935e8afcd068c"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\CustomBuild.command.1.tlog",
+        "bytes": 757,
+        "sha256": "afdfba39ef3e5288650a255f38951bc1787648d00d988b990ec52b43f44abfc0"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\CustomBuild.read.1.tlog",
+        "bytes": 8143,
+        "sha256": "2f02ddead68e16dcd36a74e108fab15dc358ca69637b5f24acd6542668014948"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\CustomBuild.write.1.tlog",
+        "bytes": 278,
+        "sha256": "b1717729b7b814964c2f1fb0f8c957370bd489031089d34d66b4e4dd7f7b3679"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\link.command.1.tlog",
+        "bytes": 2962,
+        "sha256": "0a1276a0248084c862264501ae7b143d3b274533bfcf73cd21d55adb100be636"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\link.read.1.tlog",
+        "bytes": 6116,
+        "sha256": "8b8907220be1bb4e1988b6e040fec217c91d6fca4e1680a704a14c165e6295d2"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\link.secondary.1.tlog",
+        "bytes": 221,
+        "sha256": "ca28768a22f71793946b987fc82ebe6b742bbe6baf93c8e18c42fabb21f58603"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\soui_engine_thread_timeout_tests.dir\\Release\\soui_eng.151B6925.tlog\\link.write.1.tlog",
+        "bytes": 820,
+        "sha256": "01e487bb62597bc2a42cbf26b7b9258f82d26303e97afd00e3b895e51794400b"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.vcxproj",
+        "bytes": 52840,
+        "sha256": "09999abf3348942330c3a46284c3a6cb37f4ae62b2041fc64d706241e2d2ac22"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.command.1.tlog",
+        "bytes": 29014,
+        "sha256": "bca34e94d875cb1c2819162518be06f9351c2b0433d53e2f89e0b108852d7524"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\Cl.items.tlog",
+        "bytes": 4956,
+        "sha256": "0f52c5f5048bded537be3e9a8d241a1c92534f5a076d181e1b76f34fb206502f"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.read.1.tlog",
+        "bytes": 682738,
+        "sha256": "c6dd85d16b0fef604e3b8b852fd733e73c8c087423b5afd7a53e1fb37f6269fe"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.write.1.tlog",
+        "bytes": 9918,
+        "sha256": "f01175eef040f06ed31fda803115c56a0e96f089bb5909df6bfefbd3cc943a6c"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CustomBuild.command.1.tlog",
+        "bytes": 701,
+        "sha256": "de8445fa86ccd8c18839dabda2e986d07954bb421f103e41db00e47015ff0035"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CustomBuild.read.1.tlog",
+        "bytes": 7116,
+        "sha256": "86c3fd062745f38abc23102abf9d33e2239ad269f31c2e7a16f94f414d642c48"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CustomBuild.write.1.tlog",
+        "bytes": 222,
+        "sha256": "f158091162ce5e2a876eb04ffe4d2af83564cfdd16ee5fd7a1e2bf4d9a921ba5"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\Lib-link.read.1.tlog",
+        "bytes": 14882,
+        "sha256": "685c09bcb5e8275ae07da679128ce9a7e51a6f13ed6d5237233cd23ec4da2ddd"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\Lib-link.write.1.tlog",
+        "bytes": 7694,
+        "sha256": "4f352952e81b6170d49f83320b98a8b6b8f262b16c7ed31bf22077b700edc120"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\Lib.command.1.tlog",
+        "bytes": 9578,
+        "sha256": "c308e43fea06448345490628bf6f4243190226fc7a82571bb2384983eb0f2077"
+      }
+    ],
+    "limitation": "Owned image paths and held disk bytes do not authenticate loaded memory. Existing VCPKG MSBuild integration is recorded, not disabled."
+  },
+  "note": "Read-only validation of existing outputs/tlogs/owned compile raw. MSBuild property evaluation and all native cases are still pending Root execution."
+}

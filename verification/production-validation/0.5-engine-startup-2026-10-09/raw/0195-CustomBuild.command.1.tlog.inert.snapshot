@@ -1,0 +1,10 @@
+^F:\WORK\SM05-STARTUP\OUT\ENGINE-STARTUP-SDK-VALIDATION-B5312436-E181-415A-8B79-F22CA568D329\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/work/sm05-startup/out/engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329 -BF:/work/sm05-startup/out/engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329/actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed/b-x64 --check-stamp-file F:/work/sm05-startup/out/engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329/actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed/b-x64/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

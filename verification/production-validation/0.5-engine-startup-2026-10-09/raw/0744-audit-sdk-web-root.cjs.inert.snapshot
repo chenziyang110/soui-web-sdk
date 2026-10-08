@@ -1,0 +1,44 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const root='F:/work/sm05-startup',runner='F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const client=path.join(root,'tools/internal/owned-process.cjs');
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const pin=p=>{const b=fs.readFileSync(p);return {path:p,bytes:b.length,sha256:hash(b)};};
+const check=r=>assert.deepEqual(pin(r.path),r);
+const write=(p,v)=>fs.writeFileSync(p,Buffer.isBuffer(v)?v:JSON.stringify(v,null,2)+'\n',{flag:'wx'});
+async function main(){
+  const base=path.join(root,'out','audit-root-'+crypto.randomUUID());fs.mkdirSync(base);
+  const cli=path.join(path.dirname(fs.realpathSync.native(process.execPath)),'node_modules/npm/bin/npm-cli.js');
+  const tools=[process.execPath,cli,runner,client,__filename].map(pin);
+  assert.equal(tools[2].sha256,'1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f');
+  assert.equal(tools[3].sha256,'8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7');
+  assert(!fs.existsSync(path.join(root,'.npmrc'))&&!fs.existsSync(path.join(root,'sdk/web/.npmrc')));
+  const packages=['sdk/web/package.json','sdk/web/package-lock.json'].map(p=>pin(path.join(root,p)));
+  const userConfig=path.join(base,'empty-user.npmrc'),globalConfig=path.join(base,'empty-global.npmrc');
+  write(userConfig,Buffer.alloc(0));write(globalConfig,Buffer.alloc(0));
+  const allow=new Set(['path','pathext','comspec','systemroot','windir','temp','tmp','userprofile','appdata','localappdata','homedrive','homepath','programdata','number_of_processors','processor_architecture']);
+  const env={};for(const [key,value] of Object.entries(process.env))if(allow.has(key.toLowerCase()))env[key]=value;
+  env.NPM_CONFIG_USERCONFIG=userConfig;env.NPM_CONFIG_GLOBALCONFIG=globalConfig;
+  const args=[cli,'--prefix','sdk/web','audit','--json','--ignore-scripts','--registry=https://registry.npmjs.org'];
+  const inputs={schema:'soui.sdk-web-owned-audit-inputs/v1',root,tools,packages,args,timeoutMs:120000,drainMs:3000,allowlistedChildEnvironment:true,valuesNeverWritten:true,noInstall:true,noTailPolicy:true};
+  write(path.join(base,'inputs.json'),inputs);
+  const stdout=fs.openSync(path.join(base,'stdout.bin'),'wx'),stderr=fs.openSync(path.join(base,'stderr.bin'),'wx');
+  let owned,finished,ready;
+  try{owned=require(client).launchOwned(process.execPath,args,{runner,cwd:root,report:path.join(base,'owned.ndjson'),env,timeoutMs:120000,drainMs:3000,stdout,stderr});ready=await owned.ready;finished=await owned.finished;}
+  finally{if(owned&&!finished){owned.stop();finished=await owned.finished;}fs.closeSync(stdout);fs.closeSync(stderr);}
+  write(path.join(base,'finished.json'),{...finished,ready});tools.forEach(check);packages.forEach(check);
+  const raw=fs.readFileSync(finished.report),rows=raw.toString('utf8').trim().split('\n').map(JSON.parse),start=rows[0],terminal=rows.at(-1);
+  assert.equal(hash(raw),finished.reportSha256);assert.equal(start.pid,finished.pid);assert.equal(start.creationFileTime,finished.creationFileTime);assert.deepEqual(ready,{pid:finished.pid,creationFileTime:finished.creationFileTime});
+  assert.equal(start.jobAssignedBeforeResume,true);assert.equal(start.breakawayAllowed,false);
+  const context=JSON.parse(fs.readFileSync(finished.report+'.context.json','utf8'));
+  assert.equal(context.cwd,root);assert.deepEqual(context.args,args);assert.equal(context.executableSha256,tools[0].sha256);assert.equal(context.runnerSha256,tools[2].sha256);
+  assert.equal(context.tailImagePin,undefined);assert.equal(finished.fallbackUsed,false);assert.equal(finished.stopRequested,false);
+  let audit=null,parseError=null;try{audit=JSON.parse(fs.readFileSync(path.join(base,'stdout.bin'),'utf8'));}catch(e){parseError=e.message;}
+  const natural=finished.passed&&finished.exitCode===0&&finished.supervisorExitCode===0&&finished.closureConfirmed&&terminal.reason==='completed'&&terminal.activeProcesses===0&&terminal.activeBeforeCleanup===0&&!terminal.terminatedOwnedJob;
+  const result={schema:'soui.sdk-web-owned-audit-result/v1',base,finished,exactRootBound:true,naturalClosure:natural,vulnerabilities:audit?.metadata?.vulnerabilities??null,parseError,auditAccepted:natural&&audit?.metadata?.vulnerabilities?.total===0,noInstall:true,releaseReady:false};
+  write(path.join(base,'summary.json'),result);
+  const files=fs.readdirSync(base).map(n=>({...pin(path.join(base,n)),relativePath:n}));write(path.join(base,'index.json'),{files,releaseReady:false});
+  console.log(JSON.stringify({base,rootPid:finished.pid,creationFileTime:finished.creationFileTime,naturalClosure:natural,vulnerabilities:result.vulnerabilities,auditAccepted:result.auditAccepted,index:pin(path.join(base,'index.json'))}));
+  assert(result.auditAccepted,'Audit failed; original retained');
+}
+main().catch(e=>{console.error(e.stack);process.exitCode=1;});

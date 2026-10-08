@@ -1,0 +1,235 @@
+'use strict';
+
+// Prepared for Root to execute under its held outer session; no GUI or SDK-wide build.
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const assert = require('node:assert/strict');
+const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const frozenBytes = fs.readFileSync(path.join(__dirname, 'frozen-inputs.json'));
+const frozen = JSON.parse(frozenBytes);
+const root = frozen.root;
+const clientPath = path.join(root, 'tools/internal/owned-process.cjs');
+const {launchOwned} = require(clientPath);
+const write = (file, value) => fs.writeFileSync(file,
+  typeof value === 'string' || Buffer.isBuffer(value) ? value : JSON.stringify(value, null, 2) + '\n', {flag: 'wx'});
+
+function verify(record) {
+  const bytes = fs.readFileSync(record.path);
+  assert.equal(bytes.length, record.bytes, 'Frozen input size differs: ' + record.path);
+  assert.equal(hash(bytes), record.sha256, 'Frozen input hash differs: ' + record.path);
+  return bytes;
+}
+
+function verifyFrozen() {
+  for (const record of [...frozen.sources, ...frozen.nativeCompileInputs, ...frozen.privateInputs,
+    ...Object.values(frozen.tools)]) verify(record);
+  assert.equal(path.resolve(process.execPath).toLowerCase(), path.resolve(frozen.tools.node.path).toLowerCase());
+  assert.equal(frozen.tools.runner.sha256, '1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f');
+}
+
+function fileRecord(file) {
+  const bytes = fs.readFileSync(file);
+  return {path: file, bytes: bytes.length, sha256: hash(bytes)};
+}
+
+function pe(file, architecture) {
+  const bytes = fs.readFileSync(file);
+  assert.equal(bytes.toString('ascii', 0, 2), 'MZ');
+  const peOffset = bytes.readUInt32LE(0x3c);
+  assert(peOffset <= bytes.length - 24);
+  assert.equal(bytes.toString('ascii', peOffset, peOffset + 4), 'PE\0\0');
+  const machine = bytes.readUInt16LE(peOffset + 4);
+  assert.equal(machine, architecture === 'x86' ? 0x14c : 0x8664);
+  return {...fileRecord(file), coffMachine: machine};
+}
+
+function walk(directory) {
+  const files = [];
+  for (const item of fs.readdirSync(directory, {withFileTypes: true})) {
+    const file = path.join(directory, item.name);
+    assert(!fs.lstatSync(file).isSymbolicLink(), 'Private generated tree traverses a link');
+    if (item.isDirectory()) files.push(...walk(file));
+    else if (item.isFile()) files.push(file);
+  }
+  return files;
+}
+
+async function main() {
+  assert.equal(process.platform, 'win32');
+  assert.deepEqual(process.argv.slice(2), ['all'], 'Use the explicit all argument');
+  verifyFrozen();
+  const attempt = path.join(__dirname, 'actual-' + crypto.randomUUID());
+  fs.mkdirSync(attempt);
+  const env = {...process.env, MSBUILDDISABLENODEREUSE: '1'};
+  const removedEnvironmentNames = [];
+  for (const name of Object.keys(env)) {
+    if (/token|password|secret|credential|authorization|api[_-]?key|npm.*auth/i.test(name)) {
+      removedEnvironmentNames.push(name); delete env[name];
+    }
+  }
+  const result = {schema: 'soui.engine-startup-actual-validation/v1', attempt,
+    frozenInputSha256: hash(frozenBytes), baseCommit: frozen.baseCommit,
+    controlledFaultsOnly: true, noGui: true, noVendorChanges: true, noTailAcceptance: true,
+    actualSdkLibraryCompiled: false, fullDistributionCompiled: false,
+    nodeVersion: process.version, removedEnvironmentNames,
+    phases: [], architectures: [], controlledRegressionObserved: false,
+    allPositiveGenericSupervisionPassed: false, validationPassed: false};
+  write(path.join(attempt, 'frozen-inputs.json'), frozenBytes);
+  for (const [index, source] of frozen.sources.entries())
+    write(path.join(attempt, `source-${String(index).padStart(2, '0')}.inert.snapshot`), verify(source));
+  for (const [index, source] of frozen.nativeCompileInputs.entries())
+    write(path.join(attempt, `native-input-${String(index).padStart(3, '0')}.inert.snapshot`), verify(source));
+
+  async function phase(name, executable, args, {timeoutMs = 120000, drainMs = 10000} = {}) {
+    verifyFrozen();
+    const directory = path.join(attempt, name);
+    fs.mkdirSync(directory);
+    const report = path.join(directory, 'owned.ndjson');
+    const stdoutPath = path.join(directory, 'stdout.bin');
+    const stderrPath = path.join(directory, 'stderr.bin');
+    const output = fs.openSync(stdoutPath, 'wx');
+    const error = fs.openSync(stderrPath, 'wx');
+    let owned;
+    let ready = null;
+    let readyError = null;
+    let final;
+    try {
+      owned = launchOwned(executable, args, {runner: frozen.tools.runner.path, cwd: root,
+        report, timeoutMs, drainMs, env, stdout: output, stderr: error});
+      try { ready = await owned.ready; } catch (failure) { readyError = failure.message; }
+      final = await owned.finished;
+    } finally {
+      // An unexpected reader error must still await the one held subject's cleanup.
+      if (owned && !final) { owned.stop(); final = await owned.finished; }
+      fs.closeSync(output); fs.closeSync(error);
+    }
+    verifyFrozen();
+    const reportBytes = fs.readFileSync(report);
+    assert.equal(hash(reportBytes), final.reportSha256);
+    const text = reportBytes.toString('utf8');
+    assert(text.endsWith('\n'), 'Native report is truncated');
+    const rows = text.trimEnd().split('\n').map(line => JSON.parse(line));
+    const start = rows[0];
+    assert.equal(start.event, 'start');
+    assert.equal(start.schema, 'soui.owned-process-run/v1');
+    assert.equal(start.pid, final.pid);
+    assert.equal(start.creationFileTime, final.creationFileTime);
+    assert(/^[1-9]\d*$/.test(start.creationFileTime));
+    assert.equal(start.jobAssignedBeforeResume, true);
+    assert.equal(start.breakawayAllowed, false);
+    assert.deepEqual(ready, {pid: start.pid, creationFileTime: start.creationFileTime});
+    assert.equal(readyError, null);
+    const context = JSON.parse(fs.readFileSync(report + '.context.json'));
+    assert.equal(context.runnerSha256, frozen.tools.runner.sha256);
+    assert.equal(context.executableSha256, hash(fs.readFileSync(executable)));
+    assert.equal(context.executable, executable);
+    assert.deepEqual(context.args, args);
+    assert.equal(context.cwd, root);
+    assert.equal(context.timeoutMs, timeoutMs);
+    assert.equal(context.drainMs, drainMs);
+    assert.equal(context.tailImagePin, undefined);
+    assert.equal(final.fallbackUsed, false);
+    assert.equal(final.stopRequested, false);
+    assert.equal(final.spawnError, null);
+    assert.equal(final.reportError, null);
+    assert.equal(final.closureConfirmed, true);
+    assert.equal(final.terminal.activeProcesses, 0);
+    assert.deepEqual(rows.at(-1), final.terminal);
+    const record = {name, executable, args: [...args], ready, readyError, result: final,
+      compilationCompleted: name.endsWith('-compile') ? final.exitCode === 0 : undefined,
+      genericSupervisionPassed: final.passed,
+      raw: [report, report + '.context.json', stdoutPath, stderrPath].map(fileRecord)};
+    write(path.join(directory, 'result.json'), record);
+    result.phases.push(record);
+    console.log(JSON.stringify({phase: name, rootExit: final.exitCode,
+      genericPassed: final.passed, reason: final.terminal.reason, closureConfirmed: final.closureConfirmed}));
+    return record;
+  }
+
+  try {
+    for (const architecture of ['x64', 'x86']) {
+      const build = path.join(attempt, 'b-' + architecture);
+      const platform = architecture === 'x64' ? 'x64' : 'Win32';
+      const configured = await phase(architecture + '-configure', frozen.tools.cmake.path,
+        ['-S', __dirname, '-B', build, '-G', 'Visual Studio 17 2022',
+          '-A', platform + ',version=10.0.19041.0', '-T', 'v143,host=x64,version=14.44.35207',
+          '-DCMAKE_SYSTEM_VERSION=10.0.19041.0',
+          '-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=' + path.join(root, 'cmake/SouiWindowsSdk.cmake').replace(/\\/g, '/')]);
+      assert.equal(configured.result.exitCode, 0, 'Configuration root failed');
+      const compiled = await phase(architecture + '-compile', frozen.tools.cmake.path,
+        ['--build', build, '--config', 'Release', '--target', 'soui_engine_thread_startup_tests',
+          'soui_engine_thread_timeout_tests', 'EngineStartupRed', 'EngineStartupProduction', '--', '/m:2', '/nr:false',
+          '/bl:' + path.join(attempt, architecture + '-private-build.binlog')], {timeoutMs: 240000, drainMs: 30000});
+      assert.equal(compiled.result.exitCode, 0, 'Compilation root failed');
+      // Generic false/124 compiler tails remain failures; no reviewed-tail policy is used.
+      const cache = fs.readFileSync(path.join(build, 'CMakeCache.txt'), 'utf8');
+      const compiler = cache.match(/^CMAKE_CXX_COMPILER:FILEPATH=(.+)$/m)?.[1].trim();
+      assert(compiler, 'Actual compiler path missing');
+      assert.equal(path.resolve(compiler).toLowerCase(), path.resolve(frozen.tools['cl-' + architecture].path).toLowerCase());
+      assert.equal(hash(fs.readFileSync(compiler)), frozen.tools['cl-' + architecture].sha256);
+      for (const target of ['soui_engine_thread_startup_tests', 'EngineStartupRed', 'EngineStartupProduction',
+        'soui_engine_thread_timeout_tests', 'actual-sdk/soui_sdk']) {
+        const project = fs.readFileSync(path.join(build, target + '.vcxproj'), 'utf8');
+        assert(project.includes('<PlatformToolset>v143</PlatformToolset>'));
+        assert(project.includes('<WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>'));
+        assert(project.includes('<VCToolsVersion>14.44.35207</VCToolsVersion>'));
+        if (target === 'EngineStartupProduction' || target === 'actual-sdk/soui_sdk' ||
+            target === 'soui_engine_thread_timeout_tests') assert(!project.includes('SOUI_ENGINE_STARTUP_TEST_ONLY'));
+      }
+      const outputs = ['soui_engine_thread_startup_tests.exe', 'EngineStartupRed.exe', 'EngineStartupProduction.exe']
+        .map(name => pe(path.join(build, 'Release', name), architecture));
+      outputs.push(pe(path.join(build, 'Release/soui_engine_thread_timeout_tests.exe'), architecture));
+      const actualSdk = fileRecord(path.join(build, 'actual-sdk/Release/soui_sdk.lib'));
+      assert.equal(fs.readFileSync(actualSdk.path).toString('ascii', 0, 8), '!<arch>\n');
+      outputs.push(actualSdk);
+      const tested = await phase(architecture + '-ctest', frozen.tools.ctest.path,
+        ['--test-dir', build, '-C', 'Release', '--output-on-failure', '-R', '^sdk.native.engine-(startup-|diagnostic-timeout$)'],
+        {timeoutMs: 60000});
+      assert.equal(tested.result.passed, true, 'CTest must naturally close with root zero');
+      const testLog = fs.readFileSync(path.join(build, 'Testing/Temporary/LastTest.log'), 'utf8');
+      assert(testLog.includes('Engine startup controlled-fault regression: 9/9 passed'));
+      assert(testLog.includes('Production engine implementation without TEST_ONLY hook definitions passed'));
+      assert(testLog.includes('Engine diagnostics: owned late results and failure semantics passed'));
+      assert.equal((testLog.match(/Test Passed\./g) || []).length, 3);
+      const direct = await phase(architecture + '-direct-green', outputs[0].path, [], {timeoutMs: 30000});
+      assert.equal(direct.result.passed, true, 'Green direct fixture must naturally close');
+      assert(fs.readFileSync(path.join(attempt, architecture + '-direct-green/stdout.bin'), 'utf8')
+        .includes('Engine startup controlled-fault regression: 9/9 passed'));
+      const red = await phase(architecture + '-old-body-red', outputs[1].path,
+        ['--red-launch-system-error'], {timeoutMs: 3000, drainMs: 2000});
+      assert.equal(red.result.passed, false);
+      assert.equal(red.result.supervisorExitCode, 124);
+      assert.equal(red.result.terminal.passed, false);
+      assert.equal(red.result.terminal.reason, 'timeout');
+      assert(fs.readFileSync(path.join(attempt, architecture + '-old-body-red/stdout.bin'), 'utf8')
+        .includes('Controlled launch exception observed; old-body destructor follows'));
+      const imported = await phase(architecture + '-production-imports', frozen.tools['dumpbin-' + architecture].path,
+        ['/imports', outputs[2].path]);
+      assert.equal(imported.result.passed, true);
+      result.architectures.push({architecture, outputs, actualCompiler: fileRecord(compiler),
+        ctestPassed: 3, directControlledCasesPassed: 9, oldBodyDestructorBoundaryObserved: true,
+        compilationCompleted: compiled.result.exitCode === 0,
+        compilationGenericSupervisionPassed: compiled.result.passed,
+        compilerTailAcceptance: false, actualSdkLibraryCompiled: true, fullDistributionCompiled: false});
+    }
+    verifyFrozen();
+    result.controlledRegressionObserved = true;
+    result.actualSdkLibraryCompiled = true;
+    result.allPositiveGenericSupervisionPassed = result.phases
+      .filter(item => !item.name.endsWith('-old-body-red')).every(item => item.result.passed === true);
+    result.validationPassed = result.allPositiveGenericSupervisionPassed;
+  } catch (failure) {
+    result.error = failure.stack || failure.message;
+    process.exitCode = 1;
+  } finally {
+    write(path.join(attempt, 'results.json'), result);
+    const files = walk(attempt).map(file => ({relativePath: path.relative(attempt, file).replace(/\\/g, '/'), ...fileRecord(file)}));
+    write(path.join(attempt, 'index.json'), {schema: 'soui.engine-startup-private-evidence/v1',
+      validationPassed: result.validationPassed, controlledRegressionObserved: result.controlledRegressionObserved, files});
+    console.log(JSON.stringify({attempt, validationPassed: result.validationPassed,
+      architectures: result.architectures, error: result.error || null}));
+  }
+}
+
+main().catch(error => { console.error(error.stack || error.message); process.exitCode = 1; });

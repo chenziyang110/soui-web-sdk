@@ -1,0 +1,92 @@
+'use strict';
+// Pure filesystem preparation only. No child process, GUI, compiler, or native fixture is run.
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const assert = require('node:assert/strict');
+const evidence = require('./toolchain-evidence.cjs');
+const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const write = (file, value) => fs.writeFileSync(path.join(__dirname, file), Buffer.isBuffer(value) ? value :
+  JSON.stringify(value, null, 2) + '\n', {flag: 'wx'});
+const first = 'F:/work/sm05-startup/out/engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329';
+const attempt = path.join(first, 'actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed');
+const originalFrozenBytes = fs.readFileSync(path.join(first, 'frozen-inputs-final.json'));
+assert.equal(hash(originalFrozenBytes), 'abb2f01c5103c2fd925af110700a35d81b0744109cc7313b9cbb902af5055ed2');
+const previous = JSON.parse(originalFrozenBytes);
+for (const item of [...previous.sources, ...previous.nativeCompileInputs, ...previous.privateInputs,
+  ...Object.values(previous.tools)]) evidence.verify(item);
+const originalIndex = evidence.record(path.join(attempt, 'index.json'));
+const originalResults = evidence.record(path.join(attempt, 'results.json'));
+const index = JSON.parse(evidence.verify(originalIndex));
+const results = JSON.parse(evidence.verify(originalResults));
+assert.equal(index.files.length, 286);
+for (const item of index.files) {
+  assert.equal(evidence.canonical(item.path), evidence.canonical(path.join(attempt, item.relativePath)));
+  evidence.verify(item);
+}
+assert.equal(results.frozenInputSha256, hash(originalFrozenBytes));
+assert.equal(results.phases.length, 2);
+assert.equal(results.controlledRegressionObserved, false);
+assert.equal(results.validationPassed, false);
+assert(results.error.includes("assert(project.includes('<VCToolsVersion>14.44.35207</VCToolsVersion>'))"));
+const tools = {...previous.tools};
+const vs = 'C:/Program Files/Microsoft Visual Studio/2022/Community';
+tools.msbuild = evidence.record(path.join(vs, 'MSBuild/Current/Bin/amd64/MSBuild.exe'));
+for (const architecture of ['x64', 'x86']) {
+  for (const tool of ['link', 'lib']) tools[tool + '-' + architecture] =
+    evidence.record(path.join(path.dirname(tools['cl-' + architecture].path), tool + '.exe'));
+}
+const vcTargetsPath = path.join(vs, 'MSBuild/Microsoft/VC/v170');
+const toolchainImports = ['Microsoft.Cpp.Default.props', 'Microsoft.Cpp.props']
+  .map(name => evidence.record(path.join(vcTargetsPath, name)));
+const frozen = {...previous, schema: 'soui.engine-startup-continuation-frozen-inputs/v1',
+  continuationPreparedOnly: true, executed: false, tools, vcTargetsPath, toolchainImports,
+  originalPrivateInputs: previous.privateInputs,
+  priorAttempt: {directory: attempt, build: path.join(attempt, 'b-x64'),
+    index: originalIndex, results: originalResults, payloadFiles: index.files,
+    originalFrozenSha256: hash(originalFrozenBytes), initialHarnessFailed: true,
+    harnessFailure: 'Incorrect requirement that generated vcxproj must literally contain VCToolsVersion. No native regression had run.',
+    compiledX64RootExitZero: true, genericSupervisionPassed: false, compilerTailAcceptance: false,
+    note: 'Reuse is source/bytes-bound compilation evidence only. Both original owned failures remain false/124.'}};
+for (const phase of results.phases) {
+  evidence.readPhase(phase, frozen);
+  assert.equal(phase.result.exitCode, 0);
+  assert.equal(phase.result.passed, false); assert.equal(phase.result.supervisorExitCode, 124);
+  assert.equal(phase.result.terminal.reason, 'owned-descendants-remain');
+}
+const x64 = evidence.readToolchain(frozen.priorAttempt.build, 'x64', frozen, results.phases[1]);
+const preservation = [];
+for (const [original, destination] of [[originalIndex, 'first-actual-index.json.inert.snapshot'],
+  [originalResults, 'first-actual-results.json.inert.snapshot']]) {
+  write(destination, evidence.verify(original));
+  const copied = evidence.record(path.join(__dirname, destination));
+  assert.equal(copied.sha256, original.sha256); preservation.push({original, copied});
+}
+for (const [original, destination] of [[evidence.record(path.join(first, 'validate.cjs')), 'original-validate.cjs.inert.snapshot'],
+  [evidence.record(path.join(first, 'frozen-inputs-final.json')), 'original-frozen-inputs-final.json.inert.snapshot'],
+  [evidence.record(path.join(first, 'frozen-inputs.json')), 'original-frozen-inputs.json.inert.snapshot']]) {
+  const copied = evidence.record(path.join(__dirname, destination));
+  assert.equal(copied.sha256, original.sha256); preservation.push({original, copied});
+}
+write('first-attempt-preservation-map.json', {originalPayloadCount: index.files.length,
+  allOriginalPayloadBytesVerified: true, originalFilesNotModified: true, preservation,
+  note: 'The full 286 original payload files remain at their original paths and are frozen individually; no old index/raw is rewritten.'});
+write('x64-reuse-preparation-audit.json', {preparedOnly: true, executedNativeTests: false,
+  originalIndex, originalResults, sourceCount: previous.sources.length,
+  nativeCompileInputCount: previous.nativeCompileInputs.length,
+  actualRootZeroCompilationNotGenericPass: true, toolchain: x64,
+  note: 'Read-only validation of existing outputs/tlogs/owned compile raw. MSBuild property evaluation and all native cases are still pending Root execution.'});
+const privateNames = ['validate.cjs', 'prepare-continuation.cjs', 'toolchain-evidence.cjs', 'CMakeLists.txt',
+  'production-control.cpp', 'red-engine_thread.cpp.inert.snapshot', 'original-validate.cjs.inert.snapshot',
+  'original-frozen-inputs-final.json.inert.snapshot', 'original-frozen-inputs.json.inert.snapshot',
+  'first-actual-index.json.inert.snapshot', 'first-actual-results.json.inert.snapshot',
+  'first-attempt-preservation-map.json', 'x64-reuse-preparation-audit.json'];
+frozen.privateInputs = privateNames.map(name => ({relativePath: name, ...evidence.record(path.join(__dirname, name))}));
+write('frozen-inputs-final.json', frozen);
+const payload = evidence.walk(__dirname).map(file => ({relativePath: path.relative(__dirname, file).replace(/\\/g, '/'), ...evidence.record(file)}));
+write('prepared-evidence-index.json', {schema: 'soui.engine-startup-continuation-prepared-evidence/v1',
+  preparedOnly: true, nativeExecuted: false, originalPayloadCount: index.files.length, files: payload});
+console.log(JSON.stringify({directory: __dirname, frozen: evidence.record(path.join(__dirname, 'frozen-inputs-final.json')),
+  driver: evidence.record(path.join(__dirname, 'validate.cjs')), helper: evidence.record(path.join(__dirname, 'toolchain-evidence.cjs')),
+  index: evidence.record(path.join(__dirname, 'prepared-evidence-index.json')), preparedPayloadCount: payload.length,
+  originalPayloadCount: index.files.length, actualX64ObservedToolKinds: x64.observedTools.map(item => item.key), nativeExecuted: false}));

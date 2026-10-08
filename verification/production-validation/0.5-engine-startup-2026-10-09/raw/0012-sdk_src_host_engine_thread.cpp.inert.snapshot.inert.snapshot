@@ -1,0 +1,263 @@
+#include <soui/host/engine_thread.h>
+
+#include <future>
+#include <memory>
+#include <utility>
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
+namespace soui::sdk {
+
+engine_thread::~engine_thread() { stop(); }
+
+bool engine_thread::start(initializer initialize, task shutdown) {
+  if (!initialize) return false;
+
+#ifdef _WIN32
+  const HANDLE wake_event = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+  if (wake_event == nullptr) return false;
+#endif
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (state_ != engine_thread_state::stopped || worker_.joinable()) {
+#ifdef _WIN32
+      CloseHandle(wake_event);
+#endif
+      return false;
+    }
+#ifdef _WIN32
+    wake_event_ = wake_event;
+#endif
+    state_ = engine_thread_state::starting;
+    startup_complete_ = false;
+    worker_ = std::thread(&engine_thread::run, this, std::move(initialize),
+                          std::move(shutdown));
+  }
+
+  std::unique_lock<std::mutex> lock(mutex_);
+  state_changed_.wait(lock, [this] { return startup_complete_; });
+  const bool running = state_ == engine_thread_state::running;
+  lock.unlock();
+  if (!running) {
+    if (worker_.joinable()) worker_.join();
+#ifdef _WIN32
+    lock.lock();
+    const HANDLE failed_event = static_cast<HANDLE>(wake_event_);
+    wake_event_ = nullptr;
+    lock.unlock();
+    if (failed_event != nullptr) CloseHandle(failed_event);
+#endif
+  }
+  return running;
+}
+
+bool engine_thread::post(task work) {
+  if (!work) return false;
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    if (state_ != engine_thread_state::running) return false;
+    work_.push_back(std::move(work));
+#ifdef _WIN32
+    SetEvent(static_cast<HANDLE>(wake_event_));
+#endif
+  }
+  work_ready_.notify_one();
+  return true;
+}
+
+bool engine_thread::invoke(task work, std::chrono::milliseconds timeout) {
+  if (!work || timeout.count() < 0 || is_owner_thread()) return false;
+  auto completion = std::make_shared<std::promise<void>>();
+  auto completed = completion->get_future();
+  if (!post([work = std::move(work), completion] {
+        try {
+          work();
+          completion->set_value();
+        } catch (...) {
+          completion->set_exception(std::current_exception());
+        }
+      })) {
+    return false;
+  }
+  if (completed.wait_for(timeout) != std::future_status::ready) return false;
+  try {
+    completed.get();
+  } catch (...) {
+    return false;
+  }
+  return true;
+}
+
+bool engine_thread::drain_for(std::chrono::milliseconds timeout) {
+  if (timeout.count() < 0) return false;
+  std::unique_lock<std::mutex> lock(mutex_);
+  return idle_.wait_for(lock, timeout,
+                        [this] { return work_.empty() && executing_ == 0; });
+}
+
+void engine_thread::stop(bool drain_pending) {
+  std::thread worker;
+  {
+    std::unique_lock<std::mutex> lock(mutex_);
+    if (state_ == engine_thread_state::starting) {
+      state_changed_.wait(lock, [this] { return startup_complete_; });
+    }
+    if (state_ == engine_thread_state::running)
+      state_ = engine_thread_state::stopping;
+    if (state_ == engine_thread_state::stopping) {
+      if (!drain_pending) work_.clear();
+      if (worker_.joinable()) worker = std::move(worker_);
+    } else if (worker_.joinable()) {
+      worker = std::move(worker_);
+    }
+#ifdef _WIN32
+    if (wake_event_ != nullptr) SetEvent(static_cast<HANDLE>(wake_event_));
+#endif
+    work_ready_.notify_all();
+  }
+  if (worker.joinable()) worker.join();
+#ifdef _WIN32
+  HANDLE wake_event = nullptr;
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    wake_event = static_cast<HANDLE>(wake_event_);
+    wake_event_ = nullptr;
+  }
+  if (wake_event != nullptr) CloseHandle(wake_event);
+#endif
+}
+
+engine_thread_state engine_thread::state() const noexcept {
+  std::lock_guard<std::mutex> lock(mutex_);
+  return state_;
+}
+
+bool engine_thread::is_owner_thread(std::thread::id candidate) const noexcept {
+  std::lock_guard<std::mutex> lock(mutex_);
+  return owner_thread_ != std::thread::id{} && owner_thread_ == candidate;
+}
+
+bool engine_thread::is_owner_thread() const noexcept {
+  return is_owner_thread(std::this_thread::get_id());
+}
+
+void engine_thread::run(initializer initialize, task shutdown) noexcept {
+  bool initialized = false;
+  try {
+    initialized = initialize();
+  } catch (...) {
+    initialized = false;
+  }
+
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    owner_thread_ = std::this_thread::get_id();
+    state_ = initialized ? engine_thread_state::running : engine_thread_state::failed;
+    startup_complete_ = true;
+  }
+  state_changed_.notify_all();
+  idle_.notify_all();
+  if (!initialized) {
+    try {
+      if (shutdown) shutdown();
+    } catch (...) {
+    }
+    return;
+  }
+
+  bool stopping_complete = false;
+  for (;;) {
+#ifdef _WIN32
+    {
+      std::unique_lock<std::mutex> lock(mutex_);
+      if (state_ != engine_thread_state::stopping) {
+        const HANDLE wake_event = static_cast<HANDLE>(wake_event_);
+        const bool wait_for_work = work_.empty();
+        lock.unlock();
+        if (wait_for_work) {
+          (void)MsgWaitForMultipleObjectsEx(
+              1, &wake_event, INFINITE, QS_ALLINPUT, MWMO_INPUTAVAILABLE);
+        }
+        {
+          MSG message{};
+          // A native callback may repost itself indefinitely. Yield to the
+          // FIFO and stopping state after a bounded batch, even if the
+          // Windows queue never becomes empty.
+          constexpr unsigned max_native_messages_per_turn = 32;
+          const auto native_deadline = std::chrono::steady_clock::now()
+              + std::chrono::milliseconds(2);
+          for (unsigned count = 0; count < max_native_messages_per_turn
+               && PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE) != FALSE;
+               ++count) {
+            if (message.message == WM_QUIT) {
+              std::lock_guard<std::mutex> stop_lock(mutex_);
+              if (state_ == engine_thread_state::running)
+                state_ = engine_thread_state::stopping;
+              break;
+            }
+            TranslateMessage(&message);
+            DispatchMessageW(&message);
+            if (std::chrono::steady_clock::now() >= native_deadline) break;
+          }
+        }
+        lock.lock();
+      }
+    }
+#endif
+    // Service a bounded FIFO batch too. One task per native batch makes an
+    // input burst accumulate behind expensive paint messages, even though
+    // neither queue is strictly starved. Neither budget can preempt a callback.
+    constexpr unsigned max_tasks_per_turn = 32;
+    const auto task_deadline = std::chrono::steady_clock::now()
+        + std::chrono::milliseconds(2);
+    for (unsigned count = 0; count < max_tasks_per_turn; ++count) {
+      task current;
+      {
+        std::unique_lock<std::mutex> lock(mutex_);
+#ifndef _WIN32
+        work_ready_.wait(lock, [this] {
+          return state_ == engine_thread_state::stopping || !work_.empty();
+        });
+#endif
+        if (work_.empty() && state_ == engine_thread_state::stopping) {
+          stopping_complete = true;
+          break;
+        }
+        if (work_.empty()) break;
+        current = std::move(work_.front());
+        work_.pop_front();
+        ++executing_;
+      }
+      try {
+        current();
+      } catch (...) {
+        // An isolated host callback must not kill the process-wide engine owner.
+      }
+      {
+        std::lock_guard<std::mutex> lock(mutex_);
+        --executing_;
+        if (work_.empty() && executing_ == 0) idle_.notify_all();
+      }
+      if (std::chrono::steady_clock::now() >= task_deadline) break;
+    }
+    if (stopping_complete) break;
+  }
+
+  try {
+    if (shutdown) shutdown();
+  } catch (...) {
+  }
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    work_.clear();
+    executing_ = 0;
+    owner_thread_ = std::thread::id{};
+    state_ = engine_thread_state::stopped;
+  }
+  idle_.notify_all();
+  state_changed_.notify_all();
+}
+
+}  // namespace soui::sdk

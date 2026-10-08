@@ -1,0 +1,10 @@
+^F:\WORK\SM05-STARTUP\OUT\ENGINE-STARTUP-CONTINUATION-7E151D3F-4976-49AF-A4CC-E68831DB35C6\ACTUAL-70059D03-7F13-4310-A50D-565BBB7D0382\B-X86\CMAKEFILES\55FAD4A7EB3EB0ABFEA73AB5F5C4ADF8\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/work/sm05-startup/out/engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6 -BF:/work/sm05-startup/out/engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6/actual-70059d03-7f13-4310-a50d-565bbb7d0382/b-x86 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file F:/work/sm05-startup/out/engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6/actual-70059d03-7f13-4310-a50d-565bbb7d0382/b-x86/EngineStartupBoundary.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

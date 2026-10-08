@@ -1,0 +1,22 @@
+node:fs:1569
+  const result = binding.readdir(
+                         ^
+
+Error: ENOENT: no such file or directory, scandir 'F:\work\sm05-startup\sdk\test-kit\native'
+    at Object.readdirSync (node:fs:1569:26)
+    at walk (F:\work\sm05-startup\out\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\prepare.cjs:139:30)
+    at F:\work\sm05-startup\out\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\prepare.cjs:146:27
+    at Array.flatMap (<anonymous>)
+    at Object.<anonymous> (F:\work\sm05-startup\out\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\prepare.cjs:146:6)
+    at Module._compile (node:internal/modules/cjs/loader:1812:14)
+    at Object..js (node:internal/modules/cjs/loader:1943:10)
+    at Module.load (node:internal/modules/cjs/loader:1533:32)
+    at Module._load (node:internal/modules/cjs/loader:1335:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'scandir',
+  path: 'F:\\work\\sm05-startup\\sdk\\test-kit\\native'
+}
+
+Node.js v24.14.0

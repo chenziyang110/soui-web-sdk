@@ -1,0 +1,79 @@
+{
+  "name": "x64-compile",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "--build",
+    "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64",
+    "--config",
+    "Release",
+    "--target",
+    "soui_engine_thread_startup_tests",
+    "soui_engine_thread_timeout_tests",
+    "EngineStartupRed",
+    "EngineStartupProduction",
+    "--",
+    "/m:2",
+    "/nr:false",
+    "/bl:F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-private-build.binlog"
+  ],
+  "ready": {
+    "pid": 107992,
+    "creationFileTime": "134359719234154229"
+  },
+  "readyError": null,
+  "result": {
+    "pid": 107992,
+    "creationFileTime": "134359719234154229",
+    "exitCode": 0,
+    "supervisorExitCode": 124,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": false,
+    "terminal": {
+      "event": "terminal",
+      "reason": "owned-descendants-remain",
+      "elapsedMs": 82438,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 1,
+      "terminatedOwnedJob": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 96,
+      "limitTerminatedProcesses": 0,
+      "passed": false
+    },
+    "report": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\owned.ndjson",
+    "reportSha256": "05b8f8424b636e7ad288460cb870d9174288a38d9bb553a79ab1121c91a2fa70",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "compilationCompleted": true,
+  "genericSupervisionPassed": false,
+  "raw": [
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\owned.ndjson",
+      "bytes": 138514,
+      "sha256": "05b8f8424b636e7ad288460cb870d9174288a38d9bb553a79ab1121c91a2fa70"
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\owned.ndjson.context.json",
+      "bytes": 943,
+      "sha256": "10735aacdc1bfea8de32a206984143c12b115484883e16f59152c14a1330ad6a"
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\stdout.bin",
+      "bytes": 47364,
+      "sha256": "ddc80e016e10dfecec49f4ef8fd733cab65584d51e9584e93ed7a9477a3f7336"
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

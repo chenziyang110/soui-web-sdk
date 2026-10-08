@@ -1,0 +1,633 @@
+{
+  "schema": "soui.engine-startup-root-byte-review/v1",
+  "createdAt": "2026-10-08T22:50:21.718Z",
+  "originalPrivateBytesUnchanged": true,
+  "controlledRegressionObserved": true,
+  "validationPassed": false,
+  "noCompilerTailOverride": true,
+  "fullDistributionCompiled": false,
+  "frozenInput": {
+    "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\frozen-inputs-final.json",
+    "bytes": 155888,
+    "sha256": "d3058e44941616b9d50d1ae10bedfa7d64d38aed93a471c151933e4b28a8aa02"
+  },
+  "results": {
+    "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\results.json",
+    "bytes": 204971,
+    "sha256": "a33097915c7b87006b3146b5f89bb2dbb161c3a4fd2bc895a4b83ca344e903b8"
+  },
+  "checks": [
+    {
+      "kind": "unchanged-private-index",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\index.json",
+      "bytes": 153714,
+      "sha256": "26f5f3554f92ba64ec201fa8dde8fdd04896724efda656db6e7b76820b073112",
+      "payloadFiles": 386
+    },
+    {
+      "kind": "unchanged-private-index",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\index.json",
+      "bytes": 118203,
+      "sha256": "092c59c35d2dcf962a3a3347a1e283980b8ded995f7c6b402a6fa72390c6ac9b",
+      "payloadFiles": 286
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x64-configure",
+      "pid": 68640,
+      "creationFileTime": "134359718957333810",
+      "rootExit": 0,
+      "supervisorExit": 124,
+      "genericPassed": false,
+      "reason": "owned-descendants-remain",
+      "terminatedOwnedJob": true,
+      "activeBeforeCleanup": 1,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-configure\\owned.ndjson",
+        "bytes": 104510,
+        "sha256": "5428c47529fb783a58a5c1482c6e93abfd8639caed2616958e2ad6e635e35fad"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-configure\\owned.ndjson.context.json",
+        "bytes": 924,
+        "sha256": "996fd921794ffebb121ce1a030a4c3515bd621a8bb97e0d94e173ae52de0428e"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x64-compile",
+      "pid": 107992,
+      "creationFileTime": "134359719234154229",
+      "rootExit": 0,
+      "supervisorExit": 124,
+      "genericPassed": false,
+      "reason": "owned-descendants-remain",
+      "terminatedOwnedJob": true,
+      "activeBeforeCleanup": 1,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\owned.ndjson",
+        "bytes": 138514,
+        "sha256": "05b8f8424b636e7ad288460cb870d9174288a38d9bb553a79ab1121c91a2fa70"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\owned.ndjson.context.json",
+        "bytes": 943,
+        "sha256": "10735aacdc1bfea8de32a206984143c12b115484883e16f59152c14a1330ad6a"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x64-evaluate-0",
+      "pid": 64128,
+      "creationFileTime": "134359728178649750",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-0\\owned.ndjson",
+        "bytes": 1216,
+        "sha256": "05b1172239320dde5ea74243842d63ed81a8029ffd29c02071df1fc1d76cbf15"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-0\\owned.ndjson.context.json",
+        "bytes": 919,
+        "sha256": "62e34b136645cf8e1377a8426a812f5492f1a8f9f25a60c7780b0361314c09d9"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x64-evaluate-1",
+      "pid": 44356,
+      "creationFileTime": "134359728192064324",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-1\\owned.ndjson",
+        "bytes": 1215,
+        "sha256": "54110ceb79d09359418639580f9fc4285e5ff654c15d77b806595757cb9bc0e8"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-1\\owned.ndjson.context.json",
+        "bytes": 903,
+        "sha256": "ac88c439341c913e6bb8f8435546b8d1d1fbaf4b2eeb6538d649731417921233"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x64-evaluate-2",
+      "pid": 58692,
+      "creationFileTime": "134359728204815093",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-2\\owned.ndjson",
+        "bytes": 1215,
+        "sha256": "590b3371bda790731cbf62eae3eebbe8f2227226f395d774c1b93767a13196f3"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-2\\owned.ndjson.context.json",
+        "bytes": 910,
+        "sha256": "837bea6c8eb1289213ef3dc1cb24f050a9381c856763bc1fb8d6b21634b14727"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x64-evaluate-3",
+      "pid": 114096,
+      "creationFileTime": "134359728218435989",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-3\\owned.ndjson",
+        "bytes": 1218,
+        "sha256": "22234c60447f2dbbc4a72179537802c149d4f4bd5d410d585e5238654292fc4f"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-3\\owned.ndjson.context.json",
+        "bytes": 919,
+        "sha256": "a172ffae46e38bdbd98f1297501a6b5b2cd73f1eb37a31d01c04dd804cff9305"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x64-evaluate-4",
+      "pid": 23376,
+      "creationFileTime": "134359728231743341",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-4\\owned.ndjson",
+        "bytes": 1216,
+        "sha256": "0197db862721e82467b4663342b5147d88014892015cfe4492674d7d43e94787"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-4\\owned.ndjson.context.json",
+        "bytes": 907,
+        "sha256": "82c26b17eff08ebc790517f8852930d2fc5c757e298948d8c7b40430d0e84caa"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x64-ctest",
+      "pid": 59452,
+      "creationFileTime": "134359728247286087",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-ctest\\owned.ndjson",
+        "bytes": 4313,
+        "sha256": "e144ec54ec7e6c78881e22c64d171998508832921ea89e5c6dca129ed56d85ef"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-ctest\\owned.ndjson.context.json",
+        "bytes": 667,
+        "sha256": "3a3f01fe3e7fd8fe987cc9b2a3b077198de6b81c91bd8eea848be0b9e4911419"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x64-direct-green",
+      "pid": 73876,
+      "creationFileTime": "134359728267274588",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-direct-green\\owned.ndjson",
+        "bytes": 1223,
+        "sha256": "9ea252ab6df4cd385e27c5a729694cedee3964e0ea26d61ce65ca4498cdfe159"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-direct-green\\owned.ndjson.context.json",
+        "bytes": 529,
+        "sha256": "d8de53b08c18e2ecc81f2e1c586a21debe9355538cff412b7841ab971fd19d4d"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x64-old-body-red",
+      "pid": 88888,
+      "creationFileTime": "134359728275101435",
+      "rootExit": 124,
+      "supervisorExit": 124,
+      "genericPassed": false,
+      "reason": "timeout",
+      "terminatedOwnedJob": true,
+      "activeBeforeCleanup": 2,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-old-body-red\\owned.ndjson",
+        "bytes": 1207,
+        "sha256": "96ade693b41606241116b1df6e514eb0768d69a3fe723fabcd01e758065babc0"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-old-body-red\\owned.ndjson.context.json",
+        "bytes": 546,
+        "sha256": "f0fd741e93475fefcfdfb7c37410fa4b82fa19171795ccea31e07ad2545e7280"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x64-production-imports",
+      "pid": 75616,
+      "creationFileTime": "134359728310201691",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-production-imports\\owned.ndjson",
+        "bytes": 2129,
+        "sha256": "d0c1a806425210832677a9b0366c1c1225b94b2e4fcd54ddf9cc1de813c77dec"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-production-imports\\owned.ndjson.context.json",
+        "bytes": 656,
+        "sha256": "132684946c3e7cfc5dfae39a66f543ea417eefe36816666ca518e9f98238ec57"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x86-configure",
+      "pid": 99516,
+      "creationFileTime": "134359728317204225",
+      "rootExit": 0,
+      "supervisorExit": 124,
+      "genericPassed": false,
+      "reason": "owned-descendants-remain",
+      "terminatedOwnedJob": true,
+      "activeBeforeCleanup": 1,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-configure\\owned.ndjson",
+        "bytes": 95067,
+        "sha256": "439b5dbd921a0e24c59247d5abf1d9ca6820031a4cba9c94df38bd2273e37aed"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-configure\\owned.ndjson.context.json",
+        "bytes": 922,
+        "sha256": "e67c34a1b6ba1e0325489180475b629415978fa8cfd1427ee2cc07eb9ac10b73"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x86-compile",
+      "pid": 108784,
+      "creationFileTime": "134359728546689352",
+      "rootExit": 0,
+      "supervisorExit": 124,
+      "genericPassed": false,
+      "reason": "owned-descendants-remain",
+      "terminatedOwnedJob": true,
+      "activeBeforeCleanup": 1,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-compile\\owned.ndjson",
+        "bytes": 127777,
+        "sha256": "ad8041900d2fafe1929d1b6489e0ef48d17c0071b0e34700258a0209779b4a47"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-compile\\owned.ndjson.context.json",
+        "bytes": 939,
+        "sha256": "cc9e7f5a5c2948a57f4f3b3520c80be09728d74f137eae5bc4d2c662d6f2310c"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x86-evaluate-0",
+      "pid": 14244,
+      "creationFileTime": "134359729279385390",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-0\\owned.ndjson",
+        "bytes": 1215,
+        "sha256": "fda5d349850e29cd7c249dda0c7636d16503b52d8dcba6a431d446189c807206"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-0\\owned.ndjson.context.json",
+        "bytes": 919,
+        "sha256": "6ec94f1437b014891a4f72faaa1420b049fc4534ff337d4555b079fb2dd4fd3c"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x86-evaluate-1",
+      "pid": 107504,
+      "creationFileTime": "134359729292721766",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-1\\owned.ndjson",
+        "bytes": 1219,
+        "sha256": "5687381d7ba83c3659aff200c1181b04576e9792add68d27f5d41b3af19dafd4"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-1\\owned.ndjson.context.json",
+        "bytes": 903,
+        "sha256": "f99e4f280648e45e8c6f7819065273ee279ffbdcb419604169db3bae42ef9b29"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x86-evaluate-2",
+      "pid": 114436,
+      "creationFileTime": "134359729305949059",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-2\\owned.ndjson",
+        "bytes": 1218,
+        "sha256": "1058fdeb58790d91a602d7d635a00ad32585462a88ad0ebc4182b08c97dd0810"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-2\\owned.ndjson.context.json",
+        "bytes": 910,
+        "sha256": "47ef3d214a246c9887ade2b1b223218a926a50416298310e5742a2e6bd157847"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x86-evaluate-3",
+      "pid": 54960,
+      "creationFileTime": "134359729319105383",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-3\\owned.ndjson",
+        "bytes": 1215,
+        "sha256": "bcc60d30f888efe584ab1b82b65902841a4c15b81df0d478e59f2abdcd689511"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-3\\owned.ndjson.context.json",
+        "bytes": 919,
+        "sha256": "d128e2f2be7537b80e19d7ab59f5d5fb3b20d4129e3f1ab08d69a5b72d541cc7"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x86-evaluate-4",
+      "pid": 10652,
+      "creationFileTime": "134359729332030632",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-4\\owned.ndjson",
+        "bytes": 1215,
+        "sha256": "4554848a020628b90fb51606da6fdf8113b2a983418e8ad437433d6f562a4e08"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-4\\owned.ndjson.context.json",
+        "bytes": 907,
+        "sha256": "92ce0da32f6550627bcfb49eddff32999a3b3c782f080fd12afac41df02db0c5"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x86-ctest",
+      "pid": 114120,
+      "creationFileTime": "134359729346743272",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-ctest\\owned.ndjson",
+        "bytes": 3945,
+        "sha256": "baa53b3e4fb2c9408b23c57456dc7226afbc79ec333d3b83aa57ed58e4aa0326"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-ctest\\owned.ndjson.context.json",
+        "bytes": 667,
+        "sha256": "887c94fe019686f3c183a8f3eb18b9b774a1932738dd7aabc38ff1831c19de81"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x86-direct-green",
+      "pid": 110020,
+      "creationFileTime": "134359729366503514",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-direct-green\\owned.ndjson",
+        "bytes": 1611,
+        "sha256": "90e073dcf5cd73155dca9cba3ad00c577f5e104db108d0f49188c843e63dce2c"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-direct-green\\owned.ndjson.context.json",
+        "bytes": 527,
+        "sha256": "fd3143fe77f9778931334f4eeb687b87ce1c704573123e3f4693c1cd84d646c9"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x86-old-body-red",
+      "pid": 88960,
+      "creationFileTime": "134359729372693451",
+      "rootExit": 124,
+      "supervisorExit": 124,
+      "genericPassed": false,
+      "reason": "timeout",
+      "terminatedOwnedJob": true,
+      "activeBeforeCleanup": 2,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-old-body-red\\owned.ndjson",
+        "bytes": 1203,
+        "sha256": "f9a0919633f6876a0d3bac7accf5734830e3a8ac0bde660f02929ea10904f20a"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-old-body-red\\owned.ndjson.context.json",
+        "bytes": 544,
+        "sha256": "244531e28641b985f355773c1c9f15e0f002b2d1a74837bd06502a6ef77c63c0"
+      }
+    },
+    {
+      "kind": "owned-phase",
+      "name": "x86-production-imports",
+      "pid": 50344,
+      "creationFileTime": "134359729407408389",
+      "rootExit": 0,
+      "supervisorExit": 0,
+      "genericPassed": true,
+      "reason": "completed",
+      "terminatedOwnedJob": false,
+      "activeBeforeCleanup": 0,
+      "closureConfirmed": true,
+      "report": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-production-imports\\owned.ndjson",
+        "bytes": 2128,
+        "sha256": "7625a4ae5c28f3979e33bed9a8bb274e204283f5a1e596983252e4ce884f9014"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-production-imports\\owned.ndjson.context.json",
+        "bytes": 654,
+        "sha256": "2edbb59970ac7fcd80733f49ec0f2f278d230435c3dba2e08a2a4fe0da88ed3b"
+      }
+    },
+    {
+      "kind": "actual-sdk-and-controlled-native",
+      "architecture": "x64",
+      "outputs": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\Release\\soui_engine_thread_startup_tests.exe",
+          "bytes": 101376,
+          "sha256": "10a417f3e2402d2c8a896a473c943b8e8c2bd542f677b2fb2dbbd570bb13da0f",
+          "coffMachine": 34404
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\Release\\EngineStartupRed.exe",
+          "bytes": 35328,
+          "sha256": "4218232c2d7c9fd36516512c5c536c6325f47ab3a75e377aaebf91d25826d810",
+          "coffMachine": 34404
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\Release\\EngineStartupProduction.exe",
+          "bytes": 40960,
+          "sha256": "b41d9c72118252237e9df60b9f4ddb2dd1bb8a34a2405438d6b3e09500986f5d",
+          "coffMachine": 34404
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\Release\\soui_engine_thread_timeout_tests.exe",
+          "bytes": 91648,
+          "sha256": "f815695a9141a07fd7619d1cdaf112321d2eb08f3c63bf25d990dd1215cb9970",
+          "coffMachine": 34404
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\Release\\soui_sdk.lib",
+          "bytes": 36001116,
+          "sha256": "94d509812fa3959dd8bd7f4c833b24c60fcb042e91b02baac1174ca9b824da30"
+        }
+      ],
+      "toolchainEvidence": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-toolchain-evidence.json",
+        "bytes": 58923,
+        "sha256": "3b3195dfee7e203e5a15dccaaaeea59325c8b3a37430d47f3d2739733cc28f00"
+      },
+      "ctestPassed": 3,
+      "directControlledCases": 9,
+      "oldBodyDestructorTimeout": true,
+      "macroDisabledInActualSdk": true,
+      "compilationReusedFromPriorAttempt": true,
+      "observedToolIdentityCount": 19
+    },
+    {
+      "kind": "actual-sdk-and-controlled-native",
+      "architecture": "x86",
+      "outputs": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\Release\\soui_engine_thread_startup_tests.exe",
+          "bytes": 89088,
+          "sha256": "f04eb0155c6511e79eec8c70bd4ce83b1441fa35145a35cc532fa525b82477dd",
+          "coffMachine": 332
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\Release\\EngineStartupRed.exe",
+          "bytes": 32256,
+          "sha256": "cfc5d4331b3335750afdd525d3c4b5c8769cee569548db379883e1a1fdfe95d5",
+          "coffMachine": 332
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\Release\\EngineStartupProduction.exe",
+          "bytes": 36864,
+          "sha256": "41a042930926bfc161ec0d25f05331af701d8f8278ec0ca4240581c67a23f89f",
+          "coffMachine": 332
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\Release\\soui_engine_thread_timeout_tests.exe",
+          "bytes": 80384,
+          "sha256": "5623c03b68a699dddf096a2d0b6a10094550007a8e2e025125975ae0d9323402",
+          "coffMachine": 332
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\actual-sdk\\Release\\soui_sdk.lib",
+          "bytes": 24623628,
+          "sha256": "d665a2ed865e11108a95c815eacd96730785b534f015703e224b9d32e4dcf7e3"
+        }
+      ],
+      "toolchainEvidence": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-toolchain-evidence.json",
+        "bytes": 58448,
+        "sha256": "ab0754506e09ed9f0251fdf312108d5f5cbfdcbde9a3e7dd294fd7f1239b7efd"
+      },
+      "ctestPassed": 3,
+      "directControlledCases": 9,
+      "oldBodyDestructorTimeout": true,
+      "macroDisabledInActualSdk": true,
+      "compilationReusedFromPriorAttempt": false,
+      "observedToolIdentityCount": 18
+    }
+  ]
+}

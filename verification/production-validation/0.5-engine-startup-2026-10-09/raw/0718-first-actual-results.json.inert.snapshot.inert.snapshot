@@ -1,0 +1,179 @@
+{
+  "schema": "soui.engine-startup-actual-validation/v1",
+  "attempt": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed",
+  "frozenInputSha256": "abb2f01c5103c2fd925af110700a35d81b0744109cc7313b9cbb902af5055ed2",
+  "baseCommit": "f6720b4936e488ae3edd9deb02ebf2613b5eba6c",
+  "controlledFaultsOnly": true,
+  "noGui": true,
+  "noVendorChanges": true,
+  "noTailAcceptance": true,
+  "actualSdkLibraryCompiled": false,
+  "fullDistributionCompiled": false,
+  "nodeVersion": "v24.14.0",
+  "removedEnvironmentNames": [
+    "JX_SKILLS_READ_TOKEN"
+  ],
+  "phases": [
+    {
+      "name": "x64-configure",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "-S",
+        "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329",
+        "-B",
+        "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64,version=10.0.19041.0",
+        "-T",
+        "v143,host=x64,version=14.44.35207",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=F:/work/sm05-startup/cmake/SouiWindowsSdk.cmake"
+      ],
+      "ready": {
+        "pid": 68640,
+        "creationFileTime": "134359718957333810"
+      },
+      "readyError": null,
+      "result": {
+        "pid": 68640,
+        "creationFileTime": "134359718957333810",
+        "exitCode": 0,
+        "supervisorExitCode": 124,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "owned-descendants-remain",
+          "elapsedMs": 27251,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 68,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-configure\\owned.ndjson",
+        "reportSha256": "5428c47529fb783a58a5c1482c6e93abfd8639caed2616958e2ad6e635e35fad",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "genericSupervisionPassed": false,
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-configure\\owned.ndjson",
+          "bytes": 104510,
+          "sha256": "5428c47529fb783a58a5c1482c6e93abfd8639caed2616958e2ad6e635e35fad"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-configure\\owned.ndjson.context.json",
+          "bytes": 924,
+          "sha256": "996fd921794ffebb121ce1a030a4c3515bd621a8bb97e0d94e173ae52de0428e"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-configure\\stdout.bin",
+          "bytes": 990,
+          "sha256": "71d3908fd70ccf29af38bb1051cbd6f42e51adb43fcaa4d88631e8657b51f404"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-configure\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x64-compile",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64",
+        "--config",
+        "Release",
+        "--target",
+        "soui_engine_thread_startup_tests",
+        "soui_engine_thread_timeout_tests",
+        "EngineStartupRed",
+        "EngineStartupProduction",
+        "--",
+        "/m:2",
+        "/nr:false",
+        "/bl:F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-private-build.binlog"
+      ],
+      "ready": {
+        "pid": 107992,
+        "creationFileTime": "134359719234154229"
+      },
+      "readyError": null,
+      "result": {
+        "pid": 107992,
+        "creationFileTime": "134359719234154229",
+        "exitCode": 0,
+        "supervisorExitCode": 124,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "owned-descendants-remain",
+          "elapsedMs": 82438,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 96,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\owned.ndjson",
+        "reportSha256": "05b8f8424b636e7ad288460cb870d9174288a38d9bb553a79ab1121c91a2fa70",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "compilationCompleted": true,
+      "genericSupervisionPassed": false,
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\owned.ndjson",
+          "bytes": 138514,
+          "sha256": "05b8f8424b636e7ad288460cb870d9174288a38d9bb553a79ab1121c91a2fa70"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\owned.ndjson.context.json",
+          "bytes": 943,
+          "sha256": "10735aacdc1bfea8de32a206984143c12b115484883e16f59152c14a1330ad6a"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\stdout.bin",
+          "bytes": 47364,
+          "sha256": "ddc80e016e10dfecec49f4ef8fd733cab65584d51e9584e93ed7a9477a3f7336"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "architectures": [],
+  "controlledRegressionObserved": false,
+  "allPositiveGenericSupervisionPassed": false,
+  "validationPassed": false,
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(project.includes('<VCToolsVersion>14.44.35207</VCToolsVersion>'))\n\n    at main (F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\validate.cjs:179:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+}
