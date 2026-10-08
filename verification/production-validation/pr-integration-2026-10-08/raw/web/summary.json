@@ -1,0 +1,17 @@
+{
+  "schema": "soui.merge-web-validation/v1",
+  "version": "0.4.0-preview.2",
+  "timestamp": "2026-10-08",
+  "baseCommit": "5c561a61aae64b16a7e47366c20666c086872e8d",
+  "npmCi": ["sdk/web", "templates/desktop-app/web", "templates/modern-app/web", "demos/workbench/web"],
+  "npmBuild": ["sdk/web", "templates/desktop-app/web", "templates/modern-app/web", "demos/workbench/web"],
+  "typecheck": ["templates/desktop-app/web", "templates/modern-app/web", "demos/workbench/web"],
+  "auditFiles": ["audit-0.json", "audit-1.json", "audit-2.json", "audit-3.json"],
+  "auditVulnerabilities": [0, 0, 0, 0],
+  "webTests": {"passed": 103, "failed": 0, "log": "web-tests.log"},
+  "workbench": {"initialBuildExit": 1, "initialFailure": "Element Plus 2.14.5 component imports changed to double quotes; generator matched single quotes only", "initialLog": "workbench-build.log", "retryBuildExit": 0, "retryLog": "workbench-build-retry.log", "catalogFamilies": 82, "moduleOwnersComparedWithTypeScriptAst": 111, "quoteFormsVerified": 2, "localDistFiles": 401, "localDistLog": "workbench-dist.log"},
+  "newLicense": {"path": "third_party/licenses/element-plus-2.14.5-LICENSE.txt", "source": "demos/workbench/web/node_modules/element-plus/LICENSE", "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"},
+  "dependencies": "dependency-diff.json",
+  "releaseReady": false,
+  "nativeBuildAndRuntime": "Root agent verifies the final combined source after remaining PR merges"
+}

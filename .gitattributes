@@ -37,6 +37,9 @@ verification/production-validation/license-runtime-notices-2026-09-28/** -text w
 verification/production-validation/benchmark-series-diagnostics-2026-09-28/raw/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 *.ico binary
 *.zip binary
+verification/production-validation/pr-integration-2026-10-08/** binary
+verification/production-validation/pr-integration-2026-10-08/README.md text eol=lf diff
+third_party/patches/miniblink/*.patch whitespace=-blank-at-eol
 third_party/licenses/ijg-jpeg-9a-README.txt -text
 third_party/licenses/libcurl-7.61.1-COPYING.txt -text
 third_party/licenses/ots-5.0.0-LICENSE.txt -text
@@ -53,6 +56,7 @@ demos/workbench/web/apps/react/utility.css whitespace=-blank-at-eol
 verification/production-validation/benchmark-live-gate-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 # SDK and deployed legal manifests bind the original license bytes.
 third_party/licenses/** -text whitespace=cr-at-eol
+third_party/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt whitespace=cr-at-eol,-blank-at-eol
 verification/production-validation/**/events.ndjson -text
 verification/production-validation/**/events.ndjson.phases.ndjson -text
 verification/production-validation/webview2-experiment-2026-10-03/**/*.jsonl -text
@@ -67,6 +71,8 @@ verification/production-validation/preview04-2026-10-08/pe31-software/win7-seria
 verification/production-validation/preview04-2026-10-08/** binary
 verification/production-validation/preview04-2026-10-08/README.md text eol=lf diff
 verification/production-validation/**/*.log -text
+verification/production-validation/**/*.log whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/**/*.txt whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/**/cert.pem -text
 verification/production-validation/win7-sp1-x86-v02-interaction-v7-resize-blocked-2026-09-28/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/win7-sp1-x86-v02-v8-prelaunch-refusal-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol

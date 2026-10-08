@@ -1,0 +1,107 @@
+{
+  "schema": "soui.pr-integration/v1",
+  "version": "0.4.0-preview.2",
+  "validatedSourceCommit": "0886dd13b4ef904de1fa30af57bf9b5841005cc7",
+  "sourceSha256": "6cd6c052889d8b314707699bbef09b9fc2a271f36aa78f0dd22331977f343b0b",
+  "finishedAt": "2026-10-08T07:33:09.873Z",
+  "integrationVerified": true,
+  "sourceDeliveryVerified": false,
+  "releaseReady": false,
+  "requestedPullRequests": [
+    15,
+    19,
+    20,
+    22,
+    24,
+    25,
+    26,
+    28,
+    30,
+    32,
+    34,
+    36,
+    38,
+    40,
+    41,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48
+  ],
+  "additionalToolingPullRequests": [
+    50,
+    52
+  ],
+  "nativeMatrix": [
+    {
+      "architecture": "x64",
+      "configuration": "Release",
+      "buildId": "991c3652-0f02-4bde-8f11-c96721f62f29",
+      "nativeContractsPassed": 20,
+      "legacyStartupScenarios": 3,
+      "modernStartupPassed": true,
+      "evidencePrefix": "verification/production-validation/pr-integration-2026-10-08/raw/native/x64"
+    },
+    {
+      "architecture": "x86",
+      "configuration": "Release",
+      "buildId": "8917eed2-0d37-4a26-878a-3fdb166332e3",
+      "nativeContractsPassed": 20,
+      "legacyStartupScenarios": 3,
+      "modernStartupPassed": true,
+      "evidencePrefix": "verification/production-validation/pr-integration-2026-10-08/raw/native/x86"
+    }
+  ],
+  "installedSdkConsumers": [
+    {
+      "architecture": "x64",
+      "configuration": "Release",
+      "passed": true
+    },
+    {
+      "architecture": "x86",
+      "configuration": "Release",
+      "passed": true
+    }
+  ],
+  "generatedProjects": [
+    {
+      "profile": "compatibility",
+      "configuration": "Release",
+      "architecture": "x64",
+      "buildPassed": true,
+      "startupPassed": true
+    },
+    {
+      "profile": "modern",
+      "configuration": "Release",
+      "architecture": "x64",
+      "buildPassed": true,
+      "startupPassed": true
+    }
+  ],
+  "fixedSdkManifestSha256": "1b1d258c426069d76cd548f112c40c301163e2dcf367417205fcffcaa838052c",
+  "webAuditVulnerabilities": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "acceptanceToolingAuditVulnerabilities": 0,
+  "benchmarkRegressionTestsPassed": 33,
+  "evidenceIndex": "verification/production-validation/pr-integration-2026-10-08/evidence-index.json",
+  "retainedFailures": [
+    "raw/commands/generated-compatibility-smoke.log: validation harness referenced an unpackaged repository-only Test.ps1; canonical build-evidence smoke retry passed.",
+    "raw/commands/generated-modern-create.log: disk exhaustion; clean independent retry after removing owned Git checkout passed.",
+    "raw/commands/acceptance-tools-audit.json: source-map-js vulnerability in acceptance tooling; PR52 and rerun audit resolved it.",
+    "raw/web/workbench-build.log: Element Plus import quote format; generator correction and retry passed."
+  ],
+  "limitations": [
+    "Integration validation covers Release x86/x64; Debug and a new full source/dependency release matrix are not repeated.",
+    "Modern renewal shares bounded transport capacity; sustained-pressure renewal is not certified.",
+    "Win7/PE full matrix, high-refresh performance, long-run resources, licensing and signing gates remain open.",
+    "Published v0.4.0-preview.1 and its assets remain immutable; preview.2 is not published."
+  ]
+}
