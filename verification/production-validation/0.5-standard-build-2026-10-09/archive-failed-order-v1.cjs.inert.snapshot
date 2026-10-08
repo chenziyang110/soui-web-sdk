@@ -1,0 +1,50 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const identity=require('../tools/internal/delivery-identity.cjs');
+const root=path.resolve(__dirname,'..'),hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const base='verification/production-validation/0.5-standard-build-2026-10-09';
+const groups=[
+ ['original-boundaries','out/standard-build-caller-boundaries-f2220895-1135-4ac0-85a4-f7bb79e512d3','evidence-index-frozen-final.json',147,'95265350cf4bea3ff71c7cd8e67eb56cdbf49823dd444223527d616a2673f815'],
+ ['actual-tools','out/standard-build-caller-actual-04dd8fbb-a399-4572-bd29-ca16d6dd84d8','evidence-index-actual-final.json',1531,'537d3049f3506fe211f2aa91505752188afefd208c73e453c3aa60aea330824b'],
+ ['tool-resolution','out/standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366','index.json',174,'1e7427474efddfa1a0f64ffd088ce2a08f849823e6e95e5c215fe1dbd6d7e627'],
+ ['sdk-default-x64','out/standard-build/attempt-6bc12294-bfe1-4934-bb33-d74731a4444c','index.json',34,'dc4576f7bb4f7471d3913a3de4fcab760d6751d86a96ba61157e4249a6a071bc'],
+ ['sdk-optin-natural-x64','out/standard-build/attempt-b7bfced7-3196-4996-bd48-f9cd5190f458','index.json',35,'7a910f2934b3e2502362391b7ca1dcc3636d0d03c346f6b622d96fdd5e1c6d09'],
+ ['sdk-default-x86','out/standard-build/attempt-7d02dfc2-066d-4abf-92f2-e07f0d60bbd8','index.json',34,'7d8aee53911fbacec35e16770aa05539b12016a1dea970b4047eded0a313574f']
+];
+function need(v,m){if(!v)throw Error(m);}
+const files=[],seen=new Set(),summaries=[];
+function copy(input,relative,expected){identity.safePath(input);const s=fs.lstatSync(input);need(s.isFile()&&!s.isSymbolicLink()&&s.nlink===1,'Not unique regular file');
+ const b=fs.readFileSync(input),sha256=hash(b);if(expected)need(b.length===expected.bytes&&sha256===expected.sha256,'Frozen payload changed '+input);
+ const rel=relative+'.inert.snapshot';need(!seen.has(rel.toLowerCase()),'Duplicate archive');seen.add(rel.toLowerCase());
+ const target=identity.safePath(root,base+'/'+rel);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,b,{flag:'wx'});
+ files.push({path:base+'/'+rel,source:input,bytes:b.length,sha256});return files.at(-1);}
+const source=identity.source(root);need(source.sha256==='f637ee3d58789530ed44f49d643dc7fc2c270ade211b5a04d376096a2f3be2bf','Current compiled source changed');
+const prior=JSON.parse(fs.readFileSync(path.join(root,groups[2][1],'frozen-inputs.json')));
+const prepared=identity.snapshot(root,prior.preparedCompilerInputs.files.map(f=>f.path));
+need(JSON.stringify(prepared)===JSON.stringify(prior.preparedCompilerInputs),'Actual 16 tool compile inputs changed');
+const names=['tools/internal/standard-build.cjs','tests/sdk/standard-build.test.cjs','docs/adr/0033-standard-owned-build-caller.md',
+ 'docs/standard-build.md','tools/internal/measurement-validation.cjs','tools/internal/Build-ValidationTools.ps1',
+ 'tests/benchmark/measurement-preparation-source.test.cjs','tools/Test.ps1','tools/Collect-Verification.cjs'];
+const currentFiles=identity.snapshot(root,names);
+for(const [label,dir,indexName,count,indexHash]of groups){
+ const inputIndex=path.join(root,dir,indexName),b=fs.readFileSync(inputIndex);need(hash(b)===indexHash,'Frozen index changed');
+ const index=JSON.parse(b);need(index.files.length===count,'Frozen count changed');
+ for(const [i,f]of index.files.entries()){const row=copy(identity.safePath(path.join(root,dir),f.path),label+'/raw/'+String(i+1).padStart(4,'0')+'-'+path.basename(f.path),f);row.originalRelativePath=f.path;}
+ copy(inputIndex,label+'/attempt-index.json');
+ const resultPath=path.join(root,dir,'result.json');
+ summaries.push({label,originalDirectory:dir,indexSha256:indexHash,originalFiles:count,...(fs.existsSync(resultPath)?{result:JSON.parse(fs.readFileSync(resultPath))}:{})});
+}
+for(const [i,f]of currentFiles.files.entries())copy(identity.safePath(root,f.path),'current-source/'+String(i+1).padStart(2,'0')+'-'+path.basename(f.path),f);
+const outputs=[];
+for(const [arch,expected]of [['x64','d18da1f63a6293ca23150f1a65f70e2479a2d597f74729023aed615a5366c628'],['x86','ab5422a7a158757adb1aa7ab8cc6ea3ab94cad39c9c1b8d4892e3e222df17470']]){
+ const name=path.join(root,'out/sdk-'+arch+'/Release/soui_sdk.lib'),b=fs.readFileSync(name);need(hash(b)===expected,'SDK library changed');
+ outputs.push({architecture:arch,path:name,bytes:b.length,sha256:expected,binaryIncludedInArchive:false});
+}
+copy(__filename,'archive-driver.cjs');
+const report={schema:'soui.standard-build-mainline-evidence/v1',version:'0.5.0-preview.1',
+ mergedMain:'201859502f42ba392be86c7b4b5c30a7f85de48a',source,rawSource:identity.snapshot(root,source.files.map(f=>f.path)),
+ currentFiles,preparedCompilerInputs:prepared,priorToolCompiledInputsUnchanged:true,groups:summaries,outputs,
+ x64OptinUsedCompilerTailPolicy:false,fullApplicationBuild:false,fullTestExecuted:false,fullCollectExecuted:false,
+ guiValidated:false,targetOsValidated:false,releaseReady:false,files};
+fs.writeFileSync(path.join(root,base,'index.json'),JSON.stringify(report,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({path:base+'/index.json',files:files.length,bytes:files.reduce((s,f)=>s+f.bytes,0)}));

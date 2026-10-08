@@ -1,0 +1,490 @@
+TAP version 13
+# Subtest: x86: unchanged source and matching tool identities remain prepared
+ok 1 - x86: unchanged source and matching tool identities remain prepared
+  ---
+  duration_ms: 79.0345
+  type: 'test'
+  ...
+# Subtest: x86: changed Windows SDK selection input invalidates preparation
+ok 2 - x86: changed Windows SDK selection input invalidates preparation
+  ---
+  duration_ms: 67.4745
+  type: 'test'
+  ...
+# Subtest: x86: missing Windows SDK selection input cannot reuse prepared tools
+ok 3 - x86: missing Windows SDK selection input cannot reuse prepared tools
+  ---
+  duration_ms: 51.7165
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing SDK input rejects the native group before launch
+ok 4 - x86: changed or missing SDK input rejects the native group before launch
+  ---
+  duration_ms: 84.0208
+  type: 'test'
+  ...
+# Subtest: x86: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation
+ok 5 - x86: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation
+  ---
+  duration_ms: 47.5507
+  type: 'test'
+  ...
+# Subtest: x86: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools
+ok 6 - x86: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 41.3104
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch
+ok 7 - x86: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch
+  ---
+  duration_ms: 81.6451
+  type: 'test'
+  ...
+# Subtest: x86: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation
+ok 8 - x86: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation
+  ---
+  duration_ms: 43.8128
+  type: 'test'
+  ...
+# Subtest: x86: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools
+ok 9 - x86: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools
+  ---
+  duration_ms: 38.9881
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch
+ok 10 - x86: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch
+  ---
+  duration_ms: 119.0168
+  type: 'test'
+  ...
+# Subtest: x86: changed tests/benchmark/owned-tail-process-fixture.cpp invalidates preparation
+ok 11 - x86: changed tests/benchmark/owned-tail-process-fixture.cpp invalidates preparation
+  ---
+  duration_ms: 49.0006
+  type: 'test'
+  ...
+# Subtest: x86: missing tests/benchmark/owned-tail-process-fixture.cpp cannot reuse prepared tools
+ok 12 - x86: missing tests/benchmark/owned-tail-process-fixture.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 41.0684
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing tests/benchmark/owned-tail-process-fixture.cpp rejects the native group before launch
+ok 13 - x86: changed or missing tests/benchmark/owned-tail-process-fixture.cpp rejects the native group before launch
+  ---
+  duration_ms: 87.8416
+  type: 'test'
+  ...
+# Subtest: x86: changed tests/benchmark/owned-tail-mutation-fixture.cpp invalidates preparation
+ok 14 - x86: changed tests/benchmark/owned-tail-mutation-fixture.cpp invalidates preparation
+  ---
+  duration_ms: 47.2433
+  type: 'test'
+  ...
+# Subtest: x86: missing tests/benchmark/owned-tail-mutation-fixture.cpp cannot reuse prepared tools
+ok 15 - x86: missing tests/benchmark/owned-tail-mutation-fixture.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 44.5905
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing tests/benchmark/owned-tail-mutation-fixture.cpp rejects the native group before launch
+ok 16 - x86: changed or missing tests/benchmark/owned-tail-mutation-fixture.cpp rejects the native group before launch
+  ---
+  duration_ms: 88.3752
+  type: 'test'
+  ...
+# Subtest: x86: changed tests/benchmark/owned-tail-api-fixture.cpp invalidates preparation
+ok 17 - x86: changed tests/benchmark/owned-tail-api-fixture.cpp invalidates preparation
+  ---
+  duration_ms: 71.1145
+  type: 'test'
+  ...
+# Subtest: x86: missing tests/benchmark/owned-tail-api-fixture.cpp cannot reuse prepared tools
+ok 18 - x86: missing tests/benchmark/owned-tail-api-fixture.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 54.7899
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing tests/benchmark/owned-tail-api-fixture.cpp rejects the native group before launch
+ok 19 - x86: changed or missing tests/benchmark/owned-tail-api-fixture.cpp rejects the native group before launch
+  ---
+  duration_ms: 138.1382
+  type: 'test'
+  ...
+# Subtest: x64: unchanged source and matching tool identities remain prepared
+ok 20 - x64: unchanged source and matching tool identities remain prepared
+  ---
+  duration_ms: 69.3797
+  type: 'test'
+  ...
+# Subtest: x64: changed Windows SDK selection input invalidates preparation
+ok 21 - x64: changed Windows SDK selection input invalidates preparation
+  ---
+  duration_ms: 61.3347
+  type: 'test'
+  ...
+# Subtest: x64: missing Windows SDK selection input cannot reuse prepared tools
+ok 22 - x64: missing Windows SDK selection input cannot reuse prepared tools
+  ---
+  duration_ms: 60.2041
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing SDK input rejects the native group before launch
+ok 23 - x64: changed or missing SDK input rejects the native group before launch
+  ---
+  duration_ms: 133.2139
+  type: 'test'
+  ...
+# Subtest: x64: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation
+ok 24 - x64: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation
+  ---
+  duration_ms: 98.067
+  type: 'test'
+  ...
+# Subtest: x64: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools
+ok 25 - x64: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 72.3782
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch
+ok 26 - x64: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch
+  ---
+  duration_ms: 141.7629
+  type: 'test'
+  ...
+# Subtest: x64: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation
+ok 27 - x64: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation
+  ---
+  duration_ms: 60.8526
+  type: 'test'
+  ...
+# Subtest: x64: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools
+ok 28 - x64: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools
+  ---
+  duration_ms: 64.777
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch
+ok 29 - x64: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch
+  ---
+  duration_ms: 130.8899
+  type: 'test'
+  ...
+# Subtest: x64: changed tests/benchmark/owned-tail-process-fixture.cpp invalidates preparation
+ok 30 - x64: changed tests/benchmark/owned-tail-process-fixture.cpp invalidates preparation
+  ---
+  duration_ms: 64.983
+  type: 'test'
+  ...
+# Subtest: x64: missing tests/benchmark/owned-tail-process-fixture.cpp cannot reuse prepared tools
+ok 31 - x64: missing tests/benchmark/owned-tail-process-fixture.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 49.0607
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing tests/benchmark/owned-tail-process-fixture.cpp rejects the native group before launch
+ok 32 - x64: changed or missing tests/benchmark/owned-tail-process-fixture.cpp rejects the native group before launch
+  ---
+  duration_ms: 95.8222
+  type: 'test'
+  ...
+# Subtest: x64: changed tests/benchmark/owned-tail-mutation-fixture.cpp invalidates preparation
+ok 33 - x64: changed tests/benchmark/owned-tail-mutation-fixture.cpp invalidates preparation
+  ---
+  duration_ms: 52.8079
+  type: 'test'
+  ...
+# Subtest: x64: missing tests/benchmark/owned-tail-mutation-fixture.cpp cannot reuse prepared tools
+ok 34 - x64: missing tests/benchmark/owned-tail-mutation-fixture.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 46.0462
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing tests/benchmark/owned-tail-mutation-fixture.cpp rejects the native group before launch
+ok 35 - x64: changed or missing tests/benchmark/owned-tail-mutation-fixture.cpp rejects the native group before launch
+  ---
+  duration_ms: 92.9808
+  type: 'test'
+  ...
+# Subtest: x64: changed tests/benchmark/owned-tail-api-fixture.cpp invalidates preparation
+ok 36 - x64: changed tests/benchmark/owned-tail-api-fixture.cpp invalidates preparation
+  ---
+  duration_ms: 45.3896
+  type: 'test'
+  ...
+# Subtest: x64: missing tests/benchmark/owned-tail-api-fixture.cpp cannot reuse prepared tools
+ok 37 - x64: missing tests/benchmark/owned-tail-api-fixture.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 50.5209
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing tests/benchmark/owned-tail-api-fixture.cpp rejects the native group before launch
+ok 38 - x64: changed or missing tests/benchmark/owned-tail-api-fixture.cpp rejects the native group before launch
+  ---
+  duration_ms: 104.7251
+  type: 'test'
+  ...
+# Subtest: reader derives the native start instead of trusting an extra JSON subject and supports relocation
+ok 39 - reader derives the native start instead of trusting an extra JSON subject and supports relocation
+  ---
+  duration_ms: 86.671
+  type: 'test'
+  ...
+# Subtest: ready must match the raw native start and immutable launch context
+ok 40 - ready must match the raw native start and immutable launch context
+  ---
+  duration_ms: 38.8646
+  type: 'test'
+  ...
+# Subtest: valid JSON process claims cannot replace the raw PID or one-tick creation value
+ok 41 - valid JSON process claims cannot replace the raw PID or one-tick creation value
+  ---
+  duration_ms: 70.0508
+  type: 'test'
+  ...
+# Subtest: raw data/hash mismatches, crossed report paths and duplicate roles fail
+ok 42 - raw data/hash mismatches, crossed report paths and duplicate roles fail
+  ---
+  duration_ms: 146.0978
+  type: 'test'
+  ...
+# Subtest: duplicate start/root-exit/terminal, invalid uint64 and missing complete newline fail even with updated hashes
+ok 43 - duplicate start/root-exit/terminal, invalid uint64 and missing complete newline fail even with updated hashes
+  ---
+  duration_ms: 224.8105
+  type: 'test'
+  ...
+# Subtest: a context consistently rehashed with a false collector subject still fails native provenance
+ok 44 - a context consistently rehashed with a false collector subject still fails native provenance
+  ---
+  duration_ms: 73.5118
+  type: 'test'
+  ...
+# Subtest: context tool hashes, arguments, cwd and report origin cannot silently cross runs
+ok 45 - context tool hashes, arguments, cwd and report origin cannot silently cross runs
+  ---
+  duration_ms: 226.1635
+  type: 'test'
+  ...
+# Subtest: STOP remains controlled closure with generic false and never formal natural completion
+ok 46 - STOP remains controlled closure with generic false and never formal natural completion
+  ---
+  duration_ms: 57.0568
+  type: 'test'
+  ...
+# Subtest: unreadable/missing files, unsafe paths, links and invalid UTF8 are rejected
+ok 47 - unreadable/missing files, unsafe paths, links and invalid UTF8 are rejected
+  ---
+  duration_ms: 37.6699
+  type: 'test'
+  ...
+# Subtest: v2 pair reader binds authored raw/context fixtures and cannot accept forged JSON or STOP
+ok 48 - v2 pair reader binds authored raw/context fixtures and cannot accept forged JSON or STOP
+  ---
+  duration_ms: 482.3228
+  type: 'test'
+  ...
+# Subtest: historical smoke evidence is rejected for unequal content areas and short runs
+ok 49 - historical smoke evidence is rejected for unequal content areas and short runs
+  ---
+  duration_ms: 2.5689
+  type: 'test'
+  ...
+# Subtest: page preflight accepts only complete, aligned S01 telemetry and still lists external evidence
+ok 50 - page preflight accepts only complete, aligned S01 telemetry and still lists external evidence
+  ---
+  duration_ms: 1.5567
+  type: 'test'
+  ...
+# Subtest: S05 requires observed motion for 120 seconds even when the page says measured
+ok 51 - S05 requires observed motion for 120 seconds even when the page says measured
+  ---
+  duration_ms: 1.4319
+  type: 'test'
+  ...
+# Subtest: full S02 raw traces and frozen inputs satisfy pairing preflight only
+ok 52 - full S02 raw traces and frozen inputs satisfy pairing preflight only
+  ---
+  duration_ms: 34.8095
+  type: 'test'
+  ...
+# Subtest: historical completed S01 runs without frozen inputs remain rejected
+ok 53 - historical completed S01 runs without frozen inputs remain rejected
+  ---
+  duration_ms: 6.2251
+  type: 'test'
+  ...
+# Subtest: independently collected S02 rounds retain the same machine and payload identities
+ok 54 - independently collected S02 rounds retain the same machine and payload identities
+  ---
+  duration_ms: 39.9613
+  type: 'test'
+  ...
+# Subtest: changed non-entry page asset invalidates a completed run
+ok 55 - changed non-entry page asset invalidates a completed run
+  ---
+  duration_ms: 50.5222
+  type: 'test'
+  ...
+# Subtest: accepts matching full traces without promoting performance or presentation
+ok 56 - accepts matching full traces without promoting performance or presentation
+  ---
+  duration_ms: 1.6431
+  type: 'test'
+  ...
+# Subtest: legacy rounded creation values remain readable without exact binding
+ok 57 - legacy rounded creation values remain readable without exact binding
+  ---
+  duration_ms: 0.5926
+  type: 'test'
+  ...
+# Subtest: new exact pairs require the held subject before binding and preserve one-tick alignment
+ok 58 - new exact pairs require the held subject before binding and preserve one-tick alignment
+  ---
+  duration_ms: 1.2035
+  type: 'test'
+  ...
+# Subtest: un-pinned collector CLI runs cannot claim exact owned binding
+ok 59 - un-pinned collector CLI runs cannot claim exact owned binding
+  ---
+  duration_ms: 0.7436
+  type: 'test'
+  ...
+# Subtest: actual native serializer emits readable legacy and exact collector schemas
+ok 60 - actual native serializer emits readable legacy and exact collector schemas # SKIP
+  ---
+  duration_ms: 0.0746
+  type: 'test'
+  ...
+# Subtest: exact records reject mixed versions and cannot be silently downgraded to numbers
+ok 61 - exact records reject mixed versions and cannot be silently downgraded to numbers
+  ---
+  duration_ms: 0.2705
+  type: 'test'
+  ...
+# Subtest: exact FILETIME strings enforce uint64 and canonical positive decimal boundaries
+ok 62 - exact FILETIME strings enforce uint64 and canonical positive decimal boundaries
+  ---
+  duration_ms: 2.2319
+  type: 'test'
+  ...
+# Subtest: PID reuse, duplicate members and forged held identities fail exact binding
+ok 63 - PID reuse, duplicate members and forged held identities fail exact binding
+  ---
+  duration_ms: 1.3946
+  type: 'test'
+  ...
+# Subtest: UTC alignment uses exact differences near uint64 max and rejects a one-tick overrun
+ok 64 - UTC alignment uses exact differences near uint64 max and rejects a one-tick overrun
+  ---
+  duration_ms: 0.3319
+  type: 'test'
+  ...
+# Subtest: rejects a different process, shortened input, missing process sample, and timeout
+ok 65 - rejects a different process, shortened input, missing process sample, and timeout
+  ---
+  duration_ms: 0.2845
+  type: 'test'
+  ...
+# Subtest: rejects late input and S03 without IME composition
+ok 66 - rejects late input and S03 without IME composition
+  ---
+  duration_ms: 0.2835
+  type: 'test'
+  ...
+# Subtest: rejects a full-length idle trace and missing scene operations
+ok 67 - rejects a full-length idle trace and missing scene operations
+  ---
+  duration_ms: 0.1781
+  type: 'test'
+  ...
+# Subtest: accepts full scroll, resize and motion traces, but rejects missing defining actions
+ok 68 - accepts full scroll, resize and motion traces, but rejects missing defining actions
+  ---
+  duration_ms: 0.9143
+  type: 'test'
+  ...
+# Subtest: five alternating accepted pairs produce diagnostics without a value verdict
+ok 69 - five alternating accepted pairs produce diagnostics without a value verdict
+  ---
+  duration_ms: 1.3558
+  type: 'test'
+  ...
+# Subtest: only uniformly bound v2 pairs produce an exact series diagnostic
+ok 70 - only uniformly bound v2 pairs produce an exact series diagnostic
+  ---
+  duration_ms: 1.9073
+  type: 'test'
+  ...
+# Subtest: historical verdict projection permits only the new explicit unbound fields
+ok 71 - historical verdict projection permits only the new explicit unbound fields
+  ---
+  duration_ms: 1.1646
+  type: 'test'
+  ...
+# Subtest: four pairs cannot be summarized as the five-pair acceptance input
+ok 72 - four pairs cannot be summarized as the five-pair acceptance input
+  ---
+  duration_ms: 0.1512
+  type: 'test'
+  ...
+# Subtest: a missing or contaminated live gate invalidates all candidate ratios
+ok 73 - a missing or contaminated live gate invalidates all candidate ratios
+  ---
+  duration_ms: 0.4339
+  type: 'test'
+  ...
+# Subtest: order drift and duplicate run identity are refused
+ok 74 - order drift and duplicate run identity are refused
+  ---
+  duration_ms: 0.3565
+  type: 'test'
+  ...
+# Subtest: a rejected pair or forced cleanup cannot contribute to a summary
+ok 75 - a rejected pair or forced cleanup cannot contribute to a summary
+  ---
+  duration_ms: 0.3704
+  type: 'test'
+  ...
+# Subtest: live gate timestamps must cover a full run without sampling gaps
+ok 76 - live gate timestamps must cover a full run without sampling gaps
+  ---
+  duration_ms: 1.4997
+  type: 'test'
+  ...
+# Subtest: real run times follow the declared alternating order without overlap
+ok 77 - real run times follow the declared alternating order without overlap
+  ---
+  duration_ms: 0.4263
+  type: 'test'
+  ...
+# Subtest: each before and after preflight gate brackets its actual run
+ok 78 - each before and after preflight gate brackets its actual run
+  ---
+  duration_ms: 0.447
+  type: 'test'
+  ...
+# Subtest: preflight gates too far from a measured run are rejected
+ok 79 - preflight gates too far from a measured run are rejected
+  ---
+  duration_ms: 0.1679
+  type: 'test'
+  ...
+# Subtest: series, single-run and live gate must identify the same runner
+ok 80 - series, single-run and live gate must identify the same runner
+  ---
+  duration_ms: 0.3482
+  type: 'test'
+  ...
+1..80
+# tests 80
+# suites 0
+# pass 79
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 2902.7767

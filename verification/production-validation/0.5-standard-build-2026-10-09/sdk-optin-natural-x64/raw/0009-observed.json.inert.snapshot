@@ -1,0 +1,180 @@
+{
+  "sourceSha256": "f637ee3d58789530ed44f49d643dc7fc2c270ade211b5a04d376096a2f3be2bf",
+  "rawSourceSha256": "29a92f649d9c25e5e35df541911397b186e96ef56ade49dd248e79a1f87c02a1",
+  "scriptSha256": "cf9de22572cac347b2f3a7f1e45c564107263e1be0c218340d20fe352ae2eb29",
+  "scripts": [
+    {
+      "path": "tools/Build.ps1",
+      "bytes": 5615,
+      "sha256": "cf9de22572cac347b2f3a7f1e45c564107263e1be0c218340d20fe352ae2eb29"
+    },
+    {
+      "path": "tools/internal/standard-build.cjs",
+      "bytes": 32411,
+      "sha256": "fd9406b40bba13ac5e895fdeb44454f19464aa2f3ec205240c13e003a985d2c8"
+    },
+    {
+      "path": "tools/internal/owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+    },
+    {
+      "path": "tools/internal/owned-tail-evidence.cjs",
+      "bytes": 20024,
+      "sha256": "61bceb766ecdfae0552c26212b332c8d7dbd0c2f24833cf7d27d59932f2b23cd"
+    },
+    {
+      "path": "tools/internal/compiler-tail-policy.cjs",
+      "bytes": 11520,
+      "sha256": "1458497d5701833cf83033aa05c2861b1a30accbc653cf0c2c244692c16034d6"
+    },
+    {
+      "path": "tools/internal/build-evidence.cjs",
+      "bytes": 13542,
+      "sha256": "8306bb9fe170ee206ee5b67c288826dbbf098499d6e69812488720221ca2f3bf"
+    },
+    {
+      "path": "tools/internal/delivery-identity.cjs",
+      "bytes": 5459,
+      "sha256": "087e60a3f8652a9166acbab63fdde7836d66839329a687ce5cefdd733e3c5e14"
+    },
+    {
+      "path": "tools/internal/Find-Toolchain.ps1",
+      "bytes": 653,
+      "sha256": "b3639f2ef0191ab62e2e1aa5998ffe24552115586abe68e3cece804178fdd89f"
+    },
+    {
+      "path": "tools/internal/CMake-Configure.ps1",
+      "bytes": 7196,
+      "sha256": "7958fd37fd63f24a7e8ee40301803271825a4931d2c56d54cf3c9812a768c6d1"
+    },
+    {
+      "path": "cmake/SouiWindowsSdk.cmake",
+      "bytes": 701,
+      "sha256": "5dd1a60792c86c7dac88b097873aae8eab1ec0bd3fcf59c4738f8554174736fd"
+    },
+    {
+      "path": "tools/internal/measurement-validation.cjs",
+      "bytes": 12679,
+      "sha256": "052eb8779d3e992538e00a6626d12c8eba97608fba833d719b2697b3ddde81a0"
+    }
+  ],
+  "tools": [
+    {
+      "path": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "requestedPath": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "resolvedPath": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "bytes": 495616,
+      "sha256": "8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e",
+      "role": "powershell"
+    },
+    {
+      "path": "F:\\work\\sm05-build-caller\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+      "bytes": 150016,
+      "sha256": "06abbb1ebafdad1839bdeb95447b2fed14d0e771f2853b928fd63a48f846e79b",
+      "role": "runner"
+    },
+    {
+      "path": "C:\\nvm4w\\nodejs\\node.exe",
+      "requestedPath": "C:\\nvm4w\\nodejs\\node.exe",
+      "resolvedPath": "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+      "role": "callerNode"
+    },
+    {
+      "path": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+      "requestedPath": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+      "resolvedPath": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+      "bytes": 12905544,
+      "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+      "role": "cmake"
+    },
+    {
+      "path": "C:\\nvm4w\\nodejs\\node.exe",
+      "requestedPath": "C:\\nvm4w\\nodejs\\node.exe",
+      "resolvedPath": "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+      "role": "node"
+    },
+    {
+      "path": "C:\\nvm4w\\nodejs\\npm.cmd",
+      "requestedPath": "C:\\nvm4w\\nodejs\\npm.cmd",
+      "resolvedPath": "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\npm.cmd",
+      "bytes": 538,
+      "sha256": "21b46c69ad6e2f231f02a9e120f4ba6c8e75fef5a45637103002eab99f888ab8",
+      "role": "npm"
+    },
+    {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+      "requestedPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+      "resolvedPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+      "bytes": 436024,
+      "sha256": "58fbe0acac5265fe9a93acb291e1dbd50432c4ebf00ff9b9fb4c34bc0f247c73",
+      "role": "msbuild"
+    },
+    {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "requestedPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "resolvedPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "bytes": 677968,
+      "sha256": "a80f5e7a24049a8f9a8931f83fc3d13ca417ad901e074c50cca71fcb12ba10be",
+      "role": "compiler"
+    },
+    {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe",
+      "requestedPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe",
+      "resolvedPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe",
+      "bytes": 3252808,
+      "sha256": "e388eb34fe4d280633609f6acec12a3e73c288f8b69ce402c3d24c0d0f5524f3",
+      "role": "linker"
+    },
+    {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat",
+      "requestedPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat",
+      "resolvedPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\Common7\\Tools\\VsDevCmd.bat",
+      "bytes": 11526,
+      "sha256": "c004278e64444bf3524360f960511b5ce7b1d0306910f08a4ebcf1c42ff9bd6d",
+      "role": "devcmd"
+    },
+    {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\Microsoft.VCToolsVersion.default.txt",
+      "requestedPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\Microsoft.VCToolsVersion.default.txt",
+      "resolvedPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Auxiliary\\Build\\Microsoft.VCToolsVersion.default.txt",
+      "bytes": 13,
+      "sha256": "030613df718548a88970e4c1844a8605d17aba9aa36bfea0b4359d8f28fd62bf",
+      "role": "vcVersionFile"
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe",
+      "requestedPath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe",
+      "resolvedPath": "C:\\Program Files (x86)\\Microsoft Visual Studio\\Installer\\vswhere.exe",
+      "bytes": 469456,
+      "sha256": "c54f3b7c9164ea9a0db8641e81ecdda80c2664ef5a47c4191406f848cc07c662",
+      "role": "vswhere"
+    },
+    {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe",
+      "bytes": 335520,
+      "sha256": "651345513aae26090c813b1ded859a5680c3823ca716a80e1d337bac0ca797ef",
+      "role": "tailImage"
+    }
+  ],
+  "artifacts": {
+    "payloads": {},
+    "optionalLibraries": {},
+    "library": {
+      "sha256": "8917b99158ac39efc0f0d2070a77811c469f802bfe05487d2ca7e2541e5cbc58",
+      "bytes": 35754744,
+      "files": [
+        {
+          "path": "Release/soui_sdk.lib",
+          "bytes": 35754744,
+          "sha256": "d18da1f63a6293ca23150f1a65f70e2479a2d597f74729023aed615a5366c628"
+        }
+      ]
+    }
+  },
+  "compilerVerified": true
+}

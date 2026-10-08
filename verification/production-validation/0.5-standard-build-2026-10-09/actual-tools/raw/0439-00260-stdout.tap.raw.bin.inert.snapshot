@@ -1,0 +1,106 @@
+TAP version 13
+# Subtest: supervised sampler binds the real subject and retains descendants after reparenting
+ok 1 - supervised sampler binds the real subject and retains descendants after reparenting
+  ---
+  duration_ms: 5038.4558
+  type: 'test'
+  ...
+# Subtest: supervised sampler timeout remains a failure with a closed owned Job
+ok 2 - supervised sampler timeout remains a failure with a closed owned Job
+  ---
+  duration_ms: 1973.4405
+  type: 'test'
+  ...
+# Subtest: both real collectors reject a one-tick mismatch before output creation; sampler preserves existing output
+ok 3 - both real collectors reject a one-tick mismatch before output creation; sampler preserves existing output
+  ---
+  duration_ms: 2009.308
+  type: 'test'
+  ...
+# Subtest: accepts matching full traces without promoting performance or presentation
+ok 4 - accepts matching full traces without promoting performance or presentation
+  ---
+  duration_ms: 1.0622
+  type: 'test'
+  ...
+# Subtest: legacy rounded creation values remain readable without exact binding
+ok 5 - legacy rounded creation values remain readable without exact binding
+  ---
+  duration_ms: 0.421
+  type: 'test'
+  ...
+# Subtest: new exact pairs require the held subject before binding and preserve one-tick alignment
+ok 6 - new exact pairs require the held subject before binding and preserve one-tick alignment
+  ---
+  duration_ms: 0.7752
+  type: 'test'
+  ...
+# Subtest: un-pinned collector CLI runs cannot claim exact owned binding
+ok 7 - un-pinned collector CLI runs cannot claim exact owned binding
+  ---
+  duration_ms: 0.6947
+  type: 'test'
+  ...
+# Subtest: actual native serializer emits readable legacy and exact collector schemas
+ok 8 - actual native serializer emits readable legacy and exact collector schemas
+  ---
+  duration_ms: 226.857
+  type: 'test'
+  ...
+# Subtest: exact records reject mixed versions and cannot be silently downgraded to numbers
+ok 9 - exact records reject mixed versions and cannot be silently downgraded to numbers
+  ---
+  duration_ms: 0.5177
+  type: 'test'
+  ...
+# Subtest: exact FILETIME strings enforce uint64 and canonical positive decimal boundaries
+ok 10 - exact FILETIME strings enforce uint64 and canonical positive decimal boundaries
+  ---
+  duration_ms: 2.1401
+  type: 'test'
+  ...
+# Subtest: PID reuse, duplicate members and forged held identities fail exact binding
+ok 11 - PID reuse, duplicate members and forged held identities fail exact binding
+  ---
+  duration_ms: 1.472
+  type: 'test'
+  ...
+# Subtest: UTC alignment uses exact differences near uint64 max and rejects a one-tick overrun
+ok 12 - UTC alignment uses exact differences near uint64 max and rejects a one-tick overrun
+  ---
+  duration_ms: 0.2579
+  type: 'test'
+  ...
+# Subtest: rejects a different process, shortened input, missing process sample, and timeout
+ok 13 - rejects a different process, shortened input, missing process sample, and timeout
+  ---
+  duration_ms: 0.2493
+  type: 'test'
+  ...
+# Subtest: rejects late input and S03 without IME composition
+ok 14 - rejects late input and S03 without IME composition
+  ---
+  duration_ms: 0.1745
+  type: 'test'
+  ...
+# Subtest: rejects a full-length idle trace and missing scene operations
+ok 15 - rejects a full-length idle trace and missing scene operations
+  ---
+  duration_ms: 0.2224
+  type: 'test'
+  ...
+# Subtest: accepts full scroll, resize and motion traces, but rejects missing defining actions
+ok 16 - accepts full scroll, resize and motion traces, but rejects missing defining actions
+  ---
+  duration_ms: 0.5748
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9158.8686

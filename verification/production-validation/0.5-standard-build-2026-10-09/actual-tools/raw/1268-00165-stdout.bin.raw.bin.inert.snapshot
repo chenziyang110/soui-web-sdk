@@ -1,0 +1,420 @@
+✔ x86: unchanged source and matching tool identities remain prepared (123.113ms)
+✔ x86: changed Windows SDK selection input invalidates preparation (44.2128ms)
+✔ x86: missing Windows SDK selection input cannot reuse prepared tools (37.5316ms)
+✔ x86: changed or missing SDK input rejects the native group before launch (75.8258ms)
+✔ x86: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation (48.0498ms)
+✔ x86: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools (36.6173ms)
+✔ x86: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch (72.4462ms)
+✔ x86: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation (48.2795ms)
+✔ x86: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools (55.9676ms)
+✔ x86: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch (107.3981ms)
+✖ x86: changed tests/benchmark/owned-tail-process-fixture.cpp invalidates preparation (47.9601ms)
+✖ x86: missing tests/benchmark/owned-tail-process-fixture.cpp cannot reuse prepared tools (43.8775ms)
+✖ x86: changed or missing tests/benchmark/owned-tail-process-fixture.cpp rejects the native group before launch (102.0939ms)
+✖ x86: changed tests/benchmark/owned-tail-mutation-fixture.cpp invalidates preparation (38.2814ms)
+✖ x86: missing tests/benchmark/owned-tail-mutation-fixture.cpp cannot reuse prepared tools (41.9252ms)
+✖ x86: changed or missing tests/benchmark/owned-tail-mutation-fixture.cpp rejects the native group before launch (106.5198ms)
+✖ x86: changed tests/benchmark/owned-tail-api-fixture.cpp invalidates preparation (44.8844ms)
+✖ x86: missing tests/benchmark/owned-tail-api-fixture.cpp cannot reuse prepared tools (37.5678ms)
+✖ x86: changed or missing tests/benchmark/owned-tail-api-fixture.cpp rejects the native group before launch (142.0496ms)
+✔ x64: unchanged source and matching tool identities remain prepared (54.8818ms)
+✔ x64: changed Windows SDK selection input invalidates preparation (59.9739ms)
+✔ x64: missing Windows SDK selection input cannot reuse prepared tools (52.6758ms)
+✔ x64: changed or missing SDK input rejects the native group before launch (111.982ms)
+✔ x64: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation (68.8006ms)
+✔ x64: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools (59.7311ms)
+✔ x64: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch (158.2701ms)
+✔ x64: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation (115.5725ms)
+✔ x64: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools (73.7699ms)
+✔ x64: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch (138.4641ms)
+✖ x64: changed tests/benchmark/owned-tail-process-fixture.cpp invalidates preparation (72.6652ms)
+✖ x64: missing tests/benchmark/owned-tail-process-fixture.cpp cannot reuse prepared tools (68.0544ms)
+✖ x64: changed or missing tests/benchmark/owned-tail-process-fixture.cpp rejects the native group before launch (136.2904ms)
+✖ x64: changed tests/benchmark/owned-tail-mutation-fixture.cpp invalidates preparation (59.0093ms)
+✖ x64: missing tests/benchmark/owned-tail-mutation-fixture.cpp cannot reuse prepared tools (42.7115ms)
+✖ x64: changed or missing tests/benchmark/owned-tail-mutation-fixture.cpp rejects the native group before launch (105.8777ms)
+✖ x64: changed tests/benchmark/owned-tail-api-fixture.cpp invalidates preparation (52.406ms)
+✖ x64: missing tests/benchmark/owned-tail-api-fixture.cpp cannot reuse prepared tools (38.7883ms)
+✖ x64: changed or missing tests/benchmark/owned-tail-api-fixture.cpp rejects the native group before launch (103.5223ms)
+ℹ tests 38
+ℹ suites 0
+ℹ pass 20
+ℹ fail 18
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2962.9982
+
+✖ failing tests:
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:108:5
+✖ x86: changed tests/benchmark/owned-tail-process-fixture.cpp invalidates preparation (47.9601ms)
+  AssertionError [ERR_ASSERTION]: Every actual Runner compilation dependency is a build input
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:111:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'd571931ad216b31f50836ac01c963f4cf53fdf496273e81802bd0a846673aac9',
+    expected: 'd571931ad216b31f50836ac01c963f4cf53fdf496273e81802bd0a846673aac9',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:116:5
+✖ x86: missing tests/benchmark/owned-tail-process-fixture.cpp cannot reuse prepared tools (43.8775ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:119:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /ENOENT/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:124:5
+✖ x86: changed or missing tests/benchmark/owned-tail-process-fixture.cpp rejects the native group before launch (102.0939ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /missing or stale|ENOENT/. Input:
+  
+  'Error: Native launch prohibited in pure preparation fixture'
+  
+      at async TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:129:9)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Native launch prohibited in pure preparation fixture
+        at launchOwned (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:25:13)
+        at Object.runGroup (F:\work\sm05-build-caller\tools\internal\measurement-validation.cjs:86:14)
+        at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:129:43)
+        at Test.runInAsyncScope (node:async_hooks:228:14)
+        at Test.run (node:internal/test_runner/test:1118:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+        at Test.postRun (node:internal/test_runner/test:1247:19)
+        at Test.run (node:internal/test_runner/test:1175:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:787:7),
+    expected: /missing or stale|ENOENT/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:108:5
+✖ x86: changed tests/benchmark/owned-tail-mutation-fixture.cpp invalidates preparation (38.2814ms)
+  AssertionError [ERR_ASSERTION]: Every actual Runner compilation dependency is a build input
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:111:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'd571931ad216b31f50836ac01c963f4cf53fdf496273e81802bd0a846673aac9',
+    expected: 'd571931ad216b31f50836ac01c963f4cf53fdf496273e81802bd0a846673aac9',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:116:5
+✖ x86: missing tests/benchmark/owned-tail-mutation-fixture.cpp cannot reuse prepared tools (41.9252ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:119:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /ENOENT/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:124:5
+✖ x86: changed or missing tests/benchmark/owned-tail-mutation-fixture.cpp rejects the native group before launch (106.5198ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /missing or stale|ENOENT/. Input:
+  
+  'Error: Native launch prohibited in pure preparation fixture'
+  
+      at async TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:129:9)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Native launch prohibited in pure preparation fixture
+        at launchOwned (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:25:13)
+        at Object.runGroup (F:\work\sm05-build-caller\tools\internal\measurement-validation.cjs:86:14)
+        at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:129:43)
+        at Test.runInAsyncScope (node:async_hooks:228:14)
+        at Test.run (node:internal/test_runner/test:1118:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+        at Test.postRun (node:internal/test_runner/test:1247:19)
+        at Test.run (node:internal/test_runner/test:1175:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:787:7),
+    expected: /missing or stale|ENOENT/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:108:5
+✖ x86: changed tests/benchmark/owned-tail-api-fixture.cpp invalidates preparation (44.8844ms)
+  AssertionError [ERR_ASSERTION]: Every actual Runner compilation dependency is a build input
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:111:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'd571931ad216b31f50836ac01c963f4cf53fdf496273e81802bd0a846673aac9',
+    expected: 'd571931ad216b31f50836ac01c963f4cf53fdf496273e81802bd0a846673aac9',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:116:5
+✖ x86: missing tests/benchmark/owned-tail-api-fixture.cpp cannot reuse prepared tools (37.5678ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:119:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /ENOENT/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:124:5
+✖ x86: changed or missing tests/benchmark/owned-tail-api-fixture.cpp rejects the native group before launch (142.0496ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /missing or stale|ENOENT/. Input:
+  
+  'Error: Native launch prohibited in pure preparation fixture'
+  
+      at async TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:129:9)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Native launch prohibited in pure preparation fixture
+        at launchOwned (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:25:13)
+        at Object.runGroup (F:\work\sm05-build-caller\tools\internal\measurement-validation.cjs:86:14)
+        at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:129:43)
+        at Test.runInAsyncScope (node:async_hooks:228:14)
+        at Test.run (node:internal/test_runner/test:1118:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+        at Test.postRun (node:internal/test_runner/test:1247:19)
+        at Test.run (node:internal/test_runner/test:1175:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:787:7),
+    expected: /missing or stale|ENOENT/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:108:5
+✖ x64: changed tests/benchmark/owned-tail-process-fixture.cpp invalidates preparation (72.6652ms)
+  AssertionError [ERR_ASSERTION]: Every actual Runner compilation dependency is a build input
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:111:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'd571931ad216b31f50836ac01c963f4cf53fdf496273e81802bd0a846673aac9',
+    expected: 'd571931ad216b31f50836ac01c963f4cf53fdf496273e81802bd0a846673aac9',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:116:5
+✖ x64: missing tests/benchmark/owned-tail-process-fixture.cpp cannot reuse prepared tools (68.0544ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:119:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /ENOENT/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:124:5
+✖ x64: changed or missing tests/benchmark/owned-tail-process-fixture.cpp rejects the native group before launch (136.2904ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /missing or stale|ENOENT/. Input:
+  
+  'Error: Native launch prohibited in pure preparation fixture'
+  
+      at async TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:129:9)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Native launch prohibited in pure preparation fixture
+        at launchOwned (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:25:13)
+        at Object.runGroup (F:\work\sm05-build-caller\tools\internal\measurement-validation.cjs:86:14)
+        at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:129:43)
+        at Test.runInAsyncScope (node:async_hooks:228:14)
+        at Test.run (node:internal/test_runner/test:1118:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+        at Test.postRun (node:internal/test_runner/test:1247:19)
+        at Test.run (node:internal/test_runner/test:1175:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:787:7),
+    expected: /missing or stale|ENOENT/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:108:5
+✖ x64: changed tests/benchmark/owned-tail-mutation-fixture.cpp invalidates preparation (59.0093ms)
+  AssertionError [ERR_ASSERTION]: Every actual Runner compilation dependency is a build input
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:111:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'd571931ad216b31f50836ac01c963f4cf53fdf496273e81802bd0a846673aac9',
+    expected: 'd571931ad216b31f50836ac01c963f4cf53fdf496273e81802bd0a846673aac9',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:116:5
+✖ x64: missing tests/benchmark/owned-tail-mutation-fixture.cpp cannot reuse prepared tools (42.7115ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:119:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /ENOENT/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:124:5
+✖ x64: changed or missing tests/benchmark/owned-tail-mutation-fixture.cpp rejects the native group before launch (105.8777ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /missing or stale|ENOENT/. Input:
+  
+  'Error: Native launch prohibited in pure preparation fixture'
+  
+      at async TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:129:9)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Native launch prohibited in pure preparation fixture
+        at launchOwned (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:25:13)
+        at Object.runGroup (F:\work\sm05-build-caller\tools\internal\measurement-validation.cjs:86:14)
+        at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:129:43)
+        at Test.runInAsyncScope (node:async_hooks:228:14)
+        at Test.run (node:internal/test_runner/test:1118:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+        at Test.postRun (node:internal/test_runner/test:1247:19)
+        at Test.run (node:internal/test_runner/test:1175:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:787:7),
+    expected: /missing or stale|ENOENT/,
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:108:5
+✖ x64: changed tests/benchmark/owned-tail-api-fixture.cpp invalidates preparation (52.406ms)
+  AssertionError [ERR_ASSERTION]: Every actual Runner compilation dependency is a build input
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:111:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'd571931ad216b31f50836ac01c963f4cf53fdf496273e81802bd0a846673aac9',
+    expected: 'd571931ad216b31f50836ac01c963f4cf53fdf496273e81802bd0a846673aac9',
+    operator: 'notStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:116:5
+✖ x64: missing tests/benchmark/owned-tail-api-fixture.cpp cannot reuse prepared tools (38.7883ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:119:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /ENOENT/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\measurement-preparation-source.test.cjs:124:5
+✖ x64: changed or missing tests/benchmark/owned-tail-api-fixture.cpp rejects the native group before launch (103.5223ms)
+  AssertionError [ERR_ASSERTION]: The input did not match the regular expression /missing or stale|ENOENT/. Input:
+  
+  'Error: Native launch prohibited in pure preparation fixture'
+  
+      at async TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:129:9)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Native launch prohibited in pure preparation fixture
+        at launchOwned (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:25:13)
+        at Object.runGroup (F:\work\sm05-build-caller\tools\internal\measurement-validation.cjs:86:14)
+        at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\benchmark\measurement-preparation-source.test.cjs:129:43)
+        at Test.runInAsyncScope (node:async_hooks:228:14)
+        at Test.run (node:internal/test_runner/test:1118:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+        at Test.postRun (node:internal/test_runner/test:1247:19)
+        at Test.run (node:internal/test_runner/test:1175:12)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:787:7),
+    expected: /missing or stale|ENOENT/,
+    operator: 'rejects',
+    diff: 'simple'
+  }

@@ -1,0 +1,9 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root='F:/work/sm05-build-caller',base=__dirname,phase=process.argv[2];if(!/^[a-z0-9-]+$/.test(phase))throw new Error('Invalid phase');
+const folder=path.join(base,phase+'-'+crypto.randomUUID());fs.mkdirSync(folder);
+const client='F:/work/sm05/tools/internal/owned-process.cjs',runner='F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const sha=f=>crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
+const inputs=[client,runner,process.execPath,path.join(root,'tests/sdk/standard-build.test.cjs'),path.join(root,'tools/internal/standard-build.cjs')].map(file=>({file,exists:fs.existsSync(file),...(fs.existsSync(file)?{bytes:fs.statSync(file).size,sha256:sha(file)}:{})}));
+fs.writeFileSync(path.join(folder,'inputs.json'),JSON.stringify({phase,cwd:root,executable:process.execPath,args:['--test','tests/sdk/standard-build.test.cjs'],inputs,noGui:true,actualCompilerBuild:false},null,2)+'\n',{flag:'wx'});
+(async()=>{const owned=require(client).launchOwned(process.execPath,['--test','tests/sdk/standard-build.test.cjs'],{runner,cwd:root,report:path.join(folder,'owned.ndjson'),timeoutMs:60000,drainMs:2000,stdout:'pipe',stderr:'pipe',env:{...process.env,MSBUILDDISABLENODEREUSE:'1'}});const out=[],err=[];owned.child.stdout.on('data',b=>out.push(b));owned.child.stderr.on('data',b=>err.push(b));const result=await owned.finished;fs.writeFileSync(path.join(folder,'stdout.bin'),Buffer.concat(out),{flag:'wx'});fs.writeFileSync(path.join(folder,'stderr.bin'),Buffer.concat(err),{flag:'wx'});fs.writeFileSync(path.join(folder,'finished.json'),JSON.stringify(result,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify({folder,result}));process.exitCode=result.passed?0:1;})().catch(e=>{console.error(e);process.exitCode=1});

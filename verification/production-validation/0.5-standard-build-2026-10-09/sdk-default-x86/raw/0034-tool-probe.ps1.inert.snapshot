@@ -1,0 +1,14 @@
+param([string]$Root,[string]$Architecture,[string]$Output)
+$ErrorActionPreference='Stop'
+. (Join-Path $Root 'tools/internal/Find-Toolchain.ps1')
+$vs=Get-SouiToolchain
+$versionFile=Join-Path $vs.Root 'VC/Auxiliary/Build/Microsoft.VCToolsVersion.default.txt'
+$vcVersion=([IO.File]::ReadAllText($versionFile)).Trim()
+if($vcVersion -notmatch '^14\.\d+\.\d+$'){throw 'Unknown VC default toolset'}
+$toolBin=Join-Path $vs.Root "VC/Tools/MSVC/$vcVersion/bin/Hostx64/$Architecture"
+$tools=[ordered]@{cmake=(Get-Command cmake.exe -ErrorAction Stop).Source;node=(Get-Command node.exe -ErrorAction Stop).Source;
+ npm=(Get-Command npm.cmd -ErrorAction Stop).Source;msbuild=(Join-Path $vs.Root 'MSBuild/Current/Bin/amd64/MSBuild.exe');
+ compiler=(Join-Path $toolBin 'cl.exe');linker=(Join-Path $toolBin 'link.exe');devcmd=$vs.DevCmd;
+ vcVersionFile=$versionFile;vswhere=(Join-Path ([Environment]::GetEnvironmentVariable('ProgramFiles(x86)')) 'Microsoft Visual Studio/Installer/vswhere.exe')}
+$value=[ordered]@{schema='soui.standard-build-tools/v1';installation=$vs.Root;vcVersion=$vcVersion;tools=$tools}
+[IO.File]::WriteAllText($Output,($value|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))

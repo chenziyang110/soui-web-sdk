@@ -1,0 +1,117 @@
+{
+  "schema": "soui.standard-build-tool-resolution-results/v1",
+  "createdAt": "2026-10-08T19:22:50.910Z",
+  "frozenInputSha256": "d109cddfacd585af8ffea2fbf8d9b56052d7753365593b2f9dcf86c5afaeb882",
+  "currentSourceStable": true,
+  "original147Unchanged": true,
+  "previous1531Unchanged": true,
+  "prepared16Unchanged": true,
+  "sourceChanges": [
+    "tools/internal/standard-build.cjs",
+    "tests/sdk/standard-build.test.cjs",
+    "docs/adr/0033-standard-owned-build-caller.md",
+    "docs/standard-build.md"
+  ],
+  "stages": [
+    {
+      "directory": "green-205cd635-670a-41ba-896e-711bad2063e9",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "counts": {
+        "tests": 36,
+        "pass": 36,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "directory": "red-158c5938-3517-4c68-9fbe-47204027880f",
+      "rootExitCode": 1,
+      "supervisorExitCode": 1,
+      "genericPassed": false,
+      "closureConfirmed": true,
+      "counts": {
+        "tests": 35,
+        "pass": 30,
+        "fail": 5,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "directory": "red-31537d36-0129-425e-968c-b7434027d2b6",
+      "rootExitCode": 1,
+      "supervisorExitCode": 1,
+      "genericPassed": false,
+      "closureConfirmed": true,
+      "counts": {
+        "tests": 36,
+        "pass": 30,
+        "fail": 6,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "directory": "red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3",
+      "rootExitCode": 1,
+      "supervisorExitCode": 1,
+      "genericPassed": false,
+      "closureConfirmed": true,
+      "counts": {
+        "tests": 35,
+        "pass": 29,
+        "fail": 6,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "directory": "tail-protocol-x64-8ca99cc6-8750-4022-a97c-9b64e0eeb277",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "counts": {
+        "tests": 157,
+        "pass": 157,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    },
+    {
+      "directory": "tail-protocol-x86-034b53cc-d279-45cb-b30f-8b6a23f673e5",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "counts": {
+        "tests": 157,
+        "pass": 157,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      }
+    }
+  ],
+  "meaningfulRedDirectories": [
+    "red-158c5938-3517-4c68-9fbe-47204027880f",
+    "red-31537d36-0129-425e-968c-b7434027d2b6"
+  ],
+  "firstRedHarnessPathErrorRetained": "red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3",
+  "redAdapterOnlyExposesOriginalFileForTesting": true,
+  "noActualSdkBuild": true,
+  "noCompilerTailPolicyRequested": true,
+  "noReleaseAcceptance": true,
+  "noGui": true
+}

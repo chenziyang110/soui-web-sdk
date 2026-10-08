@@ -1,0 +1,56 @@
+✔ strict CLI rejects unknown, repeated and partially specified tail permissions (1.6036ms)
+✖ natural completed build needs current payload and a new build identity (3.0982ms)
+✔ explicit synthetic exact-tail policy preserves generic false/124 (2.4031ms)
+✔ yesterday build ID reused (0.5396ms)
+✔ old report with identical source and new-looking ID (0.3044ms)
+✔ payload current bytes differ (0.3432ms)
+✔ source changed during build (0.2555ms)
+✔ Build script raw bytes changed (0.1598ms)
+✔ compiler replaced without source change (0.1671ms)
+✔ reviewed reader bytes changed (0.2445ms)
+✔ CMake actual compiler was not observed (0.1846ms)
+✔ caller ready differs by one exact FILETIME tick (0.5927ms)
+✔ valid context JSON points at another script (0.1498ms)
+✔ valid client object cannot replace native terminal (0.3288ms)
+✔ native report truncated (0.1539ms)
+✔ duplicate native start (0.263ms)
+✔ duplicate native root-exit (0.2057ms)
+✔ duplicate JSON field after valid-looking last value (0.1656ms)
+✔ unbound supervisor exit (0.238ms)
+✔ STOP cannot qualify (0.2561ms)
+✔ fallback cannot qualify (0.2209ms)
+✔ post-launch source missing (0.142ms)
+✔ default tail, explicit timeout and root failure are never promoted to accepted (1.7702ms)
+✔ same architecture lease excludes SDK/application callers and refuses foreign release (5.4593ms)
+✔ real temporary SDK library drift fails the existing build evidence verification (14.5631ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 24
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 146.0206
+
+✖ failing tests:
+
+test at tests\sdk\standard-build.test.cjs:53:1
+✖ natural completed build needs current payload and a new build identity (3.0982ms)
+  AssertionError [ERR_ASSERTION]: Native terminal/root-exit differs
+  
+  false !== true
+  
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\sdk\standard-build.test.cjs:55:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
