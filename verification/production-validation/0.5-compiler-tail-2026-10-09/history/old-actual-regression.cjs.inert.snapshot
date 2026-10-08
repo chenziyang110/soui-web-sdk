@@ -1,0 +1,37 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'../..');
+const {readTailEvidence}=require('../../tools/internal/owned-tail-evidence.cjs');
+const {acceptCompilerTail}=require('../../tools/internal/compiler-tail-policy.cjs');
+const identity=require('../../tools/internal/delivery-identity.cjs');
+const old=path.join(root,'out/actual-compiler-tail-9c838133-e825-4557-9b05-a09c4bc3c843');
+const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const originals=['report.json','driver-at-launch.cjs.inert.snapshot','OwnedProcessRunner.exe',
+  'x64/stdout.log','x64/stderr.log','x64/owned.ndjson','x64/owned.ndjson.context.json','x64/finished.json',
+  'x64/reviewed-invocation.json','x64/build-Release.json','x64/policy.json','x64/prelaunch-review.json'];
+const before=originals.map(file=>{const bytes=fs.readFileSync(path.join(old,file));return {path:file,bytes:bytes.length,sha256:hash(bytes)};});
+const read=file=>fs.readFileSync(path.join(old,'x64',file));
+const contextBytes=read('owned.ndjson.context.json'),context=JSON.parse(contextBytes),rawReport=read('owned.ndjson');
+const result=JSON.parse(read('finished.json')),reviewedInvocation=JSON.parse(read('reviewed-invocation.json'));
+const buildReportBytes=read('build-Release.json');
+const verdict=readTailEvidence(rawReport,{context,reportSha256:result.reportSha256});
+assert.equal(verdict.accepted,true,verdict.failure);
+assert.deepEqual(verdict.historicalDiagnostics,{imageReadFailures:67,unavailableMembers:53,noLongerOwnedMembers:0,pidReuses:7});
+assert.equal(verdict.member.pid,102364);assert.equal(verdict.member.creationFileTime,'134359507610679957');
+assert.equal(verdict.fixedTotalProcesses,647);assert.equal(result.passed,false);assert.equal(result.supervisorExitCode,124);
+const currentSourceSha256=identity.source(root).sha256;
+assert.notEqual(currentSourceSha256,reviewedInvocation.sourceSha256);
+// The old artifact declarations are intentionally reused only as a negative
+// fixture. This does not claim fresh artifact/source certification.
+const policy=acceptCompilerTail({reviewedInvocation,context,contextBytes,rawReport,buildReportBytes,result,
+  actualScriptSha256:hash(fs.readFileSync(path.join(root,'tools/Build.ps1'))),currentSourceSha256,
+  currentArtifacts:structuredClone(reviewedInvocation.artifacts)});
+assert.equal(policy.compilerTailAcceptance,false);assert.match(policy.failure,/source/i);
+const oldPolicy=JSON.parse(read('policy.json'));
+assert.equal(oldPolicy.compilerTailAcceptance,false);assert.equal(oldPolicy.failure,'Unknown generic member image');
+assert.equal(JSON.parse(fs.readFileSync(path.join(old,'report.json'))).completed,false);
+for(const input of before)assert.equal(hash(fs.readFileSync(path.join(old,input.path))),input.sha256,'Original bytes changed: '+input.path);
+console.log(JSON.stringify({schema:'soui.compiler-tail-history-readonly-regression/v1',originals:before,
+  newReaderOnly:verdict,oldSourceSha256:reviewedInvocation.sourceSha256,currentSourceSha256,
+  currentSourcePolicy:policy,artifactFixtureOnly:true,oldFailurePreserved:true,allOriginalBytesUnchanged:true,
+  noFreshBuild:true,noGui:true},null,2));

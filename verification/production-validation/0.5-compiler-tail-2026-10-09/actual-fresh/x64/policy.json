@@ -1,0 +1,58 @@
+{
+  "schema": "soui.compiler-tail-policy/v1",
+  "compilationCompleted": true,
+  "genericSupervisionPassed": false,
+  "compilerTailAcceptance": true,
+  "failure": null,
+  "diskBytesOnly": true,
+  "tailEvidence": {
+    "schema": "soui.owned-tail-verdict/v1",
+    "available": true,
+    "accepted": true,
+    "failure": null,
+    "diskBytesOnly": true,
+    "reportSha256": "1388deb6671ee3404c558179ac4ce3e48fed660d910496b4a1b754d50dfacd6a",
+    "nonce": "849b254ea43348d12addf79199774ad9",
+    "root": {
+      "pid": 82908,
+      "creationFileTime": "134359523307988511"
+    },
+    "pin": {
+      "canonicalPath": "\\\\?\\C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe",
+      "volumePath": "\\\\?\\Volume{152496b5-b675-42a4-88a1-4fda55c7706c}\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe",
+      "volumeSerialNumber": "505631073",
+      "fileId": "3096224746500191",
+      "size": "335520",
+      "sha256": "651345513aae26090c813b1ded859a5680c3823ca716a80e1d337bac0ca797ef"
+    },
+    "member": {
+      "pid": 113520,
+      "creationFileTime": "134359524161140106",
+      "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+    },
+    "fixedTotalProcesses": 647,
+    "preCleanupSnapshotSequence": 6,
+    "historicalDiagnostics": {
+      "imageReadFailures": 62,
+      "unavailableMembers": 64,
+      "noLongerOwnedMembers": 0,
+      "pidReuses": 11
+    },
+    "terminal": {
+      "event": "terminal",
+      "reason": "owned-descendants-remain",
+      "elapsedMs": 218767,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 1,
+      "terminatedOwnedJob": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 647,
+      "limitTerminatedProcesses": 0,
+      "passed": false,
+      "preCleanupSnapshotSequence": 6,
+      "tailEvidenceComplete": true
+    }
+  }
+}

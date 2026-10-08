@@ -1,0 +1,57 @@
+'use strict';
+const fs=require('node:fs'); const path=require('node:path'); const crypto=require('node:crypto');
+const cwd=path.resolve(__dirname,'../..');
+const client='F:/work/sm05/tools/internal/owned-process.cjs';
+const runner='F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const {launchOwned}=require(client);
+const mode=process.argv[2]; const directory=path.join(__dirname,mode+'-'+crypto.randomUUID()); fs.mkdirSync(directory);
+fs.copyFileSync(__filename,path.join(directory,'harness.cjs'));
+const sha=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const inputs=['benchmarks/protocol/owned-process-runner.cpp','benchmarks/protocol/owned-tail-evidence.cpp',
+ 'benchmarks/protocol/owned-tail-evidence.h','benchmarks/protocol/CMakeLists.txt',
+ 'tests/benchmark/owned-tail-process-fixture.cpp','tests/benchmark/owned-tail-mutation-fixture.cpp',
+ 'tests/benchmark/owned-tail-api-fixture.cpp',
+ 'tests/benchmark/owned-process-assignment-fixture.cpp','tests/benchmark/owned-process-tail-snapshot.test.cjs'];
+const manifest=inputs.map(file=>({path:file,sha256:sha(path.join(cwd,file))}));
+fs.writeFileSync(path.join(directory,'inputs.json'),JSON.stringify({base:'2154ed80ebe5825e398b87992d0f666d28bab260',
+ inputs:manifest,client,clientSha256:sha(client),runner,runnerSha256:sha(runner)},null,2)+'\n');
+const env={...process.env,MSBUILDDISABLENODEREUSE:'1',PSModulePath:'C:/Windows/system32/WindowsPowerShell/v1.0/Modules'};
+async function run(name,exe,args,extraEnv={}){
+ const folder=path.join(directory,name); fs.mkdirSync(folder);
+ const owned=launchOwned(exe,args,{runner,cwd,report:path.join(folder,'owned.ndjson'),timeoutMs:120000,
+  drainMs:2500,env:{...env,...extraEnv},stdout:'pipe',stderr:'pipe'});
+ const stdout=[],stderr=[]; owned.child.stdout.on('data',b=>stdout.push(b));owned.child.stderr.on('data',b=>stderr.push(b));
+ const result=await owned.finished;
+ fs.writeFileSync(path.join(folder,'stdout.bin'),Buffer.concat(stdout));fs.writeFileSync(path.join(folder,'stderr.bin'),Buffer.concat(stderr));
+ fs.writeFileSync(path.join(folder,'finished.json'),JSON.stringify(result,null,2)+'\n');
+ console.log(JSON.stringify({name,exitCode:result.exitCode,passed:result.passed,terminal:result.terminal,report:result.report}));
+ if(!result.closureConfirmed||sha(result.report)!==result.reportSha256)throw Error('Owned closure/report invalid');
+ if(result.exitCode!==0)throw Error('Subject failed: '+name);
+ return result;
+}
+async function main(){
+ const results=[];
+ for(const arch of ['x86','x64']){
+  const build=path.join(cwd,'out/tail-'+arch);
+  if(mode==='build'){
+   results.push(await run(arch+'-configure','C:/Program Files/CMake/bin/cmake.exe',['-S',path.join(cwd,'benchmarks/protocol'),
+    '-B',build,'-G','Visual Studio 17 2022','-A',(arch==='x86'?'Win32':'x64')+',version=10.0.19041.0',
+    '-DCMAKE_SYSTEM_VERSION=10.0.19041.0','-DCMAKE_VS_GLOBALS=VcpkgEnabled=false']));
+   results.push(await run(arch+'-build','C:/Program Files/CMake/bin/cmake.exe',['--build',build,'--config','Release',
+    '--target','OwnedProcessRunner','OwnedProcessAssignmentFixture','OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture',
+    '--parallel','2','--','/nr:false']));
+  }else if(mode==='native'){
+   const release=path.join(build,'Release');
+   results.push(await run(arch+'-tests',process.execPath,['--test','tests/benchmark/owned-process-tail-snapshot.test.cjs'],{
+    SOUI_TAIL_RUNNER:path.join(release,'OwnedProcessRunner.exe'),SOUI_TAIL_FIXTURE:path.join(release,'OwnedTailProcessFixture.exe'),
+    SOUI_TAIL_MUTATION_RUNNER:path.join(release,'OwnedTailMutationFixture.exe'),
+    SOUI_TAIL_API_RUNNER:path.join(release,'OwnedTailApiFixture.exe'),
+    SOUI_TAIL_BOOTSTRAP_RUNNER:runner,SOUI_TAIL_BOOTSTRAP_CLIENT:client,
+    SOUI_TAIL_EVIDENCE_DIRECTORY:path.join(directory,arch+'-raw-tests')}));
+  }else throw Error('Expected build/native');
+ }
+ for(const item of manifest)if(sha(path.join(cwd,item.path))!==item.sha256)throw Error('Source changed: '+item.path);
+ fs.writeFileSync(path.join(directory,'summary.json'),JSON.stringify(results,null,2)+'\n');
+ console.log('Evidence: '+directory);
+}
+main().catch(e=>{console.error(e.stack);process.exitCode=1});
