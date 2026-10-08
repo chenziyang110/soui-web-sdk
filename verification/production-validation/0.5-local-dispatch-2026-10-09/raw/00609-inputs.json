@@ -1,0 +1,50 @@
+{
+  "name": "compile-x64",
+  "executable": {
+    "path": "C:/Program Files/CMake/bin/cmake.exe",
+    "resolvedPath": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+    "bytes": 12905544,
+    "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "args": [
+    "--build",
+    "F:\\work\\sm05-ad\\out\\dispatch-native-2358a5e1-49f1-420b-bac4-adff8aead6e0\\b-x64",
+    "--config",
+    "Release",
+    "--target",
+    "soui_local_action_dispatch_tests",
+    "soui_local_authorization_tests",
+    "soui_session_renewal_tests",
+    "soui_task_scope_tests",
+    "soui_task_operation_query_tests",
+    "soui_action_contract_tests",
+    "soui_sdk_contract_tests",
+    "--parallel",
+    "2",
+    "--",
+    "/nr:false",
+    "/m:2",
+    "/p:VcpkgEnabled=false",
+    "/p:VCPkgLocalAppDataDisabled=true",
+    "/bl:F:\\work\\sm05-ad\\out\\dispatch-native-2358a5e1-49f1-420b-bac4-adff8aead6e0\\compile-x64.binlog"
+  ],
+  "cwd": "F:\\work\\sm05-ad",
+  "runner": {
+    "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+    "resolvedPath": "F:\\work\\sm05\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+    "bytes": 60928,
+    "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+  },
+  "client": {
+    "path": "F:\\work\\sm05-ad\\tools\\internal\\owned-process.cjs",
+    "resolvedPath": "F:\\work\\sm05-ad\\tools\\internal\\owned-process.cjs",
+    "bytes": 8386,
+    "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+  },
+  "timeoutMs": 600000,
+  "drainMs": 3000,
+  "environment": {
+    "MSBUILDDISABLENODEREUSE": "1"
+  },
+  "sourceSha256": "bd61b7d836dbd75d503681fea382aa5f821deb6653381e2f6aba26a1ca4d14c6"
+}

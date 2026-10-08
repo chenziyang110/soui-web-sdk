@@ -1,0 +1,10 @@
+^F:\WORK\SM05-AD\TESTS\NATIVE\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/work/sm05-ad -BF:/work/sm05-ad/out/dispatch-native-2358a5e1-49f1-420b-bac4-adff8aead6e0/b-x86 --check-stamp-file F:/work/sm05-ad/out/dispatch-native-2358a5e1-49f1-420b-bac4-adff8aead6e0/b-x86/tests/native/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

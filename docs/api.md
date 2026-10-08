@@ -158,6 +158,10 @@ WndProc 将 WM_HOTKEY 的完整参数交给 `dispatch_message()`，仅在 `activ
 
 `lease_local` 和 `renew_local` 同时要求 `bridge.session.renew` 的 method 与 capability，并保留原有有限租约、旧 bearer 重叠和幂等规则。`binding->close()` 不可逆地停止授权，重连须新建对象。关闭与已开始发行/续租可能竞争；返回 token 不保证可执行，但发行始终交付精确 scope，供应用调用 `revoke_scope` 和 `shutdown_scope`。随后仍须完成任务、回调和 I/O 清理；close 或 revoke 不是完成 barrier。详见 [ADR-0036](adr/0036-local-connection-bound-grants.md)。
 
+`capability_registry::allow_local_action(method)` 和 `json_bridge::allow_local_action(method)` 仅在注册阶段显式开放已有 typed action；默认关闭，plain 方法和保留控制方法不能开放，facade 在 bootstrap 后冻结注册。它不添加页面 capability，也不审核业务数据是否敏感。可信端点持有实际 binding 和私有 bearer，调用 `bridge_transport::handle_local(request, binding, bearer)`；请求提供的 session/origin/token/authorization 被原生绑定覆盖，`native_user_gesture` 固定为 false。执行前核对 method 与 capability，返回前核对同一实际 scope；未知、隐藏、过期或未授权的本地方法返回统一 `E_UNAUTHORIZED`。
+
+`describe_local` 使用同一连接授权过滤发现列表，再分页；canonical `bridge.describe` 不执行应用业务 callback。本地业务错误和异常返回固定错误，非法输出不回送原文。参数与页面 envelope 在解析阶段检查深度，不可表示的数值返回固定 schema 错误。输出 schema 约束结构，应用仍须审核字段和业务授权。当前内建 `task.start/query/cancel` 为 plain 方法，不能通过此入口开放；安全任务包装层、真实传输、OS 主体验证和发送边界尚待实现。关闭后的检查可丢弃已完成结果，不能回滚已执行的业务或代替 I/O 清理。详见 [ADR-0037](adr/0037-shared-local-action-dispatch.md)。
+
 ## 错误与超时
 
 `SouiBridgeError` 包含 `code` 和 `requestId`。非法响应、相关 ID 不匹配、权限拒绝、会话失效和页面等待超时都有独立错误。页面超时不代表原生任务已经取消；需要调用服务自己的取消接口。

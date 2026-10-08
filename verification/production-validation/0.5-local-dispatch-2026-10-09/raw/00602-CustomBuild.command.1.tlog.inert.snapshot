@@ -1,0 +1,10 @@
+^F:\WORK\SM05-AD\OUT\DISPATCH-NATIVE-2358A5E1-49F1-420B-BAC4-ADFF8AEAD6E0\B-X86\CMAKEFILES\5B15CDD7F166F8C4CEAA18F34E2AEA96\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/work/sm05-ad -BF:/work/sm05-ad/out/dispatch-native-2358a5e1-49f1-420b-bac4-adff8aead6e0/b-x86 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file F:/work/sm05-ad/out/dispatch-native-2358a5e1-49f1-420b-bac4-adff8aead6e0/b-x86/SouiSdkDistribution.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

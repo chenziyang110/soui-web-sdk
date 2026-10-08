@@ -1,0 +1,35 @@
+'use strict';
+const fs = require('node:fs'), path = require('node:path'), assert = require('node:assert/strict');
+const v = require('./archive.cjs');
+const index = v.json(path.join(v.archive, 'index.json'));
+const actual = v.scan(v.archive).filter(x => x.path !== 'index.json'); assert.deepEqual(actual, index.files);
+for (const item of index.files) assert(!v.binaryMagic(v.check(v.bounded(v.archive, item.path), item)), 'Published binary magic');
+const map = v.json(path.join(v.archive, 'byte-exact-map.json'));
+for (const row of map.records) {
+  v.check(row.originalPath, row);
+  if (row.archivePath) { assert.equal(row.disposition, 'byte-exact-copy'); v.check(v.bounded(v.archive, row.archivePath), row); }
+  else assert(row.disposition.startsWith('private-'), 'Omitted artifact incorrectly presented as public');
+}
+const original = v.verifyOriginal();
+const summary = v.json(path.join(v.archive, 'archive-summary.json'));
+assert.equal(summary.actualInputs, original.frozen.actualInputs.files.length);
+assert.equal(summary.indexedOriginals, original.index.files.length);
+assert.deepEqual(summary.jobs, original.proof.jobs);
+const auditDir = path.join(__dirname, 'audit'), audit = v.json(path.join(auditDir, 'summary.json'));
+const done = v.json(path.join(auditDir, 'finished.json')), inputs = v.json(path.join(auditDir, 'inputs.json'));
+assert.deepEqual(summary.audit, audit);
+assert.equal(v.hash(v.read(path.join(auditDir, 'stdout.bin'))), done.stdoutSha256);
+assert.equal(v.hash(v.read(path.join(auditDir, 'stderr.bin'))), done.stderrSha256);
+assert.equal(v.hash(v.read(path.join(auditDir, 'owned.ndjson.context.json'))), done.contextSha256);
+if (audit.auditAccepted) {
+  const subject = v.native(auditDir, done, {cwd: inputs.cwd, args: inputs.args, executable: inputs.tools[0], runner: inputs.tools[2],
+    timeoutMs: inputs.timeoutMs, drainMs: inputs.drainMs});
+  assert.deepEqual(subject, audit.subject);
+  const raw = v.json(path.join(auditDir, 'stdout.bin')); assert.equal(raw.metadata.vulnerabilities.total, 0);
+}
+console.log(JSON.stringify({schema: 'soui.local-dispatch-readonly-archive-verification/v1', passed: true,
+  indexSha256: v.hash(v.read(path.join(v.archive, 'index.json'))), indexedFiles: index.files.length,
+  indexedBytes: index.bytes, originalFiles: original.index.files.length, inputFiles: original.frozen.actualInputs.files.length,
+  mapRecords: map.records.length, hashOnlyPrivate: map.records.filter(x => !x.archivePath).length,
+  jobs: original.proof.jobs.length, staticLibraries: original.proof.staticLibraries, peFiles: original.proof.peFiles,
+  auditAccepted: audit.auditAccepted, sourceUnchanged: true, originalAllUnchanged: true}, null, 2));

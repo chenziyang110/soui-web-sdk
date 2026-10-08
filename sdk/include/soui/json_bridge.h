@@ -20,6 +20,9 @@ class json_bridge final : public bridge_adapter {
                                   soui::runtime::capability_registry::contextual_handler handler);
   bool register_action(std::string name, std::string capability, std::string contract_json,
                        soui::runtime::capability_registry::contextual_handler handler);
+  // Opt in before bootstrap. Only existing typed actions can be exposed;
+  // ordinary built-in tasks remain unavailable to local callers.
+  bool allow_local_action(const std::string& name);
   // Native-only document grant, configured before bootstrap and frozen at the
   // first bootstrap. Every listed capability must already be registered. An
   // empty list denies all ordinary calls; omission preserves legacy grants.

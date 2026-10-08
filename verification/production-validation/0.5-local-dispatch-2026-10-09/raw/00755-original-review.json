@@ -1,0 +1,103 @@
+{
+  "schema": "soui.local-dispatch-original-readonly-review/v1",
+  "indexSha256": "ae9b1dd796bb823a649bb9782bf8e879a3e65a7015a592b2992b50e737eda59f",
+  "indexedOriginals": 731,
+  "actualInputs": 68,
+  "sourceSha256": "bd61b7d836dbd75d503681fea382aa5f821deb6653381e2f6aba26a1ca4d14c6",
+  "rawSourceSha256": "63b205edddd7d07f71f09c9f657f6585178d0b7e4c4e2c7ffd0b2f092594889a",
+  "actualInputSha256": "b48bb7ee7330fb5cda0cd89ab9cd797eeb0b942910cfe3832b524743b739db3c",
+  "toolCount": 12,
+  "jobs": [
+    {
+      "name": "configure-x64",
+      "pid": 16052,
+      "creationFileTime": "134359677039852994",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "compile-x64",
+      "pid": 111552,
+      "creationFileTime": "134359677163492254",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "ctest-x64",
+      "pid": 4136,
+      "creationFileTime": "134359677765729995",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "dispatch-cases-x64",
+      "pid": 65244,
+      "creationFileTime": "134359677777683468",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "configure-x86",
+      "pid": 56124,
+      "creationFileTime": "134359677779878612",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "compile-x86",
+      "pid": 106588,
+      "creationFileTime": "134359677900362956",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "ctest-x86",
+      "pid": 102340,
+      "creationFileTime": "134359678445664189",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "dispatch-cases-x86",
+      "pid": 105224,
+      "creationFileTime": "134359678460279102",
+      "reason": "completed",
+      "activeProcesses": 0
+    }
+  ],
+  "counts": [
+    {
+      "architecture": "x64",
+      "ctestCount": 7,
+      "ctestNames": [
+        "sdk.native.contract",
+        "sdk.native.action-contract",
+        "sdk.native.session-renewal",
+        "sdk.native.task-scope",
+        "sdk.native.task-operation-query",
+        "sdk.native.local-authorization",
+        "sdk.native.local-action-dispatch"
+      ],
+      "directCases": 15
+    },
+    {
+      "architecture": "x86",
+      "ctestCount": 7,
+      "ctestNames": [
+        "sdk.native.contract",
+        "sdk.native.action-contract",
+        "sdk.native.session-renewal",
+        "sdk.native.task-scope",
+        "sdk.native.task-operation-query",
+        "sdk.native.local-authorization",
+        "sdk.native.local-action-dispatch"
+      ],
+      "directCases": 15
+    }
+  ],
+  "outputFiles": 16,
+  "peFiles": 14,
+  "staticLibraries": 2,
+  "allExact": true,
+  "authorBoundary": "Archivist authored original 14 test cases; Root/Deps independently reviewed their design. This proof verifies execution and archive bytes, not self-approval."
+}
