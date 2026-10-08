@@ -1,0 +1,121 @@
+{
+  "schema": "soui.scrollbar-win7-payload-preparation/v1",
+  "attempt": "scrollbar-win7-payload-attempt1",
+  "version": "0.3.0-preview.15",
+  "sourceSha256": "33adadfc3643208c05c27f7ac28c430175d9dcc5be69e254ea8796f8c711dd09",
+  "buildId": "111abe32-bfed-42aa-ae9c-80dcb3ba2f6e",
+  "buildRecordSha256": "338290ded119bd7d0aec352d543181c28429654a19ffadc7fb1cb1d8dd5045a4",
+  "preparationScriptSha256": "040e86ac2a4461c63ecfa5b2cfc870070df652413b17afe291e7b5ca6464bb4c",
+  "gateSamples": [
+    {
+      "at": "2026-09-29T10:24:01.967Z",
+      "stage": "before-preparation",
+      "busy": []
+    },
+    {
+      "at": "2026-09-29T10:24:04.465Z",
+      "stage": "before-SouiStarter",
+      "busy": []
+    },
+    {
+      "at": "2026-09-29T10:24:07.511Z",
+      "stage": "after-SouiStarter",
+      "busy": []
+    },
+    {
+      "at": "2026-09-29T10:24:09.374Z",
+      "stage": "before-SouiWorkbench",
+      "busy": []
+    },
+    {
+      "at": "2026-09-29T10:24:12.967Z",
+      "stage": "after-SouiWorkbench",
+      "busy": []
+    },
+    {
+      "at": "2026-09-29T10:24:15.557Z",
+      "stage": "after-preparation",
+      "busy": []
+    }
+  ],
+  "packages": {
+    "SouiStarter": {
+      "payloadSha256": "c55975916aff3e86de10f8ecaeae10d37cbb8277ffa268b9613d912ccc0f8678",
+      "payloadBytes": 28584049,
+      "fileCount": 71,
+      "legal": [
+        {
+          "path": "resources/legal/THIRD_PARTY_NOTICES.md",
+          "sha256": "ada599cb08dc27a0f7ec864902d95a1e3b765ace80515f672a22701ee09ca662",
+          "bytes": 2147
+        },
+        {
+          "path": "resources/legal/third_party/licenses/element-plus-2.11.1-LICENSE.txt",
+          "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc",
+          "bytes": 1098
+        },
+        {
+          "path": "resources/legal/third_party/licenses/ijg-jpeg-9a-README.txt",
+          "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1",
+          "bytes": 19110
+        },
+        {
+          "path": "resources/legal/third_party/licenses/libcurl-7.61.1-COPYING.txt",
+          "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095",
+          "bytes": 1088
+        },
+        {
+          "path": "resources/legal/third_party/licenses/ots-5.0.0-LICENSE.txt",
+          "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d",
+          "bytes": 1563
+        }
+      ],
+      "manifestName": "SouiStarter-payload.tsv",
+      "manifestSha256": "cdb184f72190abcf28b3078a9845e3b41f68b5ab95f71d290e361cf7ebf6ccb2",
+      "zipName": "SouiStarter.zip",
+      "zipSha256": "221173eeb2306f7b0c684c5a17eba749bc294524664d5cd852c5607c3bddaf3f",
+      "zipBytes": 28597343
+    },
+    "SouiWorkbench": {
+      "payloadSha256": "602076612c8fc6823921a6ab0570d2bb2b160c64acae8535c4c335f95c1513d6",
+      "payloadBytes": 39525463,
+      "fileCount": 475,
+      "legal": [
+        {
+          "path": "resources/legal/THIRD_PARTY_NOTICES.md",
+          "sha256": "ada599cb08dc27a0f7ec864902d95a1e3b765ace80515f672a22701ee09ca662",
+          "bytes": 2147
+        },
+        {
+          "path": "resources/legal/third_party/licenses/element-plus-2.11.1-LICENSE.txt",
+          "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc",
+          "bytes": 1098
+        },
+        {
+          "path": "resources/legal/third_party/licenses/ijg-jpeg-9a-README.txt",
+          "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1",
+          "bytes": 19110
+        },
+        {
+          "path": "resources/legal/third_party/licenses/libcurl-7.61.1-COPYING.txt",
+          "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095",
+          "bytes": 1088
+        },
+        {
+          "path": "resources/legal/third_party/licenses/ots-5.0.0-LICENSE.txt",
+          "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d",
+          "bytes": 1563
+        }
+      ],
+      "manifestName": "SouiWorkbench-payload.tsv",
+      "manifestSha256": "8eb8fe6b918faed59554fc69dad607cede999963059b573c9243ec1e4ac57024",
+      "zipName": "SouiWorkbench.zip",
+      "zipSha256": "723e9cba1132ee05acbeef968368b2d0f848dc47fc7515e6c0f4288447842d58",
+      "zipBytes": 39618199
+    }
+  },
+  "payloadPrepared": true,
+  "transportFrozen": false,
+  "guestExecuted": false,
+  "releaseReady": false
+}

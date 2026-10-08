@@ -2,6 +2,8 @@
 
 `demo.native.interaction-task` 通过真实 Workbench adapter 和公开 JSON Bridge 验证有界 `demo.interaction`：单调时钟计时、后台进度事件、运行中取消、会话隔离、非法类型/整数范围与溢出、关闭会话清理，以及原快速任务兼容。构建后可运行 `ctest --test-dir out/x64 -C Release -R demo.native.interaction-task --output-on-failure`，x86 使用对应目录。这是无窗口的原生集成回归；V02 仍需新构建上真实滚动、IME、缩放和公共任务并发的桌面证据，不能继承旧应用载荷的短测结果。
 
+Workbench 普通窗口初始位置使用主显示器的工作区：空间充足时居中；只要仍可放下至少 640×480 的窗口，就给右下缩放方向预留至少 84×64 像素；再小的工作区退回到可见范围内。任务栏占用的区域不计入工作区。`demo.native.window-placement` 覆盖 Win7 1024×768 与 800×600 底部任务栏、默认大窗口与显式 850×640 窗口的 80×60 缩放目标、负坐标显示器及无效区域。纯几何测试不能证明真实边框命中和拖拽；[现代 Windows x86/x64 原生缩放记录](../verification/production-validation/work-area-placement-gui-2026-09-28/README.md)已证明本机 1920×1032 工作区中的两架构 80×60 鼠标拖拽与正常关闭，但不证明 Win7 SP1 x86、页面在 708×488 下可用或完整 V02。须用新冻结输入在 Win7 记录真实窗口矩形、任务栏区域、原生缩放输入与关闭结果，再判断 [Issue #42](https://github.com/chenziyang110/soui-web-sdk/issues/42) 是否关闭。
+
 `node --test tests/sdk/sdk-native-payload.test.cjs` 验证 SDK Core 排除已知历史内核备份，保留有效 DLL/LIB 和许可材料，并执行旧包安装、新包升级、旧包回退。原始源码备份和业务文件必须保持原字节；`Test.ps1` 和交付汇总均包含此回归。
 
 `kernel.native.scheduler-fairness` 编译内核实际调用的内部选择策略，覆盖新任务优先级、同级先后、长期等待、连续普通任务、未来任务资格和退出清理。它是策略回归；修改此策略仍必须在两架构完整重编底层依赖，运行保持原动画的独立消费者及真实应用，不能仅凭该测试放行 DLL。首次红绿结果见[原始记录](../verification/production-validation/scheduler-fairness-policy-2026-09-26/README.md)。

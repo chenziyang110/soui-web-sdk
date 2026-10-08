@@ -1,4 +1,6 @@
 * text=auto
+verification/production-validation/win7-v11-command-interrupted-2026-09-29/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-v11-native-resize-2026-09-29/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 *.c text eol=lf
 *.cc text eol=lf
 *.cpp text eol=lf
@@ -18,6 +20,9 @@
 *.ps1 text eol=crlf
 *.cmd text eol=crlf
 *.bat text eol=crlf
+
+# Preserve captured legal-validation scripts, reports and logs exactly.
+verification/production-validation/license-runtime-notices-2026-09-28/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 *.sln text eol=crlf
 *.vcxproj text eol=crlf
 *.props text eol=crlf
@@ -40,6 +45,10 @@ verification/production-validation/**/events.ndjson -text
 verification/production-validation/**/events.ndjson.phases.ndjson -text
 verification/production-validation/**/*.log -text
 verification/production-validation/**/cert.pem -text
+verification/production-validation/win7-sp1-x86-v02-interaction-v7-resize-blocked-2026-09-28/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-v8-prelaunch-refusal-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-v8-command-interrupted-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-v8-source-manifest-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/*.txt -text
 verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/*.log binary
 verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/results/*.txt binary
@@ -231,3 +240,19 @@ verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-inte
 verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/operations/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/benchmark-git-load-gate-2026-09-30/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/benchmark-git-load-gate-2026-09-30/audit/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+verification/production-validation/work-area-placement-native-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/work-area-placement-gui-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-workarea-v9-failure-2026-09-29/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-workarea-v9-failure-2026-09-29/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-workarea-v9-failure-2026-09-29/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-window-visibility-v10-2026-09-29/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-window-visibility-v10-2026-09-29/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-window-visibility-v10-2026-09-29/raw/**/*.png binary
+verification/production-validation/scrollbar-style-modern-2026-09-29/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/scrollbar-style-win7-2026-09-29/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/scrollbar-style-win7-2026-09-29/raw/**/*.ppm binary
+verification/production-validation/scrollbar-style-win7-2026-09-29/raw/**/*.png binary
+verification/production-validation/template-scrollbar-2026-09-30/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/template-scroll-guards-2026-09-30/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/template-scroll-guards-2026-09-30/audit/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
