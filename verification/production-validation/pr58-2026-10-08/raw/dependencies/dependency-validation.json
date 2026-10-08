@@ -1,0 +1,141 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-08T08:31:12.3822256Z",
+  "worktree": "F:/work/sm04",
+  "baseline": "45670af4d859bdf4ced286823834be373a30e63f",
+  "validatedHead": "10f5ee9c4434494dd7f8e02dda6a2bbd7f3819c8",
+  "scope": "PR #58 Workbench dependency and engine update",
+  "nodeVersion": "v24.14.0",
+  "npmVersion": "11.9.0",
+  "rootPackageEngine": ">=22.12.0",
+  "strictInstall": true,
+  "dependencyChanges": [
+    {
+      "path": "node_modules/@tanstack/query-core",
+      "previous": "5.103.1",
+      "current": "5.104.1",
+      "engines": null
+    },
+    {
+      "path": "node_modules/@tanstack/react-query",
+      "previous": "5.103.1",
+      "current": "5.104.1",
+      "engines": null
+    },
+    {
+      "path": "node_modules/@vueuse/core",
+      "previous": "14.4.0",
+      "current": "15.0.0",
+      "engines": {
+        "node": ">=22"
+      }
+    },
+    {
+      "path": "node_modules/@vueuse/metadata",
+      "previous": "14.4.0",
+      "current": "15.0.0",
+      "engines": {
+        "node": ">=22"
+      }
+    },
+    {
+      "path": "node_modules/@vueuse/shared",
+      "previous": "14.4.0",
+      "current": "15.0.0",
+      "engines": {
+        "node": ">=22"
+      }
+    },
+    {
+      "path": "node_modules/element-plus",
+      "previous": "2.14.5",
+      "current": "2.14.7",
+      "engines": null
+    },
+    {
+      "path": "node_modules/sass",
+      "previous": "1.104.1",
+      "current": "1.105.1",
+      "engines": {
+        "node": ">=20.19.0"
+      }
+    }
+  ],
+  "removedDependencies": [],
+  "vulnerabilities": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "componentOwners": {
+    "upstreamOwnerCount": 111,
+    "generatorOwnerCount": 111,
+    "mismatches": 0,
+    "componentLoaders": 82,
+    "loadableModules": 83
+  },
+  "license": {
+    "source": "demos/workbench/web/node_modules/element-plus/LICENSE",
+    "retained": "third_party/licenses/element-plus-2.14.7-LICENSE.txt",
+    "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27",
+    "identicalToPrevious2145": true,
+    "previousLicenseUnmodified": true
+  },
+  "checks": [
+    {
+      "name": "npm ci --engine-strict --no-fund --no-audit",
+      "exitCode": 0,
+      "log": "npm-ci-node24.log"
+    },
+    {
+      "name": "npm audit --json",
+      "exitCode": 0,
+      "log": "audit-workbench-node24.json"
+    },
+    {
+      "name": "tsc --noEmit",
+      "exitCode": 0,
+      "log": "typecheck-workbench-node24.log"
+    },
+    {
+      "name": "npm run build",
+      "exitCode": 0,
+      "log": "build-workbench-node24.log"
+    },
+    {
+      "name": "npm run check:dist",
+      "exitCode": 0,
+      "log": "check-dist-node24.log"
+    },
+    {
+      "name": "npm run build:legacy",
+      "exitCode": 0,
+      "log": "build-legacy-node24.log"
+    },
+    {
+      "name": "Verify-LocalDist.ps1 -DistPath dist-legacy -RequireLegacy",
+      "exitCode": 0,
+      "log": "check-dist-legacy-node24.log"
+    },
+    {
+      "name": "independent TypeScript AST owner comparison",
+      "exitCode": 0,
+      "log": "component-owners-node24.json"
+    },
+    {
+      "name": "git diff --check (owned source paths)",
+      "exitCode": 0
+    }
+  ],
+  "packageLockSha256": "74ff68042f8b210cac922db10969a7acb0d13ae2ab1b9f7aa1178e7c901376ac",
+  "limitations": [
+    "Node 22.12 minimum was not executed in this subtask; execution used supported Node 24.14.0.",
+    "Native Win7/PE and gallery interaction checks are owned by root and remain outside this Web build evidence.",
+    "Parent is coordinating SDK preview.3 version and global manifests; frozen preview.2 delivery must remain unchanged."
+  ],
+  "preview": true,
+  "releaseReady": false
+}
