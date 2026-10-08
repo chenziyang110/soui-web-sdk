@@ -4,6 +4,8 @@
 
 ## 构建与独立新项目
 
+现代前端开发机使用 Node.js 22.12 或以上的受支持版本；本次验证使用 Node.js 24.14。最终用户机器不需要安装 Node.js。完整研发仓库含较深的历史验收路径，Windows 上克隆时使用 `git -c core.longpaths=true clone <仓库地址>`；此设置仅作用于该次克隆，不要求修改全局 Git 配置。
+
 ```powershell
 powershell.exe -File tools/Build.ps1 -Architecture x64 -WithWebView2 -Install
 powershell.exe -File tools/New-Project.ps1 -Name MyModernApp -OutputRoot ..\MyModernApp -Profile modern
