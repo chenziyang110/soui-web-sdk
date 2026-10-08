@@ -1,0 +1,24 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+  "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "--build",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-x86",
+    "--config",
+    "Release",
+    "--target",
+    "OwnedProcessRunner",
+    "OwnedProcessAssignmentFixture",
+    "OwnedTailProcessFixture",
+    "OwnedTailMutationFixture",
+    "--parallel",
+    "2",
+    "--",
+    "/nr:false"
+  ],
+  "cwd": "F:\\work\\sm05-compiler-tail",
+  "timeoutMs": 120000,
+  "drainMs": 2500
+}

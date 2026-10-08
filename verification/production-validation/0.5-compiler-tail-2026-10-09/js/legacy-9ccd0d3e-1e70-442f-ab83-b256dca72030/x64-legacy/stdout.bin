@@ -1,0 +1,31 @@
+✔ a complete fast close before the first poll publishes the subject and finishes normally (2.6242ms)
+▶ final evidence cannot replace either part of the already published subject identity
+  ✔ {"pid":126,"creationFileTime":"133999999999999999"} (1.193ms)
+  ✔ {"pid":125,"creationFileTime":"134000000000000000"} (0.7818ms)
+✔ final evidence cannot replace either part of the already published subject identity (2.3204ms)
+✔ a final report read failure resolves finished as failure rather than escaping the close callback (0.73ms)
+✔ a report digest failure also resolves finished as failure (0.8101ms)
+✔ a rejected ready observation stays failed even if a complete green report appears before close (1.4965ms)
+✔ a terminal without its final newline cannot pass despite a valid complete start (0.5826ms)
+✔ owned client reports the subject identity and binds tool and executable bytes (346.9094ms)
+✔ owned client retains nonzero subject exit and confirmed cleanup separately (290.6089ms)
+✔ owned client requests stop through its pipe and receives a failed terminal with closure (256.894ms)
+✔ owned client refuses missing tool and invalid bounds before launching a subject (2.6547ms)
+✔ test-only assignment denial cannot produce a ready subject or a client pass (221.7474ms)
+✔ owned runner preserves Unicode, spaces, quotes, empty args and trailing slashes (177.4386ms)
+✔ native nonzero exit is retained as failure even when the Job closes normally (171.9014ms)
+✔ only child output and null input are inherited, preserving native diagnostics (182.2433ms)
+✔ dedicated supervisor control cleans the held Job and cannot convert a stop into success (298.3835ms)
+✔ timeout closes all three owned generations and leaves an unrelated process alive (1662.906ms)
+✔ a root that exits zero cannot hide a still-running detached descendant (300.5495ms)
+✔ owned descendants may finish naturally within the explicit drain budget (476.7524ms)
+✔ an existing report or invalid limits cannot launch a child or overwrite evidence (189.0524ms)
+✔ test-only assignment denial exercises real held suspended-process cleanup, not Win7 policy (134.0172ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3775.9323

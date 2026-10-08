@@ -6,9 +6,11 @@
 #include <chrono>
 #include <cstdint>
 #include <iostream>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include "owned-tail-evidence.h"
 
 namespace {
 class handle final {
@@ -126,6 +128,9 @@ struct options {
     std::wstring executable;
     std::wstring command;
     bool stopOnStdin = false;
+    std::wstring pinTailImage;
+    std::wstring pinTailSha256;
+    std::wstring snapshotNonce;
 };
 
 options parse(int count, wchar_t** args) {
@@ -140,6 +145,23 @@ options parse(int count, wchar_t** args) {
         else if (flag == L"--drain-ms") config.drain = number(value, 60000);
         else if (flag == L"--report") config.report = value;
         else if (flag == L"--cwd") config.cwd = value;
+        else if (flag == L"--pin-tail-image") {
+            if (!config.pinTailImage.empty()) throw std::runtime_error("Duplicate tail pin image");
+            config.pinTailImage = value;
+            if (config.pinTailImage.empty()) throw std::runtime_error("Empty tail pin image");
+        }
+        else if (flag == L"--pin-tail-sha256") {
+            if (!config.pinTailSha256.empty()) throw std::runtime_error("Duplicate tail pin hash");
+            config.pinTailSha256 = value;
+            if (config.pinTailSha256.size() != 64 || config.pinTailSha256.find_first_not_of(L"0123456789abcdef") != std::wstring::npos)
+                throw std::runtime_error("Invalid tail pin hash");
+        }
+        else if (flag == L"--snapshot-nonce") {
+            if (!config.snapshotNonce.empty()) throw std::runtime_error("Duplicate snapshot nonce");
+            config.snapshotNonce = value;
+            if (config.snapshotNonce.size() != 32 || config.snapshotNonce.find_first_not_of(L"0123456789abcdef") != std::wstring::npos)
+                throw std::runtime_error("Invalid snapshot nonce");
+        }
         else throw std::runtime_error("Unknown option");
     }
     if (!config.timeout || !absolute(config.report) || !absolute(config.cwd) || ++index >= count)
@@ -151,6 +173,8 @@ options parse(int count, wchar_t** args) {
         config.command += quote(args[index]);
     }
     if (config.command.size() >= 32767) throw std::runtime_error("Command line too long");
+    const auto pinOptions = (!config.pinTailImage.empty() ? 1 : 0) + (!config.pinTailSha256.empty() ? 1 : 0) + (!config.snapshotNonce.empty() ? 1 : 0);
+    if (pinOptions != 0 && pinOptions != 3) throw std::runtime_error("Tail pin requires image, hash and nonce together");
     return config;
 }
 
@@ -181,6 +205,12 @@ std::string json(const std::wstring& value) {
         escaped += static_cast<char>(character);
     }
     return escaped + "\"";
+}
+
+std::string ascii_nonce(const std::wstring& value) {
+    std::string result;
+    for (const auto ch : value) result += static_cast<char>(ch); // parse() restricts this to lowercase ASCII hex.
+    return result;
 }
 
 void members(HANDLE job, reporter& report) {
@@ -260,6 +290,25 @@ int run(const options& config) {
         return {};
     };
     reporter report(config.report);
+    // Construct before the Job so the non-inherited disk pin outlives Job
+    // closure, including exceptional cleanup by KILL_ON_JOB_CLOSE.
+    std::unique_ptr<soui::benchmark::owned_tail_evidence> tail;
+    std::vector<std::string> prelaunchRows;
+    bool subjectStarted = false;
+    if (!config.pinTailImage.empty()) {
+        try {
+            tail = std::make_unique<soui::benchmark::owned_tail_evidence>(
+                config.pinTailImage, config.pinTailSha256, config.snapshotNonce,
+                [&report, &prelaunchRows, &subjectStarted](const std::string& row) {
+                    if (subjectStarted) report.write(row); else prelaunchRows.push_back(row);
+                });
+        } catch (...) {
+            for (const auto& row : prelaunchRows) report.write(row);
+            report.write("{\"schema\":\"soui.owned-process-run/v1\",\"event\":\"terminal\","
+                "\"reason\":\"pin-setup-failed\",\"jobAssignedBeforeResume\":false,\"closureConfirmed\":false,\"passed\":false}");
+            throw;
+        }
+    }
     handle job(CreateJobObjectW(nullptr, nullptr));
     if (!job.valid()) fail("Create owned Job");
     JOBOBJECT_EXTENDED_LIMIT_INFORMATION limits{};
@@ -325,7 +374,11 @@ int run(const options& config) {
     report.write("{\"schema\":\"soui.owned-process-run/v1\",\"event\":\"start\",\"pid\":" +
         std::to_string(info.dwProcessId) + ",\"creationFileTime\":\"" + std::to_string(creation) +
         "\",\"timeoutMs\":" + std::to_string(config.timeout) + ",\"drainMs\":" +
-        std::to_string(config.drain) + ",\"jobAssignedBeforeResume\":true,\"breakawayAllowed\":false}");
+        std::to_string(config.drain) + ",\"jobAssignedBeforeResume\":true,\"breakawayAllowed\":false" +
+        (tail ? ",\"snapshotNonce\":\"" + ascii_nonce(config.snapshotNonce) + "\"" : "") + "}");
+    subjectStarted = true;
+    for (const auto& row : prelaunchRows) report.write(row);
+    prelaunchRows.clear();
     const auto started = std::chrono::steady_clock::now();
     const auto elapsed = [&] {
         return static_cast<std::uint64_t>(std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -374,6 +427,7 @@ int run(const options& config) {
     const auto activeBeforeCleanup = state.ActiveProcesses;
     bool terminated = false;
     if (activeBeforeCleanup != 0) {
+        if (tail) tail->before_cleanup(job.get(), reason == "owned-descendants-remain" && rootExited && rootCode == 0);
         if (!TerminateJobObject(job.get(), 124)) fail("Terminate owned Job");
         terminated = true;
         const auto cleanupAt = elapsed();
@@ -391,13 +445,15 @@ int run(const options& config) {
     const bool closureConfirmed = state.ActiveProcesses == 0 && finalState.ActiveProcesses == 0 &&
         state.TotalProcesses == finalState.TotalProcesses;
     const bool passed = reason == "completed" && rootExited && rootCode == 0 && closureConfirmed;
+    if (tail) tail->after_cleanup(job.get());
     report.write("{\"event\":\"terminal\",\"reason\":\"" + reason + "\",\"elapsedMs\":" +
         std::to_string(elapsed()) + ",\"rootExited\":" + (rootExited ? "true" : "false") +
         ",\"rootExitCode\":" + (rootExited ? std::to_string(rootCode) : "null") +
         ",\"activeBeforeCleanup\":" + std::to_string(activeBeforeCleanup) +
         ",\"terminatedOwnedJob\":" + (terminated ? "true" : "false") +
         ",\"closureConfirmed\":" + (closureConfirmed ? "true" : "false") +
-        "," + counts(finalState) + ",\"passed\":" + (passed ? "true" : "false") + "}");
+        "," + counts(finalState) + ",\"passed\":" + (passed ? "true" : "false") +
+        (tail ? tail->terminal_fields() : "") + "}");
     if (!closureConfirmed) return 125;
     if (passed) return 0;
     if (reason == "timeout" || reason == "owned-descendants-remain" || reason == "supervisor-stop" ||

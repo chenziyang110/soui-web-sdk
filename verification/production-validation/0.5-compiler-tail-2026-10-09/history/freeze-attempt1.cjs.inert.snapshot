@@ -1,0 +1,61 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'../..');
+const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const item=file=>{const bytes=fs.readFileSync(file);return {path:file,bytes:bytes.length,sha256:sha(bytes)};};
+const baselineFile=path.join(root,'out/tail-js-validation/frozen-js-inputs-final.json');
+const nativeFile=path.join(root,'out/tail-validation/frozen-inputs-final.json');
+const js=JSON.parse(fs.readFileSync(baselineFile)),native=JSON.parse(fs.readFileSync(nativeFile));
+const changed=new Set(['tools/internal/owned-tail-evidence.cjs','tests/benchmark/owned-tail-evidence-reader.test.cjs',
+  'docs/adr/0031-compiler-tail-snapshot.md','docs/acceptance/0.5-compiler-tail-evidence.md']);
+const sources=js.source.map(original=>{const current=item(path.join(root,original.path));
+  if(!changed.has(original.path))assert.equal(current.sha256,original.sha256,'Unowned source changed: '+original.path);
+  return {...current,path:original.path,baselineSha256:original.sha256,modifiedInThisSlice:changed.has(original.path)};});
+sources.push({...item(path.join(root,'docs/acceptance/0.5-compiler-tail-evidence.md')),path:'docs/acceptance/0.5-compiler-tail-evidence.md',modifiedInThisSlice:true});
+const inherited=native.source.filter(original=>!changed.has(original.path)).map(original=>{
+  const current=item(path.join(root,original.path));assert.equal(current.sha256,original.sha256,'Native source changed: '+original.path);
+  return {...current,path:original.path,unchanged:true};});
+for(const original of native.executables){const current=item(original.path);assert.equal(current.sha256,original.sha256,'Native executable changed: '+original.path);inherited.push({...current,coffMachine:original.coffMachine,unchanged:true});}
+const fixed=['tools/Build.ps1','tools/internal/compiler-tail-policy.cjs','tools/internal/owned-process.cjs'];
+const immutableInputs=fixed.map(file=>({...item(path.join(root,file)),path:file}));
+const runs={red:'red-6c393bca-3723-4936-8c28-f3a6af5687c3',green:'green-bb48c234-9093-4375-ab8a-efe1523a5135',
+  native:'native-70eb61ae-36f2-4a1e-8c82-e857ead58ce4',old:'old-ef1bc0bd-36f6-4edd-9161-f9fa0bb4fcdd'};
+const observations=[];
+for(const [mode,folder] of Object.entries(runs)){
+  const summary=JSON.parse(fs.readFileSync(path.join(__dirname,folder,'summary.json')));
+  assert.equal(summary.inputsUnchanged,true);
+  for(const result of summary.results){assert.equal(result.closureConfirmed,true);assert.equal(result.fallbackUsed,false);
+    assert.equal(item(result.report).sha256,result.reportSha256);
+    observations.push({mode,folder,...result});}
+}
+const oldOutput=JSON.parse(fs.readFileSync(path.join(__dirname,runs.old,'old-actual-readonly/stdout.bin')));
+assert.equal(oldOutput.oldFailurePreserved,true);assert.equal(oldOutput.allOriginalBytesUnchanged,true);
+const freeze={schema:'soui.compiler-tail-history-freeze/v1',createdAt:new Date().toISOString(),base:js.base,
+  source:sources,inherited,immutableInputs,baselineJsFreeze:item(baselineFile),baselineNativeFreeze:item(nativeFile),runs,
+  sourceSha256:oldOutput.currentSourceSha256,oldActualSourceSha256:oldOutput.oldSourceSha256,
+  noBuild:true,noGui:true,noVm:true,noGitWrites:true,noNativeChanges:true,noClientChanges:true,noCompilerPolicyChanges:true,
+  actualFreshCompilerAcceptance:false};
+const freezePath=path.join(__dirname,'frozen-inputs-history-final.json');
+fs.writeFileSync(freezePath,JSON.stringify(freeze,null,2)+'\n',{flag:'wx'});
+const payload=[];
+function collect(folder){for(const entry of fs.readdirSync(folder,{withFileTypes:true})){
+  const file=path.join(folder,entry.name);if(entry.isDirectory())collect(file);else{
+    if(entry.name==='evidence-index-history-final.json')continue;
+    payload.push({...item(file),path:path.relative(__dirname,file).replace(/\\/g,'/')});
+  }
+}}
+collect(__dirname);payload.sort((a,b)=>a.path.localeCompare(b.path));
+const index={schema:'soui.compiler-tail-history-evidence/v1',createdAt:new Date().toISOString(),freeze:item(freezePath),
+  payload,observations,expectedRed:{tests:129,passed:126,failed:3,reasons:['Unknown generic member image','PID reused with a different FILETIME','unrecognised field accepted']},
+  green:{tests:129,passed:129,failed:0,skipped:0,cancelled:0,readerCoverage:{lines:98.51,branches:96.97,functions:100}},
+  native:{x86:6,x64:6,failures:0,skipped:0,rebuilt:false},oldActualReadOnly:oldOutput,
+  sourceChanges:[...changed],genericFailurePreserved:true,actualFreshCompilerAcceptance:false,
+  limitations:['Old raw proves only the new reader data interpretation; its original policy/report remain failure.',
+    'Old artifact declarations are reused solely for the negative current-source policy fixture, not fresh artifact certification.',
+    'Root must independently review the new freeze and rerun actual MSVC x64/x86 builds against the new source identity.',
+    'No GUI/VM/Win7/PE/full SDK build, remote operation or release validation in this slice.']};
+const indexPath=path.join(__dirname,'evidence-index-history-final.json');
+fs.writeFileSync(indexPath,JSON.stringify(index,null,2)+'\n',{flag:'wx'});
+for(const record of payload)assert.equal(item(path.join(__dirname,record.path)).sha256,record.sha256);
+console.log(JSON.stringify({freeze:item(freezePath),index:item(indexPath),payloadCount:payload.length,
+  payloadBytes:payload.reduce((total,record)=>total+record.bytes,0),source:sources.filter(record=>record.modifiedInThisSlice),allPayloadVerified:true},null,2));

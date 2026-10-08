@@ -1,0 +1,55 @@
+✖ a prelaunch exact disk pin proves one complete tail while generic supervision stays failed (6419.0219ms)
+✔ an unknown disk object with identical bytes stays in cleanup and cannot be a pinned tail (5845.1665ms)
+✔ multi actual tails are fully listed and cannot qualify as one helper (749.7543ms)
+✔ many actual tails are fully listed and cannot qualify as one helper (1326.5404ms)
+✔ the held pin denies write and rename until a normal root and Job have closed (255.3051ms)
+✖ test-only real extra assignment after the fixed snapshot invalidates cleanup evidence (1470.0545ms)
+✔ a failed owned tail cleanup leaves a separately held unrelated process alive (1285.3049ms)
+✔ hash mismatch, incomplete and duplicate opt-in arguments cannot launch a subject (760.3483ms)
+✔ the default generic path keeps v1 first start and never emits tail evidence (681.2398ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 7
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18937.4563
+
+✖ failing tests:
+
+test at tests\benchmark\owned-process-tail-snapshot.test.cjs:94:1
+✖ a prelaunch exact disk pin proves one complete tail while generic supervision stays failed (6419.0219ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (F:\work\sm05-compiler-tail\tests\benchmark\owned-process-tail-snapshot.test.cjs:110:10)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\owned-process-tail-snapshot.test.cjs:180:1
+✖ test-only real extra assignment after the fixed snapshot invalidates cleanup evidence (1470.0545ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  false !== true
+  
+      at TestContext.<anonymous> (F:\work\sm05-compiler-tail\tests\benchmark\owned-process-tail-snapshot.test.cjs:193:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
