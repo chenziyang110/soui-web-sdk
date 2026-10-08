@@ -1,0 +1,16 @@
+✔ one clean host sample just after QEMU exit is accepted (1.1054ms)
+✔ a missing terminal phase cannot close the isolation gate (1.0147ms)
+✔ a sample before QEMU exit cannot close the isolation gate (0.6094ms)
+✔ a stale sample cannot close the isolation gate (1.118ms)
+✔ an external process at the terminal sample rejects isolation (2.3234ms)
+✔ a failed terminal process query rejects isolation (0.8859ms)
+✔ a delayed first host sample cannot close isolation (0.4151ms)
+✔ a long gap between host samples cannot close isolation (0.3756ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 103.8516

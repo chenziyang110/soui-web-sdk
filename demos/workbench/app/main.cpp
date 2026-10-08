@@ -36,6 +36,7 @@
 #include <soui/runtime/services/desktop/global_shortcut.h>
 #include <soui/version.h>
 #include "../integration/demo_bridge_adapter.h"
+#include "work_area_placement.h"
 #include "../../../third_party/include/json/json.hpp"
 
 #if defined(SOUI_SOURCE_OVERRIDE)
@@ -106,6 +107,20 @@ int option_dimension(const std::vector<std::wstring>& args, const wchar_t* name,
   if (value.empty()) return fallback;
   try { return std::clamp(std::stoi(value), 640, 3840); }
   catch (...) { return fallback; }
+}
+
+std::optional<soui::demo::initial_window_rect> initial_window_on_primary_work_area(
+    int requested_width, int requested_height) {
+  const HMONITOR monitor = MonitorFromPoint(POINT{0, 0}, MONITOR_DEFAULTTOPRIMARY);
+  MONITORINFO info{sizeof(info)};
+  RECT work{};
+  if (monitor != nullptr && GetMonitorInfoW(monitor, &info)) {
+    work = info.rcWork;
+  } else if (!SystemParametersInfoW(SPI_GETWORKAREA, 0, &work, 0)) {
+    return std::nullopt;
+  }
+  return soui::demo::fit_initial_window(
+      {work.left, work.top, work.right, work.bottom}, requested_width, requested_height);
 }
 
 void append_smoke_log(const std::filesystem::path& path, const char* line) {
@@ -869,13 +884,17 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_
   const auto gallery_benchmark=option_value(args,L"--gallery-benchmark");
   if(gallery_benchmark==L"first" || gallery_benchmark==L"all") window.set_gallery_benchmark(gallery_benchmark==L"all");
 #endif
-  // Match the product reference surface by default.  A fixed 1100x720
-  // client area avoids an extra desktop/screenshot scale pass while keeping
-  // --width/--height available for high-DPI and layout validation.
+  // Keep the initial resize border inside the primary monitor's work area,
+  // including when a taskbar makes the full display bounds unavailable.
+  // Explicit dimensions remain the requested maximum when the work area fits.
   const int window_width = option_dimension(args, L"--width", 1100);
   const int window_height = option_dimension(args, L"--height", 720);
+  const auto initial = initial_window_on_primary_work_area(window_width, window_height);
   const HWND handle = window.Create(nullptr, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, 0,
-                                    CW_USEDEFAULT, CW_USEDEFAULT, window_width, window_height);
+                                    initial ? initial->left : CW_USEDEFAULT,
+                                    initial ? initial->top : CW_USEDEFAULT,
+                                    initial ? initial->width : window_width,
+                                    initial ? initial->height : window_height);
   if (handle == nullptr) {
     MessageBoxW(nullptr, L"SOUI SHostWnd could not be created.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
     return 1;

@@ -1,5 +1,29 @@
 # SDK 生产验证执行记录
 
+## 2026-09-29 Win7 V11 当前构建原生缩放通过
+
+[第三次 V11 客体原件](../../verification/production-validation/win7-v11-native-resize-2026-09-29/README.md)沿用不变的 13 文件冻结输入和正式 x86 Release 构建。确认真实 Win7 SP1 x86 桌面后只发送一次命令，原生探针在 1024×768 下把普通 Workbench 从 `[87,24,937,664]` 拖拽为 `[87,24,1017,724]`，再次检查一致；应用、我方 QEMU、驱动和严格校验器原始退出均为 0。54 帧串口、完整载荷及 legal、客体身份和冻结输入均核对通过；95 次宿主采样未见外部受控桌面负载，基础盘前后身份不变，原始屏幕帧可见放大后的边框仍在任务栏上方。此次只关闭 Win7 当前显示条件下的工作区缩放症状；截图人工观察不替代原生矩形，五秒采样不证明绝对隔离。真实中文 IME、滚动与公共任务并行、800×600、DPI/多屏、长稳和 Electron 对照仍待，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-29 Win7 V11 命令后外部负载中断
+
+[第二次 V11 客体原件](../../verification/production-validation/win7-v11-command-interrupted-2026-09-29/README.md)沿用不变的 13 文件冻结输入。真实 Win7 桌面截图确认后，向我方 QEMU 只发送一次冻结命令；后一截图可见命令提示符。外部 QEMU 在串口结果产生前启动，实时门禁只停我方虚拟机：驱动退出 1、QEMU 退出 -1，串口 0 字节。冻结输入与基础盘前后身份相符，25 份精选原件已归档，失败不覆盖。没有客体身份、原生缩放或应用退出结果，此次不算兼容性失败或通过，也没有隔离资源/时延结论。后续必须新建 attempt；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-29 Win7 V11 原生缩放输入与启动前拒绝
+
+V11 的 [13 文件输入](../../verification/production-validation/win7-v11-prelaunch-refusal-2026-09-29/README.md)已按正式 x86 构建准备、冻结并只读复核，冻结 SHA-256 为 `6d712b263f6318aacd8077418d1906aa013104ed6c7113ca2faf98c637716aa2`，三步安全捕获原始退出 0。第一次客体启动尝试在基础盘核验期间遇到外部 QEMU，二次门禁拒绝启动我方虚拟机；驱动退出 1，没有 `launch.json`、命令发送、串口或应用结果。十份非专有原件与外部原件及 Git index 逐字节核对，旧失败不覆盖。下一次须使用新 attempt；当前只证明门禁按预期拒绝，Win7 原生缩放、中文 IME、任务并行和生产门槛仍未通过。
+
+## 2026-09-29 Win7 V11 宿主采样覆盖率准备
+
+[V11 校验器及原始正反例](../../verification/production-validation/v11-host-coverage-preparation-2026-09-29/README.md)增加了首个样本和相邻样本间隔约束。首次合成测试因夹具预期旧错误消息退出 1，原件保留；修正夹具后的 8/8 检查和语法检查原始退出 0。V11 客体输入尚未冻结，Win7 未运行，五秒采样仍可能漏掉短暂外部进程；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-29 Win7 V11 宿主终态门禁准备
+
+[V11 静态原件](../../verification/production-validation/v11-host-terminal-preparation-2026-09-29/README.md)保存了未冻结客体输入前的驱动与校验器修正：QEMU 退出后补一次实时进程查询，校验器要求 15 秒内取得无外部负载的终态样本。PowerShell 解析与 JavaScript 语法检查原始退出 0；校验器六个合成正反例 6/6、退出 0。宿主外部 QEMU 持续运行，V11 传输尚未冻结，客体未启动；这不能代替真实 Win7 缩放、IME、任务或隔离性能验收。`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-28 普通窗口工作区定位的本机原生输入
+
+[76 份 GUI、负载门禁、构建身份及失败原件](../../verification/production-validation/work-area-placement-gui-2026-09-28/README.md)绑定源码 SHA-256 `60d729c8c0fe55dcabd72bf3a1aa2255af42017c10c63151a880fecd7d511640` 和正式 x64/x86 Release 构建。首次 x64 探针在窗口就绪前错误终止，原样本保留；修正等待后用新编号串行运行，两架构均在自然前台将 850×640 窗口以真实鼠标拖拽扩大 80×60，正常关闭、原生退出 0，完整载荷前后匹配，14/16 次门禁无外部负载。此结果仅证明现代 Windows 本机普通窗口初始边框可操作，Win7 x86 新输入仍未冻结或运行；真实中文 IME 组合、任务并行、800×600、DPI/多屏及全量 V02 继续未通过，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
 ## 2026-09-28 Win7 V02 v8 第二次客体在输入后中断
 
 [第二次 v8 客体原件](../../verification/production-validation/win7-sp1-x86-v02-v8-command-interrupted-2026-09-28/README.md)沿用同一旧候选冻结输入。确认真实 Win7 桌面和宿主空闲后，监视器向我方 QEMU 发送了一次冻结命令的按键序列；串口保持 0 字节，不能证明客体执行了命令。外部 QEMU 随后启动，五秒门禁只停我方客体；驱动退出 1、我方 QEMU 退出 -1，基础盘与冻结输入前后核对通过。20 份精选原件逐文件归档，原始失败不覆盖。没有客体身份、原生应用结果或隔离性能结论；后续用新 attempt，优先验证独立工作区修复的新构建。`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
@@ -503,3 +527,7 @@ preview.6 [Win7 x86 应用短测 v3](../../verification/production-validation/wi
 preview.8 [最终完整源码包的独立公共 SDK 页面消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview8-public-task-2026-09-25/README.md)先在本机完成 x86 Release Bridge 三轮，再以同一 76 文件载荷进入 Win7 SP1 x86 QEMU。客体逐文件散列、进程退出 0、17 份串口文件、10 个完整生命周期步骤、3 轮资源采样以及页面的公开任务进度/取消、容量与错误恢复均通过独立核验；伪造内核散列和截断事件流的反例被拒绝。此结果不代表 Demo 页面真实操作或生产资源门槛，虚拟机历时也不作性能对标。
 
 随后 [preview.8 Workbench Demo GUI 短测](../../verification/production-validation/win7-sp1-x86-qemu-preview8-demo-ui-2026-09-25/README.md)在另一轮 Win7 SP1 x86 QEMU 快照中完成：475 项运行载荷及五份许可逐文件校验、15 份串口结果和正常退出通过；真实页面显示 10,000 行数据，滚动到第 9,988 行附近，公开 SDK 任务分别呈现 `succeeded · 100%` 与 `cancelled · 5%`。GUI 状态由截图人工核对，不是自动交互回归或性能测量。初始落到首页的原因已定位为原测试命令缺少 `--page=data`，启动入口会清除单独继承的环境变量；已通过首页链接进入数据页，原脚本与偏离截图保留。物理 Win7、IME/DPI、长稳资源和同机 Electron 对照仍未关闭，`releaseReady=false`。
+
+2026-09-29 [当前 V02 Workbench 工作区定位 Win7 V9 实测](../../verification/production-validation/win7-sp1-x86-v02-workarea-v9-failure-2026-09-29/README.md)：冻结 x86 正式 Release 输入和基础盘前后校验一致，客体为 Win7 SP1 x86，显示模式成功切换为 1024×768。九次窗口探测均未找到可见顶层窗口；客体整轮退出 1，只导出 29/116 个预期文件。Workbench 进程由测试脚本关闭后原生退出 0，不等于页面可见或自然关闭。缩放、滚动、任务并行、中文 IME 均未进入；Win7 工作区修正和 V02 验收仍未通过，`releaseReady=false`。
+
+[同一官方 x86 Release 输入的 Win7 V10 可见性诊断](../../verification/production-validation/win7-sp1-x86-v02-window-visibility-v10-2026-09-29/README.md)补齐 10–105 秒的只读探针：前七次至客体单调计时 40.273 秒未检出，第 45 秒计划采样在 46.933 秒首次检出，随后均可见；窗口边界 `[87,24,937,664]`。46 帧串口、Win7 SP1 x86 身份、载荷前后与基础盘校验及客体/应用原生退出 0 已独立复核。约 108 秒的关闭由夹具请求；本轮没有真实缩放、滚动、中文 IME 或公共任务并行。V9 失败仍保留，不能据此推断启动延迟根因或放行工作区修正、V02、性能与生产门槛。
