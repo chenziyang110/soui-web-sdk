@@ -1,0 +1,43 @@
+{
+  "passed": true,
+  "scope": "archived-link-read-traces",
+  "linkedArchiveMembersVerified": false,
+  "releaseReady": false,
+  "summary": [
+    {
+      "architecture": "x86",
+      "openedLibraries": 44,
+      "explicitLibraries": 36,
+      "readNotExplicit": [
+        "iphlpapi.lib",
+        "libcmt.lib",
+        "libcpmt.lib",
+        "libucrt.lib",
+        "libvcruntime.lib",
+        "oldnames.lib",
+        "psapi.lib",
+        "userenv.lib"
+      ],
+      "opensslRead": true,
+      "opensslExplicit": true
+    },
+    {
+      "architecture": "x64",
+      "openedLibraries": 44,
+      "explicitLibraries": 35,
+      "readNotExplicit": [
+        "iphlpapi.lib",
+        "libcmt.lib",
+        "libcpmt.lib",
+        "libucrt.lib",
+        "libvcruntime.lib",
+        "oldnames.lib",
+        "openssl.lib",
+        "psapi.lib",
+        "userenv.lib"
+      ],
+      "opensslRead": true,
+      "opensslExplicit": false
+    }
+  ]
+}

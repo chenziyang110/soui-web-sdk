@@ -18,6 +18,9 @@
 *.ps1 text eol=crlf
 *.cmd text eol=crlf
 *.bat text eol=crlf
+
+# Preserve captured legal-validation scripts, reports and logs exactly.
+verification/production-validation/license-runtime-notices-2026-09-28/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 *.sln text eol=crlf
 *.vcxproj text eol=crlf
 *.props text eol=crlf

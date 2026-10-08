@@ -1,0 +1,150 @@
+{
+  "schema": "soui.current-kernel-link-argument-extraction/v3",
+  "scope": "Current DLL link command and explicit arguments; not actual archive members or legal clearance",
+  "priorCorrection": "v1 counted /IMPLIB output as input; v2 fixed library list; all prior reports preserved",
+  "inputsUnchanged": true,
+  "binaries": [
+    {
+      "architecture": "x86",
+      "buildRecord": {
+        "path": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x86\\build-All.json",
+        "sha256": "b793d79fdf2aa77b407972d435503472260e100bdaa2ccb653f0ff81a3135c7a",
+        "startedAt": "2026-09-26T22:55:14.7587172+08:00",
+        "finishedAt": "2026-09-26T23:43:33.2155860+08:00"
+      },
+      "binlog": {
+        "path": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x86\\miniblink\\build.binlog",
+        "bytes": 768534,
+        "sha256": "50c10730a4a79452ecdd411b874b7f7dd80d9ce88495d9da928b00d16b33b274",
+        "expandedBytes": 4774912,
+        "modifiedAtUtc": "2026-09-26T15:43:07.767571+00:00"
+      },
+      "artifact": {
+        "path": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x86\\miniblink\\bin\\node.dll",
+        "bytes": 22988288,
+        "sha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3",
+        "modifiedAtUtc": "2026-09-26T15:43:06.480770+00:00"
+      },
+      "timestampsWithinBuildInterval": true,
+      "linkCommand": {
+        "path": "C:\\SOUI-SDK-production-validation\\preview15-license-boundary-20260927\\current-x86-link-command.txt",
+        "bytes": 315061,
+        "sha256": "42fb14a9564fc881c9f5f65f4f38048c32cb490730081f6e82a492d93d5b22bd",
+        "offset": 3495271,
+        "machine": "/MACHINE:X86",
+        "explicitInputLibraryNames": [
+          "skia_gpu.lib",
+          "opengl32.lib",
+          "libcurl.lib",
+          "zlib.lib",
+          "ots.lib",
+          "libxml.lib",
+          "harfbuzz.lib",
+          "v8_5_7.lib",
+          "v8_5_7_1.lib",
+          "skia.lib",
+          "winmm.lib",
+          "ws2_32.lib",
+          "usp10.lib",
+          "shlwapi.lib",
+          "wininet.lib",
+          "gdiplus.lib",
+          "version.lib",
+          "crypt32.lib",
+          "wldap32.lib",
+          "imm32.lib",
+          "kernel32.lib",
+          "user32.lib",
+          "gdi32.lib",
+          "winspool.lib",
+          "comdlg32.lib",
+          "advapi32.lib",
+          "shell32.lib",
+          "ole32.lib",
+          "oleaut32.lib",
+          "uuid.lib",
+          "odbc32.lib",
+          "odbccp32.lib",
+          "dbghelp.lib",
+          "libjpeg.lib",
+          "libpng.lib",
+          "openssl.lib"
+        ],
+        "generatedImportLibrary": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x86\\miniblink/bin/node.lib",
+        "verboseLibraryMembershipPresent": false
+      }
+    },
+    {
+      "architecture": "x64",
+      "buildRecord": {
+        "path": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x64\\build-All.json",
+        "sha256": "1acf3e77e778ecab087adc883fd07d6a490aaceb856e4dad815cf5a245b2e1ee",
+        "startedAt": "2026-09-26T23:46:18.0767077+08:00",
+        "finishedAt": "2026-09-27T00:36:44.6216188+08:00"
+      },
+      "binlog": {
+        "path": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x64\\miniblink\\build.binlog",
+        "bytes": 780522,
+        "sha256": "5bf46dc426e151db959b8f837b601b023b7baf3a15e6e64e273e773bbf9a1ce8",
+        "expandedBytes": 4956691,
+        "modifiedAtUtc": "2026-09-26T16:36:18.588630+00:00"
+      },
+      "artifact": {
+        "path": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x64\\miniblink\\bin\\miniblink.dll",
+        "bytes": 35865600,
+        "sha256": "fe4160a70587d027504c409b8fd2bc5c87d78392811bff0c969f69c41a44d951",
+        "modifiedAtUtc": "2026-09-26T16:36:16.519378+00:00"
+      },
+      "timestampsWithinBuildInterval": true,
+      "linkCommand": {
+        "path": "C:\\SOUI-SDK-production-validation\\preview15-license-boundary-20260927\\current-x64-link-command.txt",
+        "bytes": 314973,
+        "sha256": "e7bf00c313674baf1bcab9ff7c352b906aed23497df07796594172ea1b3c41dc",
+        "offset": 3678337,
+        "machine": "/MACHINE:X64",
+        "explicitInputLibraryNames": [
+          "skia_gpu.lib",
+          "opengl32.lib",
+          "version.lib",
+          "crypt32.lib",
+          "advapi32.lib",
+          "wldap32.lib",
+          "libcurl.lib",
+          "zlib.lib",
+          "ots.lib",
+          "imm32.lib",
+          "libxml.lib",
+          "v8_5_7.lib",
+          "v8_5_7_1.lib",
+          "skia.lib",
+          "winmm.lib",
+          "ws2_32.lib",
+          "usp10.lib",
+          "shlwapi.lib",
+          "wininet.lib",
+          "gdiplus.lib",
+          "dbghelp.lib",
+          "libjpeg.lib",
+          "libpng.lib",
+          "harfbuzz.lib",
+          "kernel32.lib",
+          "user32.lib",
+          "gdi32.lib",
+          "winspool.lib",
+          "comdlg32.lib",
+          "shell32.lib",
+          "ole32.lib",
+          "oleaut32.lib",
+          "uuid.lib",
+          "odbc32.lib",
+          "odbccp32.lib"
+        ],
+        "generatedImportLibrary": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x64\\miniblink/bin/miniblink.lib",
+        "verboseLibraryMembershipPresent": false
+      }
+    }
+  ],
+  "actualArchiveMembersRecovered": false,
+  "binaryLicenseReviewComplete": false,
+  "releaseReady": false
+}
