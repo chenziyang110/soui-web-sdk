@@ -1,5 +1,13 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 preview.9 公共托盘切片
+
+新增 [ADR-0012](../adr/0012-public-tray-service.md) 与公共 `tray_service`、安装后独立消费者。双架构 SDK Release 独立构建、各 5 项无桌面契约、仓库外消费者编译通过；托盘包含 14 组边界/失败测试，故意恢复旧清理逻辑的反例按预期失败。其他 QEMU 退出后，当前输入的 x86/x64 窗口线程停滞、目录取消及托盘真实 Shell 短测串行退出 0，详见[冻结记录](../../verification/production-validation/preview9-public-tray-preflight-2026-09-26/README.md)。短测每架构 12 个关闭顺序事件完整，但未产生真实点击或 Explorer 重建通知。411 文件 SDK 包校验与源码匹配通过，首次改名 `EPERM` 失败仍保留。
+
+真实托盘键盘/Explorer/Win7、公共菜单/快捷键、完整 Workbench 驻留、V02 和同文档长会话续接均未完成；preview.8 的全量源码、应用及 Win7 记录保持原身份，不转移为 preview.9 通过。完整目标及三个生产准入标志仍未关闭。
+
+## 前序执行记录
+
 关联：[完整方案](../roadmap/0.3-sdk-validation.md)、[中期准入判定](interim-decision.md)、[ADR-0002](../adr/0002-public-sdk-acceptance.md)、[ADR-0007](../adr/0007-rebuilt-miniblink-preview-binary.md)。开始日期：2026-09-22。完整目标持续进行，未生成正式生产准入结论。下文早期“当前候选”描述为当次实验的历史身份；preview.4 的新固定包证据在文末单列。
 
 逐能力的公共入口、当前证据与剩余条件见[能力映射](capabilities.md)；设备和内核维护分别见[支持矩阵](support-matrix.md)、[内核准入核对](kernel-maintenance.md)。
@@ -24,7 +32,7 @@
 
 本文件记录执行进度，不能代替机器报告或修改 `releaseReady`。新增阶段证据应链接实际 run-id、源码与载荷身份，并列出未执行项。
 
-当前开发版本为 `0.3.0-preview.8`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
+当前开发版本为 `0.3.0-preview.9`，托盘切片正在独立验证；下述 preview.8 及更早结果只属于原版本。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
 
 preview.7 的[源码编码修复诊断](../../verification/production-validation/preview6-relocated-dependency-encoding-2026-09-25/README.md)确认 preview.6 无 Git 源包在 CP936 环境重编 x86 Miniblink 失败；定点 BOM 补丁后，修改过的仓库外目录里 x86/x64 SOUI、Skia、Miniblink 源码重编与两架构真实应用启动均通过。当前 preview.7 的双架构 Release 构建、契约测试和三入口 smoke 也通过，但它们使用固定运行包，不能和新内核结果合并。[Win7 SP1 x86 QEMU 重编内核短测](../../verification/production-validation/win7-sp1-x86-qemu-preview7-rebuilt-source-2026-09-25/README.md)完成三入口启动/关闭，24 份串口文件、来宾身份和载荷散列复核通过。诊断目录不是最终 preview.7 原封整包；最终整包重建、Debug、物理设备、长期资源、实际呈现性能与安全授权仍未完成，`sourceDeliveryVerified=false`、`releaseReady=false`。
 

@@ -6,6 +6,7 @@
 |---|---|
 | x64 重载内存与关闭稳定性 | 独立消费者已复现并修复逐窗口初始化导致的重建崩溃/多窗口挂起；100 次重载操作通过，资源和长期稳定门槛仍未关闭，见 [本轮记录](acceptance/lifecycle.md) |
 | 资源部署改名失败 | 本轮 x86 构建有一次 `EPERM`；旧资源恢复、未改源码重试及后续启动通过，失败日志保留，具体占用原因未确认 |
+| SDK 包阶段目录改名失败 | preview.9 托盘切片首次源包发布目录改名返回 `EPERM`；未改源码的第二次打包及 411 文件核验通过，原失败与结果见[记录](../verification/production-validation/preview9-public-tray-preflight-2026-09-26/README.md)。占用根因未确定，不能靠重试结果宣布问题关闭 |
 | 完整源码搬移重编 | preview.6 无 Git 源包在 CP936 下重编 x86 Miniblink 曾因 UTF-8 误读失败；preview.7 定点 BOM 修复后重编通过，但旧 SOUI 工程在源码树生成 112 个额外产物。[preview.8 候选源码包](../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)将 SOUI 构建隔离到 `out/`，在两个全新无 Git 解压目录完成 x86/x64 全量底层重编、四组应用构建与测试、重编 DLL 启动，且编译后完整清单仍分别复验通过；[Win7 SP1 x86 QEMU](../verification/production-validation/win7-sp1-x86-qemu-preview8-isolated-source-2026-09-25/README.md)三入口短测通过。[独立业务小样升级回退](../verification/production-validation/preview8-independent-upgrade-2026-09-25/README.md)双架构通过。最终打包、目标物理设备与完整交付门仍未闭合，`sourceDeliveryVerified=false` |
 | x86 公共连接器 ABI | 已修正交付动态绑定头中 54 个 `bool`/`BOOL` 返回类型不一致；preview.4 x86 软件路径四模式各 1,000 轮正常退出。[preview.5 Win7 SP1 x86 QEMU 公共消费者四模式](../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)各 3 轮通过，[三应用入口](../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)短测通过；[新诊断源码的 100 次重载](../verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/README.md)也退出 0。preview.5 宿主 x86 Bridge 千次循环两次超时，完整资源门槛、物理目标机和业务链仍缺失 |
 | preview.5 x86 Bridge 长循环超时 | [独立公共消费者复测](../verification/production-validation/preview5-lifecycle-2026-09-24/README.md)的目标 1,000 轮两次分别在第 86、977 轮挂载阶段由监督器终止；同载荷另三次诊断跑满。两次失败与其他 QEMU 负载重叠，但自有 QEMU 快照并行的诊断也跑满，不能据此认定因果。[现场诊断](../verification/production-validation/preview5-timeout-diagnostics-2026-09-24/README.md)已在超时路径加入监督器日志偏移与可选 x86 原生抓栈；新源码两次千轮通过，原源码重新编译的另一个二进制载荷也一次千轮通过，但都未触发故障抓取。根因未确定，此项阻止生产准入 |
@@ -19,6 +20,8 @@
 | 不可信网页 | 模板面向本地受控页面；远程不可信内容需专项评估内核与原生能力边界 |
 | 内核网络及安全维护 | preview.4 固定 DLL 已换入双架构重编译候选并再次完成回环 HTTPS 正负向测试；系统信任根、代理、动态子资源、逐组件补丁覆盖及维护责任仍未闭环，见[核对记录](acceptance/kernel-maintenance.md) |
 | API / ABI | preview 接口可能迁移，不保证跨编译器 C++ ABI |
+| 公共驻留能力 | preview.9 增加原生托盘服务与独立消费者，真实 Shell/Explorer 重启及 Win7 x86 验收仍待执行；公共菜单、全局快捷键和 Workbench 无窗口驻留尚未完成，V04 不通过 |
+| 同文档长会话续接 | 当前授权 30 分钟失效，Web 连接缓存旧凭据；任务归属精确绑定 token，不能简单换 token 或重载来声称原会话续接。公共授权轮换、任务/订阅保留及超过 30 分钟和八小时验收尚未闭环 |
 | 依赖授权 | 已保留来源、散列及授权文本；精确二进制再分发审核尚未完成 |
 | Web 构建依赖审计 | Vite 6.4.3 / PostCSS 8.5.23 兼容性升级后，本次 npm audit：SDK、模板、Demo 均为 0 项；完整结果在 verification/*-audit.json。后续更新继续由锁文件、Dependabot 和发布验收共同约束 |
 | 自动验证 | 按当前维护决策不配置远程 CI；每个 PR 必须提供适用的本机构建、测试和真实桌面验收证据 |

@@ -4,6 +4,8 @@
 
 ## 2026-09-25 preview.8 增补判定
 
+2026-09-26 开发进入 preview.9 公共托盘切片；本节 preview.8 工程和桌面证据保持原身份，不转移为新版本通过。[preview.8 Win7 x86 Demo GUI](../../verification/production-validation/win7-sp1-x86-qemu-preview8-demo-ui-2026-09-25/README.md)另已补足列表滚动、公共任务完成/取消的人工截图与串口核验；完整 V02 和 V04 仍未完成。
+
 **候选源码工程复现通过；指定范围生产未通过；相对 Electron 的整体采用价值未判定。** `sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。本节只评估 preview.8，旧版结果仍按各自来源保留。
 
 - [冻结候选完整源码包](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)从两个全新无 Git 解压目录完成 x86/x64 全量底层依赖重编。SOUI 编译改在 `out/` 副本进行，重编后两目录的完整源码清单仍分别通过 30,794 文件；四组 x86/x64 × Release/Debug 应用构建、完整测试与三入口真实桌面短测均通过，重编 DLL 的两架构启动也通过。候选 ZIP 加入证据文档后的最终源码包的上一轮快照已全新解压并通过 30,953 文件清单；加入独立项目与公共任务证据后的当前清单覆盖 31,056 文件；与受测候选相比，非文档/验证代码文件散列变化为 0。

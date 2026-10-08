@@ -16,6 +16,8 @@ flowchart LR
 
 `sdk/CMakeLists.txt` 直接生成 `soui_sdk.lib`，不包含任何模板或 Demo 文件。应用链接 `Soui::Sdk`。已安装的 SDK 包通过 CMake `find_package` 引入；它不依赖 SDK 的原始源码位置。
 
+preview.9 的原生 `tray_service` 属于应用级桌面服务，由应用的隐藏顶层窗口及其线程持有，寿命独立于任一 Host/文档会话。服务不启动 WebView、不另起线程，也不决定最后业务窗口关闭后的进程策略。应用先明确移除托盘并销毁服务，再销毁其所有者窗口；详细状态和恢复边界见 [ADR-0012](adr/0012-public-tray-service.md)。
+
 ## 目录所有权
 
 | 目录 | 维护责任 | 是否随 SDK 安装器更新 |

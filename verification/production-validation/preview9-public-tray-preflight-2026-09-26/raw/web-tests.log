@@ -1,0 +1,43 @@
+✔ native resolver completion clears its timer and repeated completion cannot settle a later request (1.6951ms)
+✔ duplicate identities and resolver overflow return correlated errors without adding timers (6.0858ms)
+✔ native response timeout removes the resolver and explicitly leaves running work uncancelled (16.5345ms)
+✔ document exit resolves all waits, is idempotent and blocks future resolver creation (0.7446ms)
+✔ custom method sends the scoped envelope and returns native data (1.1493ms)
+✔ a response from another request is rejected (0.3ms)
+✔ malformed JSON becomes a structured response error (0.7824ms)
+✔ native denials retain the native error code (0.1271ms)
+✔ valid JSON with an invalid response shape produces a structured error (0.8146ms)
+✔ timeout is bounded without claiming native cancellation (52.2861ms)
+✔ 32 in-flight calls resolve to their own results in reverse order (1.4032ms)
+✔ request capacity rejects overload and recovers after completion (0.515ms)
+✔ UTF-8 byte limits and non-JSON parameters fail before transport (0.5593ms)
+✔ dispose rejects outstanding waits, removes the owned listener once and rejects new calls (0.4765ms)
+✔ timeout frees a page slot without pretending native work was cancelled (27.9883ms)
+✔ invalid client options and null native error envelopes are structured failures (0.3114ms)
+✔ caller mutation of options cannot change the connection scope (0.1116ms)
+✔ event validation, sequence filtering and callback isolation apply to each observer (1.4545ms)
+✔ native subscription denial is observable and releases the local subscription slot (0.3911ms)
+✔ removal before subscription acknowledgement is idempotent and sends one late unsubscribe (0.3225ms)
+✔ a disposed pending subscription cleans up a late native success once (0.3054ms)
+✔ a timed-out subscription also cleans up a late successful acknowledgement (27.6663ms)
+✔ malformed subscription identities and failed native removal remain visible (0.4402ms)
+✔ bounded control capacity permits unsubscribe when ordinary request capacity is full (0.3057ms)
+✔ toJSON reentrancy cannot bypass disposal or capacity checks (0.2991ms)
+✔ a reentrant port can dispose during subscription creation without leaking a late subscription (0.2784ms)
+✔ the standard connector shares one bootstrap and waits for asynchronous native responses (0.5481ms)
+✔ asynchronous bootstrap is supported without a busy wait (0.0934ms)
+✔ connector options cannot swap the error observer while bootstrap is pending (0.1276ms)
+✔ a second connector cannot silently change options or replace another dispatcher (0.1237ms)
+✔ document unload disposes outstanding waits and removes connector hooks (0.1469ms)
+✔ bootstrap timeout and unload release hooks and do not silently rebootstrap (28.0754ms)
+✔ bootstrap rejects malformed credentials, wrong correlation and invalid JSON (0.3978ms)
+✔ connector native events reach only matching subscriptions and owned hooks are restored (0.1698ms)
+✔ ordinary browser use and broken native binding produce explicit connection errors (0.1067ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 266.7158

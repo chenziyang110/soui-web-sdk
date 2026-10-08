@@ -1,0 +1,614 @@
+{
+  "schema": "soui.tray-preflight/v1",
+  "version": "0.3.0-preview.9",
+  "createdAt": "2026-09-26T03:10:47.769Z",
+  "sourceSha256": "9cc0e1046693c01d20f6256c1d2bfe06a4699be2725a1f519ab24e3d86476c78",
+  "host": {
+    "Caption": "Microsoft Windows 11 专业版",
+    "Version": "10.0.26200",
+    "BuildNumber": "26200",
+    "OSArchitecture": "64 位"
+  },
+  "architectures": [
+    {
+      "architecture": "x86",
+      "configuration": "Release",
+      "sourceSha256": "9cc0e1046693c01d20f6256c1d2bfe06a4699be2725a1f519ab24e3d86476c78",
+      "sdkBuildId": "abc44cf4-ab94-411f-a306-cea642891ad6",
+      "installedSdk": {
+        "sha256": "5b6196fbceb612a3d802052678a9ae7b4a920f667a277f129149398026015bd9",
+        "bytes": 21523616,
+        "files": [
+          {
+            "path": "include/soui/bridge_adapter.h",
+            "bytes": 1374,
+            "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+          },
+          {
+            "path": "include/soui/host/async_result_slot.h",
+            "bytes": 2015,
+            "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840"
+          },
+          {
+            "path": "include/soui/host/engine_thread.h",
+            "bytes": 1929,
+            "sha256": "b197f66ff76041c66ef0e1d92fbf681eb50669d6bd99f4935430080c46606256"
+          },
+          {
+            "path": "include/soui/host/frame_pacer.h",
+            "bytes": 7158,
+            "sha256": "0d52a99dee38afabf3d48cce21706436c901b525ff8766658421d2951a223966"
+          },
+          {
+            "path": "include/soui/host/interaction_protocol.h",
+            "bytes": 3853,
+            "sha256": "83265088b52fc340e620141729b8f3bef2dc35d5cd22f6b40fdb38bcbff48bad"
+          },
+          {
+            "path": "include/soui/host/soui_miniblink_host.h",
+            "bytes": 9178,
+            "sha256": "2b1c6155dec0decaf297387fd8566c01bea3aedde600fc8235e78bdb56e9a8aa"
+          },
+          {
+            "path": "include/soui/host/window_chrome.h",
+            "bytes": 2359,
+            "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30"
+          },
+          {
+            "path": "include/soui/host/window_chrome_script.h",
+            "bytes": 1612,
+            "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286"
+          },
+          {
+            "path": "include/soui/json_bridge.h",
+            "bytes": 1974,
+            "sha256": "5367dc03ac981ef03a39a21c8ea70e87c59e6858dfdf7c2a8f46ad03a04ef704"
+          },
+          {
+            "path": "include/soui/runtime/bridge/bridge_transport.h",
+            "bytes": 2582,
+            "sha256": "9af5bf13068f6cb43462a271abd1a3db035637dc42bf6498001e1ce7f6ea3b0a"
+          },
+          {
+            "path": "include/soui/runtime/core/events/event_bus.h",
+            "bytes": 1639,
+            "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62"
+          },
+          {
+            "path": "include/soui/runtime/core/result/result.h",
+            "bytes": 626,
+            "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec"
+          },
+          {
+            "path": "include/soui/runtime/core/task/task_store.h",
+            "bytes": 2473,
+            "sha256": "f4b5aaf1049a5f3c1467eae74318fe2e850bebdae1e5879f457289fa527e8fbf"
+          },
+          {
+            "path": "include/soui/runtime/host/session/webview_session.h",
+            "bytes": 1892,
+            "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a"
+          },
+          {
+            "path": "include/soui/runtime/host/trusted_document.h",
+            "bytes": 2696,
+            "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e"
+          },
+          {
+            "path": "include/soui/runtime/services/desktop/desktop_services.h",
+            "bytes": 2210,
+            "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2"
+          },
+          {
+            "path": "include/soui/runtime/services/desktop/tray_service.h",
+            "bytes": 2765,
+            "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e"
+          },
+          {
+            "path": "include/soui/runtime/services/desktop/window_commands.h",
+            "bytes": 2377,
+            "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089"
+          },
+          {
+            "path": "include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+            "bytes": 668,
+            "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab"
+          },
+          {
+            "path": "include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+            "bytes": 5088,
+            "sha256": "6fa67527f5c4d34f022ae9ec4333138428e9ce635b98211bda25c3f1133f9065"
+          },
+          {
+            "path": "include/soui/runtime/services/permissions/permission_store.h",
+            "bytes": 1771,
+            "sha256": "1a4390b28381ceab7c0a688ddb2dbf0981ff2ada7ca3811748af58f5e54a6060"
+          },
+          {
+            "path": "include/soui/runtime/services/task/task_service.h",
+            "bytes": 2467,
+            "sha256": "5a60c97362a98ae28bf2cc395991a2a449880a92f19bd58b8cb3418c75b789a8"
+          },
+          {
+            "path": "include/soui/version.h",
+            "bytes": 250,
+            "sha256": "6b8c2b372b061ffcd0fcabb2b1b11688f2b0f48ea12f0ee3d5099f23e779e96c"
+          },
+          {
+            "path": "lib/Release/soui_sdk.lib",
+            "bytes": 21428022,
+            "sha256": "60401d5027e1cad0491f6ac0f407e8f7a181c739dbd3762e8371d7c66a9c2e21"
+          },
+          {
+            "path": "lib/cmake/SouiSdk/SouiSdkConfig.cmake",
+            "bytes": 1000,
+            "sha256": "f4a7c36a7fb3aada3f0b337b62f0d9be2d10c8b3f8b1a5eb129548477a713125"
+          },
+          {
+            "path": "lib/cmake/SouiSdk/SouiSdkConfigVersion.cmake",
+            "bytes": 3332,
+            "sha256": "b1ac9bfe480a17358a2ea8e3b04f0632dfccd28df9ca5a72173075a7a57201df"
+          },
+          {
+            "path": "lib/cmake/SouiSdk/SouiSdkTargets-release.cmake",
+            "bytes": 855,
+            "sha256": "21b6165a848d9dd5ccf4e04d3a3370191a51b47ace24502ae9cb29d882664696"
+          },
+          {
+            "path": "lib/cmake/SouiSdk/SouiSdkTargets.cmake",
+            "bytes": 4445,
+            "sha256": "03183290e10be3650b0f664da8adc44e69d841505acfdcf25d4725a29c6b54b8"
+          },
+          {
+            "path": "share/SouiSdk/THIRD_PARTY_NOTICES.md",
+            "bytes": 2147,
+            "sha256": "ada599cb08dc27a0f7ec864902d95a1e3b765ace80515f672a22701ee09ca662"
+          },
+          {
+            "path": "share/SouiSdk/licenses/element-plus-2.11.1-LICENSE.txt",
+            "bytes": 1098,
+            "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc"
+          },
+          {
+            "path": "share/SouiSdk/licenses/ijg-jpeg-9a-README.txt",
+            "bytes": 19110,
+            "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1"
+          },
+          {
+            "path": "share/SouiSdk/licenses/libcurl-7.61.1-COPYING.txt",
+            "bytes": 1088,
+            "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095"
+          },
+          {
+            "path": "share/SouiSdk/licenses/ots-5.0.0-LICENSE.txt",
+            "bytes": 1563,
+            "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d"
+          }
+        ]
+      },
+      "consumerSource": {
+        "sha256": "33d0ceb43e6809598f0272f8eaaedca7f5ca400fe991dde79b4c50280a3ac9a1",
+        "bytes": 19272,
+        "files": [
+          {
+            "path": "CMakeLists.txt",
+            "bytes": 616,
+            "sha256": "3a9d492c7e548fe1e008be2197572c4540d277f20102b8f35e47a62c8dc7b668"
+          },
+          {
+            "path": "README.md",
+            "bytes": 4552,
+            "sha256": "4d41bf4ddd5e260c96c4b11fa8b091a64d0f22083b2e847bd270299fccefbc32"
+          },
+          {
+            "path": "main.cpp",
+            "bytes": 14104,
+            "sha256": "77272f9e2b5fcb5daab1d9589ff8eac5bc6b36a5580cd5d38d9d3720420c9049"
+          }
+        ]
+      },
+      "consumerExecutable": {
+        "bytes": 69120,
+        "sha256": "78853825d73b062d3c7ac44990e1d33354f1edcd5a0d73b709c5075aa70281cd",
+        "peMachine": 332
+      },
+      "contractExecutables": {
+        "sha256": "eb3a04d53dee1567aea749e822b9a033f1b70240a2c8e99f3d0b4c36d42cab96",
+        "bytes": 1224704,
+        "files": [
+          {
+            "path": "soui_bridge_budget_tests.exe",
+            "bytes": 31232,
+            "sha256": "532098785add76ae353fb2003640f9f62581352f2bd66f46811e369ac56e0a8e"
+          },
+          {
+            "path": "soui_desktop_unicode_tests.exe",
+            "bytes": 92160,
+            "sha256": "446a8762190a6ff217d3cf52d9899d7f3e4c4f91ff27dd550295370c558db1c3"
+          },
+          {
+            "path": "soui_directory_dialog_tests.exe",
+            "bytes": 274432,
+            "sha256": "3a48b3b45c685f8b1bb7c5f04c959bf980d27daefeaa51a6ae3186fa463a2b3c"
+          },
+          {
+            "path": "soui_sdk_contract_tests.exe",
+            "bytes": 296448,
+            "sha256": "c862c819223d84d841a2ece680edf20bbb7d0a630c895a669b1ac5feeddd3323"
+          },
+          {
+            "path": "soui_task_service_tests.exe",
+            "bytes": 276992,
+            "sha256": "c2c312c5052085b1a3542962f97bd35a06416f3409490744184215cfc0d77572"
+          },
+          {
+            "path": "soui_task_store_capacity_tests.exe",
+            "bytes": 182272,
+            "sha256": "f8a9e35b075479764d89b25012a026c8492f32eca93dc353073b791757a4146e"
+          },
+          {
+            "path": "soui_tray_service_tests.exe",
+            "bytes": 71168,
+            "sha256": "1a98754535c3d6873669ccbc6a0400e95f6ac49868a99629699b0aee1c98b95f"
+          }
+        ]
+      },
+      "smoke": {
+        "result": {
+          "executable": "C:\\SOUI-SDK-production-validation\\preview9-tray-20260926\\x86\\consumer-build\\bin\\Release\\SouiTrayConsumer.exe",
+          "name": "host-x86-tray-smoke",
+          "sha256": "78853825D73B062D3C7AC44990E1D33354F1EDCD5A0D73B709C5075AA70281CD",
+          "exitCode": 0,
+          "finishedAt": "2026-09-26T03:08:53.0234298Z",
+          "startedAt": "2026-09-26T03:08:51.5200342Z",
+          "argument": "--smoke-test",
+          "otherDesktopProcessesBefore": [],
+          "timedOut": false,
+          "otherDesktopProcessesAfter": [],
+          "pid": 7464
+        },
+        "eventCount": 12
+      },
+      "desktopProbes": [
+        {
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\tray-tests-x86\\tests\\native\\Release\\soui_desktop_unicode_tests.exe",
+          "name": "host-x86-window-timeout",
+          "sha256": "446A8762190A6FF217D3CF52D9899D7F3E4C4F91FF27DD550295370C558DB1C3",
+          "exitCode": 0,
+          "finishedAt": "2026-09-26T03:08:46.3366003Z",
+          "startedAt": "2026-09-26T03:08:44.5953317Z",
+          "argument": "--window-thread-timeout",
+          "otherDesktopProcessesBefore": [],
+          "timedOut": false,
+          "otherDesktopProcessesAfter": [],
+          "pid": 10608
+        },
+        {
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\tray-tests-x86\\tests\\native\\Release\\soui_directory_dialog_tests.exe",
+          "name": "host-x86-directory-cancel",
+          "sha256": "3A48B3B45C685F8B1BB7C5F04C959BF980D27DAEFEAA51A6AE3186FA463A2B3C",
+          "exitCode": 0,
+          "finishedAt": "2026-09-26T03:08:47.8657061Z",
+          "startedAt": "2026-09-26T03:08:46.6172532Z",
+          "argument": "--cancel",
+          "otherDesktopProcessesBefore": [],
+          "timedOut": false,
+          "otherDesktopProcessesAfter": [],
+          "pid": 78136
+        }
+      ]
+    },
+    {
+      "architecture": "x64",
+      "configuration": "Release",
+      "sourceSha256": "9cc0e1046693c01d20f6256c1d2bfe06a4699be2725a1f519ab24e3d86476c78",
+      "sdkBuildId": "5288d44d-79ea-4fa4-8368-e8750a84bcdd",
+      "installedSdk": {
+        "sha256": "69daa2515f10c5973ff110cf6bcd26e3714b90347fea796a750b7e9b86877da2",
+        "bytes": 31127188,
+        "files": [
+          {
+            "path": "include/soui/bridge_adapter.h",
+            "bytes": 1374,
+            "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+          },
+          {
+            "path": "include/soui/host/async_result_slot.h",
+            "bytes": 2015,
+            "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840"
+          },
+          {
+            "path": "include/soui/host/engine_thread.h",
+            "bytes": 1929,
+            "sha256": "b197f66ff76041c66ef0e1d92fbf681eb50669d6bd99f4935430080c46606256"
+          },
+          {
+            "path": "include/soui/host/frame_pacer.h",
+            "bytes": 7158,
+            "sha256": "0d52a99dee38afabf3d48cce21706436c901b525ff8766658421d2951a223966"
+          },
+          {
+            "path": "include/soui/host/interaction_protocol.h",
+            "bytes": 3853,
+            "sha256": "83265088b52fc340e620141729b8f3bef2dc35d5cd22f6b40fdb38bcbff48bad"
+          },
+          {
+            "path": "include/soui/host/soui_miniblink_host.h",
+            "bytes": 9178,
+            "sha256": "2b1c6155dec0decaf297387fd8566c01bea3aedde600fc8235e78bdb56e9a8aa"
+          },
+          {
+            "path": "include/soui/host/window_chrome.h",
+            "bytes": 2359,
+            "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30"
+          },
+          {
+            "path": "include/soui/host/window_chrome_script.h",
+            "bytes": 1612,
+            "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286"
+          },
+          {
+            "path": "include/soui/json_bridge.h",
+            "bytes": 1974,
+            "sha256": "5367dc03ac981ef03a39a21c8ea70e87c59e6858dfdf7c2a8f46ad03a04ef704"
+          },
+          {
+            "path": "include/soui/runtime/bridge/bridge_transport.h",
+            "bytes": 2582,
+            "sha256": "9af5bf13068f6cb43462a271abd1a3db035637dc42bf6498001e1ce7f6ea3b0a"
+          },
+          {
+            "path": "include/soui/runtime/core/events/event_bus.h",
+            "bytes": 1639,
+            "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62"
+          },
+          {
+            "path": "include/soui/runtime/core/result/result.h",
+            "bytes": 626,
+            "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec"
+          },
+          {
+            "path": "include/soui/runtime/core/task/task_store.h",
+            "bytes": 2473,
+            "sha256": "f4b5aaf1049a5f3c1467eae74318fe2e850bebdae1e5879f457289fa527e8fbf"
+          },
+          {
+            "path": "include/soui/runtime/host/session/webview_session.h",
+            "bytes": 1892,
+            "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a"
+          },
+          {
+            "path": "include/soui/runtime/host/trusted_document.h",
+            "bytes": 2696,
+            "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e"
+          },
+          {
+            "path": "include/soui/runtime/services/desktop/desktop_services.h",
+            "bytes": 2210,
+            "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2"
+          },
+          {
+            "path": "include/soui/runtime/services/desktop/tray_service.h",
+            "bytes": 2765,
+            "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e"
+          },
+          {
+            "path": "include/soui/runtime/services/desktop/window_commands.h",
+            "bytes": 2377,
+            "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089"
+          },
+          {
+            "path": "include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+            "bytes": 668,
+            "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab"
+          },
+          {
+            "path": "include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+            "bytes": 5088,
+            "sha256": "6fa67527f5c4d34f022ae9ec4333138428e9ce635b98211bda25c3f1133f9065"
+          },
+          {
+            "path": "include/soui/runtime/services/permissions/permission_store.h",
+            "bytes": 1771,
+            "sha256": "1a4390b28381ceab7c0a688ddb2dbf0981ff2ada7ca3811748af58f5e54a6060"
+          },
+          {
+            "path": "include/soui/runtime/services/task/task_service.h",
+            "bytes": 2467,
+            "sha256": "5a60c97362a98ae28bf2cc395991a2a449880a92f19bd58b8cb3418c75b789a8"
+          },
+          {
+            "path": "include/soui/version.h",
+            "bytes": 250,
+            "sha256": "6b8c2b372b061ffcd0fcabb2b1b11688f2b0f48ea12f0ee3d5099f23e779e96c"
+          },
+          {
+            "path": "lib/Release/soui_sdk.lib",
+            "bytes": 31031594,
+            "sha256": "f986df57609869717fa86a4cce3cd76f978f3bbac097cb6712cc769c3da96f9d"
+          },
+          {
+            "path": "lib/cmake/SouiSdk/SouiSdkConfig.cmake",
+            "bytes": 1000,
+            "sha256": "f4a7c36a7fb3aada3f0b337b62f0d9be2d10c8b3f8b1a5eb129548477a713125"
+          },
+          {
+            "path": "lib/cmake/SouiSdk/SouiSdkConfigVersion.cmake",
+            "bytes": 3332,
+            "sha256": "c415aa5455fc5e8c4d9690c4cd573ea078d640ec3165b871ee75ca9b0b98597d"
+          },
+          {
+            "path": "lib/cmake/SouiSdk/SouiSdkTargets-release.cmake",
+            "bytes": 855,
+            "sha256": "21b6165a848d9dd5ccf4e04d3a3370191a51b47ace24502ae9cb29d882664696"
+          },
+          {
+            "path": "lib/cmake/SouiSdk/SouiSdkTargets.cmake",
+            "bytes": 4445,
+            "sha256": "03183290e10be3650b0f664da8adc44e69d841505acfdcf25d4725a29c6b54b8"
+          },
+          {
+            "path": "share/SouiSdk/THIRD_PARTY_NOTICES.md",
+            "bytes": 2147,
+            "sha256": "ada599cb08dc27a0f7ec864902d95a1e3b765ace80515f672a22701ee09ca662"
+          },
+          {
+            "path": "share/SouiSdk/licenses/element-plus-2.11.1-LICENSE.txt",
+            "bytes": 1098,
+            "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc"
+          },
+          {
+            "path": "share/SouiSdk/licenses/ijg-jpeg-9a-README.txt",
+            "bytes": 19110,
+            "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1"
+          },
+          {
+            "path": "share/SouiSdk/licenses/libcurl-7.61.1-COPYING.txt",
+            "bytes": 1088,
+            "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095"
+          },
+          {
+            "path": "share/SouiSdk/licenses/ots-5.0.0-LICENSE.txt",
+            "bytes": 1563,
+            "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d"
+          }
+        ]
+      },
+      "consumerSource": {
+        "sha256": "33d0ceb43e6809598f0272f8eaaedca7f5ca400fe991dde79b4c50280a3ac9a1",
+        "bytes": 19272,
+        "files": [
+          {
+            "path": "CMakeLists.txt",
+            "bytes": 616,
+            "sha256": "3a9d492c7e548fe1e008be2197572c4540d277f20102b8f35e47a62c8dc7b668"
+          },
+          {
+            "path": "README.md",
+            "bytes": 4552,
+            "sha256": "4d41bf4ddd5e260c96c4b11fa8b091a64d0f22083b2e847bd270299fccefbc32"
+          },
+          {
+            "path": "main.cpp",
+            "bytes": 14104,
+            "sha256": "77272f9e2b5fcb5daab1d9589ff8eac5bc6b36a5580cd5d38d9d3720420c9049"
+          }
+        ]
+      },
+      "consumerExecutable": {
+        "bytes": 82944,
+        "sha256": "f370d942f8524645431114624dc58dd87ed5459e3d3ab620003ec07818d53eef",
+        "peMachine": 34404
+      },
+      "contractExecutables": {
+        "sha256": "3d9f0f4daa5b787670865feea5775d6be61d30287767adbccd6f13cb120bf6b7",
+        "bytes": 1435136,
+        "files": [
+          {
+            "path": "soui_bridge_budget_tests.exe",
+            "bytes": 38400,
+            "sha256": "9ac5e99513255cf21427ff476d0fd42f0a8cb47758e2ad514e13d428a6bd444b"
+          },
+          {
+            "path": "soui_desktop_unicode_tests.exe",
+            "bytes": 110080,
+            "sha256": "bdba1104e022b80cb27519f746dd37d54e7cbdfa8dc05f6c4ee80c9116b166e2"
+          },
+          {
+            "path": "soui_directory_dialog_tests.exe",
+            "bytes": 321024,
+            "sha256": "6cf9c2f12d28277756523ac8bd716392ca389011dc8b16439370b2528f5e0f36"
+          },
+          {
+            "path": "soui_sdk_contract_tests.exe",
+            "bytes": 344576,
+            "sha256": "3def6030df6fe26e427b181ce6f4063d80382c31b6ffd61feaddef2971317d0d"
+          },
+          {
+            "path": "soui_task_service_tests.exe",
+            "bytes": 321536,
+            "sha256": "4e8ecf22d43bf36a8dcf88ea72dc7ce581fd48b29550aba55d5f425a235135bf"
+          },
+          {
+            "path": "soui_task_store_capacity_tests.exe",
+            "bytes": 212992,
+            "sha256": "96d570cdf0e22157e0308867ce3e2a543a641763bbd4e4203934c6faf58741de"
+          },
+          {
+            "path": "soui_tray_service_tests.exe",
+            "bytes": 86528,
+            "sha256": "da8a497d23b22a44b66fe92c3af09569a4c27e91d191ec4d7be9b396246adb03"
+          }
+        ]
+      },
+      "smoke": {
+        "result": {
+          "executable": "C:\\SOUI-SDK-production-validation\\preview9-tray-20260926\\x64\\consumer-build\\bin\\Release\\SouiTrayConsumer.exe",
+          "name": "host-x64-tray-smoke",
+          "sha256": "F370D942F8524645431114624DC58DD87ED5459E3D3AB620003EC07818D53EEF",
+          "exitCode": 0,
+          "finishedAt": "2026-09-26T03:08:54.7353705Z",
+          "startedAt": "2026-09-26T03:08:53.2872810Z",
+          "argument": "--smoke-test",
+          "otherDesktopProcessesBefore": [],
+          "timedOut": false,
+          "otherDesktopProcessesAfter": [],
+          "pid": 16936
+        },
+        "eventCount": 12
+      },
+      "desktopProbes": [
+        {
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\tray-tests-x64\\tests\\native\\Release\\soui_desktop_unicode_tests.exe",
+          "name": "host-x64-window-timeout",
+          "sha256": "BDBA1104E022B80CB27519F746DD37D54E7CBDFA8DC05F6C4EE80C9116B166E2",
+          "exitCode": 0,
+          "finishedAt": "2026-09-26T03:08:49.8636615Z",
+          "startedAt": "2026-09-26T03:08:48.1106237Z",
+          "argument": "--window-thread-timeout",
+          "otherDesktopProcessesBefore": [],
+          "timedOut": false,
+          "otherDesktopProcessesAfter": [],
+          "pid": 44040
+        },
+        {
+          "executable": "C:\\SOUI-SDK-development\\preview9-tray\\out\\tray-tests-x64\\tests\\native\\Release\\soui_directory_dialog_tests.exe",
+          "name": "host-x64-directory-cancel",
+          "sha256": "6CF9C2F12D28277756523AC8BD716392CA389011DC8B16439370B2528F5E0F36",
+          "exitCode": 0,
+          "finishedAt": "2026-09-26T03:08:51.2665271Z",
+          "startedAt": "2026-09-26T03:08:50.1598802Z",
+          "argument": "--cancel",
+          "otherDesktopProcessesBefore": [],
+          "timedOut": false,
+          "otherDesktopProcessesAfter": [],
+          "pid": 54192
+        }
+      ]
+    }
+  ],
+  "tests": {
+    "nativePerArchitecture": 5,
+    "trayContractGroups": 14,
+    "web": 35,
+    "sdkPackaging": 14,
+    "deliveryIdentity": 7,
+    "negativeLostCleanupExit": 1
+  },
+  "package": {
+    "status": "verified",
+    "version": "0.3.0-preview.9",
+    "files": 411,
+    "releaseReady": false
+  },
+  "desktopGate": {
+    "observedAt": "2026-09-26T03:08:00.5606222Z",
+    "processes": []
+  },
+  "realInteraction": "not-run",
+  "explorerRestart": "not-run",
+  "win7": "not-run",
+  "releaseReady": false,
+  "sourceDeliveryVerified": false,
+  "benchmarkValid": false
+}
