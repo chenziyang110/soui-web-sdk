@@ -2,7 +2,9 @@
 
 0.4.0-preview.2 整合两条功能分支，SDK 内容发生变化，因此使用新版本。已发布的 v0.4.0-preview.1 标签和固定包不覆盖；整合验证不继承旧版完整交付通过状态。
 
-版本入口是根目录 `VERSION`，当前开发版本为 `0.4.0-preview.2`。构建工具检查 C++ 版本字符串、Web 包和锁文件保持一致，CMake 从该版本推导数值版本。生成项目以 `sdk-lock.json` 确认 SDK 版本，升级不覆盖业务项目自己的 VERSION。C++ API 使用源码编译，不承诺不同编译器、工具集或配置之间的稳定二进制 ABI。
+0.4.0-preview.3 更新 Workbench 依赖和 SDK 内的依赖清单、授权材料，因此再次使用新身份。Workbench 构建要求 Node.js 22.12 以上；基础 SDK 和兼容生成项目仍保留 Node.js 20.19 范围。详见 [ADR-0018](adr/0018-workbench-build-node22.md)。
+
+版本入口是根目录 `VERSION`，当前开发版本为 `0.4.0-preview.3`。构建工具检查 C++ 版本字符串、Web 包和锁文件保持一致，CMake 从该版本推导数值版本。生成项目以 `sdk-lock.json` 确认 SDK 版本，升级不覆盖业务项目自己的 VERSION。C++ API 使用源码编译，不承诺不同编译器、工具集或配置之间的稳定二进制 ABI。
 
 `tools/New-Project.ps1` 把模板与固定 SDK 包组合，生成 `project.json` 和 `sdk-lock.json`。默认 SDK 包位于 `dist/sdk/<版本>/`，包含 SDK 源码、接入工具和应用必需的固定依赖；完整底层源码保留在完整交付包中。
 
@@ -11,7 +13,7 @@
 ## 升级
 
 1. 修改 SDK 后更新 VERSION，记录兼容性变化并完成验证。
-2. 按当前 VERSION 生成新包，例如 `node tools/sdk/soui-sdk.cjs pack --source . --output dist/sdk/0.4.0-preview.2 --version 0.4.0-preview.2`；开发中应在验证收敛后生成，已生成的同版本包不允许覆盖。
+2. 按当前 VERSION 生成新包，例如 `node tools/sdk/soui-sdk.cjs pack --source . --output dist/sdk/0.4.0-preview.3 --version 0.4.0-preview.3`；开发中应在验证收敛后生成，已生成的同版本包不允许覆盖。
 3. 在业务项目中提交或备份修改。
 4. 执行 `node tools/sdk/soui-sdk.cjs install --package <新SDK包目录> --project <业务项目目录>`。
 5. 重新编译、回归业务，保留旧包用于回退。
