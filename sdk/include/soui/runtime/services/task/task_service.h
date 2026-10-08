@@ -48,7 +48,7 @@ class task_control final {
 // Every direct request needs the trusted authorization returned by
 // permission_store::resolve. Empty scopes are rejected; the scope, session and
 // origin own tasks/subscriptions across bearer rotation. Revoke authorization
-// before shutdown_session so requests admitted earlier cannot enqueue late.
+// before shutdown_scope/shutdown_session so earlier requests cannot enqueue late.
 class task_service final {
  public:
   static constexpr std::size_t max_workers{2};
@@ -64,6 +64,10 @@ class task_service final {
 
   [[nodiscard]] bool register_handler(std::string kind, handler callback);
   void set_event_sink(event_sink sink);
+  // Requires a revoked/expired native scope. Active/empty scopes return false;
+  // true means cleanup/cancellation was requested, not that workers have exited.
+  // It removes only this object's subscriptions, including on repeated calls.
+  [[nodiscard]] bool shutdown_scope(const std::shared_ptr<const authorization_scope>& scope);
   void shutdown_session(const std::string& session_id);
   [[nodiscard]] std::string start(const bridge_request& request);
   [[nodiscard]] std::string query(const bridge_request& request) const;

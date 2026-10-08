@@ -1,0 +1,14 @@
+{
+  "schema": "soui.owned-process-assignment-denial-test/v1",
+  "scope": "test-only compiled AssignProcessToJobObject ERROR_ACCESS_DENIED replacement",
+  "realApis": [
+    "CreateProcessW",
+    "GetProcessTimes",
+    "TerminateProcess",
+    "WaitForSingleObject",
+    "GetExitCodeProcess"
+  ],
+  "fixtureSha256": "6343e978572b5599b7148ee622a5a401b810e5c29d03913dc0f0e2abb2872c5c",
+  "win7NestedJobVerified": false,
+  "pcaVerified": false
+}

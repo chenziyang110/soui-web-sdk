@@ -1,0 +1,33 @@
+✔ generates relocatable deterministic typed bindings and traceable output hashes (828.5911ms)
+✔ portable generator runs offline from SDK source files without dist or npm dependencies (502.8678ms)
+✔ check rejects missing and tampered files without creating or rewriting anything (1094.7449ms)
+✔ explicit regeneration accepts a changed source while preserving ownership evidence (882.2055ms)
+✔ rejects unknown keywords, unsafe symbols, duplicate actions and reserved success error (1560.7202ms)
+✔ refuses generated C++ symbol collisions before writing output (141.8927ms)
+✔ prototype-named methods use computed TS keys without prototype mutation (276.939ms)
+✔ source encoding, byte bounds and argument errors fail before output (322.7267ms)
+✔ rejects existing business files and output junctions without writing outside the project (222.7784ms)
+✔ known standard and Windows macros are rejected as generated identifiers (1454.856ms)
+✔ known macros are rejected in namespace, action type and recursive input/output fields (823.9808ms)
+✔ hard-linked app/generated/actions.hpp is rejected before any output changes (350.1107ms)
+✔ hard-linked web/src/generated/actions.ts is rejected before any output changes (294.9901ms)
+✔ hard-linked contracts/generated/tools.json is rejected before any output changes (270.1391ms)
+✔ hard-linked docs/generated/actions.md is rejected before any output changes (262.3903ms)
+✔ hard-linked contracts/generated/actiongen-manifest.json is rejected before any output changes (248.0801ms)
+✔ check compares exact UTF-8 bytes and the manifest hashes without rewriting corruption (462.1384ms)
+✔ atomic app/generated/actions.hpp replacement cannot modify a late external hard link (823.8273ms)
+✔ atomic contracts/generated/actiongen-manifest.json replacement cannot modify a late external hard link (682.3155ms)
+✔ typed generated calls enter native synchronously and validate success results (2.2011ms)
+✔ invalid bounded inputs never reach the native client (1.2703ms)
+✔ bad native output and native denial fail without retry (0.9114ms)
+✔ runtime Agent tools follow the authorized catalog and exclude unrelated host actions (1.5665ms)
+✔ browser wrapper and source CLI core preserve Unicode, safe integers and schema errors (2.0978ms)
+✔ generated MethodMap rejects wrong inputs, methods and output types in a source consumer (497.2604ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11641.6121

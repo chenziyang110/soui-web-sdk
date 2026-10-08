@@ -1,0 +1,74 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),cp=require('node:child_process');
+const root=path.resolve(__dirname,'..'),identity=require('../tools/internal/delivery-identity.cjs');
+const base='verification/production-validation/0.5-action-integration-2026-10-09';
+const initial=path.join(root,'out/action-foundation-integration-fac60169-3daf-429b-9458-360c4a5b8a60');
+const continuation=path.join(initial,'continuation-198328d6-c140-49ed-9d88-e68015e39176');
+const regression='F:/work/sm05-mi/out/action-hook-regression';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex'),sha=p=>hash(fs.readFileSync(p));
+const prior=JSON.parse(fs.readFileSync(path.join(initial,'report.json'))),next=JSON.parse(fs.readFileSync(path.join(continuation,'report.json')));
+const redGreen=JSON.parse(fs.readFileSync(path.join(regression,'final-red-green.json')));
+if(!next.completed||!next.currentSourceUnchanged||next.priorReportSha256!==sha(path.join(initial,'report.json'))||
+ sha(path.join(root,'tools/Build.ps1'))!==redGreen.sourceSha256||!redGreen.onlyHookChanged)throw Error('Validation prerequisites differ');
+const files=[];
+function copy(input,relative){
+ const st=fs.lstatSync(input);if(!st.isFile()||st.isSymbolicLink()||st.nlink!==1)throw Error('Not plain raw evidence '+input);
+ const bytes=fs.readFileSync(input),output=path.join(root,base,relative);
+ fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,bytes,{flag:'wx'});
+ files.push({path:base+'/'+relative,source:input,bytes:bytes.length,sha256:hash(bytes)});
+}
+function inert(name){return /\.(?:cjs|mjs|ps1|cpp|hpp|h|ts|cmake|vcxproj|txt)$/i.test(name)||name==='CMakeLists.txt'?name+'.inert.snapshot':name;}
+function tree(input,relative){for(const e of fs.readdirSync(input,{withFileTypes:true})){
+ const full=path.join(input,e.name);if(e.isDirectory())tree(full,relative+'/'+e.name);else copy(full,relative+'/'+inert(e.name));}}
+copy(path.join(initial,'report.json'),'initial/report.json');
+copy(path.join(initial,'driver-at-launch.cjs.inert.snapshot'),'initial/driver-at-launch.cjs.inert.snapshot');
+for(const phase of prior.results)tree(path.join(initial,phase.name),'initial/'+phase.name);
+for(const name of ['consumer-x86.ps1','consumer-x64.ps1','parse-powershell.ps1'])copy(path.join(initial,name),'initial/'+inert(name));
+tree(continuation,'continuation');
+copy(path.join(regression,'final-red-green.json'),'hook-regression/final-red-green.json');
+for(const raw of redGreen.rawFiles){if(sha(raw.path)!==raw.sha256||fs.statSync(raw.path).size!==raw.bytes)throw Error('Regression evidence changed');
+ const relative=path.relative(regression,raw.path).replaceAll('\\','/');
+ copy(raw.path,'hook-regression/'+relative.split('/').map(inert).join('/'));}
+for(const old of ['old-c7f12c48-637a-4b22-a004-6ee34a62cb7c','old-5231333a-36d1-4c71-a15a-099d54c69503','old-956ab5aa-d794-4e64-8b53-7955d1518fc9'])
+ tree(path.join(regression,old),'hook-regression/historical/'+old);
+copy(path.join(regression,'run.cjs'),'hook-regression/run.cjs.inert.snapshot');
+for(const architecture of ['x86','x64']){
+ const output=path.join(root,'out',architecture==='x86'?'sdk-x86':'x64');
+ for(const name of ['build-Release.json','native-Release.log','CMakeCache.txt'])copy(path.join(output,name),'builds/'+architecture+'/'+inert(name));
+ copy(path.join(output,architecture==='x86'?'soui_sdk.vcxproj':'sdk/soui_sdk.vcxproj'),'builds/'+architecture+'/soui_sdk.vcxproj.inert.snapshot');
+ const consumer=path.join(prior.external,'consumer-'+architecture);
+ for(const name of ['CMakeLists.txt','main.cpp','contracts/actions.json','app/generated/actions.hpp'])
+  if(fs.existsSync(path.join(consumer,name)))copy(path.join(consumer,name),'consumers/'+architecture+'/'+inert(name));
+ for(const name of ['CMakeCache.txt','soui_action_consumer.vcxproj'])copy(path.join(consumer,'out/native',name),'consumers/'+architecture+'/'+inert(name));
+}
+for(const name of ['Build.ps1','Test.ps1','Collect-Verification.cjs'])copy(path.join(root,'tools',name),'current-tools/'+name+'.inert.snapshot');
+for(const name of ['verify-action-foundation-integration.cjs','continue-action-foundation-integration.cjs'])
+ copy(path.join(root,'out',name),'drivers/'+name+'.inert.snapshot');
+const audits=[];
+for(const [name,relative] of [['sdk','sdk/web'],['compatibility','templates/desktop-app/web'],['modern','templates/modern-app/web'],
+ ['workbench','demos/workbench/web'],['electron','benchmarks/hosts/electron'],['acceptance','tests/acceptance']]){
+ const cwd=path.join(root,relative),lockSha256=sha(path.join(cwd,'package-lock.json'));
+ const result=cp.spawnSync(process.env.ComSpec||'cmd.exe',['/d','/s','/c','npm audit --json'],{cwd,windowsHide:true,encoding:null,timeout:120000,maxBuffer:16*1024*1024});
+ const dir=path.join(root,'out','action-integration-audit-'+name+'-'+crypto.randomUUID());fs.mkdirSync(dir);
+ fs.writeFileSync(path.join(dir,'stdout.json'),result.stdout||Buffer.alloc(0));fs.writeFileSync(path.join(dir,'stderr.log'),result.stderr||Buffer.alloc(0));
+ const audit=JSON.parse((result.stdout||Buffer.alloc(0)).toString('utf8'));
+ const record={cwd,lockSha256,exitCode:result.status,signal:result.signal,error:result.error?.message||null,vulnerabilities:audit.metadata?.vulnerabilities};
+ fs.writeFileSync(path.join(dir,'result.json'),JSON.stringify(record,null,2)+'\n');tree(dir,'audits/'+name);audits.push(record);
+ if(result.status!==0||result.error||audit.metadata?.vulnerabilities?.total!==0||sha(path.join(cwd,'package-lock.json'))!==lockSha256)
+  throw Error('Active dependency audit failed: '+name);
+}
+copy(__filename,'drivers/archive-action-integration.cjs.inert.snapshot');
+const currentSource=identity.source(root),oldMap=new Map(prior.source.files.map(f=>[f.path,f]));
+const currentChangedPaths=currentSource.files.filter(f=>JSON.stringify(f)!==JSON.stringify(oldMap.get(f.path))).map(f=>f.path);
+if(currentChangedPaths.join(',')!=='tools/Build.ps1,tools/Collect-Verification.cjs')throw Error('Unreviewed source change after validation');
+const record={schema:'soui.action-foundation-integration-evidence/v1',version:'0.5.0-preview.1',
+ compiledSourceSha256:prior.source.sha256,hookContinuationSourceSha256:next.currentSource.sha256,currentSourceSha256:currentSource.sha256,
+ currentChangedPaths,compilationArchitectures:['x86','x64'],actualConsumersRan:true,relatedNodeTests:80,
+ priorPrivateParserFailurePreserved:true,correctedParserNaturallyClosed:true,hookRegressionCases:redGreen.cases,
+ oldMissingSourceRegressionPreserved:true,currentHookRegressionPassed:true,
+ allCompilationCompleted:true,genericCompilationSupervisionPassed:false,compilerTailExceptionAccepted:false,
+ dependencyAudits:audits,releaseReady:false,sourceDeliveryVerified:false,
+ limitations:next.limitations.concat(['Collect-Verification added the already-passed action generation suites after the continuation; its syntax was checked. It changes tool identity but no native or Web input.',
+  'Compiled binaries and libraries remain local; their recorded hashes and consumer project metadata are archived, not their bytes.']),files};
+fs.writeFileSync(path.join(root,base,'index.json'),JSON.stringify(record,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({path:base+'/index.json',files:files.length,bytes:files.reduce((s,f)=>s+f.bytes,0),source:currentSource.sha256}));

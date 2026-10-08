@@ -1,0 +1,99 @@
+{
+  "schema": "soui.actiongen-x86-independent-verification/v1",
+  "verified": true,
+  "sourceBeforeAfterEqual": true,
+  "sourceFilesBound": 86,
+  "actualPEMachine": "0x014c",
+  "relocatedIncludesAndLibBound": true,
+  "phases": [
+    {
+      "name": "sdk",
+      "passed": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 54990,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 89,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "lastMember": {
+        "event": "owned-member",
+        "pid": 89904,
+        "creationFileTime": "134359343325773013",
+        "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe"
+      },
+      "compilerIdentity": [
+        "-- SOUI verified selected Windows SDK 10.0.19041.0",
+        "-- The C compiler identification is MSVC 19.44.35226.0",
+        "-- The CXX compiler identification is MSVC 19.44.35226.0"
+      ],
+      "rawHashesVerified": true
+    },
+    {
+      "name": "consumer",
+      "passed": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 19405,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 60,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "lastMember": {
+        "event": "owned-member",
+        "pid": 30856,
+        "creationFileTime": "134359343872729798",
+        "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe"
+      },
+      "compilerIdentity": [
+        "-- SOUI verified selected Windows SDK 10.0.19041.0",
+        "-- The CXX compiler identification is MSVC 19.44.35226.0"
+      ],
+      "rawHashesVerified": true
+    },
+    {
+      "name": "ctest",
+      "passed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 2165,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 3,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "lastMember": {
+        "event": "owned-member",
+        "pid": 62312,
+        "creationFileTime": "134359344016265657",
+        "image": "C:\\Windows\\System32\\conhost.exe"
+      },
+      "compilerIdentity": [
+        "1/1 Test #1: sdk.consumer.generated-actions ...   Passed    2.05 sec",
+        "100% tests passed, 0 tests failed out of 1"
+      ],
+      "rawHashesVerified": true
+    }
+  ],
+  "reportSha256": "daf592f4474c085e04a4055bceb4d16279f4b730d15f73d329e89ed52e46f1e1"
+}

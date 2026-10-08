@@ -1,0 +1,2 @@
+process.stdout.write('原生输出\n');process.stderr.write('native-error\n');
+      process.stdin.resume();process.stdin.on('data',()=>process.exit(8));

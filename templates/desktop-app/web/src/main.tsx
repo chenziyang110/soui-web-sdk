@@ -1,7 +1,8 @@
 import React, {useEffect,useRef,useState} from 'react';
 import {createRoot} from 'react-dom/client';
-import {SouiBridgeError, createSouiGui, souiToolDefinitions, validateSouiActionInput, type SouiNativeClientImpl} from '@soui-sdk';
+import {SouiBridgeError, createSouiGui, type SouiNativeClientImpl} from '@soui-sdk';
 import {connectNative, type AppMethods} from './native';
+import {callAction, authorizedActionTools, type GreetInput} from './generated/actions';
 import './style.css';
 function describeError(error:unknown):string {
   return error instanceof SouiBridgeError && error.code==='E_NATIVE_UNAVAILABLE'
@@ -29,21 +30,19 @@ function App(){
       if(!active)return;
       const catalog=await connected.discover();
       const method=catalog.methods.find(entry=>entry.name==='app.greet');
-      if(!method?.action || !souiToolDefinitions(catalog).some(tool=>tool.name==='app.greet'))
+      if(!method?.action || !authorizedActionTools(catalog).some(tool=>tool.name==='app.greet'))
         throw new Error('当前宿主未安装应用所需的动作契约。');
       if(!active)return;
       const element=document.getElementById('greet');
       if(!element)throw new Error('问候控件尚未就绪。');
-      const contract=method.action;
       setClient(connected);
       gui.register({id:'greet',role:'button',name:'调用C++问候',element,
         state:()=>({enabled:active,state:{phase:guiState.current.phase,message:guiState.current.message}}),
         actions:{activate:async input=>{
-          validateSouiActionInput(contract,input);
           guiState.current={phase:'running',message:''};
           if(active)setBusy(true);
           try{
-            const result=await connected.call('app.greet',input as {name:string});
+            const result=await callAction(connected,'app.greet',input as GreetInput);
             guiState.current={phase:'ready',message:result.message};
             if(active)setMessage(result.message);
             return result;

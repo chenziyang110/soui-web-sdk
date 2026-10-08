@@ -1,7 +1,6 @@
 import { connectSouiNative, type SouiNativeClientImpl, type SouiCoreMethodMap, type SouiClipboardMethodMap, type SouiDirectoryMethodMap, type SouiWindowMethodMap } from '@soui-sdk';
-export type AppMethods = SouiCoreMethodMap & SouiClipboardMethodMap & SouiDirectoryMethodMap & SouiWindowMethodMap & {
-  'app.greet': {params:{name:string};result:{message:string}};
-};
+import type { ActionMethods } from './generated/actions';
+export type AppMethods = SouiCoreMethodMap & SouiClipboardMethodMap & SouiDirectoryMethodMap & SouiWindowMethodMap & ActionMethods;
 export function connectNative():Promise<SouiNativeClientImpl<AppMethods>> {
   return connectSouiNative<AppMethods>();
 }

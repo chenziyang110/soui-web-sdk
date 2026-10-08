@@ -1,0 +1,66 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {launchOwned}=require('../tools/internal/owned-process.cjs');
+const identity=require('../tools/internal/delivery-identity.cjs'),buildEvidence=require('../tools/internal/build-evidence.cjs');
+const root=path.resolve(__dirname,'..'),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const attempt=path.join(root,'out','scope-foundation-integration-'+crypto.randomUUID());fs.mkdirSync(attempt);
+fs.copyFileSync(__filename,path.join(attempt,'driver-at-launch.cjs.inert.snapshot'),fs.constants.COPYFILE_EXCL);
+const external=path.join('F:/work','soui-05-scope-integration-'+crypto.randomUUID());fs.mkdirSync(external);
+const source=identity.source(root),runner='F:/work/sm05/out/validation-bootstrap/1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f/OwnedProcessRunner.exe';
+if(sha(runner)!=='1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f')throw Error('Frozen runner changed');
+const ps=path.join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/powershell.exe');
+const env={...process.env,MSBUILDDISABLENODEREUSE:'1',PSModulePath:path.join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/Modules')};
+const cases=['task_scope_tests','task_service_tests','task_store_capacity_tests','session_renewal_tests'],results=[],builds=[],binaries=[];
+const report={schema:'soui.scope-foundation-integration/v1',mainCommit:'e4ff7f9d',version:'0.5.0-preview.1',
+ source,attempt,external,results,builds,binaries,completed:false,releaseReady:false,
+ limitations:['This external fixture builds repository internal tests and uses their private seams; it is not an independent public-SDK adoption consumer.',
+ 'SDK compilation and generic owned-process supervision are separate results; no compiler-tail exception is asserted for this v1 runner.',
+ 'No GUI, local Agent transport, target-system, long-session or final-candidate acceptance is asserted.']};
+const save=()=>fs.writeFileSync(path.join(attempt,'report.json'),JSON.stringify(report,null,2)+'\n');
+const q=s=>"'"+s.replaceAll("'","''")+"'";
+async function run(name,exe,args,cwd,compile=false){
+ const folder=path.join(attempt,name);fs.mkdirSync(folder);
+ const stdout=fs.openSync(path.join(folder,'stdout.log'),'wx'),stderr=fs.openSync(path.join(folder,'stderr.log'),'wx');let result;
+ try{result=await launchOwned(exe,args,{runner,cwd,env,report:path.join(folder,'owned.ndjson'),
+  timeoutMs:compile?1200000:180000,drainMs:compile?30000:2000,stdout,stderr}).finished;}
+ finally{fs.closeSync(stdout);fs.closeSync(stderr);}
+ results.push({name,exe,args,cwd,compile,...result});save();
+ console.log(JSON.stringify({name,rootExitCode:result.exitCode,genericPassed:result.passed,closureConfirmed:result.closureConfirmed}));
+ if(result.exitCode!==0||!result.closureConfirmed||result.spawnError||result.reportError||result.fallbackUsed||(!compile&&!result.passed))throw Error('Failed '+name);
+ return result;
+}
+(async()=>{save();console.log('Scope integration: '+attempt);
+ for(const architecture of ['x86','x64']){
+  await run('sdk-build-'+architecture,ps,['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(root,'tools/Build.ps1'),
+   '-Architecture',architecture,'-Configuration','Release','-SdkOnly','-WithWebView2','-Install'],root,true);
+  const build=buildEvidence.verifyBuild(root,architecture,'Release',true);builds.push({architecture,buildId:build.buildId,sourceSha256:build.source.sha256});
+  fs.copyFileSync(path.join(root,'out/sdk-'+architecture,'build-Release.json'),path.join(attempt,'sdk-build-'+architecture+'.json'),fs.constants.COPYFILE_EXCL);
+  const fixture=path.join(external,'tests-'+architecture);fs.mkdirSync(fixture);
+  const prefix=path.join(root,'out/install',architecture),binary=path.join(fixture,'out/native');
+  const lines=['cmake_minimum_required(VERSION 3.24)','project(SouiScopeIntegration LANGUAGES CXX)','find_package(SouiSdk CONFIG REQUIRED)'];
+  for(const name of cases){
+   lines.push('add_executable('+name+' "'+path.join(root,'tests/native',name+'.cpp').replaceAll('\\','/')+'")',
+    'target_link_libraries('+name+' PRIVATE Soui::Sdk Soui::ActionJson)',
+    'target_compile_options('+name+' PRIVATE /utf-8 /W4 /U_DEBUG)',
+    'set_property(TARGET '+name+' PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)');
+  }
+  fs.writeFileSync(path.join(fixture,'CMakeLists.txt'),lines.join('\n')+'\n',{flag:'wx'});
+  const script=path.join(attempt,'fixture-build-'+architecture+'.ps1');
+  fs.writeFileSync(script,["$ErrorActionPreference='Stop'",'. '+q(path.join(root,'tools/internal/CMake-Configure.ps1')),
+   '$taskWorkspace='+q(fixture),'$taskBinary='+q(binary),"$taskCMake=(Get-Command cmake.exe -ErrorAction Stop).Source",
+   '$taskConfigure=@(Get-SouiCMakeConfigureArguments -CMake $taskCMake -WorkspaceRoot $taskWorkspace -SourceDirectory $taskWorkspace -BuildDirectory $taskBinary -Architecture '+q(architecture)+')',
+   '& $taskCMake @taskConfigure '+q('-DCMAKE_PREFIX_PATH='+prefix),"if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}",
+   '& $taskCMake --build $taskBinary --config Release --parallel 2',"exit $LASTEXITCODE"].join('\r\n')+'\r\n',{flag:'wx'});
+  await run('tests-build-'+architecture,ps,['-NoProfile','-ExecutionPolicy','Bypass','-File',script],fixture,true);
+  for(const name of cases){
+   const exe=path.join(binary,'Release',name+'.exe'),bytes=fs.readFileSync(exe),machine=bytes.readUInt16LE(bytes.readUInt32LE(0x3c)+4);
+   if(machine!==(architecture==='x86'?0x14c:0x8664))throw Error('Wrong test architecture');
+   binaries.push({architecture,name,exe,sha256:sha(exe),machine});
+   await run('run-'+architecture+'-'+name,exe,[],path.dirname(exe));
+  }
+ }
+ report.sourceInputsUnchanged=identity.source(root).sha256===source.sha256;
+ if(!report.sourceInputsUnchanged)throw Error('Source changed during integration validation');
+ report.completed=true;report.allCompilationCompleted=true;report.allNativeTestsNaturallyClosed=true;
+ report.genericCompilationSupervisionPassed=results.filter(r=>r.compile).every(r=>r.passed);save();
+})().catch(error=>{report.error=error.stack;save();console.error(error.stack);process.exitCode=1;});

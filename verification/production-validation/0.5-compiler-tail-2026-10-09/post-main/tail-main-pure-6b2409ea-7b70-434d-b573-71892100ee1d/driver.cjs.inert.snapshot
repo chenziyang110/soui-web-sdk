@@ -1,0 +1,20 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..'),{launchOwned}=require('../tools/internal/owned-process.cjs'),identity=require('../tools/internal/delivery-identity.cjs');
+const folder=path.join(root,'out','tail-main-pure-'+crypto.randomUUID());fs.mkdirSync(folder);
+const source=identity.source(root),sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const tests=['tests/benchmark/owned-tail-evidence-reader.test.cjs','tests/benchmark/compiler-tail-policy.test.cjs','tests/benchmark/owned-tail-client-boundaries.test.cjs'];
+const runner='F:/work/sm05/out/validation-bootstrap/1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f/OwnedProcessRunner.exe';
+if(sha(runner)!=='1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f')throw Error('Bootstrap runner changed');
+fs.copyFileSync(__filename,path.join(folder,'driver.cjs.inert.snapshot'),fs.constants.COPYFILE_EXCL);
+fs.writeFileSync(path.join(folder,'inputs.json'),JSON.stringify({source,tests:tests.map(p=>({path:p,sha256:sha(path.join(root,p))})),runnerSha256:sha(runner),noGui:true},null,2)+'\n');
+(async()=>{
+ const out=fs.openSync(path.join(folder,'stdout.tap'),'wx'),err=fs.openSync(path.join(folder,'stderr.log'),'wx');let r;
+ try{r=await launchOwned(process.execPath,['--test','--test-reporter=tap',...tests],{runner,cwd:root,report:path.join(folder,'owned.ndjson'),timeoutMs:180000,drainMs:2000,stdout:out,stderr:err}).finished;}
+ finally{fs.closeSync(out);fs.closeSync(err);}
+ const unchanged=identity.source(root).sha256===source.sha256;
+ fs.writeFileSync(path.join(folder,'report.json'),JSON.stringify({result:r,sourceInputsUnchanged:unchanged,actualCompilerTailAcceptance:false,releaseReady:false},null,2)+'\n');
+ if(!r.passed||!r.closureConfirmed||!unchanged)throw Error('Post-main pure validation failed');
+ const tap=fs.readFileSync(path.join(folder,'stdout.tap'),'utf8');if(!/^# tests 129\r?$/m.test(tap)||!/^# pass 129\r?$/m.test(tap)||!/^# skipped 0\r?$/m.test(tap))throw Error('Unexpected pure suite count');
+ console.log(JSON.stringify({folder,passed:true,tests:129,sourceSha256:source.sha256}));
+})().catch(error=>{console.error(error.stack);process.exitCode=1});

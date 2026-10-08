@@ -1,10 +1,24 @@
 # ADR-0027：本地主体授权范围与共享任务归属
 
-日期：2026-10-08。状态：设计基线，待实现与独立审查。范围：05-07 / 05-08c 的公共授权和任务边界；本文件不是已实现能力或验收结论。
+日期：2026-10-08；整合更新：2026-10-09。状态：服务层首批切片已实现，原切片及整合 0.5 主线后的 x86/x64 无窗口回归通过。范围：05-07 / 05-08c 的公共授权和任务边界；下文管道主体和定向事件仍为设计，未实现或验收。
+
+## 首批服务层实现决定
+
+- `authorization_scope::scope_id()` 返回不可变 `soui-scope-<十进制序号>`。同一 SDK 模块装载实例使用一个进程内原子 uint64 分配器；授权、续租和撤销不重置计数，耗尽时 fail closed，不保存持续增长的历史集合。ID 可预测，只用于关联，不是 bearer、能力或所有权证明；不承诺跨进程、重启或独立静态 SDK 副本唯一性。
+- `permission_store::revoke_scope(shared_ptr<const authorization_scope>)` 只撤销本 store 实际持有的 scope 对象，先失效再移除当前和重叠 bearer；空、其他 store 和已经移除的对象返回 false。字符串 ID 不被解析为授权。续租保留同一 scope 和 ID，已撤销对象不能复活。
+- 任务 operation key 包含 `scope_id` 与 operationId；所有查询、取消、订阅和重复关联仍比较实际 scope 对象及 session/origin。相同 scope、kind/input 与 operationId 返回原 taskId，输入不同冲突；不同 grant 或不同 store 相同 operationId 独立。操作幂等仍只覆盖被任务保留上限保留的记录，不提供永久历史。
+- `task_service::shutdown_scope(scope)` 要求先撤销或到期；活跃或空 scope 返回 false，避免错误顺序留下可继续提交的授权。通过后只移除该对象的订阅和请求协作取消，返回 true 只表示执行了服务清理请求，不表示处理器已退出。现有 shutdown_session 及页面 API 保留，应用仍先 revoke 再关闭服务。
+- 排队工作在 worker 资源锁内、标记运行前重验实际授权与 task.start 能力，事件回调后、业务执行提交前再验一次；撤销或到期后的未执行工作不能进入业务回调。最后复验成功是执行提交边界，随后到期不强制中止已执行处理器；事件不再新派发，显式 shutdown_scope 请求协作取消。执行提交之后的业务副作用不承诺回滚。
+- finish 不把 cancelRequested 无条件覆盖为 cancelled。已执行处理器返回 success/partial/failure 保留；只有未执行便被取消，或处理器明确返回 task_cancelled/user_cancelled，才形成 cancelled 终态。task_store::complete 原本按实际 outcome 映射，保持不变。旧合作处理器测试改为观察取消后明确返回取消结果，保留原终态断言。
+- exact-scope 清理不影响同文档其他 grant；任务保留淘汰同步移除对应 operation 和订阅，回收容量。仍只有原有全局事件 sink：本层不增加外部 Agent 订阅或声称 scope-directed event 可用。原生入口建立本地主体后仍须禁止本地 subscribe，直到定向出口独立实现。
+
+验证使用受控时钟和 condition_variable/barrier：跨 grant/store 幂等、续租与精确撤销、执行前排队撤销、真实取消结果、跨 scope 查询/订阅、一个范围关闭不误伤、容量与淘汰回收。x86/x64 无窗口验证绑定 SDK19041 和受管进程 Job；不运行 GUI、VM 或真实输入。
+
+整合证据见 `verification/production-validation/0.5-scope-integration-2026-10-09/index.json`：准确源码 `61b743bf388a5e5b6ceb2794d792dca755dc68883465b5a8f9a57793fad47a46`，标准工具构建两个架构的 SDK，并从外部目录链接安装前缀编译四项仓库内部测试；八个测试进程均自然退出。该 fixture 使用测试私有接口，不代表独立公开 SDK 接入。四个编译阶段 root exit 0、Job 清理闭合，但通用监督结果为 false；本记录未采用编译尾进程例外。文档和原件归档之后的版本仍须完成最终候选验收。
 
 ## 背景
 
-当前 `authorization_scope` 已能在 bearer 续期期间保持 C++ 对象身份，任务拥有该对象而不是某一时刻的 token。但授权仍只绑定文档 session/origin；任务幂等键仅为 `session + operationId`，同一文档的不同原生授权范围会争用操作标识。事件出口也只有一个全局 sink。
+本切片之前，`authorization_scope` 已能在 bearer 续期期间保持 C++ 对象身份，任务拥有该对象而不是某一时刻的 token。但任务幂等键仅为 `session + operationId`，同一文档的不同原生授权范围会争用操作标识。本切片改为 scope 归属；事件出口仍只有一个全局 sink。
 
 本地 Agent 需要真实 Windows 连接身份和独立撤销。页面传来的 PID、SID、actor、权限或 token 不能成为可信主体。直接把页面 `SouiGui.perform()` 发布到管道，会绕过原生业务校验，无法满足发现、快照和执行按主体过滤的目标。
 

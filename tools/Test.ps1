@@ -13,6 +13,8 @@ if(-not $NativeOnly){
   if($LASTEXITCODE -ne 0){throw 'Owned process supervision tools build failed'}
   & node --test (Join-Path $root 'tests/benchmark/owned-process-runner.test.cjs') (Join-Path $root 'tests/benchmark/owned-process-client.test.cjs') (Join-Path $root 'tests/benchmark/owned-process-client-boundaries.test.cjs') (Join-Path $root 'tests/acceptance/owned-supervision-boundaries.test.cjs') (Join-Path $root 'tests/benchmark/run-one-cleanup.test.cjs') (Join-Path $root 'tests/sdk/cmake-sdk-selection.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'Owned supervision or SDK selection tests failed'}
+  & node --test (Join-Path $root 'tests/sdk/actiongen.test.mjs') (Join-Path $root 'tests/web/generated-actions.test.mjs')
+  if($LASTEXITCODE -ne 0){throw 'Single-source action generation or generated Web contract tests failed'}
   & node (Join-Path $root 'tests/sdk/sdk-package-smoke.cjs')
   if($LASTEXITCODE -ne 0){throw 'SDK package tests failed'}
   & node --test (Join-Path $root 'tests/sdk/sdk-native-payload.test.cjs')

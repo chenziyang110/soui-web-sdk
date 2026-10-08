@@ -1,0 +1,9 @@
+Get-ExecutionPolicy : 无法绑定参数“Scope”。无法将值“Bypass”转换为类型“Microsoft.PowerShell.ExecutionPolicyScope”。错误:“
+无法将标识符名称 Bypass 与有效的枚举器名称相匹配。请指定以下枚举器名称之一，然后重试:
+Process, CurrentUser, LocalMachine, UserPolicy, MachinePolicy”
+所在位置 行:1 字符: 17
++ ExecutionPolicy Bypass -File F:\work\sm05-actions\out\action-foundati ...
++                 ~~~~~~
+    + CategoryInfo          : InvalidArgument: (:) [Get-ExecutionPolicy]，ParameterBindingException
+    + FullyQualifiedErrorId : CannotConvertArgumentNoMessage,Microsoft.PowerShell.Commands.GetExecutionPolicyCommand
+ 

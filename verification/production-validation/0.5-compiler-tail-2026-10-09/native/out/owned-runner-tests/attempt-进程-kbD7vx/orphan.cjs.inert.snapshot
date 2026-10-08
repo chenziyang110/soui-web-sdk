@@ -1,0 +1,3 @@
+const child=require('node:child_process').spawn(process.execPath,
+      ['-e','setTimeout(()=>{},30000)'],{detached:true,windowsHide:true,stdio:'ignore'});
+      require('node:fs').writeFileSync('child.pid',String(child.pid));child.unref();

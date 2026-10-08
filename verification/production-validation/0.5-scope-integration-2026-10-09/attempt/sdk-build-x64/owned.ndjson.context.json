@@ -1,0 +1,23 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+  "executableSha256": "8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e",
+  "executable": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "F:\\work\\sm05-scopes\\tools\\Build.ps1",
+    "-Architecture",
+    "x64",
+    "-Configuration",
+    "Release",
+    "-SdkOnly",
+    "-WithWebView2",
+    "-Install"
+  ],
+  "cwd": "F:\\work\\sm05-scopes",
+  "timeoutMs": 1200000,
+  "drainMs": 30000
+}

@@ -1,0 +1,37 @@
+{
+    "passed":  true,
+    "commands":  [
+                     {
+                         "executable":  "C:/Program Files/CMake/bin/cmake.exe",
+                         "arguments":  [
+                                           "-S",
+                                           "F:\\work\\sm05-actions\\out\\actiongen-x86-independent-9a78df14766c4a1f8740adff9bbc46e5\\consumer-source",
+                                           "-B",
+                                           "F:\\work\\sm05-actions\\out\\actiongen-x86-independent-9a78df14766c4a1f8740adff9bbc46e5\\consumer-build",
+                                           "-G",
+                                           "Visual Studio 17 2022",
+                                           "-A",
+                                           "Win32,version=10.0.19041.0",
+                                           "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+                                           "-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=F:/work/sm05/cmake/SouiWindowsSdk.cmake",
+                                           "-T",
+                                           "v143",
+                                           "-DCMAKE_PREFIX_PATH=F:/work/sm05-actions/out/actiongen-x86-independent-9a78df14766c4a1f8740adff9bbc46e5/install-relocated"
+                                       ]
+                     },
+                     {
+                         "executable":  "C:/Program Files/CMake/bin/cmake.exe",
+                         "arguments":  [
+                                           "--build",
+                                           "F:\\work\\sm05-actions\\out\\actiongen-x86-independent-9a78df14766c4a1f8740adff9bbc46e5\\consumer-build",
+                                           "--config",
+                                           "Release",
+                                           "--target",
+                                           "soui_action_consumer",
+                                           "--",
+                                           "/nr:false",
+                                           "/m:1"
+                                       ]
+                     }
+                 ]
+}
