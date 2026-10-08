@@ -3,39 +3,40 @@
     "schema": "soui.dependency-build/v1",
     "architecture": "x64",
     "component": "All",
-    "startedAt": "2026-09-21T15:12:16.8842812+08:00",
-    "finishedAt": "2026-09-21T16:04:26.7301629+08:00",
+    "startedAt": "2026-10-03T20:56:35.4654897+08:00",
+    "finishedAt": "2026-10-03T21:00:46.0670819+08:00",
     "status": "built",
     "releaseReady": false,
+    "souiSourceStage": "out\\dependencies\\x64\\soui-source-65ee8e186c6a447eb1bcdbe66c3a6771",
     "artifacts": [
       {
         "path": "out/dependencies/x64/miniblink/bin/miniblink.dll",
-        "sha256": "FE788554A77E0E09665855A5D415BF1C5E13E758212AC1D22A40601057481643",
+        "sha256": "AFB4E8FEB6E8D37BDEC1F6253DD9D11A2EF1BA3E7166D2358FDA4F85795C15B9",
         "kind": "miniblink"
       },
       {
-        "path": "third_party/sources/soui/bin64/soui.dll",
-        "sha256": "FA3F65A74E550317DFD2EE6868156B8D46502FA64BA981CBC787F0408F48CBCC",
+        "path": "out/dependencies/x64/soui-source-65ee8e186c6a447eb1bcdbe66c3a6771/bin64/soui.dll",
+        "sha256": "0A1696750E1976478EA55FE4F54520171E187A5ACBE7DFABD054F6272D34C403",
         "kind": "soui"
       },
       {
-        "path": "third_party/sources/soui/bin64/utilities.dll",
-        "sha256": "B03D3391054E5A549D07ED856EAD2FAAC4267B551D0F9B6DDEFE6F5D759EEF82",
+        "path": "out/dependencies/x64/soui-source-65ee8e186c6a447eb1bcdbe66c3a6771/bin64/utilities.dll",
+        "sha256": "12E9229501653D24A856BEFA5C7541449F39B6015F628EABC1965B41701E5764",
         "kind": "utilities"
       },
       {
-        "path": "third_party/sources/soui/bin64/render-gdi.dll",
-        "sha256": "B378DE014CF27324161CE0F2C2EAFAEAB6B3A7F0B01094F2BA3EF2CF1818D28E",
+        "path": "out/dependencies/x64/soui-source-65ee8e186c6a447eb1bcdbe66c3a6771/bin64/render-gdi.dll",
+        "sha256": "40771790F7B3525514C2CA6BA86C1939F9CB1BD79F51A948F86FA75D17FF8D84",
         "kind": "render-gdi"
       },
       {
-        "path": "third_party/sources/soui/bin64/imgdecoder-gdip.dll",
-        "sha256": "8844ADE99D4B12A2A122BD418B69861EC1D96FC43386DEE9F593AF7DE4AFD3DC",
+        "path": "out/dependencies/x64/soui-source-65ee8e186c6a447eb1bcdbe66c3a6771/bin64/imgdecoder-gdip.dll",
+        "sha256": "6A8C5616518D6608013E3F4F50F51EF12DF201B90AE6D8FFCF5E83CE513F3595",
         "kind": "imgdecoder-gdip"
       },
       {
-        "path": "third_party/sources/soui/bin64/soui-sys-resource.dll",
-        "sha256": "6D2561A61640EE54295A0FE37C91338C3FF59AE397535E67BED07C594ADE67DC",
+        "path": "out/dependencies/x64/soui-source-65ee8e186c6a447eb1bcdbe66c3a6771/bin64/soui-sys-resource.dll",
+        "sha256": "E0D7B77083C2C9EBFE1B3108445A98128926D434DC8B879886022BF42021B122",
         "kind": "soui-sys-resource"
       }
     ]
@@ -58,7 +59,7 @@
         "passed": true,
         "exitCode": 0,
         "target": "SouiWorkbench",
-        "log": "process-start\r\nwindow-constructed\r\nhost-started\r\ntimer-waiting-document\r\ndocument=waiting,bridge=waiting,draw_interval_ms=-1\r\ndocument=ready,bridge=ready,draw_interval_ms=0,probe=script/json/event/error/local/proxy/promise/symbol/reflect/vue/reactivity/dom/bridge\r\napplication-ready\r\nhost-close-start\r\nadapter-unmount-start\r\nadapter-bridge-shutdown\r\nadapter-events-drained\r\nadapter-webview-destroyed\r\nadapter-engine-shutdown\r\nadapter-module-released-by-engine\r\nhost-close-complete\r\nwindow-destroyed\r\n",
+        "log": "process-start\r\nwindow-constructed\r\nhost-started\r\ntimer-waiting-document\r\ndocument=waiting,bridge=waiting,draw_interval_ms=-1\r\ndocument=ready,bridge=ready,draw_interval_ms=17,probe=script/json/event/error/local/proxy/promise/symbol/reflect/vue/reactivity/dom/bridge\r\napplication-ready\r\nhost-close-start\r\nadapter-unmount-start\r\nadapter-bridge-shutdown\r\nadapter-events-drained\r\nadapter-webview-destroyed\r\nhost-close-complete\r\nwindow-destroyed\r\n",
         "timedOut": false
       }
     ],
@@ -232,7 +233,7 @@
         "file": "concrt140.dll"
       },
       {
-        "sha256": "8844ADE99D4B12A2A122BD418B69861EC1D96FC43386DEE9F593AF7DE4AFD3DC",
+        "sha256": "6A8C5616518D6608013E3F4F50F51EF12DF201B90AE6D8FFCF5E83CE513F3595",
         "file": "imgdecoder-gdip.dll"
       },
       {
@@ -256,19 +257,19 @@
         "file": "msvcp140_codecvt_ids.dll"
       },
       {
-        "sha256": "FE788554A77E0E09665855A5D415BF1C5E13E758212AC1D22A40601057481643",
+        "sha256": "AFB4E8FEB6E8D37BDEC1F6253DD9D11A2EF1BA3E7166D2358FDA4F85795C15B9",
         "file": "node.dll"
       },
       {
-        "sha256": "B378DE014CF27324161CE0F2C2EAFAEAB6B3A7F0B01094F2BA3EF2CF1818D28E",
+        "sha256": "40771790F7B3525514C2CA6BA86C1939F9CB1BD79F51A948F86FA75D17FF8D84",
         "file": "render-gdi.dll"
       },
       {
-        "sha256": "6D2561A61640EE54295A0FE37C91338C3FF59AE397535E67BED07C594ADE67DC",
+        "sha256": "E0D7B77083C2C9EBFE1B3108445A98128926D434DC8B879886022BF42021B122",
         "file": "soui-sys-resource.dll"
       },
       {
-        "sha256": "FA3F65A74E550317DFD2EE6868156B8D46502FA64BA981CBC787F0408F48CBCC",
+        "sha256": "0A1696750E1976478EA55FE4F54520171E187A5ACBE7DFABD054F6272D34C403",
         "file": "soui.dll"
       },
       {
@@ -276,7 +277,7 @@
         "file": "ucrtbase.dll"
       },
       {
-        "sha256": "B03D3391054E5A549D07ED856EAD2FAAC4267B551D0F9B6DDEFE6F5D759EEF82",
+        "sha256": "12E9229501653D24A856BEFA5C7541449F39B6015F628EABC1965B41701E5764",
         "file": "utilities.dll"
       },
       {

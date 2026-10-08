@@ -3,6 +3,8 @@
 #include <windows.h>
 #include <objbase.h>
 #include <array>
+#include <algorithm>
+#include <set>
 #include <stdexcept>
 #include <utility>
 
@@ -35,6 +37,10 @@ json_bridge::json_bridge(std::string origin) : origin_{std::move(origin)} {
       ? std::string{"{\"ready\":true}"}
       : std::string{"{\"error\":\"E_INVALID_PARAMS\",\"message\":\"Expected ready=true.\"}"};
   });
+  (void)register_contextual_method("bridge.describe", "bridge.describe",
+      [this](const soui::runtime::bridge_request& request) {
+        return transport_.describe(request);
+      });
   (void)register_contextual_method("task.start", "task.start", [this](const soui::runtime::bridge_request& request) {
     return tasks_.start(request);
   });
@@ -65,6 +71,25 @@ bool json_bridge::register_contextual_method(std::string name, std::string capab
   if (registration_closed_) return false;
   if (!registry_.register_contextual_method(std::move(name), capability, std::move(handler))) return false;
   capabilities_.push_back(std::move(capability));
+  return true;
+}
+bool json_bridge::register_action(std::string name, std::string capability, std::string contract_json,
+                                  soui::runtime::capability_registry::contextual_handler handler) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (registration_closed_ || !registry_.register_action(std::move(name), capability,
+                                                       std::move(contract_json), std::move(handler))) return false;
+  capabilities_.push_back(std::move(capability));
+  return true;
+}
+bool json_bridge::set_session_capabilities(std::vector<std::string> capabilities) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (registration_closed_) return false;
+  std::set<std::string> seen;
+  for (const auto& capability : capabilities)
+    if (std::find(capabilities_.begin(), capabilities_.end(), capability) == capabilities_.end() ||
+        !seen.insert(capability).second) return false;
+  session_capabilities_ = std::move(capabilities);
+  session_capabilities_configured_ = true;
   return true;
 }
 bool json_bridge::register_task_handler(std::string kind, soui::runtime::task_service::handler handler) {
@@ -185,7 +210,8 @@ std::string json_bridge::handle_json(std::string_view request, bool native_user_
     if(!active_session_.empty())return error(request_id,"E_UNAUTHORIZED","The document already has an active session.");
     registration_closed_=true;
     active_session_=new_session();
-    const auto token=permissions_.issue(active_session_,origin_,capabilities_);
+    const auto token=permissions_.issue(active_session_,origin_,
+        session_capabilities_configured_ ? session_capabilities_ : capabilities_);
     return json{{"requestId",request_id},{"ok",true},{"result",{{"sessionId",active_session_},{"origin",origin_},{"token",token}}}}.dump();
   } catch(const std::exception&) {
     return error(request_id,"E_INVALID_PARAMS","Malformed bridge request or method parameters.");

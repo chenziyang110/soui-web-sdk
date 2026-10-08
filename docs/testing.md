@@ -1,5 +1,11 @@
 # 测试与验收
 
+preview.10 增加 `sdk.native.action-contract`、Web动作契约与GUI语义测试，标准 `Test.ps1` 纳入这些检查。模板实际就绪探针包含契约发现→工具定义→语义动作→C++结果→状态等待→原生非法参数拒绝；WebView2实验执行相同业务与受限能力拒绝。`tools/Verify-Release.ps1` 在冻结版本后执行仓库外生成、升级/回退、搬移和真实启动，不复用历史结果。
+
+2026-10-03 起，独立消费者监督器使用单调计时判断步骤和无进展超时；系统 UTC 只用于日志。`tests/acceptance/monotonic-supervisor.test.cjs` 覆盖系统时钟前后跳变。此变更不说明历史挂载超时根因已查明。WebView2 实验使用独立 [构建与测试入口](../experiments/webview2-consumer/README.md)，不加入默认 SDK 构建；它的记录不能替代 Miniblink 或完整产品支持矩阵。双架构实验与 Miniblink 回归的 [2026-10-03结果](acceptance/webview2-experiment.md) 保留失败证据和未覆盖门槛。
+
+preview.9 新增 `sdk.native.host-adapter`（引擎无关转发、失败重试、终态与晚到事件）、扩展 `sdk.native.contract`（方法发现与授权/分页/响应边界），以及 `node --test tests/web/capabilities.test.mjs`（Web 分页与结果校验）。`tools/Test.ps1` 已纳入这些检查。模板在 `bridge.probe.report` 之前执行 `discover()`，因此本版模板的真实启动包含当前原生发现往返。当前执行结果见 [本轮记录](acceptance/agent-foundation.md)，这些测试不代表完整 Agent 操作或第二后端支持。
+
 0.3 后续的场景、公共 SDK 消费者、Electron 对照及生产准入设计见 [SDK 生产能力与价值验证方案](roadmap/0.3-sdk-validation.md)。其中独立消费者与生命周期驱动已落地，混合负载、完整 Electron 对照及生产准入档尚未实现；下文是当前可用入口。
 
 独立公共 SDK 消费者现有入口为 `powershell.exe -File tools/Test-Acceptance.ps1 -Architecture x64 -Scenario all -Cycles 3`。支持 reload/recreate/multiwindow 的真实 Host 生命周期与 Runtime 退出边界，以及 `bridge` 的标准连接器/32 并发/延时/错误恢复探针；说明见 [测试应用](../tests/acceptance-app/README.md)。`-PrepareOnly` 只生成已绑定身份的消费者，不执行任何桌面场景。该入口不包含方案中的全部场景，不授予生产或长稳通过结论。

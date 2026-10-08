@@ -47,6 +47,20 @@
 
 namespace soui::sdk {
 namespace {
+
+// Owner-thread reentrancy guard: native lifecycle calls may dispatch window
+// messages while waiting. This does not make host calls thread-safe.
+class lifecycle_operation_guard {
+ public:
+  explicit lifecycle_operation_guard(bool& active) noexcept : active_(active) { active_ = true; }
+  lifecycle_operation_guard(const lifecycle_operation_guard&) = delete;
+  lifecycle_operation_guard& operator=(const lifecycle_operation_guard&) = delete;
+  ~lifecycle_operation_guard() { active_ = false; }
+
+ private:
+  bool& active_;
+};
+
 #ifdef _WIN32
 constexpr wchar_t kInteractionWindowClass[] = L"SouiMiniblinkInteractionWindowV1";
 
@@ -2347,97 +2361,120 @@ soui_miniblink_host::~soui_miniblink_host() {
 }
 
 host_result soui_miniblink_host::start(const host_config& config) {
+  if (lifecycle_operation_) return failure("E_BUSY", "A host lifecycle operation is already in progress.");
   if (session_ != nullptr && !session_->terminal()) return failure("E_ALREADY_STARTED", "Host is already running.");
-  if (!adapter_) return failure("E_HOST_ADAPTER_MISSING", "A SOUI/Miniblink host adapter is required.");
+  if (!adapter_) return failure("E_HOST_ADAPTER_MISSING", "A renderer host adapter is required.");
   const auto architecture = validate_architecture(config);
   if (!architecture.ok) return architecture;
   const auto resources = validate_local_resources(config.resource_root);
   if (!resources.ok) return resources;
+  auto next_session = std::make_unique<soui::runtime::webview_session>();
+  const lifecycle_operation_guard operation(lifecycle_operation_);
   const auto mounted = adapter_->mount(config);
   if (!mounted.ok) return mounted;
-  session_ = std::make_unique<soui::runtime::webview_session>();
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {
-    dynamic->set_session_id(session_->session_id());
-  }
+  session_ = std::move(next_session);
+  adapter_->set_session_id(session_->session_id());
   (void)session_->mark_ready();
-  return success("SOUI SHostWnd and Miniblink child WebView are ready with local resources.");
+  return mounted;
 }
 
 host_result soui_miniblink_host::hide() {
-  if (session_ == nullptr) return failure("E_NOT_STARTED", "Host has not started.");
-  const auto event = session_->hide();
-  if (!event.has_value()) return failure("E_INVALID_LIFECYCLE", "WebView cannot be hidden in its current state.");
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {
-    return dynamic->show(false);
-  }
-  return success("WebView hidden without cancelling tasks.");
+  const auto active = require_running();
+  if (!active.ok) return active;
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  const auto hidden = adapter_->show(false);
+  if (!hidden.ok) return hidden;
+  (void)session_->hide();
+  return hidden;
 }
 
 host_result soui_miniblink_host::reload() {
-  if (session_ == nullptr) return failure("E_NOT_STARTED", "Host has not started.");
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {
-    const auto result = dynamic->reload();
-    if (!result.ok) return result;
-  }
-  return session_->reload().has_value() ? success("WebView reload requested.")
-                                        : failure("E_INVALID_LIFECYCLE", "WebView cannot reload in its current state.");
+  const auto active = require_running();
+  if (!active.ok) return active;
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  const auto reloaded = adapter_->reload();
+  if (!reloaded.ok) return reloaded;
+  (void)session_->reload();
+  adapter_->set_session_id(session_->session_id());
+  return reloaded;
 }
 
 host_result soui_miniblink_host::close() {
-  if (session_ == nullptr) return failure("E_NOT_STARTED", "Host has not started.");
-  const auto event = session_->close();
-  if (!event.has_value()) return failure("E_INVALID_LIFECYCLE", "WebView cannot close in its current state.");
-  return adapter_->unmount();
+  const auto active = require_running();
+  if (!active.ok) return active;
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  const auto unmounted = adapter_->unmount();
+  if (!unmounted.ok) return unmounted;
+  (void)session_->close();
+  return unmounted;
 }
 
 host_result soui_miniblink_host::destroy() {
+  if (lifecycle_operation_) return failure("E_BUSY", "A host lifecycle operation is already in progress.");
   if (session_ == nullptr) return success("WebView was not started.");
-  const auto event = session_->destroy();
-  if (!event.has_value()) return success("WebView was already destroyed.");
-  return adapter_->unmount();
+  if (session_->terminal()) {
+    // close() publishes the terminal state; destroy() also releases its event
+    // subscriptions. Keep that cleanup contract without unmounting twice.
+    (void)session_->destroy();
+    return success("WebView was already closed or destroyed.");
+  }
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  const auto unmounted = adapter_->unmount();
+  if (!unmounted.ok) return unmounted;
+  (void)session_->destroy();
+  return unmounted;
 }
 
 host_result soui_miniblink_host::resize(int width, int height) {
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {
-    return dynamic->resize(width, height);
-  }
-  return success("Host resize recorded by the test adapter.");
+  const auto active = require_running();
+  if (!active.ok) return active;
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  return adapter_->resize(width, height);
 }
 
 host_result soui_miniblink_host::focus() {
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {
-    return dynamic->focus();
-  }
-  return success("Host focus recorded by the test adapter.");
+  const auto active = require_running();
+  if (!active.ok) return active;
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  return adapter_->focus();
 }
 
 void soui_miniblink_host::pump() {
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) dynamic->pump();
+  if (running()) adapter_->pump();
 }
 
 void soui_miniblink_host::deliver_posted_event(void* payload) {
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {
-    dynamic->deliver_posted_event(payload);
-  }
+  // Late payloads must still be consumed by their originating adapter.
+  if (adapter_) adapter_->deliver_posted_event(payload);
 }
 
 bool soui_miniblink_host::document_ready() const noexcept {
-  const auto* dynamic = dynamic_cast<const dynamic_miniblink_adapter*>(adapter_.get());
-  return dynamic != nullptr && dynamic->document_ready();
+  return running() && adapter_->document_ready();
 }
 
 bool soui_miniblink_host::application_ready() {
-  auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get());
-  return dynamic != nullptr && dynamic->application_ready();
+  return running() && adapter_->application_ready();
 }
 
 std::string soui_miniblink_host::application_diagnostics() {
-  auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get());
-  return dynamic == nullptr ? "test-adapter" : dynamic->application_diagnostics();
+  return running() ? adapter_->application_diagnostics() : std::string{};
+}
+
+bool soui_miniblink_host::running() const noexcept {
+  return session_ != nullptr && !session_->terminal() && !lifecycle_operation_;
+}
+
+host_result soui_miniblink_host::require_running() const {
+  if (lifecycle_operation_) return failure("E_BUSY", "A host lifecycle operation is already in progress.");
+  if (session_ == nullptr) return failure("E_NOT_STARTED", "Host has not started.");
+  if (session_->terminal()) return failure("E_INVALID_LIFECYCLE", "The WebView session is already closed or destroyed.");
+  return success();
 }
 
 #ifdef SOUI_PERFORMANCE_DIAGNOSTICS
 host_result soui_miniblink_host::request_memory_recovery() {
+  const auto active = require_running();
+  if (!active.ok) return active;
   auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get());
   return dynamic == nullptr
       ? failure("E_HOST_ADAPTER_MISSING", "The dynamic Miniblink adapter is unavailable.")

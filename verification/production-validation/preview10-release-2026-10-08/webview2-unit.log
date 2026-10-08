@@ -1,0 +1,21 @@
+✔ complete reload and recreate logs prove native operations while leaving broader gates unevaluated (0.9608ms)
+✔ missing or duplicate ready, close, start and completion events cannot pass (0.5556ms)
+✔ real exit failure, timeout and unconfirmed termination override complete green native logs (0.149ms)
+✔ a hidden or unobserved GUI window cannot pass the visible-page probe (0.0938ms)
+✔ cross-process, stale-source and reordered lifecycle evidence is rejected (0.1997ms)
+✔ every ready event requires a fresh session and actual stable runtime version (0.2429ms)
+✔ an unterminated native log cannot be treated as complete evidence (4.0026ms)
+✔ preload only exposes the binding to the exact trusted top-level document (2.1165ms)
+✔ old document responses cannot resolve a reused request ID; completion releases the timer (1.0511ms)
+✔ duplicate IDs and capacity overload reject without overwriting in-flight work (4.1117ms)
+✔ unload rejects pending work and detaches native dispatch exactly once (1.0079ms)
+✔ timeout and postMessage failure release capacity and do not accept late results (1.0139ms)
+✔ events are delivered only for the current document generation (0.4361ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1162.9096

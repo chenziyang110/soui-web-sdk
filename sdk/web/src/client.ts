@@ -1,4 +1,6 @@
 import type { SouiMethodMap } from './contracts.js';
+import { describeOptions, discoverCapabilities, readCapabilityPage } from './capabilities.js';
+import type { SouiCapabilityCatalog, SouiCapabilityPage, SouiDescribeOptions, SouiDiscoveryOptions } from './capabilities.js';
 import { SouiBridgeError, MAX_MESSAGE_BYTES, integerOption, isNativeEvent, isRecord,
   nonEmptyString, readResponse, utf8Bytes } from './protocol.js';
 import type { SouiBridgeRequest, SouiNativeEvent, SouiNativePort } from './protocol.js';
@@ -70,6 +72,17 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
 
   public call<M extends keyof Methods & string>(method: M, params: Methods[M]['params']): Promise<Methods[M]['result']> {
     return this.request<Methods[M]['result']>(method, params);
+  }
+
+  /** Read one authorized page. Older hosts return their unsupported-method error. */
+  public async describe(options: SouiDescribeOptions = {}): Promise<SouiCapabilityPage> {
+    const { cursor, limit } = describeOptions(options);
+    return readCapabilityPage(await this.request<unknown>('bridge.describe', { cursor, limit }), cursor, limit);
+  }
+
+  /** Read a bounded catalog without invoking the discovered business methods. */
+  public discover(options: SouiDiscoveryOptions = {}): Promise<SouiCapabilityCatalog> {
+    return discoverCapabilities(page => this.describe(page), options);
   }
 
   private report(error: unknown, code = 'E_TRANSPORT'): void {

@@ -8,6 +8,7 @@ const {spawn} = require('node:child_process');
 const identity = require('../../tools/internal/delivery-identity.cjs');
 const builds = require('../../tools/internal/build-evidence.cjs');
 const {captureTimeout} = require('./timeout-diagnostics.cjs');
+const {createSupervisor} = require('./monotonic-supervisor.cjs');
 const {mixedSettings, validateMixedRecords} = require('./mixed-validation.cjs');
 const root = path.resolve(__dirname, '../..');
 const modes = ['reload', 'recreate', 'multiwindow', 'bridge'];
@@ -233,18 +234,14 @@ async function run(suite,config) {
       let observedBytes=0;
       let partial='';
       const decoder=new StringDecoder('utf8');
-      let stepStarted=null;
-      let lastProgress=Date.now();
-      let lastNativeRecord=null;
+      const supervisor=createSupervisor(config);
       const expire=reason=>{
         if(timedOut)return;
         timedOut=true;
         timeoutReason=reason;
-        const observedAt=Date.now();
         timeoutDiagnosticPromise=captureTimeout({pid:child.pid,output,nativeLog:log,
           snapshot:{schema:'soui.acceptance-timeout-observation/v1',runId,reason,pid:child.pid,
-            observedAt:new Date(observedAt).toISOString(),observedBytes,partialBytes:Buffer.byteLength(partial,'utf8'),
-            lastProgressAgeMs:observedAt-lastProgress,lastNativeRecord,stepStarted},
+            observedBytes,partialBytes:Buffer.byteLength(partial,'utf8'),...supervisor.snapshot()},
           debuggerExe:process.env.SOUI_ACCEPTANCE_DEBUGGER,
           dumpRoot:process.env.SOUI_ACCEPTANCE_DUMP_ROOT})
           .catch(error=>({debugger:{status:'failed',error:error.message}}))
@@ -266,18 +263,12 @@ async function run(suite,config) {
               observedBytes+=bytesRead;
               const lines=(partial+decoder.write(buffer.subarray(0,bytesRead))).split('\n'); partial=lines.pop();
               for(const line of lines){
-                const record=JSON.parse(line);
-                lastProgress=Date.now();
-                lastNativeRecord=Object.fromEntries(['event','elapsedMs','action','window','cycle']
-                  .filter(key=>Object.hasOwn(record,key)).map(key=>[key,record[key]]));
-                if(record.event==='step.begin')stepStarted={at:Date.now(),action:record.action,
-                  window:record.window,cycle:record.cycle};
-                if(record.event==='step.complete'||record.event==='step.failed')stepStarted=null;
+                supervisor.observe(JSON.parse(line));
               }
             }
           }
-          if(stepStarted && Date.now()-stepStarted.at>config.timeoutMs+2000)expire('step-deadline:'+stepStarted.action);
-          else if(!stepStarted && Date.now()-lastProgress>Math.max(config.timeoutMs,config.settleMs)+5000)expire('no-native-progress');
+          const reason=supervisor.deadlineReason();
+          if(reason)expire(reason);
         } catch(error){expire('native-observation-failed:'+error.message);}
       },250);
       child.once('error',error=>{spawnError=error.message;});
