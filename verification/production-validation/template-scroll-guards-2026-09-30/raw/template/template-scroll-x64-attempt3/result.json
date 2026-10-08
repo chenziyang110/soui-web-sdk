@@ -1,0 +1,40 @@
+{
+  "schema": "soui.template-scrollbar-real-input-host/v1",
+  "architecture": "x64",
+  "attemptName": "template-scroll-x64-attempt3",
+  "sourceSha256": "edece3019fd29db841425671071367eb13e891d5cefb85a1d70594b9bd3cc227",
+  "buildId": "5a5224a2-883d-41da-ac2a-45c7b010413e",
+  "helperHashes": {
+    "probe": "4bd647c75f08e1f14b5ae4418e30c1c7c480e69e07bc425988cad09128826ecd",
+    "activationProbe": "2f693ff73673c492459ea3fa6fa1656f2329c64c4c095566a1afc958ea0d69ca",
+    "coverInspector": "9161f19afbab8ede78676c1a5a818d63d3dcfe5a8ea4b0e9942eda67c30c9436",
+    "payloadVerifier": "5bf05e827a0be59dfcc5a8e099cd539ed386e05b467c5db7d43edd02f8811ae1",
+    "capture": "d764fb72f200a3043de9c6f72e9066180a31c6e5e09bc8aedcae2c87ceba8be2",
+    "closeWindow": "3ad71bccab0999bc246f4818a0f96c49198d8d831bf15845790872036a24fcd0"
+  },
+  "driverSha256Before": "d43ca6afcbfa9fd57f943682e134206efd2fc31be73f514a47db1fad17e2bcd4",
+  "driverSha256After": "d43ca6afcbfa9fd57f943682e134206efd2fc31be73f514a47db1fad17e2bcd4",
+  "startedAt": "2026-09-30T02:18:35.943Z",
+  "status": "failed",
+  "target": null,
+  "actions": [],
+  "gates": [
+    {
+      "stage": "before-build-check",
+      "at": "2026-09-30T02:18:37.302Z",
+      "busy": []
+    },
+    {
+      "stage": "after-close",
+      "at": "2026-09-30T02:18:39.205Z",
+      "busy": []
+    }
+  ],
+  "screenshotHashes": {},
+  "nativeExitCode": null,
+  "externalLoadObserved": false,
+  "realScrollVerified": false,
+  "releaseReady": false,
+  "error": "AssertionError [ERR_ASSERTION]: Unexpected runtime navigation\n+ actual - expected\n\n+ 'allowed=1 url=file:///C:/SOUI-SDK-production-validation/template-scrollbar-preparation-20260929/staged/x64-gui-attempt1/resources/index.html\\r\\n' +\n+   'allowed=1 url=file:///C:/SOUI-SDK-production-validation/template-scrollbar-preparation-20260929/staged/x64-gui-attempt1/resources/index.html'\n- 'allowed=1 url=file:///C:/SOUI-SDK-production-validation/template-scrollbar-preparation-20260929/staged/x64-gui-attempt1/resources/index.html'\n\n    at verifyLivePayload (C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\Verify-TemplateLivePayload.cjs:48:14)\n    at main (C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\Run-TemplateScrollHost-v4.cjs:136:31)\n    at Object.<anonymous> (C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\Run-TemplateScrollHost-v4.cjs:291:6)\n    at Module._compile (node:internal/modules/cjs/loader:1812:14)\n    at Object..js (node:internal/modules/cjs/loader:1943:10)\n    at Module.load (node:internal/modules/cjs/loader:1533:32)\n    at Module._load (node:internal/modules/cjs/loader:1335:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47",
+  "finishedAt": "2026-09-30T02:18:39.207Z"
+}

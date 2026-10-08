@@ -1,0 +1,49 @@
+{
+  "schema": "soui.template-live-payload-controls/v1",
+  "startedAt": "2026-09-30T02:17:20.488Z",
+  "verifierSha256": "5bf05e827a0be59dfcc5a8e099cd539ed386e05b467c5db7d43edd02f8811ae1",
+  "cases": [
+    {
+      "name": "original-payload",
+      "expected": "accepted",
+      "passed": true
+    },
+    {
+      "name": "normal-navigation-log",
+      "expected": "accepted",
+      "passed": true
+    },
+    {
+      "name": "same-exe-changed-kernel",
+      "expected": "rejected",
+      "passed": true
+    },
+    {
+      "name": "same-exe-changed-page",
+      "expected": "rejected",
+      "passed": true
+    },
+    {
+      "name": "missing-notice",
+      "expected": "rejected",
+      "passed": true
+    },
+    {
+      "name": "extra-runtime-dll",
+      "expected": "rejected",
+      "passed": true
+    },
+    {
+      "name": "foreign-navigation",
+      "expected": "rejected",
+      "passed": true
+    },
+    {
+      "name": "manifest-escape",
+      "expected": "rejected",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "finishedAt": "2026-09-30T02:17:20.543Z"
+}

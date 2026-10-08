@@ -1,0 +1,59 @@
+{
+  "schema": "soui.title-cover-selftest/v2",
+  "attempt": "title-cover-selftest-attempt2",
+  "driverSha256": "d84039947b3054ba97c0805e7e2c6323880eeadf645fc77144ce335a4c78b4c8",
+  "inspectorSha256": "9161f19afbab8ede78676c1a5a818d63d3dcfe5a8ea4b0e9942eda67c30c9436",
+  "startedAt": "2026-09-30T02:17:40.374Z",
+  "cases": [
+    {
+      "name": "before-foreground",
+      "script": "$ErrorActionPreference='Stop';$busy=@(Get-CimInstance Win32_Process -ErrorAction Stop|Where-Object{$_.Name -match 'qemu|soui|sdk.*(test|consumer)|ScrollStarter|InstalledRenewalProbe|RenewalStarter|UpgradeLedger|V02InputProbe|msbuild|^cl\\.exe$|^link\\.exe$|cdb|InputTrace|ProcessTreeSampler|electron|git\\.exe'}|Select-Object ProcessId,ParentProcessId,Name,CreationDate);[ordered]@{busy=$busy}|ConvertTo-Json -Depth 3 -Compress;if($busy.Count){exit 2}",
+      "startedAt": "2026-09-30T02:17:40.375Z",
+      "finishedAt": "2026-09-30T02:17:41.836Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null
+    },
+    {
+      "name": "foreground",
+      "script": "$ErrorActionPreference='Stop';Add-Type -TypeDefinition 'using System;using System.Runtime.InteropServices;public static class ReadOnlyForeground{[DllImport(\"user32.dll\")]public static extern IntPtr GetForegroundWindow();[DllImport(\"user32.dll\")]public static extern uint GetWindowThreadProcessId(IntPtr hwnd,out uint pid);}';$hwnd=[ReadOnlyForeground]::GetForegroundWindow();if($hwnd -eq [IntPtr]::Zero){throw 'No foreground window available'};[uint32]$targetPid=0;[void][ReadOnlyForeground]::GetWindowThreadProcessId($hwnd,[ref]$targetPid);& 'C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\Inspect-TemplateTitleCover.ps1' -TargetProcessId $targetPid -ExpectedHwnd $hwnd.ToInt64() -OutputJson 'C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\title-cover-selftest-attempt2\\foreground.json'",
+      "startedAt": "2026-09-30T02:17:41.838Z",
+      "finishedAt": "2026-09-30T02:17:43.324Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null
+    },
+    {
+      "name": "before-invalid-hwnd",
+      "script": "$ErrorActionPreference='Stop';$busy=@(Get-CimInstance Win32_Process -ErrorAction Stop|Where-Object{$_.Name -match 'qemu|soui|sdk.*(test|consumer)|ScrollStarter|InstalledRenewalProbe|RenewalStarter|UpgradeLedger|V02InputProbe|msbuild|^cl\\.exe$|^link\\.exe$|cdb|InputTrace|ProcessTreeSampler|electron|git\\.exe'}|Select-Object ProcessId,ParentProcessId,Name,CreationDate);[ordered]@{busy=$busy}|ConvertTo-Json -Depth 3 -Compress;if($busy.Count){exit 2}",
+      "startedAt": "2026-09-30T02:17:43.325Z",
+      "finishedAt": "2026-09-30T02:17:44.917Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null
+    },
+    {
+      "name": "invalid-hwnd",
+      "script": "$ErrorActionPreference='Stop';& 'C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\Inspect-TemplateTitleCover.ps1' -TargetProcessId 1 -ExpectedHwnd 0 -OutputJson 'C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\title-cover-selftest-attempt2\\invalid-hwnd.json'",
+      "startedAt": "2026-09-30T02:17:44.918Z",
+      "finishedAt": "2026-09-30T02:17:46.296Z",
+      "exitCode": 1,
+      "signal": null,
+      "error": null
+    },
+    {
+      "name": "after-tests",
+      "script": "$ErrorActionPreference='Stop';$busy=@(Get-CimInstance Win32_Process -ErrorAction Stop|Where-Object{$_.Name -match 'qemu|soui|sdk.*(test|consumer)|ScrollStarter|InstalledRenewalProbe|RenewalStarter|UpgradeLedger|V02InputProbe|msbuild|^cl\\.exe$|^link\\.exe$|cdb|InputTrace|ProcessTreeSampler|electron|git\\.exe'}|Select-Object ProcessId,ParentProcessId,Name,CreationDate);[ordered]@{busy=$busy}|ConvertTo-Json -Depth 3 -Compress;if($busy.Count){exit 2}",
+      "startedAt": "2026-09-30T02:17:46.297Z",
+      "finishedAt": "2026-09-30T02:17:48.047Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null
+    }
+  ],
+  "status": "passed",
+  "passed": true,
+  "finishedAt": "2026-09-30T02:17:48.048Z",
+  "inspectorSha256After": "9161f19afbab8ede78676c1a5a818d63d3dcfe5a8ea4b0e9942eda67c30c9436",
+  "driverSha256After": "d84039947b3054ba97c0805e7e2c6323880eeadf645fc77144ce335a4c78b4c8"
+}

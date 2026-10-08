@@ -1,5 +1,9 @@
 # SDK 生产验证执行记录
 
+## 2026-09-30 独立模板交互门禁与拒绝证据
+
+[模板输入前验证原件](../../verification/production-validation/template-scroll-guards-2026-09-30/README.md)记录两架构标题点击探针的冻结编译身份、实际只读遮挡检测正负控，以及载荷校验器 13/13 原始退出 0。x64 attempt3 在启动前被旧校验器误拒正常重复导航；v5 attempt4 核对 71 文件和五份 legal 后启动，但标题点仍被 GameViewer 遮挡，未发送点击或滚轮，原始退出 1，且未取得原生完整关闭。80 份精选原件保留；另附 SDK Web 依赖审计原始退出 0、零漏洞记录。这些结果不能计为产品滚动失败或通过。真实滚动、Win7 模板、IME、长期资源与性能仍待验收，三个生产结论均保持 false。
+
 ## 2026-09-29 Workbench 滚动条外观
 
 [本机双架构原始记录](../../verification/production-validation/scrollbar-style-modern-2026-09-29/README.md)绑定同一份 Demo 源码的正式 x64/x86 Release 构建；两次真实窗口的只读截图显示页面与 V02 列表滚动条使用窄轨道、圆角滑块，应用均原生退出 0。第一次 x64 前台条件不成立的失败样本保留，不能计作可视通过。实际滚轮/拖动/键盘交互和生产 V02 场景仍待验收；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
@@ -537,3 +541,5 @@ preview.8 [最终完整源码包的独立公共 SDK 页面消费者](../../verif
 2026-09-29 [当前 V02 Workbench 工作区定位 Win7 V9 实测](../../verification/production-validation/win7-sp1-x86-v02-workarea-v9-failure-2026-09-29/README.md)：冻结 x86 正式 Release 输入和基础盘前后校验一致，客体为 Win7 SP1 x86，显示模式成功切换为 1024×768。九次窗口探测均未找到可见顶层窗口；客体整轮退出 1，只导出 29/116 个预期文件。Workbench 进程由测试脚本关闭后原生退出 0，不等于页面可见或自然关闭。缩放、滚动、任务并行、中文 IME 均未进入；Win7 工作区修正和 V02 验收仍未通过，`releaseReady=false`。
 
 [同一官方 x86 Release 输入的 Win7 V10 可见性诊断](../../verification/production-validation/win7-sp1-x86-v02-window-visibility-v10-2026-09-29/README.md)补齐 10–105 秒的只读探针：前七次至客体单调计时 40.273 秒未检出，第 45 秒计划采样在 46.933 秒首次检出，随后均可见；窗口边界 `[87,24,937,664]`。46 帧串口、Win7 SP1 x86 身份、载荷前后与基础盘校验及客体/应用原生退出 0 已独立复核。约 108 秒的关闭由夹具请求；本轮没有真实缩放、滚动、中文 IME 或公共任务并行。V9 失败仍保留，不能据此推断启动延迟根因或放行工作区修正、V02、性能与生产门槛。
+
+2026-09-30 [模板滚动条独立项目预检](../../verification/production-validation/template-scrollbar-2026-09-30/README.md)使用冻结 preview.15 SDK 包生成仓库外 `ScrollStarter`，419 个已安装 SDK 文件身份通过；x64/x86 正式 Release 均完成 Web/原生构建、71 文件载荷复核及原生退出 0 的短启动/关闭。新 CSS 已进入打包资源，两个运行包各含五份法律文件。可见窗口的两架构真实滚动尝试均因窗口非自然前台在发出滚轮前停止，原始失败保留；因此模板的 Win7 外观、现代/Win7 真实滚轮与拖动、升级回退及生产门仍未通过。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
