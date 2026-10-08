@@ -1,0 +1,56 @@
+{
+  "schema": "soui.source-build/v2",
+  "buildId": "250c0a9a-2b68-402d-8596-8b32b499be1e",
+  "version": "0.5.0-preview.1",
+  "architecture": "x86",
+  "configuration": "Release",
+  "sdkOnly": true,
+  "nativeBuild": "passed",
+  "releaseReady": false,
+  "startedAt": "2026-10-08T19:20:41.968Z",
+  "nodeVersion": "v24.14.0",
+  "source": {
+    "sha256": "a1586d0b78a579a94a521b99e1ac6dc13ebad554c39091cbf2b13093f4d9411f",
+    "bytes": 207,
+    "files": [
+      {
+        "path": "VERSION",
+        "bytes": 15,
+        "sha256": "6c6ec1379d30ba397d8ceb76fb795e11b2797572e58f08c9fe8c301d14713d5e",
+        "normalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/version.h",
+        "bytes": 50,
+        "sha256": "6e5e46ac9e2861f9a4cd6e855cca7e473b7d71816edd3079c0006e2a26ee30f1",
+        "normalization": "lf"
+      },
+      {
+        "path": "sdk/web/package-lock.json",
+        "bytes": 107,
+        "sha256": "e16a5032964e618c9dd799c1de2d6516c268917e5e488a22d47fee1303ced3c4",
+        "normalization": "lf"
+      },
+      {
+        "path": "sdk/web/package.json",
+        "bytes": 35,
+        "sha256": "cfdfc5bd958fb730582344cffd7295ef0c29b4753cdab915cc5a29cd1efbdb73",
+        "normalization": "lf"
+      }
+    ]
+  },
+  "payloads": {},
+  "library": {
+    "sha256": "883e1e8556d352a84c0a8db45774cc6bf2fab35b28a9bf551fdb40258113c538",
+    "bytes": 23,
+    "files": [
+      {
+        "path": "Release/soui_sdk.lib",
+        "bytes": 23,
+        "sha256": "c62529d29043b89410e88618f766b3d2f497a03fa1616108e0dfa269007d596c"
+      }
+    ]
+  },
+  "optionalLibraries": {},
+  "finishedAt": "2026-10-08T19:20:41.973Z"
+}

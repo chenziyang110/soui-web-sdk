@@ -1,0 +1,70 @@
+import type { SouiMethodMap } from './contracts.js';
+import type { SouiCapabilityCatalog, SouiCapabilityPage, SouiDescribeOptions, SouiDiscoveryOptions } from './capabilities.js';
+import { SouiBridgeError } from './protocol.js';
+import type { SouiNativeEvent, SouiNativePort, SouiSessionLease } from './protocol.js';
+import type { SouiCoreMethodMap } from './protocol.js';
+export interface SouiNativeClientOptions {
+    sessionId: string;
+    origin: string;
+    token: string;
+    lease?: SouiSessionLease;
+    /** Elapsed bootstrap round-trip time; this can only shorten the local expiry estimate. */
+    leaseElapsedMs?: number;
+    requestTimeoutMs?: number;
+    maxPendingRequests?: number;
+    maxSubscriptions?: number;
+    maxMessageBytes?: number;
+    onError?: (error: SouiBridgeError) => void;
+}
+export interface SouiSubscription {
+    /** Compatibility form: start removal without waiting for its native acknowledgement. */
+    (): void;
+    readonly ready: Promise<void>;
+    readonly closed: boolean;
+    unsubscribe(): Promise<void>;
+}
+export declare class SouiNativeClientImpl<Methods extends {
+    [K in keyof Methods]: {
+        params: unknown;
+        result: unknown;
+    };
+} = SouiMethodMap> {
+    private readonly port;
+    private readonly clientId;
+    private nextRequest;
+    private readonly options;
+    private readonly timeoutMs;
+    private readonly requestLimit;
+    private readonly subscriptionLimit;
+    private readonly messageLimit;
+    private readonly pending;
+    private readonly subscriptions;
+    private readonly removeEventListener;
+    private readonly session;
+    private stopped;
+    constructor(port: SouiNativePort, options: SouiNativeClientOptions);
+    get disposed(): boolean;
+    get pendingRequestCount(): number;
+    get subscriptionCount(): number;
+    /** Conservative local estimate; does not prove that native authorization has not been revoked. */
+    get sessionLease(): SouiSessionLease | undefined;
+    /** Shares an in-flight renewal. Before the renewal window, resolves the current lease without sending. */
+    renewSession(): Promise<SouiSessionLease>;
+    call<M extends keyof Methods & string>(method: M, params: Methods[M]['params']): Promise<Methods[M]['result']>;
+    /** Read one authorized page. Older hosts return their unsupported-method error. */
+    describe(options?: SouiDescribeOptions): Promise<SouiCapabilityPage>;
+    /** Read a bounded catalog without invoking the discovered business methods. */
+    discover(options?: SouiDiscoveryOptions): Promise<SouiCapabilityCatalog>;
+    private newRequestId;
+    private report;
+    private request;
+    /** Compatibility helpers require a native task service registered by the application. */
+    query(taskId: string): Promise<SouiMethodMap['task.query']['result']>;
+    /** Read the current scope's retained operation; never restarts or cancels it. */
+    queryOperation(operationId: string): Promise<SouiCoreMethodMap['task.query']['result']>;
+    cancel(taskId: string): Promise<SouiMethodMap['task.cancel']['result']>;
+    subscribe(taskId: string, eventName: string, listener: (event: SouiNativeEvent) => void): SouiSubscription;
+    private receiveEvent;
+    /** Immediate local cleanup. Native task cancellation and acknowledged unsubscription are separate operations. */
+    dispose(): void;
+}

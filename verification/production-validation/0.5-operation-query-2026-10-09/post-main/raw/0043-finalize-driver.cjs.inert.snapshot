@@ -1,0 +1,44 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..'),identity=require('../tools/internal/delivery-identity.cjs'),gui=require('../tools/sdk/gui-bindings-delivery.cjs');
+const {launchOwned}=require('../tools/internal/owned-process.cjs');
+const folder=path.join(root,'out/operation-query-mainline-gui-b110143d-3086-44e6-aeea-f65fb136634d');
+const input=JSON.parse(fs.readFileSync(path.join(folder,'inputs.json'))),hash=b=>crypto.createHash('sha256').update(b).digest('hex'),encoded=x=>JSON.stringify(x,null,2)+'\n';
+const provider=require(input.reviewedToolProviderRoot+'/tools/internal/measurement-validation.cjs'),runner=provider.prepared('x64').tools.OwnedProcessRunner;
+if(identity.source(root).sha256!==input.source.sha256||gui.source(root).sha256!==input.guiSource.sha256)throw Error('Source changed after GUI validation');
+function bytes(p){const s=fs.lstatSync(p);if(!s.isFile()||s.isSymbolicLink()||s.nlink!==1)throw Error('Not unique plain file');return fs.readFileSync(p);}
+function copyTree(source,target,mapping){fs.mkdirSync(target,{recursive:true});for(const e of fs.readdirSync(source,{withFileTypes:true})){
+ if(e.isSymbolicLink())throw Error('Linked tree');const from=path.join(source,e.name),to=path.join(target,e.name);
+ if(e.isDirectory())copyTree(from,to,mapping);else{const b=bytes(from);fs.writeFileSync(to,b,{flag:'wx'});mapping.push({source:from,snapshot:path.relative(folder,to).replace(/\\/g,'/'),bytes:b.length,sha256:hash(b)});}}}
+(async()=>{
+ const astDir=path.join(folder,'entrypoints');fs.mkdirSync(astDir);const owned=launchOwned(process.execPath,['out/verify-query-entrypoints.cjs'],{runner,cwd:root,
+  report:path.join(astDir,'owned.ndjson'),timeoutMs:60000,drainMs:3000,stdout:'pipe',stderr:'pipe'}),out=[],err=[];
+ owned.child.stdout.on('data',b=>out.push(b));owned.child.stderr.on('data',b=>err.push(b));const result=await owned.finished;
+ fs.writeFileSync(path.join(astDir,'stdout.log'),Buffer.concat(out),{flag:'wx'});fs.writeFileSync(path.join(astDir,'stderr.log'),Buffer.concat(err),{flag:'wx'});
+ fs.writeFileSync(path.join(astDir,'finished.json'),encoded(result),{flag:'wx'});
+ if(!result.passed||!result.closureConfirmed||result.terminal.reason!=='completed'||result.terminal.terminatedOwnedJob||result.terminal.activeProcesses!==0)throw Error('AST Job failed');
+ fs.copyFileSync(path.join(root,'out/verify-query-entrypoints.cjs'),path.join(folder,'entrypoints-driver.cjs'),fs.constants.COPYFILE_EXCL);
+ const old=JSON.parse(fs.readFileSync(path.join(root,'out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/current-delivery-source.inert.snapshot')));
+ const selected=n=>n==='CMakeLists.txt'||n==='sdk/CMakeLists.txt'||n==='VERSION'||['sdk/include/','sdk/src/','cmake/','third_party/include/','third_party/prebuilt/'].some(prefix=>n.startsWith(prefix));
+ const prior=old.files.filter(f=>selected(f.path)),current=identity.source(root).files.filter(f=>selected(f.path));
+ if(JSON.stringify(prior)!==JSON.stringify(current))throw Error('Native SDK dependency inputs changed');
+ fs.writeFileSync(path.join(folder,'native-source-reconciliation.json'),encoded({schema:'soui.query-native-source-reconciliation/v1',files:current,
+  previousDeliverySourceSha256:old.sha256,currentDeliverySourceSha256:input.source.sha256,nativeInputsUnchanged:true,
+  nativeSdkRecompiledAfterMainMerge:false,sourceComparisonOnly:true}),{flag:'wx'});
+ const mapping=[];
+ for(const name of ['build-90607d12-49a0-4c04-aa67-dddf25696101','tests-c8ac2fb4-d1bd-4acd-8133-9ab2425a03a8'])
+  copyTree(path.join(root,'out/gui-bindings',name),path.join(folder,'gui-records',name),mapping);
+ fs.copyFileSync(path.join(root,gui.reportName),path.join(folder,'gui-build.json'),fs.constants.COPYFILE_EXCL);
+ const actual=gui.verify(root),outputs=gui.outputs(root);
+ for(const f of outputs.files){const b=bytes(path.join(root,f.path));if(b.length!==f.bytes||hash(b)!==f.sha256)throw Error('GUI output changed');
+  const to=path.join(folder,'compiled-gui-output',f.path);fs.mkdirSync(path.dirname(to),{recursive:true});fs.writeFileSync(to,b,{flag:'wx'});}
+ for(const name of ['tools/Test.ps1','tools/Collect-Verification.cjs','tests/native/CMakeLists.txt']){
+  const to=path.join(folder,'current-entrypoints',name+'.inert.snapshot');fs.mkdirSync(path.dirname(to),{recursive:true});fs.writeFileSync(to,bytes(path.join(root,name)),{flag:'wx'});}
+ fs.writeFileSync(path.join(folder,'snapshot-map.json'),encoded({mapping,guiSourceSha256:actual.source.sha256,guiOutputSha256:actual.output.sha256}),{flag:'wx'});
+ fs.copyFileSync(__filename,path.join(folder,'finalize-driver.cjs'),fs.constants.COPYFILE_EXCL);
+ const files=[];function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const p=path.join(dir,e.name);if(e.isDirectory())walk(p);else{const b=bytes(p);files.push({path:path.relative(folder,p).replace(/\\/g,'/'),bytes:b.length,sha256:hash(b)});}}}walk(folder);
+ fs.writeFileSync(path.join(folder,'index.json'),encoded({schema:'soui.operation-query-gui-evidence/v1',sourceSha256:input.source.sha256,
+  guiSourceSha256:actual.source.sha256,guiOutputSha256:actual.output.sha256,nativeInputsUnchanged:true,nativeRecompiled:false,files}),{flag:'wx'});
+ console.log(encoded({folder,files:files.length,indexSha256:hash(fs.readFileSync(path.join(folder,'index.json'))),nativeInputFiles:current.length,
+  guiSourceSha256:actual.source.sha256,guiOutputSha256:actual.output.sha256}));
+})().catch(e=>{console.error(e.stack);process.exitCode=1;});

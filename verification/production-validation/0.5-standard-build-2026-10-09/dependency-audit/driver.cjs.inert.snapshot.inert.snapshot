@@ -1,0 +1,29 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {launchOwned}=require('../tools/internal/owned-process.cjs');
+const {prepared}=require('../tools/internal/measurement-validation.cjs');
+const identity=require('../tools/internal/delivery-identity.cjs');
+const root=path.resolve(__dirname,'..'),base=path.join(root,'out/standard-build-audit-'+crypto.randomUUID());fs.mkdirSync(base);
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex'),enc=v=>Buffer.from(JSON.stringify(v,null,2)+'\n');
+const setup=prepared('x64'),node=fs.realpathSync.native(process.execPath),npm=path.join(path.dirname(node),'node_modules/npm/bin/npm-cli.js');
+const env={...process.env};for(const key of Object.keys(env))if(/(TOKEN|SECRET|PASSWORD|PASSWD|API.?KEY|AUTHORIZATION|CREDENTIAL)/i.test(key))delete env[key];
+const args=[npm,'--prefix','sdk/web','audit','--json'];
+const source=identity.source(root);
+function file(n){const b=fs.readFileSync(n);return {path:n,bytes:b.length,sha256:hash(b)};}
+fs.writeFileSync(path.join(base,'inputs.json'),enc({node:file(node),npm:file(npm),runner:file(setup.tools.OwnedProcessRunner),
+ args,cwd:root,sourceSha256:source.sha256,credentialLikeChildEnvironmentRemoved:true,releaseReady:false}),{flag:'wx'});
+fs.writeFileSync(path.join(base,'driver.cjs.inert.snapshot'),fs.readFileSync(__filename),{flag:'wx'});
+(async()=>{
+ const out=[],err=[],run=launchOwned(node,args,{runner:setup.tools.OwnedProcessRunner,cwd:root,report:path.join(base,'owned.ndjson'),
+  timeoutMs:60000,drainMs:2000,env,stdout:'pipe',stderr:'pipe'});
+ run.child.stdout.on('data',b=>out.push(b));run.child.stderr.on('data',b=>err.push(b));let ready;try{ready=await run.ready;}catch(e){ready={error:e.message};}
+ const finished=await run.finished,stdout=Buffer.concat(out),stderr=Buffer.concat(err);
+ fs.writeFileSync(path.join(base,'stdout.bin'),stdout,{flag:'wx'});fs.writeFileSync(path.join(base,'stderr.bin'),stderr,{flag:'wx'});
+ fs.writeFileSync(path.join(base,'finished.json'),enc({...finished,ready}),{flag:'wx'});
+ const audit=JSON.parse(stdout.toString('utf8'));if(!finished.passed||audit.metadata?.vulnerabilities?.total!==0||identity.source(root).sha256!==source.sha256)throw Error('Audit failed or source changed');
+ const destination=path.join(root,'verification/production-validation/0.5-standard-build-2026-10-09/dependency-audit');fs.mkdirSync(destination);
+ const files=[];for(const name of fs.readdirSync(base)){const b=fs.readFileSync(path.join(base,name)),target=name+'.inert.snapshot';fs.writeFileSync(path.join(destination,target),b,{flag:'wx'});files.push({path:target,bytes:b.length,sha256:hash(b)});}
+ fs.writeFileSync(path.join(destination,'index.json'),enc({schema:'soui.standard-build-audit-evidence/v1',scope:'sdk/web current locked graph',
+  vulnerabilities:0,genericSupervisionPassed:true,naturallyClosed:true,releaseReady:false,files}),{flag:'wx'});
+ console.log(JSON.stringify({base,archived:destination,files:files.length,vulnerabilities:0}));
+})().catch(e=>{fs.writeFileSync(path.join(base,'failure.json'),enc({error:e.stack,releaseReady:false}),{flag:'wx'});console.error(e);process.exitCode=1;});

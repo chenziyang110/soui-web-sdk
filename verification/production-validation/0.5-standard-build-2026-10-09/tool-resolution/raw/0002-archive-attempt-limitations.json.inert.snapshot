@@ -1,0 +1,19 @@
+{
+  "schema": "soui.private-evidence-archive-attempts/v1",
+  "description": "Old current-tools archival attempts preserved as scripts and partial outputs; these are archival harness failures, not native test failures.",
+  "attempts": [
+    {
+      "script": "F:\\work\\sm05-build-caller\\out\\standard-build-caller-actual-04dd8fbb-a399-4572-bd29-ca16d6dd84d8\\archive-final.cjs",
+      "error": "TypeError: Cannot read properties of undefined (reading 'sha256')",
+      "cause": "Private script used incorrect frozen.preparation key; corrected in v2."
+    },
+    {
+      "script": "F:\\work\\sm05-build-caller\\out\\standard-build-caller-actual-04dd8fbb-a399-4572-bd29-ca16d6dd84d8\\archive-final-v2.cjs",
+      "error": "Invalid path: out\\measurement-validation\\native-x64-0ec41b06-e634-4100-9919-0feb9213e093\\owned.ndjson",
+      "cause": "Private archival script supplied backslash relative path; corrected to slash in v3."
+    }
+  ],
+  "originalExecRepliesRemainInConversation": true,
+  "standaloneRawStderrNotRedirectedForTheseArchiveScripts": true,
+  "successfulArchiveScript": "F:\\work\\sm05-build-caller\\out\\standard-build-caller-actual-04dd8fbb-a399-4572-bd29-ca16d6dd84d8\\archive-final-v3.cjs"
+}

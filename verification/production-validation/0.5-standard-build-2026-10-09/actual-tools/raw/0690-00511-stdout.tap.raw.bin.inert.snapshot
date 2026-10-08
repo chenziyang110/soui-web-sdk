@@ -1,0 +1,136 @@
+TAP version 13
+# Subtest: a prelaunch exact disk pin proves one complete tail while generic supervision stays failed
+ok 1 - a prelaunch exact disk pin proves one complete tail while generic supervision stays failed
+  ---
+  duration_ms: 500.3672
+  type: 'test'
+  ...
+# Subtest: an unknown disk object with identical bytes stays in cleanup and cannot be a pinned tail
+ok 2 - an unknown disk object with identical bytes stays in cleanup and cannot be a pinned tail
+  ---
+  duration_ms: 423.1425
+  type: 'test'
+  ...
+# Subtest: multi actual tails are fully listed and cannot qualify as one helper
+ok 3 - multi actual tails are fully listed and cannot qualify as one helper
+  ---
+  duration_ms: 469.4762
+  type: 'test'
+  ...
+# Subtest: many actual tails are fully listed and cannot qualify as one helper
+ok 4 - many actual tails are fully listed and cannot qualify as one helper
+  ---
+  duration_ms: 554.4577
+  type: 'test'
+  ...
+# Subtest: the held pin denies write and rename until a normal root and Job have closed
+ok 5 - the held pin denies write and rename until a normal root and Job have closed
+  ---
+  duration_ms: 186.1953
+  type: 'test'
+  ...
+# Subtest: test-only real extra assignment after the fixed snapshot invalidates cleanup evidence
+ok 6 - test-only real extra assignment after the fixed snapshot invalidates cleanup evidence
+  ---
+  duration_ms: 480.0292
+  type: 'test'
+  ...
+# Subtest: a failed owned tail cleanup leaves a separately held unrelated process alive
+ok 7 - a failed owned tail cleanup leaves a separately held unrelated process alive
+  ---
+  duration_ms: 446.0821
+  type: 'test'
+  ...
+# Subtest: hash mismatch, incomplete and duplicate opt-in arguments cannot launch a subject
+ok 8 - hash mismatch, incomplete and duplicate opt-in arguments cannot launch a subject
+  ---
+  duration_ms: 341.8695
+  type: 'test'
+  ...
+# Subtest: prelaunch pin rejects a reparse directory, an existing writer and an oversized file
+ok 9 - prelaunch pin rejects a reparse directory, an existing writer and an oversized file
+  ---
+  duration_ms: 299.5197
+  type: 'test'
+  ...
+# Subtest: the default generic path keeps v1 first start and never emits tail evidence
+ok 10 - the default generic path keeps v1 first start and never emits tail evidence
+  ---
+  duration_ms: 352.2558
+  type: 'test'
+  ...
+# Subtest: test-only success-truncated diagnostic response preserves expansion, retry or sticky refusal
+ok 11 - test-only success-truncated diagnostic response preserves expansion, retry or sticky refusal
+  ---
+  duration_ms: 413.9169
+  type: 'test'
+  ...
+# Subtest: test-only retry-count diagnostic response preserves expansion, retry or sticky refusal
+ok 12 - test-only retry-count diagnostic response preserves expansion, retry or sticky refusal
+  ---
+  duration_ms: 348.5255
+  type: 'test'
+  ...
+# Subtest: test-only duplicate-pid diagnostic response preserves expansion, retry or sticky refusal
+ok 13 - test-only duplicate-pid diagnostic response preserves expansion, retry or sticky refusal
+  ---
+  duration_ms: 336.5171
+  type: 'test'
+  ...
+# Subtest: test-only pid-hole diagnostic response preserves expansion, retry or sticky refusal
+ok 14 - test-only pid-hole diagnostic response preserves expansion, retry or sticky refusal
+  ---
+  duration_ms: 395.1359
+  type: 'test'
+  ...
+# Subtest: test-only image-permission diagnostic response preserves expansion, retry or sticky refusal
+ok 15 - test-only image-permission diagnostic response preserves expansion, retry or sticky refusal
+  ---
+  duration_ms: 337.7523
+  type: 'test'
+  ...
+# Subtest: actual single opt-in client/native linkage
+ok 16 - actual single opt-in client/native linkage
+  ---
+  duration_ms: 421.3866
+  type: 'test'
+  ...
+# Subtest: actual unknown opt-in client/native linkage
+ok 17 - actual unknown opt-in client/native linkage
+  ---
+  duration_ms: 331.6727
+  type: 'test'
+  ...
+# Subtest: actual multi opt-in client/native linkage
+ok 18 - actual multi opt-in client/native linkage
+  ---
+  duration_ms: 358.9411
+  type: 'test'
+  ...
+# Subtest: actual brief opt-in client/native linkage
+ok 19 - actual brief opt-in client/native linkage
+  ---
+  duration_ms: 202.1159
+  type: 'test'
+  ...
+# Subtest: actual context-rewrite opt-in client/native linkage
+ok 20 - actual context-rewrite opt-in client/native linkage
+  ---
+  duration_ms: 331.7669
+  type: 'test'
+  ...
+# Subtest: actual pin-setup-failure opt-in client/native linkage
+ok 21 - actual pin-setup-failure opt-in client/native linkage
+  ---
+  duration_ms: 52.5849
+  type: 'test'
+  ...
+1..21
+# tests 21
+# suites 0
+# pass 21
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6005.1975

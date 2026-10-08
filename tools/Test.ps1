@@ -32,6 +32,10 @@ if(-not $NativeOnly){
   }
   & node --test (Join-Path $root 'tests/sdk/actiongen.test.mjs') (Join-Path $root 'tests/web/generated-actions.test.mjs')
   if($LASTEXITCODE -ne 0){throw 'Single-source action generation or generated Web contract tests failed'}
+  & node --test (Join-Path $root 'tests/web/task-query.test.mjs')
+  if($LASTEXITCODE -ne 0){throw 'Read-only task query contract tests failed'}
+  & node (Join-Path $root 'sdk/web/node_modules/typescript/bin/tsc') -p (Join-Path $root 'tests/web/task-query-types.tsconfig.json')
+  if($LASTEXITCODE -ne 0){throw 'Task query mutually exclusive parameter types failed'}
   & node (Join-Path $root 'tests/sdk/sdk-package-smoke.cjs')
   if($LASTEXITCODE -ne 0){throw 'SDK package tests failed'}
   & node --test (Join-Path $root 'tests/sdk/sdk-native-payload.test.cjs')

@@ -1,0 +1,81 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'../..'),base=__dirname;
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const json=x=>JSON.stringify(x,null,2)+'\n';
+const rel=p=>path.relative(base,p).replace(/\\/g,'/');
+const info=p=>{const b=fs.readFileSync(p);return{path:p,bytes:b.length,sha256:hash(b)};};
+const load=p=>JSON.parse(fs.readFileSync(p,'utf8'));
+const save=(name,value)=>fs.writeFileSync(path.join(base,name),json(value),{flag:'wx'});
+function walk(p){return fs.readdirSync(p,{withFileTypes:true}).flatMap(d=>d.isDirectory()?walk(path.join(p,d.name)):[path.join(p,d.name)]);}
+function pe(p){const b=fs.readFileSync(p),offset=b.readUInt32LE(0x3c);if(b.toString('ascii',offset,offset+4)!=='PE\0\0')throw Error('Not PE '+p);
+ const optional=offset+24;return{machine:b.readUInt16LE(offset+4),subsystemMajor:b.readUInt16LE(optional+48),subsystemMinor:b.readUInt16LE(optional+50)};}
+const names=['docs/adr/0032-read-only-task-operation-query.md','docs/api.md','docs/migration/task-operation-query.md',
+ 'sdk/include/soui/runtime/services/task/task_service.h','sdk/src/runtime/services/task/task_service.cpp',
+ 'sdk/web/src/action-contracts.ts','sdk/web/src/client.ts','sdk/web/src/contracts.ts','sdk/web/src/index.ts','sdk/web/src/protocol.ts','sdk/web/src/task-query.ts',
+ 'tests/native/CMakeLists.txt','tests/native/task_operation_query_tests.cpp','tests/web/task-query-types.ts','tests/web/task-query-types.tsconfig.json','tests/web/task-query.test.mjs'];
+const sourceDir=path.join(base,'source-final');fs.mkdirSync(sourceDir);
+const sources=names.sort().map(name=>{const original=info(path.join(root,name)),target=path.join(sourceDir,name+'.inert.snapshot');fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(original.path,target);
+ return{...original,path:name,snapshot:rel(target)};});
+const identity=require(path.join(root,'tools/internal/delivery-identity.cjs'));
+const delivery=identity.source(root);save('current-delivery-source.inert.snapshot',delivery);
+const metadataDir=path.join(base,'metadata-final');fs.mkdirSync(metadataDir);
+const metadata=[],outputs=[],toolPaths=new Set([process.execPath,'C:/Program Files/CMake/bin/cmake.exe',
+ 'C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe',
+ 'C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js',path.join(root,'sdk/web/node_modules/typescript/bin/tsc')]);
+for(const arch of ['x64','x86']){
+ const build=path.join(base,'build-'+arch),all=walk(build);
+ const selected=all.filter(p=>/CMakeCache\.txt$|CMakeCXXCompiler\.cmake$|\.vcxproj$|CL\.(command|read)\.1\.tlog$/.test(p));
+ for(const file of selected){const target=path.join(metadataDir,arch,path.relative(build,file)+'.inert.snapshot');fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(file,target);
+  metadata.push({...info(file),snapshot:rel(target)});}
+ const compilerFile=selected.find(p=>p.endsWith('CMakeCXXCompiler.cmake')),compilerText=fs.readFileSync(compilerFile,'utf8');
+ const compiler=/set\(CMAKE_CXX_COMPILER "([^"]+)"\)/.exec(compilerText)?.[1];if(!compiler)throw Error('Missing actual compiler');toolPaths.add(compiler);toolPaths.add(path.join(path.dirname(compiler),'link.exe'));
+ const project=fs.readFileSync(path.join(build,'sdk/soui_sdk.vcxproj'),'utf8');if(!project.includes('<WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>')||!project.includes('<PlatformToolset>v143</PlatformToolset>'))throw Error('SDK/toolset mismatch');
+ const command=selected.filter(p=>p.endsWith('CL.command.1.tlog')&&p.includes('soui_sdk.dir')).map(p=>fs.readFileSync(p).toString('utf16le')).join('\n');
+ if(!command.includes('WINVER=0x0601')||!command.includes('_WIN32_WINNT=0x0601')||!command.includes('/std:c++17')||/vcpkg[\\/]|installed[\\/](?:x86|x64)/i.test(command))throw Error('Unexpected actual CL input');
+ const read=selected.filter(p=>p.endsWith('CL.read.1.tlog')&&p.includes('soui_sdk.dir')).map(p=>fs.readFileSync(p).toString('utf16le')).join('\n');
+ if(!read.toLowerCase().includes('include\\10.0.19041.0\\'))throw Error('Actual SDK header path not observed');
+ for(const name of ['task_operation_query','task_service','task_scope','task_store_capacity']){const file=path.join(build,'Release',name+'_tests.exe'),header=pe(file);if(header.machine!==(arch==='x86'?332:34404))throw Error('Wrong output architecture');outputs.push({...info(file),arch,kind:'native-test',...header});}
+ outputs.push({...info(path.join(build,'sdk/Release/soui_sdk.lib')),arch,kind:'sdk-static-library'});
+}
+for(const file of walk(path.join(root,'sdk/web/dist')))outputs.push({...info(file),kind:'web-build-output'});
+const tools=[...toolPaths].sort().map(info),npmInputs=['sdk/web/package.json','sdk/web/package-lock.json','sdk/web/tsconfig.json','tools/internal/delivery-identity.cjs'].map(name=>({...info(path.join(root,name)),path:name}));
+const stages=fs.readdirSync(base,{withFileTypes:true}).filter(d=>d.isDirectory()&&fs.existsSync(path.join(base,d.name,'summary.json'))).map(d=>{
+ const folder=path.join(base,d.name),summary=load(path.join(folder,'summary.json')),inputs=load(path.join(folder,'inputs.json')),context=load(path.join(folder,'owned.ndjson.context.json'));
+ const raw=info(path.join(folder,'owned.ndjson')),rows=fs.readFileSync(raw.path,'utf8').trim().split(/\r?\n/).map(JSON.parse),terminal=rows.filter(r=>r.event==='terminal');
+ if(raw.sha256!==summary.reportSha256||terminal.length!==1||!terminal[0].closureConfirmed||terminal[0].activeProcesses!==0||!summary.closureConfirmed)throw Error('Job evidence mismatch '+d.name);
+ if(context.executableSha256!==inputs.executable.sha256||context.runnerSha256!==inputs.runner.sha256||JSON.stringify(context.args)!==JSON.stringify(inputs.args)||context.cwd!==inputs.cwd)throw Error('Context mismatch '+d.name);
+ if(info(inputs.executable.path).sha256!==inputs.executable.sha256||info(inputs.runner.path).sha256!==inputs.runner.sha256||info(inputs.client.path).sha256!==inputs.client.sha256)throw Error('Runnable input changed '+d.name);
+ return{directory:d.name,name:summary.name,rootExitCode:summary.exitCode,genericPassed:summary.passed,closureConfirmed:summary.closureConfirmed,
+  activeProcesses:terminal[0].activeProcesses,terminatedOwnedJob:terminal[0].terminatedOwnedJob,sourceUnchanged:summary.sourceUnchanged,acceptedByStageDriver:summary.accepted,
+  nativeCompilerRootOnly:summary.nativeCompilerRootOnly,validationSourceSha256:inputs.source.sha256,driverSha256:inputs.driver.sha256,
+  raw:{...raw,path:rel(raw.path)},context:{...info(path.join(folder,'owned.ndjson.context.json')),path:rel(path.join(folder,'owned.ndjson.context.json'))},executable:inputs.executable};
+});
+const finalDirectories={x64:['compile-x64-fed9b60a-fb81-44c3-8d5c-02b9bf5ebbc8','task_operation_query-x64-913df16b-3ca3-43dd-8059-1d1e39bc1c7f','task_service-x64-e79b8563-8bd3-4dec-88f6-fa71de85bab3','task_scope-x64-46b91fa4-616e-4c1e-8b0f-332bff627203','task_store_capacity-x64-1b6894ac-795f-4e19-9f17-a5de2f2794d2'],
+ x86:['compile-x86-ff8e96a3-d89a-4f5b-9c49-cb08d4b040e2','task_operation_query-x86-9776931a-6c14-4373-bd23-dd7a2774d5b6','task_service-x86-de79b768-34be-4008-b9db-32a1ceb07136','task_scope-x86-293cf8a9-8f2a-43db-b7d1-c07d5bfd3fa6','task_store_capacity-x86-a9cc9bd8-d223-4cb5-9c69-0a0b5dd6ceb3'],
+ web:['npm-ci-d0b3cb4b-4926-4625-ba46-a511f394bbd2','web-build-efca9e40-0022-4ad9-a6e4-98d049730832','web-types-6dc3714a-4983-45c3-ad16-bae569ff9c89','web-runtime-52d2357a-e632-4cd3-8643-8cd271efd610','npm-audit-786e4adf-c273-44ba-83a5-3816bd1b67fa']};
+for(const arch of ['x64','x86'])for(const dir of finalDirectories[arch]){const s=stages.find(s=>s.directory===dir);if(!s||s.rootExitCode!==0||!s.sourceUnchanged||!s.closureConfirmed||(!s.nativeCompilerRootOnly&&!s.genericPassed))throw Error('Final native result mismatch');
+ const before=load(path.join(base,dir,'inputs.json')).source.files;for(const file of before)if(info(path.join(root,file.path)).sha256!==file.sha256)throw Error('Final native input no longer matches '+file.path);}
+for(const dir of finalDirectories.web){const s=stages.find(s=>s.directory===dir);if(!s||s.rootExitCode!==0||!s.genericPassed||!s.closureConfirmed)throw Error('Final Web result mismatch');}
+const audit=load(path.join(base,'npm-audit-786e4adf-c273-44ba-83a5-3816bd1b67fa','stdout.bin'));if(audit.metadata?.vulnerabilities?.total!==0)throw Error('Audit mismatch');
+const freeze={schema:'soui.task-operation-query-freeze/v1',tree:root,baseline:'a030071e113ee3dcb420b37bcb2e7d44840f9018',
+ sourceFiles:sources,currentDeliverySource:{path:'current-delivery-source.inert.snapshot',sha256:delivery.sha256,files:delivery.files.length,bytes:delivery.bytes},
+ validationSource:'Per-stage inputs.json source is a smaller raw-byte SDK/task/Web validation set, not the standard normalized delivery source or build ID.',
+ metadata,tools,npmInputs,outputs,driver:info(path.join(base,'run.cjs')),bootstrap:[info(path.join(base,'bootstrap/OwnedProcessRunner.exe')),info(path.join(base,'bootstrap/owned-process.cjs'))],finalDirectories,
+ result:{nativeNewCasesPerArchitecture:'7/7',nativeTargetsPerArchitecture:4,webRuntime:'83/83; skipped 0',types:'exit 0; exactOptionalPropertyTypes enabled',npmAuditTotal:0,
+ compile:'Root exit 0 separately observed; generic supervision false retained. No compiler-tail exception.'},
+ limitations:['No GUI, VM, full Collect, 8h, Chrome49/Win7/PE runtime, installed-package consumer or release acceptance.',
+ 'No Git write, VERSION/source manifest change, canonical acceptance or fixed package regeneration.',
+ 'Native RED has six valid behavior failures. Seventh public bootstrap failed due to a six-field fixture error; not valid behavior RED.',
+ 'Initial configure false and two compilation fixture failures retained; later outputs do not rewrite those reports.',
+ 'Final native test changed captured-state declaration lifetime only; both architectures rebuilt and all four targets rerun. Web production/test inputs unchanged since Web GREEN.',
+ 'Old per-stage source hashes retained; only final 16 changed/new source bytes are separately snapshotted. Native RED and later test executable copies remain in their original stage directories.',
+ 'Historical Demo generated declarations updated here; unrelated Demo generator/adapters not migrated; schema alone cannot express XOR/ASCII.']};
+save('frozen-inputs-final.json',freeze);
+save('results-final.json',{schema:'soui.task-operation-query-results/v1',stages,counts:{jobs:stages.length,genericPassed:stages.filter(s=>s.genericPassed).length,genericFalse:stages.filter(s=>!s.genericPassed).length,
+ naturalClosure:stages.filter(s=>!s.terminatedOwnedJob).length,forcedOwnedCleanup:stages.filter(s=>s.terminatedOwnedJob).length},finalDirectories,freeze:info(path.join(base,'frozen-inputs-final.json'))});
+const payload=walk(base).filter(p=>!p.includes(path.sep+'build-x64'+path.sep)&&!p.includes(path.sep+'build-x86'+path.sep)&&!p.endsWith(path.sep+'index.json')).sort().map(p=>({...info(p),path:rel(p)}));
+save('index.json',{schema:'soui.task-operation-query-evidence-index/v1',root:base,files:payload,count:payload.length,bytes:payload.reduce((n,f)=>n+f.bytes,0),
+ freeze:info(path.join(base,'frozen-inputs-final.json')),results:info(path.join(base,'results-final.json')),buildArtifacts:'Build directories retained locally; exact outputs and selected metadata bound by freeze. Not all obj/pdb files are evidence payload.',
+ historicalFailuresRetained:true,noGui:true,noVm:true,noCanonicalAcceptance:true});
+console.log(json({index:info(path.join(base,'index.json')),freeze:info(path.join(base,'frozen-inputs-final.json')),results:info(path.join(base,'results-final.json')),payload:payload.length,sourceFiles:sources.length,jobs:stages.length,outputs:outputs.length}));

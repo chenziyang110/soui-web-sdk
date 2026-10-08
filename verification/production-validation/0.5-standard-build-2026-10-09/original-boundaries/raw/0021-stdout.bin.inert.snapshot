@@ -1,0 +1,24 @@
+[
+    {
+        "commands":  [
+                         "\u0026 node (Join-Path $root \u0027tools/internal/measurement-validation.cjs\u0027) tail-protocol $Architecture",
+                         "\u0026 node (Join-Path $root \u0027tools/internal/measurement-validation.cjs\u0027) tail-native $Architecture"
+                     ],
+        "path":  "F:\\work\\sm05-build-caller\\tools\\Test.ps1",
+        "errors":  0
+    },
+    {
+        "commands":  [
+                         "\u0026 $cmake --build $validationBuild --config Release --target OwnedProcessRunner OwnedProcessAssignmentFixture ProcessTreeSampler InputTrace NativeTraceIdentity OwnedTailProcessFixture OwnedTailMutationFixture OwnedTailApiFixture --parallel 2 -- /nr:false *\u003e (Join-Path $validationBuild \u0027compile.log\u0027)"
+                     ],
+        "path":  "F:\\work\\sm05-build-caller\\tools\\internal\\Build-ValidationTools.ps1",
+        "errors":  0
+    },
+    {
+        "commands":  [
+
+                     ],
+        "path":  "F:\\work\\sm05-build-caller\\out\\standard-build-caller-boundaries-f2220895-1135-4ac0-85a4-f7bb79e512d3\\frozen-entry-ast-937e52a1-6409-416e-b7a7-906a0b731e24\\probe.ps1",
+        "errors":  0
+    }
+]

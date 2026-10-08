@@ -1,0 +1,9 @@
+param([string]$Root,[string]$Probe)
+$ErrorActionPreference='Stop'
+$all=@()
+foreach($file in @((Join-Path $Root 'tools/Test.ps1'),(Join-Path $Root 'tools/internal/Build-ValidationTools.ps1'),$Probe)){
+ $tokens=$null;$errors=$null;$ast=[Management.Automation.Language.Parser]::ParseFile($file,[ref]$tokens,[ref]$errors)
+ if($errors.Count){throw ($errors|ForEach-Object{$_.ToString()}|Out-String)}
+ $all+=@{path=$file;errors=0;commands=@($ast.FindAll({param($n) $n -is [Management.Automation.Language.CommandAst] -and ($n.Extent.Text.Contains('tail-protocol') -or $n.Extent.Text.Contains('tail-native') -or $n.Extent.Text.Contains('--target'))},$true)|ForEach-Object{$_.Extent.Text})}
+}
+$all|ConvertTo-Json -Depth 6

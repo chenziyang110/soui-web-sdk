@@ -1,0 +1,42 @@
+import { SouiBridgeError } from './protocol.js';
+import type { SouiNativePort, SouiSessionLease } from './protocol.js';
+interface Credentials {
+    sessionId: string;
+    origin: string;
+    token: string;
+    lease?: SouiSessionLease;
+    leaseElapsedMs?: number;
+}
+export declare const monotonicNow: () => number;
+/** Private single-flight control lane; it never queues or replays business calls. */
+export declare class SessionRenewal {
+    private readonly port;
+    private readonly credentials;
+    private readonly clientId;
+    private readonly requestId;
+    private readonly timeoutMs;
+    private readonly messageLimit;
+    private readonly report;
+    token: string;
+    private generation;
+    private expiresAt;
+    private renewAt;
+    private nextOperation;
+    private automaticTimer?;
+    private active?;
+    private stopped;
+    private failure?;
+    constructor(port: SouiNativePort, credentials: Credentials, clientId: number, requestId: () => string, timeoutMs: number, messageLimit: number, report: (error: SouiBridgeError) => void);
+    get pendingRequestCount(): number;
+    get lease(): SouiSessionLease | undefined;
+    renew(): Promise<SouiSessionLease>;
+    private schedule;
+    private clearAutomatic;
+    private isCurrent;
+    private attempt;
+    private waitForRecovery;
+    private clearFlight;
+    private fail;
+    dispose(): void;
+}
+export {};

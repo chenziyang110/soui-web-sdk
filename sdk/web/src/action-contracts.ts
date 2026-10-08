@@ -1,6 +1,7 @@
 import { SouiBridgeError, isRecord, utf8Bytes } from './protocol.js';
 import type { SouiCapabilityCatalog } from './capabilities.js';
 import * as core from './action-contract-core.js';
+import { taskQueryToolDefinition } from './task-query.js';
 
 export type SouiJson = null | boolean | number | string | SouiJson[] | { [key: string]: SouiJson };
 export type SouiActionSchema =
@@ -59,7 +60,11 @@ export function souiToolDefinitions(catalog: SouiCapabilityCatalog): SouiToolDef
         typeof method.capability !== 'string' || method.capability.length === 0 || utf8Bytes(method.capability) > 512 || names.indexOf(method.name) >= 0)
       invalid('E_INVALID_RESPONSE', 'Invalid or duplicate tool method.');
     names.push(method.name);
-    if (method.action === undefined) continue;
+    if (method.action === undefined) {
+      if (method.name === 'task.query' && method.capability === 'task.query' &&
+          method.available !== false && method.authorized !== false) output.push(taskQueryToolDefinition());
+      continue;
+    }
     const action = readSouiActionContract(method.action);
     output.push({ name: method.name, description: action.description || action.title, inputSchema: action.inputSchema });
   }

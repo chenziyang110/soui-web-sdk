@@ -1,0 +1,42 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "06abbb1ebafdad1839bdeb95447b2fed14d0e771f2853b928fd63a48f846e79b",
+  "executableSha256": "db1c36bc2528a047fa2dab5e6e36fe26ef62888b084cb80a35e28ede8d65e0ab",
+  "executable": "F:\\work\\sm05-build-caller\\out\\benchmark-protocol\\Release\\OwnedTailProcessFixture.exe",
+  "args": [
+    "single",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV\\pinned-helper.exe"
+  ],
+  "cwd": "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV",
+  "timeoutMs": 8000,
+  "drainMs": 100,
+  "tailImagePin": {
+    "image": "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV\\pinned-helper.exe",
+    "sha256": "db1c36bc2528a047fa2dab5e6e36fe26ef62888b084cb80a35e28ede8d65e0ab",
+    "nonce": "f25306b4c850ed6471c1aaf59d21d2e5"
+  },
+  "report": "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV\\owned.ndjson",
+  "runnerArgs": [
+    "--timeout-ms",
+    "8000",
+    "--drain-ms",
+    "100",
+    "--stop-on-stdin",
+    "--report",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV\\owned.ndjson",
+    "--cwd",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV",
+    "--pin-tail-image",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV\\pinned-helper.exe",
+    "--pin-tail-sha256",
+    "db1c36bc2528a047fa2dab5e6e36fe26ef62888b084cb80a35e28ede8d65e0ab",
+    "--snapshot-nonce",
+    "f25306b4c850ed6471c1aaf59d21d2e5",
+    "--",
+    "F:\\work\\sm05-build-caller\\out\\benchmark-protocol\\Release\\OwnedTailProcessFixture.exe",
+    "single",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV\\pinned-helper.exe"
+  ]
+}

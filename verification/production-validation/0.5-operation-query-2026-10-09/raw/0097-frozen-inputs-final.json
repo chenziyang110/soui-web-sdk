@@ -1,0 +1,838 @@
+{
+  "schema": "soui.task-operation-query-freeze/v1",
+  "tree": "F:\\work\\sm05-query",
+  "baseline": "a030071e113ee3dcb420b37bcb2e7d44840f9018",
+  "sourceFiles": [
+    {
+      "path": "docs/adr/0032-read-only-task-operation-query.md",
+      "bytes": 6798,
+      "sha256": "67a08c1c3496637f3730febe3cee4ed1946a40614a3ae16c6c5b1ad4b913dc8f",
+      "snapshot": "source-final/docs/adr/0032-read-only-task-operation-query.md.inert.snapshot"
+    },
+    {
+      "path": "docs/api.md",
+      "bytes": 26980,
+      "sha256": "39d1d9cc78e3e16b556fba25b89d4a571639179adf68d21f844c50a994c36527",
+      "snapshot": "source-final/docs/api.md.inert.snapshot"
+    },
+    {
+      "path": "docs/migration/task-operation-query.md",
+      "bytes": 2229,
+      "sha256": "1c540110e53f01627bc8732028995d11b6021de3c5bf5fc227b81bc5c0b87e70",
+      "snapshot": "source-final/docs/migration/task-operation-query.md.inert.snapshot"
+    },
+    {
+      "path": "sdk/include/soui/runtime/services/task/task_service.h",
+      "bytes": 3421,
+      "sha256": "81fb6fe4844e58b37e70ccd472d4c4b300e9d6b1abadc5363be41ccaeaa59028",
+      "snapshot": "source-final/sdk/include/soui/runtime/services/task/task_service.h.inert.snapshot"
+    },
+    {
+      "path": "sdk/src/runtime/services/task/task_service.cpp",
+      "bytes": 21141,
+      "sha256": "65ed025ab221058460f1c3e5014fb347840ec488bc0147c71bc5e8c2fee5a1bc",
+      "snapshot": "source-final/sdk/src/runtime/services/task/task_service.cpp.inert.snapshot"
+    },
+    {
+      "path": "sdk/web/src/action-contracts.ts",
+      "bytes": 3743,
+      "sha256": "376712242da7d5b76147e666cbd60996cde21264f8a990d04221e60f1a01d1f7",
+      "snapshot": "source-final/sdk/web/src/action-contracts.ts.inert.snapshot"
+    },
+    {
+      "path": "sdk/web/src/client.ts",
+      "bytes": 13197,
+      "sha256": "d43742949889e97269bb9511393084740856bc55c5296b28d7fdc0778154a343",
+      "snapshot": "source-final/sdk/web/src/client.ts.inert.snapshot"
+    },
+    {
+      "path": "sdk/web/src/contracts.ts",
+      "bytes": 8089,
+      "sha256": "d46998f3dc09e57e5cc5621ea11b9814ad0dae364670e3f913a73eda8d0e14a3",
+      "snapshot": "source-final/sdk/web/src/contracts.ts.inert.snapshot"
+    },
+    {
+      "path": "sdk/web/src/index.ts",
+      "bytes": 1413,
+      "sha256": "1f0b18e6564d1a241c572489dde29502d329fa5520e7d7f31869442b636c60a1",
+      "snapshot": "source-final/sdk/web/src/index.ts.inert.snapshot"
+    },
+    {
+      "path": "sdk/web/src/protocol.ts",
+      "bytes": 6671,
+      "sha256": "be042367fb4c9eb3d1f4d2ddc9feba6370f665d12538ae3914849746e8d25652",
+      "snapshot": "source-final/sdk/web/src/protocol.ts.inert.snapshot"
+    },
+    {
+      "path": "sdk/web/src/task-query.ts",
+      "bytes": 2133,
+      "sha256": "c4fe39f82cff24447e6fca6c88068bd4a1298613142dfa1441987332ca8bdaea",
+      "snapshot": "source-final/sdk/web/src/task-query.ts.inert.snapshot"
+    },
+    {
+      "path": "tests/native/CMakeLists.txt",
+      "bytes": 14587,
+      "sha256": "8f9f4dd3eafc8ec3d1fe76b9a6fe27960dc5e58461698b4165cfc672dbcf7325",
+      "snapshot": "source-final/tests/native/CMakeLists.txt.inert.snapshot"
+    },
+    {
+      "path": "tests/native/task_operation_query_tests.cpp",
+      "bytes": 15722,
+      "sha256": "fbd58d9203da579869cdd344dcc91e3b0505eb1c581b659d7a3d899f9f02776e",
+      "snapshot": "source-final/tests/native/task_operation_query_tests.cpp.inert.snapshot"
+    },
+    {
+      "path": "tests/web/task-query-types.ts",
+      "bytes": 1538,
+      "sha256": "76513cfe8150b497a5e03bedb86d4bf39b4147f3dd0e5748164218a387bf1481",
+      "snapshot": "source-final/tests/web/task-query-types.ts.inert.snapshot"
+    },
+    {
+      "path": "tests/web/task-query-types.tsconfig.json",
+      "bytes": 252,
+      "sha256": "8649b3f4462d57e175b75b84204b15f6e45bfdf616d03f5d4d2be9243bc0d3f5",
+      "snapshot": "source-final/tests/web/task-query-types.tsconfig.json.inert.snapshot"
+    },
+    {
+      "path": "tests/web/task-query.test.mjs",
+      "bytes": 6986,
+      "sha256": "953c9075ddfdf67771252ddb7d9900a8811ac1bd944990c3decf54b1451a63f2",
+      "snapshot": "source-final/tests/web/task-query.test.mjs.inert.snapshot"
+    }
+  ],
+  "currentDeliverySource": {
+    "path": "current-delivery-source.inert.snapshot",
+    "sha256": "c48877c88bbb6ab1e6bca2270a082e827742cc7cbc0b5593033de29cc5dcf82d",
+    "files": 832,
+    "bytes": 149991632
+  },
+  "validationSource": "Per-stage inputs.json source is a smaller raw-byte SDK/task/Web validation set, not the standard normalized delivery source or build ID.",
+  "metadata": [
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\ALL_BUILD.vcxproj",
+      "bytes": 24760,
+      "sha256": "fec2780e127a2492e14d896b07422074e77bb752b85313878e55eae884c4be74",
+      "snapshot": "metadata-final/x64/ALL_BUILD.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\CMakeCache.txt",
+      "bytes": 15696,
+      "sha256": "0a68233ad5e8b0c5e421ae150ff68d92a044244ec5368c3f8301779bf66b3a5f",
+      "snapshot": "metadata-final/x64/CMakeCache.txt.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\CMakeFiles\\4.2.3\\CMakeCXXCompiler.cmake",
+      "bytes": 6508,
+      "sha256": "1b080885144120f43636716a60139852ad7dd840aad639de4664d4253f8a63f8",
+      "snapshot": "metadata-final/x64/CMakeFiles/4.2.3/CMakeCXXCompiler.cmake.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\CMakeFiles\\4.2.3\\CompilerIdC\\CompilerIdC.vcxproj",
+      "bytes": 2798,
+      "sha256": "e8146e3715620ff6cd920110500d3061df1cfc563bcdd9b5bc973310fd1f3406",
+      "snapshot": "metadata-final/x64/CMakeFiles/4.2.3/CompilerIdC/CompilerIdC.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\CMakeFiles\\4.2.3\\CompilerIdC\\Debug\\CompilerIdC.tlog\\CL.command.1.tlog",
+      "bytes": 936,
+      "sha256": "cc6b970e00491a52aa1d7b12e70be4797898d89f38e52d2287fd990cc677cd39",
+      "snapshot": "metadata-final/x64/CMakeFiles/4.2.3/CompilerIdC/Debug/CompilerIdC.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\CMakeFiles\\4.2.3\\CompilerIdC\\Debug\\CompilerIdC.tlog\\CL.read.1.tlog",
+      "bytes": 672,
+      "sha256": "53397ba40abe5003f6d646780df2b562ddec538e31a5430e86581e186d3aa18e",
+      "snapshot": "metadata-final/x64/CMakeFiles/4.2.3/CompilerIdC/Debug/CompilerIdC.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\CMakeFiles\\4.2.3\\CompilerIdCXX\\CompilerIdCXX.vcxproj",
+      "bytes": 2806,
+      "sha256": "b5a1b5175b32b552ef789ce6058b13232255b8d1648fa4d1a1bb8f912b71f336",
+      "snapshot": "metadata-final/x64/CMakeFiles/4.2.3/CompilerIdCXX/CompilerIdCXX.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\CMakeFiles\\4.2.3\\CompilerIdCXX\\Debug\\CompilerIdCXX.tlog\\CL.command.1.tlog",
+      "bytes": 960,
+      "sha256": "4d24c07f5f722fb7482a5a3b632485f34a94fcd38932750661e9d20da3981820",
+      "snapshot": "metadata-final/x64/CMakeFiles/4.2.3/CompilerIdCXX/Debug/CompilerIdCXX.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\CMakeFiles\\4.2.3\\CompilerIdCXX\\Debug\\CompilerIdCXX.tlog\\CL.read.1.tlog",
+      "bytes": 684,
+      "sha256": "1fb22f949997f2cff331547bcc94606e23e77101dee3a3c9e49d7b145797e7f5",
+      "snapshot": "metadata-final/x64/CMakeFiles/4.2.3/CompilerIdCXX/Debug/CompilerIdCXX.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\CMakeFiles\\4.2.3\\VCTargetsPath.vcxproj",
+      "bytes": 1255,
+      "sha256": "24fac7257bc0523f8eacba7408241a2b83d1a9aa96e6d481323bab364ce3ceb2",
+      "snapshot": "metadata-final/x64/CMakeFiles/4.2.3/VCTargetsPath.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\INSTALL.vcxproj",
+      "bytes": 10969,
+      "sha256": "7a29a4e0e0cfebd9f5e764c04129222357d9de18e0b64c6a3ad60b1ecc29a491",
+      "snapshot": "metadata-final/x64/INSTALL.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\sdk\\ALL_BUILD.vcxproj",
+      "bytes": 13623,
+      "sha256": "e0a49b76a4b0cc6656d43c95b4d6e70d54558185583bbf8a0fbd4f0cf3fdc5d2",
+      "snapshot": "metadata-final/x64/sdk/ALL_BUILD.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\sdk\\INSTALL.vcxproj",
+      "bytes": 10989,
+      "sha256": "720d68b804e0bf317e2de195f9b89f40dba77685b2ba8e4ca12748961d450148",
+      "snapshot": "metadata-final/x64/sdk/INSTALL.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.command.1.tlog",
+      "bytes": 24682,
+      "sha256": "3e1850f1323d998f8106433176022fcabf1812beec8fbbdec929bbf42a6ca52e",
+      "snapshot": "metadata-final/x64/sdk/soui_sdk.dir/Release/soui_sdk.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.read.1.tlog",
+      "bytes": 682302,
+      "sha256": "b21a751e73e5730d956258fb87b4863a8e9845d0906e047fc9fb120044fc3c89",
+      "snapshot": "metadata-final/x64/sdk/soui_sdk.dir/Release/soui_sdk.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\sdk\\soui_sdk.vcxproj",
+      "bytes": 25525,
+      "sha256": "383e3f54a1dbdacde5999809718bbdda656f5e270fbb977dbe067ea355948fa0",
+      "snapshot": "metadata-final/x64/sdk/soui_sdk.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\sdk\\soui_zlib.vcxproj",
+      "bytes": 23048,
+      "sha256": "f62d11a3cbbe31912fe14905d89d3dedae8d894de67b84857f5dcb332d8ba091",
+      "snapshot": "metadata-final/x64/sdk/soui_zlib.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\task_operation_query_tests.dir\\Release\\task_ope.9FBE71A8.tlog\\CL.command.1.tlog",
+      "bytes": 1152,
+      "sha256": "a255dd9c0b9be5298ea3e7bc9acda49aeb734fcf2e0003b4c9c1b8a6afb493a6",
+      "snapshot": "metadata-final/x64/task_operation_query_tests.dir/Release/task_ope.9FBE71A8.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\task_operation_query_tests.dir\\Release\\task_ope.9FBE71A8.tlog\\CL.read.1.tlog",
+      "bytes": 30798,
+      "sha256": "bd43c6533bdee1c29cd46f886b0a2149987d6696f46ae5c30b939cbc22d9ea74",
+      "snapshot": "metadata-final/x64/task_operation_query_tests.dir/Release/task_ope.9FBE71A8.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\task_operation_query_tests.vcxproj",
+      "bytes": 40432,
+      "sha256": "5969e8c3960c5772db16aabfb3d8a953082f22ced17a92176b4c671c64b366e6",
+      "snapshot": "metadata-final/x64/task_operation_query_tests.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\task_scope_tests.dir\\Release\\task_scope_tests.tlog\\CL.command.1.tlog",
+      "bytes": 1072,
+      "sha256": "c679ed6211923ac7406c7447ea9bfe6a3be14b80409d397985a1ff2386133f3c",
+      "snapshot": "metadata-final/x64/task_scope_tests.dir/Release/task_scope_tests.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\task_scope_tests.dir\\Release\\task_scope_tests.tlog\\CL.read.1.tlog",
+      "bytes": 34298,
+      "sha256": "27d0e8a8518be7f83e11bcb22b2c8b9a4cd44bb8be625bf6b571a49ff98db7fe",
+      "snapshot": "metadata-final/x64/task_scope_tests.dir/Release/task_scope_tests.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\task_scope_tests.vcxproj",
+      "bytes": 40252,
+      "sha256": "0d60b617d418312fdf8611c898ed8b8df59cbe1a2d7ade06738e4d109520cdb6",
+      "snapshot": "metadata-final/x64/task_scope_tests.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\task_service_tests.dir\\Release\\task_ser.551B1B1C.tlog\\CL.command.1.tlog",
+      "bytes": 1088,
+      "sha256": "19f79df9f04f5b893683027ed71425e20e7e9902587bbb28e61e8b968b03797b",
+      "snapshot": "metadata-final/x64/task_service_tests.dir/Release/task_ser.551B1B1C.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\task_service_tests.dir\\Release\\task_ser.551B1B1C.tlog\\CL.read.1.tlog",
+      "bytes": 34708,
+      "sha256": "8c3a8e56f7a95ac3e992e235ed903af3f55753356aa4af830b2021d02a72ab7e",
+      "snapshot": "metadata-final/x64/task_service_tests.dir/Release/task_ser.551B1B1C.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\task_service_tests.vcxproj",
+      "bytes": 40288,
+      "sha256": "96a872440522ee85f0d110d827badccc51a1980c2aa247329010a1b0da137493",
+      "snapshot": "metadata-final/x64/task_service_tests.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\task_store_capacity_tests.dir\\Release\\task_sto.9F44CA20.tlog\\CL.command.1.tlog",
+      "bytes": 1144,
+      "sha256": "51ff964aea9d0d97b3d1d17597713c30091105a4cb1338c42a904573725944d5",
+      "snapshot": "metadata-final/x64/task_store_capacity_tests.dir/Release/task_sto.9F44CA20.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\task_store_capacity_tests.dir\\Release\\task_sto.9F44CA20.tlog\\CL.read.1.tlog",
+      "bytes": 28384,
+      "sha256": "90b68ab4d0182856b19b6532bf64d891d456a14ec72cf634585c02a459f54c90",
+      "snapshot": "metadata-final/x64/task_store_capacity_tests.dir/Release/task_sto.9F44CA20.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\task_store_capacity_tests.vcxproj",
+      "bytes": 40414,
+      "sha256": "22a58cf8db3328f8c0268e2626ce09c8206b78ebf34501b22a31af4798e0442b",
+      "snapshot": "metadata-final/x64/task_store_capacity_tests.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\ZERO_CHECK.vcxproj",
+      "bytes": 27367,
+      "sha256": "e4b23f6b90aab185e733568318f8cdaba330467b44e80652ae5dc2e74eb8bfcb",
+      "snapshot": "metadata-final/x64/ZERO_CHECK.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\ALL_BUILD.vcxproj",
+      "bytes": 53182,
+      "sha256": "552d4700f023bf3ec2d60fe713a19a49c74ef71da7b90e5316706e631971733e",
+      "snapshot": "metadata-final/x86/ALL_BUILD.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\CMakeCache.txt",
+      "bytes": 15704,
+      "sha256": "291cfeb6323b90ad21613b70e4d0724ef520320d5957ded9cb734266be56b96c",
+      "snapshot": "metadata-final/x86/CMakeCache.txt.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\CMakeFiles\\4.2.3\\CMakeCXXCompiler.cmake",
+      "bytes": 6508,
+      "sha256": "95f10a437e276655abad1f3627373bfec2ab7c70169b0c7b9e1d57bfce28fe1d",
+      "snapshot": "metadata-final/x86/CMakeFiles/4.2.3/CMakeCXXCompiler.cmake.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\CMakeFiles\\4.2.3\\CompilerIdC\\CompilerIdC.vcxproj",
+      "bytes": 2812,
+      "sha256": "93dd3cade739c0d127030f8180557c1a31fc1855dc41fcd287bfa4593d1f48f9",
+      "snapshot": "metadata-final/x86/CMakeFiles/4.2.3/CompilerIdC/CompilerIdC.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\CMakeFiles\\4.2.3\\CompilerIdC\\Debug\\CompilerIdC.tlog\\CL.command.1.tlog",
+      "bytes": 966,
+      "sha256": "9979e2555c421ee57957cb2763da565bf2dcc093736fc1295d8267c15c2ea70e",
+      "snapshot": "metadata-final/x86/CMakeFiles/4.2.3/CompilerIdC/Debug/CompilerIdC.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\CMakeFiles\\4.2.3\\CompilerIdC\\Debug\\CompilerIdC.tlog\\CL.read.1.tlog",
+      "bytes": 672,
+      "sha256": "509b12c5b724b0b736e6e190df68340d7fddb6457cfb288c9e2874d39c7300b9",
+      "snapshot": "metadata-final/x86/CMakeFiles/4.2.3/CompilerIdC/Debug/CompilerIdC.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\CMakeFiles\\4.2.3\\CompilerIdCXX\\CompilerIdCXX.vcxproj",
+      "bytes": 2820,
+      "sha256": "1f616b32ca13cb1cb59ce61d42109ac551f5b513143affcf4d609669c8eee279",
+      "snapshot": "metadata-final/x86/CMakeFiles/4.2.3/CompilerIdCXX/CompilerIdCXX.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\CMakeFiles\\4.2.3\\CompilerIdCXX\\Debug\\CompilerIdCXX.tlog\\CL.command.1.tlog",
+      "bytes": 990,
+      "sha256": "ada65585ec83f6a6f888c5c9f96ac2b51df356f434900b922fe0b2e3b9fee0d3",
+      "snapshot": "metadata-final/x86/CMakeFiles/4.2.3/CompilerIdCXX/Debug/CompilerIdCXX.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\CMakeFiles\\4.2.3\\CompilerIdCXX\\Debug\\CompilerIdCXX.tlog\\CL.read.1.tlog",
+      "bytes": 684,
+      "sha256": "495f6a0bae58e6f1dabc670b17c9a5120bf3c3c523684ec42a40ef973bf6d3b4",
+      "snapshot": "metadata-final/x86/CMakeFiles/4.2.3/CompilerIdCXX/Debug/CompilerIdCXX.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\CMakeFiles\\4.2.3\\VCTargetsPath.vcxproj",
+      "bytes": 1261,
+      "sha256": "b392ec75b7860d7de265026986be273eb184a3fc6524ff8c71ced413f2a03aa0",
+      "snapshot": "metadata-final/x86/CMakeFiles/4.2.3/VCTargetsPath.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\INSTALL.vcxproj",
+      "bytes": 11067,
+      "sha256": "abedaa39ed58ff4919f8d5384cbd38efa5f014261479e6426e6f3a7bb3e30c3c",
+      "snapshot": "metadata-final/x86/INSTALL.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\sdk\\ALL_BUILD.vcxproj",
+      "bytes": 13705,
+      "sha256": "d882c3baee3cf7b9ba3a5d5e0b595f444b9a91ab081b03a5c43d154321ffab20",
+      "snapshot": "metadata-final/x86/sdk/ALL_BUILD.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\sdk\\INSTALL.vcxproj",
+      "bytes": 11087,
+      "sha256": "8dd47e75b6fc08cfdc3e767c5cbf7b2d67e4817728f05d0a2197974a96380f2f",
+      "snapshot": "metadata-final/x86/sdk/INSTALL.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.command.1.tlog",
+      "bytes": 25252,
+      "sha256": "8f9a6f91a42ca34e5e1de5afa3b69a2dcee8a70297f9767fdba77fe7fcdbfb5d",
+      "snapshot": "metadata-final/x86/sdk/soui_sdk.dir/Release/soui_sdk.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.read.1.tlog",
+      "bytes": 682706,
+      "sha256": "79ff62e2ca6a9fb4ccf3e1268a223c9e9031539759b5a9f8bd719e9862d06e04",
+      "snapshot": "metadata-final/x86/sdk/soui_sdk.dir/Release/soui_sdk.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\sdk\\soui_sdk.vcxproj",
+      "bytes": 25631,
+      "sha256": "b19f2183664163dddbefc999d5f3ef8bc70ddf2a67b9ec5cebf651054c58e46c",
+      "snapshot": "metadata-final/x86/sdk/soui_sdk.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\sdk\\soui_zlib.vcxproj",
+      "bytes": 23154,
+      "sha256": "b474497923a4cb2c2d35027b3836a1723ac8cfbe6493eb622f816f81db408301",
+      "snapshot": "metadata-final/x86/sdk/soui_zlib.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\task_operation_query_tests.dir\\Release\\task_ope.96CEF687.tlog\\CL.command.1.tlog",
+      "bytes": 1182,
+      "sha256": "9f773e9310898fbc0f3cb67b800f2425a13c4879b63da0b2fa1474b86039fb84",
+      "snapshot": "metadata-final/x86/task_operation_query_tests.dir/Release/task_ope.96CEF687.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\task_operation_query_tests.dir\\Release\\task_ope.96CEF687.tlog\\CL.read.1.tlog",
+      "bytes": 30798,
+      "sha256": "631efe57163e6054d42d9abdd77788095aa1e60c0abe6cd97df8d2db73255591",
+      "snapshot": "metadata-final/x86/task_operation_query_tests.dir/Release/task_ope.96CEF687.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\task_operation_query_tests.vcxproj",
+      "bytes": 68894,
+      "sha256": "5d8f451dc1256990186a49ddb215338b81b3504ddcff906733c10bcecc0fcb5c",
+      "snapshot": "metadata-final/x86/task_operation_query_tests.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\task_scope_tests.dir\\Release\\task_scope_tests.tlog\\CL.command.1.tlog",
+      "bytes": 1102,
+      "sha256": "791a52ee7b4fab2f2e3fc2cd441bdcf766fe84f1eec000fe72a629ae0579a920",
+      "snapshot": "metadata-final/x86/task_scope_tests.dir/Release/task_scope_tests.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\task_scope_tests.dir\\Release\\task_scope_tests.tlog\\CL.read.1.tlog",
+      "bytes": 34500,
+      "sha256": "2288f4c72c1c924798bcbaeafcf247eca6c20f4d919a3282172cb17e2dd17250",
+      "snapshot": "metadata-final/x86/task_scope_tests.dir/Release/task_scope_tests.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\task_scope_tests.vcxproj",
+      "bytes": 68714,
+      "sha256": "4c6bf3e0495c8f7de9e84ba0816ef9a2d17e9353227437985065c337ec52f248",
+      "snapshot": "metadata-final/x86/task_scope_tests.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\task_service_tests.dir\\Release\\task_ser.8821057E.tlog\\CL.command.1.tlog",
+      "bytes": 1118,
+      "sha256": "4fe830ec689d94fa58d01fbfa6e93bb6b957bab88907b566acefd94157dfcf0f",
+      "snapshot": "metadata-final/x86/task_service_tests.dir/Release/task_ser.8821057E.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\task_service_tests.dir\\Release\\task_ser.8821057E.tlog\\CL.read.1.tlog",
+      "bytes": 34910,
+      "sha256": "0b10357e60c03664ac55d1bfbe7d4ed60dc041164b886e8863979296cf336302",
+      "snapshot": "metadata-final/x86/task_service_tests.dir/Release/task_ser.8821057E.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\task_service_tests.vcxproj",
+      "bytes": 68750,
+      "sha256": "6305da19b465ec53f91eda50e2f5c2f8525da7eec1d0beebf36fe163e6aea686",
+      "snapshot": "metadata-final/x86/task_service_tests.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\task_store_capacity_tests.dir\\Release\\task_sto.4972BF4E.tlog\\CL.command.1.tlog",
+      "bytes": 1174,
+      "sha256": "4a348404c13a87862ca43be1aa064677bbd61a36721d0716d33eadad1c0d1592",
+      "snapshot": "metadata-final/x86/task_store_capacity_tests.dir/Release/task_sto.4972BF4E.tlog/CL.command.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\task_store_capacity_tests.dir\\Release\\task_sto.4972BF4E.tlog\\CL.read.1.tlog",
+      "bytes": 28384,
+      "sha256": "7c6a109ed47f0046ee843b13dfc2603ab2e74a8b3a25c17f681172fc359e1016",
+      "snapshot": "metadata-final/x86/task_store_capacity_tests.dir/Release/task_sto.4972BF4E.tlog/CL.read.1.tlog.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\task_store_capacity_tests.vcxproj",
+      "bytes": 68876,
+      "sha256": "9e4b6410616a20a700bbbed951d89137fd729ea7d9242b0e6a5849b685b5b586",
+      "snapshot": "metadata-final/x86/task_store_capacity_tests.vcxproj.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\ZERO_CHECK.vcxproj",
+      "bytes": 55797,
+      "sha256": "852a212b3b2f01189003d41829c6099ae14b005e6ad26fb30d7935fc642c5ffa",
+      "snapshot": "metadata-final/x86/ZERO_CHECK.vcxproj.inert.snapshot"
+    }
+  ],
+  "tools": [
+    {
+      "path": "C:/Program Files/CMake/bin/cmake.exe",
+      "bytes": 12905544,
+      "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe",
+      "bytes": 436024,
+      "sha256": "58fbe0acac5265fe9a93acb291e1dbd50432c4ebf00ff9b9fb4c34bc0f247c73"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
+      "bytes": 677968,
+      "sha256": "a80f5e7a24049a8f9a8931f83fc3d13ca417ad901e074c50cca71fcb12ba10be"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86/cl.exe",
+      "bytes": 678000,
+      "sha256": "8de3c1e7af40f4a6c83188ef7cca6270223a00652e8c703022694f64add54a14"
+    },
+    {
+      "path": "C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js",
+      "bytes": 56,
+      "sha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+    },
+    {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe",
+      "bytes": 3252808,
+      "sha256": "e388eb34fe4d280633609f6acec12a3e73c288f8b69ce402c3d24c0d0f5524f3"
+    },
+    {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\link.exe",
+      "bytes": 3252840,
+      "sha256": "ee4ce2b47beb5a14cadc9dfffd3d66723342ef97045697ffe1a5727b330324b2"
+    },
+    {
+      "path": "C:\\nvm4w\\nodejs\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\node_modules\\typescript\\bin\\tsc",
+      "bytes": 45,
+      "sha256": "8d5fa5bd883fec0979fc2004f1fe1d99aef40570155d550eadc0b03b55513bf0"
+    }
+  ],
+  "npmInputs": [
+    {
+      "path": "sdk/web/package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "sdk/web/package-lock.json",
+      "bytes": 735,
+      "sha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0"
+    },
+    {
+      "path": "sdk/web/tsconfig.json",
+      "bytes": 296,
+      "sha256": "8f1d5e9b1b25e98c4221574ea7dd96792c63d26d18716ebe8d796ab3f40b359e"
+    },
+    {
+      "path": "tools/internal/delivery-identity.cjs",
+      "bytes": 5459,
+      "sha256": "087e60a3f8652a9166acbab63fdde7836d66839329a687ce5cefdd733e3c5e14"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\Release\\task_operation_query_tests.exe",
+      "bytes": 403456,
+      "sha256": "bedc7a3a83607962a406c360e922a79c00be3cad80e6b1bdb19b0b65be42454e",
+      "arch": "x64",
+      "kind": "native-test",
+      "machine": 34404,
+      "subsystemMajor": 6,
+      "subsystemMinor": 0
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\Release\\task_service_tests.exe",
+      "bytes": 435712,
+      "sha256": "46395306ac97cc2ce39f0efe4e01d8639a8f9bd87d9245760f81800e19cab061",
+      "arch": "x64",
+      "kind": "native-test",
+      "machine": 34404,
+      "subsystemMajor": 6,
+      "subsystemMinor": 0
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\Release\\task_scope_tests.exe",
+      "bytes": 393216,
+      "sha256": "21f78f1161b4cb30b25e166de3fda0848b89daf29c89a0c62807126fe9b66d9f",
+      "arch": "x64",
+      "kind": "native-test",
+      "machine": 34404,
+      "subsystemMajor": 6,
+      "subsystemMinor": 0
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\Release\\task_store_capacity_tests.exe",
+      "bytes": 292352,
+      "sha256": "da74a1035d7d47ff4e7fc8c325e667c8e1a5c37b2405467767c9a3bbf09d4392",
+      "arch": "x64",
+      "kind": "native-test",
+      "machine": 34404,
+      "subsystemMajor": 6,
+      "subsystemMinor": 0
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x64\\sdk\\Release\\soui_sdk.lib",
+      "bytes": 35755836,
+      "sha256": "ce7644805eeafc2dc105902a3076475a1e91dd6676f9ef9d03cf37cf6abb6792",
+      "arch": "x64",
+      "kind": "sdk-static-library"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\Release\\task_operation_query_tests.exe",
+      "bytes": 348672,
+      "sha256": "c39129c0e8cb8819c7573650fe665e2e84a762934a844ff3951cf22ad8c0d6a9",
+      "arch": "x86",
+      "kind": "native-test",
+      "machine": 332,
+      "subsystemMajor": 6,
+      "subsystemMinor": 0
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\Release\\task_service_tests.exe",
+      "bytes": 384000,
+      "sha256": "93f9d0199969e366e16d4fec34a3068e036f6657af729090e270f6ef95dd2c0c",
+      "arch": "x86",
+      "kind": "native-test",
+      "machine": 332,
+      "subsystemMajor": 6,
+      "subsystemMinor": 0
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\Release\\task_scope_tests.exe",
+      "bytes": 347648,
+      "sha256": "c2f7b2938b3b12669e5408887707495e059cbd1a644d916a70e28219f3a512d2",
+      "arch": "x86",
+      "kind": "native-test",
+      "machine": 332,
+      "subsystemMajor": 6,
+      "subsystemMinor": 0
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\Release\\task_store_capacity_tests.exe",
+      "bytes": 247808,
+      "sha256": "81bd3cfd2cd671da86cc7049bca045294051e1f5c99ebb5b9e46c60ad691326a",
+      "arch": "x86",
+      "kind": "native-test",
+      "machine": 332,
+      "subsystemMajor": 6,
+      "subsystemMinor": 0
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\build-x86\\sdk\\Release\\soui_sdk.lib",
+      "bytes": 24455668,
+      "sha256": "497dbcc5d307ee6315803cbef882582e438dc7a2b952f388d4aa1d51556be3b2",
+      "arch": "x86",
+      "kind": "sdk-static-library"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\action-contract-core.d.ts",
+      "bytes": 505,
+      "sha256": "4af780195bdc72315af8a5bbd8a0a2a71a67957e6a3fc580d3b2da91be9beeeb",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\action-contract-core.js",
+      "bytes": 11417,
+      "sha256": "d76d00e2a3fa9ea2f25c9124534fd2b04e1c662bc07afaee9b985b40bf8b00a4",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\action-contracts.d.ts",
+      "bytes": 1716,
+      "sha256": "6e4fd2c306c78cac64bdd41da4c40d4ac16de848278619ac48989134635e2ad4",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\action-contracts.js",
+      "bytes": 2561,
+      "sha256": "e9fe8c0975f655fde61ffade7d32d7eb8791a67ea804442e7960b120ad18caae",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\capabilities.d.ts",
+      "bytes": 1170,
+      "sha256": "9ea83c612285207e742a563a37216367113b5086cf9ecd5a12ac25d3d56d7028",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\capabilities.js",
+      "bytes": 4077,
+      "sha256": "1ef5a3f610c45da4ae557f1cefec3c41d12a27361692c1b8d975afcf32cb99fe",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\client.d.ts",
+      "bytes": 3335,
+      "sha256": "206d2784f4d732368d5305a020ae91ae14f940bdb630a4963b58233662ab1c55",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\client.js",
+      "bytes": 12935,
+      "sha256": "8b0ad48e5a37dcaff3a629813531c3b822ffc99e3d32bb457e6d4b66c699490e",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\connection.d.ts",
+      "bytes": 1024,
+      "sha256": "dabf49c56bb107d8617bff08064d8e5d97a447c66136ae1987dd2c5c6437c29d",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\connection.js",
+      "bytes": 7695,
+      "sha256": "fd63d56a4a7a930de7d348277574b1e658db3591b6db85452cd52a7c39b239f2",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\contracts.d.ts",
+      "bytes": 10823,
+      "sha256": "d89cb72bda32503903614ed996331a051c65feaa08ec96f722e82ec9e95fc05b",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\contracts.js",
+      "bytes": 100,
+      "sha256": "a5a3d5d72ebbce80878b35311427b38f0ec2946e82ddfeb890c70578abe11344",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\gui.d.ts",
+      "bytes": 1592,
+      "sha256": "0bf94ffb7612746d8bf79a75f5a661afa40217288b844f622a9698b7dbdbb1f3",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\gui.js",
+      "bytes": 13602,
+      "sha256": "b823ad98ce26dce9fb92aed212c41f17b0ce9fd6766f2fd174f94f32b4bb3df0",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\index.d.ts",
+      "bytes": 1413,
+      "sha256": "1f0b18e6564d1a241c572489dde29502d329fa5520e7d7f31869442b636c60a1",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\index.js",
+      "bytes": 425,
+      "sha256": "acaba2502e1304305bf75e1395751f80301e534d193898ba2e638251c9f3bcb2",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\protocol.d.ts",
+      "bytes": 4814,
+      "sha256": "b3350d78507825145f2f7c215b93d62dd191b9cbf04a79bf44c0a207a97bc979",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\protocol.js",
+      "bytes": 3445,
+      "sha256": "bf0f8678f0bc28cd974d70d22afcbf442ef7c97f446b0a531b9ef0f4c67ace65",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\session-renewal.d.ts",
+      "bytes": 1384,
+      "sha256": "eec9f45daecb2857b55d662987a571786ce519bf1260114894b7aee01ad43a10",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\session-renewal.js",
+      "bytes": 11085,
+      "sha256": "161b551f6afc1dbae07c38a6286e78075fcd04c8b3a717849954a1f2ff64a74c",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\task-query.d.ts",
+      "bytes": 629,
+      "sha256": "d79a3f33319fd162d00a6aaee75afaa685be7aa9e2620ac0cd984b29a86b8835",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\task-query.js",
+      "bytes": 1963,
+      "sha256": "ff0b7c09dcd46d20371d4478c2b17b79dd40d1d28b46ebbfa7fea37b7a1d0ec9",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\web-features.d.ts",
+      "bytes": 1400,
+      "sha256": "d660fcbbb92d26eb2fcc05b3bd03fdee64a2f586488d3085eedbbbde17df5e29",
+      "kind": "web-build-output"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\sdk\\web\\dist\\web-features.js",
+      "bytes": 3590,
+      "sha256": "c9c03f65a9988474a2e806b78367bab69957d706785c9fb316be3280923557b5",
+      "kind": "web-build-output"
+    }
+  ],
+  "driver": {
+    "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\run.cjs",
+    "bytes": 7584,
+    "sha256": "248c2f2325771b32159ccfd97f9ffc6182b9b94b8dd7b3fc4b3b2d0ea1b68d3f"
+  },
+  "bootstrap": [
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\bootstrap\\OwnedProcessRunner.exe",
+      "bytes": 60928,
+      "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    },
+    {
+      "path": "F:\\work\\sm05-query\\out\\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\\bootstrap\\owned-process.cjs",
+      "bytes": 6540,
+      "sha256": "aa160d64892294eb3e65f27f29d554020dd10ea0704f6d0a669fa83184054753"
+    }
+  ],
+  "finalDirectories": {
+    "x64": [
+      "compile-x64-fed9b60a-fb81-44c3-8d5c-02b9bf5ebbc8",
+      "task_operation_query-x64-913df16b-3ca3-43dd-8059-1d1e39bc1c7f",
+      "task_service-x64-e79b8563-8bd3-4dec-88f6-fa71de85bab3",
+      "task_scope-x64-46b91fa4-616e-4c1e-8b0f-332bff627203",
+      "task_store_capacity-x64-1b6894ac-795f-4e19-9f17-a5de2f2794d2"
+    ],
+    "x86": [
+      "compile-x86-ff8e96a3-d89a-4f5b-9c49-cb08d4b040e2",
+      "task_operation_query-x86-9776931a-6c14-4373-bd23-dd7a2774d5b6",
+      "task_service-x86-de79b768-34be-4008-b9db-32a1ceb07136",
+      "task_scope-x86-293cf8a9-8f2a-43db-b7d1-c07d5bfd3fa6",
+      "task_store_capacity-x86-a9cc9bd8-d223-4cb5-9c69-0a0b5dd6ceb3"
+    ],
+    "web": [
+      "npm-ci-d0b3cb4b-4926-4625-ba46-a511f394bbd2",
+      "web-build-efca9e40-0022-4ad9-a6e4-98d049730832",
+      "web-types-6dc3714a-4983-45c3-ad16-bae569ff9c89",
+      "web-runtime-52d2357a-e632-4cd3-8643-8cd271efd610",
+      "npm-audit-786e4adf-c273-44ba-83a5-3816bd1b67fa"
+    ]
+  },
+  "result": {
+    "nativeNewCasesPerArchitecture": "7/7",
+    "nativeTargetsPerArchitecture": 4,
+    "webRuntime": "83/83; skipped 0",
+    "types": "exit 0; exactOptionalPropertyTypes enabled",
+    "npmAuditTotal": 0,
+    "compile": "Root exit 0 separately observed; generic supervision false retained. No compiler-tail exception."
+  },
+  "limitations": [
+    "No GUI, VM, full Collect, 8h, Chrome49/Win7/PE runtime, installed-package consumer or release acceptance.",
+    "No Git write, VERSION/source manifest change, canonical acceptance or fixed package regeneration.",
+    "Native RED has six valid behavior failures. Seventh public bootstrap failed due to a six-field fixture error; not valid behavior RED.",
+    "Initial configure false and two compilation fixture failures retained; later outputs do not rewrite those reports.",
+    "Final native test changed captured-state declaration lifetime only; both architectures rebuilt and all four targets rerun. Web production/test inputs unchanged since Web GREEN.",
+    "Old per-stage source hashes retained; only final 16 changed/new source bytes are separately snapshotted. Native RED and later test executable copies remain in their original stage directories.",
+    "Historical Demo generated declarations updated here; unrelated Demo generator/adapters not migrated; schema alone cannot express XOR/ASCII."
+  ]
+}

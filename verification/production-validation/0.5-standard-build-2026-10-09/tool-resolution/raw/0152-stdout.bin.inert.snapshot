@@ -1,0 +1,302 @@
+TAP version 13
+# Subtest: strict CLI rejects unknown, repeated and partially specified tail permissions
+ok 1 - strict CLI rejects unknown, repeated and partially specified tail permissions
+  ---
+  duration_ms: 2.8364
+  type: 'test'
+  ...
+# Subtest: natural completed build needs current payload and a new build identity
+ok 2 - natural completed build needs current payload and a new build identity
+  ---
+  duration_ms: 2.471
+  type: 'test'
+  ...
+# Subtest: explicit synthetic exact-tail policy preserves generic false/124
+ok 3 - explicit synthetic exact-tail policy preserves generic false/124
+  ---
+  duration_ms: 2.8173
+  type: 'test'
+  ...
+# Subtest: yesterday build ID reused
+ok 4 - yesterday build ID reused
+  ---
+  duration_ms: 0.5054
+  type: 'test'
+  ...
+# Subtest: old report with identical source and new-looking ID
+ok 5 - old report with identical source and new-looking ID
+  ---
+  duration_ms: 0.3025
+  type: 'test'
+  ...
+# Subtest: payload current bytes differ
+ok 6 - payload current bytes differ
+  ---
+  duration_ms: 0.2657
+  type: 'test'
+  ...
+# Subtest: source changed during build
+ok 7 - source changed during build
+  ---
+  duration_ms: 0.4116
+  type: 'test'
+  ...
+# Subtest: raw source changes even with identical normalized identity
+ok 8 - raw source changes even with identical normalized identity
+  ---
+  duration_ms: 0.1527
+  type: 'test'
+  ...
+# Subtest: Build script raw bytes changed
+ok 9 - Build script raw bytes changed
+  ---
+  duration_ms: 0.1714
+  type: 'test'
+  ...
+# Subtest: compiler replaced without source change
+ok 10 - compiler replaced without source change
+  ---
+  duration_ms: 0.2216
+  type: 'test'
+  ...
+# Subtest: reviewed reader bytes changed
+ok 11 - reviewed reader bytes changed
+  ---
+  duration_ms: 0.1964
+  type: 'test'
+  ...
+# Subtest: CMake actual compiler was not observed
+ok 12 - CMake actual compiler was not observed
+  ---
+  duration_ms: 0.1939
+  type: 'test'
+  ...
+# Subtest: caller ready differs by one exact FILETIME tick
+ok 13 - caller ready differs by one exact FILETIME tick
+  ---
+  duration_ms: 0.165
+  type: 'test'
+  ...
+# Subtest: valid context JSON points at another script
+ok 14 - valid context JSON points at another script
+  ---
+  duration_ms: 0.1383
+  type: 'test'
+  ...
+# Subtest: natural Test.ps1 cannot acquire Build policy by freezing its own context
+ok 15 - natural Test.ps1 cannot acquire Build policy by freezing its own context
+  ---
+  duration_ms: 0.4827
+  type: 'test'
+  ...
+# Subtest: missing tools cannot be called unchanged
+ok 16 - missing tools cannot be called unchanged
+  ---
+  duration_ms: 0.1606
+  type: 'test'
+  ...
+# Subtest: missing raw script inputs cannot be called unchanged
+ok 17 - missing raw script inputs cannot be called unchanged
+  ---
+  duration_ms: 0.1032
+  type: 'test'
+  ...
+# Subtest: valid client object cannot replace native terminal
+ok 18 - valid client object cannot replace native terminal
+  ---
+  duration_ms: 0.1578
+  type: 'test'
+  ...
+# Subtest: native report truncated
+ok 19 - native report truncated
+  ---
+  duration_ms: 0.1296
+  type: 'test'
+  ...
+# Subtest: duplicate native start
+ok 20 - duplicate native start
+  ---
+  duration_ms: 0.149
+  type: 'test'
+  ...
+# Subtest: duplicate native root-exit
+ok 21 - duplicate native root-exit
+  ---
+  duration_ms: 0.1343
+  type: 'test'
+  ...
+# Subtest: unknown native event cannot be an invisible extra
+ok 22 - unknown native event cannot be an invisible extra
+  ---
+  duration_ms: 0.1397
+  type: 'test'
+  ...
+# Subtest: floating member creation time cannot be rounded back into an identity
+ok 23 - floating member creation time cannot be rounded back into an identity
+  ---
+  duration_ms: 0.1309
+  type: 'test'
+  ...
+# Subtest: duplicate JSON field after valid-looking last value
+ok 24 - duplicate JSON field after valid-looking last value
+  ---
+  duration_ms: 0.1378
+  type: 'test'
+  ...
+# Subtest: unbound supervisor exit
+ok 25 - unbound supervisor exit
+  ---
+  duration_ms: 0.1782
+  type: 'test'
+  ...
+# Subtest: STOP cannot qualify
+ok 26 - STOP cannot qualify
+  ---
+  duration_ms: 0.14
+  type: 'test'
+  ...
+# Subtest: fallback cannot qualify
+ok 27 - fallback cannot qualify
+  ---
+  duration_ms: 0.1461
+  type: 'test'
+  ...
+# Subtest: post-launch source missing
+ok 28 - post-launch source missing
+  ---
+  duration_ms: 0.1034
+  type: 'test'
+  ...
+# Subtest: default tail, explicit timeout and root failure are never promoted to accepted
+ok 29 - default tail, explicit timeout and root failure are never promoted to accepted
+  ---
+  duration_ms: 2.3566
+  type: 'test'
+  ...
+# Subtest: workspace lease excludes both architectures and refuses foreign release
+not ok 30 - workspace lease excludes both architectures and refuses foreign release
+  ---
+  duration_ms: 0.3255
+  type: 'test'
+  location: 'F:\\work\\sm05-build-caller\\out\\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\\red-standard-build.test.cjs:108:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, mkdtemp 'F:\\work\\sm05-build-caller\\out\\out\\standard-build-lease-XXXXXX'"
+  code: 'ENOENT'
+  stack: |-
+    Object.mkdtempSync (node:fs:3038:18)
+    TestContext.<anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\red-standard-build.test.cjs:109:19)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: configured Node records requested and resolved tool bytes
+not ok 31 - configured Node records requested and resolved tool bytes
+  ---
+  duration_ms: 0.5702
+  type: 'test'
+  location: 'F:\\work\\sm05-build-caller\\out\\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\\red-standard-build.test.cjs:120:1'
+  failureType: 'testCodeFailure'
+  error: 'Linked path: C:\\nvm4w\\nodejs'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Object.safePath (F:\work\sm05-build-caller\tools\internal\delivery-identity.cjs:19:56)
+    Object.file [as inspectTool] (eval at <anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\old-adapter.cjs:1:448), <anonymous>:61:12)
+    TestContext.<anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\red-standard-build.test.cjs:121:23)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: real private junction resolves tools but source and evidence rules still refuse links
+not ok 32 - real private junction resolves tools but source and evidence rules still refuse links
+  ---
+  duration_ms: 0.1651
+  type: 'test'
+  location: 'F:\\work\\sm05-build-caller\\out\\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\\red-standard-build.test.cjs:139:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, mkdtemp 'F:\\work\\sm05-build-caller\\out\\out\\standard-build-tool-junction-XXXXXX'"
+  code: 'ENOENT'
+  stack: |-
+    Object.mkdtempSync (node:fs:3038:18)
+    junctionTool (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\red-standard-build.test.cjs:131:22)
+    TestContext.<anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\red-standard-build.test.cjs:140:11)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: junction retarget to identical bytes cannot preserve frozen tool identity
+not ok 33 - junction retarget to identical bytes cannot preserve frozen tool identity
+  ---
+  duration_ms: 0.0965
+  type: 'test'
+  location: 'F:\\work\\sm05-build-caller\\out\\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\\red-standard-build.test.cjs:149:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, mkdtemp 'F:\\work\\sm05-build-caller\\out\\out\\standard-build-tool-junction-XXXXXX'"
+  code: 'ENOENT'
+  stack: |-
+    Object.mkdtempSync (node:fs:3038:18)
+    junctionTool (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\red-standard-build.test.cjs:131:22)
+    TestContext.<anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\red-standard-build.test.cjs:150:11)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: canonical tool replacement and missing junction target fail closed
+not ok 34 - canonical tool replacement and missing junction target fail closed
+  ---
+  duration_ms: 0.0847
+  type: 'test'
+  location: 'F:\\work\\sm05-build-caller\\out\\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\\red-standard-build.test.cjs:157:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, mkdtemp 'F:\\work\\sm05-build-caller\\out\\out\\standard-build-tool-junction-XXXXXX'"
+  code: 'ENOENT'
+  stack: |-
+    Object.mkdtempSync (node:fs:3038:18)
+    junctionTool (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\red-standard-build.test.cjs:131:22)
+    TestContext.<anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\red-standard-build.test.cjs:158:11)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: real temporary SDK library drift fails the existing build evidence verification
+not ok 35 - real temporary SDK library drift fails the existing build evidence verification
+  ---
+  duration_ms: 0.1047
+  type: 'test'
+  location: 'F:\\work\\sm05-build-caller\\out\\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\\red-standard-build.test.cjs:165:1'
+  failureType: 'testCodeFailure'
+  error: "ENOENT: no such file or directory, mkdtemp 'F:\\work\\sm05-build-caller\\out\\out\\standard-build-payload-XXXXXX'"
+  code: 'ENOENT'
+  stack: |-
+    Object.mkdtempSync (node:fs:3038:18)
+    TestContext.<anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\red-standard-build.test.cjs:166:17)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 29
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 130.2152

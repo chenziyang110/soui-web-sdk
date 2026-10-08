@@ -1,0 +1,50 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict'),vm=require('node:vm');
+const root=path.resolve(__dirname,'..'),identity=require('../tools/internal/delivery-identity.cjs'),gui=require('../tools/sdk/gui-bindings-delivery.cjs');
+const {launchOwned}=require('../tools/internal/owned-process.cjs');
+const providerRoot='F:/work/sm05-mi',provider=require(providerRoot+'/tools/internal/measurement-validation.cjs');
+const setup=provider.prepared('x64'),runner=setup.tools.OwnedProcessRunner;
+if(setup.report.source.sha256!=='d4e161aaed29d4332881e6e4e2c99b21ab81365104cd1f8e8943f0b6f73ca3e2')throw Error('Borrowed reviewed tool provenance changed');
+const folder=path.join(root,'out','operation-query-mainline-gui-'+crypto.randomUUID());fs.mkdirSync(folder);
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex'),encoded=x=>JSON.stringify(x,null,2)+'\n';
+const source=identity.source(root),guiSource=gui.source(root),results=[];
+const sourceFiles=JSON.parse(fs.readFileSync(path.join(root,'out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/frozen-inputs-final.json'))).sourceFiles;
+const originalDeltas=sourceFiles.filter(f=>{const b=fs.readFileSync(path.join(root,f.path));return b.length!==f.bytes||hash(b)!==f.sha256;});
+if(originalDeltas.length)throw Error('Original query inputs changed: '+originalDeltas.map(f=>f.path));
+fs.writeFileSync(path.join(folder,'inputs.json'),encoded({schema:'soui.operation-query-gui-inputs/v1',mainMerged:'4fc8c199ac0d58bc8509fab0f3a36a047ad268c1',
+ source,guiSource,originalQueryFilesUnchanged:true,reviewedToolProviderRoot:providerRoot,providerPreparation:setup.report,
+ runnerSha256:hash(fs.readFileSync(runner)),clientSha256:hash(fs.readFileSync(path.join(root,'tools/internal/owned-process.cjs'))),
+ node:{path:process.execPath,version:process.version,sha256:hash(fs.readFileSync(process.execPath))},nativeToolRecompiledInThisTree:false}),{flag:'wx'});
+async function run(name,args,timeoutMs=300000){
+ const dir=path.join(folder,name);fs.mkdirSync(dir);const owned=launchOwned(process.execPath,args,{runner,cwd:root,report:path.join(dir,'owned.ndjson'),
+  timeoutMs,drainMs:3000,stdout:'pipe',stderr:'pipe',env:{...process.env,MSBUILDDISABLENODEREUSE:'1'}});
+ const out=[],err=[];owned.child.stdout.on('data',b=>out.push(b));owned.child.stderr.on('data',b=>err.push(b));const finished=await owned.finished;
+ const stdout=Buffer.concat(out);fs.writeFileSync(path.join(dir,'stdout.log'),stdout,{flag:'wx'});fs.writeFileSync(path.join(dir,'stderr.log'),Buffer.concat(err),{flag:'wx'});
+ fs.writeFileSync(path.join(dir,'finished.json'),encoded(finished),{flag:'wx'});
+ if(!finished.passed||!finished.closureConfirmed||finished.terminal.reason!=='completed'||finished.terminal.terminatedOwnedJob||finished.terminal.activeProcesses!==0)throw Error('Actual Job failed '+dir);
+ const counts=name==='query-web'?Object.fromEntries(['tests','pass','fail','cancelled','skipped'].map(key=>{const m=[...stdout.toString('utf8').matchAll(new RegExp('^# '+key+' (\\d+)\\r?$','gm'))];assert.equal(m.length,1);return[key,Number(m[0][1])];})):null;
+ if(counts&&(counts.fail||counts.cancelled||counts.skipped||counts.pass!==counts.tests))throw Error('Web test omissions');
+ results.push({name,args,counts,naturalCompleted:true,reportSha256:finished.reportSha256});
+}
+(async()=>{
+ await run('gui-build',['tools/sdk/gui-bindings-delivery.cjs','build','--root',root]);
+ await run('query-types',['sdk/web/node_modules/typescript/bin/tsc','-p','tests/web/task-query-types.tsconfig.json']);
+ await run('query-web',['--test','--test-reporter=tap','tests/web/task-query.test.mjs','tests/web/sdk-client.test.mjs','tests/web/capabilities.test.mjs',
+  'tests/web/action-contracts.test.mjs','tests/web/gui.test.mjs','tests/web/session-renewal.test.mjs']);
+ await run('gui-tests',['tools/sdk/gui-bindings-delivery.cjs','test','--root',root]);
+ const collect=fs.readFileSync(path.join(root,'tools/Collect-Verification.cjs'),'utf8'),literal=collect.match(/const unit=(\{[\s\S]*?\n\});/),calls=[];
+ assert.ok(literal);vm.runInNewContext('('+literal[1]+')',{root,path,process,run:(name,exe,args)=>{calls.push({name,exe,args});return{selectedOnly:true};}});
+ const selected=calls.filter(c=>c.name.startsWith('task-query-')||c.name.startsWith('native-task-query-'));
+ assert.deepEqual(selected.map(c=>[c.name,...Array.from(c.args)]),[
+  ['task-query-tests','--test','tests/web/task-query.test.mjs'],['task-query-types','sdk/web/node_modules/typescript/bin/tsc','-p','tests/web/task-query-types.tsconfig.json'],
+  ['native-task-query-x64'],['native-task-query-x86']]);
+ assert.equal(selected[2].exe,path.join(root,'out/x64/tests/native/Release/soui_task_operation_query_tests.exe'));
+ assert.equal(selected[3].exe,path.join(root,'out/x86/tests/native/Release/soui_task_operation_query_tests.exe'));
+ if(identity.source(root).sha256!==source.sha256||gui.source(root).sha256!==guiSource.sha256)throw Error('Source changed during actual GUI compilation');
+ provider.prepared('x64');const declared=gui.verify(root);
+ const result={schema:'soui.operation-query-gui-combination/v1',sourceSha256:source.sha256,guiSourceSha256:guiSource.sha256,
+  guiOutputSha256:declared.output.sha256,results,collectQueryUnitProjection:selected,collectProjectionOnly:true,
+  fullTestExecuted:false,fullCollectExecuted:false,sdkNativeRecompiledHere:false,guiDesktopValidated:false,releaseReady:false};
+ fs.writeFileSync(path.join(folder,'result.json'),encoded(result),{flag:'wx'});fs.copyFileSync(__filename,path.join(folder,'driver.cjs'),fs.constants.COPYFILE_EXCL);
+ console.log(encoded({folder,result}));
+})().catch(e=>{fs.writeFileSync(path.join(folder,'failure.json'),encoded({message:e.message}),{flag:'wx'});console.error(e.stack);process.exitCode=1;});

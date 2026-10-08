@@ -1,0 +1,30 @@
+# 0.5 标准构建调用者：实现、工具与主线整合
+
+日期：2026-10-09。开发版本 `0.5.0-preview.1`。本切片不关闭正式发布、应用、GUI、目标系统或长期运行门槛。
+
+标准调用者只构造本工作区的 Build.ps1 参数，启动前固定当前源码、工具、命令与旧报告，结束后重读实际 Job 原文、编译配置和载荷。默认要求自然闭合；明确 opt-in 才能请求已审精确 MSVC 对象的窄政策。整个工作区共用一个合作租约。外部 NVM junction 固定 requested/resolved 路径与目标 bytes；源码、证据、prepared runner 和 pin 仍拒绝链接。SHA 一致性不认证可改写整套记录的同权限主体。
+
+## 保存的原件
+
+`index.json` 映射 1,972 份逐字 payload，共 161,319,509 字节，并逐组保存原索引、原路径、字节数与 SHA256。大于 64 MiB 的两份拒绝夹具是 TEST_ONLY 边界输入，未作为程序执行；它们不表示 SDK 运行体积。所有归档文件为 inert snapshot，不作为工具入口。
+
+| 原组 | 原索引文件数 | 证明范围 |
+|---|---:|---|
+| original-boundaries | 147 | 原始纯边界、拒绝与当时源码冻结；没有实际 SDK 编译 |
+| actual-tools | 1,531 | 双架构实际 prepared 工具与八个标准协议/原生组；保留编译 root0、通用 false/124，未请求尾政策 |
+| tool-resolution | 174 | NVM 解析及 workspace 租约修正；最终 caller 36/36，双架构 tail-protocol 各157/157自然闭合；不替代 SDK 编译 |
+| sdk-default-x64 | 34 | 当前组合的 SDK-only 实际编译及安装，root0；收尾留下候选 vctip，被 owned Job 清理，generic=false/124、accepted=false |
+| sdk-optin-natural-x64 | 35 | 同一源码、显式 pin 的后续增量构建自然完成；generic=true/0、accepted=true，compilerTailAcceptance=false |
+| sdk-default-x86 | 34 | 当前组合的 SDK-only 实际编译及安装，默认自然完成；generic=true/0、accepted=true |
+
+实际工具组最初的两次私有归档诊断与链接夹具限制保留在原文和更正记录中。Root 首次归档前把已有有序 compiler fingerprint 当作排序 snapshot 比较，误报输入改变；文件逐项及原顺序重算确认 16 项均未变，旧脚本另存。该错误发生在复制前，不改变编译或测试原件。
+
+## 主线与真实结果
+
+合入主线 `201859502f42ba392be86c7b4b5c30a7f85de48a` 的 Query 与原测量/GUI/Tail 入口。当前 SDK 编译的完整规范化 source SHA 为 `f637ee3d58789530ed44f49d643dc7fc2c270ade211b5a04d376096a2f3be2bf`，raw source 和九份本切片当前文件另在索引中固定。原工具的16项实际编译输入 fingerprint仍为 `4e3f19da88c4e3a0dabc7819de096c6e7cc039bc0fbc17c1a9d3388470e45d89`；旧全局源码冻结保留其历史身份，不冒充当前组合。
+
+三次本轮 buildId 不相同；x64 后续尝试保存的 previous-build 原字节与首次报告相同。x64 后续构建为增量构建，当前库仍由首轮真实编译产生。最终 x64库 35,754,744字节/SHA `d18da1f63a6293ca23150f1a65f70e2479a2d597f74729023aed615a5366c628`，x86库 24,454,576字节/SHA `ab5422a7a158757adb1aa7ab8cc6ea3ab94cad39c9c1b8d4892e3e222df17470`。库保留在 owned output，归档仅包含它们的实际观察与散列，不包含发布二进制。
+
+本轮没有实际使用 compiler-tail 接受，不能追认首次默认尝试政策通过。SDK 编译/安装不等于完整应用、现代后端、GUI、全部 Test/Collect、无 Git最终源码重建、Win7/PE或8小时验收。全部记录 `releaseReady=false`，canonical acceptance 未修改。
+
+提交前对本轮实际构建的 sdk/web 锁定依赖图运行 npm audit，结果0个漏洞，owned Job自然闭合；七份新原件另在 dependency-audit/index.json 保存。该检查不认证其他运行依赖或后续日期。

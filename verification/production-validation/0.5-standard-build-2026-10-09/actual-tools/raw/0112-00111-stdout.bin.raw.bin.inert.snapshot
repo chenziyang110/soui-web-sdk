@@ -1,0 +1,32 @@
+F:\work\sm05-build-caller\tools\internal\standard-build.cjs:164
+ vcVersionFile=$versionFile;vswhere=(Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe')}
+                                                 ^^^
+
+SyntaxError: Missing } in template expression
+    at wrapSafe (node:internal/modules/cjs/loader:1743:18)
+    at Module._compile (node:internal/modules/cjs/loader:1786:20)
+    at Object..js (node:internal/modules/cjs/loader:1943:10)
+    at Module.load (node:internal/modules/cjs/loader:1533:32)
+    at Module._load (node:internal/modules/cjs/loader:1335:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.require (node:internal/modules/cjs/loader:1556:12)
+    at require (node:internal/modules/helpers:152:16)
+    at Object.<anonymous> (F:\work\sm05-build-caller\tests\sdk\standard-build.test.cjs:9:16)
+    at Module._compile (node:internal/modules/cjs/loader:1812:14)
+
+Node.js v24.14.0
+✖ tests\sdk\standard-build.test.cjs (91.0327ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 96.3438
+
+✖ failing tests:
+
+test at tests\sdk\standard-build.test.cjs:1:1
+✖ tests\sdk\standard-build.test.cjs (91.0327ms)
+  'test failed'

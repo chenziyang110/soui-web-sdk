@@ -1,0 +1,49 @@
+import type { SouiCapabilityCatalog } from './capabilities.js';
+export type SouiJson = null | boolean | number | string | SouiJson[] | {
+    [key: string]: SouiJson;
+};
+export type SouiActionSchema = {
+    type: 'object';
+    properties: Record<string, SouiActionSchema>;
+    required?: string[];
+    additionalProperties: false;
+} | {
+    type: 'array';
+    items: SouiActionSchema;
+    minItems?: number;
+    maxItems: number;
+} | {
+    type: 'string';
+    minLength?: number;
+    maxLength: number;
+    enum?: string[];
+} | {
+    type: 'number' | 'integer';
+    minimum?: number;
+    maximum?: number;
+} | {
+    type: 'boolean' | 'null';
+};
+/** Deliberately limited schema vocabulary; unsupported keywords are rejected. */
+export interface SouiActionContract {
+    protocol: 'soui.action/1';
+    title: string;
+    description: string;
+    inputSchema: Extract<SouiActionSchema, {
+        type: 'object';
+    }>;
+    outputSchema: Extract<SouiActionSchema, {
+        type: 'object';
+    }>;
+}
+export interface SouiToolDefinition {
+    name: string;
+    description: string;
+    inputSchema: SouiActionContract['inputSchema'];
+}
+export declare function copySouiJson(value: unknown, maximum: number, code: string): SouiJson;
+export declare function readSouiActionContract(raw: unknown, code?: string): SouiActionContract;
+export declare function validateSouiActionInput(contract: SouiActionContract, input: unknown): void;
+export declare function validateSouiActionOutput(contract: SouiActionContract, output: unknown): void;
+/** Descriptions are advisory. Calling a tool still uses the authorized native client. */
+export declare function souiToolDefinitions(catalog: SouiCapabilityCatalog): SouiToolDefinition[];

@@ -70,6 +70,10 @@ class task_service final {
   [[nodiscard]] bool shutdown_scope(const std::shared_ptr<const authorization_scope>& scope);
   void shutdown_session(const std::string& session_id);
   [[nodiscard]] std::string start(const bridge_request& request);
+  // Read-only exact params: {taskId} XOR {operationId}, one bounded ASCII
+  // identifier (1-128 characters, letters/digits/-_.:), no other fields.
+  // Operation lookup uses this request's actual active scope and retained task;
+  // not-found never proves that work was not executed or authorizes a replay.
   [[nodiscard]] std::string query(const bridge_request& request) const;
   [[nodiscard]] std::string cancel(const bridge_request& request);
   [[nodiscard]] std::string subscribe(const bridge_request& request);

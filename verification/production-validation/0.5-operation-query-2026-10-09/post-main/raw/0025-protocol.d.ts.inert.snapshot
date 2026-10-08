@@ -1,0 +1,174 @@
+import type { SouiCapabilityPage, SouiDescribeOptions } from './capabilities.js';
+import type { SouiTaskQueryParams } from './task-query.js';
+export type { SouiTaskQueryParams } from './task-query.js';
+export interface SouiNativeEvent {
+    sessionId: string;
+    taskId?: string;
+    sequence: number;
+    eventName: string;
+    payload: unknown;
+}
+export interface SouiNativePort {
+    request(envelope: string): Promise<string>;
+    onEvent(listener: (event: SouiNativeEvent) => void): () => void;
+    /** Release this port's listeners; this does not cancel native work. */
+    dispose?(): void;
+}
+/** Relative native authorization lifetime. A renewal keeps the document identity. */
+export interface SouiSessionLease {
+    generation: number;
+    expiresInMs: number;
+    renewAfterMs: number;
+}
+export declare function readSessionLease(value: unknown, code?: string): SouiSessionLease;
+export interface SouiBridgeRequest {
+    requestId: string;
+    sessionId: string;
+    origin: string;
+    token: string;
+    method: string;
+    params: unknown;
+    timeoutMs: number;
+}
+export interface SouiBridgeResponse {
+    requestId: string;
+    ok: boolean;
+    result?: unknown;
+    error?: {
+        code: string;
+        message: string;
+    };
+}
+/** Methods installed by json_bridge itself, without Workbench services. */
+export interface SouiCoreMethodMap {
+    'bridge.describe': {
+        params: SouiDescribeOptions;
+        result: SouiCapabilityPage;
+    };
+    'bridge.probe.report': {
+        params: {
+            ready: true;
+        };
+        result: {
+            ready: true;
+        };
+    };
+    'task.start': {
+        params: {
+            kind: string;
+            operationId: string;
+            input: Record<string, unknown>;
+        };
+        result: {
+            taskId: string;
+            accepted: boolean;
+            duplicate: boolean;
+        };
+    };
+    'task.query': {
+        params: SouiTaskQueryParams;
+        result: {
+            taskId: string;
+            state: string;
+            progress: number;
+            message: string;
+            sequence: number;
+            result?: Record<string, unknown>;
+        };
+    };
+    'task.cancel': {
+        params: {
+            taskId: string;
+        };
+        result: {
+            taskId: string;
+            state: string;
+            cancelRequested: boolean;
+        };
+    };
+    'task.subscribe': {
+        params: {
+            taskId: string;
+            eventName: 'task.progress';
+        };
+        result: {
+            subscriptionId: string;
+        };
+    };
+    'task.unsubscribe': {
+        params: {
+            subscriptionId: string;
+        };
+        result: {
+            removed: boolean;
+        };
+    };
+}
+/** Optional desktop capability installed by json_bridge::enable_clipboard_service(). */
+export interface SouiClipboardMethodMap {
+    'desktop.clipboard.writeText': {
+        params: {
+            text: string;
+        };
+        result: {
+            applied: true;
+        };
+    };
+}
+/** Optional directory picker installed by json_bridge::enable_directory_service(). */
+export interface SouiDirectoryMethodMap {
+    'desktop.dialog.pickDirectory': {
+        params: {};
+        result: {
+            cancelled: boolean;
+            path: string;
+        };
+    };
+}
+/** Optional window capability installed by json_bridge::enable_window_service(). */
+export interface SouiWindowMethodMap {
+    'desktop.window.setTitle': {
+        params: {
+            title: string;
+        };
+        result: {
+            applied: true;
+        };
+    };
+    'desktop.window.beginDrag': {
+        params: {};
+        result: {
+            started: true;
+        };
+    };
+    'desktop.window.minimize': {
+        params: {};
+        result: {
+            minimized: true;
+        };
+    };
+    'desktop.window.toggleMaximize': {
+        params: {};
+        result: {
+            maximized: boolean;
+        };
+    };
+    'desktop.window.close': {
+        params: {};
+        result: {
+            accepted: true;
+        };
+    };
+}
+export declare class SouiBridgeError extends Error {
+    readonly code: string;
+    readonly requestId: string;
+    constructor(code: string, message: string, requestId?: string);
+}
+export declare const MAX_MESSAGE_BYTES: number;
+export declare function isRecord(value: unknown): value is Record<string, unknown>;
+export declare function nonEmptyString(value: unknown, maximum?: number): value is string;
+export declare function utf8Bytes(text: string): number;
+export declare function readResponse(raw: unknown, requestId: string): SouiBridgeResponse;
+export declare function isNativeEvent(value: unknown): value is SouiNativeEvent;
+export declare function integerOption(value: number | undefined, fallback: number, maximum: number, name: string): number;

@@ -1,0 +1,246 @@
+{
+  "schema": "soui.gui-bindings-tests/v1",
+  "version": "0.5.0-preview.1",
+  "sourceSha256": "3d9486bc4083bf212cd27c5a8ae61607687145a85a712cf2041b053c522c7711",
+  "outputSha256": "7e70cd6a1ff03a714c2e43bbb08cf0ef80281da119936cc4a3874a84b0afb6e9",
+  "commands": [
+    {
+      "cwd": "tests/gui-bindings",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "tests-gui-bindings-install.stdout.log",
+      "stderr": "tests-gui-bindings-install.stderr.log",
+      "logs": {
+        "stdout": {
+          "bytes": 25,
+          "sha256": "d257108234163be5f8af2aadb991d07060800d9cbd64dc651ef957d543036a4f"
+        },
+        "stderr": {
+          "bytes": 122,
+          "sha256": "67389c0b6efbe86c5fc51293d278be25159d27ace6d73ae2da626b49a0143470"
+        }
+      }
+    },
+    {
+      "cwd": "tests/gui-bindings/react18",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "tests-gui-bindings-react18-install.stdout.log",
+      "stderr": "tests-gui-bindings-react18-install.stderr.log",
+      "logs": {
+        "stdout": {
+          "bytes": 28,
+          "sha256": "87bc59bb3b916f974d0cb36a279aedf26b6c853750a66d116bf39bd639ce731e"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "cwd": "tests/gui-bindings",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "test"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "test.stdout.log",
+      "stderr": "test.stderr.log",
+      "logs": {
+        "stdout": {
+          "bytes": 2875,
+          "sha256": "230b8141b3201e39437c38978950453a247a027e41fefa2cb8abe73c815d4bab"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "cwd": "tests/gui-bindings",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "test:react18"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "test-react18.stdout.log",
+      "stderr": "test-react18.stderr.log",
+      "logs": {
+        "stdout": {
+          "bytes": 1274,
+          "sha256": "983509d39c82f0b898e793822a22c7ed5c6693a341fc2db0763e493ee00fbb84"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "cwd": "tests/gui-bindings",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "typecheck.stdout.log",
+      "stderr": "typecheck.stderr.log",
+      "logs": {
+        "stdout": {
+          "bytes": 86,
+          "sha256": "2c25c6281402ca0eb5811d9967c35a7429feff3b0977999dc539f7da3d041a30"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "cwd": "tests/gui-bindings",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "typecheck:react18"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "typecheck-react18.stdout.log",
+      "stderr": "typecheck-react18.stderr.log",
+      "logs": {
+        "stdout": {
+          "bytes": 102,
+          "sha256": "4f4b7b81c014a3025367de557322e5bc6505a0702d677fb284091ced37f4ef21"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "cwd": "sdk/bindings/react",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "sdk-bindings-react-audit.stdout.log",
+      "stderr": "sdk-bindings-react-audit.stderr.log",
+      "logs": {
+        "stdout": {
+          "bytes": 358,
+          "sha256": "e8bbc82d0d656ca6c5d561fcb794dae7591893e0a9812ba4d5dcc40258af1ad3"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "cwd": "sdk/bindings/vue",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "sdk-bindings-vue-audit.stdout.log",
+      "stderr": "sdk-bindings-vue-audit.stderr.log",
+      "logs": {
+        "stdout": {
+          "bytes": 360,
+          "sha256": "d779408e46397a81b73737e06ea904cb9b8bb82ad1efff44f3e59f363fe8c5f3"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "cwd": "tests/gui-bindings",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "tests-gui-bindings-audit.stdout.log",
+      "stderr": "tests-gui-bindings-audit.stderr.log",
+      "logs": {
+        "stdout": {
+          "bytes": 361,
+          "sha256": "69e36da0ad034c92fa26e81cf9caa7aa6d6aec1f5b79bd1bf38e1cf7dbb53c31"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "cwd": "tests/gui-bindings/react18",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "tests-gui-bindings-react18-audit.stdout.log",
+      "stderr": "tests-gui-bindings-react18-audit.stderr.log",
+      "logs": {
+        "stdout": {
+          "bytes": 359,
+          "sha256": "9929b6a673ba369e5a69314aa2bb8d5a0c1040d1b9948cb402f34a7a3c8fbe85"
+        },
+        "stderr": {
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ],
+  "passed": true,
+  "desktopValidated": false
+}

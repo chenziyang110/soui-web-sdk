@@ -1,0 +1,100 @@
+{
+  "schema": "soui.operation-query-gui-combination/v1",
+  "sourceSha256": "b5feaa0d5e7a9782c33625bdc3b807c25f61c6f71fc9650f8ae31f3efd28bad5",
+  "guiSourceSha256": "3d9486bc4083bf212cd27c5a8ae61607687145a85a712cf2041b053c522c7711",
+  "guiOutputSha256": "7e70cd6a1ff03a714c2e43bbb08cf0ef80281da119936cc4a3874a84b0afb6e9",
+  "results": [
+    {
+      "name": "gui-build",
+      "args": [
+        "tools/sdk/gui-bindings-delivery.cjs",
+        "build",
+        "--root",
+        "F:\\work\\sm05-query"
+      ],
+      "counts": null,
+      "naturalCompleted": true,
+      "reportSha256": "aae3ae6013c0c7f3cba9e01edf85e947b2bb7fe0b84f9499386d2e56c34ce53d"
+    },
+    {
+      "name": "query-types",
+      "args": [
+        "sdk/web/node_modules/typescript/bin/tsc",
+        "-p",
+        "tests/web/task-query-types.tsconfig.json"
+      ],
+      "counts": null,
+      "naturalCompleted": true,
+      "reportSha256": "df95c3abfbdd26d3699ebbc076899afea07304f28c80d2566c7cd4a1509eac42"
+    },
+    {
+      "name": "query-web",
+      "args": [
+        "--test",
+        "--test-reporter=tap",
+        "tests/web/task-query.test.mjs",
+        "tests/web/sdk-client.test.mjs",
+        "tests/web/capabilities.test.mjs",
+        "tests/web/action-contracts.test.mjs",
+        "tests/web/gui.test.mjs",
+        "tests/web/session-renewal.test.mjs"
+      ],
+      "counts": {
+        "tests": 98,
+        "pass": 98,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0
+      },
+      "naturalCompleted": true,
+      "reportSha256": "66c8d69f984e13a1b5c5f15f9c433620800c950826893be8848bc15917a56e77"
+    },
+    {
+      "name": "gui-tests",
+      "args": [
+        "tools/sdk/gui-bindings-delivery.cjs",
+        "test",
+        "--root",
+        "F:\\work\\sm05-query"
+      ],
+      "counts": null,
+      "naturalCompleted": true,
+      "reportSha256": "94f3287ff6d4e0d0a5dcb037cb870fe75be5266fd866c50a3c556ed8fab2266a"
+    }
+  ],
+  "collectQueryUnitProjection": [
+    {
+      "name": "task-query-tests",
+      "exe": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--test",
+        "tests/web/task-query.test.mjs"
+      ]
+    },
+    {
+      "name": "task-query-types",
+      "exe": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "sdk/web/node_modules/typescript/bin/tsc",
+        "-p",
+        "tests/web/task-query-types.tsconfig.json"
+      ]
+    },
+    {
+      "name": "native-task-query-x64",
+      "exe": "F:\\work\\sm05-query\\out\\x64\\tests\\native\\Release\\soui_task_operation_query_tests.exe",
+      "args": []
+    },
+    {
+      "name": "native-task-query-x86",
+      "exe": "F:\\work\\sm05-query\\out\\x86\\tests\\native\\Release\\soui_task_operation_query_tests.exe",
+      "args": []
+    }
+  ],
+  "collectProjectionOnly": true,
+  "fullTestExecuted": false,
+  "fullCollectExecuted": false,
+  "sdkNativeRecompiledHere": false,
+  "guiDesktopValidated": false,
+  "releaseReady": false
+}

@@ -1,0 +1,291 @@
+TAP version 13
+# Subtest: strict CLI rejects unknown, repeated and partially specified tail permissions
+ok 1 - strict CLI rejects unknown, repeated and partially specified tail permissions
+  ---
+  duration_ms: 1.6852
+  type: 'test'
+  ...
+# Subtest: natural completed build needs current payload and a new build identity
+ok 2 - natural completed build needs current payload and a new build identity
+  ---
+  duration_ms: 2.2611
+  type: 'test'
+  ...
+# Subtest: explicit synthetic exact-tail policy preserves generic false/124
+ok 3 - explicit synthetic exact-tail policy preserves generic false/124
+  ---
+  duration_ms: 2.1994
+  type: 'test'
+  ...
+# Subtest: yesterday build ID reused
+ok 4 - yesterday build ID reused
+  ---
+  duration_ms: 0.5523
+  type: 'test'
+  ...
+# Subtest: old report with identical source and new-looking ID
+ok 5 - old report with identical source and new-looking ID
+  ---
+  duration_ms: 0.2902
+  type: 'test'
+  ...
+# Subtest: payload current bytes differ
+ok 6 - payload current bytes differ
+  ---
+  duration_ms: 0.2673
+  type: 'test'
+  ...
+# Subtest: source changed during build
+ok 7 - source changed during build
+  ---
+  duration_ms: 0.1807
+  type: 'test'
+  ...
+# Subtest: raw source changes even with identical normalized identity
+ok 8 - raw source changes even with identical normalized identity
+  ---
+  duration_ms: 0.1595
+  type: 'test'
+  ...
+# Subtest: Build script raw bytes changed
+ok 9 - Build script raw bytes changed
+  ---
+  duration_ms: 0.1659
+  type: 'test'
+  ...
+# Subtest: compiler replaced without source change
+ok 10 - compiler replaced without source change
+  ---
+  duration_ms: 0.2209
+  type: 'test'
+  ...
+# Subtest: reviewed reader bytes changed
+ok 11 - reviewed reader bytes changed
+  ---
+  duration_ms: 0.3288
+  type: 'test'
+  ...
+# Subtest: CMake actual compiler was not observed
+ok 12 - CMake actual compiler was not observed
+  ---
+  duration_ms: 0.26
+  type: 'test'
+  ...
+# Subtest: caller ready differs by one exact FILETIME tick
+ok 13 - caller ready differs by one exact FILETIME tick
+  ---
+  duration_ms: 0.1882
+  type: 'test'
+  ...
+# Subtest: valid context JSON points at another script
+ok 14 - valid context JSON points at another script
+  ---
+  duration_ms: 0.116
+  type: 'test'
+  ...
+# Subtest: natural Test.ps1 cannot acquire Build policy by freezing its own context
+ok 15 - natural Test.ps1 cannot acquire Build policy by freezing its own context
+  ---
+  duration_ms: 0.3993
+  type: 'test'
+  ...
+# Subtest: missing tools cannot be called unchanged
+ok 16 - missing tools cannot be called unchanged
+  ---
+  duration_ms: 0.2148
+  type: 'test'
+  ...
+# Subtest: missing raw script inputs cannot be called unchanged
+ok 17 - missing raw script inputs cannot be called unchanged
+  ---
+  duration_ms: 0.2427
+  type: 'test'
+  ...
+# Subtest: valid client object cannot replace native terminal
+ok 18 - valid client object cannot replace native terminal
+  ---
+  duration_ms: 0.1714
+  type: 'test'
+  ...
+# Subtest: native report truncated
+ok 19 - native report truncated
+  ---
+  duration_ms: 0.1172
+  type: 'test'
+  ...
+# Subtest: duplicate native start
+ok 20 - duplicate native start
+  ---
+  duration_ms: 0.1443
+  type: 'test'
+  ...
+# Subtest: duplicate native root-exit
+ok 21 - duplicate native root-exit
+  ---
+  duration_ms: 0.1257
+  type: 'test'
+  ...
+# Subtest: unknown native event cannot be an invisible extra
+ok 22 - unknown native event cannot be an invisible extra
+  ---
+  duration_ms: 0.1229
+  type: 'test'
+  ...
+# Subtest: floating member creation time cannot be rounded back into an identity
+ok 23 - floating member creation time cannot be rounded back into an identity
+  ---
+  duration_ms: 0.1236
+  type: 'test'
+  ...
+# Subtest: duplicate JSON field after valid-looking last value
+ok 24 - duplicate JSON field after valid-looking last value
+  ---
+  duration_ms: 0.1362
+  type: 'test'
+  ...
+# Subtest: unbound supervisor exit
+ok 25 - unbound supervisor exit
+  ---
+  duration_ms: 0.1649
+  type: 'test'
+  ...
+# Subtest: STOP cannot qualify
+ok 26 - STOP cannot qualify
+  ---
+  duration_ms: 0.1247
+  type: 'test'
+  ...
+# Subtest: fallback cannot qualify
+ok 27 - fallback cannot qualify
+  ---
+  duration_ms: 0.1507
+  type: 'test'
+  ...
+# Subtest: post-launch source missing
+ok 28 - post-launch source missing
+  ---
+  duration_ms: 0.1019
+  type: 'test'
+  ...
+# Subtest: default tail, explicit timeout and root failure are never promoted to accepted
+ok 29 - default tail, explicit timeout and root failure are never promoted to accepted
+  ---
+  duration_ms: 2.0046
+  type: 'test'
+  ...
+# Subtest: workspace lease excludes both architectures and refuses foreign release
+not ok 30 - workspace lease excludes both architectures and refuses foreign release
+  ---
+  duration_ms: 3.3349
+  type: 'test'
+  location: 'F:\\work\\sm05-build-caller\\out\\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\\red-158c5938-3517-4c68-9fbe-47204027880f\\red-standard-build.test.cjs:108:1'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-158c5938-3517-4c68-9fbe-47204027880f\red-standard-build.test.cjs:112:10)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: configured Node records requested and resolved tool bytes
+not ok 31 - configured Node records requested and resolved tool bytes
+  ---
+  duration_ms: 0.4481
+  type: 'test'
+  location: 'F:\\work\\sm05-build-caller\\out\\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\\red-158c5938-3517-4c68-9fbe-47204027880f\\red-standard-build.test.cjs:120:1'
+  failureType: 'testCodeFailure'
+  error: 'Linked path: C:\\nvm4w\\nodejs'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Object.safePath (F:\work\sm05-build-caller\tools\internal\delivery-identity.cjs:19:56)
+    Object.file [as inspectTool] (eval at <anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-158c5938-3517-4c68-9fbe-47204027880f\old-adapter.cjs:1:448), <anonymous>:61:12)
+    TestContext.<anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-158c5938-3517-4c68-9fbe-47204027880f\red-standard-build.test.cjs:121:23)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: real private junction resolves tools but source and evidence rules still refuse links
+not ok 32 - real private junction resolves tools but source and evidence rules still refuse links
+  ---
+  duration_ms: 1.4135
+  type: 'test'
+  location: 'F:\\work\\sm05-build-caller\\out\\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\\red-158c5938-3517-4c68-9fbe-47204027880f\\red-standard-build.test.cjs:139:1'
+  failureType: 'testCodeFailure'
+  error: 'Linked path: F:\\work\\sm05-build-caller\\out\\standard-build-tool-junction-Zirygi\\configured'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Object.safePath (F:\work\sm05-build-caller\tools\internal\delivery-identity.cjs:19:56)
+    Object.file [as inspectTool] (eval at <anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-158c5938-3517-4c68-9fbe-47204027880f\old-adapter.cjs:1:448), <anonymous>:61:12)
+    TestContext.<anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-158c5938-3517-4c68-9fbe-47204027880f\red-standard-build.test.cjs:140:40)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: junction retarget to identical bytes cannot preserve frozen tool identity
+not ok 33 - junction retarget to identical bytes cannot preserve frozen tool identity
+  ---
+  duration_ms: 1.303
+  type: 'test'
+  location: 'F:\\work\\sm05-build-caller\\out\\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\\red-158c5938-3517-4c68-9fbe-47204027880f\\red-standard-build.test.cjs:149:1'
+  failureType: 'testCodeFailure'
+  error: 'Linked path: F:\\work\\sm05-build-caller\\out\\standard-build-tool-junction-Eg3B63\\configured'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Object.safePath (F:\work\sm05-build-caller\tools\internal\delivery-identity.cjs:19:56)
+    Object.file [as inspectTool] (eval at <anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-158c5938-3517-4c68-9fbe-47204027880f\old-adapter.cjs:1:448), <anonymous>:61:12)
+    TestContext.<anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-158c5938-3517-4c68-9fbe-47204027880f\red-standard-build.test.cjs:150:40)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: canonical tool replacement and missing junction target fail closed
+not ok 34 - canonical tool replacement and missing junction target fail closed
+  ---
+  duration_ms: 1.2118
+  type: 'test'
+  location: 'F:\\work\\sm05-build-caller\\out\\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\\red-158c5938-3517-4c68-9fbe-47204027880f\\red-standard-build.test.cjs:157:1'
+  failureType: 'testCodeFailure'
+  error: 'Linked path: F:\\work\\sm05-build-caller\\out\\standard-build-tool-junction-1GTdLs\\configured'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Object.safePath (F:\work\sm05-build-caller\tools\internal\delivery-identity.cjs:19:56)
+    Object.file [as inspectTool] (eval at <anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-158c5938-3517-4c68-9fbe-47204027880f\old-adapter.cjs:1:448), <anonymous>:61:12)
+    TestContext.<anonymous> (F:\work\sm05-build-caller\out\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\red-158c5938-3517-4c68-9fbe-47204027880f\red-standard-build.test.cjs:158:40)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: real temporary SDK library drift fails the existing build evidence verification
+ok 35 - real temporary SDK library drift fails the existing build evidence verification
+  ---
+  duration_ms: 13.6603
+  type: 'test'
+  ...
+1..35
+# tests 35
+# suites 0
+# pass 30
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 149.7584

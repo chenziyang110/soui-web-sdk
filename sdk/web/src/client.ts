@@ -5,6 +5,8 @@ import { SouiBridgeError, MAX_MESSAGE_BYTES, integerOption, isNativeEvent, isRec
   nonEmptyString, readResponse, utf8Bytes } from './protocol.js';
 import type { SouiBridgeRequest, SouiNativeEvent, SouiNativePort, SouiSessionLease } from './protocol.js';
 import { SessionRenewal } from './session-renewal.js';
+import { readTaskQueryParams } from './task-query.js';
+import type { SouiCoreMethodMap } from './protocol.js';
 
 export interface SouiNativeClientOptions {
   sessionId: string;
@@ -116,6 +118,10 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
       return Promise.reject(new SouiBridgeError('E_DISPOSED', 'The native client has been disposed.', requestId));
     if (!nonEmptyString(method))
       return Promise.reject(new SouiBridgeError('E_INVALID_PARAMS', 'A method name is required.', requestId));
+    if (method === 'task.query') {
+      try { params = readTaskQueryParams(params, requestId); }
+      catch (error) { return Promise.reject(error); }
+    }
     const request: SouiBridgeRequest = { requestId, sessionId: this.options.sessionId, origin: this.options.origin,
       token: this.session.token, method, params, timeoutMs: this.timeoutMs };
     let envelope: string;
@@ -167,6 +173,10 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
   /** Compatibility helpers require a native task service registered by the application. */
   public query(taskId: string): Promise<SouiMethodMap['task.query']['result']> {
     return this.request('task.query', { taskId });
+  }
+  /** Read the current scope's retained operation; never restarts or cancels it. */
+  public queryOperation(operationId: string): Promise<SouiCoreMethodMap['task.query']['result']> {
+    return this.request('task.query', { operationId });
   }
   public cancel(taskId: string): Promise<SouiMethodMap['task.cancel']['result']> {
     return this.request('task.cancel', { taskId });
