@@ -1,0 +1,102 @@
+{
+  "schema": "soui.historical-alert-disposition/v1",
+  "repository": "chenziyang110/soui-web-sdk",
+  "reviewedPolicyCommit": "b185bacd224ea8632a2fa21224065971475188c6",
+  "policyDocument": {
+    "path": "docs/maintenance/historical-source-map-js-evidence.md",
+    "bytes": 13964,
+    "sha256": "8faf805abc497806ebb49f19f275d03cb3ff9afec0aabb4af12008a178126b6d"
+  },
+  "originalMaintenanceIndexSha256": "fe7485e4806757cd9b79f2993ae8cce610d395f46dde59d946880b596eb49221",
+  "startedAt": "2026-10-08T16:03:50.209Z",
+  "completed": false,
+  "reason": "not_used",
+  "files": [
+    {
+      "path": "main-before.stdout.json",
+      "bytes": 350,
+      "sha256": "122353b5a1b46ecdc51a9439b0dcc4326099d36260f6a5d822ae70159c41b758"
+    },
+    {
+      "path": "main-before.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "open-before.stdout.json",
+      "bytes": 32956,
+      "sha256": "f31ff5693b26d741b1215071aa562a622395e1a2f54a2d62e3466f93eccfd9bf"
+    },
+    {
+      "path": "open-before.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "alert-57.request.json",
+      "bytes": 388,
+      "sha256": "45bf6616cd3cf969b674c9eac1097efdfe9929ae0dc130d068a9dde9186b89f0"
+    },
+    {
+      "path": "alert-57-patch.stdout.json",
+      "bytes": 232,
+      "sha256": "9227ebabeab11e271b1c2879a7369e3543f8a36cbf327e8dcb9f02dbd649db94"
+    },
+    {
+      "path": "alert-57-patch.stderr.log",
+      "bytes": 122,
+      "sha256": "a25afd7c22f5c16e50c0883655354c43ed850a83fa1e55ed81e085bbe06acaea"
+    }
+  ],
+  "operations": [
+    {
+      "name": "main-before",
+      "executable": "C:\\Program Files\\GitHub CLI\\gh.exe",
+      "args": [
+        "api",
+        "repos/chenziyang110/soui-web-sdk/git/ref/heads/main"
+      ],
+      "startedAt": "2026-10-08T16:03:50.211Z",
+      "finishedAt": "2026-10-08T16:03:51.287Z",
+      "exitCode": 0,
+      "signal": null,
+      "spawnError": null
+    },
+    {
+      "name": "open-before",
+      "executable": "C:\\Program Files\\GitHub CLI\\gh.exe",
+      "args": [
+        "api",
+        "repos/chenziyang110/soui-web-sdk/dependabot/alerts?state=open&per_page=100"
+      ],
+      "startedAt": "2026-10-08T16:03:51.288Z",
+      "finishedAt": "2026-10-08T16:03:52.458Z",
+      "exitCode": 0,
+      "signal": null,
+      "spawnError": null
+    },
+    {
+      "name": "alert-57-patch",
+      "executable": "C:\\Program Files\\GitHub CLI\\gh.exe",
+      "args": [
+        "api",
+        "--method",
+        "PATCH",
+        "repos/chenziyang110/soui-web-sdk/dependabot/alerts/57",
+        "--input",
+        "F:\\work\\sm05\\verification\\production-validation\\0.5-maintenance-disposition-2026-10-09\\alert-57.request.json"
+      ],
+      "startedAt": "2026-10-08T16:03:52.462Z",
+      "finishedAt": "2026-10-08T16:03:53.625Z",
+      "exitCode": 1,
+      "signal": null,
+      "spawnError": null
+    }
+  ],
+  "alerts": [],
+  "historicalDependencyPatched": false,
+  "originalRawEvidenceModified": false,
+  "releaseReady": false,
+  "error": "Error: GitHub operation failed: alert-57-patch\n    at api (F:\\work\\sm05\\out\\triage-historical-alerts.cjs:28:58)\n    at Object.<anonymous> (F:\\work\\sm05\\out\\triage-historical-alerts.cjs:52:17)\n    at Module._compile (node:internal/modules/cjs/loader:1812:14)\n    at Object..js (node:internal/modules/cjs/loader:1943:10)\n    at Module.load (node:internal/modules/cjs/loader:1533:32)\n    at Module._load (node:internal/modules/cjs/loader:1335:12)\n    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)\n    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)\n    at node:internal/main/run_main_module:33:47",
+  "finishedAt": "2026-10-08T16:03:53.626Z"
+}

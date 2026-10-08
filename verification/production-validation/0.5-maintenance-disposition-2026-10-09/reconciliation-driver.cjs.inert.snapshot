@@ -1,0 +1,39 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),{spawnSync}=require('node:child_process');
+const root=path.resolve(__dirname,'..'),base='verification/production-validation/0.5-maintenance-disposition-2026-10-09';
+const folder=path.join(root,base,'reconciliation-'+crypto.randomUUID());fs.mkdirSync(folder);
+const original=JSON.parse(fs.readFileSync(path.join(root,'verification/production-validation/0.5-maintenance-2026-10-08/index.json')));
+const mutation=path.join(root,base,'continuation-e66c8887-303b-42b6-bc0e-c1ff39737b5b');
+const mutated=JSON.parse(fs.readFileSync(path.join(mutation,'index.json')));
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const executable=spawnSync('where.exe',['gh.exe'],{encoding:'utf8',windowsHide:true}).stdout.trim().split(/\r?\n/)[0];
+const operations=[],files=[],alerts=[];
+const record={schema:'soui.historical-alert-reconciliation/v1',startedAt:new Date().toISOString(),completed:false,
+ mutationIndexSha256:sha(fs.readFileSync(path.join(mutation,'index.json'))),mutationDirectory:path.relative(root,mutation).replaceAll('\\','/'),
+ priorPartialVerification:'All eleven PATCH responses were dismissed/not_used. The immediate state=open list still returned a dismissed alert, and the overly strict presence check failed. Its raw response and failed result remain unchanged.',
+ operations,files,alerts,historicalDependencyPatched:false,originalRawEvidenceModified:false,releaseReady:false};
+const save=()=>fs.writeFileSync(path.join(folder,'index.json'),JSON.stringify(record,null,2)+'\n');
+function api(name,endpoint){const args=['api',endpoint],startedAt=new Date().toISOString();
+ const r=spawnSync(executable,args,{cwd:root,windowsHide:true,maxBuffer:8*1024*1024});
+ for(const [suffix,b]of [['stdout.json',r.stdout||Buffer.alloc(0)],['stderr.log',r.stderr||Buffer.alloc(0)]]){
+  const file=name+'.'+suffix;fs.writeFileSync(path.join(folder,file),b,{flag:'wx'});files.push({path:file,bytes:b.length,sha256:sha(b)});
+ }
+ operations.push({name,executable,args,startedAt,finishedAt:new Date().toISOString(),exitCode:r.status,signal:r.signal});save();
+ if(r.status!==0||r.signal||r.error)throw new Error('Read failed');return JSON.parse(r.stdout);
+}
+try{save();if(mutated.alerts.length!==11)throw new Error('Eleven successful PATCH responses missing');
+ for(const expected of original.alerts){
+  const a=api('alert-'+expected.number,'repos/chenziyang110/soui-web-sdk/dependabot/alerts/'+expected.number);
+  if(a.number!==expected.number||a.dependency?.manifest_path!==expected.path||a.dependency?.package?.name!=='source-map-js'||
+   a.security_advisory?.ghsa_id!==expected.ghsa||a.state!=='dismissed'||a.dismissed_reason!=='not_used')throw new Error('Disposition identity mismatch');
+  const bytes=fs.readFileSync(path.join(root,expected.path));if(bytes.length!==expected.bytes||sha(bytes)!==expected.sha256)throw new Error('Evidence changed');
+  alerts.push({number:a.number,path:expected.path,state:a.state,reason:a.dismissed_reason,dismissedAt:a.dismissed_at,
+   preservedLockBytes:bytes.length,preservedLockSha256:sha(bytes)});save();
+ }
+ const open=api('open-final','repos/chenziyang110/soui-web-sdk/dependabot/alerts?state=open&sort=updated&direction=desc&per_page=100');
+ if(!Array.isArray(open)||open.some(a=>a.state==='open'&&original.alerts.some(x=>x.number===a.number)))throw new Error('An observed target is still open');
+ record.returnedListCount=open.length;record.observedOpenAlertCount=open.filter(a=>a.state==='open').length;
+ record.completed=true;record.finishedAt=new Date().toISOString();save();
+ console.log(JSON.stringify({completed:true,dismissed:alerts.length,observedOpenAlerts:record.observedOpenAlertCount,
+  record:path.relative(root,path.join(folder,'index.json')).replaceAll('\\','/')}));
+}catch(error){record.error=error.stack;save();throw error;}
