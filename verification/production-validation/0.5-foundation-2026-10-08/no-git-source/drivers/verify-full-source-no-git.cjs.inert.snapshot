@@ -1,0 +1,116 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),cp=require('node:child_process');
+const {launchOwned}=require('../tools/internal/owned-process.cjs');
+const root=path.resolve(__dirname,'..');
+const expected='e7519638abe291a21f9b03764677dd1ead8f6e27ede7a0df206de7d676477ff9';
+const hash=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const parent=path.resolve('F:/work');
+if(cp.spawnSync('git',['-C',parent,'rev-parse','--show-toplevel'],{windowsHide:true}).status!==128)
+ throw new Error('No-Git validation parent must be outside a Git checkout');
+const uuid=crypto.randomUUID();
+const attempt=path.join(parent,'soui-05-source-validation-'+uuid);fs.mkdirSync(attempt);
+const originalRunner=path.join(root,'out/benchmark-protocol/Release/OwnedProcessRunner.exe');
+const runnerFolder=path.join(root,'out/validation-bootstrap',hash(originalRunner));fs.mkdirSync(runnerFolder,{recursive:true});
+const runner=path.join(runnerFolder,'OwnedProcessRunner.exe');
+if(!fs.existsSync(runner))fs.copyFileSync(originalRunner,runner,fs.constants.COPYFILE_EXCL);
+if(hash(runner)!==hash(originalRunner))throw new Error('Bootstrap runner identity');
+const ps=path.join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/powershell.exe');
+const zip=path.join(process.env.ProgramFiles,'7-Zip/7z.exe');
+const archive=path.join(root,'dist/local-validation','foundation-source-'+uuid+'.zip');
+const extracted=path.join(attempt,'extracted-source');
+const relocated=path.join(attempt,'relocated-source');
+const env={...process.env,MSBUILDDISABLENODEREUSE:'1',
+ PSModulePath:path.join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/Modules')};
+const results=[];
+const report={schema:'soui.full-source-no-git-local/v1',version:'0.5.0-preview.1',releaseReady:false,
+ sourceDeliveryVerified:false,scope:'SDK-only both architectures plus external installed consumer',
+ sourceGitCommit:'2154ed80ebe5825e398b87992d0f666d28bab260',sourceSha256:expected,
+ originalSourceManifestSha256:hash(path.join(root,'source-manifest.json')),attempt,archive,
+ completed:false,results,
+ limitations:['Local immutable validation ZIP, not a published or frozen SDK/app package.',
+  'Generic compilation supervision remains independently evaluated; vctip tails are not accepted by name.',
+  'No generated application startup, offline dependency restoration, target-system, performance or final release acceptance.']};
+const save=()=>fs.writeFileSync(path.join(attempt,'report.json'),JSON.stringify(report,null,2)+'\n');
+async function run(name,exe,args,cwd,timeoutMs=1200000,drainMs=30000){
+ const folder=path.join(attempt,name);fs.mkdirSync(folder);
+ const log=fs.openSync(path.join(folder,'run.log'),'wx');
+ const child=launchOwned(exe,args,{runner,cwd,report:path.join(folder,'owned.ndjson'),timeoutMs,drainMs,
+  env,stdout:log,stderr:log});
+ const result=await child.finished;fs.closeSync(log);results.push({name,exe,args,cwd,...result});save();
+ console.log(JSON.stringify({name,exitCode:result.exitCode,passed:result.passed,
+  closureConfirmed:result.closureConfirmed,reason:result.terminal?.reason}));
+ if(result.exitCode!==0||!result.closureConfirmed||result.reportError||result.spawnError||result.fallbackUsed)
+  throw new Error('Validation root failed or closure unverified: '+name);
+ return result;
+}
+function quoted(value){return "'"+value.replace(/'/g,"''")+"'";}
+function pe(file){const bytes=fs.readFileSync(file),offset=bytes.readUInt32LE(0x3c);
+ if(bytes.toString('ascii',offset,offset+4)!=='PE\0\0')throw new Error('Invalid PE');return bytes.readUInt16LE(offset+4);}
+(async()=>{
+ console.log('No-Git validation: '+attempt);save();
+ await run('package',ps,['-NoProfile','-ExecutionPolicy','Bypass','-File','tools/Package.ps1','-OutputFile',archive],root);
+ report.archiveSha256=hash(archive);report.archiveBytes=fs.statSync(archive).size;save();
+ await run('extract',zip,['x',archive,'-o'+extracted,'-y'],attempt);
+ if(fs.existsSync(path.join(extracted,'.git')))throw new Error('Archive includes Git metadata');
+ fs.renameSync(extracted,relocated);
+ if(fs.existsSync(extracted))throw new Error('Original extraction still exists');
+ report.relocation={original:extracted,current:relocated,originalAbsent:true};save();
+ if(cp.spawnSync('git',['-C',relocated,'rev-parse','--show-toplevel'],{windowsHide:true}).status!==128)
+  throw new Error('Relocated source still discovers Git');
+ if(hash(path.join(relocated,'source-manifest.json'))!==report.originalSourceManifestSha256)
+  throw new Error('ZIP source manifest bytes changed');
+ await run('no-git-before',process.execPath,['tools/internal/source-archive.cjs','verify'],relocated,180000,2000);
+ const id=require(path.join(relocated,'tools/internal/delivery-identity.cjs'));
+ const evidence=require(path.join(relocated,'tools/internal/build-evidence.cjs'));
+ if(id.source(relocated).sha256!==expected)throw new Error('Relocated production source differs');
+ const consumers=[];
+ for(const architecture of ['x86','x64']){
+  const buildResult=await run('sdk-build-'+architecture,ps,['-NoProfile','-ExecutionPolicy','Bypass',
+   '-File','tools/Build.ps1','-Architecture',architecture,'-Configuration','Release','-SdkOnly','-WithWebView2','-Install'],relocated);
+  const build=evidence.verifyBuild(relocated,architecture,'Release',true);
+  if(build.source.sha256!==expected||!build.optionalLibraries.webview2)throw new Error('Independent SDK payload invalid');
+  fs.copyFileSync(path.join(relocated,'out','sdk-'+architecture,'build-Release.json'),
+   path.join(attempt,'sdk-build-'+architecture,'build.json'),fs.constants.COPYFILE_EXCL);
+  const prefixOriginal=path.join(relocated,'out/install',architecture);
+  const prefix=path.join(attempt,'relocated-installed-'+architecture);
+  fs.renameSync(prefixOriginal,prefix);
+  if(fs.existsSync(prefixOriginal))throw new Error('Old install prefix remains');
+  const consumerSource=path.join(attempt,'external-consumer-source-'+architecture);
+  fs.cpSync(path.join(relocated,'tests/package-consumer'),consumerSource,{recursive:true,errorOnExist:true,force:false});
+  const consumerBuild=path.join(relocated,'out','independent-consumer-'+architecture);
+  const script=path.join(attempt,'consumer-'+architecture+'.ps1');
+  const text=["$ErrorActionPreference='Stop'",
+   '. '+quoted(path.join(relocated,'tools/internal/CMake-Configure.ps1')),
+   '$workspaceRoot='+quoted(relocated),'$consumerSource='+quoted(consumerSource),'$consumerBuild='+quoted(consumerBuild),
+   '$cmake=(Get-Command cmake.exe -ErrorAction Stop).Source',
+   "$args=@(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $workspaceRoot -SourceDirectory $consumerSource -BuildDirectory $consumerBuild -Architecture '"+architecture+"')",
+   '& $cmake @args '+quoted('-DCMAKE_PREFIX_PATH='+prefix),"if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}",
+   '& $cmake --build $consumerBuild --config Release --parallel 2',"exit $LASTEXITCODE"].join('\r\n')+'\r\n';
+  fs.writeFileSync(script,text,{flag:'wx'});
+  const compile=await run('consumer-build-'+architecture,ps,['-NoProfile','-ExecutionPolicy','Bypass','-File',script],attempt);
+  const project=path.join(consumerBuild,'soui_consumer.vcxproj');
+  const projectText=fs.readFileSync(project,'utf8');
+  if(!projectText.includes('<WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>')||
+    !projectText.includes('<PlatformToolset>v143</PlatformToolset>'))throw new Error('Actual external SDK selection differs');
+  const exe=path.join(consumerBuild,'Release/soui_consumer.exe');
+  if(pe(exe)!==(architecture==='x86'?0x14c:0x8664))throw new Error('External consumer architecture differs');
+  const actualLibrary=fs.readFileSync(path.join(consumerBuild,'consumer-library-Release.txt'),'utf8').trim();
+  if(path.resolve(actualLibrary)!==path.join(prefix,'lib/Release/soui_sdk.lib'))throw new Error('Consumer linked other library');
+  const execution=await run('consumer-run-'+architecture,exe,[],path.dirname(exe),60000,2000);
+  if(!execution.passed)throw new Error('External consumer did not exit naturally');
+  consumers.push({architecture,buildId:build.buildId,sdkLibrarySha256:hash(actualLibrary),
+   optionalWebView2Library:build.optionalLibraries.webview2,installPrefixRelocated:true,
+   consumerExeSha256:hash(exe),consumerPeMachine:'0x'+pe(exe).toString(16),
+   actualWindowsSdk:'10.0.19041.0',actualToolset:'v143',consumerProjectSha256:hash(project),
+   sdkCompileCompleted:buildResult.exitCode===0,sdkGenericSupervisionPassed:buildResult.passed,
+   consumerCompileCompleted:compile.exitCode===0,consumerGenericSupervisionPassed:compile.passed,
+   consumerNaturalOwnedClosure:execution.passed});report.consumers=consumers;save();
+ }
+ await run('no-git-after',process.execPath,['tools/internal/source-archive.cjs','verify'],relocated,180000,2000);
+ report.sourceInputsUnchanged=id.source(relocated).sha256===expected;
+ if(!report.sourceInputsUnchanged)throw new Error('Build changed production inputs');
+ report.completed=true;report.fullArchiveRoundTripVerified=true;
+ report.noGitRelocatedSdkRebuildVerified=true;report.allGenericSupervisionPassed=results.every(r=>r.passed);save();
+ console.log(JSON.stringify({completed:true,report:path.join(attempt,'report.json'),
+  noGitRelocatedSdkRebuildVerified:true,allGenericSupervisionPassed:report.allGenericSupervisionPassed}));
+})().catch(error=>{report.error=error.stack;save();console.error(error.stack);process.exitCode=1;});
