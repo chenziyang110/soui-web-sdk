@@ -1,4 +1,6 @@
 * text=auto
+verification/production-validation/win7-v11-command-interrupted-2026-09-29/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-v11-native-resize-2026-09-29/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 *.c text eol=lf
 *.cc text eol=lf
 *.cpp text eol=lf
@@ -32,6 +34,7 @@ verification/production-validation/license-runtime-notices-2026-09-28/** -text w
 *.png binary
 *.jpg binary
 *.jpeg binary
+verification/production-validation/benchmark-series-diagnostics-2026-09-28/raw/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 *.ico binary
 *.zip binary
 # SDK and deployed legal manifests bind the original license bytes.

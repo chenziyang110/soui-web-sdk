@@ -1,0 +1,32 @@
+✔ preflight and live gate share the full SOUI workload classification (0.7222ms)
+✔ live gate excludes the benchmark run and its descendants while finding external load (0.4919ms)
+✔ live gate remembers observed child identity after its parent exits (0.1251ms)
+✔ live gate does not trust a new child of an absent parent PID (0.1089ms)
+✔ live gate records when the runner has disappeared (0.0706ms)
+✔ live gate treats a benchmark host outside the owned tree as interference (0.0694ms)
+✔ live gate catches other SOUI tests and build drivers (0.0668ms)
+✔ live gate rejects a reused PID with a different creation identity (0.0507ms)
+✔ live gate fails closed if the runner PID changes identity (0.2428ms)
+✔ Windows live gate obtains process identities with a fail-closed query (635.0743ms)
+✔ live gate stops only its own runner when external workload appears (733.7808ms)
+✔ live gate checks the real runner identity before stopping its process tree (1742.9911ms)
+✔ live gate fails closed and stops its runner when the process query fails (77.2617ms)
+✔ live gate stops its runner if the gate log cannot be written (711.4864ms)
+✔ live gate lets an isolated runner exit normally (239.9606ms)
+✔ live gate rejects a missing runner identity before accepting a run (35.9502ms)
+✔ live gate catches interference that starts after a clean initial sample (770.8856ms)
+✔ five alternating accepted pairs produce diagnostics without a value verdict (1.3334ms)
+✔ four pairs cannot be summarized as the five-pair acceptance input (0.5062ms)
+✔ a missing or contaminated live gate invalidates all candidate ratios (1.2664ms)
+✔ order drift and duplicate run identity are refused (0.4563ms)
+✔ a rejected pair or forced cleanup cannot contribute to a summary (0.5055ms)
+✔ live gate must cover each real run without a missing interval (1.6094ms)
+✔ series, single-run and live gate must identify the same runner (0.4027ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5046.835
