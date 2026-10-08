@@ -1,0 +1,157 @@
+'use strict';
+const {test} = require('node:test');
+const assert = require('node:assert/strict');
+const {readDisplayCalibration, equalRational} = require('../../benchmarks/protocol/display-calibration.cjs');
+
+const identity = {pid: 321, creationFileTime: '134360000000000001'};
+const adapter = '8000000100000002';
+const rate = (numerator = 60000, denominator = 1001) => ({numerator, denominator});
+const clone = value => JSON.parse(JSON.stringify(value));
+const bytes = value => Buffer.from(JSON.stringify(value) + '\n');
+function fixture() {
+  const signal = {pixelRate: '18446744073709551615', hSyncFreq: rate(67500, 1), vSyncFreq: rate(),
+    activeSize: {cx: 1920, cy: 1080}, totalSize: {cx: 2200, cy: 1125}, videoStandardRaw: 0, scanLineOrdering: 1};
+  const modes = [
+    {kind: 1, id: 0, adapterLuid: adapter, data: {width: 1920, height: 1080, pixelFormat: 4, position: {x: -1920, y: 0}}},
+    {kind: 2, id: 9, adapterLuid: adapter, data: signal},
+    {kind: 3, id: 123, adapterLuid: adapter, data: {pathSourceSize: {x: 1920, y: 1080},
+      desktopImageRegion: {left: 0, top: 0, right: 1920, bottom: 1080},
+      desktopImageClip: {left: 0, top: 0, right: 1920, bottom: 1080}}},
+  ];
+  const paths = [{flags: 9,
+    source: {adapterLuid: adapter, id: 0, rawModeIndex: 65535, statusFlags: 1,
+      gdiName: {errorCode: 0, name: '\\\\.\\DISPLAY1'}, adapterName: {errorCode: 0, name: '\\Device\\Video0'}},
+    target: {adapterLuid: adapter, id: 9, rawModeIndex: 65538, statusFlags: 1, available: true,
+      outputTechnology: 5, rotation: 1, scaling: 1, pathRefreshRate: rate(), scanLineOrdering: 1,
+      deviceName: {errorCode: 0, flags: 5, outputTechnology: 5, edidManufactureId: 123, edidProductCodeId: 456,
+        connectorInstance: 1, friendlyName: 'Authored panel', devicePath: '\\?\\DISPLAY#fixture'},
+      adapterName: {errorCode: 0, name: '\\Device\\Video0'}}}];
+  const stages = ['buffer-size', 'query', 'metadata', 'validation', 'buffer-size', 'query', 'metadata', 'validation', 'compare'];
+  return {schema: 'soui.display-calibration/v1', readOnly: true,
+    collection: {...identity, startedAtUtcFileTime: '134360000100000001', finishedAtUtcFileTime: '134360000101000001',
+      qpcFrequency: '10000', qpcBegin: '9007199254740993', qpcEnd: '9007199254741993'},
+    bounds: {maxPaths: 256, maxModes: 1024, maxAttempts: 3, observedBudgetMs: 2000},
+    status: 'available', reason: 'success',
+    api: {module: 'system-user32', exports: {getBufferSizes: true, queryDisplayConfig: true, getDeviceInfo: true},
+      queryFlags: 82, sizingFlags: 18, virtualModeAware: true, virtualRefreshRateAware: true},
+    attempts: stages.map((stage, index) => ({attempt: 1, stage, errorCode: 0, queryFlags: 82, sizingFlags: 18,
+      pathCount: 1, modeCount: 3, qpc: (9007199254740994n + BigInt(index)).toString()})),
+    readings: [{paths, modes}, clone({paths, modes})], equalReadings: true,
+    claims: {configuredSignalOnly: true, physicalPresentation: false, opticalCalibration: false, performanceGate: false, releaseReady: false}};
+}
+function both(value, change) { value.readings.forEach(change); return value; }
+function legacy(value = fixture()) {
+  value.api.queryFlags = value.api.sizingFlags = 2;
+  value.api.virtualModeAware = value.api.virtualRefreshRateAware = false;
+  value.attempts.forEach(item => {item.queryFlags = item.sizingFlags = 2; item.modeCount = 2;});
+  return both(value, item => { item.modes.pop(); item.paths[0].flags = 1;
+    item.paths[0].source.rawModeIndex = 0; item.paths[0].target.rawModeIndex = 1; });
+}
+
+test('authored exact fractions and uint64s parse, but unbound diagnostics are not calibrated', () => {
+  const value = readDisplayCalibration(bytes(fixture()));
+  assert.equal(value.displayConfigurationAccepted, true);
+  assert.equal(value.exactCollectorBound, false);
+  assert.equal(value.calibrationAccepted, false);
+  assert.deepEqual(value.paths[0].configuredSignalVSync, rate());
+  assert.equal(value.physicalPresentation, false); assert.equal(value.releaseReady, false);
+  assert.equal(equalRational(rate(), rate(60, 1)), false);
+  assert.equal(equalRational(rate(120000, 2002), rate()), true);
+  assert.equal(equalRational(rate(144000, 1000), rate(144, 1)), true);
+});
+test('owned identity matches exact one-tick FILETIME without Number recovery', () => {
+  assert.equal(readDisplayCalibration(bytes(fixture()), {ownedSubject: identity}).calibrationAccepted, true);
+  assert.throws(() => readDisplayCalibration(bytes(fixture()), {ownedSubject: {...identity,
+    creationFileTime: '134360000000000002'}}), /identity mismatch/);
+  assert.throws(() => readDisplayCalibration(bytes(fixture()), {ownedSubject: {...identity,
+    creationFileTime: Number(identity.creationFileTime)}}), /decimal uint64/);
+});
+test('DRR retains virtual-aware path60 and configured signal120 separately', () => {
+  const value = both(fixture(), reading => {reading.paths[0].flags |= 16;
+    reading.paths[0].target.pathRefreshRate = rate(60, 1); reading.modes[1].data.vSyncFreq = rate(120, 1);});
+  const result = readDisplayCalibration(bytes(value), {ownedSubject: identity});
+  assert.equal(result.paths[0].boostRefreshRate, true);
+  assert.deepEqual(result.paths[0].pathRefreshRate, rate(60, 1));
+  assert.deepEqual(result.paths[0].configuredSignalVSync, rate(120, 1));
+  assert.equal(result.physicalPresentation, false);
+});
+test('legacy indices stay DWORD and path-rate semantics stay unknown', () => {
+  const result = readDisplayCalibration(bytes(legacy()));
+  assert.equal(result.paths[0].pathRateRole, 'legacy-or-unknown');
+  assert.equal(result.paths[0].boostRefreshRate, null); assert.equal(result.paths[0].cloneGroupId, null);
+});
+test('virtual desktop sentinel and noncontiguous clone group are retained without guessing desktop id', () => {
+  const value = both(fixture(), reading => {reading.paths[0].source.rawModeIndex = 423;
+    reading.paths[0].target.rawModeIndex = 131071;});
+  const result = readDisplayCalibration(bytes(value));
+  assert.equal(result.paths[0].cloneGroupId, 423); assert.equal(result.paths[0].desktopModeIndex, null);
+  assert.equal(result.paths[0].desktopImageIdRole, 'unspecified');
+});
+test('same source cloned to two targets is preserved; no monitor averaging', () => {
+  const value = both(fixture(), reading => {const path = clone(reading.paths[0]); path.target.id = 10;
+    path.target.rawModeIndex = 262143; reading.paths.push(path);
+    const mode = clone(reading.modes[1]); mode.id = 10; mode.data.vSyncFreq = rate(144, 1); reading.modes.push(mode);});
+  value.attempts.forEach(item => {item.pathCount = 2; item.modeCount = 4;});
+  const result = readDisplayCalibration(bytes(value));
+  assert.equal(result.paths.length, 2); assert.equal(result.paths[1].configuredSignalVSync.numerator, 144);
+});
+test('identical target id on different adapter is not merged', () => {
+  const value = both(legacy(), reading => {const path = clone(reading.paths[0]);
+    const other = '0000000100000003'; path.source.adapterLuid = path.target.adapterLuid = other;
+    path.source.rawModeIndex = 2; path.target.rawModeIndex = 3; reading.paths.push(path);
+    reading.modes.push(...clone(reading.modes).map(mode => ({...mode, adapterLuid: other})));});
+  value.attempts.forEach(item => {item.pathCount = 2; item.modeCount = 4;});
+  assert.equal(readDisplayCalibration(bytes(value)).paths.length, 2);
+});
+
+const invalid = {
+  'source id mismatch': value => both(value, r => {r.modes[0].id++;}),
+  'target LUID mismatch': value => both(value, r => {r.modes[1].adapterLuid = '0000000000000000';}),
+  'wrong target mode kind': value => both(value, r => {r.paths[0].target.rawModeIndex = 2;}),
+  'source virtual sentinel': value => both(value, r => {r.paths[0].source.rawModeIndex = 0xffffffff;}),
+  'target virtual sentinel': value => both(value, r => {r.paths[0].target.rawModeIndex = 0xffffffff;}),
+  'desktop index out of bounds': value => both(value, r => {r.paths[0].target.rawModeIndex = 65540;}),
+  'desktop reference wrong kind': value => both(value, r => {r.paths[0].target.rawModeIndex = 65536;}),
+  'unknown path flag': value => both(value, r => {r.paths[0].flags |= 32;}),
+  'active removed target': value => both(value, r => {r.paths[0].target.available = false;}),
+  'duplicate target': value => both(value, r => {r.paths.push(clone(r.paths[0]));}),
+  'denominator zero': value => both(value, r => {r.modes[1].data.vSyncFreq.denominator = 0;}),
+  'unspecified path0/0': value => both(value, r => {r.paths[0].target.pathRefreshRate = rate(0, 0);}),
+  'pixel clock overflow': value => both(value, r => {r.modes[1].data.pixelRate = '18446744073709551616';}),
+  'rounded FILETIME': value => {value.collection.creationFileTime = Number(identity.creationFileTime);},
+  'noncanonical QPC': value => {value.collection.qpcBegin = '09007199254740993';},
+  'unknown query flag': value => {value.api.queryFlags = 98;},
+  'awareness flag lie': value => {value.api.virtualRefreshRateAware = false;},
+  'virtual union with legacy query': value => {value.api.queryFlags = 2; value.api.virtualModeAware = value.api.virtualRefreshRateAware = false;},
+  'boost flag with no refresh awareness': value => {value.api.queryFlags = 18; value.api.virtualRefreshRateAware = false;
+    both(value, r => {r.paths[0].flags |= 16;});},
+  'mode count over bound': value => both(value, r => {r.modes = Array.from({length: 1025}, () => clone(r.modes[0]));}),
+  'second reading changed': value => {value.readings[1].paths[0].target.pathRefreshRate = rate(120, 1);},
+  'only one successful query': value => {value.attempts = value.attempts.filter((item, index) => index !== 5);},
+  'sticky access failure cannot become available': value => {value.attempts.unshift({...value.attempts[0], errorCode: 5});},
+  'metadata error cannot retry green': value => {value.attempts.unshift({...value.attempts[0], stage: 'metadata', errorCode: 31});},
+  'budget0.001tick over': value => {value.collection.qpcEnd = (BigInt(value.collection.qpcBegin) + 20001n).toString();},
+  'false physical presentation': value => {value.claims.physicalPresentation = true;},
+  'unknown schema field': value => {value.claims.actualFPS = 120;},
+};
+for (const [name, change] of Object.entries(invalid)) test('rejects ' + name, () => {
+  const value = fixture(); change(value); assert.throws(() => readDisplayCalibration(bytes(value)));
+});
+for (const [reason, code] of [['non-wddm', 50], ['console-access-denied', 5], ['user32-export-unavailable', 127]])
+  test('explicit unavailable ' + reason + ' cannot pass calibration', () => {
+    const value = fixture(); value.status = 'unavailable'; value.reason = reason;
+    value.equalReadings = false; value.readings = []; value.api.queryFlags = value.api.sizingFlags = null;
+    value.api.virtualModeAware = value.api.virtualRefreshRateAware = false;
+    value.attempts = [{...value.attempts[0], errorCode: code}];
+    const result = readDisplayCalibration(bytes(value), {ownedSubject: identity});
+    assert.equal(result.displayConfigurationAccepted, false); assert.equal(result.calibrationAccepted, false);
+    assert.equal(result.reason, reason); assert.equal(result.physicalPresentation, false);
+  });
+test('rejects incomplete, multiline, invalid UTF8 and duplicate fields', () => {
+  const valid = bytes(fixture());
+  for (const raw of [valid.subarray(0, -1), Buffer.concat([valid, valid]), Buffer.from([0xff, 10]),
+    Buffer.from(valid.toString().replace('"readOnly":true', '"readOnly":false,"readOnly":true'))])
+    assert.throws(() => readDisplayCalibration(raw));
+});
+
+module.exports = {fixture, legacy, identity, bytes};

@@ -1,0 +1,18 @@
+// TEST_ONLY diagnostic call-point wrapper. Never synthesizes API results.
+#define NOMINMAX
+#include <windows.h>
+#include <iomanip>
+#include <iostream>
+HMODULE WINAPI observed_load_user32(LPCWSTR path) {
+  HMODULE result = ::LoadLibraryW(path);
+  const DWORD error = result ? ERROR_SUCCESS : GetLastError();
+  std::cerr << "TEST_ONLY actual LoadLibraryW error=" << error << " requestedPathUtf16=";
+  for (const wchar_t* next = path; *next; ++next)
+    std::cerr << std::hex << std::setw(4) << std::setfill('0') << static_cast<unsigned>(*next);
+  std::cerr << std::dec << '\n';
+  SetLastError(error);
+  return result;
+}
+#define LoadLibraryW observed_load_user32
+#include "F:/work/sm05-scopes/benchmarks/protocol/display-calibration.cpp"
+#undef LoadLibraryW

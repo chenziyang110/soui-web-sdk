@@ -1,0 +1,27 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "a9c394665ddfeae33e592ee7c030475c70708a289c88681e9372132627b61977",
+  "executableSha256": "a9c394665ddfeae33e592ee7c030475c70708a289c88681e9372132627b61977",
+  "executable": "F:\\work\\sm05-scopes\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+  "args": [
+    "--timeout-ms",
+    "8000",
+    "--report",
+    "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\native-fixtures\\attempt-YfmQV9\\inner.ndjson",
+    "--cwd",
+    "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\native-fixtures\\attempt-YfmQV9",
+    "--pin-tail-image",
+    "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\native-fixtures\\attempt-YfmQV9\\pinned-helper.exe",
+    "--pin-tail-sha256",
+    "0000000000000000000000000000000000000000000000000000000000000000",
+    "--snapshot-nonce",
+    "4123f1ec226dd78c9e4d083cdf436be8",
+    "--",
+    "F:\\work\\sm05-scopes\\out\\benchmark-protocol\\Release\\OwnedTailProcessFixture.exe",
+    "external",
+    "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\native-fixtures\\attempt-YfmQV9"
+  ],
+  "cwd": "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\native-fixtures\\attempt-YfmQV9",
+  "timeoutMs": 15000,
+  "drainMs": 2500
+}

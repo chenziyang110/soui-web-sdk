@@ -1,0 +1,84 @@
+{
+  "pid": 83384,
+  "creationFileTime": "134359667367930495",
+  "exitCode": 0,
+  "supervisorExitCode": 124,
+  "signal": null,
+  "spawnError": null,
+  "reportError": null,
+  "stopRequested": false,
+  "fallbackUsed": false,
+  "closureConfirmed": true,
+  "passed": false,
+  "terminal": {
+    "event": "terminal",
+    "reason": "owned-descendants-remain",
+    "elapsedMs": 276,
+    "rootExited": true,
+    "rootExitCode": 0,
+    "activeBeforeCleanup": 1,
+    "terminatedOwnedJob": true,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 2,
+    "limitTerminatedProcesses": 0,
+    "passed": false,
+    "preCleanupSnapshotSequence": 6,
+    "tailEvidenceComplete": true
+  },
+  "report": "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-hemGhs\\owned.ndjson",
+  "reportSha256": "f986ebe62b49786adf9b16b93b8b9614492ecb6c826a5048d86a3f426efe8a82",
+  "runnerSha256": "a9c394665ddfeae33e592ee7c030475c70708a289c88681e9372132627b61977",
+  "executableSha256": "13b71df377a8823b9c2d5b315842fb490c6ab3c680c9970b7c399aac5ee459d8",
+  "contextSha256": "d686b711fad0702761a2b7b0a84238c9e43c236a554f83f605c9e43365d24e0f",
+  "tailEvidence": {
+    "schema": "soui.owned-tail-verdict/v1",
+    "available": true,
+    "accepted": true,
+    "failure": null,
+    "diskBytesOnly": true,
+    "reportSha256": "f986ebe62b49786adf9b16b93b8b9614492ecb6c826a5048d86a3f426efe8a82",
+    "nonce": "9b9a66053dab9dec492ad64698a2204f",
+    "root": {
+      "pid": 83384,
+      "creationFileTime": "134359667367930495"
+    },
+    "pin": {
+      "canonicalPath": "\\\\?\\F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-hemGhs\\pinned-helper.exe",
+      "volumePath": "\\\\?\\Volume{a6219e00-961b-49db-aa72-39c9faf17062}\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-hemGhs\\pinned-helper.exe",
+      "volumeSerialNumber": "34490321",
+      "fileId": "844424937181808",
+      "size": "31232",
+      "sha256": "13b71df377a8823b9c2d5b315842fb490c6ab3c680c9970b7c399aac5ee459d8"
+    },
+    "member": {
+      "pid": 59332,
+      "creationFileTime": "134359667369412374",
+      "image": "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-hemGhs\\pinned-helper.exe"
+    },
+    "fixedTotalProcesses": 2,
+    "preCleanupSnapshotSequence": 6,
+    "historicalDiagnostics": {
+      "imageReadFailures": 0,
+      "unavailableMembers": 0,
+      "noLongerOwnedMembers": 0,
+      "pidReuses": 0
+    },
+    "terminal": {
+      "event": "terminal",
+      "reason": "owned-descendants-remain",
+      "elapsedMs": 276,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 1,
+      "terminatedOwnedJob": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 2,
+      "limitTerminatedProcesses": 0,
+      "passed": false,
+      "preCleanupSnapshotSequence": 6,
+      "tailEvidenceComplete": true
+    }
+  }
+}

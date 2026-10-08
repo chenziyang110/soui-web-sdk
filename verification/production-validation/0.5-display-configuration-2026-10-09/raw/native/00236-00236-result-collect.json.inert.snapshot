@@ -1,0 +1,55 @@
+{
+  "phase": "collect",
+  "records": [
+    {
+      "label": "collect-x64",
+      "rootExitCode": 0,
+      "genericPassed": true,
+      "supervisorExitCode": 0,
+      "closureConfirmed": true,
+      "ready": {
+        "pid": 61732,
+        "creationFileTime": "134359608832559706"
+      },
+      "reportSha256": "1c6ba0e9786b5d7cd6dfb7898a26664bc5e7065f8737fd9c0fcc18d42d72c721",
+      "contextSha256": "ddd261c30973b508f555d159e6346f65ffe46199ec4b99c1a3b8161ebaeac102",
+      "stdoutSha256": "42505d22c2d87831febe65bb9bf5d29a15feeeb93439fd181f17d8a8c6b44dbe",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observedMemberHistory": [
+        {
+          "pid": 72796,
+          "image": "C:\\Windows\\System32\\conhost.exe",
+          "creationFileTime": "134359608833245623"
+        },
+        {
+          "pid": 72796,
+          "image": "C:\\Windows\\System32\\conhost.exe",
+          "creationFileTime": "134359608833245623"
+        }
+      ]
+    },
+    {
+      "label": "collect-x86",
+      "rootExitCode": 1,
+      "genericPassed": false,
+      "supervisorExitCode": 1,
+      "closureConfirmed": true,
+      "ready": {
+        "pid": 100756,
+        "creationFileTime": "134359608834918039"
+      },
+      "reportSha256": "8c9525fb5fe5ae389460da467b24af33bf2c3b48e08eb12f4c2a562baa1c1ad3",
+      "contextSha256": "e9e4d04f6f26de1abba5a1b0c77320b67921f75d9e04c00b5d04969d68c4d7cc",
+      "stdoutSha256": "421a47acdc1099ffa0ca097ad7fab890ee908c55d1af6f733db7d75ade2e2f18",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observedMemberHistory": []
+    }
+  ],
+  "sourceFreezeSha256": "9f1ad96f3734547b8f5315f4de4d1139f8f417766266d3a3f483f32a6cf38e1b",
+  "rawFailurePreserved": true,
+  "compilerTailAcceptance": false,
+  "physicalPresentation": false,
+  "opticalCalibration": false,
+  "performanceGate": false,
+  "releaseReady": false
+}

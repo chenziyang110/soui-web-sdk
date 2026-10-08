@@ -1,0 +1,86 @@
+{
+  "schema": "soui.display-standard-entry-projection/v1",
+  "folder": "F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\entry-23dc3fd1-c11f-467b-81f7-2f699add0c21",
+  "psCases": [
+    {
+      "name": "default",
+      "exitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "actualAstHooks": 2,
+      "calls": 0
+    },
+    {
+      "name": "explicit-x86",
+      "exitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "actualAstHooks": 2,
+      "calls": 1
+    },
+    {
+      "name": "explicit-failure",
+      "exitCode": 1,
+      "genericPassed": false,
+      "closureConfirmed": true,
+      "actualAstHooks": 2,
+      "calls": 1
+    },
+    {
+      "name": "nativeonly-conflict",
+      "exitCode": 1,
+      "genericPassed": false,
+      "closureConfirmed": true,
+      "actualAstHooks": 2,
+      "calls": 0
+    }
+  ],
+  "collectCases": [
+    {
+      "args": [],
+      "displayCalls": 0
+    },
+    {
+      "args": [
+        "--foundation"
+      ],
+      "displayCalls": 0
+    },
+    {
+      "args": [
+        "--with-gui-bindings"
+      ],
+      "displayCalls": 0
+    },
+    {
+      "args": [
+        "--with-display-configuration"
+      ],
+      "displayCalls": 2,
+      "configurationOnly": true
+    },
+    {
+      "args": [
+        "--with-display-configuration",
+        "--with-display-configuration"
+      ],
+      "rejected": true
+    },
+    {
+      "args": [
+        "--unknown"
+      ],
+      "rejected": true
+    },
+    {
+      "authoredCollectorFailurePropagates": true
+    }
+  ],
+  "actualTestSha256": "4be85b422fa41b37f1057b4522a86a4d9ff01eeb8618b46df703ef22e9449877",
+  "actualCollectSha256": "0f2f0a735f5c7daf3c387de4211b213e5cc02c5a3628c6749c1806cf3a1e603a",
+  "astProjectionOnly": true,
+  "fullTestExecuted": false,
+  "fullCollectExecuted": false,
+  "noGui": true,
+  "noPerformanceClaim": true
+}

@@ -1,0 +1,24 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root='F:/work/sm05-scopes',base=__dirname,runner='F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex'),enc=v=>JSON.stringify(v,null,2)+'\n';
+const pin=file=>{const resolvedPath=fs.realpathSync(file),b=fs.readFileSync(resolvedPath);return {path:file,resolvedPath,bytes:b.length,sha256:hash(b)};};
+const write=(f,b)=>fs.writeFileSync(f,b,{flag:'wx'});
+async function main(){
+ const directory=path.join(base,'verify-'+crypto.randomUUID());fs.mkdirSync(directory);
+ const tools=[pin(runner),pin(process.execPath),pin(path.join(root,'tools/internal/owned-process.cjs')),pin(path.join(base,'verify.cjs'))];
+ if(tools[0].sha256!=='1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f')throw Error('Bootstrap changed');
+ const args=[path.join(base,'verify.cjs')],inputs={schema:'soui.private-readonly-verification-inputs/v1',executable:process.execPath,args,cwd:root,tools,timeoutMs:90000,drainMs:3000,noGui:true,noEtw:true,noSendInput:true,noTailPolicy:true};
+ write(path.join(directory,'inputs.json'),enc(inputs));write(path.join(directory,'driver.cjs.inert.snapshot'),fs.readFileSync(__filename));write(path.join(directory,'verify.cjs.inert.snapshot'),fs.readFileSync(args[0]));
+ const stdout=fs.openSync(path.join(directory,'stdout.bin'),'wx'),stderr=fs.openSync(path.join(directory,'stderr.bin'),'wx');let finished;
+ try{const job=require(path.join(root,'tools/internal/owned-process.cjs')).launchOwned(process.execPath,args,{runner,cwd:root,report:path.join(directory,'owned.ndjson'),timeoutMs:90000,drainMs:3000,env:{...process.env,MSBUILDDISABLENODEREUSE:'1'},stdout,stderr});await job.ready;finished=await job.finished;}finally{fs.closeSync(stdout);fs.closeSync(stderr);}
+ write(path.join(directory,'finished.json'),enc(finished));
+ for(const item of tools){const current=pin(item.path);if(current.sha256!==item.sha256||current.resolvedPath!==item.resolvedPath)throw Error('Verification tool changed');}
+ const verdict=JSON.parse(fs.readFileSync(path.join(directory,'stdout.bin')));if(!finished.passed||finished.supervisorExitCode!==0||!verdict.passed)throw Error('Read-only verification failed');
+ write(path.join(directory,'result.json'),enc({passed:true,finished,verdict}));
+ const payload=[];
+ function walk(d){for(const name of fs.readdirSync(d).sort()){const f=path.join(d,name),s=fs.lstatSync(f);if(s.isSymbolicLink()||s.nlink!==1)throw Error('Evidence path linked');if(s.isDirectory())walk(f);else{const b=fs.readFileSync(f);payload.push({path:path.relative(base,f).replace(/\\/g,'/'),bytes:b.length,sha256:hash(b)});}}}
+ walk(base);write(path.join(base,'index-complete.json'),enc({schema:'soui.display-standard-evidence-index/v1',root:base,previousIndex:pin(path.join(base,'index-final.json')),verificationDirectory:path.relative(base,directory).replace(/\\/g,'/'),payload}));
+ console.log(enc({directory,rootExitCode:finished.exitCode,supervisorExitCode:finished.supervisorExitCode,genericPassed:finished.passed,closureConfirmed:finished.closureConfirmed,payload:payload.length,index:pin(path.join(base,'index-complete.json'))}));
+}
+main().catch(e=>{console.error(e.stack);process.exitCode=1;});

@@ -1,0 +1,52 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),{isDeepStrictEqual}=require('node:util');
+const base=__dirname,root='F:/work/sm05-scopes';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const need=(x,m)=>{if(!x)throw Error(m);};
+const read=file=>{const s=fs.lstatSync(file);need(s.isFile()&&!s.isSymbolicLink()&&s.nlink===1,'Not regular '+file);return fs.readFileSync(file);};
+const json=file=>JSON.parse(read(file));
+const same=(a,b)=>path.resolve(a).toLowerCase()===path.resolve(b).toLowerCase();
+const check=(file,item)=>{const b=read(file);need(b.length===item.bytes&&hash(b)===item.sha256,'Bytes differ '+file);};
+const index=json(path.join(base,'index-final.json'));
+for(const row of index.payload)check(path.join(base,row.path),row);
+const folder=path.join(base,index.sealedDirectory),map=json(path.join(folder,'current-map.json')),results=json(path.join(folder,'results-final.json'));
+for(const row of map.copies){check(row.original,row);check(path.join(base,row.snapshot),row);}
+for(const row of map.privateArtifacts)check(row.path,row);
+for(const row of map.links)need(fs.lstatSync(row.path).isSymbolicLink()&&fs.readlinkSync(row.path)===row.target,'Authored junction metadata differs');
+for(const row of results.sourceFiles)check(path.join(root,row.path),row);
+function native(directory,reportName,finished,expected){
+ const raw=read(path.join(directory,reportName));need(raw.at(-1)===10,'Truncated native report');
+ const rows=raw.toString('utf8').trimEnd().split(/\r?\n/).map(x=>JSON.parse(x));
+ const start=rows[0],terminal=rows.at(-1),context=json(path.join(directory,reportName+'.context.json'));
+ need(start.event==='start'&&start.schema==='soui.owned-process-run/v1'&&rows.filter(x=>x.event==='start').length===1&&rows.filter(x=>x.event==='terminal').length===1,'Ambiguous native records');
+ need(start.pid===finished.pid&&start.creationFileTime===finished.creationFileTime&&start.jobAssignedBeforeResume&&start.breakawayAllowed===false,'Native subject differs');
+ need(typeof start.creationFileTime==='string'&&/^[1-9][0-9]{0,19}$/.test(start.creationFileTime)&&BigInt(start.creationFileTime)<=18446744073709551615n,'Invalid exact FILETIME');
+ need(isDeepStrictEqual(terminal,finished.terminal)&&finished.reportSha256===hash(raw)&&finished.exitCode===terminal.rootExitCode&&finished.passed===terminal.passed,'Native terminal differs from result');
+ const exits=rows.filter(x=>x.event==='root-exit');need(exits.length===1&&exits[0].exitCode===terminal.rootExitCode&&terminal.rootExited,'Root exit differs');
+ need(same(context.executable,expected.executable)&&same(context.cwd,expected.cwd)&&isDeepStrictEqual(context.args,expected.args),'Native context command differs');
+ need(context.runnerSha256===expected.runnerSha256&&context.executableSha256===expected.executableSha256&&context.runnerSha256===finished.runnerSha256&&context.executableSha256===finished.executableSha256,'Native tool hashes differ');
+ need(start.timeoutMs===context.timeoutMs&&start.drainMs===context.drainMs&&terminal.closureConfirmed&&terminal.activeProcesses===0&&finished.closureConfirmed,'Native cleanup closure differs');
+ return {pid:start.pid,creationFileTime:start.creationFileTime,reason:terminal.reason,rootExitCode:terminal.rootExitCode,genericPassed:terminal.passed,supervisorExitCode:finished.supervisorExitCode};
+}
+const outer=[];
+for(const row of results.phaseResults){
+ const directory=path.join(base,path.basename(row.folder)),inputs=json(path.join(directory,'inputs.json')),finished=json(path.join(directory,'finished.json'));
+ const exe=inputs.tools.find(x=>same(x.path,inputs.executable));need(exe,'Executable absent from pinned input');
+ outer.push(native(directory,'owned.ndjson',finished,{...inputs,runnerSha256:inputs.tools[0].sha256,executableSha256:exe.sha256}));
+}
+const inner=[];
+const provenance=require(path.join(root,'benchmarks/protocol/owned-trace-subject.cjs'));
+for(const row of results.groupResults){
+ const directory=row.originalDirectory,inputs=json(path.join(directory,'inputs.json')),summary=json(path.join(directory,'summary.json')),finished=json(path.join(directory,'finished.json'));
+ if(row.name.startsWith('display-')){
+  const verified=provenance.verifyOwnedProcess(directory,'sampler',summary.process,summary.ownedEvidence,{executable:inputs.executable,args:inputs.args,cwd:inputs.cwd,runnerSha256:inputs.provider.sha256,executableSha256:inputs.collector.sha256});
+  need(verified.naturalCompletion&&isDeepStrictEqual(verified.subject,summary.ownedSubject),'Display provenance differs');
+  inner.push({name:row.name,...verified.subject,naturalCompletion:true});
+ }else{
+  const runner=inputs.preparation.executables.find(x=>x.name==='OwnedProcessRunner');
+  const checked=native(directory,'owned.ndjson',finished,{executable:inputs.node.path,args:['--test','--test-reporter=tap',...inputs.tests.map(x=>x.path)],cwd:root,runnerSha256:runner.sha256,executableSha256:inputs.node.sha256});
+  need(checked.reason==='completed'&&checked.genericPassed&&checked.rootExitCode===0&&checked.supervisorExitCode===0,'Standard group did not naturally close');
+  inner.push({name:row.name,...checked});
+ }
+}
+console.log(JSON.stringify({schema:'soui.display-integration-readonly-verification/v1',indexedRaw:index.payload.length,originalCopies:map.copies.length,privateArtifacts:map.privateArtifacts.length,authoredLinksNotFollowed:map.links.length,sourceFiles:results.sourceFiles.length,outerJobs:outer.length,innerJobs:inner.length,outer,inner,passed:true},null,2));

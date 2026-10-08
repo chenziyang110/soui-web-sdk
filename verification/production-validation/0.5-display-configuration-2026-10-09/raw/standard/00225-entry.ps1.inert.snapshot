@@ -1,0 +1,23 @@
+param([string]$SourceRoot,[string]$Output,[string]$Architecture='x64',
+      [switch]$WithDisplayConfiguration,[switch]$NativeOnly,[int]$MockExit=0)
+$ErrorActionPreference='Stop'
+$testPath=Join-Path $SourceRoot 'tools/Test.ps1'
+$tokens=$null;$parseErrors=$null
+$ast=[System.Management.Automation.Language.Parser]::ParseFile($testPath,[ref]$tokens,[ref]$parseErrors)
+if($parseErrors.Count){throw 'Actual Test.ps1 parser errors'}
+$tokens=$null;$parseErrors=$null
+[void][System.Management.Automation.Language.Parser]::ParseFile((Join-Path $SourceRoot 'tools/internal/Build-ValidationTools.ps1'),[ref]$tokens,[ref]$parseErrors)
+if($parseErrors.Count){throw 'Actual Build-ValidationTools.ps1 parser errors'}
+if(-not ($ast.ParamBlock.Parameters.Name.VariablePath.UserPath -contains 'WithDisplayConfiguration')){throw 'Actual display opt-in parameter missing'}
+$hooks=@($ast.FindAll({param($node)
+  $node -is [System.Management.Automation.Language.IfStatementAst] -and
+  $node.Clauses[0].Item1.Extent.Text -match 'WithDisplayConfiguration'
+},$true)|Sort-Object {$_.Extent.StartOffset})
+if($hooks.Count -ne 2){throw 'Unexpected actual display hook set'}
+$root=$SourceRoot
+$script:calls=@()
+function node {$script:calls+=,[pscustomobject]@{arguments=@($args)};$global:LASTEXITCODE=$MockExit}
+$global:LASTEXITCODE=0
+try{foreach($hook in $hooks){Invoke-Expression $hook.Extent.Text}}
+finally{[IO.File]::WriteAllText($Output,([pscustomobject]@{projectionOnly=$true;fullTestExecuted=$false;
+  fullCollectExecuted=$false;actualAstHooks=2;calls=@($script:calls)}|ConvertTo-Json -Depth 8))}

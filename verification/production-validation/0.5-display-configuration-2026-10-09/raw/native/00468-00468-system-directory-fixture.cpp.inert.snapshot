@@ -1,0 +1,51 @@
+// TEST_ONLY authored API returns exercise the actual bounded directory helper.
+// These are not Windows/API/OS acceptance. The collector runs separately.
+#define main display_collector_main
+#include "F:/work/sm05-scopes/benchmarks/protocol/display-calibration.cpp"
+#undef main
+#include <functional>
+namespace {
+using api=soui::benchmark::display::api;
+std::wstring value;
+enum class result_kind { valid, zero, embedded_nul, missing_nul, excessive, max_boundary, growing };
+result_kind kind=result_kind::valid;
+unsigned calls=0;
+UINT WINAPI query(WCHAR* buffer,UINT size) {
+  ++calls;
+  if(kind==result_kind::zero) return 0;
+  if(kind==result_kind::excessive) return 0xffffffffU;
+  if(kind==result_kind::max_boundary) return 32768;
+  if(kind==result_kind::growing) return size+1;
+  if(kind==result_kind::embedded_nul) {buffer[0]=L'x';buffer[1]=0;buffer[2]=L'y';return 3;}
+  if(kind==result_kind::missing_nul) {std::fill(buffer,buffer+size,L'x');return 1;}
+  if(value.size()>=size) return static_cast<UINT>(value.size()+1);
+  std::copy(value.begin(),value.end(),buffer);buffer[value.size()]=0;return static_cast<UINT>(value.size());
+}
+void require(bool condition,const char* message) {if(!condition) throw std::runtime_error(message);}
+void denied(result_kind next,const char* expected) {
+  kind=next;calls=0;
+  try { (void)api::system_directory(&query); } catch(const std::runtime_error& error) {
+    require(std::string(error.what())==expected,"Incorrect bounded failure"); return;
+  }
+  throw std::runtime_error("Invalid directory admitted");
+}
+}
+int main() {
+  try {
+    kind=result_kind::valid;value=L"C:\\Windows\\SysWOW64";calls=0;
+    require(api::system_directory(&query)==value&&calls==1,"Valid directory changed");
+    value=std::wstring(300,L'a');calls=0;
+    require(api::system_directory(&query)==value&&calls==2,"Required-size growth changed");
+    value=std::wstring(32766,L'a');calls=0;
+    require(api::system_directory(&query)==value&&calls==2,"Exact capacity ceiling changed");
+    denied(result_kind::zero,"system-directory-unavailable");
+    denied(result_kind::embedded_nul,"invalid-system-directory-result");
+    denied(result_kind::missing_nul,"invalid-system-directory-result");
+    denied(result_kind::excessive,"system-directory-limit");
+    denied(result_kind::max_boundary,"system-directory-limit");
+    denied(result_kind::growing,"system-directory-growth-limit");
+    require(calls==3,"Directory growth exceeded its attempt bound");
+    std::cout << "TEST_ONLY system-directory helper 9/9; synthetic API returns, not OS acceptance\n";
+    return 0;
+  } catch(const std::exception& error) {std::cerr << error.what() << '\n';return 1;}
+}

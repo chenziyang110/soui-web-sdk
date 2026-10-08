@@ -1,0 +1,92 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root='F:/work/sm05-scopes',outRoot=path.join(root,'out');
+const final=path.join(outRoot,'display-calibration-final-'+crypto.randomUUID());
+const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const write=(name,value)=>fs.writeFileSync(path.join(final,name),typeof value==='string'||Buffer.isBuffer(value)?value:JSON.stringify(value,null,2)+'\n',{flag:'wx'});
+const initial=path.join(outRoot,'display-calibration-validation-88094002-6a88-4ea0-91de-6be83902ef41');
+const latest=path.join(outRoot,'display-calibration-repaired-a1afbafa-e252-4ecc-8410-33ba09fc5e61');
+const priorIndex=fs.readFileSync(path.join(initial,'evidence-index-final.json'));
+if(sha(priorIndex)!=='7664cf38c03e19552b8d869ed204e536f65bb479374176e9d59a514b55f01090')throw new Error('Prior immutable index changed');
+for(const item of JSON.parse(priorIndex).payload) {
+ const bytes=fs.readFileSync(path.join(initial,item.relativePath));
+ if(bytes.length!==item.bytes||sha(bytes)!==item.sha256)throw new Error('Prior payload changed: '+item.relativePath);
+}
+const oldFreeze=JSON.parse(fs.readFileSync(path.join(initial,'frozen-inputs-final.json')));
+fs.mkdirSync(final);fs.mkdirSync(path.join(final,'raw'));fs.mkdirSync(path.join(final,'sources'));
+const sources=oldFreeze.sources.map((item,index)=>{const bytes=fs.readFileSync(path.join(root,item.relativePath));
+ const snapshot='sources/'+index+'.inert.snapshot';write(snapshot,bytes);return{relativePath:item.relativePath,bytes:bytes.length,sha256:sha(bytes),snapshot};});
+if(sources[0].sha256!=='062c20ff1a4a1ba2542afb4ab03afdd97bcf263b2fbb78f4875984a659b67ccf'||
+ sources[1].sha256!=='577b49792e98b9481e351248d9382e85e4287dc84305b725aa5ff13a29b23317'||
+ sources[2].sha256!=='f978598ee8b6e7deb65576aefefee51b150033c851d993d7e1e0d17bcea87959')throw new Error('Production code no longer frozen');
+const groups=[initial,path.join(outRoot,'display-calibration-native-bdfd762c-5be0-4076-888c-5a5c34b9fe82'),
+ ...fs.readdirSync(outRoot).filter(name=>name.startsWith('display-calibration-repaired-')).sort().map(name=>path.join(outRoot,name))];
+function walk(directory) {
+ return fs.readdirSync(directory,{withFileTypes:true}).flatMap(entry=>entry.isDirectory()?walk(path.join(directory,entry.name)):[path.join(directory,entry.name)]);
+}
+function include(file,group) {
+ const relative=path.relative(group,file).replace(/\\/g,'/');
+ if(relative.split('/').some(part=>part.startsWith('build-'))) {
+  const leaf=path.basename(file);
+  return leaf==='CMakeCache.txt'||leaf.endsWith('.vcxproj')||leaf.endsWith('.exe')||/^CL\.command\.\d+\.tlog$/.test(leaf)||/^link\.command\.\d+\.tlog$/.test(leaf);
+ }
+ return true;
+}
+const payload=[],jobInputs=[];
+for(const group of groups)for(const file of walk(group).filter(file=>include(file,group)).sort()) {
+ const bytes=fs.readFileSync(file),relativePath='raw/'+String(payload.length).padStart(5,'0')+'-'+path.basename(file);
+ write(relativePath,bytes);
+ payload.push({relativePath,originalRelativePath:path.relative(root,file).replace(/\\/g,'/'),sourceAbsolutePath:file,
+  bytes:bytes.length,sha256:sha(bytes)});
+ if(path.basename(file)==='owned.ndjson')jobInputs.push(file);
+}
+const jobs=jobInputs.map(file=>{
+ const bytes=fs.readFileSync(file);if(!bytes.length||bytes.at(-1)!==10)throw new Error('Incomplete native line');
+ const rows=bytes.toString('utf8').trimEnd().split('\n').map(line=>JSON.parse(line));
+ const first=rows[0],last=rows.at(-1);
+ const result=JSON.parse(fs.readFileSync(path.join(path.dirname(file),'result.json')));
+ const contextBytes=fs.readFileSync(file+'.context.json'),context=JSON.parse(contextBytes);
+ if(first.event!=='start'||last.event!=='terminal'||!last.closureConfirmed||last.activeProcesses!==0||
+    !result.closureConfirmed||result.pid!==first.pid||result.creationFileTime!==first.creationFileTime||
+    result.reportSha256!==sha(bytes)||result.passed!==last.passed)throw new Error('Native/context/result terminal mismatch: '+file);
+ const executableBytes=fs.readFileSync(context.executable);
+ if(sha(executableBytes)!==context.executableSha256)throw new Error('Existing subject bytes changed: '+file);
+ return{originalRelativePath:path.relative(root,file).replace(/\\/g,'/'),reportSha256:sha(bytes),contextSha256:sha(contextBytes),
+  pid:first.pid,creationFileTime:first.creationFileTime,rootExitCode:result.exitCode,supervisorExitCode:result.supervisorExitCode,
+  genericPassed:result.passed,reason:last.reason,closureConfirmed:last.closureConfirmed,activeProcesses:last.activeProcesses,
+  totalProcesses:last.totalProcesses,executableSha256:context.executableSha256};
+});
+const {readDisplayCalibration}=require(path.join(root,'benchmarks/protocol/display-calibration.cjs'));
+const collectors=['x64','x86'].map(arch=>{
+ const directory=path.join(latest,'collect-'+arch),result=JSON.parse(fs.readFileSync(path.join(directory,'result.json')));
+ const artifact=JSON.parse(fs.readFileSync(path.join(latest,'artifact-'+arch+'.json')));
+ const raw=fs.readFileSync(path.join(directory,'stdout.log'));
+ const verdict=readDisplayCalibration(raw,{ownedSubject:result.ready});
+ if(!result.passed||!verdict.boundConfigurationAccepted||artifact.sourceCppSha256!==sources[0].sha256||
+    sha(fs.readFileSync(artifact.artifact.path))!==artifact.artifact.sha256)throw new Error('Final collector not actually accepted');
+ return{arch,sourceCppSha256:artifact.sourceCppSha256,artifact:artifact.artifact,rawSha256:sha(raw),
+  reportSha256:result.reportSha256,ownedSubject:result.ready,verdict};
+});
+write('frozen-inputs-final.json',{schema:oldFreeze.schema,baseline:oldFreeze.baseline,sources,
+ compiledCodeUnchangedAfterFinalBuild:true,documentationUpdatedAfterBuild:true,prebuildFreeze:path.relative(root,path.join(latest,'frozen-inputs-prebuild.json')).replace(/\\/g,'/'),
+ initialIndexUnchanged:true,initialPayloadCount:JSON.parse(priorIndex).payload.length,
+ presentMonDownloaded:false,physicalPresentation:false,opticalCalibration:false,performanceGate:false,releaseReady:false});
+write('result-final.json',{schema:'soui.display-calibration-local-validation/v1',currentSource:sources[0].sha256,collectors,
+ jobs,counts:{total:jobs.length,genericTrue:jobs.filter(job=>job.genericPassed).length,genericFalse:jobs.filter(job=>!job.genericPassed).length,
+ closureConfirmed:jobs.filter(job=>job.closureConfirmed&&job.activeProcesses===0).length},
+ pureReader:{total:45,passed:45,skipped:0,actualRun:path.relative(root,path.join(latest,'pure')).replace(/\\/g,'/')},
+ directoryFixture:{x86:9,x64:9,testOnlySyntheticApiReturns:true},hostOsScope:'current Win11 only',
+ compilerTailAcceptance:false,physicalPresentation:false,opticalCalibration:false,performanceGate:false,releaseReady:false,
+ historicalLimitations:['Initial private Buffer snapshot encoded JSON, correct raw copied separately; original retained',
+  'Initial private summary used member event rather than owned-member; raw/corrections retained',
+  'Initial pure phase did not retain a prelaunch pinned client byte snapshot',
+  'Two historical x86 real collectors rejected, no retroactive acceptance',
+  'Disk identity agreement is not loaded-memory/injection attestation',
+  'No PresentMon, ETW, input, GUI operations, VM, Win7/PE, high-refresh, optical or performance validation']});
+for(const file of ['frozen-inputs-final.json','result-final.json',...sources.map(item=>item.snapshot)]) {
+ const bytes=fs.readFileSync(path.join(final,file));payload.push({relativePath:file,bytes:bytes.length,sha256:sha(bytes)});
+}
+write('index.json',{schema:'soui.display-calibration-evidence-index/v1',payload,priorIndex:{relativePath:path.relative(root,path.join(initial,'evidence-index-final.json')).replace(/\\/g,'/'),sha256:sha(priorIndex)},
+ rootPath:root,totalPayload:payload.length});
+console.log(JSON.stringify({directory:final,payload:payload.length,indexSha256:sha(fs.readFileSync(path.join(final,'index.json'))),jobs:jobs.length,
+ genericTrue:jobs.filter(job=>job.genericPassed).length,genericFalse:jobs.filter(job=>!job.genericPassed).length,sources},null,2));

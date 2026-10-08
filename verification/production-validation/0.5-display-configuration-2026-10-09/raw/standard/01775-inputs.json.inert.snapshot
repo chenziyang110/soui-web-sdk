@@ -1,0 +1,296 @@
+{
+  "schema": "soui.display-standard-driver-inputs/v1",
+  "phase": "tail-native",
+  "architecture": "x86",
+  "executable": "C:\\nvm4w\\nodejs\\node.exe",
+  "args": [
+    "tools/internal/measurement-validation.cjs",
+    "tail-native",
+    "x86"
+  ],
+  "cwd": "F:/work/sm05-scopes",
+  "tools": [
+    {
+      "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+      "resolvedPath": "F:\\work\\sm05\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+      "bytes": 60928,
+      "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    },
+    {
+      "path": "C:\\nvm4w\\nodejs\\node.exe",
+      "resolvedPath": "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tools\\internal\\owned-process.cjs",
+      "resolvedPath": "F:\\work\\sm05-scopes\\tools\\internal\\owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+    }
+  ],
+  "driver": {
+    "path": "F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\run.cjs",
+    "bytes": 5335,
+    "sha256": "fc8be24832e11a3a0ef5b76ffbf20151eb703c5973252387408723436d07790f"
+  },
+  "sourceFiles": [
+    {
+      "path": "F:\\work\\sm05-scopes\\benchmarks\\protocol\\CMakeLists.txt",
+      "bytes": 3308,
+      "sha256": "5ff70fbadb0175133116ee689c9adf6986ee2c716c93d06b80a5f38ecf858220",
+      "snapshot": "input-snapshots/0000-CMakeLists.txt.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\benchmarks\\protocol\\owned-process-runner.cpp",
+      "bytes": 24220,
+      "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0",
+      "snapshot": "input-snapshots/0001-owned-process-runner.cpp.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\benchmarks\\protocol\\owned-tail-evidence.cpp",
+      "bytes": 31483,
+      "sha256": "6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3",
+      "snapshot": "input-snapshots/0002-owned-tail-evidence.cpp.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\benchmarks\\protocol\\owned-tail-evidence.h",
+      "bytes": 971,
+      "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790",
+      "snapshot": "input-snapshots/0003-owned-tail-evidence.h.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\owned-process-assignment-fixture.cpp",
+      "bytes": 964,
+      "sha256": "8f96bfb07a8043052c3e77459687fd6788994b39db6e4063112aab8a40697bbf",
+      "snapshot": "input-snapshots/0004-owned-process-assignment-fixture.cpp.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\benchmarks\\protocol\\process-tree-sampler.cpp",
+      "bytes": 11219,
+      "sha256": "22f928f03925fbe2df6233abccc7b5528005b6a70f784e4e20304e572baf040a",
+      "snapshot": "input-snapshots/0005-process-tree-sampler.cpp.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\benchmarks\\protocol\\input-trace.cpp",
+      "bytes": 12471,
+      "sha256": "e803785c3dc61d6d64aecbe3308e73044eee8eac6860b97482e65396469ee027",
+      "snapshot": "input-snapshots/0006-input-trace.cpp.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\benchmarks\\protocol\\trace-identity.h",
+      "bytes": 3162,
+      "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f",
+      "snapshot": "input-snapshots/0007-trace-identity.h.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\native-trace-identity.cpp",
+      "bytes": 1708,
+      "sha256": "7b389ea9041964cb56220c81013beb1d541d4519dd897d77a36895d511545db9",
+      "snapshot": "input-snapshots/0008-native-trace-identity.cpp.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tools\\internal\\CMake-Configure.ps1",
+      "bytes": 7196,
+      "sha256": "7958fd37fd63f24a7e8ee40301803271825a4931d2c56d54cf3c9812a768c6d1",
+      "snapshot": "input-snapshots/0009-CMake-Configure.ps1.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\cmake\\SouiWindowsSdk.cmake",
+      "bytes": 701,
+      "sha256": "5dd1a60792c86c7dac88b097873aae8eab1ec0bd3fcf59c4738f8554174736fd",
+      "snapshot": "input-snapshots/0010-SouiWindowsSdk.cmake.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tools\\internal\\Build-ValidationTools.ps1",
+      "bytes": 2212,
+      "sha256": "2d86e01214db0a52aa8b0b76c5976539b105990de44f3710ce487fdbf0da23e6",
+      "snapshot": "input-snapshots/0011-Build-ValidationTools.ps1.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tools\\internal\\measurement-validation.cjs",
+      "bytes": 19826,
+      "sha256": "99e5c9e4d59aae0063244b63990d93514ba3408fff58489b4b04a235f1151dcb",
+      "snapshot": "input-snapshots/0012-measurement-validation.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\owned-tail-process-fixture.cpp",
+      "bytes": 4875,
+      "sha256": "b3f83a2f7f4b175f237c10ee8a9d9b0961c758f5e9d8a977e8a3eb64f228692a",
+      "snapshot": "input-snapshots/0013-owned-tail-process-fixture.cpp.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\owned-tail-mutation-fixture.cpp",
+      "bytes": 1648,
+      "sha256": "49c6b1d1bbe91f94d2982dc2abe8acf3fb373583d71dc1e343c0f1d92b130fbc",
+      "snapshot": "input-snapshots/0014-owned-tail-mutation-fixture.cpp.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\owned-tail-api-fixture.cpp",
+      "bytes": 2446,
+      "sha256": "1d6050f0859ae1357b672c106233a44474a277bacb0ee0e48aa1900ed96977f1",
+      "snapshot": "input-snapshots/0015-owned-tail-api-fixture.cpp.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\benchmarks\\protocol\\display-calibration.cpp",
+      "bytes": 30392,
+      "sha256": "062c20ff1a4a1ba2542afb4ab03afdd97bcf263b2fbb78f4875984a659b67ccf",
+      "snapshot": "input-snapshots/0016-display-calibration.cpp.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\measurement-preparation-source.test.cjs",
+      "bytes": 18851,
+      "sha256": "a63906616c9f3aa683aa478ef70ecf38270d68803b10d658b9801983ccfe2243",
+      "snapshot": "input-snapshots/0017-measurement-preparation-source.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tools\\Test.ps1",
+      "bytes": 8684,
+      "sha256": "4be85b422fa41b37f1057b4522a86a4d9ff01eeb8618b46df703ef22e9449877",
+      "snapshot": "input-snapshots/0018-Test.ps1.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tools\\Collect-Verification.cjs",
+      "bytes": 12933,
+      "sha256": "0f2f0a735f5c7daf3c387de4211b213e5cc02c5a3628c6749c1806cf3a1e603a",
+      "snapshot": "input-snapshots/0019-Collect-Verification.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\benchmarks\\protocol\\display-calibration.cjs",
+      "bytes": 18141,
+      "sha256": "577b49792e98b9481e351248d9382e85e4287dc84305b725aa5ff13a29b23317",
+      "snapshot": "input-snapshots/0020-display-calibration.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\benchmarks\\protocol\\owned-trace-subject.cjs",
+      "bytes": 15334,
+      "sha256": "2041bfd1cb4b067e7047550136eaecb76a1fed18f6617ee889dafbefe16670a7",
+      "snapshot": "input-snapshots/0021-owned-trace-subject.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tools\\internal\\owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7",
+      "snapshot": "input-snapshots/0022-owned-process.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tools\\internal\\owned-tail-evidence.cjs",
+      "bytes": 20024,
+      "sha256": "61bceb766ecdfae0552c26212b332c8d7dbd0c2f24833cf7d27d59932f2b23cd",
+      "snapshot": "input-snapshots/0023-owned-tail-evidence.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tools\\internal\\compiler-tail-policy.cjs",
+      "bytes": 11520,
+      "sha256": "1458497d5701833cf83033aa05c2861b1a30accbc653cf0c2c244692c16034d6",
+      "snapshot": "input-snapshots/0024-compiler-tail-policy.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tools\\internal\\standard-build.cjs",
+      "bytes": 32411,
+      "sha256": "fd9406b40bba13ac5e895fdeb44454f19464aa2f3ec205240c13e003a985d2c8",
+      "snapshot": "input-snapshots/0025-standard-build.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tools\\internal\\build-evidence.cjs",
+      "bytes": 13542,
+      "sha256": "8306bb9fe170ee206ee5b67c288826dbbf098499d6e69812488720221ca2f3bf",
+      "snapshot": "input-snapshots/0026-build-evidence.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tools\\internal\\delivery-identity.cjs",
+      "bytes": 5459,
+      "sha256": "087e60a3f8652a9166acbab63fdde7836d66839329a687ce5cefdd733e3c5e14",
+      "snapshot": "input-snapshots/0027-delivery-identity.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\tail-evidence-fixtures.cjs",
+      "bytes": 4569,
+      "sha256": "b8e27d32bd8b454368c97c1e9c33d40e4aed684ea4a8e88a38785b931f7761aa",
+      "snapshot": "input-snapshots/0028-tail-evidence-fixtures.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\page-pair.test.cjs",
+      "bytes": 3159,
+      "sha256": "d1962ab685388c3a42dc6912dc1744dcbdc9ec033ef07e4ca038206b7ac65de9",
+      "snapshot": "input-snapshots/0029-page-pair.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\run-traces.test.cjs",
+      "bytes": 16130,
+      "sha256": "fe6b28b223730c05980f7820ff7ffc6e9afdc9a792654f4a9cfa31bd2f60f803",
+      "snapshot": "input-snapshots/0030-run-traces.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\owned-trace-subject.test.cjs",
+      "bytes": 16574,
+      "sha256": "77fb6d2555bdcf38138e2ae91e68291688e0b933bbfb60d3e8af85e4a575fff4",
+      "snapshot": "input-snapshots/0031-owned-trace-subject.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\pair-preflight.test.cjs",
+      "bytes": 2656,
+      "sha256": "26010f32caa7045773a81b7d805069c74907e8794f14ea7f88c835303dc2ea88",
+      "snapshot": "input-snapshots/0032-pair-preflight.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\series-summary.test.cjs",
+      "bytes": 14327,
+      "sha256": "7985665dc99e4e4cef52320dd855417efc51f9f40f6fbd00c7b8430717414963",
+      "snapshot": "input-snapshots/0033-series-summary.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\display-calibration.test.cjs",
+      "bytes": 14100,
+      "sha256": "f978598ee8b6e7deb65576aefefee51b150033c851d993d7e1e0d17bcea87959",
+      "snapshot": "input-snapshots/0034-display-calibration.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\process-tree-sampler.test.cjs",
+      "bytes": 10537,
+      "sha256": "ae5261788b2056529a62bec6bd7c5f791ea47e1aa5911a0d72ccba7104122b12",
+      "snapshot": "input-snapshots/0035-process-tree-sampler.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\owned-tail-evidence-reader.test.cjs",
+      "bytes": 12763,
+      "sha256": "cb0b795e66dbda2a18054780c886505e603b01c90d89096d26096154de0a54f0",
+      "snapshot": "input-snapshots/0036-owned-tail-evidence-reader.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\owned-tail-client-boundaries.test.cjs",
+      "bytes": 4219,
+      "sha256": "f58dc889e07f5874273bd276ef4e7e593d3f5a425ee539ad92a5a098cbbdc429",
+      "snapshot": "input-snapshots/0037-owned-tail-client-boundaries.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\compiler-tail-policy.test.cjs",
+      "bytes": 9000,
+      "sha256": "7147eedfde2c4cad364cafe7a2eba011bbb255a97d5939d4703917bf3bf75458",
+      "snapshot": "input-snapshots/0038-compiler-tail-policy.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\owned-process-tail-snapshot.test.cjs",
+      "bytes": 18714,
+      "sha256": "b30df47d24193c64d56eeb273bd0d0e78fe2dce62886f00f27e7bf9f846d5593",
+      "snapshot": "input-snapshots/0039-owned-process-tail-snapshot.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\benchmark\\owned-tail-client-native.test.cjs",
+      "bytes": 3900,
+      "sha256": "8b75d19910197ed460ac18a1640cd068522c4f20b4ee4e020cc75b7418ecbfa3",
+      "snapshot": "input-snapshots/0040-owned-tail-client-native.test.cjs.inert.snapshot"
+    },
+    {
+      "path": "F:\\work\\sm05-scopes\\tests\\sdk\\standard-build.test.cjs",
+      "bytes": 14217,
+      "sha256": "c276afb2207f5a39684747992bff2ad0e4a8907514b160042526998e30e38b23",
+      "snapshot": "input-snapshots/0041-standard-build.test.cjs.inert.snapshot"
+    }
+  ],
+  "noGui": true,
+  "noEtw": true,
+  "noSendInput": true,
+  "noVm": true,
+  "noTailPolicy": true
+}

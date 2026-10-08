@@ -1,0 +1,66 @@
+{
+  "phase": "collect",
+  "records": [
+    {
+      "label": "collect-x64",
+      "rootExitCode": 0,
+      "genericPassed": true,
+      "supervisorExitCode": 0,
+      "closureConfirmed": true,
+      "ready": {
+        "pid": 47684,
+        "creationFileTime": "134359620920998550"
+      },
+      "reportSha256": "27e21f56d788cdf218df84cfebdc60358f7b98658eb54b739134f90b8b4cb0fc",
+      "contextSha256": "0fd33b681eb2d31e293a3e8a11e8a13ec79751bd9632cf2b42abc5c082b2f21e",
+      "stdoutSha256": "d2a4820c73d92753fa36de66e95caaa4660c611cd1cdc0b3fafd41efcbfe1215",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observedMemberHistory": [
+        {
+          "pid": 93904,
+          "image": "C:\\Windows\\System32\\conhost.exe",
+          "creationFileTime": "134359620921633020"
+        },
+        {
+          "pid": 93904,
+          "image": "C:\\Windows\\System32\\conhost.exe",
+          "creationFileTime": "134359620921633020"
+        }
+      ]
+    },
+    {
+      "label": "collect-x86",
+      "rootExitCode": 1,
+      "genericPassed": false,
+      "supervisorExitCode": 1,
+      "closureConfirmed": true,
+      "ready": {
+        "pid": 15980,
+        "creationFileTime": "134359620923140432"
+      },
+      "reportSha256": "672ffbf8bc980fbd603ab90fda8324ae81ab14c446bbc401625d25c9526faf03",
+      "contextSha256": "9dd950856381b2d420395c2670334c25b5b5715a84fd2a7d01db5d82479098be",
+      "stdoutSha256": "211e644447efe299b2d5985be57a8ac6c83e13c2f9f8515664e7e298c3478ee4",
+      "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "observedMemberHistory": [
+        {
+          "pid": 112608,
+          "image": "C:\\Windows\\System32\\conhost.exe",
+          "creationFileTime": "134359620923705017"
+        },
+        {
+          "pid": 112608,
+          "image": "C:\\Windows\\System32\\conhost.exe",
+          "creationFileTime": "134359620923705017"
+        }
+      ]
+    }
+  ],
+  "sourceFreezeSha256": "321999d490be3f6e71c1bfb2b053648daa27821fc79029244491098936cec8c8",
+  "rawFailurePreserved": true,
+  "compilerTailAcceptance": false,
+  "physicalPresentation": false,
+  "opticalCalibration": false,
+  "performanceGate": false,
+  "releaseReady": false
+}

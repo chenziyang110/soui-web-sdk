@@ -1,0 +1,276 @@
+'use strict';
+
+// A configuration reader, not a frame-present or optical measurement reader.
+const {TextDecoder} = require('node:util');
+const UINT64_MAX = (1n << 64n) - 1n;
+const SCHEMA = 'soui.display-calibration/v1';
+const QUERY_FLAGS = new Set([2, 18, 82]);
+
+function fail(message) { throw new Error('Display calibration: ' + message); }
+function exactKeys(value, names, label) {
+  if (!value || typeof value !== 'object' || Array.isArray(value) ||
+      Object.keys(value).sort().join('|') !== [...names].sort().join('|')) fail(label + ' fields');
+}
+function integer(value, min, max, label) {
+  if (!Number.isSafeInteger(value) || value < min || value > max) fail(label + ' integer');
+  return value;
+}
+function uint32(value, label) { return integer(value, 0, 0xffffffff, label); }
+function uint64(value, label, positive = false) {
+  if (typeof value !== 'string' || !/^(0|[1-9][0-9]{0,19})$/.test(value)) fail(label + ' decimal uint64');
+  const result = BigInt(value);
+  if (result > UINT64_MAX || (positive && result === 0n)) fail(label + ' uint64 range');
+  return result;
+}
+function luid(value) {
+  if (typeof value !== 'string' || !/^[0-9a-f]{16}$/.test(value)) fail('adapter LUID');
+}
+function bool(value, label) { if (typeof value !== 'boolean') fail(label + ' boolean'); }
+function text(value, max, label) {
+  if (typeof value !== 'string' || value.length > max || value.includes('\0')) fail(label + ' string');
+}
+function rational(value, label) {
+  exactKeys(value, ['numerator', 'denominator'], label);
+  uint32(value.numerator, label + ' numerator'); uint32(value.denominator, label + ' denominator');
+  if (value.numerator === 0 || value.denominator === 0) fail(label + ' unspecified/invalid rate');
+}
+function equalRational(left, right) {
+  rational(left, 'left rate'); rational(right, 'right rate');
+  return BigInt(left.numerator) * BigInt(right.denominator) ===
+    BigInt(right.numerator) * BigInt(left.denominator);
+}
+function rejectDuplicateKeys(json) {
+  // JSON.parse accepts overwritten object members. Inspect keys in the same
+  // immutable text before trusting a verdict field or an identity.
+  const stack = [];
+  for (let index = 0; index < json.length; index++) {
+    const next = json[index];
+    if (next === '{' || next === '[') {
+      stack.push(next === '{' ? new Set() : null);
+      if (stack.length > 32) fail('JSON nesting');
+    } else if (next === '}' || next === ']') stack.pop();
+    else if (next === '"') {
+      const start = index++;
+      while (index < json.length) {
+        if (json[index] === '\\') index += 2;
+        else if (json[index] === '"') break;
+        else index++;
+      }
+      let after = index + 1;
+      while (/\s/.test(json[after] || '') && after < json.length) after++;
+      if (json[after] === ':' && stack.at(-1) instanceof Set) {
+        const key = JSON.parse(json.slice(start, index + 1));
+        if (stack.at(-1).has(key)) fail('duplicate JSON field');
+        stack.at(-1).add(key);
+      }
+    }
+  }
+}
+function size(value, label) {
+  exactKeys(value, ['cx', 'cy'], label);
+  integer(value.cx, 1, 0xffffffff, label + ' width'); integer(value.cy, 1, 0xffffffff, label + ' height');
+}
+function point(value, label) {
+  exactKeys(value, ['x', 'y'], label);
+  integer(value.x, -2147483648, 2147483647, label + ' x');
+  integer(value.y, -2147483648, 2147483647, label + ' y');
+}
+function rect(value, label) {
+  exactKeys(value, ['left', 'top', 'right', 'bottom'], label);
+  for (const key of ['left', 'top', 'right', 'bottom']) integer(value[key], -2147483648, 2147483647, label);
+  if (value.right < value.left || value.bottom < value.top) fail(label + ' bounds');
+}
+function signal(value) {
+  exactKeys(value, ['pixelRate', 'hSyncFreq', 'vSyncFreq', 'activeSize', 'totalSize',
+    'videoStandardRaw', 'scanLineOrdering'], 'signal');
+  uint64(value.pixelRate, 'pixelRate', true);
+  rational(value.hSyncFreq, 'hSyncFreq'); rational(value.vSyncFreq, 'vSyncFreq');
+  size(value.activeSize, 'activeSize'); size(value.totalSize, 'totalSize');
+  if (value.activeSize.cx > value.totalSize.cx || value.activeSize.cy > value.totalSize.cy) fail('signal size');
+  uint32(value.videoStandardRaw, 'videoStandardRaw'); integer(value.scanLineOrdering, 0, 3, 'signal scanline');
+}
+function mode(value, virtualAware) {
+  exactKeys(value, ['kind', 'id', 'adapterLuid', 'data'], 'mode');
+  uint32(value.id, 'mode id'); luid(value.adapterLuid);
+  if (value.kind === 1) {
+    exactKeys(value.data, ['width', 'height', 'pixelFormat', 'position'], 'source mode');
+    integer(value.data.width, 1, 0xffffffff, 'source width'); integer(value.data.height, 1, 0xffffffff, 'source height');
+    integer(value.data.pixelFormat, 1, 5, 'pixelFormat'); point(value.data.position, 'source position');
+  } else if (value.kind === 2) signal(value.data);
+  else if (value.kind === 3 && virtualAware) {
+    exactKeys(value.data, ['pathSourceSize', 'desktopImageRegion', 'desktopImageClip'], 'desktop image');
+    point(value.data.pathSourceSize, 'desktop source size');
+    if (value.data.pathSourceSize.x <= 0 || value.data.pathSourceSize.y <= 0) fail('desktop source size');
+    rect(value.data.desktopImageRegion, 'desktop region'); rect(value.data.desktopImageClip, 'desktop clip');
+    const region = value.data.desktopImageRegion, dimensions = value.data.pathSourceSize;
+    if (region.left < 0 || region.top < 0 || region.right > dimensions.x || region.bottom > dimensions.y)
+      fail('desktop region outside source');
+  } else fail('mode kind/awareness');
+}
+function nameInfo(value, label, max) {
+  exactKeys(value, ['errorCode', 'name'], label); uint32(value.errorCode, label + ' error');
+  text(value.name, max, label);
+  if (value.errorCode !== 0 || value.name.length === 0) fail(label + ' unavailable');
+}
+function deviceInfo(value) {
+  exactKeys(value, ['errorCode', 'flags', 'outputTechnology', 'edidManufactureId', 'edidProductCodeId',
+    'connectorInstance', 'friendlyName', 'devicePath'], 'target device');
+  for (const field of ['errorCode', 'flags', 'outputTechnology', 'connectorInstance']) uint32(value[field], field);
+  integer(value.edidManufactureId, 0, 65535, 'EDID manufacturer');
+  integer(value.edidProductCodeId, 0, 65535, 'EDID product');
+  text(value.friendlyName, 64, 'friendlyName'); text(value.devicePath, 128, 'devicePath');
+  if (value.errorCode !== 0) fail('target device unavailable');
+  // An empty name/path and EDID-validity flags remain reported data, never proof of a physical panel.
+}
+function reference(modes, index, kind, endpoint) {
+  if (index >= modes.length) fail('mode index/sentinel');
+  const found = modes[index];
+  if (found.kind !== kind || found.id !== endpoint.id || found.adapterLuid !== endpoint.adapterLuid)
+    fail('mode kind/id/LUID mismatch');
+  return found;
+}
+function reading(value, queryFlags) {
+  exactKeys(value, ['paths', 'modes'], 'reading');
+  if (!Array.isArray(value.paths) || value.paths.length === 0 || value.paths.length > 256 ||
+      !Array.isArray(value.modes) || value.modes.length === 0 || value.modes.length > 1024) fail('reading count');
+  const virtualAware = Boolean(queryFlags & 16);
+  value.modes.forEach(item => mode(item, virtualAware));
+  const targetKeys = new Set();
+  return value.paths.map(path => {
+    exactKeys(path, ['flags', 'source', 'target'], 'path'); uint32(path.flags, 'path flags');
+    if (!(path.flags & 1) || (path.flags & ~29) !== 0) fail('inactive/unknown path flags');
+    const source = path.source, target = path.target;
+    exactKeys(source, ['adapterLuid', 'id', 'rawModeIndex', 'statusFlags', 'gdiName', 'adapterName'], 'source');
+    exactKeys(target, ['adapterLuid', 'id', 'rawModeIndex', 'statusFlags', 'available', 'outputTechnology',
+      'rotation', 'scaling', 'pathRefreshRate', 'scanLineOrdering', 'deviceName', 'adapterName'], 'target');
+    for (const item of [source, target]) {
+      luid(item.adapterLuid); uint32(item.id, 'endpoint id'); uint32(item.rawModeIndex, 'rawModeIndex');
+      uint32(item.statusFlags, 'statusFlags'); nameInfo(item.adapterName, 'adapter name', 128);
+    }
+    nameInfo(source.gdiName, 'source GDI', 32); deviceInfo(target.deviceName);
+    bool(target.available, 'target available'); if (!target.available) fail('active target unavailable');
+    uint32(target.outputTechnology, 'outputTechnology'); integer(target.rotation, 1, 4, 'rotation');
+    if (![1, 2, 3, 4, 5, 128].includes(target.scaling)) fail('scaling');
+    rational(target.pathRefreshRate, 'pathRefreshRate'); integer(target.scanLineOrdering, 0, 3, 'path scanline');
+    const key = target.adapterLuid + '/' + target.id;
+    if (targetKeys.has(key)) fail('duplicate target path'); targetKeys.add(key);
+    const supportsVirtual = Boolean(path.flags & 8);
+    if (supportsVirtual && !virtualAware) fail('virtual union without awareness');
+    if ((path.flags & 16) && !(queryFlags & 64)) fail('boost flag without refresh awareness');
+    const sourceIndex = supportsVirtual ? source.rawModeIndex >>> 16 : source.rawModeIndex;
+    const targetIndex = supportsVirtual ? target.rawModeIndex >>> 16 : target.rawModeIndex;
+    if (sourceIndex === (supportsVirtual ? 65535 : 0xffffffff) ||
+        targetIndex === (supportsVirtual ? 65535 : 0xffffffff)) fail('source/target mode sentinel');
+    reference(value.modes, sourceIndex, 1, source);
+    const targetMode = reference(value.modes, targetIndex, 2, target);
+    const desktopIndex = supportsVirtual ? target.rawModeIndex & 65535 : null;
+    if (desktopIndex !== null && desktopIndex !== 65535 &&
+        (desktopIndex >= value.modes.length || value.modes[desktopIndex].kind !== 3)) fail('desktop mode reference');
+    return {sourceAdapterLuid: source.adapterLuid, sourceId: source.id,
+      targetAdapterLuid: target.adapterLuid, targetId: target.id,
+      sourceModeIndex: sourceIndex, targetModeIndex: targetIndex,
+      cloneGroupIdRaw: supportsVirtual ? source.rawModeIndex & 65535 : null,
+      cloneGroupUsed: false, // Only used without a source-mode index; this reader requires a bound source mode.
+      desktopModeIndex: desktopIndex === 65535 ? null : desktopIndex,
+      desktopImageIdRole: 'unspecified',
+      pathRateRole: queryFlags & 64 ? 'virtual-refresh-aware-path' : 'legacy-or-unknown',
+      boostRefreshRate: queryFlags & 64 ? Boolean(path.flags & 16) : null,
+      pathRefreshRate: {...target.pathRefreshRate}, configuredSignalVSync: {...targetMode.data.vSyncFreq}};
+  });
+}
+
+function readDisplayCalibration(raw, {ownedSubject} = {}) {
+  if (!Buffer.isBuffer(raw) || raw.length === 0 || raw.length > 1024 * 1024) fail('raw bytes/size');
+  let decoded;
+  try { decoded = new TextDecoder('utf-8', {fatal: true}).decode(raw); } catch { fail('UTF-8'); }
+  if (!decoded.endsWith('\n') || decoded.slice(0, -1).includes('\n') || decoded.startsWith('\ufeff')) fail('single complete JSON line');
+  let value;
+  try { value = JSON.parse(decoded); } catch { fail('JSON syntax'); }
+  rejectDuplicateKeys(decoded);
+  exactKeys(value, ['schema', 'readOnly', 'collection', 'bounds', 'status', 'reason', 'api', 'attempts',
+    'readings', 'equalReadings', 'claims'], 'report');
+  if (value.schema !== SCHEMA || value.readOnly !== true) fail('schema/readOnly');
+  exactKeys(value.claims, ['configuredSignalOnly', 'physicalPresentation', 'opticalCalibration', 'performanceGate', 'releaseReady'], 'claims');
+  if (value.claims.configuredSignalOnly !== true || ['physicalPresentation', 'opticalCalibration', 'performanceGate', 'releaseReady']
+      .some(field => value.claims[field] !== false)) fail('presentation/performance claim');
+  exactKeys(value.collection, ['pid', 'creationFileTime', 'startedAtUtcFileTime', 'finishedAtUtcFileTime',
+    'qpcFrequency', 'qpcBegin', 'qpcEnd'], 'collection');
+  integer(value.collection.pid, 1, 0xffffffff, 'collector PID');
+  uint64(value.collection.creationFileTime, 'creationFileTime', true);
+  const started = uint64(value.collection.startedAtUtcFileTime, 'started UTC', true);
+  const finished = uint64(value.collection.finishedAtUtcFileTime, 'finished UTC', true);
+  const frequency = uint64(value.collection.qpcFrequency, 'QPC frequency', true);
+  const begin = uint64(value.collection.qpcBegin, 'QPC begin', true), end = uint64(value.collection.qpcEnd, 'QPC end', true);
+  if (end < begin) fail('time order');
+  exactKeys(value.bounds, ['maxPaths', 'maxModes', 'maxAttempts', 'observedBudgetMs'], 'bounds');
+  if (value.bounds.maxPaths !== 256 || value.bounds.maxModes !== 1024 || value.bounds.maxAttempts !== 3 ||
+      value.bounds.observedBudgetMs !== 2000) fail('bounds changed');
+  if (!['available', 'unavailable', 'error'].includes(value.status)) fail('status');
+  text(value.reason, 128, 'reason'); bool(value.equalReadings, 'equalReadings');
+  exactKeys(value.api, ['module', 'exports', 'queryFlags', 'sizingFlags', 'virtualModeAware', 'virtualRefreshRateAware'], 'api');
+  if (value.api.module !== 'system-user32') fail('module');
+  exactKeys(value.api.exports, ['getBufferSizes', 'queryDisplayConfig', 'getDeviceInfo'], 'exports');
+  Object.values(value.api.exports).forEach(item => bool(item, 'export'));
+  for (const field of ['queryFlags', 'sizingFlags']) if (value.api[field] !== null && !QUERY_FLAGS.has(value.api[field])) fail(field);
+  if (value.api.virtualModeAware !== Boolean(value.api.queryFlags & 16) ||
+      value.api.virtualRefreshRateAware !== Boolean(value.api.queryFlags & 64)) fail('awareness flags');
+  if (!Array.isArray(value.attempts) || value.attempts.length > 96) fail('attempts');
+  let previousAttempt = 1, previousTime = begin;
+  for (const attempt of value.attempts) {
+    exactKeys(attempt, ['attempt', 'stage', 'errorCode', 'queryFlags', 'sizingFlags', 'pathCount', 'modeCount', 'qpc'], 'attempt');
+    integer(attempt.attempt, 1, 3, 'attempt index');
+    if (!['buffer-size', 'query', 'metadata', 'validation', 'compare', 'budget'].includes(attempt.stage)) fail('attempt stage');
+    uint32(attempt.errorCode, 'attempt error');
+    if (!QUERY_FLAGS.has(attempt.queryFlags) || !QUERY_FLAGS.has(attempt.sizingFlags)) fail('attempt flags');
+    // Failed sizing diagnostics retain the original oversized counts. Never
+    // allocate from them; each materialized reading has separate hard limits.
+    uint32(attempt.pathCount, 'attempt paths'); uint32(attempt.modeCount, 'attempt modes');
+    const at = uint64(attempt.qpc, 'attempt QPC', true);
+    if (at < previousTime || at > end || attempt.attempt < previousAttempt) fail('attempt time/order');
+    previousTime = at; previousAttempt = attempt.attempt;
+  }
+  if (!Array.isArray(value.readings) || value.readings.length > 2) fail('readings');
+  let paths = [];
+  if (value.readings.length) {
+    if (!QUERY_FLAGS.has(value.api.queryFlags)) fail('reading without query');
+    paths = reading(value.readings[0], value.api.queryFlags);
+    value.readings.slice(1).forEach(item => reading(item, value.api.queryFlags));
+  }
+  const same = value.readings.length === 2 && JSON.stringify(value.readings[0]) === JSON.stringify(value.readings[1]);
+  if (value.equalReadings !== same) fail('equalReadings mismatch');
+  if (value.status === 'available') {
+    if (finished < started) fail('available UTC clock discontinuity');
+    if (value.reason !== 'success' || !same || Object.values(value.api.exports).some(item => !item) ||
+        !QUERY_FLAGS.has(value.api.sizingFlags) || !value.attempts.some(item => item.stage === 'query' &&
+          item.errorCode === 0 && item.queryFlags === value.api.queryFlags && item.sizingFlags === value.api.sizingFlags))
+      fail('available report incomplete');
+    const retryable = item =>
+      (item.errorCode === 87 && ['buffer-size', 'query'].includes(item.stage) && item.queryFlags !== 2) ||
+      (item.errorCode === 122 && item.stage === 'query') || (item.errorCode === 1237 && item.stage === 'compare');
+    if (value.attempts.some(item => item.errorCode !== 0 && !retryable(item))) fail('sticky API/error history');
+    if (value.attempts.some(item => item.pathCount > 256 || item.modeCount > 1024)) fail('available buffer limits');
+    const last = value.attempts.at(-1);
+    if (!last || last.stage !== 'compare' || last.errorCode !== 0 || last.queryFlags !== value.api.queryFlags ||
+        last.sizingFlags !== value.api.sizingFlags) fail('final comparison');
+    const finalAttempt = value.attempts.filter(item => item.attempt === last.attempt &&
+      item.queryFlags === value.api.queryFlags && item.sizingFlags === value.api.sizingFlags);
+    for (const stage of ['query', 'metadata', 'validation'])
+      if (finalAttempt.filter(item => item.stage === stage && item.errorCode === 0).length !== 2)
+        fail('two complete readings required');
+    if ((end - begin) * 1000n > frequency * 2000n) fail('observed budget exceeded');
+  }
+  let exactCollectorBound = false;
+  if (ownedSubject !== undefined) {
+    exactKeys(ownedSubject, ['pid', 'creationFileTime'], 'ownedSubject');
+    integer(ownedSubject.pid, 1, 0xffffffff, 'owned PID'); uint64(ownedSubject.creationFileTime, 'owned FILETIME', true);
+    if (ownedSubject.pid !== value.collection.pid || ownedSubject.creationFileTime !== value.collection.creationFileTime)
+      fail('owned collector identity mismatch');
+    exactCollectorBound = true;
+  }
+  return {schema: 'soui.display-calibration-verdict/v1', displayConfigurationAccepted: value.status === 'available',
+    calibrationAccepted: value.status === 'available' && exactCollectorBound,
+    exactCollectorBound, status: value.status, reason: value.reason, paths,
+    physicalPresentation: false, opticalCalibration: false, performanceGate: false, releaseReady: false};
+}
+
+module.exports = {readDisplayCalibration, equalRational};

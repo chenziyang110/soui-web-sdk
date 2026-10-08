@@ -1,0 +1,33 @@
+# ADR 0035：显示配置与实际呈现证据分开
+
+日期：2026-10-09。状态：accepted（只读显示配置切片；实际呈现采集尚未实施）。
+
+## 背景
+
+60/120/144 Hz 验收必须先知道本轮使用哪条显示路径及其配置频率。整数频率、JS rAF、全局 DWM 帧和应用 Present 次数不能彼此代替。已有测量协议仍未关闭实际桌面配对、物理呈现、高刷和 OS/PE 门槛；本决策不会改变旧证据或这些状态。
+
+## 决策
+
+增加无参数、单行 stdout JSON 的只读 `DisplayCalibration` collector，以及独立严格 reader。`soui.display-calibration/v1` 保存全部 active paths、同次查询的模式表、source GDI 名、target monitor 信息、adapter LUID、原始刷新率分数和能力/错误记录。进程创建 FILETIME、UTC FILETIME、QPC 和 pixelRate 使用规范十进制 uint64 字符串。
+
+只查询当前活动配置。索引必须指向同次返回的模式表；source/target 同时核对 mode kind、id 和 LUID。virtual path 的两个 16-bit 索引/clone group 与 legacy DWORD 索引分开解码，sentinel 不作数组下标。desktop-image 的 id 在当前官方描述中没有明确指定属于哪一端，保留原值并标为 `unspecified`，不用于 target 身份或频率绑定。[CCD 查询](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-querydisplayconfig)、[source union](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-displayconfig_path_source_info)、[target union](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-displayconfig_path_target_info)、[模式结构](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-displayconfig_mode_info)。
+
+分别保存 `path.targetInfo.refreshRate` 和 target mode 的 `targetVideoSignalInfo.vSyncFreq`。接受 Win11 virtual-refresh-aware 查询时前者可表达虚拟桌面率；DRR boost 标志的意义只有在该能力已接受时才解释。后者是 OS/驱动报告的配置信号率，不是逐帧 VRR、观测到的 scanout 或光学屏幕变化。[DRR 字段](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-displayconfig_path_info)、[视频信号](https://learn.microsoft.com/en-us/windows/win32/api/wingdi/ns-wingdi-displayconfig_video_signal_info)。
+
+SDK 19041 和 Win7 target floor 保持不变。只从系统 User32 动态探测三个 CCD exports；缺组件、非 WDDM、当前桌面/会话无访问权均输出显式不可用。新 query `0x40` / path `0x10` 数值来自官方文档，局部常量不意味着旧 OS 支持。仅 `ERROR_INVALID_PARAMETER` 能降级 awareness。buffer sizing 对 `0x40` 的支持未由参数文档承诺，单独记录 sizing/query flags；允许探测 sizing `0x12` + query `0x52`，不把 sizing 拒绝误当作 query 能力不存在。[buffer sizing](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getdisplayconfigbuffersizes)。
+
+x86 在 WOW64 下通过已加载 Kernel32 的旧版可用 exports 探测架构，并取 `GetSystemWow64DirectoryW` 的系统目录，再加载/核对 User32 路径；不将合法的 SysWOW64 重定向误判为路径异常，不修改重定向设置。[WOW64 重定向](https://learn.microsoft.com/en-us/windows/win32/winprog64/file-system-redirector)、[旧版目录接口](https://learn.microsoft.com/en-us/windows/win32/api/wow64apiset/nf-wow64apiset-getsystemwow64directoryw)。
+
+当前主机的真实 x86 对照暴露了两个错误：32768 WCHAR 目录缓冲返回 required size 却未改写原内容，以及已加载 User32 的模块名使用逻辑 System32 路径。目录读取改用 MAX_PATH 初始容量、最多三次有界增长、32767 WCHAR 上限，并要求返回长度与首 NUL 一致。模块名同样拒绝截断或长度不符。加载请求与模块报告路径同时以只读属性句柄打开，拒绝目录/非磁盘，比较规范 volume-GUID 最终路径、volume serial 和 64-bit file index；这只说明此时两个持有的磁盘对象一致，不认证 HMODULE 内存、DLL 注入或执行代码。缺少磁盘身份/规范路径支持保持 unavailable，网络或未由 Mount Manager 管理的卷不作成功回退。[模块名返回规则](https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew)、[磁盘对象比较](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfileinformationbyhandle)、[规范路径和平台要求](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-getfinalpathnamebyhandlew)。
+
+最多三次拓扑候选，256 paths、1024 modes、两秒观测预算。重取大小只用于正常 buffer/topology 变化；权限、未知格式、无效引用和元数据错误不通过重试洗掉。两次完整读取的有意义字段相同才报告 `equalReadings`；这不能证明期间没有 ABA 变化，也不是原子快照。同步 API 的底层阻塞无法被该观测预算抢占，仍需外层 owned Job 超时监督。
+
+## 选项与后果
+
+不以 CIM/EnumDisplaySettings 的整数频率填补 exact rate；不按 monitor 名合并 clone 或多 adapter。配置采集不会改变分辨率、刷新率、显示路径、窗口、输入、ETW session 或系统设置。reader 可无外部身份解析诊断，但只有与本轮 held owned subject 的 PID/精确 FILETIME 相符才设置 `exactCollectorBound`；这并非防同一用户重写整个证据包的认证。
+
+实际呈现另用固定版本 PresentMon/ETL 与 owned 进程生命周期绑定。无可归属应用帧就是不可用，不能回退全局 DWM 或 rAF 为成功。物理屏幕校准需要独立外部传感器/摄像方案。[后续实施约束](../acceptance/0.5-display-presentation-calibration.md)。
+
+## 验证边界
+
+纯 Node fixtures 明确是 authored 数据，覆盖精确分数、DRR、clone/multi-adapter、union/sentinel、mode kind/id/LUID、格式/溢出、权限/组件缺失和虚假呈现声明。根代理授权的两架构隔离 consumer 已真实编译；当前 Win11 各一次最终只读 collector 自然 root 0 / owned Job 归零，精确 PID/FILETIME 绑定后读取同一 active path。九项目录 helper fixture 使用 TEST_ONLY authored API 返回，仅证明分支边界；真实 API 容量/模块名对照另存。旧失败和 compile root 0 / generic false 124 均保留。当前没有实际 PresentMon、ETW、GUI 操作、SendInput、VM、Win7/PE、高刷或物理屏幕校准结果；VC/UCRT 部署仍是兼容条件。
