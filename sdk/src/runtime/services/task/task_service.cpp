@@ -85,6 +85,9 @@ struct task_service::impl {
       return session == request.session_id && origin == request.origin && authorization &&
              authorization == request.authorization;
     }
+    bool executable() const {
+      return authorization && authorization->matches(session, origin) && authorization->allows("task.start");
+    }
   };
   struct job {
     std::string id;
@@ -150,11 +153,8 @@ struct task_service::impl {
 
   void finish(const std::shared_ptr<job>& item, task_outcome outcome) {
     std::lock_guard<std::mutex> lock(mutex);
-    if (item->cancel_requested.load(std::memory_order_acquire)) {
-      outcome.kind = result_kind::task_cancelled;
-      outcome.result_json = "{}";
-      outcome.message = "Native task cancellation confirmed.";
-    }
+    // A cancellation request cannot undo work. Preserve the handler's actual
+    // terminal outcome; only an unexecuted job or explicit confirmation cancels.
     if (outcome.kind == result_kind::timeout_observed || outcome.kind == result_kind::input_required) {
       outcome.kind = result_kind::failure;
       outcome.result_json = "{}";
@@ -179,19 +179,36 @@ struct task_service::impl {
   void run() {
     for (;;) {
       std::shared_ptr<job> item;
+      bool execute = false;
       {
         std::unique_lock<std::mutex> lock(mutex);
         ready.wait(lock, [this] { return stopping || !queue.empty(); });
         if (queue.empty() && stopping) return;
         item = std::move(queue.front());
         queue.pop_front();
+        const auto owner = owners.find(item->id);
+        execute = owner != owners.end() && !owner->second.revoked && owner->second.context.executable() &&
+            !item->cancel_requested.load(std::memory_order_acquire) && tasks.mark_running(item->id);
       }
-      if (item->cancel_requested.load(std::memory_order_acquire) || !tasks.mark_running(item->id)) {
+      if (!execute) {
         finish(item, {result_kind::task_cancelled, "{}", "Native task cancelled before execution."});
         emit(item->id);
         continue;
       }
       emit(item->id);
+      {
+        // Event callbacks may delay a worker. Recheck immediately before the
+        // business callback is committed, not only when it leaves the queue.
+        std::lock_guard<std::mutex> lock(mutex);
+        const auto owner = owners.find(item->id);
+        execute = owner != owners.end() && !owner->second.revoked && owner->second.context.executable() &&
+            !item->cancel_requested.load(std::memory_order_acquire);
+      }
+      if (!execute) {
+        finish(item, {result_kind::task_cancelled, "{}", "Native task cancelled before execution."});
+        emit(item->id);
+        continue;
+      }
       task_control control(
           [item] { return item->cancel_requested.load(std::memory_order_acquire); },
           [this, item](std::uint32_t percent, std::string message) {
@@ -212,6 +229,10 @@ struct task_service::impl {
     for (auto iterator = owners.begin(); iterator != owners.end();) {
       if (!tasks.query(iterator->first)) {
         operations.erase(iterator->second.operation_key);
+        for (auto subscription = subscriptions.begin(); subscription != subscriptions.end();) {
+          if (subscription->second.task_id == iterator->first) subscription = subscriptions.erase(subscription);
+          else ++subscription;
+        }
         iterator = owners.erase(iterator);
       } else ++iterator;
     }
@@ -244,6 +265,25 @@ void task_service::set_event_sink(event_sink sink) {
   impl_->sink = std::move(sink);
 }
 
+bool task_service::shutdown_scope(const std::shared_ptr<const authorization_scope>& scope) {
+  if (!scope) return false;
+  std::lock_guard<std::mutex> lock(impl_->mutex);
+  if (scope->active()) return false;
+  for (auto& entry : impl_->owners) {
+    if (entry.second.context.authorization != scope) continue;
+    entry.second.revoked = true;
+    if (entry.second.active) {
+      entry.second.active->cancel_requested.store(true, std::memory_order_release);
+      (void)impl_->tasks.request_cancel(entry.first);
+    }
+  }
+  for (auto iterator = impl_->subscriptions.begin(); iterator != impl_->subscriptions.end();) {
+    if (iterator->second.context.authorization == scope) iterator = impl_->subscriptions.erase(iterator);
+    else ++iterator;
+  }
+  return true;
+}
+
 void task_service::shutdown_session(const std::string& session_id) {
   std::lock_guard<std::mutex> lock(impl_->mutex);
   for (auto& entry : impl_->owners) {
@@ -270,13 +310,13 @@ std::string task_service::start(const bridge_request& request) {
   if (!valid_name(kind) || !valid_name(operation_id))
     return error("E_INVALID_PARAMS", "kind and operationId must be bounded identifiers.");
   const auto input = params["input"].dump();
-  const auto operation_key = request.session_id + '\x1f' + operation_id;
   const auto scope_key = kind + '\x1f' + input;
   std::lock_guard<std::mutex> lock(impl_->mutex);
   if (impl_->stopping) return error("E_BUSY", "The native task service is shutting down.");
   // A request may have waited after transport validation. Recheck under the
   // resource lock so revoke-before-shutdown cannot miss a late admission.
   if (!authorized(request, "task.start")) return error("E_UNAUTHORIZED", "A live task.start authorization is required.");
+  const auto operation_key = request.authorization->scope_id() + '\x1f' + operation_id;
   const auto previous = impl_->operations.find(operation_key);
   if (previous != impl_->operations.end()) {
     const auto owner = impl_->owners.find(previous->second);

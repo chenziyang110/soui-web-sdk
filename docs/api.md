@@ -110,13 +110,15 @@ Web 方法类型为 `SouiClipboardMethodMap`，与 `SouiCoreMethodMap` 组合使
 
 公共 `permission_store.resolve(session, origin, token, capability)` 返回本次校验及稳定的 `authorization_scope`。transport 始终重建原生 `bridge_request.authorization`，JSON 不得提供它；直接调用 `task_service` 的原生代码必须提供正确的 scope。资源比较 scope 身份加 session/origin；同一 session 重新 issue 的独立 grant 不能访问旧资源。关闭顺序必须先 `permission_store.revoke_session` 再服务 `shutdown_session`，新资源在提交锁内复验 scope。已接纳任务协作式结束；到期后不新投递其订阅事件，关窗负责最终资源清理。
 
+原生 `scope->scope_id()` 是续租不变的 `soui-scope-<十进制序号>` 关联 ID，可预测且不是凭据。仅保证同一 SDK 模块装载实例内不复用，不承诺跨进程、重启或独立静态 SDK 副本唯一性；uint64 耗尽时 issue 抛出 overflow_error，不回绕。任务所有权仍比较实际对象，不能凭字符串查找或授予授权。`permission_store.revoke_scope(scope)` 只撤销本 store 持有的对象及所有 bearer 别名，空、其他 store 或已移除对象返回 false。先撤销，再调用 `task_service.shutdown_scope(scope)` 清理该对象的订阅并请求协作取消；活跃或空 scope 返回 false，true 不表示工作线程已结束，重复清理安全。一个范围的关闭不影响同文档其他 grant。排队工作在业务回调执行提交前复验授权；到期或撤销不回滚已经提交的业务。事件出口仍是原页面全局 sink，本 API 未提供外部 Agent 的按 scope 定向事件。
+
 一次 Web 续期最多三次尝试，共享同一个 operationId 和最多 25 秒的总预算；dispose 终止计时器，迟到回应不能复活客户端。Host 和实际注入 resolver 均保留单独的一项续期容量，但不能抢占正在执行的业务方法。休眠、长模态或阻塞超过原生期限仍会失败，需应用明确处理重新加载。行为边界见 [ADR-0014](adr/0014-same-document-session-renewal.md)，真实八小时与 Win7 验收另行留证。
 
 ## 公共长任务
 
 应用在首次 bootstrap 前调用 `bridge.register_task_handler(kind, handler)`，在处理器中通过 `task_control::report_progress(0..100, message)` 报告进度、定期检查 `cancellation_requested()` 并返回 `task_outcome`。处理器运行在 SDK 的后台工作线程，不能直接修改窗口控件。模板的 `app.count` 展示完整调用。页面以 `client.call('task.start', {kind, operationId, input})` 启动，随后以 `task.query` 读取状态、`client.subscribe(taskId, 'task.progress', listener)` 订阅进度，必要时调用 `task.cancel`，最后等待 `unsubscribe()` 确认。`task.start` 要求三个字段且 `input` 为对象；`kind` 和 `operationId` 只能包含 ASCII 字母、数字、连字符、下划线、点和冒号，长度为 1–128。
 
-同一授权的同一 `operationId` 与相同 `kind`/`input` 重试会返回原 `taskId` 和 `duplicate: true`；不同内容返回 `E_OPERATION_CONFLICT`。任务查询、取消和订阅核对本次 token 的授权结果，并按 session、origin 和稳定授权对象确认资源归属；轮换不重启任务、不重置 sequence。页面导航撤销旧会话并请求取消未完成任务。取消是协作式的：`task.cancel` 先返回 `cancel-pending`，只有处理器退出后才报告 `cancelled`。页面请求超时也不自动取消任务。
+同一原生授权 scope 中 `operationId` 与相同 `kind`/`input` 重试会返回原 `taskId` 和 `duplicate: true`；不同内容返回 `E_OPERATION_CONFLICT`。同一文档的不同 grant 或不同 permission_store 的相同 operationId 独立。任务查询、取消和订阅核对本次 token 的授权结果，并按 session、origin 和实际授权对象确认资源归属；轮换不重启任务、不重置 sequence。页面导航撤销旧会话并请求取消未完成任务。取消是协作式的：`task.cancel` 先返回 `cancel-pending`；只有业务回调尚未执行便取消，或处理器明确返回 `task_cancelled` / `user_cancelled`，才报告 `cancelled`。已执行处理器返回的 success、partial、failure 仍形成对应真实终态；收到取消请求后仅退出并返回 success 不会自动变成 cancelled。页面请求超时也不自动取消任务。
 
 默认上限为 2 个原生工作线程、32 个未完成任务、128 个订阅和 1,024 个保留的任务结果。超限返回 `E_BUSY`，旧终态记录按最早序号淘汰；任务结果只保留在进程内，没有持久化保证。返回结果须为不超过 32 KiB 的 JSON 对象，进度与终态消息最多 4 KiB；违反返回约束会形成失败终态。应用的处理器应按自己的数据来源继续验证 `input`，及时响应取消，并自行约束阻塞外部调用的最长时间。当前公共任务模块仍待独立真实页面、Demo、长稳和目标机整组验收。
 

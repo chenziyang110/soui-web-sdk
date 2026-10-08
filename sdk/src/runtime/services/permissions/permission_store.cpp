@@ -1,4 +1,5 @@
 #include <soui/runtime/services/permissions/permission_store.h>
+#include "scope_id_sequence.h"
 
 #include <windows.h>
 #include <bcrypt.h>
@@ -16,6 +17,10 @@ constexpr auto lifetime = std::chrono::minutes(30);
 constexpr auto renewal_window = std::chrono::minutes(5);
 constexpr auto overlap = std::chrono::seconds(30);
 constexpr const char* renewal_capability = "bridge.session.renew";
+detail::scope_id_sequence& scope_ids() {
+  static detail::scope_id_sequence sequence;
+  return sequence;
+}
 bool valid_operation(const std::string& value) {
   return !value.empty() && value.size() <= 128U &&
       std::all_of(value.begin(), value.end(), [](unsigned char c) {
@@ -29,7 +34,7 @@ bool valid_operation(const std::string& value) {
 struct authorization_scope::state {
   mutable std::mutex mutex;
   permission_store::clock_source now{&permission_store::clock_type::now};
-  std::string session_id, origin, token, previous_token, last_operation;
+  std::string scope_id, session_id, origin, token, previous_token, last_operation;
   std::unordered_set<std::string> capabilities;
   permission_store::clock_type::time_point expires_at{}, previous_until{};
   std::uint64_t generation{1};
@@ -62,6 +67,7 @@ struct authorization_scope::state {
 
 authorization_scope::authorization_scope(std::unique_ptr<state> data) : data_(std::move(data)) {}
 authorization_scope::~authorization_scope() = default;
+const std::string& authorization_scope::scope_id() const noexcept { return data_->scope_id; }
 bool authorization_scope::active() const {
   std::lock_guard<std::mutex> lock(data_->mutex);
   return data_->active_at(data_->now());
@@ -103,6 +109,7 @@ std::string permission_store::issue(std::string session_id, std::string origin,
   std::lock_guard<std::mutex> lock(mutex_);
   const auto token = make_token();
   if (grants_.count(token)) throw std::runtime_error("Authorization entropy collision");
+  data->scope_id = "soui-scope-" + std::to_string(scope_ids().allocate());
   data->token = token; data->expires_at = now_() + lifetime;
   auto scope = std::shared_ptr<authorization_scope>(new authorization_scope(std::move(data)));
   grants_.emplace(token, std::move(scope));
@@ -178,6 +185,25 @@ permission_lease permission_store::renew(const std::string& session, const std::
   data.expires_at = now + lifetime;
   ++data.generation;
   return data.snapshot(now);
+}
+
+bool permission_store::revoke_scope(const std::shared_ptr<const authorization_scope>& scope) {
+  if (!scope) return false;
+  std::lock_guard<std::mutex> lock(mutex_);
+  const auto found = std::find_if(grants_.begin(), grants_.end(), [&](const auto& entry) {
+    return entry.second == scope;
+  });
+  if (found == grants_.end()) return false;
+  {
+    std::lock_guard<std::mutex> state_lock(scope->data_->mutex);
+    scope->data_->revoked = true;
+  }
+  // Invalidate the held native object before removing every bearer alias.
+  for (auto iterator = grants_.begin(); iterator != grants_.end();) {
+    if (iterator->second == scope) iterator = grants_.erase(iterator);
+    else ++iterator;
+  }
+  return true;
 }
 
 void permission_store::revoke_session(const std::string& session_id) {

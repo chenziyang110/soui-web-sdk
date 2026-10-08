@@ -251,6 +251,8 @@ int main() {
                                                       const soui::runtime::task_control& control) {
       ++block_started;
       while (!release_block.load() && !control.cancellation_requested()) std::this_thread::sleep_for(2ms);
+      if (control.cancellation_requested())
+        return soui::runtime::task_outcome{soui::runtime::result_kind::task_cancelled, "{}", "cancel confirmed"};
       return soui::runtime::task_outcome{soui::runtime::result_kind::success, R"({"released":true})", "done"};
     }), "blocking handler registration failed");
     require(bridge.register_task_handler("oversize", [](const auto&, const auto&) {
