@@ -7,8 +7,8 @@
     {
       "path": ".gitattributes",
       "normalization": "lf",
-      "bytes": 28708,
-      "sha256": "5bedbb8a7a7478b1e1a72ac10e05826d47d0767a9111d735ead2c75efac2dbfa"
+      "bytes": 28835,
+      "sha256": "3cb8018e0c45497a86a09458d0a9e6f5eeedcbdc586684a19d700a7916a64f16"
     },
     {
       "path": ".github/CODEOWNERS",
@@ -1607,6 +1607,12 @@
       "sha256": "238e5e7022be6a35c6f4a2bf21e2319087ac13c87e172ec70be1b06eec49563e"
     },
     {
+      "path": "docs/adr/0027-native-authorization-scope-and-task-ownership.md",
+      "normalization": "lf",
+      "bytes": 9018,
+      "sha256": "2b396a5ce0c8d51708877dda2e1385fbde6a6438df8ba6dd5092d88409f871cf"
+    },
+    {
       "path": "docs/adr/README.md",
       "normalization": "lf",
       "bytes": 732,
@@ -1615,8 +1621,8 @@
     {
       "path": "docs/api.md",
       "normalization": "lf",
-      "bytes": 24311,
-      "sha256": "07b62801cb07c07d0067f2ec88c085ff81226cee126599ba1e10669b90eb9628"
+      "bytes": 25635,
+      "sha256": "eedbf47c9557dc7ec971523d8ea0faf5e6302ef53fc9f0af9a8fac825d9c499e"
     },
     {
       "path": "docs/architecture.md",
@@ -1987,14 +1993,14 @@
     {
       "path": "sdk/include/soui/runtime/services/permissions/permission_store.h",
       "normalization": "lf",
-      "bytes": 3627,
-      "sha256": "63980c76c70f500c9a7d0cf52600c21b2ff70eb7a6d40b36a106a281ab3299ee"
+      "bytes": 4093,
+      "sha256": "052419de7a352ca8d331d15eb1caad58d88839add2c65696b6b1dd3969913155"
     },
     {
       "path": "sdk/include/soui/runtime/services/task/task_service.h",
       "normalization": "lf",
-      "bytes": 2771,
-      "sha256": "b1b20895eae62cf284f47232f1ec7f6c386595c4115c44399acb066219e29d08"
+      "bytes": 3112,
+      "sha256": "1fbf99650c1735495a69447a17ce9870c5525aaa5f7ccfc3ae2dae0e6b5ec041"
     },
     {
       "path": "sdk/include/soui/version.h",
@@ -2179,14 +2185,20 @@
     {
       "path": "sdk/src/runtime/services/permissions/permission_store.cpp",
       "normalization": "lf",
-      "bytes": 9554,
-      "sha256": "e2140e6ccb1bd7e0a91275ac72adb23eaf69384265b748ea5ef53a93a3b5406a"
+      "bytes": 10579,
+      "sha256": "39691d3c6ce6904d814381d0d7eaa6348d20bf0bc3bdfd58c3e56195c287b427"
+    },
+    {
+      "path": "sdk/src/runtime/services/permissions/scope_id_sequence.h",
+      "normalization": "lf",
+      "bytes": 892,
+      "sha256": "da8ddba81e066354401b09b317c94ca1aa07701162c44ca31afe33908ac0599e"
     },
     {
       "path": "sdk/src/runtime/services/task/task_service.cpp",
       "normalization": "lf",
-      "bytes": 18239,
-      "sha256": "8c20f308e11e5043bc5c131510551672148d5648db854bc4b42909f7e4febaae"
+      "bytes": 20185,
+      "sha256": "b2176b95457c81f4dd768adda31c1ada0061ac41ecd9efab2fdef436e5a35e6b"
     },
     {
       "path": "sdk/web/package-lock.json",
@@ -2611,8 +2623,8 @@
     {
       "path": "tests/native/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 11181,
-      "sha256": "0c1e8199c9f8fd216678a98d76bf39123d5f8b0acc379c6d5aedd28bc73e5af9"
+      "bytes": 11711,
+      "sha256": "b7a0cec706c974b204f34bd520cd6ae576ce46d9d86900a1ddbdff55e08e9bad"
     },
     {
       "path": "tests/native/action_contract_tests.cpp",
@@ -2705,10 +2717,22 @@
       "sha256": "67e3f532128f627c0222923552cf4403777641908762d870a5acaa315a1a4591"
     },
     {
+      "path": "tests/native/task-scope-regression.md",
+      "normalization": "lf",
+      "bytes": 3478,
+      "sha256": "496680378377424ebf156b752e7a294f36e5bfcc2c40c9dee9b0ba496ff8e0ce"
+    },
+    {
+      "path": "tests/native/task_scope_tests.cpp",
+      "normalization": "lf",
+      "bytes": 28528,
+      "sha256": "4a84c17f3465b5f86d39914f8fa2511882bef4a0ee4c2c99997ccc40485a860e"
+    },
+    {
       "path": "tests/native/task_service_tests.cpp",
       "normalization": "lf",
-      "bytes": 21505,
-      "sha256": "5a94239f832c723dcfc8fc6cd574b6663aa9fb98ef5b3e5de4e5ae2c00740efa"
+      "bytes": 21663,
+      "sha256": "f280a239c9adaefd74a53a2ee38611cf7e5297fc939c60b34756ef8cdc2fc9a9"
     },
     {
       "path": "tests/native/task_store_capacity_tests.cpp",
@@ -174207,6 +174231,450 @@
       "normalization": "lf",
       "bytes": 1881,
       "sha256": "0285c346d2e8979806293fe7c8cb48f550ce97be648d96dff89c153037f50397"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/inputs.json",
+      "normalization": "none",
+      "bytes": 5215,
+      "sha256": "48c8f423b648019acd34b6810385250cba4abdb2521347ff91144f10b6f43e32"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/run.cjs",
+      "normalization": "none",
+      "bytes": 4853,
+      "sha256": "74729aec07481d8f8093c67baa43effc99d96f9c3a63ffced2323de13b9440f6"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/summary.json",
+      "normalization": "none",
+      "bytes": 14654,
+      "sha256": "6601b0336a9a78139b73068c4198b9589bbc67b91d52dcfcdad35bb8793da5ad"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_session_renewal_tests/finished.json",
+      "normalization": "none",
+      "bytes": 1020,
+      "sha256": "cf4250e084f70ca44cde7acf1f57c17443ab9424d3c45d521011142153265655"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_session_renewal_tests/owned.ndjson",
+      "normalization": "none",
+      "bytes": 1429,
+      "sha256": "2b8b1e6d59e342de8d45c1a93b61527db62da2b2836aaf43f5ba543161ee6fd3"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_session_renewal_tests/owned.ndjson.context.json",
+      "normalization": "none",
+      "bytes": 427,
+      "sha256": "1990e4eee5410c7d4d6d6f6d9341631ca81e5da3969379204dfde2b7ea1fbadc"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_session_renewal_tests/stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_session_renewal_tests/stdout.bin",
+      "normalization": "none",
+      "bytes": 99,
+      "sha256": "e01fbc45087bfb2b1a15cf0ff5eff6dfbd87fb02b3bb8dc10ac9d86997b0b4e8"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_scope_tests/finished.json",
+      "normalization": "none",
+      "bytes": 1015,
+      "sha256": "cac05f9b7027d6f0f630caf414467a0e414c65b994ef7c0589b84d3ab3f5b4a6"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_scope_tests/owned.ndjson",
+      "normalization": "none",
+      "bytes": 1419,
+      "sha256": "13798de07daddc201ef0ba34c077398b1318ff89f6aa2c619f006a9daf132b3c"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_scope_tests/owned.ndjson.context.json",
+      "normalization": "none",
+      "bytes": 435,
+      "sha256": "150247b1903edb578c0c5fdde6ca2a34ba82b1b3019374727b31702a5ec0021f"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_scope_tests/stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_scope_tests/stdout.bin",
+      "normalization": "none",
+      "bytes": 37,
+      "sha256": "b94e1162826f5438692fabc60bcafcd6c2e221d6de673820a3c17c3144ac16ec"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_service_tests/finished.json",
+      "normalization": "none",
+      "bytes": 1017,
+      "sha256": "d11233fbc3ee8bdf61a46d1413c409a242bb25292764769e53eff20911dd6371"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_service_tests/owned.ndjson",
+      "normalization": "none",
+      "bytes": 1424,
+      "sha256": "1633085d719ec2eb686d377b02cd2a07d7eb94dfd6517f116a7d5f6e625e9ec4"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_service_tests/owned.ndjson.context.json",
+      "normalization": "none",
+      "bytes": 424,
+      "sha256": "37209ca5c7cfda25023510195f23020268eab9f30724597f54c720c7e510bfb8"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_service_tests/stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_service_tests/stdout.bin",
+      "normalization": "none",
+      "bytes": 95,
+      "sha256": "f2aacb5cc1941ef3473b8821f2a84f44fa9f9f8ff41e49e0a2f8b3e7fb5f8983"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_store_capacity_tests/finished.json",
+      "normalization": "none",
+      "bytes": 1024,
+      "sha256": "18c0a1e503a6f1f4e0e5a82926e86e46a7ca2b81dbdfe8893a3edc43b70a192f"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_store_capacity_tests/owned.ndjson",
+      "normalization": "none",
+      "bytes": 1434,
+      "sha256": "31327ea5e456e341e3d5f494895aff4b84e90de04ccc7f243a6ec8e17a8530c2"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_store_capacity_tests/owned.ndjson.context.json",
+      "normalization": "none",
+      "bytes": 431,
+      "sha256": "cce8d6454dd7139de922d777786cd9bd8e7234b0dcf4fa8a1dded8be148720a6"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_store_capacity_tests/stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x64-soui_task_store_capacity_tests/stdout.bin",
+      "normalization": "none",
+      "bytes": 123,
+      "sha256": "8a4449a79f8eb950fe5ebf641fa39d2232c341d369d325120ea536927e9529ac"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_session_renewal_tests/finished.json",
+      "normalization": "none",
+      "bytes": 1019,
+      "sha256": "151fba15c9503155826cf888c2d0bff2df2b05a7c28f57c0a0b01262dfdc4174"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_session_renewal_tests/owned.ndjson",
+      "normalization": "none",
+      "bytes": 1426,
+      "sha256": "92238b4158b0dca081b17cebff945b650c5df6150cda5e3c0d60e0e3cb4a5b5a"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_session_renewal_tests/owned.ndjson.context.json",
+      "normalization": "none",
+      "bytes": 427,
+      "sha256": "8ad3efd47935959d8198da1bec318fc3869fd1d741c1fb04944b4ad7860037c9"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_session_renewal_tests/stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_session_renewal_tests/stdout.bin",
+      "normalization": "none",
+      "bytes": 99,
+      "sha256": "e01fbc45087bfb2b1a15cf0ff5eff6dfbd87fb02b3bb8dc10ac9d86997b0b4e8"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_scope_tests/finished.json",
+      "normalization": "none",
+      "bytes": 1015,
+      "sha256": "0f66370b58deee2275bf4db24183752d9e45ef1a3d78ee18451ef39b052b92a7"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_scope_tests/owned.ndjson",
+      "normalization": "none",
+      "bytes": 1416,
+      "sha256": "6b3b19510b68f5a5a66372492a711262c7770b63714270bafacc4c3967ab5b2c"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_scope_tests/owned.ndjson.context.json",
+      "normalization": "none",
+      "bytes": 435,
+      "sha256": "3be0dbc4570bf60b4f9b10d5a9bf7f1bc8853766d83f91995d6878f0cc2ac501"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_scope_tests/stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_scope_tests/stdout.bin",
+      "normalization": "none",
+      "bytes": 37,
+      "sha256": "b94e1162826f5438692fabc60bcafcd6c2e221d6de673820a3c17c3144ac16ec"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_service_tests/finished.json",
+      "normalization": "none",
+      "bytes": 1017,
+      "sha256": "036349e91ae013d1f61e340d74b7d2316c65daf7c32b20071601453a73051dcc"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_service_tests/owned.ndjson",
+      "normalization": "none",
+      "bytes": 1192,
+      "sha256": "9a8281e5024b421250a9fe0f721a4f684589692bc13ef79f300037a3dd5e6127"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_service_tests/owned.ndjson.context.json",
+      "normalization": "none",
+      "bytes": 424,
+      "sha256": "7826432cfe687b337407217418fcc0a4bb7c429ce073f395394228699d3975e3"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_service_tests/stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_service_tests/stdout.bin",
+      "normalization": "none",
+      "bytes": 95,
+      "sha256": "f2aacb5cc1941ef3473b8821f2a84f44fa9f9f8ff41e49e0a2f8b3e7fb5f8983"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_store_capacity_tests/finished.json",
+      "normalization": "none",
+      "bytes": 1024,
+      "sha256": "cdc2ff908dc0eedcaf7a3581848556f920025b7b22a27bc70ed5cdd9362f9806"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_store_capacity_tests/owned.ndjson",
+      "normalization": "none",
+      "bytes": 1435,
+      "sha256": "ed710375cb999edfb035b142c809d583d7a14d2ddbcafd1be0f63e42c2de29fb"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_store_capacity_tests/owned.ndjson.context.json",
+      "normalization": "none",
+      "bytes": 431,
+      "sha256": "d4f9fa164b4d5eb39fea2cc1d854029946db9997d0f3c1525d151734e522278d"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_store_capacity_tests/stderr.bin",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/independent-review/x86-soui_task_store_capacity_tests/stdout.bin",
+      "normalization": "none",
+      "bytes": 123,
+      "sha256": "8a4449a79f8eb950fe5ebf641fa39d2232c341d369d325120ea536927e9529ac"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/index.json",
+      "normalization": "none",
+      "bytes": 27732,
+      "sha256": "c33e162f60184de076cc5b52ca4b20f20d1c15eb95f3e1bcf5e3b5bb37c5f39e"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/source-snapshots/docs/adr/0027-native-authorization-scope-and-task-ownership.md.inert.snapshot",
+      "normalization": "none",
+      "bytes": 9018,
+      "sha256": "2b396a5ce0c8d51708877dda2e1385fbde6a6438df8ba6dd5092d88409f871cf"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/source-snapshots/docs/api.md.inert.snapshot",
+      "normalization": "none",
+      "bytes": 25635,
+      "sha256": "eedbf47c9557dc7ec971523d8ea0faf5e6302ef53fc9f0af9a8fac825d9c499e"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/source-snapshots/sdk/include/soui/runtime/services/permissions/permission_store.h.inert.snapshot",
+      "normalization": "none",
+      "bytes": 4093,
+      "sha256": "052419de7a352ca8d331d15eb1caad58d88839add2c65696b6b1dd3969913155"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/source-snapshots/sdk/include/soui/runtime/services/task/task_service.h.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3112,
+      "sha256": "1fbf99650c1735495a69447a17ce9870c5525aaa5f7ccfc3ae2dae0e6b5ec041"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/source-snapshots/sdk/src/runtime/core/task/task_store.cpp.inert.snapshot",
+      "normalization": "none",
+      "bytes": 7546,
+      "sha256": "678509bbffcfe1a5363dda9c1db08504a6c55faa35ac2db7f145d3a1807ea3f3"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/source-snapshots/sdk/src/runtime/services/permissions/permission_store.cpp.inert.snapshot",
+      "normalization": "none",
+      "bytes": 10579,
+      "sha256": "39691d3c6ce6904d814381d0d7eaa6348d20bf0bc3bdfd58c3e56195c287b427"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/source-snapshots/sdk/src/runtime/services/permissions/scope_id_sequence.h.inert.snapshot",
+      "normalization": "none",
+      "bytes": 892,
+      "sha256": "da8ddba81e066354401b09b317c94ca1aa07701162c44ca31afe33908ac0599e"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/source-snapshots/sdk/src/runtime/services/task/task_service.cpp.inert.snapshot",
+      "normalization": "none",
+      "bytes": 20185,
+      "sha256": "b2176b95457c81f4dd768adda31c1ada0061ac41ecd9efab2fdef436e5a35e6b"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/source-snapshots/tests/native/CMakeLists.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 11859,
+      "sha256": "6c28d43b8f4bde422f3409dd82c4187e85059e62f59d719cb238df64560d020d"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/source-snapshots/tests/native/task-scope-regression.md.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3478,
+      "sha256": "496680378377424ebf156b752e7a294f36e5bfcc2c40c9dee9b0ba496ff8e0ce"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/source-snapshots/tests/native/task_scope_tests.cpp.inert.snapshot",
+      "normalization": "none",
+      "bytes": 28528,
+      "sha256": "4a84c17f3465b5f86d39914f8fa2511882bef4a0ee4c2c99997ccc40485a860e"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/source-snapshots/tests/native/task_service_tests.cpp.inert.snapshot",
+      "normalization": "none",
+      "bytes": 21663,
+      "sha256": "f280a239c9adaefd74a53a2ee38611cf7e5297fc939c60b34756ef8cdc2fc9a9"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-build/x64/CMakeCache.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 15282,
+      "sha256": "8fd227316e33ddf36cdf2ee3022883f0378420f367b8c7304b35d00f57f3ee6e"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-build/x64/Testing/Temporary/LastTest.log.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3170,
+      "sha256": "bc36a3eecaa252bb82bdb32f8adf340890c552096f7c14e2cb3546c00406473a"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-build/x64/sdk/soui_sdk.vcxproj.inert.snapshot",
+      "normalization": "none",
+      "bytes": 24109,
+      "sha256": "009f3f980d5a7a7f8410e443a0ebde8009fd5a08c0b80588c1ed4e8905d7e9e9"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-build/x86/CMakeCache.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 15290,
+      "sha256": "a3d812e02bf60de090793bfe1f6478f8cb081e1d55e1521be41c01019a130bbe"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-build/x86/Testing/Temporary/LastTest.log.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3170,
+      "sha256": "de8fbe3b63e89a98c3ebc25264757064dd0c6d197a01d76cd33cfcfbfc73495b"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-build/x86/sdk/soui_sdk.vcxproj.inert.snapshot",
+      "normalization": "none",
+      "bytes": 24215,
+      "sha256": "261161daeb374ed2d650bf96b0d7bce76bd157af1bbe02135d76445fa63ce612"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-native-reports/baseline-build-x64.jsonl",
+      "normalization": "none",
+      "bytes": 38712,
+      "sha256": "b0fecfdbc38d313869872b5d37a64d2e027bdef160808f9e3a96cbdc1e64ab4a"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-native-reports/configure-x64-exact.jsonl",
+      "normalization": "none",
+      "bytes": 1091,
+      "sha256": "12b15a73050d808cbad72a2f1b4c0330d631d75a2f33ef5ae1ef88c3f7201224"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-native-reports/configure-x64.jsonl",
+      "normalization": "none",
+      "bytes": 82532,
+      "sha256": "2c413d6ddf7083fce11cd38b7fb75ec9178bb9e59cd7009305b629e3adf897c2"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-native-reports/configure-x86-exact.jsonl",
+      "normalization": "none",
+      "bytes": 85954,
+      "sha256": "4f291b7c24caddb9920fc86ce26d06fc723c2fe486a8820939dda2bc18221888"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-native-reports/green-build-x64-final.jsonl",
+      "normalization": "none",
+      "bytes": 83602,
+      "sha256": "9f4f92613224add393f7b34f3773464361d6e93bb58f8a0cdbb161eee58cdafb"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-native-reports/green-build-x64.jsonl",
+      "normalization": "none",
+      "bytes": 104517,
+      "sha256": "f923384d1c20fe29fd1ba79bd51d7d1a2d176c8d13a8602fdbb4f5675d538ea8"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-native-reports/green-build-x86.jsonl",
+      "normalization": "none",
+      "bytes": 114812,
+      "sha256": "c26d08a536b70b29635ba73c8047f2ca74e0de0e33335fde17ce5b1b6d8e3a5f"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-native-reports/green-tests-x64.jsonl",
+      "normalization": "none",
+      "bytes": 4678,
+      "sha256": "562c63948306796b647a8ad6b265e0e945a82a2d822c61d4619572cedfee22c9"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-native-reports/green-tests-x86.jsonl",
+      "normalization": "none",
+      "bytes": 4678,
+      "sha256": "c66b7a85cc3cba32c4e4737aaafef100b2a59a7fd19e43db35ba9c921ab76079"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-native-reports/red-honest-cancel-x64.jsonl",
+      "normalization": "none",
+      "bytes": 1314,
+      "sha256": "ce9b878c56d5e625120886da052340ada49167366dd07c92b1e0e25d60c27352"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-native-reports/red-multi-grant-x64.jsonl",
+      "normalization": "none",
+      "bytes": 1312,
+      "sha256": "dc310f906b07b51536826a44e7ae34fb97325c85643c25f445d31f1a4a2382e4"
+    },
+    {
+      "path": "verification/production-validation/0.5-native-scopes-2026-10-08/worker-native-reports/red-queued-expiry-x64.jsonl",
+      "normalization": "none",
+      "bytes": 1243,
+      "sha256": "e2280e4dec61e75c55c79c57cc63569ecef255cc44883f3bf1074203c5f3c114"
     },
     {
       "path": "verification/production-validation/076187ed-66f1-4e0d-ae12-e48da99be5e4/bridge-59165ceb-51f4-4a86-a507-9b55fcd4b899/events.ndjson",
