@@ -1,0 +1,4 @@
+const {spawn}=require('node:child_process'); const fs=require('node:fs');
+    const child=spawn(process.execPath,["F:\\work\\sm05-mi\\out\\sampler-owned-orphan-0cb1e6c8-ab84-42a9-925d-c18477e4d404\\leaf.cjs"],{detached:true,windowsHide:true,stdio:'ignore'});
+    fs.writeFileSync("F:\\work\\sm05-mi\\out\\sampler-owned-orphan-0cb1e6c8-ab84-42a9-925d-c18477e4d404\\leaf.pid",String(child.pid));
+    child.unref(); setTimeout(()=>process.exit(0),900);

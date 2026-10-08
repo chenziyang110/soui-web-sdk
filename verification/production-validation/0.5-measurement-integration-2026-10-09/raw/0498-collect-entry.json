@@ -1,0 +1,100 @@
+{
+  "collectSourceSha256": "e60f9743d59184a712fb5458da90de43bc197eef281fe3b0d4fd162aa7736d01",
+  "calls": [
+    {
+      "name": "measurement-protocol-tests",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/internal/measurement-validation.cjs",
+        "protocol"
+      ],
+      "status": 0
+    },
+    {
+      "name": "native-measurement-x64",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/internal/measurement-validation.cjs",
+        "native",
+        "x64"
+      ],
+      "status": 0
+    },
+    {
+      "name": "native-measurement-x86",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/internal/measurement-validation.cjs",
+        "native",
+        "x86"
+      ],
+      "status": 0
+    }
+  ],
+  "unit": {
+    "ownedSupervision": {
+      "privateFixtureStub": true,
+      "passed": null
+    },
+    "windowsSdkSelection": {
+      "privateFixtureStub": true,
+      "passed": null
+    },
+    "measurementProtocol": {
+      "passed": true
+    },
+    "nativeMeasurementX64": {
+      "passed": true
+    },
+    "nativeMeasurementX86": {
+      "passed": true
+    },
+    "package": {
+      "privateFixtureStub": true,
+      "passed": null
+    },
+    "nativePayload": {
+      "privateFixtureStub": true,
+      "passed": null
+    },
+    "interruption": {
+      "privateFixtureStub": true,
+      "passed": null
+    },
+    "delivery": {
+      "privateFixtureStub": true,
+      "passed": null
+    },
+    "modernDelivery": {
+      "privateFixtureStub": true,
+      "passed": null
+    },
+    "release": {
+      "privateFixtureStub": true,
+      "passed": null
+    },
+    "web": {
+      "privateFixtureStub": true,
+      "passed": null
+    },
+    "nativeActionsX64": {
+      "privateFixtureStub": true,
+      "passed": null
+    },
+    "nativeActionsX86": {
+      "privateFixtureStub": true,
+      "passed": null
+    },
+    "nativeX64": {
+      "privateFixtureStub": true,
+      "passed": null
+    },
+    "nativeX86": {
+      "privateFixtureStub": true,
+      "passed": null
+    }
+  },
+  "scope": "Only actual measurement unit entries; all unrelated units stubbed and canonical Collect not evaluated",
+  "canonicalAcceptanceWritten": false,
+  "noGui": true
+}

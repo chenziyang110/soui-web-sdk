@@ -1,0 +1,6 @@
+const {spawn}=require('node:child_process'); const fs=require('node:fs'); const started=Date.now();
+    spawn(process.execPath,["F:\\work\\sm05-mi\\out\\sampler-owned-orphan-eee27761-a6b3-41dd-99cc-d148f8103f2e\\middle.cjs"],
+      {windowsHide:true,stdio:'ignore'});
+    const clock=setInterval(()=>{if(fs.existsSync("F:\\work\\sm05-mi\\out\\sampler-owned-orphan-eee27761-a6b3-41dd-99cc-d148f8103f2e\\finish") && Date.now()-started>=2600) {
+      clearInterval(clock); process.exit(0);}},20);
+    setTimeout(()=>process.exit(9),20000).unref();

@@ -1,0 +1,262 @@
+TAP version 13
+# Subtest: reader derives the native start instead of trusting an extra JSON subject and supports relocation
+ok 1 - reader derives the native start instead of trusting an extra JSON subject and supports relocation
+  ---
+  duration_ms: 125.3513
+  type: 'test'
+  ...
+# Subtest: ready must match the raw native start and immutable launch context
+ok 2 - ready must match the raw native start and immutable launch context
+  ---
+  duration_ms: 71.8
+  type: 'test'
+  ...
+# Subtest: valid JSON process claims cannot replace the raw PID or one-tick creation value
+ok 3 - valid JSON process claims cannot replace the raw PID or one-tick creation value
+  ---
+  duration_ms: 147.0282
+  type: 'test'
+  ...
+# Subtest: raw data/hash mismatches, crossed report paths and duplicate roles fail
+ok 4 - raw data/hash mismatches, crossed report paths and duplicate roles fail
+  ---
+  duration_ms: 213.4735
+  type: 'test'
+  ...
+# Subtest: duplicate start/root-exit/terminal, invalid uint64 and missing complete newline fail even with updated hashes
+ok 5 - duplicate start/root-exit/terminal, invalid uint64 and missing complete newline fail even with updated hashes
+  ---
+  duration_ms: 362.0371
+  type: 'test'
+  ...
+# Subtest: a context consistently rehashed with a false collector subject still fails native provenance
+ok 6 - a context consistently rehashed with a false collector subject still fails native provenance
+  ---
+  duration_ms: 57.177
+  type: 'test'
+  ...
+# Subtest: context tool hashes, arguments, cwd and report origin cannot silently cross runs
+ok 7 - context tool hashes, arguments, cwd and report origin cannot silently cross runs
+  ---
+  duration_ms: 357.9482
+  type: 'test'
+  ...
+# Subtest: STOP remains controlled closure with generic false and never formal natural completion
+ok 8 - STOP remains controlled closure with generic false and never formal natural completion
+  ---
+  duration_ms: 95.8619
+  type: 'test'
+  ...
+# Subtest: unreadable/missing files, unsafe paths, links and invalid UTF8 are rejected
+ok 9 - unreadable/missing files, unsafe paths, links and invalid UTF8 are rejected
+  ---
+  duration_ms: 59.2181
+  type: 'test'
+  ...
+# Subtest: v2 pair reader binds authored raw/context fixtures and cannot accept forged JSON or STOP
+ok 10 - v2 pair reader binds authored raw/context fixtures and cannot accept forged JSON or STOP
+  ---
+  duration_ms: 452.1686
+  type: 'test'
+  ...
+# Subtest: historical smoke evidence is rejected for unequal content areas and short runs
+ok 11 - historical smoke evidence is rejected for unequal content areas and short runs
+  ---
+  duration_ms: 2.3335
+  type: 'test'
+  ...
+# Subtest: page preflight accepts only complete, aligned S01 telemetry and still lists external evidence
+ok 12 - page preflight accepts only complete, aligned S01 telemetry and still lists external evidence
+  ---
+  duration_ms: 2.0748
+  type: 'test'
+  ...
+# Subtest: S05 requires observed motion for 120 seconds even when the page says measured
+ok 13 - S05 requires observed motion for 120 seconds even when the page says measured
+  ---
+  duration_ms: 0.6715
+  type: 'test'
+  ...
+# Subtest: full S02 raw traces and frozen inputs satisfy pairing preflight only
+ok 14 - full S02 raw traces and frozen inputs satisfy pairing preflight only
+  ---
+  duration_ms: 36.4316
+  type: 'test'
+  ...
+# Subtest: historical completed S01 runs without frozen inputs remain rejected
+ok 15 - historical completed S01 runs without frozen inputs remain rejected
+  ---
+  duration_ms: 7.8443
+  type: 'test'
+  ...
+# Subtest: independently collected S02 rounds retain the same machine and payload identities
+ok 16 - independently collected S02 rounds retain the same machine and payload identities
+  ---
+  duration_ms: 49.8249
+  type: 'test'
+  ...
+# Subtest: changed non-entry page asset invalidates a completed run
+ok 17 - changed non-entry page asset invalidates a completed run
+  ---
+  duration_ms: 110.6148
+  type: 'test'
+  ...
+# Subtest: accepts matching full traces without promoting performance or presentation
+ok 18 - accepts matching full traces without promoting performance or presentation
+  ---
+  duration_ms: 1.4852
+  type: 'test'
+  ...
+# Subtest: legacy rounded creation values remain readable without exact binding
+ok 19 - legacy rounded creation values remain readable without exact binding
+  ---
+  duration_ms: 0.5838
+  type: 'test'
+  ...
+# Subtest: new exact pairs require the held subject before binding and preserve one-tick alignment
+ok 20 - new exact pairs require the held subject before binding and preserve one-tick alignment
+  ---
+  duration_ms: 1.0357
+  type: 'test'
+  ...
+# Subtest: un-pinned collector CLI runs cannot claim exact owned binding
+ok 21 - un-pinned collector CLI runs cannot claim exact owned binding
+  ---
+  duration_ms: 0.6912
+  type: 'test'
+  ...
+# Subtest: actual native serializer emits readable legacy and exact collector schemas
+ok 22 - actual native serializer emits readable legacy and exact collector schemas # SKIP
+  ---
+  duration_ms: 0.0641
+  type: 'test'
+  ...
+# Subtest: exact records reject mixed versions and cannot be silently downgraded to numbers
+ok 23 - exact records reject mixed versions and cannot be silently downgraded to numbers
+  ---
+  duration_ms: 0.2841
+  type: 'test'
+  ...
+# Subtest: exact FILETIME strings enforce uint64 and canonical positive decimal boundaries
+ok 24 - exact FILETIME strings enforce uint64 and canonical positive decimal boundaries
+  ---
+  duration_ms: 2.2833
+  type: 'test'
+  ...
+# Subtest: PID reuse, duplicate members and forged held identities fail exact binding
+ok 25 - PID reuse, duplicate members and forged held identities fail exact binding
+  ---
+  duration_ms: 1.844
+  type: 'test'
+  ...
+# Subtest: UTC alignment uses exact differences near uint64 max and rejects a one-tick overrun
+ok 26 - UTC alignment uses exact differences near uint64 max and rejects a one-tick overrun
+  ---
+  duration_ms: 0.3665
+  type: 'test'
+  ...
+# Subtest: rejects a different process, shortened input, missing process sample, and timeout
+ok 27 - rejects a different process, shortened input, missing process sample, and timeout
+  ---
+  duration_ms: 0.3065
+  type: 'test'
+  ...
+# Subtest: rejects late input and S03 without IME composition
+ok 28 - rejects late input and S03 without IME composition
+  ---
+  duration_ms: 0.2107
+  type: 'test'
+  ...
+# Subtest: rejects a full-length idle trace and missing scene operations
+ok 29 - rejects a full-length idle trace and missing scene operations
+  ---
+  duration_ms: 0.2754
+  type: 'test'
+  ...
+# Subtest: accepts full scroll, resize and motion traces, but rejects missing defining actions
+ok 30 - accepts full scroll, resize and motion traces, but rejects missing defining actions
+  ---
+  duration_ms: 0.8864
+  type: 'test'
+  ...
+# Subtest: five alternating accepted pairs produce diagnostics without a value verdict
+ok 31 - five alternating accepted pairs produce diagnostics without a value verdict
+  ---
+  duration_ms: 2.8132
+  type: 'test'
+  ...
+# Subtest: only uniformly bound v2 pairs produce an exact series diagnostic
+ok 32 - only uniformly bound v2 pairs produce an exact series diagnostic
+  ---
+  duration_ms: 4.2375
+  type: 'test'
+  ...
+# Subtest: historical verdict projection permits only the new explicit unbound fields
+ok 33 - historical verdict projection permits only the new explicit unbound fields
+  ---
+  duration_ms: 2.2514
+  type: 'test'
+  ...
+# Subtest: four pairs cannot be summarized as the five-pair acceptance input
+ok 34 - four pairs cannot be summarized as the five-pair acceptance input
+  ---
+  duration_ms: 0.5219
+  type: 'test'
+  ...
+# Subtest: a missing or contaminated live gate invalidates all candidate ratios
+ok 35 - a missing or contaminated live gate invalidates all candidate ratios
+  ---
+  duration_ms: 1.0695
+  type: 'test'
+  ...
+# Subtest: order drift and duplicate run identity are refused
+ok 36 - order drift and duplicate run identity are refused
+  ---
+  duration_ms: 0.7433
+  type: 'test'
+  ...
+# Subtest: a rejected pair or forced cleanup cannot contribute to a summary
+ok 37 - a rejected pair or forced cleanup cannot contribute to a summary
+  ---
+  duration_ms: 0.7184
+  type: 'test'
+  ...
+# Subtest: live gate timestamps must cover a full run without sampling gaps
+ok 38 - live gate timestamps must cover a full run without sampling gaps
+  ---
+  duration_ms: 5.6629
+  type: 'test'
+  ...
+# Subtest: real run times follow the declared alternating order without overlap
+ok 39 - real run times follow the declared alternating order without overlap
+  ---
+  duration_ms: 1.668
+  type: 'test'
+  ...
+# Subtest: each before and after preflight gate brackets its actual run
+ok 40 - each before and after preflight gate brackets its actual run
+  ---
+  duration_ms: 1.0983
+  type: 'test'
+  ...
+# Subtest: preflight gates too far from a measured run are rejected
+ok 41 - preflight gates too far from a measured run are rejected
+  ---
+  duration_ms: 0.414
+  type: 'test'
+  ...
+# Subtest: series, single-run and live gate must identify the same runner
+ok 42 - series, single-run and live gate must identify the same runner
+  ---
+  duration_ms: 0.8444
+  type: 'test'
+  ...
+1..42
+# tests 42
+# suites 0
+# pass 41
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 2069.3401

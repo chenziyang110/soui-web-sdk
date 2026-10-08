@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <psapi.h>
 #include <tlhelp32.h>
+#include "trace-identity.h"
 
 #include <cstdint>
 #include <filesystem>
@@ -98,14 +99,14 @@ sample collect(DWORD root_pid, std::uint64_t root_creation,
   } while (Process32NextW(snapshot.value, &entry));
 
   sample result;
-  struct pending_process { DWORD pid; std::uint64_t expected_creation; };
-  std::vector<pending_process> pending{{root_pid, root_creation}};
+  struct pending_process { DWORD pid; std::uint64_t expected_creation; std::uint64_t parent_creation; };
+  std::vector<pending_process> pending{{root_pid, root_creation, 0}};
   for (const auto& previous : known) {
-    if (previous.first != root_pid) pending.push_back({previous.first, previous.second});
+    if (previous.first != root_pid) pending.push_back({previous.first, previous.second, 0});
   }
   std::unordered_set<DWORD> seen;
   for (std::size_t index = 0; index < pending.size(); ++index) {
-    const auto [pid, expected_creation] = pending[index];
+    const auto [pid, expected_creation, parent_creation] = pending[index];
     if (seen.find(pid) != seen.end()) continue;
     const auto found = entries.find(pid);
     if (found == entries.end()) {
@@ -130,6 +131,8 @@ sample collect(DWORD root_pid, std::uint64_t root_creation,
       if (pid == root_pid) result.complete = false;
       continue;
     }
+    // A reused parent PID cannot adopt a process created before this parent.
+    if (parent_creation && current.created < parent_creation) continue;
     seen.insert(pid);
     PROCESS_MEMORY_COUNTERS_EX memory{};
     memory.cb = sizeof(memory);
@@ -147,7 +150,7 @@ sample collect(DWORD root_pid, std::uint64_t root_creation,
     result.members.push_back(current);
     const auto range = children.equal_range(pid);
     for (auto child = range.first; child != range.second; ++child)
-      pending.push_back({child->second, 0});
+      pending.push_back({child->second, 0, current.created});
   }
   if (result.members.empty() || result.members.front().pid != root_pid) result.complete = false;
   return result;
@@ -172,7 +175,7 @@ std::string encode_sample(const sample& value, DWORD root_pid, std::uint64_t ela
     if (&process != &value.members.front()) line += ',';
     line += "{\"pid\":" + std::to_string(process.pid) +
         ",\"parentPid\":" + std::to_string(process.parent) +
-        ",\"creationTime100ns\":" + std::to_string(process.created) +
+        ",\"creationTime100ns\":" + soui::benchmark::encode_filetime(process.created) +
         ",\"privateBytes\":" + std::to_string(process.private_bytes) +
         ",\"workingSetBytes\":" + std::to_string(process.working_set_bytes) +
         ",\"handles\":" + std::to_string(process.handles) +
@@ -182,7 +185,9 @@ std::string encode_sample(const sample& value, DWORD root_pid, std::uint64_t ela
 }
 
 int run(int argc, wchar_t** argv) {
-  if (argc != 5) throw std::runtime_error("Usage: ProcessTreeSampler PID INTERVAL_MS DURATION_MS ABSOLUTE_NEW_OUTPUT.ndjson");
+  if (argc != 5 && argc != 6) throw std::runtime_error("Usage: ProcessTreeSampler PID INTERVAL_MS DURATION_MS ABSOLUTE_NEW_OUTPUT.ndjson [EXPECTED_CREATION_FILETIME]");
+  const std::optional<std::uint64_t> expected = argc == 6 ?
+      std::optional<std::uint64_t>{soui::benchmark::parse_expected_filetime(argv[5])} : std::nullopt;
   const DWORD root_pid = parse_number(argv[1], std::numeric_limits<DWORD>::max());
   const DWORD interval = parse_number(argv[2], 60000);
   const DWORD duration = parse_number(argv[3], 24U * 60U * 60U * 1000U);
@@ -192,16 +197,13 @@ int run(int argc, wchar_t** argv) {
   if (!root.value) throw std::runtime_error("Root process is unavailable");
   std::uint64_t root_creation = 0;
   (void)process_time(root.value, root_creation);
+  if (expected && root_creation != *expected) throw std::runtime_error("Root creation identity differs from expected FILETIME");
   handle file{CreateFileW(output.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_NEW,
                           FILE_ATTRIBUTE_NORMAL, nullptr)};
   if (file.value == INVALID_HANDLE_VALUE) throw std::runtime_error("Cannot create new sampler output");
   FILETIME utc{};
   GetSystemTimeAsFileTime(&utc);
-  write_line(file.value, "{\"event\":\"run.begin\",\"schema\":\"soui.process-tree-samples/v1\",\"rootPid\":" +
-      std::to_string(root_pid) + ",\"rootCreationTime100ns\":" + std::to_string(root_creation) +
-      ",\"startedAtUtcFiletime100ns\":" + std::to_string(ticks(utc)) +
-      ",\"intervalMs\":" + std::to_string(interval) +
-      ",\"durationMs\":" + std::to_string(duration) + "}\n");
+  write_line(file.value, soui::benchmark::process_begin(root_pid, root_creation, ticks(utc), interval, duration, expected));
   const auto start = GetTickCount64();
   std::unordered_map<DWORD, std::pair<std::uint64_t, std::uint64_t>> previous_cpu;
   std::unordered_map<DWORD, std::uint64_t> known;

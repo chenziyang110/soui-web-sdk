@@ -1,0 +1,83 @@
+{
+  "schema": "soui.measurement-source-input-fix-state/v1",
+  "source": {
+    "sha256": "71051f6fea25ba02bae6801d512b38ae2df5c3166984352502518607843becda",
+    "files": [
+      {
+        "path": "benchmarks/protocol/CMakeLists.txt",
+        "bytes": 1844,
+        "sha256": "6040ffb5339c22151b4db7efd0a51e173e8e2b4057c53ec45fa2988bdebc3857"
+      },
+      {
+        "path": "benchmarks/protocol/owned-process-runner.cpp",
+        "bytes": 21013,
+        "sha256": "0628a169c5fd8e9269fd1a79220331c57ecdcdf2142f901cec4180d2a8808d35"
+      },
+      {
+        "path": "tests/benchmark/owned-process-assignment-fixture.cpp",
+        "bytes": 964,
+        "sha256": "8f96bfb07a8043052c3e77459687fd6788994b39db6e4063112aab8a40697bbf"
+      },
+      {
+        "path": "benchmarks/protocol/process-tree-sampler.cpp",
+        "bytes": 11219,
+        "sha256": "22f928f03925fbe2df6233abccc7b5528005b6a70f784e4e20304e572baf040a"
+      },
+      {
+        "path": "benchmarks/protocol/input-trace.cpp",
+        "bytes": 12471,
+        "sha256": "e803785c3dc61d6d64aecbe3308e73044eee8eac6860b97482e65396469ee027"
+      },
+      {
+        "path": "benchmarks/protocol/trace-identity.h",
+        "bytes": 3162,
+        "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f"
+      },
+      {
+        "path": "tests/benchmark/native-trace-identity.cpp",
+        "bytes": 1708,
+        "sha256": "7b389ea9041964cb56220c81013beb1d541d4519dd897d77a36895d511545db9"
+      },
+      {
+        "path": "tools/internal/CMake-Configure.ps1",
+        "bytes": 7196,
+        "sha256": "7958fd37fd63f24a7e8ee40301803271825a4931d2c56d54cf3c9812a768c6d1"
+      },
+      {
+        "path": "cmake/SouiWindowsSdk.cmake",
+        "bytes": 701,
+        "sha256": "5dd1a60792c86c7dac88b097873aae8eab1ec0bd3fcf59c4738f8554174736fd"
+      },
+      {
+        "path": "tools/internal/Build-ValidationTools.ps1",
+        "bytes": 2124,
+        "sha256": "661cc5b479b89a352ce75e9e7ba8a485cbfb4dfc9df06f819de8086f9572c0d4"
+      },
+      {
+        "path": "tools/internal/measurement-validation.cjs",
+        "bytes": 10675,
+        "sha256": "6b73ae4b570361bd82a7f7de7a4497dd36a3ef4b130c274a088bedae264ed237"
+      }
+    ]
+  },
+  "existingPreparations": [
+    {
+      "architecture": "x86",
+      "path": "F:\\work\\sm05-mi\\out\\benchmark-protocol-x86\\measurement-tools.json",
+      "sha256": "feb0a29a7be015bd3d4669b76ca8c5db82e5510227b534cb72ae342d49c52748",
+      "oldSourceSha256": "d9a1f03a2cafcbfb138729ba21eb7904f4280745eab65b558faa908abfaea488",
+      "rejected": true,
+      "error": "Measurement tools are missing or stale; prepare the selected architecture",
+      "recordUnchanged": true
+    },
+    {
+      "architecture": "x64",
+      "path": "F:\\work\\sm05-mi\\out\\benchmark-protocol\\measurement-tools.json",
+      "sha256": "b16e4191f3dfd2761e59e14169177eaa98f313ced74bdb03df297f0ca3384756",
+      "oldSourceSha256": "d9a1f03a2cafcbfb138729ba21eb7904f4280745eab65b558faa908abfaea488",
+      "rejected": true,
+      "error": "Measurement tools are missing or stale; prepare the selected architecture",
+      "recordUnchanged": true
+    }
+  ]
+}

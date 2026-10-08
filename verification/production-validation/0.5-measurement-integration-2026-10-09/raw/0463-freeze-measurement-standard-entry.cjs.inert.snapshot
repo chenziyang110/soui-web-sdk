@@ -1,0 +1,52 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..'),hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const encoded=v=>JSON.stringify(v,null,2)+'\n';
+const final=path.join(__dirname,'measurement-standard-entry-final-'+crypto.randomUUID());fs.mkdirSync(final);
+function describe(p){const b=fs.readFileSync(p);return {path:path.relative(root,p).replace(/\\/g,'/'),bytes:b.length,sha256:hash(b)};}
+const sourceNames=['tools/Test.ps1','tools/Collect-Verification.cjs','tools/internal/Build-ValidationTools.ps1','tools/internal/measurement-validation.cjs'];
+const source=sourceNames.map(p=>describe(path.join(root,p)));
+const oldInputs=JSON.parse(fs.readFileSync(path.join(root,'out/measurement-integration-validation/native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893/inputs.json')));
+const unchanged=oldInputs.source.every(f=>{const actual=describe(path.join(root,f.path));return actual.sha256===f.sha256&&actual.bytes===f.bytes;});
+if(!unchanged)throw Error('Frozen measurement source changed');
+const preparations=['x86','x64'].map(arch=>JSON.parse(fs.readFileSync(path.join(root,'out',arch==='x64'?'benchmark-protocol':'benchmark-protocol-x86','measurement-tools.json'))));
+const runnerHashes=new Set(preparations.map(p=>p.executables.find(e=>e.name==='OwnedProcessRunner').sha256));
+const selected=new Set();
+function walk(directory){for(const n of fs.readdirSync(directory)){const p=path.join(directory,n),s=fs.lstatSync(p);if(s.isSymbolicLink())throw Error('Linked raw evidence');if(s.isDirectory())walk(p);else if(s.isFile())selected.add(p);}}
+for(const p of ['out/measurement-standard-entry-validation','out/measurement-validation'])walk(path.join(root,p));
+const innerDirectories=[];
+for(const n of fs.readdirSync(__dirname).filter(n=>n.startsWith('sampler-owned-')||n.startsWith('native-identity-'))){
+ const directory=path.join(__dirname,n);if(!fs.statSync(directory).isDirectory())continue;
+ let current=false;function check(p){for(const name of fs.readdirSync(p)){const f=path.join(p,name);if(fs.statSync(f).isDirectory())check(f);else if(name.endsWith('.context.json')){
+  const j=JSON.parse(fs.readFileSync(f));if(runnerHashes.has(j.runnerSha256))current=true;
+ }}}check(directory);if(current){walk(directory);innerDirectories.push(n);}
+}
+for(const p of ['measurement-standard-entry-validation.cjs','measurement-test-entry.ps1','measurement-standard-boundaries.cjs','measurement-standard-boundaries-held.cjs',path.basename(__filename)])selected.add(path.join(__dirname,p));
+const tools=[];
+for(const preparation of preparations){const directory=path.join(root,'out',preparation.architecture==='x64'?'benchmark-protocol':'benchmark-protocol-x86');
+ for(const n of ['measurement-tools.json','configure.log','compile.log','CMakeCache.txt'])selected.add(path.join(directory,n));
+ for(const item of preparation.executables){const actual=describe(path.join(root,item.path));if(actual.sha256!==item.sha256||actual.bytes!==item.bytes)throw Error('Executable changed');tools.push({architecture:preparation.architecture,...item});}
+}
+for(const file of source){const target=path.join(final,path.basename(file.path)+'.inert.snapshot');fs.copyFileSync(path.join(root,file.path),target);selected.add(target);}
+const raw=[...selected].sort().map(describe);
+const jobs=[];
+for(const f of raw.filter(f=>f.path.endsWith('.ndjson')&&fs.existsSync(path.join(root,f.path+'.context.json')))){
+ const context=JSON.parse(fs.readFileSync(path.join(root,f.path+'.context.json')));if(context.schema!=='soui.owned-process-context/v1')continue;
+ const b=fs.readFileSync(path.join(root,f.path));if(b.at(-1)!==10)throw Error('Partial raw report');
+ const rows=b.toString().trimEnd().split('\n').map(JSON.parse);if(rows[0]?.schema!=='soui.owned-process-run/v1')continue;
+ const terminal=rows.at(-1);if(terminal.event!=='terminal'||!terminal.closureConfirmed||terminal.activeProcesses!==0)throw Error('Unclosed owned Job');
+ jobs.push({report:f.path,sha256:f.sha256,pid:rows[0].pid,creationFileTime:rows[0].creationFileTime,terminal});
+}
+const summaries=raw.filter(f=>f.path.endsWith('/summary.json')).map(f=>({path:f.path,...JSON.parse(fs.readFileSync(path.join(root,f.path)))}));
+const report={schema:'soui.measurement-standard-entry-freeze/v1',source,measurementBuildSourceSha256:preparations[0].source.sha256,
+ frozenPreviousMeasurementSourcesUnchanged:unchanged,frozenPreviousMeasurementSourceCount:oldInputs.source.length,
+ toolPreparations:preparations.map(p=>({architecture:p.architecture,prepared:p.prepared,buildExitCode:p.buildExitCode,genericSupervisionPassed:p.genericSupervisionPassed})),
+ tools,groups:summaries,jobs,innerDirectories,
+ boundaries:{tests:11,passed:11,skipped:0,scope:'Private VM input faults; native spawn count remains zero for each rejected preparation'},
+ limitations:['Only actual new Test command AST slice and Collect measurement unit slice executed; unrelated Collect unit entries were private fixture stubs. Canonical acceptance was not overwritten.',
+ 'Both small tool compilation roots exited 0 but vctip remained. Generic supervision is false and the entire held Job was cleaned; no compiler-tail exception is asserted.',
+ 'Node v24.14.0 on this current Windows host only; no minimum Node, GUI, correct SendInput, VM or target-system acceptance.'],
+ raw};
+fs.writeFileSync(path.join(final,'index.json'),encoded(report));
+for(const f of raw){const actual=describe(path.join(root,f.path));if(actual.sha256!==f.sha256||actual.bytes!==f.bytes)throw Error('Raw changed during freeze');}
+console.log(encoded({directory:final,source,rawFiles:raw.length,jobs:jobs.length,groups:summaries.map(g=>({kind:g.kind,architecture:g.architecture,counts:g.counts,passed:g.passed})),oldSourceCount:oldInputs.source.length,oldSourceUnchanged:unchanged}));

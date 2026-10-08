@@ -1,0 +1,49 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+const {test}=require('node:test');
+const root=path.resolve(__dirname,'..'),source=path.join(root,'tools/internal/measurement-validation.cjs');
+const reportPath=path.join(root,'out/benchmark-protocol/measurement-tools.json');
+const actualReport=JSON.parse(fs.readFileSync(reportPath,'utf8'));
+function load({report=actualReport,read,lstat}={}){
+ let spawned=0;
+ const localFs={...fs,
+  readFileSync(filename,...args){
+   if(path.resolve(filename)===reportPath)return JSON.stringify(report);
+   if(read){const override=read(filename);if(override!==undefined)return override;}
+   return fs.readFileSync(filename,...args);
+  },
+  lstatSync(filename,...args){const override=lstat?.(filename);return override||fs.lstatSync(filename,...args);}
+ };
+ const mod={exports:{}};
+ const localRequire=name=>name==='node:fs'?localFs:name==='./owned-process.cjs'?{launchOwned(){spawned++;throw Error('Unexpected launch');}}:require(name);
+ vm.runInNewContext(fs.readFileSync(source,'utf8'),{require:localRequire,module:mod,__dirname:path.dirname(source),process,console,Buffer,TextDecoder});
+ return {api:mod.exports,spawns:()=>spawned};
+}
+async function rejectBeforeLaunch(options,pattern){const item=load(options);await assert.rejects(item.api.runGroup('native','x64'),pattern);assert.equal(item.spawns(),0);}
+test('default x64 preparation path stays compatible, x86 uses isolated outputs',()=>{
+ const {api}=load();assert.equal(api.buildDirectory('x64'),path.join(root,'out/benchmark-protocol'));
+ assert.equal(api.buildDirectory('x86'),path.join(root,'out/benchmark-protocol-x86'));
+});
+test('invalid architecture fails before native spawn',async()=>{
+ const item=load();await assert.rejects(item.api.runGroup('native','arm64'),/architecture/);assert.equal(item.spawns(),0);
+});
+test('unprepared marker cannot supply a native pass',()=>rejectBeforeLaunch({report:{...actualReport,prepared:false}},/missing or stale/));
+test('stale build input fingerprint fails before native spawn',()=>rejectBeforeLaunch({report:{...actualReport,source:{...actualReport.source,sha256:'0'.repeat(64)}}},/missing or stale/));
+test('missing member cannot turn native cases into skips',()=>rejectBeforeLaunch({report:{...actualReport,executables:actualReport.executables.slice(0,4)}},/incomplete/));
+test('duplicate member and missing identity fail closed',()=>rejectBeforeLaunch({report:{...actualReport,executables:[actualReport.executables[0],...actualReport.executables.slice(0,4)]}},/Duplicate\/missing/));
+test('wrong target architecture is rejected independent of recorded SHA',()=>rejectBeforeLaunch({read(filename){
+ if(path.basename(filename)==='InputTrace.exe'){const b=Buffer.from(fs.readFileSync(filename));b.writeUInt16LE(332,b.readUInt32LE(60)+4);return b;}
+}},/architecture differs/));
+test('changed executable bytes are rejected before native spawn',()=>rejectBeforeLaunch({read(filename){
+ if(path.basename(filename)==='NativeTraceIdentity.exe'){const b=Buffer.from(fs.readFileSync(filename));b[b.length-1]^=1;return b;}
+}},/executable changed/));
+test('missing executable is an error, never a skip',()=>rejectBeforeLaunch({read(filename){
+ if(path.basename(filename)==='ProcessTreeSampler.exe')throw Error('ENOENT fixture');
+}},/ENOENT fixture/));
+test('linked executable is rejected before any spawn',()=>rejectBeforeLaunch({lstat(filename){
+ if(path.basename(filename)==='ProcessTreeSampler.exe')return {isSymbolicLink(){return true;}};
+}},/Linked/));
+test('preparation does not claim generic compiler supervision passed',()=>{
+ assert.equal(actualReport.prepared,true);assert.equal(actualReport.buildExitCode,0);assert.equal(actualReport.genericSupervisionPassed,null);
+ assert.equal(actualReport.supervision,'external-caller-evidence-required');
+});

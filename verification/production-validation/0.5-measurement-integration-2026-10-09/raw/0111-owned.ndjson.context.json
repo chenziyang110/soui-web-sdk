@@ -1,0 +1,19 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "81535990cb5ca5a390658e02468766899c1c1a62d4d35527f316435ea97c8fc1",
+  "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+  "executable": "C:\\nvm4w\\nodejs\\node.exe",
+  "args": [
+    "--test",
+    "--test-reporter=tap",
+    "tests/benchmark/page-pair.test.cjs",
+    "tests/benchmark/run-traces.test.cjs",
+    "tests/benchmark/owned-trace-subject.test.cjs",
+    "tests/benchmark/pair-preflight.test.cjs",
+    "tests/benchmark/series-summary.test.cjs",
+    "tests/benchmark/measurement-preparation-source.test.cjs"
+  ],
+  "cwd": "F:\\work\\sm05-mi",
+  "timeoutMs": 120000,
+  "drainMs": 2500
+}

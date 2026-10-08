@@ -3,7 +3,7 @@
 const assert = require('node:assert/strict');
 const {test} = require('node:test');
 const {summarizeSeriesRecord, validateGateCoverage, validateRunChronology,
-  validatePreflightChronology, assertRunnerBinding} =
+  validatePreflightChronology, assertRunnerBinding, assertPairVerdict} =
   require('../../benchmarks/protocol/summarize-series.cjs');
 
 function acceptedSeries(count = 5) {
@@ -52,6 +52,49 @@ test('five alternating accepted pairs produce diagnostics without a value verdic
   assert.equal(summary.physicalPresentationMeasured, false);
   assert.equal(summary.benchmarkValid, false);
   assert.equal(summary.releaseReady, false);
+  assert.equal(summary.exactFileTimeBound, false);
+  assert.equal(summary.diagnosticScope, 'legacy-unbound');
+});
+
+test('only uniformly bound v2 pairs produce an exact series diagnostic', () => {
+  const input = acceptedSeries();
+  for (const report of input.reports) Object.assign(report, {
+    schema: 'soui.benchmark-pair-preflight/v2', exactFileTimeBound: true,
+    preflightScope: 'exact-owned-subject'});
+  const summary = summarizeSeriesRecord(input.series, input.gates, input.reports);
+  assert.equal(summary.schema, 'soui.benchmark-series-diagnostic/v2');
+  assert.equal(summary.exactFileTimeBound, true);
+  assert.equal(summary.diagnosticScope, 'exact-owned-subject');
+  assert.equal(summary.benchmarkValid, false);
+  assert.equal(summary.releaseReady, false);
+  input.reports[2].exactFileTimeBound = false;
+  assert.throws(() => summarizeSeriesRecord(input.series, input.gates, input.reports),
+    /Formal pairs must bind/);
+  input.reports[2].schema = 'soui.benchmark-pair-preflight/v1';
+  assert.throws(() => summarizeSeriesRecord(input.series, input.gates, input.reports),
+    /Mixed legacy\/exact/);
+  const legacy = acceptedSeries();
+  legacy.reports[0].exactFileTimeBound = true;
+  assert.throws(() => summarizeSeriesRecord(legacy.series, legacy.gates, legacy.reports),
+    /Legacy pairs remain unbound/);
+});
+
+test('historical verdict projection permits only the new explicit unbound fields', () => {
+  const stored = acceptedSeries().reports[0];
+  const projected = {...structuredClone(stored), exactFileTimeBound: false,
+    preflightScope: 'legacy-diagnostic-unbound'};
+  assert.doesNotThrow(() => assertPairVerdict(stored, projected));
+  const changed = structuredClone(projected);
+  changed.runs[0].resources.privateBytesP95++;
+  assert.throws(() => assertPairVerdict(stored, changed), /Stored pair verdict changed/);
+  assert.throws(() => assertPairVerdict(stored, {...projected, extra: true}),
+    /Stored pair verdict changed/);
+  assert.throws(() => assertPairVerdict(stored, {...projected, exactFileTimeBound: true}));
+  const exact = {...structuredClone(stored), schema: 'soui.benchmark-pair-preflight/v2',
+    exactFileTimeBound: true, preflightScope: 'exact-owned-subject'};
+  assert.doesNotThrow(() => assertPairVerdict(exact, structuredClone(exact)));
+  assert.throws(() => assertPairVerdict(exact, {...exact, extra: true}),
+    /Stored pair verdict changed/);
 });
 
 test('four pairs cannot be summarized as the five-pair acceptance input', () => {

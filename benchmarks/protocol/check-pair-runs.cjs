@@ -5,8 +5,10 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
-const {checkRunTraces, readLines} = require('./check-run-traces.cjs');
+const {isDeepStrictEqual} = require('node:util');
+const {checkRunTraces} = require('./check-run-traces.cjs');
 const {checkPagePair} = require('./check-page-pair.cjs');
+const {runFile, runDirectory, readRunFile, readRunJson, readRunLines, readOwnedRun} = require('./owned-trace-subject.cjs');
 
 function insist(condition, message) {
   if (!condition) throw new Error(message);
@@ -16,15 +18,18 @@ function sha(file) {
   return crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
 }
 
-function bundleFiles(root) {
+function bundleFiles(root, runRoot) {
   const output = [];
   const walk = (directory, prefix = '') => {
     for (const entry of fs.readdirSync(directory, {withFileTypes: true})) {
       const relative = prefix ? `${prefix}/${entry.name}` : entry.name;
       const file = path.join(directory, entry.name);
-      if (entry.isDirectory()) walk(file, relative);
-      else if (entry.isFile()) output.push({path: relative,
-        bytes: fs.statSync(file).size, sha256: sha(file)});
+      if (entry.isDirectory()) walk(runDirectory(runRoot, 'page-bundle/' + relative), relative);
+      else if (entry.isFile()) {
+        const bytes = readRunFile(runRoot, 'page-bundle/' + relative);
+        output.push({path: relative, bytes: bytes.length,
+          sha256: crypto.createHash('sha256').update(bytes).digest('hex')});
+      }
       else throw new Error(`Unsupported page bundle entry: ${relative}`);
     }
   };
@@ -39,34 +44,52 @@ function quantile(values, fraction) {
 
 function loadRun(directory, host) {
   const root = fs.realpathSync(directory);
-  const record = JSON.parse(fs.readFileSync(path.join(root, 'run.json'), 'utf8'));
-  insist(record.schema === 'soui.benchmark-single-run/v1' && record.host === host &&
+  const record = readRunJson(root, 'run.json');
+  const exact = record.schema === 'soui.benchmark-single-run/v2';
+  insist((exact || record.schema === 'soui.benchmark-single-run/v1') && record.host === host &&
     record.status === 'completed' && record.releaseReady === false &&
     record.benchmarkValid === false &&
     record.processes?.length === 3 && record.processes.every(item => item.code === 0),
   `${host}: run did not complete cleanly`);
   insist(/^page-results\/[A-Za-z0-9._-]+\.json$/.test(record.pageResult?.path),
     `${host}: unsafe page result path`);
-  const pageFile = path.join(root, ...record.pageResult.path.split('/'));
+  const pageFile = runFile(root, record.pageResult.path);
   insist(fs.statSync(pageFile).size === record.pageResult.bytes &&
     sha(pageFile) === record.pageResult.sha256, `${host}: page result changed`);
-  const page = JSON.parse(fs.readFileSync(pageFile, 'utf8'));
+  const page = readRunJson(root, record.pageResult.path);
   if (record.pageBundle === 'page-bundle') {
-    insist(JSON.stringify(bundleFiles(path.join(root, 'page-bundle'))) ===
+    insist(JSON.stringify(bundleFiles(runDirectory(root, 'page-bundle'), root)) ===
       JSON.stringify(record.pageFiles), `${host}: page bundle changed`);
-    insist(sha(path.join(root, 'page-bundle', 'benchmark.html')) ===
+    insist(sha(runFile(root, 'page-bundle/benchmark.html')) ===
       record.pageSha256, `${host}: benchmark page changed`);
   }
-  const inputFile = path.join(root, 'input.ndjson');
-  const processFile = path.join(root, 'process-tree.ndjson');
-  const input = readLines(inputFile);
-  const process = readLines(processFile);
-  const trace = checkRunTraces(input, process, record.scene);
-  insist(JSON.stringify(trace) === JSON.stringify(record.trace),
-    `${host}: recorded trace verdict changed`);
+  const inputFile = runFile(root, 'input.ndjson');
+  const processFile = runFile(root, 'process-tree.ndjson');
+  const input = readRunLines(root, 'input.ndjson');
+  const process = readRunLines(root, 'process-tree.ndjson');
+  const owned = exact ? readOwnedRun(root, record) : null;
+  const trace = checkRunTraces(input, process, record.scene, owned ? {ownedSubject:owned.subject} : {});
+  if (exact) {
+    insist(trace.exactFileTimeBound === true && isDeepStrictEqual(trace, record.trace),
+      `${host}: recorded exact trace verdict changed`);
+    insist(isDeepStrictEqual(record.traceIdentity,
+      {pidBound:true, creationComparison:'exact-native-filetime', exactFileTimeBound:true}),
+    `${host}: recorded trace identity changed`);
+  } else {
+    insist(!trace.exactFileTimePair && record.trace?.schema === 'soui.benchmark-run-traces/v1',
+      `${host}: legacy run cannot claim an exact trace`);
+    const originalKeys = ['schema', 'scene', 'hostPid', 'hostCreationTime100ns', 'inputActions',
+      'processSamples', 'inputDurationMs', 'processDurationMs', 'inputOffsetMs',
+      'traceIntegrityAccepted', 'physicalPresentation', 'performanceGate', 'releaseReady'];
+    const projection = Object.fromEntries(originalKeys.map(key => [key,
+      key === 'schema' ? 'soui.benchmark-run-traces/v1' : trace[key]]));
+    insist(isDeepStrictEqual(projection, record.trace), `${host}: recorded legacy trace verdict changed`);
+  }
   const samples = process.filter(item => item.event === 'sample');
   return {
-    root, record, page, input, process,
+    root, record, page, input, process, trace,
+    identityBinding: {version:exact ? 2 : 1, exactFileTimeBound:trace.exactFileTimeBound,
+      naturalCompletion:owned?.naturalCompletion ?? false, legacyUnbound:!exact},
     hashes: {run: sha(path.join(root, 'run.json')), page: sha(pageFile),
       input: sha(inputFile), processTree: sha(processFile)},
     resources: {samples: samples.length,
@@ -78,10 +101,10 @@ function loadRun(directory, host) {
 }
 
 function checkElectronMetadata(electron) {
-  const directory = path.join(electron.root, 'page-results');
+  const directory = runDirectory(electron.root, 'page-results');
   const names = fs.readdirSync(directory).filter(name => name.endsWith('-host.json'));
   if (names.length !== 1) return false;
-  const metadata = JSON.parse(fs.readFileSync(path.join(directory, names[0]), 'utf8'));
+  const metadata = readRunJson(electron.root, 'page-results/' + names[0]);
   return metadata.schema === 'soui.benchmark-electron-run/v1' &&
     metadata.pageSha256 === electron.record.pageSha256 &&
     metadata.versions?.electron === '44.4.4' &&
@@ -93,6 +116,11 @@ function checkElectronMetadata(electron) {
 
 function compare(soui, electron) {
   insist(soui.record.scene === electron.record.scene, 'Scene identity differs');
+  insist(soui.identityBinding.version === electron.identityBinding.version, 'Mixed legacy/exact runs cannot form a formal pair');
+  const exact = soui.identityBinding.version === 2;
+  const exactFileTimeBound = exact && soui.identityBinding.exactFileTimeBound &&
+    electron.identityBinding.exactFileTimeBound && soui.identityBinding.naturalCompletion &&
+    electron.identityBinding.naturalCompletion;
   const page = checkPagePair(soui.page, electron.page);
   const souiActions = soui.input.filter(item => item.event === 'input').map(item => item.action);
   const electronActions = electron.input.filter(item => item.event === 'input').map(item => item.action);
@@ -118,8 +146,10 @@ function compare(soui, electron) {
       electron.record.identity.sha256 &&
     checkElectronMetadata(electron);
   const preflightAccepted = page.pagePairAccepted && inputMatched && samePageBundle &&
-    toolsMatched && sameMachine && hostIdentity;
-  return {schema: 'soui.benchmark-pair-preflight/v1', scene: soui.record.scene,
+    toolsMatched && sameMachine && hostIdentity && (!exact || exactFileTimeBound);
+  return {schema: exact ? 'soui.benchmark-pair-preflight/v2' : 'soui.benchmark-pair-preflight/v1', scene: soui.record.scene,
+    preflightScope:exact ? 'exact-owned-subject' : 'legacy-diagnostic-unbound',
+    exactFileTimeBound:Boolean(exactFileTimeBound),
     preflightAccepted, checks: {pagePair: page.pagePairAccepted,
       inputMatched, samePageBundle, toolsMatched, sameMachine: Boolean(sameMachine), hostIdentity,
       bothTraceIntegrityAccepted: true},

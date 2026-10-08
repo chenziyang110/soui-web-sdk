@@ -9,6 +9,8 @@ const {test} = require('node:test');
 const {launch, stop, validateHostIdentity} = require('../../benchmarks/protocol/run-one.cjs');
 
 const options = {skip: process.platform !== 'win32', timeout: 15000};
+const ownership = {runner:process.env.BENCHMARK_OWNED_RUNNER_EXE ||
+  path.resolve(__dirname, '../../out/benchmark-protocol/Release/OwnedProcessRunner.exe')};
 function fixture() {
   const output = path.resolve(__dirname, '../../out/benchmark-cleanup-tests');
   fs.mkdirSync(output, {recursive: true});
@@ -35,7 +37,7 @@ test('benchmark failure cleanup proves the entire held Job closed and leaves an 
       {stdio: 'ignore', windowsHide: true});
     unrelated.unref();
     t.after(() => unrelated.kill());
-    const run = launch('host', process.execPath, ['-e', parentCode, grandchildFile], output, output);
+    const run = launch('host', process.execPath, ['-e', parentCode, grandchildFile], output, output, process.env, ownership);
     t.after(async () => { stop([run]); await run.finished; });
     const ready = await run.ready;
     await until(() => fs.existsSync(grandchildFile));
@@ -60,7 +62,7 @@ test('a zero benchmark root exit with an outstanding descendant remains a failed
     const output = fixture();
     const code = `const child=require('node:child_process').spawn(process.execPath,
       ['-e','setTimeout(()=>{},30000)'],{detached:true,stdio:'ignore',windowsHide:true});child.unref();`;
-    const run = launch('host', process.execPath, ['-e', code], output, output);
+    const run = launch('host', process.execPath, ['-e', code], output, output, process.env, ownership);
     t.after(async () => { stop([run]); await run.finished; });
     await run.ready;
     const result = await run.finished;
@@ -73,11 +75,13 @@ test('a zero benchmark root exit with an outstanding descendant remains a failed
 
 test('two mutually consistent traces cannot replace the owned host identity', () => {
   const filetime = '134359302086731837';
-  const processes = [{name: 'host', ownedProcess: {pid: 73, creationFileTime: filetime}}];
-  const trace = {hostPid: 73, hostCreationTime100ns: Number(filetime)};
-  assert.deepEqual(validateHostIdentity(trace, processes),
-    {pidBound: true, creationComparison: 'legacy-json-number', exactFileTimeBound: false});
-  assert.throws(() => validateHostIdentity({...trace, hostPid: 74}, processes), /owned benchmark subject/);
-  assert.throws(() => validateHostIdentity({...trace, hostCreationTime100ns: 1}, processes), /owned benchmark subject/);
+  const subject = {pid:73, creationFileTime:filetime};
+  const trace = {hostPid:73, hostCreationTime100ns:filetime, exactFileTimeBound:true};
+  assert.deepEqual(validateHostIdentity(trace, subject),
+    {pidBound:true, creationComparison:'exact-native-filetime', exactFileTimeBound:true});
+  assert.throws(() => validateHostIdentity({...trace, hostPid:74}, subject), /owned benchmark subject/);
+  assert.throws(() => validateHostIdentity({...trace, hostCreationTime100ns:(BigInt(filetime)+1n).toString()}, subject), /owned benchmark subject/);
+  assert.throws(() => validateHostIdentity({...trace, hostCreationTime100ns:Number(filetime)}, subject), /owned benchmark subject/);
+  assert.throws(() => validateHostIdentity({...trace, exactFileTimeBound:false}, subject), /owned benchmark subject/);
   assert.throws(() => validateHostIdentity(trace, []), /owned benchmark subject/);
 });

@@ -1,0 +1,51 @@
+& node (Join-Path $root 'tools/internal/measurement-validation.cjs') protocol $Architecture
+{
+  "schema": "soui.measurement-standard-group/v1",
+  "kind": "protocol",
+  "architecture": "x64",
+  "passed": true,
+  "counts": {
+    "tests": 42,
+    "pass": 41,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 1,
+    "todo": 0
+  },
+  "nativeCasesExecuted": false,
+  "nativeSerializerSkipExpected": true,
+  "noGui": true,
+  "correctInputTraceExecuted": false,
+  "report": "out/measurement-validation/protocol-x64-77cf16c1-37d8-4b92-ab45-075b4dbbdc9f/owned.ndjson",
+  "reportSha256": "fb17136e2a5e1ad2da34dce16ec45e1639c292815503eee9cf7c7c6c5f2cf401",
+  "genericSupervisionPassed": true,
+  "closureConfirmed": true,
+  "sourceSha256": "d9a1f03a2cafcbfb138729ba21eb7904f4280745eab65b558faa908abfaea488"
+}
+
+& node (Join-Path $root 'tools/internal/measurement-validation.cjs') native $Architecture
+{
+  "schema": "soui.measurement-standard-group/v1",
+  "kind": "native",
+  "architecture": "x64",
+  "passed": true,
+  "counts": {
+    "tests": 16,
+    "pass": 16,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0,
+    "todo": 0
+  },
+  "nativeCasesExecuted": true,
+  "nativeSerializerSkipExpected": false,
+  "noGui": true,
+  "correctInputTraceExecuted": false,
+  "report": "out/measurement-validation/native-x64-219a3842-3949-4f14-abce-24a7a620931b/owned.ndjson",
+  "reportSha256": "2d8ee33af88b49b2f9cebb298f8a6fe8b9e41317fcc753f3cc487f114e336549",
+  "genericSupervisionPassed": true,
+  "closureConfirmed": true,
+  "sourceSha256": "d9a1f03a2cafcbfb138729ba21eb7904f4280745eab65b558faa908abfaea488"
+}
+
+Only new measurement commands executed; canonical Test/CTests/desktop were not invoked.
