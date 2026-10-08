@@ -7,6 +7,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const identity = require('../internal/delivery-identity.cjs');
+const {isHistoricalNativeBackup} = require('../internal/native-payload.cjs');
 
 const PACKAGE = 'soui.source-sdk/v1';
 const LOCK = 'soui.sdk-lock/v1';
@@ -55,6 +56,12 @@ function walk(root, relative) {
   if (fs.statSync(full).isFile()) return [relative];
   return fs.readdirSync(full).sort().filter(name => !['node_modules', 'dist', 'out', '.git', '.vs'].includes(name))
     .flatMap(name => walk(root, `${relative}/${name}`));
+}
+
+function sourceFiles(source, manifest) {
+  const historical = new Set(manifest ? manifest.files.map(file => file.path) : []);
+  return [...managedRoots, ...managedFiles].flatMap(relative => walk(source, relative))
+    .filter(relative => !isHistoricalNativeBackup(relative) || historical.has(relative)).sort();
 }
 
 function validateManifest(manifest) {
@@ -133,7 +140,7 @@ function pack(source, output, version) {
     throw new Error('Package output must be outside source or under dist/sdk');
   }
   if (fs.existsSync(output)) throw new Error('Package output already exists');
-  const files = [...managedRoots, ...managedFiles].flatMap(relative => walk(source, relative)).sort();
+  const files = sourceFiles(source);
   const manifest = validateManifest({schema: PACKAGE, id: sdkId, version, channel: 'preview', releaseReady: false,
     format: 'source-with-native-dependencies',
     applicationContract: 'Applications own app, web, contracts and resources. SDK builds independently using CMake and links through Soui::Sdk.',
@@ -214,7 +221,7 @@ function main(argv) {
     const manifest = readPackage(options['--package']);
     const source = safePath(options['--source']);
     verifyFiles(source, manifest, true);
-    const paths = [...managedRoots, ...managedFiles].flatMap(relative => walk(source, relative)).sort();
+    const paths = sourceFiles(source, manifest);
     if (JSON.stringify(paths) !== JSON.stringify(manifest.files.map(file => file.path))) {
       throw new Error('SDK source file set changed; create a new SDK version');
     }

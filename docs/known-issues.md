@@ -2,6 +2,12 @@
 
 本交付解决分层、接入、自行构建和验证的问题，仍为预览版本。
 
+[原生调度快照](../verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/README.md)确认 x86 低优先级解析任务相对上一帧时钟迟约 10.28 秒。[策略回归](../verification/production-validation/scheduler-fairness-policy-2026-09-26/README.md)先失败、后两架构各十二项通过；[x86](../verification/production-validation/scheduler-fairness-x86-rebuild-2026-09-26/README.md)和 [x64](../verification/production-validation/scheduler-fairness-x64-rebuild-2026-09-27/README.md)完整重编、保留原动画的短测均退出 0，公共任务、取消、退订和关闭完成。冻结消费者只替换内核，实际消除了这两个启动复现；新内核已纳入 preview.15 候选，长期资源和生产门槛仍待验收。
+
+当前 preview.15 已补齐[原仓库双架构 14 次桌面短测](../verification/production-validation/preview15-desktop-2026-09-27/README.md)、[完整源码无 Git 解压四配置构建](../verification/production-validation/preview15-full-source-build-2026-09-27/README.md)及[新编 EXE 六入口短测](../verification/production-validation/preview15-relocated-desktop-2026-09-27/README.md)。[Win7 SP1 x86 当前三入口](../verification/production-validation/win7-sp1-x86-qemu-preview15-apps-attempt3-2026-09-27/README.md)也在原 60 秒期限内原生退出 0，完整关闭、客体身份和运行前后资源/legal 通过，未观察到外部负载。旧 preview.11 关闭停滞未在本次当前输入重现；V02 真实交互、重复生命周期、真实续期、隔离长稳、干净机器及物理目标机仍未通过。以下历史失败按各自输入保留。
+
+[SDK Core 体积修正](../verification/production-validation/sdk-core-native-backups-2026-09-27/README.md)排除两份历史内核备份，并保留完整源码原件。内部 preview.14 的源码匹配失败后，preview.15 统一打包和校验筛选，真实新包匹配及安装往返通过，净减少约 55.94 MiB；不据此扩大应用运行体积或 Electron 对标结论。
+
 冻结 preview.11 的[页面动画诊断](../verification/production-validation/preview11-renewal-animation-diagnostic-2026-09-26/README.md)中，相同输入只关闭旋转动画即可完成任务短测；动画开启时解析持续停滞，尚需原生调度证据。另一已就绪运行在页面记录后 15 ms 被监督器判定为“30 秒无记录”。[新外部夹具](../verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26/README.md)已复现并修正先采样时钟、后读跨线程快照导致的无符号差值风险；两架构边界测试、自检及关闭动画的诊断短测通过。原失败保留，关闭动画不作为 SDK 修复，真实续期和生产门槛继续未通过。
 
 preview.13 [完整源码解压身份检查](../verification/production-validation/preview13-legal-identity-2026-09-26/README.md)发现一份许可证的 Git 换行转换，使旧源码 ZIP 与同版 419 文件 SDK 包不一致。Git 规则和回归已修正，旧包/失败目录保留。[新完整源码包](../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)已在无 Git 解压目录匹配同版 SDK，完成 SDK/Starter/Workbench 四配置构建、44 项原生及 8 项交付身份测试；新载荷 GUI、底层完整重编及干净机器复现仍待执行。验证输入是 `a1007f2188102dfa4de4e79f73a4e0b2c2b8b99cf3e892a3d1e1e3794fd51e68`；SDK 实现与既有安装包字节不变。

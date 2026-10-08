@@ -1,0 +1,124 @@
+'use strict';
+// Non-GUI CLI checks of the exact checkerSource bytes embedded in production Run.ps1.
+// Only the new self-test directory is written. Run.ps1 and native EXEs are never executed.
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),cp=require('node:child_process');
+const fixture=__dirname;
+const label=process.argv[2];
+if(!/^[a-z0-9][a-z0-9-]{0,63}$/.test(label||''))throw new Error('Usage: node Test-RunnerBinding.cjs <new-unique-name>');
+const root=path.join(path.dirname(fixture),'runner-binding-self-test-only',label);
+if(fs.existsSync(root))throw new Error('Refuse existing self-test directory');
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const encode=v=>JSON.stringify(v,null,2)+'\n';
+const read=p=>JSON.parse(fs.readFileSync(p,'utf8').replace(/^\uFEFF/,''));
+const put=(p,b)=>{fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,b,{flag:'wx'})};
+const freezePath=path.join(fixture,'freeze.json'),runPath=path.join(fixture,'Run.ps1');
+const freezeBytes=fs.readFileSync(freezePath),freeze=JSON.parse(freezeBytes),runBytes=fs.readFileSync(runPath);
+if(!/^[a-f0-9]{64}$/.test(process.argv[3]||'')||hash(freezeBytes)!==process.argv[3]||freeze.version!=='0.3.0-preview.15'||freeze.parent?.freezeSha256!=='b58de0c44a2ae96a12aa144f4d8607b800415c40b1311591e05b91f67486faef')throw new Error('Unexpected current production freeze');
+const opening=Buffer.from("$checkerSource = @'");
+const start=runBytes.indexOf(opening),boundary=start+opening.length;
+const newline=runBytes[boundary]===13&&runBytes[boundary+1]===10?Buffer.from('\r\n'):runBytes[boundary]===10?Buffer.from('\n'):null;
+if(!newline)throw new Error('Production here-string opening newline missing');
+const bodyStart=boundary+newline.length,end=runBytes.indexOf(Buffer.concat([newline,Buffer.from("'@")]),bodyStart);
+if(start<0||end<=bodyStart||runBytes.indexOf(opening,start+opening.length)!==-1)throw new Error('Ambiguous production checkerSource here-string');
+// Match PowerShell single-quoted here-string value: delimiters and the two boundary newlines are excluded.
+const checkerBytes=runBytes.subarray(bodyStart,end);
+const checker=path.join(root,'check-inputs.cjs');
+const parentFreezePath=path.join(freeze.parent.preparationRoot,'freeze.json'),parentFreezeBytes=fs.readFileSync(parentFreezePath);
+if(hash(parentFreezeBytes)!==freeze.parent.freezeSha256)throw new Error('v1 parent freeze changed');
+const identities=[freezePath,runPath,parentFreezePath,...['x86','x64'].map(a=>freeze.runtimes[a].buildRecordPath)];
+const fingerprint=()=>identities.map(p=>{const b=fs.readFileSync(p);return {path:p,bytes:b.length,sha256:hash(b)}});
+const before=fingerprint();
+fs.mkdirSync(root,{recursive:true});
+put(checker,checkerBytes);
+put(path.join(root,'production-Run.ps1'),runBytes);
+put(path.join(root,'Test-RunnerBinding.cjs'),fs.readFileSync(__filename));
+put(path.join(root,'extraction.json'),encode({schema:'soui.production-runner-checker-extraction/v1',sourcePath:runPath,
+  sourceBytes:runBytes.length,sourceSha256:hash(runBytes),checkerBytes:checkerBytes.length,checkerSha256:hash(checkerBytes),
+  byteStart:bodyStart,byteEndExclusive:end,boundaryNewlinesExcluded:true,productionCodeModified:false,
+  freezePath,freezeSha256:hash(freezeBytes),parentFreezePath,parentFreezeSha256:hash(parentFreezeBytes),
+  guiExecuted:false,nativeExecuted:false,networkExecuted:false}));
+const cases=[];
+function invoke(name,architecture,makeFake,expectedError=null){
+  const caseRoot=path.join(root,'cases',name),output=path.join(caseRoot,'output');
+  fs.mkdirSync(output,{recursive:true});
+  let candidate=fixture,mutation=null;
+  if(makeFake){candidate=path.join(caseRoot,'fake-fixture');fs.mkdirSync(candidate);mutation=makeFake(candidate);}
+  put(path.join(output,'Run.ps1'),runBytes);
+  const nodePath=freeze.toolchain[architecture].tools.node.path;
+  const args=[checker,'before',candidate,output,architecture,nodePath];
+  const startedAt=new Date().toISOString();
+  const executed=cp.spawnSync(nodePath,args,{cwd:caseRoot,windowsHide:true,timeout:180000,maxBuffer:8*1024*1024,encoding:null});
+  const stdout=executed.stdout||Buffer.alloc(0),stderr=executed.stderr||Buffer.alloc(0);
+  put(path.join(caseRoot,'stdout.log'),stdout);put(path.join(caseRoot,'stderr.log'),stderr);
+  const result={schema:'soui.runner-binding-cli-case/v1',name,architecture,program:nodePath,arguments:args,
+    startedAt,finishedAt:new Date().toISOString(),pid:executed.pid,exitCode:executed.status,signal:executed.signal,
+    error:executed.error?{name:executed.error.name,code:executed.error.code||null,message:executed.error.message}:null,
+    productionCheckerSha256:hash(checkerBytes),productionRunSha256:hash(runBytes),
+    inputKind:makeFake?'synthetic-mutated-freeze-or-build-record':'actual-v2-frozen-inputs',mutation,
+    expectedRejection:expectedError,stdout:{bytes:stdout.length,sha256:hash(stdout)},stderr:{bytes:stderr.length,sha256:hash(stderr)},
+    guiExecuted:false,nativeExecuted:false,networkExecuted:false};
+  let mismatch=null;
+  if(executed.error||executed.signal||!Number.isInteger(executed.status))mismatch='No normal numeric CLI exit';
+  else if(expectedError){
+    const errorLine=stderr.toString('utf8').split(/\r?\n/).find(line=>line.startsWith('Error: '));
+    if(executed.status!==1||errorLine!==`Error: ${expectedError}`||/ENOENT|ENOTDIR/.test(stderr.toString('utf8'))||
+      fs.existsSync(path.join(output,'identity-before.json')))mismatch='Wrong rejection boundary or unintended success';
+  }else{
+    try{
+      const success=JSON.parse(stdout.toString('utf8'));
+      const identity=read(path.join(output,'identity-before.json'));
+      if(executed.status!==0||stderr.length!==0||success.status!=='identity-verified'||success.stage!=='before'||success.architecture!==architecture||
+        identity.freezeSha256!==hash(freezeBytes)||identity.architecture!==architecture||identity.inputsUnchanged!==true)mismatch='Actual-input before check did not pass';
+    }catch(error){mismatch='Actual-input result missing/invalid: '+error.message;}
+  }
+  if(hash(fs.readFileSync(checker))!==hash(checkerBytes))mismatch='Extracted production checker changed';
+  result.passed=mismatch===null;result.validationError=mismatch;
+  put(path.join(caseRoot,'result.json'),encode(result));cases.push(result);
+  process.stdout.write(JSON.stringify({case:name,exitCode:result.exitCode,passed:result.passed,expectedRejection:expectedError})+'\n');
+  if(mismatch)throw new Error(name+': '+mismatch);
+}
+function changedFreeze(directory,change){
+  const value=structuredClone(freeze);change(value);
+  put(path.join(directory,'freeze.json'),encode(value));
+  return value;
+}
+function changedBuild(architecture,field){return directory=>{
+  const originalPath=freeze.runtimes[architecture].buildRecordPath,bytes=fs.readFileSync(originalPath),build=JSON.parse(bytes);
+  if(field==='revision')build.fixtureRevision=1;else build.parent.freezeSha256='0'.repeat(64);
+  const fakePath=path.join(directory,'mutated-builds',architecture,'build.json'),fakeBytes=Buffer.from(encode(build));
+  put(fakePath,fakeBytes);
+  changedFreeze(directory,value=>{value.runtimes[architecture].buildRecordPath=fakePath;value.runtimes[architecture].buildRecordSha256=hash(fakeBytes);});
+  return {kind:'synthetic-build-identity-mutation',architecture,field,originalBuildPath:originalPath,originalBuildSha256:hash(bytes),
+    mutatedBuildPath:fakePath,mutatedBuildSha256:hash(fakeBytes),freezeBuildRecordHashRecomputed:true,
+    unchangedSourceAndOtherBuildPathsReferenceRealReadOnlyInputs:true};
+};}
+let error=null;
+try{
+  invoke('actual-v2-x86-before','x86',null);
+  invoke('actual-v2-x64-before','x64',null);
+  invoke('synthetic-v1-freeze','x86',directory=>{
+    put(path.join(directory,'freeze.json'),parentFreezeBytes);
+    return {kind:'synthetic-fixture-directory-with-actual-v1-freeze-copy',sourcePath:parentFreezePath,sha256:hash(parentFreezeBytes)};
+  },'Wrong compiled freeze');
+  invoke('synthetic-wrong-freeze-parent','x64',directory=>{
+    changedFreeze(directory,value=>{value.parent.freezeSha256='0'.repeat(64)});
+    return {kind:'synthetic-freeze-parent-mutation',parentFreezeSha256:'0'.repeat(64)};
+  },'Wrong v2 fixture revision or parent freeze');
+  // Opposite selected architecture proves the production gate checks both build records.
+  invoke('synthetic-x86-build-revision','x64',changedBuild('x86','revision'),'Wrong v2 build revision or parent freeze');
+  invoke('synthetic-x86-build-parent','x86',changedBuild('x86','parent'),'Wrong v2 build revision or parent freeze');
+  invoke('synthetic-x64-build-revision','x86',changedBuild('x64','revision'),'Wrong v2 build revision or parent freeze');
+  invoke('synthetic-x64-build-parent','x64',changedBuild('x64','parent'),'Wrong v2 build revision or parent freeze');
+}catch(e){error=e.message;}
+const after=fingerprint();
+if(JSON.stringify(before)!==JSON.stringify(after))error=error||'Production run/freeze/build records changed during checks';
+const result={schema:'soui.production-runner-binding-self-test/v1',status:error?'failed':'passed-non-gui-checker-only',
+  root,finishedAt:new Date().toISOString(),checkerSha256:hash(checkerBytes),runSha256:hash(runBytes),freezeSha256:hash(freezeBytes),
+  caseCount:cases.length,passedCases:cases.filter(c=>c.passed).length,actualInputPositives:cases.filter(c=>c.passed&&!c.expectedRejection).length,
+  syntheticNegativeRejections:cases.filter(c=>c.passed&&c.expectedRejection).length,cases:cases.map(c=>({name:c.name,architecture:c.architecture,
+    exitCode:c.exitCode,passed:c.passed,expectedRejection:c.expectedRejection,resultPath:path.join(root,'cases',c.name,'result.json')})),
+  productionIdentitiesBefore:before,productionIdentitiesAfter:after,productionIdentitiesUnchanged:JSON.stringify(before)===JSON.stringify(after),
+  error,guiExecuted:false,nativeExecuted:false,networkExecuted:false,realRenewalVerified:false,releaseReady:false};
+put(path.join(root,'summary.json'),encode(result));
+process.stdout.write(encode({status:result.status,caseCount:result.caseCount,passedCases:result.passedCases,resultPath:path.join(root,'summary.json'),error}));
+if(error)process.exitCode=1;

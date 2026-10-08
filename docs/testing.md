@@ -1,5 +1,9 @@
 # 测试与验收
 
+`node --test tests/sdk/sdk-native-payload.test.cjs` 验证 SDK Core 排除已知历史内核备份，保留有效 DLL/LIB 和许可材料，并执行旧包安装、新包升级、旧包回退。原始源码备份和业务文件必须保持原字节；`Test.ps1` 和交付汇总均包含此回归。
+
+`kernel.native.scheduler-fairness` 编译内核实际调用的内部选择策略，覆盖新任务优先级、同级先后、长期等待、连续普通任务、未来任务资格和退出清理。它是策略回归；修改此策略仍必须在两架构完整重编底层依赖，运行保持原动画的独立消费者及真实应用，不能仅凭该测试放行 DLL。首次红绿结果见[原始记录](../verification/production-validation/scheduler-fairness-policy-2026-09-26/README.md)。
+
 preview.13 的 `node --test tests/sdk/installation-interruption.test.cjs` 真正终止独立安装子进程，再由新进程恢复。覆盖准备、journal、替换、删除、新增、锁提交、清理、恢复再次中断，以及并发、文件/备份/锁/journal 冲突和链接。原始边界与退出记录保存在每次独立的 `out/sdk-recovery/attempt-*/`，故障样本不删除。`Test.ps1` 和交付汇总入口均执行此回归；小文件事务通过不能代替真实 SDK 包、业务编译、旧无 journal 现场或目标平台验收。
 
 preview.11 增加 `sdk.native.session-renewal` 与安装后独立 [session-consumer](../tests/session-consumer/README.md)，验证授权期限、轮换、重取、撤销、稳定归属与公开接入。Web 续期测试使用模拟时间并覆盖连接器与真实注入 resolver 的容量；这些测试不启动窗口，不证明真实八小时、模态响应、休眠或 Win7。真实长测必须在同一版本载荷上跨越多次 25 分钟续期，保留任务、订阅、输入响应和资源轨迹，不能用反复重载绕过授权期限。

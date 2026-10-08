@@ -1,0 +1,30 @@
+✖ new SDK packages omit historical kernels and still upgrade and roll back old packages (104.8176ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 195.1481
+
+✖ failing tests:
+
+test at ..\..\SOUI-SDK-development\preview14-scheduler\tests\sdk\sdk-native-payload.test.cjs:10:1
+✖ new SDK packages omit historical kernels and still upgrade and roll back old packages (104.8176ms)
+  AssertionError [ERR_ASSERTION]: third_party/prebuilt/x86/miniblink/node.dll.before-gpu-lcd must not be delivered
+  
+  true !== false
+  
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\preview14-scheduler\tests\sdk\sdk-native-payload.test.cjs:36:14)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

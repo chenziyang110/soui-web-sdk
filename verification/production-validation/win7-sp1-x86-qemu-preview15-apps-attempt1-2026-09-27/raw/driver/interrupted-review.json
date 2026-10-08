@@ -1,0 +1,69 @@
+{
+  "version": "0.3.0-preview.15",
+  "classification": "external-load-interrupted-before-guest-command",
+  "qemuPid": 83580,
+  "qemuExitCode": -1,
+  "driverExitCode": 1,
+  "externalLoad": [
+    {
+      "at": "2026-09-26T18:10:23.0354618Z",
+      "processes": [
+        {
+          "ProcessId": 28876,
+          "Name": "qemu-system-x86_64.exe",
+          "CreationDate": "/Date(1790446217966)/"
+        }
+      ],
+      "error": null
+    }
+  ],
+  "guestCommandSent": false,
+  "guestApplicationExecuted": false,
+  "serialBytes": 0,
+  "frozenBeforeAndAfter": {
+    "before": {
+      "status": "frozen-preparation-intact",
+      "version": "0.3.0-preview.15",
+      "files": 612,
+      "freezeSha256": "47e463d7746dd9824a6083d3e12b26d0910ac79a35bd7d69060b1ffe62b9e005",
+      "inputSha256": "0fd85712982cc9f9f8cf35eaab0a0584956ed0ff9bf54536db976bd08e414d15",
+      "buildId": "b8c26d8d-7144-4eb0-b889-0034ec8029fb",
+      "sourceSha256": "b0d7cc7d52de3493084e0dec6813f92f9a90a1bbce2f75ad5a62532a6dd87d07",
+      "guestExecuted": false,
+      "releaseReady": false
+    },
+    "after": {
+      "status": "frozen-preparation-intact",
+      "version": "0.3.0-preview.15",
+      "files": 612,
+      "freezeSha256": "47e463d7746dd9824a6083d3e12b26d0910ac79a35bd7d69060b1ffe62b9e005",
+      "inputSha256": "0fd85712982cc9f9f8cf35eaab0a0584956ed0ff9bf54536db976bd08e414d15",
+      "buildId": "b8c26d8d-7144-4eb0-b889-0034ec8029fb",
+      "sourceSha256": "b0d7cc7d52de3493084e0dec6813f92f9a90a1bbce2f75ad5a62532a6dd87d07",
+      "guestExecuted": false,
+      "releaseReady": false
+    }
+  },
+  "diskSha256Before": "fdf5eb826c9868622e218d1d54f328970ad190f848cd0777174885b1d072ddb4",
+  "diskSha256After": "fdf5eb826c9868622e218d1d54f328970ad190f848cd0777174885b1d072ddb4",
+  "desktopScreenshot": {
+    "path": "boot-2.png",
+    "sha256": "b77652a27d17f4d9938aed1e1cca8f64ae05e08ef1308a5c5e20de64f4c652be",
+    "observed": "Windows 7 desktop, taskbar and QEMU disk driver notification visible; no SDK command sent"
+  },
+  "excludedSnapshotFiles": [
+    {
+      "name": "vl.EADZV3",
+      "bytes": 589824,
+      "sha256": "2fe11b9ccfb409f8d3942c853e09a612d664c10c8715ecfa8cc27ffc64e5fff0"
+    },
+    {
+      "name": "vl.QG6YV3",
+      "bytes": 39124992,
+      "sha256": "873a3794b6e6f31a24692309a16c8594c6451f5eb74fe7c10d63dc2717d0d51a"
+    }
+  ],
+  "applicationFailure": false,
+  "win7ApplicationPass": false,
+  "releaseReady": false
+}

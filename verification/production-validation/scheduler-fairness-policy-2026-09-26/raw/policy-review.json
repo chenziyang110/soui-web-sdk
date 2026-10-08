@@ -1,0 +1,410 @@
+{
+  "reviewedAt": "2026-09-26T15:02:44.909Z",
+  "baseCommit": "0872075ec45d07b1428719725a8ffbcdd5d962de",
+  "rows": [
+    {
+      "architecture": "x86",
+      "phase": "red",
+      "snapshot": "snapshots/x86-red",
+      "binary": {
+        "path": "builds/x86-red/tests/native/Release/soui_scheduler_fairness_tests.exe",
+        "bytes": 17920,
+        "sha256": "f027c6b0d5f96726a9ff329b82f71369fea8d4fe3867de2215f20eb7d75b05c6"
+      },
+      "outputs": {
+        "configure": {
+          "program": "cmake.exe",
+          "args": [
+            "-S",
+            "C:/SOUI-SDK-development/preview14-scheduler",
+            "-B",
+            "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926\\builds\\x86-red",
+            "-G",
+            "Visual Studio 17 2022",
+            "-A",
+            "Win32",
+            "-T",
+            "v143",
+            "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+            "-DSOUI_BUILD_TEMPLATE=OFF",
+            "-DSOUI_BUILD_DEMOS=OFF"
+          ],
+          "cwd": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926",
+          "startedAt": "2026-09-26T14:52:43.286Z",
+          "pid": 52464,
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "error": null,
+          "finishedAt": "2026-09-26T14:52:47.597Z",
+          "stdout": {
+            "bytes": 881,
+            "sha256": "8899e245b1080da39925b41c9f69f12343c1af691ad9a0e8d5abbd3d616201d6"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "build": {
+          "program": "cmake.exe",
+          "args": [
+            "--build",
+            "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926\\builds\\x86-red",
+            "--config",
+            "Release",
+            "--target",
+            "soui_scheduler_fairness_tests",
+            "--parallel",
+            "2"
+          ],
+          "cwd": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926",
+          "startedAt": "2026-09-26T14:52:47.719Z",
+          "pid": 32676,
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "error": null,
+          "finishedAt": "2026-09-26T14:52:49.517Z",
+          "stdout": {
+            "bytes": 424,
+            "sha256": "2db845fd23b43e6627c79087d5bedf48496214a65d01ab4303fb4f91737c99ad"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "execute": {
+          "program": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926\\builds\\x86-red\\tests\\native\\Release\\soui_scheduler_fairness_tests.exe",
+          "args": [],
+          "cwd": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926",
+          "startedAt": "2026-09-26T14:52:49.614Z",
+          "pid": 47544,
+          "exitCode": 1,
+          "signal": null,
+          "timedOut": false,
+          "error": null,
+          "finishedAt": "2026-09-26T14:52:49.753Z",
+          "stdout": {
+            "bytes": 42,
+            "sha256": "ebbe9fcf12128effb0cdc01105808bc00d32895cb46063be6dab0990c6f0ac18"
+          },
+          "stderr": {
+            "bytes": 225,
+            "sha256": "19f3e227124ad579bd2ccce163697bef9a8836b5a8c9e7052598968b23102b71"
+          }
+        }
+      },
+      "checks": 12,
+      "failures": 5,
+      "failFast": false,
+      "stdout": "Scheduler policy checks: 12; failures: 5\r\n",
+      "stderr": "Aging must begin at 50 ms\r\nOverdue loading task starved behind fresh normal work\r\nAmong aged tasks the oldest deadline must win\r\nAged idle work must not starve indefinitely\r\nContinuous animation starved a ready loading task\r\n"
+    },
+    {
+      "architecture": "x86",
+      "phase": "green",
+      "snapshot": "snapshots/x86-green",
+      "binary": {
+        "path": "builds/x86-green/tests/native/Release/soui_scheduler_fairness_tests.exe",
+        "bytes": 17920,
+        "sha256": "a73fceab879e953ff9c73f6fd0f7e65e9d23eb33b20d1b1dca9c9fb52f41a8c8"
+      },
+      "outputs": {
+        "configure": {
+          "program": "cmake.exe",
+          "args": [
+            "-S",
+            "C:/SOUI-SDK-development/preview14-scheduler",
+            "-B",
+            "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926\\builds\\x86-green",
+            "-G",
+            "Visual Studio 17 2022",
+            "-A",
+            "Win32",
+            "-T",
+            "v143",
+            "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+            "-DSOUI_BUILD_TEMPLATE=OFF",
+            "-DSOUI_BUILD_DEMOS=OFF"
+          ],
+          "cwd": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926",
+          "startedAt": "2026-09-26T14:53:19.192Z",
+          "pid": 82240,
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "error": null,
+          "finishedAt": "2026-09-26T14:53:24.044Z",
+          "stdout": {
+            "bytes": 883,
+            "sha256": "ff67dc10605acbcefe0316231aa88e77ddf6a787a38a8d2509113341c48838e1"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "build": {
+          "program": "cmake.exe",
+          "args": [
+            "--build",
+            "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926\\builds\\x86-green",
+            "--config",
+            "Release",
+            "--target",
+            "soui_scheduler_fairness_tests",
+            "--parallel",
+            "2"
+          ],
+          "cwd": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926",
+          "startedAt": "2026-09-26T14:53:24.140Z",
+          "pid": 5232,
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "error": null,
+          "finishedAt": "2026-09-26T14:53:25.816Z",
+          "stdout": {
+            "bytes": 426,
+            "sha256": "d4960a937caba614b2a852fa580ad8daa230a05cbba5eda5482b6912168732b4"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "execute": {
+          "program": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926\\builds\\x86-green\\tests\\native\\Release\\soui_scheduler_fairness_tests.exe",
+          "args": [],
+          "cwd": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926",
+          "startedAt": "2026-09-26T14:53:25.902Z",
+          "pid": 20008,
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "error": null,
+          "finishedAt": "2026-09-26T14:53:26.055Z",
+          "stdout": {
+            "bytes": 42,
+            "sha256": "9510b4b18dd02832887e3a9a32398fd756779af4cb096eddd47c4a05e825e12c"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      },
+      "checks": 12,
+      "failures": 0,
+      "failFast": false,
+      "stdout": "Scheduler policy checks: 12; failures: 0\r\n",
+      "stderr": ""
+    },
+    {
+      "architecture": "x64",
+      "phase": "red",
+      "snapshot": "snapshots/x64-red",
+      "binary": {
+        "path": "builds/x64-red/tests/native/Release/soui_scheduler_fairness_tests.exe",
+        "bytes": 21504,
+        "sha256": "a32895680b2126eb81ea14a9cea0baf29b9f2dd1adbc4a0c799f8e24076b1e18"
+      },
+      "outputs": {
+        "configure": {
+          "program": "cmake.exe",
+          "args": [
+            "-S",
+            "C:/SOUI-SDK-development/preview14-scheduler",
+            "-B",
+            "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926\\builds\\x64-red",
+            "-G",
+            "Visual Studio 17 2022",
+            "-A",
+            "x64",
+            "-T",
+            "v143",
+            "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+            "-DSOUI_BUILD_TEMPLATE=OFF",
+            "-DSOUI_BUILD_DEMOS=OFF"
+          ],
+          "cwd": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926",
+          "startedAt": "2026-09-26T14:37:51.402Z",
+          "pid": 10776,
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "error": null,
+          "finishedAt": "2026-09-26T14:37:55.881Z",
+          "stdout": {
+            "bytes": 881,
+            "sha256": "7bd0f292bc70f5313de39f967fa4ca0471ecca25b2cf98ed2f7dd36810325880"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "build": {
+          "program": "cmake.exe",
+          "args": [
+            "--build",
+            "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926\\builds\\x64-red",
+            "--config",
+            "Release",
+            "--target",
+            "soui_scheduler_fairness_tests",
+            "--parallel",
+            "2"
+          ],
+          "cwd": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926",
+          "startedAt": "2026-09-26T14:37:55.996Z",
+          "pid": 45336,
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "error": null,
+          "finishedAt": "2026-09-26T14:37:57.691Z",
+          "stdout": {
+            "bytes": 424,
+            "sha256": "a4b75fc87988b779ce23e72c6395a72a4f1ab14d814390dfbd6047b46f28a29b"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "execute": {
+          "program": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926\\builds\\x64-red\\tests\\native\\Release\\soui_scheduler_fairness_tests.exe",
+          "args": [],
+          "cwd": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926",
+          "startedAt": "2026-09-26T14:37:57.791Z",
+          "pid": 81340,
+          "exitCode": 1,
+          "signal": null,
+          "timedOut": false,
+          "error": null,
+          "finishedAt": "2026-09-26T14:37:57.898Z",
+          "stdout": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          },
+          "stderr": {
+            "bytes": 55,
+            "sha256": "1879bfe139bd14430c3850803cb7ced561a963b6a2004daaebf7c674572ebb87"
+          }
+        }
+      },
+      "checks": null,
+      "failures": 1,
+      "failFast": true,
+      "stdout": "",
+      "stderr": "Overdue loading task starved behind fresh normal work\r\n"
+    },
+    {
+      "architecture": "x64",
+      "phase": "green",
+      "snapshot": "snapshots/x64-green",
+      "binary": {
+        "path": "builds/x64-green/tests/native/Release/soui_scheduler_fairness_tests.exe",
+        "bytes": 21504,
+        "sha256": "34914e99227896f75b292266d947c084a69a97921e77721684ba561821a3e921"
+      },
+      "outputs": {
+        "configure": {
+          "program": "cmake.exe",
+          "args": [
+            "-S",
+            "C:/SOUI-SDK-development/preview14-scheduler",
+            "-B",
+            "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926\\builds\\x64-green",
+            "-G",
+            "Visual Studio 17 2022",
+            "-A",
+            "x64",
+            "-T",
+            "v143",
+            "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+            "-DSOUI_BUILD_TEMPLATE=OFF",
+            "-DSOUI_BUILD_DEMOS=OFF"
+          ],
+          "cwd": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926",
+          "startedAt": "2026-09-26T14:53:12.056Z",
+          "pid": 44636,
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "error": null,
+          "finishedAt": "2026-09-26T14:53:16.856Z",
+          "stdout": {
+            "bytes": 883,
+            "sha256": "8a7ea3fce9351679ab4aaae5be7131b142bb50377e790be47a36c138a31d8465"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "build": {
+          "program": "cmake.exe",
+          "args": [
+            "--build",
+            "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926\\builds\\x64-green",
+            "--config",
+            "Release",
+            "--target",
+            "soui_scheduler_fairness_tests",
+            "--parallel",
+            "2"
+          ],
+          "cwd": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926",
+          "startedAt": "2026-09-26T14:53:16.955Z",
+          "pid": 53164,
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "error": null,
+          "finishedAt": "2026-09-26T14:53:18.754Z",
+          "stdout": {
+            "bytes": 426,
+            "sha256": "7c500ca8c57f56963048f92bae3191186ae206f3cc8db3c3d4b906e1903a1d1c"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        "execute": {
+          "program": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926\\builds\\x64-green\\tests\\native\\Release\\soui_scheduler_fairness_tests.exe",
+          "args": [],
+          "cwd": "C:\\SOUI-SDK-production-validation\\preview14-scheduler-policy-20260926",
+          "startedAt": "2026-09-26T14:53:18.850Z",
+          "pid": 37500,
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "error": null,
+          "finishedAt": "2026-09-26T14:53:18.985Z",
+          "stdout": {
+            "bytes": 42,
+            "sha256": "9510b4b18dd02832887e3a9a32398fd756779af4cb096eddd47c4a05e825e12c"
+          },
+          "stderr": {
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      },
+      "checks": 12,
+      "failures": 0,
+      "failFast": false,
+      "stdout": "Scheduler policy checks: 12; failures: 0\r\n",
+      "stderr": ""
+    }
+  ],
+  "greenMatchesCurrentPolicySources": true,
+  "realKernelRebuildValidated": false,
+  "animatedPageValidated": false,
+  "productionPass": false
+}

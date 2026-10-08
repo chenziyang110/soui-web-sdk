@@ -1,5 +1,59 @@
 # SDK 生产验证执行记录
 
+## 2026-09-27 真实续期构建门禁与 V02 输入核查
+
+[外部构建门禁修正](../../verification/production-validation/preview15-renewal-build-gate-2026-09-27/README.md)复现了 CIM 查询非终止错误可能返回 0、误判桌面空闲的问题。原驱动六项中三项失败，修正后六项通过；实际构建命令又因仍有其他 QEMU 返回 2，没有启动编译。23 份原始记录保留，SDK 内容和已验客体输入不变，真实续期仍待执行。
+
+V02 源码核查发现同页公开任务固定为 200 步，每步请求等待 5 ms，只有约一秒的名义等待量，实际时长取决于调度。它不足以稳定安排连续滚动、中文候选组合和缩放全过程的并发验收。下一步需为 Demo 增加明确有界、可取消的持续任务，保留原快速任务，随后绑定当前应用构建分别验证真实输入。现有 `data-v02-ready`、滚动位置、组合事件计数和 RAF 诊断可辅助观察，但不能把 Unicode 注入当 IME、窗口尺寸变化当多屏 DPI 或 RAF 当物理呈现。该核查不是 V02 桌面通过证据。
+
+## 2026-09-27 preview.15 Win7 当前三入口短测完成
+
+[Win7 SP1 x86 attempt3](../../verification/production-validation/win7-sp1-x86-qemu-preview15-apps-attempt3-2026-09-27/README.md)在同一 v3 冻结输入和原 60 秒期限下完成 Starter、Workbench 默认/React 三项，原生均退出 0。完整就绪/卸载/关闭、客体身份、传输及运行前后 resources/legal 通过；37 帧串口、63 次隔离采样、基础盘和冻结输入前后核验均保留，89 份原始记录已归档。只读严格校验器、宿主复核和客体驱动均退出 0。
+
+attempt2 的宿主模块路径启动失败也原样保留，没有启动客体。修正仅限宿主驱动进程环境。旧 preview.11 关闭停滞在本次当前输入中未重现，但短测不能替代 V02 真实交互、重复关闭、长稳、物理机或性能验收；生产状态仍为 preview。
+
+## 2026-09-27 preview.15 解压版桌面完成与 Win7 中断
+
+[无 Git 解压版桌面验证](../../verification/production-validation/preview15-relocated-desktop-2026-09-27/README.md)补齐两架构新编 EXE 的六个入口：Starter、默认/React Workbench 原生均退出 0、就绪和关闭完整，构建 ID、完整载荷/资源/legal 和运行期间门禁通过。初次外部 QEMU 门禁拒绝仍保留，31 份原始文件独立归档。短测不关闭源码交付、长稳或生产总门槛。
+
+[Win7 当前输入 attempt1](../../verification/production-validation/win7-sp1-x86-qemu-preview15-apps-attempt1-2026-09-27/README.md)已显示桌面，但命令发送前另一个 QEMU 启动，驱动保护性停止自己的客体。驱动退出 1，QEMU 退出 -1；没有 SDK 命令或串口结果，不算应用失败或通过。基础盘和冻结输入前后不变，36 份原始记录保留。等待其他负载结束后使用新的 attempt2，不覆盖失败原件或扩大结论。
+
+## 2026-09-27 preview.15 原动画真实续期准备
+
+[当前版本续期夹具准备](../../verification/production-validation/preview15-real-renewal-preparation-2026-09-27/README.md)已匹配实际 419 文件 SDK 包，暂存 720 文件；构建身份仍为同一 717 文件输入。保留原 HTML/CSS 动画和 Web 逻辑，以及已修正的监督器取快照/计时顺序。新校验器 106 项合成边界测试通过；实际运行器校验代码的两个独立命令正确拒绝旧冻结和错误来源，122 份原始记录保留。
+
+SDK 独立编译入口因其他 QEMU 运行被门禁拒绝，原始退出 2，没有启动编译器或应用。当前两架构 SDK 安装、消费者编译、自检、实际输入冻结/绑定和 35 分钟真实续期均未执行；合成测试不作为真实续期或生产通过。
+
+## 2026-09-27 preview.15 完整源码重编与 Win7 新冻结
+
+[完整源码 ZIP 的无 Git 独立解压和四配置构建](../../verification/production-validation/preview15-full-source-build-2026-09-27/README.md)已完成：34,612 文件完整清单、同版 419 文件 SDK 匹配在构建前后通过；x86/x64 × Debug/Release 原始退出 0，完整单元/契约入口和合计 48 项 CTest 通过。八份运行载荷、每份 60 个 PE 及实际编译命令复核通过。解压版 GUI 启动被外部 QEMU 门禁拒绝，退出 2、未启动应用；239 份原始文件保留。
+
+[当前 Win7 x86 的 v3 输入](../../verification/production-validation/win7-sp1-x86-qemu-preview15-apps-v3-preparation-2026-09-27/README.md)已冻结到 SHA `47e463d7746dd9824a6083d3e12b26d0910ac79a35bd7d69060b1ffe62b9e005`，绑定 preview.15 原仓库 x86 Release 构建。串口校验器 1 个完整合成样本和 27 个拒绝样本、传输/进程诊断宿主辅助函数自测均通过，84 份原始记录归档。60 秒期限不变，新增一次 55 秒未退出时的线程状态记录。客体尚未运行，原关闭失败未关闭；等其他虚拟机退出后串行执行。完整生产门槛继续待验收。
+
+## 2026-09-27 preview.15 本机桌面短测
+
+[当前候选的串行桌面证据](../../verification/production-validation/preview15-desktop-2026-09-27/README.md)完成两架构窗口线程超时、目录取消、新编 SOUI/内核组合的模板与 Workbench React，以及固定包的模板、默认/React 六入口，合计 14 次原生退出 0，页面就绪与关闭、完整运行载荷核验通过。第一次命令因编译节点尚未退出被拒绝，未启动 GUI；原样保留。717 文件源码输入不变。Win7、真实长会话、V02、驻留/多窗、资源和生产门槛继续待验收。
+
+## 2026-09-27 双架构原动画修复与新包候选
+
+[x64 完整重编与原动画实测](../../verification/production-validation/scheduler-fairness-x64-rebuild-2026-09-27/README.md)补齐另一架构：构建退出 0、六份 DLL 身份通过，原动画消费者 76 条事件、退出 0，任务结果、取消、退订及关闭完成，完整载荷和门禁复核通过。首个命令被外部 QEMU 门禁拒绝，未启动 GUI；失败样本保留。结合既有 x86 记录，实际修复覆盖两架构的这一启动复现。
+
+[SDK Core 包验证](../../verification/production-validation/sdk-core-native-backups-2026-09-27/README.md)发现两份历史内核备份进入活动包，修正后旧包安装、新包升级、旧包回退和再次升级保留业务内容。内部 preview.14 的源码匹配仍失败，原件保留；preview.15 统一文件选择后，实际新包与源码匹配通过。两份新内核及授权核查对象、版本和清单已同步；[四配置应用构建和 48 项 CTest](../../verification/production-validation/preview15-app-matrix-2026-09-27/README.md)已退出 0，当前 GUI、Win7、真实续期和生产门槛继续待验收。
+
+[数值格式警告的限定诊断](../../verification/production-validation/kernel-number-format-diagnostic-2026-09-27/README.md)完成 833,668 次 x86 ASan 调用，没有报告内存错误；它只覆盖提取函数和记录的输入/区域设置，未关闭完整内核的安全或编译警告风险。
+
+## 2026-09-26 x86 实际内核修复复现通过
+
+[x86 完整底层重编及原动画实测](../../verification/production-validation/scheduler-fairness-x86-rebuild-2026-09-26/README.md)已完成：`-Component All` 原始退出 0、28,163 文件输入不变，六份 DLL 身份通过。冻结消费者只替换新内核，保持原页面动画、EXE、JS 与期限；真实运行完成两类任务、结果 42、取消、退订和关闭，76 条原生事件、退出 0，载荷和门禁复核通过。新内核 SHA 为 `2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3`。
+
+这关闭了该 x86 页面在旧策略下 60 秒未就绪的复现；它仍是旧独立消费者配新内核的短测。x64 完整重编已启动，固定包未替换；新 SOUI DLL 的应用运行、完整当前 SDK、Win7、V02、真实续期与生产门槛继续待验收。构建中其他第三方警告未完成风险排除，不按退出 0 自动批准安全门。
+
+## 2026-09-26 原生加载任务饥饿与策略候选
+
+[匹配符号的 x86 队列快照](../../verification/production-validation/preview11-renewal-scheduler-stack-2026-09-26/README.md)确认主线程加载任务相对上一帧时钟已迟约 10.28 秒，队列仍有已就绪、更高优先级的页面提交任务。原动画、二进制和期限未改，原生仍退出 1、bootstrap/任务为 0。全部原始记录和失败保留，调试器样本不作性能证据。
+
+[候选策略回归](../../verification/production-validation/scheduler-fairness-policy-2026-09-26/README.md)在旧策略实际失败；加入就绪任务等待补偿后，x86/x64 各十二项通过。设计见 [ADR-0016](../adr/0016-scheduler-ready-task-fairness.md)。完整依赖重编仍在进行，尚未替换固定 DLL、增加交付版本或证明原动画恢复。源码候选与既有 preview.13 发布输入分别保留，续期、V02 和生产门槛不放行。
+
 ## 2026-09-26 外部监督器计时竞态修正
 
 [新的独立夹具](../../verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26/README.md)已确定性复现“先读时钟、后取快照”导致无符号差值下溢，旧顺序运行退出 1。改为先取快照、再读单调时钟后，x86/x64 各 8 项计时边界检查、45 项阶段自检及 8 条日志检查通过；真实消费者也重编完成，SDK 与父冻结未改。新冻结 SHA 为 `b58de0c44a2ae96a12aa144f4d8607b800415c40b1311591e05b91f67486faef`。

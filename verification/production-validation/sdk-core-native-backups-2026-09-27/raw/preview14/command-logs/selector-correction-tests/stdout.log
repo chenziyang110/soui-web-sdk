@@ -1,0 +1,31 @@
+✖ new SDK packages omit historical kernels and still upgrade and roll back old packages (658.1215ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 758.4385
+
+✖ failing tests:
+
+test at ..\..\SOUI-SDK-development\preview14-scheduler\tests\sdk\sdk-native-payload.test.cjs:11:1
+✖ new SDK packages omit historical kernels and still upgrade and roll back old packages (658.1215ms)
+  AssertionError [ERR_ASSERTION]: SDK: SDK source file set changed; create a new SDK version
+  
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\preview14-scheduler\tests\sdk\sdk-native-payload.test.cjs:64:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

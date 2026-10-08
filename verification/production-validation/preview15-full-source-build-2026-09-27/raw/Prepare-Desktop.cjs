@@ -1,0 +1,12 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const parent='C:/SOUI-SDK-production-validation/preview15-desktop-20260927',root=path.join(__dirname,'desktop');
+assert(!fs.existsSync(root));fs.mkdirSync(root);
+let run=fs.readFileSync(path.join(parent,'Run.cjs'),'utf8');
+assert(run.includes("repo='C:/SOUI-SDK-development/preview14-scheduler'"));
+run=run.replace("repo='C:/SOUI-SDK-development/preview14-scheduler'","repo='C:/SOUI-SDK-source-validation/preview15-no-git'");
+run=run.replace("beforeDirs=fs.readdirSync(deps).filter(n=>n.startsWith('runtime-test-'))","beforeDirs=kind==='deps'?fs.readdirSync(deps).filter(n=>n.startsWith('runtime-test-')):[]");
+run=run.replace("assert(['deps','apps','window-thread-timeout','directory-cancel'].includes(kind))","assert.equal(kind,'apps')");
+fs.writeFileSync(path.join(root,'Run.cjs'),run,{flag:'wx'});
+fs.copyFileSync(path.join(parent,'Capture-Command.cjs'),path.join(root,'Capture-Command.cjs'),fs.constants.COPYFILE_EXCL);
+console.log(JSON.stringify({status:'relocated-app-smoke-driver-prepared',root}));
