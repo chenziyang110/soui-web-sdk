@@ -1,0 +1,73 @@
+{
+  "schema": "soui.dependency-integration/v1",
+  "version": "0.4.0-preview.3",
+  "pullRequest": 58,
+  "validatedSourceCommit": "8a5fca5a2419353b17d873eaacd5811b7eda2aea",
+  "sourceSha256": "8c7f9d5834bbac68e0ebb81cd660d0389ebec8ce05ad842a75bee035a19b4515",
+  "finishedAt": "2026-10-08T08:58:27.324Z",
+  "integrationVerified": true,
+  "sourceDeliveryVerified": false,
+  "releaseReady": false,
+  "buildRequirement": {
+    "workbench": ">=22.12.0",
+    "compatibilitySdkAndGeneratedProject": ">=20.19.0",
+    "windowsRuntimeRequiresNode": false
+  },
+  "nativeMatrix": [
+    {
+      "architecture": "x64",
+      "configuration": "Release",
+      "buildId": "5c5b0376-80c5-4ce3-b319-b2edbd4176a8",
+      "sourceSha256": "8c7f9d5834bbac68e0ebb81cd660d0389ebec8ce05ad842a75bee035a19b4515",
+      "nodeVersion": "v22.12.0",
+      "legacyStartupScenarios": 3,
+      "modernStartupPassed": true,
+      "nativeContractsPassed": 20
+    },
+    {
+      "architecture": "x86",
+      "configuration": "Release",
+      "buildId": "0a5cc362-fbb2-4baf-af2c-6b2aef3a181c",
+      "sourceSha256": "8c7f9d5834bbac68e0ebb81cd660d0389ebec8ce05ad842a75bee035a19b4515",
+      "nodeVersion": "v22.12.0",
+      "legacyStartupScenarios": 3,
+      "modernStartupPassed": true,
+      "nativeContractsPassed": 20
+    }
+  ],
+  "generatedProjects": [
+    {
+      "profile": "compatibility",
+      "architecture": "x64",
+      "configuration": "Release",
+      "nodeVersion": "v20.19.0",
+      "sourceSha256": "b18018bd3b8c9aaccca6e3d65ea87ef2c54c54285651e4c59253c445eef1a21b",
+      "buildId": "90704f56-a1af-417b-8607-b1501439b684",
+      "buildPassed": true,
+      "startupPassed": true
+    },
+    {
+      "profile": "modern",
+      "architecture": "x64",
+      "configuration": "Release",
+      "nodeVersion": "v22.12.0",
+      "sourceSha256": "a206d0ceadd68ccd81df3972e8bf844367f369c4818a76ef246c9696cb7d2e65",
+      "buildId": "26607558-e07a-4e9b-b52e-ad7f74cb895e",
+      "buildPassed": true,
+      "startupPassed": true
+    }
+  ],
+  "workbenchAuditVulnerabilities": 0,
+  "fixedSdkManifestSha256": "b421fceeab38d91ecb2afe2242baf7c4b9b7b7a41df6c990e9b9477fd9f9fb51",
+  "evidenceIndex": "verification/production-validation/pr58-2026-10-08/evidence-index.json",
+  "harnessCorrections": [
+    "Installed npm.cmd initially used its adjacent Node24 despite the selected PATH; isolated npm wrappers and actual npm version metadata bound the minimum-version rerun.",
+    "npm exec node resolved a different cached runtime; direct npm version metadata replaced that unsuitable proof. The raw output is retained."
+  ],
+  "limitations": [
+    "Release x86/x64 and current-host Miniblink/WebView2 startup only; Debug, new Win7/PE OS matrix, full source/dependency release matrix and all component behavior are not certified.",
+    "Historical immutable archive paths excluded by the no-Git full-source scanner remain a known delivery limitation.",
+    "Long-run, pressure renewal, high-refresh, licensing, signing and production gates remain open.",
+    "This PR does not publish preview.3; previous fixed SDK packages and release tags remain unchanged."
+  ]
+}
