@@ -5,6 +5,13 @@
 :root { font-family:"Microsoft YaHei","Microsoft YaHei UI","Segoe UI",Arial,sans-serif; color:#173e66; background:#edf5ff; font-synthesis:none; text-rendering:geometricPrecision; font-feature-settings:"kern" 1; -webkit-font-smoothing:subpixel-antialiased; }
 * { box-sizing:border-box; }
 html,body,#react-app { margin:0; min-width:320px; min-height:100%; }
+/* Keep both page and V02 list scrollbars readable on the pinned Chrome 49 renderer. */
+html::-webkit-scrollbar,body::-webkit-scrollbar,.v02-list::-webkit-scrollbar { width:11px; height:11px; background:#eaf2f8; }
+html::-webkit-scrollbar-track,body::-webkit-scrollbar-track,.v02-list::-webkit-scrollbar-track { background:#eaf2f8; }
+html::-webkit-scrollbar-thumb,body::-webkit-scrollbar-thumb,.v02-list::-webkit-scrollbar-thumb { border:2px solid #eaf2f8; border-radius:9px; background:#5a7fa2; }
+html::-webkit-scrollbar-thumb:hover,body::-webkit-scrollbar-thumb:hover,.v02-list::-webkit-scrollbar-thumb:hover { background:#326eaa; }
+html::-webkit-scrollbar-button,body::-webkit-scrollbar-button,.v02-list::-webkit-scrollbar-button { display:none; width:0; height:0; }
+html::-webkit-scrollbar-corner,body::-webkit-scrollbar-corner,.v02-list::-webkit-scrollbar-corner { background:#eaf2f8; }
 button { font:inherit; }
 .rx-titlebar { position:fixed; z-index:20; inset:0 0 auto; height:44px; display:flex; align-items:center; padding:0 16px; color:#294f73; background:#e7f2ff; border-bottom:1px solid #cfe2f3; user-select:none; }
 .rx-brand { display:flex; align-items:center; flex:0 0 226px; gap:9px; width:226px; border:0; color:#294f73; background:none; text-align:left; cursor:move; }

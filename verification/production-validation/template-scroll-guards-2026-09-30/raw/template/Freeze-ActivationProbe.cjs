@@ -1,0 +1,41 @@
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const root = __dirname;
+const input = path.join(root, 'activation-probe-input-attempt1');
+const x86Attempt = process.argv[2];
+assert(/^activation-build-x86-attempt[0-9]+$/.test(x86Attempt || ''));
+const source = path.join(input, 'V02InputProbe.cpp');
+const cmake = path.join(input, 'CMakeLists.txt');
+const buildScript = path.join(root, 'Build-ActivationProbe.ps1');
+const sha = file => crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const expectedSource = '788785ffd296190c5a7d67741c4a8c6f15cd788001975ac66de3dc19db2e6437';
+assert.equal(sha(source), expectedSource);
+const freeze = {schema: 'soui.template-title-activation/v1', sourceSha256: expectedSource,
+  cmakeSha256: sha(cmake), buildScriptSha256: sha(buildScript), binaries: {}};
+for (const [arch, attempt] of [['x64', 'activation-build-x64-attempt1'], ['x86', x86Attempt]]) {
+  const logs = path.join(root, 'command-logs', attempt);
+  const record = JSON.parse(fs.readFileSync(path.join(logs, 'result.json'), 'utf8'));
+  assert.equal(record.exitCode, 0, attempt);
+  assert.equal(record.timedOut, false, attempt);
+  assert.equal(record.interruptedByExternal, null, attempt);
+  assert.equal(record.gateError, null, attempt);
+  assert.equal(record.error, null, attempt);
+  assert.deepEqual(record.preflight.processes, [], attempt);
+  assert.deepEqual(record.afterClose.processes, [], attempt);
+  assert.equal(fs.readFileSync(path.join(logs, 'stderr.log')).length, 0, attempt);
+  const lines = fs.readFileSync(path.join(logs, 'stdout.log'), 'utf8').trim().split(/\r?\n/);
+  const built = JSON.parse(lines.at(-1));
+  assert.equal(built.architecture, arch, attempt);
+  assert.equal(built.sourceSha256, expectedSource, attempt);
+  const executable = path.join(input, 'build', arch, 'Release', 'V02InputProbe.exe');
+  assert.equal(path.resolve(built.executable), executable, attempt);
+  assert.equal(built.executableSha256, sha(executable), attempt);
+  assert.equal(built.executableBytes, fs.statSync(executable).size, attempt);
+  freeze.binaries[arch] = {sha256: built.executableSha256, bytes: built.executableBytes, capture: attempt};
+}
+const target = path.join(input, 'freeze.json');
+fs.writeFileSync(target, JSON.stringify(freeze, null, 2) + '\n', {flag: 'wx'});
+process.stdout.write(JSON.stringify({freeze: target, sha256: sha(target), binaries: freeze.binaries}) + '\n');
