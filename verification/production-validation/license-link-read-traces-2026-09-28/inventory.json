@@ -1,0 +1,417 @@
+{
+  "schema": "soui.current-link-trace-inventory/v1",
+  "capturedAt": "2026-09-28T14:18:18.450Z",
+  "sourceHead": "5df8e3f0a5ef5a45098cb08466d444158c7fef5e",
+  "status": "mechanical-input-inventory",
+  "linkedArchiveMembersVerified": false,
+  "applicableRedistributionTermsVerified": false,
+  "binaryLicenseReviewComplete": false,
+  "releaseReady": false,
+  "evidenceLimit": "MSVC link read traces identify opened libraries, not the exact members incorporated into either DLL.",
+  "architectures": [
+    {
+      "architecture": "x86",
+      "buildRecord": "verification/production-validation/scheduler-fairness-x86-rebuild-2026-09-26/raw/build/build-All.json",
+      "buildRecordSha256": "b793d79fdf2aa77b407972d435503472260e100bdaa2ccb653f0ff81a3135c7a",
+      "buildStartedAt": "2026-09-26T22:55:14.7587172+08:00",
+      "buildFinishedAt": "2026-09-26T23:43:33.2155860+08:00",
+      "currentBinarySha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3",
+      "currentBinaryBytes": 22988288,
+      "linkTraces": {
+        "command": {
+          "path": "x86/link.command.1.tlog",
+          "bytes": 1238896,
+          "sha256": "596027ba2dca9f7f4fddd9fdb7bba0e1127447f498b3be8d8e7e8b598bac14dd",
+          "sourceLastWriteUtc": "2026-09-26T15:43:07.341Z"
+        },
+        "read": {
+          "path": "x86/link.read.1.tlog",
+          "bytes": 1234900,
+          "sha256": "aec35970eb1fa4bfec7ecd2cdf37e20a83ea5368ca71eb730fc1dbaf5ee5426d",
+          "sourceLastWriteUtc": "2026-09-26T15:43:07.325Z"
+        }
+      },
+      "libraryReadCount": 44,
+      "libraries": [
+        {
+          "name": "advapi32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\ADVAPI32.LIB"
+        },
+        {
+          "name": "comdlg32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\COMDLG32.LIB"
+        },
+        {
+          "name": "crypt32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\CRYPT32.LIB"
+        },
+        {
+          "name": "dbghelp.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\DBGHELP.LIB"
+        },
+        {
+          "name": "gdi32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\GDI32.LIB"
+        },
+        {
+          "name": "gdiplus.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\GDIPLUS.LIB"
+        },
+        {
+          "name": "harfbuzz.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X86\\LIBRARIES\\LIB\\HARFBUZZ.LIB"
+        },
+        {
+          "name": "imm32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\IMM32.LIB"
+        },
+        {
+          "name": "iphlpapi.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\IPHLPAPI.LIB"
+        },
+        {
+          "name": "kernel32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\KERNEL32.LIB"
+        },
+        {
+          "name": "libcmt.lib",
+          "path": "C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X86\\LIBCMT.LIB"
+        },
+        {
+          "name": "libcpmt.lib",
+          "path": "C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X86\\LIBCPMT.LIB"
+        },
+        {
+          "name": "libcurl.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X86\\LIBRARIES\\LIB\\LIBCURL.LIB"
+        },
+        {
+          "name": "libjpeg.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X86\\LIBRARIES\\LIB\\LIBJPEG.LIB"
+        },
+        {
+          "name": "libpng.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X86\\LIBRARIES\\LIB\\LIBPNG.LIB"
+        },
+        {
+          "name": "libucrt.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UCRT\\X86\\LIBUCRT.LIB"
+        },
+        {
+          "name": "libvcruntime.lib",
+          "path": "C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X86\\LIBVCRUNTIME.LIB"
+        },
+        {
+          "name": "libxml.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X86\\LIBRARIES\\LIB\\LIBXML.LIB"
+        },
+        {
+          "name": "odbc32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\ODBC32.LIB"
+        },
+        {
+          "name": "odbccp32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\ODBCCP32.LIB"
+        },
+        {
+          "name": "oldnames.lib",
+          "path": "C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X86\\OLDNAMES.LIB"
+        },
+        {
+          "name": "ole32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\OLE32.LIB"
+        },
+        {
+          "name": "oleaut32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\OLEAUT32.LIB"
+        },
+        {
+          "name": "opengl32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\OPENGL32.LIB"
+        },
+        {
+          "name": "openssl.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X86\\LIBRARIES\\LIB\\OPENSSL.LIB"
+        },
+        {
+          "name": "ots.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X86\\LIBRARIES\\LIB\\OTS.LIB"
+        },
+        {
+          "name": "psapi.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\PSAPI.LIB"
+        },
+        {
+          "name": "shell32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\SHELL32.LIB"
+        },
+        {
+          "name": "shlwapi.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\SHLWAPI.LIB"
+        },
+        {
+          "name": "skia_gpu.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X86\\GPU-95140EF24C9E4D4A8020E2DB7591A772\\LIB\\SKIA_GPU.LIB"
+        },
+        {
+          "name": "skia.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X86\\LIBRARIES\\LIB\\SKIA.LIB"
+        },
+        {
+          "name": "user32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\USER32.LIB"
+        },
+        {
+          "name": "userenv.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\USERENV.LIB"
+        },
+        {
+          "name": "usp10.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\USP10.LIB"
+        },
+        {
+          "name": "uuid.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\UUID.LIB"
+        },
+        {
+          "name": "v8_5_7_1.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X86\\LIBRARIES\\LIB\\V8_5_7_1.LIB"
+        },
+        {
+          "name": "v8_5_7.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X86\\LIBRARIES\\LIB\\V8_5_7.LIB"
+        },
+        {
+          "name": "version.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\VERSION.LIB"
+        },
+        {
+          "name": "wininet.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\WININET.LIB"
+        },
+        {
+          "name": "winmm.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\WINMM.LIB"
+        },
+        {
+          "name": "winspool.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\WINSPOOL.LIB"
+        },
+        {
+          "name": "wldap32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\WLDAP32.LIB"
+        },
+        {
+          "name": "ws2_32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X86\\WS2_32.LIB"
+        },
+        {
+          "name": "zlib.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X86\\LIBRARIES\\LIB\\ZLIB.LIB"
+        }
+      ]
+    },
+    {
+      "architecture": "x64",
+      "buildRecord": "verification/production-validation/scheduler-fairness-x64-rebuild-2026-09-27/raw/build/build-All.json",
+      "buildRecordSha256": "1acf3e77e778ecab087adc883fd07d6a490aaceb856e4dad815cf5a245b2e1ee",
+      "buildStartedAt": "2026-09-26T23:46:18.0767077+08:00",
+      "buildFinishedAt": "2026-09-27T00:36:44.6216188+08:00",
+      "currentBinarySha256": "fe4160a70587d027504c409b8fd2bc5c87d78392811bff0c969f69c41a44d951",
+      "currentBinaryBytes": 35865600,
+      "linkTraces": {
+        "command": {
+          "path": "x64/link.command.1.tlog",
+          "bytes": 1239100,
+          "sha256": "5f144b9c95b1854cfefdb33009e635a9e99b196f280d3fffebeda65d7d9ebfe9",
+          "sourceLastWriteUtc": "2026-09-26T16:36:18.204Z"
+        },
+        "read": {
+          "path": "x64/link.read.1.tlog",
+          "bytes": 1232600,
+          "sha256": "a4024d319ef3aa3618be00e491d9b1ce9e608b691aebf7dbf23924d6d7c15c3f",
+          "sourceLastWriteUtc": "2026-09-26T16:36:18.192Z"
+        }
+      },
+      "libraryReadCount": 44,
+      "libraries": [
+        {
+          "name": "advapi32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\ADVAPI32.LIB"
+        },
+        {
+          "name": "comdlg32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\COMDLG32.LIB"
+        },
+        {
+          "name": "crypt32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\CRYPT32.LIB"
+        },
+        {
+          "name": "dbghelp.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\DBGHELP.LIB"
+        },
+        {
+          "name": "gdi32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\GDI32.LIB"
+        },
+        {
+          "name": "gdiplus.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\GDIPLUS.LIB"
+        },
+        {
+          "name": "harfbuzz.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X64\\LIBRARIES\\LIB\\HARFBUZZ.LIB"
+        },
+        {
+          "name": "imm32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\IMM32.LIB"
+        },
+        {
+          "name": "iphlpapi.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\IPHLPAPI.LIB"
+        },
+        {
+          "name": "kernel32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\KERNEL32.LIB"
+        },
+        {
+          "name": "libcmt.lib",
+          "path": "C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\LIBCMT.LIB"
+        },
+        {
+          "name": "libcpmt.lib",
+          "path": "C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\LIBCPMT.LIB"
+        },
+        {
+          "name": "libcurl.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X64\\LIBRARIES\\LIB\\LIBCURL.LIB"
+        },
+        {
+          "name": "libjpeg.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X64\\LIBRARIES\\LIB\\LIBJPEG.LIB"
+        },
+        {
+          "name": "libpng.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X64\\LIBRARIES\\LIB\\LIBPNG.LIB"
+        },
+        {
+          "name": "libucrt.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UCRT\\X64\\LIBUCRT.LIB"
+        },
+        {
+          "name": "libvcruntime.lib",
+          "path": "C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\LIBVCRUNTIME.LIB"
+        },
+        {
+          "name": "libxml.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X64\\LIBRARIES\\LIB\\LIBXML.LIB"
+        },
+        {
+          "name": "odbc32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\ODBC32.LIB"
+        },
+        {
+          "name": "odbccp32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\ODBCCP32.LIB"
+        },
+        {
+          "name": "oldnames.lib",
+          "path": "C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\OLDNAMES.LIB"
+        },
+        {
+          "name": "ole32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OLE32.LIB"
+        },
+        {
+          "name": "oleaut32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OLEAUT32.LIB"
+        },
+        {
+          "name": "opengl32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OPENGL32.LIB"
+        },
+        {
+          "name": "openssl.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X64\\LIBRARIES\\LIB\\OPENSSL.LIB"
+        },
+        {
+          "name": "ots.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X64\\LIBRARIES\\LIB\\OTS.LIB"
+        },
+        {
+          "name": "psapi.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\PSAPI.LIB"
+        },
+        {
+          "name": "shell32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\SHELL32.LIB"
+        },
+        {
+          "name": "shlwapi.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\SHLWAPI.LIB"
+        },
+        {
+          "name": "skia_gpu.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X64\\GPU-B2C00529F252420198F88AC3A05799E3\\LIB\\SKIA_GPU.LIB"
+        },
+        {
+          "name": "skia.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X64\\LIBRARIES\\LIB\\SKIA.LIB"
+        },
+        {
+          "name": "user32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\USER32.LIB"
+        },
+        {
+          "name": "userenv.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\USERENV.LIB"
+        },
+        {
+          "name": "usp10.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\USP10.LIB"
+        },
+        {
+          "name": "uuid.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\UUID.LIB"
+        },
+        {
+          "name": "v8_5_7_1.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X64\\LIBRARIES\\LIB\\V8_5_7_1.LIB"
+        },
+        {
+          "name": "v8_5_7.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X64\\LIBRARIES\\LIB\\V8_5_7.LIB"
+        },
+        {
+          "name": "version.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\VERSION.LIB"
+        },
+        {
+          "name": "wininet.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WININET.LIB"
+        },
+        {
+          "name": "winmm.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WINMM.LIB"
+        },
+        {
+          "name": "winspool.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WINSPOOL.LIB"
+        },
+        {
+          "name": "wldap32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WLDAP32.LIB"
+        },
+        {
+          "name": "ws2_32.lib",
+          "path": "C:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WS2_32.LIB"
+        },
+        {
+          "name": "zlib.lib",
+          "path": "C:\\SOUI-SDK-DEVELOPMENT\\PREVIEW14-SCHEDULER\\OUT\\DEPENDENCIES\\X64\\LIBRARIES\\LIB\\ZLIB.LIB"
+        }
+      ]
+    }
+  ]
+}
