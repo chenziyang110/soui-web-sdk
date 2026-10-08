@@ -1,0 +1,455 @@
+{
+  "schema": "soui.local-foundation-evidence/v1",
+  "version": "0.5.0-preview.1",
+  "channel": "unfrozen-development",
+  "releaseReady": false,
+  "sourceDeliveryVerified": false,
+  "status": "partial-with-retained-failures",
+  "sourceGitBase": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+  "validatedSourceSha256": "7be528a96605be4e71590ba0348978c923fcfd53d6a7cd0591545af00763fcd1",
+  "startedSourceState": "uncommitted branch codex/sdk-05-major",
+  "statements": {
+    "x64ReleaseBuildAndOwnedClosure": true,
+    "x64ReleaseUnitAndOwnedClosure": true,
+    "x64DebugBuildAndOwnedClosure": true,
+    "releaseDesktopBothArchitecturesAndOwnedClosure": true,
+    "x86ReleaseCompile": true,
+    "x86ReleaseNaturalOwnedClosure": false,
+    "x86NativeCtestPassed": 22,
+    "x86NativeCtestNaturalOwnedClosure": false,
+    "allTargetOsVerified": false,
+    "allFourConfigurationsVerified": false,
+    "formalCandidateVerified": false
+  },
+  "limitations": [
+    "Pre-cancellation-fix source identity; later code changes require new evidence.",
+    "x86 compilation left compiler vctip tail: generic supervision remains failed after forced owned cleanup.",
+    "x86 CTest passed assertions but preparation cancellation left WebView2 tail at both 10s and 30s; retained failures.",
+    "Assignment-denial regression injects only the named Windows API in a TEST_ONLY executable; not Win7/PCA certification.",
+    "VM boundary tests use mock transcripts; they are not target-system or long-load evidence.",
+    "The developer workstation also ran a foreign VM; no isolated performance claim.",
+    "No physical presentation, exact legacy collector FILETIME, long-load, licensing/signing or formal release acceptance."
+  ],
+  "files": [
+    {
+      "source": "out/0.5.0-preview.1-build-x64-e65a263bbe6f41b5b04f51c631f7826c/build.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-failed-version/build.log",
+      "bytes": 478,
+      "sha256": "e2edfe85b5b1a9d608951db641d412629fd709255700115933cfd5a6317379d9"
+    },
+    {
+      "source": "out/0.5.0-preview.1-build-x64-e65a263bbe6f41b5b04f51c631f7826c/owned.ndjson",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-failed-version/owned.ndjson",
+      "bytes": 3992,
+      "sha256": "2028d415d1b1f19e71d127c2c927424e39dae82a5be149284da999c37db01390"
+    },
+    {
+      "source": "out/0.5.0-preview.1-build-x64-306b89f0b49d4877bc2925d89ac2d0fb/build.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-failed-ps-modules/build.log",
+      "bytes": 1202,
+      "sha256": "a70ec388526be3f38458d7987be43eb68e51d1aefa9f7373f05d498c3b60d7c8"
+    },
+    {
+      "source": "out/0.5.0-preview.1-build-x64-306b89f0b49d4877bc2925d89ac2d0fb/owned.ndjson",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-failed-ps-modules/owned.ndjson",
+      "bytes": 81452,
+      "sha256": "6bc034b3b69dc01e84bfb007f79c401bcf3667b4781840adb18f9ebf2111d5cc"
+    },
+    {
+      "source": "out/0.5.0-preview.1-build-x64-eec49933b96e4d1aaf01aabacc3484be/build.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-release/build.log",
+      "bytes": 1582,
+      "sha256": "21ac8b4435d5e085f00e0f26d11030e0722e70f05a2fc54131a7a222905103f6"
+    },
+    {
+      "source": "out/0.5.0-preview.1-build-x64-eec49933b96e4d1aaf01aabacc3484be/owned.ndjson",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-release/owned.ndjson",
+      "bytes": 1255487,
+      "sha256": "3c7dc953751b0e0fdac5bf2cc0c0c9af6a1faa053996cd40c9986aa484dd22d2"
+    },
+    {
+      "source": "out/0.5.0-preview.1-build-x86-cdc5a1aa5dab4610be7efc007c816776/build.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x86-release-failed-compiler-tail/build.log",
+      "bytes": 1411,
+      "sha256": "38437aeb4a69eb2bb0030a10a395306057e013058e0c4919a6e14dab26d46957"
+    },
+    {
+      "source": "out/0.5.0-preview.1-build-x86-cdc5a1aa5dab4610be7efc007c816776/owned.ndjson",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x86-release-failed-compiler-tail/owned.ndjson",
+      "bytes": 1148277,
+      "sha256": "c56e7b5c8b93b17e1306ab365df371f20a4a6703f4a421c33dbc623d694c1e10"
+    },
+    {
+      "source": "out/0.5.0-preview.1-unit-x64-94db27623d8e48fa975b50cedc69c313/owned.ndjson",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-release-unit/owned.ndjson",
+      "bytes": 698387,
+      "sha256": "1e33987a784b27e5bdf5c01388b2345cb6e09312c55096389851be1ebbf2373b"
+    },
+    {
+      "source": "out/0.5.0-preview.1-unit-x64-94db27623d8e48fa975b50cedc69c313/unit.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-release-unit/unit.log",
+      "bytes": 26866,
+      "sha256": "2e5a6e20c2c9e8862e6849526131e9d59b63c9e0c329f246492298dfaeef538a"
+    },
+    {
+      "source": "out/0.5.0-preview.1-build-x64-Debug-1ddae2c7-4a84-43c2-bf77-68097b6dbac2/build.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-debug/build.json",
+      "bytes": 301840,
+      "sha256": "c120211d39f2599da420a1c27bd1ba572a9065dc806ad0b5035f4894936ed50c"
+    },
+    {
+      "source": "out/0.5.0-preview.1-build-x64-Debug-1ddae2c7-4a84-43c2-bf77-68097b6dbac2/build.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-debug/build.log",
+      "bytes": 667,
+      "sha256": "4d2b058f01cd43269ddae169f9a75c372b8c7c33f297a2b9dd2df2868543b075"
+    },
+    {
+      "source": "out/0.5.0-preview.1-build-x64-Debug-1ddae2c7-4a84-43c2-bf77-68097b6dbac2/owned.ndjson",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-debug/owned.ndjson",
+      "bytes": 904708,
+      "sha256": "470b2f230e194fc48bcad6f345b6459f1c069edc56ceba18bbe7681552975788"
+    },
+    {
+      "source": "out/0.5.0-preview.1-build-x64-Debug-1ddae2c7-4a84-43c2-bf77-68097b6dbac2/owned.ndjson.context.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-debug/owned.ndjson.context.json",
+      "bytes": 589,
+      "sha256": "da991c64baa2dd8864e193c61357bd092ac52128899578030ef724163370ad6f"
+    },
+    {
+      "source": "out/0.5.0-preview.1-build-x64-Debug-1ddae2c7-4a84-43c2-bf77-68097b6dbac2/result.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x64-debug/result.json",
+      "bytes": 1256,
+      "sha256": "36819b3fad1bd023b71d2e6f1ff25fa8f22584a67218440852c70d706a7443c5"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-fd6c4693-ba28-416f-b6e9-151f85a8104e/native-x86/owned.ndjson",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x86-ctest-failed-runtime-tail-10s/native-x86/owned.ndjson",
+      "bytes": 40368,
+      "sha256": "4286bb4bc9df986e8c35bd8c2baf426996a6fd470891e2dca7f22230aaa2d558"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-fd6c4693-ba28-416f-b6e9-151f85a8104e/native-x86/owned.ndjson.context.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x86-ctest-failed-runtime-tail-10s/native-x86/owned.ndjson.context.json",
+      "bytes": 549,
+      "sha256": "83c86cba383003bd0668b6ea30340a397946d1608cc44567de32c34de25907e9"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-fd6c4693-ba28-416f-b6e9-151f85a8104e/native-x86/run.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x86-ctest-failed-runtime-tail-10s/native-x86/run.log",
+      "bytes": 2811,
+      "sha256": "0ab5a56c89de18def6e8c22c8cee0c56e93a93fb7eb34a9d47529087d145ed10"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-fd6c4693-ba28-416f-b6e9-151f85a8104e/results.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x86-ctest-failed-runtime-tail-10s/results.json",
+      "bytes": 1372,
+      "sha256": "5aaf5b82281126c30dcdbdba848217d928d862bb7740e9bcd5b7b1edcd7fd344"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-c47af484-ee2b-4b32-8103-f1915d8b16ea/native-x86/owned.ndjson",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x86-ctest-failed-runtime-tail-30s/native-x86/owned.ndjson",
+      "bytes": 32995,
+      "sha256": "6ce5f6692e877e3134166386392c488a0428aa3c0268bda50e31bacbc33bc3c9"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-c47af484-ee2b-4b32-8103-f1915d8b16ea/native-x86/owned.ndjson.context.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x86-ctest-failed-runtime-tail-30s/native-x86/owned.ndjson.context.json",
+      "bytes": 549,
+      "sha256": "e442553275da4ee0d6828af4827abb6c6d66cb6bfa93959d8c9b7b10ae043829"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-c47af484-ee2b-4b32-8103-f1915d8b16ea/native-x86/run.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x86-ctest-failed-runtime-tail-30s/native-x86/run.log",
+      "bytes": 2811,
+      "sha256": "30941e4dcec67dc6a354abc8ef27fdbf215c086d8a1214b016b86d3de9154981"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-c47af484-ee2b-4b32-8103-f1915d8b16ea/results.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/x86-ctest-failed-runtime-tail-30s/results.json",
+      "bytes": 1372,
+      "sha256": "0fccfa73c354cdb724a40451d9e0f1beb92227c19af11725933fcb2394093a44"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/modern-x64/modern-smoke-Release.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/modern-x64/modern-smoke-Release.json",
+      "bytes": 23624,
+      "sha256": "73785b7d0777e18ec56b8e42eb17915480d5eb7e612527f5ff09f68effdaa681"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/modern-x64/owned.ndjson",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/modern-x64/owned.ndjson",
+      "bytes": 19836,
+      "sha256": "d832883429d0ea784885ec5310b9668a52a92da21b67b55d2a0f99fa03181525"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/modern-x64/owned.ndjson.context.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/modern-x64/owned.ndjson.context.json",
+      "bytes": 559,
+      "sha256": "0441581a149f9dd46d1314c294da2c095a5832f7f85b5bd3ab982982ca6a9d3e"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/modern-x64/run.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/modern-x64/run.log",
+      "bytes": 42,
+      "sha256": "f48bf5045da1595dd2d16a7b333ae6dc1f1c62862a4ceb465785eb8ef1621a37"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/modern-x86/modern-smoke-Release.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/modern-x86/modern-smoke-Release.json",
+      "bytes": 23638,
+      "sha256": "626e3eabccc4a6fd1ad8a81f89e8c7d8230ac3e7649cf93cc8a3b3ff0a306c05"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/modern-x86/owned.ndjson",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/modern-x86/owned.ndjson",
+      "bytes": 15645,
+      "sha256": "85319298ed12df1307a2adf538df961dbb8510b772d5e9dad175bc5e979c6be8"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/modern-x86/owned.ndjson.context.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/modern-x86/owned.ndjson.context.json",
+      "bytes": 559,
+      "sha256": "67ca9121f48c07e9d00a229b037fe1b8591647a7ba525f47fbc94ecb69511a2d"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/modern-x86/run.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/modern-x86/run.log",
+      "bytes": 42,
+      "sha256": "fdb8fb1fc3a177d94b4dd0c141c6c6ca97185eefd14a81d7e902b256ff7d165c"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/results.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/results.json",
+      "bytes": 4793,
+      "sha256": "37cb57d07aa7bfbd113e8ff3f1c477026a3fa17373b6709b7ecfa103782e2671"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/smoke-x64/owned.ndjson",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/smoke-x64/owned.ndjson",
+      "bytes": 5734,
+      "sha256": "5dedbb33ae687c8fa9d50d033766b187320575911bc8e6708806320e681fa8e7"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/smoke-x64/owned.ndjson.context.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/smoke-x64/owned.ndjson.context.json",
+      "bytes": 571,
+      "sha256": "0dbb7ec0ad5c7e1bd51c39249440277d1e7b2dc0d5b059138805de7cd441f995"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/smoke-x64/run.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/smoke-x64/run.log",
+      "bytes": 118,
+      "sha256": "4548b0e1753311c92bbd503b909f58f06a5682c2569a6384f9dfd0a39a91de41"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/smoke-x64/smoke-Release.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/smoke-x64/smoke-Release.json",
+      "bytes": 108419,
+      "sha256": "ea1e4214c184111599eee831058d14a815508c6fd3ddeb38cb174a220927189e"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/smoke-x86/owned.ndjson",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/smoke-x86/owned.ndjson",
+      "bytes": 5943,
+      "sha256": "c7d0c7714970bcf90f9ada95783fe1dc20ca598e3cc4c08c8c7f1cd161d4aed5"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/smoke-x86/owned.ndjson.context.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/smoke-x86/owned.ndjson.context.json",
+      "bytes": 571,
+      "sha256": "c36a8ad9ee473df6c6add9c266c174e1e8375694c1d0cfbef6d7573a8e629161"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/smoke-x86/run.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/smoke-x86/run.log",
+      "bytes": 118,
+      "sha256": "134c47d5266e9dcae9c3b74ce9c4b8e313684904e282d6c345713e4b78a7a927"
+    },
+    {
+      "source": "out/0.5.0-preview.1-desktop-3c5f4be8-73e6-4a2a-89d4-1849b4b8fcb4/smoke-x86/smoke-Release.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/release-desktop/smoke-x86/smoke-Release.json",
+      "bytes": 108443,
+      "sha256": "10975f3d7ac46c56e5ed035a7176c678a2eec0efb27dc88bb2c0fb96b2fc1051"
+    },
+    {
+      "source": "out/owned-runner-tests-initial.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/unit-history/owned-runner-tests-initial.log",
+      "bytes": 4173,
+      "sha256": "fe0c4a2c9198d4a26a78e5662ebf83682d3853eaf91a83b67e710e9ca686c16a"
+    },
+    {
+      "source": "out/owned-runner-tests-final.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/unit-history/owned-runner-tests-final.log",
+      "bytes": 694,
+      "sha256": "3afaad22a79354981e0903bb01969f01d16c8254d67d70f2d992bf84bb03758b"
+    },
+    {
+      "source": "out/owned-runner-tests-reviewed.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/unit-history/owned-runner-tests-reviewed.log",
+      "bytes": 2646,
+      "sha256": "e0fdb4e9615680e0cc4bcca6a4c9398c0211cf7d8917e70c3c0bc34452603a77"
+    },
+    {
+      "source": "out/owned-runner-tests-corrected.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/unit-history/owned-runner-tests-corrected.log",
+      "bytes": 803,
+      "sha256": "a015969fc3a9ee6ac210554446a9c2870686bf9e8a8241fba446a2a8f20c784b"
+    },
+    {
+      "source": "out/owned-runner-tests-control.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/unit-history/owned-runner-tests-control.log",
+      "bytes": 1004,
+      "sha256": "7da9a1e04c8c3d37b320df0ec76a95e6b4347c52fe5ffd91cb3875ca9f6afe80"
+    },
+    {
+      "source": "out/owned-client-acceptance-tests.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/unit-history/owned-client-acceptance-tests.log",
+      "bytes": 2585,
+      "sha256": "235421a29e33cd750d0259fc14a9ca7fca5a4dc71c42c000a7876d540ffb58d5"
+    },
+    {
+      "source": "out/benchmark-supervision-integration.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/unit-history/benchmark-supervision-integration.log",
+      "bytes": 1554,
+      "sha256": "85b4892d9da231bfec250345523c9d9c5b60303db508bd82aa3df887b878ffdc"
+    },
+    {
+      "source": "out/review-boundaries-and-cleanup.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/unit-history/review-boundaries-and-cleanup.log",
+      "bytes": 1818,
+      "sha256": "81d909210e4a1ecb4ad42bff18d33403fa38171278bbe06bb8758597f918c804"
+    },
+    {
+      "source": "out/audit-05-sdk.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/audits/sdk.json",
+      "bytes": 380,
+      "sha256": "9eb873e86a9736534b3f2dac887f18523d452211ddd058faa3ad016439916915"
+    },
+    {
+      "source": "out/audit-05-compatibility.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/audits/compatibility.json",
+      "bytes": 385,
+      "sha256": "068b20fa86297f8dc878b5aea09b72203f277c65a8faf1a813e93178b240665e"
+    },
+    {
+      "source": "out/audit-05-modern.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/audits/modern.json",
+      "bytes": 383,
+      "sha256": "dea100fd677ac5226415d74d7716285920cbac92dd44b9399de08e0cf6518a73"
+    },
+    {
+      "source": "out/audit-05-workbench.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/audits/workbench.json",
+      "bytes": 386,
+      "sha256": "07718f0bb0faac4c19eedee56e96770cc1dd55e4be239f716c1db8d29fd3334d"
+    },
+    {
+      "source": "out/x64/build-Release.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/payload-identities/x64-release.json",
+      "bytes": 301840,
+      "sha256": "af6bd943b768ef2edf8ac9a764038416bd66325dcccba12524ee23f24545f710"
+    },
+    {
+      "source": "out/x86/build-Release.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/payload-identities/x86-release.json",
+      "bytes": 301878,
+      "sha256": "ef9401fa492d3b5b437adbcccb082de6621164634f1c31a42a7f159df70f5032"
+    },
+    {
+      "source": "out/x64/native-Release.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/native-compile/x64-release.log",
+      "bytes": 32286,
+      "sha256": "884d3a2bab66a3213bd7aacadcc9a817d071fb5a23d95b861bbd2dbf963cbd8e"
+    },
+    {
+      "source": "out/x86/native-Release.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/native-compile/x86-release.log",
+      "bytes": 32286,
+      "sha256": "a8b4738916d9ec2abb3149b56a5ad0f3e29b1c56b9d3d478ba9d06661baafd3d"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/validated-report.json",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/validated-report.json",
+      "bytes": 29562,
+      "sha256": "76267bc38dd3061b273e3c864b026b66ef0f52a348d7cf7fa1d4d14fa7833aaf"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/version.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/version.log",
+      "bytes": 190,
+      "sha256": "6d72ff8012c47d4f47cba6f13b45662021d5621f6c7254a592c4e3cdf598853d"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/x64-fresh-configure.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/x64-fresh-configure.log",
+      "bytes": 1188,
+      "sha256": "3ee5f478640b4044e82c0df8fdbcb84db2dd9b389adca9b5c550f3981f430606"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/x64-matching-reconfigure.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/x64-matching-reconfigure.log",
+      "bytes": 458,
+      "sha256": "e8e80943001503e44277475a66770f1776a978ec40d5236f05c2c65023e35c32"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/x64-stale-system-refused.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/x64-stale-system-refused.log",
+      "bytes": 251,
+      "sha256": "17ccfafc555ccd6fee008290004dd86a7ce51cbb2fc3c00b6cfcc3b491dca5bd"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/x64-unfixed-cache-only-pin.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/x64-unfixed-cache-only-pin.log",
+      "bytes": 508,
+      "sha256": "2b270be7d7389b6c89fd0c08a538b11c5dc0ef7bb2a46b13a6ebe38e2d1d190d"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/x64-unfixed-initial.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/x64-unfixed-initial.log",
+      "bytes": 1238,
+      "sha256": "8538426c43deafe361a3fc366917fd7e89cf5a6c4b31c711431ef08cd72230c0"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/x64-wrong-platform-refused.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/x64-wrong-platform-refused.log",
+      "bytes": 221,
+      "sha256": "23fafd515b42ace2ea05e558cf3b8552abccc7965ee2733abc87f014debceda6"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/x86-fresh-configure.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/x86-fresh-configure.log",
+      "bytes": 1188,
+      "sha256": "cfcf260e13479a54ff6c8816963013766a1724891ce24dc18f7171e914f4569a"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/x86-matching-reconfigure.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/x86-matching-reconfigure.log",
+      "bytes": 458,
+      "sha256": "f17485c59ac6a7356cdac8ffa070d8979ac2ecb57fc4daf731e347cc9ab5309f"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/x86-stale-system-refused.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/x86-stale-system-refused.log",
+      "bytes": 251,
+      "sha256": "eeb4135c97ebe3745a4746a36b29da1f0686c3c769d3a454f63fb99bcbeda6b4"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/x86-unfixed-cache-only-pin.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/x86-unfixed-cache-only-pin.log",
+      "bytes": 508,
+      "sha256": "69e5b9993ce371f840e37f4be1bd310087d4f52dc8dfd697161dad6b6f2879c7"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/x86-unfixed-initial.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/x86-unfixed-initial.log",
+      "bytes": 1238,
+      "sha256": "fa4ff8d378ae76aa1d70e8f7a13f031630c3403119d257afe1615b0fe46cc818"
+    },
+    {
+      "source": "out/cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab/logs/x86-wrong-platform-refused.log",
+      "path": "verification/production-validation/0.5-foundation-2026-10-08/cmake-3.24.4/logs/x86-wrong-platform-refused.log",
+      "bytes": 221,
+      "sha256": "a580b2903b9b70c17788b2f51f07f333ed2ff7be6ce6f9316714e74c4222c894"
+    }
+  ]
+}

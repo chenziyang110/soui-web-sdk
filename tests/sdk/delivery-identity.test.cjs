@@ -24,6 +24,19 @@ function write(root, name, data) {
 function git(root, ...args) {
   return cp.execFileSync('git', ['-C', root, ...args], {encoding: 'utf8', windowsHide: true});
 }
+function unpackedSource(t) {
+  const root = fixture(t);
+  const files = new Map([
+    ['VERSION', Buffer.from('0.5.0-preview.1\n')],
+    ['src/main.cpp', Buffer.from('int main() {}\n')],
+    ['verification/raw/failed/out/probe.exe', Buffer.from([0x4d, 0x5a, 0, 13, 10, 255])],
+  ]);
+  for (const [name, data] of files) write(root, name, data);
+  const manifest = {schema: 'soui.full-source/v2', version: '0.5.0-preview.1', releaseReady: false,
+    files: [...files].map(([name, data]) => ({path: name, bytes: data.length, sha256: identity.hash(data), normalization: 'none'}))};
+  write(root, 'source-manifest.json', identity.encoded(manifest));
+  return {root, files, manifest};
+}
 
 test('source snapshot excludes ignored cache, works with CRLF checkout and without Git', t => {
   const root = fixture(t);
@@ -54,6 +67,96 @@ test('source snapshot excludes ignored cache, works with CRLF checkout and witho
   archive.verify(stage);
   write(stage, 'tools/test.ps1', 'Write-Output jello\r\n');
   assert.throws(() => archive.verify(stage), /modified/);
+});
+
+test('source export preserves tracked historical output paths and excludes unrelated build caches', t => {
+  const root = fixture(t);
+  git(root, 'init', '-q');
+  write(root, '.gitattributes', '* -text\n');
+  write(root, '.gitignore', 'out/\ndist/\ndist-legacy/\nnode_modules/\n.vs/\n');
+  write(root, 'VERSION', '0.5.0-preview.1\n');
+  const bytes = Buffer.from([0x4d, 0x5a, 0, 13, 10, 255]);
+  const names = ['out/probe.exe', 'dist/assets/probe.bin', 'dist-legacy/probe.bin',
+    'node_modules/frozen/probe.bin', '.vs/probe.bin'].map(name => `verification/raw/failed/${name}`);
+  for (const name of names) write(root, name, bytes);
+  write(root, 'out/current-build/ignored.exe', 'build cache');
+  git(root, 'add', '.');
+  git(root, 'add', '-f', '--', ...names);
+  const manifest = archive.create(root);
+  assert.equal(manifest.schema, 'soui.full-source/v2');
+  for (const name of names) assert.equal(manifest.files.some(file => file.path === name), true, name);
+  const stage = path.join(fixture(t), 'export');
+  const result = archive.stage(root, stage);
+  assert.equal(result.files, manifest.files.length);
+  assert.equal(fs.existsSync(path.join(stage, '.git')), false);
+  assert.equal(fs.existsSync(path.join(stage, 'out')), false);
+  for (const name of names) assert.deepEqual(fs.readFileSync(path.join(stage, name)), bytes, name);
+  for (const cache of ['out', 'dist', 'dist-legacy', 'node_modules', '.vs']) {
+    write(stage, `${cache}/current-build/ignored.bin`, 'new build cache');
+  }
+  assert.deepEqual(archive.verify(stage).files, manifest.files);
+});
+
+test('unpacked source rejects missing or equal-length modified historical binaries', t => {
+  const {root, files} = unpackedSource(t);
+  const name = 'verification/raw/failed/out/probe.exe';
+  archive.verify(root);
+  fs.unlinkSync(path.join(root, name));
+  assert.throws(() => archive.verify(root), /Missing|missing|file set/);
+  const modified = Buffer.from(files.get(name));
+  modified[modified.length - 1] = 254;
+  write(root, name, modified);
+  assert.throws(() => archive.verify(root), /modified/);
+  write(root, name, files.get(name));
+  archive.verify(root);
+});
+
+test('unpacked source rejects undeclared files including nested caches inside frozen output trees', t => {
+  const {root} = unpackedSource(t);
+  archive.verify(root);
+  for (const name of ['extra.cpp', 'verification/raw/failed/out/extra.exe',
+    'verification/raw/failed/out/out/extra.exe', 'verification/raw/failed/out/node_modules/extra.js']) {
+    write(root, name, 'not declared');
+    assert.throws(() => archive.verify(root), /file set/, name);
+    fs.unlinkSync(path.join(root, name));
+    archive.verify(root);
+  }
+});
+
+test('unpacked source rejects duplicate, escaping and malformed manifest paths', t => {
+  const {root, manifest} = unpackedSource(t);
+  archive.verify(root);
+  for (const name of ['version', '../outside.exe', 'C:/outside.exe', 'raw/./probe.exe',
+    'raw//probe.exe', 'raw/NUL', 'raw/probe.exe:stream', 'raw\\probe.exe']) {
+    const changed = {...manifest, files: [...manifest.files, {...manifest.files[0], path: name}]};
+    write(root, 'source-manifest.json', identity.encoded(changed));
+    assert.throws(() => archive.verify(root), /Invalid|duplicate/, name);
+  }
+  write(root, 'source-manifest.json', identity.encoded(manifest));
+  archive.verify(root);
+});
+
+test('unpacked source rejects linked historical output directories without changing the target', t => {
+  const {root, files} = unpackedSource(t);
+  archive.verify(root);
+  const name = 'verification/raw/failed/out/probe.exe';
+  const outside = fixture(t);
+  write(outside, 'probe.exe', files.get(name));
+  fs.unlinkSync(path.join(root, name));
+  fs.rmdirSync(path.join(root, 'verification/raw/failed/out'));
+  fs.symlinkSync(outside, path.join(root, 'verification/raw/failed/out'), 'junction');
+  assert.throws(() => archive.verify(root), /Linked/);
+  assert.deepEqual(fs.readFileSync(path.join(outside, 'probe.exe')), files.get(name));
+});
+
+test('unpacked source cannot hide a linked directory under an excluded cache name', t => {
+  const {root} = unpackedSource(t);
+  archive.verify(root);
+  const outside = fixture(t);
+  write(outside, 'protected.txt', 'keep');
+  fs.symlinkSync(outside, path.join(root, 'out'), 'junction');
+  assert.throws(() => archive.verify(root), /Linked/);
+  assert.equal(fs.readFileSync(path.join(outside, 'protected.txt'), 'utf8'), 'keep');
 });
 
 test('source validation rejects missing, extra, ambiguous and escaping files', t => {

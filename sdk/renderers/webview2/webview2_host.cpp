@@ -1,6 +1,8 @@
 #include <soui/host/webview2_host.h>
 #include <soui/host/runtime_profile.h>
 #include "webview2_preload.h"
+#include "request_capacity.h"
+#include "preparation_lifetime.h"
 
 #include <windows.h>
 #include <bcrypt.h>
@@ -16,7 +18,6 @@
 #include <sstream>
 #include <stdexcept>
 #include <thread>
-#include <unordered_set>
 #include <utility>
 #include <vector>
 
@@ -26,13 +27,12 @@ using Microsoft::WRL::ComPtr;
 using json = nlohmann::json;
 using clock_type = std::chrono::steady_clock;
 using sdk::host_result;
+namespace capacity = detail::webview2_capacity;
 
 namespace {
 constexpr wchar_t entry_url[] = L"https://soui-webview2.invalid/index.html";
 constexpr wchar_t asset_origin[] = L"https://soui-webview2.invalid/";
-constexpr std::size_t message_limit = 64U * 1024U;
-constexpr std::size_t request_limit = 128;
-constexpr std::size_t outgoing_limit = 8U * 1024U * 1024U;
+constexpr std::size_t message_limit = capacity::message_limit;
 
 host_result ok() { return {true, {}, {}}; }
 host_result error(const char* code, std::string message) { return {false, code, std::move(message)}; }
@@ -131,18 +131,20 @@ struct webview2_adapter::state {
     std::string document_id, id, raw;
     clock_type::time_point deadline;
     bool revoke{false};
+    std::shared_ptr<capacity::request_budget::lease> slot;
   };
   struct output {
     std::uint64_t generation{};
     std::string document_id, id, raw;
     bool event{false};
     bool ready{false};
-    bool owns_request_slot{true};
+    std::shared_ptr<capacity::request_budget::lease> slot;
   };
   HWND owner{};
   DWORD ui_thread{GetCurrentThreadId()};
   std::filesystem::path profile, fixed_runtime;
   std::function<void(host_result)> prepared;
+  detail::preparation_lifetime preparation;
   std::string preload, runtime_version, script_id;
   ComPtr<ICoreWebView2Environment> environment;
   ComPtr<ICoreWebView2Controller> controller;
@@ -163,8 +165,9 @@ struct webview2_adapter::state {
   std::condition_variable wake;
   std::deque<request> requests;
   std::deque<output> outputs;
-  std::unordered_set<std::string> pending;
-  std::size_t output_bytes{};
+  capacity::request_budget request_slots;
+  capacity::output_budget output_slots;
+  capacity::priority_policy request_priority, output_priority;
   std::uint64_t generation{1};
   std::string document_id, active_session, session_digest;
   bool stop_requested{false};
@@ -185,7 +188,7 @@ void finish_preparation(const std::shared_ptr<state>& value, const host_result& 
   try { completed(result); }
   catch (...) {
     value->failure = error("E_CALLBACK", "The preparation completion callback threw an exception.");
-    value->current = state::phase::failed;
+    if (!value->preparation.cancelled()) value->current = state::phase::failed;
     value->document_ready = value->application_ready = false;
   }
 }
@@ -223,12 +226,13 @@ void push_output(const std::shared_ptr<state>& value, state::output output) {
     output.event = false;
     output.ready = false;
   }
-  if (value->outputs.size() >= request_limit || output.raw.size() > outgoing_limit - value->output_bytes) {
-    if (output.owns_request_slot) value->pending.erase(output.id);
+  const auto category = output.slot ? output.slot->category : capacity::lane::ordinary;
+  const auto bytes = output.raw.size();
+  if (!value->output_slots.reserve(category, bytes)) {
     return; // the page's bounded request timer observes missing delivery
   }
-  value->output_bytes += output.raw.size();
-  value->outputs.push_back(std::move(output));
+  try { value->outputs.push_back(std::move(output)); }
+  catch (...) { value->output_slots.release(category, bytes); throw; }
   wake_owner(value);
 }
 void bridge_worker(const std::shared_ptr<state>& value) noexcept {
@@ -242,8 +246,12 @@ void bridge_worker(const std::shared_ptr<state>& value) noexcept {
         std::unique_lock<std::mutex> lock(value->mutex);
         value->wake.wait(lock, [&] { return value->stop_requested || !value->requests.empty(); });
         if (value->stop_requested) break;
-        request = std::move(value->requests.front());
-        value->requests.pop_front();
+        // Navigation's revoke barrier always precedes the new document's work.
+        auto selected = capacity::next_with_barrier(value->requests, value->request_priority,
+            [](const state::request& item) { return item.slot->category; },
+            [](const state::request& item) { return item.revoke; });
+        request = std::move(*selected);
+        value->requests.erase(selected);
       }
       if (request.revoke) {
         if (!session.empty()) value->bridge->shutdown_session(session);
@@ -286,7 +294,8 @@ void bridge_worker(const std::shared_ptr<state>& value) noexcept {
           }
         }
       } catch (...) { response = response_error(request.id, "E_NATIVE_EXCEPTION", "Native request failed."); }
-      push_output(value, {request.generation, request.document_id, request.id, std::move(response), false, ready});
+      push_output(value, {request.generation, request.document_id, request.id, std::move(response),
+          false, ready, std::move(request.slot)});
     }
   } catch (...) {
     // No UI COM work from this thread. The owner observes worker_done/status.
@@ -311,8 +320,10 @@ void invalidate_document(const std::shared_ptr<state>& value) {
     value->session_digest.clear();
     value->requests.clear();
     value->outputs.clear();
-    value->pending.clear();
-    value->output_bytes = 0;
+    value->request_slots = capacity::request_budget{};
+    value->output_slots = capacity::output_budget{};
+    value->request_priority = capacity::priority_policy{};
+    value->output_priority = capacity::priority_policy{};
     value->requests.push_back({0, {}, {}, {}, {}, true});
   }
   value->wake.notify_one();
@@ -325,16 +336,22 @@ void register_preload(const std::shared_ptr<state>& value, std::function<void()>
   source.replace(offset, marker.size(), json(value->document_id).dump());
   const auto script = wide(source);
   const std::weak_ptr<state> weak(value);
-  check(value->core->AddScriptToExecuteOnDocumentCreated(script.c_str(),
-      Callback<ICoreWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler>(
-          [weak, completed](HRESULT result, LPCWSTR identifier) -> HRESULT {
+  auto callback = Callback<ICoreWebView2AddScriptToExecuteOnDocumentCreatedCompletedHandler>(
+          [value, weak, completed](HRESULT result, LPCWSTR identifier) -> HRESULT {
+            auto script_completion = value->preparation.receive(detail::preparation_lifetime::operation::script);
+            if (!script_completion) return S_OK;
             return boundary(weak, [completed, result, identifier](const auto& current) {
               check(result, "Register preload");
               if (!identifier) throw std::runtime_error("Preload identity missing");
               current->script_id = utf8(identifier);
               completed();
             });
-          }).Get()), "AddScriptToExecuteOnDocumentCreated");
+          });
+  if (!value->preparation.begin(detail::preparation_lifetime::operation::script))
+    throw std::runtime_error("Preload registration is cancelled or already pending");
+  const auto submitted = value->core->AddScriptToExecuteOnDocumentCreated(script.c_str(), callback.Get());
+  if (FAILED(submitted)) (void)value->preparation.settle(detail::preparation_lifetime::operation::script);
+  check(submitted, "AddScriptToExecuteOnDocumentCreated");
 }
 void receive_message(const std::shared_ptr<state>& value, ICoreWebView2WebMessageReceivedEventArgs* args) {
   if (value->current != state::phase::mounted || value->reload_preparing || !current_source(value)) return;
@@ -359,22 +376,23 @@ void receive_message(const std::shared_ptr<state>& value, ICoreWebView2WebMessag
         packet["timeoutMs"].get<double>() > 60000) return;
     timeout = packet["timeoutMs"].get<unsigned>();
   }
+  const auto category = capacity::classify(packet);
   std::uint64_t generation = 0;
   const char* rejection = nullptr;
   {
     std::lock_guard<std::mutex> lock(value->mutex);
     if (value->stop_requested || identity != value->document_id) return;
     generation = value->generation;
-    if (value->pending.count(id)) rejection = "E_DUPLICATE_REQUEST";
-    else if (value->pending.size() >= request_limit || value->requests.size() >= request_limit) rejection = "E_BUSY";
+    capacity::request_budget::rejection rejected;
+    auto slot = value->request_slots.acquire(id, generation, category, rejected);
+    if (!slot) rejection = rejected == capacity::request_budget::rejection::duplicate ? "E_DUPLICATE_REQUEST" : "E_BUSY";
     else {
-      value->pending.insert(id);
       value->requests.push_back({generation, identity, id, request,
-          clock_type::now() + std::chrono::milliseconds(timeout), false});
+          clock_type::now() + std::chrono::milliseconds(timeout), false, std::move(slot)});
     }
   }
   if (rejection) push_output(value, {generation, identity, id,
-      response_error(id, rejection, "Request was not admitted."), false, false, false});
+      response_error(id, rejection, "Request was not admitted."), false, false, {}});
   else value->wake.notify_one();
 }
 void install_policy(const std::shared_ptr<state>& value) {
@@ -480,6 +498,7 @@ webview2_adapter::~webview2_adapter() {
   // Applications must finish close before destruction. Joining preserves the
   // borrowed Bridge's lifetime even when a consumer violates that contract.
   auto value = state_;
+  value->preparation.cancel();
   value->current = state::phase::closing;
   auto completed = std::move(value->prepared);
   if (completed) { try { completed(error("E_CANCELLED", "WebView2 preparation was cancelled.")); } catch (...) {} }
@@ -487,6 +506,8 @@ webview2_adapter::~webview2_adapter() {
     std::lock_guard<std::mutex> lock(value->mutex);
     value->stop_requested = true;
     value->requests.clear();
+    value->outputs.clear();
+    value->output_slots = capacity::output_budget{};
   }
   value->wake.notify_all();
   if (value->worker.joinable()) value->worker.join();
@@ -515,10 +536,10 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
   value->current = state::phase::preparing;
   value->prepared = std::move(completed);
   const std::weak_ptr<state> weak(value);
-  const auto result = CreateCoreWebView2EnvironmentWithOptions(
-      value->fixed_runtime.empty() ? nullptr : value->fixed_runtime.c_str(), value->profile.c_str(), nullptr,
-      Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
-          [weak](HRESULT result, ICoreWebView2Environment* environment) -> HRESULT {
+  auto callback = Callback<ICoreWebView2CreateCoreWebView2EnvironmentCompletedHandler>(
+          [value, weak](HRESULT result, ICoreWebView2Environment* environment) -> HRESULT {
+            auto environment_completion = value->preparation.receive(detail::preparation_lifetime::operation::environment);
+            if (!environment_completion || value->preparation.cancelled()) return S_OK;
             return boundary(weak, [weak, result, environment](const auto& current) {
               check(result, "Create WebView2 environment");
               if (!environment || !IsWindow(current->owner)) throw std::runtime_error("Owner closed during preparation");
@@ -526,11 +547,25 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
               task_string runtime;
               check(environment->get_BrowserVersionString(&runtime.value), "Runtime identity");
               current->runtime_version = utf8(runtime.value ? runtime.value : L"");
-              check(environment->CreateCoreWebView2Controller(current->owner,
-                  Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
-                      [weak](HRESULT controller_result, ICoreWebView2Controller* controller) -> HRESULT {
+              auto controller_callback = Callback<ICoreWebView2CreateCoreWebView2ControllerCompletedHandler>(
+                      [current, weak](HRESULT controller_result, ICoreWebView2Controller* controller) -> HRESULT {
+                        auto controller_completion = current->preparation.receive(detail::preparation_lifetime::operation::controller);
+                        if (!controller_completion) return S_OK;
                         const auto held = weak.lock();
-                        if (!live(held)) { if (controller) (void)controller->Close(); return S_OK; }
+                        if (!live(held) || current->preparation.cancelled()) {
+                          if (!controller) return S_OK;
+                          // Retain a failed Close for the caller's next unmount;
+                          // a returned initialization callback is not proof of
+                          // successful controller teardown.
+                          current->controller = controller;
+                          const auto closed = controller->Close();
+                          if (FAILED(closed)) {
+                            current->failure = error("E_WEBVIEW2_CLOSE", hresult_text(closed));
+                            return closed;
+                          }
+                          current->controller.Reset();
+                          return S_OK;
+                        }
                         return boundary(weak, [weak, controller_result, controller](const auto& prepared) {
                           check(controller_result, "Create WebView2 controller");
                           if (!controller) throw std::runtime_error("WebView2 controller missing");
@@ -544,13 +579,26 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
                             finish_preparation(ready, ok());
                           });
                         });
-                      }).Get()), "CreateCoreWebView2Controller");
+                      });
+              if (!current->preparation.begin(detail::preparation_lifetime::operation::controller))
+                throw std::runtime_error("Controller creation is cancelled or already pending");
+              const auto submitted = environment->CreateCoreWebView2Controller(current->owner, controller_callback.Get());
+              if (FAILED(submitted)) (void)current->preparation.settle(detail::preparation_lifetime::operation::controller);
+              check(submitted, "CreateCoreWebView2Controller");
             });
-          }).Get());
+          });
+  if (!value->preparation.begin(detail::preparation_lifetime::operation::environment)) {
+    fail(value, "Environment creation is cancelled or already pending");
+    return;
+  }
+  const auto result = CreateCoreWebView2EnvironmentWithOptions(
+      value->fixed_runtime.empty() ? nullptr : value->fixed_runtime.c_str(), value->profile.c_str(), nullptr, callback.Get());
+  if (FAILED(result)) (void)value->preparation.settle(detail::preparation_lifetime::operation::environment);
   if (FAILED(result)) fail(value, hresult_text(result));
 }
 
 host_result webview2_adapter::status() const {
+  if (state_->failure.code == "E_CALLBACK" || state_->failure.code == "E_WEBVIEW2_CLOSE") return state_->failure;
   if (state_->current == state::phase::failed) return state_->failure;
   if (state_->current == state::phase::created || state_->current == state::phase::preparing)
     return error("E_PENDING", "Preparing WebView2 asynchronously.");
@@ -627,6 +675,7 @@ host_result webview2_adapter::unmount() {
   auto value = state_;
   if (GetCurrentThreadId() != value->ui_thread) return error("E_THREAD", "Unmount requires the UI STA.");
   if (value->current == state::phase::closed) return ok();
+  value->preparation.cancel();
   value->current = state::phase::closing;
   finish_preparation(value, error("E_CANCELLED", "WebView2 preparation was cancelled."));
   value->document_ready = value->application_ready = false;
@@ -636,10 +685,11 @@ host_result webview2_adapter::unmount() {
     ++value->generation;
     value->requests.clear();
     value->outputs.clear();
-    value->pending.clear();
-    value->output_bytes = 0;
+    value->output_slots = capacity::output_budget{};
   }
   value->wake.notify_all();
+  if (!value->preparation.settled())
+    return error("E_BUSY", "WebView2 initialization callbacks are finishing bounded teardown.");
   if (!value->worker_done.load(std::memory_order_acquire)) return error("E_BUSY", "Bridge worker is finishing bounded teardown.");
   if (value->worker.joinable()) value->worker.join();
   if (value->bridge) { value->bridge->set_event_sink({}); value->bridge->set_owner_window(nullptr); value->bridge = nullptr; }
@@ -725,10 +775,13 @@ void webview2_adapter::pump() {
       {
         std::lock_guard<std::mutex> lock(value->mutex);
         if (value->outputs.empty()) break;
-        output = std::move(value->outputs.front());
-        value->outputs.pop_front();
-        value->output_bytes -= output.raw.size();
-        if (output.owns_request_slot) value->pending.erase(output.id);
+        auto selected = capacity::next(value->outputs, value->output_priority,
+            [](const state::output& item) { return item.slot ? item.slot->category : capacity::lane::ordinary; });
+        output = std::move(*selected);
+        value->outputs.erase(selected);
+        value->output_slots.release(output.slot ? output.slot->category : capacity::lane::ordinary, output.raw.size());
+        // Release before notifying the page; its completion may send new work.
+        if (output.slot) output.slot->release();
         if (output.generation != value->generation || output.document_id != value->document_id) continue;
       }
       if (!current_source(value)) continue;

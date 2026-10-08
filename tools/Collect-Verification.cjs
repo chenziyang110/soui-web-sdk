@@ -23,13 +23,16 @@ function run(name,executable,args) {
  return {passed:true,exitCode:result.status,log:name+'.log'};
 }
 const unit={
+ ownedSupervision:run('owned-process-tests',process.execPath,['--test','tests/benchmark/owned-process-runner.test.cjs','tests/benchmark/owned-process-client.test.cjs','tests/benchmark/owned-process-client-boundaries.test.cjs','tests/acceptance/owned-supervision-boundaries.test.cjs','tests/benchmark/run-one-cleanup.test.cjs']),
+ windowsSdkSelection:run('windows-sdk-selection-tests',process.execPath,['--test','tests/sdk/cmake-sdk-selection.test.cjs']),
+ actionGeneration:run('action-generation-tests',process.execPath,['--test','tests/sdk/actiongen.test.mjs','tests/web/generated-actions.test.mjs']),
  package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),
  nativePayload:run('sdk-native-payload-tests',process.execPath,['--test','tests/sdk/sdk-native-payload.test.cjs']),
  interruption:run('sdk-installation-interruption-tests',process.execPath,['--test','tests/sdk/installation-interruption.test.cjs','tests/sdk/profile-installation-integration.test.cjs']),
  delivery:run('delivery-identity-tests',process.execPath,['--test','tests/sdk/delivery-identity.test.cjs']),
  modernDelivery:run('modern-evidence-tests',process.execPath,['--test','tests/sdk/modern-evidence.test.cjs']),
  release:run('release-verification-tests',process.execPath,['--test','tests/sdk/release-verification.test.cjs']),
- web:run('web-sdk-tests',process.execPath,['--test','tests/web/sdk-client.test.mjs','tests/web/capabilities.test.mjs','tests/web/action-contracts.test.mjs','tests/web/gui.test.mjs','tests/web/web-features.test.mjs','tests/web/native-resolvers.test.mjs','tests/web/session-renewal.test.mjs','tests/web/agent-session-renewal.test.mjs']),
+ web:run('web-sdk-tests',process.execPath,['--test','tests/web/sdk-client.test.mjs','tests/web/capabilities.test.mjs','tests/web/action-contracts.test.mjs','tests/web/gui.test.mjs','tests/web/web-features.test.mjs','tests/web/native-resolvers.test.mjs','tests/web/session-renewal.test.mjs','tests/web/agent-session-renewal.test.mjs','tests/web/webview2-preload.test.mjs']),
  nativeActionsX64:run('native-actions-x64',path.join(root,'out/x64/tests/native/Release/soui_action_contract_tests.exe'),[]),
  nativeActionsX86:run('native-actions-x86',path.join(root,'out/x86/tests/native/Release/soui_action_contract_tests.exe'),[]),
  nativeX64:run('native-contract-x64',path.join(root,'out/x64/tests/native/Release/soui_sdk_contract_tests.exe'),[]),

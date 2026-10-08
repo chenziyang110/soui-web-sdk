@@ -1,0 +1,61 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const {spawnSync}=require('node:child_process');
+const sourceRoot='F:/work/sm05-actions';
+const build=path.resolve(process.argv[2]||path.join(sourceRoot,'tools/Build.ps1'));
+const old=process.argv.includes('--expect-old');
+const root=path.join(__dirname,(old?'old-':'fixed-')+crypto.randomUUID());fs.mkdirSync(root);
+fs.copyFileSync(__filename,path.join(root,'harness.cjs'));fs.copyFileSync(build,path.join(root,'Build.ps1'));
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const tools=['tools/sdk/actiongen.cjs','tools/sdk/actiongen/generate.cjs','tools/sdk/actiongen/emit.cjs',
+ 'sdk/web/package.json','sdk/web/src/action-contract-core.js'];
+const outputs=['app/generated/actions.hpp','web/src/generated/actions.ts','contracts/generated/tools.json',
+ 'contracts/generated/actiongen-manifest.json','docs/generated/actions.md'];
+const inputs=[...tools,...outputs.map(p=>'templates/desktop-app/'+p),...outputs.map(p=>'templates/modern-app/'+p),
+ 'templates/desktop-app/contracts/actions.json','templates/modern-app/contracts/actions.json'].map(name=>{
+ const bytes=fs.readFileSync(path.join(sourceRoot,name));return {path:name,bytes:bytes.length,sha256:hash(bytes)};});
+fs.writeFileSync(path.join(root,'inputs.json'),JSON.stringify({build,buildSha256:hash(fs.readFileSync(build)),inputs},null,2)+'\n');
+function copy(relative,destination){const target=path.join(destination,relative);fs.mkdirSync(path.dirname(target),{recursive:true});
+ fs.copyFileSync(path.join(sourceRoot,relative),target);}
+function copyApp(profile,destination,includeSource=true){for(const name of outputs.concat(includeSource?['contracts/actions.json']:[])){
+ const target=path.join(destination,name);fs.mkdirSync(path.dirname(target),{recursive:true});fs.copyFileSync(path.join(sourceRoot,'templates/'+profile+'/'+name),target);}}
+function digest(folder){const files=[];function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){
+ const target=path.join(dir,e.name);if(e.isDirectory())walk(target);else {const bytes=fs.readFileSync(target);files.push({path:path.relative(folder,target),bytes:bytes.length,sha256:hash(bytes)});}}}
+ walk(folder);return hash(Buffer.from(JSON.stringify(files.sort((a,b)=>a.path.localeCompare(b.path)))));}
+const script=String.raw`param([string]$Build,[string]$Fixture,[string]$Generated,[string]$SdkOnlyValue,[string]$Node)
+$ErrorActionPreference='Stop';$taskTokens=$null;$taskErrors=$null
+$taskAst=[Management.Automation.Language.Parser]::ParseFile($Build,[ref]$taskTokens,[ref]$taskErrors)
+if($taskErrors.Count){throw 'Build parse failed'}
+$taskIf=$taskAst.Find({param($a) $a -is [Management.Automation.Language.IfStatementAst] -and $a.Extent.Text.StartsWith('if(-not $SdkOnly){')},$true)
+if(-not $taskIf){throw 'Action hook not found'}
+$root=$Fixture;$generated=$Generated -eq 'true';$SdkOnly=$SdkOnlyValue -eq 'true';$node=[pscustomobject]@{Source=$Node}
+try{& ([scriptblock]::Create($taskIf.Extent.Text));exit 0}catch{[Console]::Error.WriteLine($_.Exception.Message);exit 41}
+`;
+const scriptFile=path.join(root,'hook.ps1');fs.writeFileSync(scriptFile,script);
+const scenarios=[{name:'both-templates',generated:false,sdkOnly:false,expectedOld:0,expectedNew:0},
+ {name:'missing-modern-source',generated:false,sdkOnly:false,missing:true,expectedOld:0,expectedNew:41},
+ {name:'sdk-only-no-source',generated:false,sdkOnly:true,missing:true,expectedOld:0,expectedNew:0},
+ {name:'legacy-generated',generated:true,sdkOnly:false,legacy:true,expectedOld:0,expectedNew:0},
+ {name:'managed-generated-missing-source',generated:true,sdkOnly:false,missing:true,expectedOld:0,expectedNew:41},
+ {name:'stale-generated',generated:true,sdkOnly:false,stale:true,expectedOld:41,expectedNew:41}];
+const results=[];
+for(const s of scenarios){const folder=path.join(root,s.name);fs.mkdirSync(folder);const fixture=path.join(folder,'project');fs.mkdirSync(fixture);
+ for(const name of tools)copy(name,fixture);
+ if(s.generated){if(!s.legacy)copyApp('desktop-app',fixture,!s.missing);}else{
+ copyApp('desktop-app',path.join(fixture,'templates/desktop-app'));copyApp('modern-app',path.join(fixture,'templates/modern-app'),!s.missing);}
+ if(s.stale)fs.appendFileSync(path.join(fixture,outputs[0]),'// authored stale output\n');
+ const before=digest(fixture);
+ const args=['-NoProfile','-ExecutionPolicy','Bypass','-File',scriptFile,'-Build',path.join(root,'Build.ps1'),'-Fixture',fixture,
+ '-Generated',String(s.generated),'-SdkOnlyValue',String(s.sdkOnly),'-Node',process.execPath];
+ const run=spawnSync('powershell.exe',args,{windowsHide:true,timeout:15000});
+ fs.writeFileSync(path.join(folder,'stdout.bin'),run.stdout||Buffer.alloc(0));fs.writeFileSync(path.join(folder,'stderr.bin'),run.stderr||Buffer.alloc(0));
+ const after=digest(fixture);const expected=old?s.expectedOld:s.expectedNew;
+ const record={...s,args,status:run.status,signal:run.signal,error:run.error?.message||null,before,after,
+ checkCount:(run.stdout?.toString().match(/Action outputs checked/g)||[]).length,expected};
+ results.push(record);fs.writeFileSync(path.join(folder,'result.json'),JSON.stringify(record,null,2)+'\n');
+ assert.equal(run.status,expected,run.stderr?.toString());assert.equal(before,after,'Check changed fixture bytes');
+ console.log(JSON.stringify({name:s.name,status:run.status,checks:record.checkCount,unchanged:true}));
+}
+fs.writeFileSync(path.join(root,'summary.json'),JSON.stringify({passed:true,mode:old?'old-red-boundary':'fixed-green',results,
+ scope:'Actual source-extracted PS hook only; real actiongen check; no build, no SDK lock verifier execution, no desktop'},null,2)+'\n');
+console.log(JSON.stringify({root,passed:true}));

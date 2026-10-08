@@ -1,0 +1,10 @@
+$ErrorActionPreference='Stop'
+. 'F:\work\sm05-actions\tools\internal\CMake-Configure.ps1'
+$workspace='F:\work\soui-05-action-integration-a791fb04-ff07-45a6-93df-07915161d31f\consumer-x64'
+$build='F:\work\soui-05-action-integration-a791fb04-ff07-45a6-93df-07915161d31f\consumer-x64\out\native'
+$cmake=(Get-Command cmake.exe -ErrorAction Stop).Source
+$configureArguments=@(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $workspace -SourceDirectory $workspace -BuildDirectory $build -Architecture 'x64')
+& $cmake @configureArguments '-DCMAKE_PREFIX_PATH=F:\work\soui-05-action-integration-a791fb04-ff07-45a6-93df-07915161d31f\installed-x64'
+if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}
+& $cmake --build $build --config Release --parallel 2
+exit $LASTEXITCODE

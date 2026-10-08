@@ -1,0 +1,34 @@
+✔ mixed analysis rechecks archived raw evidence and preserves the release gate (3.1534ms)
+✔ mixed analysis rejects contradictory result claims (0.6797ms)
+✔ hourly statistics retain first and last values and use nearest-rank percentiles (0.4559ms)
+✔ mixed transcript requires one process, every public lifecycle step and full duration (0.8135ms)
+✔ mixed verification rejects missing work, shortened idle, premature finish and process failure (0.6623ms)
+✔ mixed parameters reject absent idle and timing beyond the supported range (1.8187ms)
+✔ forward wall-clock jumps do not expire a live native step (1.9146ms)
+✔ backward wall-clock jumps cannot postpone the native step deadline (0.151ms)
+✔ no-progress supervision uses monotonic elapsed time and the configured settle allowance (0.0718ms)
+✔ a completed or failed step clears its deadline and new progress renews the idle deadline (0.1087ms)
+✔ native timestamps and mutable diagnostic snapshots cannot change deadline state (0.1039ms)
+✔ complete native reload transcript proves steps but does not claim a resource/production gate (1.0839ms)
+✔ a green native log cannot hide a process crash, kill or supervision timeout (0.3146ms)
+✔ early completion, duplicate success and routing to a different window fail (1.0399ms)
+✔ cycle counts, sample completeness and native failure records are mandatory (0.3078ms)
+✔ multiwindow requires surviving windows to reload and the closed slot to be recreated (0.6356ms)
+✔ invalid scenario parameters and backwards clocks are rejected (0.1978ms)
+✔ bridge contract mode requires its own real process, complete mount and teardown (0.2213ms)
+✔ closed resources may only be sampled after the final window teardown completes (0.2735ms)
+✔ timeout evidence preserves the native log offset without treating the run as passed (6.0365ms)
+﹣ configured x86 debugger creates a dump and thread log before the target is killed (0.1115ms) # SKIP
+✔ owned client reports the subject identity and binds tool and executable bytes (717.0597ms)
+✔ owned client retains nonzero subject exit and confirmed cleanup separately (367.3263ms)
+✔ owned client requests stop through its pipe and receives a failed terminal with closure (245.4882ms)
+✔ owned client refuses missing tool and invalid bounds before launching a subject (1.9449ms)
+✔ test-only assignment denial cannot produce a ready subject or a client pass (208.5939ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 1818.2492

@@ -1,0 +1,40 @@
+{
+  "schema": "soui.independent-evidence-review/v1",
+  "date": "2026-10-08",
+  "reviewer": "/root/merge_side_review",
+  "method": "Read-only byte/hash, archive, metadata, context and native-record cross-check; no build or executable was rerun.",
+  "reviewedIndex": "verification/production-validation/0.5-foundation-2026-10-08/no-git-source/index.json",
+  "reviewedIndexSha256": "690749b028dbb74dff529643b07ad4765fd3fab334fad9063ac8f9e4cf7b30bd",
+  "blockingFindings": 0,
+  "archivedOriginalFiles": 64,
+  "archivedOriginalBytes": 11350224,
+  "sourceManifestEntriesChecked": 38816,
+  "sourceManifestBytesChecked": 1285312032,
+  "productionSourceEntriesPerSdkBuildChecked": 795,
+  "sourceSha256": "e7519638abe291a21f9b03764677dd1ead8f6e27ede7a0df206de7d676477ff9",
+  "archiveBytes": 372126069,
+  "archiveSha256": "3a946cfa39dd1f8f2d1a477bb7f39f0017ab1dc962e6b737b4bc9e3ba11ea240",
+  "sourceManifestSha256": "8ad175f0f78e5c5c30527cf796ed385090fee5c8f7d073c04be46303f15fe551",
+  "sdkBuildIds": {
+    "x86": "2425e45c-d9e6-4381-bc56-59784378f1ea",
+    "x64": "22f07735-eb51-4cae-8872-73d027f71dfc"
+  },
+  "ownedJobsChecked": 11,
+  "successfulNaturallyClosedJobs": 10,
+  "initialFixtureFailedJobsPreserved": 1,
+  "allContextArgsCwdExecutableRunnerAndReportHashesMatched": true,
+  "actualSdkAndConsumerProjectsMatched19041V143": true,
+  "actualConsumerPeAndExeHashesMatched": true,
+  "actualRelocatedImportsAndLibrariesMatched": true,
+  "gitDiscoveryExitCode": 128,
+  "originalExtractedSourceAndInstalledPrefixesAbsent": true,
+  "modernBackendCompiled": true,
+  "modernExternalConsumerLinkedOrStarted": false,
+  "limitations": [
+    "Consumers only link Soui::Sdk; the modern renderer has SDK build evidence, not external startup evidence.",
+    "An ordinary F:/.git directory exists but is not a discovered repository; no-Git means actual git rev-parse failed and the relocated source has no .git.",
+    "Archive and compiled EXE/lib bytes remain local; this repository retains hashes, source manifest, metadata and original run records.",
+    "Historical foundation source identity, not the final integrated candidate, generated application, offline or formal release acceptance."
+  ],
+  "releaseReady": false
+}
