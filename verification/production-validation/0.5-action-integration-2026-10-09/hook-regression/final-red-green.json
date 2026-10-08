@@ -1,0 +1,1775 @@
+{
+  "schema": "soui.action-hook-red-green/v1",
+  "source": "F:/work/sm05-actions/tools/Build.ps1",
+  "sourceSha256": "f5e300415c4af0bcd41f21292fa817f16e25d371c1450119b7926d36fc225eaf",
+  "oldSourceSha256": "09a7815338c8070f597ecafa43d3142959a9cf25b7b4da3859d2b8b49304cd73",
+  "onlyHookChanged": true,
+  "oldRoot": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e",
+  "newRoot": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f",
+  "cases": 13,
+  "allFixtureBytesUnchanged": true,
+  "rawFiles": [
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\templates\\desktop-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\templates\\desktop-app\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\templates\\desktop-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\templates\\desktop-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\templates\\desktop-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\templates\\desktop-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\templates\\modern-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\templates\\modern-app\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\templates\\modern-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\templates\\modern-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\templates\\modern-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\templates\\modern-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\result.json",
+      "bytes": 928,
+      "sha256": "2c50167ca426f87c8ac38798bb8e1044d4e46e1d09190e32e08c3c835b8ea07c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\both-templates\\stdout.bin",
+      "bytes": 182,
+      "sha256": "e7010d4a5f901ed4eeff7fa0eb19e695af3cee75c28e1df02359c61d3d0c3164"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\Build.ps1",
+      "bytes": 4455,
+      "sha256": "09a7815338c8070f597ecafa43d3142959a9cf25b7b4da3859d2b8b49304cd73"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\harness.cjs",
+      "bytes": 7173,
+      "sha256": "23d2804671225de930fa30661793ddfe847de527b9167bc5edba8a0c87af4ac2"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\hook.ps1",
+      "bytes": 767,
+      "sha256": "cd6eb9aec5f39a2221f5f055360f8dbbd4489f19bb86c486d56f61c6ce3da067"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\inputs.json",
+      "bytes": 3249,
+      "sha256": "547681227700bd04c8e5ae7406d215edaf83e398f4d38db804616f30a954d3cd"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\legacy-generated\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\legacy-generated\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\legacy-generated\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\legacy-generated\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\legacy-generated\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\legacy-generated\\result.json",
+      "bytes": 948,
+      "sha256": "c0aeca8cc00e32a9bffe9e00242027483a7a6b7bbf706cd01cdb64abc6543465"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\legacy-generated\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\legacy-generated\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\project\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\project\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\project\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\project\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\project\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\result.json",
+      "bytes": 982,
+      "sha256": "bbe89c05bb454ac8fc2a1e8bf16a34613bbdc1b53249ba068a6f124140e4a7d5"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-generated-missing-source\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-0\\project\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-0\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-0\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-0\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-0\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-0\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-0\\result.json",
+      "bytes": 986,
+      "sha256": "d152542b68ba71605761ac57633afc4098321a6c42acbc2f1328c0c69a332349"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-0\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-0\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-1\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-1\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-1\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-1\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-1\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-1\\project\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-1\\result.json",
+      "bytes": 989,
+      "sha256": "925e2bb91651064612ffd8c7199058bf52988670b6e25baaf4db027eef3adf8e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-1\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-1\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-2\\project\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-2\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-2\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-2\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-2\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-2\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-2\\result.json",
+      "bytes": 991,
+      "sha256": "334274f28a0082fa6dbe4c3fbd446bcdf0d9f1c350e13780b71e31c44807f81d"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-2\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-2\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-3\\project\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-3\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-3\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-3\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-3\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-3\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-3\\result.json",
+      "bytes": 1004,
+      "sha256": "382bc9e5d3759e52975a5d1c458523accf3e35dbf10f46a2d75336870b49f75c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-3\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-3\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-4\\project\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-4\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-4\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-4\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-4\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-4\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-4\\result.json",
+      "bytes": 986,
+      "sha256": "56a5c74e86b67f41ed75796c3a71b7cd5a9f3633e8ac2a5dcadeb665cbd22db2"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-4\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\managed-marker-only-4\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\templates\\desktop-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\templates\\desktop-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\templates\\desktop-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\templates\\desktop-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\templates\\desktop-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\templates\\modern-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\templates\\modern-app\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\templates\\modern-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\templates\\modern-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\templates\\modern-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\templates\\modern-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\result.json",
+      "bytes": 971,
+      "sha256": "4532028f5dab004fb3287fbf2101f9a87f0da319b84922e58d2db356125cf637"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-desktop-source\\stdout.bin",
+      "bytes": 91,
+      "sha256": "c7452faeb9a091655d684909434841346f9d2ecbf373a50358ed9fe05726bf16"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\templates\\desktop-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\templates\\desktop-app\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\templates\\desktop-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\templates\\desktop-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\templates\\desktop-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\templates\\desktop-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\templates\\modern-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\templates\\modern-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\templates\\modern-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\templates\\modern-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\templates\\modern-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\result.json",
+      "bytes": 962,
+      "sha256": "04c620f834b83223a2d9dd0468026977755b0f6b62e503047e40c961a1d397af"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\missing-modern-source\\stdout.bin",
+      "bytes": 91,
+      "sha256": "c7452faeb9a091655d684909434841346f9d2ecbf373a50358ed9fe05726bf16"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\templates\\desktop-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\templates\\desktop-app\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\templates\\desktop-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\templates\\desktop-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\templates\\desktop-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\templates\\desktop-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\templates\\modern-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\templates\\modern-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\templates\\modern-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\templates\\modern-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\templates\\modern-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\result.json",
+      "bytes": 953,
+      "sha256": "143f6a4bba7030c5e4d62974f38286e524a03793bff80d5121671da3fd57a2a1"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\sdk-only-no-source\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\project\\app\\generated\\actions.hpp",
+      "bytes": 2235,
+      "sha256": "1b4908a885497084f736cd674b8a2412a3952356654e59f7805c23ed1c358062"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\project\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\project\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\project\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\project\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\project\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\result.json",
+      "bytes": 949,
+      "sha256": "1c1de6c594381466844a759768f116991df5c2b8bbfd4c04e542767db1976cbc"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\stderr.bin",
+      "bytes": 201,
+      "sha256": "66efe0fcfdcced54f38ee918eb069a61fb2b0678dc6e301eed694a386e46ca4d"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\stale-generated\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\summary.json",
+      "bytes": 14443,
+      "sha256": "9556a6d8ce25fafe694da903019abe107d0e4a88722496185be16a239140ed13"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\project\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\project\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\project\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\project\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\project\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\project\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\result.json",
+      "bytes": 928,
+      "sha256": "d7fd0ef39b9256490ec2bfd9c5bd504e0abe19ca56cab80b9c5d90eaceda35f1"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\old-317cab75-39b7-482e-9b47-bbcc5f766b0e\\valid-generated\\stdout.bin",
+      "bytes": 91,
+      "sha256": "c7452faeb9a091655d684909434841346f9d2ecbf373a50358ed9fe05726bf16"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\templates\\desktop-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\templates\\desktop-app\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\templates\\desktop-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\templates\\desktop-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\templates\\desktop-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\templates\\desktop-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\templates\\modern-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\templates\\modern-app\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\templates\\modern-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\templates\\modern-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\templates\\modern-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\templates\\modern-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\result.json",
+      "bytes": 934,
+      "sha256": "6faf96df8a4091b49f3deb79809179aad688b7e1b6f5d5c05e516e852abe254b"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\both-templates\\stdout.bin",
+      "bytes": 182,
+      "sha256": "e7010d4a5f901ed4eeff7fa0eb19e695af3cee75c28e1df02359c61d3d0c3164"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\Build.ps1",
+      "bytes": 4956,
+      "sha256": "f5e300415c4af0bcd41f21292fa817f16e25d371c1450119b7926d36fc225eaf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\harness.cjs",
+      "bytes": 7173,
+      "sha256": "23d2804671225de930fa30661793ddfe847de527b9167bc5edba8a0c87af4ac2"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\hook.ps1",
+      "bytes": 767,
+      "sha256": "cd6eb9aec5f39a2221f5f055360f8dbbd4489f19bb86c486d56f61c6ce3da067"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\inputs.json",
+      "bytes": 3190,
+      "sha256": "6b21812998ea362b05a178a18e35ada04b03590a70b449718e0ebfe93485c773"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\legacy-generated\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\legacy-generated\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\legacy-generated\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\legacy-generated\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\legacy-generated\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\legacy-generated\\result.json",
+      "bytes": 954,
+      "sha256": "c59fa15f4bb4e6927edab034afaad0ebbb1326c5424cb3357a862b9dcf1d2a1e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\legacy-generated\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\legacy-generated\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\project\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\project\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\project\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\project\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\project\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\result.json",
+      "bytes": 990,
+      "sha256": "6d7e24f99dddbf2116b925d2aa9bb6316e9bd7a2e05c72ed47125d84f723bfd6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\stderr.bin",
+      "bytes": 177,
+      "sha256": "e9dc1623647b5c9853a05476a04141f9216264cc2c8d4f126ba71ec67348f9a5"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-generated-missing-source\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-0\\project\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-0\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-0\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-0\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-0\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-0\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-0\\result.json",
+      "bytes": 994,
+      "sha256": "0711f09bacce84428478ba6119c0afbb0ca0deac45bdd862e25b46ea816f0b8d"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-0\\stderr.bin",
+      "bytes": 166,
+      "sha256": "93b2c66dda54629c34150af0079155d628b884b9e14c1f9d143d196f4fcccfe8"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-0\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-1\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-1\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-1\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-1\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-1\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-1\\project\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-1\\result.json",
+      "bytes": 997,
+      "sha256": "79216d029c4e412ef84a4e2448bef427428d90a69aa46b7fe4caaca636f5b928"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-1\\stderr.bin",
+      "bytes": 166,
+      "sha256": "61fb1a2748f10934306413a8ce997336513b9bcffc8ef983e4ba8a0100e261cb"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-1\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-2\\project\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-2\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-2\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-2\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-2\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-2\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-2\\result.json",
+      "bytes": 999,
+      "sha256": "e8849ae51adf70a34335d645da419233830088df3e1a6dc01e572fa60b9d9112"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-2\\stderr.bin",
+      "bytes": 166,
+      "sha256": "264a12f723d6b358a16274ad5a227493bdd4e664798c7766008f95ceb4d44fab"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-2\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-3\\project\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-3\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-3\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-3\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-3\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-3\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-3\\result.json",
+      "bytes": 1012,
+      "sha256": "6e636d79050167403d79aab33b78fa33a426b3727eb157d8980366e8bd6e2ec5"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-3\\stderr.bin",
+      "bytes": 166,
+      "sha256": "0e6ea8543ba62a96b5b1e64052da83afed69af5c10ee86ae99942bcefa9136ea"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-3\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-4\\project\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-4\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-4\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-4\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-4\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-4\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-4\\result.json",
+      "bytes": 994,
+      "sha256": "363893af63931f4403ada325f22b8added92c4a51ddd9b54944cf7d9778e739b"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-4\\stderr.bin",
+      "bytes": 166,
+      "sha256": "6e0cb4946ac843a1f8d8f842fffdd953295a2133e417afc5ea2a4b4a96684898"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\managed-marker-only-4\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\templates\\desktop-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\templates\\desktop-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\templates\\desktop-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\templates\\desktop-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\templates\\desktop-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\templates\\modern-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\templates\\modern-app\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\templates\\modern-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\templates\\modern-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\templates\\modern-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\templates\\modern-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\result.json",
+      "bytes": 979,
+      "sha256": "14dc2718ba5ec769d0baf4441f8aade0d5a011a00d7ae81c40ddceac06794f2b"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\stderr.bin",
+      "bytes": 189,
+      "sha256": "ffa94d8b9ef478ddc7781f9c056a48e0da80bd5014fc2e901ecc126e636c1cea"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-desktop-source\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\templates\\desktop-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\templates\\desktop-app\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\templates\\desktop-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\templates\\desktop-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\templates\\desktop-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\templates\\desktop-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\templates\\modern-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\templates\\modern-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\templates\\modern-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\templates\\modern-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\templates\\modern-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\result.json",
+      "bytes": 970,
+      "sha256": "2d83b4c50d356739cff47899d0df5dfaf08413b7341deba86ffdcfa5c8da8ad2"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\stderr.bin",
+      "bytes": 187,
+      "sha256": "8dc61f7b62341424a5d558d038c343c0e03dc774676fa921cc84c702abae7a3a"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\missing-modern-source\\stdout.bin",
+      "bytes": 91,
+      "sha256": "c7452faeb9a091655d684909434841346f9d2ecbf373a50358ed9fe05726bf16"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\templates\\desktop-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\templates\\desktop-app\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\templates\\desktop-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\templates\\desktop-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\templates\\desktop-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\templates\\desktop-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\templates\\modern-app\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\templates\\modern-app\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\templates\\modern-app\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\templates\\modern-app\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\templates\\modern-app\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\result.json",
+      "bytes": 959,
+      "sha256": "c2dfde4a445a03819507c24163444f09dbd4cfaaf62a822d3920e2364ef2a3ce"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\sdk-only-no-source\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\project\\app\\generated\\actions.hpp",
+      "bytes": 2235,
+      "sha256": "1b4908a885497084f736cd674b8a2412a3952356654e59f7805c23ed1c358062"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\project\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\project\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\project\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\project\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\project\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\result.json",
+      "bytes": 955,
+      "sha256": "71534a42e2d98e1f00372ca68b85acd6bc6137b9a807c2b82789293897bab8a8"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\stderr.bin",
+      "bytes": 201,
+      "sha256": "66efe0fcfdcced54f38ee918eb069a61fb2b0678dc6e301eed694a386e46ca4d"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\stale-generated\\stdout.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\summary.json",
+      "bytes": 14532,
+      "sha256": "366d924414e7aeceaa23dde467bad4e6999faf84fba6ebe6ce9a4130cc206093"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\project\\app\\generated\\actions.hpp",
+      "bytes": 2210,
+      "sha256": "60659f5bb3ac531b8e83777049f442e24dfe4443061387fb674d6a20cb1d3ebf"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\project\\contracts\\actions.json",
+      "bytes": 673,
+      "sha256": "7816a9b9dcf147c2bf8b4c88ed512dda3c142df92172b1f9f64454a9f685d279"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\project\\contracts\\generated\\actiongen-manifest.json",
+      "bytes": 588,
+      "sha256": "d257eae3be65ca3e8b00385856a1c0e8093966307a25314f5f03874601bd95f6"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\project\\contracts\\generated\\tools.json",
+      "bytes": 553,
+      "sha256": "771869def487b4a9fb401c71244a68ca6430751e5dec297401d167a263ac886c"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\project\\docs\\generated\\actions.md",
+      "bytes": 864,
+      "sha256": "1a97e42bd3a5b92a25787d29b505aad8eb2e33da3fb573585d4ca33971a6fd00"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\project\\sdk\\web\\package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\project\\sdk\\web\\src\\action-contract-core.js",
+      "bytes": 11315,
+      "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\project\\tools\\sdk\\actiongen\\emit.cjs",
+      "bytes": 7626,
+      "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\project\\tools\\sdk\\actiongen\\generate.cjs",
+      "bytes": 14508,
+      "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\project\\tools\\sdk\\actiongen.cjs",
+      "bytes": 208,
+      "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\project\\web\\src\\generated\\actions.ts",
+      "bytes": 1908,
+      "sha256": "1e9053fb25cd178de46f832202b6d6c9623605943a04d99c7c12310d9989375e"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\result.json",
+      "bytes": 934,
+      "sha256": "0d41e70a46889e2070236c440b96e834293438318ce605f22712b6d7d02bc4dc"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:\\work\\sm05-mi\\out\\action-hook-regression\\fixed-cd21c9b2-6035-4b83-8a2c-741e60c0a68f\\valid-generated\\stdout.bin",
+      "bytes": 91,
+      "sha256": "c7452faeb9a091655d684909434841346f9d2ecbf373a50358ed9fe05726bf16"
+    }
+  ],
+  "scope": "PS AST-extracted actual hook; actual generator CLI; no compilation/GUI, no SDK lock verifier or full Build execution",
+  "invalidHistoricalFixture": "old-5231333a-36d1-4c71-a15a-099d54c69503/invalid-harness.json"
+}

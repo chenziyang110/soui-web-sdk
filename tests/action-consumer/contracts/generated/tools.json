@@ -1,0 +1,66 @@
+{
+  "schema": "soui.action-tools/1",
+  "advisory": true,
+  "sourceSha256": "bfeea5be4eabeae0d4ce5de79e670c20547c9f6709197fe85dc692a1fed636e6",
+  "tools": [
+    {
+      "name": "app.greet",
+      "description": "验证可独立使用的类型绑定。",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "GreetInputObject1": {
+            "maxLength": 8,
+            "type": "string"
+          },
+          "attempts": {
+            "maximum": 9007199254740991,
+            "minimum": 0,
+            "type": "integer"
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "meta": {
+            "additionalProperties": false,
+            "properties": {
+              "tags": {
+                "items": {
+                  "enum": [
+                    "one",
+                    "two"
+                  ],
+                  "maxLength": 8,
+                  "type": "string"
+                },
+                "maxItems": 4,
+                "type": "array"
+              }
+            },
+            "required": [
+              "tags"
+            ],
+            "type": "object"
+          },
+          "name": {
+            "maxLength": 32,
+            "minLength": 1,
+            "type": "string"
+          },
+          "nothing": {
+            "type": "null"
+          },
+          "ratio": {
+            "maximum": 1,
+            "minimum": 0,
+            "type": "number"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      }
+    }
+  ]
+}
