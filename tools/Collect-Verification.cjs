@@ -1,11 +1,18 @@
 'use strict';
 const fs=require('node:fs'), path=require('node:path'), crypto=require('node:crypto'), cp=require('node:child_process');
 const root=path.resolve(__dirname,'..'), output=path.join(root,'verification');
+const evidence=require('./internal/build-evidence.cjs');
+const identity=require('./internal/delivery-identity.cjs');
 const read=name=>JSON.parse(fs.readFileSync(path.join(root,name),'utf8').replace(/^\uFEFF/,''));
 const digest=name=>crypto.createHash('sha256').update(fs.readFileSync(path.resolve(root,name))).digest('hex');
 const save=(name,value)=>fs.writeFileSync(path.join(output,name),JSON.stringify(value,null,2)+'\n');
 fs.mkdirSync(output,{recursive:true});
 const version=fs.readFileSync(path.join(root,'VERSION'),'utf8').trim();
+const scope=process.argv[2] || 'full';
+if(!['full','--foundation'].includes(scope))throw new Error('Usage: Collect-Verification.cjs [--foundation]');
+// A failed collection leaves an explicit non-acceptance, never yesterday's green result.
+save('acceptance.json',{schema:'soui.source-delivery-acceptance/v2',version,scope,
+ sourceDeliveryVerified:false,releaseReady:false,status:'collecting',startedAt:new Date().toISOString()});
 function requirePassed(condition,message){if(!condition)throw new Error(message);}
 function run(name,executable,args) {
  const result=cp.spawnSync(executable,args,{cwd:root,encoding:'utf8',windowsHide:true});
@@ -15,20 +22,44 @@ function run(name,executable,args) {
 }
 const unit={
  package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),
+ delivery:run('delivery-identity-tests',process.execPath,['--test','tests/sdk/delivery-identity.test.cjs']),
  web:run('web-sdk-tests',process.execPath,['--test','tests/web/sdk-client.test.mjs']),
  nativeX64:run('native-contract-x64',path.join(root,'out/x64/tests/native/Release/soui_sdk_contract_tests.exe'),[]),
  nativeX86:run('native-contract-x86',path.join(root,'out/x86/tests/native/Release/soui_sdk_contract_tests.exe'),[])
 };
+if(scope==='--foundation'){
+ const matrix=[];
+ const sizes=[];
+ for(const arch of ['x86','x64']){
+  const {build,smoke}=evidence.verifySmoke(root,arch,'Release');
+  save('native-'+arch+'-Release.json',smoke);
+  matrix.push({architecture:arch,configuration:'Release',buildId:build.buildId,sourceSha256:build.source.sha256,
+   scenarios:smoke.runs.map(({target,scenario,passed})=>({target,scenario,passed})),evidence:'native-'+arch+'-Release.json'});
+  for(const target of evidence.targets(root)){
+   const name=target+'-'+version+'-windows-'+arch+'.zip';
+   const report=read('dist/'+name+'.json');
+   requirePassed(report.buildId===build.buildId && report.sourceSha256===build.source.sha256 &&
+    report.payload.sha256===build.payloads[target].sha256 && report.archive.sha256===digest('dist/'+name) &&
+    report.archive.bytes===fs.statSync(path.join(root,'dist',name)).size,'Application archive evidence drift');
+   save('size-'+target+'-'+arch+'.json',report);
+   sizes.push({target,architecture:arch,bytes:report.payload.bytes,compressedBytes:report.archive.bytes,
+    evidence:'size-'+target+'-'+arch+'.json'});
+  }
+ }
+ save('acceptance.json',{schema:'soui.source-delivery-acceptance/v2',version,scope:'foundation',status:'passed',
+  sourceDeliveryVerified:false,releaseReady:false,finishedAt:new Date().toISOString(),unitTests:unit,
+  nativeApplicationMatrix:matrix,sizes,
+  limitations:['Foundation checks only, not a complete 0.3 release acceptance.',
+   'Clean clone/archive builds are recorded separately; full dependency rebuild and four-configuration matrix are still required.',
+   'Electron performance comparison, long-run lifecycle tests and 0.3 desktop capability work remain open.',
+   'No remote CI; production, signing and binary redistribution gates remain open.']});
+ console.log(JSON.stringify({version,foundationVerified:true,sourceDeliveryVerified:false,releaseReady:false}));
+ process.exit(0);
+}
 const matrix=[];
 for(const arch of ['x86','x64'])for(const config of ['Debug','Release']){
- const build=read('out/'+arch+'/build-'+config+'.json');
- const smoke=read('out/'+arch+'/smoke-'+config+'.json');
+ const {build,smoke}=evidence.verifySmoke(root,arch,config);
  requirePassed(build.nativeBuild==='passed' && smoke.passed,arch+' '+config+' was not verified');
- for(const row of smoke.runs){
-  const base='out/'+arch+'/bin/'+config+'/'+row.target+'/';
-  requirePassed(digest(base+row.target+'.exe')===row.executableSha256.toLowerCase(), 'Executable drift');
-  requirePassed(digest(base+'node.dll')===row.kernelSha256.toLowerCase(), 'Kernel drift');
- }
  save('native-'+arch+'-'+config+'.json',smoke);
  matrix.push({architecture:arch,configuration:config,buildPassed:true,templateAndDemoPassed:true,evidence:'native-'+arch+'-'+config+'.json'});
 }
@@ -50,7 +81,7 @@ const relocated=read('verification/relocation.json');
 const relocationSmoke=read('verification/relocated-native-smoke.json');
 requirePassed(generated.passed && generated.sdkVersion===version && relocated.passed && relocated.sdkVersion===version && relocationSmoke.passed,'Independent application evidence missing');
 requirePassed(fresh.passed && fresh.sdkVersion===version,'Fresh project verification missing');
-const sdkOnly=read('out/sdk-x64/build-Release.json');
+const sdkOnly=evidence.verifyBuild(root,'x64','Release',true);
 requirePassed(sdkOnly.sdkOnly && sdkOnly.nativeBuild==='passed','SDK independent build missing');
 const consumer=run('cmake-consumer',path.join(root,'out/consumer-vs2022/Release/soui_consumer.exe'),[]);
 const sources=[];

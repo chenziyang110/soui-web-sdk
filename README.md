@@ -1,6 +1,6 @@
 # SOUI SDK 源码交付
 
-**版本：0.2.0-preview.2。** 面向 Windows 的 C++ / TypeScript 桌面 SDK，提供独立 SDK、最小模板、完整 Demo、第三方源码和构建工具。这个目录是可独立搬移的交付根目录，构建不依赖原研发仓库或开发者机器上的源码路径。
+**版本：0.3.0-preview.2（基础建设预览，未正式发布）。** 面向 Windows 的 C++ / TypeScript 桌面 SDK，提供独立 SDK、最小模板、完整 Demo、第三方源码和构建工具。这个目录是可独立搬移的交付根目录，构建不依赖原研发仓库或开发者机器上的源码路径。
 
 长期维护、AI Agent、评审、测试和发布的统一规范见 [AGENTS.md](AGENTS.md)；所有贡献者和自动化工具在修改前都应阅读。
 
@@ -76,5 +76,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Build-Dependencies
 - [发布与打包](docs/releasing.md)
 - [故障排查](docs/troubleshooting.md)
 - [已知限制与生产门槛](docs/known-issues.md)
+- [0.3 迭代计划](docs/roadmap/0.3.0.md)
+- [0.3 基础切片进展与验证](docs/roadmap/0.3-foundation.md)
 
 当前是预览源码交付。独立构建与接入验证通过，不等于生产发布验收完成；x64 长时间内存与关闭稳定性、目标系统矩阵等剩余项目在已知限制中逐项记录。

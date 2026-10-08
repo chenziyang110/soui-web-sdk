@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
-project(SouiSdk VERSION 0.2.0 LANGUAGES C CXX)
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/include/soui/version.h" SOUI_VERSION_DECLARATION REGEX "^#define SOUI_SDK_VERSION_STRING")
+string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" SOUI_PROJECT_VERSION "${SOUI_VERSION_DECLARATION}")
+project(SouiSdk VERSION ${SOUI_PROJECT_VERSION} LANGUAGES C CXX)
 if(NOT MSVC OR NOT WIN32)
   message(FATAL_ERROR "SouiSdk currently requires Windows and the MSVC v143 toolchain")
 endif()

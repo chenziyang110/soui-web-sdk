@@ -45,4 +45,8 @@ $metadata=[ordered]@{schema='soui.application/v1';name=$Name;sdkLock='sdk-lock.j
 [IO.File]::WriteAllText((Join-Path $output 'project.json'),($metadata|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
 [IO.File]::WriteAllText((Join-Path $output 'VERSION'),$version+[Environment]::NewLine,[Text.UTF8Encoding]::new($false))
 Copy-Item -LiteralPath (Join-Path $root '.gitignore') -Destination (Join-Path $output '.gitignore')
+$attributes="* text=auto eol=lf`n"
+# SDK files are pinned byte-for-byte, including non-UTF8 vendor headers.
+foreach($entry in $manifest.files){$attributes += $entry.path + " -text`n"}
+[IO.File]::WriteAllText((Join-Path $output '.gitattributes'),$attributes,[Text.UTF8Encoding]::new($false))
 Write-Output "Created $Name with SDK $($manifest.version): $output"

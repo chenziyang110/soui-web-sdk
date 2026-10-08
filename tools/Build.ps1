@@ -20,6 +20,11 @@ if(Test-Path -LiteralPath (Join-Path $root 'sdk-lock.json')) {
 }
 $output=Join-Path $root "out/$(if($SdkOnly){'sdk-'}else{''})$Architecture"
 New-Item -ItemType Directory -Force -Path $output | Out-Null
+$evidence=Join-Path $root 'tools/internal/build-evidence.cjs'
+$evidenceArgs=@($Architecture,$Configuration)
+if($SdkOnly){$evidenceArgs+='sdk-only'}
+& $node.Source $evidence start @evidenceArgs
+if($LASTEXITCODE -ne 0){throw 'Build identity initialization failed'}
 if(-not $SkipWeb) {
   $webRoots=@('sdk/web')
   if(-not $SdkOnly){$webRoots+=if($generated){@('web')}else{@('templates/desktop-app/web','demos/workbench/web')}}
@@ -36,6 +41,8 @@ if(-not $SkipWeb) {
     if($LASTEXITCODE -ne 0){throw "Web build failed for $relative; inspect $output"}
   }
 }
+& $node.Source $evidence $(if($SkipWeb){'verify-web'}else{'record-web'}) @evidenceArgs
+if($LASTEXITCODE -ne 0){throw 'Web source/output identity verification failed'}
 $source=if($SdkOnly){Join-Path $root 'sdk'}else{$root}
 $platform=if($Architecture -eq 'x86'){'Win32'}else{'x64'}
 & $cmake.Source -S $source -B $output -G 'Visual Studio 17 2022' -A $platform '-DCMAKE_SYSTEM_VERSION=10.0.19041.0'
@@ -46,6 +53,6 @@ if($Install){
   & $cmake.Source --install $output --config $Configuration --prefix (Join-Path $root "out/install/$Architecture")
   if($LASTEXITCODE -ne 0){throw 'SDK install failed'}
 }
-$report=[ordered]@{schema='soui.source-build/v1';architecture=$Architecture;configuration=$Configuration;sdkOnly=[bool]$SdkOnly;webBuild=(-not $SkipWeb);nativeBuild='passed';releaseReady=$false;finishedAt=(Get-Date).ToString('o')}
-[IO.File]::WriteAllText((Join-Path $output "build-$Configuration.json"),($report|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
+& $node.Source $evidence finish @evidenceArgs
+if($LASTEXITCODE -ne 0){throw 'Build payload recording failed'}
 Write-Output "Build passed: $output / $Configuration"

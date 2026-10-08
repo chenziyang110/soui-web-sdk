@@ -1,6 +1,7 @@
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
 const root = path.resolve(__dirname, '../..');
+const identity = require('./delivery-identity.cjs');
 const sha = name => crypto.createHash('sha256').update(fs.readFileSync(path.join(root, name))).digest('hex');
 const definitions = [
  ['soui-source', 'third_party/sources/soui/SOURCE-MANIFEST.json', 'SOUI 2.9.0.3 lineage', 'upstream source notices'],
@@ -15,7 +16,11 @@ const definitions = [
  ['template-web', 'templates/desktop-app/web/package-lock.json', 'lockfile', 'resolved package licenses'],
  ['demo-web', 'demos/workbench/web/package-lock.json', 'lockfile', 'resolved package licenses']
 ];
-const dependencies = definitions.map(([id, source, version, license]) => ({id, source, version, license, sha256:sha(source)}));
+const dependencies = definitions.map(([id, source, version, license]) => {
+ const raw=fs.readFileSync(path.join(root,source));
+ const sourceNormalization=identity.normalization(source,raw);
+ return {id,source,version,license,sourceNormalization,sha256:identity.hash(identity.normalize(raw,sourceNormalization))};
+});
 const nativeFiles = [];
 function walk(relative) {
  for(const entry of fs.readdirSync(path.join(root, relative), {withFileTypes:true}).sort((a,b)=>a.name.localeCompare(b.name))) {

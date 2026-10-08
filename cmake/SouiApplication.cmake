@@ -16,6 +16,7 @@ function(soui_add_application target)
   get_filename_component(windows_kits_root "[HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows Kits\\Installed Roots;KitsRoot10]" ABSOLUTE)
   find_program(SOUI_MT_EXECUTABLE mt.exe
     PATHS "${windows_kits_root}/bin/${CMAKE_VS_WINDOWS_TARGET_PLATFORM_VERSION}/x64" REQUIRED)
+  find_program(SOUI_NODE_EXECUTABLE node.exe REQUIRED)
   add_executable(${target} WIN32 ${APP_SOURCES} "${APP_ROOT}/resources/demo.rc")
   target_compile_features(${target} PRIVATE cxx_std_17)
   target_compile_options(${target} PRIVATE /utf-8 /W4 /U_DEBUG)
@@ -39,7 +40,8 @@ function(soui_add_application target)
   add_custom_target(${target}_runtime ALL
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${runtime_dlls} ${crt_dlls} "$<TARGET_FILE_DIR:${target}>"
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${dep}/prebuilt/${arch}/miniblink/node.dll" "$<TARGET_FILE_DIR:${target}>/node.dll"
-    COMMAND "${CMAKE_COMMAND}" -E copy_directory "${APP_WEB_ROOT}" "$<TARGET_FILE_DIR:${target}>/resources"
+    COMMAND "${SOUI_NODE_EXECUTABLE}" "${SOUI_DISTRIBUTION_ROOT}/tools/internal/deploy-resources.cjs"
+      "${APP_WEB_ROOT}" "$<TARGET_FILE_DIR:${target}>"
     COMMAND "${SOUI_MT_EXECUTABLE}" -nologo -manifest "${APP_ROOT}/resources/app.manifest" "-outputresource:$<TARGET_FILE:${target}>;#1"
     DEPENDS ${target}
     VERBATIM)
