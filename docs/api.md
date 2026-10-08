@@ -150,6 +150,14 @@ Web 方法类型为 `SouiClipboardMethodMap`，与 `SouiCoreMethodMap` 组合使
 
 WndProc 将 WM_HOTKEY 的完整参数交给 `dispatch_message()`，仅在 `activated` 为真时执行应用动作；匹配消息不是可信手势。`unregister_shortcut()` 立即停止事件消费；失败保留 `cleanup_pending()` 供重试。成功注销后 `retired()` 为真，同一对象不再注册；新对象使用新 ID，不得在同一 HWND 生命周期内复用注销过的 ID，以免接收排队旧消息。先确认注销，再析构服务及销毁 owner。设计及限制见 [ADR-0013](adr/0013-public-menu-shortcut-and-residency.md)。
 
+## 本地连接授权（0.5.0 preview）
+
+`permission_store.create_local_binding(session, origin)` 创建本 store 的不可复制原生连接对象。它不认证 Windows 客户端，也不启用 Agent 端点；可信应用须先完成身份验证、原生授权和窗口/文档生命周期检查。页面 JSON 不能提供此对象。
+
+`issue_local(binding, capabilities, methods)` 接受明确的两份非空白名单，每份最多 64 项，返回 `{token, scope}`。普通页面 `resolve/check/lease/renew` 拒绝本地 bearer；`resolve_local(binding, token, method, capability)` 也拒绝页面 bearer、其他 store 或其他实际连接对象。相同 session/origin 字符串不能重建连接归属。方法白名单独立于 capability，执行边界必须重新调用 `resolve_local`；`scope->allows` 不能代替该检查。
+
+`lease_local` 和 `renew_local` 同时要求 `bridge.session.renew` 的 method 与 capability，并保留原有有限租约、旧 bearer 重叠和幂等规则。`binding->close()` 不可逆地停止授权，重连须新建对象。关闭与已开始发行/续租可能竞争；返回 token 不保证可执行，但发行始终交付精确 scope，供应用调用 `revoke_scope` 和 `shutdown_scope`。随后仍须完成任务、回调和 I/O 清理；close 或 revoke 不是完成 barrier。详见 [ADR-0036](adr/0036-local-connection-bound-grants.md)。
+
 ## 错误与超时
 
 `SouiBridgeError` 包含 `code` 和 `requestId`。非法响应、相关 ID 不匹配、权限拒绝、会话失效和页面等待超时都有独立错误。页面超时不代表原生任务已经取消；需要调用服务自己的取消接口。
