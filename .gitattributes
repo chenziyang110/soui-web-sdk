@@ -51,6 +51,10 @@ verification/production-validation/preview10-release-2026-10-08/**/*.ndjson -tex
 verification/production-validation/preview04-2026-10-08/**/*.jsonl -text
 verification/production-validation/preview04-2026-10-08/**/*.ndjson -text
 verification/production-validation/preview04-2026-10-08/win7/serial.txt binary
+verification/production-validation/preview04-2026-10-08/pe31-software/win7-serial.txt binary
+# Archive identities hash original evidence bytes, including guest encodings and CRLF.
+verification/production-validation/preview04-2026-10-08/** binary
+verification/production-validation/preview04-2026-10-08/README.md text eol=lf diff
 verification/production-validation/**/*.log -text
 verification/production-validation/**/cert.pem -text
 verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/*.txt -text

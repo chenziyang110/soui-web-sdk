@@ -1,6 +1,6 @@
 # 现代桌面后端与运行档位
 
-0.4.0-preview.1 开发版增加可选 `Soui::WebView2`，基础 `Soui::Sdk` 仍不链接 WebView2。兼容模板维持 Chrome 49 构建目标。现代模板使用独立 React/Vite 锁文件和 Chrome 120 构建目标；实际浏览器接口要求还在启动时验证。当前现代模板版本为 React 19.3.0、Vite 8.3.3（2026-10-08 从 npm 注册表核对）。
+0.4.0-preview.1 增加可选 `Soui::WebView2`，基础 `Soui::Sdk` 仍不链接 WebView2。兼容模板维持 Chrome 49 构建目标。现代模板使用独立 React/Vite 锁文件和 Chrome 120 构建目标；实际浏览器接口要求还在启动时验证。当前现代模板版本为 React 19.3.0、Vite 8.3.3（2026-10-08 从 npm 注册表核对）。
 
 ## 构建与独立新项目
 

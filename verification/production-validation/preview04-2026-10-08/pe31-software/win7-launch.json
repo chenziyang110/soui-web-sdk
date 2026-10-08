@@ -1,0 +1,32 @@
+{
+    "arguments":  [
+                      "-name",
+                      "soui04-win7-software",
+                      "-machine",
+                      "pc,accel=tcg",
+                      "-cpu",
+                      "core2duo",
+                      "-smp",
+                      "2",
+                      "-m",
+                      "2048",
+                      "-drive",
+                      "file=D:/SOUI-SDK-QEMU-validation/system.qcow2,format=qcow2,if=ide,index=0",
+                      "-drive",
+                      "file=fat:ro:F:/work/SOUI_WEB/soui-sdk/out/04-target-validation/pe31-software/transfer,format=raw,if=ide,index=1",
+                      "-snapshot",
+                      "-net",
+                      "none",
+                      "-vga",
+                      "std",
+                      "-display",
+                      "none",
+                      "-monitor",
+                      "tcp:127.0.0.1:45972,server=on,wait=off",
+                      "-serial",
+                      "file:F:/work/SOUI_WEB/soui-sdk/out/04-target-validation/pe31-software/win7-serial.txt"
+                  ],
+    "pid":  60220,
+    "startedAt":  "2026-10-08T05:37:44.7417451+00:00",
+    "releaseReady":  false
+}

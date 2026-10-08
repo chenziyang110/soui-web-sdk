@@ -1,11 +1,11 @@
 [
   {
     "path": "sdk/cmake/SouiSdkConfig.cmake.in",
-    "sha256": "6c8d2723319f488314bf963f1bc85ec0196fcb60c55c8bab7958ab279c259c80"
+    "sha256": "e938b96a0455b008e37a3c8a7035c58ac535b703513ac2532c3e3cc7bd01e8d7"
   },
   {
     "path": "sdk/CMakeLists.txt",
-    "sha256": "402eeb07f68318d20deee9439efba5f04c9e345f2dd6d5605aff378a21c53191"
+    "sha256": "eff1601ad706f5c86b0f52eb795f656c79f9dbc4fa47307ecd4966ee60d9b929"
   },
   {
     "path": "sdk/include/soui/bridge_adapter.h",
@@ -21,11 +21,15 @@
   },
   {
     "path": "sdk/include/soui/host/frame_pacer.h",
-    "sha256": "0d52a99dee38afabf3d48cce21706436c901b525ff8766658421d2951a223966"
+    "sha256": "49ddae57332a45e11586dd60ac074a717f57dbd2c64a3280248b82a054358342"
   },
   {
     "path": "sdk/include/soui/host/interaction_protocol.h",
     "sha256": "83265088b52fc340e620141729b8f3bef2dc35d5cd22f6b40fdb38bcbff48bad"
+  },
+  {
+    "path": "sdk/include/soui/host/runtime_profile.h",
+    "sha256": "5d79c715900b24f7de3c44cba2e13ea415d2e2f96a929ad86667d633f6f4d051"
   },
   {
     "path": "sdk/include/soui/host/soui_miniblink_host.h",
@@ -33,7 +37,11 @@
   },
   {
     "path": "sdk/include/soui/host/webview_host.h",
-    "sha256": "c24e39e5bd4c831df6e022cf5498b1e5852a57cf3ad836cb3f941fd53b6603e8"
+    "sha256": "a7dc0948eb54a9312d04bdb0a0138195a2e9fc7213b0b79d9a7d7c0cfc6297fb"
+  },
+  {
+    "path": "sdk/include/soui/host/webview2_host.h",
+    "sha256": "b1c862a424ae04579a5c66a23769a99256cf76cf5c64251ec371f9d3be35a8cc"
   },
   {
     "path": "sdk/include/soui/host/window_chrome_script.h",
@@ -101,7 +109,27 @@
   },
   {
     "path": "sdk/include/soui/version.h",
-    "sha256": "9f78dbd18f3c5c4ed41bc508332cfa9975c630b6b5e3ccf84097d82cb1ae2e96"
+    "sha256": "730a2fe26bd61f7be2deef6668275a9fcb1477c075465339341593c8fb16606f"
+  },
+  {
+    "path": "sdk/renderers/webview2/CMakeLists.txt",
+    "sha256": "83675564863e66029344a66f080a53785fc105df0f2fe415135bd4dfd23fe15f"
+  },
+  {
+    "path": "sdk/renderers/webview2/dependency.json",
+    "sha256": "de654c9666da5e7b36eaadbaacd297c49942bc6ba8bcd9f6fee141f0308956e5"
+  },
+  {
+    "path": "sdk/renderers/webview2/native-preload.js",
+    "sha256": "ca9471aa49f8d2273bb49b398869aa3fd79ddfe94ee11ee6e298f6c72d9c3665"
+  },
+  {
+    "path": "sdk/renderers/webview2/webview2_host.cpp",
+    "sha256": "f437914c566b47125a82d745b856ee26c9cb0795fd2a7e70c271e59906987785"
+  },
+  {
+    "path": "sdk/renderers/webview2/webview2_preload.h.in",
+    "sha256": "2ec8a06fce206950e8adf28f26b573d6fbe2d634413c63fc49d381621165f79b"
   },
   {
     "path": "sdk/src/host/bridge_pending_script.h",
@@ -120,8 +148,12 @@
     "sha256": "5e4fc94c99e12173ea4533fa842c73bff858584bebdd59c371c6dbeb3e040268"
   },
   {
+    "path": "sdk/src/host/runtime_profile.cpp",
+    "sha256": "f9a9f49b6c68463bd1a0cdd615d0c53865b3c8e8c9121c7e80933cf0ca0dbcd6"
+  },
+  {
     "path": "sdk/src/host/soui_miniblink_host.cpp",
-    "sha256": "92733e1163e0818191983a7c29e12e2be446e63cf40ee78a5b1182c59d92bc1d"
+    "sha256": "67ffeae0c882feece14195f6d6359f347c0fbf2a35cdc50959e68eb2385676f5"
   },
   {
     "path": "sdk/src/host/source_kernel_api.h",
@@ -181,11 +213,11 @@
   },
   {
     "path": "sdk/web/package-lock.json",
-    "sha256": "69707dd1b6e511f8afd5c6c19f797898a9bc08f5042cd3a04e2d939241e141f0"
+    "sha256": "6746eb0601824ac9bab41f822ee5133296174e684a220cad02d68fbad5c0fdf8"
   },
   {
     "path": "sdk/web/package.json",
-    "sha256": "a0bca010fedc96abafb59f13feda69ab528e24a791875beedd6440762c1337b3"
+    "sha256": "cf2738df42ca69da6bd56157fb21b2fb17db2bd0f4af3fbdb498a7f0e5228065"
   },
   {
     "path": "sdk/web/src/action-contracts.ts",
@@ -213,11 +245,15 @@
   },
   {
     "path": "sdk/web/src/index.ts",
-    "sha256": "9dcbaa4e65158cd8e3aaa267f11b41d7e4c34041e0cc23cb6499ba4c76461c0e"
+    "sha256": "9bd3ea408860b30b494fbf64a86dce6a0784daab1944d9c88a5ee113e12acb4d"
   },
   {
     "path": "sdk/web/src/protocol.ts",
     "sha256": "89ceba557be64bab3043cd4569fc1813d207276e0c07666c161ce0d1e937c8f7"
+  },
+  {
+    "path": "sdk/web/src/web-features.ts",
+    "sha256": "4cff934cfdd03d26eb80cf52ac5e1dbf4c98b1e455641db25f04c56666457461"
   },
   {
     "path": "sdk/web/tsconfig.json",
@@ -282,6 +318,50 @@
   {
     "path": "templates/desktop-app/web/vite.config.ts",
     "sha256": "d33a84349c478c59498b7645e0768e46d7c0fcfb4cbcc8a86bafcdf329a87773"
+  },
+  {
+    "path": "templates/modern-app/app/application.manifest",
+    "sha256": "6441a7e560e0f6f85eabffb9c0ad845624df096cabad134b26113f11d3615ea9"
+  },
+  {
+    "path": "templates/modern-app/app/main.cpp",
+    "sha256": "835d9b2998e93b2b777dcae7db0da83256e2c7941fad0d131d1b3c5872e406a3"
+  },
+  {
+    "path": "templates/modern-app/CMakeLists.txt",
+    "sha256": "44695f03008c7f7a715d0d1b1c46cbd86544b6524cc452c8d54db14f1b1e826a"
+  },
+  {
+    "path": "templates/modern-app/README.md",
+    "sha256": "8ab851f588ab5750444d236a20f307da48b100527bd93c390771e03df82128f2"
+  },
+  {
+    "path": "templates/modern-app/web/index.html",
+    "sha256": "5bbfbd490132e215ef13f87139a316113af5bfe3c764d91d077fa02fb6e49cc6"
+  },
+  {
+    "path": "templates/modern-app/web/package-lock.json",
+    "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+  },
+  {
+    "path": "templates/modern-app/web/package.json",
+    "sha256": "4a97746f955a4e545679337daadeefd9b0e4a7e6dc1d96edadf21dae0ab57766"
+  },
+  {
+    "path": "templates/modern-app/web/src/main.tsx",
+    "sha256": "23a37a2be6114b64bce66d67243653d4ab1575ee2da28c2203048ff67c86f5ff"
+  },
+  {
+    "path": "templates/modern-app/web/src/style.css",
+    "sha256": "2d708b090e53e094e7555a38c28a42e0089aaecddce7fbe761d01c584ddb82ec"
+  },
+  {
+    "path": "templates/modern-app/web/tsconfig.json",
+    "sha256": "03537f083fcc2c465b0e59d6a49f621680502f63ad20dca3770bedc89449235c"
+  },
+  {
+    "path": "templates/modern-app/web/vite.config.ts",
+    "sha256": "0b4a88f26380346674e5a17cf0158bd68d1dd72eefbfd6ca2951835b581863dd"
   },
   {
     "path": "demos/workbench/app/main.cpp",
@@ -2749,11 +2829,11 @@
   },
   {
     "path": "tools/Build.ps1",
-    "sha256": "19df14431b6900539e99c7312faf49a20a91aab05bab018a77cc59af0544b84f"
+    "sha256": "0defbe6f6820909f2bd30bb35a816367d3c199c0f4764ababfc9008acb178a62"
   },
   {
     "path": "tools/Collect-Verification.cjs",
-    "sha256": "aae2bd6a46ee8c318baa92512fb3699ada3430570686cf97a998759e3a897958"
+    "sha256": "d183980385e3126ce3e117fc04667f920b1dde7836ceaa59dc31e3d845e0913f"
   },
   {
     "path": "tools/contractgen/contractgen.js",
@@ -2765,7 +2845,7 @@
   },
   {
     "path": "tools/internal/build-evidence.cjs",
-    "sha256": "c3c80320d6fd68411dc776faae1e57dc6500d455ae4b258c940be3fa6f2cf087"
+    "sha256": "8306bb9fe170ee206ee5b67c288826dbbf098499d6e69812488720221ca2f3bf"
   },
   {
     "path": "tools/internal/Build-KernelLibraryArch.cmd",
@@ -2797,7 +2877,7 @@
   },
   {
     "path": "tools/internal/delivery-identity.cjs",
-    "sha256": "951aec3fdc3f6dae6bccc00c42cf98e85b8165f78dd11944435d5ec0933a2b6b"
+    "sha256": "087e60a3f8652a9166acbab63fdde7836d66839329a687ce5cefdd733e3c5e14"
   },
   {
     "path": "tools/internal/deploy-resources.cjs",
@@ -2812,16 +2892,20 @@
     "sha256": "be4acced46ec7078af7fc1ff6a47b6477f99f28f856c4b85105c6d5588b9b9cd"
   },
   {
+    "path": "tools/internal/Restore-WebView2.ps1",
+    "sha256": "ebf11b13670c2d168b9059b7077eb6f57f9f4f8a0f312d9a1293dde06f593773"
+  },
+  {
     "path": "tools/internal/source-archive.cjs",
     "sha256": "69849371301075a3357d08d86860ffdfa60b300d6579225113f0ddd5fdf9a8a7"
   },
   {
     "path": "tools/internal/Update-DependencyManifest.cjs",
-    "sha256": "ac964f41c60932bb49c6b8e9d1fda7f005f3e2fa35ed88d0264fd69cc7e936d7"
+    "sha256": "4900e8d8e649e825afe4c1f31ec12f8a99515f6069ff5ebe1f6bd0aff6fd628c"
   },
   {
     "path": "tools/New-Project.ps1",
-    "sha256": "296fcc6646988d049533eb4018b31de9e2ba8d028adeffe3471e3fccd19a0d9e"
+    "sha256": "4d12143207eb177d95cc0fb179ca9486aef8e8147771e59e041bcb5a21412148"
   },
   {
     "path": "tools/Package-Applications.ps1",
@@ -2832,8 +2916,16 @@
     "sha256": "5250b039463d4296ae61ab45556eec99ceeedc1d20e7154dec4f6266476315f4"
   },
   {
+    "path": "tools/runtime-doctor/CMakeLists.txt",
+    "sha256": "7b3d7a9e38e9410421b09b5f1b7f9ed0a8f3df40bdc9271601a5313c57b11ceb"
+  },
+  {
+    "path": "tools/runtime-doctor/main.cpp",
+    "sha256": "e662793b58379c34833a8a2bc1cb05f347634b00745d8f0fe65fa26f7cd90020"
+  },
+  {
     "path": "tools/sdk/soui-sdk.cjs",
-    "sha256": "4574de4019588b1c4924e1b214ac46682cc2e5dd4c147865b2c1f58f0cf73a90"
+    "sha256": "63f6cafacae354ad1ee0f0b89c22527d83aa7e1eaf78c00a805d1fe8c2b5d9f6"
   },
   {
     "path": "tools/Stage-SouiSource.cjs",
@@ -2848,16 +2940,20 @@
     "sha256": "f95634c2cf4d164ecda124d9d5bc86a8eeb24ee9c9701635ecb69b201278daf3"
   },
   {
+    "path": "tools/Test-Modern.ps1",
+    "sha256": "e35bec5142fe09f812ff4b8e1094542da71eedadad58a9fdf5d2ecefcc926223"
+  },
+  {
     "path": "tools/Test-TlsKernel.ps1",
     "sha256": "638061730d683e3199db6fd72a62aaafb36960e082323d14ab66f3ff396115c6"
   },
   {
     "path": "tools/Test.ps1",
-    "sha256": "08457c70227ad375224558c0a635df8df2251614a0c62ea096b05c80cd46973a"
+    "sha256": "f4c8d13357d75bfca3ba736d64ba52f4885f8d8087a7ef7fd7b277282aace8fb"
   },
   {
     "path": "tools/Verify-Release.ps1",
-    "sha256": "13a5f8026237bf18d891e6c69db7bcc8e268ae732d7fb5e17d4abcb9d3725e1b"
+    "sha256": "25f847aea95ba67506a30990fc1da3eeb409ed3dcbd5903a98fd33fd12f4ffaa"
   },
   {
     "path": "tests/acceptance/build-web.mjs",
@@ -2921,7 +3017,7 @@
   },
   {
     "path": "tests/acceptance-app/CMakeLists.txt",
-    "sha256": "1f2406d1a13e6fe87ca5fdfd10569cfa4ceceb19a43de884e64aeac663af57fa"
+    "sha256": "734fa6ecd0d16b909fabf975dd26750cba8ca700aa0f724ccd978153d5469de4"
   },
   {
     "path": "tests/acceptance-app/main.cpp",
@@ -2981,7 +3077,7 @@
   },
   {
     "path": "tests/native/CMakeLists.txt",
-    "sha256": "73597eee4131115670d290485a31aa9b48b4fef4514bbb3072b76e40d6455be0"
+    "sha256": "980eb3491bf405a2ba29465fd0aac049e95d417cd91b2dd50dd64e204bd24aed"
   },
   {
     "path": "tests/native/desktop_unicode_tests.cpp",
@@ -2992,12 +3088,20 @@
     "sha256": "f6540e451fc3e025d813f37f45fddd0dce89183c5f303ec3314de368c7532e54"
   },
   {
+    "path": "tests/native/frame_pacer_tests.cpp",
+    "sha256": "55c80852d6dc80db7d3ca587447cb3067697c40867cf3e2267a0b92b4f1e5aab"
+  },
+  {
     "path": "tests/native/host_adapter_tests.cpp",
-    "sha256": "eb4d21eea82397d3cce809b4b4761f7daeced4299d8e2bc5899f3973973db5ce"
+    "sha256": "7f8e0fdaae527e1dd8454b8f6e806ca96bd5db91e4c974cda9b479e0308caf40"
   },
   {
     "path": "tests/native/miniblink_header_abi.test.cjs",
     "sha256": "e8b08bf76bd93a02da851f3e6a26d4ab1c6b19924568af6141793febbbf06b4c"
+  },
+  {
+    "path": "tests/native/runtime_profile_tests.cpp",
+    "sha256": "b7fad064a5f8c7a4c7e68c803e732cc1f39f03b35b0ad3d79c08b9a8085c1d93"
   },
   {
     "path": "tests/native/sdk_contract_tests.cpp",
@@ -3012,6 +3116,10 @@
     "sha256": "958be24c26c0f66da324846357593673c612bcbbb4fafd65f44e236a25c922de"
   },
   {
+    "path": "tests/native/webview2_prepare_tests.cpp",
+    "sha256": "b47151f0b363965d867b600e49db3f7eba7aaf0e4edf1a08486a14a71b95dad7"
+  },
+  {
     "path": "tests/package-consumer/CMakeLists.txt",
     "sha256": "fbd18c1ed6cd024be1e0eafbf272feedbb20c0b8c8b7f8d830f1716d6145c487"
   },
@@ -3021,7 +3129,11 @@
   },
   {
     "path": "tests/sdk/delivery-identity.test.cjs",
-    "sha256": "b5ee0aa963ec735b42e64f8ac424edee1b6bff8c0b095c1db26aa132f892e0cf"
+    "sha256": "ecd33fa9e879f2ff289a9c51faba5bb6c98926d46c435baa2ed5b63d090bd8d4"
+  },
+  {
+    "path": "tests/sdk/modern-evidence.test.cjs",
+    "sha256": "2a9441b4767105fc738da6780123d161fffa6465784d13ea133ddcfe82583524"
   },
   {
     "path": "tests/sdk/release-verification.test.cjs",
@@ -3029,7 +3141,7 @@
   },
   {
     "path": "tests/sdk/sdk-package-smoke.cjs",
-    "sha256": "a35776886f5ca0cf3aaa6c65f0ae07b99dc6fa69cb3e79151189f5ad41b6c588"
+    "sha256": "5fc5b3ed217eb4057dfe0e7ee7ab6677c8cdb67d5d0eec5a3279ad6467c66965"
   },
   {
     "path": "tests/sdk/stage-soui-source.test.cjs",
@@ -3056,7 +3168,11 @@
     "sha256": "7e3be1fc39273a321020631053bee67025bc8a655de75829b632e8cf65b4cc32"
   },
   {
+    "path": "tests/web/web-features.test.mjs",
+    "sha256": "401754839e09ddcec089bf2b8cd1248c9af54a45ef1706749b6e9b15a65f81ea"
+  },
+  {
     "path": "CMakeLists.txt",
-    "sha256": "630deabf2a41811cdb7441389f1eb2eab08f965b42b4cafd59b9d122021d4008"
+    "sha256": "d679c7c592c6ec4ddbe79549c33a37e8a380893167613718bab67f87741a45d7"
   }
 ]

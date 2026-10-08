@@ -1,7 +1,7 @@
 {
   "schema": "soui.source-delivery-acceptance/v1",
-  "version": "0.3.0-preview.10",
-  "finishedAt": "2026-10-08T02:35:18.096Z",
+  "version": "0.4.0-preview.1",
+  "finishedAt": "2026-10-08T06:05:11.228Z",
   "sourceDeliveryVerified": true,
   "releaseReady": false,
   "toolchain": {
@@ -45,6 +45,32 @@
       "evidence": "native-x64-Release.json"
     }
   ],
+  "modernApplicationMatrix": [
+    {
+      "architecture": "x86",
+      "configuration": "Debug",
+      "passed": true,
+      "evidence": "modern-x86-Debug.json"
+    },
+    {
+      "architecture": "x86",
+      "configuration": "Release",
+      "passed": true,
+      "evidence": "modern-x86-Release.json"
+    },
+    {
+      "architecture": "x64",
+      "configuration": "Debug",
+      "passed": true,
+      "evidence": "modern-x64-Debug.json"
+    },
+    {
+      "architecture": "x64",
+      "configuration": "Release",
+      "passed": true,
+      "evidence": "modern-x64-Release.json"
+    }
+  ],
   "unitTests": {
     "package": {
       "passed": true,
@@ -55,6 +81,11 @@
       "passed": true,
       "exitCode": 0,
       "log": "delivery-identity-tests.log"
+    },
+    "modernDelivery": {
+      "passed": true,
+      "exitCode": 0,
+      "log": "modern-evidence-tests.log"
     },
     "release": {
       "passed": true,
@@ -140,6 +171,14 @@
       "total": 0
     },
     "demo-web": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "modern-web": {
       "info": 0,
       "low": 0,
       "moderate": 0,
