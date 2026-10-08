@@ -7,8 +7,8 @@
     {
       "path": ".gitattributes",
       "normalization": "lf",
-      "bytes": 28708,
-      "sha256": "5bedbb8a7a7478b1e1a72ac10e05826d47d0767a9111d735ead2c75efac2dbfa"
+      "bytes": 28834,
+      "sha256": "e983d100c8edf19821328fb013cd91a6d042c9e5e9885145ad2586160971b2a4"
     },
     {
       "path": ".github/CODEOWNERS",
@@ -1607,6 +1607,12 @@
       "sha256": "238e5e7022be6a35c6f4a2bf21e2319087ac13c87e172ec70be1b06eec49563e"
     },
     {
+      "path": "docs/adr/0026-optional-react-vue-gui-bindings.md",
+      "normalization": "lf",
+      "bytes": 5344,
+      "sha256": "c117ac9a30c8af00f74f7d7f9f6baad84b7e6392212762b4af3334f3312c9fbb"
+    },
+    {
       "path": "docs/adr/README.md",
       "normalization": "lf",
       "bytes": 732,
@@ -1635,6 +1641,12 @@
       "normalization": "lf",
       "bytes": 2095,
       "sha256": "6bdb25a9575d74287ccfe6f62472464a6541518db6ebb9ed862252d96c9e05c8"
+    },
+    {
+      "path": "docs/gui-bindings.md",
+      "normalization": "lf",
+      "bytes": 8714,
+      "sha256": "eef8d4daa77cd2a5e4b75476dad954d776d334d318823a8463e2b216ca4bbd02"
     },
     {
       "path": "docs/known-issues.md",
@@ -1821,6 +1833,72 @@
       "normalization": "lf",
       "bytes": 3191,
       "sha256": "a73d29f925e48b806b4662ca437393e17765b2bc78a87beee9a7dccd588979e3"
+    },
+    {
+      "path": "sdk/bindings/react/README.md",
+      "normalization": "lf",
+      "bytes": 631,
+      "sha256": "07f13916bce99107b03ff81a97207a6331b120521a2ca5467ad9b646f3c8fb18"
+    },
+    {
+      "path": "sdk/bindings/react/package-lock.json",
+      "normalization": "lf",
+      "bytes": 3436,
+      "sha256": "c962e202a795a3305b873a71969a168fae0fcbf9f52ad470661474efbfd36172"
+    },
+    {
+      "path": "sdk/bindings/react/package.json",
+      "normalization": "lf",
+      "bytes": 623,
+      "sha256": "ffeaa34d62df36d29a01b69053e950630c24c855d6b3cc8e8ea7f501e2d03657"
+    },
+    {
+      "path": "sdk/bindings/react/src/index.ts",
+      "normalization": "lf",
+      "bytes": 1177,
+      "sha256": "5de139152838b5b9ce4cdc6d211476af410df961decaba2da83c0651ad317880"
+    },
+    {
+      "path": "sdk/bindings/react/tsconfig.json",
+      "normalization": "lf",
+      "bytes": 368,
+      "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb"
+    },
+    {
+      "path": "sdk/bindings/shared/controller.ts",
+      "normalization": "lf",
+      "bytes": 3216,
+      "sha256": "92b3095a2dc736bd52d850b608d4105793bb0409faa0f9b2d803d961b83320c8"
+    },
+    {
+      "path": "sdk/bindings/vue/README.md",
+      "normalization": "lf",
+      "bytes": 694,
+      "sha256": "68565a4091b62f6243c2669975b5919fcb449620743d3371dbe7ad842104ad05"
+    },
+    {
+      "path": "sdk/bindings/vue/package-lock.json",
+      "normalization": "lf",
+      "bytes": 11782,
+      "sha256": "de67abd439c5b6957db8302b5b8cac71b03747bfdd6e870f0741e21fabc08e97"
+    },
+    {
+      "path": "sdk/bindings/vue/package.json",
+      "normalization": "lf",
+      "bytes": 570,
+      "sha256": "477c58419e905106fe79869b5ed4d422aa9e990943f1415b67fee30769e24648"
+    },
+    {
+      "path": "sdk/bindings/vue/src/index.ts",
+      "normalization": "lf",
+      "bytes": 1309,
+      "sha256": "cf20ef5f3c136b81860b1924b50def18887c90e799e7abc32f42aa2e7f0929be"
+    },
+    {
+      "path": "sdk/bindings/vue/tsconfig.json",
+      "normalization": "lf",
+      "bytes": 368,
+      "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb"
     },
     {
       "path": "sdk/cmake/SouiSdkConfig.cmake.in",
@@ -2607,6 +2685,114 @@
       "normalization": "lf",
       "bytes": 2333,
       "sha256": "3cf3ca4fe03bb30501f5523f3cffd97c5df7febd284f0549a268e5706b86b680"
+    },
+    {
+      "path": "tests/gui-bindings/.npmrc",
+      "normalization": "lf",
+      "bytes": 19,
+      "sha256": "0ed44e7d606cd7a9eba915a10f13a13a09ea85e4b2bb4415bb0c481dbdcded51"
+    },
+    {
+      "path": "tests/gui-bindings/README.md",
+      "normalization": "lf",
+      "bytes": 1368,
+      "sha256": "6ec85467a99ace3902d97216ebaf7a34960117ff5d1968ee8e2881ad65abd97c"
+    },
+    {
+      "path": "tests/gui-bindings/consumer.ts",
+      "normalization": "lf",
+      "bytes": 1112,
+      "sha256": "91dd274edf9b259d4e276dfe156b9859dbee65010c78b5a7df0821f1b81ef23b"
+    },
+    {
+      "path": "tests/gui-bindings/helpers.mjs",
+      "normalization": "lf",
+      "bytes": 2041,
+      "sha256": "6291ceb985414cc330b4f37da588bf68989b90d64fb75b0c16454560269436d5"
+    },
+    {
+      "path": "tests/gui-bindings/package-lock.json",
+      "normalization": "lf",
+      "bytes": 32159,
+      "sha256": "2eea6d481d924a344565ac38c33ccf4c9b3ae04556e60889ea344362a37b1cdd"
+    },
+    {
+      "path": "tests/gui-bindings/package.json",
+      "normalization": "lf",
+      "bytes": 811,
+      "sha256": "5422919d2fc2d25b74419fdb5c882ba4b2ba22250afa90146d1f9e1b1af24710"
+    },
+    {
+      "path": "tests/gui-bindings/packages.test.mjs",
+      "normalization": "lf",
+      "bytes": 6761,
+      "sha256": "f9d6988dc6b8eee09a4e1716af9c34a8ad4e7a4d289a59bc02df264e99650b77"
+    },
+    {
+      "path": "tests/gui-bindings/peer-range-regression.md",
+      "normalization": "lf",
+      "bytes": 1202,
+      "sha256": "e431a01f7f4ee8e21db41168fc28ed633754399310df601acb76bb1f9e75f65e"
+    },
+    {
+      "path": "tests/gui-bindings/react-suite.mjs",
+      "normalization": "lf",
+      "bytes": 10122,
+      "sha256": "9eabb81db5f4c1296c49b78d6c338abd5686c25d80d0cdaa167d823a15ce28cf"
+    },
+    {
+      "path": "tests/gui-bindings/react.test.mjs",
+      "normalization": "lf",
+      "bytes": 104,
+      "sha256": "ec1eff2f99bbcb2ad118aa4bb805b4410cd7529fe016dfb72276524c60c9991b"
+    },
+    {
+      "path": "tests/gui-bindings/react18/.npmrc",
+      "normalization": "lf",
+      "bytes": 19,
+      "sha256": "0ed44e7d606cd7a9eba915a10f13a13a09ea85e4b2bb4415bb0c481dbdcded51"
+    },
+    {
+      "path": "tests/gui-bindings/react18/consumer.ts",
+      "normalization": "lf",
+      "bytes": 627,
+      "sha256": "aa17ade5688b93133a5166076246cf6794fbe46fa149a6e808e8d3305230a7f3"
+    },
+    {
+      "path": "tests/gui-bindings/react18/package-lock.json",
+      "normalization": "lf",
+      "bytes": 4311,
+      "sha256": "b8e9391cce89e8e816c3cb5d431945cecd9394e5190f456fa5b094595963c669"
+    },
+    {
+      "path": "tests/gui-bindings/react18/package.json",
+      "normalization": "lf",
+      "bytes": 427,
+      "sha256": "6dee16c703274c5bb87e52859321a21895c8a03512c4bc277fc8b01e685b7c3b"
+    },
+    {
+      "path": "tests/gui-bindings/react18/react.test.mjs",
+      "normalization": "lf",
+      "bytes": 105,
+      "sha256": "d4ef1ac5ab9ff85a47982308626cdb970dd54f70253980b779a17a7532ba9824"
+    },
+    {
+      "path": "tests/gui-bindings/react18/tsconfig.json",
+      "normalization": "lf",
+      "bytes": 219,
+      "sha256": "ca91e5e0e329c9b183be3076b2d0ae4279f551d265489aa1cb796a068c5d416c"
+    },
+    {
+      "path": "tests/gui-bindings/tsconfig.json",
+      "normalization": "lf",
+      "bytes": 219,
+      "sha256": "ca91e5e0e329c9b183be3076b2d0ae4279f551d265489aa1cb796a068c5d416c"
+    },
+    {
+      "path": "tests/gui-bindings/vue.test.mjs",
+      "normalization": "lf",
+      "bytes": 12124,
+      "sha256": "e79e026d9d7f8794cd84c0632d34e1bf4a3ca54e4121332fe8ce481d4355fe20"
     },
     {
       "path": "tests/native/CMakeLists.txt",
@@ -174207,6 +174393,126 @@
       "normalization": "lf",
       "bytes": 1881,
       "sha256": "0285c346d2e8979806293fe7c8cb48f550ce97be648d96dff89c153037f50397"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/index.json",
+      "normalization": "none",
+      "bytes": 7369,
+      "sha256": "b77508a1f951b4494701419c82da298e4e4c8bacf57b938d3cf8f72a1571131e"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-0.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-0.stdout.log",
+      "normalization": "none",
+      "bytes": 358,
+      "sha256": "c097d7ddc668d665a11b2d0f6532a77fdf8b80a47caad7c36dd0c310bd5ecf52"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-1.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-1.stdout.log",
+      "normalization": "none",
+      "bytes": 360,
+      "sha256": "bb8cd3eea256a6b83bb8f3bfc006abab419fa86b0e2cf439a40445ec542077d1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-2.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-2.stdout.log",
+      "normalization": "none",
+      "bytes": 361,
+      "sha256": "69e36da0ad034c92fa26e81cf9caa7aa6d6aec1f5b79bd1bf38e1cf7dbb53c31"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-3.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-3.stdout.log",
+      "normalization": "none",
+      "bytes": 359,
+      "sha256": "9929b6a673ba369e5a69314aa2bb8d5a0c1040d1b9948cb402f34a7a3c8fbe85"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/components.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/components.stdout.log",
+      "normalization": "none",
+      "bytes": 2655,
+      "sha256": "a501664df4efca4fc89209ebc22e3bc3a9b6997bf68f84346f4c842e2c8f1865"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/consumer-types-react18.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/consumer-types-react18.stdout.log",
+      "normalization": "none",
+      "bytes": 102,
+      "sha256": "4f4b7b81c014a3025367de557322e5bc6505a0702d677fb284091ced37f4ef21"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/consumer-types.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/consumer-types.stdout.log",
+      "normalization": "none",
+      "bytes": 86,
+      "sha256": "2c25c6281402ca0eb5811d9967c35a7429feff3b0977999dc539f7da3d041a30"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/core-gui.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/core-gui.stdout.log",
+      "normalization": "none",
+      "bytes": 1573,
+      "sha256": "b9aa1ee89c22e6164851e2744ed9d92ac885db45004b2f4e735f8d0d492b1267"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/index.json",
+      "normalization": "none",
+      "bytes": 2974,
+      "sha256": "6346245f22d9cc80521d6c84050ea1c5507eb0b3cdec1bf183eff3fdfa18c683"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/react18.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/react18.stdout.log",
+      "normalization": "none",
+      "bytes": 1181,
+      "sha256": "a33e908a95d47ef1118424eeecb5ea617f34460cad200c00ddb46afae7eea286"
     },
     {
       "path": "verification/production-validation/076187ed-66f1-4e0d-ae12-e48da99be5e4/bridge-59165ceb-51f4-4a86-a507-9b55fcd4b899/events.ndjson",

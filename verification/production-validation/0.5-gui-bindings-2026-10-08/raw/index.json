@@ -1,0 +1,137 @@
+{
+  "schema": "soui.gui-bindings-local-check/v1",
+  "targetVersion": "0.5.0",
+  "checkoutVersion": "0.4.0-preview.3",
+  "releaseReady": false,
+  "sourceSha256": "abe305a8d20c746af3ad9d7643a897d3dd0097a1d1d890bb0b79e8dab20127de",
+  "sourceInputsUnchanged": true,
+  "allPassed": true,
+  "results": [
+    {
+      "name": "components",
+      "exe": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--test",
+        "tests/gui-bindings/react.test.mjs",
+        "tests/gui-bindings/vue.test.mjs",
+        "tests/gui-bindings/packages.test.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "passed": true
+    },
+    {
+      "name": "react18",
+      "exe": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--test",
+        "tests/gui-bindings/react18/react.test.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "passed": true
+    },
+    {
+      "name": "core-gui",
+      "exe": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--test",
+        "tests/web/gui.test.mjs"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "passed": true
+    },
+    {
+      "name": "consumer-types",
+      "exe": "npm.cmd",
+      "args": [
+        "--prefix",
+        "tests/gui-bindings",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "passed": true
+    },
+    {
+      "name": "consumer-types-react18",
+      "exe": "npm.cmd",
+      "args": [
+        "--prefix",
+        "tests/gui-bindings",
+        "run",
+        "typecheck:react18"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "passed": true
+    },
+    {
+      "name": "audit-0",
+      "exe": "npm.cmd",
+      "args": [
+        "--prefix",
+        "sdk/bindings/react",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "passed": true
+    },
+    {
+      "name": "audit-1",
+      "exe": "npm.cmd",
+      "args": [
+        "--prefix",
+        "sdk/bindings/vue",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "passed": true
+    },
+    {
+      "name": "audit-2",
+      "exe": "npm.cmd",
+      "args": [
+        "--prefix",
+        "tests/gui-bindings",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "passed": true
+    },
+    {
+      "name": "audit-3",
+      "exe": "npm.cmd",
+      "args": [
+        "--prefix",
+        "tests/gui-bindings/react18",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "passed": true
+    }
+  ],
+  "limitations": [
+    "Headless DOM and real tarball consumption, not native desktop/platform or actiongen integration.",
+    "SDK preview/stable peer fixtures alter only temporary package metadata, not actual 0.5 source certification."
+  ]
+}
