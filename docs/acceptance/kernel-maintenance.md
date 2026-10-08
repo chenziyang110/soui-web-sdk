@@ -13,6 +13,14 @@
 | HTTP 源码 | `third_party/sources/miniblink/third_party/libcurl/include/curl/curlver.h` | 版本标记为 libcurl 7.61.1；网络配置及错误路径需要独立真实测试 |
 | 精确二进制授权 | `third_party/manifests/license-review.json` | 现有状态是 `unverified`，已重新绑定 preview.4 固定 DLL；完整链接组成与再分发要求仍须维护者审阅 |
 
+[两架构固定 DLL 的直接 PE 导入记录](../../verification/production-validation/kernel-imports-2026-09-25/README.md)已与待审阅散列核对：x86 为 17 个、x64 为 19 个直接导入 DLL 名称。它只补足动态导入这一层的机械证据，不覆盖静态链接、延迟/运行时加载，也不改变二进制授权 `unverified` 状态。
+
+[同散列 DLL 的链接参数记录](../../verification/production-validation/kernel-link-inputs-2026-09-25/README.md)从原始双架构 MSBuild 日志回放提取各 36 个库参数。x86 显式传入 `openssl.lib`，x64 没有显式传入；这不是 OpenSSL 在 x64 中缺席的证明，仍须分析默认库指令、实际链接成员与完整运行载荷。原始日志只在本地保留，公开记录保存其 SHA-256。
+
+[源码声明材料定位](../../verification/production-validation/kernel-notice-inventory-2026-09-25/README.md)把这两份精确 DLL 的显式库参数与源码树中可见的候选声明文件及 SHA-256 对齐，并标出若干库源码根目录缺少顶层许可证/声明文件的事实。该定位未穷尽嵌套组件，不能替代实际链接成员、运行载荷和再分发条款审阅；二进制授权仍为 `unverified`。
+
+进一步核对发现导入源码内已有 `libxml/src/Copyright`、`libpng/png.h` 的许可正文及 `node/LICENSE-nodejs` 的 c-ares 段落。导入的 libcurl、libjpeg、OTS 文件则指向源码根目录未提供的 `COPYING`、`README`、`LICENSE`；三者的[版本匹配上游原文已补录](../../verification/production-validation/kernel-notice-recovery-2026-09-25/README.md)。嵌套组件材料、实际链接成员与运行包声明仍待完成，不能根据头文件注释自行代写。
+
 OpenSSL 官方将 1.0.2 列为已结束常规支持的分支，另有扩展支持渠道。当前项目没有扩展支持或完整安全补丁覆盖的证据，因此不能把“能自行编译”解释为“有持续安全维护”。[OpenSSL 发布策略](https://openssl-library.org/policies/releasestrat/)（访问日期：2026-09-22）
 
 ## 阻止生产放行的缺口
@@ -21,7 +29,7 @@ OpenSSL 官方将 1.0.2 列为已结束常规支持的分支，另有扩展支�
 2. **联网边界仍未完整验收**：preview.4 固定 DLL 已修正证书链与主机名校验默认配置，[本地 HTTPS 十二项测试](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)覆盖显式信任后的成功、未受信链/错误主机/重定向拒绝，以及回调不能关闭两种校验。preview.3 旧固定包在相同类别的负向测试中失败，已由新版本替换；不能把新包测试追溯成旧包安全。系统或随包信任根、代理、远程服务、动态子资源与维护更新仍无完整生产证据。受控本地页面仍可能接触网络数据。
 3. **内容与权限边界不等同于隔离**：当前 Bridge 的 session/origin/token 校验不构成操作系统进程沙箱。文件名、剪贴板文本、图片、字体、网络结果等数据入口仍须分别评估。
 4. **签名和发布责任未闭环**：未指定实际证书、发布审批者、公告受理人、补丁承诺及回退演练责任人。不以 AI 生成的姓名或默认负责人填满这些字段。
-5. **授权核对未闭环**：已有源码许可文本与文件散列；精确运行包的链接组成、随包声明及适用再分发要求仍需由维护者完成审阅。
+5. **授权核对未闭环**：已有部分源码许可文本与文件散列；精确运行包的链接组成、随包声明及适用再分发要求仍需由维护者完成审阅。首方 SDK/模板/Demo 尚未由所有者选定对外复用许可；即使日后公开仓库，也不能把公开可见等同于允许第三方使用或再分发。
 
 证书链和主机名是分别检查的条件，测试必须同时覆盖；不能以建立了 HTTPS 连接代替验证对端身份。[libcurl 证书校验](https://curl.se/libcurl/c/CURLOPT_SSL_VERIFYPEER.html)、[主机名校验](https://curl.se/libcurl/c/CURLOPT_SSL_VERIFYHOST.html)
 

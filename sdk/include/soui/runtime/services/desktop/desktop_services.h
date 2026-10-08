@@ -55,7 +55,7 @@ class clipboard_service {
  public:
   explicit clipboard_service(const permission_store& permissions) : permissions_(permissions) {}
 
-  [[nodiscard]] desktop_response write_text(const desktop_request_context& context,
+  [[nodiscard]] desktop_response write_text(void* owner, const desktop_request_context& context,
                                             const std::string& text) const;
 
  private:

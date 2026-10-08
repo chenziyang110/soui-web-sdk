@@ -198,6 +198,25 @@ class test_window final {
         }) || !bridge_.register_method("acceptance.large", "acceptance.large", [](std::string_view) {
           return "{\"data\":\"" + std::string(65536, 'x') + "\"}";
         }))) throw std::runtime_error("Cannot register acceptance bridge probes");
+    if (bridge_checks_ && !bridge_.register_task_handler("acceptance.count",
+        [](const soui::runtime::task_invocation& invocation,
+           const soui::runtime::task_control& control) {
+          const auto steps = invocation.parameters_json == R"({"steps":10})" ? 10 :
+                             invocation.parameters_json == R"({"steps":100})" ? 100 : 0;
+          if (!steps) return soui::runtime::task_outcome{
+              soui::runtime::result_kind::failure, "{}", "Unsupported acceptance input."};
+          for (int index = 1; index <= steps; ++index) {
+            if (control.cancellation_requested()) return soui::runtime::task_outcome{
+                soui::runtime::result_kind::task_cancelled, "{}", "Cancelled."};
+            std::this_thread::sleep_for(std::chrono::milliseconds(20));
+            if (!control.report_progress(static_cast<std::uint32_t>(index * 100 / steps), "Counting"))
+              return soui::runtime::task_outcome{
+                  soui::runtime::result_kind::task_cancelled, "{}", "Cancelled."};
+          }
+          return soui::runtime::task_outcome{
+              soui::runtime::result_kind::success,
+              "{\"steps\":" + std::to_string(steps) + "}", "Completed."};
+        })) throw std::runtime_error("Cannot register public SDK task probe");
   }
   test_window(const test_window&) = delete;
   test_window& operator=(const test_window&) = delete;

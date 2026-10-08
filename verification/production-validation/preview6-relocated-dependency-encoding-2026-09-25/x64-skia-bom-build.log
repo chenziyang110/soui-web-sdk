@@ -1,0 +1,431 @@
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  SkAAClip.cpp
+  SkAdvancedTypefaceMetrics.cpp
+  SkAlphaRuns.cpp
+  SkAnnotation.cpp
+  SkBBHFactory.cpp
+  SkBigPicture.cpp
+  SkBitmap.cpp
+  SkBitmapCache.cpp
+  SkBitmapController.cpp
+  SkBitmapDevice.cpp
+  SkBitmapFilter.cpp
+  SkBitmapHeap.cpp
+  SkBitmapProcShader.cpp
+  SkBitmapProcState.cpp
+  SkBitmapProcState_matrixProcs.cpp
+  SkBitmapScaler.cpp
+  SkBlitMask_D32.cpp
+  SkBlitRow_D16.cpp
+  SkBlitRow_D32.cpp
+  SkBlitter.cpp
+  SkBlitter_A8.cpp
+  SkBlitter_ARGB32.cpp
+  SkBlitter_RGB16.cpp
+  SkBlitter_Sprite.cpp
+  SkBuffer.cpp
+  SkCachedData.cpp
+  SkCanvas.cpp
+  SkChunkAlloc.cpp
+  SkClipStack.cpp
+  SkColor.cpp
+  SkColorFilter.cpp
+  SkColorTable.cpp
+  SkComposeShader.cpp
+  SkConfig8888.cpp
+  SkConvolver.cpp
+  SkCubicClipper.cpp
+  SkData.cpp
+  SkDataTable.cpp
+  SkDebug.cpp
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\core\SkData.cpp(74,40): warning C4291: “void *SkData::operator new(size_t,void *)”: 未找到匹配的删除运算符；如果初始化引发异常，则不会释放内存 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+      D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\include\core\SkData.h(174,11):
+      参见“SkData::operator new”的声明
+  
+  SkDeque.cpp
+  SkDevice.cpp
+  SkDeviceLooper.cpp
+  SkDeviceProfile.cpp
+  SkDistanceFieldGen.cpp
+  SkDither.cpp
+  SkDraw.cpp
+  SkDrawable.cpp
+  SkDrawLooper.cpp
+  SkEdge.cpp
+  SkEdgeBuilder.cpp
+  SkEdgeClipper.cpp
+  SkError.cpp
+  SkFilterProc.cpp
+  SkFilterShader.cpp
+  SkFlate.cpp
+  SkFlattenable.cpp
+  SkFlattenableSerialization.cpp
+  SkFloatBits.cpp
+  SkFont.cpp
+  SkFontDescriptor.cpp
+  SkFontHost.cpp
+  SkFontMgr.cpp
+  SkFontStream.cpp
+  SkFontStyle.cpp
+  SkForceCPlusPlusLinking.cpp
+  SkGeometry.cpp
+  SkGlyphCache.cpp
+  SkGraphics.cpp
+  SkHalf.cpp
+  SkImageFilter.cpp
+  SkImageGenerator.cpp
+  SkImageInfo.cpp
+  SkLineClipper.cpp
+  SkLocalMatrixShader.cpp
+  SkMallocPixelRef.cpp
+  SkMask.cpp
+  SkMaskCache.cpp
+  SkMaskFilter.cpp
+  SkMaskGamma.cpp
+  SkMath.cpp
+  SkMatrix.cpp
+  SkMatrixImageFilter.cpp
+  SkMetaData.cpp
+  SkMiniRecorder.cpp
+  SkMipMap.cpp
+  SkMultiPictureDraw.cpp
+  SkNinePatchIter.cpp
+  SkPackBits.cpp
+  SkPaint.cpp
+  SkPaintPriv.cpp
+  SkPath.cpp
+  SkPathEffect.cpp
+  SkPathMeasure.cpp
+  SkPathRef.cpp
+  SkPicture.cpp
+  SkPictureContentInfo.cpp
+  SkPictureData.cpp
+  SkPictureFlat.cpp
+  SkPicturePlayback.cpp
+  SkPictureRecord.cpp
+  SkPictureRecorder.cpp
+  SkPictureShader.cpp
+  SkPixelRef.cpp
+  SkPixmap.cpp
+  SkPoint.cpp
+  SkPtrRecorder.cpp
+  SkQuadClipper.cpp
+  SkRasterClip.cpp
+  SkRasterizer.cpp
+  SkReadBuffer.cpp
+  SkRecord.cpp
+  SkRecordDraw.cpp
+  SkRecorder.cpp
+  SkRecordOpts.cpp
+  SkRect.cpp
+  SkRefDict.cpp
+  SkRegion.cpp
+  SkRegion_path.cpp
+  SkResourceCache.cpp
+  SkRRect.cpp
+  SkRTree.cpp
+  SkRWBuffer.cpp
+  SkScalar.cpp
+  SkScalerContext.cpp
+  SkScan.cpp
+  SkScan_Antihair.cpp
+  SkScan_AntiPath.cpp
+  SkScan_Hairline.cpp
+  SkScan_Path.cpp
+  SkSemaphore.cpp
+  SkShader.cpp
+  SkSharedMutex.cpp
+  SkSpinlock.cpp
+  SkSpriteBlitter_ARGB32.cpp
+  SkSpriteBlitter_RGB16.cpp
+  SkStream.cpp
+  SkString.cpp
+  SkStringUtils.cpp
+  SkStroke.cpp
+  SkStrokeRec.cpp
+  SkStrokerPriv.cpp
+  SkTaskGroup.cpp
+  SkTextBlob.cpp
+  SkTime.cpp
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\core\SkTextBlob.cpp(598,64): warning C4291: “void *SkTextBlob::operator new(size_t,void *)”: 未找到匹配的删除运算符；如果初始化引发异常，则不会释放内存 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+      D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\include\core\SkTextBlob.h(91,11):
+      参见“SkTextBlob::operator new”的声明
+  
+  SkTLS.cpp
+  SkTSearch.cpp
+  SkTypeface.cpp
+  SkTypefaceCache.cpp
+  SkUnPreMultiply.cpp
+  SkUtils.cpp
+  SkUtilsArm.cpp
+  SkValidatingReadBuffer.cpp
+  SkVarAlloc.cpp
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\core\SkVarAlloc.cpp(55,21): warning C4334: “<<”: 32 位移位的结果被隐式转换为 64 位(是否希望进行 64 位移位?) [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  SkVertState.cpp
+  SkWriteBuffer.cpp
+  SkWriter32.cpp
+  SkXfermode.cpp
+  SkXfermodeInterpretation.cpp
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,93): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/core/SkXfermode.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,91): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/core/SkXfermode.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,89): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/core/SkXfermode.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,84): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/core/SkXfermode.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,82): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/core/SkXfermode.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,80): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/core/SkXfermode.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,75): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/core/SkXfermode.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,73): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/core/SkXfermode.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,71): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/core/SkXfermode.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,66): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/core/SkXfermode.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,64): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/core/SkXfermode.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,62): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/core/SkXfermode.cpp”)
+  
+  SkYUVPlanesCache.cpp
+  SkDocument.cpp
+  SkDocument_PDF.cpp
+  SkClampRange.cpp
+  SkGradientBitmapCache.cpp
+  SkGradientShader.cpp
+  SkLinearGradient.cpp
+  SkRadialGradient.cpp
+  SkSweepGradient.cpp
+  SkTwoPointConicalGradient.cpp
+  SkTwoPointConicalGradient_gpu.cpp
+  Sk1DPathEffect.cpp
+  Sk2DPathEffect.cpp
+  SkAlphaThresholdFilter.cpp
+  SkArcToPathEffect.cpp
+  SkArithmeticMode.cpp
+  SkArithmeticMode_gpu.cpp
+  SkBitmapSource.cpp
+  SkBlurDrawLooper.cpp
+  SkBlurImageFilter.cpp
+  SkBlurMask.cpp
+  SkBlurMaskFilter.cpp
+  SkColorCubeFilter.cpp
+  SkColorFilterImageFilter.cpp
+  SkColorFilters.cpp
+  SkColorMatrix.cpp
+  SkColorMatrixFilter.cpp
+  SkComposeImageFilter.cpp
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,93): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/effects/SkColorMatrixFilter.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,91): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/effects/SkColorMatrixFilter.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,89): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/effects/SkColorMatrixFilter.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,84): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/effects/SkColorMatrixFilter.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,82): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/effects/SkColorMatrixFilter.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,80): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/effects/SkColorMatrixFilter.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,75): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/effects/SkColorMatrixFilter.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,73): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/effects/SkColorMatrixFilter.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,71): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/effects/SkColorMatrixFilter.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,66): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/effects/SkColorMatrixFilter.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,64): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/effects/SkColorMatrixFilter.cpp”)
+  
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\opts\SkPMFloat_sse.h(15,62): warning C4309: “参数”: 截断常量值 [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  (编译源文件“../../third_party/skia/src/effects/SkColorMatrixFilter.cpp”)
+  
+  SkCornerPathEffect.cpp
+  SkDashPathEffect.cpp
+  SkDiscretePathEffect.cpp
+  SkDisplacementMapEffect.cpp
+  SkDropShadowImageFilter.cpp
+  SkEmbossMask.cpp
+  SkEmbossMaskFilter.cpp
+  SkGpuBlurUtils.cpp
+  SkLayerDrawLooper.cpp
+  SkLayerRasterizer.cpp
+  SkLerpXfermode.cpp
+  SkLightingImageFilter.cpp
+  SkLumaColorFilter.cpp
+  SkMagnifierImageFilter.cpp
+  SkMatrixConvolutionImageFilter.cpp
+  SkMergeImageFilter.cpp
+  SkMorphologyImageFilter.cpp
+  SkOffsetImageFilter.cpp
+  SkPaintFlagsDrawFilter.cpp
+  SkPerlinNoiseShader.cpp
+  SkPictureImageFilter.cpp
+  SkPixelXorXfermode.cpp
+  SkRectShaderImageFilter.cpp
+  SkTableColorFilter.cpp
+  SkTableMaskFilter.cpp
+  SkTestImageFilters.cpp
+  SkTileImageFilter.cpp
+  SkXfermodeImageFilter.cpp
+  SkFontMgr_indirect.cpp
+  SkGScalerContext.cpp
+  SkRandomScalerContext.cpp
+  SkRemotableFontMgr.cpp
+  SkTestScalerContext.cpp
+  bmpdecoderhelper.cpp
+  SkDecodingImageGenerator.cpp
+  SkForceLinking.cpp
+  SkImageDecoder.cpp
+  SkImageDecoder_FactoryDefault.cpp
+  SkImageDecoder_FactoryRegistrar.cpp
+  SkImageDecoder_libbmp.cpp
+  SkImageDecoder_wbmp.cpp
+  SkImageEncoder.cpp
+  SkImageEncoder_argb.cpp
+  SkImageEncoder_Factory.cpp
+  SkMovie.cpp
+  SkPageFlipper.cpp
+  SkScaledBitmapSampler.cpp
+  SkImage.cpp
+  SkImage_Raster.cpp
+  SkSurface.cpp
+  SkSurface_Raster.cpp
+  SkCachingPixelRef.cpp
+  SkDiscardableMemoryPool.cpp
+  SkDiscardablePixelRef.cpp
+  opts_check_x86.cpp
+  SkBitmapFilter_opts_SSE2.cpp
+  SkBitmapProcState_opts_SSE2.cpp
+  SkBitmapProcState_opts_SSSE3.cpp
+  SkBlitRow_opts_SSE2.cpp
+  SkBlitRow_opts_SSE4.cpp
+  SkBlurImage_opts_SSE2.cpp
+  SkBlurImage_opts_SSE4.cpp
+  SkMorphology_opts_SSE2.cpp
+  SkUtils_opts_SSE2.cpp
+  SkXfermode_opts_SSE2.cpp
+  SkAddIntersections.cpp
+  SkDConicLineIntersection.cpp
+  SkDCubicLineIntersection.cpp
+  SkDCubicToQuads.cpp
+  SkDLineIntersection.cpp
+  SkDQuadLineIntersection.cpp
+  SkIntersections.cpp
+  SkOpAngle.cpp
+  SkOpBuilder.cpp
+  SkOpCoincidence.cpp
+  SkOpContour.cpp
+  SkOpCubicHull.cpp
+  SkOpEdgeBuilder.cpp
+  SkOpSegment.cpp
+  SkOpSpan.cpp
+  SkPathOpsCommon.cpp
+  SkPathOpsConic.cpp
+  SkPathOpsCubic.cpp
+  SkPathOpsCurve.cpp
+  SkPathOpsDebug.cpp
+  SkPathOpsLine.cpp
+  SkPathOpsOp.cpp
+  SkPathOpsPoint.cpp
+  SkPathOpsQuad.cpp
+  SkPathOpsRect.cpp
+  SkPathOpsSimplify.cpp
+  SkPathOpsTightBounds.cpp
+  SkPathOpsTSect.cpp
+  SkPathOpsTypes.cpp
+  SkPathOpsWinding.cpp
+  SkPathWriter.cpp
+  SkReduceOrder.cpp
+  SkJpegInfo.cpp
+  SkPDFBitmap.cpp
+  SkPDFCanon.cpp
+  SkPDFDevice.cpp
+  SkPDFFont.cpp
+  SkPDFFormXObject.cpp
+  SkPDFGraphicState.cpp
+  SkPDFResourceDict.cpp
+  SkPDFShader.cpp
+  SkPDFStream.cpp
+  SkPDFTypes.cpp
+  SkPDFUtils.cpp
+  SkGPipeRead.cpp
+  SkGPipeWrite.cpp
+  SamplePipeControllers.cpp
+  SkDebug_win.cpp
+  SkDiscardableMemory_none.cpp
+  SkFontHost_win.cpp
+  SkFontMgr_win_gdi_factory.cpp
+  SkGlobalInitialization_chromium.cpp
+  SkImageGenerator_skia.cpp
+  SkMemory_malloc.cpp
+  SkOSFile_stdio.cpp
+  SkOSFile_win.cpp
+  SkTime_win.cpp
+  SkTLS_win.cpp
+  SkOTUtils.cpp
+  SkBase64.cpp
+  SkBitmapHasher.cpp
+  SkBitSet.cpp
+  SkBoundaryPatch.cpp
+  SkCamera.cpp
+  SkCanvasStack.cpp
+  SkCanvasStateUtils.cpp
+  SkCubicInterval.cpp
+  SkCullPoints.cpp
+  SkDashPath.cpp
+  SkDeferredCanvas.cpp
+  SkDumpCanvas.cpp
+  SkEventTracer.cpp
+  SkFrontBufferedStream.cpp
+  SkInterpolator.cpp
+  SkLayer.cpp
+  SkMatrix22.cpp
+  SkMatrix44.cpp
+  SkMD5.cpp
+  SkMeshUtils.cpp
+  SkNinePatch.cpp
+  SkNullCanvas.cpp
+  SkNWayCanvas.cpp
+  SkOSFile.cpp
+  SkPaintFilterCanvas.cpp
+  SkParse.cpp
+  SkParseColor.cpp
+  SkParsePath.cpp
+  SkPatchGrid.cpp
+  SkPatchUtils.cpp
+  SkRTConf.cpp
+  SkSHA1.cpp
+  SkTextBox.cpp
+  SkThreadUtils_win.cpp
+  SkHRESULT.cpp
+D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\third_party\skia\src\utils\SkThreadUtils_win.cpp(134,38): warning C4334: “<<”: 32 位移位的结果被隐式转换为 64 位(是否希望进行 64 位移位?) [D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\third_party\sources\miniblink\build\skia\skia.vcxproj]
+  SkIStream.cpp
+  skia.vcxproj -> D:\SOUI-SDK-QEMU-validation\preview6-source-stage-20260925-a8b6114a\out\dependencies\x64\libraries\lib\skia.lib

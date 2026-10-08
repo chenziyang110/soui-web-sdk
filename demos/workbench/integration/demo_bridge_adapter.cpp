@@ -43,6 +43,7 @@ bool matches_kind(const json& value, std::string_view kind) {
   if (kind == "boolean") return value.is_boolean();
   if (kind == "number") return value.is_number_integer();
   if (kind == "array") return value.is_array();
+  if (kind == "object") return value.is_object();
   return false;
 }
 
@@ -245,6 +246,29 @@ std::filesystem::path bundled_fileinsight_fixture(const wchar_t* fixture_name) {
 demo_bridge_adapter::demo_bridge_adapter()
     : scanner_(permissions_, tasks_), picker_(permissions_), windows_(permissions_), clipboard_(permissions_),
       transport_(registry_, permissions_) {
+  (void)public_tasks_.register_handler("demo.count", [](const soui::runtime::task_invocation& invocation,
+                                                         const soui::runtime::task_control& control) {
+    const auto input = json::parse(invocation.parameters_json, nullptr, false);
+    if (!input.is_object() || input.size() != 1U || !input.contains("steps") ||
+        !input["steps"].is_number_integer()) {
+      return soui::runtime::task_outcome{soui::runtime::result_kind::failure, "{}", "Invalid count input."};
+    }
+    const auto steps = input["steps"].get<int>();
+    if (steps < 1 || steps > 200) {
+      return soui::runtime::task_outcome{soui::runtime::result_kind::failure, "{}", "steps must be 1..200."};
+    }
+    int sum = 0;
+    for (int step = 1; step <= steps; ++step) {
+      if (control.cancellation_requested())
+        return soui::runtime::task_outcome{soui::runtime::result_kind::task_cancelled, "{}", "Count cancelled."};
+      sum += step;
+      if (step == steps || step % 5 == 0)
+        (void)control.report_progress(static_cast<std::uint32_t>(step * 100 / steps), "Counting in native SDK worker.");
+      std::this_thread::sleep_for(std::chrono::milliseconds(5));
+    }
+    return soui::runtime::task_outcome{soui::runtime::result_kind::success,
+                                       json{{"count", steps}, {"sum", sum}}.dump(), "Count complete."};
+  });
   register_methods();
   soui::modules::fileinsight::FileinsightService::register_methods(registry_, scanner_);
 }
@@ -264,6 +288,14 @@ void demo_bridge_adapter::set_event_sink(event_sink sink) {
     std::lock_guard<std::mutex> lock(subscription_mutex_);
     event_sink_ = std::move(sink);
   }
+  public_tasks_.set_event_sink([this](std::string_view event_text) {
+    event_sink sink_copy;
+    {
+      std::lock_guard<std::mutex> lock(subscription_mutex_);
+      sink_copy = event_sink_;
+    }
+    if (sink_copy) sink_copy(event_text);
+  });
   scanner_.set_event_sink([this](std::string_view event_text) {
     const auto event = json::parse(event_text.begin(), event_text.end(), nullptr, false);
     if (!event.is_object()) return;
@@ -301,6 +333,7 @@ void demo_bridge_adapter::set_event_sink(event_sink sink) {
 
 void demo_bridge_adapter::shutdown_session(const std::string& session_id) {
   requested_frame_rate_.store(60);
+  public_tasks_.shutdown_session(session_id);
   {
     std::lock_guard<std::mutex> lock(subscription_mutex_);
     if (active_bootstrap_session_ == session_id) active_bootstrap_session_.clear();
@@ -367,7 +400,7 @@ std::string demo_bridge_adapter::handle_json(std::string_view json_text, bool na
         active_bootstrap_session_ = session_id;
       }
       const std::string origin = "app://demo";
-      const auto token = issue_session(session_id, origin, {"filesystem.read", "bridge.probe", "desktop.rendering.control",
+      const auto token = issue_session(session_id, origin, {"filesystem.read", "task.start", "bridge.probe", "desktop.rendering.control",
           "media.convert",
           "desktop.media.pickFile",
           "desktop.workload",
@@ -417,9 +450,11 @@ std::string demo_bridge_adapter::handle_json(std::string_view json_text, bool na
           method == "desktop.window.toggleMaximize" || method == "desktop.window.close") {
         params["userGesture"] = native_user_gesture;
       }
-      params["sessionId"] = envelope.value("sessionId", "");
-      params["origin"] = origin;
-      params["token"] = token;
+      if (method != "task.start") {
+        params["sessionId"] = session_id;
+        params["origin"] = origin;
+        params["token"] = token;
+      }
       return transport_.handle_json(envelope.dump());
     }
   } catch (const json::parse_error&) {
@@ -1844,12 +1879,17 @@ void demo_bridge_adapter::register_methods() {
         if (!started.ok()) return payload_error(started.code, started.message);
         return "{\"taskId\":\"" + json_escape(started.task_id) + "\",\"accepted\":true}";
       });
-  (void)registry_.register_method(
-      "task.query", "task.query", [this](std::string_view params) -> std::string {
-        const std::string value(params);
+  (void)registry_.register_contextual_method(
+      "task.start", "task.start", [this](const soui::runtime::bridge_request& request) {
+        return public_tasks_.start(request);
+      });
+  (void)registry_.register_contextual_method(
+      "task.query", "task.query", [this](const soui::runtime::bridge_request& request) -> std::string {
+        const std::string value(request.params_json);
         soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            request.session_id, request.origin, request.token};
         const auto task_id = string_param(value, "taskId");
+        if (task_id.compare(0, 9, "sdk-task-") == 0) return public_tasks_.query(request);
         if (owns_media_task(context, task_id)) return media_task_json(context, task_id);
         if (owns_media_preview_task(context, task_id)) return media_preview_task_json(context, task_id);
         if (owns_workload_task(context, task_id)) return workload_task_json(context, task_id);
@@ -1893,12 +1933,13 @@ void demo_bridge_adapter::register_methods() {
         }
         return scan_page_json(page).dump();
       });
-  (void)registry_.register_method(
-      "task.cancel", "task.cancel", [this](std::string_view params) -> std::string {
-        const std::string value(params);
+  (void)registry_.register_contextual_method(
+      "task.cancel", "task.cancel", [this](const soui::runtime::bridge_request& request) -> std::string {
+        const std::string value(request.params_json);
         soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            request.session_id, request.origin, request.token};
         const auto task_id = string_param(value, "taskId");
+        if (task_id.compare(0, 9, "sdk-task-") == 0) return public_tasks_.cancel(request);
         if (owns_media_preview_task(context, task_id)) {
           media_preview_job* job = nullptr;
           {
@@ -1960,15 +2001,16 @@ void demo_bridge_adapter::register_methods() {
         }
         return "{\"taskId\":\"" + json_escape(task_id) + "\",\"state\":\"cancel-pending\",\"cancelRequested\":true}";
       });
-  (void)registry_.register_method(
-      "task.subscribe", "task.subscribe", [this](std::string_view params) -> std::string {
-        const std::string value(params);
+  (void)registry_.register_contextual_method(
+      "task.subscribe", "task.subscribe", [this](const soui::runtime::bridge_request& request) -> std::string {
+        const std::string value(request.params_json);
         const auto task_id = demo_bridge_adapter::string_param(value, "taskId");
+        if (task_id.compare(0, 9, "sdk-task-") == 0) return public_tasks_.subscribe(request);
         const auto event = demo_bridge_adapter::string_param(value, "eventName");
         if (task_id.empty() || event.empty()) return payload_error("E_INVALID_PARAMS", "taskId and eventName are required.");
         if (event != "task.progress") return payload_error("E_INVALID_PARAMS", "Only task.progress can be subscribed.");
         const soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            request.session_id, request.origin, request.token};
         if (!scanner_.owns_task(context, task_id) && !owns_media_task(context, task_id) &&
             !owns_media_preview_task(context, task_id) && !owns_workload_task(context, task_id)) {
           return payload_error("E_TASK_NOT_FOUND", "The task is not valid for this session.");
@@ -1985,12 +2027,14 @@ void demo_bridge_adapter::register_methods() {
         }
         return json{{"subscriptionId", subscription_id}}.dump();
       });
-  (void)registry_.register_method(
-      "task.unsubscribe", "task.subscribe", [this](std::string_view params) -> std::string {
-        const std::string value(params);
+  (void)registry_.register_contextual_method(
+      "task.unsubscribe", "task.subscribe", [this](const soui::runtime::bridge_request& request) -> std::string {
+        const std::string value(request.params_json);
         const soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            request.session_id, request.origin, request.token};
         const auto subscription_id = string_param(value, "subscriptionId");
+        if (subscription_id.compare(0, 17, "sdk-subscription-") == 0)
+          return public_tasks_.unsubscribe(request);
         std::lock_guard<std::mutex> lock(subscription_mutex_);
         const auto found = subscriptions_.find(subscription_id);
         if (found == subscriptions_.end() || found->second.context.session_id != context.session_id ||
@@ -2055,7 +2099,7 @@ void demo_bridge_adapter::register_methods() {
         soui::runtime::desktop_request_context context{
             string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"),
             bool_param(value, "userGesture")};
-        const auto response = clipboard_.write_text(context, string_param(value, "text"));
+        const auto response = clipboard_.write_text(owner_window_, context, string_param(value, "text"));
         if (!response.ok()) return payload_error(response.code, response.message);
         return "{\"applied\":true}";
       });

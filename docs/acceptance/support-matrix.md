@@ -2,6 +2,10 @@
 
 日期：2026-09-24。状态：采集中，不是正式支持声明。首批真实项目要求最低 Windows 7 SP1，包含 x86；不能仅凭本机 Windows 11 上的 x86 进程结果放行。
 
+2026-09-25 增补：[preview.7 最终完整源码重编 x86 载荷](../../verification/production-validation/win7-sp1-x86-qemu-preview7-final-source-2026-09-25/README.md)已在 Windows 7 SP1 x86 QEMU 通过 Starter、Workbench 默认页和 React 页短启动，且来宾系统身份、载荷散列、退出码和 24 份串口结果复核通过。它不扩展为物理设备、完整业务或性能结论；下表各旧版本证据仍保留原身份。
+
+preview.8 [无 Git 候选源码包双架构重编与四组应用构建](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)通过；[同源重编 x86 载荷](../../verification/production-validation/win7-sp1-x86-qemu-preview8-isolated-source-2026-09-25/README.md)也在 QEMU 的 Windows 7 SP1 x86 完成三入口短测、24 份串口结果与篡改反例。另有[最终源码包生成的独立项目 Win7 SP1 x86 QEMU 短测](../../verification/production-validation/win7-sp1-x86-qemu-preview8-independent-consumer-2026-09-25/README.md)完成模板工程实际运行；首次脚本校验失败保留，修正后复测通过。[同一源码包构建的独立公共 SDK 页面消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview8-public-task-2026-09-25/README.md)在 Win7 x86 QEMU 完成公开任务进度、取消、容量与恢复三轮短测。以下物理设备与体验要求不因虚拟机短测而降低。
+
 ## 已使用的设备
 
 当前实际设备为 Windows 11 Pro 25H2，`10.0.26200.9457`，AMD Ryzen 9 9950X（16 核/32 逻辑处理器）。系统同时枚举 AMD Radeon、Intel Arc A380 及虚拟显示适配器；实际呈现所用设备、显示输出和 DPI 仍须逐个测试确认。不能从枚举到显卡或装有中文输入法直接推断功能已经通过。
@@ -14,7 +18,7 @@
 |---|---|---|
 | 本机 x64 Release | preview.4 固定包公共消费者软件路径重建/重载/三窗口/Bridge 各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)、[GPU 专项](gpu-lifecycle.md)和[当前应用回归](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)分别绑定身份；资源总体与业务长稳未通过 |
 | 本机 x86 Release | preview.4 固定包公共消费者软件路径重载/销毁重建/三窗口/Bridge 各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)与[GPU 专项](gpu-lifecycle.md)分别记录；资源门和业务长稳未通过，也不是独立 32 位系统的兼容结论 |
-| 本机 x86/x64 Debug | 无 preview.4 当前源码新报告 | 待验证 |
+| 本机 x86/x64 Debug | preview.8 完整源码候选在本机两架构的 Debug 应用编译、完整测试和三入口桌面短测均通过，见[四组构建证据](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md) | 仅此候选的本机 Debug 短验收通过；目标系统 Debug、独立项目 Debug、资源与长期稳定仍未验证 |
 | Windows 10 指定版本/补丁 | 无本轮目标机报告 | 待登记设备和执行；不得推广本机结果 |
 | Windows 7 SP1 x86 | [preview.5 QEMU 应用短测](../../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)：6.1.7601/32-bit、模板与 Workbench 默认/React 三项退出码 0；[同版公共消费者短测](../../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)：Bridge、重载、重建、三窗口各 3 轮；[原生任务容量测试](../../verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/README.md)退出码 0；[另一诊断源码 100 次重载](../../verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/README.md)退出码 0，内存末点增量低于 16 MiB 数值线 | 虚拟机软件路径三应用、四模式短操作、原生容量单测及新来源 100 次重载操作通过；句柄/线程末点上升、资源整体门、Bridge 千轮、公共任务满载业务、物理设备、完整 Demo、安装签名、TLS 信任根/代理、中文 IME、DPI 与升级回退仍未通过或未验证，不能生产放行 |
 | Windows 7 SP1 x64 | 只锁定了最低系统与 x86 必需组合；x64 是否为首批必需尚待产品矩阵确定 | 若列入支持，须另行完成目标机验收；不能沿用 x86 或 Windows 11 结果 |

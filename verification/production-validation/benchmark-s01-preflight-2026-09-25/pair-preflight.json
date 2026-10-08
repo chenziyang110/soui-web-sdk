@@ -1,0 +1,62 @@
+{
+  "schema": "soui.benchmark-pair-preflight/v1",
+  "scene": "S01",
+  "preflightAccepted": false,
+  "checks": {
+    "pagePair": true,
+    "inputMatched": true,
+    "samePageBundle": false,
+    "toolsMatched": true,
+    "hostIdentity": false,
+    "bothTraceIntegrityAccepted": true
+  },
+  "runs": [
+    {
+      "host": "soui",
+      "runId": "a0c842a7-3099-4fb5-85d2-195bc2b713c4",
+      "pageDurationMs": 61771.635,
+      "inputDurationMs": 61844,
+      "resources": {
+        "samples": 62,
+        "privateBytesP50": 54636544,
+        "privateBytesP95": 58961920,
+        "cpuPercentP50": 2.796209,
+        "cpuPercentP95": 3.170029
+      },
+      "rawSha256": {
+        "run": "de7b72edfb7fea23cc30727cafbebbf8aaab94b06da80d1f262d04891ecaaf18",
+        "page": "eb36b698d21b0f21c087c0fef640eae90e74648c19f21625eac8a739ca1dab40",
+        "input": "d1785ba4754864e11ab74193ef97867853fff030c7a57a55b2b643ac99947473",
+        "processTree": "f6b0e06680e08dff12dd3dc186eb595d1500442d5cfb1abd074d077e3ac60271"
+      }
+    },
+    {
+      "host": "electron",
+      "runId": "dc83669a-90aa-4160-8238-b394eca81dd1",
+      "pageDurationMs": 61977.09999990463,
+      "inputDurationMs": 61844,
+      "resources": {
+        "samples": 61,
+        "privateBytesP50": 241094656,
+        "privateBytesP95": 243314688,
+        "cpuPercentP50": 0.047348,
+        "cpuPercentP95": 0.142045
+      },
+      "rawSha256": {
+        "run": "2932e79868211247705b1bc928cfbb224a3fee69f2f6ffb4065d1e3efde7a7e7",
+        "page": "c9c57d8339d7ff678e1d56e34c8cbb4568208ac64e1ab6de975948d8c705032c",
+        "input": "f8557844e065aca25cedf8a98e844edc6c27c0c69db8f596ff03bc2338f502b2",
+        "processTree": "8ea640730c30d3646dae92d1e15306d98aa8f9d290122ac3dd4fb3796e117160"
+      }
+    }
+  ],
+  "remainingEvidence": [
+    "physical-presentation",
+    "startup-samples",
+    "five-full-runs-per-scene-and-alternated-order",
+    "target-system-and-product-workload"
+  ],
+  "performanceGate": "not-evaluated",
+  "benchmarkValid": false,
+  "releaseReady": false
+}

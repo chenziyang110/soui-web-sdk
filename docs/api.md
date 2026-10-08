@@ -20,6 +20,7 @@ bridge.register_method("app.ping", "app.ping",
 | `soui::sdk::shutdown_miniblink_runtime` | 所有 Host 销毁后关闭进程级内核及所有者线程；此后本进程不能重新初始化 |
 | `soui::runtime::permission_store` | 与 session/origin 绑定的能力授权及撤销 |
 | `soui::runtime::task_store` | 任务状态与取消等底层能力 |
+| `soui::runtime::task_service` | 公共长任务调度、会话归属、事件及取消 |
 
 完整窗口、计时器和关闭顺序参考模板的 `app/main.cpp`。C++ 参数和返回类型以 `sdk/include/soui` 的头文件为准。
 
@@ -44,7 +45,35 @@ const result = await client.call('app.ping', {});
 
 `sdk/web/dist` 是模块形式的 SDK 产物；面向 Miniblink49 时仍需经过应用的兼容构建。模板已配置经典脚本和所需转换，不应把 ES module 直接作为 Chrome 49 页面入口。
 
-新连接器默认的 `SouiCoreMethodMap` 只声明 `json_bridge` 自带的 probe 方法。兼容构造器默认的 `SouiMethodMap` 仍对应工作台服务；业务工程可以传入自己的方法表。`query/cancel/subscribe` 是任务协议的便捷方法，只有原生侧注册相应服务后才能使用。最小模板没有默认开放扫描、媒体或任务权限。
+新连接器默认的 `SouiCoreMethodMap` 声明 `json_bridge` 自带的 probe 与 `task.*` 方法。兼容构造器默认的 `SouiMethodMap` 仍对应工作台服务；业务工程可以传入自己的方法表。最小模板演示公共任务模块，不开放扫描或媒体权限。
+
+## 可选目录选择器
+
+在首次 `bridge.bootstrap` 前调用 `bridge.enable_directory_service()`；重复启用或 bootstrap 后启用返回 `false`。该模块只注册 `desktop.dialog.pickDirectory`，页面在点击回调中调用 `client.call('desktop.dialog.pickDirectory', {})`。返回 `{cancelled:false,path}` 表示用户选定的 UTF-8 目录，`{cancelled:true,path:""}` 表示取消。`SouiDirectoryMethodMap` 可与 Core 等方法表组合。页面不能传入窗口句柄、默认路径、session、token 或 `userGesture` 字段；原生 Host 提供同进程有效窗口，并验证绑定捕获的真实手势。
+
+无手势返回 `E_GESTURE_REQUIRED`，失效窗口返回 `E_INVALID_ARGUMENT`，非 STA 线程返回 `E_THREAD_APARTMENT`。目录对话框是模态调用，会占用当前 Bridge 工作线程直到选择或取消；页面导航、关窗、并发调用及超时尚未完成真实验收。所返回路径不是任意目录的扫描授权，业务扫描根令牌必须由可信原生侧管理。双架构编译、无窗口契约及[Win7 SP1 x86 QEMU 公共取消短测](../verification/production-validation/win7-sp1-x86-qemu-directory-v2-2026-09-25/README.md)已通过；模板真实点击、正向中文路径及其他 V03 门槛仍未通过。设计见 [ADR-0011](adr/0011-public-directory-dialog.md)。
+
+## 可选剪贴板模块
+
+在首次 `bridge.bootstrap` 前调用 `bridge.enable_clipboard_service()`；重复启用或 bootstrap 后启用返回 `false`。此操作只为当前 `json_bridge` 注册 `desktop.clipboard.writeText` 并给该文档会话授权。Host 挂载时传入 `host_config.owner_window`，卸载时撤销窗口引用。应用必须保持窗口有效，不能用空句柄代替。
+
+Web 方法类型为 `SouiClipboardMethodMap`，与 `SouiCoreMethodMap` 组合使用。页面在实际点击回调中直接调用 `client.call('desktop.clipboard.writeText', {text})`，成功返回 `{applied:true}`。原生 Host 在接收调用时记录引擎报告的用户手势；JSON 中的 `userGesture` 参数不会授予权限，并会被拒绝为 `E_INVALID_PARAMS`。缺少真实手势返回 `E_GESTURE_REQUIRED`，窗口失效或文本编码无效返回 `E_INVALID_ARGUMENT`，剪贴板占用或提交失败返回 `E_NATIVE_FAILURE`。文本为 UTF-8，受 Bridge 消息和参数大小限制。模板提供可点击的中文复制入口。
+
+该模块已有双架构编译、契约与参数拒绝测试；[Win7 SP1 x86 QEMU 公共服务短测](../verification/production-validation/win7-sp1-x86-qemu-desktop-v2-2026-09-25/README.md)也完成中文写入读回并退出 0。模板真实按钮、剪贴板占用竞态、长文本及受限账户仍待独立验收。其他 V03 桌面能力仍未纳入此 opt-in 模块。
+
+## 可选窗口模块
+
+在首次 bootstrap 前调用 `bridge.enable_window_service()`，并在窗口所有者线程收到 `soui::runtime::window_command_message` 时将 `WPARAM` 命令和 `LPARAM` 数字请求 ID 一并交给 `execute_window_command(hwnd, command, lParam)`；模板的 `starter_window` 提供了接线示例。该调用一次性注册 `desktop.window.setTitle`、`beginDrag`、`minimize`、`toggleMaximize`、`close`；重复启用或 bootstrap 后启用返回 `false`。页面以 `SouiWindowMethodMap` 组合方法类型。所有方法只使用 Host 配置的同进程有效窗口，页面不能传入 HWND、session 或手势标志。`setTitle` 接受唯一的 UTF-8 `title` 字段（最多 512 字节），其余方法只接受空对象。拖动、最小化、最大化和关闭要求原生绑定捕获的用户手势；`userGesture` JSON 字段会被拒绝。
+
+跨线程 `setTitle` 通过 SDK 的数字请求 ID 投递到窗口线程，最多等待 250 ms 的实际执行确认；超过时限返回 `E_WINDOW_TIMEOUT`，待处理表最多 64 项。若窗口线程已开始处理，超时后的最终结果可能未知，调用方不能据此断言标题未变化。窗口所有者线程直接调用仍按 Win32 同步执行。`beginDrag` 和 `close` 是排队操作，返回的是接受请求，不保证之后的交互或页面 Promise 一定能在窗口销毁前完成。`minimize` 和 `toggleMaximize` 在当前窗口线程确认后返回。真实点击、旧版 Windows、多窗口及关闭中的响应仍须验收；不要把无窗口契约测试视为这些结果。
+
+## 公共长任务
+
+应用在首次 bootstrap 前调用 `bridge.register_task_handler(kind, handler)`，在处理器中通过 `task_control::report_progress(0..100, message)` 报告进度、定期检查 `cancellation_requested()` 并返回 `task_outcome`。处理器运行在 SDK 的后台工作线程，不能直接修改窗口控件。模板的 `app.count` 展示完整调用。页面以 `client.call('task.start', {kind, operationId, input})` 启动，随后以 `task.query` 读取状态、`client.subscribe(taskId, 'task.progress', listener)` 订阅进度，必要时调用 `task.cancel`，最后等待 `unsubscribe()` 确认。`task.start` 要求三个字段且 `input` 为对象；`kind` 和 `operationId` 只能包含 ASCII 字母、数字、连字符、下划线、点和冒号，长度为 1–128。
+
+同一会话的同一 `operationId` 与相同 `kind`/`input` 重试会返回原 `taskId` 和 `duplicate: true`；不同内容返回 `E_OPERATION_CONFLICT`。任务查询、取消和订阅同时核对 session、origin 和 token；页面导航撤销旧会话并请求取消未完成任务。取消是协作式的：`task.cancel` 先返回 `cancel-pending`，只有处理器退出后才报告 `cancelled`。页面请求超时也不自动取消任务。
+
+默认上限为 2 个原生工作线程、32 个未完成任务、128 个订阅和 1,024 个保留的任务结果。超限返回 `E_BUSY`，旧终态记录按最早序号淘汰；任务结果只保留在进程内，没有持久化保证。返回结果须为不超过 32 KiB 的 JSON 对象，进度与终态消息最多 4 KiB；违反返回约束会形成失败终态。应用的处理器应按自己的数据来源继续验证 `input`，及时响应取消，并自行约束阻塞外部调用的最长时间。当前公共任务模块仍待独立真实页面、Demo、长稳和目标机整组验收。
 
 `subscribe(taskId, eventName, listener)` 保留可调用的移除句柄，同时提供 `ready`、`closed` 和 `unsubscribe(): Promise<void>`。建立失败会拒绝 `ready`；注销立即停止本地回调，等待 `unsubscribe()` 才能判断是否收到原生成功确认。重复移除共享同一次结果；建立期间移除或本地超时后收到迟到成功，会尽力补做一次注销。若传输已丢失确认或文档销毁，原生服务仍须按会话回收自己的订阅，不能依赖页面补偿保证释放。可选 `onError` 观察异步错误及被隔离的业务回调异常。
 

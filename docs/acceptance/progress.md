@@ -7,8 +7,8 @@
 | 要求 | 当前工作与完成证据 |
 |---|---|
 | 公共 SDK 独立接入 | 已新增 `tests/acceptance-app`，从独立安装的 SDK 编译；x86/x64 Release 已真实运行，见[生命周期报告](lifecycle.md) |
-| V01 通信与长任务 | 标准连接器、模板接入、本地请求/订阅清理及 Host 容量已实现并通过首批单元/编译；独立 v3 公共 Web SDK 消费者正在集成，公共任务服务/事件/取消仍待完成 |
-| V02 数据与交互 | 待完成共享万条列表、输入、动画、resize、后台场景 |
+| V01 通信与长任务 | preview.5 的连接器及 Host 容量完成短测；待审查 PR #26 已加入公共任务服务、模板、Demo 公开任务场景和独立消费者。双架构原生契约、Demo 无窗口适配器测试与外部构建通过；真实页面和长稳仍待验收 |
+| V02 数据与交互 | Workbench 已有共享万条数据的虚拟滚动、中文输入事件、动效、resize 和公共任务页面，严格类型与现代/legacy 构建通过；真实 WebView、后台、IME 与 Win7 x86 待验收 |
 | V03 桌面工作台 | 待将通用注册归入公共 SDK，完成对话框/剪贴板/多屏/shell 验收 |
 | V04 多窗口与驻留 | 已复现旧版第二窗口挂载卡住并修复进程级内核所有权；三窗口隔离及关闭后重建短测试通过；公共窗口/托盘/菜单/快捷键仍待完成 |
 | V05 资源与故障 | 已修复逐窗口初始化导致的访问冲突，以及 ToolTip、拖拽区域和线程唤醒事件释放遗漏；preview.4 双架构四种模式千次操作通过。资源所有权、完整故障恢复与诊断仍待完成 |
@@ -24,7 +24,15 @@
 
 本文件记录执行进度，不能代替机器报告或修改 `releaseReady`。新增阶段证据应链接实际 run-id、源码与载荷身份，并列出未执行项。
 
-当前开发版本为 `0.3.0-preview.5`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
+当前开发版本为 `0.3.0-preview.8`。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
+
+preview.7 的[源码编码修复诊断](../../verification/production-validation/preview6-relocated-dependency-encoding-2026-09-25/README.md)确认 preview.6 无 Git 源包在 CP936 环境重编 x86 Miniblink 失败；定点 BOM 补丁后，修改过的仓库外目录里 x86/x64 SOUI、Skia、Miniblink 源码重编与两架构真实应用启动均通过。当前 preview.7 的双架构 Release 构建、契约测试和三入口 smoke 也通过，但它们使用固定运行包，不能和新内核结果合并。[Win7 SP1 x86 QEMU 重编内核短测](../../verification/production-validation/win7-sp1-x86-qemu-preview7-rebuilt-source-2026-09-25/README.md)完成三入口启动/关闭，24 份串口文件、来宾身份和载荷散列复核通过。诊断目录不是最终 preview.7 原封整包；最终整包重建、Debug、物理设备、长期资源、实际呈现性能与安全授权仍未完成，`sourceDeliveryVerified=false`、`releaseReady=false`。
+
+[preview.7 无 Git 完整源码快照](../../verification/production-validation/preview7-full-source-stage-2026-09-25/README.md)经源清单逐文件验证，在仓库外完成 x86/x64 Release 应用重编、完整测试和三项桌面 smoke；SDK 新包的 408 个文件也通过包内完整性、源匹配及 14 项包行为测试。该快照使用固定运行依赖；最终原封整包的底层依赖全量重编继续待验收，不改变 `sourceDeliveryVerified=false`。
+
+后续已从 SHA-256 `A4F0703A4C6F6E13DC4A07BC59174D347487622143AAB51E82B3D3F4190D802E` 的[最终 preview.7 原封完整源码 ZIP](../../verification/production-validation/preview7-final-source-bottom-rebuild-2026-09-25/README.md)分别全新解压 x86/x64 无 Git 目录。编译前两目录清单验证均通过 30,719 文件；各自重编所有底层依赖、应用 Release、完整测试和重编 DLL 启动，均退出 0。[同一 x86 来源的 Win7 SP1 x86 QEMU 三入口](../../verification/production-validation/win7-sp1-x86-qemu-preview7-final-source-2026-09-25/README.md)也通过 24 份串口结果校验。旧 SOUI 工程会在源码树产生 112 个额外编译产物，故编译后原封文件集合复验失败，但逐文件比对确认清单源码内容未改；交付流程仍需修正。Debug、目标设备、资源、实际呈现、完整业务与安全授权未通过，`sourceDeliveryVerified=false`、`releaseReady=false`。
+
+preview.8 的[无 Git 候选完整源码包](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)在 x86/x64 全新目录完成全部底层重编后，30,794 文件清单依然通过；四组 Release/Debug 应用构建、完整测试与三入口桌面短测、双架构重编 DLL 短启动均通过。[仓库外新项目](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)双架构 Release 实际运行，[独立业务项目四阶段升级/回退](../../verification/production-validation/preview8-independent-upgrade-2026-09-25/README.md)双架构通过。[同源 x86 重编载荷的 Win7 SP1 x86 QEMU 三入口](../../verification/production-validation/win7-sp1-x86-qemu-preview8-isolated-source-2026-09-25/README.md)已核验 24 份客体文件。[最终源码包生成的独立项目 Win7 SP1 x86 QEMU 短测](../../verification/production-validation/win7-sp1-x86-qemu-preview8-independent-consumer-2026-09-25/README.md) 从最终包生成模板工程、在来宾逐项校验 71 文件并正常启动/关闭；第一次脚本失败被保存，修正后复测通过。最终源码包与候选的代码等价性已核对；物理目标设备、八小时资源、Bridge/GPU、Electron 呈现和安全授权仍需收敛；`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
 
 ToolTip 修补后的 x64 内核及全部原生依赖已重新编译；候选 SHA-256 为 `32d37e6399bc04e2a8d909c4021f49e3b8f21521b805f9f118f15e111ea0e59f`，三模式各 30 轮加 3 次预热全部完成。重建 USER 不再增长，但 GDI/普通句柄仍增长，缺陷未关闭。随后定位到拖拽区域和工作线程唤醒事件的释放遗漏，保留为两个后续补丁。
 
@@ -111,3 +119,79 @@ preview.5 固定载荷的[x86 Bridge 长循环复测](../../verification/product
 [preview.5 原生任务容量测试](../../verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/README.md)进一步在 Win7 SP1 x86 QEMU 客体执行：来宾 6.1.7601/32-bit/SP1 身份、测试 EXE SHA-256、退出码 0 与标准输出由五个串口文件逐项复核。它覆盖原生任务表 1,024 上限、取消回收、并发准入和扫描拒绝；首次临时载荷缺 DLL 的加载失败已保留并在补齐后重跑。公共任务业务链、长稳与物理目标机仍未通过。
 
 [preview.5 最小宿主包体积测量](../../verification/production-validation/benchmark-size-preview5-2026-09-24/README.md)把同一份页面装入 x64 Release SOUI 和 Electron 44.4.4 的独立运行目录，逐文件核对散列，使用相同 ZIP 算法并测试压缩包。SOUI/Electron 解压大小为 38,765,828/386,055,337 字节，ZIP 为 14,533,916/154,312,842 字节。两端从打包目录执行 S01 结果落盘探针并退出 0。探针不含真实交互或呈现，Electron 标准错误有 GPU 状态告警；该测量只支持最小宿主体积差异，不能作为性能或生产通过结论。
+
+公共 SDK 长任务服务开发分支新增已认证任务启动、查询、订阅、协作取消与有界工作队列，并在模板接入可取消计数任务。x86/x64 Release 原生任务契约、模板 x86/x64 编译、模板 Chrome 49 页面构建、TypeScript 检查和 Web 客户端单元测试通过；这些是开发树验证，不属于 preview.5 冻结包。真实页面操作、独立安装工程、Demo V01、Win7 SP1 x86 客体及长时负载尚未对这份新源码执行，`releaseReady` 保持 false。宿主 preview.5 的 8 小时诊断与已准备的客体混合场景也仍分别按原载荷身份判定，不合并为新功能的通过结果。
+
+独立验收消费者已增加真实公共任务处理器和页面进度/取消探针，x64 与 x86 均在 `-PrepareOnly` 路径完成安装 SDK 后的外部原生编译、Chrome 49 页面构建及运行载荷身份核对；该路径不启动桌面窗口。首次 x86 准备在 F 盘空间耗尽时失败，保留失败 suite，随后将 20 份旧验收 suite 共约 1.77 GB 完整移到 D 盘归档并重跑准备成功。新探针实际运行及客体回归待宿主长测结束后串行执行，不把编译成功计作功能通过。
+
+外部消费者构建进一步加入固定 TypeScript 5.5.4 的严格检查，对复制到 suite 的 SDK 声明文件解析，并将检查配置/日志散列写入 Web 构建记录，由监督器运行前复核。x64 与 x86 新 suite 的检查、Chrome 49 构建、外部 C++ 编译与载荷准备均通过；尚未启动桌面场景。
+
+Demo 开发树现用公开 `task.start` 接入一个有界计数任务，并以独立前缀路由公开任务的查询、订阅、取消和会话回收。x86/x64 Release 编译和 `demo.native.public-task` 无窗口适配器测试通过；React 页面构建和项目内固定 TypeScript 5.9.3 严格检查通过。原有 TypeScript 5.5.4 无法解析当前 Vite 插件声明中的字符串模块导出，故此处只升级 Demo Web 的编译器锁定版本，独立消费者仍按自身的 5.5.4 锁文件检查。Demo 真实 WebView 页面未运行，新公共任务不能据此宣称完成 Win7 或生产验收。
+
+双端 benchmark 的历史落盘探针复核发现内容区不一致：Electron 为 1100×720，SOUI 页面实际为 1084×681。SOUI 最小宿主已改为按内容区创建窗口，并加入创建后的尺寸检查；页面结果前置校验器会拒绝旧探针的视口失配、短时长及空操作。新宿主尚未实际运行，校验器只检查页面侧基础条件；外部输入、物理呈现和进程树资源仍未采集，Electron 性能结论继续未测。
+
+双架构 benchmark 宿主已在开发树重新编译；新页面结果校验器的三项测试通过。独立 Win32 进程树采样器还完成 x86/x64 编译，并在 x64 主机用真实父子进程、父进程先退出的后代、正常退出、时长超限和输出冲突验证原始 NDJSON、退出码及追踪行为。它未在正式 SOUI/Electron 轮次运行，物理呈现和配对报告也未完成，因此资源与流畅性仍未测。
+
+外部 Win32 输入轨迹工具已完成 x86/x64 编译与拒绝无效 PID、场景、输出路径和模式的边界测试。它按相同内容区坐标通过系统输入队列注入点击、滚轮与 Unicode 键，并记录 QPC；正式宿主尚未执行该工具，S03 的 Unicode 注入也不等于中文 IME composition。页面事件/动作、外部输入轨迹及实际呈现三者尚未形成可用的配对轮次。
+
+新增逐轮原始轨迹复核器，将外部输入与整进程树采样按 PID、创建时间及采样区间关联，拒绝短探针、采样长缺口、宿主异常退出和未采到真实 IME composition 的 S03。合成正常/故障轨迹单元测试通过；当前仍无真实宿主的双轨迹轮次，更无物理呈现或完整 Electron 配对数据，性能和生产门槛继续未测。
+
+宿主 preview.5 八小时混合测试运行期间，2026-09-25 02:33 本机出现另一台独立 QEMU 虚拟机，约 4.9 GB 工作集；该时点以后的宿主资源趋势不能当作隔离环境结论。原始测试继续运行并在其外层目录保留外部负载观察记录。两个待执行的 Win7 验收启动器增加对 x86/x64 QEMU 进程的互斥检查；宿主终态及其他虚拟机退出前不启动该目标客体。
+
+同一次测试又在 02:39 和 03:26 观察到另外的 x64 QEMU 启动，逐次进程/时间/内存观察已归档于[外部负载记录](../../verification/production-validation/preview5-mixed-soak-interference-2026-09-25/README.md)。这些观察不证明完整干扰区间，但足以使重叠时段的隔离资源与时延结论失效；原生操作和最终退出仍按原始长测结果单独判定。
+
+后续在 04:41 和 04:52 又观察到两台独立 x64 QEMU，04:53 同时运行；其进程身份、启动时间和内存快照追加到同一[外部负载记录](../../verification/production-validation/preview5-mixed-soak-interference-2026-09-25/README.md)。本仓库在长测期间还进行了增量构建和审计；隔离资源/时延门槛须另起完整运行，本次只保留操作完成率与终态证据。
+
+本地 `tools/Test.ps1` 的非桌面测试阶段现纳入页面配对与逐轮原始轨迹核验测试；连同已有 Web、验收监督器测试实际执行 57 项，56 项通过、1 项因未配置 x86 调试器而跳过，0 失败。该命令未启动桌面宿主，不能代替真实双端交互或客体验收。
+
+V03 公共桌面服务的路径 Unicode 转换在源码审查中发现输出缓冲区少计了终止符，选择中文目录时可能得到错误文本；公共转换现使用精确输入长度和所需输出长度，标题/剪贴板写入拒绝无效 UTF-8 与嵌入 NUL。x86/x64 Release 的 SDK 静态库和新增原生边界测试已分别编译、通过；目录选择器真实 UI、Win7 客体、多屏与服务注册仍未验收。
+
+V03 剪贴板进一步发现原实现以空窗口所有者打开剪贴板，按 Win32 规则会使 `SetClipboardData` 失败。公共服务现要求同进程有效窗口，Workbench 传入其宿主窗口；x86/x64 SDK 与 Workbench Release 重新编译，通过空/无效窗口及无效文本拒绝测试。实际中文写入/读回的可选测试已加入测试程序，须等宿主长测结束后在隔离的 Win7 x86 客体执行，尚未将该服务计为可用公共 Web 模块。
+
+公共剪贴板写入现可由新项目在首次 bootstrap 前显式启用；模板项目包含实际点击调用及独立类型声明。x86/x64 的 SDK 契约和模板 Release 编译、SDK Web 构建、模板类型检查及 Web 构建均通过；完整非桌面测试 57 项 JavaScript 中 56 通过、1 项因缺 x86 调试器跳过，x86/x64 原生各 6 项通过。已在仓库外安装两个架构 SDK，独立消费者只通过安装包公开头文件与库启用剪贴板模块，分别编译和退出 0。契约确认 JSON 假手势不能替代原生手势、无手势和无窗口均有明确拒绝；尚未运行真实页面按钮与 Win7 客体读回，所以 V03-03 仍为“已实现待验收”。为恢复构建空间，将历史 `out/source-snapshot-03-final` 57,599 个文件、1,318,952,268 字节原样搬移到 `D:\SOUI-SDK-QEMU-validation\host-out-archive-20260925\source-snapshot-03-final`；源目录不再存在。该磁盘迁移发生在宿主 8 小时测试期间，相关时间段同样不用于隔离资源/时延结论。
+
+公共窗口模块现可在新项目中显式启用，模板提供标题、最大化/还原和最小化按钮，并在 HWND 所属线程处理窗口命令。x86/x64 的 SDK 与模板 Release 编译、公共契约及桌面文字边界测试、SDK Web 构建和模板类型检查/构建通过；仓库外安装的两个架构 SDK 也由独立消费者启用模块、编译并退出 0。契约覆盖假手势、缺手势、缺少窗口和无效参数，但不替代真实 GUI 测试。当前开发树已将跨线程 `setTitle` 改为数字请求 ID 投递与 250 ms 有界确认；双架构 SDK、模板和 Demo 编译及各六项无窗口原生测试通过，窗口线程停滞回归仅完成编译，宿主长测期间不运行该 GUI 场景。若处理已开始，超时仍可能对应未知最终结果；关闭投递也不保证 Promise 在页面销毁前确认，因此 V03-01 保持待验收，细节见 [ADR-0010](../adr/0010-public-window-bridge.md)。
+
+为目标系统实测另加入可选 `--desktop-roundtrip` 原生场景：在来宾创建真实 HWND，尝试公共标题、最小化、最大化/还原和关闭，并与剪贴板中文写入读回一起验证。x86/x64 已编译该场景；宿主长测和其他 QEMU 占用期间没有执行可选 GUI 路径，故尚无通过结论。
+
+V03 目录选择器现作为可选公共 Web 模块注册，模板提供真实点击入口，返回用户选择的 UTF-8 路径或取消状态。SDK 原生服务在弹窗前核对同进程有效窗口和 STA，拒绝 MTA 调用；宿主 Bridge 工作线程原本已以 STA 初始化。x86/x64 SDK、模板 Release、Web 类型检查/构建及各六项无窗口 CTest 均通过，包括伪造手势、无效参数、缺失窗口和 MTA 拒绝。安装后的两个架构 SDK 还分别由仓库外独立消费者只用公开头文件和库编译、运行并退出 0，产物散列与 CTest 原始日志见[目录模块记录](../../verification/production-validation/directory-module-2026-09-25/README.md)。当前没有打开真实对话框，且模态调用会占用 Bridge 工作线程；Win7 x86、取消/中文路径、受限账户、导航/关窗竞态和 Demo 扫描令牌隔离仍待验收，V03 不据此放行。设计见 [ADR-0011](../adr/0011-public-directory-dialog.md)。
+
+为目录模块另编译了 x86/x64 可选 `soui_directory_dialog_tests --cancel`：真实 HWND 由 UI 线程持有，独立 STA 线程经公共 `json_bridge` 打开 Shell 对话框，观察到对话框后发送关闭并核对取消返回；15 秒无终态时进程失败退出，防止客体脚本无限挂住。该可选 GUI 场景在宿主长测期间只完成编译，尚无实际运行证据；正向中文目录选择仍待模板和 Win7 客体验证。
+
+上述 x86 可选程序已冻结为[Win7 SP1 x86 目录对话框客体短测](../../verification/production-validation/win7-sp1-x86-qemu-directory-2026-09-25/README.md)，传输散列、脚本语法、串口校验合成样本和宿主未结束时拒绝启动均已核对。真实客体尚未运行；它仅覆盖取消路径，不替代模板实际点击或正向中文路径验收。
+
+V02 Workbench 现提供可从首页和菜单进入的数据交互页，复用 Electron 对照页的确定性万条数据生成器，组合虚拟滚动、中文输入事件、动效、窗口尺寸和公共 SDK 长任务入口。严格 TypeScript、legacy 与普通 Web 构建均退出 0，原始日志及产物散列见[编译预检](../../verification/production-validation/v02-workbench-preflight-2026-09-25/README.md)；宿主八小时长测期间没有执行另一场 GUI，因此实际滚动、IME、缩放、任务并行和 Win7 x86 仍待验收，不能把编译算作 V02 通过。
+
+最新工作树上的[双架构非桌面回归](../../verification/production-validation/latest-unit-regression-2026-09-25/README.md)各有 9 项包/交付身份测试通过、59 项 Web/协议测试中 58 项通过且 1 项因调试器缺失跳过、6 项 CTest 通过，均为 0 失败。原生二进制沿用既有构建，本轮未重编译；未运行桌面或 Win7 客体，因此仅记录回归范围内的通过，不改变生产准入状态。
+
+05:54 宿主八小时测试仍在执行第 1,300 轮之后的混合循环，另有外部 x64 QEMU 正运行，约 5.0 GB 工作集。[第七次外部负载观察](../../verification/production-validation/preview5-mixed-soak-interference-2026-09-25/external-load-observation-7.json)已保留精确进程身份和时间；该长测只能继续用于操作完成率与终态判定，隔离资源及性能门槛仍须重新运行。
+
+[固定内核的源码声明材料清单](../../verification/production-validation/kernel-notice-inventory-2026-09-25/README.md)现补充定位到 libxml、libpng 和 Node c-ares 的仓内文本，同时确认导入的 libcurl、libjpeg、OTS 头文件指向本次导入源码缺少的配套许可文件。此发现只缩小再分发审查的待办范围；实际链接成员、缺失文本的精确来源、运行包声明和维护者签署仍未完成，二进制授权状态维持 `unverified`。
+
+又从 curl 官方 7.61.1 标签和 IJG 官方 9a 压缩包[补录](../../verification/production-validation/kernel-notice-recovery-2026-09-25/README.md)两份原版配套文本，并保留原始散列及导入头文件的差异核对。OTS 等剩余声明、运行包实际链接组成及维护者审阅仍未完成，不能把源码文本补齐等同于二进制授权通过。
+
+2026-09-25 通过仓库所有者的 GitHub CLI [查询](../../verification/production-validation/repository-visibility-2026-09-25/observation.json)到 `chenziyang110/soui-web-sdk` 的可见性仍为 `PRIVATE`。[首方许可状态](../../LICENSE.md)也尚未选定；若以后公开，公开可见仍不等于获得 SDK/模板/Demo 的通用复用或再分发许可。生产交付及对外采用结论须把这一所有者决策列为独立发布门槛，不能由第三方声明文本的补录代替。
+
+导入的 OTS `ots.cc` 与官方 v5.0.0 仅有少量 Miniblink 适配差异；相应 [OTS 原版 `LICENSE` 已补录](../../verification/production-validation/kernel-notice-recovery-2026-09-25/README.md)。三份新增文本仍未完成整包授权审阅；`releaseReady=false`。
+
+[第三方声明材料交付路径](../../verification/production-validation/license-delivery-2026-09-25/README.md)已补齐并在 preview.6 完整构建后复核：源码 SDK 包和安装项目、双架构 CMake 安装目录、Starter/Workbench 双架构输出均保留同一份声明与四份许可文本，32 份许可副本的原始 SHA-256 均一致。交付身份证明也纳入许可目录及声明文件，防止改动后沿用旧构建记录。此项测试没有运行应用或审完实际链接成员；运行包声明仍不完整，不能将其作为生产授权通过。
+
+当前 preview.6 的 x86 Starter/Workbench [Win7 SP1 QEMU 短测输入](../../verification/production-validation/win7-sp1-x86-qemu-preview6-apps-2026-09-25/README.md)已冻结：从现行构建载荷重新压缩并解压核对 71/475 个文件，宿主运行来宾检查脚本确认两套法务文件哈希与中文路径，串口校验器合成成功/篡改样本自检通过。宿主八小时长测和其他 QEMU 尚占用，客体未执行；不能据此填写 preview.6 的 Win7 支持结论。
+
+preview.6 [独立安装消费者预检](../../verification/production-validation/preview6-independent-consumer-2026-09-25/README.md)在 x86/x64 均通过：`find_package(SouiSdk)` 的外部控制台工程只链接安装后的公开库并退出 0；`Test-Acceptance -PrepareOnly` 又从本版源码独立编译 SDK、安装包、TypeScript 页面和桌面消费者，记录各自 32 文件安装快照与 75 文件载荷。两套安装库与各自 SDK-only 构建字节散列一致，第三方声明和四份许可进入安装目录。此项只通过构建与无窗口调用，不增加真实桌面、Win7 或长稳通过项；`releaseReady=false`。
+
+[preview.5 x86 八小时混合生命周期](../../verification/production-validation/preview5-eight-hour-soak-2026-09-25/README.md)已经正式结束：单进程 1,690 轮、23,664 步、28,802,459 ms，监督器判定退出 0、无超时、操作完整。分时分析同时发现私有内存中位数由首小时约 64.1 MiB 升至第八小时约 136.7 MiB；运行与外部 QEMU 及本机编译交叠，资源和时延门槛均不能用本次数据放行。应定位增长来源，在隔离条件下用最终候选重跑；此结果也不能跨版本计入 preview.6。
+
+preview.6 的[完整源码搬移](../../verification/production-validation/preview6-source-relocation-2026-09-25/README.md)已在无 Git 元数据的仓库外目录重新校验 30,190 个文件、打出一致的 408 文件 SDK 包，并由该包生成独立项目。完整源码与生成项目的 x86/x64 Release Web/原生编译均通过；搬移源码两架构非桌面测试通过。底层依赖未从搬移目录重编，两个项目均未在该目录启动 GUI，因此 `sourceDeliveryVerified` 仍为 false。
+
+preview.6 [Win7 x86 应用短测 v3](../../verification/production-validation/win7-sp1-x86-qemu-preview6-apps-2026-09-25/README.md)已进入客体并验证两个 ZIP 的解包、数量和中文路径，但来宾 PowerShell 2 在许可散列校验器的 `SHA256Managed.Dispose()` 报错，三项应用 smoke 没有执行；串口校验器正确拒绝仅 14/24 文件的失败帧。原样本保留。[v4 独立客体](../../verification/production-validation/win7-sp1-x86-qemu-preview6-apps-v4-2026-09-25/README.md)只修正脚本清理调用，冻结应用载荷不变；实际 Win7 SP1 x86 短测的 24 个串口文件、法务材料散列及 Starter/Workbench 默认/React 三项启动和关闭均通过，退出码 0。该短测不覆盖真实交互、物理设备或长期资源门槛。
+
+[Win7 SP1 x86 公共任务短测](../../verification/production-validation/win7-sp1-x86-qemu-public-task-2026-09-25/README.md)也已在冻结独立消费者上完成：14 个串口文件、系统/二进制身份、Bridge 三轮与 10 个完整步骤均通过，退出码 0；资源门槛仍未评估。随后[公共桌面服务短测 v1](../../verification/production-validation/win7-sp1-x86-qemu-desktop-2026-09-25/README.md)因测试 EXE 未附带 `MSVCP140.dll` 在进程加载前失败，客体退出码 `0xC0000135`；原样本保留。保持 EXE 字节不变、锁定 preview.6 应用本地 VC/UCRT 运行库的[v2 客体复测](../../verification/production-validation/win7-sp1-x86-qemu-desktop-v2-2026-09-25/README.md)已通过：真实 Win7 SP1 x86 上公共剪贴板中文写入读回和窗口标题中文往返退出 0，串口五份原始文件、系统/EXE 身份及哈希均通过独立校验。该短测仍不覆盖模板真实按钮、占用竞态、受限账户或完整 V03。
+
+[窗口线程停滞 v2 短测](../../verification/production-validation/win7-sp1-x86-qemu-title-timeout-v2-2026-09-25/README.md)保持原候选 EXE 身份，额外锁定上述 52 个应用本地运行库，在实际 Win7 SP1 x86 QEMU 上验证超时返回、未执行命令撤销及恢复后的中文标题设置，客体退出 0。五份串口文件、系统/EXE 身份及哈希均通过校验；此结果不跨候选合并到 preview.6，也不放行模板页面或生产资源门槛。
+
+[目录对话框取消 v2 短测](../../verification/production-validation/win7-sp1-x86-qemu-directory-v2-2026-09-25/README.md)同样保持原候选 EXE 身份、补入冻结的 52 个运行库，在真实 Win7 SP1 x86 QEMU 中打开并取消 Shell 目录对话框，退出 0。五份串口结果的系统/EXE 身份、逐文件散列及成功标记通过独立校验；快照客机已退出。它只证明公共取消路径，不涵盖模板真实点击、正向中文路径、关窗竞态或完整生产验收。
+
+preview.8 [最终完整源码包的独立公共 SDK 页面消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview8-public-task-2026-09-25/README.md)先在本机完成 x86 Release Bridge 三轮，再以同一 76 文件载荷进入 Win7 SP1 x86 QEMU。客体逐文件散列、进程退出 0、17 份串口文件、10 个完整生命周期步骤、3 轮资源采样以及页面的公开任务进度/取消、容量与错误恢复均通过独立核验；伪造内核散列和截断事件流的反例被拒绝。此结果不代表 Demo 页面真实操作或生产资源门槛，虚拟机历时也不作性能对标。
+
+随后 [preview.8 Workbench Demo GUI 短测](../../verification/production-validation/win7-sp1-x86-qemu-preview8-demo-ui-2026-09-25/README.md)在另一轮 Win7 SP1 x86 QEMU 快照中完成：475 项运行载荷及五份许可逐文件校验、15 份串口结果和正常退出通过；真实页面显示 10,000 行数据，滚动到第 9,988 行附近，公开 SDK 任务分别呈现 `succeeded · 100%` 与 `cancelled · 5%`。GUI 状态由截图人工核对，不是自动交互回归或性能测量。初始落到首页的原因已定位为原测试命令缺少 `--page=data`，启动入口会清除单独继承的环境变量；已通过首页链接进入数据页，原脚本与偏离截图保留。物理 Win7、IME/DPI、长稳资源和同机 Electron 对照仍未关闭，`releaseReady=false`。

@@ -123,16 +123,23 @@ struct options {
   std::filesystem::path miniblink;
   std::filesystem::path results;
   bool smoke{false};
+  bool exit_on_result{false};
 };
 
 options parse(int argc, wchar_t** argv) {
-  if (argc < 4 || argc > 5) throw std::runtime_error("Expected --resources=PATH --miniblink=PATH --result-dir=PATH [--smoke]");
+  if (argc < 4 || argc > 5) throw std::runtime_error(
+      "Expected --resources=PATH --miniblink=PATH --result-dir=PATH [--smoke|--exit-on-result]");
   options result;
   for (int i = 1; i < argc; ++i) {
     const std::wstring arg(argv[i]);
     if (arg == L"--smoke") {
       if (result.smoke) throw std::runtime_error("Duplicate --smoke option");
       result.smoke = true;
+      continue;
+    }
+    if (arg == L"--exit-on-result") {
+      if (result.exit_on_result) throw std::runtime_error("Duplicate --exit-on-result option");
+      result.exit_on_result = true;
       continue;
     }
     auto assign = [&](std::wstring_view name, std::filesystem::path& destination) {
@@ -147,13 +154,16 @@ options parse(int argc, wchar_t** argv) {
   if (result.resources.empty() || result.miniblink.empty() || result.results.empty() ||
       !std::filesystem::is_regular_file(result.resources / "index.html") ||
       !std::filesystem::is_regular_file(result.miniblink)) throw std::runtime_error("Benchmark inputs are missing");
+  if (result.smoke && result.exit_on_result)
+    throw std::runtime_error("Smoke and full-run result exit are mutually exclusive");
   return result;
 }
 
 class benchmark_window final {
  public:
-  benchmark_window(soui::sdk::soui_miniblink_host& host, result_sink& sink, bool smoke)
-      : host_(host), sink_(sink), smoke_(smoke) {}
+  benchmark_window(soui::sdk::soui_miniblink_host& host, result_sink& sink,
+                   bool smoke, bool exit_on_result)
+      : host_(host), sink_(sink), smoke_(smoke), exit_on_result_(exit_on_result) {}
   HWND handle() const { return handle_; }
   void set_handle(HWND handle) { handle_ = handle; }
   int exit_code() const { return exit_code_; }
@@ -171,7 +181,8 @@ class benchmark_window final {
     switch (message) {
       case WM_TIMER:
         self->host_.pump();
-        if (self->smoke_ && self->sink_.has_result()) PostMessageW(window, WM_CLOSE, 0, 0);
+        if ((self->smoke_ || self->exit_on_result_) && self->sink_.has_result())
+          PostMessageW(window, WM_CLOSE, 0, 0);
         else if (self->smoke_ && GetTickCount64() - self->started_ > 30000) {
           self->exit_code_ = 3;
           std::cerr << "benchmark smoke timeout: documentReady=" << self->host_.document_ready()
@@ -202,6 +213,7 @@ class benchmark_window final {
   soui::sdk::soui_miniblink_host& host_;
   result_sink& sink_;
   bool smoke_;
+  bool exit_on_result_;
   ULONGLONG started_{GetTickCount64()};
   HWND handle_{nullptr};
   int exit_code_{0};
@@ -225,7 +237,7 @@ int run(int argc, wchar_t** argv) {
       }))
     throw std::runtime_error("Cannot register benchmark result methods");
   soui::sdk::soui_miniblink_host host(std::make_unique<soui::sdk::dynamic_miniblink_adapter>());
-  benchmark_window window(host, sink, settings.smoke);
+  benchmark_window window(host, sink, settings.smoke, settings.exit_on_result);
   WNDCLASSEXW description{};
   description.cbSize = sizeof(description);
   description.hInstance = GetModuleHandleW(nullptr);
@@ -233,10 +245,21 @@ int run(int argc, wchar_t** argv) {
   description.lpszClassName = window_class;
   description.hCursor = LoadCursorW(nullptr, IDC_ARROW);
   if (!RegisterClassExW(&description)) throw std::runtime_error("Cannot register benchmark window class");
+  // Electron requests a 1100 x 720 content area. Win32 CreateWindowExW takes
+  // outer dimensions, so include the non-client frame before creating ours.
+  RECT outer{0, 0, 1100, 720};
+  if (!AdjustWindowRectEx(&outer, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, FALSE, 0))
+    throw std::runtime_error("Cannot size benchmark content area");
   const auto handle = CreateWindowExW(0, window_class, L"SOUI SDK benchmark", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
-                                      CW_USEDEFAULT, CW_USEDEFAULT, 1100, 720, nullptr, nullptr,
+                                      CW_USEDEFAULT, CW_USEDEFAULT, outer.right - outer.left,
+                                      outer.bottom - outer.top, nullptr, nullptr,
                                       GetModuleHandleW(nullptr), &window);
   if (!handle) throw std::runtime_error("Cannot create benchmark window");
+  RECT content{};
+  if (!GetClientRect(handle, &content) || content.right != 1100 || content.bottom != 720) {
+    DestroyWindow(handle);
+    throw std::runtime_error("Benchmark content area differs from the paired Electron host");
+  }
   window.set_handle(handle);
   soui::sdk::host_config config;
 #ifdef _WIN64

@@ -11,10 +11,10 @@ $evidence=Join-Path $root 'tools/internal/build-evidence.cjs'
 if(-not $NativeOnly){
   & node (Join-Path $root 'tests/sdk/sdk-package-smoke.cjs')
   if($LASTEXITCODE -ne 0){throw 'SDK package tests failed'}
-  & node --test (Join-Path $root 'tests/sdk/delivery-identity.test.cjs') (Join-Path $root 'tests/native/miniblink_header_abi.test.cjs')
+  & node --test (Join-Path $root 'tests/sdk/delivery-identity.test.cjs') (Join-Path $root 'tests/sdk/stage-soui-source.test.cjs') (Join-Path $root 'tests/native/miniblink_header_abi.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'Delivery identity tests failed'}
-  & node --test (Join-Path $root 'tests/web/sdk-client.test.mjs') (Join-Path $root 'tests/web/native-resolvers.test.mjs') (Join-Path $root 'tests/acceptance/runner.test.cjs') (Join-Path $root 'tests/acceptance/mixed-validation.test.cjs') (Join-Path $root 'tests/acceptance/mixed-analysis.test.cjs') (Join-Path $root 'tests/acceptance/timeout-diagnostics.test.cjs')
-  if($LASTEXITCODE -ne 0){throw 'Web SDK tests failed'}
+  & node --test (Join-Path $root 'tests/web/sdk-client.test.mjs') (Join-Path $root 'tests/web/native-resolvers.test.mjs') (Join-Path $root 'tests/acceptance/runner.test.cjs') (Join-Path $root 'tests/acceptance/mixed-validation.test.cjs') (Join-Path $root 'tests/acceptance/mixed-analysis.test.cjs') (Join-Path $root 'tests/acceptance/timeout-diagnostics.test.cjs') (Join-Path $root 'tests/benchmark/page-pair.test.cjs') (Join-Path $root 'tests/benchmark/run-traces.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'Web SDK, acceptance, or benchmark protocol tests failed'}
   & ctest --test-dir $output -C $Configuration --output-on-failure
   if($LASTEXITCODE -ne 0){throw 'Native SDK contract tests failed'}
 }

@@ -1,0 +1,63 @@
+{
+  "schema": "soui.benchmark-pair-preflight/v1",
+  "scene": "S02",
+  "preflightAccepted": true,
+  "checks": {
+    "pagePair": true,
+    "inputMatched": true,
+    "samePageBundle": true,
+    "toolsMatched": true,
+    "sameMachine": true,
+    "hostIdentity": true,
+    "bothTraceIntegrityAccepted": true
+  },
+  "runs": [
+    {
+      "host": "soui",
+      "runId": "e47f9c97-77a6-4e89-bad6-b93f9633dc85",
+      "pageDurationMs": 61494.01,
+      "inputDurationMs": 61828,
+      "resources": {
+        "samples": 62,
+        "privateBytesP50": 54714368,
+        "privateBytesP95": 69984256,
+        "cpuPercentP50": 3.076195,
+        "cpuPercentP95": 3.225806
+      },
+      "rawSha256": {
+        "run": "e5614fdabac895f6141e76a55ea7516efe73afb47197fd02c6d3738d3549b9e8",
+        "page": "8ea8d5174cd2b410aba8b8a0bf246375d2aafe9de0a6286a352622b6d8349a6f",
+        "input": "f0c3a111198f5d849abf788e16f577714996a0303683bada98f7941d52c301a5",
+        "processTree": "61e6c67e4b77fad65c481765db5a39ca431dda14346b848c4c61dbd91e214c22"
+      }
+    },
+    {
+      "host": "electron",
+      "runId": "60dbfd6f-f09b-4186-aaa9-121b68d2baf2",
+      "pageDurationMs": 61802.60000002384,
+      "inputDurationMs": 61843,
+      "resources": {
+        "samples": 61,
+        "privateBytesP50": 244957184,
+        "privateBytesP95": 255844352,
+        "cpuPercentP50": 0.141576,
+        "cpuPercentP95": 0.374007
+      },
+      "rawSha256": {
+        "run": "7a94ddf43c57d7fff318cfccc3c75540e64b526760a002ae0e8db00c4d0413a6",
+        "page": "5eb21e661bedb5862ace16761ad4e93566efae95ea171301f3cd7d6c20056ea2",
+        "input": "190cbf784664af1c0804ef7a04e7d998c7e59774a8f911650e5adfeb4224ed65",
+        "processTree": "2aaa68b69f8b1c0fbfb4d4bbe751898eb1171ee4757e5e48b8ad35002087f09a"
+      }
+    }
+  ],
+  "remainingEvidence": [
+    "physical-presentation",
+    "startup-samples",
+    "five-full-runs-per-scene-and-alternated-order",
+    "target-system-and-product-workload"
+  ],
+  "performanceGate": "not-evaluated",
+  "benchmarkValid": false,
+  "releaseReady": false
+}

@@ -34,6 +34,7 @@ function walk(root, relative = '', exclude = () => false) {
   });
 }
 function normalization(name, data) {
+  if (name.startsWith('third_party/licenses/')) return 'none';
   if (/\.(dll|lib|exe|pdb|png|jpe?g|gif|ico|zip|7z|pdf|woff2?|ttf|mp[34]|wav|bin)$/i.test(name)) return 'none';
   const legacyText = /\.(c|cc|cpp|cxx|h|hpp|hxx|inl|inc|tlh|idl|def|rc|cmake|txt|props|targets|vcxproj|filters|xml|sln|cmd|bat|ps1)$/i.test(name);
   return !data.includes(0) && (legacyText || isUtf8(data)) ? 'lf' : 'none';
@@ -67,11 +68,12 @@ function snapshot(root, names, source = false) {
 function source(root) {
   const generated = fs.existsSync(safePath(root, 'project.json'));
   const roots = ['sdk', 'cmake', 'tools', 'third_party/include', 'third_party/prebuilt', 'third_party/sources/zlib',
+    'third_party/licenses',
     ...(generated ? ['app', 'web', 'contracts', 'resources'] : ['templates', 'demos', 'tests', 'benchmarks'])];
   const names = roots.filter(name => fs.existsSync(safePath(root, name)))
     .flatMap(name => walk(root, name, (relative, leaf) => skipped.has(leaf) ||
       relative === 'demos/workbench/web/benchmarks/electron-smoothness/source-navigation.log'));
-  for (const name of ['VERSION', 'CMakeLists.txt', 'project.json', 'sdk-lock.json']) {
+  for (const name of ['VERSION', 'CMakeLists.txt', 'THIRD_PARTY_NOTICES.md', 'project.json', 'sdk-lock.json']) {
     if (fs.existsSync(safePath(root, name))) names.push(name);
   }
   return snapshot(root, names, true);

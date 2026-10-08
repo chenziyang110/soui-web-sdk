@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-export type ProductPage = 'home' | 'converter' | 'video4k' | 'components' | 'motion' | 'cad' | 'compat' | 'fileinsight';
+export type ProductPage = 'home' | 'converter' | 'video4k' | 'components' | 'motion' | 'data' | 'cad' | 'compat' | 'fileinsight';
 type Props = { openMedia: (title: string, format: string, quality: number, operation?: string) => void; navigate: (page: ProductPage) => void; notify: (text: string) => void };
 type Tool = { label: string; icon: string; tone?: string; page?: ProductPage };
 
@@ -100,6 +100,6 @@ export function ProductHome({ navigate, notify, openMedia }: Props) {
     <section className="pd-feature-row" aria-label="推荐工具">{features.map((feature) => <article className={`pd-feature pd-feature-${feature.kind}`} key={feature.kind}><div className="pd-feature-banner"><div className="pd-feature-copy"><h1>{feature.title}</h1><p>{feature.subtitle}</p><button onClick={() => activate({ label: feature.title, icon: 'video', page: feature.page })}>{feature.action}<ProductIcon name="arrow" /></button></div>{feature.kind === 'convert' && <span className="pd-feature-tag hot">热门</span>}{feature.kind === 'create' && <span className="pd-feature-tag new">新功能</span>}<HeroArtwork kind={feature.kind} /></div><div className="pd-feature-tools">{feature.tools.map((tool) => <button key={tool.label} onClick={() => activate(tool)}><Jewel tool={tool} /><span>{tool.label}</span></button>)}</div></article>)}<aside className="pd-utility" aria-label="快捷工具">{utilities.map((tool) => <button key={tool.label} onClick={() => activate(tool)}><Jewel tool={tool} /><span>{tool.label}</span></button>)}</aside></section>
     <div className="pd-group-row">{[{ title: '视频处理', detail: '每一帧，都有更多可能', tools: videoTools }, { title: '音频处理', detail: '让好声音，轻松出彩', tools: audioTools }].map((group) => <section className="pd-tool-group" key={group.title}><header><h2>{group.title}</h2><span>{group.detail}</span></header><div className="pd-tool-grid">{group.tools.map((tool) => <button key={tool.label} onClick={() => activate(tool)}><ProductIcon name={tool.icon} /><span>{tool.label}</span></button>)}</div></section>)}</div>
     </>}
-    <div className="pd-discover"><span><ProductIcon name="check" />本地工作空间</span><div><button onClick={() => navigate('converter')}>原生能力 <ProductIcon name="arrow" /></button><button onClick={() => navigate('components')}>组件展厅 <ProductIcon name="arrow" /></button><button onClick={() => navigate('motion')}>动效体验 <ProductIcon name="arrow" /></button></div></div>
+    <div className="pd-discover"><span><ProductIcon name="check" />本地工作空间</span><div><button onClick={() => navigate('converter')}>原生能力 <ProductIcon name="arrow" /></button><button onClick={() => navigate('components')}>组件展厅 <ProductIcon name="arrow" /></button><button onClick={() => navigate('data')}>万条数据 <ProductIcon name="arrow" /></button><button onClick={() => navigate('motion')}>动效体验 <ProductIcon name="arrow" /></button></div></div>
   </main>;
 }

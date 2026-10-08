@@ -120,6 +120,15 @@ export interface SouiMethodMap {
     taskId: string;
     accepted: boolean;
   }; };
+  'task.start': { params: {
+    kind: string;
+    operationId: string;
+    input: Record<string, unknown>;
+  }; result: {
+    taskId: string;
+    accepted: boolean;
+    duplicate: boolean;
+  }; };
   'task.query': { params: {
     taskId: string;
   }; result: {

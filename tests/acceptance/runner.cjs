@@ -172,8 +172,15 @@ function stage(suite) {
 function verifyWeb(suite,build) {
   const web=identity.readJson(path.join(suite,'web-build.json'));
   const sdkRoot=path.join(suite,'web-sdk'),output=path.join(suite,'web-output');
+  const typecheck=web.typecheck;
+  const typecheckConfig=path.join(suite,'web-typecheck.tsconfig.json');
+  const typecheckLog=path.join(suite,'web-typecheck.log');
+  const expectedTypeScript=identity.readJson(path.join(root,'tests','acceptance','package.json')).devDependencies.typescript;
   if(web.schema!=='soui.acceptance-web/v1' || web.consumerSourceSha256!==build.consumerSource.sha256 ||
      web.webSdkSha256!==build.webSdk.sha256 || identity.snapshot(sdkRoot,identity.walk(sdkRoot)).sha256!==build.webSdk.sha256 ||
+     !typecheck || typecheck.passed!==true || typecheck.typescript!==expectedTypeScript ||
+     identity.hash(fs.readFileSync(typecheckConfig))!==typecheck.configSha256 ||
+     identity.hash(fs.readFileSync(typecheckLog))!==typecheck.logSha256 ||
      identity.snapshot(output,identity.walk(output)).sha256!==web.output.sha256)
     throw new Error('Independent public Web SDK inputs/output drift');
   return web;

@@ -1,0 +1,63 @@
+{
+  "schema": "soui.benchmark-pair-preflight/v1",
+  "scene": "S02",
+  "preflightAccepted": true,
+  "checks": {
+    "pagePair": true,
+    "inputMatched": true,
+    "samePageBundle": true,
+    "toolsMatched": true,
+    "sameMachine": true,
+    "hostIdentity": true,
+    "bothTraceIntegrityAccepted": true
+  },
+  "runs": [
+    {
+      "host": "soui",
+      "runId": "97bd2960-f90c-44d2-99ed-459d73e7e20a",
+      "pageDurationMs": 61568.23500000001,
+      "inputDurationMs": 61844,
+      "resources": {
+        "samples": 62,
+        "privateBytesP50": 55394304,
+        "privateBytesP95": 70184960,
+        "cpuPercentP50": 3.053435,
+        "cpuPercentP95": 3.221154
+      },
+      "rawSha256": {
+        "run": "872e57a489463772c874876118ddb1dce778ae82c9538d91b6ceb667caa80a6e",
+        "page": "ad19a58c2d558e8ac2cb29ee5fe876d47d8d618ca177e8d03c8b220b4c5f51de",
+        "input": "30e5aadad73c1563f4fd716fce27f8d0212d1acb9a273ff07d29fb5ce0b601a2",
+        "processTree": "4e4cebca16fb976a5acef963edab4d41405f1a677bb45024a2746858cda9fd6d"
+      }
+    },
+    {
+      "host": "electron",
+      "runId": "57182ab4-30a1-4de8-9f68-1badf9cd925d",
+      "pageDurationMs": 61815.89999997616,
+      "inputDurationMs": 61843,
+      "resources": {
+        "samples": 61,
+        "privateBytesP50": 244887552,
+        "privateBytesP95": 252248064,
+        "cpuPercentP50": 0.188768,
+        "cpuPercentP95": 0.473485
+      },
+      "rawSha256": {
+        "run": "3f1ef3402072c82ca1bbc8d12df7a61b93c3dd768a1194f61139835a7fb29e18",
+        "page": "ea738137d1aa571d95f6cc80e9226c391af1d1079d03f51387f252c45945f8ab",
+        "input": "81fc02150c07eb56b48b0574d395153861381308949286292ec2639f75e8e948",
+        "processTree": "8402438122693564111fc0b37278ab43c3b85fa574742e12070fa437aa624e51"
+      }
+    }
+  ],
+  "remainingEvidence": [
+    "physical-presentation",
+    "startup-samples",
+    "five-full-runs-per-scene-and-alternated-order",
+    "target-system-and-product-workload"
+  ],
+  "performanceGate": "not-evaluated",
+  "benchmarkValid": false,
+  "releaseReady": false
+}

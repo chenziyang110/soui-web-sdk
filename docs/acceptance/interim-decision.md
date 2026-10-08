@@ -1,6 +1,34 @@
 # 0.3 SDK 中期准入判定
 
-日期：2026-09-24。候选：`0.3.0-preview.5`。本文件只汇总已执行证据；不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
+初始判定日期：2026-09-24，候选 `0.3.0-preview.5`；后续增补按各自版本分别判定。本文件只汇总已执行证据，不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
+
+## 2026-09-25 preview.8 增补判定
+
+**候选源码工程复现通过；指定范围生产未通过；相对 Electron 的整体采用价值未判定。** `sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。本节只评估 preview.8，旧版结果仍按各自来源保留。
+
+- [冻结候选完整源码包](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)从两个全新无 Git 解压目录完成 x86/x64 全量底层依赖重编。SOUI 编译改在 `out/` 副本进行，重编后两目录的完整源码清单仍分别通过 30,794 文件；四组 x86/x64 × Release/Debug 应用构建、完整测试与三入口真实桌面短测均通过，重编 DLL 的两架构启动也通过。候选 ZIP 加入证据文档后的最终源码包的上一轮快照已全新解压并通过 30,953 文件清单；加入独立项目与公共任务证据后的当前清单覆盖 31,056 文件；与受测候选相比，非文档/验证代码文件散列变化为 0。
+- [仓库外新项目](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)在 x86/x64 Release 构建并真实启动；[独立业务项目升级、回退、再升级](../../verification/production-validation/preview8-independent-upgrade-2026-09-25/README.md)的四阶段在两架构都通过，业务文件散列保持不变。[重编 x86 DLL 的 Win7 SP1 x86 QEMU 三入口](../../verification/production-validation/win7-sp1-x86-qemu-preview8-isolated-source-2026-09-25/README.md)经 24 份串口结果及反例自检通过。[最终源码包生成的独立项目 Win7 SP1 x86 QEMU 短测](../../verification/production-validation/win7-sp1-x86-qemu-preview8-independent-consumer-2026-09-25/README.md)核验 71 文件、15 份串口结果和正常关闭；首次测试脚本误判保留为失败，修正后重新运行通过。[同一源码包构建的公共 SDK 独立页面消费者](../../verification/production-validation/win7-sp1-x86-qemu-preview8-public-task-2026-09-25/README.md)又在 Win7 SP1 x86 QEMU 完成 Bridge 三轮、公开任务进度/取消与容量恢复，76 文件载荷、17 份串口结果和事件序列均通过独立核验。
+- 工程短测不关闭物理 Windows 7 SP1 x86、完整 Demo 业务链、Bridge 超时根因、GPU 与长期资源、同机实际呈现性能、内核安全维护、授权、签名安装与正式发布责任。先完成这些门槛，再决定是否向首批生产项目推荐。
+
+## 2026-09-25 preview.7 增补判定
+
+**工程交付部分通过；指定范围生产未通过；相对 Electron 的整体采用价值未判定。** `sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。本节只新增 preview.7 的结果；下方 preview.5/.6 结果仍以各自来源为准。
+
+- [搬移源码的底层重编诊断](../../verification/production-validation/preview6-relocated-dependency-encoding-2026-09-25/README.md)发现 preview.6 无 Git 源包在本机 CP936 下重编 x86 Miniblink 会因 UTF-8 文件误读失败；全局 `/utf-8` 则令旧源码产生大量编码警告。preview.7 给五个文件定点添加 BOM，新增构建告警门槛。修改后的搬移目录中，x86/x64 SOUI、Skia、Miniblink 重编及两架构 Starter/Workbench 启动均通过；该目录已被诊断性修改，不等于最终 preview.7 整包的原封重建。
+- [preview.7 双架构 Release 回归](../../verification/production-validation/preview6-relocated-dependency-encoding-2026-09-25/README.md)完成完整应用编译、Web/原生契约与三入口 smoke；固定运行包与上述重编内核分开记录。[重编 x86 内核的 Win7 SP1 x86 QEMU 三入口短测](../../verification/production-validation/win7-sp1-x86-qemu-preview7-rebuilt-source-2026-09-25/README.md)再次通过：Starter、Workbench 默认页和 React 页退出 0，24 份串口结果经长度、散列、系统身份与日志内容复核。这是诊断组合，未覆盖新版公共消费者、八小时或物理 Win7 设备。
+- [无 Git 完整源码快照](../../verification/production-validation/preview7-full-source-stage-2026-09-25/README.md)在清单验证后重新完成 x86/x64 Release 应用构建、完整测试与三项真实桌面 smoke；preview.7 SDK 包 408 文件可与工作树源逐项比对，安装/升级/回退包测试 14/14。这关闭应用源码搬移短验收。后续[最终源码包双架构底层重编](../../verification/production-validation/preview7-final-source-bottom-rebuild-2026-09-25/README.md)从 SHA-256 `A4F0703A4C6F6E13DC4A07BC59174D347487622143AAB51E82B3D3F4190D802E` 的原封 ZIP 分别全新解压，完成 x86/x64 的全部底层依赖、应用编译、完整测试和重编 DLL 启动；[重编 x86 载荷在 Win7 SP1 x86 QEMU](../../verification/production-validation/win7-sp1-x86-qemu-preview7-final-source-2026-09-25/README.md)三入口短测也通过。旧 SOUI 构建会在源码树增加编译产物，导致编译后清单文件集合复验失败；逐文件比对确认原清单源码未改变。Debug、物理目标机和完整交付流程仍缺证据。
+- [S02 交替配对记录](../../verification/production-validation/benchmark-s02-series-interference-2026-09-25/README.md)仍受外部 QEMU 干扰，未取得五对隔离样本，也缺实际呈现；最小包体积历史样本只能支持体积差异，不能推断流畅性或总体采用价值。
+
+下一步修正旧 SOUI 构建在源码树生成产物的副作用，补齐 Debug/四组配置与目标机安装升级链；随后继续关闭资源增长、Bridge/GPU 生命周期、同机呈现性能、物理目标机、安全维护和授权门槛。未完成这些证据前不得发布为生产就绪。
+
+## 2026-09-25 preview.6 增补判定
+
+本增补沿用下方三项问题，保留 preview.5 原判定与失败样本。**独立交付部分通过、指定范围生产未通过、相对 Electron 的整体采用价值未判定**；`sourceDeliveryVerified=false`、`releaseReady=false`。
+
+- preview.6 [双架构安装包独立消费者](../../verification/production-validation/preview6-independent-consumer-2026-09-25/README.md)、[无 Git 的完整源码搬移与双架构重编](../../verification/production-validation/preview6-source-relocation-2026-09-25/README.md)已通过。搬移后底层依赖未重编且 GUI 未在该目录启动，不能将源码交付门槛写成完全通过。
+- 实际 Win7 SP1 x86 QEMU 上，[preview.6 三应用入口](../../verification/production-validation/win7-sp1-x86-qemu-preview6-apps-v4-2026-09-25/README.md)、[冻结公共任务消费者](../../verification/production-validation/win7-sp1-x86-qemu-public-task-2026-09-25/README.md)、[公共剪贴板/窗口中文往返](../../verification/production-validation/win7-sp1-x86-qemu-desktop-v2-2026-09-25/README.md)、[窗口线程停滞后的超时恢复](../../verification/production-validation/win7-sp1-x86-qemu-title-timeout-v2-2026-09-25/README.md)及[目录对话框实际打开并取消](../../verification/production-validation/win7-sp1-x86-qemu-directory-v2-2026-09-25/README.md)各自的短测通过。它们来源不同，不能跨候选合成一个完整通过版本。
+- preview.5 [八小时混合运行](../../verification/production-validation/preview5-eight-hour-soak-2026-09-25/README.md)完成 1,690 轮、23,664 步、退出 0，但私有内存每小时中位数由约 64.1 MiB 升至 136.7 MiB，且与外部负载重叠；资源/时延门槛未评估，亦不能覆盖 preview.6。真实页面交互、完整业务、物理 Win7 x86、隔离的最终候选长测和 SOUI/Electron 同机配对性能仍待执行。
+- [同机 SOUI/Electron S02 配对链路预检](../../verification/production-validation/benchmark-s02-full-preflight-2026-09-25/README.md)已有三对真实 61 秒滚动样本，页面、输入、完整资源副本、进程树和身份预检通过；第 1 对与 QEMU 并行，只保留诊断。另两对无 QEMU 的样本给出初步内存/CPU 分布，但缺实际屏幕呈现、五对重复、冷/热启动和目标系统验证，`benchmarkValid=false`，不能判定相对 Electron 的整体价值。
 
 | 必须回答的问题 | 当前判定 | 决定性的现有证据与缺口 |
 |---|---|---|

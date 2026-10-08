@@ -37,10 +37,9 @@ async function run() {
     const blocker=client.call('acceptance.delay',{});
     const overloaded=Array.from({length:256},(_,index)=>client.call('acceptance.reflect',{index})
       .then(value=>({index:value.index,code:''}),error=>({index:-1,code:error instanceof SouiBridgeError ? error.code : 'unexpected'})));
-    // This fixture intentionally has no native task service. An unknown-method
-    // response proves reserved admission, not support for task cancellation.
-    const control=client.cancel('fixture:missing').then(()=>{throw new Error('Unregistered task service unexpectedly succeeded.');},error=>{
-      if(!(error instanceof SouiBridgeError) || error.code!=='E_UNKNOWN_METHOD')throw error;
+    // The public task service must still admit a control request at ordinary capacity.
+    const control=client.cancel('fixture:missing').then(()=>{throw new Error('Missing task unexpectedly cancelled.');},error=>{
+      if(!(error instanceof SouiBridgeError) || error.code!=='E_TASK_NOT_FOUND')throw error;
     });
     const capacityResults=await Promise.all(overloaded);
     await Promise.all([blocker,control]);
@@ -54,6 +53,50 @@ async function run() {
       try {await client.call(method,{});throw new Error('Native failure was accepted as success.');}
       catch(error) {if(!(error instanceof SouiBridgeError) || error.code!==code)throw error;}
     }
+    app.textContent='检查公共 SDK 长任务与进度事件…';
+    const started=await client.call('task.start',{kind:'acceptance.count',operationId:'complete-1',input:{steps:10}});
+    if(!started.accepted || started.duplicate)throw new Error('Native task did not start once.');
+    let progressEvents=0;
+    const subscription=client.subscribe(started.taskId,'task.progress',event=>{
+      const payload=event.payload as {progress?:unknown};
+      if(typeof payload.progress==='number')progressEvents++;
+    });
+    try {
+      await subscription.ready;
+      let completed=false;
+      for(let attempt=0;attempt<100;++attempt){
+        const status=await client.call('task.query',{taskId:started.taskId});
+        if(status.state==='succeeded'){
+          if(status.progress!==100 || status.result?.steps!==10)throw new Error('Task result changed across Bridge.');
+          completed=true;
+          break;
+        }
+        if(status.state==='failed' || status.state==='cancelled')throw new Error('Task failed unexpectedly: '+status.message);
+        await new Promise<void>(resolve=>setTimeout(resolve,20));
+      }
+      if(!completed)throw new Error('Public task did not finish.');
+      await new Promise<void>(resolve=>setTimeout(resolve,20));
+      if(progressEvents===0)throw new Error('No native progress event reached the page.');
+    } finally {await subscription.unsubscribe();}
+    app.textContent='检查公共 SDK 协作取消…';
+    const cancellable=await client.call('task.start',{kind:'acceptance.count',operationId:'cancel-1',input:{steps:100}});
+    let running=false;
+    for(let attempt=0;attempt<100;++attempt){
+      const status=await client.call('task.query',{taskId:cancellable.taskId});
+      if(status.state==='running' && status.progress>0){running=true;break;}
+      await new Promise<void>(resolve=>setTimeout(resolve,20));
+    }
+    if(!running)throw new Error('Cancel target never entered a native worker.');
+    const requested=await client.call('task.cancel',{taskId:cancellable.taskId});
+    if(!requested.cancelRequested)throw new Error('Task cancellation was not acknowledged.');
+    let cancelled=false;
+    for(let attempt=0;attempt<100;++attempt){
+      const status=await client.call('task.query',{taskId:cancellable.taskId});
+      if(status.state==='cancelled'){cancelled=true;break;}
+      if(status.state==='succeeded')throw new Error('Cancelled task reported success.');
+      await new Promise<void>(resolve=>setTimeout(resolve,20));
+    }
+    if(!cancelled)throw new Error('Native handler did not confirm cancellation.');
     // Capacity and error recovery must leave the same document usable.
     if((await client.call('acceptance.echo',{})).window!==expectedWindow || client.pendingRequestCount!==0)
       throw new Error('Native connection did not recover after failures.');
@@ -61,6 +104,6 @@ async function run() {
   app.textContent='回报页面就绪…';
   await client.call('bridge.probe.report',{ready:true});
   await client.call('acceptance.ready',{});
-  app.textContent=identity.bridgeChecks ? '公共 SDK 连接、并发、异步等待、原生限流与错误恢复验证通过' : '公共 SDK 原生连接、窗口身份和页面就绪验证通过';
+  app.textContent=identity.bridgeChecks ? '公共 SDK 连接、并发、长任务、进度、取消、限流与错误恢复验证通过' : '公共 SDK 原生连接、窗口身份和页面就绪验证通过';
 }
 void run().catch(error=>{app.textContent='失败：'+String(error);document.title='SDK acceptance failed';});

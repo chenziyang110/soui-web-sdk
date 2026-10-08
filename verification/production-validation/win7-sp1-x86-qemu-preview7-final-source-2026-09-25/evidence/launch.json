@@ -1,0 +1,33 @@
+{
+  "pid": 26912,
+  "startedAt": "2026-09-25T06:31:50.2002391Z",
+  "arguments": [
+    "-machine",
+    "pc,accel=tcg",
+    "-cpu",
+    "core2duo",
+    "-smp",
+    "2",
+    "-m",
+    "2048",
+    "-drive",
+    "file=D:\\SOUI-SDK-QEMU-validation\\system.qcow2,format=qcow2,if=ide",
+    "-drive",
+    "file=fat:ro:D:\\SOUI-SDK-QEMU-validation\\guest-preview7-final-transfer-20260925,format=raw,if=ide,index=1",
+    "-snapshot",
+    "-net",
+    "none",
+    "-vga",
+    "std",
+    "-display",
+    "none",
+    "-vnc",
+    "127.0.0.1:99",
+    "-monitor",
+    "tcp:127.0.0.1:4453,server,nowait",
+    "-serial",
+    "file:D:\\SOUI-SDK-QEMU-validation\\preview7-final-source-win7-serial-20260925.txt"
+  ],
+  "serial": "D:\\SOUI-SDK-QEMU-validation\\preview7-final-source-win7-serial-20260925.txt",
+  "releaseReady": false
+}

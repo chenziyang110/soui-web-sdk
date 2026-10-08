@@ -1,0 +1,9 @@
+# preview.8 公共 SDK 长任务在 Windows 7 SP1 x86 QEMU 的短验收
+
+状态：**指定虚拟机的独立公共 SDK 消费者 Bridge 三轮通过；生产准入未通过**。输入为 SHA-256 `3291FB056A009FD9BE48FF6E5212DB96D94133A300A6B23EB495F065917F9788` 的 preview.8 最终完整源码 ZIP 全新解压目录；在该目录使用 `Test-Acceptance.ps1` 编译、安装公开 C++/Web SDK，并独立编译 `tests/acceptance-app`。它不是 Workbench，也不是模板项目。安装的 SDK、TypeScript 页面、消费者及预构建 Miniblink 内核由 [build.json](build.json) 绑定：SDK build ID `2b2ea4d7-342b-4866-af7e-d7b364776fad`，consumer build ID `37048afd-1bbe-4f7e-a57d-27a7be9dce6e`，运行载荷指纹 `913ce896656170298149da54b1a0a51f863a243fe12c389e4e7e10b388afe439`。该运行使用已交付的预构建内核，不冒充本轮重新编译的内核。
+
+本机先完成 [Bridge 三轮](host-bridge-result.json)，退出 0、10 个生命周期步骤，页面每轮检查 32 个并发请求、原生异步期间页面定时器、256 请求容量与控制槽位、错误恢复、公开 `task.start/query/cancel`、进度事件及取消状态。随后用 [Prepare-PublicTask.ps1](Prepare-PublicTask.ps1) 打包同一个消费者运行目录：76 文件 ZIP SHA-256 `4CEE9D2EA931E11C9388024EE666609EE58E831A57FC15C3624C03A68F12E69C`。宿主测试 ZIP、重新解包逐文件比较 [76 项载荷散列](payload-sha256.tsv)；[输入记录](input.json)固定源码、构建、运行包、关键二进制、测试参数和客体脚本身份。[载荷校验反例](payload-self-test-output.txt)证明篡改清单会被拒绝。
+
+QEMU 使用 Windows 7 Enterprise SP1 x86 基础镜像、`-snapshot`、只读 FAT 传输盘和禁用网络。来宾在 NTFS 上解包，重新校验全部 76 个文件，运行 `bridge` 三轮（无预热、每轮静置 100 ms、步骤限时 60 秒）。[来宾完成画面](evidence/complete-console.png)显示退出 0；[原始串口](serial-export.txt)导出 17 个结果文件。[宿主核验器](Verify-PublicTaskSerial.ps1)逐帧检查长度与 SHA-256、6.1.7601/SP1/32-bit 身份、ZIP 与 EXE/内核/SOUI 散列、载荷全量校验、进程退出，以及 [28 条事件](results/bridge-events.ndjson)的 10 个完整生命周期步骤和 3 次资源采样；[核验结果](verifier-output.txt)通过。来宾事件从 `run.begin` 到 `run.complete`，总历时 23,691 ms，此时间是 TCG 虚拟机内操作时间，不作性能基准。串口[反例自检](self-test-output.txt)在重新计算帧散列后分别伪造内核散列和截断事件流，宿主核验器均拒绝；随后重验原样本通过。QEMU 已退出，基础磁盘未写回。
+
+这证明 preview.8 已安装 SDK 的独立页面消费者在指定 Win7 SP1 x86 虚拟机完成了公开任务的进度、取消、容量和恢复短链路。它不验证 Demo 的真实点击与长时任务、模板项目中的业务实现、物理设备、安装升级、IME/DPI、多屏、资源长期收敛或安全维护。`resourceGate=not-evaluated`、`sourceDeliveryVerified=false`、`releaseReady=false`。

@@ -7,11 +7,14 @@
 #include <helper/SAdapterBase.h>
 #include <soui/host/soui_miniblink_host.h>
 #include <soui/json_bridge.h>
+#include <soui/runtime/services/desktop/window_commands.h>
 #include <json.hpp>
 #include <filesystem>
 #include <fstream>
 #include <memory>
 #include <algorithm>
+#include <chrono>
+#include <thread>
 
 namespace {
 using json=nlohmann::json;
@@ -40,6 +43,11 @@ class starter_window final : public SOUI::SHostWnd {
     if(rect)::SetWindowPos(m_hWnd,nullptr,rect->left,rect->top,rect->right-rect->left,rect->bottom-rect->top,SWP_NOZORDER|SWP_NOACTIVATE);
   }
   LRESULT OnBridgeEvent(UINT,WPARAM,LPARAM value){host_.deliver_posted_event(reinterpret_cast<void*>(value));return 0;}
+  LRESULT OnWindowCommand(UINT,WPARAM command,LPARAM payload){
+    const auto action=static_cast<soui::runtime::window_command>(command);
+    if(action==soui::runtime::window_command::begin_drag && !(GetAsyncKeyState(VK_LBUTTON)&0x8000))return 0;
+    return soui::runtime::execute_window_command(m_hWnd,action,payload)?1:0;
+  }
   void OnClose(){KillTimer(1);(void)host_.destroy();append("host-close-complete");DestroyWindow();PostQuitMessage(exit_code_);}
   BEGIN_MSG_MAP_EX(starter_window)
     MSG_WM_SIZE(OnSize)
@@ -48,6 +56,7 @@ class starter_window final : public SOUI::SHostWnd {
     MSG_WM_DPICHANGED(OnDpiChanged)
     MSG_WM_CLOSE(OnClose)
     MESSAGE_HANDLER_EX(soui::sdk::bridge_event_message,OnBridgeEvent)
+    MESSAGE_HANDLER_EX(soui::runtime::window_command_message,OnWindowCommand)
     CHAIN_MSG_MAP(SOUI::SHostWnd)
   END_MSG_MAP()
  private:
@@ -79,11 +88,32 @@ int run(HINSTANCE instance,bool smoke) {
   app.AddResProvider(resources);
 
   soui::sdk::json_bridge bridge("app://starter");
+  if(!bridge.enable_directory_service())return 10;
+  if(!bridge.enable_clipboard_service())return 8;
+  if(!bridge.enable_window_service())return 9;
   (void)bridge.register_method("app.greet","app.greet",[](std::string_view params) {
     const auto value=json::parse(params);
     if(!value.is_object() || value.size()!=1 || !value.contains("name") || !value["name"].is_string() || value["name"].get_ref<const std::string&>().size()>128)
       return std::string{"{\"error\":\"E_INVALID_PARAMS\",\"message\":\"Expected a name of at most 128 bytes.\"}"};
     return json{{"message","Hello, "+value["name"].get<std::string>()+". This response came from C++."}}.dump();
+  });
+  (void)bridge.register_task_handler("app.count", [](const soui::runtime::task_invocation& invocation,
+                                                     const soui::runtime::task_control& control) {
+    const auto input=json::parse(invocation.parameters_json, nullptr, false);
+    if(!input.is_object() || input.size()!=1 || !input.contains("steps") ||
+       !input["steps"].is_number_integer() || input["steps"].get<int>()<1 ||
+       input["steps"].get<int>()>20)
+      return soui::runtime::task_outcome{soui::runtime::result_kind::failure,"{}","Expected 1–20 steps."};
+    const int steps=input["steps"].get<int>();
+    for(int index=1;index<=steps;++index){
+      if(control.cancellation_requested())
+        return soui::runtime::task_outcome{soui::runtime::result_kind::task_cancelled,"{}","Cancelled."};
+      std::this_thread::sleep_for(std::chrono::milliseconds(50));
+      if(!control.report_progress(static_cast<std::uint32_t>(index*100/steps),"Counting"))
+        return soui::runtime::task_outcome{soui::runtime::result_kind::task_cancelled,"{}","Cancelled."};
+    }
+    return soui::runtime::task_outcome{soui::runtime::result_kind::success,
+                                      json{{"count",steps}}.dump(),"Completed."};
   });
   soui::sdk::soui_miniblink_host host(std::make_unique<soui::sdk::dynamic_miniblink_adapter>());
   starter_window window(host,smoke,log);

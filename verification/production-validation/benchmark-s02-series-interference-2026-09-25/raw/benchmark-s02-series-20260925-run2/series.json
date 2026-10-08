@@ -1,0 +1,47 @@
+{
+  "schema": "soui.benchmark-series/v1",
+  "seriesId": "8877f09c-5850-4d71-9ee3-46223e30e99a",
+  "scene": "S02",
+  "plannedPairs": 5,
+  "startedAt": "2026-09-25T02:07:12.663Z",
+  "order": "alternating-soui-electron-and-electron-soui",
+  "checks": [
+    {
+      "checkedAt": "2026-09-25T02:07:11.878Z",
+      "competingProcesses": []
+    },
+    {
+      "checkedAt": "2026-09-25T02:07:12.682Z",
+      "competingProcesses": []
+    },
+    {
+      "checkedAt": "2026-09-25T02:08:17.547Z",
+      "competingProcesses": [
+        {
+          "name": "qemu-system-x86_64.exe",
+          "pid": 28384
+        }
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "number": 1,
+      "order": [
+        "soui",
+        "electron"
+      ],
+      "runs": {
+        "soui": "pair-1-soui"
+      }
+    }
+  ],
+  "benchmarkValid": false,
+  "releaseReady": false,
+  "pageBundle": "frozen-page",
+  "pageBundleSha256": "865c6e25e95d23db4ad84f694f1eb5bff93fafa5b8193ab42dafb347f0a00bd8",
+  "status": "stopped",
+  "error": "Competing process is running: qemu-system-x86_64.exe (PID 28384)",
+  "finishedAt": "2026-09-25T02:08:18.258Z",
+  "completedPairs": 0
+}

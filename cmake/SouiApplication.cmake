@@ -41,7 +41,7 @@ function(soui_add_application target)
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${runtime_dlls} ${crt_dlls} "$<TARGET_FILE_DIR:${target}>"
     COMMAND "${CMAKE_COMMAND}" -E copy_if_different "${dep}/prebuilt/${arch}/miniblink/node.dll" "$<TARGET_FILE_DIR:${target}>/node.dll"
     COMMAND "${SOUI_NODE_EXECUTABLE}" "${SOUI_DISTRIBUTION_ROOT}/tools/internal/deploy-resources.cjs"
-      "${APP_WEB_ROOT}" "$<TARGET_FILE_DIR:${target}>"
+      "${APP_WEB_ROOT}" "$<TARGET_FILE_DIR:${target}>" "${SOUI_DISTRIBUTION_ROOT}"
     COMMAND "${SOUI_MT_EXECUTABLE}" -nologo -manifest "${APP_ROOT}/resources/app.manifest" "-outputresource:$<TARGET_FILE:${target}>;#1"
     DEPENDS ${target}
     VERBATIM)

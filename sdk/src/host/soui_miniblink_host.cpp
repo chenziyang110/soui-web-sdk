@@ -934,6 +934,8 @@ host_result dynamic_miniblink_adapter::unmount() {
 #endif
   drain_events();
   destroy_input_window();
+  if (bridge_adapter_ != nullptr)
+    bridge_set_owner_window(*static_cast<bridge_adapter*>(bridge_adapter_), nullptr, 0);
   owner_window_ = nullptr;
   bridge_adapter_ = nullptr;
 #endif
@@ -2307,6 +2309,7 @@ jsValue WKE_CALL_TYPE native_post_message(jsExecState es, void*) {
       const auto response = bridge_error(request_id, "E_INVALID_PARAMS", "timeoutMs must be between 1 and 60000.");
       return jsString(es, response.c_str());
     }
+    const bool native_user_gesture = adapter->processing_user_gesture();
     // Reserve the document resolver before admitting any side effects. Both
     // creation and response delivery run on this same engine owner.
     const auto create = std::string{"return "} + detail::create_bridge_pending_script
@@ -2318,7 +2321,7 @@ jsValue WKE_CALL_TYPE native_post_message(jsExecState es, void*) {
         " string=" + (waiting_is_string ? std::string{"1"} : std::string{"0"}));
     if (waiting_is_string) return waiting;
     host_result admitted;
-    try { admitted = adapter->try_enqueue_bridge_message(std::string(request), adapter->processing_user_gesture()); }
+    try { admitted = adapter->try_enqueue_bridge_message(std::string(request), native_user_gesture); }
     catch (...) { admitted = failure("E_NATIVE_EXCEPTION", "The native bridge could not admit this request."); }
     bridge_diagnostic_trace(adapter, admitted.ok ? "binding.admitted" : "binding.rejected",
         request_id, admitted.code);

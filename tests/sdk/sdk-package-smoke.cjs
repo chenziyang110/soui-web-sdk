@@ -30,6 +30,8 @@ try {
   check(() => {
     sdk.pack(source, first, '0.1.0-preview.1');
     assert.equal(sdk.readPackage(first).releaseReady, false);
+    assert.equal(read(path.join(first, 'payload/THIRD_PARTY_NOTICES.md')), 'SDK notice\n');
+    assert.equal(read(path.join(first, 'payload/third_party/licenses/fixture.txt')), 'SDK third_party/licenses\n');
     assert.equal(fs.existsSync(path.join(first, 'payload/web/apps/business.tsx')), false);
     assert.throws(() => sdk.pack(source, first, '0.1.0-preview.1'), /already exists/);
   });
@@ -72,6 +74,8 @@ try {
     write(path.join(project, 'web/apps/business.tsx'), 'business custom');
     sdk.install(first, project);
     assert.equal(sdk.readLock(project).manifest.version, '0.1.0-preview.1');
+    assert.equal(read(path.join(project, 'THIRD_PARTY_NOTICES.md')), 'SDK notice\n');
+    assert.equal(read(path.join(project, 'third_party/licenses/fixture.txt')), 'SDK third_party/licenses\n');
     assert.equal(read(path.join(project, 'web/apps/business.tsx')), 'business custom');
   });
   const touchedPath = path.join(project, 'sdk/fixture.txt');

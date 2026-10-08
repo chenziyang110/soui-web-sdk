@@ -1,6 +1,6 @@
 {
   "schema": "soui.dependencies/v2",
-  "sdkVersion": "0.3.0-preview.4",
+  "sdkVersion": "0.3.0-preview.8",
   "releaseReady": false,
   "dependencies": [
     {
@@ -18,6 +18,14 @@
       "license": "upstream and bundled dependency notices",
       "sourceNormalization": "lf",
       "sha256": "9ce3172a363d7be251bdf60d3a7dbd8cf70cf7df80e114bad0f8742177cedb75"
+    },
+    {
+      "id": "miniblink-encoding-patch",
+      "source": "third_party/patches/miniblink/0007-mark-utf8-source-encoding.patch",
+      "version": "preview.7 post-import patch",
+      "license": "same terms as Miniblink source",
+      "sourceNormalization": "lf",
+      "sha256": "7a4cd0cd788e87e9d0ae2d42b5fe55fb6800ee7a2df8e858e8932b78dbaefbce"
     },
     {
       "id": "zlib-source",
@@ -73,7 +81,7 @@
       "version": "lockfile",
       "license": "resolved package licenses",
       "sourceNormalization": "lf",
-      "sha256": "e721390162cfe2a6b4889b05f69bfdecf41336315473e703ca6064b118d9baf2"
+      "sha256": "098a396342fd7f3cbd06b8271339453e8b724889024f5565ee822a503b838899"
     },
     {
       "id": "template-web",
@@ -89,7 +97,7 @@
       "version": "lockfile",
       "license": "resolved package licenses",
       "sourceNormalization": "lf",
-      "sha256": "530a7b639facadb78de45ed9b5c3648988fd99d3fe9577bae8cd904e2631481d"
+      "sha256": "aa61482bf9b289836f3101b985ff0a39a6743b7532443def37cabb80cc3d3c47"
     }
   ],
   "nativeFiles": [
