@@ -1,6 +1,12 @@
 # 候选支持范围与设备矩阵
 
-2026-09-26 增补：开发版 preview.10 完成[本机 x86/x64 Release 编译、安装消费与非桌面交互预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)。新增公共菜单/快捷键/驻留尚无本版真实桌面或 Win7 结果，下述历史载荷不自动授予本版兼容通过。
+2026-09-26 preview.11 增补：[当前预检](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)完成本机 x86/x64 Release SDK、Starter、Workbench 编译、独立 SDK 安装与仓库外 `session-consumer` 编译/运行，每架构 10 项 CTest 通过，其中原生续期包含 14 组契约。最终汇总核验 Web 62 项、包行为 14 项、交付身份 7 项通过、五份锁文件全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包、包内散列及源码匹配通过。生成的独立 `RenewalStarter` 两架构 Release 编译与项目校验均退出 0。
+
+[本版真实桌面短测](../../verification/production-validation/preview11-desktop-execution-2026-09-26/README.md)随后在 Windows 11 宿主串行完成：x86/x64 窗口线程停滞与目录程序化取消共四项、Starter/Workbench 默认与 React 共六入口、独立 `RenewalStarter` 两项短启动均取得退出码 0。x86 公共托盘消费者因 `E_MENU_FOREGROUND` 退出 1，菜单尚未显示；x86 Workbench 驻留因 slot 2 未在 45 秒内就绪退出 3，尚未进入 smoke 阶段，slot 3 状态未判定。两次失败保留，x64 菜单/驻留尚未执行。
+
+首次 x86 窗口线程超时探针缺退出码的旧样本仍不计通过。Win7 前两轮传输失败保留；[第三轮 v3 客体](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt3-2026-09-26/README.md)通过传输与运行前身份检查，Starter 就绪退出 0，Workbench 默认入口就绪后关闭超时，React 及运行后载荷检查未执行；真实超过 30 分钟/八小时续期、完整 V02/V04、物理设备及资源/性能门槛仍未通过。[真实时钟续期独立消费者](../../verification/production-validation/preview11-real-renewal-build-2026-09-26/README.md)的 x86/x64 编译与无窗口自检通过；随后[本机 x86 GUI 首次短测](../../verification/production-validation/preview11-real-renewal-smoke-attempt1-2026-09-26/README.md)在页面就绪前因会话关闭退出 1，任务未启动，x64 GUI 与真实超过 30 分钟/八小时运行未执行。[v2 修正夹具](../../verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/README.md)已完成两架构编译、每架构 45 项无窗口阶段自检、106 项分析器合成检查及 8 项运行输入绑定检查；随后[两架构首次 GUI](../../verification/production-validation/preview11-real-renewal-v2-smoke-2026-09-26/README.md)均因初始 60 秒未就绪退出 1，bootstrap 和任务调用为 0，真实续期未通过；可控时钟轮换也不改变设备支持状态。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+2026-09-26 preview.10 历史增补：[本机 x86/x64 Release 编译、安装消费与非桌面交互预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)通过。新增公共菜单/快捷键/驻留当时尚无本版真实桌面或 Win7 结果，下述历史载荷不自动授予新版本兼容通过。
 
 日期：2026-09-24。状态：采集中，不是正式支持声明。首批真实项目要求最低 Windows 7 SP1，包含 x86；不能仅凭本机 Windows 11 上的 x86 进程结果放行。
 
@@ -18,6 +24,7 @@ preview.8 [无 Git 候选源码包双架构重编与四组应用构建](../../ve
 
 | 组合或能力 | 当前证据 | 状态与缺口 |
 |---|---|---|
+| preview.11 本机 x86/x64 Release | [当前预检](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)的编译、安装消费与契约通过；[真实桌面记录](../../verification/production-validation/preview11-desktop-execution-2026-09-26/README.md)补足四项原生桌面探针、六个应用入口及两个生成项目短启动，均退出 0 | 仅所列短测通过；x86 菜单前台激活和驻留 slot 2 就绪失败，x64 菜单/驻留未执行。当前 Debug、Win7、完整 V02/V04、超过 30 分钟同文档续期、八小时资源与完整交付仍待验收，不扩大支持声明 |
 | 本机 x64 Release | preview.4 固定包公共消费者软件路径重建/重载/三窗口/Bridge 各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)、[GPU 专项](gpu-lifecycle.md)和[当前应用回归](../../verification/production-validation/preview4-fixed-2026-09-23/README.md)分别绑定身份；资源总体与业务长稳未通过 |
 | 本机 x86 Release | preview.4 固定包公共消费者软件路径重载/销毁重建/三窗口/Bridge 各 1,000 轮、另有静置 1 秒的重载 100 轮；模板及 Demo 默认/React 回归；历史 GPU 重建 30 轮暴露 USER 残留 | [新固定包生命周期](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)与[GPU 专项](gpu-lifecycle.md)分别记录；资源门和业务长稳未通过，也不是独立 32 位系统的兼容结论 |
 | 本机 x86/x64 Debug | preview.8 完整源码候选在本机两架构的 Debug 应用编译、完整测试和三入口桌面短测均通过，见[四组构建证据](../../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md) | 仅此候选的本机 Debug 短验收通过；目标系统 Debug、独立项目 Debug、资源与长期稳定仍未验证 |

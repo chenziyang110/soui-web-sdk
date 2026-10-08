@@ -67,11 +67,23 @@ Web 方法类型为 `SouiClipboardMethodMap`，与 `SouiCoreMethodMap` 组合使
 
 跨线程 `setTitle` 通过 SDK 的数字请求 ID 投递到窗口线程，最多等待 250 ms 的实际执行确认；超过时限返回 `E_WINDOW_TIMEOUT`，待处理表最多 64 项。若窗口线程已开始处理，超时后的最终结果可能未知，调用方不能据此断言标题未变化。窗口所有者线程直接调用仍按 Win32 同步执行。`beginDrag` 和 `close` 是排队操作，返回的是接受请求，不保证之后的交互或页面 Promise 一定能在窗口销毁前完成。`minimize` 和 `toggleMaximize` 在当前窗口线程确认后返回。真实点击、旧版 Windows、多窗口及关闭中的响应仍须验收；不要把无窗口契约测试视为这些结果。
 
+## 同文档会话续期（preview.11）
+
+原生应用在 bootstrap 前调用 `json_bridge.enable_session_renewal()`，使新授权具有 `bridge.session.renew` 能力。Starter 与 Workbench 已显式启用；自定义适配器通过 `bridge_transport.enable_session_renewal()` 注册通用处理器，并在原生固定能力集中授予该项。bootstrap 的可选 `lease` 来自 `permission_store.lease`，包含 `generation`、`expiresInMs` 和 `renewAfterMs`；未启用的应用仍使用 30 分钟有限授权。
+
+标准连接器自动将 lease 交给原客户端并在到期前五分钟续期。`client.renewSession()` 返回本次租约；早于本地续期时间时只返回当前值，在途调用共享同一结果。`client.sessionLease` 返回剩余期限副本。自定义 port 可传 `lease` 和非负 `leaseElapsedMs`，后者扣除 bootstrap 往返消耗的时间。SDK 保守计算本地期限，不能据此延长原生期限。普通业务发送保持同步，不等待续期、不自动重放；任务和订阅对象继续使用原实例。
+
+原生续期仅接受 `{operationId}`，只能由未到期的当前令牌在剩余期限不超过五分钟时创建新 30 分钟令牌。旧令牌最多重叠三十秒且不超过其原到期时间；期间可继续原权限内的普通业务，只能以同一 operationId 重取已经完成的续期结果。会话、来源与能力集合不变，generation 递增，重试不增加有效期。错误包括 `E_RENEW_TOO_EARLY`、`E_UNAUTHORIZED`、`E_SESSION_EXPIRED`、`E_ENTROPY_UNAVAILABLE`；不得把过期后重新 bootstrap 当作原会话恢复。
+
+公共 `permission_store.resolve(session, origin, token, capability)` 返回本次校验及稳定的 `authorization_scope`。transport 始终重建原生 `bridge_request.authorization`，JSON 不得提供它；直接调用 `task_service` 的原生代码必须提供正确的 scope。资源比较 scope 身份加 session/origin；同一 session 重新 issue 的独立 grant 不能访问旧资源。关闭顺序必须先 `permission_store.revoke_session` 再服务 `shutdown_session`，新资源在提交锁内复验 scope。已接纳任务协作式结束；到期后不新投递其订阅事件，关窗负责最终资源清理。
+
+一次 Web 续期最多三次尝试，共享同一个 operationId 和最多 25 秒的总预算；dispose 终止计时器，迟到回应不能复活客户端。Host 和实际注入 resolver 均保留单独的一项续期容量，但不能抢占正在执行的业务方法。休眠、长模态或阻塞超过原生期限仍会失败，需应用明确处理重新加载。行为边界见 [ADR-0014](adr/0014-same-document-session-renewal.md)，真实八小时与 Win7 验收另行留证。
+
 ## 公共长任务
 
 应用在首次 bootstrap 前调用 `bridge.register_task_handler(kind, handler)`，在处理器中通过 `task_control::report_progress(0..100, message)` 报告进度、定期检查 `cancellation_requested()` 并返回 `task_outcome`。处理器运行在 SDK 的后台工作线程，不能直接修改窗口控件。模板的 `app.count` 展示完整调用。页面以 `client.call('task.start', {kind, operationId, input})` 启动，随后以 `task.query` 读取状态、`client.subscribe(taskId, 'task.progress', listener)` 订阅进度，必要时调用 `task.cancel`，最后等待 `unsubscribe()` 确认。`task.start` 要求三个字段且 `input` 为对象；`kind` 和 `operationId` 只能包含 ASCII 字母、数字、连字符、下划线、点和冒号，长度为 1–128。
 
-同一会话的同一 `operationId` 与相同 `kind`/`input` 重试会返回原 `taskId` 和 `duplicate: true`；不同内容返回 `E_OPERATION_CONFLICT`。任务查询、取消和订阅同时核对 session、origin 和 token；页面导航撤销旧会话并请求取消未完成任务。取消是协作式的：`task.cancel` 先返回 `cancel-pending`，只有处理器退出后才报告 `cancelled`。页面请求超时也不自动取消任务。
+同一授权的同一 `operationId` 与相同 `kind`/`input` 重试会返回原 `taskId` 和 `duplicate: true`；不同内容返回 `E_OPERATION_CONFLICT`。任务查询、取消和订阅核对本次 token 的授权结果，并按 session、origin 和稳定授权对象确认资源归属；轮换不重启任务、不重置 sequence。页面导航撤销旧会话并请求取消未完成任务。取消是协作式的：`task.cancel` 先返回 `cancel-pending`，只有处理器退出后才报告 `cancelled`。页面请求超时也不自动取消任务。
 
 默认上限为 2 个原生工作线程、32 个未完成任务、128 个订阅和 1,024 个保留的任务结果。超限返回 `E_BUSY`，旧终态记录按最早序号淘汰；任务结果只保留在进程内，没有持久化保证。返回结果须为不超过 32 KiB 的 JSON 对象，进度与终态消息最多 4 KiB；违反返回约束会形成失败终态。应用的处理器应按自己的数据来源继续验证 `input`，及时响应取消，并自行约束阻塞外部调用的最长时间。当前公共任务模块仍待独立真实页面、Demo、长稳和目标机整组验收。
 

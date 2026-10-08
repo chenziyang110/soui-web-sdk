@@ -1,0 +1,109 @@
+{
+  "schema": "soui.real-renewal-attempt/v1",
+  "startedAt": "2026-09-26T07:08:26.740Z",
+  "architecture": "x86",
+  "configuration": "Release",
+  "version": "0.3.0-preview.11",
+  "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+  "inputsSha256": "29548090b14d3e8da3ef5524bdd413911db039a22b5d4d1732ddc39f651b6574",
+  "sourceBeforeSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+  "consumerSource": {
+    "sha256": "dc3498a27fa294a78501864b2b3a3f911c6d1d095c0ab8529b2dc7b059ec624f",
+    "bytes": 60927,
+    "files": [
+      {
+        "path": "CMakeLists.txt",
+        "bytes": 832,
+        "sha256": "64e8c5be2eb1a62bc6b5031065bd65b31dcba62352317d9ee63021db7bb508d7"
+      },
+      {
+        "path": "main.cpp",
+        "bytes": 35148,
+        "sha256": "ce6ab062907040f1d8c6b048f121c1795934845d33f698a77bdfb41c068b0c72"
+      },
+      {
+        "path": "web/index.html",
+        "bytes": 1787,
+        "sha256": "e1101d9496199d09d48c0d78425e5c6cb291e9b19a0cee3c6e5a25c97a8f1537"
+      },
+      {
+        "path": "web/main.ts",
+        "bytes": 23160,
+        "sha256": "ba5f05860d85a6fc502458e1f50daf1852a49a4c5f78f1c254fedae650434887"
+      }
+    ]
+  },
+  "drivers": {
+    "sha256": "0b564bda2eabfb4456250990c290f3f4c7a211b38f68a12db3240d6aec70bfb8",
+    "bytes": 101606,
+    "files": [
+      {
+        "path": "Build-Web.mjs",
+        "bytes": 6364,
+        "sha256": "5d1566106acbec8adec5023718d694091454216e30cdf831eb3f1ec0dbf09423"
+      },
+      {
+        "path": "Build.ps1",
+        "bytes": 9469,
+        "sha256": "c2a726de9de951cb883064082112deae82638d7b8b2510dfab9acfe44610ecef"
+      },
+      {
+        "path": "Prepare.cjs",
+        "bytes": 21916,
+        "sha256": "6353bb4d7f997be10f0eaad8c81d56a61e1a8bfa493f08d6495177498eb44624"
+      },
+      {
+        "path": "Run.ps1",
+        "bytes": 27618,
+        "sha256": "40e748f45f9fcdff07cdae2123e674eaf1775d7f7f3e60bf1526f9b76f6d410f"
+      },
+      {
+        "path": "Verify-Run.cjs",
+        "bytes": 36239,
+        "sha256": "4627648885a6af108e424420636c9f20f2e7d0d00fba9dcfe456fa984e1df026"
+      }
+    ]
+  },
+  "protocol": {
+    "sha256": "c29868be53199732a5631a29ee2086466b3fd8d7533278ebfb4c4f832c3f9090",
+    "bytes": 75362,
+    "files": [
+      {
+        "path": "PROTOCOL.md",
+        "bytes": 8943,
+        "sha256": "09f5b4eeb8ebac1ff2d54e49dd3c66d6c0cf583a21a8add11c8bd9af630c2360"
+      },
+      {
+        "path": "SelfTest-Verify-Run.cjs",
+        "bytes": 30180,
+        "sha256": "0b1ce09f61373a7bf8ffc3be566f676fc47d54caed601846adef0e712eb4b777"
+      },
+      {
+        "path": "Verify-Run.cjs",
+        "bytes": 36239,
+        "sha256": "4627648885a6af108e424420636c9f20f2e7d0d00fba9dcfe456fa984e1df026"
+      }
+    ]
+  },
+  "tools": {
+    "node": {
+      "path": "C:\\nvm4w\\nodejs\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    "cmake": {
+      "path": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+      "bytes": 12905544,
+      "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+    },
+    "npmCli": {
+      "path": "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+      "bytes": 56,
+      "sha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+    }
+  },
+  "sdkBuildId": "0224b983-4e77-43fd-884a-6c595eae6262",
+  "installedSdkSha256": "6386282f96319bd9bc88a67f5d09d58cff9074ba68e4fac8b4d44569acfca92c",
+  "fullBuildId": "7e000158-98f0-4349-854e-15c581663737",
+  "guiExecuted": false
+}

@@ -1,0 +1,62 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process'),crypto=require('node:crypto');
+const root=__dirname,repo='C:/SOUI-SDK-development/preview9-tray',ref='21ca3198';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const write=(p,b)=>{fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,b,{flag:'wx'});};
+const json=(p,v)=>write(p,JSON.stringify(v,null,2)+'\n');
+const walk=p=>fs.readdirSync(p,{withFileTypes:true}).sort((a,b)=>a.name.localeCompare(b.name)).flatMap(e=>{if(e.isSymbolicLink())throw Error('Linked input');return e.isDirectory()?walk(path.join(p,e.name)):[path.join(p,e.name)];});
+const snapshot=p=>walk(p).map(f=>({path:path.relative(p,f).replaceAll('\\','/'),bytes:fs.statSync(f).size,sha256:hash(fs.readFileSync(f))}));
+const run=(name,exe,args)=>{const dir=path.join(root,'logs',name);fs.mkdirSync(dir,{recursive:false});const start=new Date().toISOString();const r=cp.spawnSync(exe,args,{cwd:root,windowsHide:true,maxBuffer:16*1024*1024,timeout:120000});write(path.join(dir,'stdout.log'),r.stdout||Buffer.alloc(0));write(path.join(dir,'stderr.log'),r.stderr||Buffer.alloc(0));json(path.join(dir,'result.json'),{exe,args,start,finishedAt:new Date().toISOString(),exitCode:r.status,signal:r.signal,error:r.error?.message||null});if(r.status!==0||r.error)throw Error(name+' failed');};
+if(fs.existsSync(path.join(root,'inputs')))throw Error('Preparation exists');
+fs.mkdirSync(path.join(root,'logs'));
+const original={old:'C:/SOUI-SDK-production-validation/preview10-residency-20260926/sdk-package-attempt2',current:'C:/SOUI-SDK-production-validation/preview11-session-renewal-20260926/sdk-package-attempt1'};
+const versions={old:'0.3.0-preview.10',current:'0.3.0-preview.11'},packages={};
+for(const [key,source] of Object.entries(original)){
+ const dst=path.join(root,'inputs',key+'-package');fs.cpSync(source,dst,{recursive:true,errorOnExist:true,force:false});
+ const before=snapshot(source),after=snapshot(dst);if(JSON.stringify(before)!==JSON.stringify(after))throw Error('Copied package differs');
+ const m=JSON.parse(fs.readFileSync(path.join(dst,'sdk-manifest.json'),'utf8'));if(m.version!==versions[key])throw Error('Version mismatch');
+ packages[key]={original:source,copy:dst,version:m.version,manifestSha256:hash(fs.readFileSync(path.join(dst,'sdk-manifest.json'))),files:after};
+}
+const generator=path.join(root,'inputs','old-generator');
+const commit=cp.execFileSync('git',['rev-parse',ref],{cwd:repo,encoding:'utf8',windowsHide:true}).trim();
+const files=cp.execFileSync('git',['ls-tree','-r','--name-only',commit,'--','templates/desktop-app','tools/New-Project.ps1','tools/sdk','tools/internal','.gitignore','VERSION'],{cwd:repo,encoding:'utf8',windowsHide:true}).trim().split('\n');
+for(const name of files){if(!name||name.includes('..'))throw Error('Bad git path');write(path.join(generator,name),cp.execFileSync('git',['show',commit+':'+name],{cwd:repo,windowsHide:true,maxBuffer:8*1024*1024}));}
+const tool=path.join(root,'inputs/current-package/payload/tools/sdk/soui-sdk.cjs');
+for(const key of ['old','current'])run('verify-package-'+key,process.execPath,[tool,'verify','--package',packages[key].copy]);
+run('create-project','powershell.exe',['-NoProfile','-File',path.join(generator,'tools/New-Project.ps1'),'-Name','UpgradeLedger','-OutputRoot',path.join(root,'project'),'-SdkPackage',packages.old.copy]);
+const project=path.join(root,'project'),main=path.join(project,'app/main.cpp');
+let cpp=fs.readFileSync(main,'utf8');
+const anchor='  soui::sdk::json_bridge bridge("app://starter");';
+if(!cpp.includes(anchor)||!cpp.includes('[](std::string_view params)'))throw Error('Template changed');
+cpp=cpp.replace(anchor,`  wchar_t business_path[32768]{};
+  const DWORD business_length=GetEnvironmentVariableW(L"SOUI_UPGRADE_BUSINESS_DATA",business_path,32768);
+  if(!business_length || business_length>=32768)throw std::runtime_error("Missing business data path");
+  const auto business_size=std::filesystem::file_size(business_path);
+  if(business_size>65536)throw std::runtime_error("Business data too large");
+  std::ifstream business_stream(std::filesystem::path(business_path),std::ios::binary);
+  if(!business_stream)throw std::runtime_error("Cannot read business data");
+  const auto business=json::parse(business_stream);
+  if(!business.is_object() || business.at("schema")!="upgrade-ledger/v1" || !business.at("organization").is_string() || !business.at("invoices").is_array())throw std::runtime_error("Invalid ledger");
+  std::int64_t total_cents=0;
+  for(const auto& invoice:business.at("invoices")){
+    if(!invoice.at("id").is_string() || !invoice.at("cents").is_number_integer())throw std::runtime_error("Invalid invoice");
+    const auto cents=invoice.at("cents").get<std::int64_t>();
+    if(cents<0 || cents>1000000)throw std::runtime_error("Invalid amount");
+    total_cents+=cents;
+  }
+  const auto ledger=json{{"organization",business.at("organization")},{"invoiceCount",business.at("invoices").size()},{"totalCents",total_cents},{"revision",business.at("revision")}};
+  std::ofstream(log,std::ios::app)<<"business-loaded "<<ledger.dump()<<'\\n';
+${anchor}`);
+cpp=cpp.replace('[](std::string_view params)','[ledger](std::string_view params)');
+const response='return json{{"message","Hello, "+value["name"].get<std::string>()+". This response came from C++."}}.dump();';
+if(!cpp.includes(response))throw Error('Response anchor missing');
+cpp=cpp.replace(response,'return json{{"message",ledger.dump()},{"ledger",ledger}}.dump();');
+fs.writeFileSync(main,cpp);
+json(path.join(project,'customer-data','账本.json'),{schema:'upgrade-ledger/v1',organization:'中文验收客户',revision:17,invoices:[{id:'INV-001',cents:12345},{id:'INV-002',cents:6700},{id:'INV-003',cents:955}]});
+write(path.join(project,'customer-data','attachment.bin'),Buffer.from(Array.from({length:256},(_,i)=>i)));
+json(path.join(project,'customer-data','preferences.json'),{locale:'zh-CN',scale:125,recentInvoice:'INV-003'});
+const managed=new Set(JSON.parse(fs.readFileSync(path.join(project,'sdk-lock.json'),'utf8')).manifest.files.map(f=>f.path));
+const business=snapshot(project).filter(f=>!managed.has(f.path)&&f.path!=='sdk-lock.json');
+json(path.join(root,'business-input.json'),{files:business,sha256:hash(Buffer.from(JSON.stringify(business))),runtimeDataEnvironment:'SOUI_UPGRADE_BUSINESS_DATA',expectedLedger:{organization:'中文验收客户',invoiceCount:3,totalCents:20000,revision:17}});
+json(path.join(root,'inputs.json'),{schema:'soui.v06-upgrade-input/v1',createdAt:new Date().toISOString(),generatorCommit:commit,generatorFiles:snapshot(generator),packages,businessInputSha256:hash(fs.readFileSync(path.join(root,'business-input.json'))),scope:'preview.10 -> preview.11 -> preview.10 -> preview.11, independent generated application with ledger data and public task/window/dialog entry points',guiExecuted:false,releaseReady:false});
+console.log(JSON.stringify({prepared:true,project,businessFiles:business.length,guiExecuted:false,releaseReady:false}));

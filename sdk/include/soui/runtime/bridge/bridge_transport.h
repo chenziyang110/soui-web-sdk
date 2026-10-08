@@ -22,6 +22,8 @@ struct bridge_request {
   std::uint32_t timeout_ms{10000};
   // Set only by the native host at the JS binding; never parsed from JSON.
   bool native_user_gesture{false};
+  // Native-only credential result; transport always overwrites supplied values.
+  std::shared_ptr<const authorization_scope> authorization;
 };
 
 struct bridge_response {
@@ -68,9 +70,12 @@ class bridge_transport {
   [[nodiscard]] bridge_response handle(const bridge_request& request) const;
   [[nodiscard]] std::string handle_json(std::string_view json_text,
                                         bool native_user_gesture = false) const;
+  // Register before bootstrap; applications must also grant this capability.
+  [[nodiscard]] bool enable_session_renewal();
+  [[nodiscard]] static std::string serialize_lease(const permission_lease& lease);
 
  private:
-  [[nodiscard]] bridge_response validate(const bridge_request& request) const;
+  [[nodiscard]] bridge_response validate(bridge_request& request) const;
   [[nodiscard]] static std::string serialize(const bridge_response& response);
 
   capability_registry& registry_;

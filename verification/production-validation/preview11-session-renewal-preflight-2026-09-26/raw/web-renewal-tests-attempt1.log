@@ -1,0 +1,43 @@
+✔ custom method sends the scoped envelope and returns native data (1.3973ms)
+✔ a response from another request is rejected (0.315ms)
+✔ malformed JSON becomes a structured response error (0.7423ms)
+✔ native denials retain the native error code (0.5265ms)
+✔ valid JSON with an invalid response shape produces a structured error (0.3498ms)
+✔ timeout is bounded without claiming native cancellation (53.7428ms)
+✔ 32 in-flight calls resolve to their own results in reverse order (1.4186ms)
+✔ request capacity rejects overload and recovers after completion (0.465ms)
+✔ UTF-8 byte limits and non-JSON parameters fail before transport (0.69ms)
+✔ dispose rejects outstanding waits, removes the owned listener once and rejects new calls (0.4328ms)
+✔ timeout frees a page slot without pretending native work was cancelled (26.759ms)
+✔ invalid client options and null native error envelopes are structured failures (0.3861ms)
+✔ caller mutation of options cannot change the connection scope (0.1595ms)
+✔ event validation, sequence filtering and callback isolation apply to each observer (1.8036ms)
+✔ native subscription denial is observable and releases the local subscription slot (0.4852ms)
+✔ removal before subscription acknowledgement is idempotent and sends one late unsubscribe (0.3558ms)
+✔ a disposed pending subscription cleans up a late native success once (0.3322ms)
+✔ a timed-out subscription also cleans up a late successful acknowledgement (27.421ms)
+✔ malformed subscription identities and failed native removal remain visible (0.8746ms)
+✔ bounded control capacity permits unsubscribe when ordinary request capacity is full (0.6112ms)
+✔ toJSON reentrancy cannot bypass disposal or capacity checks (0.5981ms)
+✔ a reentrant port can dispose during subscription creation without leaking a late subscription (0.5454ms)
+✔ the standard connector shares one bootstrap and waits for asynchronous native responses (1.5291ms)
+✔ asynchronous bootstrap is supported without a busy wait (0.1909ms)
+✔ connector options cannot swap the error observer while bootstrap is pending (0.2603ms)
+✔ a second connector cannot silently change options or replace another dispatcher (0.2617ms)
+✔ document unload disposes outstanding waits and removes connector hooks (0.304ms)
+✔ bootstrap timeout and unload release hooks and do not silently rebootstrap (25.5882ms)
+✔ bootstrap rejects malformed credentials, wrong correlation and invalid JSON (0.6388ms)
+✔ connector native events reach only matching subscriptions and owned hooks are restored (0.2424ms)
+✔ ordinary browser use and broken native binding produce explicit connection errors (0.1558ms)
+✔ renewal is opt-in, early renewal returns the existing lease, and native rotation is reserved (1.6964ms)
+✔ automatic renewal shares one flight and leaves business dispatch synchronous (0.9175ms)
+✔ renewal has a slot even when business and release capacities are exhausted (1.2722ms)
+✔ bootstrap delay only shortens expiration and disposed renewal cannot restart (0.4384ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 254.1771

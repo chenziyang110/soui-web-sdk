@@ -1,0 +1,30 @@
+{
+  "label": "build-x64",
+  "program": "powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-File",
+    "C:\\SOUI-SDK-production-validation\\preview11-upgrade-attempt2-20260926\\project\\tools\\Build.ps1",
+    "-Architecture",
+    "x64",
+    "-Configuration",
+    "Release",
+    "-SkipWeb"
+  ],
+  "cwd": "C:\\SOUI-SDK-production-validation\\preview11-upgrade-attempt2-20260926\\project",
+  "startedAt": "2026-09-26T09:24:29.719Z",
+  "exitCode": 0,
+  "signal": null,
+  "timedOut": false,
+  "error": null,
+  "pid": 27704,
+  "finishedAt": "2026-09-26T09:24:59.141Z",
+  "stdout": {
+    "bytes": 1536,
+    "sha256": "6cea01fbe1d6633d9aa9978e6222cd10228546bee6e8eef545636d899041df64"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

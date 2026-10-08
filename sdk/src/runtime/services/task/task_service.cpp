@@ -58,6 +58,11 @@ std::string field(const json& value, const char* name) {
 json parameters(const bridge_request& request) {
   return json::parse(request.params_json, nullptr, false);
 }
+
+bool authorized(const bridge_request& request, const char* capability) {
+  return request.authorization && request.authorization->matches(request.session_id, request.origin) &&
+         request.authorization->allows(capability) && request.authorization->active();
+}
 }  // namespace
 
 task_control::task_control(std::function<bool()> cancelled,
@@ -75,9 +80,10 @@ struct task_service::impl {
   struct scope {
     std::string session;
     std::string origin;
-    std::string token;
+    std::shared_ptr<const authorization_scope> authorization;
     bool matches(const bridge_request& request) const {
-      return session == request.session_id && origin == request.origin && token == request.token;
+      return session == request.session_id && origin == request.origin && authorization &&
+             authorization == request.authorization;
     }
   };
   struct job {
@@ -122,9 +128,13 @@ struct task_service::impl {
     {
       std::lock_guard<std::mutex> lock(mutex);
       const auto owner = owners.find(task_id);
-      if (owner == owners.end() || owner->second.revoked) return;
+      if (owner == owners.end() || owner->second.revoked || !owner->second.context.authorization ||
+          !owner->second.context.authorization->active()) return;
       const bool subscribed = std::any_of(subscriptions.begin(), subscriptions.end(), [&](const auto& entry) {
-        return entry.second.task_id == task_id && entry.second.context.session == owner->second.context.session;
+        return entry.second.task_id == task_id && entry.second.context.session == owner->second.context.session &&
+               entry.second.context.origin == owner->second.context.origin &&
+               entry.second.context.authorization == owner->second.context.authorization &&
+               entry.second.context.authorization->allows("task.subscribe");
       });
       if (!subscribed || !sink) return;
       send = sink;
@@ -264,6 +274,9 @@ std::string task_service::start(const bridge_request& request) {
   const auto scope_key = kind + '\x1f' + input;
   std::lock_guard<std::mutex> lock(impl_->mutex);
   if (impl_->stopping) return error("E_BUSY", "The native task service is shutting down.");
+  // A request may have waited after transport validation. Recheck under the
+  // resource lock so revoke-before-shutdown cannot miss a late admission.
+  if (!authorized(request, "task.start")) return error("E_UNAUTHORIZED", "A live task.start authorization is required.");
   const auto previous = impl_->operations.find(operation_key);
   if (previous != impl_->operations.end()) {
     const auto owner = impl_->owners.find(previous->second);
@@ -288,13 +301,14 @@ std::string task_service::start(const bridge_request& request) {
   auto item = std::make_shared<impl::job>();
   item->invocation = {request.session_id, request.origin, operation_id, input};
   item->callback = handler->second;
+  if (!authorized(request, "task.start")) return error("E_UNAUTHORIZED", "Task authorization expired before admission.");
   bool duplicate = false, conflict = false, capacity = false;
   const auto snapshot = impl_->tasks.start_scoped(operation_key, scope_key, &duplicate, &conflict, &capacity);
   if (capacity) return error("E_BUSY", "The native task store capacity is exhausted.");
   if (conflict || duplicate || snapshot.task_id.empty())
     return error("E_OPERATION_CONFLICT", "Native task operation identity is inconsistent.");
   item->id = snapshot.task_id;
-  impl_->owners.emplace(item->id, impl::ownership{{request.session_id, request.origin, request.token},
+  impl_->owners.emplace(item->id, impl::ownership{{request.session_id, request.origin, request.authorization},
       operation_key, scope_key, "{}", item, false});
   impl_->operations.emplace(operation_key, item->id);
   impl_->queue.push_back(item);
@@ -309,6 +323,7 @@ std::string task_service::query(const bridge_request& request) const {
   const auto task_id = params.is_object() ? field(params, "taskId") : std::string{};
   if (!valid_name(task_id)) return error("E_INVALID_PARAMS", "A bounded taskId is required.");
   std::lock_guard<std::mutex> lock(impl_->mutex);
+  if (!authorized(request, "task.query")) return error("E_UNAUTHORIZED", "A live task.query authorization is required.");
   const auto owner = impl_->owners.find(task_id);
   if (owner == impl_->owners.end() || owner->second.revoked || !owner->second.context.matches(request))
     return error("E_TASK_NOT_FOUND", "The task is not valid for this session.");
@@ -327,6 +342,7 @@ std::string task_service::cancel(const bridge_request& request) {
   if (!valid_name(task_id)) return error("E_INVALID_PARAMS", "A bounded taskId is required.");
   {
     std::lock_guard<std::mutex> lock(impl_->mutex);
+    if (!authorized(request, "task.cancel")) return error("E_UNAUTHORIZED", "A live task.cancel authorization is required.");
     const auto owner = impl_->owners.find(task_id);
     if (owner == impl_->owners.end() || owner->second.revoked || !owner->second.context.matches(request))
       return error("E_TASK_NOT_FOUND", "The task is not valid for this session.");
@@ -347,13 +363,14 @@ std::string task_service::subscribe(const bridge_request& request) {
   if (!valid_name(task_id) || event_name != "task.progress")
     return error("E_INVALID_PARAMS", "A taskId and task.progress event are required.");
   std::lock_guard<std::mutex> lock(impl_->mutex);
+  if (!authorized(request, "task.subscribe")) return error("E_UNAUTHORIZED", "A live task.subscribe authorization is required.");
   const auto owner = impl_->owners.find(task_id);
   if (owner == impl_->owners.end() || owner->second.revoked || !owner->second.context.matches(request) ||
       !impl_->tasks.query(task_id)) return error("E_TASK_NOT_FOUND", "The task is not valid for this session.");
   if (impl_->subscriptions.size() >= max_subscriptions)
     return error("E_BUSY", "Native task subscription capacity is exhausted.");
   const auto id = "sdk-subscription-" + std::to_string(impl_->next_subscription++);
-  impl_->subscriptions.emplace(id, impl::subscription{{request.session_id, request.origin, request.token}, task_id});
+  impl_->subscriptions.emplace(id, impl::subscription{{request.session_id, request.origin, request.authorization}, task_id});
   return json{{"subscriptionId", id}}.dump();
 }
 
@@ -362,6 +379,7 @@ std::string task_service::unsubscribe(const bridge_request& request) {
   const auto id = params.is_object() ? field(params, "subscriptionId") : std::string{};
   if (!valid_name(id)) return error("E_INVALID_PARAMS", "A bounded subscriptionId is required.");
   std::lock_guard<std::mutex> lock(impl_->mutex);
+  if (!authorized(request, "task.subscribe")) return error("E_UNAUTHORIZED", "A live task.subscribe authorization is required.");
   const auto found = impl_->subscriptions.find(id);
   if (found == impl_->subscriptions.end() || !found->second.context.matches(request))
     return error("E_SUBSCRIPTION_NOT_FOUND", "The subscription is not valid for this session.");

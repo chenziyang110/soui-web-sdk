@@ -1,0 +1,19 @@
+{"sequence":1,"elapsedMs":0,"mode":"smoke-test","event":"run.started","sdkVersion":"0.3.0-preview.11","architecture":"x86","pid":16560,"timeoutMs":10000}
+{"sequence":2,"elapsedMs":6,"mode":"smoke-test","event":"owner.created","visible":false}
+{"sequence":3,"elapsedMs":6,"mode":"smoke-test","event":"service.created"}
+{"sequence":4,"elapsedMs":18,"mode":"smoke-test","event":"tray.install","ok":true,"code":"","message":"","installed":true,"desired":true,"cleanupPending":false}
+{"sequence":5,"elapsedMs":18,"mode":"smoke-test","event":"shortcut.register","ok":true,"code":"","message":"","nativeError":0,"active":true,"cleanupPending":false,"retired":false}
+{"sequence":6,"elapsedMs":18,"mode":"smoke-test","event":"shortcut.conflict-probe","ok":false,"code":"E_SHORTCUT_REGISTER","message":"Windows did not register the shortcut; inspect native_error.","nativeError":1409,"active":false,"cleanupPending":false,"retired":false}
+{"sequence":7,"elapsedMs":557,"mode":"smoke-test","event":"menu.requested","scope":"public-sdk","observation":1}
+{"sequence":8,"elapsedMs":570,"mode":"smoke-test","event":"menu.returned","ok":false,"code":"E_MENU_FOREGROUND","message":"The menu owner could not become the foreground window.","installed":true,"desired":true,"cleanupPending":false,"selection":0,"hasSelection":false,"nativeError":2,"menuCleanupPending":false}
+{"sequence":9,"elapsedMs":570,"mode":"smoke-test","event":"exit.requested","reason":"menu-failed","exitCode":1}
+{"sequence":10,"elapsedMs":574,"mode":"smoke-test","event":"tray.focus","ok":true,"code":"","message":"","installed":true,"desired":true,"cleanupPending":false,"exitRequested":true}
+{"sequence":11,"elapsedMs":574,"mode":"smoke-test","event":"loop.ended","requested":true}
+{"sequence":12,"elapsedMs":575,"mode":"smoke-test","event":"menu.cleanup","ok":true,"code":"","message":"","installed":true,"desired":true,"cleanupPending":false,"attempt":1}
+{"sequence":13,"elapsedMs":575,"mode":"smoke-test","event":"shortcut.conflict-probe.unregister","ok":true,"code":"","message":"","nativeError":0,"active":false,"cleanupPending":false,"retired":false}
+{"sequence":14,"elapsedMs":575,"mode":"smoke-test","event":"shortcut.unregister","ok":true,"code":"","message":"","nativeError":0,"active":false,"cleanupPending":false,"retired":true}
+{"sequence":15,"elapsedMs":575,"mode":"smoke-test","event":"tray.remove","ok":true,"code":"","message":"","installed":false,"desired":false,"cleanupPending":false,"attempt":1}
+{"sequence":16,"elapsedMs":575,"mode":"smoke-test","event":"service.destroyed","removalConfirmed":true}
+{"sequence":17,"elapsedMs":593,"mode":"smoke-test","event":"owner.destroyed","ok":true}
+{"sequence":18,"elapsedMs":593,"mode":"smoke-test","event":"owner-class.removed","ok":true}
+{"sequence":19,"elapsedMs":593,"mode":"smoke-test","event":"run.finished","exitCode":1,"cleanupConfirmed":true,"callbackCount":0,"shortcutCount":0,"menuCount":1,"taskbarCreatedCount":0}

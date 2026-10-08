@@ -2,9 +2,21 @@
 
 初始判定日期：2026-09-24，候选 `0.3.0-preview.5`；后续增补按各自版本分别判定。本文件只汇总已执行证据，不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
 
+## 2026-09-26 preview.11 预检与桌面短测
+
+**双架构 Release 编译、安装消费、无 GUI 契约与所列桌面短测通过；驻留切片存在真实失败，指定范围生产未通过；相对 Electron 的整体采用价值未判定。** [本轮预检归档](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)记录 SDK、Starter、Workbench 的 x86/x64 完整编译、独立 SDK 安装和仓库外 `session-consumer` 编译/运行均退出 0；每架构 10 项 CTest 通过，其中原生授权续期为 14 组契约。最终汇总确认 Web 62 项、包行为 14 项、交付身份 7 项通过，五份锁文件的全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包、包内散列与源码匹配通过。生成的仓库外 `RenewalStarter` 双架构 Release 编译与项目校验均退出 0。
+
+[后续桌面归档](../../verification/production-validation/preview11-desktop-execution-2026-09-26/README.md)沿用相同编译输入：本机 x86/x64 的窗口线程停滞、目录程序化取消共四项，Starter/Workbench 默认与 React 共六入口，以及 `RenewalStarter` 两项真实短启动均退出 0。生成项目直接监督器仅对 EXE 做运行前后采样；另有完整载荷复核，不能当作每轮退出时逐文件采样或文件锁定。首次缺退出码的窗口探针和错误生成项目脚本入口均保留为失败样本，不由后续成功覆盖。
+
+x86 托盘消费者在菜单显示前返回 `E_MENU_FOREGROUND`、退出 1；x86 Workbench 驻留的 slot 2 达到内部 45 秒就绪期限、退出 3，尚未进入 smoke 阶段，slot 3 状态未判定。两项均完成清理；x64 菜单/驻留、实际菜单/快捷键输入、Explorer 重建、三窗任务隔离和空窗驻留仍未执行，完整 V04 不通过。
+
+本版按 [ADR-0014](../adr/0014-same-document-session-renewal.md)补足续期、稳定资源归属、有限重试和关闭清理契约。[真实时钟续期独立消费者](../../verification/production-validation/preview11-real-renewal-build-2026-09-26/README.md)的 x86/x64 编译与无窗口自检通过；随后[本机 x86 GUI 首次短测](../../verification/production-validation/preview11-real-renewal-smoke-attempt1-2026-09-26/README.md)在页面就绪前因会话关闭退出 1，任务未启动，x64 GUI 与真实超过 30 分钟/八小时运行未执行。[v2 修正夹具](../../verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/README.md)已完成两架构编译、每架构 45 项无窗口阶段自检、106 项分析器合成检查及 8 项运行输入绑定检查；随后[两架构首次 GUI](../../verification/production-validation/preview11-real-renewal-v2-smoke-2026-09-26/README.md)均因初始 60 秒未就绪退出 1，bootstrap 和任务调用为 0，真实续期未通过；模拟八小时轮换仍不能证明真实长稳。前序版本的桌面、Win7、完整源码重编和受干扰八小时记录不迁移到 preview.11。Win7 前两轮传输失败保留；[第三轮 v3 客体](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt3-2026-09-26/README.md)通过传输与运行前身份检查，Starter 就绪退出 0，Workbench 默认入口就绪后关闭超时，React 及运行后载荷检查未执行；同文档超过 30 分钟与八小时运行、完整 V02、Win7 SP1 x86、物理设备、当前完整源码交付及资源/性能门槛继续待验收。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+preview.11 的后续 V06 增补：[四阶段独立升级构建](../../verification/production-validation/preview11-upgrade-interruption-2026-09-26/README.md)在 x86/x64 共八次退出 0，应用/数据文件保留，GUI 尚未执行。真实终止安装进程后，正式校验及重新安装均失败；旧内容和业务数据虽可从原位与备份核对恢复，当前工具没有自动恢复入口。安装事务的持久化与恢复门槛未通过，工程交付结论保持未通过。
+
 ## 2026-09-26 preview.10 预检
 
-2026-09-26 当前开发版已进入 preview.10 公共菜单、快捷键和显式驻留切片；[预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)仅通过双架构 Release 编译、原生契约和独立安装消费。本版真实桌面、Win7、无 Git 完整源码复现和完整 V04 均待执行，未形成新的生产准入批准。下方 preview.8 判定保持原输入范围。
+2026-09-26 当次开发版为 preview.10 公共菜单、快捷键和显式驻留切片；[预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)仅通过双架构 Release 编译、原生契约和独立安装消费。本版真实桌面、Win7、无 Git 完整源码复现和完整 V04 均待执行，未形成新的生产准入批准。下方 preview.8 判定保持原输入范围。
 
 ## 2026-09-25 preview.8 增补判定
 

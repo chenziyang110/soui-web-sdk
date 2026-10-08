@@ -1,12 +1,70 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 preview.11 新增实际桌面失败
+
+其他 QEMU 退出后，串行执行 [Win7 第三轮](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt3-2026-09-26/README.md)：v3 传输集合、546 个运行前载荷文件及 legal 身份通过，Starter 就绪并退出 0；Workbench 默认入口就绪后停在关闭开始，达到原 60 秒期限，被客体驱动终止。React 和运行后载荷检查未执行。29 帧完整串口和冻结校验器退出 1 保留，QEMU 正常退出且基础盘及输入未变。下一项是关闭阶段/线程栈诊断，不放宽期限。
+
+随后 [v2 续期夹具](../../verification/production-validation/preview11-real-renewal-v2-smoke-2026-09-26/README.md)本机 x86/x64 首次 GUI 均因初始 60 秒未就绪退出 1，bootstrap、ready、任务调用为 0；一次初始生命周期退役分类正确，关闭完整、无外部桌面负载、输入前后一致。独立页面诊断副本仍只显示静态初始化内容，尚未确定 classic script/polyfill/System.import 的实际停止点。原冻结失败不覆盖，35 分钟和八小时不启动，生产结论保持未通过。
+
+## 2026-09-26 preview.11 四阶段独立升级构建与中断缺陷
+
+[V06 原始证据](../../verification/production-validation/preview11-upgrade-interruption-2026-09-26/README.md)记录仓库外账本项目的 preview.10 初始、升级 preview.11、回退和再升级：八次 x86/x64 Release 构建均退出 0；22 个应用及数据文件在每段安装前后、构建后保持原字节，八份 71 文件运行载荷另存并复核。其他 QEMU 持续占用，尚未执行这些新载荷的 GUI，不能称四阶段业务运行通过。
+
+独立副本的真实进程终止探针发现安装恢复缺陷：旧文件重命名到事务备份后终止子进程，正式项目校验与重新安装均退出 1。业务数据与旧锁未改，417 个旧 SDK 文件可从现有内容和备份逐项恢复；CLI 未提供自动恢复。当前安装器只在进程内 catch 回滚，内存中的进度不能跨退出恢复，已有模拟 I/O 异常测试不覆盖该场景。失败现场原样保留，后续须补齐持久事务与冲突/恢复契约后再验收。完整 V06、源码交付、生产准入仍未通过。
+
+## 2026-09-26 preview.11 续期夹具 v2 编译与输入绑定
+
+[v2 独立构建记录](../../verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/README.md)修正外部夹具的阶段观察：bootstrap 调用前最多记录一次生命周期退役；唯一成功 bootstrap 响应返回给页面前绑定可信 session/origin，绑定后包括 describe/ready 之前的意外关闭、身份变化和重 bootstrap 均失败。未改变 SDK 的 711 文件输入，也未覆盖 v1 失败样本。
+
+两架构各 13 个构建步骤及外层构建均取得原始退出码 0；每架构 native self-check 完成 45 项解析/阶段检查及 8 条日志写入检查。106 项分析器合成自检通过；运行脚本的生产输入校验代码完成 2 个真实 v2 输入正例、6 个旧版/篡改记录负例，全部符合预期。运行脚本已隔离 v2 结果目录并验证 freeze 和两个 build 的 revision/父冻结身份。最终 freeze SHA `80d19d4e2008a505bbb8a9293849f3756d4bf07ad7838ad38aa5bb054ac0ee3a`，独立复核两架构各 70 个运行文件和 PE 架构、安装 SDK 及新头文件的实际编译输入。
+
+首次命令采集器在只读日志描述符上 fsync 失败，未保存子进程数值退出码，原样保留且不计通过；修正采集后另建样本重试。当前工具链审计因 TLS 建连中断退出 1，没有漏洞统计，不能写为 0 项漏洞；两架构锁文件一致且工具链前后未变。宿主 vcpkg 未冻结链接输入的限制仍在。其他 QEMU 持续占用，本轮尚未执行 v2 GUI、35 分钟或八小时真实续期；上述自检不能关闭资源、性能或生产门槛。
+
+## 2026-09-26 preview.11 Win7 客体首次执行与传输目录诊断
+
+桌面空闲后串行运行了两次独立 Win7 SP1 x86 snapshot：[attempt1](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt1-2026-09-26/README.md)与带诊断的 [attempt2](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt2-2026-09-26/README.md)都在传输集合检查退出 1，三个应用均未启动。两次均确认桌面及 D: 盘后只发送一次测试命令，完整串口分别有 4/8 帧；QEMU 正常关闭且基础磁盘、冻结输入未变。第二次明确枚举到卷根 `$RECYCLE.BIN`，实际 11 项中有一个目录，触发预期 10 个普通文件的严格检查；不能据此断言目录创建者，也不能称其他普通文件已逐项散列通过。
+
+[v3 准备](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-v3-preparation-2026-09-26/README.md)把完全相同的 10 个传输文件放入卷内 `soui-input` 子目录，原集合与逐文件散列规则不变；两个 ZIP 和 546 个应用文件保持原字节。冻结 SHA `10c9a4e90cf5e25a2c98d0f6107eb7881a5ab39caf768973d761a1045566826d`。第三次启动前新出现其他任务的 QEMU，门禁拒绝且未创建 attempt3；尚不能宣布布局修正或当前 Win7 三入口通过。已有真实失败均保留，不重跑旧版通过样本。
+
+## 2026-09-26 preview.11 续期夹具真实启动失败
+
+双架构编译后，首次[本机 x86 续期夹具短测](../../verification/production-validation/preview11-real-renewal-smoke-attempt1-2026-09-26/README.md)真实启动 GUI，但在页面就绪前因 session shutdown 退出 1，ready 和两类任务调用计数均为 0；非超时，无外部桌面负载，退出清理完整。冻结分析器退出 1，原始样本保留。源码审查确认夹具把初次 Host 生命周期退役与实际授权会话关闭混为一谈，但实际日志缺少回调身份，尚不足断言本次精确调用来源。需在新夹具中从唯一成功 bootstrap 时立即绑定真实会话，保持绑定后的所有关闭、换会话和重 bootstrap 严格失败；不修改 SDK 或原冻结输入。x64 尚未运行，真实超过 30 分钟及八小时均未开始。
+
+## 2026-09-26 preview.11 真实时钟续期消费者编译
+
+本节保留编译与冻结时点，后续 GUI 失败见上一节。
+
+[独立消费者构建证据](../../verification/production-validation/preview11-real-renewal-build-2026-09-26/README.md)新增两架构真实编译及无窗口自检：`x86-attempt4`、`x64-attempt1` 各 13 个原始步骤均退出 0，包含严格 TypeScript、Chrome 49 页面构建、安装后 SDK 链接及八条日志的无窗口自检。前三次 x86 失败及其源码快照完整保留，修正仅位于外部验证夹具；SDK 的 711 文件输入 SHA `a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550` 未变。
+
+两架构运行输入已经冻结，`freeze.json` SHA 为 `7e45bc6158db50362e088ba8a97a08e42e7e63e398dde62df1dbe6ce6721620d`。链接记录仍包含宿主 vcpkg 搜索路径及未冻结的外部库参数，因此不把此结果称为干净机器可复现构建。已有其他 QEMU 运行期间未启动该消费者的 GUI；30 秒夹具 smoke、真实超过 30 分钟保留原任务/订阅及八小时续期均未执行。分析器 88 项合成自检只验证分析规则。完整 SDK 交付、隔离性能及生产门槛保持未通过。
+
+## 2026-09-26 preview.11 本机桌面执行
+
+[本轮原始证据](../../verification/production-validation/preview11-desktop-execution-2026-09-26/README.md)沿用同一 711 文件编译输入：x86/x64 窗口线程停滞与目录取消四项均退出 0；Starter、Workbench 默认/React 两架构六入口及仓库外生成项目两架构启动/就绪/关闭短测通过。首次无退出码记录及生成项目测试入口路径错误均保留；修正外部启动器没有改变 SDK 内容。
+
+发现两项真实失败：x86 公共菜单自动请求返回 `E_MENU_FOREGROUND`、退出 1；x86 Workbench 三窗口驻留的第二窗未在 45 秒内达到页面就绪、退出 3。两者清理完整但功能未通过，根因尚待带诊断复测，x64 对应场景尚未执行。启动 Win7 前其他 QEMU 再次占用，门禁阻止平行客体。当前版 Win7、V02 和实际续期长测仍待执行；短测不关闭生产、资源或性能门槛。
+
+该次桌面归档时另已准备[真实时钟续期独立消费者](../../verification/production-validation/preview11-real-renewal-preparation-2026-09-26/README.md)及完整输入校验、监督和分析脚本。88 项校验器合成自检通过；当时尚未编译消费者或运行真实 GUI，后续编译结果见本页首节。旧混合驱动反复重载、V02 短任务都不能证明同一页面超过原 30 分钟期限后仍保留任务/订阅，此准备专门补该缺口，不改变 SDK 冻结输入。
+
+## 2026-09-26 preview.11 同文档授权续期预检
+
+以下保留预检当时的结果；后续本机桌面与消费者编译证据见本页前两节。
+
+当前候选另已完成 [Win7 SP1 x86 三应用输入冻结](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-2026-09-26/README.md)：Starter 71 文件、Workbench 475 文件与 legal 材料复制核对完成，串口校验器拒绝 17 个负例；尚未运行客体，等待其他 QEMU 空闲。准备检查不计为 Win7 通过。
+
+当前开发版本为 `0.3.0-preview.11`。按 [ADR-0014](../adr/0014-same-document-session-renewal.md)新增显式启用的同文档授权续期、稳定授权资源归属和有界确认重取；任务与订阅保留身份，普通业务调用保持同步发送，不因续期自动重放。Demo 同时补齐订阅容量、事件监听器异常隔离及所有已发行会话的撤销与 worker 关闭顺序。
+
+[本轮预检归档](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)记录 x86/x64 Release 的 SDK、Starter、Workbench 完整编译、独立 SDK 安装及仓库外 `session-consumer` 编译/运行，均退出 0；每架构 10 项 CTest 通过，其中原生授权续期包含 14 组契约。最终汇总已核验 Web 62 项、包行为 14 项、交付身份 7 项通过，以及五份锁文件的全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包成功，包内散列及源码匹配通过。由包生成的仓库外 `RenewalStarter` 也完成 x86/x64 Release 编译与项目校验，均退出 0；尚未运行该新项目的 GUI。
+
+可控时钟的八小时轮换仅验证期限、授权隔离和固定容量契约，不是实际运行八小时的稳定性证据；原生扫描与 CAD worker 的故障回归也不代替媒体引擎或真实页面验收。本版真实桌面有效结论、超过 30 分钟的同文档任务/订阅保留、八小时资源趋势和 Win7 SP1 x86 证据仍待补齐。首次 x86 窗口线程超时桌面探针输出成功标记，但监督器未取得退出码；原样本保留且不计通过，退出码采集修正未改变冻结源码。外部 QEMU 再次占用，后续补测等待空闲后串行执行，桌面/客体结果另档绑定输入，不能并入本次无 GUI 预检。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
 ## 2026-09-26 preview.10 公共菜单、快捷键与显式驻留
 
 新增 [ADR-0013](../adr/0013-public-menu-shortcut-and-residency.md)、公共 `menu_service` / `global_shortcut`，独立安装消费者接入三项原生服务。Workbench 提供三窗口控制器、`--resident` 与有限 `--resident --resident-smoke-test`，关闭按业务窗口消息栈和代际延迟释放，日志在载荷外独占创建。默认单窗路径保留。
 
 [冻结预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)包含同一输入的 x86/x64 Release SDK/Starter/Workbench 编译、独立 SDK 安装、仓库外消费者编译、各8项非桌面交互 CTest。菜单15组、快捷键9组故障契约通过；Web35、包测试14、身份测试7及五锁文件全依赖审计通过。417 文件 SDK 包校验与源码匹配通过；首次 rename `EPERM` 失败保留，原因未确证。
 
-其他 QEMU 仍运行，本版尚无真实桌面或 Win7 结果。下一步串行补消费者菜单/快捷键、Workbench 三窗及模态关闭/空窗驻留，以及 V02 IME/缩放/任务同时响应。旧版本、短测和受干扰八小时数据不迁移为本版通过；完整目标和三个准入标志未关闭。
+当次预检时其他 QEMU 仍运行，preview.10 尚无真实桌面或 Win7 结果。下一步串行补消费者菜单/快捷键、Workbench 三窗及模态关闭/空窗驻留，以及 V02 IME/缩放/任务同时响应。旧版本、短测和受干扰八小时数据不迁移为本版通过；完整目标和三个准入标志未关闭。
 
 ## 2026-09-26 preview.9 公共托盘切片
 
@@ -40,7 +98,7 @@
 
 本文件记录执行进度，不能代替机器报告或修改 `releaseReady`。新增阶段证据应链接实际 run-id、源码与载荷身份，并列出未执行项。
 
-当前开发版本为 `0.3.0-preview.9`，托盘切片正在独立验证；下述 preview.8 及更早结果只属于原版本。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；本轮新记录在 `verification/production-validation/`，不能互相替代。模板和 Demo 默认/React 的 x86/x64 Release 回归均已通过。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
+以下为 preview.9 托盘切片及更早阶段的历史记录，preview.11 当前范围见本文件首节。根 `verification/acceptance.json` 仍是 preview.2 基础切片的历史结果；后续记录在 `verification/production-validation/`，不能互相替代。下述模板和 Demo 默认/React 的 x86/x64 Release 回归按各自原版本判定。此前 x86 完整构建有一次资源目录替换 `EPERM`；旧目录恢复后，未改源码重试通过，失败日志保留且根因未关闭。
 
 preview.7 的[源码编码修复诊断](../../verification/production-validation/preview6-relocated-dependency-encoding-2026-09-25/README.md)确认 preview.6 无 Git 源包在 CP936 环境重编 x86 Miniblink 失败；定点 BOM 补丁后，修改过的仓库外目录里 x86/x64 SOUI、Skia、Miniblink 源码重编与两架构真实应用启动均通过。当前 preview.7 的双架构 Release 构建、契约测试和三入口 smoke 也通过，但它们使用固定运行包，不能和新内核结果合并。[Win7 SP1 x86 QEMU 重编内核短测](../../verification/production-validation/win7-sp1-x86-qemu-preview7-rebuilt-source-2026-09-25/README.md)完成三入口启动/关闭，24 份串口文件、来宾身份和载荷散列复核通过。诊断目录不是最终 preview.7 原封整包；最终整包重建、Debug、物理设备、长期资源、实际呈现性能与安全授权仍未完成，`sourceDeliveryVerified=false`、`releaseReady=false`。
 

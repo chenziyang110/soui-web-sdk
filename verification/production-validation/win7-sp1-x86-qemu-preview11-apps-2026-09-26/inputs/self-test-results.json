@@ -1,0 +1,102 @@
+{
+  "status": "synthetic-verifier-self-test-passed",
+  "syntheticOnly": true,
+  "guestExecuted": false,
+  "acceptedFixtures": 1,
+  "rejectedFixtures": 17,
+  "requiredRawFiles": 30,
+  "verifierWritesResults": false,
+  "cases": [
+    {
+      "case": "complete",
+      "accepted": true,
+      "reason": "synthetic complete fixture accepted"
+    },
+    {
+      "case": "wrong-engine-with-valid-frame-hash",
+      "accepted": false,
+      "reason": "Observed identity differs: SouiWorkbench/pre/node.dll"
+    },
+    {
+      "case": "wrong-legal-with-valid-frame-hash",
+      "accepted": false,
+      "reason": "Observed identity differs: SouiStarter/post/resources/legal/THIRD_PARTY_NOTICES.md"
+    },
+    {
+      "case": "missing-required-file",
+      "accepted": false,
+      "reason": "Required raw file missing: workbench-react-smoke.log"
+    },
+    {
+      "case": "missing-payload-file",
+      "accepted": false,
+      "reason": "Observed file set differs: SouiWorkbench/post"
+    },
+    {
+      "case": "nonzero-exit-with-valid-frame-hash",
+      "accepted": false,
+      "reason": "Nonzero/invalid exit code: workbench-default-exitcode.txt"
+    },
+    {
+      "case": "missing-close-with-valid-frame-hash",
+      "accepted": false,
+      "reason": "Missing/duplicate/out-of-order lifecycle: workbench-react/adapter-events-drained"
+    },
+    {
+      "case": "reordered-close-with-valid-frame-hash",
+      "accepted": false,
+      "reason": "Missing/duplicate/out-of-order lifecycle: workbench-default/adapter-events-drained"
+    },
+    {
+      "case": "duplicate-close",
+      "accepted": false,
+      "reason": "Missing/duplicate/out-of-order lifecycle: workbench-react/host-close-complete"
+    },
+    {
+      "case": "missing-ready",
+      "accepted": false,
+      "reason": "Missing/duplicate/out-of-order lifecycle: starter/application-ready"
+    },
+    {
+      "case": "wrong-guest",
+      "accepted": false,
+      "reason": "Guest identity differs: Version"
+    },
+    {
+      "case": "timeout-even-with-zero-exit",
+      "accepted": false,
+      "reason": "Run metadata differs: starter/TimedOut"
+    },
+    {
+      "case": "wrong-command-line",
+      "accepted": false,
+      "reason": "Run metadata differs: workbench-react/Arguments"
+    },
+    {
+      "case": "extra-file",
+      "accepted": false,
+      "reason": "Unexpected raw file: stale-result.txt"
+    },
+    {
+      "case": "wrong-transfer-script-hash",
+      "accepted": false,
+      "reason": "Observed identity differs: transfer/run-apps.ps1"
+    },
+    {
+      "case": "truncated-end",
+      "accepted": false,
+      "reason": "Incomplete serial framing"
+    },
+    {
+      "case": "corrupted-frame-hash",
+      "accepted": false,
+      "reason": "Frame length/hash mismatch: guest-identity.txt"
+    },
+    {
+      "case": "duplicate-frame",
+      "accepted": false,
+      "reason": "Invalid or duplicate serial header"
+    }
+  ],
+  "releaseReady": false
+}

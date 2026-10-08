@@ -1,6 +1,6 @@
 # SOUI SDK 源码交付
 
-**版本：0.3.0-preview.10（生产验证开发中，未正式发布）。** 面向 Windows 的 C++ / TypeScript 桌面 SDK，提供独立 SDK、最小模板、完整 Demo、第三方源码和构建工具。这个目录是可独立搬移的交付根目录，构建不依赖原研发仓库或开发者机器上的源码路径。当前版本的编译/安装接入范围及未完成门槛见[驻留预检记录](verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)；旧版本完整源码复现与桌面结果不自动继承。
+**版本：0.3.0-preview.11（生产验证开发中，未正式发布）。** 面向 Windows 的 C++ / TypeScript 桌面 SDK，提供独立 SDK、最小模板、完整 Demo、第三方源码和构建工具。这个目录是可独立搬移的交付根目录，构建不依赖原研发仓库或开发者机器上的源码路径。本版增加[同文档会话续期](docs/adr/0014-same-document-session-renewal.md)；当前进展与证据见[执行记录](docs/acceptance/progress.md)。旧版本完整源码复现与桌面结果不自动继承。
 
 长期维护、AI Agent、评审、测试和发布的统一规范见 [AGENTS.md](AGENTS.md)；所有贡献者和自动化工具在修改前都应阅读。
 
