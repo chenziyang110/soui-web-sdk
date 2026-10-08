@@ -1,0 +1,50 @@
+warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'source-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tools/test.ps1', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'a.txt', LF will be replaced by CRLF the next time Git touches it
+✔ source snapshot excludes ignored cache, works with CRLF checkout and without Git (2820.2268ms)
+✔ source validation rejects missing, extra, ambiguous and escaping files (1511.4273ms)
+✔ payload evidence detects equal-length page edits, new files and missing DLLs (46.5179ms)
+✔ deployment replaces stale Web assets and preserves app data outside resources (119.7774ms)
+✔ linked resource directories are rejected before deployment changes (15.8574ms)
+✔ SDK packages are identical across source EOLs but installed bytes remain pinned (634.8753ms)
+✔ build and smoke receipts fail closed after changes, empty runs or legacy successes (297.7548ms)
+Raw interruption samples retained: C:\SOUI-SDK-development\preview9-tray\out\sdk-recovery\attempt-50ccea4a-deb6-49cc-bd91-7009bddce533
+▶ process termination and new-process recovery
+  ✔ prepare (979.1716ms)
+  ✔ journal (1104.2411ms)
+  ✔ replace (1073.2329ms)
+  ✔ delete (1206.6664ms)
+  ✔ add (1165.6688ms)
+  ✔ commit (1606.5702ms)
+  ✔ cleanup (1214.734ms)
+  ✔ first install rolls back to no SDK, then install automatically recovers (1028.3379ms)
+  ✔ rollback is restartable and a competing recovery is refused (1222.0153ms)
+  ✔ active installer blocks verify, install and recover (1320.2827ms)
+  ✔ reject target conflict without partial recovery (728.4378ms)
+  ✔ reject backup conflict without partial recovery (687.7968ms)
+  ✔ reject new-backup conflict without partial recovery (617.1129ms)
+  ✔ reject lock conflict without partial recovery (740.3506ms)
+  ✔ reject journal conflict without partial recovery (680.6513ms)
+  ✔ committed but modified payload is preserved, never rolled back (670.1294ms)
+  ✔ old lock BOM and whitespace survive rollback byte for byte (693.8071ms)
+  ✔ recovery refuses a junction without writing outside the project (664.9102ms)
+  ✔ old unjournaled transaction is preserved and rejected (347.859ms)
+  ✔ upgrade rollback to older package also recovers (1459.0797ms)
+  ✔ file-directory transitions fail before installed bytes change (611.1005ms)
+  ✔ retirement retries transient denial and preserves permanent failures (1806.9686ms)
+✔ process termination and new-process recovery (21634.4969ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 21948.3526

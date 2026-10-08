@@ -4,7 +4,7 @@
 
 - Windows x64 开发机、Visual Studio 2022 C++ 桌面开发组件、ATL、v143 工具集。
 - Windows SDK **10.0.19041.0**；脚本固定使用此版本。
-- CMake ≥ 3.24、Node.js 20.19 LTS 或 ≥ 22.12、npm、PowerShell 5.1 或以上。
+- CMake ≥ 3.24、npm、PowerShell 5.1 或以上。基础 SDK/兼容生成项目支持原有 Node.js 20.19 LTS 或 ≥ 22.12；0.4 整体构建包含现代模板，请使用 Node.js ≥ 22.12。
 - 完整重编译内核建议保留至少 40 GB 空间，双架构需要更多。运行 `tools/Doctor.ps1` 检查环境。
 
 ## 日常构建
@@ -15,11 +15,11 @@ powershell.exe -File tools/Build.ps1 -Architecture x86 -Configuration Debug
 powershell.exe -File tools/Build.ps1 -SdkOnly -Architecture x64 -Install
 ```
 
-日志在 `out/<架构>/`，SDK 单独构建日志在 `out/sdk-<架构>/`。`-SkipWeb` 仅供已有最新 Web 产物时使用。默认构建会刷新运行目录中的 Web 文件，即使 C++ 无需重新链接。运行时复制整个应用输出目录。
+日志在 `out/<架构>/`，SDK 单独构建日志在 `out/sdk-<架构>/`。`-SkipWeb` 仅供已有最新 Web 产物时使用。默认构建会刷新运行目录中的 Web 文件和 `resources/legal/` 声明材料，即使 C++ 无需重新链接。运行时复制整个应用输出目录；声明材料属于载荷身份和体积统计。它们仍须与实际链接成员和再分发要求逐项核对，不能代替许可审查。
 
 应用和 SDK 的 Debug 配置保留调试信息，但为匹配固定 SOUI 运行库仍使用 `/MD` 和相同的发布版运行库边界，且定义 `NDEBUG`。它不代表底层依赖也以 Debug CRT 编译；不要混入其他配置的 SOUI DLL/LIB。
 
-安装后的 SDK 位于 `out/install/<架构>/`，外部项目通过 `find_package(SouiSdk CONFIG REQUIRED)` 和 `Soui::Sdk` 引用。此导出包支持 SDK 核心链接；完整应用的资源与运行库部署使用源码包里的 `cmake/SouiApplication.cmake`。
+安装后的 SDK 位于 `out/install/<架构>/`，第三方声明在 `share/SouiSdk/`；外部项目通过 `find_package(SouiSdk CONFIG REQUIRED)` 和 `Soui::Sdk` 引用。此导出包支持 SDK 核心链接；完整应用的资源与运行库部署使用源码包里的 `cmake/SouiApplication.cmake`。
 
 ## 底层源码重编译
 
@@ -37,10 +37,10 @@ Miniblink 主内核含数千个编译单元，完整构建可能持续较长时�
 | 新 x64 内核 | `out/dependencies/x64/miniblink/bin/miniblink.dll` |
 | 新 x86 内核 | `out/dependencies/x86/miniblink/bin/node.dll` |
 | 依赖与日志 | `out/dependencies/<架构>/` |
-| SOUI DLL / LIB | `third_party/sources/soui/bin/` 或 `bin64/` |
+| SOUI DLL / LIB | `out/dependencies/<架构>/soui-source-<构建 ID>/bin/` 或 `bin64/` |
 | 构建记录 | `out/dependencies/<架构>/build-All.json` |
 
-源码构建不会覆盖 `third_party/prebuilt/`。验证新 DLL 时先构建应用，将应用输出目录复制到隔离目录，用新内核替换 `node.dll`、同架构新 SOUI 组件替换对应 DLL，再执行模板 `--smoke-test` 与 Demo `--webview-smoke-test --arch=x64 --react`。短测通过后仍需长期内存、关闭稳定性和兼容性验收。
+源码构建不会覆盖 `third_party/prebuilt/`。SOUI 的旧工程有写入自身源码目录的硬编码规则，构建入口先将 Git 管理或完整源码清单列出的文件复制到新的 `out/dependencies/<架构>/soui-source-*` 目录；其构建产物和实际路径写入报告。验证新 DLL 时先构建应用，将应用输出目录复制到隔离目录，用新内核替换 `node.dll`、同架构新 SOUI 组件替换对应 DLL，再执行模板 `--smoke-test` 与 Demo `--webview-smoke-test --arch=x64 --react`。短测通过后仍需长期内存、关闭稳定性和兼容性验收。
 
 以上隔离替换与启动验证已封装为 `powershell.exe -File tools/Test-Dependencies.ps1 -Architecture x64`，结果在 `out/dependencies/x64/rebuilt-smoke.json`。
 

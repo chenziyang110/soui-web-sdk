@@ -1,0 +1,118 @@
+PASS synthetic-smoke
+PASS synthetic-35min
+PASS synthetic-35min-transport-recovery
+PASS synthetic-8h
+PASS second-native-bootstrap
+PASS v1-run-cannot-enter-v2
+PASS missing-native-bootstrap
+PASS native-bootstrap-identity-changed
+PASS retirement-with-bound-identity
+PASS retirement-after-bootstrap-begins
+PASS retirement-after-bootstrap-binding
+PASS second-prebootstrap-retirement
+PASS unexpected-retirement-classification
+PASS bound-shutdown-before-describe
+PASS bound-shutdown-before-ready
+PASS bound-shutdown-after-ready-before-finish
+PASS bound-shutdown-wrong-id
+PASS bound-shutdown-missing
+PASS bound-shutdown-duplicate
+PASS final-retirement-count-mismatch
+PASS final-bound-close-count-mismatch
+PASS duplicate-native-sequence
+PASS missing-native-row
+PASS native-clock-regression
+PASS second-mount
+PASS failure-marker
+PASS wrong-version
+PASS unexpected-duration
+PASS supervisor-string-zero
+PASS supervisor-nonzero
+PASS supervisor-timeout
+PASS supervisor-payload-changed
+PASS supervisor-input-changed
+PASS supervisor-post-check-failed
+PASS supervisor-external-load-observed
+PASS supervisor-desktop-process-remains
+PASS supervisor-desktop-processes-missing
+PASS supervisor-wrong-pid
+PASS supervisor-wrong-architecture
+PASS supervisor-wrong-duration
+PASS native-session-change
+PASS native-authorization-change
+PASS replayed-task-invocation
+PASS task-operation-change
+PASS task-ended-without-cancel
+PASS document-change
+PASS subscription-change
+PASS web-task-recreated
+PASS web-failure-marker
+PASS heartbeat-sequence-no-advance
+PASS heartbeat-no-native-match
+PASS heartbeat-polling-only
+PASS heartbeat-impossible-event-count
+PASS lease-expired
+PASS lease-generation-not-acked
+PASS lease-extended-limit
+PASS cancel-not-requested
+PASS cancel-not-confirmed
+PASS unsubscribe-not-removed
+PASS retained-result-lost
+PASS response-request-mismatch
+PASS observation-clock-regression
+PASS observer-unknown-raw-field
+PASS business-error
+PASS duplicate-start-ack
+PASS cleanup-scope-active
+PASS runtime-cleanup-failed
+PASS native-exit-nonzero
+PASS smoke-overclaim
+PASS native-truncated-lifecycle
+PASS resource-overclaim
+PASS synthetic-no-initial-lifecycle-retirement
+PASS duplicate-json-member
+PASS truncated-last-line
+PASS bad-report-hash
+PASS synthetic-cannot-pass-real-cli-mode
+PASS post-expiry-stale-event
+PASS fourth-renewal-attempt
+PASS native-real-duration-shortened
+PASS missing-response-not-silently-skipped
+PASS duplicate-response-not-silently-replaced
+PASS retryable-transport-is-not-a-success-ack
+PASS renewal-generation-skip
+PASS retry-operation-identity-changed-before-recovery
+PASS payload-manifest-duplicate
+PASS payload-manifest-traversal
+PASS payload-manifest-invalid-byte-count
+PASS payload-and-freeze-binding
+PASS supervisor-report-path-binding
+PASS missing-supervisor-report-hash
+PASS raw-synthetic-input-bytes-unchanged
+PASS diagnostic-absent-empty-array
+PASS diagnostic-exact-root-file-and-byte-identical-archive
+PASS diagnostic-required-array
+PASS diagnostic-exists-but-unlisted
+PASS diagnostic-listed-but-absent
+PASS diagnostic-wrong-hash
+PASS diagnostic-wrong-byte-length
+PASS diagnostic-archive-different-bytes
+PASS diagnostic-self-archive-inside-runtime-rejected
+PASS diagnostic-other-log-name-not-allowed
+PASS diagnostic-duplicate-descriptor-rejected
+PASS diagnostic-exact-exception-does-not-hide-other-new-log
+PASS diagnostic-exception-does-not-apply-in-resources
+PASS diagnostic-exception-does-not-accept-directory
+PASS diagnostic-cannot-be-frozen-in-payload
+{
+  "suite": "C:\\SOUI-SDK-production-validation\\preview15-real-renewal-preparation-20260927\\self-test-only\\2026-09-26T17-54-11-710Z-80692",
+  "syntheticOnly": true,
+  "actualGuiExecuted": false,
+  "actualClockRenewalVerified": false,
+  "testCount": 106,
+  "passed": 106,
+  "failed": 0,
+  "releaseReady": false,
+  "benchmarkValid": false,
+  "resourceGate": false
+}

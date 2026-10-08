@@ -1,0 +1,592 @@
+Opened log file 'C:\SOUI-SDK-production-validation\preview11-renewal-scheduler-stack-20260926\runs\x86-2026-09-26T14-23-43-468Z\debugger.log'
+
+Microsoft (R) Windows Debugger Version 10.0.17763.7010 X86
+Copyright (c) Microsoft Corporation. All rights reserved.
+
+*** wait with pending attach
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\atlmfc.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\concurrency.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\cpp_rest.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\stl.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\Windows.Data.Json.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\Windows.Media.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\windows.natvis'
+NatVis script successfully loaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\winrt.natvis'
+
+************* Path validation summary **************
+Response                         Time (ms)     Location
+OK                                             F:/work/SOUI_WEB/soui-sdk/out/dependencies/x86/miniblink/bin
+Symbol search path is: F:/work/SOUI_WEB/soui-sdk/out/dependencies/x86/miniblink/bin
+Executable search path is: 
+ModLoad: 009f0000 00a85000   C:\SOUI-SDK-production-validation\preview11-renewal-scheduler-stack-20260926\runs\x86-2026-09-26T14-23-43-468Z\runtime\InstalledRenewalProbe.exe
+ModLoad: 770d0000 7728f000   C:\WINDOWS\SYSTEM32\ntdll.dll
+ModLoad: 758a0000 75990000   C:\WINDOWS\System32\KERNEL32.DLL
+ModLoad: 753c0000 7569a000   C:\WINDOWS\System32\KERNELBASE.dll
+ModLoad: 5bc40000 5bcef000   C:\WINDOWS\SYSTEM32\apphelp.dll
+ModLoad: 76420000 76577000   C:\WINDOWS\System32\ole32.dll
+ModLoad: 76320000 763a5000   C:\WINDOWS\System32\msvcp_win.dll
+ModLoad: 75e10000 75f20000   C:\WINDOWS\System32\ucrtbase.dll
+ModLoad: 75a10000 75a32000   C:\WINDOWS\System32\GDI32.dll
+ModLoad: 75870000 7588c000   C:\WINDOWS\System32\win32u.dll
+ModLoad: 75080000 7516a000   C:\WINDOWS\System32\gdi32full.dll
+ModLoad: 76580000 76767000   C:\WINDOWS\System32\USER32.dll
+ModLoad: 76060000 762f3000   C:\WINDOWS\System32\combase.dll
+ModLoad: 76770000 7682c000   C:\WINDOWS\System32\RPCRT4.dll
+ModLoad: 756a0000 756c5000   C:\WINDOWS\System32\IMM32.dll
+ModLoad: 73c20000 73c3c000   C:\WINDOWS\SYSTEM32\bcrypt.dll
+ModLoad: 74ff0000 75075000   C:\WINDOWS\System32\sechost.dll
+ModLoad: 70380000 703ed000   C:\SOUI-SDK-production-validation\preview11-renewal-scheduler-stack-20260926\runs\x86-2026-09-26T14-23-43-468Z\runtime\MSVCP140.dll
+ModLoad: 70360000 70375000   C:\SOUI-SDK-production-validation\preview11-renewal-scheduler-stack-20260926\runs\x86-2026-09-26T14-23-43-468Z\runtime\VCRUNTIME140.dll
+ModLoad: 74050000 74065000   C:\WINDOWS\SYSTEM32\kernel.appcore.dll
+ModLoad: 752f0000 753b7000   C:\WINDOWS\System32\msvcrt.dll
+ModLoad: 75170000 751ea000   C:\WINDOWS\System32\bcryptPrimitives.dll
+ModLoad: 71240000 712be000   C:\WINDOWS\system32\uxtheme.dll
+ModLoad: 76ec0000 76fd7000   C:\WINDOWS\System32\MSCTF.dll
+ModLoad: 5f1e0000 607e8000   C:\SOUI-SDK-production-validation\preview11-renewal-scheduler-stack-20260926\runs\x86-2026-09-26T14-23-43-468Z\runtime\node.dll
+ModLoad: 76fe0000 7704a000   C:\WINDOWS\System32\WS2_32.dll
+ModLoad: 75f30000 75f82000   C:\WINDOWS\System32\SHLWAPI.dll
+ModLoad: 75f90000 76049000   C:\WINDOWS\System32\COMDLG32.dll
+ModLoad: 71680000 716b3000   C:\WINDOWS\SYSTEM32\WINMM.dll
+ModLoad: 6ff20000 70003000   C:\WINDOWS\SYSTEM32\OPENGL32.dll
+ModLoad: 75bf0000 75cc6000   C:\WINDOWS\System32\shcore.dll
+ModLoad: 75d80000 75e05000   C:\WINDOWS\System32\ADVAPI32.dll
+ModLoad: 51da0000 51db7000   C:\WINDOWS\SYSTEM32\USP10.dll
+ModLoad: 76840000 76ea5000   C:\WINDOWS\System32\SHELL32.dll
+ModLoad: 74b80000 74b88000   C:\WINDOWS\SYSTEM32\VERSION.dll
+ModLoad: 76050000 76056000   C:\WINDOWS\System32\PSAPI.DLL
+ModLoad: 55180000 551c2000   C:\WINDOWS\SYSTEM32\GLU32.dll
+ModLoad: 739e0000 73a71000   C:\WINDOWS\WinSxS\x86_microsoft.windows.common-controls_6595b64144ccf1df_5.82.26100.8521_none_cf9e08b68ea73d80\COMCTL32.dll
+ModLoad: 72b80000 72ba6000   C:\WINDOWS\SYSTEM32\IPHLPAPI.DLL
+ModLoad: 740e0000 74109000   C:\WINDOWS\SYSTEM32\USERENV.dll
+ModLoad: 6fbb0000 6fbe7000   C:\WINDOWS\SYSTEM32\dxcore.dll
+ModLoad: 72a10000 72a1a000   C:\WINDOWS\SYSTEM32\CRYPTBASE.DLL
+ModLoad: 72180000 7228d000   C:\WINDOWS\SYSTEM32\DNSAPI.dll
+ModLoad: 72170000 7217a000   C:\WINDOWS\SYSTEM32\DSPARSE.dll
+ModLoad: 75860000 75867000   C:\WINDOWS\System32\NSI.dll
+ModLoad: 722a0000 722b2000   C:\WINDOWS\system32\napinsp.dll
+ModLoad: 72670000 726c4000   C:\WINDOWS\System32\mswsock.dll
+ModLoad: 72150000 7215e000   C:\WINDOWS\System32\winrnr.dll
+ModLoad: 72120000 7213e000   C:\WINDOWS\system32\nlansp_c.dll
+ModLoad: 72100000 72112000   C:\WINDOWS\system32\wshbth.dll
+ModLoad: 75cd0000 75d6f000   C:\WINDOWS\System32\OLEAUT32.dll
+ModLoad: 58d20000 58e1f000   C:\WINDOWS\SYSTEM32\textinputframework.dll
+ModLoad: 6e050000 6e0a9000   C:\WINDOWS\system32\Oleacc.dll
+ModLoad: 75b60000 75be6000   C:\WINDOWS\System32\clbcatq.dll
+ModLoad: 59260000 592ac000   C:\WINDOWS\system32\dataexchange.dll
+ModLoad: 59060000 59251000   C:\WINDOWS\system32\twinapi.appcore.dll
+(1d1c.10eb4): Break instruction exception - code 80000003 (first chance)
+*** ERROR: Symbol file could not be found.  Defaulted to export symbols for C:\WINDOWS\SYSTEM32\ntdll.dll - 
+*** ERROR: Symbol file could not be found.  Defaulted to export symbols for C:\WINDOWS\System32\KERNEL32.DLL - 
+eax=00cbc000 ebx=00000000 ecx=7719e9b0 edx=7719e9b0 esi=7719e9b0 edi=7719e9b0
+eip=7714be10 esp=0452fe64 ebp=0452fe90 iopl=0         nv up ei pl zr na pe nc
+cs=0023  ss=002b  ds=002b  es=002b  fs=0053  gs=002b             efl=00000246
+ntdll!DbgBreakPoint:
+7714be10 cc              int     3
+0:013> .symopt+ 0x10
+Symbol options are 0xB0337:
+  0x00000001 - SYMOPT_CASE_INSENSITIVE
+  0x00000002 - SYMOPT_UNDNAME
+  0x00000004 - SYMOPT_DEFERRED_LOADS
+  0x00000010 - SYMOPT_LOAD_LINES
+  0x00000020 - SYMOPT_OMAP_FIND_NEAREST
+  0x00000100 - SYMOPT_NO_UNQUALIFIED_LOADS
+  0x00000200 - SYMOPT_FAIL_CRITICAL_ERRORS
+  0x00010000 - SYMOPT_AUTO_PUBLICS
+  0x00020000 - SYMOPT_NO_IMAGE_SEARCH
+  0x00080000 - SYMOPT_NO_PROMPTS
+0:013> .reload /f node.dll
+*** WARNING: Unable to verify checksum for C:\SOUI-SDK-production-validation\preview11-renewal-scheduler-stack-20260926\runs\x86-2026-09-26T14-23-43-468Z\runtime\node.dll
+*** ERROR: Symbol file could not be found.  Defaulted to export symbols for C:\WINDOWS\SYSTEM32\ntdll.dll - 
+*** ERROR: Symbol file could not be found.  Defaulted to export symbols for C:\WINDOWS\System32\KERNEL32.DLL - 
+0:013> .echo SOUI_MODULE_IDENTITY
+SOUI_MODULE_IDENTITY
+0:013> lmvm node
+start    end        module name
+5f1e0000 607e8000   node     C (private pdb symbols)  f:/work/soui_web/soui-sdk/out/dependencies/x86/miniblink/bin\miniblink.pdb
+    Loaded symbol image file: C:\SOUI-SDK-production-validation\preview11-renewal-scheduler-stack-20260926\runs\x86-2026-09-26T14-23-43-468Z\runtime\node.dll
+    Image path: C:\SOUI-SDK-production-validation\preview11-renewal-scheduler-stack-20260926\runs\x86-2026-09-26T14-23-43-468Z\runtime\node.dll
+    Image name: node.dll
+    Timestamp:        Wed Sep 23 11:30:45 2026 (6AB347E5)
+    CheckSum:         00000000
+    ImageSize:        01608000
+    File version:     19.7.17.1
+    Product version:  19.7.17.1
+    File flags:       0 (Mask 3F)
+    File OS:          4 Unknown Win32
+    File type:        1.0 App
+    File date:        00000000.00000000
+    Translations:     0409.04b0
+    Information from resource tables:
+        CompanyName:      Miniblink
+        ProductName:      Miniblink
+        InternalName:     Miniblink
+        OriginalFilename: node.dll
+        ProductVersion:   19, 7, 17, 1
+        FileVersion:      19, 7, 17, 1
+        FileDescription:  Miniblink
+        LegalCopyright:   Copyright (C) 2018
+        Comments:         Miniblink
+0:013> .echo SOUI_THREAD_STACKS
+SOUI_THREAD_STACKS
+0:013> ~* k 16
+
+   0  Id: 1d1c.11834 Suspend: 1 Teb: 00c88000 Unfrozen
+*** ERROR: Symbol file could not be found.  Defaulted to export symbols for C:\WINDOWS\System32\win32u.dll - 
+*** WARNING: Unable to verify checksum for C:\SOUI-SDK-production-validation\preview11-renewal-scheduler-stack-20260926\runs\x86-2026-09-26T14-23-43-468Z\runtime\InstalledRenewalProbe.exe
+*** ERROR: Module load completed but symbols could not be loaded for C:\SOUI-SDK-production-validation\preview11-renewal-scheduler-stack-20260926\runs\x86-2026-09-26T14-23-43-468Z\runtime\InstalledRenewalProbe.exe
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+007df6e8 009fd517 win32u!NtUserMsgWaitForMultipleObjectsEx+0xc
+007df884 00a02303 InstalledRenewalProbe+0xd517
+007dfd2c 00a0a9a1 InstalledRenewalProbe+0x12303
+007dfdc0 00a56e3d InstalledRenewalProbe+0x1a9a1
+007dfe08 758b5d49 InstalledRenewalProbe+0x66e3d
+007dfe18 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+007dfe70 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+007dfe80 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+   1  Id: 1d1c.fe18 Suspend: 1 Teb: 00c8c000 Unfrozen
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+010afacc 758b5d49 ntdll!NtWaitForWorkViaWorkerFactory+0xc
+010afadc 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+010afb34 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+010afb44 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+   2  Id: 1d1c.f5e8 Suspend: 1 Teb: 00c90000 Unfrozen
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+011efd80 758b5d49 ntdll!NtWaitForWorkViaWorkerFactory+0xc
+011efd90 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+011efde8 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+011efdf8 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+   3  Id: 1d1c.2be8 Suspend: 1 Teb: 00c94000 Unfrozen
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+0132fbdc 758b5d49 ntdll!NtWaitForWorkViaWorkerFactory+0xc
+0132fbec 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+0132fc44 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+0132fc54 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+   4  Id: 1d1c.a594 Suspend: 1 Teb: 00c98000 Unfrozen
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+02d1f60c 00a33c75 win32u!NtUserGetProp2+0xc
+02d1f754 00a203bb InstalledRenewalProbe+0x43c75
+02d1f824 00a0dac8 InstalledRenewalProbe+0x303bb
+*** ERROR: Symbol file could not be found.  Defaulted to export symbols for C:\WINDOWS\System32\ucrtbase.dll - 
+02d1f8a0 75e8ea3b InstalledRenewalProbe+0x1dac8
+02d1f8d8 758b5d49 ucrtbase!isgraph+0x21b
+02d1f8e8 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+02d1f940 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+02d1f950 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+   5  Id: 1d1c.f51c Suspend: 1 Teb: 00c9c000 Unfrozen
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+0334fb90 00a0eb7a win32u!NtUserMsgWaitForMultipleObjectsEx+0xc
+0334fc6c 00a0dac8 InstalledRenewalProbe+0x1eb7a
+0334fce8 75e8ea3b InstalledRenewalProbe+0x1dac8
+0334fd20 758b5d49 ucrtbase!isgraph+0x21b
+0334fd30 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+0334fd88 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+0334fd98 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+   6  Id: 1d1c.bcbc Suspend: 1 Teb: 00ca0000 Unfrozen
+ChildEBP RetAddr  
+(Inline) -------- node!std::min+0x3 [C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\utility @ 101]
+0344f63c 5f738aeb node!cc::`anonymous namespace'::clampValue+0x6 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\cc\input\ScrollController.cpp @ 27]
+0344f66c 5f744ffe node!cc::ScrollNodeSnapshot::setInputPrediction+0x9c [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\cc\input\ScrollController.cpp @ 348]
+0344f758 5f7421a1 node!cc::LayerTreeHost::tickCompositorScroll+0x6fd [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\cc\trees\LayerTreeHost.cpp @ 2430]
+0344f7b4 5f762ecc node!cc::LayerTreeHost::drawFrameInCompositeThread+0xcb [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\cc\trees\LayerTreeHost.cpp @ 2665]
+0344f7ec 5f763133 node!content::WebThreadImpl::schedulerTasks+0x11d [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\content\web_impl_win\WebThreadImpl.cpp @ 560]
+0344f800 5f762795 node!content::WebThreadImpl::threadEntryPoint+0x3a [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\content\web_impl_win\WebThreadImpl.cpp @ 158]
+0344f808 5ff61c97 node!content::WebThreadImpl::WebThreadImplThreadEntryPoint+0xb [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\content\web_impl_win\WebThreadImpl.cpp @ 36]
+0344f840 758b5d49 node!thread_start<unsigned int (__stdcall*)(void *),1>+0x58 [minkernel\crts\ucrt\src\appcrt\startup\thread.cpp @ 97]
+WARNING: Stack unwind information not available. Following frames may be wrong.
+0344f850 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+0344f8a8 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+0344f8b8 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+   7  Id: 1d1c.10818 Suspend: 1 Teb: 00ca4000 Unfrozen
+*** ERROR: Symbol file could not be found.  Defaulted to export symbols for C:\WINDOWS\System32\KERNELBASE.dll - 
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+0354f934 7551e052 ntdll!ZwWaitForSingleObject+0xc
+0354f948 5f763192 KERNELBASE!WaitForSingleObject+0x12
+(Inline) -------- node!std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >::empty+0x6e [C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector @ 1910]
+0354f964 5f762795 node!content::WebThreadImpl::threadEntryPoint+0x99 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\content\web_impl_win\WebThreadImpl.cpp @ 156]
+0354f96c 5ff61c97 node!content::WebThreadImpl::WebThreadImplThreadEntryPoint+0xb [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\content\web_impl_win\WebThreadImpl.cpp @ 36]
+0354f9a4 758b5d49 node!thread_start<unsigned int (__stdcall*)(void *),1>+0x58 [minkernel\crts\ucrt\src\appcrt\startup\thread.cpp @ 97]
+0354f9b4 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+0354fa0c 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+0354fa1c 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+   8  Id: 1d1c.4f64 Suspend: 1 Teb: 00ca8000 Unfrozen
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+0398f71c 7551e052 ntdll!ZwWaitForSingleObject+0xc
+0398f730 5f763192 KERNELBASE!WaitForSingleObject+0x12
+(Inline) -------- node!std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >::empty+0x6e [C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector @ 1910]
+0398f74c 5f762795 node!content::WebThreadImpl::threadEntryPoint+0x99 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\content\web_impl_win\WebThreadImpl.cpp @ 156]
+0398f754 5ff61c97 node!content::WebThreadImpl::WebThreadImplThreadEntryPoint+0xb [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\content\web_impl_win\WebThreadImpl.cpp @ 36]
+0398f78c 758b5d49 node!thread_start<unsigned int (__stdcall*)(void *),1>+0x58 [minkernel\crts\ucrt\src\appcrt\startup\thread.cpp @ 97]
+0398f79c 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+0398f7f4 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+0398f804 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+   9  Id: 1d1c.a5f0 Suspend: 1 Teb: 00cac000 Unfrozen
+*** ERROR: Symbol file could not be found.  Defaulted to export symbols for C:\WINDOWS\System32\combase.dll - 
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+03b4f848 76143757 ntdll!ZwWaitForMultipleObjects+0xc
+03b4f984 76146883 combase!Ordinal87+0x53e7
+03b4f9bc 761434bc combase!Ordinal87+0x8513
+03b4f9f4 7618331f combase!Ordinal87+0x514c
+03b4fa04 758b5d49 combase!Ordinal90+0x50f
+03b4fa14 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+03b4fa6c 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+03b4fa7c 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+  10  Id: 1d1c.13f8 Suspend: 1 Teb: 00cb0000 Unfrozen
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+03c8fefc 758b5d49 ntdll!NtWaitForWorkViaWorkerFactory+0xc
+03c8ff0c 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+03c8ff64 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+03c8ff74 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+  11  Id: 1d1c.bf38 Suspend: 1 Teb: 00cb4000 Unfrozen
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+03dcfc1c 758b5d49 ntdll!NtWaitForWorkViaWorkerFactory+0xc
+03dcfc2c 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+03dcfc84 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+03dcfc94 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+  12  Id: 1d1c.12eb4 Suspend: 1 Teb: 00cb8000 Unfrozen
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+0442fa24 7551e052 ntdll!ZwWaitForSingleObject+0xc
+0442fa38 5f763192 KERNELBASE!WaitForSingleObject+0x12
+(Inline) -------- node!std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >::empty+0x6e [C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector @ 1910]
+0442fa54 5f762795 node!content::WebThreadImpl::threadEntryPoint+0x99 [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\content\web_impl_win\WebThreadImpl.cpp @ 156]
+0442fa5c 5ff61c97 node!content::WebThreadImpl::WebThreadImplThreadEntryPoint+0xb [F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\content\web_impl_win\WebThreadImpl.cpp @ 36]
+0442fa94 758b5d49 node!thread_start<unsigned int (__stdcall*)(void *),1>+0x58 [minkernel\crts\ucrt\src\appcrt\startup\thread.cpp @ 97]
+0442faa4 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+0442fafc 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+0442fb0c 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+
+# 13  Id: 1d1c.10eb4 Suspend: 1 Teb: 00cbc000 Unfrozen
+ChildEBP RetAddr  
+WARNING: Stack unwind information not available. Following frames may be wrong.
+0452fe90 758b5d49 ntdll!DbgBreakPoint
+0452fea0 7713e1fb KERNEL32!BaseThreadInitThunk+0x19
+0452fef8 7713e181 ntdll!RtlInitializeExceptionChain+0x6b
+0452ff08 00000000 ntdll!RtlGetAppContainerNamedObjectPath+0x231
+0:013> .echo SOUI_SCHEDULER_LAYOUT
+SOUI_SCHEDULER_LAYOUT
+0:013> dt node!content::WebThreadImpl
+   +0x000 __VFN_table : Ptr32 
+   +0x004 m_hEvent         : Ptr32 Void
+   +0x008 m_threadId       : Uint4B
+   +0x00c m_willExit       : Bool
+   +0x00d m_threadClosed   : Bool
+   +0x010 m_firingTimers   : Int4B
+   +0x014 m_webSchedulerImpl : Ptr32 content::WebSchedulerImpl
+   +0x018 m_timerHeap      : std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >
+   +0x024 m_unusedTimersToDelete : std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >
+   +0x030 m_taskPairsToPost : std::vector<content::WebThreadImpl::TaskPair *,std::allocator<content::WebThreadImpl::TaskPair *> >
+   +0x03c m_observers      : std::vector<blink::WebThread::TaskObserver *,std::allocator<blink::WebThread::TaskObserver *> >
+   +0x048 m_isObserversDirty : Bool
+   +0x04c m_name           : Ptr32 Char
+   +0x050 m_taskPairsMutex : _RTL_CRITICAL_SECTION
+   +0x068 m_observersMutex : _RTL_CRITICAL_SECTION
+   +0x080 m_suspendTimerQueue : Bool
+   +0x081 m_hadThreadInit  : Bool
+   +0x084 m_threadHandle   : Ptr32 Void
+   +0x088 m_currentFrameCreateTime : Float
+   =6070f5c0 m_currentHeapInsertionOrder : Uint4B
+   +0x090 m_isMainThread   : Bool
+0:013> .echo SOUI_TIMER_LAYOUT
+SOUI_TIMER_LAYOUT
+0:013> dt node!content::WebTimerBase
+   +0x000 __VFN_table : Ptr32 
+   +0x008 m_threadTimers   : Ptr32 content::WebThreadImpl
+   +0x010 m_nextFireTime   : Float
+   +0x018 m_repeatInterval : Float
+   +0x020 m_heapIndex      : Int4B
+   +0x024 m_heapInsertionOrder : Uint4B
+   +0x028 m_location       : blink::WebTraceLocation
+   +0x030 m_task           : Ptr32 blink::WebThread::Task
+   +0x034 m_ref            : Int4B
+   +0x038 m_priority       : Int4B
+0:013> .echo SOUI_SCHEDULER_BREAK
+SOUI_SCHEDULER_BREAK
+0:013> bp /1 node!content::WebThreadImpl::schedulerTasks ".echo SOUI_SCHEDULER_HIT; r ecx; dt node!content::WebThreadImpl @ecx; dx -r3 ((node!content::WebThreadImpl *) @ecx)->m_timerHeap; .echo SOUI_SNAPSHOT_END; qd"
+0:013> g
+SOUI_SCHEDULER_HIT
+ecx=00ef75b8
+   +0x000 __VFN_table : 0x5fff2524 
+   +0x004 m_hEvent         : (null) 
+   +0x008 m_threadId       : 0xa594
+   +0x00c m_willExit       : 0
+   +0x00d m_threadClosed   : 0
+   +0x010 m_firingTimers   : 0n0
+   +0x014 m_webSchedulerImpl : 0x00ed5cd0 content::WebSchedulerImpl
+   +0x018 m_timerHeap      : std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >
+   +0x024 m_unusedTimersToDelete : std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >
+   +0x030 m_taskPairsToPost : std::vector<content::WebThreadImpl::TaskPair *,std::allocator<content::WebThreadImpl::TaskPair *> >
+   +0x03c m_observers      : std::vector<blink::WebThread::TaskObserver *,std::allocator<blink::WebThread::TaskObserver *> >
+   +0x048 m_isObserversDirty : 0
+   +0x04c m_name           : 0x5fff0890  "MainThread"
+   +0x050 m_taskPairsMutex : _RTL_CRITICAL_SECTION
+   +0x068 m_observersMutex : _RTL_CRITICAL_SECTION
+   +0x080 m_suspendTimerQueue : 0
+   +0x081 m_hadThreadInit  : 1
+   +0x084 m_threadHandle   : (null) 
+   +0x088 m_currentFrameCreateTime : 1790403835.35998106 
+   =6070f5c0 m_currentHeapInsertionOrder : 0x2cbec6
+   +0x090 m_isMainThread   : 1
+((node!content::WebThreadImpl *) @ecx)->m_timerHeap : { size=6 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+    [<Raw View>]     [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+    [capacity]       : 13
+    [allocator]      : allocator [Type: std::_Compressed_pair<std::allocator<content::WebTimerBase *>,std::_Vector_val<std::_Simple_types<content::WebTimerBase *> >,1>]
+        [<Raw View>]     [Type: std::_Compressed_pair<std::allocator<content::WebTimerBase *>,std::_Vector_val<std::_Simple_types<content::WebTimerBase *> >,1>]
+    [0]              : 0x54783980 [Type: content::WebTimerBase *]
+        [+0x008] m_threadTimers   : 0xef75b8 [Type: content::WebThreadImpl *]
+            kIdlePriority    : 0 [Type: int]
+            kLoadingPriority : 100 [Type: int]
+            kDefaultPriority : 200 [Type: int]
+            kInteractionPriority : 300 [Type: int]
+            [+0x004] m_hEvent         : 0x0 [Type: void *]
+            [+0x008] m_threadId       : 0xa594 [Type: unsigned int]
+            [+0x00c] m_willExit       : false [Type: bool]
+            [+0x00d] m_threadClosed   : false [Type: bool]
+            [+0x010] m_firingTimers   : 0 [Type: int]
+            [+0x014] m_webSchedulerImpl : 0xed5cd0 [Type: content::WebSchedulerImpl *]
+            [+0x018] m_timerHeap      : { size=6 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+            [+0x024] m_unusedTimersToDelete : { size=2771 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+            [+0x030] m_taskPairsToPost : { size=0 } [Type: std::vector<content::WebThreadImpl::TaskPair *,std::allocator<content::WebThreadImpl::TaskPair *> >]
+            [+0x03c] m_observers      : { size=2 } [Type: std::vector<blink::WebThread::TaskObserver *,std::allocator<blink::WebThread::TaskObserver *> >]
+            [+0x048] m_isObserversDirty : false [Type: bool]
+            [+0x04c] m_name           : 0x5fff0890 : "MainThread" [Type: char *]
+            [+0x050] m_taskPairsMutex [Type: _RTL_CRITICAL_SECTION]
+            [+0x068] m_observersMutex [Type: _RTL_CRITICAL_SECTION]
+            [+0x080] m_suspendTimerQueue : false [Type: bool]
+            [+0x081] m_hadThreadInit  : true [Type: bool]
+            [+0x084] m_threadHandle   : 0x0 [Type: void *]
+            [+0x088] m_currentFrameCreateTime : 1790403835.359981 [Type: double]
+            [=0x6070f5c0] m_currentHeapInsertionOrder : 0x2cbec6 [Type: unsigned int]
+            [+0x090] m_isMainThread   : true [Type: bool]
+        [+0x010] m_nextFireTime   : 1790403825.079492 [Type: double]
+        [+0x018] m_repeatInterval : 0.000000 [Type: double]
+        [+0x020] m_heapIndex      : 0 [Type: int]
+        [+0x024] m_heapInsertionOrder : 0x67bf [Type: unsigned int]
+        [+0x028] m_location       [Type: blink::WebTraceLocation]
+            [+0x000] m_functionName   : 0x602c9014 : "blink::HTMLParserScheduler::scheduleForResume" [Type: char *]
+            [+0x004] m_fileName       : 0x602c8f98 : "F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\third_party\WebKit\Source\core\html\parser\HTMLParserScheduler.cpp" [Type: char *]
+        [+0x030] m_task           : 0x2ebe180 [Type: blink::WebThread::Task *]
+            [+0x004] m_weakPtr        [Type: WTF::WeakPtr<blink::CancellableTaskFactory>]
+        [+0x034] m_ref            : 1 [Type: int]
+        [+0x038] m_priority       : 100 [Type: int]
+    [1]              : 0x5461c200 [Type: content::WebTimerBase *]
+        [+0x008] m_threadTimers   : 0xef75b8 [Type: content::WebThreadImpl *]
+            kIdlePriority    : 0 [Type: int]
+            kLoadingPriority : 100 [Type: int]
+            kDefaultPriority : 200 [Type: int]
+            kInteractionPriority : 300 [Type: int]
+            [+0x004] m_hEvent         : 0x0 [Type: void *]
+            [+0x008] m_threadId       : 0xa594 [Type: unsigned int]
+            [+0x00c] m_willExit       : false [Type: bool]
+            [+0x00d] m_threadClosed   : false [Type: bool]
+            [+0x010] m_firingTimers   : 0 [Type: int]
+            [+0x014] m_webSchedulerImpl : 0xed5cd0 [Type: content::WebSchedulerImpl *]
+            [+0x018] m_timerHeap      : { size=6 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+            [+0x024] m_unusedTimersToDelete : { size=2771 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+            [+0x030] m_taskPairsToPost : { size=0 } [Type: std::vector<content::WebThreadImpl::TaskPair *,std::allocator<content::WebThreadImpl::TaskPair *> >]
+            [+0x03c] m_observers      : { size=2 } [Type: std::vector<blink::WebThread::TaskObserver *,std::allocator<blink::WebThread::TaskObserver *> >]
+            [+0x048] m_isObserversDirty : false [Type: bool]
+            [+0x04c] m_name           : 0x5fff0890 : "MainThread" [Type: char *]
+            [+0x050] m_taskPairsMutex [Type: _RTL_CRITICAL_SECTION]
+            [+0x068] m_observersMutex [Type: _RTL_CRITICAL_SECTION]
+            [+0x080] m_suspendTimerQueue : false [Type: bool]
+            [+0x081] m_hadThreadInit  : true [Type: bool]
+            [+0x084] m_threadHandle   : 0x0 [Type: void *]
+            [+0x088] m_currentFrameCreateTime : 1790403835.359981 [Type: double]
+            [=0x6070f5c0] m_currentHeapInsertionOrder : 0x2cbec6 [Type: unsigned int]
+            [+0x090] m_isMainThread   : true [Type: bool]
+        [+0x010] m_nextFireTime   : 1790403834.896490 [Type: double]
+        [+0x018] m_repeatInterval : 0.000000 [Type: double]
+        [+0x020] m_heapIndex      : 1 [Type: int]
+        [+0x024] m_heapInsertionOrder : 0x7 [Type: unsigned int]
+        [+0x028] m_location       [Type: blink::WebTraceLocation]
+            [+0x000] m_functionName   : 0x60261adc : "blink::Document::finishedParsing" [Type: char *]
+            [+0x004] m_fileName       : 0x60261000 : "F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\third_party\WebKit\Source\core\dom\Document.cpp" [Type: char *]
+        [+0x030] m_task           : 0xfaee00 [Type: blink::WebThread::Task *]
+            [+0x004] m_timer          : 0x35a41ec0 [Type: blink::TimerBase *]
+        [+0x034] m_ref            : 1 [Type: int]
+        [+0x038] m_priority       : 200 [Type: int]
+    [2]              : 0x548344c0 [Type: content::WebTimerBase *]
+        [+0x008] m_threadTimers   : 0xef75b8 [Type: content::WebThreadImpl *]
+            kIdlePriority    : 0 [Type: int]
+            kLoadingPriority : 100 [Type: int]
+            kDefaultPriority : 200 [Type: int]
+            kInteractionPriority : 300 [Type: int]
+            [+0x004] m_hEvent         : 0x0 [Type: void *]
+            [+0x008] m_threadId       : 0xa594 [Type: unsigned int]
+            [+0x00c] m_willExit       : false [Type: bool]
+            [+0x00d] m_threadClosed   : false [Type: bool]
+            [+0x010] m_firingTimers   : 0 [Type: int]
+            [+0x014] m_webSchedulerImpl : 0xed5cd0 [Type: content::WebSchedulerImpl *]
+            [+0x018] m_timerHeap      : { size=6 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+            [+0x024] m_unusedTimersToDelete : { size=2771 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+            [+0x030] m_taskPairsToPost : { size=0 } [Type: std::vector<content::WebThreadImpl::TaskPair *,std::allocator<content::WebThreadImpl::TaskPair *> >]
+            [+0x03c] m_observers      : { size=2 } [Type: std::vector<blink::WebThread::TaskObserver *,std::allocator<blink::WebThread::TaskObserver *> >]
+            [+0x048] m_isObserversDirty : false [Type: bool]
+            [+0x04c] m_name           : 0x5fff0890 : "MainThread" [Type: char *]
+            [+0x050] m_taskPairsMutex [Type: _RTL_CRITICAL_SECTION]
+            [+0x068] m_observersMutex [Type: _RTL_CRITICAL_SECTION]
+            [+0x080] m_suspendTimerQueue : false [Type: bool]
+            [+0x081] m_hadThreadInit  : true [Type: bool]
+            [+0x084] m_threadHandle   : 0x0 [Type: void *]
+            [+0x088] m_currentFrameCreateTime : 1790403835.359981 [Type: double]
+            [=0x6070f5c0] m_currentHeapInsertionOrder : 0x2cbec6 [Type: unsigned int]
+            [+0x090] m_isMainThread   : true [Type: bool]
+        [+0x010] m_nextFireTime   : 1790403834.449987 [Type: double]
+        [+0x018] m_repeatInterval : 0.000000 [Type: double]
+        [+0x020] m_heapIndex      : 2 [Type: int]
+        [+0x024] m_heapInsertionOrder : 0x2cbec5 [Type: unsigned int]
+        [+0x028] m_location       [Type: blink::WebTraceLocation]
+            [+0x000] m_functionName   : 0x5ffefec0 : "content::WebPageImpl::setNeedsCommitAndNotLayout" [Type: char *]
+            [+0x004] m_fileName       : 0x5ffefe68 : "F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\content\browser\WebPageImpl.cpp" [Type: char *]
+        [+0x030] m_task           : 0x4637728 [Type: blink::WebThread::Task *]
+            [+0x008] m_client         : 0xfad550 [Type: content::WebPageImpl *]
+        [+0x034] m_ref            : 1 [Type: int]
+        [+0x038] m_priority       : 200 [Type: int]
+    [3]              : 0x5461c080 [Type: content::WebTimerBase *]
+        [+0x008] m_threadTimers   : 0xef75b8 [Type: content::WebThreadImpl *]
+            kIdlePriority    : 0 [Type: int]
+            kLoadingPriority : 100 [Type: int]
+            kDefaultPriority : 200 [Type: int]
+            kInteractionPriority : 300 [Type: int]
+            [+0x004] m_hEvent         : 0x0 [Type: void *]
+            [+0x008] m_threadId       : 0xa594 [Type: unsigned int]
+            [+0x00c] m_willExit       : false [Type: bool]
+            [+0x00d] m_threadClosed   : false [Type: bool]
+            [+0x010] m_firingTimers   : 0 [Type: int]
+            [+0x014] m_webSchedulerImpl : 0xed5cd0 [Type: content::WebSchedulerImpl *]
+            [+0x018] m_timerHeap      : { size=6 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+            [+0x024] m_unusedTimersToDelete : { size=2771 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+            [+0x030] m_taskPairsToPost : { size=0 } [Type: std::vector<content::WebThreadImpl::TaskPair *,std::allocator<content::WebThreadImpl::TaskPair *> >]
+            [+0x03c] m_observers      : { size=2 } [Type: std::vector<blink::WebThread::TaskObserver *,std::allocator<blink::WebThread::TaskObserver *> >]
+            [+0x048] m_isObserversDirty : false [Type: bool]
+            [+0x04c] m_name           : 0x5fff0890 : "MainThread" [Type: char *]
+            [+0x050] m_taskPairsMutex [Type: _RTL_CRITICAL_SECTION]
+            [+0x068] m_observersMutex [Type: _RTL_CRITICAL_SECTION]
+            [+0x080] m_suspendTimerQueue : false [Type: bool]
+            [+0x081] m_hadThreadInit  : true [Type: bool]
+            [+0x084] m_threadHandle   : 0x0 [Type: void *]
+            [+0x088] m_currentFrameCreateTime : 1790403835.359981 [Type: double]
+            [=0x6070f5c0] m_currentHeapInsertionOrder : 0x2cbec6 [Type: unsigned int]
+            [+0x090] m_isMainThread   : true [Type: bool]
+        [+0x010] m_nextFireTime   : 1790403944.855301 [Type: double]
+        [+0x018] m_repeatInterval : 0.000000 [Type: double]
+        [+0x020] m_heapIndex      : 3 [Type: int]
+        [+0x024] m_heapInsertionOrder : 0x3 [Type: unsigned int]
+        [+0x028] m_location       [Type: blink::WebTraceLocation]
+            [+0x000] m_functionName   : 0x5fff07ec : "content::BlinkPlatformImpl::initialize" [Type: char *]
+            [+0x004] m_fileName       : 0x5fff0788 : "F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\content\web_impl_win\BlinkPlatformImpl.cpp" [Type: char *]
+        [+0x030] m_task           : 0xf84ca0 [Type: blink::WebThread::Task *]
+            [+0x004] m_timer          : 0xef1e70 [Type: blink::TimerBase *]
+        [+0x034] m_ref            : 1 [Type: int]
+        [+0x038] m_priority       : 200 [Type: int]
+    [4]              : 0x5461c040 [Type: content::WebTimerBase *]
+        [+0x008] m_threadTimers   : 0xef75b8 [Type: content::WebThreadImpl *]
+            kIdlePriority    : 0 [Type: int]
+            kLoadingPriority : 100 [Type: int]
+            kDefaultPriority : 200 [Type: int]
+            kInteractionPriority : 300 [Type: int]
+            [+0x004] m_hEvent         : 0x0 [Type: void *]
+            [+0x008] m_threadId       : 0xa594 [Type: unsigned int]
+            [+0x00c] m_willExit       : false [Type: bool]
+            [+0x00d] m_threadClosed   : false [Type: bool]
+            [+0x010] m_firingTimers   : 0 [Type: int]
+            [+0x014] m_webSchedulerImpl : 0xed5cd0 [Type: content::WebSchedulerImpl *]
+            [+0x018] m_timerHeap      : { size=6 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+            [+0x024] m_unusedTimersToDelete : { size=2771 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+            [+0x030] m_taskPairsToPost : { size=0 } [Type: std::vector<content::WebThreadImpl::TaskPair *,std::allocator<content::WebThreadImpl::TaskPair *> >]
+            [+0x03c] m_observers      : { size=2 } [Type: std::vector<blink::WebThread::TaskObserver *,std::allocator<blink::WebThread::TaskObserver *> >]
+            [+0x048] m_isObserversDirty : false [Type: bool]
+            [+0x04c] m_name           : 0x5fff0890 : "MainThread" [Type: char *]
+            [+0x050] m_taskPairsMutex [Type: _RTL_CRITICAL_SECTION]
+            [+0x068] m_observersMutex [Type: _RTL_CRITICAL_SECTION]
+            [+0x080] m_suspendTimerQueue : false [Type: bool]
+            [+0x081] m_hadThreadInit  : true [Type: bool]
+            [+0x084] m_threadHandle   : 0x0 [Type: void *]
+            [+0x088] m_currentFrameCreateTime : 1790403835.359981 [Type: double]
+            [=0x6070f5c0] m_currentHeapInsertionOrder : 0x2cbec6 [Type: unsigned int]
+            [+0x090] m_isMainThread   : true [Type: bool]
+        [+0x010] m_nextFireTime   : 1790403864.855299 [Type: double]
+        [+0x018] m_repeatInterval : 0.000000 [Type: double]
+        [+0x020] m_heapIndex      : 4 [Type: int]
+        [+0x024] m_heapInsertionOrder : 0x2 [Type: unsigned int]
+        [+0x028] m_location       [Type: blink::WebTraceLocation]
+            [+0x000] m_functionName   : 0x5fff07ec : "content::BlinkPlatformImpl::initialize" [Type: char *]
+            [+0x004] m_fileName       : 0x5fff0788 : "F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\content\web_impl_win\BlinkPlatformImpl.cpp" [Type: char *]
+        [+0x030] m_task           : 0xf84c00 [Type: blink::WebThread::Task *]
+            [+0x004] m_timer          : 0xef1b70 [Type: blink::TimerBase *]
+        [+0x034] m_ref            : 1 [Type: int]
+        [+0x038] m_priority       : 200 [Type: int]
+    [5]              : 0x547479c0 [Type: content::WebTimerBase *]
+        [+0x008] m_threadTimers   : 0xef75b8 [Type: content::WebThreadImpl *]
+            kIdlePriority    : 0 [Type: int]
+            kLoadingPriority : 100 [Type: int]
+            kDefaultPriority : 200 [Type: int]
+            kInteractionPriority : 300 [Type: int]
+            [+0x004] m_hEvent         : 0x0 [Type: void *]
+            [+0x008] m_threadId       : 0xa594 [Type: unsigned int]
+            [+0x00c] m_willExit       : false [Type: bool]
+            [+0x00d] m_threadClosed   : false [Type: bool]
+            [+0x010] m_firingTimers   : 0 [Type: int]
+            [+0x014] m_webSchedulerImpl : 0xed5cd0 [Type: content::WebSchedulerImpl *]
+            [+0x018] m_timerHeap      : { size=6 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+            [+0x024] m_unusedTimersToDelete : { size=2771 } [Type: std::vector<content::WebTimerBase *,std::allocator<content::WebTimerBase *> >]
+            [+0x030] m_taskPairsToPost : { size=0 } [Type: std::vector<content::WebThreadImpl::TaskPair *,std::allocator<content::WebThreadImpl::TaskPair *> >]
+            [+0x03c] m_observers      : { size=2 } [Type: std::vector<blink::WebThread::TaskObserver *,std::allocator<blink::WebThread::TaskObserver *> >]
+            [+0x048] m_isObserversDirty : false [Type: bool]
+            [+0x04c] m_name           : 0x5fff0890 : "MainThread" [Type: char *]
+            [+0x050] m_taskPairsMutex [Type: _RTL_CRITICAL_SECTION]
+            [+0x068] m_observersMutex [Type: _RTL_CRITICAL_SECTION]
+            [+0x080] m_suspendTimerQueue : false [Type: bool]
+            [+0x081] m_hadThreadInit  : true [Type: bool]
+            [+0x084] m_threadHandle   : 0x0 [Type: void *]
+            [+0x088] m_currentFrameCreateTime : 1790403835.359981 [Type: double]
+            [=0x6070f5c0] m_currentHeapInsertionOrder : 0x2cbec6 [Type: unsigned int]
+            [+0x090] m_isMainThread   : true [Type: bool]
+        [+0x010] m_nextFireTime   : 1790403835.452792 [Type: double]
+        [+0x018] m_repeatInterval : 0.000000 [Type: double]
+        [+0x020] m_heapIndex      : 5 [Type: int]
+        [+0x024] m_heapInsertionOrder : 0x21745a [Type: unsigned int]
+        [+0x028] m_location       [Type: blink::WebTraceLocation]
+            [+0x000] m_functionName   : 0x602e7bd4 : "net::CurlCacheManager::CurlCacheManager" [Type: char *]
+            [+0x004] m_fileName       : 0x602e7b80 : "F:\work\SOUI_WEB\soui-sdk\third_party\sources\miniblink\net\CurlCacheManager.cpp" [Type: char *]
+        [+0x030] m_task           : 0x2ebe1f0 [Type: blink::WebThread::Task *]
+            [+0x004] m_timer          : 0xf9e120 [Type: blink::TimerBase *]
+        [+0x034] m_ref            : 1 [Type: int]
+        [+0x038] m_priority       : 200 [Type: int]
+SOUI_SNAPSHOT_END
+quit:
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\atlmfc.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\concurrency.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\cpp_rest.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\stl.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\Windows.Data.Json.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\Windows.Devices.Geolocation.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\Windows.Devices.Sensors.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\Windows.Media.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\windows.natvis'
+NatVis script unloaded from 'C:\Program Files (x86)\Windows Kits\10\Debuggers\x86\Visualizers\winrt.natvis'

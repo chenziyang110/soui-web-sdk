@@ -1,0 +1,8 @@
+{
+  "variant": "restored-old-recovery-state-clear",
+  "expectedExitCode": 1,
+  "replacement": "state.cleanup_pending = false;",
+  "exitCode": 1,
+  "sourceSha256": "4D98D17BEE22CF4D6AB5885F460DD2E3F8D3EE47868B718B9615F34BE92053E9",
+  "mutatedStatement": "state.cleanup_pending = state.installed || state.cleanup_pending;"
+}

@@ -1,0 +1,10 @@
+^C:\SOUI-SDK-PRODUCTION-VALIDATION\PREVIEW11-RENEWAL-SUPERVISOR-RACE-20260926\SOURCE-SNAPSHOTS\X64-GREEN\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/SOUI-SDK-production-validation/preview11-renewal-supervisor-race-20260926/source-snapshots/x64-green -BC:/SOUI-SDK-production-validation/preview11-renewal-supervisor-race-20260926/builds/x64-green --check-stamp-file C:/SOUI-SDK-production-validation/preview11-renewal-supervisor-race-20260926/builds/x64-green/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

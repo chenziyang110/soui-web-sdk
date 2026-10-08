@@ -1,0 +1,76 @@
+{
+  "status": "compiled-test-start-blocked-by-external-qemu",
+  "at": "2026-09-26T21:23:42.919Z",
+  "sourceSha256": "827f16e7c8996496db0ee60961bf400b4322b91bb19f15e88f005fea8bb25317",
+  "sourceFiles": 718,
+  "configurationExitCode": 0,
+  "compilationExitCode": 0,
+  "driverExitCode": 1,
+  "testExecuted": false,
+  "guiExecuted": false,
+  "releaseReady": false,
+  "testGate": {
+    "at": "2026-09-26T21:22:06.3619381Z",
+    "processes": [
+      {
+        "ProcessId": 74456,
+        "Name": "qemu-system-x86_64.exe",
+        "CreationDate": "/Date(1790457724804)/"
+      }
+    ]
+  },
+  "originalBinaries": {
+    "sha256": "44147921e95185f076200dc8d82a951f4d1ea6b628004e78e19934cf05a5e018",
+    "bytes": 1816064,
+    "files": [
+      {
+        "path": "out/x64/tests/native/Release/soui_demo_session_renewal_tests.exe",
+        "bytes": 947200,
+        "sha256": "36e84d74ae2611a366c665a0a476229041cc5d13e2a20a78d402b0bc8b249c31"
+      },
+      {
+        "path": "out/x64/tests/native/Release/soui_workbench_interaction_tests.exe",
+        "bytes": 868864,
+        "sha256": "f8b886d76d5f8edb9a5c265dcf87a81357c02e63021d37424022814756672fc3"
+      }
+    ]
+  },
+  "frozenFiles": {
+    "sha256": "a87351fefb73d992b09aeef63add533400c2378be4301f44b4b486ff59ccda6c",
+    "bytes": 1835842,
+    "files": [
+      {
+        "path": "commands/soui_demo_session_renewal_tests.dir/Release/soui_dem.7D7F40CA.tlog/CL.command.1.tlog",
+        "bytes": 6386,
+        "sha256": "40fcf3a5893266185d016d03da87874578df2dc576252ee9f00b16ecd144a562"
+      },
+      {
+        "path": "commands/soui_demo_session_renewal_tests.dir/Release/soui_dem.7D7F40CA.tlog/link.command.1.tlog",
+        "bytes": 3480,
+        "sha256": "dcd72e815275cf82d50c1d15f99f1cd8ecf9bf89c8506ca03ad415b7977b80d8"
+      },
+      {
+        "path": "commands/soui_workbench_interaction_tests.dir/Release/soui_wor.EBB3B1E4.tlog/CL.command.1.tlog",
+        "bytes": 6406,
+        "sha256": "49b032d26b39e1c5e99ee321ef633155c3051bfc6dbb310ea1b806ddc54d8676"
+      },
+      {
+        "path": "commands/soui_workbench_interaction_tests.dir/Release/soui_wor.EBB3B1E4.tlog/link.command.1.tlog",
+        "bytes": 3506,
+        "sha256": "0562d555b712e4e20f8cfcc38e5588dae9a7fd0bee87c9233535d790c6f99209"
+      },
+      {
+        "path": "soui_demo_session_renewal_tests.exe",
+        "bytes": 947200,
+        "sha256": "36e84d74ae2611a366c665a0a476229041cc5d13e2a20a78d402b0bc8b249c31"
+      },
+      {
+        "path": "soui_workbench_interaction_tests.exe",
+        "bytes": 868864,
+        "sha256": "f8b886d76d5f8edb9a5c265dcf87a81357c02e63021d37424022814756672fc3"
+      }
+    ]
+  },
+  "compilerLinkCommandFiles": 4,
+  "note": "Other QEMU appeared near the end of compilation. No isolated resource/timing conclusion, no native test pass. Attempt name is consumed; keep original records."
+}

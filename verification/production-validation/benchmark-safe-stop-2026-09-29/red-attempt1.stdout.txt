@@ -1,0 +1,58 @@
+✖ failure cleanup stops its owned process handle without following a reused parent PID (12176.402ms)
+✖ live gate stops its own runner handle even after verifying its process identity (4613.5308ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12280.2883
+
+✖ failing tests:
+
+test at tests\benchmark\run-one-cleanup.test.cjs:37:1
+✖ failure cleanup stops its owned process handle without following a reused parent PID (12176.402ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      [
+  +     'verified-tree',
+  +     true
+  -     'process-handle',
+  -     false
+      ]
+    ]
+  
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\benchmark-realtime-gate\tests\benchmark\run-one-cleanup.test.cjs:60:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ [ 'verified-tree', true ] ],
+    expected: [ [ 'process-handle', false ] ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\series-interference.test.cjs:174:1
+✖ live gate stops its own runner handle even after verifying its process identity (4613.5308ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'verified-tree'
+  - 'process-handle'
+  
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\benchmark-realtime-gate\tests\benchmark\series-interference.test.cjs:187:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'verified-tree',
+    expected: 'process-handle',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

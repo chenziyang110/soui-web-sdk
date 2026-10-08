@@ -1,0 +1,33 @@
+{
+  "pid": 81460,
+  "startedAt": "2026-09-25T08:58:43.6840981Z",
+  "arguments": [
+    "-machine",
+    "pc,accel=tcg",
+    "-cpu",
+    "core2duo",
+    "-smp",
+    "2",
+    "-m",
+    "2048",
+    "-drive",
+    "file=D:\\SOUI-SDK-QEMU-validation\\system.qcow2,format=qcow2,if=ide",
+    "-drive",
+    "file=fat:ro:C:\\SOUI-SDK-production-validation\\guest-preview8-consumer-transfer-20260925,format=raw,if=ide,index=1",
+    "-snapshot",
+    "-net",
+    "none",
+    "-vga",
+    "std",
+    "-display",
+    "none",
+    "-vnc",
+    "127.0.0.1:99",
+    "-monitor",
+    "tcp:127.0.0.1:4453,server,nowait",
+    "-serial",
+    "file:C:\\SOUI-SDK-production-validation\\preview8-independent-consumer-win7-serial-20260925.txt"
+  ],
+  "serial": "C:\\SOUI-SDK-production-validation\\preview8-independent-consumer-win7-serial-20260925.txt",
+  "releaseReady": false
+}

@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.24)
-project(SouiSdk VERSION 0.2.0 LANGUAGES C CXX)
+file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/include/soui/version.h" SOUI_VERSION_DECLARATION REGEX "^#define SOUI_SDK_VERSION_STRING")
+string(REGEX MATCH "[0-9]+\\.[0-9]+\\.[0-9]+" SOUI_PROJECT_VERSION "${SOUI_VERSION_DECLARATION}")
+project(SouiSdk VERSION ${SOUI_PROJECT_VERSION} LANGUAGES C CXX)
 if(NOT MSVC OR NOT WIN32)
   message(FATAL_ERROR "SouiSdk currently requires Windows and the MSVC v143 toolchain")
 endif()
@@ -16,8 +18,12 @@ target_compile_definitions(soui_sdk PUBLIC UNICODE _UNICODE NOMINMAX WINVER=0x06
 target_compile_definitions(soui_sdk PRIVATE ENABLE_WKE=0 SOUI_SOURCE_KERNEL_HOST NDEBUG _CRT_SECURE_NO_WARNINGS)
 target_compile_options(soui_sdk PRIVATE /utf-8 /W4 /U_DEBUG)
 set_property(TARGET soui_sdk PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
-target_link_libraries(soui_sdk PUBLIC user32 gdi32 imm32 shell32 ole32 oleaut32 uuid comctl32 advapi32 winmm)
+target_link_libraries(soui_sdk PUBLIC user32 gdi32 imm32 shell32 ole32 oleaut32 uuid comctl32 advapi32 winmm bcrypt)
 set_target_properties(soui_sdk PROPERTIES EXPORT_NAME Sdk)
+option(SOUI_BUILD_WEBVIEW2 "Build the optional modern WebView2 backend" OFF)
+if(SOUI_BUILD_WEBVIEW2)
+  add_subdirectory(renderers/webview2)
+endif()
 
 set(ZLIB_SOURCE "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/zlib")
 add_library(soui_zlib STATIC ${ZLIB_SOURCE}/adler32.c ${ZLIB_SOURCE}/compress.c
@@ -35,6 +41,8 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfigVersi
   VERSION ${PROJECT_VERSION} COMPATIBILITY ExactVersion)
 install(TARGETS soui_sdk EXPORT SouiSdkTargets ARCHIVE DESTINATION lib/$<CONFIG>)
 install(DIRECTORY include/ DESTINATION include)
+install(FILES "${SOUI_DISTRIBUTION_ROOT}/THIRD_PARTY_NOTICES.md" DESTINATION share/SouiSdk)
+install(DIRECTORY "${SOUI_DISTRIBUTION_ROOT}/third_party/licenses/" DESTINATION share/SouiSdk/licenses)
 install(EXPORT SouiSdkTargets NAMESPACE Soui:: DESTINATION lib/cmake/SouiSdk)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfig.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfigVersion.cmake" DESTINATION lib/cmake/SouiSdk)

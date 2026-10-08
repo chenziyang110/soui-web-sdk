@@ -2,6 +2,7 @@
 #include "config.h"
 
 #include "content/web_impl_win/WebThreadImpl.h"
+#include "content/web_impl_win/TaskSchedulingPolicy.h"
 #include "content/web_impl_win/BlinkPlatformImpl.h"
 #include "content/web_impl_win/WebTimerBase.h"
 #include "content/web_impl_win/WebSchedulerImpl.h"
@@ -96,6 +97,10 @@ WebThreadImpl::~WebThreadImpl()
         m_threadHandle = nullptr;
     }
 
+    if (m_hEvent) {
+        ::CloseHandle(m_hEvent);
+        m_hEvent = nullptr;
+    }
     delete m_webSchedulerImpl;
     
     ::DeleteCriticalSection(&m_taskPairsMutex);
@@ -526,18 +531,10 @@ void WebThreadImpl::schedulerTasks()
     bool hasFire = false;
     while (!m_timerHeap.empty() && (m_timerHeap[0]->m_nextFireTime <= fireTime || m_willExit)) {
         hasFire = true;
-        size_t selectedIndex = 0;
-        for (size_t i = 1; i < m_timerHeap.size(); ++i) {
-            WebTimerBase* candidate = m_timerHeap[i];
-            if (!m_willExit && candidate->m_nextFireTime > fireTime)
-                continue;
-            WebTimerBase* selected = m_timerHeap[selectedIndex];
-            if (candidate->m_priority > selected->m_priority
-                || (candidate->m_priority == selected->m_priority
-                    && candidate->m_nextFireTime < selected->m_nextFireTime)) {
-                selectedIndex = i;
-            }
-        }
+        const size_t selectedIndex = task_scheduling::selectReadyTimer(
+            m_timerHeap, fireTime, m_willExit, [](const WebTimerBase* value) {
+                return task_scheduling::ReadyTask{value->m_nextFireTime, value->m_priority};
+            });
         WebTimerBase* timer = m_timerHeap[selectedIndex];
         timer->m_nextFireTime = 0;
         timer->heapDelete();

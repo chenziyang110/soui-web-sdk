@@ -1,0 +1,20 @@
+:root { font-family: "Segoe UI", "Microsoft YaHei", sans-serif; color: #16332a; background: #f3f6ef; color-scheme: light; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+main { max-width: 850px; margin: 0 auto; padding: 72px 48px; }
+.eyebrow { font-size: 12px; letter-spacing: .16em; font-weight: 700; color: #436d59; }
+h1 { margin: 20px 0 12px; font-size: clamp(28px, 5vw, 42px); font-weight: 600; letter-spacing: -.04em; }
+.intro { color: #5b6c61; line-height: 1.8; }
+section { container-type: inline-size; margin-top: 40px; padding: 30px; background: #fff; border: 1px solid #dbe4d5; border-radius: 12px; }
+h2 { font-size: 20px; margin: 0 0 24px; }
+label { display: block; margin-bottom: 10px; font-size: 14px; }
+.form { display: grid; grid-template-columns: 1fr auto; gap: 12px; }
+input, button { font: inherit; border-radius: 6px; padding: 12px 16px; }
+input { border: 1px solid #aabbac; min-width: 0; background: #fbfcf9; }
+button { border: 0; background: #24563e; color: #fff; cursor: pointer; }
+button:disabled { opacity: .55; cursor: default; }
+:focus-visible { outline: 3px solid #9bbd66; outline-offset: 3px; }
+.message { margin: 24px 0 0; min-height: 26px; line-height: 1.7; overflow-wrap: anywhere; }
+footer { margin-top: 30px; font-size: 12px; color: #667363; }
+@container (max-width: 400px) { .form { grid-template-columns: 1fr; } }
+@media (max-width: 600px) { main { padding: 35px 20px; } section { padding: 22px; } }

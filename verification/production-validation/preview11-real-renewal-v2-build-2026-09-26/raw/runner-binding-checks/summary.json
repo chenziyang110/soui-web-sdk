@@ -1,0 +1,140 @@
+{
+  "schema": "soui.production-runner-binding-self-test/v1",
+  "status": "passed-non-gui-checker-only",
+  "root": "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1",
+  "finishedAt": "2026-09-26T08:56:31.379Z",
+  "checkerSha256": "33bfdf9330019da5188e992b3ad90b309638964f7e031f4d2fd6eb2aabedc9ec",
+  "runSha256": "bcfa7c7a712db96053297c633321e2074a2c38e36f39d90eca199ef1f8089b49",
+  "freezeSha256": "80d19d4e2008a505bbb8a9293849f3756d4bf07ad7838ad38aa5bb054ac0ee3a",
+  "caseCount": 8,
+  "passedCases": 8,
+  "actualInputPositives": 2,
+  "syntheticNegativeRejections": 6,
+  "cases": [
+    {
+      "name": "actual-v2-x86-before",
+      "architecture": "x86",
+      "exitCode": 0,
+      "passed": true,
+      "expectedRejection": null,
+      "resultPath": "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1\\cases\\actual-v2-x86-before\\result.json"
+    },
+    {
+      "name": "actual-v2-x64-before",
+      "architecture": "x64",
+      "exitCode": 0,
+      "passed": true,
+      "expectedRejection": null,
+      "resultPath": "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1\\cases\\actual-v2-x64-before\\result.json"
+    },
+    {
+      "name": "synthetic-v1-freeze",
+      "architecture": "x86",
+      "exitCode": 1,
+      "passed": true,
+      "expectedRejection": "Wrong v2 fixture revision or parent freeze",
+      "resultPath": "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1\\cases\\synthetic-v1-freeze\\result.json"
+    },
+    {
+      "name": "synthetic-wrong-freeze-parent",
+      "architecture": "x64",
+      "exitCode": 1,
+      "passed": true,
+      "expectedRejection": "Wrong v2 fixture revision or parent freeze",
+      "resultPath": "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1\\cases\\synthetic-wrong-freeze-parent\\result.json"
+    },
+    {
+      "name": "synthetic-x86-build-revision",
+      "architecture": "x64",
+      "exitCode": 1,
+      "passed": true,
+      "expectedRejection": "Wrong v2 build revision or parent freeze",
+      "resultPath": "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1\\cases\\synthetic-x86-build-revision\\result.json"
+    },
+    {
+      "name": "synthetic-x86-build-parent",
+      "architecture": "x86",
+      "exitCode": 1,
+      "passed": true,
+      "expectedRejection": "Wrong v2 build revision or parent freeze",
+      "resultPath": "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1\\cases\\synthetic-x86-build-parent\\result.json"
+    },
+    {
+      "name": "synthetic-x64-build-revision",
+      "architecture": "x86",
+      "exitCode": 1,
+      "passed": true,
+      "expectedRejection": "Wrong v2 build revision or parent freeze",
+      "resultPath": "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1\\cases\\synthetic-x64-build-revision\\result.json"
+    },
+    {
+      "name": "synthetic-x64-build-parent",
+      "architecture": "x64",
+      "exitCode": 1,
+      "passed": true,
+      "expectedRejection": "Wrong v2 build revision or parent freeze",
+      "resultPath": "C:\\SOUI-SDK-production-validation\\runner-binding-self-test-only\\revision2-parent-binding-20260926-attempt1\\cases\\synthetic-x64-build-parent\\result.json"
+    }
+  ],
+  "productionIdentitiesBefore": [
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\freeze.json",
+      "bytes": 3442525,
+      "sha256": "80d19d4e2008a505bbb8a9293849f3756d4bf07ad7838ad38aa5bb054ac0ee3a"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\Run.ps1",
+      "bytes": 27951,
+      "sha256": "bcfa7c7a712db96053297c633321e2074a2c38e36f39d90eca199ef1f8089b49"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-20260926\\freeze.json",
+      "bytes": 3441234,
+      "sha256": "7e45bc6158db50362e088ba8a97a08e42e7e63e398dde62df1dbe6ce6721620d"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\build.json",
+      "bytes": 1478118,
+      "sha256": "583a44c61a74a5ab9c142e0b5899915fffaf2a35ff389cf2045961a52430e6b2"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\build.json",
+      "bytes": 1478106,
+      "sha256": "20d14373f192a84bde4ecae22eb256ef0b038ff0c522c6c0bec591fb0959bbca"
+    }
+  ],
+  "productionIdentitiesAfter": [
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\freeze.json",
+      "bytes": 3442525,
+      "sha256": "80d19d4e2008a505bbb8a9293849f3756d4bf07ad7838ad38aa5bb054ac0ee3a"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\Run.ps1",
+      "bytes": 27951,
+      "sha256": "bcfa7c7a712db96053297c633321e2074a2c38e36f39d90eca199ef1f8089b49"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-20260926\\freeze.json",
+      "bytes": 3441234,
+      "sha256": "7e45bc6158db50362e088ba8a97a08e42e7e63e398dde62df1dbe6ce6721620d"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\build.json",
+      "bytes": 1478118,
+      "sha256": "583a44c61a74a5ab9c142e0b5899915fffaf2a35ff389cf2045961a52430e6b2"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\build.json",
+      "bytes": 1478106,
+      "sha256": "20d14373f192a84bde4ecae22eb256ef0b038ff0c522c6c0bec591fb0959bbca"
+    }
+  ],
+  "productionIdentitiesUnchanged": true,
+  "error": null,
+  "guiExecuted": false,
+  "nativeExecuted": false,
+  "networkExecuted": false,
+  "realRenewalVerified": false,
+  "releaseReady": false
+}

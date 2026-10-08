@@ -1,0 +1,94 @@
+{
+  "schema": "soui.acceptance-run/v1",
+  "runId": "c8e2d5f3-40f7-46be-a0c2-784ccffe41e6",
+  "config": {
+    "mode": "reload",
+    "cycles": 2,
+    "warmup": 0,
+    "settleMs": 500,
+    "timeoutMs": 10000
+  },
+  "consumerBuildId": "37d2ecb6-2bd2-422f-9296-656283978b29",
+  "sourceSha256": "79f5cb8d4aadb75cec342099ba2ee9621b8daa0aeeeb76997965c5f2bc29b87c",
+  "payloadSha256": "2534eacc26ae1ce6408b2a34741f186191a5802e97d757ba08b18eab232f7585",
+  "outcome": {
+    "pid": 59936,
+    "exitCode": 0,
+    "signal": null,
+    "timedOut": false,
+    "spawnError": null,
+    "processTimeoutMs": 72000
+  },
+  "passed": true,
+  "releaseReady": false,
+  "finishedAt": "2026-09-22T08:58:52.929Z",
+  "logSha256": "9b1f17ac48adc64528904c2f1bc1c5d82fd9a3b70024ea289a78424a01063433",
+  "validation": {
+    "completedSteps": 4,
+    "measuredCycles": 2,
+    "samples": [
+      {
+        "event": "sample",
+        "elapsedMs": 93,
+        "phase": "process",
+        "cycle": 0,
+        "privateBytes": 1347584,
+        "workingSetBytes": 8142848,
+        "handles": 120,
+        "threads": 4,
+        "gdiObjects": 0,
+        "userObjects": 2
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 1645,
+        "phase": "mounted",
+        "cycle": 0,
+        "privateBytes": 27811840,
+        "workingSetBytes": 42627072,
+        "handles": 295,
+        "threads": 14,
+        "gdiObjects": 60,
+        "userObjects": 23
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 2357,
+        "phase": "cycle",
+        "cycle": 1,
+        "privateBytes": 30748672,
+        "workingSetBytes": 45051904,
+        "handles": 295,
+        "threads": 14,
+        "gdiObjects": 60,
+        "userObjects": 23
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 3077,
+        "phase": "cycle",
+        "cycle": 2,
+        "privateBytes": 31051776,
+        "workingSetBytes": 46243840,
+        "handles": 295,
+        "threads": 14,
+        "gdiObjects": 60,
+        "userObjects": 23
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 4151,
+        "phase": "closed",
+        "cycle": 3,
+        "privateBytes": 7065600,
+        "workingSetBytes": 33619968,
+        "handles": 257,
+        "threads": 13,
+        "gdiObjects": 12,
+        "userObjects": 3
+      }
+    ],
+    "resourceGate": "not-evaluated",
+    "releaseReady": false
+  }
+}

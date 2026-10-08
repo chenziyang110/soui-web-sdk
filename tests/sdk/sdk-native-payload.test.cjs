@@ -1,0 +1,81 @@
+'use strict';
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const cp = require('node:child_process');
+const sdk = require('../../tools/sdk/soui-sdk.cjs');
+
+test('new SDK packages omit historical kernels and still upgrade and roll back old packages', () => {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-native-payload-'));
+  const source = path.join(root, 'source'), current = path.join(root, 'current');
+  const legacy = path.join(root, 'legacy'), project = path.join(root, 'project');
+  const write = (base, relative, value) => {
+    const file = path.join(base, relative);
+    fs.mkdirSync(path.dirname(file), {recursive: true});
+    fs.writeFileSync(file, value);
+  };
+  const read = (base, relative) => fs.readFileSync(path.join(base, relative));
+  const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+  const backups = ['x86', 'x64'].map(arch => `third_party/prebuilt/${arch}/miniblink/node.dll.before-gpu-lcd`);
+  const active = ['x86', 'x64'].flatMap(arch => [
+    `third_party/prebuilt/${arch}/miniblink/node.dll`,
+    `third_party/prebuilt/${arch}/soui/lib/soui.lib`,
+    `third_party/prebuilt/${arch}/runtime/vc/zlib1.dll`
+  ]);
+  try {
+    for (const relative of sdk.managedRoots) write(source, relative + '/fixture.txt', 'fixture\n');
+    for (const relative of sdk.managedFiles) write(source, relative, 'notice\n');
+    for (const name of backups) write(source, name, Buffer.from([0x4d, 0x5a, 0, 0xff, 0x42]));
+    for (const name of active) write(source, name, Buffer.from([0x4d, 0x5a, 0, 0xfe, 0x41]));
+    const originals = backups.map(name => read(source, name));
+    sdk.pack(source, current, '0.3.0-preview.14');
+    const manifest = sdk.readPackage(current);
+    const verifySource = pkg => cp.spawnSync(process.execPath, [path.resolve(__dirname, '../../tools/sdk/soui-sdk.cjs'),
+      'verify-source', '--package', pkg, '--source', source], {encoding: 'utf8', windowsHide: true});
+    let verified = verifySource(current);
+    assert.equal(verified.status, 0, verified.stderr);
+    write(source, 'sdk/unexpected.txt', 'must not silently omit an unrelated source file');
+    assert.match(verifySource(current).stderr, /source file set changed/);
+    fs.unlinkSync(path.join(source, 'sdk/unexpected.txt'));
+    for (const name of backups) {
+      assert.equal(manifest.files.some(file => file.path === name), false, name + ' must not be delivered');
+      assert.equal(fs.existsSync(path.join(current, 'payload', name)), false);
+    }
+    for (const name of [...active, 'third_party/licenses/fixture.txt', ...sdk.managedFiles]) {
+      assert.deepEqual(read(current, 'payload/' + name), read(source, name), name);
+    }
+
+    // Reconstruct the old format with valid hashes; it must remain readable.
+    fs.cpSync(current, legacy, {recursive: true});
+    const old = JSON.parse(read(legacy, 'sdk-manifest.json'));
+    old.version = '0.3.0-preview.13';
+    for (const name of backups) {
+      const bytes = read(source, name);
+      write(legacy, 'payload/' + name, bytes);
+      old.files.push({path: name, bytes: bytes.length, sha256: sha(bytes), sourceNormalization: 'none'});
+    }
+    old.files.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+    write(legacy, 'sdk-manifest.json', JSON.stringify(old, null, 2) + '\n');
+    sdk.readPackage(legacy);
+    verified = verifySource(legacy);
+    assert.equal(verified.status, 0, verified.stderr);
+    write(project, 'app/business.txt', 'customer-owned\n');
+    sdk.install(legacy, project);
+    for (const name of backups) assert.deepEqual(read(project, name), read(source, name));
+    sdk.install(current, project);
+    for (const name of backups) assert.equal(fs.existsSync(path.join(project, name)), false);
+    assert.equal(sdk.readLock(project).manifest.version, '0.3.0-preview.14');
+    sdk.install(legacy, project);
+    for (const name of backups) assert.deepEqual(read(project, name), read(source, name));
+    assert.equal(sdk.readLock(project).manifest.version, '0.3.0-preview.13');
+    assert.equal(read(project, 'app/business.txt').toString(), 'customer-owned\n');
+    backups.forEach((name, i) => assert.deepEqual(read(source, name), originals[i]));
+  } finally {
+    assert.equal(path.dirname(path.resolve(root)), path.resolve(os.tmpdir()));
+    assert(path.basename(root).startsWith('soui-native-payload-'));
+    fs.rmSync(root, {recursive: true, force: true});
+  }
+});

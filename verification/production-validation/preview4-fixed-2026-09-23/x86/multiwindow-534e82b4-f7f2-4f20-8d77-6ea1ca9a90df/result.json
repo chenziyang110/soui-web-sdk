@@ -1,0 +1,133 @@
+{
+  "schema": "soui.acceptance-run/v1",
+  "runId": "534e82b4-f7f2-4f20-8d77-6ea1ca9a90df",
+  "config": {
+    "mode": "multiwindow",
+    "cycles": 3,
+    "warmup": 0,
+    "settleMs": 500,
+    "timeoutMs": 20000
+  },
+  "consumerBuildId": "9b1454a9-0b46-4b21-a10d-9611970e0b16",
+  "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+  "payloadSha256": "93db730a17081c50e6de01d53f8e39acf0a356d58b4b5b755ae7d6b20e4fb782",
+  "outcome": {
+    "pid": 69076,
+    "exitCode": 0,
+    "signal": null,
+    "timedOut": false,
+    "timeoutReason": null,
+    "spawnError": null,
+    "processTimeoutMs": 727000
+  },
+  "passed": true,
+  "releaseReady": false,
+  "finishedAt": "2026-09-23T04:14:14.332Z",
+  "logSha256": "7a17fe25afe9a1dcac716ea3dd887419e0366a056cda3040dedb09d6272d335e",
+  "validation": {
+    "completedSteps": 34,
+    "measuredCycles": 3,
+    "samples": [
+      {
+        "event": "sample",
+        "elapsedMs": 72,
+        "phase": "process",
+        "cycle": 0,
+        "privateBytes": 1576960,
+        "workingSetBytes": 8806400,
+        "handles": 138,
+        "threads": 4,
+        "gdiObjects": 0,
+        "userObjects": 2,
+        "windowClasses": {
+          "OleMainThreadWndClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 3554,
+        "phase": "cycle",
+        "cycle": 1,
+        "privateBytes": 35414016,
+        "workingSetBytes": 47980544,
+        "handles": 335,
+        "threads": 14,
+        "gdiObjects": 36,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 6931,
+        "phase": "cycle",
+        "cycle": 2,
+        "privateBytes": 50053120,
+        "workingSetBytes": 58478592,
+        "handles": 371,
+        "threads": 15,
+        "gdiObjects": 35,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 10216,
+        "phase": "cycle",
+        "cycle": 3,
+        "privateBytes": 57892864,
+        "workingSetBytes": 69193728,
+        "handles": 407,
+        "threads": 15,
+        "gdiObjects": 35,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 10824,
+        "phase": "closed",
+        "cycle": 4,
+        "privateBytes": 57896960,
+        "workingSetBytes": 69197824,
+        "handles": 407,
+        "threads": 15,
+        "gdiObjects": 35,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 11097,
+        "phase": "runtime-closed",
+        "cycle": 4,
+        "privateBytes": 7868416,
+        "workingSetBytes": 32612352,
+        "handles": 267,
+        "threads": 13,
+        "gdiObjects": 13,
+        "userObjects": 3,
+        "windowClasses": {
+          "OleMainThreadWndClass": 1
+        }
+      }
+    ],
+    "resourceGate": "not-evaluated",
+    "releaseReady": false
+  }
+}

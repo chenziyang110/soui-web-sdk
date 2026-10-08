@@ -1,6 +1,8 @@
 # SOUI SDK 源码交付
 
-**版本：0.2.0-preview.2。** 面向 Windows 的 C++ / TypeScript 桌面 SDK，提供独立 SDK、最小模板、完整 Demo、第三方源码和构建工具。这个目录是可独立搬移的交付根目录，构建不依赖原研发仓库或开发者机器上的源码路径。
+**开发版本：0.4.0-preview.2（分支整合，尚未发布）。** 面向 Windows 的 C++ / TypeScript 桌面 SDK，提供独立 SDK、最小模板、完整 Demo、第三方源码和构建工具。这个目录是可独立搬移的交付根目录，构建不依赖原研发仓库或开发者机器上的源码路径。
+
+最近已发布版本为 0.4.0-preview.1，见 [发布说明](docs/releases/0.4.0-preview.1.md)。整合版本包含公平调度内核、会话续期、菜单/托盘/快捷键、安装恢复与 Agent 动作；历史发布标签和固定 SDK 包保持原内容。当前 0.4 工作增加可选 WebView2、现代模板、环境与前端能力探测，见 [接入说明](docs/modern-backend.md) 和 [执行清单](docs/roadmap/0.4.0.md)。历史验收不能转述为当前开发版本已通过；完整性能、Win7/PE 支持、独立 Agent 身份及生产门槛仍待实际验证。
 
 长期维护、AI Agent、评审、测试和发布的统一规范见 [AGENTS.md](AGENTS.md)；所有贡献者和自动化工具在修改前都应阅读。
 
@@ -26,7 +28,7 @@ soui-sdk/
 
 ## 首次编译
 
-准备 Windows x64 开发机、Visual Studio 2022 的 C++ 桌面开发组件和 ATL、Windows SDK 10.0.19041.0、CMake 3.24 或以上、Node.js 20.19 LTS 或 22.12 以上。当前实际验证的工具版本见 `verification/acceptance.json`。
+准备 Windows x64 开发机、Visual Studio 2022 的 C++ 桌面开发组件和 ATL、Windows SDK 10.0.19041.0、CMake 3.24 或以上。0.4 整体构建包含现代模板，使用 Node.js 22.12 以上；基础 SDK 和兼容生成项目保持原有 Node.js 20.19 支持范围。当前实际验证的工具版本见 `verification/acceptance.json`。
 
 在本目录执行：
 
@@ -76,5 +78,13 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Build-Dependencies
 - [发布与打包](docs/releasing.md)
 - [故障排查](docs/troubleshooting.md)
 - [已知限制与生产门槛](docs/known-issues.md)
+- [0.3 迭代计划](docs/roadmap/0.3.0.md)
+- [0.4 执行清单](docs/roadmap/0.4.0.md)
+- [现代后端与运行档位](docs/modern-backend.md)
+- [模块化 GUI 与 Agent SDK 建设路线](docs/roadmap/agent-gui-framework.md)
+- [WebView2 独立实验消费者](experiments/webview2-consumer/README.md)
+- [0.3 基础切片进展与验证](docs/roadmap/0.3-foundation.md)
+- [0.3 SDK 生产能力与价值验证方案](docs/roadmap/0.3-sdk-validation.md)
+- [生产验证执行记录与原始证据](docs/acceptance/progress.md)
 
 当前是预览源码交付。独立构建与接入验证通过，不等于生产发布验收完成；x64 长时间内存与关闭稳定性、目标系统矩阵等剩余项目在已知限制中逐项记录。

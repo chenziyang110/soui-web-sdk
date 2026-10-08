@@ -1,0 +1,142 @@
+{
+  "schema": "soui.reload-resource-observation/v1",
+  "runId": "ce5fe54b-3d51-4d68-a295-59badf783f4d",
+  "sourceSha256": "b565bd098865886d0382321eb43a5df9177fa99d1a395c094f592746a3f5724f",
+  "payloadSha256": "c4489e6837b7dc891f28f36b63b7d652df270f19ad5bc3169de1b9ff3db85028",
+  "kernel": {
+    "kind": "explicit-candidate",
+    "bytes": 35853824,
+    "sha256": "02bd76ee6736004f2bcdb4a84d622a06e9768b85745d8d56af37945a0f64fbad"
+  },
+  "logSha256": "2574dc4f4f3bb9f1d2e5bcc9c4a9561b1968bbb70b9cab1480fbe238b9ac1772",
+  "config": {
+    "mode": "reload",
+    "cycles": 100,
+    "warmup": 3,
+    "settleMs": 1000,
+    "timeoutMs": 20000
+  },
+  "baseline": {
+    "event": "sample",
+    "elapsedMs": 5113,
+    "phase": "cycle",
+    "cycle": 3,
+    "privateBytes": 42258432,
+    "workingSetBytes": 60514304,
+    "handles": 319,
+    "threads": 16,
+    "gdiObjects": 38,
+    "userObjects": 23,
+    "windowClasses": {
+      "CicMarshalWndClass": 1,
+      "IME": 2,
+      "MSCTFIME UI": 1,
+      "MbToolTip": 2,
+      "MiniBlinkTimerWindowClass": 1,
+      "OleMainThreadWndClass": 1,
+      "SouiMiniblinkInteractionWindowV1": 1,
+      "SouiPublicSdkAcceptanceV1": 1
+    }
+  },
+  "last": {
+    "event": "sample",
+    "elapsedMs": 125884,
+    "phase": "cycle",
+    "cycle": 103,
+    "privateBytes": 48599040,
+    "workingSetBytes": 67833856,
+    "handles": 324,
+    "threads": 16,
+    "gdiObjects": 24,
+    "userObjects": 23,
+    "windowClasses": {
+      "CicMarshalWndClass": 1,
+      "IME": 2,
+      "MSCTFIME UI": 1,
+      "MbToolTip": 2,
+      "MiniBlinkTimerWindowClass": 1,
+      "OleMainThreadWndClass": 1,
+      "SouiMiniblinkInteractionWindowV1": 1,
+      "SouiPublicSdkAcceptanceV1": 1
+    }
+  },
+  "runtimeClosed": {
+    "event": "sample",
+    "elapsedMs": 127505,
+    "phase": "runtime-closed",
+    "cycle": 104,
+    "privateBytes": 9723904,
+    "workingSetBytes": 40501248,
+    "handles": 254,
+    "threads": 12,
+    "gdiObjects": 11,
+    "userObjects": 3,
+    "windowClasses": {
+      "OleMainThreadWndClass": 1
+    }
+  },
+  "privateBytesBudget": {
+    "maximumIncrease": 16777216,
+    "observedIncrease": 6340608,
+    "numericBudgetMet": true
+  },
+  "peakPrivateBytes": 103616512.0,
+  "deciles": [
+    {
+      "fromCycle": 4,
+      "toCycle": 13,
+      "medianPrivateBytes": 61124608
+    },
+    {
+      "fromCycle": 14,
+      "toCycle": 23,
+      "medianPrivateBytes": 91854848
+    },
+    {
+      "fromCycle": 24,
+      "toCycle": 33,
+      "medianPrivateBytes": 100956160
+    },
+    {
+      "fromCycle": 34,
+      "toCycle": 43,
+      "medianPrivateBytes": 50728960
+    },
+    {
+      "fromCycle": 44,
+      "toCycle": 53,
+      "medianPrivateBytes": 81094656
+    },
+    {
+      "fromCycle": 54,
+      "toCycle": 63,
+      "medianPrivateBytes": 97533952
+    },
+    {
+      "fromCycle": 64,
+      "toCycle": 73,
+      "medianPrivateBytes": 47747072
+    },
+    {
+      "fromCycle": 74,
+      "toCycle": 83,
+      "medianPrivateBytes": 72450048
+    },
+    {
+      "fromCycle": 84,
+      "toCycle": 93,
+      "medianPrivateBytes": 95322112
+    },
+    {
+      "fromCycle": 94,
+      "toCycle": 103,
+      "medianPrivateBytes": 75907072
+    }
+  ],
+  "resourceGate": "not-evaluated",
+  "releaseReady": false,
+  "limitations": [
+    "Terminal memory budget is numeric observation only; full resource ownership and mixed-load stability are not accepted.",
+    "Original operation result remains unchanged."
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-09-26T04:43:53.6095711Z",
+  "processes": [
+    {
+      "Name": "qemu-system-x86_64.exe",
+      "ProcessId": 81476,
+      "CreationDate": "2026-09-26T12:34:06.241843+08:00",
+      "CommandLine": "\"C:\\Program Files\\qemu\\qemu-system-x86_64.exe\" -name desktop-media-bios-20260926 -machine pc,accel=tcg -cpu max -m 4096 -smp 2 -drive file=C:\\VM-lab-independent-20260925\\desktop-media-target-1536m-20260926.img,if=none,id=usbboot,format=raw,snapshot=on -boot order=c -display none -vnc 127.0.0.1:48 -monitor tcp:127.0.0.1:10548,server=on,wait=off -net none -usb -device usb-tablet -no-reboot -device usb-ehci,id=ehci -device usb-storage,bus=ehci.0,drive=usbboot,bootindex=1"
+    },
+    {
+      "Name": "qemu-system-x86_64.exe",
+      "ProcessId": 37500,
+      "CreationDate": "2026-09-26T12:37:41.011873+08:00",
+      "CommandLine": "\"C:\\Program Files\\qemu\\qemu-system-x86_64.exe\" -name desktop-media-uefi-20260926 -machine pc,accel=tcg -cpu max -m 4096 -smp 2 -drive \"if=pflash,format=raw,unit=0,readonly=on,file=C:\\Program Files\\qemu\\share\\edk2-x86_64-code.fd\" -drive if=pflash,format=raw,unit=1,file=C:\\VM-lab-independent-20260925\\desktop-media-uefi-20260926.vars.fd -drive file=C:\\VM-lab-independent-20260925\\desktop-media-target-1536m-20260926.img,if=ide,index=0,format=raw,snapshot=on -boot order=c -display none -vnc 127.0.0.1:49 -monitor tcp:127.0.0.1:10549,server=on,wait=off -net none -usb -device usb-tablet -no-reboot"
+    }
+  ],
+  "scope": "Read-only process check. Build and noninteractive tests only; no desktop workload launched."
+}

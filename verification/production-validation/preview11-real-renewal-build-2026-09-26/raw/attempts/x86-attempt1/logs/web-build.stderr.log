@@ -1,0 +1,12 @@
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt1\drivers\Prepare.cjs:20
+const assert = (condition, message) => { if (!condition) throw Error(message); };
+                                                               ^
+
+Error: Strict public SDK consumer typecheck failed
+    at assert (C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt1\drivers\Prepare.cjs:20:64)
+    at file:///C:/SOUI-SDK-production-validation/preview11-real-renewal-preparation-20260926/attempts/x86-attempt1/drivers/Build-Web.mjs:34:1
+    at ModuleJob.run (node:internal/modules/esm/module_job:430:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:661:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:101:5)
+
+Node.js v24.14.0

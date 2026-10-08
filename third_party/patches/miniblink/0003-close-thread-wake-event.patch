@@ -1,0 +1,14 @@
+diff --git a/content/web_impl_win/WebThreadImpl.cpp b/content/web_impl_win/WebThreadImpl.cpp
+--- a/content/web_impl_win/WebThreadImpl.cpp
++++ b/content/web_impl_win/WebThreadImpl.cpp
+@@ -96,6 +96,10 @@ WebThreadImpl::~WebThreadImpl()
+         m_threadHandle = nullptr;
+     }
+ 
++    if (m_hEvent) {
++        ::CloseHandle(m_hEvent);
++        m_hEvent = nullptr;
++    }
+     delete m_webSchedulerImpl;
+     
+     ::DeleteCriticalSection(&m_taskPairsMutex);

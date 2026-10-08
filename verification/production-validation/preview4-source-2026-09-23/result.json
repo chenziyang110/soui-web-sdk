@@ -1,0 +1,40 @@
+{
+  "schema": "soui.preview4-relocated-source/v1",
+  "version": "0.3.0-preview.4",
+  "releaseReady": false,
+  "passed": true,
+  "sourceDeliveryVerified": false,
+  "archiveBytes": 196280946,
+  "archiveSha256": "db1ad743d6e20aee9b8ef0a8d2365878bfc01d5bb257dc8a4e9638e9ca12ab0c",
+  "sourceManifestSha256": "79aba3eb873b5ae83bdafe2b855012f598d27ea5b9ee1364c8bf8890228cfa17",
+  "sourceFiles": 29585,
+  "relocatedWithoutGit": true,
+  "relocatedVerification": {
+    "status": "verify",
+    "version": "0.3.0-preview.4",
+    "files": 29585,
+    "releaseReady": false
+  },
+  "builds": [
+    {
+      "architecture": "x64",
+      "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+      "buildId": "fa50ca9c-c43a-4ef0-95fd-5a7d62e4443b",
+      "applicationScenarios": 3,
+      "buildReport": "x64-build-Release.json",
+      "smokeReport": "x64-smoke-Release.json"
+    },
+    {
+      "architecture": "x86",
+      "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+      "buildId": "3c7d8663-b72d-4df8-b09a-61846cb2ba1e",
+      "applicationScenarios": 3,
+      "buildReport": "x86-build-Release.json",
+      "smokeReport": "x86-smoke-Release.json"
+    }
+  ],
+  "limitations": [
+    "Bundled SOUI/Miniblink dependencies were not rebuilt from the relocated archive in this run.",
+    "Debug, upgrade/rollback and target-system matrix remain unverified."
+  ]
+}

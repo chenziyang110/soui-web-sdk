@@ -1,0 +1,123 @@
+SDK package smoke: 14/14 passed (ownership, integrity, upgrade, rollback, IO recovery and paths).
+✔ the delivered Miniblink binding uses the source export return ABI (4.281ms)
+✔ the host classifies pending resolvers through the validated jsIsString ABI (0.8628ms)
+warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'source-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tools/test.ps1', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'a.txt', LF will be replaced by CRLF the next time Git touches it
+✔ source snapshot excludes ignored cache, works with CRLF checkout and without Git (3083.5412ms)
+✔ source validation rejects missing, extra, ambiguous and escaping files (1379.8765ms)
+✔ payload evidence detects equal-length page edits, new files and missing DLLs (49.6412ms)
+✔ deployment replaces stale Web assets and preserves app data outside resources (161.8195ms)
+✔ linked resource directories are rejected before deployment changes (22.1891ms)
+✔ SDK packages are identical across source EOLs but installed bytes remain pinned (1507.6358ms)
+✔ build and smoke receipts fail closed after changes, empty runs or legacy successes (577.349ms)
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+✔ Git-free staging copies only manifest-listed SOUI source and leaves generated files behind (133.2918ms)
+✔ Git-free staging rejects source content that differs from the frozen manifest (119.9246ms)
+✔ Git staging includes tracked and new source while excluding ignored build outputs (520.2784ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6986.3534
+✔ mixed analysis rechecks archived raw evidence and preserves the release gate (3.0673ms)
+✔ mixed analysis rejects contradictory result claims (1.2361ms)
+✔ hourly statistics retain first and last values and use nearest-rank percentiles (0.6889ms)
+✔ mixed transcript requires one process, every public lifecycle step and full duration (1.0728ms)
+✔ mixed verification rejects missing work, shortened idle, premature finish and process failure (0.7183ms)
+✔ mixed parameters reject absent idle and timing beyond the supported range (1.1814ms)
+✔ complete native reload transcript proves steps but does not claim a resource/production gate (0.8072ms)
+✔ a green native log cannot hide a process crash, kill or supervision timeout (0.5422ms)
+✔ early completion, duplicate success and routing to a different window fail (0.5786ms)
+✔ cycle counts, sample completeness and native failure records are mandatory (0.8387ms)
+✔ multiwindow requires surviving windows to reload and the closed slot to be recreated (0.272ms)
+✔ invalid scenario parameters and backwards clocks are rejected (0.1377ms)
+✔ bridge contract mode requires its own real process, complete mount and teardown (0.1797ms)
+✔ closed resources may only be sampled after the final window teardown completes (0.2269ms)
+✔ timeout evidence preserves the native log offset without treating the run as passed (12.2203ms)
+﹣ configured x86 debugger creates a dump and thread log before the target is killed (0.2629ms) # SKIP
+✔ historical smoke evidence is rejected for unequal content areas and short runs (3.1465ms)
+✔ page preflight accepts only complete, aligned S01 telemetry and still lists external evidence (3.0109ms)
+✔ S05 requires observed motion for 120 seconds even when the page says measured (1.9539ms)
+✔ accepts matching full traces without promoting performance or presentation (1.0393ms)
+✔ rejects a different process, shortened input, missing process sample, and timeout (0.5277ms)
+✔ rejects late input and S03 without IME composition (0.2328ms)
+✔ rejects a full-length idle trace and missing scene operations (0.1659ms)
+✔ accepts full scroll, resize and motion traces, but rejects missing defining actions (0.6477ms)
+✔ native resolver completion clears its timer and repeated completion cannot settle a later request (2.7835ms)
+✔ duplicate identities and resolver overflow return correlated errors without adding timers (8.0393ms)
+✔ native response timeout removes the resolver and explicitly leaves running work uncancelled (17.2293ms)
+✔ document exit resolves all waits, is idempotent and blocks future resolver creation (0.8724ms)
+✔ custom method sends the scoped envelope and returns native data (1.5672ms)
+✔ a response from another request is rejected (0.6927ms)
+✔ malformed JSON becomes a structured response error (0.3173ms)
+✔ native denials retain the native error code (0.1593ms)
+✔ valid JSON with an invalid response shape produces a structured error (1.206ms)
+✔ timeout is bounded without claiming native cancellation (58.1801ms)
+✔ 32 in-flight calls resolve to their own results in reverse order (1.6245ms)
+✔ request capacity rejects overload and recovers after completion (0.5952ms)
+✔ UTF-8 byte limits and non-JSON parameters fail before transport (0.5817ms)
+✔ dispose rejects outstanding waits, removes the owned listener once and rejects new calls (0.59ms)
+✔ timeout frees a page slot without pretending native work was cancelled (26.1326ms)
+✔ invalid client options and null native error envelopes are structured failures (0.4968ms)
+✔ caller mutation of options cannot change the connection scope (0.2551ms)
+✔ event validation, sequence filtering and callback isolation apply to each observer (2.0348ms)
+✔ native subscription denial is observable and releases the local subscription slot (0.5137ms)
+✔ removal before subscription acknowledgement is idempotent and sends one late unsubscribe (0.3782ms)
+✔ a disposed pending subscription cleans up a late native success once (0.3531ms)
+✔ a timed-out subscription also cleans up a late successful acknowledgement (26.8408ms)
+✔ malformed subscription identities and failed native removal remain visible (1.1749ms)
+✔ bounded control capacity permits unsubscribe when ordinary request capacity is full (0.7412ms)
+✔ toJSON reentrancy cannot bypass disposal or capacity checks (0.5329ms)
+✔ a reentrant port can dispose during subscription creation without leaking a late subscription (0.3985ms)
+✔ the standard connector shares one bootstrap and waits for asynchronous native responses (0.8339ms)
+✔ asynchronous bootstrap is supported without a busy wait (0.1219ms)
+✔ connector options cannot swap the error observer while bootstrap is pending (0.1562ms)
+✔ a second connector cannot silently change options or replace another dispatcher (0.1436ms)
+✔ document unload disposes outstanding waits and removes connector hooks (0.1767ms)
+✔ bootstrap timeout and unload release hooks and do not silently rebootstrap (25.9267ms)
+✔ bootstrap rejects malformed credentials, wrong correlation and invalid JSON (0.6736ms)
+✔ connector native events reach only matching subscriptions and owned hooks are restored (0.2787ms)
+✔ ordinary browser use and broken native binding produce explicit connection errors (0.1628ms)
+ℹ tests 59
+ℹ suites 0
+ℹ pass 58
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 509.5975
+Test project C:/SOUI-SDK-production-validation/preview8-isolated-source-x64-20260925/out/x64
+    Start 1: sdk.native.contract
+1/6 Test #1: sdk.native.contract ..............   Passed    0.14 sec
+    Start 2: sdk.native.task-service
+2/6 Test #2: sdk.native.task-service ..........   Passed    0.25 sec
+    Start 3: sdk.native.bridge-budget
+3/6 Test #3: sdk.native.bridge-budget .........   Passed    0.12 sec
+    Start 4: sdk.native.task-store-capacity
+4/6 Test #4: sdk.native.task-store-capacity ...   Passed    0.14 sec
+    Start 5: sdk.native.desktop-unicode
+5/6 Test #5: sdk.native.desktop-unicode .......   Passed    0.15 sec
+    Start 6: demo.native.public-task
+6/6 Test #6: demo.native.public-task ..........   Passed    0.44 sec
+
+100% tests passed, 0 tests failed out of 6
+
+Total Test time (real) =   1.27 sec
+{
+  "passed": true,
+  "buildId": "b0691f03-377d-4d73-9894-c5bc4cec6180",
+  "scenarios": 3,
+  "releaseReady": false
+}
+

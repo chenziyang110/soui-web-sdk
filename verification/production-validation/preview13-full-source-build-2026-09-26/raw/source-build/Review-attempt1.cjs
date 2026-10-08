@@ -1,0 +1,22 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process'),assert=require('node:assert/strict');
+const root=__dirname,source=path.join(root,'source'),repo='C:/SOUI-SDK-development/preview9-tray';
+const id=require(path.join(repo,'tools/internal/delivery-identity.cjs'));
+const expected='a1007f2188102dfa4de4e79f73a4e0b2c2b8b99cf3e892a3d1e1e3794fd51e68';
+const read=p=>id.readJson(p);
+function command(name){const base=path.join(root,'command-logs',name),r=read(path.join(base,'result.json'));assert.equal(r.exitCode,0,name);assert.equal(r.error,null);assert.equal(r.timedOut,false);for(const stream of ['stdout','stderr']){const b=fs.readFileSync(path.join(base,stream+'.log'));assert.equal(b.length,r[stream].bytes);assert.equal(id.hash(b),r[stream].sha256);}return fs.readFileSync(path.join(base,'stdout.log'),'utf8');}
+const stage=read(path.join(root,'stage.json'));assert.equal(id.hash(fs.readFileSync(stage.archive)),stage.sha256);assert.equal(stage.sha256,'bbd0aa35d66ae85662fff9e4047598f82507974fb9ee48bffd2c99d9d95de9fd');assert(!fs.existsSync(path.join(source,'.git')));
+const full=require(path.join(repo,'tools/internal/source-archive.cjs')).verify(source);assert.equal(full.files.length,33199);assert.equal(id.source(source).sha256,expected);assert.equal(id.source(repo).sha256,expected);
+for(const name of ['stage','same-sdk-package'])command(name);
+const identityLog=command('exported-delivery-identity');assert.match(identityLog,/# pass 8/);assert.match(identityLog,/# fail 0/);
+const result=read(path.join(root,'result.json')),tests=read(path.join(root,'test-result.json'));assert.equal(result.matrix.length,4);assert.equal(tests.nativeTests,44);
+const matrix=[];
+for(const row of result.matrix){const label='build-'+row.architecture+'-'+row.configuration.toLowerCase(),base=path.join(root,'builds',label),build=read(path.join(base,'build.json'));command(label);assert.equal(build.source.sha256,expected);assert.equal(build.buildId,row.buildId);assert.equal(build.architecture,row.architecture);assert.equal(build.configuration,row.configuration);assert.equal(build.nativeBuild,'passed');
+ const targets=[];for(const [target,payload]of Object.entries(build.payloads)){id.verifyPayload(path.join(base,target),target,payload);assert.equal(payload.sha256,row.targets.find(t=>t.target===target).sha256);let pe=0;for(const f of payload.files.filter(f=>/\.(exe|dll)$/i.test(f.path))){const b=fs.readFileSync(path.join(base,target,f.path)),offset=b.readUInt32LE(0x3c);assert.equal(b.readUInt32LE(offset),0x4550);assert.equal(b.readUInt16LE(offset+4),row.architecture==='x86'?0x14c:0x8664);pe++;}assert.equal(pe,60);targets.push({target,files:payload.files.length,sha256:payload.sha256,peFiles:pe});}
+ const commands=id.walk(path.join(base,'commands'));assert(commands.length>=51);for(const target of ['soui_sdk','SouiStarter','SouiWorkbench']){assert(commands.some(f=>f.includes(target+'.dir/')&&f.endsWith('/CL.command.1.tlog')),target);assert(commands.some(f=>f.includes(target+'.dir/')&&f.endsWith(target==='soui_sdk'?'/Lib.command.1.tlog':'/link.command.1.tlog')),target);}
+ for(const file of commands){const b=fs.readFileSync(path.join(base,'commands',file));assert(b.length>2);assert(!/[\\/]vcpkg[\\/]/i.test(b[0]===255&&b[1]===254?b.toString('utf16le'):b.toString('utf8')),file);}
+ assert.match(command('ctest-'+row.architecture+'-'+row.configuration.toLowerCase()),/100% tests passed, 0 tests failed out of 11/);assert(tests.tests.some(t=>t.buildId===build.buildId&&t.exitCode===0&&t.tests===11));matrix.push({architecture:row.architecture,configuration:row.configuration,buildId:build.buildId,targets,commandFiles:commands.length,nativeTests:11});
+}
+const verify=cp.spawnSync(process.execPath,[path.join(source,'tools/sdk/soui-sdk.cjs'),'verify-source','--source',source,'--package','C:/SOUI-SDK-production-validation/preview13-install-recovery-20260926/sdk-package'],{encoding:'utf8',windowsHide:true});assert.equal(verify.status,0,verify.stderr);
+const review={reviewedAt:new Date().toISOString(),sourceSha256:expected,archiveSha256:stage.sha256,fullSourceFiles:full.files.length,noGitSource:true,same419FileSdkPackage:true,commandLogsVerified:true,matrix,nativeTests:44,deliveryIdentityTests:8,renderedGuiExecuted:false,fullDependencyRebuild:false,cleanMachineReproduction:false,sourceDeliveryVerified:false,benchmarkValid:false,releaseReady:false};
+fs.writeFileSync(path.join(root,'independent-review.json'),id.encoded(review),{flag:'wx'});console.log(id.encoded(review));

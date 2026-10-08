@@ -23,6 +23,9 @@ struct scan_request_context {
   std::string session_id;
   std::string origin;
   std::string token;
+  // Optional native identity for retained application resources. Scanner entry
+  // points always resolve token themselves; a caller-supplied value is untrusted.
+  std::shared_ptr<const authorization_scope> authorization;
 };
 
 struct scan_entry {
@@ -89,7 +92,7 @@ class directory_scanner {
   struct root_binding {
     std::string session_id;
     std::string origin;
-    std::string token;
+    std::shared_ptr<const authorization_scope> authorization;
     std::filesystem::path root;
   };
   struct scan_state {
@@ -113,7 +116,10 @@ class directory_scanner {
     std::thread thread;
   };
 
-  [[nodiscard]] bool authorized(const scan_request_context& context, std::string_view permission) const;
+  [[nodiscard]] std::shared_ptr<const authorization_scope> resolve_authorization(
+      const scan_request_context& context, const std::string& permission) const;
+  [[nodiscard]] std::shared_ptr<const authorization_scope> resolve_scan_authorization(
+      const scan_request_context& context) const;
   [[nodiscard]] static bool contains(const std::filesystem::path& root,
                                      const std::filesystem::path& candidate);
   [[nodiscard]] static std::size_t cursor_offset(const std::string& cursor);

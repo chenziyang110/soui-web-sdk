@@ -1,0 +1,174 @@
+{
+  "schema": "soui.real-renewal-failure-diagnosis/v1",
+  "diagnosedAt": "2026-09-26T07:57:38.339Z",
+  "runDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-runs-20260926\\x86-smoke-attempt1",
+  "reportSha256": "215d46601c76a042e0d6798f93547cd37f8463c7588db030b41d3deb231b8eb2",
+  "supervisorSha256": "2e969de9be541ffedc68a793066689b0751cd499178231a405f0399a8024db8d",
+  "freezeSha256": "7e45bc6158db50362e088ba8a97a08e42e7e63e398dde62df1dbe6ce6721620d",
+  "sourceInputSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+  "actual": {
+    "architecture": "x86",
+    "pid": 66336,
+    "requestedDurationMs": 30000,
+    "exitCode": 1,
+    "nativeFinalElapsedMs": 7944,
+    "failedAtElapsedMs": 7431,
+    "failureMessage": "Unexpected document session shutdown or navigation",
+    "readyCount": 0,
+    "longInvocations": 0,
+    "resultInvocations": 0,
+    "shutdownSessions": 1,
+    "describedRecords": 0,
+    "webRecords": 0,
+    "timedOut": false,
+    "externalLoadDetected": false,
+    "remainingDesktopProcesses": [],
+    "payloadUnchanged": true,
+    "inputsUnchanged": true,
+    "guiLaunchAttempted": true,
+    "visiblePageReadinessProven": false,
+    "x64ExecutedInThisRun": false
+  },
+  "certainFindings": [
+    "The native fixture failed before a successful probe.describe or probe.ready record and before either task invocation. Its one recorded shutdown callback triggers the fixture session_shutdown failure path.",
+    "Fixture session_shutdown rejects every callback received before explicit closing, even while no probe authorization/session identity is bound. It does not record the received session ID or callback phase.",
+    "Host start creates a webview_session lifecycle ID after mount and seeds it into the adapter when that slot is empty. Creation of a main-world main-frame context swaps that slot and forwards any nonempty ID to bridge.shutdown_session.",
+    "The public json_bridge bootstrap independently creates its authorized session ID; Host records that ID after successful bootstrap. The lifecycle ID can therefore exist before the probe has an authorized document session.",
+    "The archived navigation diagnostic contains one allowed local index.html URL line; it contains no timestamp, session ID, context generation, or callback source.",
+    "The frozen analyzer was executed once against this actual report/supervisor and rejected it with a numeric exit code 1. Original run evidence and frozen analyzer bytes remained unchanged."
+  ],
+  "inference": {
+    "status": "consistent-with-source-and-timeline-not-directly-observed",
+    "explanation": "An initial main-context callback retiring the pre-seeded Host lifecycle ID can explain the failure before describe/ready. The actual received ID and caller were not logged, so this run does not conclusively identify that callback or establish an SDK renewal defect."
+  },
+  "notEstablished": [
+    "A successful bridge bootstrap was not logged and its absence is not established merely by missing probe.describe.",
+    "No same-document renewal, task/subscription continuity, 30-second smoke pass, 35-minute run, 8-hour run, or x64 run is proven.",
+    "Resource samples are diagnostic only; no isolated resource, performance, production, or Win7 conclusion follows."
+  ],
+  "proposedNextRevisionOnly": [
+    "Preserve this frozen failure. Add token-free shutdown observations containing received session ID, whether the public bootstrap/document identity is bound, describe/ready/closing phase, and separate pre-bind versus bound-session shutdown counts.",
+    "Observe and bind the single successful public bootstrap session before returning its response, so session loss between bootstrap and describe/ready remains a failure. Never rebootstrap to recover.",
+    "Classify pre-bootstrap lifecycle retirement separately from shutdown of the actual bound document session. Continue forwarding every callback to inner.shutdown_session; do not suppress real cleanup.",
+    "Once the authorized document session is bound, every unexpected shutdown/navigation before explicit close must remain fatal, including task/subscription setup before ready. On close require revocation of that exact bound session and full task/subscription cleanup.",
+    "Add no-GUI contract coverage for lifecycle retirement before bootstrap, bound-session shutdown before describe and before ready, after-ready navigation, wrong-session/duplicate shutdown, and exactly-once final bound-session revocation before any new real run."
+  ],
+  "sourceEvidence": [
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-20260926\\attempts\\x86-attempt4\\consumer-source\\main.cpp",
+      "bytes": 35299,
+      "sha256": "07417f8b694f022c436fc857b7af286c954ced75f468d85b0405eb78da3d0b58",
+      "excerpts": [
+        {
+          "start": 239,
+          "end": 247,
+          "text": "      if (!request.authorization || !request.authorization->active() ||\n          !request.authorization->matches(request.session_id, request.origin))\n        throw std::runtime_error(\"Probe request has no matching live authorization\");\n      if (!scope_) {\n        if (method != probe_method::describe) throw std::runtime_error(\"Describe must bind the first probe identity\");\n        scope_ = request.authorization; session_ = request.session_id; origin_ = request.origin;\n      }\n      if (scope_ != request.authorization || session_ != request.session_id || origin_ != request.origin)\n        throw std::runtime_error(\"Document authorization identity changed\");"
+        },
+        {
+          "start": 365,
+          "end": 373,
+          "text": "  void session_shutdown(const std::string& session) noexcept {\n    bool unexpected = false;\n    try {\n      std::lock_guard<std::mutex> guard(mutex_);\n      ++observed_.shutdown_sessions;\n      unexpected = !closing() || (!session_.empty() && session != session_) || observed_.shutdown_sessions != 1;\n    } catch (...) { unexpected = true; }\n    if (unexpected) fail(\"Unexpected document session shutdown or navigation\");\n  }"
+        },
+        {
+          "start": 418,
+          "end": 430,
+          "text": "  std::string handle_json(std::string_view request, bool gesture = false) override {\n    struct callback_guard {\n      probe_state& state;\n      explicit callback_guard(probe_state& value) : state(value) { state.enter_callback(); }\n      ~callback_guard() { state.leave_callback(); }\n    } guard{state_};\n    try { return inner_.handle_json(request, gesture); }\n    catch (...) { state_.fail(\"Public Bridge request dispatch failed\"); throw; }\n  }\n  void shutdown_session(const std::string& session) override {\n    state_.session_shutdown(session);\n    inner_.shutdown_session(session);\n  }"
+        },
+        {
+          "start": 514,
+          "end": 527,
+          "text": "  void shutdown() noexcept {\n    if (shutdown_done_) return;\n    shutdown_done_ = true;\n    state_.begin_close();\n    try {\n      if (host_) {\n        mounted_ = false;\n        const auto destroyed = host_->destroy();\n        const auto observed = state_.snapshot();\n        log_.emit(\"host.destroyed\", \"\\\"ok\\\":\" + std::string(destroyed.ok ? \"true\" : \"false\") +\n            \",\\\"code\\\":\" + json_quoted(destroyed.code) + \",\\\"activeScope\\\":\" + (observed.scope_active ? \"true\" : \"false\"));\n        if (!destroyed.ok || observed.scope_active) state_.fail(\"Host close failed or left authorization active\");\n      }\n    } catch (...) { state_.fail(\"Exception while closing Host\"); }"
+        }
+      ]
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-20260926\\inputs\\source\\sdk\\src\\host\\soui_miniblink_host.cpp",
+      "bytes": 113588,
+      "sha256": "433a0a9ccaca9259eb41bcd130bf6eccda1724bc3b57386795872cf907bfbad6",
+      "excerpts": [
+        {
+          "start": 817,
+          "end": 819,
+          "text": "  wkeOnDocumentReady(view, &document_ready_callback, this);\n  wkeOnNavigation(view, &document_navigation_callback, this);\n  wkeOnDidCreateScriptContext(view, &script_context_created_callback, this);"
+        },
+        {
+          "start": 881,
+          "end": 887,
+          "text": "  const auto index = entry.wstring();\n  wkeLoadFileW(view, index.c_str());\n#ifdef SOUI_BRIDGE_BENCHMARK\n  append_host_smoke_log(resource_root_, \"local-page-requested\");\n#endif\n  wkeResize(view, width, height);\n  return success(\"Miniblink WebView bound to the SOUI-owned interaction window.\");"
+        },
+        {
+          "start": 1791,
+          "end": 1795,
+          "text": "void dynamic_miniblink_adapter::set_session_id(std::string session_id) {\n  std::lock_guard<std::mutex> lock(state_mutex_);\n  // A fast page may have bootstrapped before the UI thread finishes start().\n  if (session_id_.empty()) session_id_ = std::move(session_id);\n}"
+        },
+        {
+          "start": 1940,
+          "end": 1956,
+          "text": "void dynamic_miniblink_adapter::notify_main_context_created() {\n  window_chrome_.clear();\n  bridge_generation_.fetch_add(1, std::memory_order_acq_rel);\n  std::string closing_session;\n  {\n    std::lock_guard<std::mutex> lock(state_mutex_);\n    closing_session.swap(session_id_);\n  }\n  if (bridge_adapter_ != nullptr && !closing_session.empty())\n    bridge_shutdown_session(*static_cast<bridge_adapter*>(bridge_adapter_), closing_session, 0);\n  document_ready_ = false;\n  application_ready_ = false;\n  {\n    std::lock_guard<std::mutex> lock(state_mutex_);\n    probe_report_.clear();\n  }\n}"
+        },
+        {
+          "start": 1963,
+          "end": 1973,
+          "text": "  const std::string method = bridge_request_method(request);\n  auto response = static_cast<bridge_adapter*>(bridge_adapter_)->handle_json(request, native_user_gesture);\n  if (method == \"bridge.bootstrap\" &&\n      response.find(\"\\\"ok\\\":true\") != std::string::npos) {\n    const std::regex session_pattern(R\"session(\"sessionId\"\\s*:\\s*\"([^\"]+)\")session\");\n    std::smatch match;\n    if (std::regex_search(response, match, session_pattern) && match.size() > 1U) {\n      {\n        std::lock_guard<std::mutex> lock(state_mutex_);\n        session_id_ = match[1].str();\n      }"
+        },
+        {
+          "start": 2243,
+          "end": 2250,
+          "text": "bool WKE_CALL_TYPE document_navigation_callback(wkeWebView, void* param, wkeNavigationType, wkeString url) {\n  if (!param || !url || !wkeGetString) return false;\n  const auto value = wkeGetString(url);\n  return value && static_cast<dynamic_miniblink_adapter*>(param)->allow_document_navigation(value);\n}\n\nvoid WKE_CALL_TYPE script_context_created_callback(wkeWebView view, void* param, wkeWebFrameHandle frame, void*, int, int world) {\n  if (param && world == 0 && wkeIsMainFrame(view, frame)) {"
+        },
+        {
+          "start": 2259,
+          "end": 2268,
+          "text": "    char initial_page[32] = {};\n    const DWORD initial_page_length = GetEnvironmentVariableA(\"SOUI_INITIAL_PAGE\", initial_page,\n                                                               sizeof(initial_page));\n    if (initial_page_length > 0 && initial_page_length < sizeof(initial_page) && wkeRunJS != nullptr) {\n      const auto page_literal = json_string_literal(std::string{initial_page, initial_page_length});\n      const auto page_script = \"window.__souiInitialPage=\" + page_literal + \";\";\n      (void)wkeRunJS(view, page_script.c_str());\n    }\n    static_cast<dynamic_miniblink_adapter*>(param)->notify_main_context_created();\n  }"
+        },
+        {
+          "start": 2360,
+          "end": 2367,
+          "text": "  const auto mounted = adapter_->mount(config);\n  if (!mounted.ok) return mounted;\n  session_ = std::make_unique<soui::runtime::webview_session>();\n  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {\n    dynamic->set_session_id(session_->session_id());\n  }\n  (void)session_->mark_ready();\n  return success(\"SOUI SHostWnd and Miniblink child WebView are ready with local resources.\");"
+        }
+      ]
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-20260926\\inputs\\source\\sdk\\src\\runtime\\host\\session\\webview_session.cpp",
+      "bytes": 3532,
+      "sha256": "976f755f6f06b16c337a7c941de56e1ef5e3fe66adc1758f188e280ff541a9ee",
+      "excerpts": [
+        {
+          "start": 15,
+          "end": 20,
+          "text": "webview_session::webview_session(std::shared_ptr<event_bus> bus)\n    : bus_{std::move(bus)}, session_id_{make_session_id(next_session_number.fetch_add(1))} {\n  if (!bus_) {\n    bus_ = std::make_shared<event_bus>();\n  }\n}"
+        },
+        {
+          "start": 86,
+          "end": 90,
+          "text": "std::string webview_session::make_session_id(std::uint64_t number) {\n  std::ostringstream stream;\n  stream << \"session-\" << std::setw(6) << std::setfill('0') << number;\n  return stream.str();\n}"
+        }
+      ]
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-20260926\\inputs\\source\\sdk\\src\\json_bridge.cpp",
+      "bytes": 11827,
+      "sha256": "1e8432cc6c92260517b9e03922b19610d2ac1a59fd9969d0d30a646ef714e700",
+      "excerpts": [
+        {
+          "start": 191,
+          "end": 203,
+          "text": "    if(!active_session_.empty())return error(request_id,\"E_UNAUTHORIZED\",\"The document already has an active session.\");\n    registration_closed_=true;\n    const auto session=new_session();\n    const auto token=permissions_.issue(session,origin_,capabilities_);\n    active_session_=session;\n    json result{{\"sessionId\",session},{\"origin\",origin_},{\"token\",token}};\n    if (registry_.contains(\"bridge.session.renew\")) {\n      const auto lease=permissions_.lease(session,origin_,token);\n      if (!lease.ok()) { permissions_.revoke_session(session); active_session_.clear();\n        return error(request_id,lease.error_code.c_str(),\"Session lease unavailable.\"); }\n      result=json::parse(soui::runtime::bridge_transport::serialize_lease(lease));\n    }\n    return json{{\"requestId\",request_id},{\"ok\",true},{\"result\",std::move(result)}}.dump();"
+        },
+        {
+          "start": 208,
+          "end": 215,
+          "text": "void json_bridge::shutdown_session(const std::string& session_id) {\n  {\n    std::lock_guard<std::mutex> lock(mutex_);\n    permissions_.revoke_session(session_id);\n    if(active_session_==session_id)active_session_.clear();\n  }\n  tasks_.shutdown_session(session_id);\n}"
+        }
+      ]
+    }
+  ],
+  "fixtureLifecycleContractGapConfirmed": true,
+  "exactRuntimeCallbackSourceProven": false,
+  "sdkRenewalBugProven": false,
+  "smokePassed": false,
+  "realRenewalVerified": false,
+  "resourceGate": false,
+  "benchmarkValid": false,
+  "releaseReady": false
+}

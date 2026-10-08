@@ -1,0 +1,28 @@
+{
+  "program": "powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-File",
+    ".\\Run-OfficialBuild.ps1",
+    "-Architecture",
+    "x64",
+    "-Attempt",
+    "official-x64-attempt1"
+  ],
+  "cwd": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927",
+  "startedAt": "2026-09-27T06:03:34.468Z",
+  "pid": 22088,
+  "exitCode": 0,
+  "signal": null,
+  "timedOut": false,
+  "error": null,
+  "finishedAt": "2026-09-27T06:04:51.700Z",
+  "stdout": {
+    "bytes": 910,
+    "sha256": "62425b74388d1eec312d708adc5638373c44f4e859103fe93d586f2e4353a8da"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

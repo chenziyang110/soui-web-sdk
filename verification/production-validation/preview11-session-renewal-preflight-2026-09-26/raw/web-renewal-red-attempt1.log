@@ -1,0 +1,59 @@
+✖ renewal is opt-in, early renewal returns the existing lease, and native rotation is reserved (1.4655ms)
+✖ automatic renewal shares one flight and leaves business dispatch synchronous (0.8024ms)
+✖ renewal has a slot even when business and release capacities are exhausted (1.2553ms)
+✖ bootstrap delay only shortens expiration and disposed renewal cannot restart (0.3028ms)
+ℹ Error: Test "renewal has a slot even when business and release capacities are exhausted" at tests\web\session-renewal.test.mjs:55:1 generated asynchronous activity after the test ended. This activity created the error "SouiBridgeError: The page wait ended because the client was disposed; native work was not cancelled." and would have caused the test to fail, but instead triggered an unhandledRejection event.
+ℹ tests 4
+ℹ suites 0
+ℹ pass 0
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 123.7344
+
+✖ failing tests:
+
+test at tests\web\session-renewal.test.mjs:37:1
+✖ renewal is opt-in, early renewal returns the existing lease, and native rotation is reserved (1.4655ms)
+  TypeError: f.sdk.renewSession is not a function
+      at TestContext.<anonymous> (file:///C:/SOUI-SDK-development/preview9-tray/tests/web/session-renewal.test.mjs:39:32)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+
+test at tests\web\session-renewal.test.mjs:44:1
+✖ automatic renewal shares one flight and leaves business dispatch synchronous (0.8024ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///C:/SOUI-SDK-development/preview9-tray/tests/web/session-renewal.test.mjs:46:10)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\web\session-renewal.test.mjs:55:1
+✖ renewal has a slot even when business and release capacities are exhausted (1.2553ms)
+  TypeError: Cannot read properties of undefined (reading 'request')
+      at TestContext.<anonymous> (file:///C:/SOUI-SDK-development/preview9-tray/tests/web/session-renewal.test.mjs:60:52)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at tests\web\session-renewal.test.mjs:64:1
+✖ bootstrap delay only shortens expiration and disposed renewal cannot restart (0.3028ms)
+  TypeError: Cannot read properties of undefined (reading 'expiresInMs')
+      at TestContext.<anonymous> (file:///C:/SOUI-SDK-development/preview9-tray/tests/web/session-renewal.test.mjs:66:35)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)

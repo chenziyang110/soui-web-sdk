@@ -1,0 +1,10 @@
+^C:\SOUI-SDK-PRODUCTION-VALIDATION\PREVIEW11-REAL-RENEWAL-PREPARATION-20260926\ATTEMPTS\X86-ATTEMPT3\CONSUMER-SOURCE\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/SOUI-SDK-production-validation/preview11-real-renewal-preparation-20260926/attempts/x86-attempt3/consumer-source -BC:/SOUI-SDK-production-validation/preview11-real-renewal-preparation-20260926/attempts/x86-attempt3/native-build --check-stamp-file C:/SOUI-SDK-production-validation/preview11-real-renewal-preparation-20260926/attempts/x86-attempt3/native-build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

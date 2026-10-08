@@ -2,7 +2,8 @@
 param(
   [Parameter(Mandatory=$true)][string]$Name,
   [Parameter(Mandatory=$true)][string]$OutputRoot,
-  [string]$SdkPackage=''
+  [string]$SdkPackage='',
+  [ValidateSet('compatibility','modern')][string]$Profile='compatibility'
 )
 $ErrorActionPreference='Stop'
 if($Name -notmatch '^[A-Za-z][A-Za-z0-9_]{1,63}$' -or $Name -match '^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])$'){throw 'Name must be a safe C++ target name: 2-64 letters, digits or underscores.'}
@@ -25,7 +26,9 @@ $SdkPackage=[IO.Path]::GetFullPath((Resolve-Path -LiteralPath $SdkPackage))
 & node $tool verify --package $SdkPackage
 if($LASTEXITCODE -ne 0){throw 'SDK package validation failed'}
 $manifest=Get-Content -Raw -LiteralPath (Join-Path $SdkPackage 'sdk-manifest.json') | ConvertFrom-Json
-$template=Join-Path $root 'templates/desktop-app'
+& node $tool verify-profile --package $SdkPackage --profile $Profile
+if($LASTEXITCODE -ne 0){throw 'SDK package does not support the requested runtime profile.'}
+$template=Join-Path $root $(if($Profile -eq 'modern'){'templates/modern-app'}else{'templates/desktop-app'})
 $files=@(Get-ChildItem -LiteralPath $template -Recurse -File | Where-Object { $_.FullName.Substring($template.Length) -notmatch '\\(node_modules|dist|out|\.vs)\\' })
 New-Item -ItemType Directory -Path $output | Out-Null
 foreach($file in $files){
@@ -34,6 +37,7 @@ foreach($file in $files){
   New-Item -ItemType Directory -Force -Path (Split-Path $destination) | Out-Null
   if($file.Extension -in @('.cpp','.h','.txt','.json','.html','.ts','.tsx','.css','.md','.xml','.manifest','.rc','.mjs','.cjs')){
     $text=[IO.File]::ReadAllText($file.FullName)
+    $text=$text.Replace('SouiModernStarter',$Name).Replace('soui-modern-starter',$Name.ToLowerInvariant())
     $text=$text.Replace('SouiStarter',$Name).Replace('soui-starter',$Name.ToLowerInvariant())
     $text=$text.Replace('../../../sdk/','../sdk/').Replace('../../../tools/','../tools/')
     [IO.File]::WriteAllText($destination,$text,[Text.UTF8Encoding]::new($false))
@@ -41,8 +45,12 @@ foreach($file in $files){
 }
 & node $tool install --package $SdkPackage --project $output
 if($LASTEXITCODE -ne 0){throw 'SDK installation failed; retain the directory for inspection.'}
-$metadata=[ordered]@{schema='soui.application/v1';name=$Name;sdkLock='sdk-lock.json';templateVersion=$version;nativeTarget=$Name;entry='web/index.html';build='tools/Build.ps1'}
+$metadata=[ordered]@{schema='soui.application/v1';name=$Name;sdkLock='sdk-lock.json';templateVersion=$version;nativeTarget=$Name;entry='web/index.html';build='tools/Build.ps1';runtimeProfile=$Profile}
 [IO.File]::WriteAllText((Join-Path $output 'project.json'),($metadata|ConvertTo-Json),[Text.UTF8Encoding]::new($false))
 [IO.File]::WriteAllText((Join-Path $output 'VERSION'),$version+[Environment]::NewLine,[Text.UTF8Encoding]::new($false))
 Copy-Item -LiteralPath (Join-Path $root '.gitignore') -Destination (Join-Path $output '.gitignore')
+$attributes="* text=auto eol=lf`n"
+# SDK files are pinned byte-for-byte, including non-UTF8 vendor headers.
+foreach($entry in $manifest.files){$attributes += $entry.path + " -text`n"}
+[IO.File]::WriteAllText((Join-Path $output '.gitattributes'),$attributes,[Text.UTF8Encoding]::new($false))
 Write-Output "Created $Name with SDK $($manifest.version): $output"

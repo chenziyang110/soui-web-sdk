@@ -1,8 +1,9 @@
 #include <soui/runtime/bridge/bridge_transport.h>
+#include <soui/version.h>
 
 #include <algorithm>
-#include <cctype>
 #include <set>
+#include <stdexcept>
 #include <utility>
 
 #include "../../../../third_party/include/json/json.hpp"
@@ -38,7 +39,8 @@ std::size_t json_depth(const json& value) {
 bool valid_id(std::string_view value) {
   if (value.empty() || value.size() > 128U) return false;
   return std::all_of(value.begin(), value.end(), [](unsigned char c) {
-    return std::isalnum(c) || c == '-' || c == '_' || c == '.' || c == ':';
+    return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') ||
+           c == '-' || c == '_' || c == '.' || c == ':';
   });
 }
 
@@ -47,13 +49,58 @@ bool valid_origin(std::string_view value) {
   return value.rfind("app://", 0) == 0 || value.rfind("file://", 0) == 0;
 }
 
+json response_metadata(const bridge_response& response) {
+  json envelope{{"kind", "response"}, {"schemaVersion", "soui.bridge/1"},
+                {"requestId", response.request_id},
+                {"correlationId", response.correlation_id.empty() ? response.request_id : response.correlation_id},
+                {"sessionId", response.session_id}, {"ok", response.ok}};
+  if (!response.operation_id.empty()) envelope["operationId"] = response.operation_id;
+  return envelope;
+}
+
+std::string discovery_error(const char* code, const char* message) {
+  return json{{"error", code}, {"message", message}}.dump();
+}
+
+bool nonnegative_integer(const json& value, std::uint64_t& result) {
+  if (!value.is_number_integer()) return false;
+  if (!value.is_number_unsigned() && value.get<std::int64_t>() < 0) return false;
+  result = value.get<std::uint64_t>();
+  return true;
+}
+
 }  // namespace
 
 bool capability_registry::register_method(std::string method, std::string permission_name, handler callback) {
-  if (method.empty() || permission_name.empty() || !callback || methods_.find(method) != methods_.end()) {
+  if (!callback) return false;
+  return register_contextual_method(std::move(method), std::move(permission_name),
+      [callback = std::move(callback)](const bridge_request& request) {
+        return callback(request.params_json);
+      });
+}
+
+bool capability_registry::register_contextual_method(std::string method, std::string permission_name,
+                                                       contextual_handler callback) {
+  if (!valid_id(method) || permission_name.empty() || permission_name.size() > 512U ||
+      !callback || methods_.find(method) != methods_.end()) {
     return false;
   }
-  methods_.emplace(std::move(method), capability{std::move(permission_name), std::move(callback)});
+  // Capabilities are opaque UTF-8 names, but discovery must encode every accepted
+  // registration into a bounded JSON entry without replacing invalid bytes.
+  try {
+    (void)json(permission_name).dump();
+  } catch (const json::type_error&) {
+    return false;
+  }
+  methods_.emplace(std::move(method), capability{std::move(permission_name), std::move(callback), {}});
+  return true;
+}
+
+bool capability_registry::register_action(std::string method, std::string permission_name,
+                                           std::string contract_json, contextual_handler callback) {
+  const auto contract = action_contract::parse(contract_json);
+  if (!contract || !register_contextual_method(method, std::move(permission_name), std::move(callback))) return false;
+  methods_.at(method).action = contract;
   return true;
 }
 
@@ -66,13 +113,79 @@ const std::string* capability_registry::capability_for(const std::string& method
   return found == methods_.end() ? nullptr : &found->second.permission;
 }
 
-const capability_registry::handler* capability_registry::handler_for(const std::string& method) const {
+const capability_registry::contextual_handler* capability_registry::handler_for(const std::string& method) const {
   const auto found = methods_.find(method);
   return found == methods_.end() ? nullptr : &found->second.callback;
 }
 
+std::string bridge_transport::describe(const bridge_request& request) const {
+  if (request.method != "bridge.describe")
+    return discovery_error("E_INVALID_PARAMS", "Discovery requires the bridge.describe method.");
+  bridge_request authorized_request = request;
+  authorized_request.authorization.reset();
+  auto response = validate(authorized_request);
+  if (!response.error_code.empty())
+    return json{{"error", response.error_code}, {"message", response.error_message}}.dump();
+  const auto params = json::parse(request.params_json);
+  std::uint64_t cursor = 0;
+  std::uint64_t limit = 32;
+  for (const auto& field : params.items()) {
+    if (field.key() != "cursor" && field.key() != "limit")
+      return discovery_error("E_INVALID_PARAMS", "Discovery accepts only cursor and limit.");
+  }
+  if ((params.contains("cursor") && !nonnegative_integer(params["cursor"], cursor)) ||
+      (params.contains("limit") && !nonnegative_integer(params["limit"], limit)) ||
+      limit == 0 || limit > 64)
+    return discovery_error("E_INVALID_PARAMS", "Expected a nonnegative integer cursor and an integer limit from 1 to 64.");
+
+  response.ok = true;
+  auto envelope = response_metadata(response);
+  envelope["result"] = json::object();
+  const auto envelope_bytes = envelope.dump().size() - 2U; // Empty result is replaced by the payload.
+  if (envelope_bytes >= max_message_bytes)
+    return discovery_error("E_LIMIT_MESSAGE_SIZE", "Response metadata exceeds the allowed size.");
+  const auto payload_limit = max_message_bytes - envelope_bytes;
+  json page{{"protocol", "soui.capabilities/1"}, {"sdkVersion", SOUI_SDK_VERSION_STRING},
+            {"methods", json::array()}, {"nextCursor", nullptr}};
+  std::uint64_t authorized_index = 0;
+  for (const auto& method : registry_.methods_) {
+    if (permissions_.check(request.session_id, request.origin, request.token,
+                           method.second.permission) != authorization_result::authorized) continue;
+    if (authorized_index++ < cursor) continue;
+    auto& entries = page["methods"];
+    if (entries.size() == limit) {
+      page["nextCursor"] = cursor + entries.size();
+      break;
+    }
+    json entry{{"name", method.first}, {"capability", method.second.permission}};
+    if (method.second.action) entry["action"] = json::parse(method.second.action->encoded());
+    entries.push_back(std::move(entry));
+    // Reserve the continuation cursor even on a potentially final page. This
+    // keeps shrinking deterministic and guarantees the next page advances.
+    page["nextCursor"] = cursor + entries.size();
+    const auto cursor_bytes = std::to_string(cursor + entries.size()).size();
+    const auto terminal_padding = cursor_bytes < 4U ? 4U - cursor_bytes : 0U; // JSON null may be longer.
+    if (page.dump().size() + terminal_padding > payload_limit) {
+      entries.erase(entries.end() - 1);
+      if (entries.empty())
+        return discovery_error("E_LIMIT_MESSAGE_SIZE", "Response metadata leaves no room for a discovery entry.");
+      page["nextCursor"] = cursor + entries.size();
+      break;
+    }
+    page["nextCursor"] = nullptr;
+  }
+  if (cursor > authorized_index)
+    return discovery_error("E_INVALID_PARAMS", "Discovery cursor is outside the authorized registry.");
+  const auto payload = page.dump();
+  if (payload.size() > payload_limit)
+    return discovery_error("E_LIMIT_MESSAGE_SIZE", "Response metadata leaves no room for discovery.");
+  return payload;
+}
+
 bridge_response bridge_transport::handle(const bridge_request& request) const {
-  bridge_response response = validate(request);
+  bridge_request authorized_request = request;
+  authorized_request.authorization.reset();
+  bridge_response response = validate(authorized_request);
   if (!response.error_code.empty()) {
     return response;
   }
@@ -83,10 +196,36 @@ bridge_response bridge_transport::handle(const bridge_request& request) const {
     response.error_message = "Registered method has no implementation.";
     return response;
   }
+  const auto& action = registry_.methods_.at(request.method).action;
+  if (action && !action->validates_input(request.params_json)) {
+    response.error_code = "E_INVALID_PARAMS";
+    response.error_message = "Action parameters do not match the registered input schema.";
+    return response;
+  }
   response.ok = true;
-  response.payload_json = (*callback)(request.params_json);
+  if (action) {
+    try { response.payload_json = (*callback)(authorized_request); }
+    catch (...) {
+      response.ok = false;
+      response.error_code = "E_NATIVE_FAILURE";
+      response.error_message = "Native action handler failed.";
+      return response;
+    }
+  } else response.payload_json = (*callback)(authorized_request);
+  if (action && response.payload_json.size() > max_message_bytes) {
+    response.ok = false;
+    response.error_code = "E_LIMIT_MESSAGE_SIZE";
+    response.error_message = "Native action result exceeds the Bridge message bound.";
+    response.payload_json.clear();
+    return response;
+  }
   try {
-    const auto payload = response.payload_json.empty() ? json::object() : json::parse(response.payload_json);
+    const auto payload = response.payload_json.empty() ? json::object() : json::parse(response.payload_json,
+        [&action](int depth, json::parse_event_t, json&) {
+          if (action && static_cast<std::size_t>(depth) > max_json_depth)
+            throw std::invalid_argument("Native action result is too deep");
+          return true;
+        });
     const auto error = payload.find("error");
     if (payload.is_object() && error != payload.end() && error->is_string()) {
       response.ok = false;
@@ -96,17 +235,28 @@ bridge_response bridge_transport::handle(const bridge_request& request) const {
                                    ? message->get<std::string>()
                                    : "Native handler rejected the request.";
       response.payload_json.clear();
+    } else if (action && !action->validates_output(response.payload_json.empty() ? "{}" : response.payload_json)) {
+      response.ok = false;
+      response.error_code = "E_SCHEMA_INVALID";
+      response.error_message = "Native action result does not match the registered output schema.";
+      response.payload_json.clear();
     }
   } catch (const json::parse_error&) {
     response.ok = false;
     response.error_code = "E_SCHEMA_INVALID";
     response.error_message = "Native handler returned invalid JSON.";
     response.payload_json.clear();
+  } catch (const std::invalid_argument&) {
+    response.ok = false;
+    response.error_code = "E_SCHEMA_INVALID";
+    response.error_message = "Native action result exceeds the JSON depth bound.";
+    response.payload_json.clear();
   }
   return response;
 }
 
-std::string bridge_transport::handle_json(std::string_view json_text) const {
+std::string bridge_transport::handle_json(std::string_view json_text,
+                                          bool native_user_gesture) const {
   if (json_text.empty() || json_text.size() > max_message_bytes) {
     return serialize(make_error({}, {}, {}, "E_LIMIT_MESSAGE_SIZE", "Bridge message exceeds the allowed size."));
   }
@@ -151,6 +301,7 @@ std::string bridge_transport::handle_json(std::string_view json_text) const {
   request.token = string_value("token");
   request.method = string_value("method");
   request.operation_id = string_value("operationId");
+  request.native_user_gesture = native_user_gesture;
   const auto timeout = envelope.find("timeoutMs");
   if (timeout != envelope.end()) {
     if (!timeout->is_number_unsigned() || timeout->get<std::uint64_t>() == 0U ||
@@ -166,7 +317,7 @@ std::string bridge_transport::handle_json(std::string_view json_text) const {
   return serialize(handle(request));
 }
 
-bridge_response bridge_transport::validate(const bridge_request& request) const {
+bridge_response bridge_transport::validate(bridge_request& request) const {
   bridge_response response;
   response.request_id = request.request_id;
   response.correlation_id = request.request_id;
@@ -206,26 +357,39 @@ bridge_response bridge_transport::validate(const bridge_request& request) const 
     response.error_message = "Requested method is not registered.";
     return response;
   }
-  const auto authorization = permissions_.check(request.session_id, request.origin, request.token, *capability);
-  if (authorization != authorization_result::authorized) {
-    response.error_code = authorization == authorization_result::expired ? "E_SESSION_EXPIRED" : "E_UNAUTHORIZED";
-    response.error_message = authorization == authorization_result::expired
+  const auto authorization = permissions_.resolve(request.session_id, request.origin, request.token, *capability);
+  if (authorization.result != authorization_result::authorized) {
+    response.error_code = authorization.result == authorization_result::expired ? "E_SESSION_EXPIRED" : "E_UNAUTHORIZED";
+    response.error_message = authorization.result == authorization_result::expired
         ? "Session authorization has expired. A new authorized session is required."
         : "Session token is not authorized for this method.";
     return response;
   }
+  request.authorization = authorization.scope;
   return response;
 }
 
+bool bridge_transport::enable_session_renewal() {
+  return registry_.register_contextual_method("bridge.session.renew", "bridge.session.renew",
+      [this](const bridge_request& request) {
+        const auto params = json::parse(request.params_json, nullptr, false);
+        if (!params.is_object() || params.size() != 1U || !params.contains("operationId") ||
+            !params["operationId"].is_string())
+          return std::string{R"({"error":"E_INVALID_PARAMS","message":"Expected only operationId."})"};
+        return serialize_lease(permissions_.renew(request.session_id, request.origin, request.token,
+                                                  params["operationId"].get<std::string>()));
+      });
+}
+
+std::string bridge_transport::serialize_lease(const permission_lease& lease) {
+  if (!lease.ok()) return json{{"error", lease.error_code}, {"message", "Session lease operation rejected."}}.dump();
+  return json{{"sessionId", lease.session_id}, {"origin", lease.origin}, {"token", lease.token},
+              {"lease", {{"generation", lease.generation}, {"expiresInMs", lease.expires_in_ms},
+                         {"renewAfterMs", lease.renew_after_ms}}}}.dump();
+}
+
 std::string bridge_transport::serialize(const bridge_response& response) {
-  json envelope;
-  envelope["kind"] = "response";
-  envelope["schemaVersion"] = "soui.bridge/1";
-  envelope["requestId"] = response.request_id;
-  envelope["correlationId"] = response.correlation_id.empty() ? response.request_id : response.correlation_id;
-  envelope["sessionId"] = response.session_id;
-  if (!response.operation_id.empty()) envelope["operationId"] = response.operation_id;
-  envelope["ok"] = response.ok;
+  auto envelope = response_metadata(response);
   if (response.ok) {
     try {
       envelope["result"] = response.payload_json.empty() ? json::object() : json::parse(response.payload_json);
@@ -238,7 +402,16 @@ std::string bridge_transport::serialize(const bridge_response& response) {
                          {"message", response.error_message.empty() ? "Native bridge rejected the request."
                                                                      : response.error_message}};
   }
-  return envelope.dump();
+  auto encoded = envelope.dump();
+  if (encoded.size() <= max_message_bytes) return encoded;
+  // An oversized handler result or caller metadata must not escape the same
+  // response limit enforced by the Web client. Drop optional operation metadata.
+  const auto bounded = make_error(valid_id(response.request_id) ? response.request_id : std::string{},
+      valid_id(response.session_id) ? response.session_id : std::string{}, {},
+      "E_LIMIT_MESSAGE_SIZE", "Native response exceeds the allowed size.");
+  auto fallback = response_metadata(bounded);
+  fallback["error"] = {{"code", bounded.error_code}, {"message", bounded.error_message}};
+  return fallback.dump();
 }
 
 }  // namespace soui::runtime

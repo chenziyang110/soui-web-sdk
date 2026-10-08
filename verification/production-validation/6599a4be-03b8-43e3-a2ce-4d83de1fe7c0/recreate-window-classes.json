@@ -1,0 +1,33 @@
+{
+  "schema": "soui.window-class-observation/v1",
+  "observedAt": "2026-09-22T09:42:05.0574664Z",
+  "runId": "a51b255c-2664-4b60-8c5b-b7fc43ddb075",
+  "processId": 69852,
+  "method": "EnumThreadWindows plus child windows and HWND_MESSAGE enumeration; owner PID filtered; unique HWND counts",
+  "before": {
+    "event": "step.begin",
+    "elapsedMs": 607880,
+    "action": "mount",
+    "window": 1,
+    "cycle": 943
+  },
+  "after": {
+    "event": "step.begin",
+    "elapsedMs": 608038,
+    "action": "close",
+    "window": 1,
+    "cycle": 943
+  },
+  "windowClasses": {
+    "SouiPublicSdkAcceptanceV1": 1,
+    "SouiMiniblinkInteractionWindowV1": 1,
+    "IME": 2,
+    "MSCTFIME UI": 1,
+    "MbToolTip": 944,
+    "MiniBlinkTimerWindowClass": 1,
+    "SystemUserAdapterWindowClass": 1,
+    "CicMarshalWndClass": 1,
+    "OleMainThreadWndClass": 2
+  },
+  "releaseReady": false
+}

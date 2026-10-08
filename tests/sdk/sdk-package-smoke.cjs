@@ -30,13 +30,52 @@ try {
   check(() => {
     sdk.pack(source, first, '0.1.0-preview.1');
     assert.equal(sdk.readPackage(first).releaseReady, false);
+    assert.equal(read(path.join(first, 'payload/THIRD_PARTY_NOTICES.md')), 'SDK notice\n');
+    assert.equal(read(path.join(first, 'payload/third_party/licenses/fixture.txt')), 'SDK third_party/licenses\n');
     assert.equal(fs.existsSync(path.join(first, 'payload/web/apps/business.tsx')), false);
     assert.throws(() => sdk.pack(source, first, '0.1.0-preview.1'), /already exists/);
+  });
+  if (process.platform === 'win32') check(() => {
+    const transient = path.join(root, 'sdk-transient');
+    const denied = path.join(root, 'sdk-denied');
+    const rename = fs.renameSync;
+    let injected = 0;
+    fs.renameSync = (from, to) => {
+      if (to === transient && injected < 2) {
+        ++injected;
+        const error = new Error('temporary Windows rename denial');
+        error.code = 'EPERM';
+        throw error;
+      }
+      return rename(from, to);
+    };
+    try { sdk.pack(source, transient, '0.1.0-preview.1'); }
+    finally { fs.renameSync = rename; }
+    assert.equal(injected, 2);
+    sdk.readPackage(transient);
+
+    let attempts = 0;
+    fs.renameSync = (from, to) => {
+      if (to === denied) {
+        ++attempts;
+        const error = new Error('persistent Windows rename denial');
+        error.code = 'EACCES';
+        throw error;
+      }
+      return rename(from, to);
+    };
+    try { assert.throws(() => sdk.pack(source, denied, '0.1.0-preview.1'), {code: 'EACCES'}); }
+    finally { fs.renameSync = rename; }
+    assert.equal(attempts, 6);
+    assert.equal(fs.existsSync(denied), false);
+    assert.equal(fs.readdirSync(root).some(name => name.startsWith('sdk-denied.staging-')), false);
   });
   check(() => {
     write(path.join(project, 'web/apps/business.tsx'), 'business custom');
     sdk.install(first, project);
     assert.equal(sdk.readLock(project).manifest.version, '0.1.0-preview.1');
+    assert.equal(read(path.join(project, 'THIRD_PARTY_NOTICES.md')), 'SDK notice\n');
+    assert.equal(read(path.join(project, 'third_party/licenses/fixture.txt')), 'SDK third_party/licenses\n');
     assert.equal(read(path.join(project, 'web/apps/business.tsx')), 'business custom');
   });
   const touchedPath = path.join(project, 'sdk/fixture.txt');
@@ -87,7 +126,7 @@ try {
     const rename = fs.renameSync;
     let injected = false;
     fs.renameSync = (from, to) => {
-      if (!injected && from.includes(`${path.sep}new${path.sep}sdk${path.sep}`)) {
+      if (!injected && to === touchedPath) {
         injected = true;
         throw new Error('simulated installation IO failure');
       }
@@ -128,7 +167,23 @@ try {
     assert.throws(() => sdk.install(first, linked), /Linked path/);
     assert.deepEqual(fs.readdirSync(outside), []);
   });
-  console.log(`SDK package smoke: ${checks}/${checks} passed (ownership, integrity, upgrade, rollback, IO recovery and paths).`);
+  check(() => {
+    const modernPackage = path.join(root, 'modern-package');
+    const modernProject = path.join(root, 'modern-project');
+    write(path.join(modernProject, 'project.json'), JSON.stringify({runtimeProfile: 'modern'}));
+    assert.throws(() => sdk.install(first, modernProject), /does not provide the modern profile/);
+    assert.equal(fs.existsSync(path.join(modernProject, 'sdk-lock.json')), false);
+    for (const required of ['sdk/include/soui/host/webview2_host.h',
+      'sdk/renderers/webview2/CMakeLists.txt', 'tools/internal/Restore-WebView2.ps1']) write(path.join(source, required), 'modern fixture');
+    sdk.pack(source, modernPackage, '0.4.0-preview.1');
+    sdk.install(modernPackage, modernProject);
+    const lock = read(path.join(modernProject, 'sdk-lock.json'));
+    assert.throws(() => sdk.install(second, modernProject), /does not provide the modern profile/);
+    assert.equal(read(path.join(modernProject, 'sdk-lock.json')), lock);
+    sdk.readLock(modernProject);
+    assert.throws(() => sdk.requireProfile(sdk.readPackage(modernPackage), 'typo'), /Unknown application/);
+  });
+  console.log(`SDK package smoke: ${checks}/${checks} passed (ownership, integrity, upgrade, rollback, profile compatibility, IO recovery and paths).`);
 } finally {
   const expected = path.resolve(os.tmpdir()) + path.sep;
   if (!path.resolve(root).startsWith(expected) || !path.basename(root).startsWith('soui-sdk-smoke-')) throw new Error('Unsafe cleanup');

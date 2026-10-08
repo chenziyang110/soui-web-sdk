@@ -508,27 +508,41 @@ void GpuSkiaSurface::destroyFramebuffer()
 
 void GpuSkiaSurface::reset()
 {
+    const bool hadContext = m_glContext != nullptr;
+    const bool windowValid = m_window && IsWindow(m_window);
+    const bool contextCurrentHere = m_glContext && wglGetCurrentContext() == m_glContext;
     SetEnvironmentVariableA("SOUI_GPU_ACTIVE", "0");
     if (m_window)
         RemovePropA(m_window, "SOUI_GPU_ACTIVE");
     for (HWND window = m_window; window; window = GetParent(window))
         RemovePropA(window, "SOUI_GPU_PRESENT_COUNT");
     SetEnvironmentVariableA("SOUI_GPU_PRESENT_COUNT", "0");
-    if (m_glContext)
-        wglMakeCurrent(m_dc, m_glContext);
+    const BOOL madeCurrent = m_glContext ? wglMakeCurrent(m_dc, m_glContext) : FALSE;
     delete m_canvas;
     m_canvas = nullptr;
     destroyFramebuffer();
     if (m_context)
         m_context->unref();
     m_context = nullptr;
+    // GrContext retains its own reference; this is the reference returned by
+    // GrGLCreateNativeInterface() for this surface.
+    if (m_glInterface)
+        m_glInterface->unref();
     m_glInterface = nullptr;
-    if (m_glContext) {
-        wglMakeCurrent(nullptr, nullptr);
-        wglDeleteContext(m_glContext);
+    const BOOL detached = m_glContext ? wglMakeCurrent(nullptr, nullptr) : FALSE;
+    const BOOL deleted = m_glContext ? wglDeleteContext(m_glContext) : FALSE;
+    const DWORD deleteError = deleted ? 0 : GetLastError();
+    const int released = m_dc && m_window ? ReleaseDC(m_window, m_dc) : 0;
+    char shutdownTrace[MAX_PATH] = {};
+    const DWORD traceLength = GetEnvironmentVariableA("SOUI_GPU_SHUTDOWN_TRACE", shutdownTrace, MAX_PATH);
+    if (traceLength && traceLength < MAX_PATH) {
+        std::ofstream trace(shutdownTrace, std::ios::app);
+        trace << "thread=" << GetCurrentThreadId() << " context=" << hadContext
+              << " currentHere=" << contextCurrentHere << " windowValid=" << windowValid
+              << " make=" << madeCurrent << " detach=" << detached
+              << " delete=" << deleted << " deleteError=" << deleteError
+              << " releaseDC=" << released << "\n";
     }
-    if (m_dc && m_window)
-        ReleaseDC(m_window, m_dc);
     m_window = nullptr;
     m_dc = nullptr;
     m_glContext = nullptr;

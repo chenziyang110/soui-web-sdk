@@ -1,0 +1,99 @@
+{
+    "schema":  "soui.upgrade-trial/v2",
+    "oldVersion":  "0.3.0-preview.7",
+    "newVersion":  "0.3.0-preview.8",
+    "projectName":  "UpgradeProbe",
+    "businessFiles":  {
+                          "app/business_marker.h":  "B0E5B2883A9A922CB10CF8A51A3A389BCAEF3B363DDDE235038DC78924D51987",
+                          "app/main.cpp":  "DAACCD45682B4AD0213DC56E086F3688501DAA5D0E1606330AE93446A3AE62D0"
+                      },
+    "stages":  [
+                   {
+                       "architectures":  [
+                                             {
+                                                 "buildId":  "ea164d3a-d737-4718-9a14-9433796d2b55",
+                                                 "exeSha256":  "AF87BFF811DBA3588E98DDA33994D48FABBD44A24CBA5E5409D52BD2026EEB6E",
+                                                 "smokePassed":  true,
+                                                 "architecture":  "x86",
+                                                 "sourceSha256":  "5d38cdc8fe5f99053e135a1d7c5c12b61a919039bdb9c68ec8002a99d1fca8ba"
+                                             },
+                                             {
+                                                 "buildId":  "7d68c7da-493a-4b38-bb41-996839e5db06",
+                                                 "exeSha256":  "576710A05BE44E93016A79E3549DA8CACC032A467AB1A52A31460837D8A76076",
+                                                 "smokePassed":  true,
+                                                 "architecture":  "x64",
+                                                 "sourceSha256":  "5d38cdc8fe5f99053e135a1d7c5c12b61a919039bdb9c68ec8002a99d1fca8ba"
+                                             }
+                                         ],
+                       "businessFilesPreserved":  true,
+                       "stage":  "old-initial",
+                       "sdkVersion":  "0.3.0-preview.7"
+                   },
+                   {
+                       "architectures":  [
+                                             {
+                                                 "buildId":  "13244cb2-a666-4ba7-b319-0f0acd99ca29",
+                                                 "exeSha256":  "AF87BFF811DBA3588E98DDA33994D48FABBD44A24CBA5E5409D52BD2026EEB6E",
+                                                 "smokePassed":  true,
+                                                 "architecture":  "x86",
+                                                 "sourceSha256":  "54a8f1d4c8ca6dc2122bb22906bc330d64150f2de0e4ab60c7a7af29685c24b9"
+                                             },
+                                             {
+                                                 "buildId":  "a0adac6f-3a46-4463-b446-f5f0bc8f2b1d",
+                                                 "exeSha256":  "576710A05BE44E93016A79E3549DA8CACC032A467AB1A52A31460837D8A76076",
+                                                 "smokePassed":  true,
+                                                 "architecture":  "x64",
+                                                 "sourceSha256":  "54a8f1d4c8ca6dc2122bb22906bc330d64150f2de0e4ab60c7a7af29685c24b9"
+                                             }
+                                         ],
+                       "businessFilesPreserved":  true,
+                       "stage":  "new-upgraded",
+                       "sdkVersion":  "0.3.0-preview.8"
+                   },
+                   {
+                       "architectures":  [
+                                             {
+                                                 "buildId":  "59d2febb-823c-4cc8-b51c-400875ce3d59",
+                                                 "exeSha256":  "AF87BFF811DBA3588E98DDA33994D48FABBD44A24CBA5E5409D52BD2026EEB6E",
+                                                 "smokePassed":  true,
+                                                 "architecture":  "x86",
+                                                 "sourceSha256":  "5d38cdc8fe5f99053e135a1d7c5c12b61a919039bdb9c68ec8002a99d1fca8ba"
+                                             },
+                                             {
+                                                 "buildId":  "4b2628cf-c767-46d7-914a-92c5ad659779",
+                                                 "exeSha256":  "576710A05BE44E93016A79E3549DA8CACC032A467AB1A52A31460837D8A76076",
+                                                 "smokePassed":  true,
+                                                 "architecture":  "x64",
+                                                 "sourceSha256":  "5d38cdc8fe5f99053e135a1d7c5c12b61a919039bdb9c68ec8002a99d1fca8ba"
+                                             }
+                                         ],
+                       "businessFilesPreserved":  true,
+                       "stage":  "old-rolled-back",
+                       "sdkVersion":  "0.3.0-preview.7"
+                   },
+                   {
+                       "architectures":  [
+                                             {
+                                                 "buildId":  "0850b6a9-54d3-4604-8748-5ead7429225d",
+                                                 "exeSha256":  "AF87BFF811DBA3588E98DDA33994D48FABBD44A24CBA5E5409D52BD2026EEB6E",
+                                                 "smokePassed":  true,
+                                                 "architecture":  "x86",
+                                                 "sourceSha256":  "54a8f1d4c8ca6dc2122bb22906bc330d64150f2de0e4ab60c7a7af29685c24b9"
+                                             },
+                                             {
+                                                 "buildId":  "8e2f5cb8-77db-4e43-a8e4-e69404b2441a",
+                                                 "exeSha256":  "576710A05BE44E93016A79E3549DA8CACC032A467AB1A52A31460837D8A76076",
+                                                 "smokePassed":  true,
+                                                 "architecture":  "x64",
+                                                 "sourceSha256":  "54a8f1d4c8ca6dc2122bb22906bc330d64150f2de0e4ab60c7a7af29685c24b9"
+                                             }
+                                         ],
+                       "businessFilesPreserved":  true,
+                       "stage":  "new-restored",
+                       "sdkVersion":  "0.3.0-preview.8"
+                   }
+               ],
+    "passed":  true,
+    "releaseReady":  false,
+    "finishedAt":  "2026-09-25T15:48:51.2097639+08:00"
+}

@@ -1,0 +1,65 @@
+{
+  "schema": "soui.benchmark-single-run/v1",
+  "runId": "dc83669a-90aa-4160-8238-b394eca81dd1",
+  "host": "electron",
+  "scene": "S01",
+  "startedAt": "2026-09-25T01:16:22.247Z",
+  "pageSha256": "d6264e7dd53caf89eddf78986e3d6b09ddf278a9cde3e050641127ab8ca2f74b",
+  "hostExeSha256": "c2d88408954d7b62cba8a4d5dae8d02c05b41936507b4370caf17b6ecc183c37",
+  "dependency": {
+    "appDirectory": "F:\\work\\SOUI_WEB\\soui-sdk\\benchmarks\\hosts\\electron"
+  },
+  "tools": {
+    "samplerSha256": "2b15e649cc50450c9ea38b7203b5e11d887256c27d41e3fc0280e3115ef8fa74",
+    "inputSha256": "c428d18c377f89b53b35c13aa61f746265ce73d6a9f9eed50f5dbdfcf7dbf7d4"
+  },
+  "maxDurationMs": 195000,
+  "releaseReady": false,
+  "benchmarkValid": false,
+  "processes": [
+    {
+      "name": "host",
+      "pid": 44724,
+      "code": 0,
+      "signal": null,
+      "error": null
+    },
+    {
+      "name": "sampler",
+      "pid": 47996,
+      "code": 0,
+      "signal": null,
+      "error": null
+    },
+    {
+      "name": "input",
+      "pid": 25488,
+      "code": 0,
+      "signal": null,
+      "error": null
+    }
+  ],
+  "trace": {
+    "schema": "soui.benchmark-run-traces/v1",
+    "scene": "S01",
+    "hostPid": 44724,
+    "hostCreationTime100ns": 134347725823964110,
+    "inputActions": 64,
+    "processSamples": 61,
+    "inputDurationMs": 61844,
+    "processDurationMs": 62687,
+    "inputOffsetMs": 347.7888,
+    "traceIntegrityAccepted": true,
+    "physicalPresentation": "not-measured",
+    "performanceGate": "not-evaluated",
+    "releaseReady": false
+  },
+  "pageResult": {
+    "path": "page-results/fb9b776c-7c38-40ce-98df-0967673f5643-S01-803f37e5-cc1e-479b-a742-51de751c3342.json",
+    "bytes": 21990,
+    "sha256": "c9c57d8339d7ff678e1d56e34c8cbb4568208ac64e1ab6de975948d8c705032c",
+    "durationMs": 61977.09999990463
+  },
+  "status": "completed",
+  "finishedAt": "2026-09-25T01:17:25.133Z"
+}

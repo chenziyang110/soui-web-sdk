@@ -2,9 +2,12 @@
 #include <soui/host/window_chrome_script.h>
 #include <soui/runtime/host/trusted_document.h>
 #include <soui/runtime/services/desktop/window_commands.h>
+#include "bridge_pending_script.h"
+#include "bridge_request_budget.h"
 
 #include <algorithm>
 #include <cctype>
+#include <chrono>
 #include <cstdint>
 #include <cstring>
 #include <cstdlib>
@@ -12,8 +15,10 @@
 #include <functional>
 #include <future>
 #include <regex>
+#include <stdexcept>
 #include <string_view>
 #include <utility>
+#include <unordered_map>
 
 #include <soui/bridge_adapter.h>
 #include "../../../third_party/include/json/json.hpp"
@@ -42,6 +47,20 @@
 
 namespace soui::sdk {
 namespace {
+
+// Owner-thread reentrancy guard: native lifecycle calls may dispatch window
+// messages while waiting. This does not make host calls thread-safe.
+class lifecycle_operation_guard {
+ public:
+  explicit lifecycle_operation_guard(bool& active) noexcept : active_(active) { active_ = true; }
+  lifecycle_operation_guard(const lifecycle_operation_guard&) = delete;
+  lifecycle_operation_guard& operator=(const lifecycle_operation_guard&) = delete;
+  ~lifecycle_operation_guard() { active_ = false; }
+
+ private:
+  bool& active_;
+};
+
 #ifdef _WIN32
 constexpr wchar_t kInteractionWindowClass[] = L"SouiMiniblinkInteractionWindowV1";
 
@@ -199,6 +218,30 @@ host_result failure(std::string code, std::string message) {
   return {false, std::move(code), std::move(message)};
 }
 
+void bridge_diagnostic_trace(const void* adapter, std::string_view phase,
+                             std::string_view request_id = {},
+                             std::string_view detail = {}) {
+#ifdef _WIN32
+  char enabled[2]{};
+  if (GetEnvironmentVariableA("SOUI_BRIDGE_TRACE", enabled, sizeof(enabled)) != 1 ||
+      enabled[0] != '1') return;
+  char temporary[MAX_PATH + 1]{};
+  const DWORD length = GetTempPathA(MAX_PATH, temporary);
+  if (!length || length > MAX_PATH) return;
+  static std::mutex trace_mutex;
+  std::lock_guard<std::mutex> lock(trace_mutex);
+  std::ofstream trace(std::filesystem::path(temporary) /
+      ("soui-bridge-trace-" + std::to_string(GetCurrentProcessId()) + ".log"),
+      std::ios::app | std::ios::binary);
+  trace << GetCurrentThreadId() << ' ' << adapter << ' ' << phase;
+  if (!request_id.empty()) trace << " id=" << request_id;
+  if (!detail.empty()) trace << ' ' << detail;
+  trace << '\n';
+#else
+  (void)adapter; (void)phase; (void)request_id; (void)detail;
+#endif
+}
+
 host_result success(std::string message = {}) { return {true, {}, std::move(message)}; }
 
 bool contains_remote_runtime_reference(const std::filesystem::path& path,
@@ -351,27 +394,174 @@ std::filesystem::path canonical_path(const std::filesystem::path& value) {
   return error ? value : result;
 }
 
-std::string bridge_request_id(std::string_view request) {
-  static const std::regex pattern(R"request("requestId"\s*:\s*"([^"]+)")request");
-  std::match_results<std::string_view::const_iterator> match;
-  if (!std::regex_search(request.begin(), request.end(), match, pattern)
-      || match.size() < 2U)
-    return {};
-  return std::string{match[1].first, match[1].second};
+constexpr std::size_t max_bridge_message_bytes = 64U * 1024U;
+
+nlohmann::json bounded_bridge_packet(std::string_view request) {
+  if (request.empty() || request.size() > max_bridge_message_bytes) return {};
+  try {
+    return nlohmann::json::parse(request.begin(), request.end(),
+        [](int depth, nlohmann::json::parse_event_t, nlohmann::json&) {
+          if (depth > 32) throw std::invalid_argument("Bridge JSON depth exceeded");
+          return true;
+        });
+  } catch (const std::exception&) { return {}; }
+}
+
+std::string packet_string(const nlohmann::json& packet, const char* field) {
+  if (!packet.is_object()) return {};
+  const auto value = packet.find(field);
+  return value != packet.end() && value->is_string() && value->get_ref<const std::string&>().size() <= 512
+      ? value->get<std::string>() : std::string{};
+}
+
+std::string bridge_error(const std::string& id, const char* code, const char* message) {
+  return nlohmann::json{{"requestId", id}, {"ok", false},
+      {"error", {{"code", code}, {"message", message}}}}.dump();
+}
+
+std::string bridge_resolution_script(const std::string& id, const std::string& response) {
+  return "(function(){var p=window.__souiBridgePending;var id=" + json_string_literal(id)
+      + ";if(!p||!p[id])return;return p[id].finish(" + json_string_literal(response) + ");})()";
+}
+
+std::uint32_t bridge_wait_timeout(const nlohmann::json& packet) {
+  const auto timeout = packet.find("timeoutMs");
+  if (timeout == packet.end()) return 10000;
+  if (!timeout->is_number_unsigned() || timeout->get<std::uint64_t>() < 1 ||
+      timeout->get<std::uint64_t>() > 60000) return 0;
+  return timeout->get<std::uint32_t>();
 }
 
 std::string bridge_request_method(std::string_view request) {
-  const auto packet = nlohmann::json::parse(request, nullptr, false);
-  if (!packet.is_object()) return {};
-  const auto method = packet.find("method");
-  return method != packet.end() && method->is_string()
-      ? method->get<std::string>()
-      : std::string{};
+  return packet_string(bounded_bridge_packet(request), "method");
+}
+
+// The pinned engine owns process-wide Blink/V8 state and cannot be restarted
+// after finalize. All views and bindings therefore share one stable owner.
+struct process_runtime_state {
+  std::mutex mutex;
+  std::unique_ptr<engine_thread> thread;
+  HMODULE module{nullptr};
+  std::filesystem::path binary;
+  std::size_t hosts{0};
+  bool initialized{false};
+  bool retired{false};
+  // Accessed only on the engine owner, including JS callbacks and destruction.
+  std::unordered_map<wkeWebView, dynamic_miniblink_adapter*> views;
+  ~process_runtime_state() { if (thread) thread->stop(); }
+};
+
+process_runtime_state& process_runtime() {
+  static process_runtime_state state;
+  return state;
+}
+
+// Teardown may not return while callbacks still reference the adapter. A native
+// kernel hang cannot be safely preempted; external supervision records failure.
+bool invoke_lifecycle(engine_thread* thread, engine_thread::task work) {
+  if (!thread || !work) return false;
+  if (thread->is_owner_thread()) { work(); return true; }
+  auto completion = std::make_shared<std::promise<void>>();
+  auto future = completion->get_future();
+  if (!thread->post([work = std::move(work), completion] {
+        try { work(); completion->set_value(); }
+        catch (...) { completion->set_exception(std::current_exception()); }
+      })) return false;
+  try { future.get(); return true; } catch (...) { return false; }
+}
+
+host_result acquire_runtime(const host_config& config, engine_thread*& thread, void*& module) {
+  auto& runtime = process_runtime();
+  std::lock_guard<std::mutex> lock(runtime.mutex);
+  if (runtime.retired) return failure("E_RUNTIME_SHUTDOWN", "The process runtime has already shut down.");
+  const auto binary = canonical_path(config.miniblink_binary);
+  if (!std::filesystem::is_regular_file(binary)) return failure("E_DEPENDENCY_MISSING", "Miniblink binary is missing.");
+  if (!binary_matches_architecture(binary, config.architecture)) return failure("E_WRONG_ARCHITECTURE", "Miniblink binary architecture does not match the host.");
+  if (runtime.thread && runtime.binary != binary)
+    return failure("E_RUNTIME_BINARY", "All windows must use the same process runtime binary.");
+  if (!runtime.thread) {
+    auto candidate = std::make_unique<engine_thread>();
+    host_result result = failure("E_DEPENDENCY_INIT", "Miniblink process initialization failed.");
+    const bool started = candidate->start([&runtime, binary, config, &result] {
+      runtime.module = LoadLibraryW(binary.c_str());
+      if (!runtime.module) { result = failure("E_DEPENDENCY_LOAD", "Miniblink binary could not be loaded."); return false; }
+      if (!GetProcAddress(runtime.module, "wkeInitializeEx")) {
+        result = failure("E_DEPENDENCY_API", "Miniblink initialization API is missing."); return false;
+      }
+      wkeSetWkeDllHandle(runtime.module);
+#ifdef SOUI_BRIDGE_BENCHMARK
+      if (config.noopt_experiment) {
+        using set_flags = void(__cdecl*)(const char*, int);
+#ifdef _WIN64
+        const char* symbol = "?SetFlagsFromString@V8@v8@@SAXPEBDH@Z";
+#else
+        const char* symbol = "?SetFlagsFromString@V8@v8@@SAXPBDH@Z";
+#endif
+        const auto set = reinterpret_cast<set_flags>(GetProcAddress(runtime.module, symbol));
+        if (!set) { result = failure("E_DEPENDENCY_API", "V8 diagnostic flag export unavailable."); return false; }
+        set("--noopt", 7);
+      }
+#endif
+#ifdef SOUI_SOURCE_KERNEL_HOST
+      runtime.initialized = initialize_source_kernel(runtime.module);
+#else
+      runtime.initialized = wkeInitialize() != 0;
+#endif
+      return runtime.initialized;
+    }, [&runtime] {
+      if (runtime.initialized) {
+        if (wkeShutdown) wkeShutdown();
+        else if (wkeFinalize) wkeFinalize();
+        runtime.initialized = false;
+        runtime.retired = true;
+        // Preserve the pinned engine's loader lifetime; do not unload its CRT
+        // and process statics a second time after kernel shutdown.
+      } else if (runtime.module) FreeLibrary(runtime.module);
+      runtime.module = nullptr;
+    });
+    if (!started) return result;
+    runtime.binary = binary;
+    runtime.thread = std::move(candidate);
+  }
+  ++runtime.hosts;
+  thread = runtime.thread.get();
+  module = runtime.module;
+  return success();
+}
+
+void release_runtime() {
+  auto& runtime = process_runtime();
+  std::lock_guard<std::mutex> lock(runtime.mutex);
+  if (runtime.hosts) --runtime.hosts;
+}
+
+dynamic_miniblink_adapter* adapter_for_context(jsExecState state) {
+  if (!state || !jsGetWebView) return nullptr;
+  const auto& views = process_runtime().views;
+  const auto found = views.find(jsGetWebView(state));
+  return found == views.end() ? nullptr : found->second;
 }
 
 #endif
 
 }  // namespace
+
+host_result shutdown_miniblink_runtime() {
+#ifdef _WIN32
+  auto& runtime = process_runtime();
+  std::lock_guard<std::mutex> lock(runtime.mutex);
+  if (runtime.hosts) return failure("E_RUNTIME_IN_USE", "Destroy all hosts before shutting down the process runtime.");
+  if (runtime.thread) {
+    if (runtime.thread->is_owner_thread()) return failure("E_RUNTIME_THREAD", "Runtime shutdown must run outside the engine owner.");
+    runtime.thread->stop();
+    runtime.thread.reset();
+  }
+  runtime.retired = true;
+  return success("Miniblink process runtime shutdown completed.");
+#else
+  return failure("E_UNSUPPORTED", "The Miniblink runtime requires Windows.");
+#endif
+}
 
 #ifdef _WIN32
 void WKE_CALL_TYPE document_ready_callback(wkeWebView, void* param);
@@ -435,6 +625,13 @@ void dynamic_miniblink_adapter::refresh_wheel_settings() noexcept {
 #endif
 }
 
+struct dynamic_miniblink_adapter::event_dispatch_lifetime {
+  std::mutex mutex;
+  dynamic_miniblink_adapter* adapter{nullptr};
+};
+
+dynamic_miniblink_adapter::~dynamic_miniblink_adapter() { (void)unmount(); }
+
 host_result dynamic_miniblink_adapter::mount(const host_config& config) {
 #ifdef _WIN32
   if (config.owner_window == nullptr)
@@ -447,6 +644,8 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
 
   owner_window_ = config.owner_window;
   bridge_adapter_ = config.bridge_adapter;
+  event_lifetime_ = std::make_shared<event_dispatch_lifetime>();
+  event_lifetime_->adapter = this;
   // SystemParametersInfo can take tens of milliseconds on its first call.
   // Resolve wheel metrics before the user-visible input path is armed.
   refresh_wheel_settings();
@@ -467,24 +666,14 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
   next_input_sequence_ = 0;
   wheel_smoothing_.reset();
 
-  engine_thread_ = std::make_unique<engine_thread>();
-  host_result startup = failure("E_DEPENDENCY_INIT", "Miniblink engine startup did not run.");
-  const host_config engine_config = config;
-  const bool started = engine_thread_->start(
-      [this, engine_config, width, height, &startup] {
-        startup = mount_on_engine(engine_config, width, height);
-        return startup.ok;
-      },
-      [this] { unmount_on_engine(); });
-  if (!started) {
-    engine_thread_.reset();
-    destroy_input_window();
-    owner_window_ = nullptr;
-    bridge_adapter_ = nullptr;
-    return startup;
+  const auto acquired = acquire_runtime(config, engine_thread_, module_);
+  if (!acquired.ok) {
+    destroy_input_window(); owner_window_ = nullptr; bridge_adapter_ = nullptr;
+    return acquired;
   }
-
+  // Arm the worker before loading any page on the shared engine owner.
   bridge_generation_.store(1, std::memory_order_release);
+  bridge_budget_ = std::make_shared<detail::bridge_request_budget>();
   bridge_thread_ = std::make_unique<engine_thread>();
   if (!bridge_thread_->start(
           [this] {
@@ -496,13 +685,21 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
             if (bridge_com_initialized_) CoUninitialize();
             bridge_com_initialized_ = false;
           })) {
-    engine_thread_->stop();
-    engine_thread_.reset();
     bridge_thread_.reset();
-    destroy_input_window();
-    owner_window_ = nullptr;
-    bridge_adapter_ = nullptr;
+    (void)unmount();
     return failure("E_BRIDGE_THREAD", "The asynchronous native bridge worker could not start.");
+  }
+  bridge_accepting_.store(true, std::memory_order_release);
+
+  host_result startup = failure("E_DEPENDENCY_INIT", "Miniblink engine startup did not run.");
+  const host_config engine_config = config;
+  const bool invoked = invoke_lifecycle(engine_thread_,
+      [this, engine_config, width, height, &startup] {
+        startup = mount_on_engine(engine_config, width, height);
+      });
+  if (!invoked || !startup.ok) {
+    (void)unmount();
+    return startup;
   }
 
   interaction_router_.activate(interaction_generation_);
@@ -515,7 +712,7 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
   } else
 #endif
   SetFocus(static_cast<HWND>(webview_window_));
-  return success("SOUI interaction window mounted with a dedicated Miniblink engine thread.");
+  return success("SOUI interaction window mounted on the shared Miniblink engine thread.");
 #else
   (void)config;
   return failure("E_UNSUPPORTED", "The SOUI/Miniblink adapter requires a Windows host.");
@@ -531,55 +728,9 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
     return failure("E_DEPENDENCY_MISSING", "Miniblink binary path is required.");
   }
 
-  const auto binary_path = canonical_path(config.miniblink_binary);
-  const std::wstring binary = binary_path.wstring();
-  if (!std::filesystem::is_regular_file(binary_path)) {
-    return failure("E_DEPENDENCY_MISSING", "Miniblink binary could not be inspected.");
-  }
-  if (!binary_matches_architecture(binary_path, config.architecture)) {
-    return failure("E_WRONG_ARCHITECTURE", "Miniblink binary architecture does not match the host.");
-  }
-
-  HMODULE loaded = LoadLibraryW(binary.c_str());
-  if (loaded == nullptr) {
-    return failure("E_DEPENDENCY_LOAD", "Miniblink binary could not be loaded.");
-  }
-  module_ = loaded;
-  if (GetProcAddress(loaded, "wkeInitializeEx") == nullptr) {
-    FreeLibrary(loaded);
-    module_ = nullptr;
-    return failure("E_DEPENDENCY_API", "The installed Miniblink package lacks wkeInitializeEx.");
-  }
-  wkeSetWkeDllHandle(loaded);
 #ifdef SOUI_BRIDGE_BENCHMARK
   if(config.noopt_experiment) {
-    // Exact public V8 export signature from this pinned binary. Diagnostic only.
-    using set_flags = void(__cdecl*)(const char*,int);
-#ifdef _WIN64
-    const auto set = reinterpret_cast<set_flags>(GetProcAddress(loaded,"?SetFlagsFromString@V8@v8@@SAXPEBDH@Z"));
-#else
-    const auto set = reinterpret_cast<set_flags>(GetProcAddress(loaded,"?SetFlagsFromString@V8@v8@@SAXPBDH@Z"));
-#endif
-    if(!set) { FreeLibrary(loaded); module_=nullptr; return failure("E_DEPENDENCY_API","V8 flag export unavailable for diagnostic experiment."); }
-    set("--noopt",7);
-  }
-#endif
-#ifdef SOUI_SOURCE_KERNEL_HOST
-  const bool kernel_initialized = initialize_source_kernel(loaded);
-#else
-  const bool kernel_initialized = wkeInitialize() != 0;
-#endif
-  if (!kernel_initialized || wkeIsInitialize == nullptr) {
-    // Binding can fail before initialization (for example, an older DLL
-    // without the interaction ABI). Finalizing that kernel can crash.
-    if (kernel_initialized && wkeFinalize != nullptr) (void)wkeFinalize();
-    FreeLibrary(loaded);
-    module_ = nullptr;
-    return failure("E_DEPENDENCY_INIT", "Miniblink initialization failed.");
-  }
-#ifdef SOUI_BRIDGE_BENCHMARK
-  if(config.noopt_experiment) {
-    const auto opt = reinterpret_cast<const bool*>(GetProcAddress(loaded,"?FLAG_opt@internal@v8@@3_NA"));
+    const auto opt = reinterpret_cast<const bool*>(GetProcAddress(static_cast<HMODULE>(module_),"?FLAG_opt@internal@v8@@3_NA"));
     std::ofstream check(config.benchmark_output_directory/"v8-noopt.json");
     check<<nlohmann::json{{"requested",true},{"readable",opt!=nullptr},{"optEnabled",opt?*opt:true}}.dump();
   }
@@ -594,9 +745,6 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
       wkeRunJS == nullptr || wkeIsProcessingUserGesture == nullptr || jsGetWebView == nullptr ||
       wkeGetURL == nullptr || wkeGlobalExec == nullptr || jsIsString == nullptr || jsBoolean == nullptr ||
       (config.managed_frame_timing && wkeSetDebugConfig == nullptr)) {
-    if (wkeFinalize != nullptr) (void)wkeFinalize();
-    FreeLibrary(loaded);
-    module_ = nullptr;
     return failure("E_DEPENDENCY_API", "The installed Miniblink package lacks the required WebView API.");
   }
 
@@ -637,9 +785,6 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
 #endif
   const auto view = wkeCreateWebView();
   if (view == nullptr) {
-    if (wkeFinalize != nullptr) (void)wkeFinalize();
-    FreeLibrary(loaded);
-    module_ = nullptr;
     return failure("E_WEBVIEW_CREATE", "Miniblink could not create a child WebView.");
   }
   webview_ = view;
@@ -661,8 +806,6 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
       || interaction_api->invalidateEndpoint == nullptr || interaction_api->releaseEndpoint == nullptr) {
     wkeDestroyWebView(view);
     webview_ = nullptr;
-    if (wkeFinalize != nullptr) (void)wkeFinalize();
-    module_ = nullptr;
     return failure("E_INDEPENDENT_INTERACTION_UNAVAILABLE",
                    "The Miniblink binary does not expose the required independent interaction ABI.");
   }
@@ -671,8 +814,6 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
   if (interaction_endpoint_ == nullptr) {
     wkeDestroyWebView(view);
     webview_ = nullptr;
-    if (wkeFinalize != nullptr) (void)wkeFinalize();
-    module_ = nullptr;
     return failure("E_INTERACTION_ENDPOINT", "Miniblink could not create the compositor interaction endpoint.");
   }
   if (!interaction_api->configurePresentation(interaction_endpoint_,
@@ -681,8 +822,6 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
     interaction_endpoint_ = nullptr;
     wkeDestroyWebView(view);
     webview_ = nullptr;
-    if (wkeFinalize != nullptr) (void)wkeFinalize();
-    module_ = nullptr;
     return failure("E_INDEPENDENT_PRESENTATION",
                    "Miniblink could not enable compositor-owned window presentation.");
   }
@@ -713,8 +852,9 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
   }
 #endif
   if (wkeOnPaintUpdated) wkeOnPaintUpdated(view, &record_live_paint, bridge_adapter_);
-  wkeJsBindFunction("__souiNativePostMessage", &native_post_message, this, 1);
-  wkeJsBindFunction("__souiNativeWindowChrome", &native_window_chrome, this, 1);
+  process_runtime().views.emplace(view, this);
+  wkeJsBindFunction("__souiNativePostMessage", &native_post_message, nullptr, 1);
+  wkeJsBindFunction("__souiNativeWindowChrome", &native_window_chrome, nullptr, 1);
 #ifdef SOUI_BRIDGE_BENCHMARK
   wkeJsBindFunction("__souiBenchmarkMarkPhase", &mark_benchmark_phase, nullptr, 1);
   wkeJsBindFunction("__souiBenchmarkWriteCycle", &write_benchmark_cycle, nullptr, 1);
@@ -726,8 +866,13 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
   if (bridge_adapter_ != nullptr) {
     auto& bridge = *static_cast<bridge_adapter*>(bridge_adapter_);
     bridge_set_owner_window(bridge, owner_window_, 0);
-    bridge_set_event_sink_string(bridge, [this](std::string event) { dispatch_event(event); }, 0);
-    bridge_set_event_sink_view(bridge, [this](std::string_view event) { dispatch_event(std::string{event}); }, 0);
+    const std::weak_ptr<event_dispatch_lifetime> weak = event_lifetime_;
+    bridge.set_event_sink([weak](std::string_view event) {
+      if (const auto lifetime = weak.lock()) {
+        std::lock_guard<std::mutex> lock(lifetime->mutex);
+        if (lifetime->adapter) lifetime->adapter->dispatch_event(std::string{event});
+      }
+    });
   }
 
   // React is the product surface.  The original Vue reference remains a
@@ -762,6 +907,11 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
 
 host_result dynamic_miniblink_adapter::unmount() {
 #ifdef _WIN32
+  bridge_accepting_.store(false, std::memory_order_release);
+  // Finish native callbacks that could already be inside admission before
+  // another thread stops and destroys the worker they access.
+  if (engine_thread_ != nullptr && !invoke_lifecycle(engine_thread_, [] {}))
+    return failure("E_ENGINE_THREAD", "The engine could not stop admitting bridge requests.");
 #ifdef SOUI_TEST_KIT
   // Join the controller worker before invalidating its engine/adapter lifetime.
   test_agent_.reset();
@@ -769,6 +919,11 @@ host_result dynamic_miniblink_adapter::unmount() {
   interaction_router_.deactivate();
   wheel_smoothing_.reset();
   bridge_generation_.fetch_add(1, std::memory_order_acq_rel);
+  if (event_lifetime_) {
+    std::lock_guard<std::mutex> lock(event_lifetime_->mutex);
+    event_lifetime_->adapter = nullptr;
+  }
+  if (bridge_adapter_) bridge_adapter_->set_event_sink({});
   auto drain_events = [this] {
     if (owner_window_ == nullptr) return;
     MSG message{};
@@ -783,20 +938,24 @@ host_result dynamic_miniblink_adapter::unmount() {
     bridge_thread_.reset();
   }
   if (engine_thread_ != nullptr) {
-    engine_thread_->stop();
-    engine_thread_.reset();
+    if (!invoke_lifecycle(engine_thread_, [this] { unmount_on_engine(); }))
+      return failure("E_ENGINE_THREAD", "The engine could not complete WebView teardown.");
+    release_runtime();
+    engine_thread_ = nullptr;
   }
 #ifdef SOUI_BRIDGE_BENCHMARK
   benchmark_result_slot_.reset();
 #endif
   drain_events();
   destroy_input_window();
+  if (bridge_adapter_ != nullptr)
+    bridge_set_owner_window(*static_cast<bridge_adapter*>(bridge_adapter_), nullptr, 0);
   owner_window_ = nullptr;
   bridge_adapter_ = nullptr;
 #endif
   document_ready_ = false;
   application_ready_ = false;
-  return success("Miniblink WebView, endpoint, and engine thread unmounted.");
+  return success("Miniblink WebView and endpoint unmounted; process runtime remains available.");
 }
 
 void dynamic_miniblink_adapter::unmount_on_engine() {
@@ -819,20 +978,12 @@ void dynamic_miniblink_adapter::unmount_on_engine() {
   }
   append_host_smoke_log(resource_root_, "adapter-events-drained");
   if (webview_ != nullptr && wkeDestroyWebView != nullptr) {
+    process_runtime().views.erase(static_cast<wkeWebView>(webview_));
     wkeDestroyWebView(static_cast<wkeWebView>(webview_));
     webview_ = nullptr;
   }
   append_host_smoke_log(resource_root_, "adapter-webview-destroyed");
-  if (module_ != nullptr) {
-    if (wkeShutdown != nullptr) wkeShutdown();
-    else if (wkeFinalize != nullptr) (void)wkeFinalize();
-    append_host_smoke_log(resource_root_, "adapter-engine-shutdown");
-    // wkeShutdown owns the initialized engine module lifecycle for this
-    // Miniblink build. Calling FreeLibrary again after shutdown crashes in
-    // the loader teardown path; Windows releases the module at process exit.
-    append_host_smoke_log(resource_root_, "adapter-module-released-by-engine");
-    module_ = nullptr;
-  }
+  module_ = nullptr; // borrowed module; only application exit finalizes it
   resource_root_.clear();
   gpu_trace_path_.clear();
   gpu_trace_active_ = false;
@@ -874,7 +1025,7 @@ host_result dynamic_miniblink_adapter::reload() {
   benchmark_result_slot_.reset();
 #endif
   host_result result = failure("E_ENGINE_THREAD", "The reload did not reach the Miniblink owner thread.");
-  const bool invoked = engine_thread_->invoke([this, &result] {
+  const bool invoked = invoke_lifecycle(engine_thread_, [this, &result] {
     if (webview_ == nullptr || wkeReload == nullptr) {
       result = failure("E_NOT_STARTED", "The child WebView has not been created.");
       return;
@@ -1631,8 +1782,8 @@ std::string dynamic_miniblink_adapter::application_diagnostics() {
       GetEnvironmentVariableA("SOUI_DIAGNOSTIC_SCRIPT", script_diagnostics,
                               sizeof(script_diagnostics)) == 1 &&
       script_diagnostics[0] == '1') {
-    std::string script_result;
-    (void)engine_thread_->invoke([this, &script_result] {
+    const auto script_result = std::make_shared<std::string>();
+    const bool collected = engine_thread_->invoke([this, script_result] {
       if (webview_ == nullptr || wkeGlobalExec == nullptr) return;
       const auto es = wkeGlobalExec(static_cast<wkeWebView>(webview_));
       if (es == nullptr) return;
@@ -1644,22 +1795,23 @@ std::string dynamic_miniblink_adapter::application_diagnostics() {
           "render:window.__souiReactRenderError||'',"
           "ready:document.documentElement.getAttribute('data-soui-react-ready')||''});");
       const auto raw = jsToTempString(es, value);
-      if (raw != nullptr) script_result = raw;
+      if (raw != nullptr) *script_result = raw;
     });
-    if (!script_result.empty()) diagnostics += ",script=" + script_result;
+    if (collected && !script_result->empty()) diagnostics += ",script=" + *script_result;
   }
   return diagnostics;
 }
 
 void dynamic_miniblink_adapter::set_session_id(std::string session_id) {
   std::lock_guard<std::mutex> lock(state_mutex_);
-  session_id_ = std::move(session_id);
+  // A fast page may have bootstrapped before the UI thread finishes start().
+  if (session_id_.empty()) session_id_ = std::move(session_id);
 }
 
 #ifdef SOUI_BRIDGE_BENCHMARK
 std::string dynamic_miniblink_adapter::benchmark_result() {
   if (engine_thread_ == nullptr) return {};
-  return benchmark_result_slot_.poll(engine_thread_.get(),
+  return benchmark_result_slot_.poll(engine_thread_,
       [this] { return collect_benchmark_result_on_engine(); });
 }
 
@@ -1867,42 +2019,91 @@ std::string dynamic_miniblink_adapter::handle_message(std::string_view request,
 
 bool dynamic_miniblink_adapter::enqueue_bridge_message(
     std::string request, bool native_user_gesture) {
-  if (bridge_thread_ == nullptr || engine_thread_ == nullptr)
-    return false;
-  const std::string request_id = bridge_request_id(request);
-  if (request_id.empty())
-    return false;
+  return try_enqueue_bridge_message(std::move(request), native_user_gesture).ok;
+}
+
+host_result dynamic_miniblink_adapter::try_enqueue_bridge_message(
+    std::string request, bool native_user_gesture) {
+  if (!bridge_accepting_.load(std::memory_order_acquire))
+    return failure("E_DISPOSED", "The Host is no longer accepting native requests.");
+  if (bridge_thread_ == nullptr || engine_thread_ == nullptr || !bridge_budget_)
+    return failure("E_BRIDGE_QUEUE", "The asynchronous native bridge queue is unavailable.");
+  if (request.empty() || request.size() > max_bridge_message_bytes)
+    return failure("E_LIMIT_MESSAGE_SIZE", "Bridge message exceeds 64 KiB.");
+  const auto packet = bounded_bridge_packet(request);
+  const auto request_id = packet_string(packet, "requestId");
+  const auto method = packet_string(packet, "method");
+  if (request_id.empty() || method.empty())
+    return failure("E_INVALID_PARAMS", "Expected bounded requestId, method and JSON envelope.");
+  const auto timeout = bridge_wait_timeout(packet);
+  if (!timeout) return failure("E_INVALID_PARAMS", "timeoutMs must be between 1 and 60000.");
   const std::uint64_t generation =
       bridge_generation_.load(std::memory_order_acquire);
-  return bridge_thread_->post(
+  detail::bridge_request_budget::rejection rejected;
+  using request_lane = detail::bridge_request_budget::lane;
+  const auto lane = method == "bridge.session.renew" ? request_lane::renewal :
+      method == "task.unsubscribe" || method == "task.cancel" ? request_lane::control : request_lane::ordinary;
+  const auto lease = bridge_budget_->acquire(request_id, generation,
+      lane, rejected);
+  if (!lease) return rejected == detail::bridge_request_budget::rejection::duplicate
+      ? failure("E_DUPLICATE_REQUEST", "This document already has an unfinished native request with this identity.")
+      : failure("E_BUSY", "The native bridge request capacity is exhausted.");
+  const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout);
+  bridge_diagnostic_trace(this, "queue.admitted", request_id, method);
+  const bool queued = bridge_thread_->post(
       [this, request = std::move(request), request_id,
-       native_user_gesture, generation] {
-        if (generation != bridge_generation_.load(std::memory_order_acquire))
+       native_user_gesture, generation, deadline, lease] {
+        bridge_diagnostic_trace(this, "worker.begin", request_id);
+        if (generation != bridge_generation_.load(std::memory_order_acquire)) {
+          bridge_diagnostic_trace(this, "worker.drop-generation", request_id);
           return;
-        std::string response = handle_message(request, native_user_gesture);
+        }
+        std::string response;
+        if (std::chrono::steady_clock::now() >= deadline) {
+          response = bridge_error(request_id, "E_TIMEOUT", "The request expired in the native queue before execution.");
+        } else try {
+          response = handle_message(request, native_user_gesture);
+          if (response.size() > max_bridge_message_bytes)
+            response = bridge_error(request_id, "E_LIMIT_MESSAGE_SIZE", "Native response exceeds 64 KiB.");
+        } catch (...) {
+          response = bridge_error(request_id, "E_NATIVE_EXCEPTION", "The native handler failed.");
+        }
+        bridge_diagnostic_trace(this, "worker.response", request_id,
+            "bytes=" + std::to_string(response.size()));
         if (generation != bridge_generation_.load(std::memory_order_acquire)
-            || engine_thread_ == nullptr)
+            || engine_thread_ == nullptr) {
+          bridge_diagnostic_trace(this, "worker.drop-before-engine", request_id);
           return;
-        (void)engine_thread_->post(
-            [this, request_id, response = std::move(response), generation] {
+        }
+        const bool posted = engine_thread_->post(
+            [this, request_id, response = std::move(response), generation, lease] {
+              bridge_diagnostic_trace(this, "engine.resolve-begin", request_id);
+              // Completing a JS Promise may reenter admission before RunJS
+              // returns. Return its capacity before notifying that caller.
+              lease->release();
               resolve_bridge_response(request_id, response, generation);
+              bridge_diagnostic_trace(this, "engine.resolve-end", request_id);
             });
+        bridge_diagnostic_trace(this, posted ? "worker.engine-posted" : "worker.engine-post-failed",
+            request_id);
       });
+  bridge_diagnostic_trace(this, queued ? "queue.posted" : "queue.post-failed", request_id);
+  return queued ? success("Native request admitted.")
+      : failure("E_BRIDGE_QUEUE", "The asynchronous native bridge queue is stopping.");
 }
 
 void dynamic_miniblink_adapter::resolve_bridge_response(
     std::string request_id, std::string response, std::uint64_t generation) {
 #ifdef _WIN32
   if (generation != bridge_generation_.load(std::memory_order_acquire)
-      || webview_ == nullptr || wkeRunJS == nullptr)
+      || webview_ == nullptr || wkeRunJS == nullptr) {
+    bridge_diagnostic_trace(this, "resolver.drop", request_id);
     return;
-  const auto id_literal = json_string_literal(request_id);
-  const auto response_literal = json_string_literal(response);
-  const auto script =
-      "(function(){var p=window.__souiBridgePending;var id=" + id_literal
-      + ";if(!p||!p[id])return;var f=p[id];delete p[id];f("
-      + response_literal + ");})();";
-  (void)wkeRunJS(static_cast<wkeWebView>(webview_), script.c_str());
+  }
+  const auto script = bridge_resolution_script(request_id, response);
+  const auto result = wkeRunJS(static_cast<wkeWebView>(webview_), script.c_str());
+  bridge_diagnostic_trace(this, "resolver.ran", request_id,
+      "result=" + std::to_string(static_cast<long long>(result)));
 #else
   (void)request_id;
   (void)response;
@@ -2011,7 +2212,19 @@ void dynamic_miniblink_adapter::install_js_bindings() {
 void dynamic_miniblink_adapter::dispatch_event(const std::string& event_json) {
 #ifdef _WIN32
   if (!document_ready_ || engine_thread_ == nullptr) return;
-  (void)engine_thread_->post([this, event_json] { dispatch_event_now(event_json); });
+  const auto lifetime = event_lifetime_;
+  const auto generation = bridge_generation_.load(std::memory_order_acquire);
+  (void)engine_thread_->post([lifetime, generation, event_json] {
+    dynamic_miniblink_adapter* adapter = nullptr;
+    {
+      std::lock_guard<std::mutex> lock(lifetime->mutex);
+      adapter = lifetime->adapter;
+    }
+    // Teardown itself is serialized on this same owner thread. Drop events
+    // queued by a detached sink or an obsolete document without touching it.
+    if (adapter && generation == adapter->bridge_generation_.load(std::memory_order_acquire))
+      adapter->dispatch_event_now(event_json);
+  });
 #else
   (void)event_json;
 #endif
@@ -2073,45 +2286,73 @@ void WKE_CALL_TYPE document_ready_callback(wkeWebView, void* param) {
   if (param != nullptr) static_cast<dynamic_miniblink_adapter*>(param)->notify_document_ready();
 }
 
-jsValue WKE_CALL_TYPE native_window_chrome(jsExecState es, void* param) {
-  auto* adapter = static_cast<dynamic_miniblink_adapter*>(param);
+jsValue WKE_CALL_TYPE native_window_chrome(jsExecState es, void*) {
+  auto* adapter = adapter_for_context(es);
   if (!adapter || !es || jsArgCount(es) != 1 || !jsIsString(jsArg(es, 0))) return jsBoolean(false);
   const char* raw = jsToTempString(es, jsArg(es, 0));
   return jsBoolean(raw && adapter->update_window_chrome(es, raw));
 }
 
-jsValue WKE_CALL_TYPE native_post_message(jsExecState es, void* param) {
-  auto* adapter = static_cast<dynamic_miniblink_adapter*>(param);
-  if (adapter == nullptr || es == nullptr || jsArgCount(es) != 1) return jsUndefined();
+jsValue WKE_CALL_TYPE native_post_message(jsExecState es, void*) {
+  auto* adapter = adapter_for_context(es);
+  if (adapter == nullptr || es == nullptr || jsArgCount(es) != 1 || !jsIsString(jsArg(es, 0))) return jsUndefined();
   const auto raw = jsToTempString(es, jsArg(es, 0));
   if (raw == nullptr) return jsUndefined();
   if (!adapter->owns_execution_context(es)) {
     return jsString(es, R"({"requestId":"","ok":false,"error":{"code":"E_UNAUTHORIZED","message":"Bridge calls are restricted to the trusted WebView context."}})");
   }
-  const std::string request(raw);
-  if (bridge_request_method(request) == "bridge.bootstrap") {
-    const std::string response = adapter->handle_message(
-        request, adapter->processing_user_gesture());
+  std::string request_id;
+  try {
+    const std::string_view raw_request(raw);
+    if (raw_request.empty() || raw_request.size() > max_bridge_message_bytes) {
+      const auto response = bridge_error({}, "E_LIMIT_MESSAGE_SIZE", "Bridge message exceeds 64 KiB.");
+      return jsString(es, response.c_str());
+    }
+    const std::string request(raw_request); // jsEval can invalidate Miniblink's temporary string.
+    const auto packet = bounded_bridge_packet(request);
+    request_id = packet_string(packet, "requestId");
+    const auto method = packet_string(packet, "method");
+    if (request_id.empty() || method.empty()) {
+      const auto response = bridge_error(request_id, "E_INVALID_PARAMS", "Expected bounded requestId, method and JSON envelope.");
+      return jsString(es, response.c_str());
+    }
+    if (method == "bridge.bootstrap") {
+      bridge_diagnostic_trace(adapter, "binding.bootstrap", request_id);
+      const std::string response = adapter->handle_message(request, adapter->processing_user_gesture());
+      return jsString(es, response.c_str());
+    }
+    const auto timeout = bridge_wait_timeout(packet);
+    if (!timeout) {
+      const auto response = bridge_error(request_id, "E_INVALID_PARAMS", "timeoutMs must be between 1 and 60000.");
+      return jsString(es, response.c_str());
+    }
+    const bool native_user_gesture = adapter->processing_user_gesture();
+    // Reserve the document resolver before admitting any side effects. Both
+    // creation and response delivery run on this same engine owner.
+    const auto create = std::string{"return "} + detail::create_bridge_pending_script
+        + "(" + json_string_literal(request_id) + "," + std::to_string(timeout) + ","
+        + (method == "bridge.session.renew" ? "true" : "false") + ");";
+    const auto waiting = jsEval(es, create.c_str());
+    const bool waiting_is_string = jsIsString(waiting);
+    bridge_diagnostic_trace(adapter, "binding.resolver-created", request_id,
+        "value=" + std::to_string(static_cast<long long>(waiting)) +
+        " string=" + (waiting_is_string ? std::string{"1"} : std::string{"0"}));
+    if (waiting_is_string) return waiting;
+    host_result admitted;
+    try { admitted = adapter->try_enqueue_bridge_message(std::string(request), native_user_gesture); }
+    catch (...) { admitted = failure("E_NATIVE_EXCEPTION", "The native bridge could not admit this request."); }
+    bridge_diagnostic_trace(adapter, admitted.ok ? "binding.admitted" : "binding.rejected",
+        request_id, admitted.code);
+    if (!admitted.ok) {
+      const auto response = bridge_error(request_id, admitted.code.c_str(), admitted.message.c_str());
+      const auto resolve = "return " + bridge_resolution_script(request_id, response) + ";";
+      return jsEval(es, resolve.c_str());
+    }
+    return waiting;
+  } catch (...) {
+    const auto response = bridge_error(request_id, "E_NATIVE_EXCEPTION", "The native bridge could not read this request.");
     return jsString(es, response.c_str());
   }
-
-  const std::string request_id = bridge_request_id(request);
-  if (request_id.empty()
-      || !adapter->enqueue_bridge_message(
-          request, adapter->processing_user_gesture())) {
-    const std::string response =
-        "{\"requestId\":" + json_string_literal(request_id)
-        + ",\"ok\":false,\"error\":{\"code\":\"E_BRIDGE_QUEUE\","
-          "\"message\":\"The asynchronous native bridge queue is unavailable.\"}}";
-    return jsString(es, response.c_str());
-  }
-
-  const auto id_literal = json_string_literal(request_id);
-  const auto script =
-      "return (function(){var p=window.__souiBridgePending="
-      "window.__souiBridgePending||Object.create(null);var id=" + id_literal
-      + ";return new Promise(function(resolve){p[id]=resolve;});})()";
-  return jsEval(es, script.c_str());
 }
 
 #endif
@@ -2124,97 +2365,130 @@ soui_miniblink_host::~soui_miniblink_host() {
 }
 
 host_result soui_miniblink_host::start(const host_config& config) {
+  if (lifecycle_operation_) return failure("E_BUSY", "A host lifecycle operation is already in progress.");
   if (session_ != nullptr && !session_->terminal()) return failure("E_ALREADY_STARTED", "Host is already running.");
-  if (!adapter_) return failure("E_HOST_ADAPTER_MISSING", "A SOUI/Miniblink host adapter is required.");
+  if (!adapter_) return failure("E_HOST_ADAPTER_MISSING", "A renderer host adapter is required.");
   const auto architecture = validate_architecture(config);
   if (!architecture.ok) return architecture;
   const auto resources = validate_local_resources(config.resource_root);
   if (!resources.ok) return resources;
+  auto next_session = std::make_unique<soui::runtime::webview_session>();
+  const lifecycle_operation_guard operation(lifecycle_operation_);
   const auto mounted = adapter_->mount(config);
   if (!mounted.ok) return mounted;
-  session_ = std::make_unique<soui::runtime::webview_session>();
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {
-    dynamic->set_session_id(session_->session_id());
-  }
+  session_ = std::move(next_session);
+  adapter_->set_session_id(session_->session_id());
   (void)session_->mark_ready();
-  return success("SOUI SHostWnd and Miniblink child WebView are ready with local resources.");
+  return mounted;
 }
 
 host_result soui_miniblink_host::hide() {
-  if (session_ == nullptr) return failure("E_NOT_STARTED", "Host has not started.");
-  const auto event = session_->hide();
-  if (!event.has_value()) return failure("E_INVALID_LIFECYCLE", "WebView cannot be hidden in its current state.");
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {
-    return dynamic->show(false);
-  }
-  return success("WebView hidden without cancelling tasks.");
+  const auto active = require_running();
+  if (!active.ok) return active;
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  const auto hidden = adapter_->show(false);
+  if (!hidden.ok) return hidden;
+  (void)session_->hide();
+  return hidden;
+}
+
+host_result soui_miniblink_host::show() {
+  const auto active = require_running();
+  if (!active.ok) return active;
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  const auto shown = adapter_->show(true);
+  if (!shown.ok) return shown;
+  if (session_->state() == soui::runtime::lifecycle_state::hidden) (void)session_->mark_ready();
+  return shown;
 }
 
 host_result soui_miniblink_host::reload() {
-  if (session_ == nullptr) return failure("E_NOT_STARTED", "Host has not started.");
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {
-    const auto result = dynamic->reload();
-    if (!result.ok) return result;
-  }
-  return session_->reload().has_value() ? success("WebView reload requested.")
-                                        : failure("E_INVALID_LIFECYCLE", "WebView cannot reload in its current state.");
+  const auto active = require_running();
+  if (!active.ok) return active;
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  const auto reloaded = adapter_->reload();
+  if (!reloaded.ok) return reloaded;
+  (void)session_->reload();
+  adapter_->set_session_id(session_->session_id());
+  return reloaded;
 }
 
 host_result soui_miniblink_host::close() {
-  if (session_ == nullptr) return failure("E_NOT_STARTED", "Host has not started.");
-  const auto event = session_->close();
-  if (!event.has_value()) return failure("E_INVALID_LIFECYCLE", "WebView cannot close in its current state.");
-  return adapter_->unmount();
+  const auto active = require_running();
+  if (!active.ok) return active;
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  const auto unmounted = adapter_->unmount();
+  if (!unmounted.ok) return unmounted;
+  (void)session_->close();
+  return unmounted;
 }
 
 host_result soui_miniblink_host::destroy() {
+  if (lifecycle_operation_) return failure("E_BUSY", "A host lifecycle operation is already in progress.");
   if (session_ == nullptr) return success("WebView was not started.");
-  const auto event = session_->destroy();
-  if (!event.has_value()) return success("WebView was already destroyed.");
-  return adapter_->unmount();
+  if (session_->terminal()) {
+    // close() publishes the terminal state; destroy() also releases its event
+    // subscriptions. Keep that cleanup contract without unmounting twice.
+    (void)session_->destroy();
+    return success("WebView was already closed or destroyed.");
+  }
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  const auto unmounted = adapter_->unmount();
+  if (!unmounted.ok) return unmounted;
+  (void)session_->destroy();
+  return unmounted;
 }
 
 host_result soui_miniblink_host::resize(int width, int height) {
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {
-    return dynamic->resize(width, height);
-  }
-  return success("Host resize recorded by the test adapter.");
+  const auto active = require_running();
+  if (!active.ok) return active;
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  return adapter_->resize(width, height);
 }
 
 host_result soui_miniblink_host::focus() {
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {
-    return dynamic->focus();
-  }
-  return success("Host focus recorded by the test adapter.");
+  const auto active = require_running();
+  if (!active.ok) return active;
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  return adapter_->focus();
 }
 
 void soui_miniblink_host::pump() {
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) dynamic->pump();
+  if (running()) adapter_->pump();
 }
 
 void soui_miniblink_host::deliver_posted_event(void* payload) {
-  if (auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get()); dynamic != nullptr) {
-    dynamic->deliver_posted_event(payload);
-  }
+  // Late payloads must still be consumed by their originating adapter.
+  if (adapter_) adapter_->deliver_posted_event(payload);
 }
 
 bool soui_miniblink_host::document_ready() const noexcept {
-  const auto* dynamic = dynamic_cast<const dynamic_miniblink_adapter*>(adapter_.get());
-  return dynamic != nullptr && dynamic->document_ready();
+  return running() && adapter_->document_ready();
 }
 
 bool soui_miniblink_host::application_ready() {
-  auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get());
-  return dynamic != nullptr && dynamic->application_ready();
+  return running() && adapter_->application_ready();
 }
 
 std::string soui_miniblink_host::application_diagnostics() {
-  auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get());
-  return dynamic == nullptr ? "test-adapter" : dynamic->application_diagnostics();
+  return running() ? adapter_->application_diagnostics() : std::string{};
+}
+
+bool soui_miniblink_host::running() const noexcept {
+  return session_ != nullptr && !session_->terminal() && !lifecycle_operation_;
+}
+
+host_result soui_miniblink_host::require_running() const {
+  if (lifecycle_operation_) return failure("E_BUSY", "A host lifecycle operation is already in progress.");
+  if (session_ == nullptr) return failure("E_NOT_STARTED", "Host has not started.");
+  if (session_->terminal()) return failure("E_INVALID_LIFECYCLE", "The WebView session is already closed or destroyed.");
+  return success();
 }
 
 #ifdef SOUI_PERFORMANCE_DIAGNOSTICS
 host_result soui_miniblink_host::request_memory_recovery() {
+  const auto active = require_running();
+  if (!active.ok) return active;
   auto* dynamic = dynamic_cast<dynamic_miniblink_adapter*>(adapter_.get());
   return dynamic == nullptr
       ? failure("E_HOST_ADAPTER_MISSING", "The dynamic Miniblink adapter is unavailable.")

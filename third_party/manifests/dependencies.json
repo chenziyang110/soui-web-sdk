@@ -1,6 +1,6 @@
 {
   "schema": "soui.dependencies/v2",
-  "sdkVersion": "0.2.0-preview.2",
+  "sdkVersion": "0.4.0-preview.2",
   "releaseReady": false,
   "dependencies": [
     {
@@ -8,6 +8,7 @@
       "source": "third_party/sources/soui/SOURCE-MANIFEST.json",
       "version": "SOUI 2.9.0.3 lineage",
       "license": "upstream source notices",
+      "sourceNormalization": "lf",
       "sha256": "cdb534f9d6e90f1f96e447064392ef7c5f8d7e1566ebbccb0f2c1722d6263348"
     },
     {
@@ -15,48 +16,87 @@
       "source": "third_party/sources/miniblink/SOURCE-MANIFEST.json",
       "version": "Miniblink49 VS2022 working snapshot",
       "license": "upstream and bundled dependency notices",
+      "sourceNormalization": "lf",
       "sha256": "9ce3172a363d7be251bdf60d3a7dbd8cf70cf7df80e114bad0f8742177cedb75"
+    },
+    {
+      "id": "miniblink-encoding-patch",
+      "source": "third_party/patches/miniblink/0007-mark-utf8-source-encoding.patch",
+      "version": "preview.7 post-import patch",
+      "license": "same terms as Miniblink source",
+      "sourceNormalization": "lf",
+      "sha256": "7a4cd0cd788e87e9d0ae2d42b5fe55fb6800ee7a2df8e858e8932b78dbaefbce"
+    },
+    {
+      "id": "miniblink-scheduler-patch",
+      "source": "third_party/patches/miniblink/0008-bound-ready-task-priority-wait.patch",
+      "version": "preview.14 ready-task fairness",
+      "license": "same terms as Miniblink source",
+      "sourceNormalization": "lf",
+      "sha256": "77956f5cbce1a5d2316e64bfba5d8ed72f0f26f5b58f5d9e20538f8d2636c801"
+    },
+    {
+      "id": "miniblink-build-provenance",
+      "source": "third_party/manifests/kernel-build-preview14.json",
+      "version": "preview.14 dual-architecture rebuild",
+      "license": "build identity record",
+      "sourceNormalization": "lf",
+      "sha256": "9ead5a63f1c0db3081992278c40a1f8dc68c1ae0790327b7c3f89aac3813ea30"
     },
     {
       "id": "zlib-source",
       "source": "third_party/sources/zlib/source-manifest.json",
       "version": "1.2.11",
       "license": "Zlib",
-      "sha256": "3ef0e4e94c307e421773109e0444c318d8b63f7c9de093fce7fec6ad18272bea"
+      "sourceNormalization": "lf",
+      "sha256": "90ae57c39397f7eb1f13742f68d0276247f0e9f5402eeac647b60b0fb4ff9921"
     },
     {
       "id": "json",
       "source": "third_party/include/json/json.hpp",
       "version": "pinned single header",
       "license": "MIT",
-      "sha256": "853b2eb3bf7632c949f4a2dd6fb8a629c5ff25cc0059d29c7d21915dc719487f"
+      "sourceNormalization": "lf",
+      "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
+    },
+    {
+      "id": "tailwind-utility-css",
+      "source": "demos/workbench/web/apps/react/utility.css",
+      "version": "3.4.17 generated utility subset",
+      "license": "MIT; third_party/licenses/tailwindcss-3.4.17-LICENSE.txt",
+      "sourceNormalization": "lf",
+      "sha256": "b7bd9ce4e821959baf00ba7d1f60d70d1038de657a7105b15147a52ee782c816"
     },
     {
       "id": "miniblink-x86",
       "source": "third_party/prebuilt/x86/miniblink/node.dll",
-      "version": "source-consistent preview 2026-09-21",
+      "version": "rebuilt preview.14 2026-09-26",
       "license": "binary redistribution review incomplete",
-      "sha256": "1233a8542de4f6891e09b14e49270ddb0dabea703e387fe256dbacb716dc5978"
+      "sourceNormalization": "none",
+      "sha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3"
     },
     {
       "id": "zlib-runtime-x86",
       "source": "third_party/prebuilt/x86/runtime/vc/zlib1.dll",
       "version": "1.2.11 app-local",
       "license": "Zlib",
+      "sourceNormalization": "none",
       "sha256": "39611555cc1ba130a88cc3b32835207004dac7915d2fda42186c75b7743908ee"
     },
     {
       "id": "miniblink-x64",
       "source": "third_party/prebuilt/x64/miniblink/node.dll",
-      "version": "source-consistent preview 2026-09-21",
+      "version": "rebuilt preview.14 2026-09-26",
       "license": "binary redistribution review incomplete",
-      "sha256": "8f155e8466e82099f64334bbc56db35368e0f85d44ed38e11a13768edd1af199"
+      "sourceNormalization": "none",
+      "sha256": "fe4160a70587d027504c409b8fd2bc5c87d78392811bff0c969f69c41a44d951"
     },
     {
       "id": "zlib-runtime-x64",
       "source": "third_party/prebuilt/x64/runtime/vc/zlib1.dll",
       "version": "1.2.11 app-local",
       "license": "Zlib",
+      "sourceNormalization": "none",
       "sha256": "fb6726dbcd7bb3659ca126ef4d5c7f83de46ab5e2b470316925e1d5873ec9045"
     },
     {
@@ -64,33 +104,47 @@
       "source": "sdk/web/package-lock.json",
       "version": "lockfile",
       "license": "resolved package licenses",
-      "sha256": "80581b59b3597ca51dadfdc837a78e7abbdc741e938b48e80292f49ae7e36272"
+      "sourceNormalization": "lf",
+      "sha256": "ce74e5bbdf5faccca97ad189dad6ad96446f66da39a6004fdf5a10c72682f248"
     },
     {
       "id": "template-web",
       "source": "templates/desktop-app/web/package-lock.json",
       "version": "lockfile",
       "license": "resolved package licenses",
-      "sha256": "8fe6b1e6386cccfb071b26ee5fd7ab3ba426b3a2efb14365c20b5e37f91e47d1"
+      "sourceNormalization": "lf",
+      "sha256": "56553b7df7d73417629ddb7459df06c0ff1274a745f35bfedde8d28376714d33"
+    },
+    {
+      "id": "modern-template-web",
+      "source": "templates/modern-app/web/package-lock.json",
+      "version": "lockfile",
+      "license": "resolved package licenses",
+      "sourceNormalization": "lf",
+      "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+    },
+    {
+      "id": "webview2-sdk",
+      "source": "sdk/renderers/webview2/dependency.json",
+      "version": "1.0.4258.31 optional SDK",
+      "license": "Microsoft SDK LICENSE and NOTICE; Runtime separate",
+      "sourceNormalization": "lf",
+      "sha256": "de654c9666da5e7b36eaadbaacd297c49942bc6ba8bcd9f6fee141f0308956e5"
     },
     {
       "id": "demo-web",
       "source": "demos/workbench/web/package-lock.json",
       "version": "lockfile",
       "license": "resolved package licenses",
-      "sha256": "530a7b639facadb78de45ed9b5c3648988fd99d3fe9577bae8cd904e2631481d"
+      "sourceNormalization": "lf",
+      "sha256": "499b19c41a20ec56113a33240244aee79b81f9f6ebcfd03b384b1cb3dc7171e6"
     }
   ],
   "nativeFiles": [
     {
       "path": "third_party/prebuilt/x64/miniblink/node.dll",
-      "bytes": 35844096,
-      "sha256": "8f155e8466e82099f64334bbc56db35368e0f85d44ed38e11a13768edd1af199"
-    },
-    {
-      "path": "third_party/prebuilt/x64/miniblink/node.dll.before-gpu-lcd",
-      "bytes": 35761152,
-      "sha256": "2277bd68d25c4fb7930cc9a1f54679556e4f21db7d35adf76db965e130f323b0"
+      "bytes": 35865600,
+      "sha256": "fe4160a70587d027504c409b8fd2bc5c87d78392811bff0c969f69c41a44d951"
     },
     {
       "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-console-l1-1-0.dll",
@@ -429,13 +483,8 @@
     },
     {
       "path": "third_party/prebuilt/x86/miniblink/node.dll",
-      "bytes": 22977024,
-      "sha256": "1233a8542de4f6891e09b14e49270ddb0dabea703e387fe256dbacb716dc5978"
-    },
-    {
-      "path": "third_party/prebuilt/x86/miniblink/node.dll.before-gpu-lcd",
-      "bytes": 22924288,
-      "sha256": "1ea6c567a3082d417f95563ebe851d7e08096c9a29f18499d3dacc73787d895c"
+      "bytes": 22988288,
+      "sha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3"
     },
     {
       "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-console-l1-1-0.dll",
@@ -776,6 +825,7 @@
   "notes": [
     "SOURCE-MANIFEST hashes identify exported source snapshots; build products are excluded from full-source packaging.",
     "Microsoft VC/UCRT redistributables are app-local binaries, with no source redistribution.",
+    "Historical node.dll.before-gpu-lcd files remain in full source archives but are excluded from active native dependencies and SDK Core packages.",
     "Full per-file source delivery integrity is recorded separately in source-manifest.json."
   ]
 }

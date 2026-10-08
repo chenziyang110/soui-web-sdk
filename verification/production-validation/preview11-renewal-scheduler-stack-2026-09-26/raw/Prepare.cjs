@@ -1,0 +1,31 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),assert=require('node:assert/strict'),cp=require('node:child_process');
+const root=__dirname,parent='C:/SOUI-SDK-production-validation/preview11-renewal-supervisor-race-20260926';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex'),encode=v=>JSON.stringify(v,null,2)+'\n',write=(p,b)=>{fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,b,{flag:'wx'});};
+const raw=fs.readFileSync(path.join(parent,'freeze.json'));assert.equal(hash(raw),'b58de0c44a2ae96a12aa144f4d8607b800415c40b1311591e05b91f67486faef');const base=JSON.parse(raw),old=base.runtimes.x86;
+for(const f of old.payload.files){const b=fs.readFileSync(path.join(old.runtime,f.path));assert.equal(b.length,f.bytes);assert.equal(hash(b),f.sha256);write(path.join(root,'runtimes/x86',f.path),b);}
+const pdb='F:/work/SOUI_WEB/soui-sdk/out/dependencies/x86/miniblink/bin/miniblink.pdb',cdb='C:/Program Files (x86)/Windows Kits/10/Debuggers/x86/cdb.exe';
+const dllInfo=cp.spawnSync('llvm-readobj.exe',['--coff-debug-directory',path.join(root,'runtimes/x86/node.dll')],{encoding:'utf8',windowsHide:true});assert.equal(dllInfo.status,0);assert.match(dllInfo.stdout,/PDBGUID: \{D47D4204-C2AE-4E48-A148-D7B5140B01F9\}/);assert.match(dllInfo.stdout,/PDBAge: 4/);
+const pdbInfo=cp.spawnSync('llvm-pdbutil.exe',['dump','--summary',pdb],{encoding:'utf8',windowsHide:true});assert.equal(pdbInfo.status,0);assert.match(pdbInfo.stdout,/GUID: \{D47D4204-C2AE-4E48-A148-D7B5140B01F9\}/);assert.match(pdbInfo.stdout,/Age: 4/);write(path.join(root,'dll-debug-directory.txt'),dllInfo.stdout);write(path.join(root,'pdb-summary.txt'),pdbInfo.stdout);
+let run=fs.readFileSync(path.join(parent,'Run.cjs'),'utf8');const replace=(from,to)=>{assert.equal(run.split(from).length,2,from);run=run.replace(from,to);};
+replace("assert(['x86','x64'].includes(arch));","assert.equal(arch,'x86');");
+replace("assert.equal(f.schema,'soui.renewal-supervisor-clock/v1');","assert.equal(f.schema,'soui.renewal-scheduler-stack/v1');for(const x of [f.pdb,f.debugger])assert.equal(hash(fs.readFileSync(x.path)),x.sha256);");
+const begin=run.indexOf(' const htmlFile='),end=run.indexOf(' const second=gate();');assert(begin>0&&end>begin);run=run.slice(0,begin)+" const payload=snapshot(runtime);write(path.join(run,'payload-before.json'),encode(payload));\n"+run.slice(end);
+run=run.replaceAll('animationOffDiagnosticOnly:true','schedulerStackDiagnosticOnly:true');
+replace(' let closed=false,timedOut=false,externalLoad=false,spawnError=null;',' let debuggerDone=Promise.resolve(),debuggerResult=null;\n let closed=false,timedOut=false,externalLoad=false,spawnError=null;');
+const marker=" const result=await new Promise(resolve=>child.once('close'";assert.equal(run.split(marker).length,2);
+run=run.replace(marker,` timers.push(setTimeout(()=>{
+  if(closed||!child.pid)return;
+  const debuggerArgs=['-p',String(child.pid),'-pd','-y',path.dirname(f.pdb.path),'-logo',path.join(run,'debugger.log'),'-cf',path.join(root,'scheduler.cdb')];
+  write(path.join(run,'debugger-launch.json'),encode({program:f.debugger.path,args:debuggerArgs,ownedNativePid:child.pid,expectedExecutable:exe,startedAt:new Date().toISOString()}));
+  const dout=fs.openSync(path.join(run,'debugger.stdout.log'),'wx'),derr=fs.openSync(path.join(run,'debugger.stderr.log'),'wx');
+  const debug=cp.spawn(f.debugger.path,debuggerArgs,{windowsHide:true,env:helperEnv,stdio:['ignore',dout,derr]});let debugTimedOut=false,debugError=null;
+  const limit=setTimeout(()=>{debugTimedOut=true;debug.kill();},20000);debug.once('error',e=>{debugError=String(e);});
+  debuggerDone=new Promise(resolve=>debug.once('close',(exitCode,signal)=>{clearTimeout(limit);fs.closeSync(dout);fs.closeSync(derr);debuggerResult={pid:debug.pid,exitCode,signal,timedOut:debugTimedOut,error:debugError,finishedAt:new Date().toISOString()};write(path.join(run,'debugger-result.json'),encode(debuggerResult));resolve();}));
+ },10000));
+`+marker);
+replace('closed=true;timers.forEach(clearTimeout);','closed=true;timers.forEach(clearTimeout);await debuggerDone;');
+replace('...result,pid:child.pid,timedOut,externalLoad,spawnError,identityError,','...result,pid:child.pid,timedOut,externalLoad,spawnError,identityError,debuggerResult,');
+write(path.join(root,'Run.cjs'),run);write(path.join(root,'Capture-Command.cjs'),fs.readFileSync(path.join(parent,'Capture-Command.cjs')));
+const controls=['Prepare.cjs','Run.cjs','Capture-Command.cjs','scheduler.cdb'].map(file=>{const b=fs.readFileSync(path.join(root,file));return{path:file,bytes:b.length,sha256:hash(b)};});
+const freeze={schema:'soui.renewal-scheduler-stack/v1',version:base.version,parentFreezeSha256:hash(raw),runtimes:{x86:{...old,runtime:path.join(root,'runtimes/x86')}},pdb:{path:pdb,sha256:hash(fs.readFileSync(pdb)),guid:'D47D4204-C2AE-4E48-A148-D7B5140B01F9',age:4},debugger:{path:cdb,sha256:hash(fs.readFileSync(cdb))},controls,animatedPageUnchanged:true,guiExecuted:false,productionPass:false};write(path.join(root,'freeze.json'),encode(freeze));console.log(encode({freezeSha256:hash(fs.readFileSync(path.join(root,'freeze.json'))),matchingPdb:true,animatedPageUnchanged:true,guiExecuted:false}));

@@ -1,0 +1,29 @@
+{
+  "at": "2026-09-26T19:12:07.473Z",
+  "baseCommit": "aedd8d223f8a73a6b9f11f9ba49456381815d5cb",
+  "branch": "codex/sdk-v02-continuous-task",
+  "status": "implemented-awaiting-green-and-desktop",
+  "red": {
+    "configurationExitCode": 0,
+    "compilationExitCode": 0,
+    "behaviorExitCode": 1
+  },
+  "sourceSha256": "827f16e7c8996496db0ee60961bf400b4322b91bb19f15e88f005fea8bb25317",
+  "sourceFiles": 718,
+  "sdkCoreSourceMatchesFrozenPackage": true,
+  "demoProductionAuditVulnerabilities": 0,
+  "activeWorkloads": {
+    "ProcessId": 43980,
+    "Name": "qemu-system-x86_64.exe",
+    "CreationDate": "/Date(1790449711514)/"
+  },
+  "greenExecuted": false,
+  "newApplicationBuildExecuted": false,
+  "guiExecuted": false,
+  "releaseReady": false,
+  "notes": [
+    "Initial test array input expectation corrected to reject at public task.start admission; original test preserved.",
+    "An exploratory node --check Run-Green.ps1 failed due unsupported file extension; the proper PowerShell parser and node --check Bind-Inputs.cjs subsequently passed; neither was an SDK test.",
+    "Outer gate blocked green-x64-attempt1-driver before launch; that attempt name remains unused."
+  ]
+}

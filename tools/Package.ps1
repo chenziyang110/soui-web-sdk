@@ -11,11 +11,12 @@ $zip=Get-Command 7z.exe -ErrorAction SilentlyContinue
 $zipPath=if($zip){$zip.Source}else{Join-Path $env:ProgramFiles '7-Zip/7z.exe'}
 if(-not(Test-Path -LiteralPath $zipPath)){throw 'Install 7-Zip or put 7z.exe on PATH.'}
 New-Item -ItemType Directory -Force -Path (Split-Path $OutputFile) | Out-Null
-& node (Join-Path $root 'tools/internal/source-archive.cjs')
-if($LASTEXITCODE -ne 0){throw 'Source manifest creation failed'}
-Push-Location $root
+$stage=Join-Path $root ('out/package/source-'+[Guid]::NewGuid().ToString('N'))
+& node (Join-Path $root 'tools/internal/source-archive.cjs') stage $stage
+if($LASTEXITCODE -ne 0){throw 'Source snapshot failed; add reviewed files and refresh the manifest before packaging.'}
+Push-Location $stage
 try {
- & $zipPath a -tzip -mx=5 -mmt=2 $OutputFile '@out/package/files.txt' -scsUTF-8 *> (Join-Path $root 'out/package/archive.log')
+ & $zipPath a -tzip -mx=5 -mmt=2 $OutputFile '*' -scsUTF-8 *> (Join-Path $root 'out/package/archive.log')
  if($LASTEXITCODE -ne 0){throw 'Archive creation failed; see out/package/archive.log'}
  & $zipPath t $OutputFile *> (Join-Path $root 'out/package/archive-test.log')
  if($LASTEXITCODE -ne 0){throw 'Archive verification failed'}

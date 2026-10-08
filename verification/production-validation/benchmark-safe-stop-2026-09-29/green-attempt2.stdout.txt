@@ -1,0 +1,30 @@
+✔ failure cleanup stops its owned process handle without following a reused parent PID (12194.9489ms)
+✔ failed identity verification falls back to the owned process handle (6119.8363ms)
+✔ preflight process list rejects missing or malformed tasklist rows (1.1335ms)
+✔ preflight and live gate share the full SOUI workload classification (0.1983ms)
+✔ live gate excludes the benchmark run and its descendants while finding external load (0.3508ms)
+✔ live gate rejects infrastructure started inside its own process tree (0.1206ms)
+✔ live gate remembers observed child identity after its parent exits (0.1074ms)
+✔ live gate does not trust a new child of an absent parent PID (0.0598ms)
+✔ live gate records when the runner has disappeared (0.478ms)
+✔ live gate treats a benchmark host outside the owned tree as interference (0.0824ms)
+✔ live gate catches other SOUI tests and build drivers (0.0765ms)
+✔ live gate rejects a reused PID with a different creation identity (0.0945ms)
+✔ live gate does not adopt an older process after its parent PID is reused (0.1169ms)
+✔ live gate fails closed if the runner PID changes identity (0.0711ms)
+✔ Windows live gate obtains process identities with a fail-closed query (1945.3379ms)
+✔ live gate stops only its own runner when external workload appears (50.7356ms)
+✔ live gate stops its own runner handle even after verifying its process identity (1972.1589ms)
+✔ live gate fails closed and stops its runner when the process query fails (106.081ms)
+✔ live gate stops its runner if the gate log cannot be written (44.7639ms)
+✔ live gate lets an isolated runner exit normally (275.167ms)
+✔ live gate refuses a sample that cannot identify its own runner (49.1227ms)
+✔ live gate catches interference that starts after a clean initial sample (117.4127ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 18412.7717

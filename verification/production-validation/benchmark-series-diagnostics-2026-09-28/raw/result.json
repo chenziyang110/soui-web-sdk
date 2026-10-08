@@ -1,0 +1,22 @@
+{
+  "schema": "soui.benchmark-full-tree-tests/v1",
+  "startedAt": "2026-09-28T02:20:26.6352609Z",
+  "finishedAt": "2026-09-28T02:20:31.3156604Z",
+  "command": "node --test tests/benchmark/series-interference.test.cjs tests/benchmark/series-summary.test.cjs",
+  "exitCode": 0,
+  "sourceBefore": {
+    "benchmarks/protocol/summarize-series.cjs": "0645143bd0c2a82e63eff7629c0660f2bc7659a0ce56b96e7a8f9ef62e045974",
+    "benchmarks/protocol/run-series.cjs": "b790a466e412ec8b499791b122a85e845e6f681debac5a97012e7e9b2fc3c821",
+    "benchmarks/protocol/README.md": "1cb7089c23ae2b427b7ae77e1f22275fd14ae1a91a028f12fc6c60e3e4a2e674",
+    "tests/benchmark/series-summary.test.cjs": "a91de053aff26437559450d139560eb7b16e3914d3125ce7d19054884b8214a9",
+    "tests/benchmark/series-interference.test.cjs": "7983b12a2e8f7630ab23e947f3e620dcce05432d10b85cdb4740409318bb8f62"
+  },
+  "sourceAfter": {
+    "benchmarks/protocol/summarize-series.cjs": "0645143bd0c2a82e63eff7629c0660f2bc7659a0ce56b96e7a8f9ef62e045974",
+    "benchmarks/protocol/run-series.cjs": "b790a466e412ec8b499791b122a85e845e6f681debac5a97012e7e9b2fc3c821",
+    "benchmarks/protocol/README.md": "1cb7089c23ae2b427b7ae77e1f22275fd14ae1a91a028f12fc6c60e3e4a2e674",
+    "tests/benchmark/series-interference.test.cjs": "7983b12a2e8f7630ab23e947f3e620dcce05432d10b85cdb4740409318bb8f62",
+    "tests/benchmark/series-summary.test.cjs": "a91de053aff26437559450d139560eb7b16e3914d3125ce7d19054884b8214a9"
+  },
+  "sourceStable": true
+}

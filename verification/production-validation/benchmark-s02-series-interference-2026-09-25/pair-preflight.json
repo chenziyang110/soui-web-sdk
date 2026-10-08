@@ -1,0 +1,63 @@
+{
+  "schema": "soui.benchmark-pair-preflight/v1",
+  "scene": "S02",
+  "preflightAccepted": true,
+  "checks": {
+    "pagePair": true,
+    "inputMatched": true,
+    "samePageBundle": true,
+    "toolsMatched": true,
+    "sameMachine": true,
+    "hostIdentity": true,
+    "bothTraceIntegrityAccepted": true
+  },
+  "runs": [
+    {
+      "host": "soui",
+      "runId": "70ff34c3-9232-48c7-8832-c625798823b5",
+      "pageDurationMs": 61530.5,
+      "inputDurationMs": 61828,
+      "resources": {
+        "samples": 62,
+        "privateBytesP50": 54919168,
+        "privateBytesP95": 70717440,
+        "cpuPercentP50": 3.004695,
+        "cpuPercentP95": 3.21806
+      },
+      "rawSha256": {
+        "run": "f2ff38082e21ecfa0e663aa17c3b8749c03a80394c79b10eee5f551123a54809",
+        "page": "816e759bbd25586730e9a23ea253183417770c656c24f2afb01fad5a84692ec8",
+        "input": "5cf5478572423012b48aa1bc2bda26fc408c9c50e89e6ca235ac61fdacd62aff",
+        "processTree": "2ceab56d43eb7f12a7e3307cb27391d4a7260159a8165d9a399499840ea7b349"
+      }
+    },
+    {
+      "host": "electron",
+      "runId": "1a345a87-66de-4348-94d6-280b4cdcd38a",
+      "pageDurationMs": 61818.60000002384,
+      "inputDurationMs": 61844,
+      "resources": {
+        "samples": 61,
+        "privateBytesP50": 250499072,
+        "privateBytesP95": 262926336,
+        "cpuPercentP50": 0.144161,
+        "cpuPercentP95": 0.472813
+      },
+      "rawSha256": {
+        "run": "778e3a57997e395f534f43e41c8fa3132cf76bbf67459705a5f8ada2971443d0",
+        "page": "a680f6d423174aeb7a8539414b08ef21a16b59478c6e5eb10c0c530351088b81",
+        "input": "f7ef8305ddbf2259e25becec91743e2f86debf08a65063e19c3b20b35eb97808",
+        "processTree": "92e8681910c999a0909677cd16fb106d334e3b093aa9ce704fc84666175ddd82"
+      }
+    }
+  ],
+  "remainingEvidence": [
+    "physical-presentation",
+    "startup-samples",
+    "five-full-runs-per-scene-and-alternated-order",
+    "target-system-and-product-workload"
+  ],
+  "performanceGate": "not-evaluated",
+  "benchmarkValid": false,
+  "releaseReady": false
+}

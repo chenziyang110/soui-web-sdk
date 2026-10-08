@@ -15,17 +15,29 @@
 #endif
 
 #include <algorithm>
+#include <array>
+#include <atomic>
+#include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <memory>
+#include <stdexcept>
 #include <string>
+#include <thread>
+#include <utility>
 #include <vector>
 
 #include <soui/host/soui_miniblink_host.h>
 #include <soui/host/frame_pacer.h>
 #include <soui/runtime/services/desktop/window_commands.h>
+#include <soui/runtime/services/desktop/tray_service.h>
+#include <soui/runtime/services/desktop/menu_service.h>
+#include <soui/runtime/services/desktop/global_shortcut.h>
+#include <soui/version.h>
 #include "../integration/demo_bridge_adapter.h"
+#include "work_area_placement.h"
+#include "../../../third_party/include/json/json.hpp"
 
 #if defined(SOUI_SOURCE_OVERRIDE)
 #define SOUI_DEVKIT_HAS_REAL_SOUI 1
@@ -50,6 +62,10 @@
 
 #if SOUI_DEVKIT_HAS_REAL_SOUI
 namespace {
+
+constexpr UINT resident_close_message = WM_APP + 0x421;
+constexpr UINT resident_exit_message = WM_APP + 0x422;
+constexpr UINT resident_action_message = WM_APP + 0x423;
 
 std::filesystem::path executable_path() {
   std::wstring value(MAX_PATH, L'\0');
@@ -91,6 +107,20 @@ int option_dimension(const std::vector<std::wstring>& args, const wchar_t* name,
   if (value.empty()) return fallback;
   try { return std::clamp(std::stoi(value), 640, 3840); }
   catch (...) { return fallback; }
+}
+
+std::optional<soui::demo::initial_window_rect> initial_window_on_primary_work_area(
+    int requested_width, int requested_height) {
+  const HMONITOR monitor = MonitorFromPoint(POINT{0, 0}, MONITOR_DEFAULTTOPRIMARY);
+  MONITORINFO info{sizeof(info)};
+  RECT work{};
+  if (monitor != nullptr && GetMonitorInfoW(monitor, &info)) {
+    work = info.rcWork;
+  } else if (!SystemParametersInfoW(SPI_GETWORKAREA, 0, &work, 0)) {
+    return std::nullopt;
+  }
+  return soui::demo::fit_initial_window(
+      {work.left, work.top, work.right, work.bottom}, requested_width, requested_height);
 }
 
 void append_smoke_log(const std::filesystem::path& path, const char* line) {
@@ -200,6 +230,19 @@ class demo_soui_window final : public SOUI::SHostWnd {
     (void)prefer_high_resolution;
 #endif
   }
+  void configure_resident(HWND controller, unsigned slot, std::uint32_t generation) {
+    // SHostWnd::OnDestroy otherwise quits for an ordinary top-level HWND.
+    if (FAILED(GetHostAttr().SetAttribute(L"wndType", L"normal")))
+      throw std::runtime_error("SOUI refused the resident normal-window policy");
+    resident_controller_ = controller;
+    resident_slot_ = slot;
+    resident_generation_ = generation;
+  }
+  void stop_for_resident_close() {
+    if (IsWindow()) KillTimer(1);
+    pacer_.stop();
+  }
+  bool resident_dispatch_active() const { return GetCurrentMessage() != nullptr; }
 #ifdef SOUI_BRIDGE_BENCHMARK
   void set_gallery_benchmark(bool all) { gallery_benchmark_=true; gallery_all_=all; }
 #endif
@@ -426,12 +469,12 @@ class demo_soui_window final : public SOUI::SHostWnd {
     return 0;
   }
 
-  LRESULT OnWindowCommand(UINT, WPARAM command, LPARAM) {
+  LRESULT OnWindowCommand(UINT, WPARAM command, LPARAM payload) {
     const auto action = static_cast<soui::runtime::window_command>(command);
     // A delayed Bridge request must not start a move after the button is up.
     if (action != soui::runtime::window_command::begin_drag ||
         (GetAsyncKeyState(VK_LBUTTON) & 0x8000))
-      return soui::runtime::execute_window_command(m_hWnd, action) ? 1 : 0;
+      return soui::runtime::execute_window_command(m_hWnd, action, payload) ? 1 : 0;
     return 0;
   }
 
@@ -442,6 +485,18 @@ class demo_soui_window final : public SOUI::SHostWnd {
   }
 
   void OnClose() {
+    if (resident_controller_ != nullptr) {
+      // The controller destroys this object only after this WndProc returns.
+      if (!resident_close_pending_) {
+        resident_close_pending_ = ::PostMessageW(resident_controller_, resident_close_message,
+            resident_slot_, static_cast<LPARAM>(resident_generation_)) != FALSE;
+        if (!resident_close_pending_) {
+          // This only asks the controller to exit; it never deletes this slot.
+          ::SendMessageW(resident_controller_, resident_exit_message, 1, 0);
+        }
+      }
+      return;
+    }
     pacer_.stop();
     (void)host_.close();
     DestroyWindow();
@@ -507,7 +562,13 @@ class demo_soui_window final : public SOUI::SHostWnd {
   unsigned smoke_ticks_{0};
   ULONGLONG smoke_started_at_{0};
   ULONGLONG not_ready_since_{0};
+  HWND resident_controller_{nullptr};
+  unsigned resident_slot_{0};
+  std::uint32_t resident_generation_{0};
+  bool resident_close_pending_{false};
 };
+
+#include "resident_controller.h"
 
 bool run_self_test(const std::filesystem::path& kit_root, const std::filesystem::path& output_root,
                    const std::string& architecture,
@@ -531,10 +592,118 @@ bool run_self_test(const std::filesystem::path& kit_root, const std::filesystem:
   return ok;
 }
 
-int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
+bool run_public_task_self_test() {
+  using json = nlohmann::json;
+  try {
+    std::atomic<unsigned> events{0};
+    soui::demo::demo_bridge_adapter bridge;
+    bridge.set_event_sink([&events](std::string_view text) {
+      const auto event = json::parse(text.begin(), text.end(), nullptr, false);
+      if (event.is_object() && event.value("eventName", "") == "task.progress" &&
+          event.value("taskId", "").rfind("sdk-task-", 0) == 0) ++events;
+    });
+    const auto bootstrap = json::parse(bridge.handle_json(json{{"requestId", "demo-task-bootstrap"},
+        {"sessionId", ""}, {"origin", ""}, {"token", ""}, {"method", "bridge.bootstrap"},
+        {"params", {{"protocol", "soui.bridge/1"}}}}.dump()));
+    if (!bootstrap.value("ok", false)) return false;
+    const auto auth = bootstrap.at("result");
+    unsigned request_number = 0;
+    const auto call = [&](const char* method, json params) {
+      return json::parse(bridge.handle_json(json{{"requestId", "demo-task-" + std::to_string(++request_number)},
+          {"sessionId", auth.at("sessionId")}, {"origin", auth.at("origin")},
+          {"token", auth.at("token")}, {"method", method}, {"params", std::move(params)}}.dump()));
+    };
+    const auto started = call("task.start", {{"kind", "demo.count"}, {"operationId", "count-success"},
+        {"input", {{"steps", 20}}}});
+    if (!started.value("ok", false)) return false;
+    const auto id = started.at("result").at("taskId").get<std::string>();
+    if (id.rfind("sdk-task-", 0) != 0) return false;
+    const auto subscribed = call("task.subscribe", {{"taskId", id}, {"eventName", "task.progress"}});
+    if (!subscribed.value("ok", false)) return false;
+    const auto subscription_id = subscribed.at("result").at("subscriptionId").get<std::string>();
+    if (subscription_id.rfind("sdk-subscription-", 0) != 0) return false;
+    bool complete = false;
+    for (unsigned attempt = 0; attempt < 200; ++attempt) {
+      const auto queried = call("task.query", {{"taskId", id}});
+      if (!queried.value("ok", false)) return false;
+      if (queried.at("result").value("state", "") == "succeeded") {
+        complete = queried.at("result").at("result").at("sum") == 210;
+        break;
+      }
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    if (!complete || events.load() == 0 ||
+        !call("task.unsubscribe", {{"subscriptionId", subscription_id}}).value("ok", false)) return false;
+    const auto cancellable = call("task.start", {{"kind", "demo.count"}, {"operationId", "count-cancel"},
+        {"input", {{"steps", 200}}}});
+    if (!cancellable.value("ok", false)) return false;
+    const auto cancel_id = cancellable.at("result").at("taskId").get<std::string>();
+    if (!call("task.cancel", {{"taskId", cancel_id}}).value("ok", false)) return false;
+    bool cancelled = false;
+    for (unsigned attempt = 0; attempt < 200; ++attempt) {
+      const auto queried = call("task.query", {{"taskId", cancel_id}});
+      if (!queried.value("ok", false)) return false;
+      if (queried.at("result").value("state", "") == "cancelled") { cancelled = true; break; }
+      std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+    bridge.shutdown_session(auth.at("sessionId").get<std::string>());
+    return cancelled && !call("task.query", {{"taskId", id}}).value("ok", true);
+  } catch (...) { return false; }
+}
+
+int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_run_context& resident_log) {
   enable_system_dpi_awareness();
   const auto executable = executable_path();
   const auto kit_root = find_kit_root(executable);
+  const auto output_root = executable.parent_path();
+  const bool resident = std::find(args.begin(), args.end(), L"--resident") != args.end();
+  const bool resident_smoke = std::find(args.begin(), args.end(), L"--resident-smoke-test") != args.end();
+  std::wstring resident_log_option;
+  bool resident_log_specified = false;
+  for (std::size_t index = 0; index < args.size(); ++index) {
+    const auto& argument = args[index];
+    if (argument != L"--resident-log" && argument.rfind(L"--resident-log=", 0) != 0) continue;
+    if (resident_log_specified) return 2;
+    resident_log_specified = true;
+    if (argument == L"--resident-log") {
+      if (++index == args.size() || args[index].rfind(L"--", 0) == 0) return 2;
+      resident_log_option = args[index];
+    } else resident_log_option = argument.substr(std::wstring{L"--resident-log="}.size());
+    if (resident_log_option.empty() || !std::filesystem::path{resident_log_option}.is_absolute()) return 2;
+  }
+  if (resident_log_specified && !resident && !resident_smoke) return 2;
+  if (resident || resident_smoke) {
+    resident_log.started = GetTickCount64();
+    resident_log.run_id = std::to_string(GetCurrentProcessId()) + "-" + std::to_string(resident_log.started);
+    if (resident_log_specified) resident_log.log = resident_log_option;
+    else {
+      std::error_code error;
+      const auto temporary = std::filesystem::temp_directory_path(error);
+      if (error) return 1;
+      resident_log.log = temporary / ("soui-workbench-resident-" + resident_log.run_id + ".ndjson");
+    }
+    // Keep one exclusively created handle for this run. Existing evidence is
+    // never overwritten or appended, and the installed payload stays clean.
+    resident_log.file = CreateFileW(resident_log.log.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr,
+        CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (resident_log.file == INVALID_HANDLE_VALUE) return 1;
+    resident_log.active = true;
+    const bool conflicting = std::any_of(args.begin(), args.end(), [](const std::wstring& argument) {
+      const auto name = argument.substr(0, argument.find(L'='));
+      return name == L"--webview-smoke-test" || name == L"--self-test" ||
+          name == L"--task-service-self-test" || name == L"--gallery-benchmark" ||
+          name == L"--benchmark-dataset" || name == L"--v8-noopt-experiment" ||
+          name == L"--unmanaged-frame-timing" || name == L"--zero-engine-timing-experiment" ||
+          name == L"--engine-timing-experiment" || name == L"--honor-timer-resolution-experiment" ||
+          name == L"--background-pacing-experiment" || name == L"--legacy-frame-clock";
+    });
+    if (!resident || conflicting) {
+      (void)resident_write(resident_log, "mode.rejected", {{"exitCode", 2},
+          {"message", "--resident-smoke-test requires --resident; residency cannot combine with single-window tests or benchmark experiments"}});
+      return 2;
+    }
+    if (!resident_write(resident_log, "mode.accepted", {{"smoke", resident_smoke}})) return 1;
+  }
 #if defined(_WIN64)
   const std::string default_architecture = "x64";
 #else
@@ -550,21 +719,21 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
     SetEnvironmentVariableA("SOUI_INITIAL_PAGE", initial_page_narrow.c_str());
   }
   else SetEnvironmentVariableA("SOUI_INITIAL_PAGE", nullptr);
-  const auto output_root = executable.parent_path();
   const auto renderer_option = option_value(args, L"--renderer");
   const bool gpu_renderer = std::find(args.begin(), args.end(), L"--gpu-renderer") != args.end() ||
                             renderer_option == L"gpu";
   const bool gpu_readback = std::find(args.begin(), args.end(), L"--gpu-readback") != args.end() ||
                             renderer_option == L"readback";
   const bool auto_renderer = std::find(args.begin(), args.end(), L"--auto-renderer") != args.end() ||
-                             renderer_option == L"auto" ||
-                             (renderer_option.empty() &&
-                              std::find(args.begin(), args.end(), L"--cpu-high-refresh") == args.end());
-  const bool software_renderer = renderer_option == L"cpu" || renderer_option == L"software";
+                             renderer_option == L"auto";
+  const bool software_renderer = renderer_option == L"cpu" || renderer_option == L"software" ||
+                                 (!gpu_renderer && !gpu_readback && !auto_renderer);
   const bool cpu_high_refresh = std::find(args.begin(), args.end(), L"--cpu-high-refresh") != args.end();
   if (!renderer_option.empty() && renderer_option != L"auto" && renderer_option != L"gpu" &&
       renderer_option != L"readback" && !software_renderer) {
-    MessageBoxW(nullptr, L"--renderer accepts auto, gpu, readback or cpu.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
+    (void)resident_write(resident_log, "startup.error", {{"code", "E_RENDERER_OPTION"}, {"exitCode", 2}});
+    if (!resident_smoke)
+      MessageBoxW(nullptr, L"--renderer accepts auto, gpu, readback or cpu.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
     return 2;
   }
   // Request the crisp desktop text profile from the source Miniblink build.
@@ -655,6 +824,9 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
   if (std::find(args.begin(), args.end(), L"--self-test") != args.end()) {
     return run_self_test(kit_root, output_root, architecture, miniblink, resources) ? 0 : 1;
   }
+  if (std::find(args.begin(), args.end(), L"--task-service-self-test") != args.end()) {
+    return run_public_task_self_test() ? 0 : 1;
+  }
 
   const auto repository_renderer = kit_root / "third_party" / "soui" /
                                    (architecture == "x64" ? "x64" : "x86") / "bin";
@@ -666,7 +838,9 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
   components.SetDllPath(SOUI::SStringT(renderer_path.wstring().c_str()));
   SOUI::CAutoRefPtr<SOUI::IRenderFactory> render_factory;
   if (!components.CreateRender_GDI((IObjRef**)&render_factory)) {
-    MessageBoxW(nullptr, L"SOUI GDI renderer could not be loaded.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
+    (void)resident_write(resident_log, "startup.error", {{"code", "E_SOUI_RENDERER"}, {"exitCode", 1}});
+    if (!resident_smoke)
+      MessageBoxW(nullptr, L"SOUI GDI renderer could not be loaded.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
     return 1;
   }
   SOUI::SApplication application(render_factory, instance, _T("SOUIWEBDEMO"));
@@ -674,10 +848,25 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
   SOUI::CAutoRefPtr<SOUI::IResProvider> ui_resources;
   SOUI::CreateResProvider(SOUI::RES_PE, reinterpret_cast<IObjRef**>(&ui_resources));
   if (!ui_resources || !ui_resources->Init(reinterpret_cast<WPARAM>(instance), 0)) {
-    MessageBoxW(nullptr, L"SOUI UI definitions could not be initialized.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
+    (void)resident_write(resident_log, "startup.error", {{"code", "E_SOUI_RESOURCES"}, {"exitCode", 1}});
+    if (!resident_smoke)
+      MessageBoxW(nullptr, L"SOUI UI definitions could not be initialized.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
     return 1;
   }
   application.AddResProvider(ui_resources);
+
+  if (resident) {
+    resident_settings settings;
+    settings.host.architecture = architecture;
+    settings.host.miniblink_binary = miniblink;
+    settings.host.resource_root = resources;
+    settings.width = option_dimension(args, L"--width", 1100);
+    settings.height = option_dimension(args, L"--height", 720);
+    settings.auto_high_refresh = cpu_high_refresh || (!software_renderer && (gpu_renderer || gpu_readback || auto_renderer));
+    settings.smoke = resident_smoke;
+    resident_controller controller(application, std::move(settings), resident_log);
+    return controller.run();
+  }
 
   soui::demo::demo_bridge_adapter bridge;
   auto adapter = std::make_unique<soui::sdk::dynamic_miniblink_adapter>();
@@ -695,13 +884,17 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
   const auto gallery_benchmark=option_value(args,L"--gallery-benchmark");
   if(gallery_benchmark==L"first" || gallery_benchmark==L"all") window.set_gallery_benchmark(gallery_benchmark==L"all");
 #endif
-  // Match the product reference surface by default.  A fixed 1100x720
-  // client area avoids an extra desktop/screenshot scale pass while keeping
-  // --width/--height available for high-DPI and layout validation.
+  // Keep the initial resize border inside the primary monitor's work area,
+  // including when a taskbar makes the full display bounds unavailable.
+  // Explicit dimensions remain the requested maximum when the work area fits.
   const int window_width = option_dimension(args, L"--width", 1100);
   const int window_height = option_dimension(args, L"--height", 720);
+  const auto initial = initial_window_on_primary_work_area(window_width, window_height);
   const HWND handle = window.Create(nullptr, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN, 0,
-                                    CW_USEDEFAULT, CW_USEDEFAULT, window_width, window_height);
+                                    initial ? initial->left : CW_USEDEFAULT,
+                                    initial ? initial->top : CW_USEDEFAULT,
+                                    initial ? initial->width : window_width,
+                                    initial ? initial->height : window_height);
   if (handle == nullptr) {
     MessageBoxW(nullptr, L"SOUI SHostWnd could not be created.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
     return 1;
@@ -773,9 +966,16 @@ int APIENTRY wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
     LocalFree(raw_args);
   }
   const HRESULT com_result = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-  const int result = run_gui(instance, args);
+  resident_run_context resident_log;
+  const int result = run_gui(instance, args, resident_log);
+  const auto shutdown = soui::sdk::shutdown_miniblink_runtime();
+  (void)resident_write(resident_log, "runtime.shutdown-fallback",
+      {{"ok", shutdown.ok}, {"code", shutdown.code}, {"message", shutdown.message}});
   if (SUCCEEDED(com_result)) CoUninitialize();
-  return result;
+  const int exit_code = result == 0 && !shutdown.ok ? 7 : result;
+  (void)resident_write(resident_log, "process.finished", {{"exitCode", exit_code},
+      {"evidenceWriteFailed", resident_log.log_failed}});
+  return exit_code == 0 && resident_log.log_failed ? 1 : exit_code;
 }
 
 #else

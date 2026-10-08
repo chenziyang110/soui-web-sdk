@@ -1,0 +1,605 @@
+{
+  "schema": "soui.acceptance-run/v1",
+  "runId": "2a53101c-3cfb-4db7-a47f-c3302ac76fd3",
+  "config": {
+    "mode": "recreate",
+    "cycles": 30,
+    "warmup": 3,
+    "settleMs": 100,
+    "timeoutMs": 20000
+  },
+  "consumerBuildId": "64a6a41f-14fc-4b1e-8d09-12a247830e12",
+  "sourceSha256": "f1585da0b902c733c4a7e8b21c2771e8a9d89afafc5aa930e9fdb7aac1af16bb",
+  "payloadSha256": "e612d000c5640086a43d4e1a2d1259ce5955b294a2dee11766ee7ad281bfa0bf",
+  "outcome": {
+    "pid": 35920,
+    "exitCode": 0,
+    "signal": null,
+    "timedOut": false,
+    "timeoutReason": null,
+    "spawnError": null,
+    "processTimeoutMs": 1437000
+  },
+  "passed": true,
+  "releaseReady": false,
+  "finishedAt": "2026-09-23T02:14:15.830Z",
+  "logSha256": "5eefbea83ed73cce515c2f745f68be157c9371f752eafd1ee7bcf79789c2c56a",
+  "validation": {
+    "completedSteps": 70,
+    "measuredCycles": 30,
+    "samples": [
+      {
+        "event": "sample",
+        "elapsedMs": 72,
+        "phase": "process",
+        "cycle": 0,
+        "privateBytes": 1523712,
+        "workingSetBytes": 8876032,
+        "handles": 139,
+        "threads": 4,
+        "gdiObjects": 0,
+        "userObjects": 2,
+        "windowClasses": {}
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 1647,
+        "phase": "cycle",
+        "cycle": 1,
+        "privateBytes": 114171904,
+        "workingSetBytes": 100507648,
+        "handles": 403,
+        "threads": 17,
+        "gdiObjects": 33,
+        "userObjects": 11,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 2329,
+        "phase": "cycle",
+        "cycle": 2,
+        "privateBytes": 116117504,
+        "workingSetBytes": 103354368,
+        "handles": 410,
+        "threads": 18,
+        "gdiObjects": 33,
+        "userObjects": 12,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 3071,
+        "phase": "cycle",
+        "cycle": 3,
+        "privateBytes": 119545856,
+        "workingSetBytes": 106110976,
+        "handles": 417,
+        "threads": 18,
+        "gdiObjects": 33,
+        "userObjects": 13,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 3819,
+        "phase": "cycle",
+        "cycle": 4,
+        "privateBytes": 123215872,
+        "workingSetBytes": 107745280,
+        "handles": 424,
+        "threads": 18,
+        "gdiObjects": 33,
+        "userObjects": 14,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 4568,
+        "phase": "cycle",
+        "cycle": 5,
+        "privateBytes": 125734912,
+        "workingSetBytes": 110198784,
+        "handles": 431,
+        "threads": 18,
+        "gdiObjects": 33,
+        "userObjects": 15,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 5292,
+        "phase": "cycle",
+        "cycle": 6,
+        "privateBytes": 125403136,
+        "workingSetBytes": 111996928,
+        "handles": 438,
+        "threads": 18,
+        "gdiObjects": 33,
+        "userObjects": 16,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 5991,
+        "phase": "cycle",
+        "cycle": 7,
+        "privateBytes": 127979520,
+        "workingSetBytes": 113942528,
+        "handles": 446,
+        "threads": 19,
+        "gdiObjects": 33,
+        "userObjects": 17,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 6758,
+        "phase": "cycle",
+        "cycle": 8,
+        "privateBytes": 129773568,
+        "workingSetBytes": 116060160,
+        "handles": 453,
+        "threads": 19,
+        "gdiObjects": 33,
+        "userObjects": 18,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 7460,
+        "phase": "cycle",
+        "cycle": 9,
+        "privateBytes": 132132864,
+        "workingSetBytes": 118591488,
+        "handles": 460,
+        "threads": 19,
+        "gdiObjects": 33,
+        "userObjects": 19,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 8188,
+        "phase": "cycle",
+        "cycle": 10,
+        "privateBytes": 134332416,
+        "workingSetBytes": 120061952,
+        "handles": 467,
+        "threads": 19,
+        "gdiObjects": 33,
+        "userObjects": 20,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 8962,
+        "phase": "cycle",
+        "cycle": 11,
+        "privateBytes": 140500992,
+        "workingSetBytes": 122757120,
+        "handles": 474,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 21,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 9674,
+        "phase": "cycle",
+        "cycle": 12,
+        "privateBytes": 142540800,
+        "workingSetBytes": 123625472,
+        "handles": 481,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 22,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 10396,
+        "phase": "cycle",
+        "cycle": 13,
+        "privateBytes": 143982592,
+        "workingSetBytes": 125194240,
+        "handles": 488,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 23,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 11115,
+        "phase": "cycle",
+        "cycle": 14,
+        "privateBytes": 143470592,
+        "workingSetBytes": 126009344,
+        "handles": 495,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 24,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 11829,
+        "phase": "cycle",
+        "cycle": 15,
+        "privateBytes": 145190912,
+        "workingSetBytes": 128106496,
+        "handles": 501,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 25,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 12537,
+        "phase": "cycle",
+        "cycle": 16,
+        "privateBytes": 146812928,
+        "workingSetBytes": 129867776,
+        "handles": 507,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 26,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 13249,
+        "phase": "cycle",
+        "cycle": 17,
+        "privateBytes": 148422656,
+        "workingSetBytes": 131948544,
+        "handles": 513,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 27,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 14052,
+        "phase": "cycle",
+        "cycle": 18,
+        "privateBytes": 149622784,
+        "workingSetBytes": 134606848,
+        "handles": 519,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 28,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 14772,
+        "phase": "cycle",
+        "cycle": 19,
+        "privateBytes": 150810624,
+        "workingSetBytes": 135819264,
+        "handles": 525,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 29,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 15476,
+        "phase": "cycle",
+        "cycle": 20,
+        "privateBytes": 152899584,
+        "workingSetBytes": 136990720,
+        "handles": 531,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 30,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 16195,
+        "phase": "cycle",
+        "cycle": 21,
+        "privateBytes": 154619904,
+        "workingSetBytes": 138424320,
+        "handles": 537,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 31,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 16921,
+        "phase": "cycle",
+        "cycle": 22,
+        "privateBytes": 155889664,
+        "workingSetBytes": 139804672,
+        "handles": 543,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 32,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 17650,
+        "phase": "cycle",
+        "cycle": 23,
+        "privateBytes": 157822976,
+        "workingSetBytes": 141373440,
+        "handles": 549,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 33,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 18395,
+        "phase": "cycle",
+        "cycle": 24,
+        "privateBytes": 166981632,
+        "workingSetBytes": 143007744,
+        "handles": 555,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 34,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 19150,
+        "phase": "cycle",
+        "cycle": 25,
+        "privateBytes": 167931904,
+        "workingSetBytes": 143732736,
+        "handles": 561,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 35,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 19875,
+        "phase": "cycle",
+        "cycle": 26,
+        "privateBytes": 166940672,
+        "workingSetBytes": 144027648,
+        "handles": 567,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 36,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 20606,
+        "phase": "cycle",
+        "cycle": 27,
+        "privateBytes": 167067648,
+        "workingSetBytes": 144359424,
+        "handles": 573,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 37,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 21336,
+        "phase": "cycle",
+        "cycle": 28,
+        "privateBytes": 167530496,
+        "workingSetBytes": 144723968,
+        "handles": 579,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 38,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 22025,
+        "phase": "cycle",
+        "cycle": 29,
+        "privateBytes": 167976960,
+        "workingSetBytes": 145227776,
+        "handles": 585,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 39,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 22775,
+        "phase": "cycle",
+        "cycle": 30,
+        "privateBytes": 168730624,
+        "workingSetBytes": 146313216,
+        "handles": 591,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 40,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 23509,
+        "phase": "cycle",
+        "cycle": 31,
+        "privateBytes": 170819584,
+        "workingSetBytes": 148242432,
+        "handles": 597,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 41,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 24280,
+        "phase": "cycle",
+        "cycle": 32,
+        "privateBytes": 171212800,
+        "workingSetBytes": 149536768,
+        "handles": 603,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 42,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 24974,
+        "phase": "cycle",
+        "cycle": 33,
+        "privateBytes": 173711360,
+        "workingSetBytes": 150286336,
+        "handles": 609,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 43,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 25158,
+        "phase": "closed",
+        "cycle": 34,
+        "privateBytes": 173649920,
+        "workingSetBytes": 150224896,
+        "handles": 609,
+        "threads": 20,
+        "gdiObjects": 33,
+        "userObjects": 43,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 25429,
+        "phase": "runtime-closed",
+        "cycle": 34,
+        "privateBytes": 101138432,
+        "workingSetBytes": 98508800,
+        "handles": 379,
+        "threads": 18,
+        "gdiObjects": 11,
+        "userObjects": 37,
+        "windowClasses": {}
+      }
+    ],
+    "resourceGate": "not-evaluated",
+    "releaseReady": false
+  }
+}

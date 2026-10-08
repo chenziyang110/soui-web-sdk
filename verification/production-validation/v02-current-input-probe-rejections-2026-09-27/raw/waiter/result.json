@@ -1,0 +1,54 @@
+{
+  "schema": "soui.v02.probe-rejections-queued/v1",
+  "startedAt": "2026-09-27T10:28:45.751Z",
+  "status": "both-rejections-passed",
+  "scriptSha256": "b78ad5b98b96ce9e2452f29960cf9df3cb335de80c0cb3163ffec481fb589009",
+  "attempts": [
+    {
+      "architecture": "x64",
+      "attemptName": "probe-rejections-x64-attempt2",
+      "driverName": "probe-rejections-x64-attempt2-driver",
+      "args": [
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Capture-Command.cjs",
+        "probe-rejections-x64-attempt2-driver",
+        "30000",
+        "node",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Test-ProbeRejections.cjs",
+        "x64",
+        "probe-rejections-x64-attempt2"
+      ],
+      "startedAt": "2026-09-27T10:47:31.582Z",
+      "finishedAt": "2026-09-27T10:47:36.832Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"name\":\"probe-rejections-x64-attempt2-driver\",\"root\":\"C:\\\\SOUI-SDK-production-validation\\\\preview15-v02-interaction-20260927\\\\command-logs\\\\probe-rejections-x64-attempt2-driver\",\"exitCode\":0,\"timedOut\":false,\"error\":null}\n",
+      "stderr": "",
+      "externalAfter": []
+    },
+    {
+      "architecture": "x86",
+      "attemptName": "probe-rejections-x86-attempt1",
+      "driverName": "probe-rejections-x86-attempt1-driver",
+      "args": [
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Capture-Command.cjs",
+        "probe-rejections-x86-attempt1-driver",
+        "30000",
+        "node",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\Test-ProbeRejections.cjs",
+        "x86",
+        "probe-rejections-x86-attempt1"
+      ],
+      "startedAt": "2026-09-27T10:47:38.240Z",
+      "finishedAt": "2026-09-27T10:47:43.406Z",
+      "exitCode": 0,
+      "signal": null,
+      "error": null,
+      "stdout": "{\"name\":\"probe-rejections-x86-attempt1-driver\",\"root\":\"C:\\\\SOUI-SDK-production-validation\\\\preview15-v02-interaction-20260927\\\\command-logs\\\\probe-rejections-x86-attempt1-driver\",\"exitCode\":0,\"timedOut\":false,\"error\":null}\n",
+      "stderr": "",
+      "externalAfter": []
+    }
+  ],
+  "releaseReady": false,
+  "finishedAt": "2026-09-27T10:47:44.144Z"
+}

@@ -1,0 +1,46 @@
+{
+  "program": "powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-File",
+    "Build-ActivationProbe.ps1",
+    "-Architecture",
+    "x86"
+  ],
+  "cwd": "C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929",
+  "startedAt": "2026-09-29T18:58:02.272Z",
+  "pid": 70760,
+  "exitCode": 0,
+  "signal": null,
+  "timedOut": false,
+  "interruptedByExternal": null,
+  "gateError": null,
+  "error": null,
+  "preflight": {
+    "at": "2026-09-29T18:58:02.273Z",
+    "processes": []
+  },
+  "childIdentity": {
+    "ProcessId": 70760,
+    "ParentProcessId": 4112,
+    "Name": "powershell.exe",
+    "CreationDate": "/Date(1790708283554)/"
+  },
+  "afterClose": {
+    "at": "2026-09-29T18:58:08.337Z",
+    "processes": []
+  },
+  "finishedAt": "2026-09-29T18:58:09.871Z",
+  "stdout": {
+    "bytes": 3586,
+    "sha256": "749e2f2d60baa365acc76cf318c277ed06d7f67b526aa41d2ea2144f998fc23b"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "gates": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -307,6 +307,9 @@ WebPageImpl::~WebPageImpl()
         delete m_screenInfo;
 
     delete m_toolTip;
+    delete m_validationMessageTip;
+    if (m_draggableRegion)
+        ::DeleteObject(m_draggableRegion);
 
     if (m_memoryCanvasForUi)
         delete m_memoryCanvasForUi;

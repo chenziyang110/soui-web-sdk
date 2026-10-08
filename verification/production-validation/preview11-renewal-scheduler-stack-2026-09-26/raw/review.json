@@ -1,0 +1,80 @@
+{
+  "reviewedAt": "2026-09-26T15:03:18.216Z",
+  "freezeSha256": "8615b71960b35aa074553efd3ba6c4a7c91af594e88427cc1e59b153ec993749",
+  "runName": "x86-2026-09-26T14-23-43-468Z",
+  "originalAnimationUnchanged": true,
+  "nativeExitCode": 1,
+  "nativeRecords": 19,
+  "failure": {
+    "schema": "soui.renewal-probe/v2",
+    "seq": 16,
+    "elapsedMs": 60009,
+    "event": "run.failed",
+    "message": "Initial page/Host readiness exceeded 60 seconds"
+  },
+  "final": {
+    "schema": "soui.renewal-probe/v2",
+    "seq": 19,
+    "elapsedMs": 60540,
+    "event": "run.finished",
+    "exitCode": 1,
+    "readyCount": 0,
+    "longInvocations": 0,
+    "resultInvocations": 0,
+    "shutdownSessions": 1,
+    "bootstrapCount": 0,
+    "prebootstrapRetirements": 1,
+    "boundShutdowns": 0,
+    "realRenewalVerified": false,
+    "releaseReady": false
+  },
+  "debuggerExitCode": 0,
+  "pdbGuid": "D47D4204-C2AE-4E48-A148-D7B5140B01F9",
+  "pdbAge": 4,
+  "privateSymbolsLoaded": true,
+  "previousFrameTime": 1790403835.359981,
+  "heap": [
+    {
+      "index": 0,
+      "functionName": "blink::HTMLParserScheduler::scheduleForResume",
+      "nextFireTime": 1790403825.079492,
+      "priority": 100
+    },
+    {
+      "index": 1,
+      "functionName": "blink::Document::finishedParsing",
+      "nextFireTime": 1790403834.89649,
+      "priority": 200
+    },
+    {
+      "index": 2,
+      "functionName": "content::WebPageImpl::setNeedsCommitAndNotLayout",
+      "nextFireTime": 1790403834.449987,
+      "priority": 200
+    },
+    {
+      "index": 3,
+      "functionName": "content::BlinkPlatformImpl::initialize",
+      "nextFireTime": 1790403944.855301,
+      "priority": 200
+    },
+    {
+      "index": 4,
+      "functionName": "content::BlinkPlatformImpl::initialize",
+      "nextFireTime": 1790403864.855299,
+      "priority": 200
+    },
+    {
+      "index": 5,
+      "functionName": "net::CurlCacheManager::CurlCacheManager",
+      "nextFireTime": 1790403835.452792,
+      "priority": 200
+    }
+  ],
+  "parserOverdueSecondsAtPreviousFrame": 10.280488967895508,
+  "inputUnchanged": true,
+  "externalLoad": false,
+  "conclusion": "Matching-symbol main-thread snapshot confirms overdue loading work with ready higher-priority commit work; original animated startup still fails. Real rebuilt-kernel correction remains unverified.",
+  "performanceEvidence": false,
+  "productionPass": false
+}

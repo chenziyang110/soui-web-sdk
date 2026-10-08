@@ -1,0 +1,16 @@
+{
+  "schema": "soui.v02-continuous-native-review/v1",
+  "at": "2026-09-27T01:30:54.583Z",
+  "version": "0.3.0-preview.15",
+  "sourceSha256": "15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d",
+  "sourceFiles": 718,
+  "x64Attempt1": "compiled-then-interrupted-by-external-qemu-before-tests",
+  "x64Attempt2": "first-test-failed-on-second-trusted-bootstrap-in-fixture",
+  "x64Attempt3": "two-native-tests-exit-0",
+  "x86Attempt1": "two-native-tests-exit-0",
+  "webTypecheckExitCode": 0,
+  "newApplicationBuildExecuted": false,
+  "guiExecuted": false,
+  "releaseReady": false,
+  "note": "The test fixture now issues a valid independent grant in a second session, so the ownership assertions reach E_TASK_NOT_FOUND. No SDK Core implementation was changed."
+}

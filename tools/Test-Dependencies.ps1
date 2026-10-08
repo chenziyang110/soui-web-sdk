@@ -5,10 +5,26 @@ $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $deps=Join-Path $root "out/dependencies/$Architecture"
 $kernelName=if($Architecture -eq 'x86'){'node.dll'}else{'miniblink.dll'}
 $kernel=Join-Path $deps "miniblink/bin/$kernelName"
-$souiBin=Join-Path $root "third_party/sources/soui/bin$(if($Architecture -eq 'x64'){'64'})"
 if(-not(Test-Path -LiteralPath $kernel)){throw 'Build the Miniblink source first.'}
+$build=$null
+foreach($file in @(Get-ChildItem -LiteralPath $deps -Filter 'build-*.json' -File | Sort-Object LastWriteTimeUtc -Descending)){
+  $candidate=Get-Content -LiteralPath $file.FullName -Raw | ConvertFrom-Json
+  if($candidate.schema -eq 'soui.dependency-build/v1' -and $candidate.architecture -eq $Architecture -and
+      $candidate.status -eq 'built' -and $candidate.souiSourceStage){$build=$candidate;break}
+}
+if(-not $build){throw 'Build SOUI from an isolated source stage first.'}
+$stage=[IO.Path]::GetFullPath([string]$build.souiSourceStage)
+$allowed=[IO.Path]::GetFullPath($deps).TrimEnd('\')+'\'
+if(-not $stage.StartsWith($allowed,[StringComparison]::OrdinalIgnoreCase)){throw 'SOUI build report points outside dependency output.'}
+$souiFiles=@{}
 foreach($name in @('soui','utilities','render-gdi','imgdecoder-gdip','soui-sys-resource')){
-  if(-not(Test-Path -LiteralPath (Join-Path $souiBin "$name.dll"))){throw "Build SOUI first: missing $name"}
+  $matching=@($build.artifacts|Where-Object {$_.kind -eq $name})
+  if($matching.Count -ne 1){throw "SOUI build report is missing $name"}
+  $file=[IO.Path]::GetFullPath([string]$matching[0].path)
+  if(-not $file.StartsWith($stage.TrimEnd('\')+'\',[StringComparison]::OrdinalIgnoreCase) -or
+      -not(Test-Path -LiteralPath $file) -or
+      (Get-FileHash -LiteralPath $file).Hash -ne $matching[0].sha256){throw "SOUI artifact does not match build report: $name"}
+  $souiFiles[$name]=$file
 }
 $testRoot=Join-Path $deps ('runtime-test-'+[Guid]::NewGuid().ToString('N'))
 New-Item -ItemType Directory -Path $testRoot | Out-Null
@@ -24,7 +40,7 @@ try{
     Copy-Item -LiteralPath $original -Destination $bin -Recurse
     Copy-Item -LiteralPath $kernel -Destination (Join-Path $bin 'node.dll') -Force
     foreach($name in @('soui','utilities','render-gdi','imgdecoder-gdip','soui-sys-resource')){
-      Copy-Item -LiteralPath (Join-Path $souiBin "$name.dll") -Destination (Join-Path $bin "$name.dll") -Force
+      Copy-Item -LiteralPath $souiFiles[$name] -Destination (Join-Path $bin "$name.dll") -Force
     }
     $arguments=if($target -eq 'SouiStarter'){@('--smoke-test')}else{@('--webview-smoke-test',"--arch=$Architecture",'--react')}
     $logPath=Join-Path $bin $(if($target -eq 'SouiStarter'){'smoke.log'}else{'webview-smoke.log'})

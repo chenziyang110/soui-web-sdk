@@ -1,0 +1,153 @@
+{
+  "status": "synthetic-verifier-self-test-passed",
+  "syntheticOnly": true,
+  "guestExecuted": false,
+  "inputSha256": "599889c30862e6b6730ba0d23a1196e0ad1b73b3ce3e1d1418928faa235b89dc",
+  "acceptedFixtures": 1,
+  "rejectedFixtures": 27,
+  "requiredRawFiles": 34,
+  "verifierWritesResults": false,
+  "cases": [
+    {
+      "case": "complete",
+      "accepted": true,
+      "reason": "synthetic complete fixture accepted"
+    },
+    {
+      "case": "volume-root-instead-of-input-subdir",
+      "accepted": false,
+      "reason": "Diagnostic environment missing"
+    },
+    {
+      "case": "unexpected-input-subdir",
+      "accepted": false,
+      "reason": "Diagnostic environment missing"
+    },
+    {
+      "case": "extra-input-file-even-with-consistent-count",
+      "accepted": false,
+      "reason": "Diagnostic count/metadata differs: EnumeratedCount"
+    },
+    {
+      "case": "recycle-directory-inside-input-still-rejected",
+      "accepted": false,
+      "reason": "Diagnostic count/metadata differs: EnumeratedCount"
+    },
+    {
+      "case": "missing-transfer-diagnostics",
+      "accepted": false,
+      "reason": "Required raw file missing: transfer-diagnostics.txt"
+    },
+    {
+      "case": "wrong-raw-manifest-valid-frame",
+      "accepted": false,
+      "reason": "Diagnostic raw manifest differs"
+    },
+    {
+      "case": "wrong-diagnostic-count-valid-frame",
+      "accepted": false,
+      "reason": "Diagnostic count/metadata differs: EnumeratedCount"
+    },
+    {
+      "case": "diagnostic-directory-valid-frame",
+      "accepted": false,
+      "reason": "Diagnostic enumeration invalid"
+    },
+    {
+      "case": "wrong-diagnostic-line-valid-frame",
+      "accepted": false,
+      "reason": "Diagnostic parsed line differs"
+    },
+    {
+      "case": "wrong-diagnostic-name-valid-frame",
+      "accepted": false,
+      "reason": "Diagnostic enumeration identity differs"
+    },
+    {
+      "case": "wrong-engine-with-valid-frame-hash",
+      "accepted": false,
+      "reason": "Observed identity differs: SouiWorkbench/pre/node.dll"
+    },
+    {
+      "case": "wrong-legal-with-valid-frame-hash",
+      "accepted": false,
+      "reason": "Observed identity differs: SouiStarter/post/resources/legal/THIRD_PARTY_NOTICES.md"
+    },
+    {
+      "case": "missing-required-file",
+      "accepted": false,
+      "reason": "Required raw file missing: workbench-react-smoke.log"
+    },
+    {
+      "case": "missing-payload-file",
+      "accepted": false,
+      "reason": "Observed file set differs: SouiWorkbench/post"
+    },
+    {
+      "case": "nonzero-exit-with-valid-frame-hash",
+      "accepted": false,
+      "reason": "Nonzero/invalid exit code: workbench-default-exitcode.txt"
+    },
+    {
+      "case": "missing-close-with-valid-frame-hash",
+      "accepted": false,
+      "reason": "Missing/duplicate/out-of-order lifecycle: workbench-react/adapter-events-drained"
+    },
+    {
+      "case": "reordered-close-with-valid-frame-hash",
+      "accepted": false,
+      "reason": "Missing/duplicate/out-of-order lifecycle: workbench-default/adapter-events-drained"
+    },
+    {
+      "case": "duplicate-close",
+      "accepted": false,
+      "reason": "Missing/duplicate/out-of-order lifecycle: workbench-react/host-close-complete"
+    },
+    {
+      "case": "missing-ready",
+      "accepted": false,
+      "reason": "Missing/duplicate/out-of-order lifecycle: starter/application-ready"
+    },
+    {
+      "case": "wrong-guest",
+      "accepted": false,
+      "reason": "Guest identity differs: Version"
+    },
+    {
+      "case": "timeout-even-with-zero-exit",
+      "accepted": false,
+      "reason": "Run metadata differs: starter/TimedOut"
+    },
+    {
+      "case": "wrong-command-line",
+      "accepted": false,
+      "reason": "Run metadata differs: workbench-react/Arguments"
+    },
+    {
+      "case": "extra-file",
+      "accepted": false,
+      "reason": "Unexpected raw file: stale-result.txt"
+    },
+    {
+      "case": "wrong-transfer-script-hash",
+      "accepted": false,
+      "reason": "Observed identity differs: transfer/run-apps.ps1"
+    },
+    {
+      "case": "truncated-end",
+      "accepted": false,
+      "reason": "Incomplete serial framing"
+    },
+    {
+      "case": "corrupted-frame-hash",
+      "accepted": false,
+      "reason": "Frame length/hash mismatch: guest-identity.txt"
+    },
+    {
+      "case": "duplicate-frame",
+      "accepted": false,
+      "reason": "Invalid or duplicate serial header"
+    }
+  ],
+  "releaseReady": false
+}

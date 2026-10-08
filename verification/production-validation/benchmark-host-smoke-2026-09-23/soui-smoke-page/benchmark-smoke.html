@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light">
+    <title>SOUI / Electron Smoothness Benchmark</title>
+    <link rel="stylesheet" href="./assets/benchmark-BFEd3JRA.css">
+  </head>
+  <body>
+    <div id="benchmark-root"></div>
+    <script>(function(){try{var D=window.DOMException;new D(1,2);}catch(e){var P=D&&D.prototype;var S=function(message,name){this.message=String(message||"");this.name=String(name||"Error");};if(P)S.prototype=P;try{window.DOMException=S;}catch(ignore){}}})();</script>
+    <script src="./assets/polyfills-legacy-VVdV9S1d.js"></script>
+    <script>
+      System.import('./assets/benchmark-legacy-DcpevR6t.js').then(function () {}).catch(function (error) {
+        window.__souiBootstrapError = String(error && error.message || error);
+        document.getElementById('benchmark-root').textContent = 'Benchmark 启动失败：' + window.__souiBootstrapError;
+      });
+    </script>
+      <script>(function(){
+      var timer = setInterval(function(){
+        if(window.__souiBenchmarkReady && window.__souiBenchmark){
+          clearInterval(timer);
+          setTimeout(function(){window.__souiBenchmark.finish();},500);
+        }
+      },50);
+      setTimeout(function(){clearInterval(timer);},15000);
+    })();</script>
+  </body>
+</html>

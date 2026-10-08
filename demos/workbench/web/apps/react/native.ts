@@ -3,12 +3,14 @@ import {
   SouiNativeClientImpl,
   type SouiNativeEvent,
   type SouiNativePort,
+  type SouiSessionLease,
 } from '../../packages/sdk/soui_native_client';
 
 type NativeBootstrapResult = {
   sessionId?: string;
   origin?: string;
   token?: string;
+  lease?: SouiSessionLease;
   benchmarkRootToken?: string;
   sampleRootToken?: string;
   alternateSampleRootToken?: string;
@@ -25,6 +27,30 @@ const host = window as NativeHost;
 
 class SynchronousNativePort implements SouiNativePort {
   private readonly listeners = new Set<(event: SouiNativeEvent) => void>();
+  private releaseDocument?: () => void;
+
+  bindDocument(client: SouiNativeClientImpl, dispatch: (event: SouiNativeEvent) => void): void {
+    const previous = host.__souiNativeDispatchEvent;
+    const close = () => client.dispose();
+    this.releaseDocument = () => {
+      host.removeEventListener('pagehide', close);
+      host.removeEventListener('beforeunload', close);
+      if (host.__souiNativeDispatchEvent === dispatch) {
+        if (previous) host.__souiNativeDispatchEvent = previous;
+        else delete host.__souiNativeDispatchEvent;
+      }
+    };
+    host.__souiNativeDispatchEvent = dispatch;
+    host.addEventListener('pagehide', close);
+    host.addEventListener('beforeunload', close);
+  }
+
+  dispose(): void {
+    this.listeners.clear();
+    const release = this.releaseDocument;
+    this.releaseDocument = undefined;
+    release?.();
+  }
 
   request(envelope: string): Promise<string> {
     if (typeof host.__souiNativePostMessage !== 'function') {
@@ -56,6 +82,7 @@ function parseBootstrap(raw: string, requestId: string): NativeBootstrapResult {
 export function createReactNativeClient(): SouiNativeClientImpl | null {
   if (typeof host.__souiNativePostMessage !== 'function') return null;
   const requestId = 'react-bootstrap:1';
+  const bootstrapStartedAt = performance.now();
   const raw = host.__souiNativePostMessage(JSON.stringify({
     requestId, sessionId: '', origin: '', token: '', method: 'bridge.bootstrap', params: { protocol: 'soui.bridge/1' },
   }));
@@ -70,14 +97,17 @@ export function createReactNativeClient(): SouiNativeClientImpl | null {
   host.__souiFileInsightSampleRootToken = bootstrap.sampleRootToken || '';
   host.__souiFileInsightAlternateSampleRootToken = bootstrap.alternateSampleRootToken || '';
   const port = new SynchronousNativePort();
-  host.__souiNativeDispatchEvent = (value) => {
-    if (value && typeof value === 'object' && typeof value.sessionId === 'string' && typeof value.sequence === 'number') {
-      port.dispatch(value);
-    }
-  };
-  return new SouiNativeClientImpl(port, {
+  const client = new SouiNativeClientImpl(port, {
     sessionId: bootstrap.sessionId,
     origin: bootstrap.origin,
     token: bootstrap.token,
+    lease: bootstrap.lease,
+    leaseElapsedMs: bootstrap.lease === undefined ? 0 : performance.now() - bootstrapStartedAt,
   });
+  port.bindDocument(client, value => {
+    if (value && typeof value === 'object' && typeof value.sessionId === 'string' && typeof value.sequence === 'number') {
+      port.dispatch(value);
+    }
+  });
+  return client;
 }

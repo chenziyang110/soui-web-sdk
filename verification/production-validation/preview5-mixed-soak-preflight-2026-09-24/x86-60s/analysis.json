@@ -1,0 +1,172 @@
+{
+  "schema": "soui.mixed-analysis/v1",
+  "runId": "0a03a68f-2812-4969-9356-7971476fbfbe",
+  "sourceSha256": "b8355092795ee5bb08f36dc4c677c6259f5eb857032fc5cd8d3fdd9859a6d392",
+  "payloadSha256": "6c34e4909ba7059a89536d19777d55ba1dcdfd30def0cc9e6d35f6140d8824e9",
+  "requestedDurationMs": 60000,
+  "elapsedMs": 69632,
+  "measuredCycles": 4,
+  "completedSteps": 60,
+  "hourly": [
+    {
+      "hour": 0,
+      "fromMs": 0,
+      "toMs": 3600000,
+      "sampleCount": 4,
+      "stepCount": 60,
+      "firstCycle": 1,
+      "lastCycle": 4,
+      "resources": {
+        "privateBytes": {
+          "count": 4,
+          "first": 44494848,
+          "last": 87912448,
+          "min": 40017920,
+          "max": 90406912,
+          "p50": 44494848,
+          "p95": 90406912
+        },
+        "workingSetBytes": {
+          "count": 4,
+          "first": 59465728,
+          "last": 99676160,
+          "min": 54747136,
+          "max": 101625856,
+          "p50": 59465728,
+          "p95": 101625856
+        },
+        "handles": {
+          "count": 4,
+          "first": 356,
+          "last": 375,
+          "min": 334,
+          "max": 397,
+          "p50": 356,
+          "p95": 397
+        },
+        "threads": {
+          "count": 4,
+          "first": 19,
+          "last": 16,
+          "min": 16,
+          "max": 19,
+          "p50": 19,
+          "p95": 19
+        },
+        "gdiObjects": {
+          "count": 4,
+          "first": 36,
+          "last": 23,
+          "min": 22,
+          "max": 36,
+          "p50": 23,
+          "p95": 36
+        },
+        "userObjects": {
+          "count": 4,
+          "first": 12,
+          "last": 12,
+          "min": 12,
+          "max": 12,
+          "p50": 12,
+          "p95": 12
+        }
+      },
+      "actions": {
+        "close": {
+          "count": 16,
+          "first": 314,
+          "last": 285,
+          "min": 264,
+          "max": 342,
+          "p50": 285,
+          "p95": 342
+        },
+        "idle": {
+          "count": 4,
+          "first": 10004,
+          "last": 10011,
+          "min": 10004,
+          "max": 10011,
+          "p50": 10007,
+          "p95": 10011
+        },
+        "minimize": {
+          "count": 4,
+          "first": 3,
+          "last": 6,
+          "min": 3,
+          "max": 8,
+          "p50": 6,
+          "p95": 8
+        },
+        "mount": {
+          "count": 16,
+          "first": 1528,
+          "last": 859,
+          "min": 783,
+          "max": 1528,
+          "p50": 898,
+          "p95": 1528
+        },
+        "reload": {
+          "count": 12,
+          "first": 704,
+          "last": 725,
+          "min": 673,
+          "max": 865,
+          "p50": 725,
+          "p95": 865
+        },
+        "restore": {
+          "count": 4,
+          "first": 19,
+          "last": 17,
+          "min": 16,
+          "max": 19,
+          "p50": 17,
+          "p95": 19
+        },
+        "runtime.reject-busy": {
+          "count": 1,
+          "first": 0,
+          "last": 0,
+          "min": 0,
+          "max": 0,
+          "p50": 0,
+          "p95": 0
+        },
+        "runtime.reject-restart": {
+          "count": 1,
+          "first": 63,
+          "last": 63,
+          "min": 63,
+          "max": 63,
+          "p50": 63,
+          "p95": 63
+        },
+        "runtime.shutdown": {
+          "count": 1,
+          "first": 167,
+          "last": 167,
+          "min": 167,
+          "max": 167,
+          "p50": 167,
+          "p95": 167
+        },
+        "runtime.shutdown-idempotent": {
+          "count": 1,
+          "first": 0,
+          "last": 0,
+          "min": 0,
+          "max": 0,
+          "p50": 0,
+          "p95": 0
+        }
+      }
+    }
+  ],
+  "resourceGate": "not-evaluated",
+  "longRunGate": "not-evaluated",
+  "releaseReady": false
+}

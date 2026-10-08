@@ -1,0 +1,65 @@
+{
+  "schema": "soui.benchmark-single-run/v1",
+  "runId": "a0c842a7-3099-4fb5-85d2-195bc2b713c4",
+  "host": "soui",
+  "scene": "S01",
+  "startedAt": "2026-09-25T01:11:40.638Z",
+  "pageSha256": "d6264e7dd53caf89eddf78986e3d6b09ddf278a9cde3e050641127ab8ca2f74b",
+  "hostExeSha256": "2adfbaa5ab9738f16984fc9d7a32cd89c0376461584c12931b79b872b85e2635",
+  "dependency": {
+    "miniblinkSha256": "0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816"
+  },
+  "tools": {
+    "samplerSha256": "2b15e649cc50450c9ea38b7203b5e11d887256c27d41e3fc0280e3115ef8fa74",
+    "inputSha256": "c428d18c377f89b53b35c13aa61f746265ce73d6a9f9eed50f5dbdfcf7dbf7d4"
+  },
+  "maxDurationMs": 195000,
+  "releaseReady": false,
+  "benchmarkValid": false,
+  "processes": [
+    {
+      "name": "host",
+      "pid": 32992,
+      "code": 0,
+      "signal": null,
+      "error": null
+    },
+    {
+      "name": "sampler",
+      "pid": 4040,
+      "code": 0,
+      "signal": null,
+      "error": null
+    },
+    {
+      "name": "input",
+      "pid": 61692,
+      "code": 0,
+      "signal": null,
+      "error": null
+    }
+  ],
+  "trace": {
+    "schema": "soui.benchmark-run-traces/v1",
+    "scene": "S01",
+    "hostPid": 32992,
+    "hostCreationTime100ns": 134347723006686880,
+    "inputActions": 64,
+    "processSamples": 62,
+    "inputDurationMs": 61844,
+    "processDurationMs": 63640,
+    "inputOffsetMs": 447.5488,
+    "traceIntegrityAccepted": true,
+    "physicalPresentation": "not-measured",
+    "performanceGate": "not-evaluated",
+    "releaseReady": false
+  },
+  "pageResult": {
+    "path": "page-results/soui-32992-580040781-1.json",
+    "bytes": 21279,
+    "sha256": "eb36b698d21b0f21c087c0fef640eae90e74648c19f21625eac8a739ca1dab40",
+    "durationMs": 61771.635
+  },
+  "status": "completed",
+  "finishedAt": "2026-09-25T01:12:44.347Z"
+}

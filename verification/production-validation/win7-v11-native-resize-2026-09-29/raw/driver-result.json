@@ -1,0 +1,30 @@
+{
+  "program": "powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-File",
+    "Run-V11.ps1",
+    "-Attempt",
+    "guest-native-resize-v11-attempt3",
+    "-InputName",
+    "win7-v11-transfer-attempt1",
+    "-ExpectedFreezeSha256",
+    "6d712b263f6318aacd8077418d1906aa013104ed6c7113ca2faf98c637716aa2"
+  ],
+  "cwd": "C:\\SOUI-SDK-production-validation\\work-area-placement-20260928",
+  "startedAt": "2026-09-29T06:07:26.548Z",
+  "pid": 50040,
+  "exitCode": 0,
+  "signal": null,
+  "timedOut": false,
+  "error": null,
+  "finishedAt": "2026-09-29T06:16:20.833Z",
+  "stdout": {
+    "bytes": 583,
+    "sha256": "040fe4a89558052901a480c430a8ec015b005920fe6ec780f84cf738c5638a74"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

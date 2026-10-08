@@ -1,0 +1,80 @@
+{
+  "schema": "soui.win7-v02-current-display-explore-input/v1",
+  "version": "0.3.0-preview.15",
+  "buildId": "f0c38056-058a-456e-be99-17446127f7ec",
+  "sourceSha256": "15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d",
+  "starterPayloadSha256": "bbc99238c309ddc2cc8431c79170312b7444b107e250bab0702706b799470022",
+  "workbenchPayloadSha256": "7ee53c78a1c5c0c2deecfbb38f70d443d3315d6d420ec756c1b5113ccc7cbffb",
+  "probeSha256": "3d7b983d9e816978748b3ea2b3fa40a0ad004ab18c01982e5c2736e71b274737",
+  "displayProbeSha256": "9fe2a3c5ca8ab983c7cd01338b25a6b1d80844c6637f8ef94403d850a17708a2",
+  "transferManifestSha256": "fcab0ff7bb08dac997ad98b777c6d9a5db7b1e82b786c9feb652bf31f928c042",
+  "transferFiles": [
+    {
+      "path": "7za.exe",
+      "bytes": 739840,
+      "sha256": "ea308c76a2f927b160a143d94072b0dce232e04b751f0c6432a94e05164e716d"
+    },
+    {
+      "path": "export-serial.ps1",
+      "bytes": 1275,
+      "sha256": "1e15c52937b9c41f4d33cb1bb8f818ccc8de1a2e9aa0f5baa7272c63b0eba023"
+    },
+    {
+      "path": "run-display-explore.cmd",
+      "bytes": 152,
+      "sha256": "a0b9b781d63f594a8a2e779dd5b0541532a1f68d3aef2e3a0fee160752d23396"
+    },
+    {
+      "path": "run-display-explore.ps1",
+      "bytes": 12891,
+      "sha256": "19588e6a5e0c1fac2b832748e98b769d08974ab6f1a6345fdf77d2624de1f984"
+    },
+    {
+      "path": "SouiStarter-payload.tsv",
+      "bytes": 7392,
+      "sha256": "d33592eb3139a80d7c674b44e87b7cc3e7c7dbe16d244a04b1a1e03660258c0f"
+    },
+    {
+      "path": "SouiStarter.zip",
+      "bytes": 28597343,
+      "sha256": "06f27e379e1f2f02f17e8de957fc76a31061694a886b8f9cc061e638d7fc1c94"
+    },
+    {
+      "path": "SouiWorkbench-payload.tsv",
+      "bytes": 53028,
+      "sha256": "c4ee2527797ee027c11ec758fb05e38eb5632af03878318268e2f19c7ed8f3d9"
+    },
+    {
+      "path": "SouiWorkbench.zip",
+      "bytes": 39615641,
+      "sha256": "42c326ee6f1ed16a6eb3cbf4fd7ceb591b72887e4b447215138113eb7db4eda2"
+    },
+    {
+      "path": "V02DisplayModeProbe.exe",
+      "bytes": 116224,
+      "sha256": "9fe2a3c5ca8ab983c7cd01338b25a6b1d80844c6637f8ef94403d850a17708a2"
+    },
+    {
+      "path": "V02InputProbe.exe",
+      "bytes": 189952,
+      "sha256": "3d7b983d9e816978748b3ea2b3fa40a0ad004ab18c01982e5c2736e71b274737"
+    },
+    {
+      "path": "verify-apps.ps1",
+      "bytes": 2558,
+      "sha256": "f9dae77aff5a044ca9906b5cdc4e52c7fce6401aa28545dc98190725981f44f3"
+    }
+  ],
+  "mountRoot": "C:\\SOUI-SDK-production-validation\\preview15-v02-win7-current-20260927\\display-explore-attempt1\\volume",
+  "inputSubdir": "soui-input",
+  "guestCommand": "cmd.exe /c D:\\soui-input\\run-display-explore.cmd",
+  "appArguments": "--arch=x86 --renderer=cpu --react --page=data --width=700 --height=500",
+  "requestedDisplay": "1024x768",
+  "inspectAfterMs": 10000,
+  "closeAfterMs": 45000,
+  "closeWaitMs": 15000,
+  "mode": "display-and-visible-route-exploration-no-real-input",
+  "guestExecuted": false,
+  "win7CurrentV02Verified": false,
+  "releaseReady": false
+}

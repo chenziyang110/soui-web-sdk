@@ -1,0 +1,60 @@
+{
+  "schema": "soui.v02.probe-build-review/v1",
+  "buildStatus": "built-x64-x86",
+  "buildStartedAt": "2026-09-27T10:07:20.171Z",
+  "buildFinishedAt": "2026-09-27T10:14:33.091Z",
+  "stages": [
+    {
+      "name": "x64-configure",
+      "exitCode": 0,
+      "timedOut": false,
+      "interference": null,
+      "gateError": null
+    },
+    {
+      "name": "x64-build",
+      "exitCode": 0,
+      "timedOut": false,
+      "interference": null,
+      "gateError": null
+    },
+    {
+      "name": "x86-configure",
+      "exitCode": 0,
+      "timedOut": false,
+      "interference": null,
+      "gateError": null
+    },
+    {
+      "name": "x86-build",
+      "exitCode": 0,
+      "timedOut": false,
+      "interference": null,
+      "gateError": null
+    }
+  ],
+  "gateSamples": 78,
+  "busySamplesBeforeBuild": 71,
+  "emptySamplesAfterLastBusy": 7,
+  "executables": [
+    {
+      "architecture": "x64",
+      "path": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-build-queued-attempt1\\build\\x64\\Release\\V02InputProbe.exe",
+      "bytes": 47104,
+      "sha256": "f58219498883c31729414d51a48a3ec89cd4a5105d4e5f5b39c7919fefd664c7"
+    },
+    {
+      "architecture": "x86",
+      "path": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-build-queued-attempt1\\build\\x86\\Release\\V02InputProbe.exe",
+      "bytes": 41472,
+      "sha256": "3ae9a6e42fa2d7980d031cf2dccf62a9245952089a54dae215bcacaadf95d5ef"
+    }
+  ],
+  "rejectionAttempt1": {
+    "status": "failed",
+    "nativeCasesStarted": 0,
+    "driverExitCode": 1
+  },
+  "realGuiExecuted": false,
+  "releaseReady": false
+}

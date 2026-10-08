@@ -1,0 +1,60 @@
+{
+  "version": "0.3.0-preview.15",
+  "classification": "verified-functional-smoke-evidence",
+  "buildId": "b8c26d8d-7144-4eb0-b889-0034ec8029fb",
+  "sourceSha256": "b0d7cc7d52de3493084e0dec6813f92f9a90a1bbce2f75ad5a62532a6dd87d07",
+  "freezeSha256": "47e463d7746dd9824a6083d3e12b26d0910ac79a35bd7d69060b1ffe62b9e005",
+  "serialSha256": "f5e612f12c5994304d45b286461d5d7800f8dd9dd6fe5cc3157d86fc8307fe22",
+  "serialBytes": 179152,
+  "serialFiles": 37,
+  "strictValidator": {
+    "status": "verified-functional-smoke-evidence",
+    "version": "0.3.0-preview.15",
+    "buildId": "b8c26d8d-7144-4eb0-b889-0034ec8029fb",
+    "sourceSha256": "b0d7cc7d52de3493084e0dec6813f92f9a90a1bbce2f75ad5a62532a6dd87d07",
+    "rawFiles": 37,
+    "applications": 3,
+    "guest": "Windows 7 SP1 x86",
+    "releaseReady": false,
+    "sourceReproductionClaim": false
+  },
+  "guestIdentity": "Version=6.1.7601\r\nServicePackMajorVersion=1\r\nOSArchitecture=32-bit\r\nPointerBytes=4\r\nPowerShellMajor=2\r\nCaption=Microsoft Windows 7 企业版 \r\n",
+  "harness": "transfer verified\r\npayload pre verified\r\nstarter exit=0\r\nworkbench-default exit=0\r\nworkbench-react exit=0\r\npayload post verified\r\n",
+  "runs": [
+    {
+      "name": "starter",
+      "record": "Name=starter\r\nApplication=SouiStarter\r\nArguments=--smoke-test\r\nPID=1020\r\nStartUtc=2026-09-26T10:25:15.9832000Z\r\nTimeoutMs=60000\r\nTimedOut=False\r\nRemainingProcess=False\r\nExitCode=0\r\n",
+      "smoke": "process-start\r\nhost-started\r\napplication-ready\r\nhost-close-complete\r\n",
+      "nativeExitCode": 0
+    },
+    {
+      "name": "workbench-default",
+      "record": "Name=workbench-default\r\nApplication=SouiWorkbench\r\nArguments=--webview-smoke-test --arch=x86 --renderer=cpu\r\nPID=1092\r\nStartUtc=2026-09-26T10:25:26.6068000Z\r\nTimeoutMs=60000\r\nTimedOut=False\r\nRemainingProcess=False\r\nExitCode=0\r\n",
+      "smoke": "process-start\r\nwindow-constructed\r\nhost-started\r\ntimer-waiting-document\r\ndocument=waiting,bridge=waiting,draw_interval_ms=-1\r\ntimer-waiting-document\r\ndocument=waiting,bridge=waiting,draw_interval_ms=17\r\ntimer-document-ready\r\ndocument=ready,bridge=waiting,draw_interval_ms=17\r\ntimer-document-ready\r\ndocument=ready,bridge=waiting,draw_interval_ms=17\r\ndocument=ready,bridge=ready,draw_interval_ms=17,probe=script/json/event/error/local/proxy/promise/symbol/reflect/vue/reactivity/dom/bridge\r\napplication-ready\r\nhost-close-start\r\nadapter-unmount-start\r\nadapter-bridge-shutdown\r\nadapter-events-drained\r\nadapter-webview-destroyed\r\nhost-close-complete\r\nwindow-destroyed\r\n",
+      "nativeExitCode": 0
+    },
+    {
+      "name": "workbench-react",
+      "record": "Name=workbench-react\r\nApplication=SouiWorkbench\r\nArguments=--webview-smoke-test --arch=x86 --renderer=cpu --react\r\nPID=520\r\nStartUtc=2026-09-26T10:26:16.6828000Z\r\nTimeoutMs=60000\r\nTimedOut=False\r\nRemainingProcess=False\r\nExitCode=0\r\n",
+      "smoke": "process-start\r\nwindow-constructed\r\nhost-started\r\ntimer-waiting-document\r\ndocument=waiting,bridge=waiting,draw_interval_ms=-1\r\ntimer-waiting-document\r\ndocument=waiting,bridge=waiting,draw_interval_ms=17\r\ntimer-document-ready\r\ndocument=ready,bridge=waiting,draw_interval_ms=17\r\ndocument=ready,bridge=ready,draw_interval_ms=17,probe=script/json/event/error/local/proxy/promise/symbol/reflect/vue/reactivity/dom/bridge\r\napplication-ready\r\nhost-close-start\r\nadapter-unmount-start\r\nadapter-bridge-shutdown\r\nadapter-events-drained\r\nadapter-webview-destroyed\r\nhost-close-complete\r\nwindow-destroyed\r\n",
+      "nativeExitCode": 0
+    }
+  ],
+  "fullPayloadAndLegalBeforeAndAfterMatched": true,
+  "desktopReadyBeforeSingleCommand": true,
+  "observedExternalLoad": false,
+  "loadSamples": 63,
+  "baseDiskUnchanged": true,
+  "originalDriverExitCode": 0,
+  "qemuExitCode": 0,
+  "priorAttempt2": {
+    "classification": "host-powershell-module-path-startup-failure",
+    "driverExitCode": 1,
+    "qemuLaunched": false,
+    "guestCommandSent": false,
+    "correction": "Run-Guest.ps1 sets only its own process PSModulePath to Windows PowerShell system modules and verifies Get-FileHash before launching the unchanged guest driver."
+  },
+  "sourceReproductionClaim": false,
+  "realRenewalVerified": false,
+  "releaseReady": false
+}

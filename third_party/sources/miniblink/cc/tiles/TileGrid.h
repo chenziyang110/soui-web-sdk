@@ -1,4 +1,4 @@
-#ifndef TileGrid_h
+﻿#ifndef TileGrid_h
 #define TileGrid_h
 
 #include "third_party/WebKit/Source/platform/geometry/IntSize.h"

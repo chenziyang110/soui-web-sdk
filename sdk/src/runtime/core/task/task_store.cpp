@@ -3,14 +3,15 @@
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
+#include <string_view>
 #include <utility>
 
 namespace soui::runtime {
 namespace {
 
-std::string make_task_id(std::uint64_t number) {
+std::string make_task_id(std::string_view prefix, std::uint64_t number) {
   std::ostringstream stream;
-  stream << "task-" << std::setw(6) << std::setfill('0') << number;
+  stream << prefix << std::setw(6) << std::setfill('0') << number;
   return stream.str();
 }
 
@@ -21,10 +22,11 @@ task_snapshot task_store::start(std::string operation_id) {
 }
 
 task_snapshot task_store::start_scoped(std::string operation_id, std::string scope_key,
-                                       bool* duplicate, bool* conflict) {
+                                       bool* duplicate, bool* conflict, bool* capacity) {
   std::lock_guard<std::mutex> lock(mutex_);
   if (duplicate) *duplicate = false;
   if (conflict) *conflict = false;
+  if (capacity) *capacity = false;
   const auto existing = operation_to_task_.find(operation_id);
   if (existing != operation_to_task_.end()) {
     const auto scope = operation_to_scope_.find(operation_id);
@@ -40,7 +42,7 @@ task_snapshot task_store::start_scoped(std::string operation_id, std::string sco
     if (duplicate) *duplicate = true;
     return tasks_.at(existing->second);
   }
-  if (tasks_.size() >= 1024U) {
+  if (tasks_.size() >= max_tasks) {
     auto oldest = tasks_.end();
     for (auto iterator = tasks_.begin(); iterator != tasks_.end(); ++iterator) {
       if (!is_terminal(iterator->second.state)) continue;
@@ -50,11 +52,19 @@ task_snapshot task_store::start_scoped(std::string operation_id, std::string sco
       operation_to_task_.erase(oldest->second.operation_id);
       operation_to_scope_.erase(oldest->second.operation_id);
       tasks_.erase(oldest);
+    } else {
+      if (capacity) *capacity = true;
+      task_snapshot rejected;
+      rejected.operation_id = std::move(operation_id);
+      rejected.state = task_state::failed;
+      rejected.message = "The native task store capacity is exhausted.";
+      rejected.result = operation_result{result_kind::failure, {}, rejected.message};
+      return rejected;
     }
   }
 
   task_snapshot snapshot;
-  snapshot.task_id = make_task_id(next_task_number_++);
+  snapshot.task_id = make_task_id(id_prefix_, next_task_number_++);
   snapshot.operation_id = std::move(operation_id);
   snapshot.state = task_state::queued;
   snapshot.sequence = next_sequence_++;
@@ -78,7 +88,8 @@ bool task_store::mark_running(const std::string& task_id) {
   return true;
 }
 
-bool task_store::update_progress(const std::string& task_id, std::uint32_t progress) {
+bool task_store::update_progress(const std::string& task_id, std::uint32_t progress,
+                                 std::optional<std::string> message) {
   std::lock_guard<std::mutex> lock(mutex_);
   const auto found = tasks_.find(task_id);
   if (found == tasks_.end() || is_terminal(found->second.state) ||
@@ -87,7 +98,8 @@ bool task_store::update_progress(const std::string& task_id, std::uint32_t progr
   }
   found->second.state = task_state::running;
   found->second.progress = std::min<std::uint32_t>(progress, 100U);
-  found->second.result = operation_result{result_kind::timeout_observed, task_id};
+  if (message) found->second.message = std::move(*message);
+  found->second.result = operation_result{result_kind::timeout_observed, task_id, found->second.message};
   found->second.sequence = next_sequence_++;
   return true;
 }

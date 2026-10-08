@@ -1,0 +1,34 @@
+✔ preflight process list rejects missing or malformed tasklist rows (1.1835ms)
+✔ preflight and live gate share the full SOUI workload classification (0.2437ms)
+✔ live gate excludes the benchmark run and its descendants while finding external load (0.2192ms)
+✔ live gate remembers observed child identity after its parent exits (0.1191ms)
+✔ live gate does not trust a new child of an absent parent PID (0.0934ms)
+✔ live gate records when the runner has disappeared (0.0626ms)
+✔ live gate treats a benchmark host outside the owned tree as interference (0.0653ms)
+✔ live gate catches other SOUI tests and build drivers (0.0544ms)
+✔ live gate rejects a reused PID with a different creation identity (0.1271ms)
+✔ live gate fails closed if the runner PID changes identity (0.1311ms)
+✔ Windows live gate obtains process identities with a fail-closed query (1225.5007ms)
+✔ live gate stops only its own runner when external workload appears (665.8069ms)
+✔ live gate checks the real runner identity before stopping its process tree (1748.5755ms)
+✔ live gate fails closed and stops its runner when the process query fails (32.9878ms)
+✔ live gate lets an isolated runner exit normally (258.5963ms)
+✔ live gate refuses a sample that cannot identify its own runner (673.6367ms)
+✔ live gate catches interference that starts after a clean initial sample (746.9211ms)
+✔ five alternating accepted pairs produce diagnostics without a value verdict (1.2836ms)
+✔ four pairs cannot be summarized as the five-pair acceptance input (0.489ms)
+✔ a missing or contaminated live gate invalidates all candidate ratios (1.2159ms)
+✔ order drift and duplicate run identity are refused (0.4735ms)
+✔ a rejected pair or forced cleanup cannot contribute to a summary (0.4515ms)
+✔ live gate timestamps must cover a full run without sampling gaps (1.1106ms)
+✔ real run times follow the declared alternating order without overlap (0.4225ms)
+✔ each before and after preflight gate brackets its actual run (0.3693ms)
+✔ preflight gates too far from a measured run are rejected (0.1474ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5453.8607

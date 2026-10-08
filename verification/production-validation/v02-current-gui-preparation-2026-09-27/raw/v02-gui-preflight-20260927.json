@@ -1,0 +1,43 @@
+{
+  "schema": "soui.v02.gui-preflight/v1",
+  "at": "2026-09-27T09:01:43.1098359Z",
+  "status": "prepared-only",
+  "guiExecuted": false,
+  "releaseReady": false,
+  "repoHead": "b5c90b103575af3c6ee0c9dcd1e00f182d0ec166",
+  "sourceSha256": "15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d",
+  "x64BuildId": "5ddcec93-d244-456c-877b-1bdeabee568d",
+  "x64WorkbenchPayloadSha256": "48ec1c2261bef39a45c2e95bff51b8313b50778f5d6ca4af51254fa88859c308",
+  "hostInputMethods": [
+    {
+      "languageTag": "zh-Hans-CN",
+      "inputMethodTips": [
+        "0804:{81D4E9C9-1D3B-41BC-9E6C-4B40BF79E35E}{FA550B04-5AD7-411F-A5AC-CA038EC515D7}"
+      ]
+    }
+  ],
+  "blockingQemu": [
+    {
+      "ProcessId": 70216,
+      "Name": "qemu-system-x86_64.exe",
+      "CreationDate": "2026-09-27T16:52:46.950073+08:00"
+    }
+  ],
+  "routeArguments": [
+    "--react",
+    "--page=data"
+  ],
+  "observables": {
+    "ready": ".v02-lab[data-v02-ready=\"true\"]",
+    "scroll": ".v02-list[data-v02-scroll-top]",
+    "imeInput": "#v02-chinese-input",
+    "imeState": ".v02-state",
+    "task": ".rx-workloads[data-task-state][data-task-progress][data-task-events][data-task-queries]"
+  },
+  "requiredRealActions": [
+    "Physical mouse-wheel input with target PID/HWND foreground verified",
+    "Real Chinese IME composition and committed Han characters, not programmatic value assignment or Unicode injection",
+    "Actual window-border resize during a running public SDK task",
+    "Cancellation and native close with original process exit and load-gate logs"
+  ]
+}

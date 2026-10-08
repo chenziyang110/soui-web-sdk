@@ -1,0 +1,26 @@
+Usage: node run-one.cjs soui|electron S01|... ABS_PAGE_DIRECTORY ABS_HOST_EXE ABS_NODE_DLL_OR_ELECTRON_APP_DIRECTORY ABS_SAMPLER_EXE ABS_INPUT_EXE ABS_NEW_OUTPUT_DIRECTORY [ABS_SDK_LIBRARY_OR_ELECTRON_LOCKFILE]
+✖ failure cleanup verifies direct child identity and stops its own process tree (3810.321ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3908.4129
+
+✖ failing tests:
+
+test at ..\..\SOUI-SDK-development\benchmark-realtime-gate\tests\benchmark\run-one-cleanup.test.cjs:34:1
+✖ failure cleanup verifies direct child identity and stops its own process tree (3810.321ms)
+  AssertionError [ERR_ASSERTION]: {"observed":{"ProcessId":18972,"ParentProcessId":78908,"ExecutablePath":"C:\\nvm4w\\nodejs\\node.exe"},"expectedPid":18972,"expectedParent":78908,"expectedExecutable":"C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node.exe"}
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\benchmark-realtime-gate\tests\benchmark\run-one-cleanup.test.cjs:49:7)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

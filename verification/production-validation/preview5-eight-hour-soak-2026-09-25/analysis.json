@@ -1,0 +1,1095 @@
+{
+  "schema": "soui.mixed-analysis/v1",
+  "runId": "d8260ac9-e903-44f1-9090-42483361777a",
+  "sourceSha256": "b8355092795ee5bb08f36dc4c677c6259f5eb857032fc5cd8d3fdd9859a6d392",
+  "payloadSha256": "7df176b288adea36286bf1dc527861e401211284bc5ac8a1de36fd4f3798c127",
+  "requestedDurationMs": 28800000,
+  "elapsedMs": 28802459,
+  "measuredCycles": 1690,
+  "completedSteps": 23664,
+  "hourly": [
+    {
+      "hour": 0,
+      "fromMs": 0,
+      "toMs": 3600000,
+      "sampleCount": 211,
+      "stepCount": 2968,
+      "firstCycle": 1,
+      "lastCycle": 211,
+      "resources": {
+        "privateBytes": {
+          "count": 211,
+          "first": 81473536,
+          "last": 93478912,
+          "min": 30810112,
+          "max": 113881088,
+          "p50": 67252224,
+          "p95": 104394752
+        },
+        "workingSetBytes": {
+          "count": 211,
+          "first": 92217344,
+          "last": 104161280,
+          "min": 44609536,
+          "max": 125067264,
+          "p50": 79474688,
+          "p95": 115884032
+        },
+        "handles": {
+          "count": 211,
+          "first": 361,
+          "last": 361,
+          "min": 314,
+          "max": 402,
+          "p50": 360,
+          "p95": 400
+        },
+        "threads": {
+          "count": 211,
+          "first": 15,
+          "last": 14,
+          "min": 12,
+          "max": 18,
+          "p50": 15,
+          "p95": 16
+        },
+        "gdiObjects": {
+          "count": 211,
+          "first": 36,
+          "last": 21,
+          "min": 13,
+          "max": 36,
+          "p50": 22,
+          "p95": 25
+        },
+        "userObjects": {
+          "count": 211,
+          "first": 12,
+          "last": 13,
+          "min": 12,
+          "max": 14,
+          "p50": 13,
+          "p95": 13
+        }
+      },
+      "actions": {
+        "close": {
+          "count": 848,
+          "first": 342,
+          "last": 277,
+          "min": 261,
+          "max": 387,
+          "p50": 287,
+          "p95": 341
+        },
+        "idle": {
+          "count": 211,
+          "first": 10003,
+          "last": 10010,
+          "min": 10000,
+          "max": 10016,
+          "p50": 10008,
+          "p95": 10014
+        },
+        "minimize": {
+          "count": 212,
+          "first": 3,
+          "last": 8,
+          "min": 3,
+          "max": 12,
+          "p50": 8,
+          "p95": 10
+        },
+        "mount": {
+          "count": 848,
+          "first": 1390,
+          "last": 821,
+          "min": 712,
+          "max": 1390,
+          "p50": 842,
+          "p95": 971
+        },
+        "reload": {
+          "count": 636,
+          "first": 741,
+          "last": 684,
+          "min": 589,
+          "max": 937,
+          "p50": 738,
+          "p95": 873
+        },
+        "restore": {
+          "count": 212,
+          "first": 19,
+          "last": 23,
+          "min": 10,
+          "max": 32,
+          "p50": 17,
+          "p95": 25
+        },
+        "runtime.reject-busy": {
+          "count": 1,
+          "first": 0,
+          "last": 0,
+          "min": 0,
+          "max": 0,
+          "p50": 0,
+          "p95": 0
+        }
+      }
+    },
+    {
+      "hour": 1,
+      "fromMs": 3600000,
+      "toMs": 7200000,
+      "sampleCount": 212,
+      "stepCount": 2968,
+      "firstCycle": 212,
+      "lastCycle": 423,
+      "resources": {
+        "privateBytes": {
+          "count": 212,
+          "first": 48328704,
+          "last": 90914816,
+          "min": 48082944,
+          "max": 127115264,
+          "p50": 82718720,
+          "p95": 119861248
+        },
+        "workingSetBytes": {
+          "count": 212,
+          "first": 62025728,
+          "last": 97267712,
+          "min": 62025728,
+          "max": 135405568,
+          "p50": 92606464,
+          "p95": 130179072
+        },
+        "handles": {
+          "count": 212,
+          "first": 319,
+          "last": 361,
+          "min": 319,
+          "max": 404,
+          "p50": 361,
+          "p95": 401
+        },
+        "threads": {
+          "count": 212,
+          "first": 15,
+          "last": 15,
+          "min": 13,
+          "max": 16,
+          "p50": 15,
+          "p95": 16
+        },
+        "gdiObjects": {
+          "count": 212,
+          "first": 17,
+          "last": 22,
+          "min": 13,
+          "max": 25,
+          "p50": 22,
+          "p95": 25
+        },
+        "userObjects": {
+          "count": 212,
+          "first": 13,
+          "last": 13,
+          "min": 13,
+          "max": 14,
+          "p50": 13,
+          "p95": 14
+        }
+      },
+      "actions": {
+        "close": {
+          "count": 848,
+          "first": 298,
+          "last": 290,
+          "min": 259,
+          "max": 356,
+          "p50": 288,
+          "p95": 343
+        },
+        "idle": {
+          "count": 212,
+          "first": 10005,
+          "last": 10009,
+          "min": 10000,
+          "max": 10016,
+          "p50": 10007,
+          "p95": 10015
+        },
+        "minimize": {
+          "count": 212,
+          "first": 11,
+          "last": 7,
+          "min": 5,
+          "max": 14,
+          "p50": 8,
+          "p95": 10
+        },
+        "mount": {
+          "count": 848,
+          "first": 973,
+          "last": 820,
+          "min": 701,
+          "max": 1042,
+          "p50": 838,
+          "p95": 970
+        },
+        "reload": {
+          "count": 636,
+          "first": 873,
+          "last": 807,
+          "min": 572,
+          "max": 983,
+          "p50": 738,
+          "p95": 860
+        },
+        "restore": {
+          "count": 212,
+          "first": 18,
+          "last": 18,
+          "min": 11,
+          "max": 38,
+          "p50": 19,
+          "p95": 25
+        }
+      }
+    },
+    {
+      "hour": 2,
+      "fromMs": 7200000,
+      "toMs": 10800000,
+      "sampleCount": 212,
+      "stepCount": 2960,
+      "firstCycle": 424,
+      "lastCycle": 635,
+      "resources": {
+        "privateBytes": {
+          "count": 212,
+          "first": 60641280,
+          "last": 127299584,
+          "min": 60534784,
+          "max": 136609792,
+          "p50": 97869824,
+          "p95": 129744896
+        },
+        "workingSetBytes": {
+          "count": 212,
+          "first": 73068544,
+          "last": 137183232,
+          "min": 73068544,
+          "max": 145657856,
+          "p50": 107884544,
+          "p95": 138874880
+        },
+        "handles": {
+          "count": 212,
+          "first": 319,
+          "last": 397,
+          "min": 319,
+          "max": 407,
+          "p50": 361,
+          "p95": 401
+        },
+        "threads": {
+          "count": 212,
+          "first": 16,
+          "last": 14,
+          "min": 14,
+          "max": 16,
+          "p50": 15,
+          "p95": 15
+        },
+        "gdiObjects": {
+          "count": 212,
+          "first": 15,
+          "last": 22,
+          "min": 13,
+          "max": 25,
+          "p50": 22,
+          "p95": 24
+        },
+        "userObjects": {
+          "count": 212,
+          "first": 13,
+          "last": 13,
+          "min": 13,
+          "max": 14,
+          "p50": 13,
+          "p95": 14
+        }
+      },
+      "actions": {
+        "close": {
+          "count": 844,
+          "first": 300,
+          "last": 283,
+          "min": 238,
+          "max": 365,
+          "p50": 291,
+          "p95": 345
+        },
+        "idle": {
+          "count": 212,
+          "first": 10004,
+          "last": 10005,
+          "min": 10000,
+          "max": 10016,
+          "p50": 10008,
+          "p95": 10015
+        },
+        "minimize": {
+          "count": 212,
+          "first": 7,
+          "last": 7,
+          "min": 6,
+          "max": 12,
+          "p50": 7,
+          "p95": 10
+        },
+        "mount": {
+          "count": 846,
+          "first": 920,
+          "last": 828,
+          "min": 737,
+          "max": 1075,
+          "p50": 850,
+          "p95": 975
+        },
+        "reload": {
+          "count": 634,
+          "first": 729,
+          "last": 815,
+          "min": 594,
+          "max": 971,
+          "p50": 744,
+          "p95": 882
+        },
+        "restore": {
+          "count": 212,
+          "first": 20,
+          "last": 16,
+          "min": 13,
+          "max": 34,
+          "p50": 19,
+          "p95": 24
+        }
+      }
+    },
+    {
+      "hour": 3,
+      "fromMs": 10800000,
+      "toMs": 14400000,
+      "sampleCount": 211,
+      "stepCount": 2957,
+      "firstCycle": 636,
+      "lastCycle": 846,
+      "resources": {
+        "privateBytes": {
+          "count": 211,
+          "first": 71921664,
+          "last": 139218944,
+          "min": 71921664,
+          "max": 141438976,
+          "p50": 104017920,
+          "p95": 136404992
+        },
+        "workingSetBytes": {
+          "count": 211,
+          "first": 85450752,
+          "last": 148410368,
+          "min": 84676608,
+          "max": 152350720,
+          "p50": 115118080,
+          "p95": 145723392
+        },
+        "handles": {
+          "count": 211,
+          "first": 319,
+          "last": 389,
+          "min": 319,
+          "max": 404,
+          "p50": 361,
+          "p95": 400
+        },
+        "threads": {
+          "count": 211,
+          "first": 14,
+          "last": 15,
+          "min": 14,
+          "max": 16,
+          "p50": 15,
+          "p95": 16
+        },
+        "gdiObjects": {
+          "count": 211,
+          "first": 15,
+          "last": 23,
+          "min": 13,
+          "max": 25,
+          "p50": 22,
+          "p95": 25
+        },
+        "userObjects": {
+          "count": 211,
+          "first": 13,
+          "last": 14,
+          "min": 13,
+          "max": 14,
+          "p50": 13,
+          "p95": 14
+        }
+      },
+      "actions": {
+        "close": {
+          "count": 845,
+          "first": 298,
+          "last": 300,
+          "min": 264,
+          "max": 464,
+          "p50": 289,
+          "p95": 344
+        },
+        "idle": {
+          "count": 211,
+          "first": 10014,
+          "last": 10011,
+          "min": 10000,
+          "max": 10016,
+          "p50": 10008,
+          "p95": 10015
+        },
+        "minimize": {
+          "count": 211,
+          "first": 7,
+          "last": 8,
+          "min": 6,
+          "max": 11,
+          "p50": 7,
+          "p95": 10
+        },
+        "mount": {
+          "count": 845,
+          "first": 798,
+          "last": 850,
+          "min": 706,
+          "max": 3668,
+          "p50": 846,
+          "p95": 978
+        },
+        "reload": {
+          "count": 634,
+          "first": 689,
+          "last": 600,
+          "min": 595,
+          "max": 959,
+          "p50": 743,
+          "p95": 892
+        },
+        "restore": {
+          "count": 211,
+          "first": 16,
+          "last": 16,
+          "min": 14,
+          "max": 32,
+          "p50": 19,
+          "p95": 24
+        }
+      }
+    },
+    {
+      "hour": 4,
+      "fromMs": 14400000,
+      "toMs": 18000000,
+      "sampleCount": 211,
+      "stepCount": 2959,
+      "firstCycle": 847,
+      "lastCycle": 1057,
+      "resources": {
+        "privateBytes": {
+          "count": 211,
+          "first": 83800064,
+          "last": 143732736,
+          "min": 83443712,
+          "max": 154710016,
+          "p50": 129138688,
+          "p95": 150794240
+        },
+        "workingSetBytes": {
+          "count": 211,
+          "first": 97677312,
+          "last": 153456640,
+          "min": 96972800,
+          "max": 163119104,
+          "p50": 139284480,
+          "p95": 161087488
+        },
+        "handles": {
+          "count": 211,
+          "first": 319,
+          "last": 365,
+          "min": 319,
+          "max": 404,
+          "p50": 361,
+          "p95": 401
+        },
+        "threads": {
+          "count": 211,
+          "first": 14,
+          "last": 15,
+          "min": 14,
+          "max": 16,
+          "p50": 15,
+          "p95": 16
+        },
+        "gdiObjects": {
+          "count": 211,
+          "first": 17,
+          "last": 22,
+          "min": 13,
+          "max": 25,
+          "p50": 22,
+          "p95": 24
+        },
+        "userObjects": {
+          "count": 211,
+          "first": 13,
+          "last": 14,
+          "min": 13,
+          "max": 14,
+          "p50": 13,
+          "p95": 14
+        }
+      },
+      "actions": {
+        "close": {
+          "count": 847,
+          "first": 296,
+          "last": 282,
+          "min": 263,
+          "max": 453,
+          "p50": 289,
+          "p95": 343
+        },
+        "idle": {
+          "count": 211,
+          "first": 10009,
+          "last": 10009,
+          "min": 10000,
+          "max": 10016,
+          "p50": 10007,
+          "p95": 10015
+        },
+        "minimize": {
+          "count": 211,
+          "first": 6,
+          "last": 6,
+          "min": 5,
+          "max": 11,
+          "p50": 7,
+          "p95": 9
+        },
+        "mount": {
+          "count": 845,
+          "first": 837,
+          "last": 913,
+          "min": 704,
+          "max": 1112,
+          "p50": 853,
+          "p95": 975
+        },
+        "reload": {
+          "count": 634,
+          "first": 664,
+          "last": 668,
+          "min": 569,
+          "max": 969,
+          "p50": 755,
+          "p95": 887
+        },
+        "restore": {
+          "count": 211,
+          "first": 22,
+          "last": 19,
+          "min": 14,
+          "max": 37,
+          "p50": 19,
+          "p95": 24
+        }
+      }
+    },
+    {
+      "hour": 5,
+      "fromMs": 18000000,
+      "toMs": 21600000,
+      "sampleCount": 211,
+      "stepCount": 2954,
+      "firstCycle": 1058,
+      "lastCycle": 1268,
+      "resources": {
+        "privateBytes": {
+          "count": 211,
+          "first": 91922432,
+          "last": 131121152,
+          "min": 91922432,
+          "max": 162594816,
+          "p50": 119377920,
+          "p95": 155611136
+        },
+        "workingSetBytes": {
+          "count": 211,
+          "first": 105570304,
+          "last": 142848000,
+          "min": 105570304,
+          "max": 171335680,
+          "p50": 131125248,
+          "p95": 165326848
+        },
+        "handles": {
+          "count": 211,
+          "first": 323,
+          "last": 361,
+          "min": 319,
+          "max": 407,
+          "p50": 361,
+          "p95": 400
+        },
+        "threads": {
+          "count": 211,
+          "first": 15,
+          "last": 15,
+          "min": 14,
+          "max": 16,
+          "p50": 15,
+          "p95": 16
+        },
+        "gdiObjects": {
+          "count": 211,
+          "first": 14,
+          "last": 21,
+          "min": 13,
+          "max": 25,
+          "p50": 22,
+          "p95": 25
+        },
+        "userObjects": {
+          "count": 211,
+          "first": 14,
+          "last": 13,
+          "min": 13,
+          "max": 14,
+          "p50": 13,
+          "p95": 14
+        }
+      },
+      "actions": {
+        "close": {
+          "count": 844,
+          "first": 298,
+          "last": 284,
+          "min": 264,
+          "max": 437,
+          "p50": 288,
+          "p95": 332
+        },
+        "idle": {
+          "count": 211,
+          "first": 10002,
+          "last": 10004,
+          "min": 10000,
+          "max": 10016,
+          "p50": 10008,
+          "p95": 10015
+        },
+        "minimize": {
+          "count": 211,
+          "first": 6,
+          "last": 8,
+          "min": 6,
+          "max": 13,
+          "p50": 7,
+          "p95": 10
+        },
+        "mount": {
+          "count": 844,
+          "first": 909,
+          "last": 808,
+          "min": 701,
+          "max": 1100,
+          "p50": 839,
+          "p95": 975
+        },
+        "reload": {
+          "count": 633,
+          "first": 738,
+          "last": 764,
+          "min": 588,
+          "max": 989,
+          "p50": 751,
+          "p95": 900
+        },
+        "restore": {
+          "count": 211,
+          "first": 19,
+          "last": 17,
+          "min": 9,
+          "max": 28,
+          "p50": 19,
+          "p95": 25
+        }
+      }
+    },
+    {
+      "hour": 6,
+      "fromMs": 21600000,
+      "toMs": 25200000,
+      "sampleCount": 211,
+      "stepCount": 2945,
+      "firstCycle": 1269,
+      "lastCycle": 1479,
+      "resources": {
+        "privateBytes": {
+          "count": 211,
+          "first": 105508864,
+          "last": 160190464,
+          "min": 105508864,
+          "max": 175042560,
+          "p50": 149876736,
+          "p95": 172957696
+        },
+        "workingSetBytes": {
+          "count": 211,
+          "first": 119062528,
+          "last": 171253760,
+          "min": 119062528,
+          "max": 184836096,
+          "p50": 160092160,
+          "p95": 183246848
+        },
+        "handles": {
+          "count": 211,
+          "first": 319,
+          "last": 361,
+          "min": 319,
+          "max": 404,
+          "p50": 361,
+          "p95": 400
+        },
+        "threads": {
+          "count": 211,
+          "first": 15,
+          "last": 15,
+          "min": 14,
+          "max": 16,
+          "p50": 15,
+          "p95": 15
+        },
+        "gdiObjects": {
+          "count": 211,
+          "first": 14,
+          "last": 21,
+          "min": 13,
+          "max": 25,
+          "p50": 22,
+          "p95": 25
+        },
+        "userObjects": {
+          "count": 211,
+          "first": 13,
+          "last": 13,
+          "min": 13,
+          "max": 14,
+          "p50": 13,
+          "p95": 14
+        }
+      },
+      "actions": {
+        "close": {
+          "count": 840,
+          "first": 299,
+          "last": 287,
+          "min": 264,
+          "max": 485,
+          "p50": 291,
+          "p95": 344
+        },
+        "idle": {
+          "count": 211,
+          "first": 10012,
+          "last": 10012,
+          "min": 10000,
+          "max": 10016,
+          "p50": 10007,
+          "p95": 10015
+        },
+        "minimize": {
+          "count": 211,
+          "first": 9,
+          "last": 7,
+          "min": 5,
+          "max": 11,
+          "p50": 7,
+          "p95": 10
+        },
+        "mount": {
+          "count": 841,
+          "first": 851,
+          "last": 903,
+          "min": 719,
+          "max": 1123,
+          "p50": 863,
+          "p95": 980
+        },
+        "reload": {
+          "count": 631,
+          "first": 805,
+          "last": 807,
+          "min": 580,
+          "max": 1087,
+          "p50": 772,
+          "p95": 897
+        },
+        "restore": {
+          "count": 211,
+          "first": 18,
+          "last": 23,
+          "min": 13,
+          "max": 29,
+          "p50": 19,
+          "p95": 24
+        }
+      }
+    },
+    {
+      "hour": 7,
+      "fromMs": 25200000,
+      "toMs": 28800000,
+      "sampleCount": 210,
+      "stepCount": 2949,
+      "firstCycle": 1480,
+      "lastCycle": 1689,
+      "resources": {
+        "privateBytes": {
+          "count": 210,
+          "first": 113709056,
+          "last": 126287872,
+          "min": 113598464,
+          "max": 185225216,
+          "p50": 143302656,
+          "p95": 179851264
+        },
+        "workingSetBytes": {
+          "count": 210,
+          "first": 127643648,
+          "last": 140218368,
+          "min": 127488000,
+          "max": 193835008,
+          "p50": 155963392,
+          "p95": 189583360
+        },
+        "handles": {
+          "count": 210,
+          "first": 319,
+          "last": 331,
+          "min": 319,
+          "max": 404,
+          "p50": 361,
+          "p95": 400
+        },
+        "threads": {
+          "count": 210,
+          "first": 15,
+          "last": 15,
+          "min": 14,
+          "max": 16,
+          "p50": 15,
+          "p95": 15
+        },
+        "gdiObjects": {
+          "count": 210,
+          "first": 14,
+          "last": 14,
+          "min": 13,
+          "max": 25,
+          "p50": 22,
+          "p95": 24
+        },
+        "userObjects": {
+          "count": 210,
+          "first": 13,
+          "last": 13,
+          "min": 13,
+          "max": 14,
+          "p50": 13,
+          "p95": 14
+        }
+      },
+      "actions": {
+        "close": {
+          "count": 844,
+          "first": 315,
+          "last": 285,
+          "min": 264,
+          "max": 519,
+          "p50": 290,
+          "p95": 344
+        },
+        "idle": {
+          "count": 210,
+          "first": 10006,
+          "last": 10014,
+          "min": 10000,
+          "max": 10016,
+          "p50": 10007,
+          "p95": 10015
+        },
+        "minimize": {
+          "count": 210,
+          "first": 7,
+          "last": 8,
+          "min": 6,
+          "max": 13,
+          "p50": 7,
+          "p95": 9
+        },
+        "mount": {
+          "count": 843,
+          "first": 804,
+          "last": 851,
+          "min": 690,
+          "max": 1329,
+          "p50": 851,
+          "p95": 976
+        },
+        "reload": {
+          "count": 632,
+          "first": 675,
+          "last": 747,
+          "min": 584,
+          "max": 1033,
+          "p50": 768,
+          "p95": 899
+        },
+        "restore": {
+          "count": 210,
+          "first": 18,
+          "last": 23,
+          "min": 12,
+          "max": 46,
+          "p50": 19,
+          "p95": 24
+        }
+      }
+    },
+    {
+      "hour": 8,
+      "fromMs": 28800000,
+      "toMs": 32400000,
+      "sampleCount": 1,
+      "stepCount": 4,
+      "firstCycle": 1690,
+      "lastCycle": 1690,
+      "resources": {
+        "privateBytes": {
+          "count": 1,
+          "first": 173830144,
+          "last": 173830144,
+          "min": 173830144,
+          "max": 173830144,
+          "p50": 173830144,
+          "p95": 173830144
+        },
+        "workingSetBytes": {
+          "count": 1,
+          "first": 183644160,
+          "last": 183644160,
+          "min": 183644160,
+          "max": 183644160,
+          "p50": 183644160,
+          "p95": 183644160
+        },
+        "handles": {
+          "count": 1,
+          "first": 373,
+          "last": 373,
+          "min": 373,
+          "max": 373,
+          "p50": 373,
+          "p95": 373
+        },
+        "threads": {
+          "count": 1,
+          "first": 15,
+          "last": 15,
+          "min": 15,
+          "max": 15,
+          "p50": 15,
+          "p95": 15
+        },
+        "gdiObjects": {
+          "count": 1,
+          "first": 21,
+          "last": 21,
+          "min": 21,
+          "max": 21,
+          "p50": 21,
+          "p95": 21
+        },
+        "userObjects": {
+          "count": 1,
+          "first": 13,
+          "last": 13,
+          "min": 13,
+          "max": 13,
+          "p50": 13,
+          "p95": 13
+        }
+      },
+      "actions": {
+        "idle": {
+          "count": 1,
+          "first": 10014,
+          "last": 10014,
+          "min": 10014,
+          "max": 10014,
+          "p50": 10014,
+          "p95": 10014
+        },
+        "runtime.reject-restart": {
+          "count": 1,
+          "first": 47,
+          "last": 47,
+          "min": 47,
+          "max": 47,
+          "p50": 47,
+          "p95": 47
+        },
+        "runtime.shutdown": {
+          "count": 1,
+          "first": 609,
+          "last": 609,
+          "min": 609,
+          "max": 609,
+          "p50": 609,
+          "p95": 609
+        },
+        "runtime.shutdown-idempotent": {
+          "count": 1,
+          "first": 0,
+          "last": 0,
+          "min": 0,
+          "max": 0,
+          "p50": 0,
+          "p95": 0
+        }
+      }
+    }
+  ],
+  "resourceGate": "not-evaluated",
+  "longRunGate": "not-evaluated",
+  "releaseReady": false
+}
