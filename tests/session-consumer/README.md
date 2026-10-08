@@ -1,9 +1,11 @@
 # 安装后的公共会话消费者
 
+直接 CMake 示例按 3.27 以上准确选择 Windows SDK 10.0.19041.0；3.24–3.26 改用 `-A x64`（x86 为 `-A Win32`），仍保留完整引号的 `-DCMAKE_SYSTEM_VERSION=10.0.19041.0`。已有生成平台不同的目录请选新目录，或检查其所有权后显式 `--fresh`；不能在旧缓存中直接切换平台。
+
 把此目录复制到仓库外，只通过安装前缀的 `Soui::Sdk` 编译，不引用 SDK 私有头或 Demo。
 
 ```powershell
-cmake -S <独立消费者目录> -B <外部构建目录> -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH=<SDK安装目录> -DCMAKE_SYSTEM_VERSION=10.0.19041.0
+cmake -S <独立消费者目录> -B <外部构建目录> -G "Visual Studio 17 2022" -A 'x64,version=10.0.19041.0' -DCMAKE_PREFIX_PATH=<SDK安装目录> '-DCMAKE_SYSTEM_VERSION=10.0.19041.0'
 cmake --build <外部构建目录> --config Release
 <外部构建目录>/Release/soui_session_consumer.exe
 ```

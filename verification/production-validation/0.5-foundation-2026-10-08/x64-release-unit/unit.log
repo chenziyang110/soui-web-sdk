@@ -1,0 +1,364 @@
+✔ a completed subject with the full independent transcript remains a valid positive control (7.38ms)
+✔ supervisor setup failure cannot be overwritten by a completed Job and green native transcript (2.0383ms)
+✔ ready rejection after native completion remains a failed acceptance result (1.0051ms)
+✔ a green native transcript cannot hide an unverified owned closure (0.8355ms)
+✔ acceptance transcript identity must match the owned subject identity (0.8971ms)
+✔ a complete-looking native transcript without its terminal newline stays failed (0.8212ms)
+✔ a complete fast close before the first poll publishes the subject and finishes normally (2.5167ms)
+▶ final evidence cannot replace either part of the already published subject identity
+  ✔ {"pid":126,"creationFileTime":"133999999999999999"} (0.9695ms)
+  ✔ {"pid":125,"creationFileTime":"134000000000000000"} (0.7007ms)
+✔ final evidence cannot replace either part of the already published subject identity (1.9781ms)
+✔ a final report read failure resolves finished as failure rather than escaping the close callback (0.7366ms)
+✔ a report digest failure also resolves finished as failure (1.0251ms)
+✔ a rejected ready observation stays failed even if a complete green report appears before close (0.7277ms)
+✔ a terminal without its final newline cannot pass despite a valid complete start (0.6139ms)
+✔ owned client reports the subject identity and binds tool and executable bytes (474.6207ms)
+✔ owned client retains nonzero subject exit and confirmed cleanup separately (363.3945ms)
+✔ owned client requests stop through its pipe and receives a failed terminal with closure (344.6693ms)
+✔ owned client refuses missing tool and invalid bounds before launching a subject (5.3288ms)
+✔ test-only assignment denial cannot produce a ready subject or a client pass (330.9333ms)
+✔ owned runner preserves Unicode, spaces, quotes, empty args and trailing slashes (328.9858ms)
+✔ native nonzero exit is retained as failure even when the Job closes normally (281.2298ms)
+✔ only child output and null input are inherited, preserving native diagnostics (226.7174ms)
+✔ dedicated supervisor control cleans the held Job and cannot convert a stop into success (283.8194ms)
+✔ timeout closes all three owned generations and leaves an unrelated process alive (1711.118ms)
+✔ a root that exits zero cannot hide a still-running detached descendant (372.276ms)
+✔ owned descendants may finish naturally within the explicit drain budget (603.8434ms)
+✔ an existing report or invalid limits cannot launch a child or overwrite evidence (610.3804ms)
+✔ test-only assignment denial exercises real held suspended-process cleanup, not Win7 policy (134.9334ms)
+✔ benchmark failure cleanup proves the entire held Job closed and leaves an unrelated process alive (502.8489ms)
+✔ a zero benchmark root exit with an outstanding descendant remains a failed run (2371.1231ms)
+✔ two mutually consistent traces cannot replace the owned host identity (1.0368ms)
+✔ all configuration entry points use the shared SDK selector (1.0481ms)
+✔ CMake version and architecture select a compatible exact SDK request (17883.0156ms)
+✔ platform and persisted system conflicts are refused without changing cached bytes (7149.5155ms)
+✔ matching cache is reusable and preserves other project includes (1680.5172ms)
+✔ release verification adapts explicit refresh for historical Build without altering it (5087.8469ms)
+✔ FreshConfigure is opt-in and only schedules CMake refresh inside owned out (9372.8032ms)
+✔ FreshConfigure refuses foreign cache ownership and incomplete cache evidence (3441.3123ms)
+✔ FreshConfigure refuses directory links including links inside CMakeFiles (5749.5363ms)
+✔ SDK guard checks the selected SDK rather than the requested system cache (394.8467ms)
+✔ packaging carries the selector and SDK guard into a relocated generated project (2400.2463ms)
+✔ Visual Studio configure-only fixture actually selects 19041 and can explicitly refresh a legacy cache (20544.3142ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 74041.6713
+SDK package smoke: 15/15 passed (ownership, integrity, upgrade, rollback, profile compatibility, IO recovery and paths).
+✔ new SDK packages omit historical kernels and still upgrade and roll back old packages (2334.3528ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2547.6361
+Raw interruption samples retained: F:\work\sm05\out\sdk-recovery\attempt-489c2b5f-e2f4-456c-b050-daa7376e1f4a
+▶ process termination and new-process recovery
+  ✔ prepare (1693.9022ms)
+  ✔ journal (1196.7708ms)
+  ✔ replace (1263.3358ms)
+  ✔ delete (1208.2209ms)
+  ✔ add (1318.3239ms)
+  ✔ commit (1363.559ms)
+  ✔ cleanup (1319.5233ms)
+  ✔ first install rolls back to no SDK, then install automatically recovers (961.4687ms)
+  ✔ rollback is restartable and a competing recovery is refused (1430.3589ms)
+  ✔ active installer blocks verify, install and recover (1106.8335ms)
+  ✔ reject target conflict without partial recovery (806.1975ms)
+  ✔ reject backup conflict without partial recovery (1100.5416ms)
+  ✔ reject new-backup conflict without partial recovery (814.3871ms)
+  ✔ reject lock conflict without partial recovery (819.5059ms)
+  ✔ reject journal conflict without partial recovery (754.4982ms)
+  ✔ committed but modified payload is preserved, never rolled back (907.2045ms)
+  ✔ old lock BOM and whitespace survive rollback byte for byte (865.5169ms)
+  ✔ recovery refuses a junction without writing outside the project (917.9965ms)
+  ✔ old unjournaled transaction is preserved and rejected (379.5013ms)
+  ✔ upgrade rollback to older package also recovers (1578.9138ms)
+  ✔ file-directory transitions fail before installed bytes change (343.3227ms)
+  ✔ retirement retries transient denial and preserves permanent failures (1578.038ms)
+✔ process termination and new-process recovery (23733.6875ms)
+Profile/recovery original records retained: F:\work\sm05\out\sdk-profile-recovery\attempt-6b71bb23-e73f-4774-b2d7-deb224b5c4a8
+✔ modern profile validation precedes recovery of an interrupted upgrade (1210.0493ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 23984.4887
+✔ the delivered Miniblink binding uses the source export return ABI (5.6761ms)
+✔ the host classifies pending resolvers through the validated jsIsString ABI (0.7562ms)
+warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'source-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tools/test.ps1', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'a.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+✔ source snapshot excludes ignored cache, works with CRLF checkout and without Git (5424.8649ms)
+✔ source export preserves tracked historical output paths and excludes unrelated build caches (1858.3796ms)
+✔ unpacked source rejects missing or equal-length modified historical binaries (56.111ms)
+✔ unpacked source rejects undeclared files including nested caches inside frozen output trees (118.8499ms)
+✔ unpacked source rejects duplicate, escaping and malformed manifest paths (55.7207ms)
+✔ unpacked source rejects linked historical output directories without changing the target (33.0838ms)
+✔ unpacked source cannot hide a linked directory under an excluded cache name (28.2874ms)
+✔ source validation rejects missing, extra, ambiguous and escaping files (2928.9168ms)
+✔ license bytes survive Git checkout and full-source export under repository attributes (1616.0041ms)
+✔ payload evidence detects equal-length page edits, new files and missing DLLs (35.6459ms)
+✔ modern payload does not require Miniblink but preserves full asset identity checks (19.2465ms)
+✔ deployment replaces stale Web assets and preserves app data outside resources (133.6679ms)
+✔ linked resource directories are rejected before deployment changes (8.8911ms)
+✔ SDK packages are identical across source EOLs but installed bytes remain pinned (483.1594ms)
+✔ build and smoke receipts fail closed after changes, empty runs or legacy successes (314.2112ms)
+✔ successful exit cannot replace ready/closed, identity or timeout checks (0.9549ms)
+✔ upgrade acceptance requires all four actual phases and preserved business files (0.2864ms)
+✔ verification workspaces reject SDK nesting, existing paths and linked ancestors (8.9806ms)
+✔ business identity ignores build caches and detects source or metadata changes (37.6229ms)
+✔ aggregate receipts reject stale same-version source, package and missing phases (0.7924ms)
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+✔ Git-free staging copies only manifest-listed SOUI source and leaves generated files behind (145.002ms)
+✔ Git-free staging rejects source content that differs from the frozen manifest (215.7627ms)
+✔ Git staging includes tracked and new source while excluding ignored build outputs (845.0051ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 13311.9287
+✔ modern evidence binds optional backend, source, payload, process and complete lifecycle (0.9ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 261.4973
+✔ mixed analysis rechecks archived raw evidence and preserves the release gate (3.5003ms)
+✔ mixed analysis rejects contradictory result claims (0.9499ms)
+✔ hourly statistics retain first and last values and use nearest-rank percentiles (0.5292ms)
+✔ mixed transcript requires one process, every public lifecycle step and full duration (1.0554ms)
+✔ mixed verification rejects missing work, shortened idle, premature finish and process failure (0.6155ms)
+✔ mixed parameters reject absent idle and timing beyond the supported range (1.0751ms)
+✔ forward wall-clock jumps do not expire a live native step (3.3852ms)
+✔ backward wall-clock jumps cannot postpone the native step deadline (0.2778ms)
+✔ no-progress supervision uses monotonic elapsed time and the configured settle allowance (0.1343ms)
+✔ a completed or failed step clears its deadline and new progress renews the idle deadline (0.1798ms)
+✔ native timestamps and mutable diagnostic snapshots cannot change deadline state (0.1862ms)
+✔ complete native reload transcript proves steps but does not claim a resource/production gate (1.5836ms)
+✔ a green native log cannot hide a process crash, kill or supervision timeout (0.4789ms)
+✔ early completion, duplicate success and routing to a different window fail (3.1188ms)
+✔ cycle counts, sample completeness and native failure records are mandatory (0.4105ms)
+✔ multiwindow requires surviving windows to reload and the closed slot to be recreated (0.2955ms)
+✔ invalid scenario parameters and backwards clocks are rejected (0.1619ms)
+✔ bridge contract mode requires its own real process, complete mount and teardown (0.2696ms)
+✔ closed resources may only be sampled after the final window teardown completes (0.3164ms)
+✔ timeout evidence preserves the native log offset without treating the run as passed (7.5066ms)
+﹣ configured x86 debugger creates a dump and thread log before the target is killed (0.177ms) # SKIP
+✔ historical smoke evidence is rejected for unequal content areas and short runs (2.7439ms)
+✔ page preflight accepts only complete, aligned S01 telemetry and still lists external evidence (2.1421ms)
+✔ S05 requires observed motion for 120 seconds even when the page says measured (0.5023ms)
+✔ accepts matching full traces without promoting performance or presentation (0.9617ms)
+✔ rejects a different process, shortened input, missing process sample, and timeout (0.6313ms)
+✔ rejects late input and S03 without IME composition (0.8435ms)
+✔ rejects a full-length idle trace and missing scene operations (0.1535ms)
+✔ accepts full scroll, resize and motion traces, but rejects missing defining actions (0.6656ms)
+✔ contracts and tool definitions are validated defensive copies (1.7926ms)
+✔ Unicode length uses scalars rather than UTF-16 units and rejects lone surrogates (3.9458ms)
+✔ unknown keywords, missing bounds and invalid roots are refused instead of silently weakened (0.9367ms)
+✔ object, array, string enum, numeric and null schemas enforce exact values (1.7224ms)
+✔ schema cardinality, bytes, numeric bounds and raw structural depth are bounded (2.3566ms)
+✔ prototype-named properties remain data and custom serializers cannot change validation (0.3946ms)
+✔ authorized discovery preserves action contracts and rejects malformed native schemas (1.8507ms)
+✔ tools are advisory and do not change the native denial or invoke discovered methods (0.472ms)
+✔ describe uses the existing authenticated transport and returns an owned page (2.1212ms)
+✔ discovery follows authorized pages without calling business methods (0.6025ms)
+✔ empty complete catalog is valid (0.8852ms)
+✔ describe rejects invalid options before invoking native code (1.0912ms)
+✔ describe rejects malformed, oversized or non-progressing native pages (2.8542ms)
+✔ discovery detects duplicate pages and version drift (0.515ms)
+✔ discovery enforces its total bound without an extra request (0.2925ms)
+✔ a catalog ending exactly at maxMethods succeeds (0.263ms)
+✔ discovery options are bounded before transport (1.1579ms)
+✔ native unsupported and unauthorized errors are preserved (1.1574ms)
+✔ dispose stops a paged discovery instead of returning a partial catalog (0.5213ms)
+✔ only explicitly registered semantics and named actions are exposed (4.3414ms)
+✔ registrations, inputs and snapshots are owned copies (0.5779ms)
+✔ duplicate ids and capacity are enforced and unregister permits reuse (8.9462ms)
+✔ disabled property, aria-disabled and explicit app state all deny actions (0.5687ms)
+✔ Chrome49 connection fallback works and disconnected nodes cannot be acted upon (0.5257ms)
+✔ busy remains until the actual handler settles after a caller timeout (1.1414ms)
+✔ synchronous and native handler errors propagate and free busy state (0.6022ms)
+✔ waitFor observes explicit state, defaults to enabled idle, and times out honestly (0.3843ms)
+✔ unregistration rejects running actions and waits; late results cannot target a reused id (0.3407ms)
+✔ dispose immediately rejects pending waits and actions, refuses future work, and is idempotent (0.3406ms)
+✔ disconnection during a wait rejects even when the application handler remains pending (0.6972ms)
+✔ input, snapshot and handler results enforce UTF-8 byte and JSON limits (1.8037ms)
+✔ application state reentrancy cannot revive a disposed or removed registration (0.3101ms)
+✔ caller mutation of an action name cannot execute a different handler (0.1949ms)
+✔ input getter reentrancy cannot invoke an action after removal and serializers are never called (0.2448ms)
+✔ pending state observations are bounded and capacity recovers after completion (3.9795ms)
+✔ native resolver completion clears its timer and repeated completion cannot settle a later request (1.8977ms)
+✔ duplicate identities and resolver overflow return correlated errors without adding timers (8.1439ms)
+✔ native response timeout removes the resolver and explicitly leaves running work uncancelled (23.6066ms)
+✔ document exit resolves all waits, is idempotent and blocks future resolver creation (1.1903ms)
+✔ a reserved renewal resolver survives all 384 ordinary waits and releases independently (7.5383ms)
+✔ renewal resolver timeout releases its reserved slot without releasing business waits (21.7752ms)
+✔ custom method sends the scoped envelope and returns native data (1.8814ms)
+✔ a response from another request is rejected (0.3138ms)
+✔ malformed JSON becomes a structured response error (0.1805ms)
+✔ native denials retain the native error code (0.1053ms)
+✔ valid JSON with an invalid response shape produces a structured error (0.4058ms)
+✔ timeout is bounded without claiming native cancellation (60.5856ms)
+✔ 32 in-flight calls resolve to their own results in reverse order (2.5218ms)
+✔ request capacity rejects overload and recovers after completion (0.717ms)
+✔ UTF-8 byte limits and non-JSON parameters fail before transport (0.7664ms)
+✔ dispose rejects outstanding waits, removes the owned listener once and rejects new calls (0.5366ms)
+✔ timeout frees a page slot without pretending native work was cancelled (26.5478ms)
+✔ invalid client options and null native error envelopes are structured failures (0.5795ms)
+✔ caller mutation of options cannot change the connection scope (0.1934ms)
+✔ event validation, sequence filtering and callback isolation apply to each observer (1.2603ms)
+✔ native subscription denial is observable and releases the local subscription slot (0.6368ms)
+✔ removal before subscription acknowledgement is idempotent and sends one late unsubscribe (0.3817ms)
+✔ a disposed pending subscription cleans up a late native success once (0.3453ms)
+✔ a timed-out subscription also cleans up a late successful acknowledgement (26.7018ms)
+✔ malformed subscription identities and failed native removal remain visible (0.7931ms)
+✔ bounded control capacity permits unsubscribe when ordinary request capacity is full (0.7916ms)
+✔ toJSON reentrancy cannot bypass disposal or capacity checks (0.5068ms)
+✔ a reentrant port can dispose during subscription creation without leaking a late subscription (0.3855ms)
+✔ the standard connector shares one bootstrap and waits for asynchronous native responses (1.1518ms)
+✔ asynchronous bootstrap is supported without a busy wait (0.1118ms)
+✔ connector options cannot swap the error observer while bootstrap is pending (0.1536ms)
+✔ a second connector cannot silently change options or replace another dispatcher (0.1476ms)
+✔ document unload disposes outstanding waits and removes connector hooks (0.1868ms)
+✔ bootstrap timeout and unload release hooks and do not silently rebootstrap (25.8063ms)
+✔ bootstrap rejects malformed credentials, wrong correlation and invalid JSON (0.5995ms)
+✔ connector native events reach only matching subscriptions and owned hooks are restored (0.2421ms)
+✔ ordinary browser use and broken native binding produce explicit connection errors (0.134ms)
+ℹ tests 101
+ℹ suites 0
+ℹ pass 100
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 755.9237
+✔ absence is reported per capability without guessing from a browser name (0.6218ms)
+✔ throwing environment probes stay unknown and do not suppress other observations (0.1107ms)
+✔ required missing or unknown features fail before application mounting (0.4195ms)
+✔ typos, duplicates and malformed requirements cannot silently pass (0.0985ms)
+✔ server-side inspection makes no browser support claim (0.0878ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 108.8167
+✔ Agent discovery uses renewed authorization and shares unique identities with renewal (2.5032ms)
+✔ renewal is opt-in, early renewal returns the existing lease, and native rotation is reserved (2.3242ms)
+✔ automatic renewal shares one flight and leaves business dispatch synchronous (0.9011ms)
+✔ an automatic timer firing slightly early retains a bounded later renewal timer (0.6031ms)
+✔ renewal has a slot even when business and release capacities are exhausted (0.6052ms)
+✔ bootstrap delay only shortens expiration and disposed renewal cannot restart (0.4154ms)
+✔ lease validation and caller mutation cannot increase or replace the authorization lifetime (0.3859ms)
+✔ lost acknowledgement recovers the same operation without extending native expiry or replaying work (0.6769ms)
+✔ an earlier timed-out attempt can recover the active flight and cancel its retry timer (0.3683ms)
+✔ three attempts with one occupied native slot retain a custom-port late acknowledgement until the deadline (1.8059ms)
+✔ the actual native resolver drops the first acknowledgement and the reserved final attempt retrieves the same operation (1.0917ms)
+✔ an occupied native slot exhausts three attempts but fails only at the original recovery or lease deadline (1.8532ms)
+✔ retry attempts and recovery deadline stay bounded and terminal failure does not rebootstrap (0.6118ms)
+✔ even an unprocessed timeout cannot admit a late success beyond the original expiry (0.1795ms)
+✔ renewal identity, generation and native denials are checked without adopting partial credentials (1.1075ms)
+✔ retryable native rejection and transport loss retain operation identity (0.2753ms)
+✔ in-flight subscription and its sequence survive rotation and late removal uses current credentials (0.5074ms)
+✔ timed-out subscribe cleanup and repeated unsubscribe remain once-only across renewal (0.3653ms)
+✔ an old renewal response cannot roll back credentials after a subsequent generation (0.2759ms)
+✔ twenty simulated 25-minute rotations retain one subscription and increasing event sequences (2.0416ms)
+✔ dispose during renewal and subscribe stops callbacks and compensates one late subscription (0.4025ms)
+✔ synchronous transport reentrancy observes the published single flight and disposal wins (0.2995ms)
+✔ standard connector retains one bootstrap and applies lease metadata with elapsed time (0.8423ms)
+✔ connector rejects malformed native lease metadata before creating a client (0.2766ms)
+✔ Workbench React manual bootstrap passes lease metadata and page exit disposes renewal (161.9538ms)
+✔ Workbench default Vue bootstrap uses the same lease-aware public client and document cleanup (14.7413ms)
+✔ 128 business requests leave independent bounded renewal and cleanup capacity (6.4784ms)
+✔ claimed priority and malformed control envelopes cannot consume reserved capacity (2.2453ms)
+✔ a timeout returns only its lane and does not cancel the native operation (2.2091ms)
+✔ synchronous post failure returns renewal and cleanup slots and removes their timers (2.0437ms)
+✔ business and cleanup timeout return their own slots while renewal remains pending (3.2393ms)
+✔ invalid timeouts and UTF-8 request identities consume no timers or control capacity (0.7479ms)
+✔ old document responses cannot settle current waits; close rejects every lane and blocks sends (0.8315ms)
+✔ transport enforces UTF-8 bytes rather than only UTF-16 length (0.5427ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 412.2329
+Test project F:/work/sm05/out/x64
+      Start  1: kernel.native.scheduler-fairness
+ 1/22 Test  #1: kernel.native.scheduler-fairness ........   Passed    0.12 sec
+      Start  2: sdk.native.contract
+ 2/22 Test  #2: sdk.native.contract .....................   Passed    0.15 sec
+      Start  3: sdk.native.action-contract
+ 3/22 Test  #3: sdk.native.action-contract ..............   Passed    0.17 sec
+      Start  4: sdk.native.session-action-integration
+ 4/22 Test  #4: sdk.native.session-action-integration ...   Passed    0.16 sec
+      Start  5: sdk.native.host-adapter
+ 5/22 Test  #5: sdk.native.host-adapter .................   Passed    0.10 sec
+      Start  6: sdk.native.engine-diagnostic-timeout
+ 6/22 Test  #6: sdk.native.engine-diagnostic-timeout ....   Passed    1.14 sec
+      Start  7: sdk.native.runtime-profile
+ 7/22 Test  #7: sdk.native.runtime-profile ..............   Passed    0.12 sec
+      Start  8: sdk.native.frame-pacer
+ 8/22 Test  #8: sdk.native.frame-pacer ..................   Passed    0.79 sec
+      Start  9: sdk.native.webview2-capacity
+ 9/22 Test  #9: sdk.native.webview2-capacity ............   Passed    0.11 sec
+      Start 10: sdk.native.webview2-prepare
+10/22 Test #10: sdk.native.webview2-prepare .............   Passed    0.93 sec
+      Start 11: sdk.native.session-renewal
+11/22 Test #11: sdk.native.session-renewal ..............   Passed    0.27 sec
+      Start 12: demo.native.session-renewal
+12/22 Test #12: demo.native.session-renewal .............   Passed    0.29 sec
+      Start 13: demo.native.interaction-task
+13/22 Test #13: demo.native.interaction-task ............   Passed    2.47 sec
+      Start 14: demo.native.window-placement
+14/22 Test #14: demo.native.window-placement ............   Passed    0.09 sec
+      Start 15: sdk.native.task-service
+15/22 Test #15: sdk.native.task-service .................   Passed    0.51 sec
+      Start 16: sdk.native.bridge-budget
+16/22 Test #16: sdk.native.bridge-budget ................   Passed    0.12 sec
+      Start 17: sdk.native.task-store-capacity
+17/22 Test #17: sdk.native.task-store-capacity ..........   Passed    0.11 sec
+      Start 18: sdk.native.desktop-unicode
+18/22 Test #18: sdk.native.desktop-unicode ..............   Passed    0.11 sec
+      Start 19: sdk.native.tray-service
+19/22 Test #19: sdk.native.tray-service .................   Passed    0.11 sec
+      Start 20: sdk.native.menu_service
+20/22 Test #20: sdk.native.menu_service .................   Passed    0.10 sec
+      Start 21: sdk.native.global_shortcut
+21/22 Test #21: sdk.native.global_shortcut ..............   Passed    0.09 sec
+      Start 22: demo.native.public-task
+22/22 Test #22: demo.native.public-task .................   Passed    0.50 sec
+
+100% tests passed, 0 tests failed out of 22
+
+Total Test time (real) =   8.57 sec
+Unit and contract tests passed; desktop smoke was intentionally skipped.

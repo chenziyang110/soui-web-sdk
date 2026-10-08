@@ -9,6 +9,10 @@ $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $output=Join-Path $root "out/$Architecture"
 $evidence=Join-Path $root 'tools/internal/build-evidence.cjs'
 if(-not $NativeOnly){
+  & (Join-Path $PSScriptRoot 'internal/Build-ValidationTools.ps1') | Out-Null
+  if($LASTEXITCODE -ne 0){throw 'Owned process supervision tools build failed'}
+  & node --test (Join-Path $root 'tests/benchmark/owned-process-runner.test.cjs') (Join-Path $root 'tests/benchmark/owned-process-client.test.cjs') (Join-Path $root 'tests/benchmark/owned-process-client-boundaries.test.cjs') (Join-Path $root 'tests/acceptance/owned-supervision-boundaries.test.cjs') (Join-Path $root 'tests/benchmark/run-one-cleanup.test.cjs') (Join-Path $root 'tests/sdk/cmake-sdk-selection.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'Owned supervision or SDK selection tests failed'}
   & node (Join-Path $root 'tests/sdk/sdk-package-smoke.cjs')
   if($LASTEXITCODE -ne 0){throw 'SDK package tests failed'}
   & node --test (Join-Path $root 'tests/sdk/sdk-native-payload.test.cjs')
@@ -23,7 +27,7 @@ if(-not $NativeOnly){
   if($LASTEXITCODE -ne 0){throw 'Web SDK, acceptance, or benchmark protocol tests failed'}
   & node --test (Join-Path $root 'tests/web/web-features.test.mjs')
   if($LASTEXITCODE -ne 0){throw 'Web runtime feature tests failed'}
-  & node --test (Join-Path $root 'tests/web/session-renewal.test.mjs') (Join-Path $root 'tests/web/agent-session-renewal.test.mjs')
+  & node --test (Join-Path $root 'tests/web/session-renewal.test.mjs') (Join-Path $root 'tests/web/agent-session-renewal.test.mjs') (Join-Path $root 'tests/web/webview2-preload.test.mjs')
   if($LASTEXITCODE -ne 0){throw 'Web session renewal tests failed'}
   & ctest --test-dir $output -C $Configuration --output-on-failure
   if($LASTEXITCODE -ne 0){throw 'Native SDK contract tests failed'}

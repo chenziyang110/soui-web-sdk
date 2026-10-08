@@ -11,7 +11,8 @@ param(
   [ValidateRange(1,120000)][int]$StepTimeoutMs=20000,
   [string]$RuntimeBinary,
   [switch]$PrepareOnly,
-  [switch]$SkipSdkBuild
+  [switch]$SkipSdkBuild,
+  [switch]$FreshConfigure
 )
 $ErrorActionPreference='Stop'
 if($Scenario -eq 'mixed' -and ($PSBoundParameters.ContainsKey('Cycles') -or $PSBoundParameters.ContainsKey('Warmup'))){
@@ -21,14 +22,17 @@ if($Scenario -ne 'mixed' -and ($PSBoundParameters.ContainsKey('DurationMs') -or 
   throw 'DurationMs and IdleMs are only valid for mixed acceptance'
 }
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+. (Join-Path $PSScriptRoot 'internal/CMake-Configure.ps1')
 $runner=Join-Path $root 'tests/acceptance/runner.cjs'
 New-Item -ItemType Directory -Force -Path (Join-Path $root 'out') | Out-Null
 & npm.cmd --prefix (Join-Path $root 'tests/acceptance') ci --no-audit --no-fund *> (Join-Path $root 'out/acceptance-toolchain-install.log')
 if($LASTEXITCODE -ne 0){throw 'Independent Web consumer toolchain install failed'}
 if(-not $SkipSdkBuild){
-  & (Join-Path $PSScriptRoot 'Build.ps1') -SdkOnly -Architecture $Architecture -Configuration $Configuration
+  & (Join-Path $PSScriptRoot 'Build.ps1') -SdkOnly -Architecture $Architecture -Configuration $Configuration -FreshConfigure:$FreshConfigure
   if($LASTEXITCODE -ne 0){throw 'SDK build failed'}
 }
+& (Join-Path $PSScriptRoot 'internal/Build-ValidationTools.ps1') -FreshConfigure:$FreshConfigure | Out-Null
+if($LASTEXITCODE -ne 0){throw 'Owned process supervision tools build failed'}
 $suite=Join-Path $root ('out/acceptance/'+[guid]::NewGuid().ToString())
 New-Item -ItemType Directory -Path $suite | Out-Null
 $runtime=if($RuntimeBinary){[IO.Path]::GetFullPath($RuntimeBinary)}else{Join-Path $root "third_party/prebuilt/$Architecture/miniblink/node.dll"}
@@ -42,9 +46,10 @@ $sdkBuild=Join-Path $root "out/sdk-$Architecture"
 $install=Join-Path $suite 'install'
 & cmake --install $sdkBuild --config $Configuration --prefix $install *> (Join-Path $suite 'install.log')
 if($LASTEXITCODE -ne 0){throw "SDK install failed: $suite"}
-$platform=if($Architecture -eq 'x86'){'Win32,version=10.0.19041.0'}else{'x64,version=10.0.19041.0'}
 $consumer=Join-Path $suite 'consumer'
-& cmake -S (Join-Path $suite 'consumer-source') -B $consumer -G 'Visual Studio 17 2022' -A $platform "-DSouiSdk_DIR=$install/lib/cmake/SouiSdk" "-DSOUI_ACCEPTANCE_WEB_ROOT=$suite/web-output" *> (Join-Path $suite 'configure.log')
+$configure=@(Get-SouiCMakeConfigureArguments -CMake (Get-Command cmake.exe -ErrorAction Stop).Source -WorkspaceRoot $root `
+  -SourceDirectory (Join-Path $suite 'consumer-source') -BuildDirectory $consumer -Architecture $Architecture -FreshConfigure:$FreshConfigure)
+& cmake @configure "-DSouiSdk_DIR=$install/lib/cmake/SouiSdk" "-DSOUI_ACCEPTANCE_WEB_ROOT=$suite/web-output" *> (Join-Path $suite 'configure.log')
 if($LASTEXITCODE -ne 0){throw "Independent consumer configure failed: $suite"}
 & cmake --build $consumer --config $Configuration --parallel 2 *> (Join-Path $suite 'compile.log')
 if($LASTEXITCODE -ne 0){throw "Independent consumer build failed: $suite"}

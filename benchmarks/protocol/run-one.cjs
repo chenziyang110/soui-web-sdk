@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const os = require('node:os');
-const {spawn, spawnSync} = require('node:child_process');
+const {launchOwned} = require('../../tools/internal/owned-process.cjs');
 const {checkRunTraces, readLines} = require('./check-run-traces.cjs');
 
 function requirePath(value, kind) {
@@ -37,83 +37,32 @@ function bundleFiles(root) {
   return output.sort((left, right) => left.path.localeCompare(right.path));
 }
 
-function launch(name, executable, args, cwd, output, env = process.env) {
-  const realExecutable = fs.realpathSync(executable);
-  const stdout = fs.openSync(path.join(output, `${name}.stdout.log`), 'wx');
-  const stderr = fs.openSync(path.join(output, `${name}.stderr.log`), 'wx');
-  let child;
-  const spawnRequestedAtMs = Date.now();
+function launch(name, executable, args, cwd, output, env = process.env, ownership = {}) {
+  const stdout = fs.openSync(path.join(output, name + '.stdout.log'), 'wx');
+  const stderr = fs.openSync(path.join(output, name + '.stderr.log'), 'wx');
+  let owned;
   try {
-    child = spawn(executable, args, {cwd, env, windowsHide: name !== 'host',
-      stdio: ['ignore', stdout, stderr]});
-  } finally {
-    fs.closeSync(stdout);
-    fs.closeSync(stderr);
-  }
-  let settled = false;
-  const finished = new Promise(resolve => {
-    let spawnError = null;
-    const complete = (code, signal, error) => {
-      if (settled) return;
-      settled = true;
-      resolve({name, pid: child.pid ?? null, code, signal, error: error?.message ?? null});
-    };
-    child.once('error', error => { spawnError = error; });
-    child.once('close', (code, signal) => complete(code, signal, spawnError));
-  });
-  return {child, finished, name, executable: realExecutable,
-    spawnRequestedAtMs, spawnReturnedAtMs: Date.now(), stopRequested: false};
-}
-
-function normalizeExecutable(value) {
-  return path.win32.normalize(fs.realpathSync.native(value)).replace(/^\\\\\?\\/, '').toLowerCase();
-}
-
-function verifiedDirectChild(run) {
-  if (process.platform !== 'win32' || !run.child.pid) return false;
-  const script = "$ErrorActionPreference='Stop';" +
-    `$targetId=${run.child.pid};` +
-    '$item=Get-CimInstance Win32_Process -Filter "ProcessId=$targetId" -ErrorAction Stop;' +
-    'if($null -ne $item){[ordered]@{ProcessId=$item.ProcessId;ParentProcessId=$item.ParentProcessId;' +
-    "ExecutablePath=$item.ExecutablePath;CreationUtc=$item.CreationDate.ToUniversalTime().ToString('o')}|ConvertTo-Json -Compress}";
-  const query = spawnSync('powershell.exe', ['-NoProfile', '-Command', script], {
-    encoding: 'utf8', windowsHide: true, timeout: 15000,
-    env: {...process.env, PSModulePath: path.join(process.env.SystemRoot,
-      'System32/WindowsPowerShell/v1.0/Modules')},
-  });
-  if (query.error || query.status !== 0 || query.stderr.trim() || !query.stdout.trim())
-    return false;
-  let identity;
-  try { identity = JSON.parse(query.stdout.replace(/^\uFEFF/, '')); }
-  catch { return false; }
-  if (identity.ProcessId !== run.child.pid || identity.ParentProcessId !== process.pid ||
-      typeof identity.ExecutablePath !== 'string' || !identity.ExecutablePath ||
-      typeof identity.CreationUtc !== 'string' || !identity.CreationUtc) return false;
-  const createdAtMs = Date.parse(identity.CreationUtc);
-  if (!Number.isFinite(createdAtMs) ||
-      !Number.isSafeInteger(run.spawnRequestedAtMs) ||
-      !Number.isSafeInteger(run.spawnReturnedAtMs) ||
-      run.spawnReturnedAtMs < run.spawnRequestedAtMs ||
-      createdAtMs < run.spawnRequestedAtMs - 2000 ||
-      createdAtMs > run.spawnReturnedAtMs + 2000) return false;
-  try {
-    return normalizeExecutable(identity.ExecutablePath) === normalizeExecutable(run.executable);
-  } catch { return false; }
+    owned = launchOwned(executable, args, {cwd, env, stdout, stderr,
+      runner: ownership.runner || path.resolve(__dirname, '../../out/benchmark-protocol/Release/OwnedProcessRunner.exe'),
+      report: path.join(output, name + '.owned.ndjson'), timeoutMs: ownership.timeoutMs || 260000});
+  } finally { fs.closeSync(stdout); fs.closeSync(stderr); }
+  const finished = owned.finished.then(result => ({name, pid: result.pid,
+    code: result.exitCode, signal: result.signal,
+    error: result.passed ? null : result.spawnError || result.reportError || result.terminal?.reason || 'Owned run failed',
+    ownedProcess: result}));
+  return {name, ready: owned.ready, finished, stop: owned.stop, get pid() { return owned.pid; }};
 }
 
 function stop(runs, cleanup) {
   for (const run of runs) {
-    if (!run.child.pid || run.child.exitCode !== null || run.child.killed ||
-        run.stopRequested) continue;
-    run.stopRequested = true;
-    const verified = verifiedDirectChild(run);
-    // A verified parent PID does not prove that every process taskkill /T would
-    // follow still belongs to this run: Windows may reuse a former parent's PID.
-    const killRequested = run.child.kill();
-    if (cleanup) cleanup.push({name: run.name, pid: run.child.pid,
-      method: 'process-handle', treeCleanupVerified: false,
-      killRequested, taskkillExitCode: null,
-      queryIdentityVerified: verified});
+    if (!run.stop()) continue;
+    const record = {name: run.name, pid: run.pid, method: 'held-job-stdin',
+      stopRequested: true, treeCleanupVerified: false};
+    if (cleanup) cleanup.push(record);
+    void run.finished.then(result => {
+      record.treeCleanupVerified = result.ownedProcess.closureConfirmed;
+      record.nativeReportSha256 = result.ownedProcess.reportSha256;
+    });
   }
 }
 
@@ -122,6 +71,16 @@ function resultFile(directory) {
     !name.endsWith('-host.json'));
   if (files.length !== 1) throw new Error(`Expected one page result, found ${files.length}`);
   return path.join(directory, files[0]);
+}
+
+function validateHostIdentity(trace, processes) {
+  const host = processes.find(item => item.name === 'host')?.ownedProcess;
+  if (!host || trace.hostPid !== host.pid ||
+      trace.hostCreationTime100ns !== Number(host.creationFileTime))
+    throw new Error('Trace host differs from the owned benchmark subject');
+  // Legacy collectors serialize FILETIME as a JSON number. Preserve that
+  // precision limitation; this comparison does not prove every 100ns tick.
+  return {pidBound: true, creationComparison: 'legacy-json-number', exactFileTimeBound: false};
 }
 
 async function main() {
@@ -138,6 +97,7 @@ async function main() {
     host === 'soui' ? 'Miniblink DLL' : 'Electron app directory');
   const samplerExe = requirePath(samplerArgument, 'sampler executable');
   const inputExe = requirePath(inputArgument, 'input executable');
+  const ownedRunner = requirePath(path.join(path.dirname(samplerExe), 'OwnedProcessRunner.exe'), 'owned process runner');
   const benchmarkPage = requirePath(path.join(page, 'benchmark.html'), 'benchmark page');
   const entryPage = requirePath(path.join(page, 'index.html'), 'index page');
   if (sha(benchmarkPage) !== sha(entryPage))
@@ -181,7 +141,7 @@ async function main() {
       : {appDirectory: dependency, appFiles},
     identity: identityFile ? {kind: host === 'soui' ? 'sdk-library' : 'electron-lockfile',
       bytes: fs.statSync(identityFile).size, sha256: sha(identityFile)} : null,
-    tools: {samplerSha256: sha(samplerExe), inputSha256: sha(inputExe)},
+    tools: {samplerSha256: sha(samplerExe), inputSha256: sha(inputExe), ownedRunnerSha256: sha(ownedRunner)},
     maxDurationMs, cleanup: [], releaseReady: false, benchmarkValid: false};
   let timer;
   let timedOut = false;
@@ -194,16 +154,17 @@ async function main() {
     const hostEnv = {...process.env};
     delete hostEnv.ELECTRON_RUN_AS_NODE;
     const hostRun = launch('host', hostExe, args,
-      host === 'soui' ? path.dirname(hostExe) : dependency, output, hostEnv);
+      host === 'soui' ? path.dirname(hostExe) : dependency, output, hostEnv,
+      {runner: ownedRunner, timeoutMs: maxDurationMs + 10000});
     runs.push(hostRun);
-    if (!hostRun.child.pid) throw new Error('Host process did not start');
-    const pid = String(hostRun.child.pid);
+    await hostRun.ready;
+    const pid = String(hostRun.pid);
     runs.push(launch('sampler', samplerExe,
       [pid, '1000', String(maxDurationMs), path.join(output, 'process-tree.ndjson')],
-      path.dirname(samplerExe), output));
+      path.dirname(samplerExe), output, process.env, {runner: ownedRunner, timeoutMs: maxDurationMs + 10000}));
     runs.push(launch('input', inputExe,
       [pid, scene, path.join(output, 'input.ndjson'), 'full'],
-      path.dirname(inputExe), output));
+      path.dirname(inputExe), output, process.env, {runner: ownedRunner, timeoutMs: maxDurationMs + 10000}));
     for (const run of runs) {
       void run.finished.then(result => {
         if (result.code !== 0 || result.error) stop(runs, record.cleanup);
@@ -215,6 +176,7 @@ async function main() {
       throw new Error(timedOut ? 'Benchmark run exceeded deadline' : 'Benchmark process failed');
     const trace = checkRunTraces(readLines(path.join(output, 'input.ndjson')),
       readLines(path.join(output, 'process-tree.ndjson')), scene);
+    record.traceIdentity = validateHostIdentity(trace, record.processes);
     const pageResultPath = resultFile(pageResults);
     const pageResult = JSON.parse(fs.readFileSync(pageResultPath, 'utf8'));
     if (JSON.stringify(bundleFiles(pageSnapshot)) !== JSON.stringify(pageFiles))
@@ -248,4 +210,4 @@ async function main() {
 if (require.main === module)
   main().catch(error => {console.error(error.message); process.exitCode = 1;});
 
-module.exports = {launch, stop, verifiedDirectChild};
+module.exports = {launch, stop, validateHostIdentity};
