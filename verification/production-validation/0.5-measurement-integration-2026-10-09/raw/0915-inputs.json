@@ -1,0 +1,95 @@
+{
+  "schema": "soui.measurement-tail-integration-command/v1",
+  "phase": "protocol",
+  "architecture": "x86",
+  "cwd": "F:\\work\\sm05-mi",
+  "executable": "C:\\nvm4w\\nodejs\\node.exe",
+  "args": [
+    "tools/internal/measurement-validation.cjs",
+    "protocol",
+    "x86"
+  ],
+  "executableIdentity": {
+    "path": "C:\\nvm4w\\nodejs\\node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "bootstrapClient": {
+    "path": "F:/work/sm05/tools/internal/owned-process.cjs",
+    "bytes": 6540,
+    "sha256": "aa160d64892294eb3e65f27f29d554020dd10ea0704f6d0a669fa83184054753"
+  },
+  "bootstrapRunner": {
+    "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+    "bytes": 60928,
+    "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+  },
+  "node": {
+    "path": "C:\\nvm4w\\nodejs\\node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "sourceFiles": [
+    {
+      "relativePath": "tools/internal/measurement-validation.cjs",
+      "path": "F:\\work\\sm05-mi\\tools\\internal\\measurement-validation.cjs",
+      "bytes": 10767,
+      "sha256": "2fd8ad2b28525ad533580cb4508eb05d1e6a9e4eb579407eb70d26c1befc46ba"
+    },
+    {
+      "relativePath": "tests/benchmark/measurement-preparation-source.test.cjs",
+      "path": "F:\\work\\sm05-mi\\tests\\benchmark\\measurement-preparation-source.test.cjs",
+      "bytes": 7017,
+      "sha256": "46c2587a330c9a070064355665ad365c338390d8c9f2b803a6d09d24a6e32974"
+    },
+    {
+      "relativePath": "tools/internal/Build-ValidationTools.ps1",
+      "path": "F:\\work\\sm05-mi\\tools\\internal\\Build-ValidationTools.ps1",
+      "bytes": 2095,
+      "sha256": "096306560b71c45034461c59936d780a60b15507914cd79f52f8d60b5edc0ed8"
+    },
+    {
+      "relativePath": "benchmarks/protocol/owned-process-runner.cpp",
+      "path": "F:\\work\\sm05-mi\\benchmarks\\protocol\\owned-process-runner.cpp",
+      "bytes": 24220,
+      "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0"
+    },
+    {
+      "relativePath": "benchmarks/protocol/owned-tail-evidence.cpp",
+      "path": "F:\\work\\sm05-mi\\benchmarks\\protocol\\owned-tail-evidence.cpp",
+      "bytes": 31483,
+      "sha256": "6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3"
+    },
+    {
+      "relativePath": "benchmarks/protocol/owned-tail-evidence.h",
+      "path": "F:\\work\\sm05-mi\\benchmarks\\protocol\\owned-tail-evidence.h",
+      "bytes": 971,
+      "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790"
+    },
+    {
+      "relativePath": "tools/Test.ps1",
+      "path": "F:\\work\\sm05-mi\\tools\\Test.ps1",
+      "bytes": 6838,
+      "sha256": "94cb8bf768b481be26386789607dc4e7003bd0d3ad15752e29106dde45dc1b7d"
+    },
+    {
+      "relativePath": "tools/Collect-Verification.cjs",
+      "path": "F:\\work\\sm05-mi\\tools\\Collect-Verification.cjs",
+      "bytes": 10665,
+      "sha256": "b4e7bba1c96a13af37cabfc4a9144a0e91c86e7bcc6eaf7809e249c23b0036a1"
+    }
+  ],
+  "harness": {
+    "path": "F:\\work\\sm05-mi\\out\\measurement-tail-integration-dc48fd5f-4adf-473f-a048-bd2cfffa6eb8\\run.cjs",
+    "bytes": 4814,
+    "sha256": "644bf1f29a072665fc85c7349d696de43f31b75a59588850ebf769c4d3eb6176"
+  },
+  "entrypointFixture": null,
+  "env": {
+    "MSBUILDDISABLENODEREUSE": "1",
+    "PSModulePath": "C:/Windows/system32/WindowsPowerShell/v1.0/Modules"
+  },
+  "noGui": true,
+  "noCorrectInputTrace": true,
+  "frozenSourceSha256": "8b972f45b40d1a076ee37412b29bb18b98972cb43caca468a109284a75a5fc05"
+}

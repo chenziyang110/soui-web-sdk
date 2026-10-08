@@ -1,16 +1,29 @@
 [CmdletBinding()]
-param([switch]$FreshConfigure)
+param([switch]$FreshConfigure,
+      [ValidateSet('x86','x64')][string]$Architecture='x64')
 $ErrorActionPreference='Stop'
 $workspace=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../..'))
 . (Join-Path $PSScriptRoot 'CMake-Configure.ps1')
 $cmake=(Get-Command cmake.exe -ErrorAction Stop).Source
 $validationSource=Join-Path $workspace 'benchmarks/protocol'
-$validationBuild=Join-Path $workspace 'out/benchmark-protocol'
+$validationBuild=Join-Path $workspace $(if($Architecture -eq 'x64'){'out/benchmark-protocol'}else{'out/benchmark-protocol-x86'})
+$measurement=Join-Path $workspace 'tools/internal/measurement-validation.cjs'
+& node $measurement invalidate $Architecture | Out-Null
+if($LASTEXITCODE -ne 0){throw 'Cannot invalidate previous validation tool evidence'}
+$measurementInputText=& node $measurement source $Architecture
+if($LASTEXITCODE -ne 0){throw 'Cannot fingerprint validation tool inputs'}
+$measurementInputs=$measurementInputText | ConvertFrom-Json
 $arguments=@(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $workspace `
-  -SourceDirectory $validationSource -BuildDirectory $validationBuild -Architecture x64 -FreshConfigure:$FreshConfigure)
+  -SourceDirectory $validationSource -BuildDirectory $validationBuild -Architecture $Architecture -FreshConfigure:$FreshConfigure)
 New-Item -ItemType Directory -Force -Path $validationBuild | Out-Null
 & $cmake @arguments *> (Join-Path $validationBuild 'configure.log')
 if($LASTEXITCODE -ne 0){throw "Validation tools configure failed: $validationBuild/configure.log"}
-& $cmake --build $validationBuild --config Release --target OwnedProcessRunner OwnedProcessAssignmentFixture --parallel 2 *> (Join-Path $validationBuild 'compile.log')
-if($LASTEXITCODE -ne 0){throw "Validation tools build failed: $validationBuild/compile.log"}
+$previousNodeReuse=$env:MSBUILDDISABLENODEREUSE
+try{
+  $env:MSBUILDDISABLENODEREUSE='1'
+  & $cmake --build $validationBuild --config Release --target OwnedProcessRunner OwnedProcessAssignmentFixture ProcessTreeSampler InputTrace NativeTraceIdentity OwnedTailProcessFixture OwnedTailMutationFixture OwnedTailApiFixture --parallel 2 -- /nr:false *> (Join-Path $validationBuild 'compile.log')
+  if($LASTEXITCODE -ne 0){throw "Validation tools build failed: $validationBuild/compile.log"}
+}finally{$env:MSBUILDDISABLENODEREUSE=$previousNodeReuse}
+& node $measurement seal $Architecture $measurementInputs.sha256 | Out-Null
+if($LASTEXITCODE -ne 0){throw 'Validation tools architecture/source/output identity failed'}
 Write-Output (Join-Path $validationBuild 'Release/OwnedProcessRunner.exe')

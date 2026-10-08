@@ -1,0 +1,51 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..'),measurement=require('../tools/internal/measurement-validation.cjs');
+const identity=require('../tools/internal/delivery-identity.cjs'),gui=require('../tools/sdk/gui-bindings-delivery.cjs');
+const {launchOwned}=require('../tools/internal/owned-process.cjs');
+const old=path.join(root,'out/measurement-tail-integration-dc48fd5f-4adf-473f-a048-bd2cfffa6eb8');
+const folder=path.join(root,'out','measurement-gui-reconciliation-'+crypto.randomUUID());fs.mkdirSync(folder);
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex'),encoded=v=>JSON.stringify(v,null,2)+'\n';
+const frozen=JSON.parse(fs.readFileSync(path.join(old,'source-frozen.json'))),deltas=[];
+for(const f of frozen.files){const b=fs.readFileSync(path.join(root,f.path));if(b.length!==f.bytes||sha(b)!==f.sha256)deltas.push({path:f.path,oldSha256:f.sha256,currentBytes:b.length,currentSha256:sha(b)});}
+if(JSON.stringify(deltas.map(f=>f.path).sort())!==JSON.stringify(['tools/Collect-Verification.cjs','tools/Test.ps1']))throw Error('Unexpected related source delta');
+if(measurement.fingerprint().sha256!==frozen.measurement.sha256)throw Error('Actual compiled tools inputs changed');
+for(const arch of ['x86','x64'])measurement.prepared(arch);
+if(gui.source(root).sha256!=='d11407221af7e64957b0775c241da7df1aefebb7e0616b7e5c788a807b3c66c2')throw Error('GUI source differs from main proof');
+const entrySource=fs.readFileSync(path.join(old,'entrypoints.cjs'),'utf8')
+ .replace("path.resolve(__dirname,'../..')","path.resolve(__dirname,'../..')")
+ .replace("const text=fs.readFileSync", "assert.equal(ast.commands.filter(s=>s.startsWith('& node ')&&s.includes(\"'tools/sdk/gui-bindings-delivery.cjs'\")&&s.includes(' test --root $root')).length,1);\nconst text=fs.readFileSync")
+ .replace("r.name==='action-generation-tests'", "r.name==='action-generation-tests'||r.name==='gui-bindings-delivery-tests'")
+ .replace(" ['action-generation-tests','--test'", " ['gui-bindings-delivery-tests','--test','tests/sdk/gui-bindings-delivery.test.cjs','tests/sdk/gui-bindings-entrypoints.test.cjs'],\n ['action-generation-tests','--test'");
+fs.writeFileSync(path.join(folder,'entrypoints.cjs'),entrySource,{flag:'wx'});
+const names=['tools/Test.ps1','tools/Collect-Verification.cjs','tests/sdk/gui-bindings-delivery.test.cjs','tests/sdk/gui-bindings-entrypoints.test.cjs',
+ 'tools/sdk/gui-bindings-delivery.cjs','tools/internal/owned-process.cjs','tools/internal/measurement-validation.cjs'];
+const inputs=identity.snapshot(root,names),runner=measurement.prepared('x64').tools.OwnedProcessRunner,results=[];
+fs.writeFileSync(path.join(folder,'inputs.json'),encoded({schema:'soui.measurement-gui-combination-inputs/v1',mainMerged:'3153fdcba16220de9fff6fbd512ad70c20e6b5b9',
+ relatedSourceDelta:deltas,actualToolSourceSha256:frozen.measurement.sha256,guiSourceSha256:gui.source(root).sha256,
+ inputs,node:{path:process.execPath,sha256:sha(fs.readFileSync(process.execPath))},runner:{path:runner,sha256:sha(fs.readFileSync(runner))},
+ compiledNativeInputsUnchanged:true,completeNativeCombinationRecompiled:false}),{flag:'wx'});
+async function run(name,args){
+ const dir=path.join(folder,name);fs.mkdirSync(dir);const child=launchOwned(process.execPath,args,{runner,cwd:root,report:path.join(dir,'owned.ndjson'),
+  timeoutMs:180000,drainMs:3000,stdout:'pipe',stderr:'pipe',env:{...process.env,MSBUILDDISABLENODEREUSE:'1'}});
+ const out=[],err=[];child.child.stdout.on('data',b=>out.push(b));child.child.stderr.on('data',b=>err.push(b));const result=await child.finished;
+ const stdout=Buffer.concat(out);fs.writeFileSync(path.join(dir,'stdout.log'),stdout,{flag:'wx'});fs.writeFileSync(path.join(dir,'stderr.log'),Buffer.concat(err),{flag:'wx'});
+ fs.writeFileSync(path.join(dir,'finished.json'),encoded(result),{flag:'wx'});
+ if(!result.passed||!result.closureConfirmed||result.terminal.reason!=='completed'||result.terminal.terminatedOwnedJob||result.terminal.activeProcesses!==0)throw Error('Job failed '+dir);
+ const counts=name==='gui-boundaries'?Object.fromEntries(['tests','pass','fail','skipped','cancelled'].map(key=>{const m=[...stdout.toString('utf8').matchAll(new RegExp('^# '+key+' (\\d+)\\r?$','gm'))];if(m.length!==1)throw Error('Invalid TAP count');return[key,Number(m[0][1])];})):null;
+ if(counts&&(counts.tests<1||counts.fail||counts.skipped||counts.cancelled||counts.pass!==counts.tests))throw Error('GUI boundary tests failed');
+ results.push({name,counts,genericSupervisionPassed:true,closureConfirmed:true,naturalCompleted:true,reportSha256:result.reportSha256});
+}
+(async()=>{
+ await run('entrypoints',[path.join(folder,'entrypoints.cjs')]);
+ await run('gui-boundaries',['--test','--test-reporter=tap','tests/sdk/gui-bindings-delivery.test.cjs','tests/sdk/gui-bindings-entrypoints.test.cjs']);
+ if(identity.snapshot(root,names).sha256!==inputs.sha256||measurement.fingerprint().sha256!==frozen.measurement.sha256)throw Error('Inputs changed');
+ const result={schema:'soui.measurement-gui-combination/v1',passed:true,results,actualToolInputsUnchanged:true,guiInputsUnchanged:true,
+  testActualPSAst:true,collectUnitProjectionOnly:true,fullTestExecuted:false,fullCollectExecuted:false,nativeCombinationRecompiled:false,
+  guiBindingsCompiledHere:false,noGui:true,releaseReady:false};
+ fs.writeFileSync(path.join(folder,'result.json'),encoded(result),{flag:'wx'});
+ fs.copyFileSync(__filename,path.join(folder,'driver.cjs'),fs.constants.COPYFILE_EXCL);
+ const files=[];function walk(d){for(const e of fs.readdirSync(d,{withFileTypes:true})){const p=path.join(d,e.name);if(e.isDirectory())walk(p);else{const b=fs.readFileSync(p);files.push({path:path.relative(folder,p).replace(/\\/g,'/'),bytes:b.length,sha256:sha(b)});}}}walk(folder);
+ fs.writeFileSync(path.join(folder,'index.json'),encoded({schema:'soui.measurement-gui-combination-evidence/v1',files}),{flag:'wx'});
+ console.log(encoded({folder,files:files.length,indexSha256:sha(fs.readFileSync(path.join(folder,'index.json'))),results}));
+})().catch(e=>{fs.writeFileSync(path.join(folder,'failure.json'),encoded({message:e.message}),{flag:'wx'});console.error(e.message);process.exitCode=1;});

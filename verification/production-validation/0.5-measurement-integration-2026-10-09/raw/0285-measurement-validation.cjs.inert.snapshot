@@ -1,0 +1,117 @@
+'use strict';
+// Local input/output consistency. Prepared tools and SHA values do not
+// authenticate a user who can rewrite the complete source/evidence bundle.
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {launchOwned}=require('./owned-process.cjs');
+const root=path.resolve(__dirname,'../..');
+const protocolTests=['page-pair','run-traces','owned-trace-subject','pair-preflight','series-summary'];
+const nativeTests=['process-tree-sampler','run-traces'];
+const names=['OwnedProcessRunner','OwnedProcessAssignmentFixture','ProcessTreeSampler','InputTrace','NativeTraceIdentity'];
+const sourceNames=['benchmarks/protocol/CMakeLists.txt','benchmarks/protocol/owned-process-runner.cpp',
+ 'tests/benchmark/owned-process-assignment-fixture.cpp','benchmarks/protocol/process-tree-sampler.cpp','benchmarks/protocol/input-trace.cpp',
+ 'benchmarks/protocol/trace-identity.h','tests/benchmark/native-trace-identity.cpp','tools/internal/CMake-Configure.ps1',
+ 'tools/internal/Build-ValidationTools.ps1','tools/internal/measurement-validation.cjs'];
+const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const encoded=value=>JSON.stringify(value,null,2)+'\n';
+function need(condition,message){if(!condition)throw new Error(message);}
+function architecture(value){need(['x86','x64'].includes(value),'Invalid measurement tool architecture');return value;}
+function buildDirectory(arch){architecture(arch);return path.join(root,'out',arch==='x64'?'benchmark-protocol':'benchmark-protocol-x86');}
+function file(name){
+ const full=path.resolve(root,name);need(path.relative(root,full)&&!path.relative(root,full).startsWith('..')&&!path.isAbsolute(path.relative(root,full)),'Tool path escapes workspace');
+ let cursor=full;while(cursor!==root){need(!fs.lstatSync(cursor).isSymbolicLink(),'Linked tool/source paths are not allowed');cursor=path.dirname(cursor);}
+ need(fs.statSync(full).isFile(),'Required measurement tool/source is not a file');return full;
+}
+function fingerprint(){
+ const files=sourceNames.map(name=>{const bytes=fs.readFileSync(file(name));return {path:name,bytes:bytes.length,sha256:hash(bytes)};});
+ return {sha256:hash(encoded(files)),files};
+}
+function binary(name,arch){
+ const filename=file(path.join(buildDirectory(arch),'Release',name+'.exe'));
+ need(fs.statSync(filename).size<=67108864,'Measurement tool exceeds 64 MiB');const bytes=fs.readFileSync(filename);
+ need(bytes.length>=64&&bytes.length<=67108864&&bytes.readUInt16LE(0)===0x5a4d,'Invalid bounded measurement tool PE');
+ const offset=bytes.readUInt32LE(60);need(offset>=64&&offset+24<=bytes.length&&bytes.readUInt32LE(offset)===0x4550,'Invalid measurement tool PE header');
+ const coff=bytes.readUInt16LE(offset+4);need(coff===(arch==='x86'?332:34404),'Measurement tool architecture differs: '+name);
+ return {path:path.relative(root,filename).replace(/\\/g,'/'),bytes:bytes.length,sha256:hash(bytes),coff};
+}
+function preparationPath(arch){return path.join(buildDirectory(arch),'measurement-tools.json');}
+function invalidate(arch){
+ fs.mkdirSync(buildDirectory(arch),{recursive:true});
+ fs.writeFileSync(preparationPath(arch),encoded({schema:'soui.measurement-tool-preparation/v1',architecture:arch,prepared:false,genericSupervisionPassed:null}));
+}
+function seal(arch,expectedSourceSha256){
+ const source=fingerprint();need(/^[a-f0-9]{64}$/.test(expectedSourceSha256||'')&&source.sha256===expectedSourceSha256,'Measurement inputs changed during tool build');
+ const directory=buildDirectory(arch),cache=fs.readFileSync(file(path.join(directory,'CMakeCache.txt')),'utf8');
+ const home=/^CMAKE_HOME_DIRECTORY:INTERNAL=(.+)$/m.exec(cache)?.[1]?.trim();
+ need(home&&path.resolve(home).toLowerCase()===path.join(root,'benchmarks/protocol').toLowerCase(),'Validation tools use another source directory');
+ const logs=['configure.log','compile.log'].map(name=>{const filename=file(path.join(directory,name)),bytes=fs.readFileSync(filename);return {path:path.relative(root,filename).replace(/\\/g,'/'),bytes:bytes.length,sha256:hash(bytes)};});
+ const report={schema:'soui.measurement-tool-preparation/v1',architecture:arch,configuration:'Release',prepared:true,
+  preparedAt:new Date().toISOString(),source,executables:names.map(name=>({name,...binary(name,arch)})),logs,
+  buildExitCode:0,genericSupervisionPassed:null,supervision:'external-caller-evidence-required'};
+ fs.writeFileSync(preparationPath(arch),encoded(report));return report;
+}
+function prepared(arch){
+ const filename=file(preparationPath(arch));const report=JSON.parse(fs.readFileSync(filename,'utf8'));
+ need(report.schema==='soui.measurement-tool-preparation/v1'&&report.prepared===true&&report.architecture===arch&&report.configuration==='Release'&&
+  report.buildExitCode===0&&report.source?.sha256===fingerprint().sha256,'Measurement tools are missing or stale; prepare the selected architecture');
+ need(Array.isArray(report.executables)&&report.executables.length===names.length,'Prepared measurement tools are incomplete');
+ const tools={};for(const name of names){const matches=report.executables.filter(item=>item.name===name);need(matches.length===1,'Duplicate/missing prepared measurement tool');
+  const actual=binary(name,arch);need(JSON.stringify(actual)===JSON.stringify(Object.fromEntries(Object.entries(matches[0]).filter(([key])=>key!=='name'))),'Prepared measurement executable changed');
+  tools[name]=path.resolve(root,actual.path);
+ }return {report,tools};
+}
+function parseTap(text){
+ const read=name=>{const values=[...text.matchAll(new RegExp('^# '+name+' (\\d+)\\r?$','gm'))];need(values.length===1,'Missing or ambiguous TAP '+name+' count');return Number(values[0][1]);};
+ return Object.fromEntries(['tests','pass','fail','cancelled','skipped','todo'].map(name=>[name,read(name)]));
+}
+async function runGroup(kind,arch='x64'){
+ architecture(arch);need(['protocol','native'].includes(kind),'Unknown measurement validation group');
+ const setup=prepared(arch),env={...process.env};
+ for(const key of ['PROCESS_TREE_SAMPLER_EXE','BENCHMARK_IDENTITY_FIXTURE_EXE','BENCHMARK_INPUT_TRACE_EXE','BENCHMARK_OWNED_RUNNER_EXE','BENCHMARK_OWNED_CLIENT'])delete env[key];
+ env.BENCHMARK_OWNED_RUNNER_EXE=setup.tools.OwnedProcessRunner;
+ env.BENCHMARK_OWNED_CLIENT=path.join(root,'tools/internal/owned-process.cjs');
+ if(kind==='native'){
+  env.PROCESS_TREE_SAMPLER_EXE=setup.tools.ProcessTreeSampler;env.BENCHMARK_INPUT_TRACE_EXE=setup.tools.InputTrace;
+  env.BENCHMARK_IDENTITY_FIXTURE_EXE=setup.tools.NativeTraceIdentity;
+ }
+ const folder=path.join(root,'out','measurement-validation',kind+'-'+arch+'-'+crypto.randomUUID());fs.mkdirSync(folder,{recursive:true});
+ const tests=(kind==='protocol'?protocolTests:nativeTests).map(name=>'tests/benchmark/'+name+'.test.cjs');
+ const inputs={schema:'soui.measurement-standard-group-inputs/v1',kind,architecture:arch,
+  source:fingerprint(),preparation:setup.report,tests:tests.map(name=>({path:name,sha256:hash(fs.readFileSync(file(name)))})),
+  node:{path:process.execPath,version:process.version,sha256:hash(fs.readFileSync(process.execPath))},
+  clientSha256:hash(fs.readFileSync(file('tools/internal/owned-process.cjs'))),
+  env:Object.fromEntries(Object.entries(env).filter(([key])=>key.startsWith('BENCHMARK_')||key==='PROCESS_TREE_SAMPLER_EXE')),
+  noGui:true,correctInputTraceExecuted:false};
+ fs.writeFileSync(path.join(folder,'inputs.json'),encoded(inputs));
+ const owned=launchOwned(process.execPath,['--test','--test-reporter=tap',...tests],{runner:setup.tools.OwnedProcessRunner,cwd:root,
+  report:path.join(folder,'owned.ndjson'),timeoutMs:120000,drainMs:2500,stdout:'pipe',stderr:'pipe',env});
+ const stdout=[],stderr=[];let size=0,outputError=null;
+ const collect=(target,bytes)=>{size+=bytes.length;if(size>8388608){outputError='Measurement test output exceeds 8 MiB';owned.stop();return;}target.push(bytes);};
+ owned.child.stdout.on('data',bytes=>collect(stdout,bytes));owned.child.stderr.on('data',bytes=>collect(stderr,bytes));
+ const result=await owned.finished,stdoutBytes=Buffer.concat(stdout),stderrBytes=Buffer.concat(stderr);
+ fs.writeFileSync(path.join(folder,'stdout.tap'),stdoutBytes);fs.writeFileSync(path.join(folder,'stderr.bin'),stderrBytes);
+ fs.writeFileSync(path.join(folder,'finished.json'),encoded(result));
+ need(!outputError,outputError);need(result.passed&&result.closureConfirmed,'Measurement test Job failed: '+folder);
+ const counts=parseTap(stdoutBytes.toString('utf8'));const expectedSkip=kind==='protocol'?1:0;
+ need(counts.tests>0&&counts.fail===0&&counts.cancelled===0&&counts.todo===0&&counts.skipped===expectedSkip&&counts.pass+counts.skipped===counts.tests,
+  'Measurement group omitted or failed expected cases: '+folder);
+ need(hash(fs.readFileSync(result.report))===result.reportSha256&&setup.report.source.sha256===fingerprint().sha256,'Measurement source or raw evidence changed');
+ need(inputs.tests.every(item=>hash(fs.readFileSync(file(item.path)))===item.sha256)&&
+  hash(fs.readFileSync(file('tools/internal/owned-process.cjs')))===inputs.clientSha256&&
+  hash(fs.readFileSync(process.execPath))===inputs.node.sha256,'Measurement tests, client, or Node changed during execution');
+ prepared(arch);
+ const summary={schema:'soui.measurement-standard-group/v1',kind,architecture:arch,passed:true,counts,
+  nativeCasesExecuted:kind==='native',nativeSerializerSkipExpected:kind==='protocol',noGui:true,correctInputTraceExecuted:false,
+  report:path.relative(root,result.report).replace(/\\/g,'/'),reportSha256:result.reportSha256,
+  genericSupervisionPassed:result.passed,closureConfirmed:result.closureConfirmed,sourceSha256:setup.report.source.sha256};
+ fs.writeFileSync(path.join(folder,'summary.json'),encoded(summary));return summary;
+}
+module.exports={buildDirectory,fingerprint,prepared,runGroup};
+if(require.main===module)(async()=>{
+ const [command,arch='x64',expected,...rest]=process.argv.slice(2);architecture(arch);need(rest.length===0,'Unexpected measurement arguments');let report;
+ if(command==='source'&&expected===undefined)report=fingerprint();
+ else if(command==='invalidate'&&expected===undefined){invalidate(arch);report={invalidated:true,architecture:arch};}
+ else if(command==='seal'&&expected!==undefined)report=seal(arch,expected);
+ else if(['protocol','native'].includes(command)&&expected===undefined)report=await runGroup(command,arch);
+ else throw Error('Usage: measurement-validation.cjs source|invalidate|seal|protocol|native [x86|x64] [seal source SHA256]');
+ console.log(encoded(report));
+})().catch(error=>{console.error(error.message);process.exitCode=1});

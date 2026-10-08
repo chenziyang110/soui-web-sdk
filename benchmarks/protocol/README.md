@@ -20,6 +20,10 @@ $env:PROCESS_TREE_SAMPLER_EXE = (Resolve-Path out/benchmark-sampler/Release/Proc
 node --test tests/benchmark/process-tree-sampler.test.cjs
 ```
 
+两个 collector 的新输出均为 v2：创建时间和 UTC FILETIME 保存为规范 uint64 十进制字符串；不是 JSON Number，也不提高系统时钟分辨率。四个原参数后可传第五参数 `EXPECTED_CREATION_FILETIME`。它必须来自本轮受监督宿主的真实 ready/start；两个工具在创建输出、定位窗口或发送输入前核对持有的进程句柄，差一个 tick 也拒绝。缺少该参数只能得到未绑定的轨迹。无窗口 sampler 回归也监督自己的 subject 与 collector，退出/超时记录和原生 Job 证据保留在专用 `out/sampler-owned-*` 目录；不会按历史 PID 清理。
+
+独立构建目录运行上述回归时，显式设置 `BENCHMARK_OWNED_RUNNER_EXE` 为该目录内的 `OwnedProcessRunner.exe`。设置 `BENCHMARK_INPUT_TRACE_EXE` 时，同一无窗口回归还会给 InputTrace 传错一个 tick，验证其在输出及窗口操作前拒绝；这不是正确输入/SendInput 或性能测试。
+
 `InputTrace` 是正式宿主外部的 Win32 输入驱动，接受宿主 PID、`S01`–`S05`、新的绝对 NDJSON 路径和 `full`/`probe` 模式。它先定位可见的 1100×720 内容区窗口，固定窗口位置并要求其处于前台；通过 `SendInput` 发出鼠标点击、滚轮及 Unicode 按键，同时保留每次输入前后的 QPC 时间。S04 的窗口尺寸变化单独标为 Win32 操作。`full` 为 S01–S04 保留至少 61 秒、S05 至少 123 秒；`probe` 仅持续 3 秒，不能进入性能样本。输出只是外部注入轨迹；页面事件、动作、视口与结果须单独核对。S03 的 Unicode 按键**绕过中文 IME composition**，因此 S03 的 IME 门槛仍需真实输入法专项验证；驱动本身不能提供物理呈现时间。
 
 ```powershell
@@ -52,3 +56,9 @@ node benchmarks/protocol/run-series.cjs S02 <共享页面目录> <SouiBenchmark.
 ```
 
 系列原始文件全部保留后，可用 `node benchmarks/protocol/summarize-series.cjs <已完成的系列输出目录绝对路径>` 生成一次性 `series-diagnostic-summary.json`。该诊断入口重新读取每轮原始页面、输入和资源轨迹，重新计算逐对预检，并核对冻结页面、系列首检和每轮前后检查、五秒实时门禁、交替顺序及至少五对有效样本；实际运行起止时间还必须按交替顺序排列且互不重叠，每轮前后门禁须夹住对应运行。它核对系列记录、`run.json` 与实时门禁中的运行器 PID 和创建身份一致、每轮起止时间附近均有门禁采样、至少一次采样落在实际运行时间内，且采样间不存在超过 15 秒的缺口。缺失或受干扰的记录会使汇总失败，不给出比值。成功时给出逐轮资源和页面/输入时长的分布及候选资源比值；它不测真实屏幕呈现、冷/热启动或完整运行包，也不将 `benchmarkValid` 或 `releaseReady` 设为通过。不能拿 JS 回调间隔或注入时间代替物理输入到呈现时延。
+
+新正式单轮记录为 `soui.benchmark-single-run/v2`。`ownedEvidence` 为 host/sampler/input 各自记录固定相对路径的 native report、launch context、stdout/stderr 原始 bytes/SHA256；context 在 launch 返回后、等待 ready 前锁定散列。`traceEvidence` 绑定原始输入/资源轨迹。`captureRoot` 只用于搬移后核对原始 cwd/参数，reader 不据此读取外部路径。证据读取限制在本 run 内、32 MiB 普通无链接文件，拒绝截断、重复 start/terminal、跨报告/hash、PID/FILETIME、工具散列、参数或 cwd 不一致；页面和系列文件也拒绝路径逃逸与链接。文件散列是本轮一致性约束，不声称认证同用户可恶意重写的整套证据，更不认证进程内存。
+
+正式运行器将真实 native ready 的 creationFileTime 作为两个 collector 的第五参数；结束后重新读取原生 start/终态并核对本轮 context，派生 `ownedSubject` 给分析器第四参数。单独 CLI 分析仍只检查轨迹，不提供 subject，故 `exactFileTimeBound=false`。正式 v2 pair 必须两端精确绑定且三个 Job 均自然 `completed`、exit 0、active 0、无强制终止。STOP、超时、fallback、编译器尾进程清理均不能进入该准入；STOP 只保留失败及 `controlledStopClosed` 诊断，不会转换为自然完成。
+
+历史 v1 raw 保持原字节，reader 核对原 verdict 字段投影并明确 `legacy-diagnostic-unbound`，不会给舍入的 Number 补成原生精确创建身份。旧预检和系列只供未绑定诊断；新 pair/series 使用 v2，混合 v1/v2 拒绝。系列仍要求原有交替顺序、五对、原始页面、冻结载荷、时长及 15 秒门禁缺口约束，没有提高或放宽性能阈值。任何格式的预检/汇总都保持 `benchmarkValid=false`、`releaseReady=false`；真实输入、五轮桌面、呈现/高刷和完整目标系统矩阵仍须独立验收。

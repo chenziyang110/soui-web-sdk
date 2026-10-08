@@ -1,0 +1,46 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'../..'),filename=path.join(root,'tools/internal/measurement-validation.cjs');
+const source=fs.readFileSync(filename,'utf8'),cases=[];
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+function load(arch,mode){
+ const directory=path.join(root,'out',arch==='x64'?'benchmark-protocol':'benchmark-protocol-x86');
+ const preparation=path.join(directory,'measurement-tools.json');let launches=0;
+ const localFS=new Proxy(fs,{get(target,key){
+  if(key==='lstatSync')return function(file,...args){
+   if(mode==='missing-tool'&&path.resolve(file)===path.join(directory,'Release/NativeTraceIdentity.exe'))
+    throw Object.assign(new Error('ENOENT required native serializer fixture'),{code:'ENOENT'});
+   return fs.lstatSync(file,...args);
+  };
+  if(key==='readFileSync')return function(file,...args){
+   if(path.resolve(file)===preparation&&mode==='stale-source'){
+    const report=JSON.parse(fs.readFileSync(file,'utf8'));report.source.sha256='d9a1f03a2cafcbfb138729ba21eb7904f4280745eab65b558faa908abfaea488';
+    const text=JSON.stringify(report);return args[0]==='utf8'?text:Buffer.from(text);
+   }
+   return fs.readFileSync(file,...args);
+  };
+  return Reflect.get(target,key);
+ }});
+ const module={exports:{}};
+ const localRequire=name=>name==='node:fs'?localFS:name==='./owned-process.cjs'?{launchOwned(){launches++;throw Error('Native launch forbidden in read-only boundary probe');}}:require(name);
+ vm.runInNewContext(source,{module,require:localRequire,__dirname:path.dirname(filename),process,console,Buffer},{filename});
+ return {validation:module.exports,launches:()=>launches,preparation};
+}
+(async()=>{
+ for(const arch of ['x86','x64']){
+  const good=load(arch,'good'),result=good.validation.prepared(arch);
+  assert.equal(result.report.source.sha256,good.validation.fingerprint().sha256);
+  assert.equal(Object.keys(result.tools).length,5);assert.equal(good.launches(),0);
+  cases.push({arch,mode:'good-current-real-preparation',sourceSha256:result.report.source.sha256,
+   preparationSha256:hash(fs.readFileSync(good.preparation)),toolNames:Object.keys(result.tools)});
+  for(const mode of ['stale-source','missing-tool']){
+   const probe=load(arch,mode);
+   await assert.rejects(probe.validation.runGroup('native',arch),/missing or stale|ENOENT/);
+   assert.equal(probe.launches(),0);
+   cases.push({arch,mode,rejectedBeforeLaunch:true,launches:0,virtualFileFault:true});
+  }
+ }
+ console.log(JSON.stringify({schema:'soui.measurement-current-preparation-boundaries/v1',cases,
+  readsActualCurrentSourceAndPE:true,sourceOrOutputBytesChanged:false,nativeCollectorExecuted:false,
+  virtualFaultsAreNotCompilerProof:true,noGui:true},null,2));
+})().catch(error=>{console.error(error.stack);process.exitCode=1;});

@@ -1,0 +1,682 @@
+{
+  "schema": "soui.side-standard-entry-review/v1",
+  "readOnly": true,
+  "noGui": true,
+  "noCompile": true,
+  "noNativeFixtureExecution": true,
+  "freezeSha256": "4e7229b5aeb770975d47812131e711ab289e4641351349dc13b156b3fb9af8e0",
+  "raw": {
+    "count": 408,
+    "bytes": 1658254
+  },
+  "oldRaw": {
+    "count": 167,
+    "bytes": 400955
+  },
+  "oldIndexSha256": "6ca5b039b75673c30bf58168528d5b0783936dbe5ed2919eaab04331e0bdab22",
+  "oldSourceCount": 16,
+  "frozenFourSources": [
+    {
+      "path": "tools/Test.ps1",
+      "bytes": 6690,
+      "sha256": "5e1b21d5c2fa0545a50770d6efa7f2efd7f6fffd83fc2e30cb929dd63ca84559"
+    },
+    {
+      "path": "tools/Collect-Verification.cjs",
+      "bytes": 10517,
+      "sha256": "e60f9743d59184a712fb5458da90de43bc197eef281fe3b0d4fd162aa7736d01"
+    },
+    {
+      "path": "tools/internal/Build-ValidationTools.ps1",
+      "bytes": 2124,
+      "sha256": "661cc5b479b89a352ce75e9e7ba8a485cbfb4dfc9df06f819de8086f9572c0d4"
+    },
+    {
+      "path": "tools/internal/measurement-validation.cjs",
+      "bytes": 10613,
+      "sha256": "eb03a824e348a5b71d87b8a5030244be9625cebf2585711303e1e130a0505723"
+    }
+  ],
+  "toolsVerified": 10,
+  "jobCounts": {
+    "total": 57,
+    "genericPass": 39,
+    "genericFail": 18,
+    "cleanup": 15,
+    "natural": 42
+  },
+  "jobDetails": [
+    {
+      "path": "out/measurement-standard-entry-validation/boundaries-ff1446ba-f8c1-4f92-a3c9-fd171caddd23/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    },
+    {
+      "path": "out/measurement-standard-entry-validation/build-731635d5-0e76-4adc-bbf9-60b96025b1f8/x86/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    },
+    {
+      "path": "out/measurement-standard-entry-validation/build-f2b57667-97ba-41f6-b642-6ba7c54d868b/x64/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    },
+    {
+      "path": "out/measurement-standard-entry-validation/collect-entry-9431b509-b0b1-46b0-ad50-f74a8786be58/collect/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    },
+    {
+      "path": "out/measurement-standard-entry-validation/test-entry-7c6babcb-8684-4a98-94d4-ba6164532530/x86/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    },
+    {
+      "path": "out/measurement-standard-entry-validation/test-entry-db700884-d912-4cef-93b5-efaf11a137ca/x64/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    },
+    {
+      "path": "out/measurement-validation/native-x64-219a3842-3949-4f14-abce-24a7a620931b/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/measurement-validation/native-x64-a9570920-e7b4-43f7-b9ae-443e936a724b/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/measurement-validation/native-x86-14822229-07f8-44fa-a80c-89f141b93c41/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/measurement-validation/native-x86-6fb42bb0-1b75-4570-95fe-cfbed9f75044/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/measurement-validation/protocol-x64-77cf16c1-37d8-4b92-ab45-075b4dbbdc9f/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/measurement-validation/protocol-x64-db443532-ed42-4f77-b5a2-18f0bdf49c1b/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/measurement-validation/protocol-x86-482e0088-cdee-4551-b100-fd82f1530453/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/native-identity-026ff803-a732-446c-baa9-f693d92ac541/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/native-identity-34f3df8a-400f-4498-a2b2-173f4b29c527/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/native-identity-9e57ba66-d990-4beb-8d57-3114991d6082/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/native-identity-c01c8299-1b07-4c73-aa4e-f427344a0c58/owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-normal-5822f68b-9b26-49dd-8014-27685c453286/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-normal-5822f68b-9b26-49dd-8014-27685c453286/sampler.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-normal-6dd3032e-c18b-4524-86a1-4f93eb1b5909/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-normal-6dd3032e-c18b-4524-86a1-4f93eb1b5909/sampler.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-normal-796ffc7f-6b7b-40f8-84b9-f4542c353249/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-normal-796ffc7f-6b7b-40f8-84b9-f4542c353249/sampler.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-normal-ef668712-110a-4230-a6a6-218ddc0ae563/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-normal-ef668712-110a-4230-a6a6-218ddc0ae563/sampler.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-orphan-09a2a260-e679-4876-9720-a3912f11eb60/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-orphan-09a2a260-e679-4876-9720-a3912f11eb60/sampler.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-orphan-0cb1e6c8-ab84-42a9-925d-c18477e4d404/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-orphan-0cb1e6c8-ab84-42a9-925d-c18477e4d404/sampler.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-orphan-12985322-03c8-40a1-83f0-65bbfa216e67/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-orphan-12985322-03c8-40a1-83f0-65bbfa216e67/sampler.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-orphan-eee27761-a6b3-41dd-99cc-d148f8103f2e/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-orphan-eee27761-a6b3-41dd-99cc-d148f8103f2e/sampler.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-reject-380bf799-3eb8-4b38-866d-f90bb5957c17/duplicate/sampler.owned.ndjson",
+      "rootExitCode": 1,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-reject-380bf799-3eb8-4b38-866d-f90bb5957c17/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-reject-380bf799-3eb8-4b38-866d-f90bb5957c17/input.owned.ndjson",
+      "rootExitCode": 1,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-reject-380bf799-3eb8-4b38-866d-f90bb5957c17/sampler.owned.ndjson",
+      "rootExitCode": 1,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-reject-54d616e6-7c92-45a1-b973-1c95cf3d7770/duplicate/sampler.owned.ndjson",
+      "rootExitCode": 1,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-reject-54d616e6-7c92-45a1-b973-1c95cf3d7770/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-reject-54d616e6-7c92-45a1-b973-1c95cf3d7770/input.owned.ndjson",
+      "rootExitCode": 1,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-reject-54d616e6-7c92-45a1-b973-1c95cf3d7770/sampler.owned.ndjson",
+      "rootExitCode": 1,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-reject-9ada84f2-29fa-4082-9534-c69bbe30cafa/duplicate/sampler.owned.ndjson",
+      "rootExitCode": 1,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-reject-9ada84f2-29fa-4082-9534-c69bbe30cafa/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-reject-9ada84f2-29fa-4082-9534-c69bbe30cafa/input.owned.ndjson",
+      "rootExitCode": 1,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-reject-9ada84f2-29fa-4082-9534-c69bbe30cafa/sampler.owned.ndjson",
+      "rootExitCode": 1,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-reject-d08529fb-45bc-4477-9ff6-9d4ab1ce43f0/duplicate/sampler.owned.ndjson",
+      "rootExitCode": 1,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-reject-d08529fb-45bc-4477-9ff6-9d4ab1ce43f0/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-reject-d08529fb-45bc-4477-9ff6-9d4ab1ce43f0/input.owned.ndjson",
+      "rootExitCode": 1,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-reject-d08529fb-45bc-4477-9ff6-9d4ab1ce43f0/sampler.owned.ndjson",
+      "rootExitCode": 1,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-timeout-0bba4f0f-ff60-4781-8f8e-f31b9799e56a/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-timeout-0bba4f0f-ff60-4781-8f8e-f31b9799e56a/sampler.owned.ndjson",
+      "rootExitCode": 2,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-timeout-12a1ab84-cf71-4c4d-b28e-e2f64422be82/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-timeout-12a1ab84-cf71-4c4d-b28e-e2f64422be82/sampler.owned.ndjson",
+      "rootExitCode": 2,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-timeout-1ce6459d-e759-4d06-acae-8c8bf04058d4/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-timeout-1ce6459d-e759-4d06-acae-8c8bf04058d4/sampler.owned.ndjson",
+      "rootExitCode": 2,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed"
+    },
+    {
+      "path": "out/sampler-owned-timeout-a104e6bf-af2b-47df-8e59-dd7abd72e573/host.owned.ndjson",
+      "rootExitCode": 0,
+      "passed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    },
+    {
+      "path": "out/sampler-owned-timeout-a104e6bf-af2b-47df-8e59-dd7abd72e573/sampler.owned.ndjson",
+      "rootExitCode": 2,
+      "passed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": true,
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36"
+    }
+  ],
+  "groups": [
+    {
+      "kind": "native",
+      "architecture": "x64",
+      "counts": {
+        "tests": 16,
+        "pass": 16,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed",
+      "contextExecutableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "kind": "native",
+      "architecture": "x64",
+      "counts": {
+        "tests": 16,
+        "pass": 16,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed",
+      "contextExecutableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "kind": "native",
+      "architecture": "x86",
+      "counts": {
+        "tests": 16,
+        "pass": 16,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36",
+      "contextExecutableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "kind": "native",
+      "architecture": "x86",
+      "counts": {
+        "tests": 16,
+        "pass": 16,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36",
+      "contextExecutableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "kind": "protocol",
+      "architecture": "x64",
+      "counts": {
+        "tests": 42,
+        "pass": 41,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 1,
+        "todo": 0
+      },
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed",
+      "contextExecutableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "kind": "protocol",
+      "architecture": "x64",
+      "counts": {
+        "tests": 42,
+        "pass": 41,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 1,
+        "todo": 0
+      },
+      "runnerSha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed",
+      "contextExecutableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "kind": "protocol",
+      "architecture": "x86",
+      "counts": {
+        "tests": 42,
+        "pass": 41,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 1,
+        "todo": 0
+      },
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36",
+      "contextExecutableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    }
+  ],
+  "virtualFaults": [
+    {
+      "mode": "changed",
+      "sdkPolicyReads": 0,
+      "spawnCount": 0,
+      "fingerprint": "d9a1f03a2cafcbfb138729ba21eb7904f4280745eab65b558faa908abfaea488",
+      "preparedAccepted": true,
+      "policyInSourceList": false
+    },
+    {
+      "mode": "missing",
+      "sdkPolicyReads": 0,
+      "spawnCount": 0,
+      "fingerprint": "d9a1f03a2cafcbfb138729ba21eb7904f4280745eab65b558faa908abfaea488",
+      "preparedAccepted": true,
+      "policyInSourceList": false
+    }
+  ],
+  "errors": []
+}

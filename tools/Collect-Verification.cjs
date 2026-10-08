@@ -27,6 +27,12 @@ function run(name,executable,args) {
 const unit={
  ownedSupervision:run('owned-process-tests',process.execPath,['--test','tests/benchmark/owned-process-runner.test.cjs','tests/benchmark/owned-process-client.test.cjs','tests/benchmark/owned-process-client-boundaries.test.cjs','tests/acceptance/owned-supervision-boundaries.test.cjs','tests/benchmark/run-one-cleanup.test.cjs']),
  windowsSdkSelection:run('windows-sdk-selection-tests',process.execPath,['--test','tests/sdk/cmake-sdk-selection.test.cjs']),
+ measurementProtocol:run('measurement-protocol-tests',process.execPath,['tools/internal/measurement-validation.cjs','protocol']),
+ nativeMeasurementX64:run('native-measurement-x64',process.execPath,['tools/internal/measurement-validation.cjs','native','x64']),
+ nativeMeasurementX86:run('native-measurement-x86',process.execPath,['tools/internal/measurement-validation.cjs','native','x86']),
+ compilerTailProtocol:run('compiler-tail-protocol-tests',process.execPath,['tools/internal/measurement-validation.cjs','tail-protocol','x64']),
+ nativeCompilerTailX64:run('native-compiler-tail-x64',process.execPath,['tools/internal/measurement-validation.cjs','tail-native','x64']),
+ nativeCompilerTailX86:run('native-compiler-tail-x86',process.execPath,['tools/internal/measurement-validation.cjs','tail-native','x86']),
  guiDelivery:run('gui-bindings-delivery-tests',process.execPath,['--test','tests/sdk/gui-bindings-delivery.test.cjs','tests/sdk/gui-bindings-entrypoints.test.cjs']),
  actionGeneration:run('action-generation-tests',process.execPath,['--test','tests/sdk/actiongen.test.mjs','tests/web/generated-actions.test.mjs']),
  package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),

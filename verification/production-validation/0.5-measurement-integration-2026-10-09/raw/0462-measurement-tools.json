@@ -1,0 +1,114 @@
+{
+  "schema": "soui.measurement-tool-preparation/v1",
+  "architecture": "x64",
+  "configuration": "Release",
+  "prepared": true,
+  "preparedAt": "2026-10-08T16:51:32.990Z",
+  "source": {
+    "sha256": "d9a1f03a2cafcbfb138729ba21eb7904f4280745eab65b558faa908abfaea488",
+    "files": [
+      {
+        "path": "benchmarks/protocol/CMakeLists.txt",
+        "bytes": 1844,
+        "sha256": "6040ffb5339c22151b4db7efd0a51e173e8e2b4057c53ec45fa2988bdebc3857"
+      },
+      {
+        "path": "benchmarks/protocol/owned-process-runner.cpp",
+        "bytes": 21013,
+        "sha256": "0628a169c5fd8e9269fd1a79220331c57ecdcdf2142f901cec4180d2a8808d35"
+      },
+      {
+        "path": "tests/benchmark/owned-process-assignment-fixture.cpp",
+        "bytes": 964,
+        "sha256": "8f96bfb07a8043052c3e77459687fd6788994b39db6e4063112aab8a40697bbf"
+      },
+      {
+        "path": "benchmarks/protocol/process-tree-sampler.cpp",
+        "bytes": 11219,
+        "sha256": "22f928f03925fbe2df6233abccc7b5528005b6a70f784e4e20304e572baf040a"
+      },
+      {
+        "path": "benchmarks/protocol/input-trace.cpp",
+        "bytes": 12471,
+        "sha256": "e803785c3dc61d6d64aecbe3308e73044eee8eac6860b97482e65396469ee027"
+      },
+      {
+        "path": "benchmarks/protocol/trace-identity.h",
+        "bytes": 3162,
+        "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f"
+      },
+      {
+        "path": "tests/benchmark/native-trace-identity.cpp",
+        "bytes": 1708,
+        "sha256": "7b389ea9041964cb56220c81013beb1d541d4519dd897d77a36895d511545db9"
+      },
+      {
+        "path": "tools/internal/CMake-Configure.ps1",
+        "bytes": 7196,
+        "sha256": "7958fd37fd63f24a7e8ee40301803271825a4931d2c56d54cf3c9812a768c6d1"
+      },
+      {
+        "path": "tools/internal/Build-ValidationTools.ps1",
+        "bytes": 2124,
+        "sha256": "661cc5b479b89a352ce75e9e7ba8a485cbfb4dfc9df06f819de8086f9572c0d4"
+      },
+      {
+        "path": "tools/internal/measurement-validation.cjs",
+        "bytes": 10613,
+        "sha256": "eb03a824e348a5b71d87b8a5030244be9625cebf2585711303e1e130a0505723"
+      }
+    ]
+  },
+  "executables": [
+    {
+      "name": "OwnedProcessRunner",
+      "path": "out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+      "bytes": 60928,
+      "sha256": "d101f420efd7c167becec8fe76cc4a62c01bab817f2024fc3cdd7d35412973ed",
+      "coff": 34404
+    },
+    {
+      "name": "OwnedProcessAssignmentFixture",
+      "path": "out/benchmark-protocol/Release/OwnedProcessAssignmentFixture.exe",
+      "bytes": 38912,
+      "sha256": "6c54906dc785fb5c2b3d488c2d37e6c557bc98fead52d1fa41311bf86dd84aab",
+      "coff": 34404
+    },
+    {
+      "name": "ProcessTreeSampler",
+      "path": "out/benchmark-protocol/Release/ProcessTreeSampler.exe",
+      "bytes": 57856,
+      "sha256": "39a8644c718b7b855560e3bddb0b6fd4ba8d59441fe0d020cd08a05608f0798b",
+      "coff": 34404
+    },
+    {
+      "name": "InputTrace",
+      "path": "out/benchmark-protocol/Release/InputTrace.exe",
+      "bytes": 43520,
+      "sha256": "dfa7bad618e9e20ae9fbbde6bb5dd4c1b6d1bb9c1b95657a3f15f81d8fb6fd9e",
+      "coff": 34404
+    },
+    {
+      "name": "NativeTraceIdentity",
+      "path": "out/benchmark-protocol/Release/NativeTraceIdentity.exe",
+      "bytes": 34304,
+      "sha256": "98c5b3b046ca121c866643c58dbd10dea2a9abfbae3f5a319cf1dff58ef7173e",
+      "coff": 34404
+    }
+  ],
+  "logs": [
+    {
+      "path": "out/benchmark-protocol/configure.log",
+      "bytes": 1100,
+      "sha256": "a2ae442f1d1cc54e42b8e404c26959f8ae1e2da3e01a3ea369a29fce19223ae3"
+    },
+    {
+      "path": "out/benchmark-protocol/compile.log",
+      "bytes": 2680,
+      "sha256": "a85c039753c3004157c0b7520eac1fec61b0ef3afbccffc7df2d57ca1c0b3b19"
+    }
+  ],
+  "buildExitCode": 0,
+  "genericSupervisionPassed": null,
+  "supervision": "external-caller-evidence-required"
+}

@@ -1,0 +1,19 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {launchOwned}=require('F:/work/sm05/tools/internal/owned-process.cjs');
+const root=path.resolve(__dirname,'..'),folder=path.join(__dirname,'measurement-standard-entry-validation','boundaries-'+crypto.randomUUID());
+fs.mkdirSync(folder,{recursive:true});
+const source=path.join(__dirname,'measurement-standard-boundaries.cjs');
+const sourceBytes=fs.readFileSync(source);
+fs.writeFileSync(path.join(folder,'fixture.cjs.inert.snapshot'),sourceBytes);
+fs.writeFileSync(path.join(folder,'wrapper.cjs.inert.snapshot'),fs.readFileSync(__filename));
+const owned=launchOwned(process.execPath,['--test','--test-reporter=tap',source],{
+ runner:'F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe',cwd:root,
+ report:path.join(folder,'owned.ndjson'),timeoutMs:30000,drainMs:2500,stdout:'pipe',stderr:'pipe'});
+const stdout=[],stderr=[];owned.child.stdout.on('data',b=>stdout.push(b));owned.child.stderr.on('data',b=>stderr.push(b));
+owned.finished.then(result=>{
+ const text=Buffer.concat(stdout);fs.writeFileSync(path.join(folder,'stdout.tap'),text);fs.writeFileSync(path.join(folder,'stderr.bin'),Buffer.concat(stderr));
+ fs.writeFileSync(path.join(folder,'finished.json'),JSON.stringify(result,null,2)+'\n');console.log(text.toString());
+ if(!result.passed||!/^# tests 11\r?$/m.test(text.toString())||!/^# skipped 0\r?$/m.test(text.toString()))process.exitCode=1;
+ console.log('evidence '+folder);
+});

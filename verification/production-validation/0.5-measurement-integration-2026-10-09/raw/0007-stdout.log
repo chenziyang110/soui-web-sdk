@@ -1,0 +1,64 @@
+{
+  "schema": "soui.measurement-current-preparation-boundaries/v1",
+  "cases": [
+    {
+      "arch": "x86",
+      "mode": "good-current-real-preparation",
+      "sourceSha256": "d4e161aaed29d4332881e6e4e2c99b21ab81365104cd1f8e8943f0b6f73ca3e2",
+      "preparationSha256": "8eaff72d2386080e96f26db47990e5c164bcaa26df68d32ca3c1606f96681b82",
+      "toolNames": [
+        "OwnedProcessRunner",
+        "OwnedProcessAssignmentFixture",
+        "ProcessTreeSampler",
+        "InputTrace",
+        "NativeTraceIdentity"
+      ]
+    },
+    {
+      "arch": "x86",
+      "mode": "stale-source",
+      "rejectedBeforeLaunch": true,
+      "launches": 0,
+      "virtualFileFault": true
+    },
+    {
+      "arch": "x86",
+      "mode": "missing-tool",
+      "rejectedBeforeLaunch": true,
+      "launches": 0,
+      "virtualFileFault": true
+    },
+    {
+      "arch": "x64",
+      "mode": "good-current-real-preparation",
+      "sourceSha256": "d4e161aaed29d4332881e6e4e2c99b21ab81365104cd1f8e8943f0b6f73ca3e2",
+      "preparationSha256": "6ad851209e7c7ad8cf384c23cef915c18f1f1218d5f49f90fa7dffe7e3c82493",
+      "toolNames": [
+        "OwnedProcessRunner",
+        "OwnedProcessAssignmentFixture",
+        "ProcessTreeSampler",
+        "InputTrace",
+        "NativeTraceIdentity"
+      ]
+    },
+    {
+      "arch": "x64",
+      "mode": "stale-source",
+      "rejectedBeforeLaunch": true,
+      "launches": 0,
+      "virtualFileFault": true
+    },
+    {
+      "arch": "x64",
+      "mode": "missing-tool",
+      "rejectedBeforeLaunch": true,
+      "launches": 0,
+      "virtualFileFault": true
+    }
+  ],
+  "readsActualCurrentSourceAndPE": true,
+  "sourceOrOutputBytesChanged": false,
+  "nativeCollectorExecuted": false,
+  "virtualFaultsAreNotCompilerProof": true,
+  "noGui": true
+}

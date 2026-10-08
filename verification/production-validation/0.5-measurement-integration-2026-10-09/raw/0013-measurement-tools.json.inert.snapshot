@@ -1,0 +1,129 @@
+{
+  "schema": "soui.measurement-tool-preparation/v1",
+  "architecture": "x64",
+  "configuration": "Release",
+  "prepared": true,
+  "preparedAt": "2026-10-08T17:57:24.482Z",
+  "source": {
+    "sha256": "d4e161aaed29d4332881e6e4e2c99b21ab81365104cd1f8e8943f0b6f73ca3e2",
+    "files": [
+      {
+        "path": "benchmarks/protocol/CMakeLists.txt",
+        "bytes": 2993,
+        "sha256": "2bc493ac8675c18f2b4db476b34690fb6e6932971162082ad8b5ceeee0e0fec0"
+      },
+      {
+        "path": "benchmarks/protocol/owned-process-runner.cpp",
+        "bytes": 24220,
+        "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0"
+      },
+      {
+        "path": "benchmarks/protocol/owned-tail-evidence.cpp",
+        "bytes": 31483,
+        "sha256": "6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3"
+      },
+      {
+        "path": "benchmarks/protocol/owned-tail-evidence.h",
+        "bytes": 971,
+        "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790"
+      },
+      {
+        "path": "tests/benchmark/owned-process-assignment-fixture.cpp",
+        "bytes": 964,
+        "sha256": "8f96bfb07a8043052c3e77459687fd6788994b39db6e4063112aab8a40697bbf"
+      },
+      {
+        "path": "benchmarks/protocol/process-tree-sampler.cpp",
+        "bytes": 11219,
+        "sha256": "22f928f03925fbe2df6233abccc7b5528005b6a70f784e4e20304e572baf040a"
+      },
+      {
+        "path": "benchmarks/protocol/input-trace.cpp",
+        "bytes": 12471,
+        "sha256": "e803785c3dc61d6d64aecbe3308e73044eee8eac6860b97482e65396469ee027"
+      },
+      {
+        "path": "benchmarks/protocol/trace-identity.h",
+        "bytes": 3162,
+        "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f"
+      },
+      {
+        "path": "tests/benchmark/native-trace-identity.cpp",
+        "bytes": 1708,
+        "sha256": "7b389ea9041964cb56220c81013beb1d541d4519dd897d77a36895d511545db9"
+      },
+      {
+        "path": "tools/internal/CMake-Configure.ps1",
+        "bytes": 7196,
+        "sha256": "7958fd37fd63f24a7e8ee40301803271825a4931d2c56d54cf3c9812a768c6d1"
+      },
+      {
+        "path": "cmake/SouiWindowsSdk.cmake",
+        "bytes": 701,
+        "sha256": "5dd1a60792c86c7dac88b097873aae8eab1ec0bd3fcf59c4738f8554174736fd"
+      },
+      {
+        "path": "tools/internal/Build-ValidationTools.ps1",
+        "bytes": 2095,
+        "sha256": "096306560b71c45034461c59936d780a60b15507914cd79f52f8d60b5edc0ed8"
+      },
+      {
+        "path": "tools/internal/measurement-validation.cjs",
+        "bytes": 10767,
+        "sha256": "2fd8ad2b28525ad533580cb4508eb05d1e6a9e4eb579407eb70d26c1befc46ba"
+      }
+    ]
+  },
+  "executables": [
+    {
+      "name": "OwnedProcessRunner",
+      "path": "out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+      "bytes": 150016,
+      "sha256": "c5d60402cd96d63bf09a129ee8c9ba128cf56dfda0d5bb6726f49c2d426df265",
+      "coff": 34404
+    },
+    {
+      "name": "OwnedProcessAssignmentFixture",
+      "path": "out/benchmark-protocol/Release/OwnedProcessAssignmentFixture.exe",
+      "bytes": 87040,
+      "sha256": "37696c13ebf6e84f9b8e2cffe0c460fd28ebe97b3f59fb48521ca324c042f2ee",
+      "coff": 34404
+    },
+    {
+      "name": "ProcessTreeSampler",
+      "path": "out/benchmark-protocol/Release/ProcessTreeSampler.exe",
+      "bytes": 57856,
+      "sha256": "39a8644c718b7b855560e3bddb0b6fd4ba8d59441fe0d020cd08a05608f0798b",
+      "coff": 34404
+    },
+    {
+      "name": "InputTrace",
+      "path": "out/benchmark-protocol/Release/InputTrace.exe",
+      "bytes": 43520,
+      "sha256": "dfa7bad618e9e20ae9fbbde6bb5dd4c1b6d1bb9c1b95657a3f15f81d8fb6fd9e",
+      "coff": 34404
+    },
+    {
+      "name": "NativeTraceIdentity",
+      "path": "out/benchmark-protocol/Release/NativeTraceIdentity.exe",
+      "bytes": 34304,
+      "sha256": "98c5b3b046ca121c866643c58dbd10dea2a9abfbae3f5a319cf1dff58ef7173e",
+      "coff": 34404
+    }
+  ],
+  "logs": [
+    {
+      "path": "out/benchmark-protocol/configure.log",
+      "bytes": 1100,
+      "sha256": "b5416fc9e3d07ae3c3da5866368ee90813b4752dcb1e1c18de6ad36355c9c0ea"
+    },
+    {
+      "path": "out/benchmark-protocol/compile.log",
+      "bytes": 1896,
+      "sha256": "916294cdb4b9d955c624f80efd383364cbfb5965eb22de273d5424e046dff519"
+    }
+  ],
+  "buildExitCode": 0,
+  "genericSupervisionPassed": null,
+  "supervision": "external-caller-evidence-required"
+}
