@@ -1,5 +1,13 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 preview.10 公共菜单、快捷键与显式驻留
+
+新增 [ADR-0013](../adr/0013-public-menu-shortcut-and-residency.md)、公共 `menu_service` / `global_shortcut`，独立安装消费者接入三项原生服务。Workbench 提供三窗口控制器、`--resident` 与有限 `--resident --resident-smoke-test`，关闭按业务窗口消息栈和代际延迟释放，日志在载荷外独占创建。默认单窗路径保留。
+
+[冻结预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)包含同一输入的 x86/x64 Release SDK/Starter/Workbench 编译、独立 SDK 安装、仓库外消费者编译、各8项非桌面交互 CTest。菜单15组、快捷键9组故障契约通过；Web35、包测试14、身份测试7及五锁文件全依赖审计通过。417 文件 SDK 包校验与源码匹配通过；首次 rename `EPERM` 失败保留，原因未确证。
+
+其他 QEMU 仍运行，本版尚无真实桌面或 Win7 结果。下一步串行补消费者菜单/快捷键、Workbench 三窗及模态关闭/空窗驻留，以及 V02 IME/缩放/任务同时响应。旧版本、短测和受干扰八小时数据不迁移为本版通过；完整目标和三个准入标志未关闭。
+
 ## 2026-09-26 preview.9 公共托盘切片
 
 新增 [ADR-0012](../adr/0012-public-tray-service.md) 与公共 `tray_service`、安装后独立消费者。双架构 SDK Release 独立构建、各 5 项无桌面契约、仓库外消费者编译通过；托盘包含 14 组边界/失败测试，故意恢复旧清理逻辑的反例按预期失败。其他 QEMU 退出后，当前输入的 x86/x64 窗口线程停滞、目录取消及托盘真实 Shell 短测串行退出 0，详见[冻结记录](../../verification/production-validation/preview9-public-tray-preflight-2026-09-26/README.md)。短测每架构 12 个关闭顺序事件完整，但未产生真实点击或 Explorer 重建通知。411 文件 SDK 包校验与源码匹配通过，首次改名 `EPERM` 失败仍保留。

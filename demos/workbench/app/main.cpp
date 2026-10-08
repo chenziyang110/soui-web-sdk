@@ -15,12 +15,14 @@
 #endif
 
 #include <algorithm>
+#include <array>
 #include <atomic>
 #include <chrono>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <memory>
+#include <stdexcept>
 #include <string>
 #include <thread>
 #include <utility>
@@ -29,6 +31,10 @@
 #include <soui/host/soui_miniblink_host.h>
 #include <soui/host/frame_pacer.h>
 #include <soui/runtime/services/desktop/window_commands.h>
+#include <soui/runtime/services/desktop/tray_service.h>
+#include <soui/runtime/services/desktop/menu_service.h>
+#include <soui/runtime/services/desktop/global_shortcut.h>
+#include <soui/version.h>
 #include "../integration/demo_bridge_adapter.h"
 #include "../../../third_party/include/json/json.hpp"
 
@@ -55,6 +61,10 @@
 
 #if SOUI_DEVKIT_HAS_REAL_SOUI
 namespace {
+
+constexpr UINT resident_close_message = WM_APP + 0x421;
+constexpr UINT resident_exit_message = WM_APP + 0x422;
+constexpr UINT resident_action_message = WM_APP + 0x423;
 
 std::filesystem::path executable_path() {
   std::wstring value(MAX_PATH, L'\0');
@@ -205,6 +215,19 @@ class demo_soui_window final : public SOUI::SHostWnd {
     (void)prefer_high_resolution;
 #endif
   }
+  void configure_resident(HWND controller, unsigned slot, std::uint32_t generation) {
+    // SHostWnd::OnDestroy otherwise quits for an ordinary top-level HWND.
+    if (FAILED(GetHostAttr().SetAttribute(L"wndType", L"normal")))
+      throw std::runtime_error("SOUI refused the resident normal-window policy");
+    resident_controller_ = controller;
+    resident_slot_ = slot;
+    resident_generation_ = generation;
+  }
+  void stop_for_resident_close() {
+    if (IsWindow()) KillTimer(1);
+    pacer_.stop();
+  }
+  bool resident_dispatch_active() const { return GetCurrentMessage() != nullptr; }
 #ifdef SOUI_BRIDGE_BENCHMARK
   void set_gallery_benchmark(bool all) { gallery_benchmark_=true; gallery_all_=all; }
 #endif
@@ -447,6 +470,18 @@ class demo_soui_window final : public SOUI::SHostWnd {
   }
 
   void OnClose() {
+    if (resident_controller_ != nullptr) {
+      // The controller destroys this object only after this WndProc returns.
+      if (!resident_close_pending_) {
+        resident_close_pending_ = ::PostMessageW(resident_controller_, resident_close_message,
+            resident_slot_, static_cast<LPARAM>(resident_generation_)) != FALSE;
+        if (!resident_close_pending_) {
+          // This only asks the controller to exit; it never deletes this slot.
+          ::SendMessageW(resident_controller_, resident_exit_message, 1, 0);
+        }
+      }
+      return;
+    }
     pacer_.stop();
     (void)host_.close();
     DestroyWindow();
@@ -512,7 +547,13 @@ class demo_soui_window final : public SOUI::SHostWnd {
   unsigned smoke_ticks_{0};
   ULONGLONG smoke_started_at_{0};
   ULONGLONG not_ready_since_{0};
+  HWND resident_controller_{nullptr};
+  unsigned resident_slot_{0};
+  std::uint32_t resident_generation_{0};
+  bool resident_close_pending_{false};
 };
+
+#include "resident_controller.h"
 
 bool run_self_test(const std::filesystem::path& kit_root, const std::filesystem::path& output_root,
                    const std::string& architecture,
@@ -595,10 +636,59 @@ bool run_public_task_self_test() {
   } catch (...) { return false; }
 }
 
-int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
+int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_run_context& resident_log) {
   enable_system_dpi_awareness();
   const auto executable = executable_path();
   const auto kit_root = find_kit_root(executable);
+  const auto output_root = executable.parent_path();
+  const bool resident = std::find(args.begin(), args.end(), L"--resident") != args.end();
+  const bool resident_smoke = std::find(args.begin(), args.end(), L"--resident-smoke-test") != args.end();
+  std::wstring resident_log_option;
+  bool resident_log_specified = false;
+  for (std::size_t index = 0; index < args.size(); ++index) {
+    const auto& argument = args[index];
+    if (argument != L"--resident-log" && argument.rfind(L"--resident-log=", 0) != 0) continue;
+    if (resident_log_specified) return 2;
+    resident_log_specified = true;
+    if (argument == L"--resident-log") {
+      if (++index == args.size() || args[index].rfind(L"--", 0) == 0) return 2;
+      resident_log_option = args[index];
+    } else resident_log_option = argument.substr(std::wstring{L"--resident-log="}.size());
+    if (resident_log_option.empty() || !std::filesystem::path{resident_log_option}.is_absolute()) return 2;
+  }
+  if (resident_log_specified && !resident && !resident_smoke) return 2;
+  if (resident || resident_smoke) {
+    resident_log.started = GetTickCount64();
+    resident_log.run_id = std::to_string(GetCurrentProcessId()) + "-" + std::to_string(resident_log.started);
+    if (resident_log_specified) resident_log.log = resident_log_option;
+    else {
+      std::error_code error;
+      const auto temporary = std::filesystem::temp_directory_path(error);
+      if (error) return 1;
+      resident_log.log = temporary / ("soui-workbench-resident-" + resident_log.run_id + ".ndjson");
+    }
+    // Keep one exclusively created handle for this run. Existing evidence is
+    // never overwritten or appended, and the installed payload stays clean.
+    resident_log.file = CreateFileW(resident_log.log.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr,
+        CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
+    if (resident_log.file == INVALID_HANDLE_VALUE) return 1;
+    resident_log.active = true;
+    const bool conflicting = std::any_of(args.begin(), args.end(), [](const std::wstring& argument) {
+      const auto name = argument.substr(0, argument.find(L'='));
+      return name == L"--webview-smoke-test" || name == L"--self-test" ||
+          name == L"--task-service-self-test" || name == L"--gallery-benchmark" ||
+          name == L"--benchmark-dataset" || name == L"--v8-noopt-experiment" ||
+          name == L"--unmanaged-frame-timing" || name == L"--zero-engine-timing-experiment" ||
+          name == L"--engine-timing-experiment" || name == L"--honor-timer-resolution-experiment" ||
+          name == L"--background-pacing-experiment" || name == L"--legacy-frame-clock";
+    });
+    if (!resident || conflicting) {
+      (void)resident_write(resident_log, "mode.rejected", {{"exitCode", 2},
+          {"message", "--resident-smoke-test requires --resident; residency cannot combine with single-window tests or benchmark experiments"}});
+      return 2;
+    }
+    if (!resident_write(resident_log, "mode.accepted", {{"smoke", resident_smoke}})) return 1;
+  }
 #if defined(_WIN64)
   const std::string default_architecture = "x64";
 #else
@@ -614,7 +704,6 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
     SetEnvironmentVariableA("SOUI_INITIAL_PAGE", initial_page_narrow.c_str());
   }
   else SetEnvironmentVariableA("SOUI_INITIAL_PAGE", nullptr);
-  const auto output_root = executable.parent_path();
   const auto renderer_option = option_value(args, L"--renderer");
   const bool gpu_renderer = std::find(args.begin(), args.end(), L"--gpu-renderer") != args.end() ||
                             renderer_option == L"gpu";
@@ -627,7 +716,9 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
   const bool cpu_high_refresh = std::find(args.begin(), args.end(), L"--cpu-high-refresh") != args.end();
   if (!renderer_option.empty() && renderer_option != L"auto" && renderer_option != L"gpu" &&
       renderer_option != L"readback" && !software_renderer) {
-    MessageBoxW(nullptr, L"--renderer accepts auto, gpu, readback or cpu.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
+    (void)resident_write(resident_log, "startup.error", {{"code", "E_RENDERER_OPTION"}, {"exitCode", 2}});
+    if (!resident_smoke)
+      MessageBoxW(nullptr, L"--renderer accepts auto, gpu, readback or cpu.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
     return 2;
   }
   // Request the crisp desktop text profile from the source Miniblink build.
@@ -732,7 +823,9 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
   components.SetDllPath(SOUI::SStringT(renderer_path.wstring().c_str()));
   SOUI::CAutoRefPtr<SOUI::IRenderFactory> render_factory;
   if (!components.CreateRender_GDI((IObjRef**)&render_factory)) {
-    MessageBoxW(nullptr, L"SOUI GDI renderer could not be loaded.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
+    (void)resident_write(resident_log, "startup.error", {{"code", "E_SOUI_RENDERER"}, {"exitCode", 1}});
+    if (!resident_smoke)
+      MessageBoxW(nullptr, L"SOUI GDI renderer could not be loaded.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
     return 1;
   }
   SOUI::SApplication application(render_factory, instance, _T("SOUIWEBDEMO"));
@@ -740,10 +833,25 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args) {
   SOUI::CAutoRefPtr<SOUI::IResProvider> ui_resources;
   SOUI::CreateResProvider(SOUI::RES_PE, reinterpret_cast<IObjRef**>(&ui_resources));
   if (!ui_resources || !ui_resources->Init(reinterpret_cast<WPARAM>(instance), 0)) {
-    MessageBoxW(nullptr, L"SOUI UI definitions could not be initialized.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
+    (void)resident_write(resident_log, "startup.error", {{"code", "E_SOUI_RESOURCES"}, {"exitCode", 1}});
+    if (!resident_smoke)
+      MessageBoxW(nullptr, L"SOUI UI definitions could not be initialized.", L"SOUI Miniblink AI DevKit", MB_ICONERROR);
     return 1;
   }
   application.AddResProvider(ui_resources);
+
+  if (resident) {
+    resident_settings settings;
+    settings.host.architecture = architecture;
+    settings.host.miniblink_binary = miniblink;
+    settings.host.resource_root = resources;
+    settings.width = option_dimension(args, L"--width", 1100);
+    settings.height = option_dimension(args, L"--height", 720);
+    settings.auto_high_refresh = cpu_high_refresh || (!software_renderer && (gpu_renderer || gpu_readback || auto_renderer));
+    settings.smoke = resident_smoke;
+    resident_controller controller(application, std::move(settings), resident_log);
+    return controller.run();
+  }
 
   soui::demo::demo_bridge_adapter bridge;
   auto adapter = std::make_unique<soui::sdk::dynamic_miniblink_adapter>();
@@ -839,10 +947,16 @@ int APIENTRY wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
     LocalFree(raw_args);
   }
   const HRESULT com_result = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
-  const int result = run_gui(instance, args);
+  resident_run_context resident_log;
+  const int result = run_gui(instance, args, resident_log);
   const auto shutdown = soui::sdk::shutdown_miniblink_runtime();
+  (void)resident_write(resident_log, "runtime.shutdown-fallback",
+      {{"ok", shutdown.ok}, {"code", shutdown.code}, {"message", shutdown.message}});
   if (SUCCEEDED(com_result)) CoUninitialize();
-  return result == 0 && !shutdown.ok ? 7 : result;
+  const int exit_code = result == 0 && !shutdown.ok ? 7 : result;
+  (void)resident_write(resident_log, "process.finished", {{"exitCode", exit_code},
+      {"evidenceWriteFailed", resident_log.log_failed}});
+  return exit_code == 0 && resident_log.log_failed ? 1 : exit_code;
 }
 
 #else

@@ -1,6 +1,12 @@
 # 变更记录
 
-## 0.3.0-preview.9（开发中：公共原生托盘）
+## 0.3.0-preview.10（开发中：公共菜单、快捷键与显式驻留）
+
+- 增加可信原生应用的 `menu_service` 和 `global_shortcut`，包含菜单值树、线程/重入校验、原生错误诊断、失败清理重试和快捷键注销退休语义；不增加 Web 权限。
+- 独立安装消费者使用三项公共服务；Workbench 新增 `--resident` 和有限的 `--resident-smoke-test`，三个窗口独立持有 Host/adapter，由应用控制器管理关闭、恢复和最终退出。默认单窗方式保留。
+- 新增菜单与快捷键故障契约；设计见 [ADR-0013](docs/adr/0013-public-menu-shortcut-and-residency.md)。真实桌面、Win7、完整 V04、长稳与生产准入继续待验收，历史 preview 的结果不自动授予本版通过。
+
+## 0.3.0-preview.9（公共原生托盘）
 
 - 新增可信原生应用可选的 `tray_service`：应用持有隐藏顶层 HWND 和消息循环，服务复制图标、严格校验 UTF-8 提示，返回激活/上下文菜单值事件。
 - 安装检查 Shell 增加图标及版本设置，失败显式回滚；Explorer 重建按应用期望恢复，移除即取消恢复意图，清理失败可观察并重试。生命周期与线程约束见 [ADR-0012](docs/adr/0012-public-tray-service.md)。

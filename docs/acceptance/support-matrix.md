@@ -1,5 +1,7 @@
 # 候选支持范围与设备矩阵
 
+2026-09-26 增补：开发版 preview.10 完成[本机 x86/x64 Release 编译、安装消费与非桌面交互预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)。新增公共菜单/快捷键/驻留尚无本版真实桌面或 Win7 结果，下述历史载荷不自动授予本版兼容通过。
+
 日期：2026-09-24。状态：采集中，不是正式支持声明。首批真实项目要求最低 Windows 7 SP1，包含 x86；不能仅凭本机 Windows 11 上的 x86 进程结果放行。
 
 2026-09-25 增补：[preview.7 最终完整源码重编 x86 载荷](../../verification/production-validation/win7-sp1-x86-qemu-preview7-final-source-2026-09-25/README.md)已在 Windows 7 SP1 x86 QEMU 通过 Starter、Workbench 默认页和 React 页短启动，且来宾系统身份、载荷散列、退出码和 24 份串口结果复核通过。它不扩展为物理设备、完整业务或性能结论；下表各旧版本证据仍保留原身份。
