@@ -1,0 +1,619 @@
+{
+  "schema": "soui.current-notice-candidate-map/v1",
+  "generatedAtUtc": "2026-09-28T02:40:16.370071+00:00",
+  "scope": "Current explicit linker library names mapped to candidate notice files from the indexed source manifest; neither actual library resolution nor archive member selection nor legal sufficiency is established",
+  "inputs": {
+    "candidateReportSha256": "b9759dca4899e2c853e6a45a30a10f399aefe389f868e2614ab875c71694ac1c",
+    "linkExtractionSha256": "01519f6648fc59df2c18e98c7e2a9617fd8cba061425e37f7f8486cd6a7313db",
+    "licenseReviewSha256": "5a998eeef7b9dbccafa29ec25a1f1dd947bdc60cee4ec8738bf6050ae24bc0c6",
+    "sourceManifestSha256": "13fed79a9252687a78a7d181e13e35dce810b7d1c13f787ccede353720e7e5a6"
+  },
+  "binaries": [
+    {
+      "architecture": "x86",
+      "binarySha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3",
+      "explicitLibraryArguments": 36,
+      "localCandidateNames": 12,
+      "notLocatedInExplicitLibPaths": 24,
+      "libraries": [
+        {
+          "name": "skia_gpu.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/third_party/skia/LICENSE",
+              "bytes": 1553,
+              "sha256": "4826c9a63352256e3d1eaa81005e60fa618e2251ce2253822855cc27782ced07"
+            }
+          ]
+        },
+        {
+          "name": "opengl32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "libcurl.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/licenses/libcurl-7.61.1-COPYING.txt",
+              "bytes": 1088,
+              "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095"
+            }
+          ]
+        },
+        {
+          "name": "zlib.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/third_party/zlib/LICENSE",
+              "bytes": 1124,
+              "sha256": "282644c64aa8c4f0a4a589fd38d2213e41f37b4e0e4f639e01149d09b67117db"
+            }
+          ]
+        },
+        {
+          "name": "ots.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/licenses/ots-5.0.0-LICENSE.txt",
+              "bytes": 1563,
+              "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d"
+            }
+          ]
+        },
+        {
+          "name": "libxml.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/third_party/libxml/src/Copyright",
+              "bytes": 1498,
+              "sha256": "013556ff1aa847ac0e365337321c200eee1c69051db8870db37002c852a4e98d"
+            }
+          ]
+        },
+        {
+          "name": "harfbuzz.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/third_party/harfbuzz-ng/COPYING",
+              "bytes": 1690,
+              "sha256": "2a886915de4f296cdae5ed67064f86dba01d0c55286d86e8487f2a5caaf40216"
+            }
+          ]
+        },
+        {
+          "name": "v8_5_7.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/v8_5_7/LICENSE",
+              "bytes": 2913,
+              "sha256": "2337a9caeb13854242af8d0022f8e57389e5eae56fa3bf7887f5f38492b57199"
+            }
+          ]
+        },
+        {
+          "name": "v8_5_7_1.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/v8_5_7/LICENSE",
+              "bytes": 2913,
+              "sha256": "2337a9caeb13854242af8d0022f8e57389e5eae56fa3bf7887f5f38492b57199"
+            }
+          ]
+        },
+        {
+          "name": "skia.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/third_party/skia/LICENSE",
+              "bytes": 1553,
+              "sha256": "4826c9a63352256e3d1eaa81005e60fa618e2251ce2253822855cc27782ced07"
+            }
+          ]
+        },
+        {
+          "name": "winmm.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "ws2_32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "usp10.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "shlwapi.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "wininet.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "gdiplus.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "version.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "crypt32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "wldap32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "imm32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "kernel32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "user32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "gdi32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "winspool.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "comdlg32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "advapi32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "shell32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "ole32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "oleaut32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "uuid.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "odbc32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "odbccp32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "dbghelp.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "libjpeg.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/licenses/ijg-jpeg-9a-README.txt",
+              "bytes": 19110,
+              "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1"
+            }
+          ]
+        },
+        {
+          "name": "libpng.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/third_party/libpng/png.h",
+              "bytes": 143251,
+              "sha256": "4574c38e2688e9d7b49f1dd865e4130bee4bae55906fde3a02bbf120b8cc9a92"
+            }
+          ]
+        },
+        {
+          "name": "openssl.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/node/openssl/openssl/LICENSE",
+              "bytes": 6279,
+              "sha256": "0885ecb3437fc1178a62ee58ba3030e48cafab77dc31607e91208476338e0222"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "architecture": "x64",
+      "binarySha256": "fe4160a70587d027504c409b8fd2bc5c87d78392811bff0c969f69c41a44d951",
+      "explicitLibraryArguments": 35,
+      "localCandidateNames": 11,
+      "notLocatedInExplicitLibPaths": 24,
+      "libraries": [
+        {
+          "name": "skia_gpu.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/third_party/skia/LICENSE",
+              "bytes": 1553,
+              "sha256": "4826c9a63352256e3d1eaa81005e60fa618e2251ce2253822855cc27782ced07"
+            }
+          ]
+        },
+        {
+          "name": "opengl32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "version.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "crypt32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "advapi32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "wldap32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "libcurl.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/licenses/libcurl-7.61.1-COPYING.txt",
+              "bytes": 1088,
+              "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095"
+            }
+          ]
+        },
+        {
+          "name": "zlib.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/third_party/zlib/LICENSE",
+              "bytes": 1124,
+              "sha256": "282644c64aa8c4f0a4a589fd38d2213e41f37b4e0e4f639e01149d09b67117db"
+            }
+          ]
+        },
+        {
+          "name": "ots.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/licenses/ots-5.0.0-LICENSE.txt",
+              "bytes": 1563,
+              "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d"
+            }
+          ]
+        },
+        {
+          "name": "imm32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "libxml.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/third_party/libxml/src/Copyright",
+              "bytes": 1498,
+              "sha256": "013556ff1aa847ac0e365337321c200eee1c69051db8870db37002c852a4e98d"
+            }
+          ]
+        },
+        {
+          "name": "v8_5_7.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/v8_5_7/LICENSE",
+              "bytes": 2913,
+              "sha256": "2337a9caeb13854242af8d0022f8e57389e5eae56fa3bf7887f5f38492b57199"
+            }
+          ]
+        },
+        {
+          "name": "v8_5_7_1.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/v8_5_7/LICENSE",
+              "bytes": 2913,
+              "sha256": "2337a9caeb13854242af8d0022f8e57389e5eae56fa3bf7887f5f38492b57199"
+            }
+          ]
+        },
+        {
+          "name": "skia.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/third_party/skia/LICENSE",
+              "bytes": 1553,
+              "sha256": "4826c9a63352256e3d1eaa81005e60fa618e2251ce2253822855cc27782ced07"
+            }
+          ]
+        },
+        {
+          "name": "winmm.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "ws2_32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "usp10.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "shlwapi.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "wininet.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "gdiplus.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "dbghelp.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "libjpeg.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/licenses/ijg-jpeg-9a-README.txt",
+              "bytes": 19110,
+              "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1"
+            }
+          ]
+        },
+        {
+          "name": "libpng.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/third_party/libpng/png.h",
+              "bytes": 143251,
+              "sha256": "4574c38e2688e9d7b49f1dd865e4130bee4bae55906fde3a02bbf120b8cc9a92"
+            }
+          ]
+        },
+        {
+          "name": "harfbuzz.lib",
+          "candidateInExplicitLibPaths": true,
+          "candidateSourceClass": "local dependency build",
+          "noticeCandidates": [
+            {
+              "path": "third_party/sources/miniblink/third_party/harfbuzz-ng/COPYING",
+              "bytes": 1690,
+              "sha256": "2a886915de4f296cdae5ed67064f86dba01d0c55286d86e8487f2a5caaf40216"
+            }
+          ]
+        },
+        {
+          "name": "kernel32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "user32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "gdi32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "winspool.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "comdlg32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "shell32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "ole32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "oleaut32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "uuid.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "odbc32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        },
+        {
+          "name": "odbccp32.lib",
+          "candidateInExplicitLibPaths": false,
+          "candidateSourceClass": "not located in explicit /LIBPATH",
+          "noticeCandidates": []
+        }
+      ]
+    }
+  ],
+  "additionalNoticeLeads": [
+    {
+      "path": "third_party/sources/miniblink/LICENSE",
+      "bytes": 11336,
+      "sha256": "2958241ded36ff3e9c082a74c8cb94459b45d8406643a0206ff3a9f86d0e70cf"
+    },
+    {
+      "path": "third_party/sources/miniblink/third_party/brotli/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "path": "third_party/sources/miniblink/node/LICENSE-nodejs",
+      "bytes": 60446,
+      "sha256": "48c3b5ba35c8f6b670d6f9b554a0204fc42c14eedf2431bbf2418a407feb9f4d"
+    }
+  ],
+  "actualResolvedLibraryFilesVerified": false,
+  "actualArchiveMembersRecovered": false,
+  "nestedComponentInventoryComplete": false,
+  "runtimeNoticeSetReviewed": false,
+  "applicableRedistributionTermsReviewed": false,
+  "status": "unverified",
+  "releaseReady": false
+}

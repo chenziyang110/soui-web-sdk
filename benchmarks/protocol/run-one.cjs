@@ -122,6 +122,7 @@ async function main() {
   const startedAt = new Date().toISOString();
   const runId = crypto.randomUUID();
   const record = {schema: 'soui.benchmark-single-run/v1', runId, host, scene, startedAt,
+    runnerPid: process.pid,
     machine: {hostname: os.hostname(), platform: os.platform(), release: os.release(),
       architecture: os.arch(), cpuModel: os.cpus()[0]?.model ?? null,
       logicalCpus: os.cpus().length, totalMemoryBytes: os.totalmem()},

@@ -1,0 +1,63 @@
+✔ preflight and live gate share the full SOUI workload classification (0.5458ms)
+✔ live gate excludes the benchmark run and its descendants while finding external load (0.5151ms)
+✔ live gate remembers observed child identity after its parent exits (0.127ms)
+✔ live gate does not trust a new child of an absent parent PID (0.0894ms)
+✔ live gate records when the runner has disappeared (0.0625ms)
+✔ live gate treats a benchmark host outside the owned tree as interference (0.0645ms)
+✔ live gate catches other SOUI tests and build drivers (0.0624ms)
+✔ live gate rejects a reused PID with a different creation identity (0.0486ms)
+✔ live gate fails closed if the runner PID changes identity (0.6664ms)
+✔ Windows live gate obtains process identities with a fail-closed query (687.4258ms)
+✔ live gate stops only its own runner when external workload appears (671.9231ms)
+✔ live gate checks the real runner identity before stopping its process tree (1795.0239ms)
+✔ live gate fails closed and stops its runner when the process query fails (38.1617ms)
+✔ live gate stops its runner if the gate log cannot be written (733.8876ms)
+✔ live gate lets an isolated runner exit normally (248.3156ms)
+✔ live gate rejects a missing runner identity before accepting a run (34.6789ms)
+✔ live gate catches interference that starts after a clean initial sample (740.6359ms)
+✔ five alternating accepted pairs produce diagnostics without a value verdict (1.2386ms)
+✔ four pairs cannot be summarized as the five-pair acceptance input (0.4783ms)
+✔ a missing or contaminated live gate invalidates all candidate ratios (1.1617ms)
+✔ order drift and duplicate run identity are refused (0.3593ms)
+✔ a rejected pair or forced cleanup cannot contribute to a summary (0.3974ms)
+✔ live gate must cover each real run without a missing interval (1.3514ms)
+✖ series, single-run and live gate must identify the same runner (0.4064ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 23
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5047.6783
+
+✖ failing tests:
+
+test at tests\benchmark\series-summary.test.cjs:135:1
+✖ series, single-run and live gate must identify the same runner (0.4064ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Series runner PID is missing"
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\benchmark-series-full\tests\benchmark\series-summary.test.cjs:150:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: AssertionError [ERR_ASSERTION]: Series runner PID is missing
+        at assertRunnerBinding (C:\SOUI-SDK-development\benchmark-series-full\benchmarks\protocol\summarize-series.cjs:50:3)
+        at C:\SOUI-SDK-development\benchmark-series-full\tests\benchmark\series-summary.test.cjs:150:29
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (C:\SOUI-SDK-development\benchmark-series-full\tests\benchmark\series-summary.test.cjs:150:10)
+        at Test.runInAsyncScope (node:async_hooks:228:14)
+        at Test.run (node:internal/test_runner/test:1118:25)
+        at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+        at Test.postRun (node:internal/test_runner/test:1247:19)
+        at Test.run (node:internal/test_runner/test:1175:12),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }

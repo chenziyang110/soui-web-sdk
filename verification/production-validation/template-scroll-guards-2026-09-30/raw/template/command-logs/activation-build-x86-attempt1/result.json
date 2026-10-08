@@ -1,0 +1,62 @@
+{
+  "program": "powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-File",
+    "Build-ActivationProbe.ps1",
+    "-Architecture",
+    "x86"
+  ],
+  "cwd": "C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929",
+  "startedAt": "2026-09-29T18:14:08.187Z",
+  "pid": 63772,
+  "exitCode": 1,
+  "signal": null,
+  "timedOut": false,
+  "interruptedByExternal": [
+    {
+      "ProcessId": 19644,
+      "ParentProcessId": 72892,
+      "Name": "qemu-system-x86_64.exe",
+      "CreationDate": "/Date(1790705649658)/"
+    }
+  ],
+  "gateError": null,
+  "error": null,
+  "preflight": {
+    "at": "2026-09-29T18:14:08.188Z",
+    "processes": []
+  },
+  "childIdentity": {
+    "ProcessId": 63772,
+    "ParentProcessId": 2524,
+    "Name": "powershell.exe",
+    "CreationDate": "/Date(1790705649510)/"
+  },
+  "cleanupExitCode": 128,
+  "cleanupReason": "external-workload",
+  "afterClose": {
+    "at": "2026-09-29T18:14:19.630Z",
+    "processes": [
+      {
+        "ProcessId": 19644,
+        "ParentProcessId": 72892,
+        "Name": "qemu-system-x86_64.exe",
+        "CreationDate": "/Date(1790705649658)/"
+      }
+    ]
+  },
+  "finishedAt": "2026-09-29T18:14:21.059Z",
+  "stdout": {
+    "bytes": 776,
+    "sha256": "ef5bfd9e8ccf56d8cfb2700238d5f984c9b17f53a7f4056e0200b8c2e9ca22b8"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "gates": {
+    "bytes": 163,
+    "sha256": "fc50b6103edefe6a73f3e5ffaf07d7281e1990bd6c16c18faf74ae006602a06e"
+  }
+}

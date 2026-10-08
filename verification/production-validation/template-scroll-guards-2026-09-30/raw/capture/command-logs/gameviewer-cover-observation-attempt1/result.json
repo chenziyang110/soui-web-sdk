@@ -1,0 +1,30 @@
+{
+  "program": "powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-File",
+    "C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\Inspect-TemplateTitleCover.ps1",
+    "-TargetProcessId",
+    "21844",
+    "-ExpectedHwnd",
+    "1579112",
+    "-OutputJson",
+    "C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\gameviewer-cover-observation-attempt1.json"
+  ],
+  "cwd": "C:\\SOUI-SDK-production-validation\\benchmark-git-load-gate-20260930",
+  "startedAt": "2026-09-30T02:23:29.452Z",
+  "pid": 35632,
+  "exitCode": 0,
+  "signal": null,
+  "timedOut": false,
+  "error": null,
+  "finishedAt": "2026-09-30T02:23:30.607Z",
+  "stdout": {
+    "bytes": 288,
+    "sha256": "94c4bd8ed7c351fbca3b8aa431b75346e272d41a345294bfa21ccbd057cafda0"
+  },
+  "stderr": {
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

@@ -5,13 +5,22 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
-const {spawn, execFileSync} = require('node:child_process');
+const {spawn, spawnSync, execFileSync} = require('node:child_process');
 const {compare, loadRun} = require('./check-pair-runs.cjs');
 
 const prohibited = new Set([
   'qemu-system-i386.exe', 'qemu-system-x86_64.exe',
   'souiacceptance.exe', 'souibenchmark.exe', 'electron.exe',
+  'souistarter.exe', 'souiworkbench.exe', 'installedrenewalprobe.exe',
+  'renewalstarter.exe', 'upgradeledger.exe', 'cmake.exe', 'ninja.exe',
+  'msbuild.exe', 'cl.exe', 'link.exe', 'cdb.exe',
 ]);
+const liveGateIntervalMs = 5000;
+
+function isProhibitedProcessName(name) {
+  const lower = name.toLowerCase();
+  return prohibited.has(lower) || /^soui.*\.exe$/.test(lower);
+}
 
 function requireFile(value, label) {
   if (!path.isAbsolute(value) || !fs.statSync(value).isFile())
@@ -51,11 +60,71 @@ function competingProcesses() {
   return output.split(/\r?\n/).map(row => {
     const fields = /^"([^"]+)","(\d+)"/.exec(row);
     return fields ? {name: fields[1].toLowerCase(), pid: Number(fields[2])} : null;
-  }).filter(process => process && prohibited.has(process.name));
+  }).filter(process => process && isProhibitedProcessName(process.name));
 }
 
 function interferenceCheck() {
   return {checkedAt: new Date().toISOString(), competingProcesses: competingProcesses()};
+}
+
+function classifyLiveProcesses(processes, rootPid, observedOwned) {
+  const owned = new Map(observedOwned);
+  const present = new Map(processes.map(process => [process.pid, process.createdAt]));
+  for (const process of processes) {
+    if (process.pid === rootPid && owned.has(rootPid) &&
+        owned.get(rootPid) !== process.createdAt)
+      throw new Error('Benchmark runner process identity changed during a run');
+    if (owned.has(process.pid) && owned.get(process.pid) !== process.createdAt)
+      owned.delete(process.pid);
+    if (process.pid === rootPid)
+      owned.set(process.pid, process.createdAt);
+  }
+  let changed;
+  do {
+    changed = false;
+    for (const process of processes) {
+      if (owned.has(process.parentPid) &&
+          present.get(process.parentPid) === owned.get(process.parentPid) &&
+          !owned.has(process.pid)) {
+        owned.set(process.pid, process.createdAt);
+        changed = true;
+      }
+    }
+  } while (changed);
+  const competingProcesses = processes.filter(process => {
+    return isProhibitedProcessName(process.name) && !owned.has(process.pid);
+  });
+  return {owned, competingProcesses,
+    rootPresent: present.has(rootPid) && present.get(rootPid) === owned.get(rootPid)};
+}
+
+function liveInterferenceCheck(rootPid, observedOwned) {
+  if (process.platform !== 'win32') throw new Error('The series runner requires Windows');
+  const script = "$ErrorActionPreference='Stop';" +
+    "$p=@(Get-CimInstance Win32_Process -ErrorAction Stop | " +
+    "Select-Object ProcessId,ParentProcessId,Name,CreationDate);" +
+    "[ordered]@{processes=$p}|ConvertTo-Json -Depth 3 -Compress";
+  const scan = spawnSync('powershell.exe', ['-NoProfile', '-Command', script], {
+    encoding: 'utf8', windowsHide: true, timeout: 15000,
+    env: {...process.env, PSModulePath: path.join(process.env.SystemRoot,
+      'System32/WindowsPowerShell/v1.0/Modules')},
+  });
+  if (scan.error || scan.status !== 0 || scan.stderr.trim())
+    throw new Error(`Live process query failed: ${scan.error || scan.stderr || scan.status}`);
+  const decoded = JSON.parse(scan.stdout.replace(/^\uFEFF/, ''));
+  const rows = Array.isArray(decoded.processes) ? decoded.processes :
+    decoded.processes ? [decoded.processes] : [];
+  const processes = rows.filter(row => row.ProcessId !== 0) // System Idle Process.
+    .map(row => ({pid: Number(row.ProcessId), parentPid: Number(row.ParentProcessId),
+      name: row.Name, createdAt: String(row.CreationDate)}));
+  if (processes.some(row => !Number.isSafeInteger(row.pid) || row.pid <= 0 ||
+      !Number.isSafeInteger(row.parentPid) || row.parentPid < 0 ||
+      typeof row.name !== 'string' || !row.name ||
+      !row.createdAt || row.createdAt === 'undefined' || row.createdAt === 'null'))
+    throw new Error('Live process query returned invalid identity');
+  const result = classifyLiveProcesses(processes, rootPid, observedOwned);
+  return {checkedAt: new Date().toISOString(), owned: result.owned,
+    competingProcesses: result.competingProcesses, rootPresent: result.rootPresent};
 }
 
 function assertIdle(check) {
@@ -64,17 +133,91 @@ function assertIdle(check) {
       .map(process => `${process.name} (PID ${process.pid})`).join(', ')}`);
 }
 
-function runOne(args) {
+function monitorChild(child, gateFile, pairNumber, host,
+  scan = liveInterferenceCheck, intervalMs = liveGateIntervalMs) {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [path.join(__dirname, 'run-one.cjs'), ...args], {
-      stdio: 'inherit', windowsHide: false,
-    });
-    child.once('error', reject);
-    child.once('exit', (code, signal) => {
-      if (code === 0) resolve();
+    const observedOwned = new Map();
+    let failure = null;
+    let stopping = false;
+    const appendGate = row => {
+      try {
+        fs.appendFileSync(gateFile, `${JSON.stringify(row)}\n`);
+        return true;
+      } catch (error) {
+        if (!failure) failure = error;
+        return false;
+      }
+    };
+    const stopOwnRun = reason => {
+      if (stopping || child.exitCode !== null || child.signalCode !== null || !child.pid) return;
+      stopping = true;
+      let identityCheckError = null;
+      let rootPresent = false;
+      try {
+        if (observedOwned.has(child.pid))
+          rootPresent = liveInterferenceCheck(child.pid,
+            new Map([[child.pid, observedOwned.get(child.pid)]])).rootPresent;
+      } catch (error) { identityCheckError = String(error); }
+      const killed = rootPresent
+        ? spawnSync('taskkill.exe', ['/PID', String(child.pid), '/T', '/F'],
+          {windowsHide: true, timeout: 15000})
+        : null;
+      const treeStopped = killed && !killed.error && killed.status === 0;
+      if (!treeStopped) child.kill();
+      appendGate({checkedAt: new Date().toISOString(),
+        pairNumber, host, ownRunPid: child.pid,
+        ownRunCreatedAt: observedOwned.get(child.pid) ?? null, cleanupReason: reason,
+        cleanupMethod: treeStopped ? 'verified-tree' : 'process-handle',
+        cleanupCompletenessUnverified: !treeStopped,
+        cleanupExitCode: killed?.status ?? null,
+        cleanupError: killed?.error ? String(killed.error) : identityCheckError});
+    };
+    const poll = () => {
+      if (stopping || child.exitCode !== null || child.signalCode !== null || !child.pid) return;
+      try {
+        const check = scan(child.pid, observedOwned);
+        for (const [pid, createdAt] of check.owned) observedOwned.set(pid, createdAt);
+        if (!observedOwned.has(child.pid))
+          throw new Error('Live gate did not observe the runner process identity');
+        if (!appendGate({checkedAt: check.checkedAt,
+          pairNumber, host, ownRunPid: child.pid,
+          ownRunCreatedAt: observedOwned.get(child.pid),
+          ownedPidCount: observedOwned.size,
+          competingProcesses: check.competingProcesses})) {
+          stopOwnRun('gate-log-write-failed');
+          return;
+        }
+        if (check.competingProcesses.length) {
+          failure = new Error(`External workload appeared during ${host} run: ${check.competingProcesses
+            .map(process => `${process.name} (PID ${process.pid})`).join(', ')}`);
+          stopOwnRun('external-workload');
+        }
+      } catch (error) {
+        failure = error;
+        appendGate({checkedAt: new Date().toISOString(),
+          pairNumber, host, ownRunPid: child.pid, gateError: String(error)});
+        stopOwnRun('gate-error');
+      }
+    };
+    const timer = setInterval(poll, intervalMs);
+    poll();
+    child.once('error', error => { failure = error; });
+    child.once('close', (code, signal) => {
+      clearInterval(timer);
+      if (failure) reject(failure);
+      else if (code === 0 && observedOwned.has(child.pid))
+        resolve({pid: child.pid, createdAt: observedOwned.get(child.pid)});
+      else if (code === 0) reject(new Error('Runner exited without a verified live process identity'));
       else reject(new Error(`Single run failed: code=${code}, signal=${signal}`));
     });
   });
+}
+
+function runOne(args, gateFile, pairNumber, host) {
+  const child = spawn(process.execPath, [path.join(__dirname, 'run-one.cjs'), ...args], {
+    stdio: 'inherit', windowsHide: false,
+  });
+  return monitorChild(child, gateFile, pairNumber, host);
 }
 
 function frozenIdentity(run) {
@@ -116,6 +259,10 @@ async function main() {
     scene, plannedPairs: rounds, startedAt: new Date().toISOString(),
     order: 'alternating-soui-electron-and-electron-soui', checks: [firstCheck],
     pairs: [], benchmarkValid: false, releaseReady: false};
+  const liveGateFile = path.join(root, 'live-interference-gates.ndjson');
+  fs.writeFileSync(liveGateFile, '', {flag: 'wx'});
+  record.liveInterferenceGate = {path: path.basename(liveGateFile),
+    intervalMs: liveGateIntervalMs};
   try {
     const frozenPage = path.join(root, 'frozen-page');
     fs.cpSync(page, frozenPage, {recursive: true, errorOnExist: true, force: false});
@@ -133,7 +280,9 @@ async function main() {
         const args = host === 'soui'
           ? ['soui', scene, frozenPage, souiExe, nodeDll, sampler, input, runPath, library]
           : ['electron', scene, frozenPage, electronExe, app, sampler, input, runPath, lock];
-        await runOne(args);
+        const runner = await runOne(args, liveGateFile, index + 1, host);
+        if (!pair.runnerProcesses) pair.runnerProcesses = {};
+        pair.runnerProcesses[host] = runner;
         pair.runs[host] = path.basename(runPath);
         if (bundleDigest(frozenPage) !== record.pageBundleSha256)
           throw new Error('Frozen series page bundle changed during a run');
@@ -175,4 +324,6 @@ async function main() {
 if (require.main === module)
   main().catch(error => {console.error(error.message); process.exitCode = 1;});
 
-module.exports = {competingProcesses, frozenIdentity};
+module.exports = {competingProcesses, isProhibitedProcessName,
+  classifyLiveProcesses, liveInterferenceCheck,
+  monitorChild, frozenIdentity, bundleDigest};

@@ -1,0 +1,127 @@
+{
+  "schema": "soui.template-scrollbar-real-input-host/v1",
+  "architecture": "x64",
+  "attemptName": "template-scroll-x64-attempt4",
+  "sourceSha256": "edece3019fd29db841425671071367eb13e891d5cefb85a1d70594b9bd3cc227",
+  "buildId": "5a5224a2-883d-41da-ac2a-45c7b010413e",
+  "helperHashes": {
+    "probe": "4bd647c75f08e1f14b5ae4418e30c1c7c480e69e07bc425988cad09128826ecd",
+    "activationProbe": "2f693ff73673c492459ea3fa6fa1656f2329c64c4c095566a1afc958ea0d69ca",
+    "coverInspector": "9161f19afbab8ede78676c1a5a818d63d3dcfe5a8ea4b0e9942eda67c30c9436",
+    "payloadVerifier": "25d69e803701eb3a28fece8785ada686477c7196bc03e47df164084f892115be",
+    "capture": "d764fb72f200a3043de9c6f72e9066180a31c6e5e09bc8aedcae2c87ceba8be2",
+    "closeWindow": "3ad71bccab0999bc246f4818a0f96c49198d8d831bf15845790872036a24fcd0"
+  },
+  "driverSha256Before": "e83f62df874d8cc9c17867183e57d02bff1273b6fd24a9e447862237456a3b79",
+  "driverSha256After": "e83f62df874d8cc9c17867183e57d02bff1273b6fd24a9e447862237456a3b79",
+  "startedAt": "2026-09-30T02:21:23.153Z",
+  "status": "failed",
+  "target": {
+    "pid": 82624,
+    "creationFiletime": "134352084861056395",
+    "hwnd": 67709314
+  },
+  "actions": [
+    {
+      "label": "inspect-title-cover",
+      "at": "2026-09-30T02:21:31.016Z",
+      "program": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        "C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\Inspect-TemplateTitleCover.ps1",
+        "-TargetProcessId",
+        "82624",
+        "-ExpectedHwnd",
+        "67709314",
+        "-OutputJson",
+        "C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\template-scroll-x64-attempt4\\title-cover.json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "{\"schema\":\"soui.template-title-cover/v1\",\"targetProcessId\":82624,\"targetHwnd\":67709314,\"targetRect\":[130,130,1230,850],\"titlePoint\":[680,142],\"hitHwnd\":28053742,\"hitRootHwnd\":1579112,\"hitRootProcessId\":21844,\"foregroundHwnd\":1579112,\"foregroundProcessId\":21844,\"pointBelongsToTarget\":false}\r\n",
+      "stderr": ""
+    }
+  ],
+  "gates": [
+    {
+      "stage": "before-build-check",
+      "at": "2026-09-30T02:21:24.526Z",
+      "busy": []
+    },
+    {
+      "stage": "before-launch",
+      "at": "2026-09-30T02:21:26.101Z",
+      "busy": []
+    },
+    {
+      "stage": "wait-visible",
+      "at": "2026-09-30T02:21:28.477Z",
+      "busy": []
+    },
+    {
+      "stage": "before-inspect-title-cover",
+      "at": "2026-09-30T02:21:29.838Z",
+      "busy": []
+    },
+    {
+      "stage": "after-close",
+      "at": "2026-09-30T02:21:32.665Z",
+      "busy": []
+    }
+  ],
+  "screenshotHashes": {},
+  "nativeExitCode": null,
+  "externalLoadObserved": false,
+  "realScrollVerified": false,
+  "releaseReady": false,
+  "livePayloadBefore": {
+    "payloadSha256": "1a361461fc0c9837f7fa3a15840ab5a2b0fbaf0deee719c53852e6f84ee73a41",
+    "checkedFiles": 71,
+    "legalFiles": 5,
+    "extras": [
+      "smoke.log",
+      "source-navigation.log"
+    ],
+    "logs": {
+      "smoke.log": {
+        "bytes": 29,
+        "sha256": "d87cc9394363c453aec0ee5a8e81ddc7fa92e5394b59aace00a29bc5bd6097ae"
+      },
+      "source-navigation.log": {
+        "bytes": 284,
+        "sha256": "c3699e83465999dc744bc6d1d3288724fa3b200c25c9e2dc7d73dbffadccf5c3"
+      }
+    },
+    "verifiedAt": "2026-09-30T02:21:24.861Z"
+  },
+  "payloadSha256": "1a361461fc0c9837f7fa3a15840ab5a2b0fbaf0deee719c53852e6f84ee73a41",
+  "executableSha256": "f5407a286c9d94e95f9404191ead635633c5976b673774a3bac348ed0122f6fc",
+  "initiallyForeground": false,
+  "titleCover": {
+    "schema": "soui.template-title-cover/v1",
+    "targetProcessId": 82624,
+    "targetHwnd": 67709314,
+    "targetRect": [
+      130,
+      130,
+      1230,
+      850
+    ],
+    "titlePoint": [
+      680,
+      142
+    ],
+    "hitHwnd": 28053742,
+    "hitRootHwnd": 1579112,
+    "hitRootProcessId": 21844,
+    "foregroundHwnd": 1579112,
+    "foregroundProcessId": 21844,
+    "pointBelongsToTarget": false
+  },
+  "error": "Error: Target title covered by PID 21844\n    at main (C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\Run-TemplateScrollHost-v5.cjs:191:13)",
+  "ownedKillRequestedAt": "2026-09-30T02:21:31.018Z",
+  "ownedKillReturned": true,
+  "cleanupSignal": "SIGTERM",
+  "finishedAt": "2026-09-30T02:21:32.666Z"
+}

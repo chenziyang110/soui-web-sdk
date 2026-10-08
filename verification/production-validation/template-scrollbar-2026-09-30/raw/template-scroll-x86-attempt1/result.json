@@ -1,0 +1,56 @@
+{
+  "schema": "soui.template-scrollbar-real-input-host/v1",
+  "architecture": "x86",
+  "attemptName": "template-scroll-x86-attempt1",
+  "sourceSha256": "edece3019fd29db841425671071367eb13e891d5cefb85a1d70594b9bd3cc227",
+  "buildId": "24283c4e-d1fa-4f1a-b82e-6065ec1d7853",
+  "helperHashes": {
+    "probe": "929ecfcb2d842b1639b31a349ca83bd2f037d2111600526e1aa9cdb0001ab26e",
+    "capture": "d764fb72f200a3043de9c6f72e9066180a31c6e5e09bc8aedcae2c87ceba8be2",
+    "closeWindow": "3ad71bccab0999bc246f4818a0f96c49198d8d831bf15845790872036a24fcd0"
+  },
+  "driverSha256Before": "c6ea9531f7437e54344cfb5b4d81add613bfdba902259ff158d807bf41de5da8",
+  "driverSha256After": "c6ea9531f7437e54344cfb5b4d81add613bfdba902259ff158d807bf41de5da8",
+  "startedAt": "2026-09-29T17:00:56.134Z",
+  "status": "failed",
+  "target": {
+    "pid": 65164,
+    "creationFiletime": null,
+    "hwnd": null
+  },
+  "actions": [],
+  "gates": [
+    {
+      "stage": "before-build-check",
+      "at": "2026-09-29T17:00:58.573Z",
+      "busy": []
+    },
+    {
+      "stage": "before-launch",
+      "at": "2026-09-29T17:01:01.440Z",
+      "busy": []
+    },
+    {
+      "stage": "wait-visible",
+      "at": "2026-09-29T17:01:04.752Z",
+      "busy": []
+    },
+    {
+      "stage": "after-close",
+      "at": "2026-09-29T17:01:07.049Z",
+      "busy": []
+    }
+  ],
+  "screenshotHashes": {},
+  "nativeExitCode": null,
+  "externalLoadObserved": false,
+  "realScrollVerified": false,
+  "releaseReady": false,
+  "payloadSha256": "5373740f752475f283854413e349db6c9eb3614364aecaffe74b4b9335b9fc30",
+  "executableSha256": "27544751768ddf2086e86d6d3f0880c2f55253b459df2014830ceac063d47d22",
+  "error": "AssertionError [ERR_ASSERTION]: Target is not naturally foreground\n\nfalse !== true\n\n    at main (C:\\SOUI-SDK-production-validation\\template-scrollbar-preparation-20260929\\Run-TemplateScrollHost.cjs:164:12)",
+  "ownedKillRequestedAt": "2026-09-29T17:01:04.838Z",
+  "ownedKillReturned": true,
+  "cleanupSignal": "SIGTERM",
+  "finishedAt": "2026-09-29T17:01:07.050Z"
+}

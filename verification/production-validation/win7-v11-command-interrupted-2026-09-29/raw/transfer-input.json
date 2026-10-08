@@ -1,0 +1,84 @@
+{
+  "schema": "soui.win7-v02-native-resize-v11-input/v1",
+  "version": "0.3.0-preview.15",
+  "buildId": "b6caec6c-117e-49eb-86fa-4182e64d5b55",
+  "sourceSha256": "60d729c8c0fe55dcabd72bf3a1aa2255af42017c10c63151a880fecd7d511640",
+  "starterPayloadSha256": "3b10adc7f3233842bbf0715731e8f1ba6e7572747db25abfc7652fa9246c0a80",
+  "workbenchPayloadSha256": "5cef41216d57166b62d277ed064c26decce6a5ccc866ae1901ac6ac57ad98f20",
+  "payloadName": "win7-v9-payload-attempt1",
+  "payloadPreparationSha256": "86b4361e61ad7cb41ab43739fc6f1b62db7b305e2a99c7966737ff53ccd50917",
+  "previousTransportFreezeSha256": "98acf9d01407a3c4bcbe843b6d9289598d607f3c32e20485759e6fc4b1dc6e80",
+  "probeSha256": "2ad0e9eb92c7ef7b2ba8e72c672db58fd9fa250f5dbbb1698795c359cb0e5d96",
+  "guestScriptSha256": "5a5ad9b105632847e1827c47954800876c0c47f9c4df42f6a782f1b25db13ca4",
+  "serialScriptSha256": "0aa66a58d33407f34161958392567f2b99fbf5ae15cae20ca42b2c7311fb6e1e",
+  "serialFrameLimit": 128,
+  "minimumSerialFrames": 25,
+  "transferManifestSha256": "bb74046f709a1012d78f85f1bf310953ad60381f14804643c163a0174112f047",
+  "transferFiles": [
+    {
+      "path": "7za.exe",
+      "bytes": 739840,
+      "sha256": "ea308c76a2f927b160a143d94072b0dce232e04b751f0c6432a94e05164e716d"
+    },
+    {
+      "path": "export-serial.ps1",
+      "bytes": 1276,
+      "sha256": "0aa66a58d33407f34161958392567f2b99fbf5ae15cae20ca42b2c7311fb6e1e"
+    },
+    {
+      "path": "run-display-explore.cmd",
+      "bytes": 152,
+      "sha256": "a0b9b781d63f594a8a2e779dd5b0541532a1f68d3aef2e3a0fee160752d23396"
+    },
+    {
+      "path": "run-display-explore.ps1",
+      "bytes": 18023,
+      "sha256": "5a5ad9b105632847e1827c47954800876c0c47f9c4df42f6a782f1b25db13ca4"
+    },
+    {
+      "path": "SouiStarter-payload.tsv",
+      "bytes": 7392,
+      "sha256": "fe813a82fc8ddd09033cd73185b05f68ae75900506a7f4422d20fc8278333d33"
+    },
+    {
+      "path": "SouiStarter.zip",
+      "bytes": 28597343,
+      "sha256": "c3c492cb528eb851e4829f35cf2ed411335cf202353c6e0852e13cc900e822df"
+    },
+    {
+      "path": "SouiWorkbench-payload.tsv",
+      "bytes": 53028,
+      "sha256": "244f586ed702738ea28559673510d058bce589388fc9ba8b6e93f038d0a1bef4"
+    },
+    {
+      "path": "SouiWorkbench.zip",
+      "bytes": 39616665,
+      "sha256": "6b3ab3f6f68f180b5104eafa4de9b86d0b1111f8d3fb9a72a48595e5996310d9"
+    },
+    {
+      "path": "V02DisplayModeProbe.exe",
+      "bytes": 116224,
+      "sha256": "9fe2a3c5ca8ab983c7cd01338b25a6b1d80844c6637f8ef94403d850a17708a2"
+    },
+    {
+      "path": "V02InputProbe.exe",
+      "bytes": 190464,
+      "sha256": "2ad0e9eb92c7ef7b2ba8e72c672db58fd9fa250f5dbbb1698795c359cb0e5d96"
+    },
+    {
+      "path": "verify-apps.ps1",
+      "bytes": 2558,
+      "sha256": "f9dae77aff5a044ca9906b5cdc4e52c7fce6401aa28545dc98190725981f44f3"
+    }
+  ],
+  "mountRoot": "C:\\SOUI-SDK-production-validation\\work-area-placement-20260928\\win7-v11-transfer-attempt1\\volume",
+  "inputSubdir": "soui-input",
+  "guestCommand": "cmd.exe /c D:\\soui-input\\run-display-explore.cmd",
+  "appArguments": "--arch=x86 --renderer=cpu --react --page=data --width=850 --height=640",
+  "requestedDisplay": "1024x768",
+  "appDeadlineMs": 120000,
+  "mode": "focused-native-work-area-resize-probe-not-production",
+  "guestExecuted": false,
+  "win7CurrentV02Verified": false,
+  "releaseReady": false
+}
