@@ -1,0 +1,62 @@
+{
+  "schema": "soui.win7-x86-qemu-validation.v1",
+  "date": "2026-09-24",
+  "guest": {
+    "caption": "Microsoft Windows 7 Enterprise",
+    "version": "6.1.7601",
+    "servicePackMajorVersion": 1,
+    "architecture": "32-bit",
+    "network": "none",
+    "reportFileSystem": "guest C: NTFS"
+  },
+  "hypervisor": {
+    "name": "QEMU",
+    "version": "11.1.0",
+    "binarySha256": "DBBF7242E5B0D295E54336C69034A266EE1CC117D7AC6E3060E38BB61651200B",
+    "machine": "pc",
+    "accelerator": "tcg",
+    "cpu": "core2duo",
+    "virtualCpus": 2,
+    "memoryMiB": 2048,
+    "display": "std VGA",
+    "disk": "32 GiB qcow2, IDE",
+    "transfer": "Read-only QEMU vvfat D: ZIP payload; guest C: NTFS extracted runtime and result files; COM1 serial export; VM snapshot mode"
+  },
+  "installer": {
+    "image": "Windows 7 Enterprise with SP1 x86 zh-CN",
+    "isoSha256": "BB62560314372343C8221D3BCF3039E66197E1394158CA99FE005D084A0A59A6"
+  },
+  "candidate": {
+    "version": "0.3.0-preview.5",
+    "architecture": "x86",
+    "configuration": "Release",
+    "sourceSha256": "16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237",
+    "buildId": "3304ca4f-17cf-4be7-a7bb-f91ca254f0a0",
+    "consumerBuildId": "8cac9ce9-d3a3-484e-8ab1-3b7f71301a0b",
+    "acceptanceExeSha256": "3C24F024F2CA96589B648F51FBD11B65AC191C5451B88A4EB8CB7BAC783A69AC",
+    "souiDllSha256": "1EA0FF009B1EA6B513EE94A252BE059A9A755DF75A67043B25FF2F5394F040DE",
+    "webEngineDllSha256": "3B9071413F704958FB5708B8BB065785A6C3ED03B7FD0FB04F5952201E5FE4F7"
+  },
+  "run": {
+    "modes": [
+      "bridge",
+      "reload",
+      "recreate",
+      "multiwindow"
+    ],
+    "cyclesPerMode": 3,
+    "warmup": 0,
+    "settleMs": 100,
+    "stepTimeoutMs": 60000,
+    "serialFilesVerified": 26,
+    "result": "short-smoke-passed",
+    "resourceGate": "not-evaluated",
+    "releaseReady": false
+  },
+  "transfer": {
+    "runtimeZipSha256": "4209B68A3E12209990803D4968BC291C45F0D9D07A8A12DDD8F41F71CFF116C4",
+    "extractorSha256": "EA308C76A2F927B160A143D94072B0DCE232E04B751F0C6432A94E05164E716D",
+    "runtimeFiles": 76
+  },
+  "serialExportSha256": "8CD6AE755B91DDD2D60F90D07E77309E28DC08BA0B34D04427921EAD916F39FD"
+}

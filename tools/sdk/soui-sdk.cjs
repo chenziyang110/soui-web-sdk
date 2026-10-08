@@ -100,6 +100,22 @@ function readLock(directory) {
   return lock;
 }
 
+function publishStagedDirectory(stage, output) {
+  const delay = new Int32Array(new SharedArrayBuffer(4));
+  for (let attempt = 0; ; ++attempt) {
+    try {
+      fs.renameSync(stage, output);
+      return;
+    } catch (error) {
+      // Windows can briefly deny a directory rename after the staged files
+      // have been read. Retry only that transient publication boundary.
+      if (process.platform !== 'win32' || !['EPERM', 'EACCES'].includes(error.code) ||
+          attempt >= 5 || !fs.existsSync(stage) || fs.existsSync(output)) throw error;
+      Atomics.wait(delay, 0, 0, 30 * (attempt + 1));
+    }
+  }
+}
+
 function pack(source, output, version) {
   source = safePath(source);
   output = safePath(output);
@@ -127,7 +143,7 @@ function pack(source, output, version) {
     }
     fs.writeFileSync(safePath(stage, 'sdk-manifest.json'), encoded(manifest), {flag: 'wx'});
     readPackage(stage);
-    fs.renameSync(stage, output);
+    publishStagedDirectory(stage, output);
   } finally {
     if (fs.existsSync(stage)) fs.rmSync(stage, {recursive: true});
   }

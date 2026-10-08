@@ -32,5 +32,15 @@
 *.ico binary
 *.zip binary
 verification/production-validation/**/events.ndjson -text
+verification/production-validation/**/events.ndjson.phases.ndjson -text
 verification/production-validation/**/*.log -text
 verification/production-validation/**/cert.pem -text
+verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/*.txt -text
+verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/*.log binary
+verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/results/*.txt binary
+verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/results/*.log binary
+verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/serial-export.txt -text
+verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/qemu-stderr.log binary
+verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/results/*.txt binary
+verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/results/*.log binary
+verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/results/*.ndjson -text

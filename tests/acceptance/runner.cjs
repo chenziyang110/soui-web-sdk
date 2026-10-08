@@ -7,6 +7,8 @@ const {StringDecoder} = require('node:string_decoder');
 const {spawn} = require('node:child_process');
 const identity = require('../../tools/internal/delivery-identity.cjs');
 const builds = require('../../tools/internal/build-evidence.cjs');
+const {captureTimeout} = require('./timeout-diagnostics.cjs');
+const {mixedSettings, validateMixedRecords} = require('./mixed-validation.cjs');
 const root = path.resolve(__dirname, '../..');
 const modes = ['reload', 'recreate', 'multiwindow', 'bridge'];
 
@@ -204,24 +206,44 @@ async function run(suite,config) {
   const stdout=fs.openSync(path.join(output,'stdout.log'),'wx');
   const stderr=fs.openSync(path.join(output,'stderr.log'),'wx');
   const bin=path.join(suite,'runtime');
-  const args=[`--mode=${config.mode}`,`--cycles=${config.cycles}`,`--warmup=${config.warmup}`,`--settle-ms=${config.settleMs}`,
-    `--timeout-ms=${config.timeoutMs}`,`--report=${log}`];
-  const processTimeoutMs=Math.min(12*60*60*1000,Math.max(60000,expectedSteps(config).length*(config.timeoutMs+config.settleMs)+30000));
+  const mixed=config.mode==='mixed';
+  const args=mixed?
+    [`--mode=mixed`,`--duration-ms=${config.durationMs}`,`--idle-ms=${config.idleMs}`,
+      `--settle-ms=${config.settleMs}`,`--timeout-ms=${config.timeoutMs}`,`--report=${log}`]:
+    [`--mode=${config.mode}`,`--cycles=${config.cycles}`,`--warmup=${config.warmup}`,
+      `--settle-ms=${config.settleMs}`,`--timeout-ms=${config.timeoutMs}`,`--report=${log}`];
+  const processTimeoutMs=mixed?config.durationMs+Math.max(180000,2*config.timeoutMs+config.idleMs):
+    Math.min(12*60*60*1000,Math.max(60000,expectedSteps(config).length*(config.timeoutMs+config.settleMs)+30000));
   let timedOut=false;
   let timeoutReason=null;
   let child;
   let outcome;
+  let timeoutDiagnosticPromise=Promise.resolve(null);
   try {
     outcome=await new Promise(resolve=>{
       child=spawn(path.join(bin,'SouiAcceptance.exe'),args,{cwd:bin,windowsHide:true,stdio:['ignore',stdout,stderr]});
       let spawnError=null;
-      const expire=reason=>{if(!timedOut){timedOut=true;timeoutReason=reason;child.kill();}};
-      const timer=setTimeout(()=>expire('process-deadline'),processTimeoutMs);
       let observedBytes=0;
       let partial='';
       const decoder=new StringDecoder('utf8');
       let stepStarted=null;
       let lastProgress=Date.now();
+      let lastNativeRecord=null;
+      const expire=reason=>{
+        if(timedOut)return;
+        timedOut=true;
+        timeoutReason=reason;
+        const observedAt=Date.now();
+        timeoutDiagnosticPromise=captureTimeout({pid:child.pid,output,nativeLog:log,
+          snapshot:{schema:'soui.acceptance-timeout-observation/v1',runId,reason,pid:child.pid,
+            observedAt:new Date(observedAt).toISOString(),observedBytes,partialBytes:Buffer.byteLength(partial,'utf8'),
+            lastProgressAgeMs:observedAt-lastProgress,lastNativeRecord,stepStarted},
+          debuggerExe:process.env.SOUI_ACCEPTANCE_DEBUGGER,
+          dumpRoot:process.env.SOUI_ACCEPTANCE_DUMP_ROOT})
+          .catch(error=>({debugger:{status:'failed',error:error.message}}))
+          .finally(()=>child.kill());
+      };
+      const timer=setTimeout(()=>expire('process-deadline'),processTimeoutMs);
       // Per-step supervision also covers a blocked native mount/destroy where
       // the in-process readiness timer cannot run. Read only appended bytes.
       const monitor=setInterval(()=>{
@@ -239,7 +261,10 @@ async function run(suite,config) {
               for(const line of lines){
                 const record=JSON.parse(line);
                 lastProgress=Date.now();
-                if(record.event==='step.begin')stepStarted={at:Date.now(),action:record.action};
+                lastNativeRecord=Object.fromEntries(['event','elapsedMs','action','window','cycle']
+                  .filter(key=>Object.hasOwn(record,key)).map(key=>[key,record[key]]));
+                if(record.event==='step.begin')stepStarted={at:Date.now(),action:record.action,
+                  window:record.window,cycle:record.cycle};
                 if(record.event==='step.complete'||record.event==='step.failed')stepStarted=null;
               }
             }
@@ -252,6 +277,7 @@ async function run(suite,config) {
       child.once('close',(exitCode,signal)=>{clearTimeout(timer);clearInterval(monitor);resolve({pid:child.pid??null,exitCode,signal,timedOut,timeoutReason,spawnError,processTimeoutMs});});
     });
   } finally { fs.closeSync(stdout); fs.closeSync(stderr); }
+  outcome.timeoutDiagnostic=await timeoutDiagnosticPromise;
   const result={schema:'soui.acceptance-run/v1',runId,config,consumerBuildId:build.consumerBuildId,
     sourceSha256:build.sourceSha256,payloadSha256:build.payload.sha256,outcome,passed:false,releaseReady:false,
     finishedAt:new Date().toISOString()};
@@ -261,19 +287,20 @@ async function run(suite,config) {
     result.logSha256=identity.hash(bytes);
     if (!bytes.toString('utf8').endsWith('\n')) throw new Error('Truncated native log');
     const records=bytes.toString('utf8').trimEnd().split('\n').map(line=>JSON.parse(line));
-    result.validation=validateRecords(records,config,outcome);
+    result.validation=mixed?validateMixedRecords(records,config,outcome):validateRecords(records,config,outcome);
     result.passed=true;
   } catch(error) { result.failure=error.message; }
   write(path.join(output,'result.json'),result);
   return {passed:result.passed,mode:config.mode,runId,result:path.relative(root,path.join(output,'result.json')).replaceAll('\\','/'),failure:result.failure,outcome};
 }
-module.exports={settings,expectedSteps,validateRecords};
+module.exports={settings,expectedSteps,validateRecords,mixedSettings,validateMixedRecords};
 if(require.main===module) (async()=>{
   const [command,suite,...args]=process.argv.slice(2);
   let result;
   if(command==='prepare'&&(args.length===2||args.length===3))result=prepare(suite,...args);
   else if(command==='stage'&&!args.length)result=stage(suite);
   else if(command==='run'&&args.length===5)result=await run(suite,settings(args[0],...args.slice(1).map(Number)));
+  else if(command==='run-mixed'&&args.length===4)result=await run(suite,mixedSettings(...args.map(Number)));
   else throw new Error('Invalid acceptance command');
   console.log(identity.encoded(result));
   if(result.passed===false)process.exitCode=1;

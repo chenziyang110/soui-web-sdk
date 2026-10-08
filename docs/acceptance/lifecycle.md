@@ -139,6 +139,16 @@ x64 候选 `2ed34e54c26fe074e020cee6d179ba2330dff7865db6fb3b75df039f4c69e565` �
 
 [x86 同源候选](../../verification/production-validation/gpu-lifecycle-2026-09-23/cpu-x86-1000-reload/result.json)也在该口径完成 1,000 次，exit 0、0 超时。预热末点到末轮的 Private Bytes 为 37,445,632→142,479,360，普通句柄 334→977，USER 23→23；Runtime 关闭后分别为 7,729,152、265、3。[每百轮观察](../../verification/production-validation/gpu-lifecycle-2026-09-23/cpu-x86-1000-reload/resource-windows.json)的 Private Bytes 中位数约 94–123 MiB、普通句柄 608–926，均有回收波动；峰值 Private Bytes 为 171,413,504。这些较高的峰值及分段变化仍需解释，不能以正常退出等同资源合格。两架构 1,000 次重载均仅关闭当前候选的软件路径操作门。
 
+## 挂载阶段诊断开关
+
+独立消费者可在启动前设置 `SOUI_ACCEPTANCE_MOUNT_TRACE=1`。开启后，它在常规 `events.ndjson` 旁写入 `events.ndjson.phases.ndjson`，逐窗口、逐轮记录构造、原生窗口创建、Host 启动、窗口显示及页面 ready 等待的开始和结束；每条记录立即刷新，并包含 `GetTickCount64` 单调毫秒值。未设置时不创建阶段文件，常规验收事件及通过条件不变。此诊断只标出测试程序所在阶段，不能单独证明 SDK 或浏览器内核的根因；若挂载停滞，还须在监督超时前抓取原生线程栈，并与事件偏移和阶段末条记录对应。
+
+监督器现于超时瞬间保存 `timeout-observation.json`，记录其已读原生日志偏移、磁盘文件长度、最后解析事件及末尾内容，以区分原生停滞与观察延迟。可选的 x86 `cdb.exe` 抓取配置和数据范围见[独立消费者说明](../../tests/acceptance-app/README.md)。真实 x86 调试器已在受控临时进程生成 dump 和线程栈；它尚未捕获 SDK 挂载失败现场，因此仍不能定位前述两次超时根因。抓取失败、未配置和超时均保持失败判定。
+
+[现场保存诊断及两次新载荷复测](../../verification/production-validation/preview5-timeout-diagnostics-2026-09-24/README.md)均保留原 20 秒门限，分别完成 1,000 次 Bridge、无超时；新源码指纹与最初失败的冻结载荷不同。复测没有触发调试器，原故障仍未定位。分段 Private Bytes 中位数在两次复测中均从首百轮到末百轮上行，资源门继续为 `not-evaluated`。
+
+同一诊断记录还保留原失败源码重新编译后的另一个 x86 二进制载荷千轮成功对照，其八秒旁路观察器未触发；原两次失败仍然有效。随后[Win7 SP1 x86 QEMU 新载荷 100 次重载](../../verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/README.md)完成 3 次预热、100 次测量与 109 个步骤，Private Bytes 预热末点 28,459,008→最后 43,335,680 字节，增量低于 16 MiB 数值线；句柄 188→245、线程 10→14，Runtime 关闭后 Private Bytes 6,270,976。它仅关闭 Win7 x86 虚拟机中这一来源的重载操作和内存端点数值观察，整体 `resourceGate` 仍为 `not-evaluated`。
+
 ## preview.4 固定包的生命周期复测
 
 `0.3.0-preview.4` 固定包源码指纹 `f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9`，x64/x86 内核分别为 `0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816` / `3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7`。新[原始证据及分段观察](../../verification/production-validation/preview4-lifecycle-2026-09-23/README.md)与上面的 preview.3 候选分开，不跨内核混算。
@@ -153,3 +163,7 @@ x64 候选 `2ed34e54c26fe074e020cee6d179ba2330dff7865db6fb3b75df039f4c69e565` �
 | x86 销毁重建 1,000 次、静置 20 ms | exit 0，无超时 | 29,151,232 → 44,212,224 | 332 → 335 | 19,689,472 / 8 |
 
 100 次重载的末点增量分别为 7,368,704 和 4,648,960 字节，均低于 `max(16 MiB, 10% 基线)` 的数值线；逐轮样本仍有较高峰值和回收。1,000 次重载的峰值分别为 244,695,040 / 169,025,536 字节，20 ms 静置下还有大量普通句柄在运行中存在；这不能套用 1 秒静置的预算。x64 重建末轮 USER 为 13、Runtime 关闭后为 7；x86 对应为 14、8，仍需区分系统辅助窗口与业务对象并解释残留。x86 的每百轮 Private Bytes 中位数后段从约 75–81 MiB 升至约 85–89 MiB，不能仅凭末点较低认定无长期增长。当前只证实列出的操作成功；所有 `resourceGate` 保持 `not-evaluated`，后续需补三窗口、Bridge、资源所有权与 8 小时混合业务。
+
+## preview.5 x86 固定包长循环复测
+
+2026-09-24 的 [preview.5 x86 固定包复测](../../verification/production-validation/preview5-lifecycle-2026-09-24/README.md)在独立公共消费者上完成 3 次预热加 100 次、每轮静置 1 秒的重载，exit 0；Private Bytes 从 37,027,840 增至 44,335,104 字节，末点增量低于 16 MiB 数值线。另两次 Bridge 100 轮正常退出。目标 1,000 轮 Bridge 两次分别在第 86、977 轮挂载阶段超时并由监督器终止；后续同载荷三次诊断跑满，但未复现、未抓到停滞线程栈。此失败属于当前候选，不能沿用 preview.4 的通过结果或用成功诊断覆盖。三次诊断的每百轮 Private Bytes 中位数从约 80 MiB 升至约 93–95 MiB，资源所有权仍需分析。当前 `resourceGate: not-evaluated`、`releaseReady: false`。

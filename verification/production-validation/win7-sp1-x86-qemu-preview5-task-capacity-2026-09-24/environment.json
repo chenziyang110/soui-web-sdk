@@ -1,0 +1,40 @@
+{
+  "schema": "soui.target-system-evidence/v1",
+  "date": "2026-09-24",
+  "version": "0.3.0-preview.5",
+  "releaseReady": false,
+  "guest": {
+    "caption": "Microsoft Windows 7 Enterprise",
+    "version": "6.1.7601",
+    "servicePackMajorVersion": 1,
+    "architecture": "32-bit"
+  },
+  "virtualMachine": {
+    "name": "QEMU",
+    "version": "11.1.0",
+    "acceleration": "TCG",
+    "machine": "pc",
+    "cpu": "Core 2 Duo",
+    "vcpus": 2,
+    "memoryMiB": 2048,
+    "display": "standard VGA",
+    "network": "none",
+    "systemDisk": "snapshot mode",
+    "transfer": "read-only vvfat D:; guest C: NTFS results; COM1 serial export"
+  },
+  "build": {
+    "sourceSha256": "16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237",
+    "buildId": "426d9be7-c49a-43df-a4c1-7532087a23e2",
+    "architecture": "x86",
+    "configuration": "Release",
+    "testExeSha256": "21e61266b21ff51ac506e288f5bba8b711e57c915982ab23735f27d503cae07e",
+    "runtimeDllsHostVerified": 59
+  },
+  "result": {
+    "exitCode": 0,
+    "serialFiles": 5,
+    "serialSha256": "1675cb5a0df695e4d60a0fc38e3a11a1656d2bf6c3cf18a749256b051e2010c2",
+    "stderrBytes": 0,
+    "passed": true
+  }
+}

@@ -36,6 +36,7 @@ Electron 宿主只需在 `benchmarks/hosts/electron` 执行：
 
 ```powershell
 npm ci
+node node_modules/electron/install.js
 npm start -- --benchmark-page=<共享页面dist-legacy/benchmark.html> --result-dir=<本地结果目录>
 ```
 

@@ -2,9 +2,11 @@
 param(
   [ValidateSet('x86','x64')][string]$Architecture='x64',
   [ValidateSet('Debug','Release')][string]$Configuration='Release',
-  [ValidateSet('all','reload','recreate','multiwindow','bridge')][string]$Scenario='all',
+  [ValidateSet('all','reload','recreate','multiwindow','bridge','mixed')][string]$Scenario='all',
   [ValidateRange(1,10000)][int]$Cycles=3,
   [ValidateRange(0,100)][int]$Warmup=0,
+  [ValidateRange(1000,43200000)][int]$DurationMs=60000,
+  [ValidateRange(1,60000)][int]$IdleMs=10000,
   [ValidateRange(0,60000)][int]$SettleMs=500,
   [ValidateRange(1,120000)][int]$StepTimeoutMs=20000,
   [string]$RuntimeBinary,
@@ -12,6 +14,12 @@ param(
   [switch]$SkipSdkBuild
 )
 $ErrorActionPreference='Stop'
+if($Scenario -eq 'mixed' -and ($PSBoundParameters.ContainsKey('Cycles') -or $PSBoundParameters.ContainsKey('Warmup'))){
+  throw 'Mixed acceptance uses DurationMs and IdleMs, not Cycles or Warmup'
+}
+if($Scenario -ne 'mixed' -and ($PSBoundParameters.ContainsKey('DurationMs') -or $PSBoundParameters.ContainsKey('IdleMs'))){
+  throw 'DurationMs and IdleMs are only valid for mixed acceptance'
+}
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $runner=Join-Path $root 'tests/acceptance/runner.cjs'
 New-Item -ItemType Directory -Force -Path (Join-Path $root 'out') | Out-Null
@@ -49,10 +57,15 @@ $failed=$false
 try {
   try{$acquired=$lease.WaitOne(0)}catch [Threading.AbandonedMutexException]{$acquired=$true}
   if(-not $acquired){throw 'Another SOUI desktop validation is running'}
-  $modes=if($Scenario -eq 'all'){@('reload','recreate','multiwindow','bridge')}else{@($Scenario)}
-  foreach($mode in $modes){
-    & node $runner run $suite $mode $Cycles $Warmup $SettleMs $StepTimeoutMs
+  if($Scenario -eq 'mixed'){
+    & node $runner run-mixed $suite $DurationMs $SettleMs $StepTimeoutMs $IdleMs
     if($LASTEXITCODE -ne 0){$failed=$true}
+  } else {
+    $modes=if($Scenario -eq 'all'){@('reload','recreate','multiwindow','bridge')}else{@($Scenario)}
+    foreach($mode in $modes){
+      & node $runner run $suite $mode $Cycles $Warmup $SettleMs $StepTimeoutMs
+      if($LASTEXITCODE -ne 0){$failed=$true}
+    }
   }
 } finally {if($acquired){$lease.ReleaseMutex()};$lease.Dispose()}
 Write-Output "Acceptance evidence: $suite"

@@ -1,0 +1,28 @@
+{
+  "schema": "soui.acceptance-run/v1",
+  "runId": "d1271716-611b-42b7-a06a-26a98faed6bb",
+  "config": {
+    "mode": "bridge",
+    "cycles": 1000,
+    "warmup": 3,
+    "settleMs": 20,
+    "timeoutMs": 20000
+  },
+  "consumerBuildId": "8cac9ce9-d3a3-484e-8ab1-3b7f71301a0b",
+  "sourceSha256": "16d1dccc47ebacff83bf0a94abeed21c75cd7bcd049559802598a5e44656f237",
+  "payloadSha256": "53c4e8fd50b7fbc1c82854863d06e29d80076ae6393478cecf2dad702e589289",
+  "outcome": {
+    "pid": 67676,
+    "exitCode": null,
+    "signal": "SIGTERM",
+    "timedOut": true,
+    "timeoutReason": "step-deadline:mount",
+    "spawnError": null,
+    "processTimeoutMs": 40270200
+  },
+  "passed": false,
+  "releaseReady": false,
+  "finishedAt": "2026-09-24T10:03:58.606Z",
+  "logSha256": "a0d4cd35454bc8f55aa420b8712f81ab6127e2df12edbb1bf2d265f59e45121a",
+  "failure": "Process failed, timed out, or has no valid identity"
+}
