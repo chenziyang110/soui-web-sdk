@@ -1,0 +1,42 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+  "executableSha256": "bcfb1c756afb6150f3070057594cd45792e121d5b98ca7d57be9c6d13a5719fd",
+  "executable": "F:\\work\\sm05-compiler-tail\\out\\tail-x64\\Release\\OwnedTailProcessFixture.exe",
+  "args": [
+    "multi",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-js-validation\\native-f6e3c652-9d38-4937-8aa1-9c369e2d7b2f\\x64-raw-tests\\attempt-bq2jNG",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-js-validation\\native-f6e3c652-9d38-4937-8aa1-9c369e2d7b2f\\x64-raw-tests\\attempt-bq2jNG\\pinned-helper.exe"
+  ],
+  "cwd": "F:\\work\\sm05-compiler-tail\\out\\tail-js-validation\\native-f6e3c652-9d38-4937-8aa1-9c369e2d7b2f\\x64-raw-tests\\attempt-bq2jNG",
+  "timeoutMs": 8000,
+  "drainMs": 100,
+  "tailImagePin": {
+    "image": "F:\\work\\sm05-compiler-tail\\out\\tail-js-validation\\native-f6e3c652-9d38-4937-8aa1-9c369e2d7b2f\\x64-raw-tests\\attempt-bq2jNG\\pinned-helper.exe",
+    "sha256": "bcfb1c756afb6150f3070057594cd45792e121d5b98ca7d57be9c6d13a5719fd",
+    "nonce": "88204b2e7046a84703463cdcb286acf8"
+  },
+  "report": "F:\\work\\sm05-compiler-tail\\out\\tail-js-validation\\native-f6e3c652-9d38-4937-8aa1-9c369e2d7b2f\\x64-raw-tests\\attempt-bq2jNG\\owned.ndjson",
+  "runnerArgs": [
+    "--timeout-ms",
+    "8000",
+    "--drain-ms",
+    "100",
+    "--stop-on-stdin",
+    "--report",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-js-validation\\native-f6e3c652-9d38-4937-8aa1-9c369e2d7b2f\\x64-raw-tests\\attempt-bq2jNG\\owned.ndjson",
+    "--cwd",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-js-validation\\native-f6e3c652-9d38-4937-8aa1-9c369e2d7b2f\\x64-raw-tests\\attempt-bq2jNG",
+    "--pin-tail-image",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-js-validation\\native-f6e3c652-9d38-4937-8aa1-9c369e2d7b2f\\x64-raw-tests\\attempt-bq2jNG\\pinned-helper.exe",
+    "--pin-tail-sha256",
+    "bcfb1c756afb6150f3070057594cd45792e121d5b98ca7d57be9c6d13a5719fd",
+    "--snapshot-nonce",
+    "88204b2e7046a84703463cdcb286acf8",
+    "--",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-x64\\Release\\OwnedTailProcessFixture.exe",
+    "multi",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-js-validation\\native-f6e3c652-9d38-4937-8aa1-9c369e2d7b2f\\x64-raw-tests\\attempt-bq2jNG",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-js-validation\\native-f6e3c652-9d38-4937-8aa1-9c369e2d7b2f\\x64-raw-tests\\attempt-bq2jNG\\pinned-helper.exe"
+  ]
+}

@@ -1,0 +1,55 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..'),identity=require('../tools/internal/delivery-identity.cjs');
+const base='verification/production-validation/0.5-compiler-tail-2026-10-09';
+const native='out/tail-validation',js='out/tail-js-validation',history='out/side-tail-history-98a0df4b-704e-439b-a7f8-de8f3806d619';
+const actual='out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f',old='out/actual-compiler-tail-9c838133-e825-4557-9b05-a09c4bc3c843';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex'),sha=p=>hash(fs.readFileSync(p)),read=p=>JSON.parse(fs.readFileSync(path.join(root,p)));
+const n=read(native+'/evidence-index-final.json'),j=read(js+'/evidence-index-js-final.json'),h=read(history+'/evidence-index-history-final.json');
+const fresh=read(actual+'/report.json'),prior=read(old+'/report.json');
+if(!fresh.completed||!fresh.allCompilationPolicyAccepted||!fresh.sourceInputsUnchanged||identity.source(root).sha256!==fresh.source.sha256||
+ fresh.results.length!==2||prior.completed||prior.results[0].policy.compilerTailAcceptance!==false)throw Error('Actual prerequisites differ');
+const files=[],seen=new Map();
+function inert(name){return /\.(?:cjs|mjs|ps1|cpp|hpp|h|ts|cmake|vcxproj|txt)$/i.test(name)||name==='CMakeLists.txt'?name+'.inert.snapshot':name;}
+function copy(input,relative,expected){
+ const st=fs.lstatSync(input);if(!st.isFile()||st.isSymbolicLink()||st.nlink!==1)throw Error('Not plain evidence '+input);
+ const bytes=fs.readFileSync(input),digest=hash(bytes);if(expected&&(expected.bytes!==bytes.length||expected.sha256!==digest))throw Error('Raw changed '+input);
+ const rel=relative.split('/').map(inert).join('/'),output=path.join(root,base,rel);
+ if(seen.has(rel)){if(seen.get(rel)!==digest)throw Error('Conflicting evidence');return;}
+ fs.mkdirSync(path.dirname(output),{recursive:true});fs.writeFileSync(output,bytes,{flag:'wx'});seen.set(rel,digest);
+ files.push({path:base+'/'+rel,source:input,bytes:bytes.length,sha256:digest});
+}
+function tree(input,relative){for(const e of fs.readdirSync(input,{withFileTypes:true})){
+ if(e.isSymbolicLink())throw Error('Linked evidence');const full=path.join(input,e.name);
+ if(e.isDirectory())tree(full,relative+'/'+e.name);else copy(full,relative+'/'+e.name);}}
+for(const [prefix,entries,dir] of [['native',n.artifacts,native],['js',j.files,js],['history',h.payload,history]]){
+ for(const f of entries){const relative=f.path.startsWith(dir+'/')?f.path.slice(dir.length+1):f.path;
+  const input=f.path.startsWith('out/')?path.join(root,f.path):path.join(root,dir,f.path);copy(input,prefix+'/'+relative,f);}
+}
+for(const [dir,names,prefix] of [[native,['frozen-inputs-final.json','evidence-index-final.json'],'native'],
+ [js,['frozen-js-inputs-final.json','evidence-index-js-final.json'],'js'],
+ [history,['frozen-inputs-history-final.json','evidence-index-history-final.json'],'history']])
+ for(const name of names)copy(path.join(root,dir,name),prefix+'/'+name);
+tree(path.join(root,actual),'actual-fresh');
+for(const name of ['report.json','driver-at-launch.cjs.inert.snapshot'])copy(path.join(root,old,name),'actual-failed/'+name);
+tree(path.join(root,old,'x64'),'actual-failed/x64');
+for(const name of ['build-Release.json','native-Release.log','CMakeCache.txt'])
+ if(fs.existsSync(path.join(root,old,'previous-build-x64',name)))copy(path.join(root,old,'previous-build-x64',name),'actual-failed/build/'+name);
+for(const architecture of ['x64','x86']){
+ const folder=path.join(root,'out',architecture==='x86'?'sdk-x86':'x64');
+ for(const name of ['native-Release.log','CMakeCache.txt'])copy(path.join(folder,name),'builds/'+architecture+'/'+name);
+ copy(path.join(folder,architecture==='x86'?'soui_sdk.vcxproj':'sdk/soui_sdk.vcxproj'),'builds/'+architecture+'/soui_sdk.vcxproj');
+}
+const freeze=read(history+'/frozen-inputs-history-final.json'),currentSources=[];
+const sourceNames=new Set([...read(native+'/frozen-inputs-final.json').sources.filter(f=>!f.path.startsWith('docs/')).map(f=>f.path),...freeze.source.map(f=>f.path)]);
+for(const name of sourceNames){const input=path.join(root,name);copy(input,'current-inputs/'+name);currentSources.push({path:name,sha256:sha(input)});}
+for(const f of read(native+'/frozen-inputs-final.json').executables)copy(f.path,'native-executables/'+path.relative(path.join(root,'out'),f.path).replaceAll('\\','/'),f);
+copy(path.join(root,'out/verify-actual-compiler-tail.cjs'),'drivers/verify-actual-compiler-tail.cjs');copy(__filename,'drivers/archive-compiler-tail.cjs');
+const record={schema:'soui.compiler-tail-archived-evidence/v1',version:fresh.version,actualCompiledSourceSha256:fresh.source.sha256,
+ nativeRawCount:n.artifacts.length,jsRawCount:j.files.length,historyRawCount:h.payload.length,currentSources,
+ actualArchitectures:['x64','x86'],allCompilationCompleted:true,allCompilationPolicyAccepted:true,allGenericSupervisionPassed:false,
+ oldFailurePreserved:true,releaseReady:false,standardEntryIntegrationCompleted:false,
+ limitations:fresh.limitations.concat(['Historical native/JS freeze hashes remain historical; documentation and the reader were later revised in the history fix.',
+ 'Actual SDK/application executables and libraries remain local; build reports bind their exact bytes. Small protocol test executables are archived.']),files};
+fs.writeFileSync(path.join(root,base,'index.json'),JSON.stringify(record,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({path:base+'/index.json',files:files.length,bytes:files.reduce((n,f)=>n+f.bytes,0),source:fresh.source.sha256}));

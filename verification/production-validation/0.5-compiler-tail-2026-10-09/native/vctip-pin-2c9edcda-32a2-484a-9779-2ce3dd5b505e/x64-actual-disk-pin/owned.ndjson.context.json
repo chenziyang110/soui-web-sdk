@@ -1,0 +1,26 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+  "executableSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+  "executable": "F:\\work\\sm05-compiler-tail\\out\\tail-x64\\Release\\OwnedProcessRunner.exe",
+  "args": [
+    "--timeout-ms",
+    "5000",
+    "--report",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-validation\\vctip-pin-2c9edcda-32a2-484a-9779-2ce3dd5b505e\\x64-inner.ndjson",
+    "--cwd",
+    "F:\\work\\sm05-compiler-tail",
+    "--pin-tail-image",
+    "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/vctip.exe",
+    "--pin-tail-sha256",
+    "651345513aae26090c813b1ded859a5680c3823ca716a80e1d337bac0ca797ef",
+    "--snapshot-nonce",
+    "369fcdc00c13c4b8ba39751877713bc7",
+    "--",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-x64\\Release\\OwnedTailProcessFixture.exe",
+    "brief"
+  ],
+  "cwd": "F:\\work\\sm05-compiler-tail",
+  "timeoutMs": 120000,
+  "drainMs": 2500
+}

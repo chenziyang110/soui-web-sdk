@@ -1,0 +1,130 @@
+{
+  "schema": "soui.compiler-tail-history-readonly-regression/v1",
+  "originals": [
+    {
+      "path": "report.json",
+      "bytes": 187864,
+      "sha256": "0230a685fd9d4ae068d9d2caf7b1bfeaff79c0603b2d5abf10a12507769c1545"
+    },
+    {
+      "path": "driver-at-launch.cjs.inert.snapshot",
+      "bytes": 6687,
+      "sha256": "1ace5496348c0a2a66e8e30917b09aa38103bdc6146282fd9f8fa9c618540505"
+    },
+    {
+      "path": "OwnedProcessRunner.exe",
+      "bytes": 150016,
+      "sha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe"
+    },
+    {
+      "path": "x64/stdout.log",
+      "bytes": 8262,
+      "sha256": "defe5fd039d041e041524188379a8d80253628a189781a2c10038f04ce0eaa3c"
+    },
+    {
+      "path": "x64/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "x64/owned.ndjson",
+      "bytes": 1346451,
+      "sha256": "1c68660853eab6cb71ebf506eb0275e54c9c02f3fcbb187a679a9eed5beda592"
+    },
+    {
+      "path": "x64/owned.ndjson.context.json",
+      "bytes": 1970,
+      "sha256": "f85109651d71d9edeebfaa081190c0252e265f2f38e2b1209524c6c226cc95a0"
+    },
+    {
+      "path": "x64/finished.json",
+      "bytes": 1453,
+      "sha256": "a3f4de14135c583e5e1eabe542039865d2b2874fc3026c747b435e97b3412974"
+    },
+    {
+      "path": "x64/reviewed-invocation.json",
+      "bytes": 127806,
+      "sha256": "8680e9ab1be7fe8bde8101121001e0771c912863e0c8b1174f683f72f8c1dbac"
+    },
+    {
+      "path": "x64/build-Release.json",
+      "bytes": 305168,
+      "sha256": "93aeec66be724c453099820989fbd4e6c5cba8aecaf68c388d8971d3f13a53d0"
+    },
+    {
+      "path": "x64/policy.json",
+      "bytes": 221,
+      "sha256": "0d0ff08a22cf5a2354149e9e99e399a7d9e90895136ebaf521c4413d6ae54582"
+    },
+    {
+      "path": "x64/prelaunch-review.json",
+      "bytes": 1169,
+      "sha256": "dc3016d79c8fe109b2f76f7bf791ab25d12b31691cd22a3005ff1f1848102186"
+    }
+  ],
+  "newReaderOnly": {
+    "schema": "soui.owned-tail-verdict/v1",
+    "available": true,
+    "accepted": true,
+    "failure": null,
+    "diskBytesOnly": true,
+    "reportSha256": "1c68660853eab6cb71ebf506eb0275e54c9c02f3fcbb187a679a9eed5beda592",
+    "nonce": "a4b6d4ebd033b43d013a9d1c7f974fe3",
+    "root": {
+      "pid": 11336,
+      "creationFileTime": "134359506792874837"
+    },
+    "pin": {
+      "canonicalPath": "\\\\?\\C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe",
+      "volumePath": "\\\\?\\Volume{152496b5-b675-42a4-88a1-4fda55c7706c}\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe",
+      "volumeSerialNumber": "505631073",
+      "fileId": "3096224746500191",
+      "size": "335520",
+      "sha256": "651345513aae26090c813b1ded859a5680c3823ca716a80e1d337bac0ca797ef"
+    },
+    "member": {
+      "pid": 102364,
+      "creationFileTime": "134359507610679957",
+      "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+    },
+    "fixedTotalProcesses": 647,
+    "preCleanupSnapshotSequence": 6,
+    "historicalDiagnostics": {
+      "imageReadFailures": 67,
+      "unavailableMembers": 53,
+      "noLongerOwnedMembers": 0,
+      "pidReuses": 7
+    },
+    "terminal": {
+      "event": "terminal",
+      "reason": "owned-descendants-remain",
+      "elapsedMs": 210737,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 1,
+      "terminatedOwnedJob": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 647,
+      "limitTerminatedProcesses": 0,
+      "passed": false,
+      "preCleanupSnapshotSequence": 6,
+      "tailEvidenceComplete": true
+    }
+  },
+  "oldSourceSha256": "a52029fd86a9c0a3b983c9a775cebe3ba8601e0db0db60bf4a6daeb0c2fcc774",
+  "currentSourceSha256": "08c40b4c71e6bbd2a2ac7b009b80145cb6c1bd005309ce71cf350b2ab1aca8e3",
+  "currentSourcePolicy": {
+    "schema": "soui.compiler-tail-policy/v1",
+    "compilationCompleted": false,
+    "genericSupervisionPassed": false,
+    "compilerTailAcceptance": false,
+    "failure": "Current source identity differs",
+    "diskBytesOnly": true
+  },
+  "artifactFixtureOnly": true,
+  "oldFailurePreserved": true,
+  "allOriginalBytesUnchanged": true,
+  "noFreshBuild": true,
+  "noGui": true
+}

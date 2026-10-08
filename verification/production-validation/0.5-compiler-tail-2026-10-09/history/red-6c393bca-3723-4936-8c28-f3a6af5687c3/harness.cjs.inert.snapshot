@@ -1,0 +1,61 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'../..');
+const foundationClient='F:/work/sm05/tools/internal/owned-process.cjs';
+const bootstrap='F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const {launchOwned}=require(foundationClient);
+const sha=file=>crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex');
+const tracked=['tools/internal/owned-tail-evidence.cjs','tests/benchmark/owned-tail-evidence-reader.test.cjs',
+  'docs/adr/0031-compiler-tail-snapshot.md','docs/acceptance/0.5-compiler-tail-evidence.md'];
+const mode=process.argv[2];
+const directory=path.join(__dirname,mode+'-'+crypto.randomUUID());fs.mkdirSync(directory);
+fs.copyFileSync(__filename,path.join(directory,'harness.cjs.inert.snapshot'),fs.constants.COPYFILE_EXCL);
+const inputs=tracked.map(file=>({path:file,sha256:sha(path.join(root,file))}));
+fs.writeFileSync(path.join(directory,'inputs.json'),JSON.stringify({inputs,foundationClient,foundationClientSha256:sha(foundationClient),
+  bootstrap,bootstrapSha256:sha(bootstrap),node:process.execPath,nodeSha256:sha(process.execPath),nodeVersion:process.version,
+  noGui:true,noBuild:true},null,2)+'\n',{flag:'wx'});
+async function run(name,args,extraEnv={}){
+  const folder=path.join(directory,name);fs.mkdirSync(folder);
+  const env={...process.env,MSBUILDDISABLENODEREUSE:'1',...extraEnv};
+  const subject=launchOwned(process.execPath,args,{runner:bootstrap,cwd:root,env,
+    report:path.join(folder,'owned.ndjson'),timeoutMs:120000,drainMs:2500,stdout:'pipe',stderr:'pipe'});
+  const stdout=[],stderr=[];subject.child.stdout.on('data',chunk=>stdout.push(chunk));subject.child.stderr.on('data',chunk=>stderr.push(chunk));
+  const result=await subject.finished;
+  fs.writeFileSync(path.join(folder,'stdout.bin'),Buffer.concat(stdout),{flag:'wx'});
+  fs.writeFileSync(path.join(folder,'stderr.bin'),Buffer.concat(stderr),{flag:'wx'});
+  fs.writeFileSync(path.join(folder,'finished.json'),JSON.stringify(result,null,2)+'\n',{flag:'wx'});
+  if(!result.closureConfirmed||sha(result.report)!==result.reportSha256||result.fallbackUsed)
+    throw Error('Outer Job closure/raw binding failed: '+name);
+  console.log(JSON.stringify({name,exitCode:result.exitCode,supervisorExitCode:result.supervisorExitCode,
+    passed:result.passed,closureConfirmed:result.closureConfirmed,report:result.report}));
+  return result;
+}
+async function main(){
+  const results=[];
+  if(mode==='red'||mode==='green'){
+    results.push(await run('reader-policy-client',['--test',...(mode==='green'?['--experimental-test-coverage',
+      '--test-coverage-include=tools/internal/owned-tail-evidence.cjs']:[]),
+      'tests/benchmark/owned-tail-evidence-reader.test.cjs','tests/benchmark/compiler-tail-policy.test.cjs',
+      'tests/benchmark/owned-tail-client-boundaries.test.cjs','tests/benchmark/owned-process-client-boundaries.test.cjs']));
+    if(mode==='red'?(results[0].exitCode!==1||results[0].passed):(results[0].exitCode!==0||!results[0].passed))
+      throw Error('Unexpected '+mode+' result');
+  }else if(mode==='native'){
+    const freeze=JSON.parse(fs.readFileSync(path.join(root,'out/tail-validation/frozen-inputs-final.json')));
+    for(const arch of ['x86','x64']){
+      const release=path.join(root,'out/tail-'+arch,'Release');
+      const runner=path.join(release,'OwnedProcessRunner.exe'),fixture=path.join(release,'OwnedTailProcessFixture.exe');
+      for(const file of [runner,fixture]){
+        const original=freeze.executables.find(item=>path.resolve(item.path)===path.resolve(file));
+        if(!original||sha(file)!==original.sha256)throw Error('Frozen native bytes changed: '+file);
+      }
+      results.push(await run(arch+'-client',['--test','tests/benchmark/owned-tail-client-native.test.cjs'],{
+        SOUI_TAIL_RUNNER:runner,SOUI_TAIL_FIXTURE:fixture,
+        SOUI_TAIL_JS_EVIDENCE_DIRECTORY:path.join(directory,arch+'-raw-tests')}));
+      if(!results.at(-1).passed)throw Error('Native client tests failed: '+arch);
+    }
+  }else throw Error('Expected red/green/native');
+  for(const input of inputs)if(sha(path.join(root,input.path))!==input.sha256)throw Error('Input changed during gate: '+input.path);
+  fs.writeFileSync(path.join(directory,'summary.json'),JSON.stringify({mode,results,inputsUnchanged:true,noGui:true,noBuild:true},null,2)+'\n',{flag:'wx'});
+  console.log('Evidence: '+directory);
+}
+main().catch(error=>{fs.writeFileSync(path.join(directory,'failure.txt'),error.stack+'\n',{flag:'wx'});console.error(error.stack);process.exitCode=1;});

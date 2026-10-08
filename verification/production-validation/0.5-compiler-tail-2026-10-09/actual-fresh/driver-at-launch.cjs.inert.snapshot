@@ -1,0 +1,73 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {launchOwned}=require('../tools/internal/owned-process.cjs');
+const {acceptCompilerTail}=require('../tools/internal/compiler-tail-policy.cjs');
+const identity=require('../tools/internal/delivery-identity.cjs');
+const buildEvidence=require('../tools/internal/build-evidence.cjs');
+const root=path.resolve(__dirname,'..'),hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const sha=p=>hash(fs.readFileSync(p));
+const attempt=path.join(root,'out','actual-compiler-tail-'+crypto.randomUUID());fs.mkdirSync(attempt);
+fs.copyFileSync(__filename,path.join(attempt,'driver-at-launch.cjs.inert.snapshot'),fs.constants.COPYFILE_EXCL);
+const frozen=require('./tail-validation/frozen-inputs-final.json');
+const runnerFile=frozen.executables.find(e=>e.path.includes('tail-x64')&&e.path.endsWith('OwnedProcessRunner.exe'));
+if(!runnerFile||sha(runnerFile.path)!==runnerFile.sha256)throw Error('Frozen runner bytes differ');
+const runner=path.join(attempt,'OwnedProcessRunner.exe');fs.copyFileSync(runnerFile.path,runner,fs.constants.COPYFILE_EXCL);
+const source=identity.source(root),script=path.join(root,'tools/Build.ps1'),scriptSha256=sha(script);
+const executable=path.join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/powershell.exe');
+const env={...process.env,MSBUILDDISABLENODEREUSE:'1',PSModulePath:path.join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/Modules')};
+const pins={
+ x86:{image:'C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe',sha256:'1c1ca5f9c04171c02caca6863e29eca3550333219486d23e65bf01fb02951311'},
+ x64:{image:'C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe',sha256:'651345513aae26090c813b1ded859a5680c3823ca716a80e1d337bac0ca797ef'}
+};
+const results=[];
+const report={schema:'soui.actual-compiler-tail-validation/v1',version:'0.5.0-preview.1',attempt,
+ source,scriptSha256,runnerSha256:sha(runner),results,completed:false,releaseReady:false,
+ limitations:['Current Windows host only; this is compilation-specific disk-object evidence, not GUI lifecycle acceptance.',
+ 'Neither this evidence nor the conditional compiler policy authenticates against a same-user rewrite of the entire bundle.',
+ 'This source identity precedes later action, GUI, scope and measurement integration; it is not the final candidate.']};
+const save=()=>fs.writeFileSync(path.join(attempt,'report.json'),JSON.stringify(report,null,2)+'\n');
+function artifacts(build){return {payloads:build.payloads,optionalLibraries:build.optionalLibraries,
+ ...(build.sdkOnly?{library:build.library}:{}),...(build.optionalPayloads?{optionalPayloads:build.optionalPayloads}:{})};}
+(async()=>{
+ save();console.log('Actual compiler validation: '+attempt);
+ for(const architecture of ['x64','x86']){
+  if(identity.source(root).sha256!==source.sha256||sha(script)!==scriptSha256)throw Error('Source changed before build');
+  const sdkOnly=architecture==='x86',folder=path.join(attempt,architecture);fs.mkdirSync(folder);
+  const args=['-NoProfile','-ExecutionPolicy','Bypass','-File',script,'-Architecture',architecture,'-Configuration','Release',
+   ...(sdkOnly?['-SdkOnly']:[]),'-WithWebView2','-Install'];
+  const tailImagePin={...pins[architecture],nonce:crypto.randomBytes(16).toString('hex')};
+  if(sha(tailImagePin.image)!==tailImagePin.sha256)throw Error('Reviewed MSVC pin changed');
+  const prelaunch={schema:'soui.reviewed-compiler-invocation/v1',executable,args,cwd:root,architecture,
+   configuration:'Release',sdkOnly,version:report.version,scriptSha256,sourceSha256:source.sha256,
+   runnerSha256:sha(runner),executableSha256:sha(executable),tailImagePin};
+  fs.writeFileSync(path.join(folder,'prelaunch-review.json'),JSON.stringify(prelaunch,null,2)+'\n',{flag:'wx'});
+  const stdout=fs.openSync(path.join(folder,'stdout.log'),'wx'),stderr=fs.openSync(path.join(folder,'stderr.log'),'wx');
+  let result;
+  try{result=await launchOwned(executable,args,{runner,cwd:root,env,report:path.join(folder,'owned.ndjson'),
+   timeoutMs:1200000,drainMs:30000,stdout,stderr,tailImagePin}).finished;}
+  finally{fs.closeSync(stdout);fs.closeSync(stderr);}
+  fs.writeFileSync(path.join(folder,'finished.json'),JSON.stringify(result,null,2)+'\n',{flag:'wx'});
+  const phase={architecture,sdkOnly,result,policy:null};results.push(phase);save();
+  const contextBytes=fs.readFileSync(path.join(folder,'owned.ndjson.context.json')),context=JSON.parse(contextBytes);
+  const rawReport=fs.readFileSync(path.join(folder,'owned.ndjson'));
+  const buildFile=path.join(root,'out',sdkOnly?'sdk-'+architecture:architecture,'build-Release.json');
+  const buildReportBytes=fs.readFileSync(buildFile),build=buildEvidence.verifyBuild(root,architecture,'Release',sdkOnly);
+  fs.writeFileSync(path.join(folder,'build-Release.json'),buildReportBytes,{flag:'wx'});
+  const currentArtifacts=artifacts(build);
+  const reviewedInvocation={...prelaunch,contextSha256:hash(contextBytes),reportSha256:hash(rawReport),
+   buildReportSha256:hash(buildReportBytes),buildId:build.buildId,artifacts:currentArtifacts};
+  fs.writeFileSync(path.join(folder,'reviewed-invocation.json'),JSON.stringify(reviewedInvocation,null,2)+'\n',{flag:'wx'});
+  phase.policy=acceptCompilerTail({reviewedInvocation,context,contextBytes,rawReport,buildReportBytes,result,
+   actualScriptSha256:sha(script),currentSourceSha256:identity.source(root).sha256,currentArtifacts});
+  fs.writeFileSync(path.join(folder,'policy.json'),JSON.stringify(phase.policy,null,2)+'\n',{flag:'wx'});save();
+  console.log(JSON.stringify({architecture,rootExitCode:result.exitCode,genericPassed:result.passed,
+   compilerTailAcceptance:phase.policy.compilerTailAcceptance,failure:phase.policy.failure}));
+  if(!phase.policy.compilationCompleted||(!phase.policy.genericSupervisionPassed&&!phase.policy.compilerTailAcceptance))
+   throw Error('Actual compilation policy rejected '+architecture+': '+phase.policy.failure);
+ }
+ report.sourceInputsUnchanged=identity.source(root).sha256===source.sha256;
+ if(!report.sourceInputsUnchanged)throw Error('Source changed during validation');
+ report.completed=true;report.allCompilationCompleted=results.every(r=>r.policy.compilationCompleted);
+ report.allGenericSupervisionPassed=results.every(r=>r.policy.genericSupervisionPassed);
+ report.allCompilationPolicyAccepted=results.every(r=>r.policy.genericSupervisionPassed||r.policy.compilerTailAcceptance);save();
+})().catch(error=>{report.error=error.stack;save();console.error(error.stack);process.exitCode=1;});
