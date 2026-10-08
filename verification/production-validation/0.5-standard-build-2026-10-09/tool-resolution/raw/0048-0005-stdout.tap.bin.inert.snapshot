@@ -1,0 +1,952 @@
+TAP version 13
+# Subtest: explicit synthetic reviewed build keeps completed/generic/compiler exception separate
+ok 1 - explicit synthetic reviewed build keeps completed/generic/compiler exception separate
+  ---
+  duration_ms: 7.3043
+  type: 'test'
+  ...
+# Subtest: missing reviewed invocation
+ok 2 - missing reviewed invocation
+  ---
+  duration_ms: 0.2656
+  type: 'test'
+  ...
+# Subtest: missing freshly observed script hash
+ok 3 - missing freshly observed script hash
+  ---
+  duration_ms: 0.3022
+  type: 'test'
+  ...
+# Subtest: missing freshly observed source hash
+ok 4 - missing freshly observed source hash
+  ---
+  duration_ms: 0.2346
+  type: 'test'
+  ...
+# Subtest: missing freshly observed artifacts
+ok 5 - missing freshly observed artifacts
+  ---
+  duration_ms: 0.3392
+  type: 'test'
+  ...
+# Subtest: changed actual Build script
+ok 6 - changed actual Build script
+  ---
+  duration_ms: 0.2417
+  type: 'test'
+  ...
+# Subtest: changed current source
+ok 7 - changed current source
+  ---
+  duration_ms: 0.2132
+  type: 'test'
+  ...
+# Subtest: changed current payload
+ok 8 - changed current payload
+  ---
+  duration_ms: 0.3881
+  type: 'test'
+  ...
+# Subtest: old completed buildId
+ok 9 - old completed buildId
+  ---
+  duration_ms: 0.2791
+  type: 'test'
+  ...
+# Subtest: old identical-source build timestamp
+ok 10 - old identical-source build timestamp
+  ---
+  duration_ms: 0.6275
+  type: 'test'
+  ...
+# Subtest: unbound raw report bytes
+ok 11 - unbound raw report bytes
+  ---
+  duration_ms: 0.2822
+  type: 'test'
+  ...
+# Subtest: unbound context bytes
+ok 12 - unbound context bytes
+  ---
+  duration_ms: 0.2023
+  type: 'test'
+  ...
+# Subtest: different published root FILETIME
+ok 13 - different published root FILETIME
+  ---
+  duration_ms: 0.3327
+  type: 'test'
+  ...
+# Subtest: client ready/report failure
+ok 14 - client ready/report failure
+  ---
+  duration_ms: 0.2386
+  type: 'test'
+  ...
+# Subtest: client STOP even complete native stream
+ok 15 - client STOP even complete native stream
+  ---
+  duration_ms: 0.642
+  type: 'test'
+  ...
+# Subtest: fallback held supervisor kill
+ok 16 - fallback held supervisor kill
+  ---
+  duration_ms: 0.2777
+  type: 'test'
+  ...
+# Subtest: spawn error
+ok 17 - spawn error
+  ---
+  duration_ms: 0.2553
+  type: 'test'
+  ...
+# Subtest: missing cleanup confirmation
+ok 18 - missing cleanup confirmation
+  ---
+  duration_ms: 0.2063
+  type: 'test'
+  ...
+# Subtest: wrong generic result laundering
+ok 19 - wrong generic result laundering
+  ---
+  duration_ms: 0.3035
+  type: 'test'
+  ...
+# Subtest: supervisor wrong exitcode
+ok 20 - supervisor wrong exitcode
+  ---
+  duration_ms: 0.3024
+  type: 'test'
+  ...
+# Subtest: script invocation via Command is rejected
+ok 21 - script invocation via Command is rejected
+  ---
+  duration_ms: 0.1331
+  type: 'test'
+  ...
+# Subtest: test script never inherits compiler policy
+ok 22 - test script never inherits compiler policy
+  ---
+  duration_ms: 0.1134
+  type: 'test'
+  ...
+# Subtest: unreviewed GUI executable rejected
+ok 23 - unreviewed GUI executable rejected
+  ---
+  duration_ms: 0.1042
+  type: 'test'
+  ...
+# Subtest: configuration argv differs
+ok 24 - configuration argv differs
+  ---
+  duration_ms: 0.1221
+  type: 'test'
+  ...
+# Subtest: unknown invocation option
+ok 25 - unknown invocation option
+  ---
+  duration_ms: 0.1224
+  type: 'test'
+  ...
+# Subtest: Build native pending
+ok 26 - Build native pending
+  ---
+  duration_ms: 0.166
+  type: 'test'
+  ...
+# Subtest: Build artifact manifest invalid
+ok 27 - Build artifact manifest invalid
+  ---
+  duration_ms: 0.2115
+  type: 'test'
+  ...
+# Subtest: Hostx86 same basename is rejected
+ok 28 - Hostx86 same basename is rejected
+  ---
+  duration_ms: 0.3462
+  type: 'test'
+  ...
+# Subtest: target x64 cannot infer x86 target pin
+ok 29 - target x64 cannot infer x86 target pin
+  ---
+  duration_ms: 0.161
+  type: 'test'
+  ...
+# Subtest: old unpinned exact-looking stream rejected
+ok 30 - old unpinned exact-looking stream rejected
+  ---
+  duration_ms: 0.37
+  type: 'test'
+  ...
+# Subtest: STOP terminal cannot qualify
+ok 31 - STOP terminal cannot qualify
+  ---
+  duration_ms: 0.665
+  type: 'test'
+  ...
+# Subtest: timeout terminal cannot qualify
+ok 32 - timeout terminal cannot qualify
+  ---
+  duration_ms: 0.3925
+  type: 'test'
+  ...
+# Subtest: historical unknown enumeration remains rejected
+ok 33 - historical unknown enumeration remains rejected
+  ---
+  duration_ms: 0.6076
+  type: 'test'
+  ...
+# Subtest: valid generic completed build needs no tail exception
+ok 34 - valid generic completed build needs no tail exception
+  ---
+  duration_ms: 0.407
+  type: 'test'
+  ...
+# Subtest: MSVC Hostx64/x64 exact configured object uses its independently measured size/hash
+ok 35 - MSVC Hostx64/x64 exact configured object uses its independently measured size/hash
+  ---
+  duration_ms: 0.6691
+  type: 'test'
+  ...
+# Subtest: opt-in launch copies caller argv/pin and verifies exclusive context baseline at close
+ok 36 - opt-in launch copies caller argv/pin and verifies exclusive context baseline at close
+  ---
+  duration_ms: 5.7621
+  type: 'test'
+  ...
+# Subtest: rewriting actual pin context cannot be washed green by a complete native stream
+ok 37 - rewriting actual pin context cannot be washed green by a complete native stream
+  ---
+  duration_ms: 1.4448
+  type: 'test'
+  ...
+# Subtest: context read failure always resolves finished as rejected evidence
+ok 38 - context read failure always resolves finished as rejected evidence
+  ---
+  duration_ms: 0.7518
+  type: 'test'
+  ...
+# Subtest: ready identity failure stays rejected even after an apparently complete tail stream
+ok 39 - ready identity failure stays rejected even after an apparently complete tail stream
+  ---
+  duration_ms: 1.1766
+  type: 'test'
+  ...
+# Subtest: synthetic exact uint64 disk identity binds a single tail without changing generic failure
+ok 40 - synthetic exact uint64 disk identity binds a single tail without changing generic failure
+  ---
+  duration_ms: 2.7071
+  type: 'test'
+  ...
+# Subtest: legacy unpinned records are readable but cannot be retroactively accepted
+ok 41 - legacy unpinned records are readable but cannot be retroactively accepted
+  ---
+  duration_ms: 0.1589
+  type: 'test'
+  ...
+# Subtest: nonce differs
+ok 42 - nonce differs
+  ---
+  duration_ms: 0.3315
+  type: 'test'
+  ...
+# Subtest: sequence missing
+ok 43 - sequence missing
+  ---
+  duration_ms: 0.3771
+  type: 'test'
+  ...
+# Subtest: duplicate pin
+ok 44 - duplicate pin
+  ---
+  duration_ms: 0.3771
+  type: 'test'
+  ...
+# Subtest: numeric high FILETIME
+ok 45 - numeric high FILETIME
+  ---
+  duration_ms: 0.4276
+  type: 'test'
+  ...
+# Subtest: one tick identity reuse
+ok 46 - one tick identity reuse
+  ---
+  duration_ms: 0.3942
+  type: 'test'
+  ...
+# Subtest: overflow uint64
+ok 47 - overflow uint64
+  ---
+  duration_ms: 0.2609
+  type: 'test'
+  ...
+# Subtest: noncanonical decimal
+ok 48 - noncanonical decimal
+  ---
+  duration_ms: 0.4863
+  type: 'test'
+  ...
+# Subtest: pin after subject creation
+ok 49 - pin after subject creation
+  ---
+  duration_ms: 0.7332
+  type: 'test'
+  ...
+# Subtest: different context SHA
+ok 50 - different context SHA
+  ---
+  duration_ms: 0.1478
+  type: 'test'
+  ...
+# Subtest: different disk id
+ok 51 - different disk id
+  ---
+  duration_ms: 0.2612
+  type: 'test'
+  ...
+# Subtest: different canonical path
+ok 52 - different canonical path
+  ---
+  duration_ms: 0.2751
+  type: 'test'
+  ...
+# Subtest: unknown image
+ok 53 - unknown image
+  ---
+  duration_ms: 0.2222
+  type: 'test'
+  ...
+# Subtest: index hole
+ok 54 - index hole
+  ---
+  duration_ms: 0.2289
+  type: 'test'
+  ...
+# Subtest: second set differs
+ok 55 - second set differs
+  ---
+  duration_ms: 0.3449
+  type: 'test'
+  ...
+# Subtest: duplicate PID
+ok 56 - duplicate PID
+  ---
+  duration_ms: 0.345
+  type: 'test'
+  ...
+# Subtest: accounting changed
+ok 57 - accounting changed
+  ---
+  duration_ms: 0.2817
+  type: 'test'
+  ...
+# Subtest: last accounting total differs
+ok 58 - last accounting total differs
+  ---
+  duration_ms: 0.317
+  type: 'test'
+  ...
+# Subtest: identity lost at last check
+ok 59 - identity lost at last check
+  ---
+  duration_ms: 0.2982
+  type: 'test'
+  ...
+# Subtest: supervisor argv pin differs
+ok 60 - supervisor argv pin differs
+  ---
+  duration_ms: 0.0873
+  type: 'test'
+  ...
+# Subtest: new process during cleanup
+ok 61 - new process during cleanup
+  ---
+  duration_ms: 0.4906
+  type: 'test'
+  ...
+# Subtest: only one empty observation
+ok 62 - only one empty observation
+  ---
+  duration_ms: 0.2081
+  type: 'test'
+  ...
+# Subtest: held handle not signaled
+ok 63 - held handle not signaled
+  ---
+  duration_ms: 0.2218
+  type: 'test'
+  ...
+# Subtest: terminal total changed
+ok 64 - terminal total changed
+  ---
+  duration_ms: 0.1952
+  type: 'test'
+  ...
+# Subtest: terminal reference differs
+ok 65 - terminal reference differs
+  ---
+  duration_ms: 0.1875
+  type: 'test'
+  ...
+# Subtest: native true flag cannot wash sticky error
+ok 66 - native true flag cannot wash sticky error
+  ---
+  duration_ms: 0.2104
+  type: 'test'
+  ...
+# Subtest: native true flag cannot replace listing
+ok 67 - native true flag cannot replace listing
+  ---
+  duration_ms: 0.1746
+  type: 'test'
+  ...
+# Subtest: STOP is not compilation
+ok 68 - STOP is not compilation
+  ---
+  duration_ms: 0.1488
+  type: 'test'
+  ...
+# Subtest: timeout is not compilation
+ok 69 - timeout is not compilation
+  ---
+  duration_ms: 0.135
+  type: 'test'
+  ...
+# Subtest: root fails
+ok 70 - root fails
+  ---
+  duration_ms: 0.1352
+  type: 'test'
+  ...
+# Subtest: generic true tail is contradictory
+ok 71 - generic true tail is contradictory
+  ---
+  duration_ms: 0.2232
+  type: 'test'
+  ...
+# Subtest: unknown schema
+ok 72 - unknown schema
+  ---
+  duration_ms: 0.2645
+  type: 'test'
+  ...
+# Subtest: unknown generic event
+ok 73 - unknown generic event
+  ---
+  duration_ms: 0.3775
+  type: 'test'
+  ...
+# Subtest: enumeration unavailable stays rejected
+ok 74 - enumeration unavailable stays rejected
+  ---
+  duration_ms: 0.292
+  type: 'test'
+  ...
+# Subtest: earlier image read failure stays rejected
+ok 75 - earlier image read failure stays rejected
+  ---
+  duration_ms: 0.2322
+  type: 'test'
+  ...
+# Subtest: truncated/blank/invalid UTF8 lines and mismatching raw SHA refuse acceptance
+ok 76 - truncated/blank/invalid UTF8 lines and mismatching raw SHA refuse acceptance
+  ---
+  duration_ms: 0.2779
+  type: 'test'
+  ...
+# Subtest: incomplete or aliased caller pin cannot launch an opt-in subject
+ok 77 - incomplete or aliased caller pin cannot launch an opt-in subject
+  ---
+  duration_ms: 0.2278
+  type: 'test'
+  ...
+# Subtest: duplicate JSON fields are rejected even if the last value would validate
+ok 78 - duplicate JSON fields are rejected even if the last value would validate
+  ---
+  duration_ms: 0.1775
+  type: 'test'
+  ...
+# Subtest: a successful partial listing must grow to a complete list before any decision
+ok 79 - a successful partial listing must grow to a complete list before any decision
+  ---
+  duration_ms: 0.492
+  type: 'test'
+  ...
+# Subtest: ordinary active-count change can retry once while every error remains sticky
+ok 80 - ordinary active-count change can retry once while every error remains sticky
+  ---
+  duration_ms: 0.5573
+  type: 'test'
+  ...
+# Subtest: pre-root noncandidate image and enumeration diagnostics remain visible without certifying the tail
+ok 81 - pre-root noncandidate image and enumeration diagnostics remain visible without certifying the tail
+  ---
+  duration_ms: 0.6195
+  type: 'test'
+  ...
+# Subtest: pre-root noncandidate PID reuse refers to different historical processes only
+ok 82 - pre-root noncandidate PID reuse refers to different historical processes only
+  ---
+  duration_ms: 0.2246
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects null image without error
+ok 83 - historical diagnostic rejects null image without error
+  ---
+  duration_ms: 0.3592
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects null image with string error
+ok 84 - historical diagnostic rejects null image with string error
+  ---
+  duration_ms: 0.1681
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects null image with zero error
+ok 85 - historical diagnostic rejects null image with zero error
+  ---
+  duration_ms: 0.1636
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects null image with fractional error
+ok 86 - historical diagnostic rejects null image with fractional error
+  ---
+  duration_ms: 0.1388
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects null image with overflow error
+ok 87 - historical diagnostic rejects null image with overflow error
+  ---
+  duration_ms: 0.1397
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects known image carrying error
+ok 88 - historical diagnostic rejects known image carrying error
+  ---
+  duration_ms: 0.1274
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects non-string image
+ok 89 - historical diagnostic rejects non-string image
+  ---
+  duration_ms: 0.129
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects numeric FILETIME
+ok 90 - historical diagnostic rejects numeric FILETIME
+  ---
+  duration_ms: 0.1493
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects overflow FILETIME
+ok 91 - historical diagnostic rejects overflow FILETIME
+  ---
+  duration_ms: 0.1425
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects noncanonical FILETIME
+ok 92 - historical diagnostic rejects noncanonical FILETIME
+  ---
+  duration_ms: 0.1482
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects zero PID
+ok 93 - historical diagnostic rejects zero PID
+  ---
+  duration_ms: 0.1334
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects string PID
+ok 94 - historical diagnostic rejects string PID
+  ---
+  duration_ms: 0.1252
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects fractional PID
+ok 95 - historical diagnostic rejects fractional PID
+  ---
+  duration_ms: 0.2983
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects overflow PID
+ok 96 - historical diagnostic rejects overflow PID
+  ---
+  duration_ms: 0.1464
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects relative image
+ok 97 - historical diagnostic rejects relative image
+  ---
+  duration_ms: 0.1408
+  type: 'test'
+  ...
+# Subtest: historical diagnostic rejects unrecognised field
+ok 98 - historical diagnostic rejects unrecognised field
+  ---
+  duration_ms: 0.1323
+  type: 'test'
+  ...
+# Subtest: invalid historical native diagnostic shape {"event":"member-unavailable","pid":43,"win32Error":"87"}
+ok 99 - invalid historical native diagnostic shape {"event":"member-unavailable","pid":43,"win32Error":"87"}
+  ---
+  duration_ms: 0.1551
+  type: 'test'
+  ...
+# Subtest: invalid historical native diagnostic shape {"event":"member-unavailable","pid":43,"win32Error":0}
+ok 100 - invalid historical native diagnostic shape {"event":"member-unavailable","pid":43,"win32Error":0}
+  ---
+  duration_ms: 0.1255
+  type: 'test'
+  ...
+# Subtest: invalid historical native diagnostic shape {"event":"member-unavailable","pid":43,"win32Error":4294967296}
+ok 101 - invalid historical native diagnostic shape {"event":"member-unavailable","pid":43,"win32Error":4294967296}
+  ---
+  duration_ms: 0.1466
+  type: 'test'
+  ...
+# Subtest: invalid historical native diagnostic shape {"event":"member-unavailable","pid":43,"win32Error":5,"operation":"invented-operation"}
+ok 102 - invalid historical native diagnostic shape {"event":"member-unavailable","pid":43,"win32Error":5,"operation":"invented-operation"}
+  ---
+  duration_ms: 0.1336
+  type: 'test'
+  ...
+# Subtest: invalid historical native diagnostic shape {"event":"member-unavailable","pid":43,"win32Error":5,"claimedExited":true}
+ok 103 - invalid historical native diagnostic shape {"event":"member-unavailable","pid":43,"win32Error":5,"claimedExited":true}
+  ---
+  duration_ms: 0.142
+  type: 'test'
+  ...
+# Subtest: invalid historical native diagnostic shape {"event":"member-no-longer-owned","pid":0}
+ok 104 - invalid historical native diagnostic shape {"event":"member-no-longer-owned","pid":0}
+  ---
+  duration_ms: 0.1483
+  type: 'test'
+  ...
+# Subtest: invalid historical native diagnostic shape {"event":"member-no-longer-owned","pid":43,"win32Error":5}
+ok 105 - invalid historical native diagnostic shape {"event":"member-no-longer-owned","pid":43,"win32Error":5}
+  ---
+  duration_ms: 0.144
+  type: 'test'
+  ...
+# Subtest: historical image cannot hide root/tail PID 41
+ok 106 - historical image cannot hide root/tail PID 41
+  ---
+  duration_ms: 0.2457
+  type: 'test'
+  ...
+# Subtest: historical unavailable cannot hide root/tail PID 41
+ok 107 - historical unavailable cannot hide root/tail PID 41
+  ---
+  duration_ms: 0.3235
+  type: 'test'
+  ...
+# Subtest: historical membership cannot hide root/tail PID 41
+ok 108 - historical membership cannot hide root/tail PID 41
+  ---
+  duration_ms: 0.2595
+  type: 'test'
+  ...
+# Subtest: historical reuse cannot hide root/tail PID 41
+ok 109 - historical reuse cannot hide root/tail PID 41
+  ---
+  duration_ms: 0.3212
+  type: 'test'
+  ...
+# Subtest: historical image cannot hide root/tail PID 42
+ok 110 - historical image cannot hide root/tail PID 42
+  ---
+  duration_ms: 0.2108
+  type: 'test'
+  ...
+# Subtest: historical unavailable cannot hide root/tail PID 42
+ok 111 - historical unavailable cannot hide root/tail PID 42
+  ---
+  duration_ms: 0.1727
+  type: 'test'
+  ...
+# Subtest: historical membership cannot hide root/tail PID 42
+ok 112 - historical membership cannot hide root/tail PID 42
+  ---
+  duration_ms: 0.1874
+  type: 'test'
+  ...
+# Subtest: historical reuse cannot hide root/tail PID 42
+ok 113 - historical reuse cannot hide root/tail PID 42
+  ---
+  duration_ms: 0.1726
+  type: 'test'
+  ...
+# Subtest: post-root diagnostics still reject owned-member
+ok 114 - post-root diagnostics still reject owned-member
+  ---
+  duration_ms: 0.2887
+  type: 'test'
+  ...
+# Subtest: post-root diagnostics still reject member-unavailable
+ok 115 - post-root diagnostics still reject member-unavailable
+  ---
+  duration_ms: 0.2246
+  type: 'test'
+  ...
+# Subtest: post-root diagnostics still reject member-no-longer-owned
+ok 116 - post-root diagnostics still reject member-no-longer-owned
+  ---
+  duration_ms: 0.2189
+  type: 'test'
+  ...
+# Subtest: PID reuse across or after root exit cannot be treated as historical
+ok 117 - PID reuse across or after root exit cannot be treated as historical
+  ---
+  duration_ms: 0.2314
+  type: 'test'
+  ...
+# Subtest: historical PID reuse must advance the full FILETIME
+ok 118 - historical PID reuse must advance the full FILETIME
+  ---
+  duration_ms: 0.4214
+  type: 'test'
+  ...
+# Subtest: generic history cannot appear after snapshot.begin
+ok 119 - generic history cannot appear after snapshot.begin
+  ---
+  duration_ms: 0.2086
+  type: 'test'
+  ...
+# Subtest: generic history cannot appear after cleanup.member
+ok 120 - generic history cannot appear after cleanup.member
+  ---
+  duration_ms: 0.3685
+  type: 'test'
+  ...
+# Subtest: safe historical diagnostics cannot wash a snapshot sticky error or cleanup identity loss
+ok 121 - safe historical diagnostics cannot wash a snapshot sticky error or cleanup identity loss
+  ---
+  duration_ms: 0.451
+  type: 'test'
+  ...
+# Subtest: strict CLI rejects unknown, repeated and partially specified tail permissions
+ok 122 - strict CLI rejects unknown, repeated and partially specified tail permissions
+  ---
+  duration_ms: 2.3874
+  type: 'test'
+  ...
+# Subtest: natural completed build needs current payload and a new build identity
+ok 123 - natural completed build needs current payload and a new build identity
+  ---
+  duration_ms: 2.4824
+  type: 'test'
+  ...
+# Subtest: explicit synthetic exact-tail policy preserves generic false/124
+ok 124 - explicit synthetic exact-tail policy preserves generic false/124
+  ---
+  duration_ms: 2.3206
+  type: 'test'
+  ...
+# Subtest: yesterday build ID reused
+ok 125 - yesterday build ID reused
+  ---
+  duration_ms: 0.4545
+  type: 'test'
+  ...
+# Subtest: old report with identical source and new-looking ID
+ok 126 - old report with identical source and new-looking ID
+  ---
+  duration_ms: 0.2908
+  type: 'test'
+  ...
+# Subtest: payload current bytes differ
+ok 127 - payload current bytes differ
+  ---
+  duration_ms: 0.357
+  type: 'test'
+  ...
+# Subtest: source changed during build
+ok 128 - source changed during build
+  ---
+  duration_ms: 0.2311
+  type: 'test'
+  ...
+# Subtest: raw source changes even with identical normalized identity
+ok 129 - raw source changes even with identical normalized identity
+  ---
+  duration_ms: 0.1956
+  type: 'test'
+  ...
+# Subtest: Build script raw bytes changed
+ok 130 - Build script raw bytes changed
+  ---
+  duration_ms: 0.2113
+  type: 'test'
+  ...
+# Subtest: compiler replaced without source change
+ok 131 - compiler replaced without source change
+  ---
+  duration_ms: 0.2566
+  type: 'test'
+  ...
+# Subtest: reviewed reader bytes changed
+ok 132 - reviewed reader bytes changed
+  ---
+  duration_ms: 0.1915
+  type: 'test'
+  ...
+# Subtest: CMake actual compiler was not observed
+ok 133 - CMake actual compiler was not observed
+  ---
+  duration_ms: 0.1841
+  type: 'test'
+  ...
+# Subtest: caller ready differs by one exact FILETIME tick
+ok 134 - caller ready differs by one exact FILETIME tick
+  ---
+  duration_ms: 0.2419
+  type: 'test'
+  ...
+# Subtest: valid context JSON points at another script
+ok 135 - valid context JSON points at another script
+  ---
+  duration_ms: 0.1372
+  type: 'test'
+  ...
+# Subtest: natural Test.ps1 cannot acquire Build policy by freezing its own context
+ok 136 - natural Test.ps1 cannot acquire Build policy by freezing its own context
+  ---
+  duration_ms: 0.1461
+  type: 'test'
+  ...
+# Subtest: missing tools cannot be called unchanged
+ok 137 - missing tools cannot be called unchanged
+  ---
+  duration_ms: 0.3939
+  type: 'test'
+  ...
+# Subtest: missing raw script inputs cannot be called unchanged
+ok 138 - missing raw script inputs cannot be called unchanged
+  ---
+  duration_ms: 0.1513
+  type: 'test'
+  ...
+# Subtest: valid client object cannot replace native terminal
+ok 139 - valid client object cannot replace native terminal
+  ---
+  duration_ms: 0.1651
+  type: 'test'
+  ...
+# Subtest: native report truncated
+ok 140 - native report truncated
+  ---
+  duration_ms: 0.1196
+  type: 'test'
+  ...
+# Subtest: duplicate native start
+ok 141 - duplicate native start
+  ---
+  duration_ms: 0.1434
+  type: 'test'
+  ...
+# Subtest: duplicate native root-exit
+ok 142 - duplicate native root-exit
+  ---
+  duration_ms: 0.1359
+  type: 'test'
+  ...
+# Subtest: unknown native event cannot be an invisible extra
+ok 143 - unknown native event cannot be an invisible extra
+  ---
+  duration_ms: 0.1309
+  type: 'test'
+  ...
+# Subtest: floating member creation time cannot be rounded back into an identity
+ok 144 - floating member creation time cannot be rounded back into an identity
+  ---
+  duration_ms: 0.1237
+  type: 'test'
+  ...
+# Subtest: duplicate JSON field after valid-looking last value
+ok 145 - duplicate JSON field after valid-looking last value
+  ---
+  duration_ms: 0.1333
+  type: 'test'
+  ...
+# Subtest: unbound supervisor exit
+ok 146 - unbound supervisor exit
+  ---
+  duration_ms: 0.1611
+  type: 'test'
+  ...
+# Subtest: STOP cannot qualify
+ok 147 - STOP cannot qualify
+  ---
+  duration_ms: 0.1241
+  type: 'test'
+  ...
+# Subtest: fallback cannot qualify
+ok 148 - fallback cannot qualify
+  ---
+  duration_ms: 0.134
+  type: 'test'
+  ...
+# Subtest: post-launch source missing
+ok 149 - post-launch source missing
+  ---
+  duration_ms: 0.1288
+  type: 'test'
+  ...
+# Subtest: default tail, explicit timeout and root failure are never promoted to accepted
+ok 150 - default tail, explicit timeout and root failure are never promoted to accepted
+  ---
+  duration_ms: 2.5945
+  type: 'test'
+  ...
+# Subtest: workspace lease excludes both architectures and refuses foreign release
+ok 151 - workspace lease excludes both architectures and refuses foreign release
+  ---
+  duration_ms: 4.3874
+  type: 'test'
+  ...
+# Subtest: legacy architecture lease is retained and prevents a workspace build
+ok 152 - legacy architecture lease is retained and prevents a workspace build
+  ---
+  duration_ms: 1.6157
+  type: 'test'
+  ...
+# Subtest: configured Node records requested and resolved tool bytes
+ok 153 - configured Node records requested and resolved tool bytes
+  ---
+  duration_ms: 189.6065
+  type: 'test'
+  ...
+# Subtest: real private junction resolves tools but source and evidence rules still refuse links
+ok 154 - real private junction resolves tools but source and evidence rules still refuse links
+  ---
+  duration_ms: 3.817
+  type: 'test'
+  ...
+# Subtest: junction retarget to identical bytes cannot preserve frozen tool identity
+ok 155 - junction retarget to identical bytes cannot preserve frozen tool identity
+  ---
+  duration_ms: 3.2975
+  type: 'test'
+  ...
+# Subtest: canonical tool replacement and missing junction target fail closed
+ok 156 - canonical tool replacement and missing junction target fail closed
+  ---
+  duration_ms: 2.5962
+  type: 'test'
+  ...
+# Subtest: real temporary SDK library drift fails the existing build evidence verification
+ok 157 - real temporary SDK library drift fails the existing build evidence verification
+  ---
+  duration_ms: 13.0873
+  type: 'test'
+  ...
+1..157
+# tests 157
+# suites 0
+# pass 157
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 447.9073

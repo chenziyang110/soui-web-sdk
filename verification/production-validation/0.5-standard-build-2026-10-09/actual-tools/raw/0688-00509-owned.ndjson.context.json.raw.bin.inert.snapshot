@@ -1,0 +1,15 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "06abbb1ebafdad1839bdeb95447b2fed14d0e771f2853b928fd63a48f846e79b",
+  "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+  "executable": "C:\\nvm4w\\nodejs\\node.exe",
+  "args": [
+    "--test",
+    "--test-reporter=tap",
+    "tests/benchmark/owned-process-tail-snapshot.test.cjs",
+    "tests/benchmark/owned-tail-client-native.test.cjs"
+  ],
+  "cwd": "F:\\work\\sm05-build-caller",
+  "timeoutMs": 120000,
+  "drainMs": 2500
+}

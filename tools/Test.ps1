@@ -52,6 +52,10 @@ if(-not $NativeOnly){
   if($LASTEXITCODE -ne 0){throw 'Measurement protocol reader regressions failed'}
   & node (Join-Path $root 'tools/internal/measurement-validation.cjs') native $Architecture
   if($LASTEXITCODE -ne 0){throw 'Native measurement identity or owned lifecycle regressions failed'}
+  & node (Join-Path $root 'tools/internal/measurement-validation.cjs') tail-protocol $Architecture
+  if($LASTEXITCODE -ne 0){throw 'Compiler-tail reader, client, policy, or standard caller regressions failed'}
+  & node (Join-Path $root 'tools/internal/measurement-validation.cjs') tail-native $Architecture
+  if($LASTEXITCODE -ne 0){throw 'Native compiler-tail evidence linkage regressions failed'}
   & node --test (Join-Path $root 'tests/web/web-features.test.mjs')
   if($LASTEXITCODE -ne 0){throw 'Web runtime feature tests failed'}
   & node --test (Join-Path $root 'tests/web/session-renewal.test.mjs') (Join-Path $root 'tests/web/agent-session-renewal.test.mjs') (Join-Path $root 'tests/web/webview2-preload.test.mjs')

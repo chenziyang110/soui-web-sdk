@@ -6,12 +6,19 @@ const {launchOwned}=require('./owned-process.cjs');
 const root=path.resolve(__dirname,'../..');
 const protocolTests=['page-pair','run-traces','owned-trace-subject','pair-preflight','series-summary','measurement-preparation-source'];
 const nativeTests=['process-tree-sampler','run-traces'];
-const names=['OwnedProcessRunner','OwnedProcessAssignmentFixture','ProcessTreeSampler','InputTrace','NativeTraceIdentity'];
+const tailProtocolTests=['owned-tail-evidence-reader','owned-tail-client-boundaries','compiler-tail-policy'];
+const tailNativeTests=['owned-process-tail-snapshot','owned-tail-client-native'];
+const tailRuntimeInputs=['tools/internal/owned-tail-evidence.cjs','tools/internal/compiler-tail-policy.cjs',
+ 'tools/internal/standard-build.cjs','tools/internal/build-evidence.cjs','tools/internal/delivery-identity.cjs',
+ 'tests/benchmark/tail-evidence-fixtures.cjs'];
+const names=['OwnedProcessRunner','OwnedProcessAssignmentFixture','ProcessTreeSampler','InputTrace','NativeTraceIdentity',
+ 'OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture'];
 const sourceNames=['benchmarks/protocol/CMakeLists.txt','benchmarks/protocol/owned-process-runner.cpp',
  'benchmarks/protocol/owned-tail-evidence.cpp','benchmarks/protocol/owned-tail-evidence.h',
  'tests/benchmark/owned-process-assignment-fixture.cpp','benchmarks/protocol/process-tree-sampler.cpp','benchmarks/protocol/input-trace.cpp',
  'benchmarks/protocol/trace-identity.h','tests/benchmark/native-trace-identity.cpp','tools/internal/CMake-Configure.ps1',
- 'cmake/SouiWindowsSdk.cmake','tools/internal/Build-ValidationTools.ps1','tools/internal/measurement-validation.cjs'];
+ 'cmake/SouiWindowsSdk.cmake','tools/internal/Build-ValidationTools.ps1','tools/internal/measurement-validation.cjs',
+ 'tests/benchmark/owned-tail-process-fixture.cpp','tests/benchmark/owned-tail-mutation-fixture.cpp','tests/benchmark/owned-tail-api-fixture.cpp'];
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const encoded=value=>JSON.stringify(value,null,2)+'\n';
 function need(condition,message){if(!condition)throw new Error(message);}
@@ -65,7 +72,7 @@ function parseTap(text){
  return Object.fromEntries(['tests','pass','fail','cancelled','skipped','todo'].map(name=>[name,read(name)]));
 }
 async function runGroup(kind,arch='x64'){
- architecture(arch);need(['protocol','native'].includes(kind),'Unknown measurement validation group');
+ architecture(arch);need(['protocol','native','tail-protocol','tail-native'].includes(kind),'Unknown validation group');
  const setup=prepared(arch),env={...process.env};
  for(const key of ['PROCESS_TREE_SAMPLER_EXE','BENCHMARK_IDENTITY_FIXTURE_EXE','BENCHMARK_INPUT_TRACE_EXE','BENCHMARK_OWNED_RUNNER_EXE','BENCHMARK_OWNED_CLIENT'])delete env[key];
  env.BENCHMARK_OWNED_RUNNER_EXE=setup.tools.OwnedProcessRunner;
@@ -75,12 +82,22 @@ async function runGroup(kind,arch='x64'){
   env.BENCHMARK_IDENTITY_FIXTURE_EXE=setup.tools.NativeTraceIdentity;
  }
  const folder=path.join(root,'out','measurement-validation',kind+'-'+arch+'-'+crypto.randomUUID());fs.mkdirSync(folder,{recursive:true});
- const tests=(kind==='protocol'?protocolTests:nativeTests).map(name=>'tests/benchmark/'+name+'.test.cjs');
+ for(const key of Object.keys(env))if(key.startsWith('SOUI_TAIL_')||key==='SOUI_TEST_TAIL_API_MODE'||key==='SOUI_TEST_TAIL_MUTATION_EXE')delete env[key];
+ if(kind==='tail-native'){
+  env.SOUI_TAIL_RUNNER=setup.tools.OwnedProcessRunner;env.SOUI_TAIL_FIXTURE=setup.tools.OwnedTailProcessFixture;
+  env.SOUI_TAIL_MUTATION_RUNNER=setup.tools.OwnedTailMutationFixture;env.SOUI_TAIL_API_RUNNER=setup.tools.OwnedTailApiFixture;
+  env.SOUI_TAIL_BOOTSTRAP_RUNNER=setup.tools.OwnedProcessRunner;env.SOUI_TAIL_BOOTSTRAP_CLIENT=path.join(root,'tools/internal/owned-process.cjs');
+  env.SOUI_TAIL_EVIDENCE_DIRECTORY=path.join(folder,'native-fixtures');env.SOUI_TAIL_JS_EVIDENCE_DIRECTORY=path.join(folder,'client-fixtures');
+ }
+ const groups={protocol:protocolTests,native:nativeTests,'tail-protocol':tailProtocolTests,'tail-native':tailNativeTests};
+ const tests=groups[kind].map(name=>'tests/benchmark/'+name+'.test.cjs');
+ if(kind==='tail-protocol')tests.push('tests/sdk/standard-build.test.cjs');
  const inputs={schema:'soui.measurement-standard-group-inputs/v1',kind,architecture:arch,
   source:fingerprint(),preparation:setup.report,tests:tests.map(name=>({path:name,sha256:hash(fs.readFileSync(file(name)))})),
   node:{path:process.execPath,version:process.version,sha256:hash(fs.readFileSync(process.execPath))},
   clientSha256:hash(fs.readFileSync(file('tools/internal/owned-process.cjs'))),
-  env:Object.fromEntries(Object.entries(env).filter(([key])=>key.startsWith('BENCHMARK_')||key==='PROCESS_TREE_SAMPLER_EXE')),
+  runtimeInputs:kind.startsWith('tail-')?tailRuntimeInputs.map(name=>({path:name,sha256:hash(fs.readFileSync(file(name)))})):[],
+  env:Object.fromEntries(Object.entries(env).filter(([key])=>key.startsWith('BENCHMARK_')||key.startsWith('SOUI_TAIL_')||key==='PROCESS_TREE_SAMPLER_EXE')),
   noGui:true,correctInputTraceExecuted:false};
  fs.writeFileSync(path.join(folder,'inputs.json'),encoded(inputs));
  const owned=launchOwned(process.execPath,['--test','--test-reporter=tap',...tests],{runner:setup.tools.OwnedProcessRunner,cwd:root,
@@ -97,11 +114,12 @@ async function runGroup(kind,arch='x64'){
   'Measurement group omitted or failed expected cases: '+folder);
  need(hash(fs.readFileSync(result.report))===result.reportSha256&&setup.report.source.sha256===fingerprint().sha256,'Measurement source or raw evidence changed');
  need(inputs.tests.every(item=>hash(fs.readFileSync(file(item.path)))===item.sha256)&&
+  inputs.runtimeInputs.every(item=>hash(fs.readFileSync(file(item.path)))===item.sha256)&&
   hash(fs.readFileSync(file('tools/internal/owned-process.cjs')))===inputs.clientSha256&&
   hash(fs.readFileSync(process.execPath))===inputs.node.sha256,'Measurement tests, client, or Node changed during execution');
  prepared(arch);
  const summary={schema:'soui.measurement-standard-group/v1',kind,architecture:arch,passed:true,counts,
-  nativeCasesExecuted:kind==='native',nativeSerializerSkipExpected:kind==='protocol',noGui:true,correctInputTraceExecuted:false,
+  nativeCasesExecuted:kind==='native'||kind==='tail-native',nativeSerializerSkipExpected:kind==='protocol',noGui:true,correctInputTraceExecuted:false,
   report:path.relative(root,result.report).replace(/\\/g,'/'),reportSha256:result.reportSha256,
   genericSupervisionPassed:result.passed,closureConfirmed:result.closureConfirmed,sourceSha256:setup.report.source.sha256};
  fs.writeFileSync(path.join(folder,'summary.json'),encoded(summary));return summary;
@@ -112,7 +130,7 @@ if(require.main===module)(async()=>{
  if(command==='source'&&expected===undefined)report=fingerprint();
  else if(command==='invalidate'&&expected===undefined){invalidate(arch);report={invalidated:true,architecture:arch};}
  else if(command==='seal'&&expected!==undefined)report=seal(arch,expected);
- else if(['protocol','native'].includes(command)&&expected===undefined)report=await runGroup(command,arch);
- else throw Error('Usage: measurement-validation.cjs source|invalidate|seal|protocol|native [x86|x64] [seal source SHA256]');
+ else if(['protocol','native','tail-protocol','tail-native'].includes(command)&&expected===undefined)report=await runGroup(command,arch);
+ else throw Error('Usage: measurement-validation.cjs source|invalidate|seal|protocol|native|tail-protocol|tail-native [x86|x64] [seal source SHA256]');
  console.log(encoded(report));
 })().catch(error=>{console.error(error.message);process.exitCode=1});

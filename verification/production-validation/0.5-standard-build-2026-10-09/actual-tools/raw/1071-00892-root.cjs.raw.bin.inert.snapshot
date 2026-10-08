@@ -1,0 +1,6 @@
+const {spawn}=require('node:child_process'); const fs=require('node:fs'); const started=Date.now();
+    spawn(process.execPath,['-e','setTimeout(()=>process.exit(0),2000)'],
+      {windowsHide:true,stdio:'ignore'});
+    const clock=setInterval(()=>{if(fs.existsSync("F:\\work\\sm05-build-caller\\out\\sampler-owned-timeout-ddfbb322-81e1-44dc-a2d2-f20523c14228\\finish") && Date.now()-started>=1500) {
+      clearInterval(clock); process.exit(0);}},20);
+    setTimeout(()=>process.exit(9),20000).unref();

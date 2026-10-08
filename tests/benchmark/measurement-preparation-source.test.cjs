@@ -11,8 +11,11 @@ const repository = path.resolve(__dirname, '../..');
 const helperPath = path.join(repository, 'tools/internal/measurement-validation.cjs');
 const helperSource = fs.readFileSync(helperPath, 'utf8');
 const sdkCheck = 'cmake/SouiWindowsSdk.cmake';
-const tailInputs = ['benchmarks/protocol/owned-tail-evidence.cpp', 'benchmarks/protocol/owned-tail-evidence.h'];
-const toolNames = ['OwnedProcessRunner', 'OwnedProcessAssignmentFixture', 'ProcessTreeSampler', 'InputTrace', 'NativeTraceIdentity'];
+const tailInputs = ['benchmarks/protocol/owned-tail-evidence.cpp', 'benchmarks/protocol/owned-tail-evidence.h',
+  'tests/benchmark/owned-tail-process-fixture.cpp', 'tests/benchmark/owned-tail-mutation-fixture.cpp',
+  'tests/benchmark/owned-tail-api-fixture.cpp'];
+const toolNames = ['OwnedProcessRunner', 'OwnedProcessAssignmentFixture', 'ProcessTreeSampler', 'InputTrace', 'NativeTraceIdentity',
+  'OwnedTailProcessFixture', 'OwnedTailMutationFixture', 'OwnedTailApiFixture'];
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 
 function load(workspace, launches) {
@@ -124,7 +127,8 @@ for (const architecture of ['x86', 'x64']) {
         const f = fixture(t, architecture), filename = path.join(f.workspace, input);
         if (mode === 'changed') fs.appendFileSync(filename, '\n// changed Tail compilation input fixture\n');
         else fs.unlinkSync(filename);
-        await assert.rejects(f.validation.runGroup('native', architecture), /missing or stale|ENOENT/);
+        for (const group of ['native','tail-native','tail-protocol'])
+          await assert.rejects(f.validation.runGroup(group, architecture), /missing or stale|ENOENT/);
         assert.equal(f.launches.count, 0, `${mode} Tail input must fail before any owned subject is started`);
       }
     });

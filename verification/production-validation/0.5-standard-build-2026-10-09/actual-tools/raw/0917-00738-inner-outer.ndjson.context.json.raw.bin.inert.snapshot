@@ -1,0 +1,30 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "ca8b4c24d0aa32cc897bbce6ad767d2c6c3a22f09102cdbd6fe98a3db8998896",
+  "executableSha256": "ca8b4c24d0aa32cc897bbce6ad767d2c6c3a22f09102cdbd6fe98a3db8998896",
+  "executable": "F:\\work\\sm05-build-caller\\out\\benchmark-protocol-x86\\Release\\OwnedProcessRunner.exe",
+  "args": [
+    "--timeout-ms",
+    "8000",
+    "--drain-ms",
+    "100",
+    "--report",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x86-2e9bdd64-1f48-4c12-adfc-7f074eda3145\\native-fixtures\\attempt-zxpWBi\\inner.ndjson",
+    "--cwd",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x86-2e9bdd64-1f48-4c12-adfc-7f074eda3145\\native-fixtures\\attempt-zxpWBi",
+    "--pin-tail-image",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x86-2e9bdd64-1f48-4c12-adfc-7f074eda3145\\native-fixtures\\attempt-zxpWBi\\pinned-helper.exe",
+    "--pin-tail-sha256",
+    "666c2b2e94a172ac88b392efb1cf0c1f81c746cbb01fc364278fc7cc535c4ecb",
+    "--snapshot-nonce",
+    "5b9383ff8b45288b9c16cacc081c40e1",
+    "--",
+    "F:\\work\\sm05-build-caller\\out\\benchmark-protocol-x86\\Release\\OwnedTailProcessFixture.exe",
+    "unknown",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x86-2e9bdd64-1f48-4c12-adfc-7f074eda3145\\native-fixtures\\attempt-zxpWBi",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x86-2e9bdd64-1f48-4c12-adfc-7f074eda3145\\native-fixtures\\attempt-zxpWBi\\unknown.exe"
+  ],
+  "cwd": "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x86-2e9bdd64-1f48-4c12-adfc-7f074eda3145\\native-fixtures\\attempt-zxpWBi",
+  "timeoutMs": 15000,
+  "drainMs": 2500
+}

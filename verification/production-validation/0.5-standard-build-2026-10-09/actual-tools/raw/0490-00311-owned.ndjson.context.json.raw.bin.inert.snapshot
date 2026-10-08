@@ -1,0 +1,42 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "06abbb1ebafdad1839bdeb95447b2fed14d0e771f2853b928fd63a48f846e79b",
+  "executableSha256": "db1c36bc2528a047fa2dab5e6e36fe26ef62888b084cb80a35e28ede8d65e0ab",
+  "executable": "F:\\work\\sm05-build-caller\\out\\benchmark-protocol\\Release\\OwnedTailProcessFixture.exe",
+  "args": [
+    "multi",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-ggsuRN",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-ggsuRN\\pinned-helper.exe"
+  ],
+  "cwd": "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-ggsuRN",
+  "timeoutMs": 8000,
+  "drainMs": 100,
+  "tailImagePin": {
+    "image": "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-ggsuRN\\pinned-helper.exe",
+    "sha256": "db1c36bc2528a047fa2dab5e6e36fe26ef62888b084cb80a35e28ede8d65e0ab",
+    "nonce": "18bd1c8802bc4ba0f836d32508b7db2c"
+  },
+  "report": "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-ggsuRN\\owned.ndjson",
+  "runnerArgs": [
+    "--timeout-ms",
+    "8000",
+    "--drain-ms",
+    "100",
+    "--stop-on-stdin",
+    "--report",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-ggsuRN\\owned.ndjson",
+    "--cwd",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-ggsuRN",
+    "--pin-tail-image",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-ggsuRN\\pinned-helper.exe",
+    "--pin-tail-sha256",
+    "db1c36bc2528a047fa2dab5e6e36fe26ef62888b084cb80a35e28ede8d65e0ab",
+    "--snapshot-nonce",
+    "18bd1c8802bc4ba0f836d32508b7db2c",
+    "--",
+    "F:\\work\\sm05-build-caller\\out\\benchmark-protocol\\Release\\OwnedTailProcessFixture.exe",
+    "multi",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-ggsuRN",
+    "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-ggsuRN\\pinned-helper.exe"
+  ]
+}

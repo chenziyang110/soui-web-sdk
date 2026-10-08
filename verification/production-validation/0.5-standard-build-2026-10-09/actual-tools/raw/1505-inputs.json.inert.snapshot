@@ -1,0 +1,35 @@
+{
+  "phase": "tail-native",
+  "architecture": "x64",
+  "cwd": "F:/work/sm05-build-caller",
+  "executable": "C:\\nvm4w\\nodejs\\node.exe",
+  "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+  "args": [
+    "tools/internal/measurement-validation.cjs",
+    "tail-native",
+    "x64"
+  ],
+  "provider": {
+    "schema": "soui.audited-bootstrap-provider/v1",
+    "runner": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "client": "F:\\work\\sm05-build-caller\\tools\\internal\\owned-process.cjs",
+    "clientSha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7",
+    "currentFrozenMainClient": true,
+    "externalRunnerReviewedFoundation": true,
+    "noCompilerTailPolicy": true,
+    "previousGuardDirectory": "F:\\work\\sm05-build-caller\\out\\standard-build-caller-actual-6ef0a933-e5f7-42c9-87f8-5c7ca2a7049d",
+    "sourceContextRecorded": [
+      "provider-runnerSource.bin",
+      "provider-providerCMake.bin",
+      "provider-providerCache.bin",
+      "provider-providerCompiler.bin"
+    ]
+  },
+  "frozenInputSha256": "b6aed235f40388c1d95a3f7011d6d3d31dcd5fd8d6fe00b5778b5187dd6f5df4",
+  "MSBUILDDISABLENODEREUSE": "1",
+  "PSModulePath": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\Modules",
+  "noGui": true,
+  "compilerTailPolicyRequested": false,
+  "releaseReady": false
+}

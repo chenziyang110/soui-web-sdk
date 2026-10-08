@@ -1,0 +1,23 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "06abbb1ebafdad1839bdeb95447b2fed14d0e771f2853b928fd63a48f846e79b",
+  "executableSha256": "8bb6fa8c283b4d92120b1ef249a9b311b0f804d4cabbe9981159976c8be76a5e",
+  "executable": "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "F:\\work\\sm05-build-caller\\out\\standard-build\\attempt-b7bfced7-3196-4996-bd48-f9cd5190f458\\tool-probe.ps1",
+    "-Root",
+    "F:\\work\\sm05-build-caller",
+    "-Architecture",
+    "x64",
+    "-Output",
+    "F:\\work\\sm05-build-caller\\out\\standard-build\\attempt-b7bfced7-3196-4996-bd48-f9cd5190f458\\tool-paths.json"
+  ],
+  "cwd": "F:\\work\\sm05-build-caller",
+  "timeoutMs": 30000,
+  "drainMs": 2000
+}

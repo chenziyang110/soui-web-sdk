@@ -1,0 +1,84 @@
+{
+  "pid": 64288,
+  "creationFileTime": "134359598304421311",
+  "exitCode": 0,
+  "supervisorExitCode": 124,
+  "signal": null,
+  "spawnError": null,
+  "reportError": null,
+  "stopRequested": false,
+  "fallbackUsed": false,
+  "closureConfirmed": true,
+  "passed": false,
+  "terminal": {
+    "event": "terminal",
+    "reason": "owned-descendants-remain",
+    "elapsedMs": 256,
+    "rootExited": true,
+    "rootExitCode": 0,
+    "activeBeforeCleanup": 1,
+    "terminatedOwnedJob": true,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 2,
+    "limitTerminatedProcesses": 0,
+    "passed": false,
+    "preCleanupSnapshotSequence": 6,
+    "tailEvidenceComplete": true
+  },
+  "report": "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV\\owned.ndjson",
+  "reportSha256": "1b89de68bf4569766e4c131363308d299ee3bddab1b880b82a76ff806b6379d4",
+  "runnerSha256": "06abbb1ebafdad1839bdeb95447b2fed14d0e771f2853b928fd63a48f846e79b",
+  "executableSha256": "db1c36bc2528a047fa2dab5e6e36fe26ef62888b084cb80a35e28ede8d65e0ab",
+  "contextSha256": "b13156eaa2465ebbc34ef2cc6c956ffb600c35f79aa7b30cbdb8e9f56383a3a6",
+  "tailEvidence": {
+    "schema": "soui.owned-tail-verdict/v1",
+    "available": true,
+    "accepted": true,
+    "failure": null,
+    "diskBytesOnly": true,
+    "reportSha256": "1b89de68bf4569766e4c131363308d299ee3bddab1b880b82a76ff806b6379d4",
+    "nonce": "f25306b4c850ed6471c1aaf59d21d2e5",
+    "root": {
+      "pid": 64288,
+      "creationFileTime": "134359598304421311"
+    },
+    "pin": {
+      "canonicalPath": "\\\\?\\F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV\\pinned-helper.exe",
+      "volumePath": "\\\\?\\Volume{a6219e00-961b-49db-aa72-39c9faf17062}\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV\\pinned-helper.exe",
+      "volumeSerialNumber": "34490321",
+      "fileId": "3096224744506216",
+      "size": "31232",
+      "sha256": "db1c36bc2528a047fa2dab5e6e36fe26ef62888b084cb80a35e28ede8d65e0ab"
+    },
+    "member": {
+      "pid": 89296,
+      "creationFileTime": "134359598305445537",
+      "image": "F:\\work\\sm05-build-caller\\out\\measurement-validation\\tail-native-x64-cb393bc1-418f-4e7d-a9f6-be1acb6fbb32\\client-fixtures\\attempt-N7gxIV\\pinned-helper.exe"
+    },
+    "fixedTotalProcesses": 2,
+    "preCleanupSnapshotSequence": 6,
+    "historicalDiagnostics": {
+      "imageReadFailures": 0,
+      "unavailableMembers": 0,
+      "noLongerOwnedMembers": 0,
+      "pidReuses": 0
+    },
+    "terminal": {
+      "event": "terminal",
+      "reason": "owned-descendants-remain",
+      "elapsedMs": 256,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 1,
+      "terminatedOwnedJob": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 2,
+      "limitTerminatedProcesses": 0,
+      "passed": false,
+      "preCleanupSnapshotSequence": 6,
+      "tailEvidenceComplete": true
+    }
+  }
+}

@@ -1,0 +1,83 @@
+✔ strict CLI rejects unknown, repeated and partially specified tail permissions (2.1826ms)
+✔ natural completed build needs current payload and a new build identity (2.4662ms)
+✔ explicit synthetic exact-tail policy preserves generic false/124 (2.12ms)
+✔ yesterday build ID reused (0.4507ms)
+✔ old report with identical source and new-looking ID (0.5259ms)
+✔ payload current bytes differ (0.2784ms)
+✔ source changed during build (0.1501ms)
+✔ raw source changes even with identical normalized identity (0.1749ms)
+✔ Build script raw bytes changed (0.1929ms)
+✔ compiler replaced without source change (0.2403ms)
+✔ reviewed reader bytes changed (0.4212ms)
+✔ CMake actual compiler was not observed (0.2018ms)
+✔ caller ready differs by one exact FILETIME tick (0.1714ms)
+✔ valid context JSON points at another script (0.1358ms)
+✔ natural Test.ps1 cannot acquire Build policy by freezing its own context (0.1682ms)
+✔ missing tools cannot be called unchanged (0.1344ms)
+✔ missing raw script inputs cannot be called unchanged (0.3909ms)
+✔ valid client object cannot replace native terminal (0.2252ms)
+✔ native report truncated (0.1315ms)
+✔ duplicate native start (0.1448ms)
+✔ duplicate native root-exit (0.1483ms)
+✖ unknown native event cannot be an invisible extra (0.5688ms)
+✖ floating member creation time cannot be rounded back into an identity (0.314ms)
+✔ duplicate JSON field after valid-looking last value (0.1792ms)
+✔ unbound supervisor exit (0.1626ms)
+✔ STOP cannot qualify (0.1295ms)
+✔ fallback cannot qualify (0.123ms)
+✔ post-launch source missing (0.1016ms)
+✔ default tail, explicit timeout and root failure are never promoted to accepted (2.2196ms)
+✔ same architecture lease excludes SDK/application callers and refuses foreign release (5.4449ms)
+✔ real temporary SDK library drift fails the existing build evidence verification (14.1934ms)
+ℹ tests 31
+ℹ suites 0
+ℹ pass 29
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 156.5623
+
+✖ failing tests:
+
+test at tests\sdk\standard-build.test.cjs:98:51
+✖ unknown native event cannot be an invisible extra (0.5688ms)
+  AssertionError [ERR_ASSERTION]: unknown native event cannot be an invisible extra
+  
+  true !== false
+  
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\sdk\standard-build.test.cjs:99:36)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\sdk\standard-build.test.cjs:98:51
+✖ floating member creation time cannot be rounded back into an identity (0.314ms)
+  AssertionError [ERR_ASSERTION]: floating member creation time cannot be rounded back into an identity
+  
+  true !== false
+  
+      at TestContext.<anonymous> (F:\work\sm05-build-caller\tests\sdk\standard-build.test.cjs:99:36)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

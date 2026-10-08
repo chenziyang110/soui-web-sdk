@@ -1,0 +1,52 @@
+{
+  "phase": "red",
+  "cwd": "F:/work/sm05-build-caller",
+  "executable": "C:\\nvm4w\\nodejs\\node.exe",
+  "requestedPath": "C:\\nvm4w\\nodejs\\node.exe",
+  "resolvedPath": "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node.exe",
+  "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+  "args": [
+    "--test",
+    "--test-reporter=tap",
+    "F:\\work\\sm05-build-caller\\out\\standard-build-tool-resolution-2f058f9a-8e0e-4b83-a9ea-5ecd7184f366\\red-6ee734b1-a5b3-4908-b0dc-69d71b9c3ea3\\red-standard-build.test.cjs"
+  ],
+  "provider": {
+    "schema": "soui.audited-bootstrap-provider/v1",
+    "runner": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "client": "F:\\work\\sm05-build-caller\\tools\\internal\\owned-process.cjs",
+    "clientSha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7",
+    "currentFrozenMainClient": true,
+    "externalRunnerReviewedFoundation": true,
+    "noCompilerTailPolicy": true,
+    "previousGuardDirectory": "F:\\work\\sm05-build-caller\\out\\standard-build-caller-actual-6ef0a933-e5f7-42c9-87f8-5c7ca2a7049d",
+    "sourceContextRecorded": [
+      "provider-runnerSource.bin",
+      "provider-providerCMake.bin",
+      "provider-providerCache.bin",
+      "provider-providerCompiler.bin"
+    ]
+  },
+  "source": [
+    {
+      "path": "tools/internal/standard-build.cjs",
+      "sha256": "b8c579ebd497ca110cd7d55a636bf9f16301c6431b90e75fd68bfd594985a0c8"
+    },
+    {
+      "path": "tests/sdk/standard-build.test.cjs",
+      "sha256": "01fb2daa06e4401b5f188f54762bf73f80533b673258c70137a26691a82a857a"
+    },
+    {
+      "path": "docs/adr/0033-standard-owned-build-caller.md",
+      "sha256": "fbd74c1b922971bdda8e2aa916fb4db89dc05a7ee019760075889c1e676218a7"
+    },
+    {
+      "path": "docs/standard-build.md",
+      "sha256": "6f3686741905cdf6cd5fc3576449ea91f82d7b71db73338ab1404c82884cee44"
+    }
+  ],
+  "oldAdapterExposesOriginalFileWithoutChangingOldImplementation": true,
+  "noSdkBuild": true,
+  "noGui": true,
+  "compilerTailPolicyRequested": false
+}

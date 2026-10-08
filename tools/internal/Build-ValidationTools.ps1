@@ -21,7 +21,7 @@ if($LASTEXITCODE -ne 0){throw "Validation tools configure failed: $validationBui
 $previousNodeReuse=$env:MSBUILDDISABLENODEREUSE
 try{
   $env:MSBUILDDISABLENODEREUSE='1'
-  & $cmake --build $validationBuild --config Release --target OwnedProcessRunner OwnedProcessAssignmentFixture ProcessTreeSampler InputTrace NativeTraceIdentity --parallel 2 -- /nr:false *> (Join-Path $validationBuild 'compile.log')
+  & $cmake --build $validationBuild --config Release --target OwnedProcessRunner OwnedProcessAssignmentFixture ProcessTreeSampler InputTrace NativeTraceIdentity OwnedTailProcessFixture OwnedTailMutationFixture OwnedTailApiFixture --parallel 2 -- /nr:false *> (Join-Path $validationBuild 'compile.log')
   if($LASTEXITCODE -ne 0){throw "Validation tools build failed: $validationBuild/compile.log"}
 }finally{$env:MSBUILDDISABLENODEREUSE=$previousNodeReuse}
 & node $measurement seal $Architecture $measurementInputs.sha256 | Out-Null
