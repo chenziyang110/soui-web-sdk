@@ -1,5 +1,41 @@
 # SDK 生产验证执行记录
 
+## 2026-09-26 外部监督器计时竞态修正
+
+[新的独立夹具](../../verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26/README.md)已确定性复现“先读时钟、后取快照”导致无符号差值下溢，旧顺序运行退出 1。改为先取快照、再读单调时钟后，x86/x64 各 8 项计时边界检查、45 项阶段自检及 8 条日志检查通过；真实消费者也重编完成，SDK 与父冻结未改。新冻结 SHA 为 `b58de0c44a2ae96a12aa144f4d8607b800415c40b1311591e05b91f67486faef`。
+
+桌面空闲后两架构串行运行关闭动画的诊断副本，各 77 条日志、退出 0，任务结果/取消/取消订阅与关闭完成，载荷及门禁复核通过。监督器修正没有解决原动画开启时的加载问题，没有扩大时限；真实续期、V02、长稳与生产门槛继续未通过。
+
+## 2026-09-26 冻结 preview.11 动画与监督器诊断
+
+[五份诊断副本](../../verification/production-validation/preview11-renewal-animation-diagnostic-2026-09-26/README.md)保留原二进制、JS 和期限。字符集位置不变仍未就绪，1 秒及 20 秒都只解析出两段诊断脚本。相同页面仅关闭旋转动画后，bootstrap/ready、两类公共任务、订阅和取消完成，原生退出 0；这是诊断短测，不是生产修复。另一次定时关闭动画的运行已就绪，却在新页面记录后 15 ms 报“30 秒无记录”退出 1。源码轮询先读时钟后读跨线程快照存在无符号减法下溢风险，需另建修正夹具；原失败仍保留。
+
+连续动画与低优先级加载任务饥饿尚待原生调度证据确证，不能直接删除动画或宣称 DOMException 为根因。35 分钟及八小时真实续期仍未执行，本轮证据不转移为当前 preview.13 通过。
+
+## 2026-09-26 preview.13 完整源码四配置构建完成
+
+[修正后的新完整源码包](../../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)在独立无 Git 解压目录通过同版 419 文件 SDK 匹配；x86/x64 × Debug/Release 的 SDK、Starter、Workbench 四次构建均退出 0。44 项原生契约测试和解压目录内 8 项交付身份测试通过，完整源码清单在构建及测试后保持一致。八份运行载荷及各 60 个 PE 架构已独立复核，实际编译/链接无 vcpkg 路径。
+
+本轮绑定 ZIP SHA `bbd0aa35d66ae85662fff9e4047598f82507974fb9ee48bffd2c99d9d95de9fd` 和 714 文件输入 `a1007f2188102dfa4de4e79f73a4e0b2c2b8b99cf3e892a3d1e1e3794fd51e68`。未执行这些新载荷的 GUI，也未重编本候选全部底层依赖或完成干净机器复现；完整交付、设备与生产门槛继续未通过。以下记录保留各自执行时点。
+
+## 2026-09-26 源码交付身份修正与页面脚本定位
+
+[完整源码解压预检](../../verification/production-validation/preview13-legal-identity-2026-09-26/README.md)发现 Element Plus 许可证被 Git 从 CRLF 转成 LF，同版 SDK 匹配失败，尚未编译。全源码清单自身通过不能替代 SDK 包匹配。Git 规则已覆盖全部许可证原始字节，交付身份回归先失败、后 8/8 通过；现有 419 文件 SDK 包与工作区匹配退出 0，SDK 实现及版本不变。新增回归后的 714 文件验证输入 SHA 为 `a1007f2188102dfa4de4e79f73a4e0b2c2b8b99cf3e892a3d1e1e3794fd51e68`，下一轮须用新完整源码包重新解压并构建，原失败目录不改。
+
+[冻结 preview.11 页面诊断](../../verification/production-validation/preview11-renewal-page-stages-2026-09-26/README.md)在桌面空闲后真实运行 x64，仍未就绪退出 1。两秒/四十秒截图显示兼容补丁前标记和一秒定时器，未出现补丁后标记，缩小了观察范围；尚未确定 DOMException 内部停止点。进一步分段副本已准备，其他 QEMU 再次运行时门禁拒绝启动。当前 GUI、长稳和生产结论不扩大。
+
+## 2026-09-26 preview.13 旧现场副本恢复与四配置构建
+
+[本轮证据](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)在独立副本中从逐项核验的备份恢复 7 个文件，旧 preview.10 的 417 文件校验通过，再升级 preview.13 的 419 文件包；22 个业务文件保持原字节，原失败现场 858 文件完全未变。旧无 journal 的自动恢复仍拒绝，本结果仅适用于这一已知现场的手工恢复。
+
+仓库外账本项目 x86/x64 × Debug/Release 四次编译退出 0。发现宿主全局 vcpkg 输入后，新副本只在子进程中关闭自动接入并重编四组，均退出 0；实际 CL/link 命令已无 vcpkg 路径。八份 71 文件运行载荷及每份 60 个 PE 架构复核，完整原始日志归档。SDK 输入仍为 714 文件、SHA `f2ca9f2ca470c5886cda1456b31b4260795667eb4df65d4c679d8acd80f2a788`，没有改源码或版本。其他 QEMU 仍占用，GUI 未执行；本候选完整应用、底层依赖、目标平台和生产门槛继续待验收。
+
+## 2026-09-26 preview.13 安装事务恢复
+
+[新候选证据](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)记录持久事务、`recover` 和启动恢复：真实终止子进程回归及交付身份共 30 项通过，原包行为 14/14；419 文件包与当前源码匹配。两个完整包业务副本分别在文件替换后和锁提交后被终止，新的恢复进程核验为旧 preview.11 / 新 preview.13，再执行升级、回退和再升级，22 个应用/数据文件保持原字节。
+
+内部 preview.12 真实包回退的目录退休 EPERM 及路径形态负例失败均保留；preview.13 增加有界重试和提前拒绝文件/目录形态变化。旧无 journal 失败现场迁移、当前原生编译及 GUI 尚未验证。下一步继续旧失败现场受控恢复、本版安装后独立编译与业务运行；Win7 关闭、续期夹具启动、V02/V04、长稳、Electron 与发布责任等完整门槛保持未通过。
+
 ## 2026-09-26 preview.11 新增实际桌面失败
 
 其他 QEMU 退出后，串行执行 [Win7 第三轮](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt3-2026-09-26/README.md)：v3 传输集合、546 个运行前载荷文件及 legal 身份通过，Starter 就绪并退出 0；Workbench 默认入口就绪后停在关闭开始，达到原 60 秒期限，被客体驱动终止。React 和运行后载荷检查未执行。29 帧完整串口和冻结校验器退出 1 保留，QEMU 正常退出且基础盘及输入未变。下一项是关闭阶段/线程栈诊断，不放宽期限。

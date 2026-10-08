@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<script>(function(){
+  var messages=[],start=new Date().getTime();
+  function safe(value){return String(value).replace(/[\r\n]/g," ").slice(0,220);}
+  function show(){var box=document.getElementById("soui-diagnostic-stages");if(box)box.textContent=messages.join("\n");}
+  window.__souiStage=function(label){if(messages.length<40)messages.push((new Date().getTime()-start)+"ms "+safe(label));window.__souiStageText=messages.join("\n");show();};
+  window.__souiStage("head-observer");
+  window.addEventListener("error",function(e){window.__souiStage("error: "+safe(e.message||"resource-error")+" file="+safe(e.filename||e.target&&e.target.src||""));},true);
+  document.addEventListener("DOMContentLoaded",function(){window.__souiStage("dom-content-loaded");});
+  window.addEventListener("load",function(){window.__souiStage("window-load System="+typeof window.System+" native="+typeof window.__souiNativePostMessage);});
+  setTimeout(function(){window.__souiStage("timer-1000 state="+document.readyState);},1000);
+})();</script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>InstalledRenewalProbe</title>
+  <style>
+    body{font:16px/1.5 "Microsoft YaHei",sans-serif;margin:24px;background:#f4f6f8;color:#172333}
+    main{max-width:900px;margin:auto;background:white;padding:24px;border:1px solid #cbd3dc}
+    h1{font-size:24px;margin:0 0 8px}p{margin:8px 0}.muted{color:#536173}
+    .spinner{display:inline-block;width:18px;height:18px;margin-right:10px;border:3px solid #ccd6e0;border-top-color:#2569b0;border-radius:50%;animation:turn 1s linear infinite;vertical-align:middle}
+    @keyframes turn{to{transform:rotate(360deg)}}
+    #status{font-weight:bold}input{display:block;box-sizing:border-box;width:100%;padding:10px;font:inherit;margin:8px 0}
+    pre{white-space:pre-wrap;overflow-wrap:break-word;font:14px/1.6 Consolas,monospace;background:#eef2f6;padding:14px;min-height:190px}
+    .failed{color:#a21d23}.complete{color:#19613a}
+  </style>
+
+</head>
+<body>
+<pre id="soui-diagnostic-stages" style="position:fixed;left:8px;right:8px;bottom:8px;z-index:2147483647;height:230px;min-height:0;overflow:auto;background:#fff2b3;color:#101010;border:2px solid #8a6200;padding:8px;font:13px/1.25 Consolas,monospace">DIAGNOSTIC OBSERVER HAS NOT PAINTED</pre>
+<script>window.__souiStage("body-marker");</script>
+  <main>
+    <h1>公共 SDK 同文档续期观察</h1>
+    <p><span class="spinner" aria-hidden="true"></span><span id="status" role="status">等待原生连接</span></p>
+    <p class="muted">本夹具验证任务、订阅与授权连续性；不替代 Workbench V02、真实呈现性能或生产验收。30 秒模式只检查夹具。</p>
+    <label for="typing">可持续输入文字，观察窗口交互</label>
+    <input id="typing" autocomplete="off" placeholder="在这里输入；测试期间不刷新页面" />
+    <p id="interaction">输入事件 0 · 组合事件 0 · 窗口尺寸待记录</p>
+    <pre id="details" aria-live="polite">初始化中…</pre>
+  </main>
+  <script>window.__souiStage("prelude-before");</script><script>(function(){try{var D=window.DOMException;new D(1,2);}catch(e){var P=D&&D.prototype;var S=function(message,name){this.message=String(message||"");this.name=String(name||"Error");};if(P)S.prototype=P;try{window.DOMException=S;}catch(ignore){}}})();</script><script>window.__souiStage("prelude-after");</script>
+<script>window.__souiStage("polyfill-before");</script><script src="./assets/polyfills-legacy-BUHvaia5.js" onload="window.__souiStage('polyfill-load')" onerror="window.__souiStage('polyfill-resource-error')"></script>
+<script>window.__souiStage("polyfill-after System="+typeof window.System);</script>
+<script>window.__souiStage("system-import-before");System.import("./assets/index-legacy-C1PHiGhZ.js").then(function(){window.__souiStage("system-import-resolved");}).catch(function(error){window.__souiStage("system-import-rejected: "+String(error&&error.message||error));window.__souiBootstrapError=String(error&&error.message||error);var s=document.getElementById("status");if(s)s.textContent="页面启动失败："+window.__souiBootstrapError;});window.__souiStage("system-import-returned");</script>
+</body>
+</html>

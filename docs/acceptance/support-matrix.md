@@ -1,5 +1,7 @@
 # 候选支持范围与设备矩阵
 
+当前开发候选 preview.13 已取得[安装事务恢复](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)、[已知旧现场副本恢复及独立账本四配置编译](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)，以及[完整源码解压后 SDK/Starter/Workbench x86/x64 Debug/Release 构建、44 项原生与 8 项交付身份测试](../../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)证据。本版应用 GUI、Win7 和完整交互矩阵未重验，不扩大设备支持状态。下述 preview.11 及以前的结果均为各自冻结输入。
+
 2026-09-26 preview.11 增补：[当前预检](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)完成本机 x86/x64 Release SDK、Starter、Workbench 编译、独立 SDK 安装与仓库外 `session-consumer` 编译/运行，每架构 10 项 CTest 通过，其中原生续期包含 14 组契约。最终汇总核验 Web 62 项、包行为 14 项、交付身份 7 项通过、五份锁文件全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包、包内散列及源码匹配通过。生成的独立 `RenewalStarter` 两架构 Release 编译与项目校验均退出 0。
 
 [本版真实桌面短测](../../verification/production-validation/preview11-desktop-execution-2026-09-26/README.md)随后在 Windows 11 宿主串行完成：x86/x64 窗口线程停滞与目录程序化取消共四项、Starter/Workbench 默认与 React 共六入口、独立 `RenewalStarter` 两项短启动均取得退出码 0。x86 公共托盘消费者因 `E_MENU_FOREGROUND` 退出 1，菜单尚未显示；x86 Workbench 驻留因 slot 2 未在 45 秒内就绪退出 3，尚未进入 smoke 阶段，slot 3 状态未判定。两次失败保留，x64 菜单/驻留尚未执行。

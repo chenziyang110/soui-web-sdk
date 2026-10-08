@@ -2,7 +2,13 @@
 
 本交付解决分层、接入、自行构建和验证的问题，仍为预览版本。
 
-preview.11 [真实安装中断](../verification/production-validation/preview11-upgrade-interruption-2026-09-26/README.md)暴露恢复缺陷：安装进程在旧文件已移入备份后退出，正式校验与重新安装均失败。旧 SDK 字节和业务数据未丢失，但当前 CLI 无法自动恢复。须补齐持久事务记录、恢复入口与冲突处理；原有可捕获 I/O 异常回滚测试不能关闭此门槛。
+冻结 preview.11 的[页面动画诊断](../verification/production-validation/preview11-renewal-animation-diagnostic-2026-09-26/README.md)中，相同输入只关闭旋转动画即可完成任务短测；动画开启时解析持续停滞，尚需原生调度证据。另一已就绪运行在页面记录后 15 ms 被监督器判定为“30 秒无记录”。[新外部夹具](../verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26/README.md)已复现并修正先采样时钟、后读跨线程快照导致的无符号差值风险；两架构边界测试、自检及关闭动画的诊断短测通过。原失败保留，关闭动画不作为 SDK 修复，真实续期和生产门槛继续未通过。
+
+preview.13 [完整源码解压身份检查](../verification/production-validation/preview13-legal-identity-2026-09-26/README.md)发现一份许可证的 Git 换行转换，使旧源码 ZIP 与同版 419 文件 SDK 包不一致。Git 规则和回归已修正，旧包/失败目录保留。[新完整源码包](../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)已在无 Git 解压目录匹配同版 SDK，完成 SDK/Starter/Workbench 四配置构建、44 项原生及 8 项交付身份测试；新载荷 GUI、底层完整重编及干净机器复现仍待执行。验证输入是 `a1007f2188102dfa4de4e79f73a4e0b2c2b8b99cf3e892a3d1e1e3794fd51e68`；SDK 实现与既有安装包字节不变。
+
+当前 preview.13 的[新事务协议](../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)已通过真实进程终止和完整 SDK 包文件恢复测试；[已知旧现场的独立副本](../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)已手工恢复并升级，原件未变，独立账本 x86/x64 Debug/Release 编译通过。旧无 journal 自动恢复仍拒绝，文件/目录形态迁移明确拒绝；本候选业务与应用 GUI、受限账户及目标平台尚未重验。以下 preview.11 失败仍按其原输入保留，不能由安装器修复视为全部关闭。
+
+preview.11 [真实安装中断](../verification/production-validation/preview11-upgrade-interruption-2026-09-26/README.md)暴露恢复缺陷：安装进程在旧文件已移入备份后退出，正式校验与重新安装均失败。旧 SDK 字节和业务数据未丢失，当时 CLI 无法自动恢复。preview.13 已补齐新协议的持久事务、恢复入口与冲突处理；旧现场仅有上述确切副本的手工恢复证据，不能扩展为通用旧格式恢复。
 
 preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt3-2026-09-26/README.md)已通过传输与运行前文件身份检查，Starter 就绪并退出 0；Workbench 默认入口在就绪后关闭超时，React 和运行后载荷校验未执行。三入口整体仍失败，前两轮传输失败保留。
 

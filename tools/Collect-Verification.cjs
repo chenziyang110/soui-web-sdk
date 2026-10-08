@@ -22,6 +22,7 @@ function run(name,executable,args) {
 }
 const unit={
  package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),
+ interruption:run('sdk-installation-interruption-tests',process.execPath,['--test','tests/sdk/installation-interruption.test.cjs']),
  delivery:run('delivery-identity-tests',process.execPath,['--test','tests/sdk/delivery-identity.test.cjs']),
  web:run('web-sdk-tests',process.execPath,['--test','tests/web/sdk-client.test.mjs']),
  nativeX64:run('native-contract-x64',path.join(root,'out/x64/tests/native/Release/soui_sdk_contract_tests.exe'),[]),

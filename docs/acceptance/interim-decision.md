@@ -1,5 +1,7 @@
 # 0.3 SDK 中期准入判定
 
+2026-09-26 当前开发候选 preview.13：[安装恢复文件链](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)、[已知旧现场副本手工恢复与独立账本四配置编译](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)，以及[完整源码无 Git 解压后的应用四配置构建和 44+8 项测试](../../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)通过所列范围。自动旧格式恢复仍拒绝；本候选业务与应用 GUI、目标平台、底层完整重编待验证。独立完整交付、指定范围生产与 Electron 整体价值三个结论均未通过或未判定，历史版本结果保持原身份。
+
 初始判定日期：2026-09-24，候选 `0.3.0-preview.5`；后续增补按各自版本分别判定。本文件只汇总已执行证据，不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
 
 ## 2026-09-26 preview.11 预检与桌面短测

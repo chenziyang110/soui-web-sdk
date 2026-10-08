@@ -37,6 +37,8 @@ preview.11 将文档的稳定授权身份与访问令牌分开。原生 `permiss
 
 ## 扩展接口
 
+preview.13 的源码 SDK 安装器使用项目内独占事务、完整备份和不可变 journal，锁文件发布作为提交点。进程重启后根据锁与载荷判断完成提交或恢复旧版本，遇到未知内容不覆盖。安装恢复与运行期 Runtime/Host 生命周期无关，设计见 [ADR-0015](adr/0015-restartable-sdk-installation.md)。
+
 `soui::sdk::bridge_adapter` 是应用与宿主的边界，宿主不依赖 Demo 的类型。简单应用使用 `json_bridge` 注册方法；复杂业务可以实现接口并复用 runtime 的授权和任务组件。`demos/workbench/integration` 展示完整异步任务实现。
 
 UI、引擎与 Bridge worker 是不同线程。适配器必须比宿主存活更久；注册在启动前完成。运行期共享状态需要同步。关闭时先停止宿主，再释放适配器。导航切换撤销旧会话及其权限。

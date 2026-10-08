@@ -1,0 +1,47 @@
+{
+  "reviewedAt": "2026-09-26T13:40:54.845Z",
+  "fixtureVersion": "preview.11 external clock revision 1",
+  "freezeSha256": "b58de0c44a2ae96a12aa144f4d8607b800415c40b1311591e05b91f67486faef",
+  "redExitCode": 1,
+  "redReason": "Fresh callback falsely exceeded record gap after interleaving",
+  "greenClockChecksPerArchitecture": 8,
+  "phaseChecksPerArchitecture": 45,
+  "logChecksPerArchitecture": 8,
+  "rows": [
+    {
+      "architecture": "x86",
+      "run": "C:\\SOUI-SDK-production-validation\\preview11-renewal-supervisor-race-20260926\\runs\\x86-2026-09-26T13-28-36-785Z",
+      "exitCode": 0,
+      "nativeRecords": 77,
+      "readyCount": 1,
+      "bootstrapCount": 1,
+      "taskInvocations": 2,
+      "cancelled": true,
+      "unsubscribed": true,
+      "resultValue": 42,
+      "animationOffDiagnosticOnly": true,
+      "inputUnchanged": true,
+      "externalLoad": false,
+      "realRenewalVerified": false
+    },
+    {
+      "architecture": "x64",
+      "run": "C:\\SOUI-SDK-production-validation\\preview11-renewal-supervisor-race-20260926\\runs\\x64-2026-09-26T13-27-58-561Z",
+      "exitCode": 0,
+      "nativeRecords": 77,
+      "readyCount": 1,
+      "bootstrapCount": 1,
+      "taskInvocations": 2,
+      "cancelled": true,
+      "unsubscribed": true,
+      "resultValue": 42,
+      "animationOffDiagnosticOnly": true,
+      "inputUnchanged": true,
+      "externalLoad": false,
+      "realRenewalVerified": false
+    }
+  ],
+  "sdkSourceUnchanged": true,
+  "animatedStartupFixed": false,
+  "productionPass": false
+}
