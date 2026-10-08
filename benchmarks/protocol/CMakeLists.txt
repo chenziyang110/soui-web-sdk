@@ -38,3 +38,7 @@ target_include_directories(NativeTraceIdentity PRIVATE "${CMAKE_CURRENT_SOURCE_D
 target_compile_features(NativeTraceIdentity PRIVATE cxx_std_17)
 target_compile_options(NativeTraceIdentity PRIVATE /W4 /utf-8)
 set_property(TARGET NativeTraceIdentity PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_executable(DisplayCalibration display-calibration.cpp)
+target_compile_features(DisplayCalibration PRIVATE cxx_std_17)
+target_compile_options(DisplayCalibration PRIVATE /W4 /utf-8)
+set_property(TARGET DisplayCalibration PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)

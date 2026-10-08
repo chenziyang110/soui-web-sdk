@@ -1,0 +1,42 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "a9c394665ddfeae33e592ee7c030475c70708a289c88681e9372132627b61977",
+  "executableSha256": "13b71df377a8823b9c2d5b315842fb490c6ab3c680c9970b7c399aac5ee459d8",
+  "executable": "F:\\work\\sm05-scopes\\out\\benchmark-protocol\\Release\\OwnedTailProcessFixture.exe",
+  "args": [
+    "unknown",
+    "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-bZblYU",
+    "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-bZblYU\\unknown-copy.exe"
+  ],
+  "cwd": "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-bZblYU",
+  "timeoutMs": 8000,
+  "drainMs": 100,
+  "tailImagePin": {
+    "image": "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-bZblYU\\pinned-helper.exe",
+    "sha256": "13b71df377a8823b9c2d5b315842fb490c6ab3c680c9970b7c399aac5ee459d8",
+    "nonce": "4c43668bbda76a8aba0b69ecdbcb4ed7"
+  },
+  "report": "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-bZblYU\\owned.ndjson",
+  "runnerArgs": [
+    "--timeout-ms",
+    "8000",
+    "--drain-ms",
+    "100",
+    "--stop-on-stdin",
+    "--report",
+    "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-bZblYU\\owned.ndjson",
+    "--cwd",
+    "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-bZblYU",
+    "--pin-tail-image",
+    "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-bZblYU\\pinned-helper.exe",
+    "--pin-tail-sha256",
+    "13b71df377a8823b9c2d5b315842fb490c6ab3c680c9970b7c399aac5ee459d8",
+    "--snapshot-nonce",
+    "4c43668bbda76a8aba0b69ecdbcb4ed7",
+    "--",
+    "F:\\work\\sm05-scopes\\out\\benchmark-protocol\\Release\\OwnedTailProcessFixture.exe",
+    "unknown",
+    "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-bZblYU",
+    "F:\\work\\sm05-scopes\\out\\measurement-validation\\tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a\\client-fixtures\\attempt-bZblYU\\unknown-copy.exe"
+  ]
+}

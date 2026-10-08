@@ -1,0 +1,163 @@
+'use strict';
+// Private evidence sealing only: do not rewrite any production/canonical file.
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),os=require('node:os');
+const root='F:/work/sm05-scopes',base=__dirname;
+const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const enc=value=>JSON.stringify(value,null,2)+'\n';
+const need=(ok,message)=>{if(!ok)throw Error(message);};
+const rel=(a,b)=>path.relative(a,b).replace(/\\/g,'/');
+function bounded(parent,file){
+ const full=path.resolve(file),relative=path.relative(path.resolve(parent),full);
+ need(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative),'Path escapes '+parent);
+ let cursor=full;while(cursor!==path.resolve(parent)){need(!fs.lstatSync(cursor).isSymbolicLink(),'Linked evidence/source path: '+cursor);cursor=path.dirname(cursor);}
+ return full;
+}
+function regular(file){const st=fs.lstatSync(file);need(st.isFile()&&!st.isSymbolicLink()&&st.nlink===1,'Not independent regular evidence: '+file);return fs.readFileSync(file);}
+function meta(file){const bytes=regular(file);return {path:file,bytes:bytes.length,sha256:hash(bytes)};}
+function pin(file){const resolvedPath=fs.realpathSync(file),bytes=fs.readFileSync(resolvedPath);return {path:file,resolvedPath,bytes:bytes.length,sha256:hash(bytes)};}
+function json(file){return JSON.parse(regular(file));}
+function write(file,bytes){
+ const full=path.resolve(file),relative=path.relative(base,full);need(relative&&!relative.startsWith('..')&&!path.isAbsolute(relative),'Write escapes evidence base');
+ let cursor=path.dirname(full);while(cursor!==base){if(fs.existsSync(cursor))need(fs.lstatSync(cursor).isDirectory()&&!fs.lstatSync(cursor).isSymbolicLink(),'Linked/non-directory write parent');cursor=path.dirname(cursor);}
+ fs.mkdirSync(path.dirname(full),{recursive:true});fs.writeFileSync(full,bytes,{flag:'wx'});
+}
+function walk(folder,visit){
+ for(const name of fs.readdirSync(folder).sort()){
+  const file=path.join(folder,name),st=fs.lstatSync(file);
+  if(st.isSymbolicLink()){visit(file,st,'link');continue;}
+  if(st.isDirectory())walk(file,visit);else visit(file,st,'file');
+ }
+}
+const inner={
+ 'protocol-x64':'protocol-x64-0b36f3bd-ad90-4ee5-824e-dfc056e28f1e',
+ 'protocol-x86':'protocol-x86-75c5a716-d0c2-4bcd-8a29-701816197bda',
+ 'native-x64':'native-x64-87d2fd5c-a066-4809-86b5-f00db1bc2b80',
+ 'native-x86':'native-x86-53467e60-efce-4e4b-9d3f-b98af137aa18',
+ 'tail-protocol-x64':'tail-protocol-x64-e5141488-d87e-4c49-ac9a-27ef363beb85',
+ 'tail-protocol-x86':'tail-protocol-x86-f7cd9eca-f2a1-4e23-a91b-4a69a422000e',
+ 'tail-native-x64':'tail-native-x64-7b814da3-97c9-482b-b3c1-97255f9c9b9a',
+ 'tail-native-x86':'tail-native-x86-70a88343-b19a-49ef-bf7b-caee1194740c',
+ 'display-x64':'display-x64-60548cbb-3473-4352-afff-678152988d96',
+ 'display-x86':'display-x86-8e68d8cb-cfe0-41a2-b0f0-7bbd9514495b'
+};
+function tap(bytes){
+ const text=bytes.toString('utf8'),names=['tests','pass','fail','cancelled','skipped','todo'];
+ return Object.fromEntries(names.map(name=>{const values=[...text.matchAll(new RegExp('^# '+name+' (\\d+)\\r?$','gm'))];need(values.length===1,'TAP count '+name+' missing/ambiguous');return [name,Number(values[0][1])];}));
+}
+function matching(expected,actual,label){need(expected.bytes===actual.bytes&&expected.sha256===actual.sha256,label+' bytes/hash mismatch');}
+const binary=/\.(?:exe|dll|obj|pdb|lib|ilk|idb|ipdb|iobj|pch|res|binlog)$/i;
+function main(){
+ const folder=path.join(base,'sealed-'+crypto.randomUUID());fs.mkdirSync(folder);
+ const map=[],privateArtifacts=[],links=[];
+ const capture=(original,target,category)=>{
+  bounded(root,original);const m=meta(original);write(target,regular(original));const copy=meta(target);matching(m,copy,'Captured '+original);
+  map.push({original,...m,snapshot:rel(base,target),category});return m;
+ };
+ write(path.join(folder,'seal.cjs.inert.snapshot'),regular(__filename));
+ const frozen=json(path.join(base,'frozen-inputs.json'));
+ need(frozen.files.length===42&&frozen.compilerFingerprint.files.length===17,'Wrong frozen input count');
+ const currentSources=frozen.files.map(item=>{const m=meta(bounded(root,path.join(root,item.path)));matching(item,m,item.path);matching(item,meta(path.join(base,item.snapshot)),'Frozen snapshot '+item.path);return {path:item.path,bytes:m.bytes,sha256:m.sha256};});
+ const helper=require(path.join(root,'tools/internal/measurement-validation.cjs'));
+ const currentFingerprint=helper.fingerprint();need(currentFingerprint.sha256===frozen.compilerFingerprint.sha256,'Compiler fingerprint changed');
+ const sourceTools=[];const preparations=[];
+ for(const arch of ['x64','x86']){
+  const directory=path.join(root,'out',arch==='x64'?'benchmark-protocol':'benchmark-protocol-x86');
+  const setup=helper.prepared(arch),seal=setup.report;need(seal.executables.length===9&&seal.source.files.length===17,'Incorrect preparation closure');
+  const outputIdentity=seal.executables.map(item=>{
+   const original=bounded(root,path.join(root,item.path)),m=meta(original);matching(item,m,'Prepared PE '+item.name);
+   const bytes=regular(original),offset=bytes.readUInt32LE(60),coff=bytes.readUInt16LE(offset+4);need(coff===item.coff&&coff===(arch==='x64'?34404:332),'PE COFF differs');
+   privateArtifacts.push({...m,coff,architecture:arch,disposition:'hash-only-private-compiled-artifact'});return {...item};
+  });
+  for(const log of seal.logs)matching(log,meta(path.join(root,log.path)),'Prepared log');
+  const projects=seal.executables.map(item=>{
+   const file=path.join(directory,item.name+'.vcxproj'),text=regular(file).toString('utf8');
+   const sdk=[...text.matchAll(/<WindowsTargetPlatformVersion>([^<]+)<\/WindowsTargetPlatformVersion>/g)].map(v=>v[1]);
+   const toolset=[...text.matchAll(/<PlatformToolset>([^<]+)<\/PlatformToolset>/g)].map(v=>v[1]);
+   need(sdk.length===1&&sdk[0]==='10.0.19041.0'&&toolset.length>0&&toolset.every(v=>v==='v143'),'Actual project SDK/toolset mismatch');
+   need(text.includes('<LanguageStandard>stdcpp17</LanguageStandard>'),'Actual project is not C++17');
+   return {name:item.name,project:rel(root,file),sdk:sdk[0],toolset:'v143',language:'stdcpp17',...meta(file)};
+  });
+  const compilerFile=path.join(directory,'CMakeFiles/4.2.3/CMakeCXXCompiler.cmake'),compilerText=regular(compilerFile).toString('utf8');
+  const compiler=/set\(CMAKE_CXX_COMPILER "([^"]+)"\)/.exec(compilerText)?.[1],compilerVersion=/set\(CMAKE_CXX_COMPILER_VERSION "([^"]+)"\)/.exec(compilerText)?.[1];
+  need(compiler&&compiler.includes('/Hostx64/'+arch+'/cl.exe')&&compilerVersion==='19.44.35226.0','Compiler identity mismatch');
+  const cache=regular(path.join(directory,'CMakeCache.txt')).toString('utf8');
+  need(cache.includes('CMAKE_GENERATOR_PLATFORM:INTERNAL='+(arch==='x64'?'x64':'Win32')+',version=10.0.19041.0'),'Explicit generator platform not present');
+  let copied=0;
+  walk(directory,(file,st,kind)=>{
+   const relative=rel(directory,file);
+   if(kind==='link'){links.push({path:file,target:fs.readlinkSync(file),disposition:'not-followed'});return;}
+   if(binary.test(file)){
+    if(!privateArtifacts.some(item=>item.path===file))privateArtifacts.push({...meta(file),architecture:arch,disposition:'hash-only-private-compiled-artifact'});
+    return;
+   }
+   const selected=/\.(?:vcxproj|filters|cmake|tlog|log|yaml|json|recipe|lastbuildstate)$/i.test(file)||relative==='CMakeCache.txt'||/^(?:configure|compile)\.log$/.test(relative);
+   if(selected){capture(file,path.join(folder,'prepared-raw',arch,relative+'.inert.snapshot'),'actual-build-configuration/log');copied++;}
+  });
+  preparations.push({architecture:arch,configuration:'Release',sourceSha256:seal.source.sha256,executables:outputIdentity,projects,compiler,compilerVersion,cmakeVersion:'4.2.3',rawSnapshots:copied,preparation:rel(root,path.join(directory,'measurement-tools.json')),genericSupervisionPassed:seal.genericSupervisionPassed,supervision:seal.supervision});
+ }
+ const phaseResults=[];
+ const phaseFolders=fs.readdirSync(base).filter(name=>/^(?:red|regression-red|green|entry|build|protocol|native|tail-protocol|tail-native|display)-(?:x64|x86)-/.test(name)).sort();
+ for(const name of phaseFolders){
+  const directory=path.join(base,name),summary=json(path.join(directory,'summary.json')),inputs=json(path.join(directory,'inputs.json')),finished=json(path.join(directory,'finished.json'));
+  need(summary.rootExitCode===finished.exitCode&&summary.supervisorExitCode===finished.supervisorExitCode&&summary.genericPassed===finished.passed&&summary.closureConfirmed===finished.closureConfirmed,'Outer outcome inconsistent');
+  need(summary.sourceChanges.length===0&&summary.toolChanges.length===0,'Changed phase source/tool');
+  for(const item of inputs.sourceFiles){
+   const snapshot=item.snapshot?path.join(directory,item.snapshot):null;
+   if(snapshot&&fs.existsSync(snapshot))matching(item,meta(snapshot),'Historical input snapshot');
+   else {
+    const recovery=json(path.join(directory,'source-snapshot-map.json')).find(row=>row.path===item.path||row.original===item.path);
+    need(recovery,'Missing historical source snapshot '+name+' '+item.path);
+    matching(item,meta(path.join(directory,recovery.snapshot)),'Recovered historical input snapshot');
+   }
+  }
+  for(const tool of inputs.tools){const current=pin(tool.path);need(current.resolvedPath===tool.resolvedPath&&current.sha256===tool.sha256&&current.bytes===tool.bytes,'Current tool differs from recorded phase');if(!sourceTools.some(row=>row.path===tool.path))sourceTools.push(current);}
+  const result={folder:name,...summary,inputs:meta(path.join(directory,'inputs.json')),finished:meta(path.join(directory,'finished.json'))};
+  if(['red','regression-red','green'].includes(summary.phase))result.counts=tap(regular(path.join(directory,'stdout.bin')));
+  phaseResults.push(result);
+ }
+ const groupResults=[];
+ for(const [name,directoryName] of Object.entries(inner)){
+  const directory=path.join(root,'out/measurement-validation',directoryName),summary=json(path.join(directory,'summary.json'));
+  need(summary.passed&&summary.genericSupervisionPassed&&summary.closureConfirmed&&summary.sourceSha256===frozen.compilerFingerprint.sha256,'Inner group failed or source changed');
+  let counts=null;
+  if(!name.startsWith('display-')){counts=tap(regular(path.join(directory,'stdout.tap')));need(JSON.stringify(counts)===JSON.stringify(summary.counts),'Raw TAP differs from summary');}
+  else {
+   need(summary.verdict.exactCollectorBound&&summary.verdict.boundConfigurationAccepted&&summary.displayConfigurationAccepted,'Display collector is unbound');
+   for(const field of ['physicalPresentation','opticalCalibration','performanceGate','releaseReady'])need(summary[field]===false&&summary.verdict[field]===false,'Display claim broadened');
+   const reader=require(path.join(root,'benchmarks/protocol/display-calibration.cjs'));
+   const verdict=reader.readDisplayCalibration(regular(path.join(directory,'sampler.stdout.log')),{ownedSubject:summary.ownedSubject});
+   need(JSON.stringify(verdict)===JSON.stringify(summary.verdict),'Actual display raw differs from verdict');
+  }
+  walk(directory,(file,st,kind)=>{
+   const relative=rel(directory,file);
+   if(kind==='link'){links.push({path:file,target:fs.readlinkSync(file),disposition:'not-followed-authored-fixture'});return;}
+   if(binary.test(file)||st.nlink!==1){privateArtifacts.push({...meta(file),disposition:'hash-only-private-fixture-artifact'});return;}
+   capture(file,path.join(folder,'current-raw',name,relative+'.inert.snapshot'),'actual-owned-group/configuration');
+  });
+  groupResults.push({name,originalDirectory:directory,summary:meta(path.join(directory,'summary.json')),counts,ownedSubject:summary.ownedSubject||null,genericSupervisionPassed:true,naturalClosure:true,higherClaimsAccepted:false});
+ }
+ // Freeze script bytes used for entry projection without calling this full standard entry.
+ for(const name of ['entry.cjs','entry.ps1','run.cjs'])capture(path.join(base,name),path.join(folder,'drivers',name+'.inert.snapshot'),'private-driver-current-final');
+ const finalFingerprint=helper.fingerprint();need(finalFingerprint.sha256===frozen.compilerFingerprint.sha256,'Inputs changed while sealing');
+ for(const item of currentSources)matching(item,meta(path.join(root,item.path)),'Post-seal source');
+ for(const item of sourceTools){const current=pin(item.path);need(current.resolvedPath===item.resolvedPath&&current.sha256===item.sha256,'Tool changed while sealing');}
+ const results={schema:'soui.display-standard-integration-results/v1',baseline:frozen.baseline,root,completedAt:new Date().toISOString(),machine:{platform:process.platform,arch:process.arch,node:process.version,osRelease:os.release(),osVersion:os.version()},
+  frozenInputs:meta(path.join(base,'frozen-inputs.json')),sourceIdentity:frozen.source,compilerFingerprint:finalFingerprint,sourceFiles:currentSources,ownedSource:frozen.ownedSource,tools:sourceTools,preparations,phaseResults,groupResults,
+  boundaries:{sdkBuildExecuted:false,fullCollectExecuted:false,fullTestExecuted:false,entryValidation:'actual AST / Collect optional-block projection only',noGui:true,noEtw:true,noSendInput:true,noVm:true,physicalPresentation:false,opticalCalibration:false,performanceGate:false,releaseReady:false,win7PeMatrix:false,
+   buildTailPolicyApplied:false,tailBehavioralFixtureTests:true,tailFixtureNegativeJobsPreserved:true,x86BuildGenericPassed:false,x86BuildSupervisorExitCode:124,x86BuildRootExitCode:0,x86ReportedTail:'vctip.exe reported path/PID/FILETIME only; no pin/exception accepted',sourceCompilerArtifacts:'Private originals + hash/path metadata only',sameUserRewriteAuthenticated:false,
+   reconstructedSnapshot:'Second failed GREEN fixture input recovered by one literal mock-return edit, exact recorded SHA matched; no native production result reconstructed'}};
+ write(path.join(folder,'current-map.json'),enc({schema:'soui.raw-snapshot-map/v1',copies:map,privateArtifacts,links}));
+ write(path.join(folder,'results-final.json'),enc(results));
+ write(path.join(folder,'README.md'),`# Private display standard-entry integration evidence\n\nBaseline ${frozen.baseline}. This directory preserves raw bytes and local input/output consistency for two-architecture validation tools and read-only display configuration. It does not authenticate a user able to rewrite the whole evidence bundle.\n\nBoth architectures built nine targets from seventeen bound compiler inputs using CMake 4.2.3, MSVC 19.44.35226.0/v143 and Windows SDK 10.0.19041.0. The x86 compiler body exited 0; its external owned supervisor remained false/124 after a reported vctip tail was precisely cleaned. No compiler-tail policy is applied or retrospectively claimed. The x64 preparation closed naturally. The preparation manifest deliberately requires separate external caller evidence.\n\nAll eight protocol/native/tail group supervisors and both display collectors closed naturally. Passing tail behavior suites contain intentional negative fixture Jobs, whose false results remain in raw records. The only protocol skip is the preexisting serializer case; native groups have no skips. Display records bind native PID/FILETIME, context, raw report and exact PE hashes. Configuration success carries no presentation, optical calibration, performance or release claim.\n\nThe default entry runs pure reader tests. Real configuration collection requires explicit opt-in. Actual PowerShell AST and Collect block projections verify optional wiring; neither full Test nor full Collect ran. Pure preparation PE fixtures are authored metadata and do not establish native compilation. Old RED and failed harness runs remain separate. Historical fixture recovery is identified and hash-checked in source-snapshot-map files.\n\ncurrent-map.json binds exact copied current raw/canonical build configuration to original paths. Compiled EXE/obj/lib/pdb and any MSBuild binlog stay private, hash-only, rather than source evidence. Code and generated metadata copies use .inert.snapshot; their bytes are unchanged. No GUI, ETW, SendInput, VM, complete SDK build, Win7/PE matrix, soak or release acceptance was executed. Root owns subsequent documentation, Git integration and persistent archive.\n`);
+ const payload=[],indexLinks=[];
+ walk(base,(file,st,kind)=>{
+  if(kind==='link'){indexLinks.push({path:rel(base,file),target:fs.readlinkSync(file)});return;}
+  need(st.isFile()&&st.nlink===1,'Evidence index includes linked/non-file entry');
+  const bytes=regular(file);payload.push({path:rel(base,file),bytes:bytes.length,sha256:hash(bytes)});
+ });
+ write(path.join(base,'index-final.json'),enc({schema:'soui.display-standard-evidence-index/v1',root:base,baseline:frozen.baseline,sealedDirectory:rel(base,folder),payload,links:indexLinks,privateCompiledArtifactCount:privateArtifacts.length}));
+ const index=json(path.join(base,'index-final.json'));
+ for(const item of index.payload)matching(item,meta(path.join(base,item.path)),'Final indexed raw');
+ console.log(enc({folder,index:meta(path.join(base,'index-final.json')),results:meta(path.join(folder,'results-final.json')),map:meta(path.join(folder,'current-map.json')),payload:payload.length,copies:map.length,privateArtifacts:privateArtifacts.length,links:links.length,sourceFiles:currentSources.length,compilerInputs:finalFingerprint.files.length,pe:18}));
+}
+main();

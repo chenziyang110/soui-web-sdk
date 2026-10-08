@@ -1,0 +1,26 @@
+{
+  "label": "imports-x86",
+  "identity": {
+    "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86/dumpbin.exe",
+    "sha256": "7f2ceba4727e09d4097f692ecb62179f6dd50131701aa15d9f90422391f5c96a"
+  },
+  "args": [
+    "/headers",
+    "/imports",
+    "/dependents",
+    "F:\\work\\sm05-scopes\\out\\display-calibration-repaired-f34adb0b-6b98-4600-b7ff-1cb55a75b83a\\build-x86\\Release\\DisplayCalibration.exe"
+  ],
+  "cwd": "F:/work/sm05-scopes",
+  "sourceFreezeSha256": "321999d490be3f6e71c1bfb2b053648daa27821fc79029244491098936cec8c8",
+  "provider": {
+    "runner": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "clientSha256": "aa160d64892294eb3e65f27f29d554020dd10ea0704f6d0a669fa83184054753"
+  },
+  "environment": {
+    "MSBUILDDISABLENODEREUSE": "1",
+    "CL": "removed-in-child",
+    "_CL_": "removed-in-child",
+    "CMAKE_TOOLCHAIN_FILE": "removed-in-child"
+  }
+}

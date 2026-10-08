@@ -1,0 +1,36 @@
+'use strict';
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const root = 'F:/work/sm05-scopes';
+const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const names = ['benchmarks/protocol/display-calibration.cpp', 'benchmarks/protocol/display-calibration.cjs',
+  'tests/benchmark/display-calibration.test.cjs', 'docs/adr/0035-display-configuration-and-presentation-evidence.md',
+  'docs/acceptance/0.5-display-presentation-calibration.md'];
+const snapshot = path.join(__dirname, 'frozen-sources');
+fs.mkdirSync(snapshot);
+const sources = names.map((name, index) => {
+  const bytes = fs.readFileSync(path.join(root, name));
+  const saved = path.join(snapshot, index + '.inert.snapshot');
+  fs.writeFileSync(saved, bytes, {flag:'wx'});
+  return {relativePath:name, sha256:hash(bytes), bytes:bytes.length, snapshot:path.relative(__dirname, saved).replaceAll('\\','/')};
+});
+fs.writeFileSync(path.join(__dirname, 'frozen-inputs-final.json'), JSON.stringify({schema:'soui.display-calibration-freeze/v1',
+  baseline:'4fc8c199ac0d58bc8509fab0f3a36a047ad268c1', sources,
+  pureTests:{total:45, passed:45, skipped:0,
+    actualRun:'final-75b4bcf7-1129-4e70-851c-6e7b843c1c00'},
+  red:{total:38, passed:29, failed:9, actualRun:'red-5e317199-1dc9-4a03-ae8a-c33e2fa153af'},
+  nativeCompiled:false, actualDisplayCollected:false, presentMonDownloaded:false,
+  physicalPresentation:false, releaseReady:false},null,2)+'\n', {flag:'wx'});
+function files(directory) {return fs.readdirSync(directory,{withFileTypes:true}).flatMap(entry => {
+  const file = path.join(directory, entry.name);
+  if (entry.isSymbolicLink()) throw new Error('Unexpected link');
+  return entry.isDirectory() ? files(file) : [file];
+});}
+const payload = files(__dirname).map(file => {
+  const bytes = fs.readFileSync(file);
+  return {relativePath:path.relative(__dirname,file).replaceAll('\\','/'), bytes:bytes.length, sha256:hash(bytes)};
+}).sort((a,b)=>a.relativePath.localeCompare(b.relativePath));
+const index = JSON.stringify({schema:'soui.display-calibration-evidence-index/v1', payload},null,2)+'\n';
+fs.writeFileSync(path.join(__dirname,'evidence-index-final.json'),index,{flag:'wx'});
+console.log(JSON.stringify({sources,payload:payload.length,indexSha256:hash(Buffer.from(index))},null,2));

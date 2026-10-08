@@ -1,0 +1,47 @@
+// TEST_ONLY real API call-point observations. No simulated success/error.
+#define NOMINMAX
+#include <windows.h>
+#include <cstring>
+#include <iomanip>
+#include <iostream>
+using wow64_fn = BOOL (WINAPI*)(HANDLE,PBOOL);
+using directory_fn = UINT (WINAPI*)(LPWSTR,UINT);
+wow64_fn real_wow64 = nullptr;
+directory_fn real_directory = nullptr;
+void path_hex(const wchar_t* path) {
+  for (const wchar_t* next=path;*next;++next)
+    std::cerr << std::hex << std::setw(4) << std::setfill('0') << static_cast<unsigned>(*next);
+  std::cerr << std::dec;
+}
+UINT WINAPI observed_system_directory(LPWSTR buffer, UINT count) {
+  const UINT result=::GetSystemDirectoryW(buffer,count);
+  const DWORD error=GetLastError();
+  std::cerr << "TEST_ONLY GetSystemDirectoryW length=" << result << " buffer="; path_hex(buffer); std::cerr << '\n';
+  SetLastError(error); return result;
+}
+BOOL WINAPI observed_wow64(HANDLE process,PBOOL output) {
+  const BOOL result=real_wow64(process,output); const DWORD error=GetLastError();
+  std::cerr << "TEST_ONLY IsWow64Process result=" << result << " wow64=" << *output << " error=" << error << '\n';
+  SetLastError(error); return result;
+}
+UINT WINAPI observed_wow64_directory(LPWSTR buffer,UINT count) {
+  const UINT result=real_directory(buffer,count); const DWORD error=GetLastError();
+  std::cerr << "TEST_ONLY GetSystemWow64DirectoryW length=" << result << " error=" << error << " buffer="; path_hex(buffer); std::cerr << '\n';
+  SetLastError(error); return result;
+}
+FARPROC WINAPI observed_get_proc(HMODULE module,LPCSTR name) {
+  const auto result=::GetProcAddress(module,name); const DWORD error=GetLastError();
+  FARPROC selected=result;
+  if (std::strcmp(name,"IsWow64Process")==0) {real_wow64=reinterpret_cast<wow64_fn>(result); if(result) selected=reinterpret_cast<FARPROC>(observed_wow64);}
+  if (std::strcmp(name,"GetSystemWow64DirectoryW")==0) {real_directory=reinterpret_cast<directory_fn>(result); if(result) selected=reinterpret_cast<FARPROC>(observed_wow64_directory);}
+  SetLastError(error); return selected;
+}
+HMODULE WINAPI observed_load_user32(LPCWSTR path) {
+  const HMODULE result=::LoadLibraryW(path); const DWORD error=result?ERROR_SUCCESS:GetLastError();
+  std::cerr << "TEST_ONLY LoadLibraryW error=" << error << " requestedPathUtf16="; path_hex(path); std::cerr << '\n';
+  SetLastError(error); return result;
+}
+#define GetSystemDirectoryW observed_system_directory
+#define GetProcAddress observed_get_proc
+#define LoadLibraryW observed_load_user32
+#include "F:/work/sm05-scopes/benchmarks/protocol/display-calibration.cpp"

@@ -1,0 +1,134 @@
+'use strict';
+const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
+const {launchOwned} = require('./provider/owned-process.cjs');
+const root = 'F:/work/sm05-scopes';
+const runner = 'F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const runnerSha = '1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f';
+const clientSha = 'aa160d64892294eb3e65f27f29d554020dd10ea0704f6d0a669fa83184054753';
+const cmake = 'C:/Program Files/CMake/bin/cmake.exe';
+const instance = 'C:/Program Files/Microsoft Visual Studio/2022/Community';
+const toolRoot = instance + '/VC/Tools/MSVC/14.44.35207/bin/Hostx64';
+const sourceFreeze = path.join(__dirname,'frozen-inputs-prebuild.json');
+const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const hashFile = file => sha(fs.readFileSync(file));
+const write = (file, value) => fs.writeFileSync(file, typeof value === 'string' || Buffer.isBuffer(value) ? value : JSON.stringify(value,null,2)+'\n', {flag:'wx'});
+const phase = process.argv[2];
+if (!['build','collect','pure'].includes(phase)) throw new Error('Explicit build/collect phase required');
+const freezeBytes = fs.readFileSync(sourceFreeze), frozen = JSON.parse(freezeBytes);
+function checkInputs() {
+  if (hashFile(runner) !== runnerSha || hashFile(path.join(__dirname,'provider/owned-process.cjs')) !== clientSha)
+    throw new Error('Fixed provider identity changed');
+  if (hashFile(sourceFreeze) !== sha(freezeBytes)) throw new Error('Source freeze changed');
+  for (const item of frozen.sources) if (hashFile(path.join(root,item.relativePath)) !== item.sha256)
+    throw new Error('Source changed: '+item.relativePath);
+}
+const environment = {...process.env, MSBUILDDISABLENODEREUSE:'1'};
+for (const key of ['CL','_CL_','CMAKE_TOOLCHAIN_FILE']) delete environment[key];
+const records=[];
+async function owned(label, executable, args, timeoutMs=120000, drainMs=30000) {
+  checkInputs();
+  const directory = path.join(__dirname,label); fs.mkdirSync(directory);
+  const stdout = fs.openSync(path.join(directory,'stdout.log'),'wx');
+  const stderr = fs.openSync(path.join(directory,'stderr.log'),'wx');
+  const identity = {path:executable,sha256:hashFile(executable)};
+  write(path.join(directory,'invocation.json'), {label, identity, args, cwd:root,
+    sourceFreezeSha256:sha(freezeBytes), provider:{runner,runnerSha256:runnerSha,clientSha256:clientSha},
+    environment:{MSBUILDDISABLENODEREUSE:'1',CL:'removed-in-child',_CL_:'removed-in-child',CMAKE_TOOLCHAIN_FILE:'removed-in-child'}});
+  let result, ready, readyError;
+  try {
+    const handle = launchOwned(executable,args,{runner,cwd:root,report:path.join(directory,'owned.ndjson'),
+      timeoutMs,drainMs,stdout,stderr,env:environment});
+    handle.ready.then(value=>{ready=value;},error=>{readyError=error.message;});
+    result = await handle.finished;
+    try {ready = await handle.ready;} catch(error) {readyError=error.message;}
+  } finally {fs.closeSync(stdout);fs.closeSync(stderr);}
+  checkInputs(); if(hashFile(executable)!==identity.sha256) throw new Error('Subject executable changed');
+  const resultBytes=JSON.stringify({...result,ready,readyError},null,2)+'\n';
+  write(path.join(directory,'result.json'),resultBytes);
+  const raw=fs.readFileSync(result.report);
+  if(hashFile(result.report)!==result.reportSha256) throw new Error('Raw report hash differs');
+  const rows=raw.toString('utf8').trimEnd().split('\n').map(line=>JSON.parse(line));
+  const start=rows[0], terminal=rows.at(-1);
+  if(!result.closureConfirmed || terminal.activeProcesses!==0 || !ready || start.pid!==ready.pid ||
+      start.creationFileTime!==ready.creationFileTime || result.pid!==ready.pid ||
+      result.creationFileTime!==ready.creationFileTime) throw new Error('Owned closure/identity differs');
+  const context=JSON.parse(fs.readFileSync(result.report+'.context.json','utf8'));
+  if(context.executableSha256!==identity.sha256 || context.runnerSha256!==runnerSha ||
+      context.executable!==executable || JSON.stringify(context.args)!==JSON.stringify(args) || context.cwd!==root)
+    throw new Error('Invocation context differs');
+  const item={label,rootExitCode:result.exitCode,genericPassed:result.passed,supervisorExitCode:result.supervisorExitCode,
+    closureConfirmed:result.closureConfirmed,ready,reportSha256:result.reportSha256,
+    contextSha256:hashFile(result.report+'.context.json'),stdoutSha256:hashFile(path.join(directory,'stdout.log')),
+    stderrSha256:hashFile(path.join(directory,'stderr.log')),
+    observedMemberHistory:rows.filter(row=>row.event==='owned-member'&&row.pid!==start.pid).map(row=>({pid:row.pid,image:row.image,
+      creationFileTime:row.creationFileTime,imageReadError:row.imageReadError}))};
+  records.push(item); console.log(JSON.stringify(item));
+  return {directory,result,ready,rows,stdout:fs.readFileSync(path.join(directory,'stdout.log'))};
+}
+function pe(file,expected) {
+  const bytes=fs.readFileSync(file),offset=bytes.readUInt32LE(0x3c);
+  if(bytes.toString('ascii',offset,offset+4)!=='PE\0\0'||bytes.readUInt16LE(offset+4)!==expected)
+    throw new Error('PE machine differs');
+  return {path:file,bytes:bytes.length,sha256:sha(bytes),machine:expected};
+}
+(async()=>{
+  checkInputs();
+  if(phase==='pure') { const checked=await owned('pure',process.execPath,['--test',path.join(root,'tests/benchmark/display-calibration.test.cjs')],30000,2000); if(!checked.result.passed) throw new Error('Pure reader regression failed'); } else if(phase==='build') {
+    write(path.join(__dirname,'source-freeze.inert.snapshot'),freezeBytes);
+    write(path.join(__dirname,'host-interference.json'),{observedBy:'read-only Get-Process immediately before this repaired run setup',
+      observedAtUtc:new Date().toISOString(),foreignQemu:[{pid:55080,name:'qemu-system-x86_64'},{pid:61912,name:'qemu-system-x86_64'}],
+      operationsOnForeignProcesses:false,notPerformanceMeasurement:true});
+    const tools=[cmake,runner,path.join(__dirname,'provider/owned-process.cjs'),process.execPath,
+      instance+'/MSBuild/Current/Bin/amd64/MSBuild.exe',...['x86','x64'].flatMap(arch=>['cl.exe','link.exe','dumpbin.exe'].map(name=>toolRoot+'/'+arch+'/'+name))];
+    const toolsFolder=path.join(__dirname,'tool-bytes');fs.mkdirSync(toolsFolder);
+    write(path.join(__dirname,'tools.json'),tools.map((file,index)=>{const bytes=fs.readFileSync(file),snapshot=index+'.inert.binary';
+      fs.writeFileSync(path.join(toolsFolder,snapshot),bytes,{flag:'wx'});return{path:file,sha256:sha(bytes),bytes:bytes.length,snapshot};}));
+    for(const arch of ['x64','x86']) {
+      const build=path.join(__dirname,'build-'+arch), platform=arch==='x64'?'x64':'Win32';
+      const args=['-S',path.join(__dirname,'consumer'),'-B',build,'-G','Visual Studio 17 2022',
+        '-A',platform+',version=10.0.19041.0','-T','v143,host=x64,version=14.44.35207',
+        '-DCMAKE_GENERATOR_INSTANCE:PATH='+instance,'-DCMAKE_SYSTEM_VERSION:STRING=10.0.19041.0',
+        '-DCMAKE_VS_GLOBALS:STRING=VcpkgEnabled=false;VcpkgEnableManifest=false;VcpkgManifestInstall=false'];
+      const configure=await owned('configure-'+arch,cmake,args);
+      if(configure.result.exitCode!==0) throw new Error('Configure body failed '+arch);
+      const compile=await owned('compile-'+arch,cmake,['--build',build,'--config','Release','--target','DisplayCalibration',
+        'DisplaySystemDirectoryFixture','--parallel','2','--','/nr:false','/verbosity:detailed']);
+      if(compile.result.exitCode!==0) throw new Error('Compile body failed '+arch);
+      const fixture=path.join(build,'Release/DisplaySystemDirectoryFixture.exe'); const fixtureArtifact=pe(fixture,arch==='x64'?0x8664:0x14c); const fixtureResult=await owned('fixture-'+arch,fixture,[],10000,2000); if(!fixtureResult.result.passed) throw new Error('Directory fixture failed '+arch); write(path.join(__dirname,'fixture-'+arch+'.json'),{fixtureArtifact,testOnly:true,syntheticApiCases:true,result:fixtureResult.result}); const exe=path.join(build,'Release/DisplayCalibration.exe');
+      const artifact=pe(exe,arch==='x64'?0x8664:0x14c);
+      const imports=await owned('imports-'+arch,toolRoot+'/'+arch+'/dumpbin.exe',['/headers','/imports','/dependents',exe],30000,10000);
+      if(!imports.result.passed) throw new Error('Imports diagnostic supervision failed '+arch);
+      const cache=fs.readFileSync(path.join(build,'CMakeCache.txt'),'utf8');
+      const project=fs.readFileSync(path.join(build,'DisplayCalibration.vcxproj'),'utf8');
+      if(!cache.includes('CMAKE_GENERATOR:INTERNAL=Visual Studio 17 2022')||!project.includes('10.0.19041.0')||
+          !project.includes('v143')||!project.includes('WINVER=0x0601')||!project.includes('_WIN32_WINNT=0x0601')||
+          !project.includes('display-calibration.cpp')) throw new Error('Actual generated target identity differs');
+      write(path.join(__dirname,'artifact-'+arch+'.json'),{artifact,
+        sourceCppSha256:frozen.sources[0].sha256,sourceFreezeSha256:sha(freezeBytes),
+        cacheSha256:hashFile(path.join(build,'CMakeCache.txt')),projectSha256:hashFile(path.join(build,'DisplayCalibration.vcxproj')),
+        configureRootCompleted:true,compileRootCompleted:true,configureGenericPassed:configure.result.passed,
+        compileGenericPassed:compile.result.passed,compilerTailAcceptance:false,importsJobPassed:imports.result.passed});
+    }
+  } else {
+    const {readDisplayCalibration}=require(path.join(root,'benchmarks/protocol/display-calibration.cjs'));
+    for(const arch of ['x64','x86']) {
+      const artifact=JSON.parse(fs.readFileSync(path.join(__dirname,'artifact-'+arch+'.json'),'utf8'));
+      if(hashFile(artifact.artifact.path)!==artifact.artifact.sha256||artifact.sourceCppSha256!==frozen.sources[0].sha256)
+        throw new Error('Fresh built artifact identity differs');
+      const actual=await owned('collect-'+arch,artifact.artifact.path,[],10000,2000);
+      let verdict,parseError;
+      try {verdict=readDisplayCalibration(actual.stdout,{ownedSubject:actual.ready});}
+      catch(error){parseError=error.message;}
+      write(path.join(actual.directory,'verdict.json'),{verdict,parseError,
+        actualConfigurationAccepted:actual.result.passed===true&&verdict?.boundConfigurationAccepted===true,
+        actualSource:frozen.sources[0].sha256,actualArtifact:artifact.artifact.sha256,
+        physicalPresentation:false,opticalCalibration:false,performanceGate:false,releaseReady:false});
+      console.log(JSON.stringify({arch,verdict,parseError}));
+      if(parseError) process.exitCode=1;
+    }
+  }
+  write(path.join(__dirname,'result-'+phase+'.json'),{phase,records,
+    sourceFreezeSha256:sha(freezeBytes),rawFailurePreserved:true,compilerTailAcceptance:false,
+    physicalPresentation:false,opticalCalibration:false,performanceGate:false,releaseReady:false});
+})().catch(error=>{console.error(error.stack);write(path.join(__dirname,'failure-'+phase+'.json'),{
+  error:error.stack,records,sourceFreezeSha256:sha(freezeBytes),passed:false});process.exitCode=1;});

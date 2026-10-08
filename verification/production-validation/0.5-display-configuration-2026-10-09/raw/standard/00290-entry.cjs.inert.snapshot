@@ -1,0 +1,46 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),vm=require('node:vm'),assert=require('node:assert/strict');
+const root='F:/work/sm05-scopes',base=__dirname;
+const runner='F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const ps='C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const source=fs.readFileSync(path.join(root,'tools/Collect-Verification.cjs'),'utf8');
+const prefix=source.slice(source.indexOf('const args=process.argv.slice(2)'),source.indexOf('// A failed collection'));
+const block=source.slice(source.indexOf('if(withDisplayConfiguration){'),source.indexOf('if(withGuiBindings){'));
+function projection(args,fail=false){const calls=[],unit={};let error=null;try{vm.runInNewContext(prefix+'\n'+block,{process:{argv:['node','Collect',...args]},unit,
+ run(name,executable,argv){calls.push({name,argv});if(fail)throw Error('authored unavailable collector');return {passed:true,exitCode:0};}});}catch(e){error=e.message;}return {calls,unit,error};}
+const tests=[];
+for(const args of [[],['--foundation'],['--with-gui-bindings']]){const r=projection(args);assert.equal(r.error,null);assert.equal(r.calls.length,0);tests.push({args,displayCalls:0});}
+const explicit=projection(['--foundation','--with-gui-bindings','--with-display-configuration']);
+assert.equal(explicit.error,null);assert.deepEqual(explicit.calls.map(x=>Array.from(x.argv).slice(-2)),[['display','x86'],['display','x64']]);
+for(const result of Object.values(explicit.unit))for(const name of ['physicalPresentation','opticalCalibration','performanceGate','releaseReady'])assert.equal(result[name],false);
+tests.push({args:['--with-display-configuration'],displayCalls:2,configurationOnly:true});
+for(const args of [['--with-display-configuration','--with-display-configuration'],['--unknown']]){const r=projection(args);assert.ok(r.error);assert.equal(r.calls.length,0);tests.push({args,rejected:true});}
+const unavailable=projection(['--with-display-configuration'],true);assert.ok(unavailable.error);assert.equal(Object.keys(unavailable.unit).length,0);
+tests.push({authoredCollectorFailurePropagates:true});
+const folder=path.join(base,'entry-'+crypto.randomUUID());fs.mkdirSync(folder);
+const results=[];
+(async()=>{
+ const cases=[{name:'default',args:[],exit:0,calls:0},{name:'explicit-x86',args:['-WithDisplayConfiguration','-Architecture','x86'],exit:0,calls:1},
+  {name:'explicit-failure',args:['-WithDisplayConfiguration','-MockExit','1'],exit:1,calls:1},
+  {name:'nativeonly-conflict',args:['-NativeOnly','-WithDisplayConfiguration'],exit:1,calls:0}];
+ for(const item of cases){const directory=path.join(folder,item.name);fs.mkdirSync(directory);const output=path.join(directory,'projection.json');
+  const args=['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(base,'entry.ps1'),'-SourceRoot',root,'-Output',output,...item.args];
+  fs.writeFileSync(path.join(directory,'inputs.json'),JSON.stringify({executable:ps,args,cwd:root,psSha256:hash(fs.readFileSync(ps)),
+   scriptSha256:hash(fs.readFileSync(path.join(base,'entry.ps1'))),testSha256:hash(fs.readFileSync(path.join(root,'tools/Test.ps1'))),
+   buildPreparationSha256:hash(fs.readFileSync(path.join(root,'tools/internal/Build-ValidationTools.ps1')))},null,2)+'\n',{flag:'wx'});
+  fs.writeFileSync(path.join(directory,'entry.ps1.inert.snapshot'),fs.readFileSync(path.join(base,'entry.ps1')),{flag:'wx'});
+  const out=fs.openSync(path.join(directory,'stdout.bin'),'wx'),err=fs.openSync(path.join(directory,'stderr.bin'),'wx');let done;
+  try{const job=require(path.join(root,'tools/internal/owned-process.cjs')).launchOwned(ps,args,{runner,cwd:root,report:path.join(directory,'owned.ndjson'),timeoutMs:15000,drainMs:3000,stdout:out,stderr:err});await job.ready;done=await job.finished;}finally{fs.closeSync(out);fs.closeSync(err);}
+  fs.writeFileSync(path.join(directory,'finished.json'),JSON.stringify(done,null,2)+'\n',{flag:'wx'});
+  assert.equal(done.exitCode,item.exit);assert.equal(done.closureConfirmed,true);assert.equal(done.stopRequested,false);assert.equal(done.fallbackUsed,false);
+  if(item.exit===0)assert.equal(done.passed,true);else assert.equal(done.passed,false);
+  const projection=JSON.parse(fs.readFileSync(output));assert.equal(projection.calls.length,item.calls);assert.equal(projection.fullTestExecuted,false);
+  if(item.calls)assert.deepEqual(projection.calls[0].arguments.slice(1),['display',item.name==='explicit-x86'?'x86':'x64']);
+  results.push({name:item.name,exitCode:done.exitCode,genericPassed:done.passed,closureConfirmed:done.closureConfirmed,actualAstHooks:projection.actualAstHooks,calls:item.calls});
+ }
+ const summary={schema:'soui.display-standard-entry-projection/v1',folder,psCases:results,collectCases:tests,
+  actualTestSha256:hash(fs.readFileSync(path.join(root,'tools/Test.ps1'))),actualCollectSha256:hash(Buffer.from(source)),
+  astProjectionOnly:true,fullTestExecuted:false,fullCollectExecuted:false,noGui:true,noPerformanceClaim:true};
+ fs.writeFileSync(path.join(folder,'summary.json'),JSON.stringify(summary,null,2)+'\n',{flag:'wx'});console.log(JSON.stringify(summary,null,2));
+})().catch(error=>{console.error(error.stack);process.exitCode=1;});
