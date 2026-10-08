@@ -1,4 +1,6 @@
 import type { SouiCapabilityPage, SouiDescribeOptions } from './capabilities.js';
+import type { SouiTaskQueryParams } from './task-query.js';
+export type { SouiTaskQueryParams } from './task-query.js';
 
 export interface SouiNativeEvent {
   sessionId: string;
@@ -56,7 +58,7 @@ export interface SouiCoreMethodMap {
   'bridge.probe.report': { params: { ready: true }; result: { ready: true } };
   'task.start': { params: { kind: string; operationId: string; input: Record<string, unknown> };
     result: { taskId: string; accepted: boolean; duplicate: boolean } };
-  'task.query': { params: { taskId: string }; result: { taskId: string; state: string;
+  'task.query': { params: SouiTaskQueryParams; result: { taskId: string; state: string;
     progress: number; message: string; sequence: number; result?: Record<string, unknown> } };
   'task.cancel': { params: { taskId: string }; result: { taskId: string;
     state: string; cancelRequested: boolean } };

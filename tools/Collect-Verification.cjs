@@ -32,6 +32,8 @@ const unit={
  nativeMeasurementX86:run('native-measurement-x86',process.execPath,['tools/internal/measurement-validation.cjs','native','x86']),
  guiDelivery:run('gui-bindings-delivery-tests',process.execPath,['--test','tests/sdk/gui-bindings-delivery.test.cjs','tests/sdk/gui-bindings-entrypoints.test.cjs']),
  actionGeneration:run('action-generation-tests',process.execPath,['--test','tests/sdk/actiongen.test.mjs','tests/web/generated-actions.test.mjs']),
+ taskQuery:run('task-query-tests',process.execPath,['--test','tests/web/task-query.test.mjs']),
+ taskQueryTypes:run('task-query-types',process.execPath,['sdk/web/node_modules/typescript/bin/tsc','-p','tests/web/task-query-types.tsconfig.json']),
  package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),
  nativePayload:run('sdk-native-payload-tests',process.execPath,['--test','tests/sdk/sdk-native-payload.test.cjs']),
  interruption:run('sdk-installation-interruption-tests',process.execPath,['--test','tests/sdk/installation-interruption.test.cjs','tests/sdk/profile-installation-integration.test.cjs']),
@@ -41,6 +43,8 @@ const unit={
  web:run('web-sdk-tests',process.execPath,['--test','tests/web/sdk-client.test.mjs','tests/web/capabilities.test.mjs','tests/web/action-contracts.test.mjs','tests/web/gui.test.mjs','tests/web/web-features.test.mjs','tests/web/native-resolvers.test.mjs','tests/web/session-renewal.test.mjs','tests/web/agent-session-renewal.test.mjs','tests/web/webview2-preload.test.mjs']),
  nativeActionsX64:run('native-actions-x64',path.join(root,'out/x64/tests/native/Release/soui_action_contract_tests.exe'),[]),
  nativeActionsX86:run('native-actions-x86',path.join(root,'out/x86/tests/native/Release/soui_action_contract_tests.exe'),[]),
+ nativeTaskQueryX64:run('native-task-query-x64',path.join(root,'out/x64/tests/native/Release/soui_task_operation_query_tests.exe'),[]),
+ nativeTaskQueryX86:run('native-task-query-x86',path.join(root,'out/x86/tests/native/Release/soui_task_operation_query_tests.exe'),[]),
  nativeX64:run('native-contract-x64',path.join(root,'out/x64/tests/native/Release/soui_sdk_contract_tests.exe'),[]),
  nativeX86:run('native-contract-x86',path.join(root,'out/x86/tests/native/Release/soui_sdk_contract_tests.exe'),[])
 };

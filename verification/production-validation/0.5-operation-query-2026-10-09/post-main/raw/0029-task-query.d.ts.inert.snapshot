@@ -1,0 +1,13 @@
+import type { SouiToolDefinition } from './action-contracts.js';
+/** Runtime still validates exact fields, bounded ASCII, and native ownership. */
+export type SouiTaskQueryParams = {
+    taskId: string;
+    operationId?: never;
+} | {
+    operationId: string;
+    taskId?: never;
+};
+/** Copies one selector once, preventing a getter/toJSON from changing the wire shape. */
+export declare function readTaskQueryParams(value: unknown, requestId?: string): SouiTaskQueryParams;
+/** Limited schema cannot express XOR/ASCII; the client and native enforce both. */
+export declare function taskQueryToolDefinition(): SouiToolDefinition;

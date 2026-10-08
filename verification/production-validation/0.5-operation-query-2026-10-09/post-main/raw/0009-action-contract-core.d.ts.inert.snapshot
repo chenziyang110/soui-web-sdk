@@ -1,0 +1,14 @@
+export function copySouiJson(value: any, maximum: any, code: any): any;
+export function readSouiActionContract(raw: any, code?: string): {
+    protocol: string;
+    title: any;
+    description: any;
+    inputSchema: any;
+    outputSchema: any;
+};
+export function validateSouiActionInput(contract: any, input: any): void;
+export function validateSouiActionOutput(contract: any, output: any): void;
+export class ActionContractError extends Error {
+    constructor(code: any, message: any);
+    code: any;
+}

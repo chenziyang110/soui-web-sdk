@@ -1,0 +1,50 @@
+import { SouiBridgeError, isRecord, utf8Bytes } from './protocol.js';
+import * as core from './action-contract-core.js';
+import { taskQueryToolDefinition } from './task-query.js';
+function invalid(code, message) { throw new SouiBridgeError(code, message); }
+function translated(read) {
+    try {
+        return read();
+    }
+    catch (error) {
+        if (error instanceof core.ActionContractError)
+            throw new SouiBridgeError(error.code, error.message);
+        throw error;
+    }
+}
+// Shared with the GUI registry; not part of the root SDK exports.
+export function copySouiJson(value, maximum, code) {
+    return translated(() => core.copySouiJson(value, maximum, code));
+}
+export function readSouiActionContract(raw, code = 'E_INVALID_RESPONSE') {
+    return translated(() => core.readSouiActionContract(raw, code));
+}
+export function validateSouiActionInput(contract, input) {
+    translated(() => core.validateSouiActionInput(contract, input));
+}
+export function validateSouiActionOutput(contract, output) {
+    translated(() => core.validateSouiActionOutput(contract, output));
+}
+/** Descriptions are advisory. Calling a tool still uses the authorized native client. */
+export function souiToolDefinitions(catalog) {
+    if (!isRecord(catalog) || catalog.protocol !== 'soui.capabilities/1' || typeof catalog.sdkVersion !== 'string' ||
+        catalog.sdkVersion.length === 0 || catalog.sdkVersion.length > 128 || !Array.isArray(catalog.methods) || catalog.methods.length > 4096)
+        invalid('E_INVALID_RESPONSE', 'Expected a bounded capability catalog.');
+    const names = [];
+    const output = [];
+    for (const method of catalog.methods) {
+        if (!isRecord(method) || typeof method.name !== 'string' || !/^[A-Za-z0-9_.:-]{1,128}$/.test(method.name) ||
+            typeof method.capability !== 'string' || method.capability.length === 0 || utf8Bytes(method.capability) > 512 || names.indexOf(method.name) >= 0)
+            invalid('E_INVALID_RESPONSE', 'Invalid or duplicate tool method.');
+        names.push(method.name);
+        if (method.action === undefined) {
+            if (method.name === 'task.query' && method.capability === 'task.query' &&
+                method.available !== false && method.authorized !== false)
+                output.push(taskQueryToolDefinition());
+            continue;
+        }
+        const action = readSouiActionContract(method.action);
+        output.push({ name: method.name, description: action.description || action.title, inputSchema: action.inputSchema });
+    }
+    return output;
+}

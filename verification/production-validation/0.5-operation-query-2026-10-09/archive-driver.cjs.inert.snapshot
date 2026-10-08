@@ -1,0 +1,24 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),identity=require('../tools/internal/delivery-identity.cjs');
+const root=path.resolve(__dirname,'..'),attempt=path.join(root,'out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed');
+const base='verification/production-validation/0.5-operation-query-2026-10-09',hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const indexBytes=fs.readFileSync(path.join(attempt,'index.json'));
+if(hash(indexBytes)!=='7ba00129d8732bff509aeb7e62c3e5dbb0130dfb3b631e3b4d05b7510fead57d')throw Error('Frozen index changed');
+const index=JSON.parse(indexBytes),frozen=JSON.parse(fs.readFileSync(path.join(attempt,'frozen-inputs-final.json')));
+if(index.files.length!==370||frozen.sourceFiles.length!==16)throw Error('Unexpected frozen set');
+for(const f of frozen.sourceFiles){const b=fs.readFileSync(identity.safePath(root,f.path));if(b.length!==f.bytes||hash(b)!==f.sha256)throw Error('Source changed '+f.path);}
+const files=[],seen=new Set();
+function copy(input,relative,expected){const s=fs.lstatSync(input);if(!s.isFile()||s.isSymbolicLink()||s.nlink!==1)throw Error('Not plain unique file');
+ const b=fs.readFileSync(input),sha256=hash(b);if(expected&&(b.length!==expected.bytes||sha256!==expected.sha256))throw Error('Evidence changed');
+ const rel=/\.(cjs|mjs|js|ts|cpp|h|ps1|cmake|vcxproj|txt)$/i.test(relative)?relative+'.inert.snapshot':relative;
+ if(seen.has(rel.toLowerCase()))throw Error('Duplicate archive path');seen.add(rel.toLowerCase());const target=path.join(root,base,rel);
+ fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,b,{flag:'wx'});files.push({path:base+'/'+rel,source:input,bytes:b.length,sha256});return files.at(-1);}
+for(const [i,f]of index.files.entries()){const row=copy(identity.safePath(attempt,f.path),'raw/'+String(i+1).padStart(4,'0')+'-'+path.basename(f.path),f);row.originalRelativePath=f.path;}
+copy(path.join(attempt,'index.json'),'attempt-index.json');copy(__filename,'archive-driver.cjs');
+const result=JSON.parse(fs.readFileSync(path.join(attempt,'results-final.json')));
+fs.writeFileSync(path.join(root,base,'index.json'),JSON.stringify({schema:'soui.operation-query-mainline-evidence/v1',version:'0.5.0-preview.1',
+ baseline:frozen.baseline,frozenInputsSha256:hash(fs.readFileSync(path.join(attempt,'frozen-inputs-final.json'))),
+ originalResultsSha256:hash(fs.readFileSync(path.join(attempt,'results-final.json'))),results:result,
+ actualNativeTestsNaturallyClosed:true,nativeCompilerRootOnly:true,fullTestExecuted:false,fullCollectExecuted:false,
+ guiValidated:false,targetOsValidated:false,releaseReady:false,files},null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({path:base+'/index.json',files:files.length,bytes:files.reduce((n,f)=>n+f.bytes,0)}));
