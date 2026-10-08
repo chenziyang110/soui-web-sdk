@@ -1,0 +1,37 @@
+✔ failure cleanup verifies direct child identity and stops its own process tree (4899.3974ms)
+✔ failed identity verification falls back to the owned process handle (2042.2389ms)
+✔ preflight process list rejects missing or malformed tasklist rows (1.1144ms)
+✔ preflight and live gate share the full SOUI workload classification (0.1668ms)
+✔ live gate excludes the benchmark run and its descendants while finding external load (0.1615ms)
+✔ live gate rejects infrastructure started inside its own process tree (0.1129ms)
+✔ live gate remembers observed child identity after its parent exits (0.116ms)
+✔ live gate does not trust a new child of an absent parent PID (0.059ms)
+✔ live gate records when the runner has disappeared (0.048ms)
+✔ live gate treats a benchmark host outside the owned tree as interference (0.509ms)
+✔ live gate catches other SOUI tests and build drivers (0.0972ms)
+✔ live gate rejects a reused PID with a different creation identity (0.0995ms)
+✔ live gate fails closed if the runner PID changes identity (0.0824ms)
+✔ Windows live gate obtains process identities with a fail-closed query (630.0916ms)
+✔ live gate stops only its own runner when external workload appears (640.6177ms)
+✔ live gate checks the real runner identity before stopping its process tree (1644.8513ms)
+✔ live gate fails closed and stops its runner when the process query fails (38.8935ms)
+✔ live gate lets an isolated runner exit normally (303.2405ms)
+✔ live gate refuses a sample that cannot identify its own runner (678.8401ms)
+✔ live gate catches interference that starts after a clean initial sample (703.3404ms)
+✔ five alternating accepted pairs produce diagnostics without a value verdict (1.3893ms)
+✔ four pairs cannot be summarized as the five-pair acceptance input (0.5499ms)
+✔ a missing or contaminated live gate invalidates all candidate ratios (1.8131ms)
+✔ order drift and duplicate run identity are refused (0.4745ms)
+✔ a rejected pair or forced cleanup cannot contribute to a summary (0.4105ms)
+✔ live gate timestamps must cover a full run without sampling gaps (1.5625ms)
+✔ real run times follow the declared alternating order without overlap (0.4582ms)
+✔ each before and after preflight gate brackets its actual run (0.3748ms)
+✔ preflight gates too far from a measured run are rejected (0.1634ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7037.3547

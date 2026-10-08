@@ -8,3 +8,4 @@
 ## 0.4 新增
 
 - [ADR-0016：运行档位与可选现代渲染后端](0016-runtime-profiles-and-modern-backend.md)
+- [ADR-0017：版本分支整合与固定 SDK 身份](0017-pr-stack-integration.md)

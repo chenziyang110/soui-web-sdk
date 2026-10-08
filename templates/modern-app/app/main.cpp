@@ -100,6 +100,11 @@ int run(HINSTANCE instance, bool smoke) {
   if (!app.bridge.register_action("app.greet", "app.greet", contract, [](const auto& request) {
         return json{{"message", "你好，" + json::parse(request.params_json).at("name").template get<std::string>() + "。"}}.dump();
       })) { app.log("E_ACTION_REGISTRATION: Invalid application action contract."); return 1; }
+  if (!app.bridge.enable_session_renewal() ||
+      !app.bridge.set_session_capabilities({"bridge.describe", "bridge.probe", "app.greet", "bridge.session.renew"})) {
+    app.log("E_SESSION_REGISTRATION: Invalid application session capabilities.");
+    return 1;
+  }
   WNDCLASSW type{};
   type.lpfnWndProc = procedure; type.hInstance = instance; type.lpszClassName = L"SouiModernStarter";
   type.hCursor = LoadCursorW(nullptr, IDC_ARROW);

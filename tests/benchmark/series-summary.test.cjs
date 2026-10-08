@@ -2,7 +2,8 @@
 
 const assert = require('node:assert/strict');
 const {test} = require('node:test');
-const {summarizeSeriesRecord, assertLiveGateCoverage, assertRunnerBinding} =
+const {summarizeSeriesRecord, validateGateCoverage, validateRunChronology,
+  validatePreflightChronology, assertRunnerBinding} =
   require('../../benchmarks/protocol/summarize-series.cjs');
 
 function acceptedSeries(count = 5) {
@@ -25,6 +26,7 @@ function acceptedSeries(count = 5) {
     for (const host of ['soui', 'electron']) {
       gates.push({checkedAt: '2026-09-28T00:00:00.000Z', pairNumber: number,
         host, ownRunPid: number * 10 + (host === 'soui' ? 1 : 2),
+        rootPresent: true,
         competingProcesses: []});
       runs.push({host, runId: `${number}-${host}`,
         pageDurationMs: 60000 + number * 100,
@@ -87,6 +89,10 @@ test('order drift and duplicate run identity are refused', () => {
   binding.gates[0].ownRunPid = undefined;
   assert.throws(() => summarizeSeriesRecord(binding.series,
     binding.gates, binding.reports), /not bound to a run process/);
+  const missingRunner = acceptedSeries();
+  missingRunner.gates[0].rootPresent = false;
+  assert.throws(() => summarizeSeriesRecord(missingRunner.series,
+    missingRunner.gates, missingRunner.reports), /did not observe its run process/);
 });
 
 test('a rejected pair or forced cleanup cannot contribute to a summary', () => {
@@ -105,31 +111,114 @@ test('a rejected pair or forced cleanup cannot contribute to a summary', () => {
     zeroReference.gates, zeroReference.reports), /reference must be positive/);
 });
 
-test('live gate must cover each real run without a missing interval', () => {
-  const input = acceptedSeries();
-  const start = Date.parse('2026-09-28T00:00:00.000Z');
-  const periods = [];
-  const gates = [];
-  for (let number = 1; number <= 5; ++number) {
-    for (const host of ['soui', 'electron']) {
-      periods.push({pairNumber: number, host,
-        startedAt: new Date(start).toISOString(),
-        finishedAt: new Date(start + 60000).toISOString()});
-      for (let elapsed = 0; elapsed <= 60000; elapsed += 5000)
-        gates.push({pairNumber: number, host,
-          checkedAt: new Date(start + elapsed).toISOString()});
+test('live gate timestamps must cover a full run without sampling gaps', () => {
+  const start = '2026-09-28T00:00:00.000Z';
+  const finish = '2026-09-28T00:01:00.000Z';
+  const gates = Array.from({length: 13}, (_, index) => ({pairNumber: 1,
+    host: 'soui', ownRunPid: 123,
+    checkedAt: new Date(Date.parse(start) + index * 5000).toISOString()}));
+  const coverage = validateGateCoverage(gates, 1, 'soui', start, finish, 5000, 123);
+  assert.equal(coverage.samples, 13);
+  assert.equal(coverage.lastAt, finish);
+  assert.throws(() => validateGateCoverage(gates, 1, 'soui', start, finish, 5000, 999),
+    /runner PID/);
+  assert.throws(() => validateGateCoverage(gates.filter((_, index) =>
+    index <= 3 || index >= 9), 1, 'soui', start, finish, 5000, 123), /Live gate gap/);
+  assert.throws(() => validateGateCoverage(gates.slice(6), 1, 'soui', start, finish, 5000, 123),
+    /did not cover run start/);
+  assert.throws(() => validateGateCoverage(gates.slice(0, 7), 1, 'soui', start, finish, 5000, 123),
+    /did not cover run finish/);
+  assert.throws(() => validateGateCoverage(gates.slice(0, 1), 1, 'soui', start, finish, 5000, 123),
+    /did not cover run finish/);
+  const outsideShortRun = [
+    {pairNumber: 1, host: 'soui', ownRunPid: 123,
+      checkedAt: '2026-09-28T00:00:06.000Z'},
+    {pairNumber: 1, host: 'soui', ownRunPid: 123,
+      checkedAt: '2026-09-28T00:00:18.000Z'},
+  ];
+  assert.throws(() => validateGateCoverage(outsideShortRun, 1, 'soui',
+    '2026-09-28T00:00:10.000Z', '2026-09-28T00:00:14.000Z', 5000, 123),
+  /inside measured run/);
+});
+
+test('real run times follow the declared alternating order without overlap', () => {
+  const {series} = acceptedSeries();
+  series.startedAt = '2026-09-28T00:00:00.000Z';
+  series.finishedAt = '2026-09-28T00:10:01.000Z';
+  const runTimes = [];
+  let nextStart = Date.parse(series.startedAt) + 1000;
+  for (const pair of series.pairs) {
+    for (const host of pair.order) {
+      runTimes.push({pairNumber: pair.number, host,
+        startedAt: new Date(nextStart).toISOString(),
+        finishedAt: new Date(nextStart + 60000).toISOString()});
+      nextStart += 60000;
     }
   }
-  assert.doesNotThrow(() => assertLiveGateCoverage(input.series, gates, periods));
-  const truncated = gates.filter(gate => gate.pairNumber !== 1 ||
-    gate.host !== 'soui' || Date.parse(gate.checkedAt) < start + 15000 ||
-    Date.parse(gate.checkedAt) > start + 45000);
-  assert.throws(() => assertLiveGateCoverage(input.series, truncated, periods),
-    /coverage has a gap/);
-  const missingEnd = gates.filter(gate => gate.pairNumber !== 1 ||
-    gate.host !== 'soui' || Date.parse(gate.checkedAt) < start + 40000);
-  assert.throws(() => assertLiveGateCoverage(input.series, missingEnd, periods),
-    /coverage has a gap/);
+  assert.equal(validateRunChronology(series, runTimes).length, 10);
+  const swapped = structuredClone(runTimes);
+  [swapped[0].startedAt, swapped[1].startedAt] =
+    [swapped[1].startedAt, swapped[0].startedAt];
+  assert.throws(() => validateRunChronology(series, swapped), /Run chronology/);
+  const overlap = structuredClone(runTimes);
+  overlap[1].startedAt = new Date(Date.parse(overlap[0].finishedAt) - 1).toISOString();
+  assert.throws(() => validateRunChronology(series, overlap), /Run chronology/);
+  assert.throws(() => validateRunChronology(series, runTimes.slice(1)),
+    /Run chronology/);
+});
+
+test('each before and after preflight gate brackets its actual run', () => {
+  const {series} = acceptedSeries();
+  series.startedAt = '2026-09-28T00:00:01.000Z';
+  series.finishedAt = '2026-09-28T00:10:31.000Z';
+  const runTimes = [];
+  const checks = [{checkedAt: '2026-09-28T00:00:00.000Z',
+    competingProcesses: []}];
+  let nextStart = Date.parse(series.startedAt) + 1000;
+  for (const pair of series.pairs) {
+    for (const host of pair.order) {
+      const startedAt = new Date(nextStart).toISOString();
+      const finishedAt = new Date(nextStart + 60000).toISOString();
+      runTimes.push({pairNumber: pair.number, host, startedAt, finishedAt});
+      checks.push({checkedAt: new Date(nextStart - 1000).toISOString(),
+        competingProcesses: []});
+      checks.push({checkedAt: new Date(nextStart + 60001).toISOString(),
+        competingProcesses: []});
+      nextStart += 63000;
+    }
+  }
+  series.checks = checks;
+  assert.equal(validatePreflightChronology(series, runTimes).length, 10);
+  const staleBefore = structuredClone(series);
+  staleBefore.checks[3].checkedAt = staleBefore.checks[1].checkedAt;
+  assert.throws(() => validatePreflightChronology(staleBefore, runTimes),
+    /Preflight chronology/);
+  const earlyAfter = structuredClone(series);
+  earlyAfter.checks[2].checkedAt = runTimes[0].startedAt;
+  assert.throws(() => validatePreflightChronology(earlyAfter, runTimes),
+    /Preflight chronology/);
+});
+
+test('preflight gates too far from a measured run are rejected', () => {
+  const run = [{pairNumber: 1, host: 'soui',
+    startedAt: '2026-09-28T00:01:00.000Z',
+    finishedAt: '2026-09-28T00:01:10.000Z'}];
+  const series = {startedAt: '2026-09-28T00:00:00.000Z',
+    finishedAt: '2026-09-28T00:02:00.000Z', checks: [
+      {checkedAt: '2026-09-28T00:00:00.000Z'},
+      {checkedAt: '2026-09-28T00:00:01.000Z'},
+      {checkedAt: '2026-09-28T00:01:11.000Z'},
+    ]};
+  assert.throws(() => validatePreflightChronology(series, run),
+    /Preflight chronology/);
+  series.checks[1].checkedAt = '2026-09-28T00:00:59.000Z';
+  series.checks[2].checkedAt = '2026-09-28T00:01:59.000Z';
+  assert.throws(() => validatePreflightChronology(series, run),
+    /Preflight chronology/);
+  series.checks[2].checkedAt = '2026-09-28T00:01:11.000Z';
+  series.startedAt = '2026-09-28T00:00:30.000Z';
+  assert.throws(() => validatePreflightChronology(series, run),
+    /Preflight chronology/);
 });
 
 test('series, single-run and live gate must identify the same runner', () => {
@@ -150,4 +239,9 @@ test('series, single-run and live gate must identify the same runner', () => {
   assert.doesNotThrow(() => assertRunnerBinding(
     {number: 1, runnerProcesses: {soui: {pid: 41, createdAt: powershellDate}}},
     'soui', record, [{...gates[0], ownRunCreatedAt: powershellDate}]));
+  const powershellDateWithOffset = '/Date(1790562756903+0800)/';
+  assert.doesNotThrow(() => assertRunnerBinding(
+    {number: 1, runnerProcesses: {soui: {pid: 41,
+      createdAt: powershellDateWithOffset}}}, 'soui', record,
+    [{...gates[0], ownRunCreatedAt: powershellDateWithOffset}]));
 });

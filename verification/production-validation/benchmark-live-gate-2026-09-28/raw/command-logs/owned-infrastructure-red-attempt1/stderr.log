@@ -1,0 +1,15 @@
+node:internal/test_runner/utils:112
+    throw new ERR_INVALID_ARG_VALUE(
+    ^
+
+TypeError [ERR_INVALID_ARG_VALUE]: The argument '--test-name-pattern' is an invalid regular expression. Invalid regular expression: /live\/: \ at end of pattern. Received 'live\\'
+    at convertStringToRegExp (node:internal/test_runner/utils:112:11)
+    at node:internal/test_runner/utils:375:48
+    at Array.map (<anonymous>)
+    at mapPatternFlagToRegExArray (node:internal/test_runner/utils:375:12)
+    at parseCommandLine (node:internal/test_runner/utils:235:26)
+    at node:internal/main/test_runner:19:17 {
+  code: 'ERR_INVALID_ARG_VALUE'
+}
+
+Node.js v24.14.0

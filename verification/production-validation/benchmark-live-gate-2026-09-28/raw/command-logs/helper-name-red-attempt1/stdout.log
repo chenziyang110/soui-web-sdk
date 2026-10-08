@@ -1,0 +1,48 @@
+✔ preflight process list rejects missing or malformed tasklist rows (1.0784ms)
+✖ preflight and live gate share the full SOUI workload classification (0.4932ms)
+✔ live gate excludes the benchmark run and its descendants while finding external load (0.1585ms)
+✔ live gate remembers observed child identity after its parent exits (0.1111ms)
+✔ live gate does not trust a new child of an absent parent PID (0.0971ms)
+✔ live gate records when the runner has disappeared (0.0562ms)
+✔ live gate treats a benchmark host outside the owned tree as interference (0.0659ms)
+✔ live gate catches other SOUI tests and build drivers (0.0548ms)
+✔ live gate rejects a reused PID with a different creation identity (0.9518ms)
+✔ live gate fails closed if the runner PID changes identity (0.1745ms)
+✔ Windows live gate obtains process identities with a fail-closed query (698.3082ms)
+✔ live gate stops only its own runner when external workload appears (693.1864ms)
+✔ live gate checks the real runner identity before stopping its process tree (1639.3651ms)
+✔ live gate fails closed and stops its runner when the process query fails (39.5904ms)
+✔ live gate lets an isolated runner exit normally (261.5064ms)
+✔ live gate refuses a sample that cannot identify its own runner (754.5428ms)
+✔ live gate catches interference that starts after a clean initial sample (758.0767ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 16
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4941.4485
+
+✖ failing tests:
+
+test at ..\..\SOUI-SDK-development\benchmark-realtime-gate\tests\benchmark\series-interference.test.cjs:24:1
+✖ preflight and live gate share the full SOUI workload classification (0.4932ms)
+  AssertionError [ERR_ASSERTION]: ProcessTreeSampler.exe
+  
+  false !== true
+  
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\benchmark-realtime-gate\tests\benchmark\series-interference.test.cjs:29:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
