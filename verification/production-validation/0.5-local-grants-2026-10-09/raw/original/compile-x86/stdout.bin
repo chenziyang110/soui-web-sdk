@@ -1,0 +1,469 @@
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  1>Checking Build System
+  Building Custom Rule F:/work/sm05-actions/sdk/CMakeLists.txt
+  engine_thread.cpp
+  interaction_protocol.cpp
+  runtime_profile.cpp
+  soui_miniblink_host.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+  (编译源文件“../../../../sdk/src/host/soui_miniblink_host.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  json_bridge.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+  (编译源文件“../../../../sdk/src/json_bridge.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  action_contract.cpp
+  bridge_transport.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+  (编译源文件“../../../../sdk/src/runtime/bridge/bridge_transport.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  event_bus.cpp
+  result.cpp
+  task_store.cpp
+  webview_session.cpp
+  desktop_services.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+  (编译源文件“../../../../sdk/src/runtime/services/desktop/desktop_services.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  global_shortcut.cpp
+  menu_service.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+  (编译源文件“../../../../sdk/src/runtime/services/desktop/menu_service.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  tray_service.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+  (编译源文件“../../../../sdk/src/runtime/services/desktop/tray_service.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  fileinsight-service.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+  (编译源文件“../../../../sdk/src/runtime/services/fileinsight-service/fileinsight-service.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  directory_scanner.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+  (编译源文件“../../../../sdk/src/runtime/services/filesystem-readonly/directory_scanner.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  permission_store.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+  (编译源文件“../../../../sdk/src/runtime/services/permissions/permission_store.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  task_service.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\soui_sdk.vcxproj]
+  (编译源文件“../../../../sdk/src/runtime/services/task/task_service.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  正在生成代码...
+  soui_sdk.vcxproj -> F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\Release\soui_sdk.lib
+  Building Custom Rule F:/work/sm05-actions/tests/native/CMakeLists.txt
+  local_authorization_tests.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_local_authorization_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_local_authorization_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_local_authorization_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_local_authorization_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_local_authorization_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_local_authorization_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_local_authorization_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_local_authorization_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_local_authorization_tests.vcxproj]
+  (编译源文件“../../../../../tests/native/local_authorization_tests.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  soui_local_authorization_tests.vcxproj -> F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\Release\soui_local_authorization_tests.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\Release\soui_sdk.lib
+  Building Custom Rule F:/work/sm05-actions/tests/native/CMakeLists.txt
+  session_renewal_tests.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_session_renewal_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_session_renewal_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_session_renewal_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_session_renewal_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_session_renewal_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_session_renewal_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_session_renewal_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_session_renewal_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_session_renewal_tests.vcxproj]
+  (编译源文件“../../../../../tests/native/session_renewal_tests.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  soui_session_renewal_tests.vcxproj -> F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\Release\soui_session_renewal_tests.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\Release\soui_sdk.lib
+  Building Custom Rule F:/work/sm05-actions/tests/native/CMakeLists.txt
+  task_scope_tests.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_scope_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_scope_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_scope_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_scope_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_scope_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_scope_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_scope_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_scope_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_scope_tests.vcxproj]
+  (编译源文件“../../../../../tests/native/task_scope_tests.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  soui_task_scope_tests.vcxproj -> F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\Release\soui_task_scope_tests.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\Release\soui_sdk.lib
+  Building Custom Rule F:/work/sm05-actions/tests/native/CMakeLists.txt
+  task_operation_query_tests.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_operation_query_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_operation_query_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_operation_query_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_operation_query_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_operation_query_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_operation_query_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_operation_query_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_operation_query_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_task_operation_query_tests.vcxproj]
+  (编译源文件“../../../../../tests/native/task_operation_query_tests.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  soui_task_operation_query_tests.vcxproj -> F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\Release\soui_task_operation_query_tests.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\Release\soui_sdk.lib
+  Building Custom Rule F:/work/sm05-actions/tests/native/CMakeLists.txt
+  action_contract_tests.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244: “初始化”: 从“_Ty”转换到“_Ty”，可能丢失数据 [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_action_contract_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         with [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_action_contract_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_action_contract_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=int [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_action_contract_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_action_contract_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         and [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_action_contract_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         [ [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_action_contract_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:             _Ty=unsigned char [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_action_contract_tests.vcxproj]
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61): warning C4244:         ] [F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\soui_action_contract_tests.vcxproj]
+  (编译源文件“../../../../../tests/native/action_contract_tests.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(476,61):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-actions\sdk\include\soui\runtime\services\permissions\permission_store.h(143,56):
+          查看对正在编译的函数 模板 实例化“std::shared_ptr<const unsigned char> std::make_shared<const unsigned char,int>(int &&)”的引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2913,46):
+          查看对正在编译的函数 模板 实例化“std::_Ref_count_obj2<_Ty>::_Ref_count_obj2<int>(int &&)”的引用
+          with
+          [
+              _Ty=const unsigned char
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\memory(2100,18):
+          查看对正在编译的函数 模板 实例化“void std::_Construct_in_place<_Ty,int>(_Ty &,int &&) noexcept”的引用
+          with
+          [
+              _Ty=unsigned char
+          ]
+  
+  soui_action_contract_tests.vcxproj -> F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\Release\soui_action_contract_tests.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Checking File Globs
+  soui_sdk.vcxproj -> F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\sdk\Release\soui_sdk.lib
+  Building Custom Rule F:/work/sm05-actions/tests/native/CMakeLists.txt
+  sdk_contract_tests.cpp
+  soui_sdk_contract_tests.vcxproj -> F:\work\sm05-actions\out\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\build-x86\tests\native\Release\soui_sdk_contract_tests.exe

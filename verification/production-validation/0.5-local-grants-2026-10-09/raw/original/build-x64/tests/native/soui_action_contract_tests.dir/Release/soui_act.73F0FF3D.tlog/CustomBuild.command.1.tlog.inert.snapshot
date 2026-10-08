@@ -1,0 +1,10 @@
+^F:\WORK\SM05-ACTIONS\TESTS\NATIVE\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/work/sm05-actions -BF:/work/sm05-actions/out/local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f/build-x64 --check-stamp-file F:/work/sm05-actions/out/local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f/build-x64/tests/native/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

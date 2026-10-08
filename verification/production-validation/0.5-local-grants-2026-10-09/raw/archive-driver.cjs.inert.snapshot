@@ -1,0 +1,244 @@
+'use strict';
+
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const os = require('node:os');
+const root = 'F:/work/sm05-actions';
+const original = path.join(root, 'out/local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f');
+const output = __dirname;
+const archive = path.join(root, 'verification/production-validation/0.5-local-grants-2026-10-09');
+const runner = 'F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const expected = {
+  index: 'caa6b5d907dadfacc5ee80d47ce5f379a9bcf0e050a523f7ff38ddb628e618f0',
+  frozen: 'a858dceeb9f6545f9bcd5629b4f723888bff89387179ddca656c0ddddf89d7ee',
+  results: 'c8d8c12ff2e68b764321232526c6a177764dca2c150ee1d03d13d3674dd1b940',
+  source: 'e581df02ecca925f9444def0ecc51c86b94ba89848aa4fd67f075daa1a237564',
+  inputs: '335f7465d3034e30eb074aecf89cb09e744f42ae4b54005365f71b3d39a824f4',
+  runner: '1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f',
+  client: '8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7',
+};
+const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const normalized = value => path.resolve(value).toLowerCase();
+function safeAbsolute(file) {
+  if (!path.isAbsolute(file)) throw new Error('Not absolute: ' + file);
+  const absolute = path.resolve(file);
+  const parsed = path.parse(absolute);
+  let cursor = parsed.root;
+  for (const leaf of absolute.slice(parsed.root.length).split(path.sep).filter(Boolean)) {
+    cursor = path.join(cursor, leaf);
+    if (!fs.existsSync(cursor)) break;
+    if (fs.lstatSync(cursor).isSymbolicLink()) throw new Error('Linked path: ' + cursor);
+  }
+  return absolute;
+}
+function relative(base, name) {
+  if (typeof name !== 'string' || !name || name.includes('\\') || name.includes(':') ||
+      name.split('/').some(part => !part || part === '.' || part === '..'))
+    throw new Error('Invalid relative evidence path: ' + name);
+  const absolute = safeAbsolute(path.join(base, name));
+  if (!normalized(absolute).startsWith(normalized(base) + path.sep)) throw new Error('Escaped evidence root');
+  return absolute;
+}
+function bytes(file) {
+  safeAbsolute(file);
+  const stat = fs.lstatSync(file);
+  if (!stat.isFile() || stat.nlink !== 1) throw new Error('Not a regular independent file: ' + file);
+  const fd = fs.openSync(file, 'r');
+  try {
+    const before = fs.fstatSync(fd), data = fs.readFileSync(fd), after = fs.fstatSync(fd);
+    if (before.dev !== after.dev || before.ino !== after.ino || before.size !== after.size ||
+        before.mtimeMs !== after.mtimeMs || data.length !== before.size)
+      throw new Error('File changed while reading: ' + file);
+    return data;
+  } finally { fs.closeSync(fd); }
+}
+function check(file, item) {
+  const data = bytes(file);
+  if (data.length !== item.bytes || hash(data) !== item.sha256) throw new Error('Evidence changed: ' + file);
+  return data;
+}
+function write(file, data) {
+  safeAbsolute(file);
+  fs.mkdirSync(path.dirname(file), {recursive: true});
+  safeAbsolute(path.dirname(file));
+  const fd = fs.openSync(file, 'wx');
+  try { fs.writeFileSync(fd, data); fs.fsyncSync(fd); } finally { fs.closeSync(fd); }
+  if (!bytes(file).equals(Buffer.isBuffer(data) ? data : Buffer.from(data))) throw new Error('Copy differs: ' + file);
+}
+const json = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
+const readJson = file => JSON.parse(bytes(file).toString('utf8'));
+function tool(file) {
+  const resolvedPath = fs.realpathSync(file);
+  const data = bytes(resolvedPath);
+  return {path: path.resolve(file), resolvedPath, bytes: data.length, sha256: hash(data)};
+}
+function recheckTool(item) {
+  if (normalized(fs.realpathSync(item.path)) !== normalized(item.resolvedPath)) throw new Error('Tool resolution changed');
+  check(item.resolvedPath, item);
+}
+const mapping = [];
+function copyOriginal(item) {
+  const file = relative(original, item.path);
+  if (normalized(fs.realpathSync(file)) !== normalized(item.resolvedPath)) throw new Error('Original path differs');
+  const data = check(file, item);
+  const build = /^build-(x64|x86)\//.test(item.path);
+  const compiled = build && (/\.(exe|dll|obj|lib|pdb|pch|idb|ilk|res)$/i.test(item.path) || /\.bin$/i.test(item.path));
+  const binlog = /\.binlog$/i.test(item.path);
+  if (compiled || binlog) {
+    mapping.push({originalPath: file, originalRelativePath: item.path, bytes: item.bytes, sha256: item.sha256,
+      disposition: binlog ? 'private-msbuild-binlog-hash-only' : 'compiled-output-hash-only'});
+    return;
+  }
+  // All generated build files are inert, including XML projects, CMake and tlogs.
+  const name = 'raw/original/' + item.path + (build && !item.path.endsWith('.inert.snapshot') ? '.inert.snapshot' : '');
+  write(relative(archive, name), data);
+  mapping.push({originalPath: file, originalRelativePath: item.path, archivePath: name,
+    bytes: item.bytes, sha256: item.sha256, disposition: 'byte-exact-copy'});
+}
+function scan(base, prefix = '') {
+  const rows = [];
+  for (const entry of fs.readdirSync(relative(base, prefix || '__placeholder__').replace(/__placeholder__$/, ''), {withFileTypes: true})) {
+    const name = prefix ? prefix + '/' + entry.name : entry.name;
+    const file = relative(base, name);
+    if (fs.lstatSync(file).isSymbolicLink()) throw new Error('Archive contains link');
+    if (entry.isDirectory()) rows.push(...scan(base, name));
+    else if (entry.isFile()) { const data = bytes(file); rows.push({path: name, bytes: data.length, sha256: hash(data)}); }
+    else throw new Error('Unexpected archive entry');
+  }
+  return rows.sort((a, b) => a.path.localeCompare(b.path, 'en'));
+}
+async function audit() {
+  const clientFile = path.join(root, 'tools/internal/owned-process.cjs');
+  const cli = path.join(path.dirname(fs.realpathSync(process.execPath)), 'node_modules/npm/bin/npm-cli.js');
+  const tools = [tool(process.execPath), tool(cli), tool(runner), tool(clientFile)];
+  if (tools[2].sha256 !== expected.runner || tools[3].sha256 !== expected.client) throw new Error('Audit provider changed');
+  if (!fs.existsSync(path.join(root, 'sdk/web/node_modules/typescript'))) throw new Error('Existing SDK dependencies missing; installation forbidden');
+  const packageInputs = ['sdk/web/package.json', 'sdk/web/package-lock.json'].map(name => {
+    const data = bytes(relative(root, name)); return {path: name, bytes: data.length, sha256: hash(data)};
+  });
+  const directory = path.join(output, 'audit');
+  fs.mkdirSync(directory);
+  const report = path.join(directory, 'owned.ndjson');
+  const args = [cli, '--prefix', 'sdk/web', 'audit', '--json'];
+  write(path.join(directory, 'inputs.json'), json({schema: 'soui.local-grants-archive-audit-inputs/v1',
+    requestedCommand: 'npm --prefix sdk/web audit --json', executable: process.execPath, args, cwd: root,
+    tools, packageInputs, timeoutMs: 120000, drainMs: 3000, noInstall: true, noTailPolicy: true}));
+  const stdout = fs.openSync(path.join(directory, 'stdout.bin'), 'wx');
+  const stderr = fs.openSync(path.join(directory, 'stderr.bin'), 'wx');
+  let result;
+  try {
+    const owned = require(clientFile).launchOwned(process.execPath, args, {runner, cwd: root, report,
+      timeoutMs: 120000, drainMs: 3000, env: {...process.env, MSBUILDDISABLENODEREUSE: '1'}, stdout, stderr});
+    await owned.ready;
+    result = await owned.finished;
+  } finally { fs.closeSync(stdout); fs.closeSync(stderr); }
+  write(path.join(directory, 'finished.json'), json(result));
+  tools.forEach(recheckTool);
+  packageInputs.forEach(item => check(relative(root, item.path), item));
+  const stdoutBytes = bytes(path.join(directory, 'stdout.bin'));
+  const auditJson = JSON.parse(stdoutBytes.toString('utf8'));
+  const total = auditJson.metadata?.vulnerabilities?.total;
+  const rows = bytes(report).toString('utf8').trimEnd().split('\n').map(JSON.parse);
+  const terminal = rows.at(-1);
+  const summary = {rootExitCode: result.exitCode, supervisorExitCode: result.supervisorExitCode,
+    genericPassed: result.passed, naturalClosure: result.passed && terminal.reason === 'completed' && terminal.activeProcesses === 0,
+    vulnerabilities: auditJson.metadata?.vulnerabilities, auditVersion: auditJson.auditReportVersion,
+    reportSha256: result.reportSha256, noInstall: true, noTailPolicy: true};
+  write(path.join(directory, 'summary.json'), json(summary));
+  if (total !== 0 || !summary.naturalClosure || result.spawnError || result.reportError)
+    throw new Error('Audit did not produce zero vulnerabilities with natural owned closure; raw retained');
+  console.log(JSON.stringify({phase: 'audit', summary}));
+  return {directory, summary};
+}
+async function main() {
+  if (fs.existsSync(archive)) throw new Error('Persistent archive already exists; never overwrite');
+  const indexBytes = bytes(path.join(original, 'index.json'));
+  const frozenBytes = bytes(path.join(original, 'frozen-inputs.json'));
+  const resultBytes = bytes(path.join(original, 'results.json'));
+  if (hash(indexBytes) !== expected.index || hash(frozenBytes) !== expected.frozen || hash(resultBytes) !== expected.results)
+    throw new Error('Original frozen entry changed');
+  const index = JSON.parse(indexBytes), frozen = JSON.parse(frozenBytes), results = JSON.parse(resultBytes);
+  if (index.files.length !== 683 || frozen.actualInputs.files.length !== 67 ||
+      frozen.actualInputs.sha256 !== expected.inputs || frozen.source.sha256 !== expected.source)
+    throw new Error('Unexpected original evidence scope');
+  const identity = require(path.join(root, 'tools/internal/delivery-identity.cjs'));
+  if (identity.source(root).sha256 !== expected.source) throw new Error('Current source no longer matches frozen source');
+  frozen.actualInputs.files.forEach(item => check(relative(root, item.path), item));
+  const sourceMap = readJson(path.join(original, 'source-raw-map.json'));
+  if (sourceMap.length !== 67) throw new Error('Source map incomplete');
+  for (const item of sourceMap) {
+    if (!item.archive.endsWith('.inert.snapshot')) throw new Error('Source copy not inert');
+    const expectedItem = frozen.actualInputs.files.find(input => input.path === item.path);
+    if (!expectedItem || expectedItem.sha256 !== item.sha256 || expectedItem.bytes !== item.bytes) throw new Error('Source mapping differs');
+    check(relative(original, item.archive), item);
+  }
+  for (const record of results.records) {
+    const dir = path.join(original, record.name);
+    const done = readJson(path.join(dir, 'finished.json'));
+    const reportBytes = bytes(path.join(dir, 'owned.ndjson'));
+    const rows = reportBytes.toString('utf8').trimEnd().split('\n').map(JSON.parse);
+    const terminal = rows.at(-1);
+    if (!done.passed || !done.closureConfirmed || done.exitCode !== 0 || done.supervisorExitCode !== 0 ||
+        done.reportSha256 !== hash(reportBytes) || terminal.event !== 'terminal' || terminal.reason !== 'completed' ||
+        terminal.activeProcesses !== 0 || terminal.rootExitCode !== 0 || !terminal.passed)
+      throw new Error('Original Job is not natural success: ' + record.name);
+  }
+  if (results.records.length !== 6 || results.selectedTestsPerArchitecture !== 6 || results.localPolicyCasesPerArchitecture !== 10)
+    throw new Error('Unexpected actual test scope');
+  // Verify the whole old index before creating persistent output.
+  for (const item of index.files) check(relative(original, item.path), item);
+  const auditResult = await audit();
+  if (identity.source(root).sha256 !== expected.source) throw new Error('Source changed during audit');
+  fs.mkdirSync(archive);
+  safeAbsolute(archive);
+  for (const item of index.files) copyOriginal(item);
+  write(relative(archive, 'raw/original/index.json'), indexBytes); // original index intentionally does not enumerate itself
+  mapping.push({originalPath: path.join(original, 'index.json'), originalRelativePath: 'index.json',
+    archivePath: 'raw/original/index.json', bytes: indexBytes.length, sha256: hash(indexBytes), disposition: 'byte-exact-copy'});
+  for (const item of scan(auditResult.directory)) {
+    const archivePath = 'raw/audit/' + item.path;
+    write(relative(archive, archivePath), check(relative(auditResult.directory, item.path), item));
+    mapping.push({originalPath: relative(auditResult.directory, item.path), archivePath,
+      bytes: item.bytes, sha256: item.sha256, disposition: 'byte-exact-copy'});
+  }
+  const driverBytes = bytes(__filename);
+  write(relative(archive, 'raw/archive-driver.cjs.inert.snapshot'), driverBytes);
+  mapping.push({originalPath: __filename, archivePath: 'raw/archive-driver.cjs.inert.snapshot',
+    bytes: driverBytes.length, sha256: hash(driverBytes), disposition: 'byte-exact-copy'});
+  write(relative(archive, 'byte-exact-map.json'), json({schema: 'soui.local-grants-archive-map/v1',
+    originalDirectory: original, originalIndexSha256: hash(indexBytes), records: mapping, releaseReady: false}));
+  const omitted = mapping.filter(item => item.disposition !== 'byte-exact-copy');
+  write(relative(archive, 'private-artifacts.json'), json({schema: 'soui.local-grants-private-artifacts/v1',
+    files: omitted, payloadOutputs: results.outputs, copiedCompiledPayload: false,
+    binlogBodyPublished: false, rootReportedPrivateBinlogGzipScanMatches: 0,
+    privateBinlogScanNotIndependentlyRepeatedByArchivist: true, releaseReady: false}));
+  write(relative(archive, 'archive-summary.json'), json({schema: 'soui.local-grants-persistent-archive/v1',
+    archivedAt: new Date().toISOString(), archiveHostObservation: {platform: process.platform, release: os.release(), arch: process.arch},
+    originalIndexSha256: hash(indexBytes), originalIndexFiles: index.files.length,
+    frozenInputsSha256: hash(frozenBytes), resultsSha256: hash(resultBytes),
+    sourceSha256: expected.source, actualInputSha256: expected.inputs, actualInputFiles: 67,
+    selectedTestsPerArchitecture: 6, localPolicyCasesPerArchitecture: 10, architecture: ['x86', 'x64'], configuration: 'Release',
+    ownedJobs: 6, allOriginalJobsNatural: true, originalRecords: results.records,
+    copiedOriginalFiles: mapping.filter(item => item.archivePath?.startsWith('raw/original/')).length,
+    hashOnlyPrivateFiles: omitted.length, audit: auditResult.summary, releaseReady: false,
+    noPipeValidation: true, noUiAutomationValidation: true, noOsIdentityValidation: true, noGuiValidation: true,
+    noEightHourValidation: true, noFullCollectValidation: true, noNewOsMatrixValidation: true}));
+  const readme = `# 0.5 本地连接授权第一层：本机双架构验证归档\n\n本目录保留 2026-10-09 当前 Windows 11 主机上执行的 Release x86/x64 SDK 静态库及六组原生测试证据。它验证权限策略第一层，不表示发布就绪，也不是 pipe、UIA、GUI 或操作系统身份验证。\n\n原始入口为 \`out/local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\`。原始 683 项索引、冻结输入、结果、67 份实际编译输入快照和六次 configure/build/CTest Job 的 context、inputs、原始 stdout/stderr、native NDJSON 与 finished 记录均按原字节保留或映射。原索引 SHA-256：\`${expected.index}\`；规范化源码 SHA-256：\`${expected.source}\`；67 项实际输入 SHA-256：\`${expected.inputs}\`。\n\n两架构的 configure、编译和 CTest 共六个 Job 均 root exit 0、supervisor exit 0、generic passed=true、自然 completed、activeProcesses=0、closureConfirmed=true。每架构实际 CTest 6/6：contract、action-contract、session-renewal、task-scope、task-operation-query、local-authorization。本地授权组实际 10/10 策略 case，包括 page/local 互拒、实际 binding/store 归属、方法与 capability 交集、续租别名、精确撤销、entropy 钩子内 close 的发行与续租竞态、失效后的真实 cleanup owner、state/binding 寿命，以及全部 worker 经后置 FIFO sentinel 排空后的 queued admission 拒绝。时间和 entropy 测试钩子仅用于确定性测试，不声称完成长期并发压力验证。\n\nSDK Web 现有依赖额外执行一次实际 \`npm --prefix sdk/web audit --json\`（通过 Node 的真实 npm CLI，未安装或更新依赖）。审计 vulnerabilities.total=0，root/supervisor exit 0，受监督 Job 自然归零。\`raw/audit\` 保存该次工具/包锁输入、原始输出和独立 Job 记录；未对任何编译或测量采用尾进程政策例外。\n\n\`byte-exact-map.json\` 逐项关联原路径、大小、SHA-256 和归档路径；\`index.json\` 索引本目录全部文件（不含自身）。\`raw/original/index.json\` 是完整原索引，不能将其未复制的路径误认为本目录内的文件。所有归档代码及生成构建文件都以 \`.inert.snapshot\` 结尾，未归一化换行或文本内容。CMake cache、actual vcxproj、compiler CMake、tlogs 和 LastTest 日志保留了实际 SDK 10.0.19041.0、v143/14.44.35207 与编译输入路径。\n\n编译 obj/lib/pdb/EXE 等及 ABI 二进制仅保留原路径、大小和散列（见 \`private-artifacts.json\` 和原索引），没有将产物复制为源码证据。两份 MSBuild binlog 原件继续留在私有 out，正文不公开；本目录保留其 SHA-256/大小/原路径及实际 stdout、tlog、cache/project。Root 已报告私有 binlog gzip 解压扫描 0 匹配；归档者未重复扫描，此信息不是公开可独立复算的 binlog 正文证据。\n\n本轮未验证 DLL 交付、真实窗口、pipe/gateway、UIA、OS 身份、Win7/PE 或其他系统矩阵、8 小时运行、完整 Collect、正式发布门槛。\`releaseReady\` 保持 false。关闭 binding 是后续 admission 边界而不是在途 handler/IO 屏障；本轮尚无实际本地端点。散列及路径绑定用于发现意外不一致，不声称抵御同一权限用户恶意重写整套来源文件。\n`;
+  write(relative(archive, 'README.md'), Buffer.from(readme));
+  for (const item of index.files) check(relative(original, item.path), item);
+  if (hash(bytes(path.join(original, 'index.json'))) !== expected.index || identity.source(root).sha256 !== expected.source)
+    throw new Error('Original evidence or source changed during archive');
+  const files = scan(archive);
+  write(relative(archive, 'index.json'), json({schema: 'soui.local-grants-persistent-file-index/v1', files,
+    bytes: files.reduce((n, item) => n + item.bytes, 0), releaseReady: false}));
+  files.forEach(item => check(relative(archive, item.path), item));
+  const completion = {archive, archivedFiles: files.length + 1, indexedFiles: files.length,
+    indexSha256: hash(bytes(path.join(archive, 'index.json'))), mappingRecords: mapping.length,
+    byteExactCopies: mapping.filter(item => item.disposition === 'byte-exact-copy').length,
+    hashOnlyPrivateFiles: omitted.length, originalIndexSha256: expected.index,
+    sourceUnchanged: true, originalAllIndexedFilesUnchanged: true, audit: auditResult.summary};
+  write(path.join(output, 'completion.json'), json(completion));
+  console.log(JSON.stringify(completion, null, 2));
+}
+main().catch(error => { console.error(error.stack); process.exitCode = 1; });
