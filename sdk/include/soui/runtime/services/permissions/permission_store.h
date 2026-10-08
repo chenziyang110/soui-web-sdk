@@ -27,6 +27,7 @@ class native_connection_binding final {
 
  private:
   friend class permission_store;
+  friend class bridge_transport;
   native_connection_binding(std::weak_ptr<const void> issuer, std::string session_id, std::string origin);
   std::weak_ptr<const void> issuer_;
   const std::string session_id_, origin_;

@@ -1,0 +1,170 @@
+{
+  "schema": "soui.local-dispatch-persistent-archive/v1",
+  "indexSha256": "ae9b1dd796bb823a649bb9782bf8e879a3e65a7015a592b2992b50e737eda59f",
+  "indexedOriginals": 731,
+  "actualInputs": 68,
+  "sourceSha256": "bd61b7d836dbd75d503681fea382aa5f821deb6653381e2f6aba26a1ca4d14c6",
+  "rawSourceSha256": "63b205edddd7d07f71f09c9f657f6585178d0b7e4c4e2c7ffd0b2f092594889a",
+  "actualInputSha256": "b48bb7ee7330fb5cda0cd89ab9cd797eeb0b942910cfe3832b524743b739db3c",
+  "toolCount": 12,
+  "jobs": [
+    {
+      "name": "configure-x64",
+      "pid": 16052,
+      "creationFileTime": "134359677039852994",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "compile-x64",
+      "pid": 111552,
+      "creationFileTime": "134359677163492254",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "ctest-x64",
+      "pid": 4136,
+      "creationFileTime": "134359677765729995",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "dispatch-cases-x64",
+      "pid": 65244,
+      "creationFileTime": "134359677777683468",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "configure-x86",
+      "pid": 56124,
+      "creationFileTime": "134359677779878612",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "compile-x86",
+      "pid": 106588,
+      "creationFileTime": "134359677900362956",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "ctest-x86",
+      "pid": 102340,
+      "creationFileTime": "134359678445664189",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    {
+      "name": "dispatch-cases-x86",
+      "pid": 105224,
+      "creationFileTime": "134359678460279102",
+      "reason": "completed",
+      "activeProcesses": 0
+    }
+  ],
+  "counts": [
+    {
+      "architecture": "x64",
+      "ctestCount": 7,
+      "ctestNames": [
+        "sdk.native.contract",
+        "sdk.native.action-contract",
+        "sdk.native.session-renewal",
+        "sdk.native.task-scope",
+        "sdk.native.task-operation-query",
+        "sdk.native.local-authorization",
+        "sdk.native.local-action-dispatch"
+      ],
+      "directCases": 15
+    },
+    {
+      "architecture": "x86",
+      "ctestCount": 7,
+      "ctestNames": [
+        "sdk.native.contract",
+        "sdk.native.action-contract",
+        "sdk.native.session-renewal",
+        "sdk.native.task-scope",
+        "sdk.native.task-operation-query",
+        "sdk.native.local-authorization",
+        "sdk.native.local-action-dispatch"
+      ],
+      "directCases": 15
+    }
+  ],
+  "outputFiles": 16,
+  "peFiles": 14,
+  "staticLibraries": 2,
+  "allExact": true,
+  "authorBoundary": "Archivist authored original 14 test cases; Root/Deps independently reviewed their design. This proof verifies execution and archive bytes, not self-approval.",
+  "frozenInputsSha256": "db9926c773e17d349bbd6d0110b8ee33b3b61eb75ea654ea68d15c47f7e5dde0",
+  "resultsSha256": "d04c21e8adbda803d72ce9414ac20ce410804d316e029c43c735899b17917886",
+  "allOriginalJobsNatural": true,
+  "audit": {
+    "schema": "soui.local-dispatch-audit-result/v1",
+    "rootExitCode": 0,
+    "supervisorExitCode": 0,
+    "genericPassed": true,
+    "closureConfirmed": true,
+    "naturalClosure": true,
+    "subject": {
+      "pid": 96204,
+      "creationFileTime": "134359685686669184",
+      "reason": "completed",
+      "activeProcesses": 0
+    },
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "auditReportVersion": 2,
+    "parseError": null,
+    "readyError": null,
+    "supervisionError": null,
+    "auditAccepted": true,
+    "reportSha256": "be0d027e82cd13948238cbbc3d6ad7e0e78eb34fb8e2fabc98eeac00963acf99",
+    "noInstall": true,
+    "noDependencyBuildClaim": true,
+    "noTailPolicy": true
+  },
+  "firstAuditHarnessFailure": {
+    "schema": "soui.local-dispatch-audit-result/v1",
+    "rootExitCode": 1,
+    "supervisorExitCode": 1,
+    "genericPassed": false,
+    "closureConfirmed": true,
+    "naturalClosure": false,
+    "subject": null,
+    "vulnerabilities": null,
+    "auditReportVersion": null,
+    "parseError": "Unexpected end of JSON input",
+    "readyError": null,
+    "supervisionError": "The expression evaluated to a falsy value:\n\n  assert(finished.passed && finished.closureConfirmed && finished.exitCode === 0 && finished.supervisorExitCode === 0 &&\n",
+    "auditAccepted": false,
+    "reportSha256": "6c782fa6c793f741fa2157a161a04d387e3aeac2016f288ce83001345a732c69",
+    "noInstall": true,
+    "noDependencyBuildClaim": true,
+    "noTailPolicy": true
+  },
+  "copiedOriginalFiles": 649,
+  "hashOnlyPrivateFiles": 82,
+  "architectures": [
+    "x64",
+    "x86"
+  ],
+  "configuration": "Release",
+  "noPipeValidation": true,
+  "noGuiValidation": true,
+  "noOsIdentityValidation": true,
+  "noEightHourValidation": true,
+  "noFullCollectValidation": true,
+  "noNewOsMatrixValidation": true,
+  "releaseReady": false
+}

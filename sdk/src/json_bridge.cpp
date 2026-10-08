@@ -81,6 +81,10 @@ bool json_bridge::register_action(std::string name, std::string capability, std:
   capabilities_.push_back(std::move(capability));
   return true;
 }
+bool json_bridge::allow_local_action(const std::string& name) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  return !registration_closed_ && registry_.allow_local_action(name);
+}
 bool json_bridge::set_session_capabilities(std::vector<std::string> capabilities) {
   std::lock_guard<std::mutex> lock(mutex_);
   if (registration_closed_) return false;

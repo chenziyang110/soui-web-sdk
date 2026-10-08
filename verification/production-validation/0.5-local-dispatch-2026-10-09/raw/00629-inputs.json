@@ -1,0 +1,45 @@
+{
+  "name": "configure-x86",
+  "executable": {
+    "path": "C:/Program Files/CMake/bin/cmake.exe",
+    "resolvedPath": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+    "bytes": 12905544,
+    "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "args": [
+    "-S",
+    "F:\\work\\sm05-ad",
+    "-B",
+    "F:\\work\\sm05-ad\\out\\dispatch-native-2358a5e1-49f1-420b-bac4-adff8aead6e0\\b-x86",
+    "-G",
+    "Visual Studio 17 2022",
+    "-A",
+    "Win32,version=10.0.19041.0",
+    "-T",
+    "v143,version=14.44.35207,host=x64",
+    "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+    "-DSOUI_BUILD_TEMPLATE=OFF",
+    "-DSOUI_BUILD_DEMOS=OFF",
+    "-DSOUI_BUILD_TESTS=ON",
+    "-DSOUI_BUILD_WEBVIEW2=OFF"
+  ],
+  "cwd": "F:\\work\\sm05-ad",
+  "runner": {
+    "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+    "resolvedPath": "F:\\work\\sm05\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+    "bytes": 60928,
+    "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+  },
+  "client": {
+    "path": "F:\\work\\sm05-ad\\tools\\internal\\owned-process.cjs",
+    "resolvedPath": "F:\\work\\sm05-ad\\tools\\internal\\owned-process.cjs",
+    "bytes": 8386,
+    "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+  },
+  "timeoutMs": 120000,
+  "drainMs": 3000,
+  "environment": {
+    "MSBUILDDISABLENODEREUSE": "1"
+  },
+  "sourceSha256": "bd61b7d836dbd75d503681fea382aa5f821deb6653381e2f6aba26a1ca4d14c6"
+}

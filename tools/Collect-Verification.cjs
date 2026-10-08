@@ -50,6 +50,8 @@ const unit={
  nativeTaskQueryX86:run('native-task-query-x86',path.join(root,'out/x86/tests/native/Release/soui_task_operation_query_tests.exe'),[]),
  nativeLocalAuthorizationX64:run('native-local-authorization-x64',path.join(root,'out/x64/tests/native/Release/soui_local_authorization_tests.exe'),[]),
  nativeLocalAuthorizationX86:run('native-local-authorization-x86',path.join(root,'out/x86/tests/native/Release/soui_local_authorization_tests.exe'),[]),
+ nativeLocalDispatchX64:run('native-local-dispatch-x64',path.join(root,'out/x64/tests/native/Release/soui_local_action_dispatch_tests.exe'),[]),
+ nativeLocalDispatchX86:run('native-local-dispatch-x86',path.join(root,'out/x86/tests/native/Release/soui_local_action_dispatch_tests.exe'),[]),
  nativeX64:run('native-contract-x64',path.join(root,'out/x64/tests/native/Release/soui_sdk_contract_tests.exe'),[]),
  nativeX86:run('native-contract-x86',path.join(root,'out/x86/tests/native/Release/soui_sdk_contract_tests.exe'),[])
 };

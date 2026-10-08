@@ -53,6 +53,9 @@ class capability_registry {
   // bounded contract is advertised by discovery and enforced before/after call.
   [[nodiscard]] bool register_action(std::string method, std::string permission_name,
                                      std::string contract_json, contextual_handler callback);
+  // Native registration-time opt-in for an existing typed action. This does
+  // not certify business data as nonsensitive or grant any connection access.
+  [[nodiscard]] bool allow_local_action(const std::string& method);
   [[nodiscard]] bool contains(const std::string& method) const;
   [[nodiscard]] const std::string* capability_for(const std::string& method) const;
   [[nodiscard]] const contextual_handler* handler_for(const std::string& method) const;
@@ -63,6 +66,7 @@ class capability_registry {
     std::string permission;
     contextual_handler callback;
     std::shared_ptr<const action_contract> action;
+    bool local_enabled{false};
   };
   // Registration is frozen before bootstrap; ordered storage makes discovery
   // deterministic without copying the complete registry for every request.
@@ -80,16 +84,31 @@ class bridge_transport {
       : registry_{registry}, permissions_{permissions} {}
 
   [[nodiscard]] bridge_response handle(const bridge_request& request) const;
+  // Trusted native callers only. The bearer never belongs in local wire JSON.
+  // Rewrites all credential fields and always clears native_user_gesture.
+  [[nodiscard]] bridge_response handle_local(const bridge_request& request,
+      const std::shared_ptr<const native_connection_binding>& binding, const std::string& bearer) const;
   [[nodiscard]] std::string handle_json(std::string_view json_text,
                                         bool native_user_gesture = false) const;
   // Returns the authorized discovery payload, without invoking listed methods.
   [[nodiscard]] std::string describe(const bridge_request& request) const;
+  [[nodiscard]] std::string describe_local(const bridge_request& request,
+      const std::shared_ptr<const native_connection_binding>& binding, const std::string& bearer) const;
   // Register before bootstrap; applications must also grant this capability.
   [[nodiscard]] bool enable_session_renewal();
   [[nodiscard]] static std::string serialize_lease(const permission_lease& lease);
 
  private:
-  [[nodiscard]] bridge_response validate(bridge_request& request) const;
+  [[nodiscard]] static bridge_request local_request(const bridge_request& request,
+      const std::shared_ptr<const native_connection_binding>& binding, const std::string& bearer);
+  [[nodiscard]] bridge_response handle_impl(const bridge_request& request,
+      const std::shared_ptr<const native_connection_binding>& binding, bool local) const;
+  [[nodiscard]] std::string describe_impl(const bridge_request& request,
+      const std::shared_ptr<const native_connection_binding>& binding, bool local) const;
+  [[nodiscard]] bool local_authorized(const bridge_request& request,
+      const std::shared_ptr<const native_connection_binding>& binding) const;
+  [[nodiscard]] bridge_response validate(bridge_request& request,
+      const std::shared_ptr<const native_connection_binding>& binding = {}, bool local = false) const;
   [[nodiscard]] static std::string serialize(const bridge_response& response);
 
   capability_registry& registry_;
