@@ -1,0 +1,21 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const parent='C:/SOUI-SDK-production-validation/preview15-app-matrix-20260927',root=path.join(__dirname,'matrix');
+const relocated=JSON.parse(fs.readFileSync(path.join(__dirname,'relocate-result.json'),'utf8'));
+assert.equal(relocated.status,'extracted-source-and-sdk-matched');assert.equal(relocated.gitPresent,false);
+assert.equal(relocated.archiveSha256,'4c0255ca2a215e819bbda339d7432fc37398c3cef98b7d234f0411fcd4a4dd92');
+assert(!fs.existsSync(root));fs.mkdirSync(root);
+let script=fs.readFileSync(path.join(parent,'Build-Matrix.cjs'),'utf8');
+assert(script.includes("repo='C:/SOUI-SDK-development/preview14-scheduler'"));
+script=script.replace("repo='C:/SOUI-SDK-development/preview14-scheduler'","repo='C:/SOUI-SDK-source-validation/preview15-no-git'");
+script=script.replace('async function main(){',`async function main(){
+ assert(!fs.existsSync(path.join(repo,'.git')));
+ const relocated=id.readJson(path.join(root,'../relocate-result.json'));
+ assert.equal(relocated.archiveSha256,'4c0255ca2a215e819bbda339d7432fc37398c3cef98b7d234f0411fcd4a4dd92');
+ assert.equal(id.hash(fs.readFileSync(path.join(repo,'source-manifest.json'))),relocated.sourceManifestSha256);
+ assert.equal(id.source(repo).sha256,relocated.applicationSource.sha256);
+ const controls=['Build-Matrix.cjs','Capture-Command.cjs'].map(name=>{const b=fs.readFileSync(path.join(root,name));return {path:name,bytes:b.length,sha256:id.hash(b)}});
+ write('archive-binding.json',{archiveSha256:relocated.archiveSha256,sourceManifestSha256:relocated.sourceManifestSha256,sdkManifestSha256:relocated.sdkManifestSha256,controls,gitPresent:false});`);
+fs.writeFileSync(path.join(root,'Build-Matrix.cjs'),script,{flag:'wx'});
+fs.copyFileSync(path.join(parent,'Capture-Command.cjs'),path.join(root,'Capture-Command.cjs'),fs.constants.COPYFILE_EXCL);
+console.log(JSON.stringify({status:'relocated-build-driver-prepared',root,guiExecuted:false}));

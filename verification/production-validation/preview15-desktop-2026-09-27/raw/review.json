@@ -1,0 +1,108 @@
+{
+  "version": "0.3.0-preview.15",
+  "sourceSha256": "b0d7cc7d52de3493084e0dec6813f92f9a90a1bbce2f75ad5a62532a6dd87d07",
+  "controls": [
+    {
+      "path": "Run.cjs",
+      "bytes": 5935,
+      "sha256": "c18bd7b2fff2b17d7d6652c64cac407f3fd09f517b5505e51e727b514d7582c5"
+    },
+    {
+      "path": "Capture-Command.cjs",
+      "bytes": 2235,
+      "sha256": "1b5344feee4a7f1018d6470cb905dd982bd009701cb930b2c3c3f99b7dc65530"
+    },
+    {
+      "path": "Review.cjs",
+      "bytes": 5282,
+      "sha256": "0938c879913885aeb1805aa232096c9ed96c06dd588365792fc5beb2076c71b9"
+    }
+  ],
+  "cases": [
+    {
+      "run": "x64-apps-2026-09-26T17-15-07-318Z",
+      "architecture": "x64",
+      "originalExitCode": 0,
+      "kind": "current-apps",
+      "nativeExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "run": "x64-deps-2026-09-26T17-14-43-748Z",
+      "architecture": "x64",
+      "originalExitCode": 0,
+      "kind": "freshly-built-dependencies",
+      "nativeExitCodes": [
+        0,
+        0
+      ]
+    },
+    {
+      "run": "x64-directory-cancel-2026-09-26T17-14-18-160Z",
+      "architecture": "x64",
+      "originalExitCode": 0,
+      "kind": "--cancel",
+      "nativeExitCodes": [
+        0
+      ]
+    },
+    {
+      "run": "x64-window-thread-timeout-2026-09-26T17-14-12-986Z",
+      "architecture": "x64",
+      "originalExitCode": 0,
+      "kind": "--window-thread-timeout",
+      "nativeExitCodes": [
+        0
+      ]
+    },
+    {
+      "run": "x86-apps-2026-09-26T17-14-53-709Z",
+      "architecture": "x86",
+      "originalExitCode": 0,
+      "kind": "current-apps",
+      "nativeExitCodes": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "run": "x86-deps-2026-09-26T17-14-32-948Z",
+      "architecture": "x86",
+      "originalExitCode": 0,
+      "kind": "freshly-built-dependencies",
+      "nativeExitCodes": [
+        0,
+        0
+      ]
+    },
+    {
+      "run": "x86-directory-cancel-2026-09-26T17-14-08-387Z",
+      "architecture": "x86",
+      "originalExitCode": 0,
+      "kind": "--cancel",
+      "nativeExitCodes": [
+        0
+      ]
+    },
+    {
+      "run": "x86-window-thread-timeout-2026-09-26T17-14-03-253Z",
+      "architecture": "x86",
+      "originalExitCode": 0,
+      "kind": "--window-thread-timeout",
+      "nativeExitCodes": [
+        0
+      ]
+    }
+  ],
+  "nativeRuns": 14,
+  "nativeExitCodesAllZero": true,
+  "fullPayloadsMatched": true,
+  "noExternalDesktopLoadObserved": true,
+  "firstAttemptBlockedBeforeLaunch": true,
+  "realRenewalVerified": false,
+  "productionPass": false
+}

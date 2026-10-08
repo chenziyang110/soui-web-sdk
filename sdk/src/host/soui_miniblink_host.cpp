@@ -2040,8 +2040,11 @@ host_result dynamic_miniblink_adapter::try_enqueue_bridge_message(
   const std::uint64_t generation =
       bridge_generation_.load(std::memory_order_acquire);
   detail::bridge_request_budget::rejection rejected;
+  using request_lane = detail::bridge_request_budget::lane;
+  const auto lane = method == "bridge.session.renew" ? request_lane::renewal :
+      method == "task.unsubscribe" || method == "task.cancel" ? request_lane::control : request_lane::ordinary;
   const auto lease = bridge_budget_->acquire(request_id, generation,
-      method == "task.unsubscribe" || method == "task.cancel", rejected);
+      lane, rejected);
   if (!lease) return rejected == detail::bridge_request_budget::rejection::duplicate
       ? failure("E_DUPLICATE_REQUEST", "This document already has an unfinished native request with this identity.")
       : failure("E_BUSY", "The native bridge request capacity is exhausted.");
@@ -2327,7 +2330,8 @@ jsValue WKE_CALL_TYPE native_post_message(jsExecState es, void*) {
     // Reserve the document resolver before admitting any side effects. Both
     // creation and response delivery run on this same engine owner.
     const auto create = std::string{"return "} + detail::create_bridge_pending_script
-        + "(" + json_string_literal(request_id) + "," + std::to_string(timeout) + ");";
+        + "(" + json_string_literal(request_id) + "," + std::to_string(timeout) + ","
+        + (method == "bridge.session.renew" ? "true" : "false") + ");";
     const auto waiting = jsEval(es, create.c_str());
     const bool waiting_is_string = jsIsString(waiting);
     bridge_diagnostic_trace(adapter, "binding.resolver-created", request_id,

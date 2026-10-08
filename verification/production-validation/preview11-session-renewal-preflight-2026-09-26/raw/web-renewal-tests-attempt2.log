@@ -1,0 +1,79 @@
+✔ native resolver completion clears its timer and repeated completion cannot settle a later request (2.3501ms)
+✔ duplicate identities and resolver overflow return correlated errors without adding timers (10.3299ms)
+✔ native response timeout removes the resolver and explicitly leaves running work uncancelled (22.7369ms)
+✔ document exit resolves all waits, is idempotent and blocks future resolver creation (0.9839ms)
+✔ a reserved renewal resolver survives all 384 ordinary waits and releases independently (7.9748ms)
+✔ renewal resolver timeout releases its reserved slot without releasing business waits (20.9553ms)
+✔ custom method sends the scoped envelope and returns native data (1.2765ms)
+✔ a response from another request is rejected (0.3013ms)
+✔ malformed JSON becomes a structured response error (0.1528ms)
+✔ native denials retain the native error code (0.5534ms)
+✔ valid JSON with an invalid response shape produces a structured error (0.3281ms)
+✔ timeout is bounded without claiming native cancellation (62.9069ms)
+✔ 32 in-flight calls resolve to their own results in reverse order (1.644ms)
+✔ request capacity rejects overload and recovers after completion (0.4854ms)
+✔ UTF-8 byte limits and non-JSON parameters fail before transport (0.5945ms)
+✔ dispose rejects outstanding waits, removes the owned listener once and rejects new calls (0.413ms)
+✔ timeout frees a page slot without pretending native work was cancelled (27.3985ms)
+✔ invalid client options and null native error envelopes are structured failures (0.4253ms)
+✔ caller mutation of options cannot change the connection scope (0.1373ms)
+✔ event validation, sequence filtering and callback isolation apply to each observer (1.9876ms)
+✔ native subscription denial is observable and releases the local subscription slot (0.4734ms)
+✔ removal before subscription acknowledgement is idempotent and sends one late unsubscribe (0.3623ms)
+✔ a disposed pending subscription cleans up a late native success once (0.3476ms)
+✔ a timed-out subscription also cleans up a late successful acknowledgement (27.6131ms)
+✔ malformed subscription identities and failed native removal remain visible (0.6107ms)
+✔ bounded control capacity permits unsubscribe when ordinary request capacity is full (0.3656ms)
+✔ toJSON reentrancy cannot bypass disposal or capacity checks (0.3767ms)
+✔ a reentrant port can dispose during subscription creation without leaking a late subscription (0.3362ms)
+✔ the standard connector shares one bootstrap and waits for asynchronous native responses (1.1107ms)
+✔ asynchronous bootstrap is supported without a busy wait (0.1108ms)
+✔ connector options cannot swap the error observer while bootstrap is pending (0.2442ms)
+✔ a second connector cannot silently change options or replace another dispatcher (0.1736ms)
+✔ document unload disposes outstanding waits and removes connector hooks (0.1752ms)
+✔ bootstrap timeout and unload release hooks and do not silently rebootstrap (26.3584ms)
+✔ bootstrap rejects malformed credentials, wrong correlation and invalid JSON (0.6054ms)
+✔ connector native events reach only matching subscriptions and owned hooks are restored (0.205ms)
+✔ ordinary browser use and broken native binding produce explicit connection errors (0.1201ms)
+✔ renewal is opt-in, early renewal returns the existing lease, and native rotation is reserved (2.0488ms)
+✔ automatic renewal shares one flight and leaves business dispatch synchronous (1.5812ms)
+✔ renewal has a slot even when business and release capacities are exhausted (0.7861ms)
+✔ bootstrap delay only shortens expiration and disposed renewal cannot restart (0.4814ms)
+✔ lease validation and caller mutation cannot increase or replace the authorization lifetime (0.4388ms)
+✔ lost acknowledgement recovers the same operation without extending native expiry or replaying work (0.7392ms)
+✔ an earlier timed-out attempt can recover the active flight and cancel its retry timer (0.3117ms)
+✔ retry attempts and recovery deadline stay bounded and terminal failure does not rebootstrap (0.5458ms)
+✔ even an unprocessed timeout cannot admit a late success beyond the original expiry (0.211ms)
+✔ renewal identity, generation and native denials are checked without adopting partial credentials (0.7444ms)
+✔ retryable native rejection and transport loss retain operation identity (0.8461ms)
+✔ in-flight subscription and its sequence survive rotation and late removal uses current credentials (0.3938ms)
+✖ timed-out subscribe cleanup and repeated unsubscribe remain once-only across renewal (0.605ms)
+✔ an old renewal response cannot roll back credentials after a subsequent generation (0.3203ms)
+✔ sixteen simulated 25-minute rotations retain one subscription and increasing event sequences (2.6954ms)
+✔ standard connector retains one bootstrap and applies lease metadata with elapsed time (0.9527ms)
+✔ connector rejects malformed native lease metadata before creating a client (0.2581ms)
+✔ Workbench manual bootstrap passes the real lease and elapsed time to the public client (141.4056ms)
+ℹ tests 55
+ℹ suites 0
+ℹ pass 54
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 333.3775
+
+✖ failing tests:
+
+test at tests\web\session-renewal.test.mjs:160:1
+✖ timed-out subscribe cleanup and repeated unsubscribe remain once-only across renewal (0.605ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///C:/SOUI-SDK-development/preview9-tray/tests/web/session-renewal.test.mjs:166:44)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { code: 'E_TIMEOUT' },
+    operator: 'rejects',
+    diff: 'simple'
+  }

@@ -11,6 +11,10 @@ $evidence=Join-Path $root 'tools/internal/build-evidence.cjs'
 if(-not $NativeOnly){
   & node (Join-Path $root 'tests/sdk/sdk-package-smoke.cjs')
   if($LASTEXITCODE -ne 0){throw 'SDK package tests failed'}
+  & node --test (Join-Path $root 'tests/sdk/sdk-native-payload.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'SDK native payload tests failed'}
+  & node --test (Join-Path $root 'tests/sdk/installation-interruption.test.cjs') (Join-Path $root 'tests/sdk/profile-installation-integration.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'SDK installation interruption tests failed'}
   & node --test (Join-Path $root 'tests/sdk/delivery-identity.test.cjs') (Join-Path $root 'tests/sdk/release-verification.test.cjs') (Join-Path $root 'tests/sdk/stage-soui-source.test.cjs') (Join-Path $root 'tests/native/miniblink_header_abi.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'Delivery identity tests failed'}
   & node --test (Join-Path $root 'tests/sdk/modern-evidence.test.cjs')
@@ -19,6 +23,8 @@ if(-not $NativeOnly){
   if($LASTEXITCODE -ne 0){throw 'Web SDK, acceptance, or benchmark protocol tests failed'}
   & node --test (Join-Path $root 'tests/web/web-features.test.mjs')
   if($LASTEXITCODE -ne 0){throw 'Web runtime feature tests failed'}
+  & node --test (Join-Path $root 'tests/web/session-renewal.test.mjs') (Join-Path $root 'tests/web/agent-session-renewal.test.mjs')
+  if($LASTEXITCODE -ne 0){throw 'Web session renewal tests failed'}
   & ctest --test-dir $output -C $Configuration --output-on-failure
   if($LASTEXITCODE -ne 0){throw 'Native SDK contract tests failed'}
 }

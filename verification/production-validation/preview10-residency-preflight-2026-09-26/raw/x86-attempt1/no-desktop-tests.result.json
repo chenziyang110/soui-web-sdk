@@ -1,0 +1,18 @@
+{
+    "program":  "ctest.exe",
+    "arguments":  [
+                      "--test-dir",
+                      "out/x86",
+                      "-C",
+                      "Release",
+                      "--output-on-failure",
+                      "-V",
+                      "-R",
+                      "^(sdk.native.(contract|task-service|bridge-budget|task-store-capacity|tray-service|menu_service|global_shortcut)|demo.native.public-task)$",
+                      "--output-junit",
+                      "C:\\SOUI-SDK-production-validation\\preview10-residency-20260926\\x86-attempt1\\tests.xml"
+                  ],
+    "startedAt":  "2026-09-26T03:47:02.5898291Z",
+    "finishedAt":  "2026-09-26T03:47:03.9222396Z",
+    "exitCode":  0
+}

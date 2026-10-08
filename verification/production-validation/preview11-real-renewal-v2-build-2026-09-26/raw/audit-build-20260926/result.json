@@ -1,0 +1,51 @@
+{
+  "schema": "soui.real-renewal-v2-audit/v1",
+  "scope": "one audit of the byte-identical x86/x64 package and lock",
+  "program": "C:\\nvm4w\\nodejs\\node.exe",
+  "arguments": [
+    "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+    "audit",
+    "--json"
+  ],
+  "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\toolchain",
+  "startedAt": "2026-09-26T08:54:43.338Z",
+  "finishedAt": "2026-09-26T08:54:54.283Z",
+  "pid": 42188,
+  "exitCode": 1,
+  "signal": null,
+  "timedOut": false,
+  "timeoutMs": 45000,
+  "error": null,
+  "parseError": null,
+  "vulnerabilities": null,
+  "stdout": {
+    "bytes": 241,
+    "sha256": "d2cfe4991a5ac2f2565e92eaf1960d955c9592c7d8c359dc62cb1d99815c4ac8"
+  },
+  "stderr": {
+    "bytes": 362,
+    "sha256": "9f5dfd63760cb7035224b9fbdba28accb9f5f4898b261fd4cef7d22ebec7ea85"
+  },
+  "samePackageAndLock": true,
+  "package": {
+    "bytes": 230,
+    "sha256": "76e1fe0a3f1b8aad82d8a83fdfc1b66d221ae2a0cf4247a6374fc2dd3b750541"
+  },
+  "lock": {
+    "bytes": 122928,
+    "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a"
+  },
+  "toolchainBefore": {
+    "x86-attempt1": "182209377dff49f7003ba5121132493239671558c6ce4752def8b5406411131b",
+    "x64-attempt1": "182209377dff49f7003ba5121132493239671558c6ce4752def8b5406411131b"
+  },
+  "toolchainAfter": {
+    "x86-attempt1": "182209377dff49f7003ba5121132493239671558c6ce4752def8b5406411131b",
+    "x64-attempt1": "182209377dff49f7003ba5121132493239671558c6ce4752def8b5406411131b"
+  },
+  "inputsUnchanged": true,
+  "inputError": null,
+  "advisoryLookupSucceeded": false,
+  "realRenewalVerified": false,
+  "releaseReady": false
+}

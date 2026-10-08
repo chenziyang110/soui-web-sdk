@@ -28,6 +28,20 @@ int main() {
       control.push_back(std::move(lease));
     }
     require(!queue.acquire("release-overflow", 1, true, error) && error == budget::rejection::full, "cleanup capacity is also bounded");
+    auto renewal = queue.acquire("renew", 1, budget::lane::renewal, error);
+    require(renewal != nullptr, "renewal has capacity while ordinary and cleanup lanes are full");
+    require(!queue.acquire("renew-overflow", 1, budget::lane::renewal, error) && error == budget::rejection::full,
+        "only one native renewal can wait or execute per host");
+    require(!queue.acquire("renew", 1, true, error) && error == budget::rejection::duplicate,
+        "renewal identity cannot be reused in another lane");
+    require(!queue.acquire("renew-next-document", 2, budget::lane::renewal, error),
+        "reload must not reset an occupied renewal slot");
+    renewal->release();
+    auto next_renewal = queue.acquire("renew", 1, budget::lane::renewal, error);
+    renewal.reset();
+    require(next_renewal != nullptr && !queue.acquire("renew-late", 1, budget::lane::renewal, error),
+        "idempotent old release cannot free replacement renewal");
+    next_renewal.reset();
     auto response_owner = ordinary.back();
     ordinary.pop_back();
     require(!queue.acquire("response-wait", 1, false, error), "response queue retains lease");

@@ -1,0 +1,33 @@
+{
+  "schema": "soui.kernel-warning-triage/v1",
+  "observedAt": "2026-09-26T16:14:33.621Z",
+  "code": "C4789",
+  "artifact": "out/dependencies/x86/miniblink/bin/node.dll",
+  "kernelSha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3",
+  "source": "third_party/sources/miniblink/third_party/libxml/src/xpath.c",
+  "sourceSha256": "ebe13f4bf4fc5d59a27468a4159655ae2184f5bf6b6a964d5c19edd48987147a",
+  "sourceUnchangedFromBase": true,
+  "sourceLine": 2769,
+  "warningSite": "work[buffersize - 1] = 0;",
+  "onlyCallSites": [
+    {
+      "line": 2669,
+      "text": "xmlXPathFormatNumber(double number, char buffer[], int buffersize)"
+    },
+    {
+      "line": 5592,
+      "text": "xmlXPathFormatNumber(val, buf, 99);"
+    }
+  ],
+  "configuredMsvcToolset": "14.44.35207",
+  "legacySnprintfAliasGuard": "#if _MSC_VER < 1900",
+  "legacyAliasAppliesToCurrentBuild": false,
+  "status": "not-resolved",
+  "notes": [
+    "The warning is in pre-existing libxml source, unchanged by the scheduler patch.",
+    "The compiler warns about an inlined buffer truncation branch; this alone proves neither a reachable overflow nor a false positive.",
+    "Do not silence the warning or mark the native security gate passed. Boundary/formatting and locale behavior still need focused validation."
+  ],
+  "runtimeSecurityVerified": false,
+  "productionPass": false
+}

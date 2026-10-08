@@ -156,39 +156,72 @@ void directory_scanner::shutdown_session(const std::string& session_id) {
   }
 }
 
-bool directory_scanner::authorized(const scan_request_context& context, std::string_view permission) const {
-  return permissions_.authorize(context.session_id, context.origin, context.token, std::string(permission));
+std::shared_ptr<const authorization_scope> directory_scanner::resolve_authorization(
+    const scan_request_context& context, const std::string& permission) const {
+  const auto checked = permissions_.resolve(context.session_id, context.origin, context.token, permission);
+  return checked.result == authorization_result::authorized ? checked.scope : nullptr;
+}
+
+std::shared_ptr<const authorization_scope> directory_scanner::resolve_scan_authorization(
+    const scan_request_context& context) const {
+  auto authorization = resolve_authorization(context, "filesystem.scan");
+  if (!authorization) authorization = resolve_authorization(context, "demo.scan");
+  return authorization;
 }
 
 std::string directory_scanner::register_root(const scan_request_context& context,
                                              const std::filesystem::path& root) {
-  if (!authorized(context, "desktop.dialog.pickDirectory")) return {};
+  const auto authorization = resolve_authorization(context, "desktop.dialog.pickDirectory");
+  if (!authorization) return {};
   std::error_code error;
   const auto canonical = std::filesystem::weakly_canonical(root, error);
   if (error || !std::filesystem::is_directory(canonical, error) || error) return {};
   std::lock_guard<std::mutex> lock(mutex_);
   const auto reference = make_root_reference(next_root_++);
-  roots_.emplace(reference, root_binding{context.session_id, context.origin, context.token, canonical});
+  // Shutdown first revokes the grant, then takes this resource lock. Anything
+  // admitted before revocation is covered by that cleanup; later work is denied.
+  if (!authorization->active()) return {};
+  roots_.emplace(reference, root_binding{context.session_id, context.origin, authorization, canonical});
   return reference;
 }
 
 scan_response directory_scanner::start(const scan_request_context& context, std::string operation_id,
                                        const std::string& root_reference, const std::string& filter,
                                        std::string operation_scope) {
-  if (!authorized(context, "demo.scan") && !authorized(context, "filesystem.scan")) {
+  const auto authorization = resolve_scan_authorization(context);
+  if (!authorization) {
     return error("E_PERMISSION_DENIED", "filesystem.scan is required.");
   }
   if (operation_id.empty()) return error("E_INVALID_PARAMS", "operationId is required.");
   join_finished_workers();
-  root_binding binding;
+  if (operation_scope.empty()) operation_scope = "demo.scan.start";
+  const std::string scope_key = context.session_id + "|" + context.origin + "|" + operation_scope + "|" + root_reference + "|" + filter;
+  bool duplicate = false;
+  bool conflict = false;
+  bool capacity = false;
+  task_snapshot task;
+  // Retained resources contain stable identity, never a bearer credential.
+  const scan_request_context owner{context.session_id, context.origin, {}, authorization};
   {
     std::lock_guard<std::mutex> lock(mutex_);
+    if (!authorization->active()) return error("E_PERMISSION_DENIED", "The scan authorization is no longer active.");
     const auto found = roots_.find(root_reference);
     if (found == roots_.end() || found->second.session_id != context.session_id ||
-        found->second.origin != context.origin || found->second.token != context.token) {
+        found->second.origin != context.origin || found->second.authorization != authorization) {
       return error("E_ROOT_NOT_FOUND", "The root reference is not valid for this session.");
     }
-    binding = found->second;
+    const auto binding = found->second;
+    // Handle existing operations before enforcing admission bounds. A retry of
+    // an existing task never creates another worker or evicts its own result.
+    for (const auto& item : scans_) {
+      const auto existing = tasks_.query(item.first);
+      if (!existing || existing->operation_id != operation_id) continue;
+      task = tasks_.start_scoped(operation_id, scope_key, &duplicate, &conflict, &capacity);
+      if (conflict || item.second.context.authorization != authorization) {
+        return error("E_OPERATION_CONFLICT", "operationId already belongs to a different request.");
+      }
+      return {result_kind::success, {}, "duplicate operationId returned existing task", task.task_id, {}, {}, false};
+    }
     const auto active_workers = std::count_if(workers_.begin(), workers_.end(), [&](const auto& item) {
       const auto scan = scans_.find(item.first);
       return scan != scans_.end() && scan->second.context.session_id == context.session_id;
@@ -211,29 +244,38 @@ scan_response directory_scanner::start(const scan_request_context& context, std:
       scans_.erase(removable);
       --retained;
     }
-  }
-
-  if (operation_scope.empty()) operation_scope = "demo.scan.start";
-  const std::string scope_key = context.session_id + "|" + context.origin + "|" + operation_scope + "|" + root_reference + "|" + filter;
-  bool duplicate = false;
-  bool conflict = false;
-  bool capacity = false;
-  const auto task = tasks_.start_scoped(std::move(operation_id), scope_key, &duplicate, &conflict, &capacity);
-  if (conflict) return error("E_OPERATION_CONFLICT", "operationId already belongs to a different request.", task.task_id);
-  if (capacity) return error("E_BUSY", "The native task store capacity is exhausted.");
-  {
-    std::lock_guard<std::mutex> lock(mutex_);
-    if (scans_.find(task.task_id) != scans_.end()) {
-      return {result_kind::success, {}, duplicate ? std::string{"duplicate operationId returned existing task"} : std::string{}, task.task_id, {}, {}, false};
+    if (!authorization->active()) return error("E_PERMISSION_DENIED", "The scan authorization is no longer active.");
+    task = tasks_.start_scoped(std::move(operation_id), scope_key, &duplicate, &conflict, &capacity);
+    if (conflict) return error("E_OPERATION_CONFLICT", "operationId already belongs to a different request.", task.task_id);
+    if (capacity) return error("E_BUSY", "The native task store capacity is exhausted.");
+    // An operation in the shared store without scanner ownership is never ours
+    // to adopt or erase, even if a native caller used the same scope string.
+    if (duplicate) return error("E_OPERATION_CONFLICT", "operationId has no matching scan owner.");
+    try {
+      scans_.emplace(task.task_id, scan_state{owner, {}, filter, result_kind::input_required, {}, {}, false, false});
+      auto worker = std::make_unique<scan_worker>();
+      auto* control = worker.get();
+      // Insert before starting the thread: map allocation failure must not
+      // destroy a joinable thread while holding the scanner lock.
+      workers_.emplace(task.task_id, std::move(worker));
+      if (!authorization->active()) {
+        workers_.erase(task.task_id);
+        scans_.erase(task.task_id);
+        (void)tasks_.complete(task.task_id, result_kind::failure, "Scan authorization was revoked before worker admission.");
+        (void)tasks_.erase(task.task_id);
+        return error("E_PERMISSION_DENIED", "The scan authorization is no longer active.");
+      }
+      control->thread = std::thread([this, task_id = task.task_id, binding, owner, filter, control]() {
+        run_scan(task_id, binding, owner, filter, control);
+        control->cancel_requested = true;
+      });
+    } catch (...) {
+      workers_.erase(task.task_id);
+      scans_.erase(task.task_id);
+      (void)tasks_.complete(task.task_id, result_kind::failure, "The scan worker could not be created.");
+      (void)tasks_.erase(task.task_id);
+      return error("E_SCAN_START_FAILED", "The scan worker could not be created.");
     }
-    scans_.emplace(task.task_id, scan_state{context, {}, filter, result_kind::input_required, {}, {}, false, duplicate});
-    auto worker = std::make_unique<scan_worker>();
-    auto* control = worker.get();
-    worker->thread = std::thread([this, task_id = task.task_id, binding, context, filter, control]() {
-      run_scan(task_id, binding, context, filter, control);
-      control->cancel_requested = true;
-    });
-    workers_.emplace(task.task_id, std::move(worker));
   }
   emit_event(context.session_id, task.task_id, "accepted", 0);
   return {result_kind::success, {}, duplicate ? std::string{"duplicate operationId returned existing task"} : std::string{}, task.task_id, {}, "0", false};
@@ -438,24 +480,26 @@ void directory_scanner::run_scan(std::string task_id, root_binding binding, scan
 scan_response directory_scanner::read_page(const scan_request_context& context,
                                            const std::string& task_id, std::string cursor,
                                            std::size_t page_size) {
-  if (!authorized(context, "task.query")) return error("E_PERMISSION_DENIED", "task.query is required.", task_id);
+  const auto authorization = resolve_authorization(context, "task.query");
+  if (!authorization) return error("E_PERMISSION_DENIED", "task.query is required.", task_id);
   if (page_size == 0) return error("E_INVALID_ARGUMENT", "page_size must be greater than zero.", task_id);
   page_size = std::min<std::size_t>(page_size, 1000);
-  const auto task = tasks_.query(task_id);
-  if (!task.has_value()) return error("E_TASK_NOT_FOUND", "The scan task does not exist.");
-  if (task->state == task_state::cancel_requested) {
-    return {result_kind::timeout_observed, "E_CANCEL_PENDING", "Native scan cancellation is pending.", task_id, {}, {}, false};
-  }
   scan_state state;
   std::vector<scan_entry> entries;
   std::size_t total_entries{0};
   std::size_t end{0};
   {
     std::lock_guard<std::mutex> lock(mutex_);
+    if (!authorization->active()) return error("E_PERMISSION_DENIED", "The scan authorization is no longer active.", task_id);
     const auto found = scans_.find(task_id);
     if (found == scans_.end() || found->second.context.session_id != context.session_id ||
-        found->second.context.origin != context.origin || found->second.context.token != context.token) {
+        found->second.context.origin != context.origin || found->second.context.authorization != authorization) {
       return error("E_TASK_NOT_FOUND", "The scan task is not valid for this session.", task_id);
+    }
+    const auto task = tasks_.query(task_id);
+    if (!task.has_value()) return error("E_TASK_NOT_FOUND", "The scan task does not exist.");
+    if (task->state == task_state::cancel_requested) {
+      return {result_kind::timeout_observed, "E_CANCEL_PENDING", "Native scan cancellation is pending.", task_id, {}, {}, false};
     }
     const auto& source = found->second;
     state.complete = source.complete;
@@ -507,31 +551,39 @@ scan_response directory_scanner::read_page(const scan_request_context& context,
 }
 
 bool directory_scanner::cancel(const scan_request_context& context, const std::string& task_id) {
-  if (!authorized(context, "task.cancel")) return false;
-  const auto task = tasks_.query(task_id);
-  if (!task.has_value()) return false;
+  const auto authorization = resolve_authorization(context, "task.cancel");
+  if (!authorization) return false;
+  bool accepted = false;
   {
     std::lock_guard<std::mutex> lock(mutex_);
+    if (!authorization->active()) return false;
     const auto found = scans_.find(task_id);
     if (found == scans_.end() || found->second.context.session_id != context.session_id ||
-        found->second.context.origin != context.origin || found->second.context.token != context.token) {
+        found->second.context.origin != context.origin || found->second.context.authorization != authorization) {
       return false;
     }
-    const auto worker = workers_.find(task_id);
-    if (worker != workers_.end()) worker->second->cancel_requested = true;
-    found->second.message = "Native scan cancellation accepted.";
+    accepted = tasks_.request_cancel(task_id);
+    if (accepted) {
+      const auto worker = workers_.find(task_id);
+      if (worker != workers_.end()) worker->second->cancel_requested = true;
+      found->second.message = "Native scan cancellation accepted.";
+    }
   }
-  const bool accepted = tasks_.request_cancel(task_id);
   if (accepted) emit_event(context.session_id, task_id, "cancel-pending", 0, "Native scan cancellation accepted.");
   return accepted;
 }
 
 bool directory_scanner::owns_task(const scan_request_context& context,
                                   const std::string& task_id) const {
+  // Every scan owner necessarily held one of these capabilities at admission.
+  // Resolve the bearer again, even when the caller supplies a native identity.
+  const auto authorization = resolve_scan_authorization(context);
+  if (!authorization) return false;
   std::lock_guard<std::mutex> lock(mutex_);
   const auto found = scans_.find(task_id);
-  return found != scans_.end() && found->second.context.session_id == context.session_id &&
-         found->second.context.origin == context.origin && found->second.context.token == context.token;
+  return authorization->active() && found != scans_.end() &&
+         found->second.context.session_id == context.session_id &&
+         found->second.context.origin == context.origin && found->second.context.authorization == authorization;
 }
 
 bool directory_scanner::contains(const std::filesystem::path& root,
@@ -563,6 +615,9 @@ void directory_scanner::emit_event(const std::string& session_id, const std::str
   std::uint64_t sequence = 0;
   {
     std::lock_guard<std::mutex> lock(mutex_);
+    const auto found = scans_.find(task_id);
+    if (found == scans_.end() || found->second.context.session_id != session_id ||
+        !found->second.context.authorization || !found->second.context.authorization->active()) return;
     sink = sink_;
     sequence = next_event_sequence_++;
   }
@@ -575,7 +630,8 @@ void directory_scanner::emit_event(const std::string& session_id, const std::str
   payload["payload"] = {{"state", name}, {"progress", progress}, {"message", message},
                         {"indeterminate", name == "accepted" || name == "running" ||
                                               name == "cancel-pending"}};
-  sink(payload.dump());
+  try { sink(payload.dump()); }
+  catch (...) { /* A listener cannot escape the worker or prevent scan cleanup. */ }
 }
 
 void directory_scanner::join_finished_workers() {

@@ -3,12 +3,16 @@ import { describeOptions, discoverCapabilities, readCapabilityPage } from './cap
 import type { SouiCapabilityCatalog, SouiCapabilityPage, SouiDescribeOptions, SouiDiscoveryOptions } from './capabilities.js';
 import { SouiBridgeError, MAX_MESSAGE_BYTES, integerOption, isNativeEvent, isRecord,
   nonEmptyString, readResponse, utf8Bytes } from './protocol.js';
-import type { SouiBridgeRequest, SouiNativeEvent, SouiNativePort } from './protocol.js';
+import type { SouiBridgeRequest, SouiNativeEvent, SouiNativePort, SouiSessionLease } from './protocol.js';
+import { SessionRenewal } from './session-renewal.js';
 
 export interface SouiNativeClientOptions {
   sessionId: string;
   origin: string;
   token: string;
+  lease?: SouiSessionLease;
+  /** Elapsed bootstrap round-trip time; this can only shorten the local expiry estimate. */
+  leaseElapsedMs?: number;
   requestTimeoutMs?: number;
   maxPendingRequests?: number;
   maxSubscriptions?: number;
@@ -50,6 +54,7 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
   private readonly pending = new Map<string, PendingRequest>();
   private readonly subscriptions = new Set<SubscriptionState>();
   private readonly removeEventListener: () => void;
+  private readonly session: SessionRenewal;
   private stopped = false;
 
   public constructor(private readonly port: SouiNativePort, options: SouiNativeClientOptions) {
@@ -61,16 +66,27 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
     this.requestLimit = integerOption(options.maxPendingRequests, 128, 1024, 'maxPendingRequests');
     this.subscriptionLimit = integerOption(options.maxSubscriptions, 128, 1024, 'maxSubscriptions');
     this.messageLimit = integerOption(options.maxMessageBytes, MAX_MESSAGE_BYTES, MAX_MESSAGE_BYTES, 'maxMessageBytes');
-    this.removeEventListener = port.onEvent(event => this.receiveEvent(event));
-    if (typeof this.removeEventListener !== 'function')
-      throw new SouiBridgeError('E_INVALID_PORT', 'The event port must return a listener removal function.');
+    this.session = new SessionRenewal(port, this.options, this.clientId, () => this.newRequestId(),
+      this.timeoutMs, this.messageLimit, error => this.report(error));
+    try {
+      this.removeEventListener = port.onEvent(event => this.receiveEvent(event));
+      if (typeof this.removeEventListener !== 'function')
+        throw new SouiBridgeError('E_INVALID_PORT', 'The event port must return a listener removal function.');
+    } catch (error) { this.session.dispose(); throw error; }
   }
 
   public get disposed(): boolean { return this.stopped; }
-  public get pendingRequestCount(): number { return this.pending.size; }
+  public get pendingRequestCount(): number { return this.pending.size + this.session.pendingRequestCount; }
   public get subscriptionCount(): number { return this.subscriptions.size; }
+  /** Conservative local estimate; does not prove that native authorization has not been revoked. */
+  public get sessionLease(): SouiSessionLease | undefined { return this.session.lease; }
+
+  /** Shares an in-flight renewal. Before the renewal window, resolves the current lease without sending. */
+  public renewSession(): Promise<SouiSessionLease> { return this.session.renew(); }
 
   public call<M extends keyof Methods & string>(method: M, params: Methods[M]['params']): Promise<Methods[M]['result']> {
+    if (method === 'bridge.session.renew')
+      return Promise.reject(new SouiBridgeError('E_RESERVED_METHOD', 'Use renewSession() to update this client authorization.'));
     return this.request<Methods[M]['result']>(method, params);
   }
 
@@ -85,6 +101,8 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
     return discoverCapabilities(page => this.describe(page), options);
   }
 
+  private newRequestId(): string { return `${this.options.sessionId}:${this.clientId}:${this.nextRequest++}`; }
+
   private report(error: unknown, code = 'E_TRANSPORT'): void {
     const detail = error instanceof SouiBridgeError ? error : new SouiBridgeError(code,
       error instanceof Error ? error.message : 'The native operation failed.');
@@ -93,13 +111,13 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
 
   private request<Result>(method: string, params: unknown, control = false,
                           lateSuccess?: (value: Result) => void): Promise<Result> {
-    const requestId = `${this.options.sessionId}:${this.clientId}:${this.nextRequest++}`;
+    const requestId = this.newRequestId();
     if (this.stopped && !control)
       return Promise.reject(new SouiBridgeError('E_DISPOSED', 'The native client has been disposed.', requestId));
     if (!nonEmptyString(method))
       return Promise.reject(new SouiBridgeError('E_INVALID_PARAMS', 'A method name is required.', requestId));
     const request: SouiBridgeRequest = { requestId, sessionId: this.options.sessionId, origin: this.options.origin,
-      token: this.options.token, method, params, timeoutMs: this.timeoutMs };
+      token: this.session.token, method, params, timeoutMs: this.timeoutMs };
     let envelope: string;
     try { envelope = JSON.stringify(request); }
     catch { return Promise.reject(new SouiBridgeError('E_INVALID_PARAMS', 'Request parameters are not JSON serializable.', requestId)); }
@@ -214,6 +232,7 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
   public dispose(): void {
     if (this.stopped) return;
     this.stopped = true;
+    this.session.dispose();
     try { this.removeEventListener(); } catch (error) { this.report(error); }
     for (const state of Array.from(this.subscriptions)) void state.remove();
     for (const [requestId, item] of Array.from(this.pending)) {

@@ -8,6 +8,20 @@ preview.10 增加 `sdk.native.action-contract`、Web动作契约与GUI语义测�
 
 preview.9 新增 `sdk.native.host-adapter`（引擎无关转发、失败重试、终态与晚到事件）、扩展 `sdk.native.contract`（方法发现与授权/分页/响应边界），以及 `node --test tests/web/capabilities.test.mjs`（Web 分页与结果校验）。`tools/Test.ps1` 已纳入这些检查。模板在 `bridge.probe.report` 之前执行 `discover()`，因此本版模板的真实启动包含当前原生发现往返。当前执行结果见 [本轮记录](acceptance/agent-foundation.md)，这些测试不代表完整 Agent 操作或第二后端支持。
 
+`demo.native.interaction-task` 通过真实 Workbench adapter 和公开 JSON Bridge 验证有界 `demo.interaction`：单调时钟计时、后台进度事件、运行中取消、会话隔离、非法类型/整数范围与溢出、关闭会话清理，以及原快速任务兼容。构建后可运行 `ctest --test-dir out/x64 -C Release -R demo.native.interaction-task --output-on-failure`，x86 使用对应目录。这是无窗口的原生集成回归；V02 仍需新构建上真实滚动、IME、缩放和公共任务并发的桌面证据，不能继承旧应用载荷的短测结果。
+
+`node --test tests/sdk/sdk-native-payload.test.cjs` 验证 SDK Core 排除已知历史内核备份，保留有效 DLL/LIB 和许可材料，并执行旧包安装、新包升级、旧包回退。原始源码备份和业务文件必须保持原字节；`Test.ps1` 和交付汇总均包含此回归。
+
+`kernel.native.scheduler-fairness` 编译内核实际调用的内部选择策略，覆盖新任务优先级、同级先后、长期等待、连续普通任务、未来任务资格和退出清理。它是策略回归；修改此策略仍必须在两架构完整重编底层依赖，运行保持原动画的独立消费者及真实应用，不能仅凭该测试放行 DLL。首次红绿结果见[原始记录](../verification/production-validation/scheduler-fairness-policy-2026-09-26/README.md)。
+
+preview.13 的 `node --test tests/sdk/installation-interruption.test.cjs` 真正终止独立安装子进程，再由新进程恢复。覆盖准备、journal、替换、删除、新增、锁提交、清理、恢复再次中断，以及并发、文件/备份/锁/journal 冲突和链接。原始边界与退出记录保存在每次独立的 `out/sdk-recovery/attempt-*/`，故障样本不删除。`Test.ps1` 和交付汇总入口均执行此回归；小文件事务通过不能代替真实 SDK 包、业务编译、旧无 journal 现场或目标平台验收。
+
+preview.11 增加 `sdk.native.session-renewal` 与安装后独立 [session-consumer](../tests/session-consumer/README.md)，验证授权期限、轮换、重取、撤销、稳定归属与公开接入。Web 续期测试使用模拟时间并覆盖连接器与真实注入 resolver 的容量；这些测试不启动窗口，不证明真实八小时、模态响应、休眠或 Win7。真实长测必须在同一版本载荷上跨越多次 25 分钟续期，保留任务、订阅、输入响应和资源轨迹，不能用反复重载绕过授权期限。
+
+preview.10 新增 `sdk.native.menu_service` 和 `sdk.native.global_shortcut`，通过未安装的平台替换边界验证参数、状态、故障及资源所有权，不调用真实菜单或注册快捷键。安装后独立消费者同时使用三项公共服务；`--smoke-test` 的菜单程序取消与快捷键冲突也是实际桌面负载，必须串行。Workbench `--resident --resident-smoke-test` 是三窗口关闭、重载、重建和无窗口驻留的有限短测，不能证明真实快捷键、任务隔离、Explorer 重启或长期稳定。实际证据需绑定当前源码与完整载荷，历史版本结果不自动继承。
+
+preview.9 的 `sdk.native.tray-service` 使用未安装的私有平台边界测试托盘故障和资源状态，不创建窗口或调用真实 Shell。独立 [tray-consumer](../tests/tray-consumer/README.md) 必须只从安装后的 SDK 构建，其 `--smoke-test` 会使用真实桌面，须与其他桌面/QEMU 负载串行。编译、模拟故障、Shell API 返回成功均不能替代图标可见、真实点击、Explorer 重启和目标平台验证。
+
 0.3 后续的场景、公共 SDK 消费者、Electron 对照及生产准入设计见 [SDK 生产能力与价值验证方案](roadmap/0.3-sdk-validation.md)。其中独立消费者与生命周期驱动已落地，混合负载、完整 Electron 对照及生产准入档尚未实现；下文是当前可用入口。
 
 独立公共 SDK 消费者现有入口为 `powershell.exe -File tools/Test-Acceptance.ps1 -Architecture x64 -Scenario all -Cycles 3`。支持 reload/recreate/multiwindow 的真实 Host 生命周期与 Runtime 退出边界，以及 `bridge` 的标准连接器/32 并发/延时/错误恢复探针；说明见 [测试应用](../tests/acceptance-app/README.md)。`-PrepareOnly` 只生成已绑定身份的消费者，不执行任何桌面场景。该入口不包含方案中的全部场景，不授予生产或长稳通过结论。

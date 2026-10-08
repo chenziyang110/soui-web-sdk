@@ -1,0 +1,345 @@
+{
+  "syntheticOnly": true,
+  "actualGuiExecuted": false,
+  "actualClockRenewalVerified": false,
+  "testCount": 83,
+  "passed": 83,
+  "failed": 0,
+  "releaseReady": false,
+  "benchmarkValid": false,
+  "resourceGate": false,
+  "cases": [
+    {
+      "name": "synthetic-smoke",
+      "passed": true
+    },
+    {
+      "name": "synthetic-35min",
+      "passed": true
+    },
+    {
+      "name": "synthetic-35min-transport-recovery",
+      "passed": true
+    },
+    {
+      "name": "synthetic-8h",
+      "passed": true
+    },
+    {
+      "name": "duplicate-native-sequence",
+      "passed": true
+    },
+    {
+      "name": "missing-native-row",
+      "passed": true
+    },
+    {
+      "name": "native-clock-regression",
+      "passed": true
+    },
+    {
+      "name": "second-mount",
+      "passed": true
+    },
+    {
+      "name": "failure-marker",
+      "passed": true
+    },
+    {
+      "name": "wrong-version",
+      "passed": true
+    },
+    {
+      "name": "unexpected-duration",
+      "passed": true
+    },
+    {
+      "name": "supervisor-string-zero",
+      "passed": true
+    },
+    {
+      "name": "supervisor-nonzero",
+      "passed": true
+    },
+    {
+      "name": "supervisor-timeout",
+      "passed": true
+    },
+    {
+      "name": "supervisor-payload-changed",
+      "passed": true
+    },
+    {
+      "name": "supervisor-wrong-pid",
+      "passed": true
+    },
+    {
+      "name": "supervisor-wrong-architecture",
+      "passed": true
+    },
+    {
+      "name": "supervisor-wrong-duration",
+      "passed": true
+    },
+    {
+      "name": "native-session-change",
+      "passed": true
+    },
+    {
+      "name": "native-authorization-change",
+      "passed": true
+    },
+    {
+      "name": "replayed-task-invocation",
+      "passed": true
+    },
+    {
+      "name": "task-operation-change",
+      "passed": true
+    },
+    {
+      "name": "task-ended-without-cancel",
+      "passed": true
+    },
+    {
+      "name": "document-change",
+      "passed": true
+    },
+    {
+      "name": "subscription-change",
+      "passed": true
+    },
+    {
+      "name": "web-task-recreated",
+      "passed": true
+    },
+    {
+      "name": "web-failure-marker",
+      "passed": true
+    },
+    {
+      "name": "heartbeat-sequence-no-advance",
+      "passed": true
+    },
+    {
+      "name": "heartbeat-no-native-match",
+      "passed": true
+    },
+    {
+      "name": "heartbeat-polling-only",
+      "passed": true
+    },
+    {
+      "name": "heartbeat-impossible-event-count",
+      "passed": true
+    },
+    {
+      "name": "lease-expired",
+      "passed": true
+    },
+    {
+      "name": "lease-generation-not-acked",
+      "passed": true
+    },
+    {
+      "name": "lease-extended-limit",
+      "passed": true
+    },
+    {
+      "name": "cancel-not-requested",
+      "passed": true
+    },
+    {
+      "name": "cancel-not-confirmed",
+      "passed": true
+    },
+    {
+      "name": "unsubscribe-not-removed",
+      "passed": true
+    },
+    {
+      "name": "retained-result-lost",
+      "passed": true
+    },
+    {
+      "name": "response-request-mismatch",
+      "passed": true
+    },
+    {
+      "name": "observation-clock-regression",
+      "passed": true
+    },
+    {
+      "name": "observer-unknown-raw-field",
+      "passed": true
+    },
+    {
+      "name": "business-error",
+      "passed": true
+    },
+    {
+      "name": "duplicate-start-ack",
+      "passed": true
+    },
+    {
+      "name": "cleanup-scope-active",
+      "passed": true
+    },
+    {
+      "name": "runtime-cleanup-failed",
+      "passed": true
+    },
+    {
+      "name": "native-exit-nonzero",
+      "passed": true
+    },
+    {
+      "name": "smoke-overclaim",
+      "passed": true
+    },
+    {
+      "name": "native-truncated-lifecycle",
+      "passed": true
+    },
+    {
+      "name": "resource-overclaim",
+      "passed": true
+    },
+    {
+      "name": "duplicate-json-member",
+      "passed": true
+    },
+    {
+      "name": "truncated-last-line",
+      "passed": true
+    },
+    {
+      "name": "bad-report-hash",
+      "passed": true
+    },
+    {
+      "name": "synthetic-cannot-pass-real-cli-mode",
+      "passed": true
+    },
+    {
+      "name": "post-expiry-stale-event",
+      "passed": true
+    },
+    {
+      "name": "fourth-renewal-attempt",
+      "passed": true
+    },
+    {
+      "name": "native-real-duration-shortened",
+      "passed": true
+    },
+    {
+      "name": "missing-response-not-silently-skipped",
+      "passed": true
+    },
+    {
+      "name": "duplicate-response-not-silently-replaced",
+      "passed": true
+    },
+    {
+      "name": "retryable-transport-is-not-a-success-ack",
+      "passed": true
+    },
+    {
+      "name": "renewal-generation-skip",
+      "passed": true
+    },
+    {
+      "name": "retry-operation-identity-changed-before-recovery",
+      "passed": true
+    },
+    {
+      "name": "payload-manifest-duplicate",
+      "passed": true
+    },
+    {
+      "name": "payload-manifest-traversal",
+      "passed": true
+    },
+    {
+      "name": "payload-manifest-invalid-byte-count",
+      "passed": true
+    },
+    {
+      "name": "payload-and-freeze-binding",
+      "passed": true
+    },
+    {
+      "name": "supervisor-report-path-binding",
+      "passed": true
+    },
+    {
+      "name": "missing-supervisor-report-hash",
+      "passed": true
+    },
+    {
+      "name": "raw-synthetic-input-bytes-unchanged",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-absent-empty-array",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-exact-root-file-and-byte-identical-archive",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-required-array",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-exists-but-unlisted",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-listed-but-absent",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-wrong-hash",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-wrong-byte-length",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-archive-different-bytes",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-self-archive-inside-runtime-rejected",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-other-log-name-not-allowed",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-duplicate-descriptor-rejected",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-exact-exception-does-not-hide-other-new-log",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-exception-does-not-apply-in-resources",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-exception-does-not-accept-directory",
+      "passed": true
+    },
+    {
+      "name": "diagnostic-cannot-be-frozen-in-payload",
+      "passed": true
+    }
+  ]
+}

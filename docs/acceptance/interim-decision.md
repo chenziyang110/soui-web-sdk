@@ -1,8 +1,36 @@
 # 0.3 SDK 中期准入判定
 
+## 2026-09-28 preview.15 当前输入的三项结论
+
+**工程交付：部分通过，完整独立交付未通过。** 当前 419 文件 SDK Core 的构建与包身份、此前完整源码无 Git 解压编译、独立接入等局部证据已保存；V02 Demo 更新后的 718 文件源码已完成[双架构正式 Release 应用构建](../../verification/production-validation/v02-continuous-task-official-build-2026-09-27/README.md)和本机[两架构可见单轮交互](../../verification/production-validation/v02-current-visible-x64-2026-09-27/README.md)、[x86 单轮](../../verification/production-validation/v02-current-visible-x86-2026-09-27/README.md)。旧完整源码 ZIP 不包含这次新 Demo 输入，不能据此宣布当前整套交付已从原封包独立重建；`sourceDeliveryVerified=false`。
+
+**指定范围生产：未通过。** 当前构建在 Win7 SP1 x86 QEMU 有[应用短测](../../verification/production-validation/win7-sp1-x86-v02-current-app-smoke-2026-09-28/README.md)和[可见滚轮前后截图](../../verification/production-validation/win7-sp1-x86-v02-layout-wheel-before-after-2026-09-28/README.md)，但中文 IME、缩放及同一 30 秒任务并行仍待测；下一份新输入[首次客体尝试](../../verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-2026-09-28/README.md)在发命令前因外部虚拟机被门禁中止，不能算功能失败或通过。真实同页续期、V04 驻留、每模式千轮、百次重载资源门、隔离八小时、物理目标机与内核安全授权责任等仍未关闭；[支持矩阵](support-matrix.md)没有生产组合，`releaseReady=false`。
+
+**相对 Electron 的采用价值：未判定。** 历史最小宿主体积与三对预检均绑定旧输入；当前 Demo 尚缺至少五对隔离交替、输入到实际呈现/帧间隔、完整进程树资源与维护工时的同口径结果。不能由体积优势或本机短测推导整体价值，`benchmarkValid=false`。
+
+2026-09-26 当前开发候选 preview.13：[安装恢复文件链](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)、[已知旧现场副本手工恢复与独立账本四配置编译](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)，以及[完整源码无 Git 解压后的应用四配置构建和 44+8 项测试](../../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)通过所列范围。自动旧格式恢复仍拒绝；本候选业务与应用 GUI、目标平台、底层完整重编待验证。独立完整交付、指定范围生产与 Electron 整体价值三个结论均未通过或未判定，历史版本结果保持原身份。
+
 初始判定日期：2026-09-24，候选 `0.3.0-preview.5`；后续增补按各自版本分别判定。本文件只汇总已执行证据，不是正式发布批准。完整门槛见[验证方案](../roadmap/0.3-sdk-validation.md)，逐能力缺口见[能力矩阵](capabilities.md)，原始结果按 run-id 保存在 `verification/production-validation/`。当前 `releaseReady: false`。
 
+## 2026-09-26 preview.11 预检与桌面短测
+
+**双架构 Release 编译、安装消费、无 GUI 契约与所列桌面短测通过；驻留切片存在真实失败，指定范围生产未通过；相对 Electron 的整体采用价值未判定。** [本轮预检归档](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)记录 SDK、Starter、Workbench 的 x86/x64 完整编译、独立 SDK 安装和仓库外 `session-consumer` 编译/运行均退出 0；每架构 10 项 CTest 通过，其中原生授权续期为 14 组契约。最终汇总确认 Web 62 项、包行为 14 项、交付身份 7 项通过，五份锁文件的全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包、包内散列与源码匹配通过。生成的仓库外 `RenewalStarter` 双架构 Release 编译与项目校验均退出 0。
+
+[后续桌面归档](../../verification/production-validation/preview11-desktop-execution-2026-09-26/README.md)沿用相同编译输入：本机 x86/x64 的窗口线程停滞、目录程序化取消共四项，Starter/Workbench 默认与 React 共六入口，以及 `RenewalStarter` 两项真实短启动均退出 0。生成项目直接监督器仅对 EXE 做运行前后采样；另有完整载荷复核，不能当作每轮退出时逐文件采样或文件锁定。首次缺退出码的窗口探针和错误生成项目脚本入口均保留为失败样本，不由后续成功覆盖。
+
+x86 托盘消费者在菜单显示前返回 `E_MENU_FOREGROUND`、退出 1；x86 Workbench 驻留的 slot 2 达到内部 45 秒就绪期限、退出 3，尚未进入 smoke 阶段，slot 3 状态未判定。两项均完成清理；x64 菜单/驻留、实际菜单/快捷键输入、Explorer 重建、三窗任务隔离和空窗驻留仍未执行，完整 V04 不通过。
+
+本版按 [ADR-0014](../adr/0014-same-document-session-renewal.md)补足续期、稳定资源归属、有限重试和关闭清理契约。[真实时钟续期独立消费者](../../verification/production-validation/preview11-real-renewal-build-2026-09-26/README.md)的 x86/x64 编译与无窗口自检通过；随后[本机 x86 GUI 首次短测](../../verification/production-validation/preview11-real-renewal-smoke-attempt1-2026-09-26/README.md)在页面就绪前因会话关闭退出 1，任务未启动，x64 GUI 与真实超过 30 分钟/八小时运行未执行。[v2 修正夹具](../../verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/README.md)已完成两架构编译、每架构 45 项无窗口阶段自检、106 项分析器合成检查及 8 项运行输入绑定检查；随后[两架构首次 GUI](../../verification/production-validation/preview11-real-renewal-v2-smoke-2026-09-26/README.md)均因初始 60 秒未就绪退出 1，bootstrap 和任务调用为 0，真实续期未通过；模拟八小时轮换仍不能证明真实长稳。前序版本的桌面、Win7、完整源码重编和受干扰八小时记录不迁移到 preview.11。Win7 前两轮传输失败保留；[第三轮 v3 客体](../../verification/production-validation/win7-sp1-x86-qemu-preview11-apps-attempt3-2026-09-26/README.md)通过传输与运行前身份检查，Starter 就绪退出 0，Workbench 默认入口就绪后关闭超时，React 及运行后载荷检查未执行；同文档超过 30 分钟与八小时运行、完整 V02、Win7 SP1 x86、物理设备、当前完整源码交付及资源/性能门槛继续待验收。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+preview.11 的后续 V06 增补：[四阶段独立升级构建](../../verification/production-validation/preview11-upgrade-interruption-2026-09-26/README.md)在 x86/x64 共八次退出 0，应用/数据文件保留，GUI 尚未执行。真实终止安装进程后，正式校验及重新安装均失败；旧内容和业务数据虽可从原位与备份核对恢复，当前工具没有自动恢复入口。安装事务的持久化与恢复门槛未通过，工程交付结论保持未通过。
+
+## 2026-09-26 preview.10 预检
+
+2026-09-26 当次开发版为 preview.10 公共菜单、快捷键和显式驻留切片；[预检](../../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md)仅通过双架构 Release 编译、原生契约和独立安装消费。本版真实桌面、Win7、无 Git 完整源码复现和完整 V04 均待执行，未形成新的生产准入批准。下方 preview.8 判定保持原输入范围。
+
 ## 2026-09-25 preview.8 增补判定
+
+2026-09-26 开发进入 preview.9 公共托盘切片；本节 preview.8 工程和桌面证据保持原身份，不转移为新版本通过。[preview.8 Win7 x86 Demo GUI](../../verification/production-validation/win7-sp1-x86-qemu-preview8-demo-ui-2026-09-25/README.md)另已补足列表滚动、公共任务完成/取消的人工截图与串口核验；完整 V02 和 V04 仍未完成。
 
 **候选源码工程复现通过；指定范围生产未通过；相对 Electron 的整体采用价值未判定。** `sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。本节只评估 preview.8，旧版结果仍按各自来源保留。
 

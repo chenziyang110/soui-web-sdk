@@ -1,0 +1,2599 @@
+{
+  "schema": "soui.independent-real-renewal-build-review/v2",
+  "status": "build-and-frozen-input-evidence-verified",
+  "reviewedAt": "2026-09-26T08:54:55.111Z",
+  "startedAt": "2026-09-26T08:54:52.374Z",
+  "scope": "Independent read-only review of existing v2 x86/x64 build evidence. No build, test, GUI, VM or network executed by this review.",
+  "fixtureRoot": "C:/SOUI-SDK-production-validation/preview11-real-renewal-preparation-v2-20260926",
+  "fixtureRevision": 2,
+  "parentFreezeSha256": "7e45bc6158db50362e088ba8a97a08e42e7e63e398dde62df1dbe6ce6721620d",
+  "freeze": {
+    "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\freeze.json",
+    "bytes": 3442525,
+    "sha256": "80d19d4e2008a505bbb8a9293849f3756d4bf07ad7838ad38aa5bb054ac0ee3a"
+  },
+  "sourceSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+  "compiledCandidateCommit": "bec71cef4135087b76ccb368db8544950c1806b8",
+  "checks": {
+    "manifestCount": 27,
+    "sourceFileCount": 711,
+    "inputFileCount": 937,
+    "installedSdkFilesPerArchitecture": 35,
+    "payloadFilesPerArchitecture": 70,
+    "consumerSourceFiles": 6,
+    "toolchainFilesPerArchitecture": 7415,
+    "sourceMatchesCurrentCheckout": true,
+    "headersFrozenAndCompilerReadObserved": true,
+    "outerBuildNumericExitZero": true,
+    "exactThirteenStepSets": true,
+    "runnerUsesV2OutputRootAndRevisionParentBinding": true
+  },
+  "manifestChecks": [
+    {
+      "label": "frozen inputs",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\inputs",
+      "files": 937,
+      "bytes": 273676732,
+      "sha256": "29548090b14d3e8da3ef5524bdd413911db039a22b5d4d1732ddc39f651b6574",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "frozen source",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\inputs\\source",
+      "files": 711,
+      "bytes": 149215489,
+      "sha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+      "exactFileSet": true,
+      "normalizedSource": true
+    },
+    {
+      "label": "current SDK source",
+      "root": "C:\\SOUI-SDK-development\\preview9-tray",
+      "files": 711,
+      "bytes": 149215489,
+      "sha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+      "exactFileSet": false,
+      "normalizedSource": true
+    },
+    {
+      "label": "x86 consumerSource",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\consumer-source",
+      "files": 6,
+      "bytes": 80511,
+      "sha256": "51e5698e33e43df0192c496ba2997d87c575ad9fc1b5f230b7112978f36a4f38",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x86 drivers",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\drivers",
+      "files": 6,
+      "bytes": 110993,
+      "sha256": "180710958c2c9abc3247b5a6f9ef5cf75c3296921b7e2f7f3f0c29db25646431",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x86 protocol",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\protocol",
+      "files": 3,
+      "bytes": 85190,
+      "sha256": "4e109a738995f89d2be2d5a046e96605339610b17190c614255dec18a6277fab",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x86 toolchain",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\toolchain",
+      "files": 7415,
+      "bytes": 66868889,
+      "sha256": "182209377dff49f7003ba5121132493239671558c6ce4752def8b5406411131b",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x86 payload",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\runtime",
+      "files": 70,
+      "bytes": 28358884,
+      "sha256": "cd1bafab3851432531b1999efc88da9cb9cc1dad9706ce74b7fffcddfd6a5cb1",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x86 evidence",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1",
+      "files": 43,
+      "bytes": 1428454,
+      "sha256": "1108c289a7593c7a328212b8b20030141f0f831ecf7234f827c2625de1d2329e",
+      "exactFileSet": false,
+      "normalizedSource": false
+    },
+    {
+      "label": "x86 current consumer",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\consumer",
+      "files": 6,
+      "bytes": 80511,
+      "sha256": "51e5698e33e43df0192c496ba2997d87c575ad9fc1b5f230b7112978f36a4f38",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x86 current drivers",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+      "files": 6,
+      "bytes": 110993,
+      "sha256": "180710958c2c9abc3247b5a6f9ef5cf75c3296921b7e2f7f3f0c29db25646431",
+      "exactFileSet": false,
+      "normalizedSource": false
+    },
+    {
+      "label": "x86 current protocol",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+      "files": 3,
+      "bytes": 85190,
+      "sha256": "4e109a738995f89d2be2d5a046e96605339610b17190c614255dec18a6277fab",
+      "exactFileSet": false,
+      "normalizedSource": false
+    },
+    {
+      "label": "x86 installed SDK",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\inputs\\install\\x86",
+      "files": 35,
+      "bytes": 22282197,
+      "sha256": "6386282f96319bd9bc88a67f5d09d58cff9074ba68e4fac8b4d44569acfca92c",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x86 original installed SDK",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\x86-attempt1\\sdk-install",
+      "files": 35,
+      "bytes": 22282197,
+      "sha256": "6386282f96319bd9bc88a67f5d09d58cff9074ba68e4fac8b4d44569acfca92c",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x86 built web",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\web-output",
+      "files": 5,
+      "bytes": 145286,
+      "sha256": "4d1402dd3408751370e1fb2cb4c60db17a6bf1df2d5ad908e0f1232834d974c8",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x64 consumerSource",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\consumer-source",
+      "files": 6,
+      "bytes": 80511,
+      "sha256": "51e5698e33e43df0192c496ba2997d87c575ad9fc1b5f230b7112978f36a4f38",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x64 drivers",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\drivers",
+      "files": 6,
+      "bytes": 110993,
+      "sha256": "180710958c2c9abc3247b5a6f9ef5cf75c3296921b7e2f7f3f0c29db25646431",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x64 protocol",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\protocol",
+      "files": 3,
+      "bytes": 85190,
+      "sha256": "4e109a738995f89d2be2d5a046e96605339610b17190c614255dec18a6277fab",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x64 toolchain",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\toolchain",
+      "files": 7415,
+      "bytes": 66868889,
+      "sha256": "182209377dff49f7003ba5121132493239671558c6ce4752def8b5406411131b",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x64 payload",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\runtime",
+      "files": 70,
+      "bytes": 41820692,
+      "sha256": "b8e57159723f09ade349bf331af38ecabf687976cd7e0fc8885da0091b4be852",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x64 evidence",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1",
+      "files": 43,
+      "bytes": 1428432,
+      "sha256": "bb77daf26766e2c4eec8740e6036d03e0d05ac32e81f657a45df51fb2f808de1",
+      "exactFileSet": false,
+      "normalizedSource": false
+    },
+    {
+      "label": "x64 current consumer",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\consumer",
+      "files": 6,
+      "bytes": 80511,
+      "sha256": "51e5698e33e43df0192c496ba2997d87c575ad9fc1b5f230b7112978f36a4f38",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x64 current drivers",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+      "files": 6,
+      "bytes": 110993,
+      "sha256": "180710958c2c9abc3247b5a6f9ef5cf75c3296921b7e2f7f3f0c29db25646431",
+      "exactFileSet": false,
+      "normalizedSource": false
+    },
+    {
+      "label": "x64 current protocol",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+      "files": 3,
+      "bytes": 85190,
+      "sha256": "4e109a738995f89d2be2d5a046e96605339610b17190c614255dec18a6277fab",
+      "exactFileSet": false,
+      "normalizedSource": false
+    },
+    {
+      "label": "x64 installed SDK",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\inputs\\install\\x64",
+      "files": 35,
+      "bytes": 32291187,
+      "sha256": "f198f5c276339a6a4af3b0be569ce6faee2e297dfa545a150789b2f7d3d3d518",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x64 original installed SDK",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-session-renewal-20260926\\x64-attempt1\\sdk-install",
+      "files": 35,
+      "bytes": 32291187,
+      "sha256": "f198f5c276339a6a4af3b0be569ce6faee2e297dfa545a150789b2f7d3d3d518",
+      "exactFileSet": true,
+      "normalizedSource": false
+    },
+    {
+      "label": "x64 built web",
+      "root": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\web-output",
+      "files": 5,
+      "bytes": 145286,
+      "sha256": "4d1402dd3408751370e1fb2cb4c60db17a6bf1df2d5ad908e0f1232834d974c8",
+      "exactFileSet": true,
+      "normalizedSource": false
+    }
+  ],
+  "architectures": [
+    {
+      "architecture": "x86",
+      "buildId": "x86-attempt1",
+      "sdkBuildId": "0224b983-4e77-43fd-884a-6c595eae6262",
+      "fullBuildId": "7e000158-98f0-4349-854e-15c581663737",
+      "buildRecord": {
+        "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\build.json",
+        "bytes": 1478118,
+        "sha256": "583a44c61a74a5ab9c142e0b5899915fffaf2a35ff389cf2045961a52430e6b2"
+      },
+      "outerExitCode": 0,
+      "stepCount": 13,
+      "steps": [
+        {
+          "name": "cmake-version",
+          "program": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "arguments": [
+            "--version"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1",
+          "processId": 74532,
+          "startedAt": "2026-09-26T08:43:54.7241605Z",
+          "finishedAt": "2026-09-26T08:43:54.8667517Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 30,
+          "error": null
+        },
+        {
+          "name": "configure",
+          "program": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "arguments": [
+            "-S",
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\consumer-source",
+            "-B",
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\native-build",
+            "-G",
+            "Visual Studio 17 2022",
+            "-A",
+            "Win32",
+            "-T",
+            "v143",
+            "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+            "-DSouiSdk_DIR=C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\inputs\\install\\x86\\lib\\cmake\\SouiSdk"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1",
+          "processId": 67392,
+          "startedAt": "2026-09-26T08:44:31.1348985Z",
+          "finishedAt": "2026-09-26T08:44:35.0809847Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 180,
+          "error": null
+        },
+        {
+          "name": "deploy",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\drivers\\Prepare.cjs",
+            "deploy",
+            "x86-attempt1"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+          "processId": 70496,
+          "startedAt": "2026-09-26T08:44:38.4263170Z",
+          "finishedAt": "2026-09-26T08:44:51.8713912Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 180,
+          "error": null
+        },
+        {
+          "name": "finalize",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\drivers\\Prepare.cjs",
+            "finalize",
+            "x86-attempt1"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+          "processId": 15912,
+          "startedAt": "2026-09-26T08:44:52.0629488Z",
+          "finishedAt": "2026-09-26T08:45:01.2074795Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 180,
+          "error": null
+        },
+        {
+          "name": "native-build",
+          "program": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "arguments": [
+            "--build",
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\native-build",
+            "--config",
+            "Release",
+            "--target",
+            "InstalledRenewalProbe",
+            "--parallel",
+            "2"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1",
+          "processId": 64080,
+          "startedAt": "2026-09-26T08:44:35.0839874Z",
+          "finishedAt": "2026-09-26T08:44:38.4240304Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 600,
+          "error": null
+        },
+        {
+          "name": "node-version",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "--version"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1",
+          "processId": 8364,
+          "startedAt": "2026-09-26T08:43:54.6413839Z",
+          "finishedAt": "2026-09-26T08:43:54.7204929Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 30,
+          "error": null
+        },
+        {
+          "name": "npm-ci",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+            "ci",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\toolchain",
+          "processId": 68808,
+          "startedAt": "2026-09-26T08:43:55.1127794Z",
+          "finishedAt": "2026-09-26T08:44:01.1296077Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 600,
+          "error": null
+        },
+        {
+          "name": "npm-version",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+            "--version"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1",
+          "processId": 60848,
+          "startedAt": "2026-09-26T08:43:54.8708723Z",
+          "finishedAt": "2026-09-26T08:43:55.1092660Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 30,
+          "error": null
+        },
+        {
+          "name": "prepare",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\Prepare.cjs",
+            "begin",
+            "x86",
+            "x86-attempt1",
+            "C:\\nvm4w\\nodejs\\node.exe",
+            "C:\\Program Files\\CMake\\bin\\cmake.exe",
+            "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+          "processId": 42576,
+          "startedAt": "2026-09-26T08:43:50.5063790Z",
+          "finishedAt": "2026-09-26T08:43:54.6047407Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 180,
+          "error": null
+        },
+        {
+          "name": "self-check",
+          "program": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\runtime\\InstalledRenewalProbe.exe",
+          "arguments": [
+            "--self-check"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\runtime",
+          "processId": 4748,
+          "startedAt": "2026-09-26T08:44:51.8733934Z",
+          "finishedAt": "2026-09-26T08:44:52.0595469Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 30,
+          "error": null
+        },
+        {
+          "name": "toolchain-freeze",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\drivers\\Prepare.cjs",
+            "toolchain-freeze",
+            "x86-attempt1"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+          "processId": 4404,
+          "startedAt": "2026-09-26T08:44:01.1437956Z",
+          "finishedAt": "2026-09-26T08:44:10.7748628Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 180,
+          "error": null
+        },
+        {
+          "name": "web-build",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\drivers\\Build-Web.mjs",
+            "x86-attempt1"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+          "processId": 81016,
+          "startedAt": "2026-09-26T08:44:10.7773768Z",
+          "finishedAt": "2026-09-26T08:44:31.1293856Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 300,
+          "error": null
+        },
+        {
+          "name": "web-typecheck",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\toolchain\\node_modules\\typescript\\bin\\tsc",
+            "--project",
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\web-typecheck.tsconfig.json"
+          ],
+          "startedAt": "2026-09-26T08:44:19.713Z",
+          "finishedAt": "2026-09-26T08:44:20.283Z",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "error": null
+        }
+      ],
+      "selfCheck": {
+        "status": "self-check-passed",
+        "version": "0.3.0-preview.11",
+        "architecture": "x86",
+        "records": 8,
+        "fixtureRevision": 2,
+        "phaseCases": 45,
+        "guiExecuted": false,
+        "realRenewalVerified": false
+      },
+      "payloadCount": 70,
+      "payloadSha256": "cd1bafab3851432531b1999efc88da9cb9cc1dad9706ce74b7fffcddfd6a5cb1",
+      "executable": {
+        "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\runtime\\InstalledRenewalProbe.exe",
+        "bytes": 592896,
+        "sha256": "494771df6e7da2532f300b692e01aee72ef5eb1d0a8be7b5ac0e1abde6807bff"
+      },
+      "compiledExecutable": {
+        "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\native-build\\bin\\Release\\InstalledRenewalProbe.exe",
+        "bytes": 592896,
+        "sha256": "494771df6e7da2532f300b692e01aee72ef5eb1d0a8be7b5ac0e1abde6807bff"
+      },
+      "peFiles": [
+        {
+          "path": "API-MS-Win-core-xstate-l2-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "f0619ecd237feb5287c10f283994b470e6efd3c008392e8372a9a29f29b94ad2"
+        },
+        {
+          "path": "InstalledRenewalProbe.exe",
+          "machine": "0x014c",
+          "sha256": "494771df6e7da2532f300b692e01aee72ef5eb1d0a8be7b5ac0e1abde6807bff"
+        },
+        {
+          "path": "api-ms-win-core-console-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "35e4308351bec766eec1dfb5bc9b6aca4417d6d822fdff7c779618ebfc2c2652"
+        },
+        {
+          "path": "api-ms-win-core-console-l1-2-0.dll",
+          "machine": "0x014c",
+          "sha256": "72023dd72f20d305286ca64e188f3a1b58f8adec8934778e50cc20e4d6793956"
+        },
+        {
+          "path": "api-ms-win-core-datetime-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "cbeb3fce4b9067aefbe995970d39cd2498270e4929ae2e367ac15d3cb9ebac06"
+        },
+        {
+          "path": "api-ms-win-core-debug-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "6a168c94d5194d63f2d80f905ab9339e01afecc757af44b6658943fd369afd89"
+        },
+        {
+          "path": "api-ms-win-core-errorhandling-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "45757a42a31d519b0e6b2cf031352dceace039e69a65119b506e332fc2628fbd"
+        },
+        {
+          "path": "api-ms-win-core-file-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "e3eb59f334848b30e3271d9236404a9e4df711409894e4880c4ceec080707014"
+        },
+        {
+          "path": "api-ms-win-core-file-l1-2-0.dll",
+          "machine": "0x014c",
+          "sha256": "0777622b3487106f4ec764e415e3796a3c6ed2e0ebf799219b9a864dfe04735c"
+        },
+        {
+          "path": "api-ms-win-core-file-l2-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "26c7c62d033f50ac68a6c5a953816b2614efea1a123fecd66a0423da08769a54"
+        },
+        {
+          "path": "api-ms-win-core-handle-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "d4244d9ca65ca5c1a9de9e37d2839262c61099fc92e6728e0aeb6da988b28e78"
+        },
+        {
+          "path": "api-ms-win-core-heap-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "e4a9c2ebaebcec78eeaef566f30af26fbbb04005650a342aa47c0df941197218"
+        },
+        {
+          "path": "api-ms-win-core-interlocked-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "a5b9ac82f8564d3062f26c02c2c7a29b34ee8a5391831276c9bc4b8c911b015a"
+        },
+        {
+          "path": "api-ms-win-core-libraryloader-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "fe748c3a751de4e25afb1d66de0459917eae079fbbd5a75515b179057b012049"
+        },
+        {
+          "path": "api-ms-win-core-localization-l1-2-0.dll",
+          "machine": "0x014c",
+          "sha256": "e84b59c4d0371a701a11732c6db4ad47ea735d5ead7b7ed697c9e7b5e267d5b6"
+        },
+        {
+          "path": "api-ms-win-core-memory-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "60a8f25ee3942f2dba151e9676fa858a034ff090767a80d1a3a986b77fa7c94a"
+        },
+        {
+          "path": "api-ms-win-core-namedpipe-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "1380ae17c1c21764d1677a59a95a8302c17f2ac7676cc96921747476595e30ab"
+        },
+        {
+          "path": "api-ms-win-core-processenvironment-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "c0e71c61fec11988ce93f6524e98544f3cf71a55086365d9d40029cc16ed1b94"
+        },
+        {
+          "path": "api-ms-win-core-processthreads-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "9cb774aa46cd16e17d78d1ee939279cd69d68ba7445e90ebdd186bd02f0bb415"
+        },
+        {
+          "path": "api-ms-win-core-processthreads-l1-1-1.dll",
+          "machine": "0x014c",
+          "sha256": "471ff523e741d4c16eb843b2820d6d9be42cda4c4b13c7c06f45e55bfa39b2e3"
+        },
+        {
+          "path": "api-ms-win-core-profile-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "615693905133a17d9d72d8b46fd9ae85443bac5990e11a2e7ae8b405e10d56c0"
+        },
+        {
+          "path": "api-ms-win-core-rtlsupport-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "b7a2f47b389a8d0f2d1f1279516f99fbff399aed485d522472f373265cb99d46"
+        },
+        {
+          "path": "api-ms-win-core-string-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "6bac726de58d5305f13a55d7dd83769e20536362c18a07262747c4b4a73c79df"
+        },
+        {
+          "path": "api-ms-win-core-synch-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "61d44dcde3af12cdf8f545fce458610496d699a2658c28e280fa715999fa8f3e"
+        },
+        {
+          "path": "api-ms-win-core-synch-l1-2-0.dll",
+          "machine": "0x014c",
+          "sha256": "0f8bac3bc17c6a03d090c59a7b24958fd9a732cb82ea82f223ee1c5d7c6c2448"
+        },
+        {
+          "path": "api-ms-win-core-sysinfo-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "91c2f53d2078142f0ed742b0dbac94c2b2006d15285753be70f3b28e0aebdbd7"
+        },
+        {
+          "path": "api-ms-win-core-timezone-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "150e57cab3e9e7b443050b13418f5f6e93a2d2c7e6ab5b8a06962d9d9df820d0"
+        },
+        {
+          "path": "api-ms-win-core-util-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "c1b7d839923ee2ecd91246335bde6a39c65c088b61566c694ab6ba318476b7c6"
+        },
+        {
+          "path": "api-ms-win-crt-conio-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "78398b9e78680cfa705104eed73b59cd0c5208298bdead11cb778c11bf4eb3c0"
+        },
+        {
+          "path": "api-ms-win-crt-convert-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "ce26c495f3682f728cd783c4703e709a817355ac9c996713562b9c6ec4a64855"
+        },
+        {
+          "path": "api-ms-win-crt-environment-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "29cb4c12407e87d1cfb2073c9d856bbdec8d29f2190a6e2eb762ed2c14b75869"
+        },
+        {
+          "path": "api-ms-win-crt-filesystem-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "31011adfbe20d6004532a56937349b98ae2913ae0996e88236e4d2db37f0d19e"
+        },
+        {
+          "path": "api-ms-win-crt-heap-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "06e35112d8b3d1d98566bb75b0f586e457783af8f981c2c1fb97bed11d7c4030"
+        },
+        {
+          "path": "api-ms-win-crt-locale-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "7347bdcfef657d6dc57c74abe2969632f96d8e1f1228c0d6b405b56a3cbcb3ac"
+        },
+        {
+          "path": "api-ms-win-crt-math-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "efc419f701c15228db2cd8347ee030515dfd3ff9b6c13f6c0b50e207313dc6cf"
+        },
+        {
+          "path": "api-ms-win-crt-multibyte-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "b2edd6f49b474303a40150b6f44cdeb7b4954bb7c53407d82b69d13e2908699f"
+        },
+        {
+          "path": "api-ms-win-crt-private-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "2ab1fa504d082e7dd4565acfefb15b86d1711c86d5fa0d7867bbb8af1d8f4f45"
+        },
+        {
+          "path": "api-ms-win-crt-process-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "fc8aff5eb737f42742790e0b1a62f1368296e54ffa141ac75491ebd561b588fe"
+        },
+        {
+          "path": "api-ms-win-crt-runtime-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "c68c494549d7891a37b9e5fe6e172af1a1da88ac20e7db951d2f51e6a69df3d8"
+        },
+        {
+          "path": "api-ms-win-crt-stdio-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "e116c1689a811dd9740eeba6f4ea200c54a685f716e5ae2e8526ec18a3973e53"
+        },
+        {
+          "path": "api-ms-win-crt-string-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "fe123c4190422cda976253ec952ab0ba37c3bca66bc428dcaab5b9e69e769a8e"
+        },
+        {
+          "path": "api-ms-win-crt-time-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "f9914b9aa16678157aa8bd5203d383a08d5e1df3fd54fd8858d7bceed04be65d"
+        },
+        {
+          "path": "api-ms-win-crt-utility-l1-1-0.dll",
+          "machine": "0x014c",
+          "sha256": "55b9e24759c65a74a3dc6422f9e2e796b42b61b1090dac2776df07f568f50582"
+        },
+        {
+          "path": "concrt140.dll",
+          "machine": "0x014c",
+          "sha256": "a2b04c69868b08a600518ebbad1661d38de4dd0e0a8e638c22d4641d410e50b1"
+        },
+        {
+          "path": "imgdecoder-gdip.dll",
+          "machine": "0x014c",
+          "sha256": "c8c7643191bef7489422dd65a6e3ea6982912487e783dc24237a974d354ac114"
+        },
+        {
+          "path": "msvcp140.dll",
+          "machine": "0x014c",
+          "sha256": "97e71a3c697fb1ab3af777db39009e4602525e8c3aff0837ecc7031cba188165"
+        },
+        {
+          "path": "msvcp140_1.dll",
+          "machine": "0x014c",
+          "sha256": "01a58552686d0c6b9fd67a7ac81169fc0013aedf59a8efdc611f94907489a31c"
+        },
+        {
+          "path": "msvcp140_2.dll",
+          "machine": "0x014c",
+          "sha256": "2a5365e03cc6e78b408dfca81537f3734bf3d7cf9cc13ae33204dfbc641dbe43"
+        },
+        {
+          "path": "msvcp140_atomic_wait.dll",
+          "machine": "0x014c",
+          "sha256": "c4a2bae74e008a5bb2445f9078c14df9dcb03267248dfa64e7d04cdc8af5208e"
+        },
+        {
+          "path": "msvcp140_codecvt_ids.dll",
+          "machine": "0x014c",
+          "sha256": "a5cbecfd9b8892ec9a60e30fef7ef2158032c6d91efdfbaca87c082bcd48bfa9"
+        },
+        {
+          "path": "node.dll",
+          "machine": "0x014c",
+          "sha256": "3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7"
+        },
+        {
+          "path": "render-gdi.dll",
+          "machine": "0x014c",
+          "sha256": "fe5b27388de7b63fec69b43ee93dc421cd57eb7df21aed667453f0c5a46b5171"
+        },
+        {
+          "path": "soui-sys-resource.dll",
+          "machine": "0x014c",
+          "sha256": "13ad6ded9cb39570c0fa38c22e713469e9bddd50da0ce77033631dbe59ba4782"
+        },
+        {
+          "path": "soui.dll",
+          "machine": "0x014c",
+          "sha256": "1ea0ff009b1ea6b513ee94a252be059a9a755df75a67043b25ff2f5394f040de"
+        },
+        {
+          "path": "ucrtbase.dll",
+          "machine": "0x014c",
+          "sha256": "d7a94eabf4109bb5a2e381a603bee5e398a81f23894e1764170399ec83ad2541"
+        },
+        {
+          "path": "utilities.dll",
+          "machine": "0x014c",
+          "sha256": "316c174853f5a0dc0687c2f6b43418c2c46bf92251b2b6fa71190e9d72e94caf"
+        },
+        {
+          "path": "vccorlib140.dll",
+          "machine": "0x014c",
+          "sha256": "89ed5a6877a87ec3ec9fe4a0fb14dc950599f0b67318e746084a0c333a6c865f"
+        },
+        {
+          "path": "vcruntime140.dll",
+          "machine": "0x014c",
+          "sha256": "a9d7732a3c3de09f0601a7fa2555093dcb49f08e2fc62a86091461f0f38393ed"
+        },
+        {
+          "path": "vcruntime140_threads.dll",
+          "machine": "0x014c",
+          "sha256": "bb2b1d16187562376fc888059e2cbbf26c5404f6a4bb7197d1d01b970f199667"
+        },
+        {
+          "path": "zlib1.dll",
+          "machine": "0x014c",
+          "sha256": "39611555cc1ba130a88cc3b32835207004dac7915d2fda42186c75b7743908ee"
+        }
+      ],
+      "headersObservedInCompilerReadLog": [
+        "session_observation.h",
+        "session_observation_tests.h"
+      ],
+      "compilerReadLog": {
+        "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\native-build\\InstalledRenewalProbe.dir\\Release\\Installe.FF75026F.tlog\\CL.read.1.tlog",
+        "bytes": 51548,
+        "sha256": "a2c7c65fcc9b18612a577178496a6dd8c317b298ea0f98bc7b4a68b8321bab50"
+      },
+      "linkCommandLog": {
+        "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\native-build\\InstalledRenewalProbe.dir\\Release\\Installe.FF75026F.tlog\\link.command.1.tlog",
+        "bytes": 2794,
+        "sha256": "e7074d20f374e2c648f75881cf28be9bb0c610f82a1abda0bc8e40d584d760e0"
+      },
+      "installedSdkSha256": "6386282f96319bd9bc88a67f5d09d58cff9074ba68e4fac8b4d44569acfca92c",
+      "consumerSourceSha256": "51e5698e33e43df0192c496ba2997d87c575ad9fc1b5f230b7112978f36a4f38",
+      "driversSha256": "180710958c2c9abc3247b5a6f9ef5cf75c3296921b7e2f7f3f0c29db25646431",
+      "protocolSha256": "4e109a738995f89d2be2d5a046e96605339610b17190c614255dec18a6277fab",
+      "toolchainSha256": "182209377dff49f7003ba5121132493239671558c6ce4752def8b5406411131b",
+      "ambientVcpkgWildcardPresent": true,
+      "web": {
+        "classicEntry": true,
+        "target": "Chrome 49",
+        "manifestEntries": [
+          "../../toolchain/vite/legacy-polyfills-legacy",
+          "index-legacy.html",
+          "index.html"
+        ],
+        "actualBrowserExecuted": false
+      }
+    },
+    {
+      "architecture": "x64",
+      "buildId": "x64-attempt1",
+      "sdkBuildId": "d4599caa-770e-461e-a4a5-06d4e1c064cd",
+      "fullBuildId": "6c61f9e3-065a-40c5-b281-ace7ca80df02",
+      "buildRecord": {
+        "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\build.json",
+        "bytes": 1478106,
+        "sha256": "20d14373f192a84bde4ecae22eb256ef0b038ff0c522c6c0bec591fb0959bbca"
+      },
+      "outerExitCode": 0,
+      "stepCount": 13,
+      "steps": [
+        {
+          "name": "cmake-version",
+          "program": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "arguments": [
+            "--version"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1",
+          "processId": 49652,
+          "startedAt": "2026-09-26T08:46:45.1482421Z",
+          "finishedAt": "2026-09-26T08:46:45.2567114Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 30,
+          "error": null
+        },
+        {
+          "name": "configure",
+          "program": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "arguments": [
+            "-S",
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\consumer-source",
+            "-B",
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\native-build",
+            "-G",
+            "Visual Studio 17 2022",
+            "-A",
+            "x64",
+            "-T",
+            "v143",
+            "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+            "-DSouiSdk_DIR=C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\inputs\\install\\x64\\lib\\cmake\\SouiSdk"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1",
+          "processId": 19644,
+          "startedAt": "2026-09-26T08:47:22.0302492Z",
+          "finishedAt": "2026-09-26T08:47:25.6492985Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 180,
+          "error": null
+        },
+        {
+          "name": "deploy",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\drivers\\Prepare.cjs",
+            "deploy",
+            "x64-attempt1"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+          "processId": 6560,
+          "startedAt": "2026-09-26T08:47:29.1054892Z",
+          "finishedAt": "2026-09-26T08:47:42.9249780Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 180,
+          "error": null
+        },
+        {
+          "name": "finalize",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\drivers\\Prepare.cjs",
+            "finalize",
+            "x64-attempt1"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+          "processId": 83432,
+          "startedAt": "2026-09-26T08:47:43.0939685Z",
+          "finishedAt": "2026-09-26T08:47:52.5116904Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 180,
+          "error": null
+        },
+        {
+          "name": "native-build",
+          "program": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "arguments": [
+            "--build",
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\native-build",
+            "--config",
+            "Release",
+            "--target",
+            "InstalledRenewalProbe",
+            "--parallel",
+            "2"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1",
+          "processId": 432,
+          "startedAt": "2026-09-26T08:47:25.6523019Z",
+          "finishedAt": "2026-09-26T08:47:29.1024831Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 600,
+          "error": null
+        },
+        {
+          "name": "node-version",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "--version"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1",
+          "processId": 73016,
+          "startedAt": "2026-09-26T08:46:45.0628556Z",
+          "finishedAt": "2026-09-26T08:46:45.1452424Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 30,
+          "error": null
+        },
+        {
+          "name": "npm-ci",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+            "ci",
+            "--no-audit",
+            "--no-fund"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\toolchain",
+          "processId": 66860,
+          "startedAt": "2026-09-26T08:46:45.4631534Z",
+          "finishedAt": "2026-09-26T08:46:51.2128191Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 600,
+          "error": null
+        },
+        {
+          "name": "npm-version",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+            "--version"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1",
+          "processId": 76460,
+          "startedAt": "2026-09-26T08:46:45.2597112Z",
+          "finishedAt": "2026-09-26T08:46:45.4602313Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 30,
+          "error": null
+        },
+        {
+          "name": "prepare",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\Prepare.cjs",
+            "begin",
+            "x64",
+            "x64-attempt1",
+            "C:\\nvm4w\\nodejs\\node.exe",
+            "C:\\Program Files\\CMake\\bin\\cmake.exe",
+            "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+          "processId": 19808,
+          "startedAt": "2026-09-26T08:46:40.8898846Z",
+          "finishedAt": "2026-09-26T08:46:45.0262939Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 180,
+          "error": null
+        },
+        {
+          "name": "self-check",
+          "program": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\runtime\\InstalledRenewalProbe.exe",
+          "arguments": [
+            "--self-check"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\runtime",
+          "processId": 83228,
+          "startedAt": "2026-09-26T08:47:42.9275514Z",
+          "finishedAt": "2026-09-26T08:47:43.0918557Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 30,
+          "error": null
+        },
+        {
+          "name": "toolchain-freeze",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\drivers\\Prepare.cjs",
+            "toolchain-freeze",
+            "x64-attempt1"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+          "processId": 55272,
+          "startedAt": "2026-09-26T08:46:51.2153742Z",
+          "finishedAt": "2026-09-26T08:47:00.9274943Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 180,
+          "error": null
+        },
+        {
+          "name": "web-build",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\drivers\\Build-Web.mjs",
+            "x64-attempt1"
+          ],
+          "workingDirectory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+          "processId": 51824,
+          "startedAt": "2026-09-26T08:47:00.9304954Z",
+          "finishedAt": "2026-09-26T08:47:22.0250716Z",
+          "exitCode": 0,
+          "timedOut": false,
+          "timeoutSeconds": 300,
+          "error": null
+        },
+        {
+          "name": "web-typecheck",
+          "program": "C:\\nvm4w\\nodejs\\node.exe",
+          "arguments": [
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\toolchain\\node_modules\\typescript\\bin\\tsc",
+            "--project",
+            "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\web-typecheck.tsconfig.json"
+          ],
+          "startedAt": "2026-09-26T08:47:10.425Z",
+          "finishedAt": "2026-09-26T08:47:11.022Z",
+          "exitCode": 0,
+          "signal": null,
+          "timedOut": false,
+          "error": null
+        }
+      ],
+      "selfCheck": {
+        "status": "self-check-passed",
+        "version": "0.3.0-preview.11",
+        "architecture": "x64",
+        "records": 8,
+        "fixtureRevision": 2,
+        "phaseCases": 45,
+        "guiExecuted": false,
+        "realRenewalVerified": false
+      },
+      "payloadCount": 70,
+      "payloadSha256": "b8e57159723f09ade349bf331af38ecabf687976cd7e0fc8885da0091b4be852",
+      "executable": {
+        "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\runtime\\InstalledRenewalProbe.exe",
+        "bytes": 669696,
+        "sha256": "88f51fc9c9e0dc601b85d2256cbb76d29b615ce2fee988edb7d0b0aa65738e13"
+      },
+      "compiledExecutable": {
+        "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\native-build\\bin\\Release\\InstalledRenewalProbe.exe",
+        "bytes": 669696,
+        "sha256": "88f51fc9c9e0dc601b85d2256cbb76d29b615ce2fee988edb7d0b0aa65738e13"
+      },
+      "peFiles": [
+        {
+          "path": "InstalledRenewalProbe.exe",
+          "machine": "0x8664",
+          "sha256": "88f51fc9c9e0dc601b85d2256cbb76d29b615ce2fee988edb7d0b0aa65738e13"
+        },
+        {
+          "path": "api-ms-win-core-console-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "6801f5306be9f07a8376fd72d95ee6f2c286d02a940822af4f9c873c58a8c79b"
+        },
+        {
+          "path": "api-ms-win-core-console-l1-2-0.dll",
+          "machine": "0x8664",
+          "sha256": "3239f73115b8614296dfb0dc72a79cbcc9c6e26e528fcb18e044c7bd673ef122"
+        },
+        {
+          "path": "api-ms-win-core-datetime-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "bea649ba3dedf2b6e46d2085f3b354fc3eeb1440e1c2c5ea97721b147921cc85"
+        },
+        {
+          "path": "api-ms-win-core-debug-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "3de02d9fa11365c84d9da6a29841cc130239ce3bede7535847d001172def18a8"
+        },
+        {
+          "path": "api-ms-win-core-errorhandling-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "848cd0fc6f7b994af337a1b895709949c4a1d2380a32737c86b81b73f6f4aab1"
+        },
+        {
+          "path": "api-ms-win-core-file-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "a261e91aee4552d2f4d4bccf73afb0124d45ef12f37fd617e9818c7c41644556"
+        },
+        {
+          "path": "api-ms-win-core-file-l1-2-0.dll",
+          "machine": "0x8664",
+          "sha256": "d7add947980a5ce1bb875cc2340dd318739c717898366b27542b4386cafed530"
+        },
+        {
+          "path": "api-ms-win-core-file-l2-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "a3e5f16c901f3aa34927d848628fdadb2bf39948da958785872a204940327365"
+        },
+        {
+          "path": "api-ms-win-core-handle-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "c0874c137181bf40542b9fda3443063247962e7cbf87a43109a2f1d4b2231dba"
+        },
+        {
+          "path": "api-ms-win-core-heap-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "691f8c9d3a52396851400870a25eb4ed864d89fa4579d6cf82fff99e5393fdd2"
+        },
+        {
+          "path": "api-ms-win-core-interlocked-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "7a35ed8d0d3f917e51c1c9be4a465f298e01cc26d4b090c4611b4045365e3471"
+        },
+        {
+          "path": "api-ms-win-core-libraryloader-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "5ce62d6356f80fbcab69bd53b4b31cbb7b3cbcfb69736bb56d32272c56a107fc"
+        },
+        {
+          "path": "api-ms-win-core-localization-l1-2-0.dll",
+          "machine": "0x8664",
+          "sha256": "b6158bf61526b05ba5569f5191fce05f2d78dac356aade761c110a645c9ebc7f"
+        },
+        {
+          "path": "api-ms-win-core-memory-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "49caa4ac64640e07642d5332850b09d7765a263d418e31c4ea563f72b53ad6ac"
+        },
+        {
+          "path": "api-ms-win-core-namedpipe-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "0db4d342deb40d02dd84d8d1242c2c455eda11dadaf7d1c0da24887c368b55c2"
+        },
+        {
+          "path": "api-ms-win-core-processenvironment-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "df7819c1f49c5070fec9289c6c91f3b78da3eb2dbb54267c6ee17fdbd1d75aab"
+        },
+        {
+          "path": "api-ms-win-core-processthreads-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "378000df20aaa09fb41deecf06a9bd868cd1424c695971e2cb4f19de39b127e3"
+        },
+        {
+          "path": "api-ms-win-core-processthreads-l1-1-1.dll",
+          "machine": "0x8664",
+          "sha256": "ec26ab8014c7e3b102b2f5e7268f025fad1993027571a0fcb26b82606be31f4d"
+        },
+        {
+          "path": "api-ms-win-core-profile-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "3a2d5d94142c0eab0336cae355776d46aab81511fe85a81ea5d1cb58fcfc6f44"
+        },
+        {
+          "path": "api-ms-win-core-rtlsupport-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "f3e88425e086c99ba9b50301272eb5fedbea93975848496c4c929dead0f4b3b6"
+        },
+        {
+          "path": "api-ms-win-core-string-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "f5deaf128637170e8a5c5f5c18b0d14b3c4541a33d54ee0b9c4ab2d8bb748415"
+        },
+        {
+          "path": "api-ms-win-core-synch-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "6b043a1dd6a02e6a09e2d9c2047e95df9b091f641fd8e0a61a74599697360017"
+        },
+        {
+          "path": "api-ms-win-core-synch-l1-2-0.dll",
+          "machine": "0x8664",
+          "sha256": "af7d60e1f7d127be7be92519bc2b24f0ad5a095cb04a8784b2337e81895ff7f7"
+        },
+        {
+          "path": "api-ms-win-core-sysinfo-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "1fd75b049056b219195e1ac36f207d59b1c0aea37b7be63c659733fe9f428f84"
+        },
+        {
+          "path": "api-ms-win-core-timezone-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "d216b9631f0e1e561a910b1b17a7b0ef6ec78614c38991617e31fb98213bca08"
+        },
+        {
+          "path": "api-ms-win-core-util-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "ced4c182964a46b9ee461c2845a90e728c67843a77635b06354617544534630f"
+        },
+        {
+          "path": "api-ms-win-crt-conio-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "f1737997ec35f7f00638297b4fab5450b93f4128c2927ab47a54c361addf7499"
+        },
+        {
+          "path": "api-ms-win-crt-convert-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "25fe8493624b0a0d9d00a46fb41e4356c1cd01fa80f7b1e6ab831df2ccac762a"
+        },
+        {
+          "path": "api-ms-win-crt-environment-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "16e8b7c5f5c806bf831c81f2124c86ed8da1d34d7c430475894f49d3007e499a"
+        },
+        {
+          "path": "api-ms-win-crt-filesystem-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "790495652731de7e51e4803e3ecb0c050d95749e8e84bc4bcf6f3b67d756e9ed"
+        },
+        {
+          "path": "api-ms-win-crt-heap-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "49f8312f15018bbf386704dd8fc62e0043ed38b98413b5a19f3776bc780d1253"
+        },
+        {
+          "path": "api-ms-win-crt-locale-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "880127e94c1437d94e508f8c806e24413d95d1e0b131f88bc45606e4dece23ca"
+        },
+        {
+          "path": "api-ms-win-crt-math-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "26effb6000a24e3c1c597009e148f48a44498bbcf4218f0119c7301f8ac5a78c"
+        },
+        {
+          "path": "api-ms-win-crt-multibyte-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "b674a5e4ec8446c411f6a7ebfd179a2b385714c60adf4b21f9f81650b415b61c"
+        },
+        {
+          "path": "api-ms-win-crt-private-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "6b33bdfb8c6589541d0211eb44b173f8aae5f2df9db82f535cb90a5054d69f49"
+        },
+        {
+          "path": "api-ms-win-crt-process-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "820aeb34862d0058bc66af68859f6ffce1af4c9d0cf83fe7df58611e4ce3d6b9"
+        },
+        {
+          "path": "api-ms-win-crt-runtime-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "6a95a2ea68320591a955c2930462798083a8cc7e6d79754122c21b293ba9a1a8"
+        },
+        {
+          "path": "api-ms-win-crt-stdio-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "18d8b00e797538bc4767c19ae1762df18c64479a54e7041b8b4da99e32cda8bd"
+        },
+        {
+          "path": "api-ms-win-crt-string-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "c94bb2053a6541cc065b806ea945d420eb3207c3bee1d760401a600506e99589"
+        },
+        {
+          "path": "api-ms-win-crt-time-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "26376455bd746d87e150e73856d0db88303e0af2533f32956999c505e29db6fb"
+        },
+        {
+          "path": "api-ms-win-crt-utility-l1-1-0.dll",
+          "machine": "0x8664",
+          "sha256": "39b254cb97f25869d3c335899c6d3bab346cd6b000f2803ca9ddc8f2540c3a32"
+        },
+        {
+          "path": "concrt140.dll",
+          "machine": "0x8664",
+          "sha256": "2405355f0a58067b258f8df33c327e3a3d716eaac5a3a5aebb757842d85bd376"
+        },
+        {
+          "path": "imgdecoder-gdip.dll",
+          "machine": "0x8664",
+          "sha256": "d77aa604f007452f3e7ee06bba06f63a4ae960cdb15cda57c65a1a4b42ff741f"
+        },
+        {
+          "path": "msvcp140.dll",
+          "machine": "0x8664",
+          "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9"
+        },
+        {
+          "path": "msvcp140_1.dll",
+          "machine": "0x8664",
+          "sha256": "bfad5aef4c63a669e3c140655cdfdf395b6c979b400a447bd5dcb65ed8826c3d"
+        },
+        {
+          "path": "msvcp140_2.dll",
+          "machine": "0x8664",
+          "sha256": "3ea06f0ee098b4823cb79599df3780e7f23cce52c19aac31d2a0d47efe33a5e9"
+        },
+        {
+          "path": "msvcp140_atomic_wait.dll",
+          "machine": "0x8664",
+          "sha256": "640b2aefced484d0368eea5bdd06addd0658a3a70a49256e560d6923b404a479"
+        },
+        {
+          "path": "msvcp140_codecvt_ids.dll",
+          "machine": "0x8664",
+          "sha256": "f2069a52880ec885ee7f0511186100eb7fada0411a2b4948fafea7735b878a18"
+        },
+        {
+          "path": "node.dll",
+          "machine": "0x8664",
+          "sha256": "0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816"
+        },
+        {
+          "path": "render-gdi.dll",
+          "machine": "0x8664",
+          "sha256": "363ab16fc113a679ba307b087e88947ad3b6e165804e4072ced8b08a0456a895"
+        },
+        {
+          "path": "soui-sys-resource.dll",
+          "machine": "0x8664",
+          "sha256": "effd8ea82e281f8d4ce7ae2e9573163b942e838c2437d1574969f0ad7b50b7c5"
+        },
+        {
+          "path": "soui.dll",
+          "machine": "0x8664",
+          "sha256": "eea3f03795f2ac3fad8a19e9178c40da74e653452d1ebed9c367e3b942f4d96e"
+        },
+        {
+          "path": "ucrtbase.dll",
+          "machine": "0x8664",
+          "sha256": "0a2be4a529a46fe0579150e205af3518988a58e70000dd4053bae541e98fc3f2"
+        },
+        {
+          "path": "utilities.dll",
+          "machine": "0x8664",
+          "sha256": "1bddc92997f364cf01498559bb0bc66a1ef37988ca759a225197a3ff333b8950"
+        },
+        {
+          "path": "vccorlib140.dll",
+          "machine": "0x8664",
+          "sha256": "19839407c3fdbc824e5bce189bf68ddf8097f12ec28b757797ffa0415c144ddd"
+        },
+        {
+          "path": "vcruntime140.dll",
+          "machine": "0x8664",
+          "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066"
+        },
+        {
+          "path": "vcruntime140_1.dll",
+          "machine": "0x8664",
+          "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f"
+        },
+        {
+          "path": "vcruntime140_threads.dll",
+          "machine": "0x8664",
+          "sha256": "219915cf20822f34d5e7c1fdd4e21ae7f3396881096c51036225fb8f84b47afa"
+        },
+        {
+          "path": "zlib1.dll",
+          "machine": "0x8664",
+          "sha256": "fb6726dbcd7bb3659ca126ef4d5c7f83de46ab5e2b470316925e1d5873ec9045"
+        }
+      ],
+      "headersObservedInCompilerReadLog": [
+        "session_observation.h",
+        "session_observation_tests.h"
+      ],
+      "compilerReadLog": {
+        "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\native-build\\InstalledRenewalProbe.dir\\Release\\Installe.5E62D68C.tlog\\CL.read.1.tlog",
+        "bytes": 51548,
+        "sha256": "c14e11d2d1b074da3c543f7faf44df1d180d142cc0289fd119eb2fd6456e2cc0"
+      },
+      "linkCommandLog": {
+        "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\native-build\\InstalledRenewalProbe.dir\\Release\\Installe.5E62D68C.tlog\\link.command.1.tlog",
+        "bytes": 2794,
+        "sha256": "10da3f49addd3125e7ab4eaa9badbc645a44d81ee66014fcf146816f93dd93b9"
+      },
+      "installedSdkSha256": "f198f5c276339a6a4af3b0be569ce6faee2e297dfa545a150789b2f7d3d3d518",
+      "consumerSourceSha256": "51e5698e33e43df0192c496ba2997d87c575ad9fc1b5f230b7112978f36a4f38",
+      "driversSha256": "180710958c2c9abc3247b5a6f9ef5cf75c3296921b7e2f7f3f0c29db25646431",
+      "protocolSha256": "4e109a738995f89d2be2d5a046e96605339610b17190c614255dec18a6277fab",
+      "toolchainSha256": "182209377dff49f7003ba5121132493239671558c6ce4752def8b5406411131b",
+      "ambientVcpkgWildcardPresent": true,
+      "web": {
+        "classicEntry": true,
+        "target": "Chrome 49",
+        "manifestEntries": [
+          "../../toolchain/vite/legacy-polyfills-legacy",
+          "index-legacy.html",
+          "index.html"
+        ],
+        "actualBrowserExecuted": false
+      }
+    }
+  ],
+  "outerCommands": [
+    {
+      "name": "prepare-verify-attempt2",
+      "program": "node.exe",
+      "args": [
+        ".\\Prepare.cjs",
+        "verify"
+      ],
+      "cwd": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+      "startedAt": "2026-09-26T08:38:58.190Z",
+      "pid": 64524,
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "error": null,
+      "finishedAt": "2026-09-26T08:39:00.209Z",
+      "stdout": {
+        "bytes": 114,
+        "sha256": "2779536bb43473c28e9f1cb7adabd3c7f06330a0b651cce21fe666cb924d2945"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "analyzer-self-test-attempt1",
+      "program": "node.exe",
+      "args": [
+        ".\\SelfTest-Verify-Run.cjs"
+      ],
+      "cwd": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+      "startedAt": "2026-09-26T08:40:33.715Z",
+      "pid": 70312,
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "error": null,
+      "finishedAt": "2026-09-26T08:40:36.453Z",
+      "stdout": {
+        "bytes": 3844,
+        "sha256": "83654cf08f829db35fba2ae93c46cb59e6b4b43f222daf1ea0664bcaca30cfd4"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x86-build-attempt1",
+      "program": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        ".\\Build.ps1",
+        "-Architecture",
+        "x86",
+        "-AttemptName",
+        "x86-attempt1"
+      ],
+      "cwd": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+      "startedAt": "2026-09-26T08:43:50.128Z",
+      "pid": 34156,
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "error": null,
+      "finishedAt": "2026-09-26T08:45:01.232Z",
+      "stdout": {
+        "bytes": 248,
+        "sha256": "8138fb97225596d34169460dac6a64fb503804c83b9df69e612dd0915e0bfb9e"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "x64-build-attempt1",
+      "program": "powershell.exe",
+      "args": [
+        "-NoProfile",
+        "-File",
+        ".\\Build.ps1",
+        "-Architecture",
+        "x64",
+        "-AttemptName",
+        "x64-attempt1"
+      ],
+      "cwd": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+      "startedAt": "2026-09-26T08:46:40.547Z",
+      "pid": 36028,
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "error": null,
+      "finishedAt": "2026-09-26T08:47:52.536Z",
+      "stdout": {
+        "bytes": 248,
+        "sha256": "8ab94ad2534b9c000fb1705ff34f874b47e459370199f868195286325b69ab4a"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "freeze-attempt1",
+      "program": "node.exe",
+      "args": [
+        ".\\Prepare.cjs",
+        "freeze",
+        "x86-attempt1",
+        "x64-attempt1"
+      ],
+      "cwd": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926",
+      "startedAt": "2026-09-26T08:48:12.394Z",
+      "pid": 43920,
+      "exitCode": 0,
+      "signal": null,
+      "timedOut": false,
+      "error": null,
+      "finishedAt": "2026-09-26T08:48:34.303Z",
+      "stdout": {
+        "bytes": 257,
+        "sha256": "2fd046384dfdcb3b1b980d4db2e9c97a2a6901317dc75e66e9082aa2b36bccc9"
+      },
+      "stderr": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "syntheticAnalyzer": {
+    "report": {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\self-test-only\\2026-09-26T08-40-33-800Z-70312\\self-test-result.json",
+      "bytes": 8592,
+      "sha256": "a4a4e5b2348b65e34e6a19b04c4cb4357ebf055d7d43b80eb29bcd56633e8571"
+    },
+    "syntheticOnly": true,
+    "testCount": 106,
+    "passed": 106,
+    "failed": 0,
+    "caseNames": [
+      "synthetic-smoke",
+      "synthetic-35min",
+      "synthetic-35min-transport-recovery",
+      "synthetic-8h",
+      "second-native-bootstrap",
+      "v1-run-cannot-enter-v2",
+      "missing-native-bootstrap",
+      "native-bootstrap-identity-changed",
+      "retirement-with-bound-identity",
+      "retirement-after-bootstrap-begins",
+      "retirement-after-bootstrap-binding",
+      "second-prebootstrap-retirement",
+      "unexpected-retirement-classification",
+      "bound-shutdown-before-describe",
+      "bound-shutdown-before-ready",
+      "bound-shutdown-after-ready-before-finish",
+      "bound-shutdown-wrong-id",
+      "bound-shutdown-missing",
+      "bound-shutdown-duplicate",
+      "final-retirement-count-mismatch",
+      "final-bound-close-count-mismatch",
+      "duplicate-native-sequence",
+      "missing-native-row",
+      "native-clock-regression",
+      "second-mount",
+      "failure-marker",
+      "wrong-version",
+      "unexpected-duration",
+      "supervisor-string-zero",
+      "supervisor-nonzero",
+      "supervisor-timeout",
+      "supervisor-payload-changed",
+      "supervisor-input-changed",
+      "supervisor-post-check-failed",
+      "supervisor-external-load-observed",
+      "supervisor-desktop-process-remains",
+      "supervisor-desktop-processes-missing",
+      "supervisor-wrong-pid",
+      "supervisor-wrong-architecture",
+      "supervisor-wrong-duration",
+      "native-session-change",
+      "native-authorization-change",
+      "replayed-task-invocation",
+      "task-operation-change",
+      "task-ended-without-cancel",
+      "document-change",
+      "subscription-change",
+      "web-task-recreated",
+      "web-failure-marker",
+      "heartbeat-sequence-no-advance",
+      "heartbeat-no-native-match",
+      "heartbeat-polling-only",
+      "heartbeat-impossible-event-count",
+      "lease-expired",
+      "lease-generation-not-acked",
+      "lease-extended-limit",
+      "cancel-not-requested",
+      "cancel-not-confirmed",
+      "unsubscribe-not-removed",
+      "retained-result-lost",
+      "response-request-mismatch",
+      "observation-clock-regression",
+      "observer-unknown-raw-field",
+      "business-error",
+      "duplicate-start-ack",
+      "cleanup-scope-active",
+      "runtime-cleanup-failed",
+      "native-exit-nonzero",
+      "smoke-overclaim",
+      "native-truncated-lifecycle",
+      "resource-overclaim",
+      "synthetic-no-initial-lifecycle-retirement",
+      "duplicate-json-member",
+      "truncated-last-line",
+      "bad-report-hash",
+      "synthetic-cannot-pass-real-cli-mode",
+      "post-expiry-stale-event",
+      "fourth-renewal-attempt",
+      "native-real-duration-shortened",
+      "missing-response-not-silently-skipped",
+      "duplicate-response-not-silently-replaced",
+      "retryable-transport-is-not-a-success-ack",
+      "renewal-generation-skip",
+      "retry-operation-identity-changed-before-recovery",
+      "payload-manifest-duplicate",
+      "payload-manifest-traversal",
+      "payload-manifest-invalid-byte-count",
+      "payload-and-freeze-binding",
+      "supervisor-report-path-binding",
+      "missing-supervisor-report-hash",
+      "raw-synthetic-input-bytes-unchanged",
+      "diagnostic-absent-empty-array",
+      "diagnostic-exact-root-file-and-byte-identical-archive",
+      "diagnostic-required-array",
+      "diagnostic-exists-but-unlisted",
+      "diagnostic-listed-but-absent",
+      "diagnostic-wrong-hash",
+      "diagnostic-wrong-byte-length",
+      "diagnostic-archive-different-bytes",
+      "diagnostic-self-archive-inside-runtime-rejected",
+      "diagnostic-other-log-name-not-allowed",
+      "diagnostic-duplicate-descriptor-rejected",
+      "diagnostic-exact-exception-does-not-hide-other-new-log",
+      "diagnostic-exception-does-not-apply-in-resources",
+      "diagnostic-exception-does-not-accept-directory",
+      "diagnostic-cannot-be-frozen-in-payload"
+    ],
+    "stdoutNamesAndCountMatch": true,
+    "realClockRenewalVerified": false
+  },
+  "failedSample": {
+    "directory": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\prepare-verify-attempt1",
+    "observation": {
+      "observedAt": "2026-09-26T08:38:57.6841336Z",
+      "wrapperExitCode": 1,
+      "failure": "EPERM fsync on read-only log descriptor",
+      "childExitCodeRecorded": false,
+      "resultJsonWritten": false,
+      "logsPreserved": true
+    },
+    "childNumericExitCode": null,
+    "passed": false,
+    "note": "First capture has preserved child stdout and stderr but no result.json. EPERM read-only fsync and wrapper exit 1 are stated in the explicit observation record; do not infer a captured child exit 0 from verified stdout."
+  },
+  "limitations": [
+    "Both actual link.command.1.tlog files contain ambient F:/GitHub/vcpkg/installed/<arch>-windows/lib LIBPATH and *.LIB. Those ambient libraries and the complete MSVC/Windows SDK installation are not frozen here; this is not proof of a hermetic or clean-machine rebuild.",
+    "Current byte/hash and PE checks were performed at review time and tied to saved manifests and raw commands; this is not additional atomic process-time sampling.",
+    "Native --self-check records 8 and phaseCases 45 validate non-GUI fixture logic. The 106 analyzer cases use synthetic input/time; neither proves actual WebView bootstrap or real-time renewal.",
+    "Chrome 49 classic entry metadata and emitted file identity were checked statically; no browser compatibility execution occurred.",
+    "This report does not include the parallel archival agent npm audit results.",
+    "The prepared.json and independent-static-review.json false compilation flags describe their earlier preparation/static snapshots. Actual compilation success is established by the later raw build records reviewed here."
+  ],
+  "compiledEvidenceVerified": true,
+  "noGuiSelfCheckEvidenceVerified": true,
+  "analyzerSyntheticEvidenceVerified": true,
+  "reviewExecutedBuild": false,
+  "reviewExecutedTests": false,
+  "guiExecuted": false,
+  "vmExecuted": false,
+  "networkExecuted": false,
+  "realRenewalVerified": false,
+  "eightHourStabilityVerified": false,
+  "win7Verified": false,
+  "productionVerified": false,
+  "releaseReady": false,
+  "benchmarkValid": false,
+  "resourceGate": false,
+  "evidence": [
+    {
+      "path": "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+      "bytes": 56,
+      "sha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+    },
+    {
+      "path": "C:\\nvm4w\\nodejs\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+      "bytes": 12905544,
+      "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\build.json",
+      "bytes": 1478106,
+      "sha256": "20d14373f192a84bde4ecae22eb256ef0b038ff0c522c6c0bec591fb0959bbca"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\consumer-source\\CMakeLists.txt",
+      "bytes": 832,
+      "sha256": "64e8c5be2eb1a62bc6b5031065bd65b31dcba62352317d9ee63021db7bb508d7"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\consumer-source\\main.cpp",
+      "bytes": 38771,
+      "sha256": "ef8297ac04c1178c26cac5a7ad66d1b17297e4d34af90769a0ed3bd21ae309e1"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\consumer-source\\session_observation_tests.h",
+      "bytes": 5889,
+      "sha256": "ea1332587987d89113b6f436a2ad34d5e8bab96f221fc22a33fc5ba45a7a3d3c"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\consumer-source\\session_observation.h",
+      "bytes": 10072,
+      "sha256": "dfbb8eed1a43e16569076edcab3953030c5cc75da4151e5382ce741ebde242de"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\consumer-source\\web\\index.html",
+      "bytes": 1787,
+      "sha256": "e1101d9496199d09d48c0d78425e5c6cb291e9b19a0cee3c6e5a25c97a8f1537"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\consumer-source\\web\\main.ts",
+      "bytes": 23160,
+      "sha256": "ba5f05860d85a6fc502458e1f50daf1852a49a4c5f78f1c254fedae650434887"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\drivers\\Build-Web.mjs",
+      "bytes": 6802,
+      "sha256": "c0d82dd25e25f459d093c25e7141083ce235fc62612405e4f13d2b427c9d1e3b"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\drivers\\Build.ps1",
+      "bytes": 9469,
+      "sha256": "c2a726de9de951cb883064082112deae82638d7b8b2510dfab9acfe44610ecef"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\drivers\\Clone-V1.cjs",
+      "bytes": 4998,
+      "sha256": "308739bcf0d11977d28152733c86934980ec47a9b3c3a3bd40fc2bef708d9cbb"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\drivers\\Prepare.cjs",
+      "bytes": 22757,
+      "sha256": "f41d4c344acbfc2b405dfeb1274384118669a9db6883b5df0622613cf32039cc"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\drivers\\Run.ps1",
+      "bytes": 27951,
+      "sha256": "bcfa7c7a712db96053297c633321e2074a2c38e36f39d90eca199ef1f8089b49"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\drivers\\Verify-Run.cjs",
+      "bytes": 39016,
+      "sha256": "882f540bda7ab6f82e5dd60d97b0e5187f287a58078cd27c8ac4bac692e00ea7"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\cmake-version.result.json",
+      "bytes": 503,
+      "sha256": "d82a22178426122fd5979fb4d9f34ddcf369f0a1152b6cee87372e15a2c4ad58"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\cmake-version.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\cmake-version.stdout.log",
+      "bytes": 90,
+      "sha256": "a24e1ae7f8f715ef1f0121cd749052d73c6a4315dba5bb885c584553d826eb79"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\configure.result.json",
+      "bytes": 1247,
+      "sha256": "26b9559536df775ce1a5955a8c31132a7b2faa227bf5cdc155380d357456d869"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\configure.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\configure.stdout.log",
+      "bytes": 565,
+      "sha256": "26d4555c970c50807ae0cc47ba9766985d933b33e9858f4acd4fc3bae99be03d"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\deploy.result.json",
+      "bytes": 657,
+      "sha256": "6d04fd132947e539c9ff2d99ab1b5dc9cf6fd1df4beb8b9ee6dc7736e79194cb"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\deploy.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\deploy.stdout.log",
+      "bytes": 154,
+      "sha256": "37b1dcb36d20cfc1844502889c8c81690a3ed989969544cc849afc04d2e506cb"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\finalize.result.json",
+      "bytes": 660,
+      "sha256": "f6c875b8ab6aba7fb46317b1546f5b59ebbb2b6bf6689f6fe133fcabb4fbf2d0"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\finalize.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\finalize.stdout.log",
+      "bytes": 259,
+      "sha256": "f70c4d58674ac10c3e9cd8e4509fa4e24c07db8fd2e7e3677c2fc81ececf481d"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\native-build.result.json",
+      "bytes": 864,
+      "sha256": "9389efb5bbe8c1b023245fb1481fa81af89af86a92e965a3307e659b1fae1e9d"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\native-build.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\native-build.stdout.log",
+      "bytes": 1271,
+      "sha256": "f085ea7f4c207eecf985926a4cc2924565e473eaf04ac9425fd6ea981cdfb7fb"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\node-version.result.json",
+      "bytes": 490,
+      "sha256": "51f4d8e47c93994b71da4d62fc323af64775bf6ebc31a2c2e7e34f25b73d040a"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\node-version.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\node-version.stdout.log",
+      "bytes": 10,
+      "sha256": "db3d2feb713e4945f390f5d41fb44fd8aaf6b8d4c564a2af9e63262172fb5a98"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\npm-ci.result.json",
+      "bytes": 648,
+      "sha256": "16789cc777d0b7db09ae4c62a099a846efdec79d0672fdc3332fd0a34db9ba88"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\npm-ci.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\npm-ci.stdout.log",
+      "bytes": 26,
+      "sha256": "5b4edabfc7fd3da7c11c9070dd1a77ed4872b8dd67f0199e7dab9a984b77b07b"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\npm-version.result.json",
+      "bytes": 570,
+      "sha256": "7c85ff2a6748c9bdea4deca4bb6159708832b3ddcedaf854192f4bdefaffdc9e"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\npm-version.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\npm-version.stdout.log",
+      "bytes": 7,
+      "sha256": "d9f29f5aab43c8c1a8d6acc856e258b89735f541aa5e1f07b39a62f28bfa8d06"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\prepare.result.json",
+      "bytes": 855,
+      "sha256": "2a87fe9274271ee60dfe4cdf0a834d236e68ece671c392ed4db04024ec570082"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\prepare.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\prepare.stdout.log",
+      "bytes": 184,
+      "sha256": "3dc80131b9d8a48f34d1e624b41812d4e9703fb97bbab2bdb535e46ff087407d"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\self-check.result.json",
+      "bytes": 617,
+      "sha256": "d8915c01ba70138564ce8331e83e39c5eab54461338f9be74e39f41ef43af112"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\self-check.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\self-check.stdout.log",
+      "bytes": 178,
+      "sha256": "6096e6dc78201d86b1b2f1eba88f79425e2fe6ddbf93ead5d834f830b5bfac59"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\toolchain-freeze.result.json",
+      "bytes": 668,
+      "sha256": "2245779a608b254ab3dc61ded539e0aefef402e98f845960d470e2eba83f75f8"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\toolchain-freeze.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\toolchain-freeze.stdout.log",
+      "bytes": 133,
+      "sha256": "de1df6994695e7b1d3e560426321a9f0b3bc191e548f07ecfe4063bc1921ce57"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\web-build.result.json",
+      "bytes": 627,
+      "sha256": "4ec249f85d1f06ae88e164940017044fbdb6ee6e85dce35ceff0a8f5577af547"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\web-build.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\web-build.stdout.log",
+      "bytes": 729,
+      "sha256": "4571c431dbb5f1a3f4b7b4405dcf992ca7f7961a8f1bf7a0289f4b41196f5189"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\web-typecheck.result.json",
+      "bytes": 549,
+      "sha256": "ae4acb8383f01e98c4488c61f64a6c65af85ed0086a5a2559e48fa8775f45086"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\web-typecheck.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\logs\\web-typecheck.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\native-build\\bin\\Release\\InstalledRenewalProbe.exe",
+      "bytes": 669696,
+      "sha256": "88f51fc9c9e0dc601b85d2256cbb76d29b615ce2fee988edb7d0b0aa65738e13"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\native-build\\CMakeCache.txt",
+      "bytes": 13717,
+      "sha256": "4577903e6bc5336440f2c889dbc010f73b035c17508fadb28d47ded585f583ef"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\native-build\\InstalledRenewalProbe.dir\\Release\\Installe.5E62D68C.tlog\\CL.read.1.tlog",
+      "bytes": 51548,
+      "sha256": "c14e11d2d1b074da3c543f7faf44df1d180d142cc0289fd119eb2fd6456e2cc0"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\native-build\\InstalledRenewalProbe.dir\\Release\\Installe.5E62D68C.tlog\\link.command.1.tlog",
+      "bytes": 2794,
+      "sha256": "10da3f49addd3125e7ab4eaa9badbc645a44d81ee66014fcf146816f93dd93b9"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\pending.json",
+      "bytes": 4616,
+      "sha256": "d0e8a6da5e9bc2e44bc72c9968948561cdbf68e8f023294f2b69bf72c552cfab"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\protocol\\PROTOCOL.md",
+      "bytes": 11705,
+      "sha256": "a3acf97765d45478cebfe9bd2e80f0afb49c237725bc979b8c01fae463bf2964"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\protocol\\SelfTest-Verify-Run.cjs",
+      "bytes": 34469,
+      "sha256": "40ce2a9797817390423f346134133be6588d4e55c821c265ed07d5d680c24aab"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\protocol\\Verify-Run.cjs",
+      "bytes": 39016,
+      "sha256": "882f540bda7ab6f82e5dd60d97b0e5187f287a58078cd27c8ac4bac692e00ea7"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\runtime-input.json",
+      "bytes": 13541,
+      "sha256": "8c197a1964543619086062924f94ada3305d5e10b36cdb692c0b12443a5c1223"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\runtime\\InstalledRenewalProbe.exe",
+      "bytes": 669696,
+      "sha256": "88f51fc9c9e0dc601b85d2256cbb76d29b615ce2fee988edb7d0b0aa65738e13"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\toolchain-input.json",
+      "bytes": 1379464,
+      "sha256": "e22c0a64e56bfe89e53415f7dad83c499e0a797034db0992d28dbb278e77fab4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\vite-index-before-classic.html",
+      "bytes": 3072,
+      "sha256": "0d82df0670a824ec1f253a803fa5e28b0d06df9388bf389cfc47a2fc6d8876dd"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\web-build.json",
+      "bytes": 1713,
+      "sha256": "5c39dcc3486ced32391af3dba20248b6ad21ffffdcfef04e40495d7c4ea89cd4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x64-attempt1\\web-typecheck.tsconfig.json",
+      "bytes": 667,
+      "sha256": "eeecc0f79fd02ee372d9f68fa9b70b2f73a8416be45d72b92e0baa04089268fc"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\build.json",
+      "bytes": 1478118,
+      "sha256": "583a44c61a74a5ab9c142e0b5899915fffaf2a35ff389cf2045961a52430e6b2"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\consumer-source\\CMakeLists.txt",
+      "bytes": 832,
+      "sha256": "64e8c5be2eb1a62bc6b5031065bd65b31dcba62352317d9ee63021db7bb508d7"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\consumer-source\\main.cpp",
+      "bytes": 38771,
+      "sha256": "ef8297ac04c1178c26cac5a7ad66d1b17297e4d34af90769a0ed3bd21ae309e1"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\consumer-source\\session_observation_tests.h",
+      "bytes": 5889,
+      "sha256": "ea1332587987d89113b6f436a2ad34d5e8bab96f221fc22a33fc5ba45a7a3d3c"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\consumer-source\\session_observation.h",
+      "bytes": 10072,
+      "sha256": "dfbb8eed1a43e16569076edcab3953030c5cc75da4151e5382ce741ebde242de"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\consumer-source\\web\\index.html",
+      "bytes": 1787,
+      "sha256": "e1101d9496199d09d48c0d78425e5c6cb291e9b19a0cee3c6e5a25c97a8f1537"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\consumer-source\\web\\main.ts",
+      "bytes": 23160,
+      "sha256": "ba5f05860d85a6fc502458e1f50daf1852a49a4c5f78f1c254fedae650434887"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\drivers\\Build-Web.mjs",
+      "bytes": 6802,
+      "sha256": "c0d82dd25e25f459d093c25e7141083ce235fc62612405e4f13d2b427c9d1e3b"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\drivers\\Build.ps1",
+      "bytes": 9469,
+      "sha256": "c2a726de9de951cb883064082112deae82638d7b8b2510dfab9acfe44610ecef"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\drivers\\Clone-V1.cjs",
+      "bytes": 4998,
+      "sha256": "308739bcf0d11977d28152733c86934980ec47a9b3c3a3bd40fc2bef708d9cbb"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\drivers\\Prepare.cjs",
+      "bytes": 22757,
+      "sha256": "f41d4c344acbfc2b405dfeb1274384118669a9db6883b5df0622613cf32039cc"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\drivers\\Run.ps1",
+      "bytes": 27951,
+      "sha256": "bcfa7c7a712db96053297c633321e2074a2c38e36f39d90eca199ef1f8089b49"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\drivers\\Verify-Run.cjs",
+      "bytes": 39016,
+      "sha256": "882f540bda7ab6f82e5dd60d97b0e5187f287a58078cd27c8ac4bac692e00ea7"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\cmake-version.result.json",
+      "bytes": 503,
+      "sha256": "3c95c08f0436242f4eb15b183e470ed3872456b568f82684b88e151925047cf0"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\cmake-version.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\cmake-version.stdout.log",
+      "bytes": 90,
+      "sha256": "a24e1ae7f8f715ef1f0121cd749052d73c6a4315dba5bb885c584553d826eb79"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\configure.result.json",
+      "bytes": 1249,
+      "sha256": "b888c5baf307cf15798c4fac4a3e0dfe584222f6ee974c00ae9af64e35c07567"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\configure.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\configure.stdout.log",
+      "bytes": 565,
+      "sha256": "a2d86ccc4bb3e65e93cbd88c8102686d7d3f2e1c748f78b9f739d405a5438475"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\deploy.result.json",
+      "bytes": 658,
+      "sha256": "42b9b1d6af2c688d18a6f9433e50c482e1f36f06c050727fc398924e70540ee3"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\deploy.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\deploy.stdout.log",
+      "bytes": 154,
+      "sha256": "c34377021b448b92cc7a49d5a65c20136398f699091b258f789de70ec48e4cb4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\finalize.result.json",
+      "bytes": 660,
+      "sha256": "f42f5889829c846c21e42a8439bec7a4aab9eb67f92ebba892da8146c0949245"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\finalize.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\finalize.stdout.log",
+      "bytes": 259,
+      "sha256": "40f6c63fd63cbd53796059454087d2e5885c89cef6e4255b19bdd8dff6467b91"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\native-build.result.json",
+      "bytes": 866,
+      "sha256": "44f0bd9d3973f1b7fee842188d27ae5f31adfbac6ebf8fa921574bb1f8aecc1a"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\native-build.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\native-build.stdout.log",
+      "bytes": 1271,
+      "sha256": "9938719de400e193d386ef9d5aab1820eb8698e5099cd2932e377e846ce5e23e"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\node-version.result.json",
+      "bytes": 489,
+      "sha256": "db002c29c52ae630760e5a65a7e2448b26b3b25f4396f75ac8e1fa4e05215fca"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\node-version.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\node-version.stdout.log",
+      "bytes": 10,
+      "sha256": "db3d2feb713e4945f390f5d41fb44fd8aaf6b8d4c564a2af9e63262172fb5a98"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\npm-ci.result.json",
+      "bytes": 648,
+      "sha256": "ca798a92d8d57cefcfe42337caee49bd716418ae56854a8d9e9feb3420e6b6c9"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\npm-ci.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\npm-ci.stdout.log",
+      "bytes": 26,
+      "sha256": "5b4edabfc7fd3da7c11c9070dd1a77ed4872b8dd67f0199e7dab9a984b77b07b"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\npm-version.result.json",
+      "bytes": 570,
+      "sha256": "aabea89fe2fd1f7957df9486ccc4ffb28cd19738b537ef1a00e2f190ffb4c1f2"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\npm-version.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\npm-version.stdout.log",
+      "bytes": 7,
+      "sha256": "d9f29f5aab43c8c1a8d6acc856e258b89735f541aa5e1f07b39a62f28bfa8d06"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\prepare.result.json",
+      "bytes": 855,
+      "sha256": "0972ae0dae775e616b13ae9d5913ebc22e1e31349b27948d2f2aadd5b25ce7cc"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\prepare.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\prepare.stdout.log",
+      "bytes": 184,
+      "sha256": "7b5efa1842a169007713b183d08aec74fada2b155a54968f408050b35e6ce6c4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\self-check.result.json",
+      "bytes": 616,
+      "sha256": "84817d0e8d83076cff803bda94a43ba73e7d2345fb761e9b52928085d0109df6"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\self-check.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\self-check.stdout.log",
+      "bytes": 178,
+      "sha256": "211eff8f132033aef1914559080d865d554ba3ae13f7bed4cf6df621fd3bead3"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\toolchain-freeze.result.json",
+      "bytes": 667,
+      "sha256": "e4fdb945dc1060b7eeb3daabfb4d3d49a75ced6fc2f7f707e0199b439fa7fe62"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\toolchain-freeze.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\toolchain-freeze.stdout.log",
+      "bytes": 133,
+      "sha256": "de1df6994695e7b1d3e560426321a9f0b3bc191e548f07ecfe4063bc1921ce57"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\web-build.result.json",
+      "bytes": 627,
+      "sha256": "f143d482b3a4089cef8425fd510a7d165a97936b426798be1036171fb3020a30"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\web-build.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\web-build.stdout.log",
+      "bytes": 729,
+      "sha256": "e8f1d41b38c929fe0e7cbc24683f7fbd118f21634ca29ea1b6ed002845a975e5"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\web-typecheck.result.json",
+      "bytes": 549,
+      "sha256": "20d86d6ebe7cd4a23785488f07fca4c3bef4d5f254b1302c77a2d6e6522d2125"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\web-typecheck.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\logs\\web-typecheck.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\native-build\\bin\\Release\\InstalledRenewalProbe.exe",
+      "bytes": 592896,
+      "sha256": "494771df6e7da2532f300b692e01aee72ef5eb1d0a8be7b5ac0e1abde6807bff"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\native-build\\CMakeCache.txt",
+      "bytes": 13725,
+      "sha256": "e877cfb5924bd1febfeca065e658a7e5e0256584b030403dfa2b767539e3d67c"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\native-build\\InstalledRenewalProbe.dir\\Release\\Installe.FF75026F.tlog\\CL.read.1.tlog",
+      "bytes": 51548,
+      "sha256": "a2c7c65fcc9b18612a577178496a6dd8c317b298ea0f98bc7b4a68b8321bab50"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\native-build\\InstalledRenewalProbe.dir\\Release\\Installe.FF75026F.tlog\\link.command.1.tlog",
+      "bytes": 2794,
+      "sha256": "e7074d20f374e2c648f75881cf28be9bb0c610f82a1abda0bc8e40d584d760e0"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\pending.json",
+      "bytes": 4616,
+      "sha256": "5b5478e7daa7d6d0c4f5235efc8d09d9031082858e667c1074baf95b39cb7342"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\protocol\\PROTOCOL.md",
+      "bytes": 11705,
+      "sha256": "a3acf97765d45478cebfe9bd2e80f0afb49c237725bc979b8c01fae463bf2964"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\protocol\\SelfTest-Verify-Run.cjs",
+      "bytes": 34469,
+      "sha256": "40ce2a9797817390423f346134133be6588d4e55c821c265ed07d5d680c24aab"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\protocol\\Verify-Run.cjs",
+      "bytes": 39016,
+      "sha256": "882f540bda7ab6f82e5dd60d97b0e5187f287a58078cd27c8ac4bac692e00ea7"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\runtime-input.json",
+      "bytes": 13553,
+      "sha256": "8b7683b3eca24e0b4f9df5a724916c7b63d6513895e85a1994c63c05f0628218"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\runtime\\InstalledRenewalProbe.exe",
+      "bytes": 592896,
+      "sha256": "494771df6e7da2532f300b692e01aee72ef5eb1d0a8be7b5ac0e1abde6807bff"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\toolchain-input.json",
+      "bytes": 1379464,
+      "sha256": "e22c0a64e56bfe89e53415f7dad83c499e0a797034db0992d28dbb278e77fab4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\vite-index-before-classic.html",
+      "bytes": 3072,
+      "sha256": "0d82df0670a824ec1f253a803fa5e28b0d06df9388bf389cfc47a2fc6d8876dd"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\web-build.json",
+      "bytes": 1713,
+      "sha256": "31eb3ba090cf141f232b6e4f2a904ed84ebbc4ad92a5cd0d13d3948b7a7094c4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\attempts\\x86-attempt1\\web-typecheck.tsconfig.json",
+      "bytes": 667,
+      "sha256": "08b06967bd27007aab2ee82d685ee850e45c3d652a45a31b31fcdba20b17751b"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\Build-Web.mjs",
+      "bytes": 6802,
+      "sha256": "c0d82dd25e25f459d093c25e7141083ce235fc62612405e4f13d2b427c9d1e3b"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\Build.ps1",
+      "bytes": 9469,
+      "sha256": "c2a726de9de951cb883064082112deae82638d7b8b2510dfab9acfe44610ecef"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\Capture-Command.cjs",
+      "bytes": 2235,
+      "sha256": "1b5344feee4a7f1018d6470cb905dd982bd009701cb930b2c3c3f99b7dc65530"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\capture-wrapper-history\\Capture-Command-before-fsync-fix.cjs",
+      "bytes": 2195,
+      "sha256": "5fd6121c3ed404f48d2352432f3bfa580acf5dbe7ff0b71c250380561ab410a3"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\analyzer-self-test-attempt1\\result.json",
+      "bytes": 584,
+      "sha256": "9c2cfdd603a63bc53f920b5ab01003a5883fd764107c0f7a89a4a542162b4bf0"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\analyzer-self-test-attempt1\\stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\analyzer-self-test-attempt1\\stdout.log",
+      "bytes": 3844,
+      "sha256": "83654cf08f829db35fba2ae93c46cb59e6b4b43f222daf1ea0664bcaca30cfd4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\freeze-attempt1\\result.json",
+      "bytes": 625,
+      "sha256": "97fce3bfefafc3d8bffc7320e7592c8f825420c237b04eb27594453245f40a43"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\freeze-attempt1\\stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\freeze-attempt1\\stdout.log",
+      "bytes": 257,
+      "sha256": "2fd046384dfdcb3b1b980d4db2e9c97a2a6901317dc75e66e9082aa2b36bccc9"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\prepare-verify-attempt1\\stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\prepare-verify-attempt1\\stdout.log",
+      "bytes": 114,
+      "sha256": "2779536bb43473c28e9f1cb7adabd3c7f06330a0b651cce21fe666cb924d2945"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\prepare-verify-attempt1\\wrapper-failure-observation.json",
+      "bytes": 228,
+      "sha256": "857a35fe9a940639b4d781279ee658b6f96df3c5e262c64c6e901fc3d2e95935"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\prepare-verify-attempt2\\result.json",
+      "bytes": 585,
+      "sha256": "bb5570415097dc9a78c62a0f2ec1c3df1b0023003595cb228275821eecff308b"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\prepare-verify-attempt2\\stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\prepare-verify-attempt2\\stdout.log",
+      "bytes": 114,
+      "sha256": "2779536bb43473c28e9f1cb7adabd3c7f06330a0b651cce21fe666cb924d2945"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\x64-build-attempt1\\result.json",
+      "bytes": 678,
+      "sha256": "ab06aa0fd15291ed219a5f5f315003dde04dc7fb065db8102957b97b7acdb9f9"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\x64-build-attempt1\\stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\x64-build-attempt1\\stdout.log",
+      "bytes": 248,
+      "sha256": "8ab94ad2534b9c000fb1705ff34f874b47e459370199f868195286325b69ab4a"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\x86-build-attempt1\\result.json",
+      "bytes": 678,
+      "sha256": "f8f009bca60b313ccce32ce13b74e0ac5c869882c7656945d9c4ca1d3c19b6b0"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\x86-build-attempt1\\stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\command-logs\\x86-build-attempt1\\stdout.log",
+      "bytes": 248,
+      "sha256": "8138fb97225596d34169460dac6a64fb503804c83b9df69e612dd0915e0bfb9e"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\freeze.json",
+      "bytes": 3442525,
+      "sha256": "80d19d4e2008a505bbb8a9293849f3756d4bf07ad7838ad38aa5bb054ac0ee3a"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\independent-static-review.json",
+      "bytes": 3877,
+      "sha256": "2b20b412d8608c3a50996c545cc8f022c4d3b40fc1fef382ee33d6a455a1dc1d"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\Prepare.cjs",
+      "bytes": 22757,
+      "sha256": "f41d4c344acbfc2b405dfeb1274384118669a9db6883b5df0622613cf32039cc"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\prepared.json",
+      "bytes": 233109,
+      "sha256": "cfb2ab07bed35e637274dd66fdd52ece2ed014fe9c3de259eb8fd659e53c79b4"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\PROTOCOL.md",
+      "bytes": 11705,
+      "sha256": "a3acf97765d45478cebfe9bd2e80f0afb49c237725bc979b8c01fae463bf2964"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\Run.ps1",
+      "bytes": 27951,
+      "sha256": "bcfa7c7a712db96053297c633321e2074a2c38e36f39d90eca199ef1f8089b49"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\self-test-only\\2026-09-26T08-40-33-800Z-70312\\self-test-result.json",
+      "bytes": 8592,
+      "sha256": "a4a4e5b2348b65e34e6a19b04c4cb4357ebf055d7d43b80eb29bcd56633e8571"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\SelfTest-Verify-Run.cjs",
+      "bytes": 34469,
+      "sha256": "40ce2a9797817390423f346134133be6588d4e55c821c265ed07d5d680c24aab"
+    },
+    {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-real-renewal-preparation-v2-20260926\\Verify-Run.cjs",
+      "bytes": 39016,
+      "sha256": "882f540bda7ab6f82e5dd60d97b0e5187f287a58078cd27c8ac4bac692e00ea7"
+    }
+  ]
+}

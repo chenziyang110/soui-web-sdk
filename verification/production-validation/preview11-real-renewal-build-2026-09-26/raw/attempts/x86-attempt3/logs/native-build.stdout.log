@@ -1,0 +1,1658 @@
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  1>Checking Build System
+  Building Custom Rule C:/SOUI-SDK-production-validation/preview11-real-renewal-preparation-20260926/attempts/x86-attempt3/consumer-source/CMakeLists.txt
+  main.cpp
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29): error C2678: 二进制“+”: 没有找到接受“const char [13]”类型的左操作数的运算符(或没有可接受的转换) [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      可能是“std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[通过使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [13]”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [13]”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [13]”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [13]”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [13]”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [13]”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [13]”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [13]”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(139,59):
+      或    “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“const char [13]”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(319,53):
+      或    “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“const char [13]”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(1984,50):
+      或    “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”: 无法从“std::_Quote_in<char,std::char_traits<char>,std::allocator<char>>”推导出“const std::reverse_iterator<_BidIt> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4535,46):
+      或    “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”: 无法从“std::_Quote_in<char,std::char_traits<char>,std::allocator<char>>”推导出“const std::move_iterator<_Iter> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3147,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“const char [13]”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3159,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_in<char,std::char_traits<char>,std::allocator<char>>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3172,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_in<char,std::char_traits<char>,std::allocator<char>>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3183,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”: 无法从“const char [13]”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3196,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 无法从“const char [13]”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3207,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“const char [13]”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3213,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“const char [13]”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3219,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“const char [13]”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3232,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_in<char,std::char_traits<char>,std::allocator<char>>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3238,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_in<char,std::char_traits<char>,std::allocator<char>>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3244,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”: 无法从“const char [13]”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3250,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”: 无法从“const char [13]”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,29):
+      尝试匹配参数列表“(const char [13], std::_Quote_in<char,std::char_traits<char>,std::allocator<char>>)”时
+  
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(252,18): error C2737: “identity”: 必须初始化 const 对象 [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(258,39): error C3536: “identity”: 初始化之前无法使用 [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18): error C2678: 二进制“+”: 没有找到接受“const char [10]”类型的左操作数的运算符(或没有可接受的转换) [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      可能是“std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[通过使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [10]”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [10]”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [10]”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [10]”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [10]”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [10]”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [10]”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char [10]”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(139,59):
+      或    “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“const char [10]”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(319,53):
+      或    “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“const char [10]”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(1984,50):
+      或    “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::reverse_iterator<_BidIt> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4535,46):
+      或    “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::move_iterator<_Iter> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3147,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“const char [10]”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3159,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3172,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3183,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”: 无法从“const char [10]”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3196,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 无法从“const char [10]”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3207,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“const char [10]”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3213,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“const char [10]”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3219,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“const char [10]”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3232,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3238,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3244,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”: 无法从“const char [10]”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3250,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”: 无法从“const char [10]”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(259,18):
+      尝试匹配参数列表“(const char [10], std::_Quote_out<char,std::char_traits<char>,size_t>)”时
+  
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44): error C2678: 二进制“+”: 没有找到接受“const char *”类型的左操作数的运算符(或没有可接受的转换) [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      可能是“std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[通过使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(139,59):
+      或    “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(319,53):
+      或    “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(1984,50):
+      或    “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::reverse_iterator<_BidIt> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4535,46):
+      或    “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::move_iterator<_Iter> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3147,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“const char *”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3159,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3172,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3183,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”: 无法从“const char *”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3196,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 无法从“const char *”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3207,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“const char *”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3213,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“const char *”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3219,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“const char *”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3232,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3238,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3244,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”: 无法从“const char *”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3250,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”: 无法从“const char *”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(271,44):
+      尝试匹配参数列表“(const char *, std::_Quote_out<char,std::char_traits<char>,size_t>)”时
+  
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44): error C2678: 二进制“+”: 没有找到接受“const char *”类型的左操作数的运算符(或没有可接受的转换) [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      可能是“std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[通过使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(139,59):
+      或    “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(319,53):
+      或    “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“const char *”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+              没有使该转换得以执行的上下文
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(1984,50):
+      或    “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::reverse_iterator<_BidIt> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4535,46):
+      或    “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::move_iterator<_Iter> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3147,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“const char *”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3159,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3172,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3183,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”: 无法从“const char *”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3196,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 无法从“const char *”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3207,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“const char *”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3213,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“const char *”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3219,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“const char *”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3232,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3238,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3244,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”: 无法从“const char *”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3250,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”: 无法从“const char *”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(286,44):
+      尝试匹配参数列表“(const char *, std::_Quote_out<char,std::char_traits<char>,size_t>)”时
+  
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102): error C2678: 二进制“+”: 没有找到接受“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”类型的左操作数的运算符(或没有可接受的转换) [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      可能是“std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[通过使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(139,59):
+      或    “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(319,53):
+      或    “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(1984,50):
+      或    “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::reverse_iterator<_BidIt> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4535,46):
+      或    “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::move_iterator<_Iter> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3147,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3159,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3172,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3183,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3196,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 模板 参数“_Elem”不明确
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              可能是“std::_Quote_out<char,std::char_traits<char>,size_t>”
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              或    “char”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3207,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3213,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3219,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3232,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3238,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3244,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3250,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”: 模板 参数“_Elem”不明确
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              可能是“std::_Quote_out<char,std::char_traits<char>,size_t>”
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+              或    “char”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem”的 模板 参数
+      C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(312,102):
+      尝试匹配参数列表“(std::basic_string<char,std::char_traits<char>,std::allocator<char>>, std::_Quote_out<char,std::char_traits<char>,size_t>)”时
+  
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94): error C2678: 二进制“+”: 没有找到接受“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”类型的左操作数的运算符(或没有可接受的转换) [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      可能是“std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[通过使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(139,59):
+      或    “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(319,53):
+      或    “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(1984,50):
+      或    “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::reverse_iterator<_BidIt> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4535,46):
+      或    “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::move_iterator<_Iter> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3147,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3159,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3172,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3183,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3196,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 模板 参数“_Elem”不明确
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              可能是“std::_Quote_out<char,std::char_traits<char>,size_t>”
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              或    “char”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3207,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3213,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3219,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3232,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3238,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3244,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3250,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”: 模板 参数“_Elem”不明确
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              可能是“std::_Quote_out<char,std::char_traits<char>,size_t>”
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+              或    “char”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem”的 模板 参数
+      C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(522,94):
+      尝试匹配参数列表“(std::basic_string<char,std::char_traits<char>,std::allocator<char>>, std::_Quote_out<char,std::char_traits<char>,size_t>)”时
+  
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93): error C2678: 二进制“+”: 没有找到接受“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”类型的左操作数的运算符(或没有可接受的转换) [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      可能是“std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[通过使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(139,59):
+      或    “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(319,53):
+      或    “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(1984,50):
+      或    “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::reverse_iterator<_BidIt> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4535,46):
+      或    “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::move_iterator<_Iter> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3147,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3159,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3172,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3183,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3196,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 模板 参数“_Elem”不明确
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              可能是“std::_Quote_out<char,std::char_traits<char>,size_t>”
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              或    “char”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3207,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3213,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3219,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3232,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3238,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3244,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3250,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”: 模板 参数“_Elem”不明确
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              可能是“std::_Quote_out<char,std::char_traits<char>,size_t>”
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+              或    “char”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem”的 模板 参数
+      C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(534,93):
+      尝试匹配参数列表“(std::basic_string<char,std::char_traits<char>,std::allocator<char>>, std::_Quote_out<char,std::char_traits<char>,size_t>)”时
+  
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100): error C2678: 二进制“+”: 没有找到接受“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”类型的左操作数的运算符(或没有可接受的转换) [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      可能是“std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[通过使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=wchar_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=wchar_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char16_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char16_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(144,59):
+      或    “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(321,53):
+      或    “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Elem=char32_t
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>> std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>::operator +(const int,std::_String_iterator<std::_String_val<std::_Simple_types<_Elem>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Elem=char32_t
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(139,59):
+      或    “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_const_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\vector(319,53):
+      或    “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”[使用参数相关的查找找到]
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>> std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>::operator +(const int,std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>) noexcept”: 无法将参数 1 从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”转换为“const int”
+          with
+          [
+              _Ty=std::wstring_view
+          ]
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              没有可用于执行该转换的用户定义的转换运算符，或者无法调用该运算符
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(1984,50):
+      或    “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::reverse_iterator<_BidIt> std::operator +(reverse_iterator<_BidIt>::difference_type,const std::reverse_iterator<_BidIt> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::reverse_iterator<_BidIt> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4535,46):
+      或    “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::move_iterator<_Iter> std::operator +(move_iterator<_Iter>::difference_type,const std::move_iterator<_Iter> &) noexcept(<expr>)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::move_iterator<_Iter> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3147,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3159,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3172,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3183,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem *const )”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3196,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 模板 参数“_Elem”不明确
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              可能是“std::_Quote_out<char,std::char_traits<char>,size_t>”
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              或    “char”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,const _Elem)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3207,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const std::basic_string<_Elem,_Traits,_Alloc> &,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3213,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const std::basic_string<_Elem,_Traits,_Alloc> &)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const std::basic_string<_Elem,_Traits,_Alloc> &”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3219,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3232,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem *const ,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::basic_string<char,std::char_traits<char>,std::allocator<char>>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3238,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(const _Elem,std::basic_string<_Elem,_Traits,_Alloc> &&)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“std::basic_string<_Elem,_Traits,_Alloc> &&”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3244,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem *const )”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem *const ”的 模板 参数
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(3250,62):
+      或    “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”: 模板 参数“_Elem”不明确
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              可能是“std::_Quote_out<char,std::char_traits<char>,size_t>”
+              C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+              或    “char”
+          C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+          “std::basic_string<_Elem,_Traits,_Alloc> std::operator +(std::basic_string<_Elem,_Traits,_Alloc> &&,const _Elem)”: 无法从“std::_Quote_out<char,std::char_traits<char>,size_t>”推导出“const _Elem”的 模板 参数
+      C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(655,100):
+      尝试匹配参数列表“(std::basic_string<char,std::char_traits<char>,std::allocator<char>>, std::_Quote_out<char,std::char_traits<char>,size_t>)”时
+  
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(658,44): error C2065: “COINIT_APARTMENTTHREADED”: 未声明的标识符 [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(658,20): error C3861: “CoInitializeEx”: 找不到标识符 [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]
+C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\consumer-source\main.cpp(667,3): error C3861: “CoUninitialize”: 找不到标识符 [C:\SOUI-SDK-production-validation\preview11-real-renewal-preparation-20260926\attempts\x86-attempt3\native-build\InstalledRenewalProbe.vcxproj]

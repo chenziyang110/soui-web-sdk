@@ -1,0 +1,22 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict');
+const root=__dirname,repo='C:/SOUI-SDK-development/preview9-tray',id=require(path.join(repo,'tools/internal/delivery-identity.cjs')),freeze=id.readJson(path.join(root,'freeze.json'));
+assert.equal(id.hash(fs.readFileSync(path.join(root,'freeze.json'))),'b58de0c44a2ae96a12aa144f4d8607b800415c40b1311591e05b91f67486faef');
+for(const f of freeze.controls){const b=fs.readFileSync(path.join(root,f.path));assert.equal(b.length,f.bytes);assert.equal(id.hash(b),f.sha256);}
+const rows=[];
+for(const arch of ['x86','x64']){
+ const original=freeze.runtimes[arch];assert.deepEqual(id.snapshot(original.runtime,id.walk(original.runtime)).files,original.payload.files);
+ const runs=fs.readdirSync(path.join(root,'runs')).filter(n=>n.startsWith(arch+'-'));assert.equal(runs.length,1);const base=path.join(root,'runs',runs[0]),result=id.readJson(path.join(base,'result.json')),payload=id.readJson(path.join(base,'payload-before.json'));
+ assert.equal(result.exitCode,0);assert.equal(result.timedOut,false);assert.equal(result.externalLoad,false);assert.equal(result.spawnError,null);assert.equal(result.identityError,null);
+ assert.deepEqual(id.snapshot(path.join(base,'runtime'),id.walk(path.join(base,'runtime')).filter(n=>n!=='source-navigation.log')).files,payload);
+ const events=fs.readFileSync(path.join(base,'native.ndjson'),'utf8').trim().split(/\r?\n/).map(JSON.parse);assert(events.every((e,i)=>e.seq===i+1));assert(!events.some(e=>e.event==='run.failed'));const final=events.at(-1);assert.equal(final.event,'run.finished');assert.equal(final.exitCode,0);assert.equal(final.readyCount,1);assert.equal(final.bootstrapCount,1);assert.equal(final.longInvocations,1);assert.equal(final.resultInvocations,1);assert.equal(final.realRenewalVerified,false);
+ const completes=events.filter(e=>e.event==='web.record').map(e=>JSON.parse(e.dataJson)).filter(e=>e.kind==='complete');assert.equal(completes.length,1);assert.equal(completes[0].cancelled,true);assert.equal(completes[0].unsubscribed,true);assert.equal(completes[0].resultValue,42);assert.equal(completes[0].startCount,2);assert.equal(completes[0].subscribeCount,1);
+ for(const gate of [id.readJson(path.join(base,'gate-before.json')),id.readJson(path.join(base,'gate-prelaunch.json')),...id.readJson(path.join(base,'gates-during.json'))]){assert.equal(gate.exitCode,0);assert.equal(gate.error,null);}
+ rows.push({architecture:arch,run:base,exitCode:0,nativeRecords:events.length,readyCount:1,bootstrapCount:1,taskInvocations:2,cancelled:true,unsubscribed:true,resultValue:42,animationOffDiagnosticOnly:true,inputUnchanged:true,externalLoad:false,realRenewalVerified:false});
+}
+for(const name of fs.readdirSync(path.join(root,'command-logs'))){const base=path.join(root,'command-logs',name),r=id.readJson(path.join(base,'result.json'));assert.equal(r.exitCode,name==='x64-red-clock-check'?1:0,name);assert.equal(r.error,null);assert.equal(r.timedOut,false);for(const stream of ['stdout','stderr']){const b=fs.readFileSync(path.join(base,stream+'.log'));assert.equal(b.length,r[stream].bytes);assert.equal(id.hash(b),r[stream].sha256);}}
+const review={reviewedAt:new Date().toISOString(),fixtureVersion:'preview.11 external clock revision 1',freezeSha256:'b58de0c44a2ae96a12aa144f4d8607b800415c40b1311591e05b91f67486faef',redExitCode:1,redReason:fs.readFileSync(path.join(root,'command-logs/x64-red-clock-check/stderr.log'),'utf8').trim(),greenClockChecksPerArchitecture:8,phaseChecksPerArchitecture:45,logChecksPerArchitecture:8,rows,sdkSourceUnchanged:true,animatedStartupFixed:false,productionPass:false};
+fs.writeFileSync(path.join(root,'review.json'),id.encoded(review),{flag:'wx'});
+const target=path.join(repo,'verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26');assert(!fs.existsSync(target));const files=[];
+for(const file of id.walk(root,'',(_,leaf)=>['inputs','builds','runtimes','runtime'].includes(leaf))){const original=path.join(root,file),b=fs.readFileSync(original),relative='raw/'+file,to=path.join(target,relative);fs.mkdirSync(path.dirname(to),{recursive:true});fs.writeFileSync(to,b,{flag:'wx'});files.push({path:relative,bytes:b.length,sha256:id.hash(b),original});}
+files.sort((a,b)=>a.path.localeCompare(b.path));fs.writeFileSync(path.join(target,'raw-manifest.json'),id.encoded({schema:'soui.raw-evidence/v1',files}),{flag:'wx'});console.log(id.encoded({files:files.length,bytes:files.reduce((n,f)=>n+f.bytes,0),review}));

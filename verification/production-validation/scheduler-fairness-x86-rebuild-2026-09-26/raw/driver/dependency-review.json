@@ -1,0 +1,130 @@
+{
+  "reviewedAt": "2026-09-26T15:48:39.931Z",
+  "sourceCommit": "2bf961be7b120b56c286dccdc983ed6c91b25e0e",
+  "architecture": "x86",
+  "component": "All",
+  "originalBuildExitCode": 0,
+  "startedAt": "2026-09-26T14:55:14.275Z",
+  "finishedAt": "2026-09-26T15:43:33.247Z",
+  "sourceInputSha256": "012bfc5c482f59dc14452a76cc13e7536662950e218ada4e888ad475a8d7d652",
+  "sourceFiles": 28163,
+  "sourceUnchanged": true,
+  "artifacts": [
+    {
+      "kind": "miniblink",
+      "path": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x86\\miniblink\\bin\\node.dll",
+      "bytes": 22988288,
+      "sha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3",
+      "peMachine": "0x014c"
+    },
+    {
+      "kind": "soui",
+      "path": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x86\\soui-source-06678c549fd94babac1bb084f1c72b73\\bin\\soui.dll",
+      "bytes": 936960,
+      "sha256": "c2cf00fbd96a447ec2daf61a4e8baca0fad64ac6e10119e6a500831a4dcd4f34",
+      "peMachine": "0x014c"
+    },
+    {
+      "kind": "utilities",
+      "path": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x86\\soui-source-06678c549fd94babac1bb084f1c72b73\\bin\\utilities.dll",
+      "bytes": 88064,
+      "sha256": "a1bb7ebb96523b4d58f296698dc6c6c3643347f690e2fa4d6e1bdb0aae60e267",
+      "peMachine": "0x014c"
+    },
+    {
+      "kind": "render-gdi",
+      "path": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x86\\soui-source-06678c549fd94babac1bb084f1c72b73\\bin\\render-gdi.dll",
+      "bytes": 44032,
+      "sha256": "1044c3764cf39963bd65946a0ec7b786d56de05912fa37bfcc4c25948470cb8e",
+      "peMachine": "0x014c"
+    },
+    {
+      "kind": "imgdecoder-gdip",
+      "path": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x86\\soui-source-06678c549fd94babac1bb084f1c72b73\\bin\\imgdecoder-gdip.dll",
+      "bytes": 18432,
+      "sha256": "d1b63e9c750868610f1705d1357fb78ec0c9c6a29225dd87389ab340e4d8de9e",
+      "peMachine": "0x014c"
+    },
+    {
+      "kind": "soui-sys-resource",
+      "path": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\dependencies\\x86\\soui-source-06678c549fd94babac1bb084f1c72b73\\bin\\soui-sys-resource.dll",
+      "bytes": 122368,
+      "sha256": "434d1de477a6b0796d5a9c1d7821194da2a69707853634b9539dd68c3aa95582",
+      "peMachine": "0x014c"
+    }
+  ],
+  "buildLogCount": 18,
+  "compilerLinkCommandFiles": 33,
+  "ambientVcpkgPathsFound": false,
+  "encodingWarningsFound": false,
+  "warningCounts": {
+    "MSB4011": 6,
+    "C4838": 10,
+    "C4018": 6,
+    "C4996": 30,
+    "C4244": 259,
+    "C5287": 1,
+    "C4065": 2,
+    "C4005": 1,
+    "C4068": 1,
+    "C4651": 26,
+    "C4251": 13618,
+    "C4267": 6,
+    "C4091": 1,
+    "MSB8012": 2,
+    "LNK4075": 1,
+    "C4789": 1,
+    "LNK4286": 27,
+    "C4013": 9,
+    "C4477": 4,
+    "C4275": 394
+  },
+  "warningsRiskReviewComplete": false,
+  "fixedPrebuiltUnchanged": true,
+  "animatedReview": {
+    "reviewedAt": "2026-09-26T15:46:03.187Z",
+    "freezeSha256": "ef2767b3f0d853c8ae509454e64fb55aa0e157eb7b890b32dcff7217477e9fc2",
+    "kernelSha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3",
+    "kernelBuildSourceSha256": "012bfc5c482f59dc14452a76cc13e7536662950e218ada4e888ad475a8d7d652",
+    "consumerSdkVersion": "0.3.0-preview.11",
+    "runtimeDifferenceFromParent": [
+      "node.dll"
+    ],
+    "originalAnimationUnchanged": true,
+    "debuggerAttached": false,
+    "run": "x86-2026-09-26T15-44-59-988Z",
+    "nativeRecords": 76,
+    "nativeExitCode": 0,
+    "final": {
+      "schema": "soui.renewal-probe/v2",
+      "seq": 76,
+      "elapsedMs": 34107,
+      "event": "run.finished",
+      "exitCode": 0,
+      "readyCount": 1,
+      "longInvocations": 1,
+      "resultInvocations": 1,
+      "shutdownSessions": 2,
+      "bootstrapCount": 1,
+      "prebootstrapRetirements": 1,
+      "boundShutdowns": 1,
+      "realRenewalVerified": false,
+      "releaseReady": false
+    },
+    "publicTasks": {
+      "started": 2,
+      "resultValue": 42,
+      "cancelled": true,
+      "unsubscribed": true
+    },
+    "allRuntimeInputsUnchanged": true,
+    "externalLoadObserved": false,
+    "currentSdkPackageValidated": false,
+    "realRenewalVerified": false,
+    "productionPass": false
+  },
+  "applicationSmokeVerified": false,
+  "x64Verified": false,
+  "currentSdkPackageValidated": false,
+  "productionPass": false
+}

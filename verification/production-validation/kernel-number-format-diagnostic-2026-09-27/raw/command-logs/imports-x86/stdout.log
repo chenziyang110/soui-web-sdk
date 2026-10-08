@@ -1,0 +1,205 @@
+
+File: .\format-number-probe.exe
+Format: COFF-i386
+Arch: i386
+AddressSize: 32bit
+Import {
+  Name: clang_rt.asan_dynamic-i386.dll
+  ImportLookupTableRVA: 0x8B30
+  ImportAddressTableRVA: 0x617C
+  Symbol: __asan_memset (99)
+  Symbol: __asan_report_load1 (135)
+  Symbol: __asan_report_load4 (141)
+  Symbol: __asan_report_load8 (143)
+  Symbol: __asan_report_store1 (148)
+  Symbol: __asan_report_store4 (154)
+  Symbol: __asan_report_store8 (156)
+  Symbol: __asan_set_shadow_00 (163)
+  Symbol: __asan_set_shadow_f8 (175)
+  Symbol: __asan_wrap_strlen (279)
+  Symbol: __sanitizer_override_function (389)
+  Symbol: __sanitizer_register_weak_function (396)
+  Symbol: __asan_memcpy (97)
+  Symbol: __sanitizer_on_print__dll (388)
+  Symbol: __sanitizer_report_error_summary__dll (397)
+  Symbol: __sanitizer_sandbox_on_notify__dll (398)
+  Symbol: __sanitizer_get_dtls_size__dll (374)
+  Symbol: __sanitizer_weak_hook_memcmp__dll (416)
+  Symbol: __sanitizer_weak_hook_strcmp__dll (417)
+  Symbol: __sanitizer_weak_hook_strncmp__dll (418)
+  Symbol: __sanitizer_weak_hook_strstr__dll (419)
+  Symbol: __sanitizer_free_hook__dll (369)
+  Symbol: __sanitizer_malloc_hook__dll (387)
+  Symbol: __sanitizer_ignore_free_hook__dll (382)
+  Symbol: __sancov_default_options__dll (325)
+  Symbol: __sanitizer_cov_trace_cmp__dll (352)
+  Symbol: __sanitizer_cov_trace_cmp1__dll (348)
+  Symbol: __sanitizer_cov_trace_cmp2__dll (349)
+  Symbol: __asan_get_report_description (74)
+  Symbol: __asan_unregister_globals (229)
+  Symbol: __asan_register_globals (120)
+  Symbol: __asan_set_seh_filter (162)
+  Symbol: __asan_get_shadow_memory_dynamic_address (78)
+  Symbol: __asan_should_detect_stack_use_after_return (177)
+  Symbol: __asan_on_error__dll (109)
+  Symbol: __asan_default_suppressions__dll (44)
+  Symbol: __asan_default_options__dll (43)
+  Symbol: __sanitizer_cov_pcs_cleanup__dll (340)
+  Symbol: __sanitizer_cov_pcs_init__dll (341)
+  Symbol: __sanitizer_cov_bool_flag_init__dll (333)
+  Symbol: __sanitizer_cov_8bit_counters_cleanup__dll (331)
+  Symbol: __sanitizer_cov_8bit_counters_init__dll (332)
+  Symbol: __sanitizer_cov_trace_switch__dll (364)
+  Symbol: __sanitizer_cov_store16__dll (343)
+  Symbol: __sanitizer_cov_store8__dll (347)
+  Symbol: __sanitizer_cov_store4__dll (346)
+  Symbol: __sanitizer_cov_store2__dll (345)
+  Symbol: __sanitizer_cov_store1__dll (344)
+  Symbol: __sanitizer_cov_load16__dll (335)
+  Symbol: __sanitizer_cov_load8__dll (339)
+  Symbol: __sanitizer_cov_load4__dll (338)
+  Symbol: __sanitizer_cov_load2__dll (337)
+  Symbol: __sanitizer_cov_load1__dll (336)
+  Symbol: __sanitizer_cov_trace_pc_indir__dll (363)
+  Symbol: __sanitizer_cov_trace_pc_guard_cleanup__dll (361)
+  Symbol: __sanitizer_cov_trace_pc_guard_init__dll (362)
+  Symbol: __sanitizer_cov_trace_pc_guard__dll (360)
+  Symbol: __sanitizer_cov_trace_gep__dll (359)
+  Symbol: __sanitizer_cov_trace_div8__dll (358)
+  Symbol: __sanitizer_cov_trace_div4__dll (357)
+  Symbol: __sanitizer_cov_trace_const_cmp8__dll (356)
+  Symbol: __sanitizer_cov_trace_const_cmp4__dll (355)
+  Symbol: __sanitizer_cov_trace_const_cmp2__dll (354)
+  Symbol: __sanitizer_cov_trace_const_cmp1__dll (353)
+  Symbol: __sanitizer_cov_trace_cmp8__dll (351)
+  Symbol: __asan_memmove (98)
+  Symbol: __sanitizer_cov_trace_cmp4__dll (350)
+  Symbol: __asan_set_error_report_callback (161)
+}
+Import {
+  Name: KERNEL32.dll
+  ImportLookupTableRVA: 0x89B4
+  ImportAddressTableRVA: 0x6000
+  Symbol: GetTempFileNameW (798)
+  Symbol: PssQuerySnapshot (1123)
+  Symbol: PssFreeSnapshot (1122)
+  Symbol: PssCaptureSnapshot (1120)
+  Symbol: MultiByteToWideChar (1056)
+  Symbol: LoadLibraryExW (1011)
+  Symbol: GetProcAddress (726)
+  Symbol: FreeLibrary (462)
+  Symbol: OpenProcess (1084)
+  Symbol: GetProcessId (735)
+  Symbol: GetLastError (647)
+  Symbol: RaiseException (1172)
+  Symbol: CloseHandle (157)
+  Symbol: GetTempPathW (802)
+  Symbol: CreateFileW (230)
+  Symbol: GetEnvironmentVariableW (605)
+  Symbol: InitializeSListHead (913)
+  Symbol: GetSystemTimeAsFileTime (787)
+  Symbol: GetCurrentThreadId (576)
+  Symbol: GetCurrentProcessId (572)
+  Symbol: QueryPerformanceCounter (1150)
+  Symbol: GetModuleHandleW (671)
+  Symbol: GetStartupInfoW (762)
+  Symbol: IsDebuggerPresent (941)
+  Symbol: IsProcessorFeaturePresent (949)
+  Symbol: TerminateProcess (1480)
+  Symbol: GetCurrentProcess (571)
+  Symbol: SetUnhandledExceptionFilter (1448)
+  Symbol: UnhandledExceptionFilter (1514)
+}
+Import {
+  Name: VCRUNTIME140.dll
+  ImportLookupTableRVA: 0x8A2C
+  ImportAddressTableRVA: 0x6078
+  Symbol: __current_exception (28)
+  Symbol: __current_exception_context (29)
+  Symbol: memset (72)
+  Symbol: _except_handler4_common (53)
+  Symbol: __std_type_info_destroy_list (37)
+  Symbol: strstr (76)
+  Symbol: __CxxFrameHandler3 (16)
+  Symbol: memcpy (70)
+  Symbol: wcsstr (80)
+}
+Import {
+  Name: api-ms-win-crt-math-l1-1-0.dll
+  ImportLookupTableRVA: 0x8A78
+  ImportAddressTableRVA: 0x60C4
+  Symbol: nextafter (274)
+  Symbol: ldexp (240)
+  Symbol: _dclass (53)
+  Symbol: _libm_sse2_log10_precise (103)
+  Symbol: _dsign (60)
+  Symbol: __setusermatherr (46)
+}
+Import {
+  Name: api-ms-win-crt-locale-l1-1-0.dll
+  ImportLookupTableRVA: 0x8A68
+  ImportAddressTableRVA: 0x60B4
+  Symbol: _configthreadlocale (8)
+  Symbol: setlocale (19)
+  Symbol: localeconv (18)
+}
+Import {
+  Name: api-ms-win-crt-stdio-l1-1-0.dll
+  ImportLookupTableRVA: 0x8AF4
+  ImportAddressTableRVA: 0x6140
+  Symbol: __stdio_common_vsprintf (13)
+  Symbol: __stdio_common_vfprintf (3)
+  Symbol: puts (147)
+  Symbol: __p__commode (1)
+  Symbol: _set_fmode (84)
+  Symbol: __stdio_common_vswprintf_s (19)
+  Symbol: __acrt_iob_func (0)
+}
+Import {
+  Name: api-ms-win-crt-runtime-l1-1-0.dll
+  ImportLookupTableRVA: 0x8A94
+  ImportAddressTableRVA: 0x60E0
+  Symbol: _get_initial_narrow_environment (42)
+  Symbol: _exit (37)
+  Symbol: _set_app_type (68)
+  Symbol: _seh_filter_exe (66)
+  Symbol: _initterm_e (57)
+  Symbol: exit (88)
+  Symbol: _crt_at_quick_exit (30)
+  Symbol: _crt_atexit (31)
+  Symbol: _execute_onexit_table (36)
+  Symbol: _register_onexit_function (62)
+  Symbol: _initialize_onexit_table (54)
+  Symbol: _initialize_narrow_environment (53)
+  Symbol: _configure_narrow_argv (25)
+  Symbol: _seh_filter_dll (65)
+  Symbol: _initterm (56)
+  Symbol: abort (87)
+  Symbol: __p___argc (5)
+  Symbol: __p___argv (6)
+  Symbol: _c_exit (22)
+  Symbol: _register_thread_local_exe_atexit_callback (63)
+  Symbol: _controlfp_s (29)
+  Symbol: terminate (106)
+  Symbol: _cexit (23)
+}
+Import {
+  Name: api-ms-win-crt-heap-l1-1-0.dll
+  ImportLookupTableRVA: 0x8A54
+  ImportAddressTableRVA: 0x60A0
+  Symbol: free (24)
+  Symbol: malloc (25)
+  Symbol: calloc (23)
+  Symbol: _set_new_mode (22)
+}
+Import {
+  Name: api-ms-win-crt-string-l1-1-0.dll
+  ImportLookupTableRVA: 0x8B14
+  ImportAddressTableRVA: 0x6160
+  Symbol: wcsnlen (169)
+  Symbol: wcsncpy_s (168)
+  Symbol: wmemcpy_s (176)
+  Symbol: wcscpy_s (161)
+  Symbol: strnlen (145)
+  Symbol: wcsncmp (166)
+}

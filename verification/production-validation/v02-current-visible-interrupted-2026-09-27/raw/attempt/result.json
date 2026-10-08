@@ -1,0 +1,66 @@
+{
+  "schema": "soui.v02.visible-run/v1",
+  "architecture": "x64",
+  "attemptName": "visible-v02-x64-attempt1",
+  "startedAt": "2026-09-27T10:59:33.645Z",
+  "status": "interrupted-external",
+  "beforeGate": {
+    "at": "2026-09-27T10:59:33.643Z",
+    "busy": []
+  },
+  "buildBefore": {
+    "buildId": "5ddcec93-d244-456c-877b-1bdeabee568d",
+    "sourceSha256": "15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d",
+    "payloadSha256": "48ec1c2261bef39a45c2e95bff51b8313b50778f5d6ca4af51254fa88859c308",
+    "executable": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\x64\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe",
+    "executableSha256": "3a152087abfbacd833424b12be6389f67a36137941953c6bd78165dabda74b89"
+  },
+  "launch": {
+    "program": "C:\\SOUI-SDK-development\\preview14-scheduler\\out\\x64\\bin\\Release\\SouiWorkbench\\SouiWorkbench.exe",
+    "args": [
+      "--react",
+      "--page=data"
+    ],
+    "pid": 57804,
+    "at": "2026-09-27T10:59:34.964Z",
+    "supervisorSha256": "002f282411a7a67369a0dda6dc46385e84ae1bcf75623984c3f789da3ea36db2"
+  },
+  "interference": {
+    "at": "2026-09-27T11:00:50.896Z",
+    "busy": [
+      {
+        "ProcessId": 78264,
+        "ParentProcessId": 27928,
+        "Name": "qemu-system-x86_64.exe",
+        "CreationDate": "/Date(1790506847264)/"
+      }
+    ]
+  },
+  "gateError": null,
+  "timedOut": false,
+  "nativeExitCode": 1,
+  "signal": null,
+  "forcedCleanup": {
+    "reason": "external-workload",
+    "at": "2026-09-27T11:00:51.227Z",
+    "exitCode": 0,
+    "error": null
+  },
+  "buildAfter": null,
+  "afterGate": {
+    "at": "2026-09-27T11:00:52.031Z",
+    "busy": [
+      {
+        "ProcessId": 78264,
+        "ParentProcessId": 27928,
+        "Name": "qemu-system-x86_64.exe",
+        "CreationDate": "/Date(1790506847264)/"
+      }
+    ]
+  },
+  "realInputVerified": false,
+  "releaseReady": false,
+  "spawnError": null,
+  "postflightDeferredDueToExternal": true,
+  "finishedAt": "2026-09-27T11:00:52.032Z"
+}

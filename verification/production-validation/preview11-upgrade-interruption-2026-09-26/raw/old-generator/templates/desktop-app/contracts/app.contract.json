@@ -1,0 +1,13 @@
+{
+  "protocol":"soui.bridge/1",
+  "origin":"app://starter",
+  "methods":{
+    "app.greet":{"capability":"app.greet","params":{"name":"string, <=128 UTF-8 bytes"},"result":{"message":"string"}},
+    "bridge.probe.report":{"capability":"bridge.probe","params":{"ready":"true"},"result":{"ready":"true"}},
+    "task.start":{"capability":"task.start","params":{"kind":"app.count","operationId":"string, <=128 bytes","input":"object, steps 1–20"},"result":{"taskId":"string","accepted":"boolean","duplicate":"boolean"}},
+    "task.query":{"capability":"task.query","params":{"taskId":"string"},"result":{"state":"string","progress":"number","result":"object on completion"}},
+    "task.cancel":{"capability":"task.cancel","params":{"taskId":"string"},"result":{"cancelRequested":"boolean"}},
+    "task.subscribe":{"capability":"task.subscribe","params":{"taskId":"string","eventName":"task.progress"},"result":{"subscriptionId":"string"}},
+    "task.unsubscribe":{"capability":"task.subscribe","params":{"subscriptionId":"string"},"result":{"removed":"boolean"}}
+  }
+}

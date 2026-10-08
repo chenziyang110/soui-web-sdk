@@ -1,7 +1,8 @@
 import { SouiNativeClientImpl } from './client.js';
 import type { SouiNativeClientOptions } from './client.js';
-import { SouiBridgeError, MAX_MESSAGE_BYTES, integerOption, isNativeEvent, isRecord, nonEmptyString, readResponse } from './protocol.js';
+import { SouiBridgeError, MAX_MESSAGE_BYTES, integerOption, isNativeEvent, isRecord, nonEmptyString, readResponse, readSessionLease } from './protocol.js';
 import type { SouiCoreMethodMap, SouiNativeEvent, SouiNativePort } from './protocol.js';
+import { monotonicNow } from './session-renewal.js';
 
 export interface SouiNativeWindow {
   __souiNativePostMessage?: (envelope: string) => string | Promise<string>;
@@ -10,7 +11,7 @@ export interface SouiNativeWindow {
   removeEventListener(type: string, listener: EventListener): void;
 }
 
-export interface SouiConnectionOptions extends Omit<SouiNativeClientOptions, 'sessionId' | 'origin' | 'token'> {
+export interface SouiConnectionOptions extends Omit<SouiNativeClientOptions, 'sessionId' | 'origin' | 'token' | 'lease' | 'leaseElapsedMs'> {
   target?: SouiNativeWindow;
   bootstrapTimeoutMs?: number;
 }
@@ -96,6 +97,7 @@ export function connectSouiNative<Methods extends { [K in keyof Methods]: { para
         target.addEventListener('beforeunload', unload);
         const interrupted = new Promise<never>((_, reject) => { abort = reject; });
         const requestId = `sdk:bootstrap:${nextBootstrap++}`;
+        const sentAt = monotonicNow();
         timer = setTimeout(() => abort(new SouiBridgeError('E_TIMEOUT', 'Native bootstrap timed out; reload before retrying.', requestId)), bootstrapTimeoutMs);
         const raw = await Promise.race([port.request(JSON.stringify({ requestId, sessionId: '', origin: '', token: '',
           method: 'bridge.bootstrap', params: { protocol: 'soui.bridge/1' } })), interrupted]);
@@ -104,8 +106,10 @@ export function connectSouiNative<Methods extends { [K in keyof Methods]: { para
             !result.origin.startsWith('app://') || !nonEmptyString(result.token))
           throw new SouiBridgeError('E_INVALID_RESPONSE', 'Native bootstrap credentials are invalid.', requestId);
         if (record.closed) throw new SouiBridgeError('E_DISPOSED', 'The document closed during connection.');
+        const lease = result.lease === undefined ? undefined : readSessionLease(result.lease);
         client = new SouiNativeClientImpl<Methods>(port, { sessionId: result.sessionId, origin: result.origin,
-          token: result.token, ...limits, onError: record.onError });
+          token: result.token, lease, leaseElapsedMs: lease ? monotonicNow() - sentAt : 0,
+          ...limits, onError: record.onError });
         return client;
       } catch (error) {
         close();

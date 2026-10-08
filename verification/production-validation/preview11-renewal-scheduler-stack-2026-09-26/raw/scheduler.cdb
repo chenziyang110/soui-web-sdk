@@ -1,0 +1,13 @@
+.symopt+ 0x10
+.reload /f node.dll
+.echo SOUI_MODULE_IDENTITY
+lmvm node
+.echo SOUI_THREAD_STACKS
+~* k 16
+.echo SOUI_SCHEDULER_LAYOUT
+dt node!content::WebThreadImpl
+.echo SOUI_TIMER_LAYOUT
+dt node!content::WebTimerBase
+.echo SOUI_SCHEDULER_BREAK
+bp /1 node!content::WebThreadImpl::schedulerTasks ".echo SOUI_SCHEDULER_HIT; r ecx; dt node!content::WebThreadImpl @ecx; dx -r3 ((node!content::WebThreadImpl *) @ecx)->m_timerHeap; .echo SOUI_SNAPSHOT_END; qd"
+g

@@ -78,6 +78,32 @@ test('source validation rejects missing, extra, ambiguous and escaping files', t
   assert.throws(() => archive.verify(root), /duplicate|Duplicate/);
 });
 
+test('license bytes survive Git checkout and full-source export under repository attributes', t => {
+  const root = fixture(t);
+  git(root, 'init', '-q');
+  git(root, 'config', 'core.autocrlf', 'true');
+  write(root, '.gitattributes', fs.readFileSync(path.join(__dirname, '../../.gitattributes')));
+  write(root, 'VERSION', '0.3.0-preview.1\n');
+  const licenses = new Map([
+    ['third_party/licenses/element-plus-2.11.1-LICENSE.txt', Buffer.from('License\r\nCopyright fixture\r\n')],
+    ['third_party/licenses/future-component-LICENSE.md', Buffer.from('License\r\nKeep original bytes\r\n')],
+  ]);
+  for (const [name, bytes] of licenses) write(root, name, bytes);
+  const before = identity.source(root);
+  git(root, 'add', '.');
+  archive.create(root);
+  const stage = path.join(fixture(t), 'export');
+  archive.stage(root, stage);
+  for (const [name, bytes] of licenses) {
+    assert.deepEqual(fs.readFileSync(path.join(stage, name)), bytes, name);
+    fs.unlinkSync(path.join(root, name));
+    git(root, 'checkout-index', '--', name);
+    assert.deepEqual(fs.readFileSync(path.join(root, name)), bytes, name);
+  }
+  assert.equal(identity.source(stage).sha256, before.sha256);
+  assert.equal(identity.source(root).sha256, before.sha256);
+});
+
 test('payload evidence detects equal-length page edits, new files and missing DLLs', t => {
   const root = fixture(t);
   write(root, 'App.exe', 'exe');

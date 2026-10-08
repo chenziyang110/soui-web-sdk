@@ -88,6 +88,7 @@ int run(HINSTANCE instance,bool smoke) {
   app.AddResProvider(resources);
 
   soui::sdk::json_bridge bridge("app://starter");
+  if(!bridge.enable_session_renewal())return 11;
   if(!bridge.enable_directory_service())return 10;
   if(!bridge.enable_clipboard_service())return 8;
   if(!bridge.enable_window_service())return 9;

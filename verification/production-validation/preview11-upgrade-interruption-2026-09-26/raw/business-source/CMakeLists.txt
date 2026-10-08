@@ -1,0 +1,7 @@
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
+  cmake_minimum_required(VERSION 3.24)
+  project(UpgradeLedger VERSION 0.1.0 LANGUAGES C CXX RC)
+  add_subdirectory(sdk)
+  include(cmake/SouiApplication.cmake)
+endif()
+soui_add_application(UpgradeLedger ROOT "${CMAKE_CURRENT_SOURCE_DIR}" SOURCES app/main.cpp)

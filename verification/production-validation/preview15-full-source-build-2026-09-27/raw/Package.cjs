@@ -1,0 +1,20 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process'),assert=require('node:assert/strict');
+const root=__dirname,repo='C:/SOUI-SDK-development/preview14-scheduler';
+const id=require(path.join(repo,'tools/internal/delivery-identity.cjs'));
+const archive=path.join(repo,'dist/soui-sdk-0.3.0-preview.15-full-source.zip');assert(!fs.existsSync(archive));
+const manifest=fs.readFileSync(path.join(repo,'source-manifest.json'));
+assert.equal(JSON.parse(manifest).version,'0.3.0-preview.15');
+const record={version:'0.3.0-preview.15',sourceCommit:cp.execFileSync('git',['-C',repo,'rev-parse','HEAD'],{encoding:'utf8',windowsHide:true}).trim(),sourceManifestSha256:id.hash(manifest),sourceFiles:JSON.parse(manifest).files.length,archive,startedAt:new Date().toISOString(),guiExecuted:false,releaseReady:false};
+fs.writeFileSync(path.join(root,'package-input.json'),id.encoded(record),{flag:'wx'});
+const env={...process.env,PSModulePath:path.join(process.env.SystemRoot,'System32/WindowsPowerShell/v1.0/Modules')};
+const child=cp.spawn(process.execPath,[path.join(root,'Capture-Command.cjs'),'package','1200000','powershell.exe','-NoProfile','-File',path.join(repo,'tools/Package.ps1'),'-OutputFile',archive],{env,windowsHide:true,stdio:'inherit'});
+fs.writeFileSync(path.join(root,'package-running.json'),id.encoded({driverPid:process.pid,capturePid:child.pid,...record}),{flag:'wx'});
+child.once('error',error=>{console.error(error);process.exitCode=1;});child.once('close',code=>{try{
+ assert.equal(code,0);const result=id.readJson(path.join(root,'command-logs/package/result.json'));assert.equal(result.exitCode,0);assert.equal(result.timedOut,false);assert.equal(result.error,null);
+ assert.equal(id.hash(fs.readFileSync(path.join(repo,'source-manifest.json'))),record.sourceManifestSha256);
+ const bytes=fs.readFileSync(archive),sha256=id.hash(bytes);assert(fs.readFileSync(archive+'.sha256','utf8').startsWith(sha256+'  '));
+ for(const name of ['archive.log','archive-test.log'])fs.copyFileSync(path.join(repo,'out/package',name),path.join(root,name),fs.constants.COPYFILE_EXCL);
+ fs.writeFileSync(path.join(root,'package-result.json'),id.encoded({...record,finishedAt:new Date().toISOString(),exitCode:0,archiveBytes:bytes.length,archiveSha256:sha256,sourceManifestUnchanged:true,sourceDeliveryVerified:false}),{flag:'wx'});
+ console.log(JSON.stringify({archive,bytes:bytes.length,sha256,sourceDeliveryVerified:false}));
+ }catch(error){console.error(error.stack);process.exitCode=1;}});

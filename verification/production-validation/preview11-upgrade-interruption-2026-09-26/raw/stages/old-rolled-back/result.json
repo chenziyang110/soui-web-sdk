@@ -1,0 +1,63 @@
+{
+  "schema": "soui.upgrade-build-stage/v1",
+  "stage": "old-rolled-back",
+  "version": "0.3.0-preview.10",
+  "status": "builds-complete-desktop-pending",
+  "finishedAt": "2026-09-26T09:27:50.568Z",
+  "architectures": [
+    {
+      "architecture": "x86",
+      "buildId": "9cd3f9c1-4d0d-4ea5-bc5b-852ff34fbd94",
+      "sourceSha256": "db0b810c6a79b2b6d8541583b27de7e2568c0c91964b03496f510df7f59e9b85",
+      "payloadSha256": "6b379075590a29eb6b587519a1a59cc033505451d90610e5781b3bd516a9bec3",
+      "payloadFiles": 71,
+      "buildRecordSha256": "7efa5d22eb8b346b5c64b8df23adfc657c5811f1b240c4b0535e0aeedddc870f",
+      "guiExecuted": false
+    },
+    {
+      "architecture": "x64",
+      "buildId": "b410d210-125c-4a59-a009-b0efc7e64292",
+      "sourceSha256": "db0b810c6a79b2b6d8541583b27de7e2568c0c91964b03496f510df7f59e9b85",
+      "payloadSha256": "c769c03656772f6be0f402d59ed650304ff6cf77f4ec1fb8539ac63d7068924f",
+      "payloadFiles": 71,
+      "buildRecordSha256": "48ccc21807118556de001314cb8519c749cf891c382bf26a924eef226855f97b",
+      "guiExecuted": false
+    }
+  ],
+  "business": [
+    {
+      "label": "before-install",
+      "at": "2026-09-26T09:27:18.174Z",
+      "businessFiles": 22,
+      "preserved": true
+    },
+    {
+      "label": "after-install",
+      "at": "2026-09-26T09:27:22.768Z",
+      "businessFiles": 22,
+      "preserved": true
+    },
+    {
+      "label": "after-build-x86",
+      "at": "2026-09-26T09:27:43.973Z",
+      "businessFiles": 22,
+      "preserved": true
+    },
+    {
+      "label": "after-build-x64",
+      "at": "2026-09-26T09:27:49.919Z",
+      "businessFiles": 22,
+      "preserved": true
+    },
+    {
+      "label": "stage-end",
+      "at": "2026-09-26T09:27:50.568Z",
+      "businessFiles": 22,
+      "preserved": true
+    }
+  ],
+  "guiExecuted": false,
+  "upgradeRuntimeVerified": false,
+  "sourceDeliveryVerified": false,
+  "releaseReady": false
+}

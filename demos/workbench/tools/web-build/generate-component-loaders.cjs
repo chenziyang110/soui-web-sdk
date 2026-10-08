@@ -38,9 +38,10 @@ if(catalogNames.length!==cases.size || catalogNames.some(name=>!cases.has(name))
 const loaders = path.join(directory,'component-loaders');
 const owners = new Map();
 const upstream = fs.readFileSync(path.join(root,'web/node_modules/element-plus/es/component.mjs'),'utf8');
-for (const match of upstream.matchAll(/import \{([^}]+)\} from '\.\/components\/([^/]+)\/index\.mjs'/g)) {
-  for (const exported of match[1].split(',')) owners.set(exported.trim().replace(/^El/,''),match[2]);
+for (const match of upstream.matchAll(/import\s*\{([^}]+)\}\s*from\s*(['"])\.\/components\/([^/]+)\/index\.mjs\2/g)) {
+  for (const exported of match[1].split(',')) owners.set(exported.trim().replace(/^El/,''),match[3]);
 }
+if (!owners.size) throw Error('No upstream component owners found; review the Element Plus module format');
 fs.mkdirSync(loaders,{recursive:true});
 const routes = [];
 for (const [name,code] of cases) {

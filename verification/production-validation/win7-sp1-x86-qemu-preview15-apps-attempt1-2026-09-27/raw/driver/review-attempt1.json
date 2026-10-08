@@ -1,0 +1,9 @@
+{
+  "classification": "archive-review-encoding-error",
+  "command": "node Review-Interrupted.cjs",
+  "observedToolExitCode": 1,
+  "observation": "Initial review helper tried to read Windows PowerShell redirected UTF-16LE frozen-check logs as UTF-8 JSON. SyntaxError before report or archive creation. Tool output was observed but not separately redirected to a raw stderr file.",
+  "preservedScript": "Review-Interrupted.v1.cjs",
+  "correction": "Decode UTF-16LE only when its BOM is present, otherwise UTF-8; retain every original guest record byte unchanged.",
+  "sdkOrGuestFailure": false
+}

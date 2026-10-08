@@ -1,0 +1,12 @@
+{
+  "observedAt": "2026-09-27T23:32:39.7408747Z",
+  "processes": [
+    {
+      "ProcessId": 60968,
+      "ParentProcessId": 37876,
+      "Name": "qemu-system-x86_64.exe",
+      "CreationDate": "2026-09-28T07:31:47.66276+08:00",
+      "CommandLine": "\"C:\\Program Files\\qemu\\qemu-system-x86_64.exe\" -name v4-uefi-coldboot -machine pc,accel=tcg -cpu max -m 4096 -smp 2 -drive \"if=pflash,format=raw,unit=0,readonly=on,file=C:\\Program Files\\qemu\\share\\edk2-x86_64-code.fd\" -drive if=pflash,format=raw,unit=1,file=C:\\VM-lab-independent-20260925\\v4-uefi-iso-20260928\\v4-uefi-coldboot.vars.fd -drive file=C:\\VM-lab-independent-20260925\\current-integrated-v4-unlock-20260928.iso,if=ide,index=0,media=cdrom,readonly=on -drive file=C:\\VM-lab-independent-20260925\\v4-uefi-iso-20260928\\v4-uefi-guest.qcow2,if=ide,index=1,format=qcow2 -boot order=d -display none -vnc 127.0.0.1:65 -monitor tcp:127.0.0.1:47665,server=on,wait=off -net none -usb -device usb-tablet -no-reboot"
+    }
+  ]
+}

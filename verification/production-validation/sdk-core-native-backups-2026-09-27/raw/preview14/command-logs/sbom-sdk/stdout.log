@@ -1,0 +1,84 @@
+{
+  "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:d263f81e-baf6-49d1-80c0-029a4112f843",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-09-26T16:49:32.341Z",
+    "lifecycles": [
+      {
+        "phase": "pre-build"
+      }
+    ],
+    "tools": [
+      {
+        "vendor": "npm",
+        "name": "cli",
+        "version": "11.9.0"
+      }
+    ],
+    "component": {
+      "bom-ref": "@soui/native-sdk@0.3.0-preview.14",
+      "type": "library",
+      "name": "web",
+      "version": "0.3.0-preview.14",
+      "scope": "required",
+      "purl": "pkg:npm/%40soui/native-sdk@0.3.0-preview.14",
+      "properties": [
+        {
+          "name": "cdx:npm:package:private",
+          "value": "true"
+        }
+      ],
+      "externalReferences": []
+    }
+  },
+  "components": [
+    {
+      "bom-ref": "typescript@5.5.4",
+      "type": "library",
+      "name": "typescript",
+      "version": "5.5.4",
+      "scope": "optional",
+      "purl": "pkg:npm/typescript@5.5.4",
+      "properties": [
+        {
+          "name": "cdx:npm:package:development",
+          "value": "true"
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "distribution",
+          "url": "https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz"
+        }
+      ],
+      "hashes": [
+        {
+          "alg": "SHA-512",
+          "content": "32dab6f6c28300460feda963460b4f3a94ef39f6f0456952e9d3d1cf08dd13e0b44786eb5ff194ca11d279c6c73052cd04b70920fb7d9e5f721b94d9d70787f9"
+        }
+      ],
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ]
+    }
+  ],
+  "dependencies": [
+    {
+      "ref": "@soui/native-sdk@0.3.0-preview.14",
+      "dependsOn": [
+        "typescript@5.5.4"
+      ]
+    },
+    {
+      "ref": "typescript@5.5.4",
+      "dependsOn": []
+    }
+  ]
+}

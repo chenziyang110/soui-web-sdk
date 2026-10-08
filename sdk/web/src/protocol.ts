@@ -15,6 +15,24 @@ export interface SouiNativePort {
   dispose?(): void;
 }
 
+/** Relative native authorization lifetime. A renewal keeps the document identity. */
+export interface SouiSessionLease {
+  generation: number;
+  expiresInMs: number;
+  renewAfterMs: number;
+}
+
+export function readSessionLease(value: unknown, code = 'E_INVALID_RESPONSE'): SouiSessionLease {
+  if (!isRecord(value) || !Number.isSafeInteger(value.generation) || (value.generation as number) < 1 ||
+      !Number.isSafeInteger(value.expiresInMs) || (value.expiresInMs as number) < 1 ||
+      (value.expiresInMs as number) > 1800000 || !Number.isSafeInteger(value.renewAfterMs) ||
+      (value.renewAfterMs as number) < 0 || (value.renewAfterMs as number) > 1500000 ||
+      (value.renewAfterMs as number) > (value.expiresInMs as number))
+    throw new SouiBridgeError(code, 'Native authorization lease fields are invalid.');
+  return { generation: value.generation as number, expiresInMs: value.expiresInMs as number,
+    renewAfterMs: value.renewAfterMs as number };
+}
+
 export interface SouiBridgeRequest {
   requestId: string;
   sessionId: string;

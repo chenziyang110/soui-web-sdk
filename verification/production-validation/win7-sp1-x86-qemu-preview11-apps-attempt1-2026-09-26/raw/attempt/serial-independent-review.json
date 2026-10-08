@@ -1,0 +1,81 @@
+{
+  "schema": "soui.win7-attempt-independent-serial-review/v1",
+  "reviewedAt": "2026-09-26T07:51:57.773Z",
+  "stage": "failed-before-apps",
+  "method": "Independent ASCII framing/Base64/byte-count/SHA-256/END decoding; original frozen validator separately executed once after QEMU exit; original files hashed before and after. No GUI, VM or application started by this review.",
+  "serial": {
+    "path": "C:\\SOUI-SDK-production-validation\\preview11-win7-apps-attempt1\\serial-export.txt",
+    "bytes": 677,
+    "sha256": "d8666e5559484693e12e14fb1501c8b639ba8c76179ca56acec603dc9c8c45cf"
+  },
+  "framingComplete": true,
+  "frameCount": 4,
+  "frames": [
+    {
+      "name": "guest-identity.txt",
+      "bytes": 143,
+      "sha256": "bb7571212bd610b0af9edcf4bebdef3c106ce50e04e17adc03fee43aa0c15364",
+      "text": "Version=6.1.7601\r\nServicePackMajorVersion=1\r\nOSArchitecture=32-bit\r\nPointerBytes=4\r\nPowerShellMajor=2\r\nCaption=Microsoft Windows 7 企业版 \r\n"
+    },
+    {
+      "name": "harness.log",
+      "bytes": 35,
+      "sha256": "37b1793eaa150db07c12519366a44731cf668c3c41ce0e0d2f0d62bd71d93eec",
+      "text": "failed: Transfer file set differs\r\n"
+    },
+    {
+      "name": "harness-exception.txt",
+      "bytes": 27,
+      "sha256": "0b594060c87c80d27a5526daf85f7e224432b39afedf7a298ac5c7d9ee9b68b1",
+      "text": "Transfer file set differs\r\n"
+    },
+    {
+      "name": "run-exitcode.txt",
+      "bytes": 3,
+      "sha256": "f1b2f662800122bed0ff255693df89c4487fbdcf453d3524a42d4ec20c3d9c04",
+      "text": "1\r\n"
+    }
+  ],
+  "guestIdentity": {
+    "Version": "6.1.7601",
+    "ServicePackMajorVersion": "1",
+    "OSArchitecture": "32-bit",
+    "PointerBytes": "4",
+    "PowerShellMajor": "2",
+    "Caption": "Microsoft Windows 7 企业版"
+  },
+  "guestHarnessExitCode": 1,
+  "guestApplicationsStarted": 0,
+  "guestApplicationsPassed": 0,
+  "applicationsNotStartedEvidence": "Frozen run-apps.ps1 throws at transfer file-set validation (line 76), before transfer-observed.tsv (line 88), extraction, payload validation and Run-App calls (lines 96-98). Four exported frames report that exact exception and contain no application run or smoke records.",
+  "hostTransferAtReview": {
+    "fileCount": 10,
+    "completeFileSetAndAllHashesMatched": true,
+    "input": {
+      "path": "C:\\SOUI-SDK-production-validation\\preview11-win7-preparation-20260926\\input.json",
+      "bytes": 110161,
+      "sha256": "84f275ea91aa5af51b8844724ec1dc4d70d0a2116268a4d1070f9539266863b0"
+    },
+    "guestTransferFileSetObserved": false
+  },
+  "rootCause": "undetermined: guest did not export its observed transfer directory names/count; host ten-file hash match alone does not identify guest-side cause.",
+  "qemuLifecycle": {
+    "exitCode": 0,
+    "timedOut": false,
+    "diskUnchanged": true,
+    "diskSha256Before": "fdf5eb826c9868622e218d1d54f328970ad190f848cd0777174885b1d072ddb4",
+    "diskSha256After": "fdf5eb826c9868622e218d1d54f328970ad190f848cd0777174885b1d072ddb4",
+    "frozenCheckExitCode": 0
+  },
+  "originalFilesPreserved": 24,
+  "limitations": [
+    "The original monitor helper has no separately saved raw stdout/stderr/exit result. Root reported tool session 94950 exit 1 with Monitor timeout and earlier relative-path screendump creation error; this is attributed tool observation, not reconstructed raw evidence.",
+    "The first verifier stdout/stderr are retained, but no original result JSON exists because hash sampling failed while the serial file was open. The new recapture records its own later execution, not a replacement timestamp/exit record.",
+    "Windows desktop and AutoPlay QEMU VVFAT (D:) establish guest readiness, not application startup or smoke success.",
+    "Host transfer identity was rechecked after shutdown; actual guest list was not captured. No fixed guest cause is claimed."
+  ],
+  "functionalSmokePassed": false,
+  "realRenewalVerified": false,
+  "releaseReady": false,
+  "productionReady": false
+}

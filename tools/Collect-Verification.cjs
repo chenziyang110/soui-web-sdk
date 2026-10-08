@@ -24,10 +24,12 @@ function run(name,executable,args) {
 }
 const unit={
  package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),
+ nativePayload:run('sdk-native-payload-tests',process.execPath,['--test','tests/sdk/sdk-native-payload.test.cjs']),
+ interruption:run('sdk-installation-interruption-tests',process.execPath,['--test','tests/sdk/installation-interruption.test.cjs','tests/sdk/profile-installation-integration.test.cjs']),
  delivery:run('delivery-identity-tests',process.execPath,['--test','tests/sdk/delivery-identity.test.cjs']),
  modernDelivery:run('modern-evidence-tests',process.execPath,['--test','tests/sdk/modern-evidence.test.cjs']),
  release:run('release-verification-tests',process.execPath,['--test','tests/sdk/release-verification.test.cjs']),
- web:run('web-sdk-tests',process.execPath,['--test','tests/web/sdk-client.test.mjs','tests/web/capabilities.test.mjs','tests/web/action-contracts.test.mjs','tests/web/gui.test.mjs','tests/web/web-features.test.mjs']),
+ web:run('web-sdk-tests',process.execPath,['--test','tests/web/sdk-client.test.mjs','tests/web/capabilities.test.mjs','tests/web/action-contracts.test.mjs','tests/web/gui.test.mjs','tests/web/web-features.test.mjs','tests/web/native-resolvers.test.mjs','tests/web/session-renewal.test.mjs','tests/web/agent-session-renewal.test.mjs']),
  nativeActionsX64:run('native-actions-x64',path.join(root,'out/x64/tests/native/Release/soui_action_contract_tests.exe'),[]),
  nativeActionsX86:run('native-actions-x86',path.join(root,'out/x86/tests/native/Release/soui_action_contract_tests.exe'),[]),
  nativeX64:run('native-contract-x64',path.join(root,'out/x64/tests/native/Release/soui_sdk_contract_tests.exe'),[]),

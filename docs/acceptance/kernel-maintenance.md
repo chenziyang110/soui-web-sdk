@@ -2,6 +2,8 @@
 
 日期：2026-09-23。状态：初步来源与配置核对，生产准入未通过。关联：[完整方案](../roadmap/0.3-sdk-validation.md)、[安全报告流程](../../SECURITY.md)。本文不提供漏洞利用步骤，也不把源码版本识别等同于完整二进制安全评估。
 
+2026-09-27 更新：[旧 libxml 数值格式化 C4789 的有限诊断](../../verification/production-validation/kernel-number-format-diagnostic-2026-09-27/README.md)在 x86 提取函数上完成四种常规区域设置、833,668 次边界和随机输入，实际 ASan 编译/运行退出 0、未报告越界。它不是完整依赖或内核插桩，也不覆盖自定义区域设置；警告仍待审查，整体安全状态不变。
+
 ## 已核对的来源
 
 | 对象 | 本地证据 | 已知事实与边界 |
@@ -11,13 +13,13 @@
 | JavaScript 引擎 | `third_party/sources/miniblink/v8_5_7/include/v8-version.h` | 源码宏为 5.7.246.0；不能仅用“Chrome 49 兼容”描述整个内核的确切组成 |
 | TLS 源码 | `third_party/sources/miniblink/node/openssl/openssl/include/openssl/opensslv.h` | 版本标记为 OpenSSL 1.0.2h；现有依赖构建入口选择此 OpenSSL 工程。仍需结合链接配置与产物确认完整组成 |
 | HTTP 源码 | `third_party/sources/miniblink/third_party/libcurl/include/curl/curlver.h` | 版本标记为 libcurl 7.61.1；网络配置及错误路径需要独立真实测试 |
-| 精确二进制授权 | `third_party/manifests/license-review.json` | 现有状态是 `unverified`，已重新绑定 preview.4 固定 DLL；完整链接组成与再分发要求仍须维护者审阅 |
+| 精确二进制授权 | `third_party/manifests/license-review.json` | 现有状态是 `unverified`，已绑定 preview.14 重编的 x86/x64 DLL；完整链接组成与再分发要求仍须维护者审阅 |
 
-[两架构固定 DLL 的直接 PE 导入记录](../../verification/production-validation/kernel-imports-2026-09-25/README.md)已与待审阅散列核对：x86 为 17 个、x64 为 19 个直接导入 DLL 名称。它只补足动态导入这一层的机械证据，不覆盖静态链接、延迟/运行时加载，也不改变二进制授权 `unverified` 状态。
+[两架构旧固定 DLL 的直接 PE 导入记录](../../verification/production-validation/kernel-imports-2026-09-25/README.md)对应旧 x86 SHA-256 `3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7`、旧 x64 SHA-256 `0801aa929336168c851df4a3f245f5984a88bd01af585aea752404fa07774816`，分别记录 17、19 个直接导入 DLL 名称。[当前重编身份](../../third_party/manifests/kernel-build-preview14.json)已变为 x86 `2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3`、x64 `fe4160a70587d027504c409b8fd2bc5c87d78392811bff0c969f69c41a44d951`；旧导入记录不能直接证明当前二进制的导入、静态链接或延迟/运行时加载。
 
-[同散列 DLL 的链接参数记录](../../verification/production-validation/kernel-link-inputs-2026-09-25/README.md)从原始双架构 MSBuild 日志回放提取各 36 个库参数。x86 显式传入 `openssl.lib`，x64 没有显式传入；这不是 OpenSSL 在 x64 中缺席的证明，仍须分析默认库指令、实际链接成员与完整运行载荷。原始日志只在本地保留，公开记录保存其 SHA-256。
+[旧固定 DLL 的链接参数记录](../../verification/production-validation/kernel-link-inputs-2026-09-25/README.md)从旧构建的双架构 MSBuild 日志回放提取各 36 个库参数。旧 x86 显式传入 `openssl.lib`，旧 x64 没有显式传入；这不是 OpenSSL 在 x64 中缺席的证明，也不能将该参数列表无条件继承给当前重编 DLL。当前[双架构构建记录](../../third_party/manifests/kernel-build-preview14.json)证明了新产物身份，仍缺与其精确绑定的完整链接参数、默认库指令和实际链接成员清单。
 
-[源码声明材料定位](../../verification/production-validation/kernel-notice-inventory-2026-09-25/README.md)把这两份精确 DLL 的显式库参数与源码树中可见的候选声明文件及 SHA-256 对齐，并标出若干库源码根目录缺少顶层许可证/声明文件的事实。该定位未穷尽嵌套组件，不能替代实际链接成员、运行载荷和再分发条款审阅；二进制授权仍为 `unverified`。
+[源码声明材料定位](../../verification/production-validation/kernel-notice-inventory-2026-09-25/README.md)把旧 DLL 的显式库参数与源码树中可见的候选声明文件及 SHA-256 对齐，并标出若干库源码根目录缺少顶层许可证/声明文件的事实。它可作为当前候选的核对线索，但未绑定新 DLL 的完整链接成员，也未穷尽嵌套组件、运行载荷和再分发条款；二进制授权仍为 `unverified`。
 
 进一步核对发现导入源码内已有 `libxml/src/Copyright`、`libpng/png.h` 的许可正文及 `node/LICENSE-nodejs` 的 c-ares 段落。导入的 libcurl、libjpeg、OTS 文件则指向源码根目录未提供的 `COPYING`、`README`、`LICENSE`；三者的[版本匹配上游原文已补录](../../verification/production-validation/kernel-notice-recovery-2026-09-25/README.md)。嵌套组件材料、实际链接成员与运行包声明仍待完成，不能根据头文件注释自行代写。
 

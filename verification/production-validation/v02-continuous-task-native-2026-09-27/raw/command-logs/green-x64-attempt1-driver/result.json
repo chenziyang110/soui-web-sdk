@@ -1,0 +1,28 @@
+{
+  "program": "powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-File",
+    ".\\Run-Green.ps1",
+    "-Architecture",
+    "x64",
+    "-Attempt",
+    "green-x64-attempt1"
+  ],
+  "cwd": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927",
+  "startedAt": "2026-09-26T21:21:50.930Z",
+  "pid": 48644,
+  "exitCode": 1,
+  "signal": null,
+  "timedOut": false,
+  "error": null,
+  "finishedAt": "2026-09-26T21:22:06.450Z",
+  "stdout": {
+    "bytes": 612,
+    "sha256": "32143fe410c1d96c990c153cb7dc06a1edd83708c047d44d4e3a3cbf3ea8e9b5"
+  },
+  "stderr": {
+    "bytes": 511,
+    "sha256": "df17b0fe12e5e7bd62a34fa5b1c24d8eaadeb2a2b82d6bb76b4663c4e475af99"
+  }
+}

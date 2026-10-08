@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:5a72735c-4c36-47a5-9c3e-bdef05acb627",
+  "serialNumber": "urn:uuid:6ccbf55e-4cd0-4be7-b707-12a6bb163db0",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-09-21T08:42:06.937Z",
+    "timestamp": "2026-09-26T16:49:32.408Z",
     "lifecycles": [
       {
         "phase": "pre-build"
@@ -10546,23 +10546,23 @@
       ]
     },
     {
-      "bom-ref": "typescript@5.5.4",
+      "bom-ref": "typescript@5.9.3",
       "type": "library",
       "name": "typescript",
-      "version": "5.5.4",
+      "version": "5.9.3",
       "scope": "optional",
-      "purl": "pkg:npm/typescript@5.5.4",
+      "purl": "pkg:npm/typescript@5.9.3",
       "properties": [],
       "externalReferences": [
         {
           "type": "distribution",
-          "url": "https://registry.npmjs.org/typescript/-/typescript-5.5.4.tgz"
+          "url": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz"
         }
       ],
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "32dab6f6c28300460feda963460b4f3a94ef39f6f0456952e9d3d1cf08dd13e0b44786eb5ff194ca11d279c6c73052cd04b70920fb7d9e5f721b94d9d70787f9"
+          "content": "8e5d6f6733c38a72ebf5e52ddc9feded5e8580d130f508ef04f772b33f4a7d00c3e357d0ac2d98e2f290762694a454f86d795bd511e12e9a7cc2d9ba3394e04b"
         }
       ],
       "licenses": [
@@ -10983,7 +10983,7 @@
         "postcss@8.5.23",
         "sass@1.79.3",
         "tailwindcss@3.4.17",
-        "typescript@5.5.4",
+        "typescript@5.9.3",
         "vite@6.4.3"
       ]
     },
@@ -13122,7 +13122,7 @@
       "dependsOn": []
     },
     {
-      "ref": "typescript@5.5.4",
+      "ref": "typescript@5.9.3",
       "dependsOn": []
     },
     {
@@ -13180,7 +13180,7 @@
     {
       "ref": "vue@3.4.38",
       "dependsOn": [
-        "typescript@5.5.4",
+        "typescript@5.9.3",
         "@vue/compiler-dom@3.4.38",
         "@vue/compiler-sfc@3.4.38",
         "@vue/runtime-dom@3.4.38",

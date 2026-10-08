@@ -10,5 +10,5 @@ export type { SouiJson, SouiActionSchema, SouiActionContract, SouiToolDefinition
 export { createSouiGui, SouiGui } from './gui.js';
 export type { SouiGuiState, SouiGuiRegistration, SouiGuiNode, SouiGuiSnapshot, SouiGuiPerformOptions, SouiGuiWaitOptions } from './gui.js';
 export type { SouiMethodCapability, SouiCapabilityPage, SouiCapabilityCatalog, SouiDescribeOptions, SouiDiscoveryOptions } from './capabilities.js';
-export type { SouiNativePort, SouiNativeEvent, SouiBridgeRequest, SouiBridgeResponse, SouiCoreMethodMap, SouiClipboardMethodMap, SouiDirectoryMethodMap, SouiWindowMethodMap } from './protocol.js';
+export type { SouiNativePort, SouiNativeEvent, SouiBridgeRequest, SouiBridgeResponse, SouiSessionLease, SouiCoreMethodMap, SouiClipboardMethodMap, SouiDirectoryMethodMap, SouiWindowMethodMap } from './protocol.js';
 export type { SouiMethodMap, SouiMethodName } from './contracts.js';

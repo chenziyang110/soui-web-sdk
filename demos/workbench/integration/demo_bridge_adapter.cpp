@@ -16,6 +16,7 @@
 #endif
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
@@ -26,6 +27,7 @@
 #include <random>
 #include <regex>
 #include <sstream>
+#include <thread>
 #include <unordered_set>
 #include <utility>
 
@@ -37,6 +39,23 @@ namespace soui::demo {
 namespace {
 
 using json = nlohmann::json;
+using authorization_ptr = std::shared_ptr<const soui::runtime::authorization_scope>;
+
+bool live_context(const soui::runtime::scan_request_context& context) {
+  return context.authorization && context.authorization->matches(context.session_id, context.origin) &&
+         context.authorization->active();
+}
+
+bool same_owner(const soui::runtime::scan_request_context& owner,
+                const soui::runtime::scan_request_context& request) {
+  return live_context(request) && owner.session_id == request.session_id &&
+         owner.origin == request.origin && owner.authorization == request.authorization;
+}
+
+soui::runtime::scan_request_context retained_context(soui::runtime::scan_request_context context) {
+  context.token.clear();
+  return context;
+}
 
 bool matches_kind(const json& value, std::string_view kind) {
   if (kind == "string") return value.is_string();
@@ -243,9 +262,10 @@ std::filesystem::path bundled_fileinsight_fixture(const wchar_t* fixture_name) {
 
 }  // namespace
 
-demo_bridge_adapter::demo_bridge_adapter()
-    : scanner_(permissions_, tasks_), picker_(permissions_), windows_(permissions_), clipboard_(permissions_),
+demo_bridge_adapter::demo_bridge_adapter(soui::runtime::permission_store::clock_source now)
+    : permissions_(now), scanner_(permissions_, tasks_), picker_(permissions_), windows_(permissions_), clipboard_(permissions_),
       transport_(registry_, permissions_) {
+  (void)transport_.enable_session_renewal();
   (void)public_tasks_.register_handler("demo.count", [](const soui::runtime::task_invocation& invocation,
                                                          const soui::runtime::task_control& control) {
     const auto input = json::parse(invocation.parameters_json, nullptr, false);
@@ -269,11 +289,61 @@ demo_bridge_adapter::demo_bridge_adapter()
     return soui::runtime::task_outcome{soui::runtime::result_kind::success,
                                        json{{"count", steps}, {"sum", sum}}.dump(), "Count complete."};
   });
+  (void)public_tasks_.register_handler("demo.interaction", [](const soui::runtime::task_invocation& invocation,
+                                                               const soui::runtime::task_control& control) {
+    const auto input = json::parse(invocation.parameters_json, nullptr, false);
+    if (!input.is_object() || input.size() != 1U || !input.contains("durationMs") ||
+        !input["durationMs"].is_number_integer()) {
+      return soui::runtime::task_outcome{soui::runtime::result_kind::failure, "{}", "Invalid interaction input."};
+    }
+    const auto& value = input["durationMs"];
+    // Check the full JSON integer range before narrowing, including unsigned values.
+    const bool in_range = value.is_number_unsigned()
+        ? value.get<std::uint64_t>() >= 1000U && value.get<std::uint64_t>() <= 60000U
+        : value.get<std::int64_t>() >= 1000 && value.get<std::int64_t>() <= 60000;
+    if (!in_range) {
+      return soui::runtime::task_outcome{soui::runtime::result_kind::failure, "{}", "durationMs must be 1000..60000."};
+    }
+    const auto duration_ms = value.get<std::uint32_t>();
+    const auto began = std::chrono::steady_clock::now();
+    const auto deadline = began + std::chrono::milliseconds(duration_ms);
+    std::uint64_t iterations = 0;
+    std::uint32_t previous_progress = 0;
+    for (;;) {
+      if (control.cancellation_requested())
+        return soui::runtime::task_outcome{soui::runtime::result_kind::task_cancelled, "{}", "Interaction task cancelled."};
+      const auto now = std::chrono::steady_clock::now();
+      const auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - began).count();
+      if (now >= deadline) {
+        (void)control.report_progress(100, "Interaction task complete.");
+        return soui::runtime::task_outcome{soui::runtime::result_kind::success,
+            json{{"durationMs", duration_ms}, {"elapsedMs", elapsed_ms}, {"iterations", iterations}}.dump(),
+            "Interaction task complete."};
+      }
+      const auto progress = static_cast<std::uint32_t>(elapsed_ms * 100 / duration_ms);
+      if (progress > previous_progress) {
+        previous_progress = progress;
+        (void)control.report_progress(progress, "Interaction timer running in native SDK worker.");
+      }
+      ++iterations;
+      // This is a low-load interaction companion, not a CPU throughput benchmark.
+      std::this_thread::sleep_until((std::min)(deadline, now + std::chrono::milliseconds(20)));
+    }
+  });
   register_methods();
   soui::modules::fileinsight::FileinsightService::register_methods(registry_, scanner_);
 }
 
 demo_bridge_adapter::~demo_bridge_adapter() {
+  set_event_sink({});
+  std::vector<std::string> closing_sessions;
+  {
+    std::lock_guard<std::mutex> lock(subscription_mutex_);
+    closing_sessions.assign(issued_sessions_.begin(), issued_sessions_.end());
+  }
+  // Direct native issue_session users also own workers. Join every session
+  // before callback state and its mutex can be destroyed by member teardown.
+  for (const auto& session : closing_sessions) shutdown_session(session);
   shutdown_media_jobs({});
   shutdown_workload_jobs({});
   shutdown_media_preview_jobs({});
@@ -284,9 +354,15 @@ void demo_bridge_adapter::set_owner_window(void* owner_window) noexcept {
 }
 
 void demo_bridge_adapter::set_event_sink(event_sink sink) {
+  const bool attach = static_cast<bool>(sink);
   {
     std::lock_guard<std::mutex> lock(subscription_mutex_);
     event_sink_ = std::move(sink);
+  }
+  if (!attach) {
+    public_tasks_.set_event_sink({});
+    scanner_.set_event_sink({});
+    return;
   }
   public_tasks_.set_event_sink([this](std::string_view event_text) {
     event_sink sink_copy;
@@ -308,7 +384,7 @@ void demo_bridge_adapter::set_event_sink(event_sink sink) {
       const bool subscribed = std::any_of(subscriptions_.begin(), subscriptions_.end(),
                                           [&](const auto& entry) {
         const auto& binding = entry.second;
-        return binding.context.session_id == session_id && binding.task_id == task_id &&
+        return live_context(binding.context) && binding.context.session_id == session_id && binding.task_id == task_id &&
                binding.event_name == event_name;
       });
       if (!subscribed) return;
@@ -333,9 +409,12 @@ void demo_bridge_adapter::set_event_sink(event_sink sink) {
 
 void demo_bridge_adapter::shutdown_session(const std::string& session_id) {
   requested_frame_rate_.store(60);
-  public_tasks_.shutdown_session(session_id);
   {
     std::lock_guard<std::mutex> lock(subscription_mutex_);
+    // Close authorization before taking resource locks or joining workers.
+    // Bootstrap issuance uses this same small authority-transition lock.
+    permissions_.revoke_session(session_id);
+    issued_sessions_.erase(session_id);
     if (active_bootstrap_session_ == session_id) active_bootstrap_session_.clear();
     request_rates_.erase(session_id);
 #ifdef SOUI_PROGRESS_DEDUP
@@ -350,12 +429,12 @@ void demo_bridge_adapter::shutdown_session(const std::string& session_id) {
       else ++iterator;
     }
   }
+  public_tasks_.shutdown_session(session_id);
   scanner_.shutdown_session(session_id);
   shutdown_media_jobs(session_id);
   shutdown_workload_jobs(session_id);
   shutdown_media_preview_jobs(session_id);
   shutdown_media_files(session_id);
-  permissions_.revoke_session(session_id);
 }
 
 std::string demo_bridge_adapter::handle_json(std::string_view json_text, bool native_user_gesture) {
@@ -364,6 +443,10 @@ std::string demo_bridge_adapter::handle_json(std::string_view json_text, bool na
   }
   try {
     auto envelope = json::parse(json_text.begin(), json_text.end());
+    // Renewal has its own strict envelope/params contract. Legacy application
+    // context augmentation must never add fields to its {operationId} input.
+    if (envelope.is_object() && envelope.value("method", "") == "bridge.session.renew")
+      return transport_.handle_json(json_text, native_user_gesture);
     if (envelope.is_object() && envelope.value("method", "") == "bridge.bootstrap") {
       static const std::unordered_set<std::string> allowed{
           "requestId", "sessionId", "origin", "token", "method", "params"};
@@ -391,21 +474,29 @@ std::string demo_bridge_adapter::handle_json(std::string_view json_text, bool na
         return response.dump();
       }
       const std::string session_id = make_bootstrap_session_id();
+      const std::string origin = "app://demo";
+      std::string token;
       {
         std::lock_guard<std::mutex> lock(subscription_mutex_);
         if (!active_bootstrap_session_.empty()) {
           return bridge_error_json(envelope.value("requestId", ""), "E_UNAUTHORIZED",
                                    "The trusted WebView already owns an active bridge session.");
         }
-        active_bootstrap_session_ = session_id;
-      }
-      const std::string origin = "app://demo";
-      const auto token = issue_session(session_id, origin, {"filesystem.read", "task.start", "bridge.probe", "desktop.rendering.control",
+        const bool newly_tracked = issued_sessions_.insert(session_id).second;
+        try {
+          token = permissions_.issue(session_id, origin, expand_capabilities({"filesystem.read", "task.start", "bridge.probe", "desktop.rendering.control",
+          "bridge.session.renew",
           "media.convert",
           "desktop.media.pickFile",
           "desktop.workload",
           "desktop.window.setTitle", "desktop.window.beginDrag", "desktop.window.minimize",
-          "desktop.window.toggleMaximize", "desktop.window.close", "desktop.clipboard.writeText"});
+          "desktop.window.toggleMaximize", "desktop.window.close", "desktop.clipboard.writeText"}));
+        } catch (...) {
+          if (newly_tracked) issued_sessions_.erase(session_id);
+          throw;
+        }
+        active_bootstrap_session_ = session_id;
+      }
       std::string sample_root_token;
       std::string alternate_sample_root_token;
       if (const auto fixture = bundled_fileinsight_fixture(L"fileinsight-fixture"); !fixture.empty()) {
@@ -425,6 +516,10 @@ std::string demo_bridge_adapter::handle_json(std::string_view json_text, bool na
       response["result"] = {{"sessionId", session_id}, {"origin", origin}, {"token", token},
                              {"reactMode", react_mode}, {"sampleRootToken", sample_root_token},
                              {"alternateSampleRootToken", alternate_sample_root_token}};
+      const auto lease = permissions_.lease(session_id, origin, token);
+      if (!lease.ok()) return bridge_error_json(response.value("requestId", ""), lease.error_code.c_str(),
+                                                 "The bootstrap authorization is no longer live.");
+      response["result"]["lease"] = json::parse(soui::runtime::bridge_transport::serialize_lease(lease)).at("lease");
       return response.dump();
     }
     if (envelope.is_object() && envelope["params"].is_object()) {
@@ -455,19 +550,28 @@ std::string demo_bridge_adapter::handle_json(std::string_view json_text, bool na
         params["origin"] = origin;
         params["token"] = token;
       }
-      return transport_.handle_json(envelope.dump());
+      return transport_.handle_json(envelope.dump(), native_user_gesture);
     }
   } catch (const json::parse_error&) {
     return transport_.handle_json(json_text);
   } catch (const json::exception&) {
     return bridge_error_json({}, "E_SCHEMA_INVALID", "The bridge envelope contains an invalid field type.");
+  } catch (const std::exception&) {
+    return bridge_error_json({}, "E_NATIVE_FAILURE", "Native authorization or request processing failed.");
   }
   return transport_.handle_json(json_text);
 }
 
 std::string demo_bridge_adapter::issue_session(const std::string& session_id, const std::string& origin,
                                                const std::vector<std::string>& capabilities) {
-  return permissions_.issue(session_id, origin, expand_capabilities(capabilities));
+  std::lock_guard<std::mutex> lock(subscription_mutex_);
+  const bool newly_tracked = issued_sessions_.insert(session_id).second;
+  try {
+    return permissions_.issue(session_id, origin, expand_capabilities(capabilities));
+  } catch (...) {
+    if (newly_tracked) issued_sessions_.erase(session_id);
+    throw;
+  }
 }
 
 std::string demo_bridge_adapter::register_root(const soui::runtime::scan_request_context& context,
@@ -476,6 +580,7 @@ std::string demo_bridge_adapter::register_root(const soui::runtime::scan_request
 }
 
 soui::runtime::bridge_response demo_bridge_adapter::handle(const soui::runtime::bridge_request& request) const {
+  if (request.method == "bridge.session.renew") return transport_.handle(request);
   const auto parsed_params = json::parse(request.params_json.empty() ? "{}" : request.params_json,
                                          nullptr, false);
   std::string validation_error;
@@ -490,7 +595,7 @@ soui::runtime::bridge_response demo_bridge_adapter::handle(const soui::runtime::
     return rejected;
   }
   auto bound_request = request;
-  bound_request.params_json = augment_context(request);
+  if (request.method != "task.start") bound_request.params_json = augment_context(request);
   auto response = transport_.handle(bound_request);
   if (response.ok && response.payload_json.find("\"error\":") != std::string::npos) {
     const std::regex code_pattern("\\\"error\\\":\\\"([^\\\"]+)\\\"");
@@ -514,8 +619,7 @@ bool demo_bridge_adapter::owns_media_task(const soui::runtime::scan_request_cont
                                           const std::string& task_id) const {
   std::lock_guard<std::mutex> lock(media_mutex_);
   const auto found = media_jobs_.find(task_id);
-  return found != media_jobs_.end() && found->second->context.session_id == context.session_id &&
-         found->second->context.origin == context.origin && found->second->context.token == context.token;
+  return found != media_jobs_.end() && same_owner(found->second->context, context);
 }
 
 std::string demo_bridge_adapter::media_task_json(const soui::runtime::scan_request_context& context,
@@ -524,8 +628,7 @@ std::string demo_bridge_adapter::media_task_json(const soui::runtime::scan_reque
   {
     std::lock_guard<std::mutex> lock(media_mutex_);
     const auto found = media_jobs_.find(task_id);
-    if (found == media_jobs_.end() || found->second->context.session_id != context.session_id ||
-        found->second->context.origin != context.origin || found->second->context.token != context.token) {
+    if (found == media_jobs_.end() || !same_owner(found->second->context, context)) {
       return payload_error("E_TASK_NOT_FOUND", "The media task is not valid for this session.");
     }
     output = found->second->output;
@@ -543,8 +646,7 @@ bool demo_bridge_adapter::owns_workload_task(const soui::runtime::scan_request_c
                                              const std::string& task_id) const {
   std::lock_guard<std::mutex> lock(workload_mutex_);
   const auto found = workload_jobs_.find(task_id);
-  return found != workload_jobs_.end() && found->second->context.session_id == context.session_id &&
-         found->second->context.origin == context.origin && found->second->context.token == context.token;
+  return found != workload_jobs_.end() && same_owner(found->second->context, context);
 }
 
 std::string demo_bridge_adapter::workload_task_json(const soui::runtime::scan_request_context& context,
@@ -554,8 +656,7 @@ std::string demo_bridge_adapter::workload_task_json(const soui::runtime::scan_re
   {
     std::lock_guard<std::mutex> lock(workload_mutex_);
     const auto found = workload_jobs_.find(task_id);
-    if (found == workload_jobs_.end() || found->second->context.session_id != context.session_id ||
-        found->second->context.origin != context.origin || found->second->context.token != context.token) {
+    if (found == workload_jobs_.end() || !same_owner(found->second->context, context)) {
       return payload_error("E_TASK_NOT_FOUND", "The workload task is not valid for this session.");
     }
     kind = found->second->kind;
@@ -575,8 +676,7 @@ bool demo_bridge_adapter::owns_media_preview_task(
     const soui::runtime::scan_request_context& context, const std::string& task_id) const {
   std::lock_guard<std::mutex> lock(media_preview_mutex_);
   const auto found = media_preview_jobs_.find(task_id);
-  return found != media_preview_jobs_.end() && found->second->context.session_id == context.session_id &&
-         found->second->context.origin == context.origin && found->second->context.token == context.token;
+  return found != media_preview_jobs_.end() && same_owner(found->second->context, context);
 }
 
 std::string demo_bridge_adapter::media_preview_task_json(
@@ -585,8 +685,7 @@ std::string demo_bridge_adapter::media_preview_task_json(
   {
     std::lock_guard<std::mutex> lock(media_preview_mutex_);
     const auto found = media_preview_jobs_.find(task_id);
-    if (found == media_preview_jobs_.end() || found->second->context.session_id != context.session_id ||
-        found->second->context.origin != context.origin || found->second->context.token != context.token) {
+    if (found == media_preview_jobs_.end() || !same_owner(found->second->context, context)) {
       return payload_error("E_TASK_NOT_FOUND", "The media preview task is not valid for this session.");
     }
     preview = found->second->result;
@@ -641,7 +740,7 @@ void demo_bridge_adapter::emit_media_preview_event(const media_preview_job& job,
     std::lock_guard<std::mutex> lock(subscription_mutex_);
     const bool subscribed = std::any_of(subscriptions_.begin(), subscriptions_.end(), [&](const auto& entry) {
       const auto& binding = entry.second;
-      return binding.context.session_id == job.context.session_id && binding.task_id == job.task_id &&
+      return same_owner(binding.context, job.context) && binding.task_id == job.task_id &&
              binding.event_name == "task.progress";
     });
     if (!subscribed) return;
@@ -649,17 +748,19 @@ void demo_bridge_adapter::emit_media_preview_event(const media_preview_job& job,
     sequence = next_media_event_sequence_++;
   }
   if (!sink_copy) return;
-  sink_copy(json{{"sessionId", job.context.session_id}, {"sequence", sequence},
+  try {
+    sink_copy(json{{"sessionId", job.context.session_id}, {"sequence", sequence},
                  {"eventName", "task.progress"}, {"taskId", job.task_id},
                  {"payload", {{"state", state}, {"progress", progress}, {"message", message},
                                {"kind", "media-preview"},
                                {"indeterminate", state == "accepted" || state == "running" ||
                                                     state == "cancel-pending"}}}}
                  .dump());
+  } catch (...) { /* A listener cannot stop native task completion or cleanup. */ }
 }
 
 void demo_bridge_adapter::join_finished_media_preview_jobs() {
-  std::vector<std::unique_ptr<media_preview_job>> finished;
+  std::vector<std::shared_ptr<media_preview_job>> finished;
   {
     std::lock_guard<std::mutex> lock(media_preview_mutex_);
     for (auto iterator = media_preview_jobs_.begin(); iterator != media_preview_jobs_.end();) {
@@ -676,7 +777,7 @@ void demo_bridge_adapter::join_finished_media_preview_jobs() {
 }
 
 void demo_bridge_adapter::shutdown_media_preview_jobs(const std::string& session_id) {
-  std::vector<std::unique_ptr<media_preview_job>> jobs;
+  std::vector<std::shared_ptr<media_preview_job>> jobs;
   {
     std::lock_guard<std::mutex> lock(media_preview_mutex_);
     for (auto iterator = media_preview_jobs_.begin(); iterator != media_preview_jobs_.end();) {
@@ -1009,7 +1110,7 @@ void demo_bridge_adapter::emit_workload_event(const workload_job& job, const std
     std::lock_guard<std::mutex> lock(subscription_mutex_);
     const bool subscribed = std::any_of(subscriptions_.begin(), subscriptions_.end(), [&](const auto& entry) {
       const auto& binding = entry.second;
-      return binding.context.session_id == job.context.session_id && binding.task_id == job.task_id &&
+      return same_owner(binding.context, job.context) && binding.task_id == job.task_id &&
              binding.event_name == "task.progress";
     });
     if (!subscribed) return;
@@ -1017,16 +1118,18 @@ void demo_bridge_adapter::emit_workload_event(const workload_job& job, const std
     sequence = next_media_event_sequence_++;
   }
   if (!sink_copy) return;
-  sink_copy(json{{"sessionId", job.context.session_id}, {"sequence", sequence},
+  try {
+    sink_copy(json{{"sessionId", job.context.session_id}, {"sequence", sequence},
                  {"eventName", "task.progress"}, {"taskId", job.task_id},
                  {"payload", {{"state", state}, {"progress", progress}, {"message", message},
                                {"kind", job.kind}, {"indeterminate", state == "accepted" || state == "running" ||
                                                                   state == "cancel-pending"}}}}
                  .dump());
+  } catch (...) { /* A listener cannot stop native task completion or cleanup. */ }
 }
 
 void demo_bridge_adapter::join_finished_workload_jobs() {
-  std::vector<std::unique_ptr<workload_job>> finished;
+  std::vector<std::shared_ptr<workload_job>> finished;
   {
     std::lock_guard<std::mutex> lock(workload_mutex_);
     for (auto iterator = workload_jobs_.begin(); iterator != workload_jobs_.end();) {
@@ -1043,7 +1146,7 @@ void demo_bridge_adapter::join_finished_workload_jobs() {
 }
 
 void demo_bridge_adapter::shutdown_workload_jobs(const std::string& session_id) {
-  std::vector<std::unique_ptr<workload_job>> jobs;
+  std::vector<std::shared_ptr<workload_job>> jobs;
   {
     std::lock_guard<std::mutex> lock(workload_mutex_);
     for (auto iterator = workload_jobs_.begin(); iterator != workload_jobs_.end();) {
@@ -1067,7 +1170,7 @@ void demo_bridge_adapter::emit_media_event(const media_job& job, const std::stri
     std::lock_guard<std::mutex> lock(subscription_mutex_);
     const bool subscribed = std::any_of(subscriptions_.begin(), subscriptions_.end(), [&](const auto& entry) {
       const auto& binding = entry.second;
-      return binding.context.session_id == job.context.session_id && binding.task_id == job.task_id &&
+      return same_owner(binding.context, job.context) && binding.task_id == job.task_id &&
              binding.event_name == "task.progress";
     });
     if (!subscribed) return;
@@ -1075,7 +1178,8 @@ void demo_bridge_adapter::emit_media_event(const media_job& job, const std::stri
     sequence = next_media_event_sequence_++;
   }
   if (!sink_copy) return;
-  sink_copy(json{{"sessionId", job.context.session_id},
+  try {
+    sink_copy(json{{"sessionId", job.context.session_id},
                  {"sequence", sequence},
                  {"eventName", "task.progress"},
                  {"taskId", job.task_id},
@@ -1083,10 +1187,11 @@ void demo_bridge_adapter::emit_media_event(const media_job& job, const std::stri
                                {"indeterminate", state == "accepted" || state == "running" ||
                                                      state == "cancel-pending"}}}}
                  .dump());
+  } catch (...) { /* A listener cannot stop native task completion or cleanup. */ }
 }
 
 void demo_bridge_adapter::join_finished_media_jobs() {
-  std::vector<std::unique_ptr<media_job>> finished;
+  std::vector<std::shared_ptr<media_job>> finished;
   {
     std::lock_guard<std::mutex> lock(media_mutex_);
     for (auto iterator = media_jobs_.begin(); iterator != media_jobs_.end();) {
@@ -1105,7 +1210,7 @@ void demo_bridge_adapter::join_finished_media_jobs() {
 }
 
 void demo_bridge_adapter::shutdown_media_jobs(const std::string& session_id) {
-  std::vector<std::unique_ptr<media_job>> jobs;
+  std::vector<std::shared_ptr<media_job>> jobs;
   {
     std::lock_guard<std::mutex> lock(media_mutex_);
     for (auto iterator = media_jobs_.begin(); iterator != media_jobs_.end();) {
@@ -1190,8 +1295,7 @@ std::string demo_bridge_adapter::start_media_job(
   } else {
     std::lock_guard<std::mutex> lock(media_mutex_);
     const auto found = media_files_.find(source);
-    if (found == media_files_.end() || found->second.context.session_id != context.session_id ||
-        found->second.context.origin != context.origin || found->second.context.token != context.token) {
+    if (found == media_files_.end() || !same_owner(found->second.context, context)) {
       return payload_error("E_TASK_NOT_FOUND", "The media file token is not valid for this session.");
     }
     source_path = found->second.path;
@@ -1201,6 +1305,8 @@ std::string demo_bridge_adapter::start_media_job(
     return payload_error("E_RESOURCE_MISSING", "The selected media file is no longer available.");
   }
 
+  std::lock_guard<std::mutex> admission(media_mutex_);
+  if (!live_context(context)) return payload_error("E_UNAUTHORIZED", "The media authorization is no longer active.");
   bool duplicate = false;
   bool conflict = false;
   bool capacity = false;
@@ -1210,26 +1316,21 @@ std::string demo_bridge_adapter::start_media_job(
   if (conflict) return payload_error("E_OPERATION_CONFLICT", "operationId is already used by another media request.");
   if (capacity) return payload_error("E_BUSY", "The native task store capacity is exhausted.");
   if (duplicate) {
-    const auto existing = json::parse(media_task_json(context, snapshot.task_id), nullptr, false);
-    if (!existing.is_object() || existing.value("error", "") != "") {
-      return payload_error("E_TASK_NOT_FOUND", "The duplicate media task is no longer retained.");
-    }
+    const auto existing = media_jobs_.find(snapshot.task_id);
+    if (existing == media_jobs_.end() || !same_owner(existing->second->context, context))
+      return payload_error("E_TASK_NOT_FOUND", "The duplicate media task is not owned by this authorization.");
     return json{{"taskId", snapshot.task_id}, {"accepted", true},
-                {"output", existing.value("output", "")}}.dump();
+                {"output", existing->second->output.filename().generic_string()}}.dump();
   }
-
-  {
-    std::lock_guard<std::mutex> lock(media_mutex_);
-    std::size_t running = 0;
-    for (const auto& item : media_jobs_) {
-      const auto state = tasks_.query(item.first);
-      if (state && !terminal_task_state(state->state)) ++running;
-    }
-    if (running >= 2 || media_jobs_.size() >= 32) {
-      (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure, "Media capacity reached.");
-      (void)tasks_.erase(snapshot.task_id);
-      return payload_error("E_BUSY", "最多同时处理 2 个任务，当前会话最多保留 32 个结果。");
-    }
+  std::size_t running = 0;
+  for (const auto& item : media_jobs_) {
+    const auto state = tasks_.query(item.first);
+    if (state && !terminal_task_state(state->state)) ++running;
+  }
+  if (running >= 2 || media_jobs_.size() >= 32) {
+    (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure, "Media capacity reached.");
+    (void)tasks_.erase(snapshot.task_id);
+    return payload_error("E_BUSY", "最多同时处理 2 个任务，当前会话最多保留 32 个结果。");
   }
 
   std::error_code error;
@@ -1241,8 +1342,8 @@ std::string demo_bridge_adapter::start_media_job(
     (void)tasks_.erase(snapshot.task_id);
     return payload_error("E_NATIVE_FAILURE", "A temporary output directory could not be resolved.");
   }
-  auto job = std::make_unique<media_job>();
-  job->context = context;
+  auto job = std::make_shared<media_job>();
+  job->context = retained_context(context);
   job->task_id = snapshot.task_id;
   job->source = std::move(source_path);
   GUID output_id{};
@@ -1266,22 +1367,18 @@ std::string demo_bridge_adapter::start_media_job(
   job->operation = operation;
   job->quality = quality;
   const auto output_name = job->output.filename().generic_string();
-  media_job* raw = job.get();
-  {
-    std::lock_guard<std::mutex> lock(media_mutex_);
-    if (media_jobs_.size() >= 32U) {
-      std::error_code ignored;
-      std::filesystem::remove_all(output_directory, ignored);
-      (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure, "Media capacity reached.");
-      (void)tasks_.erase(snapshot.task_id);
-      return payload_error("E_BUSY", "Too many retained media tasks; query or restart the session first.");
-    }
-    media_jobs_.emplace(snapshot.task_id, std::move(job));
+  auto* raw = job.get();
+  if (!live_context(context)) {
+    std::error_code ignored;
+    std::filesystem::remove_all(output_directory, ignored);
+    (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure, "Authorization revoked.");
+    (void)tasks_.erase(snapshot.task_id);
+    return payload_error("E_UNAUTHORIZED", "The media authorization is no longer active.");
   }
   try {
+    media_jobs_.emplace(snapshot.task_id, job);
     raw->worker = std::thread([this, raw] { run_media_job(raw); });
   } catch (...) {
-    std::lock_guard<std::mutex> lock(media_mutex_);
     media_jobs_.erase(snapshot.task_id);
     std::error_code ignored;
     std::filesystem::remove_all(output_directory, ignored);
@@ -1294,16 +1391,25 @@ std::string demo_bridge_adapter::start_media_job(
 }
 
 void demo_bridge_adapter::register_methods() {
-  (void)registry_.register_method("desktop.rendering.setTargetRate", "desktop.rendering.control",
-      [this](std::string_view params) -> std::string {
+  using legacy_handler = std::function<std::string(std::string_view, const authorization_ptr&)>;
+  const auto register_legacy = [this](std::string name, std::string capability, legacy_handler handler) {
+    return registry_.register_contextual_method(std::move(name), std::move(capability),
+        [handler = std::move(handler)](const soui::runtime::bridge_request& request) {
+          // Supply the stable scope only after transport has authenticated the
+          // bearer. It never crosses JSON or trusts a caller-provided identity.
+          return handler(augment_context(request), request.authorization);
+        });
+  };
+  (void)register_legacy("desktop.rendering.setTargetRate", "desktop.rendering.control",
+      [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const auto rate = size_param(std::string(params), "targetHz", 0);
         if (rate != 60 && rate != 120 && rate != 144) return payload_error("E_INVALID_PARAMS", "Allowed targets: 60, 120, 144.");
         preferred_frame_rate_.store(static_cast<unsigned>(rate));
         requested_frame_rate_.store(static_cast<unsigned>(rate));
         return json{{"requestedHz", rate}}.dump();
       });
-  (void)registry_.register_method("desktop.rendering.getStats", "bridge.probe",
-      [this](std::string_view) -> std::string {
+  (void)register_legacy("desktop.rendering.getStats", "bridge.probe",
+      [this](std::string_view, const authorization_ptr&) -> std::string {
         const auto now = std::chrono::steady_clock::now().time_since_epoch();
         const char* gpu = std::getenv("SOUI_GPU_COMPOSITOR");
         const char* direct = std::getenv("SOUI_GPU_DIRECT_PRESENT");
@@ -1356,8 +1462,8 @@ void demo_bridge_adapter::register_methods() {
                     {"activePacingHz", active_frame_rate_.load()},
                     {"drawIntervalMs", draw_interval_ms_.load(std::memory_order_relaxed)}}.dump();
       });
-  (void)registry_.register_method("desktop.media.getCapabilities", "bridge.probe",
-      [this](std::string_view) -> std::string {
+  (void)register_legacy("desktop.media.getCapabilities", "bridge.probe",
+      [this](std::string_view, const authorization_ptr&) -> std::string {
         const auto sample = bundled_sample_mp4();
         const bool ffmpeg = !configured_media_encoder().empty();
         const bool media_foundation = media_preview_available();
@@ -1370,11 +1476,11 @@ void demo_bridge_adapter::register_methods() {
                                                          : "No media engine configured; conversion is unavailable."}}
             .dump();
       });
-  (void)registry_.register_method(
-      "desktop.media.preview.start", "media.convert", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "desktop.media.preview.start", "media.convert", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         const soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         const auto source = string_param(value, "source");
         const auto operation = string_param(value, "operationId");
         if (source.empty() || operation.empty()) {
@@ -1386,8 +1492,7 @@ void demo_bridge_adapter::register_methods() {
         } else {
           std::lock_guard<std::mutex> lock(media_mutex_);
           const auto found = media_files_.find(source);
-          if (found == media_files_.end() || found->second.context.session_id != context.session_id ||
-              found->second.context.origin != context.origin || found->second.context.token != context.token) {
+          if (found == media_files_.end() || !same_owner(found->second.context, context)) {
             return payload_error("E_TASK_NOT_FOUND", "The media file token is not valid for this session.");
           }
           source_path = found->second.path;
@@ -1396,6 +1501,8 @@ void demo_bridge_adapter::register_methods() {
           return payload_error("E_RESOURCE_MISSING", "The media preview source is missing.");
         }
         join_finished_media_preview_jobs();
+        std::lock_guard<std::mutex> admission(media_preview_mutex_);
+        if (!live_context(context)) return payload_error("E_UNAUTHORIZED", "The authorization is no longer active.");
         bool duplicate = false;
         bool conflict = false;
         bool capacity = false;
@@ -1403,63 +1510,63 @@ void demo_bridge_adapter::register_methods() {
                                                   &duplicate, &conflict, &capacity);
         if (conflict) return payload_error("E_OPERATION_CONFLICT", "operationId is already used for another preview.");
         if (capacity) return payload_error("E_BUSY", "The native task store capacity is exhausted.");
-        if (duplicate) return json{{"taskId", snapshot.task_id}, {"accepted", true}}.dump();
-        auto job = std::make_unique<media_preview_job>();
-        job->context = context;
+        if (duplicate) {
+          const auto found = media_preview_jobs_.find(snapshot.task_id);
+          if (found == media_preview_jobs_.end() || !same_owner(found->second->context, context))
+            return payload_error("E_TASK_NOT_FOUND", "The duplicate task is not owned by this authorization.");
+          return json{{"taskId", snapshot.task_id}, {"accepted", true}}.dump();
+        }
+        auto job = std::make_shared<media_preview_job>();
+        job->context = retained_context(context);
         job->task_id = snapshot.task_id;
         job->source = std::move(source_path);
-        media_preview_job* raw = job.get();
-        {
-          std::lock_guard<std::mutex> lock(media_preview_mutex_);
-          if (media_preview_jobs_.size() >= 8U) {
-            (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure,
-                                  "Media preview capacity reached.");
-            (void)tasks_.erase(snapshot.task_id);
-            return payload_error("E_BUSY", "Too many retained media preview tasks.");
-          }
-          media_preview_jobs_.emplace(snapshot.task_id, std::move(job));
+        auto* raw = job.get();
+        if (!live_context(context) || media_preview_jobs_.size() >= 8U) {
+          const bool authorized = live_context(context);
+          (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure, "Task admission rejected.");
+          (void)tasks_.erase(snapshot.task_id);
+          return payload_error(authorized ? "E_BUSY" : "E_UNAUTHORIZED", "Task capacity or authorization no longer permits admission.");
         }
         try {
+          media_preview_jobs_.emplace(snapshot.task_id, job);
           raw->worker = std::thread([this, raw] { run_media_preview_job(raw); });
         } catch (...) {
-          std::lock_guard<std::mutex> lock(media_preview_mutex_);
           media_preview_jobs_.erase(snapshot.task_id);
-          (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure,
-                                "The native media preview worker could not be started.");
-          return payload_error("E_NATIVE_FAILURE", "The native media preview worker could not be started.");
+          (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure, "The native worker could not be started.");
+          (void)tasks_.erase(snapshot.task_id);
+          return payload_error("E_NATIVE_FAILURE", "The native worker could not be started.");
         }
         return json{{"taskId", snapshot.task_id}, {"accepted", true}}.dump();
       });
-  (void)registry_.register_method(
-      "desktop.media.preview.query", "media.convert", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "desktop.media.preview.query", "media.convert", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         const soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         const auto task_id = string_param(value, "taskId");
         if (task_id.empty()) return payload_error("E_INVALID_PARAMS", "taskId is required.");
         return media_preview_task_json(context, task_id);
       });
-  (void)registry_.register_method("desktop.workload.getCapabilities", "bridge.probe",
-      [this](std::string_view) -> std::string {
+  (void)register_legacy("desktop.workload.getCapabilities", "bridge.probe",
+      [this](std::string_view, const authorization_ptr&) -> std::string {
         (void)this;
         return json{{"video4kSynthetic", true}, {"video4kNativeFrame", !bundled_4k_sample_mp4().empty()},
                     {"cadScene", true}, {"zipStored", true}, {"zipDeflate", true},
                     {"hardwareDecode", false},
                     {"note", "Native bounded workload probes run outside the WebView; zlib deflate/CRC is available, while hardware decode, CAD geometry kernels, ZIP64 and 7z remain separate adapters."}}.dump();
       });
-  (void)registry_.register_method("desktop.media.saveOutput", "media.convert",
-      [this](std::string_view params) -> std::string {
+  (void)register_legacy("desktop.media.saveOutput", "media.convert",
+      [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         const soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         if (!bool_param(value, "userGesture")) return payload_error("E_GESTURE_REQUIRED", "Saving requires a native user gesture.");
         const auto source_task = string_param(value, "taskId");
         std::filesystem::path source;
         {
           std::lock_guard<std::mutex> lock(media_mutex_);
           const auto found = media_jobs_.find(source_task);
-          if (found == media_jobs_.end() || found->second->context.session_id != context.session_id ||
-              found->second->context.origin != context.origin || found->second->context.token != context.token ||
+          if (found == media_jobs_.end() || !same_owner(found->second->context, context) ||
               !found->second->save_destination.empty()) return payload_error("E_TASK_NOT_FOUND", "Output is not owned by this session.");
           const auto task = tasks_.query(source_task);
           if (!task || task->state != soui::runtime::task_state::succeeded) return payload_error("E_BUSY", "Output is not complete.");
@@ -1482,14 +1589,18 @@ void demo_bridge_adapter::register_methods() {
         std::error_code error;
         auto destination = std::filesystem::weakly_canonical(std::filesystem::path(name), error);
         if (error || destination.empty()) return payload_error("E_INVALID_PARAMS", "Invalid save destination.");
-        {
-          std::lock_guard<std::mutex> lock(media_mutex_);
-          for (const auto& file : media_files_) {
-            if (destination == file.second.path || (std::filesystem::exists(destination, error) && std::filesystem::equivalent(destination, file.second.path, error))) return payload_error("E_INVALID_PARAMS", "不能覆盖已选择的源文件，请使用新文件名。");
-          }
-          for (const auto& job : media_jobs_) {
-            if (destination == job.second->source || destination == job.second->output || destination == job.second->save_destination) return payload_error("E_INVALID_PARAMS", "Choose a different destination; this file is owned by an active task.");
-          }
+        std::lock_guard<std::mutex> admission(media_mutex_);
+        const auto retained_source = media_jobs_.find(source_task);
+        if (!live_context(context) || retained_source == media_jobs_.end() ||
+            !same_owner(retained_source->second->context, context))
+          return payload_error("E_UNAUTHORIZED", "The source authorization changed while the dialog was open.");
+        for (const auto& file : media_files_) {
+          if (destination == file.second.path || (std::filesystem::exists(destination, error) && std::filesystem::equivalent(destination, file.second.path, error)))
+            return payload_error("E_INVALID_PARAMS", "不能覆盖已选择的源文件，请使用新文件名。");
+        }
+        for (const auto& item : media_jobs_) {
+          if (destination == item.second->source || destination == item.second->output || destination == item.second->save_destination)
+            return payload_error("E_INVALID_PARAMS", "Choose a different destination; this file is owned by an active task.");
         }
         GUID id{}; if (FAILED(CoCreateGuid(&id))) return payload_error("E_NATIVE_FAILURE", "Could not allocate save task.");
         wchar_t suffix[40]{}; StringFromGUID2(id, suffix, 40);
@@ -1500,32 +1611,30 @@ void demo_bridge_adapter::register_methods() {
                                              nullptr, &conflict, &capacity);
         if (conflict) return payload_error("E_OPERATION_CONFLICT", "The generated save operationId is already in use.");
         if (capacity) return payload_error("E_BUSY", "The native task store capacity is exhausted.");
-        auto job = std::make_unique<media_job>();
-        job->context = context; job->task_id = task.task_id; job->source = source;
+        auto job = std::make_shared<media_job>();
+        job->context = retained_context(context); job->task_id = task.task_id; job->source = source;
         job->save_destination = destination;
         job->output = destination.parent_path() / (std::wstring(L".soui-save-") + suffix + L".tmp");
         auto* raw = job.get();
-        {
-          std::lock_guard<std::mutex> lock(media_mutex_);
-          if (media_jobs_.size() >= 32U) {
-            (void)tasks_.complete(task.task_id, soui::runtime::result_kind::failure, "Media capacity reached.");
-            (void)tasks_.erase(task.task_id);
-            return payload_error("E_BUSY", "Too many retained media tasks; query or restart the session first.");
-          }
-          media_jobs_.emplace(task.task_id, std::move(job));
+        if (!live_context(context) || media_jobs_.size() >= 32U) {
+          const bool authorized = live_context(context);
+          (void)tasks_.complete(task.task_id, soui::runtime::result_kind::failure, "Save admission rejected.");
+          (void)tasks_.erase(task.task_id);
+          return payload_error(authorized ? "E_BUSY" : "E_UNAUTHORIZED", "Save capacity or authorization no longer permits admission.");
         }
-        try { raw->worker = std::thread([this, raw] { run_media_job(raw); }); }
-        catch (...) {
-          std::lock_guard<std::mutex> lock(media_mutex_); media_jobs_.erase(task.task_id);
-          (void)tasks_.complete(task.task_id, soui::runtime::result_kind::failure,
-                                "The native media save worker could not be started.");
+        try {
+          media_jobs_.emplace(task.task_id, job);
+          raw->worker = std::thread([this, raw] { run_media_job(raw); });
+        } catch (...) {
+          media_jobs_.erase(task.task_id);
+          (void)tasks_.complete(task.task_id, soui::runtime::result_kind::failure, "The native media save worker could not be started.");
           (void)tasks_.erase(task.task_id);
           return payload_error("E_NATIVE_FAILURE", "Could not start save worker.");
         }
         return json{{"cancelled", false}, {"taskId", task.task_id}, {"name", wide_to_utf8(destination.filename().wstring())}}.dump();
       });
-  (void)registry_.register_method("desktop.media.pickFile", "desktop.media.pickFile",
-      [this](std::string_view params) -> std::string {
+  (void)register_legacy("desktop.media.pickFile", "desktop.media.pickFile",
+      [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         const soui::runtime::desktop_request_context context{
             string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"),
@@ -1561,10 +1670,12 @@ void demo_bridge_adapter::register_methods() {
         std::string token;
         {
           std::lock_guard<std::mutex> lock(media_mutex_);
+          if (!authorization || !authorization->matches(context.session_id, context.origin) || !authorization->active())
+            return payload_error("E_UNAUTHORIZED", "The file selection authorization is no longer live.");
           if (media_files_.size() >= 64) return payload_error("E_BUSY", "Too many selected files; restart this workspace.");
           token = "media-file-" + std::to_string(next_media_file_++);
           media_files_.emplace(token, media_file_binding{
-              {context.session_id, context.origin, context.token}, path,
+              {context.session_id, context.origin, {}, authorization}, path,
               wide_to_utf8(path.filename().wstring()), size});
         }
         return json{{"cancelled", false}, {"fileToken", token},
@@ -1574,11 +1685,11 @@ void demo_bridge_adapter::register_methods() {
 #endif
       });
 #ifdef SOUI_BRIDGE_BENCHMARK
-  (void)registry_.register_method("bridge.benchmark.ping", "bridge.probe",
-      [](std::string_view) -> std::string { return "{}"; });
+  (void)register_legacy("bridge.benchmark.ping", "bridge.probe",
+      [](std::string_view, const authorization_ptr&) -> std::string { return "{}"; });
 #endif
-  (void)registry_.register_method(
-      "bridge.probe.report", "bridge.probe", [](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "bridge.probe.report", "bridge.probe", [](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         for (const char* feature : {"script", "json", "event", "errorHandling", "localResource",
                                     "proxy", "promise", "symbol", "reflect", "vueMount",
@@ -1590,159 +1701,50 @@ void demo_bridge_adapter::register_methods() {
         }
         return R"({"accepted":true})";
       });
-  (void)registry_.register_method(
-      "media.transform.start", "media.convert", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "media.transform.start", "media.convert", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         const soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         return start_media_job(context, string_param(value, "source"), string_param(value, "format"),
                                string_param(value, "codec"), static_cast<unsigned>(size_param(value, "quality", 82)),
                                string_param(value, "operation"), string_param(value, "operationId"));
       });
-  (void)registry_.register_method(
-      "media.convert.start", "media.convert", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "media.convert.start", "media.convert", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
-        const auto source = string_param(value, "source");
-        const auto format = string_param(value, "format");
-        const auto codec = string_param(value, "codec");
-        const auto operation = string_param(value, "operationId");
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         const auto quality = size_param(value, "quality", 82);
-        if (operation.empty()) return payload_error("E_INVALID_PARAMS", "operationId is required.");
-        if (quality > 95 || !valid_media_profile(format, codec, static_cast<unsigned>(quality))) return payload_error("E_INVALID_PARAMS", "Unsupported format/codec or quality outside 10..95.");
-        const auto encoder = configured_media_encoder();
-        const bool native_png_snapshot = encoder.empty() && format == "PNG" && codec == "PNG" && media_preview_available();
-        if (encoder.empty() && !native_png_snapshot) return payload_error("E_UNIMPLEMENTED", "请配置 SOUI_FFMPEG_PATH；未配置时不会把复制文件冒充转换。PNG 可使用内置 Media Foundation 快照。");
-        std::filesystem::path source_path;
-        if (source == "sample") {
-          source_path = bundled_sample_mp4();
-          if (source_path.empty()) return payload_error("E_RESOURCE_MISSING", "The bundled sample MP4 is missing.");
-        } else {
-          std::lock_guard<std::mutex> lock(media_mutex_);
-          const auto found = media_files_.find(source);
-          if (found == media_files_.end() || found->second.context.session_id != context.session_id ||
-              found->second.context.origin != context.origin || found->second.context.token != context.token) {
-            return payload_error("E_TASK_NOT_FOUND", "The media file token is not valid for this session.");
-          }
-          source_path = found->second.path;
-        }
-        std::error_code source_error;
-        if (!std::filesystem::is_regular_file(source_path, source_error) || source_error) {
-          return payload_error("E_RESOURCE_MISSING", "The selected media file is no longer available.");
-        }
-        bool duplicate = false;
-        bool conflict = false;
-        bool capacity = false;
-        const auto snapshot = tasks_.start_scoped(
-            operation, context.session_id + "|" + context.origin + "|media|" + source + "|" + format + "|" + codec + "|" + std::to_string(quality), &duplicate, &conflict, &capacity);
-        if (conflict) return payload_error("E_OPERATION_CONFLICT", "operationId is already used by another media request.");
-        if (capacity) return payload_error("E_BUSY", "The native task store capacity is exhausted.");
-        if (duplicate) {
-          const auto existing = json::parse(media_task_json(context, snapshot.task_id), nullptr, false);
-          if (!existing.is_object() || existing.value("error", "") != "") {
-            return payload_error("E_TASK_NOT_FOUND", "The duplicate media task is no longer retained.");
-          }
-          return json{{"taskId", snapshot.task_id}, {"accepted", true},
-                      {"output", existing.value("output", "")}}.dump();
-        }
-        {
-          std::lock_guard<std::mutex> lock(media_mutex_);
-          std::size_t running = 0;
-          for (const auto& item : media_jobs_) {
-            const auto state = tasks_.query(item.first);
-            if (state && !terminal_task_state(state->state)) ++running;
-          }
-          if (running >= 2 || media_jobs_.size() >= 32) {
-            (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure, "Media capacity reached.");
-            (void)tasks_.erase(snapshot.task_id);
-            return payload_error("E_BUSY", "最多同时处理 2 个任务，当前会话最多保留 32 个结果。");
-          }
-        }
-        std::error_code error;
-        auto output_directory = std::filesystem::temp_directory_path(error);
-        if (error || output_directory.empty()) output_directory = std::filesystem::current_path(error);
-        if (error || output_directory.empty()) {
-          (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure,
-                                "A temporary output directory could not be resolved.");
-          return payload_error("E_NATIVE_FAILURE", "A temporary output directory could not be resolved.");
-        }
-        auto job = std::make_unique<media_job>();
-        job->context = context;
-        job->task_id = snapshot.task_id;
-        job->source = std::move(source_path);
-        GUID output_id{};
-        if (FAILED(CoCreateGuid(&output_id))) {
-          (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure, "Output allocation failed.");
-          (void)tasks_.erase(snapshot.task_id);
-          return payload_error("E_NATIVE_FAILURE", "Could not allocate output identity.");
-        }
-        wchar_t output_suffix[40]{};
-        StringFromGUID2(output_id, output_suffix, 40);
-        output_directory /= std::wstring(L"soui-media-") + output_suffix;
-        if (!std::filesystem::create_directory(output_directory, error) || error) {
-          (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure, "Output directory failed.");
-          (void)tasks_.erase(snapshot.task_id);
-          return payload_error("E_NATIVE_FAILURE", "Could not create isolated output directory.");
-        }
-        job->output = output_directory / ("result" + media_output_extension(format));
-        job->encoder = encoder;
-        job->format = format;
-        job->codec = codec;
-        job->quality = static_cast<unsigned>(quality);
-        const auto output_name = job->output.filename().generic_string();
-        media_job* raw = job.get();
-        {
-          std::lock_guard<std::mutex> lock(media_mutex_);
-          if (media_jobs_.size() >= 32U) {
-            std::error_code ignored;
-            std::filesystem::remove_all(output_directory, ignored);
-            (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure,
-                                  "Media capacity reached.");
-            (void)tasks_.erase(snapshot.task_id);
-            return payload_error("E_BUSY", "Too many retained media tasks; query or restart the session first.");
-          }
-          media_jobs_.emplace(snapshot.task_id, std::move(job));
-        }
-        try {
-          raw->worker = std::thread([this, raw] { run_media_job(raw); });
-        } catch (...) {
-          std::lock_guard<std::mutex> lock(media_mutex_);
-          media_jobs_.erase(snapshot.task_id);
-          std::error_code ignored;
-          std::filesystem::remove(output_directory, ignored);
-          (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure,
-                                "The native media worker could not be started.");
-          (void)tasks_.erase(snapshot.task_id);
-          return payload_error("E_NATIVE_FAILURE", "The native media worker could not be started.");
-        }
-        return json{{"taskId", snapshot.task_id}, {"accepted", true}, {"output", output_name}}.dump();
+        if (quality > 95) return payload_error("E_INVALID_PARAMS", "quality must be within 10..95.");
+        return start_media_job(context, string_param(value, "source"), string_param(value, "format"),
+                               string_param(value, "codec"), static_cast<unsigned>(quality), {},
+                               string_param(value, "operationId"));
       });
-  (void)registry_.register_method(
-      "media.convert.query", "media.convert", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "media.convert.query", "media.convert", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         const soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         const auto task_id = string_param(value, "taskId");
         if (task_id.empty()) return payload_error("E_INVALID_PARAMS", "taskId is required.");
         return media_task_json(context, task_id);
       });
-  (void)registry_.register_method(
-      "media.convert.cancel", "media.convert", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "media.convert.cancel", "media.convert", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         const soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         const auto task_id = string_param(value, "taskId");
         if (task_id.empty()) return payload_error("E_INVALID_PARAMS", "taskId is required.");
-        media_job* job = nullptr;
+        std::shared_ptr<media_job> job;
         {
           std::lock_guard<std::mutex> lock(media_mutex_);
           const auto found = media_jobs_.find(task_id);
-          if (found == media_jobs_.end() || found->second->context.session_id != context.session_id ||
-              found->second->context.origin != context.origin || found->second->context.token != context.token) {
+          if (found == media_jobs_.end() || !same_owner(found->second->context, context)) {
             return payload_error("E_TASK_NOT_FOUND", "The media task is not valid for this session.");
           }
-          job = found->second.get();
+          job = found->second;
         }
         const auto current = tasks_.query(task_id);
         if (!current.has_value()) return payload_error("E_TASK_NOT_FOUND", "The media task does not exist.");
@@ -1752,11 +1754,11 @@ void demo_bridge_adapter::register_methods() {
         emit_media_event(*job, "cancel-pending", 0, "Native media cancellation accepted.");
         return json{{"taskId", task_id}, {"cancelRequested", true}}.dump();
       });
-  (void)registry_.register_method(
-      "desktop.workload.start", "desktop.workload", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "desktop.workload.start", "desktop.workload", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         const soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         const auto kind = string_param(value, "kind");
         const auto complexity = size_param(value, "complexity", 1);
         const auto operation = string_param(value, "operationId");
@@ -1764,6 +1766,8 @@ void demo_bridge_adapter::register_methods() {
           return payload_error("E_INVALID_PARAMS", "kind must be video4k, cad or zip and operationId is required.");
         }
         join_finished_workload_jobs();
+        std::lock_guard<std::mutex> admission(workload_mutex_);
+        if (!live_context(context)) return payload_error("E_UNAUTHORIZED", "The authorization is no longer active.");
         bool duplicate = false;
         bool conflict = false;
         bool capacity = false;
@@ -1771,59 +1775,59 @@ void demo_bridge_adapter::register_methods() {
                                                   &duplicate, &conflict, &capacity);
         if (conflict) return payload_error("E_OPERATION_CONFLICT", "operationId is already used for another workload.");
         if (capacity) return payload_error("E_BUSY", "The native task store capacity is exhausted.");
-        if (duplicate) return json{{"taskId", snapshot.task_id}, {"accepted", true}}.dump();
-        auto job = std::make_unique<workload_job>();
-        job->context = context;
+        if (duplicate) {
+          const auto found = workload_jobs_.find(snapshot.task_id);
+          if (found == workload_jobs_.end() || !same_owner(found->second->context, context))
+            return payload_error("E_TASK_NOT_FOUND", "The duplicate task is not owned by this authorization.");
+          return json{{"taskId", snapshot.task_id}, {"accepted", true}}.dump();
+        }
+        auto job = std::make_shared<workload_job>();
+        job->context = retained_context(context);
         job->task_id = snapshot.task_id;
         job->kind = kind;
         job->complexity = complexity;
-        workload_job* raw = job.get();
-        {
-          std::lock_guard<std::mutex> lock(workload_mutex_);
-          if (workload_jobs_.size() >= 16U) {
-            (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure,
-                                  "Workload capacity reached.");
-            (void)tasks_.erase(snapshot.task_id);
-            return payload_error("E_BUSY", "Too many retained workload tasks.");
-          }
-          workload_jobs_.emplace(snapshot.task_id, std::move(job));
+        auto* raw = job.get();
+        if (!live_context(context) || workload_jobs_.size() >= 16U) {
+          const bool authorized = live_context(context);
+          (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure, "Task admission rejected.");
+          (void)tasks_.erase(snapshot.task_id);
+          return payload_error(authorized ? "E_BUSY" : "E_UNAUTHORIZED", "Task capacity or authorization no longer permits admission.");
         }
         try {
+          workload_jobs_.emplace(snapshot.task_id, job);
           raw->worker = std::thread([this, raw] { run_workload_job(raw); });
         } catch (...) {
-          std::lock_guard<std::mutex> lock(workload_mutex_);
           workload_jobs_.erase(snapshot.task_id);
-          (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure,
-                                "The native workload worker could not be started.");
-          return payload_error("E_NATIVE_FAILURE", "The native workload worker could not be started.");
+          (void)tasks_.complete(snapshot.task_id, soui::runtime::result_kind::failure, "The native worker could not be started.");
+          (void)tasks_.erase(snapshot.task_id);
+          return payload_error("E_NATIVE_FAILURE", "The native worker could not be started.");
         }
         return json{{"taskId", snapshot.task_id}, {"accepted", true}}.dump();
       });
-  (void)registry_.register_method(
-      "desktop.workload.query", "desktop.workload", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "desktop.workload.query", "desktop.workload", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         const soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         const auto task_id = string_param(value, "taskId");
         if (task_id.empty()) return payload_error("E_INVALID_PARAMS", "taskId is required.");
         return workload_task_json(context, task_id);
       });
-  (void)registry_.register_method(
-      "desktop.workload.cancel", "desktop.workload", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "desktop.workload.cancel", "desktop.workload", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         const soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         const auto task_id = string_param(value, "taskId");
         if (task_id.empty()) return payload_error("E_INVALID_PARAMS", "taskId is required.");
-        workload_job* job = nullptr;
+        std::shared_ptr<workload_job> job;
         {
           std::lock_guard<std::mutex> lock(workload_mutex_);
           const auto found = workload_jobs_.find(task_id);
-          if (found == workload_jobs_.end() || found->second->context.session_id != context.session_id ||
-              found->second->context.origin != context.origin || found->second->context.token != context.token) {
+          if (found == workload_jobs_.end() || !same_owner(found->second->context, context)) {
             return payload_error("E_TASK_NOT_FOUND", "The workload task is not valid for this session.");
           }
-          job = found->second.get();
+          job = found->second;
         }
         const auto current = tasks_.query(task_id);
         if (!current.has_value()) return payload_error("E_TASK_NOT_FOUND", "The workload task does not exist.");
@@ -1833,8 +1837,8 @@ void demo_bridge_adapter::register_methods() {
         emit_workload_event(*job, "cancel-pending", 0, "Native workload cancellation accepted.");
         return json{{"taskId", task_id}, {"cancelRequested", true}}.dump();
       });
-  (void)registry_.register_method(
-      "desktop.dialog.pickDirectory", "desktop.dialog.pickDirectory", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "desktop.dialog.pickDirectory", "desktop.dialog.pickDirectory", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         soui::runtime::desktop_request_context context;
         context.session_id = string_param(std::string(params), "sessionId");
         context.origin = string_param(std::string(params), "origin");
@@ -1846,16 +1850,16 @@ void demo_bridge_adapter::register_methods() {
         }
         if (!selected.ok()) return payload_error(selected.code, selected.message);
         const soui::runtime::scan_request_context scan_context{
-            context.session_id, context.origin, context.token};
+            context.session_id, context.origin, context.token, authorization};
         const auto root = scanner_.register_root(scan_context, selected.value);
         if (root.empty()) return payload_error("E_ROOT_NOT_FOUND", "The selected folder could not be authorized.");
         return "{\"cancelled\":false,\"rootToken\":\"" + json_escape(root) + "\"}";
   });
-  (void)registry_.register_method(
-      "demo.scan.start", "demo.scan", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "demo.scan.start", "demo.scan", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         const auto root = string_param(value, "rootToken");
         const auto filter = string_param(value, "filter");
         const auto operation = string_param(value, "operationId");
@@ -1864,11 +1868,11 @@ void demo_bridge_adapter::register_methods() {
         if (!started.ok()) return payload_error(started.code, started.message);
         return "{\"taskId\":\"" + json_escape(started.task_id) + "\",\"accepted\":true}";
       });
-  (void)registry_.register_method(
-      "filesystem.scan.start", "filesystem.scan", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "filesystem.scan.start", "filesystem.scan", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         const auto root = string_param(value, "rootToken");
         const auto filter = string_param(value, "filter");
         const auto operation = string_param(value, "operationId");
@@ -1887,7 +1891,7 @@ void demo_bridge_adapter::register_methods() {
       "task.query", "task.query", [this](const soui::runtime::bridge_request& request) -> std::string {
         const std::string value(request.params_json);
         soui::runtime::scan_request_context context{
-            request.session_id, request.origin, request.token};
+            request.session_id, request.origin, request.token, request.authorization};
         const auto task_id = string_param(value, "taskId");
         if (task_id.compare(0, 9, "sdk-task-") == 0) return public_tasks_.query(request);
         if (owns_media_task(context, task_id)) return media_task_json(context, task_id);
@@ -1905,11 +1909,11 @@ void demo_bridge_adapter::register_methods() {
         result["progress"] = task->progress;
         return result.dump();
   });
-  (void)registry_.register_method(
-      "demo.scan.page", "task.query", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "demo.scan.page", "task.query", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         const auto task_id = string_param(value, "taskId");
         if (task_id.empty()) return payload_error("E_INVALID_PARAMS", "taskId is required.");
         const auto page = scanner_.read_page(context, task_id, string_param(value, "cursor"),
@@ -1919,11 +1923,11 @@ void demo_bridge_adapter::register_methods() {
         }
         return scan_page_json(page).dump();
       });
-  (void)registry_.register_method(
-      "filesystem.scan.page", "task.query", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "filesystem.scan.page", "task.query", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         soui::runtime::scan_request_context context{
-            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token")};
+            string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), authorization};
         const auto task_id = string_param(value, "taskId");
         if (task_id.empty()) return payload_error("E_INVALID_PARAMS", "taskId is required.");
         const auto page = scanner_.read_page(context, task_id, string_param(value, "cursor"),
@@ -1937,15 +1941,15 @@ void demo_bridge_adapter::register_methods() {
       "task.cancel", "task.cancel", [this](const soui::runtime::bridge_request& request) -> std::string {
         const std::string value(request.params_json);
         soui::runtime::scan_request_context context{
-            request.session_id, request.origin, request.token};
+            request.session_id, request.origin, request.token, request.authorization};
         const auto task_id = string_param(value, "taskId");
         if (task_id.compare(0, 9, "sdk-task-") == 0) return public_tasks_.cancel(request);
         if (owns_media_preview_task(context, task_id)) {
-          media_preview_job* job = nullptr;
+          std::shared_ptr<media_preview_job> job;
           {
             std::lock_guard<std::mutex> lock(media_preview_mutex_);
             const auto found = media_preview_jobs_.find(task_id);
-            if (found != media_preview_jobs_.end()) job = found->second.get();
+            if (found != media_preview_jobs_.end() && same_owner(found->second->context, context)) job = found->second;
           }
           const auto current = tasks_.query(task_id);
           if (!job || !current.has_value()) return payload_error("E_TASK_NOT_FOUND", "The media preview task is not valid for this session.");
@@ -1956,11 +1960,11 @@ void demo_bridge_adapter::register_methods() {
           return json{{"taskId", task_id}, {"state", "cancel-pending"}, {"cancelRequested", true}}.dump();
         }
         if (owns_workload_task(context, task_id)) {
-          workload_job* job = nullptr;
+          std::shared_ptr<workload_job> job;
           {
             std::lock_guard<std::mutex> lock(workload_mutex_);
             const auto found = workload_jobs_.find(task_id);
-            if (found != workload_jobs_.end()) job = found->second.get();
+            if (found != workload_jobs_.end() && same_owner(found->second->context, context)) job = found->second;
           }
           const auto current = tasks_.query(task_id);
           if (!job || !current.has_value()) return payload_error("E_TASK_NOT_FOUND", "The workload task is not valid for this session.");
@@ -1971,11 +1975,11 @@ void demo_bridge_adapter::register_methods() {
           return json{{"taskId", task_id}, {"state", "cancel-pending"}, {"cancelRequested", true}}.dump();
         }
         if (owns_media_task(context, task_id)) {
-          media_job* job = nullptr;
+          std::shared_ptr<media_job> job;
           {
             std::lock_guard<std::mutex> lock(media_mutex_);
             const auto found = media_jobs_.find(task_id);
-            if (found != media_jobs_.end()) job = found->second.get();
+            if (found != media_jobs_.end() && same_owner(found->second->context, context)) job = found->second;
           }
           const auto current = tasks_.query(task_id);
           if (!job || !current.has_value()) return payload_error("E_TASK_NOT_FOUND", "The media task is not valid for this session.");
@@ -2010,7 +2014,7 @@ void demo_bridge_adapter::register_methods() {
         if (task_id.empty() || event.empty()) return payload_error("E_INVALID_PARAMS", "taskId and eventName are required.");
         if (event != "task.progress") return payload_error("E_INVALID_PARAMS", "Only task.progress can be subscribed.");
         const soui::runtime::scan_request_context context{
-            request.session_id, request.origin, request.token};
+            request.session_id, request.origin, request.token, request.authorization};
         if (!scanner_.owns_task(context, task_id) && !owns_media_task(context, task_id) &&
             !owns_media_preview_task(context, task_id) && !owns_workload_task(context, task_id)) {
           return payload_error("E_TASK_NOT_FOUND", "The task is not valid for this session.");
@@ -2018,8 +2022,11 @@ void demo_bridge_adapter::register_methods() {
         std::string subscription_id;
         {
           std::lock_guard<std::mutex> lock(subscription_mutex_);
+          if (!live_context(context)) return payload_error("E_UNAUTHORIZED", "The subscription authorization is no longer live.");
+          if (subscriptions_.size() >= soui::runtime::task_service::max_subscriptions)
+            return payload_error("E_BUSY", "Demo task subscription capacity is exhausted.");
           subscription_id = "subscription-" + std::to_string(next_subscription_++);
-          subscriptions_.emplace(subscription_id, subscription_binding{context, task_id, event});
+          subscriptions_.emplace(subscription_id, subscription_binding{retained_context(context), task_id, event});
 #ifdef SOUI_PROGRESS_DEDUP
           // A new observer must not inherit another observer's suppression state.
           running_payloads_.erase(context.session_id + ":" + task_id);
@@ -2031,21 +2038,20 @@ void demo_bridge_adapter::register_methods() {
       "task.unsubscribe", "task.subscribe", [this](const soui::runtime::bridge_request& request) -> std::string {
         const std::string value(request.params_json);
         const soui::runtime::scan_request_context context{
-            request.session_id, request.origin, request.token};
+            request.session_id, request.origin, request.token, request.authorization};
         const auto subscription_id = string_param(value, "subscriptionId");
         if (subscription_id.compare(0, 17, "sdk-subscription-") == 0)
           return public_tasks_.unsubscribe(request);
         std::lock_guard<std::mutex> lock(subscription_mutex_);
         const auto found = subscriptions_.find(subscription_id);
-        if (found == subscriptions_.end() || found->second.context.session_id != context.session_id ||
-            found->second.context.origin != context.origin || found->second.context.token != context.token) {
+        if (found == subscriptions_.end() || !same_owner(found->second.context, context)) {
           return payload_error("E_SUBSCRIPTION_NOT_FOUND", "The subscription is not valid for this session.");
         }
         subscriptions_.erase(found);
         return R"({"removed":true})";
       });
-  (void)registry_.register_method(
-      "desktop.window.setTitle", "desktop.window.setTitle", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "desktop.window.setTitle", "desktop.window.setTitle", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         soui::runtime::desktop_request_context context{
             string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"), false};
@@ -2053,8 +2059,8 @@ void demo_bridge_adapter::register_methods() {
         if (!response.ok()) return payload_error(response.code, response.message);
         return "{\"applied\":true}";
       });
-  (void)registry_.register_method(
-      "desktop.window.beginDrag", "desktop.window.beginDrag", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "desktop.window.beginDrag", "desktop.window.beginDrag", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         soui::runtime::desktop_request_context context{
             string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"),
@@ -2063,8 +2069,8 @@ void demo_bridge_adapter::register_methods() {
         if (!response.ok()) return payload_error(response.code, response.message);
         return R"({"started":true})";
       });
-  (void)registry_.register_method(
-      "desktop.window.minimize", "desktop.window.minimize", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "desktop.window.minimize", "desktop.window.minimize", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         soui::runtime::desktop_request_context context{
             string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"),
@@ -2073,8 +2079,8 @@ void demo_bridge_adapter::register_methods() {
         if (!response.ok()) return payload_error(response.code, response.message);
         return R"({"minimized":true})";
       });
-  (void)registry_.register_method(
-      "desktop.window.toggleMaximize", "desktop.window.toggleMaximize", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "desktop.window.toggleMaximize", "desktop.window.toggleMaximize", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         soui::runtime::desktop_request_context context{
             string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"),
@@ -2083,8 +2089,8 @@ void demo_bridge_adapter::register_methods() {
         if (!response.ok()) return payload_error(response.code, response.message);
         return response.value.empty() ? R"({"maximized":false})" : response.value;
       });
-  (void)registry_.register_method(
-      "desktop.window.close", "desktop.window.close", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "desktop.window.close", "desktop.window.close", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         soui::runtime::desktop_request_context context{
             string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"),
@@ -2093,8 +2099,8 @@ void demo_bridge_adapter::register_methods() {
         if (!response.ok()) return payload_error(response.code, response.message);
         return R"({"accepted":true})";
       });
-  (void)registry_.register_method(
-      "desktop.clipboard.writeText", "desktop.clipboard.writeText", [this](std::string_view params) -> std::string {
+  (void)register_legacy(
+      "desktop.clipboard.writeText", "desktop.clipboard.writeText", [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
         const std::string value(params);
         soui::runtime::desktop_request_context context{
             string_param(value, "sessionId"), string_param(value, "origin"), string_param(value, "token"),
@@ -2150,6 +2156,7 @@ std::string demo_bridge_adapter::augment_context(const soui::runtime::bridge_req
   params["sessionId"] = request.session_id;
   params["origin"] = request.origin;
   params["token"] = request.token;
+  params["userGesture"] = request.native_user_gesture;
   return params.dump();
 }
 

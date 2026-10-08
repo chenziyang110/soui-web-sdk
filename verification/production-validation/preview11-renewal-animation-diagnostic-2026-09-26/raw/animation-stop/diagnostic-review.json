@@ -1,0 +1,113 @@
+{
+  "reviewedAt": "2026-09-26T12:30:39.572Z",
+  "version": "0.3.0-preview.11",
+  "parentFreezeSha256": "80d19d4e2008a505bbb8a9293849f3756d4bf07ad7838ad38aa5bb054ac0ee3a",
+  "rows": [
+    {
+      "label": "prelude-stages",
+      "run": "C:\\SOUI-SDK-production-validation\\preview11-renewal-prelude-stages-preparation-20260926\\runs\\2026-09-26T11-56-23-661Z-58652",
+      "exitCode": 1,
+      "records": 19,
+      "readyCount": 0,
+      "bootstrapCount": 0,
+      "longInvocations": 0,
+      "resultInvocations": 0,
+      "failed": {
+        "elapsedMs": 60004,
+        "message": "Initial page/Host readiness exceeded 60 seconds"
+      },
+      "externalLoad": false,
+      "timedOut": false,
+      "inputUnchanged": true,
+      "parentUnchanged": true,
+      "diagnosticOnly": true,
+      "productionPass": false
+    },
+    {
+      "label": "charset-preserved",
+      "run": "C:\\SOUI-SDK-production-validation\\preview11-renewal-charset-preserved-preparation-20260926\\runs\\2026-09-26T11-59-36-941Z-44676",
+      "exitCode": 1,
+      "records": 19,
+      "readyCount": 0,
+      "bootstrapCount": 0,
+      "longInvocations": 0,
+      "resultInvocations": 0,
+      "failed": {
+        "elapsedMs": 60012,
+        "message": "Initial page/Host readiness exceeded 60 seconds"
+      },
+      "externalLoad": false,
+      "timedOut": false,
+      "inputUnchanged": true,
+      "parentUnchanged": true,
+      "diagnosticOnly": true,
+      "productionPass": false
+    },
+    {
+      "label": "parser-state",
+      "run": "C:\\SOUI-SDK-production-validation\\preview11-renewal-parser-state-preparation-20260926\\runs\\2026-09-26T12-01-45-308Z-20632",
+      "exitCode": 1,
+      "records": 19,
+      "readyCount": 0,
+      "bootstrapCount": 0,
+      "longInvocations": 0,
+      "resultInvocations": 0,
+      "failed": {
+        "elapsedMs": 60004,
+        "message": "Initial page/Host readiness exceeded 60 seconds"
+      },
+      "externalLoad": false,
+      "timedOut": false,
+      "inputUnchanged": true,
+      "parentUnchanged": true,
+      "diagnosticOnly": true,
+      "productionPass": false
+    },
+    {
+      "label": "animation-off",
+      "run": "C:\\SOUI-SDK-production-validation\\preview11-renewal-animation-off-preparation-20260926\\runs\\2026-09-26T12-13-51-490Z-54608",
+      "exitCode": 0,
+      "records": 78,
+      "readyCount": 1,
+      "bootstrapCount": 1,
+      "longInvocations": 1,
+      "resultInvocations": 1,
+      "failed": null,
+      "externalLoad": false,
+      "timedOut": false,
+      "inputUnchanged": true,
+      "parentUnchanged": true,
+      "diagnosticOnly": true,
+      "productionPass": false
+    },
+    {
+      "label": "animation-stop",
+      "run": "C:\\SOUI-SDK-production-validation\\preview11-renewal-animation-stop-preparation-20260926\\runs\\2026-09-26T12-16-02-699Z-53728",
+      "exitCode": 1,
+      "records": 69,
+      "readyCount": 1,
+      "bootstrapCount": 1,
+      "longInvocations": 1,
+      "resultInvocations": 1,
+      "failed": {
+        "elapsedMs": 43156,
+        "message": "Page record gap exceeded 30 seconds"
+      },
+      "externalLoad": false,
+      "timedOut": false,
+      "inputUnchanged": true,
+      "parentUnchanged": true,
+      "diagnosticOnly": true,
+      "productionPass": false,
+      "lastRecordBeforeFailure": {
+        "elapsedMs": 43141,
+        "gapMs": 15
+      }
+    }
+  ],
+  "animationOffOnlyCssDifference": true,
+  "rootCauseConfirmed": false,
+  "realRenewalVerified": false,
+  "productionPass": false,
+  "supervisorFinding": "The polling loop reads now before acquiring the observation snapshot; a callback can update last_record_at between these reads. Unsigned subtraction then underflows. The retained run fails 15 ms after a page record; raw evidence does not capture the exact two operand values."
+}

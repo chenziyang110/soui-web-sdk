@@ -1,0 +1,24 @@
+{
+  "program": "powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-Command",
+    "$PSVersionTable.PSVersion.ToString(); $env:PSModulePath; Get-Module -ListAvailable Microsoft.PowerShell.Utility | Select-Object Name,Version,ModuleBase; Get-Command Get-FileHash -ErrorAction Stop"
+  ],
+  "cwd": "C:\\SOUI-SDK-production-validation\\preview13-independent-build-isolated-20260926",
+  "startedAt": "2026-09-26T11:20:43.953Z",
+  "pid": 80500,
+  "exitCode": 1,
+  "signal": null,
+  "timedOut": false,
+  "error": null,
+  "finishedAt": "2026-09-26T11:20:44.354Z",
+  "stdout": {
+    "bytes": 291,
+    "sha256": "88b316d54b93fbb7d27c5bb11398b2910e92d07bee897495a34b416d099d8e18"
+  },
+  "stderr": {
+    "bytes": 548,
+    "sha256": "e993db35a94648408adb1b050fc604147d919a6953d2cee8cf0693c548c2a79e"
+  }
+}

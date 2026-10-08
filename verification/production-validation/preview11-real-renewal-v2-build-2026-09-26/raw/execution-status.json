@@ -1,0 +1,229 @@
+{
+  "schema": "soui.real-renewal-v2-build-execution/v1",
+  "createdAt": "2026-09-26T08:56:52.978Z",
+  "version": "0.3.0-preview.11",
+  "fixtureRevision": 2,
+  "status": "compiled-and-no-gui-checks-complete-real-desktop-pending",
+  "sourceInputSha256": "a0c1d7900d39555508288d5459e65d3852e543cf7ec3879126bd6af59d2c2550",
+  "freezeSha256": "80d19d4e2008a505bbb8a9293849f3756d4bf07ad7838ad38aa5bb054ac0ee3a",
+  "parent": {
+    "preparationRoot": "C:/SOUI-SDK-production-validation/preview11-real-renewal-preparation-20260926",
+    "freezeSha256": "7e45bc6158db50362e088ba8a97a08e42e7e63e398dde62df1dbe6ce6721620d",
+    "failureRunRoot": "C:/SOUI-SDK-production-validation/preview11-real-renewal-runs-20260926/x86-smoke-attempt1",
+    "failureReportSha256": "215d46601c76a042e0d6798f93547cd37f8463c7588db030b41d3deb231b8eb2",
+    "failureSupervisorSha256": "2e969de9be541ffedc68a793066689b0751cd499178231a405f0399a8024db8d"
+  },
+  "architectures": {
+    "x86": {
+      "attempt": "x86-attempt1",
+      "steps": [
+        {
+          "name": "cmake-version",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "configure",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "deploy",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "finalize",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "native-build",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "node-version",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "npm-ci",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "npm-version",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "prepare",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "self-check",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "toolchain-freeze",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "web-build",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "web-typecheck",
+          "exitCode": 0,
+          "timedOut": false
+        }
+      ],
+      "selfCheck": {
+        "status": "self-check-passed",
+        "version": "0.3.0-preview.11",
+        "architecture": "x86",
+        "records": 8,
+        "fixtureRevision": 2,
+        "phaseCases": 45,
+        "guiExecuted": false,
+        "realRenewalVerified": false
+      },
+      "outerExitCode": 0,
+      "buildRecordSha256": "583a44c61a74a5ab9c142e0b5899915fffaf2a35ff389cf2045961a52430e6b2"
+    },
+    "x64": {
+      "attempt": "x64-attempt1",
+      "steps": [
+        {
+          "name": "cmake-version",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "configure",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "deploy",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "finalize",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "native-build",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "node-version",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "npm-ci",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "npm-version",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "prepare",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "self-check",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "toolchain-freeze",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "web-build",
+          "exitCode": 0,
+          "timedOut": false
+        },
+        {
+          "name": "web-typecheck",
+          "exitCode": 0,
+          "timedOut": false
+        }
+      ],
+      "selfCheck": {
+        "status": "self-check-passed",
+        "version": "0.3.0-preview.11",
+        "architecture": "x64",
+        "records": 8,
+        "fixtureRevision": 2,
+        "phaseCases": 45,
+        "guiExecuted": false,
+        "realRenewalVerified": false
+      },
+      "outerExitCode": 0,
+      "buildRecordSha256": "20d14373f192a84bde4ecae22eb256ef0b038ff0c522c6c0bec591fb0959bbca"
+    }
+  },
+  "synthetic": {
+    "file": "self-test-only/2026-09-26T08-40-33-800Z-70312/self-test-result.json",
+    "testCount": 106,
+    "passed": 106,
+    "failed": 0,
+    "syntheticOnly": true
+  },
+  "captureFailure": {
+    "path": "command-logs/prepare-verify-attempt1",
+    "childExitCode": null,
+    "observation": {
+      "observedAt": "2026-09-26T08:38:57.6841336Z",
+      "wrapperExitCode": 1,
+      "failure": "EPERM fsync on read-only log descriptor",
+      "childExitCodeRecorded": false,
+      "resultJsonWritten": false,
+      "logsPreserved": true
+    },
+    "explanation": "The first capture wrapper attempted fsync on a read-only descriptor and failed with EPERM before persisting the child result. Its child exit is not asserted. The retained r+ fix and a distinct second capture have raw numeric exit 0."
+  },
+  "audit": {
+    "resultPath": "audit-build-20260926/result.json",
+    "exitCode": 1,
+    "vulnerabilities": null,
+    "inputsUnchanged": true,
+    "advisoryLookupSucceeded": false,
+    "failureReason": "request to https://registry.npmjs.org/-/npm/v1/security/advisories/bulk failed, reason: Client network socket disconnected before secure TLS connection was established"
+  },
+  "independentReview": {
+    "path": "independent-build-review.json",
+    "bytes": 114208,
+    "sha256": "68283b8fc95e634a75b2111ebbab6e5c22ac554b8a30ee3ae774e9d22e852f74"
+  },
+  "compiled": true,
+  "nativeSelfCheckExecuted": true,
+  "syntheticSelfTestExecuted": true,
+  "v2GuiExecuted": false,
+  "harnessSmokeVerified": false,
+  "realRenewalVerified": false,
+  "resourceGate": false,
+  "benchmarkValid": false,
+  "releaseReady": false,
+  "limitations": [
+    "v2 GUI/real-clock renewal not executed",
+    "Host-global vcpkg adds unfrozen library search paths and libraries; closed reproducibility/clean-machine validation is not established",
+    "Original v1 real x86 smoke remains failed and preserved"
+  ]
+}

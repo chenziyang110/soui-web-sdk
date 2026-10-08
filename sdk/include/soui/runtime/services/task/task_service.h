@@ -45,6 +45,10 @@ class task_control final {
 // Optional public Bridge task module. Applications register bounded native
 // handlers before bootstrap; the service owns a fixed worker pool and a bounded
 // queue. Handlers must cooperate with cancellation and must not retain control.
+// Every direct request needs the trusted authorization returned by
+// permission_store::resolve. Empty scopes are rejected; the scope, session and
+// origin own tasks/subscriptions across bearer rotation. Revoke authorization
+// before shutdown_session so requests admitted earlier cannot enqueue late.
 class task_service final {
  public:
   static constexpr std::size_t max_workers{2};

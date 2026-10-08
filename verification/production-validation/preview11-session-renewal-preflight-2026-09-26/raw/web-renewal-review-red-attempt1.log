@@ -1,0 +1,115 @@
+✔ renewal is opt-in, early renewal returns the existing lease, and native rotation is reserved (1.8287ms)
+✔ automatic renewal shares one flight and leaves business dispatch synchronous (1.348ms)
+✖ an automatic timer firing slightly early retains a bounded later renewal timer (0.8132ms)
+✔ renewal has a slot even when business and release capacities are exhausted (0.5728ms)
+✔ bootstrap delay only shortens expiration and disposed renewal cannot restart (0.4123ms)
+✔ lease validation and caller mutation cannot increase or replace the authorization lifetime (0.4177ms)
+✔ lost acknowledgement recovers the same operation without extending native expiry or replaying work (0.6455ms)
+✔ an earlier timed-out attempt can recover the active flight and cancel its retry timer (0.3526ms)
+✖ three attempts with one occupied native slot retain a custom-port late acknowledgement until the deadline (1.3106ms)
+✖ the actual native resolver drops the first acknowledgement and the reserved final attempt retrieves the same operation (1.3557ms)
+✖ an occupied native slot exhausts three attempts but fails only at the original recovery or lease deadline (1.4324ms)
+✔ retry attempts and recovery deadline stay bounded and terminal failure does not rebootstrap (0.5256ms)
+✔ even an unprocessed timeout cannot admit a late success beyond the original expiry (0.1458ms)
+✔ renewal identity, generation and native denials are checked without adopting partial credentials (0.6072ms)
+✖ retryable native rejection and transport loss retain operation identity (0.3416ms)
+✔ in-flight subscription and its sequence survive rotation and late removal uses current credentials (0.4472ms)
+✔ timed-out subscribe cleanup and repeated unsubscribe remain once-only across renewal (0.4719ms)
+✔ an old renewal response cannot roll back credentials after a subsequent generation (1.9034ms)
+✔ twenty simulated 25-minute rotations retain one subscription and increasing event sequences (0.9569ms)
+✔ dispose during renewal and subscribe stops callbacks and compensates one late subscription (0.3303ms)
+✔ synchronous transport reentrancy observes the published single flight and disposal wins (0.2162ms)
+✔ standard connector retains one bootstrap and applies lease metadata with elapsed time (0.8285ms)
+✔ connector rejects malformed native lease metadata before creating a client (0.2569ms)
+✔ Workbench React manual bootstrap passes lease metadata and page exit disposes renewal (133.1803ms)
+✔ Workbench default Vue bootstrap uses the same lease-aware public client and document cleanup (11.0378ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 20
+ℹ fail 5
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 274.3641
+
+✖ failing tests:
+
+test at tests\web\session-renewal.test.mjs:61:1
+✖ an automatic timer firing slightly early retains a bounded later renewal timer (0.8132ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (file:///C:/SOUI-SDK-development/preview9-tray/tests/web/session-renewal.test.mjs:65:46)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\web\session-renewal.test.mjs:154:1
+✖ three attempts with one occupied native slot retain a custom-port late acknowledgement until the deadline (1.3106ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///C:/SOUI-SDK-development/preview9-tray/tests/web/session-renewal.test.mjs:157:70)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\web\session-renewal.test.mjs:165:1
+✖ the actual native resolver drops the first acknowledgement and the reserved final attempt retrieves the same operation (1.3557ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (file:///C:/SOUI-SDK-development/preview9-tray/tests/web/session-renewal.test.mjs:169:62)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\web\session-renewal.test.mjs:178:1
+✖ an occupied native slot exhausts three attempts but fails only at the original recovery or lease deadline (1.4324ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 2
+  
+      at TestContext.<anonymous> (file:///C:/SOUI-SDK-development/preview9-tray/tests/web/session-renewal.test.mjs:183:38)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\web\session-renewal.test.mjs:225:1
+✖ retryable native rejection and transport loss retain operation identity (0.3416ms)
+  Error [SouiBridgeError]: The renewal acknowledgement timed out; native rotation may already have occurred.
+      at Object.callback (file:///C:/SOUI-SDK-development/preview9-tray/sdk/web/dist/session-renewal.js:128:58)
+      at Object.advance (file:///C:/SOUI-SDK-development/preview9-tray/tests/web/session-renewal.test.mjs:26:131)
+      at async TestContext.<anonymous> (file:///C:/SOUI-SDK-development/preview9-tray/tests/web/session-renewal.test.mjs:228:60)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    code: 'E_TIMEOUT',
+    requestId: 'lease-session:38:3'
+  }
