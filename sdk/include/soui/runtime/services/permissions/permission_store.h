@@ -19,6 +19,9 @@ class authorization_scope final {
   ~authorization_scope();
   authorization_scope(const authorization_scope&) = delete;
   authorization_scope& operator=(const authorization_scope&) = delete;
+  // Immutable module-local correlation ID, never an authorization credential.
+  // Renewal preserves it; revocation/expiry cannot make the grant active again.
+  [[nodiscard]] const std::string& scope_id() const noexcept;
   [[nodiscard]] bool active() const;
   [[nodiscard]] bool allows(const std::string& capability) const;
   [[nodiscard]] bool matches(const std::string& session_id, const std::string& origin) const;
@@ -71,6 +74,9 @@ class permission_store {
                                        const std::string& token) const;
   [[nodiscard]] permission_lease renew(const std::string& session_id, const std::string& origin,
                                        const std::string& token, const std::string& operation_id);
+  // Revoke only an actual scope owned by this store, including overlapping
+  // bearers. Empty, foreign-store and already removed scopes return false.
+  [[nodiscard]] bool revoke_scope(const std::shared_ptr<const authorization_scope>& scope);
   void revoke_session(const std::string& session_id);
 
  private:
