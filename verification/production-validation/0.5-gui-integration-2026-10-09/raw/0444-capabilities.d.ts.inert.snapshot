@@ -1,0 +1,30 @@
+import type { SouiActionContract } from './action-contracts.js';
+/** Registration and permission information, not proof of business preconditions. */
+export interface SouiMethodCapability {
+    name: string;
+    capability: string;
+    action?: SouiActionContract;
+}
+export interface SouiDescribeOptions {
+    cursor?: number;
+    limit?: number;
+}
+export interface SouiCapabilityCatalog {
+    protocol: 'soui.capabilities/1';
+    sdkVersion: string;
+    methods: SouiMethodCapability[];
+}
+export interface SouiCapabilityPage extends SouiCapabilityCatalog {
+    nextCursor: number | null;
+}
+export interface SouiDiscoveryOptions {
+    pageSize?: number;
+    /** Bounds total retained entries and prevents an unbounded discovery loop. */
+    maxMethods?: number;
+}
+export declare function describeOptions(options: SouiDescribeOptions): {
+    cursor: number;
+    limit: number;
+};
+export declare function readCapabilityPage(raw: unknown, cursor: number, limit: number): SouiCapabilityPage;
+export declare function discoverCapabilities(describe: (options: SouiDescribeOptions) => Promise<SouiCapabilityPage>, options: SouiDiscoveryOptions): Promise<SouiCapabilityCatalog>;

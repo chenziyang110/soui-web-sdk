@@ -1,0 +1,3342 @@
+{
+  "schema": "soui.sdk-lock/v1",
+  "manifestSha256": "d1c8fa093f139cd5da744e41eb80e4b0d2fe9e48e3a79bcde964cb54e91ea720",
+  "manifest": {
+    "schema": "soui.source-sdk/v1",
+    "id": "soui-desktop-sdk",
+    "version": "0.5.0-preview.1",
+    "channel": "preview",
+    "releaseReady": false,
+    "format": "source-with-native-dependencies",
+    "optionalGuiBindings": {
+      "schema": "soui.optional-gui-bindings/v1",
+      "sdkVersion": "0.5.0-preview.1",
+      "source": {
+        "sha256": "d11407221af7e64957b0775c241da7df1aefebb7e0616b7e5c788a807b3c66c2",
+        "bytes": 120653,
+        "files": [
+          {
+            "path": "sdk/bindings/react/package-lock.json",
+            "bytes": 3316,
+            "sha256": "ea10296892ee041af0e56579bc2d00c2c2cf1af15caa478dcc6ddab9aa636fa9",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/bindings/react/package.json",
+            "bytes": 633,
+            "sha256": "3292ac0653d1ba4c2408c22cbe40375c08f22944ee0ce96d69e863bc3df78bc0",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/bindings/react/src/index.ts",
+            "bytes": 1177,
+            "sha256": "5de139152838b5b9ce4cdc6d211476af410df961decaba2da83c0651ad317880",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/bindings/react/tsconfig.json",
+            "bytes": 368,
+            "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/bindings/shared/controller.ts",
+            "bytes": 3216,
+            "sha256": "92b3095a2dc736bd52d850b608d4105793bb0409faa0f9b2d803d961b83320c8",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/bindings/vue/package-lock.json",
+            "bytes": 11662,
+            "sha256": "7ac9fac8f6dbade6055367989e4199406011e83f5a303abb23bd19680ff19889",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/bindings/vue/package.json",
+            "bytes": 580,
+            "sha256": "15bb9a044d79e3a48dd1180b66d6be38e355329c03bd883b6aeebc728f4774bf",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/bindings/vue/src/index.ts",
+            "bytes": 1309,
+            "sha256": "cf20ef5f3c136b81860b1924b50def18887c90e799e7abc32f42aa2e7f0929be",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/bindings/vue/tsconfig.json",
+            "bytes": 368,
+            "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/package-lock.json",
+            "bytes": 735,
+            "sha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/package.json",
+            "bytes": 422,
+            "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/src/action-contract-core.d.ts",
+            "bytes": 552,
+            "sha256": "934cc7835dd9faa8ca803082712e7b1f075fa3444d624265a08e0d141293174f",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/src/action-contract-core.js",
+            "bytes": 11315,
+            "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/src/action-contracts.ts",
+            "bytes": 3481,
+            "sha256": "1d44b3a1378c81bf79c9f4fac134909a5abed5944bbeb28940c3084ddf067e47",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/src/capabilities.ts",
+            "bytes": 4189,
+            "sha256": "920e9eca97b6a37e2c47b68797dc9080e7143d5b57e818bfe019e682fe109ef1",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/src/client.ts",
+            "bytes": 12685,
+            "sha256": "d797e22387a786cbaf07ec329a05183ff0e975621cda2edb38d25e255d166520",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/src/connection.ts",
+            "bytes": 7243,
+            "sha256": "cd66287b6152189f7f4f45b6091a0f38b47adde1b83747ef8a1bffb3b6f6cb03",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/src/contracts.ts",
+            "bytes": 7927,
+            "sha256": "70dee386c707a0ed5e1993bba169e5f19e72bf31fc7a133714c7611952f3890a",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/src/gui.ts",
+            "bytes": 12852,
+            "sha256": "926babf7b99c734273b48971e4532569a45d7ad30e57ee2deb9d27d8cb5e892d",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/src/index.ts",
+            "bytes": 1392,
+            "sha256": "e6d25c88174b218f3c4c6e0f92e386b31ec52b1b6d244599dd875a3afdd38cb8",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/src/protocol.ts",
+            "bytes": 6550,
+            "sha256": "e4da99d8f1520ff74c4551122bad7d13ec57c45193580ca2a8caa91ac101884b",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/src/session-renewal.ts",
+            "bytes": 10876,
+            "sha256": "99923a5088b8b2df93b8c6f138a1f4ab092821fb175cf2de79a60ef17a3b263a",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/src/web-features.ts",
+            "bytes": 3816,
+            "sha256": "4cff934cfdd03d26eb80cf52ac5e1dbf4c98b1e455641db25f04c56666457461",
+            "normalization": "lf"
+          },
+          {
+            "path": "sdk/web/tsconfig.json",
+            "bytes": 296,
+            "sha256": "8f1d5e9b1b25e98c4221574ea7dd96792c63d26d18716ebe8d796ab3f40b359e",
+            "normalization": "lf"
+          },
+          {
+            "path": "tools/sdk/gui-bindings-delivery.cjs",
+            "bytes": 13693,
+            "sha256": "26305269c19891cd5dfb6d781985114f7b6aa1d6437d22213d4cb6ba25c10ec3",
+            "normalization": "lf"
+          }
+        ]
+      },
+      "output": {
+        "sha256": "a294a593a0ab975d8af5ab7e58a6bb0fbc8d5fd5216b161895403e89fd088f3b",
+        "bytes": 108422,
+        "files": [
+          {
+            "path": "sdk/bindings/react/dist/react/src/index.d.ts",
+            "bytes": 459,
+            "sha256": "123e4c15b41765fd0e25d0ac15311e28acb18c38a60d372c2ad4cc14bac0dc0c"
+          },
+          {
+            "path": "sdk/bindings/react/dist/react/src/index.js",
+            "bytes": 855,
+            "sha256": "ca4b694539e51406f9ba98cf170e5aba2bd5166321b913c961191d7c614929c3"
+          },
+          {
+            "path": "sdk/bindings/react/dist/shared/controller.d.ts",
+            "bytes": 611,
+            "sha256": "0373e3a6d5293272dd7f6fd19dbf805e0d77685906b9d0cca06c5b2af8fdf598"
+          },
+          {
+            "path": "sdk/bindings/react/dist/shared/controller.js",
+            "bytes": 2750,
+            "sha256": "ef4e3708d461cc8b7bb63fb4f549b20deaf821e89713128067c3e861fdc1f2a2"
+          },
+          {
+            "path": "sdk/bindings/vue/dist/shared/controller.d.ts",
+            "bytes": 611,
+            "sha256": "0373e3a6d5293272dd7f6fd19dbf805e0d77685906b9d0cca06c5b2af8fdf598"
+          },
+          {
+            "path": "sdk/bindings/vue/dist/shared/controller.js",
+            "bytes": 2750,
+            "sha256": "ef4e3708d461cc8b7bb63fb4f549b20deaf821e89713128067c3e861fdc1f2a2"
+          },
+          {
+            "path": "sdk/bindings/vue/dist/vue/src/index.d.ts",
+            "bytes": 441,
+            "sha256": "f066441359df2680eb656a00ec4beeb66cfbba69f6d54c58c33313aadde78879"
+          },
+          {
+            "path": "sdk/bindings/vue/dist/vue/src/index.js",
+            "bytes": 1106,
+            "sha256": "e732eccda916d02ac2434488cf8ba1bf4dc49d23c1119248027d5504b38ad80b"
+          },
+          {
+            "path": "sdk/web/dist/action-contract-core.d.ts",
+            "bytes": 505,
+            "sha256": "4af780195bdc72315af8a5bbd8a0a2a71a67957e6a3fc580d3b2da91be9beeeb"
+          },
+          {
+            "path": "sdk/web/dist/action-contract-core.js",
+            "bytes": 11417,
+            "sha256": "d76d00e2a3fa9ea2f25c9124534fd2b04e1c662bc07afaee9b985b40bf8b00a4"
+          },
+          {
+            "path": "sdk/web/dist/action-contracts.d.ts",
+            "bytes": 1716,
+            "sha256": "6e4fd2c306c78cac64bdd41da4c40d4ac16de848278619ac48989134635e2ad4"
+          },
+          {
+            "path": "sdk/web/dist/action-contracts.js",
+            "bytes": 2273,
+            "sha256": "197fdb5775e5a431d96282d3f05ce1803eb2ff88ad03f841daf2c152c4a41b60"
+          },
+          {
+            "path": "sdk/web/dist/capabilities.d.ts",
+            "bytes": 1170,
+            "sha256": "9ea83c612285207e742a563a37216367113b5086cf9ecd5a12ac25d3d56d7028"
+          },
+          {
+            "path": "sdk/web/dist/capabilities.js",
+            "bytes": 4077,
+            "sha256": "1ef5a3f610c45da4ae557f1cefec3c41d12a27361692c1b8d975afcf32cb99fe"
+          },
+          {
+            "path": "sdk/web/dist/client.d.ts",
+            "bytes": 3100,
+            "sha256": "4f0b2065288e9ecf79f4a9862561311d8b9a3d41830ab6807d4834a960e3113b"
+          },
+          {
+            "path": "sdk/web/dist/client.js",
+            "bytes": 12460,
+            "sha256": "d08c645bfbc9a15da53eebc773e552cf83dd245180f4ea9c6378f2e2456d478b"
+          },
+          {
+            "path": "sdk/web/dist/connection.d.ts",
+            "bytes": 1024,
+            "sha256": "dabf49c56bb107d8617bff08064d8e5d97a447c66136ae1987dd2c5c6437c29d"
+          },
+          {
+            "path": "sdk/web/dist/connection.js",
+            "bytes": 7695,
+            "sha256": "fd63d56a4a7a930de7d348277574b1e658db3591b6db85452cd52a7c39b239f2"
+          },
+          {
+            "path": "sdk/web/dist/contracts.d.ts",
+            "bytes": 10673,
+            "sha256": "eaacca74bb9b9a26082bc8d062724ad00cc00d17cce8321db53d5eb469b7bbf2"
+          },
+          {
+            "path": "sdk/web/dist/contracts.js",
+            "bytes": 100,
+            "sha256": "a5a3d5d72ebbce80878b35311427b38f0ec2946e82ddfeb890c70578abe11344"
+          },
+          {
+            "path": "sdk/web/dist/gui.d.ts",
+            "bytes": 1592,
+            "sha256": "0bf94ffb7612746d8bf79a75f5a661afa40217288b844f622a9698b7dbdbb1f3"
+          },
+          {
+            "path": "sdk/web/dist/gui.js",
+            "bytes": 13602,
+            "sha256": "b823ad98ce26dce9fb92aed212c41f17b0ce9fd6766f2fd174f94f32b4bb3df0"
+          },
+          {
+            "path": "sdk/web/dist/index.d.ts",
+            "bytes": 1392,
+            "sha256": "e6d25c88174b218f3c4c6e0f92e386b31ec52b1b6d244599dd875a3afdd38cb8"
+          },
+          {
+            "path": "sdk/web/dist/index.js",
+            "bytes": 425,
+            "sha256": "acaba2502e1304305bf75e1395751f80301e534d193898ba2e638251c9f3bcb2"
+          },
+          {
+            "path": "sdk/web/dist/protocol.d.ts",
+            "bytes": 4714,
+            "sha256": "7c264d062b761d3450a43eab27c9442f4f77c3a7ed49cc4d39c9195ee0d80523"
+          },
+          {
+            "path": "sdk/web/dist/protocol.js",
+            "bytes": 3445,
+            "sha256": "bf0f8678f0bc28cd974d70d22afcbf442ef7c97f446b0a531b9ef0f4c67ace65"
+          },
+          {
+            "path": "sdk/web/dist/session-renewal.d.ts",
+            "bytes": 1384,
+            "sha256": "eec9f45daecb2857b55d662987a571786ce519bf1260114894b7aee01ad43a10"
+          },
+          {
+            "path": "sdk/web/dist/session-renewal.js",
+            "bytes": 11085,
+            "sha256": "161b551f6afc1dbae07c38a6286e78075fcd04c8b3a717849954a1f2ff64a74c"
+          },
+          {
+            "path": "sdk/web/dist/web-features.d.ts",
+            "bytes": 1400,
+            "sha256": "d660fcbbb92d26eb2fcc05b3bd03fdee64a2f586488d3085eedbbbde17df5e29"
+          },
+          {
+            "path": "sdk/web/dist/web-features.js",
+            "bytes": 3590,
+            "sha256": "c9c03f65a9988474a2e806b78367bab69957d706785c9fb316be3280923557b5"
+          }
+        ]
+      },
+      "packages": [
+        {
+          "name": "@soui/native-sdk",
+          "version": "0.5.0-preview.1",
+          "root": "sdk/web",
+          "import": "dist/index.js",
+          "types": "dist/index.d.ts"
+        },
+        {
+          "name": "@soui/gui-react",
+          "version": "0.5.0-preview.1",
+          "root": "sdk/bindings/react",
+          "import": "dist/react/src/index.js",
+          "types": "dist/react/src/index.d.ts"
+        },
+        {
+          "name": "@soui/gui-vue",
+          "version": "0.5.0-preview.1",
+          "root": "sdk/bindings/vue",
+          "import": "dist/vue/src/index.js",
+          "types": "dist/vue/src/index.d.ts"
+        }
+      ]
+    },
+    "applicationContract": "Applications own app, web, contracts and resources. SDK builds independently using CMake and links through Soui::Sdk.",
+    "files": [
+      {
+        "path": "THIRD_PARTY_NOTICES.md",
+        "bytes": 2840,
+        "sha256": "659184254a71db3397d1f613ed16a66d7aa2bf9a3a364db9c3248a1c2eeffb99",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "cmake/SouiApplication.cmake",
+        "bytes": 2889,
+        "sha256": "fd48457121a0b86c483bd15aa4bb491e14ef0522d99e0b8cb39dc3f8c0823c2b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "cmake/SouiWindowsSdk.cmake",
+        "bytes": 690,
+        "sha256": "7d71d217641623fde4fdc02bfdf536eee4167bf61eb00b3227c91c6d0d55b031",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/CMakeLists.txt",
+        "bytes": 3802,
+        "sha256": "20f2a7441ea5612dd4097f93118c85704d91f33135c28461ee31e61b1a0a6890",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/bindings/react/README.md",
+        "bytes": 631,
+        "sha256": "07f13916bce99107b03ff81a97207a6331b120521a2ca5467ad9b646f3c8fb18",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/bindings/react/dist/react/src/index.d.ts",
+        "bytes": 459,
+        "sha256": "123e4c15b41765fd0e25d0ac15311e28acb18c38a60d372c2ad4cc14bac0dc0c",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/bindings/react/dist/react/src/index.js",
+        "bytes": 855,
+        "sha256": "ca4b694539e51406f9ba98cf170e5aba2bd5166321b913c961191d7c614929c3",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/bindings/react/dist/shared/controller.d.ts",
+        "bytes": 611,
+        "sha256": "0373e3a6d5293272dd7f6fd19dbf805e0d77685906b9d0cca06c5b2af8fdf598",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/bindings/react/dist/shared/controller.js",
+        "bytes": 2750,
+        "sha256": "ef4e3708d461cc8b7bb63fb4f549b20deaf821e89713128067c3e861fdc1f2a2",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/bindings/react/package-lock.json",
+        "bytes": 3316,
+        "sha256": "ea10296892ee041af0e56579bc2d00c2c2cf1af15caa478dcc6ddab9aa636fa9",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/bindings/react/package.json",
+        "bytes": 633,
+        "sha256": "3292ac0653d1ba4c2408c22cbe40375c08f22944ee0ce96d69e863bc3df78bc0",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/bindings/react/src/index.ts",
+        "bytes": 1177,
+        "sha256": "5de139152838b5b9ce4cdc6d211476af410df961decaba2da83c0651ad317880",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/bindings/react/tsconfig.json",
+        "bytes": 368,
+        "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/bindings/shared/controller.ts",
+        "bytes": 3216,
+        "sha256": "92b3095a2dc736bd52d850b608d4105793bb0409faa0f9b2d803d961b83320c8",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/bindings/vue/README.md",
+        "bytes": 694,
+        "sha256": "68565a4091b62f6243c2669975b5919fcb449620743d3371dbe7ad842104ad05",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/bindings/vue/dist/shared/controller.d.ts",
+        "bytes": 611,
+        "sha256": "0373e3a6d5293272dd7f6fd19dbf805e0d77685906b9d0cca06c5b2af8fdf598",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/bindings/vue/dist/shared/controller.js",
+        "bytes": 2750,
+        "sha256": "ef4e3708d461cc8b7bb63fb4f549b20deaf821e89713128067c3e861fdc1f2a2",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/bindings/vue/dist/vue/src/index.d.ts",
+        "bytes": 441,
+        "sha256": "f066441359df2680eb656a00ec4beeb66cfbba69f6d54c58c33313aadde78879",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/bindings/vue/dist/vue/src/index.js",
+        "bytes": 1106,
+        "sha256": "e732eccda916d02ac2434488cf8ba1bf4dc49d23c1119248027d5504b38ad80b",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/bindings/vue/package-lock.json",
+        "bytes": 11662,
+        "sha256": "7ac9fac8f6dbade6055367989e4199406011e83f5a303abb23bd19680ff19889",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/bindings/vue/package.json",
+        "bytes": 580,
+        "sha256": "15bb9a044d79e3a48dd1180b66d6be38e355329c03bd883b6aeebc728f4774bf",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/bindings/vue/src/index.ts",
+        "bytes": 1309,
+        "sha256": "cf20ef5f3c136b81860b1924b50def18887c90e799e7abc32f42aa2e7f0929be",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/bindings/vue/tsconfig.json",
+        "bytes": 368,
+        "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/cmake/SouiSdkConfig.cmake.in",
+        "bytes": 456,
+        "sha256": "c4ac308bab6f1ceaf7bb315b3e6ac63e1e2361ff036dd07bcda4c043b016c702",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/bridge_adapter.h",
+        "bytes": 1374,
+        "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/host/async_result_slot.h",
+        "bytes": 2015,
+        "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/host/engine_thread.h",
+        "bytes": 1929,
+        "sha256": "b197f66ff76041c66ef0e1d92fbf681eb50669d6bd99f4935430080c46606256",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/host/frame_pacer.h",
+        "bytes": 7240,
+        "sha256": "49ddae57332a45e11586dd60ac074a717f57dbd2c64a3280248b82a054358342",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/host/interaction_protocol.h",
+        "bytes": 3853,
+        "sha256": "83265088b52fc340e620141729b8f3bef2dc35d5cd22f6b40fdb38bcbff48bad",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/host/runtime_profile.h",
+        "bytes": 1433,
+        "sha256": "5d79c715900b24f7de3c44cba2e13ea415d2e2f96a929ad86667d633f6f4d051",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/host/soui_miniblink_host.h",
+        "bytes": 7003,
+        "sha256": "7510ba5a4efee56f6d96645ac432eaa11de97e9ae0fdfb47041c0b35d16050db",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/host/webview2_host.h",
+        "bytes": 1983,
+        "sha256": "b1c862a424ae04579a5c66a23769a99256cf76cf5c64251ec371f9d3be35a8cc",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/host/webview_host.h",
+        "bytes": 5037,
+        "sha256": "a7dc0948eb54a9312d04bdb0a0138195a2e9fc7213b0b79d9a7d7c0cfc6297fb",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/host/window_chrome.h",
+        "bytes": 2359,
+        "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/host/window_chrome_script.h",
+        "bytes": 1612,
+        "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/json_bridge.h",
+        "bytes": 2749,
+        "sha256": "ed5447554438c5ee9a3a6388aac4f69fbdb14796615ad6c9df6923034d6e15c0",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/bridge/action_contract.h",
+        "bytes": 1167,
+        "sha256": "11a77c9a9aa90bd8d1839f6d08eae8a892c78b7df11bdc37455f623f92c97936",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/bridge/bridge_transport.h",
+        "bytes": 3856,
+        "sha256": "9bfb8efba241cfb650dacb89013c3389cd5e5a514624b979f1a4da6750a97098",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/core/events/event_bus.h",
+        "bytes": 1639,
+        "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/core/result/result.h",
+        "bytes": 626,
+        "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/core/task/task_store.h",
+        "bytes": 2473,
+        "sha256": "f4b5aaf1049a5f3c1467eae74318fe2e850bebdae1e5879f457289fa527e8fbf",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/host/session/webview_session.h",
+        "bytes": 1892,
+        "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/host/trusted_document.h",
+        "bytes": 2696,
+        "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/services/desktop/desktop_services.h",
+        "bytes": 2210,
+        "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/services/desktop/global_shortcut.h",
+        "bytes": 3012,
+        "sha256": "800d40c2029697ca23f9148c75acbcc683b7893665c735f4ea0a9ce0810b1ae5",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/services/desktop/menu_service.h",
+        "bytes": 2461,
+        "sha256": "2e304780c55cbc92c49d14532ae04ad934b835f7ff3d3f43004c3faae1244605",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/services/desktop/tray_service.h",
+        "bytes": 2765,
+        "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/services/desktop/window_commands.h",
+        "bytes": 2377,
+        "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+        "bytes": 668,
+        "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+        "bytes": 5545,
+        "sha256": "ab303cb608d400e36655136ac1ef491dfdf5fd0acaeb2aed1615243ad93d0e55",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/services/permissions/permission_store.h",
+        "bytes": 4093,
+        "sha256": "052419de7a352ca8d331d15eb1caad58d88839add2c65696b6b1dd3969913155",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/runtime/services/task/task_service.h",
+        "bytes": 3112,
+        "sha256": "1fbf99650c1735495a69447a17ce9870c5525aaa5f7ccfc3ae2dae0e6b5ec041",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/include/soui/version.h",
+        "bytes": 250,
+        "sha256": "505061598801d39ee8151581935990c0f8fed242dede3ee5a2b6f96f0a97f4a5",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/renderers/webview2/CMakeLists.txt",
+        "bytes": 1869,
+        "sha256": "83675564863e66029344a66f080a53785fc105df0f2fe415135bd4dfd23fe15f",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/renderers/webview2/dependency.json",
+        "bytes": 574,
+        "sha256": "de654c9666da5e7b36eaadbaacd297c49942bc6ba8bcd9f6fee141f0308956e5",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/renderers/webview2/native-preload.js",
+        "bytes": 3979,
+        "sha256": "b7e7b9d86af6c7b5bd089760c4b6ca78756337ca28472b2df9c45e9e825fbf39",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/renderers/webview2/preparation_lifetime.h",
+        "bytes": 2085,
+        "sha256": "f5308dd4617cd3c5c795b17bf250ef47ac4705910b4516980d15c7b2ebb969d9",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/renderers/webview2/request_capacity.h",
+        "bytes": 5802,
+        "sha256": "69d9e8bd5f9957c16671989a7679363b1472eae95ead0ff3029d6b10559d9a42",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/renderers/webview2/webview2_host.cpp",
+        "bytes": 41893,
+        "sha256": "f94481b942a7c58002c377fe5fa4bf06f5943264c5b5115b9f692e06079b3b99",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/renderers/webview2/webview2_preload.h.in",
+        "bytes": 142,
+        "sha256": "2ec8a06fce206950e8adf28f26b573d6fbe2d634413c63fc49d381621165f79b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/host/bridge_pending_script.h",
+        "bytes": 2166,
+        "sha256": "9672b98ffc6de2e4a0287b4c414ad43764c89fa00fed5f5721ee0e98aec02213",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/host/bridge_request_budget.h",
+        "bytes": 2703,
+        "sha256": "811516ee0541190362a96a9987c78ffe1dac9b53c8f0c723fd9289b794899592",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/host/diagnostic_result.h",
+        "bytes": 1007,
+        "sha256": "7c322a719060a89624bd0c74bfc6f4ca62a752f50a633a64fd9c4aeb244be129",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/host/engine_thread.cpp",
+        "bytes": 7861,
+        "sha256": "e5c325bf88352627093cfe435731f6e1a6f59f7a520ab17fe4c972cd493bbfa7",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/host/interaction_protocol.cpp",
+        "bytes": 2308,
+        "sha256": "5e4fc94c99e12173ea4533fa842c73bff858584bebdd59c371c6dbeb3e040268",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/host/runtime_profile.cpp",
+        "bytes": 6222,
+        "sha256": "f9a9f49b6c68463bd1a0cdd615d0c53865b3c8e8c9121c7e80933cf0ca0dbcd6",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/host/soui_miniblink_host.cpp",
+        "bytes": 114721,
+        "sha256": "f7963f9914eabddcaa828ba42c137c2b81140d631f402a7ac144692b9cfb9bcb",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/host/source_kernel_api.h",
+        "bytes": 2542,
+        "sha256": "d1df6ab9803a0073a3c3fb8489e3012f65cc9879de765f9a348ddc6d8566eb8e",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/json_bridge.cpp",
+        "bytes": 13287,
+        "sha256": "c3860d24beb55fa9671b9a73397df2b8826dc893606c2a87290ac46bed512dba",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/bridge/action_contract.cpp",
+        "bytes": 10283,
+        "sha256": "6dfa4ceb6a2bf92b5c464619063873896a2c4357c8730205c56f5c04ad3dae7c",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/bridge/bridge_transport.cpp",
+        "bytes": 19134,
+        "sha256": "53765e2b87fff0bd5b117efdbdd89993e11c35f557d468529fb3c42ba6fdd674",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/core/events/event_bus.cpp",
+        "bytes": 2559,
+        "sha256": "e0e1c24c98720e20eb19a71a881b9a1625adb2f1092b67478a7873ad84bc1805",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/core/result/result.cpp",
+        "bytes": 409,
+        "sha256": "238c8e90a28173d2ac5ea994fcc2f669d9b46d336dd23d4d865e5b481457a9f0",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/core/task/task_store.cpp",
+        "bytes": 7546,
+        "sha256": "678509bbffcfe1a5363dda9c1db08504a6c55faa35ac2db7f145d3a1807ea3f3",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/host/session/webview_session.cpp",
+        "bytes": 3532,
+        "sha256": "976f755f6f06b16c337a7c941de56e1ef5e3fe66adc1758f188e280ff541a9ee",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/desktop/desktop_services.cpp",
+        "bytes": 14078,
+        "sha256": "824b61b8c8fc3b16e69b62e499d01ef64bea2b07cbd3907aa11327ce3e9e21eb",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/desktop/global_shortcut.cpp",
+        "bytes": 8129,
+        "sha256": "bbfc1b6980b666374a807fec39170d06e9aa84b87b661856bb41c02a091876ab",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/desktop/menu_platform.h",
+        "bytes": 1958,
+        "sha256": "294743b92d08d0c478f728ffa74400ab601e9df360896bd329fbfc67f93f6f26",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/desktop/menu_service.cpp",
+        "bytes": 16092,
+        "sha256": "09fc3b1b133738bdaedf19f1ea020ff51c5b25ba0309fbd3af0ad66b85d64095",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/desktop/shortcut_platform.h",
+        "bytes": 1570,
+        "sha256": "848466afe3a048c798f654d8cbf3ceb672b46dd112af5e2226977676b74458ae",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/desktop/tray_platform.h",
+        "bytes": 1627,
+        "sha256": "91bb14277f550cb75bdd7b382c79127de4eba48ffffbd3a7025bb47f4ea42012",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/desktop/tray_service.cpp",
+        "bytes": 13336,
+        "sha256": "f96238fcfa7abbbc08ef4ba242c210450657ed69841df6e777c3174a7ce280a3",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/desktop/unicode_conversion.h",
+        "bytes": 1709,
+        "sha256": "a404b90539344d479faee04ad58606f8af3669546e9f93824b5d590695ce6908",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/fileinsight-service/fileinsight-service.cpp",
+        "bytes": 4790,
+        "sha256": "1f3303c2426759d3e4513e3bbf2dc0263cfe56c5d76c545624c7a8b39986df4a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/filesystem-readonly/directory_scanner.cpp",
+        "bytes": 30071,
+        "sha256": "713bc211743282e4b8793d244fc8cd5dca0cbb28dd7e8d27e53564ac8f107914",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/permissions/permission_store.cpp",
+        "bytes": 10579,
+        "sha256": "39691d3c6ce6904d814381d0d7eaa6348d20bf0bc3bdfd58c3e56195c287b427",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/permissions/scope_id_sequence.h",
+        "bytes": 892,
+        "sha256": "da8ddba81e066354401b09b317c94ca1aa07701162c44ca31afe33908ac0599e",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/src/runtime/services/task/task_service.cpp",
+        "bytes": 20185,
+        "sha256": "b2176b95457c81f4dd768adda31c1ada0061ac41ecd9efab2fdef436e5a35e6b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/dist/action-contract-core.d.ts",
+        "bytes": 505,
+        "sha256": "4af780195bdc72315af8a5bbd8a0a2a71a67957e6a3fc580d3b2da91be9beeeb",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/action-contract-core.js",
+        "bytes": 11417,
+        "sha256": "d76d00e2a3fa9ea2f25c9124534fd2b04e1c662bc07afaee9b985b40bf8b00a4",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/action-contracts.d.ts",
+        "bytes": 1716,
+        "sha256": "6e4fd2c306c78cac64bdd41da4c40d4ac16de848278619ac48989134635e2ad4",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/action-contracts.js",
+        "bytes": 2273,
+        "sha256": "197fdb5775e5a431d96282d3f05ce1803eb2ff88ad03f841daf2c152c4a41b60",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/capabilities.d.ts",
+        "bytes": 1170,
+        "sha256": "9ea83c612285207e742a563a37216367113b5086cf9ecd5a12ac25d3d56d7028",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/capabilities.js",
+        "bytes": 4077,
+        "sha256": "1ef5a3f610c45da4ae557f1cefec3c41d12a27361692c1b8d975afcf32cb99fe",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/client.d.ts",
+        "bytes": 3100,
+        "sha256": "4f0b2065288e9ecf79f4a9862561311d8b9a3d41830ab6807d4834a960e3113b",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/client.js",
+        "bytes": 12460,
+        "sha256": "d08c645bfbc9a15da53eebc773e552cf83dd245180f4ea9c6378f2e2456d478b",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/connection.d.ts",
+        "bytes": 1024,
+        "sha256": "dabf49c56bb107d8617bff08064d8e5d97a447c66136ae1987dd2c5c6437c29d",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/connection.js",
+        "bytes": 7695,
+        "sha256": "fd63d56a4a7a930de7d348277574b1e658db3591b6db85452cd52a7c39b239f2",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/contracts.d.ts",
+        "bytes": 10673,
+        "sha256": "eaacca74bb9b9a26082bc8d062724ad00cc00d17cce8321db53d5eb469b7bbf2",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/contracts.js",
+        "bytes": 100,
+        "sha256": "a5a3d5d72ebbce80878b35311427b38f0ec2946e82ddfeb890c70578abe11344",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/gui.d.ts",
+        "bytes": 1592,
+        "sha256": "0bf94ffb7612746d8bf79a75f5a661afa40217288b844f622a9698b7dbdbb1f3",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/gui.js",
+        "bytes": 13602,
+        "sha256": "b823ad98ce26dce9fb92aed212c41f17b0ce9fd6766f2fd174f94f32b4bb3df0",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/index.d.ts",
+        "bytes": 1392,
+        "sha256": "e6d25c88174b218f3c4c6e0f92e386b31ec52b1b6d244599dd875a3afdd38cb8",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/index.js",
+        "bytes": 425,
+        "sha256": "acaba2502e1304305bf75e1395751f80301e534d193898ba2e638251c9f3bcb2",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/protocol.d.ts",
+        "bytes": 4714,
+        "sha256": "7c264d062b761d3450a43eab27c9442f4f77c3a7ed49cc4d39c9195ee0d80523",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/protocol.js",
+        "bytes": 3445,
+        "sha256": "bf0f8678f0bc28cd974d70d22afcbf442ef7c97f446b0a531b9ef0f4c67ace65",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/session-renewal.d.ts",
+        "bytes": 1384,
+        "sha256": "eec9f45daecb2857b55d662987a571786ce519bf1260114894b7aee01ad43a10",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/session-renewal.js",
+        "bytes": 11085,
+        "sha256": "161b551f6afc1dbae07c38a6286e78075fcd04c8b3a717849954a1f2ff64a74c",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/web-features.d.ts",
+        "bytes": 1400,
+        "sha256": "d660fcbbb92d26eb2fcc05b3bd03fdee64a2f586488d3085eedbbbde17df5e29",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/dist/web-features.js",
+        "bytes": 3590,
+        "sha256": "c9c03f65a9988474a2e806b78367bab69957d706785c9fb316be3280923557b5",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "sdk/web/package-lock.json",
+        "bytes": 735,
+        "sha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/package.json",
+        "bytes": 422,
+        "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/src/action-contract-core.d.ts",
+        "bytes": 552,
+        "sha256": "934cc7835dd9faa8ca803082712e7b1f075fa3444d624265a08e0d141293174f",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/src/action-contract-core.js",
+        "bytes": 11315,
+        "sha256": "93cfd3eab4f9d835c36c76fe6c8196f71b97979fce3c852e5b7853b0e665ce80",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/src/action-contracts.ts",
+        "bytes": 3481,
+        "sha256": "1d44b3a1378c81bf79c9f4fac134909a5abed5944bbeb28940c3084ddf067e47",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/src/capabilities.ts",
+        "bytes": 4189,
+        "sha256": "920e9eca97b6a37e2c47b68797dc9080e7143d5b57e818bfe019e682fe109ef1",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/src/client.ts",
+        "bytes": 12685,
+        "sha256": "d797e22387a786cbaf07ec329a05183ff0e975621cda2edb38d25e255d166520",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/src/connection.ts",
+        "bytes": 7243,
+        "sha256": "cd66287b6152189f7f4f45b6091a0f38b47adde1b83747ef8a1bffb3b6f6cb03",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/src/contracts.ts",
+        "bytes": 7927,
+        "sha256": "70dee386c707a0ed5e1993bba169e5f19e72bf31fc7a133714c7611952f3890a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/src/gui.ts",
+        "bytes": 12852,
+        "sha256": "926babf7b99c734273b48971e4532569a45d7ad30e57ee2deb9d27d8cb5e892d",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/src/index.ts",
+        "bytes": 1392,
+        "sha256": "e6d25c88174b218f3c4c6e0f92e386b31ec52b1b6d244599dd875a3afdd38cb8",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/src/protocol.ts",
+        "bytes": 6550,
+        "sha256": "e4da99d8f1520ff74c4551122bad7d13ec57c45193580ca2a8caa91ac101884b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/src/session-renewal.ts",
+        "bytes": 10876,
+        "sha256": "99923a5088b8b2df93b8c6f138a1f4ab092821fb175cf2de79a60ef17a3b263a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/src/web-features.ts",
+        "bytes": 3816,
+        "sha256": "4cff934cfdd03d26eb80cf52ac5e1dbf4c98b1e455641db25f04c56666457461",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "sdk/web/tsconfig.json",
+        "bytes": 296,
+        "sha256": "8f1d5e9b1b25e98c4221574ea7dd96792c63d26d18716ebe8d796ab3f40b359e",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/json/json.hpp",
+        "bytes": 919975,
+        "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/miniblink/wke.h",
+        "bytes": 70330,
+        "sha256": "8b090aafeee71f1571f3c07b7d8625570506720dabc20abaf4faf607166bcd54",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/SApp.h",
+        "bytes": 10529,
+        "sha256": "480f460eaf7d9f5907794fe0445c22656db5163c4e95abbf6c4ce4dedd206812",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/activex/SBStr.h",
+        "bytes": 3370,
+        "sha256": "b6b7c139255d9b11a301b830755a2b8f365bb6c6cecea37f573e36ba1a25368a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/activex/flash10t.tlh",
+        "bytes": 21873,
+        "sha256": "12a3db76296ce97c5ce251e74114f15172075bdd5bbd3e35e6667be16bb65d95",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/activex/flash10t.tli",
+        "bytes": 22435,
+        "sha256": "06da50dd67f9ff3ed77230105caf781eb28d2cfa2ab8927e498c2aee266204cc",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/animator/SInterpolatorImpl.h",
+        "bytes": 4796,
+        "sha256": "92180cbac994b2764a00e447f2483ed9eb9a3cc2a5b0e50eef9bf2f1744af983",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/RealWndHandler-i.h",
+        "bytes": 2075,
+        "sha256": "5e0206050dc964101dde140702a33443233874f31f264e1f7de982449c1fcb3c",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SActiveX.h",
+        "bytes": 2432,
+        "sha256": "ef54f5076a3b23ae4c0b908daa3c6deed59984749d8d7e07d36305576c652933",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SCalendar.h",
+        "bytes": 11110,
+        "sha256": "f5a8592e8a0d7d9a16b41af1346116ede2144aa4a34e1494bcdb2148a35fb326",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SCaption.h",
+        "bytes": 2154,
+        "sha256": "116e748b7ca0dc650ddcb595ed574f8b9f9ab5d04d0f3755d117ed61b7ee03c7",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SCmnCtrl.h",
+        "bytes": 28219,
+        "sha256": "8b72638814e4b92e86080758a7629be00c737dba31e524d494e63564577d7572",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SComboBase.h",
+        "bytes": 12738,
+        "sha256": "592e880576887299d9be60595eb775bb51028027952c42f421eaa264aee1401b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SComboBox.h",
+        "bytes": 5327,
+        "sha256": "082d12d6175247d489a1ee35a25471f87f81ba18938894c30583af4d3d7f6aa5",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SComboView.h",
+        "bytes": 2917,
+        "sha256": "b0f0aec93676fa2041723f50fbb8f8a91e5637b712ae160db2a278e935bffa59",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SDateTimePicker.h",
+        "bytes": 6098,
+        "sha256": "15ffc2a33bba520c0a88c48e13ed4d6a70918252d8ca5d320e592f3177b47d81",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SDropDown.h",
+        "bytes": 8120,
+        "sha256": "7898972cc131ef0ececb8ff831f47f8d245120b93fc5de16bf972a08433e1786",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SHeaderCtrl.h",
+        "bytes": 9944,
+        "sha256": "c084fbc7d4fc82eb92172f1c916c37a9c68551f9a970b05d8d2e983fa40b3854",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SHotKeyCtrl.h",
+        "bytes": 6342,
+        "sha256": "9328ee6478828c887972b3dc41bc1fc9674c4f7b22800254ce83d34ccf1f43ec",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SListCtrl.h",
+        "bytes": 17465,
+        "sha256": "2b253e6cd7a99557cca49ccbd74b73c06ef94f2e965948f0064d639f5ad0ed09",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SListView.h",
+        "bytes": 5411,
+        "sha256": "d9beabfb11569aadd3720812e50cb234a1538a9cd922199c929fd25f79e9b05a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SListbox.h",
+        "bytes": 11723,
+        "sha256": "c031207d3a967b85d47f41bc887eeda4591be281b36ac88fc2bb4ee9cb227e96",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SMCListView.h",
+        "bytes": 7539,
+        "sha256": "297bc6def88bd25415603d2efc668587d92f9a9141a4762e011c4713b5ce362a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SMenuBar.h",
+        "bytes": 580,
+        "sha256": "62b739a370f4c6476a00ea6281609f3e914ebe07df00f9afee9a91c3438c5f65",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SMessageBox.h",
+        "bytes": 3384,
+        "sha256": "74d01c82a68fc2d173cc8ff09b47ae7ca003877f420efbdc89fb5aec845e3fdc",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SRealWnd.h",
+        "bytes": 4612,
+        "sha256": "bad16845c8755677c76106bf5955f04a40000b60ee56c52f051976a3bc3509e2",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SRichEdit.h",
+        "bytes": 39709,
+        "sha256": "47c20e00d022551f687d2478a3d974a817a472b71381b457c7dce0e7b2546cd1",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SScrollbar.h",
+        "bytes": 5508,
+        "sha256": "019fd3f00b9b5f3cf915609fc5ca9c199413423c21ed86b345ce960a686e4250",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SSliderBar.h",
+        "bytes": 4085,
+        "sha256": "f157943b3b0d9bc8bfea780138c31dc5a91b4725df183659ba7d1d2716ce3272",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SSpinButtonCtrl.h",
+        "bytes": 4597,
+        "sha256": "49f33cafeafc430086d9c04192dc2f0c7f61206d471cab20d53cdb7017772dc1",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SSplitWnd.h",
+        "bytes": 7808,
+        "sha256": "c12bc008100466fe803122683f83b53f09b88091539e0dc0e6d4b56a22102693",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/STabCtrl.h",
+        "bytes": 14707,
+        "sha256": "bbc875b245d425278fabd56683e42fe08658cfc430024eba8be7a5eadf38e892",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/STileView.h",
+        "bytes": 4902,
+        "sha256": "dccb84a354d4dac2cdb67d77cb525d1694308f8d4078bcccc0784971d9cb663b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/STreeCtrl.h",
+        "bytes": 8138,
+        "sha256": "9e3092a7a226964580386845a27f345e6dfdb136ff6cf375cabda4bdcf98cb72",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/STreeView.h",
+        "bytes": 6971,
+        "sha256": "ad179aec65c83a5fbf4d0a9fa504e5f7592c0907e73f51dc3e9b767a9797e10b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/SouiCtrls.h",
+        "bytes": 606,
+        "sha256": "50eb8e10a961850cd7466bc17d1b84a3755e89df6fff338827c44e1ae881dabf",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/control/stree.hpp",
+        "bytes": 30762,
+        "sha256": "97912835a110843b6c1851f0b4f199c9797a83521aff995a8ea70dc7cf41386b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/Accelerator.h",
+        "bytes": 4767,
+        "sha256": "5ad8f4aabdb5506a92d47e3fbcbdddd1f9fd4b3d9b715f7a77092e393ca7432f",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/FocusManager.h",
+        "bytes": 8305,
+        "sha256": "80ac213c1a53900090890b8eb7c1d1fb968b1c2617474d374b5cfa77bbebef0e",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SCaret.h",
+        "bytes": 474,
+        "sha256": "cca223466111aee8290a690536823f7c6f29a8cafb8f64e9e8ec2317acae5832",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SDefine.h",
+        "bytes": 773,
+        "sha256": "be31a557aa75c817bdf115849fe4fe2f55bb01ad502baf2b9450470c890b9b80",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SDropTargetDispatcher.h",
+        "bytes": 2161,
+        "sha256": "410fb1e228e17cca65857aef3dd680f4d6a0430ff60edaa9595bdc87c2bf3e51",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SHostDialog.h",
+        "bytes": 1856,
+        "sha256": "08988270fce63f670d1dc208ed2da002dcdad068b29fcfc360008a23d6222c0c",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SHostPresenter.h",
+        "bytes": 833,
+        "sha256": "ef9a07ed792283b08b18995144b8d45a397617e1bf724f4579d4fbc8ba99888c",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SHostWnd.h",
+        "bytes": 12775,
+        "sha256": "f2fdb02fe323675fc865035eb8b8f71393d75800269451d500a8228011e4914f",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SItemPanel.h",
+        "bytes": 3818,
+        "sha256": "7d250d1e1d5eaea330099b4c383ee4dd0be751f96bf384c599a57df20ad67b95",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SMsgLoop.h",
+        "bytes": 1885,
+        "sha256": "3bd773c288a6afbe06d304c0d6ec8dc9638b081cb62748e2ecb87a94adea4433",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SObjectFactory.h",
+        "bytes": 4036,
+        "sha256": "48ac3add7745301152e9dd2d00a567de4f4fe76ae58f48380d21e8380ea73f5d",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SPanel.h",
+        "bytes": 6769,
+        "sha256": "f50927df691cf63d8a9689f4a233f8a06c88c83d3f0dec4ac5a20c63201fd2ac",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SSingleton.h",
+        "bytes": 1170,
+        "sha256": "2b380e278b90da53c516d1a90e1ee498f3fd91dc649cae275ebb16815ccc1c20",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SSingleton2.h",
+        "bytes": 1560,
+        "sha256": "a4ace57927f94a0ad8e1cd2a6c989f881b9758ad7e484ea5a848ff2ecd09583a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SSingletonMap.h",
+        "bytes": 1974,
+        "sha256": "7f6cdbff747bb5030a3c7de0cd2c6c896b6620c49d0e35d75b0081266f6b1a61",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SSkin.h",
+        "bytes": 16539,
+        "sha256": "a3a84c6847a9b0419c8f8f916283044777cb6be4be14228c6a01ad5426606d50",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SSkinObjBase.h",
+        "bytes": 3022,
+        "sha256": "3c61770d3dc65a4ed21792166c19991c7f3533bc1dc01c695f5aa6f4540382b9",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SWindowMgr.h",
+        "bytes": 880,
+        "sha256": "f7488a76b14a878c1063d9e13f7fb4215f9fe2c5def354ae90ef2e97a00bf171",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SimpleWnd.h",
+        "bytes": 13892,
+        "sha256": "c09ee208e84f53c04ac057192393bb035019caef4d9ad9b86b5a8d19fa553ccd",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/Swnd.h",
+        "bytes": 44387,
+        "sha256": "3ec2fac0fc9aee6053035738ec39b9c160628b334bc956ecc3bb8bfe47932fbc",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SwndAccessible.h",
+        "bytes": 2628,
+        "sha256": "7704d5a5aa49c7794337fa8e15f0a631550db9a035c9b6de144651abcf1dc5f5",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SwndContainer-i.h",
+        "bytes": 2860,
+        "sha256": "9d4908879e6f55fa85fbe21d1110fac8f9759211e8d590b8490c993c5dc18069",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SwndContainerImpl.h",
+        "bytes": 2778,
+        "sha256": "bc586cad69dbc56346bce7c8a3bc36d0af99a53204aa9e9478e24320551bbb04",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/SwndStyle.h",
+        "bytes": 5059,
+        "sha256": "297e27eb7d4a2080295b29fd664efd9d9ddb8a910df7835af9656f7ded644b7d",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/core/hostmsg.h",
+        "bytes": 822,
+        "sha256": "69a6d061b07720f66fc1dd8071e03da9ed9ce1e73a57bf60c4a57954bd5016f5",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/event/EventSet.h",
+        "bytes": 4922,
+        "sha256": "c7786a9b9d1308f04d556c50ed47a4a60c9158f7dfbbe920235b84f289f3b70d",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/event/EventSubscriber.h",
+        "bytes": 4616,
+        "sha256": "842bf0cebcfc9152f73ba8f3004f69c1dd2e789f40a77282e186fcae26471652",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/event/Events.h",
+        "bytes": 39998,
+        "sha256": "a1d9ece0e4142cf5026e96d4ab5593333899969197116118d3e655e0a59bdc78",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/event/NotifyCenter.h",
+        "bytes": 3130,
+        "sha256": "47cd3d7877e2dfc6ca3460c508288bc06e0de09e25ccdf424030114e26fa4736",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/event/eventcrack.h",
+        "bytes": 6110,
+        "sha256": "9a18b53a00fb288ab818f011fa4367c637a1c87d03e27222138d161f57dc0ec3",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/AppDir.h",
+        "bytes": 209,
+        "sha256": "869dd9238abd5ba377886b9f07ca72756f57eb3d1f8d0675c151f3c5182da827",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/DragWnd.h",
+        "bytes": 557,
+        "sha256": "bafbbd4c21c05f1a593fb976e89d51b46983fb0b6d9665c1b58ce57918282162",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/LunarData.h",
+        "bytes": 597773,
+        "sha256": "5462d8689498a4dd83d9e0e133b84b49957251b38f6c4e6f8383723ea4f82016",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/MemDC.h",
+        "bytes": 676,
+        "sha256": "6a9823c8dbd71f5a2d3cb0331725a08622feb755c2093b077d99e423bb42c605",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/MenuWndHook.h",
+        "bytes": 1999,
+        "sha256": "dbd8b85ab83710e37e0c82e6383bca7a96fe0b1db2cd4219bcc17e8f46673f25",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SAdapterBase.h",
+        "bytes": 15860,
+        "sha256": "cd159cf81ebd6289d4ed53f6130419411fc084e164d3504365dd75b3ccf296c5",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SAttrCracker.h",
+        "bytes": 22320,
+        "sha256": "ec17a6c01e324bb72eda77429bd99b636ddea5e9110b038c95ee5f6a13cd42da",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SDIBHelper.h",
+        "bytes": 766,
+        "sha256": "4cd4d3f271755ce5203cff3a0dd2009517e545a56991afe9d3f6f44ba57934a6",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SDpiHelper.hpp",
+        "bytes": 6826,
+        "sha256": "7e6f7d0f21d9452bef202f7a52bb95e64b5c6daa98f4a6126f0763f19532d573",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SDpiScale.h",
+        "bytes": 471,
+        "sha256": "2f2e1e2d205e23689cf2d77f653e1f3b1b34336da942969368e582f5e36f2524",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SFunctor.hpp",
+        "bytes": 14588,
+        "sha256": "d299dd58f7dcf3e93a56ead0d271c532f18aca4b1d14470423690bca90bb84f4",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SIpcParamHelper.hpp",
+        "bytes": 3518,
+        "sha256": "e0dc59bd8194a54a17ec3ad0f05aa49f5144f84be8a26fd455808b20b9d83394",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SListViewItemLocator.h",
+        "bytes": 3070,
+        "sha256": "10610955decdca76833d95eeae120d65db99578de26e97ce0d582f0eb0f2dbeb",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SMatrix.h",
+        "bytes": 2146,
+        "sha256": "d6366da5f603082d25152adf024d7262d737515c00e6bedf2ad3761d644cd66a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SMenu.h",
+        "bytes": 7690,
+        "sha256": "8a318bb4a8c3e44c8d74037d43265bfc9d87cafbdf16ecc792aeb0698cf6e0ed",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SMenuEx.h",
+        "bytes": 4779,
+        "sha256": "21a8c24650886a5b20b0dcad3ce60c2d6c4af2eaf56035a34eee3c16f3f105f2",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SResID.h",
+        "bytes": 1460,
+        "sha256": "e63466bf8e3e94c3874d79ead11522c645b6bd42b88a25a06e38dd76e383aeeb",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SScriptTimer.h",
+        "bytes": 648,
+        "sha256": "f2fb250e4fde18b929cf4a529000c440faf9adcc8e35774fdc056f81243053d9",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/STileViewItemLocator.h",
+        "bytes": 1923,
+        "sha256": "31022bcf33f24503a8d332a3a97847869feee7b083f7fac4528ddd94c69d30dc",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/STime.h",
+        "bytes": 10438,
+        "sha256": "7c18b76325e4aa8efb072c8117971efe8ce058fe4b6c844f5413147a0b49d8e3",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/STimerEx.h",
+        "bytes": 1033,
+        "sha256": "06cee8cf54c400ff9b5369057c21fc6419062720b27542b5dee4e086c5c869c0",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SToolTip.h",
+        "bytes": 1126,
+        "sha256": "678fde7077e3502a9062301d73c13fb1ce11122d3ecabb9e20b402202dee7c93",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SplitString.h",
+        "bytes": 1382,
+        "sha256": "62e8f64c65d5df02f7f7fc189aa439f20b9783f8f0d99b86fa0393fc4d298288",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SwndFinder.h",
+        "bytes": 2287,
+        "sha256": "5389b94b958fcb6d0bfd3d24898317182503eac8043c034dd66f3250c28d7cf4",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/SwndMsgCracker.h",
+        "bytes": 3537,
+        "sha256": "0d3c288c12467f92030ee381738a1e7cd553a68d92413e39865461959328ab74",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/auto_reset.h",
+        "bytes": 998,
+        "sha256": "d9290599369a85a0481bb4960afbc7b107e3bde7b819c99d91fd3ae868c3f979",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/color.h",
+        "bytes": 1309,
+        "sha256": "b62d7cb50299f25b11462c94fa0634233b78ec37885ba192aebdebae41455a6f",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/copylist.hpp",
+        "bytes": 722,
+        "sha256": "dce7e04a7b03dd12061fc3071458c12f8bc068536b4cc52288aa014351dfac85",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/mybuffer.h",
+        "bytes": 2158,
+        "sha256": "58c3c3159cb21d3e2efa586c001f338ce21bd1b7500ad41873a834461ff2b36b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/slog-def.h",
+        "bytes": 1304,
+        "sha256": "6f5c12c014faef2512707cdbbb9a68f5171289b29abbcd5cbec262e2d3dd5a8e",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/slog.h",
+        "bytes": 11694,
+        "sha256": "c4b76c18ecf9b536adf237ca2da809d510d7d4d863f62a5573cfcb381c1a4eab",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/swndspy.h",
+        "bytes": 364,
+        "sha256": "5e7c666bae4f28a27974893aabb228eac3b04c68a15b01d9d34dda3ff4cf7392",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/helper/unknown.h",
+        "bytes": 1274,
+        "sha256": "95118d742ec85454889e60e52d4b030acc3f72890908a3f93a1eae20e3975531",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/Adapter-i.h",
+        "bytes": 11181,
+        "sha256": "7d3f1f9aa98009ff65dea140fc55c0d52862274b58d573157bbb8262a488777e",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/LvItemLocator-i.h",
+        "bytes": 720,
+        "sha256": "45b74ef894d479d6ff1bc43ca55c61254bad80009af217ee13301fd91301cdd9",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/SAttrStorage-i.h",
+        "bytes": 428,
+        "sha256": "a32e6c9814a4009768a904b5f3a20a1c521461914099f9e4dcd973dcfa118bd5",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/SHostPresenter-i.h",
+        "bytes": 698,
+        "sha256": "f132db8d4b8c8d1b62c4b3fa5e177984a8554f21e5fdd41002a654adb38c0811",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/SPathEffect-i.h",
+        "bytes": 633,
+        "sha256": "f604db7fa101e4cc15ba81a0f6c352d60633a47b68d28f9a706b48dd3de31ba7",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/SResProvider-i.h",
+        "bytes": 4783,
+        "sha256": "4278b07bd150daacba3d36b86fd34e486479603de25e8063171ac7c18b87daed",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/SScriptModule-i.h",
+        "bytes": 3747,
+        "sha256": "858e8359042a7a69b5aba8e70c02b546d1437089c65fe6e392ca0635f1867f13",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/SSkinobj-i.h",
+        "bytes": 2942,
+        "sha256": "fbcd1dc3ddd73d111409217f60cb8b78d4f65d69acdd8383cb5071fac00a8d47",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/STaskLoop-i.h",
+        "bytes": 1896,
+        "sha256": "c99cef4796f03146bb20a33c97dd4f618e40bd4aefeffe91df991c4e6fd49620",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/STranslator-i.h",
+        "bytes": 5329,
+        "sha256": "bcba899675dbb367c8d0fde21c6ca0ed36f67977fd70e4d5bf551a2822a98fa1",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/TvItemLocator-i.h",
+        "bytes": 1273,
+        "sha256": "05b8e37b7a6d366ca1fb3edcfcca4328c8fd0938c0baa7db8793bcfb3b5eec12",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/imgdecoder-i.h",
+        "bytes": 4490,
+        "sha256": "724cd4e7432394169a3915bb45767816dffc81c1918ead8ee8948db5d960bcce",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/render-i.h",
+        "bytes": 44055,
+        "sha256": "688977ce5d11a440bd0e30a7b7652372c0ad4ed5e78a6f8c29ee0ea88fa86e4c",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/sacchelper-i.h",
+        "bytes": 239,
+        "sha256": "38b6218f06d16bb5a5801796d59dff70a311e9caa853024d6731fde0a7b21d44",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/saccproxy-i.h",
+        "bytes": 901,
+        "sha256": "a22cbf5a07724a607b776bdb6c92c355b6c99aefc82a23ba01dbe4c94b7f10a7",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/sinterpolator-i.h",
+        "bytes": 223,
+        "sha256": "9399b7f5afb29aec391fa4fb08a180612ee73a2d419555a8a747f3c6d8bcfc61",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/sipcobj-i.h",
+        "bytes": 3832,
+        "sha256": "dcf9bd8a450eaa8c8ab15b47229d000fa3c4b53d4a2a97a1e047c797b59b786c",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/slayout-i.h",
+        "bytes": 1305,
+        "sha256": "bc5d63ce44087a5e6af195c17d1fbf4990e35a148aa220e6c54813d9ab7b279f",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/slog-i.h",
+        "bytes": 3628,
+        "sha256": "2e0e1a94663270ead3c4a547ddfd57d0f41c689d7f9552c6ae99ebfd097ba633",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/interface/stooltip-i.h",
+        "bytes": 2200,
+        "sha256": "37127a8b6d3c4d570db77e95008830237907fe754ddbb6fe8152701c499bf8aa",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/layout/SGridLayout.h",
+        "bytes": 3331,
+        "sha256": "40231b8ac3cec8a90aa19e6a280c337de4ba2d54cef552293e143aee288a7036",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/layout/SGridLayoutParamStruct.h",
+        "bytes": 923,
+        "sha256": "0b38ffdcff6235fee68af5807168a5403ff3029df36a179bf4b6b548cdea3335",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/layout/SLayoutSize.h",
+        "bytes": 852,
+        "sha256": "95087522b2b6195499ae98d75a051b8c3d650a0612dc0eeb96702ed172f7eba2",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/layout/SLinearLayout.h",
+        "bytes": 3565,
+        "sha256": "c16d5cdd0485ce0b43997eea4940d8a6f3b4c8f48a8ec750fe95fc9579e5c809",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/layout/SLinearLayoutParamStruct.h",
+        "bytes": 420,
+        "sha256": "052ed4d350de2ba551bfbda47753309c027ed9407e57f663ef3615c6d52026e5",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/layout/SouiLayout.h",
+        "bytes": 3386,
+        "sha256": "65121090ba3fa0424c3a7d9937e9dc5a86b0de304c77b84b603584a9163309d1",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/layout/SouiLayoutParamStruct.h",
+        "bytes": 2524,
+        "sha256": "737873724589b317eb46f67ad9699c1bca42ee66775bb20c7f641bd61e0315c6",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/msaa/SAccProxyCmnCtrl.h",
+        "bytes": 1547,
+        "sha256": "e820c2146409ebd47ccd5c52762bb95b12dbfb92fdf5787ce4eeaaa463d503c8",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/msaa/SAccProxyWindow.h",
+        "bytes": 1051,
+        "sha256": "5095b28ab6d195297239f187301682e7e4ecfb754193c302cefb9db3d9010c84",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/res.mgr/SDpiAwareFont.h",
+        "bytes": 371,
+        "sha256": "e6881ee82ee4bd7c502c43b166b231b52f999654ed5271916218acb13a686d8d",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/res.mgr/SFontPool.h",
+        "bytes": 4209,
+        "sha256": "e344063d74df39b82b3248ad6ef6268b02896a30d36d5619762e3048d575b0dc",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/res.mgr/SNamedValue.h",
+        "bytes": 4753,
+        "sha256": "f71d47874bdf67d60b128434a305782dd431d2391a6945e42c5f33fdd2d85b9f",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/res.mgr/SObjDefAttr.h",
+        "bytes": 561,
+        "sha256": "9780f0867432775a9587354321e36ea94567dbc9f2c5e6ae6353655f2b90ae2a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/res.mgr/SResProvider.h",
+        "bytes": 3219,
+        "sha256": "17c89830f00811d788a33a3337a662196ea88557b6ad22e943c33752f45d19ed",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/res.mgr/SResProviderMgr.h",
+        "bytes": 3360,
+        "sha256": "04d640ec7fc75c8a4fd0e8e2d5ae8b235eb30250ba558a11efd03338c6e984ff",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/res.mgr/SSkinPool.h",
+        "bytes": 6634,
+        "sha256": "44b470c13932afd6cf8487d10a59b894f21ef82be510f994b22c6f1f3625003f",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/res.mgr/SStylePool.h",
+        "bytes": 4587,
+        "sha256": "5391dc26fc4f21ae63af304973357d099c12c41ff98a149418804e3ccc393fcc",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/res.mgr/SUiDef.h",
+        "bytes": 1637,
+        "sha256": "ffcd25dff47265797656925f8e09923be2542acd637a0810308d762be5709202",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/soui-version.h",
+        "bytes": 170,
+        "sha256": "0b0dfff88b88978cbd472de109c3693d8d58f534a9f631c8e0056e2ac2e97cdb",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/souistd.h",
+        "bytes": 2164,
+        "sha256": "16202430cfbbd3ff29a5058f8396f120e67d519a385316f8d6abc09bca1bade2",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/SOUI/include/souistd.h.cpp",
+        "bytes": 746,
+        "sha256": "4d6c84e0df0a64fc6507eb815f4cb5c72500aec97db73b55118bccbae07be340",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/components/com-cfg.h",
+        "bytes": 7176,
+        "sha256": "3eb71be378eb184b79edafd2038aed81064ec906a60c824133c0a7b91367e729",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/config/com-def.h",
+        "bytes": 67,
+        "sha256": "881f239535c68d35d837c8b1d7fbfac801eab7f590f50b669cd66988f46a4112",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/config/core-def.h",
+        "bytes": 69,
+        "sha256": "8e701be0d67bfdbab372d72b10c305ab911389dc870c95cafc12a2ba4d279afd",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/atl.mini/SComCli.h",
+        "bytes": 14154,
+        "sha256": "97b71769d32f9b0cf81d71e567ccf2f03e7c3233b6c65341476860d67ced30c8",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/atl.mini/SComHelper.h",
+        "bytes": 2382,
+        "sha256": "fc667cede2ccdbb5ab3e851c151b5b92a34632bd270b66c2ba75282995259ef6",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/atl.mini/atldef.h",
+        "bytes": 613,
+        "sha256": "65e4f0dbb375f922f1e53c952b137944ba5bfd3c55f191881cbcdd14bd6cd446",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/com-loader.hpp",
+        "bytes": 1014,
+        "sha256": "77e6a17407f34e573deb30e02e8d36d93613e785454f1bf4b0ab8aaafcd13da6",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/gdialpha.h",
+        "bytes": 757,
+        "sha256": "3767f1db57931765e33100461361cf3d7c1f73c84ca4f9026612f7fae0d6a2af",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/helper/SCriticalSection.h",
+        "bytes": 784,
+        "sha256": "6a370909581e70976e08de5d54f5fd346d39ba7455189a2db6223f85a204fd24",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/helper/SEmptyable.hpp",
+        "bytes": 1813,
+        "sha256": "95aa0583352f8866998cc967cd60230a70aab77450af7046d9a6d1a4431b6a95",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/helper/SNoCopyable.hpp",
+        "bytes": 328,
+        "sha256": "a41b09c7e71a307eaf6c2e3529a33406d6a6a1f45e81cd8647eb1fb1c7fa834b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/helper/SSemaphore.h",
+        "bytes": 1002,
+        "sha256": "a3cc044d2fa06d7991a70d7671687295efffe442b21c50378dc84b266a5ba214",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/helper/SSharedPtr.hpp",
+        "bytes": 4023,
+        "sha256": "6f19d9d671023273313f7f17d2846b8add122694c37d81fe96c5ed43f1d02526",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/pugixml/pugiconfig.hpp",
+        "bytes": 2757,
+        "sha256": "591cbdc422f85a71c43d984fc29e6a17b6b62967f18187779c0a5edffc6aa88e",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/pugixml/pugixml.hpp",
+        "bytes": 46307,
+        "sha256": "f36328aa605c4346d7d1f20a42763b00c5156e64742aeeae91983ac70170d2f6",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/pugixml/readme.txt",
+        "bytes": 2138,
+        "sha256": "e85f6bd181dab56dff88304388c71ee7f4a764b8a98ba01c28dbeed97062c04c",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/snew.h",
+        "bytes": 267,
+        "sha256": "cc33156385521e718c8e557503d7d82114fcd1b2e5ce76a7c3e24d8f8c19ffda",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/sobject/Sobject.hpp",
+        "bytes": 3248,
+        "sha256": "228ab824954b1cc95085872d488cb5d17c05c9e22c2411877cdde969d68b3c19",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/sobject/sobject-i.h",
+        "bytes": 8742,
+        "sha256": "22d7bd192a171f1d84884f9ca6069c89439ebb92305a4d2f2a1e0d96b67b534e",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/soui_mem_wrapper.h",
+        "bytes": 617,
+        "sha256": "ddaab0829ceeae53477a0f99c92736dbb848e94f2ff00b752d5213a115c790ae",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/souicoll.h",
+        "bytes": 100065,
+        "sha256": "60856be8eb20f2d75960709027f4e08f5afb113d980cbf530d56e9af1b683668",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/string/strcpcvt.h",
+        "bytes": 928,
+        "sha256": "9e8d12eabc2976f02d3a24bf23bc2f1efbdcf8f50006bd70681f1ab15e3def7f",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/string/tstring.h",
+        "bytes": 45753,
+        "sha256": "b76ad4287f838be7ed80e9f466182d04f58a1251d53acbde46dd72fc12318a22",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/trace.h",
+        "bytes": 358,
+        "sha256": "30e948660eecabad2650f32e4bd91dd982d3d750de627d321935ded4f9b24f95",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/unknown/obj-ref-i.h",
+        "bytes": 345,
+        "sha256": "41b568d1efeaee6de3c5a84370bc64a0f3fd90515ba1d0b666c6cfdba2e81008",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/unknown/obj-ref-impl.hpp",
+        "bytes": 2905,
+        "sha256": "30097a473f07db09172dbc9faf53feeff2bf504f296af605279ca5465e76ca64",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/utilities-def.h",
+        "bytes": 938,
+        "sha256": "c83181f8ccd4525db36d311062dde49ff16c93273957c47944bf7ee5e637e09a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/utilities.h",
+        "bytes": 388,
+        "sha256": "a140bab4381b46fbea9b1ec468f8f0f4e6e7f46e817e1d32ac751de3c9929e2d",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/wtl.mini/msgcrack.h",
+        "bytes": 71514,
+        "sha256": "a85fca0863447a3cb2f18b243dd50f210122fc52a10389a7bd0febdc9071c4af",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/include/soui/utilities/include/wtl.mini/souimisc.h",
+        "bytes": 17938,
+        "sha256": "fca77f5baa2bff010a55a7b79d03525f319ff509693305ec137909e14b626c91",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/licenses/element-plus-2.11.1-LICENSE.txt",
+        "bytes": 1098,
+        "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/licenses/element-plus-2.14.5-LICENSE.txt",
+        "bytes": 1077,
+        "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/licenses/element-plus-2.14.7-LICENSE.txt",
+        "bytes": 1077,
+        "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/licenses/ijg-jpeg-9a-README.txt",
+        "bytes": 19110,
+        "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/licenses/libcurl-7.61.1-COPYING.txt",
+        "bytes": 1088,
+        "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/licenses/ots-5.0.0-LICENSE.txt",
+        "bytes": 1563,
+        "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/licenses/tailwindcss-3.4.17-LICENSE.txt",
+        "bytes": 1071,
+        "sha256": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt",
+        "bytes": 1488,
+        "sha256": "324083bf015092054be9d5851dafa1b79cbfab3331ff983476d502839515d8bb",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/licenses/webview2-sdk-1.0.4258.31-NOTICE.txt",
+        "bytes": 3894,
+        "sha256": "106423785c5b7eba0a8e61d1837f2132e9c828e20ad530f565d981c1df60dd90",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/manifests/dependencies.json",
+        "bytes": 33891,
+        "sha256": "1ed9729afa139c48964926dda797f680cf520e088e2b01361af9f3f56e671701",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/manifests/kernel-build-preview14.json",
+        "bytes": 2136,
+        "sha256": "9ead5a63f1c0db3081992278c40a1f8dc68c1ae0790327b7c3f89aac3813ea30",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/manifests/license-review.json",
+        "bytes": 1273,
+        "sha256": "5a998eeef7b9dbccafa29ec25a1f1dd947bdc60cee4ec8738bf6050ae24bc0c6",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/prebuilt/x64/miniblink/node.dll",
+        "bytes": 35865600,
+        "sha256": "fe4160a70587d027504c409b8fd2bc5c87d78392811bff0c969f69c41a44d951",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-console-l1-1-0.dll",
+        "bytes": 13376,
+        "sha256": "6801f5306be9f07a8376fd72d95ee6f2c286d02a940822af4f9c873c58a8c79b",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-console-l1-2-0.dll",
+        "bytes": 13368,
+        "sha256": "3239f73115b8614296dfb0dc72a79cbcc9c6e26e528fcb18e044c7bd673ef122",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-datetime-l1-1-0.dll",
+        "bytes": 12864,
+        "sha256": "bea649ba3dedf2b6e46d2085f3b354fc3eeb1440e1c2c5ea97721b147921cc85",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-debug-l1-1-0.dll",
+        "bytes": 12840,
+        "sha256": "3de02d9fa11365c84d9da6a29841cc130239ce3bede7535847d001172def18a8",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-errorhandling-l1-1-0.dll",
+        "bytes": 12880,
+        "sha256": "848cd0fc6f7b994af337a1b895709949c4a1d2380a32737c86b81b73f6f4aab1",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-file-l1-1-0.dll",
+        "bytes": 16464,
+        "sha256": "a261e91aee4552d2f4d4bccf73afb0124d45ef12f37fd617e9818c7c41644556",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-file-l1-2-0.dll",
+        "bytes": 12864,
+        "sha256": "d7add947980a5ce1bb875cc2340dd318739c717898366b27542b4386cafed530",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-file-l2-1-0.dll",
+        "bytes": 12856,
+        "sha256": "a3e5f16c901f3aa34927d848628fdadb2bf39948da958785872a204940327365",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-handle-l1-1-0.dll",
+        "bytes": 12864,
+        "sha256": "c0874c137181bf40542b9fda3443063247962e7cbf87a43109a2f1d4b2231dba",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-heap-l1-1-0.dll",
+        "bytes": 13392,
+        "sha256": "691f8c9d3a52396851400870a25eb4ed864d89fa4579d6cf82fff99e5393fdd2",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-interlocked-l1-1-0.dll",
+        "bytes": 12856,
+        "sha256": "7a35ed8d0d3f917e51c1c9be4a465f298e01cc26d4b090c4611b4045365e3471",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-libraryloader-l1-1-0.dll",
+        "bytes": 13864,
+        "sha256": "5ce62d6356f80fbcab69bd53b4b31cbb7b3cbcfb69736bb56d32272c56a107fc",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-localization-l1-2-0.dll",
+        "bytes": 15936,
+        "sha256": "b6158bf61526b05ba5569f5191fce05f2d78dac356aade761c110a645c9ebc7f",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-memory-l1-1-0.dll",
+        "bytes": 13368,
+        "sha256": "49caa4ac64640e07642d5332850b09d7765a263d418e31c4ea563f72b53ad6ac",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-namedpipe-l1-1-0.dll",
+        "bytes": 12880,
+        "sha256": "0db4d342deb40d02dd84d8d1242c2c455eda11dadaf7d1c0da24887c368b55c2",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-processenvironment-l1-1-0.dll",
+        "bytes": 13888,
+        "sha256": "df7819c1f49c5070fec9289c6c91f3b78da3eb2dbb54267c6ee17fdbd1d75aab",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-processthreads-l1-1-0.dll",
+        "bytes": 15400,
+        "sha256": "378000df20aaa09fb41deecf06a9bd868cd1424c695971e2cb4f19de39b127e3",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-processthreads-l1-1-1.dll",
+        "bytes": 13376,
+        "sha256": "ec26ab8014c7e3b102b2f5e7268f025fad1993027571a0fcb26b82606be31f4d",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-profile-l1-1-0.dll",
+        "bytes": 12856,
+        "sha256": "3a2d5d94142c0eab0336cae355776d46aab81511fe85a81ea5d1cb58fcfc6f44",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-rtlsupport-l1-1-0.dll",
+        "bytes": 13392,
+        "sha256": "f3e88425e086c99ba9b50301272eb5fedbea93975848496c4c929dead0f4b3b6",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-string-l1-1-0.dll",
+        "bytes": 12880,
+        "sha256": "f5deaf128637170e8a5c5f5c18b0d14b3c4541a33d54ee0b9c4ab2d8bb748415",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-synch-l1-1-0.dll",
+        "bytes": 14912,
+        "sha256": "6b043a1dd6a02e6a09e2d9c2047e95df9b091f641fd8e0a61a74599697360017",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-synch-l1-2-0.dll",
+        "bytes": 13376,
+        "sha256": "af7d60e1f7d127be7be92519bc2b24f0ad5a095cb04a8784b2337e81895ff7f7",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-sysinfo-l1-1-0.dll",
+        "bytes": 13904,
+        "sha256": "1fd75b049056b219195e1ac36f207d59b1c0aea37b7be63c659733fe9f428f84",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-timezone-l1-1-0.dll",
+        "bytes": 13392,
+        "sha256": "d216b9631f0e1e561a910b1b17a7b0ef6ec78614c38991617e31fb98213bca08",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-core-util-l1-1-0.dll",
+        "bytes": 12840,
+        "sha256": "ced4c182964a46b9ee461c2845a90e728c67843a77635b06354617544534630f",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-conio-l1-1-0.dll",
+        "bytes": 13904,
+        "sha256": "f1737997ec35f7f00638297b4fab5450b93f4128c2927ab47a54c361addf7499",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-convert-l1-1-0.dll",
+        "bytes": 16952,
+        "sha256": "25fe8493624b0a0d9d00a46fb41e4356c1cd01fa80f7b1e6ab831df2ccac762a",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-environment-l1-1-0.dll",
+        "bytes": 13368,
+        "sha256": "16e8b7c5f5c806bf831c81f2124c86ed8da1d34d7c430475894f49d3007e499a",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-filesystem-l1-1-0.dll",
+        "bytes": 14888,
+        "sha256": "790495652731de7e51e4803e3ecb0c050d95749e8e84bc4bcf6f3b67d756e9ed",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-heap-l1-1-0.dll",
+        "bytes": 13880,
+        "sha256": "49f8312f15018bbf386704dd8fc62e0043ed38b98413b5a19f3776bc780d1253",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-locale-l1-1-0.dll",
+        "bytes": 13368,
+        "sha256": "880127e94c1437d94e508f8c806e24413d95d1e0b131f88bc45606e4dece23ca",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-math-l1-1-0.dll",
+        "bytes": 22072,
+        "sha256": "26effb6000a24e3c1c597009e148f48a44498bbcf4218f0119c7301f8ac5a78c",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-multibyte-l1-1-0.dll",
+        "bytes": 21032,
+        "sha256": "b674a5e4ec8446c411f6a7ebfd179a2b385714c60adf4b21f9f81650b415b61c",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-private-l1-1-0.dll",
+        "bytes": 65576,
+        "sha256": "6b33bdfb8c6589541d0211eb44b173f8aae5f2df9db82f535cb90a5054d69f49",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-process-l1-1-0.dll",
+        "bytes": 13864,
+        "sha256": "820aeb34862d0058bc66af68859f6ffce1af4c9d0cf83fe7df58611e4ce3d6b9",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-runtime-l1-1-0.dll",
+        "bytes": 17488,
+        "sha256": "6a95a2ea68320591a955c2930462798083a8cc7e6d79754122c21b293ba9a1a8",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-stdio-l1-1-0.dll",
+        "bytes": 18984,
+        "sha256": "18d8b00e797538bc4767c19ae1762df18c64479a54e7041b8b4da99e32cda8bd",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-string-l1-1-0.dll",
+        "bytes": 19520,
+        "sha256": "c94bb2053a6541cc065b806ea945d420eb3207c3bee1d760401a600506e99589",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-time-l1-1-0.dll",
+        "bytes": 15400,
+        "sha256": "26376455bd746d87e150e73856d0db88303e0af2533f32956999c505e29db6fb",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/api-ms-win-crt-utility-l1-1-0.dll",
+        "bytes": 13368,
+        "sha256": "39b254cb97f25869d3c335899c6d3bab346cd6b000f2803ca9ddc8f2540c3a32",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/ucrt/x64/ucrtbase.dll",
+        "bytes": 1036864,
+        "sha256": "0a2be4a529a46fe0579150e205af3518988a58e70000dd4053bae541e98fc3f2",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/vc/Microsoft.VC143.CRT/concrt140.dll",
+        "bytes": 324208,
+        "sha256": "2405355f0a58067b258f8df33c327e3a3d716eaac5a3a5aebb757842d85bd376",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/vc/Microsoft.VC143.CRT/msvcp140.dll",
+        "bytes": 557728,
+        "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/vc/Microsoft.VC143.CRT/msvcp140_1.dll",
+        "bytes": 35952,
+        "sha256": "bfad5aef4c63a669e3c140655cdfdf395b6c979b400a447bd5dcb65ed8826c3d",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/vc/Microsoft.VC143.CRT/msvcp140_2.dll",
+        "bytes": 280200,
+        "sha256": "3ea06f0ee098b4823cb79599df3780e7f23cce52c19aac31d2a0d47efe33a5e9",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/vc/Microsoft.VC143.CRT/msvcp140_atomic_wait.dll",
+        "bytes": 50304,
+        "sha256": "640b2aefced484d0368eea5bdd06addd0658a3a70a49256e560d6923b404a479",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/vc/Microsoft.VC143.CRT/msvcp140_codecvt_ids.dll",
+        "bytes": 31872,
+        "sha256": "f2069a52880ec885ee7f0511186100eb7fada0411a2b4948fafea7735b878a18",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/vc/Microsoft.VC143.CRT/vccorlib140.dll",
+        "bytes": 352384,
+        "sha256": "19839407c3fdbc824e5bce189bf68ddf8097f12ec28b757797ffa0415c144ddd",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/vc/Microsoft.VC143.CRT/vcruntime140.dll",
+        "bytes": 124544,
+        "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/vc/Microsoft.VC143.CRT/vcruntime140_1.dll",
+        "bytes": 49792,
+        "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/vc/Microsoft.VC143.CRT/vcruntime140_threads.dll",
+        "bytes": 38528,
+        "sha256": "219915cf20822f34d5e7c1fdd4e21ae7f3396881096c51036225fb8f84b47afa",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/runtime/vc/zlib1.dll",
+        "bytes": 88576,
+        "sha256": "fb6726dbcd7bb3659ca126ef4d5c7f83de46ab5e2b470316925e1d5873ec9045",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/bin/imgdecoder-gdip.dll",
+        "bytes": 22016,
+        "sha256": "d77aa604f007452f3e7ee06bba06f63a4ae960cdb15cda57c65a1a4b42ff741f",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/bin/imgdecoder-gdipd.dll",
+        "bytes": 72192,
+        "sha256": "187c9e934d602053649da124d50e720847fd3c9f25ed5d0c6c414b8f9f82c382",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/bin/render-gdi.dll",
+        "bytes": 51200,
+        "sha256": "363ab16fc113a679ba307b087e88947ad3b6e165804e4072ced8b08a0456a895",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/bin/render-gdid.dll",
+        "bytes": 156672,
+        "sha256": "a809745a4b6db51f3fbc1472f8249058d8a9932ef1d42696860aa37f1650c9c6",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/bin/soui-sys-resource.dll",
+        "bytes": 122368,
+        "sha256": "effd8ea82e281f8d4ce7ae2e9573163b942e838c2437d1574969f0ad7b50b7c5",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/bin/soui-sys-resourced.dll",
+        "bytes": 148480,
+        "sha256": "4f669f55071cb062fedb14ab7cbbb75ed2f9335197241e03f943b027bda08aa7",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/bin/soui.dll",
+        "bytes": 1200640,
+        "sha256": "eea3f03795f2ac3fad8a19e9178c40da74e653452d1ebed9c367e3b942f4d96e",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/bin/souid.dll",
+        "bytes": 2888192,
+        "sha256": "93af782bc455deca494e9b5a3c16fdbcc66ad77791746b566e14b05972f19366",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/bin/utilities.dll",
+        "bytes": 113152,
+        "sha256": "1bddc92997f364cf01498559bb0bc66a1ef37988ca759a225197a3ff333b8950",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/bin/utilitiesd.dll",
+        "bytes": 268288,
+        "sha256": "39773879cdf5549346691e5109f4c24299e96fd564b34b5541cc3710450dd503",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/lib/soui.lib",
+        "bytes": 1454092,
+        "sha256": "0c589952c3fcb56a85a8dfd983b611c3c11951eb42fb68378014abe44e71511b",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/lib/souid.lib",
+        "bytes": 1457492,
+        "sha256": "db5b5ea98132e227f433acb8559d038acf2332449c54731f360b310ef4026f9c",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/lib/utilities.lib",
+        "bytes": 175454,
+        "sha256": "a197de4b10faaac3b538dc05a45f172826e39b227d861f44b9e49d4ea9b18b9d",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x64/soui/lib/utilitiesd.lib",
+        "bytes": 175912,
+        "sha256": "ec71f3721d1c9b1d5fc50220a52f72baa947b0d1a9ca97275ce3b98071165f6e",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/miniblink/node.dll",
+        "bytes": 22988288,
+        "sha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/API-MS-Win-core-xstate-l2-1-0.dll",
+        "bytes": 12328,
+        "sha256": "f0619ecd237feb5287c10f283994b470e6efd3c008392e8372a9a29f29b94ad2",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-console-l1-1-0.dll",
+        "bytes": 12840,
+        "sha256": "35e4308351bec766eec1dfb5bc9b6aca4417d6d822fdff7c779618ebfc2c2652",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-console-l1-2-0.dll",
+        "bytes": 12840,
+        "sha256": "72023dd72f20d305286ca64e188f3a1b58f8adec8934778e50cc20e4d6793956",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-datetime-l1-1-0.dll",
+        "bytes": 12328,
+        "sha256": "cbeb3fce4b9067aefbe995970d39cd2498270e4929ae2e367ac15d3cb9ebac06",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-debug-l1-1-0.dll",
+        "bytes": 12344,
+        "sha256": "6a168c94d5194d63f2d80f905ab9339e01afecc757af44b6658943fd369afd89",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-errorhandling-l1-1-0.dll",
+        "bytes": 12328,
+        "sha256": "45757a42a31d519b0e6b2cf031352dceace039e69a65119b506e332fc2628fbd",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-file-l1-1-0.dll",
+        "bytes": 15912,
+        "sha256": "e3eb59f334848b30e3271d9236404a9e4df711409894e4880c4ceec080707014",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-file-l1-2-0.dll",
+        "bytes": 12328,
+        "sha256": "0777622b3487106f4ec764e415e3796a3c6ed2e0ebf799219b9a864dfe04735c",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-file-l2-1-0.dll",
+        "bytes": 12344,
+        "sha256": "26c7c62d033f50ac68a6c5a953816b2614efea1a123fecd66a0423da08769a54",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-handle-l1-1-0.dll",
+        "bytes": 12328,
+        "sha256": "d4244d9ca65ca5c1a9de9e37d2839262c61099fc92e6728e0aeb6da988b28e78",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-heap-l1-1-0.dll",
+        "bytes": 12856,
+        "sha256": "e4a9c2ebaebcec78eeaef566f30af26fbbb04005650a342aa47c0df941197218",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-interlocked-l1-1-0.dll",
+        "bytes": 12856,
+        "sha256": "a5b9ac82f8564d3062f26c02c2c7a29b34ee8a5391831276c9bc4b8c911b015a",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-libraryloader-l1-1-0.dll",
+        "bytes": 13352,
+        "sha256": "fe748c3a751de4e25afb1d66de0459917eae079fbbd5a75515b179057b012049",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-localization-l1-2-0.dll",
+        "bytes": 14888,
+        "sha256": "e84b59c4d0371a701a11732c6db4ad47ea735d5ead7b7ed697c9e7b5e267d5b6",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-memory-l1-1-0.dll",
+        "bytes": 12840,
+        "sha256": "60a8f25ee3942f2dba151e9676fa858a034ff090767a80d1a3a986b77fa7c94a",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-namedpipe-l1-1-0.dll",
+        "bytes": 12328,
+        "sha256": "1380ae17c1c21764d1677a59a95a8302c17f2ac7676cc96921747476595e30ab",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-processenvironment-l1-1-0.dll",
+        "bytes": 13352,
+        "sha256": "c0e71c61fec11988ce93f6524e98544f3cf71a55086365d9d40029cc16ed1b94",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-processthreads-l1-1-0.dll",
+        "bytes": 14888,
+        "sha256": "9cb774aa46cd16e17d78d1ee939279cd69d68ba7445e90ebdd186bd02f0bb415",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-processthreads-l1-1-1.dll",
+        "bytes": 12856,
+        "sha256": "471ff523e741d4c16eb843b2820d6d9be42cda4c4b13c7c06f45e55bfa39b2e3",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-profile-l1-1-0.dll",
+        "bytes": 11832,
+        "sha256": "615693905133a17d9d72d8b46fd9ae85443bac5990e11a2e7ae8b405e10d56c0",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-rtlsupport-l1-1-0.dll",
+        "bytes": 12344,
+        "sha256": "b7a2f47b389a8d0f2d1f1279516f99fbff399aed485d522472f373265cb99d46",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-string-l1-1-0.dll",
+        "bytes": 12328,
+        "sha256": "6bac726de58d5305f13a55d7dd83769e20536362c18a07262747c4b4a73c79df",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-synch-l1-1-0.dll",
+        "bytes": 14392,
+        "sha256": "61d44dcde3af12cdf8f545fce458610496d699a2658c28e280fa715999fa8f3e",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-synch-l1-2-0.dll",
+        "bytes": 12840,
+        "sha256": "0f8bac3bc17c6a03d090c59a7b24958fd9a732cb82ea82f223ee1c5d7c6c2448",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-sysinfo-l1-1-0.dll",
+        "bytes": 13352,
+        "sha256": "91c2f53d2078142f0ed742b0dbac94c2b2006d15285753be70f3b28e0aebdbd7",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-timezone-l1-1-0.dll",
+        "bytes": 12856,
+        "sha256": "150e57cab3e9e7b443050b13418f5f6e93a2d2c7e6ab5b8a06962d9d9df820d0",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-core-util-l1-1-0.dll",
+        "bytes": 12328,
+        "sha256": "c1b7d839923ee2ecd91246335bde6a39c65c088b61566c694ab6ba318476b7c6",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-conio-l1-1-0.dll",
+        "bytes": 13352,
+        "sha256": "78398b9e78680cfa705104eed73b59cd0c5208298bdead11cb778c11bf4eb3c0",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-convert-l1-1-0.dll",
+        "bytes": 16440,
+        "sha256": "ce26c495f3682f728cd783c4703e709a817355ac9c996713562b9c6ec4a64855",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-environment-l1-1-0.dll",
+        "bytes": 12840,
+        "sha256": "29cb4c12407e87d1cfb2073c9d856bbdec8d29f2190a6e2eb762ed2c14b75869",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-filesystem-l1-1-0.dll",
+        "bytes": 14376,
+        "sha256": "31011adfbe20d6004532a56937349b98ae2913ae0996e88236e4d2db37f0d19e",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-heap-l1-1-0.dll",
+        "bytes": 13352,
+        "sha256": "06e35112d8b3d1d98566bb75b0f586e457783af8f981c2c1fb97bed11d7c4030",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-locale-l1-1-0.dll",
+        "bytes": 12840,
+        "sha256": "7347bdcfef657d6dc57c74abe2969632f96d8e1f1228c0d6b405b56a3cbcb3ac",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-math-l1-1-0.dll",
+        "bytes": 23080,
+        "sha256": "efc419f701c15228db2cd8347ee030515dfd3ff9b6c13f6c0b50e207313dc6cf",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-multibyte-l1-1-0.dll",
+        "bytes": 20536,
+        "sha256": "b2edd6f49b474303a40150b6f44cdeb7b4954bb7c53407d82b69d13e2908699f",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-private-l1-1-0.dll",
+        "bytes": 67120,
+        "sha256": "2ab1fa504d082e7dd4565acfefb15b86d1711c86d5fa0d7867bbb8af1d8f4f45",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-process-l1-1-0.dll",
+        "bytes": 13352,
+        "sha256": "fc8aff5eb737f42742790e0b1a62f1368296e54ffa141ac75491ebd561b588fe",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-runtime-l1-1-0.dll",
+        "bytes": 16952,
+        "sha256": "c68c494549d7891a37b9e5fe6e172af1a1da88ac20e7db951d2f51e6a69df3d8",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-stdio-l1-1-0.dll",
+        "bytes": 18472,
+        "sha256": "e116c1689a811dd9740eeba6f4ea200c54a685f716e5ae2e8526ec18a3973e53",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-string-l1-1-0.dll",
+        "bytes": 18984,
+        "sha256": "fe123c4190422cda976253ec952ab0ba37c3bca66bc428dcaab5b9e69e769a8e",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-time-l1-1-0.dll",
+        "bytes": 14904,
+        "sha256": "f9914b9aa16678157aa8bd5203d383a08d5e1df3fd54fd8858d7bceed04be65d",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/api-ms-win-crt-utility-l1-1-0.dll",
+        "bytes": 12856,
+        "sha256": "55b9e24759c65a74a3dc6422f9e2e796b42b61b1090dac2776df07f568f50582",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/ucrt/x86/ucrtbase.dll",
+        "bytes": 1172024,
+        "sha256": "d7a94eabf4109bb5a2e381a603bee5e398a81f23894e1764170399ec83ad2541",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/vc/Microsoft.VC143.CRT/concrt140.dll",
+        "bytes": 259688,
+        "sha256": "a2b04c69868b08a600518ebbad1661d38de4dd0e0a8e638c22d4641d410e50b1",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/vc/Microsoft.VC143.CRT/msvcp140.dll",
+        "bytes": 447616,
+        "sha256": "97e71a3c697fb1ab3af777db39009e4602525e8c3aff0837ecc7031cba188165",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/vc/Microsoft.VC143.CRT/msvcp140_1.dll",
+        "bytes": 33896,
+        "sha256": "01a58552686d0c6b9fd67a7ac81169fc0013aedf59a8efdc611f94907489a31c",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/vc/Microsoft.VC143.CRT/msvcp140_2.dll",
+        "bytes": 294992,
+        "sha256": "2a5365e03cc6e78b408dfca81537f3734bf3d7cf9cc13ae33204dfbc641dbe43",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/vc/Microsoft.VC143.CRT/msvcp140_atomic_wait.dll",
+        "bytes": 47240,
+        "sha256": "c4a2bae74e008a5bb2445f9078c14df9dcb03267248dfa64e7d04cdc8af5208e",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/vc/Microsoft.VC143.CRT/msvcp140_codecvt_ids.dll",
+        "bytes": 30824,
+        "sha256": "a5cbecfd9b8892ec9a60e30fef7ef2158032c6d91efdfbaca87c082bcd48bfa9",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/vc/Microsoft.VC143.CRT/vccorlib140.dll",
+        "bytes": 287360,
+        "sha256": "89ed5a6877a87ec3ec9fe4a0fb14dc950599f0b67318e746084a0c333a6c865f",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/vc/Microsoft.VC143.CRT/vcruntime140.dll",
+        "bytes": 91216,
+        "sha256": "a9d7732a3c3de09f0601a7fa2555093dcb49f08e2fc62a86091461f0f38393ed",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/vc/Microsoft.VC143.CRT/vcruntime140_threads.dll",
+        "bytes": 36000,
+        "sha256": "bb2b1d16187562376fc888059e2cbbf26c5404f6a4bb7197d1d01b970f199667",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/runtime/vc/zlib1.dll",
+        "bytes": 78336,
+        "sha256": "39611555cc1ba130a88cc3b32835207004dac7915d2fda42186c75b7743908ee",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/bin/imgdecoder-gdip.dll",
+        "bytes": 17920,
+        "sha256": "c8c7643191bef7489422dd65a6e3ea6982912487e783dc24237a974d354ac114",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/bin/imgdecoder-gdipd.dll",
+        "bytes": 56320,
+        "sha256": "61dc18822abc2c9640a067da5fa32a894f8e7ab18f2e21876f60f2d1170da3cc",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/bin/render-gdi.dll",
+        "bytes": 42496,
+        "sha256": "fe5b27388de7b63fec69b43ee93dc421cd57eb7df21aed667453f0c5a46b5171",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/bin/render-gdid.dll",
+        "bytes": 116224,
+        "sha256": "5583ea0143b6f354dabe195d5e9ce3434874defaf361153da274f4439b55d0ab",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/bin/soui-sys-resource.dll",
+        "bytes": 121856,
+        "sha256": "13ad6ded9cb39570c0fa38c22e713469e9bddd50da0ce77033631dbe59ba4782",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/bin/soui-sys-resourced.dll",
+        "bytes": 148480,
+        "sha256": "e59d54261762a179bb84453b2fcac3d5cd28137e0362314ce9b385d3b2246809",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/bin/soui.dll",
+        "bytes": 930304,
+        "sha256": "1ea0ff009b1ea6b513ee94a252be059a9a755df75a67043b25ff2f5394f040de",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/bin/souid.dll",
+        "bytes": 2266624,
+        "sha256": "282fda8f9e6a50de450cb4c5726a0bff58304f734070d9ed63feaf117e624dad",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/bin/utilities.dll",
+        "bytes": 88064,
+        "sha256": "316c174853f5a0dc0687c2f6b43418c2c46bf92251b2b6fa71190e9d72e94caf",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/bin/utilitiesd.dll",
+        "bytes": 211968,
+        "sha256": "f6dded17a5349a5b0c57c5f6f22cc4e96f8c7dcd72bcf942891407a6b3b3d4cb",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/lib/soui.lib",
+        "bytes": 1422394,
+        "sha256": "9144e0cc7a42eb513ad2a2b23e9b802b21e73c5fdc53891788cef1b2500f16a1",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/lib/souid.lib",
+        "bytes": 1425912,
+        "sha256": "09d131a3a65f6222f040d3f2fd2fdf0b5c0216351621f1e90ecef5fbd8fa37ca",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/lib/utilities.lib",
+        "bytes": 171606,
+        "sha256": "096f15cb4086ad5efbbbf8474664a37816263df43605c2415716f76e5d28fe22",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/prebuilt/x86/soui/lib/utilitiesd.lib",
+        "bytes": 172074,
+        "sha256": "5ea820355d5e5ec31dbdb5de4bb1668d2e6d27a20db74669ed4ebb0bc6a6a27f",
+        "sourceNormalization": "none"
+      },
+      {
+        "path": "third_party/sources/zlib/LICENSE",
+        "bytes": 1124,
+        "sha256": "282644c64aa8c4f0a4a589fd38d2213e41f37b4e0e4f639e01149d09b67117db",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/README",
+        "bytes": 5187,
+        "sha256": "7960b6b1cc63e619abb77acaea5427159605afee8c8b362664f4effc7d7f7d15",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/README.chromium",
+        "bytes": 1691,
+        "sha256": "6df18813d3e1d9e029d93096b749f7d186501e8821402a43aa3f10e0f03eeab8",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/adler32.c",
+        "bytes": 5204,
+        "sha256": "d7f1b6e44fee20ab41cef1d650776a039a2348935eb96bcbd294a4096139be3a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/compress.c",
+        "bytes": 2699,
+        "sha256": "5c11e1fc22e219cb986f6fa9e4ba939315227e84aef042737d38ec668b89b6d2",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/crc32.c",
+        "bytes": 14053,
+        "sha256": "a04af273e83ecc351bf3794974ab2098d8d960df4044b7b44734c41443ee26d0",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/crc32.h",
+        "bytes": 30562,
+        "sha256": "407af59d0abfea84a6507c603eb29809411797f98249614fe76a661def783ce1",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/deflate.c",
+        "bytes": 78889,
+        "sha256": "11fd6b0328b65c4ad4b5c204d892a97a9083628a7e77dc47836c8e0c799f8da0",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/deflate.h",
+        "bytes": 13150,
+        "sha256": "0ca7fb0cf1dd63001c6e9e4ff93c8dbff2fe521199be51a4dda38a11b44919f6",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/gzguts.h",
+        "bytes": 6819,
+        "sha256": "1ef4741cf10441feeca5c8dde2b6c754f0cbd96fcae697d54a604757289a5e9b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/infback.c",
+        "bytes": 22715,
+        "sha256": "abe44873b5af2ea68ea1d281d915b2800f1832f846d2c05442a4711adbe6f269",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/inffast.c",
+        "bytes": 12978,
+        "sha256": "4d496ab2a3d29df5fadc3dbff6067e039806aaceae6cfcd09ea77d46c2b848fd",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/inffast.h",
+        "bytes": 427,
+        "sha256": "7d8c1c873ce9bc346ad6005bb9d75cce5c6352aaf7395385be216a9452a34908",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/inffixed.h",
+        "bytes": 6332,
+        "sha256": "237ba710f090e432b62ebf963bee8b302867e9691406b2d3f8ee89ee7bfef9b0",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/inflate.c",
+        "bytes": 54800,
+        "sha256": "8b6c599c3563c14c447c47db0d7dc9a16e8c246a078ec95a169ddcebaaebd811",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/inflate.h",
+        "bytes": 6618,
+        "sha256": "8ec9ac297790276f7e46a961d4c6f9f944fb1dec92401339ec2666973cc5983c",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/inftrees.c",
+        "bytes": 12999,
+        "sha256": "1960ca67384376f65b6ce8c08fdb501f8eb33923e11ef5f61a855708c6cb0a8a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/inftrees.h",
+        "bytes": 2928,
+        "sha256": "c510b36402784b1f898be3b049b923469aa92701de2d9195aed19f6b65c0dce2",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/source-manifest.json",
+        "bytes": 3577,
+        "sha256": "90ae57c39397f7eb1f13742f68d0276247f0e9f5402eeac647b60b0fb4ff9921",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/trees.c",
+        "bytes": 43761,
+        "sha256": "f2a5f949ea70dde7c23a54c793aeed630a03df4bb72417cd3aa008000c44699b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/trees.h",
+        "bytes": 8472,
+        "sha256": "bb0a9d3ca88ee00c81adb7c636e73b97085f6ef1b52d6d58edbe2b6dc3adeb4d",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/uncompr.c",
+        "bytes": 1368,
+        "sha256": "34a126d54addf0d634efac2fe910b43a9acf3fd6eea699585fb6cfc3c187d474",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/zconf.h",
+        "bytes": 16298,
+        "sha256": "9c0087f31cd45fe4bfa0ca79b51df2c69d67c44f2fbb2223d7cf9ab8d971c360",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/zlib.h",
+        "bytes": 96239,
+        "sha256": "4ddc82b4af931ab55f44d977bde81bfbc4151b5dcdccc03142831a301b5ec3c8",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/zutil.c",
+        "bytes": 7304,
+        "sha256": "f7fdc9ef326a2683eb33c794face54e83c751ec17f3d1ba581847a62af36ddcd",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "third_party/sources/zlib/zutil.h",
+        "bytes": 7127,
+        "sha256": "9a63f6690fac1620aa3cecee5752af618806da438a256b4a047fbcd289cac159",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/Build.ps1",
+        "bytes": 5511,
+        "sha256": "d28a789a8415e571bb519e4214368ffc985f9f1fb8b395b5dd39355bed33ee60",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/Test-Modern.ps1",
+        "bytes": 3158,
+        "sha256": "e35bec5142fe09f812ff4b8e1094542da71eedadad58a9fdf5d2ecefcc926223",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/Build-KernelLibraryArch.cmd",
+        "bytes": 919,
+        "sha256": "0cf79b8eec81995df12196500c59e46883957fb4c12a0bd22eb65cd3cf43beb9",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/Build-KernelMainArch.cmd",
+        "bytes": 1041,
+        "sha256": "e0d7c193f1ec76b68fb2563f6d9aded16d4db112d5f870472d600761d57b2fc1",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/Build-SkiaGpuLibrary.ps1",
+        "bytes": 4393,
+        "sha256": "f19f9c8f63b30a395613fc6b62496171a47dd3e072285012b8b6546216db54e4",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/Build-SouiComponent.cmd",
+        "bytes": 668,
+        "sha256": "297a14d7509701e009160d446ce4e60d8481a4fbd467407123a8ec5894cc934a",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/Build-TlsProbe.cmd",
+        "bytes": 244,
+        "sha256": "375b72b1aedd5250db79e9493b9eec171b62a728e68a51364d2cd7811dbe194d",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/Build-ValidationTools.ps1",
+        "bytes": 1159,
+        "sha256": "62cc1adfb3619d47fdbb4422b083c31e14a8c6c5f34af44973f9d977d25b8ae1",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/Build-WglProbe.cmd",
+        "bytes": 239,
+        "sha256": "ba48791409f2d5a6705e8b62a78bdfed0c28003e796ff93167533db569820689",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/CMake-Configure.ps1",
+        "bytes": 7057,
+        "sha256": "ca1df1b7ba625f360e7d56503509f7f5d7d0f2f7d7def568db5dcdf80ce33806",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/Find-Toolchain.ps1",
+        "bytes": 646,
+        "sha256": "c543489cc8ce5c3a96f59cae0cbf3c5257ca34eff9dd9f975659076d6596b3b1",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/Restore-WebView2.ps1",
+        "bytes": 2380,
+        "sha256": "ebf11b13670c2d168b9059b7077eb6f57f9f4f8a0f312d9a1293dde06f593773",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/Update-DependencyManifest.cjs",
+        "bytes": 5126,
+        "sha256": "b7766496641751606642b063e51769fd12c54267d3ed154028709fa0b95a0a7f",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/build-evidence.cjs",
+        "bytes": 13542,
+        "sha256": "8306bb9fe170ee206ee5b67c288826dbbf098499d6e69812488720221ca2f3bf",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/create-miniblink-entry.mjs",
+        "bytes": 3966,
+        "sha256": "1d60a1930078c0905195642b60f9fbcaf537e130c2532d916d1ae5e30f27fbfd",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/delivery-identity.cjs",
+        "bytes": 5459,
+        "sha256": "087e60a3f8652a9166acbab63fdde7836d66839329a687ce5cefdd733e3c5e14",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/deploy-resources.cjs",
+        "bytes": 2837,
+        "sha256": "080a1559c448ba6cf7d3284dabae03d55bfacc0795508107c06f93cd1e9e4010",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/native-payload.cjs",
+        "bytes": 459,
+        "sha256": "d72b34e8d45a1cdeea50cc9b24a675322cba56818a7a9f552f9010b87fcbba7e",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/owned-process.cjs",
+        "bytes": 6540,
+        "sha256": "aa160d64892294eb3e65f27f29d554020dd10ea0704f6d0a669fa83184054753",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/release-verification.cjs",
+        "bytes": 16151,
+        "sha256": "be4acced46ec7078af7fc1ff6a47b6477f99f28f856c4b85105c6d5588b9b9cd",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/internal/source-archive.cjs",
+        "bytes": 7529,
+        "sha256": "00fff214745a50e3ca71420b6ece4d24f5dec9b307514b7f6c3b1a3f9c06fe8b",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/sdk/actiongen.cjs",
+        "bytes": 208,
+        "sha256": "a862633a4855da358036d201b6642b13255f6cc044ac137d418fd53e262b6661",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/sdk/actiongen/README.md",
+        "bytes": 4126,
+        "sha256": "e620190231775ede72ecd2082973ca7c77c479dd838d18184bec75fcf833a0f5",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/sdk/actiongen/emit.cjs",
+        "bytes": 7626,
+        "sha256": "4982f0fa48c22d362e00b98b2c6e16a62fe0211467cfbae20ac91e16fc09a811",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/sdk/actiongen/generate.cjs",
+        "bytes": 14508,
+        "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/sdk/gui-bindings-delivery.cjs",
+        "bytes": 13693,
+        "sha256": "26305269c19891cd5dfb6d781985114f7b6aa1d6437d22213d4cb6ba25c10ec3",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/sdk/install-transaction.cjs",
+        "bytes": 11370,
+        "sha256": "2cca31f2a07730e0dda2541b71a7052a096536850d8a042be8e925000c25e132",
+        "sourceNormalization": "lf"
+      },
+      {
+        "path": "tools/sdk/soui-sdk.cjs",
+        "bytes": 13805,
+        "sha256": "84fee789283b81e9a866d29c4860dfb8311666fcf92b460d54bbb3abf47bbee5",
+        "sourceNormalization": "lf"
+      }
+    ]
+  }
+}

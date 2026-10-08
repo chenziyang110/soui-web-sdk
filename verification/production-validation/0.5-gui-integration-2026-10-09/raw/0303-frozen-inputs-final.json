@@ -1,0 +1,131 @@
+{
+  "schema": "soui.gui-bindings-integration-freeze/v1",
+  "head": "21ec627a2e41536be4a7cb5b4e92f38817872e83",
+  "mergedMain": "0330a3e0b6435f5f21114fa48a28d89d53b4192d",
+  "version": "0.5.0-preview.1",
+  "node": "v24.14.0",
+  "nodeExecutable": {
+    "path": "C:\\nvm4w\\nodejs\\node.exe",
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "npmCli": {
+    "path": "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+    "sha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+  },
+  "owned": {
+    "sha256": "b91edad1f6c29d76d06591d838c61147a4db80e6c7088debec616b6a1f637a52",
+    "bytes": 142516,
+    "files": [
+      {
+        "path": "docs/adr/0026-optional-react-vue-gui-bindings.md",
+        "bytes": 7012,
+        "sha256": "6c83b16a51b2ad7eb069ebd5e8b34a7cd21d9d8bf25f0a84ab0ff6faee5b1b70"
+      },
+      {
+        "path": "docs/gui-bindings.md",
+        "bytes": 10099,
+        "sha256": "2d52daaf67c7d70d10c8144334429451e19cb74d1fd0eb973f0591878237c542"
+      },
+      {
+        "path": "sdk/bindings/react/package-lock.json",
+        "bytes": 3316,
+        "sha256": "ea10296892ee041af0e56579bc2d00c2c2cf1af15caa478dcc6ddab9aa636fa9"
+      },
+      {
+        "path": "sdk/bindings/react/package.json",
+        "bytes": 633,
+        "sha256": "3292ac0653d1ba4c2408c22cbe40375c08f22944ee0ce96d69e863bc3df78bc0"
+      },
+      {
+        "path": "sdk/bindings/vue/package-lock.json",
+        "bytes": 11662,
+        "sha256": "7ac9fac8f6dbade6055367989e4199406011e83f5a303abb23bd19680ff19889"
+      },
+      {
+        "path": "sdk/bindings/vue/package.json",
+        "bytes": 580,
+        "sha256": "15bb9a044d79e3a48dd1180b66d6be38e355329c03bd883b6aeebc728f4774bf"
+      },
+      {
+        "path": "tests/gui-bindings/package-lock.json",
+        "bytes": 32179,
+        "sha256": "5a3727c8b1f9450e5f97d09ff0bbc975383da35b618a0c7a1969839eeca4ca59"
+      },
+      {
+        "path": "tests/gui-bindings/packages.test.mjs",
+        "bytes": 10542,
+        "sha256": "25566fa0005c4bf06eda3dedca5fee2ddedf2ba94135296b3c0260e4ed13fd03"
+      },
+      {
+        "path": "tests/gui-bindings/react18/package-lock.json",
+        "bytes": 4321,
+        "sha256": "53371c1c763989d4da96b3ce575d9c475034d2b7b5924e26f2a26c064593429a"
+      },
+      {
+        "path": "tests/sdk/gui-bindings-delivery.test.cjs",
+        "bytes": 7789,
+        "sha256": "3011f4c8487a392ee225748536894830e5e7998753ed77f975b2af6768bb54d9"
+      },
+      {
+        "path": "tests/sdk/gui-bindings-entrypoints.test.cjs",
+        "bytes": 5240,
+        "sha256": "64587dbc68f2b3e00eb38cc62a79ad865e81c711be034d3e05f846e02be9a905"
+      },
+      {
+        "path": "tools/Build.ps1",
+        "bytes": 4545,
+        "sha256": "01a92854f5e719031a1501347655fd9c64bd674b389c692a661e492f0849e4b1"
+      },
+      {
+        "path": "tools/Collect-Verification.cjs",
+        "bytes": 10925,
+        "sha256": "f412cf8b1d55b1ef305985a499d33495c9c3d7cc6b0bcb3e2456ae270a56f212"
+      },
+      {
+        "path": "tools/Test.ps1",
+        "bytes": 6455,
+        "sha256": "529ab033b182f3a5b243fd35fde36d0cafa3ad5d42e5e14ecfabd0c8a4e2d519"
+      },
+      {
+        "path": "tools/sdk/gui-bindings-delivery.cjs",
+        "bytes": 13413,
+        "sha256": "577c02ada70f4caad120b890849270bd7e4d5f62d65235dd5583ee368c602d6b"
+      },
+      {
+        "path": "tools/sdk/soui-sdk.cjs",
+        "bytes": 13805,
+        "sha256": "84fee789283b81e9a866d29c4860dfb8311666fcf92b460d54bbb3abf47bbee5"
+      }
+    ]
+  },
+  "business": [
+    {
+      "path": "sdk/bindings/shared/controller.ts",
+      "bytes": 3216,
+      "sha256": "92b3095a2dc736bd52d850b608d4105793bb0409faa0f9b2d803d961b83320c8",
+      "unchangedAfterLfNormalization": true
+    },
+    {
+      "path": "sdk/bindings/react/src/index.ts",
+      "bytes": 1177,
+      "sha256": "5de139152838b5b9ce4cdc6d211476af410df961decaba2da83c0651ad317880",
+      "unchangedAfterLfNormalization": true
+    },
+    {
+      "path": "sdk/bindings/vue/src/index.ts",
+      "bytes": 1309,
+      "sha256": "cf20ef5f3c136b81860b1924b50def18887c90e799e7abc32f42aa2e7f0929be",
+      "unchangedAfterLfNormalization": true
+    }
+  ],
+  "buildSourceSha256": "dbe6d57229878c7cc06be0f2bdf3f2124046f283d995d59504d52a7915be0eae",
+  "buildOutputSha256": "c571dcadda7ef708a6a10796d353d58efa4ea0459e95aae9163ce102f21650bc",
+  "buildEvidenceDirectory": "out/gui-bindings/build-ba72a79a-c3a0-4389-a83b-e48986465bac",
+  "testEvidenceDirectory": "out/gui-bindings/tests-d20395af-9809-4ab8-9862-f1f11c738413",
+  "limitations": [
+    "No ActionCore e4ff7f9d combination yet; root must rebuild and repeat affected package/type/import checks after merge.",
+    "No complete Build/Test/Collect entrypoint or C++/desktop/VM execution; actual PowerShell AST optional blocks use capture stubs.",
+    "RED/ GREEN packaging file-set fixture uses synthetic command records, not real compilation.",
+    "Actual framework/tarball/type/import tests are the real Node npm commands in final-bindings logs; no target OS or GUI acceptance."
+  ]
+}

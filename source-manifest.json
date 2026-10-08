@@ -7,8 +7,8 @@
     {
       "path": ".gitattributes",
       "normalization": "lf",
-      "bytes": 29734,
-      "sha256": "c5bdc2d7f102c6dce7ef68373032689d6368d78ccbfddf49f456895e2ee1a031"
+      "bytes": 29989,
+      "sha256": "596e0cb02d2bc7fcd6328a193b44fd106ea7f0a3e2ff41a50463a2d0672d7024"
     },
     {
       "path": ".github/CODEOWNERS",
@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 20270,
-      "sha256": "455f26f5892ed0a540d1d7cde22685083ec211ec674123c2b7929316602267f8"
+      "bytes": 20547,
+      "sha256": "7bd1618e7e6e5d4c4ce2c529c8f12eb82f0d1148a779404c6d903cfbcd9dfb76"
     },
     {
       "path": "CMakeLists.txt",
@@ -1691,6 +1691,12 @@
       "sha256": "9f8c093df9bac4ab57c464dc6e5b6d2cbaf2abb3ab9b90c576a83a20b5cf09f3"
     },
     {
+      "path": "docs/adr/0026-optional-react-vue-gui-bindings.md",
+      "normalization": "lf",
+      "bytes": 7216,
+      "sha256": "3df1bac7777be104ec2ce208ea8b169b14d04346dd39eeef4a086ed6e317efa3"
+    },
+    {
       "path": "docs/adr/0027-native-authorization-scope-and-task-ownership.md",
       "normalization": "lf",
       "bytes": 9662,
@@ -1731,6 +1737,12 @@
       "normalization": "lf",
       "bytes": 2095,
       "sha256": "6bdb25a9575d74287ccfe6f62472464a6541518db6ebb9ed862252d96c9e05c8"
+    },
+    {
+      "path": "docs/gui-bindings.md",
+      "normalization": "lf",
+      "bytes": 10099,
+      "sha256": "2d52daaf67c7d70d10c8144334429451e19cb74d1fd0eb973f0591878237c542"
     },
     {
       "path": "docs/known-issues.md",
@@ -1935,6 +1947,72 @@
       "normalization": "lf",
       "bytes": 3802,
       "sha256": "20f2a7441ea5612dd4097f93118c85704d91f33135c28461ee31e61b1a0a6890"
+    },
+    {
+      "path": "sdk/bindings/react/README.md",
+      "normalization": "lf",
+      "bytes": 631,
+      "sha256": "07f13916bce99107b03ff81a97207a6331b120521a2ca5467ad9b646f3c8fb18"
+    },
+    {
+      "path": "sdk/bindings/react/package-lock.json",
+      "normalization": "lf",
+      "bytes": 3316,
+      "sha256": "ea10296892ee041af0e56579bc2d00c2c2cf1af15caa478dcc6ddab9aa636fa9"
+    },
+    {
+      "path": "sdk/bindings/react/package.json",
+      "normalization": "lf",
+      "bytes": 633,
+      "sha256": "3292ac0653d1ba4c2408c22cbe40375c08f22944ee0ce96d69e863bc3df78bc0"
+    },
+    {
+      "path": "sdk/bindings/react/src/index.ts",
+      "normalization": "lf",
+      "bytes": 1177,
+      "sha256": "5de139152838b5b9ce4cdc6d211476af410df961decaba2da83c0651ad317880"
+    },
+    {
+      "path": "sdk/bindings/react/tsconfig.json",
+      "normalization": "lf",
+      "bytes": 368,
+      "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb"
+    },
+    {
+      "path": "sdk/bindings/shared/controller.ts",
+      "normalization": "lf",
+      "bytes": 3216,
+      "sha256": "92b3095a2dc736bd52d850b608d4105793bb0409faa0f9b2d803d961b83320c8"
+    },
+    {
+      "path": "sdk/bindings/vue/README.md",
+      "normalization": "lf",
+      "bytes": 694,
+      "sha256": "68565a4091b62f6243c2669975b5919fcb449620743d3371dbe7ad842104ad05"
+    },
+    {
+      "path": "sdk/bindings/vue/package-lock.json",
+      "normalization": "lf",
+      "bytes": 11662,
+      "sha256": "7ac9fac8f6dbade6055367989e4199406011e83f5a303abb23bd19680ff19889"
+    },
+    {
+      "path": "sdk/bindings/vue/package.json",
+      "normalization": "lf",
+      "bytes": 580,
+      "sha256": "15bb9a044d79e3a48dd1180b66d6be38e355329c03bd883b6aeebc728f4774bf"
+    },
+    {
+      "path": "sdk/bindings/vue/src/index.ts",
+      "normalization": "lf",
+      "bytes": 1309,
+      "sha256": "cf20ef5f3c136b81860b1924b50def18887c90e799e7abc32f42aa2e7f0929be"
+    },
+    {
+      "path": "sdk/bindings/vue/tsconfig.json",
+      "normalization": "lf",
+      "bytes": 368,
+      "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb"
     },
     {
       "path": "sdk/cmake/SouiSdkConfig.cmake.in",
@@ -2969,6 +3047,114 @@
       "sha256": "3cf3ca4fe03bb30501f5523f3cffd97c5df7febd284f0549a268e5706b86b680"
     },
     {
+      "path": "tests/gui-bindings/.npmrc",
+      "normalization": "lf",
+      "bytes": 19,
+      "sha256": "0ed44e7d606cd7a9eba915a10f13a13a09ea85e4b2bb4415bb0c481dbdcded51"
+    },
+    {
+      "path": "tests/gui-bindings/README.md",
+      "normalization": "lf",
+      "bytes": 1368,
+      "sha256": "6ec85467a99ace3902d97216ebaf7a34960117ff5d1968ee8e2881ad65abd97c"
+    },
+    {
+      "path": "tests/gui-bindings/consumer.ts",
+      "normalization": "lf",
+      "bytes": 1112,
+      "sha256": "91dd274edf9b259d4e276dfe156b9859dbee65010c78b5a7df0821f1b81ef23b"
+    },
+    {
+      "path": "tests/gui-bindings/helpers.mjs",
+      "normalization": "lf",
+      "bytes": 2041,
+      "sha256": "6291ceb985414cc330b4f37da588bf68989b90d64fb75b0c16454560269436d5"
+    },
+    {
+      "path": "tests/gui-bindings/package-lock.json",
+      "normalization": "lf",
+      "bytes": 32179,
+      "sha256": "5a3727c8b1f9450e5f97d09ff0bbc975383da35b618a0c7a1969839eeca4ca59"
+    },
+    {
+      "path": "tests/gui-bindings/package.json",
+      "normalization": "lf",
+      "bytes": 811,
+      "sha256": "5422919d2fc2d25b74419fdb5c882ba4b2ba22250afa90146d1f9e1b1af24710"
+    },
+    {
+      "path": "tests/gui-bindings/packages.test.mjs",
+      "normalization": "lf",
+      "bytes": 10542,
+      "sha256": "25566fa0005c4bf06eda3dedca5fee2ddedf2ba94135296b3c0260e4ed13fd03"
+    },
+    {
+      "path": "tests/gui-bindings/peer-range-regression.md",
+      "normalization": "lf",
+      "bytes": 1202,
+      "sha256": "e431a01f7f4ee8e21db41168fc28ed633754399310df601acb76bb1f9e75f65e"
+    },
+    {
+      "path": "tests/gui-bindings/react-suite.mjs",
+      "normalization": "lf",
+      "bytes": 10122,
+      "sha256": "9eabb81db5f4c1296c49b78d6c338abd5686c25d80d0cdaa167d823a15ce28cf"
+    },
+    {
+      "path": "tests/gui-bindings/react.test.mjs",
+      "normalization": "lf",
+      "bytes": 104,
+      "sha256": "ec1eff2f99bbcb2ad118aa4bb805b4410cd7529fe016dfb72276524c60c9991b"
+    },
+    {
+      "path": "tests/gui-bindings/react18/.npmrc",
+      "normalization": "lf",
+      "bytes": 19,
+      "sha256": "0ed44e7d606cd7a9eba915a10f13a13a09ea85e4b2bb4415bb0c481dbdcded51"
+    },
+    {
+      "path": "tests/gui-bindings/react18/consumer.ts",
+      "normalization": "lf",
+      "bytes": 627,
+      "sha256": "aa17ade5688b93133a5166076246cf6794fbe46fa149a6e808e8d3305230a7f3"
+    },
+    {
+      "path": "tests/gui-bindings/react18/package-lock.json",
+      "normalization": "lf",
+      "bytes": 4321,
+      "sha256": "53371c1c763989d4da96b3ce575d9c475034d2b7b5924e26f2a26c064593429a"
+    },
+    {
+      "path": "tests/gui-bindings/react18/package.json",
+      "normalization": "lf",
+      "bytes": 427,
+      "sha256": "6dee16c703274c5bb87e52859321a21895c8a03512c4bc277fc8b01e685b7c3b"
+    },
+    {
+      "path": "tests/gui-bindings/react18/react.test.mjs",
+      "normalization": "lf",
+      "bytes": 105,
+      "sha256": "d4ef1ac5ab9ff85a47982308626cdb970dd54f70253980b779a17a7532ba9824"
+    },
+    {
+      "path": "tests/gui-bindings/react18/tsconfig.json",
+      "normalization": "lf",
+      "bytes": 219,
+      "sha256": "ca91e5e0e329c9b183be3076b2d0ae4279f551d265489aa1cb796a068c5d416c"
+    },
+    {
+      "path": "tests/gui-bindings/tsconfig.json",
+      "normalization": "lf",
+      "bytes": 219,
+      "sha256": "ca91e5e0e329c9b183be3076b2d0ae4279f551d265489aa1cb796a068c5d416c"
+    },
+    {
+      "path": "tests/gui-bindings/vue.test.mjs",
+      "normalization": "lf",
+      "bytes": 12124,
+      "sha256": "e79e026d9d7f8794cd84c0632d34e1bf4a3ca54e4121332fe8ce481d4355fe20"
+    },
+    {
       "path": "tests/native/CMakeLists.txt",
       "normalization": "lf",
       "bytes": 13712,
@@ -3159,6 +3345,18 @@
       "normalization": "lf",
       "bytes": 17897,
       "sha256": "ae7cdeae58862fb728f54e1f83e7432a6b7fee7f20c0855f66c02d1f7601a553"
+    },
+    {
+      "path": "tests/sdk/gui-bindings-delivery.test.cjs",
+      "normalization": "lf",
+      "bytes": 10231,
+      "sha256": "3f7984c1e78494e979a03b61537f4429f01e152e9a6b8ad68e2d03f240eadba9"
+    },
+    {
+      "path": "tests/sdk/gui-bindings-entrypoints.test.cjs",
+      "normalization": "lf",
+      "bytes": 5240,
+      "sha256": "64587dbc68f2b3e00eb38cc62a79ad865e81c711be034d3e05f846e02be9a905"
     },
     {
       "path": "tests/sdk/installation-interruption-worker.cjs",
@@ -174181,14 +174379,14 @@
     {
       "path": "tools/Build.ps1",
       "normalization": "lf",
-      "bytes": 4866,
-      "sha256": "eede01e80385e0ed44466410155370774f6fea02d8fd923788d42710091c150f"
+      "bytes": 5511,
+      "sha256": "d28a789a8415e571bb519e4214368ffc985f9f1fb8b395b5dd39355bed33ee60"
     },
     {
       "path": "tools/Collect-Verification.cjs",
       "normalization": "lf",
-      "bytes": 10273,
-      "sha256": "6234cec2d7421f7a2b558bc6be337c569d9c525944d4e8cbb36ef33a33a4ff9e"
+      "bytes": 11073,
+      "sha256": "ff7a0b8bbbd49cc61eec1f525e4e1945f7f9647f1d2fb21a441033fbe296a079"
     },
     {
       "path": "tools/Doctor.ps1",
@@ -174247,8 +174445,8 @@
     {
       "path": "tools/Test.ps1",
       "normalization": "lf",
-      "bytes": 6070,
-      "sha256": "dec841fd7db4a25905f12761d9206953eb59a6f87cc2868b2959520caf8fed12"
+      "bytes": 6608,
+      "sha256": "a2061f7a953df3be351acb9985f6bd0643f6e85c37a7e0483f3efda000fc3dab"
     },
     {
       "path": "tools/Verify-Release.ps1",
@@ -174425,6 +174623,12 @@
       "sha256": "e6adc191c1d77ad572b6c024eed6313106298e4402d9a4b58e7d5ff0f8a5ff84"
     },
     {
+      "path": "tools/sdk/gui-bindings-delivery.cjs",
+      "normalization": "lf",
+      "bytes": 13693,
+      "sha256": "26305269c19891cd5dfb6d781985114f7b6aa1d6437d22213d4cb6ba25c10ec3"
+    },
+    {
       "path": "tools/sdk/install-transaction.cjs",
       "normalization": "lf",
       "bytes": 11370,
@@ -174433,8 +174637,8 @@
     {
       "path": "tools/sdk/soui-sdk.cjs",
       "normalization": "lf",
-      "bytes": 12595,
-      "sha256": "40e50d78f8a7296301d17d1f09c779b422fd40d8a28f419da1d869efb55f7ebb"
+      "bytes": 13805,
+      "sha256": "84fee789283b81e9a866d29c4860dfb8311666fcf92b460d54bbb3abf47bbee5"
     },
     {
       "path": "verification/acceptance.json",
@@ -191235,6 +191439,3522 @@
       "normalization": "none",
       "bytes": 1148277,
       "sha256": "c56e7b5c8b93b17e1306ab365df371f20a4a6703f4a421c33dbc623d694c1e10"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/index.json",
+      "normalization": "none",
+      "bytes": 7369,
+      "sha256": "b77508a1f951b4494701419c82da298e4e4c8bacf57b938d3cf8f72a1571131e"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-0.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-0.stdout.log",
+      "normalization": "none",
+      "bytes": 358,
+      "sha256": "c097d7ddc668d665a11b2d0f6532a77fdf8b80a47caad7c36dd0c310bd5ecf52"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-1.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-1.stdout.log",
+      "normalization": "none",
+      "bytes": 360,
+      "sha256": "bb8cd3eea256a6b83bb8f3bfc006abab419fa86b0e2cf439a40445ec542077d1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-2.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-2.stdout.log",
+      "normalization": "none",
+      "bytes": 361,
+      "sha256": "69e36da0ad034c92fa26e81cf9caa7aa6d6aec1f5b79bd1bf38e1cf7dbb53c31"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-3.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/audit-3.stdout.log",
+      "normalization": "none",
+      "bytes": 359,
+      "sha256": "9929b6a673ba369e5a69314aa2bb8d5a0c1040d1b9948cb402f34a7a3c8fbe85"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/components.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/components.stdout.log",
+      "normalization": "none",
+      "bytes": 2655,
+      "sha256": "a501664df4efca4fc89209ebc22e3bc3a9b6997bf68f84346f4c842e2c8f1865"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/consumer-types-react18.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/consumer-types-react18.stdout.log",
+      "normalization": "none",
+      "bytes": 102,
+      "sha256": "4f4b7b81c014a3025367de557322e5bc6505a0702d677fb284091ced37f4ef21"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/consumer-types.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/consumer-types.stdout.log",
+      "normalization": "none",
+      "bytes": 86,
+      "sha256": "2c25c6281402ca0eb5811d9967c35a7429feff3b0977999dc539f7da3d041a30"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/core-gui.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/core-gui.stdout.log",
+      "normalization": "none",
+      "bytes": 1573,
+      "sha256": "b9aa1ee89c22e6164851e2744ed9d92ac885db45004b2f4e735f8d0d492b1267"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/index.json",
+      "normalization": "none",
+      "bytes": 2974,
+      "sha256": "6346245f22d9cc80521d6c84050ea1c5507eb0b3cdec1bf183eff3fdfa18c683"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/react18.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-bindings-2026-10-08/raw/react18.stdout.log",
+      "normalization": "none",
+      "bytes": 1181,
+      "sha256": "a33e908a95d47ef1118424eeecb5ea617f34460cad200c00ddb46afae7eea286"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/README.md",
+      "normalization": "none",
+      "bytes": 1444,
+      "sha256": "acc17a4b3f089f1e35070d55dc3024327360d9282a9db19b8f8177e2f64d654f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/archive-driver.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3309,
+      "sha256": "16f822bc81ffb5ee2a1ddc14ff06a2ea6436c7d1f5dbc968dd79cdc146bdcde2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/attempt/evidence-index-final.json",
+      "normalization": "none",
+      "bytes": 124852,
+      "sha256": "c6acd15adfd5048ea72e790f29e436b1972baa0e1cabdc005f0ee3aa817eacd1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/current-inputs/tests/sdk/gui-bindings-delivery.test.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 10231,
+      "sha256": "3f7984c1e78494e979a03b61537f4429f01e152e9a6b8ad68e2d03f240eadba9"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/current-inputs/tests/sdk/gui-bindings-entrypoints.test.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 5240,
+      "sha256": "64587dbc68f2b3e00eb38cc62a79ad865e81c711be034d3e05f846e02be9a905"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/current-inputs/tools/Build.ps1.inert.snapshot",
+      "normalization": "none",
+      "bytes": 5615,
+      "sha256": "cf9de22572cac347b2f3a7f1e45c564107263e1be0c218340d20fe352ae2eb29"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/current-inputs/tools/Collect-Verification.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 11073,
+      "sha256": "ff7a0b8bbbd49cc61eec1f525e4e1945f7f9647f1d2fb21a441033fbe296a079"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/current-inputs/tools/Test.ps1.inert.snapshot",
+      "normalization": "none",
+      "bytes": 6685,
+      "sha256": "8e5e9df84bbc059bd2119a5a1055b19dd8ff7873ca66da19cfea440bff6252fa"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/current-inputs/tools/sdk/gui-bindings-delivery.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 13693,
+      "sha256": "26305269c19891cd5dfb6d781985114f7b6aa1d6437d22213d4cb6ba25c10ec3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/current-inputs/tools/sdk/soui-sdk.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 13805,
+      "sha256": "84fee789283b81e9a866d29c4860dfb8311666fcf92b460d54bbb3abf47bbee5"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/index.json",
+      "normalization": "none",
+      "bytes": 321051,
+      "sha256": "d32e7064c446fae0c17731042827a24d249293d843483c24860fb847df381aca"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0001-.gitattributes.conflicted.inert.snapshot",
+      "normalization": "none",
+      "bytes": 29843,
+      "sha256": "d9d939b616f85f5a597e7296a87563d82fb7035536743c348e5a408929da195e"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0002-action-check-templates-desktop-app.json",
+      "normalization": "none",
+      "bytes": 332,
+      "sha256": "fcef8fc6ce9a51d7106328b8d0df765e28c8a5fd9f34954567426de11d92fb43"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0003-action-check-templates-desktop-app.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0004-action-check-templates-desktop-app.stdout.log",
+      "normalization": "none",
+      "bytes": 91,
+      "sha256": "c7452faeb9a091655d684909434841346f9d2ecbf373a50358ed9fe05726bf16"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0005-action-check-templates-modern-app.json",
+      "normalization": "none",
+      "bytes": 330,
+      "sha256": "1eb0744a8cb4564b39b6c93054c4888a0741b273d1b0d6c972332061a56d497f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0006-action-check-templates-modern-app.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0007-action-check-templates-modern-app.stdout.log",
+      "normalization": "none",
+      "bytes": 91,
+      "sha256": "c7452faeb9a091655d684909434841346f9d2ecbf373a50358ed9fe05726bf16"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0008-action-check-tests-action-consumer.json",
+      "normalization": "none",
+      "bytes": 332,
+      "sha256": "91072f2706642c8642cea059587aa17f9d2ca94fb89df4a0f4575138d2081f31"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0009-action-check-tests-action-consumer.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0010-action-check-tests-action-consumer.stdout.log",
+      "normalization": "none",
+      "bytes": 91,
+      "sha256": "8ab4c0c649b2adf1e560a48faa78394c139b048ff469f701b1fca205665aa1c9"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0011-add-gui-integration.json",
+      "normalization": "none",
+      "bytes": 767,
+      "sha256": "b5a74c9e319e93a7ef287b4b9a0b92c668810a63cdd4272ab2a4ea3d405c9448"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0012-add-gui-integration.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0013-add-gui-integration.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0014-add-second-merge-resolutions.json",
+      "normalization": "none",
+      "bytes": 214,
+      "sha256": "293949785af205de72d7cb51f4d2786d77152ba49bc966f417f7f96f3258c11d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0015-add-second-merge-resolutions.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0016-add-second-merge-resolutions.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0017-add-third-main-resolutions.json",
+      "normalization": "none",
+      "bytes": 176,
+      "sha256": "7a9c5da3352e43eedd31572629826a6d3fd12d2a4954e64c2f9a73a9df5e4c14"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0018-add-third-main-resolutions.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0019-add-third-main-resolutions.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0020-all-merged-heads-final.json",
+      "normalization": "none",
+      "bytes": 629,
+      "sha256": "eb8f64d2b132272d73c7709aea3255e7988f3895530c275af7c9b8767eacc5c9"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0021-check-collect.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0022-check-collect.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0023-combined-core-actions-gui.json",
+      "normalization": "none",
+      "bytes": 299,
+      "sha256": "aead98a3ef184be76192def6f8d1626cc3b45cbcdffbf554a8c97f95f1d74c42"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0024-combined-core-actions-gui.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0025-combined-core-actions-gui.stdout.log",
+      "normalization": "none",
+      "bytes": 5563,
+      "sha256": "54e50fff9628824de1eae44333accbfcdd93df6797ce5bb3d1e20ebe1ae4aebb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0026-combined-delivery-boundaries.json",
+      "normalization": "none",
+      "bytes": 244,
+      "sha256": "257f1d64ad0b7b430bf8bcd9f58e4ab25c22203f19ec69fb8689e7d5f076b739"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0027-combined-delivery-boundaries.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0028-combined-delivery-boundaries.stdout.log",
+      "normalization": "none",
+      "bytes": 1102,
+      "sha256": "dd8aa78176f6c1b030bfb6786924a68ae8d81300c973543e22623a6d3b4b4c75"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0029-combined-gui-bindings.json",
+      "normalization": "none",
+      "bytes": 226,
+      "sha256": "9c8e92b012bd46fc54eec5cc2233e9747686889347b7b92ff9b8925977916bda"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0030-combined-gui-bindings.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0031-combined-gui-bindings.stdout.log",
+      "normalization": "none",
+      "bytes": 190,
+      "sha256": "ff5244a5e4d0f13d597d9e3f38612664446dcaed953a8c396c040825c2f46661"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0032-combined-gui-build.json",
+      "normalization": "none",
+      "bytes": 227,
+      "sha256": "78fe83037ffb9d2cef4908e2dc7be1a487faa8abd415a85f87c5c9c2ef3b7dbe"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0033-combined-gui-build.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0034-combined-gui-build.stdout.log",
+      "normalization": "none",
+      "bytes": 11356,
+      "sha256": "97582dbd1c57fe13c5b9d7e2bae6441344433a9d7b263ab35891143139fe2f67"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0035-combined-sdk-package-smoke.json",
+      "normalization": "none",
+      "bytes": 170,
+      "sha256": "7efe854a2a3414c19d413f8c058cdb6754f3bacf87a6419283e7999643afeaf9"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0036-combined-sdk-package-smoke.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0037-combined-sdk-package-smoke.stdout.log",
+      "normalization": "none",
+      "bytes": 121,
+      "sha256": "bcf419e4bc10cfec19c0934b8914ee77f59726695a7cf5d7ca31fce70c7250de"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0038-commit-first-main-merge.json",
+      "normalization": "none",
+      "bytes": 193,
+      "sha256": "23f26647118d12b62508f89fa075c54fc63a9cbf1912b9a1b41552d15d555a5c"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0039-commit-first-main-merge.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0040-commit-first-main-merge.stdout.log",
+      "normalization": "none",
+      "bytes": 85,
+      "sha256": "0eb09a73da80c64eff31e0a0e39699edf0a44bfb53b4b4ab1ec02482a9936f2e"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0041-commit-second-main-merge.json",
+      "normalization": "none",
+      "bytes": 196,
+      "sha256": "9ec008ca722234099cbdea10b45d40f9ba84d85eb5e4476d3acd69d750131f5b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0042-commit-second-main-merge.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0043-commit-second-main-merge.stdout.log",
+      "normalization": "none",
+      "bytes": 88,
+      "sha256": "38d7b43f30e00e0703ea7874b4c8167184224dc6353d982864809b0889311736"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0044-commit-third-main-merge.json",
+      "normalization": "none",
+      "bytes": 201,
+      "sha256": "607d0a79e6f1f13c3e281e15a773d9e80d9e42ffca98b17f175d566ff0a3bce5"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0045-commit-third-main-merge.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0046-commit-third-main-merge.stdout.log",
+      "normalization": "none",
+      "bytes": 93,
+      "sha256": "051daf07f9f97f3ad904b7ae99b01f2a6ded25bd59f815f3928b6f0e04c4370b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0047-conflicts-after-stage.json",
+      "normalization": "none",
+      "bytes": 159,
+      "sha256": "eee6a56fd3d609248ae53740e52fa4286b2304aeae078efac46d4cee33a0b50a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0048-conflicts-after-stage.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0049-conflicts-after-stage.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0050-conflicts-after.json",
+      "normalization": "none",
+      "bytes": 159,
+      "sha256": "eee6a56fd3d609248ae53740e52fa4286b2304aeae078efac46d4cee33a0b50a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0051-conflicts-after.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0052-conflicts-after.stdout.log",
+      "normalization": "none",
+      "bytes": 46,
+      "sha256": "9a8dec37d782bc120902cfe86c9c0f09ad44540a64580d15822f2b57faf9173e"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0053-conflicts-before.json",
+      "normalization": "none",
+      "bytes": 159,
+      "sha256": "eee6a56fd3d609248ae53740e52fa4286b2304aeae078efac46d4cee33a0b50a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0054-conflicts-before.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0055-conflicts-before.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0056-conflicts-resolved.json",
+      "normalization": "none",
+      "bytes": 159,
+      "sha256": "eee6a56fd3d609248ae53740e52fa4286b2304aeae078efac46d4cee33a0b50a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0057-conflicts-resolved.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0058-conflicts-resolved.stdout.log",
+      "normalization": "none",
+      "bytes": 46,
+      "sha256": "9a8dec37d782bc120902cfe86c9c0f09ad44540a64580d15822f2b57faf9173e"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0059-@soui-gui-react-build.json",
+      "normalization": "none",
+      "bytes": 577,
+      "sha256": "a23ea9f4bd737de401027354846e775ae0d29deb6ea7b0e3504f5212d9b6f93e"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0060-@soui-gui-react-build.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0061-@soui-gui-react-build.stdout.log",
+      "normalization": "none",
+      "bytes": 65,
+      "sha256": "76817b9a88ad9ca81d71cce94135bf011de398774dc0fa10d97f8181e9cb0bc3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0062-@soui-gui-react-install.json",
+      "normalization": "none",
+      "bytes": 649,
+      "sha256": "02935ab6ae9eff2f58fe984c60f04792e34889d0e71444e41a00ad0732d5138f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0063-@soui-gui-react-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0064-@soui-gui-react-install.stdout.log",
+      "normalization": "none",
+      "bytes": 27,
+      "sha256": "0d2898d020814025fc1b42dca62b29a49218589dc6aa78bf821e5d9fdca4ade4"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0065-@soui-gui-vue-build.json",
+      "normalization": "none",
+      "bytes": 571,
+      "sha256": "b22ec7eda7273728934d231ab182899b039462b86eb82e3f776c8d0ea6e57241"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0066-@soui-gui-vue-build.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0067-@soui-gui-vue-build.stdout.log",
+      "normalization": "none",
+      "bytes": 63,
+      "sha256": "5596f60822b7a1cf5aa0b58fdecbc4bc451283b3d1867d0b8cdf235c394d1ce1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0068-@soui-gui-vue-install.json",
+      "normalization": "none",
+      "bytes": 643,
+      "sha256": "2621d7e0f0466c5d084f9b25948ed62addb7f36b2ec506f11d023ee760b71c7a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0069-@soui-gui-vue-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0070-@soui-gui-vue-install.stdout.log",
+      "normalization": "none",
+      "bytes": 25,
+      "sha256": "6a7de75b54c9614bfa040966983635014d77fce2fdc3dc6204da61b1c0031920"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0071-@soui-native-sdk-build.json",
+      "normalization": "none",
+      "bytes": 568,
+      "sha256": "9e56cc5cf3fe1613d7ddec12cf161fc06fc61afd0bd526d1aa3b78d451d71039"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0072-@soui-native-sdk-build.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0073-@soui-native-sdk-build.stdout.log",
+      "normalization": "none",
+      "bytes": 66,
+      "sha256": "1ff070644395da994c252e69cf6d9561e383c616ddc3d0993ba076257dd6e5ee"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0074-@soui-native-sdk-install.json",
+      "normalization": "none",
+      "bytes": 640,
+      "sha256": "09eaaf1e9a4b39a1b2e80572ad94a8beaac2516d2fadaf3b5bfedde5ed5f316f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0075-@soui-native-sdk-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0076-@soui-native-sdk-install.stdout.log",
+      "normalization": "none",
+      "bytes": 26,
+      "sha256": "15b4733a930fbac732c7421050d07926371d916b27b8aba099f62b610be79129"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0077-current-evidence-path-map.json",
+      "normalization": "none",
+      "bytes": 8468,
+      "sha256": "f7ce48efe9e1a434742f4ce09941ceb40d549268891b5e4583dd4df58d92d96e"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0078-current-gui-build.json",
+      "normalization": "none",
+      "bytes": 15104,
+      "sha256": "33a519091519af3fcb34f0dda238c64f599e41f0a8d9d63c3012a4c384dcd864"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0079-result.json",
+      "normalization": "none",
+      "bytes": 7223,
+      "sha256": "5ffcd492aa9c1bdf346de21014de0966cb7594b465e14d02fb54249195278cf4"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0080-sdk-bindings-react-audit.json",
+      "normalization": "none",
+      "bytes": 587,
+      "sha256": "f265bcf175b4b89dc639b23f6366a4292f04df4f01715127b567ec35fc37f9ff"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0081-sdk-bindings-react-audit.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0082-sdk-bindings-react-audit.stdout.log",
+      "normalization": "none",
+      "bytes": 358,
+      "sha256": "e8bbc82d0d656ca6c5d561fcb794dae7591893e0a9812ba4d5dcc40258af1ad3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0083-sdk-bindings-vue-audit.json",
+      "normalization": "none",
+      "bytes": 581,
+      "sha256": "f58deb901eeffe67cd9099ae23606a71f14d5309bbdfbff5cf93228f42cb78b1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0084-sdk-bindings-vue-audit.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0085-sdk-bindings-vue-audit.stdout.log",
+      "normalization": "none",
+      "bytes": 360,
+      "sha256": "d779408e46397a81b73737e06ea904cb9b8bb82ad1efff44f3e59f363fe8c5f3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0086-test-react18.json",
+      "normalization": "none",
+      "bytes": 568,
+      "sha256": "28d1a427c29f2b27cd9953d9c70b22a7602454d9e7941a90a09140555b4244ff"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0087-test-react18.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0088-test-react18.stdout.log",
+      "normalization": "none",
+      "bytes": 1275,
+      "sha256": "a38d469eb3352ead7bf73abba433e9c39593cde39bf6b917f782d46cf65ee87a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0089-test.json",
+      "normalization": "none",
+      "bytes": 544,
+      "sha256": "9b93abe6440d85a176fb6afb2e942e75c05c772d1434990186d7c942355eb9f4"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0090-test.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0091-test.stdout.log",
+      "normalization": "none",
+      "bytes": 2873,
+      "sha256": "1c6fe9689fac10283bb3651bcec6c99e2c475536e589b35171d8621258a55bb2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0092-tests-gui-bindings-audit.json",
+      "normalization": "none",
+      "bytes": 587,
+      "sha256": "9aeaeee0f1535f3f9bb642171e87c4fae81a102310d368ce653dd3008108cee6"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0093-tests-gui-bindings-audit.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0094-tests-gui-bindings-audit.stdout.log",
+      "normalization": "none",
+      "bytes": 361,
+      "sha256": "69e36da0ad034c92fa26e81cf9caa7aa6d6aec1f5b79bd1bf38e1cf7dbb53c31"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0095-tests-gui-bindings-install.json",
+      "normalization": "none",
+      "bytes": 657,
+      "sha256": "5164558be28b3ad7d3ec34205f86edf1ed5b666dbdce2598b0d629b0ec9938e0"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0096-tests-gui-bindings-install.stderr.log",
+      "normalization": "none",
+      "bytes": 122,
+      "sha256": "67389c0b6efbe86c5fc51293d278be25159d27ace6d73ae2da626b49a0143470"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0097-tests-gui-bindings-install.stdout.log",
+      "normalization": "none",
+      "bytes": 25,
+      "sha256": "d257108234163be5f8af2aadb991d07060800d9cbd64dc651ef957d543036a4f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0098-tests-gui-bindings-react18-audit.json",
+      "normalization": "none",
+      "bytes": 611,
+      "sha256": "7b857a7b19cda12e9ba53f06ff6a9882bf77406696c84d21775dfd413aa94751"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0099-tests-gui-bindings-react18-audit.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0100-tests-gui-bindings-react18-audit.stdout.log",
+      "normalization": "none",
+      "bytes": 359,
+      "sha256": "9929b6a673ba369e5a69314aa2bb8d5a0c1040d1b9948cb402f34a7a3c8fbe85"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0101-tests-gui-bindings-react18-install.json",
+      "normalization": "none",
+      "bytes": 679,
+      "sha256": "0a8d34f41228bffb91c9194f765280b33d931351162c821178d2322efc1f066b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0102-tests-gui-bindings-react18-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0103-tests-gui-bindings-react18-install.stdout.log",
+      "normalization": "none",
+      "bytes": 25,
+      "sha256": "944e3b802686a1d2591066d0f061e9ff8ddb4e6b707756414e9810dc83416f38"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0104-typecheck-react18.json",
+      "normalization": "none",
+      "bytes": 582,
+      "sha256": "6a337a7a865bf2127b5699c65278d188727f57d1a2e01f9fdcc5ee3f577265e3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0105-typecheck-react18.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0106-typecheck-react18.stdout.log",
+      "normalization": "none",
+      "bytes": 102,
+      "sha256": "4f4b7b81c014a3025367de557322e5bc6505a0702d677fb284091ced37f4ef21"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0107-typecheck.json",
+      "normalization": "none",
+      "bytes": 557,
+      "sha256": "577c85abb23a344a51c4e4d6e437372c7b31cb2884079483e67aba3cd98227dd"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0108-typecheck.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0109-typecheck.stdout.log",
+      "normalization": "none",
+      "bytes": 86,
+      "sha256": "2c25c6281402ca0eb5811d9967c35a7429feff3b0977999dc539f7da3d041a30"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0110-entrypoint-syntax-final.json",
+      "normalization": "none",
+      "bytes": 1005,
+      "sha256": "5db6204bd3ef7767b0cf2f8883a71e3ce488f8061ff3ea491d757dea4b97fe85"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0111-@soui-gui-react-installed-package.json",
+      "normalization": "none",
+      "bytes": 633,
+      "sha256": "3292ac0653d1ba4c2408c22cbe40375c08f22944ee0ce96d69e863bc3df78bc0"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0112-@soui-gui-vue-installed-package.json",
+      "normalization": "none",
+      "bytes": 580,
+      "sha256": "15bb9a044d79e3a48dd1180b66d6be38e355329c03bd883b6aeebc728f4774bf"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0113-@soui-native-sdk-installed-package.json",
+      "normalization": "none",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0114-consumer-imports.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0115-consumer-imports.stdout.log",
+      "normalization": "none",
+      "bytes": 34,
+      "sha256": "a752882709c69a8d42d2c5024ab0388acc74e9cdc56148f4544994ce5ffdc146"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0116-consumer-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0117-consumer-install.stdout.log",
+      "normalization": "none",
+      "bytes": 25,
+      "sha256": "38361b69b3f63fd08d34ca5b11b142d9fd58323fb368d31d7f63500f73819ae3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0118-consumer-types.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0119-consumer-types.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0120-consumer.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1112,
+      "sha256": "91dd274edf9b259d4e276dfe156b9859dbee65010c78b5a7df0821f1b81ef23b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0121-imports.mjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 373,
+      "sha256": "9d06eae381d5bbccff7d5ef99f51019cd26b3bf5acde754e69bedf161fa1b5cf"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0122-pack-@soui-gui-react.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0123-pack-@soui-gui-react.stdout.log",
+      "normalization": "none",
+      "bytes": 1044,
+      "sha256": "9b15817abf7f587ed1eec8b16e22596275ac2b8ba36772278f9ff1afa78849fa"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0124-pack-@soui-gui-vue.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0125-pack-@soui-gui-vue.stdout.log",
+      "normalization": "none",
+      "bytes": 1035,
+      "sha256": "5a2c2e0ab1ed145b8dc5ddd733882323797d2bbe96a98f698ab13a9a35bf6842"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0126-pack-@soui-native-sdk.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0127-pack-@soui-native-sdk.stdout.log",
+      "normalization": "none",
+      "bytes": 3894,
+      "sha256": "0e8b20b59e5cf29bb9c51a7137a2975e0a2a9de962fe8072db1c28577348b60c"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0128-package-lock.json",
+      "normalization": "none",
+      "bytes": 14668,
+      "sha256": "f2077552d1de8beb9406f1fa4b0c462421af1c46d5fdd597cbb405d7934f8fd1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0129-package.json",
+      "normalization": "none",
+      "bytes": 799,
+      "sha256": "1fbbac552528feb8c72268500940ae74fd81089f8c94ef7ae077162a719e479d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0130-result.json",
+      "normalization": "none",
+      "bytes": 11495,
+      "sha256": "e1a85f9002ba5a40a90e078eebf7dccf03455b729e9ddc79e409e7d1c13e1a10"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0131-sdk-lock.json",
+      "normalization": "none",
+      "bytes": 130704,
+      "sha256": "cf099d301b988c246400b9e0fff3567c0cb71647265b4eaca22c67f8c8bd53d5"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0132-sdk-manifest.json",
+      "normalization": "none",
+      "bytes": 123892,
+      "sha256": "d1c8fa093f139cd5da744e41eb80e4b0d2fe9e48e3a79bcde964cb54e91ea720"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0133-soui-gui-react-0.5.0-preview.1.tgz",
+      "normalization": "none",
+      "bytes": 2538,
+      "sha256": "6773b492a2fe63aac89d9cb572a0e2b28ea277307fb408ec6f61dcf68dfa9284"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0134-soui-gui-vue-0.5.0-preview.1.tgz",
+      "normalization": "none",
+      "bytes": 2589,
+      "sha256": "683346e1e577fb563c60b3d321337689aced86cc8d43b93c61c29847aabc2afc"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0135-soui-native-sdk-0.5.0-preview.1.tgz",
+      "normalization": "none",
+      "bytes": 35896,
+      "sha256": "bf3dd77e8ad31735e02f31db72d6c075ec498401823e131e9f99889a6e7bc621"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0136-tsconfig.json",
+      "normalization": "none",
+      "bytes": 219,
+      "sha256": "ca91e5e0e329c9b183be3076b2d0ae4279f551d265489aa1cb796a068c5d416c"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0137-final-status.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0138-final-status.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0139-final-whitespace.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0140-final-whitespace.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0141-first-merge-head.json",
+      "normalization": "none",
+      "bytes": 134,
+      "sha256": "56e67cab1a0ddcdd04b1b3076c0053a826032cbc6d65d97246c1f3847a6ef8f3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0142-first-merge-head.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0143-first-merge-head.stdout.log",
+      "normalization": "none",
+      "bytes": 41,
+      "sha256": "292737ffd73072d2aa609c54df64452b6897c0dbb80ce5996033edceacc82eb8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0144-frozen-result-final.json",
+      "normalization": "none",
+      "bytes": 7136,
+      "sha256": "c59dd8fe6b1a33f731d3231278bd3a58b3389a2ebe79ce4ded9321648d0be84b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0145-main-object.json",
+      "normalization": "none",
+      "bytes": 179,
+      "sha256": "70936a3b342d79d3ac4603e46192f9564e2c32a6d083e43bd63ae02b3181a3ce"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0146-main-object.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0147-main-object.stdout.log",
+      "normalization": "none",
+      "bytes": 7,
+      "sha256": "50836eee574ecff79dea3b4fd40673d7d000f7a5f177d8a6a3000b59c78383b8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0148-merge-progress.json",
+      "normalization": "none",
+      "bytes": 333,
+      "sha256": "e3b9cf1bfe274471242afc2f26384a21af89cbf75acae590195106ef84731d39"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0149-merged-heads-final.json",
+      "normalization": "none",
+      "bytes": 529,
+      "sha256": "7d2712e4940d5faa24edeb1d816ccc1c7c6e2ec89a12c24d8da6d77ca0946d56"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0150-parse-standard-entrypoints.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0151-parse-standard-entrypoints.stdout.log",
+      "normalization": "none",
+      "bytes": 42,
+      "sha256": "6b6d5bbac0bda48afa7337393d78bbd1d82cb4f53f9f35f7ea19797d722f1918"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0152-prior-snapshot-map.json",
+      "normalization": "none",
+      "bytes": 210551,
+      "sha256": "c7242e8938206b0b0b0a3151b7cebdc0131ef9b7665412a493274f2aa6355c15"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0153-real-commands-final.json",
+      "normalization": "none",
+      "bytes": 2668,
+      "sha256": "b76bdd443f1cbc230ea56c27ba21d2fb6860f269f63cb7eb43daa18b06d6ab5c"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0154-run-combined.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 2658,
+      "sha256": "81001930608ac011edcbeab79325b4b9010606f4404ac626101d8969163e493d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0155-run-external-consumer.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 5728,
+      "sha256": "3f931014f47fecd8adffa44ee2dc833b532fedd4a89599d08917a7bb61ac9e34"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0156-scopes-delta.json",
+      "normalization": "none",
+      "bytes": 232,
+      "sha256": "eac53380478011455f230c95d335f70e8fb8a26bf83d3817334db0bfadf790b8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0157-scopes-delta.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0158-scopes-delta.stdout.log",
+      "normalization": "none",
+      "bytes": 19002,
+      "sha256": "e4161d468062e98c28f5e0cfceaf5c197acb92585e95cc7ea5a0cdbbaf7eac97"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0159-scopes-main-object.json",
+      "normalization": "none",
+      "bytes": 179,
+      "sha256": "68d71a3e137557966c41d241b6dd1115f118df4c6dd2b436dac9487d264559b6"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0160-scopes-main-object.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0161-scopes-main-object.stdout.log",
+      "normalization": "none",
+      "bytes": 7,
+      "sha256": "50836eee574ecff79dea3b4fd40673d7d000f7a5f177d8a6a3000b59c78383b8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0162-second-main-merge.json",
+      "normalization": "none",
+      "bytes": 200,
+      "sha256": "5582acb6f9671bf05ec67885a5dcbb18fde6c48ea498257157ea776cac0c2655"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0163-second-main-merge.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0164-second-main-merge.stdout.log",
+      "normalization": "none",
+      "bytes": 317,
+      "sha256": "21c73e933b9717c1e0f05f7638e9f7a5483af64ef6369b624c942c6d62a7eafe"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0165-second-merge-head.json",
+      "normalization": "none",
+      "bytes": 134,
+      "sha256": "56e67cab1a0ddcdd04b1b3076c0053a826032cbc6d65d97246c1f3847a6ef8f3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0166-second-merge-head.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0167-second-merge-head.stdout.log",
+      "normalization": "none",
+      "bytes": 41,
+      "sha256": "018796b9b73e4e53739e594a409f36bc541aa6b30c6c065626211c591d710c8f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0168-second-merge-whitespace.json",
+      "normalization": "none",
+      "bytes": 148,
+      "sha256": "7630a9d35b3264cc5ecdea013b6637ada1fe46e2002e1461d2c7ebab4de3f6a5"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0169-second-merge-whitespace.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0170-second-merge-whitespace.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0171-original-index.json",
+      "normalization": "none",
+      "bytes": 87903,
+      "sha256": "6537bec520139d5003f9ad7f213ae27e38181f054210bba66e95ae712756be51"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0172-@soui-gui-react-build.json",
+      "normalization": "none",
+      "bytes": 312,
+      "sha256": "796c180fa9308c495b182a11d590b7bc95fc7378bd653c26c107015093b36165"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0173-@soui-gui-react-build.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0174-@soui-gui-react-build.stdout.log",
+      "normalization": "none",
+      "bytes": 65,
+      "sha256": "76817b9a88ad9ca81d71cce94135bf011de398774dc0fa10d97f8181e9cb0bc3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0175-@soui-gui-react-install.json",
+      "normalization": "none",
+      "bytes": 384,
+      "sha256": "5850b6ef508e3c768b1968bd88c7180ea54c4c5864a15831b7293507efc226ea"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0176-@soui-gui-react-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0177-@soui-gui-react-install.stdout.log",
+      "normalization": "none",
+      "bytes": 24,
+      "sha256": "829dbc0cd1c03d78cfed218cea77e5e0d62991392cafd04d8bf260056a1d7abd"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0178-@soui-gui-vue-build.json",
+      "normalization": "none",
+      "bytes": 306,
+      "sha256": "411d0f5614d8bcd8e7e7ac4b3168b89315aab48f65d56108ef30919b4aaae1ef"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0179-@soui-gui-vue-build.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0180-@soui-gui-vue-build.stdout.log",
+      "normalization": "none",
+      "bytes": 63,
+      "sha256": "5596f60822b7a1cf5aa0b58fdecbc4bc451283b3d1867d0b8cdf235c394d1ce1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0181-@soui-gui-vue-install.json",
+      "normalization": "none",
+      "bytes": 378,
+      "sha256": "5f56899b3486735a685937577db0d6a68251d9c4196054df66ba7be981e7d837"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0182-@soui-gui-vue-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0183-@soui-gui-vue-install.stdout.log",
+      "normalization": "none",
+      "bytes": 25,
+      "sha256": "42655418c228288a9dba4735657fb971df86f631b04c4ca47178142ac98df7fb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0184-@soui-native-sdk-build.json",
+      "normalization": "none",
+      "bytes": 303,
+      "sha256": "74367cb9831fbb36d654dd06f2377fe718e4741d27194001238a710631eb434d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0185-@soui-native-sdk-build.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0186-@soui-native-sdk-build.stdout.log",
+      "normalization": "none",
+      "bytes": 66,
+      "sha256": "1ff070644395da994c252e69cf6d9561e383c616ddc3d0993ba076257dd6e5ee"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0187-@soui-native-sdk-install.json",
+      "normalization": "none",
+      "bytes": 375,
+      "sha256": "779c2ded0412357ed17facecd908d4e6b293affe3d13cf83a759d1fe76dae70b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0188-@soui-native-sdk-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0189-@soui-native-sdk-install.stdout.log",
+      "normalization": "none",
+      "bytes": 23,
+      "sha256": "a941066d38162d18c88ea4b096d8cf11d19b0d46b973f6d916e2f9b8794e1f36"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0190-@soui-gui-react-build.json",
+      "normalization": "none",
+      "bytes": 577,
+      "sha256": "a23ea9f4bd737de401027354846e775ae0d29deb6ea7b0e3504f5212d9b6f93e"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0191-@soui-gui-react-build.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0192-@soui-gui-react-build.stdout.log",
+      "normalization": "none",
+      "bytes": 65,
+      "sha256": "76817b9a88ad9ca81d71cce94135bf011de398774dc0fa10d97f8181e9cb0bc3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0193-@soui-gui-react-install.json",
+      "normalization": "none",
+      "bytes": 649,
+      "sha256": "6d32810192b6f61ed73b5a84ee8cc5777206f5822ae15f5ac781d2a3aa42a19f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0194-@soui-gui-react-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0195-@soui-gui-react-install.stdout.log",
+      "normalization": "none",
+      "bytes": 24,
+      "sha256": "96257ee724afbdad43552ebf0379999a1234a2aa2f715848980d813a7d66dea1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0196-@soui-gui-vue-build.json",
+      "normalization": "none",
+      "bytes": 571,
+      "sha256": "b22ec7eda7273728934d231ab182899b039462b86eb82e3f776c8d0ea6e57241"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0197-@soui-gui-vue-build.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0198-@soui-gui-vue-build.stdout.log",
+      "normalization": "none",
+      "bytes": 63,
+      "sha256": "5596f60822b7a1cf5aa0b58fdecbc4bc451283b3d1867d0b8cdf235c394d1ce1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0199-@soui-gui-vue-install.json",
+      "normalization": "none",
+      "bytes": 643,
+      "sha256": "c6334d5182e8a0e7eb8226bfecd1453d3493da33fa098f3b16351544ec46bd8c"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0200-@soui-gui-vue-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0201-@soui-gui-vue-install.stdout.log",
+      "normalization": "none",
+      "bytes": 25,
+      "sha256": "42655418c228288a9dba4735657fb971df86f631b04c4ca47178142ac98df7fb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0202-@soui-native-sdk-build.json",
+      "normalization": "none",
+      "bytes": 568,
+      "sha256": "9e56cc5cf3fe1613d7ddec12cf161fc06fc61afd0bd526d1aa3b78d451d71039"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0203-@soui-native-sdk-build.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0204-@soui-native-sdk-build.stdout.log",
+      "normalization": "none",
+      "bytes": 66,
+      "sha256": "1ff070644395da994c252e69cf6d9561e383c616ddc3d0993ba076257dd6e5ee"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0205-@soui-native-sdk-install.json",
+      "normalization": "none",
+      "bytes": 640,
+      "sha256": "b5c66f78b8032e92671d28979402754210c531b607b37f27293cee5d403ceac5"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0206-@soui-native-sdk-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0207-@soui-native-sdk-install.stdout.log",
+      "normalization": "none",
+      "bytes": 23,
+      "sha256": "da13ab9d025b19c91553bc7d4c450975d3e4e36dd7c5fef6f223f8008ba39547"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0208-build.json",
+      "normalization": "none",
+      "bytes": 14318,
+      "sha256": "063d49ea02715986a8e34f9780d462008565ac0b32b6f8f6d670e4b8ec8a371c"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0209-result.json",
+      "normalization": "none",
+      "bytes": 4162,
+      "sha256": "4b3b8409dfdb23ecfecb8d4c72d41481fe382c1202ba793972a95aff583e4735"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0210-sdk-bindings-react-audit.json",
+      "normalization": "none",
+      "bytes": 321,
+      "sha256": "08435b285facb1296b39db93e274516f409bc4057027dd0028d700ef22bbfc43"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0211-sdk-bindings-react-audit.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0212-sdk-bindings-react-audit.stdout.log",
+      "normalization": "none",
+      "bytes": 358,
+      "sha256": "e8bbc82d0d656ca6c5d561fcb794dae7591893e0a9812ba4d5dcc40258af1ad3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0213-sdk-bindings-vue-audit.json",
+      "normalization": "none",
+      "bytes": 315,
+      "sha256": "759b9f7b20aad3caa18c4f704ffcccf6485265ef9ac547d649b71a3c276b2393"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0214-sdk-bindings-vue-audit.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0215-sdk-bindings-vue-audit.stdout.log",
+      "normalization": "none",
+      "bytes": 360,
+      "sha256": "d779408e46397a81b73737e06ea904cb9b8bb82ad1efff44f3e59f363fe8c5f3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0216-test-react18.json",
+      "normalization": "none",
+      "bytes": 301,
+      "sha256": "640de707369fe96f3028c0509a45c6d5862f8d46539b249cc8ebfffc3719a48d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0217-test-react18.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0218-test-react18.stdout.log",
+      "normalization": "none",
+      "bytes": 1273,
+      "sha256": "37b06a8685af600bfe81c14d08adef4606b6d5f4992e20ac720f0ecd1d4274a5"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0219-test.json",
+      "normalization": "none",
+      "bytes": 277,
+      "sha256": "49224d899779e88a2fd224a95355f2516ad74ae6757cfad2e008e9ed4d1e8ad9"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0220-test.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0221-test.stdout.log",
+      "normalization": "none",
+      "bytes": 2874,
+      "sha256": "f29a7529091924e9c2f2da2b260af7a02c64b8c52cfd0978b5c484dba77d92fe"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0222-tests-gui-bindings-audit.json",
+      "normalization": "none",
+      "bytes": 321,
+      "sha256": "f38c2f229219a7fdabd6c79c8d8a823e8329c781d97fd5c014307f685800d4a5"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0223-tests-gui-bindings-audit.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0224-tests-gui-bindings-audit.stdout.log",
+      "normalization": "none",
+      "bytes": 361,
+      "sha256": "69e36da0ad034c92fa26e81cf9caa7aa6d6aec1f5b79bd1bf38e1cf7dbb53c31"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0225-tests-gui-bindings-install.json",
+      "normalization": "none",
+      "bytes": 390,
+      "sha256": "c6d05659241c1a390179d73f58271ee957f6b82feee521f2fb547c088a688fcc"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0226-tests-gui-bindings-install.stderr.log",
+      "normalization": "none",
+      "bytes": 122,
+      "sha256": "67389c0b6efbe86c5fc51293d278be25159d27ace6d73ae2da626b49a0143470"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0227-tests-gui-bindings-install.stdout.log",
+      "normalization": "none",
+      "bytes": 25,
+      "sha256": "d257108234163be5f8af2aadb991d07060800d9cbd64dc651ef957d543036a4f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0228-tests-gui-bindings-react18-audit.json",
+      "normalization": "none",
+      "bytes": 345,
+      "sha256": "4717aa4a8de702baf9eda7a23173298afa8a874f4bb05a190199952e01817def"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0229-tests-gui-bindings-react18-audit.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0230-tests-gui-bindings-react18-audit.stdout.log",
+      "normalization": "none",
+      "bytes": 359,
+      "sha256": "9929b6a673ba369e5a69314aa2bb8d5a0c1040d1b9948cb402f34a7a3c8fbe85"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0231-tests-gui-bindings-react18-install.json",
+      "normalization": "none",
+      "bytes": 414,
+      "sha256": "424c77d8fd153c35f773560d33b8207b0f385b46a3e621392a9d0f3bc90f5127"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0232-tests-gui-bindings-react18-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0233-tests-gui-bindings-react18-install.stdout.log",
+      "normalization": "none",
+      "bytes": 25,
+      "sha256": "944e3b802686a1d2591066d0f061e9ff8ddb4e6b707756414e9810dc83416f38"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0234-typecheck-react18.json",
+      "normalization": "none",
+      "bytes": 316,
+      "sha256": "49f2b5a385c203a95de2d1d176b4b288c89d483d0c791675a85804b0882990a3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0235-typecheck-react18.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0236-typecheck-react18.stdout.log",
+      "normalization": "none",
+      "bytes": 102,
+      "sha256": "4f4b7b81c014a3025367de557322e5bc6505a0702d677fb284091ced37f4ef21"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0237-typecheck.json",
+      "normalization": "none",
+      "bytes": 292,
+      "sha256": "965a67b9c79fbd9e5686ba151ff12c883c5780da05a6feea5e931c81ce1612b7"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0238-typecheck.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0239-typecheck.stdout.log",
+      "normalization": "none",
+      "bytes": 86,
+      "sha256": "2c25c6281402ca0eb5811d9967c35a7429feff3b0977999dc539f7da3d041a30"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0240-result.json",
+      "normalization": "none",
+      "bytes": 7223,
+      "sha256": "13cf83606c7e3eba9b685138bd942690082a690492da22e90b24cf67683cee92"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0241-sdk-bindings-react-audit.json",
+      "normalization": "none",
+      "bytes": 587,
+      "sha256": "f265bcf175b4b89dc639b23f6366a4292f04df4f01715127b567ec35fc37f9ff"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0242-sdk-bindings-react-audit.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0243-sdk-bindings-react-audit.stdout.log",
+      "normalization": "none",
+      "bytes": 358,
+      "sha256": "e8bbc82d0d656ca6c5d561fcb794dae7591893e0a9812ba4d5dcc40258af1ad3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0244-sdk-bindings-vue-audit.json",
+      "normalization": "none",
+      "bytes": 581,
+      "sha256": "f58deb901eeffe67cd9099ae23606a71f14d5309bbdfbff5cf93228f42cb78b1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0245-sdk-bindings-vue-audit.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0246-sdk-bindings-vue-audit.stdout.log",
+      "normalization": "none",
+      "bytes": 360,
+      "sha256": "d779408e46397a81b73737e06ea904cb9b8bb82ad1efff44f3e59f363fe8c5f3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0247-test-react18.json",
+      "normalization": "none",
+      "bytes": 568,
+      "sha256": "3292f1e028c9bb88e08a5b1692ee6ba12843538b46b1dcaa6a6ba1b94e454b0a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0248-test-react18.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0249-test-react18.stdout.log",
+      "normalization": "none",
+      "bytes": 1273,
+      "sha256": "5dd101ee54b3b87c310d067856e766be86e1fc370ecb6cb5e6baf21c850c66a2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0250-test.json",
+      "normalization": "none",
+      "bytes": 544,
+      "sha256": "0a193b1953338a65cc57ce31d4b21be98008b4f4c0399a5ee0c3c4d5d74d473f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0251-test.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0252-test.stdout.log",
+      "normalization": "none",
+      "bytes": 2874,
+      "sha256": "d8a0a210bf6790365ae373cc39d688cae3285b5073af7e0f979e01a30be33470"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0253-tests-gui-bindings-audit.json",
+      "normalization": "none",
+      "bytes": 587,
+      "sha256": "9aeaeee0f1535f3f9bb642171e87c4fae81a102310d368ce653dd3008108cee6"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0254-tests-gui-bindings-audit.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0255-tests-gui-bindings-audit.stdout.log",
+      "normalization": "none",
+      "bytes": 361,
+      "sha256": "69e36da0ad034c92fa26e81cf9caa7aa6d6aec1f5b79bd1bf38e1cf7dbb53c31"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0256-tests-gui-bindings-install.json",
+      "normalization": "none",
+      "bytes": 657,
+      "sha256": "3ff1994d68ab8bd989c723d90ebbba80ac3219317bfa03611233415056ebab5d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0257-tests-gui-bindings-install.stderr.log",
+      "normalization": "none",
+      "bytes": 122,
+      "sha256": "67389c0b6efbe86c5fc51293d278be25159d27ace6d73ae2da626b49a0143470"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0258-tests-gui-bindings-install.stdout.log",
+      "normalization": "none",
+      "bytes": 25,
+      "sha256": "3c37a9f36e7b2e3c66c047d9e71d8eefbfa87aba431f20545ab295115b101fde"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0259-tests-gui-bindings-react18-audit.json",
+      "normalization": "none",
+      "bytes": 611,
+      "sha256": "7b857a7b19cda12e9ba53f06ff6a9882bf77406696c84d21775dfd413aa94751"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0260-tests-gui-bindings-react18-audit.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0261-tests-gui-bindings-react18-audit.stdout.log",
+      "normalization": "none",
+      "bytes": 359,
+      "sha256": "9929b6a673ba369e5a69314aa2bb8d5a0c1040d1b9948cb402f34a7a3c8fbe85"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0262-tests-gui-bindings-react18-install.json",
+      "normalization": "none",
+      "bytes": 679,
+      "sha256": "0a8d34f41228bffb91c9194f765280b33d931351162c821178d2322efc1f066b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0263-tests-gui-bindings-react18-install.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0264-tests-gui-bindings-react18-install.stdout.log",
+      "normalization": "none",
+      "bytes": 25,
+      "sha256": "944e3b802686a1d2591066d0f061e9ff8ddb4e6b707756414e9810dc83416f38"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0265-typecheck-react18.json",
+      "normalization": "none",
+      "bytes": 582,
+      "sha256": "6a337a7a865bf2127b5699c65278d188727f57d1a2e01f9fdcc5ee3f577265e3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0266-typecheck-react18.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0267-typecheck-react18.stdout.log",
+      "normalization": "none",
+      "bytes": 102,
+      "sha256": "4f4b7b81c014a3025367de557322e5bc6505a0702d677fb284091ced37f4ef21"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0268-typecheck.json",
+      "normalization": "none",
+      "bytes": 557,
+      "sha256": "577c85abb23a344a51c4e4d6e437372c7b31cb2884079483e67aba3cd98227dd"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0269-typecheck.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0270-typecheck.stdout.log",
+      "normalization": "none",
+      "bytes": 86,
+      "sha256": "2c25c6281402ca0eb5811d9967c35a7429feff3b0977999dc539f7da3d041a30"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0271-@soui-gui-react-pack.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0272-@soui-gui-react-pack.stdout.json",
+      "normalization": "none",
+      "bytes": 1044,
+      "sha256": "9b15817abf7f587ed1eec8b16e22596275ac2b8ba36772278f9ff1afa78849fa"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0273-@soui-gui-vue-pack.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0274-@soui-gui-vue-pack.stdout.json",
+      "normalization": "none",
+      "bytes": 1035,
+      "sha256": "5a2c2e0ab1ed145b8dc5ddd733882323797d2bbe96a98f698ab13a9a35bf6842"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0275-@soui-native-sdk-pack.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0276-@soui-native-sdk-pack.stdout.json",
+      "normalization": "none",
+      "bytes": 3466,
+      "sha256": "c050648d8fa699495163945063c5d0365f1027a367def9b598aad58214ade811"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0277-baseline-soui-sdk.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 12595,
+      "sha256": "40e50d78f8a7296301d17d1f09c779b422fd40d8a28f419da1d869efb55f7ebb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0278-bindings-test-command.json",
+      "normalization": "none",
+      "bytes": 169,
+      "sha256": "a7c7673b404c10743eeb7547f79beb543ed2d8d48858d051d1a730804bb91f36"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0279-bindings-test.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0280-bindings-test.stdout.json",
+      "normalization": "none",
+      "bytes": 190,
+      "sha256": "b79f431a73543474cc30b2788906991c5549e885d6e20e998312b09de2441c61"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0281-build-2-command.json",
+      "normalization": "none",
+      "bytes": 170,
+      "sha256": "9a9d510d6094371393ed91358b749389fe90f357ab96883db69aa14795041d51"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0282-build-2.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0283-build-2.stdout.json",
+      "normalization": "none",
+      "bytes": 10570,
+      "sha256": "ffba0592a5b7c0eb00bd5cbd34454db03fe8e631e65aa125d4b38a570a248935"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0284-build-command.json",
+      "normalization": "none",
+      "bytes": 170,
+      "sha256": "686794a979072ba43345a919b7d8723b690ab712c03edce5320fc2b2e691e650"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0285-build.stderr.log",
+      "normalization": "none",
+      "bytes": 95,
+      "sha256": "73a2918a0fe02af3b2ea1f5e81a064c8acd3fab63861396a27d9eda0c40adf3f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0286-build.stdout.json",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0287-commands-final.json",
+      "normalization": "none",
+      "bytes": 948,
+      "sha256": "6e44b1e2169e521a2486a85f7ed19d864e675f44c3413384f86ba15f5a3ff547"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0288-final-bindings.json",
+      "normalization": "none",
+      "bytes": 186,
+      "sha256": "0bd984ae531e77e73395973dfcbabf81acb2365306094372c8a0cba50d1cd59a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0289-final-bindings.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0290-final-bindings.stdout.log",
+      "normalization": "none",
+      "bytes": 190,
+      "sha256": "4d63f476e3a0cb8cbacdee0024400cfb367589dfce7bf89a31fdf7e34c5b0524"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0291-final-boundaries.json",
+      "normalization": "none",
+      "bytes": 204,
+      "sha256": "1fe962b17074208718ba2d60e74a771fe1bd63305209b93822dcff5a81495d74"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0292-final-boundaries.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0293-final-boundaries.stdout.log",
+      "normalization": "none",
+      "bytes": 915,
+      "sha256": "a46f7d6ffbc441e288f35150a5eee708809dd749deb5652dd59743743b8517c8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0294-final-build.json",
+      "normalization": "none",
+      "bytes": 187,
+      "sha256": "b5aa93c1c3ceb11108775431708606f0acbe7d3dbcd7c08ce31250f1bf06b53e"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0295-final-build.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0296-final-build.stdout.log",
+      "normalization": "none",
+      "bytes": 10570,
+      "sha256": "67f5dc9cb52fab2f4962b2be77708d186b41ee63e2f1569c5246558375b02add"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0297-final-core-gui.json",
+      "normalization": "none",
+      "bytes": 135,
+      "sha256": "21529ce2b70074bb2fd2a7d4093d1130a0019f6fcd86fff6ead37519e3dfa869"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0298-final-core-gui.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0299-final-core-gui.stdout.log",
+      "normalization": "none",
+      "bytes": 1574,
+      "sha256": "19016e48b7e71b74b8c5a66bee1d9afa4c35388314fc43d90734bcd934f0d3a6"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0300-final-pack-smoke.json",
+      "normalization": "none",
+      "bytes": 130,
+      "sha256": "7ef4a0a13b0204766b572f8c5d68301f1f2ac667d272ed402e2e03d61ce27ffd"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0301-final-pack-smoke.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0302-final-pack-smoke.stdout.log",
+      "normalization": "none",
+      "bytes": 121,
+      "sha256": "bcf419e4bc10cfec19c0934b8914ee77f59726695a7cf5d7ca31fce70c7250de"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0303-frozen-inputs-final.json",
+      "normalization": "none",
+      "bytes": 5060,
+      "sha256": "f00b63124aef91f9ccecd296036ab57ce95a72ab65c8207c5eb7cc0bcd1dbcb8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0304-THIRD_PARTY_NOTICES.md",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0305-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0306-index.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 459,
+      "sha256": "123e4c15b41765fd0e25d0ac15311e28acb18c38a60d372c2ad4cc14bac0dc0c"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0307-index.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 855,
+      "sha256": "ca4b694539e51406f9ba98cf170e5aba2bd5166321b913c961191d7c614929c3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0308-controller.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 611,
+      "sha256": "0373e3a6d5293272dd7f6fd19dbf805e0d77685906b9d0cca06c5b2af8fdf598"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0309-controller.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 2750,
+      "sha256": "ef4e3708d461cc8b7bb63fb4f549b20deaf821e89713128067c3e861fdc1f2a2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0310-package-lock.json",
+      "normalization": "none",
+      "bytes": 3316,
+      "sha256": "ea10296892ee041af0e56579bc2d00c2c2cf1af15caa478dcc6ddab9aa636fa9"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0311-package.json",
+      "normalization": "none",
+      "bytes": 633,
+      "sha256": "3292ac0653d1ba4c2408c22cbe40375c08f22944ee0ce96d69e863bc3df78bc0"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0312-index.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1177,
+      "sha256": "5de139152838b5b9ce4cdc6d211476af410df961decaba2da83c0651ad317880"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0313-tsconfig.json",
+      "normalization": "none",
+      "bytes": 368,
+      "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0314-controller.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3216,
+      "sha256": "92b3095a2dc736bd52d850b608d4105793bb0409faa0f9b2d803d961b83320c8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0315-controller.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 611,
+      "sha256": "0373e3a6d5293272dd7f6fd19dbf805e0d77685906b9d0cca06c5b2af8fdf598"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0316-controller.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 2750,
+      "sha256": "ef4e3708d461cc8b7bb63fb4f549b20deaf821e89713128067c3e861fdc1f2a2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0317-index.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 441,
+      "sha256": "f066441359df2680eb656a00ec4beeb66cfbba69f6d54c58c33313aadde78879"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0318-index.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1106,
+      "sha256": "e732eccda916d02ac2434488cf8ba1bf4dc49d23c1119248027d5504b38ad80b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0319-package-lock.json",
+      "normalization": "none",
+      "bytes": 11662,
+      "sha256": "7ac9fac8f6dbade6055367989e4199406011e83f5a303abb23bd19680ff19889"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0320-package.json",
+      "normalization": "none",
+      "bytes": 580,
+      "sha256": "15bb9a044d79e3a48dd1180b66d6be38e355329c03bd883b6aeebc728f4774bf"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0321-index.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1309,
+      "sha256": "cf20ef5f3c136b81860b1924b50def18887c90e799e7abc32f42aa2e7f0929be"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0322-tsconfig.json",
+      "normalization": "none",
+      "bytes": 368,
+      "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0323-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0324-action-contracts.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1716,
+      "sha256": "6e4fd2c306c78cac64bdd41da4c40d4ac16de848278619ac48989134635e2ad4"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0325-action-contracts.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 11909,
+      "sha256": "d524559c10f0da5ca6197e64daab19d771f682468a54fb72bbfffc01e77c3b45"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0326-capabilities.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1170,
+      "sha256": "9ea83c612285207e742a563a37216367113b5086cf9ecd5a12ac25d3d56d7028"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0327-capabilities.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 4077,
+      "sha256": "1ef5a3f610c45da4ae557f1cefec3c41d12a27361692c1b8d975afcf32cb99fe"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0328-client.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3100,
+      "sha256": "4f0b2065288e9ecf79f4a9862561311d8b9a3d41830ab6807d4834a960e3113b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0329-client.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 12460,
+      "sha256": "d08c645bfbc9a15da53eebc773e552cf83dd245180f4ea9c6378f2e2456d478b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0330-connection.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1024,
+      "sha256": "dabf49c56bb107d8617bff08064d8e5d97a447c66136ae1987dd2c5c6437c29d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0331-connection.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 7695,
+      "sha256": "fd63d56a4a7a930de7d348277574b1e658db3591b6db85452cd52a7c39b239f2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0332-contracts.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 10673,
+      "sha256": "eaacca74bb9b9a26082bc8d062724ad00cc00d17cce8321db53d5eb469b7bbf2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0333-contracts.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 100,
+      "sha256": "a5a3d5d72ebbce80878b35311427b38f0ec2946e82ddfeb890c70578abe11344"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0334-gui.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1592,
+      "sha256": "0bf94ffb7612746d8bf79a75f5a661afa40217288b844f622a9698b7dbdbb1f3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0335-gui.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 13602,
+      "sha256": "b823ad98ce26dce9fb92aed212c41f17b0ce9fd6766f2fd174f94f32b4bb3df0"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0336-index.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1392,
+      "sha256": "e6d25c88174b218f3c4c6e0f92e386b31ec52b1b6d244599dd875a3afdd38cb8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0337-index.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 425,
+      "sha256": "acaba2502e1304305bf75e1395751f80301e534d193898ba2e638251c9f3bcb2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0338-protocol.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 4714,
+      "sha256": "7c264d062b761d3450a43eab27c9442f4f77c3a7ed49cc4d39c9195ee0d80523"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0339-protocol.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3445,
+      "sha256": "bf0f8678f0bc28cd974d70d22afcbf442ef7c97f446b0a531b9ef0f4c67ace65"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0340-session-renewal.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1384,
+      "sha256": "eec9f45daecb2857b55d662987a571786ce519bf1260114894b7aee01ad43a10"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0341-session-renewal.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 11085,
+      "sha256": "161b551f6afc1dbae07c38a6286e78075fcd04c8b3a717849954a1f2ff64a74c"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0342-web-features.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1400,
+      "sha256": "d660fcbbb92d26eb2fcc05b3bd03fdee64a2f586488d3085eedbbbde17df5e29"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0343-web-features.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3590,
+      "sha256": "c9c03f65a9988474a2e806b78367bab69957d706785c9fb316be3280923557b5"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0344-package-lock.json",
+      "normalization": "none",
+      "bytes": 735,
+      "sha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0345-package.json",
+      "normalization": "none",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0346-action-contracts.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 12456,
+      "sha256": "0f126592a6c7ffda891cfc0192c9d2f91caccefa6dfdbf93b1ee2a025085e985"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0347-capabilities.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 4189,
+      "sha256": "920e9eca97b6a37e2c47b68797dc9080e7143d5b57e818bfe019e682fe109ef1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0348-client.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 12685,
+      "sha256": "d797e22387a786cbaf07ec329a05183ff0e975621cda2edb38d25e255d166520"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0349-connection.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 7243,
+      "sha256": "cd66287b6152189f7f4f45b6091a0f38b47adde1b83747ef8a1bffb3b6f6cb03"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0350-contracts.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 7927,
+      "sha256": "70dee386c707a0ed5e1993bba169e5f19e72bf31fc7a133714c7611952f3890a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0351-gui.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 12852,
+      "sha256": "926babf7b99c734273b48971e4532569a45d7ad30e57ee2deb9d27d8cb5e892d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0352-index.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1392,
+      "sha256": "e6d25c88174b218f3c4c6e0f92e386b31ec52b1b6d244599dd875a3afdd38cb8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0353-protocol.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 6550,
+      "sha256": "e4da99d8f1520ff74c4551122bad7d13ec57c45193580ca2a8caa91ac101884b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0354-session-renewal.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 10876,
+      "sha256": "99923a5088b8b2df93b8c6f138a1f4ab092821fb175cf2de79a60ef17a3b263a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0355-web-features.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3816,
+      "sha256": "4cff934cfdd03d26eb80cf52ac5e1dbf4c98b1e455641db25f04c56666457461"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0356-tsconfig.json",
+      "normalization": "none",
+      "bytes": 264,
+      "sha256": "6412fadb6cfc09a8b4b612d999f85bbad9148260ed41ae07a34ecad3cd89a408"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0357-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0358-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0359-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0360-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0361-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0362-Build.ps1.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0363-Test-Modern.ps1.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0364-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0365-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0366-gui-bindings-delivery.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 13413,
+      "sha256": "577c02ada70f4caad120b890849270bd7e4d5f62d65235dd5583ee368c602d6b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0367-sdk-manifest.json",
+      "normalization": "none",
+      "bytes": 24118,
+      "sha256": "13100e397d8de4f442be032273a16788efc51ac79648e085a2545611435867b7"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0368-green-result.json",
+      "normalization": "none",
+      "bytes": 304,
+      "sha256": "28025e40223ee0e0c31ababb49025ad194ceaa4300675fcad0d2f28e86cb587d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0369-lock-update.json",
+      "normalization": "none",
+      "bytes": 1055,
+      "sha256": "5b291182f4e1f3e44976f0f0f16bc2ae5d0b81971c4c3de44afd111d4955d3fa"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0370-parser.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0371-parser.stdout.log",
+      "normalization": "none",
+      "bytes": 33,
+      "sha256": "0ba439c76aec5f75a1ce36f7111a8c6d8a78a4560a3322565e5090dc3196699f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0372-THIRD_PARTY_NOTICES.md",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0373-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0374-package-lock.json",
+      "normalization": "none",
+      "bytes": 3316,
+      "sha256": "ea10296892ee041af0e56579bc2d00c2c2cf1af15caa478dcc6ddab9aa636fa9"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0375-package.json",
+      "normalization": "none",
+      "bytes": 633,
+      "sha256": "3292ac0653d1ba4c2408c22cbe40375c08f22944ee0ce96d69e863bc3df78bc0"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0376-index.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1177,
+      "sha256": "5de139152838b5b9ce4cdc6d211476af410df961decaba2da83c0651ad317880"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0377-tsconfig.json",
+      "normalization": "none",
+      "bytes": 368,
+      "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0378-controller.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3216,
+      "sha256": "92b3095a2dc736bd52d850b608d4105793bb0409faa0f9b2d803d961b83320c8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0379-package-lock.json",
+      "normalization": "none",
+      "bytes": 11662,
+      "sha256": "7ac9fac8f6dbade6055367989e4199406011e83f5a303abb23bd19680ff19889"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0380-package.json",
+      "normalization": "none",
+      "bytes": 580,
+      "sha256": "15bb9a044d79e3a48dd1180b66d6be38e355329c03bd883b6aeebc728f4774bf"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0381-index.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1309,
+      "sha256": "cf20ef5f3c136b81860b1924b50def18887c90e799e7abc32f42aa2e7f0929be"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0382-tsconfig.json",
+      "normalization": "none",
+      "bytes": 368,
+      "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0383-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0384-package-lock.json",
+      "normalization": "none",
+      "bytes": 735,
+      "sha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0385-package.json",
+      "normalization": "none",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0386-action-contracts.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 12456,
+      "sha256": "0f126592a6c7ffda891cfc0192c9d2f91caccefa6dfdbf93b1ee2a025085e985"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0387-capabilities.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 4189,
+      "sha256": "920e9eca97b6a37e2c47b68797dc9080e7143d5b57e818bfe019e682fe109ef1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0388-client.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 12685,
+      "sha256": "d797e22387a786cbaf07ec329a05183ff0e975621cda2edb38d25e255d166520"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0389-connection.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 7243,
+      "sha256": "cd66287b6152189f7f4f45b6091a0f38b47adde1b83747ef8a1bffb3b6f6cb03"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0390-contracts.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 7927,
+      "sha256": "70dee386c707a0ed5e1993bba169e5f19e72bf31fc7a133714c7611952f3890a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0391-gui.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 12852,
+      "sha256": "926babf7b99c734273b48971e4532569a45d7ad30e57ee2deb9d27d8cb5e892d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0392-index.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1392,
+      "sha256": "e6d25c88174b218f3c4c6e0f92e386b31ec52b1b6d244599dd875a3afdd38cb8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0393-protocol.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 6550,
+      "sha256": "e4da99d8f1520ff74c4551122bad7d13ec57c45193580ca2a8caa91ac101884b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0394-session-renewal.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 10876,
+      "sha256": "99923a5088b8b2df93b8c6f138a1f4ab092821fb175cf2de79a60ef17a3b263a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0395-web-features.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3816,
+      "sha256": "4cff934cfdd03d26eb80cf52ac5e1dbf4c98b1e455641db25f04c56666457461"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0396-tsconfig.json",
+      "normalization": "none",
+      "bytes": 264,
+      "sha256": "6412fadb6cfc09a8b4b612d999f85bbad9148260ed41ae07a34ecad3cd89a408"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0397-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0398-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0399-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0400-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0401-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0402-Build.ps1.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0403-Test-Modern.ps1.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0404-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0405-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0406-gui-bindings-delivery.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 13413,
+      "sha256": "577c02ada70f4caad120b890849270bd7e4d5f62d65235dd5583ee368c602d6b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0407-sdk-manifest.json",
+      "normalization": "none",
+      "bytes": 7204,
+      "sha256": "8f8e10cb635f4712e9d7ce3df8119c95e68782a76b5c91ef10ca932cb73d78f6"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0408-THIRD_PARTY_NOTICES.md",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0409-VERSION",
+      "normalization": "none",
+      "bytes": 17,
+      "sha256": "83cb3ff2cd9573b48948e93b93bdc74433ed8daa5f14c73ded4b79671995b2c1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0410-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0411-@soui-gui-react0.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0412-@soui-gui-react0.stdout.log",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0413-@soui-gui-react1.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0414-@soui-gui-react1.stdout.log",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0415-@soui-gui-vue0.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0416-@soui-gui-vue0.stdout.log",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0417-@soui-gui-vue1.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0418-@soui-gui-vue1.stdout.log",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0419-@soui-native-sdk0.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0420-@soui-native-sdk0.stdout.log",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0421-@soui-native-sdk1.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0422-@soui-native-sdk1.stdout.log",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0423-build.json",
+      "normalization": "none",
+      "bytes": 13988,
+      "sha256": "873d7dde648509d4f381ec7bfb05becfc14432a23b07ebdb737f0b2f9fba36e7"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0424-index.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 459,
+      "sha256": "123e4c15b41765fd0e25d0ac15311e28acb18c38a60d372c2ad4cc14bac0dc0c"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0425-index.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 855,
+      "sha256": "ca4b694539e51406f9ba98cf170e5aba2bd5166321b913c961191d7c614929c3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0426-controller.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 611,
+      "sha256": "0373e3a6d5293272dd7f6fd19dbf805e0d77685906b9d0cca06c5b2af8fdf598"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0427-controller.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 2750,
+      "sha256": "ef4e3708d461cc8b7bb63fb4f549b20deaf821e89713128067c3e861fdc1f2a2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0428-package-lock.json",
+      "normalization": "none",
+      "bytes": 3316,
+      "sha256": "ea10296892ee041af0e56579bc2d00c2c2cf1af15caa478dcc6ddab9aa636fa9"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0429-package.json",
+      "normalization": "none",
+      "bytes": 633,
+      "sha256": "3292ac0653d1ba4c2408c22cbe40375c08f22944ee0ce96d69e863bc3df78bc0"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0430-index.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1177,
+      "sha256": "5de139152838b5b9ce4cdc6d211476af410df961decaba2da83c0651ad317880"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0431-tsconfig.json",
+      "normalization": "none",
+      "bytes": 368,
+      "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0432-controller.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3216,
+      "sha256": "92b3095a2dc736bd52d850b608d4105793bb0409faa0f9b2d803d961b83320c8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0433-controller.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 611,
+      "sha256": "0373e3a6d5293272dd7f6fd19dbf805e0d77685906b9d0cca06c5b2af8fdf598"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0434-controller.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 2750,
+      "sha256": "ef4e3708d461cc8b7bb63fb4f549b20deaf821e89713128067c3e861fdc1f2a2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0435-index.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 441,
+      "sha256": "f066441359df2680eb656a00ec4beeb66cfbba69f6d54c58c33313aadde78879"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0436-index.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1106,
+      "sha256": "e732eccda916d02ac2434488cf8ba1bf4dc49d23c1119248027d5504b38ad80b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0437-package-lock.json",
+      "normalization": "none",
+      "bytes": 11662,
+      "sha256": "7ac9fac8f6dbade6055367989e4199406011e83f5a303abb23bd19680ff19889"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0438-package.json",
+      "normalization": "none",
+      "bytes": 580,
+      "sha256": "15bb9a044d79e3a48dd1180b66d6be38e355329c03bd883b6aeebc728f4774bf"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0439-index.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1309,
+      "sha256": "cf20ef5f3c136b81860b1924b50def18887c90e799e7abc32f42aa2e7f0929be"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0440-tsconfig.json",
+      "normalization": "none",
+      "bytes": 368,
+      "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0441-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0442-action-contracts.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1716,
+      "sha256": "6e4fd2c306c78cac64bdd41da4c40d4ac16de848278619ac48989134635e2ad4"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0443-action-contracts.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 11909,
+      "sha256": "d524559c10f0da5ca6197e64daab19d771f682468a54fb72bbfffc01e77c3b45"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0444-capabilities.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1170,
+      "sha256": "9ea83c612285207e742a563a37216367113b5086cf9ecd5a12ac25d3d56d7028"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0445-capabilities.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 4077,
+      "sha256": "1ef5a3f610c45da4ae557f1cefec3c41d12a27361692c1b8d975afcf32cb99fe"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0446-client.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3100,
+      "sha256": "4f0b2065288e9ecf79f4a9862561311d8b9a3d41830ab6807d4834a960e3113b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0447-client.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 12460,
+      "sha256": "d08c645bfbc9a15da53eebc773e552cf83dd245180f4ea9c6378f2e2456d478b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0448-connection.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1024,
+      "sha256": "dabf49c56bb107d8617bff08064d8e5d97a447c66136ae1987dd2c5c6437c29d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0449-connection.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 7695,
+      "sha256": "fd63d56a4a7a930de7d348277574b1e658db3591b6db85452cd52a7c39b239f2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0450-contracts.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 10673,
+      "sha256": "eaacca74bb9b9a26082bc8d062724ad00cc00d17cce8321db53d5eb469b7bbf2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0451-contracts.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 100,
+      "sha256": "a5a3d5d72ebbce80878b35311427b38f0ec2946e82ddfeb890c70578abe11344"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0452-gui.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1592,
+      "sha256": "0bf94ffb7612746d8bf79a75f5a661afa40217288b844f622a9698b7dbdbb1f3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0453-gui.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 13602,
+      "sha256": "b823ad98ce26dce9fb92aed212c41f17b0ce9fd6766f2fd174f94f32b4bb3df0"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0454-index.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1392,
+      "sha256": "e6d25c88174b218f3c4c6e0f92e386b31ec52b1b6d244599dd875a3afdd38cb8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0455-index.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 425,
+      "sha256": "acaba2502e1304305bf75e1395751f80301e534d193898ba2e638251c9f3bcb2"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0456-protocol.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 4714,
+      "sha256": "7c264d062b761d3450a43eab27c9442f4f77c3a7ed49cc4d39c9195ee0d80523"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0457-protocol.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3445,
+      "sha256": "bf0f8678f0bc28cd974d70d22afcbf442ef7c97f446b0a531b9ef0f4c67ace65"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0458-session-renewal.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1384,
+      "sha256": "eec9f45daecb2857b55d662987a571786ce519bf1260114894b7aee01ad43a10"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0459-session-renewal.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 11085,
+      "sha256": "161b551f6afc1dbae07c38a6286e78075fcd04c8b3a717849954a1f2ff64a74c"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0460-web-features.d.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1400,
+      "sha256": "d660fcbbb92d26eb2fcc05b3bd03fdee64a2f586488d3085eedbbbde17df5e29"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0461-web-features.js.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3590,
+      "sha256": "c9c03f65a9988474a2e806b78367bab69957d706785c9fb316be3280923557b5"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0462-package-lock.json",
+      "normalization": "none",
+      "bytes": 735,
+      "sha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0463-package.json",
+      "normalization": "none",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0464-action-contracts.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 12456,
+      "sha256": "0f126592a6c7ffda891cfc0192c9d2f91caccefa6dfdbf93b1ee2a025085e985"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0465-capabilities.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 4189,
+      "sha256": "920e9eca97b6a37e2c47b68797dc9080e7143d5b57e818bfe019e682fe109ef1"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0466-client.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 12685,
+      "sha256": "d797e22387a786cbaf07ec329a05183ff0e975621cda2edb38d25e255d166520"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0467-connection.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 7243,
+      "sha256": "cd66287b6152189f7f4f45b6091a0f38b47adde1b83747ef8a1bffb3b6f6cb03"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0468-contracts.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 7927,
+      "sha256": "70dee386c707a0ed5e1993bba169e5f19e72bf31fc7a133714c7611952f3890a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0469-gui.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 12852,
+      "sha256": "926babf7b99c734273b48971e4532569a45d7ad30e57ee2deb9d27d8cb5e892d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0470-index.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 1392,
+      "sha256": "e6d25c88174b218f3c4c6e0f92e386b31ec52b1b6d244599dd875a3afdd38cb8"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0471-protocol.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 6550,
+      "sha256": "e4da99d8f1520ff74c4551122bad7d13ec57c45193580ca2a8caa91ac101884b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0472-session-renewal.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 10876,
+      "sha256": "99923a5088b8b2df93b8c6f138a1f4ab092821fb175cf2de79a60ef17a3b263a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0473-web-features.ts.inert.snapshot",
+      "normalization": "none",
+      "bytes": 3816,
+      "sha256": "4cff934cfdd03d26eb80cf52ac5e1dbf4c98b1e455641db25f04c56666457461"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0474-tsconfig.json",
+      "normalization": "none",
+      "bytes": 264,
+      "sha256": "6412fadb6cfc09a8b4b612d999f85bbad9148260ed41ae07a34ecad3cd89a408"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0475-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0476-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0477-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0478-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0479-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0480-Build.ps1.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0481-Test-Modern.ps1.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0482-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0483-fixture.txt.inert.snapshot",
+      "normalization": "none",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0484-gui-bindings-delivery.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 13413,
+      "sha256": "577c02ada70f4caad120b890849270bd7e4d5f62d65235dd5583ee368c602d6b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0485-red-result.json",
+      "normalization": "none",
+      "bytes": 549,
+      "sha256": "7f4c03eeedd0a245c3944ba9ee1cc2a3a2587b22965fefe5f2af49f1546c6f00"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0486-run-final.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 5693,
+      "sha256": "5e0826be0f7da835ac0b7bced14481ffd64f9905f8639ef371853a168d7b4403"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0487-sdk-bindings-react-lock-correction.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0488-sdk-bindings-react-lock-correction.stdout.log",
+      "normalization": "none",
+      "bytes": 18,
+      "sha256": "b125771fda8addd462adfe7f7b03299feb35e28badbb2d16ae8589e371216f8f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0489-sdk-bindings-react-lock.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0490-sdk-bindings-react-lock.stdout.log",
+      "normalization": "none",
+      "bytes": 18,
+      "sha256": "b125771fda8addd462adfe7f7b03299feb35e28badbb2d16ae8589e371216f8f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0491-sdk-bindings-vue-lock-correction.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0492-sdk-bindings-vue-lock-correction.stdout.log",
+      "normalization": "none",
+      "bytes": 18,
+      "sha256": "ce7bf91f54adc7390cff6bf1c2572fd00ce9cfbd0611637e273059c4710a80c9"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0493-sdk-bindings-vue-lock.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0494-sdk-bindings-vue-lock.stdout.log",
+      "normalization": "none",
+      "bytes": 21,
+      "sha256": "5ac85c144f221987386471ee6e30c4e6f4ddd99b8faaf3e6595068d332647aed"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0495-tarball-manifest.json",
+      "normalization": "none",
+      "bytes": 7500,
+      "sha256": "e00cc8f521f121d8079ef699bd971f7e88ccef8d2d744c7f4d6326b8322682f0"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0496-soui-gui-react-0.5.0-preview.1.tgz",
+      "normalization": "none",
+      "bytes": 2538,
+      "sha256": "6773b492a2fe63aac89d9cb572a0e2b28ea277307fb408ec6f61dcf68dfa9284"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0497-soui-gui-vue-0.5.0-preview.1.tgz",
+      "normalization": "none",
+      "bytes": 2589,
+      "sha256": "683346e1e577fb563c60b3d321337689aced86cc8d43b93c61c29847aabc2afc"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0498-soui-native-sdk-0.5.0-preview.1.tgz",
+      "normalization": "none",
+      "bytes": 37179,
+      "sha256": "2f9c2ec4ad9794452a987ef6b723b32d06d124469935b4a6616630e8aa206eba"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0499-tests-gui-bindings-lock-correction.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0500-tests-gui-bindings-lock-correction.stdout.log",
+      "normalization": "none",
+      "bytes": 18,
+      "sha256": "b125771fda8addd462adfe7f7b03299feb35e28badbb2d16ae8589e371216f8f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0501-tests-gui-bindings-lock-refresh.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0502-tests-gui-bindings-lock-refresh.stdout.log",
+      "normalization": "none",
+      "bytes": 18,
+      "sha256": "b125771fda8addd462adfe7f7b03299feb35e28badbb2d16ae8589e371216f8f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0503-tests-gui-bindings-lock.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0504-tests-gui-bindings-lock.stdout.log",
+      "normalization": "none",
+      "bytes": 18,
+      "sha256": "ce7bf91f54adc7390cff6bf1c2572fd00ce9cfbd0611637e273059c4710a80c9"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0505-tests-gui-bindings-react18-lock-correction.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0506-tests-gui-bindings-react18-lock-correction.stdout.log",
+      "normalization": "none",
+      "bytes": 21,
+      "sha256": "5410c83941524c14f6a0f8f69ec8fdcd093f0b01e68a140ed2cfaab4df31856d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0507-tests-gui-bindings-react18-lock-refresh.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0508-tests-gui-bindings-react18-lock-refresh.stdout.log",
+      "normalization": "none",
+      "bytes": 18,
+      "sha256": "b125771fda8addd462adfe7f7b03299feb35e28badbb2d16ae8589e371216f8f"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0509-tests-gui-bindings-react18-lock.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0510-tests-gui-bindings-react18-lock.stdout.log",
+      "normalization": "none",
+      "bytes": 21,
+      "sha256": "245f844418b44c03827181d848ed1a364b1661dbacec5dbc60ab7df2f5309a11"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0511-original-index.json",
+      "normalization": "none",
+      "bytes": 2623,
+      "sha256": "1cf0c95a405ee679368f3131c85ec79b1ed39bc98ae3f7b4a97768080f171022"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0512-docs-adr-0026-optional-react-vue-gui-bindings.md.before.inert.snapshot",
+      "normalization": "none",
+      "bytes": 7012,
+      "sha256": "6c83b16a51b2ad7eb069ebd5e8b34a7cd21d9d8bf25f0a84ab0ff6faee5b1b70"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0513-frozen-inputs-final.json",
+      "normalization": "none",
+      "bytes": 1605,
+      "sha256": "8fd0b5d424a0e013e56c7b9e6c4b8c0044aace265ff4236d62b9ca92ca988a16"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0514-green-command.json",
+      "normalization": "none",
+      "bytes": 204,
+      "sha256": "1fe962b17074208718ba2d60e74a771fe1bd63305209b93822dcff5a81495d74"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0515-green-final-command.json",
+      "normalization": "none",
+      "bytes": 204,
+      "sha256": "1fe962b17074208718ba2d60e74a771fe1bd63305209b93822dcff5a81495d74"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0516-green-final.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0517-green-final.stdout.log",
+      "normalization": "none",
+      "bytes": 1102,
+      "sha256": "aea8a2c818d2fc8719357fea2e4ae7bffefd73bccc0127b95edb4e11314c0fcc"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0518-green.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0519-green.stdout.log",
+      "normalization": "none",
+      "bytes": 1104,
+      "sha256": "5f84f92d3ff9cf7e03349245e984c5059d573edddae553b5e6eec74b91ae95cc"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0520-prior-evidence.json",
+      "normalization": "none",
+      "bytes": 207,
+      "sha256": "06bd7b809b9bc784954b30cd2c20293414f7042334fc3c936eb1ddb3db79866e"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0521-red-command.json",
+      "normalization": "none",
+      "bytes": 392,
+      "sha256": "4dcc848e1a1a7eb3e4885f061fd8ff80d492100dbbb3a121281dc125a9059638"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0522-red-regression-test.cjs.inert.snapshot",
+      "normalization": "none",
+      "bytes": 9891,
+      "sha256": "995994669e6b37c858c77ecaca58e795455add759739c3df4c0fea5278756173"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0523-red.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0524-red.stdout.log",
+      "normalization": "none",
+      "bytes": 2071,
+      "sha256": "0fbfa7b2e1243a1fa66b3dc026bed75469f34240f359e0738b90060b46d00fad"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0525-tests-sdk-gui-bindings-delivery.test.cjs.before.inert.snapshot",
+      "normalization": "none",
+      "bytes": 7789,
+      "sha256": "3011f4c8487a392ee225748536894830e5e7998753ed77f975b2af6768bb54d9"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0526-tools-sdk-gui-bindings-delivery.cjs.before.inert.snapshot",
+      "normalization": "none",
+      "bytes": 13413,
+      "sha256": "577c02ada70f4caad120b890849270bd7e4d5f62d65235dd5583ee368c602d6b"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0527-source-after-tests.json",
+      "normalization": "none",
+      "bytes": 207689,
+      "sha256": "d3da0c56ceee8d444cbd59385a69b7432093830654766d15c073536441e90114"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0528-source-before-tests.json",
+      "normalization": "none",
+      "bytes": 202625,
+      "sha256": "050e71660e84ec99152bd6b8afbaff906fc9143e4313e560d864494e55feef15"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0529-status-before.json",
+      "normalization": "none",
+      "bytes": 141,
+      "sha256": "3f72a8925888b7ac0642c5e747c26b7240aed9377a5dc5fb1ee1978293e8b3eb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0530-status-before.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0531-status-before.stdout.log",
+      "normalization": "none",
+      "bytes": 51528,
+      "sha256": "4540657c5f3589d70ed00e48f2ac62d3e5938ab9a5cffdbd712ceec1e8f61d4a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0532-status-second-merge.json",
+      "normalization": "none",
+      "bytes": 141,
+      "sha256": "3f72a8925888b7ac0642c5e747c26b7240aed9377a5dc5fb1ee1978293e8b3eb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0533-status-second-merge.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0534-status-second-merge.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0535-status-third-main.json",
+      "normalization": "none",
+      "bytes": 141,
+      "sha256": "3f72a8925888b7ac0642c5e747c26b7240aed9377a5dc5fb1ee1978293e8b3eb"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0536-status-third-main.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0537-status-third-main.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0538-third-attrs.conflicted.inert.snapshot",
+      "normalization": "none",
+      "bytes": 30103,
+      "sha256": "a60fe3aeed5ee9850442edce719838faed94d7d02df407e300acd072f27f2d39"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0539-third-conflicts-after-stage.json",
+      "normalization": "none",
+      "bytes": 159,
+      "sha256": "eee6a56fd3d609248ae53740e52fa4286b2304aeae078efac46d4cee33a0b50a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0540-third-conflicts-after-stage.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0541-third-conflicts-after-stage.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0542-third-main-conflicts.json",
+      "normalization": "none",
+      "bytes": 159,
+      "sha256": "eee6a56fd3d609248ae53740e52fa4286b2304aeae078efac46d4cee33a0b50a"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0543-third-main-conflicts.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0544-third-main-conflicts.stdout.log",
+      "normalization": "none",
+      "bytes": 15,
+      "sha256": "c897936f5ea7ea10d8ff410df59d263e98b67d3c2ac3b7a78f0ebdfa16e7abc3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0545-third-main-head.json",
+      "normalization": "none",
+      "bytes": 134,
+      "sha256": "56e67cab1a0ddcdd04b1b3076c0053a826032cbc6d65d97246c1f3847a6ef8f3"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0546-third-main-head.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0547-third-main-head.stdout.log",
+      "normalization": "none",
+      "bytes": 41,
+      "sha256": "c81e2489f889e3d24e405ef678c3599eab5a5e3c18d8f006fd1423b1182efaaa"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0548-third-main-merge.json",
+      "normalization": "none",
+      "bytes": 200,
+      "sha256": "426e34bcb9cc6906b33ba3ce90f0fa110bbb96f860277b35b79abbe58c214ae4"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0549-third-main-merge.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0550-third-main-merge.stdout.log",
+      "normalization": "none",
+      "bytes": 147,
+      "sha256": "d5bfb27b43db7cd4f639135b0094aeb6bd5f237048eda7df95ff4e85bc65674d"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0551-third-whitespace.json",
+      "normalization": "none",
+      "bytes": 148,
+      "sha256": "7630a9d35b3264cc5ecdea013b6637ada1fe46e2002e1461d2c7ebab4de3f6a5"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0552-third-whitespace.stderr.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0553-third-whitespace.stdout.log",
+      "normalization": "none",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/raw/0554-tools-Collect-Verification.cjs.conflicted.inert.snapshot",
+      "normalization": "none",
+      "bytes": 11143,
+      "sha256": "831d8fdd292578182d5aff38b5d6c04e45885724c3ebc173a41f11d65f93f2a9"
+    },
+    {
+      "path": "verification/production-validation/0.5-gui-integration-2026-10-09/tail-main-reconciliation.json",
+      "normalization": "none",
+      "bytes": 1451,
+      "sha256": "061535c709b19a683c784894d34cc91e0e28d5a93809322919d9ce83bd96688f"
     },
     {
       "path": "verification/production-validation/0.5-maintenance-2026-10-08/README.md",

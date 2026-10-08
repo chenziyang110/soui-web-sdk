@@ -1,0 +1,19 @@
+✔ React 18.3.1: StrictMode registrations and teardown borrow the shared GUI (11.2382ms)
+✔ React committed callbacks and state update without removing an existing observation (26.6334ms)
+✔ React suspended uncommitted renders cannot replace the last committed callback (3.6683ms)
+✔ React structural changes reject old work and protect an id reused by a new generation (3.3353ms)
+✔ React DOM ref replacement and action-name changes each remove the old observation (1.8851ms)
+✔ React stable business ids survive list reorder without cancelling observations (41.7409ms)
+✔ React changing the borrowed GUI removes only this binding from the old registry (1.6681ms)
+✔ React duplicate ids reach the error boundary rather than replacing another registration (3.8069ms)
+✔ React exposes only explicit projections and expose=false removes the registration (2.6771ms)
+✔ React native denial propagates without retry or a synthesized user gesture (2.0318ms)
+✔ React timeout and unmount do not cancel native work; cancellation is an explicit action (14.3786ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 600.7954

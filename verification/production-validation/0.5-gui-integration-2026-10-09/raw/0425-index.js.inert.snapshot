@@ -1,0 +1,19 @@
+import { useCallback, useLayoutEffect, useRef } from 'react';
+import { GuiBinding } from '../../shared/controller.js';
+/** Borrow the application's per-document registry and bind one actual DOM element. */
+export function useSouiGuiNode(gui, options) {
+    const controller = useRef(null);
+    if (controller.current === null)
+        controller.current = new GuiBinding();
+    const binding = controller.current;
+    const element = useRef(null);
+    const ref = useCallback((next) => {
+        if (element.current !== next)
+            binding.release();
+        element.current = next;
+    }, [binding]);
+    // Updating render refs here would expose callbacks from an abandoned render.
+    useLayoutEffect(() => { binding.commit(gui, element.current, options); });
+    useLayoutEffect(() => () => { binding.release(); }, [binding]);
+    return ref;
+}

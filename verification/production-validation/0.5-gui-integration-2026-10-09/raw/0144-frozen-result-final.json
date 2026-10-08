@@ -1,0 +1,204 @@
+{
+  "schema": "soui.gui-actioncore-integration/v1",
+  "head": "6114e173e86860311e38f88729f53e794e253ccf",
+  "mergeHeads": {
+    "originalHead": "21ec627a2e41536be4a7cb5b4e92f38817872e83",
+    "firstMain": "0330a3e0b6435f5f21114fa48a28d89d53b4192d",
+    "firstMergeHead": "c5a4b2e6444ab4bb14cff1d8f9550cce5787e52a",
+    "secondMain": "e4ff7f9d1e670550a62a402bd1bf1888c0a7546d",
+    "mergeStatus": 1,
+    "conflicts": ".gitattributes\ntools/Collect-Verification.cjs",
+    "secondMergeHead": "e995892337c72efe1e3f126ba2c0cffa6a63f3e1",
+    "sourceManifestPolicy": "Exact latest main5bb manifest is temporary; root owns final combined manifest.",
+    "thirdMain": "5bb083d22f68a3df2da101ca5f90f3604e9fb147",
+    "thirdMergeHead": "6114e173e86860311e38f88729f53e794e253ccf"
+  },
+  "sourceSha256": "359ac7b1fcbcac944c9ec5cc3a0ff8b9b33d8a94718050d5b70d3b3a341dfac6",
+  "guiSourceSha256": "d11407221af7e64957b0775c241da7df1aefebb7e0616b7e5c788a807b3c66c2",
+  "guiOutputSha256": "a294a593a0ab975d8af5ab7e58a6bb0fbc8d5fd5216b161895403e89fd088f3b",
+  "entrypoints": {
+    "sha256": "e21bc94255f5e8badabfe2b250c19bf941422c5113e28e301c2ba2ff1a0035c5",
+    "bytes": 76884,
+    "files": [
+      {
+        "path": "tests/gui-bindings/packages.test.mjs",
+        "bytes": 10542,
+        "sha256": "25566fa0005c4bf06eda3dedca5fee2ddedf2ba94135296b3c0260e4ed13fd03"
+      },
+      {
+        "path": "tests/sdk/gui-bindings-delivery.test.cjs",
+        "bytes": 10231,
+        "sha256": "3f7984c1e78494e979a03b61537f4429f01e152e9a6b8ad68e2d03f240eadba9"
+      },
+      {
+        "path": "tests/sdk/gui-bindings-entrypoints.test.cjs",
+        "bytes": 5240,
+        "sha256": "64587dbc68f2b3e00eb38cc62a79ad865e81c711be034d3e05f846e02be9a905"
+      },
+      {
+        "path": "tools/Build.ps1",
+        "bytes": 5615,
+        "sha256": "cf9de22572cac347b2f3a7f1e45c564107263e1be0c218340d20fe352ae2eb29"
+      },
+      {
+        "path": "tools/Collect-Verification.cjs",
+        "bytes": 11073,
+        "sha256": "ff7a0b8bbbd49cc61eec1f525e4e1945f7f9647f1d2fb21a441033fbe296a079"
+      },
+      {
+        "path": "tools/Test.ps1",
+        "bytes": 6685,
+        "sha256": "8e5e9df84bbc059bd2119a5a1055b19dd8ff7873ca66da19cfea440bff6252fa"
+      },
+      {
+        "path": "tools/sdk/gui-bindings-delivery.cjs",
+        "bytes": 13693,
+        "sha256": "26305269c19891cd5dfb6d781985114f7b6aa1d6437d22213d4cb6ba25c10ec3"
+      },
+      {
+        "path": "tools/sdk/soui-sdk.cjs",
+        "bytes": 13805,
+        "sha256": "84fee789283b81e9a866d29c4860dfb8311666fcf92b460d54bbb3abf47bbee5"
+      }
+    ]
+  },
+  "business": [
+    {
+      "path": "sdk/bindings/shared/controller.ts",
+      "bytes": 3216,
+      "sha256": "92b3095a2dc736bd52d850b608d4105793bb0409faa0f9b2d803d961b83320c8",
+      "sameAsBaselineAfterLfNormalization": true
+    },
+    {
+      "path": "sdk/bindings/react/src/index.ts",
+      "bytes": 1177,
+      "sha256": "5de139152838b5b9ce4cdc6d211476af410df961decaba2da83c0651ad317880",
+      "sameAsBaselineAfterLfNormalization": true
+    },
+    {
+      "path": "sdk/bindings/vue/src/index.ts",
+      "bytes": 1309,
+      "sha256": "cf20ef5f3c136b81860b1924b50def18887c90e799e7abc32f42aa2e7f0929be",
+      "sameAsBaselineAfterLfNormalization": true
+    }
+  ],
+  "node": {
+    "version": "v24.14.0",
+    "executable": "C:\\nvm4w\\nodejs\\node.exe",
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "compilerPackage": {
+    "typescript": "5.9.3"
+  },
+  "npmCli": {
+    "path": "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+    "sha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+  },
+  "results": {
+    "coreActionGuiTests": 61,
+    "bindingPackageTests": 28,
+    "react18Tests": 11,
+    "deliveryBoundaryTests": 10,
+    "sdkPackageSmokeChecks": 15,
+    "types": [
+      "typecheck",
+      "typecheck:react18"
+    ],
+    "audits": [
+      {
+        "cwd": "sdk/bindings/react",
+        "exitCode": 0,
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      },
+      {
+        "cwd": "sdk/bindings/vue",
+        "exitCode": 0,
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      },
+      {
+        "cwd": "tests/gui-bindings",
+        "exitCode": 0,
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      },
+      {
+        "cwd": "tests/gui-bindings/react18",
+        "exitCode": 0,
+        "vulnerabilities": {
+          "info": 0,
+          "low": 0,
+          "moderate": 0,
+          "high": 0,
+          "critical": 0,
+          "total": 0
+        }
+      }
+    ],
+    "actionChecks": 3,
+    "externalConsumer": {
+      "passed": true,
+      "manifestSha256": "d1c8fa093f139cd5da744e41eb80e4b0d2fe9e48e3a79bcde964cb54e91ea720",
+      "sdkLockSha256": "cf099d301b988c246400b9e0fff3567c0cb71647265b4eaca22c67f8c8bd53d5",
+      "tarballs": [
+        {
+          "name": "@soui/native-sdk",
+          "version": "0.5.0-preview.1",
+          "filename": "soui-native-sdk-0.5.0-preview.1.tgz",
+          "sha256": "bf3dd77e8ad31735e02f31db72d6c075ec498401823e131e9f99889a6e7bc621",
+          "bytes": 35896
+        },
+        {
+          "name": "@soui/gui-react",
+          "version": "0.5.0-preview.1",
+          "filename": "soui-gui-react-0.5.0-preview.1.tgz",
+          "sha256": "6773b492a2fe63aac89d9cb572a0e2b28ea277307fb408ec6f61dcf68dfa9284",
+          "bytes": 2538
+        },
+        {
+          "name": "@soui/gui-vue",
+          "version": "0.5.0-preview.1",
+          "filename": "soui-gui-vue-0.5.0-preview.1.tgz",
+          "sha256": "683346e1e577fb563c60b3d321337689aced86cc8d43b93c61c29847aabc2afc",
+          "bytes": 2589
+        }
+      ],
+      "types": true,
+      "imports": true
+    }
+  },
+  "priorEvidence": {
+    "savedRawFiles": 354,
+    "snapshotsVerified": true,
+    "oldCanonicalBuildRecordSha256": "063d49ea02715986a8e34f9780d462008565ac0b32b6f8f6d670e4b8ec8a371c",
+    "newCanonicalBuildRecordSha256": "33a519091519af3fcb34f0dda238c64f599e41f0a8d9d63c3012a4c384dcd864",
+    "referenceMap": "prior-snapshot-map.json",
+    "oldCanonicalPathUpdatedNormally": true
+  },
+  "limitations": [
+    "source-manifest.json retains exact main5bb bytes temporarily; root must generate the final combined source/package manifest.",
+    "No C++ compilation, real desktop/VM/SendInput, full standard Build/Test/Collect or canonical acceptance update occurred.",
+    "PowerShell AST hook regressions exercise real extracted blocks with command capture stubs, not full native builds.",
+    "Peer metadata fixtures test version resolution only; real compilation and tarball relocation/types/imports are separate recorded npm/SDK commands.",
+    "Source/output/evidence hashes bind files within this run; they do not authenticate an attacker who rewrites a whole same-user bundle."
+  ]
+}

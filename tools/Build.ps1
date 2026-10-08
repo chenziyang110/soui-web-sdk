@@ -5,6 +5,7 @@ param(
   [switch]$SdkOnly,
   [switch]$SkipWeb,
   [switch]$WithWebView2,
+  [switch]$WithGuiBindings,
   [switch]$Install,
   [switch]$FreshConfigure
 )
@@ -55,6 +56,11 @@ if($SdkOnly){$evidenceArgs+='sdk-only'}
 if($LASTEXITCODE -ne 0){throw 'Build identity initialization failed'}
 if(-not $SkipWeb) {
   $webRoots=@('sdk/web')
+  if($WithGuiBindings){
+    & $node.Source (Join-Path $root 'tools/sdk/gui-bindings-delivery.cjs') build --root $root
+    if($LASTEXITCODE -ne 0){throw 'Optional GUI bindings build failed'}
+    $webRoots=@()
+  }
   if(-not $SdkOnly){$webRoots+=if($generated){@('web')}else{@('templates/desktop-app/web','templates/modern-app/web','demos/workbench/web')}}
   foreach($relative in $webRoots){
     $web=Join-Path $root $relative
@@ -71,6 +77,10 @@ if(-not $SkipWeb) {
 }
 & $node.Source $evidence $(if($SkipWeb){'verify-web'}else{'record-web'}) @evidenceArgs
 if($LASTEXITCODE -ne 0){throw 'Web source/output identity verification failed'}
+if($WithGuiBindings){
+  & $node.Source (Join-Path $root 'tools/sdk/gui-bindings-delivery.cjs') verify --root $root
+  if($LASTEXITCODE -ne 0){throw 'Optional GUI bindings identity verification failed'}
+}
 $optional=@('-DSOUI_BUILD_WEBVIEW2=OFF')
 if($WithWebView2){
   $webview2Package=& (Join-Path $PSScriptRoot 'internal/Restore-WebView2.ps1')
@@ -84,6 +94,10 @@ if($WithWebView2){& (Join-Path $PSScriptRoot 'internal/Restore-WebView2.ps1') | 
 if($Install){
   & $cmake.Source --install $output --config $Configuration --prefix (Join-Path $root "out/install/$Architecture")
   if($LASTEXITCODE -ne 0){throw 'SDK install failed'}
+}
+if($WithGuiBindings){
+  & $node.Source (Join-Path $root 'tools/sdk/gui-bindings-delivery.cjs') verify --root $root
+  if($LASTEXITCODE -ne 0){throw 'Optional GUI bindings changed during native build'}
 }
 & $node.Source $evidence finish @evidenceArgs
 if($LASTEXITCODE -ne 0){throw 'Build payload recording failed'}

@@ -2,13 +2,21 @@
 param([ValidateSet('x86','x64')][string]$Architecture='x64',
       [ValidateSet('Debug','Release')][string]$Configuration='Release',
       [switch]$NativeOnly,
-      [switch]$UnitOnly)
+      [switch]$UnitOnly,
+      [switch]$WithGuiBindings)
 $ErrorActionPreference='Stop'
 if($NativeOnly -and $UnitOnly){throw 'NativeOnly and UnitOnly cannot be used together.'}
+if($NativeOnly -and $WithGuiBindings){throw 'WithGuiBindings requires unit tests; omit NativeOnly.'}
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $output=Join-Path $root "out/$Architecture"
 $evidence=Join-Path $root 'tools/internal/build-evidence.cjs'
 if(-not $NativeOnly){
+  & node --test (Join-Path $root 'tests/sdk/gui-bindings-delivery.test.cjs') (Join-Path $root 'tests/sdk/gui-bindings-entrypoints.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'Optional GUI delivery boundary tests failed'}
+  if($WithGuiBindings){
+    & node (Join-Path $root 'tools/sdk/gui-bindings-delivery.cjs') test --root $root
+    if($LASTEXITCODE -ne 0){throw 'Optional GUI bindings tests failed'}
+  }
   & (Join-Path $PSScriptRoot 'internal/Build-ValidationTools.ps1') | Out-Null
   if($LASTEXITCODE -ne 0){throw 'Owned process supervision tools build failed'}
   & node --test (Join-Path $root 'tests/benchmark/owned-process-runner.test.cjs') (Join-Path $root 'tests/benchmark/owned-process-client.test.cjs') (Join-Path $root 'tests/benchmark/owned-process-client-boundaries.test.cjs') (Join-Path $root 'tests/acceptance/owned-supervision-boundaries.test.cjs') (Join-Path $root 'tests/benchmark/run-one-cleanup.test.cjs') (Join-Path $root 'tests/sdk/cmake-sdk-selection.test.cjs')
