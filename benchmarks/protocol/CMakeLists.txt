@@ -20,3 +20,8 @@ set_property(TARGET ProcessTreeSampler PROPERTY MSVC_RUNTIME_LIBRARY MultiThread
 set_property(TARGET InputTrace PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 set_property(TARGET OwnedProcessRunner PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 set_property(TARGET OwnedProcessAssignmentFixture PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_executable(NativeTraceIdentity "${CMAKE_CURRENT_SOURCE_DIR}/../../tests/benchmark/native-trace-identity.cpp")
+target_include_directories(NativeTraceIdentity PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}")
+target_compile_features(NativeTraceIdentity PRIVATE cxx_std_17)
+target_compile_options(NativeTraceIdentity PRIVATE /W4 /utf-8)
+set_property(TARGET NativeTraceIdentity PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)

@@ -7,10 +7,21 @@ const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const {compare, loadRun} = require('./check-pair-runs.cjs');
-const {frozenIdentity, bundleDigest} = require('./run-series.cjs');
+const {frozenIdentity} = require('./run-series.cjs');
+const {runDirectory, readRunFile, readRunJson, describeTree} = require('./owned-trace-subject.cjs');
 
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
-const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
+function assertPairVerdict(stored, report, message = 'Stored pair verdict changed') {
+  if (stored?.schema === 'soui.benchmark-pair-preflight/v1' &&
+      !Object.hasOwn(stored, 'preflightScope') && !Object.hasOwn(stored, 'exactFileTimeBound')) {
+    assert.equal(report.schema, 'soui.benchmark-pair-preflight/v1');
+    assert.equal(report.exactFileTimeBound, false);
+    assert.equal(report.preflightScope, 'legacy-diagnostic-unbound');
+    const projection = {...report};
+    delete projection.preflightScope; delete projection.exactFileTimeBound;
+    assert.deepEqual(stored, projection, message);
+  } else assert.deepEqual(stored, report, message);
+}
 
 function quantile(values, fraction) {
   assert(values.length > 0 && values.every(value => Number.isFinite(value) && value >= 0));
@@ -151,6 +162,7 @@ function summarizeSeriesRecord(series, gates, reports) {
   assert.equal(series.completedPairs, series.plannedPairs);
   assert.equal(series.pairs.length, series.plannedPairs);
   assert.equal(reports.length, series.plannedPairs);
+  const exact = reports[0]?.schema === 'soui.benchmark-pair-preflight/v2';
   assert.equal(series.order, 'alternating-soui-electron-and-electron-soui');
   assert.equal(series.liveInterferenceGate?.intervalMs, 5000);
   assert.equal(series.liveInterferenceGate?.path, 'live-interference-gates.ndjson');
@@ -195,7 +207,14 @@ function summarizeSeriesRecord(series, gates, reports) {
     assert.equal(pair.preflightAccepted, true, 'Only accepted pairs can be summarized');
     assert.equal(pair.runs.soui, `pair-${number}-soui`);
     assert.equal(pair.runs.electron, `pair-${number}-electron`);
-    assert.equal(report.schema, 'soui.benchmark-pair-preflight/v1');
+    assert.equal(report.schema, exact ? 'soui.benchmark-pair-preflight/v2' : 'soui.benchmark-pair-preflight/v1',
+      'Mixed legacy/exact pairs cannot form a formal series');
+    if (exact) {
+      assert.equal(report.exactFileTimeBound, true, 'Formal pairs must bind exact native subjects');
+      assert.equal(report.preflightScope, 'exact-owned-subject');
+    } else {
+      assert.notEqual(report.exactFileTimeBound, true, 'Legacy pairs remain unbound');
+    }
     assert.equal(report.scene, series.scene);
     assert.equal(report.preflightAccepted, true, 'Only accepted pairs can be summarized');
     assert.equal(report.benchmarkValid, false);
@@ -221,7 +240,8 @@ function summarizeSeriesRecord(series, gates, reports) {
       [name, distribution(samples)]))]));
   assert(metrics.electron.privateBytesP95.p50 > 0,
     'Electron private-memory reference must be positive');
-  return {schema: 'soui.benchmark-series-diagnostic/v1',
+  return {schema: exact ? 'soui.benchmark-series-diagnostic/v2' : 'soui.benchmark-series-diagnostic/v1',
+    exactFileTimeBound:exact, diagnosticScope:exact ? 'exact-owned-subject' : 'legacy-unbound',
     scene: series.scene, acceptedPairs: series.plannedPairs,
     order: series.order, liveGateSamples: gates.length,
     metrics, candidateRatios: {
@@ -238,13 +258,14 @@ function summarizeSeriesRecord(series, gates, reports) {
 }
 
 function summarizeDirectory(root) {
-  const seriesPath = path.join(root, 'series.json');
-  const gatesPath = path.join(root, 'live-interference-gates.ndjson');
-  const series = readJson(seriesPath);
+  const seriesBytes = readRunFile(root, 'series.json');
+  const gatesBytes = readRunFile(root, 'live-interference-gates.ndjson');
+  const series = readRunJson(root, 'series.json');
   assert.equal(series.pageBundle, 'frozen-page');
-  assert.equal(bundleDigest(path.join(root, 'frozen-page')), series.pageBundleSha256,
+  assert.equal(sha(Buffer.from(JSON.stringify(describeTree(root, 'frozen-page')))), series.pageBundleSha256,
     'Frozen page bundle changed after the series');
-  const gates = fs.readFileSync(gatesPath, 'utf8').trim().split(/\r?\n/)
+  assert(gatesBytes.length > 0 && gatesBytes.at(-1) === 10, 'Truncated live gate evidence');
+  const gates = new TextDecoder('utf-8', {fatal: true}).decode(gatesBytes).trim().split(/\r?\n/)
     .filter(Boolean).map(JSON.parse);
   const reports = [];
   const evidence = [];
@@ -253,7 +274,7 @@ function summarizeDirectory(root) {
   for (let number = 1; number <= series.plannedPairs; ++number) {
     const runs = {};
     for (const host of ['soui', 'electron'])
-      runs[host] = loadRun(path.join(root, `pair-${number}-${host}`), host);
+      runs[host] = loadRun(runDirectory(root, `pair-${number}-${host}`), host);
     for (const host of ['soui', 'electron']) {
       assertRunnerBinding(series.pairs[number - 1], host, runs[host].record, gates);
       runTimes.push({pairNumber: number, host,
@@ -267,11 +288,11 @@ function summarizeDirectory(root) {
     else frozen = identity;
     assert.deepEqual(identity, series.fixedIdentities, 'Series identity record differs');
     const report = compare(runs.soui, runs.electron);
-    const reportPath = path.join(root, `pair-${number}-preflight.json`);
-    const stored = readJson(reportPath);
-    assert.deepEqual(stored, report, `Pair ${number} preflight changed`);
+    const reportName = `pair-${number}-preflight.json`;
+    const stored = readRunJson(root, reportName);
+    assertPairVerdict(stored, report, `Pair ${number} preflight changed`);
     reports.push(report);
-    evidence.push({pair: number, preflightSha256: sha(fs.readFileSync(reportPath))});
+    evidence.push({pair: number, preflightSha256: sha(readRunFile(root, reportName))});
   }
   const summary = summarizeSeriesRecord(series, gates, reports);
   const runChronology = validateRunChronology(series, runTimes);
@@ -281,8 +302,7 @@ function summarizeDirectory(root) {
     series.liveInterferenceGate.intervalMs, run.runnerPid));
   return {...summary, sourceIdentity: frozen,
     runChronology, preflightChronology, liveGateCoverage,
-    sourceSha256: {series: sha(fs.readFileSync(seriesPath)),
-      liveGate: sha(fs.readFileSync(gatesPath))}, pairs: evidence};
+    sourceSha256: {series: sha(seriesBytes), liveGate: sha(gatesBytes)}, pairs: evidence};
 }
 
 if (require.main === module) {
@@ -302,4 +322,4 @@ if (require.main === module) {
 }
 
 module.exports = {summarizeSeriesRecord, summarizeDirectory, validateGateCoverage,
-  validateRunChronology, validatePreflightChronology, assertRunnerBinding};
+  validateRunChronology, validatePreflightChronology, assertRunnerBinding, assertPairVerdict};
