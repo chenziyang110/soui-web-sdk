@@ -23,6 +23,10 @@
 
 进一步核对发现导入源码内已有 `libxml/src/Copyright`、`libpng/png.h` 的许可正文及 `node/LICENSE-nodejs` 的 c-ares 段落。导入的 libcurl、libjpeg、OTS 文件则指向源码根目录未提供的 `COPYING`、`README`、`LICENSE`；三者的[版本匹配上游原文已补录](../../verification/production-validation/kernel-notice-recovery-2026-09-25/README.md)。嵌套组件材料、实际链接成员与运行包声明仍待完成，不能根据头文件注释自行代写。
 
+2026-09-28 对当前 preview.15 精确 DLL 另作[链接参数和运行包声明观察](../../verification/production-validation/license-runtime-notices-2026-09-28/README.md)：x86 真实链接命令显式列出 `openssl.lib`；四份 Release Starter/Workbench 的 `resources/legal/` 各有五个文件，均未包含导入源码中 OpenSSL 1.0.2h 的 OpenSSL/原 SSLeay 许可文本。原始脚本与独立校验退出 0、当前 DLL/文件散列已保留。此结果不证明静态归档成员最终进入 DLL，也不构成法律结论；x64 无显式参数同样不能证明缺席。实际链接解析、适用条款、随包声明及维护者审批继续按 [Issue #39](https://github.com/chenziyang110/soui-web-sdk/issues/39) 验收，`license-review.json` 保持 `unverified`。
+
+2026-09-29 的[匹配 x86 DLL/PDB 成员检查](../../verification/production-validation/license-pdb-members-2026-09-29/README.md)把当前精确 x86 `node.dll` 与 PDB 的 GUID/Age 对齐，并列出 501 个来自 `openssl.lib` 的编译单元。这补强了 x86 成员级证据；精确 x64 `miniblink.dll` 没有 CodeView，采集时无匹配 PDB，不能沿用 x86 结论。四份运行包仍缺对应声明，适用再分发条件和维护审批未完成，依赖授权保持 `unverified`。
+
 OpenSSL 官方将 1.0.2 列为已结束常规支持的分支，另有扩展支持渠道。当前项目没有扩展支持或完整安全补丁覆盖的证据，因此不能把“能自行编译”解释为“有持续安全维护”。[OpenSSL 发布策略](https://openssl-library.org/policies/releasestrat/)（访问日期：2026-09-22）
 
 ## 阻止生产放行的缺口

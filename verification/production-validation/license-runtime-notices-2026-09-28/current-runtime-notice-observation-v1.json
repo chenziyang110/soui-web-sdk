@@ -1,0 +1,170 @@
+{
+  "schema": "soui.current-runtime-notice-observation/v1",
+  "observedAtUtc": "2026-09-28T03:15:23.717576+00:00",
+  "scope": "Exact current node.dll hashes, explicit linker arguments, source license, and four app-local legal directories only",
+  "inputs": {
+    "licenseReviewSha256": "5a998eeef7b9dbccafa29ec25a1f1dd947bdc60cee4ec8738bf6050ae24bc0c6",
+    "linkExtractionSha256": "01519f6648fc59df2c18e98c7e2a9617fd8cba061425e37f7f8486cd6a7313db",
+    "sourceOpenSslLicenseSha256": "d0047be11f613ca5afebb508c19242fdecd55b740d70ea031c00c11784f37ee7"
+  },
+  "sourceOpenSslLicensePath": "third_party/sources/miniblink/node/openssl/openssl/LICENSE",
+  "sourceLicenseContainsOpenSslAndSsLeayTexts": true,
+  "officialVersionMatchedLicenseUrl": "https://github.com/openssl/openssl/blob/OpenSSL_1_0_2h/LICENSE",
+  "binaries": [
+    {
+      "architecture": "x86",
+      "binarySha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3",
+      "explicitOpenSslLibArgument": true,
+      "apps": [
+        {
+          "app": "SouiStarter",
+          "nodeDllSha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3",
+          "legalFiles": [
+            {
+              "path": "third_party/licenses/element-plus-2.11.1-LICENSE.txt",
+              "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc",
+              "bytes": 1098
+            },
+            {
+              "path": "third_party/licenses/ijg-jpeg-9a-README.txt",
+              "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1",
+              "bytes": 19110
+            },
+            {
+              "path": "third_party/licenses/libcurl-7.61.1-COPYING.txt",
+              "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095",
+              "bytes": 1088
+            },
+            {
+              "path": "third_party/licenses/ots-5.0.0-LICENSE.txt",
+              "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d",
+              "bytes": 1563
+            },
+            {
+              "path": "THIRD_PARTY_NOTICES.md",
+              "sha256": "ada599cb08dc27a0f7ec864902d95a1e3b765ace80515f672a22701ee09ca662",
+              "bytes": 2147
+            }
+          ],
+          "exactSourceLicenseBytesPresent": false,
+          "ssleayLicenseTextPresent": false
+        },
+        {
+          "app": "SouiWorkbench",
+          "nodeDllSha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3",
+          "legalFiles": [
+            {
+              "path": "third_party/licenses/element-plus-2.11.1-LICENSE.txt",
+              "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc",
+              "bytes": 1098
+            },
+            {
+              "path": "third_party/licenses/ijg-jpeg-9a-README.txt",
+              "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1",
+              "bytes": 19110
+            },
+            {
+              "path": "third_party/licenses/libcurl-7.61.1-COPYING.txt",
+              "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095",
+              "bytes": 1088
+            },
+            {
+              "path": "third_party/licenses/ots-5.0.0-LICENSE.txt",
+              "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d",
+              "bytes": 1563
+            },
+            {
+              "path": "THIRD_PARTY_NOTICES.md",
+              "sha256": "ada599cb08dc27a0f7ec864902d95a1e3b765ace80515f672a22701ee09ca662",
+              "bytes": 2147
+            }
+          ],
+          "exactSourceLicenseBytesPresent": false,
+          "ssleayLicenseTextPresent": false
+        }
+      ]
+    },
+    {
+      "architecture": "x64",
+      "binarySha256": "fe4160a70587d027504c409b8fd2bc5c87d78392811bff0c969f69c41a44d951",
+      "explicitOpenSslLibArgument": false,
+      "apps": [
+        {
+          "app": "SouiStarter",
+          "nodeDllSha256": "fe4160a70587d027504c409b8fd2bc5c87d78392811bff0c969f69c41a44d951",
+          "legalFiles": [
+            {
+              "path": "third_party/licenses/element-plus-2.11.1-LICENSE.txt",
+              "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc",
+              "bytes": 1098
+            },
+            {
+              "path": "third_party/licenses/ijg-jpeg-9a-README.txt",
+              "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1",
+              "bytes": 19110
+            },
+            {
+              "path": "third_party/licenses/libcurl-7.61.1-COPYING.txt",
+              "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095",
+              "bytes": 1088
+            },
+            {
+              "path": "third_party/licenses/ots-5.0.0-LICENSE.txt",
+              "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d",
+              "bytes": 1563
+            },
+            {
+              "path": "THIRD_PARTY_NOTICES.md",
+              "sha256": "ada599cb08dc27a0f7ec864902d95a1e3b765ace80515f672a22701ee09ca662",
+              "bytes": 2147
+            }
+          ],
+          "exactSourceLicenseBytesPresent": false,
+          "ssleayLicenseTextPresent": false
+        },
+        {
+          "app": "SouiWorkbench",
+          "nodeDllSha256": "fe4160a70587d027504c409b8fd2bc5c87d78392811bff0c969f69c41a44d951",
+          "legalFiles": [
+            {
+              "path": "third_party/licenses/element-plus-2.11.1-LICENSE.txt",
+              "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc",
+              "bytes": 1098
+            },
+            {
+              "path": "third_party/licenses/ijg-jpeg-9a-README.txt",
+              "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1",
+              "bytes": 19110
+            },
+            {
+              "path": "third_party/licenses/libcurl-7.61.1-COPYING.txt",
+              "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095",
+              "bytes": 1088
+            },
+            {
+              "path": "third_party/licenses/ots-5.0.0-LICENSE.txt",
+              "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d",
+              "bytes": 1563
+            },
+            {
+              "path": "THIRD_PARTY_NOTICES.md",
+              "sha256": "ada599cb08dc27a0f7ec864902d95a1e3b765ace80515f672a22701ee09ca662",
+              "bytes": 2147
+            }
+          ],
+          "exactSourceLicenseBytesPresent": false,
+          "ssleayLicenseTextPresent": false
+        }
+      ]
+    }
+  ],
+  "observation": "x86 current link command explicitly names openssl.lib; none of the four current app-local legal directories contains the source OpenSSL/SSLeay license text",
+  "limitations": [
+    "Explicit input is not proof of selected archive members",
+    "x64 lack of explicit argument is not proof that OpenSSL is absent",
+    "Other source or online notices are not analyzed",
+    "No legal sufficiency or redistribution determination"
+  ],
+  "licenseReviewStatus": "unverified",
+  "releaseReady": false
+}
