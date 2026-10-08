@@ -1,0 +1,160 @@
+'use strict';
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const cp = require('node:child_process');
+const gui = require('../../tools/sdk/gui-bindings-delivery.cjs');
+const sdk = require('../../tools/sdk/soui-sdk.cjs');
+const identity = require('../../tools/internal/delivery-identity.cjs');
+const version = '0.5.0-preview.1';
+const repository = path.resolve(__dirname, '../..');
+function fixture(t) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-optional-gui-'));
+  t.after(() => {
+    assert.ok(fs.realpathSync(root).startsWith(fs.realpathSync(os.tmpdir()) + path.sep));
+    fs.rmSync(root, {recursive: true, force: true});
+  });
+  const source = path.join(root, 'source');
+  const write = (name, data) => { fs.mkdirSync(path.dirname(path.join(source, name)), {recursive: true}); fs.writeFileSync(path.join(source, name), data); };
+  for (const name of sdk.managedRoots) write(`${name}/fixture.txt`, 'fixture\n');
+  for (const name of sdk.managedFiles) write(name, 'fixture\n');
+  write('VERSION', version + '\n');
+  write('tools/sdk/gui-bindings-delivery.cjs', fs.readFileSync(path.join(repository, 'tools/sdk/gui-bindings-delivery.cjs')));
+  write('sdk/bindings/shared/controller.ts', 'export const shared = true;\n');
+  for (const entry of gui.packages) {
+    const meta = {name: entry.name, version, type: 'module', main: `./${entry.import}`, types: `./${entry.types}`,
+      exports: {'.': {import: `./${entry.import}`, types: `./${entry.types}`}}};
+    const lock = {version, packages: {'': {version}}};
+    if (entry.framework) {
+      meta.peerDependencies = {'@soui/native-sdk': '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0', [entry.framework]: '*'};
+      meta.devDependencies = {'@soui/native-sdk': 'file:../../web'};
+      lock.packages['node_modules/@soui/native-sdk'] = {version};
+    }
+    write(`${entry.root}/package.json`, identity.encoded(meta));
+    write(`${entry.root}/package-lock.json`, identity.encoded(lock));
+    write(`${entry.root}/tsconfig.json`, '{}\n');
+    write(`${entry.root}/src/index.ts`, 'export const source = true;\n');
+    write(`${entry.root}/${entry.import}`, 'export const compiled = true;\n');
+    write(`${entry.root}/${entry.types}`, 'export declare const compiled: true;\n');
+    if (entry.framework) {
+      write(`${entry.root}/dist/shared/controller.js`, 'export const shared = true;\n');
+      write(`${entry.root}/dist/shared/controller.d.ts`, 'export declare const shared: true;\n');
+    }
+  }
+  const record = (recordRoot = source) => {
+    const writeRecord = (name, data) => {
+      const file = path.join(recordRoot, name);
+      fs.mkdirSync(path.dirname(file), {recursive: true}); fs.writeFileSync(file, data);
+    };
+    const evidenceDirectory = 'out/gui-bindings/build-00000000-0000-0000-0000-000000000000';
+    const commands = gui.packages.flatMap(entry => [['ci', '--ignore-scripts', '--no-audit', '--no-fund', '--install-links'], ['run', 'build']]
+      .map((args, index) => {
+        const stdout = `${entry.name.replaceAll('/', '-')}-${index}.stdout.log`, stderr = `${entry.name.replaceAll('/', '-')}-${index}.stderr.log`;
+        writeRecord(`${evidenceDirectory}/${stdout}`, 'fixture command\n'); writeRecord(`${evidenceDirectory}/${stderr}`, '');
+        return {cwd: entry.root, executable: process.execPath, args: ['fixture-npm-cli', ...args], exitCode: 0, error: null, stdout, stderr,
+          logs: {stdout: {bytes: 16, sha256: identity.hash(Buffer.from('fixture command\n'))}, stderr: {bytes: 0, sha256: identity.hash(Buffer.alloc(0))}}};
+      }));
+    writeRecord(gui.reportName, identity.encoded({schema: 'soui.gui-bindings-build/v1', version,
+      source: gui.source(recordRoot), output: gui.outputs(recordRoot), evidenceDirectory, commands}));
+  };
+  record();
+  return {root, source, write, record};
+}
+test('default source delivery remains framework-free and does not require compiled GUI output', t => {
+  const f = fixture(t);
+  fs.rmSync(path.join(f.source, 'sdk/bindings/react/dist'), {recursive: true});
+  sdk.pack(f.source, path.join(f.root, 'default'), version);
+  const manifest = sdk.readPackage(path.join(f.root, 'default'));
+  assert.equal(manifest.optionalGuiBindings, undefined);
+  assert.equal(manifest.files.some(file => file.path.includes('/dist/')), false);
+});
+test('opt-in source package carries compiled imports through installation and relocation', t => {
+  const f = fixture(t), packed = path.join(f.root, 'packed'), installed = path.join(f.root, 'installed'), moved = path.join(f.root, 'relocated');
+  const cli = cp.spawnSync(process.execPath, [path.join(repository, 'tools/sdk/soui-sdk.cjs'), 'pack', '--source', f.source,
+    '--output', packed, '--version', version, '--with-gui-bindings'], {encoding: 'utf8', windowsHide: true});
+  assert.equal(cli.status, 0, cli.stderr);
+  const manifest = sdk.readPackage(packed);
+  assert.equal(manifest.optionalGuiBindings.packages.length, 3);
+  for (const entry of gui.packages) {
+    assert.ok(manifest.files.some(file => file.path === `${entry.root}/${entry.import}`));
+    assert.ok(manifest.files.some(file => file.path === `${entry.root}/${entry.types}`));
+  }
+  sdk.install(packed, installed);
+  fs.renameSync(installed, moved);
+  assert.equal(gui.verify(moved).sdkVersion, version);
+  const verified = cp.spawnSync(process.execPath, [path.join(repository, 'tools/sdk/soui-sdk.cjs'), 'verify-source', '--package', packed, '--source', moved],
+    {encoding: 'utf8', windowsHide: true});
+  assert.equal(verified.status, 0, verified.stderr);
+});
+test('stale source, missing output, mismatched SDK version, and output mutation fail before publication', t => {
+  for (const [name, mutate] of [
+    ['stale', f => f.write('sdk/bindings/shared/controller.ts', 'export const shared = false;\n')],
+    ['missing', f => fs.unlinkSync(path.join(f.source, gui.packages[1].root, gui.packages[1].import))],
+    ['version', f => {const name = 'sdk/bindings/react/package.json', meta = JSON.parse(fs.readFileSync(path.join(f.source, name))); meta.version = '0.4.0-preview.3'; f.write(name, identity.encoded(meta));}],
+    ['mutation', f => f.write('sdk/web/dist/index.js', 'export const compiled = false;\n')]
+  ]) {
+    const f = fixture(t), output = path.join(f.root, name); mutate(f);
+    assert.throws(() => sdk.pack(f.source, output, version, {withGuiBindings: true}));
+    assert.equal(fs.existsSync(output), false);
+  }
+});
+test('delivered missing, changed and undeclared compiled files are rejected', t => {
+  for (const mutate of [
+    dir => fs.unlinkSync(path.join(dir, 'sdk/web/dist/index.d.ts')),
+    dir => fs.writeFileSync(path.join(dir, 'sdk/bindings/vue/dist/vue/src/index.js'), 'tampered'),
+    dir => fs.writeFileSync(path.join(dir, 'sdk/bindings/react/dist/unknown.js'), 'unknown')
+  ]) {
+    const f = fixture(t), packed = path.join(f.root, 'packed'); sdk.pack(f.source, packed, version, {withGuiBindings: true});
+    mutate(path.join(packed, 'payload'));
+    assert.throws(() => sdk.readPackage(packed));
+  }
+});
+test('links and hard-linked output cannot be consumed as GUI delivery', t => {
+  const f = fixture(t), output = path.join(f.source, 'sdk/web/dist/index.js');
+  fs.linkSync(output, path.join(f.root, 'output-hardlink'));
+  assert.throws(() => gui.verify(f.source), /independent regular file/);
+});
+test('a failed compile command or modified raw compile log cannot become a verified build', t => {
+  const f = fixture(t), report = JSON.parse(fs.readFileSync(path.join(f.source, gui.reportName)));
+  report.commands[2].exitCode = 1;
+  f.write(gui.reportName, identity.encoded(report));
+  assert.throws(() => gui.verify(f.source), /compile command/);
+  f.record();
+  const current = JSON.parse(fs.readFileSync(path.join(f.source, gui.reportName)));
+  f.write(`${current.evidenceDirectory}/${current.commands[0].stdout}`, 'changed');
+  assert.throws(() => gui.verify(f.source), /compile log changed/);
+});
+test('a refreshed build record cannot replace the installed optional SDK lock', t => {
+  const f = fixture(t), packed = path.join(f.root, 'fixed-package'), installed = path.join(f.root, 'fixed-project');
+  sdk.pack(f.source, packed, version, {withGuiBindings: true});
+  sdk.install(packed, installed);
+  f.record(installed);
+  assert.equal(gui.verify(installed).sdkVersion, version, 'A matching fixed lock and build record both pass');
+  const reportFile = path.join(installed, gui.reportName), report = JSON.parse(fs.readFileSync(reportFile));
+  report.commands[0].exitCode = 1;
+  fs.writeFileSync(reportFile, identity.encoded(report));
+  assert.throws(() => gui.verify(installed), /compile command/, 'A valid lock cannot hide a failed build record');
+  f.record(installed);
+  const output = path.join(installed, 'sdk/web/dist/index.js');
+  fs.writeFileSync(output, 'export const compiled = false;\n');
+  f.record(installed);
+  assert.throws(() => sdk.readLock(installed), /modified/);
+  assert.throws(() => gui.verify(installed), /modified|identity changed/,
+    'A valid refreshed source/output record must not hide bytes changed from the fixed package');
+});
+test('a source-only fixed SDK allows unmanaged dist but still checks every managed file', t => {
+  const f = fixture(t), packed = path.join(f.root, 'source-package'), installed = path.join(f.root, 'source-project');
+  sdk.pack(f.source, packed, version);
+  sdk.install(packed, installed);
+  for (const entry of gui.packages) fs.cpSync(path.join(f.source, entry.root, 'dist'), path.join(installed, entry.root, 'dist'), {recursive: true});
+  fs.writeFileSync(path.join(installed, 'sdk/web/dist/index.js'), 'export const compiled = false;\n');
+  f.record(installed);
+  assert.equal(gui.verify(installed).sdkVersion, version, 'Source-only SDK locks do not manage generated dist');
+  assert.equal(sdk.readLock(installed).manifest.optionalGuiBindings, undefined);
+  fs.writeFileSync(path.join(installed, 'cmake/fixture.txt'), 'managed SDK change\n');
+  f.record(installed);
+  assert.throws(() => sdk.readLock(installed), /modified/);
+  assert.throws(() => gui.verify(installed), /modified/, 'A build record must not bypass other managed SDK files');
+});

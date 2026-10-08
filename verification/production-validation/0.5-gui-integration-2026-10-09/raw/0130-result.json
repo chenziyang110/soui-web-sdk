@@ -1,0 +1,394 @@
+{
+  "passed": true,
+  "version": "0.5.0-preview.1",
+  "commands": [
+    {
+      "cwd": "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-gui-actioncore-proof-hGlLnM\\relocated",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "pack",
+        "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-gui-actioncore-proof-hGlLnM\\relocated\\sdk\\web",
+        "--pack-destination",
+        "F:\\work\\sm05-gui\\out\\gui-actioncore-integration-eacfca9d-1ced-48ae-a7d2-234a71b455ea\\external-consumer",
+        "--json",
+        "--ignore-scripts"
+      ],
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "cwd": "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-gui-actioncore-proof-hGlLnM\\relocated",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "pack",
+        "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-gui-actioncore-proof-hGlLnM\\relocated\\sdk\\bindings\\react",
+        "--pack-destination",
+        "F:\\work\\sm05-gui\\out\\gui-actioncore-integration-eacfca9d-1ced-48ae-a7d2-234a71b455ea\\external-consumer",
+        "--json",
+        "--ignore-scripts"
+      ],
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "cwd": "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-gui-actioncore-proof-hGlLnM\\relocated",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "pack",
+        "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-gui-actioncore-proof-hGlLnM\\relocated\\sdk\\bindings\\vue",
+        "--pack-destination",
+        "F:\\work\\sm05-gui\\out\\gui-actioncore-integration-eacfca9d-1ced-48ae-a7d2-234a71b455ea\\external-consumer",
+        "--json",
+        "--ignore-scripts"
+      ],
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "cwd": "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-gui-actioncore-proof-hGlLnM\\consumer",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "install",
+        "--offline",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund"
+      ],
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "cwd": "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-gui-actioncore-proof-hGlLnM\\consumer",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-gui-actioncore-proof-hGlLnM\\consumer\\node_modules\\typescript\\bin\\tsc",
+        "-p",
+        "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-gui-actioncore-proof-hGlLnM\\consumer\\tsconfig.json"
+      ],
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "cwd": "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-gui-actioncore-proof-hGlLnM\\consumer",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\Users\\11034\\AppData\\Local\\Temp\\soui-gui-actioncore-proof-hGlLnM\\consumer\\imports.mjs"
+      ],
+      "exitCode": 0,
+      "error": null
+    }
+  ],
+  "tarballs": [
+    {
+      "name": "@soui/native-sdk",
+      "version": "0.5.0-preview.1",
+      "filename": "soui-native-sdk-0.5.0-preview.1.tgz",
+      "bytes": 35896,
+      "sha256": "bf3dd77e8ad31735e02f31db72d6c075ec498401823e131e9f99889a6e7bc621",
+      "npm": {
+        "id": "@soui/native-sdk@0.5.0-preview.1",
+        "name": "@soui/native-sdk",
+        "version": "0.5.0-preview.1",
+        "size": 35896,
+        "unpackedSize": 182139,
+        "shasum": "b935fe262856ef19327e2214943cb55948bcc0df",
+        "integrity": "sha512-H3sn0ySBbk/b26pDA9k9sUqBX7HHrpe8OWAajfChm5Vg7C1iNxTPQEJEFgUZZtoQUnfd11oVr8TYCb0LT7oaig==",
+        "filename": "soui-native-sdk-0.5.0-preview.1.tgz",
+        "files": [
+          {
+            "path": "dist/action-contract-core.d.ts",
+            "size": 505,
+            "mode": 420
+          },
+          {
+            "path": "dist/action-contract-core.js",
+            "size": 11417,
+            "mode": 420
+          },
+          {
+            "path": "dist/action-contracts.d.ts",
+            "size": 1716,
+            "mode": 420
+          },
+          {
+            "path": "dist/action-contracts.js",
+            "size": 2273,
+            "mode": 420
+          },
+          {
+            "path": "dist/capabilities.d.ts",
+            "size": 1170,
+            "mode": 420
+          },
+          {
+            "path": "dist/capabilities.js",
+            "size": 4077,
+            "mode": 420
+          },
+          {
+            "path": "dist/client.d.ts",
+            "size": 3100,
+            "mode": 420
+          },
+          {
+            "path": "dist/client.js",
+            "size": 12460,
+            "mode": 420
+          },
+          {
+            "path": "dist/connection.d.ts",
+            "size": 1024,
+            "mode": 420
+          },
+          {
+            "path": "dist/connection.js",
+            "size": 7695,
+            "mode": 420
+          },
+          {
+            "path": "dist/contracts.d.ts",
+            "size": 10673,
+            "mode": 420
+          },
+          {
+            "path": "dist/contracts.js",
+            "size": 100,
+            "mode": 420
+          },
+          {
+            "path": "dist/gui.d.ts",
+            "size": 1592,
+            "mode": 420
+          },
+          {
+            "path": "dist/gui.js",
+            "size": 13602,
+            "mode": 420
+          },
+          {
+            "path": "dist/index.d.ts",
+            "size": 1392,
+            "mode": 420
+          },
+          {
+            "path": "dist/index.js",
+            "size": 425,
+            "mode": 420
+          },
+          {
+            "path": "dist/protocol.d.ts",
+            "size": 4714,
+            "mode": 420
+          },
+          {
+            "path": "dist/protocol.js",
+            "size": 3445,
+            "mode": 420
+          },
+          {
+            "path": "dist/session-renewal.d.ts",
+            "size": 1384,
+            "mode": 420
+          },
+          {
+            "path": "dist/session-renewal.js",
+            "size": 11085,
+            "mode": 420
+          },
+          {
+            "path": "dist/web-features.d.ts",
+            "size": 1400,
+            "mode": 420
+          },
+          {
+            "path": "dist/web-features.js",
+            "size": 3590,
+            "mode": 420
+          },
+          {
+            "path": "package.json",
+            "size": 422,
+            "mode": 420
+          },
+          {
+            "path": "src/action-contract-core.d.ts",
+            "size": 552,
+            "mode": 420
+          },
+          {
+            "path": "src/action-contract-core.js",
+            "size": 11315,
+            "mode": 420
+          },
+          {
+            "path": "src/action-contracts.ts",
+            "size": 3481,
+            "mode": 420
+          },
+          {
+            "path": "src/capabilities.ts",
+            "size": 4189,
+            "mode": 420
+          },
+          {
+            "path": "src/client.ts",
+            "size": 12685,
+            "mode": 420
+          },
+          {
+            "path": "src/connection.ts",
+            "size": 7243,
+            "mode": 420
+          },
+          {
+            "path": "src/contracts.ts",
+            "size": 7927,
+            "mode": 420
+          },
+          {
+            "path": "src/gui.ts",
+            "size": 12852,
+            "mode": 420
+          },
+          {
+            "path": "src/index.ts",
+            "size": 1392,
+            "mode": 420
+          },
+          {
+            "path": "src/protocol.ts",
+            "size": 6550,
+            "mode": 420
+          },
+          {
+            "path": "src/session-renewal.ts",
+            "size": 10876,
+            "mode": 420
+          },
+          {
+            "path": "src/web-features.ts",
+            "size": 3816,
+            "mode": 420
+          }
+        ],
+        "entryCount": 35,
+        "bundled": []
+      }
+    },
+    {
+      "name": "@soui/gui-react",
+      "version": "0.5.0-preview.1",
+      "filename": "soui-gui-react-0.5.0-preview.1.tgz",
+      "bytes": 2538,
+      "sha256": "6773b492a2fe63aac89d9cb572a0e2b28ea277307fb408ec6f61dcf68dfa9284",
+      "npm": {
+        "id": "@soui/gui-react@0.5.0-preview.1",
+        "name": "@soui/gui-react",
+        "version": "0.5.0-preview.1",
+        "size": 2538,
+        "unpackedSize": 5939,
+        "shasum": "0463d64abc6341a20bd68228c6a9927d37bf7e89",
+        "integrity": "sha512-qiT1m6Y/jSfOdDY1sUyYGxtBYNXjXwjwyQdYenTFQs27BIZpRUTJwK1tVcE4XVD/fh0SMVl281dDs1HDNK7FqQ==",
+        "filename": "soui-gui-react-0.5.0-preview.1.tgz",
+        "files": [
+          {
+            "path": "README.md",
+            "size": 631,
+            "mode": 420
+          },
+          {
+            "path": "dist/react/src/index.d.ts",
+            "size": 459,
+            "mode": 420
+          },
+          {
+            "path": "dist/react/src/index.js",
+            "size": 855,
+            "mode": 420
+          },
+          {
+            "path": "dist/shared/controller.d.ts",
+            "size": 611,
+            "mode": 420
+          },
+          {
+            "path": "dist/shared/controller.js",
+            "size": 2750,
+            "mode": 420
+          },
+          {
+            "path": "package.json",
+            "size": 633,
+            "mode": 420
+          }
+        ],
+        "entryCount": 6,
+        "bundled": []
+      }
+    },
+    {
+      "name": "@soui/gui-vue",
+      "version": "0.5.0-preview.1",
+      "filename": "soui-gui-vue-0.5.0-preview.1.tgz",
+      "bytes": 2589,
+      "sha256": "683346e1e577fb563c60b3d321337689aced86cc8d43b93c61c29847aabc2afc",
+      "npm": {
+        "id": "@soui/gui-vue@0.5.0-preview.1",
+        "name": "@soui/gui-vue",
+        "version": "0.5.0-preview.1",
+        "size": 2589,
+        "unpackedSize": 6182,
+        "shasum": "e53f23de2f5fdcb4c89476182af8338c9c49c38b",
+        "integrity": "sha512-PeHNXuRZRez2Nb45u2rKlFPHG7TAdHIjAwMSYxzbkYd6hWCdBBjsCzAVk0dBLNVSdbqZRntfVwFng1RaUXT3CQ==",
+        "filename": "soui-gui-vue-0.5.0-preview.1.tgz",
+        "files": [
+          {
+            "path": "README.md",
+            "size": 694,
+            "mode": 420
+          },
+          {
+            "path": "dist/shared/controller.d.ts",
+            "size": 611,
+            "mode": 420
+          },
+          {
+            "path": "dist/shared/controller.js",
+            "size": 2750,
+            "mode": 420
+          },
+          {
+            "path": "dist/vue/src/index.d.ts",
+            "size": 441,
+            "mode": 420
+          },
+          {
+            "path": "dist/vue/src/index.js",
+            "size": 1106,
+            "mode": 420
+          },
+          {
+            "path": "package.json",
+            "size": 580,
+            "mode": 420
+          }
+        ],
+        "entryCount": 6,
+        "bundled": []
+      }
+    }
+  ],
+  "sourceSha256": "d11407221af7e64957b0775c241da7df1aefebb7e0616b7e5c788a807b3c66c2",
+  "outputSha256": "a294a593a0ab975d8af5ab7e58a6bb0fbc8d5fd5216b161895403e89fd088f3b",
+  "manifestSha256": "d1c8fa093f139cd5da744e41eb80e4b0d2fe9e48e3a79bcde964cb54e91ea720",
+  "sdkLockSha256": "cf099d301b988c246400b9e0fff3567c0cb71647265b4eaca22c67f8c8bd53d5",
+  "packagedRelocatedWithoutRebuilding": true,
+  "actualActionCoreImports": true,
+  "noSourceAlias": true,
+  "noSecondSdkRuntime": true,
+  "desktopValidated": false
+}

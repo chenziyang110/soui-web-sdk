@@ -1,0 +1,62 @@
+import type { SouiJson } from './action-contracts.js';
+export interface SouiGuiState {
+    enabled?: boolean;
+    busy?: boolean;
+    state?: {
+        [key: string]: SouiJson;
+    };
+}
+export interface SouiGuiRegistration {
+    id: string;
+    role: string;
+    name: string;
+    element: Element;
+    actions: Record<string, (input: SouiJson) => unknown | Promise<unknown>>;
+    state?: () => SouiGuiState;
+}
+export interface SouiGuiNode {
+    id: string;
+    role: string;
+    name: string;
+    enabled: boolean;
+    busy: boolean;
+    state: {
+        [key: string]: SouiJson;
+    };
+    actions: string[];
+}
+export interface SouiGuiSnapshot {
+    protocol: 'soui.gui/1';
+    nodes: SouiGuiNode[];
+}
+export interface SouiGuiPerformOptions {
+    id: string;
+    action: string;
+    input?: SouiJson;
+    timeoutMs?: number;
+}
+export interface SouiGuiWaitOptions {
+    id: string;
+    state?: {
+        [key: string]: SouiJson;
+    };
+    timeoutMs?: number;
+}
+/** Explicit application semantics, without selectors, DOM scraping or user-gesture authority. */
+export declare class SouiGui {
+    private readonly entries;
+    private readonly waits;
+    private stopped;
+    private monitor;
+    get disposed(): boolean;
+    register(registration: SouiGuiRegistration): () => void;
+    private active;
+    private lookup;
+    private node;
+    snapshot(): SouiGuiSnapshot;
+    private wait;
+    perform(request: SouiGuiPerformOptions): Promise<SouiJson>;
+    waitFor(request: SouiGuiWaitOptions): Promise<SouiGuiNode>;
+    dispose(): void;
+}
+export declare function createSouiGui(): SouiGui;

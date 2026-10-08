@@ -1,0 +1,43 @@
+[
+  {
+    "cwd": "F:\\work\\sm05-gui",
+    "executable": "C:\\nvm4w\\nodejs\\node.exe",
+    "args": [
+      "--check",
+      "tools/Collect-Verification.cjs"
+    ],
+    "exitCode": 0,
+    "error": null
+  },
+  {
+    "cwd": "F:\\work\\sm05-gui",
+    "executable": "powershell.exe",
+    "args": [
+      "-NoProfile",
+      "-Command",
+      "$files=@('tools/Build.ps1','tools/Test.ps1');foreach($file in $files){$tokens=$null;$errors=$null;[void][Management.Automation.Language.Parser]::ParseFile((Resolve-Path $file),[ref]$tokens,[ref]$errors);if($errors.Count){throw $errors[0]}};Write-Output '2 standard PowerShell entrypoints parsed'"
+    ],
+    "exitCode": 0,
+    "error": null
+  },
+  {
+    "cwd": "F:\\work\\sm05-gui",
+    "executable": "git",
+    "args": [
+      "diff",
+      "--check"
+    ],
+    "exitCode": 0,
+    "error": null
+  },
+  {
+    "cwd": "F:\\work\\sm05-gui",
+    "executable": "git",
+    "args": [
+      "status",
+      "--porcelain=v1"
+    ],
+    "exitCode": 0,
+    "error": null
+  }
+]

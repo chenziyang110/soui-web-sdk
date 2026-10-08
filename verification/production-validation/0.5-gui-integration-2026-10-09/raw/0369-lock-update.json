@@ -1,0 +1,57 @@
+[
+  {
+    "cwd": "sdk/bindings/react",
+    "args": [
+      "install",
+      "../../web",
+      "--package-lock-only",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund",
+      "--install-links"
+    ],
+    "status": 0
+  },
+  {
+    "cwd": "sdk/bindings/vue",
+    "args": [
+      "install",
+      "../../web",
+      "--package-lock-only",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund",
+      "--install-links"
+    ],
+    "status": 0
+  },
+  {
+    "cwd": "tests/gui-bindings",
+    "args": [
+      "install",
+      "../../sdk/bindings/react",
+      "../../sdk/bindings/vue",
+      "../../sdk/web",
+      "--package-lock-only",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund",
+      "--install-links"
+    ],
+    "status": 0
+  },
+  {
+    "cwd": "tests/gui-bindings/react18",
+    "args": [
+      "install",
+      "../../../sdk/bindings/react",
+      "../../../sdk/web",
+      "--package-lock-only",
+      "--ignore-scripts",
+      "--no-audit",
+      "--no-fund",
+      "--install-links"
+    ],
+    "status": 0
+  }
+]

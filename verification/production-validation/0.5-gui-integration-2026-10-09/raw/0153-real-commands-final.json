@@ -1,0 +1,106 @@
+{
+  "commands": [
+    {
+      "cwd": "F:\\work\\sm05-gui",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/sdk/gui-bindings-delivery.cjs",
+        "build",
+        "--root",
+        "F:\\work\\sm05-gui"
+      ],
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "cwd": "F:\\work\\sm05-gui",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--test",
+        "tests/sdk/gui-bindings-delivery.test.cjs",
+        "tests/sdk/gui-bindings-entrypoints.test.cjs"
+      ],
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "cwd": "F:\\work\\sm05-gui",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tests/sdk/sdk-package-smoke.cjs"
+      ],
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "cwd": "F:\\work\\sm05-gui",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--test",
+        "tests/web/gui.test.mjs",
+        "tests/web/generated-actions.test.mjs",
+        "tests/web/sdk-client.test.mjs",
+        "tests/web/action-contracts.test.mjs"
+      ],
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "cwd": "F:\\work\\sm05-gui",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/sdk/actiongen.cjs",
+        "--source",
+        "F:\\work\\sm05-gui\\templates\\desktop-app\\contracts\\actions.json",
+        "--root",
+        "F:\\work\\sm05-gui\\templates\\desktop-app",
+        "--check"
+      ],
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "cwd": "F:\\work\\sm05-gui",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/sdk/actiongen.cjs",
+        "--source",
+        "F:\\work\\sm05-gui\\templates\\modern-app\\contracts\\actions.json",
+        "--root",
+        "F:\\work\\sm05-gui\\templates\\modern-app",
+        "--check"
+      ],
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "cwd": "F:\\work\\sm05-gui",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/sdk/actiongen.cjs",
+        "--source",
+        "F:\\work\\sm05-gui\\tests\\action-consumer\\contracts\\actions.json",
+        "--root",
+        "F:\\work\\sm05-gui\\tests\\action-consumer",
+        "--check"
+      ],
+      "exitCode": 0,
+      "error": null
+    },
+    {
+      "cwd": "F:\\work\\sm05-gui",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/sdk/gui-bindings-delivery.cjs",
+        "test",
+        "--root",
+        "F:\\work\\sm05-gui"
+      ],
+      "exitCode": 0,
+      "error": null
+    }
+  ],
+  "allPassed": true,
+  "fullCollectExecuted": false,
+  "desktopExecuted": false
+}

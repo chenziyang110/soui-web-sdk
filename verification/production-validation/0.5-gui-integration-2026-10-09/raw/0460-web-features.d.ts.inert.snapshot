@@ -1,0 +1,28 @@
+export type SouiWebFeature = 'promise' | 'proxy' | 'fetch' | 'abortController' | 'resizeObserver' | 'intersectionObserver' | 'webAssembly' | 'webGpuInterface' | 'cssGrid' | 'cssContainerQueries' | 'cssOklch' | 'cssRegisteredProperties';
+export type SouiFeatureObservation = 'available' | 'missing' | 'unknown';
+export interface SouiWebFeatureReport {
+    protocol: 'soui.web-features/1';
+    /** Interface/syntax detection only; this does not certify behavior, GPU hardware or permission. */
+    scope: 'surface-detection';
+    features: Record<SouiWebFeature, SouiFeatureObservation>;
+}
+export interface SouiWebProbeTarget {
+    Promise?: unknown;
+    Proxy?: unknown;
+    fetch?: unknown;
+    AbortController?: unknown;
+    ResizeObserver?: unknown;
+    IntersectionObserver?: unknown;
+    WebAssembly?: unknown;
+    navigator?: {
+        gpu?: unknown;
+    };
+    CSS?: {
+        supports?: (property: string, value: string) => boolean;
+        registerProperty?: unknown;
+    };
+}
+/** No UA guessing, GPU/device creation, permission requests or network traffic. */
+export declare function inspectSouiWebFeatures(target?: SouiWebProbeTarget): SouiWebFeatureReport;
+/** Validate the required surfaces before mounting the app; never grants native permissions. */
+export declare function requireSouiWebFeatures(required: readonly SouiWebFeature[], target?: SouiWebProbeTarget): SouiWebFeatureReport;

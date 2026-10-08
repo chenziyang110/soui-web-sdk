@@ -1,0 +1,30 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..'),identity=require('../tools/internal/delivery-identity.cjs'),gui=require('../tools/sdk/gui-bindings-delivery.cjs');
+const attempt=path.join(root,'out/gui-actioncore-integration-eacfca9d-1ced-48ae-a7d2-234a71b455ea');
+const base='verification/production-validation/0.5-gui-integration-2026-10-09';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex'),sha=p=>hash(fs.readFileSync(p));
+const index=JSON.parse(fs.readFileSync(path.join(attempt,'evidence-index-final.json'))),r=JSON.parse(fs.readFileSync(path.join(attempt,'frozen-result-final.json')));
+const actual=gui.verify(root),files=[],seen=new Set();
+if(!index.allCommandsPassed||identity.source(root).sha256!==r.sourceSha256||actual.source.sha256!==r.guiSourceSha256||actual.output.sha256!==r.guiOutputSha256)
+ throw Error('Frozen GUI identities changed');
+function inert(name){return /\.(?:cjs|mjs|js|jsx|ps1|cpp|hpp|h|ts|tsx|cmake|vcxproj|txt)$/i.test(name)||name==='CMakeLists.txt'?name+'.inert.snapshot':name;}
+function copy(input,relative,expected){
+ const st=fs.lstatSync(input);if(!st.isFile()||st.isSymbolicLink()||st.nlink!==1)throw Error('Not plain evidence '+input);
+ const bytes=fs.readFileSync(input),digest=hash(bytes);if(expected&&(expected.bytes!==bytes.length||expected.sha256!==digest))throw Error('Evidence changed '+input);
+ const rel=relative.split('/').map(inert).join('/');if(seen.has(rel))throw Error('Duplicate evidence');seen.add(rel);
+ const target=path.join(root,base,rel);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,bytes,{flag:'wx'});
+ files.push({path:base+'/'+rel,source:input,bytes:bytes.length,sha256:digest});
+}
+for(const [i,f] of index.files.entries()){if(path.isAbsolute(f.path)||f.path.split(/[\\/]/).some(p=>!p||p==='..'||p==='.')||/[\x00-\x1f]/.test(f.path))throw Error('Unsafe evidence path');
+ copy(path.join(attempt,f.path),'raw/'+String(i+1).padStart(4,'0')+'-'+path.basename(f.path),f);files.at(-1).originalRelativePath=f.path;}
+copy(path.join(attempt,'evidence-index-final.json'),'attempt/evidence-index-final.json');
+for(const name of ['tools/Build.ps1','tools/Test.ps1','tools/Collect-Verification.cjs','tools/sdk/gui-bindings-delivery.cjs','tools/sdk/soui-sdk.cjs',
+ 'tests/sdk/gui-bindings-delivery.test.cjs','tests/sdk/gui-bindings-entrypoints.test.cjs'])copy(path.join(root,name),'current-inputs/'+name);
+copy(__filename,'archive-driver.cjs');
+const record={schema:'soui.gui-mainline-archived-evidence/v1',version:'0.5.0-preview.1',compiledMain:'5bb083d22f68a3df2da101ca5f90f3604e9fb147',
+ compiledSourceSha256:r.sourceSha256,guiSourceSha256:r.guiSourceSha256,guiOutputSha256:r.guiOutputSha256,
+ actualCommandsPassed:true,results:r.results,priorEvidence:r.priorEvidence,releaseReady:false,
+ limitations:r.limitations.concat(['This archival record replaces the temporary source manifest only after all evidence has been staged; it does not certify final release acceptance.']),files};
+fs.writeFileSync(path.join(root,base,'index.json'),JSON.stringify(record,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({path:base+'/index.json',files:files.length,bytes:files.reduce((n,f)=>n+f.bytes,0),source:r.sourceSha256}));

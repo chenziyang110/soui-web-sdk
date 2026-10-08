@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "target": "ES2015", "module": "ES2020", "moduleResolution": "Bundler",
+    "lib": ["ES2015", "DOM"], "strict": true, "declaration": true,
+    "rootDir": "..", "outDir": "dist", "skipLibCheck": true,
+    "baseUrl": ".", "paths": { "@soui/native-sdk": ["../../web/dist/index.d.ts"] }
+  },
+  "include": ["src/**/*.ts", "../shared/**/*.ts"]
+}
