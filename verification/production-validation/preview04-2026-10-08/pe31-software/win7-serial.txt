@@ -1,0 +1,48 @@
+SOUI04_SERIAL_START 
+FILE:os.txt 
+
+Microsoft Windows [版本 6.1.7601]
+PROCESSOR_ARCHITECTURE=x86 
+END_FILE 
+FILE:minint.txt 
+错误: 系统找不到指定的注册表项或值。
+END_FILE 
+FILE:extract-exit.txt 
+0 
+END_FILE 
+FILE:doctor.json 
+{
+  "schema": "soui.runtime-environment/1",
+  "sdkVersion": "0.4.0-preview.1",
+  "osVersionKnown": true,
+  "os": {"major": 6, "minor": 1, "build": 7601},
+  "peKnown": true,
+  "windowsPE": false,
+  "processArchitecture": "x86",
+  "nativeArchitecture": "x86",
+  "remoteSession": false,
+  "displayKnown": true,
+  "display": {"width": 800, "height": 600, "refreshHz": 1},
+  "threadDpiContextApi": false,
+  "rendererStatus": "not-probed",
+  "compatibilityStatus": "unverified",
+  "releaseReady": false
+}
+END_FILE 
+FILE:doctor-error.txt 
+END_FILE 
+FILE:doctor-exit.txt 
+0 
+END_FILE 
+FILE:app-exit.txt 
+0 
+END_FILE 
+FILE:app-stderr.txt 
+END_FILE 
+FILE:smoke.log 
+process-start
+host-started
+application-ready
+host-close-complete
+END_FILE 
+SOUI04_SERIAL_END 

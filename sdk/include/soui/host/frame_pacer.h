@@ -23,7 +23,7 @@ class frame_pacer final {
 
   bool start(HWND window, unsigned target, bool prefer_high_resolution = true) {
     stop();
-    if (!window || (target != 60 && target != 120 && target != 144)) return false;
+    if (!IsWindow(window) || (target != 60 && target != 120 && target != 144)) return false;
     LARGE_INTEGER frequency{}, now{};
     if (!QueryPerformanceFrequency(&frequency) || !QueryPerformanceCounter(&now)) return false;
     window_ = window;
@@ -39,33 +39,31 @@ class frame_pacer final {
     constexpr DWORD high_resolution_flag = 0x00000002;
     waitable_ = prefer_high_resolution ? CreateWaitableTimerExW(nullptr, nullptr, high_resolution_flag,
                                       TIMER_MODIFY_STATE | SYNCHRONIZE) : nullptr;
+    const bool high_resolution = waitable_ != nullptr;
+    // Win7/PE also support one-shot waitable timers. Wait for the next frame
+    // deadline instead of waking a timer-queue callback every 2 ms.
+    if (!waitable_) waitable_ = CreateWaitableTimerW(nullptr, FALSE, nullptr);
     if (waitable_) {
       stop_event_ = CreateEventW(nullptr, TRUE, FALSE, nullptr);
       if (stop_event_) {
         try {
           worker_ = std::thread([this] { wait_loop(); });
-          backend_ = 2;
+          backend_ = high_resolution ? 2 : 3;
           target_ = target;
           return true;
-        } catch (...) { /* Fall back to the legacy queue without a worker. */ }
+        } catch (...) { /* Release all resources below and report failure. */ }
       }
       if (stop_event_) { CloseHandle(stop_event_); stop_event_ = nullptr; }
       CloseHandle(waitable_); waitable_ = nullptr;
     }
-    if (!precision_) { stop(); return false; }
-    if (!CreateTimerQueueTimer(&timer_, nullptr, &on_timer, this, 2, 2, WT_EXECUTEINTIMERTHREAD)) {
-      stop(); return false;
-    }
-    target_ = target;
-    backend_ = 1;
-    return true;
+    stop();
+    return false;
   }
   void stop() noexcept {
     if (stop_event_) SetEvent(stop_event_);
     if (worker_.joinable()) worker_.join();
     if (waitable_) { CancelWaitableTimer(waitable_); CloseHandle(waitable_); waitable_ = nullptr; }
     if (stop_event_) { CloseHandle(stop_event_); stop_event_ = nullptr; }
-    if (timer_) { DeleteTimerQueueTimer(nullptr, timer_, INVALID_HANDLE_VALUE); timer_ = nullptr; }
     if (precision_) { timeEndPeriod(1); precision_ = false; }
     target_ = 0;
     backend_ = 0;
@@ -112,7 +110,8 @@ class frame_pacer final {
     HANDLE handles[]{stop_event_, waitable_};
     for (;;) {
       if (WaitForSingleObject(stop_event_, 0) == WAIT_OBJECT_0) return;
-      LARGE_INTEGER now{}; QueryPerformanceCounter(&now);
+      LARGE_INTEGER now{};
+      if (!QueryPerformanceCounter(&now)) { clock_failed_.store(true); return; }
       const auto remaining = next_ - now.QuadPart;
       if (remaining <= 0) { on_timer(this, FALSE); continue; }
       LARGE_INTEGER due{};
@@ -129,7 +128,8 @@ class frame_pacer final {
 #ifdef SOUI_BRIDGE_BENCHMARK
     self.wakes_.fetch_add(1, std::memory_order_relaxed);
 #endif
-    LARGE_INTEGER now{}; QueryPerformanceCounter(&now);
+    LARGE_INTEGER now{};
+    if (!QueryPerformanceCounter(&now)) { self.clock_failed_.store(true); return; }
     if (now.QuadPart < self.next_) return;
     const auto elapsed_steps = (now.QuadPart - self.next_) / self.step_ + 1;
 #ifdef SOUI_BRIDGE_BENCHMARK
@@ -147,7 +147,6 @@ class frame_pacer final {
     }
   }
   HWND window_{nullptr};
-  HANDLE timer_{nullptr};
   HANDLE waitable_{nullptr}, stop_event_{nullptr};
   std::thread worker_;
   std::atomic<bool> clock_failed_{false};

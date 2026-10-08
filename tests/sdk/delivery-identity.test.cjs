@@ -122,6 +122,18 @@ test('payload evidence detects equal-length page edits, new files and missing DL
   assert.throws(() => identity.verifyPayload(root, 'App', expected), /missing|Missing/);
 });
 
+test('modern payload does not require Miniblink but preserves full asset identity checks', t => {
+  const root = fixture(t);
+  write(root, 'App.exe', 'exe');
+  write(root, 'resources/index.html', 'first');
+  assert.throws(() => identity.payload(root, 'App'), /node.dll/);
+  const report = identity.payload(root, 'App', 'webview2');
+  identity.verifyPayload(root, 'App', report, 'webview2');
+  write(root, 'resources/index.html', 'other');
+  assert.throws(() => identity.verifyPayload(root, 'App', report, 'webview2'), /changed/);
+  assert.throws(() => identity.payload(root, 'App', 'unknown'), /Unknown renderer/);
+});
+
 test('deployment replaces stale Web assets and preserves app data outside resources', t => {
   const root = fixture(t);
   const source = path.join(root, 'web');

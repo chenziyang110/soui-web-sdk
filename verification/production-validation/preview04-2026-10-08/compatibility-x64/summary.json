@@ -1,0 +1,587 @@
+{
+  "version": "0.4.0-preview.1",
+  "sourceSha256": "3079521f32e26c94316d351731c20c33b5e356a061d244bd2e8e114297c23602",
+  "runs": [
+    {
+      "runId": "bc9c3d7e-0b63-4cc1-8eb5-71dfbd9a945a",
+      "config": {
+        "mode": "bridge",
+        "cycles": 3,
+        "warmup": 0,
+        "settleMs": 100,
+        "timeoutMs": 20000
+      },
+      "passed": true,
+      "exitCode": 0,
+      "elapsedMs": 7831,
+      "measuredSamples": 3,
+      "stats": {
+        "privateBytes": {
+          "min": 44339200,
+          "median": 62947328,
+          "max": 72114176
+        },
+        "handles": {
+          "min": 307,
+          "median": 313,
+          "max": 319
+        },
+        "threads": {
+          "min": 15,
+          "median": 15,
+          "max": 15
+        },
+        "gdiObjects": {
+          "min": 33,
+          "median": 33,
+          "max": 33
+        },
+        "userObjects": {
+          "min": 9,
+          "median": 9,
+          "max": 9
+        }
+      },
+      "quarters": [
+        {
+          "firstCycle": 1,
+          "lastCycle": 1,
+          "stats": {
+            "privateBytes": {
+              "min": 44339200,
+              "median": 44339200,
+              "max": 44339200
+            },
+            "handles": {
+              "min": 307,
+              "median": 307,
+              "max": 307
+            },
+            "threads": {
+              "min": 15,
+              "median": 15,
+              "max": 15
+            },
+            "gdiObjects": {
+              "min": 33,
+              "median": 33,
+              "max": 33
+            },
+            "userObjects": {
+              "min": 9,
+              "median": 9,
+              "max": 9
+            }
+          }
+        },
+        {
+          "firstCycle": 2,
+          "lastCycle": 2,
+          "stats": {
+            "privateBytes": {
+              "min": 62947328,
+              "median": 62947328,
+              "max": 62947328
+            },
+            "handles": {
+              "min": 313,
+              "median": 313,
+              "max": 313
+            },
+            "threads": {
+              "min": 15,
+              "median": 15,
+              "max": 15
+            },
+            "gdiObjects": {
+              "min": 33,
+              "median": 33,
+              "max": 33
+            },
+            "userObjects": {
+              "min": 9,
+              "median": 9,
+              "max": 9
+            }
+          }
+        },
+        {
+          "firstCycle": 3,
+          "lastCycle": 3,
+          "stats": {
+            "privateBytes": {
+              "min": 72114176,
+              "median": 72114176,
+              "max": 72114176
+            },
+            "handles": {
+              "min": 319,
+              "median": 319,
+              "max": 319
+            },
+            "threads": {
+              "min": 15,
+              "median": 15,
+              "max": 15
+            },
+            "gdiObjects": {
+              "min": 33,
+              "median": 33,
+              "max": 33
+            },
+            "userObjects": {
+              "min": 9,
+              "median": 9,
+              "max": 9
+            }
+          }
+        }
+      ],
+      "resourceGate": "not-evaluated"
+    },
+    {
+      "runId": "7637be3b-29b6-4246-811b-62db7646b768",
+      "config": {
+        "mode": "multiwindow",
+        "cycles": 3,
+        "warmup": 0,
+        "settleMs": 100,
+        "timeoutMs": 20000
+      },
+      "passed": true,
+      "exitCode": 0,
+      "elapsedMs": 12300,
+      "measuredSamples": 3,
+      "stats": {
+        "privateBytes": {
+          "min": 51589120,
+          "median": 77533184,
+          "max": 86601728
+        },
+        "handles": {
+          "min": 337,
+          "median": 373,
+          "max": 409
+        },
+        "threads": {
+          "min": 14,
+          "median": 15,
+          "max": 15
+        },
+        "gdiObjects": {
+          "min": 35,
+          "median": 36,
+          "max": 36
+        },
+        "userObjects": {
+          "min": 9,
+          "median": 9,
+          "max": 9
+        }
+      },
+      "quarters": [
+        {
+          "firstCycle": 1,
+          "lastCycle": 1,
+          "stats": {
+            "privateBytes": {
+              "min": 51589120,
+              "median": 51589120,
+              "max": 51589120
+            },
+            "handles": {
+              "min": 337,
+              "median": 337,
+              "max": 337
+            },
+            "threads": {
+              "min": 14,
+              "median": 14,
+              "max": 14
+            },
+            "gdiObjects": {
+              "min": 36,
+              "median": 36,
+              "max": 36
+            },
+            "userObjects": {
+              "min": 9,
+              "median": 9,
+              "max": 9
+            }
+          }
+        },
+        {
+          "firstCycle": 2,
+          "lastCycle": 2,
+          "stats": {
+            "privateBytes": {
+              "min": 77533184,
+              "median": 77533184,
+              "max": 77533184
+            },
+            "handles": {
+              "min": 373,
+              "median": 373,
+              "max": 373
+            },
+            "threads": {
+              "min": 15,
+              "median": 15,
+              "max": 15
+            },
+            "gdiObjects": {
+              "min": 35,
+              "median": 35,
+              "max": 35
+            },
+            "userObjects": {
+              "min": 9,
+              "median": 9,
+              "max": 9
+            }
+          }
+        },
+        {
+          "firstCycle": 3,
+          "lastCycle": 3,
+          "stats": {
+            "privateBytes": {
+              "min": 86601728,
+              "median": 86601728,
+              "max": 86601728
+            },
+            "handles": {
+              "min": 409,
+              "median": 409,
+              "max": 409
+            },
+            "threads": {
+              "min": 15,
+              "median": 15,
+              "max": 15
+            },
+            "gdiObjects": {
+              "min": 36,
+              "median": 36,
+              "max": 36
+            },
+            "userObjects": {
+              "min": 9,
+              "median": 9,
+              "max": 9
+            }
+          }
+        }
+      ],
+      "resourceGate": "not-evaluated"
+    },
+    {
+      "runId": "273837d5-41d2-4625-ab67-7306206ffd3f",
+      "config": {
+        "mode": "recreate",
+        "cycles": 1000,
+        "warmup": 3,
+        "settleMs": 100,
+        "timeoutMs": 20000
+      },
+      "passed": true,
+      "exitCode": 0,
+      "elapsedMs": 1050724,
+      "measuredSamples": 1000,
+      "stats": {
+        "privateBytes": {
+          "min": 33603584,
+          "median": 95858688,
+          "max": 150650880
+        },
+        "handles": {
+          "min": 296,
+          "median": 416,
+          "max": 544
+        },
+        "threads": {
+          "min": 11,
+          "median": 13,
+          "max": 17
+        },
+        "gdiObjects": {
+          "min": 11,
+          "median": 19,
+          "max": 33
+        },
+        "userObjects": {
+          "min": 9,
+          "median": 10,
+          "max": 12
+        }
+      },
+      "quarters": [
+        {
+          "firstCycle": 4,
+          "lastCycle": 253,
+          "stats": {
+            "privateBytes": {
+              "min": 33603584,
+              "median": 86908928,
+              "max": 148275200
+            },
+            "handles": {
+              "min": 296,
+              "median": 410,
+              "max": 537
+            },
+            "threads": {
+              "min": 11,
+              "median": 13,
+              "max": 17
+            },
+            "gdiObjects": {
+              "min": 11,
+              "median": 19,
+              "max": 33
+            },
+            "userObjects": {
+              "min": 9,
+              "median": 9,
+              "max": 9
+            }
+          }
+        },
+        {
+          "firstCycle": 254,
+          "lastCycle": 503,
+          "stats": {
+            "privateBytes": {
+              "min": 36884480,
+              "median": 94916608,
+              "max": 140435456
+            },
+            "handles": {
+              "min": 296,
+              "median": 424,
+              "max": 542
+            },
+            "threads": {
+              "min": 11,
+              "median": 13,
+              "max": 16
+            },
+            "gdiObjects": {
+              "min": 11,
+              "median": 19,
+              "max": 19
+            },
+            "userObjects": {
+              "min": 9,
+              "median": 11,
+              "max": 12
+            }
+          }
+        },
+        {
+          "firstCycle": 504,
+          "lastCycle": 753,
+          "stats": {
+            "privateBytes": {
+              "min": 45416448,
+              "median": 99508224,
+              "max": 150650880
+            },
+            "handles": {
+              "min": 300,
+              "median": 412,
+              "max": 544
+            },
+            "threads": {
+              "min": 12,
+              "median": 13,
+              "max": 13
+            },
+            "gdiObjects": {
+              "min": 11,
+              "median": 19,
+              "max": 19
+            },
+            "userObjects": {
+              "min": 10,
+              "median": 10,
+              "max": 11
+            }
+          }
+        },
+        {
+          "firstCycle": 754,
+          "lastCycle": 1003,
+          "stats": {
+            "privateBytes": {
+              "min": 47034368,
+              "median": 102449152,
+              "max": 144248832
+            },
+            "handles": {
+              "min": 300,
+              "median": 418,
+              "max": 526
+            },
+            "threads": {
+              "min": 13,
+              "median": 14,
+              "max": 15
+            },
+            "gdiObjects": {
+              "min": 11,
+              "median": 19,
+              "max": 19
+            },
+            "userObjects": {
+              "min": 10,
+              "median": 11,
+              "max": 11
+            }
+          }
+        }
+      ],
+      "resourceGate": "not-evaluated"
+    },
+    {
+      "runId": "9f18200c-939a-476c-bd66-3e9e384cd4b1",
+      "config": {
+        "mode": "reload",
+        "cycles": 3,
+        "warmup": 0,
+        "settleMs": 100,
+        "timeoutMs": 20000
+      },
+      "passed": true,
+      "exitCode": 0,
+      "elapsedMs": 3409,
+      "measuredSamples": 3,
+      "stats": {
+        "privateBytes": {
+          "min": 38330368,
+          "median": 42123264,
+          "max": 44617728
+        },
+        "handles": {
+          "min": 323,
+          "median": 329,
+          "max": 335
+        },
+        "threads": {
+          "min": 16,
+          "median": 16,
+          "max": 16
+        },
+        "gdiObjects": {
+          "min": 38,
+          "median": 38,
+          "max": 38
+        },
+        "userObjects": {
+          "min": 23,
+          "median": 23,
+          "max": 23
+        }
+      },
+      "quarters": [
+        {
+          "firstCycle": 1,
+          "lastCycle": 1,
+          "stats": {
+            "privateBytes": {
+              "min": 38330368,
+              "median": 38330368,
+              "max": 38330368
+            },
+            "handles": {
+              "min": 323,
+              "median": 323,
+              "max": 323
+            },
+            "threads": {
+              "min": 16,
+              "median": 16,
+              "max": 16
+            },
+            "gdiObjects": {
+              "min": 38,
+              "median": 38,
+              "max": 38
+            },
+            "userObjects": {
+              "min": 23,
+              "median": 23,
+              "max": 23
+            }
+          }
+        },
+        {
+          "firstCycle": 2,
+          "lastCycle": 2,
+          "stats": {
+            "privateBytes": {
+              "min": 42123264,
+              "median": 42123264,
+              "max": 42123264
+            },
+            "handles": {
+              "min": 329,
+              "median": 329,
+              "max": 329
+            },
+            "threads": {
+              "min": 16,
+              "median": 16,
+              "max": 16
+            },
+            "gdiObjects": {
+              "min": 38,
+              "median": 38,
+              "max": 38
+            },
+            "userObjects": {
+              "min": 23,
+              "median": 23,
+              "max": 23
+            }
+          }
+        },
+        {
+          "firstCycle": 3,
+          "lastCycle": 3,
+          "stats": {
+            "privateBytes": {
+              "min": 44617728,
+              "median": 44617728,
+              "max": 44617728
+            },
+            "handles": {
+              "min": 335,
+              "median": 335,
+              "max": 335
+            },
+            "threads": {
+              "min": 16,
+              "median": 16,
+              "max": 16
+            },
+            "gdiObjects": {
+              "min": 38,
+              "median": 38,
+              "max": 38
+            },
+            "userObjects": {
+              "min": 23,
+              "median": 23,
+              "max": 23
+            }
+          }
+        }
+      ],
+      "resourceGate": "not-evaluated"
+    }
+  ],
+  "releaseReady": false,
+  "note": "Descriptive samples only; no memory convergence, eight-hour or performance gate inferred."
+}

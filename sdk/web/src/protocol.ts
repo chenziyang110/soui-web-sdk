@@ -1,3 +1,5 @@
+import type { SouiCapabilityPage, SouiDescribeOptions } from './capabilities.js';
+
 export interface SouiNativeEvent {
   sessionId: string;
   taskId?: string;
@@ -50,6 +52,7 @@ export interface SouiBridgeResponse {
 
 /** Methods installed by json_bridge itself, without Workbench services. */
 export interface SouiCoreMethodMap {
+  'bridge.describe': { params: SouiDescribeOptions; result: SouiCapabilityPage };
   'bridge.probe.report': { params: { ready: true }; result: { ready: true } };
   'task.start': { params: { kind: string; operationId: string; input: Record<string, unknown> };
     result: { taskId: string; accepted: boolean; duplicate: boolean } };

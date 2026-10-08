@@ -10,6 +10,7 @@
 #include <string_view>
 
 #include <soui/runtime/host/session/webview_session.h>
+#include <soui/host/webview_host.h>
 #include <soui/host/async_result_slot.h>
 #include <soui/host/engine_thread.h>
 #include <soui/host/interaction_protocol.h>
@@ -25,28 +26,6 @@ namespace detail { class bridge_request_budget; }
 inline constexpr std::uint32_t bridge_event_message = 0x84D2U;
 inline constexpr std::uint32_t ime_position_message = 0x84D3U;
 
-struct host_config {
-  std::string architecture;
-  std::filesystem::path miniblink_binary;
-  std::filesystem::path resource_root;
-  void* owner_window{nullptr};
-  soui::sdk::bridge_adapter* bridge_adapter{nullptr};
-  bool self_test{false};
-  bool managed_frame_timing{true};
-#ifdef SOUI_BRIDGE_BENCHMARK
-  std::filesystem::path benchmark_dataset;
-  std::filesystem::path benchmark_output_directory;
-  unsigned engine_timing_experiment{0}; // bit 1: wake=0; bit 2: draw=0; diagnostics only
-  bool noopt_experiment{false};
-#endif
-};
-
-struct host_result {
-  bool ok{false};
-  std::string code;
-  std::string message;
-};
-
 // Final application exit, after every Host has been destroyed. Window teardown
 // keeps the process runtime available for subsequent windows. Shutdown is final:
 // this Miniblink version cannot initialize again in the same process.
@@ -55,13 +34,6 @@ struct host_result {
 [[nodiscard]] bool binary_matches_architecture(const std::filesystem::path& binary,
                                                 std::string_view architecture);
 
-class webview_host_adapter {
- public:
-  virtual ~webview_host_adapter() = default;
-  [[nodiscard]] virtual host_result mount(const host_config& config) = 0;
-  [[nodiscard]] virtual host_result unmount() = 0;
-};
-
 class dynamic_miniblink_adapter final : public webview_host_adapter,
                                         private independent_input_sink,
                                         private engine_input_sink {
@@ -69,19 +41,19 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   ~dynamic_miniblink_adapter() override;
   [[nodiscard]] host_result mount(const host_config& config) override;
   [[nodiscard]] host_result unmount() override;
-  [[nodiscard]] host_result show(bool visible);
-  [[nodiscard]] host_result reload();
-  [[nodiscard]] host_result resize(int width, int height);
-  [[nodiscard]] host_result focus();
-  void pump();
-  void deliver_posted_event(void* payload);
-  [[nodiscard]] bool document_ready() const noexcept;
-  [[nodiscard]] bool application_ready();
-  [[nodiscard]] std::string application_diagnostics();
+  [[nodiscard]] host_result show(bool visible) override;
+  [[nodiscard]] host_result reload() override;
+  [[nodiscard]] host_result resize(int width, int height) override;
+  [[nodiscard]] host_result focus() override;
+  void pump() override;
+  void deliver_posted_event(void* payload) override;
+  [[nodiscard]] bool document_ready() const noexcept override;
+  [[nodiscard]] bool application_ready() override;
+  [[nodiscard]] std::string application_diagnostics() override;
 #ifdef SOUI_PERFORMANCE_DIAGNOSTICS
   [[nodiscard]] host_result request_memory_recovery();
 #endif
-  void set_session_id(std::string session_id);
+  void set_session_id(std::string session_id) override;
   void notify_document_ready();
   void notify_main_context_created();
   [[nodiscard]] bool allow_document_navigation(std::string_view url) const noexcept;
@@ -181,43 +153,6 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   async_result_slot benchmark_result_slot_;
   int benchmark_x_{0}, benchmark_y_{0}, benchmark_width_{0}, benchmark_height_{0};
 #endif
-};
-
-class soui_miniblink_host {
- public:
-  explicit soui_miniblink_host(std::unique_ptr<webview_host_adapter> adapter);
-  soui_miniblink_host(const soui_miniblink_host&) = delete;
-  soui_miniblink_host& operator=(const soui_miniblink_host&) = delete;
-  ~soui_miniblink_host();
-
-  [[nodiscard]] host_result start(const host_config& config);
-  [[nodiscard]] host_result hide();
-  [[nodiscard]] host_result reload();
-  [[nodiscard]] host_result close();
-  [[nodiscard]] host_result destroy();
-  [[nodiscard]] host_result resize(int width, int height);
-  [[nodiscard]] host_result focus();
-  void pump();
-  void deliver_posted_event(void* payload);
-  [[nodiscard]] bool document_ready() const noexcept;
-  [[nodiscard]] bool application_ready();
-  [[nodiscard]] std::string application_diagnostics();
-#ifdef SOUI_PERFORMANCE_DIAGNOSTICS
-  [[nodiscard]] host_result request_memory_recovery();
-#endif
-  [[nodiscard]] const soui::runtime::webview_session* session() const noexcept;
-#ifdef SOUI_BRIDGE_BENCHMARK
-  [[nodiscard]] std::string benchmark_result();
-  void benchmark_gallery(bool all_components);
-  [[nodiscard]] int configured_wake_interval() const noexcept;
-#endif
-
- private:
-  [[nodiscard]] static host_result validate_local_resources(const std::filesystem::path& root);
-  [[nodiscard]] static host_result validate_architecture(const host_config& config);
-
-  std::unique_ptr<webview_host_adapter> adapter_;
-  std::unique_ptr<soui::runtime::webview_session> session_;
 };
 
 }  // namespace soui::sdk

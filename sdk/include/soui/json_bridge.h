@@ -10,6 +10,7 @@
 namespace soui::sdk {
 // Register methods before mounting the host. Grants are scoped to the trusted
 // local document session; navigation revokes them through shutdown_session.
+// bridge.describe lists only registered methods authorized for that session.
 class json_bridge final : public bridge_adapter {
  public:
   explicit json_bridge(std::string origin);
@@ -17,6 +18,12 @@ class json_bridge final : public bridge_adapter {
                        soui::runtime::capability_registry::handler handler);
   bool register_contextual_method(std::string name, std::string capability,
                                   soui::runtime::capability_registry::contextual_handler handler);
+  bool register_action(std::string name, std::string capability, std::string contract_json,
+                       soui::runtime::capability_registry::contextual_handler handler);
+  // Native-only document grant, configured before bootstrap and frozen at the
+  // first bootstrap. Every listed capability must already be registered. An
+  // empty list denies all ordinary calls; omission preserves legacy grants.
+  bool set_session_capabilities(std::vector<std::string> capabilities);
   bool register_task_handler(std::string kind, soui::runtime::task_service::handler handler);
   bool enable_directory_service();
   bool enable_clipboard_service();
@@ -38,9 +45,11 @@ class json_bridge final : public bridge_adapter {
   soui::runtime::bridge_transport transport_{registry_, permissions_};
   soui::runtime::task_service tasks_;
   std::vector<std::string> capabilities_;
+  std::vector<std::string> session_capabilities_;
   std::mutex mutex_;
   std::string active_session_;
   bool registration_closed_{false};
+  bool session_capabilities_configured_{false};
   std::atomic<void*> owner_window_{nullptr};
 };
 }  // namespace soui::sdk

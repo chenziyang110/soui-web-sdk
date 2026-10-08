@@ -1,5 +1,21 @@
 # SDK API
 
+## 0.4 现代后端与环境探测
+
+可选 `Soui::WebView2` 导出 `<soui/host/webview2_host.h>`；UI STA 异步准备后使用相同 `webview_host`。`show()` 恢复隐藏视图并保留会话。公共 `<soui/host/runtime_profile.h>` 提供实际系统/PE/架构探测和候选档位选择；Web SDK 导出 `inspectSouiWebFeatures`、`requireSouiWebFeatures`。这些探测不授予原生权限，不代表目标环境认证。完整初始化、通知、关闭和部署契约见 [现代后端](modern-backend.md)。
+
+## 动作契约与受控界面（preview.10）
+
+`json_bridge::register_action(name, capability, contract_json, contextual_handler)` 注册同步原生动作。契约包含 `protocol: "soui.action/1"`、标题、说明、`inputSchema` 与 `outputSchema`；通过原有会话授权后先验证输入，再执行处理器并验证成功结果。业务错误仍走原有Bridge错误路径。契约不会自动把动作注册为task kind，也不能绕过公共任务处理器自己的校验。
+
+schema只支持明确的object/properties/required/additionalProperties:false、array/items/minItems/maxItems、string/minLength/maxLength/enum、integer/number/minimum/maximum、boolean、null。输入/输出根必须是object；对象必须声明properties且禁止额外字段，数组必须声明items与maxItems，字符串必须声明maxLength。未知关键字、无界或过深schema在注册时拒绝。字符串长度按Unicode标量，数字须可在Web安全表达；完整规范和限制由公共 `action_contract.h` 与Web类型约束。
+
+`set_session_capabilities(...)` 由C++应用在首个bootstrap前设置已注册能力白名单，同时限制方法发现和直接执行；默认保持旧行为。它属于文档会话授权，不能据此宣称拥有独立Agent主体认证。网页自报actor或手势不改变权限。
+
+Web `discover()` 保留已校验的可选 `method.action`。`souiToolDefinitions(catalog)` 只为这些方法生成通用工具定义；`validateSouiActionInput/Output` 提供相同子集的客户端检查，原生检查仍是最终边界。工具定义本身不执行动作或授予权限。
+
+`createSouiGui()` 为应用明确注册的元素提供 `register`、`snapshot`、`perform`、`waitFor` 和 `dispose`。节点有稳定ID、role/name、enabled/busy、显式应用state和命名动作。调用只进入注册处理器，不执行任意选择器或脚本；禁用、断开、忙碌、移除与销毁均有错误。等待有上限，调用超时不代表原生任务已取消，实际处理器结束前仍保留busy。示例见模板；UIA与外部Agent服务不在本版实现范围内。
+
 ## C++ 接入
 
 ```cpp
@@ -46,6 +62,23 @@ const result = await client.call('app.ping', {});
 `sdk/web/dist` 是模块形式的 SDK 产物；面向 Miniblink49 时仍需经过应用的兼容构建。模板已配置经典脚本和所需转换，不应把 ES module 直接作为 Chrome 49 页面入口。
 
 新连接器默认的 `SouiCoreMethodMap` 声明 `json_bridge` 自带的 probe 与 `task.*` 方法。兼容构造器默认的 `SouiMethodMap` 仍对应工作台服务；业务工程可以传入自己的方法表。最小模板演示公共任务模块，不开放扫描或媒体权限。
+
+## 公共能力发现（preview.9）
+
+`json_bridge` 自带 `bridge.describe`。该方法通过普通 Bridge 请求校验 session、origin 和 token，仅列出已注册且该会话有权访问的方法。它不会调用业务方法、打开对话框或新增授权。
+
+```ts
+const client = await connectSouiNative();
+const catalog = await client.discover({pageSize: 32, maxMethods: 1024});
+const hasClipboard = catalog.methods.some(item => item.name === 'desktop.clipboard.writeText');
+// hasClipboard 表示已注册且当前获授权；写入仍须真实手势、有效窗口等前置条件。
+```
+
+`client.describe({cursor: 0, limit: 32})` 获取一页。返回 `{protocol: 'soui.capabilities/1', sdkVersion, methods: [{name, capability}], nextCursor}`，终页 `nextCursor` 为 null。只接受可选 cursor/limit；cursor 为非负安全整数，limit 为 1–64，默认32。按方法名稳定排序，游标属于 bootstrap 后冻结的注册表；不要把游标或发现结果跨文档会话复用。
+
+`discover()` 自动分页，默认最多保留1,024项，最大可配置4,096项。超过上限返回 `E_LIMIT_CAPABILITIES`；格式错误、不前进游标、跨页重复或版本变化返回 `E_INVALID_RESPONSE`；原生拒绝、旧宿主不支持、超时和 dispose 仍显式失败，不返回伪造或部分清单。与普通 call 一样，发现请求受并发/大小/超时约束。低层 `client.call('bridge.describe', ...)` 只有通用 envelope 校验，优先使用上述高层入口进行发现结果校验。
+
+该清单不是参数 schema、能力永久承诺或 Agent 操作授权。自定义方法仍应验证业务参数；页面与 Agent 均不能通过 JSON 伪造 native user gesture。注册方法名限 ASCII 字母、数字、点、连字符、下划线、冒号，1–128字节；capability 为1–512 UTF-8字节且可编码为 JSON。注册失败返回 false。
 
 ## 可选目录选择器
 
@@ -115,7 +148,7 @@ WndProc 将 WM_HOTKEY 的完整参数交给 `dispatch_message()`，仅在 `activ
 
 `SouiBridgeError` 包含 `code` 和 `requestId`。非法响应、相关 ID 不匹配、权限拒绝、会话失效和页面等待超时都有独立错误。页面超时不代表原生任务已经取消；需要调用服务自己的取消接口。
 
-请求默认最多 64 KiB，参数最多 32 KiB，深度和字段规则由原生 Bridge 限制。应用方法应继续校验自己的参数。不得向不受信任的远程页面开放原生接口。
+请求默认最多 64 KiB，参数最多 32 KiB，深度和字段规则由原生 Bridge 限制。preview.9 的标准 JSON 响应也限制为64 KiB；业务返回或可选元数据使完整响应超限时返回 `E_LIMIT_MESSAGE_SIZE`。发现页按完整响应大小自动缩页。应用方法应继续校验自己的参数。不得向不受信任的远程页面开放原生接口。
 
 客户端默认最多 128 个普通等待与 128 个订阅，各可配置至 1,024；`requestTimeoutMs` 默认 10,000、范围 1–60,000 ms，与原生协议一致。`maxMessageBytes` 只能下调 64 KiB 上限。注销另有同订阅上限的控制等待容量，dispose 后可能继续等待确认或超时。
 

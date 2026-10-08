@@ -1,6 +1,6 @@
 {
   "schema": "soui.dependencies/v2",
-  "sdkVersion": "0.3.0-preview.15",
+  "sdkVersion": "0.4.0-preview.2",
   "releaseReady": false,
   "dependencies": [
     {
@@ -60,6 +60,14 @@
       "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
     },
     {
+      "id": "tailwind-utility-css",
+      "source": "demos/workbench/web/apps/react/utility.css",
+      "version": "3.4.17 generated utility subset",
+      "license": "MIT; third_party/licenses/tailwindcss-3.4.17-LICENSE.txt",
+      "sourceNormalization": "lf",
+      "sha256": "b7bd9ce4e821959baf00ba7d1f60d70d1038de657a7105b15147a52ee782c816"
+    },
+    {
       "id": "miniblink-x86",
       "source": "third_party/prebuilt/x86/miniblink/node.dll",
       "version": "rebuilt preview.14 2026-09-26",
@@ -97,7 +105,7 @@
       "version": "lockfile",
       "license": "resolved package licenses",
       "sourceNormalization": "lf",
-      "sha256": "3e00312e2d64d3b555b50c70b4a533bb823a903b55f8cdf3d23381898ded7849"
+      "sha256": "ce74e5bbdf5faccca97ad189dad6ad96446f66da39a6004fdf5a10c72682f248"
     },
     {
       "id": "template-web",
@@ -105,7 +113,23 @@
       "version": "lockfile",
       "license": "resolved package licenses",
       "sourceNormalization": "lf",
-      "sha256": "8fe6b1e6386cccfb071b26ee5fd7ab3ba426b3a2efb14365c20b5e37f91e47d1"
+      "sha256": "56553b7df7d73417629ddb7459df06c0ff1274a745f35bfedde8d28376714d33"
+    },
+    {
+      "id": "modern-template-web",
+      "source": "templates/modern-app/web/package-lock.json",
+      "version": "lockfile",
+      "license": "resolved package licenses",
+      "sourceNormalization": "lf",
+      "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+    },
+    {
+      "id": "webview2-sdk",
+      "source": "sdk/renderers/webview2/dependency.json",
+      "version": "1.0.4258.31 optional SDK",
+      "license": "Microsoft SDK LICENSE and NOTICE; Runtime separate",
+      "sourceNormalization": "lf",
+      "sha256": "de654c9666da5e7b36eaadbaacd297c49942bc6ba8bcd9f6fee141f0308956e5"
     },
     {
       "id": "demo-web",
@@ -113,7 +137,7 @@
       "version": "lockfile",
       "license": "resolved package licenses",
       "sourceNormalization": "lf",
-      "sha256": "aa61482bf9b289836f3101b985ff0a39a6743b7532443def37cabb80cc3d3c47"
+      "sha256": "499b19c41a20ec56113a33240244aee79b81f9f6ebcfd03b384b1cb3dc7171e6"
     }
   ],
   "nativeFiles": [

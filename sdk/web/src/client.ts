@@ -1,4 +1,6 @@
 import type { SouiMethodMap } from './contracts.js';
+import { describeOptions, discoverCapabilities, readCapabilityPage } from './capabilities.js';
+import type { SouiCapabilityCatalog, SouiCapabilityPage, SouiDescribeOptions, SouiDiscoveryOptions } from './capabilities.js';
 import { SouiBridgeError, MAX_MESSAGE_BYTES, integerOption, isNativeEvent, isRecord,
   nonEmptyString, readResponse, utf8Bytes } from './protocol.js';
 import type { SouiBridgeRequest, SouiNativeEvent, SouiNativePort, SouiSessionLease } from './protocol.js';
@@ -86,6 +88,17 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
     if (method === 'bridge.session.renew')
       return Promise.reject(new SouiBridgeError('E_RESERVED_METHOD', 'Use renewSession() to update this client authorization.'));
     return this.request<Methods[M]['result']>(method, params);
+  }
+
+  /** Read one authorized page. Older hosts return their unsupported-method error. */
+  public async describe(options: SouiDescribeOptions = {}): Promise<SouiCapabilityPage> {
+    const { cursor, limit } = describeOptions(options);
+    return readCapabilityPage(await this.request<unknown>('bridge.describe', { cursor, limit }), cursor, limit);
+  }
+
+  /** Read a bounded catalog without invoking the discovered business methods. */
+  public discover(options: SouiDiscoveryOptions = {}): Promise<SouiCapabilityCatalog> {
+    return discoverCapabilities(page => this.describe(page), options);
   }
 
   private newRequestId(): string { return `${this.options.sessionId}:${this.clientId}:${this.nextRequest++}`; }

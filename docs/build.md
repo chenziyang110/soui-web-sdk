@@ -4,7 +4,7 @@
 
 - Windows x64 开发机、Visual Studio 2022 C++ 桌面开发组件、ATL、v143 工具集。
 - Windows SDK **10.0.19041.0**；脚本固定使用此版本。
-- CMake ≥ 3.24、Node.js 20.19 LTS 或 ≥ 22.12、npm、PowerShell 5.1 或以上。
+- CMake ≥ 3.24、npm、PowerShell 5.1 或以上。基础 SDK/兼容生成项目支持原有 Node.js 20.19 LTS 或 ≥ 22.12；0.4 整体构建包含现代模板，请使用 Node.js ≥ 22.12。
 - 完整重编译内核建议保留至少 40 GB 空间，双架构需要更多。运行 `tools/Doctor.ps1` 检查环境。
 
 ## 日常构建

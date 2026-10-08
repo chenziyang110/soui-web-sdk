@@ -12,12 +12,15 @@ const definitions = [
  ['miniblink-build-provenance', 'third_party/manifests/kernel-build-preview14.json', 'preview.14 dual-architecture rebuild', 'build identity record'],
  ['zlib-source', 'third_party/sources/zlib/source-manifest.json', '1.2.11', 'Zlib'],
  ['json', 'third_party/include/json/json.hpp', 'pinned single header', 'MIT'],
+ ['tailwind-utility-css', 'demos/workbench/web/apps/react/utility.css', '3.4.17 generated utility subset', 'MIT; third_party/licenses/tailwindcss-3.4.17-LICENSE.txt'],
  ...['x86','x64'].flatMap(arch => [
    ['miniblink-'+arch, 'third_party/prebuilt/'+arch+'/miniblink/node.dll', 'rebuilt preview.14 2026-09-26', 'binary redistribution review incomplete'],
    ['zlib-runtime-'+arch, 'third_party/prebuilt/'+arch+'/runtime/vc/zlib1.dll', '1.2.11 app-local', 'Zlib']
  ]),
  ['web-sdk', 'sdk/web/package-lock.json', 'lockfile', 'resolved package licenses'],
  ['template-web', 'templates/desktop-app/web/package-lock.json', 'lockfile', 'resolved package licenses'],
+ ['modern-template-web', 'templates/modern-app/web/package-lock.json', 'lockfile', 'resolved package licenses'],
+ ['webview2-sdk', 'sdk/renderers/webview2/dependency.json', '1.0.4258.31 optional SDK', 'Microsoft SDK LICENSE and NOTICE; Runtime separate'],
  ['demo-web', 'demos/workbench/web/package-lock.json', 'lockfile', 'resolved package licenses']
 ];
 const dependencies = definitions.map(([id, source, version, license]) => {

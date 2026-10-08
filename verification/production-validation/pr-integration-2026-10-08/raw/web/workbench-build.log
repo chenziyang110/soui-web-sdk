@@ -1,0 +1,19 @@
+
+> soui-miniblink-ai-web@0.1.0 prebuild
+> node ../tools/web-build/generate-component-loaders.cjs
+
+F:\work\sm04\demos\workbench\tools\web-build\generate-component-loaders.cjs:57
+    if (!fs.existsSync(path.join(local,'index.mjs'))) throw Error(`No package module: ${module}`);
+                                                      ^
+
+Error: No package module: button-group
+    at Object.<anonymous> (F:\work\sm04\demos\workbench\tools\web-build\generate-component-loaders.cjs:57:61)
+    at Module._compile (node:internal/modules/cjs/loader:1812:14)
+    at Object..js (node:internal/modules/cjs/loader:1943:10)
+    at Module.load (node:internal/modules/cjs/loader:1533:32)
+    at Module._load (node:internal/modules/cjs/loader:1335:12)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:255:19)
+    at Module.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:154:5)
+    at node:internal/main/run_main_module:33:47
+
+Node.js v24.14.0

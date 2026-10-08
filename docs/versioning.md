@@ -1,6 +1,8 @@
 # 版本与升级
 
-版本入口是根目录 `VERSION`，当前开发版本为 `0.3.0-preview.15`。构建工具检查 C++ 版本字符串、Web 包和锁文件保持一致，CMake 从该版本推导数值版本。生成项目以 `sdk-lock.json` 确认 SDK 版本，升级不覆盖业务项目自己的 VERSION。C++ API 使用源码编译，不承诺不同编译器、工具集或配置之间的稳定二进制 ABI。
+0.4.0-preview.2 整合两条功能分支，SDK 内容发生变化，因此使用新版本。已发布的 v0.4.0-preview.1 标签和固定包不覆盖；整合验证不继承旧版完整交付通过状态。
+
+版本入口是根目录 `VERSION`，当前开发版本为 `0.4.0-preview.2`。构建工具检查 C++ 版本字符串、Web 包和锁文件保持一致，CMake 从该版本推导数值版本。生成项目以 `sdk-lock.json` 确认 SDK 版本，升级不覆盖业务项目自己的 VERSION。C++ API 使用源码编译，不承诺不同编译器、工具集或配置之间的稳定二进制 ABI。
 
 `tools/New-Project.ps1` 把模板与固定 SDK 包组合，生成 `project.json` 和 `sdk-lock.json`。默认 SDK 包位于 `dist/sdk/<版本>/`，包含 SDK 源码、接入工具和应用必需的固定依赖；完整底层源码保留在完整交付包中。
 
@@ -9,7 +11,7 @@
 ## 升级
 
 1. 修改 SDK 后更新 VERSION，记录兼容性变化并完成验证。
-2. 按当前 VERSION 生成新包，例如 `node tools/sdk/soui-sdk.cjs pack --source . --output dist/sdk/0.3.0-preview.15 --version 0.3.0-preview.15`；开发中应在验证收敛后生成，已生成的同版本包不允许覆盖。
+2. 按当前 VERSION 生成新包，例如 `node tools/sdk/soui-sdk.cjs pack --source . --output dist/sdk/0.4.0-preview.2 --version 0.4.0-preview.2`；开发中应在验证收敛后生成，已生成的同版本包不允许覆盖。
 3. 在业务项目中提交或备份修改。
 4. 执行 `node tools/sdk/soui-sdk.cjs install --package <新SDK包目录> --project <业务项目目录>`。
 5. 重新编译、回归业务，保留旧包用于回退。
@@ -36,6 +38,22 @@ node tools/sdk/soui-sdk.cjs verify-project --project <业务项目目录>
 完整升级并重新构建，使用带就绪任务等待补偿的双架构新内核。持续压力下跨优先级执行次序可能变化，具体契约见 [ADR-0016](adr/0016-scheduler-ready-task-fairness.md)。SDK Core 不再携带两份历史 `node.dll.before-gpu-lcd`；它们仍在完整源码和旧包中保留。安装器按旧锁退役受管备份，回退旧包时恢复，业务文件不受影响。不要手工删除历史现场，或用新 DLL 覆盖既有同版本包。新候选仍须完成应用、Win7、资源和真实交互验收。
 
 原 `soui-miniblink-ai-devkit` 0.1 系列使用另一 SDK 身份与目录，不能直接混装。迁移到 0.2 应创建新模板工程，再迁入页面、资源和业务方法。
+
+## preview.9 → preview.10 的动作和界面语义
+
+完整重编译 SDK 和应用。`register_action` 是新的受权同步方法入口，要求公布的有界schema子集；输入在原生处理器之前校验，成功结果也必须匹配。`bridge.describe` 的方法项可包含可选 `action`，旧方法不受影响，新Web客户端保留并校验该信息。原生 `set_session_capabilities` 在首个bootstrap前配置，默认保持原授予行为；不能通过网页字段设置权限。
+
+新模板在业务就绪前核对动作契约、界面语义调用和原生非法参数拒绝，因此不能直接回退到只有preview.9 SDK的库。已有使用旧API的业务项目仍可按固定包升级/回退；新功能的迁移由业务项目自己负责。WebView2仍作为独立实验随完整源码提供，未加入默认SDK安装包。Demo移除Tailwind构建插件并保留静态CSS，新增样式使用明确CSS，不再依赖自动生成Tailwind工具类。
+
+接口和已验证范围见 [ADR-0014](adr/0014-action-contracts-and-gui-semantics.md) 与本版发布说明。
+
+## preview.8 → preview.9 的能力发现与适配器
+
+完整重编译 C++ SDK 与应用；自定义适配器可改为包含 `soui/host/webview_host.h`，原包含路径仍兼容。控制操作通过虚接口真实执行，未实现操作返回 `E_NOT_SUPPORTED`，不再得到测试适配器的默认成功。销毁仍保持幂等；失败卸载保留可重试状态。
+
+Web `describe()`/`discover()` 需要原生 `bridge.describe` 支持。连接本身不自动发现，因此旧应用连接行为保持；新模板依赖 preview.9 的发现结果检查所需服务，不能仅替换 Web 文件而沿用旧原生 SDK。旧宿主错误显式传播，不自动猜测方法清单。注册方法名现在与已有调用规则一致，权限标识限制为1–512 UTF-8字节；检查注册返回值。
+
+本版不更换预编译引擎，不移除历史版本验收。旧 `acceptance.json` 中的版本和 scope 仍只说明对应历史验证；preview.9 的本轮结果单独记录，正式汇总和完整源码打包须重新核验当前内容。
 
 ## 0.2 → 0.3 基础切片
 

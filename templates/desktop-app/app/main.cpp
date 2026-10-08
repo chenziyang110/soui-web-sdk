@@ -92,12 +92,17 @@ int run(HINSTANCE instance,bool smoke) {
   if(!bridge.enable_directory_service())return 10;
   if(!bridge.enable_clipboard_service())return 8;
   if(!bridge.enable_window_service())return 9;
-  (void)bridge.register_method("app.greet","app.greet",[](std::string_view params) {
-    const auto value=json::parse(params);
-    if(!value.is_object() || value.size()!=1 || !value.contains("name") || !value["name"].is_string() || value["name"].get_ref<const std::string&>().size()>128)
-      return std::string{"{\"error\":\"E_INVALID_PARAMS\",\"message\":\"Expected a name of at most 128 bytes.\"}"};
+  const auto greet_contract=json{
+    {"protocol","soui.action/1"},{"title","问候"},{"description","由C++生成问候消息。"},
+    {"inputSchema",{{"type","object"},{"properties",{{"name",{{"type","string"},{"minLength",1},{"maxLength",32}}}}},
+                    {"required",json::array({"name"})},{"additionalProperties",false}}},
+    {"outputSchema",{{"type","object"},{"properties",{{"message",{{"type","string"},{"maxLength",200}}}}},
+                     {"required",json::array({"message"})},{"additionalProperties",false}}}
+  }.dump();
+  if(!bridge.register_action("app.greet","app.greet",greet_contract,[](const soui::runtime::bridge_request& request) {
+    const auto value=json::parse(request.params_json);
     return json{{"message","Hello, "+value["name"].get<std::string>()+". This response came from C++."}}.dump();
-  });
+  }))return 11;
   (void)bridge.register_task_handler("app.count", [](const soui::runtime::task_invocation& invocation,
                                                      const soui::runtime::task_control& control) {
     const auto input=json::parse(invocation.parameters_json, nullptr, false);

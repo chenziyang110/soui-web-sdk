@@ -167,7 +167,23 @@ try {
     assert.throws(() => sdk.install(first, linked), /Linked path/);
     assert.deepEqual(fs.readdirSync(outside), []);
   });
-  console.log(`SDK package smoke: ${checks}/${checks} passed (ownership, integrity, upgrade, rollback, IO recovery and paths).`);
+  check(() => {
+    const modernPackage = path.join(root, 'modern-package');
+    const modernProject = path.join(root, 'modern-project');
+    write(path.join(modernProject, 'project.json'), JSON.stringify({runtimeProfile: 'modern'}));
+    assert.throws(() => sdk.install(first, modernProject), /does not provide the modern profile/);
+    assert.equal(fs.existsSync(path.join(modernProject, 'sdk-lock.json')), false);
+    for (const required of ['sdk/include/soui/host/webview2_host.h',
+      'sdk/renderers/webview2/CMakeLists.txt', 'tools/internal/Restore-WebView2.ps1']) write(path.join(source, required), 'modern fixture');
+    sdk.pack(source, modernPackage, '0.4.0-preview.1');
+    sdk.install(modernPackage, modernProject);
+    const lock = read(path.join(modernProject, 'sdk-lock.json'));
+    assert.throws(() => sdk.install(second, modernProject), /does not provide the modern profile/);
+    assert.equal(read(path.join(modernProject, 'sdk-lock.json')), lock);
+    sdk.readLock(modernProject);
+    assert.throws(() => sdk.requireProfile(sdk.readPackage(modernPackage), 'typo'), /Unknown application/);
+  });
+  console.log(`SDK package smoke: ${checks}/${checks} passed (ownership, integrity, upgrade, rollback, profile compatibility, IO recovery and paths).`);
 } finally {
   const expected = path.resolve(os.tmpdir()) + path.sep;
   if (!path.resolve(root).startsWith(expected) || !path.basename(root).startsWith('soui-sdk-smoke-')) throw new Error('Unsafe cleanup');

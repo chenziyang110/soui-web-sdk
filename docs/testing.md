@@ -1,5 +1,13 @@
 # 测试与验收
 
+0.4 增加运行档位、帧计时和 WebView2 异步准备测试。`Build.ps1 -WithWebView2` 构建可选组件和现代模板，之后执行 `Test.ps1` 与 `Test-Modern.ps1`；后者绑定当前构建及运行载荷。`experiments/webview2-consumer` 现为安装后公共现代组件的独立消费者，仍保留历史目录名。现代项目支持在仓库外运行自己的 `tools/Test-Modern.ps1`。详见 [现代后端](modern-backend.md) 和 [0.4 门槛](roadmap/0.4.0.md)。
+
+preview.10 增加 `sdk.native.action-contract`、Web动作契约与GUI语义测试，标准 `Test.ps1` 纳入这些检查。模板实际就绪探针包含契约发现→工具定义→语义动作→C++结果→状态等待→原生非法参数拒绝；WebView2实验执行相同业务与受限能力拒绝。`tools/Verify-Release.ps1` 在冻结版本后执行仓库外生成、升级/回退、搬移和真实启动，不复用历史结果。
+
+2026-10-03 起，独立消费者监督器使用单调计时判断步骤和无进展超时；系统 UTC 只用于日志。`tests/acceptance/monotonic-supervisor.test.cjs` 覆盖系统时钟前后跳变。此变更不说明历史挂载超时根因已查明。WebView2 实验使用独立 [构建与测试入口](../experiments/webview2-consumer/README.md)，不加入默认 SDK 构建；它的记录不能替代 Miniblink 或完整产品支持矩阵。双架构实验与 Miniblink 回归的 [2026-10-03结果](acceptance/webview2-experiment.md) 保留失败证据和未覆盖门槛。
+
+preview.9 新增 `sdk.native.host-adapter`（引擎无关转发、失败重试、终态与晚到事件）、扩展 `sdk.native.contract`（方法发现与授权/分页/响应边界），以及 `node --test tests/web/capabilities.test.mjs`（Web 分页与结果校验）。`tools/Test.ps1` 已纳入这些检查。模板在 `bridge.probe.report` 之前执行 `discover()`，因此本版模板的真实启动包含当前原生发现往返。当前执行结果见 [本轮记录](acceptance/agent-foundation.md)，这些测试不代表完整 Agent 操作或第二后端支持。
+
 `demo.native.interaction-task` 通过真实 Workbench adapter 和公开 JSON Bridge 验证有界 `demo.interaction`：单调时钟计时、后台进度事件、运行中取消、会话隔离、非法类型/整数范围与溢出、关闭会话清理，以及原快速任务兼容。构建后可运行 `ctest --test-dir out/x64 -C Release -R demo.native.interaction-task --output-on-failure`，x86 使用对应目录。这是无窗口的原生集成回归；V02 仍需新构建上真实滚动、IME、缩放和公共任务并发的桌面证据，不能继承旧应用载荷的短测结果。
 
 Workbench 普通窗口初始位置使用主显示器的工作区：空间充足时居中；只要仍可放下至少 640×480 的窗口，就给右下缩放方向预留至少 84×64 像素；再小的工作区退回到可见范围内。任务栏占用的区域不计入工作区。`demo.native.window-placement` 覆盖 Win7 1024×768 与 800×600 底部任务栏、默认大窗口与显式 850×640 窗口的 80×60 缩放目标、负坐标显示器及无效区域。纯几何测试不能证明真实边框命中和拖拽；[现代 Windows x86/x64 原生缩放记录](../verification/production-validation/work-area-placement-gui-2026-09-28/README.md)已证明本机 1920×1032 工作区中的两架构 80×60 鼠标拖拽与正常关闭，但不证明 Win7 SP1 x86、页面在 708×488 下可用或完整 V02。须用新冻结输入在 Win7 记录真实窗口矩形、任务栏区域、原生缩放输入与关闭结果，再判断 [Issue #42](https://github.com/chenziyang110/soui-web-sdk/issues/42) 是否关闭。
