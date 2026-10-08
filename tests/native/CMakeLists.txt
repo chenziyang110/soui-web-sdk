@@ -39,6 +39,19 @@ target_compile_options(soui_engine_thread_timeout_tests PRIVATE /utf-8 /W4 /U_DE
 set_property(TARGET soui_engine_thread_timeout_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.engine-diagnostic-timeout COMMAND soui_engine_thread_timeout_tests)
 set_tests_properties(sdk.native.engine-diagnostic-timeout PROPERTIES TIMEOUT 30)
+add_executable(soui_engine_thread_startup_tests engine_thread_startup_tests.cpp
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/engine_thread.cpp")
+# This target compiles the real engine implementation once, with a private seam.
+# The installed SDK is compiled separately without this definition or hook code.
+target_include_directories(soui_engine_thread_startup_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
+target_link_libraries(soui_engine_thread_startup_tests PRIVATE user32)
+target_compile_features(soui_engine_thread_startup_tests PRIVATE cxx_std_17)
+target_compile_definitions(soui_engine_thread_startup_tests PRIVATE
+  SOUI_ENGINE_STARTUP_TEST_ONLY UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+target_compile_options(soui_engine_thread_startup_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET soui_engine_thread_startup_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.engine-startup-rollback COMMAND soui_engine_thread_startup_tests)
+set_tests_properties(sdk.native.engine-startup-rollback PROPERTIES TIMEOUT 30)
 add_executable(soui_runtime_profile_tests runtime_profile_tests.cpp)
 target_link_libraries(soui_runtime_profile_tests PRIVATE Soui::Sdk)
 target_compile_options(soui_runtime_profile_tests PRIVATE /utf-8 /W4 /U_DEBUG)

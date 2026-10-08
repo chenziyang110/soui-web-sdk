@@ -1,0 +1,12 @@
+{
+  "schema": "soui.engine-startup-archive-preparation-history/v1",
+  "executedCommand": "node archive.cjs (filesystem-only)",
+  "exitCode": 1,
+  "error": "TypeError [ERR_INVALID_ARG_TYPE]: path.isAbsolute received undefined in checkIndex at archive.cjs:85",
+  "cause": "One prepared index uses relativePath without an absolute path property. The first reader assumed every record had both.",
+  "failureBeforePublicArchiveCreation": true,
+  "nativeExecution": false,
+  "productionOrOriginalEvidenceModified": false,
+  "stdoutStderrNotSeparatelyRedirected": true,
+  "note": "This is an accurate error description plus the actual failed script snapshot, not an independently captured raw stderr file. Tool invocation output reported exit 1. The later reader accepts only explicit relativePath or a string path and retains all hash checks."
+}

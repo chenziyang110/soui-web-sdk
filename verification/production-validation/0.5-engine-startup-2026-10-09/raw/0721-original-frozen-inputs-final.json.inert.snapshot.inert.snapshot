@@ -1,0 +1,579 @@
+{
+  "schema": "soui.engine-startup-frozen-inputs/v1",
+  "root": "F:\\work\\sm05-startup",
+  "baseCommit": "f6720b4936e488ae3edd9deb02ebf2613b5eba6c",
+  "executed": false,
+  "controlledFaultsOnly": true,
+  "noGui": true,
+  "noVendorChanges": true,
+  "sources": [
+    {
+      "relativePath": "sdk/src/host/engine_thread.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\engine_thread.cpp",
+      "bytes": 8982,
+      "sha256": "61fff71382e86cecb201953d625981c38e8799e3e2f342c133be67ef2f20b56f"
+    },
+    {
+      "relativePath": "sdk/src/host/engine_startup_test_hooks.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\engine_startup_test_hooks.h",
+      "bytes": 548,
+      "sha256": "a1c7a6d8eba10265bbcbf8e75b6fc2f16d0265ced0e1869420382c9a578da6ff"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/engine_thread.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\engine_thread.h",
+      "bytes": 1929,
+      "sha256": "b197f66ff76041c66ef0e1d92fbf681eb50669d6bd99f4935430080c46606256"
+    },
+    {
+      "relativePath": "tests/native/engine_thread_startup_tests.cpp",
+      "path": "F:\\work\\sm05-startup\\tests\\native\\engine_thread_startup_tests.cpp",
+      "bytes": 16341,
+      "sha256": "5a041aa08d067101ec2e4ed9339c8e68eec2af2f662bd3a2555066e6dbaf0579"
+    },
+    {
+      "relativePath": "tests/native/CMakeLists.txt",
+      "path": "F:\\work\\sm05-startup\\tests\\native\\CMakeLists.txt",
+      "bytes": 17086,
+      "sha256": "fbb0e3689008f106e219f63ab47153c3a9097a93167759d0d85139e5742369d2"
+    },
+    {
+      "relativePath": "docs/adr/0038-engine-thread-launch-rollback.md",
+      "path": "F:\\work\\sm05-startup\\docs\\adr\\0038-engine-thread-launch-rollback.md",
+      "bytes": 3761,
+      "sha256": "ad26a18c0003d3e8eb977095f210b82b8663c82fe1b0a49f29893b9a7de29b68"
+    },
+    {
+      "relativePath": "tools/internal/owned-process.cjs",
+      "path": "F:\\work\\sm05-startup\\tools\\internal\\owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+    },
+    {
+      "relativePath": "cmake/SouiWindowsSdk.cmake",
+      "path": "F:\\work\\sm05-startup\\cmake\\SouiWindowsSdk.cmake",
+      "bytes": 701,
+      "sha256": "5dd1a60792c86c7dac88b097873aae8eab1ec0bd3fcf59c4738f8554174736fd"
+    }
+  ],
+  "nativeCompileInputs": [
+    {
+      "relativePath": "cmake/SouiWindowsSdk.cmake",
+      "path": "F:\\work\\sm05-startup\\cmake\\SouiWindowsSdk.cmake",
+      "bytes": 701,
+      "sha256": "5dd1a60792c86c7dac88b097873aae8eab1ec0bd3fcf59c4738f8554174736fd"
+    },
+    {
+      "relativePath": "sdk/CMakeLists.txt",
+      "path": "F:\\work\\sm05-startup\\sdk\\CMakeLists.txt",
+      "bytes": 3859,
+      "sha256": "7ab6ffe0098c23a45e84f9fb0894d336ad99422323cf345491d660214b4c6a7f"
+    },
+    {
+      "relativePath": "sdk/cmake/SouiSdkConfig.cmake.in",
+      "path": "F:\\work\\sm05-startup\\sdk\\cmake\\SouiSdkConfig.cmake.in",
+      "bytes": 466,
+      "sha256": "021cfd659d6975f7b2bdf931db9d02f30f5e202d1df4358eaade12c24bf7a335"
+    },
+    {
+      "relativePath": "sdk/include/soui/bridge_adapter.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\bridge_adapter.h",
+      "bytes": 1374,
+      "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/async_result_slot.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\async_result_slot.h",
+      "bytes": 2015,
+      "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/engine_thread.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\engine_thread.h",
+      "bytes": 1929,
+      "sha256": "b197f66ff76041c66ef0e1d92fbf681eb50669d6bd99f4935430080c46606256"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/frame_pacer.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\frame_pacer.h",
+      "bytes": 7240,
+      "sha256": "49ddae57332a45e11586dd60ac074a717f57dbd2c64a3280248b82a054358342"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/interaction_protocol.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\interaction_protocol.h",
+      "bytes": 3853,
+      "sha256": "83265088b52fc340e620141729b8f3bef2dc35d5cd22f6b40fdb38bcbff48bad"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/runtime_profile.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\runtime_profile.h",
+      "bytes": 1433,
+      "sha256": "5d79c715900b24f7de3c44cba2e13ea415d2e2f96a929ad86667d633f6f4d051"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/soui_miniblink_host.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\soui_miniblink_host.h",
+      "bytes": 7003,
+      "sha256": "7510ba5a4efee56f6d96645ac432eaa11de97e9ae0fdfb47041c0b35d16050db"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/webview2_host.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\webview2_host.h",
+      "bytes": 1983,
+      "sha256": "b1c862a424ae04579a5c66a23769a99256cf76cf5c64251ec371f9d3be35a8cc"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/webview_host.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\webview_host.h",
+      "bytes": 5037,
+      "sha256": "a7dc0948eb54a9312d04bdb0a0138195a2e9fc7213b0b79d9a7d7c0cfc6297fb"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/window_chrome.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\window_chrome.h",
+      "bytes": 2359,
+      "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/window_chrome_script.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\window_chrome_script.h",
+      "bytes": 1612,
+      "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286"
+    },
+    {
+      "relativePath": "sdk/include/soui/json_bridge.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\json_bridge.h",
+      "bytes": 2941,
+      "sha256": "13a7766bb548be21ab33467aefde4d36ade437ca9029d8ee5a3289d2e606fd9a"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/bridge/action_contract.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\bridge\\action_contract.h",
+      "bytes": 1167,
+      "sha256": "11a77c9a9aa90bd8d1839f6d08eae8a892c78b7df11bdc37455f623f92c97936"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/bridge/bridge_transport.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\bridge\\bridge_transport.h",
+      "bytes": 5378,
+      "sha256": "26231cbc4c79f1a00b82951264f48cd2c26302a9fce7b2fa05fdaeb57a96eedb"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/core/events/event_bus.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\core\\events\\event_bus.h",
+      "bytes": 1639,
+      "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/core/result/result.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\core\\result\\result.h",
+      "bytes": 626,
+      "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/core/task/task_store.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\core\\task\\task_store.h",
+      "bytes": 2473,
+      "sha256": "f4b5aaf1049a5f3c1467eae74318fe2e850bebdae1e5879f457289fa527e8fbf"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/host/session/webview_session.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\host\\session\\webview_session.h",
+      "bytes": 1892,
+      "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/host/trusted_document.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\host\\trusted_document.h",
+      "bytes": 2696,
+      "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/desktop/desktop_services.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\desktop\\desktop_services.h",
+      "bytes": 2210,
+      "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/desktop/global_shortcut.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\desktop\\global_shortcut.h",
+      "bytes": 3012,
+      "sha256": "800d40c2029697ca23f9148c75acbcc683b7893665c735f4ea0a9ce0810b1ae5"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/desktop/menu_service.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\desktop\\menu_service.h",
+      "bytes": 2461,
+      "sha256": "2e304780c55cbc92c49d14532ae04ad934b835f7ff3d3f43004c3faae1244605"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/desktop/tray_service.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\desktop\\tray_service.h",
+      "bytes": 2765,
+      "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/desktop/window_commands.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\desktop\\window_commands.h",
+      "bytes": 2377,
+      "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\fileinsight-service\\fileinsight-service.h",
+      "bytes": 668,
+      "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\filesystem-readonly\\directory_scanner.h",
+      "bytes": 5545,
+      "sha256": "ab303cb608d400e36655136ac1ef491dfdf5fd0acaeb2aed1615243ad93d0e55"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/permissions/permission_store.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\permissions\\permission_store.h",
+      "bytes": 7414,
+      "sha256": "274270bf39ee9d89b7172f66406c04810e31256a152c4de934c8812e138969e2"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/task/task_service.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\task\\task_service.h",
+      "bytes": 3421,
+      "sha256": "81fb6fe4844e58b37e70ccd472d4c4b300e9d6b1abadc5363be41ccaeaa59028"
+    },
+    {
+      "relativePath": "sdk/include/soui/version.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\version.h",
+      "bytes": 250,
+      "sha256": "505061598801d39ee8151581935990c0f8fed242dede3ee5a2b6f96f0a97f4a5"
+    },
+    {
+      "relativePath": "sdk/src/host/bridge_pending_script.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\bridge_pending_script.h",
+      "bytes": 2166,
+      "sha256": "9672b98ffc6de2e4a0287b4c414ad43764c89fa00fed5f5721ee0e98aec02213"
+    },
+    {
+      "relativePath": "sdk/src/host/bridge_request_budget.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\bridge_request_budget.h",
+      "bytes": 2703,
+      "sha256": "811516ee0541190362a96a9987c78ffe1dac9b53c8f0c723fd9289b794899592"
+    },
+    {
+      "relativePath": "sdk/src/host/diagnostic_result.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\diagnostic_result.h",
+      "bytes": 1007,
+      "sha256": "7c322a719060a89624bd0c74bfc6f4ca62a752f50a633a64fd9c4aeb244be129"
+    },
+    {
+      "relativePath": "sdk/src/host/engine_startup_test_hooks.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\engine_startup_test_hooks.h",
+      "bytes": 548,
+      "sha256": "a1c7a6d8eba10265bbcbf8e75b6fc2f16d0265ced0e1869420382c9a578da6ff"
+    },
+    {
+      "relativePath": "sdk/src/host/engine_thread.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\engine_thread.cpp",
+      "bytes": 8982,
+      "sha256": "61fff71382e86cecb201953d625981c38e8799e3e2f342c133be67ef2f20b56f"
+    },
+    {
+      "relativePath": "sdk/src/host/interaction_protocol.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\interaction_protocol.cpp",
+      "bytes": 2308,
+      "sha256": "5e4fc94c99e12173ea4533fa842c73bff858584bebdd59c371c6dbeb3e040268"
+    },
+    {
+      "relativePath": "sdk/src/host/runtime_profile.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\runtime_profile.cpp",
+      "bytes": 6222,
+      "sha256": "f9a9f49b6c68463bd1a0cdd615d0c53865b3c8e8c9121c7e80933cf0ca0dbcd6"
+    },
+    {
+      "relativePath": "sdk/src/host/soui_miniblink_host.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\soui_miniblink_host.cpp",
+      "bytes": 114721,
+      "sha256": "f7963f9914eabddcaa828ba42c137c2b81140d631f402a7ac144692b9cfb9bcb"
+    },
+    {
+      "relativePath": "sdk/src/host/source_kernel_api.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\source_kernel_api.h",
+      "bytes": 2542,
+      "sha256": "d1df6ab9803a0073a3c3fb8489e3012f65cc9879de765f9a348ddc6d8566eb8e"
+    },
+    {
+      "relativePath": "sdk/src/json_bridge.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\json_bridge.cpp",
+      "bytes": 13467,
+      "sha256": "7337b730edea12cce1b8bd333a2cfc619f10de58f3fb5a59ca0f2fc2dc2ed4de"
+    },
+    {
+      "relativePath": "sdk/src/runtime/bridge/action_contract.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\bridge\\action_contract.cpp",
+      "bytes": 10283,
+      "sha256": "6dfa4ceb6a2bf92b5c464619063873896a2c4357c8730205c56f5c04ad3dae7c"
+    },
+    {
+      "relativePath": "sdk/src/runtime/bridge/bridge_transport.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\bridge\\bridge_transport.cpp",
+      "bytes": 25180,
+      "sha256": "8bf1ce7790d6a1b58896bcb0d65fc2e9108ee814bef2d2b890c15a8cc649170b"
+    },
+    {
+      "relativePath": "sdk/src/runtime/core/events/event_bus.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\core\\events\\event_bus.cpp",
+      "bytes": 2559,
+      "sha256": "e0e1c24c98720e20eb19a71a881b9a1625adb2f1092b67478a7873ad84bc1805"
+    },
+    {
+      "relativePath": "sdk/src/runtime/core/result/result.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\core\\result\\result.cpp",
+      "bytes": 409,
+      "sha256": "238c8e90a28173d2ac5ea994fcc2f669d9b46d336dd23d4d865e5b481457a9f0"
+    },
+    {
+      "relativePath": "sdk/src/runtime/core/task/task_store.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\core\\task\\task_store.cpp",
+      "bytes": 7546,
+      "sha256": "678509bbffcfe1a5363dda9c1db08504a6c55faa35ac2db7f145d3a1807ea3f3"
+    },
+    {
+      "relativePath": "sdk/src/runtime/host/session/webview_session.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\host\\session\\webview_session.cpp",
+      "bytes": 3532,
+      "sha256": "976f755f6f06b16c337a7c941de56e1ef5e3fe66adc1758f188e280ff541a9ee"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/desktop_services.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\desktop_services.cpp",
+      "bytes": 14078,
+      "sha256": "824b61b8c8fc3b16e69b62e499d01ef64bea2b07cbd3907aa11327ce3e9e21eb"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/global_shortcut.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\global_shortcut.cpp",
+      "bytes": 8129,
+      "sha256": "bbfc1b6980b666374a807fec39170d06e9aa84b87b661856bb41c02a091876ab"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/menu_platform.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\menu_platform.h",
+      "bytes": 1958,
+      "sha256": "294743b92d08d0c478f728ffa74400ab601e9df360896bd329fbfc67f93f6f26"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/menu_service.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\menu_service.cpp",
+      "bytes": 16092,
+      "sha256": "09fc3b1b133738bdaedf19f1ea020ff51c5b25ba0309fbd3af0ad66b85d64095"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/shortcut_platform.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\shortcut_platform.h",
+      "bytes": 1570,
+      "sha256": "848466afe3a048c798f654d8cbf3ceb672b46dd112af5e2226977676b74458ae"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/tray_platform.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\tray_platform.h",
+      "bytes": 1627,
+      "sha256": "91bb14277f550cb75bdd7b382c79127de4eba48ffffbd3a7025bb47f4ea42012"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/tray_service.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\tray_service.cpp",
+      "bytes": 13336,
+      "sha256": "f96238fcfa7abbbc08ef4ba242c210450657ed69841df6e777c3174a7ce280a3"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/unicode_conversion.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\unicode_conversion.h",
+      "bytes": 1709,
+      "sha256": "a404b90539344d479faee04ad58606f8af3669546e9f93824b5d590695ce6908"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/fileinsight-service/fileinsight-service.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\fileinsight-service\\fileinsight-service.cpp",
+      "bytes": 4790,
+      "sha256": "1f3303c2426759d3e4513e3bbf2dc0263cfe56c5d76c545624c7a8b39986df4a"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/filesystem-readonly/directory_scanner.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\filesystem-readonly\\directory_scanner.cpp",
+      "bytes": 30071,
+      "sha256": "713bc211743282e4b8793d244fc8cd5dca0cbb28dd7e8d27e53564ac8f107914"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/permissions/permission_store.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\permissions\\permission_store.cpp",
+      "bytes": 16353,
+      "sha256": "bfa237deb1ef280cf55b5a6f191f30e0dd3c92c941c6c8588d978c7c8bf96b7a"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/permissions/scope_id_sequence.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\permissions\\scope_id_sequence.h",
+      "bytes": 892,
+      "sha256": "da8ddba81e066354401b09b317c94ca1aa07701162c44ca31afe33908ac0599e"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/task/task_service.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\task\\task_service.cpp",
+      "bytes": 21141,
+      "sha256": "65ed025ab221058460f1c3e5014fb347840ec488bc0147c71bc5e8c2fee5a1bc"
+    },
+    {
+      "relativePath": "tests/native/CMakeLists.txt",
+      "path": "F:\\work\\sm05-startup\\tests\\native\\CMakeLists.txt",
+      "bytes": 17086,
+      "sha256": "fbb0e3689008f106e219f63ab47153c3a9097a93167759d0d85139e5742369d2"
+    },
+    {
+      "relativePath": "tests/native/engine_thread_startup_tests.cpp",
+      "path": "F:\\work\\sm05-startup\\tests\\native\\engine_thread_startup_tests.cpp",
+      "bytes": 16341,
+      "sha256": "5a041aa08d067101ec2e4ed9339c8e68eec2af2f662bd3a2555066e6dbaf0579"
+    },
+    {
+      "relativePath": "tests/native/engine_thread_timeout_tests.cpp",
+      "path": "F:\\work\\sm05-startup\\tests\\native\\engine_thread_timeout_tests.cpp",
+      "bytes": 7378,
+      "sha256": "55445dc8f6b284806390f00b2248da84e00af85594731d1e09b8ab89167d1ba0"
+    },
+    {
+      "relativePath": "third_party/include/json/json.hpp",
+      "path": "F:\\work\\sm05-startup\\third_party\\include\\json\\json.hpp",
+      "bytes": 919975,
+      "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
+    },
+    {
+      "relativePath": "third_party/include/miniblink/wke.h",
+      "path": "F:\\work\\sm05-startup\\third_party\\include\\miniblink\\wke.h",
+      "bytes": 70330,
+      "sha256": "8b090aafeee71f1571f3c07b7d8625570506720dabc20abaf4faf607166bcd54"
+    }
+  ],
+  "privateInputs": [
+    {
+      "relativePath": "prepare.cjs",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\prepare.cjs",
+      "bytes": 10392,
+      "sha256": "cac386d38bdd2e197987e0299089e1e0d7822a0bc2e4173570096112e189ab75"
+    },
+    {
+      "relativePath": "validate.cjs",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\validate.cjs",
+      "bytes": 14114,
+      "sha256": "7fda57e2efb0f5be50976b3d1a3df57cbbb358a14fc9c93650a60ccf26b43616"
+    },
+    {
+      "relativePath": "CMakeLists.txt",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\CMakeLists.txt",
+      "bytes": 4100,
+      "sha256": "6024e1db5ae65da85d2c244f0e6ca07576b31b76fd471199d99f7df07dae2de9"
+    },
+    {
+      "relativePath": "production-control.cpp",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\production-control.cpp",
+      "bytes": 1265,
+      "sha256": "263f7f1a3489c7f1a81b33302669bc32e288ee665c13aa538649902481c62cff"
+    },
+    {
+      "relativePath": "red-engine_thread.cpp.inert.snapshot",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\red-engine_thread.cpp.inert.snapshot",
+      "bytes": 8518,
+      "sha256": "ae13c148ae2a6218c7d98be2deb1d4d0ad33fca7336d5971a574b49defdf6b8c"
+    },
+    {
+      "relativePath": "baseline-inputs.json",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\baseline-inputs.json",
+      "bytes": 910,
+      "sha256": "6bfa9ed6e23f4b5c273d70cb8b9db4945e8bf04e665f58e2796ca8f5bf23fbcd"
+    },
+    {
+      "relativePath": "sdk_src_host_engine_thread.cpp.inert.snapshot",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\sdk_src_host_engine_thread.cpp.inert.snapshot",
+      "bytes": 7861,
+      "sha256": "e5c325bf88352627093cfe435731f6e1a6f59f7a520ab17fe4c972cd493bbfa7"
+    },
+    {
+      "relativePath": "sdk_include_soui_host_engine_thread.h.inert.snapshot",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\sdk_include_soui_host_engine_thread.h.inert.snapshot",
+      "bytes": 1929,
+      "sha256": "b197f66ff76041c66ef0e1d92fbf681eb50669d6bd99f4935430080c46606256"
+    },
+    {
+      "relativePath": "tests_native_CMakeLists.txt.inert.snapshot",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\tests_native_CMakeLists.txt.inert.snapshot",
+      "bytes": 15995,
+      "sha256": "f646cc1eef323af72be24f8a2bd99f453c1e8d9bee734662fe50e5510d958395"
+    },
+    {
+      "relativePath": "finalize-inputs.cjs",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\finalize-inputs.cjs",
+      "bytes": 2059,
+      "sha256": "1cbf8b35ee80e53071c4ed8edeb99c4a4bdb3026597a06aba4a33caa062a49e5"
+    },
+    {
+      "relativePath": "startup-test-b955841a-unexecuted.inert.snapshot",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\startup-test-b955841a-unexecuted.inert.snapshot",
+      "bytes": 16388,
+      "sha256": "b955841a485fde86db76f91e41189b51342efa6742143568eb843b4e549f4e0f"
+    },
+    {
+      "relativePath": "validate-cache-only-unexecuted.cjs.inert.snapshot",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\validate-cache-only-unexecuted.cjs.inert.snapshot",
+      "bytes": 13783,
+      "sha256": "28f273dde5e9b8195caac18e551697c5d8f7b47dfa843df0a6c5caac91a4e847"
+    }
+  ],
+  "tools": {
+    "runner": {
+      "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+      "bytes": 60928,
+      "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    },
+    "node": {
+      "path": "C:/nvm4w/nodejs/node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    "cmake": {
+      "path": "C:/Program Files/CMake/bin/cmake.exe",
+      "bytes": 12905544,
+      "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+    },
+    "ctest": {
+      "path": "C:/Program Files/CMake/bin/ctest.exe",
+      "bytes": 13829192,
+      "sha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+    },
+    "cl-x64": {
+      "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
+      "bytes": 677968,
+      "sha256": "a80f5e7a24049a8f9a8931f83fc3d13ca417ad901e074c50cca71fcb12ba10be"
+    },
+    "dumpbin-x64": {
+      "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/dumpbin.exe",
+      "bytes": 23608,
+      "sha256": "b927086527c3c94470ed747ce4db42d36fb3688b82b4590c1ff42e519853091d"
+    },
+    "cl-x86": {
+      "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86/cl.exe",
+      "bytes": 678000,
+      "sha256": "8de3c1e7af40f4a6c83188ef7cca6270223a00652e8c703022694f64add54a14"
+    },
+    "dumpbin-x86": {
+      "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86/dumpbin.exe",
+      "bytes": 23608,
+      "sha256": "7f2ceba4727e09d4097f692ecb62179f6dd50131701aa15d9f90422391f5c96a"
+    }
+  },
+  "priorUnexecutedFreeze": {
+    "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\frozen-inputs.json",
+    "bytes": 25348,
+    "sha256": "6655313f964b66187e78ee1142bd69f18e71867f316139f0a4ab9129cd4d0def",
+    "note": "Preserved preparer output. Final driver reads actual compiler metadata rather than assuming a cache compiler entry."
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "name": "x86-configure",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "-S",
+    "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6",
+    "-B",
+    "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86",
+    "-G",
+    "Visual Studio 17 2022",
+    "-A",
+    "Win32,version=10.0.19041.0",
+    "-T",
+    "v143,host=x64,version=14.44.35207",
+    "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+    "-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=F:/work/sm05-startup/cmake/SouiWindowsSdk.cmake"
+  ],
+  "ready": {
+    "pid": 99516,
+    "creationFileTime": "134359728317204225"
+  },
+  "readyError": null,
+  "result": {
+    "pid": 99516,
+    "creationFileTime": "134359728317204225",
+    "exitCode": 0,
+    "supervisorExitCode": 124,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": false,
+    "terminal": {
+      "event": "terminal",
+      "reason": "owned-descendants-remain",
+      "elapsedMs": 22482,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 1,
+      "terminatedOwnedJob": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 68,
+      "limitTerminatedProcesses": 0,
+      "passed": false
+    },
+    "report": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-configure\\owned.ndjson",
+    "reportSha256": "439b5dbd921a0e24c59247d5abf1d9ca6820031a4cba9c94df38bd2273e37aed",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "genericSupervisionPassed": false,
+  "raw": [
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-configure\\owned.ndjson",
+      "bytes": 95067,
+      "sha256": "439b5dbd921a0e24c59247d5abf1d9ca6820031a4cba9c94df38bd2273e37aed"
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-configure\\owned.ndjson.context.json",
+      "bytes": 922,
+      "sha256": "e67c34a1b6ba1e0325489180475b629415978fa8cfd1427ee2cc07eb9ac10b73"
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-configure\\stdout.bin",
+      "bytes": 988,
+      "sha256": "1b76920b41dbab3f24a6c9c20d75fffdbe43401b78f2f3056fcf5047ddd0b5c4"
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-configure\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

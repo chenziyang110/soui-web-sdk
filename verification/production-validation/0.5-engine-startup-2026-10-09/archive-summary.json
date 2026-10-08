@@ -1,0 +1,1840 @@
+{
+  "schema": "soui.engine-startup-persistent-evidence/v1",
+  "date": "2026-10-09",
+  "archiveHostObservation": {
+    "platform": "win32",
+    "release": "10.0.26200",
+    "arch": "x64"
+  },
+  "frozenInput": {
+    "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\frozen-inputs-final.json",
+    "bytes": 155888,
+    "sha256": "d3058e44941616b9d50d1ae10bedfa7d64d38aed93a471c151933e4b28a8aa02"
+  },
+  "actualResults": {
+    "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\results.json",
+    "bytes": 204971,
+    "sha256": "a33097915c7b87006b3146b5f89bb2dbb161c3a4fd2bc895a4b83ca344e903b8"
+  },
+  "indexProofs": [
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\index.json",
+      "bytes": 118203,
+      "sha256": "092c59c35d2dcf962a3a3347a1e283980b8ded995f7c6b402a6fa72390c6ac9b",
+      "payloadCount": 286
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\index.json",
+      "bytes": 153714,
+      "sha256": "26f5f3554f92ba64ec201fa8dde8fdd04896724efda656db6e7b76820b073112",
+      "payloadCount": 386
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\audit-root-185b988d-a264-4fdb-a4bb-4f516f0668fb\\index.json",
+      "bytes": 2439,
+      "sha256": "afabd3d484d1626d034301615ee58f8c0dd9ac21462c90fb2b4aaea549696ad7",
+      "payloadCount": 9
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\prepared-evidence-index.json",
+      "bytes": 4615,
+      "sha256": "59273c262823a679d9600d615665ae896fb68dc5b875da19f51de593e5c7c805",
+      "payloadCount": 14
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\prepared-evidence-index.json",
+      "bytes": 4726,
+      "sha256": "ae4708474132ca36b17c2687c0c5f5dc85a9873cee7b173e7774465731a14548",
+      "payloadCount": 26
+    }
+  ],
+  "rawSourceInputs": [
+    {
+      "relativePath": "sdk/src/host/engine_thread.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\engine_thread.cpp",
+      "bytes": 8982,
+      "sha256": "61fff71382e86cecb201953d625981c38e8799e3e2f342c133be67ef2f20b56f"
+    },
+    {
+      "relativePath": "sdk/src/host/engine_startup_test_hooks.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\engine_startup_test_hooks.h",
+      "bytes": 548,
+      "sha256": "a1c7a6d8eba10265bbcbf8e75b6fc2f16d0265ced0e1869420382c9a578da6ff"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/engine_thread.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\engine_thread.h",
+      "bytes": 1929,
+      "sha256": "b197f66ff76041c66ef0e1d92fbf681eb50669d6bd99f4935430080c46606256"
+    },
+    {
+      "relativePath": "tests/native/engine_thread_startup_tests.cpp",
+      "path": "F:\\work\\sm05-startup\\tests\\native\\engine_thread_startup_tests.cpp",
+      "bytes": 16341,
+      "sha256": "5a041aa08d067101ec2e4ed9339c8e68eec2af2f662bd3a2555066e6dbaf0579"
+    },
+    {
+      "relativePath": "tests/native/CMakeLists.txt",
+      "path": "F:\\work\\sm05-startup\\tests\\native\\CMakeLists.txt",
+      "bytes": 17086,
+      "sha256": "fbb0e3689008f106e219f63ab47153c3a9097a93167759d0d85139e5742369d2"
+    },
+    {
+      "relativePath": "docs/adr/0038-engine-thread-launch-rollback.md",
+      "path": "F:\\work\\sm05-startup\\docs\\adr\\0038-engine-thread-launch-rollback.md",
+      "bytes": 3761,
+      "sha256": "ad26a18c0003d3e8eb977095f210b82b8663c82fe1b0a49f29893b9a7de29b68"
+    },
+    {
+      "relativePath": "tools/internal/owned-process.cjs",
+      "path": "F:\\work\\sm05-startup\\tools\\internal\\owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+    },
+    {
+      "relativePath": "cmake/SouiWindowsSdk.cmake",
+      "path": "F:\\work\\sm05-startup\\cmake\\SouiWindowsSdk.cmake",
+      "bytes": 701,
+      "sha256": "5dd1a60792c86c7dac88b097873aae8eab1ec0bd3fcf59c4738f8554174736fd"
+    }
+  ],
+  "actualNativeCompileInputs": [
+    {
+      "relativePath": "cmake/SouiWindowsSdk.cmake",
+      "path": "F:\\work\\sm05-startup\\cmake\\SouiWindowsSdk.cmake",
+      "bytes": 701,
+      "sha256": "5dd1a60792c86c7dac88b097873aae8eab1ec0bd3fcf59c4738f8554174736fd"
+    },
+    {
+      "relativePath": "sdk/CMakeLists.txt",
+      "path": "F:\\work\\sm05-startup\\sdk\\CMakeLists.txt",
+      "bytes": 3859,
+      "sha256": "7ab6ffe0098c23a45e84f9fb0894d336ad99422323cf345491d660214b4c6a7f"
+    },
+    {
+      "relativePath": "sdk/cmake/SouiSdkConfig.cmake.in",
+      "path": "F:\\work\\sm05-startup\\sdk\\cmake\\SouiSdkConfig.cmake.in",
+      "bytes": 466,
+      "sha256": "021cfd659d6975f7b2bdf931db9d02f30f5e202d1df4358eaade12c24bf7a335"
+    },
+    {
+      "relativePath": "sdk/include/soui/bridge_adapter.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\bridge_adapter.h",
+      "bytes": 1374,
+      "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/async_result_slot.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\async_result_slot.h",
+      "bytes": 2015,
+      "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/engine_thread.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\engine_thread.h",
+      "bytes": 1929,
+      "sha256": "b197f66ff76041c66ef0e1d92fbf681eb50669d6bd99f4935430080c46606256"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/frame_pacer.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\frame_pacer.h",
+      "bytes": 7240,
+      "sha256": "49ddae57332a45e11586dd60ac074a717f57dbd2c64a3280248b82a054358342"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/interaction_protocol.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\interaction_protocol.h",
+      "bytes": 3853,
+      "sha256": "83265088b52fc340e620141729b8f3bef2dc35d5cd22f6b40fdb38bcbff48bad"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/runtime_profile.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\runtime_profile.h",
+      "bytes": 1433,
+      "sha256": "5d79c715900b24f7de3c44cba2e13ea415d2e2f96a929ad86667d633f6f4d051"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/soui_miniblink_host.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\soui_miniblink_host.h",
+      "bytes": 7003,
+      "sha256": "7510ba5a4efee56f6d96645ac432eaa11de97e9ae0fdfb47041c0b35d16050db"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/webview2_host.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\webview2_host.h",
+      "bytes": 1983,
+      "sha256": "b1c862a424ae04579a5c66a23769a99256cf76cf5c64251ec371f9d3be35a8cc"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/webview_host.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\webview_host.h",
+      "bytes": 5037,
+      "sha256": "a7dc0948eb54a9312d04bdb0a0138195a2e9fc7213b0b79d9a7d7c0cfc6297fb"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/window_chrome.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\window_chrome.h",
+      "bytes": 2359,
+      "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30"
+    },
+    {
+      "relativePath": "sdk/include/soui/host/window_chrome_script.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\host\\window_chrome_script.h",
+      "bytes": 1612,
+      "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286"
+    },
+    {
+      "relativePath": "sdk/include/soui/json_bridge.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\json_bridge.h",
+      "bytes": 2941,
+      "sha256": "13a7766bb548be21ab33467aefde4d36ade437ca9029d8ee5a3289d2e606fd9a"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/bridge/action_contract.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\bridge\\action_contract.h",
+      "bytes": 1167,
+      "sha256": "11a77c9a9aa90bd8d1839f6d08eae8a892c78b7df11bdc37455f623f92c97936"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/bridge/bridge_transport.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\bridge\\bridge_transport.h",
+      "bytes": 5378,
+      "sha256": "26231cbc4c79f1a00b82951264f48cd2c26302a9fce7b2fa05fdaeb57a96eedb"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/core/events/event_bus.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\core\\events\\event_bus.h",
+      "bytes": 1639,
+      "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/core/result/result.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\core\\result\\result.h",
+      "bytes": 626,
+      "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/core/task/task_store.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\core\\task\\task_store.h",
+      "bytes": 2473,
+      "sha256": "f4b5aaf1049a5f3c1467eae74318fe2e850bebdae1e5879f457289fa527e8fbf"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/host/session/webview_session.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\host\\session\\webview_session.h",
+      "bytes": 1892,
+      "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/host/trusted_document.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\host\\trusted_document.h",
+      "bytes": 2696,
+      "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/desktop/desktop_services.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\desktop\\desktop_services.h",
+      "bytes": 2210,
+      "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/desktop/global_shortcut.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\desktop\\global_shortcut.h",
+      "bytes": 3012,
+      "sha256": "800d40c2029697ca23f9148c75acbcc683b7893665c735f4ea0a9ce0810b1ae5"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/desktop/menu_service.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\desktop\\menu_service.h",
+      "bytes": 2461,
+      "sha256": "2e304780c55cbc92c49d14532ae04ad934b835f7ff3d3f43004c3faae1244605"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/desktop/tray_service.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\desktop\\tray_service.h",
+      "bytes": 2765,
+      "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/desktop/window_commands.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\desktop\\window_commands.h",
+      "bytes": 2377,
+      "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\fileinsight-service\\fileinsight-service.h",
+      "bytes": 668,
+      "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\filesystem-readonly\\directory_scanner.h",
+      "bytes": 5545,
+      "sha256": "ab303cb608d400e36655136ac1ef491dfdf5fd0acaeb2aed1615243ad93d0e55"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/permissions/permission_store.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\permissions\\permission_store.h",
+      "bytes": 7414,
+      "sha256": "274270bf39ee9d89b7172f66406c04810e31256a152c4de934c8812e138969e2"
+    },
+    {
+      "relativePath": "sdk/include/soui/runtime/services/task/task_service.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\runtime\\services\\task\\task_service.h",
+      "bytes": 3421,
+      "sha256": "81fb6fe4844e58b37e70ccd472d4c4b300e9d6b1abadc5363be41ccaeaa59028"
+    },
+    {
+      "relativePath": "sdk/include/soui/version.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\include\\soui\\version.h",
+      "bytes": 250,
+      "sha256": "505061598801d39ee8151581935990c0f8fed242dede3ee5a2b6f96f0a97f4a5"
+    },
+    {
+      "relativePath": "sdk/src/host/bridge_pending_script.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\bridge_pending_script.h",
+      "bytes": 2166,
+      "sha256": "9672b98ffc6de2e4a0287b4c414ad43764c89fa00fed5f5721ee0e98aec02213"
+    },
+    {
+      "relativePath": "sdk/src/host/bridge_request_budget.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\bridge_request_budget.h",
+      "bytes": 2703,
+      "sha256": "811516ee0541190362a96a9987c78ffe1dac9b53c8f0c723fd9289b794899592"
+    },
+    {
+      "relativePath": "sdk/src/host/diagnostic_result.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\diagnostic_result.h",
+      "bytes": 1007,
+      "sha256": "7c322a719060a89624bd0c74bfc6f4ca62a752f50a633a64fd9c4aeb244be129"
+    },
+    {
+      "relativePath": "sdk/src/host/engine_startup_test_hooks.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\engine_startup_test_hooks.h",
+      "bytes": 548,
+      "sha256": "a1c7a6d8eba10265bbcbf8e75b6fc2f16d0265ced0e1869420382c9a578da6ff"
+    },
+    {
+      "relativePath": "sdk/src/host/engine_thread.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\engine_thread.cpp",
+      "bytes": 8982,
+      "sha256": "61fff71382e86cecb201953d625981c38e8799e3e2f342c133be67ef2f20b56f"
+    },
+    {
+      "relativePath": "sdk/src/host/interaction_protocol.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\interaction_protocol.cpp",
+      "bytes": 2308,
+      "sha256": "5e4fc94c99e12173ea4533fa842c73bff858584bebdd59c371c6dbeb3e040268"
+    },
+    {
+      "relativePath": "sdk/src/host/runtime_profile.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\runtime_profile.cpp",
+      "bytes": 6222,
+      "sha256": "f9a9f49b6c68463bd1a0cdd615d0c53865b3c8e8c9121c7e80933cf0ca0dbcd6"
+    },
+    {
+      "relativePath": "sdk/src/host/soui_miniblink_host.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\soui_miniblink_host.cpp",
+      "bytes": 114721,
+      "sha256": "f7963f9914eabddcaa828ba42c137c2b81140d631f402a7ac144692b9cfb9bcb"
+    },
+    {
+      "relativePath": "sdk/src/host/source_kernel_api.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\host\\source_kernel_api.h",
+      "bytes": 2542,
+      "sha256": "d1df6ab9803a0073a3c3fb8489e3012f65cc9879de765f9a348ddc6d8566eb8e"
+    },
+    {
+      "relativePath": "sdk/src/json_bridge.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\json_bridge.cpp",
+      "bytes": 13467,
+      "sha256": "7337b730edea12cce1b8bd333a2cfc619f10de58f3fb5a59ca0f2fc2dc2ed4de"
+    },
+    {
+      "relativePath": "sdk/src/runtime/bridge/action_contract.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\bridge\\action_contract.cpp",
+      "bytes": 10283,
+      "sha256": "6dfa4ceb6a2bf92b5c464619063873896a2c4357c8730205c56f5c04ad3dae7c"
+    },
+    {
+      "relativePath": "sdk/src/runtime/bridge/bridge_transport.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\bridge\\bridge_transport.cpp",
+      "bytes": 25180,
+      "sha256": "8bf1ce7790d6a1b58896bcb0d65fc2e9108ee814bef2d2b890c15a8cc649170b"
+    },
+    {
+      "relativePath": "sdk/src/runtime/core/events/event_bus.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\core\\events\\event_bus.cpp",
+      "bytes": 2559,
+      "sha256": "e0e1c24c98720e20eb19a71a881b9a1625adb2f1092b67478a7873ad84bc1805"
+    },
+    {
+      "relativePath": "sdk/src/runtime/core/result/result.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\core\\result\\result.cpp",
+      "bytes": 409,
+      "sha256": "238c8e90a28173d2ac5ea994fcc2f669d9b46d336dd23d4d865e5b481457a9f0"
+    },
+    {
+      "relativePath": "sdk/src/runtime/core/task/task_store.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\core\\task\\task_store.cpp",
+      "bytes": 7546,
+      "sha256": "678509bbffcfe1a5363dda9c1db08504a6c55faa35ac2db7f145d3a1807ea3f3"
+    },
+    {
+      "relativePath": "sdk/src/runtime/host/session/webview_session.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\host\\session\\webview_session.cpp",
+      "bytes": 3532,
+      "sha256": "976f755f6f06b16c337a7c941de56e1ef5e3fe66adc1758f188e280ff541a9ee"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/desktop_services.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\desktop_services.cpp",
+      "bytes": 14078,
+      "sha256": "824b61b8c8fc3b16e69b62e499d01ef64bea2b07cbd3907aa11327ce3e9e21eb"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/global_shortcut.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\global_shortcut.cpp",
+      "bytes": 8129,
+      "sha256": "bbfc1b6980b666374a807fec39170d06e9aa84b87b661856bb41c02a091876ab"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/menu_platform.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\menu_platform.h",
+      "bytes": 1958,
+      "sha256": "294743b92d08d0c478f728ffa74400ab601e9df360896bd329fbfc67f93f6f26"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/menu_service.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\menu_service.cpp",
+      "bytes": 16092,
+      "sha256": "09fc3b1b133738bdaedf19f1ea020ff51c5b25ba0309fbd3af0ad66b85d64095"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/shortcut_platform.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\shortcut_platform.h",
+      "bytes": 1570,
+      "sha256": "848466afe3a048c798f654d8cbf3ceb672b46dd112af5e2226977676b74458ae"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/tray_platform.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\tray_platform.h",
+      "bytes": 1627,
+      "sha256": "91bb14277f550cb75bdd7b382c79127de4eba48ffffbd3a7025bb47f4ea42012"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/tray_service.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\tray_service.cpp",
+      "bytes": 13336,
+      "sha256": "f96238fcfa7abbbc08ef4ba242c210450657ed69841df6e777c3174a7ce280a3"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/desktop/unicode_conversion.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\desktop\\unicode_conversion.h",
+      "bytes": 1709,
+      "sha256": "a404b90539344d479faee04ad58606f8af3669546e9f93824b5d590695ce6908"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/fileinsight-service/fileinsight-service.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\fileinsight-service\\fileinsight-service.cpp",
+      "bytes": 4790,
+      "sha256": "1f3303c2426759d3e4513e3bbf2dc0263cfe56c5d76c545624c7a8b39986df4a"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/filesystem-readonly/directory_scanner.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\filesystem-readonly\\directory_scanner.cpp",
+      "bytes": 30071,
+      "sha256": "713bc211743282e4b8793d244fc8cd5dca0cbb28dd7e8d27e53564ac8f107914"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/permissions/permission_store.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\permissions\\permission_store.cpp",
+      "bytes": 16353,
+      "sha256": "bfa237deb1ef280cf55b5a6f191f30e0dd3c92c941c6c8588d978c7c8bf96b7a"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/permissions/scope_id_sequence.h",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\permissions\\scope_id_sequence.h",
+      "bytes": 892,
+      "sha256": "da8ddba81e066354401b09b317c94ca1aa07701162c44ca31afe33908ac0599e"
+    },
+    {
+      "relativePath": "sdk/src/runtime/services/task/task_service.cpp",
+      "path": "F:\\work\\sm05-startup\\sdk\\src\\runtime\\services\\task\\task_service.cpp",
+      "bytes": 21141,
+      "sha256": "65ed025ab221058460f1c3e5014fb347840ec488bc0147c71bc5e8c2fee5a1bc"
+    },
+    {
+      "relativePath": "tests/native/CMakeLists.txt",
+      "path": "F:\\work\\sm05-startup\\tests\\native\\CMakeLists.txt",
+      "bytes": 17086,
+      "sha256": "fbb0e3689008f106e219f63ab47153c3a9097a93167759d0d85139e5742369d2"
+    },
+    {
+      "relativePath": "tests/native/engine_thread_startup_tests.cpp",
+      "path": "F:\\work\\sm05-startup\\tests\\native\\engine_thread_startup_tests.cpp",
+      "bytes": 16341,
+      "sha256": "5a041aa08d067101ec2e4ed9339c8e68eec2af2f662bd3a2555066e6dbaf0579"
+    },
+    {
+      "relativePath": "tests/native/engine_thread_timeout_tests.cpp",
+      "path": "F:\\work\\sm05-startup\\tests\\native\\engine_thread_timeout_tests.cpp",
+      "bytes": 7378,
+      "sha256": "55445dc8f6b284806390f00b2248da84e00af85594731d1e09b8ab89167d1ba0"
+    },
+    {
+      "relativePath": "third_party/include/json/json.hpp",
+      "path": "F:\\work\\sm05-startup\\third_party\\include\\json\\json.hpp",
+      "bytes": 919975,
+      "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
+    },
+    {
+      "relativePath": "third_party/include/miniblink/wke.h",
+      "path": "F:\\work\\sm05-startup\\third_party\\include\\miniblink\\wke.h",
+      "bytes": 70330,
+      "sha256": "8b090aafeee71f1571f3c07b7d8625570506720dabc20abaf4faf607166bcd54"
+    }
+  ],
+  "sourceNormalization": "none",
+  "nativeCompileInputCount": 66,
+  "uniqueActualNativeJobs": 22,
+  "reusedX64CompileJobs": 2,
+  "newContinuationJobs": 20,
+  "phases": [
+    {
+      "name": "x64-configure",
+      "identity": {
+        "pid": 68640,
+        "creationFileTime": "134359718957333810"
+      },
+      "reused": true,
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 27251,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 68,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-configure\\owned.ndjson",
+          "bytes": 104510,
+          "sha256": "5428c47529fb783a58a5c1482c6e93abfd8639caed2616958e2ad6e635e35fad"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-configure\\owned.ndjson.context.json",
+          "bytes": 924,
+          "sha256": "996fd921794ffebb121ce1a030a4c3515bd621a8bb97e0d94e173ae52de0428e"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-configure\\stdout.bin",
+          "bytes": 990,
+          "sha256": "71d3908fd70ccf29af38bb1051cbd6f42e51adb43fcaa4d88631e8657b51f404"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-configure\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x64-compile",
+      "identity": {
+        "pid": 107992,
+        "creationFileTime": "134359719234154229"
+      },
+      "reused": true,
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 82438,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 96,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\owned.ndjson",
+          "bytes": 138514,
+          "sha256": "05b8f8424b636e7ad288460cb870d9174288a38d9bb553a79ab1121c91a2fa70"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\owned.ndjson.context.json",
+          "bytes": 943,
+          "sha256": "10735aacdc1bfea8de32a206984143c12b115484883e16f59152c14a1330ad6a"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\stdout.bin",
+          "bytes": 47364,
+          "sha256": "ddc80e016e10dfecec49f4ef8fd733cab65584d51e9584e93ed7a9477a3f7336"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\x64-compile\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x64-evaluate-0",
+      "identity": {
+        "pid": 64128,
+        "creationFileTime": "134359728178649750"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 925,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-0\\owned.ndjson",
+          "bytes": 1216,
+          "sha256": "05b1172239320dde5ea74243842d63ed81a8029ffd29c02071df1fc1d76cbf15"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-0\\owned.ndjson.context.json",
+          "bytes": 919,
+          "sha256": "62e34b136645cf8e1377a8426a812f5492f1a8f9f25a60c7780b0361314c09d9"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-0\\stdout.bin",
+          "bytes": 525,
+          "sha256": "0885bb1abadb4d5cc84785f96c9031659d141db8bc2ae00509e5af61d2c7b8b7"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-0\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x64-evaluate-1",
+      "identity": {
+        "pid": 44356,
+        "creationFileTime": "134359728192064324"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 878,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-1\\owned.ndjson",
+          "bytes": 1215,
+          "sha256": "54110ceb79d09359418639580f9fc4285e5ff654c15d77b806595757cb9bc0e8"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-1\\owned.ndjson.context.json",
+          "bytes": 903,
+          "sha256": "ac88c439341c913e6bb8f8435546b8d1d1fbaf4b2eeb6538d649731417921233"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-1\\stdout.bin",
+          "bytes": 525,
+          "sha256": "0885bb1abadb4d5cc84785f96c9031659d141db8bc2ae00509e5af61d2c7b8b7"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-1\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x64-evaluate-2",
+      "identity": {
+        "pid": 58692,
+        "creationFileTime": "134359728204815093"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 892,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-2\\owned.ndjson",
+          "bytes": 1215,
+          "sha256": "590b3371bda790731cbf62eae3eebbe8f2227226f395d774c1b93767a13196f3"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-2\\owned.ndjson.context.json",
+          "bytes": 910,
+          "sha256": "837bea6c8eb1289213ef3dc1cb24f050a9381c856763bc1fb8d6b21634b14727"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-2\\stdout.bin",
+          "bytes": 525,
+          "sha256": "0885bb1abadb4d5cc84785f96c9031659d141db8bc2ae00509e5af61d2c7b8b7"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-2\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x64-evaluate-3",
+      "identity": {
+        "pid": 114096,
+        "creationFileTime": "134359728218435989"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 902,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-3\\owned.ndjson",
+          "bytes": 1218,
+          "sha256": "22234c60447f2dbbc4a72179537802c149d4f4bd5d410d585e5238654292fc4f"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-3\\owned.ndjson.context.json",
+          "bytes": 919,
+          "sha256": "a172ffae46e38bdbd98f1297501a6b5b2cd73f1eb37a31d01c04dd804cff9305"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-3\\stdout.bin",
+          "bytes": 525,
+          "sha256": "0885bb1abadb4d5cc84785f96c9031659d141db8bc2ae00509e5af61d2c7b8b7"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-3\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x64-evaluate-4",
+      "identity": {
+        "pid": 23376,
+        "creationFileTime": "134359728231743341"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 914,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-4\\owned.ndjson",
+          "bytes": 1216,
+          "sha256": "0197db862721e82467b4663342b5147d88014892015cfe4492674d7d43e94787"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-4\\owned.ndjson.context.json",
+          "bytes": 907,
+          "sha256": "82c26b17eff08ebc790517f8852930d2fc5c757e298948d8c7b40430d0e84caa"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-4\\stdout.bin",
+          "bytes": 525,
+          "sha256": "0885bb1abadb4d5cc84785f96c9031659d141db8bc2ae00509e5af61d2c7b8b7"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-evaluate-4\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x64-ctest",
+      "identity": {
+        "pid": 59452,
+        "creationFileTime": "134359728247286087"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 1453,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 5,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-ctest\\owned.ndjson",
+          "bytes": 4313,
+          "sha256": "e144ec54ec7e6c78881e22c64d171998508832921ea89e5c6dca129ed56d85ef"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-ctest\\owned.ndjson.context.json",
+          "bytes": 667,
+          "sha256": "3a3f01fe3e7fd8fe987cc9b2a3b077198de6b81c91bd8eea848be0b9e4911419"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-ctest\\stdout.bin",
+          "bytes": 643,
+          "sha256": "c9bc76f7a51cdde1b45e3b6a1adaaa6a59a98bedbe8e47d02f2b0a834d4e9110"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-ctest\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x64-direct-green",
+      "identity": {
+        "pid": 73876,
+        "creationFileTime": "134359728267274588"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 38,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-direct-green\\owned.ndjson",
+          "bytes": 1223,
+          "sha256": "9ea252ab6df4cd385e27c5a729694cedee3964e0ea26d61ce65ca4498cdfe159"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-direct-green\\owned.ndjson.context.json",
+          "bytes": 529,
+          "sha256": "d8de53b08c18e2ecc81f2e1c586a21debe9355538cff412b7841ab971fd19d4d"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-direct-green\\stdout.bin",
+          "bytes": 442,
+          "sha256": "21fc90efa9932ce169563616919861c225e9f5142b5ade0f929638d5aefcda8d"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-direct-green\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x64-old-body-red",
+      "identity": {
+        "pid": 88888,
+        "creationFileTime": "134359728275101435"
+      },
+      "reused": false,
+      "rootExitCode": 124,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "timeout",
+        "elapsedMs": 3009,
+        "rootExited": true,
+        "rootExitCode": 124,
+        "activeBeforeCleanup": 2,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-old-body-red\\owned.ndjson",
+          "bytes": 1207,
+          "sha256": "96ade693b41606241116b1df6e514eb0768d69a3fe723fabcd01e758065babc0"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-old-body-red\\owned.ndjson.context.json",
+          "bytes": 546,
+          "sha256": "f0fd741e93475fefcfdfb7c37410fa4b82fa19171795ccea31e07ad2545e7280"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-old-body-red\\stdout.bin",
+          "bytes": 67,
+          "sha256": "8259119edec54ebbbcc091ba98447d32cc6933df69c49f4522fecaa44f5a4e91"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-old-body-red\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x64-production-imports",
+      "identity": {
+        "pid": 75616,
+        "creationFileTime": "134359728310201691"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 160,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 3,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-production-imports\\owned.ndjson",
+          "bytes": 2129,
+          "sha256": "d0c1a806425210832677a9b0366c1c1225b94b2e4fcd54ddf9cc1de813c77dec"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-production-imports\\owned.ndjson.context.json",
+          "bytes": 656,
+          "sha256": "132684946c3e7cfc5dfae39a66f543ea417eefe36816666ca518e9f98238ec57"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-production-imports\\stdout.bin",
+          "bytes": 8589,
+          "sha256": "e4dbf04035e6d6b8824fdd5f29ce595df967db07bc115de602b52698a5a3103b"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-production-imports\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x86-configure",
+      "identity": {
+        "pid": 99516,
+        "creationFileTime": "134359728317204225"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 22482,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 68,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-configure\\owned.ndjson",
+          "bytes": 95067,
+          "sha256": "439b5dbd921a0e24c59247d5abf1d9ca6820031a4cba9c94df38bd2273e37aed"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-configure\\owned.ndjson.context.json",
+          "bytes": 922,
+          "sha256": "e67c34a1b6ba1e0325489180475b629415978fa8cfd1427ee2cc07eb9ac10b73"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-configure\\stdout.bin",
+          "bytes": 988,
+          "sha256": "1b76920b41dbab3f24a6c9c20d75fffdbe43401b78f2f3056fcf5047ddd0b5c4"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-configure\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x86-compile",
+      "identity": {
+        "pid": 108784,
+        "creationFileTime": "134359728546689352"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 72681,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 96,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-compile\\owned.ndjson",
+          "bytes": 127777,
+          "sha256": "ad8041900d2fafe1929d1b6489e0ef48d17c0071b0e34700258a0209779b4a47"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-compile\\owned.ndjson.context.json",
+          "bytes": 939,
+          "sha256": "cc9e7f5a5c2948a57f4f3b3520c80be09728d74f137eae5bc4d2c662d6f2310c"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-compile\\stdout.bin",
+          "bytes": 47148,
+          "sha256": "5f093ca2d2382b79b1e42264abd50be231d295bb20cc298cc7784824496689da"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-compile\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x86-evaluate-0",
+      "identity": {
+        "pid": 14244,
+        "creationFileTime": "134359729279385390"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 907,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-0\\owned.ndjson",
+          "bytes": 1215,
+          "sha256": "fda5d349850e29cd7c249dda0c7636d16503b52d8dcba6a431d446189c807206"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-0\\owned.ndjson.context.json",
+          "bytes": 919,
+          "sha256": "6ec94f1437b014891a4f72faaa1420b049fc4534ff337d4555b079fb2dd4fd3c"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-0\\stdout.bin",
+          "bytes": 525,
+          "sha256": "0885bb1abadb4d5cc84785f96c9031659d141db8bc2ae00509e5af61d2c7b8b7"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-0\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x86-evaluate-1",
+      "identity": {
+        "pid": 107504,
+        "creationFileTime": "134359729292721766"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 873,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-1\\owned.ndjson",
+          "bytes": 1219,
+          "sha256": "5687381d7ba83c3659aff200c1181b04576e9792add68d27f5d41b3af19dafd4"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-1\\owned.ndjson.context.json",
+          "bytes": 903,
+          "sha256": "f99e4f280648e45e8c6f7819065273ee279ffbdcb419604169db3bae42ef9b29"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-1\\stdout.bin",
+          "bytes": 525,
+          "sha256": "0885bb1abadb4d5cc84785f96c9031659d141db8bc2ae00509e5af61d2c7b8b7"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-1\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x86-evaluate-2",
+      "identity": {
+        "pid": 114436,
+        "creationFileTime": "134359729305949059"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 886,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-2\\owned.ndjson",
+          "bytes": 1218,
+          "sha256": "1058fdeb58790d91a602d7d635a00ad32585462a88ad0ebc4182b08c97dd0810"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-2\\owned.ndjson.context.json",
+          "bytes": 910,
+          "sha256": "47ef3d214a246c9887ade2b1b223218a926a50416298310e5742a2e6bd157847"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-2\\stdout.bin",
+          "bytes": 525,
+          "sha256": "0885bb1abadb4d5cc84785f96c9031659d141db8bc2ae00509e5af61d2c7b8b7"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-2\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x86-evaluate-3",
+      "identity": {
+        "pid": 54960,
+        "creationFileTime": "134359729319105383"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 907,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-3\\owned.ndjson",
+          "bytes": 1215,
+          "sha256": "bcc60d30f888efe584ab1b82b65902841a4c15b81df0d478e59f2abdcd689511"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-3\\owned.ndjson.context.json",
+          "bytes": 919,
+          "sha256": "d128e2f2be7537b80e19d7ab59f5d5fb3b20d4129e3f1ab08d69a5b72d541cc7"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-3\\stdout.bin",
+          "bytes": 525,
+          "sha256": "0885bb1abadb4d5cc84785f96c9031659d141db8bc2ae00509e5af61d2c7b8b7"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-3\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x86-evaluate-4",
+      "identity": {
+        "pid": 10652,
+        "creationFileTime": "134359729332030632"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 883,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-4\\owned.ndjson",
+          "bytes": 1215,
+          "sha256": "4554848a020628b90fb51606da6fdf8113b2a983418e8ad437433d6f562a4e08"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-4\\owned.ndjson.context.json",
+          "bytes": 907,
+          "sha256": "92ce0da32f6550627bcfb49eddff32999a3b3c782f080fd12afac41df02db0c5"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-4\\stdout.bin",
+          "bytes": 525,
+          "sha256": "0885bb1abadb4d5cc84785f96c9031659d141db8bc2ae00509e5af61d2c7b8b7"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-evaluate-4\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x86-ctest",
+      "identity": {
+        "pid": 114120,
+        "creationFileTime": "134359729346743272"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 1454,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 5,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-ctest\\owned.ndjson",
+          "bytes": 3945,
+          "sha256": "baa53b3e4fb2c9408b23c57456dc7226afbc79ec333d3b83aa57ed58e4aa0326"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-ctest\\owned.ndjson.context.json",
+          "bytes": 667,
+          "sha256": "887c94fe019686f3c183a8f3eb18b9b774a1932738dd7aabc38ff1831c19de81"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-ctest\\stdout.bin",
+          "bytes": 643,
+          "sha256": "2696bd86f8a5163a69b08df1f046de970bd3fe41c21395935fdc060af8aeeb8c"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-ctest\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x86-direct-green",
+      "identity": {
+        "pid": 110020,
+        "creationFileTime": "134359729366503514"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 98,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-direct-green\\owned.ndjson",
+          "bytes": 1611,
+          "sha256": "90e073dcf5cd73155dca9cba3ad00c577f5e104db108d0f49188c843e63dce2c"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-direct-green\\owned.ndjson.context.json",
+          "bytes": 527,
+          "sha256": "fd3143fe77f9778931334f4eeb687b87ce1c704573123e3f4693c1cd84d646c9"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-direct-green\\stdout.bin",
+          "bytes": 442,
+          "sha256": "21fc90efa9932ce169563616919861c225e9f5142b5ade0f929638d5aefcda8d"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-direct-green\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x86-old-body-red",
+      "identity": {
+        "pid": 88960,
+        "creationFileTime": "134359729372693451"
+      },
+      "reused": false,
+      "rootExitCode": 124,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "timeout",
+        "elapsedMs": 3027,
+        "rootExited": true,
+        "rootExitCode": 124,
+        "activeBeforeCleanup": 2,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-old-body-red\\owned.ndjson",
+          "bytes": 1203,
+          "sha256": "f9a0919633f6876a0d3bac7accf5734830e3a8ac0bde660f02929ea10904f20a"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-old-body-red\\owned.ndjson.context.json",
+          "bytes": 544,
+          "sha256": "244531e28641b985f355773c1c9f15e0f002b2d1a74837bd06502a6ef77c63c0"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-old-body-red\\stdout.bin",
+          "bytes": 67,
+          "sha256": "8259119edec54ebbbcc091ba98447d32cc6933df69c49f4522fecaa44f5a4e91"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-old-body-red\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    },
+    {
+      "name": "x86-production-imports",
+      "identity": {
+        "pid": 50344,
+        "creationFileTime": "134359729407408389"
+      },
+      "reused": false,
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 159,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 3,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "raw": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-production-imports\\owned.ndjson",
+          "bytes": 2128,
+          "sha256": "7625a4ae5c28f3979e33bed9a8bb274e204283f5a1e596983252e4ce884f9014"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-production-imports\\owned.ndjson.context.json",
+          "bytes": 654,
+          "sha256": "2edbb59970ac7fcd80733f49ec0f2f278d230435c3dba2e08a2a4fe0da88ed3b"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-production-imports\\stdout.bin",
+          "bytes": 7256,
+          "sha256": "e268aba937454e8e2b2f90da5fe0b880a20aeb829faeaaef324ca8cf7dd38e8d"
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-production-imports\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ]
+    }
+  ],
+  "architectures": [
+    {
+      "architecture": "x64",
+      "outputs": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\Release\\soui_engine_thread_startup_tests.exe",
+          "bytes": 101376,
+          "sha256": "10a417f3e2402d2c8a896a473c943b8e8c2bd542f677b2fb2dbbd570bb13da0f",
+          "coffMachine": 34404
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\Release\\EngineStartupRed.exe",
+          "bytes": 35328,
+          "sha256": "4218232c2d7c9fd36516512c5c536c6325f47ab3a75e377aaebf91d25826d810",
+          "coffMachine": 34404
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\Release\\EngineStartupProduction.exe",
+          "bytes": 40960,
+          "sha256": "b41d9c72118252237e9df60b9f4ddb2dd1bb8a34a2405438d6b3e09500986f5d",
+          "coffMachine": 34404
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\Release\\soui_engine_thread_timeout_tests.exe",
+          "bytes": 91648,
+          "sha256": "f815695a9141a07fd7619d1cdaf112321d2eb08f3c63bf25d990dd1215cb9970",
+          "coffMachine": 34404
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\Release\\soui_sdk.lib",
+          "bytes": 36001116,
+          "sha256": "94d509812fa3959dd8bd7f4c833b24c60fcb042e91b02baac1174ca9b824da30"
+        }
+      ],
+      "actualCompiler": {
+        "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe",
+        "bytes": 677968,
+        "sha256": "a80f5e7a24049a8f9a8931f83fc3d13ca417ad901e074c50cca71fcb12ba10be"
+      },
+      "compilerMetadata": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\CMakeFiles\\4.2.3\\CMakeCXXCompiler.cmake",
+        "bytes": 6508,
+        "sha256": "1b080885144120f43636716a60139852ad7dd840aad639de4664d4253f8a63f8"
+      },
+      "toolchainEvidence": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x64-toolchain-evidence.json",
+        "bytes": 58923,
+        "sha256": "3b3195dfee7e203e5a15dccaaaeea59325c8b3a37430d47f3d2739733cc28f00"
+      },
+      "ctestDefinitions": [
+        {
+          "original": {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\CTestTestfile.cmake",
+            "bytes": 8841,
+            "sha256": "c0c485b3efb1f6719e096aa72226e66863b439b966cbb92682c297a320ad6ed1"
+          },
+          "copied": {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\ctest-x64\\CTestTestfile.cmake",
+            "bytes": 8841,
+            "sha256": "c0c485b3efb1f6719e096aa72226e66863b439b966cbb92682c297a320ad6ed1"
+          }
+        }
+      ],
+      "compilationReusedFromPriorAttempt": true,
+      "ctestPassed": 3,
+      "directControlledCasesPassed": 9,
+      "oldBodyDestructorBoundaryObserved": true,
+      "compilationCompleted": true,
+      "compilationGenericSupervisionPassed": false,
+      "compilerTailAcceptance": false,
+      "actualSdkLibraryCompiled": true,
+      "fullDistributionCompiled": false
+    },
+    {
+      "architecture": "x86",
+      "outputs": [
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\Release\\soui_engine_thread_startup_tests.exe",
+          "bytes": 89088,
+          "sha256": "f04eb0155c6511e79eec8c70bd4ce83b1441fa35145a35cc532fa525b82477dd",
+          "coffMachine": 332
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\Release\\EngineStartupRed.exe",
+          "bytes": 32256,
+          "sha256": "cfc5d4331b3335750afdd525d3c4b5c8769cee569548db379883e1a1fdfe95d5",
+          "coffMachine": 332
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\Release\\EngineStartupProduction.exe",
+          "bytes": 36864,
+          "sha256": "41a042930926bfc161ec0d25f05331af701d8f8278ec0ca4240581c67a23f89f",
+          "coffMachine": 332
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\Release\\soui_engine_thread_timeout_tests.exe",
+          "bytes": 80384,
+          "sha256": "5623c03b68a699dddf096a2d0b6a10094550007a8e2e025125975ae0d9323402",
+          "coffMachine": 332
+        },
+        {
+          "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\actual-sdk\\Release\\soui_sdk.lib",
+          "bytes": 24623628,
+          "sha256": "d665a2ed865e11108a95c815eacd96730785b534f015703e224b9d32e4dcf7e3"
+        }
+      ],
+      "actualCompiler": {
+        "path": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86/cl.exe",
+        "bytes": 678000,
+        "sha256": "8de3c1e7af40f4a6c83188ef7cca6270223a00652e8c703022694f64add54a14"
+      },
+      "compilerMetadata": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\CMakeFiles\\4.2.3\\CMakeCXXCompiler.cmake",
+        "bytes": 6508,
+        "sha256": "95f10a437e276655abad1f3627373bfec2ab7c70169b0c7b9e1d57bfce28fe1d"
+      },
+      "toolchainEvidence": {
+        "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-toolchain-evidence.json",
+        "bytes": 58448,
+        "sha256": "ab0754506e09ed9f0251fdf312108d5f5cbfdcbde9a3e7dd294fd7f1239b7efd"
+      },
+      "ctestDefinitions": [
+        {
+          "original": {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\CTestTestfile.cmake",
+            "bytes": 8765,
+            "sha256": "d81679b1090a3972f8975bd1a05c3e450c4e763bf8d14a14c90648d4e04b367f"
+          },
+          "copied": {
+            "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\ctest-x86\\CTestTestfile.cmake",
+            "bytes": 8765,
+            "sha256": "d81679b1090a3972f8975bd1a05c3e450c4e763bf8d14a14c90648d4e04b367f"
+          }
+        }
+      ],
+      "compilationReusedFromPriorAttempt": false,
+      "ctestPassed": 3,
+      "directControlledCasesPassed": 9,
+      "oldBodyDestructorBoundaryObserved": true,
+      "compilationCompleted": true,
+      "compilationGenericSupervisionPassed": false,
+      "compilerTailAcceptance": false,
+      "actualSdkLibraryCompiled": true,
+      "fullDistributionCompiled": false
+    }
+  ],
+  "binaryOutputs": [
+    {
+      "architecture": "x64",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\Release\\soui_engine_thread_startup_tests.exe",
+      "bytes": 101376,
+      "sha256": "10a417f3e2402d2c8a896a473c943b8e8c2bd542f677b2fb2dbbd570bb13da0f",
+      "coffMachine": 34404,
+      "disposition": "private-compiled-output-hash-only"
+    },
+    {
+      "architecture": "x64",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\Release\\EngineStartupRed.exe",
+      "bytes": 35328,
+      "sha256": "4218232c2d7c9fd36516512c5c536c6325f47ab3a75e377aaebf91d25826d810",
+      "coffMachine": 34404,
+      "disposition": "private-compiled-output-hash-only"
+    },
+    {
+      "architecture": "x64",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\Release\\EngineStartupProduction.exe",
+      "bytes": 40960,
+      "sha256": "b41d9c72118252237e9df60b9f4ddb2dd1bb8a34a2405438d6b3e09500986f5d",
+      "coffMachine": 34404,
+      "disposition": "private-compiled-output-hash-only"
+    },
+    {
+      "architecture": "x64",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\Release\\soui_engine_thread_timeout_tests.exe",
+      "bytes": 91648,
+      "sha256": "f815695a9141a07fd7619d1cdaf112321d2eb08f3c63bf25d990dd1215cb9970",
+      "coffMachine": 34404,
+      "disposition": "private-compiled-output-hash-only"
+    },
+    {
+      "architecture": "x64",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\actual-3e8b84ec-c0cd-427c-8a54-e1a79fdfb6ed\\b-x64\\actual-sdk\\Release\\soui_sdk.lib",
+      "bytes": 36001116,
+      "sha256": "94d509812fa3959dd8bd7f4c833b24c60fcb042e91b02baac1174ca9b824da30",
+      "disposition": "private-compiled-output-hash-only"
+    },
+    {
+      "architecture": "x86",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\Release\\soui_engine_thread_startup_tests.exe",
+      "bytes": 89088,
+      "sha256": "f04eb0155c6511e79eec8c70bd4ce83b1441fa35145a35cc532fa525b82477dd",
+      "coffMachine": 332,
+      "disposition": "private-compiled-output-hash-only"
+    },
+    {
+      "architecture": "x86",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\Release\\EngineStartupRed.exe",
+      "bytes": 32256,
+      "sha256": "cfc5d4331b3335750afdd525d3c4b5c8769cee569548db379883e1a1fdfe95d5",
+      "coffMachine": 332,
+      "disposition": "private-compiled-output-hash-only"
+    },
+    {
+      "architecture": "x86",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\Release\\EngineStartupProduction.exe",
+      "bytes": 36864,
+      "sha256": "41a042930926bfc161ec0d25f05331af701d8f8278ec0ca4240581c67a23f89f",
+      "coffMachine": 332,
+      "disposition": "private-compiled-output-hash-only"
+    },
+    {
+      "architecture": "x86",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\Release\\soui_engine_thread_timeout_tests.exe",
+      "bytes": 80384,
+      "sha256": "5623c03b68a699dddf096a2d0b6a10094550007a8e2e025125975ae0d9323402",
+      "coffMachine": 332,
+      "disposition": "private-compiled-output-hash-only"
+    },
+    {
+      "architecture": "x86",
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\b-x86\\actual-sdk\\Release\\soui_sdk.lib",
+      "bytes": 24623628,
+      "sha256": "d665a2ed865e11108a95c815eacd96730785b534f015703e224b9d32e4dcf7e3",
+      "disposition": "private-compiled-output-hash-only"
+    }
+  ],
+  "firstHarnessError": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert(project.includes('<VCToolsVersion>14.44.35207</VCToolsVersion>'))\n\n    at main (F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\validate.cjs:179:9)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+  "firstHarnessNativeTestsExecuted": false,
+  "audit": {
+    "finished": {
+      "pid": 111860,
+      "creationFileTime": "134359722014674246",
+      "exitCode": 0,
+      "supervisorExitCode": 0,
+      "signal": null,
+      "spawnError": null,
+      "reportError": null,
+      "stopRequested": false,
+      "fallbackUsed": false,
+      "closureConfirmed": true,
+      "passed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 2420,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "report": "F:\\work\\sm05-startup\\out\\audit-root-185b988d-a264-4fdb-a4bb-4f516f0668fb\\owned.ndjson",
+      "reportSha256": "fcc82914de6b19a41317249641c0a32296e7a9dc6672a83e7f8214bedd3d9c2f",
+      "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+      "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+      "ready": {
+        "pid": 111860,
+        "creationFileTime": "134359722014674246"
+      }
+    },
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "noInstall": true,
+    "packageInputs": [
+      {
+        "path": "F:\\work\\sm05-startup\\sdk\\web\\package.json",
+        "bytes": 422,
+        "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079"
+      },
+      {
+        "path": "F:\\work\\sm05-startup\\sdk\\web\\package-lock.json",
+        "bytes": 735,
+        "sha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0"
+      }
+    ]
+  },
+  "controlledRegressionObserved": true,
+  "actualSdkLibraryCompiled": true,
+  "compilerTailAcceptance": false,
+  "allPositiveGenericSupervisionPassed": false,
+  "validationPassed": false,
+  "releaseReady": false,
+  "noFullDistributionValidation": true,
+  "noGuiValidation": true,
+  "noVendorKernelValidation": true,
+  "noNewOsMatrixValidation": true,
+  "noEightHourValidation": true,
+  "noFullCollectValidation": true,
+  "archivistAuthoredProductionAndTests": true,
+  "noIndependentProductionApprovalByArchivist": true
+}

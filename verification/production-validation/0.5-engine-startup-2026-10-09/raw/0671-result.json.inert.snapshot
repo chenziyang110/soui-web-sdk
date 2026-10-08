@@ -1,0 +1,72 @@
+{
+  "name": "x86-ctest",
+  "executable": "C:/Program Files/CMake/bin/ctest.exe",
+  "args": [
+    "--test-dir",
+    "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\ctest-x86",
+    "-C",
+    "Release",
+    "--output-on-failure",
+    "-R",
+    "^sdk.native.engine-(startup-|diagnostic-timeout$)"
+  ],
+  "ready": {
+    "pid": 114120,
+    "creationFileTime": "134359729346743272"
+  },
+  "readyError": null,
+  "result": {
+    "pid": 114120,
+    "creationFileTime": "134359729346743272",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 1454,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 5,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-ctest\\owned.ndjson",
+    "reportSha256": "baa53b3e4fb2c9408b23c57456dc7226afbc79ec333d3b83aa57ed58e4aa0326",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+  },
+  "genericSupervisionPassed": true,
+  "raw": [
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-ctest\\owned.ndjson",
+      "bytes": 3945,
+      "sha256": "baa53b3e4fb2c9408b23c57456dc7226afbc79ec333d3b83aa57ed58e4aa0326"
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-ctest\\owned.ndjson.context.json",
+      "bytes": 667,
+      "sha256": "887c94fe019686f3c183a8f3eb18b9b774a1932738dd7aabc38ff1831c19de81"
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-ctest\\stdout.bin",
+      "bytes": 643,
+      "sha256": "2696bd86f8a5163a69b08df1f046de970bd3fe41c21395935fdc060af8aeeb8c"
+    },
+    {
+      "path": "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\x86-ctest\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

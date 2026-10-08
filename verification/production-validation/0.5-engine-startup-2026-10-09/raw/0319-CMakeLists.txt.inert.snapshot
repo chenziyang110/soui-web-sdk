@@ -1,0 +1,51 @@
+cmake_minimum_required(VERSION 3.24)
+project(EngineStartupBoundary LANGUAGES CXX)
+if(NOT MSVC OR NOT WIN32)
+  message(FATAL_ERROR "The private startup fixture requires Windows MSVC")
+endif()
+set(SOUI_DISTRIBUTION_ROOT "F:/work/sm05-startup")
+set(SOUI_BUILD_WEBVIEW2 OFF CACHE BOOL "No GUI/backend preparation in this isolated harness")
+add_subdirectory("${SOUI_DISTRIBUTION_ROOT}/sdk" "actual-sdk")
+enable_testing()
+# The actual public regression block is copied with only its local source path made absolute.
+add_executable(soui_engine_thread_startup_tests "${SOUI_DISTRIBUTION_ROOT}/tests/native/engine_thread_startup_tests.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/engine_thread.cpp")
+# This target compiles the real engine implementation once, with a private seam.
+# The installed SDK is compiled separately without this definition or hook code.
+target_include_directories(soui_engine_thread_startup_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
+target_link_libraries(soui_engine_thread_startup_tests PRIVATE user32)
+target_compile_features(soui_engine_thread_startup_tests PRIVATE cxx_std_17)
+target_compile_definitions(soui_engine_thread_startup_tests PRIVATE
+  SOUI_ENGINE_STARTUP_TEST_ONLY UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+target_compile_options(soui_engine_thread_startup_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET soui_engine_thread_startup_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.engine-startup-rollback COMMAND soui_engine_thread_startup_tests)
+set_tests_properties(sdk.native.engine-startup-rollback PROPERTIES TIMEOUT 30)
+# The unchanged existing engine test links the actual SDK compiled without the seam macro.
+add_executable(soui_engine_thread_timeout_tests "${SOUI_DISTRIBUTION_ROOT}/tests/native/engine_thread_timeout_tests.cpp")
+target_link_libraries(soui_engine_thread_timeout_tests PRIVATE Soui::Sdk)
+target_compile_features(soui_engine_thread_timeout_tests PRIVATE cxx_std_17)
+target_compile_options(soui_engine_thread_timeout_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET soui_engine_thread_timeout_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.engine-diagnostic-timeout COMMAND soui_engine_thread_timeout_tests)
+set_tests_properties(sdk.native.engine-diagnostic-timeout PROPERTIES TIMEOUT 30)
+add_executable(EngineStartupRed "${SOUI_DISTRIBUTION_ROOT}/tests/native/engine_thread_startup_tests.cpp"
+  "${CMAKE_CURRENT_SOURCE_DIR}/red-engine_thread.cpp.inert.snapshot")
+set_source_files_properties("${CMAKE_CURRENT_SOURCE_DIR}/red-engine_thread.cpp.inert.snapshot" PROPERTIES LANGUAGE CXX)
+target_include_directories(EngineStartupRed PRIVATE "${SOUI_DISTRIBUTION_ROOT}/sdk/include" "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host")
+target_link_libraries(EngineStartupRed PRIVATE user32)
+target_compile_features(EngineStartupRed PRIVATE cxx_std_17)
+target_compile_definitions(EngineStartupRed PRIVATE SOUI_ENGINE_STARTUP_TEST_ONLY SOUI_ENGINE_STARTUP_RED_FIXTURE
+  UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+target_compile_options(EngineStartupRed PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET EngineStartupRed PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_executable(EngineStartupProduction "${CMAKE_CURRENT_SOURCE_DIR}/production-control.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/engine_thread.cpp")
+target_include_directories(EngineStartupProduction PRIVATE "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
+target_link_libraries(EngineStartupProduction PRIVATE user32)
+target_compile_features(EngineStartupProduction PRIVATE cxx_std_17)
+target_compile_definitions(EngineStartupProduction PRIVATE UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+target_compile_options(EngineStartupProduction PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET EngineStartupProduction PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.engine-startup-production-control COMMAND EngineStartupProduction)
+set_tests_properties(sdk.native.engine-startup-production-control PROPERTIES TIMEOUT 10)

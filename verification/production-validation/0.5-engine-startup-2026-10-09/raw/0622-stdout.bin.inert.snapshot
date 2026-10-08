@@ -1,0 +1,10 @@
+PASS empty_initializer_creates_nothing
+PASS event_creation_failure_can_retry
+PASS system_error_rolls_back
+PASS bad_alloc_rolls_back
+PASS repeated_launch_failures_have_no_event_growth
+PASS second_start_closes_only_its_temporary_event
+PASS initializer_false_preserves_failed
+PASS initializer_exception_preserves_failed
+PASS concurrent_stop_does_not_wait_for_a_nonexistent_worker
+Engine startup controlled-fault regression: 9/9 passed
