@@ -1,0 +1,139 @@
+$script:SouiWindowsSdkCheck=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../cmake/SouiWindowsSdk.cmake'))
+
+function Assert-SouiCMakePath([string]$Path) {
+  $cursor=[IO.Path]::GetFullPath($Path)
+  while($cursor){
+    $item=Get-Item -LiteralPath $cursor -Force -ErrorAction SilentlyContinue
+    if($item -and ($item.Attributes -band [IO.FileAttributes]::ReparsePoint)){
+      throw "CMake paths cannot traverse a link or reparse point: $cursor"
+    }
+    $parent=[IO.Path]::GetDirectoryName($cursor)
+    if($parent -eq $cursor){break}
+    $cursor=$parent
+  }
+}
+
+function Assert-SouiCMakeCacheTree([string]$Directory) {
+  Assert-SouiCMakePath $Directory
+  if(-not (Test-Path -LiteralPath $Directory)){return}
+  if(-not (Test-Path -LiteralPath $Directory -PathType Container)){throw "CMakeFiles is not a generated cache directory: $Directory"}
+  $pending=[Collections.Generic.Stack[string]]::new()
+  $pending.Push($Directory)
+  while($pending.Count){
+    $current=$pending.Pop()
+    Assert-SouiCMakePath $current
+    foreach($entry in @(Get-ChildItem -LiteralPath $current -Force -ErrorAction Stop)){
+      if($entry.Attributes -band [IO.FileAttributes]::ReparsePoint){
+        throw "CMake cache cannot contain a link or reparse point: $($entry.FullName)"
+      }
+      if($entry.PSIsContainer){$pending.Push($entry.FullName)}
+    }
+  }
+}
+
+function Get-SouiCMakeConfigureArguments {
+  [CmdletBinding()]
+  param(
+    [Parameter(Mandatory=$true)][string]$CMake,
+    [Parameter(Mandatory=$true)][string]$WorkspaceRoot,
+    [Parameter(Mandatory=$true)][string]$SourceDirectory,
+    [Parameter(Mandatory=$true)][string]$BuildDirectory,
+    [ValidateSet('x86','x64')][string]$Architecture='x64',
+    [switch]$FreshConfigure
+  )
+  $workspace=[IO.Path]::GetFullPath($WorkspaceRoot).TrimEnd('\','/')
+  $source=[IO.Path]::GetFullPath($SourceDirectory).TrimEnd('\','/')
+  $build=[IO.Path]::GetFullPath($BuildDirectory).TrimEnd('\','/')
+  $out=Join-Path $workspace 'out'
+  $comparison=[StringComparison]::OrdinalIgnoreCase
+  if(-not $build.StartsWith($out+'\',$comparison)){
+    throw 'CMake build directory must be a generated directory inside this workspace out/; out itself is not allowed.'
+  }
+  foreach($segment in $build.Substring($out.Length+1).Split([char[]]@('\','/'))){
+    if(-not $segment -or $segment -match '[<>:"|?*]' -or $segment -match '[. ]$' -or
+        $segment -match '^(CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(\.|$)'){
+      throw 'CMake build directory must be a safe generated path inside this workspace out/.'
+    }
+  }
+  if($source -ne $workspace -and -not $source.StartsWith($workspace+'\',$comparison)){
+    throw 'CMake source directory must belong to this workspace.'
+  }
+  foreach($directory in @($workspace,$source)){
+    if(-not (Test-Path -LiteralPath $directory -PathType Container)){throw "CMake source/workspace directory is missing: $directory"}
+  }
+  Assert-SouiCMakePath $build
+  Assert-SouiCMakePath $source
+  if((Test-Path -LiteralPath $build) -and -not (Test-Path -LiteralPath $build -PathType Container)){
+    throw "CMake build path is not a generated directory: $build"
+  }
+  if(-not (Test-Path -LiteralPath $script:SouiWindowsSdkCheck -PathType Leaf)){
+    throw 'SDK selection check is missing; restore cmake/SouiWindowsSdk.cmake from the reviewed SDK.'
+  }
+  $versionOutput=@(& $CMake --version)
+  if($LASTEXITCODE -ne 0){throw 'Could not read CMake version.'}
+  $versionLine=$versionOutput | Select-Object -First 1
+  if($versionLine -notmatch '^cmake version (\d+\.\d+(?:\.\d+)?)(?:[-\s].*)?$'){
+    throw 'Could not recognize CMake version; CMake 3.24 or newer is required.'
+  }
+  $cmakeVersion=[version]$Matches[1]
+  if($cmakeVersion -lt [version]'3.24.0'){throw 'CMake 3.24 or newer is required.'}
+  $platform=if($Architecture -eq 'x86'){'Win32'}else{'x64'}
+  if($cmakeVersion -ge [version]'3.27.0'){$platform+=',version=10.0.19041.0'}
+
+  $cacheFile=Join-Path $build 'CMakeCache.txt'
+  $cacheDirectory=Join-Path $build 'CMakeFiles'
+  Assert-SouiCMakePath $cacheFile
+  Assert-SouiCMakeCacheTree $cacheDirectory
+  $cache=@{}
+  if(Test-Path -LiteralPath $cacheFile){
+    foreach($line in [IO.File]::ReadAllLines($cacheFile)){
+      if($line -match '^([^#/:][^:]*):[^=]+=(.*)$'){
+        $key=$Matches[1]
+        if($cache.ContainsKey($key)){throw "Duplicate CMake cache entry: $key"}
+        $cache[$key]=$Matches[2]
+      }
+    }
+    # Ownership checks apply even to an explicitly requested refresh. CMake
+    # --fresh must never clear a copied or foreign cache on our behalf.
+    foreach($ownership in @(@('CMAKE_HOME_DIRECTORY',$source),@('CMAKE_CACHEFILE_DIR',$build))){
+      $key=$ownership[0]
+      if(-not $cache.ContainsKey($key) -or
+          -not [string]::Equals([IO.Path]::GetFullPath($cache[$key]).TrimEnd('\','/'),$ownership[1],$comparison)){
+        throw "CMake cache ownership/source differs for $key in $build; use a new generated directory."
+      }
+    }
+    if(-not $FreshConfigure){
+      foreach($expected in @(@('CMAKE_GENERATOR','Visual Studio 17 2022'),@('CMAKE_GENERATOR_PLATFORM',$platform))){
+        if(-not $cache.ContainsKey($expected[0]) -or $cache[$expected[0]] -cne $expected[1]){
+          throw "CMake cache $($expected[0]) conflicts in $build. Inspect this directory and explicitly use -FreshConfigure to reconfigure."
+        }
+      }
+      if($cache.ContainsKey('CMAKE_SYSTEM_VERSION') -and $cache['CMAKE_SYSTEM_VERSION'] -ne '10.0.19041.0'){
+        throw "CMake cache system version conflicts in $build. Inspect this directory and explicitly use -FreshConfigure to reconfigure."
+      }
+      if(Test-Path -LiteralPath $cacheDirectory){
+        foreach($entry in @(Get-ChildItem -LiteralPath $cacheDirectory -Directory -Force)){
+          $systemFile=Join-Path $entry.FullName 'CMakeSystem.cmake'
+          if(Test-Path -LiteralPath $systemFile){
+            $systemText=[IO.File]::ReadAllText($systemFile)
+            if($systemText -notmatch '(?m)^set\(CMAKE_SYSTEM_VERSION\s+"([^"]*)"\)' -or $Matches[1] -ne '10.0.19041.0'){
+              throw "CMake persisted system version conflicts in $systemFile. Inspect this directory and explicitly use -FreshConfigure to reconfigure."
+            }
+          }
+        }
+      }
+    }
+  } elseif($FreshConfigure -and (Test-Path -LiteralPath $cacheDirectory)){
+    throw "Cannot establish cache ownership without CMakeCache.txt in $build; use a new generated directory."
+  }
+  $check=$script:SouiWindowsSdkCheck.Replace('\','/').Replace(';','\;')
+  $includes=$check
+  if(-not $FreshConfigure -and $cache.ContainsKey('CMAKE_PROJECT_TOP_LEVEL_INCLUDES') -and $cache['CMAKE_PROJECT_TOP_LEVEL_INCLUDES']){
+    $previous=[string]$cache['CMAKE_PROJECT_TOP_LEVEL_INCLUDES']
+    if(-not ($previous.Split(';') -contains $check)){$includes=$previous+';'+$check}else{$includes=$previous}
+  }
+  $arguments=@('-S',$source,'-B',$build,'-G','Visual Studio 17 2022','-A',$platform,
+    '-DCMAKE_SYSTEM_VERSION=10.0.19041.0',"-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=$includes")
+  if($FreshConfigure){$arguments+='--fresh'}
+  return $arguments
+}

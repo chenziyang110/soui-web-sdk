@@ -1,0 +1,369 @@
+Microsoft (R) COFF/PE Dumper Version 14.44.35226.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file F:\work\sm05-scopes\out\display-calibration-repaired-a1afbafa-e252-4ecc-8410-33ba09fc5e61\build-x64\Release\DisplayCalibration.exe
+
+PE signature found
+
+File Type: EXECUTABLE IMAGE
+
+FILE HEADER VALUES
+            8664 machine (x64)
+               6 number of sections
+        6AC7F307 time date stamp Fri Oct  9 03:46:15 2026
+               0 file pointer to symbol table
+               0 number of symbols
+              F0 size of optional header
+              22 characteristics
+                   Executable
+                   Application can handle large (>2GB) addresses
+
+OPTIONAL HEADER VALUES
+             20B magic # (PE32+)
+           14.44 linker version
+           10A00 size of code
+            8E00 size of initialized data
+               0 size of uninitialized data
+            FE3C entry point (000000014000FE3C)
+            1000 base of code
+       140000000 image base (0000000140000000 to 000000014001DFFF)
+            1000 section alignment
+             200 file alignment
+            6.00 operating system version
+            0.00 image version
+            6.00 subsystem version
+               0 Win32 version
+           1E000 size of image
+             400 size of headers
+               0 checksum
+               3 subsystem (Windows CUI)
+            8160 DLL characteristics
+                   High Entropy Virtual Addresses
+                   Dynamic base
+                   NX compatible
+                   Terminal Server Aware
+          100000 size of stack reserve
+            1000 size of stack commit
+          100000 size of heap reserve
+            1000 size of heap commit
+               0 loader flags
+              10 number of directories
+               0 [       0] RVA [size] of Export Directory
+           17F0C [      DC] RVA [size] of Import Directory
+           1C000 [     1E0] RVA [size] of Resource Directory
+           1B000 [     954] RVA [size] of Exception Directory
+               0 [       0] RVA [size] of Certificates Directory
+           1D000 [      9C] RVA [size] of Base Relocation Directory
+           15A90 [      1C] RVA [size] of Debug Directory
+               0 [       0] RVA [size] of Architecture Directory
+               0 [       0] RVA [size] of Global Pointer Directory
+               0 [       0] RVA [size] of Thread Storage Directory
+           15950 [     140] RVA [size] of Load Configuration Directory
+               0 [       0] RVA [size] of Bound Import Directory
+           12000 [     3F0] RVA [size] of Import Address Table Directory
+               0 [       0] RVA [size] of Delay Import Directory
+               0 [       0] RVA [size] of COM Descriptor Directory
+               0 [       0] RVA [size] of Reserved Directory
+
+
+SECTION HEADER #1
+   .text name
+   10978 virtual size
+    1000 virtual address (0000000140001000 to 0000000140011977)
+   10A00 size of raw data
+     400 file pointer to raw data (00000400 to 00010DFF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+60000020 flags
+         Code
+         Execute Read
+
+SECTION HEADER #2
+  .rdata name
+    75E4 virtual size
+   12000 virtual address (0000000140012000 to 00000001400195E3)
+    7600 size of raw data
+   10E00 file pointer to raw data (00010E00 to 000183FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+40000040 flags
+         Initialized Data
+         Read Only
+
+  Debug Directories
+
+        Time Type        Size      RVA  Pointer
+    -------- ------- -------- -------- --------
+    6AC7F307 coffgrp      2D0 00016170    14F70
+
+  Image has the following dependencies:
+
+    KERNEL32.dll
+    MSVCP140.dll
+    VCRUNTIME140.dll
+    VCRUNTIME140_1.dll
+    api-ms-win-crt-runtime-l1-1-0.dll
+    api-ms-win-crt-string-l1-1-0.dll
+    api-ms-win-crt-heap-l1-1-0.dll
+    api-ms-win-crt-math-l1-1-0.dll
+    api-ms-win-crt-stdio-l1-1-0.dll
+    api-ms-win-crt-locale-l1-1-0.dll
+
+  Section contains the following imports:
+
+    KERNEL32.dll
+             140012000 Import Address Table
+             140017FE8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          CE CreateFileW
+                         251 GetFileInformationByHandle
+                         258 GetFileType
+                         25A GetFinalPathNameByHandleW
+                          89 CloseHandle
+                         452 QueryPerformanceCounter
+                         453 QueryPerformanceFrequency
+                         2C8 GetProcessTimes
+                         220 GetCurrentProcess
+                         221 GetCurrentProcessId
+                         2F3 GetSystemTimeAsFileTime
+                         2EA GetSystemDirectoryW
+                         1B4 FreeLibrary
+                         27D GetModuleFileNameW
+                         2B8 GetProcAddress
+                         3CB LoadLibraryW
+                         385 IsDebuggerPresent
+                         36F InitializeSListHead
+                         225 GetCurrentThreadId
+                         38C IsProcessorFeaturePresent
+                         59F TerminateProcess
+                         580 SetUnhandledExceptionFilter
+                         5C1 UnhandledExceptionFilter
+                         4E4 RtlVirtualUnwind
+                         4DD RtlLookupFunctionEntry
+                         4D6 RtlCaptureContext
+                         281 GetModuleHandleW
+
+    MSVCP140.dll
+             1400120E0 Import Address Table
+             1400180C8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          2F ??0?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEAA@XZ
+                          89 ??1?$basic_streambuf@DU?$char_traits@D@std@@@std@@UEAA@XZ
+                         4DE ?sputc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QEAAHD@Z
+                         4E1 ?sputn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@QEAA_JPEBD_J@Z
+                         34D ?eback@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEBAPEADXZ
+                         3C6 ?gptr@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEBAPEADXZ
+                         43E ?pbase@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEBAPEADXZ
+                         447 ?pptr@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEBAPEADXZ
+                         350 ?egptr@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEBAPEADXZ
+                         36B ?gbump@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEAAXH@Z
+                         4BA ?setg@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEAAXPEAD00@Z
+                         359 ?epptr@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEBAPEADXZ
+                         4BF ?setp@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEAAXPEAD0@Z
+                         4BE ?setp@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEAAXPEAD00@Z
+                         24A ?_Pninc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@IEAAPEADXZ
+                          7D ??1?$basic_ios@DU?$char_traits@D@std@@@std@@UEAA@XZ
+                         4C5 ?setstate@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAXH_N@Z
+                         50A ?tie@?$basic_ios@DU?$char_traits@D@std@@@std@@QEBAPEAV?$basic_ostream@DU?$char_traits@D@std@@@2@XZ
+                         487 ?rdbuf@?$basic_ios@DU?$char_traits@D@std@@@std@@QEBAPEAV?$basic_streambuf@DU?$char_traits@D@std@@@2@XZ
+                         361 ?fill@?$basic_ios@DU?$char_traits@D@std@@@std@@QEBADXZ
+                         360 ?fill@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAADD@Z
+                           C ??0?$basic_ios@DU?$char_traits@D@std@@@std@@IEAA@XZ
+                          25 ??0?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAA@PEAV?$basic_streambuf@DU?$char_traits@D@std@@@1@_N@Z
+                          86 ??1?$basic_ostream@DU?$char_traits@D@std@@@std@@UEAA@XZ
+                         244 ?_Osfx@?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAXXZ
+                         108 ??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV01@P6AAEAVios_base@1@AEAV21@@Z@Z
+                         100 ??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV01@I@Z
+                         10C ??6?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV01@_K@Z
+                         368 ?flush@?$basic_ostream@DU?$char_traits@D@std@@@std@@QEAAAEAV12@XZ
+                         4CE ?setw@std@@YA?AU?$_Smanip@_J@1@_J@Z
+                         3F6 ?imbue@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAXAEBVlocale@2@@Z
+                         4FD ?sync@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAHXZ
+                         4B5 ?setbuf@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAPEAV12@PEAD_J@Z
+                         546 ?xsputn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAA_JPEBD_J@Z
+                         543 ?xsgetn@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAA_JPEAD_J@Z
+                         51B ?uflow@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAAHXZ
+                         4D5 ?showmanyc@?$basic_streambuf@DU?$char_traits@D@std@@@std@@MEAA_JXZ
+                         27F ?_Unlock@?$basic_streambuf@DU?$char_traits@D@std@@@std@@UEAAXXZ
+                         228 ?_Lock@?$basic_streambuf@DU?$char_traits@D@std@@@std@@UEAAXXZ
+                         2B4 ?cout@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A
+                         53E ?width@ios_base@std@@QEBA_JXZ
+                         53D ?width@ios_base@std@@QEAA_J_J@Z
+                         28E ?_Xlength_error@std@@YAXPEBD@Z
+                         51E ?uncaught_exception@std@@YA_NXZ
+                         3C5 ?good@ios_base@std@@QEBA_NXZ
+                         367 ?flags@ios_base@std@@QEBAHXZ
+                         4B9 ?setf@ios_base@std@@QEAAHHH@Z
+                         2A2 ?cerr@std@@3V?$basic_ostream@DU?$char_traits@D@std@@@1@A
+
+    VCRUNTIME140.dll
+             140012268 Import Address Table
+             140018250 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          1C __current_exception_context
+                           8 __C_specific_handler
+                          23 __std_terminate
+                          21 __std_exception_copy
+                          22 __std_exception_destroy
+                           1 _CxxThrowException
+                          3B memcmp
+                          3C memcpy
+                          3D memmove
+                          3E memset
+                          1B __current_exception
+
+    VCRUNTIME140_1.dll
+             1400122C8 Import Address Table
+             1400182B0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           0 __CxxFrameHandler4
+
+    api-ms-win-crt-runtime-l1-1-0.dll
+             140012320 Import Address Table
+             140018308 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          3D _register_thread_local_exe_atexit_callback
+                          42 _set_app_type
+                          16 _cexit
+                          18 _configure_narrow_argv
+                           5 __p___argv
+                          34 _initialize_onexit_table
+                          3C _register_onexit_function
+                           4 __p___argc
+                          1E _crt_atexit
+                          67 terminate
+                          33 _initialize_narrow_environment
+                          3A _invoke_watson
+                          15 _c_exit
+                          28 _get_initial_narrow_environment
+                          23 _exit
+                          40 _seh_filter_exe
+                          55 exit
+                          37 _initterm_e
+                          36 _initterm
+
+    api-ms-win-crt-string-l1-1-0.dll
+             1400123D8 Import Address Table
+             1400183C0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          4A _wcsicmp
+                          8B strlen
+
+    api-ms-win-crt-heap-l1-1-0.dll
+             1400122D8 Import Address Table
+             1400182C0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          19 malloc
+                           8 _callnewh
+                          16 _set_new_mode
+                          18 free
+
+    api-ms-win-crt-math-l1-1-0.dll
+             140012310 Import Address Table
+             1400182F8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           9 __setusermatherr
+
+    api-ms-win-crt-stdio-l1-1-0.dll
+             1400123C0 Import Address Table
+             1400183A8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                          54 _set_fmode
+                           1 __p__commode
+
+    api-ms-win-crt-locale-l1-1-0.dll
+             140012300 Import Address Table
+             1400182E8 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                           8 _configthreadlocale
+
+SECTION HEADER #3
+   .data name
+     948 virtual size
+   1A000 virtual address (000000014001A000 to 000000014001A947)
+     400 size of raw data
+   18400 file pointer to raw data (00018400 to 000187FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+C0000040 flags
+         Initialized Data
+         Read Write
+
+SECTION HEADER #4
+  .pdata name
+     954 virtual size
+   1B000 virtual address (000000014001B000 to 000000014001B953)
+     A00 size of raw data
+   18800 file pointer to raw data (00018800 to 000191FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+40000040 flags
+         Initialized Data
+         Read Only
+
+SECTION HEADER #5
+   .rsrc name
+     1E0 virtual size
+   1C000 virtual address (000000014001C000 to 000000014001C1DF)
+     200 size of raw data
+   19200 file pointer to raw data (00019200 to 000193FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+40000040 flags
+         Initialized Data
+         Read Only
+
+SECTION HEADER #6
+  .reloc name
+      9C virtual size
+   1D000 virtual address (000000014001D000 to 000000014001D09B)
+     200 size of raw data
+   19400 file pointer to raw data (00019400 to 000195FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+42000040 flags
+         Initialized Data
+         Discardable
+         Read Only
+
+  Summary
+
+        1000 .data
+        1000 .pdata
+        8000 .rdata
+        1000 .reloc
+        1000 .rsrc
+       11000 .text

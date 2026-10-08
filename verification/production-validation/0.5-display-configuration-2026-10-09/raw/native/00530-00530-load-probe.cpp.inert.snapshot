@@ -1,0 +1,41 @@
+// TEST_ONLY actual Windows load/module-path/file identity observations.
+#define _WIN32_WINNT 0x0601
+#define NOMINMAX
+#include <windows.h>
+#include <iomanip>
+#include <iostream>
+#include <string>
+#include <vector>
+void hex(const WCHAR* buffer,std::size_t length) {
+  for(std::size_t i=0;i<length;++i) std::cerr << std::hex << std::setw(4) << std::setfill('0') << static_cast<unsigned>(buffer[i]);
+  std::cerr << std::dec;
+}
+void file_identity(const WCHAR* name) {
+  const HANDLE file=CreateFileW(name,FILE_READ_ATTRIBUTES,FILE_SHARE_READ|FILE_SHARE_WRITE|FILE_SHARE_DELETE,nullptr,OPEN_EXISTING,0,nullptr);
+  BY_HANDLE_FILE_INFORMATION info{}; const bool valid=file!=INVALID_HANDLE_VALUE&&GetFileInformationByHandle(file,&info);
+  const DWORD error=valid?0:GetLastError();
+  std::cerr << "TEST_ONLY diskObject valid=" << valid << " error=" << error << " volume=" << info.dwVolumeSerialNumber
+    << " idHigh=" << info.nFileIndexHigh << " idLow=" << info.nFileIndexLow << '\n';
+  if(file!=INVALID_HANDLE_VALUE) CloseHandle(file);
+}
+int main() {
+  using directory_fn=UINT (WINAPI*)(LPWSTR,UINT);
+  const auto get_directory=reinterpret_cast<directory_fn>(GetProcAddress(GetModuleHandleW(L"kernel32.dll"),"GetSystemWow64DirectoryW"));
+  WCHAR directory[MAX_PATH]{};
+  const UINT size=get_directory(directory,MAX_PATH);
+  const std::wstring requested=std::wstring(directory,size)+L"\\user32.dll";
+  const auto module=LoadLibraryW(requested.c_str());
+  const auto load_error=module?0:GetLastError();
+  std::cerr << "TEST_ONLY LoadLibraryW error=" << load_error << " requested=";hex(requested.c_str(),requested.size());std::cerr << '\n';
+  if(!module) return 1;
+  file_identity(requested.c_str());
+  for(DWORD count:{DWORD{260},DWORD{32767},DWORD{32768}}) {
+    std::vector<WCHAR> buffer(32768,L'!');SetLastError(ERROR_SUCCESS);
+    const auto length=GetModuleFileNameW(module,buffer.data(),count); const auto error=GetLastError();
+    std::size_t actual=0;while(actual<buffer.size()&&buffer[actual]) ++actual;
+    std::cerr << "TEST_ONLY GetModuleFileNameW capacity=" << count << " length=" << length << " actual=" << actual << " error=" << error << " path=";
+    hex(buffer.data(),actual<100?actual:100);std::cerr << '\n';
+    if(actual<buffer.size()) file_identity(buffer.data());
+  }
+  FreeLibrary(module);return 0;
+}

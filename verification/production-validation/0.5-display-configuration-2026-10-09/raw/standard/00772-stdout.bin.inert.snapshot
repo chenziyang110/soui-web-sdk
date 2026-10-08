@@ -1,0 +1,645 @@
+TAP version 13
+# Subtest: x86: unchanged source and matching tool identities remain prepared
+not ok 1 - x86: unchanged source and matching tool identities remain prepared
+  ---
+  duration_ms: 49.95
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:80:3'
+  failureType: 'testCodeFailure'
+  error: 'Prepared measurement tools are incomplete'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    need (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tools\internal\measurement-validation.cjs:24:54)
+    Object.prepared (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tools\internal\measurement-validation.cjs:64:2)
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:81:65)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.start (node:internal/test_runner/test:1015:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+  ...
+# Subtest: x86: changed Windows SDK selection input invalidates preparation
+ok 2 - x86: changed Windows SDK selection input invalidates preparation
+  ---
+  duration_ms: 45.9926
+  type: 'test'
+  ...
+# Subtest: x86: missing Windows SDK selection input cannot reuse prepared tools
+ok 3 - x86: missing Windows SDK selection input cannot reuse prepared tools
+  ---
+  duration_ms: 41.3017
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing SDK input rejects the native group before launch
+ok 4 - x86: changed or missing SDK input rejects the native group before launch
+  ---
+  duration_ms: 83.5582
+  type: 'test'
+  ...
+# Subtest: x86: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation
+ok 5 - x86: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation
+  ---
+  duration_ms: 45.306
+  type: 'test'
+  ...
+# Subtest: x86: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools
+ok 6 - x86: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 42.2682
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch
+ok 7 - x86: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch
+  ---
+  duration_ms: 91.2542
+  type: 'test'
+  ...
+# Subtest: x86: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation
+ok 8 - x86: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation
+  ---
+  duration_ms: 42.3688
+  type: 'test'
+  ...
+# Subtest: x86: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools
+ok 9 - x86: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools
+  ---
+  duration_ms: 42.1072
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch
+ok 10 - x86: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch
+  ---
+  duration_ms: 91.7536
+  type: 'test'
+  ...
+# Subtest: x86: changed tests/benchmark/owned-tail-process-fixture.cpp invalidates preparation
+ok 11 - x86: changed tests/benchmark/owned-tail-process-fixture.cpp invalidates preparation
+  ---
+  duration_ms: 49.6564
+  type: 'test'
+  ...
+# Subtest: x86: missing tests/benchmark/owned-tail-process-fixture.cpp cannot reuse prepared tools
+ok 12 - x86: missing tests/benchmark/owned-tail-process-fixture.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 93.1318
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing tests/benchmark/owned-tail-process-fixture.cpp rejects the native group before launch
+ok 13 - x86: changed or missing tests/benchmark/owned-tail-process-fixture.cpp rejects the native group before launch
+  ---
+  duration_ms: 103.8763
+  type: 'test'
+  ...
+# Subtest: x86: changed tests/benchmark/owned-tail-mutation-fixture.cpp invalidates preparation
+ok 14 - x86: changed tests/benchmark/owned-tail-mutation-fixture.cpp invalidates preparation
+  ---
+  duration_ms: 67.8823
+  type: 'test'
+  ...
+# Subtest: x86: missing tests/benchmark/owned-tail-mutation-fixture.cpp cannot reuse prepared tools
+ok 15 - x86: missing tests/benchmark/owned-tail-mutation-fixture.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 60.9066
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing tests/benchmark/owned-tail-mutation-fixture.cpp rejects the native group before launch
+ok 16 - x86: changed or missing tests/benchmark/owned-tail-mutation-fixture.cpp rejects the native group before launch
+  ---
+  duration_ms: 160.6177
+  type: 'test'
+  ...
+# Subtest: x86: changed tests/benchmark/owned-tail-api-fixture.cpp invalidates preparation
+ok 17 - x86: changed tests/benchmark/owned-tail-api-fixture.cpp invalidates preparation
+  ---
+  duration_ms: 75.7217
+  type: 'test'
+  ...
+# Subtest: x86: missing tests/benchmark/owned-tail-api-fixture.cpp cannot reuse prepared tools
+ok 18 - x86: missing tests/benchmark/owned-tail-api-fixture.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 85.8231
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing tests/benchmark/owned-tail-api-fixture.cpp rejects the native group before launch
+ok 19 - x86: changed or missing tests/benchmark/owned-tail-api-fixture.cpp rejects the native group before launch
+  ---
+  duration_ms: 173.8503
+  type: 'test'
+  ...
+# Subtest: x86: changed display compiler input invalidates preparation before any native launch
+not ok 20 - x86: changed display compiler input invalidates preparation before any native launch
+  ---
+  duration_ms: 91.9914
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:143:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected "actual" to be strictly unequal to:
+    
+    '4e3f19da88c4e3a0dabc7819de096c6e7cc039bc0fbc17c1a9d3388470e45d89'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '4e3f19da88c4e3a0dabc7819de096c6e7cc039bc0fbc17c1a9d3388470e45d89'
+  actual: '4e3f19da88c4e3a0dabc7819de096c6e7cc039bc0fbc17c1a9d3388470e45d89'
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:146:12)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: x86: missing display compiler input cannot reuse a preparation or launch
+not ok 21 - x86: missing display compiler input cannot reuse a preparation or launch
+  ---
+  duration_ms: 55.7751
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:152:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:155:12)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: x86: missing-entry DisplayCalibration fails closed before launch
+not ok 22 - x86: missing-entry DisplayCalibration fails closed before launch
+  ---
+  duration_ms: 70.2435
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:162:5'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:176:14)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: x86: missing-file DisplayCalibration fails closed before launch
+not ok 23 - x86: missing-file DisplayCalibration fails closed before launch
+  ---
+  duration_ms: 55.2921
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:162:5'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:177:41)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: x86: wrong-architecture DisplayCalibration fails closed before launch
+not ok 24 - x86: wrong-architecture DisplayCalibration fails closed before launch
+  ---
+  duration_ms: 55.0363
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:162:5'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:177:41)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: x86: changed-bytes DisplayCalibration fails closed before launch
+not ok 25 - x86: changed-bytes DisplayCalibration fails closed before launch
+  ---
+  duration_ms: 60.9479
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:162:5'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:177:41)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: x64: unchanged source and matching tool identities remain prepared
+not ok 26 - x64: unchanged source and matching tool identities remain prepared
+  ---
+  duration_ms: 55.3419
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:80:3'
+  failureType: 'testCodeFailure'
+  error: 'Prepared measurement tools are incomplete'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    need (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tools\internal\measurement-validation.cjs:24:54)
+    Object.prepared (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tools\internal\measurement-validation.cjs:64:2)
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:81:65)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: x64: changed Windows SDK selection input invalidates preparation
+ok 27 - x64: changed Windows SDK selection input invalidates preparation
+  ---
+  duration_ms: 55.668
+  type: 'test'
+  ...
+# Subtest: x64: missing Windows SDK selection input cannot reuse prepared tools
+ok 28 - x64: missing Windows SDK selection input cannot reuse prepared tools
+  ---
+  duration_ms: 52.1983
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing SDK input rejects the native group before launch
+ok 29 - x64: changed or missing SDK input rejects the native group before launch
+  ---
+  duration_ms: 135.9006
+  type: 'test'
+  ...
+# Subtest: x64: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation
+ok 30 - x64: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation
+  ---
+  duration_ms: 58.8096
+  type: 'test'
+  ...
+# Subtest: x64: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools
+ok 31 - x64: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 51.8483
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch
+ok 32 - x64: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch
+  ---
+  duration_ms: 97.1015
+  type: 'test'
+  ...
+# Subtest: x64: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation
+ok 33 - x64: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation
+  ---
+  duration_ms: 59.343
+  type: 'test'
+  ...
+# Subtest: x64: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools
+ok 34 - x64: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools
+  ---
+  duration_ms: 54.3871
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch
+ok 35 - x64: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch
+  ---
+  duration_ms: 115.0208
+  type: 'test'
+  ...
+# Subtest: x64: changed tests/benchmark/owned-tail-process-fixture.cpp invalidates preparation
+ok 36 - x64: changed tests/benchmark/owned-tail-process-fixture.cpp invalidates preparation
+  ---
+  duration_ms: 59.9171
+  type: 'test'
+  ...
+# Subtest: x64: missing tests/benchmark/owned-tail-process-fixture.cpp cannot reuse prepared tools
+ok 37 - x64: missing tests/benchmark/owned-tail-process-fixture.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 54.8803
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing tests/benchmark/owned-tail-process-fixture.cpp rejects the native group before launch
+ok 38 - x64: changed or missing tests/benchmark/owned-tail-process-fixture.cpp rejects the native group before launch
+  ---
+  duration_ms: 108.952
+  type: 'test'
+  ...
+# Subtest: x64: changed tests/benchmark/owned-tail-mutation-fixture.cpp invalidates preparation
+ok 39 - x64: changed tests/benchmark/owned-tail-mutation-fixture.cpp invalidates preparation
+  ---
+  duration_ms: 53.1815
+  type: 'test'
+  ...
+# Subtest: x64: missing tests/benchmark/owned-tail-mutation-fixture.cpp cannot reuse prepared tools
+ok 40 - x64: missing tests/benchmark/owned-tail-mutation-fixture.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 54.3987
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing tests/benchmark/owned-tail-mutation-fixture.cpp rejects the native group before launch
+ok 41 - x64: changed or missing tests/benchmark/owned-tail-mutation-fixture.cpp rejects the native group before launch
+  ---
+  duration_ms: 134.6594
+  type: 'test'
+  ...
+# Subtest: x64: changed tests/benchmark/owned-tail-api-fixture.cpp invalidates preparation
+ok 42 - x64: changed tests/benchmark/owned-tail-api-fixture.cpp invalidates preparation
+  ---
+  duration_ms: 71.9568
+  type: 'test'
+  ...
+# Subtest: x64: missing tests/benchmark/owned-tail-api-fixture.cpp cannot reuse prepared tools
+ok 43 - x64: missing tests/benchmark/owned-tail-api-fixture.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 76.2128
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing tests/benchmark/owned-tail-api-fixture.cpp rejects the native group before launch
+ok 44 - x64: changed or missing tests/benchmark/owned-tail-api-fixture.cpp rejects the native group before launch
+  ---
+  duration_ms: 344.235
+  type: 'test'
+  ...
+# Subtest: x64: changed display compiler input invalidates preparation before any native launch
+not ok 45 - x64: changed display compiler input invalidates preparation before any native launch
+  ---
+  duration_ms: 75.264
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:143:3'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected "actual" to be strictly unequal to:
+    
+    '4e3f19da88c4e3a0dabc7819de096c6e7cc039bc0fbc17c1a9d3388470e45d89'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: '4e3f19da88c4e3a0dabc7819de096c6e7cc039bc0fbc17c1a9d3388470e45d89'
+  actual: '4e3f19da88c4e3a0dabc7819de096c6e7cc039bc0fbc17c1a9d3388470e45d89'
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:146:12)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: x64: missing display compiler input cannot reuse a preparation or launch
+not ok 46 - x64: missing display compiler input cannot reuse a preparation or launch
+  ---
+  duration_ms: 71.9959
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:152:3'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:155:12)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: x64: missing-entry DisplayCalibration fails closed before launch
+not ok 47 - x64: missing-entry DisplayCalibration fails closed before launch
+  ---
+  duration_ms: 68.9981
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:162:5'
+  failureType: 'testCodeFailure'
+  error: 'Missing expected exception.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  operator: 'throws'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:176:14)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: x64: missing-file DisplayCalibration fails closed before launch
+not ok 48 - x64: missing-file DisplayCalibration fails closed before launch
+  ---
+  duration_ms: 59.9657
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:162:5'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:177:41)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: x64: wrong-architecture DisplayCalibration fails closed before launch
+not ok 49 - x64: wrong-architecture DisplayCalibration fails closed before launch
+  ---
+  duration_ms: 56.8844
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:162:5'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:177:41)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: x64: changed-bytes DisplayCalibration fails closed before launch
+not ok 50 - x64: changed-bytes DisplayCalibration fails closed before launch
+  ---
+  duration_ms: 64.3696
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:162:5'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:177:41)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: authored available display is bound only after native context verification and never claims presentation
+not ok 51 - authored available display is bound only after native context verification and never claims presentation
+  ---
+  duration_ms: 52.9317
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:235:1'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:237:37)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: authored one-tick collector mismatch retains failure raw and cannot accept configuration
+not ok 52 - authored one-tick collector mismatch retains failure raw and cannot accept configuration
+  ---
+  duration_ms: 58.3964
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:249:5'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:251:37)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: authored native launch context mismatch retains failure raw and cannot accept configuration
+not ok 53 - authored native launch context mismatch retains failure raw and cannot accept configuration
+  ---
+  duration_ms: 61.634
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:249:5'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:251:37)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: authored reader changed during collection retains failure raw and cannot accept configuration
+not ok 54 - authored reader changed during collection retains failure raw and cannot accept configuration
+  ---
+  duration_ms: 65.3076
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:249:5'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:251:37)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: authored nonzero collector with available-looking JSON retains failure raw and cannot accept configuration
+not ok 55 - authored nonzero collector with available-looking JSON retains failure raw and cannot accept configuration
+  ---
+  duration_ms: 51.6076
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:249:5'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:251:37)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: authored empty failed collector retains failure raw and cannot accept configuration
+not ok 56 - authored empty failed collector retains failure raw and cannot accept configuration
+  ---
+  duration_ms: 55.1732
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:249:5'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:251:37)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+# Subtest: authored unavailable collector remains exit1/generic false with only unbound diagnostic parsing
+not ok 57 - authored unavailable collector remains exit1/generic false with only unbound diagnostic parsing
+  ---
+  duration_ms: 63.9941
+  type: 'test'
+  location: 'F:\\work\\sm05-scopes\\out\\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\\red-workspace\\tests\\benchmark\\measurement-preparation-source.test.cjs:259:1'
+  failureType: 'testCodeFailure'
+  error: 'f.validation.runDisplay is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    TestContext.<anonymous> (F:\work\sm05-scopes\out\display-standard-integration-8ca5ea8c-73db-40c9-9dda-a5bb0671d7c9\red-workspace\tests\benchmark\measurement-preparation-source.test.cjs:261:37)
+    Test.runInAsyncScope (node:async_hooks:228:14)
+    Test.run (node:internal/test_runner/test:1118:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+    Test.postRun (node:internal/test_runner/test:1247:19)
+    Test.run (node:internal/test_runner/test:1175:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+  ...
+1..57
+# tests 57
+# suites 0
+# pass 36
+# fail 21
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4463.9046

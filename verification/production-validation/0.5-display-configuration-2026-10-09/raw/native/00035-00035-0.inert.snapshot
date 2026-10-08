@@ -1,0 +1,411 @@
+#ifndef _WIN32_WINNT
+#define _WIN32_WINNT 0x0601
+#endif
+#ifndef WINVER
+#define WINVER _WIN32_WINNT
+#endif
+#define NOMINMAX
+#include <windows.h>
+#include <algorithm>
+#include <cstdint>
+#include <iomanip>
+#include <iostream>
+#include <iterator>
+#include <set>
+#include <sstream>
+#include <stdexcept>
+#include <string>
+#include <vector>
+
+namespace soui::benchmark::display {
+// SDK 19041 predates these Win11 flags. Values are documented by Microsoft;
+// runtime probing, not the compile target or an OS-version guess, selects them.
+constexpr UINT32 virtual_refresh_aware = 0x40;
+constexpr UINT32 boost_refresh_rate = 0x10;
+constexpr UINT32 max_paths = 256, max_modes = 1024, max_attempts = 3;
+constexpr std::size_t max_report_bytes = 1024 * 1024;
+
+std::uint64_t filetime(FILETIME value) {
+  return (static_cast<std::uint64_t>(value.dwHighDateTime) << 32) | value.dwLowDateTime;
+}
+std::uint64_t utc() { FILETIME value{}; GetSystemTimeAsFileTime(&value); return filetime(value); }
+std::uint64_t qpc() {
+  LARGE_INTEGER value{};
+  if (!QueryPerformanceCounter(&value) || value.QuadPart <= 0) throw std::runtime_error("qpc-unavailable");
+  return static_cast<std::uint64_t>(value.QuadPart);
+}
+std::string quoted(const std::string& value) {
+  std::ostringstream out; out << '"';
+  for (const unsigned char next : value) {
+    if (next == '"' || next == '\\') out << '\\' << next;
+    else if (next < 32) out << "\\u" << std::hex << std::setw(4) << std::setfill('0') << static_cast<unsigned>(next) << std::dec;
+    else out << next;
+  }
+  out << '"'; return out.str();
+}
+template<std::size_t Count> std::string wide(const WCHAR (&value)[Count]) {
+  std::ostringstream out; out << '"';
+  std::size_t length = 0;
+  for (; length < Count && value[length]; ++length) {
+    const auto next = static_cast<unsigned>(value[length]);
+    if (next == '"' || next == '\\') out << '\\' << static_cast<char>(next);
+    else if (next < 32 || next >= 127) out << "\\u" << std::hex << std::setw(4) << std::setfill('0') << next << std::dec;
+    else out << static_cast<char>(next);
+  }
+  if (length == Count) throw std::runtime_error("unterminated-device-name");
+  out << '"'; return out.str();
+}
+std::string decimal(std::uint64_t value) { return quoted(std::to_string(value)); }
+std::string luid(LUID value) {
+  const auto bits = (static_cast<std::uint64_t>(static_cast<UINT32>(value.HighPart)) << 32) | value.LowPart;
+  std::ostringstream out; out << '"' << std::hex << std::setw(16) << std::setfill('0') << bits << '"'; return out.str();
+}
+bool same_luid(LUID left, LUID right) { return left.LowPart == right.LowPart && left.HighPart == right.HighPart; }
+std::string rational(DISPLAYCONFIG_RATIONAL value) {
+  return "{\"numerator\":" + std::to_string(value.Numerator) + ",\"denominator\":" + std::to_string(value.Denominator) + '}';
+}
+std::string point(POINTL value) { return "{\"x\":" + std::to_string(value.x) + ",\"y\":" + std::to_string(value.y) + '}'; }
+std::string region(DISPLAYCONFIG_2DREGION value) { return "{\"cx\":" + std::to_string(value.cx) + ",\"cy\":" + std::to_string(value.cy) + '}'; }
+std::string rectangle(RECTL value) {
+  return "{\"left\":" + std::to_string(value.left) + ",\"top\":" + std::to_string(value.top) +
+    ",\"right\":" + std::to_string(value.right) + ",\"bottom\":" + std::to_string(value.bottom) + '}';
+}
+bool valid_rate(DISPLAYCONFIG_RATIONAL value) { return value.Numerator != 0 && value.Denominator != 0; }
+bool valid_signal(const DISPLAYCONFIG_VIDEO_SIGNAL_INFO& value) {
+  return value.pixelRate > 0 && valid_rate(value.hSyncFreq) && valid_rate(value.vSyncFreq) &&
+    value.activeSize.cx > 0 && value.activeSize.cy > 0 && value.totalSize.cx >= value.activeSize.cx &&
+    value.totalSize.cy >= value.activeSize.cy && static_cast<UINT32>(value.scanLineOrdering) <= 3;
+}
+std::string signal(const DISPLAYCONFIG_VIDEO_SIGNAL_INFO& value) {
+  return "{\"pixelRate\":" + decimal(value.pixelRate) + ",\"hSyncFreq\":" + rational(value.hSyncFreq) +
+    ",\"vSyncFreq\":" + rational(value.vSyncFreq) + ",\"activeSize\":" + region(value.activeSize) +
+    ",\"totalSize\":" + region(value.totalSize) + ",\"videoStandardRaw\":" + std::to_string(value.videoStandard) +
+    ",\"scanLineOrdering\":" + std::to_string(static_cast<UINT32>(value.scanLineOrdering)) + '}';
+}
+std::string mode_json(const DISPLAYCONFIG_MODE_INFO& value) {
+  std::string data;
+  if (value.infoType == DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE) {
+    const auto& item = value.sourceMode;
+    data = "{\"width\":" + std::to_string(item.width) + ",\"height\":" + std::to_string(item.height) +
+      ",\"pixelFormat\":" + std::to_string(static_cast<UINT32>(item.pixelFormat)) + ",\"position\":" + point(item.position) + '}';
+  } else if (value.infoType == DISPLAYCONFIG_MODE_INFO_TYPE_TARGET) data = signal(value.targetMode.targetVideoSignalInfo);
+  else if (value.infoType == DISPLAYCONFIG_MODE_INFO_TYPE_DESKTOP_IMAGE) {
+    const auto& item = value.desktopImageInfo;
+    data = "{\"pathSourceSize\":" + point(item.PathSourceSize) + ",\"desktopImageRegion\":" +
+      rectangle(item.DesktopImageRegion) + ",\"desktopImageClip\":" + rectangle(item.DesktopImageClip) + '}';
+  } else throw std::runtime_error("unsupported-mode-kind");
+  return "{\"kind\":" + std::to_string(static_cast<UINT32>(value.infoType)) + ",\"id\":" + std::to_string(value.id) +
+    ",\"adapterLuid\":" + luid(value.adapterId) + ",\"data\":" + data + '}';
+}
+struct names {
+  DISPLAYCONFIG_SOURCE_DEVICE_NAME source{};
+  DISPLAYCONFIG_TARGET_DEVICE_NAME target{};
+  DISPLAYCONFIG_ADAPTER_NAME source_adapter{}, target_adapter{};
+};
+struct snapshot {
+  std::vector<DISPLAYCONFIG_PATH_INFO> paths;
+  std::vector<DISPLAYCONFIG_MODE_INFO> modes;
+  std::vector<names> metadata;
+};
+const DISPLAYCONFIG_MODE_INFO& reference(const snapshot& value, UINT32 index,
+    DISPLAYCONFIG_MODE_INFO_TYPE kind, LUID adapter, UINT32 id) {
+  if (index >= value.modes.size()) throw std::runtime_error("invalid-mode-index-or-sentinel");
+  const auto& mode = value.modes[index];
+  if (mode.infoType != kind || mode.id != id || !same_luid(mode.adapterId, adapter))
+    throw std::runtime_error("mode-kind-id-luid-mismatch");
+  return mode;
+}
+void validate(const snapshot& value, UINT32 query_flags) {
+  if (value.paths.empty() || value.paths.size() > max_paths || value.modes.empty() || value.modes.size() > max_modes)
+    throw std::runtime_error("active-path-or-mode-count-unavailable");
+  const bool virtual_aware = (query_flags & QDC_VIRTUAL_MODE_AWARE) != 0;
+  for (const auto& mode : value.modes) {
+    if (mode.infoType == DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE) {
+      const auto& item = mode.sourceMode;
+      if (item.width == 0 || item.height == 0 || static_cast<UINT32>(item.pixelFormat) < 1 ||
+          static_cast<UINT32>(item.pixelFormat) > 5) throw std::runtime_error("invalid-source-mode");
+    } else if (mode.infoType == DISPLAYCONFIG_MODE_INFO_TYPE_TARGET) {
+      if (!valid_signal(mode.targetMode.targetVideoSignalInfo)) throw std::runtime_error("unknown-or-invalid-signal-rate");
+    } else if (mode.infoType == DISPLAYCONFIG_MODE_INFO_TYPE_DESKTOP_IMAGE && virtual_aware) {
+      const auto& item = mode.desktopImageInfo;
+      if (item.PathSourceSize.x <= 0 || item.PathSourceSize.y <= 0 || item.DesktopImageRegion.left < 0 ||
+          item.DesktopImageRegion.top < 0 || item.DesktopImageRegion.right < item.DesktopImageRegion.left ||
+          item.DesktopImageRegion.bottom < item.DesktopImageRegion.top || item.DesktopImageRegion.right > item.PathSourceSize.x ||
+          item.DesktopImageRegion.bottom > item.PathSourceSize.y || item.DesktopImageClip.right < item.DesktopImageClip.left ||
+          item.DesktopImageClip.bottom < item.DesktopImageClip.top) throw std::runtime_error("invalid-desktop-image");
+    } else throw std::runtime_error("unsupported-mode-kind-or-awareness");
+  }
+  std::set<std::string> targets;
+  for (const auto& path : value.paths) {
+    const auto& source = path.sourceInfo;
+    const auto& target = path.targetInfo;
+    if (!(path.flags & DISPLAYCONFIG_PATH_ACTIVE) || (path.flags & ~UINT32{0x1d}))
+      throw std::runtime_error("inactive-or-unknown-path-flags");
+    if (!target.targetAvailable) throw std::runtime_error("active-target-unavailable");
+    if (!valid_rate(target.refreshRate) || static_cast<UINT32>(target.scanLineOrdering) > 3 ||
+        static_cast<UINT32>(target.rotation) < 1 || static_cast<UINT32>(target.rotation) > 4)
+      throw std::runtime_error("invalid-target-configured-rate-or-rotation");
+    const auto scaling = static_cast<UINT32>(target.scaling);
+    if (scaling < 1 || (scaling > 5 && scaling != 128)) throw std::runtime_error("unknown-scaling");
+    if (!targets.insert(luid(target.adapterId) + '/' + std::to_string(target.id)).second)
+      throw std::runtime_error("duplicate-target-path");
+    const bool supports_virtual = (path.flags & DISPLAYCONFIG_PATH_SUPPORT_VIRTUAL_MODE) != 0;
+    if (supports_virtual && !virtual_aware) throw std::runtime_error("virtual-union-without-awareness");
+    if ((path.flags & boost_refresh_rate) && !(query_flags & virtual_refresh_aware))
+      throw std::runtime_error("boost-without-refresh-awareness");
+    const UINT32 source_index = supports_virtual ? source.sourceModeInfoIdx : source.modeInfoIdx;
+    const UINT32 target_index = supports_virtual ? target.targetModeInfoIdx : target.modeInfoIdx;
+    if (source_index == (supports_virtual ? 0xffffU : 0xffffffffU) ||
+        target_index == (supports_virtual ? 0xffffU : 0xffffffffU)) throw std::runtime_error("source-target-mode-sentinel");
+    reference(value, source_index, DISPLAYCONFIG_MODE_INFO_TYPE_SOURCE, source.adapterId, source.id);
+    reference(value, target_index, DISPLAYCONFIG_MODE_INFO_TYPE_TARGET, target.adapterId, target.id);
+    if (supports_virtual && target.desktopModeInfoIdx != DISPLAYCONFIG_PATH_DESKTOP_IMAGE_IDX_INVALID) {
+      const UINT32 index = target.desktopModeInfoIdx;
+      if (index >= value.modes.size() || value.modes[index].infoType != DISPLAYCONFIG_MODE_INFO_TYPE_DESKTOP_IMAGE)
+        throw std::runtime_error("invalid-desktop-mode-reference");
+      // The public desktop-image id role is not specified. Preserve it, but
+      // never guess a source/target association or use it for signal binding.
+    }
+  }
+}
+template<std::size_t Count> std::string name_json(const WCHAR (&value)[Count]) {
+  if (value[0] == L'\0') throw std::runtime_error("empty-source-or-adapter-name");
+  return "{\"errorCode\":0,\"name\":" + wide(value) + '}';
+}
+std::string path_json(const DISPLAYCONFIG_PATH_INFO& path, const names& metadata) {
+  const auto& source = path.sourceInfo; const auto& target = path.targetInfo;
+  const auto& name = metadata.target;
+  return "{\"flags\":" + std::to_string(path.flags) + ",\"source\":{\"adapterLuid\":" + luid(source.adapterId) +
+    ",\"id\":" + std::to_string(source.id) + ",\"rawModeIndex\":" + std::to_string(source.modeInfoIdx) +
+    ",\"statusFlags\":" + std::to_string(source.statusFlags) + ",\"gdiName\":" + name_json(metadata.source.viewGdiDeviceName) +
+    ",\"adapterName\":" + name_json(metadata.source_adapter.adapterDevicePath) + "},\"target\":{\"adapterLuid\":" + luid(target.adapterId) +
+    ",\"id\":" + std::to_string(target.id) + ",\"rawModeIndex\":" + std::to_string(target.modeInfoIdx) +
+    ",\"statusFlags\":" + std::to_string(target.statusFlags) + ",\"available\":" + (target.targetAvailable ? "true" : "false") +
+    ",\"outputTechnology\":" + std::to_string(static_cast<UINT32>(target.outputTechnology)) +
+    ",\"rotation\":" + std::to_string(static_cast<UINT32>(target.rotation)) + ",\"scaling\":" + std::to_string(static_cast<UINT32>(target.scaling)) +
+    ",\"pathRefreshRate\":" + rational(target.refreshRate) + ",\"scanLineOrdering\":" + std::to_string(static_cast<UINT32>(target.scanLineOrdering)) +
+    ",\"deviceName\":{\"errorCode\":0,\"flags\":" + std::to_string(name.flags.value) +
+    ",\"outputTechnology\":" + std::to_string(static_cast<UINT32>(name.outputTechnology)) + ",\"edidManufactureId\":" + std::to_string(name.edidManufactureId) +
+    ",\"edidProductCodeId\":" + std::to_string(name.edidProductCodeId) + ",\"connectorInstance\":" + std::to_string(name.connectorInstance) +
+    ",\"friendlyName\":" + wide(name.monitorFriendlyDeviceName) + ",\"devicePath\":" + wide(name.monitorDevicePath) +
+    "},\"adapterName\":" + name_json(metadata.target_adapter.adapterDevicePath) + "}}";
+}
+std::string snapshot_json(const snapshot& value) {
+  if (value.metadata.size() != value.paths.size()) throw std::runtime_error("incomplete-metadata");
+  std::string result = "{\"paths\":[";
+  for (std::size_t index = 0; index < value.paths.size(); ++index) {
+    if (index) result += ','; result += path_json(value.paths[index], value.metadata[index]);
+  }
+  result += "],\"modes\":[";
+  for (std::size_t index = 0; index < value.modes.size(); ++index) {
+    if (index) result += ','; result += mode_json(value.modes[index]);
+  }
+  return result + "]}";
+}
+struct api {
+  using sizes_fn = LONG (WINAPI*)(UINT32, UINT32*, UINT32*);
+  using query_fn = LONG (WINAPI*)(UINT32, UINT32*, DISPLAYCONFIG_PATH_INFO*, UINT32*, DISPLAYCONFIG_MODE_INFO*, DISPLAYCONFIG_TOPOLOGY_ID*);
+  using info_fn = LONG (WINAPI*)(DISPLAYCONFIG_DEVICE_INFO_HEADER*);
+  HMODULE module = nullptr; sizes_fn sizes = nullptr; query_fn query = nullptr; info_fn info = nullptr;
+  api() = default; api(const api&) = delete; api& operator=(const api&) = delete;
+  ~api() { if (module) FreeLibrary(module); }
+  void load() {
+    WCHAR directory[32768]{};
+    UINT length = GetSystemDirectoryW(directory, static_cast<UINT>(std::size(directory)));
+#ifndef _WIN64
+    // WOW64 redirects System32 to the 32-bit directory. Request the latter
+    // explicitly before comparing the loaded module's actual path; never
+    // disable process/thread redirection or mistake SysWOW64 for a mismatch.
+    using wow64_fn = BOOL (WINAPI*)(HANDLE, PBOOL);
+    using directory_fn = UINT (WINAPI*)(LPWSTR, UINT);
+    const HMODULE kernel = GetModuleHandleW(L"kernel32.dll");
+    const auto is_wow64 = kernel ? reinterpret_cast<wow64_fn>(GetProcAddress(kernel, "IsWow64Process")) : nullptr;
+    BOOL wow64 = FALSE;
+    if (!is_wow64 || !is_wow64(GetCurrentProcess(), &wow64)) throw std::runtime_error("process-architecture-unavailable");
+    if (wow64) {
+      const auto wow64_directory = reinterpret_cast<directory_fn>(GetProcAddress(kernel, "GetSystemWow64DirectoryW"));
+      if (!wow64_directory) throw std::runtime_error("wow64-system-directory-unavailable");
+      length = wow64_directory(directory, static_cast<UINT>(std::size(directory)));
+    }
+#endif
+    if (length == 0 || length >= std::size(directory)) throw std::runtime_error("system-directory-unavailable");
+    const std::wstring requested = std::wstring(directory, length) + L"\\user32.dll";
+    module = LoadLibraryW(requested.c_str());
+    if (!module) throw std::runtime_error("system-user32-unavailable");
+    WCHAR actual[32768]{};
+    const DWORD actual_length = GetModuleFileNameW(module, actual, static_cast<DWORD>(std::size(actual)));
+    if (actual_length == 0 || actual_length >= std::size(actual) || _wcsicmp(actual, requested.c_str()) != 0)
+      throw std::runtime_error("user32-module-path-mismatch");
+    sizes = reinterpret_cast<sizes_fn>(GetProcAddress(module, "GetDisplayConfigBufferSizes"));
+    query = reinterpret_cast<query_fn>(GetProcAddress(module, "QueryDisplayConfig"));
+    info = reinterpret_cast<info_fn>(GetProcAddress(module, "DisplayConfigGetDeviceInfo"));
+  }
+};
+struct observation {
+  DWORD pid = GetCurrentProcessId();
+  std::uint64_t creation = 0, started = 0, finished = 0, frequency = 0, begin = 0, end = 0;
+  UINT32 selected_query = 0, selected_sizing = 0, candidate = 1;
+  bool equal = false, exports_sizes = false, exports_query = false, exports_info = false;
+  std::string status = "error", reason = "not-completed";
+  std::vector<std::string> attempts, readings;
+  observation() {
+    FILETIME created{}, exited{}, kernel{}, user{}; LARGE_INTEGER freq{};
+    if (!GetProcessTimes(GetCurrentProcess(), &created, &exited, &kernel, &user) || !QueryPerformanceFrequency(&freq) || freq.QuadPart <= 0)
+      throw std::runtime_error("collector-identity-clock-unavailable");
+    creation = filetime(created); frequency = static_cast<std::uint64_t>(freq.QuadPart); started = utc(); begin = qpc();
+  }
+  void record(const char* stage, LONG error, UINT32 query_flags, UINT32 sizing_flags, UINT32 path_count, UINT32 mode_count) {
+    if (attempts.size() >= 96) throw std::runtime_error("attempt-record-limit");
+    attempts.push_back("{\"attempt\":" + std::to_string(candidate) + ",\"stage\":" + quoted(stage) +
+      ",\"errorCode\":" + std::to_string(static_cast<DWORD>(error)) + ",\"queryFlags\":" + std::to_string(query_flags) +
+      ",\"sizingFlags\":" + std::to_string(sizing_flags) + ",\"pathCount\":" + std::to_string(path_count) +
+      ",\"modeCount\":" + std::to_string(mode_count) + ",\"qpc\":" + decimal(qpc()) + '}');
+  }
+  bool over_budget() const {
+    const auto now = qpc(); if (now < begin) return true;
+    const auto delta = now - begin;
+    return delta / frequency > 2 || (delta / frequency == 2 && delta % frequency != 0);
+  }
+  void budget() {
+    if (over_budget()) {
+      record("budget", ERROR_TIMEOUT, selected_query ? selected_query : 2, selected_sizing ? selected_sizing : 2, 0, 0);
+      throw std::runtime_error("observed-budget-exceeded");
+    }
+  }
+  std::string json() const {
+    const auto flag_json = [](UINT32 value) { return value ? std::to_string(value) : std::string("null"); };
+    const auto boolean = [](bool value) { return value ? "true" : "false"; };
+    std::string result = "{\"schema\":\"soui.display-calibration/v1\",\"readOnly\":true,\"collection\":{\"pid\":" + std::to_string(pid) +
+      ",\"creationFileTime\":" + decimal(creation) + ",\"startedAtUtcFileTime\":" + decimal(started) +
+      ",\"finishedAtUtcFileTime\":" + decimal(finished) + ",\"qpcFrequency\":" + decimal(frequency) +
+      ",\"qpcBegin\":" + decimal(begin) + ",\"qpcEnd\":" + decimal(end) +
+      "},\"bounds\":{\"maxPaths\":256,\"maxModes\":1024,\"maxAttempts\":3,\"observedBudgetMs\":2000},\"status\":" +
+      quoted(status) + ",\"reason\":" + quoted(reason) + ",\"api\":{\"module\":\"system-user32\",\"exports\":{\"getBufferSizes\":" +
+      boolean(exports_sizes) + ",\"queryDisplayConfig\":" + boolean(exports_query) + ",\"getDeviceInfo\":" + boolean(exports_info) +
+      "},\"queryFlags\":" + flag_json(selected_query) + ",\"sizingFlags\":" + flag_json(selected_sizing) +
+      ",\"virtualModeAware\":" + boolean((selected_query & QDC_VIRTUAL_MODE_AWARE) != 0) +
+      ",\"virtualRefreshRateAware\":" + boolean((selected_query & virtual_refresh_aware) != 0) + "},\"attempts\":[";
+    for (std::size_t index = 0; index < attempts.size(); ++index) { if (index) result += ','; result += attempts[index]; }
+    result += "],\"readings\":[";
+    for (std::size_t index = 0; index < readings.size(); ++index) { if (index) result += ','; result += readings[index]; }
+    return result + "],\"equalReadings\":" + boolean(equal) +
+      ",\"claims\":{\"configuredSignalOnly\":true,\"physicalPresentation\":false,\"opticalCalibration\":false,\"performanceGate\":false,\"releaseReady\":false}}\n";
+  }
+};
+LONG query_once(api& functions, observation& report, UINT32 query_flags, UINT32 sizing_flags, snapshot& value) {
+  for (unsigned growth = 0; growth < 3; ++growth) {
+    report.budget(); UINT32 path_count = 0, mode_count = 0;
+    LONG code = functions.sizes(sizing_flags, &path_count, &mode_count);
+    report.record("buffer-size", code, query_flags, sizing_flags, path_count, mode_count); report.budget();
+    if (code != ERROR_SUCCESS) return code;
+    if (path_count > max_paths || mode_count > max_modes) {
+      report.record("validation", ERROR_NOT_ENOUGH_MEMORY, query_flags, sizing_flags, path_count, mode_count);
+      throw std::runtime_error("display-buffer-limit");
+    }
+    if (path_count == 0 || mode_count == 0) throw std::runtime_error("no-active-display-paths");
+    value.paths.assign(path_count, {}); value.modes.assign(mode_count, {});
+    code = functions.query(query_flags, &path_count, value.paths.data(), &mode_count, value.modes.data(), nullptr);
+    report.record("query", code, query_flags, sizing_flags, path_count, mode_count); report.budget();
+    if (code == ERROR_INSUFFICIENT_BUFFER) continue;
+    if (code != ERROR_SUCCESS) return code;
+    if (path_count > value.paths.size() || mode_count > value.modes.size()) throw std::runtime_error("invalid-returned-buffer-count");
+    value.paths.resize(path_count); value.modes.resize(mode_count); return ERROR_SUCCESS;
+  }
+  throw std::runtime_error("display-buffer-race-limit");
+}
+void api_failure(LONG code) {
+  if (code == ERROR_NOT_SUPPORTED) throw std::runtime_error("non-wddm");
+  if (code == ERROR_ACCESS_DENIED) throw std::runtime_error("console-access-denied");
+  throw std::runtime_error("ccd-api-failed");
+}
+snapshot get_snapshot(api& functions, observation& report) {
+  snapshot value;
+  LONG code = ERROR_INVALID_PARAMETER;
+  if (report.selected_query) {
+    code = query_once(functions, report, report.selected_query, report.selected_sizing, value);
+  } else {
+    for (const UINT32 flags : {UINT32{82}, UINT32{18}, UINT32{2}}) {
+      // GetBufferSizes does not document virtual-refresh-aware sizing. Probe
+      // the separate sizing flags; do not discard query82 just on sizing87.
+      for (const UINT32 sizing : {flags, flags == 82 ? UINT32{18} : flags}) {
+        code = query_once(functions, report, flags, sizing, value);
+        if (code == ERROR_SUCCESS) {report.selected_query = flags; report.selected_sizing = sizing; break;}
+        if (code != ERROR_INVALID_PARAMETER) api_failure(code);
+        if (flags != 82) break;
+      }
+      if (code == ERROR_SUCCESS) break;
+    }
+  }
+  if (code != ERROR_SUCCESS) api_failure(code);
+  // Validate unions before dereferencing mode fields or calling name APIs.
+  try {validate(value, report.selected_query);}
+  catch (...) {report.record("validation", ERROR_INVALID_DATA, report.selected_query, report.selected_sizing,
+    static_cast<UINT32>(value.paths.size()), static_cast<UINT32>(value.modes.size())); throw;}
+  value.metadata.resize(value.paths.size());
+  for (std::size_t index = 0; index < value.paths.size(); ++index) {
+    const auto& path = value.paths[index]; auto& names = value.metadata[index];
+    names.source.header = {DISPLAYCONFIG_DEVICE_INFO_GET_SOURCE_NAME, sizeof(names.source), path.sourceInfo.adapterId, path.sourceInfo.id};
+    names.target.header = {DISPLAYCONFIG_DEVICE_INFO_GET_TARGET_NAME, sizeof(names.target), path.targetInfo.adapterId, path.targetInfo.id};
+    names.source_adapter.header = {DISPLAYCONFIG_DEVICE_INFO_GET_ADAPTER_NAME, sizeof(names.source_adapter), path.sourceInfo.adapterId, 0};
+    names.target_adapter.header = {DISPLAYCONFIG_DEVICE_INFO_GET_ADAPTER_NAME, sizeof(names.target_adapter), path.targetInfo.adapterId, 0};
+    for (auto* header : {&names.source.header, &names.target.header, &names.source_adapter.header, &names.target_adapter.header}) {
+      report.budget(); const LONG code = functions.info(header);
+      if (code != ERROR_SUCCESS) {
+        report.record("metadata", code, report.selected_query, report.selected_sizing,
+          static_cast<UINT32>(value.paths.size()), static_cast<UINT32>(value.modes.size()));
+        report.budget(); api_failure(code);
+      }
+      report.budget();
+    }
+  }
+  report.record("metadata", ERROR_SUCCESS, report.selected_query, report.selected_sizing,
+    static_cast<UINT32>(value.paths.size()), static_cast<UINT32>(value.modes.size()));
+  report.record("validation", ERROR_SUCCESS, report.selected_query, report.selected_sizing,
+    static_cast<UINT32>(value.paths.size()), static_cast<UINT32>(value.modes.size()));
+  return value;
+}
+void collect(api& functions, observation& report) {
+  report.exports_sizes = functions.sizes != nullptr; report.exports_query = functions.query != nullptr; report.exports_info = functions.info != nullptr;
+  if (!report.exports_sizes || !report.exports_query || !report.exports_info) throw std::runtime_error("user32-export-unavailable");
+  for (report.candidate = 1; report.candidate <= max_attempts; ++report.candidate) {
+    report.readings.clear(); report.equal = false;
+    const auto first = get_snapshot(functions, report);
+    report.readings.push_back(snapshot_json(first)); report.budget();
+    const auto second = get_snapshot(functions, report);
+    report.readings.push_back(snapshot_json(second)); report.budget();
+    report.equal = report.readings[0] == report.readings[1];
+    report.record("compare", report.equal ? ERROR_SUCCESS : ERROR_RETRY, report.selected_query, report.selected_sizing,
+      static_cast<UINT32>(second.paths.size()), static_cast<UINT32>(second.modes.size()));
+    if (report.equal) {report.status = "available"; report.reason = "success"; return;}
+  }
+  throw std::runtime_error("topology-not-stable-across-readings");
+}
+int run() {
+  observation report;
+  try {
+    api functions; functions.load(); collect(functions, report); report.budget();
+  } catch (const std::exception& error) {
+    report.reason = error.what();
+    report.status = (report.reason == "non-wddm" || report.reason == "console-access-denied" ||
+      report.reason == "system-user32-unavailable" || report.reason == "user32-export-unavailable") ? "unavailable" : "error";
+  } catch (...) {report.status = "error"; report.reason = "unexpected-exception";}
+  report.finished = utc(); report.end = qpc();
+  if (report.finished < report.started) {report.status = "error"; report.reason = "utc-clock-went-backwards";}
+  if (report.over_budget()) {report.status = "error"; report.reason = "observed-budget-exceeded";}
+  std::string output = report.json();
+  if (output.size() > max_report_bytes) {
+    report.status = "error"; report.reason = "report-size-limit"; report.readings.clear(); report.equal = false; output = report.json();
+  }
+  std::cout << output; std::cout.flush();
+  return report.status == "available" && std::cout.good() ? 0 : 1;
+}
+} // namespace soui::benchmark::display
+
+#ifndef SOUI_DISPLAY_CALIBRATION_TEST_ONLY
+int main(int argc, char**) {
+  if (argc != 1) {std::cerr << "DisplayCalibration takes no arguments\n"; return 2;}
+  try {return soui::benchmark::display::run();}
+  catch (const std::exception& error) {std::cerr << "DisplayCalibration: " << error.what() << '\n'; return 1;}
+  catch (...) {std::cerr << "DisplayCalibration: unexpected failure\n"; return 1;}
+}
+#endif

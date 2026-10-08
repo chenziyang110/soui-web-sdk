@@ -1,0 +1,265 @@
+'use strict';
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+const os = require('node:os');
+const crypto = require('node:crypto');
+const vm = require('node:vm');
+
+const repository = path.resolve(__dirname, '../..');
+const helperPath = path.join(repository, 'tools/internal/measurement-validation.cjs');
+const helperSource = fs.readFileSync(helperPath, 'utf8');
+const sdkCheck = 'cmake/SouiWindowsSdk.cmake';
+const tailInputs = ['benchmarks/protocol/owned-tail-evidence.cpp', 'benchmarks/protocol/owned-tail-evidence.h',
+  'tests/benchmark/owned-tail-process-fixture.cpp', 'tests/benchmark/owned-tail-mutation-fixture.cpp',
+  'tests/benchmark/owned-tail-api-fixture.cpp'];
+const toolNames = ['OwnedProcessRunner', 'OwnedProcessAssignmentFixture', 'ProcessTreeSampler', 'InputTrace', 'NativeTraceIdentity',
+  'OwnedTailProcessFixture', 'OwnedTailMutationFixture', 'OwnedTailApiFixture', 'DisplayCalibration'];
+const displayInput = 'benchmarks/protocol/display-calibration.cpp';
+const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+
+function load(workspace, launches) {
+  const module = {exports: {}};
+  const localRequire = name => name === './owned-process.cjs' ? {
+    launchOwned(...args) {
+      launches.count++;
+      if (launches.implementation) return launches.implementation(...args);
+      throw new Error('Native launch prohibited in pure preparation fixture');
+    }
+  } : require(name);
+  vm.runInNewContext(helperSource, {module, require: localRequire,
+    __dirname: path.join(workspace, 'tools/internal'), process, console, Buffer}, {filename: helperPath});
+  return module.exports;
+}
+
+function fixture(t, architecture) {
+  const temporaryRoot = fs.realpathSync(os.tmpdir());
+  const workspace = fs.mkdtempSync(path.join(temporaryRoot, 'soui-measurement-source-'));
+  const ownedPath = fs.realpathSync(workspace);
+  t.after(() => {
+    assert.equal(fs.realpathSync(workspace), ownedPath);
+    assert.ok(ownedPath.startsWith(temporaryRoot + path.sep));
+    fs.rmSync(workspace, {recursive: true, force: true});
+  });
+  const write = (name, bytes) => {
+    const file = path.join(workspace, name);
+    fs.mkdirSync(path.dirname(file), {recursive: true});
+    fs.writeFileSync(file, bytes);
+  };
+  // Real input bytes, synthetic bounded PE headers: none of these tools execute.
+  const existing = load(repository, {count: 0}).fingerprint();
+  for (const entry of existing.files) write(entry.path, fs.readFileSync(path.join(repository, entry.path)));
+  write(sdkCheck, fs.readFileSync(path.join(repository, sdkCheck)));
+  for (const name of tailInputs) write(name, fs.readFileSync(path.join(repository, name)));
+  for (const name of [displayInput, 'benchmarks/protocol/display-calibration.cjs', 'benchmarks/protocol/owned-trace-subject.cjs'])
+    write(name, fs.readFileSync(path.join(repository, name)));
+  write('tools/internal/owned-process.cjs', '// pure fixture client\n');
+  for (const name of ['process-tree-sampler', 'run-traces']) write(`tests/benchmark/${name}.test.cjs`, '// pure fixture test\n');
+  const launches = {count: 0}, validation = load(workspace, launches);
+  const directory = architecture === 'x64' ? 'out/benchmark-protocol' : 'out/benchmark-protocol-x86';
+  const executables = toolNames.map(name => {
+    const bytes = Buffer.alloc(128);
+    bytes.writeUInt16LE(0x5a4d, 0);
+    bytes.writeUInt32LE(64, 60);
+    bytes.writeUInt32LE(0x4550, 64);
+    bytes.writeUInt16LE(architecture === 'x64' ? 34404 : 332, 68);
+    const filename = `${directory}/Release/${name}.exe`;
+    write(filename, bytes);
+    return {name, path: filename, bytes: bytes.length, sha256: hash(bytes), coff: architecture === 'x64' ? 34404 : 332};
+  });
+  write(`${directory}/measurement-tools.json`, JSON.stringify({schema: 'soui.measurement-tool-preparation/v1',
+    architecture, configuration: 'Release', prepared: true, buildExitCode: 0,
+    genericSupervisionPassed: null, source: validation.fingerprint(), executables}));
+  return {workspace, write, validation, launches, directory, sdkFile: path.join(workspace, sdkCheck)};
+}
+
+for (const architecture of ['x86', 'x64']) {
+  test(`${architecture}: unchanged source and matching tool identities remain prepared`, t => {
+    const f = fixture(t, architecture), prepared = f.validation.prepared(architecture);
+    assert.equal(prepared.report.prepared, true);
+    assert.equal(prepared.report.source.sha256, f.validation.fingerprint().sha256);
+    assert.deepEqual(Object.keys(prepared.tools).sort(), [...toolNames].sort());
+    assert.equal(f.launches.count, 0);
+  });
+
+  test(`${architecture}: changed Windows SDK selection input invalidates preparation`, t => {
+    const f = fixture(t, architecture), before = f.validation.fingerprint().sha256;
+    fs.appendFileSync(f.sdkFile, '\n# changed SDK selection fixture\n');
+    assert.notEqual(f.validation.fingerprint().sha256, before, 'The actual top-level CMake SDK check is a build input');
+    assert.throws(() => f.validation.prepared(architecture), /missing or stale/);
+    assert.equal(f.launches.count, 0);
+  });
+
+  test(`${architecture}: missing Windows SDK selection input cannot reuse prepared tools`, t => {
+    const f = fixture(t, architecture);
+    fs.unlinkSync(f.sdkFile);
+    assert.throws(() => f.validation.fingerprint(), /ENOENT/);
+    assert.throws(() => f.validation.prepared(architecture), /ENOENT/);
+    assert.equal(f.launches.count, 0);
+  });
+
+  test(`${architecture}: changed or missing SDK input rejects the native group before launch`, async t => {
+    for (const mode of ['changed', 'missing']) {
+      const f = fixture(t, architecture);
+      if (mode === 'changed') fs.appendFileSync(f.sdkFile, '\n# changed SDK selection fixture\n');
+      else fs.unlinkSync(f.sdkFile);
+      await assert.rejects(f.validation.runGroup('native', architecture), /missing or stale|ENOENT/);
+      assert.equal(f.launches.count, 0, `${mode} SDK input must fail before any owned subject is started`);
+    }
+  });
+
+  for (const input of tailInputs) {
+    test(`${architecture}: changed ${input} invalidates preparation`, t => {
+      const f = fixture(t, architecture), before = f.validation.fingerprint().sha256;
+      fs.appendFileSync(path.join(f.workspace, input), '\n// changed Tail compilation input fixture\n');
+      assert.notEqual(f.validation.fingerprint().sha256, before, 'Every actual Runner compilation dependency is a build input');
+      assert.throws(() => f.validation.prepared(architecture), /missing or stale/);
+      assert.equal(f.launches.count, 0);
+    });
+
+    test(`${architecture}: missing ${input} cannot reuse prepared tools`, t => {
+      const f = fixture(t, architecture);
+      fs.unlinkSync(path.join(f.workspace, input));
+      assert.throws(() => f.validation.fingerprint(), /ENOENT/);
+      assert.throws(() => f.validation.prepared(architecture), /ENOENT/);
+      assert.equal(f.launches.count, 0);
+    });
+
+    test(`${architecture}: changed or missing ${input} rejects the native group before launch`, async t => {
+      for (const mode of ['changed', 'missing']) {
+        const f = fixture(t, architecture), filename = path.join(f.workspace, input);
+        if (mode === 'changed') fs.appendFileSync(filename, '\n// changed Tail compilation input fixture\n');
+        else fs.unlinkSync(filename);
+        for (const group of ['native','tail-native','tail-protocol'])
+          await assert.rejects(f.validation.runGroup(group, architecture), /missing or stale|ENOENT/);
+        assert.equal(f.launches.count, 0, `${mode} Tail input must fail before any owned subject is started`);
+      }
+    });
+  }
+
+  test(`${architecture}: changed display compiler input invalidates preparation before any native launch`, async t => {
+    const f = fixture(t, architecture), before = f.validation.fingerprint().sha256;
+    fs.appendFileSync(path.join(f.workspace, displayInput), '\n// changed display compilation input fixture\n');
+    assert.notEqual(f.validation.fingerprint().sha256, before);
+    assert.throws(() => f.validation.prepared(architecture), /missing or stale/);
+    await assert.rejects(f.validation.runDisplay(architecture), /missing or stale/);
+    assert.equal(f.launches.count, 0);
+  });
+
+  test(`${architecture}: missing display compiler input cannot reuse a preparation or launch`, async t => {
+    const f = fixture(t, architecture);
+    fs.unlinkSync(path.join(f.workspace, displayInput));
+    assert.throws(() => f.validation.fingerprint(), /ENOENT/);
+    assert.throws(() => f.validation.prepared(architecture), /ENOENT/);
+    await assert.rejects(f.validation.runDisplay(architecture), /ENOENT/);
+    assert.equal(f.launches.count, 0);
+  });
+
+  for (const change of ['missing-entry', 'missing-file', 'wrong-architecture', 'changed-bytes']) {
+    test(`${architecture}: ${change} DisplayCalibration fails closed before launch`, async t => {
+      const f = fixture(t, architecture), executable = path.join(f.workspace, f.directory, 'Release/DisplayCalibration.exe');
+      if (change === 'missing-entry') {
+        const record = path.join(f.workspace, f.directory, 'measurement-tools.json');
+        const value = JSON.parse(fs.readFileSync(record));
+        value.executables = value.executables.filter(item => item.name !== 'DisplayCalibration');
+        fs.writeFileSync(record, JSON.stringify(value));
+      } else if (change === 'missing-file') fs.unlinkSync(executable);
+      else {
+        const bytes = fs.readFileSync(executable);
+        if (change === 'wrong-architecture') bytes.writeUInt16LE(architecture === 'x64' ? 332 : 34404, 68);
+        else bytes[127] = 1;
+        fs.writeFileSync(executable, bytes);
+      }
+      assert.throws(() => f.validation.prepared(architecture), /incomplete|ENOENT|architecture differs|executable changed/);
+      await assert.rejects(f.validation.runDisplay(architecture), /incomplete|ENOENT|architecture differs|executable changed/);
+      assert.equal(f.launches.count, 0);
+    });
+  }
+}
+
+// Authored raw schema plus authored native records test caller decisions only.
+// Synthetic PE headers and fake launch records are never actual native evidence.
+function authoredDisplay() {
+  const module = {exports: {}};
+  const source = fs.readFileSync(path.join(repository, 'tests/benchmark/display-calibration.test.cjs'), 'utf8');
+  vm.runInNewContext(source, {module, Buffer, structuredClone,
+    require: name => name === 'node:test' ? {test() {}} : name.startsWith('../../benchmarks/') ?
+      require(path.resolve(repository, 'tests/benchmark', name)) : require(name)});
+  return module.exports;
+}
+function fakeCapture(f, options = {}) {
+  const {EventEmitter} = require('node:events');
+  f.launches.implementation = (executable, args, launch) => {
+    const authored = authoredDisplay(), value = authored.fixture();
+    const subject = authored.identity;
+    const context = {schema: 'soui.owned-process-context/v1', runnerSha256: hash(fs.readFileSync(launch.runner)),
+      executableSha256: hash(fs.readFileSync(executable)), executable,
+      args: options.badContext ? ['unexpected'] : args, cwd: launch.cwd, timeoutMs: launch.timeoutMs, drainMs: launch.drainMs};
+    fs.writeFileSync(launch.report + '.context.json', JSON.stringify(context) + '\n', {flag: 'wx'});
+    if (options.wrongTick) value.collection.creationFileTime = String(BigInt(subject.creationFileTime) + 1n);
+    if (options.unavailable) {
+      value.status = 'unavailable'; value.reason = 'user32-export-unavailable'; value.equalReadings = false; value.readings = [];
+      value.api.queryFlags = value.api.sizingFlags = null; value.api.virtualModeAware = value.api.virtualRefreshRateAware = false;
+      value.attempts = [{...value.attempts[0], errorCode: 127}];
+    }
+    const exit = options.unavailable || options.empty || options.nonzeroAvailable ? 1 : 0;
+    const terminal = {event: 'terminal', reason: 'completed', rootExited: true, rootExitCode: exit,
+      elapsedMs: 1, closureConfirmed: true, activeProcesses: 0, totalProcesses: 1,
+      activeBeforeCleanup: 0, terminatedOwnedJob: false, limitTerminatedProcesses: 0, passed: exit === 0};
+    const records = [{schema: 'soui.owned-process-run/v1', event: 'start', ...subject,
+      jobAssignedBeforeResume: true, breakawayAllowed: false, timeoutMs: launch.timeoutMs, drainMs: launch.drainMs},
+      {event: 'root-exit', exitCode: exit}, terminal];
+    const raw = Buffer.from(records.map(JSON.stringify).join('\n') + '\n');
+    const child = {stdout: new EventEmitter(), stderr: new EventEmitter()};
+    const finished = new Promise(resolve => process.nextTick(() => {
+      child.stdout.emit('data', options.empty ? Buffer.alloc(0) : authored.bytes(value));
+      fs.writeFileSync(launch.report, raw, {flag: 'wx'});
+      if (options.changedReader) fs.appendFileSync(path.join(f.workspace, 'benchmarks/protocol/display-calibration.cjs'), '\n// changed reader\n');
+      resolve({pid: subject.pid, creationFileTime: subject.creationFileTime, exitCode: exit,
+        supervisorExitCode: exit, signal: null, spawnError: null, reportError: null, stopRequested: false,
+        fallbackUsed: false, closureConfirmed: true, passed: exit === 0, terminal, report: launch.report,
+        reportSha256: hash(raw), runnerSha256: context.runnerSha256, executableSha256: context.executableSha256});
+    }));
+    return {child, ready: Promise.resolve(subject), finished, stop() {throw new Error('Authored bounded fixture should not stop');}};
+  };
+}
+function displaySummary(f) {
+  const directories = fs.readdirSync(path.join(f.workspace, 'out/measurement-validation'));
+  assert.equal(directories.length, 1);
+  const directory = path.join(f.workspace, 'out/measurement-validation', directories[0]);
+  return {summary: JSON.parse(fs.readFileSync(path.join(directory, 'summary.json'))), directory};
+}
+test('authored available display is bound only after native context verification and never claims presentation', async t => {
+  const f = fixture(t, 'x64'); fakeCapture(f);
+  const result = await f.validation.runDisplay('x64');
+  assert.equal(result.displayConfigurationAccepted, true);
+  assert.equal(result.verdict.exactCollectorBound, true);
+  for (const field of ['physicalPresentation', 'opticalCalibration', 'performanceGate', 'releaseReady']) assert.equal(result[field], false);
+  assert.equal(f.launches.count, 1);
+});
+for (const [name, options] of Object.entries({
+  'one-tick collector mismatch': {wrongTick: true},
+  'native launch context mismatch': {badContext: true},
+  'reader changed during collection': {changedReader: true},
+  'nonzero collector with available-looking JSON': {nonzeroAvailable: true},
+  'empty failed collector': {empty: true},
+})) test(`authored ${name} retains failure raw and cannot accept configuration`, async t => {
+  const f = fixture(t, 'x64'); fakeCapture(f, options);
+  await assert.rejects(f.validation.runDisplay('x64'));
+  const {summary, directory} = displaySummary(f);
+  assert.equal(summary.passed, false); assert.equal(summary.displayConfigurationAccepted, false);
+  assert.equal(summary.performanceGate, false); assert.equal(summary.releaseReady, false);
+  assert.ok(fs.existsSync(path.join(directory, 'sampler.owned.ndjson')));
+  assert.ok(fs.existsSync(path.join(directory, 'sampler.stdout.log')));
+  assert.ok(fs.existsSync(path.join(directory, 'finished.json')));
+});
+test('authored unavailable collector remains exit1/generic false with only unbound diagnostic parsing', async t => {
+  const f = fixture(t, 'x86'); fakeCapture(f, {unavailable: true});
+  await assert.rejects(f.validation.runDisplay('x86'));
+  const {summary} = displaySummary(f);
+  assert.equal(summary.rootExitCode, 1); assert.equal(summary.genericSupervisionPassed, false);
+  assert.equal(summary.diagnostic.reason, 'user32-export-unavailable');
+  assert.equal(summary.diagnostic.exactCollectorBound, false);
+  assert.equal(summary.displayConfigurationAccepted, false);
+});

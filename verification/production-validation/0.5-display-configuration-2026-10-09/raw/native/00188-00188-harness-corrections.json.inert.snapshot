@@ -1,0 +1,203 @@
+{
+  "schema": "soui.display-harness-corrections/v1",
+  "productionSourceChanged": false,
+  "originalDriverSha256": "6226da7abf21f9ec80653a9c622f5686bb69d309f268d7d723fb545df9887fe1",
+  "wrongBufferSnapshot": {
+    "path": "source-freeze.inert.snapshot",
+    "sha256": "a5d6d10b371003d028caf519bfb6dd3f3ad2fff46e4a609b6010a3e4ffc8ea71",
+    "description": "Private write helper JSON-serialized Buffer; not original source bytes. Preserved without overwrite."
+  },
+  "correctedOriginalSnapshot": {
+    "path": "source-freeze.original-bytes.inert.snapshot",
+    "sha256": "9f1ad96f3734547b8f5315f4de4d1139f8f417766266d3a3f483f32a6cf38e1b"
+  },
+  "memberSummary": {
+    "description": "Original ownedTail summary filtered member, but native event is owned-member. Empty summary is not evidence of an empty Job. These are last-observed held Job members, not exact pre-cleanup tail-policy snapshots."
+  },
+  "records": [
+    {
+      "label": "configure-x64",
+      "rawSha256": "8cf375707d918e6f274c23acf64da619720d3878593e1bdd0131b6e2a17112fc",
+      "lastObservedAccounting": {
+        "event": "job-members",
+        "elapsedMs": 6407,
+        "activeProcesses": 1,
+        "totalProcesses": 32,
+        "limitTerminatedProcesses": 0
+      },
+      "lastObservedMembers": [
+        {
+          "event": "owned-member",
+          "pid": 19972,
+          "creationFileTime": "134359605874905032",
+          "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+        }
+      ],
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 36423,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 32,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    },
+    {
+      "label": "compile-x64",
+      "rawSha256": "ce83e43b28e241d66a3f6d9e2489975005c8624687cdbb72cfcbf1bf8917436c",
+      "lastObservedAccounting": {
+        "event": "job-members",
+        "elapsedMs": 3090,
+        "activeProcesses": 1,
+        "totalProcesses": 18,
+        "limitTerminatedProcesses": 0
+      },
+      "lastObservedMembers": [
+        {
+          "event": "owned-member",
+          "pid": 95884,
+          "creationFileTime": "134359606232708111",
+          "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+        }
+      ],
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 33096,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 18,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    },
+    {
+      "label": "imports-x64",
+      "rawSha256": "4003fdc6a9aa84365822c9230d418bd821b30fe359f8fad32702c2f8a13f71da",
+      "lastObservedAccounting": {
+        "event": "job-members",
+        "elapsedMs": 96,
+        "activeProcesses": 0,
+        "totalProcesses": 3,
+        "limitTerminatedProcesses": 0
+      },
+      "lastObservedMembers": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 97,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 3,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "label": "configure-x86",
+      "rawSha256": "c2235c3f8a5b41604da13f8b71649fd47bfc5cff568f4df55970b5cc1a7457af",
+      "lastObservedAccounting": {
+        "event": "job-members",
+        "elapsedMs": 5923,
+        "activeProcesses": 1,
+        "totalProcesses": 32,
+        "limitTerminatedProcesses": 0
+      },
+      "lastObservedMembers": [
+        {
+          "event": "owned-member",
+          "pid": 95108,
+          "creationFileTime": "134359606570122060",
+          "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe"
+        }
+      ],
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 35924,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 32,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    },
+    {
+      "label": "compile-x86",
+      "rawSha256": "a706f0a4136536cb33f07dadf43d086d78de2a94d7aa0bcd9523560078568da2",
+      "lastObservedAccounting": {
+        "event": "job-members",
+        "elapsedMs": 2993,
+        "activeProcesses": 1,
+        "totalProcesses": 18,
+        "limitTerminatedProcesses": 0
+      },
+      "lastObservedMembers": [
+        {
+          "event": "owned-member",
+          "pid": 57276,
+          "creationFileTime": "134359606927071349",
+          "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe"
+        }
+      ],
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 33014,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 18,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    },
+    {
+      "label": "imports-x86",
+      "rawSha256": "40eb41d45efe48c6e27098d92ac110d442b1452a525414156355a66092e51420",
+      "lastObservedAccounting": {
+        "event": "job-members",
+        "elapsedMs": 95,
+        "activeProcesses": 0,
+        "totalProcesses": 3,
+        "limitTerminatedProcesses": 0
+      },
+      "lastObservedMembers": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 96,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 3,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    }
+  ]
+}

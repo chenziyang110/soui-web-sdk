@@ -3,10 +3,12 @@ param([ValidateSet('x86','x64')][string]$Architecture='x64',
       [ValidateSet('Debug','Release')][string]$Configuration='Release',
       [switch]$NativeOnly,
       [switch]$UnitOnly,
-      [switch]$WithGuiBindings)
+      [switch]$WithGuiBindings,
+      [switch]$WithDisplayConfiguration)
 $ErrorActionPreference='Stop'
 if($NativeOnly -and $UnitOnly){throw 'NativeOnly and UnitOnly cannot be used together.'}
 if($NativeOnly -and $WithGuiBindings){throw 'WithGuiBindings requires unit tests; omit NativeOnly.'}
+if($NativeOnly -and $WithDisplayConfiguration){throw 'WithDisplayConfiguration requires prepared unit tools; omit NativeOnly.'}
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $output=Join-Path $root "out/$Architecture"
 $evidence=Join-Path $root 'tools/internal/build-evidence.cjs'
@@ -56,6 +58,10 @@ if(-not $NativeOnly){
   if($LASTEXITCODE -ne 0){throw 'Compiler-tail reader, client, policy, or standard caller regressions failed'}
   & node (Join-Path $root 'tools/internal/measurement-validation.cjs') tail-native $Architecture
   if($LASTEXITCODE -ne 0){throw 'Native compiler-tail evidence linkage regressions failed'}
+  if($WithDisplayConfiguration){
+    & node (Join-Path $root 'tools/internal/measurement-validation.cjs') display $Architecture
+    if($LASTEXITCODE -ne 0){throw 'Current display configuration is unavailable or failed; this is not a presentation/performance result'}
+  }
   & node --test (Join-Path $root 'tests/web/web-features.test.mjs')
   if($LASTEXITCODE -ne 0){throw 'Web runtime feature tests failed'}
   & node --test (Join-Path $root 'tests/web/session-renewal.test.mjs') (Join-Path $root 'tests/web/agent-session-renewal.test.mjs') (Join-Path $root 'tests/web/webview2-preload.test.mjs')

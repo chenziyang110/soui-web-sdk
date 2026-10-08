@@ -1,0 +1,25 @@
+// TEST_ONLY real Windows API capacity observations, no synthetic API returns.
+#define _WIN32_WINNT 0x0601
+#define NOMINMAX
+#include <windows.h>
+#include <iomanip>
+#include <iostream>
+#include <vector>
+int main() {
+  using directory_fn=UINT (WINAPI*)(LPWSTR,UINT);
+  const auto kernel=GetModuleHandleW(L"kernel32.dll");
+  const auto get_directory=reinterpret_cast<directory_fn>(GetProcAddress(kernel,"GetSystemWow64DirectoryW"));
+  if (!get_directory) return 1;
+  for (UINT count : {260U,32767U,32768U}) {
+    std::vector<WCHAR> buffer(32768,L'!');
+    const UINT first=GetSystemDirectoryW(buffer.data(),count);
+    SetLastError(ERROR_SUCCESS);
+    const UINT length=get_directory(buffer.data(),count); const auto error=GetLastError();
+    std::size_t actual=0; while(actual<buffer.size() && buffer[actual]) ++actual;
+    std::cerr << "TEST_ONLY capacity=" << count << " initialLength=" << first << " returnedLength=" << length
+      << " actualLength=" << actual << " error=" << error << " pathUtf16=";
+    for(std::size_t i=0;i<actual && i<64;++i)
+      std::cerr << std::hex << std::setw(4) << std::setfill('0') << static_cast<unsigned>(buffer[i]);
+    std::cerr << std::dec << '\n';
+  }
+}

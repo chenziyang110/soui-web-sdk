@@ -1,0 +1,10 @@
+^F:\WORK\SM05-SCOPES\OUT\BENCHMARK-PROTOCOL-X86\CMAKEFILES\64FEC157E1B40360335418A9DF151F72\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/work/sm05-scopes/benchmarks/protocol -BF:/work/sm05-scopes/out/benchmark-protocol-x86 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file F:/work/sm05-scopes/out/benchmark-protocol-x86/SouiBenchmarkSampler.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

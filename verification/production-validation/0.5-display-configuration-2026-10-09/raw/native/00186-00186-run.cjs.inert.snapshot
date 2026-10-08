@@ -1,0 +1,34 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {launchOwned}=require('../provider/owned-process.cjs');
+const root='F:/work/sm05-scopes',runner='F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const cmake='C:/Program Files/CMake/bin/cmake.exe',instance='C:/Program Files/Microsoft Visual Studio/2022/Community';
+const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const write=(file,value)=>fs.writeFileSync(file,JSON.stringify(value,null,2)+'\n',{flag:'wx'});
+const provider={client:'aa160d64892294eb3e65f27f29d554020dd10ea0704f6d0a669fa83184054753',
+  runner:'1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f',
+  cpp:'960c60e897a602391d7b2cdb34f0ddb0f76d050ba0caae59d1b058b3dc4fe94f'};
+function verify(){for(const [file,expected] of [[runner,provider.runner],[path.join(__dirname,'../provider/owned-process.cjs'),provider.client],
+  [root+'/benchmarks/protocol/display-calibration.cpp',provider.cpp]])if(sha(fs.readFileSync(file))!==expected)throw new Error('Frozen input differs');}
+async function owned(label,executable,args){verify();const dir=path.join(__dirname,label);fs.mkdirSync(dir);
+ const stdout=fs.openSync(path.join(dir,'stdout.log'),'wx'),stderr=fs.openSync(path.join(dir,'stderr.log'),'wx');let result;
+ const executableSha256=sha(fs.readFileSync(executable));
+ try{const h=launchOwned(executable,args,{runner,cwd:root,report:path.join(dir,'owned.ndjson'),stdout,stderr,
+  timeoutMs:120000,drainMs:30000,env:{...process.env,MSBUILDDISABLENODEREUSE:'1'}});result=await h.finished;}
+ finally{fs.closeSync(stdout);fs.closeSync(stderr);}verify();
+ if(!result.closureConfirmed||sha(fs.readFileSync(executable))!==executableSha256)throw new Error('Identity/closure differs');
+ write(path.join(dir,'result.json'),result);console.log(JSON.stringify({label,exitCode:result.exitCode,passed:result.passed,
+  closureConfirmed:result.closureConfirmed,supervisorExitCode:result.supervisorExitCode}));return result;}
+(async()=>{verify();write(path.join(__dirname,'inputs.json'),{provider,testOnly:true,apiResultSimulation:false,
+ files:['run.cjs','consumer/CMakeLists.txt','consumer/load-probe.cpp'].map(name=>({name,sha256:sha(fs.readFileSync(path.join(__dirname,name)))}))});
+ const build=path.join(__dirname,'build-x86');
+ const configure=await owned('configure',cmake,['-S',path.join(__dirname,'consumer'),'-B',build,'-G','Visual Studio 17 2022',
+ '-A','Win32,version=10.0.19041.0','-T','v143,host=x64,version=14.44.35207','-DCMAKE_GENERATOR_INSTANCE:PATH='+instance,
+ '-DCMAKE_SYSTEM_VERSION:STRING=10.0.19041.0','-DCMAKE_VS_GLOBALS:STRING=VcpkgEnabled=false;VcpkgEnableManifest=false;VcpkgManifestInstall=false']);
+ if(configure.exitCode!==0)throw new Error('Diagnostic configure body failed');
+ const compile=await owned('compile',cmake,['--build',build,'--config','Release','--target','DisplayLoadProbe','--','/nr:false','/verbosity:detailed']);
+ if(compile.exitCode!==0)throw new Error('Diagnostic compile body failed');
+ const exe=path.join(build,'Release/DisplayLoadProbe.exe');const collected=await owned('collect',exe,[]);
+ write(path.join(__dirname,'result.json'),{testOnly:true,exeSha256:sha(fs.readFileSync(exe)),configure,compile,collected});
+ console.log(fs.readFileSync(path.join(__dirname,'collect/stderr.log'),'utf8'));
+})().catch(error=>{console.error(error.stack);write(path.join(__dirname,'failure.json'),{error:error.stack,passed:false});process.exitCode=1;});

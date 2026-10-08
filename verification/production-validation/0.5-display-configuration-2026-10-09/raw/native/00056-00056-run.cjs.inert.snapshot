@@ -1,0 +1,39 @@
+'use strict';
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const {launchOwned} = require('F:/work/sm05/tools/internal/owned-process.cjs');
+const root = 'F:/work/sm05-scopes';
+const runner = 'F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const phase = process.argv[2];
+if (!/^(red|green|final)$/.test(phase)) throw new Error('Explicit phase required');
+const folder = path.join(__dirname, phase + '-' + crypto.randomUUID());
+fs.mkdirSync(folder);
+const inputs = ['benchmarks/protocol/display-calibration.cjs', 'tests/benchmark/display-calibration.test.cjs'];
+const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const records = inputs.map((name, index) => {
+  const bytes = fs.readFileSync(path.join(root, name));
+  const snapshot = path.join(folder, index + '.inert.snapshot');
+  fs.writeFileSync(snapshot, bytes, {flag:'wx'});
+  return {name, sha256:sha(bytes), bytes:bytes.length, snapshot};
+});
+fs.writeFileSync(path.join(folder, 'inputs.json'), JSON.stringify({records,
+  node:{path:process.execPath, sha256:sha(fs.readFileSync(process.execPath)), version:process.version},
+  runner:{path:runner, sha256:sha(fs.readFileSync(runner))}}, null, 2)+'\n', {flag:'wx'});
+(async () => {
+  const stdout = fs.openSync(path.join(folder, 'stdout.log'), 'wx');
+  const stderr = fs.openSync(path.join(folder, 'stderr.log'), 'wx');
+  let result;
+  try {
+    const handle = launchOwned(process.execPath, ['--test', path.join(root, inputs[1])], {runner,
+      cwd:root, report:path.join(folder, 'owned.ndjson'), timeoutMs:30000, drainMs:10000, stdout, stderr});
+    result = await handle.finished;
+  } finally {fs.closeSync(stdout); fs.closeSync(stderr);}
+  for (const record of records) if (sha(fs.readFileSync(path.join(root, record.name))) !== record.sha256)
+    throw new Error('Input changed during tests');
+  fs.writeFileSync(path.join(folder, 'result.json'), JSON.stringify(result, null, 2)+'\n', {flag:'wx'});
+  console.log(JSON.stringify({folder, phase, exitCode:result.exitCode, passed:result.passed,
+    closureConfirmed:result.closureConfirmed, activeProcesses:result.terminal?.activeProcesses}));
+  if (!result.closureConfirmed || (phase === 'red' ? result.passed || result.exitCode === 0 : !result.passed))
+    process.exitCode = 1;
+})().catch(error => {console.error(error.stack); process.exitCode=1;});

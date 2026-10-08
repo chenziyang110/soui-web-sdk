@@ -10,10 +10,11 @@ const digest=name=>crypto.createHash('sha256').update(fs.readFileSync(path.resol
 const save=(name,value)=>fs.writeFileSync(path.join(output,name),JSON.stringify(value,null,2)+'\n');
 fs.mkdirSync(output,{recursive:true});
 const version=fs.readFileSync(path.join(root,'VERSION'),'utf8').trim();
-const args=process.argv.slice(2),withGuiBindings=args.includes('--with-gui-bindings');
-const scopes=args.filter(value=>value!=='--with-gui-bindings');
+const args=process.argv.slice(2),withGuiBindings=args.includes('--with-gui-bindings'),
+ withDisplayConfiguration=args.includes('--with-display-configuration');
+const scopes=args.filter(value=>!['--with-gui-bindings','--with-display-configuration'].includes(value));
 const scope=scopes[0] || 'full';
-if(scopes.length>1 || new Set(args).size!==args.length || !['full','--foundation'].includes(scope))throw new Error('Usage: Collect-Verification.cjs [--foundation] [--with-gui-bindings]');
+if(scopes.length>1 || new Set(args).size!==args.length || !['full','--foundation'].includes(scope))throw new Error('Usage: Collect-Verification.cjs [--foundation] [--with-gui-bindings] [--with-display-configuration]');
 // A failed collection leaves an explicit non-acceptance, never yesterday's green result.
 save('acceptance.json',{schema:'soui.source-delivery-acceptance/v2',version,scope,
  sourceDeliveryVerified:false,releaseReady:false,status:'collecting',startedAt:new Date().toISOString()});
@@ -53,6 +54,13 @@ const unit={
  nativeX64:run('native-contract-x64',path.join(root,'out/x64/tests/native/Release/soui_sdk_contract_tests.exe'),[]),
  nativeX86:run('native-contract-x86',path.join(root,'out/x86/tests/native/Release/soui_sdk_contract_tests.exe'),[])
 };
+if(withDisplayConfiguration){
+ for(const arch of ['x86','x64']){
+  const result=run('display-configuration-'+arch,process.execPath,['tools/internal/measurement-validation.cjs','display',arch]);
+  unit['displayConfiguration'+arch.toUpperCase()]={...result,configurationOnly:true,
+   physicalPresentation:false,opticalCalibration:false,performanceGate:false,releaseReady:false};
+ }
+}
 if(withGuiBindings){
  unit.guiBindings=run('gui-bindings-tests',process.execPath,['tools/sdk/gui-bindings-delivery.cjs','test','--root',root]);
  unit.guiBindings.desktopValidated=false;

@@ -1,0 +1,54 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root='F:/work/sm05-scopes',base=__dirname;
+const runner='F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const write=(file,value)=>{fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,value,{flag:'wx'});};
+const json=value=>JSON.stringify(value,null,2)+'\n';
+const pin=file=>{const resolvedPath=fs.realpathSync(file),bytes=fs.readFileSync(resolvedPath);return {path:file,resolvedPath,bytes:bytes.length,sha256:hash(bytes)};};
+const actual=file=>{const bytes=fs.readFileSync(file);return {path:file,bytes:bytes.length,sha256:hash(bytes)};};
+const ps='C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe';
+async function main(){
+ const [phase,arch='x64']=process.argv.slice(2);
+ if(!['red','regression-red','green','entry','build','protocol','native','tail-protocol','tail-native','display'].includes(phase)||!['x64','x86'].includes(arch))throw Error('Invalid phase');
+ const folder=path.join(base,phase+'-'+arch+'-'+crypto.randomUUID());fs.mkdirSync(folder);
+ const tools=[pin(runner),pin(process.execPath),pin(path.join(root,'tools/internal/owned-process.cjs'))];
+ if(tools[0].sha256!=='1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f')throw Error('Bootstrap provider changed');
+ let executable=process.execPath,cwd=root,args;
+ if(phase==='red'){
+  cwd=path.join(base,'red-workspace');
+  fs.copyFileSync(path.join(root,'tests/benchmark/measurement-preparation-source.test.cjs'),path.join(cwd,'tests/benchmark/measurement-preparation-source.test.cjs'));
+  args=['--test','--test-reporter=tap','tests/benchmark/measurement-preparation-source.test.cjs'];
+ }else if(phase==='green'||phase==='regression-red')args=['--test','--test-reporter=tap','tests/benchmark/measurement-preparation-source.test.cjs','tests/benchmark/display-calibration.test.cjs'];
+ else if(phase==='entry'){tools.push(pin(ps));args=[path.join(base,'entry.cjs')];}
+ else if(phase==='build'){executable=ps;tools.push(pin(ps),pin('C:/Program Files/CMake/bin/cmake.exe'));args=['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(root,'tools/internal/Build-ValidationTools.ps1'),'-Architecture',arch,'-FreshConfigure'];}
+ else args=['tools/internal/measurement-validation.cjs',phase,arch];
+ const inputs={schema:'soui.display-standard-driver-inputs/v1',phase,architecture:arch,executable,args,cwd,
+  tools,driver:actual(__filename),sourceFiles:[],noGui:true,noEtw:true,noSendInput:true,noVm:true,noTailPolicy:true};
+ const names=JSON.parse(fs.readFileSync(path.join(base,'before.json'))).files.map(item=>item.path);
+ for(let i=0;i<names.length;i++){
+  const name=names[i],file=path.join(phase==='red'?cwd:root,name),snapshot='input-snapshots/'+String(i).padStart(4,'0')+'-'+path.basename(name)+'.inert.snapshot';
+  inputs.sourceFiles.push({...actual(file),snapshot});write(path.join(folder,snapshot),fs.readFileSync(file));
+ }
+ write(path.join(folder,'inputs.json'),json(inputs));write(path.join(folder,'driver.cjs.inert.snapshot'),fs.readFileSync(__filename));
+ const stdout=fs.openSync(path.join(folder,'stdout.bin'),'wx'),stderr=fs.openSync(path.join(folder,'stderr.bin'),'wx');
+ let finished;
+ try{
+  const owned=require(path.join(root,'tools/internal/owned-process.cjs')).launchOwned(executable,args,{runner,cwd,
+   report:path.join(folder,'owned.ndjson'),timeoutMs:phase==='build'?600000:180000,drainMs:phase==='build'?30000:3000,
+   env:{...process.env,MSBUILDDISABLENODEREUSE:'1',PSModulePath:'C:/Windows/System32/WindowsPowerShell/v1.0/Modules'},stdout,stderr});
+  await owned.ready;finished=await owned.finished;
+ }finally{fs.closeSync(stdout);fs.closeSync(stderr);}
+ write(path.join(folder,'finished.json'),json(finished));
+ const changed=inputs.sourceFiles.filter(item=>hash(fs.readFileSync(item.path))!==item.sha256);
+ const toolChanges=tools.filter(item=>fs.realpathSync(item.path)!==item.resolvedPath||hash(fs.readFileSync(item.resolvedPath))!==item.sha256);
+ const expectedFailure=phase==='red'||phase==='regression-red';
+ const acceptable=changed.length===0&&toolChanges.length===0&&finished.closureConfirmed&&
+  (expectedFailure?finished.exitCode===1:phase==='build'?finished.exitCode===0:finished.passed);
+ const summary={phase,architecture:arch,folder,rootExitCode:finished.exitCode,supervisorExitCode:finished.supervisorExitCode,
+  genericPassed:finished.passed,closureConfirmed:finished.closureConfirmed,reason:finished.terminal?.reason,
+  compilerRootSucceeded:phase==='build'&&finished.exitCode===0,expectedRed:expectedFailure,
+  sourceChanges:changed,toolChanges,acceptableForThisPhase:acceptable,noTailPolicy:true};
+ write(path.join(folder,'summary.json'),json(summary));console.log(json(summary));if(!acceptable)process.exitCode=1;
+}
+main().catch(error=>{console.error(error.stack);process.exitCode=1;});

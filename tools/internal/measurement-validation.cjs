@@ -4,7 +4,8 @@
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {launchOwned}=require('./owned-process.cjs');
 const root=path.resolve(__dirname,'../..');
-const protocolTests=['page-pair','run-traces','owned-trace-subject','pair-preflight','series-summary','measurement-preparation-source'];
+const protocolTests=['page-pair','run-traces','owned-trace-subject','pair-preflight','series-summary','measurement-preparation-source','display-calibration'];
+const protocolRuntimeInputs=['benchmarks/protocol/display-calibration.cjs'];
 const nativeTests=['process-tree-sampler','run-traces'];
 const tailProtocolTests=['owned-tail-evidence-reader','owned-tail-client-boundaries','compiler-tail-policy'];
 const tailNativeTests=['owned-process-tail-snapshot','owned-tail-client-native'];
@@ -12,13 +13,14 @@ const tailRuntimeInputs=['tools/internal/owned-tail-evidence.cjs','tools/interna
  'tools/internal/standard-build.cjs','tools/internal/build-evidence.cjs','tools/internal/delivery-identity.cjs',
  'tests/benchmark/tail-evidence-fixtures.cjs'];
 const names=['OwnedProcessRunner','OwnedProcessAssignmentFixture','ProcessTreeSampler','InputTrace','NativeTraceIdentity',
- 'OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture'];
+ 'OwnedTailProcessFixture','OwnedTailMutationFixture','OwnedTailApiFixture','DisplayCalibration'];
 const sourceNames=['benchmarks/protocol/CMakeLists.txt','benchmarks/protocol/owned-process-runner.cpp',
  'benchmarks/protocol/owned-tail-evidence.cpp','benchmarks/protocol/owned-tail-evidence.h',
  'tests/benchmark/owned-process-assignment-fixture.cpp','benchmarks/protocol/process-tree-sampler.cpp','benchmarks/protocol/input-trace.cpp',
  'benchmarks/protocol/trace-identity.h','tests/benchmark/native-trace-identity.cpp','tools/internal/CMake-Configure.ps1',
  'cmake/SouiWindowsSdk.cmake','tools/internal/Build-ValidationTools.ps1','tools/internal/measurement-validation.cjs',
- 'tests/benchmark/owned-tail-process-fixture.cpp','tests/benchmark/owned-tail-mutation-fixture.cpp','tests/benchmark/owned-tail-api-fixture.cpp'];
+ 'tests/benchmark/owned-tail-process-fixture.cpp','tests/benchmark/owned-tail-mutation-fixture.cpp','tests/benchmark/owned-tail-api-fixture.cpp',
+ 'benchmarks/protocol/display-calibration.cpp'];
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const encoded=value=>JSON.stringify(value,null,2)+'\n';
 function need(condition,message){if(!condition)throw new Error(message);}
@@ -96,7 +98,8 @@ async function runGroup(kind,arch='x64'){
   source:fingerprint(),preparation:setup.report,tests:tests.map(name=>({path:name,sha256:hash(fs.readFileSync(file(name)))})),
   node:{path:process.execPath,version:process.version,sha256:hash(fs.readFileSync(process.execPath))},
   clientSha256:hash(fs.readFileSync(file('tools/internal/owned-process.cjs'))),
-  runtimeInputs:kind.startsWith('tail-')?tailRuntimeInputs.map(name=>({path:name,sha256:hash(fs.readFileSync(file(name)))})):[],
+  runtimeInputs:(kind.startsWith('tail-')?tailRuntimeInputs:kind==='protocol'?protocolRuntimeInputs:[])
+   .map(name=>({path:name,sha256:hash(fs.readFileSync(file(name)))})),
   env:Object.fromEntries(Object.entries(env).filter(([key])=>key.startsWith('BENCHMARK_')||key.startsWith('SOUI_TAIL_')||key==='PROCESS_TREE_SAMPLER_EXE')),
   noGui:true,correctInputTraceExecuted:false};
  fs.writeFileSync(path.join(folder,'inputs.json'),encoded(inputs));
@@ -124,13 +127,106 @@ async function runGroup(kind,arch='x64'){
   genericSupervisionPassed:result.passed,closureConfirmed:result.closureConfirmed,sourceSha256:setup.report.source.sha256};
  fs.writeFileSync(path.join(folder,'summary.json'),encoded(summary));return summary;
 }
-module.exports={buildDirectory,fingerprint,prepared,runGroup};
+// Optional current display configuration, deliberately separate from native
+// identity tests and from every presentation/performance acceptance gate.
+async function runDisplay(arch='x64'){
+ architecture(arch);
+ const setup=prepared(arch),runtimeNames=['benchmarks/protocol/display-calibration.cjs','benchmarks/protocol/owned-trace-subject.cjs'];
+ const runtimeInputs=runtimeNames.map(name=>({path:name,sha256:hash(fs.readFileSync(file(name)))}));
+ const clientSha256=hash(fs.readFileSync(file('tools/internal/owned-process.cjs')));
+ const collector=setup.report.executables.find(item=>item.name==='DisplayCalibration');
+ const provider=setup.report.executables.find(item=>item.name==='OwnedProcessRunner');
+ const folder=path.join(root,'out','measurement-validation','display-'+arch+'-'+crypto.randomUUID());
+ for(let cursor=folder;cursor!==root;cursor=path.dirname(cursor))if(fs.existsSync(cursor))
+  need(!fs.lstatSync(cursor).isSymbolicLink()&&fs.statSync(cursor).isDirectory(),'Linked/invalid display evidence directory');
+ fs.mkdirSync(folder,{recursive:true});
+ const inputs={schema:'soui.display-configuration-standard-inputs/v1',architecture:arch,
+  source:fingerprint(),preparation:setup.report,runtimeInputs,clientSha256,
+  executable:setup.tools.DisplayCalibration,args:[],cwd:root,timeoutMs:15000,drainMs:2500,
+  collector,provider,node:{path:process.execPath,version:process.version,sha256:hash(fs.readFileSync(process.execPath))},
+  explicitConfigurationRequest:true,noGui:true,noEtw:true,noSendInput:true,noTailPolicy:true};
+ fs.writeFileSync(path.join(folder,'inputs.json'),encoded(inputs),{flag:'wx'});
+ const stdout=[],stderr=[];let size=0,outputError=null,owned,result=null,ready=null,contextSha256=null;
+ let persisted=false;
+ const report=path.join(folder,'sampler.owned.ndjson');
+ const summary={schema:'soui.display-configuration-standard-run/v1',kind:'display-configuration',architecture:arch,
+  passed:false,displayConfigurationAccepted:false,physicalPresentation:false,opticalCalibration:false,
+  performanceGate:false,releaseReady:false,noGui:true,noEtw:true,noSendInput:true,noTailPolicy:true,
+  sourceSha256:inputs.source.sha256,collectorSha256:collector.sha256,
+  report:path.relative(root,report).replace(/\\/g,'/'),genericSupervisionPassed:false};
+ const preserve=()=>{
+  if(!result||persisted)return;persisted=true;
+  Object.assign(summary,{rootExitCode:result.exitCode,supervisorExitCode:result.supervisorExitCode,
+   genericSupervisionPassed:result.passed,closureConfirmed:result.closureConfirmed,reportSha256:result.reportSha256});
+  fs.writeFileSync(path.join(folder,'sampler.stdout.log'),Buffer.concat(stdout),{flag:'wx'});
+  fs.writeFileSync(path.join(folder,'sampler.stderr.log'),Buffer.concat(stderr),{flag:'wx'});
+  fs.writeFileSync(path.join(folder,'finished.json'),encoded(result),{flag:'wx'});
+ };
+ try{
+  owned=launchOwned(setup.tools.DisplayCalibration,[],{runner:setup.tools.OwnedProcessRunner,cwd:root,
+   report,timeoutMs:inputs.timeoutMs,drainMs:inputs.drainMs,stdout:'pipe',stderr:'pipe'});
+  const collect=(target,bytes)=>{size+=bytes.length;if(size>2097152){outputError='Display output exceeds 2 MiB';owned.stop();return;}target.push(bytes);};
+  owned.child.stdout.on('data',bytes=>collect(stdout,bytes));owned.child.stderr.on('data',bytes=>collect(stderr,bytes));
+  contextSha256=hash(fs.readFileSync(report+'.context.json'));
+  try{ready=await owned.ready;}catch(error){outputError??=error.message;}
+  result=await owned.finished;
+  preserve();
+  const stdoutBytes=Buffer.concat(stdout),stderrBytes=Buffer.concat(stderr);
+  need(!outputError,outputError);
+  need(setup.report.source.sha256===fingerprint().sha256&&
+   runtimeInputs.every(item=>hash(fs.readFileSync(file(item.path)))===item.sha256)&&
+   hash(fs.readFileSync(file('tools/internal/owned-process.cjs')))===clientSha256&&
+   hash(fs.readFileSync(process.execPath))===inputs.node.sha256,'Display source/reader/client/Node changed during execution');
+  prepared(arch);
+  const {readDisplayCalibration}=require(file('benchmarks/protocol/display-calibration.cjs'));
+  // Nonzero native status never receives a bound subject or an acceptance.
+  // Retain a strictly parsed but unbound diagnostic before returning failure.
+  if(!result.passed){
+   try{const diagnostic=readDisplayCalibration(stdoutBytes);
+    summary.diagnostic={status:diagnostic.status,reason:diagnostic.reason,exactCollectorBound:false};
+   }catch(error){summary.diagnosticError=error.message;}
+   throw new Error('Display collector unavailable or failed; original Job status retained');
+  }
+  const provenance=require(file('benchmarks/protocol/owned-trace-subject.cjs'));
+  // "sampler" is the existing generic collector evidence role, not a claim
+  // that the ProcessTreeSampler or a three-process benchmark ran here.
+  const item={name:'sampler',pid:result.pid,code:result.exitCode,signal:result.signal,error:null,
+   contextSha256,ownedProcess:result};
+  const evidence=provenance.captureOwnedEvidence(folder,[item])[0];
+  need(evidence.stdout.sha256===hash(stdoutBytes)&&evidence.stderr.sha256===hash(stderrBytes),
+   'Display raw files differ from the actual captured output bytes');
+  const verified=provenance.verifyOwnedProcess(folder,'sampler',item,evidence,
+   {runnerSha256:provider.sha256,executableSha256:collector.sha256,executable:setup.tools.DisplayCalibration,args:[],cwd:root});
+  need(verified.naturalCompletion&&verified.genericPassed&&ready&&
+   ready.pid===verified.subject.pid&&ready.creationFileTime===verified.subject.creationFileTime,
+   'Display collector did not naturally complete with its held native identity');
+  const verdict=readDisplayCalibration(stdoutBytes,{ownedSubject:verified.subject});
+  need(verdict.boundConfigurationAccepted===true,'Display configuration is not available and bound');
+  need(inputs.source.sha256===fingerprint().sha256&&
+   runtimeInputs.every(item=>hash(fs.readFileSync(file(item.path)))===item.sha256)&&
+   hash(fs.readFileSync(file('tools/internal/owned-process.cjs')))===clientSha256&&
+   hash(fs.readFileSync(process.execPath))===inputs.node.sha256,'Display validation inputs changed before acceptance');
+  prepared(arch);
+  Object.assign(summary,{passed:true,displayConfigurationAccepted:true,verdict,
+   ownedSubject:verified.subject,ownedEvidence:evidence,process:item});
+ }catch(error){summary.error=error.message;
+  // Even a context/read/setup failure after launch owns the held process until
+  // its native terminal. STOP is failure cleanup and never configuration success.
+  if(owned&&!result){owned.stop();result=await owned.finished;}
+  preserve();
+ }
+ fs.writeFileSync(path.join(folder,'summary.json'),encoded(summary),{flag:'wx'});
+ need(summary.passed,'Display configuration was not accepted: '+folder+(summary.error?' ('+summary.error+')':''));
+ return summary;
+}
+module.exports={buildDirectory,fingerprint,prepared,runGroup,runDisplay};
 if(require.main===module)(async()=>{
  const [command,arch='x64',expected,...rest]=process.argv.slice(2);architecture(arch);need(rest.length===0,'Unexpected measurement arguments');let report;
  if(command==='source'&&expected===undefined)report=fingerprint();
  else if(command==='invalidate'&&expected===undefined){invalidate(arch);report={invalidated:true,architecture:arch};}
  else if(command==='seal'&&expected!==undefined)report=seal(arch,expected);
  else if(['protocol','native','tail-protocol','tail-native'].includes(command)&&expected===undefined)report=await runGroup(command,arch);
- else throw Error('Usage: measurement-validation.cjs source|invalidate|seal|protocol|native|tail-protocol|tail-native [x86|x64] [seal source SHA256]');
+ else if(command==='display'&&expected===undefined)report=await runDisplay(arch);
+ else throw Error('Usage: measurement-validation.cjs source|invalidate|seal|protocol|native|tail-protocol|tail-native|display [x86|x64] [seal source SHA256]');
  console.log(encoded(report));
 })().catch(error=>{console.error(error.message);process.exitCode=1});
