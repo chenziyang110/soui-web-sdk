@@ -1,0 +1,29 @@
+{
+  "name": "soui-gui-bindings-component-tests",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "test": "node --test react.test.mjs vue.test.mjs packages.test.mjs",
+    "test:react18": "node --test react18/react.test.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "typecheck:react18": "tsc --noEmit -p react18/tsconfig.json"
+  },
+  "dependencies": {
+    "@soui/gui-react": "file:../../sdk/bindings/react",
+    "@soui/gui-vue": "file:../../sdk/bindings/vue",
+    "@soui/native-sdk": "file:../../sdk/web",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "vue": "3.5.43"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "jsdom": "26.1.0",
+    "typescript": "5.9.3"
+  }
+}

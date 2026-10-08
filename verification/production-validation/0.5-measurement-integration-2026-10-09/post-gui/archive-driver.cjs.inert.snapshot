@@ -1,0 +1,21 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'..'),identity=require('../tools/internal/delivery-identity.cjs');
+const source=path.join(root,'out/measurement-gui-reconciliation-f47d0dc1-ee06-4131-b956-a18bfeadc1d9');
+const base='verification/production-validation/0.5-measurement-integration-2026-10-09/post-gui';
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex'),files=[];
+const original=fs.readFileSync(path.join(source,'index.json'));
+if(hash(original)!=='dc96a6e0d3ed7650dc1fba71a22c5cb200276ea01b4979a0cdca0e32fb3af053')throw Error('Index changed');
+function copy(input,rel,expected){const s=fs.lstatSync(input);if(!s.isFile()||s.isSymbolicLink()||s.nlink!==1)throw Error('Linked/nonunique file');
+ const b=fs.readFileSync(input),sha256=hash(b);if(expected&&(b.length!==expected.bytes||sha256!==expected.sha256))throw Error('Source changed');
+ const name=/\.(cjs|ps1)$/i.test(rel)?rel+'.inert.snapshot':rel,target=path.join(root,base,name);fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,b,{flag:'wx'});
+ files.push({path:base+'/'+name,source:input,bytes:b.length,sha256});}
+for(const f of JSON.parse(original).files){identity.safePath(source,f.path);copy(path.join(source,f.path),f.path,f);}
+copy(path.join(source,'index.json'),'attempt-index.json');
+for(const name of ['tools/Test.ps1','tools/Collect-Verification.cjs'])copy(path.join(root,name),'current-inputs/'+name);
+copy(__filename,'archive-driver.cjs');
+const inputs=JSON.parse(fs.readFileSync(path.join(source,'inputs.json'))),result=JSON.parse(fs.readFileSync(path.join(source,'result.json')));
+fs.writeFileSync(path.join(root,base,'index.json'),JSON.stringify({schema:'soui.measurement-gui-mainline-evidence/v1',
+ mainMerged:inputs.mainMerged,actualToolInputsUnchanged:true,guiInputsUnchanged:true,currentGlobalSource:identity.source(root),
+ relatedSourceDelta:inputs.relatedSourceDelta,result,releaseReady:false,files},null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({files:files.length,path:base+'/index.json',sha256:hash(fs.readFileSync(path.join(root,base,'index.json')))}));

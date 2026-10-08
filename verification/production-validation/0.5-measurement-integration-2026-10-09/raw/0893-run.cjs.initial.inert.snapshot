@@ -1,0 +1,25 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {launchOwned}=require('F:/work/sm05/tools/internal/owned-process.cjs');
+const root=path.resolve(__dirname,'../..'),label=process.argv[2];
+if(!['red','green'].includes(label))throw Error('Expected red or green');
+const sha=p=>crypto.createHash('sha256').update(fs.readFileSync(p)).digest('hex');
+const runner='F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+if(sha(runner)!=='1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f')throw Error('Frozen runner changed');
+const dir=path.join(__dirname,label);fs.mkdirSync(dir);
+const args=['--test','--test-reporter=tap','tests/benchmark/measurement-preparation-source.test.cjs'];
+const inputs={schema:'soui.measurement-source-input-fix-run/v1',label,exe:process.execPath,args,cwd:root,
+ nodeVersion:process.version,nodeSha256:sha(process.execPath),helperSha256:sha(path.join(root,'tools/internal/measurement-validation.cjs')),
+ testSha256:sha(path.join(root,args[2])),runnerSha256:sha(runner),clientSha256:sha('F:/work/sm05/tools/internal/owned-process.cjs'),
+ noGui:true,noNativeCollectorExecuted:true,syntheticPEAndPreparation:true};
+fs.writeFileSync(path.join(dir,'inputs.json'),JSON.stringify(inputs,null,2)+'\n',{flag:'wx'});
+fs.copyFileSync(path.join(root,'tools/internal/measurement-validation.cjs'),path.join(dir,'helper-at-run.cjs.inert.snapshot'),fs.constants.COPYFILE_EXCL);
+fs.copyFileSync(path.join(root,args[2]),path.join(dir,'test-at-run.cjs.inert.snapshot'),fs.constants.COPYFILE_EXCL);
+const stdout=fs.openSync(path.join(dir,'stdout.tap'),'wx'),stderr=fs.openSync(path.join(dir,'stderr.log'),'wx');
+(async()=>{let result;try{result=await launchOwned(process.execPath,args,{runner,cwd:root,
+ report:path.join(dir,'owned.ndjson'),timeoutMs:60000,drainMs:2500,stdout,stderr}).finished;}finally{fs.closeSync(stdout);fs.closeSync(stderr);}
+ fs.writeFileSync(path.join(dir,'finished.json'),JSON.stringify(result,null,2)+'\n',{flag:'wx'});
+ const expected=label==='red'?1:0;
+ if(result.exitCode!==expected||!result.closureConfirmed||result.spawnError||result.reportError||result.fallbackUsed)throw Error('Unexpected fixture result');
+ console.log(JSON.stringify({label,exitCode:result.exitCode,genericPassed:result.passed,closureConfirmed:result.closureConfirmed,reason:result.terminal.reason,reportSha256:result.reportSha256}));
+})().catch(e=>{console.error(e.stack);process.exitCode=1});

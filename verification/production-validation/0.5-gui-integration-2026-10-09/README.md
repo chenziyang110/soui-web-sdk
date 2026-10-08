@@ -1,0 +1,7 @@
+# Optional GUI mainline integration, 2026-10-09
+
+The index binds 563 byte-preserved files, including 554 final integration inputs/results, the final index, seven current entrypoint/test snapshots and the archive driver. The run compiled the current action/core SDK and both framework bindings after integrating main `5bb083d2`. Exact compiled global source is `359ac7b1fcbcac944c9ec5cc3a0ff8b9b33d8a94718050d5b70d3b3a341dfac6`; GUI input/output identities are separately recorded and verified against current dist.
+
+Actual build commands, 61 Core/action/GUI tests, 39 framework/package tests, 10 delivery boundaries, 15 source-SDK package checks, two type checks and four zero-vulnerability audits passed. An external SDK installation was moved, all three packages were packed from that installation, then consumed through actual tarballs, types and ESM imports. The 354 prior raw files remain preserved in immutable snapshots with a path map; the current build record changed normally for the new compilation.
+
+Peer metadata and entrypoint-capture fixtures do not certify compilation. No C++ build, actual desktop, VM, SendInput, complete standard Test/Collect or final release acceptance is claimed. The temporary main source manifest used during the integration is historical; Root regenerates the combined manifest after staging the final archive. Documentation and archive updates do not inherit the exact compiled global source identity.

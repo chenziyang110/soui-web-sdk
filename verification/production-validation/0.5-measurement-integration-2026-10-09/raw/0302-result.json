@@ -1,0 +1,119 @@
+{
+  "schema": "soui.reader-red-green/v1",
+  "baselineGitBlob": "HEAD:benchmarks/protocol/check-pair-runs.cjs",
+  "baselineSha256": "59093263878f11ad858342d465c6cc9ddfc3ddb3fcae626bb9bfe12be409e9aa",
+  "currentSha256": "50bc72fdfab373394f84e0a46cf071f7023f0534449598430bf8c5e1ab52338e",
+  "analyzerSha256": "d9095af9c18bbffe08cbde97297d12b5367ed7bd3858fa4a72ff1d85a4d5f4ac",
+  "source": "F:\\work\\sm05-mi\\verification\\production-validation\\benchmark-s02-full-preflight-2026-09-25\\raw\\benchmark-s02-soui-20260925-run1",
+  "raw": [
+    {
+      "path": "host.stderr.log",
+      "bytes": 49,
+      "sha256": "409a21c34239a6c1bc6df7442f120d457df725dd45bbd788eef2226cef94072d"
+    },
+    {
+      "path": "host.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "input.ndjson",
+      "bytes": 9741,
+      "sha256": "30e5aadad73c1563f4fd716fce27f8d0212d1acb9a273ff07d29fb5ce0b601a2"
+    },
+    {
+      "path": "input.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "input.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "page-bundle/.vite/manifest.json",
+      "bytes": 734,
+      "sha256": "d7aeb0c221f0ec4db71a63a954a4bd630c2f8fe8e2cc6dc77c90290c39fd740d"
+    },
+    {
+      "path": "page-bundle/assets/benchmark--aBcFLcU.js",
+      "bytes": 213443,
+      "sha256": "ac74b69a3908d5e744d74b6d2b6a9a26a9d39dadd574a74c479fad082da9c76b"
+    },
+    {
+      "path": "page-bundle/assets/benchmark-BFEd3JRA.css",
+      "bytes": 71322,
+      "sha256": "dd79a60238d5d155d1e13c4b54786b2c7075b85cb3dceed49d0ff7f65c3cb93c"
+    },
+    {
+      "path": "page-bundle/assets/benchmark-legacy-DcpevR6t.js",
+      "bytes": 286736,
+      "sha256": "2ec957991752a73aec3ccb2ab2c4c01a04ec98fef20ac686e0ebc4d6392ceaf5"
+    },
+    {
+      "path": "page-bundle/assets/polyfills-CpEBeqwa.js",
+      "bytes": 141797,
+      "sha256": "f122402990d552287258f06eb173cf2b2827cddd92d7068c44bbe69544183a7f"
+    },
+    {
+      "path": "page-bundle/assets/polyfills-legacy-VVdV9S1d.js",
+      "bytes": 165889,
+      "sha256": "75e43289eaef6ab3263d3364ed574d5a82af67af57495a6b69f1cd3d0100bb7e"
+    },
+    {
+      "path": "page-bundle/benchmark-smoke.html",
+      "bytes": 1412,
+      "sha256": "88e2ca994c71c183eb933922590fae2003d643109a02c5b15bcc9195285949a0"
+    },
+    {
+      "path": "page-bundle/benchmark.html",
+      "bytes": 1071,
+      "sha256": "d6264e7dd53caf89eddf78986e3d6b09ddf278a9cde3e050641127ab8ca2f74b"
+    },
+    {
+      "path": "page-bundle/index.html",
+      "bytes": 1071,
+      "sha256": "d6264e7dd53caf89eddf78986e3d6b09ddf278a9cde3e050641127ab8ca2f74b"
+    },
+    {
+      "path": "page-results/soui-79516-581097687-1.json",
+      "bytes": 34055,
+      "sha256": "ad19a58c2d558e8ac2cb29ee5fe876d47d8d618ca177e8d03c8b220b4c5f51de"
+    },
+    {
+      "path": "process-tree.ndjson",
+      "bytes": 20882,
+      "sha256": "4e4cebca16fb976a5acef963edab4d41405f1a677bb45024a2746858cda9fd6d"
+    },
+    {
+      "path": "run.json",
+      "bytes": 3729,
+      "sha256": "872e57a489463772c874876118ddb1dce778ae82c9538d91b6ceb667caa80a6e"
+    },
+    {
+      "path": "sampler.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "sampler.stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "source-navigation.log",
+      "bytes": 107,
+      "sha256": "fb91db31274bfa866398eea71c6920fe85e0c2c6d5995d2fb732bf9fe8b0cf11"
+    }
+  ],
+  "red": {
+    "expectedRejection": true,
+    "error": "soui: recorded trace verdict changed"
+  },
+  "green": {
+    "legacyUnbound": true,
+    "exactFileTimeBound": false
+  },
+  "scope": "Original Git reader evaluated against the imported v2 analyzer and unchanged historical raw; no old binary/benchmark execution"
+}

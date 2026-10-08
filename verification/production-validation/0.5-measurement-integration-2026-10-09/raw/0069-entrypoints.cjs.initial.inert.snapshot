@@ -1,0 +1,34 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
+const {spawnSync}=require('node:child_process');
+const root=path.resolve(__dirname,'../..');
+const ps=`$tokens=$null;$errors=$null
+$ast=[System.Management.Automation.Language.Parser]::ParseFile('${root.replace(/'/g,"''")}/tools/Test.ps1',[ref]$tokens,[ref]$errors)
+if($errors.Count -gt 0){$errors|Out-String|Write-Error;exit 1}
+$commands=@($ast.FindAll({param($a) $a -is [System.Management.Automation.Language.CommandAst]},$true)|ForEach-Object{$_.Extent.Text})
+[ordered]@{commands=$commands;parserErrors=$errors.Count}|ConvertTo-Json -Depth 4 -Compress`;
+const parsed=spawnSync('C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe',['-NoProfile','-Command',ps],
+ {cwd:root,encoding:'utf8',windowsHide:true});
+assert.equal(parsed.status,0,parsed.stderr);const ast=JSON.parse(parsed.stdout);
+assert.equal(ast.parserErrors,0);
+const selected=ast.commands.filter(s=>s.includes("'tools/internal/measurement-validation.cjs'"));
+assert.equal(selected.length,2);assert.match(selected[0],/protocol \$Architecture$/);assert.match(selected[1],/native \$Architecture$/);
+assert.equal(ast.commands.filter(s=>s.includes('internal/Build-ValidationTools.ps1')&&s.includes('-Architecture $Architecture')).length,1);
+assert.equal(ast.commands.filter(s=>s.includes("'tests/sdk/actiongen.test.mjs'")&&s.includes("'tests/web/generated-actions.test.mjs'")).length,1);
+const text=fs.readFileSync(path.join(root,'tools/Test.ps1'),'utf8');
+assert.ok(text.includes('$env:SOUI_OWNED_PROCESS_RUNNER=$validationRunner'));
+assert.ok(text.includes('$env:BENCHMARK_OWNED_RUNNER_EXE=$validationRunner'));
+assert.ok(text.includes('$env:SOUI_OWNED_PROCESS_RUNNER=$previousOwnedRunner'));
+assert.ok(text.includes('$env:BENCHMARK_OWNED_RUNNER_EXE=$previousBenchmarkRunner'));
+const collect=fs.readFileSync(path.join(root,'tools/Collect-Verification.cjs'),'utf8');
+const object=collect.match(/const unit=(\{[\s\S]*?\n\});/);assert.ok(object,'Actual unit literal is present');
+const calls=[];vm.runInNewContext('('+object[1]+')',{root,path,process,run:(name,exe,args)=>{calls.push({name,exe,args});return {selectedOnly:true};}});
+const projection=calls.filter(r=>r.name.startsWith('measurement-')||r.name.startsWith('native-measurement-')||r.name==='action-generation-tests');
+assert.deepEqual(projection.map(x=>[x.name,...Array.from(x.args)]),[
+ ['measurement-protocol-tests','tools/internal/measurement-validation.cjs','protocol'],
+ ['native-measurement-x64','tools/internal/measurement-validation.cjs','native','x64'],
+ ['native-measurement-x86','tools/internal/measurement-validation.cjs','native','x86'],
+ ['action-generation-tests','--test','tests/sdk/actiongen.test.mjs','tests/web/generated-actions.test.mjs']]);
+console.log(JSON.stringify({schema:'soui.measurement-entrypoint-extraction/v1',testActualPSAst:true,parserErrors:0,
+ measurementCommands:selected,collectActualUnitProjection:projection,metadataOnly:true,
+ fullTestExecuted:false,fullCollectExecuted:false,noCompile:true,noGui:true},null,2));

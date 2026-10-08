@@ -1,0 +1,14 @@
+param([ValidateSet('x86','x64')][string]$Architecture)
+$ErrorActionPreference='Stop'
+$root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$tokens=$null;$errors=$null
+$ast=[Management.Automation.Language.Parser]::ParseFile((Join-Path $root 'tools/Test.ps1'),[ref]$tokens,[ref]$errors)
+if($errors.Count){throw 'Test source parse failed'}
+$commands=@($ast.FindAll({param($node) $node -is [Management.Automation.Language.CommandAst] -and $node.GetCommandName() -eq 'node' -and $node.Extent.Text.Contains('measurement-validation.cjs')},$true))
+if($commands.Count -ne 2){throw 'Expected the 2 actual Test measurement commands'}
+foreach($command in $commands){
+  Write-Output $command.Extent.Text
+  Invoke-Expression $command.Extent.Text
+  if($LASTEXITCODE -ne 0){throw 'Actual Test measurement entry failed'}
+}
+Write-Output 'Only new measurement commands executed; canonical Test/CTests/desktop were not invoked.'

@@ -2,13 +2,21 @@
 param([ValidateSet('x86','x64')][string]$Architecture='x64',
       [ValidateSet('Debug','Release')][string]$Configuration='Release',
       [switch]$NativeOnly,
-      [switch]$UnitOnly)
+      [switch]$UnitOnly,
+      [switch]$WithGuiBindings)
 $ErrorActionPreference='Stop'
 if($NativeOnly -and $UnitOnly){throw 'NativeOnly and UnitOnly cannot be used together.'}
+if($NativeOnly -and $WithGuiBindings){throw 'WithGuiBindings requires unit tests; omit NativeOnly.'}
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $output=Join-Path $root "out/$Architecture"
 $evidence=Join-Path $root 'tools/internal/build-evidence.cjs'
 if(-not $NativeOnly){
+  & node --test (Join-Path $root 'tests/sdk/gui-bindings-delivery.test.cjs') (Join-Path $root 'tests/sdk/gui-bindings-entrypoints.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'Optional GUI delivery boundary tests failed'}
+  if($WithGuiBindings){
+    & node (Join-Path $root 'tools/sdk/gui-bindings-delivery.cjs') test --root $root
+    if($LASTEXITCODE -ne 0){throw 'Optional GUI bindings tests failed'}
+  }
   $validationRunner=& (Join-Path $PSScriptRoot 'internal/Build-ValidationTools.ps1') -Architecture $Architecture
   if($LASTEXITCODE -ne 0){throw 'Owned process supervision tools build failed'}
   $previousOwnedRunner=$env:SOUI_OWNED_PROCESS_RUNNER

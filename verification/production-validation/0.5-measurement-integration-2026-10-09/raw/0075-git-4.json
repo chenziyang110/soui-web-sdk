@@ -1,0 +1,12 @@
+{
+  "cwd": "F:/work/sm05-mi",
+  "exe": "git",
+  "args": [
+    "diff",
+    "--cached",
+    "--stat"
+  ],
+  "status": 0,
+  "stdout": " benchmarks/protocol/CMakeLists.txt                 |   5 +\n benchmarks/protocol/README.md                      |  10 +\n benchmarks/protocol/check-pair-runs.cjs            |  76 +++++--\n benchmarks/protocol/check-run-traces.cjs           |  98 +++++++--\n benchmarks/protocol/input-trace.cpp                |  33 ++-\n benchmarks/protocol/owned-trace-subject.cjs        | 238 +++++++++++++++++++++\n benchmarks/protocol/process-tree-sampler.cpp       |  26 +--\n benchmarks/protocol/run-one.cjs                    |  54 +++--\n benchmarks/protocol/summarize-series.cjs           |  54 +++--\n benchmarks/protocol/trace-identity.h               |  59 +++++\n docs/adr/0030-exact-benchmark-process-identity.md  |  83 +++++++\n .../measurement-preparation-source.test.cjs        | 102 +++++++++\n tests/benchmark/native-trace-identity.cpp          |  34 +++\n tests/benchmark/owned-trace-subject.test.cjs       | 233 ++++++++++++++++++++\n tests/benchmark/process-tree-sampler.test.cjs      | 221 ++++++++++++-------\n tests/benchmark/run-one-cleanup.test.cjs           |  20 +-\n tests/benchmark/run-traces.test.cjs                | 162 ++++++++++++++\n tests/benchmark/series-summary.test.cjs            |  45 +++-\n tools/Collect-Verification.cjs                     |   3 +\n tools/Test.ps1                                     |  19 +-\n tools/internal/Build-ValidationTools.ps1           |  23 +-\n tools/internal/measurement-validation.cjs          | 117 ++++++++++\n 22 files changed, 1517 insertions(+), 198 deletions(-)\n",
+  "stderr": ""
+}

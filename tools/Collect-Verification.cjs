@@ -10,8 +10,10 @@ const digest=name=>crypto.createHash('sha256').update(fs.readFileSync(path.resol
 const save=(name,value)=>fs.writeFileSync(path.join(output,name),JSON.stringify(value,null,2)+'\n');
 fs.mkdirSync(output,{recursive:true});
 const version=fs.readFileSync(path.join(root,'VERSION'),'utf8').trim();
-const scope=process.argv[2] || 'full';
-if(!['full','--foundation'].includes(scope))throw new Error('Usage: Collect-Verification.cjs [--foundation]');
+const args=process.argv.slice(2),withGuiBindings=args.includes('--with-gui-bindings');
+const scopes=args.filter(value=>value!=='--with-gui-bindings');
+const scope=scopes[0] || 'full';
+if(scopes.length>1 || new Set(args).size!==args.length || !['full','--foundation'].includes(scope))throw new Error('Usage: Collect-Verification.cjs [--foundation] [--with-gui-bindings]');
 // A failed collection leaves an explicit non-acceptance, never yesterday's green result.
 save('acceptance.json',{schema:'soui.source-delivery-acceptance/v2',version,scope,
  sourceDeliveryVerified:false,releaseReady:false,status:'collecting',startedAt:new Date().toISOString()});
@@ -28,6 +30,7 @@ const unit={
  measurementProtocol:run('measurement-protocol-tests',process.execPath,['tools/internal/measurement-validation.cjs','protocol']),
  nativeMeasurementX64:run('native-measurement-x64',process.execPath,['tools/internal/measurement-validation.cjs','native','x64']),
  nativeMeasurementX86:run('native-measurement-x86',process.execPath,['tools/internal/measurement-validation.cjs','native','x86']),
+ guiDelivery:run('gui-bindings-delivery-tests',process.execPath,['--test','tests/sdk/gui-bindings-delivery.test.cjs','tests/sdk/gui-bindings-entrypoints.test.cjs']),
  actionGeneration:run('action-generation-tests',process.execPath,['--test','tests/sdk/actiongen.test.mjs','tests/web/generated-actions.test.mjs']),
  package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),
  nativePayload:run('sdk-native-payload-tests',process.execPath,['--test','tests/sdk/sdk-native-payload.test.cjs']),
@@ -41,6 +44,11 @@ const unit={
  nativeX64:run('native-contract-x64',path.join(root,'out/x64/tests/native/Release/soui_sdk_contract_tests.exe'),[]),
  nativeX86:run('native-contract-x86',path.join(root,'out/x86/tests/native/Release/soui_sdk_contract_tests.exe'),[])
 };
+if(withGuiBindings){
+ unit.guiBindings=run('gui-bindings-tests',process.execPath,['tools/sdk/gui-bindings-delivery.cjs','test','--root',root]);
+ unit.guiBindings.desktopValidated=false;
+ unit.guiBindings.declaration=require('./sdk/gui-bindings-delivery.cjs').verify(root);
+}
 if(scope==='--foundation'){
  const matrix=[];
  const sizes=[];
@@ -102,6 +110,7 @@ const fresh=read('verification/fresh-project.json');
 const relocated=read('verification/relocation.json');
 const relocationSmoke=read('verification/relocated-native-smoke.json');
 const currentPackage=sdkPackage.readPackage(path.join(root,'dist/sdk',version));
+if(withGuiBindings)requirePassed(Boolean(currentPackage.optionalGuiBindings),'SDK package omitted the requested compiled GUI bindings');
 releaseVerification.validateReports([generated,fresh,relocated,relocationSmoke],{version,
  sourceSha256:identity.source(root).sha256,sdkManifestSha256:identity.hash(identity.encoded(currentPackage))});
 const sdkOnly=evidence.verifyBuild(root,'x64','Release',true);

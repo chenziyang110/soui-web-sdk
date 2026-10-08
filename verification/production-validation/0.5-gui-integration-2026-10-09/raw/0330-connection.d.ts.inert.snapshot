@@ -1,0 +1,20 @@
+import { SouiNativeClientImpl } from './client.js';
+import type { SouiNativeClientOptions } from './client.js';
+import type { SouiCoreMethodMap } from './protocol.js';
+export interface SouiNativeWindow {
+    __souiNativePostMessage?: (envelope: string) => string | Promise<string>;
+    __souiNativeDispatchEvent?: (event: unknown) => void;
+    addEventListener(type: string, listener: EventListener): void;
+    removeEventListener(type: string, listener: EventListener): void;
+}
+export interface SouiConnectionOptions extends Omit<SouiNativeClientOptions, 'sessionId' | 'origin' | 'token' | 'lease' | 'leaseElapsedMs'> {
+    target?: SouiNativeWindow;
+    bootstrapTimeoutMs?: number;
+}
+/** Own one connection per document. After failure or disposal, reload before reconnecting. */
+export declare function connectSouiNative<Methods extends {
+    [K in keyof Methods]: {
+        params: unknown;
+        result: unknown;
+    };
+} = SouiCoreMethodMap>(options?: SouiConnectionOptions): Promise<SouiNativeClientImpl<Methods>>;

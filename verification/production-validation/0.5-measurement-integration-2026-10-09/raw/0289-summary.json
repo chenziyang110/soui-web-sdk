@@ -1,0 +1,169 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "arch": "x86",
+      "args": [
+        "--test",
+        "tests/benchmark/run-traces.test.cjs",
+        "tests/benchmark/run-one-cleanup.test.cjs",
+        "tests/benchmark/process-tree-sampler.test.cjs",
+        "tests/benchmark/owned-trace-subject.test.cjs",
+        "tests/benchmark/pair-preflight.test.cjs",
+        "tests/benchmark/series-summary.test.cjs"
+      ],
+      "ready": {
+        "pid": 111156,
+        "creationFileTime": "134359493726239030"
+      },
+      "finished": {
+        "pid": 111156,
+        "creationFileTime": "134359493726239030",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 10002,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 61,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-mi\\out\\measurement-integration-validation\\native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893\\x86\\owned.ndjson",
+        "reportSha256": "a618de43bee0bba8185382d9b04b1c2fbca90b37d4d29d93d7fe4bba893ee475",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+      },
+      "pass": true,
+      "artifacts": [
+        {
+          "path": "F:\\work\\sm05-mi\\out\\measurement-integration-validation\\native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893\\x86\\owned.ndjson",
+          "bytes": 90561,
+          "sha256": "a618de43bee0bba8185382d9b04b1c2fbca90b37d4d29d93d7fe4bba893ee475",
+          "coff": null
+        },
+        {
+          "path": "F:\\work\\sm05-mi\\out\\measurement-integration-validation\\native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893\\x86\\owned.ndjson.context.json",
+          "bytes": 662,
+          "sha256": "49d1fafad13008e57365285181283c6c0b980f56c040c4958da493b8dda565cb",
+          "coff": null
+        },
+        {
+          "path": "F:\\work\\sm05-mi\\out\\measurement-integration-validation\\native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893\\x86\\stdout.bin",
+          "bytes": 4199,
+          "sha256": "7afae9c26f0d3a8b4124f1a4180bd5737cb81fd1e41a6330f12c7f5a96036988",
+          "coff": null
+        },
+        {
+          "path": "F:\\work\\sm05-mi\\out\\measurement-integration-validation\\native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893\\x86\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "coff": null
+        },
+        {
+          "path": "F:\\work\\sm05-mi\\out\\measurement-integration-validation\\native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893\\x86\\finished.json",
+          "bytes": 1011,
+          "sha256": "7af73f2b51cafc4dfb6527606b88051f6b032c129ac35db9757f0e78013cb69c",
+          "coff": null
+        }
+      ]
+    },
+    {
+      "arch": "x64",
+      "args": [
+        "--test",
+        "tests/benchmark/run-traces.test.cjs",
+        "tests/benchmark/run-one-cleanup.test.cjs",
+        "tests/benchmark/process-tree-sampler.test.cjs",
+        "tests/benchmark/owned-trace-subject.test.cjs",
+        "tests/benchmark/pair-preflight.test.cjs",
+        "tests/benchmark/series-summary.test.cjs"
+      ],
+      "ready": {
+        "pid": 97136,
+        "creationFileTime": "134359493828605479"
+      },
+      "finished": {
+        "pid": 97136,
+        "creationFileTime": "134359493828605479",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 9761,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 62,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-mi\\out\\measurement-integration-validation\\native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893\\x64\\owned.ndjson",
+        "reportSha256": "ff8a68800aa2cbeb8e95b54ded842c481f7f2823a1a789cbeb2ecd1ceb7b1d3d",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+      },
+      "pass": true,
+      "artifacts": [
+        {
+          "path": "F:\\work\\sm05-mi\\out\\measurement-integration-validation\\native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893\\x64\\owned.ndjson",
+          "bytes": 94147,
+          "sha256": "ff8a68800aa2cbeb8e95b54ded842c481f7f2823a1a789cbeb2ecd1ceb7b1d3d",
+          "coff": null
+        },
+        {
+          "path": "F:\\work\\sm05-mi\\out\\measurement-integration-validation\\native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893\\x64\\owned.ndjson.context.json",
+          "bytes": 662,
+          "sha256": "49d1fafad13008e57365285181283c6c0b980f56c040c4958da493b8dda565cb",
+          "coff": null
+        },
+        {
+          "path": "F:\\work\\sm05-mi\\out\\measurement-integration-validation\\native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893\\x64\\stdout.bin",
+          "bytes": 4205,
+          "sha256": "3206237195c09fd1fb275b5d578666b9b6b974a507b5a30724ae002a44ac2812",
+          "coff": null
+        },
+        {
+          "path": "F:\\work\\sm05-mi\\out\\measurement-integration-validation\\native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893\\x64\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "coff": null
+        },
+        {
+          "path": "F:\\work\\sm05-mi\\out\\measurement-integration-validation\\native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893\\x64\\finished.json",
+          "bytes": 1009,
+          "sha256": "9c87151519e99a1d9861aba4e9df37ea37830fa683aec16eae891889769a96cb",
+          "coff": null
+        }
+      ]
+    }
+  ],
+  "noDesktop": true,
+  "noSendInput": true,
+  "sourceAfterMatches": true,
+  "noBuild": true
+}

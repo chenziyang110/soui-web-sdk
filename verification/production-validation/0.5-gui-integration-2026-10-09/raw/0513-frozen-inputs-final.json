@@ -1,0 +1,42 @@
+{
+  "schema": "soui.gui-fixed-lock-review/v1",
+  "inputs": {
+    "sha256": "b8e7b93dc048a747579389f722b6502c1599bbd53b78b3eca12e64bc074afccd",
+    "bytes": 31140,
+    "files": [
+      {
+        "path": "docs/adr/0026-optional-react-vue-gui-bindings.md",
+        "bytes": 7216,
+        "sha256": "3df1bac7777be104ec2ce208ea8b169b14d04346dd39eeef4a086ed6e317efa3"
+      },
+      {
+        "path": "tests/sdk/gui-bindings-delivery.test.cjs",
+        "bytes": 10231,
+        "sha256": "3f7984c1e78494e979a03b61537f4429f01e152e9a6b8ad68e2d03f240eadba9"
+      },
+      {
+        "path": "tools/sdk/gui-bindings-delivery.cjs",
+        "bytes": 13693,
+        "sha256": "26305269c19891cd5dfb6d781985114f7b6aa1d6437d22213d4cb6ba25c10ec3"
+      }
+    ]
+  },
+  "priorIndex": {
+    "path": "out/gui-delivery-integration-20ab1ba3-606a-4023-b2e0-77f8d8a92f38/evidence-index-final.json",
+    "sha256": "6537bec520139d5003f9ad7f213ae27e38181f054210bba66e95ae712756be51",
+    "rawFiles": 339,
+    "allRawFilesVerifiedUnchanged": true
+  },
+  "red": {
+    "status": 1,
+    "helper": "tools-sdk-gui-bindings-delivery.cjs.before.inert.snapshot",
+    "test": "red-regression-test.cjs.inert.snapshot"
+  },
+  "green": {
+    "command": "green-final-command.json",
+    "pass": 10,
+    "fail": 0,
+    "skip": 0
+  },
+  "scope": "Actual SDK pack/install/lock and GUI verification with tiny source/output fixtures and synthetic compile records. No npm compilation, framework suite, desktop/C++/VM or Collect run. Current GUI build report is stale after helper source change and must be rebuilt by root after ActionCore integration."
+}

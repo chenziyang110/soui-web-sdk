@@ -1,0 +1,7 @@
+{
+  "snapshotOnly": true,
+  "error": "ENOENT while mkdir for an absolute source path embedded in a relative snapshot path",
+  "sourceFilesChanged": false,
+  "oldEvidenceChanged": false,
+  "correction": "Normalize each source path relative to the workspace; verify existing partial copies byte-for-byte and preserve them."
+}

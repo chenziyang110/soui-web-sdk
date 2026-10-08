@@ -1,0 +1,13 @@
+
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process'),identity=require('../../tools/internal/delivery-identity.cjs');
+const root=path.resolve(__dirname,'../..'),out=__dirname;
+function run(name,args){const r=cp.spawnSync(process.execPath,args,{cwd:root,encoding:'utf8',timeout:300000,windowsHide:true});fs.writeFileSync(path.join(out,name+'.stdout.log'),r.stdout||'',{flag:'wx'});fs.writeFileSync(path.join(out,name+'.stderr.log'),r.stderr||'',{flag:'wx'});const record={cwd:root,executable:process.execPath,args,exitCode:r.status,error:r.error?.message||null};fs.writeFileSync(path.join(out,name+'.json'),identity.encoded(record),{flag:'wx'});if(r.status!==0)throw Error(name+' failed');return record;}
+const commands=[];
+commands.push(run('combined-gui-build',['tools/sdk/gui-bindings-delivery.cjs','build','--root',root]));
+commands.push(run('combined-delivery-boundaries',['--test','tests/sdk/gui-bindings-delivery.test.cjs','tests/sdk/gui-bindings-entrypoints.test.cjs']));
+commands.push(run('combined-sdk-package-smoke',['tests/sdk/sdk-package-smoke.cjs']));
+commands.push(run('combined-core-actions-gui',['--test','tests/web/gui.test.mjs','tests/web/generated-actions.test.mjs','tests/web/sdk-client.test.mjs','tests/web/action-contracts.test.mjs']));
+for(const relative of ['templates/desktop-app','templates/modern-app','tests/action-consumer'])commands.push(run('action-check-'+relative.replaceAll('/','-'),['tools/sdk/actiongen.cjs','--source',path.join(root,relative,'contracts/actions.json'),'--root',path.join(root,relative),'--check']));
+commands.push(run('combined-gui-bindings',['tools/sdk/gui-bindings-delivery.cjs','test','--root',root]));
+const before=JSON.parse(fs.readFileSync(path.join(out,'source-before-tests.json'))),after=identity.source(root);if(before.globalSource.sha256!==after.sha256)throw Error('Combined source changed during tests');const gui=require(path.join(root,'tools/sdk/gui-bindings-delivery.cjs'));const decl=gui.verify(root);if(before.guiSource.sha256!==decl.source.sha256)throw Error('GUI compile input differs');fs.writeFileSync(path.join(out,'source-after-tests.json'),identity.encoded({head:cp.execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim(),globalSource:after,guiDelivery:decl,sourceUnchanged:true}),{flag:'wx'});fs.writeFileSync(path.join(out,'real-commands-final.json'),identity.encoded({commands,allPassed:true,fullCollectExecuted:false,desktopExecuted:false}),{flag:'wx'});console.log(JSON.stringify({out,commands:commands.length,sourceSha256:after.sha256,guiSourceSha256:decl.source.sha256,guiOutputSha256:decl.output.sha256}));

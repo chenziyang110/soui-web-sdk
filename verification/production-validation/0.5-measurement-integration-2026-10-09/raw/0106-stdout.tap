@@ -1,0 +1,382 @@
+TAP version 13
+# Subtest: x86: unchanged source and matching tool identities remain prepared
+ok 1 - x86: unchanged source and matching tool identities remain prepared
+  ---
+  duration_ms: 50.7966
+  type: 'test'
+  ...
+# Subtest: x86: changed Windows SDK selection input invalidates preparation
+ok 2 - x86: changed Windows SDK selection input invalidates preparation
+  ---
+  duration_ms: 51.7878
+  type: 'test'
+  ...
+# Subtest: x86: missing Windows SDK selection input cannot reuse prepared tools
+ok 3 - x86: missing Windows SDK selection input cannot reuse prepared tools
+  ---
+  duration_ms: 41.346
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing SDK input rejects the native group before launch
+ok 4 - x86: changed or missing SDK input rejects the native group before launch
+  ---
+  duration_ms: 85.2465
+  type: 'test'
+  ...
+# Subtest: x86: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation
+ok 5 - x86: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation
+  ---
+  duration_ms: 49.5193
+  type: 'test'
+  ...
+# Subtest: x86: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools
+ok 6 - x86: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 37.9673
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch
+ok 7 - x86: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch
+  ---
+  duration_ms: 65.7141
+  type: 'test'
+  ...
+# Subtest: x86: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation
+ok 8 - x86: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation
+  ---
+  duration_ms: 36.6157
+  type: 'test'
+  ...
+# Subtest: x86: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools
+ok 9 - x86: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools
+  ---
+  duration_ms: 35.6697
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch
+ok 10 - x86: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch
+  ---
+  duration_ms: 65.3432
+  type: 'test'
+  ...
+# Subtest: x64: unchanged source and matching tool identities remain prepared
+ok 11 - x64: unchanged source and matching tool identities remain prepared
+  ---
+  duration_ms: 39.7455
+  type: 'test'
+  ...
+# Subtest: x64: changed Windows SDK selection input invalidates preparation
+ok 12 - x64: changed Windows SDK selection input invalidates preparation
+  ---
+  duration_ms: 42.8131
+  type: 'test'
+  ...
+# Subtest: x64: missing Windows SDK selection input cannot reuse prepared tools
+ok 13 - x64: missing Windows SDK selection input cannot reuse prepared tools
+  ---
+  duration_ms: 67.0138
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing SDK input rejects the native group before launch
+ok 14 - x64: changed or missing SDK input rejects the native group before launch
+  ---
+  duration_ms: 73.0121
+  type: 'test'
+  ...
+# Subtest: x64: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation
+ok 15 - x64: changed benchmarks/protocol/owned-tail-evidence.cpp invalidates preparation
+  ---
+  duration_ms: 39.9881
+  type: 'test'
+  ...
+# Subtest: x64: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools
+ok 16 - x64: missing benchmarks/protocol/owned-tail-evidence.cpp cannot reuse prepared tools
+  ---
+  duration_ms: 36.9856
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch
+ok 17 - x64: changed or missing benchmarks/protocol/owned-tail-evidence.cpp rejects the native group before launch
+  ---
+  duration_ms: 66.365
+  type: 'test'
+  ...
+# Subtest: x64: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation
+ok 18 - x64: changed benchmarks/protocol/owned-tail-evidence.h invalidates preparation
+  ---
+  duration_ms: 41.0105
+  type: 'test'
+  ...
+# Subtest: x64: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools
+ok 19 - x64: missing benchmarks/protocol/owned-tail-evidence.h cannot reuse prepared tools
+  ---
+  duration_ms: 33.9908
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch
+ok 20 - x64: changed or missing benchmarks/protocol/owned-tail-evidence.h rejects the native group before launch
+  ---
+  duration_ms: 70.5954
+  type: 'test'
+  ...
+# Subtest: reader derives the native start instead of trusting an extra JSON subject and supports relocation
+ok 21 - reader derives the native start instead of trusting an extra JSON subject and supports relocation
+  ---
+  duration_ms: 75.2907
+  type: 'test'
+  ...
+# Subtest: ready must match the raw native start and immutable launch context
+ok 22 - ready must match the raw native start and immutable launch context
+  ---
+  duration_ms: 33.3084
+  type: 'test'
+  ...
+# Subtest: valid JSON process claims cannot replace the raw PID or one-tick creation value
+ok 23 - valid JSON process claims cannot replace the raw PID or one-tick creation value
+  ---
+  duration_ms: 78.3486
+  type: 'test'
+  ...
+# Subtest: raw data/hash mismatches, crossed report paths and duplicate roles fail
+ok 24 - raw data/hash mismatches, crossed report paths and duplicate roles fail
+  ---
+  duration_ms: 162.383
+  type: 'test'
+  ...
+# Subtest: duplicate start/root-exit/terminal, invalid uint64 and missing complete newline fail even with updated hashes
+ok 25 - duplicate start/root-exit/terminal, invalid uint64 and missing complete newline fail even with updated hashes
+  ---
+  duration_ms: 265.7127
+  type: 'test'
+  ...
+# Subtest: a context consistently rehashed with a false collector subject still fails native provenance
+ok 26 - a context consistently rehashed with a false collector subject still fails native provenance
+  ---
+  duration_ms: 52.7735
+  type: 'test'
+  ...
+# Subtest: context tool hashes, arguments, cwd and report origin cannot silently cross runs
+ok 27 - context tool hashes, arguments, cwd and report origin cannot silently cross runs
+  ---
+  duration_ms: 236.0745
+  type: 'test'
+  ...
+# Subtest: STOP remains controlled closure with generic false and never formal natural completion
+ok 28 - STOP remains controlled closure with generic false and never formal natural completion
+  ---
+  duration_ms: 60.4156
+  type: 'test'
+  ...
+# Subtest: unreadable/missing files, unsafe paths, links and invalid UTF8 are rejected
+ok 29 - unreadable/missing files, unsafe paths, links and invalid UTF8 are rejected
+  ---
+  duration_ms: 39.7902
+  type: 'test'
+  ...
+# Subtest: v2 pair reader binds authored raw/context fixtures and cannot accept forged JSON or STOP
+ok 30 - v2 pair reader binds authored raw/context fixtures and cannot accept forged JSON or STOP
+  ---
+  duration_ms: 415.1339
+  type: 'test'
+  ...
+# Subtest: historical smoke evidence is rejected for unequal content areas and short runs
+ok 31 - historical smoke evidence is rejected for unequal content areas and short runs
+  ---
+  duration_ms: 3.059
+  type: 'test'
+  ...
+# Subtest: page preflight accepts only complete, aligned S01 telemetry and still lists external evidence
+ok 32 - page preflight accepts only complete, aligned S01 telemetry and still lists external evidence
+  ---
+  duration_ms: 1.6481
+  type: 'test'
+  ...
+# Subtest: S05 requires observed motion for 120 seconds even when the page says measured
+ok 33 - S05 requires observed motion for 120 seconds even when the page says measured
+  ---
+  duration_ms: 0.8609
+  type: 'test'
+  ...
+# Subtest: full S02 raw traces and frozen inputs satisfy pairing preflight only
+ok 34 - full S02 raw traces and frozen inputs satisfy pairing preflight only
+  ---
+  duration_ms: 31.9805
+  type: 'test'
+  ...
+# Subtest: historical completed S01 runs without frozen inputs remain rejected
+ok 35 - historical completed S01 runs without frozen inputs remain rejected
+  ---
+  duration_ms: 5.9916
+  type: 'test'
+  ...
+# Subtest: independently collected S02 rounds retain the same machine and payload identities
+ok 36 - independently collected S02 rounds retain the same machine and payload identities
+  ---
+  duration_ms: 43.8732
+  type: 'test'
+  ...
+# Subtest: changed non-entry page asset invalidates a completed run
+ok 37 - changed non-entry page asset invalidates a completed run
+  ---
+  duration_ms: 62.8153
+  type: 'test'
+  ...
+# Subtest: accepts matching full traces without promoting performance or presentation
+ok 38 - accepts matching full traces without promoting performance or presentation
+  ---
+  duration_ms: 1.0632
+  type: 'test'
+  ...
+# Subtest: legacy rounded creation values remain readable without exact binding
+ok 39 - legacy rounded creation values remain readable without exact binding
+  ---
+  duration_ms: 0.4148
+  type: 'test'
+  ...
+# Subtest: new exact pairs require the held subject before binding and preserve one-tick alignment
+ok 40 - new exact pairs require the held subject before binding and preserve one-tick alignment
+  ---
+  duration_ms: 0.8027
+  type: 'test'
+  ...
+# Subtest: un-pinned collector CLI runs cannot claim exact owned binding
+ok 41 - un-pinned collector CLI runs cannot claim exact owned binding
+  ---
+  duration_ms: 0.6449
+  type: 'test'
+  ...
+# Subtest: actual native serializer emits readable legacy and exact collector schemas
+ok 42 - actual native serializer emits readable legacy and exact collector schemas # SKIP
+  ---
+  duration_ms: 0.0654
+  type: 'test'
+  ...
+# Subtest: exact records reject mixed versions and cannot be silently downgraded to numbers
+ok 43 - exact records reject mixed versions and cannot be silently downgraded to numbers
+  ---
+  duration_ms: 0.2195
+  type: 'test'
+  ...
+# Subtest: exact FILETIME strings enforce uint64 and canonical positive decimal boundaries
+ok 44 - exact FILETIME strings enforce uint64 and canonical positive decimal boundaries
+  ---
+  duration_ms: 1.6909
+  type: 'test'
+  ...
+# Subtest: PID reuse, duplicate members and forged held identities fail exact binding
+ok 45 - PID reuse, duplicate members and forged held identities fail exact binding
+  ---
+  duration_ms: 1.4013
+  type: 'test'
+  ...
+# Subtest: UTC alignment uses exact differences near uint64 max and rejects a one-tick overrun
+ok 46 - UTC alignment uses exact differences near uint64 max and rejects a one-tick overrun
+  ---
+  duration_ms: 0.2789
+  type: 'test'
+  ...
+# Subtest: rejects a different process, shortened input, missing process sample, and timeout
+ok 47 - rejects a different process, shortened input, missing process sample, and timeout
+  ---
+  duration_ms: 0.268
+  type: 'test'
+  ...
+# Subtest: rejects late input and S03 without IME composition
+ok 48 - rejects late input and S03 without IME composition
+  ---
+  duration_ms: 0.1619
+  type: 'test'
+  ...
+# Subtest: rejects a full-length idle trace and missing scene operations
+ok 49 - rejects a full-length idle trace and missing scene operations
+  ---
+  duration_ms: 0.1629
+  type: 'test'
+  ...
+# Subtest: accepts full scroll, resize and motion traces, but rejects missing defining actions
+ok 50 - accepts full scroll, resize and motion traces, but rejects missing defining actions
+  ---
+  duration_ms: 0.8467
+  type: 'test'
+  ...
+# Subtest: five alternating accepted pairs produce diagnostics without a value verdict
+ok 51 - five alternating accepted pairs produce diagnostics without a value verdict
+  ---
+  duration_ms: 1.5251
+  type: 'test'
+  ...
+# Subtest: only uniformly bound v2 pairs produce an exact series diagnostic
+ok 52 - only uniformly bound v2 pairs produce an exact series diagnostic
+  ---
+  duration_ms: 1.9777
+  type: 'test'
+  ...
+# Subtest: historical verdict projection permits only the new explicit unbound fields
+ok 53 - historical verdict projection permits only the new explicit unbound fields
+  ---
+  duration_ms: 1.0088
+  type: 'test'
+  ...
+# Subtest: four pairs cannot be summarized as the five-pair acceptance input
+ok 54 - four pairs cannot be summarized as the five-pair acceptance input
+  ---
+  duration_ms: 0.1377
+  type: 'test'
+  ...
+# Subtest: a missing or contaminated live gate invalidates all candidate ratios
+ok 55 - a missing or contaminated live gate invalidates all candidate ratios
+  ---
+  duration_ms: 0.3292
+  type: 'test'
+  ...
+# Subtest: order drift and duplicate run identity are refused
+ok 56 - order drift and duplicate run identity are refused
+  ---
+  duration_ms: 0.3454
+  type: 'test'
+  ...
+# Subtest: a rejected pair or forced cleanup cannot contribute to a summary
+ok 57 - a rejected pair or forced cleanup cannot contribute to a summary
+  ---
+  duration_ms: 0.3502
+  type: 'test'
+  ...
+# Subtest: live gate timestamps must cover a full run without sampling gaps
+ok 58 - live gate timestamps must cover a full run without sampling gaps
+  ---
+  duration_ms: 1.5355
+  type: 'test'
+  ...
+# Subtest: real run times follow the declared alternating order without overlap
+ok 59 - real run times follow the declared alternating order without overlap
+  ---
+  duration_ms: 0.4178
+  type: 'test'
+  ...
+# Subtest: each before and after preflight gate brackets its actual run
+ok 60 - each before and after preflight gate brackets its actual run
+  ---
+  duration_ms: 0.429
+  type: 'test'
+  ...
+# Subtest: preflight gates too far from a measured run are rejected
+ok 61 - preflight gates too far from a measured run are rejected
+  ---
+  duration_ms: 0.1575
+  type: 'test'
+  ...
+# Subtest: series, single-run and live gate must identify the same runner
+ok 62 - series, single-run and live gate must identify the same runner
+  ---
+  duration_ms: 0.3443
+  type: 'test'
+  ...
+1..62
+# tests 62
+# suites 0
+# pass 61
+# fail 0
+# cancelled 0
+# skipped 1
+# todo 0
+# duration_ms 1574.1297

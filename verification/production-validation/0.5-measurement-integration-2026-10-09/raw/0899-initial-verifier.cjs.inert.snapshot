@@ -1,0 +1,69 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),vm=require('node:vm');
+const root=path.resolve(__dirname,'../..');
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const read=p=>fs.readFileSync(path.isAbsolute(p)?p:path.join(root,p));
+const json=p=>JSON.parse(read(p));
+const freezePath='out/measurement-standard-entry-final-9d38dc2b-6e29-4b78-8810-bfcf0aa7136b/index.json';
+const frozen=json(freezePath),errors=[];
+const need=(v,label)=>{if(!v)errors.push(label);};
+function entries(items,label){let bytes=0;for(const r of items){const b=read(r.path);bytes+=b.length;need(b.length===r.bytes&&sha(b)===r.sha256,label+': '+r.path);}return{count:items.length,bytes};}
+const raw=entries(frozen.raw,'new raw');
+const oldPath='out/measurement-integration-validation/evidence-index-final.json',old=json(oldPath);
+const oldRaw=entries(old.index,'old raw');
+const oldInputs=json('out/measurement-integration-validation/native-d0d0adb8-e07c-402e-8fbe-e7c11fe2d893/inputs.json');
+entries(oldInputs.source,'old source');entries(frozen.source,'four frozen sources');
+for(const t of frozen.tools){const b=read(t.path);need(b.length===t.bytes&&sha(b)===t.sha256,'tool SHA '+t.path);need(b.readUInt16LE(b.readUInt32LE(60)+4)===(t.architecture==='x64'?34404:332),'tool COFF '+t.path);}
+const knownRunnerShas=new Set(frozen.tools.filter(t=>t.name==='OwnedProcessRunner').map(t=>t.sha256));
+knownRunnerShas.add(sha(read('F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe')));
+let genericPass=0,genericFail=0,cleanup=0,natural=0;
+const jobDetails=[];
+for(const j of frozen.jobs){
+ const reportBytes=read(j.report),rows=reportBytes.toString('utf8').trim().split(/\r?\n/).map(s=>JSON.parse(s)),start=rows[0],end=rows.at(-1),context=json(j.report+'.context.json');
+ need(sha(reportBytes)===j.sha256,'job raw SHA '+j.report);
+ need(start.schema==='soui.owned-process-run/v1'&&start.event==='start'&&start.pid===j.pid&&start.creationFileTime===j.creationFileTime&&start.jobAssignedBeforeResume===true&&start.breakawayAllowed===false,'job start '+j.report);
+ need(context.schema==='soui.owned-process-context/v1'&&context.cwd.toLowerCase()===root.toLowerCase()&&context.timeoutMs===start.timeoutMs&&context.drainMs===start.drainMs,'job context '+j.report);
+ need(knownRunnerShas.has(context.runnerSha256),'job runner '+j.report);
+ need(sha(read(context.executable))===context.executableSha256,'job actual executable '+j.report);
+ const terminal={...end};delete terminal.schema;
+ need(end.event==='terminal'&&JSON.stringify(terminal)===JSON.stringify(j.terminal)&&end.closureConfirmed===true&&end.activeProcesses===0&&end.limitTerminatedProcesses===0,'job terminal '+j.report);
+ if(end.passed)genericPass++;else genericFail++;
+ if(end.terminatedOwnedJob)cleanup++;else natural++;
+ jobDetails.push({path:j.report,rootExitCode:end.rootExitCode,passed:end.passed,closureConfirmed:end.closureConfirmed,activeProcesses:end.activeProcesses,terminatedOwnedJob:end.terminatedOwnedJob,runnerSha256:context.runnerSha256});
+}
+const groups=[];
+for(const indexed of frozen.groups){
+ const folder=path.dirname(indexed.path),s=json(indexed.path),i=json(path.join(folder,'inputs.json')),f=json(path.join(folder,'finished.json')),c=json(s.report+'.context.json');
+ const prep=json(path.join(i.architecture==='x64'?'out/benchmark-protocol':'out/benchmark-protocol-x86','measurement-tools.json'));
+ need(JSON.stringify(i.preparation)===JSON.stringify(prep),'group preparation '+folder);
+ entries(prep.source.files,'prepared sources');entries(prep.logs,'prepared logs');
+ need(sha(Buffer.from(JSON.stringify(prep.source.files,null,2)+'\n'))===prep.source.sha256,'source aggregate '+folder);
+ need(i.source.sha256===s.sourceSha256&&s.sourceSha256===frozen.measurementBuildSourceSha256,'group source '+folder);
+ need(f.passed&&f.closureConfirmed&&f.reportSha256===s.reportSha256&&sha(read(s.report))===s.reportSha256&&f.runnerSha256===c.runnerSha256&&f.executableSha256===c.executableSha256,'group finished '+folder);
+ const runner=prep.executables.find(t=>t.name==='OwnedProcessRunner');
+ need(c.runnerSha256===runner.sha256&&c.executable===i.node.path&&c.executableSha256===i.node.sha256,'group tool context '+folder);
+ need(i.tests.every(t=>sha(read(t.path))===t.sha256),'group test SHA '+folder);
+ need(sha(read('tools/internal/owned-process.cjs'))===i.clientSha256,'group client SHA '+folder);
+ const args=['--test','--test-reporter=tap',...i.tests.map(t=>t.path)];
+ need(JSON.stringify(c.args)===JSON.stringify(args),'group exact args '+folder);
+ for(const [key,name] of [['BENCHMARK_OWNED_RUNNER_EXE','OwnedProcessRunner'],['PROCESS_TREE_SAMPLER_EXE','ProcessTreeSampler'],['BENCHMARK_INPUT_TRACE_EXE','InputTrace'],['BENCHMARK_IDENTITY_FIXTURE_EXE','NativeTraceIdentity']]){
+  if(i.kind==='protocol'&&name!=='OwnedProcessRunner')need(!(key in i.env),'protocol environment '+folder);
+  else need(path.resolve(i.env[key])===path.join(root,prep.executables.find(t=>t.name===name).path),'native environment '+folder);
+ }
+ const stdout=read(path.join(folder,'stdout.tap')).toString();
+ const counts=Object.fromEntries(['tests','pass','fail','cancelled','skipped','todo'].map(k=>[k,Number(new RegExp('^# '+k+' (\\d+)\\r?$','m').exec(stdout)?.[1])]));
+ need(JSON.stringify(counts)===JSON.stringify(s.counts),'group TAP '+folder);
+ need(counts.fail===0&&counts.cancelled===0&&counts.todo===0&&counts.skipped===(i.kind==='native'?0:1)&&counts.tests===counts.pass+counts.skipped,'group TAP omissions '+folder);
+ groups.push({kind:i.kind,architecture:i.architecture,counts,runnerSha256:c.runnerSha256,contextExecutableSha256:c.executableSha256});
+}
+// Virtual-only fault: no source or binaries are edited, and no child is launched.
+const sourcePath=path.join(root,'tools/internal/measurement-validation.cjs'),sdkPolicy=path.join(root,'cmake/SouiWindowsSdk.cmake');
+function virtualSdkPolicy(mode){let reads=0,spawns=0;
+ const localFs={...fs,readFileSync(filename,...args){if(path.resolve(filename)===sdkPolicy){reads++;if(mode==='missing')throw Error('ENOENT SDK policy fixture');return Buffer.from('# virtual changed build policy\n');}return fs.readFileSync(filename,...args);},lstatSync(filename,...args){if(path.resolve(filename)===sdkPolicy&&mode==='missing')throw Error('ENOENT SDK policy fixture');return fs.lstatSync(filename,...args);}};
+ const mod={exports:{}};vm.runInNewContext(read(sourcePath).toString(),{require:n=>n==='node:fs'?localFs:n==='./owned-process.cjs'?{launchOwned(){spawns++;throw Error('Unexpected launch');}}:require(n),module:mod,__dirname:path.dirname(sourcePath),process,console,Buffer,TextDecoder});
+ const fp=mod.exports.fingerprint(),prep=mod.exports.prepared('x64');
+ return{mode,sdkPolicyReads:reads,spawnCount:spawns,fingerprint:fp.sha256,preparedAccepted:prep.report.prepared,policyInSourceList:fp.files.some(f=>f.path==='cmake/SouiWindowsSdk.cmake')};
+}
+const faults=[virtualSdkPolicy('changed'),virtualSdkPolicy('missing')];
+const result={schema:'soui.side-standard-entry-review/v1',readOnly:true,noGui:true,noCompile:true,noNativeFixtureExecution:true,freezeSha256:sha(read(freezePath)),raw,oldRaw,oldIndexSha256:sha(read(oldPath)),oldSourceCount:oldInputs.source.length,frozenFourSources:frozen.source,toolsVerified:frozen.tools.length,jobCounts:{total:frozen.jobs.length,genericPass,genericFail,cleanup,natural},jobDetails,groups,virtualFaults:faults,errors};
+fs.writeFileSync(path.join(__dirname,'result.json'),JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify({...result,jobDetails:undefined,frozenFourSources:undefined},null,2));if(errors.length)process.exitCode=1;
