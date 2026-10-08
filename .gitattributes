@@ -37,6 +37,10 @@ verification/production-validation/**/events.ndjson -text
 verification/production-validation/**/events.ndjson.phases.ndjson -text
 verification/production-validation/**/*.log -text
 verification/production-validation/**/cert.pem -text
+verification/production-validation/win7-sp1-x86-v02-interaction-v7-resize-blocked-2026-09-28/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-v8-prelaunch-refusal-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-v8-command-interrupted-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-v8-source-manifest-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/*.txt -text
 verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/*.log binary
 verification/production-validation/win7-sp1-x86-qemu-preview5-task-capacity-2026-09-24/results/*.txt binary
@@ -161,3 +165,68 @@ verification/production-validation/win7-sp1-x86-qemu-preview15-apps-attempt1-202
 verification/production-validation/win7-sp1-x86-qemu-preview15-apps-attempt3-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/win7-sp1-x86-qemu-preview15-apps-attempt3-2026-09-27/raw/attempt3/*.ppm binary
 verification/production-validation/preview15-renewal-build-gate-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-continuous-task-preparation-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-continuous-task-native-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-continuous-task-official-build-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/preview15-current-kernel-imports-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-current-gui-preparation-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-current-desktop-smoke-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-current-input-probe-build-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-current-input-probe-rejections-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-current-visible-interrupted-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-current-visible-partial-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-current-visible-x64-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-current-visible-x64-2026-09-27/raw/**/*.png binary
+verification/production-validation/v02-current-visible-x64-2026-09-27/raw/**/*.exe binary
+verification/production-validation/v02-current-visible-interruptions-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-current-visible-interruptions-2026-09-27/raw/**/*.png binary
+verification/production-validation/v02-current-visible-interruptions-2026-09-27/raw/**/*.exe binary
+verification/production-validation/v02-current-visible-x86-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/v02-current-visible-x86-2026-09-27/raw/**/*.png binary
+verification/production-validation/v02-current-visible-x86-2026-09-27/raw/**/*.exe binary
+verification/production-validation/win7-sp1-x86-v02-current-preparation-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-current-preparation-2026-09-27/raw/**/*.exe binary
+verification/production-validation/win7-sp1-x86-v02-current-preflight-2026-09-27/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-current-preflight-2026-09-27/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-current-preflight-2026-09-27/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-current-app-smoke-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-current-app-smoke-2026-09-28/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-current-app-smoke-2026-09-28/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-display-preparation-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-display-preparation-2026-09-28/raw/**/*.exe binary
+verification/production-validation/win7-sp1-x86-v02-display-interrupted-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-display-interrupted-2026-09-28/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-display-interrupted-2026-09-28/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-display-prelaunch-refusal-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/preview15-precommit-npm-audit-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-display-failure-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-display-failure-2026-09-28/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-display-failure-2026-09-28/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-display-v2-interrupted-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-display-v2-interrupted-2026-09-28/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-display-v2-interrupted-2026-09-28/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-visible-page-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-visible-page-2026-09-28/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-visible-page-2026-09-28/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-layout-wheel-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-layout-wheel-2026-09-28/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-layout-wheel-2026-09-28/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-layout-wheel-2026-09-28/operations/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-layout-wheel-before-after-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-layout-wheel-before-after-2026-09-28/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-layout-wheel-before-after-2026-09-28/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-attempt2-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-attempt2-2026-09-28/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-attempt2-2026-09-28/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-interaction-v4-interrupted-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-interaction-v4-interrupted-2026-09-28/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-interaction-v4-interrupted-2026-09-28/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-interaction-v4-attempt2-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-interaction-v4-attempt2-2026-09-28/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-interaction-v4-attempt2-2026-09-28/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-interaction-v6-interrupted-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/raw/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/raw/**/*.ppm binary
+verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/raw/**/*.png binary
+verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/operations/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol

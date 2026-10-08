@@ -16,6 +16,7 @@
 #endif
 
 #include <algorithm>
+#include <chrono>
 #include <cmath>
 #include <cstdint>
 #include <cstdlib>
@@ -26,6 +27,7 @@
 #include <random>
 #include <regex>
 #include <sstream>
+#include <thread>
 #include <unordered_set>
 #include <utility>
 
@@ -286,6 +288,47 @@ demo_bridge_adapter::demo_bridge_adapter(soui::runtime::permission_store::clock_
     }
     return soui::runtime::task_outcome{soui::runtime::result_kind::success,
                                        json{{"count", steps}, {"sum", sum}}.dump(), "Count complete."};
+  });
+  (void)public_tasks_.register_handler("demo.interaction", [](const soui::runtime::task_invocation& invocation,
+                                                               const soui::runtime::task_control& control) {
+    const auto input = json::parse(invocation.parameters_json, nullptr, false);
+    if (!input.is_object() || input.size() != 1U || !input.contains("durationMs") ||
+        !input["durationMs"].is_number_integer()) {
+      return soui::runtime::task_outcome{soui::runtime::result_kind::failure, "{}", "Invalid interaction input."};
+    }
+    const auto& value = input["durationMs"];
+    // Check the full JSON integer range before narrowing, including unsigned values.
+    const bool in_range = value.is_number_unsigned()
+        ? value.get<std::uint64_t>() >= 1000U && value.get<std::uint64_t>() <= 60000U
+        : value.get<std::int64_t>() >= 1000 && value.get<std::int64_t>() <= 60000;
+    if (!in_range) {
+      return soui::runtime::task_outcome{soui::runtime::result_kind::failure, "{}", "durationMs must be 1000..60000."};
+    }
+    const auto duration_ms = value.get<std::uint32_t>();
+    const auto began = std::chrono::steady_clock::now();
+    const auto deadline = began + std::chrono::milliseconds(duration_ms);
+    std::uint64_t iterations = 0;
+    std::uint32_t previous_progress = 0;
+    for (;;) {
+      if (control.cancellation_requested())
+        return soui::runtime::task_outcome{soui::runtime::result_kind::task_cancelled, "{}", "Interaction task cancelled."};
+      const auto now = std::chrono::steady_clock::now();
+      const auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(now - began).count();
+      if (now >= deadline) {
+        (void)control.report_progress(100, "Interaction task complete.");
+        return soui::runtime::task_outcome{soui::runtime::result_kind::success,
+            json{{"durationMs", duration_ms}, {"elapsedMs", elapsed_ms}, {"iterations", iterations}}.dump(),
+            "Interaction task complete."};
+      }
+      const auto progress = static_cast<std::uint32_t>(elapsed_ms * 100 / duration_ms);
+      if (progress > previous_progress) {
+        previous_progress = progress;
+        (void)control.report_progress(progress, "Interaction timer running in native SDK worker.");
+      }
+      ++iterations;
+      // This is a low-load interaction companion, not a CPU throughput benchmark.
+      std::this_thread::sleep_until((std::min)(deadline, now + std::chrono::milliseconds(20)));
+    }
   });
   register_methods();
   soui::modules::fileinsight::FileinsightService::register_methods(registry_, scanner_);

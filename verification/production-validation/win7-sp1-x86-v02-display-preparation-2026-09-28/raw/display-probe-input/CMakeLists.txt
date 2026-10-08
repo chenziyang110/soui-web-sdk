@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.24)
+project(V02DisplayModeProbe LANGUAGES CXX)
+add_executable(V02DisplayModeProbe V02DisplayModeProbe.cpp)
+target_compile_features(V02DisplayModeProbe PRIVATE cxx_std_17)
+target_compile_definitions(V02DisplayModeProbe PRIVATE WINVER=0x0601 _WIN32_WINNT=0x0601 NOMINMAX)
+target_link_libraries(V02DisplayModeProbe PRIVATE user32)
+set_property(TARGET V02DisplayModeProbe PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreaded")

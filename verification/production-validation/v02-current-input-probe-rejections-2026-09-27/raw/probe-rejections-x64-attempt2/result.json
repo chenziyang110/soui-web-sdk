@@ -1,0 +1,92 @@
+{
+  "schema": "soui.v02.probe-rejections/v1",
+  "architecture": "x64",
+  "attemptName": "probe-rejections-x64-attempt2",
+  "executable": {
+    "path": "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-build-queued-attempt1\\build\\x64\\Release\\V02InputProbe.exe",
+    "sha256": "f58219498883c31729414d51a48a3ec89cd4a5105d4e5f5b39c7919fefd664c7",
+    "bytes": 47104
+  },
+  "startedAt": "2026-09-27T10:47:31.737Z",
+  "cases": [
+    {
+      "name": "missing-arguments",
+      "args": [],
+      "startedAt": "2026-09-27T10:47:33.046Z",
+      "finishedAt": "2026-09-27T10:47:33.139Z",
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "usage: V02InputProbe PID EXPECTED_CREATION_FILETIME inspect|click|wheel|pinyin|resize-drag ARG ABSOLUTE_NEW_RESULT.json\r\n",
+      "outputExists": false
+    },
+    {
+      "name": "non-absolute-output",
+      "args": [
+        "43788",
+        "1",
+        "inspect",
+        "-",
+        "relative.json"
+      ],
+      "startedAt": "2026-09-27T10:47:33.744Z",
+      "finishedAt": "2026-09-27T10:47:33.777Z",
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "output must be an absolute Windows path\r\n",
+      "outputExists": false
+    },
+    {
+      "name": "wrong-process-identity",
+      "args": [
+        "43788",
+        "1",
+        "inspect",
+        "-",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-rejections-x64-attempt2\\wrong-identity.json"
+      ],
+      "startedAt": "2026-09-27T10:47:34.509Z",
+      "finishedAt": "2026-09-27T10:47:34.546Z",
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "target process creation identity differs\r\n",
+      "outputExists": false
+    },
+    {
+      "name": "unavailable-process",
+      "args": [
+        "4294967295",
+        "1",
+        "inspect",
+        "-",
+        "C:\\SOUI-SDK-production-validation\\preview15-v02-interaction-20260927\\probe-rejections-x64-attempt2\\unavailable-process.json"
+      ],
+      "startedAt": "2026-09-27T10:47:35.360Z",
+      "finishedAt": "2026-09-27T10:47:35.392Z",
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "target process unavailable\r\n",
+      "outputExists": false
+    },
+    {
+      "name": "existing-output",
+      "exitCode": 1,
+      "signal": null,
+      "error": null,
+      "stdout": "",
+      "stderr": "output already exists\r\n",
+      "outputSha256Before": "b5f7e7d285029324d9b3acae19cc05099271454ac98bfc059a92b0581625cd51",
+      "outputSha256After": "b5f7e7d285029324d9b3acae19cc05099271454ac98bfc059a92b0581625cd51"
+    }
+  ],
+  "status": "rejections-passed",
+  "releaseReady": false,
+  "finishedAt": "2026-09-27T10:47:36.801Z"
+}

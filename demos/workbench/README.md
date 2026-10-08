@@ -4,6 +4,14 @@
 
 从交付根目录执行 tools/Build.ps1，运行 out/x64/bin/Release/SouiWorkbench/SouiWorkbench.exe。默认使用稳定的软件呈现路径；`--renderer gpu`、`--renderer readback` 和 `--renderer auto` 仅用于 GPU 内核实验，当前不属于生产验收范围。自动验证使用 tools/Test.ps1。新业务项目使用 templates/desktop-app/。
 
+## V02 数据交互与持续任务
+
+交付根运行 `out/x64/bin/Release/SouiWorkbench/SouiWorkbench.exe --react --page=data`，x86 使用对应输出。万条列表旁保留中文组合事件、窗口内容尺寸及 RAF 诊断；页面提供原快速计数任务和新的“运行 30 秒任务”，可在任务期间滚动、使用真实中文输入法、调整窗口并取消任务。
+
+持续任务由 Demo 注册 `demo.interaction`，通过公共 `task.start/progress/query/cancel` 调用。唯一输入 `durationMs` 接受 1,000–60,000 的整数；以原生单调时钟计时，协作式取消，返回实际 `elapsedMs` 与迭代次数。调度可能延迟完成，时长不是响应承诺。它是低负载的交互伴随任务，不是高 CPU 压力或吞吐基准。页面分别显示实际收到的进度事件与成功查询次数，订阅失败明确显示；查询不会被计作事件。
+
+这是 Demo 业务能力，不增加公共 SDK 契约，也不修改已冻结的 preview.15 SDK Core。修改后的 Workbench 必须重新构建、冻结并执行各目标平台验收，既有同版本应用短测不覆盖此 Demo 改动。原生任务回归和页面构建均不能代替真实滚动、IME 候选/组合/提交、DPI、多屏、关闭及长稳；不能把脚本赋值或 Unicode 注入当作 IME 输入。
+
 ## 显式三窗口驻留（preview.10）
 
 交付根运行 `out/x64/bin/Release/SouiWorkbench/SouiWorkbench.exe --resident --react --page=data`。应用控制器创建三个独立 Host/adapter/会话，共用进程 Runtime；关闭任一业务窗口或全部业务窗口后仍保留托盘。点击图标、托盘菜单或 Ctrl+Alt+W 可恢复窗口，托盘菜单提供明确退出。快捷键被占用或服务初始化失败会记录错误并退出，不静默换用其他组合。默认不带 `--resident` 的单窗关闭行为保留。

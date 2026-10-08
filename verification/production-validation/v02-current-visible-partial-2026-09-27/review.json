@@ -1,0 +1,53 @@
+{
+  "schema": "soui.v02.visible-partial-review/v1",
+  "prelaunchAttempt2": {
+    "driverExitCode": 2,
+    "appStarted": false
+  },
+  "attempt3": {
+    "status": "timeout",
+    "driverExitCode": 1,
+    "forcedCleanup": {
+      "reason": "run-timeout",
+      "at": "2026-09-27T11:26:33.290Z",
+      "exitCode": 0,
+      "error": null
+    },
+    "sourceSha256": "15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d",
+    "buildId": "5ddcec93-d244-456c-877b-1bdeabee568d",
+    "payloadSha256": "48ec1c2261bef39a45c2e95bff51b8313b50778f5d6ca4af51254fa88859c308",
+    "targetProcessId": 18992,
+    "externalInterference": false,
+    "outerWheelActions": 8,
+    "resizeBefore": [
+      208,
+      208,
+      1308,
+      928
+    ],
+    "resizeAfter": [
+      208,
+      208,
+      1388,
+      988
+    ],
+    "visualObservation": {
+      "method": "review of archived native-window screenshots",
+      "dataRowsVisible": 10000,
+      "firstCommittedHanText": "中文",
+      "firstCompositionEventsVisible": 11,
+      "concurrentTaskProgressVisiblePercent": 40,
+      "concurrentCompositionEventsVisible": 17,
+      "concurrentInputStillComposing": true,
+      "concurrentViewportVisible": [
+        1180,
+        780
+      ]
+    },
+    "innerListScrollDuringTaskVerified": false,
+    "sameTaskHanCommitVerified": false,
+    "naturalCloseVerified": false,
+    "fullV02Verified": false
+  },
+  "releaseReady": false
+}

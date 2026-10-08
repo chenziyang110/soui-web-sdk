@@ -1,0 +1,39 @@
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  1>Checking Build System
+  Building Custom Rule C:/SOUI-SDK-production-validation/preview15-v02-interaction-20260927/probe-build-input-attempt1/CMakeLists.txt
+  V02InputProbe.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18): warning C4244: “=”: 从“const wchar_t”转换到“char”，可能丢失数据 [C:\SOUI-SDK-production-validation\preview15-v02-interaction-20260927\probe-build-queued-attempt1\build\x86\V02InputProbe.vcxproj]
+  (编译源文件“../../../probe-build-input-attempt1/V02InputProbe.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18):
+      模板实例化上下文(最早的实例化上下文)为
+          C:\SOUI-SDK-production-validation\preview15-v02-interaction-20260927\probe-build-input-attempt1\V02InputProbe.cpp(177,37):
+          查看对正在编译的函数 模板 实例化“std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)”的引用
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_const_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+              C:\SOUI-SDK-production-validation\preview15-v02-interaction-20260927\probe-build-input-attempt1\V02InputProbe.cpp(174,26):
+              请参阅 "`anonymous-namespace'::run" 中对 "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string" 的第一个引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(812,17):
+          查看对正在编译的函数 模板 实例化“void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<const wchar_t*,const wchar_t*,_Size_type>(_Iter,const _Sent,_Size)”的引用
+          with
+          [
+              _Size_type=unsigned int,
+              _Iter=const wchar_t *,
+              _Sent=const wchar_t *,
+              _Size=unsigned int
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(968,18):
+          查看对正在编译的函数 模板 实例化“_OutIt *std::_Copy_n_unchecked4<const wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)”的引用
+          with
+          [
+              _OutIt=char *,
+              _Size=unsigned int,
+              _InIt=const wchar_t *,
+              _SizeTy=unsigned int
+          ]
+  
+  V02InputProbe.vcxproj -> C:\SOUI-SDK-production-validation\preview15-v02-interaction-20260927\probe-build-queued-attempt1\build\x86\Release\V02InputProbe.exe

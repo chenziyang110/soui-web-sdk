@@ -1,5 +1,149 @@
 # SDK 生产验证执行记录
 
+## 2026-09-28 Win7 V02 v8 第二次客体在输入后中断
+
+[第二次 v8 客体原件](../../verification/production-validation/win7-sp1-x86-v02-v8-command-interrupted-2026-09-28/README.md)沿用同一旧候选冻结输入。确认真实 Win7 桌面和宿主空闲后，监视器向我方 QEMU 发送了一次冻结命令的按键序列；串口保持 0 字节，不能证明客体执行了命令。外部 QEMU 随后启动，五秒门禁只停我方客体；驱动退出 1、我方 QEMU 退出 -1，基础盘与冻结输入前后核对通过。20 份精选原件逐文件归档，原始失败不覆盖。没有客体身份、原生应用结果或隔离性能结论；后续用新 attempt，优先验证独立工作区修复的新构建。`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-28 Win7 V02 v8 探针已编译冻结，客体启动前拒绝
+
+[v8 编译、冻结及门禁原件](../../verification/production-validation/win7-sp1-x86-v02-v8-prelaunch-refusal-2026-09-28/README.md)绑定同一旧候选源码与正式 x86 构建，原生输入探针的 x86 配置/编译、输入准备/冻结/验证均原始退出 0，冻结文件 SHA-256 为 `764452636fd31dd5cac25611882f67fe578a7fe8357e36ce9d79a9826166502b`。客体第一次尝试在启动我方虚拟机前发现另一台 QEMU，门禁保护性退出 1；未启动我方 VM、未发客体命令，也无 V8 交互结果。53 份精选原件逐字节归档。后续只可在空闲时以全新客体 attempt 和同一冻结输入继续。v8 预设任务点击坐标尚未由真实截图确认，结构性测试即使通过也不能宣称 30 秒任务启动或中文 IME 组合通过；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-28 Win7 V02 v7 客体交互在真实缩放前失败
+
+[v7 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v7-resize-blocked-2026-09-28/README.md)绑定当前 718 文件 Demo 源码、正式 x86 Release buildId `f0c38056-058a-456e-be99-17446127f7ec` 和新 13 文件冻结输入。第一次输入准备因漏放探针源码退出 1、未启动虚拟机；保留失败后，第二次准备/冻结/核验退出 0。在确认 Win7 SP1 x86 桌面后只发送一次命令；我方 QEMU/驱动退出 0，五秒门禁未观察到外部 QEMU，基础盘及冻结输入不变。客体通过自然前台鼠标发送 12 次外层滚轮，但窗口 `[100,100,950,740]` 的右下边框被 1024×768 桌面任务栏覆盖，原生缩放探针拒绝输入、客体脚本退出 1。串口 51 帧，严格复核原始退出 1，少于冻结要求 116 帧；任务、中文 IME、内层滚动和完整关闭检查未到达。42 份精选原件和关键截图已归档，外部全部 29 帧保留；`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`，按 [Issue #42](https://github.com/chenziyang110/soui-web-sdk/issues/42) 继续处理。
+
+## 2026-09-28 Win7 V02 v6 第二次客体交互中断
+
+[第二次 v6 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/README.md)绑定不变的 13 文件冻结输入、当前 Demo 源码与正式 x86 Release 构建。宿主空闲后启动我方 QEMU，真实 Win7 桌面截图确认后只发一次命令；可见当前数据页和公共任务区。42 次时间线采样前 41 次取得截图，但尚无完整串口导出或客体原生动作日志。外部 QEMU 在交互期间启动，实时门禁仅停我方客体：驱动退出 1、QEMU 退出 -1、串口 0 字节，基础盘及冻结输入前后匹配。关键帧与控制原件已归档，其余原始图像和客体临时快照保留在外部目录并记录散列。这次既不能证明应用通过，也不能证明失败；截图中公共任务仍为 `idle`，点击坐标需结合真实窗口客户区核对，不能将其当作任务启动结论。真实中文 IME、30 秒任务并行和隔离资源/时延仍未通过，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+归档后的首次完整源码清单生成被新外部 QEMU 保护性中断，驱动退出 1、清单原文件不变；四份驱动/门禁原件已单独复制复核。之后空闲时的生成与独立验证均退出 0，覆盖当时暂存的 37,015 个文件；归档说明和复核器后来又更新，最终提交仍以针对最终暂存输入重新执行的清单生成及独立验证为准。
+
+## 2026-09-28 Win7 V02 v6 客体启动中断
+
+[v6 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v6-interrupted-2026-09-28/README.md)绑定当前 Demo 的正式 x86 Release 构建，修正了上一份未执行冻结输入的越界滚轮坐标；新 13 文件输入冻结与只读验证通过。我方 QEMU 启动后，外部 QEMU 在客体命令发送前出现，实时门禁仅停我方客体。原始驱动退出 1、QEMU 退出 -1，串口 0 字节，无命令发送；基础盘和冻结输入前后身份一致。17 份非专有快照原件已逐字节归档。此次不能判定 Win7 应用兼容性，真实中文 IME、30 秒公共任务并行及隔离性能仍未通过，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-28 当前 V02 Win7 SP1 x86 v4 功能探索
+
+[第二次 v4 客体原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v4-attempt2-2026-09-28/README.md)绑定当前 Demo 正式 x86 Release 构建和已冻结的 13 文件输入。真实 Win7 桌面确认后只发一次命令；96 帧串口通过严格校验，客体 6.1.7601 SP1 32 位/PowerShell 2，资源及 legal 前后身份一致。V02 万行数据页出现，原生探针发送 29 次输入，缩放后窗口边界变化，应用原生退出 0、正常关闭，客体及基础盘检查退出 0。外部 QEMU 在最后一次五秒门禁采样后 71 毫秒、我方客体退出前启动；串口写入早于外部负载，但整段宿主隔离不成立，资源/时延不能作隔离结论。中文 IME 组合、公共任务确实启动及并行响应尚未证明，`win7CurrentV02Verified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-28 当前 V02 Win7 SP1 x86 v4 交互的隔离中断
+
+[v4 原始记录](../../verification/production-validation/win7-sp1-x86-v02-interaction-v4-interrupted-2026-09-28/README.md)绑定当前 Demo 的正式 x86 Release 构建：x86 探针真实编译，静态 MSVC 运行库命令已核验；13 文件输入冻结且验证。客体进入真实 Win7 桌面后只收到一次命令，但串口没有输出。另一台 QEMU 在命令执行期间启动，门禁只终止我方客体；我方驱动原始退出 1、QEMU 退出 -1，基础盘和冻结输入复核正常。20 份复制原件已核对外部原件，客体临时磁盘快照只留外部。此次既不证明应用通过，也不证明应用失败；中文 IME、缩放和任务并行仍未验收。新客体尝试必须用新编号，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
+## 2026-09-28 当前 V02 Win7 SP1 x86 交互第二次隔离中断
+
+[第二次新输入尝试](../../verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-attempt2-2026-09-28/README.md)使用不变的 13 文件冻结输入和正式 x86 Release 构建。我方客体还在 Win7 欢迎界面，尚未发送应用命令，另一台 QEMU 随后启动；门禁只停止我方客体。驱动退出 1、QEMU 退出 -1、串口 0 字节，基础盘和冻结输入前后不变。19 份复制原件含欢迎界面截图与关闭后的 monitor 错误；两份可能包含客体磁盘片段的临时快照只留在外部。此样本不证明应用兼容性成败；下次用新的尝试编号，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
+同一轮归档后的源码清单刷新也在执行时遇到新外部 QEMU，门禁停止我方清单子进程并记录原始退出 1；原 `source-manifest.json` 未变，四份失败原件单独复制复核。该次既不算清单生成，也不算完整源码验证通过，后续空闲时须用新尝试编号重做。
+
+对未执行的 v3 客体脚本和冻结的 `V02InputProbe.exe` 源码作静态核查，发现脚本会调用探针不支持的 `wheel-up` 和 `key-space` 动作；且拼音动作自身已经发送空格提交。即使客体启动，v3 也无法完成预定的 30 项输入序列。两次已冻结输入和中断原件保持不变，停止将 v3 作为完整交互验收候选；另建 v4 输入与探针，重新冻结、编译和验证后再运行客体。此发现属于测试夹具缺陷，当前没有应用兼容性结论。
+
+新一轮空闲窗口中，完整源码清单生成原始退出 0、覆盖 36,840 个文件；随后的独立验证遇到新出现的外部 QEMU，门禁只停我方验证子进程，原始退出 1。八份原始命令/门禁记录已单独复制和核查；清单虽写入工作树，尚无本轮完整验证通过结论，不能据此放行源码交付。v4 夹具源码静态检查已退出 0，仍待真实 x86 编译、全新输入冻结及客体运行。
+
+之后一次空闲时的清单验证原始退出 1，错误为 `Source file set differs from manifest`：清单创建后追加了本轮原始记录，暂存文件集比清单多十项。该失败和空闲门禁的四份原件已另存并复核，不能解释为验证成功。待此次全部原件和文档暂存后，从最终暂存输入重新生成、验证清单，再提交。
+
+再一次刷新先被新外部 QEMU 保护性中断；空闲后生成 36,856 项清单并独立验证，两个驱动原始退出均为 0。该成功只对应当时的暂存输入，随后本说明更新使文件集再次变化，提交前须重新生成、验证最终暂存集。v4 交互探针的静态验证已通过，并改为静态链接 MSVC 运行库以避免 Win7 缺失动态运行库；真实编译、客体输入和中文 IME/缩放/任务并行仍未通过。
+
+本次提交的源码清单仍须对应最终暂存输入重新生成和独立验证，不跨输入集复用成功结果；各次原始命令保留在外部验证目录。清单验证不代表 v4 探针已编译，也不代表 Win7 交互验收通过。
+
+## 2026-09-28 当前 V02 Win7 SP1 x86 IME/缩放/任务探索的隔离中断
+
+[第一次新输入尝试](../../verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-2026-09-28/README.md)已绑定当前 718 文件 Demo 源码、正式 x86 Release 构建和 13 文件冻结输入。我方客体启动后，另一台 QEMU 在客体命令发送前出现；宿主门禁只停止我方虚拟机。驱动原始退出 1、QEMU 退出 -1，串口 0 字节，无应用或中文输入/缩放/任务并行结果。47 份复制原件和严格中断复核保留；两份 QEMU 临时快照只留在外部原件，不进入公开仓库。后续须在环境空闲时用新尝试编号执行，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
+## 2026-09-28 当前 V02 Win7 SP1 x86 滚轮前后截图
+
+[新客体原件](../../verification/production-validation/win7-sp1-x86-v02-layout-wheel-before-after-2026-09-28/README.md)绑定当前 718 文件 Demo 源码、正式 x86 Release 构建和新 13 文件只读输入。Win7 SP1 x86 普通可见 Workbench 在 1024×768 快照桌面中，从万条列表顶部显示移动到下方的中文输入状态、动效及公共任务区；前后原始 PPM/PNG 时间线、十二次绑定进程及自然前台的系统滚轮、61 帧串口均保留。应用原生退出 0、自然关窗，载荷及法律声明前后匹配，宿主 60 次采样未见外部桌面负载。客体与宿主时钟存在偏差，不据此计算精确输入延迟或逐帧因果。中文 IME 组合、窗口缩放及 30 秒公共任务并行仍未在 Win7 执行，`win7CurrentV02Verified=false`、`releaseReady=false`。两份应用 ZIP 原字节仍在外部冻结输入，仓库不能独立重建完整冻结输入。
+
+## 2026-09-28 当前 V02 Win7 SP1 x86 原生滚轮探索
+
+[八次系统滚轮的客体原件](../../verification/production-validation/win7-sp1-x86-v02-layout-wheel-2026-09-28/README.md)绑定当前 718 文件 Demo 源码、正式 x86 Release 构建和新 13 文件冻结输入。Win7 SP1 x86 的 1024×768 快照桌面中，普通 React Workbench 以 950×640 实际窗口显示 V02 页面；原生输入探针绑定进程创建身份、PID 和 HWND，在自然前台发送八次真实系统滚轮。应用原生退出 0、自然关闭，50 帧完整串口、运行载荷及法律声明前后核对通过，宿主 56 次采样未见外部桌面负载。29 帧时间线截图虽显示中文输入、动画和公共任务区域，首张已渲染截图晚于滚轮，缺少滚前基线，**不能证明页面实际滚动**；中文 IME、缩放和任务并行也未执行。仓库没有归档两份应用 ZIP 的字节，仅对其外部原件和先前已提交的大小/散列元数据交叉核对，不能从仓库独立重建完整冻结输入。首次归档校验因误以为旧归档含 ZIP 字节而退出 1，失败原件保留；修正后才归档。`win7CurrentV02Verified=false`、`releaseReady=false`。
+
+首次更新完整源码清单时，外部 QEMU 在执行中启动，门禁仅中断我方清单进程并保留原始退出 1 与负载采样；该次不算清单验证通过。随后空闲时第二次更新和校验完整源码清单均原始退出 0，覆盖 36594 文件。客体滚轮试验已在外部负载出现前独立完成，两个时间段不合并为隔离性能结论。
+
+## 2026-09-28 当前锁文件的提交前依赖公告核查
+
+[六次原始核查及锁文件散列](../../verification/production-validation/preview15-precommit-npm-audit-2026-09-28/README.md)覆盖 SDK Web、Starter Web、Workbench Web 的生产依赖和完整依赖：每次 `npm audit` 原始退出 0、stderr 为空、报告漏洞数 0。此结果只反映执行时 npm 公告服务答复，不覆盖原生内核、依赖再分发条款或未来公告；授权及生产门槛继续未关闭。
+
+## 2026-09-28 当前 V02 Win7 可见页面显示模式探索
+
+[显示模式探针与冻结输入](../../verification/production-validation/win7-sp1-x86-v02-display-preparation-2026-09-28/README.md)绑定当前 718 文件源码和正式 x86 Release 构建。Win7 客体预检桌面为 800×600，而 Workbench 的 `--height` 最小被限制为 640；因此本轮准备了静态 x86 探针，仅在快照客体临时尝试 1024×768，再观察正常可见窗口。13 文件冻结输入、探针编译及直接依赖核查已通过；准备本身不证明客体显示模式可用。
+
+[第一次可见探索原始记录](../../verification/production-validation/win7-sp1-x86-v02-display-interrupted-2026-09-28/README.md)显示，我方 QEMU 启动后只到 Win7 欢迎界面，另一台独立 QEMU 随后出现。宿主门禁只终止我方客体；驱动原始退出 1、QEMU 退出 -1，基础盘和冻结输入前后不变。客体命令未发送，串口 0 字节，显示探针和 Workbench 均未执行。该样本不能判定 Win7 可见页面或 V02 交互成败；下次空闲需使用新尝试编号，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
+[第二次启动前拒绝原件](../../verification/production-validation/win7-sp1-x86-v02-display-prelaunch-refusal-2026-09-28/README.md)表明，短暂空闲后再次出现外部桌面负载，驱动在创建客体目录和启动 QEMU 前原始退出 1。该轮没有自身虚拟机、串口、显示探针或应用，不能计为客体兼容失败；后续使用第三个独立尝试编号。
+
+[第三次客体原样本](../../verification/production-validation/win7-sp1-x86-v02-display-failure-2026-09-28/README.md)证明 Win7 SP1 x86 快照桌面可临时切换至 1024×768，传输、完整载荷前置核查和宿主隔离门禁通过；但普通 Workbench 启动后第 10 秒未找到可见的无 owner 顶层窗口，客体 `run-exitcode.txt=1`、严格成功校验退出 1。没有应用原生退出码、自然关闭或 V02 页面可见证据；我方 QEMU/外层驱动退出 0 只表明虚拟机流程正常结束。保留 24 帧串口与截图，不把此失败覆盖或解释成生产通过；需以新冻结输入查明可见窗口出现时序。
+
+[新夹具冻结与首次中断](../../verification/production-validation/win7-sp1-x86-v02-display-v2-interrupted-2026-09-28/README.md)保留原 60 秒应用期限，拟在 10–40 秒持续观察窗口并捕获探针错误；13 文件新输入已冻结验证。其第一次客体启动后外部 QEMU 出现，门禁只停止我方虚拟机，命令未发送、串口 0 字节；因此尚无新夹具的客体执行结论，下一次使用独立尝试编号。
+
+[第二次 v2 客体原始记录](../../verification/production-validation/win7-sp1-x86-v02-visible-page-2026-09-28/README.md)在 Win7 SP1 x86 1024×768 快照桌面执行了普通可见 Workbench。第 10、15、20、25、30 秒的窗口探测均未发现目标，第 35 秒探测成功；截图可见 V02 数据交互页、万条载入指标及虚拟列表。应用在原 60 秒期限内原生退出 0，窗口正常关闭，完整载荷与法律声明前后核对通过。此结果解释了先前第 10 秒单次探测的局限，只证明当前构建在该分辨率下页面可见；真实滚动、中文 IME 组合、缩放及公共任务并行仍未执行，`win7CurrentV02Verified=false`、`releaseReady=false`。
+
+## 2026-09-28 当前 V02 Win7 SP1 x86 Workbench 短测
+
+[当前构建的客体短测原始记录](../../verification/production-validation/win7-sp1-x86-v02-current-app-smoke-2026-09-28/README.md)绑定 718 文件 Demo 源码与正式 x86 Release 构建，在 Win7 SP1 x86 用 `--react --page=data --width=700 --height=500` 启动 Workbench 的 60 秒短测入口。真实客体中应用原生退出 0，日志按序记录 `application-ready`、Bridge 就绪、adapter 卸载、host 完整关闭和窗口销毁；载荷 71/475 文件及各 5 份法律声明前后均与冻结清单逐字节匹配。29 帧串口严格校验，62 次宿主门禁未见外部桌面负载，QEMU/驱动退出 0，基础盘及 11 文件只读输入冻结前后不变。78 份原始文件独立归档，包括随后一次源码清单生成因新出现的外部 QEMU 中断的原始退出码；该中断不改变先前客体短测结论。短测日志的 `--page=data` 参数不证明 V02 页面在屏幕可见，也未执行滚动、中文 IME、缩放和长任务并行；`win7CurrentV02Verified=false`、`releaseReady=false`。
+
+## 2026-09-27 当前 V02 Win7 SP1 x86 客体环境预检
+
+[冻结输入与客体原始记录](../../verification/production-validation/win7-sp1-x86-v02-current-preflight-2026-09-27/README.md)完成当前 718 文件源码、正式 x86 Release 构建绑定的 563 文件预检输入冻结；宿主观察桌面后仅发一次命令。客体报告 6.1.7601/SP1/32 位/PowerShell 2，静态输入探针实际加载至自身参数校验；9 帧串口严格校验、115 次宿主门禁、基础盘与冻结输入前后检查均通过，QEMU/驱动退出 0。客体显示为 800×600，中文键盘布局已预载但真实 IME 组合未验证。此次**没有启动 Workbench 或运行 V02 交互**，Win7 当前版本、DPI 多屏及生产支持继续未通过；先前一次源码清单刷新受外部 QEMU 中断的原样本保留。
+
+## 2026-09-27 当前 V02 Win7 x86 客体输入前置准备
+
+[当前输入的载荷和静态探针原始记录](../../verification/production-validation/win7-sp1-x86-v02-current-preparation-2026-09-27/README.md)绑定 718 文件源码与正式 x86 Release 构建，Starter/Workbench 分别 71/475 文件并各含 5 份法律声明，完整载荷和 ZIP 创建/测试通过；静态编译的 x86 输入探针只直接导入 USER32/KERNEL32，配置/编译及 `dumpbin` 原始退出 0，35 份宿主原始记录归档。该准备阶段尚未运行客体；后续环境预检见上节，当前应用 V02 真实交互仍未通过。旧 717 文件 Demo 的 Win7 短测不能继承。
+
+## 2026-09-27 当前 V02 x86 真实交互短测
+
+[当前正式构建的 x86 可见交互原始记录](../../verification/production-validation/v02-current-visible-x86-2026-09-27/README.md)核对同一自然前台窗口的 10,000 行页面、真实系统滚轮、30 秒公共 SDK 任务期间拼音输入法汉字“中文”提交、1100×720→1180×780 边框缩放及万行列表内滚动。内层滚轮发生在任务启动后 15,568 ms，列表首行 1→4；`WM_CLOSE` 后窗口销毁、原生退出 0。驱动/应用及运行载荷前后身份一致，89 份原始记录归档。结合此前 x64 单轮，当前版本在本机双架构各有一次可见交互短测；Win7、长期资源与响应、DPI 多屏、Electron 对照和生产支持仍未通过。
+
+## 2026-09-27 当前 V02 x64 真实交互短测
+
+[当前正式构建的 x64 可见交互原始记录](../../verification/production-validation/v02-current-visible-x64-2026-09-27/README.md)核对同一自然前台窗口的 10,000 行页面、真实系统滚轮、30 秒公共 SDK 任务期间的拼音输入法汉字“中文”提交、1100×720→1180×780 边框缩放及万行列表内滚动。内层滚轮发生在启动任务后 14,651 ms，列表首行 1→4；窗口 `WM_CLOSE` 后自然退出 0。驱动、原生进程和运行载荷前后身份均核对，88 份原始记录归档。该结果只证明 x64 当前候选的一次短时真实交互；x86 单轮见上节，Win7、长期资源与响应、Electron 对照和生产支持仍未通过。
+
+[外部负载中断原始样本](../../verification/production-validation/v02-current-visible-interruptions-2026-09-27/README.md)保留 x64 一次启动后中断，x86 一次启动前拒绝及两次在任务开始后因外部 QEMU 进程出现而清理自有应用。x86 第三次已发送真实拼音按键，但没有汉字提交的证据，缩放、内层列表滚动和自然退出也未完成；其中驱动清理导致的非零退出不得解释为隔离应用故障。四次尝试不增加 x86 支持范围。
+
+## 2026-09-27 当前 V02 x64 可见交互局部证据
+
+[第二轮可见交互原始记录](../../verification/production-validation/v02-current-visible-partial-2026-09-27/README.md)显示当前正式 Release 应用在自然前台的 V02 数据页实际接收外层页面滚轮、中文输入法组合与边框拖拽。第二次 30 秒公共任务运行期间，截图同时可见任务进度 40%、组合事件 17 次及内容区从 1100×720 变为 1180×780。首次输入已得到汉字“中文”，但发生在前一个任务完成后；同任务汉字提交和万行列表内层滚动尚未证明。自定四分钟监督期限到达后只清理自己的应用，缺少自然关闭；该轮不能作为完整 V02 或生产通过。此前一次新尝试因外部 QEMU 启动前门禁拒绝，原件一并保留。
+
+## 2026-09-27 当前 V02 x64 可见页面首轮中断
+
+[首轮原始记录](../../verification/production-validation/v02-current-visible-interrupted-2026-09-27/README.md)绑定当前正式 Release Workbench，真实启动 `--react --page=data` 并通过目标进程、窗口和自然前台核对。截图可见 10,000 行已载入，系统滚轮输入后的列表首行由第 1 行变为第 4 行。随后外部 QEMU 启动，监督器仅清理自己的应用，外层驱动退出 1；本轮受干扰且未执行中文 IME、30 秒任务并行、缩放或自然关闭，不计完整 V02 通过。后续另用新 attempt，旧原件不覆盖。
+
+## 2026-09-27 当前 V02 输入探针双架构拒绝路径
+
+[x64/x86 原始结果](../../verification/production-validation/v02-current-input-probe-rejections-2026-09-27/README.md)显示已编译探针各自真实执行五项错误输入，原生均退出 1，拒绝原因与预期一致，不存在意外结果文件，预存文件前后散列不变。一次性等待器在其他 QEMU 运行时仅查询负载，连续空闲后串行执行两个架构，外层驱动均退出 0。该结果关闭错误目标/输出的局部拒绝路径，不证明任何正向 GUI 或中文输入。
+
+## 2026-09-27 当前 V02 输入探针双架构编译
+
+[原始构建和首次拒绝路径记录](../../verification/production-validation/v02-current-input-probe-build-2026-09-27/README.md)显示已在其他 QEMU 退出后串行编译冻结的 x64/x86 操作系统输入探针，四个配置/编译阶段原始退出 0、EXE 散列已绑定。首轮 x64 拒绝路径测试因测试夹具门禁文件重名在探针启动前退出 1，原样本保留；修正版运行结果见上节。新外部 QEMU 随后启动，未并行做桌面输入。探针编译不证明 `--page=data` 真实滚动、中文 IME、窗口缩放或公共任务并行，生产准入仍为 false。
+
+## 2026-09-27 当前 V02 应用双架构本机短测
+
+[x86/x64 三入口原始记录](../../verification/production-validation/v02-current-desktop-smoke-2026-09-27/README.md)已绑定当前 718 文件源码、两份正式 Release 构建 ID 和完整载荷：Starter 默认、Workbench 默认/React 在两个架构各原生退出 0，就绪及完整关闭日志齐全，前/中/后负载门禁为空。一次性等待器于宿主空闲后串行执行，另一台 QEMU 在全部短测结束后才出现。短测使用隐藏窗口且未进入 V02 数据页，真实滚动、中文 IME、缩放、公共任务并行和 Win7 x86 仍未验证；生产准入保持 false。
+
+## 2026-09-27 当前 V02 GUI 输入验收准备
+
+[输入探针和 GUI 预检](../../verification/production-validation/v02-current-gui-preparation-2026-09-27/README.md)已保存宿主中文输入法、当前双架构应用身份、V02 页面观察点，以及只对已核对 PID/HWND 自然前台发送 Win32 输入的辅助程序源码。准备时独立 QEMU 仍运行，探针未编译、当前 GUI 未启动，中文 IME 组合和任务并行没有获得通过证据。`releaseReady=false`。
+
+## 2026-09-27 当前内核直接依赖复核
+
+[当前 x86/x64 内核导入记录](../../verification/production-validation/preview15-current-kernel-imports-2026-09-27/README.md)绑定待审二进制清单中的精确 SHA-256，`dumpbin /dependents` 均原始退出 0，分别列出 17/19 个直接 DLL 依赖。它不揭示静态链接成员或运行时加载，更不能替代再分发条件审核；依赖授权仍为 `unverified`，生产准入未关闭。
+
+## 2026-09-27 V02 持续任务双架构正式应用构建
+
+[原始构建记录](../../verification/production-validation/v02-continuous-task-official-build-2026-09-27/README.md)显示当前 718 文件源码的正式 `tools/Build.ps1` x64 Release（含完整 Web）与随后 x86 Release（复用已构建 Web）及各自外层驱动原始退出码均为 0。两次构建 ID 分别为 `5ddcec93-d244-456c-877b-1bdeabee568d` 和 `f0c38056-058a-456e-be99-17446127f7ec`，各自前后源码 SHA-256 一致，两个架构的 Starter/Workbench 完整运行载荷各有独立散列。两次前后负载门禁均为空；x64 结束后三秒才有其他 QEMU 启动，x86 在它退出后执行。当前 Demo 真实 GUI/Win7 V02 验收仍待执行；这两项只证明正式构建，不放行生产门槛。
+
+同一载荷清单的未压缩目录字节和为 x64 Starter/Workbench `42,046,881` / `53,059,977`，x86 为 `28,584,049` / `39,522,905`。这不是压缩包大小，当前尚缺同口径 Electron 对照，不能据此计算 40% 候选目标是否达到。
+
+## 2026-09-27 V02 持续任务两架构原生回归
+
+[本次原始记录](../../verification/production-validation/v02-continuous-task-native-2026-09-27/README.md)保存 x64 两次未通过的原样本、修正测试夹具后的 x64/x86 真实 adapter/Bridge 双测试退出 0，以及 Web TypeScript 类型检查退出 0。第二次失败来自同一适配器重复可信 bootstrap，测试改用具备有效权限的另一会话验证任务归属；SDK Core 和 Demo 运行实现没有因此修改。当前输入 718 文件 SHA-256 `15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d`。在该阶段，新正式应用构建、真实 V02 交互与 Win7 x86 尚未执行；后续 x64 构建见上节。旧应用短测不能继承，生产门槛未关闭。
+
+## 2026-09-27 V02 持续任务首次准备（历史状态）
+
+[V02 持续任务准备](../../verification/production-validation/v02-continuous-task-preparation-2026-09-27/README.md)保留原快速任务，新增 Demo 自有的 30 秒原生计时任务，通过公开任务接口观察进度、查询与取消。先编译的新 x64 回归在旧实现上实际退出 1，确认缺少该任务；源码仍匹配冻结 SDK Core，Demo 生产依赖审计退出 0、报告漏洞 0。
+
+修复后的两架构回归、新应用构建、Web 检查和桌面验收尚未执行。其他 QEMU 运行时未启动并行编译或桌面负载。既有 preview.15 Win7 与本机短测绑定旧应用输入，不能自动继承给新 Demo；当前 V02 与生产门槛仍未通过。
+
 ## 2026-09-27 真实续期构建门禁与 V02 输入核查
 
 [外部构建门禁修正](../../verification/production-validation/preview15-renewal-build-gate-2026-09-27/README.md)复现了 CIM 查询非终止错误可能返回 0、误判桌面空闲的问题。原驱动六项中三项失败，修正后六项通过；实际构建命令又因仍有其他 QEMU 返回 2，没有启动编译。23 份原始记录保留，SDK 内容和已验客体输入不变，真实续期仍待执行。

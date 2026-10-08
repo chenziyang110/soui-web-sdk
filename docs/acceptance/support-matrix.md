@@ -1,6 +1,19 @@
 # 候选支持范围与设备矩阵
 
-当前开发候选 preview.13 已取得[安装事务恢复](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)、[已知旧现场副本恢复及独立账本四配置编译](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)，以及[完整源码解压后 SDK/Starter/Workbench x86/x64 Debug/Release 构建、44 项原生与 8 项交付身份测试](../../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)证据。本版应用 GUI、Win7 和完整交互矩阵未重验，不扩大设备支持状态。下述 preview.11 及以前的结果均为各自冻结输入。
+## 2026-09-27 preview.15 当前候选判定
+
+状态：**预览，尚无生产支持组合**。当前 SDK Core 419 文件身份保持冻结；Demo 的 V02 持续任务使用 718 文件源码 SHA-256 `15152ef430d70b8cfbb0682c2a5adb02cdbf5ca64c64e6e93252be9b0708e46d`。下表只陈述已绑定该输入或明确标出的旧输入结果；不同源码的短测不合并为一个通过项。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+| 组合 | 当前原始证据 | 可成立的范围与未完成项 |
+| --- | --- | --- |
+| Windows 11 开发机 x64 Release | [正式应用构建](../../verification/production-validation/v02-continuous-task-official-build-2026-09-27/README.md) buildId `5ddcec93-d244-456c-877b-1bdeabee568d`；[三入口短测](../../verification/production-validation/v02-current-desktop-smoke-2026-09-27/README.md)；[V02 可见交互单轮](../../verification/production-validation/v02-current-visible-x64-2026-09-27/README.md) | 当前 Demo 三入口各原生退出 0；同一自然前台 V02 页面单轮完成万条列表滚轮、30 秒公共任务运行中拼音提交“中文”、缩放、内层列表滚动和自然关闭。尚无完整 V02、多轮性能、DPI 多屏或长稳支持结论。 |
+| Windows 11 开发机 x86 Release | 同一[正式构建和三入口短测](../../verification/production-validation/v02-current-desktop-smoke-2026-09-27/README.md)，buildId `f0c38056-058a-456e-be99-17446127f7ec`；[V02 可见交互单轮](../../verification/production-validation/v02-current-visible-x86-2026-09-27/README.md) | 当前 Demo 三入口及一轮真实 V02 操作原生退出 0，任务运行期间有中文提交、缩放和内层滚动截图。这是在 64 位 Windows 上运行的 x86 进程；不证明独立 32 位系统，长期资源、DPI 多屏与生产范围仍未验收。 |
+| Windows 7 SP1 x86 QEMU | 当前 718 文件源码、buildId `f0c38056-058a-456e-be99-17446127f7ec` 的[应用短测](../../verification/production-validation/win7-sp1-x86-v02-current-app-smoke-2026-09-28/README.md)、[可见页面](../../verification/production-validation/win7-sp1-x86-v02-visible-page-2026-09-28/README.md)及[滚轮前后截图](../../verification/production-validation/win7-sp1-x86-v02-layout-wheel-before-after-2026-09-28/README.md)；新 IME/缩放/任务尝试的[隔离中断](../../verification/production-validation/win7-sp1-x86-v02-interaction-gate-interrupted-2026-09-28/README.md) | 当前构建的一次短启动/完整关闭、临时 1024×768 桌面中数据页可见和原生滚轮造成的页面位置变化已证明。中文 IME 组合、缩放、任务并行未执行；新尝试在发命令前因外部 QEMU 停止，不能计兼容失败或通过。原生 800×600、物理机、DPI、长期资源和独立业务仍待验。 |
+| Windows 7 SP1 x86 物理机及其他目标系统 | 无当前候选的目标设备全矩阵记录 | 未验证；QEMU 短测不能代替物理输入、显示、安装、网络和系统策略。 |
+
+当前 V02 [输入探针准备](../../verification/production-validation/v02-current-gui-preparation-2026-09-27/README.md)、[双架构编译](../../verification/production-validation/v02-current-input-probe-build-2026-09-27/README.md)和[各五项错误输入拒绝](../../verification/production-validation/v02-current-input-probe-rejections-2026-09-27/README.md)建立了真实输入的验收手段；本机两架构的可见结果另见表中原件，不能用单轮操作推出性能或平台支持。当前同机 Electron 的 ≥5 对交替性能、完整运行包比较、独立安装消费者真实续期、每模式 1,000 轮、100 次重载、隔离 8 小时混合负载、内核安全与授权责任均未形成准入证据。以下旧版本矩阵保留用于回溯，不作为 preview.15 的放行依据。
+
+历史 preview.13 候选已取得[安装事务恢复](../../verification/production-validation/preview13-install-recovery-2026-09-26/README.md)、[已知旧现场副本恢复及独立账本四配置编译](../../verification/production-validation/preview13-legacy-recovery-build-2026-09-26/README.md)，以及[完整源码解压后 SDK/Starter/Workbench x86/x64 Debug/Release 构建、44 项原生与 8 项交付身份测试](../../verification/production-validation/preview13-full-source-build-2026-09-26/README.md)证据。该版应用 GUI、Win7 和完整交互矩阵未重验，不扩大设备支持状态。下述 preview.11 及以前的结果均为各自冻结输入。
 
 2026-09-26 preview.11 增补：[当前预检](../../verification/production-validation/preview11-session-renewal-preflight-2026-09-26/README.md)完成本机 x86/x64 Release SDK、Starter、Workbench 编译、独立 SDK 安装与仓库外 `session-consumer` 编译/运行，每架构 10 项 CTest 通过，其中原生续期包含 14 组契约。最终汇总核验 Web 62 项、包行为 14 项、交付身份 7 项通过、五份锁文件全依赖审计漏洞总数均为 0；418 文件 SDK 首次打包、包内散列及源码匹配通过。生成的独立 `RenewalStarter` 两架构 Release 编译与项目校验均退出 0。
 
@@ -22,7 +35,7 @@ preview.8 [无 Git 候选源码包双架构重编与四组应用构建](../../ve
 
 [设备观察记录](../../verification/production-validation/environment-windows11-26200.json)包含系统、补丁号、CPU、显卡及驱动。性能采样还须登记电源计划、实际显示刷新率、当前 DPI、远程会话状态和活动 GPU；当前窗口生命周期结果不提供这些指标的通过结论。
 
-## 本轮状态
+## 历史组合与待验收项（非 preview.15 支持声明）
 
 | 组合或能力 | 当前证据 | 状态与缺口 |
 |---|---|---|

@@ -6,6 +6,14 @@
 
 当前 preview.15 已补齐[原仓库双架构 14 次桌面短测](../verification/production-validation/preview15-desktop-2026-09-27/README.md)、[完整源码无 Git 解压四配置构建](../verification/production-validation/preview15-full-source-build-2026-09-27/README.md)及[新编 EXE 六入口短测](../verification/production-validation/preview15-relocated-desktop-2026-09-27/README.md)。[Win7 SP1 x86 当前三入口](../verification/production-validation/win7-sp1-x86-qemu-preview15-apps-attempt3-2026-09-27/README.md)也在原 60 秒期限内原生退出 0，完整关闭、客体身份和运行前后资源/legal 通过，未观察到外部负载。旧 preview.11 关闭停滞未在本次当前输入重现；V02 真实交互、重复生命周期、真实续期、隔离长稳、干净机器及物理目标机仍未通过。以下历史失败按各自输入保留。
 
+当前 V02 的 [Win7 v6 第二次交互](../verification/production-validation/win7-sp1-x86-v02-interaction-v6-attempt2-interrupted-2026-09-28/README.md)在真实桌面发出一次冻结命令后遭外部 QEMU 打断；我方门禁仅停自身，驱动退出 1、客体无串口导出。关键帧可见页面和仍为 `idle` 的任务区，但缺完整客体结果，不能判断任务、中文 IME 或缩放验收，也不能将此次作为隔离性能样本。旧短测不覆盖此场景；后续须先复核客户区点击坐标，另用新 attempt 完成客体验收。
+
+新 [Win7 v7 交互尝试](../verification/production-validation/win7-sp1-x86-v02-interaction-v7-resize-blocked-2026-09-28/README.md)在无外部 QEMU 干扰时完成 12 次原生外层滚轮，但 Workbench 默认窗口右下边框落在 1024×768 桌面的任务栏下；真实缩放探针拒绝被覆盖的边框，客体退出 1。任务、中文 IME、内层滚动及完整关闭检查未执行，V02 仍不通过。当前问题按 [Issue #42](https://github.com/chenziyang110/soui-web-sdk/issues/42) 继续处理，不得把驱动/QEMU 正常退出当成应用交互通过。
+
+[Win7 v8 输入](../verification/production-validation/win7-sp1-x86-v02-v8-prelaunch-refusal-2026-09-28/README.md)新增原生标题栏拖动后再缩放，x86 探针编译和冻结检查通过；客体第一次尝试在自身 QEMU 启动前遇到外部 VM，保护性退出 1，未产生交互结果。v8 的固定任务点击位置也未确认，后续即使结构检查通过，仍需用页面状态、进度事件和查询原件证明任务启动及并行，并单独证明真实 IME 组合。默认窗口位置的产品修复位于独立工作树，尚未编译或验收；Issue #42 仍开放。
+
+[Win7 v8 第二次客体](../verification/production-validation/win7-sp1-x86-v02-v8-command-interrupted-2026-09-28/README.md)确认真实桌面后向 QEMU 发送一次冻结命令按键，但串口 0 字节且没有客体原生结果；外部 QEMU 随后出现，门禁只停我方客体。驱动退出 1、我方 QEMU 退出 -1。不能把按键已发送解释为应用已运行，也不能据此关闭 v7 窗口问题或中文 IME/任务/缩放门槛。下一轮使用独立 attempt 和修复后的新构建。
+
 [SDK Core 体积修正](../verification/production-validation/sdk-core-native-backups-2026-09-27/README.md)排除两份历史内核备份，并保留完整源码原件。内部 preview.14 的源码匹配失败后，preview.15 统一打包和校验筛选，真实新包匹配及安装往返通过，净减少约 55.94 MiB；不据此扩大应用运行体积或 Electron 对标结论。
 
 冻结 preview.11 的[页面动画诊断](../verification/production-validation/preview11-renewal-animation-diagnostic-2026-09-26/README.md)中，相同输入只关闭旋转动画即可完成任务短测；动画开启时解析持续停滞，尚需原生调度证据。另一已就绪运行在页面记录后 15 ms 被监督器判定为“30 秒无记录”。[新外部夹具](../verification/production-validation/preview11-renewal-supervisor-clock-2026-09-26/README.md)已复现并修正先采样时钟、后读跨线程快照导致的无符号差值风险；两架构边界测试、自检及关闭动画的诊断短测通过。原失败保留，关闭动画不作为 SDK 修复，真实续期和生产门槛继续未通过。
@@ -33,6 +41,7 @@ preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/
 | Electron 流畅性对标 | 尚无完整同负载、实机输入、长期帧延迟的等价验收，不能宣称追平 |
 | GPU compositor 生命周期 | 旧默认 GPU 应用曾在 `wkeDestroyWebView` 阶段以 `0xC0000005` 退出；当前显式 GPU 短测未复现该退出，但独立消费者双架构 30 轮重建的 USER 对象每轮约增 1，Runtime 关闭后仍残留。普通句柄的短期上升在软件路径也出现并有后续回收，不能混为同一个缺陷。合成线程释放与 Skia 接口引用修补降低了内存末点，仍未关闭 GPU 资源门槛，见[专项记录](acceptance/gpu-lifecycle.md)。模板和 Workbench 默认软件路径；GPU 模式仅为实验 |
 | 目标系统 | 开发机通过不代表 Windows 7/10/11 全矩阵；各系统与补丁级别独立验证 |
+| V02 低分辨率窗口 | Workbench 的 `--height` 当前至少取 640，而 Win7 x86 客体预检桌面为 800×600；这组原始显示条件下完整可见页面尚未验收。[第一次可见探索](../verification/production-validation/win7-sp1-x86-v02-display-failure-2026-09-28/README.md)在第 10 秒检查过早；[第二次探索](../verification/production-validation/win7-sp1-x86-v02-visible-page-2026-09-28/README.md)在临时 1024×768 下第 35 秒探测到窗口并拍到 V02 数据页，应用原生退出 0、正常关闭。[第一轮滚轮探索](../verification/production-validation/win7-sp1-x86-v02-layout-wheel-2026-09-28/README.md)发送八次原生滚轮但缺滚前截图；[新一轮前后截图](../verification/production-validation/win7-sp1-x86-v02-layout-wheel-before-after-2026-09-28/README.md)显示列表顶部移动到下方公共任务区，并有十二次自然前台原生滚轮原件。中文 IME 组合、缩放及公共任务并行未执行；原 800×600 条件和完整 V02 交互仍未放行。 |
 | DPI、多屏、输入法、辅助功能 | 需要实际产品和设备回归 |
 | 浏览器能力 | Miniblink49 分支；页面按 Chrome 49 构建，不能假定现代 Web API 可用 |
 | 不可信网页 | 模板面向本地受控页面；远程不可信内容需专项评估内核与原生能力边界 |

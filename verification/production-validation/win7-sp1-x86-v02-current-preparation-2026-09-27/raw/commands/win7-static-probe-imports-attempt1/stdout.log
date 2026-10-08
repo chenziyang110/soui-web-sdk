@@ -1,0 +1,132 @@
+Microsoft (R) COFF/PE Dumper Version 14.44.35226.0
+Copyright (C) Microsoft Corporation.  All rights reserved.
+
+
+Dump of file C:\SOUI-SDK-production-validation\preview15-v02-win7-current-20260927\static-probe-attempt1\Release\V02InputProbe.exe
+
+File Type: EXECUTABLE IMAGE
+
+  Section contains the following imports:
+
+    USER32.dll
+                420158 Import Address Table
+                42BED0 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                  251 IsWindow
+                  125 GetAncestor
+                  161 GetGUIThreadInfo
+                  1E7 GetWindow
+                  202 GetWindowThreadProcessId
+                  111 EnumWindows
+                  400 WindowFromPoint
+                   4E ClientToScreen
+                  33B SetCursorPos
+                  1FA GetWindowRect
+                  138 GetClientRect
+                  160 GetForegroundWindow
+                  323 SendInput
+                  258 IsWindowVisible
+                  171 GetKeyboardLayout
+
+    KERNEL32.dll
+                420000 Import Address Table
+                42BD78 Import Name Table
+                     0 time date stamp
+                     0 Index of first forwarder reference
+
+                  287 GetLastError
+                  37C HeapSize
+                  2DD GetProcessHeap
+                  584 SetStdHandle
+                  54A SetEnvironmentVariableW
+                  1CD FreeEnvironmentStringsW
+                  25B GetEnvironmentStringsW
+                  2BF GetOEMCP
+                  1D5 GetACP
+                  3BB IsValidCodePage
+                  1AE FindNextFileW
+                  19D FindFirstFileExW
+                  197 FindClose
+                  37A HeapReAlloc
+                   E6 CreateFileW
+                  1C2 FlushFileBuffers
+                  269 GetFileAttributesW
+                  64F WriteFile
+                   9D CloseHandle
+                  614 WaitForSingleObject
+                  5B8 Sleep
+                  2E7 GetProcessTimes
+                  43C OpenProcess
+                  14F EncodePointer
+                  127 DecodePointer
+                  153 EnterCriticalSection
+                  3ED LeaveCriticalSection
+                  38E InitializeCriticalSectionEx
+                  12E DeleteCriticalSection
+                  420 MultiByteToWideChar
+                  63B WideCharToMultiByte
+                  3E0 LCMapStringEx
+                  301 GetStringTypeW
+                  1E4 GetCPInfo
+                  3B5 IsProcessorFeaturePresent
+                  5EA UnhandledExceptionFilter
+                  5A8 SetUnhandledExceptionFilter
+                  23B GetCurrentProcess
+                  5C8 TerminateProcess
+                  47E QueryPerformanceCounter
+                  23C GetCurrentProcessId
+                  240 GetCurrentThreadId
+                  313 GetSystemTimeAsFileTime
+                  391 InitializeSListHead
+                  3AD IsDebuggerPresent
+                  2FA GetStartupInfoW
+                  29F GetModuleHandleW
+                  494 RaiseException
+                  509 RtlUnwind
+                  64E WriteConsoleW
+                  569 SetLastError
+                  38D InitializeCriticalSectionAndSpinCount
+                  5DA TlsAlloc
+                  5DC TlsGetValue
+                  5DE TlsSetValue
+                  5DB TlsFree
+                  1CE FreeLibrary
+                  2D6 GetProcAddress
+                  3F3 LoadLibraryExW
+                  2FC GetStdHandle
+                  29B GetModuleFileNameW
+                  180 ExitProcess
+                  29E GetModuleHandleExW
+                  1F9 GetCommandLineA
+                  1FA GetCommandLineW
+                  373 HeapAlloc
+                  377 HeapFree
+                  1BC FlsAlloc
+                  1BE FlsGetValue
+                  1C0 FlsSetValue
+                  1BD FlsFree
+                  609 VirtualProtect
+                   B3 CompareStringW
+                  3E1 LCMapStringW
+                  28B GetLocaleInfoW
+                  3BD IsValidLocale
+                  340 GetUserDefaultLCID
+                  176 EnumSystemLocalesW
+                  273 GetFileType
+                  223 GetConsoleOutputCP
+                  21F GetConsoleMode
+                  4A5 ReadFile
+                  271 GetFileSizeEx
+                  559 SetFilePointerEx
+                  4A2 ReadConsoleW
+
+  Summary
+
+        2000 .data
+        1000 .fptable
+        D000 .rdata
+        2000 .reloc
+        1000 .rsrc
+       1F000 .text
