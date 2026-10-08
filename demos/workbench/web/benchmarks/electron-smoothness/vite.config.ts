@@ -8,6 +8,9 @@ const benchmarkRoot = __dirname;
 export default defineConfig({
   root: benchmarkRoot,
   base: './',
+  resolve: {
+    alias: { '@soui-sdk': path.resolve(benchmarkRoot, '../../../../../sdk/web/dist/index.js') },
+  },
   plugins: [
     react(),
     legacy({ targets: ['Chrome >= 49'], modernPolyfills: true, renderLegacyChunks: true }),

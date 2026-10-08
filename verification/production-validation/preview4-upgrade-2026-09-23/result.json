@@ -1,0 +1,50 @@
+{
+  "schema": "soui.upgrade-trial/v1",
+  "oldVersion": "0.3.0-preview.3",
+  "newVersion": "0.3.0-preview.4",
+  "projectName": "ProductTrial",
+  "businessFiles": {
+    "app/main.cpp": "baf62a640e0ad7b0068d1f139a84a471b62e7bf77e7b50523ccf585070f95cf0",
+    "app/business_mark.cpp": "238ccf9358a499e6e7509acbfe20c00c4b9a229f9cf747d3e21cdd55884f0c81",
+    "CMakeLists.txt": "49d3f5864793cf9af6cadb7d75c8087db09e4f028842a073a10a6574bb88c074",
+    "app/business_mark.h": "4650e096152679d411802d89a0d95bd6eb4484dc815892c9b6803d28e0b33556",
+    "web/src/main.tsx": "e6c7c1437a89412db3fb0fc8252c84c9df892ef74aed8814d359036978eb33df"
+  },
+  "stages": [
+    {
+      "stage": "old-initial",
+      "version": "0.3.0-preview.3",
+      "buildId": "09ba5f0f-2b1a-4e5e-9e98-92d70d312d3d",
+      "sourceSha256": "5f28e22e026bd2d3f39932e0406058ecd0f5c0e18cdd026e5bfef8cee7c5d380",
+      "smokePassed": true,
+      "businessFilesPreserved": true
+    },
+    {
+      "stage": "new-upgraded",
+      "version": "0.3.0-preview.4",
+      "buildId": "afde5a40-0681-429e-88f3-5122d904e6c4",
+      "sourceSha256": "ff658df0b2b2ed167232886efe6dfd8b5106895a6b453b61e0f5d11d62a414b1",
+      "smokePassed": true,
+      "businessFilesPreserved": true
+    },
+    {
+      "stage": "old-rolled-back",
+      "version": "0.3.0-preview.3",
+      "buildId": "dd456ef2-745f-4bdd-ba3f-a807e8ad51d2",
+      "sourceSha256": "5f28e22e026bd2d3f39932e0406058ecd0f5c0e18cdd026e5bfef8cee7c5d380",
+      "smokePassed": true,
+      "businessFilesPreserved": true
+    },
+    {
+      "stage": "new-restored",
+      "version": "0.3.0-preview.4",
+      "buildId": "e1929db6-919e-4a80-ba8a-1f35ac9af44e",
+      "sourceSha256": "ff658df0b2b2ed167232886efe6dfd8b5106895a6b453b61e0f5d11d62a414b1",
+      "smokePassed": true,
+      "businessFilesPreserved": true
+    }
+  ],
+  "passed": true,
+  "releaseReady": false,
+  "finishedAt": "2026-09-23T14:20:13.8223849+08:00"
+}

@@ -62,8 +62,11 @@ int run(HINSTANCE instance,bool smoke) {
   const auto root=executable_directory();
   const auto log=root/"smoke.log";
   std::ofstream(log)<<"process-start\n";
-  SetEnvironmentVariableW(L"SOUI_GPU_COMPOSITOR",L"1");
-  SetEnvironmentVariableW(L"SOUI_GPU_DIRECT_PRESENT",L"1");
+  // The portable template defaults to the stable software presentation path.
+  // GPU compositor modes remain an SDK/kernel validation surface until their
+  // close path passes the same lifecycle and long-run gates.
+  SetEnvironmentVariableW(L"SOUI_GPU_COMPOSITOR",nullptr);
+  SetEnvironmentVariableW(L"SOUI_GPU_DIRECT_PRESENT",nullptr);
   SComMgr components;
   components.SetDllPath(SOUI::SStringT(root.wstring().c_str()));
   SOUI::CAutoRefPtr<SOUI::IRenderFactory> render;
@@ -111,6 +114,8 @@ int APIENTRY wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR command,int) {
   const HRESULT com=CoInitializeEx(nullptr,COINIT_APARTMENTTHREADED);
   int result=1;
   try{result=run(instance,smoke);}catch(const std::exception& ex){if(!smoke)MessageBoxA(nullptr,ex.what(),"SouiStarter",MB_ICONERROR);}
+  const auto shutdown=soui::sdk::shutdown_miniblink_runtime();
+  if(!shutdown.ok && result==0)result=7;
   if(SUCCEEDED(com))CoUninitialize();
   return result;
 }

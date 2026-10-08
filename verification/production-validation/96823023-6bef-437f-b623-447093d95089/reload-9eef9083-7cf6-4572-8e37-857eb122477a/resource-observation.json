@@ -1,0 +1,65 @@
+{
+  "schema": "soui.lifecycle-resource-observation/v1",
+  "runId": "9eef9083-7cf6-4572-8e37-857eb122477a",
+  "sourceSha256": "e29dc0d908c741642615b27d98f0d50d262131b10d0094d8b8c140660021027f",
+  "payloadSha256": "4fd908df8db348e65812f05c406a0cd542236c0e8d6103726c4dcf81d0c607e2",
+  "logSha256": "cb794bf9e387c06e4390e3c04116c8846c82a1fbc647660dc5fc3a80353aa6c2",
+  "config": {
+    "mode": "reload",
+    "cycles": 1000,
+    "warmup": 3,
+    "settleMs": 20,
+    "timeoutMs": 10000
+  },
+  "baseline": {
+    "event": "sample",
+    "elapsedMs": 1273,
+    "phase": "cycle",
+    "cycle": 3,
+    "privateBytes": 32710656,
+    "workingSetBytes": 47812608,
+    "handles": 294,
+    "threads": 14,
+    "gdiObjects": 60,
+    "userObjects": 23
+  },
+  "last": {
+    "event": "sample",
+    "elapsedMs": 269780,
+    "phase": "cycle",
+    "cycle": 1003,
+    "privateBytes": 104255488,
+    "workingSetBytes": 102473728,
+    "handles": 289,
+    "threads": 13,
+    "gdiObjects": 32,
+    "userObjects": 23
+  },
+  "peakPrivateBytes": 129646592,
+  "delta": {
+    "privateBytes": 71544832,
+    "handles": -5,
+    "threads": -1,
+    "gdiObjects": -28,
+    "userObjects": 0
+  },
+  "runtimeClosed": {
+    "event": "sample",
+    "elapsedMs": 270603,
+    "phase": "runtime-closed",
+    "cycle": 1004,
+    "privateBytes": 10043392,
+    "workingSetBytes": 37363712,
+    "handles": 249,
+    "threads": 9,
+    "gdiObjects": 11,
+    "userObjects": 3
+  },
+  "operationPassed": true,
+  "resourceGate": "not-evaluated",
+  "releaseReady": false,
+  "limitations": [
+    "Endpoint observations only; no claim that memory trends or residual resources passed.",
+    "Frozen minimal lifecycle fixture; excludes current Web connector changes and mixed business loads."
+  ]
+}

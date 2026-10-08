@@ -20,6 +20,8 @@
 
 namespace soui::sdk {
 
+namespace detail { class bridge_request_budget; }
+
 inline constexpr std::uint32_t bridge_event_message = 0x84D2U;
 inline constexpr std::uint32_t ime_position_message = 0x84D3U;
 
@@ -45,6 +47,11 @@ struct host_result {
   std::string message;
 };
 
+// Final application exit, after every Host has been destroyed. Window teardown
+// keeps the process runtime available for subsequent windows. Shutdown is final:
+// this Miniblink version cannot initialize again in the same process.
+[[nodiscard]] host_result shutdown_miniblink_runtime();
+
 [[nodiscard]] bool binary_matches_architecture(const std::filesystem::path& binary,
                                                 std::string_view architecture);
 
@@ -59,6 +66,7 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
                                         private independent_input_sink,
                                         private engine_input_sink {
  public:
+  ~dynamic_miniblink_adapter() override;
   [[nodiscard]] host_result mount(const host_config& config) override;
   [[nodiscard]] host_result unmount() override;
   [[nodiscard]] host_result show(bool visible);
@@ -80,6 +88,8 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   [[nodiscard]] std::string handle_message(std::string_view request, bool native_user_gesture);
   [[nodiscard]] bool enqueue_bridge_message(std::string request,
                                             bool native_user_gesture);
+  [[nodiscard]] host_result try_enqueue_bridge_message(std::string request,
+                                                        bool native_user_gesture);
   [[nodiscard]] bool processing_user_gesture() const noexcept;
   [[nodiscard]] bool owns_execution_context(void* execution_state) const noexcept;
   [[nodiscard]] bool update_window_chrome(void* execution_state, std::string_view json);
@@ -126,8 +136,12 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   void* webview_window_{nullptr};
   void* owner_window_{nullptr};
   soui::sdk::bridge_adapter* bridge_adapter_{nullptr};
-  std::unique_ptr<engine_thread> engine_thread_;
+  struct event_dispatch_lifetime;
+  std::shared_ptr<event_dispatch_lifetime> event_lifetime_;
+  engine_thread* engine_thread_{nullptr}; // borrowed from the process runtime
   std::unique_ptr<engine_thread> bridge_thread_;
+  std::shared_ptr<detail::bridge_request_budget> bridge_budget_;
+  std::atomic<bool> bridge_accepting_{false};
   bool bridge_com_initialized_{false};
   std::atomic<std::uint64_t> bridge_generation_{0};
   interaction_router interaction_router_;

@@ -9,7 +9,7 @@ const definitions = [
  ['zlib-source', 'third_party/sources/zlib/source-manifest.json', '1.2.11', 'Zlib'],
  ['json', 'third_party/include/json/json.hpp', 'pinned single header', 'MIT'],
  ...['x86','x64'].flatMap(arch => [
-   ['miniblink-'+arch, 'third_party/prebuilt/'+arch+'/miniblink/node.dll', 'source-consistent preview 2026-09-21', 'binary redistribution review incomplete'],
+   ['miniblink-'+arch, 'third_party/prebuilt/'+arch+'/miniblink/node.dll', 'rebuilt preview 2026-09-23', 'binary redistribution review incomplete'],
    ['zlib-runtime-'+arch, 'third_party/prebuilt/'+arch+'/runtime/vc/zlib1.dll', '1.2.11 app-local', 'Zlib']
  ]),
  ['web-sdk', 'sdk/web/package-lock.json', 'lockfile', 'resolved package licenses'],

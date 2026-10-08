@@ -461,8 +461,18 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
     gLayerTreeHost = this;
 }
 
-static void shutdownCompositeThread(blink::WebThreadSupportingGC* webThread, std::atomic<int>* waitCount)
+static void shutdownCompositeThread(blink::WebThreadSupportingGC* webThread,
+#if defined(SOUI_GPU_COMPOSITOR)
+    GpuSkiaSurface* gpuSurface,
+#endif
+    std::atomic<int>* waitCount)
 {
+#if defined(SOUI_GPU_COMPOSITOR)
+    // The GL context was made current on this thread. Release Skia and WGL
+    // before the thread exits, rather than trying to destroy them on the UI
+    // thread after shutdown.
+    delete gpuSurface;
+#endif
     webThread->shutdown();
     waitCount->fetch_sub(1, std::memory_order_release);
 }
@@ -496,7 +506,14 @@ LayerTreeHost::~LayerTreeHost()
     if (m_compositeThread) {
         std::atomic<int> waitCount(1);
         blink::WebThreadSupportingGC* webThread = m_compositeThread.leakPtr();
+#if defined(SOUI_GPU_COMPOSITOR)
+        GpuSkiaSurface* gpuSurface = m_gpuSurface;
+        m_gpuSurface = nullptr;
+        webThread->platformThread().postTask(FROM_HERE,
+            WTF::bind(&shutdownCompositeThread, webThread, gpuSurface, &waitCount));
+#else
         webThread->platformThread().postTask(FROM_HERE, WTF::bind(&shutdownCompositeThread, webThread, &waitCount));
+#endif
         while (waitCount.load(std::memory_order_acquire) != 0) {
             ::Sleep(100);
         }
@@ -507,6 +524,8 @@ LayerTreeHost::~LayerTreeHost()
         delete m_memoryCanvas;
     m_memoryCanvas = nullptr;
 #if defined(SOUI_GPU_COMPOSITOR)
+    // A surface is normally owned and released by the compositor thread.
+    // Keep this fallback for hosts that never created that thread.
     delete m_gpuSurface;
     m_gpuSurface = nullptr;
 #endif

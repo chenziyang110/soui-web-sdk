@@ -1,0 +1,161 @@
+{
+  "schema": "soui.lifecycle-observation/v1",
+  "label": "x86-100-reload",
+  "sourceSha256": "f4cb6eba6ff8ed6119d702b81df62c2db8279829afeeb8e035bd28e425cf22c9",
+  "consumerBuildId": "d3a1c833-38da-4313-b774-331f56debe6c",
+  "payloadSha256": "f4886c2e5da2f339e94c9cbf6007a3b97c3445361cdee7b49755aee78e3532bf",
+  "kernel": {
+    "kind": "prebuilt",
+    "bytes": 22976000,
+    "sha256": "3b9071413f704958fb5708b8bb065785a6c3ed03b7fd0fb04f5952201e5fe4f7"
+  },
+  "config": {
+    "mode": "reload",
+    "cycles": 100,
+    "warmup": 3,
+    "settleMs": 1000,
+    "timeoutMs": 20000
+  },
+  "passed": true,
+  "first": {
+    "event": "sample",
+    "elapsedMs": 5827,
+    "phase": "cycle",
+    "cycle": 3,
+    "privateBytes": 36974592,
+    "workingSetBytes": 47017984,
+    "handles": 333,
+    "threads": 16,
+    "gdiObjects": 38,
+    "userObjects": 23,
+    "windowClasses": {
+      "CicMarshalWndClass": 1,
+      "IME": 2,
+      "MSCTFIME UI": 1,
+      "MbToolTip": 2,
+      "MiniBlinkTimerWindowClass": 1,
+      "OleMainThreadWndClass": 1,
+      "SouiMiniblinkInteractionWindowV1": 1,
+      "SouiPublicSdkAcceptanceV1": 1
+    }
+  },
+  "last": {
+    "event": "sample",
+    "elapsedMs": 127396,
+    "phase": "cycle",
+    "cycle": 103,
+    "privateBytes": 41623552,
+    "workingSetBytes": 54296576,
+    "handles": 344,
+    "threads": 18,
+    "gdiObjects": 24,
+    "userObjects": 23,
+    "windowClasses": {
+      "CicMarshalWndClass": 1,
+      "IME": 2,
+      "MSCTFIME UI": 1,
+      "MbToolTip": 2,
+      "MiniBlinkTimerWindowClass": 1,
+      "OleMainThreadWndClass": 1,
+      "SouiMiniblinkInteractionWindowV1": 1,
+      "SouiPublicSdkAcceptanceV1": 1
+    }
+  },
+  "runtimeClosed": {
+    "event": "sample",
+    "elapsedMs": 129021,
+    "phase": "runtime-closed",
+    "cycle": 104,
+    "privateBytes": 8065024,
+    "workingSetBytes": 32894976,
+    "handles": 268,
+    "threads": 14,
+    "gdiObjects": 11,
+    "userObjects": 3,
+    "windowClasses": {
+      "OleMainThreadWndClass": 1
+    }
+  },
+  "peakPrivateBytes": 73113600,
+  "peakHandles": 508,
+  "windows": [
+    {
+      "startCycle": 4,
+      "endCycle": 13,
+      "medianPrivateBytes": 42991616,
+      "medianHandles": 366,
+      "medianUserObjects": 23
+    },
+    {
+      "startCycle": 14,
+      "endCycle": 23,
+      "medianPrivateBytes": 61632512,
+      "medianHandles": 426,
+      "medianUserObjects": 23
+    },
+    {
+      "startCycle": 24,
+      "endCycle": 33,
+      "medianPrivateBytes": 64374784,
+      "medianHandles": 476,
+      "medianUserObjects": 23
+    },
+    {
+      "startCycle": 34,
+      "endCycle": 43,
+      "medianPrivateBytes": 42704896,
+      "medianHandles": 356,
+      "medianUserObjects": 23
+    },
+    {
+      "startCycle": 44,
+      "endCycle": 53,
+      "medianPrivateBytes": 59930624,
+      "medianHandles": 415,
+      "medianUserObjects": 23
+    },
+    {
+      "startCycle": 54,
+      "endCycle": 63,
+      "medianPrivateBytes": 68122624,
+      "medianHandles": 475,
+      "medianUserObjects": 23
+    },
+    {
+      "startCycle": 64,
+      "endCycle": 73,
+      "medianPrivateBytes": 42098688,
+      "medianHandles": 343,
+      "medianUserObjects": 23
+    },
+    {
+      "startCycle": 74,
+      "endCycle": 83,
+      "medianPrivateBytes": 56907776,
+      "medianHandles": 397,
+      "medianUserObjects": 23
+    },
+    {
+      "startCycle": 84,
+      "endCycle": 93,
+      "medianPrivateBytes": 66168832,
+      "medianHandles": 457,
+      "medianUserObjects": 23
+    },
+    {
+      "startCycle": 94,
+      "endCycle": 103,
+      "medianPrivateBytes": 41695232,
+      "medianHandles": 341,
+      "medianUserObjects": 23
+    }
+  ],
+  "memoryNumericLine": {
+    "thresholdBytes": 16777216,
+    "deltaBytes": 4648960,
+    "withinThreshold": true,
+    "scope": "Terminal Private Bytes only; trend and resource ownership require separate review"
+  },
+  "resourceGate": "not-evaluated",
+  "releaseReady": false
+}

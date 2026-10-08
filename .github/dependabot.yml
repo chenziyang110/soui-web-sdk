@@ -1,6 +1,19 @@
 version: 2
 updates:
   - package-ecosystem: npm
+    directory: /tests/acceptance
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 1
+    labels: [dependencies]
+    groups:
+      compatible-acceptance-tools:
+        patterns: ["*"]
+        update-types: [minor, patch]
+    ignore:
+      - dependency-name: "*"
+        update-types: [version-update:semver-major]
+  - package-ecosystem: npm
     directory: /sdk/web
     schedule:
       interval: weekly

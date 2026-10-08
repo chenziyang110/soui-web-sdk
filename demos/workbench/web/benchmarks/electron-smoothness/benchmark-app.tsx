@@ -8,6 +8,7 @@ import { render } from 'react-dom';
 import { ProductHome, type ProductPage } from '../../apps/react/product-home';
 import { ProductTitlebar, type WindowAction } from '../../apps/react/product-shell';
 import { AsyncMemoryAdapter, FIXTURE, SCENES, type BenchmarkRow, type SceneId } from './benchmark-contract';
+import { connectSouiNative, type SouiCoreMethodMap } from '@soui-sdk';
 
 const MOTION_DURATION_MS = 120000;
 const MAX_EVENT_RECORDS = 12000;
@@ -17,6 +18,33 @@ type HostBridge = {
   kind: 'electron';
   writeResult: (result: BenchmarkResult) => Promise<{ ok: boolean }>;
 };
+
+type BenchmarkMethods = SouiCoreMethodMap & {
+  'benchmark.result.begin': { params: {}; result: { accepted: true } };
+  'benchmark.result.chunk': { params: { sequence: number; hex: string }; result: { accepted: true } };
+  'benchmark.result.commit': { params: { bytes: number }; result: { accepted: true } };
+  'benchmark.result.status': { params: { message: string }; result: {} };
+};
+
+async function writeSouiResult(result: BenchmarkResult): Promise<void> {
+  const client = await connectSouiNative<BenchmarkMethods>();
+  // Chrome 49 has no TextEncoder. This produces UTF-8 bytes before chunking,
+  // so every Bridge request stays below its 64 KiB transport limit.
+  const bytes = unescape(encodeURIComponent(JSON.stringify(result)));
+  if (bytes.length > 8 * 1024 * 1024) throw new Error('Benchmark result exceeds size limit');
+  await client.call('benchmark.result.begin', {});
+  const digits = '0123456789abcdef';
+  let sequence = 0;
+  for (let offset = 0; offset < bytes.length; offset += 8192) {
+    let hex = '';
+    for (let index = offset; index < Math.min(offset + 8192, bytes.length); index++) {
+      const code = bytes.charCodeAt(index);
+      hex += digits[code >> 4] + digits[code & 15];
+    }
+    await client.call('benchmark.result.chunk', { sequence: sequence++, hex });
+  }
+  await client.call('benchmark.result.commit', { bytes: bytes.length });
+}
 
 type InputRecord = {
   type: string;
@@ -291,9 +319,19 @@ function BenchmarkApp() {
     const result = snapshot(complete);
     const target = window as WindowWithBenchmark;
     target.__souiPerformanceResult = result;
-    setStatus(complete ? 'result-written' : 'invalid-motion-duration');
+    setStatus(complete ? 'writing-result' : 'writing-invalid-result');
     const host = target.benchmarkHost;
-    if (host) void host.writeResult(result).catch((error) => setStatus(`write-failed:${String(error)}`));
+    const write = host ? host.writeResult(result).then(() => undefined) :
+      typeof target.__souiNativePostMessage === 'function' ? writeSouiResult(result) :
+      Promise.reject(new Error('No benchmark host is connected'));
+    void write.then(() => setStatus(complete ? 'result-written' : 'invalid-result-written'))
+      .catch((error) => {
+        setStatus(`write-failed:${String(error)}`);
+        if (typeof target.__souiNativePostMessage === 'function') {
+          void connectSouiNative<BenchmarkMethods>().then(client =>
+            client.call('benchmark.result.status', { message: String(error).slice(0, 256) })).catch(() => undefined);
+        }
+      });
   }, [scene, snapshot, telemetry]);
   useEffect(() => {
     const target = window as WindowWithBenchmark;
