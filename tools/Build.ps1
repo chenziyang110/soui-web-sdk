@@ -5,11 +5,13 @@ param(
   [switch]$SdkOnly,
   [switch]$SkipWeb,
   [switch]$WithWebView2,
-  [switch]$Install
+  [switch]$Install,
+  [switch]$FreshConfigure
 )
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 . (Join-Path $PSScriptRoot 'internal/Find-Toolchain.ps1')
+. (Join-Path $PSScriptRoot 'internal/CMake-Configure.ps1')
 $toolchain=Get-SouiToolchain
 $cmake=Get-Command cmake.exe -ErrorAction Stop
 $node=Get-Command node.exe -ErrorAction Stop
@@ -24,6 +26,9 @@ if(Test-Path -LiteralPath (Join-Path $root 'sdk-lock.json')) {
   if($LASTEXITCODE -ne 0){throw 'Pinned SDK was modified; install a reviewed SDK version or restore its files.'}
 }
 $output=Join-Path $root "out/$(if($SdkOnly){'sdk-'}else{''})$Architecture"
+$source=if($SdkOnly){Join-Path $root 'sdk'}else{$root}
+$configure=@(Get-SouiCMakeConfigureArguments -CMake $cmake.Source -WorkspaceRoot $root -SourceDirectory $source `
+  -BuildDirectory $output -Architecture $Architecture -FreshConfigure:$FreshConfigure)
 New-Item -ItemType Directory -Force -Path $output | Out-Null
 $evidence=Join-Path $root 'tools/internal/build-evidence.cjs'
 $evidenceArgs=@($Architecture,$Configuration)
@@ -48,14 +53,12 @@ if(-not $SkipWeb) {
 }
 & $node.Source $evidence $(if($SkipWeb){'verify-web'}else{'record-web'}) @evidenceArgs
 if($LASTEXITCODE -ne 0){throw 'Web source/output identity verification failed'}
-$source=if($SdkOnly){Join-Path $root 'sdk'}else{$root}
-$platform=if($Architecture -eq 'x86'){'Win32'}else{'x64'}
 $optional=@('-DSOUI_BUILD_WEBVIEW2=OFF')
 if($WithWebView2){
   $webview2Package=& (Join-Path $PSScriptRoot 'internal/Restore-WebView2.ps1')
   $optional=@('-DSOUI_BUILD_WEBVIEW2=ON',"-DSOUI_WEBVIEW2_SDK_ROOT=$webview2Package")
 }
-& $cmake.Source -S $source -B $output -G 'Visual Studio 17 2022' -A $platform '-DCMAKE_SYSTEM_VERSION=10.0.19041.0' @optional
+& $cmake.Source @configure @optional
 if($LASTEXITCODE -ne 0){throw 'CMake configure failed'}
 & $cmake.Source --build $output --config $Configuration --parallel 2 *> (Join-Path $output "native-$Configuration.log")
 if($LASTEXITCODE -ne 0){throw "Native build failed; inspect $output/native-$Configuration.log"}

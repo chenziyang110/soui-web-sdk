@@ -1,5 +1,7 @@
 # 同负载 SOUI / Electron 对照
 
+直接 CMake 示例按 3.27 以上准确选择 Windows SDK 10.0.19041.0；3.24–3.26 改用 `-A x64`（x86 为 `-A Win32`），仍保留完整引号的 `-DCMAKE_SYSTEM_VERSION=10.0.19041.0`。已有生成平台不同的目录请选新目录，或检查其所有权后显式 `--fresh`；不能在旧缓存中直接切换平台。
+
 状态：宿主、共享页面和外部输入配对预检已执行；尚无可用于采用决策的正式性能样本。S02 的三对原始样本及局限见[预检记录](../verification/production-validation/benchmark-s02-full-preflight-2026-09-25/README.md)。完整门槛见 [`docs/roadmap/0.3-sdk-validation.md`](../docs/roadmap/0.3-sdk-validation.md)。本目录随完整源码包交付，**不进入 SDK Core 或应用运行包**。
 
 ## 构成
@@ -27,7 +29,7 @@ node benchmarks/electron-smoothness/create-miniblink-entry.cjs
 SOUI 宿主需要已安装的 `SouiSdk 0.4.0` CMake 包及同架构 `node.dll`：
 
 ```powershell
-cmake -S benchmarks/hosts/soui -B out/benchmark-soui-x64 -G "Visual Studio 17 2022" -A x64 -DSouiSdk_DIR=<SDK安装目录>/lib/cmake/SouiSdk
+cmake -S benchmarks/hosts/soui -B out/benchmark-soui-x64 -G "Visual Studio 17 2022" -A 'x64,version=10.0.19041.0' '-DCMAKE_SYSTEM_VERSION=10.0.19041.0' -DSouiSdk_DIR=<SDK安装目录>/lib/cmake/SouiSdk
 cmake --build out/benchmark-soui-x64 --config Release
 out/benchmark-soui-x64/bin/Release/SouiBenchmark.exe --resources=<共享页面dist-legacy> --miniblink=<x64 node.dll> --result-dir=<本地结果目录>
 ```

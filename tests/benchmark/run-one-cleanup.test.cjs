@@ -2,105 +2,82 @@
 
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
-const os = require('node:os');
 const path = require('node:path');
-const {spawnSync} = require('node:child_process');
+const {spawn} = require('node:child_process');
+const {performance} = require('node:perf_hooks');
 const {test} = require('node:test');
-const {launch, stop, verifiedDirectChild} = require('../../benchmarks/protocol/run-one.cjs');
+const {launch, stop, validateHostIdentity} = require('../../benchmarks/protocol/run-one.cjs');
 
-const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
-const sameExecutable = (left, right) =>
-  path.win32.normalize(fs.realpathSync.native(left)).toLowerCase() ===
-  path.win32.normalize(fs.realpathSync.native(right)).toLowerCase();
-const query = pid => {
-  const script = "$ErrorActionPreference='Stop';" +
-    `$targetId=${pid};` +
-    '$item=Get-CimInstance Win32_Process -Filter "ProcessId=$targetId" -ErrorAction Stop;' +
-    'if($null -ne $item){$item|Select-Object ProcessId,ParentProcessId,ExecutablePath|ConvertTo-Json -Compress}';
-  const result = spawnSync('powershell.exe', ['-NoProfile', '-Command', script], {
-    encoding: 'utf8', windowsHide: true, timeout: 15000,
-    env: {...process.env, PSModulePath: path.join(process.env.SystemRoot,
-      'System32/WindowsPowerShell/v1.0/Modules')},
-  });
-  assert.equal(result.status, 0, result.stderr);
-  assert.equal(result.stderr, '');
-  return result.stdout.trim() ? JSON.parse(result.stdout.replace(/^\uFEFF/, '')) : null;
-};
-async function until(check) {
-  for (let i = 0; i < 50; ++i) {
-    const result = check();
-    if (result) return result;
-    await delay(100);
-  }
-  throw new Error('Timed out waiting for the owned process fixture');
+const options = {skip: process.platform !== 'win32', timeout: 15000};
+function fixture() {
+  const output = path.resolve(__dirname, '../../out/benchmark-cleanup-tests');
+  fs.mkdirSync(output, {recursive: true});
+  return fs.mkdtempSync(path.join(output, 'attempt-'));
 }
-test('failure cleanup stops its owned process handle without following a reused parent PID',
-  {skip: process.platform !== 'win32'}, async () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-run-one-cleanup-'));
-    const grandchildFile = path.join(root, 'grandchild.json');
-    const parentCode = `const fs=require('node:fs');const cp=require('node:child_process');` +
-      `const child=cp.spawn(process.execPath,['-e','setInterval(()=>{},1000)'],` +
-      `{stdio:'ignore',windowsHide:true});` +
-      `fs.writeFileSync(process.argv[1],JSON.stringify({pid:child.pid}));` +
-      `setInterval(()=>{},1000);`;
-    const run = launch('host', process.execPath, ['-e', parentCode, grandchildFile],
-      root, root);
-    let grandchildPid;
-    try {
-      await until(() => fs.existsSync(grandchildFile));
-      grandchildPid = JSON.parse(fs.readFileSync(grandchildFile, 'utf8')).pid;
-      assert(verifiedDirectChild(run), JSON.stringify({
-        observed: query(run.child.pid), expectedPid: run.child.pid,
-        expectedParent: process.pid, expectedExecutable: run.executable}));
-      const owned = query(grandchildPid);
-      assert.equal(owned.ParentProcessId, run.child.pid);
-      const cleanup = [];
-      stop([run], cleanup);
-      await run.finished;
-      assert.deepEqual(cleanup.map(item => [item.method, item.treeCleanupVerified]),
-        [['process-handle', false]]);
-      assert.equal(cleanup[0].killRequested, true);
-    } finally {
-      if (run.child.exitCode === null && !run.child.killed) run.child.kill();
-      await run.finished;
-      if (grandchildPid) {
-        const remaining = query(grandchildPid);
-        if (remaining && remaining.ParentProcessId === run.child.pid &&
-            sameExecutable(remaining.ExecutablePath, process.execPath))
-          spawnSync('taskkill.exe', ['/PID', String(grandchildPid), '/F'],
-            {windowsHide: true, timeout: 15000});
-        await until(() => !query(grandchildPid));
-      }
-      assert.equal(path.dirname(root), os.tmpdir());
-      assert.match(path.basename(root), /^soui-run-one-cleanup-/);
-    }
+async function until(check) {
+  const started = performance.now();
+  while (!check()) {
+    assert.ok(performance.now() - started < 5000, 'Owned fixture did not become ready');
+    await new Promise(resolve => setTimeout(resolve, 20));
+  }
+}
+
+test('benchmark failure cleanup proves the entire held Job closed and leaves an unrelated process alive',
+  options, async t => {
+    const output = fixture();
+    const grandchildFile = path.join(output, 'grandchild.json');
+    const parentCode = `const fs=require('node:fs');const cp=require('node:child_process');
+      const child=cp.spawn(process.execPath,['-e','setInterval(()=>{},1000)'],
+        {stdio:'ignore',windowsHide:true});
+      fs.writeFileSync(process.argv[1],JSON.stringify({pid:child.pid,parent:process.pid}));
+      setInterval(()=>{},1000);`;
+    const unrelated = spawn(process.execPath, ['-e', 'setInterval(()=>{},1000)'],
+      {stdio: 'ignore', windowsHide: true});
+    unrelated.unref();
+    t.after(() => unrelated.kill());
+    const run = launch('host', process.execPath, ['-e', parentCode, grandchildFile], output, output);
+    t.after(async () => { stop([run]); await run.finished; });
+    const ready = await run.ready;
+    await until(() => fs.existsSync(grandchildFile));
+    const child = JSON.parse(fs.readFileSync(grandchildFile, 'utf8'));
+    assert.equal(child.parent, ready.pid);
+    const cleanup = [];
+    stop([run], cleanup);
+    const result = await run.finished;
+    assert.deepEqual(cleanup.map(item => [item.method, item.treeCleanupVerified]),
+      [['held-job-stdin', true]]);
+    assert.equal(result.error, 'supervisor-stop');
+    assert.equal(result.ownedProcess.passed, false);
+    assert.equal(result.ownedProcess.terminal.activeProcesses, 0);
+    assert.match(cleanup[0].nativeReportSha256, /^[a-f0-9]{64}$/);
+    assert.throws(() => process.kill(child.pid, 0), {code: 'ESRCH'});
+    assert.throws(() => process.kill(ready.pid, 0), {code: 'ESRCH'});
+    assert.doesNotThrow(() => process.kill(unrelated.pid, 0));
   });
 
-test('failed identity verification falls back to the owned process handle',
-  {skip: process.platform !== 'win32'}, async () => {
-    const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-run-one-cleanup-'));
-    const run = launch('host', process.execPath,
-      ['-e', 'setInterval(()=>{},1000)'], root, root);
-    try {
-      await until(() => verifiedDirectChild(run));
-      const launchedAt = run.spawnRequestedAtMs;
-      const returnedAt = run.spawnReturnedAtMs;
-      run.spawnRequestedAtMs = 0;
-      run.spawnReturnedAtMs = 0;
-      assert.equal(verifiedDirectChild(run), false,
-        'A matching PID, parent and executable cannot replace launch-time identity');
-      run.spawnRequestedAtMs = launchedAt;
-      run.spawnReturnedAtMs = returnedAt;
-      run.executable = path.join(root, 'not-the-child.exe');
-      const cleanup = [];
-      stop([run], cleanup);
-      await run.finished;
-      assert.deepEqual(cleanup.map(item => [item.method, item.treeCleanupVerified]),
-        [['process-handle', false]]);
-    } finally {
-      if (run.child.exitCode === null && !run.child.killed) run.child.kill();
-      await run.finished;
-      assert.equal(path.dirname(root), os.tmpdir());
-      assert.match(path.basename(root), /^soui-run-one-cleanup-/);
-    }
+test('a zero benchmark root exit with an outstanding descendant remains a failed run',
+  options, async t => {
+    const output = fixture();
+    const code = `const child=require('node:child_process').spawn(process.execPath,
+      ['-e','setTimeout(()=>{},30000)'],{detached:true,stdio:'ignore',windowsHide:true});child.unref();`;
+    const run = launch('host', process.execPath, ['-e', code], output, output);
+    t.after(async () => { stop([run]); await run.finished; });
+    await run.ready;
+    const result = await run.finished;
+    assert.equal(result.code, 0);
+    assert.equal(result.error, 'owned-descendants-remain');
+    assert.equal(result.ownedProcess.supervisorExitCode, 124);
+    assert.equal(result.ownedProcess.passed, false);
+    assert.equal(result.ownedProcess.closureConfirmed, true);
   });
+
+test('two mutually consistent traces cannot replace the owned host identity', () => {
+  const filetime = '134359302086731837';
+  const processes = [{name: 'host', ownedProcess: {pid: 73, creationFileTime: filetime}}];
+  const trace = {hostPid: 73, hostCreationTime100ns: Number(filetime)};
+  assert.deepEqual(validateHostIdentity(trace, processes),
+    {pidBound: true, creationComparison: 'legacy-json-number', exactFileTimeBound: false});
+  assert.throws(() => validateHostIdentity({...trace, hostPid: 74}, processes), /owned benchmark subject/);
+  assert.throws(() => validateHostIdentity({...trace, hostCreationTime100ns: 1}, processes), /owned benchmark subject/);
+  assert.throws(() => validateHostIdentity(trace, []), /owned benchmark subject/);
+});

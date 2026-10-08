@@ -1,0 +1,1454 @@
+{
+  "schema": "soui.maintenance-evidence/v1",
+  "id": "0.5-maintenance-2026-10-08",
+  "startedAt": "2026-10-08T13:10:44.984Z",
+  "finishedAt": "2026-10-08T13:10:50.115Z",
+  "repository": "chenziyang110/soui-web-sdk",
+  "purpose": "Preserve historical vulnerable dependency evidence; retire execution and prepare scoped maintainer disposition.",
+  "localContext": {
+    "root": "F:/work/sm05",
+    "commitAtStart": "2154ed80ebe5825e398b87992d0f666d28bab260",
+    "commitAtEnd": "2154ed80ebe5825e398b87992d0f666d28bab260",
+    "guiRoot": "F:/work/sm05-gui",
+    "guiCommit": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+    "scopeServiceContext": "Independently reviewed in separate task; no new native/GUI evidence claimed here."
+  },
+  "defaultBranch": {
+    "name": "main",
+    "commitAtStart": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+    "commitAtEnd": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+    "unchanged": true
+  },
+  "advisory": {
+    "ghsa": "GHSA-68fv-2mgg-jv7q",
+    "cve": "CVE-2026-93749",
+    "severity": "high",
+    "htmlUrl": "https://github.com/advisories/GHSA-68fv-2mgg-jv7q",
+    "query": "advisory"
+  },
+  "queries": [
+    {
+      "id": "open-alerts",
+      "program": "C:/Program Files/GitHub CLI/gh.exe",
+      "args": [
+        "api",
+        "--method",
+        "GET",
+        "repos/chenziyang110/soui-web-sdk/dependabot/alerts?state=open&per_page=100"
+      ],
+      "cwd": "F:/work/sm05",
+      "startedAt": "2026-10-08T13:10:45.252Z",
+      "finishedAt": "2026-10-08T13:10:46.750Z",
+      "exitCode": 0,
+      "signal": null,
+      "stdout": {
+        "path": "queries/open-alerts.response.json",
+        "bytes": 32956,
+        "sha256": "f31ff5693b26d741b1215071aa562a622395e1a2f54a2d62e3466f93eccfd9bf"
+      },
+      "stderr": {
+        "path": "queries/open-alerts.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "method": "GET",
+      "credentialsRecorded": false
+    },
+    {
+      "id": "main-before",
+      "program": "C:/Program Files/GitHub CLI/gh.exe",
+      "args": [
+        "api",
+        "--method",
+        "GET",
+        "repos/chenziyang110/soui-web-sdk/commits/main"
+      ],
+      "cwd": "F:/work/sm05",
+      "startedAt": "2026-10-08T13:10:46.751Z",
+      "finishedAt": "2026-10-08T13:10:47.658Z",
+      "exitCode": 0,
+      "signal": null,
+      "stdout": {
+        "path": "queries/main-before.response.json",
+        "bytes": 425420,
+        "sha256": "2ae2d840ba5e6bcfd21fdbbd83c72f61d94d3e11282dde0c1425733b6d7870c4"
+      },
+      "stderr": {
+        "path": "queries/main-before.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "method": "GET",
+      "credentialsRecorded": false
+    },
+    {
+      "id": "advisory",
+      "program": "C:/Program Files/GitHub CLI/gh.exe",
+      "args": [
+        "api",
+        "--method",
+        "GET",
+        "advisories/GHSA-68fv-2mgg-jv7q"
+      ],
+      "cwd": "F:/work/sm05",
+      "startedAt": "2026-10-08T13:10:47.659Z",
+      "finishedAt": "2026-10-08T13:10:48.470Z",
+      "exitCode": 0,
+      "signal": null,
+      "stdout": {
+        "path": "queries/advisory.response.json",
+        "bytes": 2330,
+        "sha256": "eb21a14220bff681c7e5054d9da233b82d9358e916ecef4d7549e01e2f0d3389"
+      },
+      "stderr": {
+        "path": "queries/advisory.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "method": "GET",
+      "credentialsRecorded": false
+    },
+    {
+      "id": "main-after",
+      "program": "C:/Program Files/GitHub CLI/gh.exe",
+      "args": [
+        "api",
+        "--method",
+        "GET",
+        "repos/chenziyang110/soui-web-sdk/commits/main"
+      ],
+      "cwd": "F:/work/sm05",
+      "startedAt": "2026-10-08T13:10:49.076Z",
+      "finishedAt": "2026-10-08T13:10:50.024Z",
+      "exitCode": 0,
+      "signal": null,
+      "stdout": {
+        "path": "queries/main-after.response.json",
+        "bytes": 425420,
+        "sha256": "2ae2d840ba5e6bcfd21fdbbd83c72f61d94d3e11282dde0c1425733b6d7870c4"
+      },
+      "stderr": {
+        "path": "queries/main-after.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "method": "GET",
+      "credentialsRecorded": false
+    }
+  ],
+  "alerts": [
+    {
+      "number": 57,
+      "url": "https://github.com/chenziyang110/soui-web-sdk/security/dependabot/57",
+      "capturedState": "open",
+      "path": "verification/production-validation/preview11-followup-audit-2026-09-26/raw/web/package-lock.json",
+      "package": "source-map-js",
+      "ecosystem": "npm",
+      "relationship": "transitive",
+      "dependencyScope": "development",
+      "severity": "high",
+      "ghsa": "GHSA-68fv-2mgg-jv7q",
+      "cve": "CVE-2026-93749",
+      "vulnerableVersionRange": ">= 1.0.0, < 1.2.2",
+      "firstPatchedVersion": "1.2.2",
+      "resolvedVersion": "1.2.1",
+      "bytes": 130657,
+      "sha256": "626872d385918a4e6f91f738cd865ae80bc9231102b9936f87a456acd984842d",
+      "rawManifest": {
+        "path": "verification/production-validation/preview11-followup-audit-2026-09-26/raw-manifest.json",
+        "entryKey": "raw/web/package-lock.json",
+        "entryPathField": "path",
+        "bytes": 130657,
+        "sha256": "626872d385918a4e6f91f738cd865ae80bc9231102b9936f87a456acd984842d",
+        "match": true
+      },
+      "executionUse": "retired-by-maintenance-policy",
+      "retainedUse": [
+        "read-only-forensics",
+        "hash-verification"
+      ]
+    },
+    {
+      "number": 58,
+      "url": "https://github.com/chenziyang110/soui-web-sdk/security/dependabot/58",
+      "capturedState": "open",
+      "path": "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/attempts/x64-attempt1/toolchain/package-lock.json",
+      "package": "source-map-js",
+      "ecosystem": "npm",
+      "relationship": "transitive",
+      "dependencyScope": "development",
+      "severity": "high",
+      "ghsa": "GHSA-68fv-2mgg-jv7q",
+      "cve": "CVE-2026-93749",
+      "vulnerableVersionRange": ">= 1.0.0, < 1.2.2",
+      "firstPatchedVersion": "1.2.2",
+      "resolvedVersion": "1.2.1",
+      "bytes": 122928,
+      "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+      "rawManifest": {
+        "path": "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw-manifest.json",
+        "entryKey": "raw/attempts/x64-attempt1/toolchain/package-lock.json",
+        "entryPathField": "path",
+        "bytes": 122928,
+        "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+        "match": true
+      },
+      "executionUse": "retired-by-maintenance-policy",
+      "retainedUse": [
+        "read-only-forensics",
+        "hash-verification"
+      ]
+    },
+    {
+      "number": 59,
+      "url": "https://github.com/chenziyang110/soui-web-sdk/security/dependabot/59",
+      "capturedState": "open",
+      "path": "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/attempts/x86-attempt1/toolchain/package-lock.json",
+      "package": "source-map-js",
+      "ecosystem": "npm",
+      "relationship": "transitive",
+      "dependencyScope": "development",
+      "severity": "high",
+      "ghsa": "GHSA-68fv-2mgg-jv7q",
+      "cve": "CVE-2026-93749",
+      "vulnerableVersionRange": ">= 1.0.0, < 1.2.2",
+      "firstPatchedVersion": "1.2.2",
+      "resolvedVersion": "1.2.1",
+      "bytes": 122928,
+      "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+      "rawManifest": {
+        "path": "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw-manifest.json",
+        "entryKey": "raw/attempts/x86-attempt1/toolchain/package-lock.json",
+        "entryPathField": "path",
+        "bytes": 122928,
+        "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+        "match": true
+      },
+      "executionUse": "retired-by-maintenance-policy",
+      "retainedUse": [
+        "read-only-forensics",
+        "hash-verification"
+      ]
+    },
+    {
+      "number": 60,
+      "url": "https://github.com/chenziyang110/soui-web-sdk/security/dependabot/60",
+      "capturedState": "open",
+      "path": "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/attempts/x86-attempt2/toolchain/package-lock.json",
+      "package": "source-map-js",
+      "ecosystem": "npm",
+      "relationship": "transitive",
+      "dependencyScope": "development",
+      "severity": "high",
+      "ghsa": "GHSA-68fv-2mgg-jv7q",
+      "cve": "CVE-2026-93749",
+      "vulnerableVersionRange": ">= 1.0.0, < 1.2.2",
+      "firstPatchedVersion": "1.2.2",
+      "resolvedVersion": "1.2.1",
+      "bytes": 122928,
+      "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+      "rawManifest": {
+        "path": "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw-manifest.json",
+        "entryKey": "raw/attempts/x86-attempt2/toolchain/package-lock.json",
+        "entryPathField": "path",
+        "bytes": 122928,
+        "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+        "match": true
+      },
+      "executionUse": "retired-by-maintenance-policy",
+      "retainedUse": [
+        "read-only-forensics",
+        "hash-verification"
+      ]
+    },
+    {
+      "number": 61,
+      "url": "https://github.com/chenziyang110/soui-web-sdk/security/dependabot/61",
+      "capturedState": "open",
+      "path": "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/attempts/x86-attempt3/toolchain/package-lock.json",
+      "package": "source-map-js",
+      "ecosystem": "npm",
+      "relationship": "transitive",
+      "dependencyScope": "development",
+      "severity": "high",
+      "ghsa": "GHSA-68fv-2mgg-jv7q",
+      "cve": "CVE-2026-93749",
+      "vulnerableVersionRange": ">= 1.0.0, < 1.2.2",
+      "firstPatchedVersion": "1.2.2",
+      "resolvedVersion": "1.2.1",
+      "bytes": 122928,
+      "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+      "rawManifest": {
+        "path": "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw-manifest.json",
+        "entryKey": "raw/attempts/x86-attempt3/toolchain/package-lock.json",
+        "entryPathField": "path",
+        "bytes": 122928,
+        "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+        "match": true
+      },
+      "executionUse": "retired-by-maintenance-policy",
+      "retainedUse": [
+        "read-only-forensics",
+        "hash-verification"
+      ]
+    },
+    {
+      "number": 62,
+      "url": "https://github.com/chenziyang110/soui-web-sdk/security/dependabot/62",
+      "capturedState": "open",
+      "path": "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/attempts/x86-attempt4/toolchain/package-lock.json",
+      "package": "source-map-js",
+      "ecosystem": "npm",
+      "relationship": "transitive",
+      "dependencyScope": "development",
+      "severity": "high",
+      "ghsa": "GHSA-68fv-2mgg-jv7q",
+      "cve": "CVE-2026-93749",
+      "vulnerableVersionRange": ">= 1.0.0, < 1.2.2",
+      "firstPatchedVersion": "1.2.2",
+      "resolvedVersion": "1.2.1",
+      "bytes": 122928,
+      "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+      "rawManifest": {
+        "path": "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw-manifest.json",
+        "entryKey": "raw/attempts/x86-attempt4/toolchain/package-lock.json",
+        "entryPathField": "path",
+        "bytes": 122928,
+        "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+        "match": true
+      },
+      "executionUse": "retired-by-maintenance-policy",
+      "retainedUse": [
+        "read-only-forensics",
+        "hash-verification"
+      ]
+    },
+    {
+      "number": 63,
+      "url": "https://github.com/chenziyang110/soui-web-sdk/security/dependabot/63",
+      "capturedState": "open",
+      "path": "verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw/attempts/x64-attempt1/toolchain/package-lock.json",
+      "package": "source-map-js",
+      "ecosystem": "npm",
+      "relationship": "transitive",
+      "dependencyScope": "development",
+      "severity": "high",
+      "ghsa": "GHSA-68fv-2mgg-jv7q",
+      "cve": "CVE-2026-93749",
+      "vulnerableVersionRange": ">= 1.0.0, < 1.2.2",
+      "firstPatchedVersion": "1.2.2",
+      "resolvedVersion": "1.2.1",
+      "bytes": 122928,
+      "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+      "rawManifest": {
+        "path": "verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw-manifest.json",
+        "entryKey": "raw/attempts/x64-attempt1/toolchain/package-lock.json",
+        "entryPathField": "archivedPath",
+        "bytes": 122928,
+        "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+        "match": true
+      },
+      "executionUse": "retired-by-maintenance-policy",
+      "retainedUse": [
+        "read-only-forensics",
+        "hash-verification"
+      ]
+    },
+    {
+      "number": 64,
+      "url": "https://github.com/chenziyang110/soui-web-sdk/security/dependabot/64",
+      "capturedState": "open",
+      "path": "verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw/attempts/x86-attempt1/toolchain/package-lock.json",
+      "package": "source-map-js",
+      "ecosystem": "npm",
+      "relationship": "transitive",
+      "dependencyScope": "development",
+      "severity": "high",
+      "ghsa": "GHSA-68fv-2mgg-jv7q",
+      "cve": "CVE-2026-93749",
+      "vulnerableVersionRange": ">= 1.0.0, < 1.2.2",
+      "firstPatchedVersion": "1.2.2",
+      "resolvedVersion": "1.2.1",
+      "bytes": 122928,
+      "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+      "rawManifest": {
+        "path": "verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw-manifest.json",
+        "entryKey": "raw/attempts/x86-attempt1/toolchain/package-lock.json",
+        "entryPathField": "archivedPath",
+        "bytes": 122928,
+        "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+        "match": true
+      },
+      "executionUse": "retired-by-maintenance-policy",
+      "retainedUse": [
+        "read-only-forensics",
+        "hash-verification"
+      ]
+    },
+    {
+      "number": 65,
+      "url": "https://github.com/chenziyang110/soui-web-sdk/security/dependabot/65",
+      "capturedState": "open",
+      "path": "verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw/toolchain/package-lock.json",
+      "package": "source-map-js",
+      "ecosystem": "npm",
+      "relationship": "transitive",
+      "dependencyScope": "development",
+      "severity": "high",
+      "ghsa": "GHSA-68fv-2mgg-jv7q",
+      "cve": "CVE-2026-93749",
+      "vulnerableVersionRange": ">= 1.0.0, < 1.2.2",
+      "firstPatchedVersion": "1.2.2",
+      "resolvedVersion": "1.2.1",
+      "bytes": 122928,
+      "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+      "rawManifest": {
+        "path": "verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw-manifest.json",
+        "entryKey": "raw/toolchain/package-lock.json",
+        "entryPathField": "archivedPath",
+        "bytes": 122928,
+        "sha256": "072d216489333de113f7d4177ed327f082709f72836893b60c53b46c98a3da8a",
+        "match": true
+      },
+      "executionUse": "retired-by-maintenance-policy",
+      "retainedUse": [
+        "read-only-forensics",
+        "hash-verification"
+      ]
+    },
+    {
+      "number": 66,
+      "url": "https://github.com/chenziyang110/soui-web-sdk/security/dependabot/66",
+      "capturedState": "open",
+      "path": "verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/business-source/web/package-lock.json",
+      "package": "source-map-js",
+      "ecosystem": "npm",
+      "relationship": "transitive",
+      "dependencyScope": "development",
+      "severity": "high",
+      "ghsa": "GHSA-68fv-2mgg-jv7q",
+      "cve": "CVE-2026-93749",
+      "vulnerableVersionRange": ">= 1.0.0, < 1.2.2",
+      "firstPatchedVersion": "1.2.2",
+      "resolvedVersion": "1.2.1",
+      "bytes": 130657,
+      "sha256": "626872d385918a4e6f91f738cd865ae80bc9231102b9936f87a456acd984842d",
+      "rawManifest": {
+        "path": "verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw-manifest.json",
+        "entryKey": "raw/business-source/web/package-lock.json",
+        "entryPathField": "path",
+        "bytes": 130657,
+        "sha256": "626872d385918a4e6f91f738cd865ae80bc9231102b9936f87a456acd984842d",
+        "match": true
+      },
+      "executionUse": "retired-by-maintenance-policy",
+      "retainedUse": [
+        "read-only-forensics",
+        "hash-verification"
+      ]
+    },
+    {
+      "number": 67,
+      "url": "https://github.com/chenziyang110/soui-web-sdk/security/dependabot/67",
+      "capturedState": "open",
+      "path": "verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/old-generator/templates/desktop-app/web/package-lock.json",
+      "package": "source-map-js",
+      "ecosystem": "npm",
+      "relationship": "transitive",
+      "dependencyScope": "development",
+      "severity": "high",
+      "ghsa": "GHSA-68fv-2mgg-jv7q",
+      "cve": "CVE-2026-93749",
+      "vulnerableVersionRange": ">= 1.0.0, < 1.2.2",
+      "firstPatchedVersion": "1.2.2",
+      "resolvedVersion": "1.2.1",
+      "bytes": 130655,
+      "sha256": "8fe6b1e6386cccfb071b26ee5fd7ab3ba426b3a2efb14365c20b5e37f91e47d1",
+      "rawManifest": {
+        "path": "verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw-manifest.json",
+        "entryKey": "raw/old-generator/templates/desktop-app/web/package-lock.json",
+        "entryPathField": "path",
+        "bytes": 130655,
+        "sha256": "8fe6b1e6386cccfb071b26ee5fd7ab3ba426b3a2efb14365c20b5e37f91e47d1",
+        "match": true
+      },
+      "executionUse": "retired-by-maintenance-policy",
+      "retainedUse": [
+        "read-only-forensics",
+        "hash-verification"
+      ]
+    }
+  ],
+  "activeLocks": [
+    {
+      "scope": "root",
+      "root": "F:/work/sm05",
+      "path": "sdk/web/package-lock.json",
+      "sourceMapJs": [],
+      "bytes": 735,
+      "sha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0",
+      "snapshot": "snapshots/active-root/sdk/web/package-lock.json.inert.snapshot",
+      "liveAuditExecuted": false
+    },
+    {
+      "scope": "root",
+      "root": "F:/work/sm05",
+      "path": "templates/desktop-app/web/package-lock.json",
+      "sourceMapJs": [
+        {
+          "path": "node_modules/source-map-js",
+          "version": "1.2.2",
+          "dev": true,
+          "optional": false
+        }
+      ],
+      "bytes": 130655,
+      "sha256": "56553b7df7d73417629ddb7459df06c0ff1274a745f35bfedde8d28376714d33",
+      "snapshot": "snapshots/active-root/templates/desktop-app/web/package-lock.json.inert.snapshot",
+      "liveAuditExecuted": false
+    },
+    {
+      "scope": "root",
+      "root": "F:/work/sm05",
+      "path": "templates/modern-app/web/package-lock.json",
+      "sourceMapJs": [
+        {
+          "path": "node_modules/source-map-js",
+          "version": "1.2.2",
+          "dev": true,
+          "optional": false
+        }
+      ],
+      "bytes": 28768,
+      "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde",
+      "snapshot": "snapshots/active-root/templates/modern-app/web/package-lock.json.inert.snapshot",
+      "liveAuditExecuted": false
+    },
+    {
+      "scope": "root",
+      "root": "F:/work/sm05",
+      "path": "demos/workbench/web/package-lock.json",
+      "sourceMapJs": [
+        {
+          "path": "node_modules/source-map-js",
+          "version": "1.2.2",
+          "dev": false,
+          "optional": false
+        }
+      ],
+      "bytes": 167788,
+      "sha256": "74ff68042f8b210cac922db10969a7acb0d13ae2ab1b9f7aa1178e7c901376ac",
+      "snapshot": "snapshots/active-root/demos/workbench/web/package-lock.json.inert.snapshot",
+      "liveAuditExecuted": false
+    },
+    {
+      "scope": "root",
+      "root": "F:/work/sm05",
+      "path": "tests/acceptance/package-lock.json",
+      "sourceMapJs": [
+        {
+          "path": "node_modules/source-map-js",
+          "version": "1.2.2",
+          "dev": true,
+          "optional": false
+        }
+      ],
+      "bytes": 122928,
+      "sha256": "a52a6433c859865dd884101e3340723afb4492e4ba89bec31b7158bdd7701a66",
+      "snapshot": "snapshots/active-root/tests/acceptance/package-lock.json.inert.snapshot",
+      "liveAuditExecuted": false
+    },
+    {
+      "scope": "root",
+      "root": "F:/work/sm05",
+      "path": "benchmarks/hosts/electron/package-lock.json",
+      "sourceMapJs": [],
+      "bytes": 5786,
+      "sha256": "db51b0767e5a03de455d8dae6beb3719ec3ab60f458346caa6fb460c190307f4",
+      "snapshot": "snapshots/active-root/benchmarks/hosts/electron/package-lock.json.inert.snapshot",
+      "liveAuditExecuted": false
+    },
+    {
+      "scope": "gui",
+      "root": "F:/work/sm05-gui",
+      "path": "sdk/bindings/react/package-lock.json",
+      "sourceMapJs": [],
+      "bytes": 3436,
+      "sha256": "c962e202a795a3305b873a71969a168fae0fcbf9f52ad470661474efbfd36172",
+      "snapshot": "snapshots/active-gui/sdk/bindings/react/package-lock.json.inert.snapshot",
+      "liveAuditExecuted": false
+    },
+    {
+      "scope": "gui",
+      "root": "F:/work/sm05-gui",
+      "path": "sdk/bindings/vue/package-lock.json",
+      "sourceMapJs": [
+        {
+          "path": "node_modules/source-map-js",
+          "version": "1.2.2",
+          "dev": true,
+          "optional": false
+        }
+      ],
+      "bytes": 11782,
+      "sha256": "de67abd439c5b6957db8302b5b8cac71b03747bfdd6e870f0741e21fabc08e97",
+      "snapshot": "snapshots/active-gui/sdk/bindings/vue/package-lock.json.inert.snapshot",
+      "liveAuditExecuted": false
+    },
+    {
+      "scope": "gui",
+      "root": "F:/work/sm05-gui",
+      "path": "tests/gui-bindings/package-lock.json",
+      "sourceMapJs": [
+        {
+          "path": "node_modules/source-map-js",
+          "version": "1.2.2",
+          "dev": false,
+          "optional": false
+        }
+      ],
+      "bytes": 32159,
+      "sha256": "2eea6d481d924a344565ac38c33ccf4c9b3ae04556e60889ea344362a37b1cdd",
+      "snapshot": "snapshots/active-gui/tests/gui-bindings/package-lock.json.inert.snapshot",
+      "liveAuditExecuted": false
+    },
+    {
+      "scope": "gui",
+      "root": "F:/work/sm05-gui",
+      "path": "tests/gui-bindings/react18/package-lock.json",
+      "sourceMapJs": [],
+      "bytes": 4311,
+      "sha256": "b8e9391cce89e8e816c3cb5d431945cecd9394e5190f456fa5b094595963c669",
+      "snapshot": "snapshots/active-gui/tests/gui-bindings/react18/package-lock.json.inert.snapshot",
+      "liveAuditExecuted": false
+    }
+  ],
+  "mainLocks": [
+    {
+      "commit": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+      "path": "sdk/web/package-lock.json",
+      "sourceMapJs": [],
+      "bytes": 735,
+      "sha256": "c3fd19039e976dcb639b830d5947f398e321d2317889df868f6eecd238e1176d",
+      "snapshot": "snapshots/main/sdk/web/package-lock.json.inert.snapshot",
+      "readCommand": {
+        "program": "git",
+        "args": [
+          "show",
+          "05e7d93b6bb36904cfabaea6147552b4d62dfb70:sdk/web/package-lock.json"
+        ],
+        "cwd": "F:/work/sm05"
+      }
+    },
+    {
+      "commit": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+      "path": "templates/desktop-app/web/package-lock.json",
+      "sourceMapJs": [
+        {
+          "path": "node_modules/source-map-js",
+          "version": "1.2.2",
+          "dev": true,
+          "optional": false
+        }
+      ],
+      "bytes": 130655,
+      "sha256": "56553b7df7d73417629ddb7459df06c0ff1274a745f35bfedde8d28376714d33",
+      "snapshot": "snapshots/main/templates/desktop-app/web/package-lock.json.inert.snapshot",
+      "readCommand": {
+        "program": "git",
+        "args": [
+          "show",
+          "05e7d93b6bb36904cfabaea6147552b4d62dfb70:templates/desktop-app/web/package-lock.json"
+        ],
+        "cwd": "F:/work/sm05"
+      }
+    },
+    {
+      "commit": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+      "path": "templates/modern-app/web/package-lock.json",
+      "sourceMapJs": [
+        {
+          "path": "node_modules/source-map-js",
+          "version": "1.2.2",
+          "dev": true,
+          "optional": false
+        }
+      ],
+      "bytes": 28768,
+      "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde",
+      "snapshot": "snapshots/main/templates/modern-app/web/package-lock.json.inert.snapshot",
+      "readCommand": {
+        "program": "git",
+        "args": [
+          "show",
+          "05e7d93b6bb36904cfabaea6147552b4d62dfb70:templates/modern-app/web/package-lock.json"
+        ],
+        "cwd": "F:/work/sm05"
+      }
+    },
+    {
+      "commit": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+      "path": "demos/workbench/web/package-lock.json",
+      "sourceMapJs": [
+        {
+          "path": "node_modules/source-map-js",
+          "version": "1.2.2",
+          "dev": false,
+          "optional": false
+        }
+      ],
+      "bytes": 167788,
+      "sha256": "74ff68042f8b210cac922db10969a7acb0d13ae2ab1b9f7aa1178e7c901376ac",
+      "snapshot": "snapshots/main/demos/workbench/web/package-lock.json.inert.snapshot",
+      "readCommand": {
+        "program": "git",
+        "args": [
+          "show",
+          "05e7d93b6bb36904cfabaea6147552b4d62dfb70:demos/workbench/web/package-lock.json"
+        ],
+        "cwd": "F:/work/sm05"
+      }
+    },
+    {
+      "commit": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+      "path": "tests/acceptance/package-lock.json",
+      "sourceMapJs": [
+        {
+          "path": "node_modules/source-map-js",
+          "version": "1.2.2",
+          "dev": true,
+          "optional": false
+        }
+      ],
+      "bytes": 122928,
+      "sha256": "a52a6433c859865dd884101e3340723afb4492e4ba89bec31b7158bdd7701a66",
+      "snapshot": "snapshots/main/tests/acceptance/package-lock.json.inert.snapshot",
+      "readCommand": {
+        "program": "git",
+        "args": [
+          "show",
+          "05e7d93b6bb36904cfabaea6147552b4d62dfb70:tests/acceptance/package-lock.json"
+        ],
+        "cwd": "F:/work/sm05"
+      }
+    },
+    {
+      "commit": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+      "path": "benchmarks/hosts/electron/package-lock.json",
+      "sourceMapJs": [],
+      "bytes": 5786,
+      "sha256": "db51b0767e5a03de455d8dae6beb3719ec3ab60f458346caa6fb460c190307f4",
+      "snapshot": "snapshots/main/benchmarks/hosts/electron/package-lock.json.inert.snapshot",
+      "readCommand": {
+        "program": "git",
+        "args": [
+          "show",
+          "05e7d93b6bb36904cfabaea6147552b4d62dfb70:benchmarks/hosts/electron/package-lock.json"
+        ],
+        "cwd": "F:/work/sm05"
+      }
+    }
+  ],
+  "sourceSnapshots": [
+    {
+      "scope": "archive-manifests",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "verification/production-validation/preview11-followup-audit-2026-09-26/raw-manifest.json",
+      "originalBytes": 3996,
+      "originalSha256": "37ca07e635e723529369ff6a67b35aeaa7893eea664a1aa30e337febe83cf97f",
+      "snapshot": {
+        "path": "snapshots/archive-manifests/verification/production-validation/preview11-followup-audit-2026-09-26/raw-manifest.json.inert.snapshot",
+        "bytes": 3996,
+        "sha256": "37ca07e635e723529369ff6a67b35aeaa7893eea664a1aa30e337febe83cf97f"
+      }
+    },
+    {
+      "scope": "archive-manifests",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw-manifest.json",
+      "originalBytes": 89857,
+      "originalSha256": "ce3deca2437f389aea565ca98153a5a9189812918c04e352d6f5fadcddb7b860",
+      "snapshot": {
+        "path": "snapshots/archive-manifests/verification/production-validation/preview11-real-renewal-build-2026-09-26/raw-manifest.json.inert.snapshot",
+        "bytes": 89857,
+        "sha256": "ce3deca2437f389aea565ca98153a5a9189812918c04e352d6f5fadcddb7b860"
+      }
+    },
+    {
+      "scope": "archive-manifests",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw-manifest.json",
+      "originalBytes": 114611,
+      "originalSha256": "abc83da032ed0a7110dec1a4065d431a0cf534204cc7ddf99857b4ed327496dd",
+      "snapshot": {
+        "path": "snapshots/archive-manifests/verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw-manifest.json.inert.snapshot",
+        "bytes": 114611,
+        "sha256": "abc83da032ed0a7110dec1a4065d431a0cf534204cc7ddf99857b4ed327496dd"
+      }
+    },
+    {
+      "scope": "archive-manifests",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw-manifest.json",
+      "originalBytes": 63901,
+      "originalSha256": "5253ac154883332b8bb86355679c21eca9edebcd9d3ebdccdc6662ff8b3e74e2",
+      "snapshot": {
+        "path": "snapshots/archive-manifests/verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw-manifest.json.inert.snapshot",
+        "bytes": 63901,
+        "sha256": "5253ac154883332b8bb86355679c21eca9edebcd9d3ebdccdc6662ff8b3e74e2"
+      }
+    },
+    {
+      "scope": "active-root",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "sdk/web/package-lock.json",
+      "originalBytes": 735,
+      "originalSha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0",
+      "snapshot": {
+        "path": "snapshots/active-root/sdk/web/package-lock.json.inert.snapshot",
+        "bytes": 735,
+        "sha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0"
+      }
+    },
+    {
+      "scope": "active-root",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "templates/desktop-app/web/package-lock.json",
+      "originalBytes": 130655,
+      "originalSha256": "56553b7df7d73417629ddb7459df06c0ff1274a745f35bfedde8d28376714d33",
+      "snapshot": {
+        "path": "snapshots/active-root/templates/desktop-app/web/package-lock.json.inert.snapshot",
+        "bytes": 130655,
+        "sha256": "56553b7df7d73417629ddb7459df06c0ff1274a745f35bfedde8d28376714d33"
+      }
+    },
+    {
+      "scope": "active-root",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "templates/modern-app/web/package-lock.json",
+      "originalBytes": 28768,
+      "originalSha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde",
+      "snapshot": {
+        "path": "snapshots/active-root/templates/modern-app/web/package-lock.json.inert.snapshot",
+        "bytes": 28768,
+        "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+      }
+    },
+    {
+      "scope": "active-root",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "demos/workbench/web/package-lock.json",
+      "originalBytes": 167788,
+      "originalSha256": "74ff68042f8b210cac922db10969a7acb0d13ae2ab1b9f7aa1178e7c901376ac",
+      "snapshot": {
+        "path": "snapshots/active-root/demos/workbench/web/package-lock.json.inert.snapshot",
+        "bytes": 167788,
+        "sha256": "74ff68042f8b210cac922db10969a7acb0d13ae2ab1b9f7aa1178e7c901376ac"
+      }
+    },
+    {
+      "scope": "active-root",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tests/acceptance/package-lock.json",
+      "originalBytes": 122928,
+      "originalSha256": "a52a6433c859865dd884101e3340723afb4492e4ba89bec31b7158bdd7701a66",
+      "snapshot": {
+        "path": "snapshots/active-root/tests/acceptance/package-lock.json.inert.snapshot",
+        "bytes": 122928,
+        "sha256": "a52a6433c859865dd884101e3340723afb4492e4ba89bec31b7158bdd7701a66"
+      }
+    },
+    {
+      "scope": "active-root",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "benchmarks/hosts/electron/package-lock.json",
+      "originalBytes": 5786,
+      "originalSha256": "db51b0767e5a03de455d8dae6beb3719ec3ab60f458346caa6fb460c190307f4",
+      "snapshot": {
+        "path": "snapshots/active-root/benchmarks/hosts/electron/package-lock.json.inert.snapshot",
+        "bytes": 5786,
+        "sha256": "db51b0767e5a03de455d8dae6beb3719ec3ab60f458346caa6fb460c190307f4"
+      }
+    },
+    {
+      "scope": "active-gui",
+      "originalRoot": "F:/work/sm05-gui",
+      "originalPath": "sdk/bindings/react/package-lock.json",
+      "originalBytes": 3436,
+      "originalSha256": "c962e202a795a3305b873a71969a168fae0fcbf9f52ad470661474efbfd36172",
+      "snapshot": {
+        "path": "snapshots/active-gui/sdk/bindings/react/package-lock.json.inert.snapshot",
+        "bytes": 3436,
+        "sha256": "c962e202a795a3305b873a71969a168fae0fcbf9f52ad470661474efbfd36172"
+      }
+    },
+    {
+      "scope": "active-gui",
+      "originalRoot": "F:/work/sm05-gui",
+      "originalPath": "sdk/bindings/vue/package-lock.json",
+      "originalBytes": 11782,
+      "originalSha256": "de67abd439c5b6957db8302b5b8cac71b03747bfdd6e870f0741e21fabc08e97",
+      "snapshot": {
+        "path": "snapshots/active-gui/sdk/bindings/vue/package-lock.json.inert.snapshot",
+        "bytes": 11782,
+        "sha256": "de67abd439c5b6957db8302b5b8cac71b03747bfdd6e870f0741e21fabc08e97"
+      }
+    },
+    {
+      "scope": "active-gui",
+      "originalRoot": "F:/work/sm05-gui",
+      "originalPath": "tests/gui-bindings/package-lock.json",
+      "originalBytes": 32159,
+      "originalSha256": "2eea6d481d924a344565ac38c33ccf4c9b3ae04556e60889ea344362a37b1cdd",
+      "snapshot": {
+        "path": "snapshots/active-gui/tests/gui-bindings/package-lock.json.inert.snapshot",
+        "bytes": 32159,
+        "sha256": "2eea6d481d924a344565ac38c33ccf4c9b3ae04556e60889ea344362a37b1cdd"
+      }
+    },
+    {
+      "scope": "active-gui",
+      "originalRoot": "F:/work/sm05-gui",
+      "originalPath": "tests/gui-bindings/react18/package-lock.json",
+      "originalBytes": 4311,
+      "originalSha256": "b8e9391cce89e8e816c3cb5d431945cecd9394e5190f456fa5b094595963c669",
+      "snapshot": {
+        "path": "snapshots/active-gui/tests/gui-bindings/react18/package-lock.json.inert.snapshot",
+        "bytes": 4311,
+        "sha256": "b8e9391cce89e8e816c3cb5d431945cecd9394e5190f456fa5b094595963c669"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tools/Build.ps1",
+      "originalBytes": 3886,
+      "originalSha256": "db9a923575a7158a642995cb91391604ffc8051861fa575b0005f68771c38143",
+      "snapshot": {
+        "path": "snapshots/entrypoints/tools/Build.ps1.inert.snapshot",
+        "bytes": 3886,
+        "sha256": "db9a923575a7158a642995cb91391604ffc8051861fa575b0005f68771c38143"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tools/New-Project.ps1",
+      "originalBytes": 4123,
+      "originalSha256": "e29339cee59700b12a7131be4e2045f935c097f0586b4c19506fbb5d543514fe",
+      "snapshot": {
+        "path": "snapshots/entrypoints/tools/New-Project.ps1.inert.snapshot",
+        "bytes": 4123,
+        "sha256": "e29339cee59700b12a7131be4e2045f935c097f0586b4c19506fbb5d543514fe"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tools/Package.ps1",
+      "originalBytes": 1921,
+      "originalSha256": "23a5cbb600fd9c2ae4781b77d130bc710aa770283f7eab3b9e893e8cb851be01",
+      "snapshot": {
+        "path": "snapshots/entrypoints/tools/Package.ps1.inert.snapshot",
+        "bytes": 1921,
+        "sha256": "23a5cbb600fd9c2ae4781b77d130bc710aa770283f7eab3b9e893e8cb851be01"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tools/Package-Applications.ps1",
+      "originalBytes": 2251,
+      "originalSha256": "2c2cbd9983847244f2ac541658c0fa755d75f39109c0e5cb164280e2272f3f64",
+      "snapshot": {
+        "path": "snapshots/entrypoints/tools/Package-Applications.ps1.inert.snapshot",
+        "bytes": 2251,
+        "sha256": "2c2cbd9983847244f2ac541658c0fa755d75f39109c0e5cb164280e2272f3f64"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tools/Verify-Release.ps1",
+      "originalBytes": 14751,
+      "originalSha256": "af4054ef03d816125ad61d77d633c5893dbc0f41034a3c57c3bd4d7b7ca6644e",
+      "snapshot": {
+        "path": "snapshots/entrypoints/tools/Verify-Release.ps1.inert.snapshot",
+        "bytes": 14751,
+        "sha256": "af4054ef03d816125ad61d77d633c5893dbc0f41034a3c57c3bd4d7b7ca6644e"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tools/Test.ps1",
+      "originalBytes": 5909,
+      "originalSha256": "1782b937362e64c28b62f0532f77a2b79bbbfbaa30496d60f1def47fd1837a93",
+      "snapshot": {
+        "path": "snapshots/entrypoints/tools/Test.ps1.inert.snapshot",
+        "bytes": 5909,
+        "sha256": "1782b937362e64c28b62f0532f77a2b79bbbfbaa30496d60f1def47fd1837a93"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tools/Test-Acceptance.ps1",
+      "originalBytes": 4751,
+      "originalSha256": "6448a65379cfddbde0764368c31bcf7862e8807c83cef01f6e72ea80c9c1547f",
+      "snapshot": {
+        "path": "snapshots/entrypoints/tools/Test-Acceptance.ps1.inert.snapshot",
+        "bytes": 4751,
+        "sha256": "6448a65379cfddbde0764368c31bcf7862e8807c83cef01f6e72ea80c9c1547f"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tools/Collect-Verification.cjs",
+      "originalBytes": 10125,
+      "originalSha256": "41d93b754586c2f9188269c905bd23b0e801b79c3db762405c7fc717cbefc4f7",
+      "snapshot": {
+        "path": "snapshots/entrypoints/tools/Collect-Verification.cjs.inert.snapshot",
+        "bytes": 10125,
+        "sha256": "41d93b754586c2f9188269c905bd23b0e801b79c3db762405c7fc717cbefc4f7"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tools/sdk/soui-sdk.cjs",
+      "originalBytes": 12595,
+      "originalSha256": "40e50d78f8a7296301d17d1f09c779b422fd40d8a28f419da1d869efb55f7ebb",
+      "snapshot": {
+        "path": "snapshots/entrypoints/tools/sdk/soui-sdk.cjs.inert.snapshot",
+        "bytes": 12595,
+        "sha256": "40e50d78f8a7296301d17d1f09c779b422fd40d8a28f419da1d869efb55f7ebb"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tools/internal/source-archive.cjs",
+      "originalBytes": 7529,
+      "originalSha256": "00fff214745a50e3ca71420b6ece4d24f5dec9b307514b7f6c3b1a3f9c06fe8b",
+      "snapshot": {
+        "path": "snapshots/entrypoints/tools/internal/source-archive.cjs.inert.snapshot",
+        "bytes": 7529,
+        "sha256": "00fff214745a50e3ca71420b6ece4d24f5dec9b307514b7f6c3b1a3f9c06fe8b"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tools/internal/release-verification.cjs",
+      "originalBytes": 16151,
+      "originalSha256": "be4acced46ec7078af7fc1ff6a47b6477f99f28f856c4b85105c6d5588b9b9cd",
+      "snapshot": {
+        "path": "snapshots/entrypoints/tools/internal/release-verification.cjs.inert.snapshot",
+        "bytes": 16151,
+        "sha256": "be4acced46ec7078af7fc1ff6a47b6477f99f28f856c4b85105c6d5588b9b9cd"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "tests/acceptance/verify-upgrade.cjs",
+      "originalBytes": 4624,
+      "originalSha256": "b23ed5405a27cfc9ca00d5ff99ff7219c3ca0d3ca5cfcd01cf0e49c04f281332",
+      "snapshot": {
+        "path": "snapshots/entrypoints/tests/acceptance/verify-upgrade.cjs.inert.snapshot",
+        "bytes": 4624,
+        "sha256": "b23ed5405a27cfc9ca00d5ff99ff7219c3ca0d3ca5cfcd01cf0e49c04f281332"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": ".github/dependabot.yml",
+      "originalBytes": 1451,
+      "originalSha256": "988dab4b5c61d9d9b27da2a32ec93aac0dec82f69e3aabb358cacf28cf44d8ef",
+      "snapshot": {
+        "path": "snapshots/entrypoints/.github/dependabot.yml.inert.snapshot",
+        "bytes": 1451,
+        "sha256": "988dab4b5c61d9d9b27da2a32ec93aac0dec82f69e3aabb358cacf28cf44d8ef"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/Build.ps1",
+      "originalBytes": 9469,
+      "originalSha256": "c2a726de9de951cb883064082112deae82638d7b8b2510dfab9acfe44610ecef",
+      "snapshot": {
+        "path": "snapshots/entrypoints/verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/Build.ps1.inert.snapshot",
+        "bytes": 9469,
+        "sha256": "c2a726de9de951cb883064082112deae82638d7b8b2510dfab9acfe44610ecef"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw/Build.ps1",
+      "originalBytes": 9469,
+      "originalSha256": "c2a726de9de951cb883064082112deae82638d7b8b2510dfab9acfe44610ecef",
+      "snapshot": {
+        "path": "snapshots/entrypoints/verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw/Build.ps1.inert.snapshot",
+        "bytes": 9469,
+        "sha256": "c2a726de9de951cb883064082112deae82638d7b8b2510dfab9acfe44610ecef"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/Prepare.cjs",
+      "originalBytes": 7084,
+      "originalSha256": "a26064821742bb887d70baf785270af18b91adfeb8686432612bb9858567c104",
+      "snapshot": {
+        "path": "snapshots/entrypoints/verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/Prepare.cjs.inert.snapshot",
+        "bytes": 7084,
+        "sha256": "a26064821742bb887d70baf785270af18b91adfeb8686432612bb9858567c104"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/Run-Stage.cjs",
+      "originalBytes": 5742,
+      "originalSha256": "bb99264c5b419e2e7f6b4182786ea6fe80d7d024fa03670caa36af26630a098c",
+      "snapshot": {
+        "path": "snapshots/entrypoints/verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/Run-Stage.cjs.inert.snapshot",
+        "bytes": 5742,
+        "sha256": "bb99264c5b419e2e7f6b4182786ea6fe80d7d024fa03670caa36af26630a098c"
+      }
+    },
+    {
+      "scope": "entrypoints",
+      "originalRoot": "F:/work/sm05",
+      "originalPath": "verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/old-generator/tools/New-Project.ps1",
+      "originalBytes": 3641,
+      "originalSha256": "296fcc6646988d049533eb4018b31de9e2ba8d028adeffe3471e3fccd19a0d9e",
+      "snapshot": {
+        "path": "snapshots/entrypoints/verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/old-generator/tools/New-Project.ps1.inert.snapshot",
+        "bytes": 3641,
+        "sha256": "296fcc6646988d049533eb4018b31de9e2ba8d028adeffe3471e3fccd19a0d9e"
+      }
+    }
+  ],
+  "sourceSnapshotBindingSha256": "3f5e3abcac8e85fec82c218b672614a6c0720837a1ff94b274d1b1d1ec0e7c3f",
+  "analyzedSourceUnchangedDuringCapture": true,
+  "policy": {
+    "historicalExecutionRetired": true,
+    "scope": [
+      "verification/production-validation/preview11-followup-audit-2026-09-26/raw/web/package-lock.json",
+      "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/attempts/x64-attempt1/toolchain/package-lock.json",
+      "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/attempts/x86-attempt1/toolchain/package-lock.json",
+      "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/attempts/x86-attempt2/toolchain/package-lock.json",
+      "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/attempts/x86-attempt3/toolchain/package-lock.json",
+      "verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/attempts/x86-attempt4/toolchain/package-lock.json",
+      "verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw/attempts/x64-attempt1/toolchain/package-lock.json",
+      "verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw/attempts/x86-attempt1/toolchain/package-lock.json",
+      "verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw/toolchain/package-lock.json",
+      "verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/business-source/web/package-lock.json",
+      "verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/old-generator/templates/desktop-app/web/package-lock.json"
+    ],
+    "legacyRunnerFoldersRetired": [
+      "verification/production-validation/preview11-followup-audit-2026-09-26",
+      "verification/production-validation/preview11-real-renewal-build-2026-09-26",
+      "verification/production-validation/preview11-real-renewal-v2-build-2026-09-26",
+      "verification/production-validation/preview11-upgrade-interruption-2026-09-26"
+    ],
+    "retainedUses": [
+      "read-only-forensics",
+      "hash-verification"
+    ],
+    "newValidation": "Independent new fixtures built from current patched templates/toolchains; new identity and evidence.",
+    "existingCustomerBusinessLocks": "Must be audited/upgraded separately; an SDK upgrade does not fix them.",
+    "originalBytesPreserved": true,
+    "fixedOrSignedPackagesModified": false,
+    "fullSourceRetainsVulnerableArchivedLocks": true,
+    "githubDisposition": {
+      "applied": false,
+      "recommendedReasonAfterPolicyReview": "not_used",
+      "condition": "Restricted to the listed retired archived evidence; no claim that vulnerable versions were patched."
+    }
+  },
+  "limits": {
+    "freshNpmAuditExecuted": false,
+    "npmInstallExecuted": false,
+    "historicalFixtureExecuted": false,
+    "nativeBuildExecuted": false,
+    "guiExecuted": false,
+    "vmExecuted": false,
+    "credentialOutput": false,
+    "allArtifactsVulnerabilityFree": false,
+    "independentSourceReviewOrRuntimeProofCreated": false
+  },
+  "files": [
+    {
+      "path": "queries/open-alerts.response.json",
+      "bytes": 32956,
+      "sha256": "f31ff5693b26d741b1215071aa562a622395e1a2f54a2d62e3466f93eccfd9bf"
+    },
+    {
+      "path": "queries/open-alerts.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "queries/main-before.response.json",
+      "bytes": 425420,
+      "sha256": "2ae2d840ba5e6bcfd21fdbbd83c72f61d94d3e11282dde0c1425733b6d7870c4"
+    },
+    {
+      "path": "queries/main-before.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "queries/advisory.response.json",
+      "bytes": 2330,
+      "sha256": "eb21a14220bff681c7e5054d9da233b82d9358e916ecef4d7549e01e2f0d3389"
+    },
+    {
+      "path": "queries/advisory.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "snapshots/archive-manifests/verification/production-validation/preview11-followup-audit-2026-09-26/raw-manifest.json.inert.snapshot",
+      "bytes": 3996,
+      "sha256": "37ca07e635e723529369ff6a67b35aeaa7893eea664a1aa30e337febe83cf97f"
+    },
+    {
+      "path": "snapshots/archive-manifests/verification/production-validation/preview11-real-renewal-build-2026-09-26/raw-manifest.json.inert.snapshot",
+      "bytes": 89857,
+      "sha256": "ce3deca2437f389aea565ca98153a5a9189812918c04e352d6f5fadcddb7b860"
+    },
+    {
+      "path": "snapshots/archive-manifests/verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw-manifest.json.inert.snapshot",
+      "bytes": 114611,
+      "sha256": "abc83da032ed0a7110dec1a4065d431a0cf534204cc7ddf99857b4ed327496dd"
+    },
+    {
+      "path": "snapshots/archive-manifests/verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw-manifest.json.inert.snapshot",
+      "bytes": 63901,
+      "sha256": "5253ac154883332b8bb86355679c21eca9edebcd9d3ebdccdc6662ff8b3e74e2"
+    },
+    {
+      "path": "snapshots/active-root/sdk/web/package-lock.json.inert.snapshot",
+      "bytes": 735,
+      "sha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0"
+    },
+    {
+      "path": "snapshots/active-root/templates/desktop-app/web/package-lock.json.inert.snapshot",
+      "bytes": 130655,
+      "sha256": "56553b7df7d73417629ddb7459df06c0ff1274a745f35bfedde8d28376714d33"
+    },
+    {
+      "path": "snapshots/active-root/templates/modern-app/web/package-lock.json.inert.snapshot",
+      "bytes": 28768,
+      "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+    },
+    {
+      "path": "snapshots/active-root/demos/workbench/web/package-lock.json.inert.snapshot",
+      "bytes": 167788,
+      "sha256": "74ff68042f8b210cac922db10969a7acb0d13ae2ab1b9f7aa1178e7c901376ac"
+    },
+    {
+      "path": "snapshots/active-root/tests/acceptance/package-lock.json.inert.snapshot",
+      "bytes": 122928,
+      "sha256": "a52a6433c859865dd884101e3340723afb4492e4ba89bec31b7158bdd7701a66"
+    },
+    {
+      "path": "snapshots/active-root/benchmarks/hosts/electron/package-lock.json.inert.snapshot",
+      "bytes": 5786,
+      "sha256": "db51b0767e5a03de455d8dae6beb3719ec3ab60f458346caa6fb460c190307f4"
+    },
+    {
+      "path": "snapshots/active-gui/sdk/bindings/react/package-lock.json.inert.snapshot",
+      "bytes": 3436,
+      "sha256": "c962e202a795a3305b873a71969a168fae0fcbf9f52ad470661474efbfd36172"
+    },
+    {
+      "path": "snapshots/active-gui/sdk/bindings/vue/package-lock.json.inert.snapshot",
+      "bytes": 11782,
+      "sha256": "de67abd439c5b6957db8302b5b8cac71b03747bfdd6e870f0741e21fabc08e97"
+    },
+    {
+      "path": "snapshots/active-gui/tests/gui-bindings/package-lock.json.inert.snapshot",
+      "bytes": 32159,
+      "sha256": "2eea6d481d924a344565ac38c33ccf4c9b3ae04556e60889ea344362a37b1cdd"
+    },
+    {
+      "path": "snapshots/active-gui/tests/gui-bindings/react18/package-lock.json.inert.snapshot",
+      "bytes": 4311,
+      "sha256": "b8e9391cce89e8e816c3cb5d431945cecd9394e5190f456fa5b094595963c669"
+    },
+    {
+      "path": "snapshots/main/sdk/web/package-lock.json.inert.snapshot",
+      "bytes": 735,
+      "sha256": "c3fd19039e976dcb639b830d5947f398e321d2317889df868f6eecd238e1176d"
+    },
+    {
+      "path": "snapshots/main/templates/desktop-app/web/package-lock.json.inert.snapshot",
+      "bytes": 130655,
+      "sha256": "56553b7df7d73417629ddb7459df06c0ff1274a745f35bfedde8d28376714d33"
+    },
+    {
+      "path": "snapshots/main/templates/modern-app/web/package-lock.json.inert.snapshot",
+      "bytes": 28768,
+      "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+    },
+    {
+      "path": "snapshots/main/demos/workbench/web/package-lock.json.inert.snapshot",
+      "bytes": 167788,
+      "sha256": "74ff68042f8b210cac922db10969a7acb0d13ae2ab1b9f7aa1178e7c901376ac"
+    },
+    {
+      "path": "snapshots/main/tests/acceptance/package-lock.json.inert.snapshot",
+      "bytes": 122928,
+      "sha256": "a52a6433c859865dd884101e3340723afb4492e4ba89bec31b7158bdd7701a66"
+    },
+    {
+      "path": "snapshots/main/benchmarks/hosts/electron/package-lock.json.inert.snapshot",
+      "bytes": 5786,
+      "sha256": "db51b0767e5a03de455d8dae6beb3719ec3ab60f458346caa6fb460c190307f4"
+    },
+    {
+      "path": "snapshots/entrypoints/tools/Build.ps1.inert.snapshot",
+      "bytes": 3886,
+      "sha256": "db9a923575a7158a642995cb91391604ffc8051861fa575b0005f68771c38143"
+    },
+    {
+      "path": "snapshots/entrypoints/tools/New-Project.ps1.inert.snapshot",
+      "bytes": 4123,
+      "sha256": "e29339cee59700b12a7131be4e2045f935c097f0586b4c19506fbb5d543514fe"
+    },
+    {
+      "path": "snapshots/entrypoints/tools/Package.ps1.inert.snapshot",
+      "bytes": 1921,
+      "sha256": "23a5cbb600fd9c2ae4781b77d130bc710aa770283f7eab3b9e893e8cb851be01"
+    },
+    {
+      "path": "snapshots/entrypoints/tools/Package-Applications.ps1.inert.snapshot",
+      "bytes": 2251,
+      "sha256": "2c2cbd9983847244f2ac541658c0fa755d75f39109c0e5cb164280e2272f3f64"
+    },
+    {
+      "path": "snapshots/entrypoints/tools/Verify-Release.ps1.inert.snapshot",
+      "bytes": 14751,
+      "sha256": "af4054ef03d816125ad61d77d633c5893dbc0f41034a3c57c3bd4d7b7ca6644e"
+    },
+    {
+      "path": "snapshots/entrypoints/tools/Test.ps1.inert.snapshot",
+      "bytes": 5909,
+      "sha256": "1782b937362e64c28b62f0532f77a2b79bbbfbaa30496d60f1def47fd1837a93"
+    },
+    {
+      "path": "snapshots/entrypoints/tools/Test-Acceptance.ps1.inert.snapshot",
+      "bytes": 4751,
+      "sha256": "6448a65379cfddbde0764368c31bcf7862e8807c83cef01f6e72ea80c9c1547f"
+    },
+    {
+      "path": "snapshots/entrypoints/tools/Collect-Verification.cjs.inert.snapshot",
+      "bytes": 10125,
+      "sha256": "41d93b754586c2f9188269c905bd23b0e801b79c3db762405c7fc717cbefc4f7"
+    },
+    {
+      "path": "snapshots/entrypoints/tools/sdk/soui-sdk.cjs.inert.snapshot",
+      "bytes": 12595,
+      "sha256": "40e50d78f8a7296301d17d1f09c779b422fd40d8a28f419da1d869efb55f7ebb"
+    },
+    {
+      "path": "snapshots/entrypoints/tools/internal/source-archive.cjs.inert.snapshot",
+      "bytes": 7529,
+      "sha256": "00fff214745a50e3ca71420b6ece4d24f5dec9b307514b7f6c3b1a3f9c06fe8b"
+    },
+    {
+      "path": "snapshots/entrypoints/tools/internal/release-verification.cjs.inert.snapshot",
+      "bytes": 16151,
+      "sha256": "be4acced46ec7078af7fc1ff6a47b6477f99f28f856c4b85105c6d5588b9b9cd"
+    },
+    {
+      "path": "snapshots/entrypoints/tests/acceptance/verify-upgrade.cjs.inert.snapshot",
+      "bytes": 4624,
+      "sha256": "b23ed5405a27cfc9ca00d5ff99ff7219c3ca0d3ca5cfcd01cf0e49c04f281332"
+    },
+    {
+      "path": "snapshots/entrypoints/.github/dependabot.yml.inert.snapshot",
+      "bytes": 1451,
+      "sha256": "988dab4b5c61d9d9b27da2a32ec93aac0dec82f69e3aabb358cacf28cf44d8ef"
+    },
+    {
+      "path": "snapshots/entrypoints/verification/production-validation/preview11-real-renewal-build-2026-09-26/raw/Build.ps1.inert.snapshot",
+      "bytes": 9469,
+      "sha256": "c2a726de9de951cb883064082112deae82638d7b8b2510dfab9acfe44610ecef"
+    },
+    {
+      "path": "snapshots/entrypoints/verification/production-validation/preview11-real-renewal-v2-build-2026-09-26/raw/Build.ps1.inert.snapshot",
+      "bytes": 9469,
+      "sha256": "c2a726de9de951cb883064082112deae82638d7b8b2510dfab9acfe44610ecef"
+    },
+    {
+      "path": "snapshots/entrypoints/verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/Prepare.cjs.inert.snapshot",
+      "bytes": 7084,
+      "sha256": "a26064821742bb887d70baf785270af18b91adfeb8686432612bb9858567c104"
+    },
+    {
+      "path": "snapshots/entrypoints/verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/Run-Stage.cjs.inert.snapshot",
+      "bytes": 5742,
+      "sha256": "bb99264c5b419e2e7f6b4182786ea6fe80d7d024fa03670caa36af26630a098c"
+    },
+    {
+      "path": "snapshots/entrypoints/verification/production-validation/preview11-upgrade-interruption-2026-09-26/raw/old-generator/tools/New-Project.ps1.inert.snapshot",
+      "bytes": 3641,
+      "sha256": "296fcc6646988d049533eb4018b31de9e2ba8d028adeffe3471e3fccd19a0d9e"
+    },
+    {
+      "path": "queries/main-after.response.json",
+      "bytes": 425420,
+      "sha256": "2ae2d840ba5e6bcfd21fdbbd83c72f61d94d3e11282dde0c1425733b6d7870c4"
+    },
+    {
+      "path": "queries/main-after.stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3749,
+      "sha256": "18de4714012e9c5fadc1c11d247ee56945b51fc300f8eaff5753af0fe74f3dd4"
+    },
+    {
+      "path": "Verify-Evidence.cjs",
+      "bytes": 6052,
+      "sha256": "fbab9c6c55d54a308ceea17d536f1a8be5f487cd041447073d63f9442c91e849"
+    }
+  ],
+  "maintenanceDocument": {
+    "path": "docs/maintenance/historical-source-map-js-evidence.md",
+    "bytes": 13964,
+    "sha256": "8faf805abc497806ebb49f19f275d03cb3ff9afec0aabb4af12008a178126b6d"
+  },
+  "sourceSnapshotBindingAlgorithm": "sha256(UTF8(JSON.stringify(sourceSnapshots.map(s => ({root:s.originalRoot,path:s.originalPath,bytes:s.originalBytes,sha256:s.originalSha256})))))",
+  "hashVerification": {
+    "program": "C:/nvm4w/nodejs/node.exe",
+    "args": [
+      "F:\\work\\sm05\\verification\\production-validation\\0.5-maintenance-2026-10-08\\Verify-Evidence.cjs",
+      "--source-root",
+      "."
+    ],
+    "cwd": "F:/work/sm05",
+    "startedAt": "2026-10-08T13:21:30.880Z",
+    "finishedAt": "2026-10-08T13:21:31.039Z",
+    "exitCode": 0,
+    "signal": null,
+    "stdout": "{\n  \"schema\": \"soui.maintenance-hash-check/v1\",\n  \"evidenceConsistent\": true,\n  \"storedFilesVerified\": 48,\n  \"sourceSnapshotsVerified\": 32,\n  \"historicalManifestEntriesVerified\": 11,\n  \"liveHistoricalLocksVerified\": 11,\n  \"activeLockSnapshotsVerified\": 10,\n  \"mainLockSnapshotsVerified\": 6,\n  \"sourceSnapshotBindingSha256\": \"3f5e3abcac8e85fec82c218b672614a6c0720837a1ff94b274d1b1d1ec0e7c3f\",\n  \"freshNpmAuditExecuted\": false,\n  \"historicalFixtureExecuted\": false,\n  \"nativeBuildExecuted\": false,\n  \"guiExecuted\": false,\n  \"githubMutationExecuted\": false\n}\n",
+    "stdoutBytes": 556,
+    "stdoutSha256": "564fd8883f6e4d8040f1dc031e1e12b8527c4e7d70e360526077cdc1e09871e2",
+    "stderrBytes": 0,
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "purpose": "Read-only stored-file, manifest, API/source binding and original archived lock byte consistency; not runtime acceptance."
+  }
+}

@@ -4,6 +4,9 @@
 #include <soui/runtime/services/desktop/window_commands.h>
 #include "bridge_pending_script.h"
 #include "bridge_request_budget.h"
+#ifdef SOUI_PERFORMANCE_DIAGNOSTICS
+#include "diagnostic_result.h"
+#endif
 
 #include <algorithm>
 #include <cctype>
@@ -1059,22 +1062,18 @@ host_result dynamic_miniblink_adapter::request_memory_recovery() {
 #ifdef _WIN32
   if (engine_thread_ == nullptr)
     return failure("E_NOT_STARTED", "The Miniblink engine thread is not running.");
-  host_result result = failure("E_ENGINE_THREAD", "The memory recovery request did not reach the Miniblink owner thread.");
-  const bool invoked = engine_thread_->invoke([&result] {
+  return detail::invoke_diagnostic_result(*engine_thread_, [] {
     using gc_timer = void(__cdecl*)(void*, long);
     const auto module = GetModuleHandleW(L"node.dll");
     const auto gc = reinterpret_cast<gc_timer>(GetProcAddress(module, "wkeGC"));
     const auto resource_gc = reinterpret_cast<gc_timer>(GetProcAddress(module, "wkeSetResourceGc"));
     if (!gc || !resource_gc) {
-      result = failure("E_GC_API_MISSING", "The Miniblink recovery timer APIs are unavailable.");
-      return;
+      return failure("E_GC_API_MISSING", "The Miniblink recovery timer APIs are unavailable.");
     }
     gc(nullptr, 1);
     resource_gc(nullptr, 1);
-    result = success("Miniblink recovery timers requested on the engine owner thread.");
-  });
-  return invoked ? result
-                 : failure("E_ENGINE_THREAD", "The memory recovery request timed out on the Miniblink owner thread.");
+    return success("Miniblink recovery timers requested on the engine owner thread.");
+  }, failure("E_ENGINE_THREAD", "The memory recovery request timed out on the Miniblink owner thread."));
 #else
   return failure("E_UNSUPPORTED", "Memory recovery diagnostics require Windows.");
 #endif

@@ -16,6 +16,29 @@ function tracked(root) {
     return {path: row.slice(tab + 1), normalization: !/attr\/-text(?:\s|$)/.test(flags) && /^i\/(lf|crlf|mixed)\s/.test(flags) ? 'lf' : 'none'};
   }).filter(file => file.path !== manifestName).sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
 }
+function unpackedFiles(root, files) {
+  const frozenCaches = new Set();
+  for (const file of files) {
+    let prefix = '';
+    for (const part of file.path.split('/')) {
+      prefix = prefix ? `${prefix}/${part}` : part;
+      if (id.skipped.has(part)) frozenCaches.add(prefix);
+    }
+  }
+  return id.walk(root, '', (name, leaf) => {
+    if (name === manifestName) return true;
+    if (!id.skipped.has(leaf)) return false;
+    // Git can track immutable evidence under output-like names. Scan that
+    // entire subtree so undeclared descendants cannot hide as nested caches.
+    for (let ancestor = name; ancestor;) {
+      if (frozenCaches.has(ancestor)) return false;
+      const slash = ancestor.lastIndexOf('/');
+      ancestor = slash < 0 ? '' : ancestor.slice(0, slash);
+    }
+    id.safePath(root, name); // An excluded cache entry must not be a link.
+    return true;
+  });
+}
 function checkFileSet(root, files) {
   const entries = tracked(root);
   const expected = files.map(f => f.path).sort();
@@ -26,7 +49,7 @@ function checkFileSet(root, files) {
       .filter(name => name && name !== manifestName);
     if (extra.length) throw new Error(`Untracked source files: ${extra.slice(0, 5).join(', ')}`);
   } else {
-    names = id.walk(root, '', (name, leaf) => name === manifestName || id.skipped.has(leaf)).sort();
+    names = unpackedFiles(root, files).sort();
   }
   if (JSON.stringify(names) !== JSON.stringify(expected)) throw new Error('Source file set differs from manifest');
 }

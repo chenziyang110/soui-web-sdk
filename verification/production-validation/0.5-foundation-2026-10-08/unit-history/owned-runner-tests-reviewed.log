@@ -1,0 +1,60 @@
+✔ owned runner preserves Unicode, spaces, quotes, empty args and trailing slashes (608.9996ms)
+✔ native nonzero exit is retained as failure even when the Job closes normally (175.7828ms)
+✔ timeout closes all three owned generations and leaves an unrelated process alive (1661.815ms)
+✖ a root that exits zero cannot hide a still-running detached descendant (273.1925ms)
+✔ owned descendants may finish naturally within the explicit drain budget (445.5694ms)
+✔ an existing report or invalid limits cannot launch a child or overwrite evidence (332.5079ms)
+✖ real enclosing Job restrictions reject assignment and prove the suspended child was stopped (1170.2149ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 5
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4808.6854
+
+✖ failing tests:
+
+test at tests\benchmark\owned-process-runner.test.cjs:109:1
+✖ a root that exits zero cannot hide a still-running detached descendant (273.1925ms)
+  AssertionError [ERR_ASSERTION]: Read member image failed: 5
+  
+  
+  125 !== 124
+  
+      at TestContext.<anonymous> (F:\work\sm05\tests\benchmark\owned-process-runner.test.cjs:117:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 125,
+    expected: 124,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\benchmark\owned-process-runner.test.cjs:159:1
+✖ real enclosing Job restrictions reject assignment and prove the suspended child was stopped (1170.2149ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 125
+  
+      at TestContext.<anonymous> (F:\work\sm05\tests\benchmark\owned-process-runner.test.cjs:169:12)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 125,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

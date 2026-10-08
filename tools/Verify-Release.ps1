@@ -2,10 +2,12 @@
 param(
   [string]$ExpectedVersion='',
   [string]$PreviousPackage='',
-  [string]$WorkspaceParent=''
+  [string]$WorkspaceParent='',
+  [switch]$FreshConfigure
 )
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+. (Join-Path $PSScriptRoot 'internal/CMake-Configure.ps1')
 $version=([IO.File]::ReadAllText((Join-Path $root 'VERSION'))).Trim()
 if(-not $ExpectedVersion){$ExpectedVersion=$version}
 if($version -ne $ExpectedVersion){throw "Freeze VERSION at $ExpectedVersion before release verification (found $version)."}
@@ -31,8 +33,24 @@ function Invoke-Checked([string]$Executable,[string[]]$Arguments,[string]$Log){
 }
 function Build-And-Smoke([string]$Project,[string]$Phase){
   Write-Output "Building independent project: $Phase"
-  Invoke-Checked $powershell @('-NoProfile','-ExecutionPolicy','Bypass','-File',
-    (Join-Path $Project 'tools/Build.ps1'),'-Architecture','x64','-Configuration','Release') (Join-Path $output "$Phase-build.log")
+  $buildEntry=Join-Path $Project 'tools/Build.ps1'
+  $refresh=@()
+  if($FreshConfigure){
+    if((Get-Command -Name $buildEntry -ErrorAction Stop).Parameters.ContainsKey('FreshConfigure')){
+      $refresh=@('-FreshConfigure')
+    } else {
+      # Frozen historical scripts cannot accept the new switch or version=
+      # platform. Validate ownership using today's helper, then initialize
+      # their original platform with the same actual-SDK assertion.
+      $legacyConfigure=@(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $Project -SourceDirectory $Project `
+        -BuildDirectory (Join-Path $Project 'out/x64') -Architecture x64 -FreshConfigure)
+      $legacyConfigure[[Array]::IndexOf($legacyConfigure,'-A')+1]='x64'
+      Write-Output "Explicitly refreshing historical configuration: $Phase; selected SDK is checked in the configure log"
+      Invoke-Checked $cmake $legacyConfigure (Join-Path $output "$Phase-legacy-configure.log")
+    }
+  }
+  Invoke-Checked $powershell (@('-NoProfile','-ExecutionPolicy','Bypass','-File',
+    $buildEntry,'-Architecture','x64','-Configuration','Release')+$refresh) (Join-Path $output "$Phase-build.log")
   $evidence=Join-Path $Project 'tools/internal/build-evidence.cjs'
   $metadataText=@(& $node $evidence begin-smoke x64 Release)
   if($LASTEXITCODE -ne 0){throw 'Generated project build identity failed.'}
@@ -209,11 +227,13 @@ foreach($relative in @(Invoke-Json @('copy-files',$runFile))){
 }
 Build-And-Smoke $relocated 'relocation'
 Write-Output 'Building installed SDK and external CMake consumer'
-Invoke-Checked $powershell @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $root 'tools/Build.ps1'),
-  '-Architecture','x64','-Configuration','Release','-SdkOnly','-Install') (Join-Path $output 'installed-sdk-build.log')
+$refresh=if($FreshConfigure){@('-FreshConfigure')}else{@()}
+Invoke-Checked $powershell (@('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $root 'tools/Build.ps1'),
+  '-Architecture','x64','-Configuration','Release','-SdkOnly','-Install')+$refresh) (Join-Path $output 'installed-sdk-build.log')
 $consumer=Join-Path $output 'consumer'
-Invoke-Checked $cmake @('-S',(Join-Path $root 'tests/package-consumer'),'-B',$consumer,'-G','Visual Studio 17 2022','-A','x64',
-  '-DCMAKE_SYSTEM_VERSION=10.0.19041.0',"-DSouiSdk_DIR=$(Join-Path $root 'out/install/x64/lib/cmake/SouiSdk')") (Join-Path $output 'consumer-configure.log')
+$configure=@(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $root -SourceDirectory (Join-Path $root 'tests/package-consumer') `
+  -BuildDirectory $consumer -Architecture x64 -FreshConfigure:$FreshConfigure)
+Invoke-Checked $cmake ($configure+@("-DSouiSdk_DIR=$(Join-Path $root 'out/install/x64/lib/cmake/SouiSdk')")) (Join-Path $output 'consumer-configure.log')
 Invoke-Checked $cmake @('--build',$consumer,'--config','Release','--parallel','2') (Join-Path $output 'consumer-build.log')
 Invoke-Json @('consumer',$runFile) | ConvertTo-Json -Compress
 Invoke-Json @('complete',$runFile) | ConvertTo-Json -Depth 12

@@ -1,0 +1,10 @@
+$ErrorActionPreference='Stop'
+. 'F:\work\soui-05-source-validation-b68cc42e-ad9c-49a7-8e5b-20ac5ef05a12\relocated-source\tools\internal\CMake-Configure.ps1'
+$consumerWorkspace='F:\work\soui-05-source-validation-b68cc42e-ad9c-49a7-8e5b-20ac5ef05a12\external-consumer-source-x86'
+$consumerBuild='F:\work\soui-05-source-validation-b68cc42e-ad9c-49a7-8e5b-20ac5ef05a12\external-consumer-source-x86\out\consumer-x86'
+$cmake=(Get-Command cmake.exe -ErrorAction Stop).Source
+$configureArguments=@(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $consumerWorkspace -SourceDirectory $consumerWorkspace -BuildDirectory $consumerBuild -Architecture 'x86')
+& $cmake @configureArguments '-DCMAKE_PREFIX_PATH=F:\work\soui-05-source-validation-b68cc42e-ad9c-49a7-8e5b-20ac5ef05a12\relocated-installed-x86'
+if($LASTEXITCODE -ne 0){exit $LASTEXITCODE}
+& $cmake --build $consumerBuild --config Release --parallel 2
+exit $LASTEXITCODE

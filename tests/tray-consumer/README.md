@@ -1,5 +1,7 @@
 # 安装后公共托盘、菜单与快捷键 SDK 独立消费者
 
+直接 CMake 示例按 3.27 以上准确选择 Windows SDK 10.0.19041.0；3.24–3.26 改用 `-A x64`（x86 为 `-A Win32`），仍保留完整引号的 `-DCMAKE_SYSTEM_VERSION=10.0.19041.0`。已有生成平台不同的目录请选新目录，或检查其所有权后显式 `--fresh`；不能在旧缓存中直接切换平台。
+
 本目录通过安装后的 `find_package(SouiSdk 0.3.0 EXACT)` 和 `Soui::Sdk` 编译，只引用公开头文件。应用自己创建隐藏顶层 HWND 并提供消息循环，调用公共 `tray_service`、`menu_service` 和 `global_shortcut`；不创建 WebView，不依赖模板、Workbench、私有 SDK 头文件或内核 DLL。仍需要对应架构的受支持 MSVC 运行库。preview.10 的输入与行为不同于 preview.9，旧短测不能证明本版通过。
 
 程序必须显式选择一个模式，不接受其他参数：
@@ -24,13 +26,13 @@ New-Item -ItemType Directory -Path $suite | Out-Null
 Copy-Item -LiteralPath tests/tray-consumer -Destination (Join-Path $suite 'consumer-source') -Recurse
 cmake --install out/sdk-x64 --config Release --prefix "$suite/install"
 if ($LASTEXITCODE -ne 0) { throw 'SDK install failed' }
-cmake -S "$suite/consumer-source" -B "$suite/build" -G 'Visual Studio 17 2022' -A x64 '-DCMAKE_SYSTEM_VERSION=10.0.19041.0' "-DSouiSdk_DIR=$suite/install/lib/cmake/SouiSdk"
+cmake -S "$suite/consumer-source" -B "$suite/build" -G 'Visual Studio 17 2022' -A 'x64,version=10.0.19041.0' '-DCMAKE_SYSTEM_VERSION=10.0.19041.0' "-DSouiSdk_DIR=$suite/install/lib/cmake/SouiSdk"
 if ($LASTEXITCODE -ne 0) { throw 'Independent consumer configure failed' }
 cmake --build "$suite/build" --config Release --parallel 2
 if ($LASTEXITCODE -ne 0) { throw 'Independent consumer build failed' }
 ```
 
-x86 使用其独立安装包 `out/sdk-x86`、`-A Win32` 和相同的 `-DCMAKE_SYSTEM_VERSION=10.0.19041.0`，保留另一套新目录。不能把一个架构的安装结果用于另一架构。
+x86 使用其独立安装包 `out/sdk-x86`、`-A 'Win32,version=10.0.19041.0'`（3.24–3.26 为 `-A Win32`）和相同的 `'-DCMAKE_SYSTEM_VERSION=10.0.19041.0'`，保留另一套新目录。不能把一个架构的安装结果用于另一架构。
 
 ## 本地验收边界
 
