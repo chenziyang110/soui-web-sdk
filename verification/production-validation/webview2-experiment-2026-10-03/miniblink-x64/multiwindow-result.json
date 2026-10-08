@@ -1,0 +1,253 @@
+{
+  "schema": "soui.acceptance-run/v1",
+  "runId": "0bfbb3f0-9260-4832-bec1-07af49f7914d",
+  "config": {
+    "mode": "multiwindow",
+    "cycles": 10,
+    "warmup": 0,
+    "settleMs": 500,
+    "timeoutMs": 20000
+  },
+  "consumerBuildId": "a045423c-cace-4b3f-8526-bebdc3e39cb3",
+  "sourceSha256": "d48bfb5b8901e5bbf7ce1b99928a26856cc26dc8746efa40cbbd4c998c46b868",
+  "payloadSha256": "67d036a99016ab272c065dd4a157160aaeb3dc956efe2a35f11954e462df2bfa",
+  "outcome": {
+    "pid": 292,
+    "exitCode": 0,
+    "signal": null,
+    "timedOut": false,
+    "timeoutReason": null,
+    "spawnError": null,
+    "processTimeoutMs": 2162000,
+    "timeoutDiagnostic": null
+  },
+  "passed": true,
+  "releaseReady": false,
+  "finishedAt": "2026-10-02T16:58:18.233Z",
+  "logSha256": "fad00196ee751979366f5f2f6337d259a107ebc1e9ef7055db4efa26e0732af4",
+  "validation": {
+    "completedSteps": 104,
+    "measuredCycles": 10,
+    "samples": [
+      {
+        "event": "sample",
+        "elapsedMs": 77,
+        "phase": "process",
+        "cycle": 0,
+        "privateBytes": 1380352,
+        "workingSetBytes": 7479296,
+        "handles": 134,
+        "threads": 4,
+        "gdiObjects": 0,
+        "userObjects": 2,
+        "windowClasses": {
+          "OleMainThreadWndClass": 1
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 3924,
+        "phase": "cycle",
+        "cycle": 1,
+        "privateBytes": 50896896,
+        "workingSetBytes": 66322432,
+        "handles": 335,
+        "threads": 14,
+        "gdiObjects": 37,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 7998,
+        "phase": "cycle",
+        "cycle": 2,
+        "privateBytes": 75407360,
+        "workingSetBytes": 84692992,
+        "handles": 371,
+        "threads": 15,
+        "gdiObjects": 37,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 12064,
+        "phase": "cycle",
+        "cycle": 3,
+        "privateBytes": 86335488,
+        "workingSetBytes": 98664448,
+        "handles": 407,
+        "threads": 15,
+        "gdiObjects": 37,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 16027,
+        "phase": "cycle",
+        "cycle": 4,
+        "privateBytes": 88686592,
+        "workingSetBytes": 102490112,
+        "handles": 443,
+        "threads": 16,
+        "gdiObjects": 36,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 19923,
+        "phase": "cycle",
+        "cycle": 5,
+        "privateBytes": 91287552,
+        "workingSetBytes": 105541632,
+        "handles": 479,
+        "threads": 16,
+        "gdiObjects": 36,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 23820,
+        "phase": "cycle",
+        "cycle": 6,
+        "privateBytes": 119836672,
+        "workingSetBytes": 117432320,
+        "handles": 515,
+        "threads": 16,
+        "gdiObjects": 35,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 27751,
+        "phase": "cycle",
+        "cycle": 7,
+        "privateBytes": 132448256,
+        "workingSetBytes": 130625536,
+        "handles": 551,
+        "threads": 16,
+        "gdiObjects": 36,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 31741,
+        "phase": "cycle",
+        "cycle": 8,
+        "privateBytes": 148705280,
+        "workingSetBytes": 147226624,
+        "handles": 589,
+        "threads": 16,
+        "gdiObjects": 35,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 35439,
+        "phase": "cycle",
+        "cycle": 9,
+        "privateBytes": 155459584,
+        "workingSetBytes": 154411008,
+        "handles": 598,
+        "threads": 17,
+        "gdiObjects": 35,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 39517,
+        "phase": "cycle",
+        "cycle": 10,
+        "privateBytes": 109481984,
+        "workingSetBytes": 109641728,
+        "handles": 634,
+        "threads": 17,
+        "gdiObjects": 35,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 40126,
+        "phase": "closed",
+        "cycle": 11,
+        "privateBytes": 109457408,
+        "workingSetBytes": 109617152,
+        "handles": 634,
+        "threads": 17,
+        "gdiObjects": 35,
+        "userObjects": 9,
+        "windowClasses": {
+          "IME": 1,
+          "MiniBlinkTimerWindowClass": 1,
+          "OleMainThreadWndClass": 2
+        }
+      },
+      {
+        "event": "sample",
+        "elapsedMs": 40403,
+        "phase": "runtime-closed",
+        "cycle": 11,
+        "privateBytes": 10878976,
+        "workingSetBytes": 40808448,
+        "handles": 269,
+        "threads": 13,
+        "gdiObjects": 13,
+        "userObjects": 3,
+        "windowClasses": {
+          "OleMainThreadWndClass": 1
+        }
+      }
+    ],
+    "resourceGate": "not-evaluated",
+    "releaseReady": false
+  }
+}

@@ -8,13 +8,13 @@ warning: in the working copy of 'source-manifest.json', LF will be replaced by C
 warning: in the working copy of 'tools/test.ps1', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
 warning: in the working copy of 'a.txt', LF will be replaced by CRLF the next time Git touches it
-✔ source snapshot excludes ignored cache, works with CRLF checkout and without Git (3579.1536ms)
-✔ source validation rejects missing, extra, ambiguous and escaping files (1342.9554ms)
-✔ payload evidence detects equal-length page edits, new files and missing DLLs (43.5931ms)
-✔ deployment replaces stale Web assets and preserves app data outside resources (35.1058ms)
-✔ linked resource directories are rejected before deployment changes (8.8326ms)
-✔ SDK packages are identical across source EOLs but installed bytes remain pinned (751.3605ms)
-✔ build and smoke receipts fail closed after changes, empty runs or legacy successes (366.0931ms)
+✔ source snapshot excludes ignored cache, works with CRLF checkout and without Git (3154.0888ms)
+✔ source validation rejects missing, extra, ambiguous and escaping files (1362.3349ms)
+✔ payload evidence detects equal-length page edits, new files and missing DLLs (27.4481ms)
+✔ deployment replaces stale Web assets and preserves app data outside resources (89.339ms)
+✔ linked resource directories are rejected before deployment changes (12.0136ms)
+✔ SDK packages are identical across source EOLs but installed bytes remain pinned (502.3245ms)
+✔ build and smoke receipts fail closed after changes, empty runs or legacy successes (287.8557ms)
 ℹ tests 7
 ℹ suites 0
 ℹ pass 7
@@ -22,4 +22,4 @@ warning: in the working copy of 'a.txt', LF will be replaced by CRLF the next ti
 ℹ cancelled 0
 ℹ skipped 0
 ℹ todo 0
-ℹ duration_ms 6238.8553
+ℹ duration_ms 5564.3899

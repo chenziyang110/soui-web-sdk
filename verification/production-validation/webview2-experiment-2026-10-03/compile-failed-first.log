@@ -1,0 +1,45 @@
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  1>Checking Build System
+  Building Custom Rule <SDK_ROOT>/out/webview2/81c2df7d-217b-40eb-93b5-3c79794d708b/source/CMakeLists.txt
+  main.cpp
+  webview2_adapter.cpp
+  正在生成代码...
+<SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\source\webview2_adapter.cpp(91,23): error C3861: “BCryptHash”: 找不到标识符 [<SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\native\SouiWebView2Consumer.vcxproj]
+<SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\source\webview2_adapter.cpp(491,1): error C2440: “<function-style-cast>”: 无法从“initializer list”转换为“soui::experiment::webview2_adapter::prepare_async::<lambda_8240221fa634ea02c603e0188203ed15>::()::<lambda_b554b01d81fd02630e35874d18ec4875>” [<SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\native\SouiWebView2Consumer.vcxproj]
+      <SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\source\webview2_adapter.cpp(491,1):
+      “soui::experiment::webview2_adapter::prepare_async::<lambda_8240221fa634ea02c603e0188203ed15>::()::<lambda_b554b01d81fd02630e35874d18ec4875>::<lambda_b554b01d81fd02630e35874d18ec4875>”: 没有重载函数可以转换所有参数类型
+          <SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\source\webview2_adapter.cpp(491,1):
+          可能是“soui::experiment::webview2_adapter::prepare_async::<lambda_8240221fa634ea02c603e0188203ed15>::()::<lambda_b554b01d81fd02630e35874d18ec4875>::<lambda_b554b01d81fd02630e35874d18ec4875>(HRESULT &,ICoreWebView2Environment *&,const std::weak_ptr<_Ty> &,std::function<void (soui::sdk::host_result)> &)”
+          with
+          [
+              _Ty=soui::experiment::webview2_adapter::state
+          ]
+              <SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\source\webview2_adapter.cpp(491,1):
+              “soui::experiment::webview2_adapter::prepare_async::<lambda_8240221fa634ea02c603e0188203ed15>::()::<lambda_b554b01d81fd02630e35874d18ec4875>::<lambda_b554b01d81fd02630e35874d18ec4875>(HRESULT &,ICoreWebView2Environment *&,const std::weak_ptr<_Ty> &,std::function<void (soui::sdk::host_result)> &)”: 无法将参数 4 从“const std::function<void (soui::sdk::host_result)>”转换为“std::function<void (soui::sdk::host_result)> &”
+          with
+          [
+              _Ty=soui::experiment::webview2_adapter::state
+          ]
+                  <SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\source\webview2_adapter.cpp(491,1):
+                  转换丢失限定符
+          <SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\source\webview2_adapter.cpp(491,1):
+          尝试匹配参数列表“(HRESULT, ICoreWebView2Environment *, const std::weak_ptr<_Ty>, const std::function<void (soui::sdk::host_result)>)”时
+          with
+          [
+              _Ty=soui::experiment::webview2_adapter::state
+          ]
+
+<SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\source\webview2_adapter.cpp(465,20): error C2672: “boundary”: 未找到匹配的重载函数 [<SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\native\SouiWebView2Consumer.vcxproj]
+      <SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\source\webview2_adapter.cpp(167,9):
+      可能是“HRESULT soui::experiment::`anonymous-namespace'::boundary(const std::weak_ptr<_Ty> &,Function) noexcept”
+          with
+          [
+              _Ty=soui::experiment::webview2_adapter::state
+          ]
+          <SDK_ROOT>\out\webview2\81c2df7d-217b-40eb-93b5-3c79794d708b\source\webview2_adapter.cpp(465,20):
+          “HRESULT soui::experiment::`anonymous-namespace'::boundary(const std::weak_ptr<_Ty> &,Function) noexcept”: 应输入 2 个参数，却提供了 1 个
+          with
+          [
+              _Ty=soui::experiment::webview2_adapter::state
+          ]

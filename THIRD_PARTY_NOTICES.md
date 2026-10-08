@@ -10,6 +10,7 @@ Retain upstream license and copyright files under third_party/licenses/ and the 
 | zlib 1.2.11 | Source and runtime dependency | zlib license retained in source |
 | Microsoft VC runtime / UCRT | App-local binaries | Microsoft redistribution terms; compiler, Windows SDK and OS source are not included |
 | React / Vue / Vite / TypeScript and dependencies | Application source and npm lockfiles | Consult exact resolved npm package licenses; retain notices with distributed tooling/assets |
+| Tailwind CSS 3.4.17 generated utility rules | Static Demo stylesheet; build plugin removed | MIT; original copyright and license retained in `third_party/licenses/tailwindcss-3.4.17-LICENSE.txt` |
 
 The x86 kernel imports Windows msvcp60.dll; this delivery does not redistribute that OS file. Source snapshots include provenance in SOURCE-MANIFEST.json. The source SDK includes this notice and `third_party/licenses/`; CMake installation copies them to `share/SouiSdk/`, and application deployment copies them to `resources/legal/`. Those copies are current materials for review, not a complete inventory of the runtime's linked components.
 

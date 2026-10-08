@@ -1,0 +1,36 @@
+
+> soui-miniblink-ai-web@0.1.0 prebuild
+> node ../tools/web-build/generate-component-loaders.cjs
+
+Generated 82 explicit component loaders
+
+> soui-miniblink-ai-web@0.1.0 build
+> vite build && node ../tools/web-build/create-miniblink-entry.js dist
+
+vite v6.4.3 building for production...
+transforming...
+✓ 48 modules transformed.
+npm.cmd : ✗ Build failed in 649ms
+At <SDK_ROOT>\tools\Build.ps1:39 char:5
++     & $npm.Source --prefix $web run build *> (Join-Path $output ($rel ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (✗ Build failed in 649ms:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+
+error during build:
+[commonjs--resolver] [plugin soui-vue-css-cache-compat] node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js:
+Vue runtime-dom fingerprint changed: review the Miniblink CSS cache compatibility patch before building.
+file: <SDK_ROOT>/demos/workbench/web/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js
+    at getRollupError (file:///<SDK_ROOT>/demos/workbench/web/node_modules/rollup/dist/es/shared/parseAs
+t.js:317:41)
+    at error (file:///<SDK_ROOT>/demos/workbench/web/node_modules/rollup/dist/es/shared/parseAst.js:313:
+42)
+    at Object.error (file:///<SDK_ROOT>/demos/workbench/web/node_modules/rollup/dist/es/shared/node-entr
+y.js:22539:20)
+    at Object.error (file:///<SDK_ROOT>/demos/workbench/web/node_modules/rollup/dist/es/shared/node-entr
+y.js:21591:42)
+    at Object.transform (file:///<SDK_ROOT>/demos/workbench/web/node_modules/.vite-temp/vite.config.ts.t
+imestamp-1791425673303-fcdb55ff3d62b.mjs:24:14)
+    at Object.handler (file:///<SDK_ROOT>/demos/workbench/web/node_modules/vite/dist/node/chunks/dep-Dm0
+c1Wj2.js:46667:15)
+    at file:///<SDK_ROOT>/demos/workbench/web/node_modules/rollup/dist/es/shared/node-entry.js:22861:40

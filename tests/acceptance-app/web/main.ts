@@ -22,6 +22,25 @@ async function run() {
   app.textContent='检查窗口身份…';
   const identity=await client.call('acceptance.echo',{});
   if(identity.window!==expectedWindow)throw new Error('Message reached the wrong native window.');
+  app.textContent='检查当前窗口的原生能力发现…';
+  const expectedCapabilities:{[name:string]:string}={
+    'bridge.describe':'bridge.describe', 'bridge.probe.report':'bridge.probe',
+    'task.start':'task.start', 'task.query':'task.query', 'task.cancel':'task.cancel',
+    'task.subscribe':'task.subscribe', 'task.unsubscribe':'task.subscribe',
+    'acceptance.echo':'acceptance.echo', 'acceptance.ready':'acceptance.ready',
+  };
+  if(identity.bridgeChecks)
+    for(const name of ['acceptance.reflect','acceptance.delay','acceptance.fail','acceptance.large'])
+      expectedCapabilities[name]=name;
+  const expectedNames=Object.keys(expectedCapabilities).sort();
+  const catalog=await client.discover({pageSize:2,maxMethods:32});
+  if(catalog.methods.length!==expectedNames.length || catalog.methods.some((method,index)=>
+    method.name!==expectedNames[index] || method.capability!==expectedCapabilities[method.name]))
+    throw new Error('Discovered methods differ from this window\'s registered capabilities.');
+  const firstPage=await client.describe({cursor:0,limit:2});
+  if(firstPage.sdkVersion!==catalog.sdkVersion || firstPage.nextCursor!==2 ||
+    JSON.stringify(firstPage.methods)!==JSON.stringify(catalog.methods.slice(0,2)))
+    throw new Error('Repeated discovery changed within the active document session.');
   if(identity.bridgeChecks) {
     app.textContent='检查 32 并发…';
     const results=await Promise.all(Array.from({length:32},(_,index)=>client.call('acceptance.reflect',{index})));
@@ -100,10 +119,12 @@ async function run() {
     // Capacity and error recovery must leave the same document usable.
     if((await client.call('acceptance.echo',{})).window!==expectedWindow || client.pendingRequestCount!==0)
       throw new Error('Native connection did not recover after failures.');
+    if(JSON.stringify(await client.discover({pageSize:2,maxMethods:32}))!==JSON.stringify(catalog))
+      throw new Error('Capability discovery changed after task, overload or error recovery.');
   }
   app.textContent='回报页面就绪…';
   await client.call('bridge.probe.report',{ready:true});
   await client.call('acceptance.ready',{});
-  app.textContent=identity.bridgeChecks ? '公共 SDK 连接、并发、长任务、进度、取消、限流与错误恢复验证通过' : '公共 SDK 原生连接、窗口身份和页面就绪验证通过';
+  app.textContent=identity.bridgeChecks ? '公共 SDK 连接、能力发现、并发、长任务、进度、取消、限流与错误恢复验证通过' : '公共 SDK 原生连接、能力发现、窗口身份和页面就绪验证通过';
 }
 void run().catch(error=>{app.textContent='失败：'+String(error);document.title='SDK acceptance failed';});

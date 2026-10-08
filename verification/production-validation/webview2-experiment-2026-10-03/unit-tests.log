@@ -1,0 +1,36 @@
+✔ complete reload and recreate logs prove native operations while leaving broader gates unevaluated (0.7606ms)
+✔ missing or duplicate ready, close, start and completion events cannot pass (0.4804ms)
+✔ real exit failure, timeout and unconfirmed termination override complete green native logs (0.1747ms)
+✔ a hidden or unobserved GUI window cannot pass the visible-page probe (0.0912ms)
+✔ cross-process, stale-source and reordered lifecycle evidence is rejected (0.1903ms)
+✔ every ready event requires a fresh session and actual stable runtime version (0.2054ms)
+✔ an unterminated native log cannot be treated as complete evidence (8.8367ms)
+✔ preload only exposes the binding to the exact trusted top-level document (2.2214ms)
+✔ old document responses cannot resolve a reused request ID; completion releases the timer (1.1071ms)
+✔ duplicate IDs and capacity overload reject without overwriting in-flight work (13.0923ms)
+✔ unload rejects pending work and detaches native dispatch exactly once (0.9334ms)
+✔ timeout and postMessage failure release capacity and do not accept late results (0.942ms)
+✔ events are delivered only for the current document generation (0.4525ms)
+✔ forward wall-clock jumps do not expire a live native step (3.2025ms)
+✔ backward wall-clock jumps cannot postpone the native step deadline (0.1231ms)
+✔ no-progress supervision uses monotonic elapsed time and the configured settle allowance (0.1274ms)
+✔ a completed or failed step clears its deadline and new progress renews the idle deadline (0.1246ms)
+✔ native timestamps and mutable diagnostic snapshots cannot change deadline state (0.1024ms)
+✔ complete native reload transcript proves steps but does not claim a resource/production gate (0.8169ms)
+✔ a green native log cannot hide a process crash, kill or supervision timeout (0.2489ms)
+✔ early completion, duplicate success and routing to a different window fail (0.7738ms)
+✔ cycle counts, sample completeness and native failure records are mandatory (0.313ms)
+✔ multiwindow requires surviving windows to reload and the closed slot to be recreated (0.2363ms)
+✔ invalid scenario parameters and backwards clocks are rejected (0.1256ms)
+✔ bridge contract mode requires its own real process, complete mount and teardown (0.1586ms)
+✔ closed resources may only be sampled after the final window teardown completes (0.2051ms)
+✔ timeout evidence preserves the native log offset without treating the run as passed (7.8698ms)
+﹣ configured x86 debugger creates a dump and thread log before the target is killed (0.1195ms) # SKIP
+ℹ tests 28
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 480.8968

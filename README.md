@@ -1,6 +1,8 @@
 # SOUI SDK 源码交付
 
-**版本：0.3.0-preview.7（生产验证开发中，未正式发布）。** 面向 Windows 的 C++ / TypeScript 桌面 SDK，提供独立 SDK、最小模板、完整 Demo、第三方源码和构建工具。这个目录是可独立搬移的交付根目录，构建不依赖原研发仓库或开发者机器上的源码路径。
+**版本：0.3.0-preview.10（动作契约与界面语义预览版）。** 面向 Windows 的 C++ / TypeScript 桌面 SDK，提供独立 SDK、最小模板、完整 Demo、第三方源码和构建工具。这个目录是可独立搬移的交付根目录，构建不依赖原研发仓库或开发者机器上的源码路径。
+
+本版新增机器可发现的受权动作schema、原生参数/结果校验和受控界面语义。发布与复验范围见 [本版说明](docs/releases/0.3.0-preview.10.md)；跨平台、独立Agent身份、Electron性能对齐及完整生产支持仍以实际验收为准。
 
 长期维护、AI Agent、评审、测试和发布的统一规范见 [AGENTS.md](AGENTS.md)；所有贡献者和自动化工具在修改前都应阅读。
 
@@ -77,6 +79,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Build-Dependencies
 - [故障排查](docs/troubleshooting.md)
 - [已知限制与生产门槛](docs/known-issues.md)
 - [0.3 迭代计划](docs/roadmap/0.3.0.md)
+- [模块化 GUI 与 Agent SDK 建设路线](docs/roadmap/agent-gui-framework.md)
+- [WebView2 独立实验消费者](experiments/webview2-consumer/README.md)
 - [0.3 基础切片进展与验证](docs/roadmap/0.3-foundation.md)
 - [0.3 SDK 生产能力与价值验证方案](docs/roadmap/0.3-sdk-validation.md)
 - [生产验证执行记录与原始证据](docs/acceptance/progress.md)

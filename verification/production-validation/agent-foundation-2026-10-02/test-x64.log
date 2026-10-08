@@ -1,0 +1,135 @@
+SDK package smoke: 14/14 passed (ownership, integrity, upgrade, rollback, IO recovery and paths).
+✔ the delivered Miniblink binding uses the source export return ABI (5.2231ms)
+✔ the host classifies pending resolvers through the validated jsIsString ABI (0.6329ms)
+warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitattributes', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'source-manifest.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tools/test.ps1', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'VERSION', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'a.txt', LF will be replaced by CRLF the next time Git touches it
+✔ source snapshot excludes ignored cache, works with CRLF checkout and without Git (2383.4311ms)
+✔ source validation rejects missing, extra, ambiguous and escaping files (995.8666ms)
+✔ payload evidence detects equal-length page edits, new files and missing DLLs (25.9972ms)
+✔ deployment replaces stale Web assets and preserves app data outside resources (79.0108ms)
+✔ linked resource directories are rejected before deployment changes (8.7994ms)
+✔ SDK packages are identical across source EOLs but installed bytes remain pinned (467.2901ms)
+✔ build and smoke receipts fail closed after changes, empty runs or legacy successes (286.023ms)
+warning: in the working copy of '.gitignore', LF will be replaced by CRLF the next time Git touches it
+✔ Git-free staging copies only manifest-listed SOUI source and leaves generated files behind (94.3154ms)
+✔ Git-free staging rejects source content that differs from the frozen manifest (87.9802ms)
+✔ Git staging includes tracked and new source while excluding ignored build outputs (388.6695ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4392.2623
+✔ mixed analysis rechecks archived raw evidence and preserves the release gate (3.1309ms)
+✔ mixed analysis rejects contradictory result claims (1.4359ms)
+✔ hourly statistics retain first and last values and use nearest-rank percentiles (0.4668ms)
+✔ mixed transcript requires one process, every public lifecycle step and full duration (0.926ms)
+✔ mixed verification rejects missing work, shortened idle, premature finish and process failure (0.6396ms)
+✔ mixed parameters reject absent idle and timing beyond the supported range (0.8005ms)
+✔ complete native reload transcript proves steps but does not claim a resource/production gate (0.9688ms)
+✔ a green native log cannot hide a process crash, kill or supervision timeout (0.2702ms)
+✔ early completion, duplicate success and routing to a different window fail (0.3806ms)
+✔ cycle counts, sample completeness and native failure records are mandatory (0.6391ms)
+✔ multiwindow requires surviving windows to reload and the closed slot to be recreated (0.232ms)
+✔ invalid scenario parameters and backwards clocks are rejected (0.1221ms)
+✔ bridge contract mode requires its own real process, complete mount and teardown (0.1808ms)
+✔ closed resources may only be sampled after the final window teardown completes (0.2241ms)
+✔ timeout evidence preserves the native log offset without treating the run as passed (7.0284ms)
+﹣ configured x86 debugger creates a dump and thread log before the target is killed (0.3586ms) # SKIP
+✔ historical smoke evidence is rejected for unequal content areas and short runs (2.5204ms)
+✔ page preflight accepts only complete, aligned S01 telemetry and still lists external evidence (1.426ms)
+✔ S05 requires observed motion for 120 seconds even when the page says measured (1.3005ms)
+✔ accepts matching full traces without promoting performance or presentation (0.9619ms)
+✔ rejects a different process, shortened input, missing process sample, and timeout (0.4206ms)
+✔ rejects late input and S03 without IME composition (0.2033ms)
+✔ rejects a full-length idle trace and missing scene operations (0.1588ms)
+✔ accepts full scroll, resize and motion traces, but rejects missing defining actions (0.7274ms)
+✔ describe uses the existing authenticated transport and returns an owned page (1.8694ms)
+✔ discovery follows authorized pages without calling business methods (0.8556ms)
+✔ empty complete catalog is valid (0.2061ms)
+✔ describe rejects invalid options before invoking native code (0.6201ms)
+✔ describe rejects malformed, oversized or non-progressing native pages (2.493ms)
+✔ discovery detects duplicate pages and version drift (0.3077ms)
+✔ discovery enforces its total bound without an extra request (0.1495ms)
+✔ a catalog ending exactly at maxMethods succeeds (0.1483ms)
+✔ discovery options are bounded before transport (0.2264ms)
+✔ native unsupported and unauthorized errors are preserved (0.3691ms)
+✔ dispose stops a paged discovery instead of returning a partial catalog (0.1753ms)
+✔ native resolver completion clears its timer and repeated completion cannot settle a later request (1.7326ms)
+✔ duplicate identities and resolver overflow return correlated errors without adding timers (6.8932ms)
+✔ native response timeout removes the resolver and explicitly leaves running work uncancelled (20.3534ms)
+✔ document exit resolves all waits, is idempotent and blocks future resolver creation (0.8097ms)
+✔ custom method sends the scoped envelope and returns native data (1.1174ms)
+✔ a response from another request is rejected (0.4003ms)
+✔ malformed JSON becomes a structured response error (0.1778ms)
+✔ native denials retain the native error code (0.2804ms)
+✔ valid JSON with an invalid response shape produces a structured error (0.4483ms)
+✔ timeout is bounded without claiming native cancellation (60.7503ms)
+✔ 32 in-flight calls resolve to their own results in reverse order (1.7276ms)
+✔ request capacity rejects overload and recovers after completion (0.4795ms)
+✔ UTF-8 byte limits and non-JSON parameters fail before transport (0.5318ms)
+✔ dispose rejects outstanding waits, removes the owned listener once and rejects new calls (0.4128ms)
+✔ timeout frees a page slot without pretending native work was cancelled (27.6268ms)
+✔ invalid client options and null native error envelopes are structured failures (0.4082ms)
+✔ caller mutation of options cannot change the connection scope (0.1466ms)
+✔ event validation, sequence filtering and callback isolation apply to each observer (2.0807ms)
+✔ native subscription denial is observable and releases the local subscription slot (0.5247ms)
+✔ removal before subscription acknowledgement is idempotent and sends one late unsubscribe (0.3672ms)
+✔ a disposed pending subscription cleans up a late native success once (0.3939ms)
+✔ a timed-out subscription also cleans up a late successful acknowledgement (27.2181ms)
+✔ malformed subscription identities and failed native removal remain visible (0.578ms)
+✔ bounded control capacity permits unsubscribe when ordinary request capacity is full (0.3341ms)
+✔ toJSON reentrancy cannot bypass disposal or capacity checks (0.3332ms)
+✔ a reentrant port can dispose during subscription creation without leaking a late subscription (0.298ms)
+✔ the standard connector shares one bootstrap and waits for asynchronous native responses (0.5634ms)
+✔ asynchronous bootstrap is supported without a busy wait (0.0968ms)
+✔ connector options cannot swap the error observer while bootstrap is pending (0.1315ms)
+✔ a second connector cannot silently change options or replace another dispatcher (0.1291ms)
+✔ document unload disposes outstanding waits and removes connector hooks (0.1565ms)
+✔ bootstrap timeout and unload release hooks and do not silently rebootstrap (27.4111ms)
+✔ bootstrap rejects malformed credentials, wrong correlation and invalid JSON (0.5561ms)
+✔ connector native events reach only matching subscriptions and owned hooks are restored (0.2094ms)
+✔ ordinary browser use and broken native binding produce explicit connection errors (0.1304ms)
+ℹ tests 70
+ℹ suites 0
+ℹ pass 69
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 487.5695
+Test project <SDK_ROOT>/out/x64
+    Start 1: sdk.native.contract
+1/7 Test #1: sdk.native.contract ..............   Passed    0.12 sec
+    Start 2: sdk.native.host-adapter
+2/7 Test #2: sdk.native.host-adapter ..........   Passed    0.11 sec
+    Start 3: sdk.native.task-service
+3/7 Test #3: sdk.native.task-service ..........   Passed    0.19 sec
+    Start 4: sdk.native.bridge-budget
+4/7 Test #4: sdk.native.bridge-budget .........   Passed    0.03 sec
+    Start 5: sdk.native.task-store-capacity
+5/7 Test #5: sdk.native.task-store-capacity ...   Passed    0.06 sec
+    Start 6: sdk.native.desktop-unicode
+6/7 Test #6: sdk.native.desktop-unicode .......   Passed    0.08 sec
+    Start 7: demo.native.public-task
+7/7 Test #7: demo.native.public-task ..........   Passed    0.49 sec
+
+100% tests passed, 0 tests failed out of 7
+
+Total Test time (real) =   1.10 sec
+{
+  "passed": true,
+  "buildId": "354e0c05-9e08-47bf-b569-9fc82fc08ca0",
+  "scenarios": 3,
+  "releaseReady": false
+}

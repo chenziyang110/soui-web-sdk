@@ -9,6 +9,7 @@ const definitions = [
  ['miniblink-encoding-patch', 'third_party/patches/miniblink/0007-mark-utf8-source-encoding.patch', 'preview.7 post-import patch', 'same terms as Miniblink source'],
  ['zlib-source', 'third_party/sources/zlib/source-manifest.json', '1.2.11', 'Zlib'],
  ['json', 'third_party/include/json/json.hpp', 'pinned single header', 'MIT'],
+ ['tailwind-utility-css', 'demos/workbench/web/apps/react/utility.css', '3.4.17 generated utility subset', 'MIT; third_party/licenses/tailwindcss-3.4.17-LICENSE.txt'],
  ...['x86','x64'].flatMap(arch => [
    ['miniblink-'+arch, 'third_party/prebuilt/'+arch+'/miniblink/node.dll', 'rebuilt preview 2026-09-23', 'binary redistribution review incomplete'],
    ['zlib-runtime-'+arch, 'third_party/prebuilt/'+arch+'/runtime/vc/zlib1.dll', '1.2.11 app-local', 'Zlib']
