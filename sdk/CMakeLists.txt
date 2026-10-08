@@ -20,6 +20,14 @@ target_compile_options(soui_sdk PRIVATE /utf-8 /W4 /U_DEBUG)
 set_property(TARGET soui_sdk PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 target_link_libraries(soui_sdk PUBLIC user32 gdi32 imm32 shell32 ole32 oleaut32 uuid comctl32 advapi32 winmm bcrypt)
 set_target_properties(soui_sdk PROPERTIES EXPORT_NAME Sdk)
+# Optional header-only dependency for generated typed action bindings.
+add_library(soui_action_json INTERFACE)
+add_library(Soui::ActionJson ALIAS soui_action_json)
+target_compile_features(soui_action_json INTERFACE cxx_std_17)
+target_include_directories(soui_action_json INTERFACE
+  "$<BUILD_INTERFACE:${SOUI_DISTRIBUTION_ROOT}/third_party/include/json>"
+  "$<INSTALL_INTERFACE:include/soui/action-json>")
+set_target_properties(soui_action_json PROPERTIES EXPORT_NAME ActionJson)
 option(SOUI_BUILD_WEBVIEW2 "Build the optional modern WebView2 backend" OFF)
 if(SOUI_BUILD_WEBVIEW2)
   add_subdirectory(renderers/webview2)
@@ -39,7 +47,8 @@ configure_package_config_file(cmake/SouiSdkConfig.cmake.in
   "${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfig.cmake" INSTALL_DESTINATION lib/cmake/SouiSdk)
 write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/SouiSdkConfigVersion.cmake"
   VERSION ${PROJECT_VERSION} COMPATIBILITY ExactVersion)
-install(TARGETS soui_sdk EXPORT SouiSdkTargets ARCHIVE DESTINATION lib/$<CONFIG>)
+install(TARGETS soui_sdk soui_action_json EXPORT SouiSdkTargets ARCHIVE DESTINATION lib/$<CONFIG>)
+install(FILES "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json/json.hpp" DESTINATION include/soui/action-json)
 install(DIRECTORY include/ DESTINATION include)
 install(FILES "${SOUI_DISTRIBUTION_ROOT}/THIRD_PARTY_NOTICES.md" DESTINATION share/SouiSdk)
 install(DIRECTORY "${SOUI_DISTRIBUTION_ROOT}/third_party/licenses/" DESTINATION share/SouiSdk/licenses)

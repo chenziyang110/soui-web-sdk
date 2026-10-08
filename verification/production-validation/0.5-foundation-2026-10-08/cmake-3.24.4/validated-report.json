@@ -1,0 +1,634 @@
+{
+  "schema": "soui.cmake-sdk-minimum-validation/v1",
+  "startedUtc": "2026-10-08T10:52:31.9717863Z",
+  "finishedUtc": "2026-10-08T10:53:09.5381140Z",
+  "status": "passed",
+  "releaseReady": false,
+  "repository": "F:\\work\\sm05",
+  "sourceGitHead": "05e7d93b6bb36904cfabaea6147552b4d62dfb70",
+  "version": "0.5.0-preview.1",
+  "download": {
+    "zipUrl": "https://github.com/Kitware/CMake/releases/download/v3.24.4/cmake-3.24.4-windows-x86_64.zip",
+    "checksumUrl": "https://github.com/Kitware/CMake/releases/download/v3.24.4/cmake-3.24.4-SHA-256.txt",
+    "zip": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\cmake-3.24.4-windows-x86_64.zip",
+    "bytes": 40213130,
+    "expectedSha256": "c135c7ab78143c46e6686b1e9652bc1dd07e0cf71fd4decee777cdca77019c39",
+    "actualSha256": "c135c7ab78143c46e6686b1e9652bc1dd07e0cf71fd4decee777cdca77019c39",
+    "checksumDocumentSha256": "0c43aacad06935ac6efafbfe479060682a4078163b5bf3ac8c40211654433d03",
+    "hashMatches": true,
+    "cmake": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+    "cmakeExeSha256": "8a91abf0195dfdd05b94916170e07e78feb4e8f96fa282c08269c267faa91dc4",
+    "version": [
+      "cmake version 3.24.4",
+      "",
+      "CMake suite maintained and supported by Kitware (kitware.com/cmake)."
+    ]
+  },
+  "toolVersion": "cmake version 3.24.4",
+  "toolInputs": [
+    {
+      "path": "F:\\work\\sm05\\tools\\internal\\CMake-Configure.ps1",
+      "bytes": 7057,
+      "sha256": "ca1df1b7ba625f360e7d56503509f7f5d7d0f2f7d7def568db5dcdf80ce33806"
+    },
+    {
+      "path": "F:\\work\\sm05\\cmake\\SouiWindowsSdk.cmake",
+      "bytes": 690,
+      "sha256": "7d71d217641623fde4fdc02bfdf536eee4167bf61eb00b3227c91c6d0d55b031"
+    }
+  ],
+  "fixtureInputs": [
+    {
+      "path": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\CMakeLists.txt",
+      "bytes": 533,
+      "sha256": "6c074463b8a040e56b7bb68a87f13874334f9858cec0769581ab6c7193cbf037"
+    },
+    {
+      "path": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\main.cpp",
+      "bytes": 76,
+      "sha256": "1efad9d1a5f5009555a3dc80c61a64c38ebf0040c4b020be8972e22f0267728a"
+    }
+  ],
+  "commands": [
+    {
+      "name": "version",
+      "kind": "process",
+      "executable": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+      "arguments": [
+        "--version"
+      ],
+      "startedUtc": "2026-10-08T10:52:32.1287775Z",
+      "exitCode": 0,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\version.log",
+      "finishedUtc": "2026-10-08T10:52:32.2286952Z"
+    },
+    {
+      "name": "x64-unfixed-initial",
+      "kind": "process",
+      "executable": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+      "arguments": [
+        "-S",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "-B",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64"
+      ],
+      "startedUtc": "2026-10-08T10:52:32.2471784Z",
+      "exitCode": 0,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\x64-unfixed-initial.log",
+      "finishedUtc": "2026-10-08T10:52:40.8537689Z"
+    },
+    {
+      "name": "x64-unfixed-cache-only-pin",
+      "kind": "process",
+      "executable": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+      "arguments": [
+        "-S",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "-B",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0"
+      ],
+      "startedUtc": "2026-10-08T10:52:40.8892493Z",
+      "exitCode": 0,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\x64-unfixed-cache-only-pin.log",
+      "finishedUtc": "2026-10-08T10:52:41.0151954Z"
+    },
+    {
+      "name": "x64-stale-system-refused",
+      "kind": "powershell-function",
+      "function": "Get-SouiCMakeConfigureArguments",
+      "script": "F:\\work\\sm05\\tools\\internal\\CMake-Configure.ps1",
+      "parameters": {
+        "CMake": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+        "WorkspaceRoot": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "SourceDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "BuildDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64",
+        "Architecture": "x64",
+        "FreshConfigure": false
+      },
+      "exceptionThrown": true,
+      "error": "CMake persisted system version conflicts in F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64\\CMakeFiles\\3.24.4\\CMakeSystem.cmake. Inspect this directory and explicitly use -FreshConfigure to reconfigure.",
+      "returnedArguments": null,
+      "configureProcessStarted": false,
+      "internalCMakeVersionProbeExecuted": true
+    },
+    {
+      "name": "x64-fresh-arguments",
+      "kind": "powershell-function",
+      "function": "Get-SouiCMakeConfigureArguments",
+      "script": "F:\\work\\sm05\\tools\\internal\\CMake-Configure.ps1",
+      "parameters": {
+        "CMake": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+        "WorkspaceRoot": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "SourceDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "BuildDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64",
+        "Architecture": "x64",
+        "FreshConfigure": true
+      },
+      "exceptionThrown": false,
+      "error": null,
+      "returnedArguments": [
+        "-S",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "-B",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=F:/work/sm05/cmake/SouiWindowsSdk.cmake",
+        "--fresh"
+      ],
+      "configureProcessStarted": false,
+      "internalCMakeVersionProbeExecuted": true
+    },
+    {
+      "name": "x64-fresh-configure",
+      "kind": "process",
+      "executable": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+      "arguments": [
+        "-S",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "-B",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=F:/work/sm05/cmake/SouiWindowsSdk.cmake",
+        "--fresh"
+      ],
+      "startedUtc": "2026-10-08T10:52:41.5863662Z",
+      "exitCode": 0,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\x64-fresh-configure.log",
+      "finishedUtc": "2026-10-08T10:52:50.6030853Z"
+    },
+    {
+      "name": "x64-matching-arguments",
+      "kind": "powershell-function",
+      "function": "Get-SouiCMakeConfigureArguments",
+      "script": "F:\\work\\sm05\\tools\\internal\\CMake-Configure.ps1",
+      "parameters": {
+        "CMake": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+        "WorkspaceRoot": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "SourceDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "BuildDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64",
+        "Architecture": "x64",
+        "FreshConfigure": false
+      },
+      "exceptionThrown": false,
+      "error": null,
+      "returnedArguments": [
+        "-S",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "-B",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=F:/work/sm05/cmake/SouiWindowsSdk.cmake"
+      ],
+      "configureProcessStarted": false,
+      "internalCMakeVersionProbeExecuted": true
+    },
+    {
+      "name": "x64-matching-reconfigure",
+      "kind": "process",
+      "executable": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+      "arguments": [
+        "-S",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "-B",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=F:/work/sm05/cmake/SouiWindowsSdk.cmake"
+      ],
+      "startedUtc": "2026-10-08T10:52:50.8467024Z",
+      "exitCode": 0,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\x64-matching-reconfigure.log",
+      "finishedUtc": "2026-10-08T10:52:50.9653634Z"
+    },
+    {
+      "name": "x64-wrong-platform-refused",
+      "kind": "powershell-function",
+      "function": "Get-SouiCMakeConfigureArguments",
+      "script": "F:\\work\\sm05\\tools\\internal\\CMake-Configure.ps1",
+      "parameters": {
+        "CMake": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+        "WorkspaceRoot": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "SourceDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "BuildDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64",
+        "Architecture": "x86",
+        "FreshConfigure": false
+      },
+      "exceptionThrown": true,
+      "error": "CMake cache CMAKE_GENERATOR_PLATFORM conflicts in F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64. Inspect this directory and explicitly use -FreshConfigure to reconfigure.",
+      "returnedArguments": null,
+      "configureProcessStarted": false,
+      "internalCMakeVersionProbeExecuted": true
+    },
+    {
+      "name": "x86-unfixed-initial",
+      "kind": "process",
+      "executable": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+      "arguments": [
+        "-S",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "-B",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32"
+      ],
+      "startedUtc": "2026-10-08T10:52:51.2033535Z",
+      "exitCode": 0,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\x86-unfixed-initial.log",
+      "finishedUtc": "2026-10-08T10:52:59.7172829Z"
+    },
+    {
+      "name": "x86-unfixed-cache-only-pin",
+      "kind": "process",
+      "executable": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+      "arguments": [
+        "-S",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "-B",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0"
+      ],
+      "startedUtc": "2026-10-08T10:52:59.7224962Z",
+      "exitCode": 0,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\x86-unfixed-cache-only-pin.log",
+      "finishedUtc": "2026-10-08T10:52:59.8464946Z"
+    },
+    {
+      "name": "x86-stale-system-refused",
+      "kind": "powershell-function",
+      "function": "Get-SouiCMakeConfigureArguments",
+      "script": "F:\\work\\sm05\\tools\\internal\\CMake-Configure.ps1",
+      "parameters": {
+        "CMake": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+        "WorkspaceRoot": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "SourceDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "BuildDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86",
+        "Architecture": "x86",
+        "FreshConfigure": false
+      },
+      "exceptionThrown": true,
+      "error": "CMake persisted system version conflicts in F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86\\CMakeFiles\\3.24.4\\CMakeSystem.cmake. Inspect this directory and explicitly use -FreshConfigure to reconfigure.",
+      "returnedArguments": null,
+      "configureProcessStarted": false,
+      "internalCMakeVersionProbeExecuted": true
+    },
+    {
+      "name": "x86-fresh-arguments",
+      "kind": "powershell-function",
+      "function": "Get-SouiCMakeConfigureArguments",
+      "script": "F:\\work\\sm05\\tools\\internal\\CMake-Configure.ps1",
+      "parameters": {
+        "CMake": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+        "WorkspaceRoot": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "SourceDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "BuildDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86",
+        "Architecture": "x86",
+        "FreshConfigure": true
+      },
+      "exceptionThrown": false,
+      "error": null,
+      "returnedArguments": [
+        "-S",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "-B",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=F:/work/sm05/cmake/SouiWindowsSdk.cmake",
+        "--fresh"
+      ],
+      "configureProcessStarted": false,
+      "internalCMakeVersionProbeExecuted": true
+    },
+    {
+      "name": "x86-fresh-configure",
+      "kind": "process",
+      "executable": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+      "arguments": [
+        "-S",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "-B",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=F:/work/sm05/cmake/SouiWindowsSdk.cmake",
+        "--fresh"
+      ],
+      "startedUtc": "2026-10-08T10:53:00.2203334Z",
+      "exitCode": 0,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\x86-fresh-configure.log",
+      "finishedUtc": "2026-10-08T10:53:08.9927434Z"
+    },
+    {
+      "name": "x86-matching-arguments",
+      "kind": "powershell-function",
+      "function": "Get-SouiCMakeConfigureArguments",
+      "script": "F:\\work\\sm05\\tools\\internal\\CMake-Configure.ps1",
+      "parameters": {
+        "CMake": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+        "WorkspaceRoot": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "SourceDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "BuildDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86",
+        "Architecture": "x86",
+        "FreshConfigure": false
+      },
+      "exceptionThrown": false,
+      "error": null,
+      "returnedArguments": [
+        "-S",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "-B",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=F:/work/sm05/cmake/SouiWindowsSdk.cmake"
+      ],
+      "configureProcessStarted": false,
+      "internalCMakeVersionProbeExecuted": true
+    },
+    {
+      "name": "x86-matching-reconfigure",
+      "kind": "process",
+      "executable": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+      "arguments": [
+        "-S",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "-B",
+        "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=F:/work/sm05/cmake/SouiWindowsSdk.cmake"
+      ],
+      "startedUtc": "2026-10-08T10:53:09.1335759Z",
+      "exitCode": 0,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\x86-matching-reconfigure.log",
+      "finishedUtc": "2026-10-08T10:53:09.2668480Z"
+    },
+    {
+      "name": "x86-wrong-platform-refused",
+      "kind": "powershell-function",
+      "function": "Get-SouiCMakeConfigureArguments",
+      "script": "F:\\work\\sm05\\tools\\internal\\CMake-Configure.ps1",
+      "parameters": {
+        "CMake": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115\\portable\\cmake-3.24.4-windows-x86_64\\bin\\cmake.exe",
+        "WorkspaceRoot": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "SourceDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace",
+        "BuildDirectory": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86",
+        "Architecture": "x64",
+        "FreshConfigure": false
+      },
+      "exceptionThrown": true,
+      "error": "CMake cache CMAKE_GENERATOR_PLATFORM conflicts in F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86. Inspect this directory and explicitly use -FreshConfigure to reconfigure.",
+      "returnedArguments": null,
+      "configureProcessStarted": false,
+      "internalCMakeVersionProbeExecuted": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "x64-control-cache-is-not-selection",
+      "passed": true,
+      "initial": {
+        "selectedSdk": "10.0.26100.0",
+        "generatorPlatform": "x64",
+        "systemVersion": "10.0.26200",
+        "cmakeVersion": "3.24.4",
+        "compilerId": "MSVC",
+        "compilerVersion": "19.44.35226.0"
+      },
+      "stale": {
+        "selectedSdk": "10.0.26100.0",
+        "generatorPlatform": "x64",
+        "systemVersion": "10.0.26200",
+        "cmakeVersion": "3.24.4",
+        "compilerId": "MSVC",
+        "compilerVersion": "19.44.35226.0"
+      },
+      "cacheRequestedSystemVersion": "10.0.19041.0"
+    },
+    {
+      "name": "x64-stale-system-refused",
+      "passed": true,
+      "result": "rejected",
+      "error": "CMake persisted system version conflicts in F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64\\CMakeFiles\\3.24.4\\CMakeSystem.cmake. Inspect this directory and explicitly use -FreshConfigure to reconfigure.",
+      "cacheBytesUnchanged": true,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\x64-stale-system-refused.log"
+    },
+    {
+      "name": "x64-actual-sdk-19041",
+      "passed": true,
+      "selected": {
+        "selectedSdk": "10.0.19041.0",
+        "generatorPlatform": "x64",
+        "systemVersion": "10.0.19041.0",
+        "cmakeVersion": "3.24.4",
+        "compilerId": "MSVC",
+        "compilerVersion": "19.44.35226.0"
+      },
+      "vcxprojSdk": "10.0.19041.0",
+      "actualSdkGuardExecuted": true
+    },
+    {
+      "name": "x64-matching-cache-reused",
+      "passed": true,
+      "selected": {
+        "selectedSdk": "10.0.19041.0",
+        "generatorPlatform": "x64",
+        "systemVersion": "10.0.19041.0",
+        "cmakeVersion": "3.24.4",
+        "compilerId": "MSVC",
+        "compilerVersion": "19.44.35226.0"
+      },
+      "freshRequested": false
+    },
+    {
+      "name": "x64-wrong-platform-refused",
+      "passed": true,
+      "result": "rejected",
+      "error": "CMake cache CMAKE_GENERATOR_PLATFORM conflicts in F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x64. Inspect this directory and explicitly use -FreshConfigure to reconfigure.",
+      "cacheBytesUnchanged": true,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\x64-wrong-platform-refused.log"
+    },
+    {
+      "name": "x86-control-cache-is-not-selection",
+      "passed": true,
+      "initial": {
+        "selectedSdk": "10.0.26100.0",
+        "generatorPlatform": "Win32",
+        "systemVersion": "10.0.26200",
+        "cmakeVersion": "3.24.4",
+        "compilerId": "MSVC",
+        "compilerVersion": "19.44.35226.0"
+      },
+      "stale": {
+        "selectedSdk": "10.0.26100.0",
+        "generatorPlatform": "Win32",
+        "systemVersion": "10.0.26200",
+        "cmakeVersion": "3.24.4",
+        "compilerId": "MSVC",
+        "compilerVersion": "19.44.35226.0"
+      },
+      "cacheRequestedSystemVersion": "10.0.19041.0"
+    },
+    {
+      "name": "x86-stale-system-refused",
+      "passed": true,
+      "result": "rejected",
+      "error": "CMake persisted system version conflicts in F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86\\CMakeFiles\\3.24.4\\CMakeSystem.cmake. Inspect this directory and explicitly use -FreshConfigure to reconfigure.",
+      "cacheBytesUnchanged": true,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\x86-stale-system-refused.log"
+    },
+    {
+      "name": "x86-actual-sdk-19041",
+      "passed": true,
+      "selected": {
+        "selectedSdk": "10.0.19041.0",
+        "generatorPlatform": "Win32",
+        "systemVersion": "10.0.19041.0",
+        "cmakeVersion": "3.24.4",
+        "compilerId": "MSVC",
+        "compilerVersion": "19.44.35226.0"
+      },
+      "vcxprojSdk": "10.0.19041.0",
+      "actualSdkGuardExecuted": true
+    },
+    {
+      "name": "x86-matching-cache-reused",
+      "passed": true,
+      "selected": {
+        "selectedSdk": "10.0.19041.0",
+        "generatorPlatform": "Win32",
+        "systemVersion": "10.0.19041.0",
+        "cmakeVersion": "3.24.4",
+        "compilerId": "MSVC",
+        "compilerVersion": "19.44.35226.0"
+      },
+      "freshRequested": false
+    },
+    {
+      "name": "x86-wrong-platform-refused",
+      "passed": true,
+      "result": "rejected",
+      "error": "CMake cache CMAKE_GENERATOR_PLATFORM conflicts in F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\workspace\\out\\x86. Inspect this directory and explicitly use -FreshConfigure to reconfigure.",
+      "cacheBytesUnchanged": true,
+      "log": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\logs\\x86-wrong-platform-refused.log"
+    }
+  ],
+  "scope": {
+    "actualCMakeBinary": true,
+    "mockVersionUsed": false,
+    "architectures": [
+      "x64",
+      "x86"
+    ],
+    "target": "SdkSelectionTiny",
+    "sdkBuildExecuted": false,
+    "tinyTargetBuildExecuted": false,
+    "cmakeCompilerChecksExecuted": true,
+    "guiExecuted": false,
+    "systemInstallPerformed": false,
+    "globalPathModified": false,
+    "win7OrPeTested": false
+  },
+  "environment": {
+    "windowsSdkVersion": null,
+    "policyVersionMinimum": null
+  },
+  "toolInputsUnchanged": true,
+  "error": null,
+  "toolInputsAfter": [
+    {
+      "path": "F:\\work\\sm05\\tools\\internal\\CMake-Configure.ps1",
+      "bytes": 7057,
+      "sha256": "ca1df1b7ba625f360e7d56503509f7f5d7d0f2f7d7def568db5dcdf80ce33806"
+    },
+    {
+      "path": "F:\\work\\sm05\\cmake\\SouiWindowsSdk.cmake",
+      "bytes": 690,
+      "sha256": "7d71d217641623fde4fdc02bfdf536eee4167bf61eb00b3227c91c6d0d55b031"
+    }
+  ],
+  "checkCount": 10,
+  "processCommandCount": 9,
+  "evidenceReview": {
+    "reviewedUtc": "2026-10-08T10:56:20.587Z",
+    "rawReport": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\report.json",
+    "rawReportSha256": "b06258e41d41a1a37ebf736c8f47bb6bc56b513113c3094392f7604c0bf34c3f",
+    "driverScript": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\run-validation.ps1",
+    "driverScriptSha256": "06968ee8ce1517b8ad4c4d5914cfa35fded6f8e96c3ad13498acec182e3802af",
+    "reviewerScript": "F:\\work\\sm05\\out\\cmake-3.24.4-actual-20261008-e0f9109f1fb943f89f8f5e3fe15854ab\\verify-report.cjs",
+    "reviewerScriptSha256": "3d4c7db4d538971ad53fe7724e933bf3ffa2f29f64d6d08b4e4b8de906de1e58",
+    "actualProjectChecks": [
+      {
+        "architecture": "x64",
+        "selectedSdk": "10.0.19041.0",
+        "generatorPlatform": "x64",
+        "compiler": "MSVC",
+        "compilerVersion": "19.44.35226.0",
+        "platformToolset": "v143",
+        "staleSelectedSdk": "10.0.26100.0",
+        "sourceProjectSha256": "990576cea3a77451593abe3e8b67d1771156765e9f247acf7c022d910f729c27"
+      },
+      {
+        "architecture": "x86",
+        "selectedSdk": "10.0.19041.0",
+        "generatorPlatform": "Win32",
+        "compiler": "MSVC",
+        "compilerVersion": "19.44.35226.0",
+        "platformToolset": "v143",
+        "staleSelectedSdk": "10.0.26100.0",
+        "sourceProjectSha256": "57a684d101ecb571867684d95432745e4d8a0cb502f1d16c40c3f09675d27f21"
+      }
+    ],
+    "helperRecordClarification": "The original processStarted field described configure/build start. The helper did execute its internal --version probe with the actual portable binary; normalized commands distinguish those actions.",
+    "recordedDirectCMakeProcessCommands": 9,
+    "actualCMakeInvocationsIncludingHelperVersionProbes": 17,
+    "priorDriverFailures": [
+      "F:/work/sm05/out/cmake-3.24.4-actual-20261008-19d9343c10b6459dbc1222191f2f1115/driver-failure.json",
+      "F:/work/sm05/out/cmake-3.24.4-actual-20261008-4b827fc462ee47f4ac9e2093fba19c2e/driver-failure.json"
+    ],
+    "productionFilesModifiedByValidation": false,
+    "standaloneSdkOrApplicationBuildValidated": false
+  }
+}

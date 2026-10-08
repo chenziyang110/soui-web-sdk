@@ -1,9 +1,10 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {createRoot} from 'react-dom/client';
 import {connectSouiNative, createSouiGui, requireSouiWebFeatures, type SouiCoreMethodMap} from '@soui-sdk';
+import {callAction, authorizedActionTools, type ActionMethods, type GreetInput} from './generated/actions';
 import './style.css';
 
-type Methods = SouiCoreMethodMap & {'app.greet': {params: {name: string}; result: {message: string}}};
+type Methods = SouiCoreMethodMap & ActionMethods;
 function App() {
   const [message, setMessage] = useState('正在准备…');
   const [name, setName] = useState('开发者');
@@ -15,12 +16,14 @@ function App() {
     const gui = createSouiGui(); action.current = gui;
     void connectSouiNative<Methods>().then(async client => {
       if (!active) return;
+      if (!authorizedActionTools(await client.discover()).some(tool => tool.name === 'app.greet'))
+        throw new Error('当前宿主未安装问候动作。');
       const button = document.getElementById('greet');
       if (!button) throw new Error('界面尚未准备好');
       gui.register({id: 'greet', role: 'button', name: '发送问候', element: button,
         actions: {activate: async value => {
           setBusy(true);
-          try { const result = await client.call('app.greet', value as {name: string}); if (active) setMessage(result.message); return result; }
+          try { const result = await callAction(client, 'app.greet', value as GreetInput); if (active) setMessage(result.message); return result; }
           finally { if (active) setBusy(false); }
         }}});
       setReady(true);

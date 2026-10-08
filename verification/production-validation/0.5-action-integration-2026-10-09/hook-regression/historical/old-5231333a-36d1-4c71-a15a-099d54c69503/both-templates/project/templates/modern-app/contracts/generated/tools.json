@@ -1,0 +1,25 @@
+{
+  "schema": "soui.action-tools/1",
+  "advisory": true,
+  "sourceSha256": "8963117ae3e673e4e873d25d40e9f413af63ee268aca2b728493e67307b0cd16",
+  "tools": [
+    {
+      "name": "app.greet",
+      "description": "由 C++ 生成问候消息。",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "maxLength": 32,
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "type": "object"
+      }
+    }
+  ]
+}

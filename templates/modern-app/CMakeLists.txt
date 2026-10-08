@@ -7,8 +7,7 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   add_subdirectory(sdk)
 endif()
 add_executable(SouiModernStarter WIN32 app/main.cpp app/application.manifest)
-target_link_libraries(SouiModernStarter PRIVATE Soui::WebView2)
-target_include_directories(SouiModernStarter PRIVATE "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
+target_link_libraries(SouiModernStarter PRIVATE Soui::WebView2 Soui::ActionJson)
 target_compile_options(SouiModernStarter PRIVATE /utf-8 /W4 /U_DEBUG)
 set_target_properties(SouiModernStarter PROPERTIES MSVC_RUNTIME_LIBRARY MultiThreadedDLL
   RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/SouiModernStarter")
@@ -18,6 +17,11 @@ else()
   set(modern_arch x86)
 endif()
 find_program(SOUI_MODERN_NODE node.exe REQUIRED)
+add_custom_target(SouiModernStarter_actions_check ALL
+  COMMAND "${SOUI_MODERN_NODE}" "${SOUI_DISTRIBUTION_ROOT}/tools/sdk/actiongen.cjs"
+    --source "${CMAKE_CURRENT_SOURCE_DIR}/contracts/actions.json" --root "${CMAKE_CURRENT_SOURCE_DIR}" --check
+  VERBATIM)
+add_dependencies(SouiModernStarter SouiModernStarter_actions_check)
 file(GLOB_RECURSE modern_crt "${SOUI_DISTRIBUTION_ROOT}/third_party/prebuilt/${modern_arch}/runtime/*.dll")
 add_custom_target(SouiModernStarter_resources ALL
   COMMAND "${CMAKE_COMMAND}" -E copy_if_different ${modern_crt} "$<TARGET_FILE_DIR:SouiModernStarter>"

@@ -1,0 +1,9 @@
+# Historical alert disposition
+
+On 2026-10-09 Asia/Shanghai, alerts 57–67 were dismissed with `not_used` after the exact historical fixture retirement policy merged in main commit `b185bacd224ea8632a2fa21224065971475188c6`. This is a disposition of preserved forensic dependency records, not a patch of the original `source-map-js@1.2.1` locks. Their bytes and prior manifests remain unchanged. Current templates and the customer's business Web dependencies retain the maintenance boundaries in the [policy](../../../docs/maintenance/historical-source-map-js-evidence.md).
+
+The final [read-only reconciliation](reconciliation-05282716-a0b9-4a0c-81f5-3dfccf5349e6/index.json) checked all eleven individual alert identities, paths, advisory, dismissed reason and retained original lock hashes. The final open-alert query returned no alerts. Responses, request bodies, CLI arguments, times and hashes are retained without credentials or authorization headers.
+
+The initial report remains failed: GitHub rejected a 300-character dismissal comment with HTTP 422 before changing alert 57. The continuation shortened that comment and all eleven PATCH responses returned dismissed/not_used. Its immediate `state=open` query still returned one record whose body already said dismissed; the overly strict presence-only check failed. This partial result is also preserved. Reconciliation subsequently read each individual alert and a fresh sorted list, with no repeated PATCH and no rewrite of either failed report.
+
+The two private operation drivers are stored under inert snapshot names. This directory is capture data, not an executable security-update workflow or fresh npm audit. The evidence manifest hashes every retained file except itself; repository provenance binds that manifest. No SDK/app package, source lock or historical fixed/signed release was changed. `releaseReady=false` remains in the records.

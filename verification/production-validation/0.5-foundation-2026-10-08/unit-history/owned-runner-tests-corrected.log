@@ -1,0 +1,15 @@
+✔ owned runner preserves Unicode, spaces, quotes, empty args and trailing slashes (3214.7057ms)
+✔ native nonzero exit is retained as failure even when the Job closes normally (164.3961ms)
+✔ timeout closes all three owned generations and leaves an unrelated process alive (1681.2345ms)
+✔ a root that exits zero cannot hide a still-running detached descendant (333.2152ms)
+✔ owned descendants may finish naturally within the explicit drain budget (423.2372ms)
+✔ an existing report or invalid limits cannot launch a child or overwrite evidence (259.0146ms)
+✔ test-only assignment denial exercises real held suspended-process cleanup, not Win7 policy (420.1844ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6700.1807

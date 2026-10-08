@@ -1,0 +1,26 @@
+✔ a completed subject with the full independent transcript remains a valid positive control (5.9251ms)
+✔ supervisor setup failure cannot be overwritten by a completed Job and green native transcript (1.4925ms)
+✔ ready rejection after native completion remains a failed acceptance result (0.7588ms)
+✔ a green native transcript cannot hide an unverified owned closure (0.8805ms)
+✔ acceptance transcript identity must match the owned subject identity (1.2743ms)
+✔ a complete-looking native transcript without its terminal newline stays failed (1.0286ms)
+✔ a complete fast close before the first poll publishes the subject and finishes normally (2.5145ms)
+▶ final evidence cannot replace either part of the already published subject identity
+  ✔ {"pid":126,"creationFileTime":"133999999999999999"} (0.9608ms)
+  ✔ {"pid":125,"creationFileTime":"134000000000000000"} (0.8205ms)
+✔ final evidence cannot replace either part of the already published subject identity (2.0953ms)
+✔ a final report read failure resolves finished as failure rather than escaping the close callback (0.9233ms)
+✔ a report digest failure also resolves finished as failure (1.65ms)
+✔ a rejected ready observation stays failed even if a complete green report appears before close (1.1352ms)
+✔ a terminal without its final newline cannot pass despite a valid complete start (0.8573ms)
+✔ benchmark failure cleanup proves the entire held Job closed and leaves an unrelated process alive (376.9972ms)
+✔ a zero benchmark root exit with an outstanding descendant remains a failed run (2319.6454ms)
+✔ two mutually consistent traces cannot replace the owned host identity (0.4389ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2895.5553
