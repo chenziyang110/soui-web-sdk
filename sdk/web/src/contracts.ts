@@ -1,3 +1,4 @@
+import type { SouiCoreMethodMap, SouiTaskQueryParams } from './protocol.js';
 /* <soui-generated> */
 export const SOUI_BRIDGE_PROTOCOL = 'soui.bridge/1';
 export type SouiErrorCode = 'E_INVALID_PARAMS' | 'E_UNKNOWN_METHOD' | 'E_UNAUTHORIZED' | 'E_SESSION_EXPIRED' | 'E_UNIMPLEMENTED' | 'E_TIMEOUT' | 'E_CANCELLED' | 'E_LIMIT_MESSAGE_SIZE' | 'E_MALFORMED_JSON' | 'E_SCHEMA_INVALID' | 'E_SCHEMA_VERSION_UNSUPPORTED' | 'E_OPERATION_CONFLICT' | 'E_PERMISSION_DENIED' | 'E_GESTURE_REQUIRED' | 'E_TASK_NOT_FOUND' | 'E_INVALID_CURSOR' | 'E_NATIVE_FAILURE' | 'E_USER_CANCELLED' | 'E_RESOURCE_MISSING' | 'E_WRONG_ARCHITECTURE' | 'E_COMPATIBILITY_UNSUPPORTED' | 'E_SUBSCRIPTION_NOT_FOUND' | 'E_TASK_TERMINAL' | 'E_LIMIT_RATE' | 'E_BUSY' | 'E_RESULT_LIMIT' | 'E_UNTRUSTED_FRAME';
@@ -129,9 +130,7 @@ export interface SouiMethodMap {
     accepted: boolean;
     duplicate: boolean;
   }; };
-  'task.query': { params: {
-    taskId: string;
-  }; result: {
+  'task.query': { params: SouiTaskQueryParams; result: {
     taskId: string;
     state: string;
     progress: number;
@@ -315,6 +314,7 @@ export type SouiMethodName = keyof SouiMethodMap;
 export interface SouiNativeClient {
   call<M extends SouiMethodName>(method: M, params: SouiMethodMap[M]["params"]): Promise<SouiMethodMap[M]["result"]>;
   query(taskId: string): Promise<SouiMethodMap["task.query"]["result"]>;
+  queryOperation(operationId: string): Promise<SouiCoreMethodMap["task.query"]["result"]>;
   cancel(taskId: string): Promise<SouiMethodMap["task.cancel"]["result"]>;
   subscribe(taskId: string, eventName: string, listener: (event: unknown) => void): () => void;
 }

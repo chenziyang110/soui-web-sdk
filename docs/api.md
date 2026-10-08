@@ -122,6 +122,10 @@ Web 方法类型为 `SouiClipboardMethodMap`，与 `SouiCoreMethodMap` 组合使
 
 默认上限为 2 个原生工作线程、32 个未完成任务、128 个订阅和 1,024 个保留的任务结果。超限返回 `E_BUSY`，旧终态记录按最早序号淘汰；任务结果只保留在进程内，没有持久化保证。返回结果须为不超过 32 KiB 的 JSON 对象，进度与终态消息最多 4 KiB；违反返回约束会形成失败终态。应用的处理器应按自己的数据来源继续验证 `input`，及时响应取消，并自行约束阻塞外部调用的最长时间。当前公共任务模块仍待独立真实页面、Demo、长稳和目标机整组验收。
 
+`task.query` 接受 `{taskId}` 或 `{operationId}`，对象恰好有一个字段；两者不能同时提供，也不能附加其他字段。标识均为 1–128 字节，仅允许 ASCII 字母、数字和 `-_.:`。`client.query(taskId)` 保留，新增 `client.queryOperation(operationId)`；直接 `call('task.query', params)` 使用同一参数校验。原生 operation 查询只在本次实际活跃授权 scope 中定位，并再次核对实际对象、session/origin 和保留记录；同一 scope 续租不改变归属，不同 grant/store 或重连的新 scope 不能读取旧任务。查询不启动、重放或取消任务，不修改快照或保留顺序。结果字段与 taskId 查询相同。未知或被淘汰的记录返回 `E_TASK_NOT_FOUND`，失效或缺能力的授权返回 `E_UNAUTHORIZED`；not-found 不证明从未执行，不授权自动重试。
+
+已授权 catalog 中无 action 的 `task.query` 可获得工具描述。受限 schema 只表达两个可选的有界字符串和禁止额外属性，**不能单独表达互斥或 ASCII 字符集合**；描述明确要求 exactly one，TS 运行时及原生最终校验负责完整约束。schema 通过或工具出现均不是执行授权。参见 [operation 查询迁移](migration/task-operation-query.md) 与 [ADR-0032](adr/0032-read-only-task-operation-query.md)。
+
 `subscribe(taskId, eventName, listener)` 保留可调用的移除句柄，同时提供 `ready`、`closed` 和 `unsubscribe(): Promise<void>`。建立失败会拒绝 `ready`；注销立即停止本地回调，等待 `unsubscribe()` 才能判断是否收到原生成功确认。重复移除共享同一次结果；建立期间移除或本地超时后收到迟到成功，会尽力补做一次注销。若传输已丢失确认或文档销毁，原生服务仍须按会话回收自己的订阅，不能依赖页面补偿保证释放。可选 `onError` 观察异步错误及被隔离的业务回调异常。
 
 ## 原生应用级托盘（preview.9）

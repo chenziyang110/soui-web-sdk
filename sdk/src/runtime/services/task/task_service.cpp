@@ -360,15 +360,31 @@ std::string task_service::start(const bridge_request& request) {
 
 std::string task_service::query(const bridge_request& request) const {
   const auto params = parameters(request);
-  const auto task_id = params.is_object() ? field(params, "taskId") : std::string{};
-  if (!valid_name(task_id)) return error("E_INVALID_PARAMS", "A bounded taskId is required.");
+  if (!params.is_object() || params.size() != 1U ||
+      (!params.contains("taskId") && !params.contains("operationId")))
+    return error("E_INVALID_PARAMS", "Expected exactly one taskId or operationId.");
+  const bool by_operation = params.contains("operationId");
+  const auto selector = field(params, by_operation ? "operationId" : "taskId");
+  if (!valid_name(selector)) return error("E_INVALID_PARAMS", "A bounded ASCII taskId or operationId is required.");
   std::lock_guard<std::mutex> lock(impl_->mutex);
   if (!authorized(request, "task.query")) return error("E_UNAUTHORIZED", "A live task.query authorization is required.");
+  std::string task_id = selector;
+  std::string operation_key;
+  if (by_operation) {
+    // This public ID only locates a candidate; actual native ownership is checked below.
+    operation_key = request.authorization->scope_id() + '\x1f' + selector;
+    const auto operation = impl_->operations.find(operation_key);
+    if (operation == impl_->operations.end())
+      return error("E_TASK_NOT_FOUND", "The task is not valid for this scope.");
+    task_id = operation->second;
+  }
   const auto owner = impl_->owners.find(task_id);
-  if (owner == impl_->owners.end() || owner->second.revoked || !owner->second.context.matches(request))
+  if (owner == impl_->owners.end() || owner->second.revoked || !owner->second.context.matches(request) ||
+      (by_operation && owner->second.operation_key != operation_key))
     return error("E_TASK_NOT_FOUND", "The task is not valid for this session.");
   const auto snapshot = impl_->tasks.query(task_id);
   if (!snapshot) return error("E_TASK_NOT_FOUND", "The native task is no longer retained.");
+  if (!authorized(request, "task.query")) return error("E_UNAUTHORIZED", "Task authorization expired during lookup.");
   json result = {{"taskId", task_id}, {"state", state_name(snapshot->state)},
                  {"progress", snapshot->progress}, {"message", snapshot->message},
                  {"sequence", snapshot->sequence}};
