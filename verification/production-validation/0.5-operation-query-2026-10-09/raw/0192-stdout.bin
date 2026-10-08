@@ -1,0 +1,81 @@
+✖ taskId and operation helpers and direct calls preserve one read-only snapshot (1.4778ms)
+✖ all invalid XOR/ASCII/length shapes fail before transport and capacity admission (0.6026ms)
+✖ exact query input cannot use inherited identifiers or serialization hooks to change it (0.2745ms)
+✖ timeout recovery uses operation query without restarting or cancelling native work (32.0344ms)
+✖ native not-found and unauthorized are preserved without retries (0.5535ms)
+✖ query tool fallback only describes the authorized catalog entry (0.3342ms)
+✔ an existing native action description takes precedence over task fallback (0.555ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 1
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 144.2427
+
+✖ failing tests:
+
+test at tests\web\task-query.test.mjs:15:1
+✖ taskId and operation helpers and direct calls preserve one read-only snapshot (1.4778ms)
+  TypeError: sdk.queryOperation is not a function
+      at TestContext.<anonymous> (file:///F:/work/sm05-query/tests/web/task-query.test.mjs:18:30)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+
+test at tests\web\task-query.test.mjs:23:1
+✖ all invalid XOR/ASCII/length shapes fail before transport and capacity admission (0.6026ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///F:/work/sm05-query/tests/web/task-query.test.mjs:30:32)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { code: 'E_INVALID_PARAMS' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\web\task-query.test.mjs:38:1
+✖ exact query input cannot use inherited identifiers or serialization hooks to change it (0.2745ms)
+  AssertionError [ERR_ASSERTION]: Missing expected rejection.
+      at async TestContext.<anonymous> (file:///F:/work/sm05-query/tests/web/task-query.test.mjs:45:5)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: { code: 'E_INVALID_PARAMS' },
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\web\task-query.test.mjs:51:1
+✖ timeout recovery uses operation query without restarting or cancelling native work (32.0344ms)
+  TypeError: sdk.queryOperation is not a function
+      at TestContext.<anonymous> (file:///F:/work/sm05-query/tests/web/task-query.test.mjs:54:30)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at tests\web\task-query.test.mjs:59:1
+✖ native not-found and unauthorized are preserved without retries (0.5535ms)
+  TypeError: sdk.queryOperation is not a function
+      at TestContext.<anonymous> (file:///F:/work/sm05-query/tests/web/task-query.test.mjs:63:28)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at tests\web\task-query.test.mjs:68:1
+✖ query tool fallback only describes the authorized catalog entry (0.3342ms)
+  TypeError: Cannot read properties of undefined (reading 'name')
+      at TestContext.<anonymous> (file:///F:/work/sm05-query/tests/web/task-query.test.mjs:75:21)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)

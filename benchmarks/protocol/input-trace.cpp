@@ -1,5 +1,6 @@
 #define NOMINMAX
 #include <windows.h>
+#include "trace-identity.h"
 
 #include <cstdint>
 #include <filesystem>
@@ -87,12 +88,19 @@ class trace final {
     if (!IsWindow(window_) || current_pid != pid_ ||
         WaitForSingleObject(process_, 0) != WAIT_TIMEOUT)
       throw std::runtime_error("Benchmark window or process closed");
-    if (GetForegroundWindow() == window_) return;
+    if (GetForegroundWindow() == window_) { ready_for_input(); return; }
     ShowWindow(window_, SW_RESTORE);
     BringWindowToTop(window_);
     SetForegroundWindow(window_);
     Sleep(50);
-    if (GetForegroundWindow() != window_) throw std::runtime_error("Benchmark window is not foreground");
+    ready_for_input();
+  }
+  void ready_for_input() const {
+    DWORD current_pid = 0;
+    GetWindowThreadProcessId(window_, &current_pid);
+    if (!IsWindow(window_) || current_pid != pid_ ||
+        WaitForSingleObject(process_, 0) != WAIT_TIMEOUT || GetForegroundWindow() != window_)
+      throw std::runtime_error("Benchmark process, window or foreground identity changed before input");
   }
   void cursor(int x, int y) const {
     foreground();
@@ -110,6 +118,7 @@ class trace final {
     inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
     inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
     const auto before = qpc();
+    ready_for_input();
     if (SendInput(2, inputs, sizeof(INPUT)) != 2) throw std::runtime_error("Click injection failed");
     record(name, x, y, before, qpc());
   }
@@ -120,6 +129,7 @@ class trace final {
     input.mi.dwFlags = MOUSEEVENTF_WHEEL;
     input.mi.mouseData = static_cast<DWORD>(amount);
     const auto before = qpc();
+    ready_for_input();
     if (SendInput(1, &input, sizeof(INPUT)) != 1) throw std::runtime_error("Wheel injection failed");
     record(amount > 0 ? "wheel-up" : "wheel-down", x, y, before, qpc());
   }
@@ -133,6 +143,7 @@ class trace final {
     }
     inputs[1].ki.dwFlags |= KEYEVENTF_KEYUP;
     const auto before = qpc();
+    ready_for_input();
     if (SendInput(2, inputs, sizeof(INPUT)) != 2) throw std::runtime_error("Unicode injection failed");
     record("unicode-key-not-ime", -1, -1, before, qpc());
   }
@@ -144,6 +155,7 @@ class trace final {
     if (!AdjustWindowRectEx(&outer, style, GetMenu(window_) != nullptr, extended))
       throw std::runtime_error("Cannot calculate benchmark window frame");
     const auto before = qpc();
+    ready_for_input();
     if (!SetWindowPos(window_, nullptr, 0, 0, outer.right - outer.left, outer.bottom - outer.top,
                       SWP_NOMOVE | SWP_NOZORDER | SWP_NOACTIVATE))
       throw std::runtime_error("Cannot resize benchmark window");
@@ -163,7 +175,9 @@ class trace final {
 };
 
 int run(int argc, wchar_t** argv) {
-  if (argc != 5) throw std::runtime_error("Usage: InputTrace PID S01|S02|S03|S04|S05 ABSOLUTE_NEW_OUTPUT.ndjson full|probe");
+  if (argc != 5 && argc != 6) throw std::runtime_error("Usage: InputTrace PID S01|S02|S03|S04|S05 ABSOLUTE_NEW_OUTPUT.ndjson full|probe [EXPECTED_CREATION_FILETIME]");
+  const std::optional<std::uint64_t> expected = argc == 6 ?
+      std::optional<std::uint64_t>{soui::benchmark::parse_expected_filetime(argv[5])} : std::nullopt;
   const DWORD pid = parse_pid(argv[1]);
   const std::wstring scene(argv[2]);
   if (scene != L"S01" && scene != L"S02" && scene != L"S03" && scene != L"S04" && scene != L"S05")
@@ -180,6 +194,7 @@ int run(int argc, wchar_t** argv) {
   FILETIME creation{}, process_exit{}, kernel{}, user{};
   if (!GetProcessTimes(process.value, &creation, &process_exit, &kernel, &user))
     throw std::runtime_error("Cannot read benchmark process identity");
+  if (expected && filetime(creation) != *expected) throw std::runtime_error("Benchmark creation identity differs from expected FILETIME");
   window_search search{pid};
   const auto window_deadline = GetTickCount64() + 45000;
   while (!search.found && GetTickCount64() < window_deadline) {
@@ -196,6 +211,10 @@ int run(int argc, wchar_t** argv) {
       outer.bottom - outer.top > screen_height) throw std::runtime_error("The benchmark window does not fit on the primary display");
   const auto position_x = (screen_width - (outer.right - outer.left)) / 2;
   const auto position_y = (screen_height - (outer.bottom - outer.top)) / 2;
+  DWORD current_window_pid = 0;
+  GetWindowThreadProcessId(search.found, &current_window_pid);
+  if (!IsWindow(search.found) || current_window_pid != pid || WaitForSingleObject(process.value, 0) != WAIT_TIMEOUT)
+    throw std::runtime_error("Benchmark process or window changed before positioning");
   if (!SetWindowPos(search.found, HWND_TOP, position_x, position_y, 0, 0,
                     SWP_NOSIZE | SWP_SHOWWINDOW)) throw std::runtime_error("Cannot position benchmark window");
   file_handle file{CreateFileW(output.c_str(), GENERIC_WRITE, FILE_SHARE_READ, nullptr, CREATE_NEW,
@@ -207,12 +226,8 @@ int run(int argc, wchar_t** argv) {
   GetSystemTimeAsFileTime(&utc);
   std::string scene_name{"S0"};
   scene_name.push_back(static_cast<char>(scene[2]));
-  write_line(file.value, "{\"event\":\"run.begin\",\"schema\":\"soui.external-input-trace/v1\",\"pid\":" +
-      std::to_string(pid) + ",\"scene\":\"" + scene_name + "\",\"contentWidth\":1100,\"contentHeight\":720" +
-      ",\"processCreationTime100ns\":" + std::to_string(filetime(creation)) +
-      ",\"qpcFrequency\":" + std::to_string(frequency.QuadPart) +
-      ",\"startedAtUtcFiletime100ns\":" + std::to_string(filetime(utc)) +
-      ",\"mode\":\"" + std::string(duration_mode == L"full" ? "full" : "probe") + "\"}\n");
+  write_line(file.value, soui::benchmark::input_begin(pid, scene_name, duration_mode == L"full" ? "full" : "probe",
+      filetime(creation), filetime(utc), static_cast<std::uint64_t>(frequency.QuadPart), expected));
   trace input(file.value, process.value, pid, search.found);
   input.foreground();
   const int tab_x = 47 + 72 * static_cast<int>(scene[2] - L'1');

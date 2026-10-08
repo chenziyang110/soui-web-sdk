@@ -1,0 +1,49 @@
+import { SouiBridgeError } from './protocol.js';
+const names = ['promise', 'proxy', 'fetch', 'abortController', 'resizeObserver',
+    'intersectionObserver', 'webAssembly', 'webGpuInterface', 'cssGrid', 'cssContainerQueries',
+    'cssOklch', 'cssRegisteredProperties'];
+/** No UA guessing, GPU/device creation, permission requests or network traffic. */
+export function inspectSouiWebFeatures(target) {
+    const environment = target !== null && target !== void 0 ? target : (typeof window === 'undefined' ? undefined : window);
+    const features = {};
+    function observe(name, probe) {
+        if (!environment) {
+            features[name] = 'unknown';
+            return;
+        }
+        try {
+            features[name] = probe() ? 'available' : 'missing';
+        }
+        catch (_a) {
+            features[name] = 'unknown';
+        }
+    }
+    function css(property, value) {
+        var _a;
+        return typeof ((_a = environment === null || environment === void 0 ? void 0 : environment.CSS) === null || _a === void 0 ? void 0 : _a.supports) === 'function' && environment.CSS.supports(property, value);
+    }
+    observe('promise', () => typeof (environment === null || environment === void 0 ? void 0 : environment.Promise) === 'function');
+    observe('proxy', () => typeof (environment === null || environment === void 0 ? void 0 : environment.Proxy) === 'function');
+    observe('fetch', () => typeof (environment === null || environment === void 0 ? void 0 : environment.fetch) === 'function');
+    observe('abortController', () => typeof (environment === null || environment === void 0 ? void 0 : environment.AbortController) === 'function');
+    observe('resizeObserver', () => typeof (environment === null || environment === void 0 ? void 0 : environment.ResizeObserver) === 'function');
+    observe('intersectionObserver', () => typeof (environment === null || environment === void 0 ? void 0 : environment.IntersectionObserver) === 'function');
+    observe('webAssembly', () => !!(environment === null || environment === void 0 ? void 0 : environment.WebAssembly));
+    observe('webGpuInterface', () => { var _a; return !!((_a = environment === null || environment === void 0 ? void 0 : environment.navigator) === null || _a === void 0 ? void 0 : _a.gpu); });
+    observe('cssGrid', () => css('display', 'grid'));
+    observe('cssContainerQueries', () => css('container-type', 'inline-size'));
+    observe('cssOklch', () => css('color', 'oklch(50% 0.1 120)'));
+    observe('cssRegisteredProperties', () => { var _a; return typeof ((_a = environment === null || environment === void 0 ? void 0 : environment.CSS) === null || _a === void 0 ? void 0 : _a.registerProperty) === 'function'; });
+    return { protocol: 'soui.web-features/1', scope: 'surface-detection', features };
+}
+/** Validate the required surfaces before mounting the app; never grants native permissions. */
+export function requireSouiWebFeatures(required, target) {
+    if (!Array.isArray(required) || required.length > names.length ||
+        required.some(name => names.indexOf(name) < 0) || new Set(required).size !== required.length)
+        throw new SouiBridgeError('E_INVALID_FEATURES', 'Expected a bounded list of unique supported feature names.');
+    const report = inspectSouiWebFeatures(target);
+    const missing = required.filter((name) => report.features[name] !== 'available');
+    if (missing.length)
+        throw new SouiBridgeError('E_WEB_FEATURES_UNAVAILABLE', `This application requires unavailable or unverified Web features: ${missing.join(', ')}.`);
+    return report;
+}

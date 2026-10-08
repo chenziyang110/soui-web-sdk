@@ -1,6 +1,6 @@
 # ADR-0032：按 operationId 只读查询公共任务
 
-日期：2026-10-09。状态：实现与局部验证已完成，待独立审查及主线整合。关联：[ADR-0027](0027-native-authorization-scope-and-task-ownership.md)。
+日期：2026-10-09。状态：实现与独立审查完成，主线组合已验证，正式验收待完成。关联：[ADR-0027](0027-native-authorization-scope-and-task-ownership.md)。
 
 ## 背景与影响对象
 
@@ -47,4 +47,4 @@
 
 本切片已在 x86/x64 的 SDK 源消费者中编译并执行新查询回归（各 7/7）及既有 task_service、task_scope、task_store_capacity 回归；实际测试均自然退出 0 且 Job 归零。真实 Web 构建、互斥类型检查及六套相关运行时测试 83/83 通过、无 skip，npm audit 为 0。编译虽 root exit 0，通用监督的 compiler 尾诊断仍为 false，未改写或套用例外。旧实现的 Web/types 负证据和六项有效 native 行为失败均保留；另一次 public bootstrap 测试输入错误及早期验证脚本/编译 fixture 失败也保留，不能作为有效行为 RED。本次源码消费者不等同已安装 CMake 包、目标浏览器或正式交付验收。
 
-回退此切片会恢复仅 taskId 查询；已有任务池和 scope 生命周期不变。证据完成后由 Root 独审、整合主线、更新最终交付身份和清单。
+主线 `4fc8c199` 组合后的 Web 查询及核心回归 98/98、互斥类型检查、可选 React/Vue 实际编译与绑定测试通过；实际 AST 与 Collect 字段投影验证新增入口。371 个原生 SDK/依赖输入与上述已验证切片一致，本轮未重编完整原生组合。见[归档](../../verification/production-validation/0.5-operation-query-2026-10-09/README.md)。回退此切片会恢复仅 taskId 查询；已有任务池和 scope 生命周期不变。

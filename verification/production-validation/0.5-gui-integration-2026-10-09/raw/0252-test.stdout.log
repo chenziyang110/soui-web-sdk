@@ -1,0 +1,40 @@
+
+> soui-gui-bindings-component-tests@0.1.0 test
+> node --test react.test.mjs vue.test.mjs packages.test.mjs
+
+✔ binding delivery is peer-only and local installed consumers have no source links (2.08ms)
+✔ packed bindings compile in an offline consumer outside the SDK tree (7894.0329ms)
+✔ optional SDK source package imports and types survive installation outside the repository (14746.8922ms)
+✔ npm peers accept the promised 0.5 tuple and reject unpromised prerelease tuples (15262.9413ms)
+✔ React 19.3.0: StrictMode registrations and teardown borrow the shared GUI (15.3978ms)
+✔ React committed callbacks and state update without removing an existing observation (35.4835ms)
+✔ React suspended uncommitted renders cannot replace the last committed callback (7.1598ms)
+✔ React structural changes reject old work and protect an id reused by a new generation (2.5251ms)
+✔ React DOM ref replacement and action-name changes each remove the old observation (2.8597ms)
+✔ React stable business ids survive list reorder without cancelling observations (40.7335ms)
+✔ React changing the borrowed GUI removes only this binding from the old registry (3.1483ms)
+✔ React duplicate ids reach the error boundary rather than replacing another registration (7.4017ms)
+✔ React exposes only explicit projections and expose=false removes the registration (5.3852ms)
+✔ React native denial propagates without retry or a synthesized user gesture (2.3013ms)
+✔ React timeout and unmount do not cancel native work; cancellation is an explicit action (21.4541ms)
+✔ Vue real connected mount/unmount borrows the shared GUI (9.3923ms)
+✔ Vue post-render callbacks and state update without removing an observation (39.4115ms)
+✔ Vue getter dependencies update even when the DOM itself has no reactive read (2.0707ms)
+✔ Vue KeepAlive removes inactive generations and re-registers on activation (5.8863ms)
+✔ Vue structural change isolates old asynchronous results from a reused id (1.9831ms)
+✔ Vue DOM ref and action-name replacement reject the old observation (2.0007ms)
+✔ Vue keyed business ids survive list reorder with pending observations intact (38.7087ms)
+✔ Vue DOM/props remain private and expose=false removes registered observations (2.4616ms)
+✔ Vue native denial propagates once and a disabled DOM element cannot execute (2.4292ms)
+✔ Vue timeout/unmount do not cancel native work; task.cancel is only explicit (20.9061ms)
+✔ Vue duplicate ids and disconnected mount failures reach the framework error handler (1.3828ms)
+✔ Vue invalid action updates remove old observers instead of accepting an array as a map (1.579ms)
+✔ Vue options getter failure withdraws the previous generation through the framework error handler (0.5265ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 38051.5186

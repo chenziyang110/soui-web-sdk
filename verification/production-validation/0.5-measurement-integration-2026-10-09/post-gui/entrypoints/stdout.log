@@ -1,0 +1,60 @@
+{
+  "schema": "soui.measurement-entrypoint-extraction/v1",
+  "testActualPSAst": true,
+  "parserErrors": 0,
+  "measurementCommands": [
+    "& node (Join-Path $root 'tools/internal/measurement-validation.cjs') protocol $Architecture",
+    "& node (Join-Path $root 'tools/internal/measurement-validation.cjs') native $Architecture"
+  ],
+  "collectActualUnitProjection": [
+    {
+      "name": "measurement-protocol-tests",
+      "exe": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/internal/measurement-validation.cjs",
+        "protocol"
+      ]
+    },
+    {
+      "name": "native-measurement-x64",
+      "exe": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/internal/measurement-validation.cjs",
+        "native",
+        "x64"
+      ]
+    },
+    {
+      "name": "native-measurement-x86",
+      "exe": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/internal/measurement-validation.cjs",
+        "native",
+        "x86"
+      ]
+    },
+    {
+      "name": "gui-bindings-delivery-tests",
+      "exe": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--test",
+        "tests/sdk/gui-bindings-delivery.test.cjs",
+        "tests/sdk/gui-bindings-entrypoints.test.cjs"
+      ]
+    },
+    {
+      "name": "action-generation-tests",
+      "exe": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "--test",
+        "tests/sdk/actiongen.test.mjs",
+        "tests/web/generated-actions.test.mjs"
+      ]
+    }
+  ],
+  "metadataOnly": true,
+  "fullTestExecuted": false,
+  "fullCollectExecuted": false,
+  "noCompile": true,
+  "noGui": true
+}

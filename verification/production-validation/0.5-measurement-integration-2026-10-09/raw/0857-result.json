@@ -1,0 +1,84 @@
+{
+  "ready": {
+    "pid": 63180,
+    "creationFileTime": "134359520318979033"
+  },
+  "hostResult": {
+    "name": "host",
+    "pid": 63180,
+    "contextSha256": "5a1bda8f7686bffe05e38f864174079ba75eb67241fb466ab5374d4ba5e9ab25",
+    "code": 0,
+    "signal": null,
+    "error": null,
+    "ownedProcess": {
+      "pid": 63180,
+      "creationFileTime": "134359520318979033",
+      "exitCode": 0,
+      "supervisorExitCode": 0,
+      "signal": null,
+      "spawnError": null,
+      "reportError": null,
+      "stopRequested": false,
+      "fallbackUsed": false,
+      "closureConfirmed": true,
+      "passed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 1768,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 4,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "report": "F:\\work\\sm05-mi\\out\\sampler-owned-timeout-a104e6bf-af2b-47df-8e59-dd7abd72e573\\host.owned.ndjson",
+      "reportSha256": "ef75e3024bf11e0eacb6cb0b8a9b63fbfbd68dcbe481ef0a9b28d812f9319d5e",
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36",
+      "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    }
+  },
+  "failed": {
+    "name": "sampler",
+    "pid": 84936,
+    "contextSha256": "6fa3f602567644437dc933ff1694a35e4c2788152100245527cf62ddc7425e9c",
+    "code": 2,
+    "signal": null,
+    "error": "root-failed",
+    "ownedProcess": {
+      "pid": 84936,
+      "creationFileTime": "134359520320992605",
+      "exitCode": 2,
+      "supervisorExitCode": 2,
+      "signal": null,
+      "spawnError": null,
+      "reportError": null,
+      "stopRequested": false,
+      "fallbackUsed": false,
+      "closureConfirmed": true,
+      "passed": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 578,
+        "rootExited": true,
+        "rootExitCode": 2,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "report": "F:\\work\\sm05-mi\\out\\sampler-owned-timeout-a104e6bf-af2b-47df-8e59-dd7abd72e573\\sampler.owned.ndjson",
+      "reportSha256": "51086c5647a2b0d271c1769dc595a1c92be9a972c42c4c15485739e974771eb4",
+      "runnerSha256": "144489da8b25573b4eb027f198526fa2a05975345594d84cb9c7468a9b3e3b36",
+      "executableSha256": "8cb25011a5679456f6b43d18dfdec465a1033211844c11a91b441f047cdc5aec"
+    }
+  }
+}

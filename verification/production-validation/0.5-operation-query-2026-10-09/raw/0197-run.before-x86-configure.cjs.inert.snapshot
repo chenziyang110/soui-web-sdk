@@ -1,0 +1,70 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'../..'),folder=__dirname;
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const identity=p=>{const b=fs.readFileSync(p);return{path:p,bytes:b.length,sha256:sha(b)};};
+const stringify=x=>JSON.stringify(x,null,2)+'\n';
+const bin=path.join(folder,'bootstrap');fs.mkdirSync(bin,{recursive:true});
+for(const [source,target] of [['F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe','OwnedProcessRunner.exe'],[path.join(root,'tools/internal/owned-process.cjs'),'owned-process.cjs']]) {
+ const to=path.join(bin,target);if(!fs.existsSync(to))fs.copyFileSync(source,to);
+}
+const runner=path.join(bin,'OwnedProcessRunner.exe'),client=path.join(bin,'owned-process.cjs');
+const {launchOwned}=require(client);
+function sources(){
+ const files=[];
+ function walk(name){const full=path.join(root,name);for(const d of fs.readdirSync(full,{withFileTypes:true})){
+  if(d.isDirectory()&&!['node_modules','dist'].includes(d.name))walk(path.join(name,d.name));
+  else if(d.isFile()&&/\.(cpp|h|c|ts|js|json)$/.test(d.name)&&!d.name.endsWith('package-lock.json'))files.push(path.join(name,d.name));
+ }}
+ walk('sdk');
+ files.push('sdk/CMakeLists.txt','cmake/SouiWindowsSdk.cmake','third_party/include/json/json.hpp',
+ 'tests/native/task_operation_query_tests.cpp','tests/native/task_service_tests.cpp','tests/native/task_scope_tests.cpp','tests/native/task_store_capacity_tests.cpp',
+ 'tests/web/task-query.test.mjs','tests/web/task-query-types.ts','tests/web/task-query-types.tsconfig.json');
+ const entries=[...new Set(files)].sort().map(p=>({...identity(path.join(root,p)),path:p.replace(/\\/g,'/')}));
+ return{sha256:sha(Buffer.from(stringify(entries))),files:entries};
+}
+async function run(name,exe,args,options={}){
+ const stage=path.join(folder,name+'-'+crypto.randomUUID());fs.mkdirSync(stage);
+ const originalExecutable=identity(exe);
+ if(/_tests\.exe$/i.test(exe)){const saved=path.join(stage,path.basename(exe));fs.copyFileSync(exe,saved);exe=saved;}
+ const before=sources();const inputs={name,executable:identity(exe),runner:identity(runner),client:identity(client),driver:identity(__filename),source:before,args,cwd:root,
+  originalExecutable,
+  noGui:true,noVm:true,compilerTailException:false,env:{MSBUILDDISABLENODEREUSE:'1',VcpkgEnabled:'false',VcpkgEnableManifest:'false',VcpkgApplocalDeps:'false'}};
+ fs.writeFileSync(path.join(stage,'inputs.json'),stringify(inputs));
+ const owned=launchOwned(exe,args,{runner,cwd:root,report:path.join(stage,'owned.ndjson'),timeoutMs:options.timeoutMs||120000,drainMs:2500,stdout:'pipe',stderr:'pipe',
+ env:{...process.env,MSBUILDDISABLENODEREUSE:'1',VcpkgEnabled:'false',VcpkgEnableManifest:'false',VcpkgApplocalDeps:'false'}});
+ const out=[],err=[];owned.child.stdout.on('data',b=>out.push(b));owned.child.stderr.on('data',b=>err.push(b));
+ const result=await owned.finished;fs.writeFileSync(path.join(stage,'stdout.bin'),Buffer.concat(out));fs.writeFileSync(path.join(stage,'stderr.bin'),Buffer.concat(err));
+ fs.writeFileSync(path.join(stage,'finished.json'),stringify(result));
+ const after=sources();const stable=after.sha256===before.sha256;const actualSuccess=result.exitCode===0&&result.closureConfirmed&&!result.reportError&&!result.fallbackUsed;
+ const summary={stage,name,sourceUnchanged:stable,...result,accepted:stable&&(options.compile?actualSuccess:result.passed&&result.closureConfirmed),nativeCompilerRootOnly:!!options.compile,noGui:true};
+ fs.writeFileSync(path.join(stage,'summary.json'),stringify(summary));console.log(stringify({stage,name,rootExitCode:result.exitCode,genericPassed:result.passed,closureConfirmed:result.closureConfirmed,sourceUnchanged:stable,accepted:summary.accepted}));
+ if(!summary.accepted&&!options.expectedFailure)throw Error(name+' failed; evidence retained at '+stage);
+ return summary;
+}
+const cmake='C:/Program Files/CMake/bin/cmake.exe',npm='C:/nvm4w/nodejs/node_modules/npm/bin/npm-cli.js';
+const project=path.join(folder,'consumer');fs.mkdirSync(project,{recursive:true});
+const cmakeText=`cmake_minimum_required(VERSION 3.24)\nproject(TaskOperationQueryValidation LANGUAGES C CXX)\nadd_subdirectory("${root.replace(/\\/g,'/')}/sdk" sdk)\n`+
+ ['task_operation_query','task_service','task_scope','task_store_capacity'].map(n=>`add_executable(${n}_tests "${root.replace(/\\/g,'/')}/tests/native/${n}_tests.cpp")\ntarget_link_libraries(${n}_tests PRIVATE Soui::Sdk)\ntarget_compile_features(${n}_tests PRIVATE cxx_std_17)\ntarget_include_directories(${n}_tests PRIVATE "${root.replace(/\\/g,'/')}/third_party/include/json")\ntarget_compile_options(${n}_tests PRIVATE /utf-8 /W4 /U_DEBUG)\nset_property(TARGET ${n}_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)\n`).join('');
+const cmakePath=path.join(project,'CMakeLists.txt');if(!fs.existsSync(cmakePath))fs.writeFileSync(cmakePath,cmakeText);
+const build=arch=>path.join(folder,'build-'+arch);
+async function configure(arch){return run('configure-'+arch,cmake,['-S',project,'-B',build(arch),'-G','Visual Studio 17 2022','-A',(arch==='x86'?'Win32':'x64')+',version=10.0.19041.0','-T','v143','-DCMAKE_SYSTEM_VERSION=10.0.19041.0','-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING='+path.join(root,'cmake/SouiWindowsSdk.cmake').replace(/\\/g,'/')],{compile:true});}
+async function compile(arch){return run('compile-'+arch,cmake,['--build',build(arch),'--config','Release','--target','task_operation_query_tests','task_service_tests','task_scope_tests','task_store_capacity_tests','--parallel','2','--','/nr:false','/v:normal','/p:VcpkgEnabled=false','/p:VcpkgEnableManifest=false','/p:VcpkgApplocalDeps=false'],{compile:true});}
+(async()=>{
+ const [mode,arch='x64']=process.argv.slice(2);if(!['x64','x86'].includes(arch))throw Error('invalid arch');
+ if(mode==='prepare-web'){
+  await run('npm-ci',process.execPath,[npm,'--prefix','sdk/web','ci']);
+  await run('web-build-before',process.execPath,[npm,'--prefix','sdk/web','run','build']);
+ }else if(mode==='red-web'){
+  await run('red-web',process.execPath,['--test','tests/web/task-query.test.mjs'],{expectedFailure:true});
+  await run('red-types',process.execPath,['sdk/web/node_modules/typescript/bin/tsc','-p','tests/web/task-query-types.tsconfig.json'],{expectedFailure:true});
+ }else if(mode==='build-native'){await configure(arch);await compile(arch);}
+ else if(mode==='red-native'){await compile(arch);await run('red-native-'+arch,path.join(build(arch),'Release/task_operation_query_tests.exe'),[],{expectedFailure:true});}
+ else if(mode==='green-native'){await compile(arch);for(const n of ['task_operation_query','task_service','task_scope','task_store_capacity'])await run(n+'-'+arch,path.join(build(arch),'Release',n+'_tests.exe'),[]);}
+ else if(mode==='green-web'){
+  await run('web-build',process.execPath,[npm,'--prefix','sdk/web','run','build']);
+  await run('web-types',process.execPath,['sdk/web/node_modules/typescript/bin/tsc','-p','tests/web/task-query-types.tsconfig.json']);
+  await run('web-runtime',process.execPath,['--test','tests/web/task-query.test.mjs','tests/web/sdk-client.test.mjs','tests/web/action-contracts.test.mjs','tests/web/capabilities.test.mjs','tests/web/session-renewal.test.mjs','tests/web/agent-session-renewal.test.mjs']);
+  await run('npm-audit',process.execPath,[npm,'--prefix','sdk/web','audit','--json']);
+ }else throw Error('unknown mode');
+})().catch(e=>{console.error(e.stack);process.exitCode=1});

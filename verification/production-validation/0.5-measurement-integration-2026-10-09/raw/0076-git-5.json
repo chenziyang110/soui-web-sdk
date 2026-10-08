@@ -1,0 +1,12 @@
+{
+  "cwd": "F:/work/sm05-mi",
+  "exe": "git",
+  "args": [
+    "commit",
+    "-m",
+    "feat: bind benchmark measurement to exact owned process identity"
+  ],
+  "status": 0,
+  "stdout": "[codex/sdk-05-measure-integration 6d7a2747] feat: bind benchmark measurement to exact owned process identity\n 22 files changed, 1517 insertions(+), 198 deletions(-)\n create mode 100644 benchmarks/protocol/owned-trace-subject.cjs\n create mode 100644 benchmarks/protocol/trace-identity.h\n create mode 100644 docs/adr/0030-exact-benchmark-process-identity.md\n create mode 100644 tests/benchmark/measurement-preparation-source.test.cjs\n create mode 100644 tests/benchmark/native-trace-identity.cpp\n create mode 100644 tests/benchmark/owned-trace-subject.test.cjs\n create mode 100644 tools/internal/measurement-validation.cjs\n",
+  "stderr": ""
+}

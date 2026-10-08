@@ -1,0 +1,598 @@
+TAP version 13
+# Subtest: contracts and tool definitions are validated defensive copies
+ok 1 - contracts and tool definitions are validated defensive copies
+  ---
+  duration_ms: 1.4315
+  type: 'test'
+  ...
+# Subtest: Unicode length uses scalars rather than UTF-16 units and rejects lone surrogates
+ok 2 - Unicode length uses scalars rather than UTF-16 units and rejects lone surrogates
+  ---
+  duration_ms: 2.1669
+  type: 'test'
+  ...
+# Subtest: unknown keywords, missing bounds and invalid roots are refused instead of silently weakened
+ok 3 - unknown keywords, missing bounds and invalid roots are refused instead of silently weakened
+  ---
+  duration_ms: 1.0489
+  type: 'test'
+  ...
+# Subtest: object, array, string enum, numeric and null schemas enforce exact values
+ok 4 - object, array, string enum, numeric and null schemas enforce exact values
+  ---
+  duration_ms: 0.8858
+  type: 'test'
+  ...
+# Subtest: schema cardinality, bytes, numeric bounds and raw structural depth are bounded
+ok 5 - schema cardinality, bytes, numeric bounds and raw structural depth are bounded
+  ---
+  duration_ms: 0.9513
+  type: 'test'
+  ...
+# Subtest: prototype-named properties remain data and custom serializers cannot change validation
+ok 6 - prototype-named properties remain data and custom serializers cannot change validation
+  ---
+  duration_ms: 0.2875
+  type: 'test'
+  ...
+# Subtest: authorized discovery preserves action contracts and rejects malformed native schemas
+ok 7 - authorized discovery preserves action contracts and rejects malformed native schemas
+  ---
+  duration_ms: 2.0709
+  type: 'test'
+  ...
+# Subtest: tools are advisory and do not change the native denial or invoke discovered methods
+ok 8 - tools are advisory and do not change the native denial or invoke discovered methods
+  ---
+  duration_ms: 0.4807
+  type: 'test'
+  ...
+# Subtest: describe uses the existing authenticated transport and returns an owned page
+ok 9 - describe uses the existing authenticated transport and returns an owned page
+  ---
+  duration_ms: 1.8409
+  type: 'test'
+  ...
+# Subtest: discovery follows authorized pages without calling business methods
+ok 10 - discovery follows authorized pages without calling business methods
+  ---
+  duration_ms: 0.9166
+  type: 'test'
+  ...
+# Subtest: empty complete catalog is valid
+ok 11 - empty complete catalog is valid
+  ---
+  duration_ms: 0.3384
+  type: 'test'
+  ...
+# Subtest: describe rejects invalid options before invoking native code
+ok 12 - describe rejects invalid options before invoking native code
+  ---
+  duration_ms: 1.1473
+  type: 'test'
+  ...
+# Subtest: describe rejects malformed, oversized or non-progressing native pages
+ok 13 - describe rejects malformed, oversized or non-progressing native pages
+  ---
+  duration_ms: 1.9883
+  type: 'test'
+  ...
+# Subtest: discovery detects duplicate pages and version drift
+ok 14 - discovery detects duplicate pages and version drift
+  ---
+  duration_ms: 0.3747
+  type: 'test'
+  ...
+# Subtest: discovery enforces its total bound without an extra request
+ok 15 - discovery enforces its total bound without an extra request
+  ---
+  duration_ms: 0.1973
+  type: 'test'
+  ...
+# Subtest: a catalog ending exactly at maxMethods succeeds
+ok 16 - a catalog ending exactly at maxMethods succeeds
+  ---
+  duration_ms: 0.2614
+  type: 'test'
+  ...
+# Subtest: discovery options are bounded before transport
+ok 17 - discovery options are bounded before transport
+  ---
+  duration_ms: 0.3505
+  type: 'test'
+  ...
+# Subtest: native unsupported and unauthorized errors are preserved
+ok 18 - native unsupported and unauthorized errors are preserved
+  ---
+  duration_ms: 0.3962
+  type: 'test'
+  ...
+# Subtest: dispose stops a paged discovery instead of returning a partial catalog
+ok 19 - dispose stops a paged discovery instead of returning a partial catalog
+  ---
+  duration_ms: 0.1912
+  type: 'test'
+  ...
+# Subtest: only explicitly registered semantics and named actions are exposed
+ok 20 - only explicitly registered semantics and named actions are exposed
+  ---
+  duration_ms: 4.5388
+  type: 'test'
+  ...
+# Subtest: registrations, inputs and snapshots are owned copies
+ok 21 - registrations, inputs and snapshots are owned copies
+  ---
+  duration_ms: 0.6948
+  type: 'test'
+  ...
+# Subtest: duplicate ids and capacity are enforced and unregister permits reuse
+ok 22 - duplicate ids and capacity are enforced and unregister permits reuse
+  ---
+  duration_ms: 8.0267
+  type: 'test'
+  ...
+# Subtest: disabled property, aria-disabled and explicit app state all deny actions
+ok 23 - disabled property, aria-disabled and explicit app state all deny actions
+  ---
+  duration_ms: 1.2
+  type: 'test'
+  ...
+# Subtest: Chrome49 connection fallback works and disconnected nodes cannot be acted upon
+ok 24 - Chrome49 connection fallback works and disconnected nodes cannot be acted upon
+  ---
+  duration_ms: 0.718
+  type: 'test'
+  ...
+# Subtest: busy remains until the actual handler settles after a caller timeout
+ok 25 - busy remains until the actual handler settles after a caller timeout
+  ---
+  duration_ms: 0.9446
+  type: 'test'
+  ...
+# Subtest: synchronous and native handler errors propagate and free busy state
+ok 26 - synchronous and native handler errors propagate and free busy state
+  ---
+  duration_ms: 0.3437
+  type: 'test'
+  ...
+# Subtest: waitFor observes explicit state, defaults to enabled idle, and times out honestly
+ok 27 - waitFor observes explicit state, defaults to enabled idle, and times out honestly
+  ---
+  duration_ms: 0.3569
+  type: 'test'
+  ...
+# Subtest: unregistration rejects running actions and waits; late results cannot target a reused id
+ok 28 - unregistration rejects running actions and waits; late results cannot target a reused id
+  ---
+  duration_ms: 0.3548
+  type: 'test'
+  ...
+# Subtest: dispose immediately rejects pending waits and actions, refuses future work, and is idempotent
+ok 29 - dispose immediately rejects pending waits and actions, refuses future work, and is idempotent
+  ---
+  duration_ms: 0.6789
+  type: 'test'
+  ...
+# Subtest: disconnection during a wait rejects even when the application handler remains pending
+ok 30 - disconnection during a wait rejects even when the application handler remains pending
+  ---
+  duration_ms: 0.2498
+  type: 'test'
+  ...
+# Subtest: input, snapshot and handler results enforce UTF-8 byte and JSON limits
+ok 31 - input, snapshot and handler results enforce UTF-8 byte and JSON limits
+  ---
+  duration_ms: 1.8368
+  type: 'test'
+  ...
+# Subtest: application state reentrancy cannot revive a disposed or removed registration
+ok 32 - application state reentrancy cannot revive a disposed or removed registration
+  ---
+  duration_ms: 0.3316
+  type: 'test'
+  ...
+# Subtest: caller mutation of an action name cannot execute a different handler
+ok 33 - caller mutation of an action name cannot execute a different handler
+  ---
+  duration_ms: 0.232
+  type: 'test'
+  ...
+# Subtest: input getter reentrancy cannot invoke an action after removal and serializers are never called
+ok 34 - input getter reentrancy cannot invoke an action after removal and serializers are never called
+  ---
+  duration_ms: 0.4476
+  type: 'test'
+  ...
+# Subtest: pending state observations are bounded and capacity recovers after completion
+ok 35 - pending state observations are bounded and capacity recovers after completion
+  ---
+  duration_ms: 3.0084
+  type: 'test'
+  ...
+# Subtest: custom method sends the scoped envelope and returns native data
+ok 36 - custom method sends the scoped envelope and returns native data
+  ---
+  duration_ms: 1.5096
+  type: 'test'
+  ...
+# Subtest: a response from another request is rejected
+ok 37 - a response from another request is rejected
+  ---
+  duration_ms: 0.3187
+  type: 'test'
+  ...
+# Subtest: malformed JSON becomes a structured response error
+ok 38 - malformed JSON becomes a structured response error
+  ---
+  duration_ms: 0.1677
+  type: 'test'
+  ...
+# Subtest: native denials retain the native error code
+ok 39 - native denials retain the native error code
+  ---
+  duration_ms: 0.1095
+  type: 'test'
+  ...
+# Subtest: valid JSON with an invalid response shape produces a structured error
+ok 40 - valid JSON with an invalid response shape produces a structured error
+  ---
+  duration_ms: 0.3152
+  type: 'test'
+  ...
+# Subtest: timeout is bounded without claiming native cancellation
+ok 41 - timeout is bounded without claiming native cancellation
+  ---
+  duration_ms: 60.0662
+  type: 'test'
+  ...
+# Subtest: 32 in-flight calls resolve to their own results in reverse order
+ok 42 - 32 in-flight calls resolve to their own results in reverse order
+  ---
+  duration_ms: 1.6425
+  type: 'test'
+  ...
+# Subtest: request capacity rejects overload and recovers after completion
+ok 43 - request capacity rejects overload and recovers after completion
+  ---
+  duration_ms: 0.4761
+  type: 'test'
+  ...
+# Subtest: UTF-8 byte limits and non-JSON parameters fail before transport
+ok 44 - UTF-8 byte limits and non-JSON parameters fail before transport
+  ---
+  duration_ms: 0.541
+  type: 'test'
+  ...
+# Subtest: dispose rejects outstanding waits, removes the owned listener once and rejects new calls
+ok 45 - dispose rejects outstanding waits, removes the owned listener once and rejects new calls
+  ---
+  duration_ms: 0.9477
+  type: 'test'
+  ...
+# Subtest: timeout frees a page slot without pretending native work was cancelled
+ok 46 - timeout frees a page slot without pretending native work was cancelled
+  ---
+  duration_ms: 26.9453
+  type: 'test'
+  ...
+# Subtest: invalid client options and null native error envelopes are structured failures
+ok 47 - invalid client options and null native error envelopes are structured failures
+  ---
+  duration_ms: 0.437
+  type: 'test'
+  ...
+# Subtest: caller mutation of options cannot change the connection scope
+ok 48 - caller mutation of options cannot change the connection scope
+  ---
+  duration_ms: 0.125
+  type: 'test'
+  ...
+# Subtest: event validation, sequence filtering and callback isolation apply to each observer
+ok 49 - event validation, sequence filtering and callback isolation apply to each observer
+  ---
+  duration_ms: 1.3261
+  type: 'test'
+  ...
+# Subtest: native subscription denial is observable and releases the local subscription slot
+ok 50 - native subscription denial is observable and releases the local subscription slot
+  ---
+  duration_ms: 0.7035
+  type: 'test'
+  ...
+# Subtest: removal before subscription acknowledgement is idempotent and sends one late unsubscribe
+ok 51 - removal before subscription acknowledgement is idempotent and sends one late unsubscribe
+  ---
+  duration_ms: 0.4487
+  type: 'test'
+  ...
+# Subtest: a disposed pending subscription cleans up a late native success once
+ok 52 - a disposed pending subscription cleans up a late native success once
+  ---
+  duration_ms: 0.3904
+  type: 'test'
+  ...
+# Subtest: a timed-out subscription also cleans up a late successful acknowledgement
+ok 53 - a timed-out subscription also cleans up a late successful acknowledgement
+  ---
+  duration_ms: 27.215
+  type: 'test'
+  ...
+# Subtest: malformed subscription identities and failed native removal remain visible
+ok 54 - malformed subscription identities and failed native removal remain visible
+  ---
+  duration_ms: 1.1223
+  type: 'test'
+  ...
+# Subtest: bounded control capacity permits unsubscribe when ordinary request capacity is full
+ok 55 - bounded control capacity permits unsubscribe when ordinary request capacity is full
+  ---
+  duration_ms: 0.5054
+  type: 'test'
+  ...
+# Subtest: toJSON reentrancy cannot bypass disposal or capacity checks
+ok 56 - toJSON reentrancy cannot bypass disposal or capacity checks
+  ---
+  duration_ms: 0.379
+  type: 'test'
+  ...
+# Subtest: a reentrant port can dispose during subscription creation without leaking a late subscription
+ok 57 - a reentrant port can dispose during subscription creation without leaking a late subscription
+  ---
+  duration_ms: 0.3247
+  type: 'test'
+  ...
+# Subtest: the standard connector shares one bootstrap and waits for asynchronous native responses
+ok 58 - the standard connector shares one bootstrap and waits for asynchronous native responses
+  ---
+  duration_ms: 1.0194
+  type: 'test'
+  ...
+# Subtest: asynchronous bootstrap is supported without a busy wait
+ok 59 - asynchronous bootstrap is supported without a busy wait
+  ---
+  duration_ms: 0.1073
+  type: 'test'
+  ...
+# Subtest: connector options cannot swap the error observer while bootstrap is pending
+ok 60 - connector options cannot swap the error observer while bootstrap is pending
+  ---
+  duration_ms: 0.1504
+  type: 'test'
+  ...
+# Subtest: a second connector cannot silently change options or replace another dispatcher
+ok 61 - a second connector cannot silently change options or replace another dispatcher
+  ---
+  duration_ms: 0.1498
+  type: 'test'
+  ...
+# Subtest: document unload disposes outstanding waits and removes connector hooks
+ok 62 - document unload disposes outstanding waits and removes connector hooks
+  ---
+  duration_ms: 0.152
+  type: 'test'
+  ...
+# Subtest: bootstrap timeout and unload release hooks and do not silently rebootstrap
+ok 63 - bootstrap timeout and unload release hooks and do not silently rebootstrap
+  ---
+  duration_ms: 26.5745
+  type: 'test'
+  ...
+# Subtest: bootstrap rejects malformed credentials, wrong correlation and invalid JSON
+ok 64 - bootstrap rejects malformed credentials, wrong correlation and invalid JSON
+  ---
+  duration_ms: 0.6173
+  type: 'test'
+  ...
+# Subtest: connector native events reach only matching subscriptions and owned hooks are restored
+ok 65 - connector native events reach only matching subscriptions and owned hooks are restored
+  ---
+  duration_ms: 0.2645
+  type: 'test'
+  ...
+# Subtest: ordinary browser use and broken native binding produce explicit connection errors
+ok 66 - ordinary browser use and broken native binding produce explicit connection errors
+  ---
+  duration_ms: 0.148
+  type: 'test'
+  ...
+# Subtest: renewal is opt-in, early renewal returns the existing lease, and native rotation is reserved
+ok 67 - renewal is opt-in, early renewal returns the existing lease, and native rotation is reserved
+  ---
+  duration_ms: 1.8539
+  type: 'test'
+  ...
+# Subtest: automatic renewal shares one flight and leaves business dispatch synchronous
+ok 68 - automatic renewal shares one flight and leaves business dispatch synchronous
+  ---
+  duration_ms: 1.8537
+  type: 'test'
+  ...
+# Subtest: an automatic timer firing slightly early retains a bounded later renewal timer
+ok 69 - an automatic timer firing slightly early retains a bounded later renewal timer
+  ---
+  duration_ms: 0.8994
+  type: 'test'
+  ...
+# Subtest: renewal has a slot even when business and release capacities are exhausted
+ok 70 - renewal has a slot even when business and release capacities are exhausted
+  ---
+  duration_ms: 0.6496
+  type: 'test'
+  ...
+# Subtest: bootstrap delay only shortens expiration and disposed renewal cannot restart
+ok 71 - bootstrap delay only shortens expiration and disposed renewal cannot restart
+  ---
+  duration_ms: 0.3804
+  type: 'test'
+  ...
+# Subtest: lease validation and caller mutation cannot increase or replace the authorization lifetime
+ok 72 - lease validation and caller mutation cannot increase or replace the authorization lifetime
+  ---
+  duration_ms: 0.41
+  type: 'test'
+  ...
+# Subtest: lost acknowledgement recovers the same operation without extending native expiry or replaying work
+ok 73 - lost acknowledgement recovers the same operation without extending native expiry or replaying work
+  ---
+  duration_ms: 0.6259
+  type: 'test'
+  ...
+# Subtest: an earlier timed-out attempt can recover the active flight and cancel its retry timer
+ok 74 - an earlier timed-out attempt can recover the active flight and cancel its retry timer
+  ---
+  duration_ms: 0.3183
+  type: 'test'
+  ...
+# Subtest: three attempts with one occupied native slot retain a custom-port late acknowledgement until the deadline
+ok 75 - three attempts with one occupied native slot retain a custom-port late acknowledgement until the deadline
+  ---
+  duration_ms: 1.933
+  type: 'test'
+  ...
+# Subtest: the actual native resolver drops the first acknowledgement and the reserved final attempt retrieves the same operation
+ok 76 - the actual native resolver drops the first acknowledgement and the reserved final attempt retrieves the same operation
+  ---
+  duration_ms: 1.0739
+  type: 'test'
+  ...
+# Subtest: an occupied native slot exhausts three attempts but fails only at the original recovery or lease deadline
+ok 77 - an occupied native slot exhausts three attempts but fails only at the original recovery or lease deadline
+  ---
+  duration_ms: 1.9536
+  type: 'test'
+  ...
+# Subtest: retry attempts and recovery deadline stay bounded and terminal failure does not rebootstrap
+ok 78 - retry attempts and recovery deadline stay bounded and terminal failure does not rebootstrap
+  ---
+  duration_ms: 0.6255
+  type: 'test'
+  ...
+# Subtest: even an unprocessed timeout cannot admit a late success beyond the original expiry
+ok 79 - even an unprocessed timeout cannot admit a late success beyond the original expiry
+  ---
+  duration_ms: 0.1705
+  type: 'test'
+  ...
+# Subtest: renewal identity, generation and native denials are checked without adopting partial credentials
+ok 80 - renewal identity, generation and native denials are checked without adopting partial credentials
+  ---
+  duration_ms: 1.1835
+  type: 'test'
+  ...
+# Subtest: retryable native rejection and transport loss retain operation identity
+ok 81 - retryable native rejection and transport loss retain operation identity
+  ---
+  duration_ms: 0.3003
+  type: 'test'
+  ...
+# Subtest: in-flight subscription and its sequence survive rotation and late removal uses current credentials
+ok 82 - in-flight subscription and its sequence survive rotation and late removal uses current credentials
+  ---
+  duration_ms: 0.488
+  type: 'test'
+  ...
+# Subtest: timed-out subscribe cleanup and repeated unsubscribe remain once-only across renewal
+ok 83 - timed-out subscribe cleanup and repeated unsubscribe remain once-only across renewal
+  ---
+  duration_ms: 0.3923
+  type: 'test'
+  ...
+# Subtest: an old renewal response cannot roll back credentials after a subsequent generation
+ok 84 - an old renewal response cannot roll back credentials after a subsequent generation
+  ---
+  duration_ms: 0.3615
+  type: 'test'
+  ...
+# Subtest: twenty simulated 25-minute rotations retain one subscription and increasing event sequences
+ok 85 - twenty simulated 25-minute rotations retain one subscription and increasing event sequences
+  ---
+  duration_ms: 1.8024
+  type: 'test'
+  ...
+# Subtest: dispose during renewal and subscribe stops callbacks and compensates one late subscription
+ok 86 - dispose during renewal and subscribe stops callbacks and compensates one late subscription
+  ---
+  duration_ms: 0.3856
+  type: 'test'
+  ...
+# Subtest: synchronous transport reentrancy observes the published single flight and disposal wins
+ok 87 - synchronous transport reentrancy observes the published single flight and disposal wins
+  ---
+  duration_ms: 0.2487
+  type: 'test'
+  ...
+# Subtest: standard connector retains one bootstrap and applies lease metadata with elapsed time
+ok 88 - standard connector retains one bootstrap and applies lease metadata with elapsed time
+  ---
+  duration_ms: 0.7291
+  type: 'test'
+  ...
+# Subtest: connector rejects malformed native lease metadata before creating a client
+ok 89 - connector rejects malformed native lease metadata before creating a client
+  ---
+  duration_ms: 0.2665
+  type: 'test'
+  ...
+# Subtest: Workbench React manual bootstrap passes lease metadata and page exit disposes renewal
+ok 90 - Workbench React manual bootstrap passes lease metadata and page exit disposes renewal
+  ---
+  duration_ms: 135.9746
+  type: 'test'
+  ...
+# Subtest: Workbench default Vue bootstrap uses the same lease-aware public client and document cleanup
+ok 91 - Workbench default Vue bootstrap uses the same lease-aware public client and document cleanup
+  ---
+  duration_ms: 13.1741
+  type: 'test'
+  ...
+# Subtest: taskId and operation helpers and direct calls preserve one read-only snapshot
+ok 92 - taskId and operation helpers and direct calls preserve one read-only snapshot
+  ---
+  duration_ms: 1.8238
+  type: 'test'
+  ...
+# Subtest: all invalid XOR/ASCII/length shapes fail before transport and capacity admission
+ok 93 - all invalid XOR/ASCII/length shapes fail before transport and capacity admission
+  ---
+  duration_ms: 2.2902
+  type: 'test'
+  ...
+# Subtest: exact query input cannot use inherited identifiers or serialization hooks to change it
+ok 94 - exact query input cannot use inherited identifiers or serialization hooks to change it
+  ---
+  duration_ms: 0.751
+  type: 'test'
+  ...
+# Subtest: timeout recovery uses operation query without restarting or cancelling native work
+ok 95 - timeout recovery uses operation query without restarting or cancelling native work
+  ---
+  duration_ms: 28.9721
+  type: 'test'
+  ...
+# Subtest: native not-found and unauthorized are preserved without retries
+ok 96 - native not-found and unauthorized are preserved without retries
+  ---
+  duration_ms: 0.5976
+  type: 'test'
+  ...
+# Subtest: query tool fallback only describes the authorized catalog entry
+ok 97 - query tool fallback only describes the authorized catalog entry
+  ---
+  duration_ms: 1.6789
+  type: 'test'
+  ...
+# Subtest: an existing native action description takes precedence over task fallback
+ok 98 - an existing native action description takes precedence over task fallback
+  ---
+  duration_ms: 0.1927
+  type: 'test'
+  ...
+1..98
+# tests 98
+# suites 0
+# pass 98
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 485.3333

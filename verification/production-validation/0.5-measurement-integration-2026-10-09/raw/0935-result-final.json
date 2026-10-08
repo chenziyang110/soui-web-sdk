@@ -1,0 +1,260 @@
+{
+  "schema": "soui.measurement-tail-integration-result/v1",
+  "head": "41f04af2f538b7b2420fe9a1d2af45e18811b2a9",
+  "miSourceCommit": "6d7a2747db26ac983bba19f2269532cdaceb0f0c",
+  "mainMerged": "0f25070f44d67716fde8c3945e4475b2f3b081a7",
+  "sourceSha256": "8b972f45b40d1a076ee37412b29bb18b98972cb43caca468a109284a75a5fc05",
+  "sourceFileCount": 47,
+  "measurementBuildSourceSha256": "d4e161aaed29d4332881e6e4e2c99b21ab81365104cd1f8e8943f0b6f73ca3e2",
+  "measurementBuildSourceCount": 13,
+  "priorSnapshotFiles": 626,
+  "prior575RawPreserved": true,
+  "priorTwoIndexesPreserved": true,
+  "priorTwoPreparationsPreserved": true,
+  "builds": [
+    {
+      "directory": "build-x64-69107693-1fa2-4e92-8204-fbe607a3d42c",
+      "rootExitCode": 0,
+      "compileCompleted": true,
+      "genericSupervisionPassed": false,
+      "closureConfirmed": true,
+      "terminatedOwnedJob": true,
+      "reason": "owned-descendants-remain",
+      "totalProcesses": 74,
+      "activeBeforeCleanup": 1,
+      "reportSha256": "73864b5d825672bed85b84f8704819c8ba0dfaced11a35cef5f3ffce97f4aef5",
+      "observedLastImages": [
+        {
+          "pid": 63596,
+          "creationFileTime": "134359558261263828",
+          "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+        }
+      ],
+      "compilerTailPolicyAccepted": false
+    },
+    {
+      "directory": "build-x86-09720f6f-2860-4397-8e38-69331bd9e482",
+      "rootExitCode": 0,
+      "compileCompleted": true,
+      "genericSupervisionPassed": false,
+      "closureConfirmed": true,
+      "terminatedOwnedJob": true,
+      "reason": "owned-descendants-remain",
+      "totalProcesses": 74,
+      "activeBeforeCleanup": 1,
+      "reportSha256": "618efaf6f35e060e4747f6fd1bdd7a6d14d1d26c1379da4ff118a16c7c516a98",
+      "observedLastImages": [
+        {
+          "pid": 65508,
+          "creationFileTime": "134359558981711060",
+          "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\vctip.exe"
+        }
+      ],
+      "compilerTailPolicyAccepted": false
+    }
+  ],
+  "groups": [
+    {
+      "kind": "native",
+      "architecture": "x64",
+      "counts": {
+        "tests": 16,
+        "pass": 16,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "sourceSha256": "d4e161aaed29d4332881e6e4e2c99b21ab81365104cd1f8e8943f0b6f73ca3e2",
+      "outerDirectory": "native-x64-f07d5e1b-8cff-4630-a132-f20d894ff158",
+      "innerDirectory": "inner-groups/native-x64-eb5ed878-f93a-45d5-abbe-ed8ad96cf1e8",
+      "nativeReportSha256": "4dd1cd5dd5d04319f07d9dd123204ab1af2b12b7e8af4d334fb08883048017f0",
+      "outerReportSha256": "d0bb687c4f599b6ac0fe2b0465a2ea4c50059c13cb53749aeaf184059929606b",
+      "naturalCompleted": true
+    },
+    {
+      "kind": "native",
+      "architecture": "x86",
+      "counts": {
+        "tests": 16,
+        "pass": 16,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "sourceSha256": "d4e161aaed29d4332881e6e4e2c99b21ab81365104cd1f8e8943f0b6f73ca3e2",
+      "outerDirectory": "native-x86-a7219a4c-a76c-4791-aa72-5b39f03d4d9d",
+      "innerDirectory": "inner-groups/native-x86-25686429-f017-4997-b3bd-ec975874813a",
+      "nativeReportSha256": "f12631110ecdb03978bb325a4a06bf8498694545b3b2e407cc6468c49de3def4",
+      "outerReportSha256": "4fb64c0eb90c3e632cc53c713c2a2a4ed8585747ed456dcbc631c129063fdee7",
+      "naturalCompleted": true
+    },
+    {
+      "kind": "protocol",
+      "architecture": "x64",
+      "counts": {
+        "tests": 62,
+        "pass": 61,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 1,
+        "todo": 0
+      },
+      "sourceSha256": "d4e161aaed29d4332881e6e4e2c99b21ab81365104cd1f8e8943f0b6f73ca3e2",
+      "outerDirectory": "protocol-x64-d39e32f7-cc9c-484a-9f8c-c53abcce7785",
+      "innerDirectory": "inner-groups/protocol-x64-1d174307-b02b-4b36-9593-d879023dc5bc",
+      "nativeReportSha256": "6b849a2109ed6be7ffedda6587c1bc9920bfbba190281f1f80f9d14d984f48f7",
+      "outerReportSha256": "7846b1570321d9184e5631de2ff8ccd9a0427cdc71d37ca62df48dd7032c9e85",
+      "naturalCompleted": true
+    },
+    {
+      "kind": "protocol",
+      "architecture": "x86",
+      "counts": {
+        "tests": 62,
+        "pass": 61,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 1,
+        "todo": 0
+      },
+      "sourceSha256": "d4e161aaed29d4332881e6e4e2c99b21ab81365104cd1f8e8943f0b6f73ca3e2",
+      "outerDirectory": "protocol-x86-b47f997d-f512-4475-9e8b-30efae6347ff",
+      "innerDirectory": "inner-groups/protocol-x86-42fb9e37-5f6c-4179-8f2e-8da6fa3837f6",
+      "nativeReportSha256": "04f292af4de07c027eb5f9884e21ec0c3d3f6036fc875d7c7c68b3fb16f6b16c",
+      "outerReportSha256": "20c2ac052f7f86730f6f04525e0b4a4828756b9ff0f29db78f51057217ab7827",
+      "naturalCompleted": true
+    }
+  ],
+  "preparation": [
+    {
+      "architecture": "x86",
+      "path": "out/benchmark-protocol-x86/measurement-tools.json",
+      "bytes": 4441,
+      "sha256": "8eaff72d2386080e96f26db47990e5c164bcaa26df68d32ca3c1606f96681b82",
+      "sourceSha256": "d4e161aaed29d4332881e6e4e2c99b21ab81365104cd1f8e8943f0b6f73ca3e2",
+      "executables": [
+        {
+          "name": "OwnedProcessRunner",
+          "path": "out/benchmark-protocol-x86/Release/OwnedProcessRunner.exe",
+          "bytes": 127488,
+          "sha256": "81535990cb5ca5a390658e02468766899c1c1a62d4d35527f316435ea97c8fc1",
+          "coff": 332
+        },
+        {
+          "name": "OwnedProcessAssignmentFixture",
+          "path": "out/benchmark-protocol-x86/Release/OwnedProcessAssignmentFixture.exe",
+          "bytes": 76288,
+          "sha256": "ca19a799b48dbe23e4376d0731c669eef3f73905e00611d50c81c19a3d9b4f8a",
+          "coff": 332
+        },
+        {
+          "name": "ProcessTreeSampler",
+          "path": "out/benchmark-protocol-x86/Release/ProcessTreeSampler.exe",
+          "bytes": 47616,
+          "sha256": "8cb25011a5679456f6b43d18dfdec465a1033211844c11a91b441f047cdc5aec",
+          "coff": 332
+        },
+        {
+          "name": "InputTrace",
+          "path": "out/benchmark-protocol-x86/Release/InputTrace.exe",
+          "bytes": 38400,
+          "sha256": "a4c3a94a59cb6ecfe9b423dd61c46703e721754ca26896276b93592c21ebfc83",
+          "coff": 332
+        },
+        {
+          "name": "NativeTraceIdentity",
+          "path": "out/benchmark-protocol-x86/Release/NativeTraceIdentity.exe",
+          "bytes": 29696,
+          "sha256": "2eab2705b5812ef63d3e137eee892afaf8c703489a05529881016115d777263a",
+          "coff": 332
+        }
+      ]
+    },
+    {
+      "architecture": "x64",
+      "path": "out/benchmark-protocol/measurement-tools.json",
+      "bytes": 4423,
+      "sha256": "6ad851209e7c7ad8cf384c23cef915c18f1f1218d5f49f90fa7dffe7e3c82493",
+      "sourceSha256": "d4e161aaed29d4332881e6e4e2c99b21ab81365104cd1f8e8943f0b6f73ca3e2",
+      "executables": [
+        {
+          "name": "OwnedProcessRunner",
+          "path": "out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+          "bytes": 150016,
+          "sha256": "c5d60402cd96d63bf09a129ee8c9ba128cf56dfda0d5bb6726f49c2d426df265",
+          "coff": 34404
+        },
+        {
+          "name": "OwnedProcessAssignmentFixture",
+          "path": "out/benchmark-protocol/Release/OwnedProcessAssignmentFixture.exe",
+          "bytes": 87040,
+          "sha256": "37696c13ebf6e84f9b8e2cffe0c460fd28ebe97b3f59fb48521ca324c042f2ee",
+          "coff": 34404
+        },
+        {
+          "name": "ProcessTreeSampler",
+          "path": "out/benchmark-protocol/Release/ProcessTreeSampler.exe",
+          "bytes": 57856,
+          "sha256": "39a8644c718b7b855560e3bddb0b6fd4ba8d59441fe0d020cd08a05608f0798b",
+          "coff": 34404
+        },
+        {
+          "name": "InputTrace",
+          "path": "out/benchmark-protocol/Release/InputTrace.exe",
+          "bytes": 43520,
+          "sha256": "dfa7bad618e9e20ae9fbbde6bb5dd4c1b6d1bb9c1b95657a3f15f81d8fb6fd9e",
+          "coff": 34404
+        },
+        {
+          "name": "NativeTraceIdentity",
+          "path": "out/benchmark-protocol/Release/NativeTraceIdentity.exe",
+          "bytes": 34304,
+          "sha256": "98c5b3b046ca121c866643c58dbd10dea2a9abfbae3f5a319cf1dff58ef7173e",
+          "coff": 34404
+        }
+      ]
+    }
+  ],
+  "nativeFixtureDirectories": [
+    "native-fixtures/native-identity-6f160614-6e54-4301-bbd0-831a63a14c1a",
+    "native-fixtures/native-identity-9c64378a-aee4-4ec5-8c2d-0de3c480b56c",
+    "native-fixtures/sampler-owned-normal-1bf654ef-2ce5-417e-b701-a56ceaf46b52",
+    "native-fixtures/sampler-owned-normal-263a4ed3-ca4f-49ef-b2ba-10604517dd79",
+    "native-fixtures/sampler-owned-orphan-675b14d1-c855-4ea8-92a6-e15a1bb496c0",
+    "native-fixtures/sampler-owned-orphan-c5a8c3ae-2ae4-4eff-a379-cf9f35f92760",
+    "native-fixtures/sampler-owned-reject-9264c944-bc1a-41d4-8024-0b7ccd1198f1",
+    "native-fixtures/sampler-owned-reject-e857f149-309c-4cfe-a2b2-ee0c0c2c3de2",
+    "native-fixtures/sampler-owned-timeout-1c1eb286-feb4-4b58-bf96-0d17cf8cf441",
+    "native-fixtures/sampler-owned-timeout-62e3bea8-c4a3-4470-8993-929e625d6dc2"
+  ],
+  "tailDependencyRed": {
+    "tests": 20,
+    "pass": 8,
+    "fail": 12,
+    "syntheticPE": true,
+    "actualNativeCompilerProof": false
+  },
+  "tailDependencyGreenIsIncludedInEachProtocolGroup": true,
+  "entrypointActualPSAst": true,
+  "collectUnitProjectionOnly": true,
+  "privateInitialParserFailurePreserved": true,
+  "currentRealPreparationReadOnlyFaultProbe": true,
+  "noGui": true,
+  "noCorrectInputTrace": true,
+  "noSdkCppBuild": true,
+  "noVm": true,
+  "noFullCollect": true,
+  "noCanonicalAcceptanceChanges": true,
+  "temporaryMainSourceManifest": true,
+  "noFinalSourcePackageClaim": true,
+  "noPush": true,
+  "limitations": [
+    "编译 root exit 0 与通用 Job false 分别保留；没有 compiler-tail 例外通过。",
+    "纯 preparation 用合成 PE，仅拒绝边界；当前真实 preparation probe 的故障是只读虚拟 FS，不是编译证明。",
+    "protocol 每架构仅原生 serializer 跳过一次；native 每架构无跳过。",
+    "无真实桌面、正常 InputTrace/SendInput、五轮性能、物理呈现、高刷、Win7/PE/VM 或全 SDK/Collect 验收。",
+    "原始散列绑定本轮文件一致性，不认证同用户恶意重写整套证据，不认证进程内存。"
+  ]
+}

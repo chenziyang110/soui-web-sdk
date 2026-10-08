@@ -1,0 +1,14 @@
+{
+  "name": "@soui/gui-vue",
+  "version": "0.5.0-preview.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/vue/src/index.js",
+  "types": "./dist/vue/src/index.d.ts",
+  "exports": { ".": { "types": "./dist/vue/src/index.d.ts", "import": "./dist/vue/src/index.js" } },
+  "files": ["dist"],
+  "sideEffects": false,
+  "scripts": { "build": "tsc -p tsconfig.json" },
+  "peerDependencies": { "@soui/native-sdk": ">=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0", "vue": "^3.5.0" },
+  "devDependencies": { "@soui/native-sdk": "file:../../web", "vue": "3.5.43", "typescript": "5.9.3" }
+}

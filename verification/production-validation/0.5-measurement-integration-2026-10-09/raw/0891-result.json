@@ -1,0 +1,134 @@
+{
+  "schema": "soui.measurement-source-input-fix/v1",
+  "fixedInput": "cmake/SouiWindowsSdk.cmake",
+  "registeredProtocolTest": "tests/benchmark/measurement-preparation-source.test.cjs",
+  "source": [
+    {
+      "path": "tools/internal/measurement-validation.cjs",
+      "bytes": 10675,
+      "sha256": "6b73ae4b570361bd82a7f7de7a4497dd36a3ef4b130c274a088bedae264ed237",
+      "snapshot": "measurement-validation.cjs.current.inert.snapshot"
+    },
+    {
+      "path": "tests/benchmark/measurement-preparation-source.test.cjs",
+      "bytes": 5251,
+      "sha256": "ae87d58b8cbdf4f3ce21ff4a9458fe3b35aafb7e81630544a43c5602ac1bf753",
+      "snapshot": "measurement-preparation-source.test.cjs.current.inert.snapshot"
+    }
+  ],
+  "currentBuildSourceSha256": "71051f6fea25ba02bae6801d512b38ae2df5c3166984352502518607843becda",
+  "buildSourceInputCount": 11,
+  "oldArchives": [
+    {
+      "path": "out/measurement-standard-entry-final-9d38dc2b-6e29-4b78-8810-bfcf0aa7136b/index.json",
+      "key": "raw",
+      "count": 408,
+      "sha256": "4e7229b5aeb770975d47812131e711ab289e4641351349dc13b156b3fb9af8e0",
+      "allRawUnchanged": true
+    },
+    {
+      "path": "out/measurement-integration-validation/evidence-index-final.json",
+      "key": "index",
+      "count": 167,
+      "sha256": "6ca5b039b75673c30bf58168528d5b0783936dbe5ed2919eaab04331e0bdab22",
+      "allRawUnchanged": true
+    }
+  ],
+  "previousMeasurementSourceInputsUnchanged": 16,
+  "runs": [
+    {
+      "label": "red",
+      "counts": {
+        "tests": 8,
+        "pass": 2,
+        "fail": 6,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "pid": 33088,
+      "creationFileTime": "134359545596510248",
+      "rootExitCode": 1,
+      "genericSupervisionPassed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "report": "out/measurement-source-input-fix-6bbbf06c-66df-46a6-9acc-d31f9b56665e/red/owned.ndjson",
+      "reportSha256": "23abd0a8c476d79163474050cfa8f5d0db219b3ae70fec65cc11d7c34e2e9002",
+      "sourceSha256": "eb03a824e348a5b71d87b8a5030244be9625cebf2585711303e1e130a0505723"
+    },
+    {
+      "label": "green",
+      "counts": {
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "pid": 76456,
+      "creationFileTime": "134359545849437085",
+      "rootExitCode": 0,
+      "genericSupervisionPassed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "report": "out/measurement-source-input-fix-6bbbf06c-66df-46a6-9acc-d31f9b56665e/green/owned.ndjson",
+      "reportSha256": "da693c9cf22824eaf4167eba00f55d487f015e2eaced19ba5b4a6caf3131746f",
+      "sourceSha256": "6776cbfe6baa36f1064ee74b78c961f4eeeb2569ab9b31e1fc0b77dfdaf4393d"
+    },
+    {
+      "label": "green-final",
+      "counts": {
+        "tests": 8,
+        "pass": 8,
+        "fail": 0,
+        "cancelled": 0,
+        "skipped": 0,
+        "todo": 0
+      },
+      "pid": 109212,
+      "creationFileTime": "134359547087862421",
+      "rootExitCode": 0,
+      "genericSupervisionPassed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "report": "out/measurement-source-input-fix-6bbbf06c-66df-46a6-9acc-d31f9b56665e/green-final/owned.ndjson",
+      "reportSha256": "5a5f40a65d9786bcf47965120e3feb9a3c235c761e9797a92cea894c82c13b4d",
+      "sourceSha256": "6b73ae4b570361bd82a7f7de7a4497dd36a3ef4b130c274a088bedae264ed237"
+    }
+  ],
+  "existingPreparations": [
+    {
+      "architecture": "x86",
+      "path": "F:\\work\\sm05-mi\\out\\benchmark-protocol-x86\\measurement-tools.json",
+      "sha256": "feb0a29a7be015bd3d4669b76ca8c5db82e5510227b534cb72ae342d49c52748",
+      "oldSourceSha256": "d9a1f03a2cafcbfb138729ba21eb7904f4280745eab65b558faa908abfaea488",
+      "rejected": true,
+      "error": "Measurement tools are missing or stale; prepare the selected architecture",
+      "recordUnchanged": true
+    },
+    {
+      "architecture": "x64",
+      "path": "F:\\work\\sm05-mi\\out\\benchmark-protocol\\measurement-tools.json",
+      "sha256": "b16e4191f3dfd2761e59e14169177eaa98f313ced74bdb03df297f0ca3384756",
+      "oldSourceSha256": "d9a1f03a2cafcbfb138729ba21eb7904f4280745eab65b558faa908abfaea488",
+      "rejected": true,
+      "error": "Measurement tools are missing or stale; prepare the selected architecture",
+      "recordUnchanged": true
+    }
+  ],
+  "compiled": false,
+  "guiExecuted": false,
+  "nativeCollectorsExecuted": false,
+  "syntheticPEAndPreparation": true,
+  "releaseReady": false,
+  "limitations": [
+    "Pure fixtures reuse the actual reader with real input bytes and synthetic bounded PE/preparation records. No native collector or InputTrace is executed.",
+    "Existing x86/x64 preparation bytes and all 408/167 historical evidence remain unchanged and now correctly fail current-source verification. Root must rebuild after main integration.",
+    "Protocol registration is checked in source; the full future measurementProtocol group (50 total/49 pass/1 conditional native-serializer skip) has not been executed in this repair.",
+    "This tree does not contain the subsequently integrated compiler-tail helper dependency; root will extend the build input set when merging that explicitly new source."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+  "executableSha256": "d5dd77c1c63c1c0597d6fe103f10d5f1c8028b48cf1625cf7835861cd4285709",
+  "executable": "F:\\work\\sm05-compiler-tail\\out\\tail-x86\\Release\\OwnedProcessRunner.exe",
+  "args": [
+    "--timeout-ms",
+    "8000",
+    "--report",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-validation\\native-39b9105e-2396-4837-9b34-1ebc09131fda\\x86-raw-tests\\attempt-FNnxYR\\inner.ndjson",
+    "--cwd",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-validation\\native-39b9105e-2396-4837-9b34-1ebc09131fda\\x86-raw-tests\\attempt-FNnxYR",
+    "--pin-tail-image",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-validation\\native-39b9105e-2396-4837-9b34-1ebc09131fda\\x86-raw-tests\\attempt-FNnxYR\\pinned-helper.exe",
+    "--pin-tail-sha256",
+    "0000000000000000000000000000000000000000000000000000000000000000",
+    "--snapshot-nonce",
+    "3835530f124b5fd8c3b5b98a0b4ce7d8",
+    "--",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-x86\\Release\\OwnedTailProcessFixture.exe",
+    "external",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-validation\\native-39b9105e-2396-4837-9b34-1ebc09131fda\\x86-raw-tests\\attempt-FNnxYR"
+  ],
+  "cwd": "F:\\work\\sm05-compiler-tail\\out\\tail-validation\\native-39b9105e-2396-4837-9b34-1ebc09131fda\\x86-raw-tests\\attempt-FNnxYR",
+  "timeoutMs": 15000,
+  "drainMs": 2500
+}

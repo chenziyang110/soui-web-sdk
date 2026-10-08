@@ -1,0 +1,23 @@
+
+> soui-gui-bindings-component-tests@0.1.0 test:react18
+> node --test react18/react.test.mjs
+
+✔ React 18.3.1: StrictMode registrations and teardown borrow the shared GUI (12.1825ms)
+✔ React committed callbacks and state update without removing an existing observation (36.7777ms)
+✔ React suspended uncommitted renders cannot replace the last committed callback (3.2774ms)
+✔ React structural changes reject old work and protect an id reused by a new generation (2.3889ms)
+✔ React DOM ref replacement and action-name changes each remove the old observation (2.143ms)
+✔ React stable business ids survive list reorder without cancelling observations (41.5232ms)
+✔ React changing the borrowed GUI removes only this binding from the old registry (1.5248ms)
+✔ React duplicate ids reach the error boundary rather than replacing another registration (3.9725ms)
+✔ React exposes only explicit projections and expose=false removes the registration (2.6506ms)
+✔ React native denial propagates without retry or a synthesized user gesture (1.7338ms)
+✔ React timeout and unmount do not cancel native work; cancellation is an explicit action (16.3931ms)
+ℹ tests 11
+ℹ suites 0
+ℹ pass 11
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 523.4883

@@ -1,0 +1,58 @@
+TAP version 13
+# Subtest: x86: unchanged source and matching tool identities remain prepared
+ok 1 - x86: unchanged source and matching tool identities remain prepared
+  ---
+  duration_ms: 126.8954
+  type: 'test'
+  ...
+# Subtest: x86: changed Windows SDK selection input invalidates preparation
+ok 2 - x86: changed Windows SDK selection input invalidates preparation
+  ---
+  duration_ms: 41.9512
+  type: 'test'
+  ...
+# Subtest: x86: missing Windows SDK selection input cannot reuse prepared tools
+ok 3 - x86: missing Windows SDK selection input cannot reuse prepared tools
+  ---
+  duration_ms: 37.7289
+  type: 'test'
+  ...
+# Subtest: x86: changed or missing SDK input rejects the native group before launch
+ok 4 - x86: changed or missing SDK input rejects the native group before launch
+  ---
+  duration_ms: 76.1316
+  type: 'test'
+  ...
+# Subtest: x64: unchanged source and matching tool identities remain prepared
+ok 5 - x64: unchanged source and matching tool identities remain prepared
+  ---
+  duration_ms: 41.9235
+  type: 'test'
+  ...
+# Subtest: x64: changed Windows SDK selection input invalidates preparation
+ok 6 - x64: changed Windows SDK selection input invalidates preparation
+  ---
+  duration_ms: 40.7074
+  type: 'test'
+  ...
+# Subtest: x64: missing Windows SDK selection input cannot reuse prepared tools
+ok 7 - x64: missing Windows SDK selection input cannot reuse prepared tools
+  ---
+  duration_ms: 35.9802
+  type: 'test'
+  ...
+# Subtest: x64: changed or missing SDK input rejects the native group before launch
+ok 8 - x64: changed or missing SDK input rejects the native group before launch
+  ---
+  duration_ms: 74.9584
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 670.598

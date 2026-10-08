@@ -1,0 +1,54 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),cp=require('node:child_process'),vm=require('node:vm');
+const root=path.resolve(__dirname,'..');
+const {launchOwned}=require('F:/work/sm05/tools/internal/owned-process.cjs');
+const runner='F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const ps='C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe';
+const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const encoded=value=>JSON.stringify(value,null,2)+'\n';
+const folder=path.join(__dirname,'measurement-standard-entry-validation',process.argv[2]+'-'+crypto.randomUUID());
+fs.mkdirSync(folder,{recursive:true});
+async function held(label,executable,args,timeoutMs=180000,drainMs=2500){
+ const directory=path.join(folder,label);fs.mkdirSync(directory);
+ const env={...process.env,MSBUILDDISABLENODEREUSE:'1',PSModulePath:'C:/Windows/system32/WindowsPowerShell/v1.0/Modules'};
+ fs.writeFileSync(path.join(directory,'inputs.json'),encoded({executable,args,cwd:root,timeoutMs,drainMs,
+  env:{MSBUILDDISABLENODEREUSE:env.MSBUILDDISABLENODEREUSE,PSModulePath:env.PSModulePath},
+  runner:{path:runner,sha256:sha(fs.readFileSync(runner))},node:{path:process.execPath,version:process.version},
+  harnessSha256:sha(fs.readFileSync(__filename)),noGui:true,correctInputTraceExecuted:false}));
+ const owned=launchOwned(executable,args,{runner,cwd:root,report:path.join(directory,'owned.ndjson'),timeoutMs,drainMs,env,stdout:'pipe',stderr:'pipe'});
+ const out=[],err=[];owned.child.stdout.on('data',b=>out.push(b));owned.child.stderr.on('data',b=>err.push(b));
+ const result=await owned.finished;fs.writeFileSync(path.join(directory,'stdout.bin'),Buffer.concat(out));fs.writeFileSync(path.join(directory,'stderr.bin'),Buffer.concat(err));
+ fs.writeFileSync(path.join(directory,'finished.json'),encoded(result));console.log(label+' '+JSON.stringify({exitCode:result.exitCode,genericSupervisionPassed:result.passed,closureConfirmed:result.closureConfirmed,reason:result.terminal?.reason}));
+ return result;
+}
+(async()=>{
+ const mode=process.argv[2],arch=process.argv[3];let result;
+ if(mode==='build'){
+  if(!['x86','x64'].includes(arch))throw Error('Expected arch');
+  result=await held(arch,ps,['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(root,'tools/internal/Build-ValidationTools.ps1'),'-Architecture',arch,'-FreshConfigure']);
+  if(result.exitCode!==0||!result.closureConfirmed||result.reportError||result.fallbackUsed)throw Error('Small tool compile or owned closure failed');
+  fs.writeFileSync(path.join(folder,'result.json'),encoded({toolBuildCompleted:true,genericSupervisionPassed:result.passed,forcedOwnedCleanup:result.terminal.reason!=='completed',result,
+   compilerTailAcceptance:false,note:'No compiler-tail policy applies; generic failure remains visible.'}));
+ }else if(mode==='test-entry'){
+  if(!['x86','x64'].includes(arch))throw Error('Expected arch');
+  result=await held(arch,ps,['-NoProfile','-ExecutionPolicy','Bypass','-File',path.join(__dirname,'measurement-test-entry.ps1'),'-Architecture',arch]);
+  if(!result.passed)throw Error('Actual Test.ps1 measurement command slice failed');
+ }else if(mode==='collect-entry'){
+  result=await held('collect',process.execPath,[__filename,'collect-private']);if(!result.passed)throw Error('Actual Collect unit slice failed');
+ }else if(mode==='collect-private'){
+  const source=fs.readFileSync(path.join(root,'tools/Collect-Verification.cjs'),'utf8');
+  const start=source.indexOf('const unit={'),end=source.indexOf('\n};',start);if(start<0||end<0)throw Error('Unit object not found');
+  const calls=[];const run=(name,executable,args)=>{
+   if(!['measurement-protocol-tests','native-measurement-x64','native-measurement-x86'].includes(name))return {privateFixtureStub:true,passed:null};
+   const item=cp.spawnSync(executable,args,{cwd:root,windowsHide:true,encoding:'utf8',timeout:180000});
+   fs.writeFileSync(path.join(folder,name+'.stdout'),item.stdout||'');fs.writeFileSync(path.join(folder,name+'.stderr'),item.stderr||'');
+   calls.push({name,executable,args,status:item.status,error:item.error?.message});if(item.status!==0)throw Error(name+' failed');return {passed:true};
+  };
+  const unit=vm.runInNewContext(source.slice(start,end+3)+'\nunit;',{run,process,path,root});
+  if(calls.length!==3)throw Error('Expected all 3 actual measurement calls');
+  fs.writeFileSync(path.join(folder,'collect-entry.json'),encoded({collectSourceSha256:sha(Buffer.from(source)),calls,unit,
+   scope:'Only actual measurement unit entries; all unrelated units stubbed and canonical Collect not evaluated',canonicalAcceptanceWritten:false,noGui:true}));
+  console.log(encoded({passed:true,calls,scope:'measurement entries only'}));
+ }else throw Error('Unknown mode');
+ console.log('evidence '+folder);
+})().catch(error=>{console.error(error.stack);process.exitCode=1});

@@ -1,0 +1,146 @@
+{
+  "schema": "soui.gui-bindings-tests/v1",
+  "version": "0.5.0-preview.1",
+  "sourceSha256": "9b48a741e153f68045815da3b1515a16662e8c7a74f2d3acca39ccd7369de270",
+  "outputSha256": "c571dcadda7ef708a6a10796d353d58efa4ea0459e95aae9163ce102f21650bc",
+  "commands": [
+    {
+      "cwd": "tests/gui-bindings",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "tests-gui-bindings-install.stdout.log",
+      "stderr": "tests-gui-bindings-install.stderr.log"
+    },
+    {
+      "cwd": "tests/gui-bindings/react18",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "ci",
+        "--ignore-scripts",
+        "--no-audit",
+        "--no-fund",
+        "--install-links"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "tests-gui-bindings-react18-install.stdout.log",
+      "stderr": "tests-gui-bindings-react18-install.stderr.log"
+    },
+    {
+      "cwd": "tests/gui-bindings",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "test"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "test.stdout.log",
+      "stderr": "test.stderr.log"
+    },
+    {
+      "cwd": "tests/gui-bindings",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "test:react18"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "test-react18.stdout.log",
+      "stderr": "test-react18.stderr.log"
+    },
+    {
+      "cwd": "tests/gui-bindings",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "typecheck.stdout.log",
+      "stderr": "typecheck.stderr.log"
+    },
+    {
+      "cwd": "tests/gui-bindings",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "run",
+        "typecheck:react18"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "typecheck-react18.stdout.log",
+      "stderr": "typecheck-react18.stderr.log"
+    },
+    {
+      "cwd": "sdk/bindings/react",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "sdk-bindings-react-audit.stdout.log",
+      "stderr": "sdk-bindings-react-audit.stderr.log"
+    },
+    {
+      "cwd": "sdk/bindings/vue",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "sdk-bindings-vue-audit.stdout.log",
+      "stderr": "sdk-bindings-vue-audit.stderr.log"
+    },
+    {
+      "cwd": "tests/gui-bindings",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "tests-gui-bindings-audit.stdout.log",
+      "stderr": "tests-gui-bindings-audit.stderr.log"
+    },
+    {
+      "cwd": "tests/gui-bindings/react18",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:\\nvm4w\\nodejs\\node_modules\\npm\\bin\\npm-cli.js",
+        "audit",
+        "--json"
+      ],
+      "exitCode": 0,
+      "error": null,
+      "stdout": "tests-gui-bindings-react18-audit.stdout.log",
+      "stderr": "tests-gui-bindings-react18-audit.stderr.log"
+    }
+  ],
+  "passed": true,
+  "desktopValidated": false
+}

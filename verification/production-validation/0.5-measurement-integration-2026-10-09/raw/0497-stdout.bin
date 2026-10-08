@@ -1,0 +1,37 @@
+{
+  "passed": true,
+  "calls": [
+    {
+      "name": "measurement-protocol-tests",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/internal/measurement-validation.cjs",
+        "protocol"
+      ],
+      "status": 0
+    },
+    {
+      "name": "native-measurement-x64",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/internal/measurement-validation.cjs",
+        "native",
+        "x64"
+      ],
+      "status": 0
+    },
+    {
+      "name": "native-measurement-x86",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "tools/internal/measurement-validation.cjs",
+        "native",
+        "x86"
+      ],
+      "status": 0
+    }
+  ],
+  "scope": "measurement entries only"
+}
+
+evidence F:\work\sm05-mi\out\measurement-standard-entry-validation\collect-private-e5d36e81-8377-472f-95af-60479b869f29

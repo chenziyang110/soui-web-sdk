@@ -1,0 +1,418 @@
+import type { SouiCoreMethodMap, SouiTaskQueryParams } from './protocol.js';
+export declare const SOUI_BRIDGE_PROTOCOL = "soui.bridge/1";
+export type SouiErrorCode = 'E_INVALID_PARAMS' | 'E_UNKNOWN_METHOD' | 'E_UNAUTHORIZED' | 'E_SESSION_EXPIRED' | 'E_UNIMPLEMENTED' | 'E_TIMEOUT' | 'E_CANCELLED' | 'E_LIMIT_MESSAGE_SIZE' | 'E_MALFORMED_JSON' | 'E_SCHEMA_INVALID' | 'E_SCHEMA_VERSION_UNSUPPORTED' | 'E_OPERATION_CONFLICT' | 'E_PERMISSION_DENIED' | 'E_GESTURE_REQUIRED' | 'E_TASK_NOT_FOUND' | 'E_INVALID_CURSOR' | 'E_NATIVE_FAILURE' | 'E_USER_CANCELLED' | 'E_RESOURCE_MISSING' | 'E_WRONG_ARCHITECTURE' | 'E_COMPATIBILITY_UNSUPPORTED' | 'E_SUBSCRIPTION_NOT_FOUND' | 'E_TASK_TERMINAL' | 'E_LIMIT_RATE' | 'E_BUSY' | 'E_RESULT_LIMIT' | 'E_UNTRUSTED_FRAME';
+export interface SouiMethodMap {
+    'desktop.rendering.setTargetRate': {
+        params: {
+            targetHz: number;
+        };
+        result: {
+            requestedHz: number;
+        };
+    };
+    'desktop.rendering.getStats': {
+        params: {};
+        result: {
+            paintCount: number;
+            sampledAtMs: number;
+            gpuStatus: string;
+            architecture: string;
+            requestedHz: number;
+            activePacingHz: number;
+            drawIntervalMs: number;
+        };
+    };
+    'desktop.media.getCapabilities': {
+        params: {};
+        result: {
+            samplePassthrough: boolean;
+            nativeDecoder: boolean;
+            nativeStillImage: boolean;
+            ffmpeg: boolean;
+            note: string;
+        };
+    };
+    'desktop.media.pickFile': {
+        params: {
+            userGesture: boolean;
+        };
+        result: {
+            cancelled: boolean;
+            fileToken: string;
+            name: string;
+            size: number;
+        };
+    };
+    'desktop.media.saveOutput': {
+        params: {
+            taskId: string;
+            userGesture: boolean;
+        };
+        result: {
+            cancelled: boolean;
+            taskId: string;
+            name: string;
+        };
+    };
+    'desktop.media.preview.start': {
+        params: {
+            source: string;
+            operationId: string;
+        };
+        result: {
+            taskId: string;
+            accepted: boolean;
+        };
+    };
+    'desktop.media.preview.query': {
+        params: {
+            taskId: string;
+        };
+        result: {
+            taskId: string;
+            state: string;
+            progress: number;
+            supported: boolean;
+            frameData: string;
+            width: number;
+            height: number;
+            durationMs: number;
+            decoder: string;
+            message: string;
+        };
+    };
+    'desktop.workload.getCapabilities': {
+        params: {};
+        result: {
+            video4kSynthetic: boolean;
+            video4kNativeFrame: boolean;
+            cadScene: boolean;
+            zipStored: boolean;
+            zipDeflate: boolean;
+            hardwareDecode: boolean;
+            note: string;
+        };
+    };
+    'bridge.probe.report': {
+        params: {
+            script: boolean;
+            json: boolean;
+            event: boolean;
+            errorHandling: boolean;
+            localResource: boolean;
+            proxy: boolean;
+            promise: boolean;
+            symbol: boolean;
+            reflect: boolean;
+            vueMount: boolean;
+            reactivity: boolean;
+            domEvent: boolean;
+            bridge: boolean;
+        };
+        result: {
+            accepted: boolean;
+        };
+    };
+    'desktop.dialog.pickDirectory': {
+        params: {
+            title: string;
+            userGesture: boolean;
+        };
+        result: {
+            cancelled: boolean;
+            rootToken: string;
+        };
+    };
+    'demo.scan.start': {
+        params: {
+            rootToken: string;
+            filter: string;
+            operationId: string;
+        };
+        result: {
+            taskId: string;
+            accepted: boolean;
+        };
+    };
+    'filesystem.scan.start': {
+        params: {
+            rootToken: string;
+            filter: string;
+            operationId: string;
+        };
+        result: {
+            taskId: string;
+            accepted: boolean;
+        };
+    };
+    'fileinsight.scan.start': {
+        params: {
+            rootToken: string;
+            filter: string;
+            operationId: string;
+        };
+        result: {
+            taskId: string;
+            accepted: boolean;
+        };
+    };
+    'task.start': {
+        params: {
+            kind: string;
+            operationId: string;
+            input: Record<string, unknown>;
+        };
+        result: {
+            taskId: string;
+            accepted: boolean;
+            duplicate: boolean;
+        };
+    };
+    'task.query': {
+        params: SouiTaskQueryParams;
+        result: {
+            taskId: string;
+            state: string;
+            progress: number;
+            entries: unknown[];
+            cursor: string;
+            hasMore: boolean;
+            message: string;
+            skipped: number;
+            errors: number;
+            issues: unknown[];
+            fileCount: number;
+            totalBytes: number;
+            groups: unknown[];
+        };
+    };
+    'demo.scan.page': {
+        params: {
+            taskId: string;
+            cursor: string;
+            pageSize: number;
+        };
+        result: {
+            taskId: string;
+            entries: unknown[];
+            cursor: string;
+            hasMore: boolean;
+            message: string;
+            skipped: number;
+            errors: number;
+            issues: unknown[];
+            fileCount: number;
+            totalBytes: number;
+            groups: unknown[];
+        };
+    };
+    'filesystem.scan.page': {
+        params: {
+            taskId: string;
+            cursor: string;
+            pageSize: number;
+        };
+        result: {
+            taskId: string;
+            entries: unknown[];
+            cursor: string;
+            hasMore: boolean;
+            message: string;
+            skipped: number;
+            errors: number;
+            issues: unknown[];
+            fileCount: number;
+            totalBytes: number;
+            groups: unknown[];
+        };
+    };
+    'fileinsight.scan.query': {
+        params: {
+            taskId: string;
+            cursor: string;
+            pageSize: number;
+        };
+        result: {
+            taskId: string;
+            state: string;
+            progress: number;
+            entries: unknown[];
+            cursor: string;
+            hasMore: boolean;
+            message: string;
+            skipped: number;
+            errors: number;
+            issues: unknown[];
+            fileCount: number;
+            totalBytes: number;
+            groups: unknown[];
+        };
+    };
+    'task.cancel': {
+        params: {
+            taskId: string;
+        };
+        result: {
+            taskId: string;
+            state: string;
+            cancelRequested: boolean;
+        };
+    };
+    'task.subscribe': {
+        params: {
+            taskId: string;
+            eventName: string;
+        };
+        result: {
+            subscriptionId: string;
+        };
+    };
+    'task.unsubscribe': {
+        params: {
+            subscriptionId: string;
+        };
+        result: {
+            removed: boolean;
+        };
+    };
+    'media.convert.start': {
+        params: {
+            source: string;
+            format: string;
+            codec: string;
+            quality: number;
+            operationId: string;
+        };
+        result: {
+            taskId: string;
+            accepted: boolean;
+            output: string;
+        };
+    };
+    'media.transform.start': {
+        params: {
+            source: string;
+            operation: string;
+            format: string;
+            codec: string;
+            quality: number;
+            operationId: string;
+        };
+        result: {
+            taskId: string;
+            accepted: boolean;
+            output: string;
+        };
+    };
+    'media.convert.query': {
+        params: {
+            taskId: string;
+        };
+        result: {
+            taskId: string;
+            state: string;
+            progress: number;
+            output: string;
+            message: string;
+        };
+    };
+    'media.convert.cancel': {
+        params: {
+            taskId: string;
+        };
+        result: {
+            taskId: string;
+            cancelRequested: boolean;
+        };
+    };
+    'desktop.workload.start': {
+        params: {
+            kind: string;
+            complexity: number;
+            operationId: string;
+        };
+        result: {
+            taskId: string;
+            accepted: boolean;
+        };
+    };
+    'desktop.workload.query': {
+        params: {
+            taskId: string;
+        };
+        result: {
+            taskId: string;
+            state: string;
+            progress: number;
+            kind: string;
+            metrics: string;
+            message: string;
+        };
+    };
+    'desktop.workload.cancel': {
+        params: {
+            taskId: string;
+        };
+        result: {
+            taskId: string;
+            cancelRequested: boolean;
+        };
+    };
+    'desktop.window.setTitle': {
+        params: {
+            title: string;
+        };
+        result: {
+            applied: boolean;
+        };
+    };
+    'desktop.window.beginDrag': {
+        params: {
+            userGesture: boolean;
+        };
+        result: {
+            started: boolean;
+        };
+    };
+    'desktop.window.minimize': {
+        params: {
+            userGesture: boolean;
+        };
+        result: {
+            minimized: boolean;
+        };
+    };
+    'desktop.window.toggleMaximize': {
+        params: {
+            userGesture: boolean;
+        };
+        result: {
+            maximized: boolean;
+        };
+    };
+    'desktop.window.close': {
+        params: {
+            userGesture: boolean;
+        };
+        result: {
+            accepted: boolean;
+        };
+    };
+    'desktop.clipboard.writeText': {
+        params: {
+            text: string;
+            userGesture: boolean;
+        };
+        result: {
+            applied: boolean;
+        };
+    };
+}
+export type SouiMethodName = keyof SouiMethodMap;
+export interface SouiNativeClient {
+    call<M extends SouiMethodName>(method: M, params: SouiMethodMap[M]["params"]): Promise<SouiMethodMap[M]["result"]>;
+    query(taskId: string): Promise<SouiMethodMap["task.query"]["result"]>;
+    queryOperation(operationId: string): Promise<SouiCoreMethodMap["task.query"]["result"]>;
+    cancel(taskId: string): Promise<SouiMethodMap["task.cancel"]["result"]>;
+    subscribe(taskId: string, eventName: string, listener: (event: unknown) => void): () => void;
+}

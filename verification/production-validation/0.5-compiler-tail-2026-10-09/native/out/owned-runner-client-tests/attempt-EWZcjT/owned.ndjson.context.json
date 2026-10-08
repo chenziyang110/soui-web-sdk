@@ -1,0 +1,13 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "d5dd77c1c63c1c0597d6fe103f10d5f1c8028b48cf1625cf7835861cd4285709",
+  "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+  "executable": "C:\\nvm4w\\nodejs\\node.exe",
+  "args": [
+    "-e",
+    "require('node:fs').writeFileSync('subject.pid',String(process.pid))"
+  ],
+  "cwd": "F:\\work\\sm05-compiler-tail\\out\\owned-runner-client-tests\\attempt-EWZcjT",
+  "timeoutMs": 5000,
+  "drainMs": 2000
+}

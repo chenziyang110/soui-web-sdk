@@ -1,0 +1,60 @@
+{
+  "main": "0f25070f44d67716fde8c3945e4475b2f3b081a7",
+  "ours": "6d7a2747db26ac983bba19f2269532cdaceb0f0c",
+  "temporaryMainManifest": true,
+  "resolutions": [
+    {
+      "path": "benchmarks/protocol/owned-process-runner.cpp",
+      "choice": "main exact bytes"
+    },
+    {
+      "path": "tools/internal/owned-process.cjs",
+      "choice": "main exact bytes"
+    },
+    {
+      "path": "docs/adr/0027-native-authorization-scope-and-task-ownership.md",
+      "choice": "main exact bytes"
+    },
+    {
+      "path": "docs/roadmap/0.5.0-execution.md",
+      "choice": "main exact bytes"
+    },
+    {
+      "path": "CHANGELOG.md",
+      "choice": "main exact bytes"
+    },
+    {
+      "path": "source-manifest.json",
+      "choice": "main exact bytes"
+    },
+    {
+      "path": "benchmarks/protocol/run-one.cjs",
+      "choice": "MI exact bytes"
+    },
+    {
+      "path": "tests/benchmark/run-one-cleanup.test.cjs",
+      "choice": "MI exact bytes"
+    },
+    {
+      "path": "tools/internal/Build-ValidationTools.ps1",
+      "choice": "MI exact bytes"
+    },
+    {
+      "path": ".gitattributes",
+      "choice": "main plus union",
+      "missing": []
+    },
+    {
+      "path": "benchmarks/protocol/CMakeLists.txt",
+      "choice": "main Tail targets plus exact NativeTraceIdentity append"
+    },
+    {
+      "path": "tools/Test.ps1",
+      "choice": "MI architecture/measurement plus exact main Action commands"
+    },
+    {
+      "path": "tools/Collect-Verification.cjs",
+      "choice": "MI measurement groups plus exact main Action group"
+    }
+  ]
+}

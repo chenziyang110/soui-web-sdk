@@ -1,0 +1,1 @@
+import * as sdk from '@soui/native-sdk'; import {useSouiGuiNode as react} from '@soui/gui-react'; import {useSouiGuiNode as vue} from '@soui/gui-vue'; if([sdk.SouiGui,sdk.readSouiActionContract,sdk.validateSouiActionInput,react,vue].some(value=>typeof value!=='function')) throw Error('Missing ActionCore or GUI imports'); console.log('ActionCore and GUI imports passed');

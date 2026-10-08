@@ -1,0 +1,16 @@
+import type { SouiGui, SouiGuiRegistration } from '@soui/native-sdk';
+/** Explicit application semantics; no DOM values or component props are projected. */
+export interface SouiGuiBindingOptions {
+    id: string;
+    role: string;
+    name: string;
+    actions: SouiGuiRegistration['actions'];
+    state?: SouiGuiRegistration['state'];
+    expose?: boolean;
+}
+/** Private, framework-independent controller; commit only after DOM insertion. */
+export declare class GuiBinding {
+    private current;
+    release(): void;
+    commit(gui: SouiGui, element: Element | null, options: SouiGuiBindingOptions): void;
+}

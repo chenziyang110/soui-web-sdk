@@ -1,0 +1,24 @@
+✔ only explicitly registered semantics and named actions are exposed (2.9804ms)
+✔ registrations, inputs and snapshots are owned copies (0.4065ms)
+✔ duplicate ids and capacity are enforced and unregister permits reuse (7.3024ms)
+✔ disabled property, aria-disabled and explicit app state all deny actions (0.4657ms)
+✔ Chrome49 connection fallback works and disconnected nodes cannot be acted upon (0.3708ms)
+✔ busy remains until the actual handler settles after a caller timeout (0.8843ms)
+✔ synchronous and native handler errors propagate and free busy state (0.3661ms)
+✔ waitFor observes explicit state, defaults to enabled idle, and times out honestly (0.3754ms)
+✔ unregistration rejects running actions and waits; late results cannot target a reused id (0.3587ms)
+✔ dispose immediately rejects pending waits and actions, refuses future work, and is idempotent (0.3464ms)
+✔ disconnection during a wait rejects even when the application handler remains pending (0.3109ms)
+✔ input, snapshot and handler results enforce UTF-8 byte and JSON limits (1.9577ms)
+✔ application state reentrancy cannot revive a disposed or removed registration (0.3036ms)
+✔ caller mutation of an action name cannot execute a different handler (0.288ms)
+✔ input getter reentrancy cannot invoke an action after removal and serializers are never called (0.2962ms)
+✔ pending state observations are bounded and capacity recovers after completion (3.5248ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 165.2199

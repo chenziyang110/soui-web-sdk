@@ -1,0 +1,79 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),{spawnSync}=require('node:child_process');
+const root=path.resolve(__dirname,'../..'),folder=__dirname;
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex'),encoded=x=>JSON.stringify(x,null,2)+'\n';
+function relative(full,base){const rel=path.relative(base,full);if(!rel||rel.startsWith('..')||path.isAbsolute(rel))throw Error('Path escape');return rel;}
+function bytes(full,base){let q=full;relative(full,base);while(q!==base){const s=fs.lstatSync(q);if(s.isSymbolicLink())throw Error('Linked evidence '+q);q=path.dirname(q);}
+ const s=fs.statSync(full);if(!s.isFile()||s.nlink!==1)throw Error('Evidence is not a unique regular file');return fs.readFileSync(full);}
+const mapping=[];
+function copyTree(source,target){for(const e of fs.readdirSync(source,{withFileTypes:true})){
+ const full=path.join(source,e.name),dest=path.join(target,e.name);if(e.isSymbolicLink())throw Error('Linked tree entry');
+ if(e.isDirectory()){fs.mkdirSync(dest);copyTree(full,dest);}else{const b=bytes(full,root);fs.writeFileSync(dest,b,{flag:'wx'});
+  if(!fs.readFileSync(dest).equals(b))throw Error('Copied evidence changed');mapping.push({source:relative(full,root).replace(/\\/g,'/'),snapshot:relative(dest,folder).replace(/\\/g,'/'),bytes:b.length,sha256:sha(b)});}
+}}
+const frozen=JSON.parse(fs.readFileSync(path.join(folder,'source-frozen.json')));
+for(const item of frozen.files){const b=bytes(path.join(root,item.path),root);if(b.length!==item.bytes||sha(b)!==item.sha256)throw Error('Frozen source changed '+item.path);}
+const prior=JSON.parse(fs.readFileSync(path.join(folder,'prior-snapshot-map.json')));
+for(const item of prior.files){const b=bytes(path.join(folder,item.snapshot),folder);if(b.length!==item.bytes||sha(b)!==item.sha256)throw Error('Prior snapshot changed');}
+const groups=[];
+for(const name of fs.readdirSync(folder).filter(n=>/^(protocol|native)-(x86|x64)-/.test(n))){
+ const outer=JSON.parse(fs.readFileSync(path.join(folder,name,'finished.json'))),summary=JSON.parse(fs.readFileSync(path.join(folder,name,'stdout.log')));
+ if(!outer.passed||outer.terminal.reason!=='completed'||outer.terminal.terminatedOwnedJob||outer.terminal.activeProcesses!==0)throw Error('Outer group not natural');
+ const source=path.dirname(path.join(root,summary.report)),dest=path.join(folder,'inner-groups',path.basename(source));fs.mkdirSync(dest,{recursive:true});copyTree(source,dest);
+ const inner=JSON.parse(fs.readFileSync(path.join(source,'finished.json'))),raw=bytes(path.join(root,summary.report),root);
+ if(sha(raw)!==summary.reportSha256||inner.reportSha256!==summary.reportSha256||!inner.passed||inner.terminal.reason!=='completed'||inner.terminal.terminatedOwnedJob||inner.terminal.activeProcesses!==0)throw Error('Inner group not natural');
+ if(summary.sourceSha256!==frozen.measurement.sha256)throw Error('Wrong group source');
+ groups.push({kind:summary.kind,architecture:summary.architecture,counts:summary.counts,
+  sourceSha256:summary.sourceSha256,outerDirectory:name,innerDirectory:relative(dest,folder).replace(/\\/g,'/'),
+  nativeReportSha256:summary.reportSha256,outerReportSha256:outer.reportSha256,naturalCompleted:true});
+}
+if(groups.length!==4||new Set(groups.map(g=>g.kind+'-'+g.architecture)).size!==4)throw Error('Four unique groups required');
+const createdAfter=fs.statSync(path.join(folder,'source-frozen.json')).birthtimeMs;
+const fixtures=[];
+for(const item of fs.readdirSync(path.join(root,'out'),{withFileTypes:true}).filter(e=>e.isDirectory()&&/^(sampler-owned-|native-identity-)/.test(e.name))){
+ const source=path.join(root,'out',item.name);if(fs.statSync(source).birthtimeMs<createdAfter)continue;
+ const dest=path.join(folder,'native-fixtures',item.name);fs.mkdirSync(dest,{recursive:true});copyTree(source,dest);fixtures.push(relative(dest,folder).replace(/\\/g,'/'));
+}
+if(fixtures.length!==10)throw Error('Expected per-arch serializer + four owned sampler fixture directories');
+fs.writeFileSync(path.join(folder,'current-raw-snapshot-map.json'),encoded({schema:'soui.measurement-current-raw-snapshot/v1',mapping}),{flag:'wx'});
+const preparation=[];
+for(const arch of ['x86','x64']){
+ const rel='out/'+(arch==='x64'?'benchmark-protocol':'benchmark-protocol-x86')+'/measurement-tools.json';const b=bytes(path.join(root,rel),root),j=JSON.parse(b);
+ if(j.source.sha256!==frozen.measurement.sha256||!j.prepared||j.architecture!==arch)throw Error('Wrong current preparation');
+ for(const e of j.executables){const actual=bytes(path.join(root,e.path),root),offset=actual.readUInt32LE(60);
+  if(sha(actual)!==e.sha256||actual.length!==e.bytes||actual.readUInt16LE(offset+4)!==(arch==='x86'?332:34404))throw Error('Actual output identity changed');}
+ preparation.push({architecture:arch,path:rel,bytes:b.length,sha256:sha(b),sourceSha256:j.source.sha256,executables:j.executables});
+}
+const builds=fs.readdirSync(folder).filter(n=>/^build-(x86|x64)-/.test(n)).map(n=>{
+ const result=JSON.parse(fs.readFileSync(path.join(folder,n,'finished.json')));
+ if(result.exitCode!==0||!result.closureConfirmed)throw Error('Compilation or closure failed');
+ const rows=fs.readFileSync(path.join(folder,n,'owned.ndjson'),'utf8').trim().split(/\r?\n/).map(JSON.parse),terminal=rows.at(-1);
+ return {directory:n,rootExitCode:result.exitCode,compileCompleted:true,genericSupervisionPassed:result.passed,
+  closureConfirmed:result.closureConfirmed,terminatedOwnedJob:terminal.terminatedOwnedJob,reason:terminal.reason,
+  totalProcesses:terminal.totalProcesses,activeBeforeCleanup:terminal.activeBeforeCleanup,reportSha256:result.reportSha256,
+  observedLastImages:rows.filter(r=>r.event==='owned-member').slice(-terminal.activeBeforeCleanup).map(r=>({pid:r.pid,creationFileTime:r.creationFileTime,image:r.image})),
+  compilerTailPolicyAccepted:false};
+});
+const git=spawnSync('git',['status','--short'],{cwd:root,encoding:'utf8'});if(git.status!==0||git.stdout.trim())throw Error('Expected frozen clean Git tree');
+fs.writeFileSync(path.join(folder,'final-git-status.json'),encoded({exe:'git',args:['status','--short'],cwd:root,status:git.status,stdout:git.stdout,stderr:git.stderr}),{flag:'wx'});
+const head=spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).stdout.trim();if(head!==frozen.head)throw Error('HEAD changed');
+const result={schema:'soui.measurement-tail-integration-result/v1',head,miSourceCommit:'6d7a2747db26ac983bba19f2269532cdaceb0f0c',mainMerged:'0f25070f44d67716fde8c3945e4475b2f3b081a7',
+ sourceSha256:frozen.sha256,sourceFileCount:frozen.files.length,measurementBuildSourceSha256:frozen.measurement.sha256,measurementBuildSourceCount:frozen.measurement.files.length,
+ priorSnapshotFiles:prior.files.length,prior575RawPreserved:true,priorTwoIndexesPreserved:true,priorTwoPreparationsPreserved:true,
+ builds,groups,preparation,nativeFixtureDirectories:fixtures,
+ tailDependencyRed:{tests:20,pass:8,fail:12,syntheticPE:true,actualNativeCompilerProof:false},
+ tailDependencyGreenIsIncludedInEachProtocolGroup:true,entrypointActualPSAst:true,collectUnitProjectionOnly:true,
+ privateInitialParserFailurePreserved:true,currentRealPreparationReadOnlyFaultProbe:true,
+ noGui:true,noCorrectInputTrace:true,noSdkCppBuild:true,noVm:true,noFullCollect:true,noCanonicalAcceptanceChanges:true,
+ temporaryMainSourceManifest:true,noFinalSourcePackageClaim:true,noPush:true,
+ limitations:['编译 root exit 0 与通用 Job false 分别保留；没有 compiler-tail 例外通过。',
+  '纯 preparation 用合成 PE，仅拒绝边界；当前真实 preparation probe 的故障是只读虚拟 FS，不是编译证明。',
+  'protocol 每架构仅原生 serializer 跳过一次；native 每架构无跳过。',
+  '无真实桌面、正常 InputTrace/SendInput、五轮性能、物理呈现、高刷、Win7/PE/VM 或全 SDK/Collect 验收。',
+  '原始散列绑定本轮文件一致性，不认证同用户恶意重写整套证据，不认证进程内存。']};
+fs.writeFileSync(path.join(folder,'result-final.json'),encoded(result),{flag:'wx'});
+const files=[];function walk(dir){for(const e of fs.readdirSync(dir,{withFileTypes:true})){const full=path.join(dir,e.name);if(e.isDirectory())walk(full);else{const b=bytes(full,folder);files.push({path:relative(full,folder).replace(/\\/g,'/'),bytes:b.length,sha256:sha(b)});}}}walk(folder);files.sort((a,b)=>a.path.localeCompare(b.path));
+fs.writeFileSync(path.join(folder,'evidence-index-final.json'),encoded({schema:'soui.measurement-tail-integration-evidence/v1',head,sourceSha256:frozen.sha256,
+ measurementBuildSourceSha256:frozen.measurement.sha256,resultSha256:sha(fs.readFileSync(path.join(folder,'result-final.json'))),files}),{flag:'wx'});
+console.log(encoded({folder,indexSha256:sha(fs.readFileSync(path.join(folder,'evidence-index-final.json'))),files:files.length,head,sourceSha256:frozen.sha256,
+ measurementSha256:frozen.measurement.sha256,groups:groups.map(g=>({kind:g.kind,architecture:g.architecture,counts:g.counts})),builds:builds.map(b=>({directory:b.directory,compileCompleted:b.compileCompleted,genericSupervisionPassed:b.genericSupervisionPassed,closureConfirmed:b.closureConfirmed}))}));

@@ -25,7 +25,7 @@ function identity(rows) {
 }
 
 function launchOwned(executable, args, {runner, cwd, report, timeoutMs, drainMs = 2000,
-  env = process.env, stdout = 'ignore', stderr = 'ignore'} = {}) {
+  env = process.env, stdout = 'ignore', stderr = 'ignore', tailImagePin} = {}) {
   if (process.platform !== 'win32') throw new Error('Owned process supervision requires Windows');
   for (const [name, value] of Object.entries({executable, runner, cwd, report}))
     if (typeof value !== 'string' || !path.isAbsolute(value)) throw new Error(`${name} must be absolute`);
@@ -33,14 +33,28 @@ function launchOwned(executable, args, {runner, cwd, report, timeoutMs, drainMs 
     ['timeoutMs', timeoutMs, 1, 172800000], ['drainMs', drainMs, 0, 60000]])
     if (!Number.isSafeInteger(value) || value < min || value > max) throw new Error(`Invalid ${name}`);
   if (!Array.isArray(args) || args.some(arg => typeof arg !== 'string')) throw new Error('Arguments must be strings');
+  args = [...args];
+  // Keep default callers (including isolated VM clients) free of new imports
+  // and randomness. The explicit caller generates/persists its own nonce.
+  const tailReader = tailImagePin === undefined ? null : require('./owned-tail-evidence.cjs');
+  const pin = tailReader ? tailReader.validateTailImagePin(tailImagePin) : null;
   if (fs.existsSync(report)) throw new Error('Owned report already exists');
   const runnerSha256 = sha(runner);
   const executableSha256 = sha(executable);
   const context = {schema: 'soui.owned-process-context/v1', runnerSha256, executableSha256,
     executable, args, cwd, timeoutMs, drainMs};
-  fs.writeFileSync(report + '.context.json', JSON.stringify(context, null, 2) + '\n', {flag: 'wx'});
-  const child = spawn(runner, ['--timeout-ms', String(timeoutMs), '--drain-ms', String(drainMs),
-    '--stop-on-stdin', '--report', report, '--cwd', cwd, '--', executable, ...args],
+  const runnerArgs = ['--timeout-ms', String(timeoutMs), '--drain-ms', String(drainMs),
+    '--stop-on-stdin', '--report', report, '--cwd', cwd];
+  if (pin) {
+    runnerArgs.push('--pin-tail-image', pin.image, '--pin-tail-sha256', pin.sha256, '--snapshot-nonce', pin.nonce);
+    context.tailImagePin = pin;
+    context.report = report;
+    context.runnerArgs = [...runnerArgs, '--', executable, ...args];
+  }
+  const contextText = JSON.stringify(context, null, 2) + '\n';
+  const contextSha256 = pin ? crypto.createHash('sha256').update(contextText).digest('hex') : null;
+  fs.writeFileSync(report + '.context.json', contextText, {flag: 'wx'});
+  const child = spawn(runner, [...runnerArgs, '--', executable, ...args],
     {cwd, env, windowsHide: true, stdio: ['pipe', stdout, stderr]});
   let root = null;
   let readySettled = false;
@@ -88,6 +102,7 @@ function launchOwned(executable, args, {runner, cwd, report, timeoutMs, drainMs 
       let closureConfirmed = false;
       let passed = false;
       let reportSha256 = null;
+      let tailEvidence = null;
       try {
         const reportBytes = fs.readFileSync(report);
         const reportText = reportBytes.toString('utf8');
@@ -106,20 +121,36 @@ function launchOwned(executable, args, {runner, cwd, report, timeoutMs, drainMs 
         closureConfirmed = root !== null && terminal.closureConfirmed === true &&
           terminal.activeProcesses === 0 && Number.isSafeInteger(terminal.totalProcesses) &&
           terminal.totalProcesses >= 1 && !fallbackUsed;
+        if (pin && sha(report + '.context.json') !== contextSha256)
+          throw new Error('Owned pin context changed during execution');
         passed = !spawnError && !reportError && !signal && supervisorExitCode === 0 && !stopRequested &&
           terminal.reason === 'completed' && terminal.rootExited === true &&
           terminal.rootExitCode === 0 && terminal.passed === true && closureConfirmed;
+        if (tailReader) {
+          tailEvidence = tailReader.readTailEvidence(reportBytes, {context, reportSha256});
+          if (tailEvidence.accepted && (spawnError || reportError || signal || stopRequested || fallbackUsed ||
+              !closureConfirmed || supervisorExitCode !== 124 || tailEvidence.root.pid !== root.pid ||
+              tailEvidence.root.creationFileTime !== root.creationFileTime)) {
+            tailEvidence = {...tailEvidence, accepted: false, failure: 'Client observation or supervision failed'};
+          }
+        }
       } catch (error) { reportError = error.message; }
       if (!readySettled) {
         readySettled = true;
         if (root) settleReady({...root});
         else rejectReady(new Error(reportError || terminal?.reason || spawnError || 'Owned process did not start'));
       }
-      resolve({pid: root?.pid ?? null, creationFileTime: root?.creationFileTime ?? null,
+      const result = {pid: root?.pid ?? null, creationFileTime: root?.creationFileTime ?? null,
         exitCode: terminal?.rootExitCode ?? null, supervisorExitCode, signal,
         spawnError, reportError, stopRequested, fallbackUsed, closureConfirmed, passed,
         terminal, report, reportSha256,
-        runnerSha256, executableSha256});
+        runnerSha256, executableSha256};
+      if (tailReader) {
+        result.contextSha256 = contextSha256;
+        result.tailEvidence = tailEvidence || {schema: 'soui.owned-tail-verdict/v1', available: true,
+          accepted: false, diskBytesOnly: true, failure: reportError || 'No complete tail evidence', reportSha256};
+      }
+      resolve(result);
     });
   });
   return {child, ready, finished, stop, get pid() { return root?.pid ?? null; }};

@@ -1,0 +1,6 @@
+First evidence-index helper attempt failed before creating either final index:
+TypeError: Cannot read properties of undefined (reading 'filter')
+at freeze.cjs:15:31: const inherited=native.source.filter(...)
+The native freeze uses its own source-list property; this helper assumed the JS freeze property name.
+Node.js v24.14.0, process exit 1. The original helper bytes are preserved as freeze-attempt1.cjs.inert.snapshot.
+This is an evidence-index helper error, not a test result or production source error. RED/GREEN/native/old raw attempts remain unchanged.

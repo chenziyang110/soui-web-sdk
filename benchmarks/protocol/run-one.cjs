@@ -7,7 +7,8 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const os = require('node:os');
 const {launchOwned} = require('../../tools/internal/owned-process.cjs');
-const {checkRunTraces, readLines} = require('./check-run-traces.cjs');
+const {checkRunTraces} = require('./check-run-traces.cjs');
+const {readPublishedSubject, captureOwnedEvidence, readOwnedRun, describe, readRunLines} = require('./owned-trace-subject.cjs');
 
 function requirePath(value, kind) {
   if (!path.isAbsolute(value)) throw new Error(`${kind} must be an absolute path`);
@@ -46,11 +47,21 @@ function launch(name, executable, args, cwd, output, env = process.env, ownershi
       runner: ownership.runner || path.resolve(__dirname, '../../out/benchmark-protocol/Release/OwnedProcessRunner.exe'),
       report: path.join(output, name + '.owned.ndjson'), timeoutMs: ownership.timeoutMs || 260000});
   } finally { fs.closeSync(stdout); fs.closeSync(stderr); }
-  const finished = owned.finished.then(result => ({name, pid: result.pid,
+  let contextSha256, contextError;
+  try { contextSha256 = sha(path.join(output, name + '.owned.ndjson.context.json')); }
+  catch (error) { contextError = error; }
+  const ready = owned.ready.then(subject => {
+    if (contextError) throw contextError;
+    return readPublishedSubject(output, name, subject, {contextSha256,
+      runnerSha256: sha(ownership.runner || path.resolve(__dirname, '../../out/benchmark-protocol/Release/OwnedProcessRunner.exe')),
+      executableSha256: sha(executable), executable, args, cwd});
+  });
+  void ready.catch(() => {});
+  const finished = owned.finished.then(result => ({name, pid: result.pid, contextSha256,
     code: result.exitCode, signal: result.signal,
     error: result.passed ? null : result.spawnError || result.reportError || result.terminal?.reason || 'Owned run failed',
     ownedProcess: result}));
-  return {name, ready: owned.ready, finished, stop: owned.stop, get pid() { return owned.pid; }};
+  return {name, ready, finished, stop: owned.stop, get pid() { return owned.pid; }};
 }
 
 function stop(runs, cleanup) {
@@ -73,14 +84,11 @@ function resultFile(directory) {
   return path.join(directory, files[0]);
 }
 
-function validateHostIdentity(trace, processes) {
-  const host = processes.find(item => item.name === 'host')?.ownedProcess;
-  if (!host || trace.hostPid !== host.pid ||
-      trace.hostCreationTime100ns !== Number(host.creationFileTime))
+function validateHostIdentity(trace, subject) {
+  if (!subject || trace.hostPid !== subject.pid ||
+      trace.hostCreationTime100ns !== subject.creationFileTime || trace.exactFileTimeBound !== true)
     throw new Error('Trace host differs from the owned benchmark subject');
-  // Legacy collectors serialize FILETIME as a JSON number. Preserve that
-  // precision limitation; this comparison does not prove every 100ns tick.
-  return {pidBound: true, creationComparison: 'legacy-json-number', exactFileTimeBound: false};
+  return {pidBound: true, creationComparison: 'exact-native-filetime', exactFileTimeBound: true};
 }
 
 async function main() {
@@ -130,14 +138,14 @@ async function main() {
   const runs = [];
   const startedAt = new Date().toISOString();
   const runId = crypto.randomUUID();
-  const record = {schema: 'soui.benchmark-single-run/v1', runId, host, scene, startedAt,
+  const record = {schema: 'soui.benchmark-single-run/v2', runId, host, scene, startedAt, captureRoot:output,
     runnerPid: process.pid,
     machine: {hostname: os.hostname(), platform: os.platform(), release: os.release(),
       architecture: os.arch(), cpuModel: os.cpus()[0]?.model ?? null,
       logicalCpus: os.cpus().length, totalMemoryBytes: os.totalmem()},
     pageSha256: sha(benchmarkPage), pageBundle: 'page-bundle', pageFiles,
     hostExeSha256: sha(hostExe),
-    dependency: host === 'soui' ? {miniblinkSha256: sha(dependency)}
+    dependency: host === 'soui' ? {miniblinkSha256: sha(dependency), miniblinkPath:dependency}
       : {appDirectory: dependency, appFiles},
     identity: identityFile ? {kind: host === 'soui' ? 'sdk-library' : 'electron-lockfile',
       bytes: fs.statSync(identityFile).size, sha256: sha(identityFile)} : null,
@@ -157,13 +165,13 @@ async function main() {
       host === 'soui' ? path.dirname(hostExe) : dependency, output, hostEnv,
       {runner: ownedRunner, timeoutMs: maxDurationMs + 10000});
     runs.push(hostRun);
-    await hostRun.ready;
-    const pid = String(hostRun.pid);
+    const subject = await hostRun.ready;
+    const pid = String(subject.pid);
     runs.push(launch('sampler', samplerExe,
-      [pid, '1000', String(maxDurationMs), path.join(output, 'process-tree.ndjson')],
+      [pid, '1000', String(maxDurationMs), path.join(output, 'process-tree.ndjson'), subject.creationFileTime],
       path.dirname(samplerExe), output, process.env, {runner: ownedRunner, timeoutMs: maxDurationMs + 10000}));
     runs.push(launch('input', inputExe,
-      [pid, scene, path.join(output, 'input.ndjson'), 'full'],
+      [pid, scene, path.join(output, 'input.ndjson'), 'full', subject.creationFileTime],
       path.dirname(inputExe), output, process.env, {runner: ownedRunner, timeoutMs: maxDurationMs + 10000}));
     for (const run of runs) {
       void run.finished.then(result => {
@@ -171,12 +179,16 @@ async function main() {
       });
     }
     timer = setTimeout(() => {timedOut = true; stop(runs, record.cleanup);}, maxDurationMs + 10000);
+    await Promise.all(runs.map(run => run.ready));
     record.processes = await Promise.all(runs.map(run => run.finished));
     if (timedOut || record.processes.some(item => item.code !== 0 || item.error))
       throw new Error(timedOut ? 'Benchmark run exceeded deadline' : 'Benchmark process failed');
-    const trace = checkRunTraces(readLines(path.join(output, 'input.ndjson')),
-      readLines(path.join(output, 'process-tree.ndjson')), scene);
-    record.traceIdentity = validateHostIdentity(trace, record.processes);
+    record.ownedEvidence = captureOwnedEvidence(output, record.processes);
+    record.traceEvidence = {input:describe(output, 'input.ndjson'), processTree:describe(output, 'process-tree.ndjson')};
+    const verified = readOwnedRun(output, record);
+    const trace = checkRunTraces(readRunLines(output, 'input.ndjson'),
+      readRunLines(output, 'process-tree.ndjson'), scene, {ownedSubject:verified.subject});
+    record.traceIdentity = validateHostIdentity(trace, verified.subject);
     const pageResultPath = resultFile(pageResults);
     const pageResult = JSON.parse(fs.readFileSync(pageResultPath, 'utf8'));
     if (JSON.stringify(bundleFiles(pageSnapshot)) !== JSON.stringify(pageFiles))
@@ -200,6 +212,10 @@ async function main() {
     process.exitCode = 1;
   } finally {
     clearTimeout(timer);
+    if (!record.ownedEvidence && record.processes) {
+      try { record.ownedEvidence = captureOwnedEvidence(output, record.processes); }
+      catch (error) { record.evidenceError = error.message; }
+    }
     record.finishedAt = new Date().toISOString();
     fs.writeFileSync(path.join(output, 'run.json'), `${JSON.stringify(record, null, 2)}\n`, {flag: 'wx'});
     process.stdout.write(`${JSON.stringify({output, status: record.status,

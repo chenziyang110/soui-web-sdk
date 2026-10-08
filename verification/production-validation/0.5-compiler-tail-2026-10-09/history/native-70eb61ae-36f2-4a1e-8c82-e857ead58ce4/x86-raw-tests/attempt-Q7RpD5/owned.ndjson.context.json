@@ -1,0 +1,38 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "6a27c80706696d19131537edc08aee75f8e816247d1f27acd2cf917462bc3293",
+  "executableSha256": "69e790a603b9c0f5d10e3ede3553715473dbdf958fd405adf31f36b4ea1d8e56",
+  "executable": "F:\\work\\sm05-compiler-tail\\out\\tail-x86\\Release\\OwnedTailProcessFixture.exe",
+  "args": [
+    "brief"
+  ],
+  "cwd": "F:\\work\\sm05-compiler-tail\\out\\side-tail-history-98a0df4b-704e-439b-a7f8-de8f3806d619\\native-70eb61ae-36f2-4a1e-8c82-e857ead58ce4\\x86-raw-tests\\attempt-Q7RpD5",
+  "timeoutMs": 8000,
+  "drainMs": 100,
+  "tailImagePin": {
+    "image": "F:\\work\\sm05-compiler-tail\\out\\side-tail-history-98a0df4b-704e-439b-a7f8-de8f3806d619\\native-70eb61ae-36f2-4a1e-8c82-e857ead58ce4\\x86-raw-tests\\attempt-Q7RpD5\\pinned-helper.exe",
+    "sha256": "69e790a603b9c0f5d10e3ede3553715473dbdf958fd405adf31f36b4ea1d8e56",
+    "nonce": "cb2b971e2bb7ef6a9278a56b6f95ce14"
+  },
+  "report": "F:\\work\\sm05-compiler-tail\\out\\side-tail-history-98a0df4b-704e-439b-a7f8-de8f3806d619\\native-70eb61ae-36f2-4a1e-8c82-e857ead58ce4\\x86-raw-tests\\attempt-Q7RpD5\\owned.ndjson",
+  "runnerArgs": [
+    "--timeout-ms",
+    "8000",
+    "--drain-ms",
+    "100",
+    "--stop-on-stdin",
+    "--report",
+    "F:\\work\\sm05-compiler-tail\\out\\side-tail-history-98a0df4b-704e-439b-a7f8-de8f3806d619\\native-70eb61ae-36f2-4a1e-8c82-e857ead58ce4\\x86-raw-tests\\attempt-Q7RpD5\\owned.ndjson",
+    "--cwd",
+    "F:\\work\\sm05-compiler-tail\\out\\side-tail-history-98a0df4b-704e-439b-a7f8-de8f3806d619\\native-70eb61ae-36f2-4a1e-8c82-e857ead58ce4\\x86-raw-tests\\attempt-Q7RpD5",
+    "--pin-tail-image",
+    "F:\\work\\sm05-compiler-tail\\out\\side-tail-history-98a0df4b-704e-439b-a7f8-de8f3806d619\\native-70eb61ae-36f2-4a1e-8c82-e857ead58ce4\\x86-raw-tests\\attempt-Q7RpD5\\pinned-helper.exe",
+    "--pin-tail-sha256",
+    "69e790a603b9c0f5d10e3ede3553715473dbdf958fd405adf31f36b4ea1d8e56",
+    "--snapshot-nonce",
+    "cb2b971e2bb7ef6a9278a56b6f95ce14",
+    "--",
+    "F:\\work\\sm05-compiler-tail\\out\\tail-x86\\Release\\OwnedTailProcessFixture.exe",
+    "brief"
+  ]
+}

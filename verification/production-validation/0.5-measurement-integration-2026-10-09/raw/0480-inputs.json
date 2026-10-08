@@ -1,0 +1,31 @@
+{
+  "executable": "C:/Windows/System32/WindowsPowerShell/v1.0/powershell.exe",
+  "args": [
+    "-NoProfile",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "F:\\work\\sm05-mi\\tools\\internal\\Build-ValidationTools.ps1",
+    "-Architecture",
+    "x86",
+    "-FreshConfigure"
+  ],
+  "cwd": "F:\\work\\sm05-mi",
+  "timeoutMs": 180000,
+  "drainMs": 2500,
+  "env": {
+    "MSBUILDDISABLENODEREUSE": "1",
+    "PSModulePath": "C:/Windows/system32/WindowsPowerShell/v1.0/Modules"
+  },
+  "runner": {
+    "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+    "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+  },
+  "node": {
+    "path": "C:\\nvm4w\\nodejs\\node.exe",
+    "version": "v24.14.0"
+  },
+  "harnessSha256": "c09a6f33b87e69e4d908cf7d77b7d1405ee814fe31964acb9fe979ab4f5f9d38",
+  "noGui": true,
+  "correctInputTraceExecuted": false
+}

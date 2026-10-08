@@ -1,0 +1,274 @@
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+生成启动时间为 2026/10/9 1:49:10。
+
+     1>节点 1 上的项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_operation_query_tests.vcxproj”(默认目标)。
+     1>项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_operation_query_tests.vcxproj”(1)正在节点 1 上生成“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\ZERO_CHECK.vcxproj”(2) (默认目标)。
+     2>PrepareForBuild:
+         已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
+       InitializeBuildStatus:
+         正在创建“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+         正在对“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild”执行 Touch 任务。
+       PreBuildEvent:
+         Checking File Globs
+         setlocal
+         "C:\Program Files\CMake\bin\cmake.exe" -P F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/build-x64/CMakeFiles/VerifyGlobs.cmake
+         if %errorlevel% neq 0 goto :cmEnd
+         :cmEnd
+         endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+         :cmErrorLevel
+         exit /b %1
+         :cmDone
+         if %errorlevel% neq 0 goto :VCEnd
+         :VCEnd
+       CustomBuild:
+         所有输出均为最新。
+       FinalizeBuildStatus:
+         正在删除文件“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild”。
+         正在对“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\ZERO_CHECK.lastbuildstate”执行 Touch 任务。
+     2>已完成生成项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\ZERO_CHECK.vcxproj”(默认目标)的操作。
+     1>项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_operation_query_tests.vcxproj”(1)正在节点 1 上生成“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\sdk\soui_sdk.vcxproj”(3) (默认目标)。
+     3>PrepareForBuild:
+         已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
+       InitializeBuildStatus:
+         正在创建“soui_sdk.dir\Release\soui_sdk.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+         正在对“soui_sdk.dir\Release\soui_sdk.tlog\unsuccessfulbuild”执行 Touch 任务。
+       CustomBuild:
+         所有输出均为最新。
+       ClCompile:
+         所有输出均为最新。
+       Lib:
+         所有输出均为最新。
+         soui_sdk.vcxproj -> F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\sdk\Release\soui_sdk.lib
+       FinalizeBuildStatus:
+         正在删除文件“soui_sdk.dir\Release\soui_sdk.tlog\unsuccessfulbuild”。
+         正在对“soui_sdk.dir\Release\soui_sdk.tlog\soui_sdk.lastbuildstate”执行 Touch 任务。
+     3>已完成生成项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\sdk\soui_sdk.vcxproj”(默认目标)的操作。
+     1>PrepareForBuild:
+         已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
+       InitializeBuildStatus:
+         正在对“task_operation_query_tests.dir\Release\task_ope.9FBE71A8.tlog\unsuccessfulbuild”执行 Touch 任务。
+       CustomBuild:
+         所有输出均为最新。
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /I"F:\work\sm05-query\third_party\include\json" /I"F:\work\sm05-query\sdk\include" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D "CMAKE_INTDIR=\"Release\"" /U_DEBUG /EHsc /MD /std:c++17 /Fo"task_operation_query_tests.dir\Release\\" /Fd"task_operation_query_tests.dir\Release\vc143.pdb" /external:W4 /TP /errorReport:queue  /utf-8 "F:\work\sm05-query\tests\native\task_operation_query_tests.cpp"
+         task_operation_query_tests.cpp
+       Link:
+         C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /OUT:"F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\Release\task_operation_query_tests.exe" /INCREMENTAL:NO /NOLOGO sdk\Release\soui_sdk.lib user32.lib gdi32.lib imm32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comctl32.lib advapi32.lib winmm.lib bcrypt.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/build-x64/Release/task_operation_query_tests.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/build-x64/Release/task_operation_query_tests.lib" /MACHINE:X64  /machine:x64 task_operation_query_tests.dir\Release\task_operation_query_tests.obj
+         task_operation_query_tests.vcxproj -> F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\Release\task_operation_query_tests.exe
+       FinalizeBuildStatus:
+         正在删除文件“task_operation_query_tests.dir\Release\task_ope.9FBE71A8.tlog\unsuccessfulbuild”。
+         正在对“task_operation_query_tests.dir\Release\task_ope.9FBE71A8.tlog\task_operation_query_tests.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_operation_query_tests.vcxproj”(默认目标)的操作。
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:04.25
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+生成启动时间为 2026/10/9 1:49:14。
+
+     1>节点 1 上的项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_service_tests.vcxproj”(默认目标)。
+     1>项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_service_tests.vcxproj”(1)正在节点 1 上生成“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\ZERO_CHECK.vcxproj”(2) (默认目标)。
+     2>PrepareForBuild:
+         已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
+       InitializeBuildStatus:
+         正在创建“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+         正在对“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild”执行 Touch 任务。
+       PreBuildEvent:
+         Checking File Globs
+         setlocal
+         "C:\Program Files\CMake\bin\cmake.exe" -P F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/build-x64/CMakeFiles/VerifyGlobs.cmake
+         if %errorlevel% neq 0 goto :cmEnd
+         :cmEnd
+         endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+         :cmErrorLevel
+         exit /b %1
+         :cmDone
+         if %errorlevel% neq 0 goto :VCEnd
+         :VCEnd
+       CustomBuild:
+         所有输出均为最新。
+       FinalizeBuildStatus:
+         正在删除文件“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild”。
+         正在对“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\ZERO_CHECK.lastbuildstate”执行 Touch 任务。
+     2>已完成生成项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\ZERO_CHECK.vcxproj”(默认目标)的操作。
+     1>项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_service_tests.vcxproj”(1)正在节点 1 上生成“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\sdk\soui_sdk.vcxproj”(3) (默认目标)。
+     3>PrepareForBuild:
+         已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
+       InitializeBuildStatus:
+         正在创建“soui_sdk.dir\Release\soui_sdk.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+         正在对“soui_sdk.dir\Release\soui_sdk.tlog\unsuccessfulbuild”执行 Touch 任务。
+       CustomBuild:
+         所有输出均为最新。
+       ClCompile:
+         所有输出均为最新。
+       Lib:
+         所有输出均为最新。
+         soui_sdk.vcxproj -> F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\sdk\Release\soui_sdk.lib
+       FinalizeBuildStatus:
+         正在删除文件“soui_sdk.dir\Release\soui_sdk.tlog\unsuccessfulbuild”。
+         正在对“soui_sdk.dir\Release\soui_sdk.tlog\soui_sdk.lastbuildstate”执行 Touch 任务。
+     3>已完成生成项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\sdk\soui_sdk.vcxproj”(默认目标)的操作。
+     1>PrepareForBuild:
+         已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
+         正在创建目录“task_service_tests.dir\Release\task_ser.551B1B1C.tlog\”。
+       InitializeBuildStatus:
+         正在创建“task_service_tests.dir\Release\task_ser.551B1B1C.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+         正在对“task_service_tests.dir\Release\task_ser.551B1B1C.tlog\unsuccessfulbuild”执行 Touch 任务。
+       CustomBuild:
+         Building Custom Rule F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/consumer/CMakeLists.txt
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /I"F:\work\sm05-query\third_party\include\json" /I"F:\work\sm05-query\sdk\include" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D "CMAKE_INTDIR=\"Release\"" /U_DEBUG /EHsc /MD /std:c++17 /Fo"task_service_tests.dir\Release\\" /Fd"task_service_tests.dir\Release\vc143.pdb" /external:W4 /TP /errorReport:queue  /utf-8 "F:\work\sm05-query\tests\native\task_service_tests.cpp"
+         task_service_tests.cpp
+       Link:
+         C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /OUT:"F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\Release\task_service_tests.exe" /INCREMENTAL:NO /NOLOGO sdk\Release\soui_sdk.lib user32.lib gdi32.lib imm32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comctl32.lib advapi32.lib winmm.lib bcrypt.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/build-x64/Release/task_service_tests.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/build-x64/Release/task_service_tests.lib" /MACHINE:X64  /machine:x64 task_service_tests.dir\Release\task_service_tests.obj
+         task_service_tests.vcxproj -> F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\Release\task_service_tests.exe
+       FinalizeBuildStatus:
+         正在删除文件“task_service_tests.dir\Release\task_ser.551B1B1C.tlog\unsuccessfulbuild”。
+         正在对“task_service_tests.dir\Release\task_ser.551B1B1C.tlog\task_service_tests.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_service_tests.vcxproj”(默认目标)的操作。
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:04.24
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+生成启动时间为 2026/10/9 1:49:19。
+
+     1>节点 1 上的项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_scope_tests.vcxproj”(默认目标)。
+     1>项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_scope_tests.vcxproj”(1)正在节点 1 上生成“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\ZERO_CHECK.vcxproj”(2) (默认目标)。
+     2>PrepareForBuild:
+         已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
+       InitializeBuildStatus:
+         正在创建“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+         正在对“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild”执行 Touch 任务。
+       PreBuildEvent:
+         Checking File Globs
+         setlocal
+         "C:\Program Files\CMake\bin\cmake.exe" -P F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/build-x64/CMakeFiles/VerifyGlobs.cmake
+         if %errorlevel% neq 0 goto :cmEnd
+         :cmEnd
+         endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+         :cmErrorLevel
+         exit /b %1
+         :cmDone
+         if %errorlevel% neq 0 goto :VCEnd
+         :VCEnd
+       CustomBuild:
+         所有输出均为最新。
+       FinalizeBuildStatus:
+         正在删除文件“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild”。
+         正在对“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\ZERO_CHECK.lastbuildstate”执行 Touch 任务。
+     2>已完成生成项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\ZERO_CHECK.vcxproj”(默认目标)的操作。
+     1>项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_scope_tests.vcxproj”(1)正在节点 1 上生成“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\sdk\soui_sdk.vcxproj”(3) (默认目标)。
+     3>PrepareForBuild:
+         已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
+       InitializeBuildStatus:
+         正在创建“soui_sdk.dir\Release\soui_sdk.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+         正在对“soui_sdk.dir\Release\soui_sdk.tlog\unsuccessfulbuild”执行 Touch 任务。
+       CustomBuild:
+         所有输出均为最新。
+       ClCompile:
+         所有输出均为最新。
+       Lib:
+         所有输出均为最新。
+         soui_sdk.vcxproj -> F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\sdk\Release\soui_sdk.lib
+       FinalizeBuildStatus:
+         正在删除文件“soui_sdk.dir\Release\soui_sdk.tlog\unsuccessfulbuild”。
+         正在对“soui_sdk.dir\Release\soui_sdk.tlog\soui_sdk.lastbuildstate”执行 Touch 任务。
+     3>已完成生成项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\sdk\soui_sdk.vcxproj”(默认目标)的操作。
+     1>PrepareForBuild:
+         已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
+         正在创建目录“task_scope_tests.dir\Release\task_scope_tests.tlog\”。
+       InitializeBuildStatus:
+         正在创建“task_scope_tests.dir\Release\task_scope_tests.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+         正在对“task_scope_tests.dir\Release\task_scope_tests.tlog\unsuccessfulbuild”执行 Touch 任务。
+       CustomBuild:
+         Building Custom Rule F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/consumer/CMakeLists.txt
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /I"F:\work\sm05-query\third_party\include\json" /I"F:\work\sm05-query\sdk\include" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D "CMAKE_INTDIR=\"Release\"" /U_DEBUG /EHsc /MD /std:c++17 /Fo"task_scope_tests.dir\Release\\" /Fd"task_scope_tests.dir\Release\vc143.pdb" /external:W4 /TP /errorReport:queue  /utf-8 "F:\work\sm05-query\tests\native\task_scope_tests.cpp"
+         task_scope_tests.cpp
+       Link:
+         C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /OUT:"F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\Release\task_scope_tests.exe" /INCREMENTAL:NO /NOLOGO sdk\Release\soui_sdk.lib user32.lib gdi32.lib imm32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comctl32.lib advapi32.lib winmm.lib bcrypt.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/build-x64/Release/task_scope_tests.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/build-x64/Release/task_scope_tests.lib" /MACHINE:X64  /machine:x64 task_scope_tests.dir\Release\task_scope_tests.obj
+         task_scope_tests.vcxproj -> F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\Release\task_scope_tests.exe
+       FinalizeBuildStatus:
+         正在删除文件“task_scope_tests.dir\Release\task_scope_tests.tlog\unsuccessfulbuild”。
+         正在对“task_scope_tests.dir\Release\task_scope_tests.tlog\task_scope_tests.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_scope_tests.vcxproj”(默认目标)的操作。
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:04.64
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+生成启动时间为 2026/10/9 1:49:24。
+
+     1>节点 1 上的项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_store_capacity_tests.vcxproj”(默认目标)。
+     1>项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_store_capacity_tests.vcxproj”(1)正在节点 1 上生成“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\ZERO_CHECK.vcxproj”(2) (默认目标)。
+     2>PrepareForBuild:
+         已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
+       InitializeBuildStatus:
+         正在创建“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+         正在对“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild”执行 Touch 任务。
+       PreBuildEvent:
+         Checking File Globs
+         setlocal
+         "C:\Program Files\CMake\bin\cmake.exe" -P F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/build-x64/CMakeFiles/VerifyGlobs.cmake
+         if %errorlevel% neq 0 goto :cmEnd
+         :cmEnd
+         endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+         :cmErrorLevel
+         exit /b %1
+         :cmDone
+         if %errorlevel% neq 0 goto :VCEnd
+         :VCEnd
+       CustomBuild:
+         所有输出均为最新。
+       FinalizeBuildStatus:
+         正在删除文件“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\unsuccessfulbuild”。
+         正在对“x64\Release\ZERO_CHECK\ZERO_CHECK.tlog\ZERO_CHECK.lastbuildstate”执行 Touch 任务。
+     2>已完成生成项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\ZERO_CHECK.vcxproj”(默认目标)的操作。
+     1>项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_store_capacity_tests.vcxproj”(1)正在节点 1 上生成“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\sdk\soui_sdk.vcxproj”(3) (默认目标)。
+     3>PrepareForBuild:
+         已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
+       InitializeBuildStatus:
+         正在创建“soui_sdk.dir\Release\soui_sdk.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+         正在对“soui_sdk.dir\Release\soui_sdk.tlog\unsuccessfulbuild”执行 Touch 任务。
+       CustomBuild:
+         所有输出均为最新。
+       ClCompile:
+         所有输出均为最新。
+       Lib:
+         所有输出均为最新。
+         soui_sdk.vcxproj -> F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\sdk\Release\soui_sdk.lib
+       FinalizeBuildStatus:
+         正在删除文件“soui_sdk.dir\Release\soui_sdk.tlog\unsuccessfulbuild”。
+         正在对“soui_sdk.dir\Release\soui_sdk.tlog\soui_sdk.lastbuildstate”执行 Touch 任务。
+     3>已完成生成项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\sdk\soui_sdk.vcxproj”(默认目标)的操作。
+     1>PrepareForBuild:
+         已启用结构化输出。编译器诊断的格式设置将反映错误层次结构。有关详细信息，请参阅 https://aka.ms/cpp/structured-output。
+         正在创建目录“task_store_capacity_tests.dir\Release\task_sto.9F44CA20.tlog\”。
+       InitializeBuildStatus:
+         正在创建“task_store_capacity_tests.dir\Release\task_sto.9F44CA20.tlog\unsuccessfulbuild”，因为已指定“AlwaysCreate”。
+         正在对“task_store_capacity_tests.dir\Release\task_sto.9F44CA20.tlog\unsuccessfulbuild”执行 Touch 任务。
+       CustomBuild:
+         Building Custom Rule F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/consumer/CMakeLists.txt
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\CL.exe /c /I"F:\work\sm05-query\third_party\include\json" /I"F:\work\sm05-query\sdk\include" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D "CMAKE_INTDIR=\"Release\"" /U_DEBUG /EHsc /MD /std:c++17 /Fo"task_store_capacity_tests.dir\Release\\" /Fd"task_store_capacity_tests.dir\Release\vc143.pdb" /external:W4 /TP /errorReport:queue  /utf-8 "F:\work\sm05-query\tests\native\task_store_capacity_tests.cpp"
+         task_store_capacity_tests.cpp
+       Link:
+         C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\link.exe /OUT:"F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\Release\task_store_capacity_tests.exe" /INCREMENTAL:NO /NOLOGO sdk\Release\soui_sdk.lib user32.lib gdi32.lib imm32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comctl32.lib advapi32.lib winmm.lib bcrypt.lib kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /PDB:"F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/build-x64/Release/task_store_capacity_tests.pdb" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:"F:/work/sm05-query/out/task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed/build-x64/Release/task_store_capacity_tests.lib" /MACHINE:X64  /machine:x64 task_store_capacity_tests.dir\Release\task_store_capacity_tests.obj
+         task_store_capacity_tests.vcxproj -> F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\Release\task_store_capacity_tests.exe
+       FinalizeBuildStatus:
+         正在删除文件“task_store_capacity_tests.dir\Release\task_sto.9F44CA20.tlog\unsuccessfulbuild”。
+         正在对“task_store_capacity_tests.dir\Release\task_sto.9F44CA20.tlog\task_store_capacity_tests.lastbuildstate”执行 Touch 任务。
+     1>已完成生成项目“F:\work\sm05-query\out\task-operation-query-5965e71f-bfb7-456c-81b2-203e93f5fbed\build-x64\task_store_capacity_tests.vcxproj”(默认目标)的操作。
+
+已成功生成。
+    0 个警告
+    0 个错误
+
+已用时间 00:00:02.68

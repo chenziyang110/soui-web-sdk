@@ -2,19 +2,40 @@
 param([ValidateSet('x86','x64')][string]$Architecture='x64',
       [ValidateSet('Debug','Release')][string]$Configuration='Release',
       [switch]$NativeOnly,
-      [switch]$UnitOnly)
+      [switch]$UnitOnly,
+      [switch]$WithGuiBindings)
 $ErrorActionPreference='Stop'
 if($NativeOnly -and $UnitOnly){throw 'NativeOnly and UnitOnly cannot be used together.'}
+if($NativeOnly -and $WithGuiBindings){throw 'WithGuiBindings requires unit tests; omit NativeOnly.'}
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $output=Join-Path $root "out/$Architecture"
 $evidence=Join-Path $root 'tools/internal/build-evidence.cjs'
 if(-not $NativeOnly){
-  & (Join-Path $PSScriptRoot 'internal/Build-ValidationTools.ps1') | Out-Null
+  & node --test (Join-Path $root 'tests/sdk/gui-bindings-delivery.test.cjs') (Join-Path $root 'tests/sdk/gui-bindings-entrypoints.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'Optional GUI delivery boundary tests failed'}
+  if($WithGuiBindings){
+    & node (Join-Path $root 'tools/sdk/gui-bindings-delivery.cjs') test --root $root
+    if($LASTEXITCODE -ne 0){throw 'Optional GUI bindings tests failed'}
+  }
+  $validationRunner=& (Join-Path $PSScriptRoot 'internal/Build-ValidationTools.ps1') -Architecture $Architecture
   if($LASTEXITCODE -ne 0){throw 'Owned process supervision tools build failed'}
-  & node --test (Join-Path $root 'tests/benchmark/owned-process-runner.test.cjs') (Join-Path $root 'tests/benchmark/owned-process-client.test.cjs') (Join-Path $root 'tests/benchmark/owned-process-client-boundaries.test.cjs') (Join-Path $root 'tests/acceptance/owned-supervision-boundaries.test.cjs') (Join-Path $root 'tests/benchmark/run-one-cleanup.test.cjs') (Join-Path $root 'tests/sdk/cmake-sdk-selection.test.cjs')
-  if($LASTEXITCODE -ne 0){throw 'Owned supervision or SDK selection tests failed'}
+  $previousOwnedRunner=$env:SOUI_OWNED_PROCESS_RUNNER
+  $previousBenchmarkRunner=$env:BENCHMARK_OWNED_RUNNER_EXE
+  try{
+    $env:SOUI_OWNED_PROCESS_RUNNER=$validationRunner
+    $env:BENCHMARK_OWNED_RUNNER_EXE=$validationRunner
+    & node --test (Join-Path $root 'tests/benchmark/owned-process-runner.test.cjs') (Join-Path $root 'tests/benchmark/owned-process-client.test.cjs') (Join-Path $root 'tests/benchmark/owned-process-client-boundaries.test.cjs') (Join-Path $root 'tests/acceptance/owned-supervision-boundaries.test.cjs') (Join-Path $root 'tests/benchmark/run-one-cleanup.test.cjs') (Join-Path $root 'tests/sdk/cmake-sdk-selection.test.cjs')
+    if($LASTEXITCODE -ne 0){throw 'Owned supervision or SDK selection tests failed'}
+  }finally{
+    $env:SOUI_OWNED_PROCESS_RUNNER=$previousOwnedRunner
+    $env:BENCHMARK_OWNED_RUNNER_EXE=$previousBenchmarkRunner
+  }
   & node --test (Join-Path $root 'tests/sdk/actiongen.test.mjs') (Join-Path $root 'tests/web/generated-actions.test.mjs')
   if($LASTEXITCODE -ne 0){throw 'Single-source action generation or generated Web contract tests failed'}
+  & node --test (Join-Path $root 'tests/web/task-query.test.mjs')
+  if($LASTEXITCODE -ne 0){throw 'Read-only task query contract tests failed'}
+  & node (Join-Path $root 'sdk/web/node_modules/typescript/bin/tsc') -p (Join-Path $root 'tests/web/task-query-types.tsconfig.json')
+  if($LASTEXITCODE -ne 0){throw 'Task query mutually exclusive parameter types failed'}
   & node (Join-Path $root 'tests/sdk/sdk-package-smoke.cjs')
   if($LASTEXITCODE -ne 0){throw 'SDK package tests failed'}
   & node --test (Join-Path $root 'tests/sdk/sdk-native-payload.test.cjs')
@@ -27,6 +48,10 @@ if(-not $NativeOnly){
   if($LASTEXITCODE -ne 0){throw 'Modern delivery evidence tests failed'}
   & node --test (Join-Path $root 'tests/web/sdk-client.test.mjs') (Join-Path $root 'tests/web/capabilities.test.mjs') (Join-Path $root 'tests/web/action-contracts.test.mjs') (Join-Path $root 'tests/web/gui.test.mjs') (Join-Path $root 'tests/web/native-resolvers.test.mjs') (Join-Path $root 'tests/acceptance/runner.test.cjs') (Join-Path $root 'tests/acceptance/monotonic-supervisor.test.cjs') (Join-Path $root 'tests/acceptance/mixed-validation.test.cjs') (Join-Path $root 'tests/acceptance/mixed-analysis.test.cjs') (Join-Path $root 'tests/acceptance/timeout-diagnostics.test.cjs') (Join-Path $root 'tests/benchmark/page-pair.test.cjs') (Join-Path $root 'tests/benchmark/run-traces.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'Web SDK, acceptance, or benchmark protocol tests failed'}
+  & node (Join-Path $root 'tools/internal/measurement-validation.cjs') protocol $Architecture
+  if($LASTEXITCODE -ne 0){throw 'Measurement protocol reader regressions failed'}
+  & node (Join-Path $root 'tools/internal/measurement-validation.cjs') native $Architecture
+  if($LASTEXITCODE -ne 0){throw 'Native measurement identity or owned lifecycle regressions failed'}
   & node --test (Join-Path $root 'tests/web/web-features.test.mjs')
   if($LASTEXITCODE -ne 0){throw 'Web runtime feature tests failed'}
   & node --test (Join-Path $root 'tests/web/session-renewal.test.mjs') (Join-Path $root 'tests/web/agent-session-renewal.test.mjs') (Join-Path $root 'tests/web/webview2-preload.test.mjs')

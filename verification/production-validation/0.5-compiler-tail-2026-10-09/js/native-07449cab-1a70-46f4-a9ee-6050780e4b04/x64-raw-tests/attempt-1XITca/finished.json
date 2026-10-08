@@ -1,0 +1,42 @@
+{
+  "pid": 66376,
+  "creationFileTime": "134359500012628055",
+  "exitCode": 0,
+  "supervisorExitCode": 124,
+  "signal": null,
+  "spawnError": null,
+  "reportError": "Owned pin context changed during execution",
+  "stopRequested": false,
+  "fallbackUsed": false,
+  "closureConfirmed": true,
+  "passed": false,
+  "terminal": {
+    "event": "terminal",
+    "reason": "owned-descendants-remain",
+    "elapsedMs": 256,
+    "rootExited": true,
+    "rootExitCode": 0,
+    "activeBeforeCleanup": 1,
+    "terminatedOwnedJob": true,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 2,
+    "limitTerminatedProcesses": 0,
+    "passed": false,
+    "preCleanupSnapshotSequence": 6,
+    "tailEvidenceComplete": true
+  },
+  "report": "F:\\work\\sm05-compiler-tail\\out\\tail-js-validation\\native-07449cab-1a70-46f4-a9ee-6050780e4b04\\x64-raw-tests\\attempt-1XITca\\owned.ndjson",
+  "reportSha256": "e4b33b3a89d30b3de551077d881f79141d7a84594e4bfceee5029d600ca18928",
+  "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+  "executableSha256": "bcfb1c756afb6150f3070057594cd45792e121d5b98ca7d57be9c6d13a5719fd",
+  "contextSha256": "d3c7ce79313cad68dfbb9d66d5069d3308cac834c18b2dc2c98b70691fe9df78",
+  "tailEvidence": {
+    "schema": "soui.owned-tail-verdict/v1",
+    "available": true,
+    "accepted": false,
+    "diskBytesOnly": true,
+    "failure": "Owned pin context changed during execution",
+    "reportSha256": "e4b33b3a89d30b3de551077d881f79141d7a84594e4bfceee5029d600ca18928"
+  }
+}

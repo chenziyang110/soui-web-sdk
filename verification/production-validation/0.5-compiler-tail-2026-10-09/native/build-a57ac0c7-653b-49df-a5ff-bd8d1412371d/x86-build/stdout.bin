@@ -1,0 +1,225 @@
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  1>Checking Build System
+  Building Custom Rule F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt
+  owned-process-runner.cpp
+  owned-tail-evidence.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18): warning C4244: “=”: 从“const wchar_t”转换到“char”，可能丢失数据 [F:\work\sm05-compiler-tail\out\tail-x86\OwnedProcessRunner.vcxproj]
+  (编译源文件“../../benchmarks/protocol/owned-process-runner.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-compiler-tail\benchmarks\protocol\owned-process-runner.cpp(372,54):
+          查看对正在编译的函数 模板 实例化“std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)”的引用
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_const_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+              F:\work\sm05-compiler-tail\benchmarks\protocol\owned-process-runner.cpp(368,17):
+              请参阅 "`anonymous-namespace'::run" 中对 "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string" 的第一个引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(812,17):
+          查看对正在编译的函数 模板 实例化“void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<const wchar_t*,const wchar_t*,_Size_type>(_Iter,const _Sent,_Size)”的引用
+          with
+          [
+              _Size_type=std::+::_Size_type,
+              _Iter=const wchar_t *,
+              _Sent=const wchar_t *,
+              _Size=std::+::_Size_type
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(968,18):
+          查看对正在编译的函数 模板 实例化“_OutIt *std::_Copy_n_unchecked4<const wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)”的引用
+          with
+          [
+              _OutIt=char *,
+              _Size=std::+::_Size_type,
+              _InIt=const wchar_t *,
+              _SizeTy=std::+::_Size_type
+          ]
+  
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18): warning C4244: “=”: 从“const wchar_t”转换到“char”，可能丢失数据 [F:\work\sm05-compiler-tail\out\tail-x86\OwnedProcessRunner.vcxproj]
+  (编译源文件“../../benchmarks/protocol/owned-tail-evidence.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-compiler-tail\benchmarks\protocol\owned-tail-evidence.cpp(353,39):
+          查看对正在编译的函数 模板 实例化“std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)”的引用
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_const_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+              F:\work\sm05-compiler-tail\benchmarks\protocol\owned-tail-evidence.cpp(353,39):
+              请参阅 "soui::benchmark::owned_tail_evidence::owned_tail_evidence" 中对 "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string" 的第一个引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(812,17):
+          查看对正在编译的函数 模板 实例化“void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<const wchar_t*,const wchar_t*,_Size_type>(_Iter,const _Sent,_Size)”的引用
+          with
+          [
+              _Size_type=std::+::_Size_type,
+              _Iter=const wchar_t *,
+              _Sent=const wchar_t *,
+              _Size=std::+::_Size_type
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(968,18):
+          查看对正在编译的函数 模板 实例化“_OutIt *std::_Copy_n_unchecked4<const wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)”的引用
+          with
+          [
+              _OutIt=char *,
+              _Size=std::+::_Size_type,
+              _InIt=const wchar_t *,
+              _SizeTy=std::+::_Size_type
+          ]
+  
+  正在生成代码...
+  OwnedProcessRunner.vcxproj -> F:\work\sm05-compiler-tail\out\tail-x86\Release\OwnedProcessRunner.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Building Custom Rule F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt
+  owned-process-assignment-fixture.cpp
+  owned-tail-evidence.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18): warning C4244: “=”: 从“const wchar_t”转换到“char”，可能丢失数据 [F:\work\sm05-compiler-tail\out\tail-x86\OwnedProcessAssignmentFixture.vcxproj]
+  (编译源文件“../../tests/benchmark/owned-process-assignment-fixture.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-compiler-tail\benchmarks\protocol\owned-process-runner.cpp(372,54):
+          查看对正在编译的函数 模板 实例化“std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)”的引用
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_const_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+              F:\work\sm05-compiler-tail\benchmarks\protocol\owned-process-runner.cpp(368,17):
+              请参阅 "`anonymous-namespace'::run" 中对 "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string" 的第一个引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(812,17):
+          查看对正在编译的函数 模板 实例化“void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<const wchar_t*,const wchar_t*,_Size_type>(_Iter,const _Sent,_Size)”的引用
+          with
+          [
+              _Size_type=std::+::_Size_type,
+              _Iter=const wchar_t *,
+              _Sent=const wchar_t *,
+              _Size=std::+::_Size_type
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(968,18):
+          查看对正在编译的函数 模板 实例化“_OutIt *std::_Copy_n_unchecked4<const wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)”的引用
+          with
+          [
+              _OutIt=char *,
+              _Size=std::+::_Size_type,
+              _InIt=const wchar_t *,
+              _SizeTy=std::+::_Size_type
+          ]
+  
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18): warning C4244: “=”: 从“const wchar_t”转换到“char”，可能丢失数据 [F:\work\sm05-compiler-tail\out\tail-x86\OwnedProcessAssignmentFixture.vcxproj]
+  (编译源文件“../../benchmarks/protocol/owned-tail-evidence.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-compiler-tail\benchmarks\protocol\owned-tail-evidence.cpp(353,39):
+          查看对正在编译的函数 模板 实例化“std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)”的引用
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_const_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+              F:\work\sm05-compiler-tail\benchmarks\protocol\owned-tail-evidence.cpp(353,39):
+              请参阅 "soui::benchmark::owned_tail_evidence::owned_tail_evidence" 中对 "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string" 的第一个引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(812,17):
+          查看对正在编译的函数 模板 实例化“void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<const wchar_t*,const wchar_t*,_Size_type>(_Iter,const _Sent,_Size)”的引用
+          with
+          [
+              _Size_type=std::+::_Size_type,
+              _Iter=const wchar_t *,
+              _Sent=const wchar_t *,
+              _Size=std::+::_Size_type
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(968,18):
+          查看对正在编译的函数 模板 实例化“_OutIt *std::_Copy_n_unchecked4<const wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)”的引用
+          with
+          [
+              _OutIt=char *,
+              _Size=std::+::_Size_type,
+              _InIt=const wchar_t *,
+              _SizeTy=std::+::_Size_type
+          ]
+  
+  正在生成代码...
+  OwnedProcessAssignmentFixture.vcxproj -> F:\work\sm05-compiler-tail\out\tail-x86\Release\OwnedProcessAssignmentFixture.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Building Custom Rule F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt
+  owned-tail-process-fixture.cpp
+  OwnedTailProcessFixture.vcxproj -> F:\work\sm05-compiler-tail\out\tail-x86\Release\OwnedTailProcessFixture.exe
+适用于 .NET Framework MSBuild 版本 17.14.40+3e7442088
+
+  Building Custom Rule F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt
+  owned-tail-mutation-fixture.cpp
+  owned-tail-evidence.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18): warning C4244: “=”: 从“const wchar_t”转换到“char”，可能丢失数据 [F:\work\sm05-compiler-tail\out\tail-x86\OwnedTailMutationFixture.vcxproj]
+  (编译源文件“../../tests/benchmark/owned-tail-mutation-fixture.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-compiler-tail\benchmarks\protocol\owned-process-runner.cpp(372,54):
+          查看对正在编译的函数 模板 实例化“std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)”的引用
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_const_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+              F:\work\sm05-compiler-tail\benchmarks\protocol\owned-process-runner.cpp(368,17):
+              请参阅 "`anonymous-namespace'::run" 中对 "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string" 的第一个引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(812,17):
+          查看对正在编译的函数 模板 实例化“void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<const wchar_t*,const wchar_t*,_Size_type>(_Iter,const _Sent,_Size)”的引用
+          with
+          [
+              _Size_type=std::+::_Size_type,
+              _Iter=const wchar_t *,
+              _Sent=const wchar_t *,
+              _Size=std::+::_Size_type
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(968,18):
+          查看对正在编译的函数 模板 实例化“_OutIt *std::_Copy_n_unchecked4<const wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)”的引用
+          with
+          [
+              _OutIt=char *,
+              _Size=std::+::_Size_type,
+              _InIt=const wchar_t *,
+              _SizeTy=std::+::_Size_type
+          ]
+  
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18): warning C4244: “=”: 从“const wchar_t”转换到“char”，可能丢失数据 [F:\work\sm05-compiler-tail\out\tail-x86\OwnedTailMutationFixture.vcxproj]
+  (编译源文件“../../benchmarks/protocol/owned-tail-evidence.cpp”)
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xutility(4813,18):
+      模板实例化上下文(最早的实例化上下文)为
+          F:\work\sm05-compiler-tail\benchmarks\protocol\owned-tail-evidence.cpp(353,39):
+          查看对正在编译的函数 模板 实例化“std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string<std::_String_const_iterator<std::_String_val<std::_Simple_types<_Elem>>>,0>(_Iter,_Iter,const _Alloc &)”的引用
+          with
+          [
+              _Elem=wchar_t,
+              _Iter=std::_String_const_iterator<std::_String_val<std::_Simple_types<wchar_t>>>,
+              _Alloc=std::allocator<char>
+          ]
+              F:\work\sm05-compiler-tail\benchmarks\protocol\owned-tail-evidence.cpp(353,39):
+              请参阅 "soui::benchmark::owned_tail_evidence::owned_tail_evidence" 中对 "std::basic_string<char,std::char_traits<char>,std::allocator<char>>::basic_string" 的第一个引用
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(812,17):
+          查看对正在编译的函数 模板 实例化“void std::basic_string<char,std::char_traits<char>,std::allocator<char>>::_Construct_from_iter<const wchar_t*,const wchar_t*,_Size_type>(_Iter,const _Sent,_Size)”的引用
+          with
+          [
+              _Size_type=std::+::_Size_type,
+              _Iter=const wchar_t *,
+              _Sent=const wchar_t *,
+              _Size=std::+::_Size_type
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xstring(968,18):
+          查看对正在编译的函数 模板 实例化“_OutIt *std::_Copy_n_unchecked4<const wchar_t*,_Size,char*>(_InIt,_SizeTy,_OutIt)”的引用
+          with
+          [
+              _OutIt=char *,
+              _Size=std::+::_Size_type,
+              _InIt=const wchar_t *,
+              _SizeTy=std::+::_Size_type
+          ]
+  
+  正在生成代码...
+  OwnedTailMutationFixture.vcxproj -> F:\work\sm05-compiler-tail\out\tail-x86\Release\OwnedTailMutationFixture.exe

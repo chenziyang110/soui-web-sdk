@@ -1,0 +1,6 @@
+import type { RefCallback } from 'react';
+import type { SouiGui } from '@soui/native-sdk';
+import type { SouiGuiBindingOptions } from '../../shared/controller.js';
+export type { SouiGuiBindingOptions } from '../../shared/controller.js';
+/** Borrow the application's per-document registry and bind one actual DOM element. */
+export declare function useSouiGuiNode<E extends Element = HTMLElement>(gui: SouiGui, options: SouiGuiBindingOptions): RefCallback<E>;

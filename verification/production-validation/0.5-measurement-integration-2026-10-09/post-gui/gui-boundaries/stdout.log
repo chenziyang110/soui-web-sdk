@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: default source delivery remains framework-free and does not require compiled GUI output
+ok 1 - default source delivery remains framework-free and does not require compiled GUI output
+  ---
+  duration_ms: 249.673
+  type: 'test'
+  ...
+# Subtest: opt-in source package carries compiled imports through installation and relocation
+ok 2 - opt-in source package carries compiled imports through installation and relocation
+  ---
+  duration_ms: 1586.3054
+  type: 'test'
+  ...
+# Subtest: stale source, missing output, mismatched SDK version, and output mutation fail before publication
+ok 3 - stale source, missing output, mismatched SDK version, and output mutation fail before publication
+  ---
+  duration_ms: 479.0969
+  type: 'test'
+  ...
+# Subtest: delivered missing, changed and undeclared compiled files are rejected
+ok 4 - delivered missing, changed and undeclared compiled files are rejected
+  ---
+  duration_ms: 1526.1757
+  type: 'test'
+  ...
+# Subtest: links and hard-linked output cannot be consumed as GUI delivery
+ok 5 - links and hard-linked output cannot be consumed as GUI delivery
+  ---
+  duration_ms: 224.5104
+  type: 'test'
+  ...
+# Subtest: a failed compile command or modified raw compile log cannot become a verified build
+ok 6 - a failed compile command or modified raw compile log cannot become a verified build
+  ---
+  duration_ms: 391.1213
+  type: 'test'
+  ...
+# Subtest: a refreshed build record cannot replace the installed optional SDK lock
+ok 7 - a refreshed build record cannot replace the installed optional SDK lock
+  ---
+  duration_ms: 2355.6727
+  type: 'test'
+  ...
+# Subtest: a source-only fixed SDK allows unmanaged dist but still checks every managed file
+ok 8 - a source-only fixed SDK allows unmanaged dist but still checks every managed file
+  ---
+  duration_ms: 1236.2583
+  type: 'test'
+  ...
+# Subtest: actual PowerShell optional web blocks preserve default, SDK-only, generated, and SkipWeb branches
+ok 9 - actual PowerShell optional web blocks preserve default, SDK-only, generated, and SkipWeb branches
+  ---
+  duration_ms: 1577.8135
+  type: 'test'
+  ...
+# Subtest: standard tests and collection make framework installation explicitly optional
+ok 10 - standard tests and collection make framework installation explicitly optional
+  ---
+  duration_ms: 1.1143
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8176.3938

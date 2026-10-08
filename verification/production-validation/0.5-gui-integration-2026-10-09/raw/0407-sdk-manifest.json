@@ -1,0 +1,221 @@
+{
+  "schema": "soui.source-sdk/v1",
+  "id": "soui-desktop-sdk",
+  "version": "0.5.0-preview.1",
+  "channel": "preview",
+  "releaseReady": false,
+  "format": "source-with-native-dependencies",
+  "applicationContract": "Applications own app, web, contracts and resources. SDK builds independently using CMake and links through Soui::Sdk.",
+  "files": [
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "cmake/fixture.txt",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/bindings/react/package-lock.json",
+      "bytes": 3316,
+      "sha256": "ea10296892ee041af0e56579bc2d00c2c2cf1af15caa478dcc6ddab9aa636fa9",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/bindings/react/package.json",
+      "bytes": 633,
+      "sha256": "3292ac0653d1ba4c2408c22cbe40375c08f22944ee0ce96d69e863bc3df78bc0",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/bindings/react/src/index.ts",
+      "bytes": 1177,
+      "sha256": "5de139152838b5b9ce4cdc6d211476af410df961decaba2da83c0651ad317880",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/bindings/react/tsconfig.json",
+      "bytes": 368,
+      "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/bindings/shared/controller.ts",
+      "bytes": 3216,
+      "sha256": "92b3095a2dc736bd52d850b608d4105793bb0409faa0f9b2d803d961b83320c8",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/bindings/vue/package-lock.json",
+      "bytes": 11662,
+      "sha256": "7ac9fac8f6dbade6055367989e4199406011e83f5a303abb23bd19680ff19889",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/bindings/vue/package.json",
+      "bytes": 580,
+      "sha256": "15bb9a044d79e3a48dd1180b66d6be38e355329c03bd883b6aeebc728f4774bf",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/bindings/vue/src/index.ts",
+      "bytes": 1309,
+      "sha256": "cf20ef5f3c136b81860b1924b50def18887c90e799e7abc32f42aa2e7f0929be",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/bindings/vue/tsconfig.json",
+      "bytes": 368,
+      "sha256": "12462b785dbbe593d106ca0913c2114335c6139441e36002dcfde08b0363c2eb",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/fixture.txt",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/package-lock.json",
+      "bytes": 735,
+      "sha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/package.json",
+      "bytes": 422,
+      "sha256": "54f481260d96a1a7430a3a0dd316c5d387bb81b0ea744bfd01e5b69cbe179079",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/src/action-contracts.ts",
+      "bytes": 12456,
+      "sha256": "0f126592a6c7ffda891cfc0192c9d2f91caccefa6dfdbf93b1ee2a025085e985",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/src/capabilities.ts",
+      "bytes": 4189,
+      "sha256": "920e9eca97b6a37e2c47b68797dc9080e7143d5b57e818bfe019e682fe109ef1",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/src/client.ts",
+      "bytes": 12685,
+      "sha256": "d797e22387a786cbaf07ec329a05183ff0e975621cda2edb38d25e255d166520",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/src/connection.ts",
+      "bytes": 7243,
+      "sha256": "cd66287b6152189f7f4f45b6091a0f38b47adde1b83747ef8a1bffb3b6f6cb03",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/src/contracts.ts",
+      "bytes": 7927,
+      "sha256": "70dee386c707a0ed5e1993bba169e5f19e72bf31fc7a133714c7611952f3890a",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/src/gui.ts",
+      "bytes": 12852,
+      "sha256": "926babf7b99c734273b48971e4532569a45d7ad30e57ee2deb9d27d8cb5e892d",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/src/index.ts",
+      "bytes": 1392,
+      "sha256": "e6d25c88174b218f3c4c6e0f92e386b31ec52b1b6d244599dd875a3afdd38cb8",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/src/protocol.ts",
+      "bytes": 6550,
+      "sha256": "e4da99d8f1520ff74c4551122bad7d13ec57c45193580ca2a8caa91ac101884b",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/src/session-renewal.ts",
+      "bytes": 10876,
+      "sha256": "99923a5088b8b2df93b8c6f138a1f4ab092821fb175cf2de79a60ef17a3b263a",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/src/web-features.ts",
+      "bytes": 3816,
+      "sha256": "4cff934cfdd03d26eb80cf52ac5e1dbf4c98b1e455641db25f04c56666457461",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "sdk/web/tsconfig.json",
+      "bytes": 264,
+      "sha256": "6412fadb6cfc09a8b4b612d999f85bbad9148260ed41ae07a34ecad3cd89a408",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "third_party/include/fixture.txt",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "third_party/licenses/fixture.txt",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f",
+      "sourceNormalization": "none"
+    },
+    {
+      "path": "third_party/manifests/fixture.txt",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "third_party/prebuilt/fixture.txt",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "third_party/sources/zlib/fixture.txt",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "tools/Build.ps1",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "tools/Test-Modern.ps1",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "tools/internal/fixture.txt",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "tools/sdk/fixture.txt",
+      "bytes": 8,
+      "sha256": "e80b71cd14d3cbd65f4173abcbfcf01a545dbca32a72d575108b553a648cc96f",
+      "sourceNormalization": "lf"
+    },
+    {
+      "path": "tools/sdk/gui-bindings-delivery.cjs",
+      "bytes": 13413,
+      "sha256": "577c02ada70f4caad120b890849270bd7e4d5f62d65235dd5583ee368c602d6b",
+      "sourceNormalization": "lf"
+    }
+  ]
+}
