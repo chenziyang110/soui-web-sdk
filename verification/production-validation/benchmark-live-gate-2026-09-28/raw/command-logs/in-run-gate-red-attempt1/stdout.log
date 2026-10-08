@@ -1,0 +1,36 @@
+✔ five alternating accepted pairs produce diagnostics without a value verdict (1.2051ms)
+✔ four pairs cannot be summarized as the five-pair acceptance input (0.5792ms)
+✔ a missing or contaminated live gate invalidates all candidate ratios (1.8508ms)
+✔ order drift and duplicate run identity are refused (0.5629ms)
+✔ a rejected pair or forced cleanup cannot contribute to a summary (0.4258ms)
+✖ live gate timestamps must cover a full run without sampling gaps (1.3669ms)
+✔ real run times follow the declared alternating order without overlap (0.5397ms)
+✔ each before and after preflight gate brackets its actual run (0.4422ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 100.8522
+
+✖ failing tests:
+
+test at ..\..\SOUI-SDK-development\benchmark-realtime-gate\tests\benchmark\series-summary.test.cjs:114:1
+✖ live gate timestamps must cover a full run without sampling gaps (1.3669ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\benchmark-realtime-gate\tests\benchmark\series-summary.test.cjs:134:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /inside measured run/,
+    operator: 'throws',
+    diff: 'simple'
+  }

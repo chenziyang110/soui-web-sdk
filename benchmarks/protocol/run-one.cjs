@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const os = require('node:os');
-const {spawn} = require('node:child_process');
+const {spawn, spawnSync} = require('node:child_process');
 const {checkRunTraces, readLines} = require('./check-run-traces.cjs');
 
 function requirePath(value, kind) {
@@ -38,9 +38,11 @@ function bundleFiles(root) {
 }
 
 function launch(name, executable, args, cwd, output, env = process.env) {
+  const realExecutable = fs.realpathSync(executable);
   const stdout = fs.openSync(path.join(output, `${name}.stdout.log`), 'wx');
   const stderr = fs.openSync(path.join(output, `${name}.stderr.log`), 'wx');
   let child;
+  const spawnRequestedAtMs = Date.now();
   try {
     child = spawn(executable, args, {cwd, env, windowsHide: name !== 'host',
       stdio: ['ignore', stdout, stderr]});
@@ -50,21 +52,68 @@ function launch(name, executable, args, cwd, output, env = process.env) {
   }
   let settled = false;
   const finished = new Promise(resolve => {
+    let spawnError = null;
     const complete = (code, signal, error) => {
       if (settled) return;
       settled = true;
       resolve({name, pid: child.pid ?? null, code, signal, error: error?.message ?? null});
     };
-    child.once('exit', (code, signal) => complete(code, signal, null));
-    child.once('error', error => complete(null, null, error));
+    child.once('error', error => { spawnError = error; });
+    child.once('close', (code, signal) => complete(code, signal, spawnError));
   });
-  return {child, finished};
+  return {child, finished, name, executable: realExecutable,
+    spawnRequestedAtMs, spawnReturnedAtMs: Date.now(), stopRequested: false};
 }
 
-function stop(runs) {
+function normalizeExecutable(value) {
+  return path.win32.normalize(fs.realpathSync.native(value)).replace(/^\\\\\?\\/, '').toLowerCase();
+}
+
+function verifiedDirectChild(run) {
+  if (process.platform !== 'win32' || !run.child.pid) return false;
+  const script = "$ErrorActionPreference='Stop';" +
+    `$targetId=${run.child.pid};` +
+    '$item=Get-CimInstance Win32_Process -Filter "ProcessId=$targetId" -ErrorAction Stop;' +
+    'if($null -ne $item){[ordered]@{ProcessId=$item.ProcessId;ParentProcessId=$item.ParentProcessId;' +
+    "ExecutablePath=$item.ExecutablePath;CreationUtc=$item.CreationDate.ToUniversalTime().ToString('o')}|ConvertTo-Json -Compress}";
+  const query = spawnSync('powershell.exe', ['-NoProfile', '-Command', script], {
+    encoding: 'utf8', windowsHide: true, timeout: 15000,
+    env: {...process.env, PSModulePath: path.join(process.env.SystemRoot,
+      'System32/WindowsPowerShell/v1.0/Modules')},
+  });
+  if (query.error || query.status !== 0 || query.stderr.trim() || !query.stdout.trim())
+    return false;
+  let identity;
+  try { identity = JSON.parse(query.stdout.replace(/^\uFEFF/, '')); }
+  catch { return false; }
+  if (identity.ProcessId !== run.child.pid || identity.ParentProcessId !== process.pid ||
+      typeof identity.ExecutablePath !== 'string' || !identity.ExecutablePath ||
+      typeof identity.CreationUtc !== 'string' || !identity.CreationUtc) return false;
+  const createdAtMs = Date.parse(identity.CreationUtc);
+  if (!Number.isFinite(createdAtMs) ||
+      !Number.isSafeInteger(run.spawnRequestedAtMs) ||
+      !Number.isSafeInteger(run.spawnReturnedAtMs) ||
+      run.spawnReturnedAtMs < run.spawnRequestedAtMs ||
+      createdAtMs < run.spawnRequestedAtMs - 2000 ||
+      createdAtMs > run.spawnReturnedAtMs + 2000) return false;
+  try {
+    return normalizeExecutable(identity.ExecutablePath) === normalizeExecutable(run.executable);
+  } catch { return false; }
+}
+
+function stop(runs, cleanup) {
   for (const run of runs) {
-    if (run.child.pid && run.child.exitCode === null && !run.child.killed)
-      run.child.kill();
+    if (!run.child.pid || run.child.exitCode !== null || run.child.killed ||
+        run.stopRequested) continue;
+    run.stopRequested = true;
+    const verified = verifiedDirectChild(run);
+    // A verified parent PID does not prove that every process taskkill /T would
+    // follow still belongs to this run: Windows may reuse a former parent's PID.
+    const killRequested = run.child.kill();
+    if (cleanup) cleanup.push({name: run.name, pid: run.child.pid,
+      method: 'process-handle', treeCleanupVerified: false,
+      killRequested, taskkillExitCode: null,
+      queryIdentityVerified: verified});
   }
 }
 
@@ -133,7 +182,7 @@ async function main() {
     identity: identityFile ? {kind: host === 'soui' ? 'sdk-library' : 'electron-lockfile',
       bytes: fs.statSync(identityFile).size, sha256: sha(identityFile)} : null,
     tools: {samplerSha256: sha(samplerExe), inputSha256: sha(inputExe)},
-    maxDurationMs, releaseReady: false, benchmarkValid: false};
+    maxDurationMs, cleanup: [], releaseReady: false, benchmarkValid: false};
   let timer;
   let timedOut = false;
   try {
@@ -157,10 +206,10 @@ async function main() {
       path.dirname(inputExe), output));
     for (const run of runs) {
       void run.finished.then(result => {
-        if (result.code !== 0 || result.error) stop(runs);
+        if (result.code !== 0 || result.error) stop(runs, record.cleanup);
       });
     }
-    timer = setTimeout(() => {timedOut = true; stop(runs);}, maxDurationMs + 10000);
+    timer = setTimeout(() => {timedOut = true; stop(runs, record.cleanup);}, maxDurationMs + 10000);
     record.processes = await Promise.all(runs.map(run => run.finished));
     if (timedOut || record.processes.some(item => item.code !== 0 || item.error))
       throw new Error(timedOut ? 'Benchmark run exceeded deadline' : 'Benchmark process failed');
@@ -182,7 +231,7 @@ async function main() {
       durationMs: pageResult.timing.durationMs};
     record.status = 'completed';
   } catch (error) {
-    stop(runs);
+    stop(runs, record.cleanup);
     record.status = 'failed';
     record.error = error.message;
     if (!record.processes) record.processes = await Promise.all(runs.map(run => run.finished));
@@ -196,4 +245,7 @@ async function main() {
   }
 }
 
-main().catch(error => {console.error(error.message); process.exitCode = 1;});
+if (require.main === module)
+  main().catch(error => {console.error(error.message); process.exitCode = 1;});
+
+module.exports = {launch, stop, verifiedDirectChild};

@@ -1,0 +1,30 @@
+✔ failure cleanup verifies direct child identity and stops its own process tree (4921.7928ms)
+✖ failed identity verification falls back to the owned process handle (1539.2425ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6464.2984
+
+✖ failing tests:
+
+test at ..\..\..\..\tests\benchmark\run-one-cleanup.test.cjs:79:1
+✖ failed identity verification falls back to the owned process handle (1539.2425ms)
+  AssertionError [ERR_ASSERTION]: A matching PID, parent and executable cannot replace launch-time identity
+  
+  true !== false
+  
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\benchmark-realtime-gate\tests\benchmark\run-one-cleanup.test.cjs:88:14)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1125:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

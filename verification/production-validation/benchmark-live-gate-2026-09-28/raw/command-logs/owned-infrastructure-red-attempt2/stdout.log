@@ -1,0 +1,35 @@
+✖ live gate rejects infrastructure started inside its own process tree (1.5544ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 96.9222
+
+✖ failing tests:
+
+test at ..\..\..\..\tests\benchmark\series-interference.test.cjs:46:1
+✖ live gate rejects infrastructure started inside its own process tree (1.5544ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + []
+  - [
+  -   400,
+  -   500
+  - ]
+  
+      at TestContext.<anonymous> (C:\SOUI-SDK-development\benchmark-realtime-gate\tests\benchmark\series-interference.test.cjs:54:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [],
+    expected: [ 400, 500 ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

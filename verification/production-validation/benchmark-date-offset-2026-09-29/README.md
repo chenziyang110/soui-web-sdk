@@ -1,0 +1,7 @@
+# Benchmark runner time-zone identity regression
+
+The series runner accepts the Windows PowerShell date form `/Date(epoch+0800)/`, but the series summary originally accepted only `/Date(epoch)/`. The new test supplies the signed-offset form to the real `assertRunnerBinding` function. It failed against the previous summary parser with `Series runner creation identity is missing` (raw `red` exit 1, 9 passed / 1 failed); the exact RED test SHA-256 is `c476becc9779712316c7e8727dcaf3a6c36e82107150cca433ff53fa82fe999a` and the previous summary source SHA-256 was `b339e020828e7348436b35675390c20d3947b9c1e85ca6029a1d8a96c6bffd6f`.
+
+The summary parser now accepts the same optional signed numeric suffix as the live process gate. The new assertion passes (raw `green` exit 0, 10/10), and the combined no-window summary/interference/cleanup/trace/pair-preflight suite exits 0 with 41/41. Both successful stderr files are empty. The current summary source SHA-256 is `b816fb52711f930a9d8f786669d4dee9e5bb442611c59ce1b20a1a45e77109f6d`.
+
+`raw/` preserves separate stdout, stderr and native exit-code files for all three attempts. `Verify-Index.cjs` compares them with the external originals and Git index, then checks the exit and test counts. This is a no-window functional regression collected while another QEMU was running. It does not prove an isolated Electron comparison, input timing, frame rate or production readiness; `benchmarkValid=false`, `releaseReady=false`.

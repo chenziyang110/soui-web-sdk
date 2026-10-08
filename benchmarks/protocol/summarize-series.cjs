@@ -24,25 +24,97 @@ function distribution(values) {
     p99: quantile(values, 0.99), max: Math.max(...values)};
 }
 
-function assertLiveGateCoverage(series, gates, periods) {
-  const maxGapMs = series.liveInterferenceGate.intervalMs * 3;
-  for (const period of periods) {
-    const start = Date.parse(period.startedAt);
-    const finish = Date.parse(period.finishedAt);
-    assert(Number.isFinite(start) && Number.isFinite(finish) && finish > start,
-      'Invalid single-run time interval');
-    const samples = gates.filter(gate => gate.pairNumber === period.pairNumber &&
-      gate.host === period.host).map(gate => Date.parse(gate.checkedAt));
-    assert(samples.length > 0, 'Missing live gate samples for a run');
-    assert(samples.every(Number.isFinite), 'Invalid live gate sample time');
-    assert(samples.every((sample, index) => index === 0 || sample >= samples[index - 1]),
-      'Live gate samples are out of order');
-    const within = samples.filter(sample => sample >= start && sample <= finish);
-    const points = [start, ...within, finish];
-    assert(points.every((point, index) => index === 0 ||
-      point - points[index - 1] <= maxGapMs),
-    `Live gate coverage has a gap over ${maxGapMs}ms for pair ${period.pairNumber} ${period.host}`);
+function validateGateCoverage(gates, pairNumber, host, startedAt, finishedAt,
+  intervalMs = 5000, expectedRunnerPid) {
+  const start = Date.parse(startedAt);
+  const finish = Date.parse(finishedAt);
+  assert(Number.isFinite(start) && Number.isFinite(finish) && finish > start,
+    `Invalid run interval for pair ${pairNumber} ${host}`);
+  const tolerance = Math.max(15000, intervalMs * 3);
+  assert(Number.isSafeInteger(expectedRunnerPid) && expectedRunnerPid > 0,
+    `Missing recorded runner PID for pair ${pairNumber} ${host}`);
+  const matching = gates.filter(gate => gate.pairNumber === pairNumber && gate.host === host);
+  assert(matching.every(gate => gate.ownRunPid === expectedRunnerPid),
+    `Live gate runner PID differs from run record for pair ${pairNumber} ${host}`);
+  const times = matching.map(gate => Date.parse(gate.checkedAt));
+  assert(times.length > 0 && times.every(Number.isFinite),
+    `Missing timed live gate for pair ${pairNumber} ${host}`);
+  assert(times[0] <= start + tolerance && times[0] >= start - tolerance,
+    `Live gate did not cover run start for pair ${pairNumber} ${host}`);
+  assert(times[times.length - 1] >= finish - tolerance &&
+    times[times.length - 1] <= finish + tolerance,
+  `Live gate did not cover run finish for pair ${pairNumber} ${host}`);
+  assert(times.some(time => time >= start && time <= finish),
+    `No live gate inside measured run for pair ${pairNumber} ${host}`);
+  for (let index = 1; index < times.length; ++index)
+    assert(times[index] >= times[index - 1] &&
+      times[index] - times[index - 1] <= tolerance,
+    `Live gate gap for pair ${pairNumber} ${host}`);
+  return {pairNumber, host, samples: times.length,
+    firstAt: new Date(times[0]).toISOString(),
+    lastAt: new Date(times[times.length - 1]).toISOString()};
+}
+
+function validateRunChronology(series, runTimes) {
+  const seriesStart = Date.parse(series.startedAt);
+  const seriesFinish = Date.parse(series.finishedAt);
+  assert(Number.isFinite(seriesStart) && Number.isFinite(seriesFinish) &&
+    seriesFinish > seriesStart, 'Run chronology has an invalid series interval');
+  assert.equal(runTimes.length, series.plannedPairs * 2,
+    'Run chronology requires exactly two runs per pair');
+  const byKey = new Map();
+  for (const run of runTimes) {
+    const key = `${run.pairNumber}:${run.host}`;
+    assert(!byKey.has(key), `Run chronology contains a duplicate ${key}`);
+    byKey.set(key, run);
   }
+  const ordered = [];
+  let previousFinish = seriesStart;
+  for (let index = 0; index < series.plannedPairs; ++index) {
+    for (const host of series.pairs[index].order) {
+      const pairNumber = index + 1;
+      const run = byKey.get(`${pairNumber}:${host}`);
+      assert(run, `Run chronology is missing pair ${pairNumber} ${host}`);
+      const start = Date.parse(run.startedAt);
+      const finish = Date.parse(run.finishedAt);
+      assert(Number.isFinite(start) && Number.isFinite(finish) &&
+        start >= previousFinish && finish > start && finish <= seriesFinish,
+      `Run chronology overlaps or reverses pair ${pairNumber} ${host}`);
+      previousFinish = finish;
+      ordered.push({pairNumber, host, startedAt: run.startedAt,
+        finishedAt: run.finishedAt});
+    }
+  }
+  return ordered;
+}
+
+function validatePreflightChronology(series, orderedRuns) {
+  assert.equal(series.checks.length, 1 + orderedRuns.length * 2,
+    'Preflight chronology requires a start gate and two gates per run');
+  const seriesStart = Date.parse(series.startedAt);
+  const seriesFinish = Date.parse(series.finishedAt);
+  let previousGate = Date.parse(series.checks[0].checkedAt);
+  const freshnessMs = 15000;
+  assert(Number.isFinite(previousGate) && previousGate <= seriesStart &&
+    seriesStart - previousGate <= freshnessMs,
+    'Preflight chronology has an invalid start gate');
+  const checks = [];
+  for (let index = 0; index < orderedRuns.length; ++index) {
+    const run = orderedRuns[index];
+    const before = Date.parse(series.checks[index * 2 + 1].checkedAt);
+    const after = Date.parse(series.checks[index * 2 + 2].checkedAt);
+    const start = Date.parse(run.startedAt);
+    const finish = Date.parse(run.finishedAt);
+    assert(Number.isFinite(before) && Number.isFinite(after) &&
+      before >= previousGate && before <= start && start - before <= freshnessMs &&
+      after >= finish && after - finish <= freshnessMs && after <= seriesFinish,
+    `Preflight chronology does not bracket pair ${run.pairNumber} ${run.host}`);
+    previousGate = after;
+    checks.push({pairNumber: run.pairNumber, host: run.host,
+      beforeAt: series.checks[index * 2 + 1].checkedAt,
+      afterAt: series.checks[index * 2 + 2].checkedAt});
+  }
+  return checks;
 }
 
 function assertRunnerBinding(pair, host, record, gates) {
@@ -52,7 +124,7 @@ function assertRunnerBinding(pair, host, record, gates) {
   assert.equal(record.runnerPid, runner.pid,
     'Single-run process differs from the series runner');
   const legacyDate = typeof runner.createdAt === 'string'
-    ? /^\/Date\(([0-9]+)\)\/$/.exec(runner.createdAt) : null;
+    ? /^\/Date\(([0-9]+)(?:[+-][0-9]+)?\)\/$/.exec(runner.createdAt) : null;
   assert(typeof runner.createdAt === 'string' &&
     (Number.isFinite(Date.parse(runner.createdAt)) ||
       (legacyDate && Number.isSafeInteger(Number(legacyDate[1])) &&
@@ -98,6 +170,7 @@ function summarizeSeriesRecord(series, gates, reports) {
     assert(['soui', 'electron'].includes(gate.host));
     assert(Number.isSafeInteger(gate.ownRunPid) && gate.ownRunPid > 0,
       'Live gate is not bound to a run process');
+    assert.equal(gate.rootPresent, true, 'Live gate did not observe its run process');
     assert.deepEqual(gate.competingProcesses, [], 'External workload invalidates the series');
     assert(!gate.gateError && !gate.cleanupReason && !gate.cleanupCompletenessUnverified,
       'Gate failure or forced cleanup invalidates the series');
@@ -175,7 +248,7 @@ function summarizeDirectory(root) {
     .filter(Boolean).map(JSON.parse);
   const reports = [];
   const evidence = [];
-  const periods = [];
+  const runTimes = [];
   let frozen = null;
   for (let number = 1; number <= series.plannedPairs; ++number) {
     const runs = {};
@@ -183,9 +256,10 @@ function summarizeDirectory(root) {
       runs[host] = loadRun(path.join(root, `pair-${number}-${host}`), host);
     for (const host of ['soui', 'electron']) {
       assertRunnerBinding(series.pairs[number - 1], host, runs[host].record, gates);
-      periods.push({pairNumber: number, host,
+      runTimes.push({pairNumber: number, host,
         startedAt: runs[host].record.startedAt,
-        finishedAt: runs[host].record.finishedAt});
+        finishedAt: runs[host].record.finishedAt,
+        runnerPid: runs[host].record.runnerPid});
     }
     const identity = {soui: frozenIdentity(runs.soui),
       electron: frozenIdentity(runs.electron)};
@@ -199,9 +273,14 @@ function summarizeDirectory(root) {
     reports.push(report);
     evidence.push({pair: number, preflightSha256: sha(fs.readFileSync(reportPath))});
   }
-  assertLiveGateCoverage(series, gates, periods);
   const summary = summarizeSeriesRecord(series, gates, reports);
+  const runChronology = validateRunChronology(series, runTimes);
+  const preflightChronology = validatePreflightChronology(series, runChronology);
+  const liveGateCoverage = runTimes.map(run => validateGateCoverage(gates,
+    run.pairNumber, run.host, run.startedAt, run.finishedAt,
+    series.liveInterferenceGate.intervalMs, run.runnerPid));
   return {...summary, sourceIdentity: frozen,
+    runChronology, preflightChronology, liveGateCoverage,
     sourceSha256: {series: sha(fs.readFileSync(seriesPath)),
       liveGate: sha(fs.readFileSync(gatesPath))}, pairs: evidence};
 }
@@ -222,5 +301,5 @@ if (require.main === module) {
   }
 }
 
-module.exports = {summarizeSeriesRecord, summarizeDirectory, assertLiveGateCoverage,
-  assertRunnerBinding};
+module.exports = {summarizeSeriesRecord, summarizeDirectory, validateGateCoverage,
+  validateRunChronology, validatePreflightChronology, assertRunnerBinding};

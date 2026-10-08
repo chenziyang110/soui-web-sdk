@@ -1,5 +1,21 @@
 # SDK 生产验证执行记录
 
+## 2026-09-30 基准系列 Git 与独立交互负载分类
+
+[21 项门禁回归与原始记录](../../verification/production-validation/benchmark-git-load-gate-2026-09-30/README.md)确认新增 Git、ScrollStarter 和 V02InputProbe 分类后，外部进程及本轮后代均被拒绝，预期基准宿主、采样器与 InputTrace 仍允许。实际定向回归 21/21、原始退出 0；SDK Web 依赖审计退出 0、报告零漏洞。此项只验证门禁分类，不构成五对正式性能、真实滚动或生产验收。`sourceDeliveryVerified=false`、`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-29 性能运行器时间戳绑定回归
+
+[原始 RED/GREEN 与 41 项无窗口回归](../../verification/production-validation/benchmark-date-offset-2026-09-29/README.md)确认系列汇总原先拒绝运行时门禁已经接受的 PowerShell 带时区后缀时间戳，新增用例先真实退出 1，修复后定向 10/10、合并回归 41/41 均原始退出 0，失败和成功原件分开保存。此项只修复运行器身份汇总，不是实际 Electron 五对、隔离性能或生产验收；`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-29 性能监督器失败清理边界
+
+[原始 RED/GREEN 记录](../../verification/production-validation/benchmark-safe-stop-2026-09-29/README.md)显示，两级监督器原先在核验直接子进程身份后仍调用 `taskkill /T`；Windows 父 PID 复用使这个核验不足以证明整棵树属于本轮。现改为失败时只停止持有的直接子进程，并在记录中明确标记后代清理未证实。新增边界修复前两项失败；第一次修复后 21/22，通过保留了夹具对后代存活的错误假设；修正夹具后 22/22 无窗口测试原始退出 0。外部 QEMU 运行期间未进行隔离性能或正式五对；合并分支完整源码清单仍待空闲后刷新并验证，`benchmarkValid=false`、`releaseReady=false`。
+
+## 2026-09-29 性能系列父 PID 复用边界
+
+[实时门禁回归原件](../../verification/production-validation/benchmark-pid-chronology-2026-09-29/README.md)证明旧分类器会把一个早于本轮运行器创建、但 `ParentProcessId` 恰好等于其复用 PID 的外部 Electron 进程误归为本轮子进程：新增用例修复前原始退出 1。分类器现核对父子创建时序，真实 CIM 时间戳不能解析时拒绝扫描；定向测试原始退出 0，完整无图形门禁 20/20 原始退出 0，失败原样本保留。当前代码的实际只读进程查询也识别了正在运行的其他 QEMU；这些都只算门禁功能回归，没有实际五对对照或隔离性能结论。合并分支待空闲时对最终暂存输入刷新完整源码清单、验证后提交；`benchmarkValid=false`、`releaseReady=false`。
+
 ## 2026-09-30 独立模板交互门禁与拒绝证据
 
 [模板输入前验证原件](../../verification/production-validation/template-scroll-guards-2026-09-30/README.md)记录两架构标题点击探针的冻结编译身份、实际只读遮挡检测正负控，以及载荷校验器 13/13 原始退出 0。x64 attempt3 在启动前被旧校验器误拒正常重复导航；v5 attempt4 核对 71 文件和五份 legal 后启动，但标题点仍被 GameViewer 遮挡，未发送点击或滚轮，原始退出 1，且未取得原生完整关闭。80 份精选原件保留；另附 SDK Web 依赖审计原始退出 0、零漏洞记录。这些结果不能计为产品滚动失败或通过。真实滚动、Win7 模板、IME、长期资源与性能仍待验收，三个生产结论均保持 false。

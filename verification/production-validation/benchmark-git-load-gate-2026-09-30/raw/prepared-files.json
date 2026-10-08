@@ -1,0 +1,44 @@
+{
+  "preparedAt": "2026-09-30T02:09:09.7303638Z",
+  "checks": [
+    {
+      "kind": "syntax",
+      "file": "benchmarks\\protocol\\run-series.cjs",
+      "nativeExitCode": 0,
+      "stdout": "C:\\SOUI-SDK-production-validation\\benchmark-git-load-gate-20260930\\run-series.syntax.stdout.log",
+      "stderr": "C:\\SOUI-SDK-production-validation\\benchmark-git-load-gate-20260930\\run-series.syntax.stderr.log"
+    },
+    {
+      "kind": "syntax",
+      "file": "tests\\benchmark\\series-interference.test.cjs",
+      "nativeExitCode": 0,
+      "stdout": "C:\\SOUI-SDK-production-validation\\benchmark-git-load-gate-20260930\\series-interference.test.syntax.stdout.log",
+      "stderr": "C:\\SOUI-SDK-production-validation\\benchmark-git-load-gate-20260930\\series-interference.test.syntax.stderr.log"
+    },
+    {
+      "kind": "diff-check",
+      "nativeExitCode": 0
+    }
+  ],
+  "files": [
+    {
+      "path": "benchmarks\\protocol\\run-series.cjs",
+      "bytes": 17076,
+      "sha256": "8abf76ccda7d7a54656d8a24a2d072922c2c3a836849f2b446dd5b2c30b1088c"
+    },
+    {
+      "path": "tests\\benchmark\\series-interference.test.cjs",
+      "bytes": 16774,
+      "sha256": "576a53eaf9790d48eee8bd942d5cb7cf88b233489b691ad2c4510f96e264ebb9"
+    },
+    {
+      "path": "benchmarks\\protocol\\README.md",
+      "bytes": 10932,
+      "sha256": "5c62f2e662966f2bee1fd55d61727012e053cfeb44eefc5b33ed945ca84394d5"
+    }
+  ],
+  "functionalTestsRun": false,
+  "officialSeriesRun": false,
+  "benchmarkValid": false,
+  "releaseReady": false
+}
