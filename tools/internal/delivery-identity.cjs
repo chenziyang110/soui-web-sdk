@@ -79,10 +79,11 @@ function source(root) {
   return snapshot(root, names, true);
 }
 const diagnostics = new Set(['smoke.log', 'webview-smoke.log', 'source-navigation.log', 'gpu-present-trace.txt']);
-function payload(root, target) {
+function payload(root, target, backend = 'miniblink') {
+  if (!['miniblink', 'webview2'].includes(backend)) throw new Error('Unknown renderer backend');
   safePath(root, `${target}.exe`);
   const names = walk(root, '', name => diagnostics.has(name) || name === `${target}.pdb`);
-  for (const required of [`${target}.exe`, 'node.dll', 'resources/index.html']) {
+  for (const required of [`${target}.exe`, 'resources/index.html', ...(backend === 'miniblink' ? ['node.dll'] : [])]) {
     if (!names.includes(required)) throw new Error(`Runtime file missing: ${required}`);
   }
   for (const name of names) {
@@ -92,9 +93,9 @@ function payload(root, target) {
   }
   return snapshot(root, names);
 }
-function verifyPayload(root, target, expected) {
+function verifyPayload(root, target, expected, backend = 'miniblink') {
   if (!expected || !Array.isArray(expected.files) || hash(encoded(expected.files)) !== expected.sha256) throw new Error('Invalid payload evidence');
-  const current = payload(root, target);
+  const current = payload(root, target, backend);
   if (current.sha256 !== expected.sha256) throw new Error(`Runtime payload changed: ${target}`);
   return current;
 }

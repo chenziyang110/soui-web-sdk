@@ -2388,6 +2388,16 @@ host_result soui_miniblink_host::hide() {
   return hidden;
 }
 
+host_result soui_miniblink_host::show() {
+  const auto active = require_running();
+  if (!active.ok) return active;
+  const lifecycle_operation_guard operation(lifecycle_operation_);
+  const auto shown = adapter_->show(true);
+  if (!shown.ok) return shown;
+  if (session_->state() == soui::runtime::lifecycle_state::hidden) (void)session_->mark_ready();
+  return shown;
+}
+
 host_result soui_miniblink_host::reload() {
   const auto active = require_running();
   if (!active.ok) return active;

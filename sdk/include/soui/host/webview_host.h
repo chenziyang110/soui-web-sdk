@@ -78,6 +78,7 @@ class soui_miniblink_host {
 
   [[nodiscard]] host_result start(const host_config& config);
   [[nodiscard]] host_result hide();
+  [[nodiscard]] host_result show();
   [[nodiscard]] host_result reload();
   [[nodiscard]] host_result close();
   // Idempotent cleanup: never unmounts an already-closed/destroyed session twice.

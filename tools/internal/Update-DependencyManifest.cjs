@@ -16,6 +16,8 @@ const definitions = [
  ]),
  ['web-sdk', 'sdk/web/package-lock.json', 'lockfile', 'resolved package licenses'],
  ['template-web', 'templates/desktop-app/web/package-lock.json', 'lockfile', 'resolved package licenses'],
+ ['modern-template-web', 'templates/modern-app/web/package-lock.json', 'lockfile', 'resolved package licenses'],
+ ['webview2-sdk', 'sdk/renderers/webview2/dependency.json', '1.0.4258.31 optional SDK', 'Microsoft SDK LICENSE and NOTICE; Runtime separate'],
  ['demo-web', 'demos/workbench/web/package-lock.json', 'lockfile', 'resolved package licenses']
 ];
 const dependencies = definitions.map(([id, source, version, license]) => {

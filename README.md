@@ -1,8 +1,8 @@
 # SOUI SDK 源码交付
 
-**版本：0.3.0-preview.10（动作契约与界面语义预览版）。** 面向 Windows 的 C++ / TypeScript 桌面 SDK，提供独立 SDK、最小模板、完整 Demo、第三方源码和构建工具。这个目录是可独立搬移的交付根目录，构建不依赖原研发仓库或开发者机器上的源码路径。
+**开发版本：0.4.0-preview.1（现代后端与运行档位，验收进行中）。** 面向 Windows 的 C++ / TypeScript 桌面 SDK，提供独立 SDK、最小模板、完整 Demo、第三方源码和构建工具。这个目录是可独立搬移的交付根目录，构建不依赖原研发仓库或开发者机器上的源码路径。
 
-本版新增机器可发现的受权动作schema、原生参数/结果校验和受控界面语义。发布与复验范围见 [本版说明](docs/releases/0.3.0-preview.10.md)；跨平台、独立Agent身份、Electron性能对齐及完整生产支持仍以实际验收为准。
+最近已发布版本为 0.3.0-preview.10，包含动作契约和界面语义，见 [发布说明](docs/releases/0.3.0-preview.10.md)。当前 0.4 工作增加可选 WebView2、现代模板、环境与前端能力探测，见 [接入说明](docs/modern-backend.md) 和 [执行清单](docs/roadmap/0.4.0.md)。历史验收不能转述为当前开发版本已通过；完整性能、Win7/PE 支持、独立 Agent 身份及生产门槛仍待实际验证。
 
 长期维护、AI Agent、评审、测试和发布的统一规范见 [AGENTS.md](AGENTS.md)；所有贡献者和自动化工具在修改前都应阅读。
 
@@ -79,6 +79,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Build-Dependencies
 - [故障排查](docs/troubleshooting.md)
 - [已知限制与生产门槛](docs/known-issues.md)
 - [0.3 迭代计划](docs/roadmap/0.3.0.md)
+- [0.4 执行清单](docs/roadmap/0.4.0.md)
+- [现代后端与运行档位](docs/modern-backend.md)
 - [模块化 GUI 与 Agent SDK 建设路线](docs/roadmap/agent-gui-framework.md)
 - [WebView2 独立实验消费者](experiments/webview2-consumer/README.md)
 - [0.3 基础切片进展与验证](docs/roadmap/0.3-foundation.md)

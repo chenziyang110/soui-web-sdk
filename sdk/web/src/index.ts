@@ -3,6 +3,8 @@ export { connectSouiNative } from './connection.js';
 export type { SouiConnectionOptions, SouiNativeWindow } from './connection.js';
 export type { SouiNativeClientOptions, SouiSubscription } from './client.js';
 export { SouiBridgeError } from './protocol.js';
+export { inspectSouiWebFeatures, requireSouiWebFeatures } from './web-features.js';
+export type { SouiWebFeature, SouiFeatureObservation, SouiWebFeatureReport, SouiWebProbeTarget } from './web-features.js';
 export { readSouiActionContract, validateSouiActionInput, validateSouiActionOutput, souiToolDefinitions } from './action-contracts.js';
 export type { SouiJson, SouiActionSchema, SouiActionContract, SouiToolDefinition } from './action-contracts.js';
 export { createSouiGui, SouiGui } from './gui.js';

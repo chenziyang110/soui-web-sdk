@@ -13,7 +13,7 @@ const LOCK = 'soui.sdk-lock/v1';
 const sdkId = 'soui-desktop-sdk';
 const managedRoots = ['sdk', 'cmake', 'third_party/include', 'third_party/prebuilt',
   'third_party/sources/zlib', 'third_party/licenses', 'third_party/manifests', 'tools/sdk', 'tools/internal'];
-const managedFiles = ['THIRD_PARTY_NOTICES.md', 'tools/Build.ps1'];
+const managedFiles = ['THIRD_PARTY_NOTICES.md', 'tools/Build.ps1', 'tools/Test-Modern.ps1'];
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');
 const fileHash = file => hash(fs.readFileSync(file));
 const json = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
@@ -150,6 +150,17 @@ function pack(source, output, version) {
   return {status: 'packed', version, files: files.length, output, releaseReady: false};
 }
 
+function requireProfile(manifest, profile = 'compatibility') {
+  if (!['compatibility', 'modern'].includes(profile)) throw new Error('Unknown application runtime profile');
+  if (profile === 'modern') {
+    const paths = new Set(manifest.files.map(file => file.path));
+    for (const required of ['sdk/include/soui/host/webview2_host.h',
+      'sdk/renderers/webview2/CMakeLists.txt', 'tools/internal/Restore-WebView2.ps1']) {
+      if (!paths.has(required)) throw new Error(`SDK does not provide the modern profile: ${required}`);
+    }
+  }
+}
+
 function install(packageRoot, projectRoot) {
   packageRoot = safePath(packageRoot);
   projectRoot = safePath(projectRoot);
@@ -157,6 +168,8 @@ function install(packageRoot, projectRoot) {
     throw new Error('Package and project must be separate trees');
   }
   const manifest = readPackage(packageRoot);
+  const projectFile = safePath(projectRoot, 'project.json');
+  if (fs.existsSync(projectFile)) requireProfile(manifest, JSON.parse(fs.readFileSync(projectFile, 'utf8')).runtimeProfile);
   const lockPath = safePath(projectRoot, 'sdk-lock.json');
   const previous = fs.existsSync(lockPath) ? readLock(projectRoot) : null;
   if (previous && previous.manifest.version === manifest.version &&
@@ -234,13 +247,17 @@ function main(argv) {
   }
   const surfaces = {pack: ['--source', '--output', '--version'], verify: ['--package'],
     install: ['--package', '--project'], 'verify-project': ['--project'],
-    'verify-source': ['--package', '--source']};
+    'verify-source': ['--package', '--source'], 'verify-profile': ['--package', '--profile']};
   const keys = surfaces[command];
   if (!keys || keys.some(key => !options[key]) || Object.keys(options).some(key => !keys.includes(key))) {
     throw new Error('Commands: pack --source DIR --output DIR --version X.Y.Z-preview.N | verify --package DIR | install --package DIR --project DIR | verify-project --project DIR');
   }
   if (command === 'pack') return pack(options['--source'], options['--output'], options['--version']);
   if (command === 'install') return install(options['--package'], options['--project']);
+  if (command === 'verify-profile') {
+    requireProfile(readPackage(options['--package']), options['--profile']);
+    return {status: 'profile-available', profile: options['--profile']};
+  }
   if (command === 'verify-source') {
     const manifest = readPackage(options['--package']);
     const source = safePath(options['--source']);
@@ -255,7 +272,7 @@ function main(argv) {
   return {status: 'verified', version: manifest.version, files: manifest.files.length, releaseReady: false};
 }
 
-module.exports = {pack, install, readPackage, readLock, managedRoots, managedFiles};
+module.exports = {pack, install, readPackage, readLock, managedRoots, managedFiles, requireProfile};
 if (require.main === module) {
   try { process.stdout.write(encoded(main(process.argv.slice(2)))); }
   catch (error) { process.stderr.write(`SDK: ${error.message}\n`); process.exitCode = 1; }

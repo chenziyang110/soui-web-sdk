@@ -1,6 +1,6 @@
 {
   "schema": "soui.dependencies/v2",
-  "sdkVersion": "0.3.0-preview.10",
+  "sdkVersion": "0.4.0-preview.1",
   "releaseReady": false,
   "dependencies": [
     {
@@ -89,7 +89,7 @@
       "version": "lockfile",
       "license": "resolved package licenses",
       "sourceNormalization": "lf",
-      "sha256": "69707dd1b6e511f8afd5c6c19f797898a9bc08f5042cd3a04e2d939241e141f0"
+      "sha256": "6746eb0601824ac9bab41f822ee5133296174e684a220cad02d68fbad5c0fdf8"
     },
     {
       "id": "template-web",
@@ -98,6 +98,22 @@
       "license": "resolved package licenses",
       "sourceNormalization": "lf",
       "sha256": "99bb7bac99da3407b09da4e394993940ce403d46e7709fe314218d923528743e"
+    },
+    {
+      "id": "modern-template-web",
+      "source": "templates/modern-app/web/package-lock.json",
+      "version": "lockfile",
+      "license": "resolved package licenses",
+      "sourceNormalization": "lf",
+      "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+    },
+    {
+      "id": "webview2-sdk",
+      "source": "sdk/renderers/webview2/dependency.json",
+      "version": "1.0.4258.31 optional SDK",
+      "license": "Microsoft SDK LICENSE and NOTICE; Runtime separate",
+      "sourceNormalization": "lf",
+      "sha256": "de654c9666da5e7b36eaadbaacd297c49942bc6ba8bcd9f6fee141f0308956e5"
     },
     {
       "id": "demo-web",

@@ -1,5 +1,7 @@
 # 测试与验收
 
+0.4 增加运行档位、帧计时和 WebView2 异步准备测试。`Build.ps1 -WithWebView2` 构建可选组件和现代模板，之后执行 `Test.ps1` 与 `Test-Modern.ps1`；后者绑定当前构建及运行载荷。`experiments/webview2-consumer` 现为安装后公共现代组件的独立消费者，仍保留历史目录名。现代项目支持在仓库外运行自己的 `tools/Test-Modern.ps1`。详见 [现代后端](modern-backend.md) 和 [0.4 门槛](roadmap/0.4.0.md)。
+
 preview.10 增加 `sdk.native.action-contract`、Web动作契约与GUI语义测试，标准 `Test.ps1` 纳入这些检查。模板实际就绪探针包含契约发现→工具定义→语义动作→C++结果→状态等待→原生非法参数拒绝；WebView2实验执行相同业务与受限能力拒绝。`tools/Verify-Release.ps1` 在冻结版本后执行仓库外生成、升级/回退、搬移和真实启动，不复用历史结果。
 
 2026-10-03 起，独立消费者监督器使用单调计时判断步骤和无进展超时；系统 UTC 只用于日志。`tests/acceptance/monotonic-supervisor.test.cjs` 覆盖系统时钟前后跳变。此变更不说明历史挂载超时根因已查明。WebView2 实验使用独立 [构建与测试入口](../experiments/webview2-consumer/README.md)，不加入默认 SDK 构建；它的记录不能替代 Miniblink 或完整产品支持矩阵。双架构实验与 Miniblink 回归的 [2026-10-03结果](acceptance/webview2-experiment.md) 保留失败证据和未覆盖门槛。

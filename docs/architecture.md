@@ -1,5 +1,7 @@
 # 架构与所有权
 
+0.4 的可选现代适配器由 `sdk/renderers/webview2/` 持有，链接为 `Soui::WebView2`，通过公共 Host 和 Bridge 服务业务。基础 `Soui::Sdk` 默认不引入 Loader；现代模板由 `templates/modern-app/` 持有。环境策略与兼容应用共用 SDK，现代/兼容前端分别构建；具体边界见 [ADR-0016](adr/0016-runtime-profiles-and-modern-backend.md)。
+
 ## 三层交付
 
 SDK 提供宿主运行、独立引擎线程、交互协议、Bridge、会话、权限、任务与 Web 客户端。模板选择最小页面和业务注册入口。完整 Demo 展示媒体与扫描等业务，不参与 SDK 编译。

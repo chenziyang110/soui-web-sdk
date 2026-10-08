@@ -1,5 +1,9 @@
 # SDK API
 
+## 0.4 现代后端与环境探测
+
+可选 `Soui::WebView2` 导出 `<soui/host/webview2_host.h>`；UI STA 异步准备后使用相同 `webview_host`。`show()` 恢复隐藏视图并保留会话。公共 `<soui/host/runtime_profile.h>` 提供实际系统/PE/架构探测和候选档位选择；Web SDK 导出 `inspectSouiWebFeatures`、`requireSouiWebFeatures`。这些探测不授予原生权限，不代表目标环境认证。完整初始化、通知、关闭和部署契约见 [现代后端](modern-backend.md)。
+
 ## 动作契约与受控界面（preview.10）
 
 `json_bridge::register_action(name, capability, contract_json, contextual_handler)` 注册同步原生动作。契约包含 `protocol: "soui.action/1"`、标题、说明、`inputSchema` 与 `outputSchema`；通过原有会话授权后先验证输入，再执行处理器并验证成功结果。业务错误仍走原有Bridge错误路径。契约不会自动把动作注册为task kind，也不能绕过公共任务处理器自己的校验。

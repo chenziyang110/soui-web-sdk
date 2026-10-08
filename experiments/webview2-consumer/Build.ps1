@@ -21,7 +21,7 @@ try {
   if(-not $SkipSdkBuild){
     Invoke-RecordedCommand 'powershell.exe' @('-NoProfile','-ExecutionPolicy','Bypass','-File',
       (Join-Path $root 'tools/Build.ps1'),'-Architecture',$Architecture,'-Configuration',$Configuration,
-      '-SdkOnly','-Install') (Join-Path $suite 'sdk-build.log')
+      '-SdkOnly','-WithWebView2','-Install') (Join-Path $suite 'sdk-build.log')
   }
   # prepare verifies current SDK-only source/build identity even when building is skipped.
   Invoke-RecordedCommand 'node.exe' @($evidence,'prepare',$suite,$Architecture,$Configuration,[string]$package) (Join-Path $suite 'prepare.log')

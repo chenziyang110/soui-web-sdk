@@ -21,9 +21,21 @@ function targets(root) {
   if (names.some(name => typeof name !== 'string' || !/^[A-Za-z][A-Za-z0-9_]{1,63}$/.test(name))) throw new Error('Invalid native target');
   return names;
 }
+function backend(root) {
+  const file = id.safePath(root, 'project.json');
+  const profile = fs.existsSync(file) ? id.readJson(file).runtimeProfile : undefined;
+  if (profile !== undefined && !['compatibility', 'modern'].includes(profile)) throw new Error('Invalid runtime profile');
+  return profile === 'modern' ? 'webview2' : 'miniblink';
+}
 function output(root, arch, config, sdkOnly = false) {
   if (!['x86', 'x64'].includes(arch) || !['Debug', 'Release'].includes(config)) throw new Error('Invalid build architecture/configuration');
   return id.safePath(root, `out/${sdkOnly ? 'sdk-' : ''}${arch}`);
+}
+function optionalLibraries(root, arch, config, sdkOnly) {
+  const dir = output(root, arch, config, sdkOnly);
+  const cache = path.join(dir, 'CMakeCache.txt');
+  if (!fs.existsSync(cache) || !/^SOUI_BUILD_WEBVIEW2:BOOL=ON\r?$/m.test(fs.readFileSync(cache, 'utf8'))) return {};
+  return {webview2: id.snapshot(dir, [`${sdkOnly ? '' : 'sdk/'}renderers/webview2/${config}/soui_webview2.lib`])};
 }
 function start(root, arch, config, sdkOnly = false) {
   const dir = output(root, arch, config, sdkOnly);
@@ -44,8 +56,11 @@ function finish(root, arch, config, sdkOnly = false) {
   if (report.schema !== 'soui.source-build/v2' || report.nativeBuild !== 'pending' || !report.buildId ||
       report.source.sha256 !== id.source(root).sha256) throw new Error('Source changed during build; rebuild the current inputs');
   report.payloads = sdkOnly ? {} : Object.fromEntries(targets(root).map(target =>
-    [target, id.payload(path.join(dir, 'bin', config, target), target)]));
+    [target, id.payload(path.join(dir, 'bin', config, target), target, backend(root))]));
   if (sdkOnly) report.library = id.snapshot(dir, [`${config}/soui_sdk.lib`]);
+  report.optionalLibraries = optionalLibraries(root, arch, config, sdkOnly);
+  if (!sdkOnly && !fs.existsSync(path.join(root, 'project.json')) && report.optionalLibraries.webview2)
+    report.optionalPayloads = {SouiModernStarter: id.payload(path.join(dir, 'bin', config, 'SouiModernStarter'), 'SouiModernStarter', 'webview2')};
   report.nativeBuild = 'passed';
   report.finishedAt = new Date().toISOString();
   fs.writeFileSync(file, id.encoded(report));
@@ -53,7 +68,7 @@ function finish(root, arch, config, sdkOnly = false) {
 }
 function webFiles(root, sdkOnly) {
   const roots = ['sdk/web/dist', ...(sdkOnly ? [] : fs.existsSync(path.join(root, 'project.json')) ?
-    ['web/dist'] : ['templates/desktop-app/web/dist', 'demos/workbench/web/dist'])];
+    ['web/dist'] : ['templates/desktop-app/web/dist', 'templates/modern-app/web/dist', 'demos/workbench/web/dist'])];
   return roots.flatMap(name => id.walk(root, name));
 }
 function webEvidence(root, arch, config, sdkOnly, record) {
@@ -78,8 +93,12 @@ function verifyBuild(root, arch, config, sdkOnly = false) {
       !report.source || report.source.sha256 !== id.source(root).sha256) throw new Error('Build evidence is stale or incomplete; rebuild current source');
   if (!sdkOnly) {
     if (JSON.stringify(Object.keys(report.payloads || {}).sort()) !== JSON.stringify(targets(root).sort())) throw new Error('Build payload targets missing');
-    for (const target of targets(root)) id.verifyPayload(path.join(dir, 'bin', config, target), target, report.payloads[target]);
+    for (const target of targets(root)) id.verifyPayload(path.join(dir, 'bin', config, target), target, report.payloads[target], backend(root));
   } else if (!report.library || id.snapshot(dir, [`${config}/soui_sdk.lib`]).sha256 !== report.library.sha256) throw new Error('SDK library drift');
+  if (JSON.stringify(report.optionalLibraries || {}) !== JSON.stringify(optionalLibraries(root, arch, config, sdkOnly)))
+    throw new Error('Optional SDK library or component configuration drift');
+  if (!sdkOnly && !fs.existsSync(path.join(root, 'project.json')) && report.optionalLibraries?.webview2)
+    id.verifyPayload(path.join(dir, 'bin', config, 'SouiModernStarter'), 'SouiModernStarter', report.optionalPayloads?.SouiModernStarter, 'webview2');
   return report;
 }
 function scenarios(root) {
@@ -127,6 +146,25 @@ function verifySmoke(root, arch, config) {
   if (smoke.passed !== true || !smoke.finishedAt || JSON.stringify(smoke.payloads) !== JSON.stringify(build.payloads)) throw new Error('Smoke payload identity missing');
   return {build, smoke};
 }
+function validateModernSmoke(build, smoke, target, payload) {
+  if (!build.optionalLibraries?.webview2 || !payload || smoke.schema !== 'soui.modern-smoke/1' ||
+      smoke.version !== build.version || smoke.buildId !== build.buildId || smoke.sourceSha256 !== build.source.sha256 ||
+      smoke.architecture !== build.architecture || smoke.configuration !== build.configuration || smoke.target !== target ||
+      smoke.passed !== true || smoke.exitCode !== 0 || smoke.timedOut !== false || !smoke.finishedAt ||
+      !Number.isSafeInteger(smoke.pid) || smoke.pid <= 0 || JSON.stringify(smoke.payload) !== JSON.stringify(payload) ||
+      typeof smoke.log !== 'string' || !['application-ready', 'host-close-complete', 'host-started;runtime='].every(text => smoke.log.includes(text)))
+    throw new Error('Modern smoke identity or lifecycle evidence is incomplete');
+}
+function verifyModernSmoke(root, arch, config) {
+  const build = verifyBuild(root, arch, config);
+  const generated = fs.existsSync(path.join(root, 'project.json'));
+  if (generated && backend(root) !== 'webview2') throw new Error('Not a modern application');
+  const target = generated ? targets(root)[0] : 'SouiModernStarter';
+  const payload = generated ? build.payloads[target] : build.optionalPayloads?.[target];
+  const smoke = id.readJson(path.join(output(root, arch, config), `modern-smoke-${config}.json`));
+  validateModernSmoke(build, smoke, target, payload);
+  return {build, smoke};
+}
 function stageApp(root, arch, config, target, destination) {
   if (!targets(root).includes(target)) throw new Error('Unknown application target');
   const {build} = verifySmoke(root, arch, config);
@@ -138,13 +176,13 @@ function stageApp(root, arch, config, target, destination) {
     fs.mkdirSync(path.dirname(to), {recursive: true});
     fs.copyFileSync(id.safePath(app, entry.path), to);
   }
-  const payload = id.verifyPayload(destination, target, build.payloads[target]);
+  const payload = id.verifyPayload(destination, target, build.payloads[target], backend(root));
   const categories = {executable: 0, kernel: 0, libraries: 0, web: 0};
   for (const file of payload.files) categories[file.path.startsWith('resources/') ? 'web' : file.path === 'node.dll' ? 'kernel' : file.path === `${target}.exe` ? 'executable' : 'libraries'] += file.bytes;
   return {schema: 'soui.application-size/v1', version: build.version, target, architecture: arch, configuration: config,
     buildId: build.buildId, sourceSha256: build.source.sha256, payload, categories, releaseReady: false};
 }
-module.exports = {version, targets, start, finish, verifyBuild, beginSmoke, validateRuns, finishSmoke, verifySmoke, stageApp};
+module.exports = {version, targets, start, finish, verifyBuild, beginSmoke, validateRuns, finishSmoke, verifySmoke, validateModernSmoke, verifyModernSmoke, stageApp};
 if (require.main === module) {
   try {
     const [command, arch, config, ...args] = process.argv.slice(2);

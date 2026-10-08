@@ -24,7 +24,7 @@ node benchmarks/electron-smoothness/create-miniblink-entry.cjs
 
 ## 启动最小宿主
 
-SOUI 宿主需要已安装的 `SouiSdk 0.3.0` CMake 包及同架构 `node.dll`：
+SOUI 宿主需要已安装的 `SouiSdk 0.4.0` CMake 包及同架构 `node.dll`：
 
 ```powershell
 cmake -S benchmarks/hosts/soui -B out/benchmark-soui-x64 -G "Visual Studio 17 2022" -A x64 -DSouiSdk_DIR=<SDK安装目录>/lib/cmake/SouiSdk

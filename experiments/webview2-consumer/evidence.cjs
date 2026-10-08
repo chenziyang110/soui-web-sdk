@@ -34,6 +34,7 @@ function assertSnapshot(folder, expected, label) {
 function prepare(suite, architecture, configuration, packageRoot) {
   suite = directory(suite);
   const sdk = builds.verifyBuild(root, architecture, configuration, true);
+  if (!sdk.optionalLibraries?.webview2) throw new Error('Build the SDK with -WithWebView2 before preparing this consumer');
   const experiment = source();
   for (const file of ['CMakeLists.txt','main.cpp','webview2_adapter.cpp','native-preload.js','index.html','page.js','style.css'])
     if (!experiment.files.some(entry => entry.path === file)) throw new Error('Missing experiment input: ' + file);
@@ -97,6 +98,13 @@ function finish(suite) {
   const install = path.join(suite, 'install');
   if (id.hash(fs.readFileSync(path.join(install, 'lib', inputs.configuration, 'soui_sdk.lib'))) !== sdk.library.files[0].sha256)
     throw new Error('Installed SDK library differs from the verified native build');
+  if (!sdk.optionalLibraries?.webview2 ||
+      id.hash(fs.readFileSync(path.join(install, 'lib', inputs.configuration, 'soui_webview2.lib'))) !== sdk.optionalLibraries.webview2.files[0].sha256)
+    throw new Error('Installed WebView2 backend differs from the verified native build');
+  const loader = `build/native/${inputs.architecture}/WebView2LoaderStatic.lib`;
+  if (id.hash(fs.readFileSync(path.join(install, 'lib/webview2/WebView2LoaderStatic.lib'))) !==
+      inputs.dependencyFiles.files.find(file => file.path === loader)?.sha256)
+    throw new Error('Installed WebView2 loader differs from the pinned dependency');
   for (const entry of id.walk(root, 'sdk/include'))
     if (id.hash(fs.readFileSync(path.join(root, entry))) !== id.hash(fs.readFileSync(path.join(install, entry.slice(4)))))
       throw new Error('Installed public SDK header differs: ' + entry);

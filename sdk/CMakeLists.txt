@@ -20,6 +20,10 @@ target_compile_options(soui_sdk PRIVATE /utf-8 /W4 /U_DEBUG)
 set_property(TARGET soui_sdk PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 target_link_libraries(soui_sdk PUBLIC user32 gdi32 imm32 shell32 ole32 oleaut32 uuid comctl32 advapi32 winmm)
 set_target_properties(soui_sdk PROPERTIES EXPORT_NAME Sdk)
+option(SOUI_BUILD_WEBVIEW2 "Build the optional modern WebView2 backend" OFF)
+if(SOUI_BUILD_WEBVIEW2)
+  add_subdirectory(renderers/webview2)
+endif()
 
 set(ZLIB_SOURCE "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/zlib")
 add_library(soui_zlib STATIC ${ZLIB_SOURCE}/adler32.c ${ZLIB_SOURCE}/compress.c

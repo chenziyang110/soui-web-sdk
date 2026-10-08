@@ -25,8 +25,9 @@ function run(name,executable,args) {
 const unit={
  package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),
  delivery:run('delivery-identity-tests',process.execPath,['--test','tests/sdk/delivery-identity.test.cjs']),
+ modernDelivery:run('modern-evidence-tests',process.execPath,['--test','tests/sdk/modern-evidence.test.cjs']),
  release:run('release-verification-tests',process.execPath,['--test','tests/sdk/release-verification.test.cjs']),
- web:run('web-sdk-tests',process.execPath,['--test','tests/web/sdk-client.test.mjs','tests/web/capabilities.test.mjs','tests/web/action-contracts.test.mjs','tests/web/gui.test.mjs']),
+ web:run('web-sdk-tests',process.execPath,['--test','tests/web/sdk-client.test.mjs','tests/web/capabilities.test.mjs','tests/web/action-contracts.test.mjs','tests/web/gui.test.mjs','tests/web/web-features.test.mjs']),
  nativeActionsX64:run('native-actions-x64',path.join(root,'out/x64/tests/native/Release/soui_action_contract_tests.exe'),[]),
  nativeActionsX86:run('native-actions-x86',path.join(root,'out/x86/tests/native/Release/soui_action_contract_tests.exe'),[]),
  nativeX64:run('native-contract-x64',path.join(root,'out/x64/tests/native/Release/soui_sdk_contract_tests.exe'),[]),
@@ -69,6 +70,14 @@ for(const arch of ['x86','x64'])for(const config of ['Debug','Release']){
  matrix.push({architecture:arch,configuration:config,buildPassed:true,templateAndDemoPassed:true,evidence:'native-'+arch+'-'+config+'.json'});
 }
 const dependencies=[];
+const modernMatrix=[];
+for(const arch of ['x86','x64'])for(const config of ['Debug','Release']){
+ const {smoke}=evidence.verifyModernSmoke(root,arch,config);
+ const file='modern-'+arch+'-'+config+'.json';
+ save(file,smoke);
+ modernMatrix.push({architecture:arch,configuration:config,passed:true,evidence:file});
+ run('native-suite-'+arch+'-'+config,'ctest',['--test-dir','out/'+arch,'-C',config,'--output-on-failure']);
+}
 for(const arch of ['x86','x64']){
  const build=read('out/dependencies/'+arch+'/build-All.json');
  const smoke=read('out/dependencies/'+arch+'/rebuilt-smoke.json');
@@ -102,10 +111,10 @@ for(const dir of ['sdk','templates','demos','cmake','tools','tests'])walk(dir);
 sources.push({path:'CMakeLists.txt',sha256:digest('CMakeLists.txt')});
 save('first-party-source-hashes.json',sources);
 const audits={};
-for(const scope of ['web-sdk','template-web','demo-web']) audits[scope]=read('verification/'+scope+'-audit.json').metadata.vulnerabilities;
+for(const scope of ['web-sdk','template-web','demo-web','modern-web']) audits[scope]=read('verification/'+scope+'-audit.json').metadata.vulnerabilities;
 const acceptance={schema:'soui.source-delivery-acceptance/v1',version,finishedAt:new Date().toISOString(),
  sourceDeliveryVerified:true,releaseReady:false,toolchain:read('verification/toolchain.json'),
- nativeApplicationMatrix:matrix,unitTests:unit,sdkOnly:{passed:true,architecture:'x64',configuration:'Release'},externalCmakeConsumer:consumer,
+ nativeApplicationMatrix:matrix,modernApplicationMatrix:modernMatrix,unitTests:unit,sdkOnly:{passed:true,architecture:'x64',configuration:'Release'},externalCmakeConsumer:consumer,
  generatedApplication:{passed:true,upgradeTested:true,evidence:'generated-project.json',freshProjectEvidence:'fresh-project.json'},
  relocatedDistribution:{passed:true,evidence:'relocation.json',nativeEvidence:'relocated-native-smoke.json'},
  dependencies,dependencyAudit:audits,firstPartySourceHashes:'first-party-source-hashes.json',

@@ -206,6 +206,7 @@ void require_inactive(webview_host& host, const adapter_state& state, const char
   const auto application_queries = state.application_queries;
   const auto diagnostic_queries = state.diagnostic_queries;
   require_error(host.hide(), code, "inactive hide must fail");
+  require_error(host.show(), code, "inactive show must fail");
   require_error(host.reload(), code, "inactive reload must fail");
   require_error(host.resize(30, 40), code, "inactive resize must fail");
   require_error(host.focus(), code, "inactive focus must fail");
@@ -265,6 +266,14 @@ void test_forwarding_and_lifecycle(const host_config& config) {
     require_same_result(host.hide(), state->show_result, "visibility result must be preserved");
     require(state->show_calls == 1 && !state->visible && host.session()->state() == lifecycle_state::hidden,
             "hide must invoke show(false) and update session");
+    const auto hidden_session = host.session()->session_id();
+    state->show_result = {false, "E_FAKE_SHOW", "restore rejected"};
+    require_error(host.show(), "E_FAKE_SHOW", "failed restore propagates");
+    require(host.session()->state() == lifecycle_state::hidden, "failed restore preserves hidden state");
+    state->show_result = {true, "VISIBILITY", "fake visibility changed"};
+    require_same_result(host.show(), state->show_result, "restore result preserved");
+    require(state->visible && host.session()->state() == lifecycle_state::ready &&
+                host.session()->session_id() == hidden_session, "restore keeps session identity");
     host.pump();
     require(state->pump_calls == 1 && host.document_ready() && host.application_ready(),
             "pump and readiness must reach custom adapter");

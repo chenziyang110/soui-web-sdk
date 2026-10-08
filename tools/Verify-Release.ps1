@@ -1,19 +1,20 @@
 [CmdletBinding()]
 param(
-  [string]$ExpectedVersion='0.3.0-preview.10',
+  [string]$ExpectedVersion='',
   [string]$PreviousPackage='',
   [string]$WorkspaceParent=''
 )
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $version=([IO.File]::ReadAllText((Join-Path $root 'VERSION'))).Trim()
+if(-not $ExpectedVersion){$ExpectedVersion=$version}
 if($version -ne $ExpectedVersion){throw "Freeze VERSION at $ExpectedVersion before release verification (found $version)."}
 $node=(Get-Command node.exe -ErrorAction Stop).Source
 $cmake=(Get-Command cmake.exe -ErrorAction Stop).Source
 $powershell=(Get-Command powershell.exe -ErrorAction Stop).Source
 $helper=Join-Path $root 'tools/internal/release-verification.cjs'
 $package=Join-Path $root "dist/sdk/$version"
-if(-not $PreviousPackage){$PreviousPackage=Join-Path $root 'dist/sdk/0.3.0-preview.9'}
+if(-not $PreviousPackage){$PreviousPackage=Join-Path $root 'dist/sdk/0.3.0-preview.10'}
 if(-not $WorkspaceParent){$WorkspaceParent=[IO.Path]::GetFullPath((Join-Path $root '..\..'))}
 $runId=[Guid]::NewGuid().ToString('N')
 $workspace=[IO.Path]::GetFullPath((Join-Path $WorkspaceParent "soui-release-$runId"))

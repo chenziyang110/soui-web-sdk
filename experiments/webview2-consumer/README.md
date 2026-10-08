@@ -1,6 +1,6 @@
-# WebView2 独立实验消费者
+# WebView2 独立 SDK 消费者
 
-此工程验证现代渲染器能否复用 preview.10 的公共 Host、`json_bridge` 和 `connectSouiNative`。它单独构建，不加入默认 SDK、模板或 Workbench，也不进入生成项目的固定 SDK 包。实验来源、所用 SDK 与结果通过独立指纹记录；历史 preview.9 的证据保留原身份。
+0.4 起此工程链接安装后的公共 `Soui::WebView2`，验证 Host、`json_bridge` 和 `connectSouiNative` 的真实生命周期。适配器实现已移入 SDK，可进入选择现代档的生成项目；此测试应用本身保持独立。构建记录同时核对基础 SDK、现代组件和 Loader 身份；历史 preview.9/10 实验证据保持原身份。
 
 ## 环境与启动
 
