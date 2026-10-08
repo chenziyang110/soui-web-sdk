@@ -1,0 +1,307 @@
+{
+  "schema": "soui.local-grants-persistent-archive/v1",
+  "archivedAt": "2026-10-08T20:12:53.182Z",
+  "archiveHostObservation": {
+    "platform": "win32",
+    "release": "10.0.26200",
+    "arch": "x64"
+  },
+  "originalIndexSha256": "caa6b5d907dadfacc5ee80d47ce5f379a9bcf0e050a523f7ff38ddb628e618f0",
+  "originalIndexFiles": 683,
+  "frozenInputsSha256": "a858dceeb9f6545f9bcd5629b4f723888bff89387179ddca656c0ddddf89d7ee",
+  "resultsSha256": "c8d8c12ff2e68b764321232526c6a177764dca2c150ee1d03d13d3674dd1b940",
+  "sourceSha256": "e581df02ecca925f9444def0ecc51c86b94ba89848aa4fd67f075daa1a237564",
+  "actualInputSha256": "335f7465d3034e30eb074aecf89cb09e744f42ae4b54005365f71b3d39a824f4",
+  "actualInputFiles": 67,
+  "selectedTestsPerArchitecture": 6,
+  "localPolicyCasesPerArchitecture": 10,
+  "architecture": [
+    "x86",
+    "x64"
+  ],
+  "configuration": "Release",
+  "ownedJobs": 6,
+  "allOriginalJobsNatural": true,
+  "originalRecords": [
+    {
+      "name": "configure-x64",
+      "directory": "configure-x64",
+      "summary": {
+        "pid": 102796,
+        "creationFileTime": "134359627991862859",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 13232,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 67,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-actions\\out\\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\\configure-x64\\owned.ndjson",
+        "reportSha256": "9ab28ed6b502e9bd5b29bb7c4f94ff321d6ebe3058ed8b23079e4c78d7b305eb",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+        "ready": {
+          "pid": 102796,
+          "creationFileTime": "134359627991862859"
+        },
+        "contextSha256": "ea5097d9e372ea37777797526e809dd68923a8e2e24ab158391c8f58f8e1b89f",
+        "stdoutSha256": "c4fb64c30ba10b9c635f02bdcb2b6092b3df2040986c24a158066e15414c0a32",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "compile-x64",
+      "directory": "compile-x64",
+      "summary": {
+        "pid": 93340,
+        "creationFileTime": "134359628126617222",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 60665,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 105,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-actions\\out\\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\\compile-x64\\owned.ndjson",
+        "reportSha256": "ab3755c1d8e2ab0dddd1f26881aea1b96499fbd5732a3d21acc80e052f40fd78",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+        "ready": {
+          "pid": 93340,
+          "creationFileTime": "134359628126617222"
+        },
+        "contextSha256": "3c8fb8320328d6c946b839482ba0f6bf28cbdb58380a527884f5c6696e44b89c",
+        "stdoutSha256": "3e94f43622566c323cab9a264d7f4cad058e234948205437331ea3534ca887c0",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "ctest-x64",
+      "directory": "ctest-x64",
+      "summary": {
+        "pid": 90440,
+        "creationFileTime": "134359628735118257",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 1614,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 8,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-actions\\out\\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\\ctest-x64\\owned.ndjson",
+        "reportSha256": "e4c04596e0fcce435e2e4a35d66a9e4fb63a9b72cc0b0b4b8c23dc943f2daceb",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c",
+        "ready": {
+          "pid": 90440,
+          "creationFileTime": "134359628735118257"
+        },
+        "contextSha256": "24404506738f94d7ed85c3ff9b33a58db9670d8e11d38ef5afb363aca585aab1",
+        "stdoutSha256": "ebee8e43e5a89c365e1a0b9be78c8864d93a78cc796b7b3be6d61364d66b7c0f",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "configure-x86",
+      "directory": "configure-x86",
+      "summary": {
+        "pid": 96004,
+        "creationFileTime": "134359628753846570",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 12923,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 67,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-actions\\out\\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\\configure-x86\\owned.ndjson",
+        "reportSha256": "ce21499a7db6052aa7f26efd123b1326b69356fcaa065f7d793ee75616bb439f",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+        "ready": {
+          "pid": 96004,
+          "creationFileTime": "134359628753846570"
+        },
+        "contextSha256": "0470971e563484f70fa52509297395584e155438159899e30fce2a936aea2dbc",
+        "stdoutSha256": "8492af3ed9079ca9eb5c309427fab78d87804f1baf76284c52cc150b3057a34c",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "compile-x86",
+      "directory": "compile-x86",
+      "summary": {
+        "pid": 109484,
+        "creationFileTime": "134359628884384824",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 57429,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 105,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-actions\\out\\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\\compile-x86\\owned.ndjson",
+        "reportSha256": "5732f3ebf218c55ecfcdd193383f3b22116f769651ba3a9c6e4a53f7f6ad055e",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+        "ready": {
+          "pid": 109484,
+          "creationFileTime": "134359628884384824"
+        },
+        "contextSha256": "5810a87bfd5517a65694e67668cab6896ce9d95b3bbd9cf114367ff9550bcfcc",
+        "stdoutSha256": "c73f8650141f02a56d7e573da9a983bfe882505be0cfd906ab9c652d4c8d6c74",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "ctest-x86",
+      "directory": "ctest-x86",
+      "summary": {
+        "pid": 39020,
+        "creationFileTime": "134359629459878107",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 1459,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 8,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-actions\\out\\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\\ctest-x86\\owned.ndjson",
+        "reportSha256": "47bbce2cc8d3325bc5c01264a155249f037b5419389ccead6b4e2cb10b41775c",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c",
+        "ready": {
+          "pid": 39020,
+          "creationFileTime": "134359629459878107"
+        },
+        "contextSha256": "869e4cde974e322adc650522fca8c1ea539899478bfd7cc966194cdaeb8d2aa0",
+        "stdoutSha256": "b2961e08d5905a702a1180663c2ca73228e772e8c01ae170e4525f7750a553f8",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "copiedOriginalFiles": 606,
+  "hashOnlyPrivateFiles": 78,
+  "audit": {
+    "rootExitCode": 0,
+    "supervisorExitCode": 0,
+    "genericPassed": true,
+    "naturalClosure": true,
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "auditVersion": 2,
+    "reportSha256": "e9c084abb74040be20070addf17eb2e55e4e40a7ddd498008a0acd98343ef4ba",
+    "noInstall": true,
+    "noTailPolicy": true
+  },
+  "releaseReady": false,
+  "noPipeValidation": true,
+  "noUiAutomationValidation": true,
+  "noOsIdentityValidation": true,
+  "noGuiValidation": true,
+  "noEightHourValidation": true,
+  "noFullCollectValidation": true,
+  "noNewOsMatrixValidation": true
+}

@@ -1,0 +1,90 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const identity=require('../tools/internal/delivery-identity.cjs');
+const {launchOwned}=require('../tools/internal/owned-process.cjs');
+const root=path.resolve(__dirname,'..'),hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const base=path.join(root,'out/local-grant-validation-'+crypto.randomUUID());fs.mkdirSync(base);
+const encode=v=>Buffer.from(JSON.stringify(v,null,2)+'\n');
+const write=(name,value)=>fs.writeFileSync(path.join(base,name),Buffer.isBuffer(value)?value:encode(value),{flag:'wx'});
+const runner='F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const cmake='C:/Program Files/CMake/bin/cmake.exe',ctest='C:/Program Files/CMake/bin/ctest.exe';
+const vs='C:/Program Files/Microsoft Visual Studio/2022/Community';
+const client=path.join(root,'tools/internal/owned-process.cjs');
+const pins={
+ 'sdk/include/soui/runtime/services/permissions/permission_store.h':'adddfa70a126644d058e7acfbe7272a75903e723e2e156231a5e59bbb9694075',
+ 'sdk/src/runtime/services/permissions/permission_store.cpp':'bfa237deb1ef280cf55b5a6f191f30e0dd3c92c941c6c8588d978c7c8bf96b7a',
+ 'tests/native/local_authorization_tests.cpp':'64d8255a91f42da2875c8dfa75b471f08f808becd58dd6c6922995900c912d70'};
+function need(v,m){if(!v)throw Error(m);}
+function file(name){const resolved=fs.realpathSync.native(name),s=fs.statSync(resolved);need(s.isFile(),'Not file');
+ const b=fs.readFileSync(resolved);return {path:name,resolvedPath:resolved,bytes:b.length,sha256:hash(b)};}
+need(file(runner).sha256==='1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f','Runner changed');
+need(file(client).sha256==='8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7','Client changed');
+for(const [name,pin]of Object.entries(pins))need(file(path.join(root,name)).sha256===pin,'Production/test changed');
+const source=identity.source(root),rawSource=identity.snapshot(root,source.files.map(f=>f.path));
+const sdkNames=source.files.filter(f=>f.path.startsWith('sdk/include/')||f.path.startsWith('sdk/src/')||
+ ['sdk/CMakeLists.txt','CMakeLists.txt','tests/native/CMakeLists.txt','third_party/include/json/json.hpp',
+ 'tests/native/sdk_contract_tests.cpp','tests/native/action_contract_tests.cpp','tests/native/session_renewal_tests.cpp',
+ 'tests/native/task_scope_tests.cpp','tests/native/task_operation_query_tests.cpp','tests/native/local_authorization_tests.cpp'].includes(f.path)).map(f=>f.path);
+const actualInputs=identity.snapshot(root,sdkNames);
+const tools=[process.execPath,runner,client,cmake,ctest,path.join(vs,'MSBuild/Current/Bin/amd64/MSBuild.exe'),
+ ...['x64','x86'].flatMap(arch=>['cl.exe','link.exe','lib.exe'].map(n=>path.join(vs,'VC/Tools/MSVC/14.44.35207/bin/Hostx64',arch,n)))].map(file);
+write('frozen-inputs.json',{schema:'soui.local-grant-validation-inputs/v1',source,rawSource,actualInputs,tools,
+ productionPins:pins,controlledClock:true,entropyHook:'TEST_ONLY',noGui:true,noOsIdentity:true,releaseReady:false});
+fs.mkdirSync(path.join(base,'source-raw'));
+const sourceMap=[];
+for(const [index,row]of actualInputs.files.entries()){
+ const b=fs.readFileSync(identity.safePath(root,row.path));need(hash(b)===row.sha256&&b.length===row.bytes,'Input changed');
+ const archive='source-raw/'+String(index).padStart(4,'0')+'-'+path.basename(row.path)+'.inert.snapshot';write(archive,b);
+ sourceMap.push({...row,archive});}
+write('source-raw-map.json',sourceMap);write('driver.cjs.inert.snapshot',fs.readFileSync(__filename));
+const env={...process.env,MSBUILDDISABLENODEREUSE:'1'};
+const records=[];
+async function phase(name,exe,args,timeoutMs){
+ const dir=path.join(base,name);fs.mkdirSync(dir);const out=[],err=[];
+ const inputs={name,executable:file(exe),args,cwd:root,runner:file(runner),client:file(client),timeoutMs,drainMs:3000,
+ environment:{MSBUILDDISABLENODEREUSE:env.MSBUILDDISABLENODEREUSE},sourceSha256:source.sha256};
+ fs.writeFileSync(path.join(dir,'inputs.json'),encode(inputs),{flag:'wx'});
+ const owned=launchOwned(exe,args,{runner,cwd:root,report:path.join(dir,'owned.ndjson'),timeoutMs,drainMs:3000,env,stdout:'pipe',stderr:'pipe'});
+ owned.child.stdout.on('data',b=>out.push(b));owned.child.stderr.on('data',b=>err.push(b));let ready;
+ try{ready=await owned.ready;}catch(e){ready={error:e.message};}
+ const finished=await owned.finished;fs.writeFileSync(path.join(dir,'stdout.bin'),Buffer.concat(out),{flag:'wx'});
+ fs.writeFileSync(path.join(dir,'stderr.bin'),Buffer.concat(err),{flag:'wx'});
+ const report=fs.readFileSync(finished.report);need(hash(report)===finished.reportSha256,'Native raw changed');
+ const context=fs.readFileSync(finished.report+'.context.json');
+ const summary={...finished,ready,contextSha256:hash(context),stdoutSha256:hash(Buffer.concat(out)),stderrSha256:hash(Buffer.concat(err))};
+ fs.writeFileSync(path.join(dir,'finished.json'),encode(summary),{flag:'wx'});
+ records.push({name,directory:path.relative(base,dir).replaceAll('\\','/'),summary});
+ console.log(JSON.stringify({base,name,exitCode:finished.exitCode,genericSupervisionPassed:finished.passed,closureConfirmed:finished.closureConfirmed}));
+ need(finished.exitCode===0&&finished.closureConfirmed,'Actual phase failed '+name);
+ return {summary,stdout:Buffer.concat(out)};
+}
+const targets=['soui_local_authorization_tests','soui_session_renewal_tests','soui_task_scope_tests',
+ 'soui_task_operation_query_tests','soui_action_contract_tests','soui_sdk_contract_tests'];
+const testPattern='^sdk\\.native\\.(contract|action-contract|session-renewal|task-scope|task-operation-query|local-authorization)$';
+function walk(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)]);}
+function index(){const files=walk(base).filter(n=>path.basename(n)!=='index.json').map(n=>({...file(n),path:path.relative(base,n).replaceAll('\\','/')}));
+ write('index.json',{schema:'soui.local-grant-validation-evidence/v1',files,releaseReady:false});}
+(async()=>{
+ const outputs=[];
+ for(const arch of ['x64','x86']){
+  const build=path.join(base,'build-'+arch);
+  await phase('configure-'+arch,cmake,['-S',root,'-B',build,'-G','Visual Studio 17 2022','-A',(arch==='x86'?'Win32':'x64')+',version=10.0.19041.0',
+   '-T','v143,version=14.44.35207,host=x64','-DCMAKE_GENERATOR_INSTANCE='+vs,'-DSOUI_BUILD_TEMPLATE=OFF','-DSOUI_BUILD_DEMOS=OFF',
+   '-DSOUI_BUILD_TESTS=ON','-DSOUI_BUILD_WEBVIEW2=OFF'],120000);
+  await phase('compile-'+arch,cmake,['--build',build,'--config','Release','--target',...targets,'--parallel','2','--','/nr:false','/m:2',
+   '/p:VcpkgEnabled=false','/p:VCPkgLocalAppDataDisabled=true','/bl:'+path.join(base,'compile-'+arch+'.binlog')],600000);
+  const tested=await phase('ctest-'+arch,ctest,['--test-dir',build,'-C','Release','--output-on-failure','-R',testPattern],60000);
+  need(tested.summary.passed===true&&tested.stdout.toString('utf8').includes('100% tests passed, 0 tests failed out of 6'),'Selected native tests not naturally complete');
+  for(const target of targets){const name=path.join(build,'tests/native/Release',target+'.exe'),b=fs.readFileSync(name),offset=b.readUInt32LE(60);
+   need(b.readUInt32LE(offset)===0x4550&&b.readUInt16LE(offset+4)===(arch==='x86'?332:34404),'Actual test COFF differs');
+   outputs.push({...file(name),architecture:arch,coff:b.readUInt16LE(offset+4)});}
+  outputs.push({...file(path.join(build,'sdk/Release/soui_sdk.lib')),architecture:arch});
+ }
+ need(identity.source(root).sha256===source.sha256&&identity.snapshot(root,source.files.map(f=>f.path)).sha256===rawSource.sha256,'Source changed during actual regression');
+ need(tools.every(t=>JSON.stringify(file(t.path))===JSON.stringify(t)),'Actual tool changed');
+ write('results.json',{schema:'soui.local-grant-native-regression/v1',sourceSha256:source.sha256,rawSourceSha256:rawSource.sha256,
+ actualNativeInputsUnchanged:true,selectedTestsPerArchitecture:6,localPolicyCasesPerArchitecture:10,outputs,records,
+ compilerGenericPasses:records.filter(r=>r.name.startsWith('compile-')).map(r=>({name:r.name,passed:r.summary.passed})),
+ testsNaturallyClosed:true,noPipeValidation:true,noOsIdentityValidation:true,noGuiValidation:true,releaseReady:false});
+ index();console.log(JSON.stringify({base,status:'native regressions complete'}));
+})().catch(e=>{write('failure.json',{error:e.stack,records,releaseReady:false});index();console.error(e);process.exitCode=1;});

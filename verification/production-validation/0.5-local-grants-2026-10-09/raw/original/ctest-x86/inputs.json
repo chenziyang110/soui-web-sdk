@@ -1,0 +1,37 @@
+{
+  "name": "ctest-x86",
+  "executable": {
+    "path": "C:/Program Files/CMake/bin/ctest.exe",
+    "resolvedPath": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+    "bytes": 13829192,
+    "sha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+  },
+  "args": [
+    "--test-dir",
+    "F:\\work\\sm05-actions\\out\\local-grant-validation-adc8da1d-ab99-4ee1-b6a3-32c9c092783f\\build-x86",
+    "-C",
+    "Release",
+    "--output-on-failure",
+    "-R",
+    "^sdk\\.native\\.(contract|action-contract|session-renewal|task-scope|task-operation-query|local-authorization)$"
+  ],
+  "cwd": "F:\\work\\sm05-actions",
+  "runner": {
+    "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+    "resolvedPath": "F:\\work\\sm05\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+    "bytes": 60928,
+    "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+  },
+  "client": {
+    "path": "F:\\work\\sm05-actions\\tools\\internal\\owned-process.cjs",
+    "resolvedPath": "F:\\work\\sm05-actions\\tools\\internal\\owned-process.cjs",
+    "bytes": 8386,
+    "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+  },
+  "timeoutMs": 60000,
+  "drainMs": 3000,
+  "environment": {
+    "MSBUILDDISABLENODEREUSE": "1"
+  },
+  "sourceSha256": "e581df02ecca925f9444def0ecc51c86b94ba89848aa4fd67f075daa1a237564"
+}
