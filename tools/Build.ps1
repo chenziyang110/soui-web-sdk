@@ -26,6 +26,24 @@ if(Test-Path -LiteralPath (Join-Path $root 'sdk-lock.json')) {
   & $node.Source (Join-Path $root 'tools/sdk/soui-sdk.cjs') verify-project --project $root
   if($LASTEXITCODE -ne 0){throw 'Pinned SDK was modified; install a reviewed SDK version or restore its files.'}
 }
+if(-not $SdkOnly){
+  $actionRoots=if($generated){@($root)}else{@((Join-Path $root 'templates/desktop-app'),(Join-Path $root 'templates/modern-app'))}
+  $actionManagedPaths=@('contracts/generated/actiongen-manifest.json','app/generated/actions.hpp',
+    'web/src/generated/actions.ts','contracts/generated/tools.json','docs/generated/actions.md')
+  foreach($actionRoot in $actionRoots){
+    $actionSource=Join-Path $actionRoot 'contracts/actions.json'
+    if(-not(Test-Path -LiteralPath $actionSource)){
+      $actionManaged=$false
+      foreach($actionPath in $actionManagedPaths){
+        if(Test-Path -LiteralPath (Join-Path $actionRoot $actionPath)){$actionManaged=$true;break}
+      }
+      if(-not $generated -or $actionManaged){throw "Action source is missing: $actionSource"}
+      continue
+    }
+    & $node.Source (Join-Path $root 'tools/sdk/actiongen.cjs') --source $actionSource --root $actionRoot --check
+    if($LASTEXITCODE -ne 0){throw 'Generated actions are missing or stale; regenerate the application actions before building.'}
+  }
+}
 $output=Join-Path $root "out/$(if($SdkOnly){'sdk-'}else{''})$Architecture"
 $source=if($SdkOnly){Join-Path $root 'sdk'}else{$root}
 $configure=@(Get-SouiCMakeConfigureArguments -CMake $cmake.Source -WorkspaceRoot $root -SourceDirectory $source `

@@ -1,0 +1,8 @@
+param([string]$Build,[string]$Fixture,[string]$Generated,[string]$SdkOnlyValue,[string]$Node)
+$ErrorActionPreference='Stop';$taskTokens=$null;$taskErrors=$null
+$taskAst=[Management.Automation.Language.Parser]::ParseFile($Build,[ref]$taskTokens,[ref]$taskErrors)
+if($taskErrors.Count){throw 'Build parse failed'}
+$taskIf=$taskAst.Find({param($a) $a -is [Management.Automation.Language.IfStatementAst] -and $a.Extent.Text.StartsWith('if(-not $SdkOnly){')},$true)
+if(-not $taskIf){throw 'Action hook not found'}
+$root=$Fixture;$generated=$Generated -eq 'true';$SdkOnly=$SdkOnlyValue -eq 'true';$node=[pscustomobject]@{Source=$Node}
+try{& ([scriptblock]::Create($taskIf.Extent.Text));exit 0}catch{[Console]::Error.WriteLine($_.Exception.Message);exit 41}

@@ -28,6 +28,7 @@ const unit={
  ownedSupervision:run('owned-process-tests',process.execPath,['--test','tests/benchmark/owned-process-runner.test.cjs','tests/benchmark/owned-process-client.test.cjs','tests/benchmark/owned-process-client-boundaries.test.cjs','tests/acceptance/owned-supervision-boundaries.test.cjs','tests/benchmark/run-one-cleanup.test.cjs']),
  windowsSdkSelection:run('windows-sdk-selection-tests',process.execPath,['--test','tests/sdk/cmake-sdk-selection.test.cjs']),
  guiDelivery:run('gui-bindings-delivery-tests',process.execPath,['--test','tests/sdk/gui-bindings-delivery.test.cjs','tests/sdk/gui-bindings-entrypoints.test.cjs']),
+ actionGeneration:run('action-generation-tests',process.execPath,['--test','tests/sdk/actiongen.test.mjs','tests/web/generated-actions.test.mjs']),
  package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),
  nativePayload:run('sdk-native-payload-tests',process.execPath,['--test','tests/sdk/sdk-native-payload.test.cjs']),
  interruption:run('sdk-installation-interruption-tests',process.execPath,['--test','tests/sdk/installation-interruption.test.cjs','tests/sdk/profile-installation-integration.test.cjs']),

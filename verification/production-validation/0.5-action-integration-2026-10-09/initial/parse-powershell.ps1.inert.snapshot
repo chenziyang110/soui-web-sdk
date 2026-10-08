@@ -1,0 +1,6 @@
+$errors=$null
+$tokens=$null
+[Management.Automation.Language.Parser]::ParseFile('F:\work\sm05-actions\tools\Build.ps1',[ref]$tokens,[ref]$errors)|Out-Null
+if($errors.Count -ne 0){$errors|Out-String|Write-Error;exit 1}
+[Management.Automation.Language.Parser]::ParseFile('F:\work\sm05-actions\tools\Test.ps1',[ref]$tokens,[ref]$errors)|Out-Null
+if($errors.Count -ne 0){$errors|Out-String|Write-Error;exit 1}

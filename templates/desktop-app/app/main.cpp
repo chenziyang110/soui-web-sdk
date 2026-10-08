@@ -7,6 +7,7 @@
 #include <helper/SAdapterBase.h>
 #include <soui/host/soui_miniblink_host.h>
 #include <soui/json_bridge.h>
+#include "generated/actions.hpp"
 #include <soui/runtime/services/desktop/window_commands.h>
 #include <json.hpp>
 #include <filesystem>
@@ -92,16 +93,9 @@ int run(HINSTANCE instance,bool smoke) {
   if(!bridge.enable_directory_service())return 10;
   if(!bridge.enable_clipboard_service())return 8;
   if(!bridge.enable_window_service())return 9;
-  const auto greet_contract=json{
-    {"protocol","soui.action/1"},{"title","问候"},{"description","由C++生成问候消息。"},
-    {"inputSchema",{{"type","object"},{"properties",{{"name",{{"type","string"},{"minLength",1},{"maxLength",32}}}}},
-                    {"required",json::array({"name"})},{"additionalProperties",false}}},
-    {"outputSchema",{{"type","object"},{"properties",{{"message",{{"type","string"},{"maxLength",200}}}}},
-                     {"required",json::array({"message"})},{"additionalProperties",false}}}
-  }.dump();
-  if(!bridge.register_action("app.greet","app.greet",greet_contract,[](const soui::runtime::bridge_request& request) {
-    const auto value=json::parse(request.params_json);
-    return json{{"message","Hello, "+value["name"].get<std::string>()+". This response came from C++."}}.dump();
+  if(!app_actions::register_Greet(bridge,[](const app_actions::GreetInput& input,
+                                         const soui::runtime::bridge_request&) {
+    return app_actions::GreetOutput{"Hello, "+input.name+". This response came from C++."};
   }))return 11;
   (void)bridge.register_task_handler("app.count", [](const soui::runtime::task_invocation& invocation,
                                                      const soui::runtime::task_control& control) {
