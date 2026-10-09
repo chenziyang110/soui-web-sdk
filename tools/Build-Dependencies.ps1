@@ -1,7 +1,9 @@
 [CmdletBinding()]
 param(
   [ValidateSet('x86','x64')][string]$Architecture='x64',
-  [ValidateSet('All','Miniblink','SOUI')][string]$Component='All'
+  [ValidateSet('All','Miniblink','SOUI')][string]$Component='All',
+  [string]$OutputRoot='',
+  [switch]$EnableExperimentalGpu
 )
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
@@ -9,6 +11,19 @@ $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $toolchain=Get-SouiToolchain
 $node=(Get-Command node.exe -ErrorAction Stop).Source
 $output=Join-Path $root "out/dependencies/$Architecture"
+if($OutputRoot) {
+  $outputProvider=$null
+  $outputDrive=$null
+  $output=$ExecutionContext.SessionState.Path.GetUnresolvedProviderPathFromPSPath($OutputRoot,[ref]$outputProvider,[ref]$outputDrive)
+  if($outputProvider.Name -ne 'FileSystem'){throw 'OutputRoot must be a filesystem directory.'}
+}
+if($Component -in @('All','SOUI')) {
+  $allowedOutput=[IO.Path]::GetFullPath((Join-Path $root 'out')).TrimEnd('\','/')
+  if(-not $output.Equals($allowedOutput,[StringComparison]::OrdinalIgnoreCase) -and
+      -not $output.StartsWith($allowedOutput+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)) {
+    throw 'SOUI source staging requires OutputRoot inside this SDK out directory; use Component Miniblink for other output locations.'
+  }
+}
 New-Item -ItemType Directory -Force -Path $output | Out-Null
 $start=Get-Date
 function Assert-SourceEncoding([string]$LogPath) {
@@ -28,17 +43,22 @@ if($Component -in @('All','Miniblink')) {
     if($LASTEXITCODE -ne 0){throw "Dependency failed: $library; see $output/$library.log"}
     Assert-SourceEncoding $logPath
   }
-  # A fresh GPU output prevents stale objects after source files are removed.
-  $gpu=Join-Path $output ('gpu-'+[Guid]::NewGuid().ToString('N'))
-  $gpuLog=Join-Path $output 'skia-gpu.log'
-  & (Join-Path $PSScriptRoot 'internal/Build-SkiaGpuLibrary.ps1') -VsDevCmd $toolchain.DevCmd -SourceRoot $source -OutputRoot $gpu -Architecture $Architecture *> $gpuLog
-  if($LASTEXITCODE -ne 0){throw "Skia GPU failed; see $gpuLog"}
-  Assert-SourceEncoding $gpuLog
+  # A nonempty sentinel also survives Windows PowerShell 5 native arguments.
+  $gpuLibraries='none'
+  if($EnableExperimentalGpu) {
+    # A fresh GPU output prevents stale objects after source files are removed.
+    $gpu=Join-Path $output ('gpu-'+[Guid]::NewGuid().ToString('N'))
+    $gpuLog=Join-Path $output 'skia-gpu.log'
+    & (Join-Path $PSScriptRoot 'internal/Build-SkiaGpuLibrary.ps1') -VsDevCmd $toolchain.DevCmd -SourceRoot $source -OutputRoot $gpu -Architecture $Architecture *> $gpuLog
+    if($LASTEXITCODE -ne 0){throw "Skia GPU failed; see $gpuLog"}
+    Assert-SourceEncoding $gpuLog
+    $gpuLibraries=Join-Path $gpu 'lib'
+  }
   Write-Output "Building Miniblink kernel / $Architecture"
   $kernel=Join-Path $output 'miniblink'
   New-Item -ItemType Directory -Force -Path $kernel | Out-Null
   $kernelLog=Join-Path $output 'miniblink.log'
-  & (Join-Path $PSScriptRoot 'internal/Build-KernelMainArch.cmd') $toolchain.DevCmd $source $kernel (Join-Path $deps 'lib') (Join-Path $gpu 'lib') $Architecture *> $kernelLog
+  & (Join-Path $PSScriptRoot 'internal/Build-KernelMainArch.cmd') $toolchain.DevCmd $source $kernel (Join-Path $deps 'lib') $gpuLibraries $Architecture *> $kernelLog
   if($LASTEXITCODE -ne 0){throw "Miniblink failed; see $output/miniblink.log"}
   Assert-SourceEncoding $kernelLog
 }
@@ -74,6 +94,6 @@ if($souiBin){
     $artifacts+=@{kind=$name;path=$file;sha256=(Get-FileHash -LiteralPath $file).Hash}
   }
 }
-$report=[ordered]@{schema='soui.dependency-build/v1';architecture=$Architecture;component=$Component;startedAt=$start.ToString('o');finishedAt=(Get-Date).ToString('o');status='built';releaseReady=$false;souiSourceStage=$souiSourceStage;artifacts=$artifacts}
+$report=[ordered]@{schema='soui.dependency-build/v1';architecture=$Architecture;component=$Component;experimentalGpu=$EnableExperimentalGpu.IsPresent;startedAt=$start.ToString('o');finishedAt=(Get-Date).ToString('o');status='built';releaseReady=$false;souiSourceStage=$souiSourceStage;artifacts=$artifacts}
 [IO.File]::WriteAllText((Join-Path $output "build-$Component.json"),($report|ConvertTo-Json -Depth 6),[Text.UTF8Encoding]::new($false))
 Write-Output "Dependency source build completed: $output"

@@ -239,6 +239,9 @@ public:
         WebDragOperationsMask operationsAllowed,
         int modifiers) override;
     void dragTargetDragLeave() override;
+    // Concrete controlled-host helpers; no public WebView/vtable change.
+    bool dragTargetUpdateDataForCursorBroker(const WebDragData&);
+    bool dragTargetCancelForCursorBroker();
     void dragTargetDrop(
         const WebPoint& clientPoint,
         const WebPoint& screenPoint,

@@ -295,6 +295,7 @@ class demo_soui_window final : public SOUI::SHostWnd {
   }
 
   void UpdatePacer() {
+    if (close_requested_) return;
     if (!display_refresh_hz_)
       display_refresh_hz_ = soui::sdk::frame_pacer::query_display_refresh(m_hWnd);
     bridge_.set_display_refresh(display_refresh_hz_);
@@ -358,6 +359,7 @@ class demo_soui_window final : public SOUI::SHostWnd {
 
   void OnTimer(UINT_PTR timer_id) {
     if (timer_id != 1U) return;
+    if (close_requested_) { finish_close_request(); return; }
     UpdatePacer();
     if (!pacer_.target()) PumpHost();
     if (!smoke_test_ || smoke_finished_) return;
@@ -497,11 +499,31 @@ class demo_soui_window final : public SOUI::SHostWnd {
       }
       return;
     }
-    pacer_.stop();
-    (void)host_.close();
-    DestroyWindow();
-    PostQuitMessage(0);
+    request_close(0);
   }
+
+ public:
+  void begin_shutdown(int exit_code) { request_close(exit_code); }
+  int finish_shutdown_before_return(SOUI::SApplication& application, int exit_code) noexcept {
+    try { request_close(exit_code); } catch (...) { std::terminate(); }
+    while (::IsWindow(m_hWnd)) {
+      MSG message{};
+      const auto status = ::GetMessageW(&message, nullptr, 0, 0);
+      if (status < 0) std::terminate();
+      if (status == 0) {
+        if (!close_exit_code_ && message.wParam) close_exit_code_ = static_cast<int>(message.wParam);
+        try { finish_close_request(); } catch (...) { std::terminate(); }
+        continue;
+      }
+      try { application.GetMsgLoop()->OnMsg(&message); }
+      catch (...) { if (!close_exit_code_) close_exit_code_ = 1; }
+      try { finish_close_request(); } catch (...) { std::terminate(); }
+    }
+    try { if (!host_.destroy().ok) std::terminate(); } catch (...) { std::terminate(); }
+    return close_exit_code_;
+  }
+
+ protected:
 
   BEGIN_MSG_MAP_EX(demo_soui_window)
     MSG_WM_DPICHANGED(OnDpiChanged)
@@ -522,14 +544,35 @@ class demo_soui_window final : public SOUI::SHostWnd {
  private:
   void finish_smoke_test(int exit_code) {
     smoke_finished_ = true;
-    KillTimer(1);
-    pacer_.stop();
-    append_smoke_log(smoke_log_, "host-close-start");
-    (void)host_.close();
+    request_close(exit_code);
+  }
+  void request_close(int exit_code) {
+    if (!close_exit_code_ && exit_code) close_exit_code_ = exit_code;
+    if (!close_requested_) {
+      close_requested_ = true;
+      pacer_.stop();
+      if (::IsWindow(m_hWnd) && !SetTimer(1, 50)) std::terminate();
+      append_smoke_log(smoke_log_, "host-close-start");
+    }
+    finish_close_request();
+  }
+  void finish_close_request() {
+    const auto closed = host_.destroy();
+    if (!closed.ok) {
+      if (close_error_ != closed.code) {
+        close_error_ = closed.code;
+        append_smoke_log(smoke_log_, closed.code.c_str());
+      }
+      return;
+    }
+    if (!::IsWindow(m_hWnd)) return;
+    if (!DestroyWindow()) {
+      append_smoke_log(smoke_log_, "E_WINDOW_CLOSE_FAILED");
+      return;
+    }
     append_smoke_log(smoke_log_, "host-close-complete");
-    DestroyWindow();
     append_smoke_log(smoke_log_, "window-destroyed");
-    PostQuitMessage(exit_code);
+    PostQuitMessage(close_exit_code_);
   }
 
   soui::sdk::soui_miniblink_host& host_;
@@ -539,6 +582,9 @@ class demo_soui_window final : public SOUI::SHostWnd {
   unsigned failed_target_{0};
   bool smoke_test_{false};
   bool auto_high_refresh_{false};
+  bool close_requested_{false};
+  int close_exit_code_{0};
+  std::string close_error_;
 #ifdef SOUI_BRIDGE_BENCHMARK
   bool background_pacing_experiment_{false};
   bool gallery_benchmark_{false}, gallery_all_{false}, gallery_started_{false};
@@ -880,6 +926,7 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_
   const bool auto_high_refresh = cpu_high_refresh || (!software_renderer && (gpu_renderer || gpu_readback || auto_renderer));
   demo_soui_window window(host, bridge, webview_smoke_test, smoke_log, background_pacing_experiment,
                           prefer_high_resolution, auto_high_refresh);
+  try {
 #ifdef SOUI_BRIDGE_BENCHMARK
   const auto gallery_benchmark=option_value(args,L"--gallery-benchmark");
   if(gallery_benchmark==L"first" || gallery_benchmark==L"all") window.set_gallery_benchmark(gallery_benchmark==L"all");
@@ -922,8 +969,9 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_
     append_smoke_log(smoke_log, started.code.c_str());
     if (!webview_smoke_test)
       MessageBoxA(handle, started.message.c_str(), started.code.c_str(), MB_ICONERROR);
-    DestroyWindow(handle);
-    return 1;
+    window.begin_shutdown(1);
+    const auto loop_result = ::IsWindow(handle) ? application.GetMsgLoop()->Run() : 1;
+    return window.finish_shutdown_before_return(application, loop_result);
   }
   append_smoke_log(smoke_log, "host-started");
   ::SetWindowTextW(handle, L"SOUI + Miniblink AI DevKit");
@@ -950,9 +998,15 @@ int run_gui(HINSTANCE instance, const std::vector<std::wstring>& args, resident_
 #ifndef SOUI_PUMP_INTERVAL_MS
 #define SOUI_PUMP_INTERVAL_MS 16
 #endif
-  window.SetTimer(1, SOUI_PUMP_INTERVAL_MS);
+  if (!window.SetTimer(1, SOUI_PUMP_INTERVAL_MS))
+    throw std::runtime_error("Cannot start the Host timer");
   OutputDebugStringW(L"SOUI Miniblink AI DevKit: ready, local WebView mounted.\n");
-  return application.Run(handle);
+  const auto loop_result = application.GetMsgLoop()->Run();
+  return window.finish_shutdown_before_return(application, loop_result);
+  } catch (...) {
+    try { append_smoke_log(smoke_log, "E_APPLICATION_EXCEPTION"); } catch (...) { }
+    return window.finish_shutdown_before_return(application, 1);
+  }
 }
 
 }  // namespace

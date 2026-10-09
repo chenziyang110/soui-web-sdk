@@ -27,6 +27,7 @@
 
 #include "config.h"
 #include "content/web_impl_win/npapi/PluginPackage.h"
+#include "wke/CursorDescriptorBroker.h"
 
 #include "content/web_impl_win/npapi/PluginDatabase.h"
 #include "content/web_impl_win/npapi/WebPluginImpl.h"
@@ -179,6 +180,8 @@ PassRefPtr<PluginPackage> PluginPackage::createVirtualPackage(
     NPP_ShutdownProcPtr NPP_Shutdown
     )
 {
+    if (!wke::brokerPluginEntry())
+        return nullptr;
     static int count = 0;
     String description = String::format("application/virtual-plugin-%d", count++);
     String mimeDescription = description;

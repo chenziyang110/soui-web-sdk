@@ -9,6 +9,9 @@
 #include "base/strings/string_util.h"
 #include "base/json/json_reader.h"
 #include "base/values.h"
+#include <cstring>
+#include <memory>
+#include <utility>
 
 // #if USING_VC6RT == 1
 // #define PURE = 0
@@ -190,6 +193,194 @@ base::DictionaryValue* ClipboardUtil::getCustomPlainTexts(IDataObject* dataObjec
     ReleaseStgMedium(&store);
     return dictVal;
 }
+
+
+namespace {
+const size_t kBoundedClipboardBytes = 1024 * 1024;
+const size_t kBoundedClipboardItems = 256;
+
+class BoundedMediumOwner {
+public:
+    STGMEDIUM medium = {};
+    bool accepted = false;
+    ~BoundedMediumOwner() { if (accepted) ::ReleaseStgMedium(&medium); }
+    BoundedMediumOwner() = default;
+    BoundedMediumOwner(const BoundedMediumOwner&) = delete;
+    BoundedMediumOwner& operator=(const BoundedMediumOwner&) = delete;
+};
+
+class BoundedGlobalLock {
+public:
+    explicit BoundedGlobalLock(HGLOBAL handle)
+        : m_handle(handle), m_bytes(::GlobalLock(handle)) { }
+    ~BoundedGlobalLock() { if (m_bytes) ::GlobalUnlock(m_handle); }
+    const void* bytes() const { return m_bytes; }
+    BoundedGlobalLock(const BoundedGlobalLock&) = delete;
+    BoundedGlobalLock& operator=(const BoundedGlobalLock&) = delete;
+private:
+    HGLOBAL m_handle;
+    const void* m_bytes;
+};
+
+bool boundedWideToUtf8(const WCHAR* text, size_t length, size_t limit, std::string& result)
+{
+    if (!length) { result.clear(); return true; }
+    // Input length is below the 1MiB medium cap, hence representable as int.
+    const int required = ::WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS,
+        text, static_cast<int>(length), nullptr, 0, nullptr, nullptr);
+    if (required <= 0 || static_cast<size_t>(required) > limit) return false;
+    result.resize(required);
+    return ::WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, text,
+        static_cast<int>(length), &result[0], required, nullptr, nullptr) == required;
+}
+
+bool boundedAnsiCodePage(IDataObject* dataObject, size_t limit, UINT& codePage)
+{
+    FORMATETC format = { CF_LOCALE, nullptr, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
+    BoundedMediumOwner owner;
+    const HRESULT status = dataObject->GetData(&format, &owner.medium);
+    if (FAILED(status)) {
+        if (status != DV_E_FORMATETC) return false;
+        codePage = CP_ACP;
+        return true;
+    }
+    owner.accepted = true;
+    if (status != S_OK || owner.medium.tymed != TYMED_HGLOBAL || !owner.medium.hGlobal)
+        return false;
+    const SIZE_T bytes = ::GlobalSize(owner.medium.hGlobal);
+    if (bytes < sizeof(LCID) || bytes > kBoundedClipboardBytes || bytes > limit) return false;
+    BoundedGlobalLock locked(owner.medium.hGlobal);
+    if (!locked.bytes()) return false;
+    LCID locale = 0;
+    std::memcpy(&locale, locked.bytes(), sizeof(locale));
+    DWORD suppliedCodePage = 0;
+    const int codePageCharacters = sizeof(suppliedCodePage) / sizeof(WCHAR);
+    if (::GetLocaleInfoW(locale, LOCALE_IDEFAULTANSICODEPAGE | LOCALE_RETURN_NUMBER,
+        reinterpret_cast<LPWSTR>(&suppliedCodePage), codePageCharacters) != codePageCharacters
+        || !suppliedCodePage || !::IsValidCodePage(suppliedCodePage)) return false;
+    codePage = suppliedCodePage;
+    return true;
+}
+
+ClipboardUtil::BoundedReadResult boundedMediumText(IDataObject* dataObject,
+    FORMATETC format, bool wide, size_t limit, std::string& result)
+{
+    BoundedMediumOwner owner;
+    const HRESULT status = dataObject->GetData(&format, &owner.medium);
+    if (FAILED(status))
+        return status == DV_E_FORMATETC ? ClipboardUtil::BoundedReadAbsent : ClipboardUtil::BoundedReadFailure;
+    owner.accepted = true; // First operation after success; every exit releases.
+    if (status != S_OK || owner.medium.tymed != TYMED_HGLOBAL || !owner.medium.hGlobal)
+        return ClipboardUtil::BoundedReadFailure;
+    const SIZE_T bytes = ::GlobalSize(owner.medium.hGlobal);
+    if (!bytes || bytes > kBoundedClipboardBytes || bytes > limit
+        || (wide && (bytes < sizeof(WCHAR) || bytes % sizeof(WCHAR))))
+        return ClipboardUtil::BoundedReadFailure;
+    UINT codePage = CP_ACP;
+    if (!wide && !boundedAnsiCodePage(dataObject, limit, codePage)) return ClipboardUtil::BoundedReadFailure;
+    BoundedGlobalLock locked(owner.medium.hGlobal); // Unlock precedes medium release.
+    if (!locked.bytes()) return ClipboardUtil::BoundedReadFailure;
+    if (wide) {
+        const WCHAR* text = static_cast<const WCHAR*>(locked.bytes());
+        const size_t available = bytes / sizeof(WCHAR);
+        size_t length = 0;
+        while (length < available && text[length]) ++length;
+        if (length == available) return ClipboardUtil::BoundedReadFailure;
+        if (!boundedWideToUtf8(text, length, limit, result)) return ClipboardUtil::BoundedReadFailure;
+    } else {
+        const char* text = static_cast<const char*>(locked.bytes());
+        const char* end = static_cast<const char*>(std::memchr(text, 0, bytes));
+        if (!end) return ClipboardUtil::BoundedReadFailure;
+        const size_t length = static_cast<size_t>(end - text);
+        if (!length) { result.clear(); return ClipboardUtil::BoundedReadSuccess; }
+        const int required = ::MultiByteToWideChar(codePage, MB_ERR_INVALID_CHARS,
+            text, static_cast<int>(length), nullptr, 0);
+        if (required <= 0 || static_cast<size_t>(required) > limit / sizeof(WCHAR))
+            return ClipboardUtil::BoundedReadFailure;
+        std::wstring converted(required, 0);
+        if (::MultiByteToWideChar(codePage, MB_ERR_INVALID_CHARS, text,
+            static_cast<int>(length), &converted[0], required) != required
+            || !boundedWideToUtf8(converted.data(), converted.size(), limit, result))
+            return ClipboardUtil::BoundedReadFailure;
+    }
+    return ClipboardUtil::BoundedReadSuccess;
+}
+
+bool chargeBoundedString(const std::string& text, size_t& remaining)
+{
+    if (text.size() > remaining) return false;
+    int wideLength = 0;
+    if (!text.empty()) {
+        wideLength = ::MultiByteToWideChar(CP_UTF8, MB_ERR_INVALID_CHARS,
+            text.data(), static_cast<int>(text.size()), nullptr, 0);
+        if (wideLength <= 0) return false;
+    }
+    // Both representations and terminators are bounded; arithmetic cannot
+    // overflow because each input string is at most kBoundedClipboardBytes.
+    const size_t charge = text.size() + 1 + (static_cast<size_t>(wideLength) + 1) * sizeof(WCHAR);
+    if (charge > remaining) return false;
+    remaining -= charge;
+    return true;
+}
+
+bool chargeBoundedItem(const ClipboardUtil::BoundedTextItem& item, size_t& remaining)
+{
+    return chargeBoundedString(item.type, remaining) && chargeBoundedString(item.data, remaining);
+}
+} // namespace
+
+ClipboardUtil::BoundedReadResult ClipboardUtil::getPlainTextBounded(IDataObject* dataObject,
+    size_t& remainingPayloadBytes, BoundedTextItem& output) try
+{
+    if (!dataObject || remainingPayloadBytes > kBoundedClipboardBytes
+        || !output.type.empty() || !output.data.empty()) return BoundedReadFailure;
+    BoundedTextItem candidate;
+    FORMATETC format = { CF_UNICODETEXT, nullptr, DVASPECT_CONTENT, -1, TYMED_HGLOBAL };
+    BoundedReadResult status = boundedMediumText(dataObject, format, true, remainingPayloadBytes, candidate.data);
+    if (status == BoundedReadAbsent) {
+        format.cfFormat = CF_TEXT; // Correct narrow format without changing legacy getters.
+        status = boundedMediumText(dataObject, format, false, remainingPayloadBytes, candidate.data);
+    }
+    if (status != BoundedReadSuccess) return status;
+    candidate.type = kMimeTypeText;
+    size_t remaining = remainingPayloadBytes;
+    if (!chargeBoundedItem(candidate, remaining)) return BoundedReadFailure;
+    output.type.swap(candidate.type);
+    output.data.swap(candidate.data);
+    remainingPayloadBytes = remaining;
+    return BoundedReadSuccess;
+}
+catch (...) { return BoundedReadFailure; }
+
+ClipboardUtil::BoundedReadResult ClipboardUtil::getCustomPlainTextsBounded(IDataObject* dataObject,
+    size_t& remainingPayloadBytes, std::vector<BoundedTextItem>& output, size_t maxItems) try
+{
+    if (!dataObject || remainingPayloadBytes > kBoundedClipboardBytes || !output.empty()
+        || maxItems > kBoundedClipboardItems) return BoundedReadFailure;
+    std::string json;
+    const BoundedReadResult status = boundedMediumText(dataObject, *getCustomTextsType(), true,
+        remainingPayloadBytes, json);
+    if (status != BoundedReadSuccess) return status;
+    base::JSONReader reader(base::JSON_PARSE_RFC);
+    std::unique_ptr<base::Value> parsed = reader.ReadToValue(json);
+    base::DictionaryValue* dictionary = nullptr;
+    if (!parsed || !parsed->GetAsDictionary(&dictionary) || !dictionary) return BoundedReadFailure;
+    size_t remaining = remainingPayloadBytes;
+    std::vector<BoundedTextItem> candidate;
+    for (base::DictionaryValue::Iterator it(*dictionary); !it.IsAtEnd(); it.Advance()) {
+        if (candidate.size() >= maxItems || !it.value().IsType(base::Value::TYPE_STRING))
+            return BoundedReadFailure;
+        BoundedTextItem item;
+        item.type = it.key();
+        if (!it.value().GetAsString(&item.data) || !chargeBoundedItem(item, remaining))
+            return BoundedReadFailure;
+        candidate.push_back(std::move(item));
+    }
+    output.swap(candidate);
+    remainingPayloadBytes = remaining;
+    return BoundedReadSuccess;
+}
+catch (...) { return BoundedReadFailure; }
 
 HGLOBAL ClipboardUtil::createGlobalData(const std::string& url, const std::string& title)
 {

@@ -5,8 +5,10 @@
 #include "third_party/WebKit/public/web/WebDragOperation.h"
 #include "third_party/WebKit/public/platform/WebDragData.h"
 #include "base/COMPtr.h"
+#include "wke/wkedefine.h"
 #include <shlobj.h>
 #include <functional>
+#include <memory>
 
 namespace blink {
 class WebViewImpl;
@@ -26,9 +28,9 @@ public:
         std::function<void(void)>&& notifOnLeaveDrag,
         std::function<void(void)>&& notifOnDragging
         );
-    ~DragHandle() {}
+    ~DragHandle();
 
-    void setViewWindow(HWND viewWindow, blink::WebViewImpl* webViewImpl);
+    void setViewWindow(HWND viewWindow, blink::WebViewImpl* webViewImpl, wkeWebView view = nullptr);
 
     static DWORD draggingSourceOperationMaskToDragCursors(blink::WebDragOperationsMask op);
 
@@ -51,7 +53,8 @@ public:
         const wkeWebDragData* data,
         const blink::WebDragOperationsMask mask,
         const blink::WebImage* image,
-        const blink::WebPoint* dragImageOffset);
+        const blink::WebPoint* dragImageOffset,
+        std::function<bool()> cancelled = std::function<bool()>());
     
     // IDropTarget
     virtual HRESULT __stdcall DragEnter(IDataObject* pDataObject, DWORD grfKeyState, POINTL pt, DWORD* pdwEffect) override;
@@ -68,6 +71,22 @@ public:
     IDataObject* getDragData() const { return m_dragData.get(); }
 
 private:
+    struct BrokerState;
+    class BrokerCallbackGuard;
+    class BrokerTargetCandidateGuard;
+    class BrokerSourceGuard;
+    class BrokerPendingGuard;
+    std::shared_ptr<BrokerState> m_brokerState;
+    void requestBrokerClose();
+    void clearBrokerUiResources();
+    void cancelBrokerTargetSession(unsigned long long expectedSession);
+    unsigned long long m_nextBrokerTargetSession { 0 }; // UI owner only; never wraps.
+    unsigned long long m_brokerTargetCandidate { 0 }; // UI owner only; not yet admitted.
+    unsigned long long m_brokerTargetSession { 0 }; // UI owner admission identity.
+    std::function<bool()> m_brokerTargetCancelled; // Retains the DragEnter epoch.
+    bool m_nativeSourceActive { false }; // UI owner only.
+    unsigned int m_nativeCallbackDepth { 0 }; // UI owner only.
+    bool m_clearBrokerResourcesPending { false }; // UI owner only.
     
     void simulateDrag();
 

@@ -95,6 +95,8 @@ struct _tagWkeString;
 typedef struct _tagWkeString* wkeString;
 #endif
 
+#include "wke_cursor_broker.h"
+
 // Versioned cross-thread interaction ABI. Only functions exposed through this
 // table are safe to call away from the WKE owner thread.
 typedef void* wkeInteractionEndpoint;
@@ -1471,6 +1473,7 @@ public:
 WKE_EXTERN_C __declspec(dllexport) void WKE_CALL_TYPE wkeInit();
 WKE_EXTERN_C __declspec(dllexport) void WKE_CALL_TYPE wkeInitialize();
 WKE_EXTERN_C __declspec(dllexport) void WKE_CALL_TYPE wkeInitializeEx(const wkeSettings* settings);
+WKE_EXTERN_C __declspec(dllexport) const wkeCursorBrokerApi* WKE_CALL_TYPE wkeGetCursorBrokerApi(unsigned int requestedVersion);
 
 WKE_FOR_EACH_DEFINE_FUNCTION(WKE_DECLARE_ITERATOR0, WKE_DECLARE_ITERATOR1, WKE_DECLARE_ITERATOR2, \
     WKE_DECLARE_ITERATOR3, WKE_DECLARE_ITERATOR4, WKE_DECLARE_ITERATOR5, WKE_DECLARE_ITERATOR6, WKE_DECLARE_ITERATOR11)
@@ -1481,6 +1484,7 @@ WKE_FOR_EACH_DEFINE_FUNCTION(WKE_DEFINE_ITERATOR0, WKE_DEFINE_ITERATOR1, WKE_DEF
     WKE_DEFINE_ITERATOR3, WKE_DEFINE_ITERATOR4, WKE_DEFINE_ITERATOR5, WKE_DEFINE_ITERATOR6, WKE_DEFINE_ITERATOR11)
 
 typedef void (WKE_CALL_TYPE *FN_wkeInitializeEx)(const wkeSettings* settings);
+__declspec(selectany) FN_wkeGetCursorBrokerApi wkeGetCursorBrokerApi = 0;
 
 __declspec(selectany) const wchar_t* s_wkeDllPath = L"node.dll";
 __declspec(selectany) HMODULE s_wkeMainDllHandle = NULL;
@@ -1503,6 +1507,8 @@ inline int wkeInitializeEx(const wkeSettings* settings)
     if (hMod) {
         FN_wkeInitializeEx wkeInitializeExFunc = (FN_wkeInitializeEx)GetProcAddress(hMod, "wkeInitializeEx");
         wkeInitializeExFunc(settings);
+        // Optional versioned capability: old runtimes legitimately lack it.
+        wkeGetCursorBrokerApi = (FN_wkeGetCursorBrokerApi)GetProcAddress(hMod, "wkeGetCursorBrokerApi");
 
         WKE_FOR_EACH_DEFINE_FUNCTION(WKE_GET_PTR_ITERATOR0, WKE_GET_PTR_ITERATOR1, WKE_GET_PTR_ITERATOR2, WKE_GET_PTR_ITERATOR3, \
             WKE_GET_PTR_ITERATOR4, WKE_GET_PTR_ITERATOR5, WKE_GET_PTR_ITERATOR6, WKE_GET_PTR_ITERATOR11);

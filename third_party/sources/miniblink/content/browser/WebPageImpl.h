@@ -3,6 +3,7 @@
 
 #include "content/browser/WebPageState.h"
 #include "content/ui/PopupMenuWinClient.h"
+#include "content/ui/WinCursorResources.h"
 
 #include "base/rand_util.h"
 
@@ -283,7 +284,7 @@ public:
     PlatformEventHandler* m_platformEventHandler;
 
     blink::WebCursorInfo m_cursor;
-    HICON m_platformCursor;
+    OwnedCustomCursor<WinCursorApi> m_platformCursor;
 
     int m_enterCount;
     bool checkForRepeatEnter();

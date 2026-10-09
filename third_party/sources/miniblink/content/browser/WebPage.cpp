@@ -18,6 +18,7 @@
 #include "content/browser/WebPageImpl.h"
 #include "content/devtools/DevToolsClient.h"
 #include "content/devtools/DevToolsAgent.h"
+#include <memory>
 
 extern WCHAR szTitle[];
 extern WCHAR szWindowClass[];
@@ -50,19 +51,23 @@ void WebPage::shutdown()
 
 WebPage::WebPage(void* foreignPtr)
 {
-    if (!m_webPageSet)
-        m_webPageSet = new WTF::HashSet<WebPage*>();
-    m_webPageSet->add(this);
-
     m_pageImpl = nullptr;
     m_pageNetExtraData = adoptRef(new net::PageNetExtraData());
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
     m_wkeWebView = nullptr;
     m_wkeClientHandler = nullptr;
-    m_wkeHandler = new wke::CWebViewHandler();
+    std::unique_ptr<wke::CWebViewHandler> handler(new wke::CWebViewHandler());
+    m_wkeHandler = handler.get();
     memset(m_wkeHandler, 0, sizeof(wke::CWebViewHandler));
 #endif
     m_isContextMenuEnable = true;
+
+    if (!m_webPageSet)
+        m_webPageSet = new WTF::HashSet<WebPage*>();
+    m_webPageSet->add(this);
+#if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
+    handler.release();
+#endif
 }
 
 WebPage::~WebPage()

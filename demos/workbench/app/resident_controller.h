@@ -1,5 +1,7 @@
 #pragma once
 
+#include <exception>
+
 // Private Workbench implementation, included after demo_soui_window in main.cpp.
 // All state belongs to the application's existing UI thread.
 struct resident_run_context {
@@ -65,7 +67,9 @@ class resident_controller final {
     HWND hwnd{nullptr};
     ~window_slot() {
       if (window) window->stop_for_resident_close();
-      if (host) (void)host->destroy();
+      // run() must retain this whole bundle until the actual Host drain has
+      // finished. Destruction is not a substitute for that recoverable pump.
+      if (host && !host->destroy().ok) std::terminate();
       if (window && hwnd && ::IsWindow(hwnd)) window->DestroyWindow();
       // A live HWND still refers to this SOUI object and its Host/adapter.
       // On an unrecoverable DestroyWindow failure keep that bundle alive until
@@ -96,7 +100,10 @@ class resident_controller final {
  public:
   resident_controller(SOUI::SApplication& app, resident_settings settings, resident_run_context& context)
       : application_(app), settings_(std::move(settings)), context_(context) {}
-  ~resident_controller() { shutdown(); }
+  ~resident_controller() {
+    shutdown();
+    if (!shutdown_complete_) cleanup_fail_stop("Controller destruction preceded actual Host cleanup");
+  }
 
   int run() {
     try {
@@ -161,6 +168,7 @@ class resident_controller final {
       exiting_ = true;
       shutdown();
     }
+    finish_shutdown_before_return();
     if (context_.log_failed) fail(1);
     emit("resident.finished", {{"exitCode", exit_code_}, {"orderedShutdown", shutdown_complete_},
         {"smokeCompleted", smoke_phase_ == 6}});
@@ -171,6 +179,54 @@ class resident_controller final {
   unsigned live_count() const {
     return static_cast<unsigned>(std::count_if(slots_.begin(), slots_.end(),
         [](const auto& item) { return item && item->hwnd && IsWindow(item->hwnd); }));
+  }
+  unsigned owned_slot_count() const noexcept {
+    return static_cast<unsigned>(std::count_if(slots_.begin(), slots_.end(),
+        [](const auto& item) { return item != nullptr; }));
+  }
+  [[noreturn]] void cleanup_fail_stop(const char* reason) noexcept {
+    fail(1);
+    try { emit("exit.cleanup-fail-stop", {{"reason", reason}, {"ownedSlots", owned_slot_count()}}); }
+    catch (...) { context_.log_failed = true; }
+    std::terminate();
+  }
+  void finish_shutdown_before_return() noexcept {
+    // A startup exception or an external WM_QUIT can end the normal SOUI
+    // loop while an endpoint still owns callbacks. Keep every member alive
+    // and continue the same thread's SOUI filtering/native message dispatch.
+    loop_started_ = false;
+    exiting_ = true;
+    shutdown_posted_ = false;
+    shutdown();
+    loop_started_ = !shutdown_complete_;
+    while (!shutdown_complete_) {
+      MSG message{};
+      const auto received = GetMessageW(&message, nullptr, 0, 0);
+      if (received == -1) cleanup_fail_stop("The cleanup message pump failed");
+      if (received == 0) {
+        fail(1);
+        emit("exit.cleanup-quit-deferred");
+        // WM_QUIT is an exit request, never a successful drain receipt.
+        loop_started_ = false;
+        shutdown();
+        loop_started_ = !shutdown_complete_;
+        continue;
+      }
+      try { application_.GetMsgLoop()->OnMsg(&message); }
+      catch (const std::exception& error) {
+        fail(1);
+        try { emit("exit.cleanup-dispatch-error", {{"message", error.what()}}); }
+        catch (...) { context_.log_failed = true; }
+      } catch (...) {
+        fail(1);
+        emit("exit.cleanup-dispatch-error");
+      }
+      // The dispatched member/native stack has returned before any slot can
+      // be released. Retry even if an application message filter consumed the
+      // posted shutdown message; only actual close results permit completion.
+      shutdown();
+    }
+    loop_started_ = false;
   }
   bool business_dispatch_active() const {
     return std::any_of(slots_.begin(), slots_.end(), [](const auto& slot) {
@@ -271,6 +327,12 @@ class resident_controller final {
     slot.window->stop_for_resident_close();
     const auto closed = slot.host->destroy();
     host_result("host.destroyed", index, closed);
+    if (!closed.ok) {
+      deferred_closes_[index] = generation;
+      emit("window.close-pending", {{"slot", index + 1}, {"generation", generation}, {"code", closed.code}});
+      if (closed.code != "E_CURSOR_CLOSE_PENDING" && closed.code != "E_BUSY") fail(1);
+      return;
+    }
     const bool destroyed = !slot.hwnd || !IsWindow(slot.hwnd) || slot.window->DestroyWindow() != FALSE;
     emit("window.destroyed", {{"slot", index + 1}, {"generation", generation}, {"ok", destroyed}});
     if (!destroyed) {
@@ -444,13 +506,14 @@ class resident_controller final {
     } catch (const std::exception& error) {
       fail(1); emit("exit.cleanup-error", {{"message", error.what()}});
     } catch (...) { fail(1); emit("exit.cleanup-error", {{"message", "Unknown cleanup exception"}}); }
-    for (unsigned index = 0; index < slots_.size(); ++index) {
-      if (slots_[index]) {
-        fail(1);
-        emit("window.fallback-cleanup", {{"slot", index + 1}, {"generation", slots_[index]->generation},
-            {"complete", false}, {"message", "Native lifetime may require process exit; this is not a clean shutdown"}});
-        slots_[index].reset();
-      }
+    if (owned_slot_count() != 0) {
+      // Preserve each actual HWND and its Host until native borrowers and
+      // callbacks leave. This controller remains available for bounded retries.
+      in_shutdown_ = false;
+      if (!controller_ || !IsWindow(controller_) || !SetTimer(controller_, timer_id, 50, nullptr))
+        cleanup_fail_stop("Pending Host cleanup has no live controller retry timer");
+      emit("exit.cleanup-pending", {{"liveWindows", live_count()}, {"ownedSlots", owned_slot_count()}});
+      return;
     }
     shortcut_.reset(); menu_.reset(); tray_.reset();
     emit("services.destroyed");

@@ -59,12 +59,17 @@
 #include "cc/base/BdColor.h"
 #include "ui/gfx/win/dpi.h"
 #include <vector>
+#include <atomic>
+#include <memory>
+#include <limits>
+#include <stdexcept>
 
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
 #include "wke/wkeWebView.h"
 #include "wke/wkeUtil.h"
 #include "wke/wkeWebWindow.h"
 #include "wke/wkeGlobalVar.h"
+#include "wke/CursorDescriptorBroker.h"
 #endif
 #include "skia/ext/bitmap_platform_device_win.h"
 #include <cmath>
@@ -255,7 +260,7 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
     m_disablePaint = false;
     m_firstDrawCount = 0;
     m_webFrameClient = new content::WebFrameClientImpl();
-    m_platformCursor = nullptr;
+
     m_devToolsClient = nullptr;
     m_devToolsAgent = nullptr;
     m_isEnterDebugLoop = false;
@@ -296,6 +301,7 @@ WebPageImpl::WebPageImpl(COLORREF bdColor)
 WebPageImpl::~WebPageImpl()
 {
     ASSERT(pageDestroyed == m_state);
+    m_platformCursor.dispose();
     m_state = pageDestroyed;
 
     if (m_createDevToolsAgentTaskObserver) {
@@ -532,6 +538,10 @@ private:
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
 static WebView* createWkeViewDefault(HWND parent, const WebString& name, const WTF::CString& url)
 {
+    // A default browser popup is a raw view, unlike independent standard
+    // select/menu helpers. Controlled creation must come from a host endpoint.
+    if (wke::brokerActive())
+        return nullptr;
     wke::CWebWindow* window = new wke::CWebWindow(cc::s_kBgColor);
     WTF::String nameString = name;
     Vector<UChar> nameBuf = WTF::ensureUTF16UChar(nameString, true);
@@ -641,12 +651,21 @@ void WebPageImpl::freeV8TempObejctOnOneFrameBefore()
 void WebPageImpl::close()
 {
     ASSERT(isMainThread());
+    if (wke::brokerOwnsView(m_pagePtr->wkeWebView())) {
+        wke::brokerBeginClose(m_pagePtr->wkeWebView());
+        if (!wke::brokerDrained(m_pagePtr->wkeWebView()))
+            return;
+    }
+    if (pageDestroying == m_state && m_enterCount <= 1) {
+        doClose();
+        return;
+    }
     if (pageInited != m_state)
         return;
 
     m_state = pageDestroying;
 
-    if (m_enterCount == 0) { // 鎶奷ragState().m_dragSrc涔嬬被鐨勫崰鐢ㄦ姷娑?
+    if (m_enterCount == 0 && !wke::brokerOwnsView(m_pagePtr->wkeWebView())) { // 鎶奷ragState().m_dragSrc涔嬬被鐨勫崰鐢ㄦ姷娑?
         WTF::TemporaryChange<int> temporaryChange(m_enterCount, 0);
         LPARAM lParam = MAKELONG(-10000, -10000);
         fireMouseEvent(m_hWnd, WM_LBUTTONUP, 0, lParam, nullptr);
@@ -682,6 +701,10 @@ void WebPageImpl::close()
 
 void WebPageImpl::doClose()
 {
+    // Reentry destructors also reach here: actual owned task drain is mandatory.
+    if (!wke::brokerDrained(m_pagePtr->wkeWebView()))
+        return;
+    m_platformCursor.dispose();
     m_layerTreeHost->requestApplyActionsToRunIntoCompositeThread(false);
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
     if (!m_pagePtr->wkeHandler().isWke) {
@@ -696,7 +719,7 @@ void WebPageImpl::doClose()
 #endif
 
 
-    if (m_hWnd) {
+    if (m_hWnd && !wke::brokerOwnsView(m_pagePtr->wkeWebView())) {
         if (::IsWindow(m_hWnd)) { // 澶氱嚎绋嬫覆鏌撴椂锛寀i绾跨▼鍏堥攢姣佺獥鍙ｏ紝鍐嶈蛋鍒版澶?
             ::RevokeDragDrop(m_hWnd);
             ASSERT(0 == m_dragHandle->getRefCount());
@@ -1383,6 +1406,11 @@ WebLayerTreeView* WebPageImpl::layerTreeView()
 
 void WebPageImpl::didChangeCursor(const WebCursorInfo& cursor)
 {
+    // Publish before legacy type deduplication; custom A -> custom B is valid.
+    if (wke::brokerPublishCursor(m_pagePtr->wkeWebView(), cursor)) {
+        m_cursor = cursor;
+        return;
+    }
     if (m_cursor.type == cursor.type)
         return;
 
@@ -1400,10 +1428,15 @@ int WebPageImpl::getCursorInfoType() const
 void WebPageImpl::setCursorInfoType(int type)
 {
     m_cursor.type = (blink::WebCursorInfo::Type)type;
+    wke::brokerPublishCursor(m_pagePtr->wkeWebView(), m_cursor);
 }
 
 void WebPageImpl::fireCursorEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam, BOOL* handle)
 {
+    if (wke::brokerOwnsView(m_pagePtr->wkeWebView())) {
+        if (handle) *handle = FALSE;
+        return; // Descriptor mode never selects a native cursor on the engine.
+    }
     CHECK_FOR_REENTER(this, (void)0);
     freeV8TempObejctOnOneFrameBefore();
 
@@ -1474,11 +1507,9 @@ void WebPageImpl::fireCursorEvent(HWND hWnd, UINT message, WPARAM wParam, LPARAM
         hCur = ::LoadCursor(NULL, IDC_NO);
         break;
     case WebCursorInfo::TypeCustom:
-        if (m_platformCursor)
-            ::DestroyIcon(m_platformCursor);
-        m_platformCursor = createSharedCursorImpl(m_cursor);
-        hCur = m_platformCursor;
-        break;
+        if (m_platformCursor.update(hWnd, [this] { return createOwnedCursorImpl(m_cursor); }) && handle)
+            *handle = TRUE;
+        return;
     default:
         break;
     }
@@ -1616,6 +1647,10 @@ LRESULT WebPageImpl::fireMouseEvent(HWND hWnd, UINT message, WPARAM wParam, LPAR
 
 void WebPageImpl::handleMouseWhenDraging(UINT message)
 {
+    // Controlled OLE callbacks own UI COM data; legacy engine simulation must
+    // never evaluate getDragData() or select its synthetic drag cursors.
+    if (wke::brokerOwnsView(m_pagePtr->wkeWebView()))
+        return;
     POINT screenPoint = { 0 };
     ::GetCursorPos(&screenPoint);
 
@@ -1701,7 +1736,7 @@ static void destroyWkeDragData(wkeWebDragData* data)
             freeUtf8String(it->stringData);
         }
     }
-    delete items;
+    delete[] items;
     delete data;
 }
 
@@ -1712,27 +1747,34 @@ static wkeMemBuf* createUtf8String(const char* str, size_t len)
     return wkeCreateMemBuf(nullptr, (void*)str, len);
 }
 
-static wkeWebDragData* webDropDataToWkeDragData(const blink::WebDragData& data)
+static wkeWebDragData* webDropDataToWkeDragData(const blink::WebDragData& data, bool bounded)
 {
-    wkeWebDragData* result = new wkeWebDragData();
+    blink::WebVector<blink::WebDragData::Item> items = data.items();
+    const size_t size = items.size();
+    if (bounded && size > 256)
+        return nullptr;
+    if (size > static_cast<size_t>((std::numeric_limits<int>::max)()))
+        throw std::length_error("drag item count exceeds int");
 
+    std::unique_ptr<wkeWebDragData, decltype(&destroyWkeDragData)> result(new wkeWebDragData(), &destroyWkeDragData);
     result->m_filesystemId = nullptr;
+    result->m_modifierKeyState = 0;
+    result->m_itemList = nullptr;
     result->m_itemListLength = 0;
-    
-    size_t size = data.items().size();
+
     result->m_itemList = new wkeWebDragData::Item[size];
-    result->m_itemListLength = size;
-    for (size_t i = 0; i < size; i++) {
-        blink::WebVector<blink::WebDragData::Item> items = data.items();
-        blink::WebDragData::Item& item = items[i];
+    for (size_t i = 0; i < size; ++i)
         initWkeWebDragDataItem(&result->m_itemList[i]);
+    result->m_itemListLength = static_cast<int>(size);
+    for (size_t i = 0; i < size; i++) {
+        blink::WebDragData::Item& item = items[i];
 
         if (blink::WebDragData::Item::StorageTypeFilename == item.storageType) {
             result->m_itemList[i].storageType = wkeWebDragData::Item::StorageTypeFilename;
 
             std::string fileName = item.filenameData.utf8();
             result->m_itemList[i].filenameData = createUtf8String(fileName.c_str(), fileName.size());
-            
+
         } else if (blink::WebDragData::Item::StorageTypeFileSystemFile == item.storageType) {
             result->m_itemList[i].storageType = wkeWebDragData::Item::StorageTypeFileSystemFile;
 
@@ -1751,36 +1793,50 @@ static wkeWebDragData* webDropDataToWkeDragData(const blink::WebDragData& data)
         }
     }
 
-    return result;
+    return result.release();
 }
+
+class DragSimulateScope {
+public:
+    explicit DragSimulateScope(WebPageImpl* page) : m_page(page)
+    {
+        m_page->onEnterDragSimulate();
+        CheckReEnter::decrementEnterCount();
+    }
+
+    ~DragSimulateScope()
+    {
+        CheckReEnter::incrementEnterCount();
+        m_page->onLeaveDragSimulate();
+    }
+
+    DragSimulateScope(const DragSimulateScope&) = delete;
+    DragSimulateScope& operator=(const DragSimulateScope&) = delete;
+
+private:
+    WebPageImpl* m_page;
+};
 
 void WebPageImpl::startDragging(blink::WebLocalFrame* frame, const blink::WebDragData& data,
     blink::WebDragOperationsMask mask, const blink::WebImage& image, const blink::WebPoint& dragImageOffset)
 {
     BlinkPlatformImpl::AutoDisableGC autoDisableGC;
 
-    wkeWebDragData* dragDate = webDropDataToWkeDragData(data);
-
     wkeStartDraggingCallback callback = m_pagePtr->wkeHandler().startDraggingCallback;
+    const bool bounded = !callback && wke::brokerOwnsView(m_pagePtr->wkeWebView());
+    std::unique_ptr<wkeWebDragData, decltype(&destroyWkeDragData)> dragDate(webDropDataToWkeDragData(data, bounded), &destroyWkeDragData);
     if (!callback) {
-        m_dragHandle->startDragging(frame, dragDate, mask, image, dragImageOffset);
+        m_dragHandle->startDragging(frame, dragDate.get(), mask, image, dragImageOffset);
         return;
     }
 
     void* param = m_pagePtr->wkeHandler().startDraggingCallbackParam;
     wkePoint offset = { dragImageOffset.x, dragImageOffset.y };
 
-    onEnterDragSimulate();
-    CheckReEnter::decrementEnterCount();
-
+    DragSimulateScope dragScope(this);
     callback(m_pagePtr->wkeWebView(), param,
         wke::CWebView::frameIdTowkeWebFrameHandle(m_pagePtr, getFrameIdByBlinkFrame(frame)),
-        dragDate, (wkeWebDragOperationsMask)mask, nullptr, &offset);
-
-    CheckReEnter::incrementEnterCount();
-    onLeaveDragSimulate();
-
-    destroyWkeDragData(dragDate);
+        dragDate.get(), (wkeWebDragOperationsMask)mask, nullptr, &offset);
 }
 
 void WebPageImpl::loadHistoryItem(int64 frameId, const WebHistoryItem& item, WebHistoryLoadType type, WebURLRequest::CachePolicy policy)
@@ -1987,6 +2043,51 @@ void WebPageImpl::setHWND(HWND hWnd)
     if (threadID != ::GetCurrentThreadId())
         PostTaskWrap::init();
     
+    const ::wkeWebView ownedView = m_pagePtr->wkeWebView();
+    if (wke::brokerOwnsView(ownedView)) {
+        m_dragHandle->setViewWindow(m_hWnd, m_webViewImpl, ownedView);
+        auto oleInitialized = std::make_shared<std::atomic<bool>>(false);
+        // Every registered OLE target is revoked on the actual UI owner before
+        // any engine object or HWND may disappear. Failed receipts stay failed.
+        wke::brokerAddCloseAction(ownedView, [ownedView, hWnd, oleInitialized] {
+            if (!wke::brokerPostUiTask(ownedView, WKE_CURSOR_BROKER_NATIVE_OLE_REVOKE,
+                [ownedView, hWnd, oleInitialized](bool cancelled) {
+                    if (cancelled) { wke::brokerRecordFailure(ownedView); return; }
+                    wke::BrokerNativeScope scope(ownedView, WKE_CURSOR_BROKER_NATIVE_OLE_REVOKE);
+                    if (!scope.entered()) { wke::brokerRecordFailure(ownedView); return; }
+                    const HRESULT result = ::RevokeDragDrop(hWnd);
+                    if (SUCCEEDED(result) || result == DRAGDROP_E_NOTREGISTERED) {
+                        wke::brokerSetOleRegistered(ownedView, false);
+                        if (oleInitialized->exchange(false))
+                            ::OleUninitialize();
+                    } else
+                        wke::brokerRecordFailure(ownedView);
+                }, true))
+                wke::brokerRecordFailure(ownedView);
+        });
+        if (wke::g_isSetDragDropEnable) {
+            DragHandle* dragHandle = m_dragHandle;
+            if (!wke::brokerPostUiTask(ownedView, WKE_CURSOR_BROKER_NATIVE_OLE_REGISTER,
+                [ownedView, hWnd, dragHandle, oleInitialized](bool cancelled) {
+                    if (cancelled) return;
+                    wke::BrokerNativeScope scope(ownedView, WKE_CURSOR_BROKER_NATIVE_OLE_REGISTER);
+                    if (!scope.entered()) { wke::brokerRecordFailure(ownedView); return; }
+                    const HRESULT initialized = ::OleInitialize(nullptr);
+                    if (FAILED(initialized)) { wke::brokerRecordFailure(ownedView); return; }
+                    const HRESULT result = ::RegisterDragDrop(hWnd, dragHandle);
+                    if (SUCCEEDED(result)) {
+                        oleInitialized->store(true);
+                        wke::brokerSetOleRegistered(ownedView, true);
+                    }
+                    else {
+                        ::OleUninitialize();
+                        wke::brokerRecordFailure(ownedView);
+                    }
+                }))
+                wke::brokerRecordFailure(ownedView);
+        }
+        return;
+    }
     if (wke::g_isSetDragDropEnable) {
         if (wke::g_wkeUiThreadPostTaskCallback) {
             m_dragHandle->setViewWindow(m_hWnd, m_webViewImpl);
@@ -2326,7 +2427,7 @@ bool WebPageImpl::initSetting()
     settings->setDefaultFontSize(16);
     settings->setDefaultFixedFontSize(16);
     settings->setLoadsImagesAutomatically(true);
-    settings->setPluginsEnabled(true);
+    settings->setPluginsEnabled(!wke::brokerActive());
     settings->setJavaScriptCanOpenWindowsAutomatically(true);
     settings->setJavaScriptCanAccessClipboard(true);
     settings->setPrimaryPointerType(blink::WebSettings::PointerTypeFine);

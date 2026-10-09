@@ -20,6 +20,9 @@
 
 #include <windows.h>
 #include <process.h>
+#include <memory>
+#include <exception>
+#include <stdexcept>
 #include <mmsystem.h>
 
 namespace content {
@@ -28,13 +31,58 @@ namespace content {
 // This is to prevent UI freeze when there are too many timers or machine performance is low.
 static const double maxDurationOfFiringTimers = 0.050;
 
+namespace {
+
+class WebThreadCriticalSectionOwner {
+public:
+    explicit WebThreadCriticalSectionOwner(CRITICAL_SECTION* section) : m_section(section)
+    {
+        if (!::InitializeCriticalSectionAndSpinCount(section, 0))
+            throw std::runtime_error("WebThread critical section initialization failed");
+    }
+    ~WebThreadCriticalSectionOwner() { if (m_section) ::DeleteCriticalSection(m_section); }
+    void release() { m_section = nullptr; }
+private:
+    WebThreadCriticalSectionOwner(const WebThreadCriticalSectionOwner&) = delete;
+    WebThreadCriticalSectionOwner& operator=(const WebThreadCriticalSectionOwner&) = delete;
+    CRITICAL_SECTION* m_section;
+};
+
+static void closeWebThreadHandle(HANDLE handle)
+{
+    if (handle && !::CloseHandle(handle))
+        std::terminate(); // Never certify release after a failed native close.
+}
+
+class WebThreadHandleOwner {
+public:
+    explicit WebThreadHandleOwner(HANDLE handle) : m_handle(handle) { }
+    ~WebThreadHandleOwner() { closeWebThreadHandle(m_handle); }
+    HANDLE get() const { return m_handle; }
+    void release() { m_handle = nullptr; }
+private:
+    WebThreadHandleOwner(const WebThreadHandleOwner&) = delete;
+    WebThreadHandleOwner& operator=(const WebThreadHandleOwner&) = delete;
+    HANDLE m_handle;
+};
+
+} // namespace
+
 unsigned WebThreadImpl::m_currentHeapInsertionOrder = 0;
 
 unsigned __stdcall WebThreadImpl::WebThreadImplThreadEntryPoint(void* param)
 {
-    WebThreadImpl* impl = (WebThreadImpl*)param;
-    impl->threadEntryPoint();
-    return 0;
+    WebThreadImpl* impl = static_cast<WebThreadImpl*>(param);
+    try {
+        impl->threadEntryPoint();
+        return 0;
+    } catch (...) {
+        // Only the unready, unpublished startup prefix can roll back locally.
+        // Arbitrary callback/GC failures after ready have no proven drain path.
+        if (impl->m_hadThreadInit.load(std::memory_order_acquire))
+            std::terminate();
+        return 1;
+    }
 }
 
 unsigned WebThreadImpl::getNewCurrentHeapInsertionOrder()
@@ -47,67 +95,83 @@ ActivatingTimerCheck* gActivatingTimerCheck = nullptr;
 #endif
 
 WebThreadImpl::WebThreadImpl(const char* name)
-    : m_hEvent(NULL)
+    : m_hEvent(nullptr)
     , m_threadId(-1)
+    , m_willExit(false)
+    , m_threadClosed(false)
     , m_firingTimers(0)
-    , m_webSchedulerImpl(new WebSchedulerImpl(this))
+    , m_webSchedulerImpl(nullptr)
     , m_isObserversDirty(false)
     , m_name(name)
     , m_suspendTimerQueue(false)
     , m_hadThreadInit(false)
-    , m_willExit(false)
-    , m_threadClosed(false)
     , m_threadHandle(nullptr)
+    , m_hasPlatformRegistration(false)
     , m_currentFrameCreateTime(0)
+    , m_isMainThread(0 == strcmp("MainThread", name))
 {
-    m_name = name;
-    ::InitializeCriticalSection(&m_taskPairsMutex);
-    ::InitializeCriticalSection(&m_observersMutex);
-    
-    m_isMainThread = (0 == strcmp("MainThread", name));
+    std::unique_ptr<WebSchedulerImpl> scheduler(new WebSchedulerImpl(this));
+    WebThreadCriticalSectionOwner taskPairs(&m_taskPairsMutex);
+    WebThreadCriticalSectionOwner observers(&m_observersMutex);
+    m_webSchedulerImpl = scheduler.get();
+
     if (m_isMainThread) {
 #ifdef _DEBUG
         if (!gActivatingTimerCheck)
             gActivatingTimerCheck = new ActivatingTimerCheck();
 #endif
-        m_hadThreadInit = true;
         m_threadId = WTF::currentThread();
-        updateSharedTimer();
-        return;
+        m_hadThreadInit.store(true, std::memory_order_release);
+        updateSharedTimer(); // Existing native timer/window transaction remains separate.
+    } else {
+        WebThreadHandleOwner wakeEvent(::CreateEventW(nullptr, FALSE, FALSE, nullptr));
+        if (!wakeEvent.get())
+            throw std::runtime_error("WebThread event creation failed");
+        m_hEvent = wakeEvent.get();
+        unsigned threadIdentifier = 0;
+        WebThreadHandleOwner worker(reinterpret_cast<HANDLE>(
+            _beginthreadex(nullptr, 0, WebThreadImplThreadEntryPoint, this, 0, &threadIdentifier)));
+        if (!worker.get())
+            throw std::runtime_error("WebThread native launch failed");
+        m_threadHandle = worker.get();
+        while (!m_hadThreadInit.load(std::memory_order_acquire)) {
+            const DWORD observed = ::WaitForSingleObject(worker.get(), 20);
+            if (observed == WAIT_OBJECT_0) {
+                DWORD exitCode = STILL_ACTIVE;
+                if (!::GetExitCodeThread(worker.get(), &exitCode) || exitCode == STILL_ACTIVE)
+                    std::terminate();
+                // The real native thread has exited. Local owners can now unwind.
+                throw std::runtime_error("WebThread exited before initialization");
+            }
+            if (observed != WAIT_TIMEOUT)
+                std::terminate(); // Live worker ownership cannot be discarded on wait failure.
+        }
+        worker.release();
+        wakeEvent.release();
     }
-
-    m_hEvent = ::CreateEvent(NULL, FALSE, FALSE, NULL);
-
-    unsigned threadIdentifier = 0;
-    m_threadHandle = reinterpret_cast<HANDLE>(_beginthreadex(0, 0, WebThreadImplThreadEntryPoint, this, 0, &threadIdentifier));
- 
-    while (!m_hadThreadInit) {
-        Sleep(20);
-    };
+    observers.release();
+    taskPairs.release();
+    scheduler.release();
 }
 
 WebThreadImpl::~WebThreadImpl()
 {
-    //if (0 != strcmp("MainThread", m_name))
-        shutdown();
+    if (m_threadHandle && m_threadId == WTF::currentThread())
+        std::terminate(); // Deleting the currently executing worker is never a drain receipt.
+    shutdown(); // Worker release follows a real native join, not m_threadClosed polling.
 
-    if (m_threadHandle) {
-        ::WaitForSingleObject(m_threadHandle, INFINITE);
-        ::CloseHandle(m_threadHandle);
-        m_threadHandle = nullptr;
+    if (m_hasPlatformRegistration) {
+        BlinkPlatformImpl* platform = static_cast<BlinkPlatformImpl*>(blink::Platform::current());
+        platform->onThreadExit(this);
+        m_hasPlatformRegistration = false;
     }
-
-    if (m_hEvent) {
-        ::CloseHandle(m_hEvent);
-        m_hEvent = nullptr;
-    }
+    closeWebThreadHandle(m_threadHandle);
+    m_threadHandle = nullptr;
+    closeWebThreadHandle(m_hEvent);
+    m_hEvent = nullptr;
     delete m_webSchedulerImpl;
-    
     ::DeleteCriticalSection(&m_taskPairsMutex);
     ::DeleteCriticalSection(&m_observersMutex);
-    
-    BlinkPlatformImpl* platform = (BlinkPlatformImpl*)blink::Platform::current();
-    platform->onThreadExit(this);
 }
 
 void WebThreadImpl::shutdown()
@@ -121,16 +185,22 @@ void WebThreadImpl::shutdown()
 void WebThreadImpl::waitForExit()
 {
     if (m_threadId == WTF::currentThread())
-        return;
-
-    while (!m_threadClosed) {
-        Sleep(20);
-    }
+        return; // Current-thread shutdown does not claim native worker termination.
+    if (!m_threadHandle)
+        return; // MainThread owns no spawned native worker.
+    const DWORD observed = ::WaitForSingleObject(m_threadHandle, INFINITE);
+    DWORD exitCode = STILL_ACTIVE;
+    if (observed != WAIT_OBJECT_0 || !::GetExitCodeThread(m_threadHandle, &exitCode)
+        || exitCode != 0)
+        std::terminate(); // No resource release or success receipt without actual clean exit.
+    m_threadClosed.store(true, std::memory_order_release);
 }
 
 void WebThreadImpl::willExit()
 {
-    m_willExit = true;
+    ::EnterCriticalSection(&m_taskPairsMutex);
+    m_willExit = true; // Serialized with final cross-thread admission.
+    ::LeaveCriticalSection(&m_taskPairsMutex);
     if (m_hEvent)
         ::SetEvent(m_hEvent);
 
@@ -147,7 +217,9 @@ void WebThreadImpl::threadEntryPoint()
 
     m_threadId = WTF::currentThread();
     BlinkPlatformImpl::onCurrentThreadWhenWebThreadImplCreated(this);
-    m_hadThreadInit = true;
+    if (blink::Platform::current()->currentThread() != this)
+        throw std::runtime_error("WebThread TLS initialization failed");
+    m_hadThreadInit.store(true, std::memory_order_release);
 
     while (!m_willExit) {
         DWORD dReturn = ::WaitForSingleObject(m_hEvent, INFINITE);
@@ -171,7 +243,7 @@ void WebThreadImpl::threadEntryPoint()
     }
 
     fireOnExit();
-    m_threadClosed = true;
+    // waitForExit publishes closure only after the native thread handle is signaled.
 }
 
 void WebThreadImpl::postTask(const blink::WebTraceLocation& location, blink::WebThread::Task* task)
@@ -183,9 +255,29 @@ void WebThreadImpl::postDelayedTaskImpl(
     const blink::WebTraceLocation& location, blink::WebThread::Task* task, 
     long long delayMs, double* createTimeOnOtherThread, int priority, unsigned* heapInsertionOrder)
 {
-    // delete by self
-    WebTimerBase* timer = WebTimerBase::create(this, location, task, priority);
-    timer->startFromOtherThread((double)delayMs / 1000.0, createTimeOnOtherThread, heapInsertionOrder);
+    // Consume the posted task exactly once, including failed timer creation.
+    std::unique_ptr<blink::WebThread::Task> payload(task);
+    std::unique_ptr<WebTimerBase> timer;
+    try {
+        // Allocate before timer state changes. Its first heap insertion is
+        // non-allocating; failed reserve leaves the posted payload owned here.
+        const size_t required = m_timerHeap.size();
+        const size_t maximum = m_timerHeap.max_size();
+        if (required == maximum) throw std::bad_alloc();
+        if (m_timerHeap.capacity() < required + 1) {
+            const size_t capacity = m_timerHeap.capacity();
+            size_t grown = capacity == 0 ? (maximum < 16 ? maximum : 16)
+                : (capacity > maximum / 2 ? maximum : capacity * 2);
+            if (grown < required + 1) grown = required + 1;
+            m_timerHeap.reserve(grown);
+        }
+        timer.reset(WebTimerBase::create(this, location, payload.get(), priority));
+        payload.release(); // Timer now owns the task, including shutdown drain.
+        timer->startFromOtherThread((double)delayMs / 1000.0, createTimeOnOtherThread, heapInsertionOrder);
+        timer.release(); // Timer heap now owns this self-deleting timer.
+    } catch (...) {
+        // RAII destroys whichever owner actually received the payload.
+    }
 }
 
 void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
@@ -194,21 +286,36 @@ void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
     long long delayMs,
     int priority)
 {
+    // WebThread's public contract transfers ownership at post, not at run.
+    std::unique_ptr<blink::WebThread::Task> payload(task);
     if (m_willExit) {
         if (m_hEvent)
             ::SetEvent(m_hEvent);
-        delete task;
         return;
     }
 
     if (isCurrentThread()) {
-        postDelayedTaskImpl(location, task, delayMs, &m_currentFrameCreateTime, priority, nullptr);
+        postDelayedTaskImpl(location, payload.release(), delayMs, &m_currentFrameCreateTime, priority, nullptr);
         return;
     }
 
+    std::unique_ptr<TaskPair> pair;
+    try {
+        pair.reset(new TaskPair(location, payload.get(), delayMs, priority));
+        payload.release();
+    } catch (...) { return; }
     ::EnterCriticalSection(&m_taskPairsMutex);
-    m_taskPairsToPost.push_back(new TaskPair(location, task, delayMs, priority));
-
+    if (m_willExit) {
+        ::LeaveCriticalSection(&m_taskPairsMutex);
+        return; // Pair owns the rejected payload outside the critical section.
+    }
+    try {
+        m_taskPairsToPost.push_back(pair.get());
+        pair.release();
+    } catch (...) {
+        ::LeaveCriticalSection(&m_taskPairsMutex);
+        return;
+    }
     if (m_hEvent)
         ::SetEvent(m_hEvent);
     ::LeaveCriticalSection(&m_taskPairsMutex);
@@ -256,6 +363,11 @@ WebThreadImpl::TaskPair::TaskPair(const blink::WebTraceLocation& location, blink
     this->heapInsertionOrder = WebThreadImpl::getNewCurrentHeapInsertionOrder();
 }
 
+WebThreadImpl::TaskPair::~TaskPair()
+{
+    delete task; // Only untransferred work remains here (cancel-before-run).
+}
+
 void WebThreadImpl::TaskPair::sortByPriority(std::vector<WebThreadImpl::TaskPair*>* tasks)
 {
     for (size_t i = 0; i < tasks->size(); ++i) {
@@ -286,13 +398,15 @@ void WebThreadImpl::startTriggerTasks()
             break;
         }
         
-        std::vector<TaskPair*> taskPairsToPostCopy = m_taskPairsToPost;
-        m_taskPairsToPost.clear();
+        std::vector<TaskPair*> taskPairsToPostCopy;
+        taskPairsToPostCopy.swap(m_taskPairsToPost); // No allocation while locked.
         ::LeaveCriticalSection(&m_taskPairsMutex);
 
         for (size_t i = 0; i < taskPairsToPostCopy.size(); ++i) {
             TaskPair* taskPair = taskPairsToPostCopy[i];
-            postDelayedTaskImpl(taskPair->location, taskPair->task, taskPair->delayMs, &taskPair->createTime, taskPair->priority, &taskPair->heapInsertionOrder);
+            blink::WebThread::Task* payload = taskPair->task;
+            taskPair->task = nullptr; // Ownership transfers even if admission fails.
+            postDelayedTaskImpl(taskPair->location, payload, taskPair->delayMs, &taskPair->createTime, taskPair->priority, &taskPair->heapInsertionOrder);
 
             delete taskPair;
         }

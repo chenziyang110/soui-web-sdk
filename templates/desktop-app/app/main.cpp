@@ -32,10 +32,29 @@ class starter_window final : public SOUI::SHostWnd {
   starter_window(soui::sdk::soui_miniblink_host& host,bool smoke,const std::filesystem::path& log)
     : host_(host),smoke_(smoke),log_(log),started_(GetTickCount64()) {}
   void append(const char* text){std::ofstream(log_,std::ios::app)<<text<<'\n';}
+  void begin_shutdown(int exit_code){if(!exit_code_ && exit_code)exit_code_=exit_code;OnClose();}
+  int finish_shutdown_before_return(SOUI::SApplication& app,int exit_code) noexcept {
+    try{begin_shutdown(exit_code);}catch(...){std::terminate();}
+    while(::IsWindow(m_hWnd)) {
+      MSG message{};
+      const auto status=::GetMessageW(&message,nullptr,0,0);
+      if(status<0)std::terminate();
+      if(status==0){
+        if(!exit_code_ && message.wParam)exit_code_=static_cast<int>(message.wParam);
+        try{OnClose();}catch(...){std::terminate();}
+        continue;
+      }
+      try{app.GetMsgLoop()->OnMsg(&message);}catch(...){if(!exit_code_)exit_code_=1;}
+      try{OnClose();}catch(...){std::terminate();}
+    }
+    try{if(!host_.destroy().ok)std::terminate();}catch(...){std::terminate();}
+    return exit_code_;
+  }
  protected:
   void OnSize(UINT type,SOUI::CSize size){if(type!=SIZE_MINIMIZED)(void)host_.resize(std::max(1L,size.cx),std::max(1L,size.cy));}
   void OnSetFocus(HWND){(void)host_.focus();}
   void OnTimer(UINT_PTR){
+    if(closing_) {OnClose();return;}
     host_.pump();
     if(smoke_ && host_.application_ready()) {append("application-ready");OnClose();}
     else if(smoke_ && GetTickCount64()-started_>20000){exit_code_=2;append("application-timeout");OnClose();}
@@ -49,7 +68,17 @@ class starter_window final : public SOUI::SHostWnd {
     if(action==soui::runtime::window_command::begin_drag && !(GetAsyncKeyState(VK_LBUTTON)&0x8000))return 0;
     return soui::runtime::execute_window_command(m_hWnd,action,payload)?1:0;
   }
-  void OnClose(){KillTimer(1);(void)host_.destroy();append("host-close-complete");DestroyWindow();PostQuitMessage(exit_code_);}
+  void OnClose(){
+    if(!closing_) {closing_=true;append("host-close-start");if(::IsWindow(m_hWnd) && !SetTimer(1,50))std::terminate();}
+    const auto closed=host_.destroy();
+    if(!closed.ok) {
+      if(close_error_!=closed.code) {close_error_=closed.code;append(closed.code.c_str());}
+      return;
+    }
+    if(!::IsWindow(m_hWnd))return;
+    if(!DestroyWindow()) {append("E_WINDOW_CLOSE_FAILED");return;}
+    append("host-close-complete");PostQuitMessage(exit_code_);
+  }
   BEGIN_MSG_MAP_EX(starter_window)
     MSG_WM_SIZE(OnSize)
     MSG_WM_SETFOCUS(OnSetFocus)
@@ -66,6 +95,8 @@ class starter_window final : public SOUI::SHostWnd {
   std::filesystem::path log_;
   ULONGLONG started_;
   int exit_code_{0};
+  bool closing_{false};
+  std::string close_error_;
 };
 
 int run(HINSTANCE instance,bool smoke) {
@@ -117,6 +148,7 @@ int run(HINSTANCE instance,bool smoke) {
   });
   soui::sdk::soui_miniblink_host host(std::make_unique<soui::sdk::dynamic_miniblink_adapter>());
   starter_window window(host,smoke,log);
+  try {
   HWND handle=window.Create(nullptr,WS_OVERLAPPEDWINDOW|WS_CLIPCHILDREN,0,CW_USEDEFAULT,CW_USEDEFAULT,1100,720);
   if(!handle)return 5;
   soui::sdk::host_config config;
@@ -130,13 +162,24 @@ int run(HINSTANCE instance,bool smoke) {
   config.owner_window=handle;
   config.bridge_adapter=&bridge;
   const auto result=host.start(config);
-  if(!result.ok){window.append(result.code.c_str());if(!smoke)MessageBoxA(handle,result.message.c_str(),result.code.c_str(),MB_ICONERROR);window.DestroyWindow();return 6;}
+  if(!result.ok){
+    window.append(result.code.c_str());
+    if(!smoke)MessageBoxA(handle,result.message.c_str(),result.code.c_str(),MB_ICONERROR);
+    window.begin_shutdown(6);
+    const auto loop_result=::IsWindow(handle)?app.GetMsgLoop()->Run():6;
+    return window.finish_shutdown_before_return(app,loop_result);
+  }
   window.append("host-started");
   ::SetWindowTextW(handle,L"SouiStarter");
   window.ShowWindow(smoke?SW_HIDE:SW_SHOW);
   window.UpdateWindow();
-  window.SetTimer(1,16);
-  return app.Run(handle);
+  if(!window.SetTimer(1,16))throw std::runtime_error("Cannot start the Host timer");
+  const auto loop_result=app.GetMsgLoop()->Run();
+  return window.finish_shutdown_before_return(app,loop_result);
+  } catch(...) {
+    try{window.append("E_APPLICATION_EXCEPTION");}catch(...){ }
+    return window.finish_shutdown_before_return(app,1);
+  }
 }
 }
 int APIENTRY wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR command,int) {

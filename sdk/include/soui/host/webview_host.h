@@ -32,8 +32,8 @@ struct host_result {
   std::string message;
 };
 
-// Implementations own their renderer resources. A failed mount must clean up
-// its partial resources; a failed unmount must permit a later unmount retry.
+// Implementations own their renderer resources. A failed mount can still own
+// partial resources; unmount must be idempotent and allow a retry on failure.
 class webview_host_adapter {
  public:
   virtual ~webview_host_adapter() = default;
@@ -81,7 +81,9 @@ class soui_miniblink_host {
   [[nodiscard]] host_result show();
   [[nodiscard]] host_result reload();
   [[nodiscard]] host_result close();
-  // Idempotent cleanup: never unmounts an already-closed/destroyed session twice.
+  // Also cleans a failed mount with no published session. A failed result keeps
+  // adapter ownership: retain this host and its window, then retry before exit.
+  // Destroying a host whose resources cannot be released terminates the process.
   [[nodiscard]] host_result destroy();
   [[nodiscard]] host_result resize(int width, int height);
   [[nodiscard]] host_result focus();
@@ -113,6 +115,7 @@ class soui_miniblink_host {
   std::unique_ptr<webview_host_adapter> adapter_;
   std::unique_ptr<soui::runtime::webview_session> session_;
   bool lifecycle_operation_{false};
+  bool adapter_cleanup_pending_{false};
 };
 
 using webview_host = soui_miniblink_host;

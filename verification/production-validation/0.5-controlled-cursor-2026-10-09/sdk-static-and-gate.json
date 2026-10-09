@@ -1,0 +1,1017 @@
+{
+  "schema": "soui.controlled-cursor-diagnostic/v1",
+  "targetVersion": "0.5.0",
+  "preparedUtc": "2026-10-09T03:20:04.936Z",
+  "sourceBaseCommit": "75c21b6020b8afd1c2b95fed644fd92fccb595fd",
+  "testedChangesWereUncommitted": true,
+  "versionIdentityAssignedByThisRecord": false,
+  "sourceBaseCommitAssertedByRoot": true,
+  "sourceContentIdentifiedByFrozenHashes": true,
+  "observationOnly": true,
+  "actualCompilerInputBindingComplete": false,
+  "compilerTailAcceptance": false,
+  "validationPassed": false,
+  "qualificationPassed": false,
+  "releaseReady": false,
+  "fullKernelQualified": false,
+  "hostRuntimeExercised": false,
+  "guiQualified": false,
+  "targetSystemCompatibilityQualified": false,
+  "binaryBodiesIncluded": false,
+  "toolBodiesIncluded": false,
+  "rawPrivateProofBodiesIncluded": false,
+  "postHocHashesDoNotCompletePrelaunchBindings": true,
+  "scope": "Actual complete static SDK compilation and atomic main-context gate helper",
+  "independentProofSha256": "359b39555ecc1f1163c2cf6a18f8592b98abdf043a05063ecd4579213ff24326",
+  "sourceManifestSha256": "745d9e799c7ad69e990361363131e452dd61bd4502b860d01f8b64a9ff893f64",
+  "frozenSourceInputsMatchedBeforeAfter": 102,
+  "historicalSourceBindings": [
+    {
+      "source": "demos/workbench/app/main.cpp",
+      "bytes": 49979,
+      "sha256": "416356e4f71497bb289a5ea7e1241d8d905199dd6ae3a91cfdb3dc5c4353f54e"
+    },
+    {
+      "source": "demos/workbench/app/resident_controller.h",
+      "bytes": 30902,
+      "sha256": "c57921855f9c76c8a157111bfe9f9bde04e0b031b3d9ca128e09506f15441568"
+    },
+    {
+      "source": "sdk/CMakeLists.txt",
+      "bytes": 3859,
+      "sha256": "7ab6ffe0098c23a45e84f9fb0894d336ad99422323cf345491d660214b4c6a7f"
+    },
+    {
+      "source": "sdk/cmake/SouiSdkConfig.cmake.in",
+      "bytes": 466,
+      "sha256": "021cfd659d6975f7b2bdf931db9d02f30f5e202d1df4358eaade12c24bf7a335"
+    },
+    {
+      "source": "sdk/include/soui/bridge_adapter.h",
+      "bytes": 1374,
+      "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+    },
+    {
+      "source": "sdk/include/soui/host/async_result_slot.h",
+      "bytes": 2015,
+      "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840"
+    },
+    {
+      "source": "sdk/include/soui/host/engine_thread.h",
+      "bytes": 1929,
+      "sha256": "b197f66ff76041c66ef0e1d92fbf681eb50669d6bd99f4935430080c46606256"
+    },
+    {
+      "source": "sdk/include/soui/host/frame_pacer.h",
+      "bytes": 7240,
+      "sha256": "49ddae57332a45e11586dd60ac074a717f57dbd2c64a3280248b82a054358342"
+    },
+    {
+      "source": "sdk/include/soui/host/interaction_protocol.h",
+      "bytes": 3853,
+      "sha256": "83265088b52fc340e620141729b8f3bef2dc35d5cd22f6b40fdb38bcbff48bad"
+    },
+    {
+      "source": "sdk/include/soui/host/runtime_profile.h",
+      "bytes": 1433,
+      "sha256": "5d79c715900b24f7de3c44cba2e13ea415d2e2f96a929ad86667d633f6f4d051"
+    },
+    {
+      "source": "sdk/include/soui/host/soui_miniblink_host.h",
+      "bytes": 9814,
+      "sha256": "9b9a23343e131aaa5ef828c9fb1e64a407af995050415cf2e175ebb65f335b5a"
+    },
+    {
+      "source": "sdk/include/soui/host/webview2_host.h",
+      "bytes": 1983,
+      "sha256": "b1c862a424ae04579a5c66a23769a99256cf76cf5c64251ec371f9d3be35a8cc"
+    },
+    {
+      "source": "sdk/include/soui/host/webview_host.h",
+      "bytes": 5239,
+      "sha256": "f1bfc4af1fa30f90a7507bb5f61afe6d47a139caa49cf6be97c76d989413ec32"
+    },
+    {
+      "source": "sdk/include/soui/host/window_chrome.h",
+      "bytes": 2359,
+      "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30"
+    },
+    {
+      "source": "sdk/include/soui/host/window_chrome_script.h",
+      "bytes": 1612,
+      "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286"
+    },
+    {
+      "source": "sdk/include/soui/json_bridge.h",
+      "bytes": 2941,
+      "sha256": "13a7766bb548be21ab33467aefde4d36ade437ca9029d8ee5a3289d2e606fd9a"
+    },
+    {
+      "source": "sdk/include/soui/runtime/bridge/action_contract.h",
+      "bytes": 1167,
+      "sha256": "11a77c9a9aa90bd8d1839f6d08eae8a892c78b7df11bdc37455f623f92c97936"
+    },
+    {
+      "source": "sdk/include/soui/runtime/bridge/bridge_transport.h",
+      "bytes": 5378,
+      "sha256": "26231cbc4c79f1a00b82951264f48cd2c26302a9fce7b2fa05fdaeb57a96eedb"
+    },
+    {
+      "source": "sdk/include/soui/runtime/core/events/event_bus.h",
+      "bytes": 1639,
+      "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62"
+    },
+    {
+      "source": "sdk/include/soui/runtime/core/result/result.h",
+      "bytes": 626,
+      "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec"
+    },
+    {
+      "source": "sdk/include/soui/runtime/core/task/task_store.h",
+      "bytes": 2473,
+      "sha256": "f4b5aaf1049a5f3c1467eae74318fe2e850bebdae1e5879f457289fa527e8fbf"
+    },
+    {
+      "source": "sdk/include/soui/runtime/host/session/webview_session.h",
+      "bytes": 1892,
+      "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a"
+    },
+    {
+      "source": "sdk/include/soui/runtime/host/trusted_document.h",
+      "bytes": 2696,
+      "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e"
+    },
+    {
+      "source": "sdk/include/soui/runtime/services/desktop/desktop_services.h",
+      "bytes": 2210,
+      "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2"
+    },
+    {
+      "source": "sdk/include/soui/runtime/services/desktop/global_shortcut.h",
+      "bytes": 3012,
+      "sha256": "800d40c2029697ca23f9148c75acbcc683b7893665c735f4ea0a9ce0810b1ae5"
+    },
+    {
+      "source": "sdk/include/soui/runtime/services/desktop/menu_service.h",
+      "bytes": 2461,
+      "sha256": "2e304780c55cbc92c49d14532ae04ad934b835f7ff3d3f43004c3faae1244605"
+    },
+    {
+      "source": "sdk/include/soui/runtime/services/desktop/tray_service.h",
+      "bytes": 2765,
+      "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e"
+    },
+    {
+      "source": "sdk/include/soui/runtime/services/desktop/window_commands.h",
+      "bytes": 2377,
+      "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089"
+    },
+    {
+      "source": "sdk/include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+      "bytes": 668,
+      "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab"
+    },
+    {
+      "source": "sdk/include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+      "bytes": 5545,
+      "sha256": "ab303cb608d400e36655136ac1ef491dfdf5fd0acaeb2aed1615243ad93d0e55"
+    },
+    {
+      "source": "sdk/include/soui/runtime/services/permissions/permission_store.h",
+      "bytes": 7414,
+      "sha256": "274270bf39ee9d89b7172f66406c04810e31256a152c4de934c8812e138969e2"
+    },
+    {
+      "source": "sdk/include/soui/runtime/services/task/task_service.h",
+      "bytes": 3421,
+      "sha256": "81fb6fe4844e58b37e70ccd472d4c4b300e9d6b1abadc5363be41ccaeaa59028"
+    },
+    {
+      "source": "sdk/include/soui/version.h",
+      "bytes": 250,
+      "sha256": "505061598801d39ee8151581935990c0f8fed242dede3ee5a2b6f96f0a97f4a5"
+    },
+    {
+      "source": "sdk/src/host/bridge_pending_script.h",
+      "bytes": 2166,
+      "sha256": "9672b98ffc6de2e4a0287b4c414ad43764c89fa00fed5f5721ee0e98aec02213"
+    },
+    {
+      "source": "sdk/src/host/bridge_request_budget.h",
+      "bytes": 2703,
+      "sha256": "811516ee0541190362a96a9987c78ffe1dac9b53c8f0c723fd9289b794899592"
+    },
+    {
+      "source": "sdk/src/host/cursor_broker.cpp",
+      "bytes": 20877,
+      "sha256": "db7559dc32977f8960960f2625c87bd20a57dd0685605fefb4c29455d36ed418"
+    },
+    {
+      "source": "sdk/src/host/cursor_broker.h",
+      "bytes": 2638,
+      "sha256": "c9bbdd7ffcd0d2f2bcbb3caeeae031713d69dd3fd3ef392be51f560225b5d5d6"
+    },
+    {
+      "source": "sdk/src/host/cursor_queue.cpp",
+      "bytes": 6737,
+      "sha256": "569970cf0e75cd2e52e6ad6736688532bf1918b808acff9c01f70717c038ad4b"
+    },
+    {
+      "source": "sdk/src/host/cursor_queue.h",
+      "bytes": 3212,
+      "sha256": "e25c1824de719908c09fac8af0b8f51049d5b90692f6728c8aca1ac11c03d95a"
+    },
+    {
+      "source": "sdk/src/host/cursor_resources.cpp",
+      "bytes": 1544,
+      "sha256": "f4a8a986db82a522218cdd42526929a9edf61b38406abff3086e28499b428a33"
+    },
+    {
+      "source": "sdk/src/host/cursor_resources.h",
+      "bytes": 1517,
+      "sha256": "3748809de72958d466ec01b99980b59b7ebc02d655eb001e455bb60fc52a78b8"
+    },
+    {
+      "source": "sdk/src/host/diagnostic_result.h",
+      "bytes": 1007,
+      "sha256": "7c322a719060a89624bd0c74bfc6f4ca62a752f50a633a64fd9c4aeb244be129"
+    },
+    {
+      "source": "sdk/src/host/engine_startup_test_hooks.h",
+      "bytes": 548,
+      "sha256": "a1c7a6d8eba10265bbcbf8e75b6fc2f16d0265ced0e1869420382c9a578da6ff"
+    },
+    {
+      "source": "sdk/src/host/engine_thread.cpp",
+      "bytes": 8982,
+      "sha256": "61fff71382e86cecb201953d625981c38e8799e3e2f342c133be67ef2f20b56f"
+    },
+    {
+      "source": "sdk/src/host/interaction_protocol.cpp",
+      "bytes": 2308,
+      "sha256": "5e4fc94c99e12173ea4533fa842c73bff858584bebdd59c371c6dbeb3e040268"
+    },
+    {
+      "source": "sdk/src/host/main_context_gate.h",
+      "bytes": 4348,
+      "sha256": "d19008ab7e414132f24c62982bb9907c81ece7734cef3cac70ffc761b8de3d2f"
+    },
+    {
+      "source": "sdk/src/host/runtime_profile.cpp",
+      "bytes": 6222,
+      "sha256": "f9a9f49b6c68463bd1a0cdd615d0c53865b3c8e8c9121c7e80933cf0ca0dbcd6"
+    },
+    {
+      "source": "sdk/src/host/soui_miniblink_host.cpp",
+      "bytes": 154165,
+      "sha256": "19bd827f0dc2d9abfae50f9b2c421611380563a646d6844506272dac628acc78"
+    },
+    {
+      "source": "sdk/src/host/source_kernel_api.h",
+      "bytes": 2872,
+      "sha256": "cc41c26654b05ee5834ccc6e1b47bf7824056a72d56699c380b6d313a869a138"
+    },
+    {
+      "source": "sdk/src/json_bridge.cpp",
+      "bytes": 13467,
+      "sha256": "7337b730edea12cce1b8bd333a2cfc619f10de58f3fb5a59ca0f2fc2dc2ed4de"
+    },
+    {
+      "source": "sdk/src/runtime/bridge/action_contract.cpp",
+      "bytes": 10283,
+      "sha256": "6dfa4ceb6a2bf92b5c464619063873896a2c4357c8730205c56f5c04ad3dae7c"
+    },
+    {
+      "source": "sdk/src/runtime/bridge/bridge_transport.cpp",
+      "bytes": 25180,
+      "sha256": "8bf1ce7790d6a1b58896bcb0d65fc2e9108ee814bef2d2b890c15a8cc649170b"
+    },
+    {
+      "source": "sdk/src/runtime/core/events/event_bus.cpp",
+      "bytes": 2559,
+      "sha256": "e0e1c24c98720e20eb19a71a881b9a1625adb2f1092b67478a7873ad84bc1805"
+    },
+    {
+      "source": "sdk/src/runtime/core/result/result.cpp",
+      "bytes": 409,
+      "sha256": "238c8e90a28173d2ac5ea994fcc2f669d9b46d336dd23d4d865e5b481457a9f0"
+    },
+    {
+      "source": "sdk/src/runtime/core/task/task_store.cpp",
+      "bytes": 7546,
+      "sha256": "678509bbffcfe1a5363dda9c1db08504a6c55faa35ac2db7f145d3a1807ea3f3"
+    },
+    {
+      "source": "sdk/src/runtime/host/session/webview_session.cpp",
+      "bytes": 3532,
+      "sha256": "976f755f6f06b16c337a7c941de56e1ef5e3fe66adc1758f188e280ff541a9ee"
+    },
+    {
+      "source": "sdk/src/runtime/services/desktop/desktop_services.cpp",
+      "bytes": 14078,
+      "sha256": "824b61b8c8fc3b16e69b62e499d01ef64bea2b07cbd3907aa11327ce3e9e21eb"
+    },
+    {
+      "source": "sdk/src/runtime/services/desktop/global_shortcut.cpp",
+      "bytes": 8129,
+      "sha256": "bbfc1b6980b666374a807fec39170d06e9aa84b87b661856bb41c02a091876ab"
+    },
+    {
+      "source": "sdk/src/runtime/services/desktop/menu_platform.h",
+      "bytes": 1958,
+      "sha256": "294743b92d08d0c478f728ffa74400ab601e9df360896bd329fbfc67f93f6f26"
+    },
+    {
+      "source": "sdk/src/runtime/services/desktop/menu_service.cpp",
+      "bytes": 16248,
+      "sha256": "19171cec0dbae9689a7c0afb5f19fca8d664aea4e66d4d1db794a13451e42407"
+    },
+    {
+      "source": "sdk/src/runtime/services/desktop/shortcut_platform.h",
+      "bytes": 1570,
+      "sha256": "848466afe3a048c798f654d8cbf3ceb672b46dd112af5e2226977676b74458ae"
+    },
+    {
+      "source": "sdk/src/runtime/services/desktop/tray_platform.h",
+      "bytes": 1627,
+      "sha256": "91bb14277f550cb75bdd7b382c79127de4eba48ffffbd3a7025bb47f4ea42012"
+    },
+    {
+      "source": "sdk/src/runtime/services/desktop/tray_service.cpp",
+      "bytes": 13336,
+      "sha256": "f96238fcfa7abbbc08ef4ba242c210450657ed69841df6e777c3174a7ce280a3"
+    },
+    {
+      "source": "sdk/src/runtime/services/desktop/unicode_conversion.h",
+      "bytes": 1709,
+      "sha256": "a404b90539344d479faee04ad58606f8af3669546e9f93824b5d590695ce6908"
+    },
+    {
+      "source": "sdk/src/runtime/services/fileinsight-service/fileinsight-service.cpp",
+      "bytes": 4790,
+      "sha256": "1f3303c2426759d3e4513e3bbf2dc0263cfe56c5d76c545624c7a8b39986df4a"
+    },
+    {
+      "source": "sdk/src/runtime/services/filesystem-readonly/directory_scanner.cpp",
+      "bytes": 30071,
+      "sha256": "713bc211743282e4b8793d244fc8cd5dca0cbb28dd7e8d27e53564ac8f107914"
+    },
+    {
+      "source": "sdk/src/runtime/services/permissions/permission_store.cpp",
+      "bytes": 16353,
+      "sha256": "bfa237deb1ef280cf55b5a6f191f30e0dd3c92c941c6c8588d978c7c8bf96b7a"
+    },
+    {
+      "source": "sdk/src/runtime/services/permissions/scope_id_sequence.h",
+      "bytes": 892,
+      "sha256": "da8ddba81e066354401b09b317c94ca1aa07701162c44ca31afe33908ac0599e"
+    },
+    {
+      "source": "sdk/src/runtime/services/task/task_service.cpp",
+      "bytes": 21141,
+      "sha256": "65ed025ab221058460f1c3e5014fb347840ec488bc0147c71bc5e8c2fee5a1bc"
+    },
+    {
+      "source": "templates/desktop-app/app/main.cpp",
+      "bytes": 8954,
+      "sha256": "66061f5b7e64ae2f0fe3dab491e2bc00237e8894fe7aadd49fad887782981370"
+    },
+    {
+      "source": "tests/native/CMakeLists.txt",
+      "bytes": 19933,
+      "sha256": "ffbf3e1641d5cec84a3b2b3ef0363557fd4443b5275ede7f1ab68079852c0597"
+    },
+    {
+      "source": "tests/native/cursor_broker_scope_tests.cpp",
+      "bytes": 5959,
+      "sha256": "a07376dcc36e159b131546f18b986772beea2c8d61c24cb80cf1b3cb050a2a68"
+    },
+    {
+      "source": "tests/native/cursor_queue_tests.cpp",
+      "bytes": 13548,
+      "sha256": "52b5866c6782376af3df907485ad44355ead31e2391c2137e91c5806a62dad43"
+    },
+    {
+      "source": "tests/native/cursor_resource_tests.cpp",
+      "bytes": 6548,
+      "sha256": "5316802fd758a95428e9817e0c564794f120384e390dcc57cdab759ce9815c54"
+    },
+    {
+      "source": "tests/native/host_adapter_tests.cpp",
+      "bytes": 21565,
+      "sha256": "4a64d2b79e20edce733dd510fbc39bf1f0277dd6e090aa81c4169418bec9a084"
+    },
+    {
+      "source": "tests/native/main_context_gate_tests.cpp",
+      "bytes": 9147,
+      "sha256": "389a66cf2cc9cc114bb76ad5e18c1077afeed0e243e2020c2c034fcd08f29db2"
+    },
+    {
+      "source": "tests/native/source_kernel_api_tests.cpp",
+      "bytes": 5908,
+      "sha256": "c3c9c4b95f76e023a99260d251648d4e3cdc2dc93250cd6c73d7b3c77f113a65"
+    },
+    {
+      "source": "third_party/include/json/json.hpp",
+      "bytes": 919975,
+      "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
+    },
+    {
+      "source": "third_party/include/miniblink/wke.h",
+      "bytes": 70747,
+      "sha256": "5da51e29905d1b2bdd6ae8d209da55ca4698986d166a8cf04f31c6891915102e"
+    },
+    {
+      "source": "third_party/include/miniblink/wke_cursor_broker.h",
+      "bytes": 6597,
+      "sha256": "0029c8967c92c43a1bf0499af40dc8c2f16e1790fd0ab01d924c7b319ef0243a"
+    },
+    {
+      "source": "third_party/sources/zlib/adler32.c",
+      "bytes": 5204,
+      "sha256": "d7f1b6e44fee20ab41cef1d650776a039a2348935eb96bcbd294a4096139be3a"
+    },
+    {
+      "source": "third_party/sources/zlib/compress.c",
+      "bytes": 2699,
+      "sha256": "5c11e1fc22e219cb986f6fa9e4ba939315227e84aef042737d38ec668b89b6d2"
+    },
+    {
+      "source": "third_party/sources/zlib/crc32.c",
+      "bytes": 14053,
+      "sha256": "a04af273e83ecc351bf3794974ab2098d8d960df4044b7b44734c41443ee26d0"
+    },
+    {
+      "source": "third_party/sources/zlib/crc32.h",
+      "bytes": 30562,
+      "sha256": "407af59d0abfea84a6507c603eb29809411797f98249614fe76a661def783ce1"
+    },
+    {
+      "source": "third_party/sources/zlib/deflate.c",
+      "bytes": 78889,
+      "sha256": "11fd6b0328b65c4ad4b5c204d892a97a9083628a7e77dc47836c8e0c799f8da0"
+    },
+    {
+      "source": "third_party/sources/zlib/deflate.h",
+      "bytes": 13150,
+      "sha256": "0ca7fb0cf1dd63001c6e9e4ff93c8dbff2fe521199be51a4dda38a11b44919f6"
+    },
+    {
+      "source": "third_party/sources/zlib/gzguts.h",
+      "bytes": 6819,
+      "sha256": "1ef4741cf10441feeca5c8dde2b6c754f0cbd96fcae697d54a604757289a5e9b"
+    },
+    {
+      "source": "third_party/sources/zlib/infback.c",
+      "bytes": 22715,
+      "sha256": "abe44873b5af2ea68ea1d281d915b2800f1832f846d2c05442a4711adbe6f269"
+    },
+    {
+      "source": "third_party/sources/zlib/inffast.c",
+      "bytes": 12978,
+      "sha256": "4d496ab2a3d29df5fadc3dbff6067e039806aaceae6cfcd09ea77d46c2b848fd"
+    },
+    {
+      "source": "third_party/sources/zlib/inffast.h",
+      "bytes": 427,
+      "sha256": "7d8c1c873ce9bc346ad6005bb9d75cce5c6352aaf7395385be216a9452a34908"
+    },
+    {
+      "source": "third_party/sources/zlib/inffixed.h",
+      "bytes": 6332,
+      "sha256": "237ba710f090e432b62ebf963bee8b302867e9691406b2d3f8ee89ee7bfef9b0"
+    },
+    {
+      "source": "third_party/sources/zlib/inflate.c",
+      "bytes": 54800,
+      "sha256": "8b6c599c3563c14c447c47db0d7dc9a16e8c246a078ec95a169ddcebaaebd811"
+    },
+    {
+      "source": "third_party/sources/zlib/inflate.h",
+      "bytes": 6618,
+      "sha256": "8ec9ac297790276f7e46a961d4c6f9f944fb1dec92401339ec2666973cc5983c"
+    },
+    {
+      "source": "third_party/sources/zlib/inftrees.c",
+      "bytes": 12999,
+      "sha256": "1960ca67384376f65b6ce8c08fdb501f8eb33923e11ef5f61a855708c6cb0a8a"
+    },
+    {
+      "source": "third_party/sources/zlib/inftrees.h",
+      "bytes": 2928,
+      "sha256": "c510b36402784b1f898be3b049b923469aa92701de2d9195aed19f6b65c0dce2"
+    },
+    {
+      "source": "third_party/sources/zlib/trees.c",
+      "bytes": 43761,
+      "sha256": "f2a5f949ea70dde7c23a54c793aeed630a03df4bb72417cd3aa008000c44699b"
+    },
+    {
+      "source": "third_party/sources/zlib/trees.h",
+      "bytes": 8472,
+      "sha256": "bb0a9d3ca88ee00c81adb7c636e73b97085f6ef1b52d6d58edbe2b6dc3adeb4d"
+    },
+    {
+      "source": "third_party/sources/zlib/uncompr.c",
+      "bytes": 1368,
+      "sha256": "34a126d54addf0d634efac2fe910b43a9acf3fd6eea699585fb6cfc3c187d474"
+    },
+    {
+      "source": "third_party/sources/zlib/zconf.h",
+      "bytes": 16298,
+      "sha256": "9c0087f31cd45fe4bfa0ca79b51df2c69d67c44f2fbb2223d7cf9ab8d971c360"
+    },
+    {
+      "source": "third_party/sources/zlib/zlib.h",
+      "bytes": 96239,
+      "sha256": "4ddc82b4af931ab55f44d977bde81bfbc4151b5dcdccc03142831a301b5ec3c8"
+    },
+    {
+      "source": "third_party/sources/zlib/zutil.c",
+      "bytes": 7304,
+      "sha256": "f7fdc9ef326a2683eb33c794face54e83c751ec17f3d1ba581847a62af36ddcd"
+    },
+    {
+      "source": "third_party/sources/zlib/zutil.h",
+      "bytes": 7127,
+      "sha256": "9a63f6690fac1620aa3cecee5752af618806da438a256b4a047fbcd289cac159"
+    }
+  ],
+  "actualSdkCppSources": [
+    "sdk/src/host/cursor_broker.cpp",
+    "sdk/src/host/cursor_queue.cpp",
+    "sdk/src/host/cursor_resources.cpp",
+    "sdk/src/host/engine_thread.cpp",
+    "sdk/src/host/interaction_protocol.cpp",
+    "sdk/src/host/runtime_profile.cpp",
+    "sdk/src/host/soui_miniblink_host.cpp",
+    "sdk/src/json_bridge.cpp",
+    "sdk/src/runtime/bridge/action_contract.cpp",
+    "sdk/src/runtime/bridge/bridge_transport.cpp",
+    "sdk/src/runtime/core/events/event_bus.cpp",
+    "sdk/src/runtime/core/result/result.cpp",
+    "sdk/src/runtime/core/task/task_store.cpp",
+    "sdk/src/runtime/host/session/webview_session.cpp",
+    "sdk/src/runtime/services/desktop/desktop_services.cpp",
+    "sdk/src/runtime/services/desktop/global_shortcut.cpp",
+    "sdk/src/runtime/services/desktop/menu_service.cpp",
+    "sdk/src/runtime/services/desktop/tray_service.cpp",
+    "sdk/src/runtime/services/fileinsight-service/fileinsight-service.cpp",
+    "sdk/src/runtime/services/filesystem-readonly/directory_scanner.cpp",
+    "sdk/src/runtime/services/permissions/permission_store.cpp",
+    "sdk/src/runtime/services/task/task_service.cpp"
+  ],
+  "excludes": [
+    "Host opaque getter execution",
+    "Test Kit enabled build",
+    "Kernel DLL loading",
+    "Native resource drain",
+    "GUI and performance"
+  ],
+  "historicalParentNativeCMakeSha256": "ffbf3e1641d5cec84a3b2b3ef0363557fd4443b5275ede7f1ab68079852c0597",
+  "parentNativeCMakeChangedAfterRun": true,
+  "runs": [
+    {
+      "architecture": "x64",
+      "phases": [
+        {
+          "name": "configure",
+          "pid": 106548,
+          "creationFileTime": "134359848867754201",
+          "rootExitCode": 0,
+          "supervisorExitCode": 124,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "bca7fb019205b422bc5384640732473ef98041f9d65a164229ec0a4955c5ec21"
+        },
+        {
+          "name": "build",
+          "pid": 92640,
+          "creationFileTime": "134359848983785222",
+          "rootExitCode": 0,
+          "supervisorExitCode": 124,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "0ada0ba80b2e0275f8b326e04d619da13ed933a6113b25b1d8466be97ad0ad8f"
+        },
+        {
+          "name": "inspect-sdk-library",
+          "pid": 101704,
+          "creationFileTime": "134359849314635025",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "a81f763bfd3428fea84c2fd24f10ded8aa5a18d74736c375c45709b632c3fd48"
+        },
+        {
+          "name": "inspect-gate",
+          "pid": 54976,
+          "creationFileTime": "134359849333097321",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "46ced85e7a4862795dd4b9ca7292a8c23fcbc37f614b21176ebf992c3f355b9c"
+        },
+        {
+          "name": "gate-cases",
+          "pid": 112492,
+          "creationFileTime": "134359849337544436",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "026f51ef3f5d4b2971fac5f92d1233a1860037d243cfd21a5ed912635b3371ce"
+        },
+        {
+          "name": "ctest-definitions",
+          "pid": 83344,
+          "creationFileTime": "134359849342292532",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "cacd1788ced20f94c8cdddded90e6c69aba5eef71fedc416fee7bd2f74b0519f"
+        },
+        {
+          "name": "ctest",
+          "pid": 54440,
+          "creationFileTime": "134359849347428395",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "b95d2fdfba9bf211e67f71c3f142ec0fb13d1a846c4313f046b1591800549066"
+        }
+      ],
+      "actualSdkCppCompiled": 22,
+      "currentHostObjectCompiled": true,
+      "actualAtomicGateDirectCases": 14,
+      "registeredCTestTests": 1,
+      "internalCasesObservedViaCTest": 14,
+      "sdkObjects": [
+        {
+          "file": "action_contract.obj",
+          "bytes": 3000951,
+          "sha256": "a19c00ce25f4383a5a53ce130847e96ff05b3dc23db22d46a9610a3db5a5d1ee"
+        },
+        {
+          "file": "bridge_transport.obj",
+          "bytes": 4488851,
+          "sha256": "9f724b4c25117d8123d90068766443fafe9f084e9e939718c8f0b81f10e7c57e"
+        },
+        {
+          "file": "cursor_broker.obj",
+          "bytes": 260133,
+          "sha256": "333b45111019bedc16614920dcdf8603d9a0f4a2c7bd6e3f4315dedb9a82ed4f"
+        },
+        {
+          "file": "cursor_queue.obj",
+          "bytes": 16165,
+          "sha256": "869dd9a79a18a85b62c12c6ca4dac6d537e10ad078b456d72e908dbbb6ae0f39"
+        },
+        {
+          "file": "cursor_resources.obj",
+          "bytes": 4511,
+          "sha256": "b81c0413972cb71ed47956fcecd8295471b73312cb84043089193deb6f338cb1"
+        },
+        {
+          "file": "desktop_services.obj",
+          "bytes": 403985,
+          "sha256": "8c1116361bbd8a7a2fcdb84faa528128ad00bb87b01898f13b41c132a992d0cd"
+        },
+        {
+          "file": "directory_scanner.obj",
+          "bytes": 3322527,
+          "sha256": "616f893cd9d22837ffd44b85105a89484ecde6345f7a569267de4e37de06dc84"
+        },
+        {
+          "file": "engine_thread.obj",
+          "bytes": 314083,
+          "sha256": "17bc66386cf762cf9886cbc5d63d1e683f05698efa8cd90130aaeed43ebe653c"
+        },
+        {
+          "file": "event_bus.obj",
+          "bytes": 273054,
+          "sha256": "668435a9758307e372dc8a8e23129a1ef82a389203c0c3d035b1c4f4585eca54"
+        },
+        {
+          "file": "fileinsight-service.obj",
+          "bytes": 3344934,
+          "sha256": "1dc39330ab6dae04cffd42b6ec4617f5bcaa3b84b3ab59d7bb03e8c15106ee67"
+        },
+        {
+          "file": "global_shortcut.obj",
+          "bytes": 80647,
+          "sha256": "032350c4f09927841e3dd7fdf9562432d5124ea2ba275d9283efd53d3fd700cf"
+        },
+        {
+          "file": "interaction_protocol.obj",
+          "bytes": 40271,
+          "sha256": "b74a99085273211d6b297f1968b1d5a7f15d00b803a55ea2c640c5f3c69ad14c"
+        },
+        {
+          "file": "json_bridge.obj",
+          "bytes": 4107708,
+          "sha256": "d19f601dfe3f893144671809d80cd64f15bd6cf9c1bdbb1b54926da1761f8e6b"
+        },
+        {
+          "file": "menu_service.obj",
+          "bytes": 444182,
+          "sha256": "7a9f46ee199ed5e0b3953edeecc2b39073443a6714b8438c7e2fadd7499e9459"
+        },
+        {
+          "file": "permission_store.obj",
+          "bytes": 700595,
+          "sha256": "fdad355276603ebfe758c1934979987a1cf0653b29468bc1f9f115d935eb2aab"
+        },
+        {
+          "file": "result.obj",
+          "bytes": 12010,
+          "sha256": "a254985d7996cd5113b87e3139d2e487114e7971a032a6a010174e85aca1baf3"
+        },
+        {
+          "file": "runtime_profile.obj",
+          "bytes": 72209,
+          "sha256": "5049456f44314e76ba1a24a61f6376e5811e2e19675d224c67d0c640abbc1aa0"
+        },
+        {
+          "file": "soui_miniblink_host.obj",
+          "bytes": 6044260,
+          "sha256": "2497142fed207423f087f4f893129947d75d26c98d0765a332763c820622a756"
+        },
+        {
+          "file": "task_service.obj",
+          "bytes": 4442784,
+          "sha256": "85844dd4bb4515721b220fafca4e08669ce4f50b65f9161bc13587256005bc17"
+        },
+        {
+          "file": "task_store.obj",
+          "bytes": 491508,
+          "sha256": "10163d9656641bb4a28b2a7768199b430952c7f040e7063e8cbbeb782a645b9e"
+        },
+        {
+          "file": "tray_service.obj",
+          "bytes": 160093,
+          "sha256": "88b858dcfa4365b9295db620e9ab17e64865492f3973b3380f14f48f71df3102"
+        },
+        {
+          "file": "webview_session.obj",
+          "bytes": 176191,
+          "sha256": "662368bdc444a9a9a7f1cb2bf2e4921239e69ca0beaea51e627c858ca287983e"
+        }
+      ],
+      "staticLibrary": {
+        "file": "soui_sdk.lib",
+        "bytes": 36818604,
+        "sha256": "95e2741cb02085798e5c08e4e29c7be4eebfd5f21ff4dd0261c65fe88ab7fd4e"
+      },
+      "helperExecutable": {
+        "file": "soui_main_context_gate_tests.exe",
+        "bytes": 31232,
+        "sha256": "a13b4705a14ed9b29d948e4136b748d7822d42676999b97b202ac54d210e9c55"
+      },
+      "sdkCompilerFlags": {
+        "exception": "EHsc",
+        "runtime": "MD",
+        "language": "c++17",
+        "controlledKernelHost": true,
+        "enableWke": 0,
+        "testKitDefined": false
+      },
+      "webView2CacheOff": true,
+      "helperLinksSdk": false,
+      "unboundReadInputCount": 367,
+      "allGenericPassed": false
+    },
+    {
+      "architecture": "Win32",
+      "phases": [
+        {
+          "name": "configure",
+          "pid": 94104,
+          "creationFileTime": "134359849788401673",
+          "rootExitCode": 0,
+          "supervisorExitCode": 124,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "5a4351268bbbd3d7c50b4a39ad0521dee2feb60b621b816fa50ec83351b2b4c5"
+        },
+        {
+          "name": "build",
+          "pid": 63484,
+          "creationFileTime": "134359849933106125",
+          "rootExitCode": 0,
+          "supervisorExitCode": 124,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "eaec0da06c0de1ca2bd47ee10ef419085a319e2dee48e233555830d3f4de3af5"
+        },
+        {
+          "name": "inspect-sdk-library",
+          "pid": 3896,
+          "creationFileTime": "134359850250061710",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "a5f5d3fd1b2d968318e2f07f43a78599d8d766c30b883eaca09a28089d8b56f1"
+        },
+        {
+          "name": "inspect-gate",
+          "pid": 89032,
+          "creationFileTime": "134359850262223357",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "c817a23826e8403d6f0e673c0153815ff5a577aca19b7f71cd46c1fbaa9eef59"
+        },
+        {
+          "name": "gate-cases",
+          "pid": 113032,
+          "creationFileTime": "134359850266713760",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "e46189f1e5ef660fcff2bb782f851b92a0c9db1057b78cbaf622a7e3ef40767e"
+        },
+        {
+          "name": "ctest-definitions",
+          "pid": 113972,
+          "creationFileTime": "134359850271153271",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "f9f3ecac40d3d2d8a93002464f9e682a6a1ebd925f83aa2fd777c488b372c502"
+        },
+        {
+          "name": "ctest",
+          "pid": 48380,
+          "creationFileTime": "134359850275918455",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "9e1052011413f7ee171dfaa34d2fa962b2bf28dc3c6f55a25087b070c97b52a4"
+        }
+      ],
+      "actualSdkCppCompiled": 22,
+      "currentHostObjectCompiled": true,
+      "actualAtomicGateDirectCases": 14,
+      "registeredCTestTests": 1,
+      "internalCasesObservedViaCTest": 14,
+      "sdkObjects": [
+        {
+          "file": "action_contract.obj",
+          "bytes": 1876820,
+          "sha256": "98a910339f2b379b605d4a0b8b23866a2c091789a54a028ed20a622abe074719"
+        },
+        {
+          "file": "bridge_transport.obj",
+          "bytes": 2926044,
+          "sha256": "047cd88eab747607dc49c0cdbc43edf3a4ec649b6e885d89388b253a6fca9f99"
+        },
+        {
+          "file": "cursor_broker.obj",
+          "bytes": 189004,
+          "sha256": "620532520321b92897127dc16143db737effcd27ed0cdde8960156f6cceca323"
+        },
+        {
+          "file": "cursor_queue.obj",
+          "bytes": 8319,
+          "sha256": "3758c257cb7da3a32e84df8dba28ba33d1bf6eab0790b2345a18ec52440851b3"
+        },
+        {
+          "file": "cursor_resources.obj",
+          "bytes": 3307,
+          "sha256": "ed5403f8e530d63a23289eeeef8ade84edfaff6c3392b5cbef2e75a49d2172b4"
+        },
+        {
+          "file": "desktop_services.obj",
+          "bytes": 264379,
+          "sha256": "3693be5ca47425336e17de4d1cdffda225ee1a6c497d0a7df803066a1dcc5d95"
+        },
+        {
+          "file": "directory_scanner.obj",
+          "bytes": 2063264,
+          "sha256": "6ccc67c2bd1ca29ad441ef56b6fcd2d18791a875f7fe946f5719e4d3827b65a3"
+        },
+        {
+          "file": "engine_thread.obj",
+          "bytes": 210579,
+          "sha256": "a2e6c8ea122c191274ddf7bf51795e50061cd27acb3bab5675b7658735bfc653"
+        },
+        {
+          "file": "event_bus.obj",
+          "bytes": 169842,
+          "sha256": "e01ec4b806a06298ebcd2d460ee08807705ff4079272393e597e2669b300a2a1"
+        },
+        {
+          "file": "fileinsight-service.obj",
+          "bytes": 2199523,
+          "sha256": "7765282213cb30dbb4589d244eefd9193f41d75cfa72f561d47f589e8ce1154b"
+        },
+        {
+          "file": "global_shortcut.obj",
+          "bytes": 59715,
+          "sha256": "4b560fa054ed0bfa77d8b9447e859098f52ece5ca7f4d01ee2b7fcb1b5fb62f1"
+        },
+        {
+          "file": "interaction_protocol.obj",
+          "bytes": 30906,
+          "sha256": "d7d43f658ea06efe855cac5b41091d3feb0516ec081abb2902299d87fd7cd1fa"
+        },
+        {
+          "file": "json_bridge.obj",
+          "bytes": 2684415,
+          "sha256": "dc44bc15fc26275fb2dbaf7b5d270e59cfc4e95b804f9fe0e9bc9dfc485c8911"
+        },
+        {
+          "file": "menu_service.obj",
+          "bytes": 288194,
+          "sha256": "922d0c557fd69369d715a64f27166ee32acc652d9257cc929bac28e71845e037"
+        },
+        {
+          "file": "permission_store.obj",
+          "bytes": 407812,
+          "sha256": "86f08adc03428eecd5736350a61c2795fce81ac2624d79b328ffbfd5c0b5b93b"
+        },
+        {
+          "file": "result.obj",
+          "bytes": 10103,
+          "sha256": "3391319ef3080674ef9a58e40d5904dbbe44536f158aaf2d77af0dc28bef8c92"
+        },
+        {
+          "file": "runtime_profile.obj",
+          "bytes": 47157,
+          "sha256": "12156907737db28525ec04fd5d0bef78766b62df9f37a754314d740eb4b7e242"
+        },
+        {
+          "file": "soui_miniblink_host.obj",
+          "bytes": 3945718,
+          "sha256": "352e2fbd19e2de7e0cf5983b3f77a50ed0a3da06c15472e7d4048c17ae55e568"
+        },
+        {
+          "file": "task_service.obj",
+          "bytes": 2788352,
+          "sha256": "2498cd6a339b097ad7b42bee8088f311f865771832434a54d561864141832c23"
+        },
+        {
+          "file": "task_store.obj",
+          "bytes": 288917,
+          "sha256": "2d244f09badbe4cbe8b891cbd4ef083c6ad6bf3fc8b8a12b1023e930a0b387a7"
+        },
+        {
+          "file": "tray_service.obj",
+          "bytes": 109979,
+          "sha256": "3cdfb20bcaf1089181b931f8cf3b310c023071a7d41bdd3fa5478d08bafc7692"
+        },
+        {
+          "file": "webview_session.obj",
+          "bytes": 121452,
+          "sha256": "8a3eac36cdc677cb0c272248ff03cef3d005ab99f787b579a07311e9e2912953"
+        }
+      ],
+      "staticLibrary": {
+        "file": "soui_sdk.lib",
+        "bytes": 25259546,
+        "sha256": "3e5d991cda2c18135d35d43193b9095e6b847e6ad2031e71088de9b7970e9df1"
+      },
+      "helperExecutable": {
+        "file": "soui_main_context_gate_tests.exe",
+        "bytes": 28672,
+        "sha256": "0743cae27914ab5c1677d3f590004b5b5a18aa00dd929187b87c54153d690d84"
+      },
+      "sdkCompilerFlags": {
+        "exception": "EHsc",
+        "runtime": "MD",
+        "language": "c++17",
+        "controlledKernelHost": true,
+        "enableWke": 0,
+        "testKitDefined": false
+      },
+      "webView2CacheOff": true,
+      "helperLinksSdk": false,
+      "unboundReadInputCount": 368,
+      "allGenericPassed": false
+    }
+  ]
+}

@@ -3538,6 +3538,29 @@ void WebViewImpl::dragTargetDragLeave()
     m_currentDragData = nullptr;
 }
 
+bool WebViewImpl::dragTargetUpdateDataForCursorBroker(const WebDragData& webDragData)
+{
+    if (!m_currentDragData)
+        return false;
+    // Construct before replacement: an allocation failure retains the entered
+    // session and its original operation negotiation. No new Enter is emitted.
+    DataObject* updated = DataObject::create(webDragData);
+    if (!updated)
+        return false;
+    m_currentDragData = updated;
+    return true;
+}
+
+bool WebViewImpl::dragTargetCancelForCursorBroker()
+{
+    if (!m_currentDragData)
+        return true;
+    // If dragExited throws, dragTargetDragLeave has not cleared the Persistent.
+    // Propagate that failure; the owner retains its session and may retry.
+    dragTargetDragLeave();
+    return !m_currentDragData;
+}
+
 void WebViewImpl::dragTargetDrop(const WebPoint& clientPoint,
                                  const WebPoint& screenPoint,
                                  int modifiers)

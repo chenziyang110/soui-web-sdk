@@ -7,6 +7,7 @@
 #ifndef UI_BASE_CLIPBOARD_CLIPBOARD_UTIL_WIN_H_
 #define UI_BASE_CLIPBOARD_CLIPBOARD_UTIL_WIN_H_
 
+#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -50,6 +51,23 @@ public:
 
     static std::string getPlainText(IDataObject* dataObject);
     static base::DictionaryValue* getCustomPlainTexts(IDataObject* dataObject);
+
+    enum BoundedReadResult { BoundedReadAbsent, BoundedReadSuccess, BoundedReadFailure };
+    struct BoundedTextItem {
+        std::string type;
+        std::string data;
+    };
+    // Controlled drag readers. Outputs must initially be empty. Absent means
+    // DV_E_FORMATETC; bad data and all other provider failures are Failure.
+    // Only Success commits output and deducts from the caller's shared <=1MiB
+    // budget. Each MIME/text string charges owned UTF8 bytes plus its NUL and
+    // target WebString UTF16 bytes plus its NUL. Caller charges file paths into
+    // the same budget and passes the remaining item slots to the custom reader.
+    // CF_TEXT honors CF_LOCALE when supplied, using the system ACP if absent.
+    // Convert returned strings with explicit lengths (JSON can contain NULs).
+    static BoundedReadResult getPlainTextBounded(IDataObject*, size_t& remainingPayloadBytes, BoundedTextItem& output);
+    static BoundedReadResult getCustomPlainTextsBounded(IDataObject*, size_t& remainingPayloadBytes,
+        std::vector<BoundedTextItem>& output, size_t maxItems = 256);
 
     static HGLOBAL createGlobalData(const std::string& url, const std::string& title);
     template <typename charT> static HGLOBAL createGlobalData(const std::basic_string<charT>& str)

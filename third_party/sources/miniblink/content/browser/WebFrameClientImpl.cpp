@@ -3,6 +3,7 @@
 #include "content/browser/WebPage.h"
 #include "content/browser/WebPageImpl.h"
 #include "content/ui/ContextMeun.h"
+#include "wke/CursorDescriptorBroker.h"
 #include "content/web_impl_win/WebMediaPlayerImpl.h"
 #include "content/web_impl_win/npapi/WebPluginImpl.h"
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
@@ -45,8 +46,11 @@ WebFrameClientImpl::WebFrameClientImpl()
 WebFrameClientImpl::~WebFrameClientImpl()
 {
     RELEASE_ASSERT(0 == m_unusedFrames.size());
-    if (m_menu)
-        delete m_menu;
+    m_mainDocumentWitness.reset();
+    if (m_menu) {
+        m_menu->requestClose();
+        m_menu.reset();
+    }
 }
 
 void WebFrameClientImpl::didAddMessageToConsole(const WebConsoleMessage& message,
@@ -132,6 +136,8 @@ blink::WebPluginPlaceholder* WebFrameClientImpl::createPluginPlaceholder(WebLoca
 
 blink::WebPlugin* WebFrameClientImpl::createPlugin(WebLocalFrame* frame, const WebPluginParams& params)
 {
+    if (!wke::brokerPluginEntry())
+        return nullptr;
     WebPluginParams newParam = params;
     Vector<String> paramNames;
     Vector<String> paramValues;
@@ -325,9 +331,64 @@ void WebFrameClientImpl::didCommitProvisionalLoad(WebLocalFrame* frame, const We
 #endif    
 }
 
+bool WebFrameClientImpl::observeMainDocument(WebLocalFrame* frame) noexcept
+{
+#if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
+    wkeWebView view = nullptr;
+    try {
+        if (!m_webPage || !frame)
+            return false;
+        view = m_webPage->wkeWebView();
+        const bool controlled = wke::brokerOwnsView(view);
+        // Legacy views do not retain a Document. A once-controlled client may
+        // not fall back to legacy callbacks after its endpoint is removed.
+        if (!controlled && !m_mainDocumentWitnessControlled)
+            return true;
+        m_mainDocumentWitnessControlled = true;
+        if (!controlled || m_mainDocumentWitnessFailed
+            || m_webPage->getState() != pageInited || wke::brokerUiCancelled(view))
+            return false;
+        const WebDocument document = frame->document();
+        if (frame != m_webPage->mainFrame() || document.isNull()) {
+            m_mainDocumentWitnessFailed = true;
+            wke::brokerRecordFailure(view);
+            return false;
+        }
+        if (!m_mainDocumentWitness.equals(document)) {
+            // Keep the actual object alive before revocation can call out. The
+            // context callback can precede didCreateNewDocument in Blink; the
+            // later callback for this same object must not rearm pending.
+            m_mainDocumentWitness.assign(document);
+            wke::brokerDocumentCommitted(view, true);
+        }
+        // Identity actions may reenter. An observation for a superseded
+        // object must not authorize the outer context callback.
+        return m_webPage->getState() == pageInited && !wke::brokerUiCancelled(view)
+            && m_mainDocumentWitness.equals(document)
+            && document.equals(frame->document());
+    } catch (...) {
+        m_mainDocumentWitnessFailed = true;
+        try { if (view) wke::brokerRecordFailure(view); } catch (...) { }
+        return false;
+    }
+#else
+    (void)frame;
+    return true;
+#endif
+}
+
 void WebFrameClientImpl::didCreateNewDocument(WebLocalFrame* frame)
 {
-    //OutputDebugStringA("WebFrameClientImpl::didFinishDocumentLoad\n");
+#if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
+    if (!m_webPage || !frame)
+        return;
+    // Subdocument replacement still revokes native commands. For the main
+    // document, only the first observation of the actual object revokes.
+    if (!frame->parent())
+        (void)observeMainDocument(frame);
+    else
+        wke::brokerDocumentCommitted(m_webPage->wkeWebView(), false);
+#endif
 }
 
 void WebFrameClientImpl::didClearWindowObject(WebLocalFrame* frame) { }
@@ -679,7 +740,7 @@ bool WebFrameClientImpl::runModalBeforeUnloadDialog(bool isReload, const WebStri
 void WebFrameClientImpl::showContextMenu(const blink::WebContextMenuData& data)
 {
     if (!m_menu)
-        m_menu = new ContextMenu(m_webPage);
+        m_menu = ContextMenu::create(m_webPage);
 
     blink::WebDocument doc = data.node.document();
     blink::WebLocalFrame* frmae = doc.frame();
@@ -701,6 +762,13 @@ void WebFrameClientImpl::didCreateScriptContext(WebLocalFrame* frame, v8::Local<
     v8::V8::SetCaptureStackTraceForUncaughtExceptions(true, 50, v8::StackTrace::kDetailed);
 
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
+    if (!frame)
+        return;
+    // Revoke the actual new main Document before any global-object or user
+    // callback can acknowledge its context. Same-document context replacement
+    // still reaches the business callbacks below.
+    if (worldId == 0 && frame->top() == frame && !observeMainDocument(frame))
+        return;
     if (frame->top() == frame)
         wke::onCreateGlobalObjectInMainFrame(this, frame, context, extensionGroup, worldId);
     else
