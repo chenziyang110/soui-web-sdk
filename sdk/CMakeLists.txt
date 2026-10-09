@@ -33,6 +33,10 @@ option(SOUI_BUILD_WEBVIEW2 "Build the optional modern WebView2 backend" OFF)
 if(SOUI_BUILD_WEBVIEW2)
   add_subdirectory(renderers/webview2)
 endif()
+option(SOUI_BUILD_UIA "Build the optional finite Windows UIA provider" OFF)
+if(SOUI_BUILD_UIA)
+  add_subdirectory(accessibility/uia)
+endif()
 
 set(ZLIB_SOURCE "${SOUI_DISTRIBUTION_ROOT}/third_party/sources/zlib")
 add_library(soui_zlib STATIC ${ZLIB_SOURCE}/adler32.c ${ZLIB_SOURCE}/compress.c

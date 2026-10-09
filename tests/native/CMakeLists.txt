@@ -301,4 +301,7 @@ add_test(NAME sdk.native.local-task-family-prepare COMMAND soui_local_task_famil
 set_tests_properties(sdk.native.local-task-family-prepare PROPERTIES TIMEOUT 60)
 
 add_subdirectory(windows_local_endpoint)
+if(SOUI_BUILD_UIA)
+  add_subdirectory(uia)
+endif()
 add_subdirectory(json_bridge_endpoint)
