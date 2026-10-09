@@ -1,0 +1,165 @@
+'use strict';
+
+// Private evidence reader. It never launches a process or repairs a failed result.
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const assert = require('node:assert/strict');
+const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const canonical = value => path.resolve(value).replace(/\\/g, '/').replace(/\/$/, '').toLowerCase();
+const targets = ['soui_engine_thread_startup_tests', 'EngineStartupRed', 'EngineStartupProduction',
+  'soui_engine_thread_timeout_tests', 'actual-sdk/soui_sdk'];
+const propertyNames = ['VCToolsVersion', 'VCToolsInstallDir', 'PreferredToolArchitecture', 'PlatformToolset',
+  'WindowsTargetPlatformVersion', 'CLToolPath', 'CLToolExe', 'LinkToolPath', 'LinkToolExe', 'VCTargetsPath'];
+const record = file => { const bytes = fs.readFileSync(file); return {path: file, bytes: bytes.length, sha256: sha(bytes)}; };
+function verify(item) {
+  const bytes = fs.readFileSync(item.path);
+  assert.equal(bytes.length, item.bytes, 'Frozen size differs: ' + item.path);
+  assert.equal(sha(bytes), item.sha256, 'Frozen hash differs: ' + item.path);
+  return bytes;
+}
+function walk(directory) {
+  const result = [];
+  for (const item of fs.readdirSync(directory, {withFileTypes: true})) {
+    const file = path.join(directory, item.name);
+    assert(!fs.lstatSync(file).isSymbolicLink(), 'Generated evidence traverses a link');
+    if (item.isDirectory()) result.push(...walk(file));
+    else if (item.isFile()) result.push(file);
+  }
+  return result;
+}
+function uint64(value) {
+  assert.equal(typeof value, 'string');
+  assert(/^[1-9]\d*$/.test(value), 'Process identity must be a canonical positive decimal string');
+  assert(BigInt(value) <= 18446744073709551615n, 'Process identity overflow');
+}
+function readPhase(phase, frozen) {
+  for (const item of phase.raw) verify(item);
+  const reportBytes = fs.readFileSync(phase.result.report);
+  assert.equal(sha(reportBytes), phase.result.reportSha256);
+  const text = reportBytes.toString('utf8');
+  assert(text.endsWith('\n'), 'Owned report is incomplete');
+  const rows = text.trimEnd().split('\n').map(line => JSON.parse(line));
+  const start = rows[0], final = rows.at(-1), result = phase.result;
+  assert.equal(start.event, 'start');
+  assert.equal(start.schema, 'soui.owned-process-run/v1');
+  assert.equal(start.pid, result.pid); uint64(start.creationFileTime);
+  assert.equal(start.creationFileTime, result.creationFileTime);
+  assert.equal(start.jobAssignedBeforeResume, true); assert.equal(start.breakawayAllowed, false);
+  assert.deepEqual(phase.ready, {pid: start.pid, creationFileTime: start.creationFileTime});
+  assert.equal(phase.readyError, null);
+  assert.deepEqual(final, result.terminal);
+  assert.equal(final.event, 'terminal'); assert.equal(final.closureConfirmed, true);
+  assert.equal(final.activeProcesses, 0);
+  for (const key of ['fallbackUsed', 'stopRequested']) assert.equal(result[key], false);
+  for (const key of ['spawnError', 'reportError']) assert.equal(result[key], null);
+  assert.equal(result.closureConfirmed, true);
+  assert.equal(result.passed, phase.genericSupervisionPassed);
+  const context = JSON.parse(fs.readFileSync(result.report + '.context.json'));
+  assert.equal(context.runnerSha256, frozen.tools.runner.sha256);
+  assert.equal(context.executable, phase.executable);
+  assert.equal(context.executableSha256, sha(fs.readFileSync(phase.executable)));
+  assert.deepEqual(context.args, phase.args); assert.equal(context.cwd, frozen.root);
+  assert.equal(context.timeoutMs, start.timeoutMs); assert.equal(context.drainMs, start.drainMs);
+  assert.equal(context.tailImagePin, undefined);
+  return {rows, start, terminal: final, context};
+}
+function readToolchain(build, architecture, frozen, compilePhase) {
+  const cachePath = path.join(build, 'CMakeCache.txt');
+  const cache = fs.readFileSync(cachePath, 'utf8');
+  const cacheValue = name => cache.match(new RegExp('^' + name + ':[^=]+=([^\\r\\n]*)$', 'm'))?.[1];
+  assert.equal(cacheValue('CMAKE_GENERATOR'), 'Visual Studio 17 2022');
+  assert.equal(cacheValue('CMAKE_GENERATOR_PLATFORM'), (architecture === 'x64' ? 'x64' : 'Win32') + ',version=10.0.19041.0');
+  assert.equal(cacheValue('CMAKE_GENERATOR_TOOLSET'), 'v143,host=x64,version=14.44.35207');
+  assert.equal(cacheValue('CMAKE_SYSTEM_VERSION'), '10.0.19041.0');
+  const metadata = walk(path.join(build, 'CMakeFiles')).filter(file => path.basename(file) === 'CMakeCXXCompiler.cmake');
+  assert.equal(metadata.length, 1, 'Actual compiler metadata is missing or ambiguous');
+  const compilerText = fs.readFileSync(metadata[0], 'utf8');
+  const compiler = compilerText.match(/^set\(CMAKE_CXX_COMPILER "([^"]+)"\)$/m)?.[1];
+  assert(compiler, 'Actual compiler path is absent');
+  assert.equal(canonical(compiler), canonical(frozen.tools['cl-' + architecture].path));
+  verify(frozen.tools['cl-' + architecture]);
+  const native = readPhase(compilePhase, frozen);
+  const observed = new Map();
+  for (const row of native.rows.filter(row => row.event === 'owned-member' && typeof row.image === 'string')) {
+    if (!/\/(?:cl|link|lib|msbuild)\.exe$/i.test(row.image.replace(/\\/g, '/'))) continue;
+    uint64(row.creationFileTime);
+    assert(Number.isInteger(row.pid) && row.pid > 0 && row.pid <= 0xffffffff);
+    observed.set(row.pid + ':' + row.creationFileTime, {pid: row.pid, creationFileTime: row.creationFileTime, image: row.image});
+  }
+  const observedTools = [];
+  for (const key of ['cl-' + architecture, 'link-' + architecture, 'lib-' + architecture, 'msbuild']) {
+    const pin = frozen.tools[key]; verify(pin);
+    const matches = [...observed.values()].filter(item => canonical(item.image) === canonical(pin.path));
+    assert(matches.length > 0, 'Owned compile did not capture the pinned tool image: ' + key);
+    observedTools.push({key, diskObject: pin, observedProcesses: matches});
+  }
+  for (const item of observed.values()) assert(observedTools.some(tool => canonical(tool.diskObject.path) === canonical(item.image)),
+    'Owned compile captured a different CL/Link/Lib/MSBuild image: ' + item.image);
+  const generated = [record(cachePath), record(metadata[0])];
+  const projects = [];
+  for (const target of targets) {
+    const projectPath = path.join(build, target + '.vcxproj');
+    const project = fs.readFileSync(projectPath, 'utf8');
+    assert(project.includes('<PlatformToolset>v143</PlatformToolset>'));
+    assert(project.includes('<WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>'));
+    assert(project.includes('<PreferredToolArchitecture>x64</PreferredToolArchitecture>'));
+    const macroEnabled = target === 'soui_engine_thread_startup_tests' || target === 'EngineStartupRed';
+    assert.equal(project.includes('SOUI_ENGINE_STARTUP_TEST_ONLY'), macroEnabled);
+    const tlogs = walk(path.join(build, target + '.dir', 'Release')).filter(file => /\.tlog$/i.test(file));
+    const clLogs = tlogs.filter(file => path.basename(file).toLowerCase() === 'cl.command.1.tlog');
+    assert.equal(clLogs.length, 1, 'Actual CL command tlog missing or ambiguous: ' + target);
+    const clText = fs.readFileSync(clLogs[0]).toString('utf16le').replace(/^\uFEFF/, '');
+    assert.equal(clText.includes('SOUI_ENGINE_STARTUP_TEST_ONLY'), macroEnabled);
+    if (target !== 'soui_engine_thread_timeout_tests') {
+      const expectedSource = target === 'EngineStartupRed' ? 'RED-ENGINE_THREAD.CPP.INERT.SNAPSHOT' : 'SDK\\SRC\\HOST\\ENGINE_THREAD.CPP';
+      assert(clText.toUpperCase().includes(expectedSource), 'Engine source missing from actual CL tlog');
+    }
+    const outputName = target === 'actual-sdk/soui_sdk' ? 'lib.command.1.tlog' : 'link.command.1.tlog';
+    const outputLogs = tlogs.filter(file => path.basename(file).toLowerCase() === outputName);
+    assert.equal(outputLogs.length, 1, 'Actual Link/Lib command tlog missing: ' + target);
+    const outputText = fs.readFileSync(outputLogs[0]).toString('utf16le').toUpperCase();
+    const machine = architecture === 'x64' ? 'X64' : 'X86';
+    assert(outputText.includes('/MACHINE:' + machine));
+    const expectedOutput = path.join(build, target === 'actual-sdk/soui_sdk' ? 'actual-sdk/Release/soui_sdk.lib' :
+      'Release/' + target + '.exe').replace(/\\/g, '/').toUpperCase();
+    assert(outputText.replace(/\\/g, '/').includes(expectedOutput), 'Actual Link/Lib output differs');
+    const item = {target, macroEnabled, project: record(projectPath), tlogs: tlogs.map(record),
+      externalVcpkgIntegrationObserved: /VCPKG\\INSTALLED\\/i.test(clText)};
+    projects.push(item); generated.push(item.project, ...item.tlogs);
+  }
+  return {architecture, actualCompiler: record(compiler), compilerMetadata: record(metadata[0]),
+    cache: record(cachePath), observedTools, projects, generated,
+    limitation: 'Owned image paths and held disk bytes do not authenticate loaded memory. Existing VCPKG MSBuild integration is recorded, not disabled.'};
+}
+function readProperties(bytes, frozen, architecture) {
+  const value = JSON.parse(bytes.toString('utf8').replace(/^\uFEFF/, '').trim());
+  assert(value && typeof value === 'object' && !Array.isArray(value));
+  assert.deepEqual(Object.keys(value), ['Properties']);
+  const properties = value.Properties;
+  assert.deepEqual(Object.keys(properties).sort(), [...propertyNames].sort());
+  for (const name of propertyNames) assert.equal(typeof properties[name], 'string');
+  assert.equal(properties.VCToolsVersion, '14.44.35207');
+  assert.equal(properties.PlatformToolset, 'v143');
+  assert.equal(properties.PreferredToolArchitecture.toLowerCase(), 'x64');
+  assert.equal(properties.WindowsTargetPlatformVersion, '10.0.19041.0');
+  const toolsRoot = path.resolve(path.dirname(frozen.tools['cl-' + architecture].path), '../../..');
+  assert.equal(canonical(properties.VCToolsInstallDir), canonical(toolsRoot));
+  assert(properties.VCTargetsPath, 'Evaluated VC targets path missing');
+  assert.equal(canonical(properties.VCTargetsPath), canonical(frozen.vcTargetsPath));
+  for (const [prefix, key, exe] of [['CL', 'cl-' + architecture, 'cl.exe'], ['Link', 'link-' + architecture, 'link.exe']]) {
+    const toolExe = properties[prefix + 'ToolExe'];
+    assert(toolExe === '' || toolExe.toLowerCase() === exe);
+    const toolPath = properties[prefix + 'ToolPath'];
+    if (toolPath) assert.equal(canonical(path.join(toolPath, toolExe || exe)), canonical(frozen.tools[key].path));
+  }
+  const defaultProps = path.join(properties.VCTargetsPath, 'Microsoft.Cpp.Default.props');
+  const cppProps = path.join(properties.VCTargetsPath, 'Microsoft.Cpp.props');
+  for (const file of [defaultProps, cppProps]) {
+    const pinned = frozen.toolchainImports.find(item => canonical(item.path) === canonical(file));
+    assert(pinned, 'Evaluated import was not pinned before launch'); verify(pinned);
+  }
+  return {properties, evaluatedImportInputs: [record(defaultProps), record(cppProps)],
+    note: 'No target or tool-version override is requested. Empty CLToolPath/LinkToolPath are defaults, not fabricated explicit values.'};
+}
+module.exports = {record, verify, walk, canonical, targets, propertyNames, readPhase, readToolchain, readProperties};

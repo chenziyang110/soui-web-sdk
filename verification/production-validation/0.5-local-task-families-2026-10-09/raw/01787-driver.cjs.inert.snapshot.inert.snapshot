@@ -1,0 +1,266 @@
+'use strict';
+// Prepared for Root to execute. This file never runs GUI, installs an SDK,
+// requests compiler-tail acceptance, or changes source/canonical verification.
+const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
+const root = path.resolve(__dirname, '../..');
+const evidence = require('./toolchain-evidence.cjs');
+const preparedPath = path.join(__dirname, 'frozen-inputs-final.json');
+const preparedBytes = fs.readFileSync(preparedPath), prepared = JSON.parse(preparedBytes);
+function verifyPreparation() {
+  for (const row of [...prepared.privateInputs, ...Object.values(prepared.tools), ...prepared.toolchainImports,
+      ...prepared.prior.payloadFiles, ...prepared.prior.identityFiles, ...prepared.futureReadPins]) {
+    const current = evidence.record(row.path);
+    if (current.bytes !== row.bytes || current.sha256 !== row.sha256 || current.resolvedPath !== row.resolvedPath)
+      throw Error('Prepared private input changed: ' + row.path);
+  }
+  if (path.resolve(process.execPath).toLowerCase() !== path.resolve(prepared.tools.node.path).toLowerCase())
+    throw Error('Use the exact prepared Node executable');
+}
+verifyPreparation();
+const identity = require(path.join(root, 'tools/internal/delivery-identity.cjs'));
+const {launchOwned} = require(path.join(root, 'tools/internal/owned-process.cjs'));
+const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const encode = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
+const need = (value, message) => { if (!value) throw Error(message); };
+need(process.argv.length === 2, 'This fixed private driver accepts no arguments');
+const reviewedPath = path.join(__dirname, 'reviewed-inputs.json');
+const reviewedBytes = fs.readFileSync(reviewedPath), reviewed = JSON.parse(reviewedBytes);
+need(hash(reviewedBytes) === '493d43655e241556b02804a7d345491e1632fb26184f49f7830c49369f09ec6f', 'Reviewed index changed');
+need(reviewed.root === root && reviewed.files.length === 16, 'Reviewed source belongs to another worktree');
+function file(requestedPath) {
+  const resolvedPath = fs.realpathSync.native(requestedPath), stat = fs.statSync(resolvedPath);
+  need(stat.isFile(), 'Nonregular input: ' + requestedPath);
+  const bytes = fs.readFileSync(resolvedPath);
+  return {path: requestedPath, resolvedPath, bytes: bytes.length, sha256: hash(bytes)};
+}
+function verifyReviewed() {
+  for (const row of reviewed.files) {
+    const current = file(identity.safePath(root, row.path));
+    const snapshot = file(identity.safePath(__dirname, row.snapshot));
+    need(current.bytes === row.bytes && current.sha256 === row.sha256 &&
+      snapshot.bytes === row.bytes && snapshot.sha256 === row.sha256, 'Reviewed source/snapshot changed: ' + row.path);
+  }
+}
+verifyReviewed();
+const runner = 'F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';
+const client = path.join(root, 'tools/internal/owned-process.cjs');
+need(file(runner).sha256 === '1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f', 'External owned runner changed');
+need(file(client).sha256 === '8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7', 'Owned client changed');
+const cmake = 'C:/Program Files/CMake/bin/cmake.exe', ctest = 'C:/Program Files/CMake/bin/ctest.exe';
+const vs = 'C:/Program Files/Microsoft Visual Studio/2022/Community';
+const msvc = path.join(vs, 'VC/Tools/MSVC/14.44.35207');
+const sdk = 'C:/Program Files (x86)/Windows Kits/10';
+const toolPaths = [process.execPath, runner, client, cmake, ctest,
+  path.join(root, 'tools/internal/delivery-identity.cjs'), path.join(root, 'tools/internal/CMake-Configure.ps1'),
+  path.join(vs, 'MSBuild/Current/Bin/MSBuild.exe'), path.join(vs, 'MSBuild/Current/Bin/amd64/MSBuild.exe'),
+  ...['x64', 'x86'].flatMap(arch => ['cl.exe', 'link.exe', 'lib.exe'].map(name => path.join(msvc, 'bin/Hostx64', arch, name)))];
+const tools = toolPaths.map(file);
+const base = identity.safePath(__dirname, 'actual-' + crypto.randomUUID());
+fs.mkdirSync(base, {recursive: false});
+function write(name, value) {
+  fs.writeFileSync(identity.safePath(base, name), Buffer.isBuffer(value) ? value : encode(value), {flag: 'wx'});
+}
+function walk(directory) {
+  need(!fs.lstatSync(directory).isSymbolicLink(), 'Linked directory: ' + directory);
+  return fs.readdirSync(directory, {withFileTypes: true}).sort((a, b) => a.name.localeCompare(b.name)).flatMap(entry => {
+    const full = path.join(directory, entry.name), stat = fs.lstatSync(full);
+    need(!stat.isSymbolicLink(), 'Linked file: ' + full);
+    return stat.isDirectory() ? walk(full) : stat.isFile() ? [full] : [];
+  });
+}
+const testNames = ['sdk_contract', 'action_contract', 'session_renewal', 'task_service', 'task_store_capacity',
+  'task_scope', 'task_operation_query', 'local_authorization', 'local_action_dispatch', 'local_task_family'];
+const targets = testNames.map(name => 'soui_' + name + '_tests').concat('soui_local_task_family_prepare_tests');
+const testPattern = '^sdk\\.native\\.(contract|action-contract|session-renewal|task-service|task-store-capacity|task-scope|task-operation-query|local-authorization|local-action-dispatch|local-task-family|local-task-family-prepare)$';
+const source = identity.source(root), rawSource = identity.snapshot(root, source.files.map(row => row.path));
+const inputNames = source.files.filter(row => row.path.startsWith('sdk/include/') || row.path.startsWith('sdk/src/') ||
+  row.path.startsWith('cmake/') || ['CMakeLists.txt', 'VERSION', 'sdk/CMakeLists.txt', 'sdk/cmake/SouiSdkConfig.cmake.in',
+    'tools/runtime-doctor/CMakeLists.txt', 'tests/native/CMakeLists.txt', 'third_party/include/json/json.hpp',
+    ...testNames.map(name => 'tests/native/' + name + '_tests.cpp')].includes(row.path)).map(row => row.path);
+need(source.sha256===prepared.prior.sourceSha256 && rawSource.sha256===prepared.prior.rawSourceSha256, 'Current source differs from the compiled prior attempt');
+const actualInputs = identity.snapshot(root, inputNames);
+// Hash-only prelaunch inventory covers vendor headers/libraries read by the
+// compiler/linker. Their bytes remain at their original vendor locations.
+const vendorRoots = ['C:/Program Files/CMake/share', path.join(msvc, 'include'), path.join(msvc, 'lib/x64'), path.join(msvc, 'lib/x86'),
+  path.join(sdk, 'Include/10.0.19041.0'), path.join(sdk, 'Lib/10.0.19041.0/ucrt/x64'),
+  path.join(sdk, 'Lib/10.0.19041.0/ucrt/x86'), path.join(sdk, 'Lib/10.0.19041.0/um/x64'), path.join(sdk, 'Lib/10.0.19041.0/um/x86')];
+const vendorInputs = vendorRoots.flatMap(walk).map(file);
+const beforeReads = new Map([...actualInputs.files.map(row => file(identity.safePath(root, row.path))), ...tools, ...vendorInputs]
+  .map(row => [row.resolvedPath.toLowerCase(), row]));
+for(const row of prepared.futureReadPins) beforeReads.set(row.resolvedPath.toLowerCase(),row);
+for(const row of rawSource.files){const current=file(identity.safePath(root,row.path));need(current.sha256===row.sha256 && current.bytes===row.bytes,'Whole raw source changed');beforeReads.set(current.resolvedPath.toLowerCase(),current);}
+write('reviewed-inputs.json', reviewedBytes);
+write('prepared-inputs.json', preparedBytes);
+write('toolchain-evidence.cjs.inert.snapshot', fs.readFileSync(path.join(__dirname, 'toolchain-evidence.cjs')));
+write('driver.cjs.inert.snapshot', fs.readFileSync(__filename));
+write('frozen-inputs.json', {schema: 'soui.local-task-family-native-inputs/v1', reviewedSourceSha256: reviewed.sourceSha256,
+  source, rawSource, actualInputs, tools, vendorInputs, vendorInputsHashOnly: true,
+  configuration: {architectures: ['x64', 'x86'], toolset: 'v143,version=14.44.35207,host=x64', sdk: '10.0.19041.0',
+    productionSeam: false, privateSeamTarget: 'soui_local_task_family_prepare_tests',
+    privateSeamSources: ['task_service.cpp', 'task_store.cpp', 'bridge_transport.cpp'], sharedWorkers: 2},
+  noGui: true, noPipe: true, noOsIdentity: true, compilerTailAcceptance: false, releaseReady: false});
+fs.mkdirSync(path.join(base, 'source-raw'));
+const sourceMap = actualInputs.files.map((row, index) => {
+  const bytes = fs.readFileSync(identity.safePath(root, row.path));
+  need(bytes.length === row.bytes && hash(bytes) === row.sha256, 'Source input changed before launch');
+  const archive = 'source-raw/' + String(index).padStart(4, '0') + '-' + path.basename(row.path) + '.inert.snapshot';
+  write(archive, bytes); return {...row, archive};
+});
+write('source-raw-map.json', sourceMap);
+const env = {...process.env, MSBUILDDISABLENODEREUSE: '1'}, removedEnvironmentNames = [];
+const compilerOverrides = new Set(['CL', '_CL_', 'LINK', '_LINK_', 'INCLUDE', 'LIB', 'LIBPATH', 'CLTOOLPATH', 'CLTOOLEXE',
+  'LINKTOOLPATH', 'LINKTOOLEXE', 'VCTOOLSVERSION', 'VCTOOLSINSTALLDIR', 'WINDOWSSDKDIR', 'WINDOWSSDKVERSION']);
+for (const key of Object.keys(env)) if (/(token|secret|password|passwd|api_?key|credential)/i.test(key) || compilerOverrides.has(key.toUpperCase())) {
+  removedEnvironmentNames.push(key); delete env[key];
+}
+write('environment-guard.json', {removedEnvironmentNames, valuesNeverWritten: true, parentEnvironmentUnchanged: true,
+  MSBUILDDISABLENODEREUSE: env.MSBUILDDISABLENODEREUSE, binlogsPrivateOnly: true});
+const records = prepared.prior.phases.map(row=>({...row,reusedFromPriorAttempt:true})), outputs = [], architectureEvidence = [];
+for(const record of records)evidence.assertContinuation(record,prepared,true);
+function verifyInputs() {
+  verifyPreparation();
+  verifyReviewed();
+  need(identity.snapshot(root, inputNames).sha256 === actualInputs.sha256, 'Prepared project inputs changed');
+  need(tools.every(row => JSON.stringify(file(row.path)) === JSON.stringify(row)), 'Actual tool/alias bytes changed');
+}
+async function phase(name, exe, args, timeoutMs, allowClosedCompileTail = false) {
+  verifyInputs();
+  const directory = path.join(base, name); fs.mkdirSync(directory);
+  const stdout = [], stderr = [];
+  const inputs = {name, executable: file(exe), runner: file(runner), client: file(client), args: [...args], cwd: root,
+    timeoutMs, drainMs: 3000, sourceSha256: source.sha256, actualInputsSha256: actualInputs.sha256,
+    reviewedSourceSha256: reviewed.sourceSha256, compilerTailAcceptance: false,
+    allowClosedCompileTailForContinuationOnly: allowClosedCompileTail};
+  fs.writeFileSync(path.join(directory, 'inputs.json'), encode(inputs), {flag: 'wx'});
+  const owned = launchOwned(exe, args, {runner, cwd: root, report: path.join(directory, 'owned.ndjson'),
+    timeoutMs, drainMs: 3000, env, stdout: 'pipe', stderr: 'pipe'});
+  owned.child.stdout.on('data', bytes => stdout.push(bytes)); owned.child.stderr.on('data', bytes => stderr.push(bytes));
+  let ready = null, readyError = null;
+  try { ready = await owned.ready; } catch (error) { readyError = error.message; }
+  const finished = await owned.finished, out = Buffer.concat(stdout), err = Buffer.concat(stderr);
+  const stdoutPath=path.join(directory,'stdout.bin'), stderrPath=path.join(directory,'stderr.bin');
+  fs.writeFileSync(stdoutPath, out, {flag: 'wx'}); fs.writeFileSync(stderrPath, err, {flag: 'wx'});
+  const contextPath=finished.report+'.context.json';
+  const contextRow=fs.existsSync(contextPath)?file(contextPath):null, reportRow=fs.existsSync(finished.report)?file(finished.report):null;
+  const summary = {...finished, ready, readyError, contextSha256: contextRow?.sha256 ?? null,
+    stdoutSha256: hash(out), stderrSha256: hash(err), compilerTailAcceptance: false, releaseReady: false};
+  const record = {name, directory: path.relative(base, directory).replaceAll('\\','/'), inputs, summary,
+    raw: {report:reportRow,context:contextRow,stdout:file(stdoutPath),stderr:file(stderrPath)}};
+  fs.writeFileSync(path.join(directory, 'finished.json'), encode(record), {flag: 'wx'});
+  records.push(record);
+  console.log(JSON.stringify({base, name, rootExitCode: finished.exitCode, supervisorExitCode: finished.supervisorExitCode,
+    genericSupervisionPassed: finished.passed, closureConfirmed: finished.closureConfirmed}));
+  evidence.assertContinuation(record, prepared, allowClosedCompileTail);
+  verifyInputs();
+  return {summary, stdout: out, record};
+}
+async function evaluatedToolchain(build, arch, compiled, reused) {
+  const oldInputs=prepared.prior.prelaunchRows;
+  const checked=evidence.classifyActualReads(build,reused?oldInputs:[...beforeReads.values()],reused?prepared.prior.directory:base,reused);
+  write('actual-reads-'+arch+'.json',checked);
+  const actual = evidence.readToolchain(build, arch, prepared, compiled.record, targets);
+  const evaluatedProjects=[];
+  for (const [index, item] of actual.projects.entries()) {
+    const result = await phase('evaluate-'+arch+'-'+index, prepared.tools.msbuild.path,
+      [item.project.path, '-nologo', '-v:q', '-nr:false', '-p:Configuration=Release',
+        '-p:Platform='+(arch==='x64'?'x64':'Win32'), '-getProperty:'+evidence.propertyNames.join(',')], 60000);
+    evaluatedProjects.push({target:item.target, phase:result.record.name, reportSha256:result.summary.reportSha256,
+      contextSha256:result.summary.contextSha256, ...evidence.readProperties(result.stdout,prepared,arch)});
+  }
+  for (const row of actual.generated) evidence.verify(row);
+  return {...actual, evaluatedProjects, prelaunchReadBinding:checked,
+    compilationCompleted:true, compilationGenericSupervisionPassed:compiled.summary.passed,
+    compilerTailAcceptance:false};
+}
+function coff(name, arch) {
+  const bytes = fs.readFileSync(name), offset = bytes.readUInt32LE(60);
+  need(bytes.readUInt32LE(offset) === 0x4550 && bytes.readUInt16LE(offset + 4) === (arch === 'x86' ? 332 : 34404), 'Wrong actual executable COFF');
+  return {...file(name), architecture: arch, coff: bytes.readUInt16LE(offset + 4)};
+}
+function text(name) {
+  const bytes = fs.readFileSync(name);
+  return bytes[0] === 0xff && bytes[1] === 0xfe ? bytes.subarray(2).toString('utf16le') : bytes.toString('utf8').replace(/^\uFEFF/, '');
+}
+function copyCtestDefinitions(build, destination) {
+  fs.mkdirSync(destination); const mapping=[];
+  for(const fileName of walk(build).filter(name=>path.basename(name)==='CTestTestfile.cmake')) {
+    const relative=path.relative(build,fileName);need(!path.isAbsolute(relative)&&!relative.startsWith('..'),'Invalid CTest definition');
+    const copied=path.join(destination,relative);fs.mkdirSync(path.dirname(copied),{recursive:true});
+    fs.writeFileSync(copied,fs.readFileSync(fileName),{flag:'wx'});need(file(copied).sha256===file(fileName).sha256,'CTest map bytes differ');
+    mapping.push({original:file(fileName),copied:file(copied)});
+  }need(mapping.length>0,'No CTest definitions');write('ctest-map-'+path.basename(destination)+'.json',mapping);return mapping;
+}
+
+function evidenceIndex() {
+  const files = walk(base).filter(name => path.basename(name) !== 'index.json').map(name =>
+    ({...file(name), path: path.relative(base, name).replaceAll('\\', '/')}));
+  write('index.json', {schema: 'soui.local-task-family-native-evidence/v1', files, releaseReady: false});
+}
+(async () => {
+  const version = await phase('cmake-version', cmake, ['--version'], 30000);
+  const match = version.stdout.toString('utf8').match(/^cmake version (\d+)\.(\d+)\./);
+  need(match && (Number(match[1]) > 3 || Number(match[1]) === 3 && Number(match[2]) >= 27),
+    'This actual driver uses the reviewed explicit platform SDK parameter for CMake >=3.27; SDK minimum remains 3.24');
+  for (const arch of ['x64', 'x86']) {
+    const reused=arch==='x64', build=reused?prepared.prior.build:path.join(base,'b-'+arch);
+    let compiled;
+    if(reused){compiled={record:prepared.prior.phases.find(r=>r.name==='compile-x64'),summary:prepared.prior.phases.find(r=>r.name==='compile-x64').summary};}else{
+    await phase('configure-' + arch, cmake, ['-S', root, '-B', build, '--fresh', '-G', 'Visual Studio 17 2022', '-A',
+      (arch === 'x86' ? 'Win32' : 'x64') + ',version=10.0.19041.0', '-T', 'v143,version=14.44.35207,host=x64',
+      '-DCMAKE_GENERATOR_INSTANCE=' + vs, '-DCMAKE_SYSTEM_VERSION=10.0.19041.0',
+      '-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=' + path.join(root, 'cmake/SouiWindowsSdk.cmake').replaceAll('\\', '/'),
+      '-DSOUI_BUILD_TEMPLATE=OFF', '-DSOUI_BUILD_DEMOS=OFF', '-DSOUI_BUILD_TESTS=ON', '-DSOUI_BUILD_WEBVIEW2=OFF'], 120000, true);
+    compiled = await phase('compile-' + arch, cmake, ['--build', build, '--config', 'Release', '--target', 'soui_sdk', ...targets,
+      '--parallel', '2', '--', '/nr:false', '/m:2', '/verbosity:normal', '/p:VcpkgEnabled=false',
+      '/p:VCPkgLocalAppDataDisabled=true', '/bl:' + path.join(base, 'compile-' + arch + '.binlog')], 600000, true);
+    }
+    const actual = await evaluatedToolchain(build, arch, compiled,reused); architectureEvidence.push({...actual,compilationReusedFromPriorAttempt:reused});
+    outputs.push(...actual.projects.map(item => ({...item.output, architecture:arch, target:item.target, testOnlySeamEnabled:item.macroEnabled})));
+    write('actual-build-' + arch + '.json', actual);
+    const testDirectory=path.join(base,'ctest-definitions-'+arch);copyCtestDefinitions(build,testDirectory);
+    const listed = await phase('ctest-list-' + arch, ctest, ['--test-dir', testDirectory, '-C', 'Release', '-R', testPattern, '--show-only=json-v1'], 30000);
+    const list = JSON.parse(listed.stdout), expected = new Set(targets.map(name => name === 'soui_sdk_contract_tests' ? 'sdk.native.contract' :
+      'sdk.native.' + name.slice(5, -6).replaceAll('_', '-')));
+    need(list.tests.length === expected.size && list.tests.every(test => {
+      const item=actual.projects.find(item=>item.target!== 'soui_sdk' &&
+        test.name===('sdk.native.'+(item.target==='soui_sdk_contract_tests'?'contract':item.target.slice(5,-6).replaceAll('_','-'))));
+      return item && Array.isArray(test.command) && test.command.length===1 &&
+        evidence.canonical(test.command[0])===evidence.canonical(item.output.path) && expected.delete(test.name);
+    }) && expected.size === 0,
+      'The selected current CTest set is not the exact eleven target group');
+    const tested = await phase('ctest-' + arch, ctest, ['--test-dir', testDirectory, '-C', 'Release', '--output-on-failure', '-R', testPattern], 180000);
+    need(tested.stdout.toString('utf8').includes('100% tests passed, 0 tests failed out of ' + list.tests.length), 'Current selected CTest result differs');
+    for (const [target, planned] of [['soui_local_task_family_tests', 13], ['soui_local_task_family_prepare_tests', 14]]) {
+      const exe = path.join(build, 'tests/native/Release', target + '.exe');
+      const run = await phase(target + '-' + arch, exe, [], 90000), lines = run.stdout.toString('utf8').trim().split(/\r?\n/);
+      const cases = lines.filter(line => line.startsWith('PASS '));
+      need(cases.length === planned && lines.length === planned + 1 &&
+        lines.at(-1) === 'Local task family: ' + cases.length + '/' + cases.length + ' passed', 'Actual direct family cases differ');
+      write(target + '-' + arch + '-cases.json', {target, architecture: arch, actualCases: cases.length, cases,
+        reportSha256: run.summary.reportSha256, contextSha256: run.summary.contextSha256, naturallyCompleted: run.summary.passed,
+        privateSeam: target.includes('_prepare_'), realOsOomProven: false, releaseReady: false});
+    }
+    for(const item of actual.projects) evidence.verify(item.output);
+  }
+  verifyInputs();
+  need(identity.source(root).sha256 === source.sha256 && identity.snapshot(root, source.files.map(row => row.path)).sha256 === rawSource.sha256,
+    'Source changed during the actual regression');
+  need(vendorInputs.every(row => JSON.stringify(file(row.path)) === JSON.stringify(row)), 'Frozen vendor header/library inputs changed');
+  const allPositiveGenericSupervisionPassed=records.every(row=>row.summary.passed===true);
+  write('results.json', {schema: 'soui.local-task-family-native-results/v2',
+    allPositiveGenericSupervisionPassed, validationPassed:allPositiveGenericSupervisionPassed,
+    controlledRegressionObserved:true, compilerTailAcceptance:false,qualificationPassed:false,sourceReadFullyPrelaunchBound:false,
+    priorPartialValidationRemainsFalse:true,priorReadClassification:prepared.prior.readClassification, sourceSha256: source.sha256, rawSourceSha256: rawSource.sha256,
+    reviewedSourceSha256: reviewed.sourceSha256, actualInputsSha256: actualInputs.sha256,
+    sourceAndToolsUnchanged: true, outputs, architectureEvidence, records,
+    compilerResults: records.filter(row => row.name.startsWith('compile-') || row.name.startsWith('configure-')).map(row => ({name: row.name,
+      rootExitCode: row.summary.exitCode, supervisorExitCode: row.summary.supervisorExitCode, genericPassed: row.summary.passed,
+      closureConfirmed: row.summary.closureConfirmed, compilerTailAcceptance: false})),
+    testsNaturallyClosed: true, noGuiValidation: true, noDllValidation: true, noPipeValidation: true, noOsIdentityValidation: true,
+    noWin7PeMatrix: true, noPerformanceValidation: true, releaseReady: false});
+  evidenceIndex(); console.log(JSON.stringify({base, status: 'current native family regression complete'}));
+})().catch(error => {
+  write('failure.json', {error: error.stack, records, outputs, architectureEvidence, validationPassed:false,
+    compilerTailAcceptance:false, releaseReady: false});
+  evidenceIndex(); console.error(error); process.exitCode = 1;
+});

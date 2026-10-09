@@ -1,0 +1,25 @@
+'use strict';
+const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
+const base = 'F:/work/sm05-families/out/f5p-e1d8d4dd';
+const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const requireValue = (value, message) => { if (!value) throw Error(message); };
+const indexBytes = fs.readFileSync(path.join(base, 'continuation-index.json'));
+requireValue(sha(indexBytes) === '487a93f21056f3b85cc93493b3975dee9ec5b942f3629f071f01a5df199e484b', 'new preparation index changed');
+const index = JSON.parse(indexBytes);
+requireValue(index.files.length === 58, 'wrong preparation payload count');
+for (const row of index.files) {
+  const full = path.resolve(base, row.relativePath);
+  requireValue(full.toLowerCase().startsWith(path.resolve(base).toLowerCase() + path.sep), 'unsafe payload path');
+  requireValue(fs.realpathSync.native(full) === row.resolvedPath, 'preparation alias changed');
+  const bytes = fs.readFileSync(full);
+  requireValue(bytes.length === row.bytes && sha(bytes) === row.sha256, 'payload changed: ' + row.relativePath);
+}
+const old = fs.readFileSync(path.join(base, 'driver.cjs'));
+const fixed = fs.readFileSync(path.join(base, 'driver-fixed.cjs'));
+requireValue(sha(old) === '3aa75760dd6de2df16de465180b3de510cff2b0dc12f60394584e3db721de1b6', 'original driver changed');
+requireValue(sha(fixed) === 'cfd498e3a4637844010375ea8699cdb3a56614d437b4c6cad2f7379938d5a1e1', 'successor driver changed');
+const before = "const testDirectory=path.join(base,'ctest-'+arch);";
+const after = "const testDirectory=path.join(base,'ctest-definitions-'+arch);";
+requireValue(old.toString('utf8').split(before).length === 2, 'one directory collision expected');
+requireValue(Buffer.from(old.toString('utf8').replace(before, after)).equals(fixed), 'unexpected driver changes');
+console.log(JSON.stringify({payloadVerified:58, changedDriverLiterals:1, actualValidationExecuted:false}));

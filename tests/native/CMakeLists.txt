@@ -276,3 +276,26 @@ target_compile_definitions(soui_windows_peer_identity_tests PRIVATE WINVER=0x060
 set_property(TARGET soui_windows_peer_identity_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.windows-peer-identity COMMAND soui_windows_peer_identity_tests)
 set_tests_properties(sdk.native.windows-peer-identity PROPERTIES TIMEOUT 30)
+add_executable(soui_local_task_family_tests local_task_family_tests.cpp)
+target_link_libraries(soui_local_task_family_tests PRIVATE Soui::Sdk)
+target_compile_features(soui_local_task_family_tests PRIVATE cxx_std_17)
+target_include_directories(soui_local_task_family_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
+target_compile_options(soui_local_task_family_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET soui_local_task_family_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.local-task-family COMMAND soui_local_task_family_tests)
+set_tests_properties(sdk.native.local-task-family PROPERTIES TIMEOUT 60)
+
+# The same actual service/store source is compiled with private preparation
+# faults. The static library supplies only other unresolved SDK objects.
+add_executable(soui_local_task_family_prepare_tests local_task_family_tests.cpp
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/runtime/services/task/task_service.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/runtime/core/task/task_store.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/runtime/bridge/bridge_transport.cpp")
+target_link_libraries(soui_local_task_family_prepare_tests PRIVATE Soui::Sdk)
+target_compile_features(soui_local_task_family_prepare_tests PRIVATE cxx_std_17)
+target_compile_definitions(soui_local_task_family_prepare_tests PRIVATE SOUI_TASK_FAMILY_TEST_ONLY)
+target_include_directories(soui_local_task_family_prepare_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
+target_compile_options(soui_local_task_family_prepare_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET soui_local_task_family_prepare_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.local-task-family-prepare COMMAND soui_local_task_family_prepare_tests)
+set_tests_properties(sdk.native.local-task-family-prepare PROPERTIES TIMEOUT 60)

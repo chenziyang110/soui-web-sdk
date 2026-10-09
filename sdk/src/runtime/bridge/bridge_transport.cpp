@@ -7,6 +7,9 @@
 #include <utility>
 
 #include "../../../../third_party/include/json/json.hpp"
+#ifdef SOUI_TASK_FAMILY_TEST_ONLY
+#include "../services/task/task_family_test_hooks.h"
+#endif
 
 namespace soui::runtime {
 namespace {
@@ -77,7 +80,7 @@ bool local_reserved_method(const std::string& method) {
 }  // namespace
 
 bool capability_registry::register_method(std::string method, std::string permission_name, handler callback) {
-  if (!callback) return false;
+  if (preparing_ || !callback) return false;
   return register_contextual_method(std::move(method), std::move(permission_name),
       [callback = std::move(callback)](const bridge_request& request) {
         return callback(request.params_json);
@@ -86,7 +89,7 @@ bool capability_registry::register_method(std::string method, std::string permis
 
 bool capability_registry::register_contextual_method(std::string method, std::string permission_name,
                                                        contextual_handler callback) {
-  if (!valid_id(method) || permission_name.empty() || permission_name.size() > 512U ||
+  if (preparing_ || !valid_id(method) || permission_name.empty() || permission_name.size() > 512U ||
       !callback || methods_.find(method) != methods_.end()) {
     return false;
   }
@@ -97,12 +100,14 @@ bool capability_registry::register_contextual_method(std::string method, std::st
   } catch (const json::type_error&) {
     return false;
   }
-  methods_.emplace(std::move(method), capability{std::move(permission_name), std::move(callback), {}});
+  const auto shared_callback = std::make_shared<const contextual_handler>(std::move(callback));
+  methods_.emplace(std::move(method), capability{std::move(permission_name), shared_callback, {}});
   return true;
 }
 
 bool capability_registry::register_action(std::string method, std::string permission_name,
                                            std::string contract_json, contextual_handler callback) {
+  if (preparing_) return false;
   const auto contract = action_contract::parse(contract_json);
   if (!contract || !register_contextual_method(method, std::move(permission_name), std::move(callback))) return false;
   methods_.at(method).action = contract;
@@ -110,10 +115,38 @@ bool capability_registry::register_action(std::string method, std::string permis
 }
 
 bool capability_registry::allow_local_action(const std::string& method) {
+  if (preparing_) return false;
   const auto found = methods_.find(method);
   if (local_reserved_method(method) || found == methods_.end() || !found->second.action) return false;
   found->second.local_enabled = true;
   return true;
+}
+
+std::unique_ptr<capability_registry::prepared_local_actions> capability_registry::prepare_local_actions(
+    std::vector<local_action_registration> actions) {
+  if (preparing_ || actions.size() != 3U) return {};
+  auto prepared = std::make_unique<prepared_local_actions>(*this);
+  #ifdef SOUI_TASK_FAMILY_TEST_ONLY
+  detail::task_family_test::before_prepare(detail::task_family_test::prepare_point::registration_registry);
+  #endif
+  prepared->methods = methods_;
+  for (auto& entry : actions) {
+    if (!valid_id(entry.method) || local_reserved_method(entry.method) || entry.permission.empty() ||
+        entry.permission.size() > 512U || entry.permission.find('\0') != std::string::npos ||
+        !entry.callback || prepared->methods.count(entry.method)) return {};
+    try { (void)json(entry.permission).dump(); }
+    catch (const json::exception&) { return {}; }
+    const auto contract = action_contract::parse(entry.contract);
+    if (!contract) return {};
+    const auto shared_callback = std::make_shared<const contextual_handler>(std::move(entry.callback));
+    prepared->methods.emplace(entry.method, capability{entry.permission, shared_callback, contract, true, true});
+  }
+  return prepared;
+}
+
+void capability_registry::commit_local_actions(prepared_local_actions& prepared) noexcept {
+  static_assert(noexcept(methods_.swap(prepared.methods)), "Registration commit must not allocate or throw");
+  methods_.swap(prepared.methods);
 }
 
 bool capability_registry::contains(const std::string& method) const {
@@ -127,7 +160,7 @@ const std::string* capability_registry::capability_for(const std::string& method
 
 const capability_registry::contextual_handler* capability_registry::handler_for(const std::string& method) const {
   const auto found = methods_.find(method);
-  return found == methods_.end() ? nullptr : &found->second.callback;
+  return found == methods_.end() ? nullptr : found->second.callback.get();
 }
 
 std::string bridge_transport::describe(const bridge_request& request) const {
@@ -186,7 +219,7 @@ std::string bridge_transport::describe_impl(const bridge_request& request,
       if (!method.second.local_enabled || !method.second.action || local_reserved_method(method.first)) continue;
       const auto checked = permissions_.resolve_local(binding, request.token, method.first, method.second.permission);
       if (checked.result != authorization_result::authorized || checked.scope != authorized_request.authorization) continue;
-    } else if (permissions_.check(request.session_id, request.origin, request.token,
+    } else if (method.second.local_only || permissions_.check(request.session_id, request.origin, request.token,
                                   method.second.permission) != authorization_result::authorized) continue;
     if (authorized_index++ < cursor) continue;
     auto& entries = page["methods"];
@@ -457,6 +490,11 @@ bridge_response bridge_transport::validate(bridge_request& request,
   const auto registered = registry_.methods_.find(request.method);
   const bool local_discovery = local && request.method == "bridge.describe" &&
       capability && *capability == "bridge.describe";
+  if (!local && registered != registry_.methods_.end() && registered->second.local_only) {
+    response.error_code = "E_UNAUTHORIZED";
+    response.error_message = "This method requires a native local connection.";
+    return response;
+  }
   if (local && (!capability || (!local_discovery &&
       (local_reserved_method(request.method) || !registered->second.action || !registered->second.local_enabled)))) {
     response.error_code = "E_UNAUTHORIZED";

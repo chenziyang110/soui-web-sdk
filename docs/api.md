@@ -182,3 +182,7 @@ target_link_libraries(MyTarget PRIVATE Soui::Sdk)
 ```
 
 配置时把 `CMAKE_PREFIX_PATH` 指向 `out/install/x64`。头文件和静态库可独立搬移；原生运行依赖仍应按当前架构部署。`tests/package-consumer` 是可以单独构建的最小示例。
+
+## 本地 typed 任务 family
+
+`task_service::register_local_family` 和 `json_bridge::register_local_task_family` 原子注册具名 start/query/cancel 三动作，绑定已有 handler kind，仅供明确授予 method AND capability 的实际本地 scope。实际 scope/family/kind 隔离在核心锁内复验；页面、其他 family 与 plain 任务互拒，终态仅返回一次缓存的安全投影。既有 worker、队列和有界保留共用，not-found 不授权自动重试。详见 [接入与限制](local-task-families.md) 和 [ADR 0039](adr/0039-local-typed-task-families.md)；本接口不代表本地端点或 OS 主体认证完成。

@@ -1,0 +1,145 @@
+'use strict';
+// Filesystem-only preparation of a new fixed private Root-owned execution driver.
+const fs=require('node:fs'), path=require('node:path'), crypto=require('node:crypto'), assert=require('node:assert/strict');
+const root=path.resolve('F:/work/sm05-families');
+const original='F:/work/sm05-families/out/family-validation-driver-b35c10d3-f858-4d63-915d-2a3a53bd4dd5';
+const sourceReader='F:/work/sm05-startup/out/engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6/toolchain-evidence.cjs';
+const evidence=require('./toolchain-evidence.cjs');
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const encode=v=>Buffer.from(JSON.stringify(v,null,2)+'\n');
+const write=(name,v)=>fs.writeFileSync(path.join(__dirname,name),Buffer.isBuffer(v)?v:encode(v),{flag:'wx'});
+assert.equal(hash(fs.readFileSync(path.join(original,'driver.cjs'))),'ca6d7ef32e82381aa53638e6b2d83979d87d058bfb4ae0d0049cda6e9b46c138');
+assert.equal(hash(fs.readFileSync(sourceReader)),'47c23f30c595c7ba89ad7a99e8661b15e3f7ebb9c0a7bc10eee23b5f574aa192');
+const originalFiles=[];
+fs.mkdirSync(path.join(__dirname,'original-preparation'));
+for(const file of evidence.walk(original)) {
+  const relative=path.relative(original,file), copy=path.join(__dirname,'original-preparation',relative+'.inert.snapshot');
+  fs.mkdirSync(path.dirname(copy),{recursive:true}); fs.writeFileSync(copy,fs.readFileSync(file),{flag:'wx'});
+  const row=evidence.record(file); assert.equal(evidence.record(copy).sha256,row.sha256);
+  originalFiles.push({...row,snapshot:evidence.record(copy)});
+}
+const reviewed=JSON.parse(fs.readFileSync(path.join(original,'reviewed-inputs.json')));
+assert.equal(hash(fs.readFileSync(path.join(original,'reviewed-inputs.json'))),'493d43655e241556b02804a7d345491e1632fb26184f49f7830c49369f09ec6f');
+write('reviewed-inputs.json',fs.readFileSync(path.join(original,'reviewed-inputs.json')));
+for(const row of reviewed.files) {
+  assert.equal(evidence.record(row.original).sha256,row.sha256);
+  write(row.snapshot,fs.readFileSync(path.join(original,row.snapshot)));
+}
+write('startup-reader-source.cjs.inert.snapshot',fs.readFileSync(sourceReader));
+let driver=fs.readFileSync(path.join(original,'driver.cjs'),'utf8');
+function replace(old,next) {
+  assert.equal(driver.split(old).length,2,'Original driver pattern missing/ambiguous: '+old.slice(0,80));
+  driver=driver.replace(old,next);
+}
+replace("const root = path.resolve(__dirname, '../..');",`const root = path.resolve(__dirname, '../..');
+const evidence = require('./toolchain-evidence.cjs');
+const preparedPath = path.join(__dirname, 'frozen-inputs-final.json');
+const preparedBytes = fs.readFileSync(preparedPath), prepared = JSON.parse(preparedBytes);
+function verifyPreparation() {
+  for (const row of [...prepared.privateInputs, ...Object.values(prepared.tools), ...prepared.toolchainImports,
+      ...prepared.originalFiles, ...prepared.originalFiles.map(row => row.snapshot)]) {
+    const current = evidence.record(row.path);
+    if (current.bytes !== row.bytes || current.sha256 !== row.sha256 || current.resolvedPath !== row.resolvedPath)
+      throw Error('Prepared private input changed: ' + row.path);
+  }
+  if (path.resolve(process.execPath).toLowerCase() !== path.resolve(prepared.tools.node.path).toLowerCase())
+    throw Error('Use the exact prepared Node executable');
+}
+verifyPreparation();`);
+replace("const base = identity.safePath(root, 'out/local-task-family-native-' + crypto.randomUUID());",
+  "const base = identity.safePath(__dirname, 'actual-' + crypto.randomUUID());");
+replace("write('reviewed-inputs.json', reviewedBytes);",`write('reviewed-inputs.json', reviewedBytes);
+write('prepared-inputs.json', preparedBytes);
+write('toolchain-evidence.cjs.inert.snapshot', fs.readFileSync(path.join(__dirname, 'toolchain-evidence.cjs')));`);
+replace("  verifyReviewed();\n  need(identity.snapshot(root, inputNames).sha256", "  verifyPreparation();\n  verifyReviewed();\n  need(identity.snapshot(root, inputNames).sha256");
+const phaseBegin=driver.indexOf('async function phase('), phaseEnd=driver.indexOf('\nfunction coff(',phaseBegin);
+assert(phaseBegin>=0 && phaseEnd>phaseBegin);
+driver=driver.slice(0,phaseBegin)+`async function phase(name, exe, args, timeoutMs, allowClosedCompileTail = false) {
+  verifyInputs();
+  const directory = path.join(base, name); fs.mkdirSync(directory);
+  const stdout = [], stderr = [];
+  const inputs = {name, executable: file(exe), runner: file(runner), client: file(client), args: [...args], cwd: root,
+    timeoutMs, drainMs: 3000, sourceSha256: source.sha256, actualInputsSha256: actualInputs.sha256,
+    reviewedSourceSha256: reviewed.sourceSha256, compilerTailAcceptance: false,
+    allowClosedCompileTailForContinuationOnly: allowClosedCompileTail};
+  fs.writeFileSync(path.join(directory, 'inputs.json'), encode(inputs), {flag: 'wx'});
+  const owned = launchOwned(exe, args, {runner, cwd: root, report: path.join(directory, 'owned.ndjson'),
+    timeoutMs, drainMs: 3000, env, stdout: 'pipe', stderr: 'pipe'});
+  owned.child.stdout.on('data', bytes => stdout.push(bytes)); owned.child.stderr.on('data', bytes => stderr.push(bytes));
+  let ready = null, readyError = null;
+  try { ready = await owned.ready; } catch (error) { readyError = error.message; }
+  const finished = await owned.finished, out = Buffer.concat(stdout), err = Buffer.concat(stderr);
+  const stdoutPath=path.join(directory,'stdout.bin'), stderrPath=path.join(directory,'stderr.bin');
+  fs.writeFileSync(stdoutPath, out, {flag: 'wx'}); fs.writeFileSync(stderrPath, err, {flag: 'wx'});
+  const contextPath=finished.report+'.context.json';
+  const contextRow=fs.existsSync(contextPath)?file(contextPath):null, reportRow=fs.existsSync(finished.report)?file(finished.report):null;
+  const summary = {...finished, ready, readyError, contextSha256: contextRow?.sha256 ?? null,
+    stdoutSha256: hash(out), stderrSha256: hash(err), compilerTailAcceptance: false, releaseReady: false};
+  const record = {name, directory: path.relative(base, directory).replaceAll('\\\\','/'), inputs, summary,
+    raw: {report:reportRow,context:contextRow,stdout:file(stdoutPath),stderr:file(stderrPath)}};
+  fs.writeFileSync(path.join(directory, 'finished.json'), encode(record), {flag: 'wx'});
+  records.push(record);
+  console.log(JSON.stringify({base, name, rootExitCode: finished.exitCode, supervisorExitCode: finished.supervisorExitCode,
+    genericSupervisionPassed: finished.passed, closureConfirmed: finished.closureConfirmed}));
+  evidence.assertContinuation(record, prepared, allowClosedCompileTail);
+  verifyInputs();
+  return {summary, stdout: out, record};
+}
+async function evaluatedToolchain(build, arch, compiled) {
+  const checked = checkBuild(build, arch);
+  const actual = evidence.readToolchain(build, arch, prepared, compiled.record, targets);
+  const evaluatedProjects=[];
+  for (const [index, item] of actual.projects.entries()) {
+    const result = await phase('evaluate-'+arch+'-'+index, prepared.tools.msbuild.path,
+      [item.project.path, '-nologo', '-v:q', '-nr:false', '-p:Configuration=Release',
+        '-p:Platform='+(arch==='x64'?'x64':'Win32'), '-getProperty:'+evidence.propertyNames.join(',')], 60000);
+    evaluatedProjects.push({target:item.target, phase:result.record.name, reportSha256:result.summary.reportSha256,
+      contextSha256:result.summary.contextSha256, ...evidence.readProperties(result.stdout,prepared,arch)});
+  }
+  for (const row of actual.generated) evidence.verify(row);
+  return {...actual, evaluatedProjects, prelaunchReadBinding:checked,
+    compilationCompleted:true, compilationGenericSupervisionPassed:compiled.summary.passed,
+    compilerTailAcceptance:false};
+}`+driver.slice(phaseEnd);
+replace("'-DSOUI_BUILD_TEMPLATE=OFF', '-DSOUI_BUILD_DEMOS=OFF', '-DSOUI_BUILD_TESTS=ON', '-DSOUI_BUILD_WEBVIEW2=OFF'], 120000);",
+  "'-DSOUI_BUILD_TEMPLATE=OFF', '-DSOUI_BUILD_DEMOS=OFF', '-DSOUI_BUILD_TESTS=ON', '-DSOUI_BUILD_WEBVIEW2=OFF'], 120000, true);");
+replace("    await phase('compile-' + arch,", "    const compiled = await phase('compile-' + arch,");
+replace("    const actual = checkBuild(build, arch); architectureEvidence.push(actual);",
+  "    const actual = await evaluatedToolchain(build, arch, compiled); architectureEvidence.push(actual);\n    outputs.push(...actual.projects.map(item => ({...item.output, architecture:arch, target:item.target, testOnlySeamEnabled:item.macroEnabled})));" );
+replace("    need(list.tests.length === expected.size && list.tests.every(test => expected.delete(test.name)) && expected.size === 0,",
+  "    need(list.tests.length === expected.size && list.tests.every(test => {\n      const item=actual.projects.find(item=>item.target!== 'soui_sdk' &&\n        test.name===('sdk.native.'+(item.target==='soui_sdk_contract_tests'?'contract':item.target.slice(5,-6).replaceAll('_','-'))));\n      return item && Array.isArray(test.command) && test.command.length===1 &&\n        evidence.canonical(test.command[0])===evidence.canonical(item.output.path) && expected.delete(test.name);\n    }) && expected.size === 0,");
+replace("    for (const target of targets) outputs.push(coff(path.join(build, 'tests/native/Release', target + '.exe'), arch));\n    outputs.push({...file(path.join(build, 'sdk/Release/soui_sdk.lib')), architecture: arch, productionSeam: false});", "    for(const item of actual.projects) evidence.verify(item.output);");
+replace("  write('results.json', {schema: 'soui.local-task-family-native-results/v1',",`  const allPositiveGenericSupervisionPassed=records.every(row=>row.summary.passed===true);
+  write('results.json', {schema: 'soui.local-task-family-native-results/v2',
+    allPositiveGenericSupervisionPassed, validationPassed:allPositiveGenericSupervisionPassed,
+    controlledRegressionObserved:true, compilerTailAcceptance:false,`);
+replace("    compilerResults: records.filter(row => row.name.startsWith('compile-')).map(row => ({name: row.name,",
+  "    compilerResults: records.filter(row => row.name.startsWith('compile-') || row.name.startsWith('configure-')).map(row => ({name: row.name,");
+replace("  write('failure.json', {error: error.stack, records, outputs, architectureEvidence, releaseReady: false});",
+  "  write('failure.json', {error: error.stack, records, outputs, architectureEvidence, validationPassed:false,\n    compilerTailAcceptance:false, releaseReady: false});");
+write('driver.cjs',Buffer.from(driver));
+const vs='C:/Program Files/Microsoft Visual Studio/2022/Community', msvc=path.join(vs,'VC/Tools/MSVC/14.44.35207');
+const toolNames={node:process.execPath,runner:'F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe',
+  client:path.join(root,'tools/internal/owned-process.cjs'),identity:path.join(root,'tools/internal/delivery-identity.cjs'),
+  configure:path.join(root,'tools/internal/CMake-Configure.ps1'),cmake:'C:/Program Files/CMake/bin/cmake.exe',ctest:'C:/Program Files/CMake/bin/ctest.exe',
+  msbuild:path.join(vs,'MSBuild/Current/Bin/amd64/MSBuild.exe'),msbuild32:path.join(vs,'MSBuild/Current/Bin/MSBuild.exe')};
+for(const arch of ['x64','x86']) for(const tool of ['cl','link','lib']) toolNames[tool+'-'+arch]=path.join(msvc,'bin/Hostx64',arch,tool+'.exe');
+const tools=Object.fromEntries(Object.entries(toolNames).map(([key,p])=>[key,evidence.record(p)]));
+assert.equal(tools.runner.sha256,'1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f');
+assert.equal(tools.client.sha256,'8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7');
+const vcTargetsPath=path.join(vs,'MSBuild/Microsoft/VC/v170');
+const toolchainImports=['Microsoft.Cpp.Default.props','Microsoft.Cpp.props'].map(n=>evidence.record(path.join(vcTargetsPath,n)));
+const privateNames=['driver.cjs','toolchain-evidence.cjs','prepare.cjs','reviewed-inputs.json','startup-reader-source.cjs.inert.snapshot',
+  ...reviewed.files.map(row=>row.snapshot)];
+const privateInputs=privateNames.map(n=>evidence.record(path.join(__dirname,n)));
+const frozen={schema:'soui.local-task-family-driver-preparation/v2',root,originalDirectory:original,vs,msvc,vcTargetsPath,
+  reviewedIndexSha256:'493d43655e241556b02804a7d345491e1632fb26184f49f7830c49369f09ec6f',reviewedSourceSha256:reviewed.sourceSha256,
+  sources:reviewed.files.map(row=>evidence.record(row.original)),privateInputs,originalFiles,tools,toolchainImports,
+  propertyNames:evidence.propertyNames,projectsPerArchitecture:12,compilerTailAcceptance:false,executionPerformed:false,
+  rootExecutesOnly:true,noGui:true,noPipe:true,noOsIdentity:true,releaseReady:false};
+write('frozen-inputs-final.json',frozen);
+const payload=evidence.walk(__dirname).filter(p=>path.basename(p)!=='prepared-index.json').map(p=>({relativePath:path.relative(__dirname,p).replace(/\\/g,'/'),...evidence.record(p)}));
+write('prepared-index.json',{schema:'soui.local-task-family-r2-preparation-evidence/v1',files:payload,executionPerformed:false});
+console.log(JSON.stringify({directory:__dirname,driver:evidence.record(path.join(__dirname,'driver.cjs')),helper:evidence.record(path.join(__dirname,'toolchain-evidence.cjs')),
+  frozen:evidence.record(path.join(__dirname,'frozen-inputs-final.json')),index:evidence.record(path.join(__dirname,'prepared-index.json')),
+  originalFiles:originalFiles.length,sources:reviewed.files.length,executionPerformed:false}));

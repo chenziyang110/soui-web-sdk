@@ -45,6 +45,9 @@ class authorization_scope final {
   [[nodiscard]] const std::string& scope_id() const noexcept;
   [[nodiscard]] bool active() const;
   [[nodiscard]] bool allows(const std::string& capability) const;
+  // Native-only revalidation of the actual local grant and method policy.
+  // A page grant is always rejected, even if it carries the same capability.
+  [[nodiscard]] bool allows_local_method(const std::string& method, const std::string& capability) const;
   [[nodiscard]] bool matches(const std::string& session_id, const std::string& origin) const;
 
  private:

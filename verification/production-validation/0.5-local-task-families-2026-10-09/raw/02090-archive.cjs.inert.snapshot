@@ -1,0 +1,394 @@
+'use strict';
+// Filesystem-only evidence recheck and create-only curation. Never imports a launcher.
+const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
+const assert = require('node:assert/strict');
+const root = path.resolve('F:/work/sm05-families');
+const destination = path.join(root, 'verification/production-validation/0.5-local-task-families-2026-10-09');
+const prep = path.join(root, 'out/f5p-e1d8d4dd');
+const actual = path.join(prep, 'actual-89274fa8-933b-4728-99ba-6f82a411c3cb');
+const helperPath = path.join(prep, 'toolchain-evidence.cjs');
+const e = require(helperPath); // Inspected: exports only filesystem readers.
+const identity = require(path.join(root, 'tools/internal/delivery-identity.cjs')); // Inspected: filesystem-only.
+const hash = data => crypto.createHash('sha256').update(data).digest('hex');
+const encoded = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
+const canonical = value => path.resolve(value).toLowerCase();
+const reviewedHash = '493d43655e241556b02804a7d345491e1632fb26184f49f7830c49369f09ec6f';
+const source16Hash = 'cb93c9e390aa53bc5c46196828b66f067e30824c5b5ca1387e294255c0f0fb3f';
+const continuationHash = '487a93f21056f3b85cc93493b3975dee9ec5b942f3629f071f01a5df199e484b';
+const resultHash = '3e9470cd858ce29622cbf8f60f1816cc3f2a6ec6533c6455f8400f573f47df2e';
+const actualIndexHash = 'd1cff72c958d8c7303942623fb7d8facac13413d0ba7ebf2b0bf34443c000938';
+function safe(file) {
+  assert(path.isAbsolute(file), 'Absolute file required');
+  const full = path.resolve(file), parsed = path.parse(full);
+  let part = parsed.root;
+  for (const segment of full.slice(parsed.root.length).split(path.sep).filter(Boolean)) {
+    part = path.join(part, segment);
+    if (!fs.existsSync(part)) break;
+    assert(!fs.lstatSync(part).isSymbolicLink(), 'Linked evidence path: ' + part);
+  }
+  return full;
+}
+function relative(base, name) {
+  assert(typeof name === 'string' && name && !name.includes('\\') && !name.includes(':'));
+  assert(name.split('/').every(value => value && value !== '.' && value !== '..'));
+  const full = safe(path.resolve(base, name));
+  assert(canonical(full).startsWith(canonical(base) + path.sep)); return full;
+}
+function bytes(file) {
+  safe(file);
+  const stat = fs.lstatSync(file);
+  assert(stat.isFile() && stat.nlink === 1, 'Evidence must be independent and regular: ' + file);
+  const fd = fs.openSync(file, 'r');
+  try {
+    const before = fs.fstatSync(fd), data = fs.readFileSync(fd), after = fs.fstatSync(fd);
+    for (const key of ['dev', 'ino', 'size', 'mtimeMs']) assert.equal(before[key], after[key]);
+    assert.equal(data.length, before.size); return data;
+  } finally { fs.closeSync(fd); }
+}
+function record(file) {
+  const data = bytes(file); return {path: file, resolvedPath: fs.realpathSync.native(file), bytes: data.length, sha256: hash(data)};
+}
+function verify(row, target = row.path) {
+  const data = bytes(target); assert.equal(data.length, row.bytes, 'Byte count: ' + target);
+  assert.equal(hash(data), row.sha256, 'SHA: ' + target);
+  if (row.resolvedPath && canonical(target) === canonical(row.path))
+    assert.equal(fs.realpathSync.native(target), row.resolvedPath);
+  return data;
+}
+function read(file) { return JSON.parse(bytes(file).toString('utf8').replace(/^\uFEFF/, '')); }
+function write(file, value) {
+  safe(file); fs.mkdirSync(path.dirname(file), {recursive: true}); safe(path.dirname(file));
+  const data = Buffer.isBuffer(value) ? value : encoded(value);
+  const fd = fs.openSync(file, 'wx');
+  try { fs.writeFileSync(fd, data); fs.fsyncSync(fd); } finally { fs.closeSync(fd); }
+  assert(bytes(file).equals(data));
+}
+function walk(base) {
+  safe(base); assert(fs.lstatSync(base).isDirectory());
+  return fs.readdirSync(base, {withFileTypes: true}).flatMap(entry => {
+    const full = safe(path.join(base, entry.name));
+    if (entry.isDirectory()) return walk(full);
+    assert(entry.isFile(), 'Nonregular evidence entry: ' + full); return [full];
+  }).sort((a, b) => a.localeCompare(b, 'en'));
+}
+const roots = [
+  ['original-unexecuted-preparation', 'out/family-validation-driver-b35c10d3-f858-4d63-915d-2a3a53bd4dd5'],
+  ['r2-unexecuted-preparation', 'out/family-validation-continuation-r2-09a4ffec-0e01-4178-9775-56e756c0f1ef'],
+  ['r2-final-preparation-and-long-path-failure', 'out/family-validation-continuation-r2-final-f1d83fc4-3548-4119-91e7-e0c0ff343453'],
+  ['f3-short-path-preparation-and-reader-failure', 'out/f3p-d84ece0d'],
+  ['f4-preparation-and-ctest-directory-failure', 'out/f4p-9dbcc39b'],
+  ['f5-preparation-and-complete-regression', 'out/f5p-e1d8d4dd']
+].map(([name, relativePath]) => ({name, directory: relative(root, relativePath)}));
+const originalFiles = new Map();
+function add(file, group, name) {
+  const key = canonical(file);
+  if (!originalFiles.has(key)) originalFiles.set(key, {group, originalRelativePath: name, ...record(file)});
+}
+for (const group of roots) for (const file of walk(group.directory))
+  add(file, group.name, path.relative(group.directory, file).replace(/\\/g, '/'));
+for (const name of ['relocate-family-preparation-root.cjs', 'root-f5-prelaunch-review-20261009.cjs'])
+  add(path.join(root, 'out', name), 'root-review-and-relocation-drivers', name);
+add(__filename, 'archive-driver', path.basename(__filename));
+for (const name of ['archive-before-pin-schema-correction.cjs.inert.snapshot', 'recheck-failure-001.json'])
+  add(path.join(__dirname, name), 'archive-preparation-history', name);
+
+const indexProofs = [];
+function checkIndex(file, expectedHash, expectedCount) {
+  const pin = record(file); if (expectedHash) assert.equal(pin.sha256, expectedHash);
+  const value = JSON.parse(verify(pin)); assert(Array.isArray(value.files));
+  if (expectedCount !== undefined) assert.equal(value.files.length, expectedCount);
+  const base = path.dirname(file), seen = new Set();
+  for (const row of value.files) {
+    // Historical copied indices intentionally retain their original addressed paths.
+    const name = row.relativePath || (!path.isAbsolute(row.path) ? row.path : null);
+    assert(name); assert(!seen.has(name.toLowerCase())); seen.add(name.toLowerCase());
+    const addressed = path.isAbsolute(row.path) ? safe(row.path) : relative(base, name);
+    verify(row, addressed);
+  }
+  indexProofs.push({...pin, schema: value.schema, payloadCount: value.files.length});
+}
+for (const group of roots) for (const file of walk(group.directory))
+  if (/^(?:index|prepared-index|final-preparation-index|continuation-index)\.json$/.test(path.basename(file)))
+    checkIndex(file, file === path.join(prep, 'continuation-index.json') ? continuationHash :
+      file === path.join(actual, 'index.json') ? actualIndexHash : undefined,
+      file === path.join(prep, 'continuation-index.json') ? 58 : file === path.join(actual, 'index.json') ? 683 : undefined);
+const reviewedFile = path.join(roots[0].directory, 'reviewed-inputs.json'), reviewedRecord = record(reviewedFile);
+assert.equal(reviewedRecord.sha256, reviewedHash);
+const reviewed = JSON.parse(verify(reviewedRecord));
+assert.equal(reviewed.baseline, 'f6720b4936e488ae3edd9deb02ebf2613b5eba6c');
+assert.equal(canonical(reviewed.root), canonical(root)); assert.equal(reviewed.files.length, 16);
+assert.equal(hash(encoded(reviewed.files.map(({path, bytes, sha256}) => ({path, bytes, sha256})))), source16Hash);
+assert.equal(reviewed.sourceSha256, source16Hash);
+for (const row of reviewed.files) {
+  verify(row, row.original); verify(row, relative(roots[0].directory, row.snapshot));
+  verify(row, relative(prep, row.snapshot));
+}
+assert.equal(record(path.join(prep, 'reviewed-inputs.json')).sha256, reviewedHash);
+const oldDriver = bytes(path.join(prep, 'driver.cjs')), fixedDriver = bytes(path.join(prep, 'driver-fixed.cjs'));
+assert.equal(hash(oldDriver), '3aa75760dd6de2df16de465180b3de510cff2b0dc12f60394584e3db721de1b6');
+assert.equal(hash(fixedDriver), 'cfd498e3a4637844010375ea8699cdb3a56614d437b4c6cad2f7379938d5a1e1');
+const literalBefore = "const testDirectory=path.join(base,'ctest-'+arch);";
+assert.equal(oldDriver.toString('utf8').split(literalBefore).length, 2);
+assert(Buffer.from(oldDriver.toString('utf8').replace(literalBefore,
+  "const testDirectory=path.join(base,'ctest-definitions-'+arch);")).equals(fixedDriver));
+const frozenFile = path.join(prep, 'frozen-inputs-final.json'), frozenRecord = record(frozenFile), frozen = read(frozenFile);
+const nativeFile = path.join(actual, 'frozen-inputs.json'), nativeRecord = record(nativeFile), native = read(nativeFile);
+assert.equal(frozen.source16Sha256, source16Hash); assert.equal(native.reviewedSourceSha256, source16Hash);
+assert.equal(canonical(frozen.root), canonical(root));
+function verifySourceBinding() {
+  for (const row of reviewed.files) verify(row, row.original);
+  for (const key of ['rawSource', 'actualInputs']) {
+    assert.equal(hash(encoded(native[key].files)), native[key].sha256);
+    const current = identity.snapshot(root, native[key].files.map(row => row.path));
+    assert.deepEqual(current, native[key], key + ' changed');
+  }
+  assert.deepEqual(identity.source(root), native.source, 'Normalized full source changed');
+}
+verifySourceBinding();
+const externalPins = new Map();
+function verifyPin(row) {
+  const current = e.record(row.path);
+  for (const key of ['path', 'bytes', 'sha256']) assert.equal(current[key], row[key], 'Pin changed: ' + row.path);
+  if (row.resolvedPath !== undefined) assert.equal(current.resolvedPath, row.resolvedPath);
+  return current;
+}
+for (const row of [...native.tools, ...native.vendorInputs, ...Object.values(frozen.tools), ...frozen.toolchainImports,
+  ...frozen.futureReadPins, ...frozen.prior.prelaunchRows]) {
+  verifyPin(row); externalPins.set(e.canonical(row.resolvedPath || row.path), row);
+}
+for (const row of [...frozen.privateInputs, ...frozen.prior.payloadFiles, ...frozen.prior.identityFiles]) e.verify(row);
+for (const key of ['source', 'rawSource', 'actualInputs']) assert.equal(hash(encoded(native[key].files)), native[key].sha256);
+const sourceMap = read(path.join(actual, 'source-raw-map.json'));
+assert.equal(sourceMap.length, native.actualInputs.files.length);
+for (const row of sourceMap) {
+  const expected = native.actualInputs.files.find(input => input.path === row.path); assert(expected);
+  assert.equal(row.sha256, expected.sha256); assert.equal(row.bytes, expected.bytes);
+  verify(row, relative(actual, row.archive));
+}
+assert(bytes(path.join(actual, 'driver.cjs.inert.snapshot')).equals(fixedDriver));
+assert(bytes(path.join(actual, 'toolchain-evidence.cjs.inert.snapshot')).equals(bytes(helperPath)));
+const resultRecord = record(path.join(actual, 'results.json')); assert.equal(resultRecord.sha256, resultHash);
+const result = JSON.parse(verify(resultRecord));
+assert.equal(result.schema, 'soui.local-task-family-native-results/v2');
+for (const key of ['controlledRegressionObserved', 'sourceAndToolsUnchanged', 'testsNaturallyClosed', 'priorPartialValidationRemainsFalse'])
+  assert.equal(result[key], true);
+for (const key of ['allPositiveGenericSupervisionPassed', 'validationPassed', 'compilerTailAcceptance',
+  'qualificationPassed', 'sourceReadFullyPrelaunchBound', 'releaseReady']) assert.equal(result[key], false);
+assert.equal(result.reviewedSourceSha256, source16Hash);
+assert.equal(result.sourceSha256, native.source.sha256); assert.equal(result.rawSourceSha256, native.rawSource.sha256);
+assert.equal(result.actualInputsSha256, native.actualInputs.sha256);
+assert.equal(result.records.length, 37);
+const compilerNames = ['configure-x64', 'compile-x64', 'configure-x86', 'compile-x86'];
+const phaseProofs = [];
+for (const phase of result.records) {
+  const compiled = compilerNames.includes(phase.name), proof = e.assertContinuation(phase, frozen, compiled);
+  if (compiled) {
+    assert.equal(phase.summary.passed, false); assert.equal(phase.summary.supervisorExitCode, 124);
+  } else { assert.equal(phase.summary.passed, true); assert.equal(phase.summary.supervisorExitCode, 0); }
+  assert.equal(phase.summary.compilerTailAcceptance, false);
+  assert.equal(phase.inputs.compilerTailAcceptance, false);
+  assert.equal(phase.inputs.reviewedSourceSha256, source16Hash);
+  assert.equal(phase.inputs.sourceSha256, result.sourceSha256); assert.equal(phase.inputs.actualInputsSha256, result.actualInputsSha256);
+  phaseProofs.push({name: phase.name, reusedFromPriorAttempt: phase.reusedFromPriorAttempt === true,
+    pid: proof.start.pid, creationFileTime: proof.start.creationFileTime,
+    rootExitCode: phase.summary.exitCode, supervisorExitCode: phase.summary.supervisorExitCode,
+    genericPassed: phase.summary.passed, terminal: proof.terminal, raw: phase.raw, context: proof.context});
+}
+assert.equal(result.compilerResults.length, 4); assert.equal(phaseProofs.filter(row => row.reusedFromPriorAttempt).length, 2);
+const targets = ['sdk_contract', 'action_contract', 'session_renewal', 'task_service', 'task_store_capacity',
+  'task_scope', 'task_operation_query', 'local_authorization', 'local_action_dispatch', 'local_task_family']
+  .map(name => 'soui_' + name + '_tests').concat('soui_local_task_family_prepare_tests');
+const expectedTestName = target => target === 'soui_sdk_contract_tests' ? 'sdk.native.contract' :
+  'sdk.native.' + target.slice(5, -6).replace(/_/g, '-');
+const sharedCaseNames = ['atomic registration', 'immutable registry callback', 'family/plain/scope isolation',
+  'method/cap/page isolation', 'strict direct parsing', 'once projection and honest cancel',
+  'projection/normalizer failures', 'page message UTF-8 and worker recovery', 'actual brand lifetime',
+  'renew/revoke/expiry', 'queued close FIFO drain', 'shared capacity/retention'];
+const testSource = bytes(path.join(prep, reviewed.files.find(row => row.path === 'tests/native/local_task_family_tests.cpp').snapshot)).toString('utf8');
+for (const name of sharedCaseNames.concat('json bridge page policy', 'registration mutation guard', 'controlled prepare failures'))
+  assert(testSource.includes('{"' + name + '",'), 'Direct case label absent from frozen source: ' + name);
+const architectureProofs = [], binaryOutputs = [];
+assert.equal(result.architectureEvidence.length, 2); assert.equal(result.outputs.length, 24);
+for (const architecture of result.architectureEvidence) {
+  const arch = architecture.architecture; assert(['x64', 'x86'].includes(arch));
+  assert.equal(architecture.compilationReusedFromPriorAttempt, arch === 'x64');
+  assert.equal(architecture.compilationCompleted, true); assert.equal(architecture.compilationGenericSupervisionPassed, false);
+  assert.equal(architecture.compilerTailAcceptance, false);
+  const build = arch === 'x64' ? frozen.prior.build : path.join(actual, 'b-x86');
+  const compiled = result.records.find(row => row.name === 'compile-' + arch);
+  const toolchain = e.readToolchain(build, arch, frozen, compiled, targets);
+  assert.deepEqual(architecture.projects, toolchain.projects);
+  assert.deepEqual(architecture.actualCompiler, toolchain.actualCompiler);
+  assert.deepEqual(architecture.observedTools, toolchain.observedTools);
+  assert.equal(architecture.projects.length, 12); assert.equal(architecture.evaluatedProjects.length, 12);
+  for (const project of architecture.projects) {
+    const commands = project.tlogs.filter(row => /^cl\.command\.\d+\.tlog$/i.test(path.basename(row.path)));
+    assert.equal(commands.length, 1); const commandsText = e.text(commands[0].path);
+    const macro = project.target === 'soui_local_task_family_prepare_tests';
+    assert.equal(commandsText.includes('SOUI_TASK_FAMILY_TEST_ONLY'), macro);
+    if (macro) for (const source of ['task_service.cpp', 'task_store.cpp', 'bridge_transport.cpp']) {
+      const sections = commandsText.split(/(?:^|\r?\n)\^/).filter(section => section.split(/\r?\n/, 1)[0].toLowerCase().includes(source));
+      assert.equal(sections.length, 1, 'Private source CL command missing: ' + source);
+      assert(sections[0].includes('SOUI_TASK_FAMILY_TEST_ONLY'), 'Private source macro absent: ' + source);
+    }
+    const output = result.outputs.find(row => row.architecture === arch && row.target === project.target); assert(output);
+    assert.equal(output.sha256, project.output.sha256); assert.equal(output.bytes, project.output.bytes);
+    assert.equal(output.testOnlySeamEnabled, macro); verify(output);
+    binaryOutputs.push({...output, disposition: 'private-compiled-output-hash-only'});
+  }
+  const propertyProofs = [];
+  for (const project of architecture.evaluatedProjects) {
+    const phase = result.records.find(row => row.name === project.phase); assert(phase);
+    const projectPath = architecture.projects.find(item => item.target === project.target).project.path;
+    assert.deepEqual(phase.inputs.args, [projectPath, '-nologo', '-v:q', '-nr:false', '-p:Configuration=Release',
+      '-p:Platform=' + (arch === 'x64' ? 'x64' : 'Win32'), '-getProperty:' + e.propertyNames.join(',')]);
+    const properties = e.readProperties(verify(phase.raw.stdout), frozen, arch);
+    assert.deepEqual(properties.properties, project.properties);
+    assert.deepEqual(properties.evaluatedImportInputs, project.evaluatedImportInputs);
+    propertyProofs.push({target: project.target, phase: phase.name, ...properties});
+  }
+  const mapName = 'ctest-map-ctest-definitions-' + arch + '.json', ctestMap = read(path.join(actual, mapName));
+  assert(ctestMap.length > 0);
+  for (const row of ctestMap) assert(verify(row.original).equals(verify(row.copied)));
+  const listing = result.records.find(row => row.name === 'ctest-list-' + arch);
+  const tests = JSON.parse(verify(listing.raw.stdout)).tests; assert.equal(tests.length, 11);
+  const seen = new Set();
+  for (const test of tests) {
+    const target = targets.find(target => expectedTestName(target) === test.name); assert(target && !seen.has(target)); seen.add(target);
+    const output = architecture.projects.find(project => project.target === target).output;
+    assert.deepEqual(test.command, [output.path.replace(/\\/g, '/')]);
+  }
+  assert.equal(seen.size, 11);
+  const tested = result.records.find(row => row.name === 'ctest-' + arch);
+  assert(verify(tested.raw.stdout).toString('utf8').includes('100% tests passed, 0 tests failed out of 11'));
+  const lastLog = bytes(path.join(actual, 'ctest-definitions-' + arch, 'Testing/Temporary/LastTest.log')).toString('utf8');
+  assert.equal((lastLog.match(/Test Passed\./g) || []).length, 11);
+  for (const target of targets) assert(lastLog.includes(expectedTestName(target)));
+  const directProofs = [];
+  for (const [target, extra] of [['soui_local_task_family_tests', ['json bridge page policy']],
+    ['soui_local_task_family_prepare_tests', ['registration mutation guard', 'controlled prepare failures']]]) {
+    const phase = result.records.find(row => row.name === target + '-' + arch), expected = sharedCaseNames.concat(extra);
+    assert(phase); assert.deepEqual(phase.inputs.args, []);
+    const output = architecture.projects.find(project => project.target === target).output;
+    assert.equal(e.canonical(phase.inputs.executable.path), e.canonical(output.path));
+    const lines = verify(phase.raw.stdout).toString('utf8').trim().split(/\r?\n/);
+    assert.deepEqual(lines, expected.map(name => 'PASS ' + name).concat('Local task family: ' + expected.length + '/' + expected.length + ' passed'));
+    const cases = read(path.join(actual, target + '-' + arch + '-cases.json'));
+    assert.equal(cases.actualCases, expected.length); assert.deepEqual(cases.cases, expected.map(name => 'PASS ' + name));
+    assert.equal(cases.naturallyCompleted, true); assert.equal(cases.realOsOomProven, false);
+    assert.equal(cases.reportSha256, phase.summary.reportSha256); assert.equal(cases.contextSha256, phase.summary.contextSha256);
+    directProofs.push({target, expectedCaseNames: expected, actualCases: expected.length, naturallyCompleted: true, raw: phase.raw});
+  }
+  architectureProofs.push({architecture: arch, actualCompiler: toolchain.actualCompiler, compilerVersion: toolchain.compilerVersion,
+    sdk: '10.0.19041.0', projects: architecture.projects, propertyProofs, ctestMap, ctestPassed: 11, directProofs,
+    compilationReusedFromPriorAttempt: arch === 'x64', compilationGenericSupervisionPassed: false, compilerTailAcceptance: false});
+}
+assert.equal(architectureProofs.flatMap(row => row.propertyProofs).length, 24);
+const failureDefinitions = [
+  ['long-path-compile-failed', path.join(roots[2].directory, 'actual-8829f379-9eb0-4abe-afbc-8a81757c5a3c'), /Actual root failed/],
+  ['post-read-reader-failed', path.join(roots[3].directory, 'actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b'), /SORTDEFAULT\.NLS/],
+  ['ctest-directory-collision', path.join(roots[4].directory, 'actual-9f362f1a-4482-461f-a3f9-9332342089e0'), /EEXIST/]
+];
+const failureProofs = [];
+for (const [name, directory, errorPattern] of failureDefinitions) {
+  const failure = read(path.join(directory, 'failure.json'));
+  assert.equal(failure.validationPassed, false); assert.equal(failure.compilerTailAcceptance, false); assert.equal(failure.releaseReady, false);
+  assert(errorPattern.test(failure.error)); assert(!failure.records.some(row => /^ctest-(?:x86|x64)$|^soui_local_task_family.*-(?:x86|x64)$/.test(row.name)));
+  for (const phase of failure.records) e.readPhase(phase, frozen);
+  if (name === 'long-path-compile-failed') {
+    const phase = failure.records.find(row => row.name === 'compile-x64'); assert.equal(phase.summary.exitCode, 1);
+    assert(verify(phase.raw.stdout).toString('utf8').includes('FTK1011'));
+  }
+  failureProofs.push({name, results: record(path.join(directory, 'failure.json')), error: failure.error,
+    phaseNames: failure.records.map(row => row.name), nativeTestsExecuted: false, validationPassed: false});
+}
+// Only after all pure checks may public creation begin.
+for (const row of originalFiles.values()) verify(row);
+verifySourceBinding();
+const proof = {schema: 'soui.local-task-family-archive-recheck/v1', reviewedSource: reviewedRecord,
+  source16Sha256: source16Hash, source16: reviewed.files, frozenInput: frozenRecord, actualInputs: nativeRecord,
+  actualResults: resultRecord, indexProofs, phaseProofs, architectureProofs, failureProofs,
+  originalIndependentRegularFiles: originalFiles.size, unchangedSource16: true, allOriginalsStable: true,
+  noNativeExecutionByArchivist: true, noProcessControlByArchivist: true, noGitByArchivist: true,
+  controlledRegressionObserved: true, compilerTailAcceptance: false, qualificationPassed: false,
+  sourceReadFullyPrelaunchBound: false, validationPassed: false, releaseReady: false};
+function disposition(row, data) {
+  if (/\.binlog(?:\.inert\.snapshot)?$/i.test(row.path)) return 'private-msbuild-binlog-hash-only';
+  if (/CMakeCXXCompilerId\.(?:cpp|c)(?:\.inert\.snapshot)?$/i.test(row.path)) return 'private-generated-compiler-id-source-hash-only';
+  const machine = data.length >= 2 ? data.readUInt16LE(0) : 0;
+  const coff = data.length >= 20 && [0x14c, 0x8664].includes(machine) && data.readUInt16LE(2) > 0 &&
+    data.readUInt16LE(2) <= 96 && data.readUInt16LE(16) === 0;
+  const bigObj = data.length >= 56 && data.readUInt16LE(0) === 0 && data.readUInt16LE(2) === 0xffff &&
+    [0x14c, 0x8664].includes(data.readUInt16LE(6));
+  if (/\.(exe|dll|obj|lib|pdb|pch|idb|ilk|res|exp)(?:\.inert\.snapshot)?$/i.test(row.path) ||
+    data.toString('ascii', 0, 2) === 'MZ' || data.toString('ascii', 0, 8) === '!<arch>\n' ||
+    data.toString('ascii', 0, 24).startsWith('Microsoft C/C++ MSF') || coff || bigObj)
+    return 'private-compiled-binary-hash-only';
+  if (/[/\\]b-(?:x64|x86)[/\\]/i.test(row.path) && /\.bin$/i.test(row.path)) return 'private-build-binary-hash-only';
+  return 'byte-exact-inert-copy';
+}
+if (process.argv.length === 2) {
+  write(path.join(__dirname, 'recheck-proof.json'), proof);
+  console.log(JSON.stringify({pureChecksPassed: true, phaseCount: phaseProofs.length,
+    properties: 24, architectures: architectureProofs.map(row => ({architecture: row.architecture, ctest: 11, direct: [13, 14]})),
+    originalFiles: originalFiles.size, indexProofs: indexProofs.length, publicArchiveCreated: false}));
+} else {
+  assert.deepEqual(process.argv.slice(2), ['--create']);
+  const prior = read(path.join(__dirname, 'recheck-proof.json'));
+  assert.deepEqual(prior, proof, 'Pure recheck proof changed before curation');
+  add(path.join(__dirname, 'recheck-proof.json'), 'archive-recheck-proof', 'recheck-proof.json');
+  add(path.join(__dirname, 'README.template.md'), 'archive-description', 'README.template.md');
+  assert(!fs.existsSync(destination), 'Public archive is create-only');
+  safe(destination); fs.mkdirSync(destination); safe(destination);
+  const mapping = [];
+  for (const [index, row] of [...originalFiles.values()].entries()) {
+    const data = verify(row), kind = disposition(row, data), item = {...row, disposition: kind};
+    if (kind === 'byte-exact-inert-copy') {
+      const leaf = path.basename(row.path).replace(/[^A-Za-z0-9._-]/g, '_').slice(0, 88);
+      item.archivePath = 'raw/' + String(index).padStart(5, '0') + '-' + leaf + '.inert.snapshot';
+      write(relative(destination, item.archivePath), data);
+    }
+    mapping.push(item);
+  }
+  const privateFiles = mapping.filter(row => !row.archivePath);
+  write(relative(destination, 'byte-exact-map.json'), {schema: 'soui.local-task-family-archive-map/v1',
+    records: mapping, originalsNeverRewritten: true, noNormalizationOfArchivedBytes: true});
+  write(relative(destination, 'private-artifacts.json'), {schema: 'soui.local-task-family-private-artifacts/v1',
+    files: privateFiles, compiledOutputs: binaryOutputs, externalHashPins: [...externalPins.values()],
+    externalBinaryBodiesPublished: false, binlogBodiesPublished: false, generatedCompilerIdBodiesPublished: false,
+    note: 'Original private paths and disk hashes are metadata. They are not copied payloads or loaded-memory authentication.'});
+  write(relative(destination, 'archive-summary.json'), {...proof, date: '2026-10-09',
+    scope: 'Local task family source-bound Release regression evidence only; not production qualification.',
+    sourceStaticReview: {archivistPerformedIndependentProductionReview: false,
+      provenance: 'Root reports prior independent static Root and merge_graph review of the unchanged frozen16; this curation does not repeat or upgrade that approval.'},
+    actualNativeCompileInputCount: native.actualInputs.files.length, wholeRawSourceInputCount: native.rawSource.files.length,
+    actualSourceNormalization: 'Full source identity uses recorded LF normalization; raw input snapshots and archived evidence remain byte-exact.',
+    compiledOutputs: binaryOutputs, privateHashOnlyOriginalCount: privateFiles.length,
+    byteExactInertCopies: mapping.length - privateFiles.length,
+    productionGateLimitations: {fullDistribution: false, gui: false, dll: false, pipe: false, osIdentity: false,
+      win7PeMatrix: false, performance: false, longRun: false, fullCollect: false, vendorKernel: false, realOsOom: false}});
+  write(relative(destination, 'README.md'), bytes(path.join(__dirname, 'README.template.md')));
+  for (const row of originalFiles.values()) verify(row);
+  verifySourceBinding();
+  for (const row of externalPins.values()) verifyPin(row);
+  const files = walk(destination).map(file => ({path: path.relative(destination, file).replace(/\\/g, '/'),
+    bytes: bytes(file).length, sha256: hash(bytes(file))}));
+  const payloadBytes = files.reduce((total, row) => total + row.bytes, 0);
+  write(relative(destination, 'index.json'), {schema: 'soui.local-task-family-public-file-index/v1', files,
+    bytes: payloadBytes, compilerTailAcceptance: false, qualificationPassed: false, validationPassed: false, releaseReady: false});
+  for (const row of files) verify(row, relative(destination, row.path));
+  const completion = {archive: destination, index: record(path.join(destination, 'index.json')),
+    indexedPayload: files.length, totalArchiveFiles: files.length + 1, publicPayloadBytes: payloadBytes,
+    publicBytesIncludingIndex: payloadBytes + bytes(path.join(destination, 'index.json')).length,
+    mappedOriginals: mapping.length, byteExactInertCopies: mapping.length - privateFiles.length,
+    privateHashOnlyOriginals: privateFiles.length, externalHashPins: externalPins.size, originalIndexProofs: indexProofs,
+    source16Sha256: source16Hash, unchangedSource16: true, allOriginalsStable: true, noPublicBinaryBodies: true,
+    actualNativeRecords: phaseProofs.length, actualPropertyPhases: 24, actualCtestPerArchitecture: 11,
+    directCasesPerArchitecture: [13, 14], noNativeExecutionByArchivist: true,
+    compilerTailAcceptance: false, qualificationPassed: false, validationPassed: false, releaseReady: false};
+  write(path.join(__dirname, 'completion.json'), completion);
+  write(path.join(__dirname, 'verification-proof.json'), {...completion,
+    source16: reviewed.files, actualResults: resultRecord, phaseProofs, architectureProofs,
+    publicPayloadHashesRechecked: true, originalPayloadHashesRecheckedPostCopy: true});
+  console.log(JSON.stringify(completion, null, 2));
+}

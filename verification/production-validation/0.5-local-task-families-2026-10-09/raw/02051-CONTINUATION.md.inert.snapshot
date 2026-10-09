@@ -1,0 +1,7 @@
+# Family CTest directory fix preparation
+
+This directory copies the original f4 preparation's 42 payloads and index.json byte for byte. The copied index and handoff still describe their original absolute paths; they are historical records, not the new launch instruction. Existing f4 actual evidence and the prior 473 payloads remain in place and unchanged.
+
+Root may execute the exact argv in handoff-fixed.json after independently reviewing driver-fixed.cjs. The corrected driver differs from the original driver.cjs in one literal on line 220: the byte-copied CTest definitions directory is now ctest-definitions-<arch>, distinct from the owned phase directory ctest-<arch>. Other code, assertions, source identities, helper and preparation inputs are unchanged. driver-delta.json and copy-provenance.json bind both versions and all copied original bytes; continuation-index.json binds this new preparation.
+
+The old actual attempt successfully performed twelve x64 property evaluations and CTest listing, then failed with EEXIST before running CTest. This preparation ran only filesystem verification and Node syntax checks. It did not launch the actual driver, compile, execute native tests, use GUI/VM or change family production/test files. Existing compiler root-zero/generic-false/124 results remain false. qualificationPassed, sourceReadFullyPrelaunchBound, compilerTailAcceptance and releaseReady remain false.

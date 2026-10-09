@@ -1,0 +1,27 @@
+{
+  "target": "soui_local_task_family_prepare_tests",
+  "architecture": "x86",
+  "actualCases": 14,
+  "cases": [
+    "PASS atomic registration",
+    "PASS immutable registry callback",
+    "PASS family/plain/scope isolation",
+    "PASS method/cap/page isolation",
+    "PASS strict direct parsing",
+    "PASS once projection and honest cancel",
+    "PASS projection/normalizer failures",
+    "PASS page message UTF-8 and worker recovery",
+    "PASS actual brand lifetime",
+    "PASS renew/revoke/expiry",
+    "PASS queued close FIFO drain",
+    "PASS shared capacity/retention",
+    "PASS registration mutation guard",
+    "PASS controlled prepare failures"
+  ],
+  "reportSha256": "77861b1566d114bfe8a8b76bfecd4997bfb3b394ca4f482e90ebfd50a76a28a8",
+  "contextSha256": "025e3b3efd7261af1c10b447698c8bf64b5078f6d563305ec8653d7caddc68b1",
+  "naturallyCompleted": true,
+  "privateSeam": true,
+  "realOsOomProven": false,
+  "releaseReady": false
+}
