@@ -25,6 +25,28 @@ struct task_outcome {
   std::string message;
 };
 
+struct local_task_family_definition {
+  std::string name, kind;
+  std::string start_capability, query_capability, cancel_capability;
+  std::string input_schema_json, result_schema_json;
+  // Runs once on a worker, outside service locks. Publish only reviewed data.
+  std::function<std::string(const task_outcome&)> project_result;
+};
+
+// Service-issued identity, never a wire credential. A kind string is not a family.
+class local_task_family final {
+ public:
+  ~local_task_family();
+  local_task_family(const local_task_family&) = delete;
+  local_task_family& operator=(const local_task_family&) = delete;
+  [[nodiscard]] bool active() const noexcept;
+ private:
+  friend class task_service;
+  struct state;
+  explicit local_task_family(std::shared_ptr<const state> data);
+  std::shared_ptr<const state> data_;
+};
+
 // This reference is valid only while a registered handler is executing.
 class task_control final {
  public:
@@ -63,6 +85,16 @@ class task_service final {
   task_service& operator=(const task_service&) = delete;
 
   [[nodiscard]] bool register_handler(std::string kind, handler callback);
+  // Before bootstrap only. Binds an existing handler and atomically publishes
+  // name.start/query/cancel as local-only typed actions; no page grant is added.
+  [[nodiscard]] std::shared_ptr<const local_task_family> register_local_family(
+      capability_registry& registry, local_task_family_definition definition);
+  [[nodiscard]] std::string start_local(const std::shared_ptr<const local_task_family>& family,
+                                        const bridge_request& request);
+  [[nodiscard]] std::string query_local(const std::shared_ptr<const local_task_family>& family,
+                                        const bridge_request& request) const;
+  [[nodiscard]] std::string cancel_local(const std::shared_ptr<const local_task_family>& family,
+                                         const bridge_request& request);
   void set_event_sink(event_sink sink);
   // Requires a revoked/expired native scope. Active/empty scopes return false;
   // true means cleanup/cancellation was requested, not that workers have exited.
@@ -81,7 +113,7 @@ class task_service final {
 
  private:
   struct impl;
-  std::unique_ptr<impl> impl_;
+  std::shared_ptr<impl> impl_;
 };
 
 }  // namespace soui::runtime

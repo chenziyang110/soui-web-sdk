@@ -1,0 +1,5 @@
+--- original driver.cjs
++++ driver-fixed.cjs
+@@ -220 +220 @@
+-const testDirectory=path.join(base,'ctest-'+arch);copyCtestDefinitions(build,testDirectory);
++const testDirectory=path.join(base,'ctest-definitions-'+arch);copyCtestDefinitions(build,testDirectory);

@@ -1,0 +1,37 @@
+'use strict';
+const fs=require('node:fs'), path=require('node:path'), crypto=require('node:crypto');
+const assert=require('node:assert/strict');
+const root='F:/work/sm05-families';
+const old=path.join(root,'out/family-validation-continuation-r2-final-f1d83fc4-3548-4119-91e7-e0c0ff343453');
+const sourceIndex=path.join(old,'final-preparation-index.json');
+const hash=b=>crypto.createHash('sha256').update(b).digest('hex');
+const indexBytes=fs.readFileSync(sourceIndex);
+assert.equal(hash(indexBytes),'b1d87f76117246f3c686a09ce9bac2c8eb3feeecc7f41feceb7c517eb6f31a25');
+const index=JSON.parse(indexBytes); assert.equal(index.files.length,57);
+const relocated=path.join(root,'out','f3p-'+crypto.randomUUID().slice(0,8));
+fs.mkdirSync(relocated,{recursive:false});
+const copied=[];
+for(const row of index.files){
+  assert(!path.isAbsolute(row.relativePath));
+  const source=path.resolve(old,row.relativePath), destination=path.resolve(relocated,row.relativePath);
+  assert(source.startsWith(path.resolve(old)+path.sep));
+  assert(destination.startsWith(path.resolve(relocated)+path.sep));
+  const bytes=fs.readFileSync(source); assert.equal(bytes.length,row.bytes);assert.equal(hash(bytes),row.sha256);
+  fs.mkdirSync(path.dirname(destination),{recursive:true});fs.writeFileSync(destination,bytes,{flag:'wx'});
+  copied.push({source,destination,bytes:bytes.length,sha256:hash(bytes)});
+}
+fs.writeFileSync(path.join(relocated,'final-preparation-index.json'),indexBytes,{flag:'wx'});
+for(const [name,sha] of [['driver.cjs','bbe2171796bd666ac1305c9c869a8e29a0c2f54439b9f57a0d3784777a1aae5c'],
+ ['toolchain-evidence.cjs','ede76633391f4e1a316f21e968f1bd4e77a951f193d939ad3d0f01b0a102298b']])
+ assert.equal(hash(fs.readFileSync(path.join(relocated,name))),sha);
+const frozen=JSON.parse(fs.readFileSync(path.join(relocated,'frozen-inputs-final.json')));
+for(const row of frozen.sources){const b=fs.readFileSync(row.path);assert.equal(b.length,row.bytes);assert.equal(hash(b),row.sha256);}
+const failureDir=path.join(old,'actual-8829f379-9eb0-4abe-afbc-8a81757c5a3c');
+const failureIndex=fs.readFileSync(path.join(failureDir,'index.json'));
+const summary={schema:'soui.family-compact-preparation-relocation/v1',old,relocated,copied,
+ sourceIndexSha256:hash(indexBytes),failedAttempt:failureDir,failedAttemptIndexSha256:hash(failureIndex),
+ reason:'FTK1011 link-cvtres tlog paths exceeded the legacy file-tracker path limit.',
+ sourceChanged:false,driverBytesChanged:false,helperBytesChanged:false,oldAttemptChanged:false,
+ previousAttemptValidationPassed:false,newNativeExecution:false,releaseReady:false};
+fs.writeFileSync(path.join(relocated,'root-relocation.json'),JSON.stringify(summary,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({relocated,driver:path.join(relocated,'driver.cjs'),copies:copied.length,oldAttemptChanged:false}));

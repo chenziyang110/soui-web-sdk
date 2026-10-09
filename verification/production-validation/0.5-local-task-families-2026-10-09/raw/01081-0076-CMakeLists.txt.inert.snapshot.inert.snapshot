@@ -1,0 +1,12 @@
+add_executable(SouiRuntimeDoctor main.cpp "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/runtime_profile.cpp")
+target_compile_features(SouiRuntimeDoctor PRIVATE cxx_std_17)
+target_include_directories(SouiRuntimeDoctor PRIVATE "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
+target_compile_definitions(SouiRuntimeDoctor PRIVATE UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+target_compile_options(SouiRuntimeDoctor PRIVATE /utf-8 /W4)
+target_link_libraries(SouiRuntimeDoctor PRIVATE user32 advapi32 gdi32)
+target_link_options(SouiRuntimeDoctor PRIVATE /SUBSYSTEM:CONSOLE,6.01)
+# Standalone diagnosis on offline/PE machines must not need Node, PowerShell,
+# WebView2 or an installed VC Redistributable merely to report missing features.
+set_target_properties(SouiRuntimeDoctor PROPERTIES MSVC_RUNTIME_LIBRARY MultiThreaded
+  RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/$<CONFIG>/SouiRuntimeDoctor")
+install(TARGETS SouiRuntimeDoctor RUNTIME DESTINATION bin)

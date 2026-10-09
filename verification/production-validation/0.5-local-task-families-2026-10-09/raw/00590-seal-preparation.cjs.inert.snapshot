@@ -1,0 +1,33 @@
+'use strict';
+// Read/hash only, plus create-only private preparation records. No launcher import.
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+const e=require('./toolchain-evidence.cjs'),sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const write=(n,v)=>fs.writeFileSync(path.join(__dirname,n),typeof v==='string'?v:JSON.stringify(v,null,2)+'\n',{flag:'wx'});
+const frozen=e.verify(e.record(path.join(__dirname,'frozen-inputs-final.json')));
+assert.equal(sha(frozen),'d95b0f53523558ad0e25eeaea6ecbde82dd1cae1ee2e62a091e2e7b750a6c189');
+const f=JSON.parse(frozen);
+for(const row of [...f.privateInputs,...f.sources,...Object.values(f.tools),...f.toolchainImports,...f.originalFiles])e.verify(row);
+for(const row of f.originalFiles)assert(fs.readFileSync(row.path).equals(e.verify(row.snapshot)));
+assert.equal(f.sources.length,16);assert.equal(f.originalFiles.length,19);
+const reviewed=JSON.parse(fs.readFileSync(path.join(__dirname,'reviewed-inputs.json')));
+const fp=sha(Buffer.from(JSON.stringify(reviewed.files.map(({path,bytes,sha256})=>({path,bytes,sha256})),null,2)+'\n'));
+assert.equal(fp,'cb93c9e390aa53bc5c46196828b66f067e30824c5b5ca1387e294255c0f0fb3f');
+const parsed=JSON.parse(fs.readFileSync(path.join(__dirname,'reader-check-results.json')));
+assert.equal(parsed.checks,20);assert.equal(parsed.passed,20);assert.equal(parsed.newNativeExecution,false);
+for(const prefix of ['original-driver','r2-driver','r2-helper'])for(const channel of ['stdout','stderr'])
+  assert.equal(fs.statSync(path.join(__dirname,prefix+'-syntax.'+channel+'.log')).size,0);
+const argv=[f.tools.node.path,path.join(__dirname,'driver.cjs')];
+const note=`# Private family validation r2 preparation\n\nRoot executes this fixed driver with no extra arguments after reviewing its full source. No native execution, compilation, GUI, VM, installation, pipe or OS identity validation has been performed by this preparation.\n\nExact argv is stored in handoff.json. The 16 reviewed production/doc/test sources retain cb93c9e390aa53bc5c46196828b66f067e30824c5b5ca1387e294255c0f0fb3f; the original ca6d7ef3 driver, index and all 19 original preparation files are byte-preserved here and at their original paths. Three Node --check invocations returned zero and produced empty stdout/stderr. Parser-only checks read existing startup records: 20/20 passed, including rejection of timeout, STOP, numeric/one-tick FILETIME mismatch, report/context mismatch and truncated NDJSON. They do not validate twelve current family projects or constitute a new native run.\n\nThe runtime creates a new actual UUID subdirectory and builds both architectures. Configure and compile roots may continue only after exact start PID/decimal FILETIME, context/argv/tool/raw hashes and terminal closure validation: root zero, no ready/report/spawn error, STOP, timeout or fallback. A genuine owned-descendants-remain tail retains generic false and supervisor 124, is not accepted by a compiler-tail policy, and makes the positive generic aggregate/validation false. Evaluation, CTest and direct cases must all naturally close with generic true/zero. Release readiness remains false.\n\nEach architecture binds all twelve actual projects (SDK plus eleven tests), actual owned CL/Link/Lib/MSBuild image paths and PID/decimal FILETIME, cache/compiler metadata, CL/Link/Lib command tlogs, output paths and COFF machine. SDK and normal tests have TEST_ONLY off; the dedicated private target has it on for the exact service/store/transport sources. Twelve read-only MSBuild getProperty invocations validate actual default VCToolsVersion 14.44.35207, host x64, SDK 19041 and pinned default props. No literal VCToolsVersion property in vcxproj is assumed or fabricated. Input/header/library read tlogs remain strictly prelaunch-bound; unlisted dependencies fail closed. All tool binaries/binlog bodies stay private; only path/size/hash metadata are included in preparation. No tool-version target override is used for property queries.\n\nThe first unexecuted private r2 preparation at ../family-validation-continuation-r2-09a4ffec-0e01-4178-9775-56e756c0f1ef remains intact. Before any execution, this final sibling corrected native cwd path representation, clarified testOnlySeamEnabled metadata, and strengthened raw-path binding. That preparation correction is not a native/SDK failure. Source16 and the original driver were not edited.\n\nDisk hashes and reported paths do not authenticate loaded memory or defeat same-user rewriting of an entire evidence package. Default MSBuild props are pinned and evaluated; this does not assert complete isolation of every external import. All current family results await Root execution.\n`;
+write('README.md',note);
+write('handoff.json',{schema:'soui.local-task-family-r2-root-handoff/v1',argv,driver:e.record(path.join(__dirname,'driver.cjs')),
+  helper:e.record(path.join(__dirname,'toolchain-evidence.cjs')),frozen:e.record(path.join(__dirname,'frozen-inputs-final.json')),
+  originalDriverSha256:'ca6d7ef32e82381aa53638e6b2d83979d87d058bfb4ae0d0049cda6e9b46c138',
+  originalFilesUnchanged:19,source16Sha256:fp,source16Unchanged:true,syntaxChecks:3,syntaxExitCodes:[0,0,0],pureChecks:20,
+  buildExecuted:false,nativeExecuted:false,compilerTailAcceptance:false,releaseReady:false,
+  priorUnexecutedPreparation:'F:/work/sm05-families/out/family-validation-continuation-r2-09a4ffec-0e01-4178-9775-56e756c0f1ef'});
+const files=e.walk(__dirname).map(p=>({relativePath:path.relative(__dirname,p).replace(/\\/g,'/'),...e.record(p)}));
+write('final-preparation-index.json',{schema:'soui.local-task-family-r2-final-preparation/v1',files,source16Sha256:fp,
+  originalFilesUnchanged:19,pureChecks:20,buildExecuted:false,nativeExecuted:false,releaseReady:false});
+console.log(JSON.stringify({argv,index:e.record(path.join(__dirname,'final-preparation-index.json')),payload:files.length,
+  totalFiles:files.length+1,bytes:files.reduce((n,r)=>n+r.bytes,0),driver:e.record(path.join(__dirname,'driver.cjs')),
+  helper:e.record(path.join(__dirname,'toolchain-evidence.cjs')),frozen:e.record(path.join(__dirname,'frozen-inputs-final.json'))}));

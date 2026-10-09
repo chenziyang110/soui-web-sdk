@@ -1,0 +1,10 @@
+^F:\WORK\SM05-FAMILIES\OUT\F3P-D84ECE0D\ACTUAL-9FE3877A-E64E-42FB-BDBE-6259FC1CF57B\B-X64\CMAKEFILES\1C9450912CCA62479E91D0320163543A\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/work/sm05-families -BF:/work/sm05-families/out/f3p-d84ece0d/actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b/b-x64 --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file F:/work/sm05-families/out/f3p-d84ece0d/actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b/b-x64/SouiSdkDistribution.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

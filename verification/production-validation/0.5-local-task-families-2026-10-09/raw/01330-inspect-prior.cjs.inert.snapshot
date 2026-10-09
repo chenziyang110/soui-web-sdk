@@ -1,0 +1,44 @@
+'use strict';
+// Complete filesystem-only enumeration; never launches or rewrites prior artifacts.
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+const e=require('./toolchain-evidence.cjs');
+const root=path.resolve('F:/work/sm05-families');
+const prior=path.join(root,'out/f3p-d84ece0d/actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b');
+const prepared=JSON.parse(fs.readFileSync(path.join(root,'out/f3p-d84ece0d/frozen-inputs-final.json')));
+const frozen=JSON.parse(fs.readFileSync(path.join(prior,'frozen-inputs.json')));
+const oldIndex=JSON.parse(fs.readFileSync(path.join(prior,'index.json')));
+for(const row of oldIndex.files) {
+  assert(!path.isAbsolute(row.path));
+  const file=path.resolve(prior,row.path);assert(file.startsWith(prior+path.sep));
+  const current=e.record(file);assert.equal(current.bytes,row.bytes);assert.equal(current.sha256,row.sha256);
+}
+const pinRows=[...frozen.actualInputs.files.map(r=>({...r,path:path.join(root,r.path)})),...frozen.tools,...frozen.vendorInputs];
+const pins=new Map(pinRows.map(r=>[e.canonical(r.resolvedPath||r.path),r]));
+const readTlogs=e.walk(path.join(prior,'b-x64')).filter(p=>/\.read\.\d+\.tlog$/i.test(p));
+assert(readTlogs.length>0);const reads=new Map(),lines=[];
+for(const tlog of readTlogs)for(const value of e.text(tlog).split(/\r?\n/)) {
+  if(!value||value.startsWith('^')||!path.isAbsolute(value))continue;
+  const row=e.record(value),key=e.canonical(row.resolvedPath),pin=pins.get(key);
+  let classification='unknown-post-observed';
+  if(pin) {
+    assert.equal(row.bytes,pin.bytes);assert.equal(row.sha256,pin.sha256);
+    classification='prelaunch-source-library-tool-or-vendor';
+  } else if(key.startsWith(e.canonical(prior)+'/'))classification='generated-in-owned-attempt';
+  const current=reads.get(key)||{...row,classification,referencedBy:[]};
+  assert.equal(current.sha256,row.sha256);current.referencedBy.push(e.record(tlog));reads.set(key,current);
+  lines.push({tlog:e.record(tlog),path:value,classification});
+}
+const failure=JSON.parse(fs.readFileSync(path.join(prior,'failure.json')));
+assert.equal(failure.records.length,3);
+for(const p of failure.records)e.readPhase(p,prepared);
+for(const p of failure.records.filter(p=>p.name==='configure-x64'||p.name==='compile-x64'))e.assertContinuation(p,prepared,true);
+const result={schema:'soui.family-prior-read-enumeration/v1',prior,priorIndex:e.record(path.join(prior,'index.json')),
+  priorPayload:oldIndex.files.length,readTlogs:readTlogs.map(e.record),readReferences:lines.length,uniqueReads:reads.size,
+  actualReadFiles:[...reads.values()],unboundReads:[...reads.values()].filter(r=>r.classification==='unknown-post-observed'),
+  originalValidationPassed:false,priorTestsExecuted:false,classificationDoesNotRetroactivelyPrepin:true,
+  newNativeExecution:false,source16Unchanged:true};
+fs.writeFileSync(path.join(__dirname,'prior-read-enumeration.json'),JSON.stringify(result,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify({priorPayload:result.priorPayload,readTlogs:readTlogs.length,readReferences:lines.length,
+  uniqueReads:reads.size,classes:[...new Set(result.actualReadFiles.map(r=>r.classification))].map(c=>({classification:c,
+    count:result.actualReadFiles.filter(r=>r.classification===c).length})),unboundReads:result.unboundReads,
+  sourceSha256:frozen.source.sha256,actualInputsSha256:frozen.actualInputs.sha256}));

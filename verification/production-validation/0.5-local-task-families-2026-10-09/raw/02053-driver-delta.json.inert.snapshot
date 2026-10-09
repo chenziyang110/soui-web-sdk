@@ -1,0 +1,38 @@
+{
+  "schema": "soui.family-driver-directory-fix/v1",
+  "original": {
+    "path": "F:\\work\\sm05-families\\out\\f4p-9dbcc39b\\driver.cjs",
+    "resolvedPath": "F:\\work\\sm05-families\\out\\f4p-9dbcc39b\\driver.cjs",
+    "bytes": 21411,
+    "sha256": "3aa75760dd6de2df16de465180b3de510cff2b0dc12f60394584e3db721de1b6"
+  },
+  "byteExactOriginalCopy": {
+    "path": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\driver.cjs",
+    "resolvedPath": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\driver.cjs",
+    "bytes": 21411,
+    "sha256": "3aa75760dd6de2df16de465180b3de510cff2b0dc12f60394584e3db721de1b6"
+  },
+  "modified": {
+    "path": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\driver-fixed.cjs",
+    "resolvedPath": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\driver-fixed.cjs",
+    "bytes": 21423,
+    "sha256": "cfd498e3a4637844010375ea8699cdb3a56614d437b4c6cad2f7379938d5a1e1"
+  },
+  "onlyChange": {
+    "line": 220,
+    "byteOffset": 17022,
+    "oldBytes": 92,
+    "newBytes": 104,
+    "before": "const testDirectory=path.join(base,'ctest-'+arch);copyCtestDefinitions(build,testDirectory);",
+    "after": "const testDirectory=path.join(base,'ctest-definitions-'+arch);copyCtestDefinitions(build,testDirectory);"
+  },
+  "allOtherBytesEqual": true,
+  "unchangedHelper": {
+    "path": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\toolchain-evidence.cjs",
+    "resolvedPath": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\toolchain-evidence.cjs",
+    "bytes": 15798,
+    "sha256": "f75b5739f122da80f9d8d120dea43b7ed6d615f0304929ddcb55c0cdacbb14df"
+  },
+  "originalPreparationStillPinned": true,
+  "sourceAndAssertionsChanged": false
+}

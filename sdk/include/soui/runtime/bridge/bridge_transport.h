@@ -7,6 +7,7 @@
 #include <memory>
 #include <string>
 #include <string_view>
+#include <vector>
 
 #include <soui/runtime/services/permissions/permission_store.h>
 #include <soui/runtime/bridge/action_contract.h>
@@ -62,15 +63,31 @@ class capability_registry {
 
  private:
   friend class bridge_transport;
+  friend class task_service;
   struct capability {
     std::string permission;
-    contextual_handler callback;
+    std::shared_ptr<const contextual_handler> callback;
     std::shared_ptr<const action_contract> action;
     bool local_enabled{false};
+    bool local_only{false};
   };
+  struct local_action_registration {
+    std::string method, permission, contract;
+    contextual_handler callback;
+  };
+  struct prepared_local_actions {
+    explicit prepared_local_actions(capability_registry& registry) : owner{registry} { owner.preparing_ = true; }
+    ~prepared_local_actions() { methods.clear(); owner.preparing_ = false; }
+    capability_registry& owner;
+    std::map<std::string, capability> methods;
+  };
+  [[nodiscard]] std::unique_ptr<prepared_local_actions> prepare_local_actions(
+      std::vector<local_action_registration> actions);
+  void commit_local_actions(prepared_local_actions& prepared) noexcept;
   // Registration is frozen before bootstrap; ordered storage makes discovery
   // deterministic without copying the complete registry for every request.
   std::map<std::string, capability> methods_;
+  bool preparing_{false};
 };
 
 class bridge_transport {

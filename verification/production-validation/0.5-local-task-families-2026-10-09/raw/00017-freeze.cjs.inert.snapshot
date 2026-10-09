@@ -1,0 +1,33 @@
+'use strict';
+const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
+const root = path.resolve(__dirname, '../..');
+const names = [
+  'docs/api.md', 'docs/adr/0039-local-typed-task-families.md', 'docs/local-task-families.md',
+  'sdk/include/soui/json_bridge.h', 'sdk/include/soui/runtime/bridge/bridge_transport.h',
+  'sdk/include/soui/runtime/core/task/task_store.h',
+  'sdk/include/soui/runtime/services/permissions/permission_store.h',
+  'sdk/include/soui/runtime/services/task/task_service.h', 'sdk/src/json_bridge.cpp',
+  'sdk/src/runtime/bridge/bridge_transport.cpp', 'sdk/src/runtime/core/task/task_store.cpp',
+  'sdk/src/runtime/services/permissions/permission_store.cpp',
+  'sdk/src/runtime/services/task/task_service.cpp',
+  'sdk/src/runtime/services/task/task_family_test_hooks.h',
+  'tests/native/CMakeLists.txt', 'tests/native/local_task_family_tests.cpp'
+].sort();
+const hash = value => crypto.createHash('sha256').update(value).digest('hex');
+const encoded = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
+const identity = require(path.join(root, 'tools/internal/delivery-identity.cjs'));
+const rows = names.map((name, index) => {
+  const source = identity.safePath(root, name), stat = fs.lstatSync(source);
+  if (!stat.isFile() || stat.nlink !== 1) throw Error('Linked/nonregular source: ' + name);
+  const bytes = fs.readFileSync(source), snapshot = String(index).padStart(4, '0') + '-' + path.basename(name) + '.inert.snapshot';
+  fs.writeFileSync(path.join(__dirname, snapshot), bytes, {flag: 'wx'});
+  return {path: name, original: source, bytes: bytes.length, sha256: hash(bytes), snapshot};
+});
+const record = {schema: 'soui.local-task-family-reviewed-source/v1', baseline: 'f6720b4936e488ae3edd9deb02ebf2613b5eba6c',
+  root, files: rows, sourceSha256: hash(encoded(rows.map(({path, bytes, sha256}) => ({path, bytes, sha256})))),
+  execution: {compiled: false, nativeTestsExecuted: false, normalCasesPlanned: 13, privateCasesPlanned: 14},
+  boundaries: {gui: false, dll: false, pipe: false, osIdentity: false, releaseReady: false}};
+const output = encoded(record);
+fs.writeFileSync(path.join(__dirname, 'reviewed-inputs.json'), output, {flag: 'wx'});
+console.log(JSON.stringify({directory: __dirname, sourceSha256: record.sourceSha256,
+  indexSha256: hash(output), files: rows.length, index: path.join(__dirname, 'reviewed-inputs.json')}));

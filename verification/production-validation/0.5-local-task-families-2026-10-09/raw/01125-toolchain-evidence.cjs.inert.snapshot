@@ -1,0 +1,189 @@
+'use strict';
+// Private filesystem reader, adapted from the reviewed startup reader. Never spawns.
+const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
+const assert = require('node:assert/strict');
+const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const canonical = p => path.resolve(p).replace(/\\/g, '/').replace(/\/$/, '').toLowerCase();
+const propertyNames = ['VCToolsVersion', 'VCToolsInstallDir', 'PreferredToolArchitecture', 'PlatformToolset',
+  'WindowsTargetPlatformVersion', 'CLToolPath', 'CLToolExe', 'LinkToolPath', 'LinkToolExe', 'VCTargetsPath'];
+function record(file) {
+  const resolvedPath = fs.realpathSync.native(file), stat = fs.statSync(resolvedPath);
+  assert(stat.isFile()); const bytes = fs.readFileSync(resolvedPath);
+  return {path: file, resolvedPath, bytes: bytes.length, sha256: sha(bytes)};
+}
+function verify(row) {
+  const current = record(row.path);
+  for (const key of ['path','resolvedPath','bytes','sha256']) assert.equal(current[key],row[key]);
+  return fs.readFileSync(row.path);
+}
+function walk(base) {
+  assert(!fs.lstatSync(base).isSymbolicLink());
+  return fs.readdirSync(base, {withFileTypes:true}).flatMap(e => {
+    const p = path.join(base,e.name); assert(!fs.lstatSync(p).isSymbolicLink());
+    return e.isDirectory() ? walk(p) : e.isFile() ? [p] : [];
+  });
+}
+function text(file) {
+  const b=fs.readFileSync(file);
+  return b[0]===0xff && b[1]===0xfe ? b.subarray(2).toString('utf16le') : b.toString('utf8').replace(/^\uFEFF/,'');
+}
+function uint64(value) {
+  assert(typeof value==='string' && /^[1-9]\d*$/.test(value));
+  assert(BigInt(value)<=18446744073709551615n);
+}
+function pid(value) { assert(Number.isSafeInteger(value) && value>0 && value<=0xffffffff); }
+function readPhase(phase, frozen) {
+  const result=phase.summary, inputs=phase.inputs;
+  assert.equal(inputs.name,phase.name); assert.equal(inputs.cwd,frozen.root);
+  assert.equal(phase.raw.report.path,result.report);
+  assert.equal(phase.raw.context.path,result.report+'.context.json');
+  const raw=verify(phase.raw.report), contextBytes=verify(phase.raw.context);
+  verify(phase.raw.stdout); verify(phase.raw.stderr);
+  assert.equal(sha(raw),result.reportSha256);
+  assert.equal(sha(contextBytes),result.contextSha256);
+  assert.equal(raw.subarray(-1).toString(),'\n','Truncated report');
+  const rows=raw.toString('utf8').trimEnd().split('\n').map(s=>JSON.parse(s));
+  assert(rows.length>=2 && rows.filter(r=>r.event==='start').length===1 && rows.filter(r=>r.event==='terminal').length===1);
+  const start=rows[0], terminal=rows.at(-1), context=JSON.parse(contextBytes);
+  assert.equal(start.schema,'soui.owned-process-run/v1'); assert.equal(start.event,'start');
+  pid(start.pid); uint64(start.creationFileTime);
+  assert.equal(start.pid,result.pid); assert.equal(start.creationFileTime,result.creationFileTime);
+  assert.equal(start.jobAssignedBeforeResume,true); assert.equal(start.breakawayAllowed,false);
+  assert.deepEqual(result.ready,{pid:start.pid,creationFileTime:start.creationFileTime});
+  assert.equal(result.readyError,null);
+  assert.equal(start.timeoutMs,inputs.timeoutMs); assert.equal(start.drainMs,inputs.drainMs);
+  assert.deepEqual(terminal,result.terminal); assert.equal(terminal.event,'terminal');
+  assert.equal(terminal.rootExited,true); assert.equal(terminal.rootExitCode,result.exitCode);
+  assert.equal(terminal.closureConfirmed,true); assert.equal(terminal.activeProcesses,0);
+  assert(Number.isSafeInteger(terminal.totalProcesses) && terminal.totalProcesses>=1);
+  assert.equal(terminal.limitTerminatedProcesses,0);
+  assert.equal(terminal.passed,result.passed);
+  for(const key of ['spawnError','reportError','signal']) assert.equal(result[key],null);
+  for(const key of ['stopRequested','fallbackUsed']) assert.equal(result[key],false);
+  assert.equal(result.closureConfirmed,true);
+  assert.equal(context.schema,'soui.owned-process-context/v1');
+  assert.equal(context.runnerSha256,frozen.tools.runner.sha256);
+  assert.equal(result.runnerSha256,context.runnerSha256); verify(frozen.tools.runner);
+  assert.equal(context.executable,inputs.executable.path);
+  assert.equal(context.executableSha256,inputs.executable.sha256); verify(inputs.executable);
+  assert.equal(result.executableSha256,context.executableSha256);
+  assert.deepEqual(context.args,inputs.args); assert.equal(context.cwd,frozen.root);
+  assert.equal(context.timeoutMs,start.timeoutMs); assert.equal(context.drainMs,start.drainMs);
+  assert.equal(context.tailImagePin,undefined); assert.equal(result.tailEvidence,undefined);
+  assert.equal(sha(verify(phase.raw.stdout)),result.stdoutSha256);
+  assert.equal(sha(verify(phase.raw.stderr)),result.stderrSha256);
+  return {rows,start,terminal,context};
+}
+function assertContinuation(phase,frozen,allowClosedCompileTail) {
+  const evidence=readPhase(phase,frozen), result=phase.summary;
+  assert.equal(result.exitCode,0,'Actual root failed');
+  if(result.passed) {
+    assert.equal(result.supervisorExitCode,0); assert.equal(evidence.terminal.reason,'completed');
+    assert.equal(evidence.terminal.terminatedOwnedJob,false);
+  } else {
+    assert(allowClosedCompileTail,'Non-build phase must naturally close');
+    assert.equal(result.supervisorExitCode,124);
+    assert.equal(evidence.terminal.reason,'owned-descendants-remain');
+    assert.equal(evidence.terminal.terminatedOwnedJob,true);
+    assert(Number.isSafeInteger(evidence.terminal.activeBeforeCleanup) && evidence.terminal.activeBeforeCleanup>0);
+  }
+  return evidence;
+}
+function pe(file,arch) {
+  const b=fs.readFileSync(file); assert(b.length>=64 && b.subarray(0,2).toString()==='MZ');
+  const offset=b.readUInt32LE(60); assert(offset>=64 && offset<=b.length-24);
+  assert.equal(b.readUInt32LE(offset),0x4550);
+  assert.equal(b.readUInt16LE(offset+4),arch==='x86'?0x14c:0x8664);
+  return {...record(file),architecture:arch,coffMachine:b.readUInt16LE(offset+4)};
+}
+function readToolchain(build,arch,frozen,compiled,targets) {
+  const cachePath=path.join(build,'CMakeCache.txt'), cache=text(cachePath);
+  const cacheValue=n=>cache.match(new RegExp('^'+n+':[^=]+=([^\\r\\n]*)$','m'))?.[1];
+  assert.equal(cacheValue('CMAKE_GENERATOR'),'Visual Studio 17 2022');
+  assert.equal(cacheValue('CMAKE_GENERATOR_PLATFORM'),(arch==='x64'?'x64':'Win32')+',version=10.0.19041.0');
+  assert.equal(cacheValue('CMAKE_GENERATOR_INSTANCE'),frozen.vs);
+  const toolset=cacheValue('CMAKE_GENERATOR_TOOLSET').split(',');
+  assert.deepEqual([...toolset].sort(),['v143','version=14.44.35207','host=x64'].sort());
+  assert.equal(cacheValue('CMAKE_SYSTEM_VERSION'),'10.0.19041.0');
+  const files=walk(build), metas=files.filter(p=>path.basename(p)==='CMakeCXXCompiler.cmake');
+  assert.equal(metas.length,1);
+  const compilerText=text(metas[0]), compiler=compilerText.match(/^set\(CMAKE_CXX_COMPILER "([^"]+)"\)$/m)?.[1];
+  assert(compiler); assert.equal(canonical(compiler),canonical(frozen.tools['cl-'+arch].path));
+  const compilerVersion=compilerText.match(/^set\(CMAKE_CXX_COMPILER_VERSION "([^"]+)"\)$/m)?.[1];
+  assert(typeof compilerVersion==='string' && /^19\.44\.\d+(?:\.\d+)?$/.test(compilerVersion));
+  assert(/^set\(CMAKE_CXX_COMPILER_ID "MSVC"\)$/m.test(compilerText));
+  verify(frozen.tools['cl-'+arch]);
+  const native=assertContinuation(compiled,frozen,true), observed=new Map();
+  for(const row of native.rows.filter(r=>r.event==='owned-member' && typeof r.image==='string' &&
+      /\/(cl|link|lib|msbuild)\.exe$/i.test(r.image.replace(/\\/g,'/')))) {
+    pid(row.pid); uint64(row.creationFileTime);
+    const key=row.pid+':'+row.creationFileTime;
+    if(observed.has(key)) assert.equal(canonical(observed.get(key).image),canonical(row.image));
+    observed.set(key,{pid:row.pid,creationFileTime:row.creationFileTime,image:row.image});
+  }
+  const observedTools=[];
+  for(const key of ['cl-'+arch,'link-'+arch,'lib-'+arch,'msbuild']) {
+    const pin=frozen.tools[key]; verify(pin);
+    const processes=[...observed.values()].filter(p=>canonical(p.image)===canonical(pin.path));
+    assert(processes.length>0,'Actual owned tool image was not captured: '+key);
+    observedTools.push({key,diskObject:pin,observedProcesses:processes});
+  }
+  for(const process of observed.values()) assert(observedTools.some(t=>canonical(t.diskObject.path)===canonical(process.image)),
+    'Unexpected owned CL/Link/Lib/MSBuild image: '+process.image);
+  const projects=[];
+  const sourcePaths=['sdk/src/runtime/services/task/task_service.cpp','sdk/src/runtime/core/task/task_store.cpp',
+    'sdk/src/runtime/bridge/bridge_transport.cpp'].map(p=>canonical(path.join(frozen.root,p)).toUpperCase());
+  for(const target of ['soui_sdk',...targets]) {
+    const relative=target==='soui_sdk'?'sdk/soui_sdk.vcxproj':'tests/native/'+target+'.vcxproj';
+    const projectPath=path.join(build,relative), body=text(projectPath);
+    assert(body.includes('<PlatformToolset>v143</PlatformToolset>'));
+    assert(body.includes('<WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>'));
+    assert(body.includes('<PreferredToolArchitecture>x64</PreferredToolArchitecture>'));
+    const seam=target==='soui_local_task_family_prepare_tests';
+    assert.equal(body.includes('SOUI_TASK_FAMILY_TEST_ONLY'),seam);
+    const prefix=canonical(path.join(build,target==='soui_sdk'?'sdk':'tests/native',target+'.dir'))+'/';
+    const tlogs=files.filter(p=>canonical(p).startsWith(prefix) && /\.tlog$/i.test(p));
+    const cls=tlogs.filter(p=>/^cl\.command\.\d+\.tlog$/i.test(path.basename(p)));
+    assert.equal(cls.length,1,'Actual CL command missing/ambiguous: '+target);
+    const cl=text(cls[0]), normalizedCl=cl.replace(/\\/g,'/').toUpperCase();
+    assert.equal(cl.includes('SOUI_TASK_FAMILY_TEST_ONLY'),seam);
+    if(target==='soui_sdk' || seam) for(const source of sourcePaths) assert(normalizedCl.includes(source),'Actual private/production source missing: '+source);
+    if(target.includes('local_task_family')) assert(normalizedCl.includes(canonical(path.join(frozen.root,'tests/native/local_task_family_tests.cpp')).toUpperCase()));
+    const links=tlogs.filter(p=>new RegExp('^'+(target==='soui_sdk'?'lib':'link')+'\\.command\\.\\d+\\.tlog$','i').test(path.basename(p)));
+    assert.equal(links.length,1,'Actual Link/Lib command missing/ambiguous: '+target);
+    const outputText=text(links[0]).replace(/\\/g,'/').toUpperCase();
+    assert(outputText.includes('/MACHINE:'+(arch==='x64'?'X64':'X86')));
+    const outputPath=path.join(build,target==='soui_sdk'?'sdk/Release/soui_sdk.lib':'tests/native/Release/'+target+'.exe');
+    assert(outputText.includes(canonical(outputPath).toUpperCase()));
+    const output=target==='soui_sdk'?record(outputPath):pe(outputPath,arch);
+    if(target==='soui_sdk') assert.equal(fs.readFileSync(outputPath).subarray(0,8).toString(),'!<arch>\n');
+    projects.push({target,project:record(projectPath),macroEnabled:seam,tlogs:tlogs.map(record),output,
+      externalVcpkgIntegrationObserved:/VCPKG[\\/]INSTALLED[\\/]/i.test(cl)});
+  }
+  return {architecture:arch,actualCompiler:record(compiler),compilerMetadata:record(metas[0]),cache:record(cachePath),
+    compilerVersion,
+    observedTools,projects,generated:[record(cachePath),record(metas[0]),...projects.flatMap(p=>[p.project,...p.tlogs,p.output])],
+    diskBytesOnly:true,vcToolsVersionLiteralNotAssumed:true,
+    limitation:'Owned image paths and prelaunch/post-run disk hashes do not authenticate loaded memory or every external MSBuild import.'};
+}
+function readProperties(bytes,frozen,arch) {
+  const value=JSON.parse(bytes.toString('utf8').replace(/^\uFEFF/,'').trim());
+  assert.deepEqual(Object.keys(value),['Properties']); const p=value.Properties;
+  assert.deepEqual(Object.keys(p).sort(),[...propertyNames].sort());
+  for(const name of propertyNames) assert.equal(typeof p[name],'string');
+  assert.equal(p.VCToolsVersion,'14.44.35207'); assert.equal(p.PlatformToolset,'v143');
+  assert.equal(p.PreferredToolArchitecture.toLowerCase(),'x64'); assert.equal(p.WindowsTargetPlatformVersion,'10.0.19041.0');
+  assert.equal(canonical(p.VCToolsInstallDir),canonical(frozen.msvc));
+  assert.equal(canonical(p.VCTargetsPath),canonical(frozen.vcTargetsPath));
+  for(const [prefix,key,exe] of [['CL','cl-'+arch,'cl.exe'],['Link','link-'+arch,'link.exe']]) {
+    assert(p[prefix+'ToolExe']==='' || p[prefix+'ToolExe'].toLowerCase()===exe);
+    if(p[prefix+'ToolPath']) assert.equal(canonical(path.join(p[prefix+'ToolPath'],p[prefix+'ToolExe']||exe)),canonical(frozen.tools[key].path));
+  }
+  const imports=['Microsoft.Cpp.Default.props','Microsoft.Cpp.props'].map(name=>{
+    const expected=path.join(p.VCTargetsPath,name), row=frozen.toolchainImports.find(r=>canonical(r.path)===canonical(expected));
+    assert(row,'Evaluated default import was not prelaunch pinned'); verify(row); return row;
+  });
+  return {properties:p,evaluatedImportInputs:imports,
+    note:'No build target or tool-version override requested. Empty CL/Link ToolPath/ToolExe are actual evaluated defaults.'};
+}
+module.exports={record,verify,walk,text,canonical,propertyNames,readPhase,assertContinuation,readToolchain,readProperties,pe};

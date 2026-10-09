@@ -1,0 +1,128 @@
+'use strict';
+// Filesystem-only preparation. Never imports or executes an actual driver.
+const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
+const assert = require('node:assert/strict');
+const source = 'F:/work/sm05-families/out/f4p-9dbcc39b';
+const root = 'F:/work/sm05-families', destination = __dirname;
+const expectedIndex = 'edc67b19bcedeb61035f96f4b637e9e9afcf4be9a8e71853cf6d3df865a52478';
+const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const encode = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
+function rejectLinks(name) {
+  const absolute = path.resolve(name), parsed = path.parse(absolute);
+  let cursor = parsed.root;
+  for (const component of absolute.slice(parsed.root.length).split(path.sep).filter(Boolean)) {
+    cursor = path.join(cursor, component);
+    assert(!fs.lstatSync(cursor).isSymbolicLink(), 'Linked archive path: ' + cursor);
+  }
+}
+function record(name) {
+  rejectLinks(name);
+  const resolvedPath = fs.realpathSync.native(name), stat = fs.statSync(resolvedPath);
+  assert(stat.isFile() && stat.nlink === 1, 'Nonregular or shared archive file: ' + name);
+  const bytes = fs.readFileSync(resolvedPath);
+  return {path: name, resolvedPath, bytes: bytes.length, sha256: hash(bytes)};
+}
+function verify(row) {
+  const actual = record(row.path);
+  for (const key of ['bytes', 'sha256']) assert.equal(actual[key], row[key]);
+  if (row.resolvedPath) assert.equal(actual.resolvedPath, row.resolvedPath);
+  return actual;
+}
+function safeRelative(base, relative) {
+  assert(typeof relative === 'string' && relative && !path.isAbsolute(relative));
+  const result = path.resolve(base, relative), suffix = path.relative(base, result);
+  assert(suffix && !suffix.startsWith('..') && !path.isAbsolute(suffix));
+  return result;
+}
+function write(name, bytes) {
+  const target = safeRelative(destination, name);
+  assert(!fs.existsSync(target), 'Refusing overwrite: ' + target);
+  fs.writeFileSync(target, Buffer.isBuffer(bytes) ? bytes : encode(bytes), {flag: 'wx'});
+  return record(target);
+}
+assert.equal(path.resolve(destination), path.resolve(root, 'out/f5p-e1d8d4dd'));
+rejectLinks(destination);
+assert.deepEqual(fs.readdirSync(destination), ['prepare-continuation.cjs']);
+const indexPath = path.join(source, 'index.json'), indexBytes = fs.readFileSync(indexPath);
+assert.equal(hash(indexBytes), expectedIndex);
+const indexed = JSON.parse(indexBytes);
+assert.equal(indexed.files.length, 42);
+assert.equal(new Set(indexed.files.map(row => row.relativePath)).size, 42);
+const oldRecords = indexed.files.map(row => {
+  assert.equal(path.resolve(row.path), safeRelative(source, row.relativePath));
+  return verify(row);
+});
+const frozen = JSON.parse(fs.readFileSync(path.join(source, 'frozen-inputs-final.json')));
+const reviewed = JSON.parse(fs.readFileSync(path.join(source, 'reviewed-inputs.json')));
+assert.equal(reviewed.sourceSha256, 'cb93c9e390aa53bc5c46196828b66f067e30824c5b5ca1387e294255c0f0fb3f');
+assert.equal(reviewed.files.length, 16);
+const source16 = reviewed.files.map(row => {
+  const actual = record(safeRelative(root, row.path));
+  assert.equal(actual.bytes, row.bytes); assert.equal(actual.sha256, row.sha256);
+  const snapshot = record(safeRelative(source, row.snapshot));
+  assert.equal(snapshot.bytes, row.bytes); assert.equal(snapshot.sha256, row.sha256);
+  return actual;
+});
+assert.equal(frozen.prior.payloadFiles.length, 473);
+assert.equal(frozen.prior.originalIndexSha256, '9ab1e170d2023ebde693e0d93c242001bab756887ae420489f70fc2fec7821d8');
+const prior473 = frozen.prior.payloadFiles.map(verify), priorIdentity = frozen.prior.identityFiles.map(verify);
+const oldActualDirectory = path.join(source, 'actual-9f362f1a-4482-461f-a3f9-9332342089e0');
+const oldActualIndex = record(path.join(oldActualDirectory, 'index.json'));
+const actualIndex = JSON.parse(fs.readFileSync(oldActualIndex.path));
+const oldActualPayload = actualIndex.files.map(row => {
+  const absolute = safeRelative(oldActualDirectory, row.path);
+  return verify({...row, path: absolute});
+});
+const oldActualFailure = JSON.parse(fs.readFileSync(path.join(oldActualDirectory, 'failure.json')));
+assert(oldActualFailure.error.includes('EEXIST') && oldActualFailure.error.includes('ctest-x64'));
+assert.equal(oldActualFailure.records.filter(row => row.name.startsWith('evaluate-x64-')).length, 12);
+assert(oldActualFailure.records.some(row => row.name === 'ctest-list-x64' && row.summary.passed === true));
+assert(!oldActualFailure.records.some(row => row.name === 'ctest-x64'));
+const copies = indexed.files.map((row, index) => {
+  const original = oldRecords[index], bytes = fs.readFileSync(original.path);
+  const copied = write(row.relativePath, bytes);
+  assert.equal(copied.bytes, original.bytes); assert.equal(copied.sha256, original.sha256);
+  assert(fs.readFileSync(copied.path).equals(bytes));
+  return {relativePath: row.relativePath, original, copied};
+});
+const copiedIndex = write('index.json', indexBytes);
+assert.equal(copiedIndex.sha256, expectedIndex);
+const oldDriver = fs.readFileSync(path.join(source, 'driver.cjs'));
+const before = Buffer.from("const testDirectory=path.join(base,'ctest-'+arch);copyCtestDefinitions(build,testDirectory);");
+const after = Buffer.from("const testDirectory=path.join(base,'ctest-definitions-'+arch);copyCtestDefinitions(build,testDirectory);");
+const offset = oldDriver.indexOf(before);
+assert(offset >= 0 && oldDriver.indexOf(before, offset + before.length) === -1);
+const fixedBytes = Buffer.concat([oldDriver.subarray(0, offset), after, oldDriver.subarray(offset + before.length)]);
+const fixedDriver = write('driver-fixed.cjs', fixedBytes);
+assert(fixedBytes.subarray(0, offset).equals(oldDriver.subarray(0, offset)));
+assert(fixedBytes.subarray(offset + after.length).equals(oldDriver.subarray(offset + before.length)));
+const delta = {schema: 'soui.family-driver-directory-fix/v1', original: record(path.join(source, 'driver.cjs')),
+  byteExactOriginalCopy: record(path.join(destination, 'driver.cjs')), modified: fixedDriver,
+  onlyChange: {line: 220, byteOffset: offset, oldBytes: before.length, newBytes: after.length,
+    before: before.toString(), after: after.toString()}, allOtherBytesEqual: true,
+  unchangedHelper: record(path.join(destination, 'toolchain-evidence.cjs')),
+  originalPreparationStillPinned: true, sourceAndAssertionsChanged: false};
+write('driver-delta.json', delta);
+write('driver-delta.patch', Buffer.from('--- original driver.cjs\n+++ driver-fixed.cjs\n@@ -220 +220 @@\n-' +
+  before.toString() + '\n+' + after.toString() + '\n'));
+write('copy-provenance.json', {schema: 'soui.family-continuation-copy/v1', source, destination,
+  sourceIndex: record(indexPath), copiedIndex, payloadCount: copies.length, copies,
+  oldActualIndex, oldActualPayload, oldActualPreserved: true,
+  prior473Count: prior473.length, priorIndexSha256: frozen.prior.originalIndexSha256,
+  prior473, priorIdentity, reviewedSourceSha256: reviewed.sourceSha256, source16,
+  copiedOriginalIndexStillReferencesOriginalPaths: true,
+  copiedHandoffIsHistoricalNotExecutableInstruction: true,
+  noNativeExecution: true, noBuildExecution: true, noGuiExecution: true, releaseReady: false});
+write('handoff-fixed.json', {schema: 'soui.family-directory-fix-handoff/v1',
+  argv: [frozen.tools.node.path, fixedDriver.path], cwd: root, driver: fixedDriver,
+  unchangedHelper: record(path.join(destination, 'toolchain-evidence.cjs')),
+  frozen: record(path.join(destination, 'frozen-inputs-final.json')),
+  originalIndexSha256: expectedIndex, reviewedSourceSha256: reviewed.sourceSha256,
+  actualDriverExecuted: false, sourceReadFullyPrelaunchBound: false,
+  compilerTailAcceptance: false, qualificationPassed: false, releaseReady: false});
+for (const row of [...oldRecords, record(indexPath), ...prior473, ...priorIdentity, oldActualIndex,
+  ...oldActualPayload, ...source16]) verify(row);
+console.log(JSON.stringify({destination, originalPayload: copies.length, prior473: prior473.length,
+  oldActualPayload: oldActualPayload.length, source16: source16.length,
+  originalIndexSha256: expectedIndex, driver: fixedDriver, onlyOneDirectoryLiteralChanged: true,
+  actualDriverExecuted: false}));

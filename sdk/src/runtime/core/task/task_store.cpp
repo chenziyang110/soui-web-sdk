@@ -5,6 +5,9 @@
 #include <sstream>
 #include <string_view>
 #include <utility>
+#ifdef SOUI_TASK_FAMILY_TEST_ONLY
+#include "../../services/task/task_family_test_hooks.h"
+#endif
 
 namespace soui::runtime {
 namespace {
@@ -23,25 +26,36 @@ task_snapshot task_store::start(std::string operation_id) {
 
 task_snapshot task_store::start_scoped(std::string operation_id, std::string scope_key,
                                        bool* duplicate, bool* conflict, bool* capacity) {
-  std::lock_guard<std::mutex> lock(mutex_);
-  if (duplicate) *duplicate = false;
-  if (conflict) *conflict = false;
-  if (capacity) *capacity = false;
+  auto prepared = prepare_start_scoped(std::move(operation_id), std::move(scope_key));
+  // The return value is fully allocated before changing identities or retention.
+  auto snapshot = prepared->snapshot;
+  if (duplicate) *duplicate = prepared->duplicate;
+  if (conflict) *conflict = prepared->conflict;
+  if (capacity) *capacity = prepared->capacity;
+  commit_start_scoped(*prepared);
+  return snapshot;
+}
+
+std::unique_ptr<task_store::prepared_start> task_store::prepare_start_scoped(
+    std::string operation_id, std::string scope_key) {
+  auto prepared = std::make_unique<prepared_start>(mutex_);
   const auto existing = operation_to_task_.find(operation_id);
   if (existing != operation_to_task_.end()) {
     const auto scope = operation_to_scope_.find(operation_id);
     if (scope != operation_to_scope_.end() && scope->second != scope_key) {
-      if (conflict) *conflict = true;
-      task_snapshot rejected;
+      prepared->conflict = true;
+      auto& rejected = prepared->snapshot;
       rejected.operation_id = std::move(operation_id);
       rejected.state = task_state::failed;
       rejected.message = "operationId already exists for different request scope";
       rejected.result = operation_result{result_kind::failure, {}, rejected.message};
-      return rejected;
+      return prepared;
     }
-    if (duplicate) *duplicate = true;
-    return tasks_.at(existing->second);
+    prepared->duplicate = true;
+    prepared->snapshot = tasks_.at(existing->second);
+    return prepared;
   }
+  std::string evicted_id;
   if (tasks_.size() >= max_tasks) {
     auto oldest = tasks_.end();
     for (auto iterator = tasks_.begin(); iterator != tasks_.end(); ++iterator) {
@@ -49,30 +63,64 @@ task_snapshot task_store::start_scoped(std::string operation_id, std::string sco
       if (oldest == tasks_.end() || iterator->second.sequence < oldest->second.sequence) oldest = iterator;
     }
     if (oldest != tasks_.end()) {
-      operation_to_task_.erase(oldest->second.operation_id);
-      operation_to_scope_.erase(oldest->second.operation_id);
-      tasks_.erase(oldest);
+      evicted_id = oldest->first;
     } else {
-      if (capacity) *capacity = true;
-      task_snapshot rejected;
+      prepared->capacity = true;
+      auto& rejected = prepared->snapshot;
       rejected.operation_id = std::move(operation_id);
       rejected.state = task_state::failed;
       rejected.message = "The native task store capacity is exhausted.";
       rejected.result = operation_result{result_kind::failure, {}, rejected.message};
-      return rejected;
+      return prepared;
     }
   }
 
-  task_snapshot snapshot;
-  snapshot.task_id = make_task_id(id_prefix_, next_task_number_++);
+  auto& snapshot = prepared->snapshot;
+  snapshot.task_id = make_task_id(id_prefix_, next_task_number_);
   snapshot.operation_id = std::move(operation_id);
   snapshot.state = task_state::queued;
-  snapshot.sequence = next_sequence_++;
+  snapshot.sequence = next_sequence_;
   snapshot.result = operation_result{result_kind::input_required, snapshot.task_id};
-  operation_to_task_[snapshot.operation_id] = snapshot.task_id;
-  operation_to_scope_[snapshot.operation_id] = std::move(scope_key);
-  tasks_.emplace(snapshot.task_id, snapshot);
-  return snapshot;
+  #ifdef SOUI_TASK_FAMILY_TEST_ONLY
+  detail::task_family_test::before_prepare(detail::task_family_test::prepare_point::store_tasks);
+  #endif
+  prepared->tasks = tasks_;
+  #ifdef SOUI_TASK_FAMILY_TEST_ONLY
+  detail::task_family_test::before_prepare(detail::task_family_test::prepare_point::store_operations);
+  #endif
+  prepared->operations = operation_to_task_;
+  #ifdef SOUI_TASK_FAMILY_TEST_ONLY
+  detail::task_family_test::before_prepare(detail::task_family_test::prepare_point::store_scopes);
+  #endif
+  prepared->scopes = operation_to_scope_;
+  if (!evicted_id.empty()) {
+    const auto& evicted = prepared->tasks.at(evicted_id);
+    prepared->operations.erase(evicted.operation_id);
+    prepared->scopes.erase(evicted.operation_id);
+    prepared->tasks.erase(evicted_id);
+  }
+  prepared->tasks.emplace(snapshot.task_id, snapshot);
+  prepared->operations.emplace(snapshot.operation_id, snapshot.task_id);
+  prepared->scopes.emplace(snapshot.operation_id, std::move(scope_key));
+  prepared->evicted_id = std::move(evicted_id);
+  #ifdef SOUI_TASK_FAMILY_TEST_ONLY
+  detail::task_family_test::before_prepare(detail::task_family_test::prepare_point::store_receipt);
+  #endif
+  prepared->publish = true;
+  return prepared;
+}
+
+void task_store::commit_start_scoped(prepared_start& prepared) noexcept {
+  if (!prepared.publish) return;
+  static_assert(noexcept(tasks_.swap(prepared.tasks)), "Task commit must not throw");
+  static_assert(noexcept(operation_to_task_.swap(prepared.operations)), "Operation commit must not throw");
+  static_assert(noexcept(operation_to_scope_.swap(prepared.scopes)), "Scope commit must not throw");
+  tasks_.swap(prepared.tasks);
+  operation_to_task_.swap(prepared.operations);
+  operation_to_scope_.swap(prepared.scopes);
+  ++next_task_number_;
+  ++next_sequence_;
+  prepared.publish = false;
 }
 
 bool task_store::mark_running(const std::string& task_id) {
