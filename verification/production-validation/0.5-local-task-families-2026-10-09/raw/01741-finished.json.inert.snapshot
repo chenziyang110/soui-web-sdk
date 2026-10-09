@@ -1,0 +1,128 @@
+{
+  "name": "compile-x86",
+  "directory": "compile-x86",
+  "inputs": {
+    "name": "compile-x86",
+    "executable": {
+      "path": "C:/Program Files/CMake/bin/cmake.exe",
+      "resolvedPath": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+      "bytes": 12905544,
+      "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+    },
+    "runner": {
+      "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+      "resolvedPath": "F:\\work\\sm05\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+      "bytes": 60928,
+      "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    },
+    "client": {
+      "path": "F:\\work\\sm05-families\\tools\\internal\\owned-process.cjs",
+      "resolvedPath": "F:\\work\\sm05-families\\tools\\internal\\owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+    },
+    "args": [
+      "--build",
+      "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\b-x86",
+      "--config",
+      "Release",
+      "--target",
+      "soui_sdk",
+      "soui_sdk_contract_tests",
+      "soui_action_contract_tests",
+      "soui_session_renewal_tests",
+      "soui_task_service_tests",
+      "soui_task_store_capacity_tests",
+      "soui_task_scope_tests",
+      "soui_task_operation_query_tests",
+      "soui_local_authorization_tests",
+      "soui_local_action_dispatch_tests",
+      "soui_local_task_family_tests",
+      "soui_local_task_family_prepare_tests",
+      "--parallel",
+      "2",
+      "--",
+      "/nr:false",
+      "/m:2",
+      "/verbosity:normal",
+      "/p:VcpkgEnabled=false",
+      "/p:VCPkgLocalAppDataDisabled=true",
+      "/bl:F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\compile-x86.binlog"
+    ],
+    "cwd": "F:\\work\\sm05-families",
+    "timeoutMs": 600000,
+    "drainMs": 3000,
+    "sourceSha256": "b180d149e05592ee29ada7f69ccec6bde430bbef1c4c62f07c46f9571f3481a3",
+    "actualInputsSha256": "b801d190b7b0fba3f195e172db8c098f39aa2d4b0c5b2fd5f601df52ea987ffd",
+    "reviewedSourceSha256": "cb93c9e390aa53bc5c46196828b66f067e30824c5b5ca1387e294255c0f0fb3f",
+    "compilerTailAcceptance": false,
+    "allowClosedCompileTailForContinuationOnly": true
+  },
+  "summary": {
+    "pid": 92764,
+    "creationFileTime": "134359768324794794",
+    "exitCode": 0,
+    "supervisorExitCode": 124,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": false,
+    "terminal": {
+      "event": "terminal",
+      "reason": "owned-descendants-remain",
+      "elapsedMs": 88092,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 1,
+      "terminatedOwnedJob": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 185,
+      "limitTerminatedProcesses": 0,
+      "passed": false
+    },
+    "report": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\compile-x86\\owned.ndjson",
+    "reportSha256": "3b5314fb97d8a3c81982fdd88f2e5975d4ed45f13d14964d0a126fc15f40ce50",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+    "ready": {
+      "pid": 92764,
+      "creationFileTime": "134359768324794794"
+    },
+    "readyError": null,
+    "contextSha256": "7e26db4cf486e2f61042e91d0cfaac83b10c4ce148e89a7f5d6a80fd9ef7e772",
+    "stdoutSha256": "0292fbafd9c78964ae848fa60108ad80022e88c0e5a20e6e9e5deb4a84274597",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "compilerTailAcceptance": false,
+    "releaseReady": false
+  },
+  "raw": {
+    "report": {
+      "path": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\compile-x86\\owned.ndjson",
+      "resolvedPath": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\compile-x86\\owned.ndjson",
+      "bytes": 230996,
+      "sha256": "3b5314fb97d8a3c81982fdd88f2e5975d4ed45f13d14964d0a126fc15f40ce50"
+    },
+    "context": {
+      "path": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\compile-x86\\owned.ndjson.context.json",
+      "resolvedPath": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\compile-x86\\owned.ndjson.context.json",
+      "bytes": 1228,
+      "sha256": "7e26db4cf486e2f61042e91d0cfaac83b10c4ce148e89a7f5d6a80fd9ef7e772"
+    },
+    "stdout": {
+      "path": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\compile-x86\\stdout.bin",
+      "resolvedPath": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\compile-x86\\stdout.bin",
+      "bytes": 280553,
+      "sha256": "0292fbafd9c78964ae848fa60108ad80022e88c0e5a20e6e9e5deb4a84274597"
+    },
+    "stderr": {
+      "path": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\compile-x86\\stderr.bin",
+      "resolvedPath": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\compile-x86\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}

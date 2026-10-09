@@ -1,0 +1,89 @@
+'use strict';
+// Prepare a compact continuation. Root alone executes driver.cjs; no launcher imported here.
+const fs=require('node:fs'),path=require('node:path'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+const e=require('./toolchain-evidence.cjs'),sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const encode=v=>Buffer.from(JSON.stringify(v,null,2)+'\n'),write=(n,v)=>fs.writeFileSync(path.join(__dirname,n),Buffer.isBuffer(v)?v:encode(v),{flag:'wx'});
+const root=path.resolve('F:/work/sm05-families'), old=path.join(root,'out/f3p-d84ece0d');
+const prior=path.join(old,'actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b'), build=path.join(prior,'b-x64');
+const first=path.join(root,'out/family-validation-continuation-r2-final-f1d83fc4-3548-4119-91e7-e0c0ff343453/actual-8829f379-9eb0-4abe-afbc-8a81757c5a3c');
+const prepared=JSON.parse(fs.readFileSync(path.join(old,'frozen-inputs-final.json')));
+const frozen=JSON.parse(fs.readFileSync(path.join(prior,'frozen-inputs.json'))), failure=JSON.parse(fs.readFileSync(path.join(prior,'failure.json')));
+const oldIndex=JSON.parse(fs.readFileSync(path.join(prior,'index.json')));
+assert.equal(sha(fs.readFileSync(path.join(prior,'index.json'))),'9ab1e170d2023ebde693e0d93c242001bab756887ae420489f70fc2fec7821d8');
+assert.equal(sha(fs.readFileSync(path.join(prior,'failure.json'))),'5b6b0347d32681fea9942ee438c0f96fcc93b7fe6218c4d2b4f87f8eadb6d7e0');
+const priorPayload=oldIndex.files.map(r=>{const file=path.resolve(prior,r.path);assert(file.startsWith(prior+path.sep));
+  const current=e.record(file);assert.equal(current.bytes,r.bytes);assert.equal(current.sha256,r.sha256);return current;});
+assert.equal(priorPayload.length,473);
+const prelaunchRows=[...frozen.rawSource.files.map(r=>({...r,path:path.join(root,r.path)})),...frozen.tools,...frozen.vendorInputs];
+const readProof=e.classifyActualReads(build,prelaunchRows,prior,true);
+assert.equal(readProof.readTlogs.length,41);assert.equal(readProof.readReferences,6586);assert.equal(readProof.uniqueReads,585);
+assert.equal(readProof.postObservedInputs.length,17);assert.equal(readProof.selectedProjectPostObservedInputs.length,4);
+assert.equal(readProof.configureProbeOnlyPostObservedInputs.length,13);
+write('prior-read-classification.json',readProof);
+const compiled=failure.records.find(r=>r.name==='compile-x64'),configured=failure.records.find(r=>r.name==='configure-x64');
+assert(compiled&&configured);for(const phase of [configured,compiled])e.assertContinuation(phase,prepared,true);
+const names=['sdk_contract','action_contract','session_renewal','task_service','task_store_capacity','task_scope',
+  'task_operation_query','local_authorization','local_action_dispatch','local_task_family'];
+const targets=names.map(n=>'soui_'+n+'_tests').concat('soui_local_task_family_prepare_tests');
+const dryToolchain=e.readToolchain(build,'x64',prepared,compiled,targets);assert.equal(dryToolchain.projects.length,12);
+write('prior-x64-output-toolchain-readonly.json',dryToolchain);
+write('old-driver.cjs.inert.snapshot',fs.readFileSync(path.join(old,'driver.cjs')));
+write('old-helper.cjs.inert.snapshot',fs.readFileSync(path.join(old,'toolchain-evidence.cjs')));
+write('old-frozen-inputs.json.inert.snapshot',fs.readFileSync(path.join(old,'frozen-inputs-final.json')));
+write('root-relocation.json.inert.snapshot',fs.readFileSync(path.join(old,'root-relocation.json')));
+write('prior-failure.json.inert.snapshot',fs.readFileSync(path.join(prior,'failure.json')));
+write('prior-index.json.inert.snapshot',fs.readFileSync(path.join(prior,'index.json')));
+const reviewedBytes=fs.readFileSync(path.join(old,'reviewed-inputs.json')),reviewed=JSON.parse(reviewedBytes);write('reviewed-inputs.json',reviewedBytes);
+for(const row of reviewed.files)write(row.snapshot,fs.readFileSync(path.join(old,row.snapshot)));
+const futurePins=[];
+for(const row of readProof.postObservedInputs)futurePins.push({...e.record(row.path),purpose:'Future launch only; prior read remains post-observed'});
+for(const name of ['2052/clui.dll','cvtres.exe']){
+  const file=path.join(prepared.msvc,'bin/Hostx64/x86',name);if(fs.existsSync(file))futurePins.push({...e.record(file),purpose:'Exact known x86 host-tool counterpart for future launch only'});
+}
+const uniqueFuturePins=[...new Map(futurePins.map(r=>[e.canonical(r.resolvedPath),r])).values()];
+let driver=fs.readFileSync(path.join(old,'driver.cjs'),'utf8');
+function replace(a,b){assert.equal(driver.split(a).length,2,a.slice(0,80));driver=driver.replace(a,b);}
+replace("const preparedPath = path.join(__dirname, 'frozen-inputs-final.json');","const preparedPath = path.join(__dirname, 'frozen-inputs-final.json');");
+replace("...prepared.originalFiles, ...prepared.originalFiles.map(row => row.snapshot)]", "...prepared.prior.payloadFiles, ...prepared.prior.identityFiles, ...prepared.futureReadPins]");
+replace("    ...testNames.map(name => 'tests/native/' + name + '_tests.cpp')].includes(row.path)).map(row => row.path);",
+  "    ...testNames.map(name => 'tests/native/' + name + '_tests.cpp')].includes(row.path)).map(row => row.path);\nneed(source.sha256===prepared.prior.sourceSha256 && rawSource.sha256===prepared.prior.rawSourceSha256, 'Current source differs from the compiled prior attempt');");
+replace(".map(row => [row.resolvedPath.toLowerCase(), row]));", ".map(row => [row.resolvedPath.toLowerCase(), row]));\nfor(const row of prepared.futureReadPins) beforeReads.set(row.resolvedPath.toLowerCase(),row);\nfor(const row of rawSource.files){const current=file(identity.safePath(root,row.path));need(current.sha256===row.sha256 && current.bytes===row.bytes,'Whole raw source changed');beforeReads.set(current.resolvedPath.toLowerCase(),current);}");
+replace("const records = [], outputs = [], architectureEvidence = [];", "const records = prepared.prior.phases.map(row=>({...row,reusedFromPriorAttempt:true})), outputs = [], architectureEvidence = [];\nfor(const record of records)evidence.assertContinuation(record,prepared,true);");
+replace("async function evaluatedToolchain(build, arch, compiled) {\n  const checked = checkBuild(build, arch);",
+  "async function evaluatedToolchain(build, arch, compiled, reused) {\n  const oldInputs=prepared.prior.prelaunchRows;\n  const checked=evidence.classifyActualReads(build,reused?oldInputs:[...beforeReads.values()],reused?prepared.prior.directory:base,reused);\n  write('actual-reads-'+arch+'.json',checked);");
+const checkBegin=driver.indexOf('function checkBuild('),checkEnd=driver.indexOf('\nfunction evidenceIndex()',checkBegin);assert(checkBegin>=0&&checkEnd>checkBegin);
+driver=driver.slice(0,checkBegin)+`function copyCtestDefinitions(build, destination) {
+  fs.mkdirSync(destination); const mapping=[];
+  for(const fileName of walk(build).filter(name=>path.basename(name)==='CTestTestfile.cmake')) {
+    const relative=path.relative(build,fileName);need(!path.isAbsolute(relative)&&!relative.startsWith('..'),'Invalid CTest definition');
+    const copied=path.join(destination,relative);fs.mkdirSync(path.dirname(copied),{recursive:true});
+    fs.writeFileSync(copied,fs.readFileSync(fileName),{flag:'wx'});need(file(copied).sha256===file(fileName).sha256,'CTest map bytes differ');
+    mapping.push({original:file(fileName),copied:file(copied)});
+  }need(mapping.length>0,'No CTest definitions');write('ctest-map-'+path.basename(destination)+'.json',mapping);return mapping;
+}
+`+driver.slice(checkEnd);
+replace("    const build = path.join(base, 'b-' + arch);", "    const reused=arch==='x64', build=reused?prepared.prior.build:path.join(base,'b-'+arch);\n    let compiled;\n    if(reused){compiled={record:prepared.prior.phases.find(r=>r.name==='compile-x64'),summary:prepared.prior.phases.find(r=>r.name==='compile-x64').summary};}else{");
+replace("    const compiled = await phase('compile-' + arch,", "    compiled = await phase('compile-' + arch,");
+replace("    const actual = await evaluatedToolchain(build, arch, compiled); architectureEvidence.push(actual);", "    }\n    const actual = await evaluatedToolchain(build, arch, compiled,reused); architectureEvidence.push({...actual,compilationReusedFromPriorAttempt:reused});");
+replace("    const listed = await phase('ctest-list-' + arch, ctest, ['--test-dir', build,", "    const testDirectory=path.join(base,'ctest-'+arch);copyCtestDefinitions(build,testDirectory);\n    const listed = await phase('ctest-list-' + arch, ctest, ['--test-dir', testDirectory,");
+replace("    const tested = await phase('ctest-' + arch, ctest, ['--test-dir', build,", "    const tested = await phase('ctest-' + arch, ctest, ['--test-dir', testDirectory,");
+replace("    controlledRegressionObserved:true, compilerTailAcceptance:false,", "    controlledRegressionObserved:true, compilerTailAcceptance:false,qualificationPassed:false,sourceReadFullyPrelaunchBound:false,\n    priorPartialValidationRemainsFalse:true,priorReadClassification:prepared.prior.readClassification,");
+write('driver.cjs',Buffer.from(driver));
+const identityFiles=[path.join(prior,'index.json'),path.join(prior,'failure.json'),path.join(prior,'frozen-inputs.json'),
+  path.join(first,'index.json'),path.join(first,'failure.json'),path.join(old,'root-relocation.json'),path.join(old,'driver.cjs'),path.join(old,'toolchain-evidence.cjs')].map(e.record);
+const sources=reviewed.files.map(row=>e.record(row.original));
+for(const row of reviewed.files){const current=e.record(row.original);assert.equal(current.bytes,row.bytes);assert.equal(current.sha256,row.sha256);}
+const privateNames=['driver.cjs','toolchain-evidence.cjs','prepare.cjs','inspect-prior.cjs','prior-read-enumeration.json','prior-read-classification.json',
+  'prior-x64-output-toolchain-readonly.json','old-driver.cjs.inert.snapshot','old-helper.cjs.inert.snapshot','old-frozen-inputs.json.inert.snapshot',
+  'root-relocation.json.inert.snapshot','prior-failure.json.inert.snapshot','prior-index.json.inert.snapshot','reviewed-inputs.json',...reviewed.files.map(r=>r.snapshot)];
+const next={schema:'soui.local-task-family-compact-continuation/v3',root,vs:prepared.vs,msvc:prepared.msvc,vcTargetsPath:prepared.vcTargetsPath,
+  tools:prepared.tools,toolchainImports:prepared.toolchainImports,sources,privateInputs:privateNames.map(n=>e.record(path.join(__dirname,n))),futureReadPins:uniqueFuturePins,
+  prior:{directory:prior,build,identityFiles,payloadFiles:priorPayload,phases:[configured,compiled],prelaunchRows,
+    sourceSha256:frozen.source.sha256,rawSourceSha256:frozen.rawSource.sha256,readClassification:e.record(path.join(__dirname,'prior-read-classification.json')),
+    originalIndexSha256:e.record(path.join(prior,'index.json')).sha256,priorValidationPassed:false,priorTestsExecuted:false},
+  source16Sha256:reviewed.sourceSha256,qualificationPassed:false,sourceReadFullyPrelaunchBound:false,
+  newBuildExecuted:false,newNativeExecuted:false,compilerTailAcceptance:false,releaseReady:false};
+write('frozen-inputs-final.json',next);
+console.log(JSON.stringify({directory:__dirname,driver:e.record(path.join(__dirname,'driver.cjs')),helper:e.record(path.join(__dirname,'toolchain-evidence.cjs')),
+  frozen:e.record(path.join(__dirname,'frozen-inputs-final.json')),priorPayload:473,source16Unchanged:true,postObservedPrior:17,futureExactPins:uniqueFuturePins.length,
+  selectedProjects:dryToolchain.projects.length,newNativeExecuted:false}));

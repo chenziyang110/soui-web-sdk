@@ -28,6 +28,7 @@ class json_bridge final : public bridge_adapter {
   // empty list denies all ordinary calls; omission preserves legacy grants.
   bool set_session_capabilities(std::vector<std::string> capabilities);
   bool register_task_handler(std::string kind, soui::runtime::task_service::handler handler);
+  bool register_local_task_family(soui::runtime::local_task_family_definition definition);
   bool enable_directory_service();
   bool enable_clipboard_service();
   bool enable_window_service();

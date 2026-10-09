@@ -1,0 +1,361 @@
+{
+  "error": "Error: Actual compiler read was not in prelaunch inputs: C:\\WINDOWS\\GLOBALIZATION\\SORTING\\SORTDEFAULT.NLS\n    at need (F:\\work\\sm05-families\\out\\f3p-d84ece0d\\driver.cjs:24:54)\n    at checkBuild (F:\\work\\sm05-families\\out\\f3p-d84ece0d\\driver.cjs:209:5)\n    at evaluatedToolchain (F:\\work\\sm05-families\\out\\f3p-d84ece0d\\driver.cjs:154:19)\n    at F:\\work\\sm05-families\\out\\f3p-d84ece0d\\driver.cjs:238:26\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)",
+  "records": [
+    {
+      "name": "cmake-version",
+      "directory": "cmake-version",
+      "inputs": {
+        "name": "cmake-version",
+        "executable": {
+          "path": "C:/Program Files/CMake/bin/cmake.exe",
+          "resolvedPath": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "bytes": 12905544,
+          "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+        },
+        "runner": {
+          "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+          "resolvedPath": "F:\\work\\sm05\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+          "bytes": 60928,
+          "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+        },
+        "client": {
+          "path": "F:\\work\\sm05-families\\tools\\internal\\owned-process.cjs",
+          "resolvedPath": "F:\\work\\sm05-families\\tools\\internal\\owned-process.cjs",
+          "bytes": 8386,
+          "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+        },
+        "args": [
+          "--version"
+        ],
+        "cwd": "F:\\work\\sm05-families",
+        "timeoutMs": 30000,
+        "drainMs": 3000,
+        "sourceSha256": "b180d149e05592ee29ada7f69ccec6bde430bbef1c4c62f07c46f9571f3481a3",
+        "actualInputsSha256": "b801d190b7b0fba3f195e172db8c098f39aa2d4b0c5b2fd5f601df52ea987ffd",
+        "reviewedSourceSha256": "cb93c9e390aa53bc5c46196828b66f067e30824c5b5ca1387e294255c0f0fb3f",
+        "compilerTailAcceptance": false,
+        "allowClosedCompileTailForContinuationOnly": false
+      },
+      "summary": {
+        "pid": 100828,
+        "creationFileTime": "134359749862519577",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 94,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\cmake-version\\owned.ndjson",
+        "reportSha256": "ffde4868cf1c20b347eaca661f80b563e77a20651de616d39b94c5e2423c5baa",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+        "ready": {
+          "pid": 100828,
+          "creationFileTime": "134359749862519577"
+        },
+        "readyError": null,
+        "contextSha256": "3389e0270d6456a7350d29a0b0e1d7a27909ba22038c53a2cfb7149a4ad3f1ad",
+        "stdoutSha256": "a24e1ae7f8f715ef1f0121cd749052d73c6a4315dba5bb885c584553d826eb79",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "compilerTailAcceptance": false,
+        "releaseReady": false
+      },
+      "raw": {
+        "report": {
+          "path": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\cmake-version\\owned.ndjson",
+          "resolvedPath": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\cmake-version\\owned.ndjson",
+          "bytes": 1307,
+          "sha256": "ffde4868cf1c20b347eaca661f80b563e77a20651de616d39b94c5e2423c5baa"
+        },
+        "context": {
+          "path": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\cmake-version\\owned.ndjson.context.json",
+          "resolvedPath": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\cmake-version\\owned.ndjson.context.json",
+          "bytes": 390,
+          "sha256": "3389e0270d6456a7350d29a0b0e1d7a27909ba22038c53a2cfb7149a4ad3f1ad"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\cmake-version\\stdout.bin",
+          "resolvedPath": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\cmake-version\\stdout.bin",
+          "bytes": 90,
+          "sha256": "a24e1ae7f8f715ef1f0121cd749052d73c6a4315dba5bb885c584553d826eb79"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\cmake-version\\stderr.bin",
+          "resolvedPath": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\cmake-version\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "name": "configure-x64",
+      "directory": "configure-x64",
+      "inputs": {
+        "name": "configure-x64",
+        "executable": {
+          "path": "C:/Program Files/CMake/bin/cmake.exe",
+          "resolvedPath": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "bytes": 12905544,
+          "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+        },
+        "runner": {
+          "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+          "resolvedPath": "F:\\work\\sm05\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+          "bytes": 60928,
+          "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+        },
+        "client": {
+          "path": "F:\\work\\sm05-families\\tools\\internal\\owned-process.cjs",
+          "resolvedPath": "F:\\work\\sm05-families\\tools\\internal\\owned-process.cjs",
+          "bytes": 8386,
+          "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+        },
+        "args": [
+          "-S",
+          "F:\\work\\sm05-families",
+          "-B",
+          "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\b-x64",
+          "--fresh",
+          "-G",
+          "Visual Studio 17 2022",
+          "-A",
+          "x64,version=10.0.19041.0",
+          "-T",
+          "v143,version=14.44.35207,host=x64",
+          "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+          "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+          "-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=F:/work/sm05-families/cmake/SouiWindowsSdk.cmake",
+          "-DSOUI_BUILD_TEMPLATE=OFF",
+          "-DSOUI_BUILD_DEMOS=OFF",
+          "-DSOUI_BUILD_TESTS=ON",
+          "-DSOUI_BUILD_WEBVIEW2=OFF"
+        ],
+        "cwd": "F:\\work\\sm05-families",
+        "timeoutMs": 120000,
+        "drainMs": 3000,
+        "sourceSha256": "b180d149e05592ee29ada7f69ccec6bde430bbef1c4c62f07c46f9571f3481a3",
+        "actualInputsSha256": "b801d190b7b0fba3f195e172db8c098f39aa2d4b0c5b2fd5f601df52ea987ffd",
+        "reviewedSourceSha256": "cb93c9e390aa53bc5c46196828b66f067e30824c5b5ca1387e294255c0f0fb3f",
+        "compilerTailAcceptance": false,
+        "allowClosedCompileTailForContinuationOnly": true
+      },
+      "summary": {
+        "pid": 8408,
+        "creationFileTime": "134359749871367378",
+        "exitCode": 0,
+        "supervisorExitCode": 124,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "owned-descendants-remain",
+          "elapsedMs": 17746,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 68,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\configure-x64\\owned.ndjson",
+        "reportSha256": "a5b6765bbbf5d1d0894253594fad3d03b3fc0d80814a2a6f953df7e3b33d3930",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+        "ready": {
+          "pid": 8408,
+          "creationFileTime": "134359749871367378"
+        },
+        "readyError": null,
+        "contextSha256": "cb27e86fc48143bb0160372ab6bee8cbfa46ef53e7bf279779ad54ddbdf3b378",
+        "stdoutSha256": "3ae1f7b47d69a1c695e1838138f1f93fabfdd37c09f7c44960e9cc8c32987d2a",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "compilerTailAcceptance": false,
+        "releaseReady": false
+      },
+      "raw": {
+        "report": {
+          "path": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\configure-x64\\owned.ndjson",
+          "resolvedPath": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\configure-x64\\owned.ndjson",
+          "bytes": 97301,
+          "sha256": "a5b6765bbbf5d1d0894253594fad3d03b3fc0d80814a2a6f953df7e3b33d3930"
+        },
+        "context": {
+          "path": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\configure-x64\\owned.ndjson.context.json",
+          "resolvedPath": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\configure-x64\\owned.ndjson.context.json",
+          "bytes": 1030,
+          "sha256": "cb27e86fc48143bb0160372ab6bee8cbfa46ef53e7bf279779ad54ddbdf3b378"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\configure-x64\\stdout.bin",
+          "resolvedPath": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\configure-x64\\stdout.bin",
+          "bytes": 937,
+          "sha256": "3ae1f7b47d69a1c695e1838138f1f93fabfdd37c09f7c44960e9cc8c32987d2a"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\configure-x64\\stderr.bin",
+          "resolvedPath": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\configure-x64\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    },
+    {
+      "name": "compile-x64",
+      "directory": "compile-x64",
+      "inputs": {
+        "name": "compile-x64",
+        "executable": {
+          "path": "C:/Program Files/CMake/bin/cmake.exe",
+          "resolvedPath": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "bytes": 12905544,
+          "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+        },
+        "runner": {
+          "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+          "resolvedPath": "F:\\work\\sm05\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+          "bytes": 60928,
+          "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+        },
+        "client": {
+          "path": "F:\\work\\sm05-families\\tools\\internal\\owned-process.cjs",
+          "resolvedPath": "F:\\work\\sm05-families\\tools\\internal\\owned-process.cjs",
+          "bytes": 8386,
+          "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+        },
+        "args": [
+          "--build",
+          "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\b-x64",
+          "--config",
+          "Release",
+          "--target",
+          "soui_sdk",
+          "soui_sdk_contract_tests",
+          "soui_action_contract_tests",
+          "soui_session_renewal_tests",
+          "soui_task_service_tests",
+          "soui_task_store_capacity_tests",
+          "soui_task_scope_tests",
+          "soui_task_operation_query_tests",
+          "soui_local_authorization_tests",
+          "soui_local_action_dispatch_tests",
+          "soui_local_task_family_tests",
+          "soui_local_task_family_prepare_tests",
+          "--parallel",
+          "2",
+          "--",
+          "/nr:false",
+          "/m:2",
+          "/verbosity:normal",
+          "/p:VcpkgEnabled=false",
+          "/p:VCPkgLocalAppDataDisabled=true",
+          "/bl:F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\compile-x64.binlog"
+        ],
+        "cwd": "F:\\work\\sm05-families",
+        "timeoutMs": 600000,
+        "drainMs": 3000,
+        "sourceSha256": "b180d149e05592ee29ada7f69ccec6bde430bbef1c4c62f07c46f9571f3481a3",
+        "actualInputsSha256": "b801d190b7b0fba3f195e172db8c098f39aa2d4b0c5b2fd5f601df52ea987ffd",
+        "reviewedSourceSha256": "cb93c9e390aa53bc5c46196828b66f067e30824c5b5ca1387e294255c0f0fb3f",
+        "compilerTailAcceptance": false,
+        "allowClosedCompileTailForContinuationOnly": true
+      },
+      "summary": {
+        "pid": 3256,
+        "creationFileTime": "134359750056054852",
+        "exitCode": 0,
+        "supervisorExitCode": 124,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "owned-descendants-remain",
+          "elapsedMs": 89443,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 185,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\compile-x64\\owned.ndjson",
+        "reportSha256": "69bd34cc48ede8e1bb09103e37fadda090a8e8c123f5e1b5292324409dc04c4f",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+        "ready": {
+          "pid": 3256,
+          "creationFileTime": "134359750056054852"
+        },
+        "readyError": null,
+        "contextSha256": "f834084158f07d7c30e5affc6be58078d26337dbe5d326653a2385fbb4d14b2f",
+        "stdoutSha256": "e132f42ec928bfabd2970e944a45c669c155dcc43d84520c63eca4c035b826cd",
+        "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "compilerTailAcceptance": false,
+        "releaseReady": false
+      },
+      "raw": {
+        "report": {
+          "path": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\compile-x64\\owned.ndjson",
+          "resolvedPath": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\compile-x64\\owned.ndjson",
+          "bytes": 246087,
+          "sha256": "69bd34cc48ede8e1bb09103e37fadda090a8e8c123f5e1b5292324409dc04c4f"
+        },
+        "context": {
+          "path": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\compile-x64\\owned.ndjson.context.json",
+          "resolvedPath": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\compile-x64\\owned.ndjson.context.json",
+          "bytes": 1228,
+          "sha256": "f834084158f07d7c30e5affc6be58078d26337dbe5d326653a2385fbb4d14b2f"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\compile-x64\\stdout.bin",
+          "resolvedPath": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\compile-x64\\stdout.bin",
+          "bytes": 280384,
+          "sha256": "e132f42ec928bfabd2970e944a45c669c155dcc43d84520c63eca4c035b826cd"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\compile-x64\\stderr.bin",
+          "resolvedPath": "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\compile-x64\\stderr.bin",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      }
+    }
+  ],
+  "outputs": [],
+  "architectureEvidence": [],
+  "validationPassed": false,
+  "compilerTailAcceptance": false,
+  "releaseReady": false
+}

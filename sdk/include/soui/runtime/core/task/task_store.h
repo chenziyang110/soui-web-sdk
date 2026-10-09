@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <mutex>
+#include <memory>
 #include <optional>
 #include <string>
 #include <unordered_map>
@@ -57,6 +58,19 @@ class task_store {
   [[nodiscard]] bool erase(const std::string& task_id);
 
  private:
+  friend class task_service;
+  struct prepared_start {
+    explicit prepared_start(std::mutex& mutex) : lock{mutex} {}
+    std::unique_lock<std::mutex> lock;
+    std::unordered_map<std::string, task_snapshot> tasks;
+    std::unordered_map<std::string, std::string> operations, scopes;
+    task_snapshot snapshot;
+    std::string evicted_id;
+    bool duplicate{false}, conflict{false}, capacity{false}, publish{false};
+  };
+  [[nodiscard]] std::unique_ptr<prepared_start> prepare_start_scoped(
+      std::string operation_id, std::string scope_key);
+  void commit_start_scoped(prepared_start& prepared) noexcept;
   [[nodiscard]] static bool is_terminal(task_state state) noexcept;
   [[nodiscard]] static task_state state_for(result_kind kind) noexcept;
 

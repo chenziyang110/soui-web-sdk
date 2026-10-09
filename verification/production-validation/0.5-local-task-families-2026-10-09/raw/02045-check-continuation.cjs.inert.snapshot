@@ -1,0 +1,78 @@
+'use strict';
+// Read-only original verification and Node --check only; no actual driver run.
+const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
+const assert = require('node:assert/strict'), {spawnSync} = require('node:child_process');
+const base = __dirname, hash = b => crypto.createHash('sha256').update(b).digest('hex');
+const encode = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
+const provenance = JSON.parse(fs.readFileSync(path.join(base, 'copy-provenance.json')));
+const delta = JSON.parse(fs.readFileSync(path.join(base, 'driver-delta.json')));
+const e = require('./toolchain-evidence.cjs');
+function write(name, value) {
+  fs.writeFileSync(path.join(base, name), Buffer.isBuffer(value) ? value : encode(value), {flag: 'wx'});
+}
+for (const row of [provenance.sourceIndex, provenance.copiedIndex, provenance.oldActualIndex,
+  ...provenance.copies.flatMap(row => [row.original, row.copied]), ...provenance.prior473,
+  ...provenance.priorIdentity, ...provenance.oldActualPayload, ...provenance.source16]) e.verify(row);
+const original = e.verify(delta.original), fixed = e.verify(delta.modified);
+assert(fs.readFileSync(delta.byteExactOriginalCopy.path).equals(original));
+assert.equal(hash(original), '3aa75760dd6de2df16de465180b3de510cff2b0dc12f60394584e3db721de1b6');
+assert.equal(hash(fixed), 'cfd498e3a4637844010375ea8699cdb3a56614d437b4c6cad2f7379938d5a1e1');
+const before = Buffer.from(delta.onlyChange.before), after = Buffer.from(delta.onlyChange.after);
+const offset = original.indexOf(before);
+assert.equal(offset, delta.onlyChange.byteOffset);
+assert(fixed.equals(Buffer.concat([original.subarray(0, offset), after,
+  original.subarray(offset + before.length)])));
+assert.equal(fixed.length - original.length, 12);
+assert.notEqual('ctest-definitions-x64', 'ctest-x64');
+assert.notEqual('ctest-definitions-x86', 'ctest-x86');
+e.verify(delta.unchangedHelper);
+const frozen = JSON.parse(fs.readFileSync(path.join(base, 'frozen-inputs-final.json')));
+const previousFailure = JSON.parse(fs.readFileSync(path.join(provenance.source,
+  'actual-9f362f1a-4482-461f-a3f9-9332342089e0/failure.json')));
+for (const row of previousFailure.records) {
+  const historicalCompile = ['configure-x64', 'compile-x64'].includes(row.name);
+  e.assertContinuation(row, frozen, historicalCompile);
+  if (historicalCompile) {
+    assert.equal(row.summary.passed, false); assert.equal(row.summary.supervisorExitCode, 124);
+  }
+}
+assert(!previousFailure.records.some(row => row.name === 'ctest-x64'));
+assert.equal(frozen.qualificationPassed, false);
+assert.equal(frozen.sourceReadFullyPrelaunchBound, false);
+assert.equal(frozen.compilerTailAcceptance, false);
+const nodeBefore = e.record(process.execPath), syntax = [];
+for (const [ordinal, name] of ['driver-fixed.cjs', 'toolchain-evidence.cjs', 'prepare-continuation.cjs'].entries()) {
+  const input = e.record(path.join(base, name)), args = ['--check', input.path];
+  const result = spawnSync(process.execPath, args, {cwd: frozen.root, encoding: null, windowsHide: true, timeout: 30000});
+  const stdout = result.stdout || Buffer.alloc(0), stderr = result.stderr || Buffer.alloc(0);
+  write('syntax-' + ordinal + '.stdout.bin', stdout); write('syntax-' + ordinal + '.stderr.bin', stderr);
+  assert.equal(result.error, undefined); assert.equal(result.signal, null); assert.equal(result.status, 0);
+  syntax.push({executable: nodeBefore, args, cwd: frozen.root, input, exitCode: result.status,
+    stdout: e.record(path.join(base, 'syntax-' + ordinal + '.stdout.bin')),
+    stderr: e.record(path.join(base, 'syntax-' + ordinal + '.stderr.bin')), actualDriverExecuted: false});
+}
+assert.deepEqual(e.record(process.execPath), nodeBefore);
+for (const row of [provenance.sourceIndex, provenance.copiedIndex, provenance.oldActualIndex,
+  ...provenance.copies.flatMap(row => [row.original, row.copied]), ...provenance.prior473,
+  ...provenance.priorIdentity, ...provenance.oldActualPayload, ...provenance.source16]) e.verify(row);
+write('syntax-results.json', {schema: 'soui.family-directory-fix-syntax/v1', syntax,
+  unchangedSource16: provenance.reviewedSourceSha256, original42CopiedByteExact: true,
+  originalIndexByteExact: true, prior473Unchanged: true, oldActual175Unchanged: true,
+  priorPhasesRawAndContextVerified: previousFailure.records.length,
+  directoryCollisionRemoved: true, allOtherDriverBytesIdentical: true,
+  actualDriverExecuted: false, nativeExecuted: false, buildExecuted: false,
+  compilerTailAcceptance: false, qualificationPassed: false, releaseReady: false});
+const files = fs.readdirSync(base).sort().map(name => {
+  const target = path.join(base, name), stat = fs.lstatSync(target);
+  assert(stat.isFile() && !stat.isSymbolicLink() && stat.nlink === 1);
+  return {relativePath: name, ...e.record(target)};
+});
+write('continuation-index.json', {schema: 'soui.family-directory-fix-index/v1', files,
+  payloadCount: files.length, payloadBytes: files.reduce((sum, row) => sum + row.bytes, 0),
+  copiedHistoricalIndexSha256: provenance.sourceIndex.sha256,
+  executableDriver: delta.modified, actualDriverExecuted: false, releaseReady: false});
+console.log(JSON.stringify({base, driver: delta.modified,
+  index: e.record(path.join(base, 'continuation-index.json')), payloadCount: files.length,
+  payloadBytes: files.reduce((sum, row) => sum + row.bytes, 0), syntaxExitCodes: syntax.map(row => row.exitCode),
+  source16Unchanged: true, prior473Unchanged: true, oldActual175Unchanged: true,
+  actualDriverExecuted: false}));

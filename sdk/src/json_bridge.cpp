@@ -100,6 +100,11 @@ bool json_bridge::register_task_handler(std::string kind, soui::runtime::task_se
   std::lock_guard<std::mutex> lock(mutex_);
   return !registration_closed_ && tasks_.register_handler(std::move(kind), std::move(handler));
 }
+bool json_bridge::register_local_task_family(soui::runtime::local_task_family_definition definition) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  // Local capabilities must never enter the default or explicit page grants.
+  return !registration_closed_ && static_cast<bool>(tasks_.register_local_family(registry_, std::move(definition)));
+}
 bool json_bridge::enable_session_renewal() {
   std::lock_guard<std::mutex> lock(mutex_);
   if (registration_closed_ || !transport_.enable_session_renewal()) return false;

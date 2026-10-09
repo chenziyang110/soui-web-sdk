@@ -1,0 +1,464 @@
+[
+  {
+    "path": "CMakeLists.txt",
+    "bytes": 906,
+    "sha256": "1b2e55fbd017e2cc40fa51de484679168cc02a28ef8bdcfcca1245a63a573331",
+    "archive": "source-raw/0000-CMakeLists.txt.inert.snapshot"
+  },
+  {
+    "path": "VERSION",
+    "bytes": 17,
+    "sha256": "83cb3ff2cd9573b48948e93b93bdc74433ed8daa5f14c73ded4b79671995b2c1",
+    "archive": "source-raw/0001-VERSION.inert.snapshot"
+  },
+  {
+    "path": "cmake/SouiApplication.cmake",
+    "bytes": 2937,
+    "sha256": "996550e9933b927d1476e2dfe98948c59e528fc31c424aac6cd62dae3e8bd68c",
+    "archive": "source-raw/0002-SouiApplication.cmake.inert.snapshot"
+  },
+  {
+    "path": "cmake/SouiWindowsSdk.cmake",
+    "bytes": 701,
+    "sha256": "5dd1a60792c86c7dac88b097873aae8eab1ec0bd3fcf59c4738f8554174736fd",
+    "archive": "source-raw/0003-SouiWindowsSdk.cmake.inert.snapshot"
+  },
+  {
+    "path": "sdk/CMakeLists.txt",
+    "bytes": 3859,
+    "sha256": "7ab6ffe0098c23a45e84f9fb0894d336ad99422323cf345491d660214b4c6a7f",
+    "archive": "source-raw/0004-CMakeLists.txt.inert.snapshot"
+  },
+  {
+    "path": "sdk/cmake/SouiSdkConfig.cmake.in",
+    "bytes": 466,
+    "sha256": "021cfd659d6975f7b2bdf931db9d02f30f5e202d1df4358eaade12c24bf7a335",
+    "archive": "source-raw/0005-SouiSdkConfig.cmake.in.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/bridge_adapter.h",
+    "bytes": 1374,
+    "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079",
+    "archive": "source-raw/0006-bridge_adapter.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/host/async_result_slot.h",
+    "bytes": 2015,
+    "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840",
+    "archive": "source-raw/0007-async_result_slot.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/host/engine_thread.h",
+    "bytes": 1929,
+    "sha256": "b197f66ff76041c66ef0e1d92fbf681eb50669d6bd99f4935430080c46606256",
+    "archive": "source-raw/0008-engine_thread.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/host/frame_pacer.h",
+    "bytes": 7240,
+    "sha256": "49ddae57332a45e11586dd60ac074a717f57dbd2c64a3280248b82a054358342",
+    "archive": "source-raw/0009-frame_pacer.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/host/interaction_protocol.h",
+    "bytes": 3853,
+    "sha256": "83265088b52fc340e620141729b8f3bef2dc35d5cd22f6b40fdb38bcbff48bad",
+    "archive": "source-raw/0010-interaction_protocol.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/host/runtime_profile.h",
+    "bytes": 1433,
+    "sha256": "5d79c715900b24f7de3c44cba2e13ea415d2e2f96a929ad86667d633f6f4d051",
+    "archive": "source-raw/0011-runtime_profile.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/host/soui_miniblink_host.h",
+    "bytes": 7003,
+    "sha256": "7510ba5a4efee56f6d96645ac432eaa11de97e9ae0fdfb47041c0b35d16050db",
+    "archive": "source-raw/0012-soui_miniblink_host.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/host/webview2_host.h",
+    "bytes": 1983,
+    "sha256": "b1c862a424ae04579a5c66a23769a99256cf76cf5c64251ec371f9d3be35a8cc",
+    "archive": "source-raw/0013-webview2_host.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/host/webview_host.h",
+    "bytes": 5037,
+    "sha256": "a7dc0948eb54a9312d04bdb0a0138195a2e9fc7213b0b79d9a7d7c0cfc6297fb",
+    "archive": "source-raw/0014-webview_host.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/host/window_chrome.h",
+    "bytes": 2359,
+    "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30",
+    "archive": "source-raw/0015-window_chrome.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/host/window_chrome_script.h",
+    "bytes": 1612,
+    "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286",
+    "archive": "source-raw/0016-window_chrome_script.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/json_bridge.h",
+    "bytes": 3032,
+    "sha256": "4c01dd57e6af86cf2b09311026f714e36bfe95a52876d0f72b93f355f2ac345c",
+    "archive": "source-raw/0017-json_bridge.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/bridge/action_contract.h",
+    "bytes": 1167,
+    "sha256": "11a77c9a9aa90bd8d1839f6d08eae8a892c78b7df11bdc37455f623f92c97936",
+    "archive": "source-raw/0018-action_contract.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/bridge/bridge_transport.h",
+    "bytes": 6138,
+    "sha256": "2a210d157de086fc12424d3c1fc7acfc514eb62cc287b38db0b343865dfb75bd",
+    "archive": "source-raw/0019-bridge_transport.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/core/events/event_bus.h",
+    "bytes": 1639,
+    "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62",
+    "archive": "source-raw/0020-event_bus.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/core/result/result.h",
+    "bytes": 626,
+    "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec",
+    "archive": "source-raw/0021-result.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/core/task/task_store.h",
+    "bytes": 3103,
+    "sha256": "466b18425ee59dfba06b1dc63bbb157f9373182b5872ee2ed1c381ea7dcdc6e9",
+    "archive": "source-raw/0022-task_store.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/host/session/webview_session.h",
+    "bytes": 1892,
+    "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a",
+    "archive": "source-raw/0023-webview_session.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/host/trusted_document.h",
+    "bytes": 2696,
+    "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e",
+    "archive": "source-raw/0024-trusted_document.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/services/desktop/desktop_services.h",
+    "bytes": 2210,
+    "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2",
+    "archive": "source-raw/0025-desktop_services.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/services/desktop/global_shortcut.h",
+    "bytes": 3012,
+    "sha256": "800d40c2029697ca23f9148c75acbcc683b7893665c735f4ea0a9ce0810b1ae5",
+    "archive": "source-raw/0026-global_shortcut.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/services/desktop/menu_service.h",
+    "bytes": 2461,
+    "sha256": "2e304780c55cbc92c49d14532ae04ad934b835f7ff3d3f43004c3faae1244605",
+    "archive": "source-raw/0027-menu_service.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/services/desktop/tray_service.h",
+    "bytes": 2765,
+    "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e",
+    "archive": "source-raw/0028-tray_service.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/services/desktop/window_commands.h",
+    "bytes": 2377,
+    "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089",
+    "archive": "source-raw/0029-window_commands.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+    "bytes": 668,
+    "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab",
+    "archive": "source-raw/0030-fileinsight-service.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+    "bytes": 5545,
+    "sha256": "ab303cb608d400e36655136ac1ef491dfdf5fd0acaeb2aed1615243ad93d0e55",
+    "archive": "source-raw/0031-directory_scanner.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/services/permissions/permission_store.h",
+    "bytes": 7673,
+    "sha256": "3e086248ae362262aa0bf724e362febbf065f551288f8f449d45c5123fc59cca",
+    "archive": "source-raw/0032-permission_store.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/runtime/services/task/task_service.h",
+    "bytes": 5068,
+    "sha256": "d414d3e3a5140ed25201d39b58aef36a6410395d63116a4acb4c3ea8723eb1db",
+    "archive": "source-raw/0033-task_service.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/include/soui/version.h",
+    "bytes": 250,
+    "sha256": "505061598801d39ee8151581935990c0f8fed242dede3ee5a2b6f96f0a97f4a5",
+    "archive": "source-raw/0034-version.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/host/bridge_pending_script.h",
+    "bytes": 2166,
+    "sha256": "9672b98ffc6de2e4a0287b4c414ad43764c89fa00fed5f5721ee0e98aec02213",
+    "archive": "source-raw/0035-bridge_pending_script.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/host/bridge_request_budget.h",
+    "bytes": 2703,
+    "sha256": "811516ee0541190362a96a9987c78ffe1dac9b53c8f0c723fd9289b794899592",
+    "archive": "source-raw/0036-bridge_request_budget.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/host/diagnostic_result.h",
+    "bytes": 1007,
+    "sha256": "7c322a719060a89624bd0c74bfc6f4ca62a752f50a633a64fd9c4aeb244be129",
+    "archive": "source-raw/0037-diagnostic_result.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/host/engine_thread.cpp",
+    "bytes": 7861,
+    "sha256": "e5c325bf88352627093cfe435731f6e1a6f59f7a520ab17fe4c972cd493bbfa7",
+    "archive": "source-raw/0038-engine_thread.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/host/interaction_protocol.cpp",
+    "bytes": 2308,
+    "sha256": "5e4fc94c99e12173ea4533fa842c73bff858584bebdd59c371c6dbeb3e040268",
+    "archive": "source-raw/0039-interaction_protocol.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/host/runtime_profile.cpp",
+    "bytes": 6222,
+    "sha256": "f9a9f49b6c68463bd1a0cdd615d0c53865b3c8e8c9121c7e80933cf0ca0dbcd6",
+    "archive": "source-raw/0040-runtime_profile.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/host/soui_miniblink_host.cpp",
+    "bytes": 114721,
+    "sha256": "f7963f9914eabddcaa828ba42c137c2b81140d631f402a7ac144692b9cfb9bcb",
+    "archive": "source-raw/0041-soui_miniblink_host.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/host/source_kernel_api.h",
+    "bytes": 2542,
+    "sha256": "d1df6ab9803a0073a3c3fb8489e3012f65cc9879de765f9a348ddc6d8566eb8e",
+    "archive": "source-raw/0042-source_kernel_api.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/json_bridge.cpp",
+    "bytes": 13811,
+    "sha256": "4f0788514975bf0cfa49577e7d6a2d81e39cf77a1515c8fdb87153c4403fab4e",
+    "archive": "source-raw/0043-json_bridge.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/bridge/action_contract.cpp",
+    "bytes": 10283,
+    "sha256": "6dfa4ceb6a2bf92b5c464619063873896a2c4357c8730205c56f5c04ad3dae7c",
+    "archive": "source-raw/0044-action_contract.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/bridge/bridge_transport.cpp",
+    "bytes": 27179,
+    "sha256": "9886a6ac72009e404ca294c0475dbac17f67d90c7135328560e046bd0cadd381",
+    "archive": "source-raw/0045-bridge_transport.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/core/events/event_bus.cpp",
+    "bytes": 2559,
+    "sha256": "e0e1c24c98720e20eb19a71a881b9a1625adb2f1092b67478a7873ad84bc1805",
+    "archive": "source-raw/0046-event_bus.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/core/result/result.cpp",
+    "bytes": 409,
+    "sha256": "238c8e90a28173d2ac5ea994fcc2f669d9b46d336dd23d4d865e5b481457a9f0",
+    "archive": "source-raw/0047-result.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/core/task/task_store.cpp",
+    "bytes": 9685,
+    "sha256": "bd89952add679de0a2dd2ca257a556d5dde56d6270fc9d881e36e1a0ed3aba53",
+    "archive": "source-raw/0048-task_store.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/host/session/webview_session.cpp",
+    "bytes": 3532,
+    "sha256": "976f755f6f06b16c337a7c941de56e1ef5e3fe66adc1758f188e280ff541a9ee",
+    "archive": "source-raw/0049-webview_session.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/desktop/desktop_services.cpp",
+    "bytes": 14078,
+    "sha256": "824b61b8c8fc3b16e69b62e499d01ef64bea2b07cbd3907aa11327ce3e9e21eb",
+    "archive": "source-raw/0050-desktop_services.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/desktop/global_shortcut.cpp",
+    "bytes": 8129,
+    "sha256": "bbfc1b6980b666374a807fec39170d06e9aa84b87b661856bb41c02a091876ab",
+    "archive": "source-raw/0051-global_shortcut.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/desktop/menu_platform.h",
+    "bytes": 1958,
+    "sha256": "294743b92d08d0c478f728ffa74400ab601e9df360896bd329fbfc67f93f6f26",
+    "archive": "source-raw/0052-menu_platform.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/desktop/menu_service.cpp",
+    "bytes": 16092,
+    "sha256": "09fc3b1b133738bdaedf19f1ea020ff51c5b25ba0309fbd3af0ad66b85d64095",
+    "archive": "source-raw/0053-menu_service.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/desktop/shortcut_platform.h",
+    "bytes": 1570,
+    "sha256": "848466afe3a048c798f654d8cbf3ceb672b46dd112af5e2226977676b74458ae",
+    "archive": "source-raw/0054-shortcut_platform.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/desktop/tray_platform.h",
+    "bytes": 1627,
+    "sha256": "91bb14277f550cb75bdd7b382c79127de4eba48ffffbd3a7025bb47f4ea42012",
+    "archive": "source-raw/0055-tray_platform.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/desktop/tray_service.cpp",
+    "bytes": 13336,
+    "sha256": "f96238fcfa7abbbc08ef4ba242c210450657ed69841df6e777c3174a7ce280a3",
+    "archive": "source-raw/0056-tray_service.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/desktop/unicode_conversion.h",
+    "bytes": 1709,
+    "sha256": "a404b90539344d479faee04ad58606f8af3669546e9f93824b5d590695ce6908",
+    "archive": "source-raw/0057-unicode_conversion.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/fileinsight-service/fileinsight-service.cpp",
+    "bytes": 4790,
+    "sha256": "1f3303c2426759d3e4513e3bbf2dc0263cfe56c5d76c545624c7a8b39986df4a",
+    "archive": "source-raw/0058-fileinsight-service.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/filesystem-readonly/directory_scanner.cpp",
+    "bytes": 30071,
+    "sha256": "713bc211743282e4b8793d244fc8cd5dca0cbb28dd7e8d27e53564ac8f107914",
+    "archive": "source-raw/0059-directory_scanner.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/permissions/permission_store.cpp",
+    "bytes": 16679,
+    "sha256": "f3899c7d224b2f3b0d41d13959038294557fd7982fa20ef15fa1087ce32b262f",
+    "archive": "source-raw/0060-permission_store.cpp.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/permissions/scope_id_sequence.h",
+    "bytes": 892,
+    "sha256": "da8ddba81e066354401b09b317c94ca1aa07701162c44ca31afe33908ac0599e",
+    "archive": "source-raw/0061-scope_id_sequence.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/task/task_family_test_hooks.h",
+    "bytes": 534,
+    "sha256": "38b42bf8fe4525bbebf98f8f18fe7ebefe45c2db89bfa78f26aad68f982ed1e6",
+    "archive": "source-raw/0062-task_family_test_hooks.h.inert.snapshot"
+  },
+  {
+    "path": "sdk/src/runtime/services/task/task_service.cpp",
+    "bytes": 39574,
+    "sha256": "65209e30367ce7fce7b29e4398f204b27a9c9c761c5ff15300ef31b633fdb9f1",
+    "archive": "source-raw/0063-task_service.cpp.inert.snapshot"
+  },
+  {
+    "path": "tests/native/CMakeLists.txt",
+    "bytes": 17894,
+    "sha256": "c7fa1a9036d3a3f09b2c3126d76c5b30bdefe3ee4cecf087c014f9ef358542e0",
+    "archive": "source-raw/0064-CMakeLists.txt.inert.snapshot"
+  },
+  {
+    "path": "tests/native/action_contract_tests.cpp",
+    "bytes": 17353,
+    "sha256": "61013d006af589ee174c0cb6100d715a828aa4a00a32aa0dad1c0fb428f31298",
+    "archive": "source-raw/0065-action_contract_tests.cpp.inert.snapshot"
+  },
+  {
+    "path": "tests/native/local_action_dispatch_tests.cpp",
+    "bytes": 34838,
+    "sha256": "089d45023585367d49c926909fc21c3847c3525ee7f7cb3a836964f8a36497fa",
+    "archive": "source-raw/0066-local_action_dispatch_tests.cpp.inert.snapshot"
+  },
+  {
+    "path": "tests/native/local_authorization_tests.cpp",
+    "bytes": 21031,
+    "sha256": "64d8255a91f42da2875c8dfa75b471f08f808becd58dd6c6922995900c912d70",
+    "archive": "source-raw/0067-local_authorization_tests.cpp.inert.snapshot"
+  },
+  {
+    "path": "tests/native/local_task_family_tests.cpp",
+    "bytes": 42003,
+    "sha256": "b8c2bdf74dc82e8fb1e470ab71a1de2f7acace6428072dec32552b0f7ee90ee4",
+    "archive": "source-raw/0068-local_task_family_tests.cpp.inert.snapshot"
+  },
+  {
+    "path": "tests/native/sdk_contract_tests.cpp",
+    "bytes": 25128,
+    "sha256": "980bf5c7c4e08e1b175f9b273cc8a2d8fbfde525a83b4e40ead675a5f6e4e489",
+    "archive": "source-raw/0069-sdk_contract_tests.cpp.inert.snapshot"
+  },
+  {
+    "path": "tests/native/session_renewal_tests.cpp",
+    "bytes": 26876,
+    "sha256": "67e3f532128f627c0222923552cf4403777641908762d870a5acaa315a1a4591",
+    "archive": "source-raw/0070-session_renewal_tests.cpp.inert.snapshot"
+  },
+  {
+    "path": "tests/native/task_operation_query_tests.cpp",
+    "bytes": 15722,
+    "sha256": "fbd58d9203da579869cdd344dcc91e3b0505eb1c581b659d7a3d899f9f02776e",
+    "archive": "source-raw/0071-task_operation_query_tests.cpp.inert.snapshot"
+  },
+  {
+    "path": "tests/native/task_scope_tests.cpp",
+    "bytes": 28528,
+    "sha256": "4a84c17f3465b5f86d39914f8fa2511882bef4a0ee4c2c99997ccc40485a860e",
+    "archive": "source-raw/0072-task_scope_tests.cpp.inert.snapshot"
+  },
+  {
+    "path": "tests/native/task_service_tests.cpp",
+    "bytes": 21663,
+    "sha256": "f280a239c9adaefd74a53a2ee38611cf7e5297fc939c60b34756ef8cdc2fc9a9",
+    "archive": "source-raw/0073-task_service_tests.cpp.inert.snapshot"
+  },
+  {
+    "path": "tests/native/task_store_capacity_tests.cpp",
+    "bytes": 16948,
+    "sha256": "a7a6e9f9bcf9cc88781fea72204961f259a24363a3f0152abc9e077c2b6b2d86",
+    "archive": "source-raw/0074-task_store_capacity_tests.cpp.inert.snapshot"
+  },
+  {
+    "path": "third_party/include/json/json.hpp",
+    "bytes": 919975,
+    "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6",
+    "archive": "source-raw/0075-json.hpp.inert.snapshot"
+  },
+  {
+    "path": "tools/runtime-doctor/CMakeLists.txt",
+    "bytes": 975,
+    "sha256": "63db9484b98f7c78f2bc48ab59d1d0024d5afd2dbd2a54dd20e5fea76861997d",
+    "archive": "source-raw/0076-CMakeLists.txt.inert.snapshot"
+  }
+]

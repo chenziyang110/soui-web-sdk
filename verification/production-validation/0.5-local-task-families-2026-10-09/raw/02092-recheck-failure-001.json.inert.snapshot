@@ -1,0 +1,13 @@
+{
+  "schema": "soui.local-task-family-archive-preparation-failure/v1",
+  "phase": "pure-filesystem-recheck-before-public-archive",
+  "error": "Archive helper used strict resolvedPath comparison on historical prelaunch rows that intentionally omitted resolvedPath.",
+  "observed": "Historical row F:/work/sm05-families/CMakeLists.txt contains path, bytes=906, sha256=1b2e55fbd017e2cc40fa51de484679168cc02a28ef8bdcfcca1245a63a573331; no resolvedPath field.",
+  "correction": "Check mandatory path/bytes/sha256 and check resolvedPath only when the recorded schema provides it; no evidence record is rewritten.",
+  "failedHelperPreserved": "archive-before-pin-schema-correction.cjs.inert.snapshot",
+  "publicArchiveCreated": false,
+  "originalEvidenceModified": false,
+  "productionSourcesModified": false,
+  "nativeValidationExecuted": false,
+  "releaseReady": false
+}

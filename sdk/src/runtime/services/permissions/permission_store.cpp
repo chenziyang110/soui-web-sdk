@@ -112,6 +112,11 @@ bool authorization_scope::allows(const std::string& capability) const {
   std::lock_guard<std::mutex> lock(data_->mutex);
   return data_->active_at(data_->now()) && data_->capabilities.count(capability) != 0U;
 }
+bool authorization_scope::allows_local_method(const std::string& method, const std::string& capability) const {
+  std::lock_guard<std::mutex> lock(data_->mutex);
+  return data_->local_binding && data_->active_at(data_->now()) &&
+      data_->local_methods.count(method) != 0U && data_->capabilities.count(capability) != 0U;
+}
 bool authorization_scope::matches(const std::string& session, const std::string& origin) const {
   // Identity fields never change; the live check is separate and must occur at admission.
   return data_->session_id == session && data_->origin == origin;

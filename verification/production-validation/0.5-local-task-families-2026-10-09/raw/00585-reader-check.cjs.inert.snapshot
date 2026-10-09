@@ -1,0 +1,92 @@
+'use strict';
+// Parser-only checks using immutable prior startup records and clearly named synthetic copies.
+// Never imports a launcher, compiles, executes native fixtures or modifies original evidence.
+const fs=require('node:fs'), path=require('node:path'), assert=require('node:assert/strict'), crypto=require('node:crypto');
+const e=require('./toolchain-evidence.cjs');
+const base='F:/work/sm05-startup/out/engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6';
+const previous=JSON.parse(fs.readFileSync(path.join(base,'actual-70059d03-7f13-4310-a50d-565bbb7d0382/results.json')));
+const oldFrozen=JSON.parse(fs.readFileSync(path.join(base,'frozen-inputs-final.json')));
+const frozen={root:oldFrozen.root,tools:Object.fromEntries(Object.entries(oldFrozen.tools).map(([k,v])=>[k,e.record(v.path)])),
+  msvc:path.resolve(path.dirname(oldFrozen.tools['cl-x64'].path),'../../..'),vcTargetsPath:oldFrozen.vcTargetsPath,
+  toolchainImports:oldFrozen.toolchainImports.map(row=>e.record(row.path))};
+const sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const results=[];
+function check(name,callback) { callback(); results.push({name,passed:true}); console.log('PASS '+name); }
+function phase(row) {
+  const report=row.result.report, context=report+'.context.json', stdout=row.raw.find(r=>path.basename(r.path)==='stdout.bin').path;
+  const stderr=row.raw.find(r=>path.basename(r.path)==='stderr.bin').path;
+  return {name:row.name,inputs:{name:row.name,cwd:frozen.root,executable:e.record(row.executable),args:row.args,
+      timeoutMs:row.result.terminal.reason==='timeout'?3000:JSON.parse(fs.readFileSync(context)).timeoutMs,
+      drainMs:JSON.parse(fs.readFileSync(context)).drainMs},
+    summary:{...row.result,ready:row.ready,readyError:row.readyError,contextSha256:e.record(context).sha256,
+      stdoutSha256:e.record(stdout).sha256,stderrSha256:e.record(stderr).sha256},
+    raw:{report:e.record(report),context:e.record(context),stdout:e.record(stdout),stderr:e.record(stderr)}};
+}
+const phases=previous.phases.map(phase);
+check('22 prior raw PID/decimal FILETIME/context/terminal records remain readable',()=>{
+  assert.equal(phases.length,22); for(const p of phases)e.readPhase(p,frozen);
+});
+check('16 prior naturally completed phases stay natural',()=>{
+  const rows=phases.filter(p=>p.summary.passed); assert.equal(rows.length,16);
+  for(const p of rows)e.assertContinuation(p,frozen,false);
+});
+check('4 compiler/config roots may continue without changing genericfalse124',()=>{
+  const rows=phases.filter(p=>/(?:configure|compile)$/.test(p.name)); assert.equal(rows.length,4);
+  for(const p of rows) { const before=JSON.stringify(p); e.assertContinuation(p,frozen,true); assert.equal(JSON.stringify(p),before); }
+});
+check('compiler/config tails cannot qualify as naturally completed phases',()=>{
+  for(const p of phases.filter(p=>/(?:configure|compile)$/.test(p.name)))assert.throws(()=>e.assertContinuation(p,frozen,false));
+});
+check('both RED timeouts remain rejected even for compile continuation',()=>{
+  const rows=phases.filter(p=>p.name.endsWith('old-body-red')); assert.equal(rows.length,2);
+  for(const p of rows)assert.throws(()=>e.assertContinuation(p,frozen,true));
+});
+const original=phases.find(p=>p.summary.passed);
+for(const [name,mutate] of [
+  ['ready FILETIME one-tick mismatch',p=>p.summary.ready.creationFileTime=(BigInt(p.summary.ready.creationFileTime)+1n).toString()],
+  ['summary PID mismatch',p=>p.summary.pid++],
+  ['numeric FILETIME cannot replace exact string',p=>p.summary.creationFileTime=Number(p.summary.creationFileTime)],
+  ['raw report hash mismatch',p=>p.summary.reportSha256='0'.repeat(64)],
+  ['context argv mismatch',p=>p.inputs.args.push('synthetic-extra-argument')],
+  ['ready error remains sticky',p=>p.summary.readyError='synthetic readiness error'],
+  ['STOP is never a positive continuation',p=>p.summary.stopRequested=true],
+  ['fallback kills never prove closure',p=>p.summary.fallbackUsed=true],
+  ['report alias cannot replace actual recorded report',p=>p.summary.report+='-alias'],
+  ['test/GUI phase cannot inherit tail acceptance',p=>{p.summary.passed=false;p.summary.terminal.passed=false;}]
+])check(name,()=>{const p=structuredClone(original);mutate(p);assert.throws(()=>e.assertContinuation(p,frozen,false));});
+check('10 actual default-property records parse without literal project VCToolsVersion',()=>{
+  let count=0;
+  for(const p of previous.phases.filter(p=>/-evaluate-\d+$/.test(p.name))) {
+    const arch=p.name.startsWith('x86')?'x86':'x64';
+    e.readProperties(fs.readFileSync(p.raw.find(r=>path.basename(r.path)==='stdout.bin').path),frozen,arch); count++;
+  } assert.equal(count,10);
+});
+const propertyPhase=previous.phases.find(p=>p.name==='x86-evaluate-0');
+const propertyBytes=fs.readFileSync(propertyPhase.raw.find(r=>path.basename(r.path)==='stdout.bin').path);
+check('wrong evaluated compiler version rejects',()=>{
+  const v=JSON.parse(propertyBytes);v.Properties.VCToolsVersion='14.43.00000';
+  assert.throws(()=>e.readProperties(Buffer.from(JSON.stringify(v)),frozen,'x86'));
+});
+check('wrong host tool path rejects',()=>{
+  const v=JSON.parse(propertyBytes);v.Properties.CLToolPath=path.dirname(frozen.tools['cl-x64'].path);
+  assert.throws(()=>e.readProperties(Buffer.from(JSON.stringify(v)),frozen,'x86'));
+});
+check('extra evaluated property rejects',()=>{
+  const v=JSON.parse(propertyBytes);v.Properties.Unreviewed='synthetic';
+  assert.throws(()=>e.readProperties(Buffer.from(JSON.stringify(v)),frozen,'x86'));
+});
+const fixtureDir=path.join(__dirname,'pure-reader-fixtures');fs.mkdirSync(fixtureDir);
+check('truncated NDJSON tail rejects despite recomputed synthetic hashes',()=>{
+  const p=structuredClone(original), report=path.join(fixtureDir,'synthetic-truncated.ndjson.inert.snapshot');
+  fs.writeFileSync(report,fs.readFileSync(p.raw.report.path).subarray(0,-1),{flag:'wx'});
+  fs.writeFileSync(report+'.context.json',fs.readFileSync(p.raw.context.path),{flag:'wx'});
+  p.summary.report=report;p.raw.report=e.record(report);p.summary.reportSha256=p.raw.report.sha256;
+  p.raw.context=e.record(report+'.context.json');p.summary.contextSha256=p.raw.context.sha256;
+  assert.throws(()=>e.assertContinuation(p,frozen,false));
+});
+const result={schema:'soui.local-task-family-r2-parser-check/v1',checks:results.length,passed:results.length,results,
+  originalStartupResultsSha256:sha(fs.readFileSync(path.join(base,'actual-70059d03-7f13-4310-a50d-565bbb7d0382/results.json'))),
+  priorNativeExecutionsOnly:true,newNativeExecution:false,familyActualBuildValidated:false,
+  all12CurrentFamilyProjectsAwaitRoot:true,source16Untouched:true};
+fs.writeFileSync(path.join(__dirname,'reader-check-results.json'),JSON.stringify(result,null,2)+'\n',{flag:'wx'});
+console.log(JSON.stringify(result));

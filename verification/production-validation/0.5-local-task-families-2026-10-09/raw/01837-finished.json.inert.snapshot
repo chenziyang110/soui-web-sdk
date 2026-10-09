@@ -1,0 +1,109 @@
+{
+  "name": "evaluate-x64-6",
+  "directory": "evaluate-x64-6",
+  "inputs": {
+    "name": "evaluate-x64-6",
+    "executable": {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+      "resolvedPath": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+      "bytes": 436024,
+      "sha256": "58fbe0acac5265fe9a93acb291e1dbd50432c4ebf00ff9b9fb4c34bc0f247c73"
+    },
+    "runner": {
+      "path": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+      "resolvedPath": "F:\\work\\sm05\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+      "bytes": 60928,
+      "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    },
+    "client": {
+      "path": "F:\\work\\sm05-families\\tools\\internal\\owned-process.cjs",
+      "resolvedPath": "F:\\work\\sm05-families\\tools\\internal\\owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+    },
+    "args": [
+      "F:\\work\\sm05-families\\out\\f3p-d84ece0d\\actual-9fe3877a-e64e-42fb-bdbe-6259fc1cf57b\\b-x64\\tests\\native\\soui_task_scope_tests.vcxproj",
+      "-nologo",
+      "-v:q",
+      "-nr:false",
+      "-p:Configuration=Release",
+      "-p:Platform=x64",
+      "-getProperty:VCToolsVersion,VCToolsInstallDir,PreferredToolArchitecture,PlatformToolset,WindowsTargetPlatformVersion,CLToolPath,CLToolExe,LinkToolPath,LinkToolExe,VCTargetsPath"
+    ],
+    "cwd": "F:\\work\\sm05-families",
+    "timeoutMs": 60000,
+    "drainMs": 3000,
+    "sourceSha256": "b180d149e05592ee29ada7f69ccec6bde430bbef1c4c62f07c46f9571f3481a3",
+    "actualInputsSha256": "b801d190b7b0fba3f195e172db8c098f39aa2d4b0c5b2fd5f601df52ea987ffd",
+    "reviewedSourceSha256": "cb93c9e390aa53bc5c46196828b66f067e30824c5b5ca1387e294255c0f0fb3f",
+    "compilerTailAcceptance": false,
+    "allowClosedCompileTailForContinuationOnly": false
+  },
+  "summary": {
+    "pid": 82320,
+    "creationFileTime": "134359767927559821",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 1027,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 2,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\evaluate-x64-6\\owned.ndjson",
+    "reportSha256": "68188f5c297bd5916d1d5f958c47ce1bd4d6634492d77708c6d1c2ce190b87aa",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "58fbe0acac5265fe9a93acb291e1dbd50432c4ebf00ff9b9fb4c34bc0f247c73",
+    "ready": {
+      "pid": 82320,
+      "creationFileTime": "134359767927559821"
+    },
+    "readyError": null,
+    "contextSha256": "07e2a62500fbb278e6ab01201b5cf7e20aa9315a4a04187673c9dbbbb0a89200",
+    "stdoutSha256": "0885bb1abadb4d5cc84785f96c9031659d141db8bc2ae00509e5af61d2c7b8b7",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "compilerTailAcceptance": false,
+    "releaseReady": false
+  },
+  "raw": {
+    "report": {
+      "path": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\evaluate-x64-6\\owned.ndjson",
+      "resolvedPath": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\evaluate-x64-6\\owned.ndjson",
+      "bytes": 1216,
+      "sha256": "68188f5c297bd5916d1d5f958c47ce1bd4d6634492d77708c6d1c2ce190b87aa"
+    },
+    "context": {
+      "path": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\evaluate-x64-6\\owned.ndjson.context.json",
+      "resolvedPath": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\evaluate-x64-6\\owned.ndjson.context.json",
+      "bytes": 870,
+      "sha256": "07e2a62500fbb278e6ab01201b5cf7e20aa9315a4a04187673c9dbbbb0a89200"
+    },
+    "stdout": {
+      "path": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\evaluate-x64-6\\stdout.bin",
+      "resolvedPath": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\evaluate-x64-6\\stdout.bin",
+      "bytes": 525,
+      "sha256": "0885bb1abadb4d5cc84785f96c9031659d141db8bc2ae00509e5af61d2c7b8b7"
+    },
+    "stderr": {
+      "path": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\evaluate-x64-6\\stderr.bin",
+      "resolvedPath": "F:\\work\\sm05-families\\out\\f5p-e1d8d4dd\\actual-89274fa8-933b-4728-99ba-6f82a411c3cb\\evaluate-x64-6\\stderr.bin",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
