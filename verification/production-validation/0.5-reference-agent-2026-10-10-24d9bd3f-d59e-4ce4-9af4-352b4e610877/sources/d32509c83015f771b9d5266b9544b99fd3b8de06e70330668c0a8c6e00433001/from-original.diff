@@ -1,0 +1,405 @@
+--- Agent V1/demos/reference-workbench/README.md
++++ Agent v2/demos/reference-workbench/README.md
+@@ -71,0 +71,2 @@
++首次可信原生 binding 前，初始旧 session 清理仍实际转交 Bridge；该清理不使从未开始的 listener 永久失效，也不授予权限。单调 atomic binding latch 发布后发生的任何撤销，包括发布/start 竞争，都会永久关闭；没有自动重开。selected-peer 例实际覆盖 prebind 清理及 publication 时与外国线程 shutdown 的交错，其余绑定后旧 scope/任务和新文档拒绝保持不变。
++
+--- Agent V1/demos/reference-workbench/app/reference-agent.cpp
++++ Agent v2/demos/reference-workbench/app/reference-agent.cpp
+@@ -126,91 +126,106 @@
+-  bool started{false}, stopped{true};
+-  impl(soui::sdk::json_bridge& target, agent_options input) : bridge{target}, options{std::move(input)} {
+-    if (!options.enabled) {
+-      if (!options.pipe_component.empty() || options.approved_process) configuration_failure();
+-      return;
+-    }
+-    if (!component_valid(options.pipe_component) || !options.approved_process || options.approved_process == GetCurrentProcessId()) configuration_failure();
+-    process.reset(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE, FALSE, options.approved_process));
+-    if (!process.get() || WaitForSingleObject(process.get(), 0) != WAIT_TIMEOUT) configuration_failure();
+-    process_creation = creation(process.get());
+-    process_context = context(process.get());
+-    if (!same_context(process_context, context(GetCurrentProcess())) || WaitForSingleObject(process.get(), 0) != WAIT_TIMEOUT) configuration_failure();
+-    control.reset(CreateEventW(nullptr, TRUE, FALSE, nullptr));
+-    if (!control.get()) configuration_failure();
+-    if (!register_local_business(bridge)) configuration_failure();
+-    endpoint = bridge.create_local_endpoint();
+-    if (!endpoint || endpoint->state() != local_endpoint_state::stopped) configuration_failure();
+-  }
+-  bool current_scope(const local_endpoint_scope& scope) {
+-    return GetCurrentThreadId() == owner && !closed.load(std::memory_order_acquire) && same_key(scope, key) &&
+-        current && current() && !closed.load(std::memory_order_acquire) &&
+-        process.get() && WaitForSingleObject(process.get(), 0) == WAIT_TIMEOUT;
+-  }
+-  std::optional<local_endpoint_policy> authorize(const windows_peer_identity& peer) {
+-    if (!current_scope(key) || peer.process_state() != held_process_state::alive ||
+-        peer.process_id() != options.approved_process || peer.creation_filetime() != process_creation ||
+-        peer.user_sid() != process_context.user || peer.session_id() != process_context.session ||
+-        peer.authentication_id().low_part != process_context.authentication.LowPart ||
+-        peer.authentication_id().high_part != process_context.authentication.HighPart) return {};
+-    local_endpoint_policy policy;
+-    policy.scope = key;
+-    policy.session_id = "reference-agent-" + std::to_string(key.application) + "-" + std::to_string(key.document);
+-    policy.origin = "app://reference-agent";
+-    policy.methods = {"bridge.describe", "reference.fixture.describe", "reference.form.submit",
+-      "reference.summary.local.start", "reference.summary.local.query", "reference.summary.local.cancel"};
+-    policy.capabilities = policy.methods;
+-    if (!current_scope(key)) return {};
+-    return policy;
+-  }
+-};
+-agent::agent(soui::sdk::json_bridge& bridge, agent_options options) : data_{std::make_unique<impl>(bridge, std::move(options))} {}
+-agent::~agent() { if (!data_->stopped) std::terminate(); } // No dereference of endpoint after Bridge join.
+-bool agent::start_bound_document(std::function<bool()> current) {
+-  auto& d = *data_;
+-  if (GetCurrentThreadId() != d.owner || !d.endpoint || d.started || d.closed.load()) return false;
+-  d.current = std::move(current);
+-  if (!d.current_scope(d.key)) return false;
+-  d.stopped = false;
+-  const auto result = d.endpoint->start(local_endpoint_options{d.options.pipe_component},
+-      [&d](const windows_peer_identity& peer) { return d.authorize(peer); },
+-      [&d](const local_endpoint_scope& key) { return d.current_scope(key); });
+-  if (result != local_endpoint_error::none) { request_close(); (void)stop_owner(); return false; }
+-  d.started = true;
+-  if (!d.current_scope(d.key)) { request_close(); return false; }
+-  return true;
+-}
+-void agent::pump_owner() noexcept {
+-  auto& d = *data_;
+-  if (GetCurrentThreadId() != d.owner || !d.endpoint || !d.started) return;
+-  // One native control event, observed by the existing bounded owner pump.
+-  // A racing reset cannot reopen the independent atomic admission-close bit.
+-  if (d.control.get() && WaitForSingleObject(d.control.get(), 0) == WAIT_OBJECT_0)
+-    if (!ResetEvent(d.control.get())) std::terminate();
+-  try { if (!d.current_scope(d.key)) request_close(); }
+-  catch (...) { request_close(); }
+-  if (d.closed.load(std::memory_order_acquire)) (void)stop_owner();
+-  else (void)d.endpoint->pump_owner(8, 4);
+-}
+-void agent::request_close() noexcept {
+-  auto& d = *data_;
+-  d.closed.store(true, std::memory_order_release);
+-  if (d.endpoint) d.endpoint->request_stop();
+-  if (d.control.get() && !SetEvent(d.control.get())) std::terminate();
+-}
+-local_endpoint_stop agent::stop_owner() noexcept {
+-  auto& d = *data_;
+-  if (GetCurrentThreadId() != d.owner) return local_endpoint_stop::wrong_owner_thread;
+-  request_close();
+-  if (!d.endpoint) return local_endpoint_stop::stopped;
+-  if (d.started) (void)d.endpoint->revoke_scope(d.key); // No current connection is a normal false result.
+-  const auto result = d.endpoint->poll_stop();
+-  if (result == local_endpoint_stop::stopped) { d.stopped = true; d.current = {}; }
+-  return result;
+-}
+-bool agent::enabled() const noexcept { return data_->options.enabled; }
+-bool agent::started() const noexcept { return data_->started; }
+-bool agent::closed() const noexcept { return data_->closed.load(std::memory_order_acquire); }
+-DWORD agent::selected_process_id() const noexcept { return data_->options.approved_process; }
+-std::uint64_t agent::selected_creation_filetime() const noexcept { return data_->process_creation; }
+-std::string agent::handle_json(std::string_view request, bool gesture) { return data_->bridge.handle_json(request, gesture); }
+-void agent::shutdown_session(const std::string& session) { request_close(); data_->bridge.shutdown_session(session); }
++  std::atomic<bool> binding_started{false}; // Monotonic; never reopened after trusted binding begins.
++  bool started{false}, stopped{true};
++  impl(soui::sdk::json_bridge& target, agent_options input) : bridge{target}, options{std::move(input)} {
++    if (!options.enabled) {
++      if (!options.pipe_component.empty() || options.approved_process) configuration_failure();
++      return;
++    }
++    if (!component_valid(options.pipe_component) || !options.approved_process || options.approved_process == GetCurrentProcessId()) configuration_failure();
++    process.reset(OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE, FALSE, options.approved_process));
++    if (!process.get() || WaitForSingleObject(process.get(), 0) != WAIT_TIMEOUT) configuration_failure();
++    process_creation = creation(process.get());
++    process_context = context(process.get());
++    if (!same_context(process_context, context(GetCurrentProcess())) || WaitForSingleObject(process.get(), 0) != WAIT_TIMEOUT) configuration_failure();
++    control.reset(CreateEventW(nullptr, TRUE, FALSE, nullptr));
++    if (!control.get()) configuration_failure();
++    if (!register_local_business(bridge)) configuration_failure();
++    endpoint = bridge.create_local_endpoint();
++    if (!endpoint || endpoint->state() != local_endpoint_state::stopped) configuration_failure();
++  }
++  bool current_scope(const local_endpoint_scope& scope) {
++    return GetCurrentThreadId() == owner && !closed.load(std::memory_order_acquire) && same_key(scope, key) &&
++        current && current() && !closed.load(std::memory_order_acquire) &&
++        process.get() && WaitForSingleObject(process.get(), 0) == WAIT_TIMEOUT;
++  }
++  std::optional<local_endpoint_policy> authorize(const windows_peer_identity& peer) {
++    if (!current_scope(key) || peer.process_state() != held_process_state::alive ||
++        peer.process_id() != options.approved_process || peer.creation_filetime() != process_creation ||
++        peer.user_sid() != process_context.user || peer.session_id() != process_context.session ||
++        peer.authentication_id().low_part != process_context.authentication.LowPart ||
++        peer.authentication_id().high_part != process_context.authentication.HighPart) return {};
++    local_endpoint_policy policy;
++    policy.scope = key;
++    policy.session_id = "reference-agent-" + std::to_string(key.application) + "-" + std::to_string(key.document);
++    policy.origin = "app://reference-agent";
++    policy.methods = {"bridge.describe", "reference.fixture.describe", "reference.form.submit",
++      "reference.summary.local.start", "reference.summary.local.query", "reference.summary.local.cancel"};
++    policy.capabilities = policy.methods;
++    if (!current_scope(key)) return {};
++    return policy;
++  }
++};
++agent::agent(soui::sdk::json_bridge& bridge, agent_options options) : data_{std::make_unique<impl>(bridge, std::move(options))} {}
++agent::~agent() { if (!data_->stopped) std::terminate(); } // No dereference of endpoint after Bridge join.
++bool agent::start_bound_document(std::function<bool()> current) {
++  auto& d = *data_;
++  if (GetCurrentThreadId() != d.owner || !d.endpoint || d.started || d.closed.load()) return false;
++  d.current = std::move(current);
++  if (!d.current_scope(d.key)) return false;
++  d.binding_started.store(true, std::memory_order_seq_cst);
++  if (!d.current_scope(d.key)) { request_close(); return false; }
++  d.stopped = false;
++  const auto result = d.endpoint->start(local_endpoint_options{d.options.pipe_component},
++      [&d](const windows_peer_identity& peer) { return d.authorize(peer); },
++      [&d](const local_endpoint_scope& key) { return d.current_scope(key); });
++  if (result != local_endpoint_error::none) { request_close(); (void)stop_owner(); return false; }
++  d.started = true;
++  if (!d.current_scope(d.key)) { request_close(); return false; }
++  return true;
++}
++void agent::pump_owner() noexcept {
++  auto& d = *data_;
++  if (GetCurrentThreadId() != d.owner || !d.endpoint || !d.started) return;
++  // One native control event, observed by the existing bounded owner pump.
++  // A racing reset cannot reopen the independent atomic admission-close bit.
++  if (d.control.get() && WaitForSingleObject(d.control.get(), 0) == WAIT_OBJECT_0)
++    if (!ResetEvent(d.control.get())) std::terminate();
++  try { if (!d.current_scope(d.key)) request_close(); }
++  catch (...) { request_close(); }
++  if (d.closed.load(std::memory_order_acquire)) (void)stop_owner();
++  else (void)d.endpoint->pump_owner(8, 4);
++}
++void agent::request_close() noexcept {
++  auto& d = *data_;
++  d.closed.store(true, std::memory_order_release);
++  if (d.endpoint) d.endpoint->request_stop();
++  if (d.control.get() && !SetEvent(d.control.get())) std::terminate();
++}
++local_endpoint_stop agent::stop_owner() noexcept {
++  auto& d = *data_;
++  if (GetCurrentThreadId() != d.owner) return local_endpoint_stop::wrong_owner_thread;
++  request_close();
++  if (!d.endpoint) return local_endpoint_stop::stopped;
++  if (d.started) (void)d.endpoint->revoke_scope(d.key); // No current connection is a normal false result.
++  const auto result = d.endpoint->poll_stop();
++  if (result == local_endpoint_stop::stopped) { d.stopped = true; d.current = {}; }
++  return result;
++}
++bool agent::enabled() const noexcept { return data_->options.enabled; }
++bool agent::started() const noexcept { return data_->started; }
++bool agent::closed() const noexcept { return data_->closed.load(std::memory_order_acquire); }
++DWORD agent::selected_process_id() const noexcept { return data_->options.approved_process; }
++std::uint64_t agent::selected_creation_filetime() const noexcept { return data_->process_creation; }
++std::string agent::handle_json(std::string_view request, bool gesture) { return data_->bridge.handle_json(request, gesture); }
++void agent::shutdown_session(const std::string& session) {
++  // Initial Host mounting may clean a prior session before any trusted document
++  // binding. Keep that cleanup real without disabling the first listener. Both
++  // sides of the Bridge call observe a concurrent binding publication; owner
++  // probes also recheck the actual receipt/digest around publication and start.
++  const auto close_if_bound = [this]() noexcept {
++    if (data_->binding_started.load(std::memory_order_seq_cst)) request_close();
++  };
++  close_if_bound();
++  try { data_->bridge.shutdown_session(session); }
++  catch (...) { close_if_bound(); throw; }
++  close_if_bound();
++}
+--- Agent V1/demos/reference-workbench/tests/native-agent.cpp
++++ Agent v2/demos/reference-workbench/tests/native-agent.cpp
+@@ -228,77 +228,115 @@
+-  client pipe{component};
+-  if (name == "denied-peer") {
+-    require(pipe.write_raw(R"({"kind":"hello","schemaVersion":"soui.local/1"})") && pipe.read_raw().empty(), "Unapproved same-logon peer was accepted"); return json::object();
+-  }
+-  pipe.hello();
+-  if (name == "describe") {
+-    const auto value = pipe.call("reference.fixture.describe", json::object()); require(value.at("ok") == true && value.at("result").at("rowCount") == 10000, "Typed description failed"); return value.at("result");
+-  }
+-  if (name == "fixed-summary") {
+-    const auto task = local_start(pipe, "local-fixed"); const auto terminal = local_terminal(pipe, task);
+-    require(terminal.at("state") == "succeeded" && terminal.at("result").size() == 5 && !terminal.contains("message") && !terminal.contains("projectionError"), "Actual safe result missing");
+-    return {{"taskId", task}, {"result", terminal.at("result")}};
+-  }
+-  if (name == "cancel") {
+-    const auto task = local_start(pipe, "local-cancel", 60000); running(pipe, task);
+-    const auto cancel = pipe.call("reference.summary.local.cancel", {{"taskId", task}});
+-    require(cancel.at("ok") == true && cancel.at("result").at("cancelRequested") == true, "Cancel admission failed");
+-    const auto terminal = local_terminal(pipe, task);
+-    require(terminal.at("state") == "cancelled" && terminal.at("result") == json::object() && !terminal.contains("projectionError"), "Cancellation was not actual safe terminal"); return {{"taskId", task}};
+-  }
+-  if (name == "invalid-form") {
+-    const auto good = pipe.call("reference.form.submit", {{"name", "中文业务"}, {"notes", "有界草稿"}, {"category", "素材"}});
+-    require(good.at("ok") == true && good.at("result").at("accepted") == true, "Typed Chinese form failed");
+-    const auto blank = pipe.call("reference.form.submit", {{"name", " "}, {"notes", ""}, {"category", "素材"}});
+-    require(blank.at("ok") == true && blank.at("result").at("accepted") == false, "Blank business name accepted");
+-    deny(pipe.call("reference.form.submit", {{"name", "中文业务"}, {"notes", ""}, {"category", "素材"}, {"userGesture", true}}), "E_INVALID_PARAMS");
+-    deny(pipe.call("reference.summary.local.start", {{"operationId", "bad-duration"}, {"input", summary_input(0)}}), "E_INVALID_PARAMS");
+-    return good.at("result");
+-  }
+-  if (name == "revoked-document" || name == "close-pending") {
+-    const auto task = local_start(pipe, "local-before-close", 60000); running(pipe, task);
+-    if (name == "close-pending") require(pipe.write_length(500), "Actual partial read header failed");
+-    require(SetEvent(ready) && WaitForSingleObject(release, 5000) == WAIT_OBJECT_0, "Owner close gate failed");
+-    if (name == "revoked-document") (void)pipe.write_raw(R"({"kind":"request","schemaVersion":"soui.bridge/1","requestId":"late","method":"reference.fixture.describe","params":{}})");
+-    require(pipe.read_raw().empty(), "Revoked/pending connection delivered result"); return {{"taskId", task}};
+-  }
+-  if (name == "page-isolation") {
+-    deny(pipe.call("task.start", {{"kind", "reference.summary"}, {"operationId", "forbidden"}, {"input", summary_input()}}));
+-    deny(pipe.call("bridge.probe", json::object()));
+-    deny(pipe.call("reference.summary.local.query", {{"taskId", page_task}}), "E_TASK_NOT_FOUND");
+-    const auto discovery = pipe.call("bridge.describe", {{"cursor", 0}, {"limit", 32}});
+-    require(discovery.at("ok") == true, "Local discovery failed");
+-    for (const auto& method : discovery.at("result").at("methods")) {
+-      const auto id = method.at("name").get<std::string>();
+-      require(id == "reference.fixture.describe" || id == "reference.form.submit" || id == "reference.summary.local.start" || id == "reference.summary.local.query" || id == "reference.summary.local.cancel", "Discovery exposed unauthorized method");
+-    }
+-    require(pipe.write_raw(R"({"kind":"request","schemaVersion":"soui.bridge/1","requestId":"forged","method":"reference.fixture.describe","params":{},"token":"page-forged","sessionId":"page-forged","origin":"app://reference-workbench"})") && pipe.read_raw().empty(), "Wire page credential accepted");
+-    return json::object();
+-  }
+-  throw std::runtime_error("Unknown child case");
+-}
+-void disabled_default_deny(const char* fixture) {
+-  wchar_t executable[]{L"reference"}, pipe_option[]{L"--agent-pipe"}, pipe_value[]{L"safe"}, process_option[]{L"--agent-allow-process"}, bad_process[]{L"0"}, smoke[]{L"--smoke-test"};
+-  wchar_t* normal[]{executable}; require(reference::parse_command_line(1, normal).valid && !reference::parse_command_line(1, normal).agent.enabled, "Default CLI enabled agent");
+-  wchar_t* missing[]{executable, pipe_option, pipe_value}; require(!reference::parse_command_line(3, missing).valid, "Missing selection accepted");
+-  wchar_t* zero[]{executable, pipe_option, pipe_value, process_option, bad_process}; require(!reference::parse_command_line(5, zero).valid, "Zero selection accepted");
+-  wchar_t* mixed[]{executable, smoke, pipe_option, pipe_value}; require(!reference::parse_command_line(4, mixed).valid, "Smoke implicitly allowed agent");
+-  environment app{fixture}; app.configure();
+-  require(!app.agent->enabled() && !app.agent->start_bound_document([] { return true; }), "Disabled agent listened");
+-  handle absent{CreateFileW(public_endpoint_tests::pipe_name(app.name).c_str(), FILE_READ_DATA | FILE_WRITE_DATA, 0, nullptr, OPEN_EXISTING, 0, nullptr)};
+-  require(absent.get() == INVALID_HANDLE_VALUE && GetLastError() == ERROR_FILE_NOT_FOUND, "Default produced a pipe");
+-  app.default_endpoint = app.bridge->create_local_endpoint();
+-  require(app.default_endpoint && app.default_endpoint->state() == local_endpoint_state::stopped, "Stopped public factory failed");
+-  require(app.default_endpoint->start(local_endpoint_options{app.name}) == local_endpoint_error::none, "Default-deny fixture start failed");
+-  child_process denied{"denied-peer", app.name}; denied.resume(); app.until([&] { return denied.completed(); }, "Default-deny child timeout"); (void)denied.result();
+-}
+-void selected_peer(const char* fixture) {
+-  environment app{fixture}; child_process selected{"describe", app.name}; app.configure(selected.id());
+-  wchar_t executable[]{L"reference"}, pipe_option[]{L"--agent-pipe"}, pipe_value[]{L"safe"}, process_option[]{L"--agent-allow-process"};
+-  auto selected_text = std::to_wstring(selected.id());
+-  wchar_t* selected_cli[]{executable, process_option, selected_text.data(), pipe_option, pipe_value};
+-  const auto parsed = reference::parse_command_line(5, selected_cli);
+-  require(parsed.valid && parsed.agent.enabled && parsed.agent.approved_process == selected.id() && parsed.agent.pipe_component == "safe", "Explicit paired selection was not parsed");
+-  require(app.agent->selected_process_id() == selected.id() && app.agent->selected_creation_filetime() == selected.created(), "Selection is not actual held child"); app.start();
+-  child_process denied{"denied-peer", app.name}; denied.resume(); app.until([&] { return denied.completed(); }, "Unapproved child timeout"); (void)denied.result();
+-  selected.resume(); app.until([&] { return selected.completed(); }, "Approved child timeout"); (void)selected.result();
+-  app.pump(); require(app.agent->closed() && !app.agent->start_bound_document([] { return true; }), "Exited held process regained admission");
++  if (name == "selection-only") return json::object(); // Actual held process; no listener is expected in the publication race.
++  client pipe{component};
++  if (name == "denied-peer") {
++    require(pipe.write_raw(R"({"kind":"hello","schemaVersion":"soui.local/1"})") && pipe.read_raw().empty(), "Unapproved same-logon peer was accepted"); return json::object();
++  }
++  pipe.hello();
++  if (name == "describe") {
++    const auto value = pipe.call("reference.fixture.describe", json::object()); require(value.at("ok") == true && value.at("result").at("rowCount") == 10000, "Typed description failed"); return value.at("result");
++  }
++  if (name == "fixed-summary") {
++    const auto task = local_start(pipe, "local-fixed"); const auto terminal = local_terminal(pipe, task);
++    require(terminal.at("state") == "succeeded" && terminal.at("result").size() == 5 && !terminal.contains("message") && !terminal.contains("projectionError"), "Actual safe result missing");
++    return {{"taskId", task}, {"result", terminal.at("result")}};
++  }
++  if (name == "cancel") {
++    const auto task = local_start(pipe, "local-cancel", 60000); running(pipe, task);
++    const auto cancel = pipe.call("reference.summary.local.cancel", {{"taskId", task}});
++    require(cancel.at("ok") == true && cancel.at("result").at("cancelRequested") == true, "Cancel admission failed");
++    const auto terminal = local_terminal(pipe, task);
++    require(terminal.at("state") == "cancelled" && terminal.at("result") == json::object() && !terminal.contains("projectionError"), "Cancellation was not actual safe terminal"); return {{"taskId", task}};
++  }
++  if (name == "invalid-form") {
++    const auto good = pipe.call("reference.form.submit", {{"name", "中文业务"}, {"notes", "有界草稿"}, {"category", "素材"}});
++    require(good.at("ok") == true && good.at("result").at("accepted") == true, "Typed Chinese form failed");
++    const auto blank = pipe.call("reference.form.submit", {{"name", " "}, {"notes", ""}, {"category", "素材"}});
++    require(blank.at("ok") == true && blank.at("result").at("accepted") == false, "Blank business name accepted");
++    deny(pipe.call("reference.form.submit", {{"name", "中文业务"}, {"notes", ""}, {"category", "素材"}, {"userGesture", true}}), "E_INVALID_PARAMS");
++    deny(pipe.call("reference.summary.local.start", {{"operationId", "bad-duration"}, {"input", summary_input(0)}}), "E_INVALID_PARAMS");
++    return good.at("result");
++  }
++  if (name == "revoked-document" || name == "close-pending") {
++    const auto task = local_start(pipe, "local-before-close", 60000); running(pipe, task);
++    if (name == "close-pending") require(pipe.write_length(500), "Actual partial read header failed");
++    require(SetEvent(ready) && WaitForSingleObject(release, 5000) == WAIT_OBJECT_0, "Owner close gate failed");
++    if (name == "revoked-document") (void)pipe.write_raw(R"({"kind":"request","schemaVersion":"soui.bridge/1","requestId":"late","method":"reference.fixture.describe","params":{}})");
++    require(pipe.read_raw().empty(), "Revoked/pending connection delivered result"); return {{"taskId", task}};
++  }
++  if (name == "page-isolation") {
++    deny(pipe.call("task.start", {{"kind", "reference.summary"}, {"operationId", "forbidden"}, {"input", summary_input()}}));
++    deny(pipe.call("bridge.probe", json::object()));
++    deny(pipe.call("reference.summary.local.query", {{"taskId", page_task}}), "E_TASK_NOT_FOUND");
++    const auto discovery = pipe.call("bridge.describe", {{"cursor", 0}, {"limit", 32}});
++    require(discovery.at("ok") == true, "Local discovery failed");
++    for (const auto& method : discovery.at("result").at("methods")) {
++      const auto id = method.at("name").get<std::string>();
++      require(id == "reference.fixture.describe" || id == "reference.form.submit" || id == "reference.summary.local.start" || id == "reference.summary.local.query" || id == "reference.summary.local.cancel", "Discovery exposed unauthorized method");
++    }
++    require(pipe.write_raw(R"({"kind":"request","schemaVersion":"soui.bridge/1","requestId":"forged","method":"reference.fixture.describe","params":{},"token":"page-forged","sessionId":"page-forged","origin":"app://reference-workbench"})") && pipe.read_raw().empty(), "Wire page credential accepted");
++    return json::object();
++  }
++  throw std::runtime_error("Unknown child case");
++}
++void disabled_default_deny(const char* fixture) {
++  wchar_t executable[]{L"reference"}, pipe_option[]{L"--agent-pipe"}, pipe_value[]{L"safe"}, process_option[]{L"--agent-allow-process"}, bad_process[]{L"0"}, smoke[]{L"--smoke-test"};
++  wchar_t* normal[]{executable}; require(reference::parse_command_line(1, normal).valid && !reference::parse_command_line(1, normal).agent.enabled, "Default CLI enabled agent");
++  wchar_t* missing[]{executable, pipe_option, pipe_value}; require(!reference::parse_command_line(3, missing).valid, "Missing selection accepted");
++  wchar_t* zero[]{executable, pipe_option, pipe_value, process_option, bad_process}; require(!reference::parse_command_line(5, zero).valid, "Zero selection accepted");
++  wchar_t* mixed[]{executable, smoke, pipe_option, pipe_value}; require(!reference::parse_command_line(4, mixed).valid, "Smoke implicitly allowed agent");
++  environment app{fixture}; app.configure();
++  require(!app.agent->enabled() && !app.agent->start_bound_document([] { return true; }), "Disabled agent listened");
++  handle absent{CreateFileW(public_endpoint_tests::pipe_name(app.name).c_str(), FILE_READ_DATA | FILE_WRITE_DATA, 0, nullptr, OPEN_EXISTING, 0, nullptr)};
++  require(absent.get() == INVALID_HANDLE_VALUE && GetLastError() == ERROR_FILE_NOT_FOUND, "Default produced a pipe");
++  app.default_endpoint = app.bridge->create_local_endpoint();
++  require(app.default_endpoint && app.default_endpoint->state() == local_endpoint_state::stopped, "Stopped public factory failed");
++  require(app.default_endpoint->start(local_endpoint_options{app.name}) == local_endpoint_error::none, "Default-deny fixture start failed");
++  child_process denied{"denied-peer", app.name}; denied.resume(); app.until([&] { return denied.completed(); }, "Default-deny child timeout"); (void)denied.result();
++}
++void selected_peer(const char* fixture) {
++  {
++  environment app{fixture}; child_process selected{"describe", app.name}; app.configure(selected.id());
++  const auto prior = app.bootstrap();
++  std::thread prebind{[&] { app.agent->shutdown_session(prior.at("sessionId").get<std::string>()); }}; prebind.join();
++  require(!app.agent->closed() && !app.agent->started(), "Prebind session cleanup disabled first admission");
++  deny(app.page(prior, "reference.fixture.describe"));
++  const auto current = app.bootstrap();
++  require(app.page(current, "reference.fixture.describe").at("ok") == true, "Actual new page session was not usable");
++  wchar_t executable[]{L"reference"}, pipe_option[]{L"--agent-pipe"}, pipe_value[]{L"safe"}, process_option[]{L"--agent-allow-process"};
++  auto selected_text = std::to_wstring(selected.id());
++  wchar_t* selected_cli[]{executable, process_option, selected_text.data(), pipe_option, pipe_value};
++  const auto parsed = reference::parse_command_line(5, selected_cli);
++  require(parsed.valid && parsed.agent.enabled && parsed.agent.approved_process == selected.id() && parsed.agent.pipe_component == "safe", "Explicit paired selection was not parsed");
++  require(app.agent->selected_process_id() == selected.id() && app.agent->selected_creation_filetime() == selected.created(), "Selection is not actual held child"); app.start();
++  child_process denied{"denied-peer", app.name}; denied.resume(); app.until([&] { return denied.completed(); }, "Unapproved child timeout"); (void)denied.result();
++  selected.resume(); app.until([&] { return selected.completed(); }, "Approved child timeout"); (void)selected.result();
++  app.pump(); require(app.agent->closed() && !app.agent->start_bound_document([] { return true; }), "Exited held process regained admission");
++  }
++  // Deterministic real shutdown while the owner rechecks the just-published
++  // binding latch. This finite native-only scheduling wait is not a GUI probe.
++  environment race{fixture}; child_process selection{"selection-only", race.name}; race.configure(selection.id());
++  const auto prior = race.bootstrap();
++  handle published{CreateEventW(nullptr, TRUE, FALSE, nullptr)}, completed{CreateEventW(nullptr, TRUE, FALSE, nullptr)};
++  require(published.get() && completed.get(), "Publication gates failed");
++  std::atomic<bool> shutdown_completed{false};
++  std::thread invalidator{[&] {
++    if (WaitForSingleObject(published.get(), 5000) == WAIT_OBJECT_0) {
++      try { race.agent->shutdown_session(prior.at("sessionId").get<std::string>()); shutdown_completed.store(true); }
++      catch (...) {}
++    }
++    if (!SetEvent(completed.get())) pending_failure();
++  }};
++  struct thread_join { std::thread& value; ~thread_join() { if (value.joinable()) value.join(); } } join{invalidator};
++  unsigned probes{};
++  const bool started = race.agent->start_bound_document([&] {
++    require(GetCurrentThreadId() == race.owner, "Publication probe escaped owner");
++    if (++probes == 2) {
++      require(SetEvent(published.get()) && WaitForSingleObject(completed.get(), 5000) == WAIT_OBJECT_0, "Foreign publication shutdown did not finish");
++    }
++    return race.native_window_current && IsWindow(race.window);
++  });
++  invalidator.join();
++  require(probes == 2 && shutdown_completed.load() && !started && race.agent->closed() && !race.agent->started(), "Concurrent binding invalidation admitted listener");
++  require(!race.agent->start_bound_document([] { return true; }), "Publication race reopened binding");
++  handle absent{CreateFileW(public_endpoint_tests::pipe_name(race.name).c_str(), FILE_READ_DATA | FILE_WRITE_DATA, 0, nullptr, OPEN_EXISTING, 0, nullptr)};
++  require(absent.get() == INVALID_HANDLE_VALUE && GetLastError() == ERROR_FILE_NOT_FOUND, "Publication race created listener");
++  selection.resume(); race.until([&] { return selection.completed(); }, "Selection-only child timeout"); (void)selection.result();
+--- Agent V1/docs/adr/0052-reference-agent-composition.md
++++ Agent v2/docs/adr/0052-reference-agent-composition.md
+@@ -5,0 +5,2 @@
++V2 边界修正：首次实际 binding 前的 Host 初始旧 session 清理仍调用真实 Bridge shutdown，但不关闭从未准入的 listener。owner 第一次可信文档 probe 成功后发布单调 atomic binding_started，发布后和实际 start 后都重新检查原生 receipt/digest。shutdown_session 在真实 Bridge 调用前、调用后及异常退出都观察该 latch：任何重叠/绑定后失效永久 close，不清 latch、不重新授权。真正完成于 publication 前的清理不授予权限；后续仍必须通过明确 CLI、held peer 和实际 owner 文档检查。selected-peer 例中有实际 foreign prebind 清理/旧 session 拒绝/新 bootstrap，以及发布后第二 probe 与真实 foreign shutdown 的确定性交错，证明此时没有 listener、不会重新开放。该测试 probe 的有界等待仅用于 headless 原生时序，不进入生产 GUI callback。
++

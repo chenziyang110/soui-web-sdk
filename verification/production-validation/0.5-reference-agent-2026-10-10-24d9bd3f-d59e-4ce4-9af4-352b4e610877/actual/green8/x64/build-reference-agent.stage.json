@@ -1,0 +1,63 @@
+{
+  "name": "build-reference-agent",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "--build",
+    "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build",
+    "--config",
+    "Release",
+    "--target",
+    "soui_reference_agent_tests",
+    "--",
+    "/m:1",
+    "/nr:false",
+    "/p:VcpkgEnabled=false",
+    "/p:VcpkgEnableManifest=false",
+    "/p:VCToolsVersion=14.44.35207",
+    "/p:WindowsTargetPlatformVersion=10.0.19041.0",
+    "/p:ImportDirectoryBuildProps=false",
+    "/p:ImportDirectoryBuildTargets=false",
+    "/p:UseEnv=false",
+    "/p:UserRootDir=F:\\work\\sm05-broker\\out\\reference-agent-isolation-redaction-root-5f546b83-b12f-4f0b-a651-0ef6c07d19f9\\empty-user-props\\",
+    "/bl:F:\\work\\sm05-broker\\out\\ragent8\\x64\\build.binlog"
+  ],
+  "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+  "pid": 61864,
+  "creationFileTime": "134360469508157571",
+  "rootExitCode": 0,
+  "supervisorExitCode": 0,
+  "genericPassed": true,
+  "closureConfirmed": true,
+  "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build-reference-agent.owned.jsonl",
+  "rawSha256": "1e11e08bbc0abcf6e14afc2fbe1a8a841e4a1236dd91a1252c4fba3f5b680679",
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build-reference-agent.owned.jsonl.context.json",
+    "bytes": 1058,
+    "sha256": "f5d6a8ccfeea532366040713a191832fe03395bb04418df567360a3fca0fc35b"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build-reference-agent.stdout.raw",
+    "bytes": 1150,
+    "sha256": "c25d2d7e8935710aba23c847c3dd9b1c6c278a537de9559cc9e2d6053dc766b6"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build-reference-agent.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "streamErrors": [],
+  "terminal": {
+    "event": "terminal",
+    "reason": "completed",
+    "elapsedMs": 8838,
+    "rootExited": true,
+    "rootExitCode": 0,
+    "activeBeforeCleanup": 0,
+    "terminatedOwnedJob": false,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 43,
+    "limitTerminatedProcesses": 0,
+    "passed": true
+  }
+}

@@ -1,0 +1,191 @@
+'use strict';
+// Inert until Root reviews and launches through the leased guard.
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const directory=__dirname,sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const digest=file=>sha(fs.readFileSync(file)),json=(file,value)=>fs.writeFileSync(file,JSON.stringify(value,null,2)+'\n',{flag:'wx'});
+function normalize(file){return path.resolve(file).replaceAll('\\','/').toLowerCase();}
+function list(root){return fs.readdirSync(root,{withFileTypes:true}).flatMap(e=>{const file=path.join(root,e.name);if(e.isSymbolicLink())throw Error('Symlink refused');if(e.isDirectory())return list(file);if(!e.isFile())throw Error('Nonregular input refused');return[file];}).sort();}
+function pin(p){if(!p||!path.isAbsolute(p.path)||!Number.isSafeInteger(p.bytes)||p.bytes<0||!/^[a-f0-9]{64}$/.test(p.sha256)||!fs.lstatSync(p.path).isFile()||fs.statSync(p.path).size!==p.bytes||digest(p.path)!==p.sha256)throw Error('Input/tool pin mismatch: '+p?.path);return p;}
+function parse(argv){const a={};for(let n=0;n<argv.length;n+=2){if(!/^--[a-z-]+$/.test(argv[n])||argv[n+1]===undefined||a[argv[n]]!==undefined)throw Error('Invalid arguments');a[argv[n]]=argv[n+1];}return a;}
+async function main(){
+ const a=parse(process.argv.slice(2));
+ if(a['--root-gate']!=='ROOT_REFERENCE_AGENT_PREBIND_RED'||a['--mode']!=='native'||!['x64','Win32'].includes(a['--arch'])||!/^[a-f0-9]{64}$/.test(a['--package-sha']||'')||Object.keys(a).some(k=>!['--root-gate','--package-sha','--mode','--arch'].includes(k)))throw Error('Root mode/arguments invalid');
+ const packageFile=path.join(directory,'package.json');if(digest(packageFile)!==a['--package-sha'])throw Error('Package pin mismatch');
+ const packet=JSON.parse(fs.readFileSync(packageFile,'utf8'));
+ if(packet.schema!=='private-reference-agent-native-red/1'||packet.owner!=='Root only'||packet.payloads.length!==48||packet.readInputs.length!==30||packet.cases.length!==8||packet.sdkCpp.length!==24||packet.releaseReady!==false||packet.qualificationPassed!==false)throw Error('Finite contract changed');
+ function packageCheck(){
+  if(digest(packageFile)!==a['--package-sha'])throw Error('Package changed');
+  for(const p of [...packet.packageFiles,packet.readInputs,packet.nativeInputs,packet.payloads,packet.expectedGenerated,packet.sourceControls].flat())pin(p);
+  pin(packet.candidateCopyPlan);
+  const upstream=packet.architectures.find(p=>p.architecture===a['--arch']).producer;
+  for(const p of [...upstream.records,...upstream.prefixPins,...upstream.sdkObjects,upstream.archive,upstream.originalArchive])pin(p);
+  if(fs.lstatSync(upstream.prefix).isSymbolicLink()||normalize(fs.realpathSync.native(upstream.prefix))!==normalize(upstream.prefix)||JSON.stringify(list(upstream.prefix).map(normalize).sort())!==JSON.stringify(upstream.prefixPins.map(p=>normalize(p.path)).sort()))throw Error('Actual V10 prefix membership changed');
+  for(const inv of packet.inventories)if(JSON.stringify(list(inv.path).map(normalize).sort())!==JSON.stringify(inv.paths))throw Error('Dependency inventory changed');
+  if(fs.readdirSync(path.join(directory,'empty-user-props')).length||JSON.stringify(list(directory).map(file=>path.relative(directory,file).replaceAll('\\','/')).sort())!==JSON.stringify(packet.membership))throw Error('Packet membership/user props changed');
+ }
+ packageCheck();const tools=JSON.parse(fs.readFileSync(path.join(directory,'tools.json'),'utf8'));
+ const toolPins=[tools.node,tools.runner,tools.ownedClient,tools.cmake,tools.ctest,tools.msbuild,tools.dumpbin,tools.cmd,tools.rc,tools.mt,tools.vsDevCmd,tools.ml64,...tools.toolImages];
+ const toolCheck=()=>{for(const p of toolPins)pin(p);};toolCheck();
+ const output=path.join(packet.outputParent,a['--arch']);
+ if(fs.lstatSync(packet.outputParent).isSymbolicLink()||normalize(fs.realpathSync.native(packet.outputParent))!==normalize(packet.outputParent)||fs.existsSync(output)||!normalize(output).startsWith(normalize(packet.repositoryRoot)+'/out/'))throw Error('Fresh real private output required');
+ const contract=packet.architectures.find(p=>p.architecture===a['--arch']);
+ const env={};for(const name of packet.environmentAllowlist)if(process.env[name]!==undefined)env[name]=process.env[name];
+ const windows=env.SYSTEMROOT||'C:\\Windows';
+ env.PATH=[contract.compilerToolDirectory,contract.sdkToolDirectory,path.dirname(tools.msbuild.path),path.dirname(tools.cmake.path),path.join(windows,'System32'),windows].join(';');
+ env.CL='/MP2';env.VSLANG='1033';env.VcpkgEnabled='false';env.VcpkgEnableManifest='false';env.VCPkgLocalAppDataDisabled='true';
+ env.TEMP=path.join(output,'temp');env.TMP=env.TEMP;env.USERPROFILE=path.join(output,'profile');env.APPDATA=path.join(output,'profile/roaming');env.LOCALAPPDATA=path.join(output,'profile/local');env.NO_COLOR='1';
+ const {launchOwned}=require(tools.ownedClient.path),stages=[];
+ fs.mkdirSync(output);for(const file of [env.TEMP,env.USERPROFILE,env.APPDATA,env.LOCALAPPDATA])fs.mkdirSync(file,{recursive:true});
+ const source=path.join(output,'source'),reference=path.join(source,'demos/reference-workbench');
+ let generatedPins=[];
+ for(const p of packet.payloads){const file=path.join(source,p.relative);fs.mkdirSync(path.dirname(file),{recursive:true});fs.copyFileSync(p.path,file,fs.constants.COPYFILE_EXCL);pin({...p,path:file});}
+ function sourceCheck(){
+  for(const p of packet.payloads)pin({...p,path:path.join(source,p.relative)});
+  for(const p of generatedPins)pin(p);
+  const expected=packet.payloads.map(p=>p.relative).concat(generatedPins.map(p=>path.relative(source,p.path).replaceAll('\\','/'))).sort();
+  if(JSON.stringify(list(source).map(file=>path.relative(source,file).replaceAll('\\','/')).sort())!==JSON.stringify(expected))throw Error('Private source membership changed');
+ }
+ sourceCheck();
+ async function stage(name,exe,args,timeoutMs){
+  packageCheck();toolCheck();
+  const raw=path.join(output,name+'.owned.jsonl'),out=fs.createWriteStream(path.join(output,name+'.stdout.raw'),{flags:'wx'}),err=fs.createWriteStream(path.join(output,name+'.stderr.raw'),{flags:'wx'}),streamErrors=[];
+  out.on('error',e=>streamErrors.push(e.message));err.on('error',e=>streamErrors.push(e.message));const closes=[new Promise(r=>out.once('close',r)),new Promise(r=>err.once('close',r))];
+  let owned;try{owned=launchOwned(exe,args,{runner:tools.runner.path,cwd:output,report:raw,timeoutMs,drainMs:2000,env,stdout:'pipe',stderr:'pipe'});}catch(error){out.end();err.end();await Promise.all(closes);throw error;}
+  owned.child.stdout.pipe(out);owned.child.stderr.pipe(err);
+  const heartbeat=setInterval(()=>console.log(JSON.stringify({stage:name,pid:owned.pid,stdoutBytes:out.bytesWritten,stderrBytes:err.bytesWritten,pending:true})),15000);
+  let readyIdentity=null,readyError=null;
+  const readyTask=owned.ready.then(identity=>{readyIdentity=identity;json(path.join(output,name+'.pending.json'),{name,...identity,timeoutMs,rawJob:raw});}).catch(error=>{readyError=error.message;});
+  const finished=await owned.finished;clearInterval(heartbeat);await Promise.all(closes);await readyTask;json(path.join(output,name+'.finished.json'),finished);
+  const entry={name,executable:exe,args,cwd:output,pid:finished.pid,creationFileTime:finished.creationFileTime,rootExitCode:finished.exitCode,supervisorExitCode:finished.supervisorExitCode,genericPassed:finished.passed,closureConfirmed:finished.closureConfirmed,rawJob:raw,rawSha256:digest(raw),context:{path:raw+'.context.json',bytes:fs.statSync(raw+'.context.json').size,sha256:digest(raw+'.context.json')},stdout:{path:path.join(output,name+'.stdout.raw'),bytes:fs.statSync(path.join(output,name+'.stdout.raw')).size,sha256:digest(path.join(output,name+'.stdout.raw'))},stderr:{path:path.join(output,name+'.stderr.raw'),bytes:fs.statSync(path.join(output,name+'.stderr.raw')).size,sha256:digest(path.join(output,name+'.stderr.raw'))},streamErrors,terminal:finished.terminal};stages.push(entry);json(path.join(output,name+'.stage.json'),entry);
+  packageCheck();toolCheck();
+  const text=fs.readFileSync(raw,'utf8');if(!text.endsWith('\n'))throw Error('Truncated owned report');
+  const rows=text.trimEnd().split('\n').map(JSON.parse),start=rows[0],terminal=rows.at(-1),rootExits=rows.filter(p=>p.event==='root-exit'),context=JSON.parse(fs.readFileSync(raw+'.context.json','utf8'));
+  if(readyError||!readyIdentity)throw Error('Owned ready identity unavailable: '+name);
+  const pending=JSON.parse(fs.readFileSync(path.join(output,name+'.pending.json'),'utf8')),finalRecord=JSON.parse(fs.readFileSync(path.join(output,name+'.finished.json'),'utf8'));
+  const safeElapsed=value=>Number.isSafeInteger(value)&&value>=0;
+  if(start.schema!=='soui.owned-process-run/v1'||start.event!=='start'||rows.filter(p=>p.event==='start').length!==1||terminal.event!=='terminal'||rows.filter(p=>p.event==='terminal').length!==1||rootExits.length!==1||rootExits[0].exitCode!==0||!safeElapsed(rootExits[0].elapsedMs)||!safeElapsed(terminal.elapsedMs)||terminal.elapsedMs<rootExits[0].elapsedMs||terminal.elapsedMs>=timeoutMs||!Number.isSafeInteger(start.pid)||start.pid<=0||start.pid!==readyIdentity.pid||start.pid!==pending.pid||start.pid!==finished.pid||start.creationFileTime!==readyIdentity.creationFileTime||start.creationFileTime!==pending.creationFileTime||start.creationFileTime!==finished.creationFileTime||typeof start.creationFileTime!=='string'||!/^[1-9]\d{0,19}$/.test(start.creationFileTime)||start.timeoutMs!==timeoutMs||start.drainMs!==2000||start.jobAssignedBeforeResume!==true||start.breakawayAllowed!==false||pending.name!==name||pending.timeoutMs!==timeoutMs||pending.rawJob!==raw||terminal.closureConfirmed!==true||terminal.activeProcesses!==0||terminal.rootExited!==true||terminal.rootExitCode!==0||terminal.limitTerminatedProcesses!==0||!Number.isSafeInteger(terminal.totalProcesses)||terminal.totalProcesses<1||JSON.stringify(terminal)!==JSON.stringify(finished.terminal)||JSON.stringify(finalRecord)!==JSON.stringify(finished)||finished.report!==raw||finished.reportSha256!==entry.rawSha256||finished.runnerSha256!==tools.runner.sha256||finished.executableSha256!==digest(exe)||context.schema!=='soui.owned-process-context/v1'||context.executable!==exe||context.executableSha256!==digest(exe)||context.runnerSha256!==tools.runner.sha256||JSON.stringify(context.args)!==JSON.stringify(args)||context.cwd!==output||context.timeoutMs!==timeoutMs||context.drainMs!==2000)throw Error('Exact raw Owned identity/root/timing mismatch: '+name);
+  const compilePartial=['configure','build-reference-agent'].includes(name)&&finished.passed===false&&finished.exitCode===0&&finished.supervisorExitCode===124&&terminal.reason==='owned-descendants-remain'&&terminal.passed===false&&terminal.terminatedOwnedJob===true&&Number.isSafeInteger(terminal.activeBeforeCleanup)&&terminal.activeBeforeCleanup>=1&&terminal.elapsedMs>=rootExits[0].elapsedMs+2000&&terminal.elapsedMs<timeoutMs;
+  const natural=finished.passed===true&&finished.exitCode===0&&finished.supervisorExitCode===0&&terminal.reason==='completed'&&terminal.passed===true&&terminal.terminatedOwnedJob===false&&terminal.activeBeforeCleanup===0;
+  json(path.join(output,name+'.partial-verdict.json'),{genericPassed:finished.passed,closedCompileContinuation:compilePartial,originalGenericVerdictRetained:true,qualificationPassed:false,releaseReady:false});
+  if(finished.spawnError||finished.reportError||finished.signal||finished.stopRequested||finished.fallbackUsed||streamErrors.length||finished.closureConfirmed!==true||(!compilePartial&&!natural))throw Error('Owned stage failed: '+name);
+  return entry;
+ }
+ const run=async(...args)=>{sourceCheck();const value=await stage(...args);sourceCheck();return value;};
+ try{
+   function producerCheck(){
+    const upstream=contract.producer;
+    for(const p of [...upstream.records,...upstream.prefixPins,upstream.archive])pin(p);
+    if(JSON.stringify(list(upstream.prefix).map(normalize).sort())!==JSON.stringify(upstream.prefixPins.map(p=>normalize(p.path)).sort()))throw Error('Actual V10 prefix membership changed');
+    const summary=JSON.parse(fs.readFileSync(upstream.summary,'utf8')),bindings=JSON.parse(fs.readFileSync(upstream.bindings,'utf8')),artifacts=JSON.parse(fs.readFileSync(upstream.artifacts,'utf8')),producerPackage=JSON.parse(fs.readFileSync(upstream.package,'utf8'));
+    if(summary.schema!=='private-full-native-unit-suite-v10'||summary.completed!==true||summary.architecture!==a['--arch']||summary.registeredTests!==126||summary.normalSdkCppCount!==24||summary.allGenericPassed!==true||summary.stages.length!==8||bindings.currentNormalSdkArchiveMatches!==true||bindings.relocatedInstalledBytesMatch!==true||bindings.sourceSdkCompiledAgainByConsumer!==false||bindings.currentBuildSdkArchive.sha256!==upstream.archive.sha256||JSON.stringify(bindings.currentBuildSdkArchive)!==JSON.stringify(upstream.originalArchive)||JSON.stringify(artifacts.sdkObjects)!==JSON.stringify(upstream.sdkObjects)||artifacts.sdkObjects.length!==24||artifacts.sdkCommands.length!==1)throw Error('Actual V10 normal producer binding changed');
+    pin(bindings.currentBuildSdkArchive);for(const p of artifacts.sdkObjects)pin(p);
+    const cl=artifacts.sdkCommands[0],clText=cl.text.replaceAll('\\','/').toLowerCase();
+    if(!normalize(cl.path).includes('/soui_sdk.dir/release/')||!/\/ehsc(?:\s|$)/.test(clText)||!/\/md(?:\s|$)/.test(clText)||!/\/utf-8(?:\s|$)/.test(clText)||packet.sdkCpp.some(file=>!clText.includes(normalize(file)))||/SOUI_TEST_KIT|SOUI_TASK_FAMILY_TEST_ONLY|SOUI_ENGINE_STARTUP_TEST_ONLY|SOUI_SOURCE_API_TEST_ONLY|SOUI_GPU_COMPOSITOR/.test(cl.text))throw Error('Actual V10 SDK was not normal current Release source');
+    const clPin=artifacts.artifactPins.find(p=>normalize(p.path)===normalize(cl.path));if(!clPin)throw Error('Producer CL pin missing');pin(clPin);
+    for(const p of packet.nativeInputs.filter(p=>/\/sdk\/(?:src|include|cmake)\//.test(normalize(p.path))||normalize(p.path)===normalize(path.join(packet.repositoryRoot,'sdk/CMakeLists.txt')))){
+     const previous=producerPackage.liveInputs.find(value=>normalize(value.path)===normalize(p.path));if(!previous||previous.bytes!==p.bytes||previous.sha256!==p.sha256)throw Error('Current SDK input differs from V10 producer');
+    }
+    const publicInclude=path.join(packet.repositoryRoot,'sdk/include');
+    for(const p of packet.nativeInputs.filter(p=>normalize(p.path).startsWith(normalize(publicInclude)+'/')))pin({...p,path:path.join(upstream.prefix,'include',path.relative(publicInclude,p.path))});
+    const actionJson=packet.nativeInputs.find(p=>normalize(p.path)===normalize(path.join(packet.repositoryRoot,'third_party/include/json/json.hpp')));
+    pin({...actionJson,path:path.join(upstream.prefix,'include/soui/action-json/json.hpp')});
+    for(const entry of summary.stages){
+     const raw=fs.readFileSync(entry.rawJob,'utf8');if(!raw.endsWith('\n'))throw Error('Actual V10 raw record truncated');
+     const rows=raw.trimEnd().split('\n').map(JSON.parse),start=rows[0],terminal=rows.at(-1),finished=JSON.parse(fs.readFileSync(path.join(path.dirname(upstream.summary),entry.name+'.finished.json'),'utf8')),pending=JSON.parse(fs.readFileSync(path.join(path.dirname(upstream.summary),entry.name+'.pending.json'),'utf8')),context=JSON.parse(fs.readFileSync(entry.context.path,'utf8'));
+     if(start.event!=='start'||terminal.event!=='terminal'||rows.filter(p=>p.event==='terminal').length!==1||!Number.isSafeInteger(start.pid)||start.pid<=0||start.pid!==entry.pid||start.creationFileTime!==entry.creationFileTime||typeof start.creationFileTime!=='string'||!/^[1-9]\d{0,19}$/.test(start.creationFileTime)||pending.pid!==entry.pid||pending.creationFileTime!==entry.creationFileTime||!start.jobAssignedBeforeResume||start.breakawayAllowed!==false||entry.rootExitCode!==0||entry.supervisorExitCode!==0||entry.genericPassed!==true||entry.closureConfirmed!==true||entry.streamErrors.length||finished.exitCode!==0||finished.supervisorExitCode!==0||finished.passed!==true||finished.pid!==entry.pid||finished.creationFileTime!==entry.creationFileTime||finished.stopRequested||finished.fallbackUsed||finished.spawnError||finished.reportError||finished.signal||JSON.stringify(terminal)!==JSON.stringify(finished.terminal)||terminal.terminatedOwnedJob!==false||terminal.activeProcesses!==0||!terminal.rootExited||!terminal.closureConfirmed||context.executable!==entry.executable||context.executableSha256!==digest(entry.executable)||context.runnerSha256!==tools.runner.sha256||JSON.stringify(context.args)!==JSON.stringify(entry.args)||context.cwd!==entry.cwd||digest(entry.rawJob)!==entry.rawSha256||digest(entry.stdout.path)!==entry.stdout.sha256||digest(entry.stderr.path)!==entry.stderr.sha256)throw Error('Actual V10 natural Owned stage binding changed');
+    }
+   }
+   producerCheck();
+   const genArgs=[packet.actiongen,'--source',path.join(reference,'contracts/actions.json'),'--root',reference];
+   // Generation is an explicitly owned mutation of this fresh private source only.
+   await stage('actiongen-generate',tools.node.path,genArgs,45000);
+   const manifestFile=path.join(reference,'contracts/generated/actiongen-manifest.json'),manifest=JSON.parse(fs.readFileSync(manifestFile,'utf8'));
+   if(manifest.schema!=='soui.actiongen-manifest/1'||manifest.generatorVersion!=='1'||!/^[a-f0-9]{64}$/.test(manifest.sourceSha256)||JSON.stringify(Object.keys(manifest.outputs).sort())!==JSON.stringify(packet.generatedFiles.filter(p=>!p.endsWith('actiongen-manifest.json')).sort()))throw Error('Actual generator manifest mismatch');
+   generatedPins=packet.generatedFiles.map(relative=>{const file=path.join(reference,relative),p={path:file,bytes:fs.statSync(file).size,sha256:digest(file)};if(relative!=='contracts/generated/actiongen-manifest.json'&&p.sha256!==manifest.outputs[relative])throw Error('Generated bytes differ from actual manifest');const expected=packet.expectedGenerated.find(value=>value.relative===relative);if(!expected||p.bytes!==expected.bytes||p.sha256!==expected.sha256)throw Error('Fresh actiongen output differs from pinned actual V5 output');return p;});
+   sourceCheck();json(path.join(output,'generated-bindings.json'),{manifest,generatedPins,sourceContract:packet.payloads.find(p=>p.relative==='demos/reference-workbench/contracts/actions.json'),qualificationPassed:false});
+   await run('actiongen-check',tools.node.path,[...genArgs,'--check'],45000);
+   const build=path.join(output,'build'),emptyProps=path.join(directory,'empty-user-props')+path.sep;
+   await run('configure',tools.cmake.path,['-S',directory,'-B',build,'-G','Visual Studio 17 2022','-A',a['--arch']+',version=10.0.19041.0','-DCMAKE_GENERATOR_INSTANCE='+tools.vsInstance,'-T','v143,host=x64,version=14.44.35207','-DCMAKE_SYSTEM_VERSION=10.0.19041.0','-DREFERENCE_ROOT:PATH='+reference,'-DREFERENCE_NODE:FILEPATH='+tools.node.path,'-DSouiSdk_DIR:PATH='+path.join(contract.producer.prefix,'lib/cmake/SouiSdk'),'-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF','-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF','-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir='+emptyProps],120000);
+   function sdkCheck(label){
+    const cache=fs.readFileSync(path.join(build,'CMakeCache.txt'),'utf8');
+    if(!cache.split(/\r?\n/).includes('CMAKE_GENERATOR_PLATFORM:INTERNAL='+a['--arch']+',version=10.0.19041.0')||!cache.split(/\r?\n/).includes('CMAKE_GENERATOR_TOOLSET:INTERNAL=v143,host=x64,version=14.44.35207')||!cache.split(/\r?\n/).some(line=>line.startsWith('SouiSdk_DIR:PATH=')&&normalize(line.slice(17))===normalize(path.join(contract.producer.prefix,'lib/cmake/SouiSdk'))))throw Error('Actual SDK platform/package cache mismatch');
+    const projects=list(build).filter(file=>/\.vcxproj$/i.test(file));if(!projects.length)throw Error('No generated project');
+    const pins=projects.map(file=>{const bytes=fs.readFileSync(file),versions=[...bytes.toString('utf8').matchAll(/<WindowsTargetPlatformVersion(?:\s[^>]*)?>([^<]+)<\/WindowsTargetPlatformVersion>/g)].map(m=>m[1].trim());if(!versions.length||versions.some(v=>v!=='10.0.19041.0'))throw Error('Wrong actual SDK');return{path:file,bytes:bytes.length,sha256:sha(bytes),versions};});
+    json(path.join(output,label+'.sdk-selection.json'),{pins,actualSdk:'10.0.19041.0',completeToolchainProvenance:false});
+   }
+   sdkCheck('configure');
+   await run('build-reference-agent',tools.cmake.path,['--build',build,'--config','Release','--target','soui_reference_agent_tests','--','/m:1','/nr:false','/p:VcpkgEnabled=false','/p:VcpkgEnableManifest=false','/p:VCToolsVersion=14.44.35207','/p:WindowsTargetPlatformVersion=10.0.19041.0','/p:ImportDirectoryBuildProps=false','/p:ImportDirectoryBuildTargets=false','/p:UseEnv=false','/p:UserRootDir='+emptyProps,'/bl:'+path.join(output,'build.binlog')],900000);
+   sdkCheck('build');
+   const files=list(build),actualSdk=fs.readFileSync(path.join(build,'actual-sdk-location-Release.txt'),'utf8').trim();
+   if(normalize(actualSdk)!==normalize(contract.producer.archive.path)||files.some(file=>file.toLowerCase().split(path.sep).includes('soui_sdk.dir')))throw Error('Actual installed SDK archive selection changed');
+   const commands=files.filter(file=>/\.command\..*\.tlog$/i.test(file)).map(file=>{const b=fs.readFileSync(file);return{path:file,text:b[0]===255&&b[1]===254?b.subarray(2).toString('utf16le'):b.toString('utf8')};});
+   if(commands.some(p=>/SOUI_TEST_KIT|SOUI_TASK_FAMILY_TEST_ONLY|SOUI_ENGINE_STARTUP_TEST_ONLY|SOUI_SOURCE_API_TEST_ONLY|SOUI_GPU_COMPOSITOR/.test(p.text)))throw Error('Test seam or GPU acquired');
+   for(const [target,cpp]of [['reference_business','app/reference-business.cpp'],['reference_agent','app/reference-agent.cpp'],['soui_reference_agent_tests','tests/native-agent.cpp']]){
+    const cl=commands.filter(p=>p.path.toLowerCase().split(path.sep).includes(target+'.dir')&&p.path.toLowerCase().split(path.sep).includes('release')&&/^cl\.command\./i.test(path.basename(p.path))),text=cl[0]?.text.replaceAll('\\','/').toLowerCase()||'';
+    if(cl.length!==1||!text.includes(normalize(path.join(reference,cpp)))||!/\/md(?:\s|$)/.test(text)||!/\/ehsc(?:\s|$)/.test(text)||!/\/utf-8(?:\s|$)/.test(text)||!text.includes(normalize(path.join(contract.producer.prefix,'include')))||!text.includes(normalize(path.join(contract.producer.prefix,'include/soui/action-json')))||text.includes(normalize(path.join(packet.repositoryRoot,'sdk/include'))))throw Error('Actual Release installed business/test source binding missing');
+   }
+   const exes=files.filter(file=>path.basename(file).toLowerCase()==='soui_reference_agent_tests.exe');if(exes.length!==1)throw Error('Unique actual native test EXE missing');
+   const linkReads=files.filter(file=>file.toLowerCase().split(path.sep).includes('soui_reference_agent_tests.dir')&&file.toLowerCase().split(path.sep).includes('release')&&/^link\.read\..*\.tlog$/i.test(path.basename(file)));
+   if(linkReads.length!==1)throw Error('Actual link input ledger missing');
+   const linkCommands=commands.filter(p=>p.path.toLowerCase().split(path.sep).includes('soui_reference_agent_tests.dir')&&p.path.toLowerCase().split(path.sep).includes('release')&&/^link\.command\./i.test(path.basename(p.path)));
+   if(linkCommands.length!==1||!new RegExp('/machine:'+(a['--arch']==='x64'?'x64':'x86')+'(?:\\s|$)','i').test(linkCommands[0].text))throw Error('Actual Release LINK machine command missing');
+   const linkBytes=fs.readFileSync(linkReads[0]),linkInputs=(linkBytes[0]===255&&linkBytes[1]===254?linkBytes.subarray(2).toString('utf16le'):linkBytes.toString('utf8')).split(/\r?\n/).map(line=>line.trim().replaceAll('\\','/').toLowerCase());
+   const builtArchives=files.filter(file=>path.basename(file).toLowerCase()==='reference_business.lib');
+   const builtAgentArchives=files.filter(file=>path.basename(file).toLowerCase()==='reference_agent.lib');if(builtArchives.length!==1||builtAgentArchives.length!==1||!linkInputs.includes(normalize(builtArchives[0]))||!linkInputs.includes(normalize(builtAgentArchives[0])))throw Error('Actual test linker did not read both fresh application archives');
+   const linkText=linkCommands[0].text,sdkArchive=contract.producer.archive,sdkTokens=[...linkText.matchAll(/"([^"]+\.lib)"|(?:^|\s)([A-Za-z]:[\\/][^\s"]+\.lib)(?=\s|$)/gi)].map(value=>value[1]||value[2]).filter(value=>path.basename(value).toLowerCase()==='soui_sdk.lib');
+   const mapFile=path.join(build,'reference-agent-Release.map'),mapTokens=[...linkText.matchAll(/\/map:(?:"([^"]+)"|([^\s"]+))/gi)].map(value=>value[1]||value[2]);
+   if(sdkTokens.length!==1||normalize(sdkTokens[0])!==normalize(sdkArchive.path)||mapTokens.length!==1||normalize(mapTokens[0])!==normalize(mapFile))throw Error('Unique actual pinned SDK LINK input/fresh MAP path missing');
+   pin(sdkArchive);for(const object of contract.producer.sdkObjects)pin(object);
+   const mapPin={path:mapFile,bytes:fs.statSync(mapFile).size,sha256:digest(mapFile)},mapText=fs.readFileSync(mapFile,'utf8'),mapLines=mapText.split(/\r?\n/),sdkObjects=new Map(contract.producer.sdkObjects.map(object=>[path.basename(object.path).toLowerCase(),object]));
+   const headers=mapLines.flatMap((line,index)=>/^\s*Address\s+Publics by Value\s+Rva\+Base\s+Lib:Object\s*$/.test(line)?[index]:[]);
+   if(headers.length!==1)throw Error('Unique actual MAP Publics header missing');
+   const members=new Set(),required=new Map();let sdkPublicRowCount=0;
+   for(let index=headers[0]+1;index<mapLines.length;index++){
+    const line=mapLines[index];if(/^\s*(?:entry point at|Static symbols)\b/i.test(line))break;
+    const row=/^\s*([0-9a-f]{4}):([0-9a-f]{8,16})\s+(\S+)\s+([0-9a-f]{8,16})(?:\s+[fi])*\s+(\S+)\s*$/i.exec(line);if(!row)continue;
+    const module=/^soui_sdk(?:\.lib)?:([^:\s]+\.obj)$/i.exec(row[5]);if(!module)continue;
+    const member=module[1].toLowerCase(),object=sdkObjects.get(member);if(!object)throw Error('MAP SDK member does not match a pinned normal producer object');
+    ++sdkPublicRowCount;members.add(member);
+    const type=member==='json_bridge.obj'?'json_bridge':member==='windows_local_endpoint.obj'?'windows_local_endpoint':null;
+    if(type&&row[3].includes(type)&&!required.has(type))required.set(type,{line,index,section:row[1],offset:row[2],symbol:row[3],rvaPlusBase:row[4],module:row[5],producerObject:object});
+   }
+   if(required.size!==2)throw Error('Actual MAP did not define both Bridge and endpoint symbols from pinned SDK members');
+   pin(sdkArchive);for(const object of contract.producer.sdkObjects)pin(object);pin(mapPin);
+   const sdkMapObservation={map:mapPin,linkCommand:path.join(path.dirname(linkReads[0]),path.basename(linkCommands[0].path)),sdkArchive,normalProducerObjects:24,sdkPublicRowCount,members:[...members].sort(),requiredDefinitions:[...required.values()],wholeSdkArchiveReadByTlog:linkInputs.includes(normalize(sdkArchive.path)),finiteContributionOnly:true,completeCompilerInputBinding:false};
+   const executable=exes[0],pe=require('./pe-exports.cjs').inspect(executable);
+   if(pe.dll||pe.machine!==(a['--arch']==='x64'?0x8664:0x14c))throw Error('Actual EXE machine mismatch');
+   const artifacts=files.filter(file=>/\.(obj|pch|lib|exe|pdb|tlog|vcxproj|cmake|txt|map)$/i.test(file)).map(file=>({path:file,bytes:fs.statSync(file).size,sha256:digest(file)}));
+   json(path.join(output,'actual-build-bindings.json'),{artifacts,commands,linkCommands,linkReads,linkInputs,builtArchives,builtAgentArchives,sdkMapObservation,installedSdk:contract.producer.archive,producer:contract.producer,pe,normalSdkCppCount:24,normalSdkRecompiled:false,completeCompilerInputBinding:false,qualificationPassed:false});
+   await run('registry',tools.ctest.path,['--test-dir',build,'-C','Release','--show-only=json-v1'],45000);
+   const registry=JSON.parse(fs.readFileSync(path.join(output,'registry.stdout.raw'),'utf8'));
+   if(JSON.stringify(registry.tests.map(p=>p.name).sort())!==JSON.stringify(packet.cases.map(p=>'reference.agent.'+p).sort()))throw Error('Exact CTest8 set changed');
+   for(const test of registry.tests){const name=test.name.slice('reference.agent.'.length);if(!Array.isArray(test.command)||test.command.length!==3||normalize(test.command[0])!==normalize(executable)||test.command[1]!==name||typeof test.command[2]!=='string'||normalize(test.command[2])!==normalize(path.join(reference,'common/fixture.json'))||test.properties.find(p=>p.name==='TIMEOUT')?.value!==20||test.properties.some(p=>p.name==='WILL_FAIL'&&p.value===true))throw Error('Registry exact args/timeout changed');}
+   const receipts=[];
+   for(const name of ['selected-peer']){
+    for(const p of artifacts)pin(p);
+    const identity=await run('case-'+name,executable,[name,path.join(reference,'common/fixture.json')],20000);
+    const text=fs.readFileSync(path.join(output,'case-'+name+'.stdout.raw'),'utf8');if(!text.endsWith('\n')||text.trimEnd().split(/\r?\n/).length!==1||identity.stderr.bytes!==0)throw Error('Unique native receipt required');
+    const receipt=JSON.parse(text.trim());if(JSON.stringify(Object.keys(receipt).sort())!==JSON.stringify(['case','children','creationFileTime','guiReadyVerified','passed','pid','qualificationPassed','releaseReady','schema'].sort())||receipt.schema!=='soui.reference-agent-native/1'||receipt.case!==name||receipt.passed!==true||typeof receipt.pid!=='string'||receipt.pid!==String(identity.pid)||typeof receipt.creationFileTime!=='string'||receipt.creationFileTime!==identity.creationFileTime||receipt.guiReadyVerified!==false||receipt.qualificationPassed!==false||receipt.releaseReady!==false)throw Error('Actual post-join receipt/Owned identity mismatch');
+    const modes=packet.expectedChildModes[name],children=receipt.children,ownedRows=fs.readFileSync(identity.rawJob,'utf8').trimEnd().split('\n').map(JSON.parse),seen=new Set(),childBindings=[];
+    if(!Array.isArray(modes)||!Array.isArray(children)||children.length!==modes.length||identity.terminal.totalProcesses<children.length+1)throw Error('Actual child count/Owned process-tree accounting mismatch');
+    for(let i=0;i<children.length;i++){
+     const child=children[i];
+     if(JSON.stringify(Object.keys(child).sort())!==JSON.stringify(['mode','pid','creationFileTime','exitCode','jobAssigned','rawReceipt'].sort())||child.mode!==modes[i]||typeof child.pid!=='string'||! /^[1-9]\d{0,9}$/.test(child.pid)||Number(child.pid)>0xffffffff||child.pid===receipt.pid||seen.has(child.pid)||typeof child.creationFileTime!=='string'||! /^[1-9]\d{0,19}$/.test(child.creationFileTime)||child.exitCode!==0||child.jobAssigned!==true||typeof child.rawReceipt!=='string'||Buffer.byteLength(child.rawReceipt)>8192||!child.rawReceipt.endsWith('\n')||child.rawReceipt.trimEnd().split(/\r?\n/).length!==1)throw Error('Actual child identity/closed receipt mismatch');
+     seen.add(child.pid);const rawChild=JSON.parse(child.rawReceipt.trim());
+     if(JSON.stringify(Object.keys(rawChild).sort())!==JSON.stringify(['pid','creationFileTime','payload'].sort())||rawChild.pid!==child.pid||rawChild.creationFileTime!==child.creationFileTime||!rawChild.payload||typeof rawChild.payload!=='object'||Array.isArray(rawChild.payload))throw Error('Raw child/held native identity mismatch');
+     const members=ownedRows.filter(row=>row.event==='owned-member'&&String(row.pid)===child.pid);
+     if(members.some(row=>row.creationFileTime!==child.creationFileTime||normalize(row.image)!==normalize(executable)))throw Error('Observed Owned child identity/image mismatch');
+     childBindings.push({pid:child.pid,creationFileTime:child.creationFileTime,rawReceiptSha256:sha(Buffer.from(child.rawReceipt)),heldNativeProcessExited:true,inheritedAssignedRootJob:true,ownedMemberObserved:members.length>0});
+    }
+    receipts.push({name,receipt,identity,childBindings});
+   }
+   throw Error('RED unexpectedly admitted a listener; original failure was not reproduced');
+   await run('ctest-eight',tools.ctest.path,['--test-dir',build,'-C','Release','--output-on-failure','--no-tests=error','-j','1','--timeout','20','--output-junit',path.join(output,'ctest.junit.xml')],180000);
+   const junit=fs.readFileSync(path.join(output,'ctest.junit.xml'),'utf8');if(!/<testsuite\b/.test(junit)||/<(?:failure|error|skipped)\b/.test(junit)||JSON.stringify([...junit.matchAll(/<testcase\b[^>]*name="([^"]+)"/g)].map(m=>m[1]).sort())!==JSON.stringify(packet.cases.map(p=>'reference.agent.'+p).sort()))throw Error('Exact successful JUnit8 required');
+   for(const p of artifacts)pin(p);sourceCheck();packageCheck();toolCheck();producerCheck();
+   json(path.join(output,'summary.json'),{completed:true,mode:'native',architecture:a['--arch'],stages,receipts,directCases:8,registeredCTestCases:8,normalSdkCppCount:24,normalSdkRecompiled:false,installedSdkProducer:'actual-native-v10',actualAgentCandidateBytes:true,guiReadyVerified:false,realBridgeJoinBeforeReceipt:true,sdkGuiControllerRuntimeExercised:false,rendererExercised:false,allGenericPassed:stages.every(p=>p.genericPassed),qualificationPassed:false,releaseReady:false});
+   if(stages.some(p=>p.genericPassed!==true))process.exitCode=1;
+  console.log(JSON.stringify({completed:true,mode:a['--mode'],output,qualificationPassed:false,releaseReady:false}));
+ }catch(error){json(path.join(output,'summary-failed.json'),{completed:false,mode:a['--mode'],architecture:a['--arch'],stages,error:error.message,qualificationPassed:false,releaseReady:false});throw error;}
+}
+main().catch(error=>{console.error(error.message);process.exitCode=1;});

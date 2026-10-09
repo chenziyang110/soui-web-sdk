@@ -1,0 +1,47 @@
+{
+  "schema": "reference-agent-page-isolation-diagnostic-overlay/1",
+  "baseSourcePlan": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-green-contract-source-3960a7ca-0eb0-490f-b69d-3b10e9ddd76d\\copy-plan.json",
+    "bytes": 4174,
+    "sha256": "dba5b87a4aa5b4e6317fc27faf293d37628330a9a7c2fdc7261c6af121f860c7"
+  },
+  "baseRootEntry": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-green-contract-root-c66282c8-ae37-4a48-8c60-48ec7dabd805\\package.json",
+    "bytes": 132902,
+    "sha256": "65a143f158dff3ac4349ea03fa02e862573c28460b4dde3bfb60055b2a3ba502"
+  },
+  "unchangedPayloadReferences": 47,
+  "overlay": {
+    "relative": "demos/reference-workbench/tests/native-agent.cpp",
+    "before": {
+      "path": "F:\\work\\sm05-broker\\out\\reference-agent-green-contract-source-3960a7ca-0eb0-490f-b69d-3b10e9ddd76d\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+      "relative": "demos/reference-workbench/tests/native-agent.cpp",
+      "bytes": 36287,
+      "sha256": "52a732d22685f6bbfa1f173aaf6dbdd61b6f771da041ae326860231e17b4e542"
+    },
+    "after": {
+      "path": "F:\\work\\sm05-broker\\out\\reference-agent-isolation-phase-source-58b7d0de-3633-4313-ad70-53ce7e3b1391\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+      "bytes": 39417,
+      "sha256": "c0a59d9cb20a4785f498904a033649757fdb507cd209038975f9937edfb216a3"
+    }
+  },
+  "cases": [
+    "disabled-default-deny",
+    "selected-peer",
+    "fixed-summary",
+    "cancel",
+    "invalid-form",
+    "revoked-document",
+    "close-pending",
+    "page-isolation"
+  ],
+  "delta": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-isolation-phase-source-58b7d0de-3633-4313-ad70-53ce7e3b1391\\delta.json",
+    "bytes": 7840,
+    "sha256": "d7a1123b185b3b5b55dffd310df66b2f9c533dc75eb3c5d0e4a9a1617cfc3cc7"
+  },
+  "authorEvaluated": false,
+  "nativeExecuted": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

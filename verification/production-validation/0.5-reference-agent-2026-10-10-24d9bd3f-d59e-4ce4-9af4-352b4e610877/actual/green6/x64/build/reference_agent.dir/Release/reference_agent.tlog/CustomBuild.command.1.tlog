@@ -1,0 +1,10 @@
+^F:\WORK\SM05-BROKER\OUT\REFERENCE-AGENT-GREEN-CONTRACT-ROOT-C66282C8-AE37-4A48-8C60-48EC7DABD805\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/work/sm05-broker/out/reference-agent-green-contract-root-c66282c8-ae37-4a48-8c60-48ec7dabd805 -BF:/work/sm05-broker/out/ragent6/x64/build --check-stamp-file F:/work/sm05-broker/out/ragent6/x64/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

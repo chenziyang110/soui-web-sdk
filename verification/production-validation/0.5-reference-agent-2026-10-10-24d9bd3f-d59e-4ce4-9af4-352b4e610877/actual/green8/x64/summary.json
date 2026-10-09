@@ -1,0 +1,1404 @@
+{
+  "completed": true,
+  "mode": "native",
+  "architecture": "x64",
+  "stages": [
+    {
+      "name": "actiongen-generate",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\tools\\sdk\\actiongen.cjs",
+        "--source",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\contracts\\actions.json",
+        "--root",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 55400,
+      "creationFileTime": "134360469388660497",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\actiongen-generate.owned.jsonl",
+      "rawSha256": "7fa6ed507580607c18ce663ca50e7bd5cf4d6733b0fc6e4fe9877f6c4aae2950",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\actiongen-generate.owned.jsonl.context.json",
+        "bytes": 660,
+        "sha256": "07d3bd8c8626ac9eb31f51459fb3bcdc158124f9482a223140665c75253d10aa"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\actiongen-generate.stdout.raw",
+        "bytes": 90,
+        "sha256": "ffcd9c725bf6a3788c4da9fffa387d6ac50de240119a9a4e5f1d64a4ef7e2f0b"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\actiongen-generate.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 94,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "actiongen-check",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\tools\\sdk\\actiongen.cjs",
+        "--source",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\contracts\\actions.json",
+        "--root",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench",
+        "--check"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 94500,
+      "creationFileTime": "134360469399663922",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\actiongen-check.owned.jsonl",
+      "rawSha256": "2eba07a964388d26bf8f106c01eaa7d31b3b66b6c792cced7be88301357c3525",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\actiongen-check.owned.jsonl.context.json",
+        "bytes": 675,
+        "sha256": "c1ea7bd267967b7f6ff500c741948f141601f68aadc23454b801e62d95dd80e7"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\actiongen-check.stdout.raw",
+        "bytes": 91,
+        "sha256": "d531677bb98469cf893d24f6faea2bd2a4905d542429df1c08d3b4fc3c7865ff"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\actiongen-check.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 120,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "configure",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "-S",
+        "F:\\work\\sm05-broker\\out\\reference-agent-isolation-redaction-root-5f546b83-b12f-4f0b-a651-0ef6c07d19f9",
+        "-B",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64,version=10.0.19041.0",
+        "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+        "-T",
+        "v143,host=x64,version=14.44.35207",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DREFERENCE_ROOT:PATH=F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench",
+        "-DREFERENCE_NODE:FILEPATH=C:\\nvm4w\\nodejs\\node.exe",
+        "-DSouiSdk_DIR:PATH=F:\\work\\sm05-broker\\out\\native-v10\\x64\\sdk-relocated\\lib\\cmake\\SouiSdk",
+        "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
+        "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF",
+        "-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir=F:\\work\\sm05-broker\\out\\reference-agent-isolation-redaction-root-5f546b83-b12f-4f0b-a651-0ef6c07d19f9\\empty-user-props\\"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 96324,
+      "creationFileTime": "134360469411185465",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\configure.owned.jsonl",
+      "rawSha256": "3d57df6e785e6dedff6a8720792a5c058b7753deea7e113d7b0d1f91d8cd4477",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\configure.owned.jsonl.context.json",
+        "bytes": 1489,
+        "sha256": "219428fb5f3a97733953b9bbd2d1fdb2625fa8ab7088d03180cee365368a872e"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\configure.stdout.raw",
+        "bytes": 838,
+        "sha256": "0b67eac20010b1d2ccdaca55d333e038aea43fb32fd532e471fab5e89bb99e52"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\configure.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 8948,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 47,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "build-reference-agent",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build",
+        "--config",
+        "Release",
+        "--target",
+        "soui_reference_agent_tests",
+        "--",
+        "/m:1",
+        "/nr:false",
+        "/p:VcpkgEnabled=false",
+        "/p:VcpkgEnableManifest=false",
+        "/p:VCToolsVersion=14.44.35207",
+        "/p:WindowsTargetPlatformVersion=10.0.19041.0",
+        "/p:ImportDirectoryBuildProps=false",
+        "/p:ImportDirectoryBuildTargets=false",
+        "/p:UseEnv=false",
+        "/p:UserRootDir=F:\\work\\sm05-broker\\out\\reference-agent-isolation-redaction-root-5f546b83-b12f-4f0b-a651-0ef6c07d19f9\\empty-user-props\\",
+        "/bl:F:\\work\\sm05-broker\\out\\ragent8\\x64\\build.binlog"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 61864,
+      "creationFileTime": "134360469508157571",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build-reference-agent.owned.jsonl",
+      "rawSha256": "1e11e08bbc0abcf6e14afc2fbe1a8a841e4a1236dd91a1252c4fba3f5b680679",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build-reference-agent.owned.jsonl.context.json",
+        "bytes": 1058,
+        "sha256": "f5d6a8ccfeea532366040713a191832fe03395bb04418df567360a3fca0fc35b"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build-reference-agent.stdout.raw",
+        "bytes": 1150,
+        "sha256": "c25d2d7e8935710aba23c847c3dd9b1c6c278a537de9559cc9e2d6053dc766b6"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build-reference-agent.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 8838,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 43,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "registry",
+      "executable": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+      "args": [
+        "--test-dir",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build",
+        "-C",
+        "Release",
+        "--show-only=json-v1"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 106548,
+      "creationFileTime": "134360469606621203",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\registry.owned.jsonl",
+      "rawSha256": "d80065b9898071d96460c1b46b55b3a40fc31a552f6fe32c4ca555e2d4b7c0e6",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\registry.owned.jsonl.context.json",
+        "bytes": 519,
+        "sha256": "0b2ac1ebf135c80f76393ecfb2e1e7d4f0eb92a2d6e17caffcb721bc2b0a3111"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\registry.stdout.raw",
+        "bytes": 6296,
+        "sha256": "a5048d45af27f86f6635a51dc9c3052f58e3fc0751b20624141646dde6985a70"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\registry.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 71,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "case-disabled-default-deny",
+      "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+      "args": [
+        "disabled-default-deny",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 83380,
+      "creationFileTime": "134360469633267670",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-disabled-default-deny.owned.jsonl",
+      "rawSha256": "93ec0c23c7b78e67088b18afcd65473180e1053a9be7ce6958fd9082f98e3bdc",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-disabled-default-deny.owned.jsonl.context.json",
+        "bytes": 577,
+        "sha256": "3263e32d436ef0d60df4315d9ffda0e3e61aeca15666f6f1af730039e9d84220"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-disabled-default-deny.stdout.raw",
+        "bytes": 437,
+        "sha256": "d6df7448109a264e42c68bbed462e57bdc7e86290de1059c4da17f358c1e7c8c"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-disabled-default-deny.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 2475,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 4,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "case-selected-peer",
+      "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+      "args": [
+        "selected-peer",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 99664,
+      "creationFileTime": "134360469674657147",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-selected-peer.owned.jsonl",
+      "rawSha256": "d4afeb0c29486bf1832a8117839b9d46b04ee13d55d73c52cad52caf4d4dd99b",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-selected-peer.owned.jsonl.context.json",
+        "bytes": 569,
+        "sha256": "11bce46f27013f8b2b7ebd9d3806085c0defb2f2521bc195ef13379fff9f8cc9"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-selected-peer.stdout.raw",
+        "bytes": 1070,
+        "sha256": "9b9aeab9e02e8ae0e93981111cbcc7a66af8649fe5c9015bfac9bf20d43907ce"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-selected-peer.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 261,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 8,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "case-fixed-summary",
+      "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+      "args": [
+        "fixed-summary",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 46724,
+      "creationFileTime": "134360469685764779",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-fixed-summary.owned.jsonl",
+      "rawSha256": "5ab44f456cca1acad4db57abb7e13db59d5eb546d1efb2131a27169c6135529e",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-fixed-summary.owned.jsonl.context.json",
+        "bytes": 569,
+        "sha256": "86bc9bc4e52b2528579c74a8a05dabc2d1c058b2574a0f0bd0169080c4c61003"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-fixed-summary.stdout.raw",
+        "bytes": 677,
+        "sha256": "0e578d938ed2e8fc814b8fa2c22c31778d543f94bab397df2c55352cc171283b"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-fixed-summary.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 824,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 4,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "case-cancel",
+      "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+      "args": [
+        "cancel",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 99232,
+      "creationFileTime": "134360469702175825",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-cancel.owned.jsonl",
+      "rawSha256": "5830c54a66bb4a1dd485dfc286c50e96c91c3f23049e30be0e334ac0a730eecc",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-cancel.owned.jsonl.context.json",
+        "bytes": 562,
+        "sha256": "143ed5b09a40f54c190f265bd95efe3e018db784a4023e7d390d510198b97e5d"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-cancel.stdout.raw",
+        "bytes": 447,
+        "sha256": "b4eedf48ba3a2af4a5731b78c48161c89c829e66a6552ca737ed8451a7582069"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-cancel.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 860,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 4,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "case-invalid-form",
+      "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+      "args": [
+        "invalid-form",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 46764,
+      "creationFileTime": "134360469718716903",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-invalid-form.owned.jsonl",
+      "rawSha256": "fcea7fe925bc505e36bc612109c24d3b8ead35e4bc7b27cbf2bb64c403bb20f7",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-invalid-form.owned.jsonl.context.json",
+        "bytes": 568,
+        "sha256": "3b5e6d30585a6003febdb67e70479fe61c7d0a2224db65aebc505e0679616358"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-invalid-form.stdout.raw",
+        "bytes": 549,
+        "sha256": "9178ed265b218730bfd9ec2b1b0e3147eb1827bcf7d0c7204fc6d1767148cb58"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-invalid-form.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 212,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 4,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "case-revoked-document",
+      "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+      "args": [
+        "revoked-document",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 47596,
+      "creationFileTime": "134360469729318912",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-revoked-document.owned.jsonl",
+      "rawSha256": "1aac382703b61e876289020dc601c45785b75718a8079eb95b82e419de3229aa",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-revoked-document.owned.jsonl.context.json",
+        "bytes": 572,
+        "sha256": "118fcc0c94f84703078c1b295baff7ccf6639999a928daea859ddffecfeb82d1"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-revoked-document.stdout.raw",
+        "bytes": 467,
+        "sha256": "6d6d6558186bbbedcfe7f64c8be3b8a4bbcf604f1e05e2ba05de15acf60f10d3"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-revoked-document.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 737,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 4,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "case-close-pending",
+      "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+      "args": [
+        "close-pending",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 60680,
+      "creationFileTime": "134360469744474709",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-close-pending.owned.jsonl",
+      "rawSha256": "a137857d2c8b537ca84c44026e1efbc9433e95c96b7d953ac6f315cda8ff4767",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-close-pending.owned.jsonl.context.json",
+        "bytes": 569,
+        "sha256": "443c4d9110809269016dc80630b3264c3dd34f78efcca540f7e9c38b6fc84fa2"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-close-pending.stdout.raw",
+        "bytes": 461,
+        "sha256": "97c605448348b827c906ce1cccf23976c8d1f3f2cc857eaa9f576062536fc5ba"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-close-pending.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 778,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 4,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "case-page-isolation",
+      "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+      "args": [
+        "page-isolation",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 88360,
+      "creationFileTime": "134360469759664110",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-page-isolation.owned.jsonl",
+      "rawSha256": "84813bb7296b742b66c15ae5a5cad026f08e2f3bab775acafef2006222a3f16c",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-page-isolation.owned.jsonl.context.json",
+        "bytes": 570,
+        "sha256": "83a2854e94aaa69f88971eaa305a9767e55786f622bb65ec872fe56dfbf48330"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-page-isolation.stdout.raw",
+        "bytes": 433,
+        "sha256": "e61dd5821f8ed1e88375d35a1c766332f8cd23cada08861ff41ba817c7f14621"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-page-isolation.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 703,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 4,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "ctest-eight",
+      "executable": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+      "args": [
+        "--test-dir",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build",
+        "-C",
+        "Release",
+        "--output-on-failure",
+        "--no-tests=error",
+        "-j",
+        "1",
+        "--timeout",
+        "20",
+        "--output-junit",
+        "F:\\work\\sm05-broker\\out\\ragent8\\x64\\ctest.junit.xml"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+      "pid": 64628,
+      "creationFileTime": "134360469773958992",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\ctest-eight.owned.jsonl",
+      "rawSha256": "79390a12e6e2e1342f8d53df2d56929fb2d57d8ceb15d1b8afa3d511d8f3767d",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\ctest-eight.owned.jsonl.context.json",
+        "bytes": 677,
+        "sha256": "1d02d4404f355eea7533f7f36c9cfac02fc5f5bfad24f6e27289edbf9fb21887"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\ctest-eight.stdout.raw",
+        "bytes": 1092,
+        "sha256": "c8bd5b1fb13615f70f6a4ddad1649b091bd2f4275f2875ce9f95c4e41625854e"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\ctest-eight.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": [],
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 3777,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 30,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    }
+  ],
+  "receipts": [
+    {
+      "name": "disabled-default-deny",
+      "receipt": {
+        "case": "disabled-default-deny",
+        "children": [
+          {
+            "creationFileTime": "134360469657024089",
+            "exitCode": 0,
+            "jobAssigned": true,
+            "mode": "denied-peer",
+            "pid": "70912",
+            "rawReceipt": "{\"creationFileTime\":\"134360469657024089\",\"payload\":{},\"pid\":\"70912\"}\r\n"
+          }
+        ],
+        "creationFileTime": "134360469633267670",
+        "guiReadyVerified": false,
+        "passed": true,
+        "pid": "83380",
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "schema": "soui.reference-agent-native/1"
+      },
+      "identity": {
+        "name": "case-disabled-default-deny",
+        "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+        "args": [
+          "disabled-default-deny",
+          "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+        ],
+        "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+        "pid": 83380,
+        "creationFileTime": "134360469633267670",
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "genericPassed": true,
+        "closureConfirmed": true,
+        "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-disabled-default-deny.owned.jsonl",
+        "rawSha256": "93ec0c23c7b78e67088b18afcd65473180e1053a9be7ce6958fd9082f98e3bdc",
+        "context": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-disabled-default-deny.owned.jsonl.context.json",
+          "bytes": 577,
+          "sha256": "3263e32d436ef0d60df4315d9ffda0e3e61aeca15666f6f1af730039e9d84220"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-disabled-default-deny.stdout.raw",
+          "bytes": 437,
+          "sha256": "d6df7448109a264e42c68bbed462e57bdc7e86290de1059c4da17f358c1e7c8c"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-disabled-default-deny.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "streamErrors": [],
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 2475,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 4,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        }
+      },
+      "childBindings": [
+        {
+          "pid": "70912",
+          "creationFileTime": "134360469657024089",
+          "rawReceiptSha256": "4552f4a3947eb9866a4231e561c6af274a13ed396d8256b7694340fc8a7e336d",
+          "heldNativeProcessExited": true,
+          "inheritedAssignedRootJob": true,
+          "ownedMemberObserved": true
+        }
+      ]
+    },
+    {
+      "name": "selected-peer",
+      "receipt": {
+        "case": "selected-peer",
+        "children": [
+          {
+            "creationFileTime": "134360469675253880",
+            "exitCode": 0,
+            "jobAssigned": true,
+            "mode": "denied-peer",
+            "pid": "93968",
+            "rawReceipt": "{\"creationFileTime\":\"134360469675253880\",\"payload\":{},\"pid\":\"93968\"}\r\n"
+          },
+          {
+            "creationFileTime": "134360469675128437",
+            "exitCode": 0,
+            "jobAssigned": true,
+            "mode": "describe",
+            "pid": "42708",
+            "rawReceipt": "{\"creationFileTime\":\"134360469675128437\",\"payload\":{\"fixtureId\":\"electron-smoothness-10k-v1\",\"groups\":[\"素材\",\"项目\",\"缓存\",\"导出\",\"归档\"],\"rowCount\":10000,\"rowHeightPx\":32,\"seed\":20260915,\"statuses\":[\"ready\",\"indexed\",\"queued\",\"review\"]},\"pid\":\"42708\"}\r\n"
+          },
+          {
+            "creationFileTime": "134360469676514682",
+            "exitCode": 0,
+            "jobAssigned": true,
+            "mode": "selection-only",
+            "pid": "87004",
+            "rawReceipt": "{\"creationFileTime\":\"134360469676514682\",\"payload\":{},\"pid\":\"87004\"}\r\n"
+          }
+        ],
+        "creationFileTime": "134360469674657147",
+        "guiReadyVerified": false,
+        "passed": true,
+        "pid": "99664",
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "schema": "soui.reference-agent-native/1"
+      },
+      "identity": {
+        "name": "case-selected-peer",
+        "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+        "args": [
+          "selected-peer",
+          "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+        ],
+        "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+        "pid": 99664,
+        "creationFileTime": "134360469674657147",
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "genericPassed": true,
+        "closureConfirmed": true,
+        "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-selected-peer.owned.jsonl",
+        "rawSha256": "d4afeb0c29486bf1832a8117839b9d46b04ee13d55d73c52cad52caf4d4dd99b",
+        "context": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-selected-peer.owned.jsonl.context.json",
+          "bytes": 569,
+          "sha256": "11bce46f27013f8b2b7ebd9d3806085c0defb2f2521bc195ef13379fff9f8cc9"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-selected-peer.stdout.raw",
+          "bytes": 1070,
+          "sha256": "9b9aeab9e02e8ae0e93981111cbcc7a66af8649fe5c9015bfac9bf20d43907ce"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-selected-peer.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "streamErrors": [],
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 261,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 8,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        }
+      },
+      "childBindings": [
+        {
+          "pid": "93968",
+          "creationFileTime": "134360469675253880",
+          "rawReceiptSha256": "f1c7d9ba2e253700fffb35a08b9a86b20908cb8966ff9c3f5697e6c07a09c6d6",
+          "heldNativeProcessExited": true,
+          "inheritedAssignedRootJob": true,
+          "ownedMemberObserved": true
+        },
+        {
+          "pid": "42708",
+          "creationFileTime": "134360469675128437",
+          "rawReceiptSha256": "a0e97458d06fa16495172cf1b6780d0f967867119746266180c3f3760d54a7b8",
+          "heldNativeProcessExited": true,
+          "inheritedAssignedRootJob": true,
+          "ownedMemberObserved": true
+        },
+        {
+          "pid": "87004",
+          "creationFileTime": "134360469676514682",
+          "rawReceiptSha256": "d111fb10a96c1a72859eaf25b9ffd4164f927c55ecb9733cadff8576ccf09441",
+          "heldNativeProcessExited": true,
+          "inheritedAssignedRootJob": true,
+          "ownedMemberObserved": true
+        }
+      ]
+    },
+    {
+      "name": "fixed-summary",
+      "receipt": {
+        "case": "fixed-summary",
+        "children": [
+          {
+            "creationFileTime": "134360469687369638",
+            "exitCode": 0,
+            "jobAssigned": true,
+            "mode": "fixed-summary",
+            "pid": "109756",
+            "rawReceipt": "{\"creationFileTime\":\"134360469687369638\",\"payload\":{\"result\":{\"fixtureId\":\"electron-smoothness-10k-v1\",\"groups\":{\"导出\":2060,\"归档\":1936,\"素材\":2001,\"缓存\":2127,\"项目\":1876},\"matched\":10000,\"processed\":10000,\"totalSizeKb\":20760989},\"taskId\":\"sdk-task-000002\"},\"pid\":\"109756\"}\r\n"
+          }
+        ],
+        "creationFileTime": "134360469685764779",
+        "guiReadyVerified": false,
+        "passed": true,
+        "pid": "46724",
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "schema": "soui.reference-agent-native/1"
+      },
+      "identity": {
+        "name": "case-fixed-summary",
+        "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+        "args": [
+          "fixed-summary",
+          "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+        ],
+        "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+        "pid": 46724,
+        "creationFileTime": "134360469685764779",
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "genericPassed": true,
+        "closureConfirmed": true,
+        "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-fixed-summary.owned.jsonl",
+        "rawSha256": "5ab44f456cca1acad4db57abb7e13db59d5eb546d1efb2131a27169c6135529e",
+        "context": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-fixed-summary.owned.jsonl.context.json",
+          "bytes": 569,
+          "sha256": "86bc9bc4e52b2528579c74a8a05dabc2d1c058b2574a0f0bd0169080c4c61003"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-fixed-summary.stdout.raw",
+          "bytes": 677,
+          "sha256": "0e578d938ed2e8fc814b8fa2c22c31778d543f94bab397df2c55352cc171283b"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-fixed-summary.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "streamErrors": [],
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 824,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 4,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        }
+      },
+      "childBindings": [
+        {
+          "pid": "109756",
+          "creationFileTime": "134360469687369638",
+          "rawReceiptSha256": "a3b7b1867fa5756646a308fae9dfa276515714671dbd3e3a3bb1b4b45d5c7297",
+          "heldNativeProcessExited": true,
+          "inheritedAssignedRootJob": true,
+          "ownedMemberObserved": true
+        }
+      ]
+    },
+    {
+      "name": "cancel",
+      "receipt": {
+        "case": "cancel",
+        "children": [
+          {
+            "creationFileTime": "134360469702627791",
+            "exitCode": 0,
+            "jobAssigned": true,
+            "mode": "cancel",
+            "pid": "98212",
+            "rawReceipt": "{\"creationFileTime\":\"134360469702627791\",\"payload\":{\"taskId\":\"sdk-task-000001\"},\"pid\":\"98212\"}\r\n"
+          }
+        ],
+        "creationFileTime": "134360469702175825",
+        "guiReadyVerified": false,
+        "passed": true,
+        "pid": "99232",
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "schema": "soui.reference-agent-native/1"
+      },
+      "identity": {
+        "name": "case-cancel",
+        "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+        "args": [
+          "cancel",
+          "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+        ],
+        "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+        "pid": 99232,
+        "creationFileTime": "134360469702175825",
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "genericPassed": true,
+        "closureConfirmed": true,
+        "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-cancel.owned.jsonl",
+        "rawSha256": "5830c54a66bb4a1dd485dfc286c50e96c91c3f23049e30be0e334ac0a730eecc",
+        "context": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-cancel.owned.jsonl.context.json",
+          "bytes": 562,
+          "sha256": "143ed5b09a40f54c190f265bd95efe3e018db784a4023e7d390d510198b97e5d"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-cancel.stdout.raw",
+          "bytes": 447,
+          "sha256": "b4eedf48ba3a2af4a5731b78c48161c89c829e66a6552ca737ed8451a7582069"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-cancel.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "streamErrors": [],
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 860,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 4,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        }
+      },
+      "childBindings": [
+        {
+          "pid": "98212",
+          "creationFileTime": "134360469702627791",
+          "rawReceiptSha256": "442ea587a1817575d1721e077c129068713d7675c47f8dd1629ef459554f75b5",
+          "heldNativeProcessExited": true,
+          "inheritedAssignedRootJob": true,
+          "ownedMemberObserved": true
+        }
+      ]
+    },
+    {
+      "name": "invalid-form",
+      "receipt": {
+        "case": "invalid-form",
+        "children": [
+          {
+            "creationFileTime": "134360469719145023",
+            "exitCode": 0,
+            "jobAssigned": true,
+            "mode": "invalid-form",
+            "pid": "103168",
+            "rawReceipt": "{\"creationFileTime\":\"134360469719145023\",\"payload\":{\"accepted\":true,\"message\":\"C++ 已确认表单；本示例不写入文件。\",\"receiptId\":\"reference-form-2\"},\"pid\":\"103168\"}\r\n"
+          }
+        ],
+        "creationFileTime": "134360469718716903",
+        "guiReadyVerified": false,
+        "passed": true,
+        "pid": "46764",
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "schema": "soui.reference-agent-native/1"
+      },
+      "identity": {
+        "name": "case-invalid-form",
+        "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+        "args": [
+          "invalid-form",
+          "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+        ],
+        "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+        "pid": 46764,
+        "creationFileTime": "134360469718716903",
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "genericPassed": true,
+        "closureConfirmed": true,
+        "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-invalid-form.owned.jsonl",
+        "rawSha256": "fcea7fe925bc505e36bc612109c24d3b8ead35e4bc7b27cbf2bb64c403bb20f7",
+        "context": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-invalid-form.owned.jsonl.context.json",
+          "bytes": 568,
+          "sha256": "3b5e6d30585a6003febdb67e70479fe61c7d0a2224db65aebc505e0679616358"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-invalid-form.stdout.raw",
+          "bytes": 549,
+          "sha256": "9178ed265b218730bfd9ec2b1b0e3147eb1827bcf7d0c7204fc6d1767148cb58"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-invalid-form.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "streamErrors": [],
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 212,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 4,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        }
+      },
+      "childBindings": [
+        {
+          "pid": "103168",
+          "creationFileTime": "134360469719145023",
+          "rawReceiptSha256": "58ac92cfc4a95bb618e454f310519d0d258070d2c43db713814c23763f510f4c",
+          "heldNativeProcessExited": true,
+          "inheritedAssignedRootJob": true,
+          "ownedMemberObserved": true
+        }
+      ]
+    },
+    {
+      "name": "revoked-document",
+      "receipt": {
+        "case": "revoked-document",
+        "children": [
+          {
+            "creationFileTime": "134360469729747091",
+            "exitCode": 0,
+            "jobAssigned": true,
+            "mode": "revoked-document",
+            "pid": "18688",
+            "rawReceipt": "{\"creationFileTime\":\"134360469729747091\",\"payload\":{\"taskId\":\"sdk-task-000001\"},\"pid\":\"18688\"}\r\n"
+          }
+        ],
+        "creationFileTime": "134360469729318912",
+        "guiReadyVerified": false,
+        "passed": true,
+        "pid": "47596",
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "schema": "soui.reference-agent-native/1"
+      },
+      "identity": {
+        "name": "case-revoked-document",
+        "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+        "args": [
+          "revoked-document",
+          "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+        ],
+        "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+        "pid": 47596,
+        "creationFileTime": "134360469729318912",
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "genericPassed": true,
+        "closureConfirmed": true,
+        "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-revoked-document.owned.jsonl",
+        "rawSha256": "1aac382703b61e876289020dc601c45785b75718a8079eb95b82e419de3229aa",
+        "context": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-revoked-document.owned.jsonl.context.json",
+          "bytes": 572,
+          "sha256": "118fcc0c94f84703078c1b295baff7ccf6639999a928daea859ddffecfeb82d1"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-revoked-document.stdout.raw",
+          "bytes": 467,
+          "sha256": "6d6d6558186bbbedcfe7f64c8be3b8a4bbcf604f1e05e2ba05de15acf60f10d3"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-revoked-document.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "streamErrors": [],
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 737,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 4,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        }
+      },
+      "childBindings": [
+        {
+          "pid": "18688",
+          "creationFileTime": "134360469729747091",
+          "rawReceiptSha256": "d63de9c74ec61088b67674780adc3b1171c62bd849e73e7408c6d911ca082f5f",
+          "heldNativeProcessExited": true,
+          "inheritedAssignedRootJob": true,
+          "ownedMemberObserved": true
+        }
+      ]
+    },
+    {
+      "name": "close-pending",
+      "receipt": {
+        "case": "close-pending",
+        "children": [
+          {
+            "creationFileTime": "134360469744885344",
+            "exitCode": 0,
+            "jobAssigned": true,
+            "mode": "close-pending",
+            "pid": "94400",
+            "rawReceipt": "{\"creationFileTime\":\"134360469744885344\",\"payload\":{\"taskId\":\"sdk-task-000001\"},\"pid\":\"94400\"}\r\n"
+          }
+        ],
+        "creationFileTime": "134360469744474709",
+        "guiReadyVerified": false,
+        "passed": true,
+        "pid": "60680",
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "schema": "soui.reference-agent-native/1"
+      },
+      "identity": {
+        "name": "case-close-pending",
+        "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+        "args": [
+          "close-pending",
+          "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+        ],
+        "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+        "pid": 60680,
+        "creationFileTime": "134360469744474709",
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "genericPassed": true,
+        "closureConfirmed": true,
+        "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-close-pending.owned.jsonl",
+        "rawSha256": "a137857d2c8b537ca84c44026e1efbc9433e95c96b7d953ac6f315cda8ff4767",
+        "context": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-close-pending.owned.jsonl.context.json",
+          "bytes": 569,
+          "sha256": "443c4d9110809269016dc80630b3264c3dd34f78efcca540f7e9c38b6fc84fa2"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-close-pending.stdout.raw",
+          "bytes": 461,
+          "sha256": "97c605448348b827c906ce1cccf23976c8d1f3f2cc857eaa9f576062536fc5ba"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-close-pending.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "streamErrors": [],
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 778,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 4,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        }
+      },
+      "childBindings": [
+        {
+          "pid": "94400",
+          "creationFileTime": "134360469744885344",
+          "rawReceiptSha256": "9581dd52d48bdf42af6968433883c05aa5236356dc8bed67425405e6dde600d0",
+          "heldNativeProcessExited": true,
+          "inheritedAssignedRootJob": true,
+          "ownedMemberObserved": true
+        }
+      ]
+    },
+    {
+      "name": "page-isolation",
+      "receipt": {
+        "case": "page-isolation",
+        "children": [
+          {
+            "creationFileTime": "134360469764908108",
+            "exitCode": 0,
+            "jobAssigned": true,
+            "mode": "page-isolation",
+            "pid": "88424",
+            "rawReceipt": "{\"creationFileTime\":\"134360469764908108\",\"payload\":{},\"pid\":\"88424\"}\r\n"
+          }
+        ],
+        "creationFileTime": "134360469759664110",
+        "guiReadyVerified": false,
+        "passed": true,
+        "pid": "88360",
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "schema": "soui.reference-agent-native/1"
+      },
+      "identity": {
+        "name": "case-page-isolation",
+        "executable": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+        "args": [
+          "page-isolation",
+          "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\common\\fixture.json"
+        ],
+        "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\x64",
+        "pid": 88360,
+        "creationFileTime": "134360469759664110",
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "genericPassed": true,
+        "closureConfirmed": true,
+        "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-page-isolation.owned.jsonl",
+        "rawSha256": "84813bb7296b742b66c15ae5a5cad026f08e2f3bab775acafef2006222a3f16c",
+        "context": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-page-isolation.owned.jsonl.context.json",
+          "bytes": 570,
+          "sha256": "83a2854e94aaa69f88971eaa305a9767e55786f622bb65ec872fe56dfbf48330"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-page-isolation.stdout.raw",
+          "bytes": 433,
+          "sha256": "e61dd5821f8ed1e88375d35a1c766332f8cd23cada08861ff41ba817c7f14621"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-page-isolation.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "streamErrors": [],
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 703,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 4,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        }
+      },
+      "childBindings": [
+        {
+          "pid": "88424",
+          "creationFileTime": "134360469764908108",
+          "rawReceiptSha256": "b531bcf2c21b620cf1a32d8a210872a8015b00b0a84ac7c0e81e94417579f34a",
+          "heldNativeProcessExited": true,
+          "inheritedAssignedRootJob": true,
+          "ownedMemberObserved": true
+        }
+      ]
+    }
+  ],
+  "directCases": 8,
+  "registeredCTestCases": 8,
+  "normalSdkCppCount": 24,
+  "normalSdkRecompiled": false,
+  "installedSdkProducer": "actual-native-v10",
+  "actualAgentCandidateBytes": true,
+  "guiReadyVerified": false,
+  "realBridgeJoinBeforeReceipt": true,
+  "sdkGuiControllerRuntimeExercised": false,
+  "rendererExercised": false,
+  "allGenericPassed": true,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

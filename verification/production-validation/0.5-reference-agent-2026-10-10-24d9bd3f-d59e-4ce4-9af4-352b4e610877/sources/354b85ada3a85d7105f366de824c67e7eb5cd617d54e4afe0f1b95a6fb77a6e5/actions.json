@@ -1,0 +1,22 @@
+{
+  "schema": "soui.action-source/1",
+  "cppNamespace": "reference_actions",
+  "actions": [
+    {
+      "method": "reference.form.submit", "capability": "reference.form.submit", "cppName": "SubmitForm",
+      "action": {
+        "protocol": "soui.action/1", "title": "确认参考表单", "description": "由 C++ 校验并确认本次中文表单，不写文件。",
+        "inputSchema": {"type":"object","properties":{"name":{"type":"string","minLength":1,"maxLength":64},"notes":{"type":"string","maxLength":256},"category":{"type":"string","enum":["素材","项目","缓存","导出","归档"],"maxLength":32}},"required":["name","notes","category"],"additionalProperties":false},
+        "outputSchema": {"type":"object","properties":{"accepted":{"type":"boolean"},"message":{"type":"string","maxLength":200},"receiptId":{"type":"string","maxLength":64}},"required":["accepted","message","receiptId"],"additionalProperties":false}
+      }
+    },
+    {
+      "method": "reference.fixture.describe", "capability": "reference.fixture.describe", "cppName": "DescribeFixture",
+      "action": {
+        "protocol":"soui.action/1","title":"固定样本说明","description":"读取原生实际使用的固定万行样本参数。",
+        "inputSchema":{"type":"object","properties":{},"additionalProperties":false},
+        "outputSchema":{"type":"object","properties":{"fixtureId":{"type":"string","maxLength":64},"seed":{"type":"integer","minimum":0,"maximum":4294967295},"rowCount":{"type":"integer","minimum":10000,"maximum":10000},"rowHeightPx":{"type":"integer","minimum":32,"maximum":32},"groups":{"type":"array","items":{"type":"string","maxLength":32},"maxItems":5,"minItems":5},"statuses":{"type":"array","items":{"type":"string","maxLength":16},"maxItems":4,"minItems":4}},"required":["fixtureId","seed","rowCount","rowHeightPx","groups","statuses"],"additionalProperties":false}
+      }
+    }
+  ]
+}

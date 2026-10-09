@@ -1,0 +1,548 @@
+{
+  "schema": "independent-reference-agent-green8-actual-review/1",
+  "arch": "x64",
+  "summary": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\summary.json",
+    "bytes": 54293,
+    "sha256": "b838fcf9d4faf2f07a67c05a6ec063879acb9fc1e43bb833c9eb22d14dad5384"
+  },
+  "sealedPackage": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-isolation-redaction-root-5f546b83-b12f-4f0b-a651-0ef6c07d19f9\\package.json",
+    "bytes": 133960,
+    "sha256": "a1baf053b3e21a27b10c5c1ef52cc00a4bd2ba9811ab40bf62ec646077bbcd84"
+  },
+  "actualStageCount": 14,
+  "allNatural0Supervisor0NoForce": true,
+  "stages": [
+    {
+      "name": "actiongen-generate",
+      "pid": "55400",
+      "creationFileTime": "134360469388660497",
+      "elapsedMs": 94,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 2,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\actiongen-generate.owned.jsonl",
+        "bytes": 1121,
+        "sha256": "7fa6ed507580607c18ce663ca50e7bd5cf4d6733b0fc6e4fe9877f6c4aae2950"
+      }
+    },
+    {
+      "name": "actiongen-check",
+      "pid": "94500",
+      "creationFileTime": "134360469399663922",
+      "elapsedMs": 120,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 2,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\actiongen-check.owned.jsonl",
+        "bytes": 1354,
+        "sha256": "2eba07a964388d26bf8f106c01eaa7d31b3b66b6c792cced7be88301357c3525"
+      }
+    },
+    {
+      "name": "configure",
+      "pid": "96324",
+      "creationFileTime": "134360469411185465",
+      "elapsedMs": 8948,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 47,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\configure.owned.jsonl",
+        "bytes": 45034,
+        "sha256": "3d57df6e785e6dedff6a8720792a5c058b7753deea7e113d7b0d1f91d8cd4477"
+      }
+    },
+    {
+      "name": "build-reference-agent",
+      "pid": "61864",
+      "creationFileTime": "134360469508157571",
+      "elapsedMs": 8838,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 43,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build-reference-agent.owned.jsonl",
+        "bytes": 39797,
+        "sha256": "1e11e08bbc0abcf6e14afc2fbe1a8a841e4a1236dd91a1252c4fba3f5b680679"
+      }
+    },
+    {
+      "name": "registry",
+      "pid": "106548",
+      "creationFileTime": "134360469606621203",
+      "elapsedMs": 71,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 2,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\registry.owned.jsonl",
+        "bytes": 1307,
+        "sha256": "d80065b9898071d96460c1b46b55b3a40fc31a552f6fe32c4ca555e2d4b7c0e6"
+      }
+    },
+    {
+      "name": "case-disabled-default-deny",
+      "pid": "83380",
+      "creationFileTime": "134360469633267670",
+      "elapsedMs": 2475,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 4,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-disabled-default-deny.owned.jsonl",
+        "bytes": 3111,
+        "sha256": "93ec0c23c7b78e67088b18afcd65473180e1053a9be7ce6958fd9082f98e3bdc"
+      }
+    },
+    {
+      "name": "case-selected-peer",
+      "pid": "99664",
+      "creationFileTime": "134360469674657147",
+      "elapsedMs": 261,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 8,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-selected-peer.owned.jsonl",
+        "bytes": 4116,
+        "sha256": "d4afeb0c29486bf1832a8117839b9d46b04ee13d55d73c52cad52caf4d4dd99b"
+      }
+    },
+    {
+      "name": "case-fixed-summary",
+      "pid": "46724",
+      "creationFileTime": "134360469685764779",
+      "elapsedMs": 824,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 4,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-fixed-summary.owned.jsonl",
+        "bytes": 3110,
+        "sha256": "5ab44f456cca1acad4db57abb7e13db59d5eb546d1efb2131a27169c6135529e"
+      }
+    },
+    {
+      "name": "case-cancel",
+      "pid": "99232",
+      "creationFileTime": "134360469702175825",
+      "elapsedMs": 860,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 4,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-cancel.owned.jsonl",
+        "bytes": 2526,
+        "sha256": "5830c54a66bb4a1dd485dfc286c50e96c91c3f23049e30be0e334ac0a730eecc"
+      }
+    },
+    {
+      "name": "case-invalid-form",
+      "pid": "46764",
+      "creationFileTime": "134360469718716903",
+      "elapsedMs": 212,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 4,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-invalid-form.owned.jsonl",
+        "bytes": 2526,
+        "sha256": "fcea7fe925bc505e36bc612109c24d3b8ead35e4bc7b27cbf2bb64c403bb20f7"
+      }
+    },
+    {
+      "name": "case-revoked-document",
+      "pid": "47596",
+      "creationFileTime": "134360469729318912",
+      "elapsedMs": 737,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 4,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-revoked-document.owned.jsonl",
+        "bytes": 1889,
+        "sha256": "1aac382703b61e876289020dc601c45785b75718a8079eb95b82e419de3229aa"
+      }
+    },
+    {
+      "name": "case-close-pending",
+      "pid": "60680",
+      "creationFileTime": "134360469744474709",
+      "elapsedMs": 778,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 4,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-close-pending.owned.jsonl",
+        "bytes": 2688,
+        "sha256": "a137857d2c8b537ca84c44026e1efbc9433e95c96b7d953ac6f315cda8ff4767"
+      }
+    },
+    {
+      "name": "case-page-isolation",
+      "pid": "88360",
+      "creationFileTime": "134360469759664110",
+      "elapsedMs": 703,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 4,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\case-page-isolation.owned.jsonl",
+        "bytes": 3113,
+        "sha256": "84813bb7296b742b66c15ae5a5cad026f08e2f3bab775acafef2006222a3f16c"
+      }
+    },
+    {
+      "name": "ctest-eight",
+      "pid": "64628",
+      "creationFileTime": "134360469773958992",
+      "elapsedMs": 3777,
+      "root0Supervisor0Natural": true,
+      "actualTotalJobProcesses": 30,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\ctest-eight.owned.jsonl",
+        "bytes": 18621,
+        "sha256": "79390a12e6e2e1342f8d53df2d56929fb2d57d8ceb15d1b8afa3d511d8f3767d"
+      }
+    }
+  ],
+  "direct8": [
+    {
+      "case": "disabled-default-deny",
+      "pid": "83380",
+      "creationFileTime": "134360469633267670",
+      "children": [
+        {
+          "mode": "denied-peer",
+          "pid": "70912",
+          "creationFileTime": "134360469657024089",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "4552f4a3947eb9866a4231e561c6af274a13ed396d8256b7694340fc8a7e336d"
+        }
+      ]
+    },
+    {
+      "case": "selected-peer",
+      "pid": "99664",
+      "creationFileTime": "134360469674657147",
+      "children": [
+        {
+          "mode": "denied-peer",
+          "pid": "93968",
+          "creationFileTime": "134360469675253880",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "f1c7d9ba2e253700fffb35a08b9a86b20908cb8966ff9c3f5697e6c07a09c6d6"
+        },
+        {
+          "mode": "describe",
+          "pid": "42708",
+          "creationFileTime": "134360469675128437",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "a0e97458d06fa16495172cf1b6780d0f967867119746266180c3f3760d54a7b8"
+        },
+        {
+          "mode": "selection-only",
+          "pid": "87004",
+          "creationFileTime": "134360469676514682",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "d111fb10a96c1a72859eaf25b9ffd4164f927c55ecb9733cadff8576ccf09441"
+        }
+      ]
+    },
+    {
+      "case": "fixed-summary",
+      "pid": "46724",
+      "creationFileTime": "134360469685764779",
+      "children": [
+        {
+          "mode": "fixed-summary",
+          "pid": "109756",
+          "creationFileTime": "134360469687369638",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "a3b7b1867fa5756646a308fae9dfa276515714671dbd3e3a3bb1b4b45d5c7297"
+        }
+      ]
+    },
+    {
+      "case": "cancel",
+      "pid": "99232",
+      "creationFileTime": "134360469702175825",
+      "children": [
+        {
+          "mode": "cancel",
+          "pid": "98212",
+          "creationFileTime": "134360469702627791",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "442ea587a1817575d1721e077c129068713d7675c47f8dd1629ef459554f75b5"
+        }
+      ]
+    },
+    {
+      "case": "invalid-form",
+      "pid": "46764",
+      "creationFileTime": "134360469718716903",
+      "children": [
+        {
+          "mode": "invalid-form",
+          "pid": "103168",
+          "creationFileTime": "134360469719145023",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "58ac92cfc4a95bb618e454f310519d0d258070d2c43db713814c23763f510f4c"
+        }
+      ]
+    },
+    {
+      "case": "revoked-document",
+      "pid": "47596",
+      "creationFileTime": "134360469729318912",
+      "children": [
+        {
+          "mode": "revoked-document",
+          "pid": "18688",
+          "creationFileTime": "134360469729747091",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "d63de9c74ec61088b67674780adc3b1171c62bd849e73e7408c6d911ca082f5f"
+        }
+      ]
+    },
+    {
+      "case": "close-pending",
+      "pid": "60680",
+      "creationFileTime": "134360469744474709",
+      "children": [
+        {
+          "mode": "close-pending",
+          "pid": "94400",
+          "creationFileTime": "134360469744885344",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "9581dd52d48bdf42af6968433883c05aa5236356dc8bed67425405e6dde600d0"
+        }
+      ]
+    },
+    {
+      "case": "page-isolation",
+      "pid": "88360",
+      "creationFileTime": "134360469759664110",
+      "children": [
+        {
+          "mode": "page-isolation",
+          "pid": "88424",
+          "creationFileTime": "134360469764908108",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "b531bcf2c21b620cf1a32d8a210872a8015b00b0a84ac7c0e81e94417579f34a"
+        }
+      ]
+    }
+  ],
+  "ctest8": [
+    {
+      "case": "disabled-default-deny",
+      "pid": "107792",
+      "creationFileTime": "134360469776098369",
+      "children": [
+        {
+          "mode": "denied-peer",
+          "pid": "22388",
+          "creationFileTime": "134360469776292681",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "13ed4dd996fc6e528a05dc1561d1ad007cf8d1c9470098f9e0fe0d9f195c7307"
+        }
+      ]
+    },
+    {
+      "case": "selected-peer",
+      "pid": "102252",
+      "creationFileTime": "134360469777207006",
+      "children": [
+        {
+          "mode": "denied-peer",
+          "pid": "10164",
+          "creationFileTime": "134360469777460559",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "8438ef186bb1d940a8a5d0a9389a615e90bb3035a238c82b0c2afac1e70cd0e0"
+        },
+        {
+          "mode": "describe",
+          "pid": "39436",
+          "creationFileTime": "134360469777374828",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "ddd0c5c1cb4a68a6a9b2de785f2ab3c804ed6d0e85eb85a338037dd6740345bf"
+        },
+        {
+          "mode": "selection-only",
+          "pid": "89924",
+          "creationFileTime": "134360469778688400",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "b7e62d315ecf89afa50f82502da0ae38769c87acf6e6a83af7b8c4459d7485b0"
+        }
+      ]
+    },
+    {
+      "case": "fixed-summary",
+      "pid": "96164",
+      "creationFileTime": "134360469779235989",
+      "children": [
+        {
+          "mode": "fixed-summary",
+          "pid": "80580",
+          "creationFileTime": "134360469779389697",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "bd6a0d3fe2dd89ae6b7e11dfd7a79ec64488faf0cfea02896ffc120dc4abaf6c"
+        }
+      ]
+    },
+    {
+      "case": "cancel",
+      "pid": "31496",
+      "creationFileTime": "134360469785732550",
+      "children": [
+        {
+          "mode": "cancel",
+          "pid": "74428",
+          "creationFileTime": "134360469785899728",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "15431c1d52f5ea6619ab6ffef00d633d3a96f07d3f1a3ca7ec40151e135d15cf"
+        }
+      ]
+    },
+    {
+      "case": "invalid-form",
+      "pid": "107788",
+      "creationFileTime": "134360469793707576",
+      "children": [
+        {
+          "mode": "invalid-form",
+          "pid": "97604",
+          "creationFileTime": "134360469793874437",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "099a6dfaf9f3a9c65e2958a16407bb4ffbdfd01a59ca88e1511ead0a8542c3bc"
+        }
+      ]
+    },
+    {
+      "case": "revoked-document",
+      "pid": "35928",
+      "creationFileTime": "134360469795266304",
+      "children": [
+        {
+          "mode": "revoked-document",
+          "pid": "62640",
+          "creationFileTime": "134360469795423584",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "f84a1f34a69b15c60b8d42db7a0dd98d1788b4d1eab8922bccbad5fcf1c2df7f"
+        }
+      ]
+    },
+    {
+      "case": "close-pending",
+      "pid": "110200",
+      "creationFileTime": "134360469802676167",
+      "children": [
+        {
+          "mode": "close-pending",
+          "pid": "39184",
+          "creationFileTime": "134360469802828809",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "7af5bf00cc792a797c7b92ea62d0fa953a7962d99aa4e72cbfa6405cc7134b09"
+        }
+      ]
+    },
+    {
+      "case": "page-isolation",
+      "pid": "70324",
+      "creationFileTime": "134360469810114807",
+      "children": [
+        {
+          "mode": "page-isolation",
+          "pid": "69676",
+          "creationFileTime": "134360469810276601",
+          "actualExitCode": 0,
+          "actualNativeAssignedJob": true,
+          "ownedMemberObserved": true,
+          "rawReceiptSha256": "f55968c19ddfdbda968285190a635c40d876d19c1c998bde1cd249cf1855a335"
+        }
+      ]
+    }
+  ],
+  "junit": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\ctest.junit.xml",
+    "bytes": 6244,
+    "sha256": "d3336f90cb43afb85482e3d076689ef42481a66f2045ad8a6adca9db8d5561cd"
+  },
+  "fullCtestLog": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Testing\\Temporary\\LastTest.log",
+    "bytes": 10955,
+    "sha256": "2c654c6c8759b5c9913fbfe8537b4c2bea82c30447458fd243f75e141fb69f74"
+  },
+  "junitSelectedPeerOutputTruncated": true,
+  "fullCtestReceiptsParsed": true,
+  "sourcePayloads48AndGenerated5ByteExact": true,
+  "actualNormalSdkArchive": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v10\\x64\\sdk-relocated\\lib\\Release\\soui_sdk.lib",
+    "bytes": 44011594,
+    "sha256": "ce150c859d6a03c784f69cadfabe191d436ab89162649feb718c50a8c75de558"
+  },
+  "normalSdkCppCount": 24,
+  "normalSdkRecompiled": false,
+  "sdkMap": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\reference-agent-Release.map",
+    "bytes": 3179541,
+    "sha256": "5e270a509d84cf24ab9ded33aa62837689bcb6510a9f37be5e90176e05bf19f4"
+  },
+  "sdkMapPublicRows": 914,
+  "sdkMapMembers": [
+    "action_contract.obj",
+    "bridge_transport.obj",
+    "json_bridge.obj",
+    "permission_store.obj",
+    "result.obj",
+    "task_service.obj",
+    "task_store.obj",
+    "windows_local_endpoint.obj",
+    "windows_peer_identity.obj"
+  ],
+  "finiteMemberContributionOnly": true,
+  "completeCompilerInputBinding": false,
+  "actualExe": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\Release\\soui_reference_agent_tests.exe",
+    "bytes": 690176,
+    "sha256": "99eb0a3a5e24a00e15055688cc853c57bfc658c6bd4bf33fca6748fa7f7d8dda"
+  },
+  "actualPeMachine": 34404,
+  "architecturePinChecks": 201,
+  "allOriginalFailuresPreserved": true,
+  "guiReadyVerified": false,
+  "rendererExercised": false,
+  "qualificationPassed": false,
+  "releaseReady": false,
+  "reviewNativeExecuted": false
+}

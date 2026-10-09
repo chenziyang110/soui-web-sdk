@@ -1,0 +1,35 @@
+{
+  "schema": "reference-agent-local-redaction-assertion-delta/1",
+  "before": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-isolation-phase-source-58b7d0de-3633-4313-ad70-53ce7e3b1391\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+    "relative": "demos/reference-workbench/tests/native-agent.cpp",
+    "bytes": 39417,
+    "sha256": "c0a59d9cb20a4785f498904a033649757fdb507cd209038975f9937edfb216a3"
+  },
+  "after": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-isolation-redaction-source-3c9d1bfc-26dd-4a27-8baa-c6201cff1d2d\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+    "bytes": 39418,
+    "sha256": "66b2f19b72a163ed820bbf2a9a3e4d86035a786dd2db9554578872fdbda24dac"
+  },
+  "reverseRawExact": true,
+  "intervals": [
+    {
+      "before": "    deny(pipe.call(\"reference.summary.local.query\", {{\"taskId\", page_task}}), \"E_TASK_NOT_FOUND\");",
+      "after": "    deny(pipe.call(\"reference.summary.local.query\", {{\"taskId\", page_task}}), \"E_ACTION_REJECTED\");"
+    }
+  ],
+  "policyReferences": [
+    {
+      "path": "F:\\work\\sm05-broker\\sdk\\src\\runtime\\bridge\\bridge_transport.cpp",
+      "bytes": 27179,
+      "sha256": "9886a6ac72009e404ca294c0475dbac17f67d90c7135328560e046bd0cadd381"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\tests\\native\\local_action_dispatch_tests.cpp",
+      "bytes": 34838,
+      "sha256": "089d45023585367d49c926909fc21c3847c3525ee7f7cb3a836964f8a36497fa"
+    }
+  ],
+  "authorEvaluated": false,
+  "nativeExecuted": false
+}

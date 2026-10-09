@@ -1,0 +1,31 @@
+--- original/tests/native-agent.cpp
++++ RED2/tests/native-agent.cpp
+@@ selected-peer only @@
+-void selected_peer(const char* fixture) { -  environment app{fixture}; child_process selected{"describe", app.name}; app.configure(selected.id()); -  wchar_t executable[]{L"reference"}, pipe_option[]{L"--agent-pipe"}, pipe_value[]{L"safe"}, process_option[]{L"--agent-allow-process"}; -  auto selected_text = std::to_wstring(selected.id()); -  wchar_t* selected_cli[]{executable, process_option, selected_text.data(), pipe_option, pipe_value}; -  const auto parsed = reference::parse_command_line(5, selected_cli); -  require(parsed.valid && parsed.agent.enabled && parsed.agent.approved_process == selected.id() && parsed.agent.pipe_component == "safe", "Explicit paired selection was not parsed"); -  require(app.agent->selected_process_id() == selected.id() && app.agent->selected_creation_filetime() == selected.created(), "Selection is not actual held child"); app.start(); -  child_process denied{"denied-peer", app.name}; denied.resume(); app.until([&] { return denied.completed(); }, "Unapproved child timeout"); (void)denied.result(); -  selected.resume(); app.until([&] { return selected.completed(); }, "Approved child timeout"); (void)selected.result(); -  app.pump(); require(app.agent->closed() && !app.agent->start_bound_document([] { return true; }), "Exited held process regained admission"); -} -
++void selected_peer(const char* fixture) {
++  environment app{fixture}; child_process selected{"describe", app.name}; app.configure(selected.id());
++  const auto prior = app.bootstrap();
++  std::thread prebind{[&] { app.agent->shutdown_session(prior.at("sessionId").get<std::string>()); }}; prebind.join();
++  if (app.agent->closed()) {
++    std::cerr << json{{"schema", "soui.reference-agent-prebind-red-observation/1"}, {"case", "selected-peer"},
++      {"phase", "after-real-prebind-shutdown"}, {"pid", std::to_string(GetCurrentProcessId())},
++      {"creationFileTime", std::to_string(creation(GetCurrentProcess()))}, {"selectedPid", std::to_string(selected.id())},
++      {"selectedCreationFileTime", std::to_string(selected.created())}, {"selectedAlive", !selected.completed()},
++      {"closed", app.agent->closed()}, {"started", app.agent->started()},
++      {"qualificationPassed", false}, {"releaseReady", false}}.dump() << std::endl;
++  }
++  require(!app.agent->closed() && !app.agent->started(), "Prebind session cleanup disabled first admission");
++  deny(app.page(prior, "reference.fixture.describe"));
++  const auto current = app.bootstrap();
++  require(app.page(current, "reference.fixture.describe").at("ok") == true, "Actual new page session was not usable");
++  wchar_t executable[]{L"reference"}, pipe_option[]{L"--agent-pipe"}, pipe_value[]{L"safe"}, process_option[]{L"--agent-allow-process"};
++  auto selected_text = std::to_wstring(selected.id());
++  wchar_t* selected_cli[]{executable, process_option, selected_text.data(), pipe_option, pipe_value};
++  const auto parsed = reference::parse_command_line(5, selected_cli);
++  require(parsed.valid && parsed.agent.enabled && parsed.agent.approved_process == selected.id() && parsed.agent.pipe_component == "safe", "Explicit paired selection was not parsed");
++  require(app.agent->selected_process_id() == selected.id() && app.agent->selected_creation_filetime() == selected.created(), "Selection is not actual held child"); app.start();
++  child_process denied{"denied-peer", app.name}; denied.resume(); app.until([&] { return denied.completed(); }, "Unapproved child timeout"); (void)denied.result();
++  selected.resume(); app.until([&] { return selected.completed(); }, "Approved child timeout"); (void)selected.result();
++  app.pump(); require(app.agent->closed() && !app.agent->start_bound_document([] { return true; }), "Exited held process regained admission");
++}
++

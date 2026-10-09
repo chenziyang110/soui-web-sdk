@@ -1,0 +1,10 @@
+^F:\WORK\SM05-BROKER\OUT\REFERENCE-AGENT-ISOLATION-REDACTION-ROOT-5F546B83-B12F-4F0B-A651-0EF6C07D19F9\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/work/sm05-broker/out/reference-agent-isolation-redaction-root-5f546b83-b12f-4f0b-a651-0ef6c07d19f9 -BF:/work/sm05-broker/out/ragent8/Win32/build --check-stamp-file F:/work/sm05-broker/out/ragent8/Win32/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

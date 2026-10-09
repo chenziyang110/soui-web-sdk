@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="8"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="3"
+	timestamp="2026-10-10T03:16:17"
+	>
+	<testcase name="reference.agent.disabled-default-deny" classname="reference.agent.disabled-default-deny" time="0.157346" status="run">
+		<properties/>
+		<system-out>{"case":"disabled-default-deny","children":[{"creationFileTime":"134360469776292681","exitCode":0,"jobAssigned":true,"mode":"denied-peer","pid":"22388","rawReceipt":"{\"creationFileTime\":\"134360469776292681\",\"payload\":{},\"pid\":\"22388\"}\r\n"}],"creationFileTime":"134360469776098369","guiReadyVerified":false,"passed":true,"pid":"107792","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+</system-out>
+	</testcase>
+	<testcase name="reference.agent.selected-peer" classname="reference.agent.selected-peer" time="0.202405" status="run">
+		<properties/>
+		<system-out>{"case":"selected-peer","children":[{"creationFileTime":"134360469777460559","exitCode":0,"jobAssigned":true,"mode":"denied-peer","pid":"10164","rawReceipt":"{\"creationFileTime\":\"134360469777460559\",\"payload\":{},\"pid\":\"10164\"}\r\n"},{"creationFileTime":"134360469777374828","exitCode":0,"jobAssigned":true,"mode":"describe","pid":"39436","rawReceipt":"{\"creationFileTime\":\"134360469777374828\",\"payload\":{\"fixtureId\":\"electron-smoothness-10k-v1\",\"groups\":[\"素材\",\"项目\",\"缓存\",\"导出\",\"归档\"],\"rowCount\":10000,\"rowHeightPx\":32,\"seed\":20260915,\"statuses\":[\"ready\",\"indexed\",\"queued\",\"review\"]},\"pid\":\"39436\"}\r\n"},{"creationFileTime":"134360469778688400","exitCode":0,"jobAssigned":true,"mode":"selection-only","pid":"89924","rawReceipt":"{\"creationFileTime\":\"134360469778688400\",\"payload\":{},\"pid\":\"89924\"}\r\n"}],"creationFileTime":"134360469777207006","guiReadyVerified":false,"passed":true,"pid":"102252","qualificationPassed":false,"releaseReady":fa...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="reference.agent.fixed-summary" classname="reference.agent.fixed-summary" time="0.648911" status="run">
+		<properties/>
+		<system-out>{"case":"fixed-summary","children":[{"creationFileTime":"134360469779389697","exitCode":0,"jobAssigned":true,"mode":"fixed-summary","pid":"80580","rawReceipt":"{\"creationFileTime\":\"134360469779389697\",\"payload\":{\"result\":{\"fixtureId\":\"electron-smoothness-10k-v1\",\"groups\":{\"导出\":2060,\"归档\":1936,\"素材\":2001,\"缓存\":2127,\"项目\":1876},\"matched\":10000,\"processed\":10000,\"totalSizeKb\":20760989},\"taskId\":\"sdk-task-000002\"},\"pid\":\"80580\"}\r\n"}],"creationFileTime":"134360469779235989","guiReadyVerified":false,"passed":true,"pid":"96164","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+</system-out>
+	</testcase>
+	<testcase name="reference.agent.cancel" classname="reference.agent.cancel" time="0.796958" status="run">
+		<properties/>
+		<system-out>{"case":"cancel","children":[{"creationFileTime":"134360469785899728","exitCode":0,"jobAssigned":true,"mode":"cancel","pid":"74428","rawReceipt":"{\"creationFileTime\":\"134360469785899728\",\"payload\":{\"taskId\":\"sdk-task-000001\"},\"pid\":\"74428\"}\r\n"}],"creationFileTime":"134360469785732550","guiReadyVerified":false,"passed":true,"pid":"31496","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+</system-out>
+	</testcase>
+	<testcase name="reference.agent.invalid-form" classname="reference.agent.invalid-form" time="0.155156" status="run">
+		<properties/>
+		<system-out>{"case":"invalid-form","children":[{"creationFileTime":"134360469793874437","exitCode":0,"jobAssigned":true,"mode":"invalid-form","pid":"97604","rawReceipt":"{\"creationFileTime\":\"134360469793874437\",\"payload\":{\"accepted\":true,\"message\":\"C++ 已确认表单；本示例不写入文件。\",\"receiptId\":\"reference-form-2\"},\"pid\":\"97604\"}\r\n"}],"creationFileTime":"134360469793707576","guiReadyVerified":false,"passed":true,"pid":"107788","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+</system-out>
+	</testcase>
+	<testcase name="reference.agent.revoked-document" classname="reference.agent.revoked-document" time="0.74043" status="run">
+		<properties/>
+		<system-out>{"case":"revoked-document","children":[{"creationFileTime":"134360469795423584","exitCode":0,"jobAssigned":true,"mode":"revoked-document","pid":"62640","rawReceipt":"{\"creationFileTime\":\"134360469795423584\",\"payload\":{\"taskId\":\"sdk-task-000001\"},\"pid\":\"62640\"}\r\n"}],"creationFileTime":"134360469795266304","guiReadyVerified":false,"passed":true,"pid":"35928","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+</system-out>
+	</testcase>
+	<testcase name="reference.agent.close-pending" classname="reference.agent.close-pending" time="0.742956" status="run">
+		<properties/>
+		<system-out>{"case":"close-pending","children":[{"creationFileTime":"134360469802828809","exitCode":0,"jobAssigned":true,"mode":"close-pending","pid":"39184","rawReceipt":"{\"creationFileTime\":\"134360469802828809\",\"payload\":{\"taskId\":\"sdk-task-000001\"},\"pid\":\"39184\"}\r\n"}],"creationFileTime":"134360469802676167","guiReadyVerified":false,"passed":true,"pid":"110200","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+</system-out>
+	</testcase>
+	<testcase name="reference.agent.page-isolation" classname="reference.agent.page-isolation" time="0.152748" status="run">
+		<properties/>
+		<system-out>{"case":"page-isolation","children":[{"creationFileTime":"134360469810276601","exitCode":0,"jobAssigned":true,"mode":"page-isolation","pid":"69676","rawReceipt":"{\"creationFileTime\":\"134360469810276601\",\"payload\":{},\"pid\":\"69676\"}\r\n"}],"creationFileTime":"134360469810114807","guiReadyVerified":false,"passed":true,"pid":"70324","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+</system-out>
+	</testcase>
+</testsuite>

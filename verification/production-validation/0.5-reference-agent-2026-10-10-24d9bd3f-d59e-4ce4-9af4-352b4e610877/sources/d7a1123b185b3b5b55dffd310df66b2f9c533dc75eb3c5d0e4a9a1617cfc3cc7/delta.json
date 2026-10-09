@@ -1,0 +1,89 @@
+{
+  "schema": "reference-agent-page-isolation-diagnostic-delta/1",
+  "before": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-green-contract-source-3960a7ca-0eb0-490f-b69d-3b10e9ddd76d\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+    "relative": "demos/reference-workbench/tests/native-agent.cpp",
+    "bytes": 36287,
+    "sha256": "52a732d22685f6bbfa1f173aaf6dbdd61b6f771da041ae326860231e17b4e542"
+  },
+  "after": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-isolation-phase-source-58b7d0de-3633-4313-ad70-53ce7e3b1391\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+    "bytes": 39417,
+    "sha256": "c0a59d9cb20a4785f498904a033649757fdb507cd209038975f9937edfb216a3"
+  },
+  "reverseRawExact": true,
+  "intervals": [
+    {
+      "before": "#include <atomic>\n",
+      "after": "#include <atomic>\n#include <cstdio>\n"
+    },
+    {
+      "before": "std::string component() {",
+      "after": "// Fixed failure metadata only; stderr is the child's bounded private receipt\n// pipe, and the parent forwards only a validated matching identity record.\nvoid isolation_phase_failure(const char* role, const char* phase) noexcept {\n  FILETIME created{}, exited{}, kernel{}, user{};\n  if (!GetProcessTimes(GetCurrentProcess(), &created, &exited, &kernel, &user)) return;\n  const auto actual_creation = (static_cast<std::uint64_t>(created.dwHighDateTime) << 32U) | created.dwLowDateTime;\n  if (!actual_creation) return;\n  char bytes[640]{};\n  const int length = std::snprintf(bytes, sizeof(bytes),\n      \"{\\\"schema\\\":\\\"soui.reference-agent-isolation-phase/1\\\",\\\"case\\\":\\\"page-isolation\\\",\\\"role\\\":\\\"%s\\\",\"\n      \"\\\"phase\\\":\\\"%s\\\",\\\"pid\\\":\\\"%lu\\\",\\\"creationFileTime\\\":\\\"%llu\\\"}\\n\",\n      role, phase, static_cast<unsigned long>(GetCurrentProcessId()), static_cast<unsigned long long>(actual_creation));\n  if (length <= 0 || static_cast<std::size_t>(length) >= sizeof(bytes)) return;\n  DWORD written{};\n  (void)WriteFile(GetStdHandle(STD_ERROR_HANDLE), bytes, static_cast<DWORD>(length), &written, nullptr);\n}\nstd::string component() {"
+    },
+    {
+      "before": "    require(GetExitCodeProcess(process_.get(), &code) && code == 0, \"Actual child failed\");",
+      "after": "    require(GetExitCodeProcess(process_.get(), &code), \"Actual child exit unavailable\");"
+    },
+    {
+      "before": "    const auto value = json::parse(raw);",
+      "after": "    if (code != 0 && mode_ == \"page-isolation\") {\n      try {\n        const auto newline = raw.find('\\n');\n        if (newline != std::string::npos && newline < 640) {\n          const auto record = json::parse(raw.substr(0, newline));\n          constexpr std::array<const char*, 8> phases{\"pipe-connect\", \"hello\", \"deny-generic-start\", \"deny-page-probe\",\n            \"deny-page-task-query\", \"local-discovery\", \"discovery-methods\", \"forged-frame-close\"};\n          if (record.is_object() && record.size() == 6 && record.at(\"schema\") == \"soui.reference-agent-isolation-phase/1\" &&\n              record.at(\"case\") == \"page-isolation\" && record.at(\"role\") == \"child\" && record.at(\"phase\").is_string() &&\n              record.at(\"pid\") == std::to_string(id_) && record.at(\"creationFileTime\") == std::to_string(creation_) &&\n              std::any_of(phases.begin(), phases.end(), [&record](const char* phase) { return record.at(\"phase\") == phase; })) {\n            DWORD written{};\n            (void)WriteFile(GetStdHandle(STD_ERROR_HANDLE), raw.data(), static_cast<DWORD>(newline + 1), &written, nullptr);\n          }\n        }\n      } catch (...) {} // Missing/malformed diagnostics never authorize success.\n    }\n    require(code == 0, \"Actual child failed\");\n    const auto value = json::parse(raw);"
+    },
+    {
+      "before": "  client pipe{component};\n  if (name == \"denied-peer\") {",
+      "after": "  const char* phase = \"pipe-connect\";\n  try {\n  client pipe{component};\n  if (name == \"denied-peer\") {"
+    },
+    {
+      "before": "  pipe.hello();\n  if (name == \"describe\") {",
+      "after": "  phase = \"hello\";\n  pipe.hello();\n  if (name == \"describe\") {"
+    },
+    {
+      "before": "  if (name == \"page-isolation\") {\n    deny(pipe.call(\"task.start\",",
+      "after": "  if (name == \"page-isolation\") {\n    phase = \"deny-generic-start\";\n    deny(pipe.call(\"task.start\","
+    },
+    {
+      "before": "    deny(pipe.call(\"bridge.probe\", json::object()));",
+      "after": "    phase = \"deny-page-probe\";\n    deny(pipe.call(\"bridge.probe\", json::object()));"
+    },
+    {
+      "before": "    deny(pipe.call(\"reference.summary.local.query\", {{\"taskId\", page_task}}), \"E_TASK_NOT_FOUND\");",
+      "after": "    phase = \"deny-page-task-query\";\n    deny(pipe.call(\"reference.summary.local.query\", {{\"taskId\", page_task}}), \"E_TASK_NOT_FOUND\");"
+    },
+    {
+      "before": "    const auto discovery = pipe.call(\"bridge.describe\", {{\"cursor\", 0}, {\"limit\", 32}});",
+      "after": "    phase = \"local-discovery\";\n    const auto discovery = pipe.call(\"bridge.describe\", {{\"cursor\", 0}, {\"limit\", 32}});"
+    },
+    {
+      "before": "    for (const auto& method : discovery.at(\"result\").at(\"methods\")) {",
+      "after": "    phase = \"discovery-methods\";\n    for (const auto& method : discovery.at(\"result\").at(\"methods\")) {"
+    },
+    {
+      "before": "    require(pipe.write_raw(R\"({\"kind\":\"request\",\"schemaVersion\":\"soui.bridge/1\",\"requestId\":\"forged\"",
+      "after": "    phase = \"forged-frame-close\";\n    require(pipe.write_raw(R\"({\"kind\":\"request\",\"schemaVersion\":\"soui.bridge/1\",\"requestId\":\"forged\""
+    },
+    {
+      "before": "  throw std::runtime_error(\"Unknown child case\");\n}",
+      "after": "  throw std::runtime_error(\"Unknown child case\");\n  } catch (...) { if (name == \"page-isolation\") isolation_phase_failure(\"child\", phase); throw; }\n}"
+    },
+    {
+      "before": "  child_process selected{\"page-isolation\", app.name, \"stdin\"}; app.configure(selected.id()); const auto page = app.bootstrap();",
+      "after": "  child_process selected{\"page-isolation\", app.name, \"stdin\"};\n  const char* phase = \"configure\";\n  try {\n  app.configure(selected.id());\n  phase = \"bootstrap\";\n  const auto page = app.bootstrap();"
+    },
+    {
+      "before": "  deny(app.page(page, \"reference.summary.local.start\", {{\"operationId\", \"page-forged\"}, {\"input\", summary_input()}}));",
+      "after": "  phase = \"page-family-denial\";\n  deny(app.page(page, \"reference.summary.local.start\", {{\"operationId\", \"page-forged\"}, {\"input\", summary_input()}}));\n  phase = \"page-task-start\";"
+    },
+    {
+      "before": "  selected.set_page_task(task); app.start(); selected.resume();",
+      "after": "  phase = \"task-correlation-handoff\";\n  selected.set_page_task(task);\n  phase = \"bound-document-start\";\n  app.start();\n  phase = \"resume-child\";\n  selected.resume();"
+    },
+    {
+      "before": "  app.until([&] { return selected.completed(); }, \"Isolation child timeout\"); (void)selected.result();",
+      "after": "  phase = \"await-child\";\n  app.until([&] { return selected.completed(); }, \"Isolation child timeout\");\n  phase = \"child-result\";\n  (void)selected.result();\n  phase = \"page-session-shutdown\";"
+    },
+    {
+      "before": "  app.bridge->shutdown_session(page.at(\"sessionId\").get<std::string>());\n}\n}\nint main",
+      "after": "  app.bridge->shutdown_session(page.at(\"sessionId\").get<std::string>());\n  } catch (...) { isolation_phase_failure(\"parent\", phase); throw; }\n}\n}\nint main"
+    }
+  ]
+}

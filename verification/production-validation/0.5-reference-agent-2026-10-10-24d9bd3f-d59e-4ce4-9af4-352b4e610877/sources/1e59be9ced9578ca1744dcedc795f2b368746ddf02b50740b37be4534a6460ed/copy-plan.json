@@ -1,0 +1,87 @@
+{
+  "schema": "reference-local-contract-source-overlay/1",
+  "variant": "red",
+  "baseSourcePlan": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-phase-source-42d97dc4-644a-4ee8-8d1a-5a25645a12c9\\copy-plan.json",
+    "bytes": 2599,
+    "sha256": "4e803c1530e20c8b4854f7f7f62ddb5418863b8e1b10d4a4fb486a3630f6add1"
+  },
+  "baseRootEntry": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-red-phase-root-88ef5978-d7e8-4a3d-bf24-1b6c1cb861f4\\package.json",
+    "bytes": 132921,
+    "sha256": "abbb2262cd48788b97f31a7dc67513d36f2dcfef9a1acc949e0b0e246e61ebce"
+  },
+  "unchangedPayloadReferences": 45,
+  "overlays": [
+    {
+      "relative": "demos/reference-workbench/app/reference-business.cpp",
+      "before": {
+        "path": "F:\\work\\sm05-broker\\out\\reference-agent-red2-source-candidate-214d38db-19b8-478c-a880-e9172b5a7680\\candidate\\demos\\reference-workbench\\app\\reference-business.cpp",
+        "relative": "demos/reference-workbench/app/reference-business.cpp",
+        "bytes": 9060,
+        "sha256": "2767e3956e8cf1cef31785eddda66a8c129d7b6f31b60e3c5d76abd7ac903251"
+      },
+      "after": {
+        "path": "F:\\work\\sm05-broker\\out\\reference-agent-red-contract-source-5d3c5418-91e8-485b-9952-993fade6f7e8\\candidate\\demos\\reference-workbench\\app\\reference-business.cpp",
+        "bytes": 10271,
+        "sha256": "11d4acab170ecc6e06a31f63c3eafbe2516f08dcc0f9dacaa145f201d98a08be"
+      }
+    },
+    {
+      "relative": "demos/reference-workbench/tests/native-agent.cpp",
+      "before": {
+        "path": "F:\\work\\sm05-broker\\out\\reference-agent-phase-source-42d97dc4-644a-4ee8-8d1a-5a25645a12c9\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+        "relative": "demos/reference-workbench/tests/native-agent.cpp",
+        "bytes": 30955,
+        "sha256": "ce3c48d13a3f04e722511dceeae107aa0c95041189f0c95e0070f4511d9e8116"
+      },
+      "after": {
+        "path": "F:\\work\\sm05-broker\\out\\reference-agent-red-contract-source-5d3c5418-91e8-485b-9952-993fade6f7e8\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+        "bytes": 36443,
+        "sha256": "32df4fc4d87036c5fe1152388bc7e75de49d314d82c8da2e0d6beb203afc9406"
+      }
+    },
+    {
+      "relative": "docs/adr/0052-reference-agent-composition.md",
+      "before": {
+        "path": "F:\\work\\sm05-broker\\out\\reference-agent-red2-source-candidate-214d38db-19b8-478c-a880-e9172b5a7680\\candidate\\docs\\adr\\0052-reference-agent-composition.md",
+        "relative": "docs/adr/0052-reference-agent-composition.md",
+        "bytes": 13142,
+        "sha256": "1354fe7ef35b71051b7e6fd5319e343dc11f1d5b1bac4fd5e7210dde021c685f"
+      },
+      "after": {
+        "path": "F:\\work\\sm05-broker\\out\\reference-agent-red-contract-source-5d3c5418-91e8-485b-9952-993fade6f7e8\\candidate\\docs\\adr\\0052-reference-agent-composition.md",
+        "bytes": 14551,
+        "sha256": "b45a3e552176e831f4314973faf2940d36ed064c6fb537337d26f64f7e7d5ffb"
+      }
+    }
+  ],
+  "agentImplementationUnchanged": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-red2-source-candidate-214d38db-19b8-478c-a880-e9172b5a7680\\candidate\\demos\\reference-workbench\\app\\reference-agent.cpp",
+    "relative": "demos/reference-workbench/app/reference-agent.cpp",
+    "bytes": 11563,
+    "sha256": "04af3c82280ad173a4d5f5fbdb2f54337b097b23fca7f6340f61d702f8b75d9d"
+  },
+  "cases": [
+    "disabled-default-deny",
+    "selected-peer",
+    "fixed-summary",
+    "cancel",
+    "invalid-form",
+    "revoked-document",
+    "close-pending",
+    "page-isolation"
+  ],
+  "globalSdkMaxDepth": 8,
+  "pageHandlerUnchanged": true,
+  "localResultShape": "five fixed integer group keys",
+  "delta": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-red-contract-source-5d3c5418-91e8-485b-9952-993fade6f7e8\\delta.json",
+    "bytes": 40465,
+    "sha256": "9c6cf3a9483abe3017afdf3347b4022345d7eb64d73ef6388dcf210556cdd984"
+  },
+  "authorEvaluated": false,
+  "nativeExecuted": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}
