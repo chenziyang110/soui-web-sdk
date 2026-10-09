@@ -99,6 +99,9 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
 
  private:
   [[nodiscard]] host_result mount_on_engine(const host_config& config, int width, int height);
+  [[nodiscard]] host_result finish_mount_on_engine(const host_config& config, int width, int height);
+  [[nodiscard]] host_result wait_for_cursor_registration();
+  [[nodiscard]] bool startup_window_matches() const noexcept;
   void unmount_on_engine();
   [[nodiscard]] host_result close_cursor_endpoint();
   [[nodiscard]] bool advance_cursor_document_on_engine();
@@ -152,6 +155,18 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   // Odd = unique pending context, even = completed; zero is legacy/inactive.
   // Only the corresponding main-context callback can complete its receipt.
   std::atomic<std::uint64_t> cursor_context_receipt_{0};
+  bool startup_window_protected_{false}; // UI owner; retained after failed mount until actual cleanup.
+  std::atomic<bool> startup_cancelled_{false};
+  bool startup_dispatch_refused_{false}; // UI owner; permanently retains a rejected timer attempt.
+  struct startup_refused_message final {
+    void* hwnd{nullptr};
+    unsigned message{0};
+    std::uintptr_t wparam{0};
+    std::intptr_t lparam{0};
+    std::uint32_t time{0};
+    long x{0}, y{0};
+    bool retained{false};
+  } startup_refused_message_; // One actual removed MSG, never dispatched or reposted.
   bool unmount_running_{false}; // UI owner only
   bool cursor_close_pending_{false};
   bool cursor_vendor_destroyed_{false};

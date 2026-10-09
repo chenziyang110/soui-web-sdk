@@ -1,0 +1,104 @@
+[
+  {
+    "byteOffset": 0,
+    "beforeBytes": 42,
+    "afterBytes": 119,
+    "before": "#include <soui/host/soui_miniblink_host.h>",
+    "after": "#include <soui/host/soui_miniblink_host.h>\n#ifdef SOUI_STARTUP_FENCE_TEST_OBSERVER\n#include \"startup_observer.h\"\n#endif",
+    "beforeSha256": "2d4be4f17f2f2dda8a6dfd235975c9651e8830189af7e53d94e475221d46dd22",
+    "afterSha256": "a318330c08619c018af01cbc4c02c1345f6b46eca38936ff69b27d9a33563fa9",
+    "rawSpan": {
+      "byteOffset": 0,
+      "beforeBytes": 42,
+      "afterBytes": 119,
+      "beforeSha256": "2d4be4f17f2f2dda8a6dfd235975c9651e8830189af7e53d94e475221d46dd22",
+      "afterSha256": "a318330c08619c018af01cbc4c02c1345f6b46eca38936ff69b27d9a33563fa9"
+    },
+    "canonicalRule": "CRLF_TO_LF_ONLY"
+  },
+  {
+    "byteOffset": 1302,
+    "beforeBytes": 21,
+    "afterBytes": 2680,
+    "before": "namespace soui::sdk {",
+    "after": "#ifdef SOUI_STARTUP_FENCE_TEST_OBSERVER\nnamespace soui::sdk::detail::startup_fence_test {\nnamespace {\nstruct slot final { const void* adapter{nullptr}; snapshot value{}; };\nstd::array<slot, 2> observations{};\nstd::mutex observation_mutex;\nbool exhausted = false;\nslot* find_or_add(const void* adapter) noexcept {\n  for (auto& item : observations) if (item.adapter == adapter) return &item;\n  for (auto& item : observations) if (!item.adapter) {\n    item.adapter = adapter; item.value.found = true; return &item;\n  }\n  exhausted = true; return nullptr; // Fixed two-slot capacity; no allocation or owner eviction.\n}\nstd::uint64_t clock(slot& item) noexcept {\n  LARGE_INTEGER value{};\n  if (!QueryPerformanceCounter(&value) || value.QuadPart <= 0) {\n    item.value.clock_valid = false; return 0;\n  }\n  return static_cast<std::uint64_t>(value.QuadPart);\n}\n}\nvoid fence_begin(const void* adapter) noexcept {\n  std::lock_guard<std::mutex> lock(observation_mutex);\n  if (auto* item = find_or_add(adapter)) item->value.fence_begin_qpc = clock(*item);\n}\nvoid fence_confirmed(const void* adapter, unsigned status, const wkeCursorBrokerDrainReceipt& drain) noexcept {\n  std::lock_guard<std::mutex> lock(observation_mutex);\n  if (auto* item = find_or_add(adapter)) {\n    auto& value = item->value;\n    value.fence_confirmed_qpc = clock(*item); value.fence_confirmed = true;\n    value.status = status; value.closing = drain.closing; value.ole_registered = drain.oleRegistered;\n    value.queued = drain.queuedUiTasks; value.running = drain.runningUiTasks;\n    value.scopes = drain.nativeScopes; value.callbacks = drain.engineCallbacks;\n  }\n}\nvoid engine_request(const void* adapter) noexcept {\n  std::lock_guard<std::mutex> lock(observation_mutex);\n  if (auto* item = find_or_add(adapter)) {\n    auto& value = item->value;\n    const auto index = value.engine_request_count % event_capacity;\n    value.engine_request_qpc[index] = clock(*item);\n    if (value.engine_request_count == UINT64_MAX) { value.clock_valid = false; return; }\n    ++value.engine_request_count;\n  }\n}\nvoid retire(const void* adapter) noexcept {\n  std::lock_guard<std::mutex> lock(observation_mutex);\n  for (auto& item : observations) if (item.adapter == adapter) { item = {}; break; }\n}\nsnapshot read(const void* retained_adapter) noexcept {\n  std::lock_guard<std::mutex> lock(observation_mutex);\n  for (const auto& item : observations) if (item.adapter == retained_adapter) {\n    auto result = item.value; result.capacity_exceeded = exhausted; return result;\n  }\n  snapshot result{}; result.capacity_exceeded = exhausted; return result;\n}\n} // namespace soui::sdk::detail::startup_fence_test\n#endif\n\nnamespace soui::sdk {",
+    "beforeSha256": "3e286c74a452239f3577b7612d04847b7e01df01e52b2f332ab3e4343be2f38f",
+    "afterSha256": "89fbaefc00f84b4558efaba83d212f06e0c15c78ae21cb4b7ff0611fb7ee3b39",
+    "rawSpan": {
+      "byteOffset": 1302,
+      "beforeBytes": 21,
+      "afterBytes": 2680,
+      "beforeSha256": "3e286c74a452239f3577b7612d04847b7e01df01e52b2f332ab3e4343be2f38f",
+      "afterSha256": "89fbaefc00f84b4558efaba83d212f06e0c15c78ae21cb4b7ff0611fb7ee3b39"
+    },
+    "canonicalRule": "CRLF_TO_LF_ONLY"
+  },
+  {
+    "byteOffset": 55400,
+    "beforeBytes": 33,
+    "afterBytes": 129,
+    "before": "  for (;;) {\n    if (cancelled())",
+    "after": "#ifdef SOUI_STARTUP_FENCE_TEST_OBSERVER\n  detail::startup_fence_test::fence_begin(this);\n#endif\n  for (;;) {\n    if (cancelled())",
+    "beforeSha256": "c07d881ce3099296a57f47851dd79c09492e829a5fc8281a24389ca775af0372",
+    "afterSha256": "8d4b1029a1853e70406fcd4495ab7376302674bff33d19356f55aa511b16aa67",
+    "rawSpan": {
+      "byteOffset": 55400,
+      "beforeBytes": 33,
+      "afterBytes": 129,
+      "beforeSha256": "c07d881ce3099296a57f47851dd79c09492e829a5fc8281a24389ca775af0372",
+      "afterSha256": "8d4b1029a1853e70406fcd4495ab7376302674bff33d19356f55aa511b16aa67"
+    },
+    "canonicalRule": "CRLF_TO_LF_ONLY"
+  },
+  {
+    "byteOffset": 57819,
+    "beforeBytes": 239,
+    "afterBytes": 370,
+    "before": "      if (status == WKE_CURSOR_BROKER_OK && !drain.queuedUiTasks && !drain.runningUiTasks &&\n          !drain.nativeScopes && !drain.engineCallbacks)\n        return success(\"The actual controlled OLE registration is confirmed and quiet.\");",
+    "after": "      if (status == WKE_CURSOR_BROKER_OK && !drain.queuedUiTasks && !drain.runningUiTasks &&\n          !drain.nativeScopes && !drain.engineCallbacks) {\n#ifdef SOUI_STARTUP_FENCE_TEST_OBSERVER\n        detail::startup_fence_test::fence_confirmed(this, status, drain);\n#endif\n        return success(\"The actual controlled OLE registration is confirmed and quiet.\");\n      }",
+    "beforeSha256": "b6f1a43eabc2396671da970c5cef60cde84547b9d46d8e2fbb2d6563ddcab815",
+    "afterSha256": "c739c783cccbc2a79c4065760baf60dfae09571b2ea6bb58b0745d2dd9f0e79d",
+    "rawSpan": {
+      "byteOffset": 57819,
+      "beforeBytes": 239,
+      "afterBytes": 370,
+      "beforeSha256": "b6f1a43eabc2396671da970c5cef60cde84547b9d46d8e2fbb2d6563ddcab815",
+      "afterSha256": "c739c783cccbc2a79c4065760baf60dfae09571b2ea6bb58b0745d2dd9f0e79d"
+    },
+    "canonicalRule": "CRLF_TO_LF_ONLY"
+  },
+  {
+    "byteOffset": 62868,
+    "beforeBytes": 91,
+    "afterBytes": 263,
+    "before": "  startup_window_protected_ = false; // Only after actual owned endpoint and child cleanup.",
+    "after": "  startup_window_protected_ = false; // Only after actual owned endpoint and child cleanup.\n#ifdef SOUI_STARTUP_FENCE_TEST_OBSERVER\n  detail::startup_fence_test::retire(this); // Drop a borrowed key only after true retirement; fixtures copy values earlier.\n#endif",
+    "beforeSha256": "b4bb40b0cc6779efc5977c6ea9e3d1643a21fa4a2d869eadf19b932101ba0b5e",
+    "afterSha256": "514424cda258a0b0e908b0d3d68f1855bd3a92abccd23e600c5d61e4e8e4aec5",
+    "rawSpan": {
+      "byteOffset": 62868,
+      "beforeBytes": 91,
+      "afterBytes": 263,
+      "beforeSha256": "b4bb40b0cc6779efc5977c6ea9e3d1643a21fa4a2d869eadf19b932101ba0b5e",
+      "afterSha256": "514424cda258a0b0e908b0d3d68f1855bd3a92abccd23e600c5d61e4e8e4aec5"
+    },
+    "canonicalRule": "CRLF_TO_LF_ONLY"
+  },
+  {
+    "byteOffset": 143965,
+    "beforeBytes": 91,
+    "afterBytes": 347,
+    "before": "  bridge_diagnostic_trace(this, queued ? \"queue.posted\" : \"queue.post-failed\", request_id);",
+    "after": "#ifdef SOUI_STARTUP_FENCE_TEST_OBSERVER\n  if (queued && method == \"startup.pulse\" && engine_thread_->is_owner_thread())\n    detail::startup_fence_test::engine_request(this); // Actual admitted page port call on the real engine, not worker progress.\n#endif\n  bridge_diagnostic_trace(this, queued ? \"queue.posted\" : \"queue.post-failed\", request_id);",
+    "beforeSha256": "208ccdf0831138859e420dc40b28e0f702c75b4fea986c44539732b3aa97e5b8",
+    "afterSha256": "29382f29cdd611a2633d6873075903a88a431c0886f9f2ee20ad091ed92bd24e",
+    "rawSpan": {
+      "byteOffset": 143965,
+      "beforeBytes": 91,
+      "afterBytes": 347,
+      "beforeSha256": "208ccdf0831138859e420dc40b28e0f702c75b4fea986c44539732b3aa97e5b8",
+      "afterSha256": "29382f29cdd611a2633d6873075903a88a431c0886f9f2ee20ad091ed92bd24e"
+    },
+    "canonicalRule": "CRLF_TO_LF_ONLY"
+  }
+]

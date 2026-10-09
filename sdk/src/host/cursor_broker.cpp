@@ -133,6 +133,9 @@ struct cursor_broker_endpoint::implementation final : cursor_wake_target {
                  std::shared_ptr<cursor_queue_context> context)
       : owner(window), owner_thread(GetCurrentThreadId()), queue(std::move(context)), identity(value) {
     shown.pixels.reserve(256U * 256U * 4U);
+    char diagnostic_option[2] = {};
+    native_admission.enabled = GetEnvironmentVariableA("SOUI_DIAGNOSTIC_SCRIPT",
+        diagnostic_option, sizeof(diagnostic_option)) == 1 && diagnostic_option[0] == '1';
   }
   const HWND owner;
   const DWORD owner_thread;
@@ -152,6 +155,8 @@ struct cursor_broker_endpoint::implementation final : cursor_wake_target {
   std::uint64_t shown_sequence{0};
   bool applying{false}, pending_withdraw{false}, finished{false};
   cursor_queue_status status{cursor_queue_status::selected};
+  cursor_native_admission_diagnostics native_admission;
+  cursor_ole_registration_completion first_ole_completion;
   struct scope {
     wkeCursorBrokerNativeReceipt receipt{};
     std::uint64_t queue_sequence{0};
@@ -159,6 +164,25 @@ struct cursor_broker_endpoint::implementation final : cursor_wake_target {
   std::array<scope, 64> scopes{};
   unsigned scope_count{0};
 
+  void record_native_rejection_locked(cursor_native_rejection reason,
+      const wkeCursorBrokerNativeReceipt* receipt) noexcept {
+    if (!native_admission.enabled || native_admission.reason != cursor_native_rejection::none) return;
+    native_admission.reason = reason;
+    native_admission.sdk = identity;
+    native_admission.document_pending = document_request_pending;
+    native_admission.closing = closing;
+    if (receipt && receipt->structSize == sizeof(*receipt)) {
+      native_admission.receipt = receipt->identity;
+      if (receipt->kind >= WKE_CURSOR_BROKER_NATIVE_MENU &&
+          receipt->kind <= WKE_CURSOR_BROKER_NATIVE_OLE_REVOKE) native_admission.kind = receipt->kind;
+    }
+  }
+  void record_native_rejection(cursor_native_rejection reason,
+      const wkeCursorBrokerNativeReceipt* receipt) noexcept {
+    if (!native_admission.enabled) return;
+    std::lock_guard<std::mutex> lock(mutex);
+    record_native_rejection_locked(reason, receipt);
+  }
   bool on_ui() const noexcept { return GetCurrentThreadId() == owner_thread; }
   bool window_matches() const noexcept {
     DWORD process = 0;
@@ -211,28 +235,47 @@ struct cursor_broker_endpoint::implementation final : cursor_wake_target {
     if (!receipt || receipt->structSize != sizeof(*receipt) || !self.on_ui() ||
         !self.window_matches() || !receipt->taskSequence || !receipt->scopeSequence ||
         receipt->kind < WKE_CURSOR_BROKER_NATIVE_MENU || receipt->kind > WKE_CURSOR_BROKER_NATIVE_OLE_REVOKE ||
-        !valid_identity(receipt->identity) || self.scope_count == self.scopes.size()) return 0;
+        !valid_identity(receipt->identity) || self.scope_count == self.scopes.size()) {
+      self.record_native_rejection(cursor_native_rejection::receipt_or_owner, receipt);
+      return 0;
+    }
     {
       std::lock_guard<std::mutex> lock(self.mutex);
-      if (!valid_token(receipt->endpoint)) return 0;
+      if (!valid_token(receipt->endpoint)) {
+        self.record_native_rejection_locked(cursor_native_rejection::invalid_endpoint, receipt);
+        return 0;
+      }
       const bool revoke = receipt->kind == WKE_CURSOR_BROKER_NATIVE_OLE_REVOKE;
       if ((!same_identity(self.identity, receipt->identity) && !revoke) ||
           receipt->identity.viewGeneration != self.identity.viewGeneration ||
           receipt->identity.documentGeneration > self.identity.documentGeneration ||
           receipt->identity.geometryGeneration > self.identity.geometryGeneration ||
-          ((self.closing || self.document_request_pending) && !revoke)) return 0;
+          ((self.closing || self.document_request_pending) && !revoke)) {
+        self.record_native_rejection_locked(cursor_native_rejection::identity_or_transition, receipt);
+        return 0;
+      }
       if (!valid_token(self.endpoint)) self.endpoint = receipt->endpoint;
-      if (!same_token(self.endpoint, receipt->endpoint)) return 0;
+      if (!same_token(self.endpoint, receipt->endpoint)) {
+        self.record_native_rejection_locked(cursor_native_rejection::endpoint_mismatch, receipt);
+        return 0;
+      }
     }
     for (const auto& slot : self.scopes) if (slot.queue_sequence &&
-        slot.receipt.scopeSequence == receipt->scopeSequence) return 0;
+        slot.receipt.scopeSequence == receipt->scopeSequence) {
+      self.record_native_rejection(cursor_native_rejection::duplicate_scope, receipt);
+      return 0;
+    }
     for (auto& slot : self.scopes) if (!slot.queue_sequence) {
       const auto sequence = self.queue->queue.enter_scope(&self);
-      if (!sequence) return 0;
+      if (!sequence) {
+        self.record_native_rejection(cursor_native_rejection::queue_scope, receipt);
+        return 0;
+      }
       slot = {*receipt, sequence};
       ++self.scope_count;
       return 1;
     }
+    self.record_native_rejection(cursor_native_rejection::scope_storage, receipt);
     return 0;
   }
   static void WKE_CALL_TYPE leave(void* context, const wkeCursorBrokerNativeReceipt* receipt) noexcept {
@@ -249,9 +292,22 @@ struct cursor_broker_endpoint::implementation final : cursor_wake_target {
       return;
     }
   }
-  static void WKE_CALL_TYPE complete(void* context, const wkeCursorBrokerNativeReceipt*, unsigned int) noexcept {
+  static void WKE_CALL_TYPE complete(void* context, const wkeCursorBrokerNativeReceipt* receipt, unsigned int cancelled) noexcept {
     auto& self = *static_cast<implementation*>(context);
-    if (self.on_ui()) self.post_wake();
+    if (self.on_ui()) {
+      if (receipt && receipt->structSize == sizeof(*receipt) &&
+          receipt->kind == WKE_CURSOR_BROKER_NATIVE_OLE_REGISTER) {
+        std::lock_guard<std::mutex> lock(self.mutex);
+        if (!self.first_ole_completion.observed) {
+          self.first_ole_completion.observed = true;
+          self.first_ole_completion.shape_valid = cancelled <= 1 && valid_identity(receipt->identity) &&
+              valid_token(receipt->endpoint) && receipt->taskSequence != 0 && receipt->scopeSequence == 0;
+          self.first_ole_completion.cancelled = cancelled != 0;
+          self.first_ole_completion.receipt = *receipt; // UI task scopeSequence can be zero.
+        }
+      }
+      self.post_wake(); // Original wake after releasing the fixed ledger lock.
+    }
   }
 };
 
@@ -426,6 +482,18 @@ unsigned cursor_broker_endpoint::native_scopes() const noexcept {
   return impl_->on_ui() ? impl_->queue->queue.native_scopes() : 1;
 }
 cursor_queue_status cursor_broker_endpoint::last_status() const noexcept { return impl_->status; }
+cursor_native_admission_diagnostics cursor_broker_endpoint::native_admission_diagnostics() const noexcept {
+  std::lock_guard<std::mutex> lock(impl_->mutex);
+  return impl_->native_admission;
+}
+
+cursor_ole_registration_completion cursor_broker_endpoint::ole_registration_completion() const noexcept {
+  std::lock_guard<std::mutex> lock(impl_->mutex);
+  auto result = impl_->first_ole_completion;
+  result.endpoint_matches = result.observed && same_token(impl_->endpoint, result.receipt.endpoint);
+  result.identity_matches = result.observed && same_identity(impl_->identity, result.receipt.identity);
+  return result;
+}
 
 native_cursor_scope::native_cursor_scope() noexcept {
   try { impl_ = obtain_queue(); }

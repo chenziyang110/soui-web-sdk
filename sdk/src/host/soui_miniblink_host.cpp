@@ -654,7 +654,7 @@ bool dynamic_miniblink_adapter::create_input_window() {
   const int width = std::max(1L, bounds.right - bounds.left);
   const int height = std::max(1L, bounds.bottom - bounds.top);
   const HWND child = CreateWindowExW(
-      0, kInteractionWindowClass, L"", WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+      0, kInteractionWindowClass, L"", WS_CHILD | (startup_window_protected_ ? 0 : WS_VISIBLE) | WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
       0, 0, width, height, static_cast<HWND>(owner_window_), nullptr, instance, this);
   if (!child) return false;
   webview_window_ = child;
@@ -712,6 +712,22 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
   benchmark_result_slot_.reset();
 #endif
 
+  struct startup_admission_guard {
+    std::atomic<bool>& accepting;
+    bool complete{false};
+    ~startup_admission_guard() { if (!complete) accepting.store(false, std::memory_order_release); }
+  } admission{bridge_accepting_};
+  startup_window_protected_ = true;
+  startup_dispatch_refused_ = false;
+  startup_refused_message_ = {};
+  startup_cancelled_.store(false, std::memory_order_release);
+  bridge_accepting_.store(false, std::memory_order_release);
+  auto failed_startup = [this](host_result result) {
+    bridge_accepting_.store(false, std::memory_order_release);
+    (void)unmount(); // An unresolved original teardown retains its callback/HWND owners.
+    return result;
+  };
+
   owner_window_ = config.owner_window;
   bridge_adapter_ = config.bridge_adapter;
   event_lifetime_ = std::make_shared<event_dispatch_lifetime>();
@@ -724,6 +740,9 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
     bridge_adapter_ = nullptr;
     return failure("E_WEBVIEW_WINDOW", "SOUI could not create the independent interaction child window.");
   }
+
+  if (startup_cancelled_.load(std::memory_order_acquire) || !startup_window_matches())
+    return failed_startup(failure("E_CURSOR_STARTUP_CANCELLED", "The startup window owner is unavailable."));
 
   RECT client{};
   GetClientRect(static_cast<HWND>(webview_window_), &client);
@@ -778,7 +797,7 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
     (void)unmount();
     return failure("E_BRIDGE_THREAD", "The asynchronous native bridge worker could not start.");
   }
-  bridge_accepting_.store(true, std::memory_order_release);
+  // The gate stays closed until complete setup and actual controlled registration.
 
   host_result startup = failure("E_DEPENDENCY_INIT", "Miniblink engine startup did not run.");
   const host_config engine_config = config;
@@ -786,13 +805,24 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
       [this, engine_config, width, height, &startup] {
         startup = mount_on_engine(engine_config, width, height);
       });
-  if (!invoked || !startup.ok) {
-    (void)unmount();
-    return startup;
+  if (!invoked || !startup.ok) return failed_startup(std::move(startup));
+  if (cursor_broker_) {
+    const auto registered = wait_for_cursor_registration();
+    if (!registered.ok) return failed_startup(registered);
+    startup = failure("E_CURSOR_STARTUP_FINALIZE", "The controlled startup setup did not finish.");
+    const bool finalized = invoke_lifecycle(engine_thread_,
+        [this, engine_config, width, height, &startup] {
+          startup = finish_mount_on_engine(engine_config, width, height);
+        });
+    if (!finalized || !startup.ok) return failed_startup(std::move(startup));
   }
+  if (startup_cancelled_.load(std::memory_order_acquire) || !startup_window_matches())
+    return failed_startup(failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled before showing the child."));
 
   interaction_router_.activate(interaction_generation_);
   ShowWindow(static_cast<HWND>(webview_window_), SW_SHOW);
+  if (startup_cancelled_.load(std::memory_order_acquire) || !startup_window_matches())
+    return failed_startup(failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled while showing the child."));
 #ifdef SOUI_TEST_KIT
   if (soui::test_kit::enabled()) {
     test_agent_ = std::make_unique<soui::test_kit::pipe_agent>(
@@ -801,6 +831,10 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
   } else
 #endif
   SetFocus(static_cast<HWND>(webview_window_));
+  if (startup_cancelled_.load(std::memory_order_acquire) || !startup_window_matches())
+    return failed_startup(failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled while focusing the child."));
+  startup_window_protected_ = false;
+  admission.complete = true;
   return success("SOUI interaction window mounted on the shared Miniblink engine thread.");
 #else
   (void)config;
@@ -927,6 +961,24 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
                    "Miniblink could not enable compositor-owned window presentation.");
   }
 
+  if (cursor_broker_)
+    return success("Controlled endpoint primed without the initial navigation.");
+  return finish_mount_on_engine(config, width, height);
+#else
+  (void)config; (void)width; (void)height;
+  return failure("E_UNSUPPORTED", "The SOUI/Miniblink adapter requires a Windows host.");
+#endif
+}
+
+host_result dynamic_miniblink_adapter::finish_mount_on_engine(const host_config& config, int width, int height) {
+#ifdef _WIN32
+  struct startup_admission_guard {
+    std::atomic<bool>& accepting;
+    bool complete{false};
+    ~startup_admission_guard() { if (!complete) accepting.store(false, std::memory_order_release); }
+  } admission{bridge_accepting_};
+  const auto view = static_cast<wkeWebView>(webview_);
+  if (!view) return failure("E_WEBVIEW_CREATE", "The startup view is unavailable.");
   wkeSetNavigationToNewWindowEnable(view, false);
   wkeSetContextMenuEnabled(view, false);
   if (cursor_broker_) wkeOnDocumentReady2(view, &main_document_ready_callback, this);
@@ -990,15 +1042,160 @@ host_result dynamic_miniblink_adapter::mount_on_engine(const host_config& config
       entry = candidate;
   }
   const auto index = entry.wstring();
+  if (cursor_broker_) {
+    const auto completion = cursor_broker_->ole_registration_completion();
+    if (!completion.observed || !completion.shape_valid || completion.cancelled ||
+        !completion.endpoint_matches || !completion.identity_matches || !cursor_broker_->input_allowed())
+      return failure("E_CURSOR_STARTUP_IDENTITY", "The confirmed registration identity changed during setup.");
+    const auto* api = static_cast<const wkeCursorBrokerApi*>(cursor_api_);
+    wkeCursorBrokerDrainReceipt drain{}; drain.structSize = sizeof(drain);
+    const auto token = cursor_broker_->token();
+    const auto status = api->inspectDrain(token, &drain);
+    if (status != WKE_CURSOR_BROKER_OK || drain.structSize != sizeof(drain) ||
+        drain.endpoint.low != token.low || drain.endpoint.high != token.high ||
+        drain.closing || drain.oleRegistered != 1 || drain.queuedUiTasks || drain.runningUiTasks ||
+        drain.nativeScopes || drain.engineCallbacks)
+      return failure("E_CURSOR_STARTUP_REGISTRATION", "The controlled registration is no longer quiet.");
+  }
+  {
+    // Serialize cancellation and the last admission commit; no native call holds this lock.
+    std::lock_guard<std::mutex> lock(state_mutex_);
+    if (startup_cancelled_.load(std::memory_order_acquire))
+      return failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled before the initial navigation.");
+    bridge_accepting_.store(true, std::memory_order_release);
+  }
   wkeLoadFileW(view, index.c_str());
 #ifdef SOUI_BRIDGE_BENCHMARK
   append_host_smoke_log(resource_root_, "local-page-requested");
 #endif
   wkeResize(view, width, height);
+  if (startup_cancelled_.load(std::memory_order_acquire))
+    return failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled during the initial navigation.");
+  admission.complete = true;
   return success("Miniblink WebView bound to the SOUI-owned interaction window.");
 #else
   (void)config;
   return failure("E_UNSUPPORTED", "The SOUI/Miniblink adapter requires a Windows host.");
+#endif
+}
+
+bool dynamic_miniblink_adapter::startup_window_matches() const noexcept {
+#ifdef _WIN32
+  const auto child = static_cast<HWND>(webview_window_);
+  const auto owner = static_cast<HWND>(owner_window_);
+  DWORD child_process = 0, owner_process = 0;
+  return child && owner && IsWindow(child) && IsWindow(owner) && GetParent(child) == owner &&
+      GetWindowThreadProcessId(child, &child_process) == GetCurrentThreadId() &&
+      GetWindowThreadProcessId(owner, &owner_process) == GetCurrentThreadId() &&
+      child_process == GetCurrentProcessId() && owner_process == GetCurrentProcessId() &&
+      GetWindowLongPtrW(child, GWLP_USERDATA) == reinterpret_cast<LONG_PTR>(this);
+#else
+  return false;
+#endif
+}
+
+host_result dynamic_miniblink_adapter::wait_for_cursor_registration() {
+#ifdef _WIN32
+  if (!cursor_broker_ || !engine_thread_ || !valid_cursor_api(static_cast<const wkeCursorBrokerApi*>(cursor_api_)))
+    return failure("E_CURSOR_STARTUP_REGISTRATION", "The controlled startup owner is unavailable.");
+  constexpr UINT_PTR task_timer = 0x15324547U; // Actual controlled vendor SetTimer contract.
+  constexpr ULONGLONG admission_ms = 5000;
+  const auto started = GetTickCount64();
+  const auto expected = cursor_broker_->identity();
+  const auto token = cursor_broker_->token();
+  const auto* api = static_cast<const wkeCursorBrokerApi*>(cursor_api_);
+  auto same_expected = [expected](const wkeCursorBrokerIdentity& value) noexcept {
+    return value.structSize == sizeof(value) && !value.reserved &&
+        value.viewGeneration == expected.viewGeneration &&
+        value.documentGeneration == expected.documentGeneration &&
+        value.geometryGeneration == expected.geometryGeneration;
+  };
+  auto cancelled = [this] {
+    return startup_cancelled_.load(std::memory_order_acquire) || !startup_window_matches();
+  };
+  auto refused_timer = [this](const MSG* removed) {
+    startup_dispatch_refused_ = true;
+    if (removed) {
+      startup_refused_message_ = {removed->hwnd, removed->message, removed->wParam, removed->lParam,
+          removed->time, removed->pt.x, removed->pt.y, true};
+    }
+    bridge_accepting_.store(false, std::memory_order_release);
+    return removed
+        ? failure("E_CURSOR_STARTUP_TIMER_CONSUMED", "A removed startup message was retained without dispatch; retain its owners.")
+        : failure("E_CURSOR_STARTUP_TIMER", "The fixed startup timer source was rejected; retain its owners.");
+  };
+  auto timed_out = [started, admission_ms] { return GetTickCount64() - started >= admission_ms; };
+  for (;;) {
+    if (cancelled())
+      return failure("E_CURSOR_STARTUP_CANCELLED", "The startup window was closed or lost.");
+    if (timed_out())
+      return failure("E_CURSOR_STARTUP_FENCE_TIMEOUT", "The controlled registration was not confirmed before admission closed.");
+    const auto completion = cursor_broker_->ole_registration_completion();
+    if (completion.observed) {
+      if (!completion.shape_valid || completion.cancelled || !completion.endpoint_matches ||
+          !completion.identity_matches || !same_expected(completion.receipt.identity) ||
+          !cursor_broker_->input_allowed())
+        return failure("E_CURSOR_STARTUP_IDENTITY", "The queued registration was cancelled or its identity changed.");
+      wkeCursorBrokerDrainReceipt drain{}; drain.structSize = sizeof(drain);
+      unsigned status = WKE_CURSOR_BROKER_FAILED;
+      // The shared engine is never parked waiting for this owner; captured locals remain held until return.
+      if (!invoke_lifecycle(engine_thread_, [api, token, &drain, &status] { status = api->inspectDrain(token, &drain); }))
+        return failure("E_ENGINE_THREAD", "The controlled registration query did not finish.");
+      if (cancelled())
+        return failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled during the registration query.");
+      if (timed_out())
+        return failure("E_CURSOR_STARTUP_FENCE_TIMEOUT", "The registration query returned after admission closed.");
+      const auto current = cursor_broker_->ole_registration_completion();
+      if (!current.observed || !current.shape_valid || current.cancelled ||
+          !current.endpoint_matches || !current.identity_matches ||
+          !same_expected(cursor_broker_->identity()) || !cursor_broker_->input_allowed())
+        return failure("E_CURSOR_STARTUP_IDENTITY", "The confirmed startup identity changed.");
+      if ((status != WKE_CURSOR_BROKER_OK && status != WKE_CURSOR_BROKER_BUSY) ||
+          drain.structSize != sizeof(drain) || drain.endpoint.low != token.low ||
+          drain.endpoint.high != token.high || drain.closing || drain.oleRegistered != 1)
+        return failure("E_CURSOR_STARTUP_REGISTRATION", "The actual OLE registration was not valid.");
+      // Completion runs before vendor running--. Only a later actual quiet query completes this fence.
+      if (status == WKE_CURSOR_BROKER_OK && !drain.queuedUiTasks && !drain.runningUiTasks &&
+          !drain.nativeScopes && !drain.engineCallbacks)
+        return success("The actual controlled OLE registration is confirmed and quiet.");
+      Sleep(1);
+      continue;
+    }
+
+    MSG peeked{};
+    const auto child = static_cast<HWND>(webview_window_);
+    if (!PeekMessageW(&peeked, child, WM_TIMER, WM_TIMER, PM_NOREMOVE)) {
+      Sleep(1);
+      continue;
+    }
+    if (cancelled())
+      return failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled while observing its timer.");
+    MEMORY_BASIC_INFORMATION memory{};
+    const auto procedure = reinterpret_cast<const void*>(peeked.lParam);
+    const bool executable = VirtualQuery(procedure, &memory, sizeof(memory)) == sizeof(memory) &&
+        memory.State == MEM_COMMIT && memory.Type == MEM_IMAGE && memory.AllocationBase == module_ &&
+        (memory.Protect & (PAGE_EXECUTE | PAGE_EXECUTE_READ | PAGE_EXECUTE_READWRITE | PAGE_EXECUTE_WRITECOPY)) &&
+        !(memory.Protect & (PAGE_GUARD | PAGE_NOACCESS));
+    if (peeked.hwnd != child || peeked.message != WM_TIMER || peeked.wParam != task_timer ||
+        !peeked.lParam || !executable || (GetWindowLongPtrW(child, GWL_STYLE) & WS_VISIBLE))
+      return refused_timer(nullptr); // Leave this unmatched message queued; never pass it to broad cleanup.
+    if (timed_out())
+      return failure("E_CURSOR_STARTUP_FENCE_TIMEOUT", "The startup timer arrived after admission closed.");
+    MSG actual{};
+    if (!PeekMessageW(&actual, child, WM_TIMER, WM_TIMER, PM_REMOVE))
+      return refused_timer(nullptr);
+    if (actual.hwnd != peeked.hwnd || actual.message != peeked.message || actual.wParam != peeked.wParam ||
+        actual.lParam != peeked.lParam || actual.time != peeked.time ||
+        actual.pt.x != peeked.pt.x || actual.pt.y != peeked.pt.y)
+      return refused_timer(&actual); // Sent-message reentrancy can change the item removed: retain that exact MSG.
+    if (cancelled())
+      return failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled before its actual timer dispatch.");
+    if (timed_out())
+      return failure("E_CURSOR_STARTUP_FENCE_TIMEOUT", "The startup timer dispatch was not admitted before the deadline.");
+    DispatchMessageW(&actual); // Actual verified OS-delivered timer; no manual TIMERPROC invocation.
+  }
+#else
+  return failure("E_UNSUPPORTED", "The controlled startup fence requires Windows.");
 #endif
 }
 
@@ -1056,6 +1253,7 @@ host_result dynamic_miniblink_adapter::unmount() {
     bridge_set_owner_window(*static_cast<bridge_adapter*>(bridge_adapter_), nullptr, 0);
   owner_window_ = nullptr;
   bridge_adapter_ = nullptr;
+  startup_window_protected_ = false; // Only after actual owned endpoint and child cleanup.
 #endif
   document_ready_ = false;
   application_ready_ = false;
@@ -1085,6 +1283,8 @@ host_result dynamic_miniblink_adapter::close_cursor_endpoint() {
         }) || (requested != WKE_CURSOR_BROKER_OK && requested != WKE_CURSOR_BROKER_FAILED))
       return failure("E_CURSOR_CLOSE_FAILED", "The controlled endpoint did not accept teardown.");
     cursor_close_pending_ = true;
+    if (startup_dispatch_refused_)
+      return failure("E_CURSOR_CLOSE_PENDING", "A startup timer was refused; retain the Host, module and borrowed owners.");
     if (cursor_broker_->native_scopes())
       return failure("E_CURSOR_CLOSE_PENDING", "Keep the host alive until its native modal call returns.");
 
@@ -1796,6 +1996,13 @@ bool dynamic_miniblink_adapter::handle_native_window_message(
       }
       break;
     case WM_CLOSE:
+      if (startup_window_protected_) {
+        std::lock_guard<std::mutex> lock(state_mutex_);
+        startup_cancelled_.store(true, std::memory_order_release);
+        bridge_accepting_.store(false, std::memory_order_release);
+        result = 0;
+        return true;
+      }
       if (unmount_running_ || cursor_close_pending_) { result = 0; return true; }
       break;
     case WM_SETCURSOR:
@@ -2160,18 +2367,87 @@ std::string dynamic_miniblink_adapter::application_diagnostics() {
       script_diagnostics[0] == '1') {
     const auto script_result = std::make_shared<std::string>();
     const bool collected = engine_thread_->invoke([this, script_result] {
+      // Diagnostic observation only: no ACK, retry or admission mutation.
+      const auto observed_receipt = execution_context_receipt();
+      nlohmann::json observation{
+          {"contextReceipt", std::to_string(observed_receipt)},
+          {"contextAccepted", accepts_execution_context_receipt(observed_receipt)},
+          {"documentReadyReceipt", std::to_string(document_ready_receipt_.load(std::memory_order_acquire))},
+          {"documentReadyFlag", document_ready_.load(std::memory_order_acquire)},
+          {"applicationReadyReceipt", std::to_string(application_ready_receipt_.load(std::memory_order_acquire))},
+          {"applicationReadyFlag", application_ready_.load(std::memory_order_acquire)},
+          {"controlledBroker", cursor_broker_ != nullptr},
+          {"coherentAtomicSnapshot", false}};
+      if (cursor_broker_) {
+        const auto identity = cursor_broker_->identity();
+        observation["broker"] = {{"view", std::to_string(identity.viewGeneration)},
+            {"document", std::to_string(identity.documentGeneration)},
+            {"geometry", std::to_string(identity.geometryGeneration)}};
+        observation["brokerInputAllowed"] = cursor_broker_->input_allowed();
+        const auto admission = cursor_broker_->native_admission_diagnostics();
+        observation["nativeAdmission"] = {
+            {"enabled", admission.enabled},
+            {"firstRejection", admission.reason != detail::cursor_native_rejection::none},
+            {"reason", detail::cursor_native_rejection_name(admission.reason)},
+            {"kind", admission.kind},
+            {"sdk", {{"view", std::to_string(admission.sdk.viewGeneration)},
+                {"document", std::to_string(admission.sdk.documentGeneration)},
+                {"geometry", std::to_string(admission.sdk.geometryGeneration)}}},
+            {"receipt", {{"view", std::to_string(admission.receipt.viewGeneration)},
+                {"document", std::to_string(admission.receipt.documentGeneration)},
+                {"geometry", std::to_string(admission.receipt.geometryGeneration)}}},
+            {"pending", admission.document_pending}, {"closing", admission.closing}, {"nonAtomic", true}};
+        const auto registration = cursor_broker_->ole_registration_completion();
+        observation["registrationCompletion"] = {
+            {"observed", registration.observed}, {"shapeValid", registration.shape_valid},
+            {"cancelled", registration.cancelled}, {"endpointMatches", registration.endpoint_matches},
+            {"identityMatches", registration.identity_matches}, {"kind", registration.receipt.kind},
+            {"taskSequence", std::to_string(registration.receipt.taskSequence)},
+            {"scopeSequence", std::to_string(registration.receipt.scopeSequence)},
+            {"identity", {{"view", std::to_string(registration.receipt.identity.viewGeneration)},
+                {"document", std::to_string(registration.receipt.identity.documentGeneration)},
+                {"geometry", std::to_string(registration.receipt.identity.geometryGeneration)}}}, {"nonAtomic", true}};
+        // Real pre-close ledger observation only; FAILED classifies sticky vendor failure.
+        const auto* api = static_cast<const wkeCursorBrokerApi*>(cursor_api_);
+        const auto token = cursor_broker_->token();
+        wkeCursorBrokerDrainReceipt drain{}; drain.structSize = sizeof(drain);
+        const bool inspected = valid_cursor_api(api) && (token.low || token.high);
+        const unsigned int status = inspected ? api->inspectDrain(token, &drain) : WKE_CURSOR_BROKER_UNAVAILABLE;
+        const bool valid = inspected && drain.structSize == sizeof(drain) &&
+            drain.endpoint.low == token.low && drain.endpoint.high == token.high &&
+            drain.closing <= 1 && drain.drained <= 1 && drain.oleRegistered <= 1 &&
+            (status == WKE_CURSOR_BROKER_OK || status == WKE_CURSOR_BROKER_FAILED);
+        observation["vendorDrain"] = {{"inspected", inspected}, {"valid", valid},
+            {"status", status}, {"vendorFailed", valid ? nlohmann::json(status == WKE_CURSOR_BROKER_FAILED) : nlohmann::json(nullptr)},
+            {"nonAtomic", true}};
+        if (valid) {
+          observation["vendorDrain"]["closing"] = drain.closing;
+          observation["vendorDrain"]["drained"] = drain.drained;
+          observation["vendorDrain"]["queued"] = drain.queuedUiTasks;
+          observation["vendorDrain"]["running"] = drain.runningUiTasks;
+          observation["vendorDrain"]["nativeScopes"] = drain.nativeScopes;
+          observation["vendorDrain"]["engineCallbacks"] = drain.engineCallbacks;
+          observation["vendorDrain"]["oleRegistered"] = drain.oleRegistered;
+        }
+      }
+      *script_result = observation.dump();
       if (webview_ == nullptr || wkeGlobalExec == nullptr) return;
       const auto es = wkeGlobalExec(static_cast<wkeWebView>(webview_));
       if (es == nullptr) return;
       const auto value = jsEval(es,
-          "return JSON.stringify({title:document.title,body:(document.body&&document.body.innerHTML||'').length,"
-          "root:(document.getElementById('react-app')||document.getElementById('app'))&&"
-          "(document.getElementById('react-app')||document.getElementById('app')).innerHTML.slice(0,180),"
-          "bootstrap:window.__souiBootstrapError||'',react:window.__souiReactBootstrapError||'',"
-          "render:window.__souiReactRenderError||'',"
-          "ready:document.documentElement.getAttribute('data-soui-react-ready')||''});");
+          "return JSON.stringify({readyState:document.readyState,nativePort:typeof window.__souiNativePostMessage,"
+          "souiNativePort:typeof (window.SouiNative&&window.SouiNative.postMessage),"
+          "probeType:typeof window.__souiComponentCertificate,"
+          "probeStatus:window.__souiComponentCertificate&&window.__souiComponentCertificate.status==='failed'?'failed':'',"
+          "probeCode:window.__souiComponentCertificate&&window.__souiComponentCertificate.code==="
+          "'bootstrap-or-report-failed'?'bootstrap-or-report-failed':''});");
       const auto raw = jsToTempString(es, value);
-      if (raw != nullptr) *script_result = raw;
+      if (raw != nullptr) {
+        auto page = nlohmann::json::parse(raw, nullptr, false);
+        if (!page.is_discarded()) observation["page"] = std::move(page);
+      }
+      observation["contextReceiptAfter"] = std::to_string(execution_context_receipt());
+      *script_result = observation.dump();
     });
     if (collected && !script_result->empty()) diagnostics += ",script=" + *script_result;
   }

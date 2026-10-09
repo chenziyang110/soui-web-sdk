@@ -12,6 +12,38 @@ namespace soui::sdk::detail {
 inline constexpr UINT cursor_descriptor_message = WM_APP + 0x4D4;
 struct cursor_queue_context;
 
+// Private, bounded diagnostic data. It grants no admission or lifecycle state.
+enum class cursor_native_rejection : unsigned char {
+  none, receipt_or_owner, invalid_endpoint, identity_or_transition,
+  endpoint_mismatch, duplicate_scope, queue_scope, scope_storage
+};
+inline const char* cursor_native_rejection_name(cursor_native_rejection reason) noexcept {
+  switch (reason) {
+    case cursor_native_rejection::receipt_or_owner: return "receipt_or_owner";
+    case cursor_native_rejection::invalid_endpoint: return "invalid_endpoint";
+    case cursor_native_rejection::identity_or_transition: return "identity_or_transition";
+    case cursor_native_rejection::endpoint_mismatch: return "endpoint_mismatch";
+    case cursor_native_rejection::duplicate_scope: return "duplicate_scope";
+    case cursor_native_rejection::queue_scope: return "queue_scope";
+    case cursor_native_rejection::scope_storage: return "scope_storage";
+    default: return "none";
+  }
+}
+struct cursor_native_admission_diagnostics final {
+  bool enabled{false};
+  cursor_native_rejection reason{cursor_native_rejection::none};
+  unsigned int kind{0};
+  wkeCursorBrokerIdentity sdk{}, receipt{};
+  bool document_pending{false}, closing{false};
+};
+
+// Private first actual OLE UI-payload completion, not a registration/grant result.
+struct cursor_ole_registration_completion final {
+  bool observed{false}, shape_valid{false}, cancelled{false};
+  bool endpoint_matches{false}, identity_matches{false};
+  wkeCursorBrokerNativeReceipt receipt{};
+};
+
 // Callback storage must outlive the vendor's successful destroyEndpoint drain
 // receipt. Native hooks never invoke WKE or wait for the renderer owner.
 class cursor_broker_endpoint final {
@@ -38,6 +70,9 @@ class cursor_broker_endpoint final {
   [[nodiscard]] bool finish_close() noexcept;
   [[nodiscard]] unsigned native_scopes() const noexcept;
   [[nodiscard]] cursor_queue_status last_status() const noexcept;
+  // Same-lock first-rejection snapshot, not atomic with Host/context/JS state.
+  [[nodiscard]] cursor_native_admission_diagnostics native_admission_diagnostics() const noexcept;
+  [[nodiscard]] cursor_ole_registration_completion ole_registration_completion() const noexcept;
 
  private:
   struct implementation;
