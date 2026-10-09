@@ -1,0 +1,238 @@
+TAP version 13
+# Subtest: document close during connect prevents every later request and readiness publication
+ok 1 - document close during connect prevents every later request and readiness publication
+  ---
+  duration_ms: 1.2603
+  type: 'test'
+  ...
+# Subtest: document close during discover prevents every later request and readiness publication
+ok 2 - document close during discover prevents every later request and readiness publication
+  ---
+  duration_ms: 0.9655
+  type: 'test'
+  ...
+# Subtest: document close during describe prevents every later request and readiness publication
+ok 3 - document close during describe prevents every later request and readiness publication
+  ---
+  duration_ms: 0.1632
+  type: 'test'
+  ...
+# Subtest: document close during probe prevents every later request and readiness publication
+ok 4 - document close during probe prevents every later request and readiness publication
+  ---
+  duration_ms: 0.1459
+  type: 'test'
+  ...
+# Subtest: already closed document does not start a native connection
+ok 5 - already closed document does not start a native connection
+  ---
+  duration_ms: 0.2014
+  type: 'test'
+  ...
+# Subtest: actual initializer publishes readiness only after all native boundaries
+ok 6 - actual initializer publishes readiness only after all native boundaries
+  ---
+  duration_ms: 0.1559
+  type: 'test'
+  ...
+# Subtest: synchronous task observer closure prevents the next native probe
+ok 7 - synchronous task observer closure prevents the next native probe
+  ---
+  duration_ms: 0.1288
+  type: 'test'
+  ...
+# Subtest: native discovery rejection propagates without task or ready publication
+ok 8 - native discovery rejection propagates without task or ready publication
+  ---
+  duration_ms: 0.4531
+  type: 'test'
+  ...
+# Subtest: fixed dataset has exact identities and deterministic endpoints
+ok 9 - fixed dataset has exact identities and deterministic endpoints
+  ---
+  duration_ms: 2.249
+  type: 'test'
+  ...
+# Subtest: wrong fixture and row bounds reject
+ok 10 - wrong fixture and row bounds reject
+  ---
+  duration_ms: 0.1836
+  type: 'test'
+  ...
+# Subtest: UTF-8 limits count Chinese and supplementary characters without TextEncoder
+ok 11 - UTF-8 limits count Chinese and supplementary characters without TextEncoder
+  ---
+  duration_ms: 0.094
+  type: 'test'
+  ...
+# Subtest: full fixed summary conserves every row and filtered group
+ok 12 - full fixed summary conserves every row and filtered group
+  ---
+  duration_ms: 1.0258
+  type: 'test'
+  ...
+# Subtest: sort/filter uses same data and does not mutate original order
+ok 13 - sort/filter uses same data and does not mutate original order
+  ---
+  duration_ms: 1.2675
+  type: 'test'
+  ...
+# Subtest: selection is bounded, unique and copied
+ok 14 - selection is bounded, unique and copied
+  ---
+  duration_ms: 0.9119
+  type: 'test'
+  ...
+# Subtest: selection and viewport reject non-integer/out-of-range inputs
+ok 15 - selection and viewport reject non-integer/out-of-range inputs
+  ---
+  duration_ms: 0.1797
+  type: 'test'
+  ...
+# Subtest: virtual window caps actual DOM rows to 80 even for an oversized viewport
+ok 16 - virtual window caps actual DOM rows to 80 even for an oversized viewport
+  ---
+  duration_ms: 0.0774
+  type: 'test'
+  ...
+# Subtest: reload restores only bounded UI state and explains old task as unknown
+ok 17 - reload restores only bounded UI state and explains old task as unknown
+  ---
+  duration_ms: 0.2123
+  type: 'test'
+  ...
+# Subtest: credential/extra fields cannot be persisted as UI state
+ok 18 - credential/extra fields cannot be persisted as UI state
+  ---
+  duration_ms: 0.1935
+  type: 'test'
+  ...
+# Subtest: wrong fixture, duplicate selections, oversized drafts and malformed bytes reject
+ok 19 - wrong fixture, duplicate selections, oversized drafts and malformed bytes reject
+  ---
+  duration_ms: 0.3527
+  type: 'test'
+  ...
+# Subtest: missing storage is explicit empty rather than recovered
+ok 20 - missing storage is explicit empty rather than recovered
+  ---
+  duration_ms: 0.0542
+  type: 'test'
+  ...
+# Subtest: start calls actual client interface once; initial zero-progress running is valid
+ok 21 - start calls actual client interface once; initial zero-progress running is valid
+  ---
+  duration_ms: 1.4364
+  type: 'test'
+  ...
+# Subtest: native success stops local observation without manufacturing a task result
+ok 22 - native success stops local observation without manufacturing a task result
+  ---
+  duration_ms: 0.1796
+  type: 'test'
+  ...
+# Subtest: cancel-request is not a cancelled terminal
+ok 23 - cancel-request is not a cancelled terminal
+  ---
+  duration_ms: 0.1834
+  type: 'test'
+  ...
+# Subtest: public timeout state remains observable and does not mean cancellation
+ok 24 - public timeout state remains observable and does not mean cancellation
+  ---
+  duration_ms: 0.1225
+  type: 'test'
+  ...
+# Subtest: query not-found means unknown and cannot cause automatic replay
+ok 25 - query not-found means unknown and cannot cause automatic replay
+  ---
+  duration_ms: 0.2608
+  type: 'test'
+  ...
+# Subtest: local observation deadline retains unknown and never cancels or restarts native work
+ok 26 - local observation deadline retains unknown and never cancels or restarts native work
+  ---
+  duration_ms: 0.1443
+  type: 'test'
+  ...
+# Subtest: contradictory task identity and malformed progress are rejected
+ok 27 - contradictory task identity and malformed progress are rejected
+  ---
+  duration_ms: 0.2131
+  type: 'test'
+  ...
+# Subtest: missing start acknowledgement permits only query by same operation, never a second start
+ok 28 - missing start acknowledgement permits only query by same operation, never a second start
+  ---
+  duration_ms: 0.1446
+  type: 'test'
+  ...
+# Subtest: dispose removes observation and subscription without claiming native completion
+ok 29 - dispose removes observation and subscription without claiming native completion
+  ---
+  duration_ms: 0.7392
+  type: 'test'
+  ...
+# Subtest: late accepted start after disposal requests only best-effort cancellation
+ok 30 - late accepted start after disposal requests only best-effort cancellation
+  ---
+  duration_ms: 0.1669
+  type: 'test'
+  ...
+# Subtest: bounded duration and categories reject before crossing the client
+ok 31 - bounded duration and categories reject before crossing the client
+  ---
+  duration_ms: 0.1488
+  type: 'test'
+  ...
+# Subtest: late cancel acknowledgement cannot mutate or query a successor task
+ok 32 - late cancel acknowledgement cannot mutate or query a successor task
+  ---
+  duration_ms: 0.1606
+  type: 'test'
+  ...
+# Subtest: late cancel rejection cannot publish an error into a successor task
+ok 33 - late cancel rejection cannot publish an error into a successor task
+  ---
+  duration_ms: 0.1264
+  type: 'test'
+  ...
+# Subtest: old subscription ready rejection is inert after a new task starts
+ok 34 - old subscription ready rejection is inert after a new task starts
+  ---
+  duration_ms: 0.2055
+  type: 'test'
+  ...
+# Subtest: old unsubscribe rejection is inert after a new task starts
+ok 35 - old unsubscribe rejection is inert after a new task starts
+  ---
+  duration_ms: 0.1552
+  type: 'test'
+  ...
+# Subtest: current terminal unsubscribe failure remains visible without changing native result
+ok 36 - current terminal unsubscribe failure remains visible without changing native result
+  ---
+  duration_ms: 0.1096
+  type: 'test'
+  ...
+# Subtest: shared GUI and view controls bind enabled and busy to current task identity and state
+ok 37 - shared GUI and view controls bind enabled and busy to current task identity and state
+  ---
+  duration_ms: 0.1206
+  type: 'test'
+  ...
+# Subtest: starting observer disposal stops native dispatch and every observation resource
+ok 38 - starting observer disposal stops native dispatch and every observation resource
+  ---
+  duration_ms: 0.0839
+  type: 'test'
+  ...
+1..38
+# tests 38
+# suites 0
+# pass 38
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 197.0536

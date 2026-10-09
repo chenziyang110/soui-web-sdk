@@ -1,0 +1,19 @@
+# Actual initial OLE startup schedules
+
+This is a private out-only characterization candidate. No native process or compiler has been run by its author. The parent public native suite is not changed.
+
+One executable uses the normal current SDK, its actual private cursor_broker implementation, and Root's exact full-source DLL. It does not extract/rewrite the production algorithms, use TestKit, mock native APIs, synthesize timer callbacks, or supply replacement admission results. The mutex command lane controls only when the real engine gets its next command; it is a test scheduler, not a production queue.
+
+Root supplies SOUI_DISTRIBUTION_ROOT, SOUI_KERNEL_PATH and SOUI_KERNEL_SHA256. The mandatory configure and pre-build gate binds the current 24 CPP, 15 private headers, 32 public headers and supporting inputs in source-pins.json. The current Host pin is intentional: adopting the separate diagnostic Host delta requires a fresh Root input pin rather than silently accepting unrelated source changes. The fixture holds the DLL file against writes/deletes, verifies SHA256, verifies actual module identity/table addresses, and records the native subject PID and decimal FILETIME for comparison to Root's Owned identity.
+
+The exact three CTest names are ole_startup_matching, ole_startup_ui_advance_before_ack and ole_startup_ack_before_dispatch. Arguments use matching, ui-advance-before-ack and ack-before-dispatch respectively. All have TIMEOUT 20, RUN_SERIAL TRUE, no WILL_FAIL, and the startup environment SOUI_DIAGNOSTIC_SCRIPT=1.
+
+The current-source assertions characterize A: registered/SDK admitted, B: actual strict rejection/vendor FAILED/unregistered, and C: actual cancelled completion/vendor OK/unregistered. measurementPassed is only an exact observation contract. registrationPreserved is independent, startupQualified is always false, and qualificationPassed/releaseReady are false. Default direct/CTest execution also requires actual registration. Current schedules B/C therefore return 2 after safe real cleanup, while A returns 0 if the full observation contract agrees. Root may append --characterize only to an explicitly labelled observation run; that exit 0 still must not be used as a product-startup certificate.
+
+The actual production TIMERPROC is retrieved from a real SetTimer-generated WM_TIMER message for the real HWND. Engine ACK is withheld by the command lane for B and completed before dispatch for C. Every callback observer forwards the original hook before recording the result. Native callbacks do not call WKE, wait, pump, allocate or throw.
+
+Cleanup begins SDK close, requests vendor close on the actual engine, executes the real owner cleanup task, observes the actual zero-resource drain, destroys the real endpoint, finishes SDK close, ends the realm, calls actual kernel shutdown, joins the engine thread and removes the HWND. Hook/broker/DLL/file/window owners are retained until their real receipt. Any bounded wait or malformed precondition fails immediately with ExitProcess(91) before unsafe C++ cleanup; external Root Owned supervision closes that failed process. There is no timeout-as-cancellation or initialized FreeLibrary claim.
+
+Use fixed MSVC v143 / 14.44.35207, host x64 and SDK 10.0.19041.0 as in Root's already reviewed wrappers. Root owns configure/build/PE/CL/CTest registry and all direct/CTest/native execution. Native 0/124 compiler tails remain false under the existing supervision rule. No Win7, physical drag, full Host, full SDK, GC/OOM, unload or release qualification is added.
+
+ADR.md explains why suppressing a same-size initial WM_SIZE alone cannot close registration, and why any future bootstrap fence must avoid an engine/UI mutual wait. No production startup fix is included here.

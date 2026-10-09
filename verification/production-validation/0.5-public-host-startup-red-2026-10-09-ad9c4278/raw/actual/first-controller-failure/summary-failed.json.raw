@@ -1,0 +1,280 @@
+{
+  "schema": "soui.public-host-startup.root/1",
+  "architecture": "x64",
+  "completed": false,
+  "stages": [
+    {
+      "name": "configure",
+      "pid": 23820,
+      "creationFileTime": "134360362465626988",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "expectedExitCode": 0,
+      "expectedObservation": false,
+      "compilerTailPartial": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 11657,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 48,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "subject": {
+        "path": "C:/Program Files/CMake/bin/cmake.exe",
+        "bytes": 12905544,
+        "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\configure.owned.ndjson",
+        "bytes": 62231,
+        "sha256": "89faec7055a355b64c95c956f0911f182760959c880bf17944069f9dc82ca87c"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\configure.owned.ndjson.context.json",
+        "bytes": 1305,
+        "sha256": "dcd7b90a180e90f074fd9d0c68ba10cbb83c2fe1cfb1fba5df11d9194b506870"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\configure.stdout.raw",
+        "bytes": 924,
+        "sha256": "339ea63df17b0d9f82f9c49b9f8acb78a33a8c9a809a661acd7b588d8746ecb3"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\configure.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readyError": null,
+      "validationErrors": [],
+      "formalPassed": false
+    },
+    {
+      "name": "build",
+      "pid": 113104,
+      "creationFileTime": "134360362586264807",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "expectedExitCode": 0,
+      "expectedObservation": false,
+      "compilerTailPartial": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "owned-descendants-remain",
+        "elapsedMs": 24407,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 37,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "subject": {
+        "path": "C:/Program Files/CMake/bin/cmake.exe",
+        "bytes": 12905544,
+        "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\build.owned.ndjson",
+        "bytes": 43206,
+        "sha256": "5599bbff4b813916c25804cef67b29119139ed1b9b212ef6c7a793d84a067b62"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\build.owned.ndjson.context.json",
+        "bytes": 935,
+        "sha256": "804f51f7289d49bf7fd3d7d8a5553472cdb0f1b3e75757bccf39999996bd1174"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\build.stdout.raw",
+        "bytes": 43534,
+        "sha256": "0348d26402131627e61c5d05ed436b55b9021672ceb8e71b3db4d5ad797bd318"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\build.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readyError": null,
+      "validationErrors": [],
+      "formalPassed": false
+    },
+    {
+      "name": "pe",
+      "pid": 97716,
+      "creationFileTime": "134360362835042435",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "expectedExitCode": 0,
+      "expectedObservation": true,
+      "compilerTailPartial": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 99,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 3,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "subject": {
+        "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\dumpbin.exe",
+        "bytes": 23608,
+        "sha256": "b927086527c3c94470ed747ce4db42d36fb3688b82b4590c1ff42e519853091d"
+      },
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\pe.owned.ndjson",
+        "bytes": 1685,
+        "sha256": "b2349e7b5666acd2e5c8bde8856ebf8ca243351141db0e15e8b6c4f41dbc977c"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\pe.owned.ndjson.context.json",
+        "bytes": 603,
+        "sha256": "f76bd2703c267e097531d66dcb46a5cfae476fce16a4c3ac0e2bc7ec6dd15f37"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\pe.stdout.raw",
+        "bytes": 5703,
+        "sha256": "737c661e4ade4ae80b6433b7d3cf86961334c88b561a6b0a0da18e6de2abcc43"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\pe.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readyError": null,
+      "validationErrors": [],
+      "formalPassed": false
+    },
+    {
+      "name": "registry",
+      "pid": 64604,
+      "creationFileTime": "134360362839506053",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "expectedExitCode": 0,
+      "expectedObservation": true,
+      "compilerTailPartial": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 70,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "subject": {
+        "path": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+        "bytes": 13829192,
+        "sha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+      },
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\registry.owned.ndjson",
+        "bytes": 1088,
+        "sha256": "9846fdfcfbad926ac24119275a5d19a70b810fa0d9882e9ab5d277b39bb3c523"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\registry.owned.ndjson.context.json",
+        "bytes": 533,
+        "sha256": "e1215aff1b5e2a36f62dc7032c8472ebb97b887392fd9c3af0f323b099a24887"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\registry.stdout.raw",
+        "bytes": 1676,
+        "sha256": "6d8c6d6674aaed4977ad5bd80deb48e6816e88b328a44f6970df254bd9caa469"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\registry.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readyError": null,
+      "validationErrors": [],
+      "formalPassed": false
+    },
+    {
+      "name": "host-startup",
+      "pid": 95656,
+      "creationFileTime": "134360362853755884",
+      "rootExitCode": 2,
+      "supervisorExitCode": 2,
+      "genericPassed": false,
+      "expectedExitCode": 2,
+      "expectedObservation": true,
+      "compilerTailPartial": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 866,
+        "rootExited": true,
+        "rootExitCode": 2,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 1,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "subject": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\build\\Release\\soui_public_host_startup_red.exe",
+        "bytes": 721408,
+        "sha256": "ad64be2b9b5a12fc6988480bab1597913888be45c390ce0986f302fb19bb41f2"
+      },
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\host-startup.owned.ndjson",
+        "bytes": 795,
+        "sha256": "63690b57b4cf67a9aa9665eaaff15c42ff0288d314414c4e1694c17059e25d58"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\host-startup.owned.ndjson.context.json",
+        "bytes": 881,
+        "sha256": "4582285f7e721ff4f088652329ca4cef7da888e8c20e820d56a9e99993a60b8c"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\host-startup.stdout.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\host-red-cb0f2097-x64\\host-startup.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readyError": null,
+      "validationErrors": [
+        "Sealed candidate membership changed"
+      ],
+      "formalPassed": false
+    }
+  ],
+  "observations": [],
+  "error": "Sealed candidate membership changed",
+  "startupQualified": false,
+  "formalPassed": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

@@ -1,0 +1,183 @@
+'use strict';
+// Only Root launches this inert preparation, after independent review.
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const directory=__dirname,sha=b=>crypto.createHash('sha256').update(b).digest('hex');
+const digest=file=>sha(fs.readFileSync(file)),json=(file,value)=>fs.writeFileSync(file,JSON.stringify(value,null,2)+'\n',{flag:'wx'});
+function normalize(file){return path.resolve(file).replaceAll('\\','/').toLowerCase();}
+function list(root){return fs.readdirSync(root,{withFileTypes:true}).flatMap(e=>{const p=path.join(root,e.name);if(e.isSymbolicLink())throw Error('Symlink input refused');if(e.isDirectory())return list(p);if(!e.isFile())throw Error('Nonregular input refused');return[p];}).sort((a,b)=>normalize(a)<normalize(b)?-1:normalize(a)>normalize(b)?1:0);}
+function pin(p){if(!p||!path.isAbsolute(p.path)||!Number.isSafeInteger(p.bytes)||p.bytes<0||!/^[a-f0-9]{64}$/.test(p.sha256)||fs.statSync(p.path).size!==p.bytes||digest(p.path)!==p.sha256)throw Error('Input/tool pin mismatch: '+p?.path);return p;}
+function parse(argv){const a={};for(let n=0;n<argv.length;n+=2){if(!/^--[a-z-]+$/.test(argv[n])||argv[n+1]===undefined||a[argv[n]]!==undefined)throw Error('Invalid/repeated argument');a[argv[n]]=argv[n+1];}return a;}
+async function main(){
+ const a=parse(process.argv.slice(2));
+ if(a['--root-gate']!=='ROOT_FULL_NATIVE_UNIT_SUITE_V10'||Object.keys(a).some(k=>!['--root-gate','--package-sha','--arch'].includes(k)))throw Error('Root gate/arguments invalid');
+ if(!['x64','Win32'].includes(a['--arch'])||!/^[a-f0-9]{64}$/.test(a['--package-sha']||''))throw Error('Architecture/package pin required');
+ const packageFile=path.join(directory,'package.json');if(digest(packageFile)!==a['--package-sha'])throw Error('Package pin mismatch');
+ const packet=JSON.parse(fs.readFileSync(packageFile,'utf8'));
+ if(packet.schema!=='private-full-native-unit-suite-v10'||packet.executionOwner!=='Root only'||packet.releaseReady!==false||packet.initializedUnloadQualified!==false||packet.souiTestKitDefined!==false||packet.normalSdkSources!==true||packet.webview2BackendBuilt!==false||packet.preparationComplete!==true||packet.expectedTests.length!==126||packet.expectedTargets.length!==46||packet.sdkSources.length!==24||packet.uiaSources.length!==1||packet.uiaPublicInstalled!==true||packet.localEndpointPublicInstalled!==true||packet.localTaskFamilyPublicInstalled!==true||packet.legacyDragLeafPublicInstalled!==true||packet.requestClosePublicInstalled!==true||packet.workerLifetimePublicInstalled!==true||packet.windowsPeerIdentityPublicInstalled!==true||packet.dragCtorPublicInstalled!==true||packet.expectedTestCommands.length!==126||packet.expectedGeneratedFragments.length!==25||packet.sourceFixtureRanges.length!==21)throw Error('Package contract');
+ if(packet.jsonBridgeFactoryPublicInstalled!==true||packet.installedConsumer.enabled!==true||packet.installedConsumer.target!=='SouiEndpointConsumer'||packet.jsonBridgeFactoryCases!==6)throw Error('Current public factory/installed consumer contract');
+ function packageCheck(){
+  if(digest(packageFile)!==a['--package-sha'])throw Error('Package changed');
+  for(const p of packet.packageFiles)pin(p);
+  for(const p of packet.liveInputs)pin(p);
+  for(const root of packet.inventoryRoots){const actual=list(root.path).map(normalize);if(JSON.stringify(actual)!==JSON.stringify(root.paths))throw Error('SDK/header input membership changed');}
+  if(fs.readdirSync(path.join(directory,'empty-user-props')).length)throw Error('Private user props directory changed');
+  if(JSON.stringify(list(directory).map(p=>path.relative(directory,p).replaceAll('\\','/')).sort())!==JSON.stringify(packet.packageMembership))throw Error('Sealed package membership changed');
+  for(const p of packet.sourceFixtureRanges){pin(p.source);pin(p.fixture);const actual=fs.readFileSync(p.source.path).subarray(p.startByte,p.startByte+p.bytes),copy=fs.readFileSync(p.fixture.path).subarray(p.fixtureStartByte,p.fixtureStartByte+p.bytes);if(actual.length!==p.bytes||!actual.equals(copy)||sha(actual)!==p.sha256)throw Error('Actual public fixture source bytes changed');}
+ }
+ packageCheck();
+ const tools=JSON.parse(fs.readFileSync(packet.tools.path,'utf8'));
+ const toolPins=[tools.node,tools.runner,tools.ownedClient,tools.cmake,tools.ctest,tools.msbuild,tools.dumpbin,tools.cmd,tools.rc,tools.mt,tools.vsDevCmd,tools.ml64,...tools.toolImages];
+ const toolCheck=()=>{pin(packet.tools);for(const p of toolPins)pin(p);};toolCheck();
+ const contract=packet.architectures.find(p=>p.architecture===a['--arch']);if(!contract)throw Error('Architecture contract missing');
+  const expectedMachine=a['--arch']==='x64'?0x8664:0x14c,inspect=require('./pe-exports.cjs').inspect;
+ const output=contract.outputRoot;if(!path.isAbsolute(output)||fs.existsSync(output)||!normalize(output).startsWith(normalize(packet.repositoryRoot)+'/out/'))throw Error('Diagnostic output must be a fresh private root');
+ const env={},allow=new Set(packet.environmentAllowlist.map(p=>p.toUpperCase()));for(const [key,value]of Object.entries(process.env))if(allow.has(key.toUpperCase())&&!/token|secret|password|passwd|api_?key|credential|auth|cookie|private_?key|access_?key|session_?key/i.test(key))env[key.toUpperCase()]=value;
+ env.VcpkgEnabled='false';env.VcpkgEnableManifest='false';env.VCPkgLocalAppDataDisabled='true';env.TEMP=path.join(output,'temp');env.TMP=env.TEMP;
+ const windows=env.SYSTEMROOT||'C:\\Windows';env.PATH=[contract.compilerToolDirectory,contract.sdkToolDirectory,path.dirname(tools.msbuild.path),path.dirname(tools.cmake.path),path.join(windows,'System32'),windows].join(';');env.CL='/MP2';
+ const {launchOwned}=require(tools.ownedClient.path),stages=[];
+ fs.mkdirSync(output);fs.mkdirSync(path.join(output,'temp'));
+ const build=path.join(output,'build');
+ function selectedSdkCheck(phase,projectRoot=build){
+  const expected='10.0.19041.0',platform=a['--arch']+',version='+expected;
+  const cache=fs.readFileSync(path.join(projectRoot,'CMakeCache.txt'),'utf8');
+  if(!cache.split(/\r?\n/).includes('CMAKE_GENERATOR_PLATFORM:INTERNAL='+platform))throw Error('Actual generator platform/SDK request differs');
+  const projects=list(projectRoot).filter(p=>/\.vcxproj$/i.test(p));
+  if(!projects.length)throw Error('No actual generated VS projects for SDK selection');
+  const projectPins=projects.map(file=>{
+   const body=fs.readFileSync(file),versions=[...body.toString('utf8').matchAll(/<WindowsTargetPlatformVersion(?:\s[^>]*)?>([^<]+)<\/WindowsTargetPlatformVersion>/g)].map(m=>m[1].trim());
+   if(!versions.length||versions.some(version=>version!==expected))throw Error('Actual generated project selected a different Windows SDK: '+file);
+   return{path:file,bytes:body.length,sha256:sha(body),windowsTargetPlatformVersions:versions};
+  });
+  json(path.join(output,phase+'.selected-sdk.json'),{expectedWindowsSdk:expected,generatorPlatform:platform,actualGeneratedProjectSdkVersionsMatch:true,projectPins,completeToolchainProvenance:false,qualificationPassed:false});
+ }
+ async function stage(name,exe,args,timeoutMs){
+  packageCheck();toolCheck();
+  const raw=path.join(output,name+'.owned.jsonl'),out=fs.createWriteStream(path.join(output,name+'.stdout.raw'),{flags:'wx'}),err=fs.createWriteStream(path.join(output,name+'.stderr.raw'),{flags:'wx'}),streamErrors=[];
+  out.on('error',e=>streamErrors.push(e.message));err.on('error',e=>streamErrors.push(e.message));const closes=[new Promise(r=>out.once('close',r)),new Promise(r=>err.once('close',r))];
+  let owned;try{owned=launchOwned(exe,args,{runner:tools.runner.path,cwd:output,report:raw,timeoutMs,drainMs:2000,env,stdout:'pipe',stderr:'pipe'});}catch(error){out.end();err.end();await Promise.all(closes);throw error;}
+  owned.child.stdout.pipe(out);owned.child.stderr.pipe(err);
+  const heartbeat=setInterval(()=>console.log(JSON.stringify({stage:name,pid:owned.pid,stdoutBytes:out.bytesWritten,stderrBytes:err.bytesWritten,pending:true})),15000);
+  void owned.ready.then(identity=>json(path.join(output,name+'.pending.json'),{name,...identity,timeoutMs,rawJob:raw}),error=>console.error('Owned identity unavailable: '+error.message));
+  const finished=await owned.finished;clearInterval(heartbeat);await Promise.all(closes);json(path.join(output,name+'.finished.json'),finished);
+  const entry={name,executable:exe,args,cwd:output,pid:finished.pid,creationFileTime:finished.creationFileTime,rootExitCode:finished.exitCode,supervisorExitCode:finished.supervisorExitCode,genericPassed:finished.passed,closureConfirmed:finished.closureConfirmed,rawJob:raw,rawSha256:digest(raw),context:{path:raw+'.context.json',bytes:fs.statSync(raw+'.context.json').size,sha256:digest(raw+'.context.json')},stdout:{path:path.join(output,name+'.stdout.raw'),bytes:fs.statSync(path.join(output,name+'.stdout.raw')).size,sha256:digest(path.join(output,name+'.stdout.raw'))},stderr:{path:path.join(output,name+'.stderr.raw'),bytes:fs.statSync(path.join(output,name+'.stderr.raw')).size,sha256:digest(path.join(output,name+'.stderr.raw'))},streamErrors};stages.push(entry);json(path.join(output,name+'.stage.json'),entry);
+  packageCheck();toolCheck();
+  const text=fs.readFileSync(raw,'utf8');if(!text.endsWith('\n'))throw Error('Truncated owned report');const rows=text.trimEnd().split('\n').map(JSON.parse),start=rows[0],terminal=rows.at(-1),context=JSON.parse(fs.readFileSync(raw+'.context.json','utf8'));
+  if(start.event!=='start'||terminal.event!=='terminal'||rows.filter(p=>p.event==='terminal').length!==1||!Number.isSafeInteger(start.pid)||start.pid<=0||start.pid!==finished.pid||start.creationFileTime!==finished.creationFileTime||typeof start.creationFileTime!=='string'||!/^[1-9]\d{0,19}$/.test(start.creationFileTime)||!start.jobAssignedBeforeResume||start.breakawayAllowed!==false||!terminal.closureConfirmed||terminal.activeProcesses!==0||!terminal.rootExited||JSON.stringify(terminal)!==JSON.stringify(finished.terminal)||context.executable!==exe||context.executableSha256!==digest(exe)||context.runnerSha256!==tools.runner.sha256||JSON.stringify(context.args)!==JSON.stringify(args)||context.cwd!==output)throw Error('Exact raw Owned identity mismatch: '+name);
+  const compilePartial=['configure','build-full-native-suite','consumer-configure','consumer-build'].includes(name)&&!finished.passed&&finished.exitCode===0&&finished.supervisorExitCode===124&&terminal.reason==='owned-descendants-remain'&&terminal.terminatedOwnedJob===true&&Number.isSafeInteger(terminal.elapsedMs)&&terminal.elapsedMs<timeoutMs;
+  json(path.join(output,name+'.partial-verdict.json'),{genericPassed:finished.passed,closedCompileContinuation:compilePartial,originalGenericVerdictRetained:true,qualificationPassed:false,releaseReady:false});
+  if(finished.spawnError||finished.reportError||finished.signal||finished.stopRequested||finished.fallbackUsed||streamErrors.length||!finished.closureConfirmed||finished.exitCode!==0||(!compilePartial&&(finished.passed!==true||finished.supervisorExitCode!==0||terminal.terminatedOwnedJob!==false)))throw Error('Owned stage failed: '+name);
+  return entry;
+ }
+ try{
+  await stage('configure',tools.cmake.path,['-S',directory,'-B',build,'-G','Visual Studio 17 2022','-A',a['--arch']+',version=10.0.19041.0','-DCMAKE_GENERATOR_INSTANCE='+tools.vsInstance,'-T','v143,host=x64,version=14.44.35207','-DCMAKE_SYSTEM_VERSION=10.0.19041.0','-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir='+path.join(directory,'empty-user-props')+path.sep],120000);
+  selectedSdkCheck('configure');
+  await stage('build-full-native-suite',tools.cmake.path,['--build',build,'--config','Release','--target','root_full_native_suite','--','/m:1','/nr:false','/p:VcpkgEnabled=false','/p:VcpkgEnableManifest=false','/p:VCToolsVersion=14.44.35207','/p:WindowsTargetPlatformVersion=10.0.19041.0','/p:ImportDirectoryBuildProps=false','/p:ImportDirectoryBuildTargets=false','/p:UseEnv=false','/p:UserRootDir='+path.join(directory,'empty-user-props')+path.sep,'/bl:'+path.join(output,'build.binlog')],900000);
+  selectedSdkCheck('build');
+  const cache=fs.readFileSync(path.join(build,'CMakeCache.txt'),'utf8');for(const [key,value]of Object.entries(packet.cmakeOptions))if(!cache.split(/\r?\n/).includes(key+':BOOL='+value))throw Error('Actual CMake profile changed: '+key);
+  const actualSources=fs.readFileSync(path.join(build,'actual-sdk-sources.txt'),'utf8').trimEnd().split('\n').map(normalize).sort();
+  if(JSON.stringify(actualSources)!==JSON.stringify(packet.sdkSources.map(p=>normalize(path.join(packet.repositoryRoot,p))).sort()))throw Error('Normal actual SDK sources changed');
+  const actualUiaSources=fs.readFileSync(path.join(build,'actual-uia-sources.txt'),'utf8').trimEnd().split('\n').map(p=>normalize(path.resolve(packet.repositoryRoot,'sdk/accessibility/uia',p))).sort();
+  if(JSON.stringify(actualUiaSources)!==JSON.stringify(packet.uiaSources.map(p=>normalize(path.join(packet.repositoryRoot,p))).sort()))throw Error('Actual optional UIA source set differs');
+  const registered=fs.readFileSync(path.join(build,'actual-registered-tests.txt'),'utf8').trimEnd().split('\n').sort();
+  if(JSON.stringify(registered)!==JSON.stringify(packet.expectedTests))throw Error('Registered suite differs from source-reviewed test set');
+  const targets=fs.readFileSync(path.join(build,'actual-native-targets.txt'),'utf8').trimEnd().split('\n').sort();
+  if(JSON.stringify(targets)!==JSON.stringify(packet.expectedTargets))throw Error('Actual executable target set differs from source-reviewed targets');
+  const artifactPaths=list(build).filter(p=>/\.(obj|pch|lib|exe|pdb|tlog|vcxproj|cmake|inc|cpp|h)$/i.test(p)).concat(path.join(output,'build.binlog'),path.join(build,'CMakeCache.txt'),['actual-sdk-sources.txt','actual-uia-sources.txt','actual-registered-tests.txt','actual-native-targets.txt'].map(p=>path.join(build,p)));
+  const artifactPins=[...new Set(artifactPaths)].map(p=>({path:p,bytes:fs.statSync(p).size,sha256:digest(p)}));
+  const sdkObjects=artifactPins.filter(p=>p.path.toLowerCase().split(path.sep).includes('soui_sdk.dir')&&p.path.toLowerCase().endsWith('.obj'));
+  if(sdkObjects.length!==24||JSON.stringify(sdkObjects.map(p=>path.basename(p.path).toLowerCase()).sort())!==JSON.stringify(packet.sdkSources.map(p=>path.basename(p,'.cpp').toLowerCase()+'.obj').sort()))throw Error('SDK object set is not actual 24');
+  const executablePins=targets.map(target=>{const candidates=artifactPins.filter(p=>path.basename(p.path).toLowerCase()===(target+'.exe').toLowerCase());if(candidates.length!==1)throw Error('Actual unique suite executable missing: '+target);const p=pin(candidates[0]),pe=inspect(p.path);if(pe.dll||pe.machine!==expectedMachine)throw Error('Suite executable architecture mismatch');return{target,...p};});
+  const generatedFragmentPins=packet.expectedGeneratedFragments.map(expected=>{const file=path.join(build,expected.outputRelativePath),bytes=fs.readFileSync(file),source=fs.readFileSync(expected.source.path),fragment=source.subarray(expected.startByte,expected.endByteExclusive);pin(expected.source);if(bytes.length!==expected.bytes||sha(bytes)!==expected.sha256||!bytes.equals(fragment))throw Error('Actual generated finite source bytes differ: '+expected.name);return{...expected,generated:{path:file,bytes:bytes.length,sha256:sha(bytes)}};});
+  const tracking=list(build).filter(p=>/\.tlog$/i.test(p)),commands=[];for(const file of tracking)if(/\.command\./i.test(file)){const b=fs.readFileSync(file);commands.push({path:file,text:b[0]===255&&b[1]===254?b.subarray(2).toString('utf16le'):b.toString('utf8')});}
+  const sdkCommands=commands.filter(p=>p.path.toLowerCase().split(path.sep).includes('soui_sdk.dir')&&/^cl\.command\./i.test(path.basename(p.path)));
+  if(sdkCommands.length!==1)throw Error('Exactly one actual normal SDK CL command tracking file required');
+  const sdkCommand=sdkCommands[0].text.replaceAll('\\','/').toLowerCase();
+  if(!sdkCommand.includes('/ehsc')||!sdkCommand.includes('/md')||!sdkCommand.includes('/utf-8'))throw Error('Actual normal SDK unwind/runtime/encoding flags missing');
+  if(!sdkCommand.includes(normalize(path.join(packet.repositoryRoot,'third_party/include/json'))))throw Error('Actual normal SDK ActionJson include composition is missing');
+  for(const p of packet.sdkSources)if(!sdkCommand.includes(normalize(path.join(packet.repositoryRoot,p))))throw Error('Actual SDK CL command did not bind every normal source');
+  if(sdkCommands.some(p=>/SOUI_TEST_KIT|SOUI_TASK_FAMILY_TEST_ONLY|SOUI_ENGINE_STARTUP_TEST_ONLY|SOUI_CURSOR.*TEST_ONLY|SOUI_GPU_COMPOSITOR|SOUI_PERFORMANCE_DIAGNOSTICS|SOUI_BRIDGE_BENCHMARK|SOUI_SOURCE_API_TEST_ONLY/.test(p.text)))throw Error('Normal SDK acquired unit seam/experimental definitions');
+  if(commands.some(p=>/SOUI_TEST_KIT|SOUI_GPU_COMPOSITOR/.test(p.text)))throw Error('Unexpected TestKit/GPU profile');
+  const uiaObjects=artifactPins.filter(p=>p.path.toLowerCase().split(path.sep).includes('soui_uia.dir')&&p.path.toLowerCase().endsWith('.obj'));
+  const uiaCommands=commands.filter(p=>p.path.toLowerCase().split(path.sep).includes('soui_uia.dir')&&/^cl\.command\./i.test(path.basename(p.path)));
+  if(uiaObjects.length!==1||path.basename(uiaObjects[0].path).toLowerCase()!=='windows_uia_provider.obj'||uiaCommands.length!==1)throw Error('Actual optional UIA object/command set differs');
+  const uiaCommand=uiaCommands[0].text.replaceAll('\\','/').toLowerCase();
+  if(!uiaCommand.includes('/ehsc')||!uiaCommand.includes('/md')||!uiaCommand.includes('/utf-8')||!uiaCommand.includes(normalize(path.join(packet.repositoryRoot,packet.uiaSources[0]))))throw Error('Actual UIA CL command/source binding differs');
+  if(uiaCommands.some(p=>/SOUI_TEST_KIT|SOUI_TASK_FAMILY_TEST_ONLY|SOUI_ENGINE_STARTUP_TEST_ONLY|SOUI_SOURCE_API_TEST_ONLY/.test(p.text)))throw Error('Optional UIA acquired unit seam definitions');
+  const familyCommands=commands.filter(p=>/^cl\.command\./i.test(path.basename(p.path))&&p.path.toLowerCase().split(path.sep).includes('soui_local_task_family_tests.dir'));
+  const prepareCommands=commands.filter(p=>/^cl\.command\./i.test(path.basename(p.path))&&p.path.toLowerCase().split(path.sep).includes('soui_local_task_family_prepare_tests.dir'));
+  const seamCommands=commands.filter(p=>/SOUI_TASK_FAMILY_TEST_ONLY/.test(p.text));
+  if(familyCommands.length!==1||prepareCommands.length!==1||familyCommands[0].text.includes('SOUI_TASK_FAMILY_TEST_ONLY')||!prepareCommands[0].text.includes('SOUI_TASK_FAMILY_TEST_ONLY')||seamCommands.some(p=>!p.path.toLowerCase().split(path.sep).includes('soui_local_task_family_prepare_tests.dir')))throw Error('Task family preparation seam escaped its private EXE');
+  json(path.join(output,'suite-artifact-pins.json'),{artifactPins,sdkObjects,uiaObjects,uiaCommands,familyCommands,prepareCommands,executablePins,targets,sdkCommands,generatedFragmentPins,requestCloseFragmentsMatchLiveWholeSource:true,normalSdkSources:true,sourceApiUnitUsesLocalGetters:true,engineStartupSeamOnlyItsOwnTarget:true,unitsAreNotFullDllRuntimeQualification:true,actualCompilerInputBindingComplete:false,qualificationPassed:false,releaseReady:false});
+  await stage('registered-ctest-preflight',tools.ctest.path,['--test-dir',build,'-C','Release','--show-only=json-v1'],45000);
+  const rawRegistry=fs.readFileSync(path.join(output,'registered-ctest-preflight.stdout.raw'),'utf8'),registry=JSON.parse(rawRegistry);
+  if(JSON.stringify(registry.tests.map(p=>p.name).sort())!==JSON.stringify(packet.expectedTests))throw Error('Actual CTest registry changed');
+  for(const test of registry.tests){
+   const timeout=test.properties.find(p=>p.name==='TIMEOUT')?.value;if(typeof timeout!=='number'||timeout<=0||timeout>60||test.properties.some(p=>p.name==='WILL_FAIL'&&p.value===true))throw Error('Suite test lacks strict bounded verdict');
+   const binding=packet.expectedTestCommands.find(p=>p.name===test.name),exe=binding&&executablePins.find(p=>p.target===binding.target);if(!binding||!exe)throw Error('CTest command has no exact source plan');if(timeout!==binding.timeoutSeconds)throw Error('Actual registered TIMEOUT differs from exact source plan: '+test.name);pin(exe);
+   if(binding.kind==='direct-executable'){if(normalize(test.command[0])!==normalize(exe.path)||JSON.stringify(test.command.slice(1))!==JSON.stringify(binding.args))throw Error('Actual direct test command differs from source plan: '+test.name);}
+   else if(binding.kind==='worker-fail-fast-helper'){pin(binding.helper);if(normalize(test.command[0])!==normalize(tools.cmake.path)||test.command.length!==6||!test.command[1].startsWith('-DSUBJECT=')||normalize(test.command[1].slice(10))!==normalize(exe.path)||test.command[2]!=='-DCASE_ID='+binding.caseId||test.command[3]!=='-DSUBMODE='+binding.submode||test.command[4]!=='-P'||normalize(test.command[5])!==normalize(binding.helper.path))throw Error('Actual finite fail-fast helper command differs: '+test.name);}
+   else throw Error('Unsupported registered command kind');
+  }
+  json(path.join(output,'registered-test-binding.json'),{tests:registry.tests,expectedTestCommands:packet.expectedTestCommands,executablePins,registeredTests:registry.tests.length,exactRegisteredCommandsMatchSourcePlan:true,workerHelperSubjectPidExternalBindingPending:true,allRegisteredTimeoutsBounded:true,realFullDllStartupOrCloseExercised:false,qualificationPassed:false,releaseReady:false});
+  for(const p of artifactPins)pin(p);
+  await stage('ctest-all-registered-native-units',tools.ctest.path,['--test-dir',build,'-C','Release','--output-on-failure','--no-tests=error','--timeout','60','-j','1','--output-junit',path.join(output,'ctest.junit.xml')],1800000);
+  for(const p of artifactPins)pin(p);packageCheck();toolCheck();
+  const junit=fs.readFileSync(path.join(output,'ctest.junit.xml'),'utf8');if(!/<testsuite\b/.test(junit)||/<(?:failure|error|skipped)\b/.test(junit))throw Error('CTest JUnit incomplete/non-success');
+  const junitNames=[...junit.matchAll(/<testcase\b[^>]*name="([^"]+)"/g)].map(p=>p[1]).sort();if(JSON.stringify(junitNames)!==JSON.stringify(packet.expectedTests))throw Error('JUnit actual test set mismatch');
+  // Independently consume this just-built normal SDK through its public installation.
+  const installed=path.join(output,'sdk-installed'),relocated=path.join(output,'sdk-relocated'),consumerBuild=path.join(output,'consumer-build');
+  if([installed,relocated,consumerBuild].some(p=>fs.existsSync(p)))throw Error('Installed consumer outputs must be fresh');
+  await stage('sdk-install',tools.cmake.path,['--install',build,'--config','Release','--prefix',installed],120000);
+  for(const p of artifactPins)pin(p);
+  const installFiles=list(installed),installPins=installFiles.map(file=>({path:file,bytes:fs.statSync(file).size,sha256:digest(file)}));
+  if(!installPins.length)throw Error('Fresh SDK install is empty');
+  for(const source of packet.installedConsumer.expectedCopies){
+   pin(source.source);const file=path.join(installed,source.outputRelativePath);
+   if(!fs.existsSync(file)||fs.statSync(file).size!==source.source.bytes||digest(file)!==source.source.sha256)throw Error('Installed public input differs: '+source.outputRelativePath);
+  }
+  const builtSdk=artifactPins.filter(p=>path.basename(p.path).toLowerCase()==='soui_sdk.lib');
+  if(builtSdk.length!==1)throw Error('Exactly one just-built normal SDK archive is required');
+  const sdkLibrary=path.join(installed,'lib','Release','soui_sdk.lib');
+  if(digest(sdkLibrary)!==builtSdk[0].sha256)throw Error('Installed SDK archive differs from current actual build');
+  const exports=fs.readFileSync(path.join(installed,'lib/cmake/SouiSdk/SouiSdkTargets.cmake'),'utf8');
+  if(!exports.includes('Soui::Sdk')||!exports.includes('Soui::ActionJson')||!exports.includes('Soui::Uia'))throw Error('Current public exported targets are incomplete');
+  fs.cpSync(installed,relocated,{recursive:true,errorOnExist:true,force:false});
+  const relativeInstall=installFiles.map(file=>path.relative(installed,file).replaceAll('\\','/')).sort();
+  if(JSON.stringify(list(relocated).map(file=>path.relative(relocated,file).replaceAll('\\','/')).sort())!==JSON.stringify(relativeInstall))throw Error('Relocated SDK membership differs');
+  const relocatedPins=relativeInstall.map(relative=>{
+   const original=path.join(installed,relative),file=path.join(relocated,relative);
+   if(fs.statSync(file).size!==fs.statSync(original).size||digest(file)!==digest(original))throw Error('Relocated SDK bytes differ');
+   return{path:file,bytes:fs.statSync(file).size,sha256:digest(file)};
+  });
+  const consumer=packet.installedConsumer.sourceDirectory,packageDirectory=path.join(relocated,'lib/cmake/SouiSdk');
+  await stage('consumer-configure',tools.cmake.path,['-S',consumer,'-B',consumerBuild,'-G','Visual Studio 17 2022','-A',a['--arch']+',version=10.0.19041.0','-DCMAKE_GENERATOR_INSTANCE='+tools.vsInstance,'-T','v143,host=x64,version=14.44.35207','-DCMAKE_SYSTEM_VERSION=10.0.19041.0','-DSouiSdk_DIR:PATH='+packageDirectory,'-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF','-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF','-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir='+path.join(directory,'empty-user-props')+path.sep],120000);
+  selectedSdkCheck('consumer-configure',consumerBuild);
+  const consumerCache=fs.readFileSync(path.join(consumerBuild,'CMakeCache.txt'),'utf8');
+  if(!consumerCache.split(/\r?\n/).some(line=>line.startsWith('SouiSdk_DIR:PATH=')&&normalize(line.slice(17))===normalize(packageDirectory)))throw Error('Consumer resolved another SDK package');
+  await stage('consumer-build',tools.cmake.path,['--build',consumerBuild,'--config','Release','--target',packet.installedConsumer.target,'--','/m:1','/nr:false','/p:VcpkgEnabled=false','/p:VcpkgEnableManifest=false','/p:VCToolsVersion=14.44.35207','/p:WindowsTargetPlatformVersion=10.0.19041.0','/p:ImportDirectoryBuildProps=false','/p:ImportDirectoryBuildTargets=false','/p:UseEnv=false','/p:UserRootDir='+path.join(directory,'empty-user-props')+path.sep,'/bl:'+path.join(output,'consumer.binlog')],300000);
+  selectedSdkCheck('consumer-build',consumerBuild);
+  const consumerFiles=list(consumerBuild),consumerExecutables=consumerFiles.filter(file=>path.basename(file).toLowerCase()==='souiendpointconsumer.exe');
+  if(consumerExecutables.length!==1)throw Error('Actual unique installed consumer EXE missing');
+  const executable=consumerExecutables[0],executablePin={path:executable,bytes:fs.statSync(executable).size,sha256:digest(executable)},consumerPe=inspect(executable);
+  if(consumerPe.dll||consumerPe.machine!==expectedMachine)throw Error('Installed consumer architecture differs');
+  const consumerCommands=consumerFiles.filter(file=>normalize(file).startsWith(normalize(path.join(consumerBuild,packet.installedConsumer.target+'.dir/Release'))+'/')&&/\.command\..*\.tlog$/i.test(file)).map(file=>{
+   const bytes=fs.readFileSync(file);return{path:file,text:bytes[0]===255&&bytes[1]===254?bytes.subarray(2).toString('utf16le'):bytes.toString('utf8')};
+  });
+  const cl=consumerCommands.filter(p=>/^cl\.command\./i.test(path.basename(p.path))),link=consumerCommands.filter(p=>/^link\.command\./i.test(path.basename(p.path)));
+  if(cl.length!==1||link.length!==1)throw Error('Actual installed consumer CL/LINK bindings are missing');
+  const clText=cl[0].text.replaceAll('\\','/').toLowerCase(),linkText=link[0].text.replaceAll('\\','/').toLowerCase();
+  if(!clText.includes('/ehsc')||!clText.includes('/md')||!clText.includes('/utf-8')||!clText.includes(normalize(path.join(consumer,'main.cpp')))||!clText.includes(normalize(path.join(relocated,'include')))||clText.includes(normalize(path.join(packet.repositoryRoot,'sdk')))||/SOUI_TEST_KIT|SOUI_TASK_FAMILY_TEST_ONLY|SOUI_GPU_COMPOSITOR/.test(cl[0].text))throw Error('Installed consumer did not use independent normal public headers');
+  if(!linkText.includes(normalize(path.join(relocated,'lib/Release/soui_sdk.lib')))||linkText.includes(normalize(path.join(build,'sdk'))))throw Error('Consumer link did not bind relocated current installed SDK archive');
+  const consumerPins=consumerFiles.filter(file=>/\.(obj|pch|lib|exe|pdb|tlog|vcxproj|cmake)$/i.test(file)).map(file=>({path:file,bytes:fs.statSync(file).size,sha256:digest(file)}));
+  for(const p of [...installPins,...relocatedPins,...consumerPins])pin(p);
+  json(path.join(output,'installed-consumer-bindings.json'),{installPins,relocatedPins,currentBuildSdkArchive:builtSdk[0],executablePin,consumerPe,consumerCommands,consumerPins,sourceConsumer:packet.installedConsumer,currentNormalSdkArchiveMatches:true,relocatedInstalledBytesMatch:true,sourceSdkCompiledAgainByConsumer:false,completeToolchainProvenance:false,qualificationPassed:false,releaseReady:false});
+  await stage('consumer-runtime',executable,[],45000);
+  if(fs.readFileSync(path.join(output,'consumer-runtime.stdout.raw'),'utf8').trim()!==packet.installedConsumer.expectedStdout)throw Error('Actual installed consumer stopped-factory receipt differs');
+  for(const p of [...artifactPins,...installPins,...relocatedPins,...consumerPins])pin(p);
+  packageCheck();toolCheck();
+  json(path.join(output,'summary.json'),{schema:packet.schema,completed:true,packageSha256:a['--package-sha'],architecture:a['--arch'],stages,registeredTests:packet.expectedTests.length,nativeExecutableTargets:packet.expectedTargets.length,requestClosePublicInstalled:true,requestCloseCases:11,workerLifetimePublicInstalled:true,workerLifetimeCases:12,windowsPeerIdentityPublicInstalled:true,windowsPeerIdentityCases:1,dragDataCases:11,ctorShellCases:7,legacyDragLeafCases:3,legacyDefaultLeafApplied:true,generatedFiniteSourceCopies:25,publicFixtureExactSourceRanges:21,normalSdkCppCount:24,optionalUiaCppCount:1,uiaPublicInstalled:true,uiaCases:8,localEndpointPublicInstalled:true,localEndpointCases:20,localTaskFamilyCases:2,jsonBridgeFactoryPublicInstalled:true,jsonBridgeFactoryCases:6,installedConsumerExecuted:true,installedConsumerRelocated:true,installedConsumerNaturalClosed:true,currentSnapshotNotHostRootCauseFix:true,taskFamilyPreparationSeamOnlyItsOwnTarget:true,expectedFatalCasesDoNotProveNaturalResourceCleanup:true,requestCloseFragmentsMatchLiveWholeSource:true,demoTaskQueryCases:5,normalSdkSources:true,souiTestKitDefined:false,webview2BackendBuilt:false,nativeGuiAppBuilt:false,allRegisteredUnitTestsPassed:true,actualGeneratedProjectSdkVersionsMatch:true,selectedWindowsSdk:'10.0.19041.0',actualFullDllStartupCloseQualified:false,engineStartupNativeBoundaryUnitOnly:true,allPerTestPidFiletimeIndependentlyObserved:false,actualCompilerInputBindingComplete:false,targetOsQualification:false,guiRenderingQualification:false,performanceQualification:false,qualificationPassed:false,releaseReady:false,allGenericPassed:stages.every(p=>p.genericPassed)});
+  json(path.join(output,'installed-consumer-summary.json'),{completed:true,publicJsonBridgeFactoryCases:6,currentBuiltNormalSdkArchiveMatches:true,relocatedInstallBytesMatch:true,installedConsumerExecuted:true,installedConsumerNaturalClosed:true,currentSnapshotNotHostRootCauseFix:true,allGenericPassed:stages.every(p=>p.genericPassed),qualificationPassed:false,releaseReady:false});
+  console.log(JSON.stringify({completed:true,output,architecture:a['--arch'],registeredUnitTests:packet.expectedTests.length,installedConsumerExecuted:true,qualificationPassed:false,releaseReady:false}));
+ }catch(error){json(path.join(output,'summary-failed.json'),{schema:packet.schema,completed:false,architecture:a['--arch'],stages,error:error.message,qualificationPassed:false,releaseReady:false});throw error;}
+}
+main().catch(error=>{console.error(error.message);process.exitCode=1;});

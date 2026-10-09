@@ -1,0 +1,163 @@
+{
+  "backtraceGraph" : 
+  {
+    "commands" : 
+    [
+      "add_test"
+    ],
+    "files" : 
+    [
+      "F:/work/sm05-broker/out/ole-startup-schedules-candidate-bed44da5-7aa4-40e4-8cc7-c2216a9434d3/candidate/tests/native/ole_startup_schedules/CMakeLists.txt"
+    ],
+    "nodes" : 
+    [
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 84,
+        "parent" : 0
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 84,
+        "parent" : 2
+      },
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 84,
+        "parent" : 4
+      }
+    ]
+  },
+  "kind" : "ctestInfo",
+  "tests" : 
+  [
+    {
+      "backtrace" : 1,
+      "command" : 
+      [
+        "F:/work/sm05-broker/out/ole-5a2ef5db-x64/build/Release/soui_actual_ole_startup_schedules.exe",
+        "--kernel",
+        "F:\\work\\sm05-broker\\out\\kernel-83e67b12\\runs\\x64\\miniblink\\out\\miniblink.dll",
+        "--kernel-sha",
+        "342aa3b71e180c3a544ea5cde66c15fcf5f18c4126839006e0623bf5ac77d720",
+        "--case",
+        "matching"
+      ],
+      "config" : "Release",
+      "name" : "ole_startup_matching",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "SOUI_DIAGNOSTIC_SCRIPT=1"
+          ]
+        },
+        {
+          "name" : "RUN_SERIAL",
+          "value" : true
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "F:/work/sm05-broker/out/ole-5a2ef5db-x64/build"
+        }
+      ]
+    },
+    {
+      "backtrace" : 3,
+      "command" : 
+      [
+        "F:/work/sm05-broker/out/ole-5a2ef5db-x64/build/Release/soui_actual_ole_startup_schedules.exe",
+        "--kernel",
+        "F:\\work\\sm05-broker\\out\\kernel-83e67b12\\runs\\x64\\miniblink\\out\\miniblink.dll",
+        "--kernel-sha",
+        "342aa3b71e180c3a544ea5cde66c15fcf5f18c4126839006e0623bf5ac77d720",
+        "--case",
+        "ui-advance-before-ack"
+      ],
+      "config" : "Release",
+      "name" : "ole_startup_ui_advance_before_ack",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "SOUI_DIAGNOSTIC_SCRIPT=1"
+          ]
+        },
+        {
+          "name" : "RUN_SERIAL",
+          "value" : true
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "F:/work/sm05-broker/out/ole-5a2ef5db-x64/build"
+        }
+      ]
+    },
+    {
+      "backtrace" : 5,
+      "command" : 
+      [
+        "F:/work/sm05-broker/out/ole-5a2ef5db-x64/build/Release/soui_actual_ole_startup_schedules.exe",
+        "--kernel",
+        "F:\\work\\sm05-broker\\out\\kernel-83e67b12\\runs\\x64\\miniblink\\out\\miniblink.dll",
+        "--kernel-sha",
+        "342aa3b71e180c3a544ea5cde66c15fcf5f18c4126839006e0623bf5ac77d720",
+        "--case",
+        "ack-before-dispatch"
+      ],
+      "config" : "Release",
+      "name" : "ole_startup_ack_before_dispatch",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "SOUI_DIAGNOSTIC_SCRIPT=1"
+          ]
+        },
+        {
+          "name" : "RUN_SERIAL",
+          "value" : true
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "F:/work/sm05-broker/out/ole-5a2ef5db-x64/build"
+        }
+      ]
+    }
+  ],
+  "version" : 
+  {
+    "major" : 1,
+    "minor" : 0
+  }
+}

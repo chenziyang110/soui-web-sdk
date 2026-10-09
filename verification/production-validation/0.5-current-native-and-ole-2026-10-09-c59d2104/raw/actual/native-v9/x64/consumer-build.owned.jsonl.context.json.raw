@@ -1,0 +1,29 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+  "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "--build",
+    "F:\\work\\sm05-broker\\out\\native-v9\\x64\\consumer-build",
+    "--config",
+    "Release",
+    "--target",
+    "SouiEndpointConsumer",
+    "--",
+    "/m:1",
+    "/nr:false",
+    "/p:VcpkgEnabled=false",
+    "/p:VcpkgEnableManifest=false",
+    "/p:VCToolsVersion=14.44.35207",
+    "/p:WindowsTargetPlatformVersion=10.0.19041.0",
+    "/p:ImportDirectoryBuildProps=false",
+    "/p:ImportDirectoryBuildTargets=false",
+    "/p:UseEnv=false",
+    "/p:UserRootDir=F:\\work\\sm05-broker\\out\\full-native-suite-v9-root-f78831af-efd7-4861-9f96-69dc638aa54d\\empty-user-props\\",
+    "/bl:F:\\work\\sm05-broker\\out\\native-v9\\x64\\consumer.binlog"
+  ],
+  "cwd": "F:\\work\\sm05-broker\\out\\native-v9\\x64",
+  "timeoutMs": 300000,
+  "drainMs": 2000
+}

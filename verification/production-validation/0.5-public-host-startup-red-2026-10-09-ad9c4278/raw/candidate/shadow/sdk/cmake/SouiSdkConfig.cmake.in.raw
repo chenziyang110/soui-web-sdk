@@ -1,0 +1,11 @@
+@PACKAGE_INIT@
+if(@SOUI_BUILD_WEBVIEW2@ AND NOT TARGET Soui::WebView2Loader)
+  add_library(Soui::WebView2Loader STATIC IMPORTED)
+  set_target_properties(Soui::WebView2Loader PROPERTIES
+    IMPORTED_LOCATION "${PACKAGE_PREFIX_DIR}/lib/webview2/WebView2LoaderStatic.lib")
+endif()
+include("${CMAKE_CURRENT_LIST_DIR}/SouiSdkTargets.cmake")
+set(SouiSdk_WebView2_FOUND @SOUI_BUILD_WEBVIEW2@)
+set(SouiSdk_ActionJson_FOUND TRUE)
+set(SouiSdk_Uia_FOUND @SOUI_BUILD_UIA@)
+check_required_components(SouiSdk)

@@ -1,0 +1,26 @@
+'use strict';
+// Filesystem-only PE export parser. Never maps or loads the candidate image.
+const fs=require('node:fs');
+function inspect(file){
+ const fd=fs.openSync(file,'r'),size=fs.fstatSync(fd).size;
+ function read(offset,length){if(!Number.isSafeInteger(offset)||!Number.isSafeInteger(length)||offset<0||length<0||offset+length>size)throw Error('PE read exceeds file');const b=Buffer.alloc(length);if(fs.readSync(fd,b,0,length,offset)!==length)throw Error('Short PE read');return b;}
+ try{
+  const dos=read(0,64);if(dos.readUInt16LE(0)!==0x5a4d)throw Error('PE DOS signature');
+  const pe=dos.readUInt32LE(60),coff=read(pe,24);if(coff.readUInt32LE(0)!==0x4550)throw Error('PE signature');
+  const machine=coff.readUInt16LE(4),count=coff.readUInt16LE(6),optionalBytes=coff.readUInt16LE(20),characteristics=coff.readUInt16LE(22);
+  if(!count||count>96||optionalBytes<104||optionalBytes>4096)throw Error('PE header bounds');
+  const optional=read(pe+24,optionalBytes),magic=optional.readUInt16LE(0),directories=magic===0x20b?112:magic===0x10b?96:0;
+  if(!directories||optionalBytes<directories+8)throw Error('PE optional header bounds');
+  const exportRva=optional.readUInt32LE(directories),exportBytes=optional.readUInt32LE(directories+4),sections=[];
+  const table=read(pe+24+optionalBytes,count*40);
+  for(let n=0;n<count;n++){const at=n*40;sections.push({rva:table.readUInt32LE(at+12),virtualBytes:table.readUInt32LE(at+8),rawBytes:table.readUInt32LE(at+16),rawOffset:table.readUInt32LE(at+20)});}
+  function location(rva,length){if(!rva||!Number.isSafeInteger(length)||length<0)throw Error('PE RVA bounds');const section=sections.find(p=>rva>=p.rva&&rva-p.rva<p.rawBytes);if(!section||rva-section.rva+length>section.rawBytes)throw Error('PE RVA is not backed by complete file bytes');return section.rawOffset+rva-section.rva;}
+  function rvaRead(rva,length){return read(location(rva,length),length);}
+  function name(rva){const section=sections.find(p=>rva>=p.rva&&rva-p.rva<p.rawBytes);if(!section)throw Error('Export name outside section');const b=rvaRead(rva,Math.min(1024,section.rawBytes-(rva-section.rva))),end=b.indexOf(0);if(end<1||b.subarray(0,end).some(c=>c<33||c>126))throw Error('Export name bounds');return b.subarray(0,end).toString('ascii');}
+  let exports=[];
+  if(exportRva){const directory=rvaRead(exportRva,40),functions=directory.readUInt32LE(20),names=directory.readUInt32LE(24);if(functions>100000||names>functions||names>100000)throw Error('PE export count bounds');const functionTable=rvaRead(directory.readUInt32LE(28),functions*4),nameTable=rvaRead(directory.readUInt32LE(32),names*4),ordinals=rvaRead(directory.readUInt32LE(36),names*2);for(let n=0;n<names;n++){const ordinal=ordinals.readUInt16LE(n*2);if(ordinal>=functions)throw Error('PE export ordinal');const rva=functionTable.readUInt32LE(ordinal*4);exports.push({name:name(nameTable.readUInt32LE(n*4)),rva,forwarded:rva>=exportRva&&rva-exportRva<exportBytes});}}
+  if(new Set(exports.map(p=>p.name)).size!==exports.length)throw Error('Duplicate PE export names');
+  return {machine,optionalHeaderMagic:magic,dll:(characteristics&0x2000)!==0,exports};
+ }finally{fs.closeSync(fd);}
+}
+module.exports={inspect};

@@ -1,0 +1,113 @@
+{
+  "schema": "soui.actual-ole-startup-copy-plan/1",
+  "applyLive": false,
+  "status": "candidate-unexecuted",
+  "before": [
+    {
+      "path": "sdk/src/host/soui_miniblink_host.cpp",
+      "bytes": 156673,
+      "sha256": "5fe6f5e090ec9cf0edd7676c257cdb1c490d19d895877b9435b5d32fc7d6e258"
+    },
+    {
+      "path": "out/w2d8/native/main.cpp",
+      "bytes": 17506,
+      "sha256": "55b2ac5806e41448400d5c84dfbe40c64666497e707899b79937ab286d288257"
+    }
+  ],
+  "payloads": [
+    {
+      "path": "ADR.md",
+      "bytes": 5933,
+      "sha256": "34e29b1a94c9eb3ec85accea845e8ae1831fc2dad7eca64718d557cfa385602d"
+    },
+    {
+      "path": "candidate/sdk/src/host/soui_miniblink_host.cpp",
+      "bytes": 158311,
+      "sha256": "e29be926f1bfef2b7ad052f86ae516be49ac96118a3e191879d0cd12157e7947"
+    },
+    {
+      "path": "w2-main.cpp",
+      "bytes": 18177,
+      "sha256": "ff636a2201bcb18889a87b02af82eb12dd4b8557c12a333a15d588a21516b56e"
+    },
+    {
+      "path": "candidate/tests/native/ole_startup_schedules/fixture.cpp",
+      "bytes": 19368,
+      "sha256": "2d490941ae72a6e933fb904b307b0d1a02ff369ddc54264b32cc21e80e9fc2a7"
+    },
+    {
+      "path": "candidate/tests/native/ole_startup_schedules/CMakeLists.txt",
+      "bytes": 4407,
+      "sha256": "3b69cc551ba7f8c8574db5047c6cc83c4d91b8e2af7cc02531d63d7ee87a264e"
+    },
+    {
+      "path": "candidate/tests/native/ole_startup_schedules/README.md",
+      "bytes": 3770,
+      "sha256": "fb886c15d7667d0edadc1d9c935b3cdb18b2a40fcb1fc845c729eba4676292be"
+    },
+    {
+      "path": "candidate/tests/native/ole_startup_schedules/.gitattributes",
+      "bytes": 93,
+      "sha256": "e8cc0db5e42ecf6719f54ec3935785639372dd959ba6d17aad9c8f99844008b6"
+    },
+    {
+      "path": "candidate/tests/native/ole_startup_schedules/source-pins.json",
+      "bytes": 19707,
+      "sha256": "5c8293cb2fc452e7a1b3bdccfc1543b0201dcfcde343807fcb30c777dd790192"
+    }
+  ],
+  "byteSpans": [
+    {
+      "source": "sdk/src/host/soui_miniblink_host.cpp",
+      "candidate": "candidate/sdk/src/host/soui_miniblink_host.cpp",
+      "name": "opt-in-real-vendor-drain",
+      "beforeOffset": 102041,
+      "beforeBytes": 0,
+      "beforeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "afterOffset": 102041,
+      "afterBytes": 1638,
+      "afterSha256": "7b127724135ba79e8bd5524609be886b60d1918d763f2b954685ce19b48276f4",
+      "outsideBytesPreserved": true
+    },
+    {
+      "source": "out/w2d8/native/main.cpp",
+      "candidate": "w2-main.cpp",
+      "name": "opt-in-success-before-close",
+      "beforeOffset": 9819,
+      "beforeBytes": 0,
+      "beforeSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "afterOffset": 9819,
+      "afterBytes": 671,
+      "afterSha256": "27405d3f823aaecd0e70edca6d72484f6e90e18c4a91870a8cfc0db7bc51a05f",
+      "outsideBytesPreserved": true
+    }
+  ],
+  "productionAdmissionOrStartupChanged": false,
+  "sourceInputManifest": "candidate/tests/native/ole_startup_schedules/source-pins.json",
+  "inputCount": 83,
+  "normalSdkCppCount": 24,
+  "normalSdkPrivateHeaderCount": 15,
+  "normalSdkPublicHeaderCount": 32,
+  "target": "soui_actual_ole_startup_schedules",
+  "tests": [
+    "ole_startup_matching",
+    "ole_startup_ui_advance_before_ack",
+    "ole_startup_ack_before_dispatch"
+  ],
+  "ctestTimeoutSeconds": 20,
+  "ctestSerial": true,
+  "ctestWillFail": false,
+  "requiresStartupEnvironment": "SOUI_DIAGNOSTIC_SCRIPT=1",
+  "directDefaultRequiresActualRegistration": true,
+  "characterizeFlag": "--characterize",
+  "externalRootOwnedBindingRequired": true,
+  "actualDllBinding": "Root must supply actual producer artifact path and SHA per architecture; no old result borrowed",
+  "privateMainOrigin": "out/w2d8/native/main.cpp",
+  "privateMainApply": "Root-derived fresh diagnostic packet only; historical W2d8 untouched",
+  "nativeOrNodeOrCMakeExecuted": false,
+  "win7Qualified": false,
+  "fullSdkQualified": false,
+  "initializedUnloadQualified": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

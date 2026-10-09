@@ -1,0 +1,78 @@
+'use strict';
+// Root only: one unchanged default ACK-before-dispatch case, always a failed suite.
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const same=require('node:util').isDeepStrictEqual,directory=__dirname;
+const hash=f=>crypto.createHash('sha256').update(fs.readFileSync(f)).digest('hex');
+const norm=f=>path.resolve(f).replaceAll('\\','/').toLowerCase();
+const need=(v,m)=>{if(!v)throw Error(m);},read=f=>JSON.parse(fs.readFileSync(f,'utf8'));
+const write=(f,v)=>fs.writeFileSync(f,JSON.stringify(v,null,2)+'\n',{flag:'wx'});
+const filePin=f=>({path:f,bytes:fs.statSync(f).size,sha256:hash(f)});
+function list(root){return fs.readdirSync(root,{withFileTypes:true}).flatMap(e=>{const f=path.join(root,e.name);need(!e.isSymbolicLink(),'Linked input');return e.isDirectory()?list(f):e.isFile()?[f]:(()=>{throw Error('Nonregular input');})();}).sort();}
+function pin(p){need(p&&path.isAbsolute(p.path)&&Number.isSafeInteger(p.bytes)&&/^[a-f0-9]{64}$/.test(p.sha256)&&!fs.lstatSync(p.path).isSymbolicLink()&&fs.statSync(p.path).isFile()&&fs.statSync(p.path).size===p.bytes&&hash(p.path)===p.sha256,'Input changed: '+p?.path);if(p.resolvedPath)need(norm(fs.realpathSync(p.path))===norm(p.resolvedPath),'Resolved tool changed');}
+function identity(pid,ft){need(Number.isSafeInteger(pid)&&pid>0&&typeof ft==='string'&&/^[1-9]\d{0,19}$/.test(ft),'Actual PID/FILETIME invalid');return{pid,creationFileTime:ft};}
+async function main(){
+ const [gate,packageSha,...extra]=process.argv.slice(2);need(gate==='ROOT_ACTUAL_OLE_ACK_ONLY_V1'&&!extra.length&&/^[a-f0-9]{64}$/.test(packageSha||''),'Root gate invalid');
+ const packageFile=path.join(directory,'package.json');need(hash(packageFile)===packageSha,'Reviewed package changed');const packet=read(packageFile);
+ need(packet.schema==='soui.actual-ole-ack.root/1'&&packet.executionOwner==='Root only'&&packet.case==='ack-before-dispatch'&&packet.expectedDefaultExitCode===2&&packet.releaseReady===false,'One-case contract differs');
+ pin(packet.parentPackage);pin(packet.parentSeal);pin(packet.artifactBinding);const parent=read(packet.parentPackage.path),parentSeal=read(packet.parentSeal.path),binding=read(packet.artifactBinding.path);
+ pin(parent.tools);const tools=read(parent.tools.path),toolPins=[...new Map(Object.values(tools).filter(v=>v&&typeof v==='object'&&!Array.isArray(v)&&v.path).concat(tools.toolImages).map(p=>[norm(p.path),p])).values()];
+ pin(parent.sourceManifest);const manifest=read(parent.sourceManifest.path);
+ need(manifest.files.length===83&&binding.artifactPins.length===74&&binding.normalSdkCppCount===24&&binding.completeToolchainProvenance===false,'Original finite inputs differ');
+ need(binding.artifactPins.some(p=>norm(p.path)===norm(packet.executable.path)&&p.bytes===110592&&p.sha256==='46c02cbdc8c19ff1b983dc037fc07aaf084dd4843f2c7e6cd4c4923e7aedb8d5'),'Exact already-built EXE binding differs');
+ function check(){
+  need(hash(packageFile)===packageSha,'Reviewed package changed');
+  for(const p of [...packet.payloads,packet.parentPackage,packet.parentSeal,packet.artifactBinding,packet.executable,...parentSeal.files,...parent.payloads,...parent.candidatePayloads,...parent.configureSupport,parent.tools,...toolPins,parent.producer.summary,parent.producer.artifact,parent.kernel,...binding.artifactPins,...manifest.files.map(p=>({...p,path:path.join(parent.repositoryRoot,p.path)}))])pin(p);
+  for(const [kind,suffix,subroot]of [['sdk_cpp','.cpp','sdk/src'],['sdk_private_h','.h','sdk/src'],['sdk_public_h','.h','sdk/include']])need(same(list(path.join(parent.repositoryRoot,subroot)).filter(f=>f.endsWith(suffix)).map(f=>path.relative(parent.repositoryRoot,f).replaceAll('\\','/')).sort(),[...manifest.inventories[kind]].sort()),'Current source inventory changed');
+  need(same(list(parent.candidatePacketRoot).map(f=>path.relative(parent.candidatePacketRoot,f).replaceAll('\\','/')).sort(),[...parent.candidateMembership].sort()),'Original fixture membership changed');
+  need(same(list(path.dirname(packet.parentPackage.path)).map(f=>path.relative(path.dirname(packet.parentPackage.path),f).replaceAll('\\','/')).sort(),[...parent.membership].sort()),'Original wrapper membership changed');
+  need(same(list(directory).map(f=>path.relative(directory,f).replaceAll('\\','/')).sort(),[...packet.membership].sort()),'New packet membership changed');
+ }
+ check();need(!fs.existsSync(packet.outputRoot)&&norm(packet.outputRoot).startsWith(norm(parent.repositoryRoot)+'/out/'),'Output must be fresh');const output=packet.outputRoot;fs.mkdirSync(output);
+ for(const p of ['profile/AppData/Roaming','profile/AppData/Local','temp'])fs.mkdirSync(path.join(output,p),{recursive:true});
+ const inputs={parentPackage:packet.parentPackage,parentSeal:packet.parentSeal,artifactBinding:packet.artifactBinding,artifactCount:74,sourceManifest:parent.sourceManifest,sourceCount:83,tools:parent.tools,executable:packet.executable,kernel:parent.kernel,allPinsVerified:true,completeToolchainProvenance:false};write(path.join(output,'before.json'),inputs);
+ const env={},allow=new Set(parent.environmentAllowlist);for(const [key,value]of Object.entries(process.env))if(allow.has(key.toUpperCase()))env[key.toUpperCase()]=value;
+ env.USERPROFILE=path.join(output,'profile');env.APPDATA=path.join(output,'profile','AppData','Roaming');env.LOCALAPPDATA=path.join(output,'profile','AppData','Local');env.TEMP=env.TMP=path.join(output,'temp');const windows=env.SYSTEMROOT||'C:\\Windows';env.PATH=[path.dirname(packet.executable.path),path.join(windows,'System32'),windows].join(';');env.SOUI_DIAGNOSTIC_SCRIPT='1';
+ // Existing helper is loaded only after its pinned bytes, all tools and inputs are verified.
+ const {launchOwned}=require(tools.ownedClient.path),args=['--kernel',parent.kernel.path,'--kernel-sha',parent.kernel.sha256,'--case','ack-before-dispatch'];
+ const report=path.join(output,'case.owned.ndjson'),stdout=path.join(output,'case.stdout.raw'),stderr=path.join(output,'case.stderr.raw'),errors={execution:[],ownedBinding:[],nativeReceipt:[],closure:[],postInputs:[]};let result=null,ready=null,readyError=null;
+ const out=fs.openSync(stdout,'wx'),err=fs.openSync(stderr,'wx');
+ try{const run=launchOwned(packet.executable.path,args,{runner:tools.runner.path,cwd:output,report,timeoutMs:20000,drainMs:2000,env,stdout:out,stderr:err});try{ready=await run.ready;identity(ready.pid,ready.creationFileTime);write(path.join(output,'case.ready.json'),ready);}catch(error){readyError=error.message;write(path.join(output,'case.ready-error.json'),{error:readyError});}result=await run.finished;}catch(error){errors.execution.push(error.message);}finally{fs.closeSync(out);fs.closeSync(err);}
+ write(path.join(output,'case.finished.json'),result);
+ let rows=[],last=null,ownedBound=false,naturalClosed=false,forcedConsoleObserved=false,postRootMembers=[],nativeReceipt=null,receiptBound=false,exactRootFailure=false;
+ try{
+  need(result&&!readyError&&!result.spawnError&&!result.reportError&&!result.signal&&result.stopRequested===false&&result.fallbackUsed===false,'Client/report supervision failure');
+  const raw=fs.readFileSync(report,'utf8');need(raw.endsWith('\n'),'Truncated Owned report');rows=raw.trimEnd().split('\n').map(JSON.parse);const first=rows[0],rootExits=rows.filter(r=>r.event==='root-exit');last=rows.at(-1);const context=read(report+'.context.json');
+  need(first.schema==='soui.owned-process-run/v1'&&first.event==='start'&&rows.filter(r=>r.event==='start').length===1&&last.event==='terminal'&&rows.filter(r=>r.event==='terminal').length===1,'Raw start/terminal cardinality');
+  need(same(identity(first.pid,first.creationFileTime),ready)&&first.pid===result.pid&&first.creationFileTime===result.creationFileTime&&first.jobAssignedBeforeResume===true&&first.breakawayAllowed===false&&first.timeoutMs===20000&&first.drainMs===2000,'Ready/raw/final subject identity differs');
+  need(same(last,result.terminal)&&last.rootExited===true&&last.rootExitCode===result.exitCode&&rootExits.length===1&&rootExits[0].exitCode===result.exitCode&&Number.isFinite(rootExits[0].elapsedMs)&&rootExits[0].elapsedMs<20000&&Number.isFinite(last.elapsedMs)&&last.elapsedMs<20000,'Actual root/terminal/deadline differs');
+  need(context.schema==='soui.owned-process-context/v1'&&context.executable===packet.executable.path&&same(context.args,args)&&context.cwd===output&&context.timeoutMs===20000&&context.drainMs===2000&&context.runnerSha256===tools.runner.sha256&&context.executableSha256===packet.executable.sha256&&result.runnerSha256===tools.runner.sha256&&result.executableSha256===packet.executable.sha256&&result.reportSha256===hash(report),'Actual argv/image/context binding differs');
+  need(result.passed===false&&last.passed===false&&result.exitCode===2&&result.supervisorExitCode===2&&last.reason==='root-failed','Actual default failed exit differs');ownedBound=true;
+  exactRootFailure=true;
+ }catch(error){errors.ownedBinding.push(error.message);}
+ try{
+  const lines=fs.readFileSync(stdout,'utf8').trim().split(/\r?\n/).filter(Boolean);need(lines.length===1,'Exactly one actual receipt required');nativeReceipt=JSON.parse(lines[0]);const r=nativeReceipt;
+  need(result&&r.schema==='soui.actual-ole-startup-schedule/1'&&r.case==='ack-before-dispatch'&&r.pid===result.pid&&r.creationFileTime===result.creationFileTime&&r.actualDllSha256===parent.kernel.sha256&&r.characterizationOnly===false&&r.measurementPassed===true&&r.registrationPreserved===false&&r.ownerWithdrawn===true&&r.engineThreadJoined===true&&r.startupQualified===false&&r.initializedUnloadQualified===false&&r.qualificationPassed===false&&r.releaseReady===false,'Actual native subject/outcome fields differ');
+  function drain(d,queued,closing,drained){need(d&&d.status===0&&d.vendorFailed===false&&d.queued===queued&&d.running===0&&d.nativeScopes===0&&d.engineCallbacks===0&&d.oleRegistered===0&&d.closing===closing&&d.drained===drained&&d.nonAtomic===true,'Actual drain fields differ');}
+  drain(r.before,1,0,0);drain(r.after,0,0,0);drain(r.close,0,1,1);
+  need(r.enterCalls===0&&r.admitted===0&&r.registrationCompleted===1&&r.registrationCancelled===1&&r.allUiCompleted===2,'Actual registration/cancellation counters differ');
+  const a=r.nativeAdmission,zero={view:'0',document:'0',geometry:'0'};need(a&&a.enabled===true&&a.reason==='none'&&a.kind===0&&a.pending===false&&a.closing===false&&same(a.sdk,zero)&&same(a.receipt,zero),'Actual first-rejection snapshot differs');receiptBound=true;
+ }catch(error){errors.nativeReceipt.push(error.message);}
+ try{
+  need(ownedBound&&result.closureConfirmed===true&&last.closureConfirmed===true&&last.activeProcesses===0&&Number.isSafeInteger(last.totalProcesses)&&last.totalProcesses>=1&&last.limitTerminatedProcesses===0,'Whole held Job closure unverified');
+  naturalClosed=last.terminatedOwnedJob===false&&last.activeBeforeCleanup===0;
+  if(!naturalClosed){
+   need(last.terminatedOwnedJob===true&&last.activeBeforeCleanup===1&&last.totalProcesses===2,'Unexpected forced owned tail');
+   const exitIndex=rows.findIndex(r=>r.event==='root-exit');const after=rows.slice(exitIndex+1,-1),snapshot=after.find(r=>r.event==='job-members');postRootMembers=after.filter(r=>r.event==='owned-member');
+   need(snapshot&&snapshot.activeProcesses===1&&snapshot.totalProcesses===2&&snapshot.limitTerminatedProcesses===0&&postRootMembers.length===1,'Post-root own-member observation incomplete');const member=postRootMembers[0];identity(member.pid,member.creationFileTime);
+   need(member.pid!==result.pid&&norm(member.image)===norm(packet.consoleImage)&&rows.slice(0,exitIndex).some(r=>r.event==='owned-member'&&r.pid===member.pid&&r.creationFileTime===member.creationFileTime&&norm(r.image)===norm(member.image)),'Forced tail is not the previously observed own console');forcedConsoleObserved=true;
+   errors.closure.push('OwnedRunner forced disposal of its observed conhost; natural closure was not observed.');
+  }
+ }catch(error){errors.closure.push(error.message);}
+ try{check();write(path.join(output,'after.json'),inputs);}catch(error){errors.postInputs.push(error.message);}
+ const expectedScheduleObserved=ownedBound&&receiptBound&&exactRootFailure&&!errors.postInputs.length&&(naturalClosed||forcedConsoleObserved);
+ const pinIf=f=>fs.existsSync(f)?filePin(f):null;
+ const observation={case:'ack-before-dispatch',SubjectPID:result?.pid?String(result.pid):null,creationFileTime:result?.creationFileTime??null,rootExitCode:result?.exitCode??null,supervisorExitCode:result?.supervisorExitCode??null,genericPassed:result?.passed??false,actualDefaultFailureObserved:exactRootFailure,nativeReceiptBound:receiptBound,nativeReceipt,expectedScheduleObserved,wholeJobClosureConfirmed:result?.closureConfirmed===true,wholeJobNaturalClosed:naturalClosed,forcedOwnedConsoleObserved:forcedConsoleObserved,postRootMembers,memberSnapshotNonAtomic:true,naturalQualificationPassed:false,resourceReleaseQualified:false,registrationPreserved:false,terminal:last,errors,raw:pinIf(report),context:pinIf(report+'.context.json'),stdout:pinIf(stdout),stderr:pinIf(stderr),finished:pinIf(path.join(output,'case.finished.json')),startupQualified:false,formalPassed:false,qualificationPassed:false,releaseReady:false};
+ write(path.join(output,'case.observation.json'),observation);write(path.join(output,'summary.json'),{schema:packet.schema,completed:result!==null,directCases:1,buildExecuted:false,ctestExecuted:false,originalFailedStagePromoted:false,originalBHistoryChanged:false,observation,allGenericPassed:false,naturalQualificationPassed:false,completeToolchainProvenance:false,initializedUnloadQualified:false,win7Qualified:false,fullSdkQualification:false,formalPassed:false,qualificationPassed:false,releaseReady:false});
+ console.log(JSON.stringify({case:observation.case,SubjectPID:observation.SubjectPID,creationFileTime:observation.creationFileTime,root:observation.rootExitCode,supervisor:observation.supervisorExitCode,genericPassed:observation.genericPassed,expectedScheduleObserved,wholeJobNaturalClosed:naturalClosed,forcedOwnedConsoleObserved:forcedConsoleObserved,errors}));process.exitCode=1;
+}
+main().catch(e=>{console.error(e.message);process.exitCode=1;});

@@ -1,0 +1,15 @@
+# 真实公共 Host 的注册前置 RED
+
+本候选尚未执行，不改变任何 live SDK 或启动门槛。完整正常 SDK 私有副本为 24 CPP / 15 私有头 / 32 公共头；唯一代码差异是既有封存 e29be926 Host 只读诊断。支持文件来自当前实际 SDK CMake 的有限依赖，未重新构建旧内核。
+
+唯一测试为 `host_startup_registration_before_return`，GUI 子系统目标 `soui_public_host_startup_red`，无 `WILL_FAIL`，TIMEOUT 20。真实隐藏 owner、json_bridge、动态 Miniblink Host、本地 index.html 和指定实际 DLL 参与。调用 start 后立即读取已有 engine inspectDrain；此前没有调用方消息泵、resize、show、业务或 OLE 手工注册。
+
+默认 desired 断言为 start 返回时实际 OLE 已注册。当前未修复源码预计测得 0，安全关闭后返回 2，保持失败；不能将 observedCurrentRed 或期望的失败码标为 suite pass。若返回 0，必须真实 oleRegistered=1 且 statusOK。FAILED9、queued/running/engine callback 等均按实际读取保存，不固定猜测。非原子 ledger 不证明对应 UI task 的 kind 或首个 Document 时序；perKindCompletionMeasured 保持 false。
+
+应用保留 owner/Bridge/Host 到真实 destroy 成功，失败仅泵这个 owner 和子窗口并重试。超过清理界限或异常 ExitProcess91，Root Owned Job 必须如实记失败及清理；不能把 timeout 当 drain。成功后 Host、HWND、Bridge 按顺序销毁，再调用实际 shutdown_miniblink_runtime；这表示实际函数返回，完整 GC、卸载、所有线程自然退出/厂商资源闭合、Win7 和发布资格仍未验证。
+
+进程启动前由 Root 设置 SOUI_DIAGNOSTIC_SCRIPT=1。参数：`--kernel <absolute DLL> --kernel-sha <64 lowercase hex> --resources <absolute local resources> --output <fresh absolute JSON>`。DLL 由实际文件句柄保持只读锁并全流 SHA256 校验；输出仅固定 receipt 字段、PID/字符串 creation FILETIME，不输出原始 JS/页面内容、token、HWND 或线程身份。
+
+CMake configure 与 mandatory prebuild 检查当前 live、私有 SDK shadow 和 fixture/resource 的完整字节及两套 24/15/32 成员。Root wrapper 另查所有 payload/tools 和原 producer artifact，要求固定 19041/v14314.44 hostx64、实际 CL 输入及 PE、真实 registry。预期 RED2 仍 genericPassed=false；compiler closed-tail partial 也保持 false。旧 schedule A/B/C 的记录不变，本测试不能断言所有历史 W2 失败的确切原因。
+
+后续启动 fence 仅在设计草案中；本目录不含其生产实现。

@@ -1,0 +1,19 @@
+*{box-sizing:border-box}body{margin:0;font:14px "Segoe UI","Microsoft YaHei",sans-serif;background:#edf1f5;color:#203247}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid #a5b3c0;border-radius:4px;background:#fff;color:inherit;padding:7px 12px}
+button:disabled{opacity:.55;cursor:default}input,textarea,select{border:1px solid #b3bdc7;border-radius:3px;padding:6px;color:inherit;background:transparent}
+button:focus,input:focus,select:focus,textarea:focus{outline:2px solid #237aaf;outline-offset:2px}
+.reference{max-width:1380px;margin:auto;padding:24px;min-height:100vh}.reference.dark{background:#172332;color:#e3edf7}
+header,.controls,nav{display:flex;align-items:center;gap:12px;flex-wrap:wrap}header{justify-content:space-between}h1{margin:0;font-size:28px}h2{font-size:18px;margin:0 0 12px}
+.eyebrow{font-size:11px;letter-spacing:3px;color:#35718f}.status{padding:12px;background:#d7e9f4;border-left:3px solid #3780ae;color:#1b3a52}
+.note,.task-detail{font-size:12px;line-height:1.7}.columns{display:flex;gap:16px}.columns>section:first-child{flex:2;min-width:0}.columns>section:last-child{flex:1;min-width:300px}
+section{background:rgba(255,255,255,.8);border:1px solid #c5d0d9;border-radius:6px;padding:18px;margin:16px 0}.dark section{background:#233244;border-color:#415269}
+label{display:block}.controls{margin:10px 0}.table-heading,.table-row{display:flex;align-items:center;gap:8px;height:32px;padding:0 8px}
+.table-heading{background:#d8e0e8;color:#203247}.table-row{border-bottom:1px solid #d4dce4}.table-row>input,.table-heading>span:first-child{width:36px}
+.table-row>span:nth-child(2),.table-heading>span:nth-child(2){flex:1}.table-row>span:nth-child(3),.table-heading>span:nth-child(3){width:48px}.table-row>span:last-child,.table-heading>span:last-child{width:52px}
+.table-scroll{height:320px;overflow:auto;position:relative}svg{width:100%;max-height:240px}svg text{fill:currentColor;font-size:13px}svg rect{fill:#4084af}
+form>input,form>textarea{display:block;width:100%;margin:5px 0 12px}textarea{height:70px}form>button{margin-bottom:14px}
+progress{width:160px}pre{white-space:pre-wrap;word-break:break-all;font-size:12px;max-height:250px;overflow:auto}.result{color:#27774c}
+.dialog-backdrop{position:fixed;top:0;bottom:0;left:0;right:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center}
+[role=dialog]{max-width:520px;background:#fff;color:#203247;border-radius:8px;padding:24px;line-height:1.8}
+.dark button{background:#31465c;color:#e3edf7;border-color:#526c84}
+@media(max-width:850px){.columns{display:block}.reference{padding:12px}}

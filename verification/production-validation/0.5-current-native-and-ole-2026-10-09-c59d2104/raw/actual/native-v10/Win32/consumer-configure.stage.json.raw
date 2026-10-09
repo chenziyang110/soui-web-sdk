@@ -1,0 +1,47 @@
+{
+  "name": "consumer-configure",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "-S",
+    "F:\\work\\sm05-broker\\tests\\endpoint-consumer",
+    "-B",
+    "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-build",
+    "-G",
+    "Visual Studio 17 2022",
+    "-A",
+    "Win32,version=10.0.19041.0",
+    "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+    "-T",
+    "v143,host=x64,version=14.44.35207",
+    "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+    "-DSouiSdk_DIR:PATH=F:\\work\\sm05-broker\\out\\native-v10\\Win32\\sdk-relocated\\lib\\cmake\\SouiSdk",
+    "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
+    "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF",
+    "-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir=F:\\work\\sm05-broker\\out\\full-native-suite-v10-root-5ca5450c-f113-4ae5-8df0-7cf30c649100\\empty-user-props\\"
+  ],
+  "cwd": "F:\\work\\sm05-broker\\out\\native-v10\\Win32",
+  "pid": 82152,
+  "creationFileTime": "134360332389050675",
+  "rootExitCode": 0,
+  "supervisorExitCode": 0,
+  "genericPassed": true,
+  "closureConfirmed": true,
+  "rawJob": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-configure.owned.jsonl",
+  "rawSha256": "289aeecd7757364370d6aaf851ffd3aec89e4fafcb176e2244ca516fec124103",
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-configure.owned.jsonl.context.json",
+    "bytes": 1273,
+    "sha256": "124621964133d86c17b7675d0b09749501bf7de03ccb955c5a95f3d2f971d551"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-configure.stdout.raw",
+    "bytes": 505,
+    "sha256": "1fb86d9a8bfe56a75c080c03cd5ba5192839b692ba2df320378bd05153fc6c28"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-configure.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "streamErrors": []
+}

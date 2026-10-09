@@ -1,0 +1,324 @@
+{
+  "schema": "soui.public-host-startup.replay/1",
+  "executionOwner": "Root only",
+  "repositoryRoot": "F:/work/sm05-broker",
+  "architecture": "x64",
+  "candidateRoot": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe",
+  "shadowRoot": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/shadow",
+  "candidateMembership": [
+    "ADR.md",
+    "CMakeLists.txt",
+    "copy-plan.json",
+    "fixture.cpp",
+    "README.md",
+    "resources/index.html",
+    "shadow/sdk/cmake/SouiSdkConfig.cmake.in",
+    "shadow/sdk/CMakeLists.txt",
+    "shadow/sdk/include/soui/bridge_adapter.h",
+    "shadow/sdk/include/soui/host/async_result_slot.h",
+    "shadow/sdk/include/soui/host/engine_thread.h",
+    "shadow/sdk/include/soui/host/frame_pacer.h",
+    "shadow/sdk/include/soui/host/interaction_protocol.h",
+    "shadow/sdk/include/soui/host/runtime_profile.h",
+    "shadow/sdk/include/soui/host/soui_miniblink_host.h",
+    "shadow/sdk/include/soui/host/webview_host.h",
+    "shadow/sdk/include/soui/host/webview2_host.h",
+    "shadow/sdk/include/soui/host/window_chrome_script.h",
+    "shadow/sdk/include/soui/host/window_chrome.h",
+    "shadow/sdk/include/soui/json_bridge.h",
+    "shadow/sdk/include/soui/runtime/accessibility/windows_uia_provider.h",
+    "shadow/sdk/include/soui/runtime/agent/windows_local_endpoint.h",
+    "shadow/sdk/include/soui/runtime/agent/windows_peer_identity.h",
+    "shadow/sdk/include/soui/runtime/bridge/action_contract.h",
+    "shadow/sdk/include/soui/runtime/bridge/bridge_transport.h",
+    "shadow/sdk/include/soui/runtime/core/events/event_bus.h",
+    "shadow/sdk/include/soui/runtime/core/result/result.h",
+    "shadow/sdk/include/soui/runtime/core/task/task_store.h",
+    "shadow/sdk/include/soui/runtime/host/session/webview_session.h",
+    "shadow/sdk/include/soui/runtime/host/trusted_document.h",
+    "shadow/sdk/include/soui/runtime/services/desktop/desktop_services.h",
+    "shadow/sdk/include/soui/runtime/services/desktop/global_shortcut.h",
+    "shadow/sdk/include/soui/runtime/services/desktop/menu_service.h",
+    "shadow/sdk/include/soui/runtime/services/desktop/tray_service.h",
+    "shadow/sdk/include/soui/runtime/services/desktop/window_commands.h",
+    "shadow/sdk/include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+    "shadow/sdk/include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+    "shadow/sdk/include/soui/runtime/services/permissions/permission_store.h",
+    "shadow/sdk/include/soui/runtime/services/task/task_service.h",
+    "shadow/sdk/include/soui/version.h",
+    "shadow/sdk/src/host/bridge_pending_script.h",
+    "shadow/sdk/src/host/bridge_request_budget.h",
+    "shadow/sdk/src/host/cursor_broker.cpp",
+    "shadow/sdk/src/host/cursor_broker.h",
+    "shadow/sdk/src/host/cursor_queue.cpp",
+    "shadow/sdk/src/host/cursor_queue.h",
+    "shadow/sdk/src/host/cursor_resources.cpp",
+    "shadow/sdk/src/host/cursor_resources.h",
+    "shadow/sdk/src/host/diagnostic_result.h",
+    "shadow/sdk/src/host/engine_startup_test_hooks.h",
+    "shadow/sdk/src/host/engine_thread.cpp",
+    "shadow/sdk/src/host/interaction_protocol.cpp",
+    "shadow/sdk/src/host/main_context_gate.h",
+    "shadow/sdk/src/host/runtime_profile.cpp",
+    "shadow/sdk/src/host/soui_miniblink_host.cpp",
+    "shadow/sdk/src/host/source_kernel_api.h",
+    "shadow/sdk/src/json_bridge.cpp",
+    "shadow/sdk/src/runtime/agent/windows_local_endpoint.cpp",
+    "shadow/sdk/src/runtime/agent/windows_peer_identity.cpp",
+    "shadow/sdk/src/runtime/bridge/action_contract.cpp",
+    "shadow/sdk/src/runtime/bridge/bridge_transport.cpp",
+    "shadow/sdk/src/runtime/core/events/event_bus.cpp",
+    "shadow/sdk/src/runtime/core/result/result.cpp",
+    "shadow/sdk/src/runtime/core/task/task_store.cpp",
+    "shadow/sdk/src/runtime/host/session/webview_session.cpp",
+    "shadow/sdk/src/runtime/services/desktop/desktop_services.cpp",
+    "shadow/sdk/src/runtime/services/desktop/global_shortcut.cpp",
+    "shadow/sdk/src/runtime/services/desktop/menu_platform.h",
+    "shadow/sdk/src/runtime/services/desktop/menu_service.cpp",
+    "shadow/sdk/src/runtime/services/desktop/shortcut_platform.h",
+    "shadow/sdk/src/runtime/services/desktop/tray_platform.h",
+    "shadow/sdk/src/runtime/services/desktop/tray_service.cpp",
+    "shadow/sdk/src/runtime/services/desktop/unicode_conversion.h",
+    "shadow/sdk/src/runtime/services/fileinsight-service/fileinsight-service.cpp",
+    "shadow/sdk/src/runtime/services/filesystem-readonly/directory_scanner.cpp",
+    "shadow/sdk/src/runtime/services/permissions/permission_store.cpp",
+    "shadow/sdk/src/runtime/services/permissions/scope_id_sequence.h",
+    "shadow/sdk/src/runtime/services/task/task_family_test_hooks.h",
+    "shadow/sdk/src/runtime/services/task/task_service.cpp",
+    "shadow/third_party/include/json/json.hpp",
+    "shadow/third_party/include/miniblink/wke_cursor_broker.h",
+    "shadow/third_party/include/miniblink/wke.h",
+    "shadow/third_party/sources/zlib/adler32.c",
+    "shadow/third_party/sources/zlib/compress.c",
+    "shadow/third_party/sources/zlib/crc32.c",
+    "shadow/third_party/sources/zlib/deflate.c",
+    "shadow/third_party/sources/zlib/infback.c",
+    "shadow/third_party/sources/zlib/inffast.c",
+    "shadow/third_party/sources/zlib/inflate.c",
+    "shadow/third_party/sources/zlib/inftrees.c",
+    "shadow/third_party/sources/zlib/trees.c",
+    "shadow/third_party/sources/zlib/uncompr.c",
+    "shadow/third_party/sources/zlib/zconf.h",
+    "shadow/third_party/sources/zlib/zlib.h",
+    "shadow/third_party/sources/zlib/zutil.c",
+    "source-navigation.log",
+    "source-pins.json"
+  ],
+  "payloads": [
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-replay-root-f5957b4b-9ddb-45a1-9cd7-d670e35844a8/run-root.cjs",
+      "bytes": 16934,
+      "sha256": "2eba4c204a8cebc1d45b44686d4fc39bed087cea437444ece2da9f826e668ce4"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-replay-root-f5957b4b-9ddb-45a1-9cd7-d670e35844a8/README.txt",
+      "bytes": 2055,
+      "sha256": "66e097f5f7fbbe998b3b05e2a5119bb6dc03f099717cc27f90afa48fa3050386"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-replay-root-f5957b4b-9ddb-45a1-9cd7-d670e35844a8/DELTA.md",
+      "bytes": 895,
+      "sha256": "8f70a2e6f6496c7cba8d278ad782c94719fa1659efc33e37fc9eb3edff079259"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-replay-root-f5957b4b-9ddb-45a1-9cd7-d670e35844a8/tools.json",
+      "bytes": 6265,
+      "sha256": "c073ad93d7782a7b8b7d56286565bb54c4223374dc98ff76b21fa433285ff1d6"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-v2-root-cb0f2097-f48e-42a0-942d-c4fbe64c4b3a/run-root.cjs",
+      "bytes": 19902,
+      "sha256": "8d5f274be8bec8ae19a2ee758a92652a479ab2a18d34ba7a22217c2a8da188ed"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-v2-root-cb0f2097-f48e-42a0-942d-c4fbe64c4b3a/package.json",
+      "bytes": 13178,
+      "sha256": "08288420c734796295ab457f2e430c2258196b519c4cd666f533a13b1465c06c"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-v2-root-cb0f2097-f48e-42a0-942d-c4fbe64c4b3a/Run-Root.ps1",
+      "bytes": 2090,
+      "sha256": "823203275ef4fff53baed825b970231451169af3596e193c585e5ed475691527"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-v2-root-cb0f2097-f48e-42a0-942d-c4fbe64c4b3a/seal.json",
+      "bytes": 2781,
+      "sha256": "edf6dddcc0a1cec6efa3d1ccc3738c51ad6e2e9767fd43a386c6dc039d8bc87d"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-red-cb0f2097-x64/native-result.json",
+      "bytes": 1070,
+      "sha256": "0cdb0764beb24bf06246ae6d259533e7723e7176fd79a39a93f20c87a5574d2e"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-red-cb0f2097-x64/host-startup.owned.ndjson",
+      "bytes": 795,
+      "sha256": "63690b57b4cf67a9aa9665eaaff15c42ff0288d314414c4e1694c17059e25d58"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-red-cb0f2097-x64/host-startup.owned.ndjson.context.json",
+      "bytes": 881,
+      "sha256": "4582285f7e721ff4f088652329ca4cef7da888e8c20e820d56a9e99993a60b8c"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-red-cb0f2097-x64/host-startup.finished.json",
+      "bytes": 965,
+      "sha256": "cce131e9ba7f034374006172db12d484647224a8ef61b909cec08a6c5fa72e83"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-red-cb0f2097-x64/host-startup.stage.json",
+      "bytes": 1792,
+      "sha256": "9f14a647c10afd4b47588c3129e520b0fd4e7ef85049c89b3642c1fd1c9f988b"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-red-cb0f2097-x64/summary-failed.json",
+      "bytes": 9917,
+      "sha256": "6cbb7e01f5cdcf3899ac9d8c8f9fdd7dc6e77070c446885e5b4d2fbd61cc8887"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-red-cb0f2097-x64/artifact-binding.json",
+      "bytes": 48124,
+      "sha256": "07462a89dc404a74b6f931a39228bc36455dc3bcdf484ae1f6037879a1012480"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/source-navigation.log",
+      "bytes": 132,
+      "sha256": "dac7ba34e4ccc8d03ba1ba472df8261f4cbc12f55b40075cba23d98c5ac69f93"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ole-startup-fence-design-3d9b6c43-f389-41f6-8cfe-37cef5141374/ADR-SKETCH.md",
+      "bytes": 7982,
+      "sha256": "eed5e9c494623dd8a2d7fdcc96de9409ccd4bc99ad89e4dadaf690d8d0469af0"
+    }
+  ],
+  "candidatePayloads": [
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/ADR.md",
+      "bytes": 3025,
+      "sha256": "62914a68fe1823fa4883a308ddae2acd6b7b7353ac7d3c3fff47b158caaab270"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/fixture.cpp",
+      "bytes": 12921,
+      "sha256": "08d0886f73efa12962933967223fab97d9be12210488d810e574c4c6d5fc6350"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/CMakeLists.txt",
+      "bytes": 4472,
+      "sha256": "793f8f29bdafa71e6eaa9279f660cf530860e8fd05c1f59c30591429415136ff"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/README.md",
+      "bytes": 2604,
+      "sha256": "e34d9f42c12f20203dd2b81d8022134f362cd9c121cdfb9c3e698bd31b408f08"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/resources/index.html",
+      "bytes": 153,
+      "sha256": "372d07c6b47108393666fd2923d33df9665fd594e74879aee380f99839aaec1e"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/source-pins.json",
+      "bytes": 39305,
+      "sha256": "9c2dcc9d7b5489980c7e95736e20340fda8df6ce7c2a399b9b253e9433645ada"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/copy-plan.json",
+      "bytes": 35392,
+      "sha256": "319d32bd42c871a6878a7b2d25514ded97b9b1eeafc0798678b8bbf53304ac8c"
+    }
+  ],
+  "sourceManifest": {
+    "path": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/source-pins.json",
+    "bytes": 39305,
+    "sha256": "9c2dcc9d7b5489980c7e95736e20340fda8df6ce7c2a399b9b253e9433645ada"
+  },
+  "tools": {
+    "path": "F:/work/sm05-broker/out/host-startup-red-replay-root-f5957b4b-9ddb-45a1-9cd7-d670e35844a8/tools.json",
+    "bytes": 6265,
+    "sha256": "c073ad93d7782a7b8b7d56286565bb54c4223374dc98ff76b21fa433285ff1d6"
+  },
+  "compilerDirectory": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64",
+  "environmentAllowlist": [
+    "SYSTEMROOT",
+    "WINDIR",
+    "SYSTEMDRIVE",
+    "COMSPEC",
+    "PROCESSOR_ARCHITECTURE",
+    "NUMBER_OF_PROCESSORS",
+    "OS",
+    "PATHEXT",
+    "PROGRAMFILES",
+    "PROGRAMFILES(X86)",
+    "PROGRAMW6432",
+    "COMMONPROGRAMFILES",
+    "COMMONPROGRAMFILES(X86)",
+    "COMMONPROGRAMW6432"
+  ],
+  "producer": {
+    "summary": {
+      "path": "F:\\work\\sm05-broker\\out\\kernel-83e67b12\\runs\\x64\\summary.json",
+      "bytes": 25052,
+      "sha256": "031c0cc5888bd10453d9a8b1d763927ada189b793e55bb4b434d914a6a13db8a"
+    },
+    "artifact": {
+      "path": "F:\\work\\sm05-broker\\out\\kernel-83e67b12\\runs\\x64\\miniblink\\artifact.json",
+      "bytes": 523,
+      "sha256": "033a509a837be9277be02526d5925b166b0310e72b044d118c6a34c6e47ab8b4"
+    },
+    "nativePassed": false,
+    "compilerTailPartial": true,
+    "formalPassed": false,
+    "completeToolchainProvenance": false
+  },
+  "kernel": {
+    "path": "F:\\work\\sm05-broker\\out\\kernel-83e67b12\\runs\\x64\\miniblink\\out\\miniblink.dll",
+    "bytes": 35124224,
+    "sha256": "342aa3b71e180c3a544ea5cde66c15fcf5f18c4126839006e0623bf5ac77d720"
+  },
+  "outputRoot": "F:/work/sm05-broker/out/host-replay-f5957b4b-x64",
+  "membership": [
+    "DELTA.md",
+    "package.json",
+    "README.txt",
+    "run-root.cjs",
+    "Run-Root.ps1",
+    "seal.json",
+    "tools.json"
+  ],
+  "sourceCounts": {
+    "live": 95,
+    "shadow": 89,
+    "sdkCpp": 24,
+    "privateHeaders": 15,
+    "publicHeaders": 32,
+    "shadowBytes": 1968853
+  },
+  "nativeExpectedExitCode": 2,
+  "nativeDesiredAssertion": "actual oleRegistered==1 before start returns",
+  "expectedCurrentRedIsPass": false,
+  "perKindCompletionMeasured": false,
+  "productionStartupChanged": false,
+  "completeToolchainProvenance": false,
+  "formalPassed": false,
+  "qualificationPassed": false,
+  "releaseReady": false,
+  "artifactBinding": {
+    "path": "F:/work/sm05-broker/out/host-red-cb0f2097-x64/artifact-binding.json",
+    "bytes": 48124,
+    "sha256": "07462a89dc404a74b6f931a39228bc36455dc3bcdf484ae1f6037879a1012480"
+  },
+  "executable": {
+    "path": "F:/work/sm05-broker/out/host-red-cb0f2097-x64/build/Release/soui_public_host_startup_red.exe",
+    "bytes": 721408,
+    "sha256": "ad64be2b9b5a12fc6988480bab1597913888be45c390ce0986f302fb19bb41f2"
+  },
+  "resourceInput": {
+    "path": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/resources/index.html",
+    "bytes": 153,
+    "sha256": "372d07c6b47108393666fd2923d33df9665fd594e74879aee380f99839aaec1e"
+  },
+  "compileExecuted": false,
+  "oldActualSummaryCompleted": false,
+  "runtimeNavigationLogRequired": true
+}

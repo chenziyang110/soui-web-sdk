@@ -1,0 +1,24 @@
+[CmdletBinding()]
+param([Parameter(Mandatory=$true)][ValidateSet('x64','Win32')][string]$Architecture)
+$ErrorActionPreference='Stop'
+$taskPacketRoot='F:/work/sm05-broker/out/full-native-suite-v10-root-5ca5450c-f113-4ae5-8df0-7cf30c649100'
+$taskLease=[Threading.Mutex]::new($false,'Local\SouiDevKit.DesktopValidation')
+$taskAcquired=$false
+$taskEnvNames=@('NODE_OPTIONS','NODE_PATH','VcpkgEnabled','VcpkgEnableManifest')
+$taskPriorEnv=@{}
+foreach($taskName in $taskEnvNames){$taskPriorEnv[$taskName]=[Environment]::GetEnvironmentVariable($taskName,'Process')}
+try {
+ try {$taskAcquired=$taskLease.WaitOne(0)} catch [Threading.AbandonedMutexException] {$taskAcquired=$true}
+ if(-not $taskAcquired){throw 'Desktop validation lease is busy; no execution.'}
+ $taskPins=@{'package.json'='de167666531608ee134f6e54066da0966975a0fa02b2bc51a97b50570b8e14d7';'run-root.cjs'='b20e93cccce021cf318d3f012ea6b887439e991673f3151797a23fd277994c29';'tools.json'='c073ad93d7782a7b8b7d56286565bb54c4223374dc98ff76b21fa433285ff1d6'}
+ foreach($taskName in $taskPins.Keys){if((Get-FileHash -LiteralPath (Join-Path $taskPacketRoot $taskName) -Algorithm SHA256).Hash.ToLowerInvariant() -ne $taskPins[$taskName]){throw 'Root package changed'}}
+ $taskTools=Get-Content -LiteralPath (Join-Path $taskPacketRoot 'tools.json') -Raw | ConvertFrom-Json
+ if((Get-FileHash -LiteralPath $taskTools.node.path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $taskTools.node.sha256){throw 'Node host changed'}
+ [Environment]::SetEnvironmentVariable('NODE_OPTIONS',$null,'Process');[Environment]::SetEnvironmentVariable('NODE_PATH',$null,'Process')
+ [Environment]::SetEnvironmentVariable('VcpkgEnabled','false','Process');[Environment]::SetEnvironmentVariable('VcpkgEnableManifest','false','Process')
+ & $taskTools.node.path (Join-Path $taskPacketRoot 'run-root.cjs') --root-gate ROOT_FULL_NATIVE_UNIT_SUITE_V10 --package-sha 'de167666531608ee134f6e54066da0966975a0fa02b2bc51a97b50570b8e14d7' --arch $Architecture
+ $taskExit=$LASTEXITCODE
+ if($taskExit -ne 0){exit $taskExit}
+} finally {
+ try {foreach($taskName in $taskEnvNames){[Environment]::SetEnvironmentVariable($taskName,$taskPriorEnv[$taskName],'Process')}} finally {if($taskAcquired){$taskLease.ReleaseMutex()};$taskLease.Dispose()}
+}

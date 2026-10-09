@@ -1,0 +1,17 @@
+# Narrow diagnostic and deterministic schedule candidate
+
+ADR.md was written before the fixture. There is no production startup/admission fix.
+
+Only the Host safe opt-in diagnostic block changes in production source. It calls the existing engine-only inspectDrain to observe real pre-close OLE registration, counters and status. vendorFailed is true only for a valid FAILED status, false only for a valid OK status, otherwise null. All original readiness, ACK, native-entry, geometry, queue, return and cleanup behavior remains unchanged. Token/HWND/thread/content are not exposed; nonAtomic=true remains explicit.
+
+w2-main.cpp is a private fresh-copy delta from sealed W2d8 main. Successful completion now collects the same bounded diagnostic only when startup opt-in is enabled; the original failure branch and all browser/native/permission assertions remain exact. It does not change historical packets or outputs.
+
+The actual DLL/SDK fixture has three real ordered schedules, one EXE and three TIMEOUT20 serial CTests. A mutex test command lane holds the real engine between commands; the original SetTimer-produced UI callback runs unchanged. The actual SDK hooks decide admission. The ACK's real DragHandle identity cancellation continuation is retained, so registration-specific and total completion counts are distinct.
+
+Default runs require real registration. Current B/C observations produce a complete report and natural return2 after actual safe teardown; explicit --characterize is an observation contract only. Every record still marks startup/full qualification false. Any unresolved owner or timeout calls ExitProcess91 rather than unsafe unwind. Root owns actual execution and Owned closure.
+
+The input ledger binds 24 current normal SDK CPP, 15 private headers, 32 public headers and the supporting ABI/vendor sources. It contains hashes, not copied production algorithms. No compiler/native/Node/CMake or author loader evaluation occurred. No live/index/branch/other candidate write occurred.
+
+copy-plan.json binds eight small payloads, two exact source inputs, and the two disjoint diagnostic byte intervals. Outside bytes and original encodings replay exactly. A current Host source pin deliberately does not accept the candidate Host implicitly: Root must derive a fresh actual input pin if adopting that observation before compiling the fixture.
+
+Same-size WM_SIZE filtering is insufficient because genuine geometry and main-document epoch transitions can also cancel registration. The conditional registration-fence design remains in ADR.md pending actual schedule/first-rejection evidence; it is not implemented here.

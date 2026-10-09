@@ -1,0 +1,217 @@
+{
+  "completed": false,
+  "mode": "native",
+  "architecture": "x64",
+  "stages": [
+    {
+      "name": "actiongen-generate",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\tools\\sdk\\actiongen.cjs",
+        "--source",
+        "F:\\work\\sm05-broker\\out\\w6n3\\x64\\source\\demos\\reference-workbench\\contracts\\actions.json",
+        "--root",
+        "F:\\work\\sm05-broker\\out\\w6n3\\x64\\source\\demos\\reference-workbench"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n3\\x64",
+      "pid": 108968,
+      "creationFileTime": "134360363867660013",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\actiongen-generate.owned.jsonl",
+      "rawSha256": "466a6249e6c2b1c8e236b72215a4143aa66ed5bfbbf8877ad6e4f1638f826837",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\actiongen-generate.owned.jsonl.context.json",
+        "bytes": 651,
+        "sha256": "f3d3a30cc23ed39af787218fbc618ead4474a42671783548191d99a4dcb73b2d"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\actiongen-generate.stdout.raw",
+        "bytes": 90,
+        "sha256": "ffcd9c725bf6a3788c4da9fffa387d6ac50de240119a9a4e5f1d64a4ef7e2f0b"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\actiongen-generate.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "actiongen-check",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\tools\\sdk\\actiongen.cjs",
+        "--source",
+        "F:\\work\\sm05-broker\\out\\w6n3\\x64\\source\\demos\\reference-workbench\\contracts\\actions.json",
+        "--root",
+        "F:\\work\\sm05-broker\\out\\w6n3\\x64\\source\\demos\\reference-workbench",
+        "--check"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n3\\x64",
+      "pid": 80324,
+      "creationFileTime": "134360363877138615",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\actiongen-check.owned.jsonl",
+      "rawSha256": "54f62acb0aae96534b79c3a3423cfe998b065e866010566deb627885fa6e3b58",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\actiongen-check.owned.jsonl.context.json",
+        "bytes": 666,
+        "sha256": "404f1d89b3db34ce2e21834c2bc449270e1ffe174e6f80d08f92a79dd003080f"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\actiongen-check.stdout.raw",
+        "bytes": 91,
+        "sha256": "d531677bb98469cf893d24f6faea2bd2a4905d542429df1c08d3b4fc3c7865ff"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\actiongen-check.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "configure",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "-S",
+        "F:\\work\\sm05-broker\\out\\reference-native-v3-root-974c924c-b84a-4296-97fc-81ac1abfcb8e",
+        "-B",
+        "F:\\work\\sm05-broker\\out\\w6n3\\x64\\build",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "x64,version=10.0.19041.0",
+        "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+        "-T",
+        "v143,host=x64,version=14.44.35207",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DREFERENCE_ROOT:PATH=F:\\work\\sm05-broker\\out\\w6n3\\x64\\source\\demos\\reference-workbench",
+        "-DREFERENCE_NODE:FILEPATH=C:\\nvm4w\\nodejs\\node.exe",
+        "-DSouiSdk_DIR:PATH=F:\\work\\sm05-broker\\out\\native-v10\\x64\\sdk-relocated\\lib\\cmake\\SouiSdk",
+        "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
+        "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF",
+        "-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir=F:\\work\\sm05-broker\\out\\reference-native-v3-root-974c924c-b84a-4296-97fc-81ac1abfcb8e\\empty-user-props\\"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n3\\x64",
+      "pid": 44076,
+      "creationFileTime": "134360363886132338",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\configure.owned.jsonl",
+      "rawSha256": "273bc82216b5c0f186bda61a8e4ef02df0a6fdb9c670dda43600d1416105d2ed",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\configure.owned.jsonl.context.json",
+        "bytes": 1448,
+        "sha256": "6f4dce7beadfacc7d1f5f5920917547e2a0906d8f48485b09e16b1f776ea5bd0"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\configure.stdout.raw",
+        "bytes": 835,
+        "sha256": "9d1882b873e1fbd6a60e500d371c470149b0a647b8cc1f3467d438d0e4a2775c"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\configure.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "build-full-native-suite",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "F:\\work\\sm05-broker\\out\\w6n3\\x64\\build",
+        "--config",
+        "Release",
+        "--target",
+        "soui_reference_business_tests",
+        "--",
+        "/m:1",
+        "/nr:false",
+        "/p:VcpkgEnabled=false",
+        "/p:VcpkgEnableManifest=false",
+        "/p:VCToolsVersion=14.44.35207",
+        "/p:WindowsTargetPlatformVersion=10.0.19041.0",
+        "/p:ImportDirectoryBuildProps=false",
+        "/p:ImportDirectoryBuildTargets=false",
+        "/p:UseEnv=false",
+        "/p:UserRootDir=F:\\work\\sm05-broker\\out\\reference-native-v3-root-974c924c-b84a-4296-97fc-81ac1abfcb8e\\empty-user-props\\",
+        "/bl:F:\\work\\sm05-broker\\out\\w6n3\\x64\\build.binlog"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n3\\x64",
+      "pid": 28540,
+      "creationFileTime": "134360364000893370",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\build-full-native-suite.owned.jsonl",
+      "rawSha256": "d8396602abcedf149b7ac5063247b3af58b1b24e0a83a87362c175e96497aee1",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\build-full-native-suite.owned.jsonl.context.json",
+        "bytes": 1036,
+        "sha256": "e429948de2a9bbfb4701526e58059ec12c631d4257ca78d2925749982840123a"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\build-full-native-suite.stdout.raw",
+        "bytes": 841,
+        "sha256": "65a719334b62510e6d41f8e7cdccbbbe6896339a0578be0344ab2a3580c14596"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\build-full-native-suite.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "registry",
+      "executable": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+      "args": [
+        "--test-dir",
+        "F:\\work\\sm05-broker\\out\\w6n3\\x64\\build",
+        "-C",
+        "Release",
+        "--show-only=json-v1"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n3\\x64",
+      "pid": 24404,
+      "creationFileTime": "134360364100315847",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\registry.owned.jsonl",
+      "rawSha256": "13b0ff9564d0bdb5550be95002c22d6e89680afcaf1eb711a491423df85fbae9",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\registry.owned.jsonl.context.json",
+        "bytes": 513,
+        "sha256": "aa82a84a5e032eb26ab18d27519fdf9ca35d271b4be5cbf757c4d4ad461e6760"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\registry.stdout.raw",
+        "bytes": 3276,
+        "sha256": "46ca70e10a39570c3c988284c6008398c142765e7e0bd8602390497636a9ee8e"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n3\\x64\\registry.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    }
+  ],
+  "error": "Registry exact args/timeout changed",
+  "qualificationPassed": false,
+  "releaseReady": false
+}

@@ -1,0 +1,287 @@
+#include <soui/json_bridge.h>
+#include <soui/host/soui_miniblink_host.h>
+#ifdef SOUI_CERT_MODERN
+#include <soui/host/webview2_host.h>
+#endif
+#include "actions.hpp"
+#include <windows.h>
+#include <shellapi.h>
+#include <json.hpp>
+#include <atomic>
+#include <chrono>
+#include <filesystem>
+#include <memory>
+#include <mutex>
+#include <stdexcept>
+#include <string>
+#include <thread>
+#include <vector>
+
+namespace {
+using json = nlohmann::json;
+namespace fs = std::filesystem;
+struct settings { fs::path resources, output, profile_root, kernel; std::string profile; };
+std::uint64_t filetime(FILETIME value) { return (std::uint64_t(value.dwHighDateTime) << 32) | value.dwLowDateTime; }
+std::vector<std::string> expected_cases(const std::string& profile) {
+  std::vector<std::string> result;
+  if (profile == "modern-react19" || profile == "compat-template") result = {"template.input", "template.greet"};
+  else if (profile == "compat-react18") result = {"component.button", "component.input", "component.select", "component.list"};
+  else if (profile == "compat-vue3") result = {"component.button", "component.input", "component.select", "component.dialog"};
+  else throw std::invalid_argument("profile");
+  result.insert(result.end(), {"native.greet", "native.invalid-greet"});
+  if (profile != "modern-react19") result.insert(result.end(), {"native.task-count", "native.task-cancel"});
+  return result;
+}
+bool fields(const json& value, std::initializer_list<const char*> allowed) {
+  if (!value.is_object() || value.size() != allowed.size()) return false;
+  for (auto name : allowed) if (!value.contains(name)) return false;
+  return true;
+}
+bool write_new(const fs::path& output, const std::string& bytes) {
+  const auto file = CreateFileW(output.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
+  if (file == INVALID_HANDLE_VALUE) return false;
+  DWORD written = 0;
+  const bool ok = bytes.size() <= MAXDWORD && WriteFile(file, bytes.data(), static_cast<DWORD>(bytes.size()), &written, nullptr) && written == bytes.size();
+  const bool closed = CloseHandle(file) != FALSE;
+  return ok && closed;
+}
+struct application final {
+  explicit application(settings value) : options(std::move(value)), bridge("app://component-certificate") {
+    if (!app_actions::register_Greet(bridge, [this](const app_actions::GreetInput& input, const soui::runtime::bridge_request&) {
+      ++greet_calls;
+#include "greet-response.inc"
+    })) throw std::runtime_error("greet-registration");
+    if (options.profile != "modern-react19") {
+      const auto actual_count =
+#include "demo-count.inc"
+      ;
+      if (!bridge.register_task_handler("demo.count", [this, actual_count](const soui::runtime::task_invocation& invocation,
+          const soui::runtime::task_control& control) {
+        ++task_started; auto result = actual_count(invocation, control);
+        if (result.kind == soui::runtime::result_kind::success) ++task_succeeded;
+        if (result.kind == soui::runtime::result_kind::task_cancelled) ++task_cancelled;
+        return result;
+      })) throw std::runtime_error("task-registration");
+      const auto actual_template_count =
+#include "app-count.inc"
+      ;
+      if (!bridge.register_task_handler("app.count", actual_template_count)) throw std::runtime_error("template-task-registration");
+    }
+    if (!bridge.register_method("certification.environment", "certification.environment", [this](std::string_view params) {
+      if (params != "{}") throw std::invalid_argument("environment-input");
+      return json{{"profile", options.profile}, {"architecture", architecture()},
+        {"greetCalls", greet_calls.load()}, {"taskStarted", task_started.load()},
+        {"taskSucceeded", task_succeeded.load()}, {"taskCancelled", task_cancelled.load()}}.dump();
+    }) || !bridge.register_method("certification.report", "certification.report", [this](std::string_view params) {
+      if (params.size() > 32768) throw std::invalid_argument("report-size");
+      const auto value = json::parse(params, nullptr, false);
+      if (!fields(value, {"schema","profile","browserCases","pending","features","qualificationPassed","releaseReady"}) ||
+          value["schema"] != "soui.component-certificate/1" || value["profile"] != options.profile ||
+          value["qualificationPassed"] != false || value["releaseReady"] != false || !value["browserCases"].is_array())
+        throw std::invalid_argument("report-shape");
+      const auto expected = expected_cases(options.profile);
+      if (value["browserCases"].size() != expected.size()) throw std::invalid_argument("case-count");
+      bool all = true;
+      for (std::size_t i = 0; i != expected.size(); ++i) {
+        const auto& row = value["browserCases"][i];
+        if (!fields(row, {"id","status","assertions","code"}) || row["id"] != expected[i] ||
+            !row["assertions"].is_number_integer() || !row["code"].is_string() ||
+            row["code"].get_ref<const std::string&>().size() > 96 ||
+            (row["status"] != "passed" && row["status"] != "failed")) throw std::invalid_argument("case-shape");
+        if (row["status"] == "passed" && (row["assertions"] != 1 || row["code"] != "")) throw std::invalid_argument("case-success-shape");
+        if (row["status"] == "failed" && row["assertions"] != 0) throw std::invalid_argument("case-failure-shape");
+        all = all && row["status"] == "passed";
+      }
+      std::vector<std::string> pending{"input.native-keyboard"};
+      if (options.profile == "modern-react19") pending.insert(pending.end(), {"modern.dialog","modern.task-page","modern.component-gallery"});
+      if (!value["pending"].is_array() || value["pending"].size() != pending.size()) throw std::invalid_argument("pending-count");
+      for (std::size_t i = 0; i != pending.size(); ++i) {
+        const auto& row = value["pending"][i];
+        if (!fields(row, {"id","status","assertions","code"}) || row["id"] != pending[i] ||
+            row["status"] != "pending" || row["assertions"] != 0 ||
+            row["code"] != (i ? "reference-entry-absent" : "not-executed")) throw std::invalid_argument("pending-shape");
+      }
+      const auto& feature_report = value["features"];
+      if (!fields(feature_report, {"protocol","scope","features"}) || feature_report["protocol"] != "soui.web-features/1" ||
+          feature_report["scope"] != "surface-detection" || !feature_report["features"].is_object()) throw std::invalid_argument("feature-shape");
+      const std::vector<std::string> names{"promise","proxy","fetch","abortController","resizeObserver","intersectionObserver",
+        "webAssembly","webGpuInterface","cssGrid","cssContainerQueries","cssOklch","cssRegisteredProperties"};
+      if (feature_report["features"].size() != names.size()) throw std::invalid_argument("feature-count");
+      for (const auto& name : names) { const auto found = feature_report["features"].find(name);
+        if (found == feature_report["features"].end() || (*found != "available" && *found != "missing" && *found != "unknown"))
+          throw std::invalid_argument("feature-value"); }
+      std::lock_guard<std::mutex> lock(mutex);
+      if (report_received) throw std::invalid_argument("report-repeated");
+      browser_report = value; cases_ok = all; report_received = true;
+      return std::string{"{}"};
+    }) || !bridge.register_method("certification.complete", "certification.complete", [this](std::string_view params) {
+      std::lock_guard<std::mutex> lock(mutex);
+      if (params != "{}" || !report_received || complete) throw std::invalid_argument("complete-input");
+      complete = true; return std::string{"{}"};
+    })) throw std::runtime_error("report-registration");
+    std::vector<std::string> capabilities{"app.greet","bridge.describe","bridge.probe","certification.environment","certification.report","certification.complete"};
+    if (options.profile != "modern-react19") capabilities.insert(capabilities.end(), {"task.start","task.query","task.cancel","task.subscribe"});
+    if (!bridge.set_session_capabilities(std::move(capabilities))) throw std::runtime_error("capabilities");
+  }
+  static const char* architecture() {
+#ifdef _WIN64
+    return "x64";
+#else
+    return "x86";
+#endif
+  }
+  void close() {
+    if (!closing) { closing = true; close_started = GetTickCount64(); }
+    const auto result = host ? host->destroy() : soui::sdk::host_result{true, {}, {}};
+    if (!result.ok) { ++close_retries; if (GetTickCount64() - close_started > 10000) ExitProcess(91); return; }
+    closed = true; if (window) { KillTimer(window, 1); DestroyWindow(window); window = nullptr; }
+  }
+  void pump() {
+    if (closing) { close(); return; }
+    if (host) host->pump();
+#ifdef SOUI_CERT_MODERN
+    if (renderer) { const auto status = renderer->status(); if (!status.ok && status.code != "E_PENDING") { exit_code = 2; close(); return; }
+      if (status.ok) runtime_version = renderer->runtime_version(); }
+#endif
+    bool done = false; { std::lock_guard<std::mutex> lock(mutex); done = complete; }
+    if (done || GetTickCount64() - started > 30000) {
+      if (!done) {
+        exit_code = 2;
+        // Read-only failure observation through the actual SDK before teardown.
+        // The isolated subject changes only its own diagnostic environment.
+        try {
+          document_before_close = host && host->document_ready();
+          if (!SetEnvironmentVariableW(L"SOUI_DIAGNOSTIC_SCRIPT", L"1")) {
+            diagnostics_before_close = "diagnostic-environment-failed";
+          } else {
+            diagnostics_before_close = host ? host->application_diagnostics() : "host-absent";
+            if (diagnostics_before_close.size() > 4096) diagnostics_before_close.resize(4096);
+          }
+        } catch (...) { diagnostics_before_close = "diagnostic-call-threw"; }
+      } else {
+        char diagnostic_option[2]{};
+        if (GetEnvironmentVariableA("SOUI_DIAGNOSTIC_SCRIPT", diagnostic_option,
+            sizeof(diagnostic_option)) == 1 && diagnostic_option[0] == '1') {
+          // Successful opt-in subjects observe the real OLE/vendor ledger before teardown too.
+          try {
+            document_before_close = host && host->document_ready();
+            diagnostics_before_close = host ? host->application_diagnostics() : "host-absent";
+            if (diagnostics_before_close.size() > 4096) diagnostics_before_close.resize(4096);
+          } catch (...) { diagnostics_before_close = "diagnostic-call-threw"; }
+        }
+      }
+      close();
+    }
+  }
+  settings options;
+  std::string runtime_version;
+  bool document_before_close{false};
+  std::string diagnostics_before_close;
+  // Callback state precedes Bridge: it survives task-service's actual worker join.
+  std::mutex mutex; json browser_report;
+  std::atomic<unsigned> greet_calls{0}, task_started{0}, task_succeeded{0}, task_cancelled{0};
+  bool report_received{false}, complete{false}, cases_ok{false}, closing{false}, closed{false};
+  HWND window{}; int exit_code{0}; unsigned close_retries{0}; ULONGLONG started{GetTickCount64()}, close_started{0};
+  soui::sdk::json_bridge bridge; // Outlives Host and completes its worker join before state destruction.
+#ifdef SOUI_CERT_MODERN
+  soui::sdk::webview2_adapter* renderer{}; // Borrowed from Host until actual destroy.
+#endif
+  std::unique_ptr<soui::sdk::webview_host> host; // Destroyed first, including constructor unwind.
+};
+LRESULT CALLBACK procedure(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
+  auto* app = reinterpret_cast<application*>(GetWindowLongPtrW(window, GWLP_USERDATA));
+  if (message == WM_NCCREATE) { app = static_cast<application*>(reinterpret_cast<CREATESTRUCTW*>(lparam)->lpCreateParams);
+    app->window = window; SetWindowLongPtrW(window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(app)); }
+  if (!app) return DefWindowProcW(window, message, wparam, lparam);
+  if (message == soui::sdk::bridge_event_message) { if (app->host) app->host->deliver_posted_event(reinterpret_cast<void*>(lparam)); return 0; }
+#ifdef SOUI_CERT_MODERN
+  if (message == soui::sdk::webview2_event_message) { app->pump(); return 0; }
+#endif
+  switch (message) {
+    case WM_TIMER: app->pump(); return 0;
+    case WM_SIZE: if (app->host && !app->closing) (void)app->host->resize(LOWORD(lparam), HIWORD(lparam)); return 0;
+    case WM_SETFOCUS: if (app->host && !app->closing) (void)app->host->focus(); return 0;
+    case WM_CLOSE: app->exit_code = 2; app->close(); return 0;
+    case WM_DESTROY: PostQuitMessage(0); return 0;
+    case WM_NCDESTROY: SetWindowLongPtrW(window, GWLP_USERDATA, 0); break;
+    default: break;
+  }
+  return DefWindowProcW(window, message, wparam, lparam);
+}
+settings parse() {
+  int argc = 0; auto** argv = CommandLineToArgvW(GetCommandLineW(), &argc);
+  if (!argv) throw std::invalid_argument("argv");
+  std::vector<std::wstring> args(argv, argv + argc); LocalFree(argv);
+  if (args.size() != 11 || args[1] != L"--resources" || args[3] != L"--output" || args[5] != L"--profile-root" ||
+      args[7] != L"--kernel" || args[9] != L"--profile") throw std::invalid_argument("arguments");
+  settings result{args[2], args[4], args[6], args[8], std::string(args[10].begin(), args[10].end())};
+  (void)expected_cases(result.profile);
+#ifdef SOUI_CERT_MODERN
+  if (result.profile != "modern-react19") throw std::invalid_argument("backend-profile");
+#else
+  if (result.profile == "modern-react19") throw std::invalid_argument("backend-profile");
+#endif
+  for (const auto* path : {&result.resources, &result.output, &result.profile_root}) if (!path->is_absolute()) throw std::invalid_argument("absolute-path");
+  if (!fs::is_regular_file(result.resources / "index.html") || fs::exists(result.output) || fs::exists(result.profile_root)) throw std::invalid_argument("fresh-output");
+#ifndef SOUI_CERT_MODERN
+  if (!result.kernel.is_absolute() || !fs::is_regular_file(result.kernel)) throw std::invalid_argument("kernel");
+#endif
+  fs::create_directories(result.profile_root);
+  return result;
+}
+int run(settings options, HINSTANCE instance) {
+  auto app = std::make_unique<application>(options);
+  WNDCLASSW type{}; type.lpfnWndProc = procedure; type.hInstance = instance; type.lpszClassName = L"SouiComponentCertificate"; type.hCursor = LoadCursorW(nullptr, IDC_ARROW);
+  if (!RegisterClassW(&type)) throw std::runtime_error("window-class");
+  const auto window = CreateWindowExW(0, type.lpszClassName, L"SOUI component certificate candidate", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
+    CW_USEDEFAULT, CW_USEDEFAULT, 1100, 720, nullptr, nullptr, instance, app.get());
+  if (!window) throw std::runtime_error("window-create");
+  soui::sdk::host_config config; config.architecture = application::architecture(); config.owner_window = window;
+  config.resource_root = options.resources; config.miniblink_binary = options.kernel; config.bridge_adapter = &app->bridge;
+#ifdef SOUI_CERT_MODERN
+  auto adapter = std::make_unique<soui::sdk::webview2_adapter>(window, options.profile_root / "browser"); app->renderer = adapter.get();
+  app->host = std::make_unique<soui::sdk::webview_host>(std::move(adapter));
+  app->renderer->prepare_async([&](auto result) { if (app->closing) return;
+    if (result.ok) result = app->host->start(config);
+    if (!result.ok) { app->exit_code = 2; app->closing = true; app->close_started = GetTickCount64(); }
+  });
+#else
+  app->host = std::make_unique<soui::sdk::webview_host>(std::make_unique<soui::sdk::dynamic_miniblink_adapter>());
+  const auto mounted = app->host->start(config); if (!mounted.ok) app->exit_code = 2;
+  if (!mounted.ok) { app->closing = true; app->close_started = GetTickCount64(); }
+#endif
+  ShowWindow(window, SW_SHOWNOACTIVATE);
+  if (!SetTimer(window, 1, 10, nullptr)) ExitProcess(91);
+  MSG message{}; while (GetMessageW(&message, nullptr, 0, 0) > 0) { TranslateMessage(&message); DispatchMessageW(&message); }
+  if (!app->closed) ExitProcess(91); // Never destroy an unresolved native owner.
+  FILETIME creation{}, exit{}, kernel{}, user{};
+  if (!GetProcessTimes(GetCurrentProcess(), &creation, &exit, &kernel, &user)) throw std::runtime_error("process-identity");
+  const bool native_ok = app->greet_calls >= 1 && (options.profile == "modern-react19" ||
+    (app->task_started == 2 && app->task_succeeded == 1 && app->task_cancelled == 1));
+  const bool accepted = app->report_received && app->complete && app->cases_ok && native_ok && app->exit_code == 0;
+  json report{{"schema","soui.component-host-result/1"},{"profile",options.profile},{"architecture",application::architecture()},
+    {"pid",GetCurrentProcessId()},{"creationFileTime",std::to_string(filetime(creation))},{"browser",app->browser_report},
+    {"greetCalls",app->greet_calls.load()},{"taskStarted",app->task_started.load()},{"taskSucceeded",app->task_succeeded.load()},
+    {"taskCancelled",app->task_cancelled.load()},{"hostCloseComplete",app->closed},{"closeRetries",app->close_retries},{"finiteCasesAccepted",accepted},
+    {"documentBeforeClose",app->document_before_close},{"diagnosticsBeforeClose",app->diagnostics_before_close},
+    {"keyboardExecuted",false},{"moduleUnloadQualified",false},{"qualificationPassed",false},{"releaseReady",false}};
+#ifdef SOUI_CERT_MODERN
+  report["backend"] = "webview2"; report["runtimeVersion"] = app->runtime_version;
+#else
+  report["backend"] = "miniblink"; // The controller binds the actual kernel DLL bytes separately.
+#endif
+  app.reset(); // Host first, then Bridge/task-service and its actual worker join.
+#ifndef SOUI_CERT_MODERN
+  const auto shutdown = soui::sdk::shutdown_miniblink_runtime(); report["runtimeShutdownReturned"] = shutdown.ok;
+  if (!shutdown.ok) report["finiteCasesAccepted"] = false;
+#endif
+  if (!write_new(options.output, report.dump(2) + '\n')) return 2;
+  return report["finiteCasesAccepted"] == true ? 0 : 2;
+}
+}
+int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
+  try { auto options = parse(); const auto com = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED); if (FAILED(com)) return 2;
+    int result = 2; try { result = run(std::move(options), instance); } catch (...) { result = 2; }
+    CoUninitialize(); return result;
+  } catch (...) { return 2; }
+}

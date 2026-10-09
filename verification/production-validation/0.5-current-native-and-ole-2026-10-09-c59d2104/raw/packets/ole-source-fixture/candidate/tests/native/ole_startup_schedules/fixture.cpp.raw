@@ -1,0 +1,369 @@
+#include <windows.h>
+#include <bcrypt.h>
+#include "cursor_broker.h"
+#include <json.hpp>
+
+#include <array>
+#include <chrono>
+#include <condition_variable>
+#include <cstdio>
+#include <exception>
+#include <filesystem>
+#include <functional>
+#include <memory>
+#include <mutex>
+#include <string>
+#include <thread>
+#include <utility>
+#include <vector>
+
+namespace {
+using json = nlohmann::json;
+using broker = soui::sdk::detail::cursor_broker_endpoint;
+using reason = soui::sdk::detail::cursor_native_rejection;
+constexpr UINT_PTR actual_broker_timer = 0x15324547; // Whole vendor source pin gates this identifier.
+
+[[noreturn]] void fatal(const char* code) noexcept {
+  std::fprintf(stderr, "ole-startup-fatal:%s\n", code);
+  std::fflush(stderr);
+  ExitProcess(91); // No unresolved C++ owner, native callback or HWND is unwound.
+}
+void require(bool value, const char* code) { if (!value) fatal(code); }
+
+class command_lane final {
+ public:
+  command_lane() : worker_([this] {
+    std::set_terminate([] { fatal("engine-cpp-terminate-retained-owners"); });
+    try {
+      for (;;) {
+        std::function<void()> command;
+        {
+          std::unique_lock<std::mutex> lock(mutex_);
+          ready_.wait(lock, [this] { return stopping_ || command_; });
+          if (stopping_) return;
+          command = std::move(command_);
+        }
+        command();
+        {
+          std::lock_guard<std::mutex> lock(mutex_);
+          completed_ = true;
+        }
+        ready_.notify_all();
+      }
+    } catch (...) { fatal("engine-entry-exception"); }
+  }) {}
+  command_lane(const command_lane&) = delete;
+  command_lane& operator=(const command_lane&) = delete;
+  void call(std::function<void()> command) {
+    std::unique_lock<std::mutex> lock(mutex_);
+    require(!command_ && completed_ && !stopping_, "command-overlap");
+    completed_ = false;
+    command_ = std::move(command);
+    ready_.notify_all();
+    if (!ready_.wait_for(lock, std::chrono::seconds(5), [this] { return completed_; }))
+      fatal("engine-command-timeout");
+  }
+  void join() {
+    {
+      std::lock_guard<std::mutex> lock(mutex_);
+      require(completed_ && !command_ && !stopping_, "join-before-idle");
+      stopping_ = true;
+    }
+    ready_.notify_all();
+    worker_.join();
+  }
+ private:
+  std::mutex mutex_;
+  std::condition_variable ready_;
+  std::function<void()> command_;
+  bool completed_{true}, stopping_{false};
+  std::thread worker_;
+};
+
+struct file_handle final {
+  HANDLE value{INVALID_HANDLE_VALUE};
+  ~file_handle() { if (value != INVALID_HANDLE_VALUE) (void)CloseHandle(value); }
+};
+std::string hash_file(HANDLE file) {
+  BCRYPT_ALG_HANDLE provider = nullptr;
+  BCRYPT_HASH_HANDLE hash = nullptr;
+  DWORD object_bytes = 0, received = 0;
+  require(BCryptOpenAlgorithmProvider(&provider, BCRYPT_SHA256_ALGORITHM, nullptr, 0) >= 0, "hash-provider");
+  require(BCryptGetProperty(provider, BCRYPT_OBJECT_LENGTH, reinterpret_cast<PUCHAR>(&object_bytes),
+      sizeof(object_bytes), &received, 0) >= 0 && received == sizeof(object_bytes), "hash-object");
+  std::vector<unsigned char> object(object_bytes), buffer(1024U * 1024U);
+  require(BCryptCreateHash(provider, &hash, object.data(), object_bytes, nullptr, 0, 0) >= 0, "hash-create");
+  for (;;) {
+    DWORD bytes = 0;
+    require(ReadFile(file, buffer.data(), static_cast<DWORD>(buffer.size()), &bytes, nullptr) != FALSE, "hash-read");
+    if (!bytes) break;
+    require(BCryptHashData(hash, buffer.data(), bytes, 0) >= 0, "hash-data");
+  }
+  std::array<unsigned char, 32> digest{};
+  require(BCryptFinishHash(hash, digest.data(), static_cast<ULONG>(digest.size()), 0) >= 0, "hash-finish");
+  require(BCryptDestroyHash(hash) >= 0 && BCryptCloseAlgorithmProvider(provider, 0) >= 0, "hash-close");
+  constexpr char hex[] = "0123456789abcdef";
+  std::string result(64, '0');
+  for (std::size_t i = 0; i != digest.size(); ++i) {
+    result[i * 2] = hex[digest[i] >> 4];
+    result[i * 2 + 1] = hex[digest[i] & 15];
+  }
+  return result;
+}
+template<class T> T exported(HMODULE module, const char* name) {
+  const auto result = reinterpret_cast<T>(GetProcAddress(module, name));
+  require(result != nullptr, "missing-native-export");
+  return result;
+}
+bool in_module(const void* pointer, HMODULE module) {
+  MEMORY_BASIC_INFORMATION memory{};
+  return pointer && VirtualQuery(pointer, &memory, sizeof(memory)) == sizeof(memory) &&
+      memory.AllocationBase == module && memory.State == MEM_COMMIT;
+}
+
+struct observer final {
+  wkeCursorBrokerHooks original{};
+  unsigned enters{0}, admitted{0}, completed{0}, cancelled{0}, all_completed{0};
+  static void WKE_CALL_TYPE descriptor(void* value, wkeCursorBrokerEndpoint token,
+      const wkeCursorBrokerDescriptor* data) noexcept {
+    auto& self = *static_cast<observer*>(value);
+    self.original.onDescriptor(self.original.userData, token, data);
+  }
+  static int WKE_CALL_TYPE enter(void* value, const wkeCursorBrokerNativeReceipt* receipt) noexcept {
+    auto& self = *static_cast<observer*>(value);
+    const int result = self.original.onNativeEnter(self.original.userData, receipt);
+    if (receipt && receipt->kind == WKE_CURSOR_BROKER_NATIVE_OLE_REGISTER) {
+      ++self.enters;
+      if (result == 1) ++self.admitted;
+    }
+    return result; // The real SDK decides; the observer never substitutes an outcome.
+  }
+  static void WKE_CALL_TYPE leave(void* value, const wkeCursorBrokerNativeReceipt* receipt) noexcept {
+    auto& self = *static_cast<observer*>(value);
+    self.original.onNativeLeave(self.original.userData, receipt);
+  }
+  static void WKE_CALL_TYPE complete(void* value, const wkeCursorBrokerNativeReceipt* receipt,
+      unsigned int cancelled) noexcept {
+    auto& self = *static_cast<observer*>(value);
+    self.original.onNativeComplete(self.original.userData, receipt, cancelled);
+    ++self.all_completed;
+    if (receipt && receipt->kind == WKE_CURSOR_BROKER_NATIVE_OLE_REGISTER) {
+      ++self.completed;
+      if (cancelled == 1) ++self.cancelled;
+    }
+  }
+  wkeCursorBrokerHooks hooks() noexcept {
+    return {sizeof(wkeCursorBrokerHooks), 0, this, &descriptor, &enter, &leave, &complete};
+  }
+};
+
+void dispatch_actual_timer(HWND window) {
+  const auto deadline = GetTickCount64() + 2000;
+  for (;;) {
+    MSG message{};
+    if (PeekMessageW(&message, window, WM_TIMER, WM_TIMER, PM_REMOVE)) {
+      require(message.hwnd == window && message.wParam == actual_broker_timer &&
+          message.lParam != 0, "unexpected-timer");
+      DispatchMessageW(&message); // Original SetTimer-produced TIMERPROC, never a synthesized receipt.
+      return;
+    }
+    const auto now = GetTickCount64();
+    if (now >= deadline) fatal("owner-timer-timeout");
+    const auto remaining = static_cast<DWORD>(deadline - now);
+    require(MsgWaitForMultipleObjectsEx(0, nullptr, remaining, QS_TIMER, MWMO_INPUTAVAILABLE)
+        != WAIT_FAILED, "owner-timer-wait");
+  }
+}
+json drain(unsigned status, const wkeCursorBrokerDrainReceipt& value) {
+  return {{"status", status}, {"vendorFailed", status == WKE_CURSOR_BROKER_FAILED},
+      {"closing", value.closing}, {"queued", value.queuedUiTasks}, {"running", value.runningUiTasks},
+      {"nativeScopes", value.nativeScopes}, {"engineCallbacks", value.engineCallbacks},
+      {"oleRegistered", value.oleRegistered}, {"drained", value.drained}, {"nonAtomic", true}};
+}
+bool quiet(const wkeCursorBrokerDrainReceipt& value) {
+  return !value.queuedUiTasks && !value.runningUiTasks && !value.nativeScopes && !value.engineCallbacks;
+}
+json tuple(const wkeCursorBrokerIdentity& value) {
+  return {{"view", std::to_string(value.viewGeneration)}, {"document", std::to_string(value.documentGeneration)},
+      {"geometry", std::to_string(value.geometryGeneration)}};
+}
+
+int run(const std::string& schedule, const std::filesystem::path& kernel,
+    const std::string& expected_hash, bool require_registered) {
+  char opt_in[2]{};
+  require(GetEnvironmentVariableA("SOUI_DIAGNOSTIC_SCRIPT", opt_in, sizeof(opt_in)) == 1 &&
+      opt_in[0] == '1', "startup-opt-in-required");
+  require(kernel.is_absolute() && expected_hash.size() == 64 &&
+      expected_hash.find_first_not_of("0123456789abcdef") == std::string::npos, "kernel-binding-input");
+  file_handle held_file;
+  held_file.value = CreateFileW(kernel.c_str(), GENERIC_READ, FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0, nullptr);
+  require(held_file.value != INVALID_HANDLE_VALUE, "held-kernel-file");
+  const auto actual_hash = hash_file(held_file.value);
+  require(actual_hash == expected_hash, "kernel-sha-mismatch");
+
+  WNDCLASSW type{};
+  type.lpfnWndProc = DefWindowProcW;
+  type.hInstance = GetModuleHandleW(nullptr);
+  type.lpszClassName = L"SouiActualOleStartupSchedule";
+  require(RegisterClassW(&type) != 0, "window-class");
+  const HWND window = CreateWindowExW(0, type.lpszClassName, L"", WS_OVERLAPPEDWINDOW,
+      0, 0, 320, 240, nullptr, nullptr, type.hInstance, nullptr);
+  require(window != nullptr, "actual-owner-window");
+  const wkeCursorBrokerIdentity initial{sizeof(wkeCursorBrokerIdentity), 0, 1, 1, 1};
+  auto endpoint = broker::create(window, initial);
+  require(endpoint != nullptr, "actual-sdk-broker");
+  observer hooks;
+  hooks.original = endpoint->hooks();
+  command_lane engine;
+  HMODULE module = nullptr;
+  const wkeCursorBrokerApi* api = nullptr;
+  wkeCursorBrokerRealm realm{};
+  wkeCursorBrokerEndpointReceipt created{};
+  unsigned pre_status = WKE_CURSOR_BROKER_INVALID;
+  wkeCursorBrokerDrainReceipt pre{}; pre.structSize = sizeof(pre);
+  using initialize_fn = void(WKE_CALL_TYPE*)(const wkeSettings*);
+  using initialized_fn = bool(WKE_CALL_TYPE*)();
+  using drag_enabled_fn = void(WKE_CALL_TYPE*)(wkeWebView, bool);
+  using shutdown_fn = void(WKE_CALL_TYPE*)();
+  shutdown_fn shutdown = nullptr;
+
+  engine.call([&] {
+    module = LoadLibraryExW(kernel.c_str(), nullptr, LOAD_WITH_ALTERED_SEARCH_PATH);
+    require(module != nullptr, "actual-kernel-load");
+    std::vector<wchar_t> loaded_name(32768);
+    const DWORD length = GetModuleFileNameW(module, loaded_name.data(), static_cast<DWORD>(loaded_name.size()));
+    require(length != 0 && length < loaded_name.size() &&
+        std::filesystem::equivalent(kernel, std::filesystem::path(loaded_name.data())), "loaded-kernel-identity");
+    const auto initialize = exported<initialize_fn>(module, "wkeInitializeEx");
+    const auto initialized = exported<initialized_fn>(module, "wkeIsInitialize");
+    const auto enable_drag = exported<drag_enabled_fn>(module, "wkeSetDragDropEnable");
+    shutdown = exported<shutdown_fn>(module, "wkeShutdown");
+    initialize(nullptr);
+    require(initialized(), "actual-engine-initialized");
+    enable_drag(nullptr, true); // Actual native setter, no fake registration prerequisite.
+    const auto getter = exported<FN_wkeGetCursorBrokerApi>(module, "wkeGetCursorBrokerApi");
+    api = getter(WKE_CURSOR_BROKER_ABI_VERSION);
+    require(in_module(api, module) && api->structSize >= sizeof(*api) &&
+        api->abiVersion == WKE_CURSOR_BROKER_ABI_VERSION && !api->reserved &&
+        (api->capabilities & 3U) == 3U, "actual-broker-table");
+    for (const void* call : {reinterpret_cast<const void*>(api->beginRealm),
+        reinterpret_cast<const void*>(api->createEndpoint), reinterpret_cast<const void*>(api->updateIdentity),
+        reinterpret_cast<const void*>(api->requestClose), reinterpret_cast<const void*>(api->inspectDrain),
+        reinterpret_cast<const void*>(api->destroyEndpoint), reinterpret_cast<const void*>(api->endRealm)})
+      require(in_module(call, module), "actual-broker-callout");
+    const wkeCursorBrokerRealmConfig config{sizeof(config), 64, 64, 0};
+    wkeCursorBrokerRealmReceipt receipt{}; receipt.structSize = sizeof(receipt);
+    require(api->beginRealm(&config, &receipt) == WKE_CURSOR_BROKER_OK &&
+        (receipt.realm.low || receipt.realm.high), "actual-realm");
+    realm = receipt.realm;
+    const wkeCursorBrokerEndpointConfig view_config{sizeof(view_config), 0, window, initial, hooks.hooks()};
+    created.structSize = sizeof(created);
+    const unsigned status = api->createEndpoint(realm, &view_config, &created);
+    const bool bound = endpoint->bind(created); // Real engine-thread binding; retains failed handoff too.
+    require(status == WKE_CURSOR_BROKER_OK && bound &&
+        created.ownerThreadId == GetWindowThreadProcessId(window, nullptr), "actual-view-created-bound");
+    pre_status = api->inspectDrain(created.endpoint, &pre);
+  });
+  require(pre_status == WKE_CURSOR_BROKER_OK && pre.queuedUiTasks == 1 &&
+      !pre.runningUiTasks && !pre.nativeScopes && !pre.oleRegistered, "actual-initial-registration-queued");
+
+  if (schedule != "matching") require(endpoint->advance_geometry(), "actual-sdk-geometry-advance");
+  if (schedule == "ack-before-dispatch") {
+    engine.call([&] {
+      const auto latest = endpoint->identity();
+      require(api->updateIdentity(created.endpoint, &latest) == WKE_CURSOR_BROKER_OK, "actual-engine-ack");
+    });
+  }
+  // The command lane now waits on its mutex; no engine ACK/native pump can race this owner dispatch.
+  dispatch_actual_timer(window);
+  const auto admission = endpoint->native_admission_diagnostics();
+  const unsigned observed_enters = hooks.enters, observed_admitted = hooks.admitted;
+  const unsigned observed_completed = hooks.completed, observed_cancelled = hooks.cancelled, all_completed = hooks.all_completed;
+  unsigned post_status = WKE_CURSOR_BROKER_INVALID;
+  wkeCursorBrokerDrainReceipt post{}; post.structSize = sizeof(post);
+  engine.call([&] { post_status = api->inspectDrain(created.endpoint, &post); });
+  require(quiet(post) && observed_completed == 1, "actual-one-registration-completed");
+  bool measurement = false;
+  if (schedule == "matching") {
+    measurement = post_status == WKE_CURSOR_BROKER_OK && post.oleRegistered == 1 &&
+        observed_enters == 1 && observed_admitted == 1 && !observed_cancelled &&
+        admission.enabled && admission.reason == reason::none;
+  } else if (schedule == "ui-advance-before-ack") {
+    measurement = post_status == WKE_CURSOR_BROKER_FAILED && !post.oleRegistered &&
+        observed_enters == 1 && !observed_admitted && !observed_cancelled &&
+        admission.enabled && admission.reason == reason::identity_or_transition &&
+        admission.kind == WKE_CURSOR_BROKER_NATIVE_OLE_REGISTER &&
+        admission.sdk.geometryGeneration == 2 && admission.receipt.geometryGeneration == 1 &&
+        admission.sdk.viewGeneration == 1 && admission.sdk.documentGeneration == 1 &&
+        admission.receipt.viewGeneration == 1 && admission.receipt.documentGeneration == 1 &&
+        !admission.document_pending && !admission.closing;
+  } else {
+    measurement = post_status == WKE_CURSOR_BROKER_OK && !post.oleRegistered &&
+        !observed_enters && !observed_admitted && observed_cancelled == 1 &&
+        admission.enabled && admission.reason == reason::none;
+  }
+  const bool registration_preserved = post_status == WKE_CURSOR_BROKER_OK && post.oleRegistered == 1;
+
+  require(endpoint->begin_close(), "sdk-close-admission");
+  unsigned requested = WKE_CURSOR_BROKER_INVALID;
+  engine.call([&] { requested = api->requestClose(created.endpoint); });
+  require(requested == WKE_CURSOR_BROKER_OK || requested == WKE_CURSOR_BROKER_FAILED, "real-close-request");
+  const auto close_deadline = GetTickCount64() + 5000;
+  wkeCursorBrokerDrainReceipt closed{}; closed.structSize = sizeof(closed);
+  unsigned close_status = WKE_CURSOR_BROKER_INVALID;
+  for (;;) {
+    engine.call([&] { close_status = api->inspectDrain(created.endpoint, &closed); });
+    require(close_status == WKE_CURSOR_BROKER_OK || close_status == WKE_CURSOR_BROKER_FAILED, "close-receipt-status");
+    if (closed.drained == 1 && quiet(closed) && !closed.oleRegistered) break;
+    if (GetTickCount64() >= close_deadline) fatal("real-close-retained-timeout");
+    if (closed.queuedUiTasks) dispatch_actual_timer(window);
+    else fatal("real-close-retained-without-owned-task");
+  }
+  engine.call([&] {
+    wkeCursorBrokerDrainReceipt destroyed{}; destroyed.structSize = sizeof(destroyed);
+    require(api->destroyEndpoint(created.endpoint, &destroyed) == WKE_CURSOR_BROKER_OK &&
+        destroyed.drained == 1 && quiet(destroyed) && !destroyed.oleRegistered, "actual-endpoint-destroy");
+    require(api->endRealm(realm) == WKE_CURSOR_BROKER_OK, "actual-realm-end");
+    shutdown(); // Initialized module stays loaded; no FreeLibrary claim.
+  });
+  require(endpoint->finish_close(), "actual-sdk-finish-close");
+  endpoint.reset(); // Hook storage released only after the real vendor destroy receipt.
+  engine.join(); // Actual thread termination, not a task completion marker.
+  require(DestroyWindow(window) != FALSE && UnregisterClassW(type.lpszClassName, type.hInstance) != FALSE,
+      "actual-owner-window-withdrawn");
+  FILETIME creation{}, exited{}, native_kernel{}, native_user{};
+  require(GetProcessTimes(GetCurrentProcess(), &creation, &exited, &native_kernel, &native_user) != FALSE,
+      "subject-native-identity");
+  const auto file_time = (static_cast<unsigned long long>(creation.dwHighDateTime) << 32) | creation.dwLowDateTime;
+  const json report{{"schema", "soui.actual-ole-startup-schedule/1"}, {"case", schedule},
+      {"pid", GetCurrentProcessId()}, {"creationFileTime", std::to_string(file_time)},
+      {"actualDllSha256", actual_hash}, {"before", drain(pre_status, pre)}, {"after", drain(post_status, post)},
+      {"enterCalls", observed_enters}, {"admitted", observed_admitted},
+      {"registrationCompleted", observed_completed}, {"registrationCancelled", observed_cancelled}, {"allUiCompleted", all_completed},
+      {"nativeAdmission", {{"enabled", admission.enabled}, {"reason", soui::sdk::detail::cursor_native_rejection_name(admission.reason)},
+        {"kind", admission.kind}, {"sdk", tuple(admission.sdk)}, {"receipt", tuple(admission.receipt)},
+        {"pending", admission.document_pending}, {"closing", admission.closing}}},
+      {"close", drain(close_status, closed)}, {"measurementPassed", measurement},
+      {"registrationPreserved", registration_preserved}, {"characterizationOnly", !require_registered}, {"startupQualified", false},
+      {"ownerWithdrawn", true}, {"engineThreadJoined", true}, {"initializedUnloadQualified", false},
+      {"qualificationPassed", false}, {"releaseReady", false}};
+  std::puts(report.dump().c_str());
+  std::fflush(stdout);
+  return measurement && (!require_registered || registration_preserved) ? 0 : 2;
+}
+} // namespace
+
+int wmain(int argc, wchar_t** argv) {
+  std::set_terminate([] { fatal("cpp-terminate-retained-owners"); });
+  try {
+    require((argc == 7 || argc == 8) && std::wstring(argv[1]) == L"--kernel" &&
+        std::wstring(argv[3]) == L"--kernel-sha" && std::wstring(argv[5]) == L"--case", "arguments");
+    const std::wstring wide_case(argv[6]), wide_hash(argv[4]);
+    const std::string schedule(wide_case.begin(), wide_case.end()), hash(wide_hash.begin(), wide_hash.end());
+    require(schedule == "matching" || schedule == "ui-advance-before-ack" ||
+        schedule == "ack-before-dispatch", "schedule-name");
+    const bool require_registered = argc == 7;
+    require(require_registered || std::wstring(argv[7]) == L"--characterize", "registration-policy");
+    return run(schedule, std::filesystem::path(argv[2]), hash, require_registered);
+  } catch (...) { fatal("subject-entry-exception"); }
+}

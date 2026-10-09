@@ -1,0 +1,23 @@
+[CmdletBinding()]
+param()
+$ErrorActionPreference='Stop'
+$taskPacketRoot='F:/work/sm05-broker/out/ole-startup-owned-v2-root-5a2ef5db-606e-4e83-978d-e912476bee88'
+$taskLease=[Threading.Mutex]::new($false,'Local\SouiDevKit.DesktopValidation')
+$taskAcquired=$false
+$taskEnvNames=@('NODE_OPTIONS','NODE_PATH')
+$taskPriorEnv=@{}
+foreach($taskName in $taskEnvNames){$taskPriorEnv[$taskName]=[Environment]::GetEnvironmentVariable($taskName,'Process')}
+try {
+ try {$taskAcquired=$taskLease.WaitOne(0)} catch [Threading.AbandonedMutexException] {$taskAcquired=$true}
+ if(-not $taskAcquired){throw 'Desktop validation lease is busy; no execution.'}
+ foreach($taskPin in @(@{name='package.json';sha='49f08eebcf3dc541c40dadb566567a5ee81ac387813ef9b3c89f6bdf06612a63'},@{name='run-root.cjs';sha='47eca2630c5588fc33fa5c46384f05878455f6a61f7780012e0026808e53d358'},@{name='tools.json';sha='c073ad93d7782a7b8b7d56286565bb54c4223374dc98ff76b21fa433285ff1d6'})){
+  if((Get-FileHash -LiteralPath (Join-Path $taskPacketRoot $taskPin.name) -Algorithm SHA256).Hash.ToLowerInvariant() -ne $taskPin.sha){throw 'Reviewed Root packet changed'}
+ }
+ $taskTools=Get-Content -LiteralPath (Join-Path $taskPacketRoot 'tools.json') -Raw | ConvertFrom-Json
+ if((Get-Item -LiteralPath $taskTools.node.path).Length -ne $taskTools.node.bytes -or (Get-FileHash -LiteralPath $taskTools.node.path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $taskTools.node.sha256 -or $taskTools.node.sha256 -ne '63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088'){throw 'Node host changed'}
+ [Environment]::SetEnvironmentVariable('NODE_OPTIONS',$null,'Process');[Environment]::SetEnvironmentVariable('NODE_PATH',$null,'Process')
+ & $taskTools.node.path (Join-Path $taskPacketRoot 'run-root.cjs') ROOT_ACTUAL_OLE_SCHEDULES_V1 '49f08eebcf3dc541c40dadb566567a5ee81ac387813ef9b3c89f6bdf06612a63'
+ exit $LASTEXITCODE
+} finally {
+ try{foreach($taskName in $taskEnvNames){[Environment]::SetEnvironmentVariable($taskName,$taskPriorEnv[$taskName],'Process')}}finally{if($taskAcquired){$taskLease.ReleaseMutex()};$taskLease.Dispose()}
+}

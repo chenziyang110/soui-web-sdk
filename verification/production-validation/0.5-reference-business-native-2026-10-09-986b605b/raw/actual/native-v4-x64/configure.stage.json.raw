@@ -1,0 +1,49 @@
+{
+  "name": "configure",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "-S",
+    "F:\\work\\sm05-broker\\out\\reference-native-v4-root-b47a0d8f-f2a2-4f8a-a118-b5d9b0d731a3",
+    "-B",
+    "F:\\work\\sm05-broker\\out\\w6n4\\x64\\build",
+    "-G",
+    "Visual Studio 17 2022",
+    "-A",
+    "x64,version=10.0.19041.0",
+    "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+    "-T",
+    "v143,host=x64,version=14.44.35207",
+    "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+    "-DREFERENCE_ROOT:PATH=F:\\work\\sm05-broker\\out\\w6n4\\x64\\source\\demos\\reference-workbench",
+    "-DREFERENCE_NODE:FILEPATH=C:\\nvm4w\\nodejs\\node.exe",
+    "-DSouiSdk_DIR:PATH=F:\\work\\sm05-broker\\out\\native-v10\\x64\\sdk-relocated\\lib\\cmake\\SouiSdk",
+    "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
+    "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF",
+    "-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir=F:\\work\\sm05-broker\\out\\reference-native-v4-root-b47a0d8f-f2a2-4f8a-a118-b5d9b0d731a3\\empty-user-props\\"
+  ],
+  "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\x64",
+  "pid": 82588,
+  "creationFileTime": "134360368850477482",
+  "rootExitCode": 0,
+  "supervisorExitCode": 124,
+  "genericPassed": false,
+  "closureConfirmed": true,
+  "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\x64\\configure.owned.jsonl",
+  "rawSha256": "b6541ea14d8bc74a3b8f023ea3dd7144db16fbf9fb9207f5dbd5c2c81892c628",
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\w6n4\\x64\\configure.owned.jsonl.context.json",
+    "bytes": 1448,
+    "sha256": "8a2b8308ed59b17ba53592ef087172c41a23effde640e16451f2270404a5fd14"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\w6n4\\x64\\configure.stdout.raw",
+    "bytes": 836,
+    "sha256": "a1a54b41cca11a04df72091b81937906d332c176b10355795c6af5b16f1cf3d5"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\w6n4\\x64\\configure.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "streamErrors": []
+}

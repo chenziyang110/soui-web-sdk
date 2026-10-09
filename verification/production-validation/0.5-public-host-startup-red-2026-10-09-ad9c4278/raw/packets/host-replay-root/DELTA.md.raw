@@ -1,0 +1,7 @@
+# Cause and finite replay
+
+Host source allow_document_navigation (SOUI_SOURCE_KERNEL_HOST) opens resource_root_.parent_path()/source-navigation.log with append. The first run's resources were inside the sealed candidate: root2 completed naturally, then exact-membership postcheck rejected the one new log. Original failure is preserved.
+
+No EXE/source/SDK/fixture change. This wrapper reuses actual compiled GUI EXE with output-isolated resource copy and collects the normal log as actual output. Old candidate97 membership and the precise historical log SHA are protected. Original CL/object/library/exe artifact pins are checked before/after/per-stage. New wrapper gate/schema and fresh namespace reflect replay only; raw finite natural admission rules remain strict. Compilation is not rerun or requalified.
+
+Root alone executes. No Node/CMake/native/GUI execution or live edit by this lane.

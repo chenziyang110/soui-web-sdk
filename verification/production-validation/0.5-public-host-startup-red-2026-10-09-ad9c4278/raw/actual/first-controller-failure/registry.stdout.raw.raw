@@ -1,0 +1,73 @@
+{
+  "backtraceGraph" : 
+  {
+    "commands" : 
+    [
+      "add_test"
+    ],
+    "files" : 
+    [
+      "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/CMakeLists.txt"
+    ],
+    "nodes" : 
+    [
+      {
+        "file" : 0
+      },
+      {
+        "command" : 0,
+        "file" : 0,
+        "line" : 90,
+        "parent" : 0
+      }
+    ]
+  },
+  "kind" : "ctestInfo",
+  "tests" : 
+  [
+    {
+      "backtrace" : 1,
+      "command" : 
+      [
+        "F:/work/sm05-broker/out/host-red-cb0f2097-x64/build/Release/soui_public_host_startup_red.exe",
+        "--kernel",
+        "F:\\work\\sm05-broker\\out\\kernel-83e67b12\\runs\\x64\\miniblink\\out\\miniblink.dll",
+        "--kernel-sha",
+        "342aa3b71e180c3a544ea5cde66c15fcf5f18c4126839006e0623bf5ac77d720",
+        "--resources",
+        "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/resources",
+        "--output",
+        "F:/work/sm05-broker/out/host-red-cb0f2097-x64/build/host-startup-ctest-result.json"
+      ],
+      "config" : "Release",
+      "name" : "host_startup_registration_before_return",
+      "properties" : 
+      [
+        {
+          "name" : "ENVIRONMENT",
+          "value" : 
+          [
+            "SOUI_DIAGNOSTIC_SCRIPT=1"
+          ]
+        },
+        {
+          "name" : "RUN_SERIAL",
+          "value" : true
+        },
+        {
+          "name" : "TIMEOUT",
+          "value" : 20.0
+        },
+        {
+          "name" : "WORKING_DIRECTORY",
+          "value" : "F:/work/sm05-broker/out/host-red-cb0f2097-x64/build"
+        }
+      ]
+    }
+  ],
+  "version" : 
+  {
+    "major" : 1,
+    "minor" : 0
+  }
+}
