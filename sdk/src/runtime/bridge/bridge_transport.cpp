@@ -1,5 +1,6 @@
 #include <soui/runtime/bridge/bridge_transport.h>
 #include <soui/version.h>
+#include "../services/gui/gui_commands_internal.h"
 
 #include <algorithm>
 #include <set>
@@ -74,6 +75,7 @@ bool nonnegative_integer(const json& value, std::uint64_t& result) {
 
 bool local_reserved_method(const std::string& method) {
   return method == "bridge.describe" || method == "bridge.session.renew" ||
+      method == "gui.bind" || method == "gui.effect" || method == "gui.ack" ||
       method == "task.subscribe" || method == "task.unsubscribe";
 }
 
@@ -264,16 +266,17 @@ bridge_response bridge_transport::handle_local(const bridge_request& request,
 }
 
 bridge_response bridge_transport::handle_impl(const bridge_request& request,
-    const std::shared_ptr<const native_connection_binding>& binding, bool local) const {
+    const std::shared_ptr<const native_connection_binding>& binding, bool local,
+    const detail::gui_job_context* effect) const {
   bridge_request authorized_request = request;
   authorized_request.authorization.reset();
-  bridge_response response = validate(authorized_request, binding, local);
+  bridge_response response = validate(authorized_request, binding, local, effect);
   if (!response.error_code.empty()) {
     return response;
   }
 
   const auto finish = [&] {
-    if (local && !local_authorized(authorized_request, binding)) {
+    if (local && !(effect ? effect->authorizes_effect(authorized_request) : local_authorized(authorized_request, binding))) {
       response.ok = false;
       response.error_code = "E_UNAUTHORIZED";
       response.error_message = "Local request is not authorized.";
@@ -355,6 +358,11 @@ bridge_response bridge_transport::handle_impl(const bridge_request& request,
   return response;
 }
 
+bridge_response bridge_transport::handle_gui_effect(const bridge_request& request,
+    const detail::gui_job_context& context) const {
+  return handle_impl(request, {}, true, &context);
+}
+
 std::string bridge_transport::handle_json(std::string_view json_text,
                                           bool native_user_gesture) const {
   if (json_text.empty() || json_text.size() > max_message_bytes) {
@@ -433,7 +441,8 @@ bool bridge_transport::local_authorized(const bridge_request& request,
 }
 
 bridge_response bridge_transport::validate(bridge_request& request,
-    const std::shared_ptr<const native_connection_binding>& binding, bool local) const {
+    const std::shared_ptr<const native_connection_binding>& binding, bool local,
+    const detail::gui_job_context* effect) const {
   bridge_response response;
   response.request_id = local && !valid_id(request.request_id) ? std::string{} : request.request_id;
   response.correlation_id = response.request_id;
@@ -441,14 +450,14 @@ bridge_response bridge_transport::validate(bridge_request& request,
   response.operation_id = local && !request.operation_id.empty() && !valid_id(request.operation_id)
       ? std::string{} : request.operation_id;
 
-  if (local && (!binding || request.token.empty() || request.token.size() > max_string_bytes)) {
+  if (local && !effect && (!binding || request.token.empty() || request.token.size() > max_string_bytes)) {
     response.error_code = "E_UNAUTHORIZED";
     response.error_message = "Local request is not authorized.";
     return response;
   }
 
   if (!valid_id(request.request_id) || !valid_id(request.session_id) || !valid_origin(request.origin) ||
-      request.token.empty() || request.token.size() > max_string_bytes || !valid_id(request.method) ||
+      (!effect && request.token.empty()) || request.token.size() > max_string_bytes || !valid_id(request.method) ||
       request.params_json.empty() || request.timeout_ms == 0U || request.timeout_ms > 60000U ||
       (local && !request.operation_id.empty() && !valid_id(request.operation_id))) {
     response.error_code = "E_INVALID_PARAMS";
@@ -506,7 +515,9 @@ bridge_response bridge_transport::validate(bridge_request& request,
     response.error_message = "Requested method is not registered.";
     return response;
   }
-  const auto authorization = local ? permissions_.resolve_local(binding, request.token, request.method, *capability)
+  const auto authorization = effect ? checked_authorization{
+      effect->authorizes_effect(request) ? authorization_result::authorized : authorization_result::denied,
+      effect->agent_scope} : local ? permissions_.resolve_local(binding, request.token, request.method, *capability)
       : permissions_.resolve(request.session_id, request.origin, request.token, *capability);
   if (authorization.result != authorization_result::authorized) {
     response.error_code = !local && authorization.result == authorization_result::expired ? "E_SESSION_EXPIRED" : "E_UNAUTHORIZED";

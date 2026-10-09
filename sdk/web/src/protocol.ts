@@ -72,6 +72,14 @@ export interface SouiClipboardMethodMap {
   'desktop.clipboard.writeText': { params: { text: string }; result: { applied: true } };
 }
 
+/** Optional page controls. None grants a page an Agent scope or user gesture. */
+export interface SouiGuiControlMethodMap {
+  'gui.bind': { params: {}; result: { accepted: true } };
+  'gui.effect': { params: { requestId: string; documentId: string; effectId: 'native'; inputJson: string };
+    result: { resultJson: string } };
+  'gui.ack': { params: { requestId: string; documentId: string; ok: boolean; resultJson: string }; result: { accepted: true } };
+}
+
 /** Optional directory picker installed by json_bridge::enable_directory_service(). */
 export interface SouiDirectoryMethodMap {
   'desktop.dialog.pickDirectory': { params: {}; result: { cancelled: boolean; path: string } };

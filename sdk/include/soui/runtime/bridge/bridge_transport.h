@@ -13,6 +13,7 @@
 #include <soui/runtime/bridge/action_contract.h>
 
 namespace soui::runtime {
+namespace detail { class gui_commands_state; class gui_job_context; }
 
 struct bridge_request {
   std::string request_id;
@@ -64,6 +65,7 @@ class capability_registry {
  private:
   friend class bridge_transport;
   friend class task_service;
+  friend class detail::gui_commands_state;
   struct capability {
     std::string permission;
     std::shared_ptr<const contextual_handler> callback;
@@ -116,16 +118,20 @@ class bridge_transport {
   [[nodiscard]] static std::string serialize_lease(const permission_lease& lease);
 
  private:
+  friend class detail::gui_commands_state;
+  [[nodiscard]] bridge_response handle_gui_effect(const bridge_request&, const detail::gui_job_context&) const;
   [[nodiscard]] static bridge_request local_request(const bridge_request& request,
       const std::shared_ptr<const native_connection_binding>& binding, const std::string& bearer);
   [[nodiscard]] bridge_response handle_impl(const bridge_request& request,
-      const std::shared_ptr<const native_connection_binding>& binding, bool local) const;
+      const std::shared_ptr<const native_connection_binding>& binding, bool local,
+      const detail::gui_job_context* effect = nullptr) const;
   [[nodiscard]] std::string describe_impl(const bridge_request& request,
       const std::shared_ptr<const native_connection_binding>& binding, bool local) const;
   [[nodiscard]] bool local_authorized(const bridge_request& request,
       const std::shared_ptr<const native_connection_binding>& binding) const;
   [[nodiscard]] bridge_response validate(bridge_request& request,
-      const std::shared_ptr<const native_connection_binding>& binding = {}, bool local = false) const;
+      const std::shared_ptr<const native_connection_binding>& binding = {}, bool local = false,
+      const detail::gui_job_context* effect = nullptr) const;
   [[nodiscard]] static std::string serialize(const bridge_response& response);
 
   capability_registry& registry_;

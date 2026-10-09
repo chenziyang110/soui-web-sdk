@@ -309,3 +309,4 @@ option(SOUI_BUILD_HOST_STARTUP_FENCE_TESTS "Build actual controlled Host/DLL reg
 if(SOUI_BUILD_HOST_STARTUP_FENCE_TESTS)
   add_subdirectory(host_startup_fence)
 endif()
+add_subdirectory(gui_commands)

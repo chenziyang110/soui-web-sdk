@@ -33,7 +33,7 @@ get_target_property(startup_normal_sources soui_sdk SOURCES)
 list(LENGTH startup_normal_sources startup_normal_source_count)
 list(FIND startup_normal_sources "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/soui_miniblink_host.cpp" startup_normal_host_index)
 get_target_property(startup_normal_definitions soui_sdk COMPILE_DEFINITIONS)
-if(NOT startup_normal_source_count EQUAL 24 OR startup_normal_host_index EQUAL -1
+if(NOT startup_normal_source_count EQUAL 25 OR startup_normal_host_index EQUAL -1
    OR startup_normal_definitions MATCHES "SOUI_STARTUP_FENCE_TEST_OBSERVER")
   message(FATAL_ERROR "The actual normal SDK target must retain its production Host without the observer")
 endif()

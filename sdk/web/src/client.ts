@@ -7,6 +7,9 @@ import type { SouiBridgeRequest, SouiNativeEvent, SouiNativePort, SouiSessionLea
 import { SessionRenewal } from './session-renewal.js';
 import { readTaskQueryParams } from './task-query.js';
 import type { SouiCoreMethodMap } from './protocol.js';
+import { GuiCommandRoute } from './gui-command.js';
+import type { SouiGuiBinding } from './gui-command.js';
+import type { SouiGui } from './gui.js';
 
 export interface SouiNativeClientOptions {
   sessionId: string;
@@ -58,6 +61,7 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
   private readonly removeEventListener: () => void;
   private readonly session: SessionRenewal;
   private stopped = false;
+  private guiRoute: GuiCommandRoute | undefined;
 
   public constructor(private readonly port: SouiNativePort, options: SouiNativeClientOptions) {
     if (!options || !nonEmptyString(options.sessionId, 256) || !nonEmptyString(options.origin) ||
@@ -85,6 +89,16 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
 
   /** Shares an in-flight renewal. Before the renewal window, resolves the current lease without sending. */
   public renewSession(): Promise<SouiSessionLease> { return this.session.renew(); }
+
+  /** Page route only. Native readiness and Agent authority remain native decisions. */
+  public bindGui(gui: SouiGui): SouiGuiBinding {
+    if (this.stopped || gui.disposed) throw new SouiBridgeError('E_DISPOSED', 'The GUI route is closed.');
+    if (this.guiRoute) throw new SouiBridgeError('E_BUSY', 'This client already has a GUI route.');
+    const route = new GuiCommandRoute(gui, (method, params) => this.request(method, params),
+      () => !this.stopped, error => this.report(error));
+    this.guiRoute = route;
+    return route;
+  }
 
   public call<M extends keyof Methods & string>(method: M, params: Methods[M]['params']): Promise<Methods[M]['result']> {
     if (method === 'bridge.session.renew')
@@ -230,6 +244,7 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
 
   private receiveEvent(event: unknown): void {
     if (this.stopped || !isNativeEvent(event) || event.sessionId !== this.options.sessionId) return;
+    if (event.eventName === 'gui.command') { this.guiRoute?.receive(event); return; }
     for (const state of Array.from(this.subscriptions)) {
       if (state.removed || state.taskId !== event.taskId || state.eventName !== event.eventName ||
           event.sequence <= state.lastSequence) continue;
@@ -242,6 +257,7 @@ export class SouiNativeClientImpl<Methods extends { [K in keyof Methods]: { para
   public dispose(): void {
     if (this.stopped) return;
     this.stopped = true;
+    this.guiRoute?.dispose();
     this.session.dispose();
     try { this.removeEventListener(); } catch (error) { this.report(error); }
     for (const state of Array.from(this.subscriptions)) void state.remove();

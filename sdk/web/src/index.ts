@@ -8,6 +8,9 @@ export type { SouiWebFeature, SouiFeatureObservation, SouiWebFeatureReport, Soui
 export { readSouiActionContract, validateSouiActionInput, validateSouiActionOutput, souiToolDefinitions } from './action-contracts.js';
 export type { SouiJson, SouiActionSchema, SouiActionContract, SouiToolDefinition } from './action-contracts.js';
 export { createSouiGui, SouiGui } from './gui.js';
+export type { SouiGuiCommandContext } from './gui.js';
+export type { SouiGuiBinding } from './gui-command.js';
+export type { SouiGuiControlMethodMap } from './protocol.js';
 export type { SouiGuiState, SouiGuiRegistration, SouiGuiNode, SouiGuiSnapshot, SouiGuiPerformOptions, SouiGuiWaitOptions } from './gui.js';
 export type { SouiMethodCapability, SouiCapabilityPage, SouiCapabilityCatalog, SouiDescribeOptions, SouiDiscoveryOptions } from './capabilities.js';
 export type { SouiNativePort, SouiNativeEvent, SouiBridgeRequest, SouiBridgeResponse, SouiSessionLease, SouiCoreMethodMap, SouiTaskQueryParams, SouiClipboardMethodMap, SouiDirectoryMethodMap, SouiWindowMethodMap } from './protocol.js';

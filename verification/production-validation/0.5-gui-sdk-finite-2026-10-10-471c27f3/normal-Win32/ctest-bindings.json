@@ -1,0 +1,1446 @@
+{
+  "identity": {
+    "name": "ctest",
+    "executable": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+    "args": [
+      "--test-dir",
+      "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build",
+      "-C",
+      "Release",
+      "--output-on-failure",
+      "--no-tests=error",
+      "-j",
+      "1",
+      "--output-junit",
+      "F:\\work\\sm05-broker\\out\\reg25\\Win32\\tests.junit.xml"
+    ],
+    "cwd": "F:/work/sm05-broker/out/reg25/Win32",
+    "pid": 109240,
+    "creationFileTime": "134360567463312657",
+    "rootExitCode": 0,
+    "supervisorExitCode": 0,
+    "genericPassed": true,
+    "closureConfirmed": true,
+    "rawJob": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\ctest.owned.jsonl",
+    "rawSha256": "29c2dbb132f68944479bcf2ee127407e2288d808798a7260ef623694ca91910b",
+    "context": {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\ctest.owned.jsonl.context.json",
+      "bytes": 645,
+      "sha256": "54ef9447e4ba6cf31fa2fab383de3d88d256ea20a19ea02b72523bb38ca3095e"
+    },
+    "stdout": {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\ctest.stdout.raw",
+      "bytes": 7145,
+      "sha256": "6c5a00f1e7eb0dc85bda98ccc80492d213769b78e92b34c0e92ec269f54f08b1"
+    },
+    "stderr": {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\ctest.stderr.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "streamErrors": [],
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 13478,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 52,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    }
+  },
+  "junit": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\tests.junit.xml",
+    "bytes": 12215,
+    "sha256": "f41d0ff8e2d14dd83953e3383403e256410ed23adf79c56d13bfba3f444d4e65"
+  },
+  "fullLastTest": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\Testing\\Temporary\\LastTest.log",
+    "bytes": 38989,
+    "sha256": "0cf1f14a4813306a0cab1b15626370ffbbbfe2038015a8cbe054fe67c17a2d93"
+  },
+  "cases": [
+    {
+      "kind": "endpoint",
+      "case": "invalid_options",
+      "registered": "windows_local_endpoint_invalid_options",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint invalid_options passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "default_deny",
+      "registered": "windows_local_endpoint_default_deny",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint default_deny passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "handshake_required",
+      "registered": "windows_local_endpoint_handshake_required",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint handshake_required passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "owner_dispatch",
+      "registered": "windows_local_endpoint_owner_dispatch",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint owner_dispatch passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "wire_credentials",
+      "registered": "windows_local_endpoint_wire_credentials",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint wire_credentials passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "frame_bounds",
+      "registered": "windows_local_endpoint_frame_bounds",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint frame_bounds passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "consecutive_requests",
+      "registered": "windows_local_endpoint_consecutive_requests",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint consecutive_requests passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "fragmented_frame",
+      "registered": "windows_local_endpoint_fragmented_frame",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint fragmented_frame passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "external_process",
+      "registered": "windows_local_endpoint_external_process",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint external_process passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "duplicate_fields",
+      "registered": "windows_local_endpoint_duplicate_fields",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint duplicate_fields passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "navigation_revoke",
+      "registered": "windows_local_endpoint_navigation_revoke",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint navigation_revoke passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "reconnect",
+      "registered": "windows_local_endpoint_reconnect",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint reconnect passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "callback_throw",
+      "registered": "windows_local_endpoint_callback_throw",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint callback_throw passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "authorizer_throw",
+      "registered": "windows_local_endpoint_authorizer_throw",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint authorizer_throw passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "issue_close_race",
+      "registered": "windows_local_endpoint_issue_close_race",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint issue_close_race passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "lease_expiry",
+      "registered": "windows_local_endpoint_lease_expiry",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint lease_expiry passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "partial_read_stop",
+      "registered": "windows_local_endpoint_partial_read_stop",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint partial_read_stop passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "owner_timeout",
+      "registered": "windows_local_endpoint_owner_timeout",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint owner_timeout passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "callback_stop",
+      "registered": "windows_local_endpoint_callback_stop",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint callback_stop passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "endpoint",
+      "case": "security_first_instance",
+      "registered": "windows_local_endpoint_security_first_instance",
+      "result": {
+        "exactPublicSuccessLine": "windows_local_endpoint security_first_instance passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "factory",
+      "case": "factory_stopped_registration_freeze",
+      "registered": "json_bridge_endpoint_factory_stopped_registration_freeze",
+      "result": {
+        "exactPublicSuccessLine": "public-json-bridge-endpoint factory_stopped_registration_freeze passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "factory",
+      "case": "factory_allocation_failure",
+      "registered": "json_bridge_endpoint_factory_allocation_failure",
+      "result": {
+        "exactPublicSuccessLine": "public-json-bridge-endpoint factory_allocation_failure passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "factory",
+      "case": "factory_after_bootstrap",
+      "registered": "json_bridge_endpoint_factory_after_bootstrap",
+      "result": {
+        "exactPublicSuccessLine": "public-json-bridge-endpoint factory_after_bootstrap passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "factory",
+      "case": "typed_action_page_isolation",
+      "registered": "json_bridge_endpoint_typed_action_page_isolation",
+      "result": {
+        "exactPublicSuccessLine": "public-json-bridge-endpoint typed_action_page_isolation passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "factory",
+      "case": "local_family_completion",
+      "registered": "json_bridge_endpoint_local_family_completion",
+      "result": {
+        "exactPublicSuccessLine": "public-json-bridge-endpoint local_family_completion passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "factory",
+      "case": "local_family_disconnect_cancel",
+      "registered": "json_bridge_endpoint_local_family_disconnect_cancel",
+      "result": {
+        "exactPublicSuccessLine": "public-json-bridge-endpoint local_family_disconnect_cancel passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "gui",
+      "case": "registration",
+      "registered": "gui_command_registration",
+      "result": {
+        "receipt": {
+          "case": "registration",
+          "passed": true,
+          "protocolFixtureOnly": true,
+          "rootCreationFileTime": "134360567520738145",
+          "rootPid": 56976
+        },
+        "rootBinding": {
+          "pid": 56976,
+          "creationFileTime": "134360567520738145",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\gui\\Release\\soui_gui_command_tests.exe",
+          "wholeOwnedJobNaturalClosed": true
+        },
+        "child": null
+      }
+    },
+    {
+      "kind": "gui",
+      "case": "scope-matrix",
+      "registered": "gui_command_scope-matrix",
+      "result": {
+        "receipt": {
+          "case": "scope-matrix",
+          "passed": true,
+          "protocolFixtureOnly": true,
+          "rootCreationFileTime": "134360567521185229",
+          "rootPid": 106964
+        },
+        "rootBinding": {
+          "pid": 106964,
+          "creationFileTime": "134360567521185229",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\gui\\Release\\soui_gui_command_tests.exe",
+          "wholeOwnedJobNaturalClosed": true
+        },
+        "child": null
+      }
+    },
+    {
+      "kind": "gui",
+      "case": "one-use-effect",
+      "registered": "gui_command_one-use-effect",
+      "result": {
+        "receipt": {
+          "case": "one-use-effect",
+          "passed": true,
+          "protocolFixtureOnly": true,
+          "rootCreationFileTime": "134360567522452420",
+          "rootPid": 78144
+        },
+        "rootBinding": {
+          "pid": 78144,
+          "creationFileTime": "134360567522452420",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\gui\\Release\\soui_gui_command_tests.exe",
+          "wholeOwnedJobNaturalClosed": true
+        },
+        "child": null
+      }
+    },
+    {
+      "kind": "gui",
+      "case": "actual-child",
+      "registered": "gui_command_actual-child",
+      "result": {
+        "receipt": {
+          "case": "actual-child",
+          "passed": true,
+          "protocolFixtureOnly": true,
+          "rootCreationFileTime": "134360567523847131",
+          "rootPid": 85996
+        },
+        "rootBinding": {
+          "pid": 85996,
+          "creationFileTime": "134360567523847131",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\gui\\Release\\soui_gui_command_tests.exe",
+          "wholeOwnedJobNaturalClosed": true
+        },
+        "child": null
+      }
+    },
+    {
+      "kind": "gui",
+      "case": "owner-reentrancy",
+      "registered": "gui_command_owner-reentrancy",
+      "result": {
+        "receipt": {
+          "case": "owner-reentrancy",
+          "passed": true,
+          "protocolFixtureOnly": true,
+          "rootCreationFileTime": "134360567525392798",
+          "rootPid": 33256
+        },
+        "rootBinding": {
+          "pid": 33256,
+          "creationFileTime": "134360567525392798",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\gui\\Release\\soui_gui_command_tests.exe",
+          "wholeOwnedJobNaturalClosed": true
+        },
+        "child": null
+      }
+    },
+    {
+      "kind": "gui",
+      "case": "revoke-prebind",
+      "registered": "gui_command_revoke-prebind",
+      "result": {
+        "receipt": {
+          "case": "revoke-prebind",
+          "passed": true,
+          "protocolFixtureOnly": true,
+          "rootCreationFileTime": "134360567530050429",
+          "rootPid": 113740
+        },
+        "rootBinding": {
+          "pid": 113740,
+          "creationFileTime": "134360567530050429",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\gui\\Release\\soui_gui_command_tests.exe",
+          "wholeOwnedJobNaturalClosed": true
+        },
+        "child": null
+      }
+    },
+    {
+      "kind": "gui",
+      "case": "timeout-consumption",
+      "registered": "gui_command_timeout-consumption",
+      "result": {
+        "receipt": {
+          "case": "timeout-consumption",
+          "passed": true,
+          "protocolFixtureOnly": true,
+          "rootCreationFileTime": "134360567532047375",
+          "rootPid": 44028
+        },
+        "rootBinding": {
+          "pid": 44028,
+          "creationFileTime": "134360567532047375",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\gui\\Release\\soui_gui_command_tests.exe",
+          "wholeOwnedJobNaturalClosed": true
+        },
+        "child": null
+      }
+    },
+    {
+      "kind": "gui",
+      "case": "capacity-secret",
+      "registered": "gui_command_capacity-secret",
+      "result": {
+        "receipt": {
+          "case": "capacity-secret",
+          "passed": true,
+          "protocolFixtureOnly": true,
+          "rootCreationFileTime": "134360567536880706",
+          "rootPid": 111964
+        },
+        "rootBinding": {
+          "pid": 111964,
+          "creationFileTime": "134360567536880706",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\gui\\Release\\soui_gui_command_tests.exe",
+          "wholeOwnedJobNaturalClosed": true
+        },
+        "child": null
+      }
+    },
+    {
+      "kind": "gui",
+      "case": "two-parent-pool",
+      "registered": "gui_command_two-parent-pool",
+      "result": {
+        "receipt": {
+          "case": "two-parent-pool",
+          "passed": true,
+          "protocolFixtureOnly": true,
+          "rootCreationFileTime": "134360567545627808",
+          "rootPid": 668
+        },
+        "rootBinding": {
+          "pid": 668,
+          "creationFileTime": "134360567545627808",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\gui\\Release\\soui_gui_command_tests.exe",
+          "wholeOwnedJobNaturalClosed": true
+        },
+        "child": null
+      }
+    },
+    {
+      "kind": "gui",
+      "case": "external-peer",
+      "registered": "gui_command_external-peer",
+      "result": {
+        "receipt": {
+          "case": "external-peer",
+          "passed": true,
+          "protocolFixtureOnly": true,
+          "rootCreationFileTime": "134360567547915152",
+          "rootPid": 114664
+        },
+        "rootBinding": {
+          "pid": 114664,
+          "creationFileTime": "134360567547915152",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\gui\\Release\\soui_gui_command_tests.exe",
+          "wholeOwnedJobNaturalClosed": true
+        },
+        "child": {
+          "case": "external-peer",
+          "childCreationFileTime": "134360567548259612",
+          "childExitCode": 0,
+          "childPid": 105548,
+          "protocolFixtureOnly": true,
+          "rootCreationFileTime": "134360567547915152",
+          "rootPid": 114664,
+          "pid": 105548,
+          "creationFileTime": "134360567548259612",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\gui\\Release\\soui_gui_command_tests.exe",
+          "wholeOwnedJobNaturalClosed": true,
+          "nativeHeldProcessExited": true
+        }
+      }
+    },
+    {
+      "kind": "host",
+      "case": "hidden-start-registers",
+      "registered": "host_hidden_start_registers",
+      "result": {
+        "case": "hidden-start-registers",
+        "mode": "ctest",
+        "SubjectPID": "100672",
+        "creationFileTime": "134360567549636238",
+        "actualResult": {
+          "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\host_fence\\hidden-start-registers.json",
+          "bytes": 5574,
+          "sha256": "27cf6ec8134f8972bbf88e22884e0a0c7d094b6636b5a9fcd599a637c8e4c917"
+        },
+        "receipt": {
+          "actualCloseReturned": false,
+          "actualCloseSent": false,
+          "actualEngineOverlap": false,
+          "afterPageWait": {
+            "applicationReadyFlag": false,
+            "applicationReadyReceipt": "0",
+            "broker": {
+              "document": "2",
+              "geometry": "1",
+              "view": "1"
+            },
+            "contextAccepted": true,
+            "contextReceipt": "4",
+            "contextReceiptAfter": "4",
+            "documentReadyFlag": true,
+            "documentReadyReceipt": "4",
+            "nonAtomic": true,
+            "page": {
+              "nativePort": "function",
+              "readyState": "complete",
+              "souiNativePort": "function"
+            },
+            "registrationCompletion": {
+              "cancelled": false,
+              "endpointMatches": true,
+              "identity": {
+                "document": "1",
+                "geometry": "1",
+                "view": "1"
+              },
+              "identityMatches": false,
+              "kind": 3,
+              "nonAtomic": true,
+              "observed": true,
+              "scopeSequence": "0",
+              "shapeValid": true,
+              "taskSequence": "1"
+            },
+            "vendorDrain": {
+              "closing": 0,
+              "drained": 0,
+              "engineCallbacks": 0,
+              "inspected": true,
+              "nativeScopes": 0,
+              "nonAtomic": true,
+              "oleRegistered": 1,
+              "queued": 0,
+              "running": 0,
+              "status": 0,
+              "valid": true,
+              "vendorFailed": false
+            }
+          },
+          "afterPageWaitEngine": {
+            "beginQpc": "18644365832075",
+            "capacityExceeded": false,
+            "clockValid": true,
+            "confirmedQpc": "18644366135208",
+            "earlierEventsDiscarded": false,
+            "engineRequestCount": "2",
+            "fenceConfirmed": true,
+            "found": true,
+            "preNavigationDrain": {
+              "closing": 0,
+              "engineCallbacks": 0,
+              "nativeScopes": 0,
+              "oleRegistered": 1,
+              "queued": 0,
+              "running": 0,
+              "status": 0
+            },
+            "retainedEventQpc": [
+              "18644367562347",
+              "18644367823354"
+            ]
+          },
+          "architecture": "x86",
+          "bridgeDestroyedAfterHost": true,
+          "callerPumpsBeforeObservation": 0,
+          "cancellationObserved": false,
+          "case": "hidden-start-registers",
+          "creationFileTime": "134360567549636238",
+          "dllSha256": "de9178744bcf6b187312726d13e1ae5ebd9389ebad2589e70f4789681458afc1",
+          "finiteCaseAccepted": true,
+          "firstAfterSecond": null,
+          "firstBeforeSecond": null,
+          "firstEngine": {
+            "beginQpc": "0",
+            "capacityExceeded": false,
+            "clockValid": true,
+            "confirmedQpc": "0",
+            "earlierEventsDiscarded": false,
+            "engineRequestCount": "0",
+            "fenceConfirmed": false,
+            "found": false,
+            "preNavigationDrain": {
+              "closing": 0,
+              "engineCallbacks": 0,
+              "nativeScopes": 0,
+              "oleRegistered": 0,
+              "queued": 0,
+              "running": 0,
+              "status": 0
+            },
+            "retainedEventQpc": []
+          },
+          "firstFence": {
+            "beginQpc": "18644365832075",
+            "capacityExceeded": false,
+            "clockValid": true,
+            "confirmedQpc": "18644366135208",
+            "earlierEventsDiscarded": false,
+            "engineRequestCount": "0",
+            "fenceConfirmed": true,
+            "found": true,
+            "preNavigationDrain": {
+              "closing": 0,
+              "engineCallbacks": 0,
+              "nativeScopes": 0,
+              "oleRegistered": 1,
+              "queued": 0,
+              "running": 0,
+              "status": 0
+            },
+            "retainedEventQpc": []
+          },
+          "fullSdkQualified": false,
+          "hiddenOwnerAtObservation": true,
+          "immediate": {
+            "applicationReadyFlag": false,
+            "applicationReadyReceipt": "0",
+            "broker": {
+              "document": "1",
+              "geometry": "1",
+              "view": "1"
+            },
+            "contextAccepted": false,
+            "contextReceipt": "1",
+            "contextReceiptAfter": "4",
+            "documentReadyFlag": false,
+            "documentReadyReceipt": "0",
+            "nonAtomic": true,
+            "page": {
+              "nativePort": "function",
+              "readyState": "loading",
+              "souiNativePort": "undefined"
+            },
+            "registrationCompletion": {
+              "cancelled": false,
+              "endpointMatches": true,
+              "identity": {
+                "document": "1",
+                "geometry": "1",
+                "view": "1"
+              },
+              "identityMatches": true,
+              "kind": 3,
+              "nonAtomic": true,
+              "observed": true,
+              "scopeSequence": "0",
+              "shapeValid": true,
+              "taskSequence": "1"
+            },
+            "vendorDrain": {
+              "closing": 0,
+              "drained": 0,
+              "engineCallbacks": 0,
+              "inspected": true,
+              "nativeScopes": 0,
+              "nonAtomic": true,
+              "oleRegistered": 1,
+              "queued": 1,
+              "running": 0,
+              "status": 0,
+              "valid": true,
+              "vendorFailed": false
+            }
+          },
+          "moduleUnloadQualified": false,
+          "overlappingEngineEventQpc": [],
+          "owners": [
+            {
+              "closeRetries": 1,
+              "hostDestroyReturned": true,
+              "ownerWithdrawn": true,
+              "pulseCallsBeforeBridgeJoin": 2,
+              "role": "A"
+            }
+          ],
+          "pagePulseCallsAtWaitEnd": 2,
+          "pid": 100672,
+          "postedEventsBeforeObservation": 0,
+          "publishedSession": true,
+          "qpcFrequency": "10000000",
+          "qualificationPassed": false,
+          "realPageActionObserved": true,
+          "releaseReady": false,
+          "runtimeShutdownReturned": true,
+          "sameFirstDocument": false,
+          "schema": "soui.public-host-startup-fence/1",
+          "secondFence": {
+            "beginQpc": "0",
+            "capacityExceeded": false,
+            "clockValid": true,
+            "confirmedQpc": "0",
+            "earlierEventsDiscarded": false,
+            "engineRequestCount": "0",
+            "fenceConfirmed": false,
+            "found": false,
+            "preNavigationDrain": {
+              "closing": 0,
+              "engineCallbacks": 0,
+              "nativeScopes": 0,
+              "oleRegistered": 0,
+              "queued": 0,
+              "running": 0,
+              "status": 0
+            },
+            "retainedEventQpc": []
+          },
+          "secondImmediate": null,
+          "secondPublishedSession": false,
+          "secondStartCode": "",
+          "secondStarted": false,
+          "startCode": "",
+          "startReturned": true,
+          "win7Qualified": false
+        },
+        "finiteCaseAccepted": true,
+        "directOwnedIdentityBound": false,
+        "wholeJobNaturalClosed": true,
+        "genericPassed": true,
+        "formalPassed": false,
+        "observedIdentity": {
+          "pid": 100672,
+          "creationFileTime": "134360567549636238",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\host_fence\\Release\\soui_public_host_startup_fence.exe",
+          "wholeOwnedJobNaturalClosed": true
+        }
+      }
+    },
+    {
+      "kind": "host",
+      "case": "startup-close-sent",
+      "registered": "host_startup_close_sent",
+      "result": {
+        "case": "startup-close-sent",
+        "mode": "ctest",
+        "SubjectPID": "64736",
+        "creationFileTime": "134360567563350137",
+        "actualResult": {
+          "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\host_fence\\startup-close-sent.json",
+          "bytes": 3246,
+          "sha256": "084e4fc8a07efa78ad669ab15e89d2ca5ae2488cb4c3dd6d4d89ebaf37c39583"
+        },
+        "receipt": {
+          "actualCloseReturned": true,
+          "actualCloseSent": true,
+          "actualEngineOverlap": false,
+          "afterPageWait": null,
+          "afterPageWaitEngine": {
+            "beginQpc": "0",
+            "capacityExceeded": false,
+            "clockValid": true,
+            "confirmedQpc": "0",
+            "earlierEventsDiscarded": false,
+            "engineRequestCount": "0",
+            "fenceConfirmed": false,
+            "found": false,
+            "preNavigationDrain": {
+              "closing": 0,
+              "engineCallbacks": 0,
+              "nativeScopes": 0,
+              "oleRegistered": 0,
+              "queued": 0,
+              "running": 0,
+              "status": 0
+            },
+            "retainedEventQpc": []
+          },
+          "architecture": "x86",
+          "bridgeDestroyedAfterHost": true,
+          "callerPumpsBeforeObservation": 0,
+          "cancellationObserved": true,
+          "case": "startup-close-sent",
+          "creationFileTime": "134360567563350137",
+          "dllSha256": "de9178744bcf6b187312726d13e1ae5ebd9389ebad2589e70f4789681458afc1",
+          "finiteCaseAccepted": true,
+          "firstAfterSecond": null,
+          "firstBeforeSecond": null,
+          "firstEngine": {
+            "beginQpc": "0",
+            "capacityExceeded": false,
+            "clockValid": true,
+            "confirmedQpc": "0",
+            "earlierEventsDiscarded": false,
+            "engineRequestCount": "0",
+            "fenceConfirmed": false,
+            "found": false,
+            "preNavigationDrain": {
+              "closing": 0,
+              "engineCallbacks": 0,
+              "nativeScopes": 0,
+              "oleRegistered": 0,
+              "queued": 0,
+              "running": 0,
+              "status": 0
+            },
+            "retainedEventQpc": []
+          },
+          "firstFence": {
+            "beginQpc": "18644374363639",
+            "capacityExceeded": false,
+            "clockValid": true,
+            "confirmedQpc": "0",
+            "earlierEventsDiscarded": false,
+            "engineRequestCount": "0",
+            "fenceConfirmed": false,
+            "found": true,
+            "preNavigationDrain": {
+              "closing": 0,
+              "engineCallbacks": 0,
+              "nativeScopes": 0,
+              "oleRegistered": 0,
+              "queued": 0,
+              "running": 0,
+              "status": 0
+            },
+            "retainedEventQpc": []
+          },
+          "fullSdkQualified": false,
+          "hiddenOwnerAtObservation": true,
+          "immediate": null,
+          "moduleUnloadQualified": false,
+          "overlappingEngineEventQpc": [],
+          "owners": [
+            {
+              "closeRetries": 1,
+              "hostDestroyReturned": true,
+              "ownerWithdrawn": true,
+              "pulseCallsBeforeBridgeJoin": 0,
+              "role": "A"
+            }
+          ],
+          "pagePulseCallsAtWaitEnd": 0,
+          "pid": 64736,
+          "postedEventsBeforeObservation": 0,
+          "publishedSession": false,
+          "qpcFrequency": "10000000",
+          "qualificationPassed": false,
+          "realPageActionObserved": false,
+          "releaseReady": false,
+          "runtimeShutdownReturned": true,
+          "sameFirstDocument": false,
+          "schema": "soui.public-host-startup-fence/1",
+          "secondFence": {
+            "beginQpc": "0",
+            "capacityExceeded": false,
+            "clockValid": true,
+            "confirmedQpc": "0",
+            "earlierEventsDiscarded": false,
+            "engineRequestCount": "0",
+            "fenceConfirmed": false,
+            "found": false,
+            "preNavigationDrain": {
+              "closing": 0,
+              "engineCallbacks": 0,
+              "nativeScopes": 0,
+              "oleRegistered": 0,
+              "queued": 0,
+              "running": 0,
+              "status": 0
+            },
+            "retainedEventQpc": []
+          },
+          "secondImmediate": null,
+          "secondPublishedSession": false,
+          "secondStartCode": "",
+          "secondStarted": false,
+          "startCode": "E_CURSOR_STARTUP_CANCELLED",
+          "startReturned": false,
+          "win7Qualified": false
+        },
+        "finiteCaseAccepted": true,
+        "directOwnedIdentityBound": false,
+        "wholeJobNaturalClosed": true,
+        "genericPassed": true,
+        "formalPassed": false,
+        "observedIdentity": {
+          "pid": 64736,
+          "creationFileTime": "134360567563350137",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\host_fence\\Release\\soui_public_host_startup_fence.exe",
+          "wholeOwnedJobNaturalClosed": true
+        }
+      }
+    },
+    {
+      "kind": "host",
+      "case": "two-host-shared-engine",
+      "registered": "host_two_host_shared_engine",
+      "result": {
+        "case": "two-host-shared-engine",
+        "mode": "ctest",
+        "SubjectPID": "8972",
+        "creationFileTime": "134360567569676373",
+        "actualResult": {
+          "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\host_fence\\two-host-shared-engine.json",
+          "bytes": 9362,
+          "sha256": "c7dd360b0b322f4b055bea10ddab10f5fb8655a986905267663196bfe68f6a36"
+        },
+        "receipt": {
+          "actualCloseReturned": false,
+          "actualCloseSent": false,
+          "actualEngineOverlap": true,
+          "afterPageWait": {
+            "applicationReadyFlag": false,
+            "applicationReadyReceipt": "0",
+            "broker": {
+              "document": "2",
+              "geometry": "1",
+              "view": "1"
+            },
+            "contextAccepted": true,
+            "contextReceipt": "4",
+            "contextReceiptAfter": "4",
+            "documentReadyFlag": true,
+            "documentReadyReceipt": "4",
+            "nonAtomic": true,
+            "page": {
+              "nativePort": "function",
+              "readyState": "complete",
+              "souiNativePort": "function"
+            },
+            "registrationCompletion": {
+              "cancelled": false,
+              "endpointMatches": true,
+              "identity": {
+                "document": "1",
+                "geometry": "1",
+                "view": "1"
+              },
+              "identityMatches": false,
+              "kind": 3,
+              "nonAtomic": true,
+              "observed": true,
+              "scopeSequence": "0",
+              "shapeValid": true,
+              "taskSequence": "1"
+            },
+            "vendorDrain": {
+              "closing": 0,
+              "drained": 0,
+              "engineCallbacks": 0,
+              "inspected": true,
+              "nativeScopes": 0,
+              "nonAtomic": true,
+              "oleRegistered": 1,
+              "queued": 0,
+              "running": 0,
+              "status": 0,
+              "valid": true,
+              "vendorFailed": false
+            }
+          },
+          "afterPageWaitEngine": {
+            "beginQpc": "18644380726795",
+            "capacityExceeded": false,
+            "clockValid": true,
+            "confirmedQpc": "18644381012024",
+            "earlierEventsDiscarded": false,
+            "engineRequestCount": "2",
+            "fenceConfirmed": true,
+            "found": true,
+            "preNavigationDrain": {
+              "closing": 0,
+              "engineCallbacks": 0,
+              "nativeScopes": 0,
+              "oleRegistered": 1,
+              "queued": 0,
+              "running": 0,
+              "status": 0
+            },
+            "retainedEventQpc": [
+              "18644382203508",
+              "18644382614001"
+            ]
+          },
+          "architecture": "x86",
+          "bridgeDestroyedAfterHost": true,
+          "callerPumpsBeforeObservation": 0,
+          "cancellationObserved": false,
+          "case": "two-host-shared-engine",
+          "creationFileTime": "134360567569676373",
+          "dllSha256": "de9178744bcf6b187312726d13e1ae5ebd9389ebad2589e70f4789681458afc1",
+          "finiteCaseAccepted": true,
+          "firstAfterSecond": {
+            "applicationReadyFlag": false,
+            "applicationReadyReceipt": "0",
+            "broker": {
+              "document": "2",
+              "geometry": "1",
+              "view": "1"
+            },
+            "contextAccepted": true,
+            "contextReceipt": "4",
+            "contextReceiptAfter": "4",
+            "documentReadyFlag": true,
+            "documentReadyReceipt": "4",
+            "nonAtomic": true,
+            "page": {
+              "nativePort": "function",
+              "readyState": "complete",
+              "souiNativePort": "function"
+            },
+            "registrationCompletion": {
+              "cancelled": false,
+              "endpointMatches": true,
+              "identity": {
+                "document": "1",
+                "geometry": "1",
+                "view": "1"
+              },
+              "identityMatches": false,
+              "kind": 3,
+              "nonAtomic": true,
+              "observed": true,
+              "scopeSequence": "0",
+              "shapeValid": true,
+              "taskSequence": "1"
+            },
+            "vendorDrain": {
+              "closing": 0,
+              "drained": 0,
+              "engineCallbacks": 0,
+              "inspected": true,
+              "nativeScopes": 0,
+              "nonAtomic": true,
+              "oleRegistered": 1,
+              "queued": 0,
+              "running": 0,
+              "status": 0,
+              "valid": true,
+              "vendorFailed": false
+            }
+          },
+          "firstBeforeSecond": {
+            "applicationReadyFlag": false,
+            "applicationReadyReceipt": "0",
+            "broker": {
+              "document": "2",
+              "geometry": "1",
+              "view": "1"
+            },
+            "contextAccepted": true,
+            "contextReceipt": "4",
+            "contextReceiptAfter": "4",
+            "documentReadyFlag": true,
+            "documentReadyReceipt": "4",
+            "nonAtomic": true,
+            "page": {
+              "nativePort": "function",
+              "readyState": "complete",
+              "souiNativePort": "function"
+            },
+            "registrationCompletion": {
+              "cancelled": false,
+              "endpointMatches": true,
+              "identity": {
+                "document": "1",
+                "geometry": "1",
+                "view": "1"
+              },
+              "identityMatches": false,
+              "kind": 3,
+              "nonAtomic": true,
+              "observed": true,
+              "scopeSequence": "0",
+              "shapeValid": true,
+              "taskSequence": "1"
+            },
+            "vendorDrain": {
+              "closing": 0,
+              "drained": 0,
+              "engineCallbacks": 0,
+              "inspected": true,
+              "nativeScopes": 0,
+              "nonAtomic": true,
+              "oleRegistered": 1,
+              "queued": 0,
+              "running": 0,
+              "status": 0,
+              "valid": true,
+              "vendorFailed": false
+            }
+          },
+          "firstEngine": {
+            "beginQpc": "18644380726795",
+            "capacityExceeded": false,
+            "clockValid": true,
+            "confirmedQpc": "18644381012024",
+            "earlierEventsDiscarded": false,
+            "engineRequestCount": "6",
+            "fenceConfirmed": true,
+            "found": true,
+            "preNavigationDrain": {
+              "closing": 0,
+              "engineCallbacks": 0,
+              "nativeScopes": 0,
+              "oleRegistered": 1,
+              "queued": 0,
+              "running": 0,
+              "status": 0
+            },
+            "retainedEventQpc": [
+              "18644382203508",
+              "18644382614001",
+              "18644382695153",
+              "18644383013130",
+              "18644383374090",
+              "18644383495167"
+            ]
+          },
+          "firstFence": {
+            "beginQpc": "18644380726795",
+            "capacityExceeded": false,
+            "clockValid": true,
+            "confirmedQpc": "18644381012024",
+            "earlierEventsDiscarded": false,
+            "engineRequestCount": "0",
+            "fenceConfirmed": true,
+            "found": true,
+            "preNavigationDrain": {
+              "closing": 0,
+              "engineCallbacks": 0,
+              "nativeScopes": 0,
+              "oleRegistered": 1,
+              "queued": 0,
+              "running": 0,
+              "status": 0
+            },
+            "retainedEventQpc": []
+          },
+          "fullSdkQualified": false,
+          "hiddenOwnerAtObservation": true,
+          "immediate": {
+            "applicationReadyFlag": false,
+            "applicationReadyReceipt": "0",
+            "broker": {
+              "document": "1",
+              "geometry": "1",
+              "view": "1"
+            },
+            "contextAccepted": false,
+            "contextReceipt": "1",
+            "contextReceiptAfter": "4",
+            "documentReadyFlag": false,
+            "documentReadyReceipt": "0",
+            "nonAtomic": true,
+            "page": {
+              "nativePort": "function",
+              "readyState": "loading",
+              "souiNativePort": "undefined"
+            },
+            "registrationCompletion": {
+              "cancelled": false,
+              "endpointMatches": true,
+              "identity": {
+                "document": "1",
+                "geometry": "1",
+                "view": "1"
+              },
+              "identityMatches": true,
+              "kind": 3,
+              "nonAtomic": true,
+              "observed": true,
+              "scopeSequence": "0",
+              "shapeValid": true,
+              "taskSequence": "1"
+            },
+            "vendorDrain": {
+              "closing": 0,
+              "drained": 0,
+              "engineCallbacks": 0,
+              "inspected": true,
+              "nativeScopes": 0,
+              "nonAtomic": true,
+              "oleRegistered": 1,
+              "queued": 1,
+              "running": 0,
+              "status": 0,
+              "valid": true,
+              "vendorFailed": false
+            }
+          },
+          "moduleUnloadQualified": false,
+          "overlappingEngineEventQpc": [
+            "18644383374090",
+            "18644383495167"
+          ],
+          "owners": [
+            {
+              "closeRetries": 1,
+              "hostDestroyReturned": true,
+              "ownerWithdrawn": true,
+              "pulseCallsBeforeBridgeJoin": 0,
+              "role": "B"
+            },
+            {
+              "closeRetries": 1,
+              "hostDestroyReturned": true,
+              "ownerWithdrawn": true,
+              "pulseCallsBeforeBridgeJoin": 9,
+              "role": "A"
+            }
+          ],
+          "pagePulseCallsAtWaitEnd": 2,
+          "pid": 8972,
+          "postedEventsBeforeObservation": 0,
+          "publishedSession": true,
+          "qpcFrequency": "10000000",
+          "qualificationPassed": false,
+          "realPageActionObserved": true,
+          "releaseReady": false,
+          "runtimeShutdownReturned": true,
+          "sameFirstDocument": true,
+          "schema": "soui.public-host-startup-fence/1",
+          "secondFence": {
+            "beginQpc": "18644383368148",
+            "capacityExceeded": false,
+            "clockValid": true,
+            "confirmedQpc": "18644383600047",
+            "earlierEventsDiscarded": false,
+            "engineRequestCount": "0",
+            "fenceConfirmed": true,
+            "found": true,
+            "preNavigationDrain": {
+              "closing": 0,
+              "engineCallbacks": 0,
+              "nativeScopes": 0,
+              "oleRegistered": 1,
+              "queued": 0,
+              "running": 0,
+              "status": 0
+            },
+            "retainedEventQpc": []
+          },
+          "secondImmediate": {
+            "applicationReadyFlag": false,
+            "applicationReadyReceipt": "0",
+            "broker": {
+              "document": "1",
+              "geometry": "1",
+              "view": "1"
+            },
+            "contextAccepted": false,
+            "contextReceipt": "1",
+            "contextReceiptAfter": "4",
+            "documentReadyFlag": false,
+            "documentReadyReceipt": "0",
+            "nonAtomic": true,
+            "page": {
+              "nativePort": "function",
+              "readyState": "complete",
+              "souiNativePort": "undefined"
+            },
+            "registrationCompletion": {
+              "cancelled": false,
+              "endpointMatches": true,
+              "identity": {
+                "document": "1",
+                "geometry": "1",
+                "view": "1"
+              },
+              "identityMatches": true,
+              "kind": 3,
+              "nonAtomic": true,
+              "observed": true,
+              "scopeSequence": "0",
+              "shapeValid": true,
+              "taskSequence": "1"
+            },
+            "vendorDrain": {
+              "closing": 0,
+              "drained": 0,
+              "engineCallbacks": 0,
+              "inspected": true,
+              "nativeScopes": 0,
+              "nonAtomic": true,
+              "oleRegistered": 1,
+              "queued": 0,
+              "running": 0,
+              "status": 0,
+              "valid": true,
+              "vendorFailed": false
+            }
+          },
+          "secondPublishedSession": true,
+          "secondStartCode": "",
+          "secondStarted": true,
+          "startCode": "",
+          "startReturned": true,
+          "win7Qualified": false
+        },
+        "finiteCaseAccepted": true,
+        "directOwnedIdentityBound": false,
+        "wholeJobNaturalClosed": true,
+        "genericPassed": true,
+        "formalPassed": false,
+        "observedIdentity": {
+          "pid": 8972,
+          "creationFileTime": "134360567569676373",
+          "ownedMemberObserved": true,
+          "actualImage": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\host_fence\\Release\\soui_public_host_startup_fence.exe",
+          "wholeOwnedJobNaturalClosed": true
+        }
+      }
+    },
+    {
+      "kind": "uia",
+      "case": "properties",
+      "registered": "sdk.native.uia.properties",
+      "result": {
+        "exactPublicSuccessLine": "case=properties passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "uia",
+      "case": "mutations",
+      "registered": "sdk.native.uia.mutations",
+      "result": {
+        "exactPublicSuccessLine": "case=mutations passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "uia",
+      "case": "stale-secret",
+      "registered": "sdk.native.uia.stale-secret",
+      "result": {
+        "exactPublicSuccessLine": "case=stale-secret passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "uia",
+      "case": "bounded",
+      "registered": "sdk.native.uia.bounded",
+      "result": {
+        "exactPublicSuccessLine": "case=bounded passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "uia",
+      "case": "callback-close",
+      "registered": "sdk.native.uia.callback-close",
+      "result": {
+        "exactPublicSuccessLine": "case=callback-close passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "uia",
+      "case": "uia-client",
+      "registered": "sdk.native.uia.uia-client",
+      "result": {
+        "exactPublicSuccessLine": "case=uia-client passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "uia",
+      "case": "com-initialization",
+      "registered": "sdk.native.uia.com-initialization",
+      "result": {
+        "exactPublicSuccessLine": "case=com-initialization passed\n",
+        "nativePublishedIdentity": false
+      }
+    },
+    {
+      "kind": "uia",
+      "case": "api-close",
+      "registered": "sdk.native.uia.api-close",
+      "result": {
+        "exactPublicSuccessLine": "case=api-close passed\n",
+        "nativePublishedIdentity": false
+      }
+    }
+  ],
+  "plainPublicCasesDoNotPublishPidFileTime": true,
+  "wholeJobNaturalClosed": true,
+  "qualificationPassed": false
+}

@@ -1,5 +1,6 @@
 #include <soui/json_bridge.h>
 #include <soui/runtime/agent/windows_local_endpoint.h>
+#include "runtime/services/gui/gui_commands_internal.h"
 #include "../../third_party/include/json/json.hpp"
 #include <windows.h>
 #include <objbase.h>
@@ -58,7 +59,7 @@ json_bridge::json_bridge(std::string origin) : origin_{std::move(origin)} {
     return tasks_.unsubscribe(request);
   });
 }
-json_bridge::~json_bridge() = default;
+json_bridge::~json_bridge() { close_gui_commands(); }
 soui::runtime::agent::windows_local_endpoint* json_bridge::create_local_endpoint() {
   std::lock_guard<std::mutex> lock(mutex_);
   if (registration_closed_) return nullptr;
@@ -115,6 +116,34 @@ bool json_bridge::register_local_task_family(soui::runtime::local_task_family_de
   std::lock_guard<std::mutex> lock(mutex_);
   // Local capabilities must never enter the default or explicit page grants.
   return !registration_closed_ && static_cast<bool>(tasks_.register_local_family(registry_, std::move(definition)));
+}
+bool json_bridge::enable_gui_commands(std::vector<soui::runtime::gui_command_definition> rows) {
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (registration_closed_ || gui_) return false;
+  auto capabilities=capabilities_;
+  capabilities.insert(capabilities.end(),{"gui.bind","gui.effect","gui.ack"});
+  auto prepared=soui::runtime::detail::gui_commands_state::create(registry_,transport_,tasks_,std::move(rows));
+  if (!prepared) return false;
+  prepared->set_sink(event_sink_);
+  capabilities_.swap(capabilities); gui_=std::move(prepared);
+  return true;
+}
+bool json_bridge::bind_gui_document(std::string generation,std::function<bool()> current) {
+  std::shared_ptr<soui::runtime::detail::gui_commands_state> gui;
+  { std::lock_guard<std::mutex> lock(mutex_); gui=gui_; }
+  return gui && gui->bind(std::move(generation),std::move(current));
+}
+soui::runtime::gui_owner_result json_bridge::poll_gui_commands() {
+  std::shared_ptr<soui::runtime::detail::gui_commands_state> gui;
+  { std::lock_guard<std::mutex> lock(mutex_); gui=gui_; }
+  return gui?gui->poll():soui::runtime::gui_owner_result::closed;
+}
+void json_bridge::close_gui_commands() noexcept {
+  // Registration is native-only, before use. During destruction callers have
+  // stopped; during use the shared object is immutable after publication.
+  std::shared_ptr<soui::runtime::detail::gui_commands_state> gui;
+  { std::lock_guard<std::mutex> lock(mutex_); gui=gui_; }
+  if (gui) gui->close();
 }
 bool json_bridge::enable_session_renewal() {
   std::lock_guard<std::mutex> lock(mutex_);
@@ -212,7 +241,14 @@ bool json_bridge::enable_window_service() {
   }
   return true;
 }
-void json_bridge::set_event_sink(event_sink sink) { tasks_.set_event_sink(std::move(sink)); }
+void json_bridge::set_event_sink(event_sink sink) {
+  auto shared=sink?std::make_shared<const event_sink>(std::move(sink)):nullptr;
+  std::shared_ptr<soui::runtime::detail::gui_commands_state> gui;
+  std::shared_ptr<const event_sink> previous;
+  { std::lock_guard<std::mutex> lock(mutex_); gui=gui_; previous=event_sink_; event_sink_=shared; }
+  tasks_.set_event_sink(shared?event_sink{[shared](std::string_view event){(*shared)(event);}}:event_sink{});
+  if (gui) gui->set_sink(std::move(shared));
+}
 std::string json_bridge::handle_json(std::string_view request, bool native_user_gesture) {
   if (request.empty() || request.size() > soui::runtime::bridge_transport::max_message_bytes)
     return error({},"E_LIMIT_MESSAGE_SIZE","Bridge message is too large.");
@@ -239,6 +275,11 @@ std::string json_bridge::handle_json(std::string_view request, bool native_user_
     const auto& granted_capabilities = session_capabilities_configured_ ? session_capabilities_ : capabilities_;
     const auto token=permissions_.issue(session,origin_,granted_capabilities);
     active_session_=session;
+    try {
+      if (gui_) gui_->set_page(permissions_.resolve(session,origin_,token,"gui.bind").scope,session,origin_);
+    } catch (...) {
+      permissions_.revoke_session(session); active_session_.clear(); throw;
+    }
     json result{{"sessionId",session},{"origin",origin_},{"token",token}};
     if (std::find(granted_capabilities.begin(), granted_capabilities.end(), "bridge.session.renew") !=
         granted_capabilities.end()) {
@@ -253,11 +294,14 @@ std::string json_bridge::handle_json(std::string_view request, bool native_user_
   }
 }
 void json_bridge::shutdown_session(const std::string& session_id) {
+  std::shared_ptr<soui::runtime::detail::gui_commands_state> gui;
   {
     std::lock_guard<std::mutex> lock(mutex_);
     permissions_.revoke_session(session_id);
     if(active_session_==session_id)active_session_.clear();
+    gui=gui_;
   }
+  if (gui) gui->shutdown_session(session_id);
   tasks_.shutdown_session(session_id);
 }
 }  // namespace soui::sdk

@@ -8,9 +8,11 @@
 #include <functional>
 #include <memory>
 #include <string>
+#include <vector>
 #include <string_view>
 
 namespace soui::runtime {
+namespace detail { class gui_commands_state; struct gui_family_hooks; struct gui_family_registration; }
 
 struct task_invocation {
   std::string session_id;
@@ -112,6 +114,12 @@ class task_service final {
   [[nodiscard]] std::string unsubscribe(const bridge_request& request);
 
  private:
+  friend class detail::gui_commands_state;
+  [[nodiscard]] std::shared_ptr<const local_task_family> register_local_family_impl(
+      capability_registry&, local_task_family_definition,
+      std::shared_ptr<const detail::gui_family_hooks>);
+  [[nodiscard]] bool register_gui_families(capability_registry&,
+      std::vector<detail::gui_family_registration>);
   struct impl;
   std::shared_ptr<impl> impl_;
 };
