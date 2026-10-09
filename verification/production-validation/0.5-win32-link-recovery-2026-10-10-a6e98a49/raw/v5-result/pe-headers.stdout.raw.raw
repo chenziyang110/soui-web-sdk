@@ -1,0 +1,152 @@
+
+Dump of file F:\work\sm05-broker\out\relink-x86-v5-a6e98a49\image\node.dll
+
+PE signature found
+
+File Type: DLL
+
+FILE HEADER VALUES
+             14C machine (x86)
+               5 number of sections
+        6AC933B6 time date stamp Sat Oct 10 02:34:30 2026
+               0 file pointer to symbol table
+               0 number of symbols
+              E0 size of optional header
+            2102 characteristics
+                   Executable
+                   32 bit word machine
+                   DLL
+
+OPTIONAL HEADER VALUES
+             10B magic # (PE32)
+           14.44 linker version
+          E66400 size of code
+          88F600 size of initialized data
+               0 size of uninitialized data
+          D9AD9E entry point (10D9AD9E) __DllMainCRTStartup@12
+            1000 base of code
+          E68000 base of data
+        10000000 image base (10000000 to 116F8FFF)
+            1000 section alignment
+             200 file alignment
+            6.00 operating system version
+            0.00 image version
+            6.00 subsystem version
+               0 Win32 version
+         16F9000 size of image
+             400 size of headers
+               0 checksum
+               2 subsystem (Windows GUI)
+             140 DLL characteristics
+                   Dynamic base
+                   NX compatible
+          100000 size of stack reserve
+            1000 size of stack commit
+          100000 size of heap reserve
+            1000 size of heap commit
+               0 loader flags
+              10 number of directories
+         142A630 [   C9118] RVA [size] of Export Directory
+         14F3748 [     154] RVA [size] of Import Directory
+         1622000 [     508] RVA [size] of Resource Directory
+               0 [       0] RVA [size] of Exception Directory
+               0 [       0] RVA [size] of Certificates Directory
+         1623000 [   D5E00] RVA [size] of Base Relocation Directory
+         1316110 [      54] RVA [size] of Debug Directory
+               0 [       0] RVA [size] of Architecture Directory
+               0 [       0] RVA [size] of Global Pointer Directory
+         13161C0 [      18] RVA [size] of Thread Storage Directory
+         1316050 [      40] RVA [size] of Load Configuration Directory
+               0 [       0] RVA [size] of Bound Import Directory
+          E68000 [     788] RVA [size] of Import Address Table Directory
+               0 [       0] RVA [size] of Delay Import Directory
+               0 [       0] RVA [size] of COM Descriptor Directory
+               0 [       0] RVA [size] of Reserved Directory
+
+
+SECTION HEADER #1
+   .text name
+  E6624A virtual size
+    1000 virtual address (10001000 to 10E67249)
+  E66400 size of raw data
+     400 file pointer to raw data (00000400 to 00E667FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+60000020 flags
+         Code
+         Execute Read
+
+SECTION HEADER #2
+  .rdata name
+  68E098 virtual size
+  E68000 virtual address (10E68000 to 114F6097)
+  68E200 size of raw data
+  E66800 file pointer to raw data (00E66800 to 014F49FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+40000040 flags
+         Initialized Data
+         Read Only
+
+  Debug Directories
+
+        Time Type        Size      RVA  Pointer
+    -------- ------- -------- -------- --------
+    6AC933B6 cv            56 013A4BD4  13A33D4    Format: RSDS, {850E66B6-2E2D-4267-A3D0-B68D94C14228}, 1, F:\work\sm05-broker\out\relink-x86-v5-a6e98a49\image\node.pdb
+    6AC933B6 feat          14 013A4C2C  13A342C    Counts: Pre-VC++ 11.00=0, C/C++=4856, /GS=860, /sdl=0, guardN=373
+    6AC933B6 coffgrp      3BC 013A4C40  13A3440    4C544347 (LTCG)
+
+SECTION HEADER #3
+   .data name
+  12AFB8 virtual size
+ 14F7000 virtual address (114F7000 to 11621FB7)
+  110E00 size of raw data
+ 14F4A00 file pointer to raw data (014F4A00 to 016057FF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+C0000040 flags
+         Initialized Data
+         Read Write
+
+SECTION HEADER #4
+   .rsrc name
+     508 virtual size
+ 1622000 virtual address (11622000 to 11622507)
+     600 size of raw data
+ 1605800 file pointer to raw data (01605800 to 01605DFF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+40000040 flags
+         Initialized Data
+         Read Only
+
+SECTION HEADER #5
+  .reloc name
+   D5E00 virtual size
+ 1623000 virtual address (11623000 to 116F8DFF)
+   D5E00 size of raw data
+ 1605E00 file pointer to raw data (01605E00 to 016DBBFF)
+       0 file pointer to relocation table
+       0 file pointer to line numbers
+       0 number of relocations
+       0 number of line numbers
+42000040 flags
+         Initialized Data
+         Discardable
+         Read Only
+
+  Summary
+
+      12B000 .data
+      68F000 .rdata
+       D6000 .reloc
+        1000 .rsrc
+      E67000 .text

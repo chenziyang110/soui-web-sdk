@@ -1,0 +1,108 @@
+'use strict';
+// Root-only reuse of already compiled Win32 objects. No full rebuild qualification.
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),zlib=require('node:zlib');
+const same=require('node:util').isDeepStrictEqual,base=__dirname;
+const need=(v,m)=>{if(!v)throw Error(m);},read=f=>JSON.parse(fs.readFileSync(f,'utf8'));
+const digest=b=>crypto.createHash('sha256').update(b).digest('hex');
+function hash(f){const fd=fs.openSync(f,'r'),h=crypto.createHash('sha256'),b=Buffer.allocUnsafe(2*1024*1024);try{let n;while((n=fs.readSync(fd,b,0,b.length,null))>0)h.update(b.subarray(0,n));return h.digest('hex');}finally{fs.closeSync(fd);}}
+const norm=f=>path.resolve(f).replaceAll('\\','/').toLowerCase();
+const write=(f,o)=>fs.writeFileSync(f,JSON.stringify(o,null,2)+'\n',{flag:'wx'});
+const filePin=f=>({path:f,bytes:fs.statSync(f).size,sha256:hash(f)});
+function list(root){return fs.readdirSync(root,{withFileTypes:true}).flatMap(e=>{const f=path.join(root,e.name);need(!e.isSymbolicLink(),'Linked input refused');if(e.isDirectory())return list(f);need(e.isFile(),'Nonregular input');return[f];}).sort();}
+function pin(p,full=true){need(p&&path.isAbsolute(p.path)&&Number.isSafeInteger(p.bytes)&&p.bytes>=0&&/^[a-f0-9]{64}$/.test(p.sha256),'Invalid pin');const s=fs.lstatSync(p.path);need(s.isFile()&&!s.isSymbolicLink()&&s.size===p.bytes,'Input shape/size changed: '+p.path);if(full)need(hash(p.path)===p.sha256,'Input bytes changed: '+p.path);}
+function identity(pid,ft){need(Number.isSafeInteger(pid)&&pid>0&&typeof ft==='string'&&/^[1-9]\d{0,19}$/.test(ft),'PID/FILETIME invalid');return{pid,creationFileTime:ft};}
+async function main(){
+ const[gate,packageSha,...extra]=process.argv.slice(2);need(gate==='ROOT_WIN32_LINK_RECOVERY_V1'&&!extra.length&&/^[a-f0-9]{64}$/.test(packageSha||''),'Root gate differs');
+ const packageFile=path.join(base,'package.json');need(hash(packageFile)===packageSha,'Reviewed package changed');
+ const p=read(packageFile);need(p.schema==='soui.win32-link-recovery.root/1'&&p.executionOwner==='Root only'&&p.architecture==='Win32'&&p.fullRecompile===false&&p.completeToolchainProvenance===false&&p.releaseReady===false,'Package scope differs');
+ for(const q of[p.tools,p.protectedInputs,p.mapping,p.sourceManifest,p.producerPlan,p.producerTools,p.historicalSummary,p.historicalFailure])pin(q);
+ const tools=read(p.tools.path),protectedSet=read(p.protectedInputs.path),mapping=read(p.mapping.path),source=read(p.sourceManifest.path);
+ need(protectedSet.schema==='soui.win32-relink.protected-inputs/1'&&protectedSet.fileCount===5234&&protectedSet.byteCount===11397560752&&protectedSet.files.length===5234,'Protected producer scope differs');
+ need(source.schema==='soui.full-software-rebuild.source.v2'&&source.fileCount===23536&&source.byteCount===320885839&&source.files.length===23536,'Historical source scope differs');
+ const oldPins=protectedSet.files.map(q=>({...q,path:path.join(protectedSet.root,q.relative)})),sourcePins=source.files.map(q=>({...q,path:path.join(source.copySourceRoot,q.relative)}));
+ const toolPins=[...new Map([...tools.pins,...tools.inventories.flatMap(i=>i.pins),tools.node,tools.runner,tools.link,tools.dumpbin,tools.ownedClient,tools.peReader].map(q=>[norm(q.path),q])).values()];
+ const immutablePins=[...new Map([...p.payloads,...oldPins,...sourcePins,...toolPins,p.sourceManifest,p.producerPlan,p.producerTools,p.historicalSummary,p.historicalFailure].map(q=>[norm(q.path),q])).values()];
+ const metadata=new Map();
+ function membership(){
+  need(hash(packageFile)===packageSha,'Reviewed package changed');
+  need(same(list(base).map(f=>path.relative(base,f).replaceAll('\\','/')).sort(),[...p.membership].sort())&&!fs.readdirSync(path.join(base,'empty-user-props')).length,'Packet membership changed');
+  need(same(list(protectedSet.root).map(f=>path.relative(protectedSet.root,f).replaceAll('\\','/')).sort(),protectedSet.files.map(q=>q.relative).sort()),'Old Win32 output membership changed');
+  need(same(list(source.copySourceRoot).map(f=>path.relative(source.copySourceRoot,f).replaceAll('\\','/')).sort(),source.files.map(q=>q.relative).sort()),'Historical source copy membership changed');
+  for(const i of tools.inventories)need(same(list(i.root).map(f=>path.relative(i.root,f).replaceAll('\\','/')).sort(),[...i.members].sort()),'Fixed tool/library membership changed');
+ }
+ function check(full=false){membership();for(const q of immutablePins){pin(q,full);const s=fs.statSync(q.path),actual={bytes:s.size,mtimeMs:s.mtimeMs};if(metadata.has(norm(q.path)))need(same(actual,metadata.get(norm(q.path))),'Input metadata changed: '+q.path);else metadata.set(norm(q.path),actual);}}
+ check(true);
+ const historical=read(p.historicalSummary.path);
+ need(historical.schema==='soui.full-software-rebuild.summary.v1'&&historical.architecture==='Win32'&&historical.stages.length===12&&historical.sourceImmutable===true&&historical.sourceFailure===null&&historical.freshArtifactCount===11&&historical.formalPassed===false&&historical.qualificationPassed===false&&historical.completeToolchainProvenance===false,'Historical producer limits differ');
+ for(const s of historical.stages.slice(0,11)){need(s.rootExitCode===0&&s.supervisorExitCode===124&&s.nativePassed===false&&s.compilerTailPartial===true&&s.closureConfirmed===true&&s.formalPassed===false,'Historical library failure/partial scope differs');const a=read(path.join(protectedSet.root,s.stage,'artifact.json'));need(a.stage===s.stage&&a.architecture==='Win32'&&a.SubjectPID===s.SubjectPID&&a.creationFileTime===s.creationFileTime&&a.nativePassed===false&&a.compilerTailPartial===true&&a.formalPassed===false,'Historical library identity differs');pin({path:a.artifact,bytes:a.bytes,sha256:a.sha256});pin({path:a.gathered,bytes:a.bytes,sha256:a.sha256});}
+ const oldLast=historical.stages.at(-1);need(oldLast.stage==='miniblink'&&oldLast.SubjectPID==='20048'&&oldLast.creationFileTime==='134360376349000084'&&oldLast.rootExitCode===1&&oldLast.supervisorExitCode===1&&oldLast.nativePassed===false&&oldLast.compilerTailPartial===false&&oldLast.terminal.reason==='root-failed'&&oldLast.terminal.passed===false,'Original failed main stage differs');
+ // Extract the exact single logged command from its observed length-prefixed record.
+ const raw=zlib.gunzipSync(fs.readFileSync(mapping.binlog.path)),e=mapping.extraction,needle=Buffer.from(e.originalExecutable+' /ERRORREPORT:QUEUE /OUT:','utf8');
+ const at=raw.indexOf(needle);need(raw.length===e.gzipDecompressedBytes&&at===e.stringOffset&&raw.indexOf(needle,at+1)===-1&&raw[at-4]===24,'Actual binlog command frame differs');
+ let length=0,shift=0;for(let n=at-3;n<at;n++){length|=(raw[n]&127)<<shift;shift+=7;}need(length===e.stringBytes&&raw[at+length]===12,'Actual binlog command length differs');
+ const original=raw.subarray(at,at+length);need(original.equals(fs.readFileSync(mapping.originalCommand.path)),'Saved original command differs');
+ let response=original.toString('utf8').slice(e.originalExecutable.length+1);
+ need(mapping.writeChanges.length===5&&same(mapping.writeChanges.map(x=>x.switch),['OUT','ILK','PDB','LTCGOUT','IMPLIB']),'Write mapping differs');
+ for(const c of mapping.writeChanges){need(response.split(c.before).length===2&&c.after.startsWith('/'+c.switch+':"'+p.outputRoot+'/image/'),'Write switch is not exact/fresh');response=response.replace(c.before,c.after);}
+ need(Buffer.from(response,'utf8').equals(fs.readFileSync(mapping.response.path)),'Response replay differs');
+ need(!/\/(?:PGD|MAP|PDBSTRIPPED|DEF|ORDER|MANIFESTFILE|MANIFESTINPUT|TLBOUT|WINMDFILE|WINMD|ASSEMBLYRESOURCE|KEYFILE|KEYCONTAINER|RESPONSEFILE):/i.test(response),'Unreviewed file switch');
+ const objects=[...response.matchAll(/"([^"]+\.(?:obj|res))"/gi)].map(m=>path.resolve(m[1]));
+ need(objects.length===3025&&new Set(objects.map(norm)).size===3025&&objects.filter(f=>f.toLowerCase().endsWith('.obj')).length===3024&&objects.filter(f=>f.toLowerCase().endsWith('.res')).length===1&&same(objects.map(norm),mapping.objectAndResourceInputs.map(norm)),'Object/resource multiset differs');
+ const oldMap=new Map(oldPins.map(q=>[norm(q.path),q]));for(const f of objects)need(oldMap.has(norm(f)),'Object outside protected producer');
+ const named=[...response.matchAll(/(?<!\S)[A-Za-z0-9_]+\.lib(?=\s|$)/gi)].map(m=>m[0]);
+ need(same(named,mapping.namedLibraries.map(q=>q.token))&&same(mapping.implicitDefaultLibrariesResolveOnlyWithin,tools.libraryRoots),'Named library/search scope differs');
+ for(const q of mapping.namedLibraries){const resolved=[mapping.unmodifiedLibpath,...tools.libraryRoots].map(root=>path.join(root,q.token)).find(f=>fs.existsSync(f));need(resolved&&norm(resolved)===norm(q.resolved.path),'Named library resolution changed');pin(q.resolved);}
+ need(/\/MACHINE:X86(?:\s|$)/i.test(response)&&/\/LTCG(?:\s|$)/i.test(response)&&/\/SAFESEH(?:\s|$)/i.test(response)&&/\/DLL(?:\s|$)/i.test(response),'Actual link target/options differ');
+ const broker=mapping.broker,cl=fs.readFileSync(broker.clTlog.path,'utf16le').replace(/^\uFEFF/,'').split(/\r?\n/),indices=cl.map((v,n)=>v===broker.trackingKey?n:-1).filter(n=>n>=0);
+ need(indices.length===1&&digest(Buffer.from(cl[indices[0]+1],'utf8'))===broker.commandSha256&&/\/MT(?:\s|$)/i.test(cl[indices[0]+1])&&/\/EHsc(?:\s|$)/i.test(cl[indices[0]+1]),'Actual Broker CL source binding differs');
+ need(objects.filter(f=>norm(f)===norm(broker.object.path)).length===1&&objects.filter(f=>norm(f)===norm(broker.creatorObject.path)).length===1&&broker.source.sha256==='9bc5cee92eeb5e3b560bd31c4d367aae10b6d4c51f4187e2c257abb1c5733863','Actual Broker/creator object binding differs');
+ for(const q of[broker.source,broker.object,broker.creatorObject,broker.clTlog])pin(q);
+ need(!fs.existsSync(p.outputRoot)&&norm(p.outputRoot).startsWith(norm(p.repositoryRoot)+'/out/'),'Fresh output required');
+ const out=p.outputRoot;fs.mkdirSync(out);for(const name of['image','temp','profile','profile/AppData/Roaming','profile/AppData/Local'])fs.mkdirSync(path.join(out,name),{recursive:true});
+ const snapshot=phase=>({schema:'soui.win32-link-recovery.input-check/1',phase,protectedManifest:filePin(p.protectedInputs.path),protectedFileCount:protectedSet.fileCount,protectedBytes:protectedSet.byteCount,sourceManifest:p.sourceManifest,sourceCopyCount:source.fileCount,sourceCopyBytes:source.byteCount,toolManifest:p.tools,mapping:p.mapping,historicalSummary:p.historicalSummary,historicalMainRootExitCode:1,historicalMainSupervisorExitCode:1,historicalMainGenericPassed:false,fullStreamHashesChecked:true,sourceCopyImmutable:true,oldWin32OutputsImmutable:true,fullRecompile:false,completeToolchainProvenance:false});
+ write(path.join(out,'before.json'),snapshot('before'));
+ const env={},allow=new Set(p.environmentAllowlist);for(const[k,v]of Object.entries(process.env))if(allow.has(k.toUpperCase()))env[k.toUpperCase()]=v;
+ env.PATH=[tools.compilerDirectory,path.join(env.SYSTEMROOT||'C:\\Windows','System32')].join(';');env.LIB=tools.libraryRoots.join(';');env.INCLUDE=tools.includeRoots.join(';');env.USERPROFILE=path.join(out,'profile');env.APPDATA=path.join(out,'profile','AppData','Roaming');env.LOCALAPPDATA=path.join(out,'profile','AppData','Local');env.TEMP=env.TMP=path.join(out,'temp');env.VSCMD_SKIP_SENDTELEMETRY='1';
+ // No CL/_CL_/LINK/_LINK_/NODE_OPTIONS/NODE_PATH or ambient LIB/PATH is inherited.
+ const{launchOwned}=require(tools.ownedClient.path),stages=[];let failure=null,artifact=null,immutable=false,afterFailure=null;
+ async function stage(name,executable,args,timeoutMs,compile=false){
+  check();const subject=filePin(executable),report=path.join(out,name+'.owned.ndjson'),stdout=path.join(out,name+'.stdout.raw'),stderr=path.join(out,name+'.stderr.raw'),stdoutFd=fs.openSync(stdout,'wx'),stderrFd=fs.openSync(stderr,'wx');let ready=null,readyError=null,result;
+  try{const run=launchOwned(executable,args,{runner:tools.runner.path,cwd:out,report,timeoutMs,drainMs:2000,env,stdout:stdoutFd,stderr:stderrFd});try{ready=await run.ready;identity(ready.pid,ready.creationFileTime);write(path.join(out,name+'.ready.json'),ready);}catch(error){readyError=error.message;write(path.join(out,name+'.ready-error.json'),{error:readyError});}result=await run.finished;}finally{fs.closeSync(stdoutFd);fs.closeSync(stderrFd);}
+  write(path.join(out,name+'.finished.json'),result);
+  const s={name,SubjectPID:result.pid===null?null:String(result.pid),creationFileTime:result.creationFileTime,rootExitCode:result.exitCode,supervisorExitCode:result.supervisorExitCode,genericPassed:result.passed,compilerTailPartial:false,naturalClosed:false,terminal:result.terminal,subject,raw:fs.existsSync(report)?filePin(report):null,context:fs.existsSync(report+'.context.json')?filePin(report+'.context.json'):null,stdout:filePin(stdout),stderr:filePin(stderr),validationErrors:[],formalPassed:false};stages.push(s);
+  try{
+   need(!readyError&&!result.spawnError&&!result.reportError&&!result.signal&&result.stopRequested===false&&result.fallbackUsed===false,'Owned client failure');
+   const text=fs.readFileSync(report,'utf8');need(text.endsWith('\n'),'Truncated raw Owned report');const rows=text.trimEnd().split('\n').map(JSON.parse),first=rows[0],last=rows.at(-1),exits=rows.filter(r=>r.event==='root-exit'),context=read(report+'.context.json');
+   need(first.event==='start'&&first.schema==='soui.owned-process-run/v1'&&rows.filter(r=>r.event==='start').length===1&&rows.filter(r=>r.event==='terminal').length===1&&last.event==='terminal','Raw start/terminal cardinality');
+   need(same(identity(first.pid,first.creationFileTime),ready)&&first.pid===result.pid&&first.creationFileTime===result.creationFileTime&&first.jobAssignedBeforeResume===true&&first.breakawayAllowed===false&&first.timeoutMs===timeoutMs&&first.drainMs===2000,'Owned subject identity/options differ');
+   need(same(last,result.terminal)&&exits.length===1&&exits[0].exitCode===result.exitCode&&last.rootExited===true&&last.rootExitCode===result.exitCode&&result.closureConfirmed===true&&last.closureConfirmed===true&&last.activeProcesses===0&&Number.isSafeInteger(last.totalProcesses)&&last.totalProcesses>=1&&last.limitTerminatedProcesses===0,'Actual root/Job closure differs');
+   need(context.schema==='soui.owned-process-context/v1'&&context.executable===executable&&same(context.args,args)&&context.cwd===out&&context.timeoutMs===timeoutMs&&context.drainMs===2000&&context.runnerSha256===tools.runner.sha256&&context.executableSha256===subject.sha256&&result.runnerSha256===tools.runner.sha256&&result.executableSha256===subject.sha256&&result.reportSha256===s.raw.sha256,'Context/argv/raw digest differs');
+   const a=exits[0].elapsedMs,b=last.elapsedMs,timed=Number.isSafeInteger(a)&&a>=0&&Number.isSafeInteger(b)&&b>=a&&b<timeoutMs;
+   const natural=timed&&last.reason==='completed'&&result.exitCode===0&&result.supervisorExitCode===0&&result.passed===true&&last.passed===true&&last.terminatedOwnedJob===false&&last.activeBeforeCleanup===0;
+   const partial=compile&&timed&&b>=a+2000&&result.exitCode===0&&result.supervisorExitCode===124&&result.passed===false&&last.passed===false&&last.reason==='owned-descendants-remain'&&last.terminatedOwnedJob===true&&Number.isSafeInteger(last.activeBeforeCleanup)&&last.activeBeforeCleanup>0;
+   need(natural||partial,'Actual failure/timeout/closure is not eligible');s.naturalClosed=natural;s.compilerTailPartial=partial;
+   const images=[...new Set(rows.filter(r=>r.event==='owned-member').map(r=>norm(r.image)))];s.observedImages=images;
+   need(images.includes(norm(executable)),'Actual held root image not observed');
+   if(compile)need(images.filter(f=>/\/(?:cl|link|lib|cvtres|mspdbsrv)\.exe$/i.test(f)).every(f=>f.startsWith(norm(tools.compilerDirectory)+'/')),'Unexpected native compiler/link tool image');
+   check();
+  }catch(error){s.validationErrors.push(error.message);}
+  write(path.join(out,name+'.stage.json'),s);console.log(JSON.stringify({name,pid:s.SubjectPID,creationFileTime:s.creationFileTime,root:s.rootExitCode,supervisor:s.supervisorExitCode,genericPassed:s.genericPassed,compilerTailPartial:s.compilerTailPartial}));need(!s.validationErrors.length,s.validationErrors.join('; '));return s;
+ }
+ try{
+  await stage('link',tools.link.path,['@'+mapping.response.path],p.linkTimeoutMs,true);
+  const dll=path.join(out,'image','node.dll');need(fs.existsSync(dll)&&fs.statSync(dll).size>0,'Fresh node.dll absent');const pe=require(tools.peReader.path).inspect(dll);
+  need(pe.machine===0x14c&&pe.optionalHeaderMagic===0x10b&&pe.dll===true,'Fresh DLL PE target differs');
+  for(const name of p.requiredExports){const e=pe.exports.find(q=>q.name===name);need(e&&e.rva>0&&e.forwarded===false,'Required concrete export absent: '+name);}
+  artifact={schema:'soui.win32-link-recovery.artifact/1',architecture:'Win32',artifact:filePin(dll),peMachine:pe.machine,dll:true,requiredExports:p.requiredExports,exportCount:pe.exports.length,brokerSource:broker.source,brokerObject:broker.object,creatorObject:broker.creatorObject,originalObjectCount:3024,originalResourceCount:1,originalNamedLibraryCount:named.length,wholeSourceCompilerProvenance:false,historicalCompilerFormalPassed:false,fullRecompile:false,completeToolchainProvenance:false,abiValidated:false,nativeBehaviorQualified:false,releaseReady:false};
+  write(path.join(out,'artifact.json'),artifact);
+  await stage('pe-headers',tools.dumpbin.path,['/nologo','/headers',dll],120000);
+  await stage('pe-imports',tools.dumpbin.path,['/nologo','/imports',dll],120000);
+  await stage('pe-exports',tools.dumpbin.path,['/nologo','/exports',dll],120000);
+  need(hash(dll)===artifact.artifact.sha256,'Fresh DLL changed during PE inspection');
+ }catch(error){failure=error.message;write(path.join(out,'failure.json'),{error:failure,stageCount:stages.length,formalPassed:false});}
+ finally{try{check(true);immutable=true;write(path.join(out,'after.json'),snapshot('after'));}catch(error){afterFailure=error.message;write(path.join(out,'after-failure.json'),{error:afterFailure,formalPassed:false});}}
+ const completed=failure===null&&afterFailure===null&&stages.length===4&&immutable,allGenericPassed=completed&&stages.every(s=>s.genericPassed===true);
+ write(path.join(out,'summary.json'),{schema:'soui.win32-link-recovery.summary/1',architecture:'Win32',completed,failure,afterFailure,stages,artifact,protectedInputsImmutable:immutable,sourceCopyImmutable:immutable,selectedToolsAndLibrariesImmutable:immutable,historicalSummary:p.historicalSummary,historicalMainFailurePreserved:true,historical11CompilerStagesGenericPassed:false,allGenericPassed,compilerTailPartial:stages.some(s=>s.compilerTailPartial),fullRecompile:false,completeToolchainProvenance:false,fullSdkQualified:false,win7Qualified:false,qualificationPassed:false,formalPassed:false,releaseReady:false});
+ return allGenericPassed?0:1;
+}
+main().then(code=>{process.exitCode=code;}).catch(error=>{console.error(error.message);process.exitCode=1;});

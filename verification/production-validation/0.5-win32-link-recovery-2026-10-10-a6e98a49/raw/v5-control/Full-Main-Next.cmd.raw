@@ -1,0 +1,21 @@
+@echo off
+setlocal
+rem Unexecuted later full-main compilation proposal, not called by recovery driver.
+set "PACKET=F:\work\sm05-broker\out\relink-x86-root-50324118-cb8d-4e18-93e7-edebeac56f26"
+set "OLD=F:\work\sm05-broker\out\kernel-83e67b12"
+set "OUTPUT=F:\work\sm05-broker\out\recompile-x86-50324118"
+if exist "%OUTPUT%" exit /b 64
+mkdir "%OUTPUT%"
+set "PATH=%SystemRoot%\System32;%SystemRoot%;%SystemRoot%\System32\WindowsPowerShell\v1.0"
+set "NODE_OPTIONS="
+set "NODE_PATH="
+set "CL="
+set "_CL_="
+set "LINK="
+set "_LINK_="
+set "VSCMD_SKIP_SENDTELEMETRY=1"
+call "C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\Tools\VsDevCmd.bat" -no_logo -arch=x86 -host_arch=x64 -vcvars_ver=14.44.35207 -winsdk=10.0.19041.0
+if errorlevel 1 exit /b 65
+set "CL=/MP2"
+"C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Current\Bin\amd64\MSBuild.exe" "%OLD%\source\build\miniblink\miniblink.vcxproj" /t:Build /m:1 /nr:false /p:Configuration=Release /p:Platform=Win32 /p:PlatformToolset=v143 /p:VCToolsVersion=14.44.35207 /p:WindowsTargetPlatformVersion=10.0.19041.0 /p:PreferredToolArchitecture=x64 /p:CLToolExe=cl.exe /p:CLToolPath="C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86" /p:LinkToolExe=link.exe /p:LinkToolPath="C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86" /p:LIBToolExe=lib.exe /p:LIBToolPath="C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86" /p:TargetName=node /p:TargetExt=.dll /p:UseEnv=false /p:ImportDirectoryBuildProps=false /p:ImportDirectoryBuildTargets=false /p:UserRootDir="%PACKET%/empty-user-props/" /p:VcpkgEnabled=false /p:VcpkgEnableManifest=false /p:VCPkgLocalAppDataDisabled=true /p:BuildProjectReferences=false /p:SolutionDir="%OLD%/source/build/" /p:IntDir="%OUTPUT%/obj/" /p:OutDir="%OUTPUT%/out/" /p:KernelDependencyRoot="%OLD%/runs/Win32/libraries/" /p:GpuExperiment=false /p:GpuDependencyRoot= /p:ForceImportBeforeCppTargets="%PACKET%/fresh-main-output.targets" /v:minimal /bl:"%OUTPUT%/build.binlog"
+exit /b %errorlevel%

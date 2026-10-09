@@ -1,0 +1,7 @@
+# V3 — one pre-existing hidden regular file omitted by original inventory
+
+V2 and its absent output remain unchanged. Current -Force traversal finds exactly one additional protected regular file: profile/AppData/Local/Microsoft/Windows/INetCache/IE/container.dat, 0 bytes/empty SHA-256, ordinary non-reparse file. Creation and LastWriteUtc are both 2026-10-09T16:32:16.7304037Z; it was already present and omitted by the original non-Force inventory. It is not a newly created compiler input or claimed historical manifest member.
+
+The original protected-inputs.json is byte-identical: 5234 files/11397560752 bytes. A separate exact supplemental pin participates in every metadata check and full before/after streamhash; membership is precisely original5234 plus this one existing path=5235. All other profile files remain denied. Source23536 and selected tool/library744 exact membership were independently traversed with -Force, zero differences.
+
+Five finite driver substitutions add the exact supplemental shape gate, include it in immutablePins, include it in expected membership, and identify original/current counts in before/after+summary. Reverse replacements restore V2's exact 19647 bytes. No stage/Owned verdict/compiler-tail logic changed. Namespace-only five RSP write paths, local helper/manifest pins and guard digest changes use new output. V1 preflight observation remains pinned and is not called a raw stderr archive. No Node/native/loader execution.
