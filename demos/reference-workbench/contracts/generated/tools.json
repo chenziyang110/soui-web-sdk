@@ -1,0 +1,51 @@
+{
+  "schema": "soui.action-tools/1",
+  "advisory": true,
+  "sourceSha256": "8e0681085b2c71c8c1955519765ab3b458b35c168005dd637d3e2e0441283785",
+  "tools": [
+    {
+      "name": "reference.form.submit",
+      "description": "由 C++ 校验并确认本次中文表单，不写文件。",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "category": {
+            "enum": [
+              "素材",
+              "项目",
+              "缓存",
+              "导出",
+              "归档"
+            ],
+            "maxLength": 32,
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 64,
+            "minLength": 1,
+            "type": "string"
+          },
+          "notes": {
+            "maxLength": 256,
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "notes",
+          "category"
+        ],
+        "type": "object"
+      }
+    },
+    {
+      "name": "reference.fixture.describe",
+      "description": "读取原生实际使用的固定万行样本参数。",
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {},
+        "type": "object"
+      }
+    }
+  ]
+}

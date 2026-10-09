@@ -4,8 +4,11 @@
 #include <soui/runtime/services/desktop/desktop_services.h>
 #include <soui/runtime/services/task/task_service.h>
 #include <atomic>
+#include <memory>
 #include <mutex>
 #include <vector>
+
+namespace soui::runtime::agent { class windows_local_endpoint; }
 
 namespace soui::sdk {
 // Register methods before mounting the host. Grants are scoped to the trusted
@@ -14,6 +17,15 @@ namespace soui::sdk {
 class json_bridge final : public bridge_adapter {
  public:
   explicit json_bridge(std::string origin);
+  ~json_bridge() override;
+  // Native opt-in after all registration, before the first page bootstrap.
+  // Creates one stopped, bridge-owned endpoint using this bridge's services.
+  // Freezes registration/set_session_capabilities only after successful creation;
+  // returns nullptr if already frozen. Allocation failure leaves registration open.
+  // Borrowed pointer: never delete it; valid until this bridge is destroyed.
+  // Before destruction, request_stop and owner poll_stop must reach actual stopped.
+  // Task-handler contexts still outlive bridge task_service destruction/join.
+  [[nodiscard]] soui::runtime::agent::windows_local_endpoint* create_local_endpoint();
   bool register_method(std::string name, std::string capability,
                        soui::runtime::capability_registry::handler handler);
   bool register_contextual_method(std::string name, std::string capability,
@@ -24,8 +36,8 @@ class json_bridge final : public bridge_adapter {
   // ordinary built-in tasks remain unavailable to local callers.
   bool allow_local_action(const std::string& name);
   // Native-only document grant, configured before bootstrap and frozen at the
-  // first bootstrap. Every listed capability must already be registered. An
-  // empty list denies all ordinary calls; omission preserves legacy grants.
+  // first bootstrap or endpoint creation. Every listed capability must already
+  // be registered. An empty list denies ordinary calls; omission keeps legacy grants.
   bool set_session_capabilities(std::vector<std::string> capabilities);
   bool register_task_handler(std::string kind, soui::runtime::task_service::handler handler);
   bool register_local_task_family(soui::runtime::local_task_family_definition definition);
@@ -55,5 +67,7 @@ class json_bridge final : public bridge_adapter {
   bool registration_closed_{false};
   bool session_capabilities_configured_{false};
   std::atomic<void*> owner_window_{nullptr};
+  // Declared last: endpoint destruction/fail-stop precedes every borrowed service.
+  std::unique_ptr<soui::runtime::agent::windows_local_endpoint> local_endpoint_;
 };
 }  // namespace soui::sdk

@@ -299,3 +299,6 @@ target_compile_options(soui_local_task_family_prepare_tests PRIVATE /utf-8 /W4 /
 set_property(TARGET soui_local_task_family_prepare_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.local-task-family-prepare COMMAND soui_local_task_family_prepare_tests)
 set_tests_properties(sdk.native.local-task-family-prepare PROPERTIES TIMEOUT 60)
+
+add_subdirectory(windows_local_endpoint)
+add_subdirectory(json_bridge_endpoint)

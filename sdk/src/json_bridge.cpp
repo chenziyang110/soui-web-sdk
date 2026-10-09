@@ -1,4 +1,5 @@
 #include <soui/json_bridge.h>
+#include <soui/runtime/agent/windows_local_endpoint.h>
 #include "../../third_party/include/json/json.hpp"
 #include <windows.h>
 #include <objbase.h>
@@ -56,6 +57,16 @@ json_bridge::json_bridge(std::string origin) : origin_{std::move(origin)} {
   (void)register_contextual_method("task.unsubscribe", "task.subscribe", [this](const soui::runtime::bridge_request& request) {
     return tasks_.unsubscribe(request);
   });
+}
+json_bridge::~json_bridge() = default;
+soui::runtime::agent::windows_local_endpoint* json_bridge::create_local_endpoint() {
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (registration_closed_) return nullptr;
+  auto endpoint = std::make_unique<soui::runtime::agent::windows_local_endpoint>(
+      transport_, permissions_, &tasks_);
+  local_endpoint_ = std::move(endpoint);
+  registration_closed_ = true;
+  return local_endpoint_.get();
 }
 bool json_bridge::register_method(std::string name, std::string capability,
                                  soui::runtime::capability_registry::handler handler) {

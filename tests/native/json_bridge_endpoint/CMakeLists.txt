@@ -1,0 +1,14 @@
+add_executable(soui_json_bridge_endpoint_tests endpoint_bridge_tests.cpp)
+target_link_libraries(soui_json_bridge_endpoint_tests PRIVATE Soui::Sdk Soui::ActionJson)
+target_compile_features(soui_json_bridge_endpoint_tests PRIVATE cxx_std_17)
+target_compile_options(soui_json_bridge_endpoint_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+target_compile_definitions(soui_json_bridge_endpoint_tests PRIVATE NDEBUG _CRT_SECURE_NO_WARNINGS)
+set_property(TARGET soui_json_bridge_endpoint_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+set(SOUI_JSON_BRIDGE_ENDPOINT_CASES
+  factory_stopped_registration_freeze factory_allocation_failure factory_after_bootstrap
+  typed_action_page_isolation local_family_completion local_family_disconnect_cancel)
+foreach(SOUI_JSON_BRIDGE_ENDPOINT_CASE IN LISTS SOUI_JSON_BRIDGE_ENDPOINT_CASES)
+  add_test(NAME "json_bridge_endpoint_${SOUI_JSON_BRIDGE_ENDPOINT_CASE}"
+    COMMAND soui_json_bridge_endpoint_tests "${SOUI_JSON_BRIDGE_ENDPOINT_CASE}")
+  set_tests_properties("json_bridge_endpoint_${SOUI_JSON_BRIDGE_ENDPOINT_CASE}" PROPERTIES TIMEOUT 15)
+endforeach()
