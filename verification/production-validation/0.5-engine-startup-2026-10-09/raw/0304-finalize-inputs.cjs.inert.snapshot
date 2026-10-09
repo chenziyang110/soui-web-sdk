@@ -1,0 +1,33 @@
+'use strict';
+const fs = require('node:fs');
+const path = require('node:path');
+const crypto = require('node:crypto');
+const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
+const originalFile = path.join(__dirname, 'frozen-inputs.json');
+const originalBytes = fs.readFileSync(originalFile);
+const current = JSON.parse(originalBytes);
+for (const record of [...current.sources, ...current.nativeCompileInputs, ...Object.values(current.tools)]) {
+  const bytes = fs.readFileSync(record.path);
+  if (bytes.length !== record.bytes || hash(bytes) !== record.sha256) throw new Error('Source/tool differs: ' + record.path);
+}
+const replaceNames = new Set(['validate.cjs']);
+current.privateInputs = current.privateInputs.map(record => {
+  const bytes = fs.readFileSync(record.path);
+  if (!replaceNames.has(record.relativePath) && (bytes.length !== record.bytes || hash(bytes) !== record.sha256))
+    throw new Error('Private prepared input differs: ' + record.path);
+  return {...record, bytes: bytes.length, sha256: hash(bytes)};
+});
+for (const name of ['finalize-inputs.cjs', 'startup-test-b955841a-unexecuted.inert.snapshot',
+  'validate-cache-only-unexecuted.cjs.inert.snapshot']) {
+  const file = path.join(__dirname, name);
+  const bytes = fs.readFileSync(file);
+  current.privateInputs.push({relativePath: name, path: file, bytes: bytes.length, sha256: hash(bytes)});
+}
+current.priorUnexecutedFreeze = {path: originalFile, bytes: originalBytes.length, sha256: hash(originalBytes),
+  note: 'Preserved preparer output. Final driver reads actual compiler metadata rather than assuming a cache compiler entry.'};
+const bytes = Buffer.from(JSON.stringify(current, null, 2) + '\n');
+const finalFile = path.join(__dirname, 'frozen-inputs-final.json');
+fs.writeFileSync(finalFile, bytes, {flag: 'wx'});
+console.log(JSON.stringify({finalFile, sha256: hash(bytes), sourceCount: current.sources.length,
+  nativeCompileInputCount: current.nativeCompileInputs.length, privateInputCount: current.privateInputs.length,
+  executed: false}, null, 2));

@@ -8,7 +8,33 @@
 #include <windows.h>
 #endif
 
+#ifdef SOUI_ENGINE_STARTUP_TEST_ONLY
+#include "engine_startup_test_hooks.h"
+#endif
+
 namespace soui::sdk {
+
+#ifdef _WIN32
+namespace {
+
+HANDLE create_engine_wake_event() noexcept {
+#ifdef SOUI_ENGINE_STARTUP_TEST_ONLY
+  return detail::engine_startup_test::create_wake_event();
+#else
+  return CreateEventW(nullptr, FALSE, FALSE, nullptr);
+#endif
+}
+
+void close_engine_wake_event(HANDLE event) noexcept {
+#ifdef SOUI_ENGINE_STARTUP_TEST_ONLY
+  detail::engine_startup_test::close_wake_event(event);
+#else
+  (void)CloseHandle(event);
+#endif
+}
+
+}  // namespace
+#endif
 
 engine_thread::~engine_thread() { stop(); }
 
@@ -16,14 +42,15 @@ bool engine_thread::start(initializer initialize, task shutdown) {
   if (!initialize) return false;
 
 #ifdef _WIN32
-  const HANDLE wake_event = CreateEventW(nullptr, FALSE, FALSE, nullptr);
+  const HANDLE wake_event = create_engine_wake_event();
   if (wake_event == nullptr) return false;
 #endif
+  bool launch_failed = false;
   {
     std::lock_guard<std::mutex> lock(mutex_);
     if (state_ != engine_thread_state::stopped || worker_.joinable()) {
 #ifdef _WIN32
-      CloseHandle(wake_event);
+      close_engine_wake_event(wake_event);
 #endif
       return false;
     }
@@ -32,8 +59,27 @@ bool engine_thread::start(initializer initialize, task shutdown) {
 #endif
     state_ = engine_thread_state::starting;
     startup_complete_ = false;
-    worker_ = std::thread(&engine_thread::run, this, std::move(initialize),
-                          std::move(shutdown));
+    try {
+#ifdef SOUI_ENGINE_STARTUP_TEST_ONLY
+      detail::engine_startup_test::before_worker_launch();
+#endif
+      worker_ = std::thread(&engine_thread::run, this, std::move(initialize),
+                            std::move(shutdown));
+    } catch (...) {
+      // No worker exists to publish startup completion or own this event.
+      state_ = engine_thread_state::stopped;
+      startup_complete_ = true;
+      owner_thread_ = std::thread::id{};
+#ifdef _WIN32
+      wake_event_ = nullptr;
+      close_engine_wake_event(wake_event);
+#endif
+      launch_failed = true;
+    }
+  }
+  if (launch_failed) {
+    state_changed_.notify_all();
+    return false;
   }
 
   std::unique_lock<std::mutex> lock(mutex_);
@@ -47,7 +93,7 @@ bool engine_thread::start(initializer initialize, task shutdown) {
     const HANDLE failed_event = static_cast<HANDLE>(wake_event_);
     wake_event_ = nullptr;
     lock.unlock();
-    if (failed_event != nullptr) CloseHandle(failed_event);
+    if (failed_event != nullptr) close_engine_wake_event(failed_event);
 #endif
   }
   return running;
@@ -125,7 +171,7 @@ void engine_thread::stop(bool drain_pending) {
     wake_event = static_cast<HANDLE>(wake_event_);
     wake_event_ = nullptr;
   }
-  if (wake_event != nullptr) CloseHandle(wake_event);
+  if (wake_event != nullptr) close_engine_wake_event(wake_event);
 #endif
 }
 

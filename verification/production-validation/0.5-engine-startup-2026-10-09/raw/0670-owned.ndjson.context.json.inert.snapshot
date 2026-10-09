@@ -1,0 +1,18 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+  "executableSha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c",
+  "executable": "C:/Program Files/CMake/bin/ctest.exe",
+  "args": [
+    "--test-dir",
+    "F:\\work\\sm05-startup\\out\\engine-startup-continuation-7e151d3f-4976-49af-a4cc-e68831db35c6\\actual-70059d03-7f13-4310-a50d-565bbb7d0382\\ctest-x86",
+    "-C",
+    "Release",
+    "--output-on-failure",
+    "-R",
+    "^sdk.native.engine-(startup-|diagnostic-timeout$)"
+  ],
+  "cwd": "F:\\work\\sm05-startup",
+  "timeoutMs": 60000,
+  "drainMs": 10000
+}

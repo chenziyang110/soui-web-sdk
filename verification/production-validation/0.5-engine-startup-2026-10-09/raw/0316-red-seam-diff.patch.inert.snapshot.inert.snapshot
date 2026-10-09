@@ -1,0 +1,83 @@
+diff --git "a/F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\sdk_src_host_engine_thread.cpp.inert.snapshot" "b/F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\red-engine_thread.cpp.inert.snapshot"
+index c79d130d..757b4d45 100644
+--- "a/F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\sdk_src_host_engine_thread.cpp.inert.snapshot"
++++ "b/F:\\work\\sm05-startup\\out\\engine-startup-sdk-validation-b5312436-e181-415a-8b79-f22ca568d329\\red-engine_thread.cpp.inert.snapshot"
+@@ -8,22 +8,48 @@
+ #include <windows.h>
+ #endif
+ 
++#ifdef SOUI_ENGINE_STARTUP_TEST_ONLY
++#include "engine_startup_test_hooks.h"
++#endif
++
+ namespace soui::sdk {
+ 
++#ifdef _WIN32
++namespace {
++
++HANDLE create_engine_wake_event() noexcept {
++#ifdef SOUI_ENGINE_STARTUP_TEST_ONLY
++  return detail::engine_startup_test::create_wake_event();
++#else
++  return CreateEventW(nullptr, FALSE, FALSE, nullptr);
++#endif
++}
++
++void close_engine_wake_event(HANDLE event) noexcept {
++#ifdef SOUI_ENGINE_STARTUP_TEST_ONLY
++  detail::engine_startup_test::close_wake_event(event);
++#else
++  (void)CloseHandle(event);
++#endif
++}
++
++}  // namespace
++#endif
++
+ engine_thread::~engine_thread() { stop(); }
+ 
+ bool engine_thread::start(initializer initialize, task shutdown) {
+   if (!initialize) return false;
+ 
+ #ifdef _WIN32
+-  const HANDLE wake_event = CreateEventW(nullptr, FALSE, FALSE, nullptr);
++  const HANDLE wake_event = create_engine_wake_event();
+   if (wake_event == nullptr) return false;
+ #endif
+   {
+     std::lock_guard<std::mutex> lock(mutex_);
+     if (state_ != engine_thread_state::stopped || worker_.joinable()) {
+ #ifdef _WIN32
+-      CloseHandle(wake_event);
++      close_engine_wake_event(wake_event);
+ #endif
+       return false;
+     }
+@@ -32,6 +58,9 @@ bool engine_thread::start(initializer initialize, task shutdown) {
+ #endif
+     state_ = engine_thread_state::starting;
+     startup_complete_ = false;
++#ifdef SOUI_ENGINE_STARTUP_TEST_ONLY
++    detail::engine_startup_test::before_worker_launch();
++#endif
+     worker_ = std::thread(&engine_thread::run, this, std::move(initialize),
+                           std::move(shutdown));
+   }
+@@ -47,7 +76,7 @@ bool engine_thread::start(initializer initialize, task shutdown) {
+     const HANDLE failed_event = static_cast<HANDLE>(wake_event_);
+     wake_event_ = nullptr;
+     lock.unlock();
+-    if (failed_event != nullptr) CloseHandle(failed_event);
++    if (failed_event != nullptr) close_engine_wake_event(failed_event);
+ #endif
+   }
+   return running;
+@@ -125,7 +154,7 @@ void engine_thread::stop(bool drain_pending) {
+     wake_event = static_cast<HANDLE>(wake_event_);
+     wake_event_ = nullptr;
+   }
+-  if (wake_event != nullptr) CloseHandle(wake_event);
++  if (wake_event != nullptr) close_engine_wake_event(wake_event);
+ #endif
+ }
+ 

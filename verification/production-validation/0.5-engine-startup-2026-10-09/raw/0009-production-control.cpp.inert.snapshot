@@ -1,0 +1,31 @@
+#include <soui/host/engine_thread.h>
+#include <iostream>
+#include <stdexcept>
+#include <thread>
+
+int main() {
+  try {
+    unsigned initialized = 0;
+    unsigned shutdowns = 0;
+    std::thread::id owner;
+    std::thread::id shutdown_owner;
+    soui::sdk::engine_thread engine;
+    if (!engine.start([&] { ++initialized; owner = std::this_thread::get_id(); return true; },
+                      [&] { ++shutdowns; shutdown_owner = std::this_thread::get_id(); }))
+      throw std::runtime_error("production start failed");
+    if (!engine.invoke([&] {
+      if (std::this_thread::get_id() != owner || !engine.is_owner_thread())
+        throw std::runtime_error("production owner differs");
+    })) throw std::runtime_error("production invoke failed");
+    engine.stop();
+    if (initialized != 1 || shutdowns != 1 || shutdown_owner != owner ||
+        owner == std::this_thread::get_id() || engine.is_owner_thread(owner) ||
+        engine.state() != soui::sdk::engine_thread_state::stopped)
+      throw std::runtime_error("production stop/owner differs");
+    std::cout << "Production engine implementation without TEST_ONLY hook definitions passed\n";
+    return 0;
+  } catch (const std::exception& error) {
+    std::cerr << error.what() << '\n';
+    return 1;
+  }
+}
