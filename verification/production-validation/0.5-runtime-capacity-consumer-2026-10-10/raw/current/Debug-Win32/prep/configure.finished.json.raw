@@ -1,0 +1,98 @@
+{
+  "job": {
+    "name": "configure",
+    "executable": "C:/Program Files/CMake/bin/cmake.exe",
+    "args": [
+      "-S",
+      "F:/work/sm05-broker/tests/package-consumer",
+      "-B",
+      "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-Win32/consumer-build",
+      "-G",
+      "Visual Studio 17 2022",
+      "-A",
+      "Win32",
+      "-T",
+      "v143,host=x64,version=14.44.35207",
+      "-DCMAKE_GENERATOR_INSTANCE:PATH=C:/Program Files/Microsoft Visual Studio/2022/Community",
+      "-DCMAKE_SYSTEM_VERSION:STRING=10.0.19041.0",
+      "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug",
+      "-DCMAKE_MAKE_PROGRAM:FILEPATH=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+      "-DCMAKE_PROJECT_INCLUDE:FILEPATH=F:/work/sm05-broker/out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/fixed-compiler.cmake",
+      "-DSOUI_ROOT_EXPECTED_ARCH:STRING=Win32",
+      "-DCMAKE_VS_GLOBALS:STRING=VcpkgEnabled=false;VcpkgEnableManifest=false;UseEnv=false;UserRootDir=F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-Win32/empty-user-props/",
+      "-DSouiSdk_DIR:PATH=F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-Win32/prefix/lib/cmake/SouiSdk",
+      "-DCMAKE_FIND_USE_PACKAGE_REGISTRY:BOOL=OFF",
+      "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY:BOOL=OFF",
+      "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY:BOOL=ON"
+    ],
+    "cwd": "F:/work/sm05-broker",
+    "timeoutMs": 120000,
+    "expectedExitCode": 0
+  },
+  "result": {
+    "pid": 35480,
+    "creationFileTime": "134361014663343484",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 6187,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 26,
+      "limitTerminatedProcesses": 0,
+      "passed": true,
+      "preCleanupSnapshotSequence": null,
+      "tailEvidenceComplete": false
+    },
+    "report": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-Win32\\prep\\configure.owned.jsonl",
+    "reportSha256": "f5e3bd93d4929b2d941c90b65717518bf698fc6d5aee2f9960f3f5df153470b9",
+    "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+    "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+    "contextSha256": "9771e74a2274c4b36cfcfb216e3dfc3bc241b10174f8160bccba7028418f35dc",
+    "tailEvidence": {
+      "schema": "soui.owned-tail-verdict/v1",
+      "available": true,
+      "accepted": false,
+      "failure": "Generic terminal is not an eligible forced tail cleanup",
+      "diskBytesOnly": true,
+      "reportSha256": "f5e3bd93d4929b2d941c90b65717518bf698fc6d5aee2f9960f3f5df153470b9"
+    }
+  },
+  "accepted": true,
+  "finiteStepCompleted": true,
+  "compilerTailContinuation": null,
+  "compilerTailFailure": null,
+  "raw": {
+    "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-Win32\\prep\\configure.owned.jsonl",
+    "bytes": 31194,
+    "sha256": "f5e3bd93d4929b2d941c90b65717518bf698fc6d5aee2f9960f3f5df153470b9"
+  },
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-Win32\\prep\\configure.owned.jsonl.context.json",
+    "bytes": 3836,
+    "sha256": "9771e74a2274c4b36cfcfb216e3dfc3bc241b10174f8160bccba7028418f35dc"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-Win32\\prep\\configure.stdout.raw",
+    "bytes": 520,
+    "sha256": "f7cb4b162e74bf315ba1ca45c8483f14de1c6925a5b9d4df5c7233c6e80baf8b"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-Win32\\prep\\configure.stderr.raw",
+    "bytes": 116,
+    "sha256": "6b413994db538d19492dc1c8b42f9eac504bbe50b7b298f08398ecb0cf77b8d6"
+  }
+}

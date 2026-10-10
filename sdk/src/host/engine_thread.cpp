@@ -1,6 +1,11 @@
 #include <soui/host/engine_thread.h>
+#include "engine_admission.h"
+#include "../runtime/diagnostics/runtime_metrics_internal.h"
 
+#include <atomic>
+#include <exception>
 #include <future>
+#include <limits>
 #include <memory>
 #include <utility>
 
@@ -13,6 +18,44 @@
 #endif
 
 namespace soui::sdk {
+namespace detail {
+struct engine_capacity_state final {
+  engine_capacity_state() noexcept {
+    for (auto& count : reserved) count.store(0, std::memory_order_relaxed);
+  }
+  std::array<std::atomic<std::size_t>, 4> reserved{};
+  std::uint64_t generation{0};
+};
+namespace {
+constexpr std::array<std::size_t,4> lane_limits{
+  engine_admission::ordinary_limit, engine_admission::control_limit,
+  engine_admission::renewal_limit, engine_admission::cleanup_limit};
+std::size_t index(engine_lane lane) noexcept { return static_cast<std::size_t>(lane); }
+}
+void engine_reply_ticket::release() noexcept {
+  if (active_) { owner_->reserved[index(lane_)].fetch_sub(1,std::memory_order_acq_rel); active_=false; }
+  owner_.reset(); generation_=0;
+}
+engine_reply_ticket::~engine_reply_ticket() { release(); }
+engine_reply_ticket::engine_reply_ticket(engine_reply_ticket&& other) noexcept
+    : owner_(std::move(other.owner_)), generation_(other.generation_), lane_(other.lane_),
+      active_(std::exchange(other.active_,false)) { other.generation_=0; }
+engine_reply_ticket& engine_reply_ticket::operator=(engine_reply_ticket&& other) noexcept {
+  if (this != &other) { release(); owner_=std::move(other.owner_); generation_=other.generation_;
+    lane_=other.lane_; active_=std::exchange(other.active_,false); other.generation_=0; }
+  return *this;
+}
+engine_admission_result engine_admission::post(engine_thread& engine,engine_lane lane,engine_thread::task work) {
+  return engine.post_internal(std::move(work),lane,nullptr);
+}
+engine_admission_result engine_admission::reserve_reply(engine_thread& engine,engine_lane lane,engine_reply_ticket& ticket) {
+  return engine.reserve_reply(lane,ticket);
+}
+engine_admission_result engine_admission::submit_reply(engine_thread& engine,engine_reply_ticket& ticket,engine_thread::task work) {
+  return engine.post_internal(std::move(work),ticket.lane_,&ticket);
+}
+engine_capacity_snapshot engine_admission::observe(const engine_thread& engine) { return engine.capacity_snapshot(); }
+} // namespace detail
 
 #ifdef _WIN32
 namespace {
@@ -36,11 +79,31 @@ void close_engine_wake_event(HANDLE event) noexcept {
 }  // namespace
 #endif
 
+engine_thread::engine_thread() : engine_thread(diagnostics::mode::disabled) {}
+engine_thread::engine_thread(diagnostics::mode mode) : metrics_mode_(mode),
+    metrics_epoch_(mode == diagnostics::mode::scalar ? diagnostics::detail::epoch() : 0) {}
+diagnostics::status engine_thread::read_runtime_metrics(diagnostics::queue& out) const noexcept {
+  out = {};
+  if (metrics_mode_ != diagnostics::mode::scalar) return diagnostics::status::disabled;
+  try {
+    auto observed=diagnostics::detail::begin(metrics_mode_,metrics_epoch_);
+    std::unique_lock<std::mutex> lock(mutex_,std::try_to_lock);
+    if (!lock.owns_lock()) { observed.state=diagnostics::status::busy; diagnostics::detail::end(observed); out.observation=observed; return observed.state; }
+    out=metrics_; out.observation=observed; out.observation.counter_saturated=metrics_saturated_;
+    out.queued=queued_; out.executing=executing_; out.has_capacity_bound=true; out.capacity_bound=queue_capacity;
+    const auto now=diagnostics::detail::now_us();
+    if (queued_) out.oldest_queued_age_us=diagnostics::detail::age(work_[head_].enqueued_us,now,out.observation);
+    if (executing_) out.current_callback_age_us=diagnostics::detail::age(callback_started_us_,now,out.observation);
+    diagnostics::detail::end(out.observation); return out.observation.state;
+  } catch (...) { out={}; out.observation.state=diagnostics::status::unavailable; return out.observation.state; }
+}
 engine_thread::~engine_thread() { stop(); }
 
 bool engine_thread::start(initializer initialize, task shutdown) {
   if (!initialize) return false;
-
+  std::shared_ptr<detail::engine_capacity_state> next_capacity;
+  try { next_capacity=std::make_shared<detail::engine_capacity_state>(); }
+  catch (...) { return false; }
 #ifdef _WIN32
   const HANDLE wake_event = create_engine_wake_event();
   if (wake_event == nullptr) return false;
@@ -48,7 +111,8 @@ bool engine_thread::start(initializer initialize, task shutdown) {
   bool launch_failed = false;
   {
     std::lock_guard<std::mutex> lock(mutex_);
-    if (state_ != engine_thread_state::stopped || worker_.joinable()) {
+    if (state_ != engine_thread_state::stopped || worker_.joinable() ||
+        capacity_generation_ == (std::numeric_limits<std::uint64_t>::max)()) {
 #ifdef _WIN32
       close_engine_wake_event(wake_event);
 #endif
@@ -57,6 +121,8 @@ bool engine_thread::start(initializer initialize, task shutdown) {
 #ifdef _WIN32
     wake_event_ = wake_event;
 #endif
+    next_capacity->generation=++capacity_generation_;
+    capacity_=std::move(next_capacity);
     state_ = engine_thread_state::starting;
     startup_complete_ = false;
     try {
@@ -100,19 +166,68 @@ bool engine_thread::start(initializer initialize, task shutdown) {
 }
 
 bool engine_thread::post(task work) {
-  if (!work) return false;
+  return post_internal(std::move(work),detail::engine_lane::ordinary,nullptr) == detail::engine_admission_result::accepted;
+}
+
+detail::engine_admission_result engine_thread::post_internal(task work,detail::engine_lane lane,
+                                                            detail::engine_reply_ticket* ticket) {
+  using result=detail::engine_admission_result;
+  const auto category=static_cast<std::size_t>(lane);
+  if (!work || category >= lane_queued_.size()) return result::invalid;
   {
     std::lock_guard<std::mutex> lock(mutex_);
-    if (state_ != engine_thread_state::running) return false;
-    work_.push_back(std::move(work));
+    if (state_ != engine_thread_state::running) {
+      if (metrics_mode_ == diagnostics::mode::scalar) diagnostics::detail::increment(metrics_.stopped_rejections_total,metrics_saturated_);
+      return result::stopped;
+    }
+    if (ticket) {
+      if (!ticket->active_ || ticket->owner_ != capacity_ || ticket->generation_ != capacity_generation_ ||
+          ticket->lane_ != lane) return result::invalid;
+    } else if (lane_queued_[category]+capacity_->reserved[category].load(std::memory_order_acquire) >= detail::lane_limits[category]) {
+      if (metrics_mode_ == diagnostics::mode::scalar) diagnostics::detail::increment(metrics_.full_rejections_total,metrics_saturated_);
+      return result::full;
+    }
+    // Credits guarantee a free physical slot. No callable allocation/destruction under this lock.
+    if (queued_ >= queue_capacity || work_[tail_].callback) std::terminate();
+    work_[tail_].callback.swap(work);
+    work_[tail_].enqueued_us=metrics_mode_ == diagnostics::mode::scalar ? diagnostics::detail::now_us() : 0;
+    work_[tail_].lane=category;
+    tail_=(tail_+1)%queue_capacity; ++queued_; ++lane_queued_[category];
+    if (ticket) { ticket->active_=false; capacity_->reserved[category].fetch_sub(1,std::memory_order_acq_rel); }
+    if (metrics_mode_ == diagnostics::mode::scalar) {
+      diagnostics::detail::increment(metrics_.posted_total,metrics_saturated_);
+      diagnostics::detail::high_water(metrics_.high_water,queued_);
+    }
 #ifdef _WIN32
     SetEvent(static_cast<HANDLE>(wake_event_));
 #endif
   }
   work_ready_.notify_one();
-  return true;
+  return result::accepted;
 }
 
+detail::engine_admission_result engine_thread::reserve_reply(detail::engine_lane lane,detail::engine_reply_ticket& ticket) {
+  using result=detail::engine_admission_result;
+  const auto category=static_cast<std::size_t>(lane);
+  if (category >= 3 || ticket.active_) return result::invalid; // cleanup is never a wire reply lane
+  std::lock_guard<std::mutex> lock(mutex_);
+  if (state_ != engine_thread_state::running) return result::stopped;
+  if (lane_queued_[category]+capacity_->reserved[category].load(std::memory_order_acquire) >= detail::lane_limits[category]) {
+    if (metrics_mode_ == diagnostics::mode::scalar) diagnostics::detail::increment(metrics_.full_rejections_total,metrics_saturated_);
+    return result::full;
+  }
+  ticket.owner_=capacity_; ticket.generation_=capacity_generation_; ticket.lane_=lane;
+  capacity_->reserved[category].fetch_add(1,std::memory_order_acq_rel); ticket.active_=true;
+  return result::accepted;
+}
+
+detail::engine_capacity_snapshot engine_thread::capacity_snapshot() const {
+  std::lock_guard<std::mutex> lock(mutex_);
+  detail::engine_capacity_snapshot out; out.queued=lane_queued_; out.executing=executing_;
+  out.generation=capacity_generation_; out.state=state_;
+  if (capacity_) for (std::size_t i=0;i<out.reserved.size();++i) out.reserved[i]=capacity_->reserved[i].load(std::memory_order_acquire);
+  return out;
+}
 bool engine_thread::invoke(task work, std::chrono::milliseconds timeout) {
   if (!work || timeout.count() < 0 || is_owner_thread()) return false;
   auto completion = std::make_shared<std::promise<void>>();
@@ -140,10 +255,11 @@ bool engine_thread::drain_for(std::chrono::milliseconds timeout) {
   if (timeout.count() < 0) return false;
   std::unique_lock<std::mutex> lock(mutex_);
   return idle_.wait_for(lock, timeout,
-                        [this] { return work_.empty() && executing_ == 0; });
+                        [this] { return queued_ == 0 && executing_ == 0; });
 }
 
 void engine_thread::stop(bool drain_pending) {
+  std::array<task,queue_capacity> retired;
   std::thread worker;
   {
     std::unique_lock<std::mutex> lock(mutex_);
@@ -153,7 +269,11 @@ void engine_thread::stop(bool drain_pending) {
     if (state_ == engine_thread_state::running)
       state_ = engine_thread_state::stopping;
     if (state_ == engine_thread_state::stopping) {
-      if (!drain_pending) work_.clear();
+      if (!drain_pending) {
+        if (metrics_mode_ == diagnostics::mode::scalar) diagnostics::detail::add(metrics_.discarded_on_stop_total,queued_,metrics_saturated_);
+        for (std::size_t i=0;i<queue_capacity;++i) retired[i].swap(work_[i].callback);
+        head_=tail_=queued_=0; lane_queued_={};
+      }
       if (worker_.joinable()) worker = std::move(worker_);
     } else if (worker_.joinable()) {
       worker = std::move(worker_);
@@ -163,6 +283,8 @@ void engine_thread::stop(bool drain_pending) {
 #endif
     work_ready_.notify_all();
   }
+  // Captures may reenter state()/post(); retire before join and outside mutex_.
+  for (auto& callback:retired) { task release; release.swap(callback); }
   if (worker.joinable()) worker.join();
 #ifdef _WIN32
   HANDLE wake_event = nullptr;
@@ -220,7 +342,7 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
       std::unique_lock<std::mutex> lock(mutex_);
       if (state_ != engine_thread_state::stopping) {
         const HANDLE wake_event = static_cast<HANDLE>(wake_event_);
-        const bool wait_for_work = work_.empty();
+        const bool wait_for_work = queued_ == 0;
         lock.unlock();
         if (wait_for_work) {
           (void)MsgWaitForMultipleObjectsEx(
@@ -264,27 +386,33 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
         std::unique_lock<std::mutex> lock(mutex_);
 #ifndef _WIN32
         work_ready_.wait(lock, [this] {
-          return state_ == engine_thread_state::stopping || !work_.empty();
+          return state_ == engine_thread_state::stopping || queued_ != 0;
         });
 #endif
-        if (work_.empty() && state_ == engine_thread_state::stopping) {
+        if (queued_ == 0 && state_ == engine_thread_state::stopping) {
           stopping_complete = true;
           break;
         }
-        if (work_.empty()) break;
-        current = std::move(work_.front());
-        work_.pop_front();
+        if (queued_ == 0) break;
+        current.swap(work_[head_].callback);
+        --lane_queued_[work_[head_].lane];
+        head_=(head_+1)%queue_capacity; --queued_;
         ++executing_;
+        if (metrics_mode_ == diagnostics::mode::scalar) callback_started_us_=diagnostics::detail::now_us();
       }
       try {
         current();
       } catch (...) {
         // An isolated host callback must not kill the process-wide engine owner.
       }
+      // The executing slot covers capture retirement as well as the call.
+      // A capture destructor can reenter this Engine only outside mutex_.
+      { task retired; retired.swap(current); }
       {
         std::lock_guard<std::mutex> lock(mutex_);
         --executing_;
-        if (work_.empty() && executing_ == 0) idle_.notify_all();
+        callback_started_us_=0;
+        if (queued_ == 0 && executing_ == 0) idle_.notify_all();
       }
       if (std::chrono::steady_clock::now() >= task_deadline) break;
     }
@@ -295,13 +423,18 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
     if (shutdown) shutdown();
   } catch (...) {
   }
+  std::array<task,queue_capacity> retired;
   {
     std::lock_guard<std::mutex> lock(mutex_);
-    work_.clear();
+    if (metrics_mode_ == diagnostics::mode::scalar) diagnostics::detail::add(metrics_.discarded_on_stop_total,queued_,metrics_saturated_);
+    for (std::size_t i=0;i<queue_capacity;++i) retired[i].swap(work_[i].callback);
+    head_=tail_=queued_=0; lane_queued_={};
     executing_ = 0;
+    callback_started_us_=0;
     owner_thread_ = std::thread::id{};
     state_ = engine_thread_state::stopped;
   }
+  for (auto& callback:retired) { task release; release.swap(callback); }
   idle_.notify_all();
   state_changed_.notify_all();
 }

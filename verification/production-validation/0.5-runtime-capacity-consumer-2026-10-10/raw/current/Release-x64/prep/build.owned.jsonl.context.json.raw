@@ -1,0 +1,52 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+  "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "--build",
+    "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-release-x64/consumer-build",
+    "--config",
+    "Release",
+    "--target",
+    "soui_consumer",
+    "--parallel",
+    "2"
+  ],
+  "cwd": "F:/work/sm05-broker",
+  "timeoutMs": 600000,
+  "drainMs": 2000,
+  "tailImagePin": {
+    "image": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/vctip.exe",
+    "sha256": "651345513aae26090c813b1ded859a5680c3823ca716a80e1d337bac0ca797ef",
+    "nonce": "dd9afa47d3b4487cb1e56f8cef20e74d"
+  },
+  "report": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-release-x64\\prep\\build.owned.jsonl",
+  "runnerArgs": [
+    "--timeout-ms",
+    "600000",
+    "--drain-ms",
+    "2000",
+    "--stop-on-stdin",
+    "--report",
+    "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-release-x64\\prep\\build.owned.jsonl",
+    "--cwd",
+    "F:/work/sm05-broker",
+    "--pin-tail-image",
+    "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/vctip.exe",
+    "--pin-tail-sha256",
+    "651345513aae26090c813b1ded859a5680c3823ca716a80e1d337bac0ca797ef",
+    "--snapshot-nonce",
+    "dd9afa47d3b4487cb1e56f8cef20e74d",
+    "--",
+    "C:/Program Files/CMake/bin/cmake.exe",
+    "--build",
+    "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-release-x64/consumer-build",
+    "--config",
+    "Release",
+    "--target",
+    "soui_consumer",
+    "--parallel",
+    "2"
+  ]
+}

@@ -1,9 +1,11 @@
 #pragma once
 
+#include <soui/diagnostics/runtime_metrics.h>
 #include <atomic>
 #include <chrono>
 #include <cstddef>
 #include <cstdint>
+#include <exception>
 #include <memory>
 #include <mutex>
 #include <string>
@@ -12,7 +14,20 @@
 
 namespace soui::runtime {
 
+namespace detail { class scope_budget_ledger; }
 enum class authorization_result { authorized, denied, expired };
+
+enum class scope_capacity_reason { store, module, aliases };
+// Native admission refusal, not failed authentication or a grant credential.
+class scope_capacity_error final : public std::exception {
+ public:
+  explicit scope_capacity_error(scope_capacity_reason reason) noexcept : reason_(reason) {}
+  [[nodiscard]] const char* what() const noexcept override { return "E_LIMIT_SCOPE_CAPACITY"; }
+  [[nodiscard]] const char* code() const noexcept { return "E_LIMIT_SCOPE_CAPACITY"; }
+  [[nodiscard]] scope_capacity_reason reason() const noexcept { return reason_; }
+ private:
+  scope_capacity_reason reason_;
+};
 
 // Native identity for one connection, minted by the issuing store. Creation is
 // not OS authentication: the trusted endpoint must verify and authorize first.
@@ -84,10 +99,14 @@ class permission_store {
  public:
   using clock_type = std::chrono::steady_clock;
   using clock_source = clock_type::time_point (*)();
-  permission_store() = default;
+  permission_store() : permission_store(nullptr, soui::sdk::diagnostics::mode::disabled) {}
+  explicit permission_store(soui::sdk::diagnostics::mode metrics) : permission_store(nullptr, metrics) {}
+  permission_store(clock_source now, soui::sdk::diagnostics::mode metrics);
+  [[nodiscard]] soui::sdk::diagnostics::status read_runtime_metrics(
+      soui::sdk::diagnostics::permissions&) const noexcept;
   // Tests may supply a monotonic clock; production defaults and the 30-minute
   // grant duration are unchanged. No clock control is exposed through Bridge.
-  explicit permission_store(clock_source now) : now_(now ? now : &clock_type::now) {}
+  explicit permission_store(clock_source now) : permission_store(now, soui::sdk::diagnostics::mode::disabled) {}
   ~permission_store();
   permission_store(const permission_store&) = delete;
   permission_store& operator=(const permission_store&) = delete;
@@ -125,6 +144,10 @@ class permission_store {
 
  private:
   friend struct permission_store_test_access;
+  static constexpr std::size_t scope_limit = 128;
+  static constexpr std::size_t alias_limit = 256;
+  static constexpr std::size_t renewal_alias_limit = alias_limit + 1;
+  using grant_map = std::unordered_map<std::string, std::shared_ptr<authorization_scope>>;
   using entropy_source = bool (*)(unsigned char*, std::size_t);
   static bool system_entropy(unsigned char* bytes, std::size_t size);
   [[nodiscard]] std::string make_token() const;
@@ -141,11 +164,17 @@ class permission_store {
   [[nodiscard]] permission_lease renew_impl(const std::string& session_id, const std::string& origin,
       const std::string& token, const std::string& operation_id,
       const std::shared_ptr<const native_connection_binding>& binding);
+  const soui::sdk::diagnostics::mode metrics_mode_;
+  const std::uint64_t metrics_epoch_;
+  soui::sdk::diagnostics::permissions metrics_;
+  bool metrics_saturated_{false};
   clock_source now_{&clock_type::now};
   mutable std::mutex mutex_;
   entropy_source entropy_{&system_entropy};
   const std::shared_ptr<const void> local_issuer_{std::make_shared<const unsigned char>(0)};
-  std::unordered_map<std::string, std::shared_ptr<authorization_scope>> grants_;
+  const std::shared_ptr<detail::scope_budget_ledger> scope_budget_;
+  std::size_t stored_scope_count_{0}, pending_scope_reservations_{0};
+  grant_map grants_;
 };
 
 }  // namespace soui::runtime

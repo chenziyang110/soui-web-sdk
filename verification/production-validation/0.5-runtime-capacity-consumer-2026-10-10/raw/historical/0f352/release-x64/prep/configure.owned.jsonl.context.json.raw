@@ -1,0 +1,32 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+  "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "-S",
+    "F:/work/sm05-broker/tests/package-consumer",
+    "-B",
+    "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/consumer-build",
+    "-G",
+    "Visual Studio 17 2022",
+    "-A",
+    "x64",
+    "-T",
+    "v143,host=x64,version=14.44.35207",
+    "-DCMAKE_GENERATOR_INSTANCE:PATH=C:/Program Files/Microsoft Visual Studio/2022/Community",
+    "-DCMAKE_SYSTEM_VERSION:STRING=10.0.19041.0",
+    "-DCMAKE_CONFIGURATION_TYPES:STRING=Release",
+    "-DCMAKE_MAKE_PROGRAM:FILEPATH=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+    "-DCMAKE_PROJECT_INCLUDE:FILEPATH=F:/work/sm05-broker/out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/fixed-compiler.cmake",
+    "-DSOUI_ROOT_EXPECTED_ARCH:STRING=x64",
+    "-DCMAKE_VS_GLOBALS:STRING=VcpkgEnabled=false;VcpkgEnableManifest=false;UseEnv=false;UserRootDir=F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/empty-user-props/",
+    "-DSouiSdk_DIR:PATH=F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prefix/lib/cmake/SouiSdk",
+    "-DCMAKE_FIND_USE_PACKAGE_REGISTRY:BOOL=OFF",
+    "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY:BOOL=OFF",
+    "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY:BOOL=ON"
+  ],
+  "cwd": "F:/work/sm05-broker",
+  "timeoutMs": 120000,
+  "drainMs": 2000
+}

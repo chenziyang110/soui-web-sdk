@@ -1,6 +1,7 @@
 #include <soui/json_bridge.h>
 #include <soui/runtime/agent/windows_local_endpoint.h>
 #include "runtime/services/gui/gui_commands_internal.h"
+#include "runtime/diagnostics/runtime_metrics_internal.h"
 #include "../../third_party/include/json/json.hpp"
 #include <windows.h>
 #include <objbase.h>
@@ -30,7 +31,9 @@ std::string new_session() {
   return result;
 }
 }
-json_bridge::json_bridge(std::string origin) : origin_{std::move(origin)} {
+json_bridge::json_bridge(std::string origin) : json_bridge(std::move(origin), diagnostics::mode::disabled) {}
+json_bridge::json_bridge(std::string origin, diagnostics::mode metrics)
+    : origin_{std::move(origin)}, metrics_mode_{metrics}, permissions_{metrics}, tasks_{metrics} {
   if (origin_.rfind("app://",0) != 0 || origin_.size() > 512)
     throw std::invalid_argument("Native origin must begin with app://");
   (void)register_method("bridge.probe.report", "bridge.probe", [](std::string_view params) {
@@ -60,6 +63,26 @@ json_bridge::json_bridge(std::string origin) : origin_{std::move(origin)} {
   });
 }
 json_bridge::~json_bridge() { close_gui_commands(); }
+diagnostics::status json_bridge::read_runtime_metrics(diagnostics::bridge_runtime& out) const noexcept {
+  out = {};
+  if (metrics_mode_ != diagnostics::mode::scalar) return diagnostics::status::disabled;
+  auto state = tasks_.read_runtime_metrics(out.task_service);
+  state = diagnostics::detail::combine(state, permissions_.read_runtime_metrics(out.permission_store));
+  try {
+    std::shared_ptr<soui::runtime::detail::gui_commands_state> gui;
+    {
+      std::unique_lock<std::mutex> lock(mutex_, std::try_to_lock);
+      if (!lock.owns_lock()) {
+        out.gui_commands.observation.state = diagnostics::status::busy;
+        return diagnostics::detail::combine(state, diagnostics::status::busy);
+      }
+      gui = gui_;
+    } // No bridge lock while sampling another owner.
+    if (!gui) { out.gui_commands.observation.state = diagnostics::status::not_started; return state; }
+    return diagnostics::detail::combine(state, gui->read_runtime_metrics(out.gui_commands));
+  } catch (...) { out.gui_commands = {}; out.gui_commands.observation.state = diagnostics::status::unavailable;
+    return diagnostics::detail::combine(state, diagnostics::status::unavailable); }
+}
 soui::runtime::agent::windows_local_endpoint* json_bridge::create_local_endpoint() {
   std::lock_guard<std::mutex> lock(mutex_);
   if (registration_closed_) return nullptr;
@@ -122,7 +145,7 @@ bool json_bridge::enable_gui_commands(std::vector<soui::runtime::gui_command_def
   if (registration_closed_ || gui_) return false;
   auto capabilities=capabilities_;
   capabilities.insert(capabilities.end(),{"gui.bind","gui.effect","gui.ack"});
-  auto prepared=soui::runtime::detail::gui_commands_state::create(registry_,transport_,tasks_,std::move(rows));
+  auto prepared=soui::runtime::detail::gui_commands_state::create(registry_,transport_,tasks_,std::move(rows),metrics_mode_);
   if (!prepared) return false;
   prepared->set_sink(event_sink_);
   capabilities_.swap(capabilities); gui_=std::move(prepared);
@@ -289,6 +312,8 @@ std::string json_bridge::handle_json(std::string_view request, bool native_user_
       result=json::parse(soui::runtime::bridge_transport::serialize_lease(lease));
     }
     return json{{"requestId",request_id},{"ok",true},{"result",std::move(result)}}.dump();
+  } catch(const soui::runtime::scope_capacity_error&) {
+    return error(request_id,"E_LIMIT_SCOPE_CAPACITY","Authorization scope capacity is exhausted.");
   } catch(const std::exception&) {
     return error(request_id,"E_INVALID_PARAMS","Malformed bridge request or method parameters.");
   }

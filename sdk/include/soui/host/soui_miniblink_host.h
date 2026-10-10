@@ -43,6 +43,9 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   // both HWNDs alive until the callback returns and unmount completes. Do not
   // destroy an adapter from its own active member/native callback stack.
   dynamic_miniblink_adapter();
+  // Diagnostics mode is immutable; construct on the retained lifecycle owner.
+  explicit dynamic_miniblink_adapter(diagnostics::mode metrics);
+  [[nodiscard]] diagnostics::status read_runtime_metrics(diagnostics::software_host_runtime&) const noexcept;
   ~dynamic_miniblink_adapter() override;
   [[nodiscard]] host_result mount(const host_config& config) override;
   [[nodiscard]] host_result unmount() override;
@@ -98,6 +101,7 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
 #endif
 
  private:
+  friend class detail::engine_admission;
   [[nodiscard]] host_result mount_on_engine(const host_config& config, int width, int height);
   [[nodiscard]] host_result finish_mount_on_engine(const host_config& config, int width, int height);
   [[nodiscard]] host_result wait_for_cursor_registration();
@@ -133,6 +137,8 @@ class dynamic_miniblink_adapter final : public webview_host_adapter,
   std::unique_ptr<soui::test_kit::pipe_agent> test_agent_;
 #endif
 
+  const diagnostics::mode metrics_mode_;
+  const std::thread::id metrics_owner_thread_{std::this_thread::get_id()};
   void* module_{nullptr};
   void* webview_{nullptr};
   void* webview_window_{nullptr};

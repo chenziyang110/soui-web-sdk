@@ -1,0 +1,72 @@
+{
+  "job": {
+    "name": "install",
+    "executable": "C:/Program Files/CMake/bin/cmake.exe",
+    "args": [
+      "--install",
+      "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/build/sdk",
+      "--config",
+      "Debug",
+      "--prefix",
+      "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-Win32/prefix"
+    ],
+    "cwd": "F:/work/sm05-broker",
+    "timeoutMs": 120000,
+    "expectedExitCode": 0
+  },
+  "result": {
+    "pid": 96448,
+    "creationFileTime": "134360995906154942",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 302,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 2,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\sm05-broker\\out\\ctconsumer-0bea1a0f-debug-Win32\\prep\\install.owned.jsonl",
+    "reportSha256": "9a66d5ff149d1d9214d16e0210760dcebfd20b0defc4fdcabc4b812e1ec21cfd",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "accepted": true,
+  "finiteStepCompleted": true,
+  "compilerTailContinuation": null,
+  "compilerTailFailure": null,
+  "raw": {
+    "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0bea1a0f-debug-Win32\\prep\\install.owned.jsonl",
+    "bytes": 1323,
+    "sha256": "9a66d5ff149d1d9214d16e0210760dcebfd20b0defc4fdcabc4b812e1ec21cfd"
+  },
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0bea1a0f-debug-Win32\\prep\\install.owned.jsonl.context.json",
+    "bytes": 571,
+    "sha256": "3a3d1f0902200cf90399c7d4a0ef70620ada1bfc2a8098a7dd7617869edd5fe3"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0bea1a0f-debug-Win32\\prep\\install.stdout.raw",
+    "bytes": 8561,
+    "sha256": "99feb40e0432939dac24a24fb80e868bded2001d859714c6e2ee14f26e6e3f9d"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0bea1a0f-debug-Win32\\prep\\install.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

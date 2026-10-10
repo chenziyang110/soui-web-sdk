@@ -1,5 +1,6 @@
 #pragma once
 
+#include <soui/diagnostics/runtime_metrics.h>
 #include <cstddef>
 #include <cstdint>
 #include <mutex>
@@ -38,7 +39,8 @@ class task_store {
  public:
   static constexpr std::size_t max_tasks{1024};
 
-  explicit task_store(std::string id_prefix = "task-") : id_prefix_{std::move(id_prefix)} {}
+  explicit task_store(std::string id_prefix = "task-") : task_store(std::move(id_prefix), soui::sdk::diagnostics::mode::disabled) {}
+  task_store(std::string id_prefix, soui::sdk::diagnostics::mode metrics);
   task_store(const task_store&) = delete;
   task_store& operator=(const task_store&) = delete;
 
@@ -74,6 +76,11 @@ class task_store {
   [[nodiscard]] static bool is_terminal(task_state state) noexcept;
   [[nodiscard]] static task_state state_for(result_kind kind) noexcept;
 
+  [[nodiscard]] bool read_metrics_locked(soui::sdk::diagnostics::tasks&) const;
+  const soui::sdk::diagnostics::mode metrics_mode_;
+  const std::uint64_t metrics_epoch_;
+  std::uint64_t metrics_evictions_{0};
+  bool metrics_saturated_{false};
   mutable std::mutex mutex_;
   std::string id_prefix_;
   std::uint64_t next_task_number_{1};

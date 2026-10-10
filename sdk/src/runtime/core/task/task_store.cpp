@@ -1,5 +1,6 @@
 #include <soui/runtime/core/task/task_store.h>
 
+#include "../../diagnostics/runtime_metrics_internal.h"
 #include <algorithm>
 #include <iomanip>
 #include <sstream>
@@ -9,6 +10,7 @@
 #include "../../services/task/task_family_test_hooks.h"
 #endif
 
+namespace dm = soui::sdk::diagnostics;
 namespace soui::runtime {
 namespace {
 
@@ -19,6 +21,34 @@ std::string make_task_id(std::string_view prefix, std::uint64_t number) {
 }
 
 }  // namespace
+
+task_store::task_store(std::string id_prefix, dm::mode metrics)
+    : metrics_mode_(metrics), metrics_epoch_(metrics == dm::mode::scalar ? dm::detail::epoch() : 0),
+      id_prefix_(std::move(id_prefix)) {}
+
+bool task_store::read_metrics_locked(dm::tasks& out) const {
+  std::unique_lock<std::mutex> lock(mutex_, std::try_to_lock);
+  if (!lock.owns_lock()) return false;
+  if (metrics_mode_ != dm::mode::scalar || !metrics_epoch_) {
+    out.observation.state = dm::status::unavailable; return true;
+  }
+  out.store_limit = max_tasks; out.store_entries = tasks_.size();
+  out.committed_terminal_evictions_total = metrics_evictions_;
+  out.observation.counter_saturated |= metrics_saturated_;
+  for (const auto& entry : tasks_) {
+    const auto& value = entry.second;
+    if (is_terminal(value.state)) ++out.terminal_entries;
+    if (value.state == task_state::queued) ++out.queued_entries;
+    if (value.state == task_state::running) ++out.running_entries;
+    if (value.state == task_state::timeout_observed) ++out.timeout_observed_entries;
+    if (value.state == task_state::cancel_requested) ++out.cancel_requested_entries;
+    for (const auto* field : {&value.task_id, &value.operation_id, &value.message,
+                              &value.result.task_id, &value.result.message})
+      dm::detail::strings(*field, out.store_string_size_bytes, out.store_string_capacity_bytes,
+                          out.observation.counter_saturated);
+  }
+  return true;
+}
 
 task_snapshot task_store::start(std::string operation_id) {
   return start_scoped(operation_id, operation_id);
@@ -118,6 +148,8 @@ void task_store::commit_start_scoped(prepared_start& prepared) noexcept {
   tasks_.swap(prepared.tasks);
   operation_to_task_.swap(prepared.operations);
   operation_to_scope_.swap(prepared.scopes);
+  if (metrics_mode_ == dm::mode::scalar && !prepared.evicted_id.empty())
+    dm::detail::increment(metrics_evictions_, metrics_saturated_);
   ++next_task_number_;
   ++next_sequence_;
   prepared.publish = false;

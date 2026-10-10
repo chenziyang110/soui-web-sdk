@@ -1,0 +1,169 @@
+{
+  "schema": "soui.live-capacity-debug-root-failure/v1",
+  "attempt": [
+    {
+      "architecture": "x64",
+      "summary": {
+        "path": "F:/work/sm05-broker/out/capdbg-c6ed77b2-x64/summary.json",
+        "bytes": 6814,
+        "sha256": "f8a92cd0bf3a2a7618c4d445c6a9b69f0a2a2526134a3d36bb5c3b882a13541e"
+      },
+      "completed": false,
+      "stages": [
+        {
+          "name": "configure",
+          "pid": 7660,
+          "creationFileTime": "134360943900893521",
+          "exitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 10495,
+          "jobMembers": 47,
+          "naturalClosed": true,
+          "accepted": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\configure.owned.jsonl",
+            "bytes": 50091,
+            "sha256": "a733cbf1462605b6a8cf4703466ec676de0bf5538943ee052ed0160325e450b8"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\configure.owned.jsonl.context.json",
+            "bytes": 1616,
+            "sha256": "5cd06bc92c4289d8270a523bd9bec19e2e280ba6ba99c2ea8cf735cc5286aabe"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\configure.stdout.raw",
+            "bytes": 2854,
+            "sha256": "1b67535aa90964487c29585407f44aaa11c73a8dc969b1d15eb2183af75725cc"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\configure.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "name": "build",
+          "pid": 54112,
+          "creationFileTime": "134360944009992271",
+          "exitCode": 1,
+          "supervisorExitCode": 1,
+          "elapsedMs": 28048,
+          "jobMembers": 30,
+          "naturalClosed": true,
+          "accepted": false,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\build.owned.jsonl",
+            "bytes": 32334,
+            "sha256": "87df3266eaf692ad10f1fc50c2a3ccbeb410fb36a0f2a8e9769bca892a3d6203"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\build.owned.jsonl.context.json",
+            "bytes": 615,
+            "sha256": "948ce29d87d3c477f03ba01200c81e0cd8a742d77b22ef114773d81368c837c4"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\build.stdout.raw",
+            "bytes": 19345,
+            "sha256": "bdcdf5e71eb0189368bd80c8b7a42a7e1ea8d82fd4198715df9c5b4e26d72502"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\build.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ],
+      "actualCrtMismatch": true,
+      "iteratorLevels": [
+        0,
+        2
+      ],
+      "testsExecuted": false
+    },
+    {
+      "architecture": "Win32",
+      "summary": {
+        "path": "F:/work/sm05-broker/out/capdbg-c6ed77b2-Win32/summary.json",
+        "bytes": 6845,
+        "sha256": "e0b97889358500c2b4190f775f9a51aa0195b96264ea0e60293cba0a56f3d504"
+      },
+      "completed": false,
+      "stages": [
+        {
+          "name": "configure",
+          "pid": 73568,
+          "creationFileTime": "134360944300874767",
+          "exitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 10567,
+          "jobMembers": 47,
+          "naturalClosed": true,
+          "accepted": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\configure.owned.jsonl",
+            "bytes": 47812,
+            "sha256": "89d9520f61a5fdb8f5b4cad7c59858fbf2d0c39fc1728fd6e28edb8f4599f94e"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\configure.owned.jsonl.context.json",
+            "bytes": 1622,
+            "sha256": "2f6dfa76ac94667f68946731f8f35ac4f9d7c1533038135fcd66961f5ed7be51"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\configure.stdout.raw",
+            "bytes": 2856,
+            "sha256": "e5136ab556790203d2493bf0f642d7f1bb46bd8066c5640ba3e027d88067f497"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\configure.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "name": "build",
+          "pid": 61512,
+          "creationFileTime": "134360944410662788",
+          "exitCode": 1,
+          "supervisorExitCode": 1,
+          "elapsedMs": 26500,
+          "jobMembers": 30,
+          "naturalClosed": true,
+          "accepted": false,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\build.owned.jsonl",
+            "bytes": 28376,
+            "sha256": "5429cfc38c5c1787d8ab565c94ec4ba3f06de321bce4bfa05d5927c44be43c90"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\build.owned.jsonl.context.json",
+            "bytes": 617,
+            "sha256": "e2b0e6dd91d09d45f78807ae51f0a798832e10bda52f5b3212744db3e2737df2"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\build.stdout.raw",
+            "bytes": 19469,
+            "sha256": "c509356c1c15764982614544697f3a99174780dbb808fea5ce64f656d0182698"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\build.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ],
+      "actualCrtMismatch": true,
+      "iteratorLevels": [
+        0,
+        2
+      ],
+      "testsExecuted": false
+    }
+  ],
+  "wholeSessionExitCode": 1,
+  "rootCause": "New test targets use Debug CRT and iterator level while SDK fixes release CRT and undefines _DEBUG for every configuration",
+  "failurePreserved": true,
+  "debugVerified": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

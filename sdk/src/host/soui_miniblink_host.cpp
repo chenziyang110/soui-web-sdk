@@ -4,6 +4,7 @@
 #include <soui/runtime/services/desktop/window_commands.h>
 #include "bridge_pending_script.h"
 #include "bridge_request_budget.h"
+#include "engine_admission.h"
 #include "cursor_broker.h"
 #include "main_context_gate.h"
 #ifdef SOUI_PERFORMANCE_DIAGNOSTICS
@@ -482,19 +483,31 @@ bool valid_cursor_api(const wkeCursorBrokerApi* api) noexcept {
 
 // Teardown may not return while callbacks still reference the adapter. A native
 // kernel hang cannot be safely preempted; external supervision records failure.
-bool invoke_lifecycle(engine_thread* thread, engine_thread::task work) {
-  if (!thread || !work) return false;
-  if (thread->is_owner_thread()) { work(); return true; }
+struct lifecycle_invocation final {
+  bool completed{false};
+  detail::engine_admission_result admission{detail::engine_admission_result::invalid};
+  explicit operator bool() const noexcept { return completed; }
+};
+host_result engine_admission_failure(detail::engine_admission_result result,const char* message,bool cleanup=false) {
+  return failure(result == detail::engine_admission_result::full ? (cleanup ? "E_CURSOR_CLOSE_PENDING" : "E_BUSY")
+      : "E_ENGINE_THREAD",message);
+}
+lifecycle_invocation invoke_lifecycle(engine_thread* thread, engine_thread::task work,
+    detail::engine_lane lane=detail::engine_lane::ordinary) {
+  using result=detail::engine_admission_result;
+  if (!thread || !work) return {};
+  if (thread->is_owner_thread()) { work(); return {true,result::accepted}; }
   auto completion = std::make_shared<std::promise<void>>();
   auto future = completion->get_future();
-  if (!thread->post([work = std::move(work), completion] {
-        try { work(); completion->set_value(); }
-        catch (...) { completion->set_exception(std::current_exception()); }
-      })) return false;
-  try { future.get(); return true; } catch (...) { return false; }
+  const auto admitted=detail::engine_admission::post(*thread,lane,[work = std::move(work), completion] {
+    try { work(); completion->set_value(); }
+    catch (...) { completion->set_exception(std::current_exception()); }
+  });
+  if (admitted != result::accepted) return {false,admitted};
+  try { future.get(); return {true,admitted}; } catch (...) { return {false,admitted}; }
 }
-
-host_result acquire_runtime(const host_config& config, engine_thread*& thread, void*& module) {
+host_result acquire_runtime(const host_config& config, engine_thread*& thread, void*& module,
+    diagnostics::mode metrics) {
   auto& runtime = process_runtime();
   std::lock_guard<std::mutex> lock(runtime.mutex);
   if (runtime.retired) return failure("E_RUNTIME_SHUTDOWN", "The process runtime has already shut down.");
@@ -504,7 +517,9 @@ host_result acquire_runtime(const host_config& config, engine_thread*& thread, v
   if (runtime.thread && runtime.binary != binary)
     return failure("E_RUNTIME_BINARY", "All windows must use the same process runtime binary.");
   if (!runtime.thread) {
-    auto candidate = std::make_unique<engine_thread>();
+    // The first real process runtime construction selects immutable mode.
+    // Later views neither replace nor enable an existing disabled engine.
+    auto candidate = std::make_unique<engine_thread>(metrics);
     host_result result = failure("E_DEPENDENCY_INIT", "Miniblink process initialization failed.");
     const bool started = candidate->start([&runtime, binary, config, &result] {
       runtime.module = LoadLibraryW(binary.c_str());
@@ -606,7 +621,7 @@ host_result shutdown_miniblink_runtime() {
       if (!invoke_lifecycle(runtime.thread.get(), [&runtime, &status] {
             status = runtime.cursor_api.endRealm(runtime.cursor_realm);
             if (status == WKE_CURSOR_BROKER_OK) runtime.cursor_realm = {};
-          }) || status != WKE_CURSOR_BROKER_OK)
+          },detail::engine_lane::cleanup) || status != WKE_CURSOR_BROKER_OK)
         return failure("E_CURSOR_CLOSE_PENDING", "Controlled native callbacks have not finished draining.");
     }
     runtime.thread->stop();
@@ -695,7 +710,46 @@ struct dynamic_miniblink_adapter::event_dispatch_lifetime {
   dynamic_miniblink_adapter* adapter{nullptr};
 };
 
-dynamic_miniblink_adapter::dynamic_miniblink_adapter() = default;
+engine_thread* detail::engine_admission::host_engine(dynamic_miniblink_adapter& adapter) noexcept {
+  // The immutable construction owner must be checked before plain lifecycle fields.
+  if (adapter.metrics_owner_thread_ != std::this_thread::get_id()) return nullptr;
+  if (!adapter.engine_thread_ || !adapter.webview_ || !adapter.owner_window_ || !adapter.cursor_broker_)
+    return nullptr;
+  return adapter.engine_thread_->state() == engine_thread_state::running ? adapter.engine_thread_ : nullptr;
+}
+
+dynamic_miniblink_adapter::dynamic_miniblink_adapter()
+    : dynamic_miniblink_adapter(diagnostics::mode::disabled) {}
+dynamic_miniblink_adapter::dynamic_miniblink_adapter(diagnostics::mode metrics) : metrics_mode_{metrics} {}
+diagnostics::status dynamic_miniblink_adapter::read_runtime_metrics(diagnostics::software_host_runtime& out) const noexcept {
+  out = {};
+  if (metrics_mode_ != diagnostics::mode::scalar) return diagnostics::status::disabled;
+  // Only the retained owner may read the mutable lifecycle pointers. No pump,
+  // Engine work, receipt callback or application function runs in this getter.
+  if (std::this_thread::get_id() != metrics_owner_thread_) {
+    out.requests.observation.state = out.bridge_worker_fifo.observation.state =
+        out.process_engine_fifo.observation.state = diagnostics::status::wrong_owner_thread;
+    return diagnostics::status::wrong_owner_thread;
+  }
+  try {
+    out.context_receipt_before = execution_context_receipt();
+    out.bridge_accepting = bridge_accepting_.load(std::memory_order_acquire);
+    const auto budget = bridge_budget_;
+    out.requests.observation.state = diagnostics::status::not_started;
+    out.bridge_worker_fifo.observation.state = diagnostics::status::not_started;
+    out.process_engine_fifo.observation.state = diagnostics::status::not_started;
+    if (budget) (void)budget->read_runtime_metrics(out.requests);
+    if (bridge_thread_) (void)bridge_thread_->read_runtime_metrics(out.bridge_worker_fifo);
+    if (engine_thread_) (void)engine_thread_->read_runtime_metrics(out.process_engine_fifo);
+    out.context_receipt_after = execution_context_receipt();
+    return diagnostics::detail::combine(out.requests.observation.state,
+        diagnostics::detail::combine(out.bridge_worker_fifo.observation.state, out.process_engine_fifo.observation.state));
+  } catch (...) {
+    out = {}; out.requests.observation.state = out.bridge_worker_fifo.observation.state =
+        out.process_engine_fifo.observation.state = diagnostics::status::unavailable;
+    return diagnostics::status::unavailable;
+  }
+}
 dynamic_miniblink_adapter::~dynamic_miniblink_adapter() {
   // Public lifecycle calls must finish before destroying an adapter. In
   // particular, destruction from its own active native modal frame is invalid.
@@ -757,7 +811,7 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
   cursor_close_pending_ = cursor_vendor_destroyed_ = false;
   cursor_transition_pending_ = false;
 
-  const auto acquired = acquire_runtime(config, engine_thread_, module_);
+  const auto acquired = acquire_runtime(config, engine_thread_, module_, metrics_mode_);
   if (!acquired.ok) {
     if (!destroy_input_window())
       return failure("E_INPUT_WINDOW_CLOSE_PENDING", "The failed mount still owns its input window; retry cleanup.");
@@ -781,8 +835,8 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
   }
   // Arm the worker before loading any page on the shared engine owner.
   bridge_generation_.store(1, std::memory_order_release);
-  bridge_budget_ = std::make_shared<detail::bridge_request_budget>();
-  bridge_thread_ = std::make_unique<engine_thread>();
+  bridge_budget_ = std::make_shared<detail::bridge_request_budget>(metrics_mode_);
+  bridge_thread_ = std::make_unique<engine_thread>(metrics_mode_);
   if (!bridge_thread_->start(
           [this] {
             bridge_com_initialized_ =
@@ -801,19 +855,21 @@ host_result dynamic_miniblink_adapter::mount(const host_config& config) {
 
   host_result startup = failure("E_DEPENDENCY_INIT", "Miniblink engine startup did not run.");
   const host_config engine_config = config;
-  const bool invoked = invoke_lifecycle(engine_thread_,
+  const auto invoked = invoke_lifecycle(engine_thread_,
       [this, engine_config, width, height, &startup] {
         startup = mount_on_engine(engine_config, width, height);
       });
+  if (!invoked) startup=engine_admission_failure(invoked.admission,"The Engine did not admit startup.");
   if (!invoked || !startup.ok) return failed_startup(std::move(startup));
   if (cursor_broker_) {
     const auto registered = wait_for_cursor_registration();
     if (!registered.ok) return failed_startup(registered);
     startup = failure("E_CURSOR_STARTUP_FINALIZE", "The controlled startup setup did not finish.");
-    const bool finalized = invoke_lifecycle(engine_thread_,
+    const auto finalized = invoke_lifecycle(engine_thread_,
         [this, engine_config, width, height, &startup] {
           startup = finish_mount_on_engine(engine_config, width, height);
         });
+    if (!finalized) startup=engine_admission_failure(finalized.admission,"The Engine did not admit startup finalization.");
     if (!finalized || !startup.ok) return failed_startup(std::move(startup));
   }
   if (startup_cancelled_.load(std::memory_order_acquire) || !startup_window_matches())
@@ -1139,8 +1195,8 @@ host_result dynamic_miniblink_adapter::wait_for_cursor_registration() {
       wkeCursorBrokerDrainReceipt drain{}; drain.structSize = sizeof(drain);
       unsigned status = WKE_CURSOR_BROKER_FAILED;
       // The shared engine is never parked waiting for this owner; captured locals remain held until return.
-      if (!invoke_lifecycle(engine_thread_, [api, token, &drain, &status] { status = api->inspectDrain(token, &drain); }))
-        return failure("E_ENGINE_THREAD", "The controlled registration query did not finish.");
+      const auto queried=invoke_lifecycle(engine_thread_, [api, token, &drain, &status] { status = api->inspectDrain(token, &drain); });
+      if (!queried) return engine_admission_failure(queried.admission,"The controlled registration query did not finish.");
       if (cancelled())
         return failure("E_CURSOR_STARTUP_CANCELLED", "Startup was cancelled during the registration query.");
       if (timed_out())
@@ -1208,8 +1264,10 @@ host_result dynamic_miniblink_adapter::unmount() {
   else (void)detail::context_lookup_revision<>::advance(native_context_lookup_revision);
   // Finish native callbacks that could already be inside admission before
   // another thread stops and destroys the worker they access.
-  if (engine_thread_ != nullptr && !invoke_lifecycle(engine_thread_, [] {}))
-    return failure("E_ENGINE_THREAD", "The engine could not stop admitting bridge requests.");
+  if (engine_thread_ != nullptr) {
+    const auto barrier=invoke_lifecycle(engine_thread_, [] {},detail::engine_lane::cleanup);
+    if (!barrier) return engine_admission_failure(barrier.admission,"The engine could not stop admitting bridge requests.",true);
+  }
 #ifdef SOUI_TEST_KIT
   // Join the controller worker before invalidating its engine/adapter lifetime.
   test_agent_.reset();
@@ -1236,8 +1294,8 @@ host_result dynamic_miniblink_adapter::unmount() {
     bridge_thread_.reset();
   }
   if (engine_thread_ != nullptr) {
-    if (!invoke_lifecycle(engine_thread_, [this] { unmount_on_engine(); }))
-      return failure("E_ENGINE_THREAD", "The engine could not complete WebView teardown.");
+    const auto teardown=invoke_lifecycle(engine_thread_, [this] { unmount_on_engine(); },detail::engine_lane::cleanup);
+    if (!teardown) return engine_admission_failure(teardown.admission,"The engine could not complete WebView teardown.",true);
     const auto cursor_closed = close_cursor_endpoint();
     if (!cursor_closed.ok) return cursor_closed;
     release_runtime();
@@ -1277,10 +1335,13 @@ host_result dynamic_miniblink_adapter::close_cursor_endpoint() {
     return failure("E_CURSOR_BROKER_ABI", "The controlled cursor owner is unavailable.");
   if (!cursor_vendor_destroyed_) {
     unsigned requested = WKE_CURSOR_BROKER_FAILED;
-    if (!invoke_lifecycle(engine_thread_, [this, api, token, &requested] {
-          if (webview_) process_runtime().views.erase(static_cast<wkeWebView>(webview_));
-          requested = api->requestClose(token);
-        }) || (requested != WKE_CURSOR_BROKER_OK && requested != WKE_CURSOR_BROKER_FAILED))
+    const auto request=invoke_lifecycle(engine_thread_, [this, api, token, &requested] {
+      if (webview_) process_runtime().views.erase(static_cast<wkeWebView>(webview_));
+      requested = api->requestClose(token);
+    },detail::engine_lane::cleanup);
+    if (!request) return failure(request.admission == detail::engine_admission_result::full ? "E_CURSOR_CLOSE_PENDING" : "E_CURSOR_CLOSE_FAILED",
+        "The controlled endpoint did not accept teardown.");
+    if (requested != WKE_CURSOR_BROKER_OK && requested != WKE_CURSOR_BROKER_FAILED)
       return failure("E_CURSOR_CLOSE_FAILED", "The controlled endpoint did not accept teardown.");
     cursor_close_pending_ = true;
     if (startup_dispatch_refused_)
@@ -1297,7 +1358,7 @@ host_result dynamic_miniblink_adapter::close_cursor_endpoint() {
       auto result = std::make_shared<close_result>();
       auto completion = std::make_shared<std::promise<void>>();
       auto future = completion->get_future();
-      if (!engine_thread_->post([this, api, token, result, completion] {
+      const auto drain_admission=detail::engine_admission::post(*engine_thread_,detail::engine_lane::cleanup,[this, api, token, result, completion] {
             try {
               wkeCursorBrokerDrainReceipt receipt{}; receipt.structSize = sizeof(receipt);
               result->status = api->inspectDrain(token, &receipt);
@@ -1318,7 +1379,9 @@ host_result dynamic_miniblink_adapter::close_cursor_endpoint() {
               }
               completion->set_value();
             } catch (...) { completion->set_exception(std::current_exception()); }
-          })) return failure("E_ENGINE_THREAD", "The controlled owner did not accept the drain query.");
+          });
+      if (drain_admission != detail::engine_admission_result::accepted)
+        return engine_admission_failure(drain_admission,"The controlled owner did not accept the drain query.",true);
       auto dispatch_child = [this] {
         MSG message{};
         for (unsigned n = 0; n < 64 && PeekMessageW(&message, static_cast<HWND>(webview_window_),
@@ -1440,7 +1503,7 @@ host_result dynamic_miniblink_adapter::reload() {
   benchmark_result_slot_.reset();
 #endif
   host_result result = failure("E_ENGINE_THREAD", "The reload did not reach the Miniblink owner thread.");
-  const bool invoked = invoke_lifecycle(engine_thread_, [this, reload_receipt, &result] {
+  const auto invoked = invoke_lifecycle(engine_thread_, [this, reload_receipt, &result] {
     const auto current = [this, reload_receipt] {
       return reload_receipt ? detail::main_context_gate<>::pending(cursor_context_receipt_, reload_receipt)
                             : execution_context_receipt() == 0;
@@ -1476,7 +1539,7 @@ host_result dynamic_miniblink_adapter::reload() {
     wkeReload(static_cast<wkeWebView>(webview_));
     result = success("WebView reload requested on the engine thread.");
   });
-  return invoked ? result : failure("E_ENGINE_THREAD", "The Miniblink owner thread did not accept reload.");
+  return invoked ? result : engine_admission_failure(invoked.admission,"The Miniblink owner thread did not accept reload.");
 #else
   return failure("E_UNSUPPORTED", "The SOUI/Miniblink adapter requires a Windows host.");
 #endif
@@ -1524,13 +1587,13 @@ host_result dynamic_miniblink_adapter::resize(int width, int height) {
   next_input_sequence_ = 0;
   wheel_smoothing_.reset();
   MoveWindow(static_cast<HWND>(webview_window_), 0, 0, width, height, TRUE);
-  if (!engine_thread_->post([this, width, height] {
+  const auto admitted=detail::engine_admission::post(*engine_thread_,detail::engine_lane::ordinary,[this, width, height] {
         if (cursor_broker_) (void)update_cursor_identity_on_engine();
         if (webview_ != nullptr && wkeResize != nullptr)
           wkeResize(static_cast<wkeWebView>(webview_), width, height);
-      })) {
-    return failure("E_ENGINE_THREAD", "The Miniblink owner thread rejected resize.");
-  }
+      });
+  if (admitted != detail::engine_admission_result::accepted)
+    return engine_admission_failure(admitted,"The Miniblink owner thread rejected resize.");
   return success("SOUI window resized; engine resize queued.");
 #else
   (void)width;
@@ -1545,12 +1608,12 @@ host_result dynamic_miniblink_adapter::focus() {
     return failure("E_NOT_STARTED", "The child WebView has not been created.");
   }
   SetFocus(static_cast<HWND>(webview_window_));
-  if (!engine_thread_->post([this] {
+  const auto admitted=detail::engine_admission::post(*engine_thread_,detail::engine_lane::ordinary,[this] {
         if (webview_ != nullptr && wkeSetFocus != nullptr)
           wkeSetFocus(static_cast<wkeWebView>(webview_));
-      })) {
-    return failure("E_ENGINE_THREAD", "The Miniblink owner thread rejected focus.");
-  }
+      });
+  if (admitted != detail::engine_admission_result::accepted)
+    return engine_admission_failure(admitted,"The Miniblink owner thread rejected focus.");
   return success("SOUI input window focused; engine focus queued.");
 #else
   return failure("E_UNSUPPORTED", "The SOUI/Miniblink adapter requires a Windows host.");
@@ -2817,56 +2880,72 @@ host_result dynamic_miniblink_adapter::try_enqueue_bridge_message(
   using request_lane = detail::bridge_request_budget::lane;
   const auto lane = method == "bridge.session.renew" ? request_lane::renewal :
       method == "task.unsubscribe" || method == "task.cancel" ? request_lane::control : request_lane::ordinary;
-  const auto lease = bridge_budget_->acquire(request_id, generation,
+  const auto budget = bridge_budget_; // Same lease owner retained through the actual queue.
+  const auto lease = budget->acquire(request_id, generation,
       lane, rejected);
   if (!lease) return rejected == detail::bridge_request_budget::rejection::duplicate
       ? failure("E_DUPLICATE_REQUEST", "This document already has an unfinished native request with this identity.")
       : failure("E_BUSY", "The native bridge request capacity is exhausted.");
   const auto deadline = std::chrono::steady_clock::now() + std::chrono::milliseconds(timeout);
-  if (!accepts_execution_context_receipt(context_receipt))
+  if (!accepts_execution_context_receipt(context_receipt)) {
+    budget->record_drop(detail::bridge_request_budget::drop::stale_context);
     return failure("E_CONTEXT_PENDING", "The native context changed before admission.");
-  bridge_diagnostic_trace(this, "queue.admitted", request_id, method);
-  const bool queued = bridge_thread_->post(
-      [this, request = std::move(request), request_id,
-       native_user_gesture, generation, context_receipt, deadline, lease] {
-        bridge_diagnostic_trace(this, "worker.begin", request_id);
-        if (generation != bridge_generation_.load(std::memory_order_acquire) ||
-            !accepts_execution_context_receipt(context_receipt)) {
-          bridge_diagnostic_trace(this, "worker.drop-generation", request_id);
-          return;
-        }
-        std::string response;
-        if (std::chrono::steady_clock::now() >= deadline) {
-          response = bridge_error(request_id, "E_TIMEOUT", "The request expired in the native queue before execution.");
-        } else try {
-          response = handle_message(request, native_user_gesture, context_receipt);
-          if (response.size() > max_bridge_message_bytes)
-            response = bridge_error(request_id, "E_LIMIT_MESSAGE_SIZE", "Native response exceeds 64 KiB.");
-        } catch (...) {
-          response = bridge_error(request_id, "E_NATIVE_EXCEPTION", "The native handler failed.");
-        }
-        bridge_diagnostic_trace(this, "worker.response", request_id,
-            "bytes=" + std::to_string(response.size()));
-        if (generation != bridge_generation_.load(std::memory_order_acquire)
-            || !accepts_execution_context_receipt(context_receipt) || engine_thread_ == nullptr) {
-          bridge_diagnostic_trace(this, "worker.drop-before-engine", request_id);
-          return;
-        }
-        const bool posted = engine_thread_->post(
-            [this, request_id, response = std::move(response), generation, context_receipt, lease] {
-              bridge_diagnostic_trace(this, "engine.resolve-begin", request_id);
-              // Completing a JS Promise may reenter admission before RunJS
-              // returns. Return its capacity before notifying that caller.
-              lease->release();
-              resolve_bridge_response(request_id, response, generation, context_receipt);
-              bridge_diagnostic_trace(this, "engine.resolve-end", request_id);
-            });
-        bridge_diagnostic_trace(this, posted ? "worker.engine-posted" : "worker.engine-post-failed",
-            request_id);
-      });
-  bridge_diagnostic_trace(this, queued ? "queue.posted" : "queue.post-failed", request_id);
-  return queued ? success("Native request admitted.")
-      : failure("E_BRIDGE_QUEUE", "The asynchronous native bridge queue is stopping.");
+  }
+  struct reply_owner final { detail::engine_reply_ticket ticket; std::string response; };
+  const auto reply=std::make_shared<reply_owner>();
+  // Prepare every closure before taking an Engine credit and before any business call.
+  engine_thread::task resolver=[this,request_id,generation,context_receipt,lease,reply] {
+    bridge_diagnostic_trace(this,"engine.resolve-begin",request_id);
+    lease->release(); // Preserve capacity-before-JS-reentrancy ordering.
+    resolve_bridge_response(request_id,reply->response,generation,context_receipt);
+    bridge_diagnostic_trace(this,"engine.resolve-end",request_id);
+  };
+  engine_thread::task worker=[this, request=std::move(request), request_id,
+      native_user_gesture,generation,context_receipt,deadline,lease,budget,reply,
+      resolver=std::move(resolver)]() mutable {
+    bridge_diagnostic_trace(this,"worker.begin",request_id);
+    if (generation != bridge_generation_.load(std::memory_order_acquire) ||
+        !accepts_execution_context_receipt(context_receipt)) {
+      budget->record_drop(detail::bridge_request_budget::drop::stale_context);
+      bridge_diagnostic_trace(this,"worker.drop-generation",request_id); return;
+    }
+    auto& response=reply->response;
+    if (std::chrono::steady_clock::now() >= deadline) {
+      budget->record_drop(detail::bridge_request_budget::drop::queue_expired);
+      response=bridge_error(request_id,"E_TIMEOUT","The request expired in the native queue before execution.");
+    } else try {
+      response=handle_message(request,native_user_gesture,context_receipt);
+      if (response.size() > max_bridge_message_bytes)
+        response=bridge_error(request_id,"E_LIMIT_MESSAGE_SIZE","Native response exceeds 64 KiB.");
+    } catch (...) { response=bridge_error(request_id,"E_NATIVE_EXCEPTION","The native handler failed."); }
+    bridge_diagnostic_trace(this,"worker.response",request_id,"bytes="+std::to_string(response.size()));
+    if (generation != bridge_generation_.load(std::memory_order_acquire) ||
+        !accepts_execution_context_receipt(context_receipt) || engine_thread_ == nullptr) {
+      budget->record_drop(detail::bridge_request_budget::drop::stale_context);
+      bridge_diagnostic_trace(this,"worker.drop-before-engine",request_id); return;
+    }
+    const auto posted=detail::engine_admission::submit_reply(*engine_thread_,reply->ticket,std::move(resolver));
+    if (posted != detail::engine_admission_result::accepted) budget->record_drop(detail::bridge_request_budget::drop::engine_post);
+    bridge_diagnostic_trace(this,posted == detail::engine_admission_result::accepted ? "worker.engine-posted" : "worker.engine-post-failed",request_id);
+  };
+  const auto engine_lane=lane == request_lane::renewal ? detail::engine_lane::renewal :
+      lane == request_lane::control ? detail::engine_lane::control : detail::engine_lane::ordinary;
+  const auto reserved=detail::engine_admission::reserve_reply(*engine_thread_,engine_lane,reply->ticket);
+  if (reserved != detail::engine_admission_result::accepted) {
+    budget->record_drop(detail::bridge_request_budget::drop::engine_post);
+    return engine_admission_failure(reserved,"The Engine did not admit reply capacity before execution.");
+  }
+  if (!accepts_execution_context_receipt(context_receipt)) {
+    budget->record_drop(detail::bridge_request_budget::drop::stale_context);
+    return failure("E_CONTEXT_PENDING","The native context changed before worker admission.");
+  }
+  bridge_diagnostic_trace(this,"queue.admitted",request_id,method);
+  const auto queued=detail::engine_admission::post(*bridge_thread_,engine_lane,std::move(worker));
+  if (queued != detail::engine_admission_result::accepted) budget->record_drop(detail::bridge_request_budget::drop::worker_post);
+  bridge_diagnostic_trace(this,queued == detail::engine_admission_result::accepted ? "queue.posted" : "queue.post-failed",request_id);
+  return queued == detail::engine_admission_result::accepted ? success("Native request admitted.") :
+      failure(queued == detail::engine_admission_result::full ? "E_BUSY" : "E_BRIDGE_QUEUE",
+          "The asynchronous native bridge queue did not admit the request.");
 }
 
 void dynamic_miniblink_adapter::resolve_bridge_response(
@@ -3088,7 +3167,7 @@ void dynamic_miniblink_adapter::dispatch_event(const std::string& event_json,
   if (!document_ready() || !accepts_execution_context_receipt(context_receipt) || engine_thread_ == nullptr) return;
   const auto lifetime = event_lifetime_;
   const auto generation = bridge_generation_.load(std::memory_order_acquire);
-  (void)engine_thread_->post([lifetime, generation, context_receipt, event_json] {
+  const auto posted=detail::engine_admission::post(*engine_thread_,detail::engine_lane::ordinary,[lifetime, generation, context_receipt, event_json] {
     dynamic_miniblink_adapter* adapter = nullptr;
     {
       std::lock_guard<std::mutex> lock(lifetime->mutex);
@@ -3100,6 +3179,8 @@ void dynamic_miniblink_adapter::dispatch_event(const std::string& event_json,
         adapter->accepts_execution_context_receipt(context_receipt))
       adapter->dispatch_event_now(event_json, context_receipt);
   });
+  if (posted != detail::engine_admission_result::accepted)
+    bridge_diagnostic_trace(this,"event.engine-post-failed");
 #else
   (void)event_json;
   (void)context_receipt;

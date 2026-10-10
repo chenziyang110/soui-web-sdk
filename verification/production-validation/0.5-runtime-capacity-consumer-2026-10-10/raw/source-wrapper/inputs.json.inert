@@ -1,0 +1,2342 @@
+{
+  "schema": "soui.capacity-installed-consumer-tail-inputs/v1",
+  "node": {
+    "path": "C:/Users/11034/AppData/Local/nvm/v24.14.0/node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "driver": {
+    "path": "F:/work/sm05-broker/out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/run-root.cjs",
+    "bytes": 4640,
+    "sha256": "139b305e97e075ab45793999785f05bccc0ec6e47b66498ac86054ee0bb1c350"
+  },
+  "fixedCompiler": {
+    "path": "F:/work/sm05-broker/out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/fixed-compiler.cmake",
+    "bytes": 1330,
+    "sha256": "011e4f138d6c25c10e6b2f24df0a212b59951886f586359255cffba59b13a738"
+  },
+  "consumerSources": [
+    {
+      "path": "F:/work/sm05-broker/tests/package-consumer/CMakeLists.txt",
+      "bytes": 478,
+      "sha256": "27b15e64b63d100f23a0308158cf2fd8259f7029320463671e73e8fc0ecb729f"
+    },
+    {
+      "path": "F:/work/sm05-broker/tests/package-consumer/main.cpp",
+      "bytes": 300,
+      "sha256": "ebaf7a7d2aa6367bc1fc37438b36f63a54b6959403516bfc92edd9c00f64d831"
+    }
+  ],
+  "records": [
+    {
+      "architecture": "x64",
+      "configuration": "Debug",
+      "base": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-x64",
+      "producer": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64",
+      "selectedArchive": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build/sdk/Debug/soui_sdk.lib",
+        "bytes": 93588432,
+        "sha256": "767894bacda0e802571515c111523da5233349d0e0285e44487a1a38bbc8aa74"
+      },
+      "prefix": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-x64/prefix",
+      "consumerBuild": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-x64/consumer-build",
+      "executable": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-x64/consumer-build/Debug/soui_consumer.exe",
+      "installMap": [
+        {
+          "relative": "include/soui/bridge_adapter.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/bridge_adapter.h",
+            "bytes": 1374,
+            "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+          }
+        },
+        {
+          "relative": "include/soui/diagnostics/runtime_metrics.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/diagnostics/runtime_metrics.h",
+            "bytes": 5539,
+            "sha256": "8f4aa2b9a393364d27fa00ac6b6a1dade2de398658cf2c4a1900d14c0afc4208"
+          }
+        },
+        {
+          "relative": "include/soui/host/async_result_slot.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/async_result_slot.h",
+            "bytes": 2015,
+            "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840"
+          }
+        },
+        {
+          "relative": "include/soui/host/engine_thread.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/engine_thread.h",
+            "bytes": 3222,
+            "sha256": "e52cee133cf9372329f8ceb0896b7eac860d9da9c9fa5ef984b87e39973a2c8e"
+          }
+        },
+        {
+          "relative": "include/soui/host/frame_pacer.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/frame_pacer.h",
+            "bytes": 7240,
+            "sha256": "49ddae57332a45e11586dd60ac074a717f57dbd2c64a3280248b82a054358342"
+          }
+        },
+        {
+          "relative": "include/soui/host/interaction_protocol.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/interaction_protocol.h",
+            "bytes": 3853,
+            "sha256": "83265088b52fc340e620141729b8f3bef2dc35d5cd22f6b40fdb38bcbff48bad"
+          }
+        },
+        {
+          "relative": "include/soui/host/runtime_profile.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/runtime_profile.h",
+            "bytes": 1433,
+            "sha256": "5d79c715900b24f7de3c44cba2e13ea415d2e2f96a929ad86667d633f6f4d051"
+          }
+        },
+        {
+          "relative": "include/soui/host/soui_miniblink_host.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/soui_miniblink_host.h",
+            "bytes": 11011,
+            "sha256": "183bee08b323ad47ee0ae2fa74b24b494a45f753d4afd19d350b6b4cd04fad67"
+          }
+        },
+        {
+          "relative": "include/soui/host/webview2_host.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/webview2_host.h",
+            "bytes": 4593,
+            "sha256": "87e40caab86b545a973aa8e4708d6f613c8593f218e7cf437aba8f9ce71d3cb9"
+          }
+        },
+        {
+          "relative": "include/soui/host/webview_host.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/webview_host.h",
+            "bytes": 5239,
+            "sha256": "f1bfc4af1fa30f90a7507bb5f61afe6d47a139caa49cf6be97c76d989413ec32"
+          }
+        },
+        {
+          "relative": "include/soui/host/window_chrome.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/window_chrome.h",
+            "bytes": 2359,
+            "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30"
+          }
+        },
+        {
+          "relative": "include/soui/host/window_chrome_script.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/window_chrome_script.h",
+            "bytes": 1612,
+            "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286"
+          }
+        },
+        {
+          "relative": "include/soui/json_bridge.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/json_bridge.h",
+            "bytes": 5192,
+            "sha256": "45d9e94dfe46143524509564ba58abdf71b8c7f9d47388e9fe92bf9cc9453c8e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/accessibility/windows_uia_provider.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/accessibility/windows_uia_provider.h",
+            "bytes": 4974,
+            "sha256": "cc4d8482922b5fb4c9f3b65c0d3775108ad3a830981e5a9f894d962c884870be"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/agent/windows_local_endpoint.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/agent/windows_local_endpoint.h",
+            "bytes": 3836,
+            "sha256": "e7e1dace8c710ee1f119d77b3c09e0480e6d8f732bf5f8450e30a7c9d4d8e35a"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/agent/windows_peer_identity.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/agent/windows_peer_identity.h",
+            "bytes": 3668,
+            "sha256": "c5578d685b3e40f3f65ab9ca483b9c89aac4c3bb4d359d227b0d5ee72fe51de1"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/bridge/action_contract.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/bridge/action_contract.h",
+            "bytes": 1167,
+            "sha256": "11a77c9a9aa90bd8d1839f6d08eae8a892c78b7df11bdc37455f623f92c97936"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/bridge/bridge_transport.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/bridge/bridge_transport.h",
+            "bytes": 6516,
+            "sha256": "4515de6093671fdfb23201d4b4a417f5ff558ac8982fb51e56f3da3cb950718e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/core/events/event_bus.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/core/events/event_bus.h",
+            "bytes": 1639,
+            "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/core/result/result.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/core/result/result.h",
+            "bytes": 626,
+            "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/core/task/task_store.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/core/task/task_store.h",
+            "bytes": 3507,
+            "sha256": "5c8481a5a05369ced39b405f4873a8dafeb732936a1c7b51a99cf930e7d33321"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/host/session/webview_session.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/host/session/webview_session.h",
+            "bytes": 1892,
+            "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/host/trusted_document.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/host/trusted_document.h",
+            "bytes": 2696,
+            "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/desktop_services.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/desktop_services.h",
+            "bytes": 2210,
+            "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/global_shortcut.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/global_shortcut.h",
+            "bytes": 3012,
+            "sha256": "800d40c2029697ca23f9148c75acbcc683b7893665c735f4ea0a9ce0810b1ae5"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/menu_service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/menu_service.h",
+            "bytes": 2461,
+            "sha256": "2e304780c55cbc92c49d14532ae04ad934b835f7ff3d3f43004c3faae1244605"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/tray_service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/tray_service.h",
+            "bytes": 2765,
+            "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/window_commands.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/window_commands.h",
+            "bytes": 2377,
+            "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+            "bytes": 668,
+            "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+            "bytes": 5545,
+            "sha256": "ab303cb608d400e36655136ac1ef491dfdf5fd0acaeb2aed1615243ad93d0e55"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/gui/gui_commands.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/gui/gui_commands.h",
+            "bytes": 1166,
+            "sha256": "f9ed1f922daa2521f1c6cc0093be77ed36cefbda5713243c7f8cc0febe453bb2"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/permissions/permission_store.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/permissions/permission_store.h",
+            "bytes": 9308,
+            "sha256": "d4e8014eac9394d2e09ee7eb40b6f5f57319eb89e13ce95cc3ec4a9bbfa3e4df"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/task/task_service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/task/task_service.h",
+            "bytes": 5774,
+            "sha256": "a7885f6b70a5d5d67ac06d287cc06e60c6074ea83620302f453b75752e630d0c"
+          }
+        },
+        {
+          "relative": "include/soui/version.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/version.h",
+            "bytes": 250,
+            "sha256": "505061598801d39ee8151581935990c0f8fed242dede3ee5a2b6f96f0a97f4a5"
+          }
+        },
+        {
+          "relative": "include/soui/action-json/json.hpp",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/include/json/json.hpp",
+            "bytes": 919975,
+            "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
+          }
+        },
+        {
+          "relative": "lib/Debug/soui_sdk.lib",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build/sdk/Debug/soui_sdk.lib",
+            "bytes": 93588432,
+            "sha256": "767894bacda0e802571515c111523da5233349d0e0285e44487a1a38bbc8aa74"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkConfig.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build/sdk/SouiSdkConfig.cmake",
+            "bytes": 1347,
+            "sha256": "6fdb1c91f0d81cf7ffd5bf1fbd57466b4ec2650e992bbb65b1c3a212fc006109"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkConfigVersion.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build/sdk/SouiSdkConfigVersion.cmake",
+            "bytes": 3332,
+            "sha256": "bb84b7731d8c14499e259d8c03b38c6d1516da202e085d15c6198085a6bdbaa7"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkTargets.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build/sdk/CMakeFiles/Export/78dcaf853af5a2790a559561a4f2dd1d/SouiSdkTargets.cmake",
+            "bytes": 4768,
+            "sha256": "64ea103a63ad4d247bd3b46e2db8437918604f0ed58023e633407b16e16ae694"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkTargets-debug.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build/sdk/CMakeFiles/Export/78dcaf853af5a2790a559561a4f2dd1d/SouiSdkTargets-debug.cmake",
+            "bytes": 841,
+            "sha256": "3cc57f7203dfc00fe2dcb931b40603c58a48fbb2123f053ec0e1252e0d6f3e9d"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/THIRD_PARTY_NOTICES.md",
+          "source": {
+            "path": "F:/work/sm05-broker/THIRD_PARTY_NOTICES.md",
+            "bytes": 2840,
+            "sha256": "659184254a71db3397d1f613ed16a66d7aa2bf9a3a364db9c3248a1c2eeffb99"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/element-plus-2.11.1-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/element-plus-2.11.1-LICENSE.txt",
+            "bytes": 1098,
+            "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/element-plus-2.14.5-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/element-plus-2.14.5-LICENSE.txt",
+            "bytes": 1077,
+            "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/element-plus-2.14.7-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/element-plus-2.14.7-LICENSE.txt",
+            "bytes": 1077,
+            "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/ijg-jpeg-9a-README.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/ijg-jpeg-9a-README.txt",
+            "bytes": 19110,
+            "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/libcurl-7.61.1-COPYING.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/libcurl-7.61.1-COPYING.txt",
+            "bytes": 1088,
+            "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/ots-5.0.0-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/ots-5.0.0-LICENSE.txt",
+            "bytes": 1563,
+            "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/tailwindcss-3.4.17-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/tailwindcss-3.4.17-LICENSE.txt",
+            "bytes": 1071,
+            "sha256": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt",
+            "bytes": 1488,
+            "sha256": "324083bf015092054be9d5851dafa1b79cbfab3331ff983476d502839515d8bb"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/webview2-sdk-1.0.4258.31-NOTICE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/webview2-sdk-1.0.4258.31-NOTICE.txt",
+            "bytes": 3894,
+            "sha256": "106423785c5b7eba0a8e61d1837f2132e9c828e20ad530f565d981c1df60dd90"
+          }
+        }
+      ],
+      "prepPlan": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Debug.json",
+        "bytes": 37067,
+        "sha256": "eba81b59ecbe349cf7358fc88b393d315877c77551cd8870058a14a2f036416d"
+      },
+      "runtimeTemplate": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Debug.json",
+        "bytes": 30841,
+        "sha256": "44469012b9ab1ab66aa7417436ea27d1e088b8e5614cd38c66a017e3a3ea5266"
+      }
+    },
+    {
+      "architecture": "Win32",
+      "configuration": "Debug",
+      "base": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-Win32",
+      "producer": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32",
+      "selectedArchive": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/build/sdk/Debug/soui_sdk.lib",
+        "bytes": 59046360,
+        "sha256": "1e10fc04903537cf1e3147fd1700107b0ce572d62b2f499439e4fd8ffbd19b50"
+      },
+      "prefix": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-Win32/prefix",
+      "consumerBuild": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-Win32/consumer-build",
+      "executable": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-Win32/consumer-build/Debug/soui_consumer.exe",
+      "installMap": [
+        {
+          "relative": "include/soui/bridge_adapter.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/bridge_adapter.h",
+            "bytes": 1374,
+            "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+          }
+        },
+        {
+          "relative": "include/soui/diagnostics/runtime_metrics.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/diagnostics/runtime_metrics.h",
+            "bytes": 5539,
+            "sha256": "8f4aa2b9a393364d27fa00ac6b6a1dade2de398658cf2c4a1900d14c0afc4208"
+          }
+        },
+        {
+          "relative": "include/soui/host/async_result_slot.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/async_result_slot.h",
+            "bytes": 2015,
+            "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840"
+          }
+        },
+        {
+          "relative": "include/soui/host/engine_thread.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/engine_thread.h",
+            "bytes": 3222,
+            "sha256": "e52cee133cf9372329f8ceb0896b7eac860d9da9c9fa5ef984b87e39973a2c8e"
+          }
+        },
+        {
+          "relative": "include/soui/host/frame_pacer.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/frame_pacer.h",
+            "bytes": 7240,
+            "sha256": "49ddae57332a45e11586dd60ac074a717f57dbd2c64a3280248b82a054358342"
+          }
+        },
+        {
+          "relative": "include/soui/host/interaction_protocol.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/interaction_protocol.h",
+            "bytes": 3853,
+            "sha256": "83265088b52fc340e620141729b8f3bef2dc35d5cd22f6b40fdb38bcbff48bad"
+          }
+        },
+        {
+          "relative": "include/soui/host/runtime_profile.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/runtime_profile.h",
+            "bytes": 1433,
+            "sha256": "5d79c715900b24f7de3c44cba2e13ea415d2e2f96a929ad86667d633f6f4d051"
+          }
+        },
+        {
+          "relative": "include/soui/host/soui_miniblink_host.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/soui_miniblink_host.h",
+            "bytes": 11011,
+            "sha256": "183bee08b323ad47ee0ae2fa74b24b494a45f753d4afd19d350b6b4cd04fad67"
+          }
+        },
+        {
+          "relative": "include/soui/host/webview2_host.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/webview2_host.h",
+            "bytes": 4593,
+            "sha256": "87e40caab86b545a973aa8e4708d6f613c8593f218e7cf437aba8f9ce71d3cb9"
+          }
+        },
+        {
+          "relative": "include/soui/host/webview_host.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/webview_host.h",
+            "bytes": 5239,
+            "sha256": "f1bfc4af1fa30f90a7507bb5f61afe6d47a139caa49cf6be97c76d989413ec32"
+          }
+        },
+        {
+          "relative": "include/soui/host/window_chrome.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/window_chrome.h",
+            "bytes": 2359,
+            "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30"
+          }
+        },
+        {
+          "relative": "include/soui/host/window_chrome_script.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/window_chrome_script.h",
+            "bytes": 1612,
+            "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286"
+          }
+        },
+        {
+          "relative": "include/soui/json_bridge.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/json_bridge.h",
+            "bytes": 5192,
+            "sha256": "45d9e94dfe46143524509564ba58abdf71b8c7f9d47388e9fe92bf9cc9453c8e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/accessibility/windows_uia_provider.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/accessibility/windows_uia_provider.h",
+            "bytes": 4974,
+            "sha256": "cc4d8482922b5fb4c9f3b65c0d3775108ad3a830981e5a9f894d962c884870be"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/agent/windows_local_endpoint.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/agent/windows_local_endpoint.h",
+            "bytes": 3836,
+            "sha256": "e7e1dace8c710ee1f119d77b3c09e0480e6d8f732bf5f8450e30a7c9d4d8e35a"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/agent/windows_peer_identity.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/agent/windows_peer_identity.h",
+            "bytes": 3668,
+            "sha256": "c5578d685b3e40f3f65ab9ca483b9c89aac4c3bb4d359d227b0d5ee72fe51de1"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/bridge/action_contract.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/bridge/action_contract.h",
+            "bytes": 1167,
+            "sha256": "11a77c9a9aa90bd8d1839f6d08eae8a892c78b7df11bdc37455f623f92c97936"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/bridge/bridge_transport.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/bridge/bridge_transport.h",
+            "bytes": 6516,
+            "sha256": "4515de6093671fdfb23201d4b4a417f5ff558ac8982fb51e56f3da3cb950718e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/core/events/event_bus.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/core/events/event_bus.h",
+            "bytes": 1639,
+            "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/core/result/result.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/core/result/result.h",
+            "bytes": 626,
+            "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/core/task/task_store.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/core/task/task_store.h",
+            "bytes": 3507,
+            "sha256": "5c8481a5a05369ced39b405f4873a8dafeb732936a1c7b51a99cf930e7d33321"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/host/session/webview_session.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/host/session/webview_session.h",
+            "bytes": 1892,
+            "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/host/trusted_document.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/host/trusted_document.h",
+            "bytes": 2696,
+            "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/desktop_services.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/desktop_services.h",
+            "bytes": 2210,
+            "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/global_shortcut.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/global_shortcut.h",
+            "bytes": 3012,
+            "sha256": "800d40c2029697ca23f9148c75acbcc683b7893665c735f4ea0a9ce0810b1ae5"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/menu_service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/menu_service.h",
+            "bytes": 2461,
+            "sha256": "2e304780c55cbc92c49d14532ae04ad934b835f7ff3d3f43004c3faae1244605"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/tray_service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/tray_service.h",
+            "bytes": 2765,
+            "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/window_commands.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/window_commands.h",
+            "bytes": 2377,
+            "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+            "bytes": 668,
+            "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+            "bytes": 5545,
+            "sha256": "ab303cb608d400e36655136ac1ef491dfdf5fd0acaeb2aed1615243ad93d0e55"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/gui/gui_commands.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/gui/gui_commands.h",
+            "bytes": 1166,
+            "sha256": "f9ed1f922daa2521f1c6cc0093be77ed36cefbda5713243c7f8cc0febe453bb2"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/permissions/permission_store.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/permissions/permission_store.h",
+            "bytes": 9308,
+            "sha256": "d4e8014eac9394d2e09ee7eb40b6f5f57319eb89e13ce95cc3ec4a9bbfa3e4df"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/task/task_service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/task/task_service.h",
+            "bytes": 5774,
+            "sha256": "a7885f6b70a5d5d67ac06d287cc06e60c6074ea83620302f453b75752e630d0c"
+          }
+        },
+        {
+          "relative": "include/soui/version.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/version.h",
+            "bytes": 250,
+            "sha256": "505061598801d39ee8151581935990c0f8fed242dede3ee5a2b6f96f0a97f4a5"
+          }
+        },
+        {
+          "relative": "include/soui/action-json/json.hpp",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/include/json/json.hpp",
+            "bytes": 919975,
+            "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
+          }
+        },
+        {
+          "relative": "lib/Debug/soui_sdk.lib",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/build/sdk/Debug/soui_sdk.lib",
+            "bytes": 59046360,
+            "sha256": "1e10fc04903537cf1e3147fd1700107b0ce572d62b2f499439e4fd8ffbd19b50"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkConfig.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/build/sdk/SouiSdkConfig.cmake",
+            "bytes": 1347,
+            "sha256": "6fdb1c91f0d81cf7ffd5bf1fbd57466b4ec2650e992bbb65b1c3a212fc006109"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkConfigVersion.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/build/sdk/SouiSdkConfigVersion.cmake",
+            "bytes": 3332,
+            "sha256": "3d9870ebde0262ca594b4d3d7cc4ac576a7998e26965e65cde11fedfb80331c1"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkTargets.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/build/sdk/CMakeFiles/Export/78dcaf853af5a2790a559561a4f2dd1d/SouiSdkTargets.cmake",
+            "bytes": 4768,
+            "sha256": "64ea103a63ad4d247bd3b46e2db8437918604f0ed58023e633407b16e16ae694"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkTargets-debug.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/build/sdk/CMakeFiles/Export/78dcaf853af5a2790a559561a4f2dd1d/SouiSdkTargets-debug.cmake",
+            "bytes": 841,
+            "sha256": "3cc57f7203dfc00fe2dcb931b40603c58a48fbb2123f053ec0e1252e0d6f3e9d"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/THIRD_PARTY_NOTICES.md",
+          "source": {
+            "path": "F:/work/sm05-broker/THIRD_PARTY_NOTICES.md",
+            "bytes": 2840,
+            "sha256": "659184254a71db3397d1f613ed16a66d7aa2bf9a3a364db9c3248a1c2eeffb99"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/element-plus-2.11.1-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/element-plus-2.11.1-LICENSE.txt",
+            "bytes": 1098,
+            "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/element-plus-2.14.5-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/element-plus-2.14.5-LICENSE.txt",
+            "bytes": 1077,
+            "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/element-plus-2.14.7-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/element-plus-2.14.7-LICENSE.txt",
+            "bytes": 1077,
+            "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/ijg-jpeg-9a-README.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/ijg-jpeg-9a-README.txt",
+            "bytes": 19110,
+            "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/libcurl-7.61.1-COPYING.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/libcurl-7.61.1-COPYING.txt",
+            "bytes": 1088,
+            "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/ots-5.0.0-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/ots-5.0.0-LICENSE.txt",
+            "bytes": 1563,
+            "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/tailwindcss-3.4.17-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/tailwindcss-3.4.17-LICENSE.txt",
+            "bytes": 1071,
+            "sha256": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt",
+            "bytes": 1488,
+            "sha256": "324083bf015092054be9d5851dafa1b79cbfab3331ff983476d502839515d8bb"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/webview2-sdk-1.0.4258.31-NOTICE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/webview2-sdk-1.0.4258.31-NOTICE.txt",
+            "bytes": 3894,
+            "sha256": "106423785c5b7eba0a8e61d1837f2132e9c828e20ad530f565d981c1df60dd90"
+          }
+        }
+      ],
+      "prepPlan": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Debug.json",
+        "bytes": 37153,
+        "sha256": "b05ce100f9545a4fecc5114cb170181c071a07d0cf72e395c1e4ad075b3a8e1e"
+      },
+      "runtimeTemplate": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Debug.json",
+        "bytes": 30903,
+        "sha256": "50cf04e9d8bf47afdc888e06717e410a1e6c11dfbebe75099b2dcc620ce8600b"
+      }
+    },
+    {
+      "architecture": "x64",
+      "configuration": "Release",
+      "base": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-release-x64",
+      "producer": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64",
+      "selectedArchive": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build/sdk/Release/soui_sdk.lib",
+        "bytes": 49987154,
+        "sha256": "c2f053b2dc231e58bd6729735ead0939384f49b3f238a5c0810a13014dfddbda"
+      },
+      "prefix": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-release-x64/prefix",
+      "consumerBuild": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-release-x64/consumer-build",
+      "executable": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-release-x64/consumer-build/Release/soui_consumer.exe",
+      "installMap": [
+        {
+          "relative": "include/soui/bridge_adapter.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/bridge_adapter.h",
+            "bytes": 1374,
+            "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+          }
+        },
+        {
+          "relative": "include/soui/diagnostics/runtime_metrics.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/diagnostics/runtime_metrics.h",
+            "bytes": 5539,
+            "sha256": "8f4aa2b9a393364d27fa00ac6b6a1dade2de398658cf2c4a1900d14c0afc4208"
+          }
+        },
+        {
+          "relative": "include/soui/host/async_result_slot.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/async_result_slot.h",
+            "bytes": 2015,
+            "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840"
+          }
+        },
+        {
+          "relative": "include/soui/host/engine_thread.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/engine_thread.h",
+            "bytes": 3222,
+            "sha256": "e52cee133cf9372329f8ceb0896b7eac860d9da9c9fa5ef984b87e39973a2c8e"
+          }
+        },
+        {
+          "relative": "include/soui/host/frame_pacer.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/frame_pacer.h",
+            "bytes": 7240,
+            "sha256": "49ddae57332a45e11586dd60ac074a717f57dbd2c64a3280248b82a054358342"
+          }
+        },
+        {
+          "relative": "include/soui/host/interaction_protocol.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/interaction_protocol.h",
+            "bytes": 3853,
+            "sha256": "83265088b52fc340e620141729b8f3bef2dc35d5cd22f6b40fdb38bcbff48bad"
+          }
+        },
+        {
+          "relative": "include/soui/host/runtime_profile.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/runtime_profile.h",
+            "bytes": 1433,
+            "sha256": "5d79c715900b24f7de3c44cba2e13ea415d2e2f96a929ad86667d633f6f4d051"
+          }
+        },
+        {
+          "relative": "include/soui/host/soui_miniblink_host.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/soui_miniblink_host.h",
+            "bytes": 11011,
+            "sha256": "183bee08b323ad47ee0ae2fa74b24b494a45f753d4afd19d350b6b4cd04fad67"
+          }
+        },
+        {
+          "relative": "include/soui/host/webview2_host.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/webview2_host.h",
+            "bytes": 4593,
+            "sha256": "87e40caab86b545a973aa8e4708d6f613c8593f218e7cf437aba8f9ce71d3cb9"
+          }
+        },
+        {
+          "relative": "include/soui/host/webview_host.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/webview_host.h",
+            "bytes": 5239,
+            "sha256": "f1bfc4af1fa30f90a7507bb5f61afe6d47a139caa49cf6be97c76d989413ec32"
+          }
+        },
+        {
+          "relative": "include/soui/host/window_chrome.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/window_chrome.h",
+            "bytes": 2359,
+            "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30"
+          }
+        },
+        {
+          "relative": "include/soui/host/window_chrome_script.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/window_chrome_script.h",
+            "bytes": 1612,
+            "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286"
+          }
+        },
+        {
+          "relative": "include/soui/json_bridge.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/json_bridge.h",
+            "bytes": 5192,
+            "sha256": "45d9e94dfe46143524509564ba58abdf71b8c7f9d47388e9fe92bf9cc9453c8e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/accessibility/windows_uia_provider.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/accessibility/windows_uia_provider.h",
+            "bytes": 4974,
+            "sha256": "cc4d8482922b5fb4c9f3b65c0d3775108ad3a830981e5a9f894d962c884870be"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/agent/windows_local_endpoint.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/agent/windows_local_endpoint.h",
+            "bytes": 3836,
+            "sha256": "e7e1dace8c710ee1f119d77b3c09e0480e6d8f732bf5f8450e30a7c9d4d8e35a"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/agent/windows_peer_identity.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/agent/windows_peer_identity.h",
+            "bytes": 3668,
+            "sha256": "c5578d685b3e40f3f65ab9ca483b9c89aac4c3bb4d359d227b0d5ee72fe51de1"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/bridge/action_contract.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/bridge/action_contract.h",
+            "bytes": 1167,
+            "sha256": "11a77c9a9aa90bd8d1839f6d08eae8a892c78b7df11bdc37455f623f92c97936"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/bridge/bridge_transport.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/bridge/bridge_transport.h",
+            "bytes": 6516,
+            "sha256": "4515de6093671fdfb23201d4b4a417f5ff558ac8982fb51e56f3da3cb950718e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/core/events/event_bus.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/core/events/event_bus.h",
+            "bytes": 1639,
+            "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/core/result/result.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/core/result/result.h",
+            "bytes": 626,
+            "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/core/task/task_store.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/core/task/task_store.h",
+            "bytes": 3507,
+            "sha256": "5c8481a5a05369ced39b405f4873a8dafeb732936a1c7b51a99cf930e7d33321"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/host/session/webview_session.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/host/session/webview_session.h",
+            "bytes": 1892,
+            "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/host/trusted_document.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/host/trusted_document.h",
+            "bytes": 2696,
+            "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/desktop_services.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/desktop_services.h",
+            "bytes": 2210,
+            "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/global_shortcut.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/global_shortcut.h",
+            "bytes": 3012,
+            "sha256": "800d40c2029697ca23f9148c75acbcc683b7893665c735f4ea0a9ce0810b1ae5"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/menu_service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/menu_service.h",
+            "bytes": 2461,
+            "sha256": "2e304780c55cbc92c49d14532ae04ad934b835f7ff3d3f43004c3faae1244605"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/tray_service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/tray_service.h",
+            "bytes": 2765,
+            "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/window_commands.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/window_commands.h",
+            "bytes": 2377,
+            "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+            "bytes": 668,
+            "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+            "bytes": 5545,
+            "sha256": "ab303cb608d400e36655136ac1ef491dfdf5fd0acaeb2aed1615243ad93d0e55"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/gui/gui_commands.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/gui/gui_commands.h",
+            "bytes": 1166,
+            "sha256": "f9ed1f922daa2521f1c6cc0093be77ed36cefbda5713243c7f8cc0febe453bb2"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/permissions/permission_store.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/permissions/permission_store.h",
+            "bytes": 9308,
+            "sha256": "d4e8014eac9394d2e09ee7eb40b6f5f57319eb89e13ce95cc3ec4a9bbfa3e4df"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/task/task_service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/task/task_service.h",
+            "bytes": 5774,
+            "sha256": "a7885f6b70a5d5d67ac06d287cc06e60c6074ea83620302f453b75752e630d0c"
+          }
+        },
+        {
+          "relative": "include/soui/version.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/version.h",
+            "bytes": 250,
+            "sha256": "505061598801d39ee8151581935990c0f8fed242dede3ee5a2b6f96f0a97f4a5"
+          }
+        },
+        {
+          "relative": "include/soui/action-json/json.hpp",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/include/json/json.hpp",
+            "bytes": 919975,
+            "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
+          }
+        },
+        {
+          "relative": "lib/Release/soui_sdk.lib",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build/sdk/Release/soui_sdk.lib",
+            "bytes": 49987154,
+            "sha256": "c2f053b2dc231e58bd6729735ead0939384f49b3f238a5c0810a13014dfddbda"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkConfig.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build/sdk/SouiSdkConfig.cmake",
+            "bytes": 1347,
+            "sha256": "6fdb1c91f0d81cf7ffd5bf1fbd57466b4ec2650e992bbb65b1c3a212fc006109"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkConfigVersion.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build/sdk/SouiSdkConfigVersion.cmake",
+            "bytes": 3332,
+            "sha256": "bb84b7731d8c14499e259d8c03b38c6d1516da202e085d15c6198085a6bdbaa7"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkTargets.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build/sdk/CMakeFiles/Export/78dcaf853af5a2790a559561a4f2dd1d/SouiSdkTargets.cmake",
+            "bytes": 4768,
+            "sha256": "64ea103a63ad4d247bd3b46e2db8437918604f0ed58023e633407b16e16ae694"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkTargets-release.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build/sdk/CMakeFiles/Export/78dcaf853af5a2790a559561a4f2dd1d/SouiSdkTargets-release.cmake",
+            "bytes": 855,
+            "sha256": "21b6165a848d9dd5ccf4e04d3a3370191a51b47ace24502ae9cb29d882664696"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/THIRD_PARTY_NOTICES.md",
+          "source": {
+            "path": "F:/work/sm05-broker/THIRD_PARTY_NOTICES.md",
+            "bytes": 2840,
+            "sha256": "659184254a71db3397d1f613ed16a66d7aa2bf9a3a364db9c3248a1c2eeffb99"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/element-plus-2.11.1-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/element-plus-2.11.1-LICENSE.txt",
+            "bytes": 1098,
+            "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/element-plus-2.14.5-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/element-plus-2.14.5-LICENSE.txt",
+            "bytes": 1077,
+            "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/element-plus-2.14.7-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/element-plus-2.14.7-LICENSE.txt",
+            "bytes": 1077,
+            "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/ijg-jpeg-9a-README.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/ijg-jpeg-9a-README.txt",
+            "bytes": 19110,
+            "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/libcurl-7.61.1-COPYING.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/libcurl-7.61.1-COPYING.txt",
+            "bytes": 1088,
+            "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/ots-5.0.0-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/ots-5.0.0-LICENSE.txt",
+            "bytes": 1563,
+            "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/tailwindcss-3.4.17-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/tailwindcss-3.4.17-LICENSE.txt",
+            "bytes": 1071,
+            "sha256": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt",
+            "bytes": 1488,
+            "sha256": "324083bf015092054be9d5851dafa1b79cbfab3331ff983476d502839515d8bb"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/webview2-sdk-1.0.4258.31-NOTICE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/webview2-sdk-1.0.4258.31-NOTICE.txt",
+            "bytes": 3894,
+            "sha256": "106423785c5b7eba0a8e61d1837f2132e9c828e20ad530f565d981c1df60dd90"
+          }
+        }
+      ],
+      "prepPlan": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Release.json",
+        "bytes": 37159,
+        "sha256": "cb57d59bb9a2b50dd7d197c8c6c738115e06cb9814702607535585f6cf359f2c"
+      },
+      "runtimeTemplate": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Release.json",
+        "bytes": 30911,
+        "sha256": "1f6919811bd6304d88c893c4d1772bc3c98648fa68fea215d9d62f6de3c4a8b0"
+      }
+    },
+    {
+      "architecture": "Win32",
+      "configuration": "Release",
+      "base": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-release-Win32",
+      "producer": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32",
+      "selectedArchive": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/build/sdk/Release/soui_sdk.lib",
+        "bytes": 34241718,
+        "sha256": "803fcdf8440e3f5c1fb8cb616ef8c26a29d2e5190e97eda7dd6408294c519ad7"
+      },
+      "prefix": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-release-Win32/prefix",
+      "consumerBuild": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-release-Win32/consumer-build",
+      "executable": "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-release-Win32/consumer-build/Release/soui_consumer.exe",
+      "installMap": [
+        {
+          "relative": "include/soui/bridge_adapter.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/bridge_adapter.h",
+            "bytes": 1374,
+            "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
+          }
+        },
+        {
+          "relative": "include/soui/diagnostics/runtime_metrics.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/diagnostics/runtime_metrics.h",
+            "bytes": 5539,
+            "sha256": "8f4aa2b9a393364d27fa00ac6b6a1dade2de398658cf2c4a1900d14c0afc4208"
+          }
+        },
+        {
+          "relative": "include/soui/host/async_result_slot.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/async_result_slot.h",
+            "bytes": 2015,
+            "sha256": "54fb76d1b8faae67cf2baf7b4c5fef1599a337b0bd60fb3cfb45c2f81ced6840"
+          }
+        },
+        {
+          "relative": "include/soui/host/engine_thread.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/engine_thread.h",
+            "bytes": 3222,
+            "sha256": "e52cee133cf9372329f8ceb0896b7eac860d9da9c9fa5ef984b87e39973a2c8e"
+          }
+        },
+        {
+          "relative": "include/soui/host/frame_pacer.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/frame_pacer.h",
+            "bytes": 7240,
+            "sha256": "49ddae57332a45e11586dd60ac074a717f57dbd2c64a3280248b82a054358342"
+          }
+        },
+        {
+          "relative": "include/soui/host/interaction_protocol.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/interaction_protocol.h",
+            "bytes": 3853,
+            "sha256": "83265088b52fc340e620141729b8f3bef2dc35d5cd22f6b40fdb38bcbff48bad"
+          }
+        },
+        {
+          "relative": "include/soui/host/runtime_profile.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/runtime_profile.h",
+            "bytes": 1433,
+            "sha256": "5d79c715900b24f7de3c44cba2e13ea415d2e2f96a929ad86667d633f6f4d051"
+          }
+        },
+        {
+          "relative": "include/soui/host/soui_miniblink_host.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/soui_miniblink_host.h",
+            "bytes": 11011,
+            "sha256": "183bee08b323ad47ee0ae2fa74b24b494a45f753d4afd19d350b6b4cd04fad67"
+          }
+        },
+        {
+          "relative": "include/soui/host/webview2_host.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/webview2_host.h",
+            "bytes": 4593,
+            "sha256": "87e40caab86b545a973aa8e4708d6f613c8593f218e7cf437aba8f9ce71d3cb9"
+          }
+        },
+        {
+          "relative": "include/soui/host/webview_host.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/webview_host.h",
+            "bytes": 5239,
+            "sha256": "f1bfc4af1fa30f90a7507bb5f61afe6d47a139caa49cf6be97c76d989413ec32"
+          }
+        },
+        {
+          "relative": "include/soui/host/window_chrome.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/window_chrome.h",
+            "bytes": 2359,
+            "sha256": "e33c8dc8bdd7a586d2e5c77151e81ddfc68e03edef1e25a5216b92a428a31a30"
+          }
+        },
+        {
+          "relative": "include/soui/host/window_chrome_script.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/host/window_chrome_script.h",
+            "bytes": 1612,
+            "sha256": "662123135b3a3b9705898674b014ba52a1a0a1cf3913a5d40c320004e925b286"
+          }
+        },
+        {
+          "relative": "include/soui/json_bridge.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/json_bridge.h",
+            "bytes": 5192,
+            "sha256": "45d9e94dfe46143524509564ba58abdf71b8c7f9d47388e9fe92bf9cc9453c8e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/accessibility/windows_uia_provider.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/accessibility/windows_uia_provider.h",
+            "bytes": 4974,
+            "sha256": "cc4d8482922b5fb4c9f3b65c0d3775108ad3a830981e5a9f894d962c884870be"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/agent/windows_local_endpoint.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/agent/windows_local_endpoint.h",
+            "bytes": 3836,
+            "sha256": "e7e1dace8c710ee1f119d77b3c09e0480e6d8f732bf5f8450e30a7c9d4d8e35a"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/agent/windows_peer_identity.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/agent/windows_peer_identity.h",
+            "bytes": 3668,
+            "sha256": "c5578d685b3e40f3f65ab9ca483b9c89aac4c3bb4d359d227b0d5ee72fe51de1"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/bridge/action_contract.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/bridge/action_contract.h",
+            "bytes": 1167,
+            "sha256": "11a77c9a9aa90bd8d1839f6d08eae8a892c78b7df11bdc37455f623f92c97936"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/bridge/bridge_transport.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/bridge/bridge_transport.h",
+            "bytes": 6516,
+            "sha256": "4515de6093671fdfb23201d4b4a417f5ff558ac8982fb51e56f3da3cb950718e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/core/events/event_bus.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/core/events/event_bus.h",
+            "bytes": 1639,
+            "sha256": "1a4b250c614404faa146c9f3f9076b8c72feca46b88f5805f93b98aeea90de62"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/core/result/result.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/core/result/result.h",
+            "bytes": 626,
+            "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/core/task/task_store.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/core/task/task_store.h",
+            "bytes": 3507,
+            "sha256": "5c8481a5a05369ced39b405f4873a8dafeb732936a1c7b51a99cf930e7d33321"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/host/session/webview_session.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/host/session/webview_session.h",
+            "bytes": 1892,
+            "sha256": "bb11c4e2f554f8336f9783dfdc76c552fc95c62fcc12b37b371d6e05db382f9a"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/host/trusted_document.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/host/trusted_document.h",
+            "bytes": 2696,
+            "sha256": "f3bc081ba57d35153627c913b5b3c753b7fc02b745366396953fe2ef40a7964e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/desktop_services.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/desktop_services.h",
+            "bytes": 2210,
+            "sha256": "669aad7eb79d7d8c39bc2263bae2b60b0e75014263e8f191fbc1e77d490560b2"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/global_shortcut.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/global_shortcut.h",
+            "bytes": 3012,
+            "sha256": "800d40c2029697ca23f9148c75acbcc683b7893665c735f4ea0a9ce0810b1ae5"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/menu_service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/menu_service.h",
+            "bytes": 2461,
+            "sha256": "2e304780c55cbc92c49d14532ae04ad934b835f7ff3d3f43004c3faae1244605"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/tray_service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/tray_service.h",
+            "bytes": 2765,
+            "sha256": "00686e87bd122d6b89ddf9b1627b3d94ad05efbfc3e8e461c8365bce6ebbb02e"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/desktop/window_commands.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/desktop/window_commands.h",
+            "bytes": 2377,
+            "sha256": "560151b5f9531b7929d8cdb38629d5d4b990a1ce60781e3c3b80041f35b37089"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/fileinsight-service/fileinsight-service.h",
+            "bytes": 668,
+            "sha256": "77fdc539ccb1f1158f3112ababff3c2e117f4fad9fc5127709fdfc03f2d8eeab"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/filesystem-readonly/directory_scanner.h",
+            "bytes": 5545,
+            "sha256": "ab303cb608d400e36655136ac1ef491dfdf5fd0acaeb2aed1615243ad93d0e55"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/gui/gui_commands.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/gui/gui_commands.h",
+            "bytes": 1166,
+            "sha256": "f9ed1f922daa2521f1c6cc0093be77ed36cefbda5713243c7f8cc0febe453bb2"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/permissions/permission_store.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/permissions/permission_store.h",
+            "bytes": 9308,
+            "sha256": "d4e8014eac9394d2e09ee7eb40b6f5f57319eb89e13ce95cc3ec4a9bbfa3e4df"
+          }
+        },
+        {
+          "relative": "include/soui/runtime/services/task/task_service.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/runtime/services/task/task_service.h",
+            "bytes": 5774,
+            "sha256": "a7885f6b70a5d5d67ac06d287cc06e60c6074ea83620302f453b75752e630d0c"
+          }
+        },
+        {
+          "relative": "include/soui/version.h",
+          "source": {
+            "path": "F:/work/sm05-broker/sdk/include/soui/version.h",
+            "bytes": 250,
+            "sha256": "505061598801d39ee8151581935990c0f8fed242dede3ee5a2b6f96f0a97f4a5"
+          }
+        },
+        {
+          "relative": "include/soui/action-json/json.hpp",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/include/json/json.hpp",
+            "bytes": 919975,
+            "sha256": "9bea4c8066ef4a1c206b2be5a36302f8926f7fdc6087af5d20b417d0cf103ea6"
+          }
+        },
+        {
+          "relative": "lib/Release/soui_sdk.lib",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/build/sdk/Release/soui_sdk.lib",
+            "bytes": 34241718,
+            "sha256": "803fcdf8440e3f5c1fb8cb616ef8c26a29d2e5190e97eda7dd6408294c519ad7"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkConfig.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/build/sdk/SouiSdkConfig.cmake",
+            "bytes": 1347,
+            "sha256": "6fdb1c91f0d81cf7ffd5bf1fbd57466b4ec2650e992bbb65b1c3a212fc006109"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkConfigVersion.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/build/sdk/SouiSdkConfigVersion.cmake",
+            "bytes": 3332,
+            "sha256": "3d9870ebde0262ca594b4d3d7cc4ac576a7998e26965e65cde11fedfb80331c1"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkTargets.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/build/sdk/CMakeFiles/Export/78dcaf853af5a2790a559561a4f2dd1d/SouiSdkTargets.cmake",
+            "bytes": 4768,
+            "sha256": "64ea103a63ad4d247bd3b46e2db8437918604f0ed58023e633407b16e16ae694"
+          }
+        },
+        {
+          "relative": "lib/cmake/SouiSdk/SouiSdkTargets-release.cmake",
+          "source": {
+            "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/build/sdk/CMakeFiles/Export/78dcaf853af5a2790a559561a4f2dd1d/SouiSdkTargets-release.cmake",
+            "bytes": 855,
+            "sha256": "21b6165a848d9dd5ccf4e04d3a3370191a51b47ace24502ae9cb29d882664696"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/THIRD_PARTY_NOTICES.md",
+          "source": {
+            "path": "F:/work/sm05-broker/THIRD_PARTY_NOTICES.md",
+            "bytes": 2840,
+            "sha256": "659184254a71db3397d1f613ed16a66d7aa2bf9a3a364db9c3248a1c2eeffb99"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/element-plus-2.11.1-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/element-plus-2.11.1-LICENSE.txt",
+            "bytes": 1098,
+            "sha256": "7d6560ca47099f18ae7dc4d2fcdb3e0dcc207430a442525177f8af6dc229d1cc"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/element-plus-2.14.5-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/element-plus-2.14.5-LICENSE.txt",
+            "bytes": 1077,
+            "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/element-plus-2.14.7-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/element-plus-2.14.7-LICENSE.txt",
+            "bytes": 1077,
+            "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/ijg-jpeg-9a-README.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/ijg-jpeg-9a-README.txt",
+            "bytes": 19110,
+            "sha256": "c791da525733040e622ed257c7b096b8f5191b332604ead0c6bc2b54cbd8e0d1"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/libcurl-7.61.1-COPYING.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/libcurl-7.61.1-COPYING.txt",
+            "bytes": 1088,
+            "sha256": "5f3849ec38ddb927e79f514bf948890c41b8d1407286a49609b8fb1585931095"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/ots-5.0.0-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/ots-5.0.0-LICENSE.txt",
+            "bytes": 1563,
+            "sha256": "984523ee987f4e8b72d61df37d8f1189a7077cd4b77e41a397e35593b297a29d"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/tailwindcss-3.4.17-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/tailwindcss-3.4.17-LICENSE.txt",
+            "bytes": 1071,
+            "sha256": "60e0b68c0f35c078eef3a5d29419d0b03ff84ec1df9c3f9d6e39a519a5ae7985"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt",
+            "bytes": 1488,
+            "sha256": "324083bf015092054be9d5851dafa1b79cbfab3331ff983476d502839515d8bb"
+          }
+        },
+        {
+          "relative": "share/SouiSdk/licenses/webview2-sdk-1.0.4258.31-NOTICE.txt",
+          "source": {
+            "path": "F:/work/sm05-broker/third_party/licenses/webview2-sdk-1.0.4258.31-NOTICE.txt",
+            "bytes": 3894,
+            "sha256": "106423785c5b7eba0a8e61d1837f2132e9c828e20ad530f565d981c1df60dd90"
+          }
+        }
+      ],
+      "prepPlan": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Release.json",
+        "bytes": 37245,
+        "sha256": "9439a1a45bdd3a49258ff05c8495c2d2d37543b83d1a2c00ed95a7b3846ff164"
+      },
+      "runtimeTemplate": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Release.json",
+        "bytes": 30973,
+        "sha256": "53b763fe95d4e4a1c0e3aa32c233679178b1ff02343696309fba6383945f48d9"
+      }
+    }
+  ],
+  "expectedInstallCount": 50,
+  "expectedHeaderCount": 34,
+  "actionJsonRelative": "include/soui/action-json/json.hpp",
+  "qualificationPassed": false,
+  "resourceQualified": false,
+  "osQualified": false,
+  "fullToolchainQualified": false,
+  "releaseReady": false,
+  "compilerDriver": {
+    "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/run-consumer.cjs",
+    "bytes": 10287,
+    "sha256": "3b9acf0bb11fcada430596feed33982c47dc364bc4bb89871b727aea5a977eb0"
+  },
+  "tailReader": {
+    "path": "F:/work/sm05-broker/tools/internal/owned-tail-evidence.cjs",
+    "bytes": 20024,
+    "sha256": "61bceb766ecdfae0552c26212b332c8d7dbd0c2f24833cf7d27d59932f2b23cd"
+  },
+  "historicalFailedInputs": [
+    {
+      "path": "F:/work/sm05-broker/out/capacity-installed-consumer-root-0f35213c-cfb7-416d-b6f1-0dfa654ed918/inputs.json",
+      "bytes": 76112,
+      "sha256": "7f7e10d7bfd04b6abe850a603d4a5c766191cc031313a1578916d1b8fbe41bef"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-installed-consumer-root-0f35213c-cfb7-416d-b6f1-0dfa654ed918/plan.Win32.Debug.json",
+      "bytes": 27436,
+      "sha256": "4a5bc59120b8d03d9c2f25de3bb23282f379e58d6ad327fcd0951fbf307bc701"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-installed-consumer-root-0f35213c-cfb7-416d-b6f1-0dfa654ed918/plan.Win32.Release.json",
+      "bytes": 27516,
+      "sha256": "2e61b63ed563dec9fbc518e97d75f0dd7c3d83ff3da3f3cd278b5e2e35f6008b"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-installed-consumer-root-0f35213c-cfb7-416d-b6f1-0dfa654ed918/plan.x64.Debug.json",
+      "bytes": 27362,
+      "sha256": "b4488603c2480f43111f40bb8b634063351c5eeee73be17f22243112bc36c3ac"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-installed-consumer-root-0f35213c-cfb7-416d-b6f1-0dfa654ed918/plan.x64.Release.json",
+      "bytes": 27442,
+      "sha256": "32d58553d6ee4a0a346527e27646cb6ca5a7c9444ca9b36acc6366502cee497f"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-installed-consumer-root-0f35213c-cfb7-416d-b6f1-0dfa654ed918/README.md",
+      "bytes": 2210,
+      "sha256": "d03d5d5aa5f53faaaf4b81e86185d2326b9299a791e64321d190bb8ba192afb1"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-installed-consumer-root-0f35213c-cfb7-416d-b6f1-0dfa654ed918/Run-Root.ps1",
+      "bytes": 16314,
+      "sha256": "7ff1595db5c0d19c77316840dc68af9385b5aa319aa00101ea04d0e4a8e785f0"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-installed-consumer-root-0f35213c-cfb7-416d-b6f1-0dfa654ed918/runtime-template.Win32.Debug.json",
+      "bytes": 25304,
+      "sha256": "5df552e75652f7c7421529d8e74e95fa664d5f863ec53f05c1e50d103e0f2612"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-installed-consumer-root-0f35213c-cfb7-416d-b6f1-0dfa654ed918/runtime-template.Win32.Release.json",
+      "bytes": 25374,
+      "sha256": "2c695696072a56bb62c17d5fcebf8cb7dbc002f3aebc8cb183b35ff537bebc4a"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-installed-consumer-root-0f35213c-cfb7-416d-b6f1-0dfa654ed918/runtime-template.x64.Debug.json",
+      "bytes": 25242,
+      "sha256": "5c8a36475b12b0ef7407dd7e4527399f3d702c3d216012a53a55bdb8e9ef30f2"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-installed-consumer-root-0f35213c-cfb7-416d-b6f1-0dfa654ed918/runtime-template.x64.Release.json",
+      "bytes": 25312,
+      "sha256": "c873fa633d7d5ec4a3ba24cf41f8c95d829d35c08a9a7593a1ca350345a3364e"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-installed-consumer-root-0f35213c-cfb7-416d-b6f1-0dfa654ed918/seal.json",
+      "bytes": 3893,
+      "sha256": "aec3a38985f79e648a8009c5c81429d9a9361271365795a612540f8903cae668"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/configure.finished.json",
+      "bytes": 3459,
+      "sha256": "39ed1c3743b0ac59501919a02a22d8a6a362e5f0ac9a89c9bad83deb86501fef"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/configure.owned.jsonl",
+      "bytes": 37379,
+      "sha256": "579a45f5891902b8a27a2c8e45a940741c4cdba432b292b992dae777bd980ff3"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/configure.owned.jsonl.context.json",
+      "bytes": 1597,
+      "sha256": "dbb9b93838b5a366b66636dc08d22de08322c8ad3b177a94b5ea4d6b660ac29b"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/configure.ready.json",
+      "bytes": 54,
+      "sha256": "3deb082f5c2c3639ccccbcc5b6e61ac253f1f65a9c52576375edeada8e40f6da"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/configure.stderr.raw",
+      "bytes": 116,
+      "sha256": "6b413994db538d19492dc1c8b42f9eac504bbe50b7b298f08398ecb0cf77b8d6"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/configure.stdout.raw",
+      "bytes": 520,
+      "sha256": "81db15cb10e4ca4190e8d1a3b14e16f0e61062465a92155d8df79d7d19d0605c"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/install.finished.json",
+      "bytes": 2363,
+      "sha256": "a8bbca2a9972347f28c1285825bcf9c91dcbe8d6e7f7f7e9db20e3d2d29adda5"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/install.owned.jsonl",
+      "bytes": 1091,
+      "sha256": "5208fb3905ed7789f168f1edb1e7d1c9c316f45f96c307e42ea9a6206df229b4"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/install.owned.jsonl.context.json",
+      "bytes": 568,
+      "sha256": "97f3b63e9e19872da276fda0d441263c4e611de83e6815be02feab8298517427"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/install.ready.json",
+      "bytes": 54,
+      "sha256": "45b4133836ba35867ab9f03dbf907c5c3af2130ad1dcd5c4153572f8030b17eb"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/install.stderr.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/install.stdout.raw",
+      "bytes": 8489,
+      "sha256": "767a1038d45c02428a3ce38ea6d69a29889396538fd83d5f7cad903fc9ce9466"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-x64/prep/summary.json",
+      "bytes": 6905,
+      "sha256": "abc55e4a303bc8dcce6ffb23523cc031c3b41f8b42fe617f0d8c4af38bc19b30"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/configure.finished.json",
+      "bytes": 3480,
+      "sha256": "4be5087a9d1481aaf820abe644e05f8dcb5811952598ac486401cb5e7adc34ba"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/configure.owned.jsonl",
+      "bytes": 35325,
+      "sha256": "8603629d4d796394f66ff8205644b036ecbdb487a689227a928bc9791bdb5003"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/configure.owned.jsonl.context.json",
+      "bytes": 1607,
+      "sha256": "b3ff0804474225cd46d4434194432c8a22e5c9bddf35a1456d11c196158d877e"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/configure.ready.json",
+      "bytes": 55,
+      "sha256": "9131e35cb95e9b5c0289ae60835c583fc2c601610faa308c5f67686289de369d"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/configure.stderr.raw",
+      "bytes": 116,
+      "sha256": "6b413994db538d19492dc1c8b42f9eac504bbe50b7b298f08398ecb0cf77b8d6"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/configure.stdout.raw",
+      "bytes": 521,
+      "sha256": "40ef206e32d57b1c0ac170c3ce1247d4eb618349148e7537946c9b4d818d08f9"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/install.finished.json",
+      "bytes": 2379,
+      "sha256": "5020e644fc0d3036096e29034a50f911476157f181cabcb0422f3d1363cf2965"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/install.owned.jsonl",
+      "bytes": 1097,
+      "sha256": "07bfc4edab25ba11d83fca10dd93aba3cfb070511dc2a2698c51247cf48511f0"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/install.owned.jsonl.context.json",
+      "bytes": 572,
+      "sha256": "0c129b410fc65b09f9b72aed54bcaf00534e9a5bed656893b97dcb64128e6b86"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/install.ready.json",
+      "bytes": 55,
+      "sha256": "00ebe81d0f4db65d11131e24526911780b5760fff922da3b2174acbbe754fcfe"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/install.stderr.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/install.stdout.raw",
+      "bytes": 8633,
+      "sha256": "66fe4fb21f8741fe890b2e058fc5b38c13aa064288b6064d796f6e6c048ae0bc"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-debug-Win32/prep/summary.json",
+      "bytes": 6944,
+      "sha256": "fa546c0bbc5e3210248e43d14919c2a51779bbefcab1f2710abe7c7e75c4e9ce"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/configure.finished.json",
+      "bytes": 3476,
+      "sha256": "ffcf42b652494a5c524bdbbcc7fb172de99d48135b8900f8f31bf4eaf70963ff"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/configure.owned.jsonl",
+      "bytes": 35727,
+      "sha256": "66a41752411e2d686e5fb9d985e2f644ac556ff6307207278a84147332bfc70a"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/configure.owned.jsonl.context.json",
+      "bytes": 1605,
+      "sha256": "5544d15455b5904abd9eda0605e124605ac186544344f583aa058b4080c02530"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/configure.ready.json",
+      "bytes": 54,
+      "sha256": "1778f0739236170c17242861853a67c83dbc7bd15d67447c931e3441dd3d3ac1"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/configure.stderr.raw",
+      "bytes": 116,
+      "sha256": "6b413994db538d19492dc1c8b42f9eac504bbe50b7b298f08398ecb0cf77b8d6"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/configure.stdout.raw",
+      "bytes": 521,
+      "sha256": "381eb658c9924b1c792ec1bec5b14a50999e3a0d9b57eb8722259080f2744e48"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/install.finished.json",
+      "bytes": 2379,
+      "sha256": "da98cdd3c4de79700e86de4b4bfb69f45c2a6c64b06f841e979be7bd5919b82a"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/install.owned.jsonl",
+      "bytes": 1091,
+      "sha256": "5516c5b3a2f31ca14950087c0c7ed238788d24c104afdf797bcb1d0c8b8d90c4"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/install.owned.jsonl.context.json",
+      "bytes": 574,
+      "sha256": "268c0e011d6c85e756506e47cf084b6643cd12ee679a43ffdbb03609627cd77c"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/install.ready.json",
+      "bytes": 54,
+      "sha256": "44bd206ad631f997dfb3a8db761b6b83fc4d80eaa34d05393511ae51079f4a74"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/install.stderr.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/install.stdout.raw",
+      "bytes": 8637,
+      "sha256": "2b80c1aa4a17358b5a039b5e1feb5f1c241f23b652b3c4199a2de0acdbadee20"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prep/summary.json",
+      "bytes": 6940,
+      "sha256": "0a5d78052348a68ce42d145671681e0a362f79930edacb6b738003ef380a974d"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/configure.finished.json",
+      "bytes": 3496,
+      "sha256": "98c7235f0dd6fba8bc44b25451ee86556d4b5f94e9c0753f0defbbedeb60c7b5"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/configure.owned.jsonl",
+      "bytes": 33990,
+      "sha256": "5aa50cec5f699a0452f62befe53097e07e500b5191a9eab1279cfea9a778c82d"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/configure.owned.jsonl.context.json",
+      "bytes": 1615,
+      "sha256": "12795c514e564192a5949d5589d7c7da468c96479515ce8421dffd1249db8f0d"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/configure.ready.json",
+      "bytes": 54,
+      "sha256": "c165cd4897ed46ada881c784038b11b57999c2208d3b9a3b24f92717a4bdf6e5"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/configure.stderr.raw",
+      "bytes": 116,
+      "sha256": "6b413994db538d19492dc1c8b42f9eac504bbe50b7b298f08398ecb0cf77b8d6"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/configure.stdout.raw",
+      "bytes": 523,
+      "sha256": "5fac1db1321cba22ceace9f2c9d76e734d36404c9a8624316f8ddbece2353e49"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/install.finished.json",
+      "bytes": 2394,
+      "sha256": "695a906bf119fe1bfa32ea46157b29ab0641142d73b7f8ea54a1cf83c018d2ae"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/install.owned.jsonl",
+      "bytes": 1312,
+      "sha256": "aace894bbac9fe6746e8e817545b91f8e96aa7aeeecd13066865ff8a12bdfc44"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/install.owned.jsonl.context.json",
+      "bytes": 578,
+      "sha256": "d01ede8820d4eae53f1302a30567c75d459c8df51a2b338a74bfdbe98fd0407d"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/install.ready.json",
+      "bytes": 55,
+      "sha256": "ccc04181cf988a2c57087e5a59641c932f4f678f14b0467163dee2d9ec3de743"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/install.stderr.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/install.stdout.raw",
+      "bytes": 8781,
+      "sha256": "624b768222d0b7c991e3c4532471379196a9591e17210e8d15160acb828ebc98"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capconsumer-0f35213c-release-Win32/prep/summary.json",
+      "bytes": 6977,
+      "sha256": "184ac78bc271e79b3fc31fe3d7610846a8ab9a00773b1a2f03988e4aff176758"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json",
+      "bytes": 22365,
+      "sha256": "af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/DELTA.json",
+      "bytes": 83611,
+      "sha256": "2fd7350e7c6f3b504100c20eed81f07e18688e26d69ac229be04109542ec6436"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/README.md",
+      "bytes": 3386,
+      "sha256": "1a4d3fa9147885984124c5a2a9049774ce9596b52e109d0c40b5f89854a96eaa"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/Run-Root.ps1",
+      "bytes": 19115,
+      "sha256": "1c7aaa35c80c91088707b1cb86441fffbfc9511eddeb568c67592403bf8b8d54"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/inputs.json",
+      "bytes": 91243,
+      "sha256": "a652e8a857b6fc222cb93f42379633626db17ffa1f9e34ed4f3423d413a2881b"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.Win32.Debug.json",
+      "bytes": 31544,
+      "sha256": "2e9ce70365d93f3269aa534509e5bb4fedaf80983e0471811335436826c09134"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.Win32.Release.json",
+      "bytes": 31636,
+      "sha256": "c3923d0a6ce8485d277e4929a4d14e3c9edf4cbb6911d85357ed4b14a49c2b88"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.x64.Debug.json",
+      "bytes": 31458,
+      "sha256": "aa0d57230cd9fa59fcc7431cc63be046d0563f72a115985f4340e54f5e916924"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.x64.Release.json",
+      "bytes": 31550,
+      "sha256": "a74839d6ce4cae47cc4fa9d68de2ff5d187e4986cbbcf8e9e3611ed286e12325"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/run-consumer.cjs",
+      "bytes": 10287,
+      "sha256": "3b9acf0bb11fcada430596feed33982c47dc364bc4bb89871b727aea5a977eb0"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.Win32.Debug.json",
+      "bytes": 25301,
+      "sha256": "7c172d55e843407d73ce189c99734f193fcd6323929d8b041a8ffdca28f151c9"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.Win32.Release.json",
+      "bytes": 25371,
+      "sha256": "3305e45e1fe93c2ea967546fcbfb45a355f48fcb570475aa911512e1ed6fbfee"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.x64.Debug.json",
+      "bytes": 25239,
+      "sha256": "7c602ac8d6c76a9917e3ed92d25e3a2300802b89230c4e61e91f5f4c3bce61cd"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.x64.Release.json",
+      "bytes": 25309,
+      "sha256": "6a202fa6adc03061ffc41360e86ec6c36265bcaf0274631add539e93b3da88f5"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/seal.json",
+      "bytes": 4673,
+      "sha256": "6c992d730a8307637c9f4e793166fb30a6e5326848b8c4f36a945382bdcb4e82"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-x64/prep/summary.json",
+      "bytes": 3348,
+      "sha256": "25b6e8e51c719070ba32c49d81d7169f2f796c3c5235ce8ee4599d5fe01d0c11"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-x64/prep/configure.stderr.raw",
+      "bytes": 16,
+      "sha256": "a4fe904b5d2d65e10c2f1956622b05b36db41da3b11853fc419d87976129a815"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-x64/prep/configure.owned.jsonl.context.json",
+      "bytes": 3812,
+      "sha256": "79e7c399a5112f4e1fe30707df7dc4c68e2cd8aaf43f0416a916b6fd3d32b5bb"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-x64/consumer-result.json",
+      "bytes": 320,
+      "sha256": "27d302d9c7b0b3eb9a901b95f731ce38b8b4fb7d0c9e0ac4966e6e81c9957fa3"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-Win32/prep/summary.json",
+      "bytes": 3365,
+      "sha256": "ed798bc6c26159c117ff3b7f11045dff1ef0d40ec77273ad74906bf070d950c8"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-Win32/prep/configure.stderr.raw",
+      "bytes": 16,
+      "sha256": "a4fe904b5d2d65e10c2f1956622b05b36db41da3b11853fc419d87976129a815"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-Win32/prep/configure.owned.jsonl.context.json",
+      "bytes": 3836,
+      "sha256": "4de62c91292209983f4da12484fc82689090b340fe7711eeb5b22c0335762cbd"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-Win32/consumer-result.json",
+      "bytes": 322,
+      "sha256": "8cd4f91759fb4d29807e775931f4b972dc855ad5e15ad3f0b0e3047384ac7aa5"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-x64/prep/summary.json",
+      "bytes": 3368,
+      "sha256": "93369c7780ec1bf8114b2af63f4bed5f394470c3358698ab2fa08b3481669363"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-x64/prep/configure.stderr.raw",
+      "bytes": 16,
+      "sha256": "a4fe904b5d2d65e10c2f1956622b05b36db41da3b11853fc419d87976129a815"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-x64/prep/configure.owned.jsonl.context.json",
+      "bytes": 3832,
+      "sha256": "30f7fa4cf6bb446653ae558ddb894d5ec92cd6cc88afb49f0dbc9c47b13f51e7"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-x64/consumer-result.json",
+      "bytes": 322,
+      "sha256": "0ac6ef96c687b6a4c9dee6d2629cf1935588a2becfaf32c9baca9ee58772fe1d"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-Win32/prep/summary.json",
+      "bytes": 3385,
+      "sha256": "be6587cbc24ea175b42711b1a87d5c9435049da10ed7e9ca7bf2f16a277e0895"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-Win32/prep/configure.stderr.raw",
+      "bytes": 16,
+      "sha256": "a4fe904b5d2d65e10c2f1956622b05b36db41da3b11853fc419d87976129a815"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-Win32/prep/configure.owned.jsonl.context.json",
+      "bytes": 3856,
+      "sha256": "18a469e6789199bd15d4ef7074ce511760d2ec62433c0c4bdaf6bfb230b6a67a"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-Win32/consumer-result.json",
+      "bytes": 324,
+      "sha256": "04dc05ffd48581bd363057137586145959aa1f17386c75acdbca95faed33f32a"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe",
+      "bytes": 150016,
+      "sha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/tail-x64/Release/OwnedProcessRunner.exe",
+      "bytes": 150016,
+      "sha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/report.json",
+      "bytes": 197716,
+      "sha256": "c177613749679f591ce0306b737110cacf57dbceb614c5433b65919a5d3b3260"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/benchmarks/protocol/owned-process-runner.cpp",
+      "bytes": 24220,
+      "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.cpp",
+      "bytes": 31483,
+      "sha256": "6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.h",
+      "bytes": 971,
+      "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt",
+      "bytes": 2578,
+      "sha256": "716c608fb38edac64d705e8f3e915fa8a865d36ecbdbed1d5572397b9a3a769b"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.command.1.tlog",
+      "bytes": 1582,
+      "sha256": "d83a88891d2114925eec1625aa26b5c217d6af4ef8edf83be9515395fc75754c"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.read.1.tlog",
+      "bytes": 88030,
+      "sha256": "dbc2f06961357fc8305e20886f7ea6ca1664d6672840af0161ff91ac79f56f07"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.command.1.tlog",
+      "bytes": 1640,
+      "sha256": "a57c2b9cbac12d88747ba0896dd17cf23922d02254937ddcd48903110dbfc718"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.read.1.tlog",
+      "bytes": 3648,
+      "sha256": "56aa37b84ebd2ed6fe98cfb66616c559dc2af252dcdd0bebef8ab3bbe9b6aa0a"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.write.1.tlog",
+      "bytes": 532,
+      "sha256": "ed035dbad781ef24938af76efaab2c526017cf14d31708fdced23332ddb6a381"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-process-runner.obj",
+      "bytes": 432108,
+      "sha256": "9a622d177ef889e20afadbd003f575c23322d1b4c8a4f39026005c3d55410bae"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-tail-evidence.obj",
+      "bytes": 623811,
+      "sha256": "87bf8403b0e3b6df9d87e6660436f2a220ae77d1c1f612feecb895d91dc74f71"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson",
+      "bytes": 1357799,
+      "sha256": "1388deb6671ee3404c558179ac4ce3e48fed660d910496b4a1b754d50dfacd6a"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson.context.json",
+      "bytes": 1970,
+      "sha256": "aa8a9b0a26d9802f733796095e35b7cabce42262f856e4f66552a4111081d64a"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/finished.json",
+      "bytes": 3029,
+      "sha256": "8951e9b3300ea32c4505b65a00420a4e086c98fe9bf062f2dcc8895e0aad64b2"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/policy.json",
+      "bytes": 2046,
+      "sha256": "7a324984f08a4b300bea1879d54014f68157d2b823a6d6975052196a450481fe"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson",
+      "bytes": 199903,
+      "sha256": "495bb08c4cfc91070893f60fd92deed89dfd536da519be04302caf4ce1f89e10"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson.context.json",
+      "bytes": 2002,
+      "sha256": "3dca72beb9e75837431d991183d6521b4d8202b17f6480ab1ee0ab3129994d81"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/finished.json",
+      "bytes": 3025,
+      "sha256": "8686db1b0142f9fe7ad70b4cbbf21849c8f0ff78c5643e0bd28cffbe75928e0f"
+    },
+    {
+      "path": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/policy.json",
+      "bytes": 2043,
+      "sha256": "3f18f22b12c6fe23838707faaa6c5a067cfc8d2e926cf81664f18b3616f72d1f"
+    }
+  ],
+  "formalCompilerTailAcceptance": false
+}
