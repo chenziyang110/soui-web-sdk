@@ -697,6 +697,8 @@ public:
         *m_count += 1;
     }
 
+    ~StartDraggingTask() { complete(); }
+
     static void WKE_CALL_TYPE runInUiThread(HWND hWnd, void* param)
     {
         StartDraggingTask* self = (StartDraggingTask*)param;
@@ -706,12 +708,21 @@ public:
     void runInUiThreadImpl()
     {
         m_op = m_dragHandle->startDraggingInUiThread(m_frame, m_data, m_mask, m_image, m_dragImageOffset);
-        *m_count -= 1;
+        complete();
     }
 
     blink::WebDragOperation getOp() const { return m_op; }
 
 private:
+    void complete() noexcept
+    {
+        if (!m_count)
+            return;
+        int* count = m_count;
+        m_count = nullptr;
+        *count -= 1;
+    }
+
     blink::WebLocalFrame* m_frame;
     const wkeWebDragData* m_data;
     blink::WebDragOperationsMask m_mask;
@@ -722,6 +733,23 @@ private:
 
     DragHandle* m_dragHandle;
     int* m_count;
+};
+
+class LegacyDragScope {
+public:
+    explicit LegacyDragScope(const std::function<void(void)>& leave) noexcept
+        : m_leave(leave)
+    {
+    }
+
+    ~LegacyDragScope() noexcept
+    {
+        CheckReEnter::incrementEnterCount();
+        m_leave();
+    }
+
+private:
+    const std::function<void(void)>& m_leave;
 };
 
 void DragHandle::startDragging(blink::WebLocalFrame* frame,
@@ -801,26 +829,30 @@ void DragHandle::startDragging(blink::WebLocalFrame* frame,
         return;
     }
 
+    // Allocate before admitting legacy drag bookkeeping.
+    std::unique_ptr<StartDraggingTask> task(new StartDraggingTask(this, &m_taskCount, frame, dragDate, mask, image, dragImageOffset));
     m_notifOnEnterDrag();
     CheckReEnter::decrementEnterCount();
+    {
+        LegacyDragScope dragScope(m_notifOnLeaveDrag);
+        if (wke::g_wkeUiThreadPostTaskCallback) {
+            // Keep the existing external callback handoff and wait protocol.
+            StartDraggingTask* postedTask = task.release();
+            wke::g_wkeUiThreadPostTaskCallback(m_viewWindow, StartDraggingTask::runInUiThread, postedTask);
 
-    StartDraggingTask* task = new StartDraggingTask(this, &m_taskCount, frame, dragDate, mask, image, dragImageOffset);
-    if (wke::g_wkeUiThreadPostTaskCallback) {
-        wke::g_wkeUiThreadPostTaskCallback(m_viewWindow, StartDraggingTask::runInUiThread, task);
-
-        MSG msg = { 0 };
-        while (0 != m_taskCount) {
-            if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-                ::TranslateMessage(&msg);
-                ::DispatchMessageW(&msg);
+            MSG msg = { 0 };
+            while (0 != m_taskCount) {
+                if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+                    ::TranslateMessage(&msg);
+                    ::DispatchMessageW(&msg);
+                }
+                ::Sleep(10);
             }
-            ::Sleep(10);
+            task.reset(postedTask);
+        } else {
+            StartDraggingTask::runInUiThread(m_viewWindow, task.get());
         }
-    } else {
-        StartDraggingTask::runInUiThread(m_viewWindow, (void*)task);
     }
-    CheckReEnter::incrementEnterCount();
-    m_notifOnLeaveDrag();
 
     POINT screenPoint = { 0 };
     ::GetCursorPos(&screenPoint);
@@ -830,8 +862,6 @@ void DragHandle::startDragging(blink::WebLocalFrame* frame,
 
     m_webViewImpl->dragSourceEndedAt(blink::WebPoint(clientPoint.x, clientPoint.y), blink::WebPoint(screenPoint.x, screenPoint.y), task->getOp());
     m_webViewImpl->dragSourceSystemDragEnded();
-
-    delete task;
 }
 
 void DragHandle::simulateDrag()

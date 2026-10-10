@@ -14,7 +14,7 @@ set(public_dragdata_source_pins
   "third_party/sources/miniblink/wke/wkeNetHook.cpp|23119|76d5494bdc914040bcd07b22a5e9cb0243786560aefd482c8403ee36f942c57c"
   "third_party/sources/miniblink/third_party/WebKit/public/platform/WebVector.h|5493|4330d9616d7401189b746fc4d26582aec87b588b1a6aff523964d69b791474a7"
   "third_party/sources/miniblink/third_party/WebKit/public/platform/WebDragData.h|4979|11ac2e2b6d12c05df50b896ca11cebc46afb89b19cbf7f4f091e6f1e490365ad"
-  "third_party/sources/miniblink/content/ui/DragHandle.cpp|51884|663c58d9e6c5666ccbc77026aa87d500e3d4c3f97b83f5c782707ae0f86f51db"
+  "third_party/sources/miniblink/content/ui/DragHandle.cpp|52686|083f78bf2a5921ae2ce8fbb4b736a58dea0e8f536f7c8afb965ca4128942149e"
   "third_party/sources/miniblink/content/browser/CheckReEnter.cpp|761|fde567d3c8476902f681190b0338d8ba387e5f63f0f16bf0f9469276d8455f05"
 )
 # source|source-byte-offset|fixture|fixture-byte-offset|exact-byte-length
@@ -25,7 +25,7 @@ set(public_dragdata_ranges
   "third_party/sources/miniblink/third_party/WebKit/public/platform/WebDragData.h|1927|fixture.cpp|9535|1448"
   "third_party/sources/miniblink/third_party/WebKit/public/platform/WebDragData.h|3980|fixture.cpp|11094|74"
   "third_party/sources/miniblink/content/ui/DragHandle.cpp|9398|fixture.cpp|12009|2470"
-  "third_party/sources/miniblink/content/ui/DragHandle.cpp|29947|fixture.cpp|15416|344"
+  "third_party/sources/miniblink/content/ui/DragHandle.cpp|30464|fixture.cpp|15416|344"
   "third_party/sources/miniblink/content/browser/CheckReEnter.cpp|550|fixture.cpp|16289|199"
   "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|56939|fixture.cpp|17426|173"
   "third_party/sources/miniblink/content/browser/WebPageImpl.cpp|57352|fixture.cpp|17738|5656"
