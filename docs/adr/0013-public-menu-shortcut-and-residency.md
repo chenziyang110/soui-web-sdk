@@ -48,3 +48,40 @@ preview.9 已增加托盘，但独立消费者仍自己操作 HMENU，SDK 没有
 真实菜单选择/取消、快捷键冲突与实际按键、托盘恢复、三窗口互不干扰、任务中关窗、空窗驻留和明确退出需单独串行测试；Win7 SP1 x86 及资源/长期门槛分别保留原始结果。模拟成功、编译或短测不能关闭完整 V04。其他 QEMU 仍运行时不启动桌面负载。
 
 依据：[RegisterHotKey](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-registerhotkey)、[UnregisterHotKey](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-unregisterhotkey)、[TrackPopupMenuEx](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-trackpopupmenuex)、[DestroyMenu](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-destroymenu)。
+
+## 0.5 驻留退出的本地总期限（已采用，真实 GUI 验证待完成）
+
+旧控制器在 Host 返回可重试关闭状态时不断重新设置 50ms timer；消息循环提前
+结束后的 GetMessage 也没有总期限。显式退出、smoke 超时或启动异常因此可能
+永久保留所有者而不返回。本修复只处理这个 Workbench 私有退出路径。
+
+首次实际退出请求开始固定 10,000ms 本地关闭预算。启动异常、外部 WM_QUIT
+后的补充清理以及析构都使用同一首次起点；后续退出请求、timer、消息或
+destroy 重试不能更新它。这是采用的应用政策，依据是保留 owner 的
+可重试关闭契约及现有有限清理方式；不是 SDK 的响应时间或目标系统保证。
+原 ready 45s、resident smoke 180s、外部 Owned 与默认非驻留行为不变。
+
+仅精确 E_BUSY / E_CURSOR_CLOSE_PENDING 允许重试。原非零退出码和原 Host
+结果日志保持，未知 Host 错误先记录，再调用既有 cleanup_fail_stop。
+到期同样记录实际 elapsed/budget 后 fail-stop；不会设置 shutdown_complete，
+不会释放仍借用的 slot、HWND、Host 或 Bridge，也不会强制 Runtime 卸载。
+
+返回前清理泵以最多 50ms 且不超过剩余期限的
+MsgWaitForMultipleObjectsEx + PeekMessage(PM_REMOVE) 等待，继续原 SOUI OnMsg。
+WM_QUIT 仍只是退出请求；实际 Host / HWND 清理成功才允许释放。每次等待、
+分派及 native 调用返回后的检查共用期限。同步 native/消息调用仍可能阻塞；
+本地期限是 cooperative 检查，外部 Owned 期限负责该类失败，不作硬抢占声明。
+服务 cleanup 原有分类及结果处理保持不变，本切片没有新增服务清理资格。
+
+纯逻辑验证直接编译生产使用的无平台调用 deadline / Host 分类 helper，覆盖
+首次 tick=0、重复退出不续期、边界、最后 1ms、unsigned tick 跨回绕、
+时钟倒退 fail-closed、精确 pending 与未知/嵌入 NUL 错误等负面情况。
+x64 与 Win32 各九个纯 C++ 用例和对应 CTest 已实际通过，并完成独立复核；
+两次预期 CLI 拒绝保留原 generic false 和监督器清理事实。
+这些测试不能证明真实 resident/Host/菜单或线程已闭合。
+实际关闭、smoke timeout 与 fail-stop 原生特例仍由 Root 在 Owned 下独立运行；
+更广生命周期、系统、长稳、资源和发布资格保持未关闭。
+
+依据：
+[MsgWaitForMultipleObjectsEx](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-msgwaitformultipleobjectsex)、
+[PeekMessageW](https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagew)。

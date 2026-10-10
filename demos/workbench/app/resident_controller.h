@@ -1,6 +1,7 @@
 #pragma once
 
 #include <exception>
+#include "resident_shutdown_policy.h"
 
 // Private Workbench implementation, included after demo_soui_window in main.cpp.
 // All state belongs to the application's existing UI thread.
@@ -154,18 +155,18 @@ class resident_controller final {
       if (!shutdown_complete_) {
         fail(1);
         emit("loop.unexpected-exit");
-        exiting_ = true;
+        begin_shutdown();
         shutdown();
       }
     } catch (const std::exception& error) {
       fail(1);
       emit("resident.error", {{"message", error.what()}, {"win32Error", GetLastError()}});
-      exiting_ = true;
+      begin_shutdown();
       shutdown();
     } catch (...) {
       fail(1);
       emit("resident.error", {{"message", "Unknown resident exception"}});
-      exiting_ = true;
+      begin_shutdown();
       shutdown();
     }
     finish_shutdown_before_return();
@@ -190,20 +191,49 @@ class resident_controller final {
     catch (...) { context_.log_failed = true; }
     std::terminate();
   }
+  void begin_shutdown() noexcept {
+    exiting_ = true;
+    if (!shutdown_policy_.started()) {
+      shutdown_policy_.begin(GetTickCount64());
+      emit("exit.cleanup-deadline", {{"budgetMs", resident_shutdown_policy::budget_ms}});
+    }
+  }
+  void require_shutdown_budget() noexcept {
+    if (!exiting_ || shutdown_complete_) return;
+    if (!shutdown_policy_.started())
+      cleanup_fail_stop("Exit has no total shutdown deadline");
+    const auto now = GetTickCount64();
+    if (shutdown_policy_.expired(now)) {
+      emit("exit.cleanup-timeout", {{"budgetMs", resident_shutdown_policy::budget_ms},
+          {"elapsedMs", shutdown_policy_.elapsed(now)}});
+      cleanup_fail_stop("The total resident shutdown deadline expired with owners retained");
+    }
+  }
   void finish_shutdown_before_return() noexcept {
     // A startup exception or an external WM_QUIT can end the normal SOUI
     // loop while an endpoint still owns callbacks. Keep every member alive
     // and continue the same thread's SOUI filtering/native message dispatch.
     loop_started_ = false;
-    exiting_ = true;
+    begin_shutdown();
     shutdown_posted_ = false;
     shutdown();
     loop_started_ = !shutdown_complete_;
     while (!shutdown_complete_) {
+      require_shutdown_budget();
+      const auto waited = MsgWaitForMultipleObjectsEx(0, nullptr,
+          static_cast<DWORD>(shutdown_policy_.wait_ms(GetTickCount64())),
+          QS_ALLINPUT, MWMO_INPUTAVAILABLE);
+      require_shutdown_budget();
+      if (waited == WAIT_FAILED) cleanup_fail_stop("The cleanup message pump failed");
+      if (waited == WAIT_TIMEOUT) { shutdown(); continue; }
+      if (waited != WAIT_OBJECT_0) cleanup_fail_stop("The cleanup wait returned an unexpected status");
       MSG message{};
-      const auto received = GetMessageW(&message, nullptr, 0, 0);
-      if (received == -1) cleanup_fail_stop("The cleanup message pump failed");
-      if (received == 0) {
+      const bool received = PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE) != FALSE;
+      // PeekMessage can dispatch sent messages before returning.
+      require_shutdown_budget();
+      if (shutdown_complete_) break;
+      if (!received) { shutdown(); continue; }
+      if (message.message == WM_QUIT) {
         fail(1);
         emit("exit.cleanup-quit-deferred");
         // WM_QUIT is an exit request, never a successful drain receipt.
@@ -310,6 +340,7 @@ class resident_controller final {
   }
   void restore_all() { for (unsigned index = 0; index < slots_.size() && !exiting_; ++index) open_slot(index); }
   void close_slot(unsigned index, std::uint32_t generation) {
+    require_shutdown_budget();
     if (index >= slots_.size() || !slots_[index] || slots_[index]->generation != generation) {
       emit("window.close-stale", {{"slot", index + 1}, {"generation", generation}});
       return;
@@ -327,10 +358,12 @@ class resident_controller final {
     slot.window->stop_for_resident_close();
     const auto closed = slot.host->destroy();
     host_result("host.destroyed", index, closed);
+    require_shutdown_budget();
     if (!closed.ok) {
       deferred_closes_[index] = generation;
       emit("window.close-pending", {{"slot", index + 1}, {"generation", generation}, {"code", closed.code}});
-      if (closed.code != "E_CURSOR_CLOSE_PENDING" && closed.code != "E_BUSY") fail(1);
+      if (resident_classify_host_close(closed.ok, closed.code) == resident_host_close::fail_stop)
+        cleanup_fail_stop("Host destruction returned a non-retryable error with its owner retained");
       return;
     }
     const bool destroyed = !slot.hwnd || !IsWindow(slot.hwnd) || slot.window->DestroyWindow() != FALSE;
@@ -341,6 +374,7 @@ class resident_controller final {
       if (!in_shutdown_) request_exit("window-destroy-failed", 1);
       return;
     }
+    require_shutdown_budget();
     slot.hwnd = nullptr;
     slot.window.reset();
     slot.host.reset();
@@ -368,6 +402,7 @@ class resident_controller final {
       throw std::runtime_error("Cannot request the resident window close");
   }
   void on_timer() {
+    require_shutdown_budget();
     if (context_.log_failed) request_exit("evidence-write-failed", 1);
     if (settings_.smoke && GetTickCount64() - context_.started > smoke_timeout)
       request_exit("resident-smoke-timeout", 3);
@@ -459,27 +494,33 @@ class resident_controller final {
   void request_exit(const char* reason, int code) {
     if (settings_.smoke && smoke_phase_ != 6 && code == 0) code = 3;
     fail(code);
-    if (!exiting_) { exiting_ = true; emit("exit.requested", {{"reason", reason}, {"exitCode", exit_code_},
+    if (!exiting_) { begin_shutdown(); emit("exit.requested", {{"reason", reason}, {"exitCode", exit_code_},
         {"smokeIncomplete", settings_.smoke && smoke_phase_ != 6}}); }
+    require_shutdown_budget();
     if (menu_active_ && menu_) {
       const auto cancelled = menu_->cancel(); desktop_result("menu.cancel", cancelled);
     }
     schedule_shutdown();
   }
   void schedule_shutdown() noexcept {
+    require_shutdown_budget();
     if (!controller_ || in_shutdown_ || shutdown_complete_ || shutdown_posted_ || operation_depth_ ||
         menu_active_ || business_dispatch_active()) return;
     shutdown_posted_ = PostMessageW(controller_, resident_exit_message, 0, 1) != FALSE;
     if (!shutdown_posted_) { fail(1); PostQuitMessage(exit_code_); }
   }
   void shutdown() noexcept {
-    if (shutdown_complete_ || in_shutdown_ || operation_depth_ || menu_active_ || business_dispatch_active()) return;
-    in_shutdown_ = true; exiting_ = true;
+    if (shutdown_complete_) return;
+    begin_shutdown();
+    require_shutdown_budget();
+    if (in_shutdown_ || operation_depth_ || menu_active_ || business_dispatch_active()) return;
+    in_shutdown_ = true;
     if (controller_) KillTimer(controller_, timer_id);
     emit("exit.cleanup-start");
     try {
       if (shortcut_) {
         for (unsigned attempt = 1; attempt <= 3; ++attempt) {
+          require_shutdown_budget();
           operation_scope operation(*this);
           const auto result = shortcut_->unregister_shortcut();
           shortcut_result("shortcut.unregister", result, {{"attempt", attempt}});
@@ -488,6 +529,7 @@ class resident_controller final {
       }
       if (menu_) {
         for (unsigned attempt = 1; attempt <= 3; ++attempt) {
+          require_shutdown_budget();
           operation_scope operation(*this);
           const auto result = menu_->cleanup(); desktop_result("menu.cleanup", result, {{"attempt", attempt}});
           if (result.ok() && !menu_->cleanup_pending()) break;
@@ -495,6 +537,7 @@ class resident_controller final {
       }
       if (tray_) {
         for (unsigned attempt = 1; attempt <= 3; ++attempt) {
+          require_shutdown_budget();
           operation_scope operation(*this);
           const auto result = tray_->remove(); desktop_result("tray.remove", result, {{"attempt", attempt}});
           if (result.ok() && !tray_->installed() && !tray_->desired() && !tray_->cleanup_pending()) break;
@@ -506,11 +549,13 @@ class resident_controller final {
     } catch (const std::exception& error) {
       fail(1); emit("exit.cleanup-error", {{"message", error.what()}});
     } catch (...) { fail(1); emit("exit.cleanup-error", {{"message", "Unknown cleanup exception"}}); }
+    require_shutdown_budget();
     if (owned_slot_count() != 0) {
       // Preserve each actual HWND and its Host until native borrowers and
       // callbacks leave. This controller remains available for bounded retries.
       in_shutdown_ = false;
-      if (!controller_ || !IsWindow(controller_) || !SetTimer(controller_, timer_id, 50, nullptr))
+      if (!controller_ || !IsWindow(controller_) || !SetTimer(controller_, timer_id,
+          static_cast<UINT>(shutdown_policy_.wait_ms(GetTickCount64())), nullptr))
         cleanup_fail_stop("Pending Host cleanup has no live controller retry timer");
       emit("exit.cleanup-pending", {{"liveWindows", live_count()}, {"ownedSlots", owned_slot_count()}});
       return;
@@ -520,6 +565,7 @@ class resident_controller final {
     const auto runtime = soui::sdk::shutdown_miniblink_runtime();
     emit("runtime.shutdown", {{"ok", runtime.ok}, {"code", runtime.code}, {"message", runtime.message}});
     if (!runtime.ok) fail(7);
+    require_shutdown_budget();
     if (controller_) {
       const bool destroyed = DestroyWindow(controller_) != FALSE;
       if (!destroyed) SetWindowLongPtrW(controller_, GWLP_USERDATA, 0);
@@ -533,11 +579,13 @@ class resident_controller final {
       emit("controller-class.removed", {{"ok", removed}});
       if (!removed) fail(1);
     }
+    require_shutdown_budget();
     shutdown_complete_ = true;
     emit("exit.cleanup-finished", {{"exitCode", exit_code_}});
     if (loop_started_) PostQuitMessage(exit_code_);
   }
   LRESULT dispatch(HWND hwnd, UINT message, WPARAM first, LPARAM second) {
+    require_shutdown_budget();
     if (message == WM_CLOSE) { request_exit("controller-close", 0); return 0; }
     if (message == resident_exit_message) {
       shutdown_posted_ = false;
@@ -613,6 +661,7 @@ class resident_controller final {
   std::uint32_t deferred_action_{0};
   unsigned smoke_phase_{0};
   ULONGLONG empty_since_{0};
+  resident_shutdown_policy shutdown_policy_;
   int exit_code_{0};
   bool class_registered_{false};
   bool loop_started_{false};
