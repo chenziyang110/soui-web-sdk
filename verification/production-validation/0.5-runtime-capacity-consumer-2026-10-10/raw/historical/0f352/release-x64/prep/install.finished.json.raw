@@ -1,0 +1,69 @@
+{
+  "job": {
+    "name": "install",
+    "executable": "C:/Program Files/CMake/bin/cmake.exe",
+    "args": [
+      "--install",
+      "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build/sdk",
+      "--config",
+      "Release",
+      "--prefix",
+      "F:/work/sm05-broker/out/capconsumer-0f35213c-release-x64/prefix"
+    ],
+    "cwd": "F:/work/sm05-broker",
+    "timeoutMs": 120000,
+    "expectedExitCode": 0
+  },
+  "result": {
+    "pid": 36436,
+    "creationFileTime": "134360975709804261",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 241,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 2,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\sm05-broker\\out\\capconsumer-0f35213c-release-x64\\prep\\install.owned.jsonl",
+    "reportSha256": "5516c5b3a2f31ca14950087c0c7ed238788d24c104afdf797bcb1d0c8b8d90c4",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "accepted": true,
+  "raw": {
+    "path": "F:\\work\\sm05-broker\\out\\capconsumer-0f35213c-release-x64\\prep\\install.owned.jsonl",
+    "bytes": 1091,
+    "sha256": "5516c5b3a2f31ca14950087c0c7ed238788d24c104afdf797bcb1d0c8b8d90c4"
+  },
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\capconsumer-0f35213c-release-x64\\prep\\install.owned.jsonl.context.json",
+    "bytes": 574,
+    "sha256": "268c0e011d6c85e756506e47cf084b6643cd12ee679a43ffdbb03609627cd77c"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\capconsumer-0f35213c-release-x64\\prep\\install.stdout.raw",
+    "bytes": 8637,
+    "sha256": "2b80c1aa4a17358b5a039b5e1feb5f1c241f23b652b3c4199a2de0acdbadee20"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\capconsumer-0f35213c-release-x64\\prep\\install.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

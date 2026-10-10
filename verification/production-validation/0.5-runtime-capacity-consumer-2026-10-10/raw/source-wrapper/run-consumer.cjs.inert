@@ -1,0 +1,133 @@
+'use strict';
+const fs=require('node:fs');
+const path=require('node:path');
+const crypto=require('node:crypto');
+const sha=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
+const ownPin=file=>({path:file,bytes:fs.statSync(file).size,sha256:sha(fs.readFileSync(file))});
+function check(pin){
+  if(!path.isAbsolute(pin.path)||!fs.lstatSync(pin.path).isFile()||fs.lstatSync(pin.path).isSymbolicLink())throw new Error('Input is not a plain absolute file');
+  const raw=fs.readFileSync(pin.path);
+  if(raw.length!==pin.bytes||sha(raw)!==pin.sha256)throw new Error('Input changed: '+pin.path);
+}
+function members(root){
+  const visit=dir=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(entry=>{
+    const file=path.join(dir,entry.name);
+    if(entry.isSymbolicLink())throw new Error('Input reparse member');
+    return entry.isDirectory()?visit(file):entry.isFile()?[path.relative(root,file).replaceAll('\\','/')]:[];
+  });
+  return visit(root).sort();
+}
+function consumerTailScope(cfg) {
+  const need=(value,message)=>{if(!value)throw new Error(message);};
+  const same=(left,right)=>JSON.stringify(left)===JSON.stringify(right);
+  const scope=cfg.consumerTailScope;
+  need(scope?.schema==='soui.consumer-compiler-tail-scope/v1'&&['x64','Win32'].includes(cfg.architecture)&&
+    ['Debug','Release'].includes(cfg.configuration),'Exact consumer compiler scope required');
+  const expected=cfg.architecture==='x64'?
+    {image:'C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/vctip.exe',bytes:335520,sha256:'651345513aae26090c813b1ded859a5680c3823ca716a80e1d337bac0ca797ef'}:
+    {image:'C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86/vctip.exe',bytes:335560,sha256:'1c1ca5f9c04171c02caca6863e29eca3550333219486d23e65bf01fb02951311'};
+  check(scope.reader);check(scope.cmake);check(scope.tailImage);
+  need(scope.tailImage.path===expected.image&&scope.tailImage.bytes===expected.bytes&&scope.tailImage.sha256===expected.sha256,
+    'Tail image is not the fixed target MSVC disk object');
+  const reader=require(scope.reader.path);
+  need(scope.cmake.path==='C:/Program Files/CMake/bin/cmake.exe'&&cfg.jobs.length===3&&
+    same(cfg.jobs.map(job=>job.name),['install','configure','build'])&&same(scope.reviewedJobs,cfg.jobs.slice(1)),
+    'Compiler exception is limited to the two frozen consumer CMake jobs');
+  need(cfg.jobs.every(job=>job.executable===scope.cmake.path&&job.expectedExitCode===0)&&
+    cfg.jobs[0].timeoutMs===120000&&cfg.jobs[1].timeoutMs===120000&&cfg.jobs[2].timeoutMs===600000,
+    'Consumer stage executable/exit/budget differs');
+  for(const name of ['configure','build']) {
+    const pin=reader.validateTailImagePin(scope.tailPins[name]);
+    need(pin.image===expected.image&&pin.sha256===expected.sha256,'Stage pin differs from fixed disk object');
+  }
+  need(scope.tailPins.configure.nonce!==scope.tailPins.build.nonce,'Stage snapshot nonce was reused');
+  function classify(job,result,identity,report) {
+    need(['configure','build'].includes(job.name)&&same(job,scope.reviewedJobs.find(item=>item.name===job.name)),
+      'Unreviewed job cannot use compiler continuation');
+    const raw=fs.readFileSync(report),contextRaw=fs.readFileSync(report+'.context.json');
+    const context=reader.parseStrictJson(contextRaw.toString('utf8'));
+    need(result.exitCode===0&&result.supervisorExitCode===124&&result.passed===false&&
+      result.signal===null&&result.spawnError===null&&result.reportError===null&&result.stopRequested===false&&
+      result.fallbackUsed===false&&result.closureConfirmed===true,'Compiler client result is not an eligible tail');
+    need(result.report===report&&result.reportSha256===sha(raw)&&result.contextSha256===sha(contextRaw)&&
+      result.runnerSha256===cfg.runner.sha256&&result.executableSha256===scope.cmake.sha256&&
+      context.schema==='soui.owned-process-context/v1'&&context.runnerSha256===cfg.runner.sha256&&
+      context.executableSha256===scope.cmake.sha256&&context.executable===job.executable&&context.cwd===job.cwd&&
+      same(context.args,job.args)&&context.timeoutMs===job.timeoutMs&&context.drainMs===2000&&context.report===report&&
+      same(context.tailImagePin,scope.tailPins[job.name]),'Actual compiler context/hash/argv differs');
+    need(identity?.pid===result.pid&&identity.creationFileTime===result.creationFileTime&&
+      typeof result.creationFileTime==='string'&&/^[1-9]\d{0,19}$/.test(result.creationFileTime),
+      'Ready/result compiler identity differs');
+    const rows=raw.toString('utf8').trimEnd().split('\n').map(reader.parseStrictJson);
+    const starts=rows.filter(row=>row.event==='start'),roots=rows.filter(row=>row.event==='root-exit'),ends=rows.filter(row=>row.event==='terminal');
+    need(starts.length===1&&roots.length===1&&ends.length===1&&starts[0]===rows[0]&&ends[0]===rows.at(-1)&&
+      starts[0].pid===result.pid&&starts[0].creationFileTime===result.creationFileTime&&same(ends[0],result.terminal),
+      'Unique raw subject/root/terminal does not match actual result');
+    const evidence=reader.readTailEvidence(raw,{context,reportSha256:result.reportSha256});
+    need(evidence.accepted===true&&same(evidence,result.tailEvidence)&&evidence.pin.size===String(expected.bytes)&&
+      evidence.pin.sha256===expected.sha256&&evidence.root.pid===result.pid&&evidence.root.creationFileTime===result.creationFileTime,
+      evidence.failure||'Complete exact one-tail evidence unavailable');
+    return {schema:'soui.consumer-compiler-tail-continuation/v1',compileRootCompleted:true,
+      genericSupervisionPassed:false,compilerTailContinuation:true,diskBytesOnly:true,tailEvidence:evidence,
+      qualificationPassed:false,releaseReady:false};
+  }
+  return {pin:job=>['configure','build'].includes(job.name)?scope.tailPins[job.name]:undefined,classify};
+}
+async function main(){
+  if(process.argv.length!==5||process.argv[2]!=='ROOT_CONSUMER_TAIL_V1')throw new Error('Explicit frozen root gate required');
+  const file=process.argv[3],expected=process.argv[4],raw=fs.readFileSync(file);
+  if(sha(raw)!==expected)throw new Error('Plan changed');
+  const cfg=JSON.parse(raw),stages=[];
+  if(cfg.schema!=='soui.consumer-tail-owned-plan/v1'||!path.isAbsolute(cfg.output)||fs.existsSync(cfg.output))throw new Error('Fresh absolute output required');
+  const verify=()=>{
+    cfg.pins.forEach(check); check(ownPin(file));
+    for(const inventory of cfg.inventories){
+      if(JSON.stringify(members(inventory.root))!==JSON.stringify(inventory.members))throw new Error('Input inventory drift');
+    }
+    if(sha(fs.readFileSync(file))!==expected)throw new Error('Plan drift');
+  };
+  verify();
+  const {launchOwned}=require(cfg.client.path);
+  const scope=consumerTailScope(cfg);
+  fs.mkdirSync(cfg.output);
+  let failure=null;
+  try{
+    for(const job of cfg.jobs){
+      if(!/^[a-z0-9-]+$/.test(job.name)||!Array.isArray(job.args)||job.args.some(x=>typeof x!=='string')||
+          ![0,1].includes(job.expectedExitCode)||!Number.isSafeInteger(job.timeoutMs)||job.timeoutMs<=0)throw new Error('Invalid frozen job');
+      verify();
+      const report=path.join(cfg.output,job.name+'.owned.jsonl'),stdoutFile=path.join(cfg.output,job.name+'.stdout.raw'),stderrFile=path.join(cfg.output,job.name+'.stderr.raw');
+      const stdout=fs.openSync(stdoutFile,'wx'),stderr=fs.openSync(stderrFile,'wx');
+      let handle,result,identity;
+      try{
+        handle=launchOwned(job.executable,job.args,{runner:cfg.runner.path,cwd:job.cwd,report,timeoutMs:job.timeoutMs,drainMs:2000,stdout,stderr,...(scope.pin(job)?{tailImagePin:scope.pin(job)}:{})});
+        identity=await handle.ready;
+        fs.writeFileSync(path.join(cfg.output,job.name+'.ready.json'),JSON.stringify(identity)+'\n',{flag:'wx'});
+        result=await handle.finished;
+      }catch(error){if(handle){handle.stop();result=await handle.finished;}throw error;}
+      finally{fs.closeSync(stdout);fs.closeSync(stderr);}
+      const terminal=result.terminal;
+      const accepted=result.exitCode===job.expectedExitCode&&result.supervisorExitCode===job.expectedExitCode&&
+        !result.signal&&!result.spawnError&&!result.reportError&&!result.stopRequested&&!result.fallbackUsed&&
+        result.closureConfirmed&&terminal?.rootExited===true&&terminal.activeProcesses===0&&
+        terminal.terminatedOwnedJob===false&&(job.expectedExitCode===0?result.passed===true:result.passed===false);
+      const stdoutPin=ownPin(stdoutFile),stderrPin=ownPin(stderrFile);
+      const diagnostic=job.requiredDiagnostic===undefined||fs.readFileSync(stderrFile,'utf8').includes(job.requiredDiagnostic);
+      let continuation=null,continuationFailure=null;
+      if(!accepted&&diagnostic){try{continuation=scope.classify(job,result,identity,report);}catch(error){continuationFailure=error.message;}}
+      const receipt={job,result,accepted:accepted&&diagnostic,finiteStepCompleted:accepted&&diagnostic||continuation?.compilerTailContinuation===true,compilerTailContinuation:continuation,compilerTailFailure:continuationFailure,raw:ownPin(report),context:ownPin(report+'.context.json'),stdout:stdoutPin,stderr:stderrPin};
+      stages.push(receipt);
+      fs.writeFileSync(path.join(cfg.output,job.name+'.finished.json'),JSON.stringify(receipt,null,2)+'\n',{flag:'wx'});
+      verify();
+      if(!receipt.finiteStepCompleted)throw new Error('Finite stage did not satisfy frozen predicates: '+job.name);
+    }
+  }catch(error){failure=error.message;}
+  const allGenericPassed=failure===null&&stages.length===cfg.jobs.length&&stages.every(stage=>stage.accepted);
+  const summary={schema:'soui.consumer-tail-owned-result/v1',completed:failure===null,failure,allGenericPassed,compilerTailContinuation:stages.some(stage=>stage.compilerTailContinuation?.compilerTailContinuation===true),plan:ownPin(file),stages,
+    qualificationPassed:false,releaseReady:false};
+  fs.writeFileSync(path.join(cfg.output,'summary.json'),JSON.stringify(summary,null,2)+'\n',{flag:'wx'});
+  process.stdout.write(JSON.stringify({completed:summary.completed,failure,output:cfg.output,stages:stages.length})+'\n');
+  process.exitCode=failure||!allGenericPassed?1:0;
+}
+main().catch(error=>{process.stderr.write(error.stack+'\n');process.exitCode=1;});
+

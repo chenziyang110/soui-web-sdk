@@ -1,0 +1,271 @@
+{
+  "schema": "soui.consumer-tail-owned-result/v1",
+  "completed": true,
+  "failure": null,
+  "allGenericPassed": true,
+  "compilerTailContinuation": false,
+  "plan": {
+    "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Debug.json",
+    "bytes": 37067,
+    "sha256": "eba81b59ecbe349cf7358fc88b393d315877c77551cd8870058a14a2f036416d"
+  },
+  "stages": [
+    {
+      "job": {
+        "name": "install",
+        "executable": "C:/Program Files/CMake/bin/cmake.exe",
+        "args": [
+          "--install",
+          "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build/sdk",
+          "--config",
+          "Debug",
+          "--prefix",
+          "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-x64/prefix"
+        ],
+        "cwd": "F:/work/sm05-broker",
+        "timeoutMs": 120000,
+        "expectedExitCode": 0
+      },
+      "result": {
+        "pid": 59252,
+        "creationFileTime": "134361014476159371",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 505,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\install.owned.jsonl",
+        "reportSha256": "4f14f1130b3c1b801ae0779b352a4429f69367845dae3da00400e37b8c4fe86c",
+        "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "accepted": true,
+      "finiteStepCompleted": true,
+      "compilerTailContinuation": null,
+      "compilerTailFailure": null,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\install.owned.jsonl",
+        "bytes": 1092,
+        "sha256": "4f14f1130b3c1b801ae0779b352a4429f69367845dae3da00400e37b8c4fe86c"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\install.owned.jsonl.context.json",
+        "bytes": 567,
+        "sha256": "ad34814d33452a187cc150951366c0e396666fbb28fd4c5aecf6a891f49f8e38"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\install.stdout.raw",
+        "bytes": 8417,
+        "sha256": "d40a0e33453bd9caf03966b5984a755d2da019a4ac14e81505948cc0fea0036a"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\install.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "job": {
+        "name": "configure",
+        "executable": "C:/Program Files/CMake/bin/cmake.exe",
+        "args": [
+          "-S",
+          "F:/work/sm05-broker/tests/package-consumer",
+          "-B",
+          "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-x64/consumer-build",
+          "-G",
+          "Visual Studio 17 2022",
+          "-A",
+          "x64",
+          "-T",
+          "v143,host=x64,version=14.44.35207",
+          "-DCMAKE_GENERATOR_INSTANCE:PATH=C:/Program Files/Microsoft Visual Studio/2022/Community",
+          "-DCMAKE_SYSTEM_VERSION:STRING=10.0.19041.0",
+          "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug",
+          "-DCMAKE_MAKE_PROGRAM:FILEPATH=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+          "-DCMAKE_PROJECT_INCLUDE:FILEPATH=F:/work/sm05-broker/out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/fixed-compiler.cmake",
+          "-DSOUI_ROOT_EXPECTED_ARCH:STRING=x64",
+          "-DCMAKE_VS_GLOBALS:STRING=VcpkgEnabled=false;VcpkgEnableManifest=false;UseEnv=false;UserRootDir=F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-x64/empty-user-props/",
+          "-DSouiSdk_DIR:PATH=F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-x64/prefix/lib/cmake/SouiSdk",
+          "-DCMAKE_FIND_USE_PACKAGE_REGISTRY:BOOL=OFF",
+          "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY:BOOL=OFF",
+          "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY:BOOL=ON"
+        ],
+        "cwd": "F:/work/sm05-broker",
+        "timeoutMs": 120000,
+        "expectedExitCode": 0
+      },
+      "result": {
+        "pid": 109352,
+        "creationFileTime": "134361014491078375",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 6608,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 26,
+          "limitTerminatedProcesses": 0,
+          "passed": true,
+          "preCleanupSnapshotSequence": null,
+          "tailEvidenceComplete": false
+        },
+        "report": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\configure.owned.jsonl",
+        "reportSha256": "b032bc5512ae90dc1f397f6b73d2a3b6df692e0b5b842672fc379e2b2c9a18ac",
+        "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+        "contextSha256": "bbde6cf3d458bda25e3da373db21f7dade7b3e6a0b843105e53370c00032eefb",
+        "tailEvidence": {
+          "schema": "soui.owned-tail-verdict/v1",
+          "available": true,
+          "accepted": false,
+          "failure": "Generic terminal is not an eligible forced tail cleanup",
+          "diskBytesOnly": true,
+          "reportSha256": "b032bc5512ae90dc1f397f6b73d2a3b6df692e0b5b842672fc379e2b2c9a18ac"
+        }
+      },
+      "accepted": true,
+      "finiteStepCompleted": true,
+      "compilerTailContinuation": null,
+      "compilerTailFailure": null,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\configure.owned.jsonl",
+        "bytes": 30666,
+        "sha256": "b032bc5512ae90dc1f397f6b73d2a3b6df692e0b5b842672fc379e2b2c9a18ac"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\configure.owned.jsonl.context.json",
+        "bytes": 3812,
+        "sha256": "bbde6cf3d458bda25e3da373db21f7dade7b3e6a0b843105e53370c00032eefb"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\configure.stdout.raw",
+        "bytes": 518,
+        "sha256": "33f9c58be9e62d76e758c73442446e8fe522613426ae8da287a0ede40956488c"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\configure.stderr.raw",
+        "bytes": 116,
+        "sha256": "6b413994db538d19492dc1c8b42f9eac504bbe50b7b298f08398ecb0cf77b8d6"
+      }
+    },
+    {
+      "job": {
+        "name": "build",
+        "executable": "C:/Program Files/CMake/bin/cmake.exe",
+        "args": [
+          "--build",
+          "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-debug-x64/consumer-build",
+          "--config",
+          "Debug",
+          "--target",
+          "soui_consumer",
+          "--parallel",
+          "2"
+        ],
+        "cwd": "F:/work/sm05-broker",
+        "timeoutMs": 600000,
+        "expectedExitCode": 0
+      },
+      "result": {
+        "pid": 86492,
+        "creationFileTime": "134361014562290339",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 3462,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 17,
+          "limitTerminatedProcesses": 0,
+          "passed": true,
+          "preCleanupSnapshotSequence": null,
+          "tailEvidenceComplete": false
+        },
+        "report": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\build.owned.jsonl",
+        "reportSha256": "da54198be23f035f9515ea6fc2db9280a1b96a89524fad04e8105b3aedc4a09a",
+        "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+        "contextSha256": "0ef2010c5b0baa20aaaee2404ff90e2ec269cd37022cf6e46f86102eba46defb",
+        "tailEvidence": {
+          "schema": "soui.owned-tail-verdict/v1",
+          "available": true,
+          "accepted": false,
+          "failure": "Generic terminal is not an eligible forced tail cleanup",
+          "diskBytesOnly": true,
+          "reportSha256": "da54198be23f035f9515ea6fc2db9280a1b96a89524fad04e8105b3aedc4a09a"
+        }
+      },
+      "accepted": true,
+      "finiteStepCompleted": true,
+      "compilerTailContinuation": null,
+      "compilerTailFailure": null,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\build.owned.jsonl",
+        "bytes": 17257,
+        "sha256": "da54198be23f035f9515ea6fc2db9280a1b96a89524fad04e8105b3aedc4a09a"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\build.owned.jsonl.context.json",
+        "bytes": 1724,
+        "sha256": "0ef2010c5b0baa20aaaee2404ff90e2ec269cd37022cf6e46f86102eba46defb"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\build.stdout.raw",
+        "bytes": 304,
+        "sha256": "e17be0618a0a5bc34053735652baae1cf60bf1670dee883334842ba57b8480da"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-debug-x64\\prep\\build.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "qualificationPassed": false,
+  "releaseReady": false
+}

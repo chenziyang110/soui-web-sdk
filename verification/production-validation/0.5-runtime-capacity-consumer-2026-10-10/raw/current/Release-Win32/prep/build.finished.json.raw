@@ -1,0 +1,85 @@
+{
+  "job": {
+    "name": "build",
+    "executable": "C:/Program Files/CMake/bin/cmake.exe",
+    "args": [
+      "--build",
+      "F:/work/sm05-broker/out/ctconsumer-0f3dc37c-release-Win32/consumer-build",
+      "--config",
+      "Release",
+      "--target",
+      "soui_consumer",
+      "--parallel",
+      "2"
+    ],
+    "cwd": "F:/work/sm05-broker",
+    "timeoutMs": 600000,
+    "expectedExitCode": 0
+  },
+  "result": {
+    "pid": 37408,
+    "creationFileTime": "134361015055138460",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 2978,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 17,
+      "limitTerminatedProcesses": 0,
+      "passed": true,
+      "preCleanupSnapshotSequence": null,
+      "tailEvidenceComplete": false
+    },
+    "report": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-release-Win32\\prep\\build.owned.jsonl",
+    "reportSha256": "2e4201ae32f56897c4bdd4dd73b38af50989c7909ab910aaa8895d49cae97b76",
+    "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+    "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+    "contextSha256": "0a340e8335b9a84810e1a4a1fa0cbc2eb003a719298ba6edbbc1dfd5eaecc621",
+    "tailEvidence": {
+      "schema": "soui.owned-tail-verdict/v1",
+      "available": true,
+      "accepted": false,
+      "failure": "Generic terminal is not an eligible forced tail cleanup",
+      "diskBytesOnly": true,
+      "reportSha256": "2e4201ae32f56897c4bdd4dd73b38af50989c7909ab910aaa8895d49cae97b76"
+    }
+  },
+  "accepted": true,
+  "finiteStepCompleted": true,
+  "compilerTailContinuation": null,
+  "compilerTailFailure": null,
+  "raw": {
+    "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-release-Win32\\prep\\build.owned.jsonl",
+    "bytes": 17051,
+    "sha256": "2e4201ae32f56897c4bdd4dd73b38af50989c7909ab910aaa8895d49cae97b76"
+  },
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-release-Win32\\prep\\build.owned.jsonl.context.json",
+    "bytes": 1744,
+    "sha256": "0a340e8335b9a84810e1a4a1fa0cbc2eb003a719298ba6edbbc1dfd5eaecc621"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-release-Win32\\prep\\build.stdout.raw",
+    "bytes": 310,
+    "sha256": "a506ac46486ec95abbf12fab53a96564794134baa44ca5d56309d6f488aa9574"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-release-Win32\\prep\\build.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

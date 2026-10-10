@@ -1,0 +1,126 @@
+[CmdletBinding()]
+param(
+ [Parameter(Mandatory=$true)][ValidateSet('ROOT_CAPACITY_INSTALLED_CONSUMER_TAIL_V1')][string]$RootGate,
+ [ValidateSet('All','x64','Win32')][string]$Architecture='All',
+ [ValidateSet('All','Debug','Release')][string]$Configuration='All'
+)
+$ErrorActionPreference='Stop'
+$taskRoot='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48'
+$taskControl=@([pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/inputs.json';bytes=103845;sha256='e2b59d78f115b0de26e8a4315991052f115c54bbde4e155eff993b6c9415889d' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/README.md';bytes=5434;sha256='178e9ce55c6067455b3b55910cf9e348437477e44c185b2614009fd78fd3b11b' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/run-consumer.cjs';bytes=10287;sha256='3b9acf0bb11fcada430596feed33982c47dc364bc4bb89871b727aea5a977eb0' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Debug.json';bytes=37067;sha256='eba81b59ecbe349cf7358fc88b393d315877c77551cd8870058a14a2f036416d' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Debug.json';bytes=37153;sha256='b05ce100f9545a4fecc5114cb170181c071a07d0cf72e395c1e4ad075b3a8e1e' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Release.json';bytes=37159;sha256='cb57d59bb9a2b50dd7d197c8c6c738115e06cb9814702607535585f6cf359f2c' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Release.json';bytes=37245;sha256='9439a1a45bdd3a49258ff05c8495c2d2d37543b83d1a2c00ed95a7b3846ff164' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Debug.json';bytes=30841;sha256='44469012b9ab1ab66aa7417436ea27d1e088b8e5614cd38c66a017e3a3ea5266' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Debug.json';bytes=30903;sha256='50cf04e9d8bf47afdc888e06717e410a1e6c11dfbebe75099b2dcc620ce8600b' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Release.json';bytes=30911;sha256='1f6919811bd6304d88c893c4d1772bc3c98648fa68fea215d9d62f6de3c4a8b0' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Release.json';bytes=30973;sha256='53b763fe95d4e4a1c0e3aa32c233679178b1ff02343696309fba6383945f48d9' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json';bytes=22365;sha256='af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e' })
+$taskExpectedMembers=@('DELTA.json','README.md','Run-Root.ps1','inputs.json','plan.Win32.Debug.json','plan.Win32.Release.json','plan.x64.Debug.json','plan.x64.Release.json','run-consumer.cjs','runner-origin.json','runtime-template.Win32.Debug.json','runtime-template.Win32.Release.json','runtime-template.x64.Debug.json','runtime-template.x64.Release.json','seal.json')
+$taskUtf8=[Text.UTF8Encoding]::new($false)
+function Norm([string]$taskPath){if([string]::IsNullOrWhiteSpace($taskPath)){throw 'Missing actual path'};[IO.Path]::GetFullPath($taskPath).Replace('\','/').ToLowerInvariant()}
+function Pin([string]$taskPath){$taskItem=Get-Item -LiteralPath $taskPath -Force;if($taskItem.PSIsContainer-or($taskItem.Attributes-band[IO.FileAttributes]::ReparsePoint)){throw 'Nonregular actual artifact'};[ordered]@{path=$taskItem.FullName.Replace('\','/');bytes=$taskItem.Length;sha256=(Get-FileHash -LiteralPath $taskItem.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}}
+function Check($taskPin){$taskNow=Pin $taskPin.path;if($taskNow.bytes-ne$taskPin.bytes-or$taskNow.sha256-cne$taskPin.sha256){throw "Frozen bytes changed: $($taskPin.path)"}}
+function Names([string]$taskDirectory){$taskNames=[string[]]@(Get-ChildItem -LiteralPath $taskDirectory -Recurse -Force|ForEach-Object{if($_.Attributes-band[IO.FileAttributes]::ReparsePoint){throw 'Reparse artifact member'};if(-not$_.PSIsContainer){$_.FullName.Substring($taskDirectory.Length+1).Replace('\','/')}});[Array]::Sort($taskNames,[StringComparer]::Ordinal);return ,$taskNames}
+function UniqueFile([string]$taskDirectory,[string]$taskName){$taskFiles=@(Get-ChildItem -LiteralPath $taskDirectory -Recurse -Force -File|Where-Object{$_.Name-ieq$taskName});if($taskFiles.Count-ne1){throw "Actual target tracking cardinality: $taskName"};$taskFiles[0].FullName}
+function Lines([string]$taskPath){$taskLines=[string[]]@([IO.File]::ReadAllText($taskPath)-split'\r?\n'|Where-Object{-not[string]::IsNullOrWhiteSpace($_)});return ,$taskLines}
+function Tokens([string]$taskCommand){$taskResult=[Collections.Generic.List[string]]::new();$taskText=[Text.StringBuilder]::new();$taskQuoted=$false;foreach($taskChar in $taskCommand.ToCharArray()){if($taskChar-eq[char]34){$taskQuoted=-not$taskQuoted}elseif([char]::IsWhiteSpace($taskChar)-and-not$taskQuoted){if($taskText.Length){$taskResult.Add($taskText.ToString());$taskText.Clear()|Out-Null}}else{$taskText.Append($taskChar)|Out-Null}};if($taskQuoted){throw 'Unbalanced actual LINK quotes'};if($taskText.Length){$taskResult.Add($taskText.ToString())};return ,$taskResult.ToArray()}
+function ResolveToken([string]$taskToken,[string]$taskCwd){if([IO.Path]::IsPathRooted($taskToken)){Norm $taskToken}else{Norm (Join-Path $taskCwd $taskToken)}}
+function WriteJson([string]$taskPath,$taskValue){if(Test-Path -LiteralPath $taskPath){throw 'Receipt already exists'};[IO.File]::WriteAllText($taskPath,($taskValue|ConvertTo-Json -Depth 80)+[char]10,$taskUtf8)}
+function CheckControls{foreach($taskPin in $taskControl){Check $taskPin};$taskNames=Names $taskRoot;if(($taskNames-join[char]0)-cne($taskExpectedMembers-join[char]0)){throw 'Exact packet membership changed'}}
+function RunPlan($taskPlanFile,$taskInputs,[switch]$CompilerScope){
+ CheckControls;$taskPlan=Get-Content -LiteralPath $taskPlanFile -Raw|ConvertFrom-Json
+ foreach($taskPin in $taskPlan.pins){Check $taskPin};if(Test-Path -LiteralPath $taskPlan.output){throw 'Evidence output already exists'}
+ $taskHash=(Get-FileHash -LiteralPath $taskPlanFile -Algorithm SHA256).Hash.ToLowerInvariant()
+ $taskSelectedDriver=if($CompilerScope){$taskInputs.compilerDriver}else{$taskInputs.driver}
+ $taskSelectedGate=if($CompilerScope){'ROOT_CONSUMER_TAIL_V1'}else{'ROOT_FINITE_OWNED_V1'}
+ Check $taskSelectedDriver
+ & $taskInputs.node.path $taskSelectedDriver.path $taskSelectedGate $taskPlanFile $taskHash;$taskExit=$LASTEXITCODE
+ $taskSummary=Get-Content -LiteralPath (Join-Path $taskPlan.output 'summary.json') -Raw|ConvertFrom-Json
+ if(-not$taskSummary.completed-or$null-ne$taskSummary.failure-or$taskSummary.stages.Count-ne$taskPlan.jobs.Count){throw 'Finite plan incomplete'}
+ if($CompilerScope){
+  if($taskSummary.schema-cne'soui.consumer-tail-owned-result/v1'-or$taskPlan.schema-cne'soui.consumer-tail-owned-plan/v1'){throw 'Compiler scope schema differs'}
+  foreach($taskStage in $taskSummary.stages){
+   if($taskStage.accepted){if(-not$taskStage.result.passed-or$taskStage.result.exitCode-ne0-or$taskStage.result.supervisorExitCode-ne0-or$taskStage.result.terminal.terminatedOwnedJob-or$null-ne$taskStage.compilerTailContinuation){throw 'Natural compiler result differs'}}
+   else{
+    $taskContinuation=$taskStage.compilerTailContinuation;$taskResult=$taskStage.result;$taskTerminal=$taskResult.terminal
+    if($taskStage.job.name-cnotin@('configure','build')-or-not$taskStage.finiteStepCompleted-or$taskContinuation.schema-cne'soui.consumer-compiler-tail-continuation/v1'-or-not$taskContinuation.compileRootCompleted-or$taskContinuation.genericSupervisionPassed-or-not$taskContinuation.compilerTailContinuation-or-not$taskContinuation.diskBytesOnly-or-not$taskContinuation.tailEvidence.accepted-or-not$taskResult.tailEvidence.accepted-or$taskResult.passed-or$taskResult.exitCode-ne0-or$taskResult.supervisorExitCode-ne124-or$taskResult.stopRequested-or$taskResult.fallbackUsed-or$null-ne$taskResult.signal-or$null-ne$taskResult.spawnError-or$null-ne$taskResult.reportError-or-not$taskResult.closureConfirmed-or$taskTerminal.reason-cne'owned-descendants-remain'-or$taskTerminal.rootExitCode-ne0-or$taskTerminal.activeBeforeCleanup-ne1-or-not$taskTerminal.terminatedOwnedJob-or$taskTerminal.activeProcesses-ne0-or$taskTerminal.limitTerminatedProcesses-ne0-or-not$taskTerminal.tailEvidenceComplete){throw 'Exact compiler continuation differs'}
+   }
+  }
+  $taskGeneric=@($taskSummary.stages|Where-Object{-not$_.accepted}).Count-eq0
+  $taskExpectedExit=if($taskGeneric){0}else{1}
+  if($taskSummary.allGenericPassed-ne$taskGeneric-or$taskExit-ne$taskExpectedExit){throw 'Generic compiler failure was not retained'}
+ }else{
+  if($taskExit-ne0-or@($taskSummary.stages|Where-Object{-not$_.accepted-or-not$_.result.passed-or$_.result.exitCode-ne0-or$_.result.supervisorExitCode-ne0-or$_.result.terminal.terminatedOwnedJob}).Count){throw 'Strict natural result differs'}
+ }
+ foreach($taskPin in $taskPlan.pins){Check $taskPin};return $taskSummary
+}
+function BindConsumer($taskRecord){
+ $taskInstalled=@();$taskExpected=[string[]]@($taskRecord.installMap.relative);[Array]::Sort($taskExpected,[StringComparer]::Ordinal)
+ $taskMembers=Names $taskRecord.prefix
+ if($taskMembers.Count-ne50-or($taskMembers-join[char]0)-cne($taskExpected-join[char]0)){throw 'Installed 50-file membership differs'}
+ foreach($taskRow in $taskRecord.installMap){Check $taskRow.source;$taskActual=Pin (Join-Path $taskRecord.prefix $taskRow.relative);if($taskActual.bytes-ne$taskRow.source.bytes-or$taskActual.sha256-cne$taskRow.source.sha256){throw "Installed file differs: $($taskRow.relative)"};$taskInstalled+=$taskActual}
+ $taskLibrary=Join-Path $taskRecord.prefix ("lib/$($taskRecord.configuration)/soui_sdk.lib")
+ $taskLibraryFile=Join-Path $taskRecord.consumerBuild ("consumer-library-$($taskRecord.configuration).txt")
+ $taskLibraryLines=Lines $taskLibraryFile
+ if($taskLibraryLines.Count-ne1-or(Norm $taskLibraryLines[0])-cne(Norm $taskLibrary)){throw 'Imported actual library differs'}
+ $taskCache=Join-Path $taskRecord.consumerBuild 'CMakeCache.txt'
+ $taskCacheText=[IO.File]::ReadAllText($taskCache)
+ $taskDirMatches=[regex]::Matches($taskCacheText,'(?m)^SouiSdk_DIR:PATH=(.+)\r?$')
+ if($taskDirMatches.Count-ne1-or(Norm $taskDirMatches[0].Groups[1].Value.Trim())-cne(Norm (Join-Path $taskRecord.prefix 'lib/cmake/SouiSdk'))){throw 'Consumer resolved a different package'}
+ $taskTarget=Join-Path $taskRecord.consumerBuild ("soui_consumer.dir/$($taskRecord.configuration)")
+ $taskClRead=UniqueFile $taskTarget 'CL.read.1.tlog';$taskClCommand=UniqueFile $taskTarget 'CL.command.1.tlog';$taskLinkRead=UniqueFile $taskTarget 'link.read.1.tlog';$taskLinkCommand=UniqueFile $taskTarget 'link.command.1.tlog'
+ $taskClLines=Lines $taskClRead;$taskClCommands=Lines $taskClCommand;$taskLinkLines=Lines $taskLinkRead;$taskLinkCommands=Lines $taskLinkCommand
+ $taskMain='F:/work/sm05-broker/tests/package-consumer/main.cpp';$taskObj=Join-Path $taskTarget 'main.obj';$taskProject=Join-Path $taskRecord.consumerBuild 'soui_consumer.vcxproj'
+ if($taskClCommands.Count-ne2-or-not$taskClCommands[0].StartsWith('^')-or(Norm $taskClCommands[0].Substring(1))-cne(Norm $taskMain)-or
+    @($taskClLines|Where-Object{$_.StartsWith('^')-and(Norm $_.Substring(1))-ceq(Norm $taskMain)}).Count-ne1-or
+    @($taskClLines|Where-Object{-not$_.StartsWith('^')-and(Norm $_)-ceq(Norm (Join-Path $taskRecord.prefix 'include/soui/json_bridge.h'))}).Count-ne1){throw 'Actual consumer source/installed header read missing'}
+ if($taskClCommands[1]-notmatch'(?i)(?:^|\s)/MD(?:\s|$)'-or$taskClCommands[1]-match'(?i)(?:^|\s)/MDd(?:\s|$)'-or$taskClCommands[1]-notmatch'(?i)(?:^|\s)/U_DEBUG(?:\s|$)'){throw 'Actual consumer CRT/_DEBUG policy differs'}
+ foreach($taskLine in $taskClLines+$taskLinkLines){$taskPath=$taskLine.TrimStart('^');$taskNormal=Norm $taskPath;if($taskNormal.StartsWith('f:/work/sm05-broker/sdk/')-or$taskNormal.StartsWith('f:/work/sm05-broker/third_party/')){throw 'Consumer used source SDK/ActionJson'}}
+ $taskProjectText=[IO.File]::ReadAllText($taskProject).Replace('\','/').ToLowerInvariant()
+ if($taskProjectText.Contains('f:/work/sm05-broker/sdk/')-or$taskProjectText.Contains('f:/work/sm05-broker/third_party/')){throw 'Consumer project contains source SDK inputs'}
+ if($taskLinkCommands.Count-ne2-or-not$taskLinkCommands[0].StartsWith('^')-or(Norm $taskLinkCommands[0].Substring(1))-cne(Norm $taskObj)){throw 'Actual LINK object root differs'}
+ $taskArgs=Tokens $taskLinkCommands[1]
+ if(@($taskArgs|Where-Object{$_.StartsWith('@')}).Count){throw 'Unbound LINK response file'}
+ $taskSdkArgs=@($taskArgs|Where-Object{[IO.Path]::GetFileName($_)-ieq'soui_sdk.lib'})
+ $taskObjectArgs=@($taskArgs|Where-Object{[IO.Path]::GetExtension($_)-ieq'.obj'})
+ if($taskSdkArgs.Count-ne1-or-not[IO.Path]::IsPathRooted($taskSdkArgs[0])-or(ResolveToken $taskSdkArgs[0] $taskRecord.consumerBuild)-cne(Norm $taskLibrary)-or
+    $taskObjectArgs.Count-ne1-or(ResolveToken $taskObjectArgs[0] $taskRecord.consumerBuild)-cne(Norm $taskObj)-or
+    @($taskLinkLines|Where-Object{-not$_.StartsWith('^')-and(Norm $_)-ceq(Norm $taskLibrary)}).Count-ne1-or
+    @($taskLinkLines|Where-Object{$_.StartsWith('^')-and(Norm $_.Substring(1))-ceq(Norm $taskObj)}).Count-ne1-or
+    @($taskLinkLines|Where-Object{-not$_.StartsWith('^')-and(Norm $_)-ceq(Norm $taskObj)}).Count-ne1){throw 'Actual absolute installed LINK/archive/object binding differs'}
+ $taskOut=@($taskArgs|Where-Object{$_.StartsWith('/OUT:',[StringComparison]::OrdinalIgnoreCase)})
+ $taskMachine=if($taskRecord.architecture-ceq'x64'){'x64'}else{'x86'}
+ if($taskOut.Count-ne1-or(ResolveToken $taskOut[0].Substring(5) $taskRecord.consumerBuild)-cne(Norm $taskRecord.executable)-or@($taskArgs|Where-Object{$_-ieq"/MACHINE:$taskMachine"}).Count-lt1){throw 'Actual executable output/machine differs'}
+ $taskExe=Pin $taskRecord.executable;$taskObjPin=Pin $taskObj
+ $taskProof=@($taskLibraryFile,$taskCache,$taskProject,$taskClRead,$taskClCommand,$taskLinkRead,$taskLinkCommand)|ForEach-Object{Pin $_}
+ $taskBinding=[ordered]@{schema='soui.capacity-installed-consumer-binding/v1';architecture=$taskRecord.architecture;configuration=$taskRecord.configuration;selectedProducerArchive=$taskRecord.selectedArchive;installed=$taskInstalled;installedMembers=$taskMembers;publicHeaders=34;actionJsonInstalled=$true;source=(Pin $taskMain);object=$taskObjPin;executable=$taskExe;actualSdkArgument=$taskSdkArgs[0];actualObjectArgument=$taskObjectArgs[0];libraryLine=$taskLibraryLines[0];tracking=$taskProof;qualified=$false;releaseReady=$false}
+ $taskBindingPath=Join-Path $taskRecord.base 'consumer-bindings.json';WriteJson $taskBindingPath $taskBinding
+ return [pscustomobject]@{pins=@($taskInstalled)+@($taskProof)+@($taskObjPin,$taskExe,(Pin $taskBindingPath));inventory=[ordered]@{root=$taskRecord.prefix;members=$taskMembers};binding=$taskBinding}
+}
+$taskLease=[Threading.Mutex]::new($false,'Local\SouiDevKit.DesktopValidation');$taskAcquired=$false
+$taskEnvNames=@('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','VcpkgEnabled','VcpkgEnableManifest');$taskPrior=@{}
+foreach($taskName in $taskEnvNames){$taskPrior[$taskName]=[Environment]::GetEnvironmentVariable($taskName,'Process')}
+try{
+ try{$taskAcquired=$taskLease.WaitOne(0)}catch [Threading.AbandonedMutexException]{$taskAcquired=$true}
+ if(-not$taskAcquired){throw 'Desktop validation lease busy'}
+ CheckControls
+ $taskInputs=Get-Content -LiteralPath (Join-Path $taskRoot 'inputs.json') -Raw|ConvertFrom-Json
+ if($taskInputs.schema-cne'soui.capacity-installed-consumer-tail-inputs/v1'){throw 'Inputs schema differs'}
+ Check $taskInputs.node;Check $taskInputs.driver;Check $taskInputs.compilerDriver;Check $taskInputs.tailReader;foreach($taskPin in $taskInputs.historicalFailedInputs){Check $taskPin}
+ if(-not[string]::IsNullOrEmpty([Environment]::GetEnvironmentVariable('DESTDIR','Process'))){throw 'DESTDIR would redirect the frozen installation'}
+ foreach($taskName in @('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE')){[Environment]::SetEnvironmentVariable($taskName,$null,'Process')}
+ foreach($taskName in @('VcpkgEnabled','VcpkgEnableManifest')){[Environment]::SetEnvironmentVariable($taskName,'false','Process')}
+ $taskRecords=@($taskInputs.records|Where-Object{($Architecture-ceq'All'-or$_.architecture-ceq$Architecture)-and($Configuration-ceq'All'-or$_.configuration-ceq$Configuration)})
+ $taskFailed=$false
+ foreach($taskRecord in $taskRecords){
+  CheckControls;Check $taskRecord.prepPlan;Check $taskRecord.runtimeTemplate
+  if(Test-Path -LiteralPath $taskRecord.base){throw 'Fresh configuration root already exists'}
+  $taskPlan=Get-Content -LiteralPath $taskRecord.prepPlan.path -Raw|ConvertFrom-Json;foreach($taskPin in $taskPlan.pins){Check $taskPin}
+  [IO.Directory]::CreateDirectory($taskRecord.base)|Out-Null
+  [IO.Directory]::CreateDirectory((Join-Path $taskRecord.base 'empty-user-props'))|Out-Null
+  try{
+   $taskPrep=RunPlan $taskRecord.prepPlan.path $taskInputs -CompilerScope
+   if(-not$taskPrep.allGenericPassed){$taskFailed=$true}
+   $taskActual=BindConsumer $taskRecord
+   $taskRuntime=Get-Content -LiteralPath $taskRecord.runtimeTemplate.path -Raw|ConvertFrom-Json
+   $taskRuntime.pins=@($taskRuntime.pins)+@($taskActual.pins)
+   $taskRuntime.inventories=@($taskRuntime.inventories)+@($taskActual.inventory)
+   $taskRuntimePath=Join-Path $taskRecord.base 'runtime-plan.json';WriteJson $taskRuntimePath $taskRuntime
+   $taskRun=RunPlan $taskRuntimePath $taskInputs
+   WriteJson (Join-Path $taskRecord.base 'consumer-result.json') ([ordered]@{schema='soui.capacity-installed-consumer-tail-result/v1';completed=$true;finiteInstalledConsumerObserved=$true;architecture=$taskRecord.architecture;configuration=$taskRecord.configuration;allGenericPassed=$taskPrep.allGenericPassed;compilerTailContinuation=$taskPrep.compilerTailContinuation;formalCompilerTailAcceptance=$false;prep=(Pin (Join-Path $taskRecord.base 'prep/summary.json'));runtime=(Pin (Join-Path $taskRecord.base 'runtime/summary.json'));binding=(Pin (Join-Path $taskRecord.base 'consumer-bindings.json'));qualificationPassed=$false;resourceQualified=$false;osQualified=$false;fullToolchainQualified=$false;releaseReady=$false})
+  }catch{$taskFailed=$true;WriteJson (Join-Path $taskRecord.base 'consumer-result.json') ([ordered]@{schema='soui.capacity-installed-consumer-tail-result/v1';completed=$false;finiteInstalledConsumerObserved=$false;failure=$_.Exception.Message;architecture=$taskRecord.architecture;configuration=$taskRecord.configuration;allGenericPassed=$false;qualificationPassed=$false;releaseReady=$false})}
+ }
+ if($taskFailed){exit 1}
+}finally{try{foreach($taskName in $taskEnvNames){[Environment]::SetEnvironmentVariable($taskName,$taskPrior[$taskName],'Process')}}finally{if($taskAcquired){$taskLease.ReleaseMutex()};$taskLease.Dispose()}}

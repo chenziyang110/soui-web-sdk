@@ -1,0 +1,1603 @@
+{
+  "schema": "soui.capacity-consumer-supervisor-delta/v1",
+  "parent": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4",
+  "root": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48",
+  "modifiedFiles": [
+    {
+      "file": "plan.x64.Debug.json",
+      "before": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.x64.Debug.json",
+        "bytes": 31458,
+        "sha256": "aa0d57230cd9fa59fcc7431cc63be046d0563f72a115985f4340e54f5e916924"
+      },
+      "after": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Debug.json",
+        "bytes": 37067,
+        "sha256": "eba81b59ecbe349cf7358fc88b393d315877c77551cd8870058a14a2f036416d"
+      },
+      "spans": [
+        {
+          "purpose": "fresh packet path",
+          "before": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4",
+          "after": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48",
+          "count": 1,
+          "beforeByteOffsets": [
+            22529
+          ],
+          "beforeWhole": {
+            "bytes": 31458,
+            "sha256": "aa0d57230cd9fa59fcc7431cc63be046d0563f72a115985f4340e54f5e916924"
+          },
+          "afterWhole": {
+            "bytes": 31465,
+            "sha256": "5f3475b470fcd940fc8314ce01ec1e1cb5725bb8395472398d7f746d524254d6"
+          }
+        },
+        {
+          "purpose": "fresh output namespace",
+          "before": "ctconsumer-0bea1a0f",
+          "after": "ctconsumer-0f3dc37c",
+          "count": 10,
+          "beforeByteOffsets": [
+            144,
+            25779,
+            26161,
+            27039,
+            27142,
+            27645,
+            29589,
+            30467,
+            30570,
+            31073
+          ],
+          "beforeWhole": {
+            "bytes": 31465,
+            "sha256": "5f3475b470fcd940fc8314ce01ec1e1cb5725bb8395472398d7f746d524254d6"
+          },
+          "afterWhole": {
+            "bytes": 31465,
+            "sha256": "8fde12fb83cffdf6d0b4737c42f60b3480bb83cec2ee044564baf499638856c1"
+          }
+        },
+        {
+          "purpose": "actual supported host x64 supervisor path",
+          "before": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+          "after": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe",
+          "count": 2,
+          "beforeByteOffsets": [
+            402,
+            22326
+          ],
+          "beforeWhole": {
+            "bytes": 31465,
+            "sha256": "8fde12fb83cffdf6d0b4737c42f60b3480bb83cec2ee044564baf499638856c1"
+          },
+          "afterWhole": {
+            "bytes": 31555,
+            "sha256": "c0e8f36ff7e6298af7c1ae48e9004a980c5dbf027bd52b63b51c9fd03f8bf512"
+          }
+        },
+        {
+          "purpose": "actual supervisor byte length",
+          "before": "\"bytes\": 60928,",
+          "after": "\"bytes\": 150016,",
+          "count": 2,
+          "beforeByteOffsets": [
+            521,
+            22492
+          ],
+          "beforeWhole": {
+            "bytes": 31555,
+            "sha256": "c0e8f36ff7e6298af7c1ae48e9004a980c5dbf027bd52b63b51c9fd03f8bf512"
+          },
+          "afterWhole": {
+            "bytes": 31557,
+            "sha256": "c2ff5d9f26881cfe803b0f1b089a068ec53f2ed5177ce47e31db38c9331844af"
+          }
+        },
+        {
+          "purpose": "actual supervisor raw SHA",
+          "before": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+          "after": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+          "count": 2,
+          "beforeByteOffsets": [
+            554,
+            22528
+          ],
+          "beforeWhole": {
+            "bytes": 31557,
+            "sha256": "c2ff5d9f26881cfe803b0f1b089a068ec53f2ed5177ce47e31db38c9331844af"
+          },
+          "afterWhole": {
+            "bytes": 31557,
+            "sha256": "230763a649f3964320e43d4d5cbfe243833ac65af59799ad52ee0d71f67c2317"
+          }
+        },
+        {
+          "purpose": "fresh configure snapshot nonce",
+          "before": "9d1413daa5f740d8a9a86c5485458b65",
+          "after": "27c1d82e47c2437e981e3a482dacfa49",
+          "count": 1,
+          "beforeByteOffsets": [
+            29094
+          ],
+          "beforeWhole": {
+            "bytes": 31557,
+            "sha256": "230763a649f3964320e43d4d5cbfe243833ac65af59799ad52ee0d71f67c2317"
+          },
+          "afterWhole": {
+            "bytes": 31557,
+            "sha256": "4fea7f9098be397e34fafccb68486b60ccdf5b109443da6205a272705a7e5486"
+          }
+        },
+        {
+          "purpose": "fresh build snapshot nonce",
+          "before": "56c5f5a9a4af4a6ca962b5e21bb08ac9",
+          "after": "04e622a069a84251ac14360f4c872a65",
+          "count": 1,
+          "beforeByteOffsets": [
+            29381
+          ],
+          "beforeWhole": {
+            "bytes": 31557,
+            "sha256": "4fea7f9098be397e34fafccb68486b60ccdf5b109443da6205a272705a7e5486"
+          },
+          "afterWhole": {
+            "bytes": 31557,
+            "sha256": "40680cf9587a320cde9cf6bbdb90c9ffecc699bcd5f4382c8c66942f3b181df0"
+          }
+        },
+        {
+          "purpose": "frozen supervisor source and actual support pins",
+          "before": "\r\n  ],\r\n  \"inventories\": [",
+          "after": ",\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json\",\r\n      \"bytes\": 22365,\r\n      \"sha256\": \"af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/Release/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/report.json\",\r\n      \"bytes\": 197716,\r\n      \"sha256\": \"c177613749679f591ce0306b737110cacf57dbceb614c5433b65919a5d3b3260\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-process-runner.cpp\",\r\n      \"bytes\": 24220,\r\n      \"sha256\": \"5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.cpp\",\r\n      \"bytes\": 31483,\r\n      \"sha256\": \"6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.h\",\r\n      \"bytes\": 971,\r\n      \"sha256\": \"0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt\",\r\n      \"bytes\": 2578,\r\n      \"sha256\": \"716c608fb38edac64d705e8f3e915fa8a865d36ecbdbed1d5572397b9a3a769b\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.command.1.tlog\",\r\n      \"bytes\": 1582,\r\n      \"sha256\": \"d83a88891d2114925eec1625aa26b5c217d6af4ef8edf83be9515395fc75754c\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.read.1.tlog\",\r\n      \"bytes\": 88030,\r\n      \"sha256\": \"dbc2f06961357fc8305e20886f7ea6ca1664d6672840af0161ff91ac79f56f07\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.command.1.tlog\",\r\n      \"bytes\": 1640,\r\n      \"sha256\": \"a57c2b9cbac12d88747ba0896dd17cf23922d02254937ddcd48903110dbfc718\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.read.1.tlog\",\r\n      \"bytes\": 3648,\r\n      \"sha256\": \"56aa37b84ebd2ed6fe98cfb66616c559dc2af252dcdd0bebef8ab3bbe9b6aa0a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.write.1.tlog\",\r\n      \"bytes\": 532,\r\n      \"sha256\": \"ed035dbad781ef24938af76efaab2c526017cf14d31708fdced23332ddb6a381\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-process-runner.obj\",\r\n      \"bytes\": 432108,\r\n      \"sha256\": \"9a622d177ef889e20afadbd003f575c23322d1b4c8a4f39026005c3d55410bae\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-tail-evidence.obj\",\r\n      \"bytes\": 623811,\r\n      \"sha256\": \"87bf8403b0e3b6df9d87e6660436f2a220ae77d1c1f612feecb895d91dc74f71\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson\",\r\n      \"bytes\": 1357799,\r\n      \"sha256\": \"1388deb6671ee3404c558179ac4ce3e48fed660d910496b4a1b754d50dfacd6a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson.context.json\",\r\n      \"bytes\": 1970,\r\n      \"sha256\": \"aa8a9b0a26d9802f733796095e35b7cabce42262f856e4f66552a4111081d64a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/finished.json\",\r\n      \"bytes\": 3029,\r\n      \"sha256\": \"8951e9b3300ea32c4505b65a00420a4e086c98fe9bf062f2dcc8895e0aad64b2\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/policy.json\",\r\n      \"bytes\": 2046,\r\n      \"sha256\": \"7a324984f08a4b300bea1879d54014f68157d2b823a6d6975052196a450481fe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson\",\r\n      \"bytes\": 199903,\r\n      \"sha256\": \"495bb08c4cfc91070893f60fd92deed89dfd536da519be04302caf4ce1f89e10\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson.context.json\",\r\n      \"bytes\": 2002,\r\n      \"sha256\": \"3dca72beb9e75837431d991183d6521b4d8202b17f6480ab1ee0ab3129994d81\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/finished.json\",\r\n      \"bytes\": 3025,\r\n      \"sha256\": \"8686db1b0142f9fe7ad70b4cbbf21849c8f0ff78c5643e0bd28cffbe75928e0f\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/policy.json\",\r\n      \"bytes\": 2043,\r\n      \"sha256\": \"3f18f22b12c6fe23838707faaa6c5a067cfc8d2e926cf81664f18b3616f72d1f\"\r\n    }\r\n  ],\r\n  \"inventories\": [",
+          "count": 1,
+          "beforeByteOffsets": [
+            23271
+          ],
+          "beforeWhole": {
+            "bytes": 31557,
+            "sha256": "40680cf9587a320cde9cf6bbdb90c9ffecc699bcd5f4382c8c66942f3b181df0"
+          },
+          "afterWhole": {
+            "bytes": 37067,
+            "sha256": "eba81b59ecbe349cf7358fc88b393d315877c77551cd8870058a14a2f036416d"
+          }
+        }
+      ],
+      "wholeForwardMatched": true,
+      "wholeInverseMatched": true
+    },
+    {
+      "file": "plan.Win32.Debug.json",
+      "before": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.Win32.Debug.json",
+        "bytes": 31544,
+        "sha256": "2e9ce70365d93f3269aa534509e5bb4fedaf80983e0471811335436826c09134"
+      },
+      "after": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Debug.json",
+        "bytes": 37153,
+        "sha256": "b05ce100f9545a4fecc5114cb170181c071a07d0cf72e395c1e4ad075b3a8e1e"
+      },
+      "spans": [
+        {
+          "purpose": "fresh packet path",
+          "before": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4",
+          "after": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48",
+          "count": 1,
+          "beforeByteOffsets": [
+            22587
+          ],
+          "beforeWhole": {
+            "bytes": 31544,
+            "sha256": "2e9ce70365d93f3269aa534509e5bb4fedaf80983e0471811335436826c09134"
+          },
+          "afterWhole": {
+            "bytes": 31551,
+            "sha256": "62adc65f6790344e797863d9a4680f69cbcb2130529b546d8a1117f929ef18c9"
+          }
+        },
+        {
+          "purpose": "fresh output namespace",
+          "before": "ctconsumer-0bea1a0f",
+          "after": "ctconsumer-0f3dc37c",
+          "count": 10,
+          "beforeByteOffsets": [
+            146,
+            25839,
+            26223,
+            27107,
+            27212,
+            27717,
+            29663,
+            30547,
+            30652,
+            31157
+          ],
+          "beforeWhole": {
+            "bytes": 31551,
+            "sha256": "62adc65f6790344e797863d9a4680f69cbcb2130529b546d8a1117f929ef18c9"
+          },
+          "afterWhole": {
+            "bytes": 31551,
+            "sha256": "383d727c21c4efc11ef7d49f08c24eb8c0cdcb7d2d020370254214bfaac7a5dc"
+          }
+        },
+        {
+          "purpose": "actual supported host x64 supervisor path",
+          "before": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+          "after": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe",
+          "count": 2,
+          "beforeByteOffsets": [
+            406,
+            22384
+          ],
+          "beforeWhole": {
+            "bytes": 31551,
+            "sha256": "383d727c21c4efc11ef7d49f08c24eb8c0cdcb7d2d020370254214bfaac7a5dc"
+          },
+          "afterWhole": {
+            "bytes": 31641,
+            "sha256": "32f3ed17ec93695a51211afb467d6ab4184c5b5934ea02cccde7d4c6a21b50ac"
+          }
+        },
+        {
+          "purpose": "actual supervisor byte length",
+          "before": "\"bytes\": 60928,",
+          "after": "\"bytes\": 150016,",
+          "count": 2,
+          "beforeByteOffsets": [
+            525,
+            22550
+          ],
+          "beforeWhole": {
+            "bytes": 31641,
+            "sha256": "32f3ed17ec93695a51211afb467d6ab4184c5b5934ea02cccde7d4c6a21b50ac"
+          },
+          "afterWhole": {
+            "bytes": 31643,
+            "sha256": "d947e3f738c44fea3e81dfcbc4b9580019afda0dccaf0e7cdf62981f4b93d577"
+          }
+        },
+        {
+          "purpose": "actual supervisor raw SHA",
+          "before": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+          "after": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+          "count": 2,
+          "beforeByteOffsets": [
+            558,
+            22586
+          ],
+          "beforeWhole": {
+            "bytes": 31643,
+            "sha256": "d947e3f738c44fea3e81dfcbc4b9580019afda0dccaf0e7cdf62981f4b93d577"
+          },
+          "afterWhole": {
+            "bytes": 31643,
+            "sha256": "9f8501ca0c96c955cfe6e097017d9240b88922001c8c1f13ccd11f36d7c58f8f"
+          }
+        },
+        {
+          "purpose": "fresh configure snapshot nonce",
+          "before": "ca6f89735fb64cc98eeac89e09aadc96",
+          "after": "575fa721dd5c4bd5b7e06b9cba874abc",
+          "count": 1,
+          "beforeByteOffsets": [
+            29168
+          ],
+          "beforeWhole": {
+            "bytes": 31643,
+            "sha256": "9f8501ca0c96c955cfe6e097017d9240b88922001c8c1f13ccd11f36d7c58f8f"
+          },
+          "afterWhole": {
+            "bytes": 31643,
+            "sha256": "4d9768e613e902b580828dafbaf838b893bee7f5c2818ccc3e16016c05549b17"
+          }
+        },
+        {
+          "purpose": "fresh build snapshot nonce",
+          "before": "de00b618da59467a9c771e6084b1fb39",
+          "after": "a8964da0d65c4230a1e980c0355da58b",
+          "count": 1,
+          "beforeByteOffsets": [
+            29455
+          ],
+          "beforeWhole": {
+            "bytes": 31643,
+            "sha256": "4d9768e613e902b580828dafbaf838b893bee7f5c2818ccc3e16016c05549b17"
+          },
+          "afterWhole": {
+            "bytes": 31643,
+            "sha256": "86dcf51b3be9479d15a5c4c0aa38c143caf72c88d250db7784fce8bfcf9fecfc"
+          }
+        },
+        {
+          "purpose": "frozen supervisor source and actual support pins",
+          "before": "\r\n  ],\r\n  \"inventories\": [",
+          "after": ",\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json\",\r\n      \"bytes\": 22365,\r\n      \"sha256\": \"af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/Release/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/report.json\",\r\n      \"bytes\": 197716,\r\n      \"sha256\": \"c177613749679f591ce0306b737110cacf57dbceb614c5433b65919a5d3b3260\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-process-runner.cpp\",\r\n      \"bytes\": 24220,\r\n      \"sha256\": \"5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.cpp\",\r\n      \"bytes\": 31483,\r\n      \"sha256\": \"6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.h\",\r\n      \"bytes\": 971,\r\n      \"sha256\": \"0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt\",\r\n      \"bytes\": 2578,\r\n      \"sha256\": \"716c608fb38edac64d705e8f3e915fa8a865d36ecbdbed1d5572397b9a3a769b\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.command.1.tlog\",\r\n      \"bytes\": 1582,\r\n      \"sha256\": \"d83a88891d2114925eec1625aa26b5c217d6af4ef8edf83be9515395fc75754c\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.read.1.tlog\",\r\n      \"bytes\": 88030,\r\n      \"sha256\": \"dbc2f06961357fc8305e20886f7ea6ca1664d6672840af0161ff91ac79f56f07\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.command.1.tlog\",\r\n      \"bytes\": 1640,\r\n      \"sha256\": \"a57c2b9cbac12d88747ba0896dd17cf23922d02254937ddcd48903110dbfc718\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.read.1.tlog\",\r\n      \"bytes\": 3648,\r\n      \"sha256\": \"56aa37b84ebd2ed6fe98cfb66616c559dc2af252dcdd0bebef8ab3bbe9b6aa0a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.write.1.tlog\",\r\n      \"bytes\": 532,\r\n      \"sha256\": \"ed035dbad781ef24938af76efaab2c526017cf14d31708fdced23332ddb6a381\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-process-runner.obj\",\r\n      \"bytes\": 432108,\r\n      \"sha256\": \"9a622d177ef889e20afadbd003f575c23322d1b4c8a4f39026005c3d55410bae\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-tail-evidence.obj\",\r\n      \"bytes\": 623811,\r\n      \"sha256\": \"87bf8403b0e3b6df9d87e6660436f2a220ae77d1c1f612feecb895d91dc74f71\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson\",\r\n      \"bytes\": 1357799,\r\n      \"sha256\": \"1388deb6671ee3404c558179ac4ce3e48fed660d910496b4a1b754d50dfacd6a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson.context.json\",\r\n      \"bytes\": 1970,\r\n      \"sha256\": \"aa8a9b0a26d9802f733796095e35b7cabce42262f856e4f66552a4111081d64a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/finished.json\",\r\n      \"bytes\": 3029,\r\n      \"sha256\": \"8951e9b3300ea32c4505b65a00420a4e086c98fe9bf062f2dcc8895e0aad64b2\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/policy.json\",\r\n      \"bytes\": 2046,\r\n      \"sha256\": \"7a324984f08a4b300bea1879d54014f68157d2b823a6d6975052196a450481fe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson\",\r\n      \"bytes\": 199903,\r\n      \"sha256\": \"495bb08c4cfc91070893f60fd92deed89dfd536da519be04302caf4ce1f89e10\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson.context.json\",\r\n      \"bytes\": 2002,\r\n      \"sha256\": \"3dca72beb9e75837431d991183d6521b4d8202b17f6480ab1ee0ab3129994d81\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/finished.json\",\r\n      \"bytes\": 3025,\r\n      \"sha256\": \"8686db1b0142f9fe7ad70b4cbbf21849c8f0ff78c5643e0bd28cffbe75928e0f\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/policy.json\",\r\n      \"bytes\": 2043,\r\n      \"sha256\": \"3f18f22b12c6fe23838707faaa6c5a067cfc8d2e926cf81664f18b3616f72d1f\"\r\n    }\r\n  ],\r\n  \"inventories\": [",
+          "count": 1,
+          "beforeByteOffsets": [
+            23329
+          ],
+          "beforeWhole": {
+            "bytes": 31643,
+            "sha256": "86dcf51b3be9479d15a5c4c0aa38c143caf72c88d250db7784fce8bfcf9fecfc"
+          },
+          "afterWhole": {
+            "bytes": 37153,
+            "sha256": "b05ce100f9545a4fecc5114cb170181c071a07d0cf72e395c1e4ad075b3a8e1e"
+          }
+        }
+      ],
+      "wholeForwardMatched": true,
+      "wholeInverseMatched": true
+    },
+    {
+      "file": "plan.x64.Release.json",
+      "before": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.x64.Release.json",
+        "bytes": 31550,
+        "sha256": "a74839d6ce4cae47cc4fa9d68de2ff5d187e4986cbbcf8e9e3611ed286e12325"
+      },
+      "after": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Release.json",
+        "bytes": 37159,
+        "sha256": "cb57d59bb9a2b50dd7d197c8c6c738115e06cb9814702607535585f6cf359f2c"
+      },
+      "spans": [
+        {
+          "purpose": "fresh packet path",
+          "before": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4",
+          "after": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48",
+          "count": 1,
+          "beforeByteOffsets": [
+            22591
+          ],
+          "beforeWhole": {
+            "bytes": 31550,
+            "sha256": "a74839d6ce4cae47cc4fa9d68de2ff5d187e4986cbbcf8e9e3611ed286e12325"
+          },
+          "afterWhole": {
+            "bytes": 31557,
+            "sha256": "956a7779c62dc8757495a65cf9ba701fb858a92592c769d1d6d70676cf874e2c"
+          }
+        },
+        {
+          "purpose": "fresh output namespace",
+          "before": "ctconsumer-0bea1a0f",
+          "after": "ctconsumer-0f3dc37c",
+          "count": 10,
+          "beforeByteOffsets": [
+            146,
+            25845,
+            26229,
+            27111,
+            27216,
+            27721,
+            29669,
+            30551,
+            30656,
+            31161
+          ],
+          "beforeWhole": {
+            "bytes": 31557,
+            "sha256": "956a7779c62dc8757495a65cf9ba701fb858a92592c769d1d6d70676cf874e2c"
+          },
+          "afterWhole": {
+            "bytes": 31557,
+            "sha256": "14c3b3c414f6df5d6eb1d2d5b6702699d5924b6197939787cb18508455d9525e"
+          }
+        },
+        {
+          "purpose": "actual supported host x64 supervisor path",
+          "before": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+          "after": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe",
+          "count": 2,
+          "beforeByteOffsets": [
+            406,
+            22388
+          ],
+          "beforeWhole": {
+            "bytes": 31557,
+            "sha256": "14c3b3c414f6df5d6eb1d2d5b6702699d5924b6197939787cb18508455d9525e"
+          },
+          "afterWhole": {
+            "bytes": 31647,
+            "sha256": "c021b7e2d22099e1188ffca9fc9556115d6a289193b9753a03b5862b08ceef48"
+          }
+        },
+        {
+          "purpose": "actual supervisor byte length",
+          "before": "\"bytes\": 60928,",
+          "after": "\"bytes\": 150016,",
+          "count": 2,
+          "beforeByteOffsets": [
+            525,
+            22554
+          ],
+          "beforeWhole": {
+            "bytes": 31647,
+            "sha256": "c021b7e2d22099e1188ffca9fc9556115d6a289193b9753a03b5862b08ceef48"
+          },
+          "afterWhole": {
+            "bytes": 31649,
+            "sha256": "d382c83ecdbcc7345e8d9870a7ac2faee3b0f072c4f01334a8256e373285cf96"
+          }
+        },
+        {
+          "purpose": "actual supervisor raw SHA",
+          "before": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+          "after": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+          "count": 2,
+          "beforeByteOffsets": [
+            558,
+            22590
+          ],
+          "beforeWhole": {
+            "bytes": 31649,
+            "sha256": "d382c83ecdbcc7345e8d9870a7ac2faee3b0f072c4f01334a8256e373285cf96"
+          },
+          "afterWhole": {
+            "bytes": 31649,
+            "sha256": "6cc7cbac4dbc2fca9d09f257bf025922644191b4a61ffce5512adf1f6a6f4e7b"
+          }
+        },
+        {
+          "purpose": "fresh configure snapshot nonce",
+          "before": "41f1cd073a244529a926a8082197ee95",
+          "after": "ee611e1323694b8793fac5ef43661bc4",
+          "count": 1,
+          "beforeByteOffsets": [
+            29174
+          ],
+          "beforeWhole": {
+            "bytes": 31649,
+            "sha256": "6cc7cbac4dbc2fca9d09f257bf025922644191b4a61ffce5512adf1f6a6f4e7b"
+          },
+          "afterWhole": {
+            "bytes": 31649,
+            "sha256": "dc94588d8b32cc8e24a497f0b76a5e4add645293b72a8dd9a4e5caf41764ec25"
+          }
+        },
+        {
+          "purpose": "fresh build snapshot nonce",
+          "before": "6fb7c5c72a204559b06527b093174d7b",
+          "after": "dd9afa47d3b4487cb1e56f8cef20e74d",
+          "count": 1,
+          "beforeByteOffsets": [
+            29461
+          ],
+          "beforeWhole": {
+            "bytes": 31649,
+            "sha256": "dc94588d8b32cc8e24a497f0b76a5e4add645293b72a8dd9a4e5caf41764ec25"
+          },
+          "afterWhole": {
+            "bytes": 31649,
+            "sha256": "accd8ffa4e3639f78dfe3ba58c449e47ee6761755eb82e83b91363dbe08eb80d"
+          }
+        },
+        {
+          "purpose": "frozen supervisor source and actual support pins",
+          "before": "\r\n  ],\r\n  \"inventories\": [",
+          "after": ",\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json\",\r\n      \"bytes\": 22365,\r\n      \"sha256\": \"af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/Release/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/report.json\",\r\n      \"bytes\": 197716,\r\n      \"sha256\": \"c177613749679f591ce0306b737110cacf57dbceb614c5433b65919a5d3b3260\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-process-runner.cpp\",\r\n      \"bytes\": 24220,\r\n      \"sha256\": \"5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.cpp\",\r\n      \"bytes\": 31483,\r\n      \"sha256\": \"6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.h\",\r\n      \"bytes\": 971,\r\n      \"sha256\": \"0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt\",\r\n      \"bytes\": 2578,\r\n      \"sha256\": \"716c608fb38edac64d705e8f3e915fa8a865d36ecbdbed1d5572397b9a3a769b\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.command.1.tlog\",\r\n      \"bytes\": 1582,\r\n      \"sha256\": \"d83a88891d2114925eec1625aa26b5c217d6af4ef8edf83be9515395fc75754c\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.read.1.tlog\",\r\n      \"bytes\": 88030,\r\n      \"sha256\": \"dbc2f06961357fc8305e20886f7ea6ca1664d6672840af0161ff91ac79f56f07\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.command.1.tlog\",\r\n      \"bytes\": 1640,\r\n      \"sha256\": \"a57c2b9cbac12d88747ba0896dd17cf23922d02254937ddcd48903110dbfc718\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.read.1.tlog\",\r\n      \"bytes\": 3648,\r\n      \"sha256\": \"56aa37b84ebd2ed6fe98cfb66616c559dc2af252dcdd0bebef8ab3bbe9b6aa0a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.write.1.tlog\",\r\n      \"bytes\": 532,\r\n      \"sha256\": \"ed035dbad781ef24938af76efaab2c526017cf14d31708fdced23332ddb6a381\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-process-runner.obj\",\r\n      \"bytes\": 432108,\r\n      \"sha256\": \"9a622d177ef889e20afadbd003f575c23322d1b4c8a4f39026005c3d55410bae\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-tail-evidence.obj\",\r\n      \"bytes\": 623811,\r\n      \"sha256\": \"87bf8403b0e3b6df9d87e6660436f2a220ae77d1c1f612feecb895d91dc74f71\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson\",\r\n      \"bytes\": 1357799,\r\n      \"sha256\": \"1388deb6671ee3404c558179ac4ce3e48fed660d910496b4a1b754d50dfacd6a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson.context.json\",\r\n      \"bytes\": 1970,\r\n      \"sha256\": \"aa8a9b0a26d9802f733796095e35b7cabce42262f856e4f66552a4111081d64a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/finished.json\",\r\n      \"bytes\": 3029,\r\n      \"sha256\": \"8951e9b3300ea32c4505b65a00420a4e086c98fe9bf062f2dcc8895e0aad64b2\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/policy.json\",\r\n      \"bytes\": 2046,\r\n      \"sha256\": \"7a324984f08a4b300bea1879d54014f68157d2b823a6d6975052196a450481fe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson\",\r\n      \"bytes\": 199903,\r\n      \"sha256\": \"495bb08c4cfc91070893f60fd92deed89dfd536da519be04302caf4ce1f89e10\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson.context.json\",\r\n      \"bytes\": 2002,\r\n      \"sha256\": \"3dca72beb9e75837431d991183d6521b4d8202b17f6480ab1ee0ab3129994d81\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/finished.json\",\r\n      \"bytes\": 3025,\r\n      \"sha256\": \"8686db1b0142f9fe7ad70b4cbbf21849c8f0ff78c5643e0bd28cffbe75928e0f\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/policy.json\",\r\n      \"bytes\": 2043,\r\n      \"sha256\": \"3f18f22b12c6fe23838707faaa6c5a067cfc8d2e926cf81664f18b3616f72d1f\"\r\n    }\r\n  ],\r\n  \"inventories\": [",
+          "count": 1,
+          "beforeByteOffsets": [
+            23333
+          ],
+          "beforeWhole": {
+            "bytes": 31649,
+            "sha256": "accd8ffa4e3639f78dfe3ba58c449e47ee6761755eb82e83b91363dbe08eb80d"
+          },
+          "afterWhole": {
+            "bytes": 37159,
+            "sha256": "cb57d59bb9a2b50dd7d197c8c6c738115e06cb9814702607535585f6cf359f2c"
+          }
+        }
+      ],
+      "wholeForwardMatched": true,
+      "wholeInverseMatched": true
+    },
+    {
+      "file": "plan.Win32.Release.json",
+      "before": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.Win32.Release.json",
+        "bytes": 31636,
+        "sha256": "c3923d0a6ce8485d277e4929a4d14e3c9edf4cbb6911d85357ed4b14a49c2b88"
+      },
+      "after": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Release.json",
+        "bytes": 37245,
+        "sha256": "9439a1a45bdd3a49258ff05c8495c2d2d37543b83d1a2c00ed95a7b3846ff164"
+      },
+      "spans": [
+        {
+          "purpose": "fresh packet path",
+          "before": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4",
+          "after": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48",
+          "count": 1,
+          "beforeByteOffsets": [
+            22649
+          ],
+          "beforeWhole": {
+            "bytes": 31636,
+            "sha256": "c3923d0a6ce8485d277e4929a4d14e3c9edf4cbb6911d85357ed4b14a49c2b88"
+          },
+          "afterWhole": {
+            "bytes": 31643,
+            "sha256": "a385ef972a19dd09785f863ddfef71a87a468894638317f8cb9b0391ca0d99fa"
+          }
+        },
+        {
+          "purpose": "fresh output namespace",
+          "before": "ctconsumer-0bea1a0f",
+          "after": "ctconsumer-0f3dc37c",
+          "count": 10,
+          "beforeByteOffsets": [
+            148,
+            25905,
+            26291,
+            27179,
+            27286,
+            27793,
+            29743,
+            30631,
+            30738,
+            31245
+          ],
+          "beforeWhole": {
+            "bytes": 31643,
+            "sha256": "a385ef972a19dd09785f863ddfef71a87a468894638317f8cb9b0391ca0d99fa"
+          },
+          "afterWhole": {
+            "bytes": 31643,
+            "sha256": "cf70eae390bcbe854e2359def2ea3a9a3932a2db4d040e587dfbb1eb584e7eb2"
+          }
+        },
+        {
+          "purpose": "actual supported host x64 supervisor path",
+          "before": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+          "after": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe",
+          "count": 2,
+          "beforeByteOffsets": [
+            410,
+            22446
+          ],
+          "beforeWhole": {
+            "bytes": 31643,
+            "sha256": "cf70eae390bcbe854e2359def2ea3a9a3932a2db4d040e587dfbb1eb584e7eb2"
+          },
+          "afterWhole": {
+            "bytes": 31733,
+            "sha256": "6f35241f4e4eaf5e27962085381e1f7d791435c3cb1ecfcd895004e5741322eb"
+          }
+        },
+        {
+          "purpose": "actual supervisor byte length",
+          "before": "\"bytes\": 60928,",
+          "after": "\"bytes\": 150016,",
+          "count": 2,
+          "beforeByteOffsets": [
+            529,
+            22612
+          ],
+          "beforeWhole": {
+            "bytes": 31733,
+            "sha256": "6f35241f4e4eaf5e27962085381e1f7d791435c3cb1ecfcd895004e5741322eb"
+          },
+          "afterWhole": {
+            "bytes": 31735,
+            "sha256": "4a2b0f96e488a798bbba11bdc42731172d9354a5149fdd019ea126d34da4cba5"
+          }
+        },
+        {
+          "purpose": "actual supervisor raw SHA",
+          "before": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+          "after": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+          "count": 2,
+          "beforeByteOffsets": [
+            562,
+            22648
+          ],
+          "beforeWhole": {
+            "bytes": 31735,
+            "sha256": "4a2b0f96e488a798bbba11bdc42731172d9354a5149fdd019ea126d34da4cba5"
+          },
+          "afterWhole": {
+            "bytes": 31735,
+            "sha256": "ab2cc7ae188dfdd07f2b950c1aaf783641e7a4efa4f58eebbedd46efddbe9172"
+          }
+        },
+        {
+          "purpose": "fresh configure snapshot nonce",
+          "before": "8de92af13e444279b44197733fd9f9ad",
+          "after": "dc465f3eec824ca0aed7732435103bc5",
+          "count": 1,
+          "beforeByteOffsets": [
+            29248
+          ],
+          "beforeWhole": {
+            "bytes": 31735,
+            "sha256": "ab2cc7ae188dfdd07f2b950c1aaf783641e7a4efa4f58eebbedd46efddbe9172"
+          },
+          "afterWhole": {
+            "bytes": 31735,
+            "sha256": "5f4be00705f63054781f0df96307376401ee6098b6550aa5107ea0a771205d56"
+          }
+        },
+        {
+          "purpose": "fresh build snapshot nonce",
+          "before": "42660928711f4921a70dbd9a3fb8d612",
+          "after": "24d3683793044e009b5c65ae4504a578",
+          "count": 1,
+          "beforeByteOffsets": [
+            29535
+          ],
+          "beforeWhole": {
+            "bytes": 31735,
+            "sha256": "5f4be00705f63054781f0df96307376401ee6098b6550aa5107ea0a771205d56"
+          },
+          "afterWhole": {
+            "bytes": 31735,
+            "sha256": "a5b0b1d19f7c8125b787420be88513c536b5921d160a1070bcb0aa138c0bb727"
+          }
+        },
+        {
+          "purpose": "frozen supervisor source and actual support pins",
+          "before": "\r\n  ],\r\n  \"inventories\": [",
+          "after": ",\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json\",\r\n      \"bytes\": 22365,\r\n      \"sha256\": \"af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/Release/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/report.json\",\r\n      \"bytes\": 197716,\r\n      \"sha256\": \"c177613749679f591ce0306b737110cacf57dbceb614c5433b65919a5d3b3260\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-process-runner.cpp\",\r\n      \"bytes\": 24220,\r\n      \"sha256\": \"5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.cpp\",\r\n      \"bytes\": 31483,\r\n      \"sha256\": \"6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.h\",\r\n      \"bytes\": 971,\r\n      \"sha256\": \"0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt\",\r\n      \"bytes\": 2578,\r\n      \"sha256\": \"716c608fb38edac64d705e8f3e915fa8a865d36ecbdbed1d5572397b9a3a769b\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.command.1.tlog\",\r\n      \"bytes\": 1582,\r\n      \"sha256\": \"d83a88891d2114925eec1625aa26b5c217d6af4ef8edf83be9515395fc75754c\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.read.1.tlog\",\r\n      \"bytes\": 88030,\r\n      \"sha256\": \"dbc2f06961357fc8305e20886f7ea6ca1664d6672840af0161ff91ac79f56f07\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.command.1.tlog\",\r\n      \"bytes\": 1640,\r\n      \"sha256\": \"a57c2b9cbac12d88747ba0896dd17cf23922d02254937ddcd48903110dbfc718\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.read.1.tlog\",\r\n      \"bytes\": 3648,\r\n      \"sha256\": \"56aa37b84ebd2ed6fe98cfb66616c559dc2af252dcdd0bebef8ab3bbe9b6aa0a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.write.1.tlog\",\r\n      \"bytes\": 532,\r\n      \"sha256\": \"ed035dbad781ef24938af76efaab2c526017cf14d31708fdced23332ddb6a381\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-process-runner.obj\",\r\n      \"bytes\": 432108,\r\n      \"sha256\": \"9a622d177ef889e20afadbd003f575c23322d1b4c8a4f39026005c3d55410bae\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-tail-evidence.obj\",\r\n      \"bytes\": 623811,\r\n      \"sha256\": \"87bf8403b0e3b6df9d87e6660436f2a220ae77d1c1f612feecb895d91dc74f71\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson\",\r\n      \"bytes\": 1357799,\r\n      \"sha256\": \"1388deb6671ee3404c558179ac4ce3e48fed660d910496b4a1b754d50dfacd6a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson.context.json\",\r\n      \"bytes\": 1970,\r\n      \"sha256\": \"aa8a9b0a26d9802f733796095e35b7cabce42262f856e4f66552a4111081d64a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/finished.json\",\r\n      \"bytes\": 3029,\r\n      \"sha256\": \"8951e9b3300ea32c4505b65a00420a4e086c98fe9bf062f2dcc8895e0aad64b2\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/policy.json\",\r\n      \"bytes\": 2046,\r\n      \"sha256\": \"7a324984f08a4b300bea1879d54014f68157d2b823a6d6975052196a450481fe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson\",\r\n      \"bytes\": 199903,\r\n      \"sha256\": \"495bb08c4cfc91070893f60fd92deed89dfd536da519be04302caf4ce1f89e10\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson.context.json\",\r\n      \"bytes\": 2002,\r\n      \"sha256\": \"3dca72beb9e75837431d991183d6521b4d8202b17f6480ab1ee0ab3129994d81\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/finished.json\",\r\n      \"bytes\": 3025,\r\n      \"sha256\": \"8686db1b0142f9fe7ad70b4cbbf21849c8f0ff78c5643e0bd28cffbe75928e0f\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/policy.json\",\r\n      \"bytes\": 2043,\r\n      \"sha256\": \"3f18f22b12c6fe23838707faaa6c5a067cfc8d2e926cf81664f18b3616f72d1f\"\r\n    }\r\n  ],\r\n  \"inventories\": [",
+          "count": 1,
+          "beforeByteOffsets": [
+            23391
+          ],
+          "beforeWhole": {
+            "bytes": 31735,
+            "sha256": "a5b0b1d19f7c8125b787420be88513c536b5921d160a1070bcb0aa138c0bb727"
+          },
+          "afterWhole": {
+            "bytes": 37245,
+            "sha256": "9439a1a45bdd3a49258ff05c8495c2d2d37543b83d1a2c00ed95a7b3846ff164"
+          }
+        }
+      ],
+      "wholeForwardMatched": true,
+      "wholeInverseMatched": true
+    },
+    {
+      "file": "runtime-template.x64.Debug.json",
+      "before": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.x64.Debug.json",
+        "bytes": 25239,
+        "sha256": "7c602ac8d6c76a9917e3ed92d25e3a2300802b89230c4e61e91f5f4c3bce61cd"
+      },
+      "after": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Debug.json",
+        "bytes": 30841,
+        "sha256": "44469012b9ab1ab66aa7417436ea27d1e088b8e5614cd38c66a017e3a3ea5266"
+      },
+      "spans": [
+        {
+          "purpose": "fresh output namespace",
+          "before": "ctconsumer-0bea1a0f",
+          "after": "ctconsumer-0f3dc37c",
+          "count": 3,
+          "beforeByteOffsets": [
+            142,
+            24890,
+            25019
+          ],
+          "beforeWhole": {
+            "bytes": 25239,
+            "sha256": "7c602ac8d6c76a9917e3ed92d25e3a2300802b89230c4e61e91f5f4c3bce61cd"
+          },
+          "afterWhole": {
+            "bytes": 25239,
+            "sha256": "0bd8b0f72c34e9b5d50177f1a646aab8be5e4bf069052abf5e2c98afb515c965"
+          }
+        },
+        {
+          "purpose": "actual supported host x64 supervisor path",
+          "before": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+          "after": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe",
+          "count": 2,
+          "beforeByteOffsets": [
+            403,
+            22327
+          ],
+          "beforeWhole": {
+            "bytes": 25239,
+            "sha256": "0bd8b0f72c34e9b5d50177f1a646aab8be5e4bf069052abf5e2c98afb515c965"
+          },
+          "afterWhole": {
+            "bytes": 25329,
+            "sha256": "316dcc1230614708083b32b66b0c6ef75da76eef89379e6259f07f08049b98b6"
+          }
+        },
+        {
+          "purpose": "actual supervisor byte length",
+          "before": "\"bytes\": 60928,",
+          "after": "\"bytes\": 150016,",
+          "count": 2,
+          "beforeByteOffsets": [
+            522,
+            22493
+          ],
+          "beforeWhole": {
+            "bytes": 25329,
+            "sha256": "316dcc1230614708083b32b66b0c6ef75da76eef89379e6259f07f08049b98b6"
+          },
+          "afterWhole": {
+            "bytes": 25331,
+            "sha256": "2ca52ea985ac4a8918db2c5e8b24e2b9c815ec34c46e42006709d474c7a85cac"
+          }
+        },
+        {
+          "purpose": "actual supervisor raw SHA",
+          "before": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+          "after": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+          "count": 2,
+          "beforeByteOffsets": [
+            555,
+            22529
+          ],
+          "beforeWhole": {
+            "bytes": 25331,
+            "sha256": "2ca52ea985ac4a8918db2c5e8b24e2b9c815ec34c46e42006709d474c7a85cac"
+          },
+          "afterWhole": {
+            "bytes": 25331,
+            "sha256": "1ee7d62918d0ae010840ae0b71ed74abb33d08413f7507e11ccf459476903608"
+          }
+        },
+        {
+          "purpose": "frozen supervisor source and actual support pins",
+          "before": "\r\n  ],\r\n  \"inventories\": [",
+          "after": ",\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json\",\r\n      \"bytes\": 22365,\r\n      \"sha256\": \"af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/Release/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/report.json\",\r\n      \"bytes\": 197716,\r\n      \"sha256\": \"c177613749679f591ce0306b737110cacf57dbceb614c5433b65919a5d3b3260\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-process-runner.cpp\",\r\n      \"bytes\": 24220,\r\n      \"sha256\": \"5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.cpp\",\r\n      \"bytes\": 31483,\r\n      \"sha256\": \"6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.h\",\r\n      \"bytes\": 971,\r\n      \"sha256\": \"0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt\",\r\n      \"bytes\": 2578,\r\n      \"sha256\": \"716c608fb38edac64d705e8f3e915fa8a865d36ecbdbed1d5572397b9a3a769b\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.command.1.tlog\",\r\n      \"bytes\": 1582,\r\n      \"sha256\": \"d83a88891d2114925eec1625aa26b5c217d6af4ef8edf83be9515395fc75754c\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.read.1.tlog\",\r\n      \"bytes\": 88030,\r\n      \"sha256\": \"dbc2f06961357fc8305e20886f7ea6ca1664d6672840af0161ff91ac79f56f07\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.command.1.tlog\",\r\n      \"bytes\": 1640,\r\n      \"sha256\": \"a57c2b9cbac12d88747ba0896dd17cf23922d02254937ddcd48903110dbfc718\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.read.1.tlog\",\r\n      \"bytes\": 3648,\r\n      \"sha256\": \"56aa37b84ebd2ed6fe98cfb66616c559dc2af252dcdd0bebef8ab3bbe9b6aa0a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.write.1.tlog\",\r\n      \"bytes\": 532,\r\n      \"sha256\": \"ed035dbad781ef24938af76efaab2c526017cf14d31708fdced23332ddb6a381\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-process-runner.obj\",\r\n      \"bytes\": 432108,\r\n      \"sha256\": \"9a622d177ef889e20afadbd003f575c23322d1b4c8a4f39026005c3d55410bae\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-tail-evidence.obj\",\r\n      \"bytes\": 623811,\r\n      \"sha256\": \"87bf8403b0e3b6df9d87e6660436f2a220ae77d1c1f612feecb895d91dc74f71\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson\",\r\n      \"bytes\": 1357799,\r\n      \"sha256\": \"1388deb6671ee3404c558179ac4ce3e48fed660d910496b4a1b754d50dfacd6a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson.context.json\",\r\n      \"bytes\": 1970,\r\n      \"sha256\": \"aa8a9b0a26d9802f733796095e35b7cabce42262f856e4f66552a4111081d64a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/finished.json\",\r\n      \"bytes\": 3029,\r\n      \"sha256\": \"8951e9b3300ea32c4505b65a00420a4e086c98fe9bf062f2dcc8895e0aad64b2\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/policy.json\",\r\n      \"bytes\": 2046,\r\n      \"sha256\": \"7a324984f08a4b300bea1879d54014f68157d2b823a6d6975052196a450481fe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson\",\r\n      \"bytes\": 199903,\r\n      \"sha256\": \"495bb08c4cfc91070893f60fd92deed89dfd536da519be04302caf4ce1f89e10\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson.context.json\",\r\n      \"bytes\": 2002,\r\n      \"sha256\": \"3dca72beb9e75837431d991183d6521b4d8202b17f6480ab1ee0ab3129994d81\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/finished.json\",\r\n      \"bytes\": 3025,\r\n      \"sha256\": \"8686db1b0142f9fe7ad70b4cbbf21849c8f0ff78c5643e0bd28cffbe75928e0f\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/policy.json\",\r\n      \"bytes\": 2043,\r\n      \"sha256\": \"3f18f22b12c6fe23838707faaa6c5a067cfc8d2e926cf81664f18b3616f72d1f\"\r\n    }\r\n  ],\r\n  \"inventories\": [",
+          "count": 1,
+          "beforeByteOffsets": [
+            22601
+          ],
+          "beforeWhole": {
+            "bytes": 25331,
+            "sha256": "1ee7d62918d0ae010840ae0b71ed74abb33d08413f7507e11ccf459476903608"
+          },
+          "afterWhole": {
+            "bytes": 30841,
+            "sha256": "44469012b9ab1ab66aa7417436ea27d1e088b8e5614cd38c66a017e3a3ea5266"
+          }
+        }
+      ],
+      "wholeForwardMatched": true,
+      "wholeInverseMatched": true
+    },
+    {
+      "file": "runtime-template.Win32.Debug.json",
+      "before": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.Win32.Debug.json",
+        "bytes": 25301,
+        "sha256": "7c172d55e843407d73ce189c99734f193fcd6323929d8b041a8ffdca28f151c9"
+      },
+      "after": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Debug.json",
+        "bytes": 30903,
+        "sha256": "50cf04e9d8bf47afdc888e06717e410a1e6c11dfbebe75099b2dcc620ce8600b"
+      },
+      "spans": [
+        {
+          "purpose": "fresh output namespace",
+          "before": "ctconsumer-0bea1a0f",
+          "after": "ctconsumer-0f3dc37c",
+          "count": 3,
+          "beforeByteOffsets": [
+            144,
+            24948,
+            25079
+          ],
+          "beforeWhole": {
+            "bytes": 25301,
+            "sha256": "7c172d55e843407d73ce189c99734f193fcd6323929d8b041a8ffdca28f151c9"
+          },
+          "afterWhole": {
+            "bytes": 25301,
+            "sha256": "3ea584588c0309101d96153237bbf78f5b32be0bff698073599686606a06c8a4"
+          }
+        },
+        {
+          "purpose": "actual supported host x64 supervisor path",
+          "before": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+          "after": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe",
+          "count": 2,
+          "beforeByteOffsets": [
+            407,
+            22385
+          ],
+          "beforeWhole": {
+            "bytes": 25301,
+            "sha256": "3ea584588c0309101d96153237bbf78f5b32be0bff698073599686606a06c8a4"
+          },
+          "afterWhole": {
+            "bytes": 25391,
+            "sha256": "18d59231256466f1c916e289bede9ae7c7dcb61b096d22f7ff4e2a76c4c36a66"
+          }
+        },
+        {
+          "purpose": "actual supervisor byte length",
+          "before": "\"bytes\": 60928,",
+          "after": "\"bytes\": 150016,",
+          "count": 2,
+          "beforeByteOffsets": [
+            526,
+            22551
+          ],
+          "beforeWhole": {
+            "bytes": 25391,
+            "sha256": "18d59231256466f1c916e289bede9ae7c7dcb61b096d22f7ff4e2a76c4c36a66"
+          },
+          "afterWhole": {
+            "bytes": 25393,
+            "sha256": "a35a510ef59ec84a811977f7cdf016f07b1d538e4bf111b4c94489c9166e7e65"
+          }
+        },
+        {
+          "purpose": "actual supervisor raw SHA",
+          "before": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+          "after": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+          "count": 2,
+          "beforeByteOffsets": [
+            559,
+            22587
+          ],
+          "beforeWhole": {
+            "bytes": 25393,
+            "sha256": "a35a510ef59ec84a811977f7cdf016f07b1d538e4bf111b4c94489c9166e7e65"
+          },
+          "afterWhole": {
+            "bytes": 25393,
+            "sha256": "83f3d35da6c6d9126a35e39bfe024174f426e7f3b59aad8c8de73ca94d12eaa0"
+          }
+        },
+        {
+          "purpose": "frozen supervisor source and actual support pins",
+          "before": "\r\n  ],\r\n  \"inventories\": [",
+          "after": ",\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json\",\r\n      \"bytes\": 22365,\r\n      \"sha256\": \"af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/Release/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/report.json\",\r\n      \"bytes\": 197716,\r\n      \"sha256\": \"c177613749679f591ce0306b737110cacf57dbceb614c5433b65919a5d3b3260\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-process-runner.cpp\",\r\n      \"bytes\": 24220,\r\n      \"sha256\": \"5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.cpp\",\r\n      \"bytes\": 31483,\r\n      \"sha256\": \"6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.h\",\r\n      \"bytes\": 971,\r\n      \"sha256\": \"0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt\",\r\n      \"bytes\": 2578,\r\n      \"sha256\": \"716c608fb38edac64d705e8f3e915fa8a865d36ecbdbed1d5572397b9a3a769b\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.command.1.tlog\",\r\n      \"bytes\": 1582,\r\n      \"sha256\": \"d83a88891d2114925eec1625aa26b5c217d6af4ef8edf83be9515395fc75754c\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.read.1.tlog\",\r\n      \"bytes\": 88030,\r\n      \"sha256\": \"dbc2f06961357fc8305e20886f7ea6ca1664d6672840af0161ff91ac79f56f07\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.command.1.tlog\",\r\n      \"bytes\": 1640,\r\n      \"sha256\": \"a57c2b9cbac12d88747ba0896dd17cf23922d02254937ddcd48903110dbfc718\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.read.1.tlog\",\r\n      \"bytes\": 3648,\r\n      \"sha256\": \"56aa37b84ebd2ed6fe98cfb66616c559dc2af252dcdd0bebef8ab3bbe9b6aa0a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.write.1.tlog\",\r\n      \"bytes\": 532,\r\n      \"sha256\": \"ed035dbad781ef24938af76efaab2c526017cf14d31708fdced23332ddb6a381\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-process-runner.obj\",\r\n      \"bytes\": 432108,\r\n      \"sha256\": \"9a622d177ef889e20afadbd003f575c23322d1b4c8a4f39026005c3d55410bae\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-tail-evidence.obj\",\r\n      \"bytes\": 623811,\r\n      \"sha256\": \"87bf8403b0e3b6df9d87e6660436f2a220ae77d1c1f612feecb895d91dc74f71\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson\",\r\n      \"bytes\": 1357799,\r\n      \"sha256\": \"1388deb6671ee3404c558179ac4ce3e48fed660d910496b4a1b754d50dfacd6a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson.context.json\",\r\n      \"bytes\": 1970,\r\n      \"sha256\": \"aa8a9b0a26d9802f733796095e35b7cabce42262f856e4f66552a4111081d64a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/finished.json\",\r\n      \"bytes\": 3029,\r\n      \"sha256\": \"8951e9b3300ea32c4505b65a00420a4e086c98fe9bf062f2dcc8895e0aad64b2\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/policy.json\",\r\n      \"bytes\": 2046,\r\n      \"sha256\": \"7a324984f08a4b300bea1879d54014f68157d2b823a6d6975052196a450481fe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson\",\r\n      \"bytes\": 199903,\r\n      \"sha256\": \"495bb08c4cfc91070893f60fd92deed89dfd536da519be04302caf4ce1f89e10\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson.context.json\",\r\n      \"bytes\": 2002,\r\n      \"sha256\": \"3dca72beb9e75837431d991183d6521b4d8202b17f6480ab1ee0ab3129994d81\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/finished.json\",\r\n      \"bytes\": 3025,\r\n      \"sha256\": \"8686db1b0142f9fe7ad70b4cbbf21849c8f0ff78c5643e0bd28cffbe75928e0f\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/policy.json\",\r\n      \"bytes\": 2043,\r\n      \"sha256\": \"3f18f22b12c6fe23838707faaa6c5a067cfc8d2e926cf81664f18b3616f72d1f\"\r\n    }\r\n  ],\r\n  \"inventories\": [",
+          "count": 1,
+          "beforeByteOffsets": [
+            22659
+          ],
+          "beforeWhole": {
+            "bytes": 25393,
+            "sha256": "83f3d35da6c6d9126a35e39bfe024174f426e7f3b59aad8c8de73ca94d12eaa0"
+          },
+          "afterWhole": {
+            "bytes": 30903,
+            "sha256": "50cf04e9d8bf47afdc888e06717e410a1e6c11dfbebe75099b2dcc620ce8600b"
+          }
+        }
+      ],
+      "wholeForwardMatched": true,
+      "wholeInverseMatched": true
+    },
+    {
+      "file": "runtime-template.x64.Release.json",
+      "before": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.x64.Release.json",
+        "bytes": 25309,
+        "sha256": "6a202fa6adc03061ffc41360e86ec6c36265bcaf0274631add539e93b3da88f5"
+      },
+      "after": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Release.json",
+        "bytes": 30911,
+        "sha256": "1f6919811bd6304d88c893c4d1772bc3c98648fa68fea215d9d62f6de3c4a8b0"
+      },
+      "spans": [
+        {
+          "purpose": "fresh output namespace",
+          "before": "ctconsumer-0bea1a0f",
+          "after": "ctconsumer-0f3dc37c",
+          "count": 3,
+          "beforeByteOffsets": [
+            144,
+            24952,
+            25085
+          ],
+          "beforeWhole": {
+            "bytes": 25309,
+            "sha256": "6a202fa6adc03061ffc41360e86ec6c36265bcaf0274631add539e93b3da88f5"
+          },
+          "afterWhole": {
+            "bytes": 25309,
+            "sha256": "266dafcbfc6a67df546dcf9c6d7e5f4e1f2b1db9763cf257e86b2b4500047673"
+          }
+        },
+        {
+          "purpose": "actual supported host x64 supervisor path",
+          "before": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+          "after": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe",
+          "count": 2,
+          "beforeByteOffsets": [
+            407,
+            22389
+          ],
+          "beforeWhole": {
+            "bytes": 25309,
+            "sha256": "266dafcbfc6a67df546dcf9c6d7e5f4e1f2b1db9763cf257e86b2b4500047673"
+          },
+          "afterWhole": {
+            "bytes": 25399,
+            "sha256": "672c16a0472a48f45d5ebbfcb09a0063a4315224847fda3696af0f6e28fa1b54"
+          }
+        },
+        {
+          "purpose": "actual supervisor byte length",
+          "before": "\"bytes\": 60928,",
+          "after": "\"bytes\": 150016,",
+          "count": 2,
+          "beforeByteOffsets": [
+            526,
+            22555
+          ],
+          "beforeWhole": {
+            "bytes": 25399,
+            "sha256": "672c16a0472a48f45d5ebbfcb09a0063a4315224847fda3696af0f6e28fa1b54"
+          },
+          "afterWhole": {
+            "bytes": 25401,
+            "sha256": "db1c464a63d0520613ca079e4284a5d8e1d19811f634d90f69ecc265aa8ba393"
+          }
+        },
+        {
+          "purpose": "actual supervisor raw SHA",
+          "before": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+          "after": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+          "count": 2,
+          "beforeByteOffsets": [
+            559,
+            22591
+          ],
+          "beforeWhole": {
+            "bytes": 25401,
+            "sha256": "db1c464a63d0520613ca079e4284a5d8e1d19811f634d90f69ecc265aa8ba393"
+          },
+          "afterWhole": {
+            "bytes": 25401,
+            "sha256": "84aa45f7f551bfee0c98c453209bff07ab01486d0357c7001b5e634e3ca336a1"
+          }
+        },
+        {
+          "purpose": "frozen supervisor source and actual support pins",
+          "before": "\r\n  ],\r\n  \"inventories\": [",
+          "after": ",\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json\",\r\n      \"bytes\": 22365,\r\n      \"sha256\": \"af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/Release/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/report.json\",\r\n      \"bytes\": 197716,\r\n      \"sha256\": \"c177613749679f591ce0306b737110cacf57dbceb614c5433b65919a5d3b3260\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-process-runner.cpp\",\r\n      \"bytes\": 24220,\r\n      \"sha256\": \"5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.cpp\",\r\n      \"bytes\": 31483,\r\n      \"sha256\": \"6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.h\",\r\n      \"bytes\": 971,\r\n      \"sha256\": \"0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt\",\r\n      \"bytes\": 2578,\r\n      \"sha256\": \"716c608fb38edac64d705e8f3e915fa8a865d36ecbdbed1d5572397b9a3a769b\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.command.1.tlog\",\r\n      \"bytes\": 1582,\r\n      \"sha256\": \"d83a88891d2114925eec1625aa26b5c217d6af4ef8edf83be9515395fc75754c\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.read.1.tlog\",\r\n      \"bytes\": 88030,\r\n      \"sha256\": \"dbc2f06961357fc8305e20886f7ea6ca1664d6672840af0161ff91ac79f56f07\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.command.1.tlog\",\r\n      \"bytes\": 1640,\r\n      \"sha256\": \"a57c2b9cbac12d88747ba0896dd17cf23922d02254937ddcd48903110dbfc718\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.read.1.tlog\",\r\n      \"bytes\": 3648,\r\n      \"sha256\": \"56aa37b84ebd2ed6fe98cfb66616c559dc2af252dcdd0bebef8ab3bbe9b6aa0a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.write.1.tlog\",\r\n      \"bytes\": 532,\r\n      \"sha256\": \"ed035dbad781ef24938af76efaab2c526017cf14d31708fdced23332ddb6a381\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-process-runner.obj\",\r\n      \"bytes\": 432108,\r\n      \"sha256\": \"9a622d177ef889e20afadbd003f575c23322d1b4c8a4f39026005c3d55410bae\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-tail-evidence.obj\",\r\n      \"bytes\": 623811,\r\n      \"sha256\": \"87bf8403b0e3b6df9d87e6660436f2a220ae77d1c1f612feecb895d91dc74f71\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson\",\r\n      \"bytes\": 1357799,\r\n      \"sha256\": \"1388deb6671ee3404c558179ac4ce3e48fed660d910496b4a1b754d50dfacd6a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson.context.json\",\r\n      \"bytes\": 1970,\r\n      \"sha256\": \"aa8a9b0a26d9802f733796095e35b7cabce42262f856e4f66552a4111081d64a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/finished.json\",\r\n      \"bytes\": 3029,\r\n      \"sha256\": \"8951e9b3300ea32c4505b65a00420a4e086c98fe9bf062f2dcc8895e0aad64b2\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/policy.json\",\r\n      \"bytes\": 2046,\r\n      \"sha256\": \"7a324984f08a4b300bea1879d54014f68157d2b823a6d6975052196a450481fe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson\",\r\n      \"bytes\": 199903,\r\n      \"sha256\": \"495bb08c4cfc91070893f60fd92deed89dfd536da519be04302caf4ce1f89e10\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson.context.json\",\r\n      \"bytes\": 2002,\r\n      \"sha256\": \"3dca72beb9e75837431d991183d6521b4d8202b17f6480ab1ee0ab3129994d81\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/finished.json\",\r\n      \"bytes\": 3025,\r\n      \"sha256\": \"8686db1b0142f9fe7ad70b4cbbf21849c8f0ff78c5643e0bd28cffbe75928e0f\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/policy.json\",\r\n      \"bytes\": 2043,\r\n      \"sha256\": \"3f18f22b12c6fe23838707faaa6c5a067cfc8d2e926cf81664f18b3616f72d1f\"\r\n    }\r\n  ],\r\n  \"inventories\": [",
+          "count": 1,
+          "beforeByteOffsets": [
+            22663
+          ],
+          "beforeWhole": {
+            "bytes": 25401,
+            "sha256": "84aa45f7f551bfee0c98c453209bff07ab01486d0357c7001b5e634e3ca336a1"
+          },
+          "afterWhole": {
+            "bytes": 30911,
+            "sha256": "1f6919811bd6304d88c893c4d1772bc3c98648fa68fea215d9d62f6de3c4a8b0"
+          }
+        }
+      ],
+      "wholeForwardMatched": true,
+      "wholeInverseMatched": true
+    },
+    {
+      "file": "runtime-template.Win32.Release.json",
+      "before": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.Win32.Release.json",
+        "bytes": 25371,
+        "sha256": "3305e45e1fe93c2ea967546fcbfb45a355f48fcb570475aa911512e1ed6fbfee"
+      },
+      "after": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Release.json",
+        "bytes": 30973,
+        "sha256": "53b763fe95d4e4a1c0e3aa32c233679178b1ff02343696309fba6383945f48d9"
+      },
+      "spans": [
+        {
+          "purpose": "fresh output namespace",
+          "before": "ctconsumer-0bea1a0f",
+          "after": "ctconsumer-0f3dc37c",
+          "count": 3,
+          "beforeByteOffsets": [
+            146,
+            25010,
+            25145
+          ],
+          "beforeWhole": {
+            "bytes": 25371,
+            "sha256": "3305e45e1fe93c2ea967546fcbfb45a355f48fcb570475aa911512e1ed6fbfee"
+          },
+          "afterWhole": {
+            "bytes": 25371,
+            "sha256": "a640472911690a4b227eb7273788204848c6f9095dda9a4f31b891a3c50cb50f"
+          }
+        },
+        {
+          "purpose": "actual supported host x64 supervisor path",
+          "before": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+          "after": "F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe",
+          "count": 2,
+          "beforeByteOffsets": [
+            411,
+            22447
+          ],
+          "beforeWhole": {
+            "bytes": 25371,
+            "sha256": "a640472911690a4b227eb7273788204848c6f9095dda9a4f31b891a3c50cb50f"
+          },
+          "afterWhole": {
+            "bytes": 25461,
+            "sha256": "0a1f6ea12a72a6ae068809a6f1a07c85abb7c8b9b524b05b79ffaf8811722552"
+          }
+        },
+        {
+          "purpose": "actual supervisor byte length",
+          "before": "\"bytes\": 60928,",
+          "after": "\"bytes\": 150016,",
+          "count": 2,
+          "beforeByteOffsets": [
+            530,
+            22613
+          ],
+          "beforeWhole": {
+            "bytes": 25461,
+            "sha256": "0a1f6ea12a72a6ae068809a6f1a07c85abb7c8b9b524b05b79ffaf8811722552"
+          },
+          "afterWhole": {
+            "bytes": 25463,
+            "sha256": "8f3a5ff42a94205dff35ed28d3c4636c063f0502c6f2c31046a242becb8ca48a"
+          }
+        },
+        {
+          "purpose": "actual supervisor raw SHA",
+          "before": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+          "after": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+          "count": 2,
+          "beforeByteOffsets": [
+            563,
+            22649
+          ],
+          "beforeWhole": {
+            "bytes": 25463,
+            "sha256": "8f3a5ff42a94205dff35ed28d3c4636c063f0502c6f2c31046a242becb8ca48a"
+          },
+          "afterWhole": {
+            "bytes": 25463,
+            "sha256": "2aa7fbf3f181c561bcda49f7f95dcaf2e8f31545fb11776e36fd01afe5560ef8"
+          }
+        },
+        {
+          "purpose": "frozen supervisor source and actual support pins",
+          "before": "\r\n  ],\r\n  \"inventories\": [",
+          "after": ",\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json\",\r\n      \"bytes\": 22365,\r\n      \"sha256\": \"af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/Release/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/report.json\",\r\n      \"bytes\": 197716,\r\n      \"sha256\": \"c177613749679f591ce0306b737110cacf57dbceb614c5433b65919a5d3b3260\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-process-runner.cpp\",\r\n      \"bytes\": 24220,\r\n      \"sha256\": \"5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.cpp\",\r\n      \"bytes\": 31483,\r\n      \"sha256\": \"6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.h\",\r\n      \"bytes\": 971,\r\n      \"sha256\": \"0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt\",\r\n      \"bytes\": 2578,\r\n      \"sha256\": \"716c608fb38edac64d705e8f3e915fa8a865d36ecbdbed1d5572397b9a3a769b\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.command.1.tlog\",\r\n      \"bytes\": 1582,\r\n      \"sha256\": \"d83a88891d2114925eec1625aa26b5c217d6af4ef8edf83be9515395fc75754c\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.read.1.tlog\",\r\n      \"bytes\": 88030,\r\n      \"sha256\": \"dbc2f06961357fc8305e20886f7ea6ca1664d6672840af0161ff91ac79f56f07\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.command.1.tlog\",\r\n      \"bytes\": 1640,\r\n      \"sha256\": \"a57c2b9cbac12d88747ba0896dd17cf23922d02254937ddcd48903110dbfc718\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.read.1.tlog\",\r\n      \"bytes\": 3648,\r\n      \"sha256\": \"56aa37b84ebd2ed6fe98cfb66616c559dc2af252dcdd0bebef8ab3bbe9b6aa0a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.write.1.tlog\",\r\n      \"bytes\": 532,\r\n      \"sha256\": \"ed035dbad781ef24938af76efaab2c526017cf14d31708fdced23332ddb6a381\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-process-runner.obj\",\r\n      \"bytes\": 432108,\r\n      \"sha256\": \"9a622d177ef889e20afadbd003f575c23322d1b4c8a4f39026005c3d55410bae\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-tail-evidence.obj\",\r\n      \"bytes\": 623811,\r\n      \"sha256\": \"87bf8403b0e3b6df9d87e6660436f2a220ae77d1c1f612feecb895d91dc74f71\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson\",\r\n      \"bytes\": 1357799,\r\n      \"sha256\": \"1388deb6671ee3404c558179ac4ce3e48fed660d910496b4a1b754d50dfacd6a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson.context.json\",\r\n      \"bytes\": 1970,\r\n      \"sha256\": \"aa8a9b0a26d9802f733796095e35b7cabce42262f856e4f66552a4111081d64a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/finished.json\",\r\n      \"bytes\": 3029,\r\n      \"sha256\": \"8951e9b3300ea32c4505b65a00420a4e086c98fe9bf062f2dcc8895e0aad64b2\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/policy.json\",\r\n      \"bytes\": 2046,\r\n      \"sha256\": \"7a324984f08a4b300bea1879d54014f68157d2b823a6d6975052196a450481fe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson\",\r\n      \"bytes\": 199903,\r\n      \"sha256\": \"495bb08c4cfc91070893f60fd92deed89dfd536da519be04302caf4ce1f89e10\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson.context.json\",\r\n      \"bytes\": 2002,\r\n      \"sha256\": \"3dca72beb9e75837431d991183d6521b4d8202b17f6480ab1ee0ab3129994d81\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/finished.json\",\r\n      \"bytes\": 3025,\r\n      \"sha256\": \"8686db1b0142f9fe7ad70b4cbbf21849c8f0ff78c5643e0bd28cffbe75928e0f\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/policy.json\",\r\n      \"bytes\": 2043,\r\n      \"sha256\": \"3f18f22b12c6fe23838707faaa6c5a067cfc8d2e926cf81664f18b3616f72d1f\"\r\n    }\r\n  ],\r\n  \"inventories\": [",
+          "count": 1,
+          "beforeByteOffsets": [
+            22721
+          ],
+          "beforeWhole": {
+            "bytes": 25463,
+            "sha256": "2aa7fbf3f181c561bcda49f7f95dcaf2e8f31545fb11776e36fd01afe5560ef8"
+          },
+          "afterWhole": {
+            "bytes": 30973,
+            "sha256": "53b763fe95d4e4a1c0e3aa32c233679178b1ff02343696309fba6383945f48d9"
+          }
+        }
+      ],
+      "wholeForwardMatched": true,
+      "wholeInverseMatched": true
+    },
+    {
+      "file": "inputs.json",
+      "before": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/inputs.json",
+        "bytes": 91243,
+        "sha256": "a652e8a857b6fc222cb93f42379633626db17ffa1f9e34ed4f3423d413a2881b"
+      },
+      "after": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/inputs.json",
+        "bytes": 103845,
+        "sha256": "e2b59d78f115b0de26e8a4315991052f115c54bbde4e155eff993b6c9415889d"
+      },
+      "spans": [
+        {
+          "purpose": "fresh input control paths",
+          "before": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4",
+          "after": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48",
+          "count": 9,
+          "beforeByteOffsets": [
+            19276,
+            19554,
+            37913,
+            38193,
+            56566,
+            56846,
+            75243,
+            75525,
+            76096
+          ],
+          "beforeWhole": {
+            "bytes": 91243,
+            "sha256": "a652e8a857b6fc222cb93f42379633626db17ffa1f9e34ed4f3423d413a2881b"
+          },
+          "afterWhole": {
+            "bytes": 91306,
+            "sha256": "5394d29461ff8ea30cad942bcf4ee5b3c9eccdbbf0133a91d5f8c94fa47f6ce3"
+          }
+        },
+        {
+          "purpose": "fresh four consumer output paths",
+          "before": "ctconsumer-0bea1a0f",
+          "after": "ctconsumer-0f3dc37c",
+          "count": 16,
+          "beforeByteOffsets": [
+            1302,
+            1699,
+            1787,
+            1880,
+            19931,
+            20334,
+            20424,
+            20519,
+            38586,
+            38991,
+            39081,
+            39176,
+            57255,
+            57666,
+            57758,
+            57855
+          ],
+          "beforeWhole": {
+            "bytes": 91306,
+            "sha256": "5394d29461ff8ea30cad942bcf4ee5b3c9eccdbbf0133a91d5f8c94fa47f6ce3"
+          },
+          "afterWhole": {
+            "bytes": 91306,
+            "sha256": "4bd8a0341ae76c711940a5f245b467525a6d7ad77eb9e51426ad7637e326868f"
+          }
+        },
+        {
+          "purpose": "actual updated plan/template pin",
+          "before": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Debug.json\",\r\n        \"bytes\": 31458,\r\n        \"sha256\": \"aa0d57230cd9fa59fcc7431cc63be046d0563f72a115985f4340e54f5e916924\"",
+          "after": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Debug.json\",\r\n        \"bytes\": 37067,\r\n        \"sha256\": \"eba81b59ecbe349cf7358fc88b393d315877c77551cd8870058a14a2f036416d\"",
+          "count": 1,
+          "beforeByteOffsets": [
+            19259
+          ],
+          "beforeWhole": {
+            "bytes": 91306,
+            "sha256": "4bd8a0341ae76c711940a5f245b467525a6d7ad77eb9e51426ad7637e326868f"
+          },
+          "afterWhole": {
+            "bytes": 91306,
+            "sha256": "18924fb022dfe637921fccfae8117313c151f437765b21415ae361377493f953"
+          }
+        },
+        {
+          "purpose": "actual updated plan/template pin",
+          "before": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Debug.json\",\r\n        \"bytes\": 31544,\r\n        \"sha256\": \"2e9ce70365d93f3269aa534509e5bb4fedaf80983e0471811335436826c09134\"",
+          "after": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Debug.json\",\r\n        \"bytes\": 37153,\r\n        \"sha256\": \"b05ce100f9545a4fecc5114cb170181c071a07d0cf72e395c1e4ad075b3a8e1e\"",
+          "count": 1,
+          "beforeByteOffsets": [
+            37910
+          ],
+          "beforeWhole": {
+            "bytes": 91306,
+            "sha256": "18924fb022dfe637921fccfae8117313c151f437765b21415ae361377493f953"
+          },
+          "afterWhole": {
+            "bytes": 91306,
+            "sha256": "583a8ec32366c52fde210363e60243e1c224b48ceb0608532474383846ddd8a1"
+          }
+        },
+        {
+          "purpose": "actual updated plan/template pin",
+          "before": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Release.json\",\r\n        \"bytes\": 31550,\r\n        \"sha256\": \"a74839d6ce4cae47cc4fa9d68de2ff5d187e4986cbbcf8e9e3611ed286e12325\"",
+          "after": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Release.json\",\r\n        \"bytes\": 37159,\r\n        \"sha256\": \"cb57d59bb9a2b50dd7d197c8c6c738115e06cb9814702607535585f6cf359f2c\"",
+          "count": 1,
+          "beforeByteOffsets": [
+            56577
+          ],
+          "beforeWhole": {
+            "bytes": 91306,
+            "sha256": "583a8ec32366c52fde210363e60243e1c224b48ceb0608532474383846ddd8a1"
+          },
+          "afterWhole": {
+            "bytes": 91306,
+            "sha256": "c25fe2ab23f1a18c8d7fc59e47799dc0ba49d8f96a28226c1a6ee88718471fce"
+          }
+        },
+        {
+          "purpose": "actual updated plan/template pin",
+          "before": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Release.json\",\r\n        \"bytes\": 31636,\r\n        \"sha256\": \"c3923d0a6ce8485d277e4929a4d14e3c9edf4cbb6911d85357ed4b14a49c2b88\"",
+          "after": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Release.json\",\r\n        \"bytes\": 37245,\r\n        \"sha256\": \"9439a1a45bdd3a49258ff05c8495c2d2d37543b83d1a2c00ed95a7b3846ff164\"",
+          "count": 1,
+          "beforeByteOffsets": [
+            75268
+          ],
+          "beforeWhole": {
+            "bytes": 91306,
+            "sha256": "c25fe2ab23f1a18c8d7fc59e47799dc0ba49d8f96a28226c1a6ee88718471fce"
+          },
+          "afterWhole": {
+            "bytes": 91306,
+            "sha256": "5dbfdfe6f073ff0e79c66eb0cb1a90a9d279c642c0ca6db7dc02819648fa6646"
+          }
+        },
+        {
+          "purpose": "actual updated plan/template pin",
+          "before": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Debug.json\",\r\n        \"bytes\": 25239,\r\n        \"sha256\": \"7c602ac8d6c76a9917e3ed92d25e3a2300802b89230c4e61e91f5f4c3bce61cd\"",
+          "after": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Debug.json\",\r\n        \"bytes\": 30841,\r\n        \"sha256\": \"44469012b9ab1ab66aa7417436ea27d1e088b8e5614cd38c66a017e3a3ea5266\"",
+          "count": 1,
+          "beforeByteOffsets": [
+            19544
+          ],
+          "beforeWhole": {
+            "bytes": 91306,
+            "sha256": "5dbfdfe6f073ff0e79c66eb0cb1a90a9d279c642c0ca6db7dc02819648fa6646"
+          },
+          "afterWhole": {
+            "bytes": 91306,
+            "sha256": "b92a7f403eb37ede3fb307bb59a3a1908ccf52436a4e0315deb953644409452b"
+          }
+        },
+        {
+          "purpose": "actual updated plan/template pin",
+          "before": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Debug.json\",\r\n        \"bytes\": 25301,\r\n        \"sha256\": \"7c172d55e843407d73ce189c99734f193fcd6323929d8b041a8ffdca28f151c9\"",
+          "after": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Debug.json\",\r\n        \"bytes\": 30903,\r\n        \"sha256\": \"50cf04e9d8bf47afdc888e06717e410a1e6c11dfbebe75099b2dcc620ce8600b\"",
+          "count": 1,
+          "beforeByteOffsets": [
+            38197
+          ],
+          "beforeWhole": {
+            "bytes": 91306,
+            "sha256": "b92a7f403eb37ede3fb307bb59a3a1908ccf52436a4e0315deb953644409452b"
+          },
+          "afterWhole": {
+            "bytes": 91306,
+            "sha256": "36fb4566057cbd21ce309437f4ff1bf6d812b6eb11217f588c96a7f58e0daae2"
+          }
+        },
+        {
+          "purpose": "actual updated plan/template pin",
+          "before": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Release.json\",\r\n        \"bytes\": 25309,\r\n        \"sha256\": \"6a202fa6adc03061ffc41360e86ec6c36265bcaf0274631add539e93b3da88f5\"",
+          "after": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Release.json\",\r\n        \"bytes\": 30911,\r\n        \"sha256\": \"1f6919811bd6304d88c893c4d1772bc3c98648fa68fea215d9d62f6de3c4a8b0\"",
+          "count": 1,
+          "beforeByteOffsets": [
+            56864
+          ],
+          "beforeWhole": {
+            "bytes": 91306,
+            "sha256": "36fb4566057cbd21ce309437f4ff1bf6d812b6eb11217f588c96a7f58e0daae2"
+          },
+          "afterWhole": {
+            "bytes": 91306,
+            "sha256": "e84c34b35a86a946a2d59cae61646e03b590ece385b5cd0e4029cd9250037599"
+          }
+        },
+        {
+          "purpose": "actual updated plan/template pin",
+          "before": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Release.json\",\r\n        \"bytes\": 25371,\r\n        \"sha256\": \"3305e45e1fe93c2ea967546fcbfb45a355f48fcb570475aa911512e1ed6fbfee\"",
+          "after": "        \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Release.json\",\r\n        \"bytes\": 30973,\r\n        \"sha256\": \"53b763fe95d4e4a1c0e3aa32c233679178b1ff02343696309fba6383945f48d9\"",
+          "count": 1,
+          "beforeByteOffsets": [
+            75557
+          ],
+          "beforeWhole": {
+            "bytes": 91306,
+            "sha256": "e84c34b35a86a946a2d59cae61646e03b590ece385b5cd0e4029cd9250037599"
+          },
+          "afterWhole": {
+            "bytes": 91306,
+            "sha256": "5577cc14cf4f261de61a5ad4eb967ff020ad79ca6f19fdbd782aa0bfd947467b"
+          }
+        },
+        {
+          "purpose": "retain parent startup failure and historical supervisor bindings",
+          "before": "\r\n  ],\r\n  \"formalCompilerTailAcceptance\": false",
+          "after": ",\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json\",\r\n      \"bytes\": 22365,\r\n      \"sha256\": \"af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/DELTA.json\",\r\n      \"bytes\": 83611,\r\n      \"sha256\": \"2fd7350e7c6f3b504100c20eed81f07e18688e26d69ac229be04109542ec6436\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/README.md\",\r\n      \"bytes\": 3386,\r\n      \"sha256\": \"1a4d3fa9147885984124c5a2a9049774ce9596b52e109d0c40b5f89854a96eaa\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/Run-Root.ps1\",\r\n      \"bytes\": 19115,\r\n      \"sha256\": \"1c7aaa35c80c91088707b1cb86441fffbfc9511eddeb568c67592403bf8b8d54\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/inputs.json\",\r\n      \"bytes\": 91243,\r\n      \"sha256\": \"a652e8a857b6fc222cb93f42379633626db17ffa1f9e34ed4f3423d413a2881b\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.Win32.Debug.json\",\r\n      \"bytes\": 31544,\r\n      \"sha256\": \"2e9ce70365d93f3269aa534509e5bb4fedaf80983e0471811335436826c09134\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.Win32.Release.json\",\r\n      \"bytes\": 31636,\r\n      \"sha256\": \"c3923d0a6ce8485d277e4929a4d14e3c9edf4cbb6911d85357ed4b14a49c2b88\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.x64.Debug.json\",\r\n      \"bytes\": 31458,\r\n      \"sha256\": \"aa0d57230cd9fa59fcc7431cc63be046d0563f72a115985f4340e54f5e916924\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.x64.Release.json\",\r\n      \"bytes\": 31550,\r\n      \"sha256\": \"a74839d6ce4cae47cc4fa9d68de2ff5d187e4986cbbcf8e9e3611ed286e12325\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/run-consumer.cjs\",\r\n      \"bytes\": 10287,\r\n      \"sha256\": \"3b9acf0bb11fcada430596feed33982c47dc364bc4bb89871b727aea5a977eb0\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.Win32.Debug.json\",\r\n      \"bytes\": 25301,\r\n      \"sha256\": \"7c172d55e843407d73ce189c99734f193fcd6323929d8b041a8ffdca28f151c9\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.Win32.Release.json\",\r\n      \"bytes\": 25371,\r\n      \"sha256\": \"3305e45e1fe93c2ea967546fcbfb45a355f48fcb570475aa911512e1ed6fbfee\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.x64.Debug.json\",\r\n      \"bytes\": 25239,\r\n      \"sha256\": \"7c602ac8d6c76a9917e3ed92d25e3a2300802b89230c4e61e91f5f4c3bce61cd\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.x64.Release.json\",\r\n      \"bytes\": 25309,\r\n      \"sha256\": \"6a202fa6adc03061ffc41360e86ec6c36265bcaf0274631add539e93b3da88f5\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/seal.json\",\r\n      \"bytes\": 4673,\r\n      \"sha256\": \"6c992d730a8307637c9f4e793166fb30a6e5326848b8c4f36a945382bdcb4e82\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-x64/prep/summary.json\",\r\n      \"bytes\": 3348,\r\n      \"sha256\": \"25b6e8e51c719070ba32c49d81d7169f2f796c3c5235ce8ee4599d5fe01d0c11\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-x64/prep/configure.stderr.raw\",\r\n      \"bytes\": 16,\r\n      \"sha256\": \"a4fe904b5d2d65e10c2f1956622b05b36db41da3b11853fc419d87976129a815\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-x64/prep/configure.owned.jsonl.context.json\",\r\n      \"bytes\": 3812,\r\n      \"sha256\": \"79e7c399a5112f4e1fe30707df7dc4c68e2cd8aaf43f0416a916b6fd3d32b5bb\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-x64/consumer-result.json\",\r\n      \"bytes\": 320,\r\n      \"sha256\": \"27d302d9c7b0b3eb9a901b95f731ce38b8b4fb7d0c9e0ac4966e6e81c9957fa3\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-Win32/prep/summary.json\",\r\n      \"bytes\": 3365,\r\n      \"sha256\": \"ed798bc6c26159c117ff3b7f11045dff1ef0d40ec77273ad74906bf070d950c8\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-Win32/prep/configure.stderr.raw\",\r\n      \"bytes\": 16,\r\n      \"sha256\": \"a4fe904b5d2d65e10c2f1956622b05b36db41da3b11853fc419d87976129a815\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-Win32/prep/configure.owned.jsonl.context.json\",\r\n      \"bytes\": 3836,\r\n      \"sha256\": \"4de62c91292209983f4da12484fc82689090b340fe7711eeb5b22c0335762cbd\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-debug-Win32/consumer-result.json\",\r\n      \"bytes\": 322,\r\n      \"sha256\": \"8cd4f91759fb4d29807e775931f4b972dc855ad5e15ad3f0b0e3047384ac7aa5\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-x64/prep/summary.json\",\r\n      \"bytes\": 3368,\r\n      \"sha256\": \"93369c7780ec1bf8114b2af63f4bed5f394470c3358698ab2fa08b3481669363\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-x64/prep/configure.stderr.raw\",\r\n      \"bytes\": 16,\r\n      \"sha256\": \"a4fe904b5d2d65e10c2f1956622b05b36db41da3b11853fc419d87976129a815\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-x64/prep/configure.owned.jsonl.context.json\",\r\n      \"bytes\": 3832,\r\n      \"sha256\": \"30f7fa4cf6bb446653ae558ddb894d5ec92cd6cc88afb49f0dbc9c47b13f51e7\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-x64/consumer-result.json\",\r\n      \"bytes\": 322,\r\n      \"sha256\": \"0ac6ef96c687b6a4c9dee6d2629cf1935588a2becfaf32c9baca9ee58772fe1d\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-Win32/prep/summary.json\",\r\n      \"bytes\": 3385,\r\n      \"sha256\": \"be6587cbc24ea175b42711b1a87d5c9435049da10ed7e9ca7bf2f16a277e0895\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-Win32/prep/configure.stderr.raw\",\r\n      \"bytes\": 16,\r\n      \"sha256\": \"a4fe904b5d2d65e10c2f1956622b05b36db41da3b11853fc419d87976129a815\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-Win32/prep/configure.owned.jsonl.context.json\",\r\n      \"bytes\": 3856,\r\n      \"sha256\": \"18a469e6789199bd15d4ef7074ce511760d2ec62433c0c4bdaf6bfb230b6a67a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-broker/out/ctconsumer-0bea1a0f-release-Win32/consumer-result.json\",\r\n      \"bytes\": 324,\r\n      \"sha256\": \"04dc05ffd48581bd363057137586145959aa1f17386c75acdbca95faed33f32a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/Release/OwnedProcessRunner.exe\",\r\n      \"bytes\": 150016,\r\n      \"sha256\": \"015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/report.json\",\r\n      \"bytes\": 197716,\r\n      \"sha256\": \"c177613749679f591ce0306b737110cacf57dbceb614c5433b65919a5d3b3260\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-process-runner.cpp\",\r\n      \"bytes\": 24220,\r\n      \"sha256\": \"5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.cpp\",\r\n      \"bytes\": 31483,\r\n      \"sha256\": \"6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/owned-tail-evidence.h\",\r\n      \"bytes\": 971,\r\n      \"sha256\": \"0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/benchmarks/protocol/CMakeLists.txt\",\r\n      \"bytes\": 2578,\r\n      \"sha256\": \"716c608fb38edac64d705e8f3e915fa8a865d36ecbdbed1d5572397b9a3a769b\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.command.1.tlog\",\r\n      \"bytes\": 1582,\r\n      \"sha256\": \"d83a88891d2114925eec1625aa26b5c217d6af4ef8edf83be9515395fc75754c\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/CL.read.1.tlog\",\r\n      \"bytes\": 88030,\r\n      \"sha256\": \"dbc2f06961357fc8305e20886f7ea6ca1664d6672840af0161ff91ac79f56f07\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.command.1.tlog\",\r\n      \"bytes\": 1640,\r\n      \"sha256\": \"a57c2b9cbac12d88747ba0896dd17cf23922d02254937ddcd48903110dbfc718\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.read.1.tlog\",\r\n      \"bytes\": 3648,\r\n      \"sha256\": \"56aa37b84ebd2ed6fe98cfb66616c559dc2af252dcdd0bebef8ab3bbe9b6aa0a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/OwnedPro.EB0F39A0.tlog/link.write.1.tlog\",\r\n      \"bytes\": 532,\r\n      \"sha256\": \"ed035dbad781ef24938af76efaab2c526017cf14d31708fdced23332ddb6a381\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-process-runner.obj\",\r\n      \"bytes\": 432108,\r\n      \"sha256\": \"9a622d177ef889e20afadbd003f575c23322d1b4c8a4f39026005c3d55410bae\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/tail-x64/OwnedProcessRunner.dir/Release/owned-tail-evidence.obj\",\r\n      \"bytes\": 623811,\r\n      \"sha256\": \"87bf8403b0e3b6df9d87e6660436f2a220ae77d1c1f612feecb895d91dc74f71\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson\",\r\n      \"bytes\": 1357799,\r\n      \"sha256\": \"1388deb6671ee3404c558179ac4ce3e48fed660d910496b4a1b754d50dfacd6a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/owned.ndjson.context.json\",\r\n      \"bytes\": 1970,\r\n      \"sha256\": \"aa8a9b0a26d9802f733796095e35b7cabce42262f856e4f66552a4111081d64a\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/finished.json\",\r\n      \"bytes\": 3029,\r\n      \"sha256\": \"8951e9b3300ea32c4505b65a00420a4e086c98fe9bf062f2dcc8895e0aad64b2\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x64/policy.json\",\r\n      \"bytes\": 2046,\r\n      \"sha256\": \"7a324984f08a4b300bea1879d54014f68157d2b823a6d6975052196a450481fe\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson\",\r\n      \"bytes\": 199903,\r\n      \"sha256\": \"495bb08c4cfc91070893f60fd92deed89dfd536da519be04302caf4ce1f89e10\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/owned.ndjson.context.json\",\r\n      \"bytes\": 2002,\r\n      \"sha256\": \"3dca72beb9e75837431d991183d6521b4d8202b17f6480ab1ee0ab3129994d81\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/finished.json\",\r\n      \"bytes\": 3025,\r\n      \"sha256\": \"8686db1b0142f9fe7ad70b4cbbf21849c8f0ff78c5643e0bd28cffbe75928e0f\"\r\n    },\r\n    {\r\n      \"path\": \"F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/x86/policy.json\",\r\n      \"bytes\": 2043,\r\n      \"sha256\": \"3f18f22b12c6fe23838707faaa6c5a067cfc8d2e926cf81664f18b3616f72d1f\"\r\n    }\r\n  ],\r\n  \"formalCompilerTailAcceptance\": false",
+          "count": 1,
+          "beforeByteOffsets": [
+            91255
+          ],
+          "beforeWhole": {
+            "bytes": 91306,
+            "sha256": "5577cc14cf4f261de61a5ad4eb967ff020ad79ca6f19fdbd782aa0bfd947467b"
+          },
+          "afterWhole": {
+            "bytes": 103845,
+            "sha256": "e2b59d78f115b0de26e8a4315991052f115c54bbde4e155eff993b6c9415889d"
+          }
+        }
+      ],
+      "wholeForwardMatched": true,
+      "wholeInverseMatched": true
+    },
+    {
+      "file": "README.md",
+      "before": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/README.md",
+        "bytes": 3386,
+        "sha256": "1a4d3fa9147885984124c5a2a9049774ce9596b52e109d0c40b5f89854a96eaa"
+      },
+      "after": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/README.md",
+        "bytes": 5434,
+        "sha256": "178e9ce55c6067455b3b55910cf9e348437477e44c185b2614009fd78fd3b11b"
+      },
+      "spans": [
+        {
+          "purpose": "describe actual supervisor substitution",
+          "before": "This is a fresh Root-only test protocol for Debug/Release × x64/Win32. It does not change production SDK or consumer source, telemetry settings, the original 4640-byte driver, the Owned client/runner, or owned-tail-evidence.cjs.",
+          "after": "This is a fresh Root-only test protocol for Debug/Release × x64/Win32. It preserves production SDK and consumer source, telemetry settings, the original 4640-byte driver, the Owned client and owned-tail-evidence.cjs. This derivative selects an existing supported supervisor binary; the consumer driver, binding algorithm and policy remain the parent raw bytes.",
+          "count": 1,
+          "beforeByteOffsets": [
+            50
+          ],
+          "beforeWhole": {
+            "bytes": 3386,
+            "sha256": "1a4d3fa9147885984124c5a2a9049774ce9596b52e109d0c40b5f89854a96eaa"
+          },
+          "afterWhole": {
+            "bytes": 3518,
+            "sha256": "a1ae75171b8f161b1e1b477ba183ee1f853cbd9e94fb56873f8572bd8acbcf13"
+          }
+        },
+        {
+          "purpose": "record immutable historical support and pending boundary",
+          "before": "Future consumer evidence is pending and null; none is inferred from the old four failures or this sealed protocol.",
+          "after": "Future consumer evidence is pending and null; none is inferred from the old four failures or this sealed protocol.\r\n\r\n## Supported supervisor derivative\r\n\r\nThe parent 0bea packet remains immutable. Its four installations naturally completed 0/0, but configure failed before a subject was created: stderr was Unknown option, and configure ready/owned JSONL, consumer bindings and runtime were absent. Missing subject records are not natural closure. The original 0f35213c failures also remain unchanged.\r\n\r\nAll four fresh configurations use the sealed host x64 copy at F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe (150016 B, SHA-256 015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe). Its normal build directly compiled owned-process-runner.cpp plus owned-tail-evidence.cpp. Actual CL/read, OBJ, LINK/read/write and PE x64 console bytes bind this exact executable; all three source files equal the broker versions at author time.\r\n\r\nrunner-origin.json pins the 6df2 historical actual source/tool evidence and both x64/x86 contexts/raw tails. The existing binary actually accepted image/hash/nonce and emitted start, prelaunch pin, snapshot, cleanup and terminal. Those runs kept generic passed=false, root/supervisor 0/124 and forced owned-Job cleanup; the historical 30 s drain is not this packet's unchanged 2000 ms drain. Parameter support proves neither current consumer success nor natural/resource qualification. The separate 9c838 reader failure is not used as successful evidence.\r\n\r\nOnly packet/output paths, actual supervisor path/size/SHA, eight fresh configure/build nonces and corresponding frozen control pins differ from 0bea. DELTA.json replays every modified file forward and backward to the exact original bytes. The SDK producers, install map, BinderConsumer, driver, policy, args other than fresh paths, budgets and qualification flags are preserved. This author executed filesystem operations only; future outputs remain absent.",
+          "count": 1,
+          "beforeByteOffsets": [
+            3403
+          ],
+          "beforeWhole": {
+            "bytes": 3518,
+            "sha256": "a1ae75171b8f161b1e1b477ba183ee1f853cbd9e94fb56873f8572bd8acbcf13"
+          },
+          "afterWhole": {
+            "bytes": 5434,
+            "sha256": "178e9ce55c6067455b3b55910cf9e348437477e44c185b2614009fd78fd3b11b"
+          }
+        }
+      ],
+      "wholeForwardMatched": true,
+      "wholeInverseMatched": true
+    },
+    {
+      "file": "Run-Root.ps1",
+      "before": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/Run-Root.ps1",
+        "bytes": 19115,
+        "sha256": "1c7aaa35c80c91088707b1cb86441fffbfc9511eddeb568c67592403bf8b8d54"
+      },
+      "after": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/Run-Root.ps1",
+        "bytes": 19449,
+        "sha256": "991b460af29b2d98b3464179dae8eb289fbe075852a099fe591023c3c560f2a7"
+      },
+      "spans": [
+        {
+          "purpose": "fresh guard packet path",
+          "before": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4",
+          "after": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48",
+          "count": 12,
+          "beforeByteOffsets": [
+            305,
+            434,
+            648,
+            859,
+            1078,
+            1300,
+            1524,
+            1748,
+            1974,
+            2208,
+            2444,
+            2680
+          ],
+          "beforeWhole": {
+            "bytes": 19115,
+            "sha256": "1c7aaa35c80c91088707b1cb86441fffbfc9511eddeb568c67592403bf8b8d54"
+          },
+          "afterWhole": {
+            "bytes": 19199,
+            "sha256": "014f2d639beb13a1eed9b0a4c1e5e71450f25b5dfe11e376b83f1eea4d347e08"
+          }
+        },
+        {
+          "purpose": "actual sealed controls only",
+          "before": "$taskControl=@([pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/inputs.json';bytes=91243;sha256='a652e8a857b6fc222cb93f42379633626db17ffa1f9e34ed4f3423d413a2881b' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/README.md';bytes=3386;sha256='1a4d3fa9147885984124c5a2a9049774ce9596b52e109d0c40b5f89854a96eaa' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/run-consumer.cjs';bytes=10287;sha256='3b9acf0bb11fcada430596feed33982c47dc364bc4bb89871b727aea5a977eb0' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Debug.json';bytes=31458;sha256='aa0d57230cd9fa59fcc7431cc63be046d0563f72a115985f4340e54f5e916924' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Debug.json';bytes=31544;sha256='2e9ce70365d93f3269aa534509e5bb4fedaf80983e0471811335436826c09134' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Release.json';bytes=31550;sha256='a74839d6ce4cae47cc4fa9d68de2ff5d187e4986cbbcf8e9e3611ed286e12325' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Release.json';bytes=31636;sha256='c3923d0a6ce8485d277e4929a4d14e3c9edf4cbb6911d85357ed4b14a49c2b88' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Debug.json';bytes=25239;sha256='7c602ac8d6c76a9917e3ed92d25e3a2300802b89230c4e61e91f5f4c3bce61cd' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Debug.json';bytes=25301;sha256='7c172d55e843407d73ce189c99734f193fcd6323929d8b041a8ffdca28f151c9' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Release.json';bytes=25309;sha256='6a202fa6adc03061ffc41360e86ec6c36265bcaf0274631add539e93b3da88f5' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Release.json';bytes=25371;sha256='3305e45e1fe93c2ea967546fcbfb45a355f48fcb570475aa911512e1ed6fbfee' })",
+          "after": "$taskControl=@([pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/inputs.json';bytes=103845;sha256='e2b59d78f115b0de26e8a4315991052f115c54bbde4e155eff993b6c9415889d' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/README.md';bytes=5434;sha256='178e9ce55c6067455b3b55910cf9e348437477e44c185b2614009fd78fd3b11b' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/run-consumer.cjs';bytes=10287;sha256='3b9acf0bb11fcada430596feed33982c47dc364bc4bb89871b727aea5a977eb0' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Debug.json';bytes=37067;sha256='eba81b59ecbe349cf7358fc88b393d315877c77551cd8870058a14a2f036416d' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Debug.json';bytes=37153;sha256='b05ce100f9545a4fecc5114cb170181c071a07d0cf72e395c1e4ad075b3a8e1e' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.x64.Release.json';bytes=37159;sha256='cb57d59bb9a2b50dd7d197c8c6c738115e06cb9814702607535585f6cf359f2c' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/plan.Win32.Release.json';bytes=37245;sha256='9439a1a45bdd3a49258ff05c8495c2d2d37543b83d1a2c00ed95a7b3846ff164' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Debug.json';bytes=30841;sha256='44469012b9ab1ab66aa7417436ea27d1e088b8e5614cd38c66a017e3a3ea5266' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Debug.json';bytes=30903;sha256='50cf04e9d8bf47afdc888e06717e410a1e6c11dfbebe75099b2dcc620ce8600b' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.x64.Release.json';bytes=30911;sha256='1f6919811bd6304d88c893c4d1772bc3c98648fa68fea215d9d62f6de3c4a8b0' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runtime-template.Win32.Release.json';bytes=30973;sha256='53b763fe95d4e4a1c0e3aa32c233679178b1ff02343696309fba6383945f48d9' },[pscustomobject]@{path='F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json';bytes=22365;sha256='af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e' })",
+          "count": 1,
+          "beforeByteOffsets": [
+            402
+          ],
+          "beforeWhole": {
+            "bytes": 19199,
+            "sha256": "014f2d639beb13a1eed9b0a4c1e5e71450f25b5dfe11e376b83f1eea4d347e08"
+          },
+          "afterWhole": {
+            "bytes": 19428,
+            "sha256": "23315785a8cc556683246c568868a41f8082bb135695009352f3008179233601"
+          }
+        },
+        {
+          "purpose": "literal Ordinal membership including origin",
+          "before": "$taskExpectedMembers=@('DELTA.json','README.md','Run-Root.ps1','inputs.json','plan.Win32.Debug.json','plan.Win32.Release.json','plan.x64.Debug.json','plan.x64.Release.json','run-consumer.cjs','runtime-template.Win32.Debug.json','runtime-template.Win32.Release.json','runtime-template.x64.Debug.json','runtime-template.x64.Release.json','seal.json')",
+          "after": "$taskExpectedMembers=@('DELTA.json','README.md','Run-Root.ps1','inputs.json','plan.Win32.Debug.json','plan.Win32.Release.json','plan.x64.Debug.json','plan.x64.Release.json','run-consumer.cjs','runner-origin.json','runtime-template.Win32.Debug.json','runtime-template.Win32.Release.json','runtime-template.x64.Debug.json','runtime-template.x64.Release.json','seal.json')",
+          "count": 1,
+          "beforeByteOffsets": [
+            3208
+          ],
+          "beforeWhole": {
+            "bytes": 19428,
+            "sha256": "23315785a8cc556683246c568868a41f8082bb135695009352f3008179233601"
+          },
+          "afterWhole": {
+            "bytes": 19449,
+            "sha256": "991b460af29b2d98b3464179dae8eb289fbe075852a099fe591023c3c560f2a7"
+          }
+        }
+      ],
+      "wholeForwardMatched": true,
+      "wholeInverseMatched": true
+    }
+  ],
+  "rawUnchanged": [
+    {
+      "before": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/run-consumer.cjs",
+        "bytes": 10287,
+        "sha256": "3b9acf0bb11fcada430596feed33982c47dc364bc4bb89871b727aea5a977eb0"
+      },
+      "after": {
+        "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/run-consumer.cjs",
+        "bytes": 10287,
+        "sha256": "3b9acf0bb11fcada430596feed33982c47dc364bc4bb89871b727aea5a977eb0"
+      }
+    }
+  ],
+  "newPayload": {
+    "path": "F:/work/sm05-broker/out/capacity-consumer-tail-runner-root-0f3dc37c-2ce8-44a1-a44a-39a457a90d48/runner-origin.json",
+    "bytes": 22365,
+    "sha256": "af92534cb02e16ba43066547b053be595539d8451c64443dafac5dbe978e488e"
+  },
+  "oldPacketPins": [
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/DELTA.json",
+      "bytes": 83611,
+      "sha256": "2fd7350e7c6f3b504100c20eed81f07e18688e26d69ac229be04109542ec6436"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/README.md",
+      "bytes": 3386,
+      "sha256": "1a4d3fa9147885984124c5a2a9049774ce9596b52e109d0c40b5f89854a96eaa"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/Run-Root.ps1",
+      "bytes": 19115,
+      "sha256": "1c7aaa35c80c91088707b1cb86441fffbfc9511eddeb568c67592403bf8b8d54"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/inputs.json",
+      "bytes": 91243,
+      "sha256": "a652e8a857b6fc222cb93f42379633626db17ffa1f9e34ed4f3423d413a2881b"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.Win32.Debug.json",
+      "bytes": 31544,
+      "sha256": "2e9ce70365d93f3269aa534509e5bb4fedaf80983e0471811335436826c09134"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.Win32.Release.json",
+      "bytes": 31636,
+      "sha256": "c3923d0a6ce8485d277e4929a4d14e3c9edf4cbb6911d85357ed4b14a49c2b88"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.x64.Debug.json",
+      "bytes": 31458,
+      "sha256": "aa0d57230cd9fa59fcc7431cc63be046d0563f72a115985f4340e54f5e916924"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/plan.x64.Release.json",
+      "bytes": 31550,
+      "sha256": "a74839d6ce4cae47cc4fa9d68de2ff5d187e4986cbbcf8e9e3611ed286e12325"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/run-consumer.cjs",
+      "bytes": 10287,
+      "sha256": "3b9acf0bb11fcada430596feed33982c47dc364bc4bb89871b727aea5a977eb0"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.Win32.Debug.json",
+      "bytes": 25301,
+      "sha256": "7c172d55e843407d73ce189c99734f193fcd6323929d8b041a8ffdca28f151c9"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.Win32.Release.json",
+      "bytes": 25371,
+      "sha256": "3305e45e1fe93c2ea967546fcbfb45a355f48fcb570475aa911512e1ed6fbfee"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.x64.Debug.json",
+      "bytes": 25239,
+      "sha256": "7c602ac8d6c76a9917e3ed92d25e3a2300802b89230c4e61e91f5f4c3bce61cd"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/runtime-template.x64.Release.json",
+      "bytes": 25309,
+      "sha256": "6a202fa6adc03061ffc41360e86ec6c36265bcaf0274631add539e93b3da88f5"
+    },
+    {
+      "path": "F:/work/sm05-broker/out/capacity-consumer-tail-root-0bea1a0f-1e12-458d-bde2-dc3935413cc4/seal.json",
+      "bytes": 4673,
+      "sha256": "6c992d730a8307637c9f4e793166fb30a6e5326848b8c4f36a945382bdcb4e82"
+    }
+  ],
+  "originalDriver": {
+    "path": "F:/work/sm05-broker/out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/run-root.cjs",
+    "bytes": 4640,
+    "sha256": "139b305e97e075ab45793999785f05bccc0ec6e47b66498ac86054ee0bb1c350"
+  },
+  "newNonces": [
+    {
+      "file": "plan.x64.Debug.json",
+      "stage": "configure",
+      "before": "9d1413daa5f740d8a9a86c5485458b65",
+      "after": "27c1d82e47c2437e981e3a482dacfa49"
+    },
+    {
+      "file": "plan.x64.Debug.json",
+      "stage": "build",
+      "before": "56c5f5a9a4af4a6ca962b5e21bb08ac9",
+      "after": "04e622a069a84251ac14360f4c872a65"
+    },
+    {
+      "file": "plan.Win32.Debug.json",
+      "stage": "configure",
+      "before": "ca6f89735fb64cc98eeac89e09aadc96",
+      "after": "575fa721dd5c4bd5b7e06b9cba874abc"
+    },
+    {
+      "file": "plan.Win32.Debug.json",
+      "stage": "build",
+      "before": "de00b618da59467a9c771e6084b1fb39",
+      "after": "a8964da0d65c4230a1e980c0355da58b"
+    },
+    {
+      "file": "plan.x64.Release.json",
+      "stage": "configure",
+      "before": "41f1cd073a244529a926a8082197ee95",
+      "after": "ee611e1323694b8793fac5ef43661bc4"
+    },
+    {
+      "file": "plan.x64.Release.json",
+      "stage": "build",
+      "before": "6fb7c5c72a204559b06527b093174d7b",
+      "after": "dd9afa47d3b4487cb1e56f8cef20e74d"
+    },
+    {
+      "file": "plan.Win32.Release.json",
+      "stage": "configure",
+      "before": "8de92af13e444279b44197733fd9f9ad",
+      "after": "dc465f3eec824ca0aed7732435103bc5"
+    },
+    {
+      "file": "plan.Win32.Release.json",
+      "stage": "build",
+      "before": "42660928711f4921a70dbd9a3fb8d612",
+      "after": "24d3683793044e009b5c65ae4504a578"
+    }
+  ],
+  "permittedBoundary": "Actual supported supervisor, fresh outputs/nonces and corresponding control/evidence pins only",
+  "authorNativeExecuted": false,
+  "futureActual": null,
+  "qualificationPassed": false,
+  "releaseReady": false
+}
