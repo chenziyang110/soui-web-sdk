@@ -1,0 +1,117 @@
+$ErrorActionPreference='Stop'
+$taskRoot='F:/work/sm05-broker'
+$taskArchiveRelative='verification/production-validation/0.5-software-reload-resource-2026-10-10'
+$taskArchive=[IO.Path]::GetFullPath((Join-Path $taskRoot $taskArchiveRelative))
+$taskActual=Join-Path $taskRoot 'out/current-sdk-resource-root-c12e4b16/actual'
+$taskUtf8=[Text.UTF8Encoding]::new($false)
+if(Test-Path -LiteralPath $taskArchive){throw 'Archive must be fresh'}
+
+function Pin([string]$taskPath){
+ $taskFile=Get-Item -LiteralPath $taskPath
+ if($taskFile.PSIsContainer-or($taskFile.Attributes-band[IO.FileAttributes]::ReparsePoint)){throw 'Plain source file required'}
+ [ordered]@{path=[IO.Path]::GetFullPath($taskPath).Replace('\','/');bytes=$taskFile.Length;sha256=(Get-FileHash -LiteralPath $taskPath -Algorithm SHA256).Hash.ToLowerInvariant()}
+}
+function Write-New([string]$taskRelative,[string]$taskText){
+ $taskDestination=[IO.Path]::GetFullPath((Join-Path $taskArchive $taskRelative))
+ if(-not$taskDestination.StartsWith($taskArchive+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Destination escaped archive'}
+ [void][IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($taskDestination))
+ $taskStream=[IO.FileStream]::new($taskDestination,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
+ try{$taskBytes=$taskUtf8.GetBytes($taskText);$taskStream.Write($taskBytes,0,$taskBytes.Length)}finally{$taskStream.Dispose()}
+}
+function Write-Json([string]$taskRelative,$taskValue){Write-New $taskRelative (($taskValue|ConvertTo-Json -Depth 35)+[char]10)}
+$taskCopies=[Collections.Generic.List[object]]::new()
+function Add-Copy([string]$taskOriginal,[string]$taskRelative){
+ if($taskRelative.Contains('..')-or[IO.Path]::IsPathRooted($taskRelative)){throw 'Invalid relative copy path'}
+ $taskCopies.Add([ordered]@{original=Pin $taskOriginal;relative=$taskRelative})
+}
+
+$taskInputs=Get-Content -LiteralPath (Join-Path $taskActual 'inputs.json') -Raw|ConvertFrom-Json
+if($taskInputs.source.sha256-cne'ad8d40a0e73a5262a0c741c2c3148f22d5f9eb6fce36501eaf6ab6fd17438f30'-or$taskInputs.releaseReady-ne$false){throw 'Unexpected frozen inputs'}
+$taskCases=[Collections.Generic.List[object]]::new()
+foreach($taskArch in @('x64','x86')){
+ $taskAnswer=Get-Content -LiteralPath (Join-Path $taskActual ($taskArch+'-run.json')) -Raw|ConvertFrom-Json
+ $taskResult=Get-Content -LiteralPath (Join-Path $taskRoot $taskAnswer.result) -Raw|ConvertFrom-Json
+ $taskAnalysis=Get-Content -LiteralPath (Join-Path $taskActual ($taskArch+'-analysis.json')) -Raw|ConvertFrom-Json
+ $taskFrozen=$taskInputs.suites|Where-Object architecture -eq $taskArch
+ $taskRunFolder=Split-Path -Parent (Join-Path $taskRoot $taskAnswer.result)
+ $taskExpectedGate=if($taskArch-ceq'x64'){'passed'}else{'failed'}
+ if($taskAnswer.passed-ne$true-or$taskResult.passed-ne$true-or$taskAnalysis.resourceGate-cne$taskExpectedGate-or$taskAnalysis.releaseReady-ne$false){throw 'Original result classification changed'}
+ if($taskResult.outcome.ownedProcess.terminal.totalProcesses-ne1-or$taskResult.outcome.ownedProcess.terminal.terminatedOwnedJob-ne$false-or$taskResult.outcome.ownedProcess.exitCode-ne0-or$taskResult.outcome.ownedProcess.supervisorExitCode-ne0){throw 'Original closure changed'}
+ $taskLeaves=[string[]]@(Get-ChildItem -LiteralPath $taskRunFolder -File|ForEach-Object{$_.Name})
+ [Array]::Sort($taskLeaves,[StringComparer]::Ordinal)
+ $taskExpectedLeaves=[string[]]@('events.ndjson','owned-process.ndjson','owned-process.ndjson.context.json','request.json','resource-policy.json','result.json','stderr.log','stdout.log')
+ if(($taskLeaves-join'|')-cne($taskExpectedLeaves-join'|')){throw 'Unexpected reload directory inventory'}
+ foreach($taskLeaf in $taskLeaves){Add-Copy (Join-Path $taskRunFolder $taskLeaf) ('raw/reloads/'+$taskArch+'/'+$taskLeaf+'.raw')}
+ Add-Copy (Join-Path $taskFrozen.suite 'build.json') ('raw/suites/'+$taskArch+'/build.json.raw')
+ Add-Copy (Join-Path $taskFrozen.payload.root 'resources/source-navigation.log') ('raw/diagnostics/'+$taskArch+'/source-navigation.log.raw')
+ $taskSdkArch=if($taskArch-ceq'x64'){'x64'}else{'x86'}
+ Add-Copy (Join-Path $taskRoot ('out/sdk-'+$taskSdkArch+'/build-Release.json')) ('raw/sdk-builds/'+$taskArch+'/build-Release.json.raw')
+ $taskResources=[ordered]@{}
+ foreach($taskMetric in @('privateBytes','workingSetBytes','handles','threads','gdiObjects','userObjects')){
+  $taskData=$taskAnalysis.resources.$taskMetric
+  $taskResources[$taskMetric]=[ordered]@{baseline=$taskData.baseline;tailMedian=$taskData.tailMedian;tailMedianGrowth=$taskData.tailMedianGrowth;theilSenPerCycle=$taskData.theilSenPerCycle;pairs=$taskData.theilSenPairs;gated=$taskData.gated}
+ }
+ $taskCases.Add([ordered]@{architecture=$taskArch;runId=$taskResult.runId;pid=$taskResult.outcome.pid;creationFileTime=$taskResult.outcome.ownedProcess.creationFileTime;nativeExitCode=0;supervisorExitCode=0;wholeJobProcesses=1;forcedClosure=$false;ownedElapsedMs=$taskResult.outcome.ownedProcess.terminal.elapsedMs;nativeRows=348;pairedSteps=116;samples=114;measuredCycles=100;settleMinimumMs=if($taskArch-ceq'x64'){5103}else{5117};operationPassed=$true;resourceGate=$taskExpectedGate;resources=$taskResources;windowClassesStable=$taskAnalysis.windowClassesStable;releaseReady=$false})
+}
+$taskActualLeaves=[string[]]@(Get-ChildItem -LiteralPath $taskActual -File|ForEach-Object{$_.Name})
+[Array]::Sort($taskActualLeaves,[StringComparer]::Ordinal)
+$taskExpectedActual=[string[]]@('inputs.json','x64-analysis.json','x64-bindings.json','x64-run.json','x86-analysis.json','x86-bindings.json','x86-run.json')
+if(($taskActualLeaves-join'|')-cne($taskExpectedActual-join'|')){throw 'Unexpected actual directory inventory'}
+foreach($taskLeaf in $taskActualLeaves){Add-Copy (Join-Path $taskActual $taskLeaf) ('raw/actual/'+$taskLeaf+'.raw')}
+foreach($taskLeaf in @('Run-Root.ps1','run.cjs')){Add-Copy (Join-Path $taskRoot ('out/current-sdk-resource-root-c12e4b16/'+$taskLeaf)) ('raw/controller/'+$taskLeaf+'.raw')}
+foreach($taskSource in @('tests/acceptance/runner.cjs','tests/acceptance/resource-validation.cjs','tests/acceptance/monotonic-supervisor.cjs','tests/acceptance/timeout-diagnostics.cjs','tests/acceptance/mixed-validation.cjs','tests/acceptance/session-validation.cjs','tools/internal/delivery-identity.cjs','tools/internal/measurement-validation.cjs','tools/internal/owned-process.cjs','tools/internal/build-evidence.cjs','tools/internal/sdk-version.cjs','tests/acceptance-app/main.cpp','tests/acceptance-app/CMakeLists.txt')){
+ Add-Copy (Join-Path $taskRoot $taskSource) ('raw/source/'+$taskSource+'.inert')
+}
+Add-Copy (Join-Path $taskRoot 'out/benchmark-protocol/measurement-tools.json') 'raw/preparation/host-x64-measurement-tools.json.raw'
+Add-Copy (Join-Path $taskRoot 'out/current-sdk-resource-root-audit-96ceb2a4/review.json') 'raw/root-review/review.json.raw'
+Add-Copy (Join-Path $taskRoot 'docs/acceptance/0.5.0-resource-protocol.md') 'raw/protocol/0.5.0-resource-protocol.md.raw'
+Add-Copy $PSCommandPath 'raw/author/Archive-Resource.ps1.inert'
+Add-Copy (Join-Path $taskRoot 'verification/production-validation/0.5-runtime-capacity-consumer-2026-10-10/.gitattributes') '.gitattributes'
+$taskDestSet=[Collections.Generic.HashSet[string]]::new([StringComparer]::OrdinalIgnoreCase)
+foreach($taskCopy in $taskCopies){if(-not$taskDestSet.Add($taskCopy.relative)){throw 'Duplicate archive copy'}}
+[void][IO.Directory]::CreateDirectory($taskArchive)
+$taskCopyIndex=[Collections.Generic.List[object]]::new()
+foreach($taskCopy in $taskCopies){
+ $taskDestination=[IO.Path]::GetFullPath((Join-Path $taskArchive $taskCopy.relative))
+ if(-not$taskDestination.StartsWith($taskArchive+[IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)){throw 'Copy escaped archive'}
+ [void][IO.Directory]::CreateDirectory([IO.Path]::GetDirectoryName($taskDestination))
+ [IO.File]::Copy($taskCopy.original.path,$taskDestination,$false)
+ $taskCopied=Pin $taskDestination;$taskOriginalAfter=Pin $taskCopy.original.path
+ if($taskCopied.bytes-ne$taskCopy.original.bytes-or$taskCopied.sha256-cne$taskCopy.original.sha256-or$taskOriginalAfter.bytes-ne$taskCopy.original.bytes-or$taskOriginalAfter.sha256-cne$taskCopy.original.sha256){throw 'Copy or origin bytes changed'}
+ $taskCopyIndex.Add([ordered]@{original=$taskCopy.original;archived=[ordered]@{relative=$taskCopy.relative;bytes=$taskCopied.bytes;sha256=$taskCopied.sha256};byteExact=$true;originalBeforeAfterUnchanged=$true})
+}
+Write-Json 'copy-index.json' ([ordered]@{schema='soui.software-reload-resource-durable-copy-index/v1';archiveRelative=$taskArchiveRelative;rawCopyCount=$taskCopyIndex.Count;entries=@($taskCopyIndex)})
+Write-Json 'independent-review.json' ([ordered]@{schema='soui.software-reload-resource-independent-fs-review/v1';reviewer='/root/engine_capacity_review';reviewMethod='Prior FS-only audits independently read original raw records, verified full identity/hash/closure chains, and recomputed exact rational medians plus 4950 pair slopes per metric; this author script only copies closed evidence.';sourceSha256=$taskInputs.source.sha256;sourceNormalizedFilesVerifiedBeforeAndAfterBoth=1095;runtimeFilesPerArchitectureVerified=75;allowedExtraPerArchitecture='resources/source-navigation.log';originalPolicySha256=$taskInputs.policySha256;cases=@($taskCases);combinedResourcePassed=$false;controllerExitCode=1;controllerExitCodeOrigin='Root reported Native session 48167 CLOSED1 via collaboration; not a fabricated Owned receipt.';nativeExecutedByReviewer=$false;thresholdsChanged=$false;sdkPrivateCachesAndQueuesQualified=$false;thousandCycleQualified=$false;eightHourQualified=$false;targetOsQualified=$false;formalPassed=$false;releaseReady=$false})
+$taskReadme=@'
+# 0.5 软件百轮重载资源记录（2026-10-10）
+
+本轮结论为 **x64 PASS、x86 FAIL、整轮退出 1**。两个实际主体都自然退出 0/0，完整 Job 均只有该主体、无强制清理；操作循环完成不等于资源门槛通过。整轮退出码由 Root 的 Native session 48167 关闭结果报告，本目录没有伪造控制器 Owned 回执。
+
+| 架构 | 实际 PID / 创建 FILETIME | 私有内存尾部增长 | 句柄基线 → 尾部中位数 | 原资源结论 |
+| --- | --- | ---: | ---: | --- |
+| x64 | 68224 / 134361049789856195 | 4,458,496 B | 300 → 300（+0） | PASS |
+| x86 | 83776 / 134361055811640115 | 3,928,064 B | 315 → 318（+3） | FAIL |
+
+x86 的唯一失败项是句柄尾部增长 +3 超过原阈值 0。两架构句柄 Theil–Sen 斜率均为 0；这不能取消尾部门槛，也不能据此证明或排除某类对象泄漏。其他四项被门槛约束的指标及逐轮窗口类检查均通过，工作集仅描述。
+
+本轮严格保留原 reload100 / warmup10 / settle5000 / step timeout20000。各架构有 348 条原始事件、116 个步骤开始/完成对、114 个样本与 100 个测量轮次；实际最短稳定等待为 x64 5103 ms、x86 5117 ms。原监督器预算为 3110000 ms、drain2000，原逐步监视与资源 reader 未替换。第 10 轮是基线，最后 10 个测量样本取中位数；私有内存额度是 max(16 MiB, ceil(基线/10))，句柄、线程、GDI、USER 的尾部增长及趋势额度仍为 0。每指标 4950 对斜率由两位复核者以原始样本独立重算。
+
+实际输入是 source ad8d40a0e73a5262a0c741c2c3148f22d5f9eb6fce36501eaf6ab6fd17438f30 的当前正常 SDK 和两套 fresh public Web consumer。1095 源文件按原 normalization 在运行前后匹配；每套 75 个冻结 runtime 文件匹配。新准备的 host x64 OwnedProcessRunner 为 150016 B / db99e2dcdf203f1ebcb4c9892061bf2c8e9893186f32e7932176b745825665ce。两个新 source-navigation.log 单独保存在 diagnostics，不加入原 payload 身份。
+
+附件路径与来源见 [copy-index.json](copy-index.json)，全部目录成员按真正 StringComparer.Ordinal 排序，除 manifest 自身外的原字节 SHA256 见 [manifest.json](manifest.json)。原 inputs/bindings/result/review 中绝对路径保持原文，relative 附件映射仅用于离线审查。局部 .gitattributes 使用已通过消费者归档的规则，Git 保留原字节、换行及 ident 内容。复制前后来源哈希一致；所有源代码与控制脚本复本为 inert/raw，只供审查，不构成可执行交付。
+
+本目录保留本轮全部成功与失败文本记录，不覆盖历史 315e 双架构资源失败。有限的 100+10 软件单进程资源单项不提升 SDK 私有缓存/队列、1000 轮、8 小时、目标 OS/PE、完整工具链、M0 或正式发布资格；releaseReady 与 formalPassed 均为 false。后续工作区变化不能把原冻结 pin 重标为当前匹配。
+
+下一步最小诊断是复用已有 V3 PSS 自身句柄观察协议，创建新的 x86 诊断 consumer，绑定本轮同一正常安装 SDK、候选 kernel 和真实 PID/FILETIME。原失败原样封存；诊断与原无观察器 gate 分开标识，保留 100+10、5000 ms 和原监督预算。每个原样本先 flush，再采集对齐的 PSS sidecar；只看自身 PID、记录采集前后计数、QPC 与捕获/遍历/释放状态，保持既有 4096 行上限和 250 ms 事后限制，不延长门槛或施加 GC。
+
+可证伪假设是“多出的 3 个句柄集中在一类且在稳定等待后持续存在”。若相应类型尾部计数不增，或探测前后计数不稳定，则不能据此归因；若计数一致且集中，再沿真实持有/释放路径查因。PSS 类型 6 为 semaphore、0 为 unknown；opaque handle 值不能证明同一对象或分配身份，类型中位数也不能简单相加。PSS 不可用（含旧 OS）应记 unavailable，不能冒充目标系统资格。只有修正真实原因后，新的正常无 PSS 原 gate 运行才能评估是否消除 +3；本目录失败始终保留。
+'@
+Write-New 'README.md' ($taskReadme+[char]10)
+$taskMembers=[string[]]@([IO.Directory]::EnumerateFiles($taskArchive,'*',[IO.SearchOption]::AllDirectories)|ForEach-Object{[IO.Path]::GetRelativePath($taskArchive,$_).Replace('\','/')})
+$taskMembers+=@('manifest.json');[Array]::Sort($taskMembers,[StringComparer]::Ordinal)
+$taskFilePins=@($taskMembers|Where-Object{$_-cne'manifest.json'}|ForEach-Object{$taskPin=Pin (Join-Path $taskArchive $_);[ordered]@{relative=$_;bytes=$taskPin.bytes;sha256=$taskPin.sha256}})
+Write-Json 'manifest.json' ([ordered]@{schema='soui.software-reload-resource-durable-manifest/v1';membership=$taskMembers;memberCount=$taskMembers.Count;membershipSort='StringComparer.Ordinal';files=$taskFilePins;selfHashExcluded=$true;selfHashRecordedExternally=$true;combinedResourcePassed=$false;x64ResourcePassed=$true;x86ResourcePassed=$false;controllerExitCode=1;formalPassed=$false;releaseReady=$false})
+$taskActualMembers=[string[]]@([IO.Directory]::EnumerateFiles($taskArchive,'*',[IO.SearchOption]::AllDirectories)|ForEach-Object{[IO.Path]::GetRelativePath($taskArchive,$_).Replace('\','/')});[Array]::Sort($taskActualMembers,[StringComparer]::Ordinal)
+if(($taskActualMembers-join'|')-cne($taskMembers-join'|')){throw 'Final Ordinal membership differs'}
+foreach($taskFile in $taskFilePins){$taskActualPin=Pin (Join-Path $taskArchive $taskFile.relative);if($taskActualPin.bytes-ne$taskFile.bytes-or$taskActualPin.sha256-cne$taskFile.sha256){throw 'Final attachment hash differs'}}
+[ordered]@{archive=$taskArchive;rawCopies=$taskCopyIndex.Count;members=$taskMembers.Count;manifest=Pin (Join-Path $taskArchive 'manifest.json');copyIndex=Pin (Join-Path $taskArchive 'copy-index.json');independentReview=Pin (Join-Path $taskArchive 'independent-review.json');x64ResourcePassed=$true;x86ResourcePassed=$false;controllerExitCode=1;formalPassed=$false;releaseReady=$false;nativeExecutedByAuthor=$false}|ConvertTo-Json -Depth 5

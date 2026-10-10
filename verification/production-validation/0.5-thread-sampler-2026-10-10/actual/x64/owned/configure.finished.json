@@ -1,0 +1,84 @@
+{
+  "job": {
+    "name": "configure",
+    "executable": "C:/Program Files/CMake/bin/cmake.exe",
+    "args": [
+      "-S",
+      "F:\\work\\sm05-broker\\out\\acceptance-thread-sampler-regression-source-c192dbc9-721d-4fed-b017-5e5a273ae82a",
+      "-B",
+      "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\build",
+      "-G",
+      "Visual Studio 17 2022",
+      "-A",
+      "x64",
+      "-T",
+      "v143,version=14.44.35207,host=x64",
+      "-DCMAKE_GENERATOR_INSTANCE:PATH=C:/Program Files/Microsoft Visual Studio/2022/Community",
+      "-DCMAKE_SYSTEM_VERSION:STRING=10.0.19041.0",
+      "-DCMAKE_CONFIGURATION_TYPES:STRING=Release",
+      "-DCMAKE_PROJECT_INCLUDE:FILEPATH=F:/work/sm05-broker/out/thread-sampler-v2-root-f3a5e6cf-7185-45bf-8642-38c2c3725bf7/fixed-compiler.cmake",
+      "-DSOUI_ROOT_EXPECTED_ARCH:STRING=x64",
+      "-DCMAKE_VS_GLOBALS:STRING=VcpkgEnabled=false;VcpkgEnableManifest=false;UseEnv=false;UserRootDir=F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64/empty-user-props/",
+      "-DSouiSdk_DIR:PATH=F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-release-x64\\prefix/lib/cmake/SouiSdk",
+      "-DSOUI_ACCEPTANCE_MAIN:FILEPATH=F:/work/sm05-broker/tests/acceptance-app/main.cpp",
+      "-DCMAKE_FIND_USE_PACKAGE_REGISTRY:BOOL=OFF",
+      "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY:BOOL=OFF",
+      "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY:BOOL=ON"
+    ],
+    "cwd": "F:/work/sm05-broker",
+    "timeoutMs": 120000,
+    "expectedExitCode": 0
+  },
+  "result": {
+    "pid": 84872,
+    "creationFileTime": "134361035125563950",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 6174,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 26,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\configure.owned.jsonl",
+    "reportSha256": "583d530b3c565e44aa5bfafad6ad9811b367237e08aabec718497f6eebd5eff3",
+    "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+    "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "accepted": true,
+  "raw": {
+    "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\configure.owned.jsonl",
+    "bytes": 27954,
+    "sha256": "583d530b3c565e44aa5bfafad6ad9811b367237e08aabec718497f6eebd5eff3"
+  },
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\configure.owned.jsonl.context.json",
+    "bytes": 1590,
+    "sha256": "cce6224629069fa1c14a411aebc52dd806c210d7739ce7baca99188c994ae743"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\configure.stdout.raw",
+    "bytes": 499,
+    "sha256": "013d4d2aff1776b3da80d4a299581a80a0f575c972b4deceae31f914f04a29cd"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\configure.stderr.raw",
+    "bytes": 116,
+    "sha256": "6b413994db538d19492dc1c8b42f9eac504bbe50b7b298f08398ecb0cf77b8d6"
+  }
+}

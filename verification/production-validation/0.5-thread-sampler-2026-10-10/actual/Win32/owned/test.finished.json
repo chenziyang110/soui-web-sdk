@@ -1,0 +1,71 @@
+{
+  "job": {
+    "name": "test",
+    "executable": "C:/Program Files/CMake/bin/ctest.exe",
+    "args": [
+      "--test-dir",
+      "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32\\build",
+      "-C",
+      "Release",
+      "--output-on-failure",
+      "--no-tests=error",
+      "--output-junit",
+      "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32/junit.xml"
+    ],
+    "cwd": "F:/work/sm05-broker",
+    "timeoutMs": 600000,
+    "expectedExitCode": 0
+  },
+  "result": {
+    "pid": 108136,
+    "creationFileTime": "134361035379475156",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 1553,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 17,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32\\owned\\test.owned.jsonl",
+    "reportSha256": "602372d2c40d6f4666d18eb4897a77b4b9914cf2708bc76255b814ace60bab9d",
+    "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+    "executableSha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+  },
+  "accepted": true,
+  "raw": {
+    "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32\\owned\\test.owned.jsonl",
+    "bytes": 6685,
+    "sha256": "602372d2c40d6f4666d18eb4897a77b4b9914cf2708bc76255b814ace60bab9d"
+  },
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32\\owned\\test.owned.jsonl.context.json",
+    "bytes": 617,
+    "sha256": "4a96f4b9f523cc04893da4a096ffe5b9406fc8f2e2a9c5f7cfac4bb4fb43915d"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32\\owned\\test.stdout.raw",
+    "bytes": 2458,
+    "sha256": "e8c5fa4bf3e061d7a68421d862ff342bb612150b900434f8dd0b1b3f9f330cf8"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32\\owned\\test.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

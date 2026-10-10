@@ -1,0 +1,196 @@
+{
+  "schema": "soui.root-thread-sampler-actual-review/v1",
+  "reviewedAtUtc": "2026-10-10T11:11:05.1312653Z",
+  "finiteThreadSamplerCasesPassed": 30,
+  "strictNaturalStages": 6,
+  "records": [
+    {
+      "architecture": "x64",
+      "summary": {
+        "path": "F:/work/sm05-broker/out/tsamp2-f3a5e6cf-x64/owned/summary.json",
+        "bytes": 9375,
+        "sha256": "8d12c98f38bc86d7d68bb7c57e0b2490274e7a444685a7b45e060cec33142814"
+      },
+      "junit": {
+        "path": "F:/work/sm05-broker/out/tsamp2-f3a5e6cf-x64/junit.xml",
+        "bytes": 3706,
+        "sha256": "3bd00a7e204b901ee97ff3c65497fd089aa805b03a0a5e7f3c65ba586af2ff37"
+      },
+      "cases": [
+        "acceptance.thread-sampler.complete-mixed",
+        "acceptance.thread-sampler.empty",
+        "acceptance.thread-sampler.foreign-only",
+        "acceptance.thread-sampler.minimum-owner-extent",
+        "acceptance.thread-sampler.create-failure",
+        "acceptance.thread-sampler.first-failure",
+        "acceptance.thread-sampler.next-failure",
+        "acceptance.thread-sampler.close-failure",
+        "acceptance.thread-sampler.first-and-close-failure",
+        "acceptance.thread-sampler.next-and-close-failure",
+        "acceptance.thread-sampler.first-short",
+        "acceptance.thread-sampler.first-oversized",
+        "acceptance.thread-sampler.next-short",
+        "acceptance.thread-sampler.next-oversized",
+        "acceptance.thread-sampler.next-short-and-close-failure"
+      ],
+      "stages": [
+        {
+          "name": "configure",
+          "pid": 84872,
+          "creationFileTime": "134361035125563950",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "forced": false,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\configure.owned.jsonl",
+            "bytes": 27954,
+            "sha256": "583d530b3c565e44aa5bfafad6ad9811b367237e08aabec718497f6eebd5eff3"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\configure.owned.jsonl.context.json",
+            "bytes": 1590,
+            "sha256": "cce6224629069fa1c14a411aebc52dd806c210d7739ce7baca99188c994ae743"
+          }
+        },
+        {
+          "name": "build",
+          "pid": 43704,
+          "creationFileTime": "134361035191937958",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "forced": false,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\build.owned.jsonl",
+            "bytes": 17216,
+            "sha256": "25f88d9ec13b2a179eef3861142b595553773d885a3f512f40568bfdf74716fa"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\build.owned.jsonl.context.json",
+            "bytes": 592,
+            "sha256": "77c33bd13c6aaa57097fd630a5a5aef88994073585ef62dd7b116c5f9304075e"
+          }
+        },
+        {
+          "name": "test",
+          "pid": 32312,
+          "creationFileTime": "134361035238181970",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "forced": false,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\test.owned.jsonl",
+            "bytes": 6204,
+            "sha256": "6567de2f0e03374e92fcb2c94b657a060d099c1b97c445fd426e7da9b92bc131"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\test.owned.jsonl.context.json",
+            "bytes": 613,
+            "sha256": "3253d23d82974e2c1d44739c10e4c499931f861b44cee6bdefd085d6195d8567"
+          }
+        }
+      ],
+      "executable": {
+        "path": "F:/work/sm05-broker/out/tsamp2-f3a5e6cf-x64/build/Release/soui_acceptance_thread_sampler_tests.exe",
+        "bytes": 42496,
+        "sha256": "f21cfd77012a5e6cbb0fe25105b519803d89243727a673fcdc9b65ddbc0f0efa"
+      },
+      "machine": 34404
+    },
+    {
+      "architecture": "Win32",
+      "summary": {
+        "path": "F:/work/sm05-broker/out/tsamp2-f3a5e6cf-Win32/owned/summary.json",
+        "bytes": 9423,
+        "sha256": "cdad24d46eff3863b1ffc8d72472095a6f8f7f47ae52bf7e86f90189d9db1b0f"
+      },
+      "junit": {
+        "path": "F:/work/sm05-broker/out/tsamp2-f3a5e6cf-Win32/junit.xml",
+        "bytes": 3711,
+        "sha256": "e4de6387200663c4a6393eb7cff2fb9086af1b1c3a682809cf154ae1e531c3eb"
+      },
+      "cases": [
+        "acceptance.thread-sampler.complete-mixed",
+        "acceptance.thread-sampler.empty",
+        "acceptance.thread-sampler.foreign-only",
+        "acceptance.thread-sampler.minimum-owner-extent",
+        "acceptance.thread-sampler.create-failure",
+        "acceptance.thread-sampler.first-failure",
+        "acceptance.thread-sampler.next-failure",
+        "acceptance.thread-sampler.close-failure",
+        "acceptance.thread-sampler.first-and-close-failure",
+        "acceptance.thread-sampler.next-and-close-failure",
+        "acceptance.thread-sampler.first-short",
+        "acceptance.thread-sampler.first-oversized",
+        "acceptance.thread-sampler.next-short",
+        "acceptance.thread-sampler.next-oversized",
+        "acceptance.thread-sampler.next-short-and-close-failure"
+      ],
+      "stages": [
+        {
+          "name": "configure",
+          "pid": 9164,
+          "creationFileTime": "134361035275424504",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "forced": false,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32\\owned\\configure.owned.jsonl",
+            "bytes": 26866,
+            "sha256": "a4c8f891452eaa29b8abcad4025ce99bf8f822cbec6e1079ef1db35a85f9198b"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32\\owned\\configure.owned.jsonl.context.json",
+            "bytes": 1600,
+            "sha256": "1165efc787d17b9fb5a641fa9d4a796f6c0446592122fdddcbe85e5f23ec55f5"
+          }
+        },
+        {
+          "name": "build",
+          "pid": 97372,
+          "creationFileTime": "134361035335260219",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "forced": false,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32\\owned\\build.owned.jsonl",
+            "bytes": 17348,
+            "sha256": "53bab0d219140c16da5a78f2947e4723a9555a0519b646683f2a062e570294dd"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32\\owned\\build.owned.jsonl.context.json",
+            "bytes": 594,
+            "sha256": "75090e4421b8f0113ef563f63406335bc87261971e93911087e60f6515a8fda3"
+          }
+        },
+        {
+          "name": "test",
+          "pid": 108136,
+          "creationFileTime": "134361035379475156",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "forced": false,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32\\owned\\test.owned.jsonl",
+            "bytes": 6685,
+            "sha256": "602372d2c40d6f4666d18eb4897a77b4b9914cf2708bc76255b814ace60bab9d"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32\\owned\\test.owned.jsonl.context.json",
+            "bytes": 617,
+            "sha256": "4a96f4b9f523cc04893da4a096ffe5b9406fc8f2e2a9c5f7cfac4bb4fb43915d"
+          }
+        }
+      ],
+      "executable": {
+        "path": "F:/work/sm05-broker/out/tsamp2-f3a5e6cf-Win32/build/Release/soui_acceptance_thread_sampler_tests.exe",
+        "bytes": 38400,
+        "sha256": "4c982895c56c887b2ca84598de73ca9c401c60a1746decb6409a73d50d6176b2"
+      },
+      "machine": 332
+    }
+  ],
+  "qualificationPassed": false,
+  "resourceQualified": false,
+  "osQualified": false,
+  "releaseReady": false
+}

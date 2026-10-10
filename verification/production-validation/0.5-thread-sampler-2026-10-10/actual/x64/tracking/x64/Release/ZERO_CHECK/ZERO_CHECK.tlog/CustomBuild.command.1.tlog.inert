@@ -1,0 +1,10 @@
+^F:\WORK\SM05-BROKER\OUT\TSAMP2-F3A5E6CF-X64\BUILD\CMAKEFILES\7FE7F51844D749650001C5AF87583F50\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/work/sm05-broker/out/acceptance-thread-sampler-regression-source-c192dbc9-721d-4fed-b017-5e5a273ae82a -BF:/work/sm05-broker/out/tsamp2-f3a5e6cf-x64/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file F:/work/sm05-broker/out/tsamp2-f3a5e6cf-x64/build/SouiAcceptanceThreadSamplerRegression.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

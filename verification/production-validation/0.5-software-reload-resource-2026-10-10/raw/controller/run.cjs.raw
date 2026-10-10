@@ -1,0 +1,53 @@
+'use strict';
+const fs=require('node:fs');
+const path=require('node:path');
+const crypto=require('node:crypto');
+const root='F:/work/sm05-broker';
+const runner=require(path.join(root,'tests/acceptance/runner.cjs'));
+const identity=require(path.join(root,'tools/internal/delivery-identity.cjs'));
+const reader=require(path.join(root,'tests/acceptance/resource-validation.cjs'));
+const measurement=require(path.join(root,'tools/internal/measurement-validation.cjs'));
+const suites=[
+ {architecture:'x64',suite:path.join(root,'out/acceptance/8ecf40ab-1ad0-4adc-93af-0e6e4f226fe9')},
+ {architecture:'x86',suite:path.join(root,'out/acceptance/0daefd5a-cd60-4c54-ade7-69e89c14f22f')}
+];
+const sha=raw=>crypto.createHash('sha256').update(raw).digest('hex');
+const pin=file=>{const stat=fs.lstatSync(file);if(!stat.isFile()||stat.isSymbolicLink())throw Error('Plain file required');const raw=fs.readFileSync(file);return {path:file,bytes:raw.length,sha256:sha(raw)};};
+const write=(file,value)=>fs.writeFileSync(file,JSON.stringify(value,null,2)+'\n',{flag:'wx'});
+async function main(){
+ if(process.argv.length!==3||process.argv[2]!=='ROOT_CURRENT_SDK_RESOURCE_V1')throw Error('Explicit resource gate required');
+ const output=path.join(__dirname,'actual');if(fs.existsSync(output))throw Error('Fresh output required');
+ const setup=measurement.prepared('x64');
+ const provider=pin(setup.tools.OwnedProcessRunner);
+ if(path.resolve(process.env.SOUI_OWNED_PROCESS_RUNNER||'').toLowerCase()!==path.resolve(provider.path).toLowerCase())throw Error('Frozen normal host supervisor required');
+ const sourceRoots=['sdk','cmake','tools','third_party/include','third_party/prebuilt','third_party/sources/zlib','third_party/licenses','templates','demos','tests','benchmarks'].filter(name=>fs.existsSync(path.join(root,name)));
+ const source={...identity.source(root),root,inventoryRoots:sourceRoots};
+ if(source.sha256!=='ad8d40a0e73a5262a0c741c2c3148f22d5f9eb6fce36501eaf6ab6fd17438f30')throw Error('Current built source changed');
+ const config=runner.settings('reload',100,10,5000,20000);
+ const inputs=suites.map(record=>{const build=runner.verify(record.suite);if(build.architecture!==record.architecture||build.sourceSha256!==source.sha256)throw Error('Current suite build mismatch');const bin=path.join(record.suite,'runtime');return {...record,build:pin(path.join(record.suite,'build.json')),consumerBuildId:build.consumerBuildId,payload:{...build.payload,root:bin,inventoryRoots:['']}};});
+ fs.mkdirSync(output);write(path.join(output,'inputs.json'),{schema:'soui.current-sdk-resource-inputs/v1',source,provider,config,suites:inputs,policySha256:reader.POLICY_SHA256,releaseReady:false});
+ let failed=false;
+ for(const record of inputs){
+  if(identity.source(root).sha256!==source.sha256||pin(provider.path).sha256!==provider.sha256)throw Error('Resource inputs drift');
+  try{
+   const answer=await runner.run(record.suite,config,{resource:true});
+   write(path.join(output,record.architecture+'-run.json'),answer);
+   const resultPath=path.join(root,answer.result);
+   const policy=pin(path.join(path.dirname(resultPath),'resource-policy.json'));
+   if(policy.sha256!==reader.POLICY_SHA256)throw Error('Actual policy bytes drift');
+   const binding={schema:'soui.resource-file-bindings/v1',source,payload:record.payload,runner:provider,policy,executablePath:path.join(record.suite,'runtime/SouiAcceptance.exe')};
+   const bindingPath=path.join(output,record.architecture+'-bindings.json');write(bindingPath,binding);
+   const analysis=reader.analyzeFile(resultPath,bindingPath);
+   write(path.join(output,record.architecture+'-analysis.json'),analysis);
+   process.stdout.write(JSON.stringify({architecture:record.architecture,result:answer.result,runPassed:answer.passed,analysis})+'\n');
+   if(!answer.passed||!analysis.passed)failed=true;
+  }catch(error){
+   failed=true;
+   const failure={schema:'soui.current-sdk-resource-controller-failure/v1',architecture:record.architecture,suite:record.suite,failure:error.message,passed:false,releaseReady:false};
+   write(path.join(output,record.architecture+'-error.json'),failure);
+   process.stdout.write(JSON.stringify(failure)+'\n');
+  }
+ }
+ process.exitCode=failed?1:0;
+}
+main().catch(error=>{process.stderr.write(error.stack+'\n');process.exitCode=1;});

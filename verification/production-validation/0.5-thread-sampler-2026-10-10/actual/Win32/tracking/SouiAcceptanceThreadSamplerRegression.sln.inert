@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ALL_BUILD", "ALL_BUILD.vcxproj", "{367E3491-51BA-36F0-905B-BACC0826126C}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2EFD80FA-5501-39B7-B585-80CC068A5BF3} = {2EFD80FA-5501-39B7-B585-80CC068A5BF3}
+		{4EE5E7F2-1484-33F7-A806-389B3B1AD705} = {4EE5E7F2-1484-33F7-A806-389B3B1AD705}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RUN_TESTS", "RUN_TESTS.vcxproj", "{7780F389-0C75-3174-BFC1-39ADAF32F545}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2EFD80FA-5501-39B7-B585-80CC068A5BF3} = {2EFD80FA-5501-39B7-B585-80CC068A5BF3}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ZERO_CHECK", "ZERO_CHECK.vcxproj", "{2EFD80FA-5501-39B7-B585-80CC068A5BF3}"
+	ProjectSection(ProjectDependencies) = postProject
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soui_acceptance_thread_sampler_tests", "soui_acceptance_thread_sampler_tests.vcxproj", "{4EE5E7F2-1484-33F7-A806-389B3B1AD705}"
+	ProjectSection(ProjectDependencies) = postProject
+		{2EFD80FA-5501-39B7-B585-80CC068A5BF3} = {2EFD80FA-5501-39B7-B585-80CC068A5BF3}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{367E3491-51BA-36F0-905B-BACC0826126C}.Release|Win32.ActiveCfg = Release|Win32
+		{7780F389-0C75-3174-BFC1-39ADAF32F545}.Release|Win32.ActiveCfg = Release|Win32
+		{2EFD80FA-5501-39B7-B585-80CC068A5BF3}.Release|Win32.ActiveCfg = Release|Win32
+		{2EFD80FA-5501-39B7-B585-80CC068A5BF3}.Release|Win32.Build.0 = Release|Win32
+		{4EE5E7F2-1484-33F7-A806-389B3B1AD705}.Release|Win32.ActiveCfg = Release|Win32
+		{4EE5E7F2-1484-33F7-A806-389B3B1AD705}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F2B0D834-BABD-38A0-A4F6-1E2F98A61314}
+	EndGlobalSection
+	GlobalSection(ExtensibilityAddIns) = postSolution
+	EndGlobalSection
+EndGlobal

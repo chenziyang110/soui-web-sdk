@@ -1,0 +1,330 @@
+{
+  "schema": "soui.software-reload-resource-durable-manifest/v1",
+  "membership": [
+    ".gitattributes",
+    "README.md",
+    "copy-index.json",
+    "independent-review.json",
+    "manifest.json",
+    "raw/actual/inputs.json.raw",
+    "raw/actual/x64-analysis.json.raw",
+    "raw/actual/x64-bindings.json.raw",
+    "raw/actual/x64-run.json.raw",
+    "raw/actual/x86-analysis.json.raw",
+    "raw/actual/x86-bindings.json.raw",
+    "raw/actual/x86-run.json.raw",
+    "raw/author/Archive-Resource.ps1.inert",
+    "raw/controller/Run-Root.ps1.raw",
+    "raw/controller/run.cjs.raw",
+    "raw/diagnostics/x64/source-navigation.log.raw",
+    "raw/diagnostics/x86/source-navigation.log.raw",
+    "raw/preparation/host-x64-measurement-tools.json.raw",
+    "raw/protocol/0.5.0-resource-protocol.md.raw",
+    "raw/reloads/x64/events.ndjson.raw",
+    "raw/reloads/x64/owned-process.ndjson.context.json.raw",
+    "raw/reloads/x64/owned-process.ndjson.raw",
+    "raw/reloads/x64/request.json.raw",
+    "raw/reloads/x64/resource-policy.json.raw",
+    "raw/reloads/x64/result.json.raw",
+    "raw/reloads/x64/stderr.log.raw",
+    "raw/reloads/x64/stdout.log.raw",
+    "raw/reloads/x86/events.ndjson.raw",
+    "raw/reloads/x86/owned-process.ndjson.context.json.raw",
+    "raw/reloads/x86/owned-process.ndjson.raw",
+    "raw/reloads/x86/request.json.raw",
+    "raw/reloads/x86/resource-policy.json.raw",
+    "raw/reloads/x86/result.json.raw",
+    "raw/reloads/x86/stderr.log.raw",
+    "raw/reloads/x86/stdout.log.raw",
+    "raw/root-review/review.json.raw",
+    "raw/sdk-builds/x64/build-Release.json.raw",
+    "raw/sdk-builds/x86/build-Release.json.raw",
+    "raw/source/tests/acceptance-app/CMakeLists.txt.inert",
+    "raw/source/tests/acceptance-app/main.cpp.inert",
+    "raw/source/tests/acceptance/mixed-validation.cjs.inert",
+    "raw/source/tests/acceptance/monotonic-supervisor.cjs.inert",
+    "raw/source/tests/acceptance/resource-validation.cjs.inert",
+    "raw/source/tests/acceptance/runner.cjs.inert",
+    "raw/source/tests/acceptance/session-validation.cjs.inert",
+    "raw/source/tests/acceptance/timeout-diagnostics.cjs.inert",
+    "raw/source/tools/internal/build-evidence.cjs.inert",
+    "raw/source/tools/internal/delivery-identity.cjs.inert",
+    "raw/source/tools/internal/measurement-validation.cjs.inert",
+    "raw/source/tools/internal/owned-process.cjs.inert",
+    "raw/source/tools/internal/sdk-version.cjs.inert",
+    "raw/suites/x64/build.json.raw",
+    "raw/suites/x86/build.json.raw"
+  ],
+  "memberCount": 53,
+  "membershipSort": "StringComparer.Ordinal",
+  "files": [
+    {
+      "relative": ".gitattributes",
+      "bytes": 69,
+      "sha256": "372da343bf6f19ae6432c0d9665d1314b59e4769b3543faa2c107bc5ca5a1baf"
+    },
+    {
+      "relative": "README.md",
+      "bytes": 4088,
+      "sha256": "59b7c566182b4581c4dfb4e0c85b04ec621e5b9b73eeff0b99ae763c12d77e6d"
+    },
+    {
+      "relative": "copy-index.json",
+      "bytes": 26819,
+      "sha256": "b780115080562ab8bf96116bea9c1f07143b838b571172f7a27559dc1fcd7dd8"
+    },
+    {
+      "relative": "independent-review.json",
+      "bytes": 8879,
+      "sha256": "0b0c27d1874f6916e93a95f273dc3fb446b9d8346b3060b214490f2d1a6d8a2a"
+    },
+    {
+      "relative": "raw/actual/inputs.json.raw",
+      "bytes": 280437,
+      "sha256": "eac50df9f978953a912ed2e33204c47cb07b3af9a75dd050d8177fb5281dc64a"
+    },
+    {
+      "relative": "raw/actual/x64-analysis.json.raw",
+      "bytes": 126257,
+      "sha256": "872893a62c014c788d0ccdf952931ea4635c516fec3574e5c2c83fa99959b4ce"
+    },
+    {
+      "relative": "raw/actual/x64-bindings.json.raw",
+      "bytes": 263025,
+      "sha256": "4d160eb03a091bf8923e4e71643baeefb8836637a02f7c152f65d451fed153d5"
+    },
+    {
+      "relative": "raw/actual/x64-run.json.raw",
+      "bytes": 1601,
+      "sha256": "7d5ecd97f715dc9492c4aaff4daf91c31c884af6a4443a54698e51d00fa152f7"
+    },
+    {
+      "relative": "raw/actual/x86-analysis.json.raw",
+      "bytes": 126263,
+      "sha256": "822f0646bda34b180ee35e0b9b048a346e6a17e29230f760ad38bc179ad8ae27"
+    },
+    {
+      "relative": "raw/actual/x86-bindings.json.raw",
+      "bytes": 263037,
+      "sha256": "ae8397686322b67b1258c8b5abe54142a767063d6cf9d027d13c455e5879c305"
+    },
+    {
+      "relative": "raw/actual/x86-run.json.raw",
+      "bytes": 1601,
+      "sha256": "fd6d277b2704b86c747dc0f188a4a527fa6b570103348e871290826769aa27e5"
+    },
+    {
+      "relative": "raw/author/Archive-Resource.ps1.inert",
+      "bytes": 15780,
+      "sha256": "033fe9fcbe4e1f61abf76c5229f096fc59434fd1031984f26b8ff7448f1d9a49"
+    },
+    {
+      "relative": "raw/controller/Run-Root.ps1.raw",
+      "bytes": 1312,
+      "sha256": "58bf639c7e0c57423b2d93c08e493b0a6eab2c99d5a0bcf6416849f8de6621a3"
+    },
+    {
+      "relative": "raw/controller/run.cjs.raw",
+      "bytes": 4301,
+      "sha256": "60a489646c9a434eaaddeb26207eaf11d2117a6c5e6a38bdecd13776d4ccdc30"
+    },
+    {
+      "relative": "raw/diagnostics/x64/source-navigation.log.raw",
+      "bytes": 14763,
+      "sha256": "e1996a2560a1b9a2b36075719f976367d79c104a5479d177b71e227023aa1ccb"
+    },
+    {
+      "relative": "raw/diagnostics/x86/source-navigation.log.raw",
+      "bytes": 14763,
+      "sha256": "f98a1ba645e86c248538e71b0f3ba9c86bf5cfc8594101a51bb6992e0e91bae6"
+    },
+    {
+      "relative": "raw/preparation/host-x64-measurement-tools.json.raw",
+      "bytes": 6561,
+      "sha256": "ca0bffb1e4d64e91b1ab3211f9ade99d0cb8e021ab405b71dfe34a5ce9d5b81a"
+    },
+    {
+      "relative": "raw/protocol/0.5.0-resource-protocol.md.raw",
+      "bytes": 7988,
+      "sha256": "804493a1852fcb6a40987ef548a57b12f74cb22f04d56c52377ea54a592ce933"
+    },
+    {
+      "relative": "raw/reloads/x64/events.ndjson.raw",
+      "bytes": 62296,
+      "sha256": "a611573f52ab4d4ed938d4d1817d0b383843368b24161891e812f23466fb509c"
+    },
+    {
+      "relative": "raw/reloads/x64/owned-process.ndjson.context.json.raw",
+      "bytes": 769,
+      "sha256": "a6b8f425eac4e7d68712f3a7d152505480f8e19ee1d4123a83f5463e9b9a7d5b"
+    },
+    {
+      "relative": "raw/reloads/x64/owned-process.ndjson.raw",
+      "bytes": 809,
+      "sha256": "6bf191117fe5200fe46fee0d723cf88d5fa91dca8d9c18086aebf12a29de10ee"
+    },
+    {
+      "relative": "raw/reloads/x64/request.json.raw",
+      "bytes": 680,
+      "sha256": "6b2539ba509e4fd44d7da0bfca427cdfaf4f7e9a0eb3644ddb4306494bc0c487"
+    },
+    {
+      "relative": "raw/reloads/x64/resource-policy.json.raw",
+      "bytes": 633,
+      "sha256": "8fb6eda430ffce82b20b873873f7ef3c91090e10f8c14e7ef30bff18735f4037"
+    },
+    {
+      "relative": "raw/reloads/x64/result.json.raw",
+      "bytes": 70687,
+      "sha256": "feab1be4796d95ac9d5b5a51f9655076fc18dfc0003fe55e038cf994dae6b6f3"
+    },
+    {
+      "relative": "raw/reloads/x64/stderr.log.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "raw/reloads/x64/stdout.log.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "raw/reloads/x86/events.ndjson.raw",
+      "bytes": 62298,
+      "sha256": "c4de1b291256b4f19d296b4a2bbb1078e270a32c110e19a7f48b2ef432a91975"
+    },
+    {
+      "relative": "raw/reloads/x86/owned-process.ndjson.context.json.raw",
+      "bytes": 769,
+      "sha256": "a995b32e379e1c5095c00ef0a832419c7d1e9a5182a61f86660df5c651607fc1"
+    },
+    {
+      "relative": "raw/reloads/x86/owned-process.ndjson.raw",
+      "bytes": 809,
+      "sha256": "db1972e558f73e3107a6dc1c9b85c39676dbc7f89755840f02da2236da0b6c3e"
+    },
+    {
+      "relative": "raw/reloads/x86/request.json.raw",
+      "bytes": 680,
+      "sha256": "db73fabe3d5deb8206c1e1013e4455b4812a7cb2a0bc1beac0bb20bb1219697d"
+    },
+    {
+      "relative": "raw/reloads/x86/resource-policy.json.raw",
+      "bytes": 633,
+      "sha256": "8fb6eda430ffce82b20b873873f7ef3c91090e10f8c14e7ef30bff18735f4037"
+    },
+    {
+      "relative": "raw/reloads/x86/result.json.raw",
+      "bytes": 70688,
+      "sha256": "6f2cde92f6fd294149661019052056891f7eec857051601dc28feadfdedae9af"
+    },
+    {
+      "relative": "raw/reloads/x86/stderr.log.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "raw/reloads/x86/stdout.log.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "relative": "raw/root-review/review.json.raw",
+      "bytes": 6611,
+      "sha256": "9d901471eefc761d76e0f087db87c4ac0c088c2123a6f2c50e972bcbcff09606"
+    },
+    {
+      "relative": "raw/sdk-builds/x64/build-Release.json.raw",
+      "bytes": 249200,
+      "sha256": "40a639d2a8574f2ca725259fcc833befe0ff1379e900a8df3564303bb92b3c29"
+    },
+    {
+      "relative": "raw/sdk-builds/x86/build-Release.json.raw",
+      "bytes": 249200,
+      "sha256": "7bd78b538440c6bf4bb9c6d1e28858ac570c4cb02876b2bace66c3ee4c40ab6f"
+    },
+    {
+      "relative": "raw/source/tests/acceptance-app/CMakeLists.txt.inert",
+      "bytes": 962,
+      "sha256": "3c2eaedd4ad3a70597102ed3b8260f43dfa8ac0c1172df8c58502e115a4c1bc7"
+    },
+    {
+      "relative": "raw/source/tests/acceptance-app/main.cpp.inert",
+      "bytes": 35921,
+      "sha256": "88b96e34a3509728108ac9504f5e65b905e044852467a0494a8d088a2f65069e"
+    },
+    {
+      "relative": "raw/source/tests/acceptance/mixed-validation.cjs.inert",
+      "bytes": 4809,
+      "sha256": "2c2ab4574658ebaa22095f4b40043ca5ef4df81d62c0ac2ac7547d747cf44ec6"
+    },
+    {
+      "relative": "raw/source/tests/acceptance/monotonic-supervisor.cjs.inert",
+      "bytes": 1733,
+      "sha256": "3b02abc453b7958658e4365e2ea15068c07909721fa301d0cebaea1ed8fa3f4e"
+    },
+    {
+      "relative": "raw/source/tests/acceptance/resource-validation.cjs.inert",
+      "bytes": 17373,
+      "sha256": "9d56b21f8513c5ccdfef4ed64ef3fe40ebcb9f5ec26fdf8c313034f8e459418b"
+    },
+    {
+      "relative": "raw/source/tests/acceptance/runner.cjs.inert",
+      "bytes": 22574,
+      "sha256": "f645034b645edc2306418154c7e0460f7271d6a1d96c53aac3cbb8ad0f01ac84"
+    },
+    {
+      "relative": "raw/source/tests/acceptance/session-validation.cjs.inert",
+      "bytes": 13177,
+      "sha256": "774f82e0011b3b835c9b92f60ef4bbb7f9e3c45f21ef719ae66f1d844af2218a"
+    },
+    {
+      "relative": "raw/source/tests/acceptance/timeout-diagnostics.cjs.inert",
+      "bytes": 3725,
+      "sha256": "d01bb1c9cdfbcdca14593e1ca6abf293420501087257a07aee06669386e99e8b"
+    },
+    {
+      "relative": "raw/source/tools/internal/build-evidence.cjs.inert",
+      "bytes": 13849,
+      "sha256": "ab3ce23f3f0bfd60b40b72523dd79cc121359402eb82f5e53b1764d14ce460bb"
+    },
+    {
+      "relative": "raw/source/tools/internal/delivery-identity.cjs.inert",
+      "bytes": 5485,
+      "sha256": "4bcd8a561854200b24fbecd6275ad30108c0ea90e64b6a798bb5a481b67c31dd"
+    },
+    {
+      "relative": "raw/source/tools/internal/measurement-validation.cjs.inert",
+      "bytes": 19970,
+      "sha256": "98436ef2ab48cebbe7c9c4f319ae83a5e28442a9b2c3d3dbb76e7c6c02b76d98"
+    },
+    {
+      "relative": "raw/source/tools/internal/owned-process.cjs.inert",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+    },
+    {
+      "relative": "raw/source/tools/internal/sdk-version.cjs.inert",
+      "bytes": 794,
+      "sha256": "7742ee81477abd00f1ff16dbef01c4c716dce03856e91cc5e1b121f1b6cf6bc0"
+    },
+    {
+      "relative": "raw/suites/x64/build.json.raw",
+      "bytes": 31146,
+      "sha256": "c024b5295a0948f22fdecf3bb97f29226e9ba6d68976086d64c1df39d9b79ec7"
+    },
+    {
+      "relative": "raw/suites/x86/build.json.raw",
+      "bytes": 31158,
+      "sha256": "0009431a8bd4889105359d4ba142f113a370a0a27353a99622eaa688764cef40"
+    }
+  ],
+  "selfHashExcluded": true,
+  "selfHashRecordedExternally": true,
+  "combinedResourcePassed": false,
+  "x64ResourcePassed": true,
+  "x86ResourcePassed": false,
+  "controllerExitCode": 1,
+  "formalPassed": false,
+  "releaseReady": false
+}
