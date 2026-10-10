@@ -10,6 +10,7 @@
 #include <fstream>
 #include <functional>
 #include <iostream>
+#include <cstddef>
 #include <memory>
 #include <map>
 #include <stdexcept>
@@ -109,6 +110,47 @@ std::string process_window_classes() {
     result += quote(name) + ":" + std::to_string(count);
   }
   return result + "}";
+}
+
+unsigned process_thread_count() {
+  const DWORD process_id = GetCurrentProcessId();
+  const auto snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
+  if (snapshot == INVALID_HANDLE_VALUE) {
+    const DWORD error = GetLastError();
+    throw std::runtime_error("Cannot sample threads: CreateToolhelp32Snapshot WinError=" + std::to_string(error));
+  }
+  std::unique_ptr<void, decltype(&CloseHandle)> owner(snapshot, &CloseHandle);
+  THREADENTRY32 entry{}; entry.dwSize = sizeof(entry);
+  constexpr auto owner_pid_extent = offsetof(THREADENTRY32, th32OwnerProcessID) + sizeof(entry.th32OwnerProcessID);
+  unsigned threads = 0;
+  bool invalid_entry_extent = false;
+  DWORD returned_entry_size = 0;
+  const char* operation = "Thread32First";
+  BOOL available = Thread32First(snapshot, &entry);
+  DWORD enumeration_error = available ? ERROR_SUCCESS : GetLastError();
+  while (available) {
+    if (entry.dwSize < owner_pid_extent || entry.dwSize > sizeof(entry)) {
+      invalid_entry_extent = true; returned_entry_size = entry.dwSize;
+      break;
+    }
+    if (entry.th32OwnerProcessID == process_id) ++threads;
+    operation = "Thread32Next";
+    available = Thread32Next(snapshot, &entry);
+    if (!available) enumeration_error = GetLastError();
+  }
+  // Preserve enumeration failure before closing; format errors only after cleanup.
+  const BOOL closed = CloseHandle(owner.release());
+  const DWORD close_error = closed ? ERROR_SUCCESS : GetLastError();
+  if (invalid_entry_extent || enumeration_error != ERROR_NO_MORE_FILES || !closed) {
+    std::string message = "Cannot sample threads";
+    if (invalid_entry_extent)
+      message += ": " + std::string(operation) + " returned invalid THREADENTRY32 dwSize=" + std::to_string(returned_entry_size);
+    else if (enumeration_error != ERROR_NO_MORE_FILES)
+      message += ": " + std::string(operation) + " WinError=" + std::to_string(enumeration_error);
+    if (!closed) message += "; CloseHandle WinError=" + std::to_string(close_error);
+    throw std::runtime_error(message);
+  }
+  return threads;
 }
 
 struct options {
@@ -448,14 +490,7 @@ class runner final {
     DWORD handles = 0;
     if (!GetProcessMemoryInfo(GetCurrentProcess(), reinterpret_cast<PROCESS_MEMORY_COUNTERS*>(&memory), sizeof(memory))
         || !GetProcessHandleCount(GetCurrentProcess(), &handles)) throw std::runtime_error("Cannot sample process resources");
-    const auto snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);
-    if (snapshot == INVALID_HANDLE_VALUE) throw std::runtime_error("Cannot sample threads");
-    THREADENTRY32 entry{}; entry.dwSize = sizeof(entry);
-    unsigned threads = 0;
-    if (Thread32First(snapshot, &entry)) do {
-      if (entry.th32OwnerProcessID == GetCurrentProcessId()) ++threads;
-    } while (Thread32Next(snapshot, &entry));
-    CloseHandle(snapshot);
+    const auto threads = process_thread_count();
     log_.emit("sample", "\"phase\":" + quote(phase) + ",\"cycle\":" + std::to_string(cycle)
       + ",\"privateBytes\":" + std::to_string(memory.PrivateUsage) + ",\"workingSetBytes\":" + std::to_string(memory.WorkingSetSize)
       + ",\"handles\":" + std::to_string(handles) + ",\"threads\":" + std::to_string(threads)

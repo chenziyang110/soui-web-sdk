@@ -1,0 +1,108 @@
+{
+  "schema": "soui.acceptance-thread-head-index-delta/v1",
+  "relativePath": "tests/acceptance-app/main.cpp",
+  "head": "95ff886b043643f19e924f8fb972a99fb61c5b2f",
+  "headBlob": "a0c46c79f8bd4c1e408b745b67a9bd9393b4bc35",
+  "indexBlob": "a0c46c79f8bd4c1e408b745b67a9bd9393b4bc35",
+  "before": {
+    "path": "F:/work/sm05-broker/out/acceptance-thread-head-index-patch-dd3086c1-f462-48ef-a8c6-b0de011218e9/before/tests/acceptance-app/main.cpp",
+    "bytes": 23191,
+    "sha256": "88ada57b698a057c5f351690ceae3592effcaa0bd5c99a0b69ad96854db24bf2"
+  },
+  "candidate": {
+    "path": "F:/work/sm05-broker/out/acceptance-thread-head-index-patch-dd3086c1-f462-48ef-a8c6-b0de011218e9/candidate/tests/acceptance-app/main.cpp",
+    "bytes": 24876,
+    "sha256": "15a2f3b6dec9c730ef7153e83668c3c60d5f980dbfb42e8a2e9e73cd3518b3e3"
+  },
+  "sequentialSpans": [
+    {
+      "number": 1,
+      "kind": "explicit-cstddef",
+      "offset": 271,
+      "beforeText": "#include <memory>",
+      "afterText": "#include <cstddef>\n#include <memory>",
+      "beforeSegment": {
+        "bytes": 17,
+        "sha256": "8bc3ff5c398a214afbe0c2ba78ae30c49cb45c9550295d6b15ef956aaa4a1198"
+      },
+      "afterSegment": {
+        "bytes": 36,
+        "sha256": "2fb23fa217f24f211dbd589d0e947c8ce106ff7abbb2c571baa2dc38ce14e075"
+      },
+      "wholeBefore": {
+        "bytes": 23191,
+        "sha256": "88ada57b698a057c5f351690ceae3592effcaa0bd5c99a0b69ad96854db24bf2"
+      },
+      "wholeAfter": {
+        "bytes": 23210,
+        "sha256": "c9513ad69a983f05c1a4e467418425f5111dd6b4479d398cc2c89ef04334cc56"
+      }
+    },
+    {
+      "number": 2,
+      "kind": "exact-adopted-helper",
+      "offset": 3823,
+      "beforeText": "struct options {\n",
+      "afterText": "unsigned process_thread_count() {\n  const DWORD process_id = GetCurrentProcessId();\n  const auto snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);\n  if (snapshot == INVALID_HANDLE_VALUE) {\n    const DWORD error = GetLastError();\n    throw std::runtime_error(\"Cannot sample threads: CreateToolhelp32Snapshot WinError=\" + std::to_string(error));\n  }\n  std::unique_ptr<void, decltype(&CloseHandle)> owner(snapshot, &CloseHandle);\n  THREADENTRY32 entry{}; entry.dwSize = sizeof(entry);\n  constexpr auto owner_pid_extent = offsetof(THREADENTRY32, th32OwnerProcessID) + sizeof(entry.th32OwnerProcessID);\n  unsigned threads = 0;\n  bool invalid_entry_extent = false;\n  DWORD returned_entry_size = 0;\n  const char* operation = \"Thread32First\";\n  BOOL available = Thread32First(snapshot, &entry);\n  DWORD enumeration_error = available ? ERROR_SUCCESS : GetLastError();\n  while (available) {\n    if (entry.dwSize < owner_pid_extent || entry.dwSize > sizeof(entry)) {\n      invalid_entry_extent = true; returned_entry_size = entry.dwSize;\n      break;\n    }\n    if (entry.th32OwnerProcessID == process_id) ++threads;\n    operation = \"Thread32Next\";\n    available = Thread32Next(snapshot, &entry);\n    if (!available) enumeration_error = GetLastError();\n  }\n  // Preserve enumeration failure before closing; format errors only after cleanup.\n  const BOOL closed = CloseHandle(owner.release());\n  const DWORD close_error = closed ? ERROR_SUCCESS : GetLastError();\n  if (invalid_entry_extent || enumeration_error != ERROR_NO_MORE_FILES || !closed) {\n    std::string message = \"Cannot sample threads\";\n    if (invalid_entry_extent)\n      message += \": \" + std::string(operation) + \" returned invalid THREADENTRY32 dwSize=\" + std::to_string(returned_entry_size);\n    else if (enumeration_error != ERROR_NO_MORE_FILES)\n      message += \": \" + std::string(operation) + \" WinError=\" + std::to_string(enumeration_error);\n    if (!closed) message += \"; CloseHandle WinError=\" + std::to_string(close_error);\n    throw std::runtime_error(message);\n  }\n  return threads;\n}\n\nstruct options {\n",
+      "beforeSegment": {
+        "bytes": 17,
+        "sha256": "d4d57a6481d021446af745e41a6950c6a88e4c9b66888aa101a3d1c4d72877b3"
+      },
+      "afterSegment": {
+        "bytes": 2075,
+        "sha256": "e48c64e8e3158042fcbf575ecf7098f422fc0960585f7acfacd63000add403f1"
+      },
+      "wholeBefore": {
+        "bytes": 23210,
+        "sha256": "c9513ad69a983f05c1a4e467418425f5111dd6b4479d398cc2c89ef04334cc56"
+      },
+      "wholeAfter": {
+        "bytes": 25268,
+        "sha256": "5c64b9d93e263b3fe71b17d0b6063c0d45886e62cf2e2dadc719632512a1bb43"
+      }
+    },
+    {
+      "number": 3,
+      "kind": "sample-call",
+      "offset": 22881,
+      "beforeText": "    const auto snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, 0);\n    if (snapshot == INVALID_HANDLE_VALUE) throw std::runtime_error(\"Cannot sample threads\");\n    THREADENTRY32 entry{}; entry.dwSize = sizeof(entry);\n    unsigned threads = 0;\n    if (Thread32First(snapshot, &entry)) do {\n      if (entry.th32OwnerProcessID == GetCurrentProcessId()) ++threads;\n    } while (Thread32Next(snapshot, &entry));\n    CloseHandle(snapshot);\n",
+      "afterText": "    const auto threads = process_thread_count();\n",
+      "beforeSegment": {
+        "bytes": 441,
+        "sha256": "bdae10a0c0a5a9a61fc1fbc44b84ec1fa80029057fb36371f98ca66dac4eece8"
+      },
+      "afterSegment": {
+        "bytes": 49,
+        "sha256": "1b30fdde991f04c6145dffdca9ee99b90c48a7f3e5aacf2c259fcabb43626b09"
+      },
+      "wholeBefore": {
+        "bytes": 25268,
+        "sha256": "5c64b9d93e263b3fe71b17d0b6063c0d45886e62cf2e2dadc719632512a1bb43"
+      },
+      "wholeAfter": {
+        "bytes": 24876,
+        "sha256": "15a2f3b6dec9c730ef7153e83668c3c60d5f980dbfb42e8a2e9e73cd3518b3e3"
+      }
+    }
+  ],
+  "fullForwardVerified": true,
+  "fullInverseVerified": true,
+  "patch": {
+    "path": "F:/work/sm05-broker/out/acceptance-thread-head-index-patch-dd3086c1-f462-48ef-a8c6-b0de011218e9/thread-sampler-index.patch",
+    "bytes": 3670,
+    "sha256": "d51d0d530c74f26137d42833356f575c9890057bb0682dc2c489fd427467fe4f"
+  },
+  "patchHunks": 3,
+  "patchTextForwardVerified": true,
+  "patchTextInverseVerified": true,
+  "exactAdoptedHelper": {
+    "bytes": 2058,
+    "sha256": "29297b425428ca79084cf13249183ad6c67f80b035daa729bde69ee8709d6853"
+  },
+  "otherHEADBytesPreserved": true,
+  "liveModified": false,
+  "indexModified": false,
+  "branchModified": false,
+  "nativeExecuted": false,
+  "headCandidateCompiled": false
+}

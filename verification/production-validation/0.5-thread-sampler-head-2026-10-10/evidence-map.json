@@ -1,0 +1,310 @@
+{
+  "schema": "soui.thread-sampler-head-actual-evidence-map/1",
+  "actualRun": "a476dff2 default main composition",
+  "headBasis": "95ff886b043643f19e924f8fb972a99fb61c5b2f",
+  "headBlob": "a0c46c79f8bd4c1e408b745b67a9bd9393b4bc35",
+  "testedMain": {
+    "path": "F:/work/sm05-broker/out/thread-persistent-default-root-a476dff2-9d88-4de3-8f75-901c106e0944/composition/tests/acceptance-app/main.cpp",
+    "bytes": 24876,
+    "sha256": "15a2f3b6dec9c730ef7153e83668c3c60d5f980dbfb42e8a2e9e73cd3518b3e3"
+  },
+  "headBefore": {
+    "path": "F:/work/sm05-broker/out/acceptance-thread-head-index-patch-dd3086c1-f462-48ef-a8c6-b0de011218e9/before/tests/acceptance-app/main.cpp",
+    "bytes": 23191,
+    "sha256": "88ada57b698a057c5f351690ceae3592effcaa0bd5c99a0b69ad96854db24bf2"
+  },
+  "patch": {
+    "path": "F:/work/sm05-broker/out/acceptance-thread-head-index-patch-dd3086c1-f462-48ef-a8c6-b0de011218e9/thread-sampler-index.patch",
+    "bytes": 3670,
+    "sha256": "d51d0d530c74f26137d42833356f575c9890057bb0682dc2c489fd427467fe4f"
+  },
+  "faultCasesPassed": 30,
+  "architectures": [
+    "x64",
+    "Win32"
+  ],
+  "naturalOwnedJobCount": 6,
+  "naturalJobs": [
+    {
+      "architecture": "x64",
+      "name": "configure",
+      "pid": 63348,
+      "creationFileTime": "134361112207252359",
+      "exitCode": 0,
+      "supervisorExitCode": 0,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "elapsedMs": 5570,
+      "totalProcesses": 26,
+      "rawOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-x64/owned/configure.owned.jsonl",
+        "bytes": 25425,
+        "sha256": "db8b4804ed98cb0232b690a254a1cdd702f3b904b34bcbadbee47d090a6b3ff6"
+      },
+      "contextOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-x64/owned/configure.owned.jsonl.context.json",
+        "bytes": 1543,
+        "sha256": "f95167b0c7a4fd35d7c41ea8d9a7de3d18c2ad3d0221f6e485242a9ede1a81f0"
+      }
+    },
+    {
+      "architecture": "x64",
+      "name": "build",
+      "pid": 106316,
+      "creationFileTime": "134361112266617126",
+      "exitCode": 0,
+      "supervisorExitCode": 0,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "elapsedMs": 3448,
+      "totalProcesses": 17,
+      "rawOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-x64/owned/build.owned.jsonl",
+        "bytes": 16632,
+        "sha256": "fe71725b467f9971b5ac20a8728001e5d864599be9249e6725990bc21decba62"
+      },
+      "contextOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-x64/owned/build.owned.jsonl.context.json",
+        "bytes": 589,
+        "sha256": "1bd49d054b30d5e91073acc43abd55ffacbafb88cfe7ae1834b1564f9e1048ab"
+      }
+    },
+    {
+      "architecture": "x64",
+      "name": "test",
+      "pid": 58788,
+      "creationFileTime": "134361112304520074",
+      "exitCode": 0,
+      "supervisorExitCode": 0,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "elapsedMs": 2422,
+      "totalProcesses": 17,
+      "rawOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-x64/owned/test.owned.jsonl",
+        "bytes": 5483,
+        "sha256": "91cf399b6edb1f2f45546dc7f9511c17aa8704a49019bcffef623192ec2b231c"
+      },
+      "contextOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-x64/owned/test.owned.jsonl.context.json",
+        "bytes": 608,
+        "sha256": "33985a773a4d814858b963acf85c3f73d23ea7428a7185c268d8853686f4f78a"
+      }
+    },
+    {
+      "architecture": "Win32",
+      "name": "configure",
+      "pid": 101068,
+      "creationFileTime": "134361112339283397",
+      "exitCode": 0,
+      "supervisorExitCode": 0,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "elapsedMs": 5272,
+      "totalProcesses": 26,
+      "rawOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-Win32/owned/configure.owned.jsonl",
+        "bytes": 27634,
+        "sha256": "0c8f0ef19fbab75552c3bcec9ac0665c8acddee776d597de56536b4c8f2a9b00"
+      },
+      "contextOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-Win32/owned/configure.owned.jsonl.context.json",
+        "bytes": 1551,
+        "sha256": "8686472931a2fe3034a592c6f3722a2e51307bf2ac0ae06b168037b0ca378676"
+      }
+    },
+    {
+      "architecture": "Win32",
+      "name": "build",
+      "pid": 67060,
+      "creationFileTime": "134361112395260818",
+      "exitCode": 0,
+      "supervisorExitCode": 0,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "elapsedMs": 4487,
+      "totalProcesses": 17,
+      "rawOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-Win32/owned/build.owned.jsonl",
+        "bytes": 16538,
+        "sha256": "a022a1f35d6a625691618c99009199f72a931808f6101cc3be617379654cb604"
+      },
+      "contextOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-Win32/owned/build.owned.jsonl.context.json",
+        "bytes": 591,
+        "sha256": "02febe7f909b06389b3c1a98658f2db5414fd43301fd0640a8a50d472c30539e"
+      }
+    },
+    {
+      "architecture": "Win32",
+      "name": "test",
+      "pid": 106648,
+      "creationFileTime": "134361112443810066",
+      "exitCode": 0,
+      "supervisorExitCode": 0,
+      "activeProcesses": 0,
+      "terminatedOwnedJob": false,
+      "elapsedMs": 2079,
+      "totalProcesses": 17,
+      "rawOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-Win32/owned/test.owned.jsonl",
+        "bytes": 7002,
+        "sha256": "fc6587e0007c3535a80d55da240c9248df947bac8341dde2a723d2c9083abdfb"
+      },
+      "contextOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-Win32/owned/test.owned.jsonl.context.json",
+        "bytes": 612,
+        "sha256": "57f139273642ebcef5d847ff0fa8bc1437af6f8227689a05951a529da6a3107b"
+      }
+    }
+  ],
+  "junit": [
+    {
+      "architecture": "x64",
+      "caseCount": 15,
+      "caseNames": [
+        "acceptance.thread-sampler.complete-mixed",
+        "acceptance.thread-sampler.empty",
+        "acceptance.thread-sampler.foreign-only",
+        "acceptance.thread-sampler.minimum-owner-extent",
+        "acceptance.thread-sampler.create-failure",
+        "acceptance.thread-sampler.first-failure",
+        "acceptance.thread-sampler.next-failure",
+        "acceptance.thread-sampler.close-failure",
+        "acceptance.thread-sampler.first-and-close-failure",
+        "acceptance.thread-sampler.next-and-close-failure",
+        "acceptance.thread-sampler.first-short",
+        "acceptance.thread-sampler.first-oversized",
+        "acceptance.thread-sampler.next-short",
+        "acceptance.thread-sampler.next-oversized",
+        "acceptance.thread-sampler.next-short-and-close-failure"
+      ],
+      "allCasesPassed": true,
+      "junitOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-x64/junit.xml",
+        "bytes": 3710,
+        "sha256": "8215888de7a6e8a0ef20d908a6fc500663e4b87dff9a6c4676303f5d7800fbb9"
+      }
+    },
+    {
+      "architecture": "Win32",
+      "caseCount": 15,
+      "caseNames": [
+        "acceptance.thread-sampler.complete-mixed",
+        "acceptance.thread-sampler.empty",
+        "acceptance.thread-sampler.foreign-only",
+        "acceptance.thread-sampler.minimum-owner-extent",
+        "acceptance.thread-sampler.create-failure",
+        "acceptance.thread-sampler.first-failure",
+        "acceptance.thread-sampler.next-failure",
+        "acceptance.thread-sampler.close-failure",
+        "acceptance.thread-sampler.first-and-close-failure",
+        "acceptance.thread-sampler.next-and-close-failure",
+        "acceptance.thread-sampler.first-short",
+        "acceptance.thread-sampler.first-oversized",
+        "acceptance.thread-sampler.next-short",
+        "acceptance.thread-sampler.next-oversized",
+        "acceptance.thread-sampler.next-short-and-close-failure"
+      ],
+      "allCasesPassed": true,
+      "junitOriginal": {
+        "path": "F:/work/sm05-broker/out/tdefault-a476dff2-Win32/junit.xml",
+        "bytes": 3709,
+        "sha256": "c343346b4e5fd1937ac4ab4129970ddc9d6e5eb663e04355ea65630ba6af5f29"
+      }
+    }
+  ],
+  "defaultMainPathActuallyTested": true,
+  "explicitMainOverrideSupplied": false,
+  "dirtyLiveMain35921Inherited": false,
+  "publicInstalledSdkLinked": true,
+  "copiedSdkImplementation": false,
+  "compilerTraceMembers": [
+    "actual/x64/compiler/CL.command.1.tlog",
+    "actual/x64/compiler/CL.read.1.tlog",
+    "actual/x64/compiler/link.command.1.tlog",
+    "actual/x64/compiler/link.read.1.tlog",
+    "actual/Win32/compiler/CL.command.1.tlog",
+    "actual/Win32/compiler/CL.read.1.tlog",
+    "actual/Win32/compiler/link.command.1.tlog",
+    "actual/Win32/compiler/link.read.1.tlog"
+  ],
+  "frozenExecutionMetadataRole": "Raw/inert snapshots; nativeExecuted=false fields describe pre-execution source packets, not the completed actual records",
+  "shippingReadme": {
+    "path": "F:/work/sm05-broker/out/thread-persistent-shipping-readme-a476dff2/README.md",
+    "bytes": 1838,
+    "sha256": "cb571551b9382c738d14c5433c12229566184cc59e436546c5595e6e39be2602"
+  },
+  "shippingReadmeLiveByteExactAtArchive": true,
+  "rootActual": {
+    "path": "F:/work/sm05-broker/out/thread-persistent-root-actual-review-a476dff2/review.json",
+    "bytes": 71094,
+    "sha256": "6377a9f36a61899b970308226622435b4d6b7137626875cb5b421a15c0b37c75"
+  },
+  "independentActual": {
+    "path": "F:/work/sm05-broker/out/thread-persistent-default-independent-actual-6ca154ca-4e3e-4121-b557-3ddfc24e8885/review.json",
+    "bytes": 79547,
+    "sha256": "d4906802852374ffec0a265033c39fd2fd06cff62a53c5495727128cdb500b18"
+  },
+  "preservedHistoricalThreadArchive": {
+    "root": "F:/work/sm05-broker/verification/production-validation/0.5-thread-sampler-2026-10-10",
+    "fileCount": 161,
+    "references": [
+      {
+        "path": "F:/work/sm05-broker/verification/production-validation/0.5-thread-sampler-2026-10-10/README.md",
+        "bytes": 3282,
+        "sha256": "a0e3690487c84c8fd072f12e1537eb13312aa269fe6bd83c837b907d93d0b37f"
+      },
+      {
+        "path": "F:/work/sm05-broker/verification/production-validation/0.5-thread-sampler-2026-10-10/manifest.json",
+        "bytes": 45133,
+        "sha256": "daca989ac8b3d2aac65c3ccc3fb77c293092bebd576677f82af93f689c133871"
+      },
+      {
+        "path": "F:/work/sm05-broker/verification/production-validation/0.5-thread-sampler-2026-10-10/copy-index.json",
+        "bytes": 59552,
+        "sha256": "8d32914148389dc29d49e84e2fc3895ea7c4f6331b60ecb167d9c193f1ca9c4b"
+      }
+    ]
+  },
+  "preservedResourceFailure": {
+    "root": "F:/work/sm05-broker/verification/production-validation/0.5-software-reload-resource-2026-10-10",
+    "fileCount": 53,
+    "x86HandleBaseline": 315,
+    "x86HandleTailMedian": 318,
+    "x86HandleGrowth": 3,
+    "x86OriginalResult": "FAIL",
+    "wholeOriginalExitCode": 1,
+    "references": [
+      {
+        "path": "F:/work/sm05-broker/verification/production-validation/0.5-software-reload-resource-2026-10-10/README.md",
+        "bytes": 4088,
+        "sha256": "59b7c566182b4581c4dfb4e0c85b04ec621e5b9b73eeff0b99ae763c12d77e6d"
+      },
+      {
+        "path": "F:/work/sm05-broker/verification/production-validation/0.5-software-reload-resource-2026-10-10/manifest.json",
+        "bytes": 12365,
+        "sha256": "52159acbbb4266a6352d5cdefcef8636ae7203fc78fe0d316c08b3de06647c4d"
+      },
+      {
+        "path": "F:/work/sm05-broker/verification/production-validation/0.5-software-reload-resource-2026-10-10/copy-index.json",
+        "bytes": 26819,
+        "sha256": "b780115080562ab8bf96116bea9c1f07143b838b571172f7a27559dc1fcd7dd8"
+      },
+      {
+        "path": "F:/work/sm05-broker/verification/production-validation/0.5-software-reload-resource-2026-10-10/independent-review.json",
+        "bytes": 8879,
+        "sha256": "0b0c27d1874f6916e93a95f273dc3fb446b9d8346b3060b214490f2d1a6d8a2a"
+      }
+    ]
+  },
+  "resourcePassed": false,
+  "osQualified": false,
+  "peQualified": false,
+  "longRunQualified": false,
+  "fullToolchainQualified": false,
+  "formalPassed": false,
+  "releaseReady": false,
+  "archivalAuthorRanNative": false,
+  "futureNativeEvidence": null
+}
