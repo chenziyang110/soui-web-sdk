@@ -1,0 +1,98 @@
+{
+  "schema": "soui.thread-persistent-default-root-inputs/v1",
+  "node": {
+    "path": "C:/Users/11034/AppData/Local/nvm/v24.14.0/node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "driver": {
+    "path": "F:/work/sm05-broker/out/thread-persistent-default-root-a476dff2-9d88-4de3-8f75-901c106e0944/run-root.cjs",
+    "bytes": 4640,
+    "sha256": "139b305e97e075ab45793999785f05bccc0ec6e47b66498ac86054ee0bb1c350"
+  },
+  "records": [
+    {
+      "architecture": "x64",
+      "base": "F:/work/sm05-broker/out/tdefault-a476dff2-x64",
+      "plan": {
+        "path": "F:/work/sm05-broker/out/thread-persistent-default-root-a476dff2-9d88-4de3-8f75-901c106e0944/plan.x64.json",
+        "bytes": 30615,
+        "sha256": "4cb4d4f16f0ff65d8920b4119cbda00819c4dd308daae50e7106dc61f54c3c5c"
+      },
+      "expectedTestCases": [
+        "complete-mixed",
+        "empty",
+        "foreign-only",
+        "minimum-owner-extent",
+        "create-failure",
+        "first-failure",
+        "next-failure",
+        "close-failure",
+        "first-and-close-failure",
+        "next-and-close-failure",
+        "first-short",
+        "first-oversized",
+        "next-short",
+        "next-oversized",
+        "next-short-and-close-failure"
+      ],
+      "caseCount": 15
+    },
+    {
+      "architecture": "Win32",
+      "base": "F:/work/sm05-broker/out/tdefault-a476dff2-Win32",
+      "plan": {
+        "path": "F:/work/sm05-broker/out/thread-persistent-default-root-a476dff2-9d88-4de3-8f75-901c106e0944/plan.Win32.json",
+        "bytes": 30633,
+        "sha256": "9c476f050da23af0af32c8e3101adbe05da63cabd3fa5ef9d9d1ccc6fa44a4be"
+      },
+      "expectedTestCases": [
+        "complete-mixed",
+        "empty",
+        "foreign-only",
+        "minimum-owner-extent",
+        "create-failure",
+        "first-failure",
+        "next-failure",
+        "close-failure",
+        "first-and-close-failure",
+        "next-and-close-failure",
+        "first-short",
+        "first-oversized",
+        "next-short",
+        "next-oversized",
+        "next-short-and-close-failure"
+      ],
+      "caseCount": 15
+    }
+  ],
+  "compiler": {
+    "path": "F:/work/sm05-broker/out/thread-persistent-default-root-a476dff2-9d88-4de3-8f75-901c106e0944/fixed-compiler.cmake",
+    "bytes": 1330,
+    "sha256": "b0d2ba35a75dc3996c5b129138fd9cc5ff5332256bbbaf2eecac9c7648a83437"
+  },
+  "sourceMembers": [
+    "tests/acceptance-app/main.cpp",
+    "tests/acceptance-thread-sampler/CMakeLists.txt",
+    "tests/acceptance-thread-sampler/README.md",
+    "tests/acceptance-thread-sampler/thread_sampler_tests.cpp"
+  ],
+  "sourceRoot": "F:/work/sm05-broker/out/thread-persistent-default-root-a476dff2-9d88-4de3-8f75-901c106e0944/composition",
+  "sourcePins": {
+    "path": "F:/work/sm05-broker/out/thread-persistent-default-root-a476dff2-9d88-4de3-8f75-901c106e0944/source-pins.json",
+    "bytes": 5434,
+    "sha256": "41707f9f973b1b089725e65a42789388bccb663a7a7ac5dfa6afb354c340ec3d"
+  },
+  "headMain": {
+    "path": "F:/work/sm05-broker/out/thread-persistent-default-root-a476dff2-9d88-4de3-8f75-901c106e0944/composition/tests/acceptance-app/main.cpp",
+    "bytes": 24876,
+    "sha256": "15a2f3b6dec9c730ef7153e83668c3c60d5f980dbfb42e8a2e9e73cd3518b3e3"
+  },
+  "historicalDirtyMainResultsInherited": false,
+  "rootOnly": true,
+  "nativeExecuted": false,
+  "qualificationPassed": false,
+  "releaseReady": false,
+  "defaultSourcePathUnderTest": true,
+  "explicitMainOverrideSupplied": false
+}

@@ -1,0 +1,477 @@
+{
+  "schema": "soui.thread-sampler-head-production-validation-manifest/1",
+  "archive": "verification/production-validation/0.5-thread-sampler-head-2026-10-10",
+  "actualRun": "a476dff2",
+  "literalOrdinalMembers": [
+    ".gitattributes",
+    "README.md",
+    "actual/Win32/CMakeCache.txt",
+    "actual/Win32/compiler/CL.command.1.tlog",
+    "actual/Win32/compiler/CL.read.1.tlog",
+    "actual/Win32/compiler/link.command.1.tlog",
+    "actual/Win32/compiler/link.read.1.tlog",
+    "actual/Win32/junit.xml",
+    "actual/Win32/owned/build.finished.json",
+    "actual/Win32/owned/build.owned.jsonl",
+    "actual/Win32/owned/build.owned.jsonl.context.json",
+    "actual/Win32/owned/build.ready.json",
+    "actual/Win32/owned/build.stderr.raw",
+    "actual/Win32/owned/build.stdout.raw",
+    "actual/Win32/owned/configure.finished.json",
+    "actual/Win32/owned/configure.owned.jsonl",
+    "actual/Win32/owned/configure.owned.jsonl.context.json",
+    "actual/Win32/owned/configure.ready.json",
+    "actual/Win32/owned/configure.stderr.raw",
+    "actual/Win32/owned/configure.stdout.raw",
+    "actual/Win32/owned/summary.json",
+    "actual/Win32/owned/test.finished.json",
+    "actual/Win32/owned/test.owned.jsonl",
+    "actual/Win32/owned/test.owned.jsonl.context.json",
+    "actual/Win32/owned/test.ready.json",
+    "actual/Win32/owned/test.stderr.raw",
+    "actual/Win32/owned/test.stdout.raw",
+    "actual/x64/CMakeCache.txt",
+    "actual/x64/compiler/CL.command.1.tlog",
+    "actual/x64/compiler/CL.read.1.tlog",
+    "actual/x64/compiler/link.command.1.tlog",
+    "actual/x64/compiler/link.read.1.tlog",
+    "actual/x64/junit.xml",
+    "actual/x64/owned/build.finished.json",
+    "actual/x64/owned/build.owned.jsonl",
+    "actual/x64/owned/build.owned.jsonl.context.json",
+    "actual/x64/owned/build.ready.json",
+    "actual/x64/owned/build.stderr.raw",
+    "actual/x64/owned/build.stdout.raw",
+    "actual/x64/owned/configure.finished.json",
+    "actual/x64/owned/configure.owned.jsonl",
+    "actual/x64/owned/configure.owned.jsonl.context.json",
+    "actual/x64/owned/configure.ready.json",
+    "actual/x64/owned/configure.stderr.raw",
+    "actual/x64/owned/configure.stdout.raw",
+    "actual/x64/owned/summary.json",
+    "actual/x64/owned/test.finished.json",
+    "actual/x64/owned/test.owned.jsonl",
+    "actual/x64/owned/test.owned.jsonl.context.json",
+    "actual/x64/owned/test.ready.json",
+    "actual/x64/owned/test.stderr.raw",
+    "actual/x64/owned/test.stdout.raw",
+    "controls/DELTA.json",
+    "controls/README.md",
+    "controls/Run-Root.ps1",
+    "controls/fixed-compiler.cmake",
+    "controls/inputs.json",
+    "controls/plan.Win32.json",
+    "controls/plan.x64.json",
+    "controls/run-root.cjs",
+    "controls/seal.json",
+    "controls/source-pins.json",
+    "copy-index.json",
+    "evidence-map.json",
+    "manifest.json",
+    "reviews/independent-actual.json",
+    "reviews/root-actual.json",
+    "source/head-before/tests/acceptance-app/main.cpp",
+    "source/head-patch/DELTA.json",
+    "source/head-patch/thread-sampler-index.patch",
+    "source/shipping/tests/acceptance-thread-sampler/README.md",
+    "source/tested/tests/acceptance-app/main.cpp",
+    "source/tested/tests/acceptance-thread-sampler/CMakeLists.txt",
+    "source/tested/tests/acceptance-thread-sampler/README.md",
+    "source/tested/tests/acceptance-thread-sampler/thread_sampler_tests.cpp"
+  ],
+  "memberCount": 75,
+  "copiedMemberCount": 71,
+  "generatedMemberCount": 4,
+  "files": [
+    {
+      "member": ".gitattributes",
+      "bytes": 69,
+      "sha256": "372da343bf6f19ae6432c0d9665d1314b59e4769b3543faa2c107bc5ca5a1baf"
+    },
+    {
+      "member": "README.md",
+      "bytes": 3076,
+      "sha256": "defc07225a93b5e4abf1274ab3e8d5cacce0407c62c80dbf740b75d38c7fad0a"
+    },
+    {
+      "member": "actual/Win32/CMakeCache.txt",
+      "bytes": 14522,
+      "sha256": "39b763b8ae77f21a2f198dd7e12be62468b3644de9e31eda4e93495eed72b6c6"
+    },
+    {
+      "member": "actual/Win32/compiler/CL.command.1.tlog",
+      "bytes": 2004,
+      "sha256": "536d2cec8ed134ee7119dc58e71eede99af076b2767a40aef3ae8e1b90736883"
+    },
+    {
+      "member": "actual/Win32/compiler/CL.read.1.tlog",
+      "bytes": 55678,
+      "sha256": "e8a9d93ff2281ed7bdc846ee043cab90b6060891be9711c4b6a336442fdcdfff"
+    },
+    {
+      "member": "actual/Win32/compiler/link.command.1.tlog",
+      "bytes": 2100,
+      "sha256": "134cf88afd8c03c463ff8ec7e1b8b38157b23c30c75d3d825ca9a0c7349b59b4"
+    },
+    {
+      "member": "actual/Win32/compiler/link.read.1.tlog",
+      "bytes": 4354,
+      "sha256": "406f2b0a60b7259ce51a2c8a2a60c2ec442d56a0ef728415e60eb8a431858383"
+    },
+    {
+      "member": "actual/Win32/junit.xml",
+      "bytes": 3709,
+      "sha256": "c343346b4e5fd1937ac4ab4129970ddc9d6e5eb663e04355ea65630ba6af5f29"
+    },
+    {
+      "member": "actual/Win32/owned/build.finished.json",
+      "bytes": 2354,
+      "sha256": "fe6b42704a70b01e14a89d00a0250dca683f3e1cea0a53526423023f6988330f"
+    },
+    {
+      "member": "actual/Win32/owned/build.owned.jsonl",
+      "bytes": 16538,
+      "sha256": "a022a1f35d6a625691618c99009199f72a931808f6101cc3be617379654cb604"
+    },
+    {
+      "member": "actual/Win32/owned/build.owned.jsonl.context.json",
+      "bytes": 591,
+      "sha256": "02febe7f909b06389b3c1a98658f2db5414fd43301fd0640a8a50d472c30539e"
+    },
+    {
+      "member": "actual/Win32/owned/build.ready.json",
+      "bytes": 54,
+      "sha256": "81f4f3a3daa1a9b1f7135e3b11008dd695f14e1e7267d86fa2a0bface86e5c71"
+    },
+    {
+      "member": "actual/Win32/owned/build.stderr.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "member": "actual/Win32/owned/build.stdout.raw",
+      "bytes": 446,
+      "sha256": "71bc9d05583ecb05380325090832f85ac8190f364128ab9114213b96dc2edf41"
+    },
+    {
+      "member": "actual/Win32/owned/configure.finished.json",
+      "bytes": 3362,
+      "sha256": "63669174d6c45b8ec2161797106bcbcc4b94088bbde4e6d9d7cb077368ef5b03"
+    },
+    {
+      "member": "actual/Win32/owned/configure.owned.jsonl",
+      "bytes": 27634,
+      "sha256": "0c8f0ef19fbab75552c3bcec9ac0665c8acddee776d597de56536b4c8f2a9b00"
+    },
+    {
+      "member": "actual/Win32/owned/configure.owned.jsonl.context.json",
+      "bytes": 1551,
+      "sha256": "8686472931a2fe3034a592c6f3722a2e51307bf2ac0ae06b168037b0ca378676"
+    },
+    {
+      "member": "actual/Win32/owned/configure.ready.json",
+      "bytes": 55,
+      "sha256": "c8c95df19f217f7c1b7430e3a86a29a131408ef3d4605a3cd268194eff507ce1"
+    },
+    {
+      "member": "actual/Win32/owned/configure.stderr.raw",
+      "bytes": 116,
+      "sha256": "6b413994db538d19492dc1c8b42f9eac504bbe50b7b298f08398ecb0cf77b8d6"
+    },
+    {
+      "member": "actual/Win32/owned/configure.stdout.raw",
+      "bytes": 503,
+      "sha256": "27453422d93cf7a0d5cc2136f454f209aebb39bb76122d77eb1dfe4f32cd27ac"
+    },
+    {
+      "member": "actual/Win32/owned/summary.json",
+      "bytes": 9400,
+      "sha256": "82d6c134d995cf3106aacc04e82d96d6a4aff62cf634af3730f932b7fac720b4"
+    },
+    {
+      "member": "actual/Win32/owned/test.finished.json",
+      "bytes": 2366,
+      "sha256": "beee082f3b7ed79fed1eb73bae373fe17f23cd9135e737301ab7d26129b88bc7"
+    },
+    {
+      "member": "actual/Win32/owned/test.owned.jsonl",
+      "bytes": 7002,
+      "sha256": "fc6587e0007c3535a80d55da240c9248df947bac8341dde2a723d2c9083abdfb"
+    },
+    {
+      "member": "actual/Win32/owned/test.owned.jsonl.context.json",
+      "bytes": 612,
+      "sha256": "57f139273642ebcef5d847ff0fa8bc1437af6f8227689a05951a529da6a3107b"
+    },
+    {
+      "member": "actual/Win32/owned/test.ready.json",
+      "bytes": 55,
+      "sha256": "98afb1ad2a389f2a849124a62104311a289afaf9a0b71463760d2acee6187225"
+    },
+    {
+      "member": "actual/Win32/owned/test.stderr.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "member": "actual/Win32/owned/test.stdout.raw",
+      "bytes": 2460,
+      "sha256": "d930a7774329d9b92af5c2bdacbabcb890f15665c5d174dcf572ca5355371e42"
+    },
+    {
+      "member": "actual/x64/CMakeCache.txt",
+      "bytes": 14502,
+      "sha256": "2786939e28a16e96106fadb2b1f11e6b07819fe0cb82928c6ab6b9dccf396440"
+    },
+    {
+      "member": "actual/x64/compiler/CL.command.1.tlog",
+      "bytes": 1974,
+      "sha256": "e0a5acdfd5b24c8a386ccd9021322a11b12d7674536c51405c67d5b88152a218"
+    },
+    {
+      "member": "actual/x64/compiler/CL.read.1.tlog",
+      "bytes": 55678,
+      "sha256": "c79d325de162bb85452dc41c0a37ee093e6021914f1f9d4c948159f6a5056c96"
+    },
+    {
+      "member": "actual/x64/compiler/link.command.1.tlog",
+      "bytes": 2084,
+      "sha256": "8432eced5c8af1cdc1d0cfbcb24070f91e6f33e0d66db65e53721c8cf1f6b859"
+    },
+    {
+      "member": "actual/x64/compiler/link.read.1.tlog",
+      "bytes": 4346,
+      "sha256": "2c2c7b7b25116a0783e83d9ed6c7c40e9e8c6e6fb9e39bd884df40b4b4d0c803"
+    },
+    {
+      "member": "actual/x64/junit.xml",
+      "bytes": 3710,
+      "sha256": "8215888de7a6e8a0ef20d908a6fc500663e4b87dff9a6c4676303f5d7800fbb9"
+    },
+    {
+      "member": "actual/x64/owned/build.finished.json",
+      "bytes": 2343,
+      "sha256": "3874cbce7fb5d74b93f0268320662e8a14705b88248c7ffecd6810a59dddc035"
+    },
+    {
+      "member": "actual/x64/owned/build.owned.jsonl",
+      "bytes": 16632,
+      "sha256": "fe71725b467f9971b5ac20a8728001e5d864599be9249e6725990bc21decba62"
+    },
+    {
+      "member": "actual/x64/owned/build.owned.jsonl.context.json",
+      "bytes": 589,
+      "sha256": "1bd49d054b30d5e91073acc43abd55ffacbafb88cfe7ae1834b1564f9e1048ab"
+    },
+    {
+      "member": "actual/x64/owned/build.ready.json",
+      "bytes": 55,
+      "sha256": "172b9d0f1c0133e16b72b124bee1ea91137c56548da5c7407286fb0aa31595e1"
+    },
+    {
+      "member": "actual/x64/owned/build.stderr.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "member": "actual/x64/owned/build.stdout.raw",
+      "bytes": 444,
+      "sha256": "a4caaf9d31a26c7062f4de79c6cfd1c3eb387dcd903cb9b88fa337d8b086ae5f"
+    },
+    {
+      "member": "actual/x64/owned/configure.finished.json",
+      "bytes": 3343,
+      "sha256": "b9287c1a5ab913ce2df0e89807db88aa56e2b624a203b1c45419f3c15665d9b1"
+    },
+    {
+      "member": "actual/x64/owned/configure.owned.jsonl",
+      "bytes": 25425,
+      "sha256": "db8b4804ed98cb0232b690a254a1cdd702f3b904b34bcbadbee47d090a6b3ff6"
+    },
+    {
+      "member": "actual/x64/owned/configure.owned.jsonl.context.json",
+      "bytes": 1543,
+      "sha256": "f95167b0c7a4fd35d7c41ea8d9a7de3d18c2ad3d0221f6e485242a9ede1a81f0"
+    },
+    {
+      "member": "actual/x64/owned/configure.ready.json",
+      "bytes": 54,
+      "sha256": "1e1d8701b692cdd1cae42a8edc71997ba5d4f0994dd386d1ff2d99ec5a0fa501"
+    },
+    {
+      "member": "actual/x64/owned/configure.stderr.raw",
+      "bytes": 116,
+      "sha256": "6b413994db538d19492dc1c8b42f9eac504bbe50b7b298f08398ecb0cf77b8d6"
+    },
+    {
+      "member": "actual/x64/owned/configure.stdout.raw",
+      "bytes": 501,
+      "sha256": "60815ff46595fc392f46a0ae6e6a2477e971bdde4e80eb19f11a803e58a16130"
+    },
+    {
+      "member": "actual/x64/owned/summary.json",
+      "bytes": 9353,
+      "sha256": "b771c04fc57a3d8aa81cd34d8626817fc530920b33c608bfc54bbe88188cae42"
+    },
+    {
+      "member": "actual/x64/owned/test.finished.json",
+      "bytes": 2351,
+      "sha256": "8d61f602c5f1e5fdb9870b714fb712750511fede64d7f204d165eb6409261f87"
+    },
+    {
+      "member": "actual/x64/owned/test.owned.jsonl",
+      "bytes": 5483,
+      "sha256": "91cf399b6edb1f2f45546dc7f9511c17aa8704a49019bcffef623192ec2b231c"
+    },
+    {
+      "member": "actual/x64/owned/test.owned.jsonl.context.json",
+      "bytes": 608,
+      "sha256": "33985a773a4d814858b963acf85c3f73d23ea7428a7185c268d8853686f4f78a"
+    },
+    {
+      "member": "actual/x64/owned/test.ready.json",
+      "bytes": 54,
+      "sha256": "38adf3d8f910cfb48538243e14696c6424ab16400cdadd5d560abaeb29cac126"
+    },
+    {
+      "member": "actual/x64/owned/test.stderr.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "member": "actual/x64/owned/test.stdout.raw",
+      "bytes": 2458,
+      "sha256": "6b88e285e1256fce28315e5bb7946ef0afd01cb073562afa52d23ef1398eedfe"
+    },
+    {
+      "member": "controls/DELTA.json",
+      "bytes": 187386,
+      "sha256": "e5dc957d6a1dc64cb26db40c5b72dc7c0eb3109469707872efbcdbd6bfa5f19b"
+    },
+    {
+      "member": "controls/README.md",
+      "bytes": 1991,
+      "sha256": "cc343950debb559921de7c52763927592fc65ac4e11f2a227d988aecc54fd1ae"
+    },
+    {
+      "member": "controls/Run-Root.ps1",
+      "bytes": 4971,
+      "sha256": "7c41f901361885b6f76d72a2bc26d91b5aeb8b58a936a3a00486269b168fb8c1"
+    },
+    {
+      "member": "controls/fixed-compiler.cmake",
+      "bytes": 1330,
+      "sha256": "b0d2ba35a75dc3996c5b129138fd9cc5ff5332256bbbaf2eecac9c7648a83437"
+    },
+    {
+      "member": "controls/inputs.json",
+      "bytes": 3620,
+      "sha256": "7464758197d825d7484cb4833a193205e581de1df7ce3cc0fb2ef08d4b4ca586"
+    },
+    {
+      "member": "controls/plan.Win32.json",
+      "bytes": 30633,
+      "sha256": "9c476f050da23af0af32c8e3101adbe05da63cabd3fa5ef9d9d1ccc6fa44a4be"
+    },
+    {
+      "member": "controls/plan.x64.json",
+      "bytes": 30615,
+      "sha256": "4cb4d4f16f0ff65d8920b4119cbda00819c4dd308daae50e7106dc61f54c3c5c"
+    },
+    {
+      "member": "controls/run-root.cjs",
+      "bytes": 4640,
+      "sha256": "139b305e97e075ab45793999785f05bccc0ec6e47b66498ac86054ee0bb1c350"
+    },
+    {
+      "member": "controls/seal.json",
+      "bytes": 4157,
+      "sha256": "6a9b7cb84de3ed7109ecfd35b06411202bafb5a85216625bef199a21210c6e66"
+    },
+    {
+      "member": "controls/source-pins.json",
+      "bytes": 5434,
+      "sha256": "41707f9f973b1b089725e65a42789388bccb663a7a7ac5dfa6afb354c340ec3d"
+    },
+    {
+      "member": "copy-index.json",
+      "bytes": 40040,
+      "sha256": "97f70c0f53e9ea5ec783333a19e6f090de9b69fdc6c7a3f1217d618c85463a63"
+    },
+    {
+      "member": "evidence-map.json",
+      "bytes": 12498,
+      "sha256": "7e77e4883348bf3cb987c9c15f0c17653578e0aa5dbf60685d26759ce37c4ee7"
+    },
+    {
+      "member": "reviews/independent-actual.json",
+      "bytes": 79547,
+      "sha256": "d4906802852374ffec0a265033c39fd2fd06cff62a53c5495727128cdb500b18"
+    },
+    {
+      "member": "reviews/root-actual.json",
+      "bytes": 71094,
+      "sha256": "6377a9f36a61899b970308226622435b4d6b7137626875cb5b421a15c0b37c75"
+    },
+    {
+      "member": "source/head-before/tests/acceptance-app/main.cpp",
+      "bytes": 23191,
+      "sha256": "88ada57b698a057c5f351690ceae3592effcaa0bd5c99a0b69ad96854db24bf2"
+    },
+    {
+      "member": "source/head-patch/DELTA.json",
+      "bytes": 6465,
+      "sha256": "6c3d02b641571bebd99d70568f4f5270ca17c149658c6c9052c6605101012c53"
+    },
+    {
+      "member": "source/head-patch/thread-sampler-index.patch",
+      "bytes": 3670,
+      "sha256": "d51d0d530c74f26137d42833356f575c9890057bb0682dc2c489fd427467fe4f"
+    },
+    {
+      "member": "source/shipping/tests/acceptance-thread-sampler/README.md",
+      "bytes": 1838,
+      "sha256": "cb571551b9382c738d14c5433c12229566184cc59e436546c5595e6e39be2602"
+    },
+    {
+      "member": "source/tested/tests/acceptance-app/main.cpp",
+      "bytes": 24876,
+      "sha256": "15a2f3b6dec9c730ef7153e83668c3c60d5f980dbfb42e8a2e9e73cd3518b3e3"
+    },
+    {
+      "member": "source/tested/tests/acceptance-thread-sampler/CMakeLists.txt",
+      "bytes": 2025,
+      "sha256": "d4a92d1ba7dd08aca70622825a16dccf3d8d445f3a0b63805a3a324d83ea3b04"
+    },
+    {
+      "member": "source/tested/tests/acceptance-thread-sampler/README.md",
+      "bytes": 2285,
+      "sha256": "0b13b08288eb1e1911d301a699716556f963f8216e273a2e062d6815c46b7bef"
+    },
+    {
+      "member": "source/tested/tests/acceptance-thread-sampler/thread_sampler_tests.cpp",
+      "bytes": 8772,
+      "sha256": "101604b8f19f849348b0356d4203c20bc68c7ca330626de35d73ece1c564f801"
+    }
+  ],
+  "manifestSelfPinned": false,
+  "allRawCopiesVerifiedBeforeAndAfter": true,
+  "oldThreadArchiveFileCount": 161,
+  "oldResourceArchiveFileCount": 53,
+  "oldArchivesWholePinsBeforeAfterExact": true,
+  "casesPassed": 30,
+  "naturalOwnedJobs": 6,
+  "binaryPayloadCopied": false,
+  "resourcePassed": false,
+  "osQualified": false,
+  "peQualified": false,
+  "longRunQualified": false,
+  "fullToolchainQualified": false,
+  "formalPassed": false,
+  "releaseReady": false,
+  "archivalAuthorRanNative": false,
+  "archivalAuthorRanNode": false,
+  "liveSourcesChangedByArchivalAuthor": false,
+  "gitIndexChangedByArchivalAuthor": false,
+  "futureNativeEvidence": null
+}

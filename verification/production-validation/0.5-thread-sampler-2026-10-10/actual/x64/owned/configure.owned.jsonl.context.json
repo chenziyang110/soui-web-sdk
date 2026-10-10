@@ -1,0 +1,32 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+  "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "-S",
+    "F:\\work\\sm05-broker\\out\\acceptance-thread-sampler-regression-source-c192dbc9-721d-4fed-b017-5e5a273ae82a",
+    "-B",
+    "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\build",
+    "-G",
+    "Visual Studio 17 2022",
+    "-A",
+    "x64",
+    "-T",
+    "v143,version=14.44.35207,host=x64",
+    "-DCMAKE_GENERATOR_INSTANCE:PATH=C:/Program Files/Microsoft Visual Studio/2022/Community",
+    "-DCMAKE_SYSTEM_VERSION:STRING=10.0.19041.0",
+    "-DCMAKE_CONFIGURATION_TYPES:STRING=Release",
+    "-DCMAKE_PROJECT_INCLUDE:FILEPATH=F:/work/sm05-broker/out/thread-sampler-v2-root-f3a5e6cf-7185-45bf-8642-38c2c3725bf7/fixed-compiler.cmake",
+    "-DSOUI_ROOT_EXPECTED_ARCH:STRING=x64",
+    "-DCMAKE_VS_GLOBALS:STRING=VcpkgEnabled=false;VcpkgEnableManifest=false;UseEnv=false;UserRootDir=F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64/empty-user-props/",
+    "-DSouiSdk_DIR:PATH=F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-release-x64\\prefix/lib/cmake/SouiSdk",
+    "-DSOUI_ACCEPTANCE_MAIN:FILEPATH=F:/work/sm05-broker/tests/acceptance-app/main.cpp",
+    "-DCMAKE_FIND_USE_PACKAGE_REGISTRY:BOOL=OFF",
+    "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY:BOOL=OFF",
+    "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY:BOOL=ON"
+  ],
+  "cwd": "F:/work/sm05-broker",
+  "timeoutMs": 120000,
+  "drainMs": 2000
+}

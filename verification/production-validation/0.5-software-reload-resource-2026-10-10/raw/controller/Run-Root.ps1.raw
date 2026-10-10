@@ -1,0 +1,13 @@
+[CmdletBinding()]
+param([Parameter(Mandatory=$true)][ValidateSet('ROOT_CURRENT_SDK_RESOURCE_V1')][string]$RootGate)
+$ErrorActionPreference='Stop'
+$taskLease=[Threading.Mutex]::new($false,'Local\SouiDevKit.DesktopValidation');$taskAcquired=$false
+$taskNames=@('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','SOUI_OWNED_PROCESS_RUNNER');$taskPrior=@{}
+foreach($taskName in $taskNames){$taskPrior[$taskName]=[Environment]::GetEnvironmentVariable($taskName,'Process')}
+try{
+ try{$taskAcquired=$taskLease.WaitOne(0)}catch [Threading.AbandonedMutexException]{$taskAcquired=$true};if(-not$taskAcquired){throw 'Desktop validation lease busy'}
+ foreach($taskName in @('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE')){[Environment]::SetEnvironmentVariable($taskName,$null,'Process')}
+ [Environment]::SetEnvironmentVariable('SOUI_OWNED_PROCESS_RUNNER','F:/work/sm05-broker/out/benchmark-protocol/Release/OwnedProcessRunner.exe','Process')
+ & 'C:/Users/11034/AppData/Local/nvm/v24.14.0/node.exe' (Join-Path $PSScriptRoot 'run.cjs') ROOT_CURRENT_SDK_RESOURCE_V1
+ if($LASTEXITCODE-ne0){exit $LASTEXITCODE}
+}finally{try{foreach($taskName in $taskNames){[Environment]::SetEnvironmentVariable($taskName,$taskPrior[$taskName],'Process')}}finally{if($taskAcquired){$taskLease.ReleaseMutex()};$taskLease.Dispose()}}

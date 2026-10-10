@@ -1,0 +1,93 @@
+{
+  "schema": "soui.thread-sampler-root-inputs/v1",
+  "node": {
+    "path": "C:/Users/11034/AppData/Local/nvm/v24.14.0/node.exe",
+    "bytes": 91380224,
+    "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "driver": {
+    "path": "F:/work/sm05-broker/out/thread-sampler-v2-root-f3a5e6cf-7185-45bf-8642-38c2c3725bf7/run-root.cjs",
+    "bytes": 4640,
+    "sha256": "139b305e97e075ab45793999785f05bccc0ec6e47b66498ac86054ee0bb1c350"
+  },
+  "records": [
+    {
+      "architecture": "x64",
+      "base": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64",
+      "plan": {
+        "path": "F:/work/sm05-broker/out/thread-sampler-v2-root-f3a5e6cf-7185-45bf-8642-38c2c3725bf7/plan.x64.json",
+        "bytes": 22834,
+        "sha256": "1d2babecb07b96168acad1400ca0fc20b71ab2dc08d54ca26cd01929e55ff727"
+      },
+      "expectedTestCases": [
+        "complete-mixed",
+        "empty",
+        "foreign-only",
+        "minimum-owner-extent",
+        "create-failure",
+        "first-failure",
+        "next-failure",
+        "close-failure",
+        "first-and-close-failure",
+        "next-and-close-failure",
+        "first-short",
+        "first-oversized",
+        "next-short",
+        "next-oversized",
+        "next-short-and-close-failure"
+      ],
+      "caseCount": 15
+    },
+    {
+      "architecture": "Win32",
+      "base": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-Win32",
+      "plan": {
+        "path": "F:/work/sm05-broker/out/thread-sampler-v2-root-f3a5e6cf-7185-45bf-8642-38c2c3725bf7/plan.Win32.json",
+        "bytes": 22958,
+        "sha256": "538f1a82f769e8d5568ccddd0a2c385dab734725cb18c4220da78f1451188e64"
+      },
+      "expectedTestCases": [
+        "complete-mixed",
+        "empty",
+        "foreign-only",
+        "minimum-owner-extent",
+        "create-failure",
+        "first-failure",
+        "next-failure",
+        "close-failure",
+        "first-and-close-failure",
+        "next-and-close-failure",
+        "first-short",
+        "first-oversized",
+        "next-short",
+        "next-oversized",
+        "next-short-and-close-failure"
+      ],
+      "caseCount": 15
+    }
+  ],
+  "compilerOriginal": {
+    "path": "F:/work/sm05-broker/out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/fixed-compiler.cmake",
+    "bytes": 1330,
+    "sha256": "011e4f138d6c25c10e6b2f24df0a212b59951886f586359255cffba59b13a738"
+  },
+  "compiler": {
+    "path": "F:/work/sm05-broker/out/thread-sampler-v2-root-f3a5e6cf-7185-45bf-8642-38c2c3725bf7/fixed-compiler.cmake",
+    "bytes": 1330,
+    "sha256": "b0d2ba35a75dc3996c5b129138fd9cc5ff5332256bbbaf2eecac9c7648a83437"
+  },
+  "compilerGateOnlyChange": {
+    "old": "v143,host=x64,version=14.44.35207",
+    "new": "v143,version=14.44.35207,host=x64"
+  },
+  "sourceMembers": [
+    "CMakeLists.txt",
+    "README.md",
+    "seal.json",
+    "source-plan.json",
+    "thread_sampler_tests.cpp"
+  ],
+  "sourceRoot": "F:\\work\\sm05-broker\\out\\acceptance-thread-sampler-regression-source-c192dbc9-721d-4fed-b017-5e5a273ae82a",
+  "qualificationPassed": false,
+  "releaseReady": false
+}

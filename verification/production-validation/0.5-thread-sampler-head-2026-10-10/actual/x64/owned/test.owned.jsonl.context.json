@@ -1,0 +1,19 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+  "executableSha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c",
+  "executable": "C:/Program Files/CMake/bin/ctest.exe",
+  "args": [
+    "--test-dir",
+    "F:/work/sm05-broker/out/tdefault-a476dff2-x64/build",
+    "-C",
+    "Release",
+    "--output-on-failure",
+    "--no-tests=error",
+    "--output-junit",
+    "F:/work/sm05-broker/out/tdefault-a476dff2-x64/junit.xml"
+  ],
+  "cwd": "F:/work/sm05-broker",
+  "timeoutMs": 600000,
+  "drainMs": 2000
+}

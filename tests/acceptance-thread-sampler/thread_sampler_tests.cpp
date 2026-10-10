@@ -1,0 +1,225 @@
+// Include every production header before the local API redirection so no SDK,
+// Windows or standard-library declaration is rewritten by a test macro.
+#include <windows.h>
+#include <psapi.h>
+#include <tlhelp32.h>
+#include <soui/host/soui_miniblink_host.h>
+#include <soui/json_bridge.h>
+#include <array>
+#include <atomic>
+#include <chrono>
+#include <cstdint>
+#include <cstdlib>
+#include <filesystem>
+#include <fstream>
+#include <functional>
+#include <iostream>
+#include <cstddef>
+#include <memory>
+#include <map>
+#include <mutex>
+#include <stdexcept>
+#include <string>
+#include <string_view>
+#include <thread>
+#include <utility>
+
+namespace thread_sampler_fault {
+constexpr std::size_t owner_extent =
+    offsetof(THREADENTRY32, th32OwnerProcessID) + sizeof(DWORD);
+struct scenario {
+  std::array<THREADENTRY32, 6> rows{};
+  std::size_t row_count{0};
+  std::size_t cursor{0};
+  DWORD create_error{ERROR_SUCCESS};
+  DWORD enumeration_error{ERROR_NO_MORE_FILES};
+  DWORD close_error{ERROR_SUCCESS};
+  unsigned create_calls{0};
+  unsigned first_calls{0};
+  unsigned next_calls{0};
+  unsigned close_calls{0};
+  bool bad_api_contract{false};
+};
+scenario current;
+HANDLE snapshot_handle() noexcept {
+  return reinterpret_cast<HANDLE>(static_cast<std::uintptr_t>(0x1234));
+}
+HANDLE WINAPI create_snapshot(DWORD flags, DWORD process_id) noexcept {
+  ++current.create_calls;
+  if (flags != TH32CS_SNAPTHREAD || process_id != 0)
+    current.bad_api_contract = true;
+  if (current.create_error != ERROR_SUCCESS) {
+    SetLastError(current.create_error);
+    return INVALID_HANDLE_VALUE;
+  }
+  SetLastError(ERROR_SUCCESS);
+  return snapshot_handle();
+}
+BOOL emit_row(HANDLE handle, LPTHREADENTRY32 entry) noexcept {
+  if (handle != snapshot_handle() || !entry) {
+    current.bad_api_contract = true;
+    SetLastError(ERROR_INVALID_PARAMETER);
+    return FALSE;
+  }
+  if (current.cursor == current.row_count) {
+    SetLastError(current.enumeration_error);
+    return FALSE;
+  }
+  *entry = current.rows[current.cursor++];
+  SetLastError(ERROR_SUCCESS);
+  return TRUE;
+}
+BOOL WINAPI first(HANDLE handle, LPTHREADENTRY32 entry) noexcept {
+  ++current.first_calls;
+  if (!entry || entry->dwSize != sizeof(THREADENTRY32))
+    current.bad_api_contract = true;
+  return emit_row(handle, entry);
+}
+BOOL WINAPI next(HANDLE handle, LPTHREADENTRY32 entry) noexcept {
+  ++current.next_calls;
+  return emit_row(handle, entry);
+}
+BOOL WINAPI close(HANDLE handle) noexcept {
+  ++current.close_calls;
+  if (handle != snapshot_handle()) current.bad_api_contract = true;
+  // Deliberately overwrite LastError even on success. Enumeration diagnostics
+  // must therefore come from the production helper's saved error value.
+  SetLastError(current.close_error == ERROR_SUCCESS
+                   ? ERROR_INVALID_HANDLE : current.close_error);
+  return current.close_error == ERROR_SUCCESS ? TRUE : FALSE;
+}
+}  // namespace thread_sampler_fault
+
+#ifndef SOUI_ACCEPTANCE_THREAD_TEST_MAIN
+#error The fixed production main.cpp input must be provided by the CMake gate.
+#endif
+#define CreateToolhelp32Snapshot thread_sampler_fault::create_snapshot
+#define Thread32First thread_sampler_fault::first
+#define Thread32Next thread_sampler_fault::next
+#define CloseHandle thread_sampler_fault::close
+#define wWinMain acceptance_thread_sampler_unused_gui_entry
+#define wmain acceptance_thread_sampler_unused_console_entry
+#include SOUI_ACCEPTANCE_THREAD_TEST_MAIN
+#undef wmain
+#undef wWinMain
+#undef CloseHandle
+#undef Thread32Next
+#undef Thread32First
+#undef CreateToolhelp32Snapshot
+
+namespace thread_sampler_fault {
+void require(bool condition, const char* message) {
+  if (!condition) throw std::runtime_error(message);
+}
+void add(DWORD process_id, DWORD size = sizeof(THREADENTRY32)) {
+  require(current.row_count < current.rows.size(), "test rows overflow");
+  auto& row = current.rows[current.row_count++];
+  row.dwSize = size;
+  row.th32OwnerProcessID = process_id;
+}
+struct expected {
+  bool throws{false};
+  unsigned count{0};
+  unsigned first_calls{1};
+  unsigned next_calls{0};
+  unsigned close_calls{1};
+  std::string error;
+};
+expected configure(std::wstring_view name) {
+  current = {};
+  const DWORD own_pid = GetCurrentProcessId();
+  const DWORD foreign_pid = own_pid == MAXDWORD ? 1 : own_pid + 1;
+  expected want;
+  if (name == L"complete-mixed") {
+    add(own_pid); add(foreign_pid); add(own_pid); add(foreign_pid); add(own_pid);
+    want.count = 3; want.next_calls = 5;
+  } else if (name == L"empty") {
+    // First(FALSE, ERROR_NO_MORE_FILES) is a complete empty enumeration.
+  } else if (name == L"foreign-only") {
+    add(foreign_pid); add(foreign_pid); want.next_calls = 2;
+  } else if (name == L"minimum-owner-extent") {
+    add(own_pid, static_cast<DWORD>(owner_extent));
+    want.count = 1; want.next_calls = 1;
+  } else if (name == L"create-failure") {
+    current.create_error = ERROR_ACCESS_DENIED;
+    want.throws = true; want.first_calls = 0; want.close_calls = 0;
+    want.error = "Cannot sample threads: CreateToolhelp32Snapshot WinError=5";
+  } else if (name == L"first-failure" || name == L"first-and-close-failure") {
+    current.enumeration_error = ERROR_BAD_LENGTH;
+    want.throws = true;
+    want.error = "Cannot sample threads: Thread32First WinError=24";
+    if (name == L"first-and-close-failure") {
+      current.close_error = ERROR_ACCESS_DENIED;
+      want.error += "; CloseHandle WinError=5";
+    }
+  } else if (name == L"next-failure" || name == L"next-and-close-failure") {
+    add(own_pid); add(foreign_pid); add(own_pid);
+    current.enumeration_error = ERROR_BAD_LENGTH;
+    want.throws = true; want.next_calls = 3;
+    want.error = "Cannot sample threads: Thread32Next WinError=24";
+    if (name == L"next-and-close-failure") {
+      current.close_error = ERROR_ACCESS_DENIED;
+      want.error += "; CloseHandle WinError=5";
+    }
+  } else if (name == L"close-failure") {
+    add(own_pid); add(own_pid); current.close_error = ERROR_ACCESS_DENIED;
+    want.throws = true; want.next_calls = 2;
+    want.error = "Cannot sample threads; CloseHandle WinError=5";
+  } else if (name == L"first-short" || name == L"first-oversized" ||
+             name == L"next-short" || name == L"next-oversized" ||
+             name == L"next-short-and-close-failure") {
+    const bool after_first = name.substr(0, 4) == L"next";
+    const bool oversized = name.find(L"oversized") != std::wstring_view::npos;
+    const DWORD size = static_cast<DWORD>(oversized ? sizeof(THREADENTRY32) + 1
+                                                   : owner_extent - 1);
+    if (after_first) { add(own_pid); want.next_calls = 1; }
+    add(own_pid, size);
+    want.throws = true;
+    want.error = "Cannot sample threads: " +
+        std::string(after_first ? "Thread32Next" : "Thread32First") +
+        " returned invalid THREADENTRY32 dwSize=" + std::to_string(size);
+    if (name == L"next-short-and-close-failure") {
+      current.close_error = ERROR_ACCESS_DENIED;
+      want.error += "; CloseHandle WinError=5";
+    }
+  } else {
+    throw std::invalid_argument("Unknown thread sampler case");
+  }
+  return want;
+}
+void run(std::wstring_view name) {
+  const auto want = configure(name);
+  constexpr unsigned sentinel = 0xdead1234u;
+  unsigned result = sentinel;
+  bool returned = false;
+  std::string error;
+  try {
+    // This is the anonymous-namespace helper in the included, pinned production
+    // source. No helper implementation is repeated in this test.
+    result = process_thread_count();
+    returned = true;
+  } catch (const std::runtime_error& failure) {
+    error = failure.what();
+  }
+  require(current.create_calls == 1, "snapshot creation count");
+  require(current.first_calls == want.first_calls, "First call count");
+  require(current.next_calls == want.next_calls, "Next call count");
+  require(current.close_calls == want.close_calls, "Close must occur exactly once or never after failed creation");
+  require(!current.bad_api_contract, "wrong snapshot/flags/initial entry size");
+  require(returned == !want.throws, "failure returned a partial count or success threw");
+  if (want.throws) {
+    require(result == sentinel, "failure exposed a partial count");
+    require(error == want.error, "saved enumeration/close/extent diagnostic mismatch");
+  } else {
+    require(result == want.count, "target PID filtering or complete count mismatch");
+    require(error.empty(), "success diagnostic must be empty");
+  }
+  std::cout << "thread-sampler-case-passed\n";
+}
+}  // namespace thread_sampler_fault
+
+int wmain(int argc, wchar_t** argv) {
+  if (argc != 2) { std::cerr << "One thread sampler case is required\n"; return 2; }
+  try { thread_sampler_fault::run(argv[1]); return 0; }
+  catch (const std::exception& error) { std::cerr << error.what() << '\n'; return 1; }
+}

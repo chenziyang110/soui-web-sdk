@@ -1,0 +1,307 @@
+{
+  "schema": "soui.software-reload-resource-independent-fs-review/v1",
+  "reviewer": "/root/engine_capacity_review",
+  "reviewMethod": "Prior FS-only audits independently read original raw records, verified full identity/hash/closure chains, and recomputed exact rational medians plus 4950 pair slopes per metric; this author script only copies closed evidence.",
+  "sourceSha256": "ad8d40a0e73a5262a0c741c2c3148f22d5f9eb6fce36501eaf6ab6fd17438f30",
+  "sourceNormalizedFilesVerifiedBeforeAndAfterBoth": 1095,
+  "runtimeFilesPerArchitectureVerified": 75,
+  "allowedExtraPerArchitecture": "resources/source-navigation.log",
+  "originalPolicySha256": "8fb6eda430ffce82b20b873873f7ef3c91090e10f8c14e7ef30bff18735f4037",
+  "cases": [
+    {
+      "architecture": "x64",
+      "runId": "a7fce309-017e-4f54-a8d4-899aeed457ab",
+      "pid": 68224,
+      "creationFileTime": "134361049789856195",
+      "nativeExitCode": 0,
+      "supervisorExitCode": 0,
+      "wholeJobProcesses": 1,
+      "forcedClosure": false,
+      "ownedElapsedMs": 599545,
+      "nativeRows": 348,
+      "pairedSteps": 116,
+      "samples": 114,
+      "measuredCycles": 100,
+      "settleMinimumMs": 5103,
+      "operationPassed": true,
+      "resourceGate": "passed",
+      "resources": {
+        "privateBytes": {
+          "baseline": 39305216,
+          "tailMedian": {
+            "numerator": "43763712",
+            "denominator": "1",
+            "value": 43763712
+          },
+          "tailMedianGrowth": {
+            "numerator": "4458496",
+            "denominator": "1",
+            "value": 4458496
+          },
+          "theilSenPerCycle": {
+            "numerator": "695296",
+            "denominator": "51",
+            "value": 13633.254901960785
+          },
+          "pairs": 4950,
+          "gated": true
+        },
+        "workingSetBytes": {
+          "baseline": 58376192,
+          "tailMedian": {
+            "numerator": "63586304",
+            "denominator": "1",
+            "value": 63586304
+          },
+          "tailMedianGrowth": {
+            "numerator": "5210112",
+            "denominator": "1",
+            "value": 5210112
+          },
+          "theilSenPerCycle": {
+            "numerator": "917504",
+            "denominator": "45",
+            "value": 20388.977777777778
+          },
+          "pairs": 4950,
+          "gated": false
+        },
+        "handles": {
+          "baseline": 300,
+          "tailMedian": {
+            "numerator": "300",
+            "denominator": "1",
+            "value": 300
+          },
+          "tailMedianGrowth": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "theilSenPerCycle": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "pairs": 4950,
+          "gated": true
+        },
+        "threads": {
+          "baseline": 18,
+          "tailMedian": {
+            "numerator": "14",
+            "denominator": "1",
+            "value": 14
+          },
+          "tailMedianGrowth": {
+            "numerator": "-4",
+            "denominator": "1",
+            "value": -4
+          },
+          "theilSenPerCycle": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "pairs": 4950,
+          "gated": true
+        },
+        "gdiObjects": {
+          "baseline": 24,
+          "tailMedian": {
+            "numerator": "24",
+            "denominator": "1",
+            "value": 24
+          },
+          "tailMedianGrowth": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "theilSenPerCycle": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "pairs": 4950,
+          "gated": true
+        },
+        "userObjects": {
+          "baseline": 23,
+          "tailMedian": {
+            "numerator": "23",
+            "denominator": "1",
+            "value": 23
+          },
+          "tailMedianGrowth": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "theilSenPerCycle": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "pairs": 4950,
+          "gated": true
+        }
+      },
+      "windowClassesStable": true,
+      "releaseReady": false
+    },
+    {
+      "architecture": "x86",
+      "runId": "f4d186b6-d4fd-44a6-9c4b-ec4e84925d7d",
+      "pid": 83776,
+      "creationFileTime": "134361055811640115",
+      "nativeExitCode": 0,
+      "supervisorExitCode": 0,
+      "wholeJobProcesses": 1,
+      "forcedClosure": false,
+      "ownedElapsedMs": 602768,
+      "nativeRows": 348,
+      "pairedSteps": 116,
+      "samples": 114,
+      "measuredCycles": 100,
+      "settleMinimumMs": 5117,
+      "operationPassed": true,
+      "resourceGate": "failed",
+      "resources": {
+        "privateBytes": {
+          "baseline": 34152448,
+          "tailMedian": {
+            "numerator": "38080512",
+            "denominator": "1",
+            "value": 38080512
+          },
+          "tailMedianGrowth": {
+            "numerator": "3928064",
+            "denominator": "1",
+            "value": 3928064
+          },
+          "theilSenPerCycle": {
+            "numerator": "8040448",
+            "denominator": "425",
+            "value": 18918.70117647059
+          },
+          "pairs": 4950,
+          "gated": true
+        },
+        "workingSetBytes": {
+          "baseline": 46854144,
+          "tailMedian": {
+            "numerator": "51408896",
+            "denominator": "1",
+            "value": 51408896
+          },
+          "tailMedianGrowth": {
+            "numerator": "4554752",
+            "denominator": "1",
+            "value": 4554752
+          },
+          "theilSenPerCycle": {
+            "numerator": "5170688",
+            "denominator": "195",
+            "value": 26516.348717948717
+          },
+          "pairs": 4950,
+          "gated": false
+        },
+        "handles": {
+          "baseline": 315,
+          "tailMedian": {
+            "numerator": "318",
+            "denominator": "1",
+            "value": 318
+          },
+          "tailMedianGrowth": {
+            "numerator": "3",
+            "denominator": "1",
+            "value": 3
+          },
+          "theilSenPerCycle": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "pairs": 4950,
+          "gated": true
+        },
+        "threads": {
+          "baseline": 17,
+          "tailMedian": {
+            "numerator": "16",
+            "denominator": "1",
+            "value": 16
+          },
+          "tailMedianGrowth": {
+            "numerator": "-1",
+            "denominator": "1",
+            "value": -1
+          },
+          "theilSenPerCycle": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "pairs": 4950,
+          "gated": true
+        },
+        "gdiObjects": {
+          "baseline": 24,
+          "tailMedian": {
+            "numerator": "24",
+            "denominator": "1",
+            "value": 24
+          },
+          "tailMedianGrowth": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "theilSenPerCycle": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "pairs": 4950,
+          "gated": true
+        },
+        "userObjects": {
+          "baseline": 23,
+          "tailMedian": {
+            "numerator": "23",
+            "denominator": "1",
+            "value": 23
+          },
+          "tailMedianGrowth": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "theilSenPerCycle": {
+            "numerator": "0",
+            "denominator": "1",
+            "value": 0
+          },
+          "pairs": 4950,
+          "gated": true
+        }
+      },
+      "windowClassesStable": true,
+      "releaseReady": false
+    }
+  ],
+  "combinedResourcePassed": false,
+  "controllerExitCode": 1,
+  "controllerExitCodeOrigin": "Root reported Native session 48167 CLOSED1 via collaboration; not a fabricated Owned receipt.",
+  "nativeExecutedByReviewer": false,
+  "thresholdsChanged": false,
+  "sdkPrivateCachesAndQueuesQualified": false,
+  "thousandCycleQualified": false,
+  "eightHourQualified": false,
+  "targetOsQualified": false,
+  "formalPassed": false,
+  "releaseReady": false
+}

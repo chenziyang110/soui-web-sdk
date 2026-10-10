@@ -1,0 +1,23 @@
+{
+  "schema": "soui.software-reload-resource-policy/v1",
+  "version": "0.5.0",
+  "kernel": "miniblink",
+  "renderer": "software",
+  "processModel": "single-process",
+  "mode": "reload",
+  "warmup": 10,
+  "measuredCycles": 100,
+  "settleMs": 5000,
+  "baselineCycle": 10,
+  "tailCycles": 10,
+  "privateMinimumGrowthBytes": 16777216,
+  "privateBaselineFractionNumerator": 1,
+  "privateBaselineFractionDenominator": 10,
+  "slopeCycles": 100,
+  "counterTailGrowth": 0,
+  "counterSlope": 0,
+  "windowClasses": "exact-baseline-each-measured-cycle",
+  "workingSet": "descriptive-only",
+  "forcedCollection": false,
+  "releaseReady": false
+}

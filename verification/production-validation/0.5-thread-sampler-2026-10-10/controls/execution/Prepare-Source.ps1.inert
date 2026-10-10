@@ -1,0 +1,47 @@
+$ErrorActionPreference='Stop'
+$taskRoot=$PSScriptRoot.Replace('\','/')
+$taskRepo='F:/work/sm05-broker'
+$taskSource=Join-Path $taskRepo 'out/acceptance-thread-sampler-regression-source-c192dbc9-721d-4fed-b017-5e5a273ae82a'
+$taskUtf8=[Text.UTF8Encoding]::new($false)
+function Pin([string]$taskPath){$taskFile=Get-Item -LiteralPath $taskPath -Force;if($taskFile.PSIsContainer-or($taskFile.Attributes-band[IO.FileAttributes]::ReparsePoint)){throw 'Not plain file'};[ordered]@{path=$taskFile.FullName.Replace('\','/');bytes=$taskFile.Length;sha256=(Get-FileHash -LiteralPath $taskPath -Algorithm SHA256).Hash.ToLowerInvariant()}}
+function Json([string]$taskName,$taskValue){$taskPath=Join-Path $taskRoot $taskName;if(Test-Path -LiteralPath $taskPath){throw 'Output already exists'};[IO.File]::WriteAllText($taskPath,($taskValue|ConvertTo-Json -Depth 16)+[char]10,$taskUtf8)}
+$taskNode=Pin 'C:/Users/11034/AppData/Local/nvm/v24.14.0/node.exe'
+$taskCmake=Pin 'C:/Program Files/CMake/bin/cmake.exe'
+$taskCtest=Pin 'C:/Program Files/CMake/bin/ctest.exe'
+$taskRunner=Pin 'F:/work/sm05-compiler-tail/out/actual-compiler-tail-6df2df34-3e84-4f05-bffa-efbfbb555e1f/OwnedProcessRunner.exe'
+$taskClient=Pin (Join-Path $taskRepo 'tools/internal/owned-process.cjs')
+$taskDriverOriginal=Join-Path $taskRepo 'out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/run-root.cjs'
+[IO.File]::WriteAllBytes((Join-Path $taskRoot 'run-root.cjs'),[IO.File]::ReadAllBytes($taskDriverOriginal))
+$taskDriver=Pin (Join-Path $taskRoot 'run-root.cjs')
+if($taskDriver.bytes-ne4640-or$taskDriver.sha256-cne'139b305e97e075ab45793999785f05bccc0ec6e47b66498ac86054ee0bb1c350'){throw 'Strict driver differs'}
+$taskCompilerOriginal=Join-Path $taskRepo 'out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/fixed-compiler.cmake'
+$taskCompilerText=[IO.File]::ReadAllText($taskCompilerOriginal)
+$taskOld='v143,host=x64,version=14.44.35207';$taskNew='v143,version=14.44.35207,host=x64'
+if([regex]::Matches($taskCompilerText,[regex]::Escape($taskOld)).Count-ne1){throw 'Compiler string unique span differs'}
+[IO.File]::WriteAllText((Join-Path $taskRoot 'fixed-compiler.cmake'),$taskCompilerText.Replace($taskOld,$taskNew),$taskUtf8)
+$taskCompiler=Pin (Join-Path $taskRoot 'fixed-compiler.cmake')
+$taskSourcePlan=Get-Content -LiteralPath (Join-Path $taskSource 'source-plan.json') -Raw|ConvertFrom-Json -DateKind String
+$taskSourceSeal=Get-Content -LiteralPath (Join-Path $taskSource 'seal.json') -Raw|ConvertFrom-Json -DateKind String
+$taskSourcePins=@(Get-ChildItem -LiteralPath $taskSource -File -Force|ForEach-Object{Pin $_.FullName})+@($taskSourcePlan.productionMain)
+foreach($taskPin in @($taskSourcePlan.sourcePins)+@($taskSourcePlan.productionMain)+@($taskSourceSeal.pins)){$taskActual=Pin $taskPin.path;if($taskActual.bytes-ne$taskPin.bytes-or$taskActual.sha256-cne$taskPin.sha256){throw 'Source candidate drift'}}
+$taskRecords=@()
+foreach($taskArch in @('x64','Win32')){
+ $taskConsumer=Join-Path $taskRepo "out/ctconsumer-0f3dc37c-release-$taskArch"
+ $taskBindingFile=Join-Path $taskConsumer 'consumer-bindings.json';$taskBinding=Get-Content -LiteralPath $taskBindingFile -Raw|ConvertFrom-Json -DateKind String
+ $taskPrefix=Join-Path $taskConsumer 'prefix';$taskBase=Join-Path $taskRepo "out/tsamp2-f3a5e6cf-$taskArch";$taskBuild=Join-Path $taskBase 'build';$taskEvidence=Join-Path $taskBase 'owned'
+ if(Test-Path -LiteralPath $taskBase){throw 'Build/evidence output already exists'}
+ $taskClArch=if($taskArch-ceq'Win32'){'x86'}else{'x64'}
+ $taskTools=@($taskNode,$taskCmake,$taskCtest,$taskRunner,$taskClient,$taskDriver,$taskCompiler)+(Pin $taskCompilerOriginal)
+ foreach($taskLeaf in @('cl.exe','link.exe')){$taskTools+=Pin "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/$taskClArch/$taskLeaf"}
+ $taskTools+=Pin 'C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe'
+ $taskConfigure=@('-S',$taskSource,'-B',$taskBuild,'-G','Visual Studio 17 2022','-A',$taskArch,'-T',$taskNew,'-DCMAKE_GENERATOR_INSTANCE:PATH=C:/Program Files/Microsoft Visual Studio/2022/Community','-DCMAKE_SYSTEM_VERSION:STRING=10.0.19041.0','-DCMAKE_CONFIGURATION_TYPES:STRING=Release',('-DCMAKE_PROJECT_INCLUDE:FILEPATH='+$taskCompiler.path),('-DSOUI_ROOT_EXPECTED_ARCH:STRING='+$taskArch),('-DCMAKE_VS_GLOBALS:STRING=VcpkgEnabled=false;VcpkgEnableManifest=false;UseEnv=false;UserRootDir='+$taskBase+'/empty-user-props/'),('-DSouiSdk_DIR:PATH='+$taskPrefix+'/lib/cmake/SouiSdk'),('-DSOUI_ACCEPTANCE_MAIN:FILEPATH='+$taskSourcePlan.productionMain.path),'-DCMAKE_FIND_USE_PACKAGE_REGISTRY:BOOL=OFF','-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY:BOOL=OFF','-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY:BOOL=ON')
+ $taskPlan=[ordered]@{schema='soui.root-finite-owned-plan/v1';architecture=$taskArch;output=$taskEvidence;client=$taskClient;runner=$taskRunner;pins=@($taskSourcePins)+@($taskTools)+@($taskBinding.installed)+(Pin $taskBindingFile);inventories=@([ordered]@{root=$taskPrefix;members=$taskBinding.installedMembers});jobs=@([ordered]@{name='configure';executable=$taskCmake.path;args=$taskConfigure;cwd=$taskRepo;timeoutMs=120000;expectedExitCode=0},[ordered]@{name='build';executable=$taskCmake.path;args=@('--build',$taskBuild,'--config','Release','--target','soui_acceptance_thread_sampler_tests','--parallel','2','--','/nr:false');cwd=$taskRepo;timeoutMs=600000;expectedExitCode=0},[ordered]@{name='test';executable=$taskCtest.path;args=@('--test-dir',$taskBuild,'-C','Release','--output-on-failure','--no-tests=error','--output-junit',($taskBase+'/junit.xml'));cwd=$taskRepo;timeoutMs=600000;expectedExitCode=0});qualificationPassed=$false;releaseReady=$false}
+ $taskPlanName="plan.$taskArch.json";Json $taskPlanName $taskPlan
+ $taskRecords+=[ordered]@{architecture=$taskArch;base=$taskBase;plan=(Pin (Join-Path $taskRoot $taskPlanName));expectedTestCases=$taskSourcePlan.caseNames;caseCount=15}
+}
+Json 'inputs.json' ([ordered]@{schema='soui.thread-sampler-root-inputs/v1';node=$taskNode;driver=$taskDriver;records=$taskRecords;compilerOriginal=(Pin $taskCompilerOriginal);compiler=$taskCompiler;compilerGateOnlyChange=[ordered]@{old=$taskOld;new=$taskNew};sourceMembers=$taskSourcePlan.literalOrdinalMembers;sourceRoot=$taskSource;qualificationPassed=$false;releaseReady=$false})
+$taskFiles=[string[]]@(Get-ChildItem -LiteralPath $taskRoot -File -Force|ForEach-Object{$_.Name});[Array]::Sort($taskFiles,[StringComparer]::Ordinal)
+$taskSealedMembers=[string[]](@($taskFiles)+@('seal.json'))
+[Array]::Sort($taskSealedMembers,[StringComparer]::Ordinal)
+Json 'seal.json' ([ordered]@{schema='soui.thread-sampler-root-seal/v1';root=$taskRoot;members=$taskSealedMembers;core=@($taskFiles|ForEach-Object{Pin (Join-Path $taskRoot $_)})})
+Write-Output 'Source plans authored without Native/Node/compiler execution.'

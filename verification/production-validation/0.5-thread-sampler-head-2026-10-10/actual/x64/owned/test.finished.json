@@ -1,0 +1,71 @@
+{
+  "job": {
+    "name": "test",
+    "executable": "C:/Program Files/CMake/bin/ctest.exe",
+    "args": [
+      "--test-dir",
+      "F:/work/sm05-broker/out/tdefault-a476dff2-x64/build",
+      "-C",
+      "Release",
+      "--output-on-failure",
+      "--no-tests=error",
+      "--output-junit",
+      "F:/work/sm05-broker/out/tdefault-a476dff2-x64/junit.xml"
+    ],
+    "cwd": "F:/work/sm05-broker",
+    "timeoutMs": 600000,
+    "expectedExitCode": 0
+  },
+  "result": {
+    "pid": 58788,
+    "creationFileTime": "134361112304520074",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 2422,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 17,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\sm05-broker\\out\\tdefault-a476dff2-x64\\owned\\test.owned.jsonl",
+    "reportSha256": "91cf399b6edb1f2f45546dc7f9511c17aa8704a49019bcffef623192ec2b231c",
+    "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+    "executableSha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+  },
+  "accepted": true,
+  "raw": {
+    "path": "F:\\work\\sm05-broker\\out\\tdefault-a476dff2-x64\\owned\\test.owned.jsonl",
+    "bytes": 5483,
+    "sha256": "91cf399b6edb1f2f45546dc7f9511c17aa8704a49019bcffef623192ec2b231c"
+  },
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\tdefault-a476dff2-x64\\owned\\test.owned.jsonl.context.json",
+    "bytes": 608,
+    "sha256": "33985a773a4d814858b963acf85c3f73d23ea7428a7185c268d8853686f4f78a"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\tdefault-a476dff2-x64\\owned\\test.stdout.raw",
+    "bytes": 2458,
+    "sha256": "6b88e285e1256fce28315e5bb7946ef0afd01cb073562afa52d23ef1398eedfe"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\tdefault-a476dff2-x64\\owned\\test.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

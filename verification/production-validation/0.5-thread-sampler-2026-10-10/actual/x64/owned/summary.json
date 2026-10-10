@@ -1,0 +1,242 @@
+{
+  "schema": "soui.root-finite-owned-result/v1",
+  "completed": true,
+  "failure": null,
+  "plan": {
+    "path": "F:/work/sm05-broker/out/thread-sampler-v2-root-f3a5e6cf-7185-45bf-8642-38c2c3725bf7/plan.x64.json",
+    "bytes": 22834,
+    "sha256": "1d2babecb07b96168acad1400ca0fc20b71ab2dc08d54ca26cd01929e55ff727"
+  },
+  "stages": [
+    {
+      "job": {
+        "name": "configure",
+        "executable": "C:/Program Files/CMake/bin/cmake.exe",
+        "args": [
+          "-S",
+          "F:\\work\\sm05-broker\\out\\acceptance-thread-sampler-regression-source-c192dbc9-721d-4fed-b017-5e5a273ae82a",
+          "-B",
+          "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\build",
+          "-G",
+          "Visual Studio 17 2022",
+          "-A",
+          "x64",
+          "-T",
+          "v143,version=14.44.35207,host=x64",
+          "-DCMAKE_GENERATOR_INSTANCE:PATH=C:/Program Files/Microsoft Visual Studio/2022/Community",
+          "-DCMAKE_SYSTEM_VERSION:STRING=10.0.19041.0",
+          "-DCMAKE_CONFIGURATION_TYPES:STRING=Release",
+          "-DCMAKE_PROJECT_INCLUDE:FILEPATH=F:/work/sm05-broker/out/thread-sampler-v2-root-f3a5e6cf-7185-45bf-8642-38c2c3725bf7/fixed-compiler.cmake",
+          "-DSOUI_ROOT_EXPECTED_ARCH:STRING=x64",
+          "-DCMAKE_VS_GLOBALS:STRING=VcpkgEnabled=false;VcpkgEnableManifest=false;UseEnv=false;UserRootDir=F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64/empty-user-props/",
+          "-DSouiSdk_DIR:PATH=F:\\work\\sm05-broker\\out\\ctconsumer-0f3dc37c-release-x64\\prefix/lib/cmake/SouiSdk",
+          "-DSOUI_ACCEPTANCE_MAIN:FILEPATH=F:/work/sm05-broker/tests/acceptance-app/main.cpp",
+          "-DCMAKE_FIND_USE_PACKAGE_REGISTRY:BOOL=OFF",
+          "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY:BOOL=OFF",
+          "-DCMAKE_EXPORT_NO_PACKAGE_REGISTRY:BOOL=ON"
+        ],
+        "cwd": "F:/work/sm05-broker",
+        "timeoutMs": 120000,
+        "expectedExitCode": 0
+      },
+      "result": {
+        "pid": 84872,
+        "creationFileTime": "134361035125563950",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 6174,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 26,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\configure.owned.jsonl",
+        "reportSha256": "583d530b3c565e44aa5bfafad6ad9811b367237e08aabec718497f6eebd5eff3",
+        "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "accepted": true,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\configure.owned.jsonl",
+        "bytes": 27954,
+        "sha256": "583d530b3c565e44aa5bfafad6ad9811b367237e08aabec718497f6eebd5eff3"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\configure.owned.jsonl.context.json",
+        "bytes": 1590,
+        "sha256": "cce6224629069fa1c14a411aebc52dd806c210d7739ce7baca99188c994ae743"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\configure.stdout.raw",
+        "bytes": 499,
+        "sha256": "013d4d2aff1776b3da80d4a299581a80a0f575c972b4deceae31f914f04a29cd"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\configure.stderr.raw",
+        "bytes": 116,
+        "sha256": "6b413994db538d19492dc1c8b42f9eac504bbe50b7b298f08398ecb0cf77b8d6"
+      }
+    },
+    {
+      "job": {
+        "name": "build",
+        "executable": "C:/Program Files/CMake/bin/cmake.exe",
+        "args": [
+          "--build",
+          "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\build",
+          "--config",
+          "Release",
+          "--target",
+          "soui_acceptance_thread_sampler_tests",
+          "--parallel",
+          "2",
+          "--",
+          "/nr:false"
+        ],
+        "cwd": "F:/work/sm05-broker",
+        "timeoutMs": 600000,
+        "expectedExitCode": 0
+      },
+      "result": {
+        "pid": 43704,
+        "creationFileTime": "134361035191937958",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 4198,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 17,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\build.owned.jsonl",
+        "reportSha256": "25f88d9ec13b2a179eef3861142b595553773d885a3f512f40568bfdf74716fa",
+        "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "accepted": true,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\build.owned.jsonl",
+        "bytes": 17216,
+        "sha256": "25f88d9ec13b2a179eef3861142b595553773d885a3f512f40568bfdf74716fa"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\build.owned.jsonl.context.json",
+        "bytes": 592,
+        "sha256": "77c33bd13c6aaa57097fd630a5a5aef88994073585ef62dd7b116c5f9304075e"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\build.stdout.raw",
+        "bytes": 411,
+        "sha256": "f9c9e68b380e88ee09997ce07c59b351614d322b9bb916ad3305ceaed21a35c7"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\build.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "job": {
+        "name": "test",
+        "executable": "C:/Program Files/CMake/bin/ctest.exe",
+        "args": [
+          "--test-dir",
+          "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\build",
+          "-C",
+          "Release",
+          "--output-on-failure",
+          "--no-tests=error",
+          "--output-junit",
+          "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64/junit.xml"
+        ],
+        "cwd": "F:/work/sm05-broker",
+        "timeoutMs": 600000,
+        "expectedExitCode": 0
+      },
+      "result": {
+        "pid": 32312,
+        "creationFileTime": "134361035238181970",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 1391,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 17,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\test.owned.jsonl",
+        "reportSha256": "6567de2f0e03374e92fcb2c94b657a060d099c1b97c445fd426e7da9b92bc131",
+        "runnerSha256": "015d0802aa62dbdbf00eca48f200d821a0f3b6a2a42896fc55ecaef3f5197bbe",
+        "executableSha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+      },
+      "accepted": true,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\test.owned.jsonl",
+        "bytes": 6204,
+        "sha256": "6567de2f0e03374e92fcb2c94b657a060d099c1b97c445fd426e7da9b92bc131"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\test.owned.jsonl.context.json",
+        "bytes": 613,
+        "sha256": "3253d23d82974e2c1d44739c10e4c499931f861b44cee6bdefd085d6195d8567"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\test.stdout.raw",
+        "bytes": 2456,
+        "sha256": "5a2c02a4f4d482f54f1c240e9adb74f958aabdaaadfd07e60e61cbe3bd62099a"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\tsamp2-f3a5e6cf-x64\\owned\\test.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "qualificationPassed": false,
+  "releaseReady": false
+}
