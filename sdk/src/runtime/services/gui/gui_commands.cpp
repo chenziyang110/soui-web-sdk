@@ -68,7 +68,7 @@ bool gui_job_context::authorizes_effect(const bridge_request& request) const {
       request.token.empty() && !request.native_user_gesture;
 }
 gui_commands_state::gui_commands_state(capability_registry& r, bridge_transport& t, task_service& s)
-    : registry{r}, transport{t}, tasks{s} { pending.reserve(capacity_limit); }
+    : registry{r}, transport{t}, tasks{s} { pending.reserve(capacity_limit); effects.reserve(capacity_limit); }
 
 std::shared_ptr<gui_commands_state> gui_commands_state::create(capability_registry& registry,
     bridge_transport& transport, task_service& tasks, std::vector<gui_command_definition> rows) {
@@ -86,7 +86,7 @@ std::shared_ptr<gui_commands_state> gui_commands_state::create(capability_regist
         {"requestId","documentId","effectId","inputJson"});
     if (!candidate.register_action("gui.effect","gui.effect",contract("gui.effect",effect_input,
         object_schema({{"resultJson",data}}, {"resultJson"})), [weak](const bridge_request& r) {
-          const auto s=weak.lock(); return s?s->effect(r):reject("E_GUI_CLOSED"); })) return {};
+          const auto s=weak.lock(); return s?s->page_effect(r):reject("E_GUI_CLOSED"); })) return {};
     const auto ack_input = object_schema({{"requestId",id},{"documentId",id},{"ok",{{"type","boolean"}}},{"resultJson",data}},
         {"requestId","documentId","ok","resultJson"});
     if (!candidate.register_action("gui.ack","gui.ack",contract("gui.ack",ack_input,accepted),
@@ -182,9 +182,19 @@ bool gui_commands_state::bind(std::string generation,std::function<bool()> callb
 }
 void gui_commands_state::close() noexcept {
   closed.store(true,std::memory_order_seq_cst);
-  std::lock_guard<std::mutex> lock(mutex);
-  if (document) document->closed.store(true,std::memory_order_release);
-  for (const auto& item:pending) if (const auto context=item.lock()) context->request_cancel();
+  std::vector<std::shared_ptr<gui_effect_request>> release;
+  {
+    std::lock_guard<std::mutex> lock(mutex);
+    if (document) document->closed.store(true,std::memory_order_release);
+    for (const auto& item:pending) if (const auto context=item.lock()) context->request_cancel();
+    effects.swap(release);
+  }
+  // No application captures or request storage are released under the GUI lock.
+  for (const auto& request:release) {
+    unsigned queued=0;
+    (void)request->phase.compare_exchange_strong(queued,3,std::memory_order_acq_rel);
+    request->changed.notify_all();
+  }
 }
 void gui_commands_state::shutdown_session(const std::string& session) noexcept {
   const bool before=binding_started.load(std::memory_order_seq_cst);
@@ -233,13 +243,15 @@ gui_owner_result gui_commands_state::poll() {
   std::shared_ptr<const std::function<bool()>> proof,release;
   std::shared_ptr<const task_service::event_sink> send;
   std::shared_ptr<gui_job_context> selected;
+  std::shared_ptr<gui_effect_request> selected_effect;
   std::uint64_t event_sequence=0;
   {
     std::lock_guard<std::mutex> lock(mutex);
     if (polling || effect_borrows) return closed.load()?gui_owner_result::pending:gui_owner_result::busy;
     if (closed.load()) { current.swap(release); return gui_owner_result::closed; }
     polling=true; proof=current; send=sink;
-    for (const auto& item:pending) if (const auto candidate=item.lock()) {
+    if (!effects.empty()) { selected_effect=std::move(effects.front()); effects.erase(effects.begin()); }
+    if (!selected_effect) for (const auto& item:pending) if (const auto candidate=item.lock()) {
       std::lock_guard<std::mutex> command_lock(candidate->mutex);
       if (candidate->running.load(std::memory_order_acquire) && !candidate->dispatched && !candidate->cancelled.load()) {
         selected=candidate; candidate->dispatched=true; break;
@@ -249,7 +261,24 @@ gui_owner_result gui_commands_state::poll() {
   }
   auto result=gui_owner_result::idle;
   try {
-    if (selected) {
+    if (selected_effect) {
+      unsigned queued=0;
+      if (closed.load() || selected_effect->context->cancelled.load() ||
+          clock_type::now()>=selected_effect->deadline) {
+        (void)selected_effect->phase.compare_exchange_strong(queued,3,std::memory_order_acq_rel);
+        unsigned unused=0;
+        (void)selected_effect->context->consumption.compare_exchange_strong(unused,2,std::memory_order_acq_rel);
+      } else if (selected_effect->phase.compare_exchange_strong(queued,1,std::memory_order_acq_rel)) {
+        // Only this real owner can enter effect() or invoke its native proof.
+        // The waiting Bridge worker owns no GUI/task lock and is never joined here.
+        auto response=effect(selected_effect->request,selected_effect->deadline);
+        { std::lock_guard<std::mutex> lock(selected_effect->mutex);
+          selected_effect->response=std::move(response);
+          selected_effect->phase.store(2,std::memory_order_release); }
+        result=gui_owner_result::dispatched;
+      }
+      selected_effect->changed.notify_all();
+    } else if (selected) {
       if (!proof || !send || !event_sequence || closed.load() || clock_type::now()>=selected->deadline ||
           !selected->agent_scope->active() || !selected->document->page_scope->active() || !(*proof)()) {
         selected->request_cancel();
@@ -287,7 +316,54 @@ std::shared_ptr<gui_job_context> gui_commands_state::find(const bridge_request& 
   }
   return {};
 }
-std::string gui_commands_state::effect(const bridge_request& request) {
+std::string gui_commands_state::page_effect(const bridge_request& request) {
+  if (std::this_thread::get_id()==owner) return effect(request);
+  std::shared_ptr<gui_effect_request> queued;
+  try {
+    const auto packet=decode(request.params_json);
+    const auto context=find(request,packet.at("requestId").get<std::string>(),packet.at("documentId").get<std::string>());
+    if (!context || context->row->effect_method.empty() || packet.at("effectId")!="native" ||
+        decode(packet.at("inputJson").get<std::string>()).dump()!=context->approved_input)
+      return reject("E_GUI_EFFECT_REJECTED");
+    queued=std::make_shared<gui_effect_request>();
+    queued->request=request; queued->context=context;
+    queued->deadline=std::min(context->deadline,clock_type::now()+std::chrono::milliseconds(request.timeout_ms));
+    {
+      std::lock_guard<std::mutex> lock(mutex);
+      if (closed.load() || document!=context->document || context->cancelled.load() ||
+          context->document->closed.load() || !request.authorization->active() ||
+          !context->agent_scope->active() || clock_type::now()>=queued->deadline)
+        return reject("E_GUI_EFFECT_REJECTED");
+      if (context->effect_enqueued || context->consumption.load()!=0) return reject("E_GUI_EFFECT_USED");
+      if (effects.size()>=capacity_limit) return reject("E_BUSY");
+      effects.push_back(queued); context->effect_enqueued=true;
+    }
+    std::unique_lock<std::mutex> lock(queued->mutex);
+    while (queued->phase.load(std::memory_order_acquire)<2 && !closed.load() &&
+        !context->cancelled.load() && !context->document->closed.load() &&
+        request.authorization->active() && context->agent_scope->active() && clock_type::now()<queued->deadline)
+      queued->changed.wait_until(lock,std::min(queued->deadline,clock_type::now()+std::chrono::milliseconds(25)));
+    if (queued->phase.load(std::memory_order_acquire)==2) return queued->response;
+    unsigned not_started=0;
+    const bool abandoned=queued->phase.compare_exchange_strong(not_started,3,std::memory_order_acq_rel);
+    unsigned unused=0;
+    const bool prevented=context->consumption.compare_exchange_strong(unused,2,std::memory_order_acq_rel) || unused==2;
+    // A lost reply after actual owner execution starts proves neither rollback
+    // nor completion. The private admission flag is never reset for a retry.
+    return reject(abandoned || not_started==3 || prevented?"E_GUI_EFFECT_REJECTED":"E_GUI_EFFECT_UNKNOWN");
+  } catch (...) {
+    if (queued) {
+      unsigned not_started=0;
+      (void)queued->phase.compare_exchange_strong(not_started,3,std::memory_order_acq_rel);
+      unsigned unused=0;
+      const bool prevented=!queued->context || queued->context->consumption.compare_exchange_strong(unused,2,std::memory_order_acq_rel) || unused==2;
+      queued->changed.notify_all();
+      return reject(prevented?"E_GUI_EFFECT_REJECTED":"E_GUI_EFFECT_UNKNOWN");
+    }
+    return reject("E_GUI_EFFECT_REJECTED");
+  }
+}
+std::string gui_commands_state::effect(const bridge_request& request,clock_type::time_point request_deadline) {
   if (std::this_thread::get_id()!=owner) return reject("E_GUI_WRONG_OWNER");
   const auto release=[this](gui_commands_state*) noexcept {
     std::lock_guard<std::mutex> lock(mutex); --effect_borrows;
@@ -310,7 +386,7 @@ std::string gui_commands_state::effect(const bridge_request& request) {
     const auto still_current=[&] {
       const auto authorized=[&] {
         return !closed.load() && !context->cancelled.load() && !context->document->closed.load() &&
-            clock_type::now()<context->deadline && request.authorization==context->document->page_scope &&
+            clock_type::now()<std::min(context->deadline,request_deadline) && request.authorization==context->document->page_scope &&
             request.authorization->active() && request.authorization->matches(request.session_id,request.origin) &&
             request.authorization->allows("gui.effect") && context->agent_scope->active() &&
             context->agent_scope->matches(context->agent_session,context->agent_origin) &&
@@ -333,7 +409,7 @@ std::string gui_commands_state::effect(const bridge_request& request) {
     native.method=context->row->effect_method; native.params_json=context->effect_params;
     native.operation_id=context->effect_is_family_start?context->effect_operation:std::string{};
     native.timeout_ms=static_cast<std::uint32_t>(std::max<std::int64_t>(1,
-        std::chrono::duration_cast<std::chrono::milliseconds>(context->deadline-clock_type::now()).count()));
+        std::chrono::duration_cast<std::chrono::milliseconds>(std::min(context->deadline,request_deadline)-clock_type::now()).count()));
     if (!still_current() || !context->authorizes_effect(native)) {
       close(); throw std::runtime_error("GUI effect is no longer current");
     }
@@ -362,12 +438,18 @@ std::string gui_commands_state::ack(const bridge_request& request) {
     const auto context=find(request,packet.at("requestId").get<std::string>(),packet.at("documentId").get<std::string>());
     if (!context) return reject("E_GUI_ACK_REJECTED");
     const auto encoded=decode(packet.at("resultJson").get<std::string>()).dump();
+    const bool ok=packet.at("ok").get<bool>();
     std::lock_guard<std::mutex> lock(context->mutex);
     if (context->acknowledged || !context->dispatched || context->cancelled.load() ||
         context->document->closed.load() || !context->agent_scope->active() ||
-        !context->document->page_scope->active() || clock_type::now()>=context->deadline ||
-        (!context->row->effect_method.empty() && !context->effect_done)) return reject("E_GUI_ACK_REJECTED");
-    context->acknowledged=true; context->ack_ok=packet.at("ok").get<bool>();
+        !context->document->page_scope->active() || clock_type::now()>=context->deadline) return reject("E_GUI_ACK_REJECTED");
+    if (!context->row->effect_method.empty() && !context->effect_done) {
+      unsigned unused=0;
+      if (ok || (!context->consumption.compare_exchange_strong(unused,2,std::memory_order_acq_rel) && unused!=2))
+        return reject("E_GUI_ACK_REJECTED");
+      context->effect_state="unused"; // Negative ACK closes only an unconsumed effect; it invents no result.
+    }
+    context->acknowledged=true; context->ack_ok=ok;
     if (context->ack_ok) context->gui_result=encoded;
     context->changed.notify_all(); return R"({"accepted":true})";
   } catch (...) { return reject("E_GUI_ACK_REJECTED"); }

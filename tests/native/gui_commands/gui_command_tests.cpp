@@ -1,5 +1,6 @@
 #include "../json_bridge_endpoint/public_endpoint_client.h"
 #include <soui/json_bridge.h>
+#include <atomic>
 #include <chrono>
 #include <exception>
 #include <functional>
@@ -36,9 +37,11 @@ json bootstrap(soui::sdk::json_bridge& bridge) {
   const auto response=json::parse(bridge.handle_json(R"({"requestId":"bootstrap","sessionId":"","origin":"","token":"","method":"bridge.bootstrap","params":{"protocol":"soui.bridge/1"}})"));
   require(response.at("ok")==true,"Bootstrap failed"); return response.at("result");
 }
-json page(soui::sdk::json_bridge& bridge,const json& credentials,const char* method,json params) {
-  return json::parse(bridge.handle_json(json{{"requestId","page"},{"sessionId",credentials.at("sessionId")},
-      {"origin",credentials.at("origin")},{"token",credentials.at("token")},{"method",method},{"params",std::move(params)}}.dump()));
+json page(soui::sdk::json_bridge& bridge,const json& credentials,const char* method,json params,unsigned timeout=0) {
+  json request{{"requestId","page"},{"sessionId",credentials.at("sessionId")},
+      {"origin",credentials.at("origin")},{"token",credentials.at("token")},{"method",method},{"params",std::move(params)}};
+  if(timeout)request["timeoutMs"]=timeout;
+  return json::parse(bridge.handle_json(request.dump()));
 }
 json remote(client& pipe,const std::string& method,json params,std::uint32_t timeout=1000) {
   require(pipe.write_raw(json{{"kind","request"},{"schemaVersion","soui.bridge/1"},{"requestId","gui-test"},
@@ -148,9 +151,9 @@ struct environment final {
         scope.window==key.window && scope.document==key.document && scope.generation==key.generation; });
     require(error==local_endpoint_error::none,"Endpoint start failed");
   }
-  json effect(const json& command,json input={{"value",2}}) {
+  json effect(const json& command,json input={{"value",2}},unsigned timeout=0) {
     return page(bridge,credentials,"gui.effect",{{"requestId",command.at("requestId")},{"documentId",command.at("documentId")},
-        {"effectId","native"},{"inputJson",input.dump()}});
+        {"effectId","native"},{"inputJson",input.dump()}},timeout);
   }
   json ack(const json& command,json result={{"safe",2}},bool ok=true) {
     return page(bridge,credentials,"gui.ack",{{"requestId",command.at("requestId")},{"documentId",command.at("documentId")},
@@ -213,9 +216,6 @@ void scope_matrix() {
 }
 void one_use_effect() {
   environment f; f.start(); f.on_command=[&](const json& command) {
-    json foreign;
-    std::thread wrong([&] { foreign=f.effect(command); }); wrong.join();
-    denied(foreign,"E_GUI_WRONG_OWNER");
     denied(f.effect(command,{{"value",3}}),"E_GUI_EFFECT_REJECTED");
     require(f.effect(command).at("ok")==true,"Correct once-only effect rejected");
     denied(f.effect(command),"E_GUI_EFFECT_USED"); require(f.ack(command).at("ok")==true,"ACK failed");
@@ -234,6 +234,119 @@ void one_use_effect() {
     require(::GetTickCount64()<until,"Actual disconnected scope cleanup did not complete"); f.tick(); ::Sleep(1);
   }
   require(f.effects==1 && f.events==1 && f.effect_scope && !f.effect_scope->active(),"Once-only/scope cleanup failed");
+}
+
+struct page_worker final {
+  std::thread thread;
+  std::atomic<bool> done{false};
+  std::exception_ptr failure;
+  ~page_worker() { if(thread.joinable())native_pending_failure(); }
+  void start(std::function<void()> work) {
+    require(!thread.joinable(),"Page worker already started");
+    thread=std::thread([this,work=std::move(work)] { try {work();} catch(...) {failure=std::current_exception();}
+      done.store(true,std::memory_order_release); });
+  }
+  void join() {
+    const auto until=::GetTickCount64()+1000;
+    while(!done.load(std::memory_order_acquire)) {
+      require(::GetTickCount64()<until,"Page worker did not finish after terminal/close"); ::Sleep(1);
+    }
+    thread.join(); if(failure)std::rethrow_exception(failure);
+  }
+};
+void foreign_owner_effect() {
+  environment f; page_worker worker; f.start();
+  f.on_command=[&](const json& command) { worker.start([&,command] {
+    require(::GetCurrentThreadId()!=f.owner,"Page request did not use a real foreign thread");
+    require(f.effect(command).at("ok")==true,"Bridge-worker effect did not reach owner");
+    require(f.ack(command).at("ok")==true,"Foreign page ACK rejected");
+  }); };
+  f.connect([&](client& pipe) {
+    const auto id=begin(pipe,"foreign-owner"); const auto result=query_until(pipe,"gui.reference",id).at("result");
+    require(result.at("state")=="succeeded" && result.at("result").at("confirmed")==true &&
+        result.at("result").at("effectState")=="committed" &&
+        json::parse(result.at("result").at("effectResultJson").get<std::string>())==json{{"safe",2}},
+        "Foreign request lost actual owner effect receipt");
+  });
+  worker.join(); require(f.effects==1 && f.events==1,"Foreign route replayed or lost the effect");
+}
+void queued_effect_expiry() {
+  environment f; page_worker worker; f.start();
+  f.on_command=[&](const json& command) {
+    worker.start([&,command] { denied(f.effect(command,{{"value",2}},25),"E_GUI_EFFECT_REJECTED"); });
+    // Deliberately hold the real owner callback. The bounded foreign request
+    // must expire by itself before any owner poll can execute that request.
+    const auto until=::GetTickCount64()+1000;
+    while(!worker.done.load(std::memory_order_acquire)) {
+      require(::GetTickCount64()<until,"Unpumped effect did not respect its own deadline"); ::Sleep(1);
+    }
+    worker.join();
+    denied(f.effect(command),"E_GUI_EFFECT_USED"); // Expired admission cannot be replayed even on owner.
+    require(f.ack(command,json::object(),false).at("ok")==true,"Unused failed ACK did not terminate");
+  };
+  f.connect([&](client& pipe) { const auto id=begin(pipe,"queue-expired");
+    const auto result=query_until(pipe,"gui.reference",id).at("result");
+    require(result.at("state")=="failed" && result.at("result").at("confirmed")==false &&
+        result.at("result").at("effectState")=="unused","Queue expiry fabricated effect/completion"); });
+  require(f.effects==0 && f.events==1,"Expired queue entry executed a native handler");
+}
+void queued_effect_proof_close() {
+  environment f(false,false); page_worker worker; bool close_in_proof=false;
+  f.bind([&] { require(::GetCurrentThreadId()==f.owner,"Queued proof ran on Bridge worker");
+    if(close_in_proof) { f.bridge.close_gui_commands();
+      require(f.bridge.poll_gui_commands()==gui_owner_result::pending,"Queued owner proof lost its borrow"); }
+    return true; });
+  f.start(); f.on_command=[&](const json& command) { close_in_proof=true;
+    worker.start([&,command] { denied(f.effect(command),"E_GUI_EFFECT_REJECTED"); }); };
+  f.connect([&](client& pipe) { const auto id=begin(pipe,"queued-proof-close");
+    const auto result=query_until(pipe,"gui.reference",id).at("result");
+    require(result.at("state")=="failed" && result.at("result").at("effectState")=="unused",
+        "Reentrant queued proof consumed an effect"); });
+  worker.join(); require(f.effects==0 && f.bridge.poll_gui_commands()==gui_owner_result::closed,
+      "Queued proof close failed to make coordinator inert");
+}
+void negative_ack_unused() {
+  environment f; f.start(); f.on_command=[&](const json& command) {
+    require(f.ack(command,json::object(),false).at("ok")==true,"Negative ACK required a fabricated effect result");
+  };
+  f.connect([&](client& pipe) { const auto id=begin(pipe,"negative-unused");
+    const auto result=query_until(pipe,"gui.reference",id).at("result");
+    require(result.at("state")=="failed" && result.at("result").at("confirmed")==false &&
+        result.at("result").at("effectState")=="unused","Negative ACK claimed success or consumed effect"); });
+  require(f.effects==0,"Negative ACK invoked application handler");
+  environment g; g.start(); g.on_command=[&](const json& command) {
+    g.on_effect=[&] { denied(g.ack(command,json::object(),false),"E_GUI_ACK_REJECTED"); };
+    require(g.effect(command).at("ok")==true,"Actual effect failed"); g.on_effect={};
+    require(g.ack(command,json::object(),false).at("ok")==true,"Negative ACK after actual effect was rejected");
+  };
+  g.connect([&](client& pipe) { const auto id=begin(pipe,"negative-consumed");
+    const auto result=query_until(pipe,"gui.reference",id).at("result");
+    require(result.at("state")=="failed" && result.at("result").at("confirmed")==false &&
+        result.at("result").at("effectState")=="committed","Negative ACK erased actual consumed effect"); });
+  require(g.effects==1,"Consumed negative ACK test did not exercise the real handler");
+  environment race(false,false); page_worker worker; bool reject_in_proof=false,acknowledged=false;
+  race.bind([&] {
+    require(::GetCurrentThreadId()==race.owner,"ACK-race proof was not owner");
+    if(reject_in_proof) {
+      reject_in_proof=false;
+      require(race.ack(race.commands.front(),json::object(),false).at("ok")==true,"Pre-consumption ACK race rejected");
+      acknowledged=true;
+    }
+    return true;
+  });
+  race.start(); race.on_command=[&](const json& command) {
+    reject_in_proof=true;
+    worker.start([&,command] {
+      const auto response=race.effect(command);
+      require(response.at("ok")==false && (response.at("error").at("code")=="E_GUI_EFFECT_USED" ||
+          response.at("error").at("code")=="E_GUI_EFFECT_REJECTED"),"ACK race reached native effect or changed denial");
+    });
+  };
+  race.connect([&](client& pipe) { const auto id=begin(pipe,"negative-owner-race");
+    const auto result=query_until(pipe,"gui.reference",id).at("result");
+    require(result.at("state")=="failed" && result.at("result").at("effectState")=="unused",
+        "Negative ACK raced into an actual effect"); });
+  worker.join(); require(acknowledged && race.effects==0,"Atomic unused ACK did not block the owner callout");
 }
 void actual_child() {
   environment f(true); f.start();
@@ -393,7 +506,9 @@ void external_peer() {
 struct case_entry { const char* name; void (*run)(); };
 const case_entry cases[]={{"registration",registration},{"scope-matrix",scope_matrix},{"one-use-effect",one_use_effect},
     {"actual-child",actual_child},{"owner-reentrancy",owner_reentrancy},{"revoke-prebind",revoke_prebind},
-    {"timeout-consumption",timeout_consumption},{"capacity-secret",capacity_secret},{"two-parent-pool",two_parent_pool},{"external-peer",external_peer}};
+    {"timeout-consumption",timeout_consumption},{"capacity-secret",capacity_secret},{"two-parent-pool",two_parent_pool},{"external-peer",external_peer},
+    {"foreign-owner-effect",foreign_owner_effect},{"queued-effect-expiry",queued_effect_expiry},
+    {"queued-effect-proof-close",queued_effect_proof_close},{"negative-ack-unused",negative_ack_unused}};
 } // namespace
 int main(int argc,char** argv) {
   try {

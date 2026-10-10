@@ -36,7 +36,8 @@ class gui_job_context final {
   std::chrono::steady_clock::time_point deadline;
   std::atomic<bool> cancelled{false};
   std::atomic<bool> running{false};
-  std::atomic<unsigned> consumption{0}; // 0 prepared, 1 consuming; never reset.
+  std::atomic<unsigned> consumption{0}; // 0 prepared, 1 consuming, 2 rejected before effect; never reset.
+  bool effect_enqueued{false}; // Protected by the coordinator mutex; one private admission.
   std::mutex mutex;
   std::condition_variable changed;
   bool dispatched{false}, acknowledged{false}, ack_ok{false}, effect_done{false};
@@ -50,6 +51,16 @@ struct gui_family_hooks final {
 struct gui_family_registration final {
   local_task_family_definition definition;
   std::shared_ptr<const gui_family_hooks> hooks;
+};
+
+struct gui_effect_request final {
+  bridge_request request;
+  std::shared_ptr<gui_job_context> context;
+  std::chrono::steady_clock::time_point deadline;
+  std::atomic<unsigned> phase{0}; // 0 queued, 1 owner started, 2 replied, 3 abandoned before start.
+  std::mutex mutex;
+  std::condition_variable changed;
+  std::string response;
 };
 
 class gui_commands_state final : public std::enable_shared_from_this<gui_commands_state> {
@@ -68,7 +79,9 @@ class gui_commands_state final : public std::enable_shared_from_this<gui_command
       const bridge_request&);
   task_outcome run(const std::shared_ptr<gui_job_context>&, const task_control&);
   std::string page_bind(const bridge_request&);
-  std::string effect(const bridge_request&);
+  std::string page_effect(const bridge_request&);
+  std::string effect(const bridge_request&, std::chrono::steady_clock::time_point request_deadline =
+      std::chrono::steady_clock::time_point::max());
   std::string ack(const bridge_request&);
   std::shared_ptr<gui_job_context> find(const bridge_request&, const std::string&, const std::string&);
   capability_registry& registry;
@@ -85,5 +98,6 @@ class gui_commands_state final : public std::enable_shared_from_this<gui_command
   std::uint64_t sequence{0};
   std::shared_ptr<const task_service::event_sink> sink;
   std::vector<std::weak_ptr<gui_job_context>> pending;
+  std::vector<std::shared_ptr<gui_effect_request>> effects;
 };
 } // namespace soui::runtime::detail

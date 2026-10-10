@@ -16,7 +16,7 @@ GUI event 沿现有 renderer session/generation 绑定的 sink。页面实际 So
 
 首片具体结果为 confirmed、guiResultJson、effectState、effectResultJson 四个固定字段。两项 Json 是经过解析/UTF-8/深度/schema/投影检查的 JSON 字符串，避免 task.query 再包一层时增加 schema 深度。SDK 对完整 result/query 和普通 transport 最终 envelope 分别检查；转义后的 result 超过30,720 bytes 就返回 failed、confirmed=false，若 effect 已消费则标 unknown、不给重放权。committed 表示实际 typed handler 成功返回或真实 child admission，仍不表示 child 完成。redacted error/异常/期限内未返回只能 unknown，不能证明没有副作用。
 
-GUI effect 仅实际 owner 执行；foreign 调用固定拒绝。bind/poll 与实际 effect callback 都有原生 borrow：重入 poll 返回 busy，关闭后尚有 borrow 返回 pending，全部 owner callout 结束才返回 closed。取消 hook 不锁 GUI/context；worker 至多每25ms复查 atomic/CV，覆盖无锁 notify 与 wait 的交错。projection 在 worker 上执行，禁止捕获 Host/窗口；业务存储仍必须活到 Bridge 实际 join。GUI event 只派发已实际进入 worker 的 context，未执行取消不会消费 effect。
+GUI effect 仅实际 owner 执行；已认证的 Bridge worker effect 请求进入最多16条的私有队列，由既有 owner poll 在原期限内执行；其他 foreign 调用仍拒绝。worker 不执行窗口或 Host callout，owner 不等待 worker；队列授权、取消和单次消费细节见 ADR0058。bind/poll 与实际 effect callback 都有原生 borrow：重入 poll 返回 busy，关闭后尚有 borrow 返回 pending，全部 owner callout 结束才返回 closed。取消 hook 不锁 GUI/context；worker 至多每25ms复查 atomic/CV，覆盖无锁 notify 与 wait 的交错。projection 在 worker 上执行，禁止捕获 Host/窗口；业务存储仍必须活到 Bridge 实际 join。GUI event 只派发已实际进入 worker 的 context，未执行取消不会消费 effect。
 
 dispatch 通过不续期 effect 权限。effect borrow 保留 actual current callback，并在消费前、紧邻实际 typed callout 前及返回后于锁外 owner 调用；每次前后复验原 document、closed、期限和真实 Agent/page scope。proof false、异常或重入关闭阻止尚未开始的 handler；已消费后任何失效保持 unknown，不回滚或重试。owner-reentrancy 实际回归覆盖 dispatch 后 proof false 的零副作用，以及 proof 内关闭返回 pending 后零副作用。
 
@@ -41,3 +41,5 @@ normal Soui::Sdk十case覆盖registration/scope-matrix/one-use-effect/actual-chi
 Root 已保留独立原始记录：SDK Web 57 项逻辑测试；GUI 原生十用例在两架构分别直接执行与 CTest 通过；包含 Endpoint、factory、GUI、Host、UIA 的正常 SDK25 合并回归在两架构各有 47 项直接执行及 47 项 CTest 通过。参考应用另有 51 项前端测试、三视图构建、两种 classic 转换与两个固定锁依赖审计通过，原生业务 4 项、Agent 8 项及 GUI 注册 2 项在两架构分别直接执行与 CTest 通过。这些是分开的有限验证，不合并成一次全 SDK 通过；参考应用的新私有观察源码尚待三应用实际编译与运行。
 
 configure/build 的 root 退出为 0，但辅助进程未自然闭合，supervisor 为 124；其原始失败记录和 generic=false 保留。安装消费者、实际 GUI 等价、IME/输入/物理呈现、刷新率、目标 OS、长期、完整交付和 releaseReady 仍 pending。只读观察或协议 fixture 不替代这些验收。
+
+后续验证：ADR0058 的 owner 交接修复已采用，新增四项回归使 GUI 原生集合增至14项；x64、Win32 各14项直接执行及14项 CTest 自然通过。当前 x64 React、Vue、现代后端的真实 Agent GUI 各完成9类、13次操作，表单有实际 committed 收据，子任务有实际 cancelled 查询终态，应用及其自有进程自然退出。现代后端另有真实浏览器 NORMAL、signaled、订阅撤除与 callback0 的退出观察。源码、构建及运行记录详见 ADR0058；编译辅助进程 0/124 原始失败、物理输入、性能、目标系统、长期和正式发布边界保持不变。
