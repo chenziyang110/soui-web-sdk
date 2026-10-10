@@ -1,0 +1,238 @@
+{
+  "schema": "independent-agent-prebind-red7-fs-review/1",
+  "entry": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-red-contract-root-9c7b1ab7-f80e-484a-852c-b98b7bf84672\\package.json",
+    "bytes": 133449,
+    "sha256": "7dee3b3368aacdd7bbc63c5c3be7908b9e9d2999bf9e5d5b6bef0035e37004ea"
+  },
+  "failedSummary": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\summary-failed.json",
+    "bytes": 13109,
+    "sha256": "16e14bdb0e8d01a92ccb03e4cff2146af0ba7a45c84c8fef1cdbba802e9d8133"
+  },
+  "pinChecks": 137,
+  "pinMismatch": 0,
+  "actualPreparedStages": [
+    {
+      "name": "actiongen-generate",
+      "pid": 18400,
+      "creationFileTime": "134360456086029728",
+      "root": 0,
+      "supervisor": 0,
+      "genericPassed": true,
+      "rawRows": 10,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\actiongen-generate.owned.jsonl",
+        "sha256": "4baa8a070e1603b4ce1fb3db144f866319986a8f224321b04117ae429edb2908"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 108,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "actiongen-check",
+      "pid": 34980,
+      "creationFileTime": "134360456097304320",
+      "root": 0,
+      "supervisor": 0,
+      "genericPassed": true,
+      "rawRows": 8,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\actiongen-check.owned.jsonl",
+        "sha256": "0c75fb6bbaa425adc16d2c954ad7d1ac759bf76507558de31ce44b37317749f9"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 118,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "configure",
+      "pid": 49324,
+      "creationFileTime": "134360456109347375",
+      "root": 0,
+      "supervisor": 0,
+      "genericPassed": true,
+      "rawRows": 350,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\configure.owned.jsonl",
+        "sha256": "4eb5d9370197c20ccde4750a0a9a30ca013379b2b734987ade719d99b1222af1"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 9848,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 47,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "build-reference-agent",
+      "pid": 79784,
+      "creationFileTime": "134360456216591059",
+      "root": 0,
+      "supervisor": 0,
+      "genericPassed": true,
+      "rawRows": 276,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\build-reference-agent.owned.jsonl",
+        "sha256": "3a057955fa778bc7acb5a8f5076c0caea9a9d11bff8fbe0573dc4b573ccb1a71"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 9363,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 43,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "registry",
+      "pid": 92360,
+      "creationFileTime": "134360456320840928",
+      "root": 0,
+      "supervisor": 0,
+      "genericPassed": true,
+      "rawRows": 10,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\registry.owned.jsonl",
+        "sha256": "1c8559ef56f8490510dcbcadeb62312205043dc6f89b9709695ea19958238cdb"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 114,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "case-selected-peer",
+      "pid": 100144,
+      "creationFileTime": "134360456335522288",
+      "root": 91,
+      "supervisor": 91,
+      "genericPassed": false,
+      "rawRows": 14,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\case-selected-peer.owned.jsonl",
+        "sha256": "59bb50cdf34bf89637f21fd075d4f8cebbf49379597ad0894503de230e6f20b8"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 2827,
+        "rootExited": true,
+        "rootExitCode": 91,
+        "activeBeforeCleanup": 2,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 3,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    }
+  ],
+  "failureStderr": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\case-selected-peer.stderr.raw",
+    "bytes": 573,
+    "sha256": "c432c8ae8e90b1494cdb70d90180be2c757e0d7dd3c2d74e400cf604e14de72f"
+  },
+  "observations": [
+    {
+      "case": "selected-peer",
+      "closed": true,
+      "creationFileTime": "134360456335522288",
+      "phase": "after-real-prebind-shutdown",
+      "pid": "100144",
+      "qualificationPassed": false,
+      "releaseReady": false,
+      "schema": "soui.reference-agent-prebind-red-observation/1",
+      "selectedAlive": true,
+      "selectedCreationFileTime": "134360456340900147",
+      "selectedPid": "67352",
+      "started": false
+    },
+    {
+      "schema": "soui.reference-agent-phase-diagnostic/1",
+      "case": "selected-peer",
+      "phase": "prebind-assert",
+      "pid": "100144",
+      "creationFileTime": "134360456335522288",
+      "selectedPid": "67352",
+      "selectedCreationFileTime": "134360456340900147"
+    }
+  ],
+  "selectedActualJobMember": {
+    "event": "owned-member",
+    "pid": 67352,
+    "creationFileTime": "134360456340900147",
+    "image": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\build\\Release\\soui_reference_agent_tests.exe"
+  },
+  "originalAgentV1": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-red2-source-candidate-214d38db-19b8-478c-a880-e9172b5a7680\\candidate\\demos\\reference-workbench\\app\\reference-agent.cpp",
+    "relative": "demos/reference-workbench/app/reference-agent.cpp",
+    "bytes": 11563,
+    "sha256": "04af3c82280ad173a4d5f5fbdb2f54337b097b23fca7f6340f61d702f8b75d9d"
+  },
+  "actualFixture": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-red-contract-source-5d3c5418-91e8-485b-9952-993fade6f7e8\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+    "relative": "demos/reference-workbench/tests/native-agent.cpp",
+    "bytes": 36443,
+    "sha256": "32df4fc4d87036c5fe1152388bc7e75de49d314d82c8da2e0d6beb203afc9406"
+  },
+  "contractRegressionAndConfigurePassedBeforeObservedShutdown": true,
+  "reason": "Exact pinned fixture calls all actual contract assertions and successful configure/bootstrap before the real foreign shutdown and observed prebind-assert",
+  "finitePrebindFailureReproduced": true,
+  "guiReadyVerified": false,
+  "allJobsClosed": true,
+  "naturalWholeRun": false,
+  "genericPassed": false,
+  "qualificationPassed": false,
+  "releaseReady": false,
+  "originalFailedRecordsModified": false,
+  "nativeExecutedByReviewer": false
+}

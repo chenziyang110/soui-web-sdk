@@ -3,7 +3,7 @@
 ## 环境
 
 - Windows x64 开发机、Visual Studio 2022 C++ 桌面开发组件、ATL、v143 工具集。
-- Windows SDK **10.0.19041.0**；脚本固定使用此版本。
+- MSVC **14.44.35207** 和 Windows SDK **10.0.19041.0**；Miniblink 脚本固定使用这两个版本。
 - CMake ≥ 3.24、npm、PowerShell 5.1 或以上。基础 SDK/兼容生成项目支持原有 Node.js 20.19 LTS 或 ≥ 22.12；0.4 整体构建包含现代模板，请使用 Node.js ≥ 22.12。
 - 完整重编译内核建议保留至少 40 GB 空间，双架构需要更多。运行 `tools/Doctor.ps1` 检查环境。
 
@@ -28,7 +28,9 @@ powershell.exe -File tools/Build-Dependencies.ps1 -Architecture x64 -Component A
 powershell.exe -File tools/Build-Dependencies.ps1 -Architecture x86 -Component All
 ```
 
-可用 `-Component Miniblink` 或 `SOUI` 单独构建。Miniblink 的依赖库、V8、Skia GPU 和内核全部由随包源码构建。SOUI 构建 utilities、soui、render-gdi、imgdecoder-gdip、soui-sys-resource 五个组件。
+可用 `-Component Miniblink` 或 `SOUI` 单独构建。Miniblink 默认从随包源码构建依赖库、V8、软件 Skia 和软件内核；显式传入 `-EnableExperimentalGpu` 才额外构建、链接实验 Skia GPU，它仍需单独验收。SOUI 构建 utilities、soui、render-gdi、imgdecoder-gdip、soui-sys-resource 五个组件。
+
+`-OutputRoot` 可指定新的输出目录，保留历史构建产物。All/SOUI 要求该目录位于本 SDK 的 `out/` 内，单独 Miniblink 可选外部目录；默认路径保持下表所列位置。内核资源输出位于中间目录，x86 工具链使用 Win32 工程平台。
 
 Miniblink 主内核含数千个编译单元，完整构建可能持续较长时间；默认脚本限制编译并行度以控制内存。详细进度写入对应组件日志，长时间没有终端输出不等于停止。首次成功后，保留 out 目录可复用增量结果。
 

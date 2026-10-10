@@ -1,0 +1,38 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>Actual startup fence regression</title></head><body>Local startup regression
+<script>
+(function () {
+  var readinessDeadline = Date.now() + 10000;
+  function begin(port) {
+  var first = JSON.parse(port(JSON.stringify({
+    requestId: 'startup-bootstrap', sessionId: '', origin: '', token: '',
+    method: 'bridge.bootstrap', params: {protocol: 'soui.bridge/1'}
+  })));
+  if (!first || first.ok !== true || !first.result) return;
+  var grant = first.result, sequence = 0;
+  function pulse() {
+    ++sequence;
+    var waiting = port(JSON.stringify({
+      requestId: 'startup-pulse-' + sequence, sessionId: grant.sessionId, origin: grant.origin, token: grant.token,
+      method: 'startup.pulse', params: {sequence: sequence}, timeoutMs: 5000
+    }));
+    if (!waiting || typeof waiting.then !== 'function') return;
+    waiting.then(function (raw) {
+      var result = JSON.parse(raw);
+      if (result && result.ok === true && result.result && result.result.observed === true)
+        setTimeout(pulse, 1);
+    });
+  }
+  pulse(); // New purposeful page events, never action retries or navigation replay.
+  }
+  function waitForPublicPort() {
+    if (window.SouiNative && typeof window.SouiNative.postMessage === 'function') {
+      begin(window.SouiNative.postMessage); // The sole bootstrap; no request is retried.
+      return;
+    }
+    // Readiness observation only. Normal SDK document-ready injection owns the port.
+    if (Date.now() < readinessDeadline) setTimeout(waitForPublicPort, 10);
+  }
+  waitForPublicPort();
+})();
+</script></body></html>

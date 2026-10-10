@@ -545,7 +545,7 @@ std::string demo_bridge_adapter::handle_json(std::string_view json_text, bool na
           method == "desktop.window.toggleMaximize" || method == "desktop.window.close") {
         params["userGesture"] = native_user_gesture;
       }
-      if (method != "task.start") {
+      if (method != "task.start" && method != "task.query") {
         params["sessionId"] = session_id;
         params["origin"] = origin;
         params["token"] = token;
@@ -595,7 +595,8 @@ soui::runtime::bridge_response demo_bridge_adapter::handle(const soui::runtime::
     return rejected;
   }
   auto bound_request = request;
-  if (request.method != "task.start") bound_request.params_json = augment_context(request);
+  if (request.method != "task.start" && request.method != "task.query")
+    bound_request.params_json = augment_context(request);
   auto response = transport_.handle(bound_request);
   if (response.ok && response.payload_json.find("\"error\":") != std::string::npos) {
     const std::regex code_pattern("\\\"error\\\":\\\"([^\\\"]+)\\\"");

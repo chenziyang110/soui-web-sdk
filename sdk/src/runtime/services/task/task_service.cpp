@@ -1,5 +1,6 @@
 #include <soui/runtime/services/task/task_service.h>
 #include <soui/runtime/core/task/task_store.h>
+#include "../gui/gui_commands_internal.h"
 
 #include "../../../../../third_party/include/json/json.hpp"
 
@@ -114,6 +115,7 @@ struct local_task_family::state {
   std::string start_capability, query_capability, cancel_capability;
   std::function<std::string(const task_outcome&)> project_result;
   std::shared_ptr<const task_service::handler> callback;
+  std::shared_ptr<const detail::gui_family_hooks> gui;
   std::shared_ptr<const action_contract> start_contract, query_contract, cancel_contract, result_contract;
 };
 
@@ -139,7 +141,12 @@ struct task_service::impl {
     task_invocation invocation;
     std::shared_ptr<const handler> callback;
     std::shared_ptr<const local_task_family> family;
+    std::shared_ptr<detail::gui_job_context> gui;
     std::atomic<bool> cancel_requested{false};
+    void cancel() noexcept {
+      cancel_requested.store(true, std::memory_order_release);
+      if (gui) gui->request_cancel();
+    }
   };
   struct result_cache {
     std::string json{"{}"};
@@ -201,7 +208,8 @@ struct task_service::impl {
 
   std::string admit_locked(const bridge_request& request, const std::string& kind,
       const std::string& operation_id, const std::string& input,
-      const std::shared_ptr<const local_task_family>& family = {}) {
+      const std::shared_ptr<const local_task_family>& family = {},
+      const std::shared_ptr<detail::gui_job_context>& gui = {}) {
     try {
     const auto live = [&] {
       return family ? local_authorized(family, request, family->data_->start_method, family->data_->start_capability)
@@ -223,7 +231,11 @@ struct task_service::impl {
       return error("E_OPERATION_CONFLICT", "operationId belongs to a different task scope or family.");
     }
     const auto callback = handlers.find(kind);
+    if (!family && std::any_of(families.begin(), families.end(), [&](const auto& entry) {
+      return entry.second->data_->kind == kind && entry.second->data_->gui;
+    })) return error("E_UNAUTHORIZED", "GUI tasks require their native local family.");
     if (callback == handlers.end()) return error("E_UNKNOWN_METHOD", "No native task handler is registered for kind.");
+    if (family && family->data_->gui && !gui) return error("E_BUSY", "GUI command capacity is unavailable.");
     if (inflight >= task_service::max_inflight) return error("E_BUSY", "The native task queue is full.");
     if (workers.empty()) {
       try {
@@ -237,6 +249,7 @@ struct task_service::impl {
     item->invocation = {request.session_id, request.origin, operation_id, input};
     item->callback = callback->second;
     item->family = family;
+    item->gui = gui;
     if (!live()) return error("E_UNAUTHORIZED", "Task authorization expired before admission.");
     auto prepared = tasks.prepare_start_scoped(operation_key, scope_key);
     const auto& snapshot = prepared->snapshot;
@@ -305,8 +318,23 @@ struct task_service::impl {
     if (!valid_name(operation_id) || (!request.operation_id.empty() && request.operation_id != operation_id))
       return error("E_INVALID_PARAMS", "A bounded consistent operationId is required.");
     const auto input = params["input"].dump();
+    std::shared_ptr<detail::gui_job_context> context;
+    if (family->data_->gui) {
+      {
+        std::lock_guard<std::mutex> lock(mutex);
+        if (!local_authorized(family, request, family->data_->start_method, family->data_->start_capability))
+          return error("E_UNAUTHORIZED", "GUI authorization is unavailable.");
+        // A duplicate never prepares another slot/context. Final admission below
+        // still rechecks scope and resolves a concurrent same-operation winner.
+        if (operations.count(request.authorization->scope_id() + '\x1f' + operation_id))
+          return admit_locked(request, family->data_->kind, operation_id, input, family);
+      }
+      try { context = family->data_->gui->prepare(request); }
+      catch (...) { return error("E_NATIVE_FAILURE", "GUI preparation failed."); }
+      if (!context) return error("E_BUSY", "GUI command is not ready or capacity is unavailable.");
+    }
     std::lock_guard<std::mutex> lock(mutex);
-    return admit_locked(request, family->data_->kind, operation_id, input, family);
+    return admit_locked(request, family->data_->kind, operation_id, input, family, context);
   }
 
   std::string query_local(const std::shared_ptr<const local_task_family>& family, const bridge_request& request) const {
@@ -344,7 +372,11 @@ struct task_service::impl {
       if (owner->second.result->projection_failed) result["projectionError"] = "E_RESULT_PROJECTION";
       else result["result"] = json::parse(owner->second.result->json);
     }
-    return result.dump();
+    const auto encoded=result.dump();
+    if (data.gui && (encoded.size()>bridge_transport::max_params_bytes ||
+        !data.query_contract->validates_output(encoded)))
+      return error("E_RESULT_PROJECTION", "GUI query exceeds its complete result contract.");
+    return encoded;
   }
 
   std::string cancel_local(const std::shared_ptr<const local_task_family>& family, const bridge_request& request) {
@@ -367,7 +399,7 @@ struct task_service::impl {
     if (terminal(snapshot->state)) return error("E_TASK_TERMINAL", "The task already has a terminal result.");
     if (!local_authorized(family, request, data.cancel_method, data.cancel_capability))
       return error("E_UNAUTHORIZED", "Local cancel authorization expired.");
-    if (owner->second.active) owner->second.active->cancel_requested.store(true, std::memory_order_release);
+    if (owner->second.active) owner->second.active->cancel();
     if (!tasks.request_cancel(task_id)) return error("E_TASK_TERMINAL", "The task completed before cancellation.");
     return json{{"taskId", task_id}, {"state", "cancel-pending"}, {"cancelRequested", true}}.dump();
   }
@@ -459,6 +491,7 @@ struct task_service::impl {
             !item->cancel_requested.load(std::memory_order_acquire) && tasks.mark_running(item->id);
       }
       if (!execute) {
+        if (item->gui) item->gui->request_cancel();
         finish(item, {result_kind::task_cancelled, "{}", "Native task cancelled before execution."});
         emit(item->id);
         continue;
@@ -473,6 +506,7 @@ struct task_service::impl {
             !item->cancel_requested.load(std::memory_order_acquire);
       }
       if (!execute) {
+        if (item->gui) item->gui->request_cancel();
         finish(item, {result_kind::task_cancelled, "{}", "Native task cancelled before execution."});
         emit(item->id);
         continue;
@@ -486,7 +520,8 @@ struct task_service::impl {
             return true;
           });
       task_outcome outcome;
-      try { outcome = (*item->callback)(item->invocation, control); }
+      try { outcome = item->gui ? item->family->data_->gui->run(item->gui, control)
+                               : (*item->callback)(item->invocation, control); }
       catch (...) { outcome = {result_kind::failure, "{}", "Native task handler failed."}; }
       finish(item, std::move(outcome));
       emit(item->id);
@@ -503,7 +538,7 @@ task_service::~task_service() {
     impl_->stopping = true;
     impl_->family_issuer.reset();
     for (auto& entry : impl_->owners) {
-      if (entry.second.active) entry.second.active->cancel_requested.store(true, std::memory_order_release);
+      if (entry.second.active) entry.second.active->cancel();
     }
   }
   impl_->ready.notify_all();
@@ -520,6 +555,12 @@ bool task_service::register_handler(std::string kind, handler callback) {
 
 std::shared_ptr<const local_task_family> task_service::register_local_family(
     capability_registry& registry, local_task_family_definition definition) {
+  return register_local_family_impl(registry, std::move(definition), {});
+}
+
+std::shared_ptr<const local_task_family> task_service::register_local_family_impl(
+    capability_registry& registry, local_task_family_definition definition,
+    std::shared_ptr<const detail::gui_family_hooks> gui) {
   try {
     if (!valid_name(definition.name) || definition.name == "task" || !valid_name(definition.kind) || !definition.project_result ||
         !valid_name(definition.name + ".start") || !valid_name(definition.name + ".query") ||
@@ -544,6 +585,7 @@ std::shared_ptr<const local_task_family> task_service::register_local_family(
         {"state", {{"type", "string"}, {"maxLength", 16}, {"enum", {"cancel-pending"}}}},
         {"cancelRequested", {{"type", "boolean"}}}}, {"taskId", "state", "cancelRequested"});
     auto data = std::make_shared<local_task_family::state>();
+    data->gui = std::move(gui);
     data->name = std::move(definition.name); data->kind = std::move(definition.kind);
     data->start_method = data->name + ".start"; data->query_method = data->name + ".query";
     data->cancel_method = data->name + ".cancel";
@@ -597,6 +639,41 @@ std::shared_ptr<const local_task_family> task_service::register_local_family(
   } catch (...) { return {}; }
 }
 
+bool task_service::register_gui_families(capability_registry& registry,
+    std::vector<detail::gui_family_registration> entries) {
+  // Called only by json_bridge's pre-bootstrap registration transaction. No
+  // endpoint/page can dispatch while the bridge's registration lock is held.
+  decltype(impl_->handlers) previous_handlers;
+  decltype(impl_->families) previous_families;
+  try {
+    {
+      std::lock_guard<std::mutex> lock(impl_->mutex);
+      if (impl_->stopping || !impl_->workers.empty() || !impl_->owners.empty()) return false;
+      previous_handlers = impl_->handlers;
+      previous_families = impl_->families;
+    }
+    auto rollback = [&] {
+      std::lock_guard<std::mutex> lock(impl_->mutex);
+      impl_->handlers.swap(previous_handlers);
+      impl_->families.swap(previous_families);
+    };
+    try {
+      capability_registry candidate = registry;
+      for (auto& entry : entries) {
+        if (!entry.hooks || !entry.hooks->prepare || !entry.hooks->run ||
+            !register_handler(entry.definition.kind, [](const task_invocation&, const task_control&) {
+              return task_outcome{result_kind::failure, "{}", "GUI tasks require native admission."};
+            }) || !register_local_family_impl(candidate, std::move(entry.definition), std::move(entry.hooks))) {
+          rollback(); return false;
+        }
+      }
+      static_assert(noexcept(registry.methods_.swap(candidate.methods_)), "GUI table commit must not throw");
+      registry.methods_.swap(candidate.methods_);
+      return true;
+    } catch (...) { rollback(); return false; }
+  } catch (...) { return false; }
+}
+
 std::string task_service::start_local(const std::shared_ptr<const local_task_family>& family,
                                      const bridge_request& request) {
   return impl_->start_local(family, request);
@@ -626,7 +703,7 @@ bool task_service::shutdown_scope(const std::shared_ptr<const authorization_scop
     if (entry.second.context.authorization != scope) continue;
     entry.second.revoked = true;
     if (entry.second.active) {
-      entry.second.active->cancel_requested.store(true, std::memory_order_release);
+      entry.second.active->cancel();
       (void)impl_->tasks.request_cancel(entry.first);
     }
   }
@@ -643,7 +720,7 @@ void task_service::shutdown_session(const std::string& session_id) {
     if (entry.second.context.session != session_id) continue;
     entry.second.revoked = true;
     if (entry.second.active) {
-      entry.second.active->cancel_requested.store(true, std::memory_order_release);
+      entry.second.active->cancel();
       (void)impl_->tasks.request_cancel(entry.first);
     }
   }
@@ -714,7 +791,7 @@ std::string task_service::cancel(const bridge_request& request) {
     const auto snapshot = impl_->tasks.query(task_id);
     if (!snapshot) return error("E_TASK_NOT_FOUND", "The native task is no longer retained.");
     if (terminal(snapshot->state)) return error("E_TASK_TERMINAL", "The task already has a terminal result.");
-    if (owner->second.active) owner->second.active->cancel_requested.store(true, std::memory_order_release);
+    if (owner->second.active) owner->second.active->cancel();
     if (!impl_->tasks.request_cancel(task_id)) return error("E_TASK_TERMINAL", "The task completed before cancellation.");
   }
   impl_->emit(task_id);

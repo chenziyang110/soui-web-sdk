@@ -28,6 +28,7 @@
 
 #include "config.h"
 #include "content/web_impl_win/npapi/PluginPackage.h"
+#include "wke/CursorDescriptorBroker.h"
 
 #include "third_party/WebKit/Source/platform/MIMETypeRegistry.h"
 #include "content/web_impl_win/npapi/PluginDatabase.h"
@@ -231,6 +232,8 @@ bool PluginPackage::fetchInfo()
 
 bool PluginPackage::load()
 {
+    if (!wke::brokerPluginEntry())
+        return false;
     if (m_isVirtual) {
         if (m_isLoaded)
             return true;

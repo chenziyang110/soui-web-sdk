@@ -1,0 +1,63 @@
+{
+  "name": "configure",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "-S",
+    "F:\\work\\sm05-broker\\out\\reference-agent-red-contract-root-9c7b1ab7-f80e-484a-852c-b98b7bf84672",
+    "-B",
+    "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\build",
+    "-G",
+    "Visual Studio 17 2022",
+    "-A",
+    "x64,version=10.0.19041.0",
+    "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+    "-T",
+    "v143,host=x64,version=14.44.35207",
+    "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+    "-DREFERENCE_ROOT:PATH=F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\source\\demos\\reference-workbench",
+    "-DREFERENCE_NODE:FILEPATH=C:\\nvm4w\\nodejs\\node.exe",
+    "-DSouiSdk_DIR:PATH=F:\\work\\sm05-broker\\out\\native-v10\\x64\\sdk-relocated\\lib\\cmake\\SouiSdk",
+    "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
+    "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF",
+    "-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir=F:\\work\\sm05-broker\\out\\reference-agent-red-contract-root-9c7b1ab7-f80e-484a-852c-b98b7bf84672\\empty-user-props\\"
+  ],
+  "cwd": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64",
+  "pid": 49324,
+  "creationFileTime": "134360456109347375",
+  "rootExitCode": 0,
+  "supervisorExitCode": 0,
+  "genericPassed": true,
+  "closureConfirmed": true,
+  "rawJob": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\configure.owned.jsonl",
+  "rawSha256": "4eb5d9370197c20ccde4750a0a9a30ca013379b2b734987ade719d99b1222af1",
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\configure.owned.jsonl.context.json",
+    "bytes": 1487,
+    "sha256": "a5962ebc396742174bdd37bcb401cb1ce19dba43b2c9ae354ba6c7b575d087a3"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\configure.stdout.raw",
+    "bytes": 842,
+    "sha256": "c97324afebed1776cd39ee9072d9d060348b59ec0cde5bf6743460a43fb55d43"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\configure.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "streamErrors": [],
+  "terminal": {
+    "event": "terminal",
+    "reason": "completed",
+    "elapsedMs": 9848,
+    "rootExited": true,
+    "rootExitCode": 0,
+    "activeBeforeCleanup": 0,
+    "terminatedOwnedJob": false,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 47,
+    "limitTerminatedProcesses": 0,
+    "passed": true
+  }
+}

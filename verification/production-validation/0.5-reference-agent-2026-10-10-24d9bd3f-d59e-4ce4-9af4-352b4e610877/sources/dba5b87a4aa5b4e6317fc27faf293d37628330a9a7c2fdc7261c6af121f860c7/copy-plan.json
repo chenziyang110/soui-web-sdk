@@ -1,0 +1,87 @@
+{
+  "schema": "reference-local-contract-source-overlay/1",
+  "variant": "green",
+  "baseSourcePlan": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-v2-source-candidate-a7d3403d-d91d-47d2-a7bf-1c2c952da49a\\copy-plan.json",
+    "bytes": 29825,
+    "sha256": "5da81ef81b06d5bf27f2fe922548f60731c22aa29b14e21e5e3cdcbbcf451954"
+  },
+  "baseRootEntry": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-green-map-root-5942426a-8aef-4fc7-aff7-605deae849ad\\package.json",
+    "bytes": 132363,
+    "sha256": "e52f89fdbb0ae69d3939b403400482cf736e229c2fe30801e14173f1858da585"
+  },
+  "unchangedPayloadReferences": 45,
+  "overlays": [
+    {
+      "relative": "demos/reference-workbench/app/reference-business.cpp",
+      "before": {
+        "path": "F:\\work\\sm05-broker\\out\\reference-agent-v2-source-candidate-a7d3403d-d91d-47d2-a7bf-1c2c952da49a\\candidate\\demos\\reference-workbench\\app\\reference-business.cpp",
+        "relative": "demos/reference-workbench/app/reference-business.cpp",
+        "bytes": 9060,
+        "sha256": "2767e3956e8cf1cef31785eddda66a8c129d7b6f31b60e3c5d76abd7ac903251"
+      },
+      "after": {
+        "path": "F:\\work\\sm05-broker\\out\\reference-agent-green-contract-source-3960a7ca-0eb0-490f-b69d-3b10e9ddd76d\\candidate\\demos\\reference-workbench\\app\\reference-business.cpp",
+        "bytes": 10271,
+        "sha256": "11d4acab170ecc6e06a31f63c3eafbe2516f08dcc0f9dacaa145f201d98a08be"
+      }
+    },
+    {
+      "relative": "demos/reference-workbench/tests/native-agent.cpp",
+      "before": {
+        "path": "F:\\work\\sm05-broker\\out\\reference-agent-v2-source-candidate-a7d3403d-d91d-47d2-a7bf-1c2c952da49a\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+        "relative": "demos/reference-workbench/tests/native-agent.cpp",
+        "bytes": 30838,
+        "sha256": "173f3c8f05369263948269e05b6d0af740cee8d7f92ea4ec034808a5f0c7c225"
+      },
+      "after": {
+        "path": "F:\\work\\sm05-broker\\out\\reference-agent-green-contract-source-3960a7ca-0eb0-490f-b69d-3b10e9ddd76d\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+        "bytes": 36287,
+        "sha256": "52a732d22685f6bbfa1f173aaf6dbdd61b6f771da041ae326860231e17b4e542"
+      }
+    },
+    {
+      "relative": "docs/adr/0052-reference-agent-composition.md",
+      "before": {
+        "path": "F:\\work\\sm05-broker\\out\\reference-agent-v2-source-candidate-a7d3403d-d91d-47d2-a7bf-1c2c952da49a\\candidate\\docs\\adr\\0052-reference-agent-composition.md",
+        "relative": "docs/adr/0052-reference-agent-composition.md",
+        "bytes": 14051,
+        "sha256": "b7e578255ccd76a7eaa5aaa390b05f5e5b848c7444e71156874905fd98e8bc2c"
+      },
+      "after": {
+        "path": "F:\\work\\sm05-broker\\out\\reference-agent-green-contract-source-3960a7ca-0eb0-490f-b69d-3b10e9ddd76d\\candidate\\docs\\adr\\0052-reference-agent-composition.md",
+        "bytes": 15460,
+        "sha256": "e1c62816502c3eb1d78fdf13b39720a3a42ef2744a39536f2ea00b29ebe82e8e"
+      }
+    }
+  ],
+  "agentImplementationUnchanged": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-v2-source-candidate-a7d3403d-d91d-47d2-a7bf-1c2c952da49a\\candidate\\demos\\reference-workbench\\app\\reference-agent.cpp",
+    "relative": "demos/reference-workbench/app/reference-agent.cpp",
+    "bytes": 12324,
+    "sha256": "0bcb1e95dffed7c0b827ed144f8ab9c10a349c753ffd4bcd41f6981102701412"
+  },
+  "cases": [
+    "disabled-default-deny",
+    "selected-peer",
+    "fixed-summary",
+    "cancel",
+    "invalid-form",
+    "revoked-document",
+    "close-pending",
+    "page-isolation"
+  ],
+  "globalSdkMaxDepth": 8,
+  "pageHandlerUnchanged": true,
+  "localResultShape": "five fixed integer group keys",
+  "delta": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-green-contract-source-3960a7ca-0eb0-490f-b69d-3b10e9ddd76d\\delta.json",
+    "bytes": 42192,
+    "sha256": "dc969d830c674812668d46ee7e26abd7b5d983af327a9437c73e5cfae299a0ab"
+  },
+  "authorEvaluated": false,
+  "nativeExecuted": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

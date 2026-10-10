@@ -1,0 +1,49 @@
+{
+  "name": "consumer-build",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "--build",
+    "F:\\work\\sm05-broker\\out\\native-v10\\x64\\consumer-build",
+    "--config",
+    "Release",
+    "--target",
+    "SouiEndpointConsumer",
+    "--",
+    "/m:1",
+    "/nr:false",
+    "/p:VcpkgEnabled=false",
+    "/p:VcpkgEnableManifest=false",
+    "/p:VCToolsVersion=14.44.35207",
+    "/p:WindowsTargetPlatformVersion=10.0.19041.0",
+    "/p:ImportDirectoryBuildProps=false",
+    "/p:ImportDirectoryBuildTargets=false",
+    "/p:UseEnv=false",
+    "/p:UserRootDir=F:\\work\\sm05-broker\\out\\full-native-suite-v10-root-5ca5450c-f113-4ae5-8df0-7cf30c649100\\empty-user-props\\",
+    "/bl:F:\\work\\sm05-broker\\out\\native-v10\\x64\\consumer.binlog"
+  ],
+  "cwd": "F:\\work\\sm05-broker\\out\\native-v10\\x64",
+  "pid": 21664,
+  "creationFileTime": "134360334821362463",
+  "rootExitCode": 0,
+  "supervisorExitCode": 0,
+  "genericPassed": true,
+  "closureConfirmed": true,
+  "rawJob": "F:\\work\\sm05-broker\\out\\native-v10\\x64\\consumer-build.owned.jsonl",
+  "rawSha256": "10b8d4930dc5cca0c1d9e8c941dfd12559d2379761fce3602dd3491596983e0f",
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v10\\x64\\consumer-build.owned.jsonl.context.json",
+    "bytes": 1059,
+    "sha256": "90057225ca92c3a256cea1fd8e2ff66d161b98383d7c0545a36cdcadd3030103"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v10\\x64\\consumer-build.stdout.raw",
+    "bytes": 306,
+    "sha256": "39c9a98cd0f58df6b5266b60c7a3807ae048039cddbdf89bc2e98123665a5b2a"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v10\\x64\\consumer-build.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "streamErrors": []
+}

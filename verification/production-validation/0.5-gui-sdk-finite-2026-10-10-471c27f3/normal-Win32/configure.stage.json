@@ -1,0 +1,63 @@
+{
+  "name": "configure",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "-S",
+    "F:\\work\\sm05-broker\\out\\n25-b7920345",
+    "-B",
+    "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build",
+    "-G",
+    "Visual Studio 17 2022",
+    "-A",
+    "Win32,version=10.0.19041.0",
+    "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+    "-T",
+    "v143,host=x64,version=14.44.35207",
+    "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+    "-DSOUI_SOURCE_ROOT:PATH=F:\\work\\sm05-broker\\out\\n25-b7920345\\source",
+    "-DSOUI_HOST_STARTUP_KERNEL:FILEPATH=F:\\work\\sm05-broker\\out\\relink-x86-v5-a6e98a49\\image\\node.dll",
+    "-DSOUI_HOST_STARTUP_KERNEL_SHA256:STRING=de9178744bcf6b187312726d13e1ae5ebd9389ebad2589e70f4789681458afc1",
+    "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
+    "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF",
+    "-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir=F:\\work\\sm05-broker\\out\\n25-b7920345\\empty-user-props\\"
+  ],
+  "cwd": "F:/work/sm05-broker/out/reg25/Win32",
+  "pid": 55360,
+  "creationFileTime": "134360566526675899",
+  "rootExitCode": 0,
+  "supervisorExitCode": 124,
+  "genericPassed": false,
+  "closureConfirmed": true,
+  "rawJob": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\configure.owned.jsonl",
+  "rawSha256": "baa02ec3d21aed3d406efb30ded66257fd82a35a75569cfdf508bed9bd96b8ed",
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\configure.owned.jsonl.context.json",
+    "bytes": 1387,
+    "sha256": "3e46db1492eddf1e9158435b65386d49708469d388bc92e011b1abee41efb630"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\configure.stdout.raw",
+    "bytes": 838,
+    "sha256": "490f6250bf1878f8037de13bee87853f0f16e5bc9525d18a0b3088ef74f932a8"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\configure.stderr.raw",
+    "bytes": 158,
+    "sha256": "182a0c14ae941387c0f1d9d62dbc02f4cbd1c31ea51a33f1902c3d400ed78422"
+  },
+  "streamErrors": [],
+  "terminal": {
+    "event": "terminal",
+    "reason": "owned-descendants-remain",
+    "elapsedMs": 11269,
+    "rootExited": true,
+    "rootExitCode": 0,
+    "activeBeforeCleanup": 1,
+    "terminatedOwnedJob": true,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 48,
+    "limitTerminatedProcesses": 0,
+    "passed": false
+  }
+}

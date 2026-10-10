@@ -1,0 +1,815 @@
+{
+  "schema": "soui.controlled-cursor-diagnostic/v1",
+  "targetVersion": "0.5.0",
+  "preparedUtc": "2026-10-09T03:20:04.936Z",
+  "sourceBaseCommit": "75c21b6020b8afd1c2b95fed644fd92fccb595fd",
+  "testedChangesWereUncommitted": true,
+  "versionIdentityAssignedByThisRecord": false,
+  "sourceBaseCommitAssertedByRoot": true,
+  "sourceContentIdentifiedByFrozenHashes": true,
+  "observationOnly": true,
+  "actualCompilerInputBindingComplete": false,
+  "compilerTailAcceptance": false,
+  "validationPassed": false,
+  "qualificationPassed": false,
+  "releaseReady": false,
+  "fullKernelQualified": false,
+  "hostRuntimeExercised": false,
+  "guiQualified": false,
+  "targetSystemCompatibilityQualified": false,
+  "binaryBodiesIncluded": false,
+  "toolBodiesIncluded": false,
+  "rawPrivateProofBodiesIncluded": false,
+  "postHocHashesDoNotCompletePrelaunchBindings": true,
+  "scope": "Allocation-fault endpoint ownership, real Win32 activation lock regression and actual after-source compilation",
+  "independentProofSha256": "ffd838779699c838289eb684e411c00408223996003dc8d7c44366ba67f4d5f1",
+  "sourceApplicationProofSha256": "735d21d840111a6f673ef21604d8cae5bee39d65b9831c979e8990329ceadadd",
+  "historicalTddPackageSha256": "f1b96af2334bf6c9d08f2e7f62e9ea13d8b1b9fe2e3ca61259fe32090ef476e0",
+  "sourceBindings": [
+    {
+      "source": "third_party/sources/miniblink/wke/wke.cpp",
+      "beforeSha256": "0926c77f8cfbf24d0a1f37654eb55adf5c38f1c6dfe48bdd0140713b54834b53",
+      "afterSha256": "4f27467c98bfa70ec9f3604d7bffe3cf881af6524c880d916ffdc8eb2f9e06db"
+    },
+    {
+      "source": "third_party/sources/miniblink/net/ActivatingObjCheck.cpp",
+      "beforeSha256": "c1df9ca1a998f7ccc0ae4a424f96aaf059b1ebb7db8f1af9820b1b3b247578de",
+      "afterSha256": "e2f04bfb9fb0e8ddcf9a7a8bbd9ca5598ce21dccd5f035863f8630702a64842b"
+    }
+  ],
+  "excludes": [
+    "Real Blink view creation",
+    "Full-engine concurrent endpoint use",
+    "Constructor rollback",
+    "Native resource drain",
+    "PartitionAlloc failure recovery",
+    "Public portable tests",
+    "GUI and release"
+  ],
+  "tdd": [
+    {
+      "architecture": "x64",
+      "summarySha256": "bea41b313f122b3209c09321282afb6f1a097128d9ca0fc30d5f4e0dadc836ce",
+      "candidateDirectPassed": 9,
+      "oldCodeActualFailed": 6,
+      "oldCodePositiveControlsPassed": 3,
+      "candidateCTestPassed": 9,
+      "oldFailuresRetainNonzeroGenericFalse": true,
+      "stages": [
+        {
+          "name": "configure",
+          "pid": 100780,
+          "creationFileTime": "134359859317892047",
+          "rootExitCode": 0,
+          "supervisorExitCode": 124,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "dfbd4df2de3f482ff66f06d5e0cdece377bf69ecb39065811422f84d8e61872c"
+        },
+        {
+          "name": "build",
+          "pid": 41424,
+          "creationFileTime": "134359859404412911",
+          "rootExitCode": 0,
+          "supervisorExitCode": 124,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "a1380cfc3939802221cacbc26c0c4ef020da50f81d06a194197534e5eabe3404"
+        },
+        {
+          "name": "inspect-endpoint-candidate",
+          "pid": 66196,
+          "creationFileTime": "134359859498977412",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "987e8196085437a867ccca8f478f18cf9478ce03925c28e1660d152f85e0464d"
+        },
+        {
+          "name": "inspect-activation-candidate",
+          "pid": 88024,
+          "creationFileTime": "134359859502853511",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "ecee3b39e0ec2c877485b5ccf1f684370cc3981ac2e5bb1315a23a6d06387e6b"
+        },
+        {
+          "name": "inspect-endpoint-baseline",
+          "pid": 102284,
+          "creationFileTime": "134359859506488186",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "31c03226461e6da716c4ea7c2bd0cd46263deb7bb982c14da5915936eeaf1270"
+        },
+        {
+          "name": "inspect-activation-baseline",
+          "pid": 77104,
+          "creationFileTime": "134359859510111692",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "9a5582c1e55a8f73758a4e0c5e59e221f84f10e77a19542661b4e998a94b5e7b"
+        },
+        {
+          "name": "candidate-case-endpoint-empty-registry",
+          "pid": 106736,
+          "creationFileTime": "134359859514273801",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "040a1d3e774b7ad4af9d31edf50b71fb3f812240cda967a6d9e0d771ff111185"
+        },
+        {
+          "name": "candidate-case-endpoint-second-vector-growth-fault",
+          "pid": 2792,
+          "creationFileTime": "134359859518391884",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "cde0147f357e5f66b3ba2db9eff872edd47202680169508fdc294d0f075db0b5"
+        },
+        {
+          "name": "candidate-case-endpoint-all-allocation-forbidden",
+          "pid": 107208,
+          "creationFileTime": "134359859521596851",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "c9b3c5ae9e584caac20c1472663d40749eda42f572aa1cbf39ed4c88417aacef"
+        },
+        {
+          "name": "candidate-case-endpoint-create-allocation-failure",
+          "pid": 109264,
+          "creationFileTime": "134359859525522945",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "59c38b21c0b858fdd2ba27e1058e2ea1f2217121ead0aea76ffeee7f9a9e3e72"
+        },
+        {
+          "name": "candidate-case-endpoint-create-registry-growth-failure",
+          "pid": 100612,
+          "creationFileTime": "134359859528990362",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "3568ab0bd3dbe7e9acc72abfada4a4046731421e3b440f5ecb1257f921e74868"
+        },
+        {
+          "name": "candidate-case-endpoint-create-success",
+          "pid": 54404,
+          "creationFileTime": "134359859532356570",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "43cc921c9f4ba3b1f256c0e66daa7a8aff643f06d0a2c6ad8a253936d1d1e50e"
+        },
+        {
+          "name": "candidate-case-endpoint-create-invalid",
+          "pid": 103904,
+          "creationFileTime": "134359859536002957",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "55455210d7cc698cddfdbfe19e4797ea1273da879cffc3c3fd4ef05ccc54205e"
+        },
+        {
+          "name": "candidate-case-activation-insert-failure-lock-release",
+          "pid": 55572,
+          "creationFileTime": "134359859539636700",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "9dd89e7931d4923e2abfc5558ebbfb380014c3234db07a204fbd99d902640d8b"
+        },
+        {
+          "name": "candidate-case-activation-snapshot-failure-lock-release",
+          "pid": 21932,
+          "creationFileTime": "134359859543195886",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "7ad7a37259d505618f2b565570e4f8c9be413dcdc338a3c6249785b94595c30a"
+        },
+        {
+          "name": "baseline-counterexample-endpoint-second-vector-growth-fault",
+          "pid": 82456,
+          "creationFileTime": "134359859546789886",
+          "rootExitCode": 1,
+          "supervisorExitCode": 1,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "cd4c1e6975cd70029dafce84a04a62e777b0ed12c64224fa256eb60e320c3c4d"
+        },
+        {
+          "name": "baseline-counterexample-endpoint-all-allocation-forbidden",
+          "pid": 73772,
+          "creationFileTime": "134359859549996155",
+          "rootExitCode": 1,
+          "supervisorExitCode": 1,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "44ee4e4de4ad0aa6392a5f0586be03ee933b074d4b4e910ee24226afe52f3c3e"
+        },
+        {
+          "name": "baseline-counterexample-endpoint-create-allocation-failure",
+          "pid": 30136,
+          "creationFileTime": "134359859553057153",
+          "rootExitCode": 1,
+          "supervisorExitCode": 1,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "2580df142fd097bfc3475566607ddfe9e821fd0c4a602706c2abea298d278852"
+        },
+        {
+          "name": "baseline-counterexample-endpoint-create-registry-growth-failure",
+          "pid": 54344,
+          "creationFileTime": "134359859555949716",
+          "rootExitCode": 1,
+          "supervisorExitCode": 1,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "38557a8341410d60297fdf94b5d4b431bc1ed140f83eadc31c0ea805c071153d"
+        },
+        {
+          "name": "baseline-counterexample-activation-insert-failure-lock-release",
+          "pid": 66408,
+          "creationFileTime": "134359859559977640",
+          "rootExitCode": 1,
+          "supervisorExitCode": 1,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "1d028185789c4d7a1991371ed48b5ecac5bc74da3b94f322a395606ecc3bc75c"
+        },
+        {
+          "name": "baseline-counterexample-activation-snapshot-failure-lock-release",
+          "pid": 2360,
+          "creationFileTime": "134359859583987895",
+          "rootExitCode": 1,
+          "supervisorExitCode": 1,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "e2e44161a30b1bddab9056e4da1eec1d46dd32f15270649ffd8e0a4608a549d7"
+        },
+        {
+          "name": "baseline-positive-endpoint-empty-registry",
+          "pid": 41744,
+          "creationFileTime": "134359859607016038",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "7d8efcb68da5ea65fe9b18124ffb9531819762ffeb29032bebd41da669390034"
+        },
+        {
+          "name": "baseline-positive-endpoint-create-success",
+          "pid": 105692,
+          "creationFileTime": "134359859610069451",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "7902fb749f01db3ddd1553aaa9ede3af9fb4f8401ec7687c4ac64c11f6217f06"
+        },
+        {
+          "name": "baseline-positive-endpoint-create-invalid",
+          "pid": 67444,
+          "creationFileTime": "134359859613135661",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "877295eac48a38bc6db2a5f31d4dbff58c4bd15148d0e6e888de7e8f63b91f40"
+        },
+        {
+          "name": "ctest-definitions",
+          "pid": 41848,
+          "creationFileTime": "134359859616296419",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "201ab0d4b9d1fd76ac7d8434399a0649a1bef8d7d2f4be69d5b80f345f9c93db"
+        },
+        {
+          "name": "ctest",
+          "pid": 77424,
+          "creationFileTime": "134359859619941473",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "be6eed7c21f563b95f3b1f8bc87f9881e6f004cb248aa81c77a20a59de367ca2"
+        }
+      ],
+      "endpointLeafViewAndCompositorDoubles": true,
+      "actualActivationCppCompiled": true,
+      "actualWin32ContenderThreadUsed": true
+    },
+    {
+      "architecture": "Win32",
+      "summarySha256": "4394a622b07458b82db63097edc19c838d5f6dec0d2a0f10bdd71183a2b64831",
+      "candidateDirectPassed": 9,
+      "oldCodeActualFailed": 6,
+      "oldCodePositiveControlsPassed": 3,
+      "candidateCTestPassed": 9,
+      "oldFailuresRetainNonzeroGenericFalse": true,
+      "stages": [
+        {
+          "name": "configure",
+          "pid": 13656,
+          "creationFileTime": "134359859950961782",
+          "rootExitCode": 0,
+          "supervisorExitCode": 124,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "47038f444482a8d11002b0b7787170fcc38352d4bc94cefc8ebb914fe991eca6"
+        },
+        {
+          "name": "build",
+          "pid": 58576,
+          "creationFileTime": "134359860031013746",
+          "rootExitCode": 0,
+          "supervisorExitCode": 124,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "ddc794d8c69374dc74bf6e4d0c7efd258c04f331de28019a470b280c855400ff"
+        },
+        {
+          "name": "inspect-endpoint-candidate",
+          "pid": 112688,
+          "creationFileTime": "134359860126853187",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "e9f59c9e1d04196aeb390f4abdec9f60b11aeb6731938a9ddce36e3374658df3"
+        },
+        {
+          "name": "inspect-activation-candidate",
+          "pid": 68076,
+          "creationFileTime": "134359860130809697",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "ec2be335508a1b8a662132fe74f4341ef741c3b8b68fc066622968167bbba4ce"
+        },
+        {
+          "name": "inspect-endpoint-baseline",
+          "pid": 49732,
+          "creationFileTime": "134359860134531246",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "73fd0a17b05c0dfe8d987f169e1dbb4354e7e46dd2ef780a6fdafc52f164cbfd"
+        },
+        {
+          "name": "inspect-activation-baseline",
+          "pid": 21764,
+          "creationFileTime": "134359860138425153",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "2836cda5811966627a7237253759302a36c0c24efa0a3177320659742d5d0978"
+        },
+        {
+          "name": "candidate-case-endpoint-empty-registry",
+          "pid": 90612,
+          "creationFileTime": "134359860143585442",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "825ab34cbf37f60bef0153ef32c9e35aa50f5ad0fb26a94c741fcc46c2492430"
+        },
+        {
+          "name": "candidate-case-endpoint-second-vector-growth-fault",
+          "pid": 102264,
+          "creationFileTime": "134359860147799529",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "80b212e436fec2eb5090d553aabfb2060b8e9f964eb2308479874e9a2b21d195"
+        },
+        {
+          "name": "candidate-case-endpoint-all-allocation-forbidden",
+          "pid": 95748,
+          "creationFileTime": "134359860151130840",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "7ecd74033014ede44749235436c85f3faa9ebbac4adea48e0883471ebbeac5fd"
+        },
+        {
+          "name": "candidate-case-endpoint-create-allocation-failure",
+          "pid": 100088,
+          "creationFileTime": "134359860154463490",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "49178f34088be0d8d37b6800ec151fda1bba584b1d7396874aa326f14f235c05"
+        },
+        {
+          "name": "candidate-case-endpoint-create-registry-growth-failure",
+          "pid": 94120,
+          "creationFileTime": "134359860158612762",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "0b9ba7403f455332a7a3bd2d28b247a4384e1cf7f5a0cf2490657f82c90ff451"
+        },
+        {
+          "name": "candidate-case-endpoint-create-success",
+          "pid": 101592,
+          "creationFileTime": "134359860161910133",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "c3b0274b3e71f1104c89e2427b31c31c3654b3763b1c07e71a65d1dc52b73337"
+        },
+        {
+          "name": "candidate-case-endpoint-create-invalid",
+          "pid": 50576,
+          "creationFileTime": "134359860165055715",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "41c1ae2d2516db6703a0785301fd024d77b510899adbfb4ff7ea9b22ba38807c"
+        },
+        {
+          "name": "candidate-case-activation-insert-failure-lock-release",
+          "pid": 64544,
+          "creationFileTime": "134359860169562520",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "9e9d3cecd89a9bbb2f0ee331e763cedeef751336b6f31ef1b14535b727ab1860"
+        },
+        {
+          "name": "candidate-case-activation-snapshot-failure-lock-release",
+          "pid": 51300,
+          "creationFileTime": "134359860174290899",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "516b9e444279ca416e119d1aca7a1cadd8668f09efe169586da4bf188efca8b4"
+        },
+        {
+          "name": "baseline-counterexample-endpoint-second-vector-growth-fault",
+          "pid": 72284,
+          "creationFileTime": "134359860179203327",
+          "rootExitCode": 1,
+          "supervisorExitCode": 1,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "4ed0442ba81faf0b956f6aa095f696bdc979aa110381da323fd90a3928d21ea4"
+        },
+        {
+          "name": "baseline-counterexample-endpoint-all-allocation-forbidden",
+          "pid": 43368,
+          "creationFileTime": "134359860183626541",
+          "rootExitCode": 1,
+          "supervisorExitCode": 1,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "e9f9e9e8baa6638493c1b250707ce025e2a95a84f3c4895207bb8fb550f02ef5"
+        },
+        {
+          "name": "baseline-counterexample-endpoint-create-allocation-failure",
+          "pid": 4116,
+          "creationFileTime": "134359860187433035",
+          "rootExitCode": 1,
+          "supervisorExitCode": 1,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "4275f4b48e91e7898b9fe6cb9f4d0db98ec8800eab1a7bb741afd55126afb5ec"
+        },
+        {
+          "name": "baseline-counterexample-endpoint-create-registry-growth-failure",
+          "pid": 56248,
+          "creationFileTime": "134359860190707961",
+          "rootExitCode": 1,
+          "supervisorExitCode": 1,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "b7b99fd0f917741b09c3d0184c32f3b652d3e14604c73efc0cd487c94fa07421"
+        },
+        {
+          "name": "baseline-counterexample-activation-insert-failure-lock-release",
+          "pid": 79436,
+          "creationFileTime": "134359860194369752",
+          "rootExitCode": 1,
+          "supervisorExitCode": 1,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "fbc0cab1872a87e8dda265e76851605717f630a3a5d2e604088edb54881c7289"
+        },
+        {
+          "name": "baseline-counterexample-activation-snapshot-failure-lock-release",
+          "pid": 107132,
+          "creationFileTime": "134359860218255324",
+          "rootExitCode": 1,
+          "supervisorExitCode": 1,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "fdadfef883198621cf407f46568dd0bdf020f1c12558a37e7bff676f52ff5f63"
+        },
+        {
+          "name": "baseline-positive-endpoint-empty-registry",
+          "pid": 91176,
+          "creationFileTime": "134359860241334341",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "1cc23a179e5c2a4d608f9fc8c5cf25eacebd4e3610d08275f21a20a193c3715e"
+        },
+        {
+          "name": "baseline-positive-endpoint-create-success",
+          "pid": 9948,
+          "creationFileTime": "134359860244560814",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "762acca0bbc5acaa390f397446cb0fe1c620a8e7419d47bc94f02bc7bf607552"
+        },
+        {
+          "name": "baseline-positive-endpoint-create-invalid",
+          "pid": 92656,
+          "creationFileTime": "134359860248463758",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "a027bdd1ab1674f607dca7188549f58d53ad1055eaa5b1c0832d2fcd46311a92"
+        },
+        {
+          "name": "ctest-definitions",
+          "pid": 89032,
+          "creationFileTime": "134359860251944255",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "bf8ea8ff160dfe97dccc52d4f57d8e193e946327de43c56b7325bf8d586419a1"
+        },
+        {
+          "name": "ctest",
+          "pid": 110736,
+          "creationFileTime": "134359860256014065",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "genericPassed": true,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": false,
+          "rawReportSha256": "20d67dbc6868a8631a7909b3046c183685019b88ef8cf6a425551e11227277a8"
+        }
+      ],
+      "endpointLeafViewAndCompositorDoubles": true,
+      "actualActivationCppCompiled": true,
+      "actualWin32ContenderThreadUsed": true
+    }
+  ],
+  "actualAfterTranslationUnits": [
+    {
+      "architecture": "x64",
+      "summarySha256": "efb6ff5178cf13b8502d5dd31e95e701d3a622a61e344194e96ab324a18483a8",
+      "actualCppCompiled": 2,
+      "jobs": [
+        {
+          "name": "compile-wke",
+          "pid": 87384,
+          "creationFileTime": "134359877119820412",
+          "rootExitCode": 0,
+          "supervisorExitCode": 124,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "636fbb3253ef2d4017f16957ccccfae18b361b33c7f07dc74300f57c67a72b59"
+        },
+        {
+          "name": "compile-ActivatingObjCheck",
+          "pid": 25188,
+          "creationFileTime": "134359877207786570",
+          "rootExitCode": 0,
+          "supervisorExitCode": 124,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "11f429bb18b57bd0d6601656a037da8e2fdd73c405d5003efbc938f5bfe23488"
+        }
+      ],
+      "artifacts": [
+        {
+          "source": "third_party/sources/miniblink/wke/wke.cpp",
+          "sourceSha256": "4f27467c98bfa70ec9f3604d7bffe3cf881af6524c880d916ffdc8eb2f9e06db",
+          "object": {
+            "file": "wke.obj",
+            "bytes": 8928389,
+            "sha256": "ea1589e3ea54069f2d3e8a1b16298f1d6a47b307f331a7dc054378a1c2c84d38"
+          },
+          "pch": {
+            "file": "miniblink.pch",
+            "bytes": 5898240,
+            "sha256": "6c651a14916d343ed6b1a86550534a8d03cc8a340a7dc74a71fa924b0e064ef0"
+          },
+          "configObject": {
+            "file": "config.obj",
+            "bytes": 32360,
+            "sha256": "aba50325e8558a7e56529eee2e778f9c7613b225c2f30733190d2df23e7350cf"
+          }
+        },
+        {
+          "source": "third_party/sources/miniblink/net/ActivatingObjCheck.cpp",
+          "sourceSha256": "e2f04bfb9fb0e8ddcf9a7a8bbd9ca5598ce21dccd5f035863f8630702a64842b",
+          "object": {
+            "file": "ActivatingObjCheck.obj",
+            "bytes": 418055,
+            "sha256": "24ad01e5b9824c25e2cba0ce411c24b54658f8643a068dfd5a542ba4dbceb0ac"
+          },
+          "pch": {
+            "file": "miniblink.pch",
+            "bytes": 5898240,
+            "sha256": "6c651a14916d343ed6b1a86550534a8d03cc8a340a7dc74a71fa924b0e064ef0"
+          },
+          "configObject": {
+            "file": "config.obj",
+            "bytes": 32360,
+            "sha256": "aba50325e8558a7e56529eee2e778f9c7613b225c2f30733190d2df23e7350cf"
+          }
+        }
+      ]
+    },
+    {
+      "architecture": "Win32",
+      "summarySha256": "ce4d7dfbfde4091adc98060df7084cf52e0d43552a8600f870eb9ad5949d6211",
+      "actualCppCompiled": 2,
+      "jobs": [
+        {
+          "name": "compile-wke",
+          "pid": 105512,
+          "creationFileTime": "134359877398065290",
+          "rootExitCode": 0,
+          "supervisorExitCode": 124,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "87798ac13cd184c60e947d1c013f04f892063822f1d51723af4185973d9b8725"
+        },
+        {
+          "name": "compile-ActivatingObjCheck",
+          "pid": 16276,
+          "creationFileTime": "134359877483914145",
+          "rootExitCode": 0,
+          "supervisorExitCode": 124,
+          "genericPassed": false,
+          "closureConfirmed": true,
+          "terminatedOwnedJob": true,
+          "rawReportSha256": "0d7c7f55898951408840edd33999fcadbd0e64f93af7bd81850e18b7f7c30ad0"
+        }
+      ],
+      "artifacts": [
+        {
+          "source": "third_party/sources/miniblink/wke/wke.cpp",
+          "sourceSha256": "4f27467c98bfa70ec9f3604d7bffe3cf881af6524c880d916ffdc8eb2f9e06db",
+          "object": {
+            "file": "wke.obj",
+            "bytes": 1368582,
+            "sha256": "6c7f4e10881a9fba5e29c34fb387cf5250349226e9e5a69f6db9018a1406d965"
+          },
+          "pch": {
+            "file": "miniblink.pch",
+            "bytes": 5898240,
+            "sha256": "10823ef38fdaee134216e3f1f99be13efb0c2ffbec0f16b0e435f6745e784a5d"
+          },
+          "configObject": {
+            "file": "config.obj",
+            "bytes": 16165,
+            "sha256": "81eecd95dac7daa6ca411ceff600155d754885a412e55e4e6f406d694d9f016c"
+          }
+        },
+        {
+          "source": "third_party/sources/miniblink/net/ActivatingObjCheck.cpp",
+          "sourceSha256": "e2f04bfb9fb0e8ddcf9a7a8bbd9ca5598ce21dccd5f035863f8630702a64842b",
+          "object": {
+            "file": "ActivatingObjCheck.obj",
+            "bytes": 135012,
+            "sha256": "19f1e5a7fdb32a0d3f1d427371ab6bd56b032baac828fc6666828227ee7533e6"
+          },
+          "pch": {
+            "file": "miniblink.pch",
+            "bytes": 5898240,
+            "sha256": "10823ef38fdaee134216e3f1f99be13efb0c2ffbec0f16b0e435f6745e784a5d"
+          },
+          "configObject": {
+            "file": "config.obj",
+            "bytes": 16165,
+            "sha256": "81eecd95dac7daa6ca411ceff600155d754885a412e55e4e6f406d694d9f016c"
+          }
+        }
+      ]
+    }
+  ],
+  "originalCompilerValidatorFailure": {
+    "summarySha256": "2a98e62fb19485050d4b54579afba3d5f047dc0dc4cdc3db19b8a4e06c89c5e5",
+    "job": {
+      "name": "compile-wke",
+      "pid": 4472,
+      "creationFileTime": "134359875170527532",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "closureConfirmed": true,
+      "terminatedOwnedJob": true,
+      "rawReportSha256": "270f558252b880ccd154d58382fc3e30d0e0f61d18cf4830fffe08ec92f67bd8"
+    },
+    "originalFailureUnmodified": true,
+    "cause": "V1 case-insensitive /Fp parser consumed /fp:precise; V2 requires exact Fp file switch"
+  },
+  "revisedCompilerValidator": {
+    "sourceManifestSha256": "7e7d02fd3de66560007fd11b58ceb4be53342196bab32ec4f8f9bd5040c9061b",
+    "driverSha256": "76c9a86b1908ddf3e3c264b59e31e945da168f27f4acb544aacb1a8173f64d9b",
+    "frozenHeaderCount": 9096,
+    "diffIndependentlyVerified": true
+  },
+  "transitivePostHocInputCount": 1018,
+  "constructorOomClosed": false
+}

@@ -1,0 +1,583 @@
+{
+  "completed": true,
+  "mode": "native",
+  "architecture": "Win32",
+  "stages": [
+    {
+      "name": "actiongen-generate",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\tools\\sdk\\actiongen.cjs",
+        "--source",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench\\contracts\\actions.json",
+        "--root",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+      "pid": 25564,
+      "creationFileTime": "134360369725453401",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\actiongen-generate.owned.jsonl",
+      "rawSha256": "2c588115527cb8c506adfb0d896045ee122029492e2042bb8b0da2e0dcb6df93",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\actiongen-generate.owned.jsonl.context.json",
+        "bytes": 657,
+        "sha256": "ed9cb46cd86a8487601624a9419a3d997d2f2acc0344c3e752b2919fa564c590"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\actiongen-generate.stdout.raw",
+        "bytes": 90,
+        "sha256": "ffcd9c725bf6a3788c4da9fffa387d6ac50de240119a9a4e5f1d64a4ef7e2f0b"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\actiongen-generate.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "actiongen-check",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\tools\\sdk\\actiongen.cjs",
+        "--source",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench\\contracts\\actions.json",
+        "--root",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench",
+        "--check"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+      "pid": 7928,
+      "creationFileTime": "134360369734683756",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\actiongen-check.owned.jsonl",
+      "rawSha256": "efab84d1dfec0e64f12eab075178e67d5da598043d8d29a38cc9605581130681",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\actiongen-check.owned.jsonl.context.json",
+        "bytes": 672,
+        "sha256": "f312c078ef491aef596e8b0ecb949886f1c5da4e975bd7f7c34c02843efa1e6a"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\actiongen-check.stdout.raw",
+        "bytes": 91,
+        "sha256": "d531677bb98469cf893d24f6faea2bd2a4905d542429df1c08d3b4fc3c7865ff"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\actiongen-check.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "configure",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "-S",
+        "F:\\work\\sm05-broker\\out\\reference-native-v4-root-b47a0d8f-f2a2-4f8a-a118-b5d9b0d731a3",
+        "-B",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32,version=10.0.19041.0",
+        "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+        "-T",
+        "v143,host=x64,version=14.44.35207",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DREFERENCE_ROOT:PATH=F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench",
+        "-DREFERENCE_NODE:FILEPATH=C:\\nvm4w\\nodejs\\node.exe",
+        "-DSouiSdk_DIR:PATH=F:\\work\\sm05-broker\\out\\native-v10\\Win32\\sdk-relocated\\lib\\cmake\\SouiSdk",
+        "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
+        "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF",
+        "-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir=F:\\work\\sm05-broker\\out\\reference-native-v4-root-b47a0d8f-f2a2-4f8a-a118-b5d9b0d731a3\\empty-user-props\\"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+      "pid": 95056,
+      "creationFileTime": "134360369744642198",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\configure.owned.jsonl",
+      "rawSha256": "c8b65e4f60a5a807722a4e5ea1faae7a748caa72d0cca8c2d41df9629d8eb492",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\configure.owned.jsonl.context.json",
+        "bytes": 1458,
+        "sha256": "a5bda26fb4a8040485942923823984f87eebcb02ce42289fb8437f6d9df85b75"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\configure.stdout.raw",
+        "bytes": 837,
+        "sha256": "16bcb624e9f079deda7615466724c5e630e5451662d01c5d08476b7eb9715e20"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\configure.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "build-full-native-suite",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build",
+        "--config",
+        "Release",
+        "--target",
+        "soui_reference_business_tests",
+        "--",
+        "/m:1",
+        "/nr:false",
+        "/p:VcpkgEnabled=false",
+        "/p:VcpkgEnableManifest=false",
+        "/p:VCToolsVersion=14.44.35207",
+        "/p:WindowsTargetPlatformVersion=10.0.19041.0",
+        "/p:ImportDirectoryBuildProps=false",
+        "/p:ImportDirectoryBuildTargets=false",
+        "/p:UseEnv=false",
+        "/p:UserRootDir=F:\\work\\sm05-broker\\out\\reference-native-v4-root-b47a0d8f-f2a2-4f8a-a118-b5d9b0d731a3\\empty-user-props\\",
+        "/bl:F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build.binlog"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+      "pid": 53984,
+      "creationFileTime": "134360369861542248",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build-full-native-suite.owned.jsonl",
+      "rawSha256": "486df1bc808c20901836298b2623430eb4db58ebec63446014d535e7b99edbc6",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build-full-native-suite.owned.jsonl.context.json",
+        "bytes": 1042,
+        "sha256": "97c8d1fe3077b8b0a0ccea32f34410cb53fb43d43b7c5d144c7834bc4a15539f"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build-full-native-suite.stdout.raw",
+        "bytes": 845,
+        "sha256": "676920e04500ec3def317e5acdfc1ad770a5df4fc07f1a5e2ee3d2dd427d12c8"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build-full-native-suite.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "registry",
+      "executable": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+      "args": [
+        "--test-dir",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build",
+        "-C",
+        "Release",
+        "--show-only=json-v1"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+      "pid": 26368,
+      "creationFileTime": "134360369956320891",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\registry.owned.jsonl",
+      "rawSha256": "c0fc14ea5798d63655d164d8b4780365a04c7fe6de7e971f614fc91e79ed4b43",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\registry.owned.jsonl.context.json",
+        "bytes": 517,
+        "sha256": "a79816ec19ef1e883422ccb01b4c8057cdb773daf3ac6127356c73e7fbd010b4"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\registry.stdout.raw",
+        "bytes": 3300,
+        "sha256": "bce7f2aa107b950b5ce8f9a36c3b128855ea39c0358cb8c7a1faa800c82ab2a2"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\registry.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "case-fixed-summary",
+      "executable": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build\\Release\\soui_reference_business_tests.exe",
+      "args": [
+        "fixed-summary",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+      "pid": 64868,
+      "creationFileTime": "134360369970550568",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-fixed-summary.owned.jsonl",
+      "rawSha256": "c7e0ba9a011210ef24f467b8e0c293c87df14b5e51402abd384a2838c6ba104d",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-fixed-summary.owned.jsonl.context.json",
+        "bytes": 569,
+        "sha256": "8083d96a1069c645290f0e96d2bd0520cdcd0f24539dcf0ed6505eab7e9f58a1"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-fixed-summary.stdout.raw",
+        "bytes": 178,
+        "sha256": "cde3eb34b1bbb77a0cca08cd1b1f440fa53fd8843051f39e72aa49f39bab3f1b"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-fixed-summary.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "case-cancel",
+      "executable": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build\\Release\\soui_reference_business_tests.exe",
+      "args": [
+        "cancel",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+      "pid": 101868,
+      "creationFileTime": "134360369986317340",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-cancel.owned.jsonl",
+      "rawSha256": "909b96ffd7279d49f07f8a80236e5cf19273c6226a0f79f21bdc32f64f8c386b",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-cancel.owned.jsonl.context.json",
+        "bytes": 562,
+        "sha256": "32b92a9a9e821eb5c3bfc28f0f1d4fc512e90acffd7b4eb6047ca3764dd1778b"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-cancel.stdout.raw",
+        "bytes": 172,
+        "sha256": "fca70fbdf2cba21aab9a446f8d2539cb81a9773d124124a7cd8b5bce0c6a5acd"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-cancel.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "case-invalid-form",
+      "executable": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build\\Release\\soui_reference_business_tests.exe",
+      "args": [
+        "invalid-form",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+      "pid": 34600,
+      "creationFileTime": "134360369993005569",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-invalid-form.owned.jsonl",
+      "rawSha256": "d38a08f7d3e08b9def7861b96d833b01ac0fa1d3209399ceda6a292bc9488687",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-invalid-form.owned.jsonl.context.json",
+        "bytes": 568,
+        "sha256": "d49db37bd3b76a14bff2523ca9b5d3677c3ecfa3799ee1cbf31e468a3d414039"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-invalid-form.stdout.raw",
+        "bytes": 177,
+        "sha256": "ad341eac470a9943f0d89625c4ebc4b498f609133ef90e49f09363f79459554c"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-invalid-form.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "case-revoked-document",
+      "executable": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build\\Release\\soui_reference_business_tests.exe",
+      "args": [
+        "revoked-document",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+      "pid": 52592,
+      "creationFileTime": "134360369999291635",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-revoked-document.owned.jsonl",
+      "rawSha256": "59d94eae411033e1fab168d74aa4e3b1e91091dad0711bfa4fb292c354b5d558",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-revoked-document.owned.jsonl.context.json",
+        "bytes": 572,
+        "sha256": "2465a8ef3feb2e30201403052d876ec0507d4c11ae5df1cdd3584db648b41ad2"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-revoked-document.stdout.raw",
+        "bytes": 181,
+        "sha256": "7c20e4494d7ffa4b5a22b1f159524966b58837bc7fc3b51cdac066a7348e0933"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-revoked-document.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "ctest-four",
+      "executable": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+      "args": [
+        "--test-dir",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build",
+        "-C",
+        "Release",
+        "--output-on-failure",
+        "--no-tests=error",
+        "-j",
+        "1",
+        "--timeout",
+        "15",
+        "--output-junit",
+        "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\ctest.junit.xml"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+      "pid": 95408,
+      "creationFileTime": "134360370005422200",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\ctest-four.owned.jsonl",
+      "rawSha256": "561e27c183a6f34e66fe19f86d1bd63707ff71ec9f0e8cf43976ca614f4b32a9",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\ctest-four.owned.jsonl.context.json",
+        "bytes": 674,
+        "sha256": "5ceab0f9a1a7cbe919b90772faf455314d5162729e26c68e8c2f54b763419cd7"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\ctest-four.stdout.raw",
+        "bytes": 594,
+        "sha256": "a57667fc99fba14a33698b703093ebb69fd9ddd1dc8b75c015990389bdada937"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\ctest-four.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    }
+  ],
+  "receipts": [
+    {
+      "name": "fixed-summary",
+      "receipt": {
+        "case": "fixed-summary",
+        "creationFileTime": "134360369970550568",
+        "passed": true,
+        "pid": "64868",
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "schema": "soui.reference-native/1"
+      },
+      "identity": {
+        "name": "case-fixed-summary",
+        "executable": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build\\Release\\soui_reference_business_tests.exe",
+        "args": [
+          "fixed-summary",
+          "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench\\common\\fixture.json"
+        ],
+        "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+        "pid": 64868,
+        "creationFileTime": "134360369970550568",
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "genericPassed": true,
+        "closureConfirmed": true,
+        "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-fixed-summary.owned.jsonl",
+        "rawSha256": "c7e0ba9a011210ef24f467b8e0c293c87df14b5e51402abd384a2838c6ba104d",
+        "context": {
+          "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-fixed-summary.owned.jsonl.context.json",
+          "bytes": 569,
+          "sha256": "8083d96a1069c645290f0e96d2bd0520cdcd0f24539dcf0ed6505eab7e9f58a1"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-fixed-summary.stdout.raw",
+          "bytes": 178,
+          "sha256": "cde3eb34b1bbb77a0cca08cd1b1f440fa53fd8843051f39e72aa49f39bab3f1b"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-fixed-summary.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "streamErrors": []
+      }
+    },
+    {
+      "name": "cancel",
+      "receipt": {
+        "case": "cancel",
+        "creationFileTime": "134360369986317340",
+        "passed": true,
+        "pid": "101868",
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "schema": "soui.reference-native/1"
+      },
+      "identity": {
+        "name": "case-cancel",
+        "executable": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build\\Release\\soui_reference_business_tests.exe",
+        "args": [
+          "cancel",
+          "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench\\common\\fixture.json"
+        ],
+        "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+        "pid": 101868,
+        "creationFileTime": "134360369986317340",
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "genericPassed": true,
+        "closureConfirmed": true,
+        "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-cancel.owned.jsonl",
+        "rawSha256": "909b96ffd7279d49f07f8a80236e5cf19273c6226a0f79f21bdc32f64f8c386b",
+        "context": {
+          "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-cancel.owned.jsonl.context.json",
+          "bytes": 562,
+          "sha256": "32b92a9a9e821eb5c3bfc28f0f1d4fc512e90acffd7b4eb6047ca3764dd1778b"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-cancel.stdout.raw",
+          "bytes": 172,
+          "sha256": "fca70fbdf2cba21aab9a446f8d2539cb81a9773d124124a7cd8b5bce0c6a5acd"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-cancel.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "streamErrors": []
+      }
+    },
+    {
+      "name": "invalid-form",
+      "receipt": {
+        "case": "invalid-form",
+        "creationFileTime": "134360369993005569",
+        "passed": true,
+        "pid": "34600",
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "schema": "soui.reference-native/1"
+      },
+      "identity": {
+        "name": "case-invalid-form",
+        "executable": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build\\Release\\soui_reference_business_tests.exe",
+        "args": [
+          "invalid-form",
+          "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench\\common\\fixture.json"
+        ],
+        "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+        "pid": 34600,
+        "creationFileTime": "134360369993005569",
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "genericPassed": true,
+        "closureConfirmed": true,
+        "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-invalid-form.owned.jsonl",
+        "rawSha256": "d38a08f7d3e08b9def7861b96d833b01ac0fa1d3209399ceda6a292bc9488687",
+        "context": {
+          "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-invalid-form.owned.jsonl.context.json",
+          "bytes": 568,
+          "sha256": "d49db37bd3b76a14bff2523ca9b5d3677c3ecfa3799ee1cbf31e468a3d414039"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-invalid-form.stdout.raw",
+          "bytes": 177,
+          "sha256": "ad341eac470a9943f0d89625c4ebc4b498f609133ef90e49f09363f79459554c"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-invalid-form.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "streamErrors": []
+      }
+    },
+    {
+      "name": "revoked-document",
+      "receipt": {
+        "case": "revoked-document",
+        "creationFileTime": "134360369999291635",
+        "passed": true,
+        "pid": "52592",
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "schema": "soui.reference-native/1"
+      },
+      "identity": {
+        "name": "case-revoked-document",
+        "executable": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build\\Release\\soui_reference_business_tests.exe",
+        "args": [
+          "revoked-document",
+          "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench\\common\\fixture.json"
+        ],
+        "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+        "pid": 52592,
+        "creationFileTime": "134360369999291635",
+        "rootExitCode": 0,
+        "supervisorExitCode": 0,
+        "genericPassed": true,
+        "closureConfirmed": true,
+        "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-revoked-document.owned.jsonl",
+        "rawSha256": "59d94eae411033e1fab168d74aa4e3b1e91091dad0711bfa4fb292c354b5d558",
+        "context": {
+          "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-revoked-document.owned.jsonl.context.json",
+          "bytes": 572,
+          "sha256": "2465a8ef3feb2e30201403052d876ec0507d4c11ae5df1cdd3584db648b41ad2"
+        },
+        "stdout": {
+          "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-revoked-document.stdout.raw",
+          "bytes": 181,
+          "sha256": "7c20e4494d7ffa4b5a22b1f159524966b58837bc7fc3b51cdac066a7348e0933"
+        },
+        "stderr": {
+          "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\case-revoked-document.stderr.raw",
+          "bytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "streamErrors": []
+      }
+    }
+  ],
+  "directCases": 4,
+  "registeredCTestCases": 4,
+  "normalSdkCppCount": 24,
+  "normalSdkRecompiled": false,
+  "installedSdkProducer": "actual-native-v10",
+  "actualV3BusinessBytes": true,
+  "realBridgeJoinBeforeReceipt": true,
+  "sdkGuiControllerRuntimeExercised": false,
+  "rendererExercised": false,
+  "allGenericPassed": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

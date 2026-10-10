@@ -1,0 +1,7 @@
+# V4 — fixed SDK19041 x64 resource compiler for actual link
+
+V3 actual LINK generated code then failed with fatal LNK1158, unable to run rc.exe: subject87404/FILETIME134360426254516721, root1158/supervisor1158/genericfalse, natural Job active0/no forced cleanup, elapsed37964ms. Preserve original stdout/raw/context/finished/summary at their original paths; no result is upgraded.
+
+The sole driver edit adds fixed tools.resourceCompilerDirectory between existing Hostx64/x86 and System32 in isolated PATH. Reverse replacement restores V3's exact20499 bytes. Tool inventory pins all226 ordinary files/72511665 bytes in Windows Kits10/bin/10.0.19041.0/x64, including actual x64 rc.exe and rcdll.dll plus colocated dependencies; every existing full before/after and per-stage immutable check now covers these pins and exact membership. No ambient PATH/LIB/INCLUDE added. Selected OS modules remain unqualified.
+
+Fresh five response outputs, local helper/manifest references, package/guard digests and namespace only; no CL/source/object/library or Owned stage predicate changed. Original5234 manifest plus exact existing hidden supplement5235 and excluded exact Junction remain unchanged. Old744 tool/library inventory members stay exact; SDKbin adds226 to970. No author Node/native/loader execution.

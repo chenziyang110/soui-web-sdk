@@ -1,0 +1,49 @@
+{
+  "name": "configure",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "-S",
+    "F:\\work\\sm05-broker\\out\\reference-native-v4-root-b47a0d8f-f2a2-4f8a-a118-b5d9b0d731a3",
+    "-B",
+    "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\build",
+    "-G",
+    "Visual Studio 17 2022",
+    "-A",
+    "Win32,version=10.0.19041.0",
+    "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+    "-T",
+    "v143,host=x64,version=14.44.35207",
+    "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+    "-DREFERENCE_ROOT:PATH=F:\\work\\sm05-broker\\out\\w6n4\\Win32\\source\\demos\\reference-workbench",
+    "-DREFERENCE_NODE:FILEPATH=C:\\nvm4w\\nodejs\\node.exe",
+    "-DSouiSdk_DIR:PATH=F:\\work\\sm05-broker\\out\\native-v10\\Win32\\sdk-relocated\\lib\\cmake\\SouiSdk",
+    "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
+    "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF",
+    "-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir=F:\\work\\sm05-broker\\out\\reference-native-v4-root-b47a0d8f-f2a2-4f8a-a118-b5d9b0d731a3\\empty-user-props\\"
+  ],
+  "cwd": "F:\\work\\sm05-broker\\out\\w6n4\\Win32",
+  "pid": 95056,
+  "creationFileTime": "134360369744642198",
+  "rootExitCode": 0,
+  "supervisorExitCode": 124,
+  "genericPassed": false,
+  "closureConfirmed": true,
+  "rawJob": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\configure.owned.jsonl",
+  "rawSha256": "c8b65e4f60a5a807722a4e5ea1faae7a748caa72d0cca8c2d41df9629d8eb492",
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\configure.owned.jsonl.context.json",
+    "bytes": 1458,
+    "sha256": "a5bda26fb4a8040485942923823984f87eebcb02ce42289fb8437f6d9df85b75"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\configure.stdout.raw",
+    "bytes": 837,
+    "sha256": "16bcb624e9f079deda7615466724c5e630e5451662d01c5d08476b7eb9715e20"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\w6n4\\Win32\\configure.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "streamErrors": []
+}

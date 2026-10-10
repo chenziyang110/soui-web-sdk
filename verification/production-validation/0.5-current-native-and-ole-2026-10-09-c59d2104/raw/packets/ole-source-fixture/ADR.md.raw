@@ -1,0 +1,42 @@
+# Bounded initial OLE registration observation and schedule tests
+
+Status: out-only candidate; not applied, compiled or executed. This record does not choose a production fix.
+
+## Context
+
+Controlled endpoint creation publishes the real endpoint before setHandle queues OLE_REGISTER on the HWND owner. The task stores the vendor identity/epoch. The SDK returns from engine mount, shows its child, and the application shows its owner; its WM_SIZE handler can call resize, which advances the SDK geometry immediately and posts the vendor ACK to the engine. The two queues have no common FIFO.
+
+A real UI callback before that ACK can pass the vendor task cancellation check while its internal native scope presents the old tuple to the SDK. Strict full-tuple rejection is correct. setHWND then records a sticky vendor failure; observeMainDocument tests brokerUiCancelled before installing the main-world globals and calling the SDK context callback. A real callback after ACK can instead be cancelled by the old task epoch, and its registration body returns without registering OLE. Neither branch is established as the cause of the preserved W2d7 run. W2d8 successful repetitions do not close these schedules.
+
+## Decision: observe and characterize before changing admission
+
+Build one finite executable against the normal current SDK. It borrows the private SDK broker header to exercise the actual implementation, not a copied algorithm or alternate queue. Each process loads the exact Root-selected full-source DLL, verifies its SHA-256 while holding a read-only handle that denies write/delete sharing, initializes its actual engine, begins its actual realm, and creates an actual controlled view for a real UI-owned HWND.
+
+A mutex/condition-variable command lane pins the engine while the UI chooses the next operation. Actual production SetTimer messages, including their original TIMERPROC pointer, are dispatched on the real HWND owner. No timer procedure, production hook result, or queue outcome is invented. Forwarding hook observers call the original SDK hooks and record only their actual results.
+
+The three schedules are:
+1. Matching initial tuple: dispatch OLE_REGISTER before any geometry change.
+2. UI advance before ACK: advance the real SDK geometry, keep the engine ACK withheld, then dispatch the actual timer.
+3. ACK before dispatch: advance the real SDK geometry, perform the actual vendor ACK, then dispatch the already queued timer.
+
+The executable emits actual pre/post inspectDrain status/counts/oleRegistered, actual enter/completion results, and first nativeAdmission snapshot. A verified characterization is separately labelled measurementPassed; registrationPreserved and startupQualified remain false for a missing registration or failed vendor. Default direct/CTest execution also requires actual registration, so the two unsafe current-source observations return 2 after safe real cleanup. An explicit --characterize argument verifies only the observation contract; Root must not infer product qualification from that exit 0.
+
+## Successful component observations
+
+A separate bounded Host delta adds opt-in inspectDrain observation to application_diagnostics on the existing engine owner. Only fixed status, failure classification, closing/drained flags, counters and actual OLE registration are returned, with nonAtomic=true. It does not request close, update identity, ACK, retry, install a global, or mutate admission.
+
+A separate private W2 main delta captures that same safe observation on successful completion when startup opt-in is enabled, as well as on the existing failure path. Browser/bridge assertions and permission gates are unchanged. A successful component run cannot prove registration unless the actual pre-close OLE observation establishes it.
+
+## Lifecycle and failure
+
+The HWND, forwarding hook context, SDK broker, and initialized DLL remain alive through actual requestClose and zero-resource inspectDrain/destroy receipts. OLE revoke and OleUninitialize execute through the production terminal owner task. Only then may the SDK broker finish_close, the engine end its realm and finalize, the worker join, and the HWND disappear. Initialized DLL unload is not claimed.
+
+Every test-only wait is bounded. A timeout, malformed receipt, failed thread operation or unresolved owner calls ExitProcess(91) before local C++ cleanup; the external Root Owned job is responsible for failure closure. A timeout never means cancellation, drain, join or successful destruction. Native callbacks forward without WKE calls, waits, pumping, allocation or exceptions.
+
+## Conditional fix direction and alternatives
+
+Skipping an unchanged initial width/height can reduce an unnecessary WM_SIZE epoch, but it cannot prove initial OLE registration: initial document commitment or a genuine resize can still invalidate the task. Suppressing resize, cancelling registration, treating an old tuple as current, clearing sticky failed, or admitting pending state are rejected.
+
+The conditional preferred direction is a real bootstrap registration fence before the first navigation and visibility transition, keeping the initial SDK/vendor identity equal until the real owner registration completes. It must use a real completion/ledger receipt, retain owners on failure, and avoid an engine/UI mutual wait. No engine wait may cover a user-script or arbitrary UI callout. The exact handshake must be reviewed before code; an inspect call made while the engine itself is held cannot serve as a fence. A general synchronous resize ACK is not adopted because identity actions can reenter script/UI and create a mutual wait.
+
+These tests establish the concrete queue outcomes needed to choose that fence. They are finite private characterization, not an installed public API, full Host initialization contract, physical drag automation, Win7/all-OS qualification, GC/OOM/unload proof, or release approval.

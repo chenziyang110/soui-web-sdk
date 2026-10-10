@@ -1,0 +1,209 @@
+{
+  "schema": "soui.controlled-cursor-diagnostic/v1",
+  "targetVersion": "0.5.0",
+  "preparedUtc": "2026-10-09T04:15:58.423Z",
+  "sourceBaseCommit": "75c21b6020b8afd1c2b95fed644fd92fccb595fd",
+  "sourceBaseCommitAssertedByRoot": true,
+  "testedChangesWereUncommitted": true,
+  "versionIdentityAssignedByThisRecord": false,
+  "observationOnly": true,
+  "actualCompilerInputBindingComplete": false,
+  "dependencySourceQualification": false,
+  "targetSystemCompatibilityQualified": false,
+  "guiQualified": false,
+  "performanceQualification": false,
+  "validationPassed": false,
+  "qualificationPassed": false,
+  "releaseReady": false,
+  "binaryBodiesIncluded": false,
+  "toolBodiesIncluded": false,
+  "rawPrivateProofBodiesIncluded": false,
+  "scope": "Actual x64 full software kernel compile and link, followed by static image metadata inspection",
+  "architecture": "x64",
+  "independentProofSha256": "2ac566115825821988b70866c8bcd8e317ca0917242af28b477cd2e20a32a265",
+  "detailedIndependentProofSha256": "d8a91b34b0a53f3bd9f13352c1e9f693d32dd9b7f6909ead9aecd6a248a1ffef",
+  "producerSummarySha256": "918051881909416d4522794aeb4eb3f57d575bfd127e1eb78bcd7ec8951a5a86",
+  "fullCppCompiled": 3025,
+  "uniqueSourceObjectMappings": 3025,
+  "outputObjects": 3026,
+  "extraObjectReason": "one observed x64 ml64 SaveRegisters_x86.asm custom-build output, not an extra CPP translation unit",
+  "compilerObjectOutputCollision": false,
+  "dll": {
+    "file": "miniblink.dll",
+    "bytes": 35126784,
+    "sha256": "7d3f7adcfe94745d1dc65b718c1c6ac0b4a71a9222905707362f27e2b6eff840"
+  },
+  "softwareProfile": true,
+  "gpuExperiment": false,
+  "imports": [
+    "VERSION.dll",
+    "ADVAPI32.dll",
+    "IMM32.dll",
+    "WINMM.dll",
+    "WS2_32.dll",
+    "USP10.dll",
+    "SHLWAPI.dll",
+    "WININET.dll",
+    "gdiplus.dll",
+    "KERNEL32.dll",
+    "USER32.dll",
+    "GDI32.dll",
+    "COMDLG32.dll",
+    "SHELL32.dll",
+    "ole32.dll",
+    "IPHLPAPI.DLL",
+    "USERENV.dll",
+    "PSAPI.DLL"
+  ],
+  "peMachine": 34404,
+  "peOptionalHeaderMagic": 523,
+  "exportedNames": 9680,
+  "requiredNonforwardedHostExports": 59,
+  "recordedCompilerAndLinkReadPaths": 10975,
+  "preFrozenRecordedReadPaths": 7947,
+  "ownedGeneratedRecordedReadPaths": 3028,
+  "unknownRecordedReadPaths": [],
+  "recordedCoverageIsNotUniversalLoaderOrCompilerCoverage": true,
+  "oldCoreLibraries": [
+    {
+      "file": "harfbuzz.lib",
+      "sha256": "44b21f1212b6a8ef37ba6656b7d7cb36bc3d951f9ad5d21b7b5efd896c64cfa3",
+      "currentSourceProvenanceEstablished": false,
+      "bodyCopied": false
+    },
+    {
+      "file": "libcurl.lib",
+      "sha256": "0730344ee6c7a777a2c2bacd53cca71f9c15197564749c33b84184f038637239",
+      "currentSourceProvenanceEstablished": false,
+      "bodyCopied": false
+    },
+    {
+      "file": "libjpeg.lib",
+      "sha256": "9d60daaf69c09c925623fef27e05b89e3128ca5eca00fe73e0e21c329b6be481",
+      "currentSourceProvenanceEstablished": false,
+      "bodyCopied": false
+    },
+    {
+      "file": "libpng.lib",
+      "sha256": "75a58079a834162637e77fb3666f16af8ac533537ab4456a0bae7dbbd33a10f4",
+      "currentSourceProvenanceEstablished": false,
+      "bodyCopied": false
+    },
+    {
+      "file": "libxml.lib",
+      "sha256": "85e4b9c212dca9342736d34ee05f346948ed28c0800357cac4b73530788a0f1a",
+      "currentSourceProvenanceEstablished": false,
+      "bodyCopied": false
+    },
+    {
+      "file": "openssl.lib",
+      "sha256": "d368e410a2e065e87add5b862027b879652c14b441c344e04732c658705997d5",
+      "currentSourceProvenanceEstablished": false,
+      "bodyCopied": false
+    },
+    {
+      "file": "ots.lib",
+      "sha256": "6160f4b59a21a068780f2fe60646118599eb1319ddfcad595fd828670887cbf1",
+      "currentSourceProvenanceEstablished": false,
+      "bodyCopied": false
+    },
+    {
+      "file": "skia.lib",
+      "sha256": "c08c2b6ffe749ff5caf548bda75d38d5b2473843fb911c5d021ca331c8eacaa3",
+      "currentSourceProvenanceEstablished": false,
+      "bodyCopied": false
+    },
+    {
+      "file": "v8_5_7_1.lib",
+      "sha256": "ce726108f79cf87cec7495c9054e6aece2205e51d2b4e24d05886cb195e673c7",
+      "currentSourceProvenanceEstablished": false,
+      "bodyCopied": false
+    },
+    {
+      "file": "v8_5_7.lib",
+      "sha256": "39faf7ba681c7b5e6d1f24e518a44343439bab0b03db5ba328a1027b07a8536d",
+      "currentSourceProvenanceEstablished": false,
+      "bodyCopied": false
+    },
+    {
+      "file": "zlib.lib",
+      "sha256": "4975fd6ad5edec67e0b2dd2a62533c94b7c78b0f45055cc94e32eb4e5b3282ee",
+      "currentSourceProvenanceEstablished": false,
+      "bodyCopied": false
+    }
+  ],
+  "actualRepairSourceCompilation": [
+    {
+      "source": "third_party/sources/miniblink/wke/wke.cpp",
+      "sha256": "4f27467c98bfa70ec9f3604d7bffe3cf881af6524c880d916ffdc8eb2f9e06db",
+      "sourceReadObserved": true,
+      "compilerEhscObserved": true
+    },
+    {
+      "source": "third_party/sources/miniblink/net/ActivatingObjCheck.cpp",
+      "sha256": "e2f04bfb9fb0e8ddcf9a7a8bbd9ca5598ce21dccd5f035863f8630702a64842b",
+      "sourceReadObserved": true,
+      "compilerEhscObserved": true
+    }
+  ],
+  "stages": [
+    {
+      "name": "full-build",
+      "pid": 46400,
+      "creationFileTime": "134359880969807205",
+      "rootExitCode": 0,
+      "supervisorExitCode": 124,
+      "genericPassed": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "rawJobSha256": "20c24ce109dbc096ddff4dee1d0403956e41f06aa38c9a4639d03ba1344c8e2c"
+    },
+    {
+      "name": "dll-headers",
+      "pid": 21608,
+      "creationFileTime": "134359907970518627",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "rawJobSha256": "a57b5e14ad23a5f3ba2ba5fd12769507100ae7eb04ee3b80c6a553a64d6d1b3a"
+    },
+    {
+      "name": "dll-imports",
+      "pid": 29776,
+      "creationFileTime": "134359908403782204",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "rawJobSha256": "8993d7500b844bb99ff9ee58b4b7f62ec2c608779de73125f5361df611cda6ad"
+    },
+    {
+      "name": "dll-exports",
+      "pid": 38068,
+      "creationFileTime": "134359908808866352",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "rawJobSha256": "62bbb62cbff10126dc85b22ea58d2907b53f098a8191309da658f07d3ba040d0"
+    }
+  ],
+  "rootExitCode": 0,
+  "supervisorExitCode": 124,
+  "genericPassed": false,
+  "closureConfirmed": true,
+  "originalGenericFailureRetained": true,
+  "fullKernelQualified": false,
+  "compilerTailAcceptance": false,
+  "excludes": [
+    "Win32 full kernel build",
+    "Current-source provenance of old core libraries",
+    "Runtime loading and GUI",
+    "Native resource drain",
+    "Target OS, performance and release"
+  ]
+}

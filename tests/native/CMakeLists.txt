@@ -1,4 +1,36 @@
 add_executable(soui_sdk_contract_tests sdk_contract_tests.cpp)
+add_executable(soui_source_kernel_api_tests source_kernel_api_tests.cpp)
+target_compile_features(soui_source_kernel_api_tests PRIVATE cxx_std_17)
+target_compile_options(soui_source_kernel_api_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+target_compile_definitions(soui_source_kernel_api_tests PRIVATE
+  UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+set_property(TARGET soui_source_kernel_api_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.source-kernel-api COMMAND soui_source_kernel_api_tests)
+set_tests_properties(sdk.native.source-kernel-api PROPERTIES TIMEOUT 10)
+add_executable(soui_cursor_queue_tests cursor_queue_tests.cpp
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/cursor_queue.cpp")
+target_compile_features(soui_cursor_queue_tests PRIVATE cxx_std_17)
+target_compile_options(soui_cursor_queue_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET soui_cursor_queue_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.cursor-queue COMMAND soui_cursor_queue_tests)
+set_tests_properties(sdk.native.cursor-queue PROPERTIES TIMEOUT 10)
+add_executable(soui_cursor_resource_tests cursor_resource_tests.cpp
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/cursor_resources.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/cursor_queue.cpp")
+add_executable(soui_cursor_broker_scope_tests cursor_broker_scope_tests.cpp
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/cursor_broker.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/cursor_resources.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/host/cursor_queue.cpp")
+foreach(cursor_target soui_cursor_resource_tests soui_cursor_broker_scope_tests)
+  target_compile_features(${cursor_target} PRIVATE cxx_std_17)
+  target_compile_options(${cursor_target} PRIVATE /utf-8 /W4 /U_DEBUG)
+  target_compile_definitions(${cursor_target} PRIVATE UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+  set_property(TARGET ${cursor_target} PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+endforeach()
+target_link_libraries(soui_cursor_broker_scope_tests PRIVATE user32 gdi32)
+add_test(NAME sdk.native.cursor-resources COMMAND soui_cursor_resource_tests)
+add_test(NAME sdk.native.cursor-broker-scopes COMMAND soui_cursor_broker_scope_tests)
+set_tests_properties(sdk.native.cursor-resources sdk.native.cursor-broker-scopes PROPERTIES TIMEOUT 10)
 add_executable(soui_scheduler_fairness_tests scheduler_fairness_tests.cpp)
 target_compile_features(soui_scheduler_fairness_tests PRIVATE cxx_std_17)
 target_compile_options(soui_scheduler_fairness_tests PRIVATE /utf-8 /W4)
@@ -117,6 +149,27 @@ target_include_directories(soui_workbench_interaction_tests PRIVATE "${SOUI_DIST
 set_property(TARGET soui_workbench_interaction_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME demo.native.interaction-task COMMAND soui_workbench_interaction_tests)
 set_tests_properties(demo.native.interaction-task PROPERTIES TIMEOUT 30)
+add_executable(soui_demo_task_query_tests demo_task_query_tests.cpp
+  "${SOUI_DISTRIBUTION_ROOT}/demos/workbench/integration/demo_bridge_adapter.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/demos/workbench/integration/native_media_preview.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/demos/workbench/integration/native_media_encoder.cpp")
+target_link_libraries(soui_demo_task_query_tests PRIVATE Soui::Sdk soui_zlib
+  comdlg32 mfplat mfreadwrite mfuuid propsys shlwapi windowscodecs psapi)
+target_compile_features(soui_demo_task_query_tests PRIVATE cxx_std_17)
+target_compile_options(soui_demo_task_query_tests PRIVATE /EHsc /utf-8 /W4 /U_DEBUG)
+target_compile_definitions(soui_demo_task_query_tests PRIVATE NDEBUG _CRT_SECURE_NO_WARNINGS)
+target_include_directories(soui_demo_task_query_tests PRIVATE
+  "${SOUI_DISTRIBUTION_ROOT}/demos/workbench/integration"
+  "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
+set_property(TARGET soui_demo_task_query_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME demo.native.task-query-json COMMAND soui_demo_task_query_tests json-task-id)
+add_test(NAME demo.native.task-query-direct COMMAND soui_demo_task_query_tests direct-task-id)
+add_test(NAME demo.native.task-query-strict COMMAND soui_demo_task_query_tests strict-selectors)
+add_test(NAME demo.native.task-query-ownership COMMAND soui_demo_task_query_tests scope-ownership)
+add_test(NAME demo.native.task-query-legacy-scan COMMAND soui_demo_task_query_tests legacy-scan-task)
+set_tests_properties(demo.native.task-query-json demo.native.task-query-direct
+  demo.native.task-query-strict demo.native.task-query-ownership demo.native.task-query-legacy-scan
+  PROPERTIES TIMEOUT 10)
 add_executable(soui_workbench_window_placement_tests workbench_window_placement_tests.cpp)
 target_compile_features(soui_workbench_window_placement_tests PRIVATE cxx_std_17)
 target_compile_options(soui_workbench_window_placement_tests PRIVATE /utf-8 /W4)
@@ -206,6 +259,23 @@ target_compile_options(soui_local_action_dispatch_tests PRIVATE /utf-8 /W4 /U_DE
 set_property(TARGET soui_local_action_dispatch_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.local-action-dispatch COMMAND soui_local_action_dispatch_tests)
 set_tests_properties(sdk.native.local-action-dispatch PROPERTIES TIMEOUT 30)
+add_executable(soui_main_context_gate_tests main_context_gate_tests.cpp)
+target_compile_features(soui_main_context_gate_tests PRIVATE cxx_std_17)
+target_compile_options(soui_main_context_gate_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET soui_main_context_gate_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.main-context-gate COMMAND soui_main_context_gate_tests)
+set_tests_properties(sdk.native.main-context-gate PROPERTIES TIMEOUT 10)
+add_subdirectory(vendor_lifetime)
+add_subdirectory(request_close)
+
+add_executable(soui_windows_peer_identity_tests windows_peer_identity_tests.cpp)
+target_link_libraries(soui_windows_peer_identity_tests PRIVATE Soui::Sdk)
+target_compile_features(soui_windows_peer_identity_tests PRIVATE cxx_std_17)
+target_compile_options(soui_windows_peer_identity_tests PRIVATE /EHsc /utf-8 /W4 /U_DEBUG)
+target_compile_definitions(soui_windows_peer_identity_tests PRIVATE WINVER=0x0601 _WIN32_WINNT=0x0601 NOMINMAX WIN32_LEAN_AND_MEAN)
+set_property(TARGET soui_windows_peer_identity_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.windows-peer-identity COMMAND soui_windows_peer_identity_tests)
+set_tests_properties(sdk.native.windows-peer-identity PROPERTIES TIMEOUT 30)
 add_executable(soui_local_task_family_tests local_task_family_tests.cpp)
 target_link_libraries(soui_local_task_family_tests PRIVATE Soui::Sdk)
 target_compile_features(soui_local_task_family_tests PRIVATE cxx_std_17)
@@ -229,3 +299,15 @@ target_compile_options(soui_local_task_family_prepare_tests PRIVATE /utf-8 /W4 /
 set_property(TARGET soui_local_task_family_prepare_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.local-task-family-prepare COMMAND soui_local_task_family_prepare_tests)
 set_tests_properties(sdk.native.local-task-family-prepare PROPERTIES TIMEOUT 60)
+
+add_subdirectory(windows_local_endpoint)
+if(SOUI_BUILD_UIA)
+  add_subdirectory(uia)
+endif()
+add_subdirectory(json_bridge_endpoint)
+option(SOUI_BUILD_HOST_STARTUP_FENCE_TESTS "Build actual controlled Host/DLL regressions (explicit kernel required)" OFF)
+if(SOUI_BUILD_HOST_STARTUP_FENCE_TESTS)
+  add_subdirectory(host_startup_fence)
+endif()
+add_subdirectory(gui_commands)
+add_subdirectory(resident_shutdown)

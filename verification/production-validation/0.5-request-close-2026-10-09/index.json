@@ -1,0 +1,185 @@
+{
+  "schema": "soui.request-close-evidence-metadata-index/v1",
+  "sdkVersion": "0.5.0-preview.1",
+  "evidenceClass": "bounded native leaf observation",
+  "metadataOnly": true,
+  "privateBodiesCopied": false,
+  "absoluteDevelopmentPathsIncluded": false,
+  "recordedExecutionPacket": {
+    "path": "out/request-close-owned-menu-root-v4-d5be805d-b1e6-475b-b3da-d1be0182c650/package.json",
+    "bytes": 38987,
+    "sha256": "fc5d861fb8e3904bb153be8decd1c942ddfd4defa971ef01b948ae79dfb96e2c"
+  },
+  "independentActualAudit": {
+    "path": "out/independent-close-v4-actual-audit-063349be-f9c6-40d5-b6f1-28b0a726db31/proof.json",
+    "bytes": 87851,
+    "sha256": "bd159e51228b21b41c832a16a635f0bdac12ca8cd12ae801f9deabd9b6c55b0c"
+  },
+  "independentPostapplicationObservation": {
+    "path": "out/independent-close-postapply-observation-8bd74ef8-a0ec-445e-8bd0-1352b0b41483/proof.json",
+    "bytes": 3304,
+    "sha256": "3822abe4ab69f28aa99b55aaef7281cc0be7d444ecb4c5bd47a9db85852059d5"
+  },
+  "currentPublicSourceIdentities": [
+    {
+      "path": "third_party/sources/miniblink/wke/CursorDescriptorBroker.cpp",
+      "bytes": 44020,
+      "sha256": "9bc5cee92eeb5e3b560bd31c4d367aae10b6d4c51f4187e2c257abb1c5733863"
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/CursorDescriptorBroker.h",
+      "bytes": 2811,
+      "sha256": "54dfa5a53403e9043027b63774cdc4b492818034b695a3172d9fe773a4cc0460"
+    },
+    {
+      "path": "third_party/sources/miniblink/wke/wke_cursor_broker.h",
+      "bytes": 6597,
+      "sha256": "0029c8967c92c43a1bf0499af40dc8c2f16e1790fd0ab01d924c7b319ef0243a"
+    },
+    {
+      "path": "tests/native/request_close/CMakeLists.txt",
+      "bytes": 8325,
+      "sha256": "4c74467ea0349b1a2a5efb0f8893fa5c972ad770023c8c861ee2e0d08318f1a6"
+    },
+    {
+      "path": "tests/native/request_close/request_close_tests.cpp",
+      "bytes": 19488,
+      "sha256": "5e0290ba3faa55c8ee2b0b110fc7b67c0a6391e4b96e60e67cbf3b8f5029b90e"
+    },
+    {
+      "path": "tests/native/request_close/README.md",
+      "bytes": 2145,
+      "sha256": "b750a75c5fe0d5242ec08b5aafc84e0b87e129c34fe7c3914e33ffcc22e9b855"
+    },
+    {
+      "path": "tests/native/CMakeLists.txt",
+      "bytes": 21678,
+      "sha256": "a05d1a44cd492e3feb925fafd8230d8ea774ae7d90285a74ff085d1f45cd0076"
+    }
+  ],
+  "records": [
+    {
+      "architecture": "x64",
+      "path": "records/x64.json",
+      "bytes": 64048,
+      "sha256": "c5017240f8d3cbb2954eb4dac38dba437e17faba17e6aaee2d942ac6a6a640d8"
+    },
+    {
+      "architecture": "Win32",
+      "path": "records/x86.json",
+      "bytes": 64246,
+      "sha256": "661569523e3e6c7bff9c8ece9d82cd7c9326b603b2f6e2750ac2e7ee8970dde8"
+    }
+  ],
+  "history": [
+    {
+      "kind": "older-before-nine-case-observation",
+      "architecture": "x64",
+      "summary": {
+        "path": "out/request-close-before-actual-x64-e54dece0-ce62-44fe-9c45-09b7f1596b4d/summary.json",
+        "bytes": 41705,
+        "sha256": "2dcaacbf3404210d81ddf5e9c0828b6bd9a3b432bf86224d5c0878beea2aadce"
+      },
+      "originalCounterexamples": 3,
+      "originalControls": 6,
+      "oldCTestGenericPassed": false,
+      "forcedConsoleTailCleanupObserved": true,
+      "originalNoForcedCleanupProtocolSatisfied": false,
+      "acceptedAsCurrentV4": false
+    },
+    {
+      "kind": "older-before-nine-case-observation",
+      "architecture": "Win32",
+      "summary": {
+        "path": "out/request-close-before-actual-Win32-412d5f88-bec5-4b9b-955f-201d259c643d/summary.json",
+        "bytes": 41825,
+        "sha256": "a0ca245137d3b0ccf2d3befab56d1b5872e1edd800f446ed1929b9ee4903e46d"
+      },
+      "originalCounterexamples": 3,
+      "originalControls": 6,
+      "oldCTestGenericPassed": false,
+      "forcedConsoleTailCleanupObserved": true,
+      "originalNoForcedCleanupProtocolSatisfied": false,
+      "acceptedAsCurrentV4": false
+    },
+    {
+      "kind": "first-owned-menu-wrapper-native-failure",
+      "package": {
+        "path": "out/request-close-owned-menu-root-6e0a8c51-2b97-432a-879a-112d81e06ae2/package.json",
+        "bytes": 35022,
+        "sha256": "c03065f396cfa72473a8729c6b98bad2de334110dd56206543979e16550f9acc"
+      },
+      "driver": {
+        "path": "out/request-close-owned-menu-root-6e0a8c51-2b97-432a-879a-112d81e06ae2/run-root.cjs",
+        "bytes": 19361,
+        "sha256": "eba1024b8ed11f1e397dd01b52be11f2dbeffac9f5a6d024075e45a5a95dc3d9"
+      },
+      "failedSummary": {
+        "path": "out/request-close-owned-menu-actual-x64-1efb15aa-d897-42b6-b5b1-2f2f4b6fbd7d/summary-failed.json",
+        "bytes": 25969,
+        "sha256": "9c09fca6f86a418d4121627c2315dfb547a8ba858a6aeba27831133b36291ae6"
+      },
+      "historyPreserved": true,
+      "accepted": false
+    },
+    {
+      "kind": "priorStaticBlockedWrapper",
+      "package": {
+        "path": "out/request-close-owned-menu-root-v2-0bba4642-d455-4757-b55e-5d8280f48d7c/package.json",
+        "bytes": 36691,
+        "sha256": "147bcea8ffddb96bd3a54b053786361c2a19cc755aae20506f0d98131a24ad04"
+      },
+      "driver": {
+        "path": "out/request-close-owned-menu-root-v2-0bba4642-d455-4757-b55e-5d8280f48d7c/run-root.cjs",
+        "bytes": 25236,
+        "sha256": "2e0998d7467fbd4a1453454ef6848bb2567de39a15a0e5f60cc8a167bea8bbba"
+      },
+      "guard": {
+        "path": "out/request-close-owned-menu-root-v2-0bba4642-d455-4757-b55e-5d8280f48d7c/Run-Root.ps1",
+        "bytes": 2321,
+        "sha256": "943b3f760980675b57ccf014857438180c0c079041d27468004e022dbb23cfdd"
+      },
+      "blocker": "junit:pin(xmlPath) passes string to driver pin(object) API",
+      "nativeExecuted": false,
+      "historyPreserved": true,
+      "accepted": false
+    },
+    {
+      "kind": "priorStaticBlockedV3",
+      "package": {
+        "path": "out/request-close-owned-menu-root-v3-64f6b5b1-214e-40f0-9d8f-df68df2b5106/package.json",
+        "bytes": 37682,
+        "sha256": "6ddf4ea1bdde050bd87968d61291d22da04062cc3f7f32a3f61a457806342dc0"
+      },
+      "driver": {
+        "path": "out/request-close-owned-menu-root-v3-64f6b5b1-214e-40f0-9d8f-df68df2b5106/run-root.cjs",
+        "bytes": 25435,
+        "sha256": "a91f093a1b94b80414dd770ef0e6ba9219d3d6b9d9c400252e333c31d611aef7"
+      },
+      "guard": {
+        "path": "out/request-close-owned-menu-root-v3-64f6b5b1-214e-40f0-9d8f-df68df2b5106/Run-Root.ps1",
+        "bytes": 2321,
+        "sha256": "d66df452508288f5f0fcc6f078939664cef3307a91fa2a1417c7ac5f60042b67"
+      },
+      "blocker": "Two declared cases share one failureText; global expected multiplicity is two",
+      "nativeExecuted": false,
+      "historyPreserved": true,
+      "accepted": false
+    }
+  ],
+  "allOldFailuresPreserved": true,
+  "publicInstalledIntegratedSuiteResultsIncluded": false,
+  "rawReferencesRelativeToRepositoryRoot": true,
+  "rawReferencedPrivateFilesIncludedInPublicCandidate": false,
+  "engineUiSameNativeThread": true,
+  "realComObjectQualified": false,
+  "opaqueViewIdentityUsed": true,
+  "fullCompilerInputBindingComplete": false,
+  "wholeDllStartupOrCloseQualified": false,
+  "fullOperatingSystemMatrixQualified": false,
+  "guiRenderingQualified": false,
+  "performanceQualified": false,
+  "validationPassed": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

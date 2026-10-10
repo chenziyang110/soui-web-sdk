@@ -4,6 +4,8 @@
 
 #include "third_party/WebKit/public/web/WebFrameClient.h"
 #include "third_party/WebKit/public/web/WebConsoleMessage.h"
+#include "third_party/WebKit/public/web/WebDocument.h"
+#include <memory>
 
 namespace cef {
 class BrowserHostImpl;
@@ -236,6 +238,7 @@ public:
     String title() const { return m_title; }
 #endif
 private:
+    bool observeMainDocument(WebLocalFrame*) noexcept;
     void resetLoadState();
     void onLoadingStateChange(bool isLoading, bool toDifferentDocument);
 
@@ -248,7 +251,12 @@ private:
     String m_title;
     WTF::Vector<WebFrame*> m_unusedFrames;
 
-    ContextMenu* m_menu;
+    std::shared_ptr<ContextMenu> m_menu;
+    // Engine owner only. A strong witness prevents Document address reuse and
+    // makes a late didCreateNewDocument notification idempotent for this view.
+    WebDocument m_mainDocumentWitness;
+    bool m_mainDocumentWitnessControlled { false };
+    bool m_mainDocumentWitnessFailed { false };
 };
 
 } // namespace blink

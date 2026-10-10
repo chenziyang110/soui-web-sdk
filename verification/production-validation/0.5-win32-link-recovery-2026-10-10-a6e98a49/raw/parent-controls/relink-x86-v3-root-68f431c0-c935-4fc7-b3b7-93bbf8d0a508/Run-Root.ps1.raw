@@ -1,0 +1,33 @@
+[CmdletBinding()]
+param()
+$ErrorActionPreference='Stop'
+$taskPacketRoot='F:/work/sm05-broker/out/relink-x86-v3-root-68f431c0-c935-4fc7-b3b7-93bbf8d0a508'
+function Test-ExactExcludedJunction {
+ $taskLinkPath='F:\work\sm05-broker\out\kernel-83e67b12\runs\Win32\profile\AppData\Local\Microsoft\Windows\INetCache\Content.IE5'
+ $taskTargetPath='F:\work\sm05-broker\out\kernel-83e67b12\runs\Win32\profile\AppData\Local\Microsoft\Windows\INetCache\IE'
+ $taskLink=Get-Item -LiteralPath $taskLinkPath -Force
+ $taskTarget=Get-Item -LiteralPath $taskTargetPath -Force
+ if($taskLink.LinkType-ne'Junction'-or$taskLink.LinkTarget-cne$taskTargetPath-or$taskLink.ResolveLinkTarget($false).FullName-cne$taskTargetPath-or-not$taskTarget.PSIsContainer-or($taskTarget.Attributes-band[IO.FileAttributes]::ReparsePoint)-ne0){throw 'Excluded Windows alias changed'}
+}
+$taskLease=[Threading.Mutex]::new($false,'Local\SouiDevKit.DesktopValidation')
+$taskAcquired=$false
+$taskEnvNames=@('NODE_OPTIONS','NODE_PATH')
+$taskPriorEnv=@{}
+foreach($taskName in $taskEnvNames){$taskPriorEnv[$taskName]=[Environment]::GetEnvironmentVariable($taskName,'Process')}
+try {
+ try {$taskAcquired=$taskLease.WaitOne(0)} catch [Threading.AbandonedMutexException] {$taskAcquired=$true}
+ if(-not $taskAcquired){throw 'Desktop validation lease is busy; no execution.'}
+ foreach($taskPin in @(@{name='package.json';sha='131a974dbe61b088c0ca273f333801abd7f047b5a8f248f19871507bfc779b2c'},@{name='run-root.cjs';sha='8de464fecee59e8def8c926a333dec81c6d976b2c7e7be50ea1695de9540a4e3'},@{name='tools.json';sha='3a563e34c23c45950b68c9997119409977b60b604f05a943021961d095258d51'})){
+  if((Get-FileHash -LiteralPath (Join-Path $taskPacketRoot $taskPin.name) -Algorithm SHA256).Hash.ToLowerInvariant() -ne $taskPin.sha){throw 'Reviewed Root packet changed'}
+ }
+ $taskTools=Get-Content -LiteralPath (Join-Path $taskPacketRoot 'tools.json') -Raw | ConvertFrom-Json
+ if((Get-Item -LiteralPath $taskTools.node.path).Length -ne $taskTools.node.bytes -or (Get-FileHash -LiteralPath $taskTools.node.path -Algorithm SHA256).Hash.ToLowerInvariant() -ne $taskTools.node.sha256 -or $taskTools.node.sha256 -ne '63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088'){throw 'Node host changed'}
+ [Environment]::SetEnvironmentVariable('NODE_OPTIONS',$null,'Process');[Environment]::SetEnvironmentVariable('NODE_PATH',$null,'Process')
+ Test-ExactExcludedJunction
+ & $taskTools.node.path (Join-Path $taskPacketRoot 'run-root.cjs') ROOT_WIN32_LINK_RECOVERY_V1 '131a974dbe61b088c0ca273f333801abd7f047b5a8f248f19871507bfc779b2c'
+ $taskNodeExit=$LASTEXITCODE
+ Test-ExactExcludedJunction
+ exit $taskNodeExit
+} finally {
+ try{foreach($taskName in $taskEnvNames){[Environment]::SetEnvironmentVariable($taskName,$taskPriorEnv[$taskName],'Process')}}finally{if($taskAcquired){$taskLease.ReleaseMutex()};$taskLease.Dispose()}
+}

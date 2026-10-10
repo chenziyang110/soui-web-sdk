@@ -1,0 +1,89 @@
+$ErrorActionPreference='Stop'
+$taskPacket=$PSScriptRoot
+$taskOld='F:/work/sm05-broker/out/kernel-83e67b12'
+$taskOldWin=Join-Path $taskOld 'runs/Win32'
+$taskOutput='F:/work/sm05-broker/out/relink-x86-50324118'
+$taskUtf8=[Text.UTF8Encoding]::new($false)
+function Write-Text($file,$body){[IO.File]::WriteAllText((Join-Path $taskPacket $file),$body,$taskUtf8)}
+function Write-Json($file,$body){Write-Text $file (($body|ConvertTo-Json -Depth 30)+[char]10)}
+function Pin($path){$item=Get-Item -LiteralPath $path;[ordered]@{path=$item.FullName;bytes=[long]$item.Length;sha256=(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()}}
+$taskBin='C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x86'
+$taskLibRoots=@('C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/lib/x86','C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x86','C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x86')
+$taskIncludeRoots=@('C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.44.35207/include','C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt','C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared','C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um','C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt')
+if(-not(Test-Path -LiteralPath (Join-Path $taskPacket 'support/owned-process.cjs'))){[IO.File]::Copy((Join-Path $taskOld 'support/owned-process.cjs'),(Join-Path $taskPacket 'support/owned-process.cjs'),$false)}
+if(-not(Test-Path -LiteralPath (Join-Path $taskPacket 'support/pe-exports.cjs'))){[IO.File]::Copy('F:/work/sm05-broker/out/full-rebuild-host-diagnostic-seal4-root-20261009/pe-exports.cjs',(Join-Path $taskPacket 'support/pe-exports.cjs'),$false)}
+$taskFile=[IO.File]::OpenRead((Join-Path $taskOldWin 'miniblink/build.binlog'))
+$taskGzip=[IO.Compression.GZipStream]::new($taskFile,[IO.Compression.CompressionMode]::Decompress)
+$taskMemory=[IO.MemoryStream]::new()
+try{
+ $taskGzip.CopyTo($taskMemory);$taskBytes=$taskMemory.ToArray();$taskLatin=[Text.Encoding]::Latin1.GetString($taskBytes)
+ $taskExe='C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\bin\HostX86\x86\link.exe'
+ $taskNeedle=$taskExe+' /ERRORREPORT:QUEUE /OUT:'
+ $taskStart=$taskLatin.IndexOf($taskNeedle,[StringComparison]::Ordinal)
+ if($taskStart-ne3189352-or$taskLatin.IndexOf($taskNeedle,$taskStart+1,[StringComparison]::Ordinal)-ne-1){throw 'Actual binlog command cardinality/offset differs'}
+ $taskLength=0;$taskShift=0;$taskPos=$taskStart-3
+ while($taskPos-lt$taskStart){$taskValue=$taskBytes[$taskPos];$taskLength=$taskLength-bor(($taskValue-band127)-shl$taskShift);$taskPos++;$taskShift+=7}
+ if($taskBytes.Length-ne4309547-or$taskLength-ne272361-or$taskBytes[$taskStart-4]-ne24-or$taskBytes[$taskStart+$taskLength]-ne12){throw 'Actual binlog encoded-string frame differs'}
+ $taskCommand=[Text.Encoding]::UTF8.GetString($taskBytes,$taskStart,$taskLength)
+ if($taskCommand.Length-ne$taskLength-or$taskCommand-match'[\x00-\x08\x0b\x0c\x0e-\x1f]'){throw 'Actual LINK command has unexpected bytes'}
+}finally{$taskMemory.Dispose();$taskGzip.Dispose();$taskFile.Dispose()}
+Write-Text 'actual-link-command.txt' $taskCommand
+$taskResponse=$taskCommand.Substring($taskExe.Length+1)
+$taskWrites=@()
+foreach($taskSpec in @(@('OUT','node.dll'),@('ILK','node.ilk'),@('PDB','node.pdb'),@('LTCGOUT','node.iobj'),@('IMPLIB','node.lib'))){
+ $taskMatches=[regex]::Matches($taskResponse,'(?i)/'+$taskSpec[0]+':"([^"]+)"')
+ if($taskMatches.Count-ne1){throw 'Actual write switch cardinality differs'}
+ $taskBefore=$taskMatches[0].Value;$taskAfter='/'+$taskSpec[0]+':"'+$taskOutput+'/image/'+$taskSpec[1]+'"'
+ $taskWrites+=@([ordered]@{switch=$taskSpec[0];before=$taskBefore;after=$taskAfter})
+ $taskResponse=$taskResponse.Replace($taskBefore,$taskAfter)
+}
+if($taskResponse-match'(?i)/(PGD|MAP|PDBSTRIPPED|DEF|ORDER|MANIFESTFILE|MANIFESTINPUT|TLBOUT|WINMDFILE|WINMD|ASSEMBLYRESOURCE|KEYFILE|KEYCONTAINER|RESPONSEFILE):'){throw 'Extra file switch requires explicit review'}
+Write-Text 'link.rsp' $taskResponse
+$taskInputs=@([regex]::Matches($taskResponse,'"([^"]+\.(?:obj|res))"',[Text.RegularExpressions.RegexOptions]::IgnoreCase)|ForEach-Object{[IO.Path]::GetFullPath($_.Groups[1].Value)})
+if(@($taskInputs|Where-Object{[IO.Path]::GetExtension($_)-eq'.obj'}).Count-ne3024-or@($taskInputs|Where-Object{[IO.Path]::GetExtension($_)-eq'.res'}).Count-ne1-or@($taskInputs|Sort-Object -Unique).Count-ne3025){throw 'Actual object/resource multiset differs'}
+$taskBare=@([regex]::Matches($taskResponse,'(?<!\S)[A-Za-z0-9_]+\.lib(?=\s|$)',[Text.RegularExpressions.RegexOptions]::IgnoreCase)|ForEach-Object{$_.Value})
+$taskLibraries=@()
+foreach($taskName in $taskBare){
+ $taskChoices=@((Join-Path $taskOldWin 'libraries'))+$taskLibRoots
+ $taskResolved=@($taskChoices|ForEach-Object{Join-Path $_ $taskName}|Where-Object{Test-Path -LiteralPath $_ -PathType Leaf})[0]
+ if(-not$taskResolved){throw "Actual named library cannot resolve: $taskName"}
+ $taskLibraries+=@([ordered]@{token=$taskName;resolved=Pin $taskResolved})
+}
+$taskOldFiles=@(Get-ChildItem -LiteralPath $taskOldWin -Recurse -File|Sort-Object FullName)
+$taskOldPins=@($taskOldFiles|ForEach-Object{$p=Pin $_.FullName;[ordered]@{relative=[IO.Path]::GetRelativePath($taskOldWin,$_.FullName).Replace('\','/');bytes=$p.bytes;sha256=$p.sha256}})
+Write-Json 'protected-inputs.json' ([ordered]@{schema='soui.win32-relink.protected-inputs/1';root=$taskOldWin;fileCount=$taskOldPins.Count;byteCount=[long](($taskOldFiles|Measure-Object Length -Sum).Sum);files=$taskOldPins;allOriginalWin32OutputsProtected=$true;authorFilesystemHashOnly=$true})
+$taskInventories=@()
+foreach($taskRoot in @($taskBin)+$taskLibRoots){$taskFiles=@(Get-ChildItem -LiteralPath $taskRoot -Recurse -File|Sort-Object FullName);$taskInventories+=@([ordered]@{root=$taskRoot;members=@($taskFiles|ForEach-Object{[IO.Path]::GetRelativePath($taskRoot,$_.FullName).Replace('\','/')});pins=@($taskFiles|ForEach-Object{Pin $_.FullName})})}
+$taskToolPins=@(
+ (Pin 'C:/nvm4w/nodejs/node.exe')
+ (Pin 'F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe')
+ (Pin 'C:/Windows/System32/cmd.exe')
+ (Pin 'C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Current/Bin/amd64/MSBuild.exe')
+ (Pin 'C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/Tools/VsDevCmd.bat')
+ (Pin 'C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Microsoft/VC/v170/Microsoft.Cpp.Common.props')
+ (Pin 'C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Microsoft/VC/v170/Microsoft.CppCommon.targets')
+ (Pin 'C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Microsoft/VC/v170/Microsoft.Cpp.ToolsetLocation.props')
+ (Pin 'C:/Program Files/Microsoft Visual Studio/2022/Community/MSBuild/Microsoft/VC/v170/Microsoft.Cpp.MSVC.Toolset.Win32.props')
+)
+Write-Json 'tools.json' ([ordered]@{schema='soui.win32-relink.tools/1';node=Pin 'C:/nvm4w/nodejs/node.exe';runner=Pin 'F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe';link=Pin (Join-Path $taskBin 'link.exe');dumpbin=Pin (Join-Path $taskBin 'dumpbin.exe');ownedClient=Pin (Join-Path $taskPacket 'support/owned-process.cjs');peReader=Pin (Join-Path $taskPacket 'support/pe-exports.cjs');pins=$taskToolPins;inventories=$taskInventories;compilerDirectory=$taskBin;libraryRoots=$taskLibRoots;includeRoots=$taskIncludeRoots;msvcVersion='14.44.35207';sdkVersion='10.0.19041.0';systemModulesFullyPinned=$false;completeToolchainProvenance=$false})
+$taskClFile=Join-Path $taskOldWin 'miniblink/obj/miniblink.tlog/CL.command.1.tlog'
+$taskClLines=[IO.File]::ReadAllLines($taskClFile)
+$taskBrokerKey='^'+(Join-Path $taskOld 'source/wke/CursorDescriptorBroker.cpp').ToUpperInvariant().Replace('/','\')
+$taskClIndex=[Array]::IndexOf($taskClLines,$taskBrokerKey)
+if($taskClIndex-lt0-or@($taskClLines|Where-Object{$_-eq$taskBrokerKey}).Count-ne1){throw 'Actual Broker CL record cardinality differs'}
+$taskBrokerCommand=$taskClLines[$taskClIndex+1]
+if($taskBrokerCommand-notmatch'(?i)(?:^|\s)/MT(?:\s|$)'-or$taskBrokerCommand-notmatch'(?i)(?:^|\s)/EHsc(?:\s|$)'){throw 'Actual Broker flags differ'}
+Write-Json 'replay-map.json' ([ordered]@{schema='soui.win32-relink.mapping/1';binlog=Pin (Join-Path $taskOldWin 'miniblink/build.binlog');extraction=[ordered]@{gzipDecompressedBytes=4309547;stringOffset=3189352;lengthPrefixBytes=3;precedingRecordByte=24;stringBytes=272361;nextRecordByte=12;originalExecutable=$taskExe};originalCommand=Pin (Join-Path $taskPacket 'actual-link-command.txt');response=Pin (Join-Path $taskPacket 'link.rsp');writeChanges=$taskWrites;objectCount=3024;resourceCount=1;objectAndResourceInputs=$taskInputs;namedLibraries=$taskLibraries;unmodifiedLibpath=(Join-Path $taskOldWin 'libraries');implicitDefaultLibrariesResolveOnlyWithin=$taskLibRoots;broker=[ordered]@{source=Pin (Join-Path $taskOld 'source/wke/CursorDescriptorBroker.cpp');object=Pin (Join-Path $taskOldWin 'miniblink/obj/CursorDescriptorBroker.obj');creatorObject=Pin (Join-Path $taskOldWin 'miniblink/obj/config.obj');clTlog=Pin $taskClFile;trackingKey=$taskBrokerKey;commandSha256=[Convert]::ToHexString([Security.Cryptography.SHA256]::HashData([Text.Encoding]::UTF8.GetBytes($taskBrokerCommand))).ToLowerInvariant();actualHistoricalCompilerHost='Hostx86/x86';fullTransitiveProvenance=$false}})
+$taskRequired=(Get-Content -LiteralPath 'F:/work/sm05-broker/out/full-rebuild-host-diagnostic-seal4-root-20261009/package.json' -Raw|ConvertFrom-Json).requiredExports
+$taskPayloadNames=@('Prepare-Filesystem.ps1','README.md','TOOLCHAIN-GAPS.md','run-root.cjs','tools.json','protected-inputs.json','actual-link-command.txt','link.rsp','replay-map.json','support/owned-process.cjs','support/pe-exports.cjs','Full-Main-Next.cmd','fresh-main-output.targets')
+$taskPackage=[ordered]@{schema='soui.win32-link-recovery.root/1';executionOwner='Root only';repositoryRoot='F:/work/sm05-broker';architecture='Win32';outputRoot=$taskOutput;payloads=@($taskPayloadNames|ForEach-Object{Pin (Join-Path $taskPacket $_)});membership=@($taskPayloadNames)+@('package.json','Run-Root.ps1','seal.json');protectedInputs=Pin (Join-Path $taskPacket 'protected-inputs.json');tools=Pin (Join-Path $taskPacket 'tools.json');mapping=Pin (Join-Path $taskPacket 'replay-map.json');sourceManifest=Pin (Join-Path $taskOld 'source-manifest.json');producerPlan=Pin (Join-Path $taskOld 'plan.json');producerTools=Pin (Join-Path $taskOld 'tools.json');historicalSummary=Pin (Join-Path $taskOldWin 'summary.json');historicalFailure=Pin (Join-Path $taskOldWin 'failure.json');requiredExports=$taskRequired;environmentAllowlist=@('SYSTEMROOT','WINDIR','COMSPEC','PATHEXT','PROCESSOR_ARCHITECTURE','PROCESSOR_ARCHITEW6432','NUMBER_OF_PROCESSORS','SYSTEMDRIVE');linkTimeoutMs=7200000;compilerTailOnlyMayContinue=$true;sourceCopyOnlyVerified=$true;fullRecompile=$false;historicalCompilerFormalPassed=$false;completeToolchainProvenance=$false;fullSdkQualified=$false;win7Qualified=$false;qualificationPassed=$false;releaseReady=$false;nativeExecutedDuringPreparation=$false}
+Write-Json 'package.json' $taskPackage
+$taskPackagePin=Pin (Join-Path $taskPacket 'package.json');$taskDriverPin=Pin (Join-Path $taskPacket 'run-root.cjs');$taskToolsPin=Pin (Join-Path $taskPacket 'tools.json')
+$taskParent='F:/work/sm05-broker/out/host-prime-owned-v3-root-115ab448-7b93-4e64-87f5-1e1a5401ce0f'
+$taskGuard=[IO.File]::ReadAllText((Join-Path $taskParent 'Run-Root.ps1'))
+$taskGuard=$taskGuard.Replace($taskParent,$taskPacket.Replace('\','/')).Replace('c4c33a839add246baf045e02c5533766b62c01cbce4706b6c03e708f40efa7f8',$taskPackagePin.sha256).Replace('3ee912d25462c7e29763eda58b6a146fc553543f9b5ba18cc5d00bc21df8ef51',$taskDriverPin.sha256).Replace('c073ad93d7782a7b8b7d56286565bb54c4223374dc98ff76b21fa433285ff1d6',$taskToolsPin.sha256).Replace('ROOT_PUBLIC_HOST_PRIME_V1','ROOT_WIN32_LINK_RECOVERY_V1')
+Write-Text 'Run-Root.ps1' $taskGuard
+$taskTokens=$null;$taskErrors=$null;[void][Management.Automation.Language.Parser]::ParseFile((Join-Path $taskPacket 'Run-Root.ps1'),[ref]$taskTokens,[ref]$taskErrors)
+if($taskErrors.Count-ne0){throw 'Guard AST errors'}
+Write-Json 'seal.json' ([ordered]@{schema='soui.win32-link-recovery.seal/1';package=$taskPackagePin;driver=$taskDriverPin;guard=Pin (Join-Path $taskPacket 'Run-Root.ps1');protectedInputs=Pin (Join-Path $taskPacket 'protected-inputs.json');mapping=Pin (Join-Path $taskPacket 'replay-map.json');sourceManifest=$taskPackage.sourceManifest;protectedFileCount=$taskOldPins.Count;oldWin32OutputBytes=[long](($taskOldFiles|Measure-Object Length -Sum).Sum);reusedObjectCount=3024;reusedResourceCount=1;outputAbsent=(-not(Test-Path -LiteralPath $taskOutput));guardAstErrors=0;nativeExecuted=$false;authorJavaScriptEvaluated=$false;allBroaderQualification=$false})
+[ordered]@{packet=$taskPacket;output=$taskOutput;package=$taskPackagePin;driver=$taskDriverPin;guard=Pin (Join-Path $taskPacket 'Run-Root.ps1');seal=Pin (Join-Path $taskPacket 'seal.json');oldCount=$taskOldPins.Count;oldBytes=[long](($taskOldFiles|Measure-Object Length -Sum).Sum);objectCount=3024;resourceCount=1;namedLibraryCount=$taskLibraries.Count;toolInventoryFiles=($taskInventories|ForEach-Object{$_.pins.Count}|Measure-Object -Sum).Sum}|ConvertTo-Json -Depth 5

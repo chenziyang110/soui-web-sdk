@@ -1,0 +1,55 @@
+{
+  "name": "ctest",
+  "executable": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+  "args": [
+    "--test-dir",
+    "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build",
+    "-C",
+    "Release",
+    "--output-on-failure",
+    "--no-tests=error",
+    "-j",
+    "1",
+    "--output-junit",
+    "F:\\work\\sm05-broker\\out\\reg25\\Win32\\tests.junit.xml"
+  ],
+  "cwd": "F:/work/sm05-broker/out/reg25/Win32",
+  "pid": 109240,
+  "creationFileTime": "134360567463312657",
+  "rootExitCode": 0,
+  "supervisorExitCode": 0,
+  "genericPassed": true,
+  "closureConfirmed": true,
+  "rawJob": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\ctest.owned.jsonl",
+  "rawSha256": "29c2dbb132f68944479bcf2ee127407e2288d808798a7260ef623694ca91910b",
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\ctest.owned.jsonl.context.json",
+    "bytes": 645,
+    "sha256": "54ef9447e4ba6cf31fa2fab383de3d88d256ea20a19ea02b72523bb38ca3095e"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\ctest.stdout.raw",
+    "bytes": 7145,
+    "sha256": "6c5a00f1e7eb0dc85bda98ccc80492d213769b78e92b34c0e92ec269f54f08b1"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\ctest.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "streamErrors": [],
+  "terminal": {
+    "event": "terminal",
+    "reason": "completed",
+    "elapsedMs": 13478,
+    "rootExited": true,
+    "rootExitCode": 0,
+    "activeBeforeCleanup": 0,
+    "terminatedOwnedJob": false,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 52,
+    "limitTerminatedProcesses": 0,
+    "passed": true
+  }
+}

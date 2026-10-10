@@ -1,0 +1,55 @@
+diff --git a/F:/work/sm05-broker/sdk/src/host/soui_miniblink_host.cpp b/F:/work/sm05-broker/out/ole-startup-schedules-candidate-bed44da5-7aa4-40e4-8cc7-c2216a9434d3/candidate/sdk/src/host/soui_miniblink_host.cpp
+index ab2ac67a..e632008d 100644
+--- a/F:/work/sm05-broker/sdk/src/host/soui_miniblink_host.cpp
++++ b/F:/work/sm05-broker/out/ole-startup-schedules-candidate-bed44da5-7aa4-40e4-8cc7-c2216a9434d3/candidate/sdk/src/host/soui_miniblink_host.cpp
+@@ -2190,6 +2190,28 @@ std::string dynamic_miniblink_adapter::application_diagnostics() {
+                 {"document", std::to_string(admission.receipt.documentGeneration)},
+                 {"geometry", std::to_string(admission.receipt.geometryGeneration)}}},
+             {"pending", admission.document_pending}, {"closing", admission.closing}, {"nonAtomic", true}};
++        // Real pre-close ledger observation only; FAILED classifies sticky vendor failure.
++        const auto* api = static_cast<const wkeCursorBrokerApi*>(cursor_api_);
++        const auto token = cursor_broker_->token();
++        wkeCursorBrokerDrainReceipt drain{}; drain.structSize = sizeof(drain);
++        const bool inspected = valid_cursor_api(api) && (token.low || token.high);
++        const unsigned int status = inspected ? api->inspectDrain(token, &drain) : WKE_CURSOR_BROKER_UNAVAILABLE;
++        const bool valid = inspected && drain.structSize == sizeof(drain) &&
++            drain.endpoint.low == token.low && drain.endpoint.high == token.high &&
++            drain.closing <= 1 && drain.drained <= 1 && drain.oleRegistered <= 1 &&
++            (status == WKE_CURSOR_BROKER_OK || status == WKE_CURSOR_BROKER_FAILED);
++        observation["vendorDrain"] = {{"inspected", inspected}, {"valid", valid},
++            {"status", status}, {"vendorFailed", valid ? nlohmann::json(status == WKE_CURSOR_BROKER_FAILED) : nlohmann::json(nullptr)},
++            {"nonAtomic", true}};
++        if (valid) {
++          observation["vendorDrain"]["closing"] = drain.closing;
++          observation["vendorDrain"]["drained"] = drain.drained;
++          observation["vendorDrain"]["queued"] = drain.queuedUiTasks;
++          observation["vendorDrain"]["running"] = drain.runningUiTasks;
++          observation["vendorDrain"]["nativeScopes"] = drain.nativeScopes;
++          observation["vendorDrain"]["engineCallbacks"] = drain.engineCallbacks;
++          observation["vendorDrain"]["oleRegistered"] = drain.oleRegistered;
++        }
+       }
+       *script_result = observation.dump();
+       if (webview_ == nullptr || wkeGlobalExec == nullptr) return;
+diff --git a/F:/work/sm05-broker/out/w2d8/native/main.cpp b/F:/work/sm05-broker/out/ole-startup-schedules-candidate-bed44da5-7aa4-40e4-8cc7-c2216a9434d3/w2-main.cpp
+index e3ad3530..ec07eacd 100644
+--- a/F:/work/sm05-broker/out/w2d8/native/main.cpp
++++ b/F:/work/sm05-broker/out/ole-startup-schedules-candidate-bed44da5-7aa4-40e4-8cc7-c2216a9434d3/w2-main.cpp
+@@ -158,6 +158,17 @@ struct application final {
+             if (diagnostics_before_close.size() > 4096) diagnostics_before_close.resize(4096);
+           }
+         } catch (...) { diagnostics_before_close = "diagnostic-call-threw"; }
++      } else {
++        char diagnostic_option[2]{};
++        if (GetEnvironmentVariableA("SOUI_DIAGNOSTIC_SCRIPT", diagnostic_option,
++            sizeof(diagnostic_option)) == 1 && diagnostic_option[0] == '1') {
++          // Successful opt-in subjects observe the real OLE/vendor ledger before teardown too.
++          try {
++            document_before_close = host && host->document_ready();
++            diagnostics_before_close = host ? host->application_diagnostics() : "host-absent";
++            if (diagnostics_before_close.size() > 4096) diagnostics_before_close.resize(4096);
++          } catch (...) { diagnostics_before_close = "diagnostic-call-threw"; }
++        }
+       }
+       close();
+     }

@@ -1,0 +1,7 @@
+# V2 finite timing delta
+
+Original Host RED wrapper remains unrun and unchanged. Fixture/CMake/89 shadow files/95 live files/tools/producer and current kernel are byte-identical and referenced in place. No production startup change.
+
+Exactly three driver edits after the already-validated unique root-exit record: define rootElapsed/terminalElapsed/finiteTiming using safe integer and nonnegative/order/deadline checks; require finiteTiming plus terminalElapsed >= rootElapsed + 2000 for compiler-tail continuation; require finiteTiming for every exact natural outcome, including default RED2. Original compiler-tail root0/supervisor124/genericfalse/heldJobClosure/no-limit predicates remain intact. Gate and schema retain their original identity; this is solely a stricter reader.
+
+Only namespace/output, package payload pins and guard package/driver hashes differ outside these edits. Fresh output is fixed by package; old packet/output are not used or overwritten. Root still executes normal public Host desired failure2 and final wrapper1, never promotes genericfalse. No execution by author.

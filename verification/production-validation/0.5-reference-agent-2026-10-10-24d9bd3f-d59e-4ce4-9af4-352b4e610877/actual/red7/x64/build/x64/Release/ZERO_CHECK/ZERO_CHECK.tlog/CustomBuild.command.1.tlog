@@ -1,0 +1,10 @@
+^F:\WORK\SM05-BROKER\OUT\RAGENT-RED7\X64\BUILD\CMAKEFILES\CFC1ABBEC07292DAA789CB11DDA897AE\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/work/sm05-broker/out/reference-agent-red-contract-root-9c7b1ab7-f80e-484a-852c-b98b7bf84672 -BF:/work/sm05-broker/out/ragent-red7/x64/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file F:/work/sm05-broker/out/ragent-red7/x64/build/SouiReferenceAgentRoot.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

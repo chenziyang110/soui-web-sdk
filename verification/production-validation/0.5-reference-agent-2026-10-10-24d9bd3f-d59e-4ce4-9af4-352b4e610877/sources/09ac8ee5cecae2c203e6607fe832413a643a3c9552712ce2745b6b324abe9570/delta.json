@@ -1,0 +1,57 @@
+{
+  "schema": "reference-agent-failure-phase-source-delta/1",
+  "before": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-red2-source-candidate-214d38db-19b8-478c-a880-e9172b5a7680\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+    "relative": "demos/reference-workbench/tests/native-agent.cpp",
+    "bytes": 29226,
+    "sha256": "26647ad8c7638909969a8e9eff2262858ce65040ea8ee6f5bb9f0fc2d82a99e2"
+  },
+  "after": {
+    "path": "F:\\work\\sm05-broker\\out\\reference-agent-phase-source-42d97dc4-644a-4ee8-8d1a-5a25645a12c9\\candidate\\demos\\reference-workbench\\tests\\native-agent.cpp",
+    "bytes": 30955,
+    "sha256": "ce3c48d13a3f04e722511dceeae107aa0c95041189f0c95e0070f4511d9e8116"
+  },
+  "reverseRawExact": true,
+  "intervals": [
+    {
+      "before": "#include <atomic>\n",
+      "after": "#include <atomic>\n#include <cstdio>\n"
+    },
+    {
+      "before": "void selected_peer(const char* fixture) {",
+      "after": "// Failure-only fixture observation, before a held child's fail-stop destructor.\n// No exception text, page credentials, token data or successful-case output.\nvoid phase_failure(const char* phase, const child_process& selected) noexcept {\n  FILETIME created{}, exited{}, kernel{}, user{};\n  if (!GetProcessTimes(GetCurrentProcess(), &created, &exited, &kernel, &user)) return;\n  const auto root_creation = (static_cast<std::uint64_t>(created.dwHighDateTime) << 32U) | created.dwLowDateTime;\n  if (!root_creation || !selected.id() || !selected.created()) return;\n  char bytes[768]{};\n  const int length = std::snprintf(bytes, sizeof(bytes),\n      \"{\\\"schema\\\":\\\"soui.reference-agent-phase-diagnostic/1\\\",\\\"case\\\":\\\"selected-peer\\\",\\\"phase\\\":\\\"%s\\\",\"\n      \"\\\"pid\\\":\\\"%lu\\\",\\\"creationFileTime\\\":\\\"%llu\\\",\\\"selectedPid\\\":\\\"%lu\\\",\\\"selectedCreationFileTime\\\":\\\"%llu\\\"}\\n\",\n      phase, static_cast<unsigned long>(GetCurrentProcessId()), static_cast<unsigned long long>(root_creation),\n      static_cast<unsigned long>(selected.id()), static_cast<unsigned long long>(selected.created()));\n  if (length <= 0 || static_cast<std::size_t>(length) >= sizeof(bytes)) return;\n  DWORD written{};\n  (void)WriteFile(GetStdHandle(STD_ERROR_HANDLE), bytes, static_cast<DWORD>(length), &written, nullptr);\n}\nvoid selected_peer(const char* fixture) {"
+    },
+    {
+      "before": "  environment app{fixture}; child_process selected{\"describe\", app.name}; app.configure(selected.id());",
+      "after": "  environment app{fixture}; child_process selected{\"describe\", app.name};\n  const char* phase = \"configure\";\n  try {\n  app.configure(selected.id());\n  phase = \"bootstrap\";"
+    },
+    {
+      "before": "  const auto prior = app.bootstrap();\n  std::thread prebind",
+      "after": "  const auto prior = app.bootstrap();\n  phase = \"prebind-shutdown\";\n  std::thread prebind"
+    },
+    {
+      "before": "  require(!app.agent->closed() && !app.agent->started(), \"Prebind session cleanup disabled first admission\");",
+      "after": "  phase = \"prebind-assert\";\n  require(!app.agent->closed() && !app.agent->started(), \"Prebind session cleanup disabled first admission\");\n  phase = \"old-page-denial\";"
+    },
+    {
+      "before": "  const auto current = app.bootstrap();",
+      "after": "  phase = \"new-bootstrap\";\n  const auto current = app.bootstrap();\n  phase = \"new-page-probe\";"
+    },
+    {
+      "before": "  wchar_t executable[]{L\"reference\"}, pipe_option[]{L\"--agent-pipe\"}, pipe_value[]{L\"safe\"}, process_option[]{L\"--agent-allow-process\"};",
+      "after": "  phase = \"selected-cli\";\n  wchar_t executable[]{L\"reference\"}, pipe_option[]{L\"--agent-pipe\"}, pipe_value[]{L\"safe\"}, process_option[]{L\"--agent-allow-process\"};"
+    },
+    {
+      "before": "  require(app.agent->selected_process_id() == selected.id() && app.agent->selected_creation_filetime() == selected.created(), \"Selection is not actual held child\"); app.start();",
+      "after": "  phase = \"held-identity-and-start\";\n  require(app.agent->selected_process_id() == selected.id() && app.agent->selected_creation_filetime() == selected.created(), \"Selection is not actual held child\"); app.start();"
+    },
+    {
+      "before": "  child_process denied{\"denied-peer\", app.name}; denied.resume(); app.until([&] { return denied.completed(); }, \"Unapproved child timeout\"); (void)denied.result();",
+      "after": "  phase = \"denied-child\";\n  child_process denied{\"denied-peer\", app.name}; denied.resume(); app.until([&] { return denied.completed(); }, \"Unapproved child timeout\"); (void)denied.result();\n  phase = \"approved-child\";"
+    },
+    {
+      "before": "  app.pump(); require(app.agent->closed() && !app.agent->start_bound_document([] { return true; }), \"Exited held process regained admission\");",
+      "after": "  phase = \"exited-peer-admission\";\n  app.pump(); require(app.agent->closed() && !app.agent->start_bound_document([] { return true; }), \"Exited held process regained admission\");\n  } catch (...) { phase_failure(phase, selected); throw; }"
+    }
+  ]
+}

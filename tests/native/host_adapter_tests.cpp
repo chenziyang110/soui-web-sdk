@@ -89,6 +89,7 @@ struct adapter_state {
   std::string session_id;
   std::function<void()> on_unmount;
   bool mounted{false};
+  bool owns_partial_mount{false};
   bool visible{true};
   bool document_ready{true};
   bool application_ready{true};
@@ -118,7 +119,7 @@ class fake_adapter final : public webview_host_adapter {
   host_result mount(const host_config& config) override {
     ++state_->mount_calls;
     state_->mounted_config = config;
-    if (state_->mount_result.ok) state_->mounted = true;
+    if (state_->mount_result.ok || state_->owns_partial_mount) state_->mounted = true;
     return state_->mount_result;
   }
   host_result unmount() override {
@@ -313,6 +314,8 @@ void test_errors_and_retry(const host_config& config) {
   state->mount_result = {false, "E_FAKE_MOUNT", "mount rejected"};
   require_same_result(host.start(config), state->mount_result, "mount error must propagate");
   require(host.session() == nullptr && state->session_updates == 0, "failed mount cannot publish a session");
+  require_error(host.start(config), "E_CLEANUP_PENDING", "failed mount retains cleanup ownership");
+  require(host.destroy().ok, "failed mount cleanup must finish before restart");
   state->mount_result = {true, {}, {}};
   require(host.start(config).ok, "mount can retry after failure");
   const auto old_session = host.session()->session_id();
@@ -340,12 +343,38 @@ void test_errors_and_retry(const host_config& config) {
   require(!host.session()->terminal() && host.session()->state() == lifecycle_state::reloaded,
           "failed close cannot make the session terminal");
   require_same_result(host.destroy(), state->unmount_result, "destroy error must propagate");
-  require(!host.session()->terminal() && state->unmount_calls == 2,
+  require(!host.session()->terminal() && state->unmount_calls == 3,
           "failed destroy must allow another unmount attempt");
   state->unmount_result = {true, {}, {}};
   require(host.destroy().ok && host.session()->state() == lifecycle_state::destroyed &&
-              state->unmount_calls == 3, "destroy retry must finish teardown");
-  require(host.destroy().ok && state->unmount_calls == 3, "successful cleanup cannot repeat unmount");
+              state->unmount_calls == 4, "destroy retry must finish teardown");
+  require(host.destroy().ok && state->unmount_calls == 4, "successful cleanup cannot repeat unmount");
+}
+
+void test_failed_mount_cleanup_owner(const host_config& config) {
+  auto state = std::make_shared<adapter_state>();
+  webview_host host(std::make_unique<fake_adapter>(state));
+  state->owns_partial_mount = true;
+  state->mount_result = {false, "E_FAILED_HANDOFF", "native callback ownership was handed off"};
+  state->unmount_result = {false, "E_CURSOR_CLOSE_PENDING", "native callback still running"};
+  require_error(host.start(config), "E_FAILED_HANDOFF", "failed handoff is reported");
+  require(state->mounted && !host.session(), "partial mount remains owned without a ready session");
+  require_error(host.destroy(), "E_CURSOR_CLOSE_PENDING", "no session cannot fake successful destruction");
+  require_error(host.close(), "E_CURSOR_CLOSE_PENDING", "close also retries a failed mount");
+  require_error(host.start(config), "E_CLEANUP_PENDING", "pending callbacks prevent a new mount");
+  require(state->mount_calls == 1 && state->unmount_calls == 2 && state->mounted,
+          "pending teardown preserves the only partial resource owner");
+  host_result nested_destroy;
+  state->on_unmount = [&] { nested_destroy = host.destroy(); };
+  state->unmount_result = {true, "DRAINED", "real native cleanup completed"};
+  require_same_result(host.destroy(), state->unmount_result, "only the real cleanup result closes the owner");
+  require_error(nested_destroy, "E_BUSY", "reentrant failed-mount cleanup is not repeated");
+  require(!state->mounted && state->unmount_calls == 3, "cleanup releases partial mount exactly once");
+  require(host.destroy().ok && state->unmount_calls == 3, "completed partial cleanup is idempotent");
+  state->on_unmount = {};
+  state->mount_result = {true, {}, {}};
+  require(host.start(config).ok && state->mount_calls == 2, "restart is possible after actual cleanup");
+  require(host.destroy().ok, "restarted owner is cleaned before destruction");
 }
 
 void test_close_retry_and_reentrancy(const host_config& config) {
@@ -409,6 +438,7 @@ int main() {
     test_optional_operations(config);
     test_forwarding_and_lifecycle(config);
     test_errors_and_retry(config);
+    test_failed_mount_cleanup_owner(config);
     test_close_retry_and_reentrancy(config);
     test_destructor_retries_failed_close(config);
     test_validation(config);

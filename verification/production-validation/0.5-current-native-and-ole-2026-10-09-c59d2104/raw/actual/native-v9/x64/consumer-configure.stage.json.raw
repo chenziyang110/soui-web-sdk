@@ -1,0 +1,47 @@
+{
+  "name": "consumer-configure",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "-S",
+    "F:\\work\\sm05-broker\\tests\\endpoint-consumer",
+    "-B",
+    "F:\\work\\sm05-broker\\out\\native-v9\\x64\\consumer-build",
+    "-G",
+    "Visual Studio 17 2022",
+    "-A",
+    "x64,version=10.0.19041.0",
+    "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+    "-T",
+    "v143,host=x64,version=14.44.35207",
+    "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+    "-DSouiSdk_DIR:PATH=F:\\work\\sm05-broker\\out\\native-v9\\x64\\sdk-relocated\\lib\\cmake\\SouiSdk",
+    "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
+    "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF",
+    "-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir=F:\\work\\sm05-broker\\out\\full-native-suite-v9-root-f78831af-efd7-4861-9f96-69dc638aa54d\\empty-user-props\\"
+  ],
+  "cwd": "F:\\work\\sm05-broker\\out\\native-v9\\x64",
+  "pid": 39184,
+  "creationFileTime": "134360328121223394",
+  "rootExitCode": 0,
+  "supervisorExitCode": 0,
+  "genericPassed": true,
+  "closureConfirmed": true,
+  "rawJob": "F:\\work\\sm05-broker\\out\\native-v9\\x64\\consumer-configure.owned.jsonl",
+  "rawSha256": "6f7316f00302b68ac5f2dfb28746ee04c6b2ae6eab114d67fc82bf865fbbff13",
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v9\\x64\\consumer-configure.owned.jsonl.context.json",
+    "bytes": 1261,
+    "sha256": "0760ee5048123b9efc00443db945eedb2e3c36702d885afcc3539e0f0300db87"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v9\\x64\\consumer-configure.stdout.raw",
+    "bytes": 502,
+    "sha256": "ee26c5b17f4a74574369775d18a60c490a71aadbfbcace729ca1387104865977"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v9\\x64\\consumer-configure.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "streamErrors": []
+}

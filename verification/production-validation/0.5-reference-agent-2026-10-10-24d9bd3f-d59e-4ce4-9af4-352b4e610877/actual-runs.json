@@ -1,0 +1,420 @@
+{
+  "schema": "reference-agent-selected-actual-runs/1",
+  "runs": [
+    {
+      "variant": "red7",
+      "architecture": "x64",
+      "originalSummary": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\summary-failed.json",
+        "bytes": 13109,
+        "sha256": "16e14bdb0e8d01a92ccb03e4cff2146af0ba7a45c84c8fef1cdbba802e9d8133"
+      },
+      "stageNames": [
+        "actiongen-generate",
+        "actiongen-check",
+        "configure",
+        "build-reference-agent",
+        "registry",
+        "case-selected-peer"
+      ],
+      "actualStageCount": 6,
+      "completed": false,
+      "allGenericPassed": null,
+      "actualGenerated5": [
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\source\\demos\\reference-workbench\\app\\generated\\actions.hpp",
+            "bytes": 6471,
+            "sha256": "9f2117a97462e3e27ac68296f3c1f5ebe31e0bdd012624e0c2653d5740002192"
+          },
+          "archiveRelative": "sources/9f2117a97462e3e27ac68296f3c1f5ebe31e0bdd012624e0c2653d5740002192/actions.hpp"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\source\\demos\\reference-workbench\\web\\src\\generated\\actions.ts",
+            "bytes": 3494,
+            "sha256": "9137548c616ed6aefc57d890ff93aa8e0f9d69a450d692e7cc833dcca2f66457"
+          },
+          "archiveRelative": "sources/9137548c616ed6aefc57d890ff93aa8e0f9d69a450d692e7cc833dcca2f66457/actions.ts"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\source\\demos\\reference-workbench\\contracts\\generated\\tools.json",
+            "bytes": 1237,
+            "sha256": "d1ecae3598dc2c92ac7315858ceb5b6bc979bfad670169c078e2f940ada4dccb"
+          },
+          "archiveRelative": "sources/d1ecae3598dc2c92ac7315858ceb5b6bc979bfad670169c078e2f940ada4dccb/tools.json"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\source\\demos\\reference-workbench\\docs\\generated\\actions.md",
+            "bytes": 2535,
+            "sha256": "f0eda85f8922c2ea7ff0e18ca670b09cb879455750b785ba738790f4dbc9ec51"
+          },
+          "archiveRelative": "sources/f0eda85f8922c2ea7ff0e18ca670b09cb879455750b785ba738790f4dbc9ec51/actions.md"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\source\\demos\\reference-workbench\\contracts\\generated\\actiongen-manifest.json",
+            "bytes": 588,
+            "sha256": "421e463daec7e22d484c72708cfdb3050e2af20cc0e366fa253238204c49cde1"
+          },
+          "archiveRelative": "sources/421e463daec7e22d484c72708cfdb3050e2af20cc0e366fa253238204c49cde1/actiongen-manifest.json"
+        }
+      ],
+      "actualSdkArchive": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\x64\\sdk-relocated\\lib\\Release\\soui_sdk.lib",
+        "bytes": 44011594,
+        "sha256": "ce150c859d6a03c784f69cadfabe191d436ab89162649feb718c50a8c75de558"
+      },
+      "actualMap": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent-red7\\x64\\build\\reference-agent-Release.map",
+        "bytes": 3171151,
+        "sha256": "f3dac7ddd4d932c30da0b8c849f14ab840253f88e433ba0873d03e750b7c4306"
+      },
+      "memberContributionOnly": true,
+      "originalBinaryOutputsNotCopied": true,
+      "qualificationPassed": false,
+      "releaseReady": false
+    },
+    {
+      "variant": "green6",
+      "architecture": "x64",
+      "originalSummary": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent6\\x64\\summary-failed.json",
+        "bytes": 25925,
+        "sha256": "fc7b2a0573e55477bd4c18236d9dcf30159e917650f9b9c86291778592b2f252"
+      },
+      "stageNames": [
+        "actiongen-generate",
+        "actiongen-check",
+        "configure",
+        "build-reference-agent",
+        "registry",
+        "case-disabled-default-deny",
+        "case-selected-peer",
+        "case-fixed-summary",
+        "case-cancel",
+        "case-invalid-form",
+        "case-revoked-document",
+        "case-close-pending",
+        "case-page-isolation"
+      ],
+      "actualStageCount": 13,
+      "completed": false,
+      "allGenericPassed": null,
+      "actualGenerated5": [
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent6\\x64\\source\\demos\\reference-workbench\\app\\generated\\actions.hpp",
+            "bytes": 6471,
+            "sha256": "9f2117a97462e3e27ac68296f3c1f5ebe31e0bdd012624e0c2653d5740002192"
+          },
+          "archiveRelative": "sources/9f2117a97462e3e27ac68296f3c1f5ebe31e0bdd012624e0c2653d5740002192/actions.hpp"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent6\\x64\\source\\demos\\reference-workbench\\web\\src\\generated\\actions.ts",
+            "bytes": 3494,
+            "sha256": "9137548c616ed6aefc57d890ff93aa8e0f9d69a450d692e7cc833dcca2f66457"
+          },
+          "archiveRelative": "sources/9137548c616ed6aefc57d890ff93aa8e0f9d69a450d692e7cc833dcca2f66457/actions.ts"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent6\\x64\\source\\demos\\reference-workbench\\contracts\\generated\\tools.json",
+            "bytes": 1237,
+            "sha256": "d1ecae3598dc2c92ac7315858ceb5b6bc979bfad670169c078e2f940ada4dccb"
+          },
+          "archiveRelative": "sources/d1ecae3598dc2c92ac7315858ceb5b6bc979bfad670169c078e2f940ada4dccb/tools.json"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent6\\x64\\source\\demos\\reference-workbench\\docs\\generated\\actions.md",
+            "bytes": 2535,
+            "sha256": "f0eda85f8922c2ea7ff0e18ca670b09cb879455750b785ba738790f4dbc9ec51"
+          },
+          "archiveRelative": "sources/f0eda85f8922c2ea7ff0e18ca670b09cb879455750b785ba738790f4dbc9ec51/actions.md"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent6\\x64\\source\\demos\\reference-workbench\\contracts\\generated\\actiongen-manifest.json",
+            "bytes": 588,
+            "sha256": "421e463daec7e22d484c72708cfdb3050e2af20cc0e366fa253238204c49cde1"
+          },
+          "archiveRelative": "sources/421e463daec7e22d484c72708cfdb3050e2af20cc0e366fa253238204c49cde1/actiongen-manifest.json"
+        }
+      ],
+      "actualSdkArchive": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\x64\\sdk-relocated\\lib\\Release\\soui_sdk.lib",
+        "bytes": 44011594,
+        "sha256": "ce150c859d6a03c784f69cadfabe191d436ab89162649feb718c50a8c75de558"
+      },
+      "actualMap": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent6\\x64\\build\\reference-agent-Release.map",
+        "bytes": 3168152,
+        "sha256": "9d038446b89b778acf69912be20b8828fb57a873a7dce42efc39431b3c279c31"
+      },
+      "memberContributionOnly": true,
+      "originalBinaryOutputsNotCopied": true,
+      "qualificationPassed": false,
+      "releaseReady": false
+    },
+    {
+      "variant": "green7",
+      "architecture": "x64",
+      "originalSummary": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent7\\x64\\summary-failed.json",
+        "bytes": 25929,
+        "sha256": "c9d79a4e405c41ae85288f35bdea25e80c03c6ecd5fd063f706616f31321feba"
+      },
+      "stageNames": [
+        "actiongen-generate",
+        "actiongen-check",
+        "configure",
+        "build-reference-agent",
+        "registry",
+        "case-disabled-default-deny",
+        "case-selected-peer",
+        "case-fixed-summary",
+        "case-cancel",
+        "case-invalid-form",
+        "case-revoked-document",
+        "case-close-pending",
+        "case-page-isolation"
+      ],
+      "actualStageCount": 13,
+      "completed": false,
+      "allGenericPassed": null,
+      "actualGenerated5": [
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent7\\x64\\source\\demos\\reference-workbench\\app\\generated\\actions.hpp",
+            "bytes": 6471,
+            "sha256": "9f2117a97462e3e27ac68296f3c1f5ebe31e0bdd012624e0c2653d5740002192"
+          },
+          "archiveRelative": "sources/9f2117a97462e3e27ac68296f3c1f5ebe31e0bdd012624e0c2653d5740002192/actions.hpp"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent7\\x64\\source\\demos\\reference-workbench\\web\\src\\generated\\actions.ts",
+            "bytes": 3494,
+            "sha256": "9137548c616ed6aefc57d890ff93aa8e0f9d69a450d692e7cc833dcca2f66457"
+          },
+          "archiveRelative": "sources/9137548c616ed6aefc57d890ff93aa8e0f9d69a450d692e7cc833dcca2f66457/actions.ts"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent7\\x64\\source\\demos\\reference-workbench\\contracts\\generated\\tools.json",
+            "bytes": 1237,
+            "sha256": "d1ecae3598dc2c92ac7315858ceb5b6bc979bfad670169c078e2f940ada4dccb"
+          },
+          "archiveRelative": "sources/d1ecae3598dc2c92ac7315858ceb5b6bc979bfad670169c078e2f940ada4dccb/tools.json"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent7\\x64\\source\\demos\\reference-workbench\\docs\\generated\\actions.md",
+            "bytes": 2535,
+            "sha256": "f0eda85f8922c2ea7ff0e18ca670b09cb879455750b785ba738790f4dbc9ec51"
+          },
+          "archiveRelative": "sources/f0eda85f8922c2ea7ff0e18ca670b09cb879455750b785ba738790f4dbc9ec51/actions.md"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent7\\x64\\source\\demos\\reference-workbench\\contracts\\generated\\actiongen-manifest.json",
+            "bytes": 588,
+            "sha256": "421e463daec7e22d484c72708cfdb3050e2af20cc0e366fa253238204c49cde1"
+          },
+          "archiveRelative": "sources/421e463daec7e22d484c72708cfdb3050e2af20cc0e366fa253238204c49cde1/actiongen-manifest.json"
+        }
+      ],
+      "actualSdkArchive": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\x64\\sdk-relocated\\lib\\Release\\soui_sdk.lib",
+        "bytes": 44011594,
+        "sha256": "ce150c859d6a03c784f69cadfabe191d436ab89162649feb718c50a8c75de558"
+      },
+      "actualMap": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent7\\x64\\build\\reference-agent-Release.map",
+        "bytes": 3179554,
+        "sha256": "883163ee3812c4a339c28a665874d8cad85adfdc39e88a2ebec8ea7b95e6d155"
+      },
+      "memberContributionOnly": true,
+      "originalBinaryOutputsNotCopied": true,
+      "qualificationPassed": false,
+      "releaseReady": false
+    },
+    {
+      "variant": "green8",
+      "architecture": "x64",
+      "originalSummary": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\summary.json",
+        "bytes": 54293,
+        "sha256": "b838fcf9d4faf2f07a67c05a6ec063879acb9fc1e43bb833c9eb22d14dad5384"
+      },
+      "stageNames": [
+        "actiongen-generate",
+        "actiongen-check",
+        "configure",
+        "build-reference-agent",
+        "registry",
+        "case-disabled-default-deny",
+        "case-selected-peer",
+        "case-fixed-summary",
+        "case-cancel",
+        "case-invalid-form",
+        "case-revoked-document",
+        "case-close-pending",
+        "case-page-isolation",
+        "ctest-eight"
+      ],
+      "actualStageCount": 14,
+      "completed": true,
+      "allGenericPassed": true,
+      "actualGenerated5": [
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\app\\generated\\actions.hpp",
+            "bytes": 6471,
+            "sha256": "9f2117a97462e3e27ac68296f3c1f5ebe31e0bdd012624e0c2653d5740002192"
+          },
+          "archiveRelative": "sources/9f2117a97462e3e27ac68296f3c1f5ebe31e0bdd012624e0c2653d5740002192/actions.hpp"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\web\\src\\generated\\actions.ts",
+            "bytes": 3494,
+            "sha256": "9137548c616ed6aefc57d890ff93aa8e0f9d69a450d692e7cc833dcca2f66457"
+          },
+          "archiveRelative": "sources/9137548c616ed6aefc57d890ff93aa8e0f9d69a450d692e7cc833dcca2f66457/actions.ts"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\contracts\\generated\\tools.json",
+            "bytes": 1237,
+            "sha256": "d1ecae3598dc2c92ac7315858ceb5b6bc979bfad670169c078e2f940ada4dccb"
+          },
+          "archiveRelative": "sources/d1ecae3598dc2c92ac7315858ceb5b6bc979bfad670169c078e2f940ada4dccb/tools.json"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\docs\\generated\\actions.md",
+            "bytes": 2535,
+            "sha256": "f0eda85f8922c2ea7ff0e18ca670b09cb879455750b785ba738790f4dbc9ec51"
+          },
+          "archiveRelative": "sources/f0eda85f8922c2ea7ff0e18ca670b09cb879455750b785ba738790f4dbc9ec51/actions.md"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\source\\demos\\reference-workbench\\contracts\\generated\\actiongen-manifest.json",
+            "bytes": 588,
+            "sha256": "421e463daec7e22d484c72708cfdb3050e2af20cc0e366fa253238204c49cde1"
+          },
+          "archiveRelative": "sources/421e463daec7e22d484c72708cfdb3050e2af20cc0e366fa253238204c49cde1/actiongen-manifest.json"
+        }
+      ],
+      "actualSdkArchive": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\x64\\sdk-relocated\\lib\\Release\\soui_sdk.lib",
+        "bytes": 44011594,
+        "sha256": "ce150c859d6a03c784f69cadfabe191d436ab89162649feb718c50a8c75de558"
+      },
+      "actualMap": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\x64\\build\\reference-agent-Release.map",
+        "bytes": 3179541,
+        "sha256": "5e270a509d84cf24ab9ded33aa62837689bcb6510a9f37be5e90176e05bf19f4"
+      },
+      "memberContributionOnly": true,
+      "originalBinaryOutputsNotCopied": true,
+      "qualificationPassed": false,
+      "releaseReady": false
+    },
+    {
+      "variant": "green8",
+      "architecture": "Win32",
+      "originalSummary": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\summary.json",
+        "bytes": 54614,
+        "sha256": "64bf71ccf106da4e305fc1bab8f81c5064642bdb0cbd0dc9d07772b9b48fe811"
+      },
+      "stageNames": [
+        "actiongen-generate",
+        "actiongen-check",
+        "configure",
+        "build-reference-agent",
+        "registry",
+        "case-disabled-default-deny",
+        "case-selected-peer",
+        "case-fixed-summary",
+        "case-cancel",
+        "case-invalid-form",
+        "case-revoked-document",
+        "case-close-pending",
+        "case-page-isolation",
+        "ctest-eight"
+      ],
+      "actualStageCount": 14,
+      "completed": true,
+      "allGenericPassed": true,
+      "actualGenerated5": [
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\source\\demos\\reference-workbench\\app\\generated\\actions.hpp",
+            "bytes": 6471,
+            "sha256": "9f2117a97462e3e27ac68296f3c1f5ebe31e0bdd012624e0c2653d5740002192"
+          },
+          "archiveRelative": "sources/9f2117a97462e3e27ac68296f3c1f5ebe31e0bdd012624e0c2653d5740002192/actions.hpp"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\source\\demos\\reference-workbench\\web\\src\\generated\\actions.ts",
+            "bytes": 3494,
+            "sha256": "9137548c616ed6aefc57d890ff93aa8e0f9d69a450d692e7cc833dcca2f66457"
+          },
+          "archiveRelative": "sources/9137548c616ed6aefc57d890ff93aa8e0f9d69a450d692e7cc833dcca2f66457/actions.ts"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\source\\demos\\reference-workbench\\contracts\\generated\\tools.json",
+            "bytes": 1237,
+            "sha256": "d1ecae3598dc2c92ac7315858ceb5b6bc979bfad670169c078e2f940ada4dccb"
+          },
+          "archiveRelative": "sources/d1ecae3598dc2c92ac7315858ceb5b6bc979bfad670169c078e2f940ada4dccb/tools.json"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\source\\demos\\reference-workbench\\docs\\generated\\actions.md",
+            "bytes": 2535,
+            "sha256": "f0eda85f8922c2ea7ff0e18ca670b09cb879455750b785ba738790f4dbc9ec51"
+          },
+          "archiveRelative": "sources/f0eda85f8922c2ea7ff0e18ca670b09cb879455750b785ba738790f4dbc9ec51/actions.md"
+        },
+        {
+          "original": {
+            "path": "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\source\\demos\\reference-workbench\\contracts\\generated\\actiongen-manifest.json",
+            "bytes": 588,
+            "sha256": "421e463daec7e22d484c72708cfdb3050e2af20cc0e366fa253238204c49cde1"
+          },
+          "archiveRelative": "sources/421e463daec7e22d484c72708cfdb3050e2af20cc0e366fa253238204c49cde1/actiongen-manifest.json"
+        }
+      ],
+      "actualSdkArchive": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\sdk-relocated\\lib\\Release\\soui_sdk.lib",
+        "bytes": 30233074,
+        "sha256": "d4beca4b6aadb6e2ed7d7feb04b0e0d1b1fe4ef26dddd8fe5e6c1f292e27b9e0"
+      },
+      "actualMap": {
+        "path": "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\build\\reference-agent-Release.map",
+        "bytes": 2218482,
+        "sha256": "7f7d3bde421c1fb85edd5d8d0c1684a1d7c31d0a7bde4787077fa732c8fb203b"
+      },
+      "memberContributionOnly": true,
+      "originalBinaryOutputsNotCopied": true,
+      "qualificationPassed": false,
+      "releaseReady": false
+    }
+  ],
+  "originalFailuresPreserved": true,
+  "headlessOnly": true,
+  "guiReadyVerified": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

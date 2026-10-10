@@ -1,0 +1,57 @@
+{
+  "name": "ctest-eight",
+  "executable": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+  "args": [
+    "--test-dir",
+    "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\build",
+    "-C",
+    "Release",
+    "--output-on-failure",
+    "--no-tests=error",
+    "-j",
+    "1",
+    "--timeout",
+    "20",
+    "--output-junit",
+    "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\ctest.junit.xml"
+  ],
+  "cwd": "F:\\work\\sm05-broker\\out\\ragent8\\Win32",
+  "pid": 36532,
+  "creationFileTime": "134360470404440921",
+  "rootExitCode": 0,
+  "supervisorExitCode": 0,
+  "genericPassed": true,
+  "closureConfirmed": true,
+  "rawJob": "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\ctest-eight.owned.jsonl",
+  "rawSha256": "f5510bd768584ef8c472706617bfc3972366c1556c8f957030c3205e79a25f07",
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\ctest-eight.owned.jsonl.context.json",
+    "bytes": 683,
+    "sha256": "38390c4890dd631383888b78ad930d6b0c6f12f65ca3ab232565ecd2b69c6fe4"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\ctest-eight.stdout.raw",
+    "bytes": 1094,
+    "sha256": "47ac490640921478b95837a71ac2c2c7f4bba0f6ea93721e721b7b78e6bc1a78"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent8\\Win32\\ctest-eight.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "streamErrors": [],
+  "terminal": {
+    "event": "terminal",
+    "reason": "completed",
+    "elapsedMs": 3769,
+    "rootExited": true,
+    "rootExitCode": 0,
+    "activeBeforeCleanup": 0,
+    "terminatedOwnedJob": false,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 30,
+    "limitTerminatedProcesses": 0,
+    "passed": true
+  }
+}

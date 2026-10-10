@@ -1,6 +1,10 @@
 import { SouiBridgeError, integerOption, isRecord, utf8Bytes } from './protocol.js';
 import { copySouiJson } from './action-contracts.js';
 import type { SouiJson } from './action-contracts.js';
+import type { SouiGuiCommand } from './gui-command.js';
+
+/** Command-specific effect, bound natively to the original Agent scope. */
+export interface SouiGuiCommandContext { readonly active: boolean; effect(input?: SouiJson): Promise<SouiJson> }
 
 export interface SouiGuiState {
   enabled?: boolean;
@@ -12,7 +16,7 @@ export interface SouiGuiRegistration {
   role: string;
   name: string;
   element: Element;
-  actions: Record<string, (input: SouiJson) => unknown | Promise<unknown>>;
+  actions: Record<string, (input: SouiJson, command?: SouiGuiCommandContext) => unknown | Promise<unknown>>;
   state?: () => SouiGuiState;
 }
 export interface SouiGuiNode {
@@ -164,7 +168,7 @@ export class SouiGui {
     });
   }
 
-  public async perform(request: SouiGuiPerformOptions): Promise<SouiJson> {
+  public async perform(request: SouiGuiPerformOptions, command?: SouiGuiCommandContext): Promise<SouiJson> {
     options(request, ['id', 'action', 'input', 'timeoutMs']);
     if (!identifier(request.action)) throw failure('E_INVALID_PARAMS', 'A registered action name is required.');
     const action = request.action;
@@ -173,6 +177,7 @@ export class SouiGui {
     if (!own(entry.actions, action)) throw failure('E_GUI_ACTION_NOT_FOUND', 'The action is not registered for this element.');
     const input = copySouiJson(request.input === undefined ? {} : request.input, 32768, 'E_INVALID_PARAMS');
     const state = this.node(entry);
+    if (command && !command.active) throw failure('E_DISPOSED', 'The GUI command is stale.');
     if (!state.enabled) throw failure('E_GUI_DISABLED', 'The registered element is disabled.');
     if (state.busy) throw failure('E_BUSY', 'The registered element is busy.');
     if (this.waits.size >= 256) throw failure('E_BUSY', 'The GUI wait capacity is exhausted.');
@@ -181,7 +186,8 @@ export class SouiGui {
       // Deferring through Promise also converts synchronous handler throws into failures.
       Promise.resolve().then(() => {
         this.active(entry);
-        return entry.actions[action](input);
+        if (command && !command.active) throw failure('E_DISPOSED', 'The GUI command is stale.');
+        return command ? entry.actions[action](input, command) : entry.actions[action](input);
       }).then(result => {
         entry.running = false;
         try {
@@ -206,6 +212,18 @@ export class SouiGui {
       };
       pending.check();
     });
+  }
+
+  /** SDK route entry; correlation fields do not themselves authorize native work. */
+  public async executeNativeCommand(command: SouiGuiCommand, input: Record<string, SouiJson>,
+                                    context: SouiGuiCommandContext): Promise<SouiJson> {
+    if (command.operation === 'perform')
+      return this.perform({ id: command.id, action: command.action, input, timeoutMs: command.timeoutMs }, context);
+    if (command.operation === 'snapshot') return copySouiJson(this.node(this.lookup(command.id)), 32768, 'E_GUI_STATE');
+    if (Object.keys(input).some(key => key !== 'state') || (input.state !== undefined && !isRecord(input.state)))
+      throw failure('E_INVALID_PARAMS', 'Expected bounded GUI wait state.');
+    return copySouiJson(await this.waitFor({ id: command.id, state: input.state as SouiGuiNode['state'] | undefined,
+      timeoutMs: command.timeoutMs }), 32768, 'E_GUI_STATE');
   }
 
   public dispose(): void {

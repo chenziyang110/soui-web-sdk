@@ -1,0 +1,16 @@
+--- Frontend V2/run-root.cjs
++++ Frontend V3/run-root.cjs
+-ROOT_W6_REFERENCE_V3_FRONTEND_V2
++ROOT_W6_REFERENCE_V5_FRONTEND_V3
+-private-w6-reference-v3-frontend/2
++private-w6-reference-v5-frontend/3
+-packet.referenceFiles!==41
++packet.referenceFiles!==43
+-packet.sourcePins.length!==67
++packet.sourcePins.length!==68
+-...packet.npmPins])pin(p)
++...packet.npmPins,...packet.compatibilityInputs])pin(p)
+-sameReferencePayloads:41
++sameReferencePayloads:43
+-sourcePins:67
++sourcePins:68

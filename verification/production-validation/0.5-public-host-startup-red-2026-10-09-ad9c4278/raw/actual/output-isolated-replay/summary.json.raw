@@ -1,0 +1,161 @@
+{
+  "schema": "soui.public-host-startup.replay/1",
+  "architecture": "x64",
+  "completed": true,
+  "stages": [
+    {
+      "name": "host-startup",
+      "pid": 24028,
+      "creationFileTime": "134360368145967746",
+      "rootExitCode": 2,
+      "supervisorExitCode": 2,
+      "genericPassed": false,
+      "expectedExitCode": 2,
+      "expectedObservation": true,
+      "compilerTailPartial": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 906,
+        "rootExited": true,
+        "rootExitCode": 2,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 1,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "subject": {
+        "path": "F:/work/sm05-broker/out/host-red-cb0f2097-x64/build/Release/soui_public_host_startup_red.exe",
+        "bytes": 721408,
+        "sha256": "ad64be2b9b5a12fc6988480bab1597913888be45c390ce0986f302fb19bb41f2"
+      },
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\host-replay-f5957b4b-x64\\host-startup.owned.ndjson",
+        "bytes": 795,
+        "sha256": "e410d08c91e6e991ef2394073d220e8bf6245e2f9d439545571c76b82e39a0a2"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\host-replay-f5957b4b-x64\\host-startup.owned.ndjson.context.json",
+        "bytes": 841,
+        "sha256": "b2db4282871324b0e65865d4fbc24054c24d1e22c8a6ab2c6770051789f16375"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\host-replay-f5957b4b-x64\\host-startup.stdout.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\host-replay-f5957b4b-x64\\host-startup.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "readyError": null,
+      "validationErrors": [],
+      "formalPassed": false
+    }
+  ],
+  "observations": [
+    {
+      "SubjectPID": "24028",
+      "creationFileTime": "134360368145967746",
+      "actualResult": {
+        "path": "F:\\work\\sm05-broker\\out\\host-replay-f5957b4b-x64\\native-result.json",
+        "bytes": 1070,
+        "sha256": "517fb24d33115d31d7bc4edee5b3a97e1dc0f550309a2b08ab446c6f9f6a9290"
+      },
+      "receipt": {
+        "architecture": "x64",
+        "bridgeDestroyedAfterHost": true,
+        "callerPumpsBeforeObservation": 0,
+        "closeRetries": 1,
+        "creationFileTime": "134360368145967746",
+        "desiredRegistrationBeforeStartReturns": false,
+        "dllSha256": "342aa3b71e180c3a544ea5cde66c15fcf5f18c4126839006e0623bf5ac77d720",
+        "fullSdkQualified": false,
+        "hiddenOwnerAtObservation": true,
+        "hostDestroyReturned": true,
+        "measurementValid": true,
+        "moduleUnloadQualified": false,
+        "observedCurrentRed": true,
+        "ownerWithdrawn": true,
+        "perKindCompletionMeasured": false,
+        "pid": 24028,
+        "postedEventsBeforeObservation": 0,
+        "qualificationPassed": false,
+        "releaseReady": false,
+        "runtimeShutdownReturned": true,
+        "schema": "soui.public-host-startup-red/1",
+        "startReturned": true,
+        "vendorDrain": {
+          "closing": 0,
+          "drained": 0,
+          "engineCallbacks": 0,
+          "inspected": true,
+          "nativeScopes": 0,
+          "nonAtomic": true,
+          "oleRegistered": 0,
+          "queued": 2,
+          "running": 0,
+          "status": 0,
+          "valid": true,
+          "vendorFailed": false
+        },
+        "win7Qualified": false
+      },
+      "rootExitCode": 2,
+      "supervisorExitCode": 2,
+      "genericPassed": false,
+      "expectedCurrentRedObserved": true,
+      "wholeJobNaturalClosed": true,
+      "perKindCompletionMeasured": false,
+      "startupQualified": false,
+      "formalPassed": false
+    }
+  ],
+  "directCases": 1,
+  "compileExecuted": false,
+  "ctestExecuted": false,
+  "existingArtifactBinding": {
+    "path": "F:/work/sm05-broker/out/host-red-cb0f2097-x64/artifact-binding.json",
+    "bytes": 48124,
+    "sha256": "07462a89dc404a74b6f931a39228bc36455dc3bcdf484ae1f6037879a1012480"
+  },
+  "existingExecutable": {
+    "path": "F:/work/sm05-broker/out/host-red-cb0f2097-x64/build/Release/soui_public_host_startup_red.exe",
+    "bytes": 721408,
+    "sha256": "ad64be2b9b5a12fc6988480bab1597913888be45c390ce0986f302fb19bb41f2"
+  },
+  "runtimeResourceInput": {
+    "path": "F:/work/sm05-broker/out/host-startup-red-candidate-a7dd55ff-04c0-43ae-aa37-a61d8e5af2fe/resources/index.html",
+    "bytes": 153,
+    "sha256": "372d07c6b47108393666fd2923d33df9665fd594e74879aee380f99839aaec1e"
+  },
+  "runtimeResourceOutput": {
+    "path": "F:\\work\\sm05-broker\\out\\host-replay-f5957b4b-x64\\resources\\index.html",
+    "bytes": 153,
+    "sha256": "372d07c6b47108393666fd2923d33df9665fd594e74879aee380f99839aaec1e"
+  },
+  "navigationLog": {
+    "path": "F:\\work\\sm05-broker\\out\\host-replay-f5957b4b-x64\\source-navigation.log",
+    "bytes": 93,
+    "sha256": "044edf43847871e4a8cf5402cfbd97f8a078a3f5c16d040e8f79171066981f82"
+  },
+  "expectedDefaultExitCode": 2,
+  "expectedCurrentHostRedObserved": true,
+  "allGenericPassed": false,
+  "productionStartupChanged": false,
+  "perKindCompletionMeasured": false,
+  "sourceMembershipChecked": true,
+  "fullSdkQualification": false,
+  "fullOsQualification": false,
+  "win7Qualified": false,
+  "initializedUnloadQualified": false,
+  "completeToolchainProvenance": false,
+  "startupQualified": false,
+  "formalPassed": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

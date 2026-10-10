@@ -1,0 +1,676 @@
+{
+  "schema": "soui.reference-frontend-build/1",
+  "completed": true,
+  "stages": [
+    {
+      "name": "actiongen-generate",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\tools\\sdk\\actiongen.cjs",
+        "--source",
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\contracts\\actions.json",
+        "--root",
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6web5\\source",
+      "pid": 71464,
+      "creationFileTime": "134360408581556489",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\actiongen-generate.owned.jsonl",
+      "rawSha256": "3ae8b7ac6224f6ebe951c91ab6f36bc59227ed6544006d7e3a735bc4103d7e29",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\actiongen-generate.owned.jsonl.context.json",
+        "bytes": 671,
+        "sha256": "55662f4103ef7a09d68deacf4e873dd06ac319c5009e8064d9535b2d8926f259"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\actiongen-generate.stdout.raw",
+        "bytes": 90,
+        "sha256": "ffcd9c725bf6a3788c4da9fffa387d6ac50de240119a9a4e5f1d64a4ef7e2f0b"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\actiongen-generate.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "actiongen-check",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\tools\\sdk\\actiongen.cjs",
+        "--source",
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\contracts\\actions.json",
+        "--root",
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench",
+        "--check"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6web5\\source",
+      "pid": 97216,
+      "creationFileTime": "134360408591408900",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\actiongen-check.owned.jsonl",
+      "rawSha256": "9365b90775a9db59216173649cae6af35e89fbdcf427ddaf496e4a51c574e436",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\actiongen-check.owned.jsonl.context.json",
+        "bytes": 686,
+        "sha256": "8063d657b1be2cd71fdff8b6dcecf8c03a04e794a3e8969b8dc09cafc0a74518"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\actiongen-check.stdout.raw",
+        "bytes": 91,
+        "sha256": "d531677bb98469cf893d24f6faea2bd2a4905d542429df1c08d3b4fc3c7865ff"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\actiongen-check.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "typecheck-modern",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-modern\\node_modules\\typescript\\bin\\tsc",
+        "--noEmit"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-modern",
+      "pid": 14748,
+      "creationFileTime": "134360408795523236",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\typecheck-modern.owned.jsonl",
+      "rawSha256": "99b5c0587cb82604c959ea8e58d9f0aa7ad37c1b3999b3d9be8ee98918e4df9e",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\typecheck-modern.owned.jsonl.context.json",
+        "bytes": 566,
+        "sha256": "903caa1cda49499d744a9f86fce4554339a83a9a931761a76ca51c68b027d246"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\typecheck-modern.stdout.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\typecheck-modern.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "typecheck-compat",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat\\node_modules\\typescript\\bin\\tsc",
+        "--noEmit"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat",
+      "pid": 85400,
+      "creationFileTime": "134360408811405936",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\typecheck-compat.owned.jsonl",
+      "rawSha256": "c1fecb475d14150ce58f8df0446482ff3ef4f3f3d832e9cc7d3d3d0a78fbdbda",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\typecheck-compat.owned.jsonl.context.json",
+        "bytes": 566,
+        "sha256": "b9ec7b4df5c1aee99a4029f5d94e518a283d15af2009268642a39d14113e715e"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\typecheck-compat.stdout.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\typecheck-compat.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "build-modern",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-modern\\node_modules\\vite\\bin\\vite.js",
+        "build"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-modern",
+      "pid": 70420,
+      "creationFileTime": "134360408832832852",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\build-modern.owned.jsonl",
+      "rawSha256": "db050fbac00e479838ffe6db3bd1540a00bc38c87d41f4d8092e77204bcfb9a7",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\build-modern.owned.jsonl.context.json",
+        "bytes": 561,
+        "sha256": "bbd5eed35e72dd564a711dc2aa496de491c710609c7ae524266e606901c68658"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\build-modern.stdout.raw",
+        "bytes": 470,
+        "sha256": "e9a0be3fb7a8e4ecd85486f6953f1c0ca98bdbe0682287c2f0e46fb2c7a04065"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\build-modern.stderr.raw",
+        "bytes": 859,
+        "sha256": "c3dc6bb05f98c0f56b309b61e717ee4cd7f7b0105770f28540db6f0562851cab"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "audit-dist-modern",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\out\\reference-frontend-v3-root-39eb38fb-a368-4869-a5fa-77b8a817e11b\\dist-audit.cjs",
+        "modern",
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-modern\\dist",
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:/work/sm05-broker/out/w6web5",
+      "pid": 76676,
+      "creationFileTime": "134360408886204261",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\audit-dist-modern.owned.jsonl",
+      "rawSha256": "85d6f58700af4e96e3800bd3556ce8d0f47430a431dd4cb93fcb4f0080ff492e",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-dist-modern.owned.jsonl.context.json",
+        "bytes": 696,
+        "sha256": "e2d1790b8c64c2e6b5e885bf166d0817ff62bfbde3808be32cf3306501d0c3fe"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-dist-modern.stdout.raw",
+        "bytes": 1071,
+        "sha256": "ef0ed4cafdb657126d6f9b1beb1f6eec292632ed4d2b11f5b5e24f98fa2e9f13"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-dist-modern.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "build-react",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat\\node_modules\\vite\\bin\\vite.js",
+        "build",
+        "--mode",
+        "react"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat",
+      "pid": 74100,
+      "creationFileTime": "134360408896214322",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\build-react.owned.jsonl",
+      "rawSha256": "b79ec49aecbf178c7a2a03fdd119a7952212a5173fd51493b93b940fb47d478d",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\build-react.owned.jsonl.context.json",
+        "bytes": 588,
+        "sha256": "08257e6af6784246b252e68d9b03ae0ee6959b1b0dc11e728f9ec500211ea9c0"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\build-react.stdout.raw",
+        "bytes": 930,
+        "sha256": "5df68ea76ce10200269c5e6bcff7fdb2813a8593b8fbff3bd0badc3234027398"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\build-react.stderr.raw",
+        "bytes": 332,
+        "sha256": "ccb6bf354a0674eeb1e49df9a880a000b75240079fdb849282bb899d81eeb58c"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "classic-react",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\tools\\classic-entry.mjs",
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat\\dist-react"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat",
+      "pid": 43628,
+      "creationFileTime": "134360409065068849",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\classic-react.owned.jsonl",
+      "rawSha256": "8c7efad1d72222816c49422721a42d2e42ce7b584dced917c005f99f1d1dfd65",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\classic-react.owned.jsonl.context.json",
+        "bytes": 629,
+        "sha256": "4a7e1a792cc87a88cb6ba22a798d5dc585fd9e2a4c5e7a0f63f533f7567b9317"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\classic-react.stdout.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\classic-react.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "audit-dist-react",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\out\\reference-frontend-v3-root-39eb38fb-a368-4869-a5fa-77b8a817e11b\\dist-audit.cjs",
+        "react",
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat\\dist-react",
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:/work/sm05-broker/out/w6web5",
+      "pid": 16244,
+      "creationFileTime": "134360409075091204",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\audit-dist-react.owned.jsonl",
+      "rawSha256": "94f5f06068e749ed9f628d3a69f7771ceb33c59a08b75b8245c2c171fa4d61f5",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-dist-react.owned.jsonl.context.json",
+        "bytes": 701,
+        "sha256": "13b549f3287c2f8442e700478372e88646a8d7b8fd2f7fe33ee31d845a73ed11"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-dist-react.stdout.raw",
+        "bytes": 1875,
+        "sha256": "8043e2b949b2484c06b980e57ab94d419b72c72b877d6a7ddecc31d1783d43d6"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-dist-react.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "build-vue",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat\\node_modules\\vite\\bin\\vite.js",
+        "build",
+        "--mode",
+        "vue"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat",
+      "pid": 69484,
+      "creationFileTime": "134360409083686199",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\build-vue.owned.jsonl",
+      "rawSha256": "ba13442c85751fcd5d780691e1cc45f741f720e6dcdad37574ed5080f0870a12",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\build-vue.owned.jsonl.context.json",
+        "bytes": 586,
+        "sha256": "3cb921ff2cdfa94b363fa2f43bded1159540b472af508e107b583bffbda2a09d"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\build-vue.stdout.raw",
+        "bytes": 699,
+        "sha256": "12054e784aeadab3cc7071159c04b2b362ec6789883d177c17345d9d119dd01a"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\build-vue.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "classic-vue",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\tools\\classic-entry.mjs",
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat\\dist-vue"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat",
+      "pid": 65312,
+      "creationFileTime": "134360409247912761",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\classic-vue.owned.jsonl",
+      "rawSha256": "3294e0c8215dd8919cccf05b3a62ef40a66a749948c9d656c05e0b83a8c34e5f",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\classic-vue.owned.jsonl.context.json",
+        "bytes": 627,
+        "sha256": "28cc29253c802b581ee19494ba01d253ea54961609a45f220e669ce2eae4b636"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\classic-vue.stdout.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\classic-vue.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "audit-dist-vue",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "F:\\work\\sm05-broker\\out\\reference-frontend-v3-root-39eb38fb-a368-4869-a5fa-77b8a817e11b\\dist-audit.cjs",
+        "vue",
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat\\dist-vue",
+        "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\common\\fixture.json"
+      ],
+      "cwd": "F:/work/sm05-broker/out/w6web5",
+      "pid": 114232,
+      "creationFileTime": "134360409257187323",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\audit-dist-vue.owned.jsonl",
+      "rawSha256": "7d4e938e1d7aa1e0d7dd17062670b3fbcce30d4d9ab0ad949f861054df77ec67",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-dist-vue.owned.jsonl.context.json",
+        "bytes": 697,
+        "sha256": "9ec3f1650ba6ef2c75c4983be2e3b7defe1babcfa06af9ab0f092b8dc0c4c673"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-dist-vue.stdout.raw",
+        "bytes": 1578,
+        "sha256": "edf2037956ffd67bad59510140025d7b0f4220c431881a5e2f1b04b0b28a5385"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-dist-vue.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "audit-lock-modern",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/Users/11034/AppData/Local/nvm/v24.14.0/node_modules/npm/bin/npm-cli.js",
+        "audit",
+        "--package-lock-only",
+        "--ignore-scripts",
+        "--json",
+        "--include=dev",
+        "--include=optional"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-modern",
+      "pid": 98620,
+      "creationFileTime": "134360409282188662",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\audit-lock-modern.owned.jsonl",
+      "rawSha256": "1498a24130a7ec0533511207126ea8b0cf511555bc65405e3d1beba2542c1fec",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-lock-modern.owned.jsonl.context.json",
+        "bytes": 630,
+        "sha256": "db5770404ea97a42564f589ad78ae53f2231acb1b58ef089d4f656f29a1f3f64"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-lock-modern.stdout.raw",
+        "bytes": 361,
+        "sha256": "92b38a5bb4e1dac5a52f93bcfc953e6e75fd13134eb2bd45ee96b7c74ec8991a"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-lock-modern.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "audit-lock-compat",
+      "executable": "C:\\nvm4w\\nodejs\\node.exe",
+      "args": [
+        "C:/Users/11034/AppData/Local/nvm/v24.14.0/node_modules/npm/bin/npm-cli.js",
+        "audit",
+        "--package-lock-only",
+        "--ignore-scripts",
+        "--json",
+        "--include=dev",
+        "--include=optional"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat",
+      "pid": 100764,
+      "creationFileTime": "134360409366677573",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\w6web5\\audit-lock-compat.owned.jsonl",
+      "rawSha256": "eaa743e243ba4eb4076fb1e1d2f7f229183714a79372bb011f67309279fc5330",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-lock-compat.owned.jsonl.context.json",
+        "bytes": 630,
+        "sha256": "55452672bee9887512f2b383da278fdb60be78dbfa606def09790f5c3d84e7d6"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-lock-compat.stdout.raw",
+        "bytes": 364,
+        "sha256": "343a0ba059e13dfa5da6a91a42b62b90aa5e804b5e0056ab2f1253d9122fac34"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\w6web5\\audit-lock-compat.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    }
+  ],
+  "views": [
+    {
+      "schema": "soui.reference-dist-audit/1",
+      "mode": "modern",
+      "root": "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-modern\\dist",
+      "manifestSha256": "6a79a3c1a66831b2b294ad5aaf64726fd735c59d5aa4ac5e24f16c4425fee3ac",
+      "fixtureSha256": "646181296e8ee7044f0464701dc56cfc3d4bb7e3fbd0d517b247cdbad178cc41",
+      "classic": null,
+      "pins": [
+        {
+          "relative": ".vite/manifest.json",
+          "bytes": 185,
+          "sha256": "6a79a3c1a66831b2b294ad5aaf64726fd735c59d5aa4ac5e24f16c4425fee3ac"
+        },
+        {
+          "relative": "assets/index-DwZ1XPKT.css",
+          "bytes": 2551,
+          "sha256": "48435a8bf91ac7885d091aad47b3b7638720224a33f61640eb82da79a0b05bec"
+        },
+        {
+          "relative": "assets/index-Dye-d0WV.js",
+          "bytes": 280392,
+          "sha256": "990e428af989e164dbe3009dd014e8fa03944733b46f9a51058e34e80f1ac013"
+        },
+        {
+          "relative": "index.html",
+          "bytes": 365,
+          "sha256": "565b47c2e6a563f6684e750d70a9adf4bd4ad053b78c6c2ca2cc34eb38040483"
+        },
+        {
+          "relative": "reference-fixture.json",
+          "bytes": 230,
+          "sha256": "646181296e8ee7044f0464701dc56cfc3d4bb7e3fbd0d517b247cdbad178cc41"
+        }
+      ],
+      "sourceGraphChecked": true,
+      "rendererExercised": false,
+      "qualificationPassed": false,
+      "releaseReady": false
+    },
+    {
+      "schema": "soui.reference-dist-audit/1",
+      "mode": "react",
+      "root": "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat\\dist-react",
+      "manifestSha256": "a6c16bb03386fda6faab6dc9f1c4f448449a93ede1ac594e74ec907ee6c146ae",
+      "fixtureSha256": "646181296e8ee7044f0464701dc56cfc3d4bb7e3fbd0d517b247cdbad178cc41",
+      "classic": {
+        "polyfill": "assets/polyfills-legacy-DHUzeBiX.js",
+        "runtime": "assets/index-legacy-C-Vhxflo.js"
+      },
+      "pins": [
+        {
+          "relative": ".vite/manifest.json",
+          "bytes": 1417,
+          "sha256": "a6c16bb03386fda6faab6dc9f1c4f448449a93ede1ac594e74ec907ee6c146ae"
+        },
+        {
+          "relative": "assets/InterVariable-CWi-zmRD.woff2",
+          "bytes": 345588,
+          "sha256": "8af7bd5b545567adffb3dfceb5bedb353a522d7bf1b3a2b8af7b6064156babc0"
+        },
+        {
+          "relative": "assets/InterVariable-Italic-d6KXgdvN.woff2",
+          "bytes": 380904,
+          "sha256": "0470791f15efd2987bdb50b24027c3f584a2cf9b7b63fbf86012c5f2e9abcc05"
+        },
+        {
+          "relative": "assets/index-BrTEDls3.css",
+          "bytes": 185778,
+          "sha256": "fb9c382fae06c5d37e60686eddac17c7d66c1f4571890218c8a1d6d512560dd2"
+        },
+        {
+          "relative": "assets/index-DVZVJfwf.js",
+          "bytes": 318745,
+          "sha256": "ee92331de40c74b06f5b1d33c524f66df36937b9b56c847fcd82839c30049ac9"
+        },
+        {
+          "relative": "assets/index-legacy-C-Vhxflo.js",
+          "bytes": 509783,
+          "sha256": "958100ce20f3b8d927aa4a901869e669c0ac63b9a6ce6fd4a8bb4912b2edc291"
+        },
+        {
+          "relative": "assets/polyfills-DE-ALxbR.js",
+          "bytes": 143155,
+          "sha256": "0cd3ef545ee16cf96ff48f20d6a025591fe98d7e237483727ca18964bbe902bf"
+        },
+        {
+          "relative": "assets/polyfills-legacy-DHUzeBiX.js",
+          "bytes": 167504,
+          "sha256": "13c944c6826c097b37ed29ccf6334655bf18b0a191058264bdff1b5f6053e504"
+        },
+        {
+          "relative": "index.html",
+          "bytes": 735,
+          "sha256": "e7a6bdcfc200031e4c51016c342145b5f135a32f378d709a18f00f7a0e842571"
+        },
+        {
+          "relative": "reference-fixture.json",
+          "bytes": 230,
+          "sha256": "646181296e8ee7044f0464701dc56cfc3d4bb7e3fbd0d517b247cdbad178cc41"
+        }
+      ],
+      "sourceGraphChecked": true,
+      "rendererExercised": false,
+      "qualificationPassed": false,
+      "releaseReady": false
+    },
+    {
+      "schema": "soui.reference-dist-audit/1",
+      "mode": "vue",
+      "root": "F:\\work\\sm05-broker\\out\\w6web5\\source\\demos\\reference-workbench\\web-compat\\dist-vue",
+      "manifestSha256": "ad6d47d72f934ca29f95673c448e9547180cfa88447e85bc59b4839065fdcc5a",
+      "fixtureSha256": "646181296e8ee7044f0464701dc56cfc3d4bb7e3fbd0d517b247cdbad178cc41",
+      "classic": {
+        "polyfill": "assets/polyfills-legacy-Bp7tfq-b.js",
+        "runtime": "assets/index-legacy-ByCvrewE.js"
+      },
+      "pins": [
+        {
+          "relative": ".vite/manifest.json",
+          "bytes": 674,
+          "sha256": "ad6d47d72f934ca29f95673c448e9547180cfa88447e85bc59b4839065fdcc5a"
+        },
+        {
+          "relative": "assets/index-CbQ6_7_o.css",
+          "bytes": 30447,
+          "sha256": "19783208fb8a9a2e8c0c0f2edbbcae2ee13503b12c8b536e2f1b16b2f32db408"
+        },
+        {
+          "relative": "assets/index-ftY8h1NK.js",
+          "bytes": 192511,
+          "sha256": "67b71e1b047d9437e5bf72364eb4cf81f3b8bb44ab6fa57094231ca1713cd3c1"
+        },
+        {
+          "relative": "assets/index-legacy-ByCvrewE.js",
+          "bytes": 230025,
+          "sha256": "274fb166c913e49cc6e49fe15d5d5f0d7acbf4afeec7d31d0bdffdee1e643686"
+        },
+        {
+          "relative": "assets/polyfills-C_BQ8OAj.js",
+          "bytes": 141883,
+          "sha256": "d0f98d880c2a58f5239a85f8722345948675487102da24b49d0c6c5078a5b8e7"
+        },
+        {
+          "relative": "assets/polyfills-legacy-Bp7tfq-b.js",
+          "bytes": 165580,
+          "sha256": "a1714e5260285a364335ececfc26da7ccf24160d52377c9d71dce3686d3929e2"
+        },
+        {
+          "relative": "index.html",
+          "bytes": 735,
+          "sha256": "9b7b3d1715c8f6636f94c8c148cc42ef71147df69088636c9c3e844961f20fc0"
+        },
+        {
+          "relative": "reference-fixture.json",
+          "bytes": 230,
+          "sha256": "646181296e8ee7044f0464701dc56cfc3d4bb7e3fbd0d517b247cdbad178cc41"
+        }
+      ],
+      "sourceGraphChecked": true,
+      "rendererExercised": false,
+      "qualificationPassed": false,
+      "releaseReady": false
+    }
+  ],
+  "generatedBindings": 5,
+  "sameReferencePayloads": 43,
+  "currentSdkWebFiles": 16,
+  "sourcePins": 68,
+  "dependenciesUnchanged": true,
+  "originalLocksUnchanged": true,
+  "genuineViteBuilds": 3,
+  "classicEntries": 2,
+  "freshNpmInstallPerformed": false,
+  "allGenericPassed": true,
+  "controllerBrowserRuntimeExercised": false,
+  "nativeTaskRuntimeExercised": false,
+  "rendererExercised": false,
+  "keyboardImeExercised": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

@@ -233,7 +233,7 @@
       </Command>
     </PostBuildEvent>
     <ResourceCompile>
-      <ResourceOutputFileName>$(ProjectDir)miniblink.res</ResourceOutputFileName>
+      <ResourceOutputFileName>$(IntDir)miniblink.res</ResourceOutputFileName>
     </ResourceCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -277,7 +277,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MinSpace</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <StringPooling>true</StringPooling>
@@ -318,7 +318,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MinSpace</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <StringPooling>true</StringPooling>
@@ -359,7 +359,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MinSpace</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <StringPooling>true</StringPooling>
@@ -403,7 +403,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <Optimization>MinSpace</Optimization>
       <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
-      <ExceptionHandling>false</ExceptionHandling>
+      <ExceptionHandling>Sync</ExceptionHandling>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <StringPooling>true</StringPooling>
@@ -4933,6 +4933,7 @@
     <ClCompile Include="..\..\third_party\WebKit\Source\wtf\text\WTFStringUtil.cpp" />
     <ClCompile Include="..\..\ui\gfx\win\dpi.cc" />
     <ClCompile Include="..\..\wke\wke.cpp" />
+    <ClCompile Include="..\..\wke\CursorDescriptorBroker.cpp" />
     <ClCompile Include="..\..\wke\wke2.cpp" />
     <ClCompile Include="..\..\wke\wkeGlobalVar.cpp" />
     <ClCompile Include="..\..\wke\wkeJsBind.cpp" />
@@ -10089,8 +10090,8 @@
     <None Include="..\..\third_party\WebKit\Source\modules\storage\OWNERS" />
     <CustomBuild Include="..\..\third_party\WebKit\Source\platform\heap\asm\SaveRegisters_x86.asm">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ml64.exe /Fo $(IntDir)%(fileName).obj  /c /DX64WIN=1 %(RelativeDir)%(fileName).asm</Command>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release_NoNode|x64'">ml64.exe /Fo $(IntDir)%(fileName).obj  /c /DX64WIN=1 %(RelativeDir)%(fileName).asm</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">ml64.exe /Fo "$(IntDir)%(fileName).obj" /c /DX64WIN=1 "%(RelativeDir)%(fileName).asm"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release_NoNode|x64'">ml64.exe /Fo "$(IntDir)%(fileName).obj" /c /DX64WIN=1 "%(RelativeDir)%(fileName).asm"</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)%(fileName).obj</Outputs>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release_NoNode|x64'">$(IntDir)%(fileName).obj</Outputs>
       <Defines Condition="'$(Configuration)|$(Platform)'=='Release|x64'">X64WIN=1;%(Defines)</Defines>

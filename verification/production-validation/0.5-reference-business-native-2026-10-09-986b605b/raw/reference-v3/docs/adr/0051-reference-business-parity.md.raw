@@ -1,0 +1,23 @@
+# ADR 0051：三种页面共用参考业务
+
+状态：候选，未采用，未执行。
+
+## 背景
+
+W6 / 05-06 要求现代和兼容页面在万行列表操作期间执行真实 C++ 任务，并完成表单、图表、对话框、取消、完成与明确重载结果。现有 Workbench React 局部具备列表/任务，Vue 和最小 Modern starter 尚非同一业务。扩大两个 starter 或复制三个行业产品会改变模板边界及验证负担。
+
+## 决定
+
+新增可选 `demos/reference-workbench`，一份固定数据、pure 业务模型、任务观测控制与原生 Bridge 注册；React 18/19 和 Vue 3 只适配页面。使用原公共 actiongen、任务服务和 SouiGui，不增加 wire 协议、权限、任务服务或反向 SDK 依赖。数据量、草稿、选择、任务时间及观察都有上限；普通消息仅携带固定样本标识与条件。
+
+任务 worker 不改 UI。业务对象、Bridge、Host 明确由外到内持有，关闭先完成 Host destroy，Bridge 析构覆盖真实任务 join。导航撤销原 scope；重载 UI 草稿可恢复，旧任务必须解释为不能跨新文档续接，不能自动重放或制造终态。普通浏览器明确禁用原生动作，不模拟 C++ 成功。
+
+现代与兼容锁保持当前已冻结版本；现代使用语义 HTML / SVG，兼容只复用已有 PrimeReact / Element Plus 有限控件及当前转换边界。特定页面实际可用不等于所有新 JS/CSS 可用。PE、Win7、GPU、真实 IME/键盘、长期资源和呈现资格独立待验。
+
+## 备选与迁移
+
+不扩张 Modern starter，不移走或修改 W2d7 固定源码，不复制媒体/文件扫描等行业产品。新增模块显式 CMake 选择，不加入默认 Core。Root 执行 actiongen 后检查生成物，并在采用时更新源码清单、许可/打包边界和当前验证输入。Agent endpoint 采用已封存的 Bridge-owned stopped 工厂后再接入，不借私有 store 或第二套任务服务。
+
+## 验证
+
+先测共用纯边界及实际 Bridge 任务，再对三页面执行相同业务步骤并绑定各自真实 Host / Owned 退出。程序化中文赋值不是 IME；业务探针和 rAF 不是实际呈现证据。候选未执行，所有资格保持 false。

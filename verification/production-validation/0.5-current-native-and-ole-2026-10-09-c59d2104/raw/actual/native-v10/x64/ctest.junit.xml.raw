@@ -1,0 +1,818 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="(empty)"
+	tests="126"
+	failures="0"
+	disabled="0"
+	skipped="0"
+	hostname=""
+	time="76"
+	timestamp="2026-10-09T23:29:57"
+	>
+	<testcase name="sdk.native.source-kernel-api" classname="sdk.native.source-kernel-api" time="1.01852" status="run">
+		<properties/>
+		<system-out>PASS cold-frame-readiness
+PASS legacy-optional-absence
+PASS module-pointer-replacement
+PASS required-export-failure
+PASS initializer-export-failure
+PASS initialization-status-failure
+source-kernel loader: 6 passed; actual DLL and GUI not exercised
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.cursor-queue" classname="sdk.native.cursor-queue" time="1.06684" status="run">
+		<properties/>
+		<system-out>PASS same-type custom replacement
+PASS cached publication
+PASS suppressed retirement P
+PASS global old-handle veto
+PASS second retirement veto
+PASS query and flag proof
+PASS failed destruction bounded retry
+PASS selection failure
+PASS first selection failure
+PASS existing replacement retirement proof
+PASS nested native scopes
+PASS bounded native scopes
+PASS foreign queue rejection
+PASS multiple views and none
+PASS descriptor validation
+Cursor queue: 15/15 passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.cursor-resources" classname="sdk.native.cursor-resources" time="1.00533" status="run">
+		<properties/>
+		<system-out>Cursor resources: 4/4 passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.cursor-broker-scopes" classname="sdk.native.cursor-broker-scopes" time="1.70528" status="run">
+		<properties/>
+		<system-out>Cursor broker scopes: 3/3 passed
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.scheduler-fairness" classname="kernel.native.scheduler-fairness" time="1.51769" status="run">
+		<properties/>
+		<system-out>Scheduler policy checks: 12; failures: 0
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.contract" classname="sdk.native.contract" time="1.08056" status="run">
+		<properties/>
+		<system-out>Native SDK contract checks passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.action-contract" classname="sdk.native.action-contract" time="1.43975" status="run">
+		<properties/>
+		<system-out>Public action contracts: schema, Unicode, grants, errors and discovery bounds passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.session-action-integration" classname="sdk.native.session-action-integration" time="1.05098" status="run">
+		<properties/>
+		<system-out>Session/action integration passed (simulated renewal; no desktop or real-duration claim).
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.host-adapter" classname="sdk.native.host-adapter" time="1.00578" status="run">
+		<properties/>
+		<system-out>host adapter contracts passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.engine-diagnostic-timeout" classname="sdk.native.engine-diagnostic-timeout" time="2.03163" status="run">
+		<properties/>
+		<system-out>Engine diagnostics: owned late results and failure semantics passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.engine-startup-rollback" classname="sdk.native.engine-startup-rollback" time="1.00473" status="run">
+		<properties/>
+		<system-out>PASS empty_initializer_creates_nothing
+PASS event_creation_failure_can_retry
+PASS system_error_rolls_back
+PASS bad_alloc_rolls_back
+PASS repeated_launch_failures_have_no_event_growth
+PASS second_start_closes_only_its_temporary_event
+PASS initializer_false_preserves_failed
+PASS initializer_exception_preserves_failed
+PASS concurrent_stop_does_not_wait_for_a_nonexistent_worker
+Engine startup controlled-fault regression: 9/9 passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.runtime-profile" classname="sdk.native.runtime-profile" time="1.01486" status="run">
+		<properties/>
+		<system-out>runtime profiles passed; observed 10.0.26200 x64
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.frame-pacer" classname="sdk.native.frame-pacer" time="2.33863" status="run">
+		<properties/>
+		<system-out>frame pacer passed; legacy wakes=23, delivered=21
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.webview2-capacity" classname="sdk.native.webview2-capacity" time="1.03806" status="run">
+		<properties/>
+		<system-out>WebView2 capacity policy: 6 cases passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.webview2-preparation-lifetime" classname="sdk.native.webview2-preparation-lifetime" time="1.08174" status="run">
+		<properties/>
+		<system-out>Preparation ownership, cancellation, duplicate and exception boundaries passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.session-renewal" classname="sdk.native.session-renewal" time="1.17139" status="run">
+		<properties/>
+		<system-out>session_renewal: 14 no-desktop contract groups passed (fake clock; no real-duration or GUI claim)
+</system-out>
+	</testcase>
+	<testcase name="demo.native.session-renewal" classname="demo.native.session-renewal" time="1.67629" status="run">
+		<properties/>
+		<system-out>Demo renewal ownership and revoke-before-admission contracts passed; no GUI or media engine executed
+</system-out>
+	</testcase>
+	<testcase name="demo.native.interaction-task" classname="demo.native.interaction-task" time="3.86438" status="run">
+		<properties/>
+		<system-out>duration completion, real elapsed time and public progress passed
+active cancellation and session ownership passed
+13 invalid duration and schema cases passed
+session shutdown and original fast task passed
+Workbench interaction task checks passed
+</system-out>
+	</testcase>
+	<testcase name="demo.native.task-query-json" classname="demo.native.task-query-json" time="1.09411" status="run">
+		<properties/>
+		<system-out>{"actualSdkAndDemo":true,"case":"json-task-id","operationIdDemoContractSupported":false,"passed":true,"qualificationPassed":false}
+</system-out>
+	</testcase>
+	<testcase name="demo.native.task-query-direct" classname="demo.native.task-query-direct" time="0.06389" status="run">
+		<properties/>
+		<system-out>{"actualSdkAndDemo":true,"case":"direct-task-id","operationIdDemoContractSupported":false,"passed":true,"qualificationPassed":false}
+</system-out>
+	</testcase>
+	<testcase name="demo.native.task-query-strict" classname="demo.native.task-query-strict" time="0.0307155" status="run">
+		<properties/>
+		<system-out>{"actualSdkAndDemo":true,"case":"strict-selectors","operationIdDemoContractSupported":false,"passed":true,"qualificationPassed":false}
+</system-out>
+	</testcase>
+	<testcase name="demo.native.task-query-ownership" classname="demo.native.task-query-ownership" time="0.0276465" status="run">
+		<properties/>
+		<system-out>{"actualSdkAndDemo":true,"case":"scope-ownership","operationIdDemoContractSupported":false,"passed":true,"qualificationPassed":false}
+</system-out>
+	</testcase>
+	<testcase name="demo.native.task-query-legacy-scan" classname="demo.native.task-query-legacy-scan" time="0.0444396" status="run">
+		<properties/>
+		<system-out>{"actualSdkAndDemo":true,"case":"legacy-scan-task","operationIdDemoContractSupported":false,"passed":true,"qualificationPassed":false}
+</system-out>
+	</testcase>
+	<testcase name="demo.native.window-placement" classname="demo.native.window-placement" time="1.95345" status="run">
+		<properties/>
+		<system-out></system-out>
+	</testcase>
+	<testcase name="sdk.native.task-service" classname="sdk.native.task-service" time="1.49354" status="run">
+		<properties/>
+		<system-out>Public native task service: progress, events, cancellation, capacity and session scope passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.bridge-budget" classname="sdk.native.bridge-budget" time="1.18039" status="run">
+		<properties/>
+		<system-out>Native bridge budget: limits, generations, concurrency and lease cleanup passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.task-store-capacity" classname="sdk.native.task-store-capacity" time="1.33134" status="run">
+		<properties/>
+		<system-out>Native task store capacity and scanner authorization: admission, rotation, ownership, cancellation, and revocation passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.desktop-unicode" classname="sdk.native.desktop-unicode" time="1.66062" status="run">
+		<properties/>
+		<system-out>desktop unicode conversion passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.tray-service" classname="sdk.native.tray-service" time="1.01155" status="run">
+		<properties/>
+		<system-out>tray_service: 14 no-desktop contract groups passed (fake platform; no Explorer/GUI claim)
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.menu_service" classname="sdk.native.menu_service" time="2.26551" status="run">
+		<properties/>
+		<system-out>menu_service: 15 no-desktop contract groups passed (fake platform; no GUI claim)
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.global_shortcut" classname="sdk.native.global_shortcut" time="1.64799" status="run">
+		<properties/>
+		<system-out>global_shortcut: 9 no-desktop contract groups passed (fake platform; no actual key/GUI claim)
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.task-scope" classname="sdk.native.task-scope" time="1.41596" status="run">
+		<properties/>
+		<system-out>native task scope tests passed: all
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.task-operation-query" classname="sdk.native.task-operation-query" time="1.34708" status="run">
+		<properties/>
+		<system-out>PASS exact-input-and-taskId
+PASS scope-and-store-isolation
+PASS renewal-expiry-revocation
+PASS native-authorization
+PASS active-queued-real-outcomes
+PASS retention-read-only
+PASS public-bridge-lost-reply
+7/7 task operation query cases passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.local-authorization" classname="sdk.native.local-authorization" time="1.51788" status="run">
+		<properties/>
+		<system-out>PASS native channel and object identity
+PASS method and capability intersection
+PASS explicit bounded native policies
+PASS scope-preserving renewal and aliases
+PASS precise revoke and irreversible close
+PASS close raced issuance keeps cleanup owner
+PASS close raced renewal never revives
+PASS entropy failure remains closed
+PASS retained binding and store lifetime
+PASS closed queued worker admission
+10/10 native policy cases; controlled time, no OS identity or endpoint validation
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.local-action-dispatch" classname="sdk.native.local-action-dispatch" time="1.08652" status="run">
+		<properties/>
+		<system-out>PASS explicit typed exposure
+PASS native credential rewrite
+PASS capability and method authorization
+PASS channel and connection object isolation
+PASS input rejection before callback
+PASS bounded output and sanitized business failure
+PASS numeric overflow and bounded parser depth
+PASS pre-admission invalidation
+PASS late invalidation on all result paths
+PASS same bearer new scope result rejection
+PASS private renewal preserves scope
+PASS filtered discovery pagination
+PASS canonical discovery and reserved controls
+PASS discovery mid-read close
+PASS facade freeze and page compatibility
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.main-context-gate" classname="sdk.native.main-context-gate" time="0.996065" status="run">
+		<properties/>
+		<system-out>PASS legacy/initial-mount
+PASS nested-pending
+PASS nested-completed-ABA
+PASS reload-revocation
+PASS failed-ACK
+PASS failed-final-observation
+PASS receipt-overflow
+PASS invalid-ACK
+PASS exact-CAS-once
+PASS late-threaded-outer
+PASS stale-async-receipt
+PASS first-lookup-window
+PASS second-getter-window
+PASS lookup-overflow-after-teardown
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.windows-peer-identity" classname="sdk.native.windows-peer-identity" time="2.97713" status="run">
+		<properties/>
+		<system-out>windows_peer_identity: 8 real-pipe cases passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.local-task-family" classname="sdk.native.local-task-family" time="1.43092" status="run">
+		<properties/>
+		<system-out>PASS atomic registration
+PASS immutable registry callback
+PASS family/plain/scope isolation
+PASS method/cap/page isolation
+PASS strict direct parsing
+PASS once projection and honest cancel
+PASS projection/normalizer failures
+PASS page message UTF-8 and worker recovery
+PASS actual brand lifetime
+PASS renew/revoke/expiry
+PASS queued close FIFO drain
+PASS shared capacity/retention
+PASS json bridge page policy
+Local task family: 13/13 passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.local-task-family-prepare" classname="sdk.native.local-task-family-prepare" time="2.59078" status="run">
+		<properties/>
+		<system-out>PASS atomic registration
+PASS immutable registry callback
+PASS family/plain/scope isolation
+PASS method/cap/page isolation
+PASS strict direct parsing
+PASS once projection and honest cancel
+PASS projection/normalizer failures
+PASS page message UTF-8 and worker recovery
+PASS actual brand lifetime
+PASS renew/revoke/expiry
+PASS queued close FIFO drain
+PASS shared capacity/retention
+PASS registration mutation guard
+PASS controlled prepare failures
+Local task family: 14/14 passed
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.endpoint-empty-registry" classname="kernel.native.lifetime.endpoint-empty-registry" time="1.01015" status="run">
+		<properties/>
+		<system-out>PASS empty-registry targets=0 others=0 allocationAttempts=0 exactlyOnceDeleted=0
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.endpoint-second-vector-growth-fault" classname="kernel.native.lifetime.endpoint-second-vector-growth-fault" time="0.0196728" status="run">
+		<properties/>
+		<system-out>PASS second-vector-growth-fault targets=3 others=2 allocationAttempts=0 exactlyOnceDeleted=5
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.endpoint-all-allocation-forbidden" classname="kernel.native.lifetime.endpoint-all-allocation-forbidden" time="0.0207726" status="run">
+		<properties/>
+		<system-out>PASS all-allocation-forbidden targets=129 others=2 allocationAttempts=0 exactlyOnceDeleted=131
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.endpoint-create-allocation-failure" classname="kernel.native.lifetime.endpoint-create-allocation-failure" time="0.0183113" status="run">
+		<properties/>
+		<system-out>PASS create-allocation-failure containedFailure=1 unpublishedOwnershipBalanced=1
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.endpoint-create-registry-growth-failure" classname="kernel.native.lifetime.endpoint-create-registry-growth-failure" time="0.0213075" status="run">
+		<properties/>
+		<system-out>PASS create-registry-growth-failure containedFailure=1 unpublishedOwnershipBalanced=1
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.endpoint-create-success" classname="kernel.native.lifetime.endpoint-create-success" time="0.0203796" status="run">
+		<properties/>
+		<system-out>PASS create-success containedFailure=1 unpublishedOwnershipBalanced=1
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.endpoint-create-invalid" classname="kernel.native.lifetime.endpoint-create-invalid" time="0.0303195" status="run">
+		<properties/>
+		<system-out>PASS create-invalid containedFailure=1 unpublishedOwnershipBalanced=1
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.activation-insert-failure-lock-release" classname="kernel.native.lifetime.activation-insert-failure-lock-release" time="1.07227" status="run">
+		<properties/>
+		<system-out>PASS insert-failure-lock-release allocationException=bad_alloc contenderCompleted=1 registryReusable=1
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.activation-snapshot-failure-lock-release" classname="kernel.native.lifetime.activation-snapshot-failure-lock-release" time="0.0152895" status="run">
+		<properties/>
+		<system-out>PASS snapshot-failure-lock-release allocationException=bad_alloc contenderCompleted=1 registryReusable=1
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.worker-lifetime.scheduler-new-bad-alloc" classname="kernel.native.worker-lifetime.scheduler-new-bad-alloc" time="1.01557" status="run">
+		<properties/>
+		<system-out>{"record":"native-observation","case":"scheduler-new-bad-alloc","pid":98560,"tid":90436,"phase":"scheduler-bad-alloc","value":0}
+{"record":"native-observation","case":"scheduler-new-bad-alloc","pid":98560,"tid":90436,"phase":"factory-threw","value":1}
+{"record":"native-observation","case":"scheduler-new-bad-alloc","pid":98560,"tid":43152,"phase":"close-registry-acquired","value":0}
+{"schema":"worker-lifetime-source-run/1","variant":"after","case":"scheduler-new-bad-alloc","submode":"wait","pid":98560,"contractPassed":true,"expectedFailFast":false,"reason":"actual-source-contract-satisfied","registryCount":0,"registrySize":0,"eventAttempts":0,"eventAcquired":0,"eventClosed":0,"launchAttempts":0,"launched":0,"workerClosed":0,"workerFrees":0,"schedulerAllocations":0,"schedulerFrees":0,"allocationFailures":1,"sectionsInitialized":0,"sectionsDeleted":0,"tlsFailures":0,"observedJoins":0,"exitQueries":0,"lastJoin":4294967295,"lastExitCode":259,"entryReturnCode":259,"workerTid":0,"waitFailureInjected":0,"exitFailureI...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.worker-lifetime.event-null" classname="kernel.native.worker-lifetime.event-null" time="0.0217369" status="run">
+		<properties/>
+		<system-out>{"record":"native-observation","case":"event-null","pid":93720,"tid":30912,"phase":"event-null","value":0}
+{"record":"native-observation","case":"event-null","pid":93720,"tid":30912,"phase":"factory-threw","value":1}
+{"record":"native-observation","case":"event-null","pid":93720,"tid":65508,"phase":"close-registry-acquired","value":0}
+{"schema":"worker-lifetime-source-run/1","variant":"after","case":"event-null","submode":"wait","pid":93720,"contractPassed":true,"expectedFailFast":false,"reason":"actual-source-contract-satisfied","registryCount":0,"registrySize":0,"eventAttempts":1,"eventAcquired":0,"eventClosed":0,"launchAttempts":0,"launched":0,"workerClosed":0,"workerFrees":0,"schedulerAllocations":1,"schedulerFrees":1,"allocationFailures":0,"sectionsInitialized":2,"sectionsDeleted":2,"tlsFailures":0,"observedJoins":0,"exitQueries":0,"lastJoin":4294967295,"lastExitCode":259,"entryReturnCode":259,"workerTid":0,"waitFailureInjected":0,"exitFailureInjected":0,"closeInspections":1,"inspectedCount":0,"inspected...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.worker-lifetime.native-launch-zero" classname="kernel.native.worker-lifetime.native-launch-zero" time="0.0246146" status="run">
+		<properties/>
+		<system-out>{"record":"native-observation","case":"native-launch-zero","pid":18132,"tid":90588,"phase":"event-return","value":260}
+{"record":"native-observation","case":"native-launch-zero","pid":18132,"tid":90588,"phase":"native-launch-zero","value":0}
+{"record":"native-observation","case":"native-launch-zero","pid":18132,"tid":90588,"phase":"native-close-success","value":260}
+{"record":"native-observation","case":"native-launch-zero","pid":18132,"tid":90588,"phase":"factory-threw","value":1}
+{"record":"native-observation","case":"native-launch-zero","pid":18132,"tid":79576,"phase":"close-registry-acquired","value":0}
+{"schema":"worker-lifetime-source-run/1","variant":"after","case":"native-launch-zero","submode":"wait","pid":18132,"contractPassed":true,"expectedFailFast":false,"reason":"actual-source-contract-satisfied","registryCount":0,"registrySize":0,"eventAttempts":1,"eventAcquired":1,"eventClosed":1,"launchAttempts":1,"launched":0,"workerClosed":0,"workerFrees":1,"schedulerAllocations":1,"schedulerFrees":1,"alloc...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.worker-lifetime.registry-reserve-bad-alloc" classname="kernel.native.worker-lifetime.registry-reserve-bad-alloc" time="0.0216159" status="run">
+		<properties/>
+		<system-out>{"record":"native-observation","case":"registry-reserve-bad-alloc","pid":94824,"tid":28688,"phase":"stl-bad-alloc","value":0}
+{"record":"native-observation","case":"registry-reserve-bad-alloc","pid":94824,"tid":28688,"phase":"factory-threw","value":1}
+{"record":"native-observation","case":"registry-reserve-bad-alloc","pid":94824,"tid":54180,"phase":"close-registry-acquired","value":0}
+{"schema":"worker-lifetime-source-run/1","variant":"after","case":"registry-reserve-bad-alloc","submode":"wait","pid":94824,"contractPassed":true,"expectedFailFast":false,"reason":"actual-source-contract-satisfied","registryCount":0,"registrySize":0,"eventAttempts":0,"eventAcquired":0,"eventClosed":0,"launchAttempts":0,"launched":0,"workerClosed":0,"workerFrees":0,"schedulerAllocations":0,"schedulerFrees":0,"allocationFailures":1,"sectionsInitialized":0,"sectionsDeleted":0,"tlsFailures":0,"observedJoins":0,"exitQueries":0,"lastJoin":4294967295,"lastExitCode":259,"entryReturnCode":259,"workerTid":0,"waitFailureInjected":0,"exitFa...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.worker-lifetime.startup-tls-failure" classname="kernel.native.worker-lifetime.startup-tls-failure" time="0.0212749" status="run">
+		<properties/>
+		<system-out>{"record":"native-observation","case":"startup-tls-failure","pid":2132,"tid":60676,"phase":"event-return","value":268}
+{"record":"native-observation","case":"startup-tls-failure","pid":2132,"tid":60676,"phase":"beginthreadex-return","value":272}
+{"record":"native-observation","case":"startup-tls-failure","pid":2132,"tid":111304,"phase":"tls-set-failed","value":0}
+{"record":"native-observation","case":"startup-tls-failure","pid":2132,"tid":60676,"phase":"native-thread-signaled","value":0}
+{"record":"native-observation","case":"startup-tls-failure","pid":2132,"tid":60676,"phase":"native-exit-code","value":1}
+{"record":"native-observation","case":"startup-tls-failure","pid":2132,"tid":60676,"phase":"native-close-success","value":272}
+{"record":"native-observation","case":"startup-tls-failure","pid":2132,"tid":60676,"phase":"native-close-success","value":268}
+{"record":"native-observation","case":"startup-tls-failure","pid":2132,"tid":60676,"phase":"factory-threw","value":1}
+{"record":"native-observation","case":...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.worker-lifetime.ready-acquire-visibility" classname="kernel.native.worker-lifetime.ready-acquire-visibility" time="1.13321" status="run">
+		<properties/>
+		<system-out>{"record":"native-observation","case":"ready-acquire-visibility","pid":92416,"tid":35356,"phase":"event-return","value":280}
+{"record":"native-observation","case":"ready-acquire-visibility","pid":92416,"tid":35356,"phase":"beginthreadex-return","value":284}
+{"record":"native-observation","case":"ready-acquire-visibility","pid":92416,"tid":54440,"phase":"tls-set-success","value":2682625838176}
+{"record":"native-observation","case":"ready-acquire-visibility","pid":92416,"tid":35356,"phase":"native-thread-signaled","value":0}
+{"record":"native-observation","case":"ready-acquire-visibility","pid":92416,"tid":35356,"phase":"native-exit-code","value":0}
+{"record":"native-observation","case":"ready-acquire-visibility","pid":92416,"tid":35356,"phase":"native-close-success","value":284}
+{"record":"native-observation","case":"ready-acquire-visibility","pid":92416,"tid":35356,"phase":"native-close-success","value":280}
+{"record":"native-observation","case":"ready-acquire-visibility","pid":92416,"tid":35356,"phase":"even...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.worker-lifetime.native-exit-delayed" classname="kernel.native.worker-lifetime.native-exit-delayed" time="0.0461813" status="run">
+		<properties/>
+		<system-out>{"record":"native-observation","case":"native-exit-delayed","pid":98000,"tid":36444,"phase":"event-return","value":264}
+{"record":"native-observation","case":"native-exit-delayed","pid":98000,"tid":36444,"phase":"beginthreadex-return","value":268}
+{"record":"native-observation","case":"native-exit-delayed","pid":98000,"tid":94724,"phase":"tls-set-success","value":1817915739184}
+{"record":"delayed-native-exit","nativeUnsignaled":true,"threadClosed":false,"storageRetained":true,"registrationRetained":true}
+{"record":"native-observation","case":"native-exit-delayed","pid":98000,"tid":54024,"phase":"native-thread-signaled","value":0}
+{"record":"native-observation","case":"native-exit-delayed","pid":98000,"tid":54024,"phase":"native-exit-code","value":0}
+{"record":"native-observation","case":"native-exit-delayed","pid":98000,"tid":36444,"phase":"native-thread-signaled","value":0}
+{"record":"native-observation","case":"native-exit-delayed","pid":98000,"tid":36444,"phase":"native-exit-code","value":0}
+{"record":"nat...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.worker-lifetime.native-wait-fails" classname="kernel.native.worker-lifetime.native-wait-fails" time="0.673043" status="run">
+		<properties/>
+		<system-out>{"record":"native-observation","case":"native-wait-fails","pid":83200,"tid":33388,"phase":"event-return","value":264}
+{"record":"native-observation","case":"native-wait-fails","pid":83200,"tid":33388,"phase":"beginthreadex-return","value":268}
+{"record":"native-observation","case":"native-wait-fails","pid":83200,"tid":44908,"phase":"tls-set-success","value":2200041081920}
+{"record":"native-observation","case":"native-wait-fails","pid":83200,"tid":33388,"phase":"injected-native-wait-failure","value":4294967295}
+{"schema":"worker-lifetime-source-run/1","variant":"after","case":"native-wait-fails","submode":"wait","pid":83200,"contractPassed":true,"expectedFailFast":true,"reason":"actual-source-terminate-before-release","registryCount":1,"registrySize":1,"eventAttempts":1,"eventAcquired":1,"eventClosed":0,"launchAttempts":1,"launched":1,"workerClosed":0,"workerFrees":0,"schedulerAllocations":1,"schedulerFrees":0,"allocationFailures":0,"sectionsInitialized":2,"sectionsDeleted":0,"tlsFailures":0,"observedJoins":0,...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.worker-lifetime.worker-self-delete" classname="kernel.native.worker-lifetime.worker-self-delete" time="0.171314" status="run">
+		<properties/>
+		<system-out>{"record":"native-observation","case":"worker-self-delete","pid":91928,"tid":84748,"phase":"event-return","value":276}
+{"record":"native-observation","case":"worker-self-delete","pid":91928,"tid":84748,"phase":"beginthreadex-return","value":280}
+{"record":"native-observation","case":"worker-self-delete","pid":91928,"tid":69880,"phase":"tls-set-success","value":2194550082656}
+{"record":"native-observation","case":"worker-self-delete","pid":91928,"tid":69880,"phase":"self-delete-entered","value":0}
+{"schema":"worker-lifetime-source-run/1","variant":"after","case":"worker-self-delete","submode":"wait","pid":91928,"contractPassed":true,"expectedFailFast":true,"reason":"actual-source-terminate-before-release","registryCount":1,"registrySize":1,"eventAttempts":1,"eventAcquired":1,"eventClosed":0,"launchAttempts":1,"launched":1,"workerClosed":0,"workerFrees":0,"schedulerAllocations":1,"schedulerFrees":0,"allocationFailures":0,"sectionsInitialized":2,"sectionsDeleted":0,"tlsFailures":0,"observedJoins":0,"exitQueries"...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.worker-lifetime.normal-worker-close" classname="kernel.native.worker-lifetime.normal-worker-close" time="0.051393" status="run">
+		<properties/>
+		<system-out>{"record":"native-observation","case":"normal-worker-close","pid":109664,"tid":111716,"phase":"event-return","value":264}
+{"record":"native-observation","case":"normal-worker-close","pid":109664,"tid":111716,"phase":"beginthreadex-return","value":268}
+{"record":"native-observation","case":"normal-worker-close","pid":109664,"tid":110856,"phase":"tls-set-success","value":1555374918704}
+{"record":"native-observation","case":"normal-worker-close","pid":109664,"tid":111716,"phase":"native-thread-signaled","value":0}
+{"record":"native-observation","case":"normal-worker-close","pid":109664,"tid":111716,"phase":"native-exit-code","value":0}
+{"record":"native-observation","case":"normal-worker-close","pid":109664,"tid":111716,"phase":"native-thread-signaled","value":0}
+{"record":"native-observation","case":"normal-worker-close","pid":109664,"tid":111716,"phase":"native-exit-code","value":0}
+{"record":"native-observation","case":"normal-worker-close","pid":109664,"tid":111716,"phase":"native-close-success","value":268}...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.worker-lifetime.concurrent-registry-close" classname="kernel.native.worker-lifetime.concurrent-registry-close" time="0.0457822" status="run">
+		<properties/>
+		<system-out>{"record":"native-observation","case":"concurrent-registry-close","pid":113364,"tid":112344,"phase":"event-return","value":264}
+{"record":"native-observation","case":"concurrent-registry-close","pid":113364,"tid":112344,"phase":"beginthreadex-return","value":268}
+{"record":"native-observation","case":"concurrent-registry-close","pid":113364,"tid":63692,"phase":"startup-close-attempted","value":0}
+{"record":"native-observation","case":"concurrent-registry-close","pid":113364,"tid":70504,"phase":"tls-set-success","value":1590688468064}
+{"record":"native-observation","case":"concurrent-registry-close","pid":113364,"tid":60572,"phase":"close-registry-acquired","value":1}
+{"record":"native-observation","case":"concurrent-registry-close","pid":113364,"tid":60572,"phase":"source-debug-break","value":1}
+{"record":"native-observation","case":"concurrent-registry-close","pid":113364,"tid":60572,"phase":"source-debug-break","value":1}
+{"record":"native-observation","case":"concurrent-registry-close","pid":113364,"tid":6...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.worker-lifetime.main-thread-compatibility" classname="kernel.native.worker-lifetime.main-thread-compatibility" time="0.10238" status="run">
+		<properties/>
+		<system-out>{"record":"native-observation","case":"main-thread-compatibility","pid":79668,"tid":88960,"phase":"hidden-window-return","value":61091522}
+{"record":"native-observation","case":"main-thread-compatibility","pid":79668,"tid":88960,"phase":"tls-set-success","value":1954827717728}
+{"schema":"worker-lifetime-source-run/1","variant":"after","case":"main-thread-compatibility","submode":"wait","pid":79668,"contractPassed":true,"expectedFailFast":false,"reason":"actual-source-contract-satisfied","registryCount":0,"registrySize":0,"eventAttempts":0,"eventAcquired":0,"eventClosed":0,"launchAttempts":0,"launched":0,"workerClosed":0,"workerFrees":0,"schedulerAllocations":1,"schedulerFrees":1,"allocationFailures":0,"sectionsInitialized":2,"sectionsDeleted":2,"tlsFailures":0,"observedJoins":0,"exitQueries":0,"lastJoin":4294967295,"lastExitCode":259,"entryReturnCode":259,"workerTid":0,"waitFailureInjected":0,"exitFailureInjected":0,"closeInspections":0,"inspectedCount":-1,"inspectedReady":-1,"debugBreaks":0,"windowAcquired":...
+[This part of the test output was removed since it exceeds the threshold of 1024 bytes.]
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.dragdata-array-allocation-failure" classname="kernel.native.lifetime.dragdata-array-allocation-failure" time="1.57339" status="run">
+		<properties/>
+		<system-out>dragdata-body-v1 case=array-allocation-failure passed=1 subjectPid=88944 subjectFiletime=134360334570686911 heapDelta=0 bufferDelta=0 utf8Calls=0 arrayAttempts=1 bufferAllocations=0 bufferFrees=0
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.dragdata-utf8-partial-string-failure" classname="kernel.native.lifetime.dragdata-utf8-partial-string-failure" time="0.0240603" status="run">
+		<properties/>
+		<system-out>dragdata-body-v1 case=utf8-partial-string-failure passed=1 subjectPid=104068 subjectFiletime=134360334575896359 heapDelta=0 bufferDelta=0 utf8Calls=2 arrayAttempts=1 bufferAllocations=2 bufferFrees=2
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.dragdata-utf8-later-item-failure" classname="kernel.native.lifetime.dragdata-utf8-later-item-failure" time="0.0177128" status="run">
+		<properties/>
+		<system-out>dragdata-body-v1 case=utf8-later-item-failure passed=1 subjectPid=97668 subjectFiletime=134360334576151047 heapDelta=0 bufferDelta=0 utf8Calls=3 arrayAttempts=1 bufferAllocations=4 bufferFrees=4
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.dragdata-downstream-owned-copy-failure" classname="kernel.native.lifetime.dragdata-downstream-owned-copy-failure" time="0.0183857" status="run">
+		<properties/>
+		<system-out>dragdata-body-v1 case=downstream-owned-copy-failure passed=1 subjectPid=7916 subjectFiletime=134360334576333919 heapDelta=0 bufferDelta=0 utf8Calls=6 arrayAttempts=1 bufferAllocations=12 bufferFrees=12
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.dragdata-callback-unwind-counts" classname="kernel.native.lifetime.dragdata-callback-unwind-counts" time="0.0167842" status="run">
+		<properties/>
+		<system-out>dragdata-body-v1 case=callback-unwind-counts passed=1 subjectPid=104156 subjectFiletime=134360334576529919 heapDelta=0 bufferDelta=0 utf8Calls=6 arrayAttempts=1 bufferAllocations=12 bufferFrees=12
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.dragdata-callback-argument-unwind-counts" classname="kernel.native.lifetime.dragdata-callback-argument-unwind-counts" time="0.0164811" status="run">
+		<properties/>
+		<system-out>dragdata-body-v1 case=callback-argument-unwind-counts passed=1 subjectPid=43520 subjectFiletime=134360334576703243 heapDelta=0 bufferDelta=0 utf8Calls=6 arrayAttempts=1 bufferAllocations=12 bufferFrees=12
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.dragdata-controlled-257-invalid" classname="kernel.native.lifetime.dragdata-controlled-257-invalid" time="0.0188211" status="run">
+		<properties/>
+		<system-out>dragdata-body-v1 case=controlled-257-invalid passed=1 subjectPid=95732 subjectFiletime=134360334576880991 heapDelta=0 bufferDelta=0 utf8Calls=0 arrayAttempts=0 bufferAllocations=0 bufferFrees=0
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.dragdata-legacy-257-preserved" classname="kernel.native.lifetime.dragdata-legacy-257-preserved" time="0.0184294" status="run">
+		<properties/>
+		<system-out>dragdata-body-v1 case=legacy-257-preserved passed=1 subjectPid=35260 subjectFiletime=134360334577073808 heapDelta=0 bufferDelta=0 utf8Calls=514 arrayAttempts=1 bufferAllocations=1028 bufferFrees=1028
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.dragdata-custom-257-preserved" classname="kernel.native.lifetime.dragdata-custom-257-preserved" time="0.0198867" status="run">
+		<properties/>
+		<system-out>dragdata-body-v1 case=custom-257-preserved passed=1 subjectPid=100872 subjectFiletime=134360334577265456 heapDelta=0 bufferDelta=0 utf8Calls=514 arrayAttempts=1 bufferAllocations=1028 bufferFrees=1028
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.dragdata-mixed-success-releases" classname="kernel.native.lifetime.dragdata-mixed-success-releases" time="0.0917039" status="run">
+		<properties/>
+		<system-out>dragdata-body-v1 case=mixed-success-releases passed=1 subjectPid=75140 subjectFiletime=134360334578200219 heapDelta=0 bufferDelta=0 utf8Calls=3 arrayAttempts=1 bufferAllocations=8 bufferFrees=8
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.dragdata-empty-success-releases" classname="kernel.native.lifetime.dragdata-empty-success-releases" time="0.0183539" status="run">
+		<properties/>
+		<system-out>dragdata-body-v1 case=empty-success-releases passed=1 subjectPid=62228 subjectFiletime=134360334578397136 heapDelta=0 bufferDelta=0 utf8Calls=0 arrayAttempts=1 bufferAllocations=0 bufferFrees=0
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.ctor_shell-shell-success" classname="kernel.native.lifetime.ctor_shell-shell-success" time="1.0128" status="run">
+		<properties/>
+		<system-out>{"case":"shell-success","sourceBodyPassed":true,"injected":0,"partialCloseCalled":false,"fullEngineQualified":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.ctor_shell-handler-before-publication" classname="kernel.native.lifetime.ctor_shell-handler-before-publication" time="0.0137264" status="run">
+		<properties/>
+		<system-out>{"case":"handler-before-publication","sourceBodyPassed":true,"injected":1,"partialCloseCalled":false,"fullEngineQualified":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.ctor_shell-view-success" classname="kernel.native.lifetime.ctor_shell-view-success" time="0.017134" status="run">
+		<properties/>
+		<system-out>{"case":"view-success","sourceBodyPassed":true,"injected":0,"partialCloseCalled":false,"fullEngineQualified":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.ctor_shell-activation-failure" classname="kernel.native.lifetime.ctor_shell-activation-failure" time="0.0155194" status="run">
+		<properties/>
+		<system-out>{"case":"activation-failure","sourceBodyPassed":true,"injected":1,"partialCloseCalled":false,"fullEngineQualified":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.ctor_shell-view-handler-rollback" classname="kernel.native.lifetime.ctor_shell-view-handler-rollback" time="0.0154979" status="run">
+		<properties/>
+		<system-out>{"case":"view-handler-rollback","sourceBodyPassed":true,"injected":1,"partialCloseCalled":false,"fullEngineQualified":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.ctor_shell-engine-terminate" classname="kernel.native.lifetime.ctor_shell-engine-terminate" time="0.546519" status="run">
+		<properties/>
+		<system-out>{"case":"engine-terminate","actualTerminateCallObserved":true,"childExit":86,"partialCloseCalled":false,"fullEngineQualified":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.ctor_shell-live-insert-terminate" classname="kernel.native.lifetime.ctor_shell-live-insert-terminate" time="0.0532734" status="run">
+		<properties/>
+		<system-out>{"case":"live-insert-terminate","actualTerminateCallObserved":true,"childExit":86,"partialCloseCalled":false,"fullEngineQualified":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.legacy_drag-task-allocation-fails" classname="kernel.native.lifetime.legacy_drag-task-allocation-fails" time="1.01809" status="run">
+		<properties/>
+		<system-out>case=task-allocation-fails taskAttempts=1 allocated=0 freed=0 count=0 enter=0 leave=0 ui=0 completion=0 reenter=1 caught=1
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.legacy_drag-synchronous-success" classname="kernel.native.lifetime.legacy_drag-synchronous-success" time="0.0289385" status="run">
+		<properties/>
+		<system-out>case=synchronous-success taskAttempts=1 allocated=1 freed=1 count=0 enter=1 leave=1 ui=1 completion=2 reenter=1 caught=0
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.lifetime.legacy_drag-synchronous-consumer-fails" classname="kernel.native.lifetime.legacy_drag-synchronous-consumer-fails" time="0.020931" status="run">
+		<properties/>
+		<system-out>case=synchronous-consumer-fails taskAttempts=1 allocated=1 freed=1 count=0 enter=1 leave=1 ui=1 completion=0 reenter=1 caught=1
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.request-close.ordinary-first-menu" classname="kernel.native.request-close.ordinary-first-menu" time="1.08774" status="run">
+		<properties/>
+		<system-out>{"case":"ordinary-first-menu","actions":1,"actualBodies":2,"actualCompletions":2,"queued":0,"running":0,"engineCallbacks":0,"nativeResources":0,"comReferences":0,"nativeAdmissionFault":false,"drained":true,"closeSequence":41,"taskSequence":2,"stickyFailed":false,"menuHolds":1,"menuDestroys":1,"menuReleases":1,"comAdds":0,"comReleases":0,"realOomHeldMenu":false,"realLeaseHeldMenu":false,"actualComLedgerApiOnly":false,"realWin32Timer":true,"realWin32ApisUnreplaced":true,"realHmenuUsed":true,"fullQualification":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.request-close.queued-no-readmission" classname="kernel.native.request-close.queued-no-readmission" time="0.0728722" status="run">
+		<properties/>
+		<system-out>{"case":"queued-no-readmission","actions":1,"actualBodies":1,"actualCompletions":1,"queued":0,"running":0,"engineCallbacks":0,"nativeResources":0,"comReferences":0,"nativeAdmissionFault":false,"drained":true,"closeSequence":41,"taskSequence":1,"stickyFailed":false,"menuHolds":1,"menuDestroys":1,"menuReleases":1,"comAdds":0,"comReleases":0,"realOomHeldMenu":false,"realLeaseHeldMenu":false,"actualComLedgerApiOnly":false,"realWin32Timer":true,"realWin32ApisUnreplaced":true,"realHmenuUsed":true,"fullQualification":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.request-close.running-no-readmission" classname="kernel.native.request-close.running-no-readmission" time="0.0598385" status="run">
+		<properties/>
+		<system-out>{"case":"running-no-readmission","actions":1,"actualBodies":1,"actualCompletions":1,"queued":0,"running":0,"engineCallbacks":0,"nativeResources":0,"comReferences":0,"nativeAdmissionFault":false,"drained":true,"closeSequence":41,"taskSequence":1,"stickyFailed":false,"menuHolds":1,"menuDestroys":1,"menuReleases":1,"comAdds":0,"comReleases":0,"realOomHeldMenu":false,"realLeaseHeldMenu":false,"actualComLedgerApiOnly":false,"realWin32Timer":true,"realWin32ApisUnreplaced":true,"realHmenuUsed":true,"fullQualification":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.request-close.sticky-failed-pending-menu" classname="kernel.native.request-close.sticky-failed-pending-menu" time="0.0743305" status="run">
+		<properties/>
+		<system-out>{"case":"sticky-failed-pending-menu","actions":2,"actualBodies":1,"actualCompletions":1,"queued":0,"running":0,"engineCallbacks":0,"nativeResources":0,"comReferences":0,"nativeAdmissionFault":false,"drained":true,"closeSequence":41,"taskSequence":1,"stickyFailed":true,"menuHolds":1,"menuDestroys":1,"menuReleases":1,"comAdds":0,"comReleases":0,"realOomHeldMenu":true,"realLeaseHeldMenu":false,"actualComLedgerApiOnly":false,"realWin32Timer":true,"realWin32ApisUnreplaced":true,"realHmenuUsed":true,"fullQualification":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.request-close.genuine-menu-empty-retry" classname="kernel.native.request-close.genuine-menu-empty-retry" time="0.0586331" status="run">
+		<properties/>
+		<system-out>{"case":"genuine-menu-empty-retry","actions":2,"actualBodies":1,"actualCompletions":1,"queued":0,"running":0,"engineCallbacks":0,"nativeResources":0,"comReferences":0,"nativeAdmissionFault":false,"drained":true,"closeSequence":41,"taskSequence":1,"stickyFailed":true,"menuHolds":1,"menuDestroys":1,"menuReleases":1,"comAdds":0,"comReleases":0,"realOomHeldMenu":true,"realLeaseHeldMenu":false,"actualComLedgerApiOnly":false,"realWin32Timer":true,"realWin32ApisUnreplaced":true,"realHmenuUsed":true,"fullQualification":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.request-close.menu-callout-reentrant" classname="kernel.native.request-close.menu-callout-reentrant" time="0.0354344" status="run">
+		<properties/>
+		<system-out>{"case":"menu-callout-reentrant","actions":1,"actualBodies":0,"actualCompletions":0,"queued":0,"running":0,"engineCallbacks":0,"nativeResources":0,"comReferences":0,"nativeAdmissionFault":false,"drained":true,"closeSequence":41,"taskSequence":0,"stickyFailed":false,"menuHolds":1,"menuDestroys":1,"menuReleases":1,"comAdds":0,"comReleases":0,"realOomHeldMenu":false,"realLeaseHeldMenu":true,"actualComLedgerApiOnly":false,"realWin32Timer":false,"realWin32ApisUnreplaced":true,"realHmenuUsed":true,"fullQualification":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.request-close.post-menu-drain-no-readmission" classname="kernel.native.request-close.post-menu-drain-no-readmission" time="0.0699491" status="run">
+		<properties/>
+		<system-out>{"case":"post-menu-drain-no-readmission","actions":1,"actualBodies":1,"actualCompletions":1,"queued":0,"running":0,"engineCallbacks":0,"nativeResources":0,"comReferences":0,"nativeAdmissionFault":false,"drained":true,"closeSequence":41,"taskSequence":1,"stickyFailed":false,"menuHolds":1,"menuDestroys":1,"menuReleases":1,"comAdds":0,"comReleases":0,"realOomHeldMenu":false,"realLeaseHeldMenu":false,"actualComLedgerApiOnly":false,"realWin32Timer":true,"realWin32ApisUnreplaced":true,"realHmenuUsed":true,"fullQualification":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.request-close.failed-menu-drained-no-readmission" classname="kernel.native.request-close.failed-menu-drained-no-readmission" time="0.076524" status="run">
+		<properties/>
+		<system-out>{"case":"failed-menu-drained-no-readmission","actions":2,"actualBodies":1,"actualCompletions":1,"queued":0,"running":0,"engineCallbacks":0,"nativeResources":0,"comReferences":0,"nativeAdmissionFault":false,"drained":true,"closeSequence":41,"taskSequence":1,"stickyFailed":true,"menuHolds":1,"menuDestroys":1,"menuReleases":1,"comAdds":0,"comReleases":0,"realOomHeldMenu":true,"realLeaseHeldMenu":false,"actualComLedgerApiOnly":false,"realWin32Timer":true,"realWin32ApisUnreplaced":true,"realHmenuUsed":true,"fullQualification":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.request-close.native-admission-fault-empty-retry" classname="kernel.native.request-close.native-admission-fault-empty-retry" time="0.104458" status="run">
+		<properties/>
+		<system-out>{"case":"native-admission-fault-empty-retry","actions":2,"actualBodies":2,"actualCompletions":2,"queued":0,"running":0,"engineCallbacks":0,"nativeResources":0,"comReferences":0,"nativeAdmissionFault":true,"drained":false,"closeSequence":41,"taskSequence":2,"stickyFailed":true,"menuHolds":1,"menuDestroys":1,"menuReleases":1,"comAdds":0,"comReleases":0,"realOomHeldMenu":false,"realLeaseHeldMenu":false,"actualComLedgerApiOnly":false,"realWin32Timer":true,"realWin32ApisUnreplaced":true,"realHmenuUsed":true,"fullQualification":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.request-close.com-ledger-empty-retry" classname="kernel.native.request-close.com-ledger-empty-retry" time="0.0615703" status="run">
+		<properties/>
+		<system-out>{"case":"com-ledger-empty-retry","actions":2,"actualBodies":1,"actualCompletions":1,"queued":0,"running":0,"engineCallbacks":0,"nativeResources":0,"comReferences":0,"nativeAdmissionFault":false,"drained":true,"closeSequence":41,"taskSequence":1,"stickyFailed":true,"menuHolds":1,"menuDestroys":1,"menuReleases":1,"comAdds":1,"comReleases":1,"realOomHeldMenu":true,"realLeaseHeldMenu":false,"actualComLedgerApiOnly":true,"realWin32Timer":true,"realWin32ApisUnreplaced":true,"realHmenuUsed":true,"fullQualification":false}
+</system-out>
+	</testcase>
+	<testcase name="kernel.native.request-close.boundary-exhausted-drain" classname="kernel.native.request-close.boundary-exhausted-drain" time="0.0601427" status="run">
+		<properties/>
+		<system-out>{"case":"boundary-exhausted-drain","actions":1,"actualBodies":1,"actualCompletions":1,"queued":0,"running":0,"engineCallbacks":0,"nativeResources":0,"comReferences":0,"nativeAdmissionFault":false,"drained":true,"closeSequence":0,"taskSequence":1,"stickyFailed":true,"menuHolds":1,"menuDestroys":1,"menuReleases":1,"comAdds":0,"comReleases":0,"realOomHeldMenu":false,"realLeaseHeldMenu":false,"actualComLedgerApiOnly":false,"realWin32Timer":true,"realWin32ApisUnreplaced":true,"realHmenuUsed":true,"fullQualification":false}
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_invalid_options" classname="windows_local_endpoint_invalid_options" time="2.06164" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint invalid_options passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_default_deny" classname="windows_local_endpoint_default_deny" time="0.0538624" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint default_deny passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_handshake_required" classname="windows_local_endpoint_handshake_required" time="0.0443672" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint handshake_required passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_owner_dispatch" classname="windows_local_endpoint_owner_dispatch" time="0.108249" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint owner_dispatch passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_wire_credentials" classname="windows_local_endpoint_wire_credentials" time="0.287716" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint wire_credentials passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_frame_bounds" classname="windows_local_endpoint_frame_bounds" time="0.153557" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint frame_bounds passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_consecutive_requests" classname="windows_local_endpoint_consecutive_requests" time="1.04027" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint consecutive_requests passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_fragmented_frame" classname="windows_local_endpoint_fragmented_frame" time="0.0737293" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint fragmented_frame passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_external_process" classname="windows_local_endpoint_external_process" time="0.621914" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint external_process passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_duplicate_fields" classname="windows_local_endpoint_duplicate_fields" time="0.0603043" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint duplicate_fields passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_navigation_revoke" classname="windows_local_endpoint_navigation_revoke" time="0.105477" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint navigation_revoke passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_reconnect" classname="windows_local_endpoint_reconnect" time="0.137023" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint reconnect passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_callback_throw" classname="windows_local_endpoint_callback_throw" time="0.0818649" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint callback_throw passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_authorizer_throw" classname="windows_local_endpoint_authorizer_throw" time="0.0546092" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint authorizer_throw passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_issue_close_race" classname="windows_local_endpoint_issue_close_race" time="0.0439279" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint issue_close_race passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_lease_expiry" classname="windows_local_endpoint_lease_expiry" time="2.10158" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint lease_expiry passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_partial_read_stop" classname="windows_local_endpoint_partial_read_stop" time="0.0594114" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint partial_read_stop passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_owner_timeout" classname="windows_local_endpoint_owner_timeout" time="0.0764339" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint owner_timeout passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_callback_stop" classname="windows_local_endpoint_callback_stop" time="0.0757862" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint callback_stop passed
+</system-out>
+	</testcase>
+	<testcase name="windows_local_endpoint_security_first_instance" classname="windows_local_endpoint_security_first_instance" time="0.0284551" status="run">
+		<properties/>
+		<system-out>windows_local_endpoint security_first_instance passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.uia.properties" classname="sdk.native.uia.properties" time="1.08192" status="run">
+		<properties/>
+		<system-out>case=properties passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.uia.mutations" classname="sdk.native.uia.mutations" time="0.151259" status="run">
+		<properties/>
+		<system-out>case=mutations passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.uia.stale-secret" classname="sdk.native.uia.stale-secret" time="0.0768289" status="run">
+		<properties/>
+		<system-out>case=stale-secret passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.uia.bounded" classname="sdk.native.uia.bounded" time="0.352941" status="run">
+		<properties/>
+		<system-out>case=bounded passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.uia.callback-close" classname="sdk.native.uia.callback-close" time="0.0774385" status="run">
+		<properties/>
+		<system-out>case=callback-close passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.uia.uia-client" classname="sdk.native.uia.uia-client" time="0.404393" status="run">
+		<properties/>
+		<system-out>case=uia-client passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.uia.com-initialization" classname="sdk.native.uia.com-initialization" time="0.0690311" status="run">
+		<properties/>
+		<system-out>case=com-initialization passed
+</system-out>
+	</testcase>
+	<testcase name="sdk.native.uia.api-close" classname="sdk.native.uia.api-close" time="0.104026" status="run">
+		<properties/>
+		<system-out>case=api-close passed
+</system-out>
+	</testcase>
+	<testcase name="json_bridge_endpoint_factory_stopped_registration_freeze" classname="json_bridge_endpoint_factory_stopped_registration_freeze" time="1.09426" status="run">
+		<properties/>
+		<system-out>public-json-bridge-endpoint factory_stopped_registration_freeze passed
+</system-out>
+	</testcase>
+	<testcase name="json_bridge_endpoint_factory_allocation_failure" classname="json_bridge_endpoint_factory_allocation_failure" time="0.0252989" status="run">
+		<properties/>
+		<system-out>public-json-bridge-endpoint factory_allocation_failure passed
+</system-out>
+	</testcase>
+	<testcase name="json_bridge_endpoint_factory_after_bootstrap" classname="json_bridge_endpoint_factory_after_bootstrap" time="0.0291494" status="run">
+		<properties/>
+		<system-out>public-json-bridge-endpoint factory_after_bootstrap passed
+</system-out>
+	</testcase>
+	<testcase name="json_bridge_endpoint_typed_action_page_isolation" classname="json_bridge_endpoint_typed_action_page_isolation" time="0.131337" status="run">
+		<properties/>
+		<system-out>public-json-bridge-endpoint typed_action_page_isolation passed
+</system-out>
+	</testcase>
+	<testcase name="json_bridge_endpoint_local_family_completion" classname="json_bridge_endpoint_local_family_completion" time="0.108845" status="run">
+		<properties/>
+		<system-out>public-json-bridge-endpoint local_family_completion passed
+</system-out>
+	</testcase>
+	<testcase name="json_bridge_endpoint_local_family_disconnect_cancel" classname="json_bridge_endpoint_local_family_disconnect_cancel" time="0.128599" status="run">
+		<properties/>
+		<system-out>public-json-bridge-endpoint local_family_disconnect_cancel passed
+</system-out>
+	</testcase>
+</testsuite>

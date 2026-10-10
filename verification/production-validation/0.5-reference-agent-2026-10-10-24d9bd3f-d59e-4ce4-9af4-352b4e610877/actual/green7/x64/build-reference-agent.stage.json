@@ -1,0 +1,63 @@
+{
+  "name": "build-reference-agent",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "--build",
+    "F:\\work\\sm05-broker\\out\\ragent7\\x64\\build",
+    "--config",
+    "Release",
+    "--target",
+    "soui_reference_agent_tests",
+    "--",
+    "/m:1",
+    "/nr:false",
+    "/p:VcpkgEnabled=false",
+    "/p:VcpkgEnableManifest=false",
+    "/p:VCToolsVersion=14.44.35207",
+    "/p:WindowsTargetPlatformVersion=10.0.19041.0",
+    "/p:ImportDirectoryBuildProps=false",
+    "/p:ImportDirectoryBuildTargets=false",
+    "/p:UseEnv=false",
+    "/p:UserRootDir=F:\\work\\sm05-broker\\out\\reference-agent-isolation-phase-root-372a7943-b6d0-4979-a395-d6314572fe09\\empty-user-props\\",
+    "/bl:F:\\work\\sm05-broker\\out\\ragent7\\x64\\build.binlog"
+  ],
+  "cwd": "F:\\work\\sm05-broker\\out\\ragent7\\x64",
+  "pid": 107332,
+  "creationFileTime": "134360463166173566",
+  "rootExitCode": 0,
+  "supervisorExitCode": 0,
+  "genericPassed": true,
+  "closureConfirmed": true,
+  "rawJob": "F:\\work\\sm05-broker\\out\\ragent7\\x64\\build-reference-agent.owned.jsonl",
+  "rawSha256": "56e260ae091474774b3a48feacadc588079163402d53f75639ae574f7b5f6dc3",
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent7\\x64\\build-reference-agent.owned.jsonl.context.json",
+    "bytes": 1054,
+    "sha256": "d72826f4a931cba1a30aea8291c42e98f7f0031b0c441a2fde9c3ba0e2b76d93"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent7\\x64\\build-reference-agent.stdout.raw",
+    "bytes": 1134,
+    "sha256": "3333994933fc280a3cd9fd5d3e0ae4df8100abfd18a5b26d948b89c64ec5982c"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\ragent7\\x64\\build-reference-agent.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "streamErrors": [],
+  "terminal": {
+    "event": "terminal",
+    "reason": "completed",
+    "elapsedMs": 8807,
+    "rootExited": true,
+    "rootExitCode": 0,
+    "activeBeforeCleanup": 0,
+    "terminatedOwnedJob": false,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 43,
+    "limitTerminatedProcesses": 0,
+    "passed": true
+  }
+}

@@ -2,6 +2,7 @@
 #define WebThreadImpl_h
 
 #include <vector>
+#include <atomic>
 
 #include "base/compiler_specific.h"
 #include "third_party/WebKit/public/platform/Platform.h"
@@ -68,19 +69,22 @@ public:
     void updateSharedTimer();
     void appendUnusedTimerToDelete(WebTimerBase* timer) { m_unusedTimersToDelete.push_back(timer); }
 
-    bool threadClosed() { return m_threadClosed; }
+    bool threadClosed() { return m_threadClosed.load(std::memory_order_acquire); }
 
     void shutdown();
 
     static unsigned getNewCurrentHeapInsertionOrder();
 
 private:
+    friend class BlinkPlatformImpl;
+
     void fireOnExit();
     void waitForExit();
     void fireTimeOnExit();
 
     struct TaskPair {
         TaskPair(const blink::WebTraceLocation& location, blink::WebThread::Task* task, long long delayMs, int priority);
+        ~TaskPair();
         static void sortByPriority(std::vector<TaskPair*>*);
 
         blink::WebTraceLocation location;
@@ -105,8 +109,8 @@ private:
 
     HANDLE m_hEvent;
     blink::PlatformThreadId m_threadId;
-    bool m_willExit;
-    bool m_threadClosed;
+    std::atomic<bool> m_willExit;
+    std::atomic<bool> m_threadClosed;
 
     int m_firingTimers; // Reentrancy guard.
     WebSchedulerImpl* m_webSchedulerImpl;
@@ -123,8 +127,9 @@ private:
     CRITICAL_SECTION m_observersMutex;
     bool m_suspendTimerQueue;
 
-    bool m_hadThreadInit;
+    std::atomic<bool> m_hadThreadInit;
     HANDLE m_threadHandle;
+    bool m_hasPlatformRegistration;
 
     double m_currentFrameCreateTime; // 当前帧全部使用这个创建时间
     static unsigned m_currentHeapInsertionOrder;

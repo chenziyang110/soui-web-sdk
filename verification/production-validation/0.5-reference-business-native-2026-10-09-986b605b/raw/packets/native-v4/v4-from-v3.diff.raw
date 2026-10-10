@@ -1,0 +1,5 @@
+--- Native V3/run-root.cjs
++++ Native V4/run-root.cjs
+@@ registry command comparison @@
+-if(normalize(test.command[0])!==normalize(executable)||JSON.stringify(test.command.slice(1))!==JSON.stringify([name,path.join(reference,'common/fixture.json')])||
++if(!Array.isArray(test.command)||test.command.length!==3||normalize(test.command[0])!==normalize(executable)||test.command[1]!==name||typeof test.command[2]!=='string'||normalize(test.command[2])!==normalize(path.join(reference,'common/fixture.json'))||

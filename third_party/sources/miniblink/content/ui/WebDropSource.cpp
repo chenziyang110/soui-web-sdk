@@ -25,18 +25,20 @@
 
 #include "content/ui/WebDropSource.h"
 #include <Windows.h>
+#include <utility>
 
 namespace content {
 
-HRESULT WebDropSource::createInstance(IDropSource** result)
+HRESULT WebDropSource::createInstance(IDropSource** result, std::function<bool()> cancelled)
 {
     if (!result)
         return E_INVALIDARG;
-    *result = new WebDropSource();
+    *result = new WebDropSource(std::move(cancelled));
     return S_OK;
 }
 
-WebDropSource::WebDropSource()
+WebDropSource::WebDropSource(std::function<bool()> cancelled)
+    : m_cancelled(std::move(cancelled))
 {
 //     gClassCount++;
 //     gClassNameCount().add("WebDropSource");
@@ -91,6 +93,8 @@ ULONG WebDropSource::Release()
 
 STDMETHODIMP WebDropSource::QueryContinueDrag(_In_ BOOL fEscapePressed, _In_ DWORD grfKeyState)
 {
+    if (m_cancelled && m_cancelled())
+        return DRAGDROP_S_CANCEL;
     if (fEscapePressed || !(grfKeyState & (MK_LBUTTON|MK_RBUTTON))) {
         m_dropped = !fEscapePressed;
         return fEscapePressed? DRAGDROP_S_CANCEL : DRAGDROP_S_DROP;

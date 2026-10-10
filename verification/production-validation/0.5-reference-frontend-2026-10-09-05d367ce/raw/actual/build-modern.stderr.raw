@@ -1,0 +1,9 @@
+[33m[PLUGIN_TIMINGS] [0mJavaScript callbacks ran for 3.3s of this 3.3s build (100%).
+The slowest callbacks, timed inside each callback (the wait before a callback starts is excluded, the time it awaits is included):
+  - plugin externalize-deps resolveId (100%, 3.3s, 7 calls)
+See https://rolldown.rs/reference/InputOptions.checks#bundlertimings for more details.
+
+(!) Your Vite config uses features that are unsupported by `configLoader: 'native'`, which is planned to become the default in a future major version of Vite:
+  - import "../common/fixture-asset" without a file extension (vite.config.ts:5:28). Add the file extension
+  - ESM syntax in a file loaded as CommonJS (../common/fixture-asset.ts:1:1). Use a `.mjs` extension or set `"type": "module"` in the closest package.json
+Set `VITE_CONFIG_NATIVE_IGNORE_WARNING=true` to suppress this warning.

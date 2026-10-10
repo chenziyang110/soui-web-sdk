@@ -2,6 +2,30 @@
 #include "net/ActivatingObjCheck.h"
 #include <vector>
 
+namespace {
+
+class CriticalSectionScope {
+public:
+    explicit CriticalSectionScope(CRITICAL_SECTION* mutex)
+        : m_mutex(mutex)
+    {
+        ::EnterCriticalSection(m_mutex);
+    }
+
+    ~CriticalSectionScope() noexcept
+    {
+        ::LeaveCriticalSection(m_mutex);
+    }
+
+    CriticalSectionScope(const CriticalSectionScope&) = delete;
+    CriticalSectionScope& operator=(const CriticalSectionScope&) = delete;
+
+private:
+    CRITICAL_SECTION* const m_mutex;
+};
+
+} // namespace
+
 namespace net {
 
 ActivatingObjCheck* ActivatingObjCheck::m_inst = nullptr;
@@ -36,24 +60,20 @@ void ActivatingObjCheck::destroy()
 
 void ActivatingObjCheck::add(intptr_t loader)
 {
-    ::EnterCriticalSection(&m_mutex);
+    const CriticalSectionScope lock(&m_mutex);
     m_activatingObjs->insert(loader);
-    ::LeaveCriticalSection(&m_mutex);
 }
 
 void ActivatingObjCheck::remove(intptr_t loader)
 {
-    ::EnterCriticalSection(&m_mutex);
+    const CriticalSectionScope lock(&m_mutex);
     m_activatingObjs->erase(loader);
-    ::LeaveCriticalSection(&m_mutex);
 }
 
 bool ActivatingObjCheck::isActivating(intptr_t loader)
 {
-    ::EnterCriticalSection(&m_mutex);
-    bool isActivating = m_activatingObjs->find(loader) != m_activatingObjs->end();
-    ::LeaveCriticalSection(&m_mutex);
-    return isActivating;
+    const CriticalSectionScope lock(&m_mutex);
+    return m_activatingObjs->find(loader) != m_activatingObjs->end();
 }
 
 int ActivatingObjCheck::genId()
@@ -78,23 +98,22 @@ void ActivatingObjCheck::testPrint()
 void ActivatingObjCheck::doGarbageCollected(bool forceGC)
 {
     if (!forceGC) {
-        ::EnterCriticalSection(&m_mutex);
+        const CriticalSectionScope lock(&m_mutex);
         int size = m_activatingObjs->size();
-        ::LeaveCriticalSection(&m_mutex);
         if (size < 10)
             return;
     }
 
-    ::EnterCriticalSection(&m_mutex);
     std::vector<intptr_t> activatingLoaders;
-    activatingLoaders.resize(m_activatingObjs->size());
+    {
+        const CriticalSectionScope lock(&m_mutex);
+        activatingLoaders.resize(m_activatingObjs->size());
 
-    std::set<intptr_t>::iterator setIt = m_activatingObjs->begin();
-    std::set<intptr_t>::iterator end = m_activatingObjs->end();
-    for (unsigned i = 0; setIt != end; ++setIt, ++i)
-        activatingLoaders[i] = *setIt;
-
-    ::LeaveCriticalSection(&m_mutex);
+        std::set<intptr_t>::iterator setIt = m_activatingObjs->begin();
+        std::set<intptr_t>::iterator end = m_activatingObjs->end();
+        for (unsigned i = 0; setIt != end; ++setIt, ++i)
+            activatingLoaders[i] = *setIt;
+    }
 
 //     std::vector<intptr_t>::iterator it = activatingLoaders.begin();
 //     for (; it != activatingLoaders.end(); ++it) {

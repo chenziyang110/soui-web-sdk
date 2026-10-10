@@ -1,0 +1,161 @@
+{
+  "schema": "soui.actual-ole-ack.root/1",
+  "completed": true,
+  "directCases": 1,
+  "buildExecuted": false,
+  "ctestExecuted": false,
+  "originalFailedStagePromoted": false,
+  "originalBHistoryChanged": false,
+  "observation": {
+    "case": "ack-before-dispatch",
+    "SubjectPID": "100972",
+    "creationFileTime": "134360347060778204",
+    "rootExitCode": 2,
+    "supervisorExitCode": 2,
+    "genericPassed": false,
+    "actualDefaultFailureObserved": true,
+    "nativeReceiptBound": true,
+    "nativeReceipt": {
+      "actualDllSha256": "342aa3b71e180c3a544ea5cde66c15fcf5f18c4126839006e0623bf5ac77d720",
+      "admitted": 0,
+      "after": {
+        "closing": 0,
+        "drained": 0,
+        "engineCallbacks": 0,
+        "nativeScopes": 0,
+        "nonAtomic": true,
+        "oleRegistered": 0,
+        "queued": 0,
+        "running": 0,
+        "status": 0,
+        "vendorFailed": false
+      },
+      "allUiCompleted": 2,
+      "before": {
+        "closing": 0,
+        "drained": 0,
+        "engineCallbacks": 0,
+        "nativeScopes": 0,
+        "nonAtomic": true,
+        "oleRegistered": 0,
+        "queued": 1,
+        "running": 0,
+        "status": 0,
+        "vendorFailed": false
+      },
+      "case": "ack-before-dispatch",
+      "characterizationOnly": false,
+      "close": {
+        "closing": 1,
+        "drained": 1,
+        "engineCallbacks": 0,
+        "nativeScopes": 0,
+        "nonAtomic": true,
+        "oleRegistered": 0,
+        "queued": 0,
+        "running": 0,
+        "status": 0,
+        "vendorFailed": false
+      },
+      "creationFileTime": "134360347060778204",
+      "engineThreadJoined": true,
+      "enterCalls": 0,
+      "initializedUnloadQualified": false,
+      "measurementPassed": true,
+      "nativeAdmission": {
+        "closing": false,
+        "enabled": true,
+        "kind": 0,
+        "pending": false,
+        "reason": "none",
+        "receipt": {
+          "document": "0",
+          "geometry": "0",
+          "view": "0"
+        },
+        "sdk": {
+          "document": "0",
+          "geometry": "0",
+          "view": "0"
+        }
+      },
+      "ownerWithdrawn": true,
+      "pid": 100972,
+      "qualificationPassed": false,
+      "registrationCancelled": 1,
+      "registrationCompleted": 1,
+      "registrationPreserved": false,
+      "releaseReady": false,
+      "schema": "soui.actual-ole-startup-schedule/1",
+      "startupQualified": false
+    },
+    "expectedScheduleObserved": true,
+    "wholeJobClosureConfirmed": true,
+    "wholeJobNaturalClosed": true,
+    "forcedOwnedConsoleObserved": false,
+    "postRootMembers": [],
+    "memberSnapshotNonAtomic": true,
+    "naturalQualificationPassed": false,
+    "resourceReleaseQualified": false,
+    "registrationPreserved": false,
+    "terminal": {
+      "event": "terminal",
+      "reason": "root-failed",
+      "elapsedMs": 647,
+      "rootExited": true,
+      "rootExitCode": 2,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 2,
+      "limitTerminatedProcesses": 0,
+      "passed": false
+    },
+    "errors": {
+      "execution": [],
+      "ownedBinding": [],
+      "nativeReceipt": [],
+      "closure": [],
+      "postInputs": []
+    },
+    "raw": {
+      "path": "F:\\work\\sm05-broker\\out\\ole-ack-3464196f-x64\\case.owned.ndjson",
+      "bytes": 1214,
+      "sha256": "e8a7a16a10f6146867d0c65cc03b09dee0cd3b46128be602e8e8affc42841d41"
+    },
+    "context": {
+      "path": "F:\\work\\sm05-broker\\out\\ole-ack-3464196f-x64\\case.owned.ndjson.context.json",
+      "bytes": 699,
+      "sha256": "cf3e64a4fb6589cce5ce129093e5987c38142494897535ae52d1036bc90520a7"
+    },
+    "stdout": {
+      "path": "F:\\work\\sm05-broker\\out\\ole-ack-3464196f-x64\\case.stdout.raw",
+      "bytes": 1234,
+      "sha256": "daf38c02d7b848db937ba3b5f8cc1f5d97f81356f7c08d98d2a185b7752e8cc7"
+    },
+    "stderr": {
+      "path": "F:\\work\\sm05-broker\\out\\ole-ack-3464196f-x64\\case.stderr.raw",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "finished": {
+      "path": "F:\\work\\sm05-broker\\out\\ole-ack-3464196f-x64\\case.finished.json",
+      "bytes": 957,
+      "sha256": "9d74c7e521e01bdba3a214d11d8707c9265bf7113e95fd318ab1e897f293cfba"
+    },
+    "startupQualified": false,
+    "formalPassed": false,
+    "qualificationPassed": false,
+    "releaseReady": false
+  },
+  "allGenericPassed": false,
+  "naturalQualificationPassed": false,
+  "completeToolchainProvenance": false,
+  "initializedUnloadQualified": false,
+  "win7Qualified": false,
+  "fullSdkQualification": false,
+  "formalPassed": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

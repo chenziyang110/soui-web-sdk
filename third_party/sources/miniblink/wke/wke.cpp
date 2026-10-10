@@ -8,6 +8,7 @@
 #include "wke/wkeWebWindow.h"
 #include "wke/wkeGlobalVar.h"
 #include "wke/wke2.h"
+#include "wke/CursorDescriptorBroker.h"
 #include "content/browser/WebPage.h"
 #include "content/browser/WebPageImpl.h"
 #include "cc/trees/LayerTreeHost.h"
@@ -43,6 +44,7 @@
 #include <algorithm>
 #include <atomic>
 #include <mutex>
+#include <memory>
 #include <vector>
 
  namespace net {
@@ -75,6 +77,7 @@ struct InteractionEndpointImpl {
         , layerTreeHost(compositor)
         , viewGeneration(generation)
         , active(true)
+        , nextForInvalidation(nullptr)
     {
     }
 
@@ -84,6 +87,8 @@ struct InteractionEndpointImpl {
     cc::LayerTreeHost* layerTreeHost;
     unsigned __int64 viewGeneration;
     bool active;
+    // A withdrawn registry reference owns this private, allocation-free chain.
+    InteractionEndpointImpl* nextForInvalidation;
 };
 
 std::mutex s_interactionEndpointsMutex;
@@ -123,21 +128,27 @@ void invalidateInteractionEndpoint(InteractionEndpointImpl* endpoint)
 
 void invalidateInteractionEndpointsForWebView(wkeWebView webView)
 {
-    std::vector<InteractionEndpointImpl*> removed;
+    InteractionEndpointImpl* removed = nullptr;
+    InteractionEndpointImpl** nextRemoved = &removed;
     {
         std::lock_guard<std::mutex> lock(s_interactionEndpointsMutex);
         for (std::vector<InteractionEndpointImpl*>::iterator it = s_interactionEndpoints.begin();
              it != s_interactionEndpoints.end();) {
             if ((*it)->webView == webView) {
-                removed.push_back(*it);
+                InteractionEndpointImpl* endpoint = *it;
+                // Transfer the registry reference before any endpoint callout.
+                *nextRemoved = endpoint;
+                nextRemoved = &endpoint->nextForInvalidation;
                 it = s_interactionEndpoints.erase(it);
             } else {
                 ++it;
             }
         }
     }
-    for (size_t i = 0; i < removed.size(); ++i) {
-        InteractionEndpointImpl* endpoint = removed[i];
+    while (removed) {
+        InteractionEndpointImpl* endpoint = removed;
+        removed = endpoint->nextForInvalidation;
+        endpoint->nextForInvalidation = nullptr;
         {
             std::lock_guard<std::mutex> lock(endpoint->mutex);
             endpoint->active = false;
@@ -151,21 +162,26 @@ void invalidateInteractionEndpointsForWebView(wkeWebView webView)
 wkeInteractionEndpoint WKE_CALL_TYPE createInteractionEndpoint(
     wkeWebView webView, unsigned __int64 viewGeneration)
 {
-    if (!webView || !viewGeneration || !webView->webPage()
-        || !webView->webPage()->webPageImpl()) {
+    try {
+        if (!webView || !viewGeneration || !webView->webPage()
+            || !webView->webPage()->webPageImpl()) {
+            return nullptr;
+        }
+        cc::LayerTreeHost* layerTreeHost =
+            webView->webPage()->webPageImpl()->layerTreeHost();
+        if (!layerTreeHost)
+            return nullptr;
+        std::unique_ptr<InteractionEndpointImpl> endpoint(
+            new InteractionEndpointImpl(webView, layerTreeHost, viewGeneration));
+        {
+            std::lock_guard<std::mutex> lock(s_interactionEndpointsMutex);
+            s_interactionEndpoints.push_back(endpoint.get());
+        }
+        // Publish the caller reference only after registry admission commits.
+        return endpoint.release();
+    } catch (...) {
         return nullptr;
     }
-    cc::LayerTreeHost* layerTreeHost =
-        webView->webPage()->webPageImpl()->layerTreeHost();
-    if (!layerTreeHost)
-        return nullptr;
-    InteractionEndpointImpl* endpoint =
-        new InteractionEndpointImpl(webView, layerTreeHost, viewGeneration);
-    {
-        std::lock_guard<std::mutex> lock(s_interactionEndpointsMutex);
-        s_interactionEndpoints.push_back(endpoint);
-    }
-    return endpoint;
 }
 
 void WKE_CALL_TYPE retainInteractionEndpoint(wkeInteractionEndpoint opaque)
@@ -355,6 +371,11 @@ const wkeInteractionApi* WKE_CALL_TYPE wkeGetInteractionApi(unsigned int request
     return requestedVersion == WKE_INTERACTION_ABI_VERSION ? &api : nullptr;
 }
 
+const wkeCursorBrokerApi* WKE_CALL_TYPE wkeGetCursorBrokerApi(unsigned int requestedVersion)
+{
+    return wke::cursorBrokerApi(requestedVersion);
+}
+
 void WKE_CALL_TYPE wkeInitialize()
 {
     if (wke::wkeIsInit)
@@ -453,6 +474,8 @@ bool WKE_CALL_TYPE wkeIsInitialize()
 void WKE_CALL_TYPE wkeFinalize()
 {
     wke::checkThreadCallIsValid(__FUNCTION__);
+    if (!wke::brokerMayFinalize())
+        return;
     content::BlinkPlatformImpl* platform = (content::BlinkPlatformImpl*)blink::Platform::current();
     platform->shutdown();
 
@@ -507,6 +530,8 @@ void WKE_CALL_TYPE wkeSetCspCheckEnable(wkeWebView webView, bool b)
 void WKE_CALL_TYPE wkeSetNpapiPluginsEnabled(wkeWebView webView, bool b)
 {
     wke::checkThreadCallIsValid(__FUNCTION__);
+    if (wke::brokerActive())
+        return;
     blink::RuntimeEnabledFeatures::setNpapiPluginsEnabled(b);
 }
 
@@ -1753,6 +1778,8 @@ void WKE_CALL_TYPE wkeSetDragFiles(wkeWebView webView, const POINT* clintPos, co
 wkeWebView WKE_CALL_TYPE wkeCreateWebWindow(wkeWindowType type, HWND parent, int x, int y, int width, int height)
 {
     wke::checkThreadCallIsValid(__FUNCTION__);
+    if (!wke::brokerMayCreateRawView())
+        return nullptr;
     wke::CWebWindow* webWindow = new wke::CWebWindow(cc::s_kBgColor);
     if (!webWindow->createWindow(parent, type, x, y, width, height)) {
         delete webWindow;
@@ -1765,6 +1792,8 @@ wkeWebView WKE_CALL_TYPE wkeCreateWebWindow(wkeWindowType type, HWND parent, int
 wkeWebView WKE_CALL_TYPE wkeCreateWebCustomWindow(const wkeWindowCreateInfo* info)
 {
     wke::checkThreadCallIsValid(__FUNCTION__);
+    if (!wke::brokerMayCreateRawView())
+        return nullptr;
     wke::CWebWindow* webWindow = new wke::CWebWindow(info->color);
     if (!webWindow->createWindow(info)) {
         delete webWindow;
@@ -1776,6 +1805,9 @@ wkeWebView WKE_CALL_TYPE wkeCreateWebCustomWindow(const wkeWindowCreateInfo* inf
 
 wkeWebView WKE_CALL_TYPE wkeCreateWebView()
 {
+    wke::checkThreadCallIsValid(__FUNCTION__);
+    if (!wke::brokerMayCreateRawView())
+        return nullptr;
     wke::CWebView* webView = new wke::CWebView(cc::s_kBgColor);
     webView->webPage()->setNeedAutoDrawToHwnd(false);
 
@@ -1785,6 +1817,9 @@ wkeWebView WKE_CALL_TYPE wkeCreateWebView()
 
 void WKE_CALL_TYPE wkeDestroyWebView(wkeWebView webView)
 {
+    wke::checkThreadCallIsValid(__FUNCTION__);
+    if (!wke::brokerMayDestroyRawView(webView))
+        return;
     if (!webView)
         return;
 
@@ -1804,6 +1839,8 @@ void WKE_CALL_TYPE wkeDestroyWebView(wkeWebView webView)
 void WKE_CALL_TYPE wkeDestroyWebWindow(wkeWebView webWindow)
 {
     wke::checkThreadCallIsValid(__FUNCTION__);
+    if (!wke::brokerMayDestroyRawView(webWindow))
+        return;
     std::set<wkeWebView>::iterator pos = wke::g_liveWebViews.find(webWindow);
     if (pos != wke::g_liveWebViews.end()) {
         webWindow->destroy();
@@ -2051,6 +2088,9 @@ void WKE_CALL_TYPE wkeSetDeviceParameter(wkeWebView webView, const char* device,
 void WKE_CALL_TYPE wkeAddNpapiPlugin(wkeWebView webView, void* initializeFunc, void* getEntryPointsFunc, void* shutdownFunc)
 {
     wke::checkThreadCallIsValid(__FUNCTION__);
+    if (!wke::brokerPluginEntry())
+        return;
+    wke::checkThreadCallIsValid(__FUNCTION__);
     RefPtr<content::PluginPackage> package = content::PluginPackage::createVirtualPackage(
         (NP_InitializeFuncPtr)initializeFunc,
         (NP_GetEntryPointsFuncPtr) getEntryPointsFunc,
@@ -2064,6 +2104,9 @@ void WKE_CALL_TYPE wkeAddNpapiPlugin(wkeWebView webView, void* initializeFunc, v
 
 void WKE_CALL_TYPE wkeOnPluginFind(wkeWebView webView, const char* mime, wkeOnPluginFindCallback callback, void* param)
 {
+    wke::checkThreadCallIsValid(__FUNCTION__);
+    if (!wke::brokerPluginEntry())
+        return;
     wke::g_wkePluginFindcallback = callback;
     wke::g_wkePluginFindcallbackParam = param;
 }

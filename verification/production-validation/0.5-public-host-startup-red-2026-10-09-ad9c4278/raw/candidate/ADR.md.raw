@@ -1,0 +1,15 @@
+# 实际公共 Host.start 的 OLE 注册前置回归
+
+本候选先测当前行为，不实现启动 fence。直接 SDK 三个排队 schedule 已观察实际注册、入场拒绝与旧代取消；它们不能替代真实公共 Host.start，也不能证明所有 W2 失败的原因。
+
+使用当前正常 SDK 的私有源码副本，保留其真实 CMake、24 个 CPP、15 个私有及 32 个公共头。唯一源码差异是既有 e29be926 封存的 Host 只读诊断插入：原入场、调用顺序、身份、返回值完全保留。应用创建真实 json_bridge、dynamic_miniblink_adapter、隐藏 owner HWND 和本地资源。进程启动前设置 SOUI_DIAGNOSTIC_SCRIPT=1。
+
+测试顺序固定为 public Host.start → 立即 public application_diagnostics → 读取已有 engine inspectDrain。前两个调用之间不调用消息泵、Host.pump、ShowWindow、resize 或任何 OLE 操作。desired 断言是 start 返回时实际 oleRegistered=1；当前源码预计实际值为 0，并在真实安全清理后返回 2。observedCurrentRed 仅记录这个失败测量，不把失败变成通过。读取的 ledger 是非原子观察，不能把 JS ready、DOM 或 callback 数量替代为 OLE 注册。当前公共接口没有按 kind 的完成 ledger，因此 perKindCompletionMeasured 永远为 false。
+
+不替换 SDK hooks，不借助 TestKit、模型、测试 clock 或手写 broker 算法。json_bridge 的真实 registry/task service 仍存在；页面没有特权方法或远端载荷。只输出固定字段，不输出 token、HWND、线程身份、用户内容或原始 page/diagnostic 字符串。实际 process PID 和 creation FILETIME 用于外层监督绑定。
+
+清理保留 Host、Bridge、owner 及实际 DLL 文件锁。Host.destroy 失败则仅处理这个 owner/children 的实际消息并重试，保留所有借用对象。10 秒重试界限不代表取消或 drain；超界/异常/原生句柄失败 ExitProcess(91)，不展开未完成的 C++ owner。成功 destroy 返回后才释放 Host、销毁 owner、销毁 Bridge（真实 task service join），最后 shutdown_miniblink_runtime 返回。库卸载资格、Win7、完整 GC/OOM、全部 OLE 失败和生产发布资格保持 false。
+
+运行目标使用 Windows GUI 子系统避免额外 console 子进程；这不改变原 OwnedRunner 对非零退出的政策。Root 必须记录实际 Owned PID/字符串 FILETIME、0 或 2 原返回、自然 Job 闭合、原始 stdout/stderr/context；2 保持 genericPassed=false。编译尾部仅在原 root0/supervisor124、有限未到 deadline、同一 Owned Job 已关闭时允许继续测量，仍不是正式编译通过。
+
+后续设计仍是 eed5e9 封存草案：prime 创建并绑定受控 view → owner 的真实 OLE 注册完成 → idle engine 的实际 ledger 验证 → finalize callbacks/bindings/首个导航 → 展示。桥接接受应在真实 fence 之后开启；pending、full tuple、epoch 取消、真实 revoke/drain 不得放宽。本候选不实施这个修复。

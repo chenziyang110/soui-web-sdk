@@ -7,6 +7,9 @@
 #include "wke/wkeWebView.h"
 #include "wke/wkeJsBind.h"
 #include "wke/wkeGlobalVar.h"
+#include "wke/CursorDescriptorBroker.h"
+#include <stdexcept>
+#include <exception>
 
 #include "content/web_impl_win/BlinkPlatformImpl.h"
 #include "content/browser/WebFrameClientImpl.h"
@@ -34,6 +37,7 @@ CWebView::CWebView(COLORREF color)
     , m_transparent(false)
     , m_width(0)
     , m_height(0)
+    , m_webPage(nullptr)
     , m_zoomFactor(1)
     , m_awake(true)
     , m_title("", 0)
@@ -43,17 +47,33 @@ CWebView::CWebView(COLORREF color)
     , m_isCokieEnabled(true)
     , m_isCreatedDevTools(false)
 {
-    m_id = net::ActivatingObjCheck::inst()->genId();
-    net::ActivatingObjCheck::inst()->add(m_id);
+    if (!brokerNoteViewCreated())
+        throw std::logic_error("Raw view construction is unavailable in cursor broker mode");
+    net::ActivatingObjCheck* const activating = net::ActivatingObjCheck::inst();
+    m_id = activating->genId();
+    activating->add(m_id);
 
-    _initPage(color);
-    _initHandler();
-    _initMemoryDC();
+    try {
+        // A complete, uninitialized shell has not published engine resources.
+        m_webPage = new content::WebPage(nullptr);
+    } catch (...) {
+        activating->remove(m_id);
+        throw;
+    }
 
-    m_settings.size = 0;
-    m_webPage->wkeHandler().isWke = true;
+    try {
+        // Engine construction has no proven partial abort; never return FAILED.
+        _initPage(color);
+        _initHandler();
+        _initMemoryDC();
 
-    g_liveWebViews.insert(this);
+        m_settings.size = 0;
+        m_webPage->wkeHandler().isWke = true;
+
+        g_liveWebViews.insert(this);
+    } catch (...) {
+        std::terminate();
+    }
 }
 
 CWebView::~CWebView()
@@ -63,6 +83,13 @@ CWebView::~CWebView()
     m_webPage->close();
 }
 
+CWebView* CWebView::createForCursorBroker(COLORREF color)
+{
+    if (!brokerOwnedFactoryPermission())
+        return nullptr;
+    return new CWebView(color);
+}
+
 bool CWebView::create()
 {
     return true;
@@ -70,6 +97,8 @@ bool CWebView::create()
 
 void CWebView::destroy()
 {
+    if (!brokerMayDestroyRawView(this))
+        return;
     delete this;
 }
 
@@ -491,6 +520,10 @@ HWND CWebView::windowHandle() const
 
 void CWebView::setHandle(HWND wnd)
 {
+    if (!brokerMaySetHandle(this, wnd))
+        return;
+    if (brokerOwnsView(this) && m_hWnd == wnd)
+        return;
     m_hWnd = wnd;
     m_webPage->setHWND(wnd);
 }
@@ -1128,7 +1161,6 @@ void CWebView::_initHandler()
 
 void CWebView::_initPage(COLORREF color)
 {
-    m_webPage = new content::WebPage(nullptr);
     m_webPage->initWkeWebView(this);
     m_webPage->init(nullptr, color);
 
@@ -1431,6 +1463,12 @@ public:
         OutputDebugStringA("Devtools willProcessTask\n");
 
         wkeWebView devToolsWebView = wkeCreateWebWindow(WKE_WINDOW_TYPE_POPUP, nullptr, 200, 200, 800, 600);
+        if (!devToolsWebView) {
+            blink::Platform::current()->currentThread()->removeTaskObserver(this);
+            if (m_callback)
+                m_callback(nullptr, m_param);
+            return;
+        }
         m_parent->m_devToolsWebView = devToolsWebView;
 
         content::WebPage::connetDevTools(devToolsWebView->webPage(), m_parent->webPage());
@@ -1455,6 +1493,12 @@ private:
 
 void CWebView::showDevTools(const utf8* url, wkeOnShowDevtoolsCallback callback, void* param)
 {
+    // DevTools constructs a separate raw view and an uncounted parent observer.
+    // The controlled realm forbids mixed view lifetimes before either is made.
+    if (brokerOwnsView(this)) {
+        if (callback) callback(nullptr, param);
+        return;
+    }
     if (m_isCreatedDevTools)
         return;
     m_isCreatedDevTools = true;

@@ -1,0 +1,998 @@
+{
+  "sdkSources": [
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/host/cursor_broker.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/host/cursor_queue.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/host/cursor_resources.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/host/engine_thread.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/host/interaction_protocol.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/host/runtime_profile.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/host/soui_miniblink_host.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/json_bridge.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/agent/windows_local_endpoint.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/agent/windows_peer_identity.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/bridge/action_contract.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/bridge/bridge_transport.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/core/events/event_bus.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/core/result/result.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/core/task/task_store.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/host/session/webview_session.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/services/desktop/desktop_services.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/services/desktop/global_shortcut.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/services/desktop/menu_service.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/services/desktop/tray_service.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/services/fileinsight-service/fileinsight-service.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/services/filesystem-readonly/directory_scanner.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/services/gui/gui_commands.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/services/permissions/permission_store.cpp",
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/src/runtime/services/task/task_service.cpp"
+  ],
+  "sdkArchive": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\Release\\soui_sdk.lib",
+    "bytes": 49509652,
+    "sha256": "ae06f572b932b7803f51b39b9af34600d7f41441945cdee7092410ccfd961ba6"
+  },
+  "sdkObjects": [
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\action_contract.obj",
+      "bytes": 3000907,
+      "sha256": "71cb21239f7fede1e85cbb4460654153355500c254fc62ad24020c1d2120cac5"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\bridge_transport.obj",
+      "bytes": 4690173,
+      "sha256": "c070eb6029680e7a9ef33cd30da1ddfd7a905ce29a7ce9db11a8efca26501236"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\cursor_broker.obj",
+      "bytes": 266513,
+      "sha256": "38eb290513b68257bf7cfaaae4b4c9661ddcc4c1f00553a21a8d183528418ba3"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\cursor_queue.obj",
+      "bytes": 16117,
+      "sha256": "90477a829c0b1ad8db3a324d27a3cc6704aa91b2bd5f45a618cbe6883633d630"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\cursor_resources.obj",
+      "bytes": 4463,
+      "sha256": "1d059831f75d2ef9fd235044e0c9c9cb1e177818594e67e91c78ece15aff94b8"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\desktop_services.obj",
+      "bytes": 403937,
+      "sha256": "39820e2fc9a299a66fd7b39d7fe594296609fc8a7eddd3360551cf458c569aa9"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\directory_scanner.obj",
+      "bytes": 3322479,
+      "sha256": "36f693ebf74d9d0ebb24b3d3b623dfaa97db23dd2263bd4416acba38fd93bc89"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\engine_thread.obj",
+      "bytes": 314035,
+      "sha256": "638d7ba1fa8bfd0c0e14f37c23fefa4d141898916f7670601e36de10397c89a5"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\event_bus.obj",
+      "bytes": 273006,
+      "sha256": "18ebc9d8ac1a3acc503ca795ff53b25534202ac1399eceff3534c5905f18999e"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\fileinsight-service.obj",
+      "bytes": 3344890,
+      "sha256": "e20c5988b96b4477e24ad8eba843dc00b922544cda88012bae798fee3115fac2"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\global_shortcut.obj",
+      "bytes": 80603,
+      "sha256": "fd3765b7df73fa63b364623fcec3a9de3fa8317195af4bb651f4324dcfa3f0ca"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\gui_commands.obj",
+      "bytes": 4476208,
+      "sha256": "b5feca00f24356650fca36632e1ea9ec6ac7bcab3d510f3366f8958261dd8ea0"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\interaction_protocol.obj",
+      "bytes": 40223,
+      "sha256": "52dc8dbfc119b465724d068488d114551b46477975371ae2fc247ba285e111c5"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\json_bridge.obj",
+      "bytes": 4292603,
+      "sha256": "f3e430445938f7649e88747c64a67f813ee7afdf3e6d058d8793bb71e959b1a8"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\menu_service.obj",
+      "bytes": 444134,
+      "sha256": "6fc4a2b2cb948d503a0d77640f7b345c93f2e0950daae95df48e1b2012fe97c4"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\permission_store.obj",
+      "bytes": 702856,
+      "sha256": "bbdb2ede0686945809747d4c2b1cafa3a6793e54669c51fe9545d0b95dd9b595"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\result.obj",
+      "bytes": 11962,
+      "sha256": "73935ff6c6559f3a05626c03aeacd4d30e603adc3b68cfbd98172907c4da873d"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\runtime_profile.obj",
+      "bytes": 72165,
+      "sha256": "1937bae90452fd2e048d2a3a564176952fd5f4ca4ec78e7280f413bef6a9c7d8"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\soui_miniblink_host.obj",
+      "bytes": 7002724,
+      "sha256": "8a59f656fcf4ca49f24cee5ffa15739ec64cd64781b5321620e03627051a7919"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\task_service.obj",
+      "bytes": 6452654,
+      "sha256": "5107509ccbcd32117719386a06427d9a2573f58fb043e49568ab7fc4c4e57bdc"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\task_store.obj",
+      "bytes": 717327,
+      "sha256": "d38ad409d4ee5e664202fa70394d935b3484a203cdb25fd1900af031c492c98e"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\tray_service.obj",
+      "bytes": 160045,
+      "sha256": "314accbd80954b7bfb7c65fcd3a777606857c1753ad18042d357c2dab4a7352a"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\webview_session.obj",
+      "bytes": 176147,
+      "sha256": "764fe50cf11843e53ea91daea0eb339e684bb0da7cddcd80f4975e9dde6388d9"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\windows_local_endpoint.obj",
+      "bytes": 3516465,
+      "sha256": "7fef69971aa21886f142dddacc4a0ef709da19659d3b5764b0dfd5e96d4fe1b7"
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\windows_peer_identity.obj",
+      "bytes": 85879,
+      "sha256": "d53bc03930a6bc6727f433f9d8da825086b8046ae4d3cca5565ed50ef724a6a2"
+    }
+  ],
+  "sdkCl": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\soui_sdk.tlog\\CL.command.1.tlog",
+    "bytes": 37180,
+    "sha256": "e5063a2c7c0cf644d9bdd5bd067668695ff1fbd314646503680ed3b4d24b4c50",
+    "text": "^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\CURSOR_BROKER.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\CURSOR_BROKER.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\CURSOR_QUEUE.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\CURSOR_QUEUE.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\CURSOR_RESOURCES.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\CURSOR_RESOURCES.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\ENGINE_THREAD.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\ENGINE_THREAD.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\INTERACTION_PROTOCOL.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\INTERACTION_PROTOCOL.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\RUNTIME_PROFILE.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\RUNTIME_PROFILE.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\SOUI_MINIBLINK_HOST.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\\SOUI_MINIBLINK_HOST.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\JSON_BRIDGE.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\JSON_BRIDGE.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\AGENT\\WINDOWS_LOCAL_ENDPOINT.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\AGENT\\WINDOWS_LOCAL_ENDPOINT.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\AGENT\\WINDOWS_PEER_IDENTITY.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\AGENT\\WINDOWS_PEER_IDENTITY.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\BRIDGE\\ACTION_CONTRACT.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\BRIDGE\\ACTION_CONTRACT.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\BRIDGE\\BRIDGE_TRANSPORT.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\BRIDGE\\BRIDGE_TRANSPORT.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\CORE\\EVENTS\\EVENT_BUS.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\CORE\\EVENTS\\EVENT_BUS.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\CORE\\RESULT\\RESULT.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\CORE\\RESULT\\RESULT.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\CORE\\TASK\\TASK_STORE.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\CORE\\TASK\\TASK_STORE.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\HOST\\SESSION\\WEBVIEW_SESSION.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\HOST\\SESSION\\WEBVIEW_SESSION.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\DESKTOP\\DESKTOP_SERVICES.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\DESKTOP\\DESKTOP_SERVICES.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\DESKTOP\\GLOBAL_SHORTCUT.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\DESKTOP\\GLOBAL_SHORTCUT.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\DESKTOP\\MENU_SERVICE.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\DESKTOP\\MENU_SERVICE.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\DESKTOP\\TRAY_SERVICE.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\DESKTOP\\TRAY_SERVICE.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\FILEINSIGHT-SERVICE\\FILEINSIGHT-SERVICE.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\FILEINSIGHT-SERVICE\\FILEINSIGHT-SERVICE.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\FILESYSTEM-READONLY\\DIRECTORY_SCANNER.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\FILESYSTEM-READONLY\\DIRECTORY_SCANNER.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\GUI\\GUI_COMMANDS.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\GUI\\GUI_COMMANDS.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\PERMISSIONS\\PERMISSION_STORE.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\PERMISSIONS\\PERMISSION_STORE.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\TASK\\TASK_SERVICE.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_SDK.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\RUNTIME\\SERVICES\\TASK\\TASK_SERVICE.CPP\r\n"
+  },
+  "uiaSources": [
+    "f:/work/sm05-broker/out/n25-b7920345/source/sdk/accessibility/uia/windows_uia_provider.cpp"
+  ],
+  "uiaArchive": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\accessibility\\uia\\Release\\soui_uia.lib",
+    "bytes": 891714,
+    "sha256": "d16ee8c529641a6c12402c3b124c26a2c8c85d33d49ca757d56a325615417851"
+  },
+  "uiaObjects": [
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\accessibility\\uia\\soui_uia.dir\\Release\\windows_uia_provider.obj",
+      "bytes": 793847,
+      "sha256": "fa8716216c9cbc24050e941d1ed89299d2812bf37d511b6fcd5cda7468387237"
+    }
+  ],
+  "uiaCl": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\accessibility\\uia\\soui_uia.dir\\Release\\soui_uia.tlog\\CL.command.1.tlog",
+    "bytes": 1418,
+    "sha256": "641ddd4e61151f73199329bade2aaf1a3b8cd1d3183a49553eb3e521b7ad3f45",
+    "text": "^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\ACCESSIBILITY\\UIA\\WINDOWS_UIA_PROVIDER.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\ACCESSIBILITY\\UIA\\..\\..\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_UIA.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\ACCESSIBILITY\\UIA\\RELEASE\\SOUI_UIA.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\ACCESSIBILITY\\UIA\\WINDOWS_UIA_PROVIDER.CPP\r\n"
+  },
+  "generated": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\generated\\startup_observed_host.cpp",
+    "bytes": 175057,
+    "sha256": "e07d66d390ee2592aa5d6c3dbef8f517d434892d0f4418a207b5b06fe6c4b371"
+  },
+  "resource": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\runtime-resources\\index.html",
+    "bytes": 1609,
+    "sha256": "3691b9515126831664ea69cfb6c92ce30aa722fa988d851a095a1dbc8319f0b7"
+  },
+  "projects": [
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\ALL_BUILD.vcxproj",
+      "bytes": 51589,
+      "sha256": "4e3d6979309222ee0a3110c61f5818481dfc04269eeaed0806e6258be4c8b22a",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\CMakeFiles\\4.2.3\\CompilerIdCXX\\CompilerIdCXX.vcxproj",
+      "bytes": 3123,
+      "sha256": "c26879ee516b90e5a9b31458364ba04ff9cbfaaf4e0d05bf8f3b7c26537461b4",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\CMakeFiles\\4.2.3\\CompilerIdC\\CompilerIdC.vcxproj",
+      "bytes": 3115,
+      "sha256": "0a671cd014247e84d1ee5c63f02e83c626efefb4bc1849f5601ff0e0185c0553",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\CMakeFiles\\4.2.3\\VCTargetsPath.vcxproj",
+      "bytes": 1255,
+      "sha256": "24fac7257bc0523f8eacba7408241a2b83d1a9aa96e6d481323bab364ce3ceb2",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\INSTALL.vcxproj",
+      "bytes": 10929,
+      "sha256": "c5b293152f75636c1ec15f1d1ef149a25dbb6369f33affdde9d470fd1811029b",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\RUN_TESTS.vcxproj",
+      "bytes": 10277,
+      "sha256": "ae8ec0aad14ebc2f7824e739f84875a24fa5f1a69f23da6b3e5b67f5a9afe9ca",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\ZERO_CHECK.vcxproj",
+      "bytes": 58393,
+      "sha256": "169c3160a6bdc9108bebbc96b8f42e7ca9f27cf2b757e0a51aa9cbaee22c1f44",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\endpoint\\INSTALL.vcxproj",
+      "bytes": 10969,
+      "sha256": "c9eb147018b0f18205ce1dd8cb5831abd75531a36ab48a7d22d62b23a71692ed",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\endpoint\\RUN_TESTS.vcxproj",
+      "bytes": 10313,
+      "sha256": "6d3bdb5fbaf2b0ce2a9ce95c5538f4e1c65dffc0e93249550c502e7d0bd10dda",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\endpoint\\soui_windows_local_endpoint_tests.vcxproj",
+      "bytes": 29896,
+      "sha256": "c6ae844376dab9050e4bc2b7677d867b5fb16892704676dbccf1a9580bfb935b",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\factory\\INSTALL.vcxproj",
+      "bytes": 10965,
+      "sha256": "6d236d15b9034aa57ef3da6467c815f001a227aa85b7caea9e0ca69566228bab",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\factory\\RUN_TESTS.vcxproj",
+      "bytes": 10309,
+      "sha256": "4a6917df760efe78b43d2e19da81c49bb3de0d602423662f5a3b716bdc90cebe",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\factory\\soui_json_bridge_endpoint_tests.vcxproj",
+      "bytes": 29829,
+      "sha256": "05164da05ab4851d1ade71aa50b07c6102c6826b04366b73ec8b6c4b8a58c0e4",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\gui\\INSTALL.vcxproj",
+      "bytes": 10949,
+      "sha256": "d6ca70148613c7f26b48afcdb9b5685aff9cf02565c7f297dfe14db6a63dce8a",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\gui\\RUN_TESTS.vcxproj",
+      "bytes": 10293,
+      "sha256": "d5a21f8af32c0f5d2110395f7fd3e8124b635ab9f934b3a17d442cf43354e77b",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\gui\\soui_gui_command_tests.vcxproj",
+      "bytes": 29508,
+      "sha256": "f336483caf260e54fa38c54e6dfefd25e4238a6f5a328c92229edf669fa56858",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\INSTALL.vcxproj",
+      "bytes": 10977,
+      "sha256": "1595f97b8b6451c581b206f95b07e58706430bfb947e43c10670ead798480557",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\RUN_TESTS.vcxproj",
+      "bytes": 10321,
+      "sha256": "37b761932cd59f1475b014fb96bcf8742764de6c9f573ca9f082bbabfc0054ea",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\soui_public_host_startup_fence.vcxproj",
+      "bytes": 36479,
+      "sha256": "5ef0b01e046df3970ebdd780905a9a131691cc4142f1299c7caee9b061c779aa",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\verify_public_host_startup_sources.vcxproj",
+      "bytes": 17736,
+      "sha256": "0759c18f7a48dc832e395e54830ef07af1e6617d0dedae5971aa0827e95c8d84",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\root_normal25.vcxproj",
+      "bytes": 56291,
+      "sha256": "babe47f7768f6fbdccf6d10c5c7e26d15bb85de8c853b6cdfd588b23a3deb2d5",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\ALL_BUILD.vcxproj",
+      "bytes": 13216,
+      "sha256": "bd0c5d7f1744ce06f56df8ed025be44631602da839ec2aa9e639731d14b230a8",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\INSTALL.vcxproj",
+      "bytes": 10949,
+      "sha256": "1af5e83dd336184361ffe35cd4d1001b4255ee6b2f01fbff98c6b1478246b040",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\RUN_TESTS.vcxproj",
+      "bytes": 10293,
+      "sha256": "5449a5f5c56cc51a10557ad7e6d9f404b9f9dfa4e36709e5b777896b0691429e",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\accessibility\\uia\\INSTALL.vcxproj",
+      "bytes": 11021,
+      "sha256": "8f5458a2810c471bd0b9ee19d323e3a1c5f2efe8ef751e9dab973e97572fcf50",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\accessibility\\uia\\RUN_TESTS.vcxproj",
+      "bytes": 10365,
+      "sha256": "898fdfd9bcf13347888e248439f3f9ade67dda8f8608fa026a2c552b4f452e3d",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\accessibility\\uia\\soui_uia.vcxproj",
+      "bytes": 23101,
+      "sha256": "be84159f0a4326f92ac6851485082e2163b794cdab53ce74762bbf6f22930e6d",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.vcxproj",
+      "bytes": 27460,
+      "sha256": "a018389cbfd4fe9d4912ce97749c5ceb524b9b4242a3c035713458278aa23e6a",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_zlib.vcxproj",
+      "bytes": 22882,
+      "sha256": "e45b06766979f01669daa4e94b5455d846326f19adc2e84ee35e8cb2dec47327",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\uia\\INSTALL.vcxproj",
+      "bytes": 10949,
+      "sha256": "c228e9965f3b0b17a1a7ded9c417238e33993095a29695c47f75ae02256451c9",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\uia\\RUN_TESTS.vcxproj",
+      "bytes": 10293,
+      "sha256": "e7cef27b50b5a64aef60c27f7abf266ca5f84c75658590edf4376ef08e53c753",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    },
+    {
+      "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\uia\\soui_windows_uia_provider_tests.vcxproj",
+      "bytes": 30866,
+      "sha256": "d756fcb48aed8e4068445507d31ef0dc6d9d314efaada6b16044d27c0235e8c4",
+      "versions": [
+        "10.0.19041.0"
+      ]
+    }
+  ],
+  "consumers": [
+    {
+      "kind": "endpoint",
+      "target": "soui_windows_local_endpoint_tests",
+      "executable": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\endpoint\\Release\\soui_windows_local_endpoint_tests.exe",
+        "bytes": 352768,
+        "sha256": "e40ce0af925a81bf5b7753495aeddfa2a1b3841b659c6a7288a2697db72d55f8"
+      },
+      "pe": {
+        "machine": 34404,
+        "optionalHeaderMagic": 523,
+        "dll": false,
+        "exports": []
+      },
+      "cl": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\endpoint\\soui_windows_local_endpoint_tests.dir\\Release\\soui_win.CC12EA13.tlog\\CL.command.1.tlog",
+        "bytes": 1478,
+        "sha256": "bcae2746f31703cca96170273cfd1c819a683428684bbd6c49212a3a34374169",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\TESTS\\NATIVE\\WINDOWS_LOCAL_ENDPOINT\\ENDPOINT_TESTS.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _CRT_SECURE_NO_WARNINGS /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_WINDOWS_LOCAL_ENDPOINT_TESTS.DIR\\RELEASE\\\\\" /Fd\"SOUI_WINDOWS_LOCAL_ENDPOINT_TESTS.DIR\\RELEASE\\VC143.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\TESTS\\NATIVE\\WINDOWS_LOCAL_ENDPOINT\\ENDPOINT_TESTS.CPP\r\n"
+      },
+      "objects": [
+        {
+          "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\endpoint\\soui_windows_local_endpoint_tests.dir\\Release\\endpoint_tests.obj",
+          "bytes": 4475639,
+          "sha256": "00fe05025b79c033b5b72bc67eb070662726e0430c1f364f0d7ec9abdd1ad350"
+        }
+      ],
+      "link": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\endpoint\\soui_windows_local_endpoint_tests.dir\\Release\\soui_win.CC12EA13.tlog\\link.command.1.tlog",
+        "bytes": 2014,
+        "sha256": "232d51b4dcf847e6dc70a4b8d3656244b95b26f047411b33de58c954ac4461a7",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\ENDPOINT\\SOUI_WINDOWS_LOCAL_ENDPOINT_TESTS.DIR\\RELEASE\\ENDPOINT_TESTS.OBJ\r\n/OUT:\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\ENDPOINT\\RELEASE\\SOUI_WINDOWS_LOCAL_ENDPOINT_TESTS.EXE\" /INCREMENTAL:NO /NOLOGO ..\\SDK\\RELEASE\\SOUI_SDK.LIB USER32.LIB GDI32.LIB IMM32.LIB SHELL32.LIB OLE32.LIB OLEAUT32.LIB UUID.LIB COMCTL32.LIB ADVAPI32.LIB WINMM.LIB BCRYPT.LIB KERNEL32.LIB USER32.LIB GDI32.LIB WINSPOOL.LIB SHELL32.LIB OLE32.LIB OLEAUT32.LIB UUID.LIB COMDLG32.LIB ADVAPI32.LIB /MANIFEST /MANIFESTUAC:\"level='asInvoker' uiAccess='false'\" /manifest:embed /PDB:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/ENDPOINT/RELEASE/SOUI_WINDOWS_LOCAL_ENDPOINT_TESTS.PDB\" /MAP:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/SOUI_WINDOWS_LOCAL_ENDPOINT_TESTS-RELEASE.MAP\" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/ENDPOINT/RELEASE/SOUI_WINDOWS_LOCAL_ENDPOINT_TESTS.LIB\" /MACHINE:X64  /machine:x64 SOUI_WINDOWS_LOCAL_ENDPOINT_TESTS.DIR\\RELEASE\\ENDPOINT_TESTS.OBJ\r\n"
+      },
+      "project": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\endpoint\\soui_windows_local_endpoint_tests.vcxproj",
+        "bytes": 29896,
+        "sha256": "c6ae844376dab9050e4bc2b7677d867b5fb16892704676dbccf1a9580bfb935b",
+        "versions": [
+          "10.0.19041.0"
+        ]
+      },
+      "relativeLinkCwd": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\endpoint",
+      "linkRead": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\endpoint\\soui_windows_local_endpoint_tests.dir\\Release\\soui_win.CC12EA13.tlog\\link.read.1.tlog",
+        "bytes": 4070,
+        "sha256": "5df27d6c2c855a8f20e0b0cd26d68fb229eae5efd435cf7e591002201735258f",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\ENDPOINT\\SOUI_WINDOWS_LOCAL_ENDPOINT_TESTS.DIR\\RELEASE\\ENDPOINT_TESTS.OBJ\r\nF:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\USER32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\GDI32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\IMM32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\SHELL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OLE32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OLEAUT32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\UUID.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\COMCTL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\ADVAPI32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WINMM.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\BCRYPT.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\KERNEL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WINSPOOL.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\COMDLG32.LIB\r\nF:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\ENDPOINT\\SOUI_WINDOWS_LOCAL_ENDPOINT_TESTS.DIR\\RELEASE\\ENDPOINT_TESTS.OBJ\r\nC:\\WINDOWS\\GLOBALIZATION\\SORTING\\SORTDEFAULT.NLS\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCPRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\OLDNAMES.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\VCRUNTIME.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UCRT\\X64\\UCRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\BIN\\HOSTX64\\X64\\CVTRES.EXE\r\nC:\\WINDOWS\\SYSTEM32\\TZRES.DLL\r\n"
+      },
+      "actualSdkReadRow": "F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.LIB",
+      "sdkArchive": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\Release\\soui_sdk.lib",
+        "bytes": 49509652,
+        "sha256": "ae06f572b932b7803f51b39b9af34600d7f41441945cdee7092410ccfd961ba6"
+      },
+      "map": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\soui_windows_local_endpoint_tests-Release.map",
+        "bytes": 1629356,
+        "sha256": "baeaf8add4c3d12d6f3433b5e6b036e1db340c6532b76b7ef67c59158fab9f1c"
+      },
+      "sdkPublicRowCount": 402,
+      "requiredDefinitions": [
+        {
+          "line": " 0001:0000b230       ??1?$shared_ptr@Uconnection@impl@windows_local_endpoint@agent@runtime@soui@@@std@@QEAA@XZ 000000014000c230 f i soui_sdk:windows_local_endpoint.obj",
+          "index": 279,
+          "symbol": "??1?$shared_ptr@Uconnection@impl@windows_local_endpoint@agent@runtime@soui@@@std@@QEAA@XZ",
+          "module": "soui_sdk:windows_local_endpoint.obj",
+          "producerObject": {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\windows_local_endpoint.obj",
+            "bytes": 3516465,
+            "sha256": "7fef69971aa21886f142dddacc4a0ef709da19659d3b5764b0dfd5e96d4fe1b7"
+          }
+        },
+        {
+          "line": " 0001:00020670       ??0windows_peer_identity@agent@runtime@soui@@AEAA@PEAXI_KV?$vector@EV?$allocator@E@std@@@std@@Uwindows_authentication_id@123@I@Z 0000000140021670 f   soui_sdk:windows_peer_identity.obj",
+          "index": 508,
+          "symbol": "??0windows_peer_identity@agent@runtime@soui@@AEAA@PEAXI_KV?$vector@EV?$allocator@E@std@@@std@@Uwindows_authentication_id@123@I@Z",
+          "module": "soui_sdk:windows_peer_identity.obj",
+          "producerObject": {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\windows_peer_identity.obj",
+            "bytes": 85879,
+            "sha256": "d53bc03930a6bc6727f433f9d8da825086b8046ae4d3cca5565ed50ef724a6a2"
+          }
+        }
+      ],
+      "privateHost": null,
+      "module": null,
+      "finiteContributionOnly": true,
+      "completeCompilerInputBinding": false,
+      "qualificationPassed": false
+    },
+    {
+      "kind": "factory",
+      "target": "soui_json_bridge_endpoint_tests",
+      "executable": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\factory\\Release\\soui_json_bridge_endpoint_tests.exe",
+        "bytes": 612352,
+        "sha256": "72130ba16bf6a52192f977540be58cdc9fdec75d5aa670e030964ec1ddf884cd"
+      },
+      "pe": {
+        "machine": 34404,
+        "optionalHeaderMagic": 523,
+        "dll": false,
+        "exports": []
+      },
+      "cl": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\factory\\soui_json_bridge_endpoint_tests.dir\\Release\\soui_jso.A4795922.tlog\\CL.command.1.tlog",
+        "bytes": 1490,
+        "sha256": "c6edf7372edbf0f94fffeedca7aba0e8ed481750acfc7812547c80ee9344de3f",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\TESTS\\NATIVE\\JSON_BRIDGE_ENDPOINT\\ENDPOINT_BRIDGE_TESTS.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _CRT_SECURE_NO_WARNINGS /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_JSON_BRIDGE_ENDPOINT_TESTS.DIR\\RELEASE\\\\\" /Fd\"SOUI_JSON_BRIDGE_ENDPOINT_TESTS.DIR\\RELEASE\\VC143.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\TESTS\\NATIVE\\JSON_BRIDGE_ENDPOINT\\ENDPOINT_BRIDGE_TESTS.CPP\r\n"
+      },
+      "objects": [
+        {
+          "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\factory\\soui_json_bridge_endpoint_tests.dir\\Release\\endpoint_bridge_tests.obj",
+          "bytes": 3978032,
+          "sha256": "67fb92f3c439aa1c8f0c894a9a768015ba636c442bbf6a49c45ca1c51d9bf76f"
+        }
+      ],
+      "link": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\factory\\soui_json_bridge_endpoint_tests.dir\\Release\\soui_jso.A4795922.tlog\\link.command.1.tlog",
+        "bytes": 2010,
+        "sha256": "fe61b18d143d77006d03d547b9337bd00d31e3a4d4098d0417e596027fb0258d",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\FACTORY\\SOUI_JSON_BRIDGE_ENDPOINT_TESTS.DIR\\RELEASE\\ENDPOINT_BRIDGE_TESTS.OBJ\r\n/OUT:\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\FACTORY\\RELEASE\\SOUI_JSON_BRIDGE_ENDPOINT_TESTS.EXE\" /INCREMENTAL:NO /NOLOGO ..\\SDK\\RELEASE\\SOUI_SDK.LIB USER32.LIB GDI32.LIB IMM32.LIB SHELL32.LIB OLE32.LIB OLEAUT32.LIB UUID.LIB COMCTL32.LIB ADVAPI32.LIB WINMM.LIB BCRYPT.LIB KERNEL32.LIB USER32.LIB GDI32.LIB WINSPOOL.LIB SHELL32.LIB OLE32.LIB OLEAUT32.LIB UUID.LIB COMDLG32.LIB ADVAPI32.LIB /MANIFEST /MANIFESTUAC:\"level='asInvoker' uiAccess='false'\" /manifest:embed /PDB:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/FACTORY/RELEASE/SOUI_JSON_BRIDGE_ENDPOINT_TESTS.PDB\" /MAP:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/SOUI_JSON_BRIDGE_ENDPOINT_TESTS-RELEASE.MAP\" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/FACTORY/RELEASE/SOUI_JSON_BRIDGE_ENDPOINT_TESTS.LIB\" /MACHINE:X64  /machine:x64 SOUI_JSON_BRIDGE_ENDPOINT_TESTS.DIR\\RELEASE\\ENDPOINT_BRIDGE_TESTS.OBJ\r\n"
+      },
+      "project": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\factory\\soui_json_bridge_endpoint_tests.vcxproj",
+        "bytes": 29829,
+        "sha256": "05164da05ab4851d1ade71aa50b07c6102c6826b04366b73ec8b6c4b8a58c0e4",
+        "versions": [
+          "10.0.19041.0"
+        ]
+      },
+      "relativeLinkCwd": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\factory",
+      "linkRead": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\factory\\soui_json_bridge_endpoint_tests.dir\\Release\\soui_jso.A4795922.tlog\\link.read.1.tlog",
+        "bytes": 4086,
+        "sha256": "62504c14ab93bb7e8b839641b20c37787ef0db2cf36212fa023043ce95eac526",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\FACTORY\\SOUI_JSON_BRIDGE_ENDPOINT_TESTS.DIR\\RELEASE\\ENDPOINT_BRIDGE_TESTS.OBJ\r\nF:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\USER32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\GDI32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\IMM32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\SHELL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OLE32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OLEAUT32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\UUID.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\COMCTL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\ADVAPI32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WINMM.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\BCRYPT.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\KERNEL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WINSPOOL.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\COMDLG32.LIB\r\nF:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\FACTORY\\SOUI_JSON_BRIDGE_ENDPOINT_TESTS.DIR\\RELEASE\\ENDPOINT_BRIDGE_TESTS.OBJ\r\nC:\\WINDOWS\\GLOBALIZATION\\SORTING\\SORTDEFAULT.NLS\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCPRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\OLDNAMES.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\VCRUNTIME.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UCRT\\X64\\UCRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\BIN\\HOSTX64\\X64\\CVTRES.EXE\r\nC:\\WINDOWS\\SYSTEM32\\TZRES.DLL\r\n"
+      },
+      "actualSdkReadRow": "F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.LIB",
+      "sdkArchive": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\Release\\soui_sdk.lib",
+        "bytes": 49509652,
+        "sha256": "ae06f572b932b7803f51b39b9af34600d7f41441945cdee7092410ccfd961ba6"
+      },
+      "map": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\soui_json_bridge_endpoint_tests-Release.map",
+        "bytes": 2765150,
+        "sha256": "9743071894ee616bd5ef74200aaf5ad36596812ed7e5b94851b6e95b4c8f008e"
+      },
+      "sdkPublicRowCount": 1154,
+      "requiredDefinitions": [
+        {
+          "line": " 0001:00001210       ??R?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QEBA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@0@Z 0000000140002210 f i soui_sdk:json_bridge.obj",
+          "index": 118,
+          "symbol": "??R?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QEBA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@0@Z",
+          "module": "soui_sdk:json_bridge.obj",
+          "producerObject": {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\json_bridge.obj",
+            "bytes": 4292603,
+            "sha256": "f3e430445938f7649e88747c64a67f813ee7afdf3e6d058d8793bb71e959b1a8"
+          }
+        },
+        {
+          "line": " 0001:000029c0       ??$_Find_lower_bound@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@Ucapability@capability_registry@runtime@soui@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@Ucapability@capability_registry@runtime@soui@@@std@@@2@$0A@@std@@@std@@IEBA?AU?$_Tree_find_result@PEAU?$_Tree_node@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@Ucapability@capability_registry@runtime@soui@@@std@@PEAX@std@@@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z 00000001400039c0 f i soui_sdk:bridge_transport.obj",
+          "index": 137,
+          "symbol": "??$_Find_lower_bound@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@?$_Tree@V?$_Tmap_traits@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@Ucapability@capability_registry@runtime@soui@@U?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@2@V?$allocator@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@Ucapability@capability_registry@runtime@soui@@@std@@@2@$0A@@std@@@std@@IEBA?AU?$_Tree_find_result@PEAU?$_Tree_node@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@Ucapability@capability_registry@runtime@soui@@@std@@PEAX@std@@@1@AEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@@Z",
+          "module": "soui_sdk:bridge_transport.obj",
+          "producerObject": {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\bridge_transport.obj",
+            "bytes": 4690173,
+            "sha256": "c070eb6029680e7a9ef33cd30da1ddfd7a905ce29a7ce9db11a8efca26501236"
+          }
+        },
+        {
+          "line": " 0001:00003b10       ??$contains@AEAY04$$CBD$0A@@?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_11_3@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_11_3@nlohmann@@QEBA_NAEAY04$$CBD@Z 0000000140004b10 f i soui_sdk:task_service.obj",
+          "index": 169,
+          "symbol": "??$contains@AEAY04$$CBD$0A@@?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_11_3@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_11_3@nlohmann@@QEBA_NAEAY04$$CBD@Z",
+          "module": "soui_sdk:task_service.obj",
+          "producerObject": {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\task_service.obj",
+            "bytes": 6452654,
+            "sha256": "5107509ccbcd32117719386a06427d9a2573f58fb043e49568ab7fc4c4e57bdc"
+          }
+        }
+      ],
+      "privateHost": null,
+      "module": null,
+      "finiteContributionOnly": true,
+      "completeCompilerInputBinding": false,
+      "qualificationPassed": false
+    },
+    {
+      "kind": "gui",
+      "target": "soui_gui_command_tests",
+      "executable": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\gui\\Release\\soui_gui_command_tests.exe",
+        "bytes": 716288,
+        "sha256": "dde7a16cdf7a8704ee5c26fe992e14f517d35223b5b89666fba9fc9b49042122"
+      },
+      "pe": {
+        "machine": 34404,
+        "optionalHeaderMagic": 523,
+        "dll": false,
+        "exports": []
+      },
+      "cl": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\gui\\soui_gui_command_tests.dir\\Release\\soui_gui.5A1ECC7D.tlog\\CL.command.1.tlog",
+        "bytes": 1406,
+        "sha256": "e31206a2846fef5772df3b0fa0ad5228925db0410a6ff379c3c836ff60a2c3fd",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\TESTS\\NATIVE\\GUI_COMMANDS\\GUI_COMMAND_TESTS.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D _CRT_SECURE_NO_WARNINGS /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_GUI_COMMAND_TESTS.DIR\\RELEASE\\\\\" /Fd\"SOUI_GUI_COMMAND_TESTS.DIR\\RELEASE\\VC143.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\TESTS\\NATIVE\\GUI_COMMANDS\\GUI_COMMAND_TESTS.CPP\r\n"
+      },
+      "objects": [
+        {
+          "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\gui\\soui_gui_command_tests.dir\\Release\\gui_command_tests.obj",
+          "bytes": 5288466,
+          "sha256": "a1d242e352ee3b23aeff2cb8da8c8300f7e3e7951e29d982c9c39c15361a4f2d"
+        }
+      ],
+      "link": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\gui\\soui_gui_command_tests.dir\\Release\\soui_gui.5A1ECC7D.tlog\\link.command.1.tlog",
+        "bytes": 1854,
+        "sha256": "f8736f11596498492feec8ff3e00f79e2857508207682ae9dcbbb0537a0e51a3",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\GUI\\SOUI_GUI_COMMAND_TESTS.DIR\\RELEASE\\GUI_COMMAND_TESTS.OBJ\r\n/OUT:\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\GUI\\RELEASE\\SOUI_GUI_COMMAND_TESTS.EXE\" /INCREMENTAL:NO /NOLOGO ..\\SDK\\RELEASE\\SOUI_SDK.LIB USER32.LIB GDI32.LIB IMM32.LIB SHELL32.LIB OLE32.LIB OLEAUT32.LIB UUID.LIB COMCTL32.LIB ADVAPI32.LIB WINMM.LIB BCRYPT.LIB KERNEL32.LIB USER32.LIB GDI32.LIB WINSPOOL.LIB SHELL32.LIB OLE32.LIB OLEAUT32.LIB UUID.LIB COMDLG32.LIB ADVAPI32.LIB /MANIFEST /MANIFESTUAC:\"level='asInvoker' uiAccess='false'\" /manifest:embed /PDB:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/GUI/RELEASE/SOUI_GUI_COMMAND_TESTS.PDB\" /MAP:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/SOUI_GUI_COMMAND_TESTS-RELEASE.MAP\" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/GUI/RELEASE/SOUI_GUI_COMMAND_TESTS.LIB\" /MACHINE:X64  /machine:x64 SOUI_GUI_COMMAND_TESTS.DIR\\RELEASE\\GUI_COMMAND_TESTS.OBJ\r\n"
+      },
+      "project": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\gui\\soui_gui_command_tests.vcxproj",
+        "bytes": 29508,
+        "sha256": "f336483caf260e54fa38c54e6dfefd25e4238a6f5a328c92229edf669fa56858",
+        "versions": [
+          "10.0.19041.0"
+        ]
+      },
+      "relativeLinkCwd": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\gui",
+      "linkRead": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\gui\\soui_gui_command_tests.dir\\Release\\soui_gui.5A1ECC7D.tlog\\link.read.1.tlog",
+        "bytes": 4018,
+        "sha256": "8ca2f146bd8643aa34702d3a187333247a98b54ea87a856b14e0430427018483",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\GUI\\SOUI_GUI_COMMAND_TESTS.DIR\\RELEASE\\GUI_COMMAND_TESTS.OBJ\r\nF:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\USER32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\GDI32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\IMM32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\SHELL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OLE32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OLEAUT32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\UUID.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\COMCTL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\ADVAPI32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WINMM.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\BCRYPT.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\KERNEL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WINSPOOL.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\COMDLG32.LIB\r\nF:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\GUI\\SOUI_GUI_COMMAND_TESTS.DIR\\RELEASE\\GUI_COMMAND_TESTS.OBJ\r\nC:\\WINDOWS\\GLOBALIZATION\\SORTING\\SORTDEFAULT.NLS\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCPRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\OLDNAMES.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\VCRUNTIME.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UCRT\\X64\\UCRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\BIN\\HOSTX64\\X64\\CVTRES.EXE\r\nC:\\WINDOWS\\SYSTEM32\\TZRES.DLL\r\n"
+      },
+      "actualSdkReadRow": "F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.LIB",
+      "sdkArchive": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\Release\\soui_sdk.lib",
+        "bytes": 49509652,
+        "sha256": "ae06f572b932b7803f51b39b9af34600d7f41441945cdee7092410ccfd961ba6"
+      },
+      "map": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\soui_gui_command_tests-Release.map",
+        "bytes": 3338550,
+        "sha256": "4792b85d4c59447563207cdbb57c737681e95a42f2916eeda70aebe4f9d71482"
+      },
+      "sdkPublicRowCount": 1125,
+      "requiredDefinitions": [
+        {
+          "line": " 0001:000046f0       ??$?0AEAY00$$CBD$0A@@?$json_ref@V?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_11_3@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_11_3@nlohmann@@@detail@json_abi_v3_11_3@nlohmann@@QEAA@AEAY00$$CBD@Z 00000001400056f0 f i soui_sdk:gui_commands.obj",
+          "index": 97,
+          "symbol": "??$?0AEAY00$$CBD$0A@@?$json_ref@V?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_11_3@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_11_3@nlohmann@@@detail@json_abi_v3_11_3@nlohmann@@QEAA@AEAY00$$CBD@Z",
+          "module": "soui_sdk:gui_commands.obj",
+          "producerObject": {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\gui_commands.obj",
+            "bytes": 4476208,
+            "sha256": "b5feca00f24356650fca36632e1ea9ec6ac7bcab3d510f3366f8958261dd8ea0"
+          }
+        },
+        {
+          "line": " 0001:000046f0       ??$?0AEAY0BB@$$CBD$0A@@?$json_ref@V?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_11_3@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_11_3@nlohmann@@@detail@json_abi_v3_11_3@nlohmann@@QEAA@AEAY0BB@$$CBD@Z 00000001400056f0 f i soui_sdk:json_bridge.obj",
+          "index": 106,
+          "symbol": "??$?0AEAY0BB@$$CBD$0A@@?$json_ref@V?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_11_3@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_11_3@nlohmann@@@detail@json_abi_v3_11_3@nlohmann@@QEAA@AEAY0BB@$$CBD@Z",
+          "module": "soui_sdk:json_bridge.obj",
+          "producerObject": {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\json_bridge.obj",
+            "bytes": 4292603,
+            "sha256": "f3e430445938f7649e88747c64a67f813ee7afdf3e6d058d8793bb71e959b1a8"
+          }
+        },
+        {
+          "line": " 0001:000046f0       ??$?0AEAY0CG@$$CBD$0A@@?$json_ref@V?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_11_3@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_11_3@nlohmann@@@detail@json_abi_v3_11_3@nlohmann@@QEAA@AEAY0CG@$$CBD@Z 00000001400056f0 f i soui_sdk:bridge_transport.obj",
+          "index": 109,
+          "symbol": "??$?0AEAY0CG@$$CBD$0A@@?$json_ref@V?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_11_3@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_11_3@nlohmann@@@detail@json_abi_v3_11_3@nlohmann@@QEAA@AEAY0CG@$$CBD@Z",
+          "module": "soui_sdk:bridge_transport.obj",
+          "producerObject": {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\bridge_transport.obj",
+            "bytes": 4690173,
+            "sha256": "c070eb6029680e7a9ef33cd30da1ddfd7a905ce29a7ce9db11a8efca26501236"
+          }
+        },
+        {
+          "line": " 0001:000046f0       ??$?0AEAY0P@$$CBD$0A@@?$json_ref@V?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_11_3@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_11_3@nlohmann@@@detail@json_abi_v3_11_3@nlohmann@@QEAA@AEAY0P@$$CBD@Z 00000001400056f0 f i soui_sdk:task_service.obj",
+          "index": 114,
+          "symbol": "??$?0AEAY0P@$$CBD$0A@@?$json_ref@V?$basic_json@Vmap@std@@Vvector@2@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@2@_N_J_KNVallocator@2@Uadl_serializer@json_abi_v3_11_3@nlohmann@@V?$vector@EV?$allocator@E@std@@@2@X@json_abi_v3_11_3@nlohmann@@@detail@json_abi_v3_11_3@nlohmann@@QEAA@AEAY0P@$$CBD@Z",
+          "module": "soui_sdk:task_service.obj",
+          "producerObject": {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\task_service.obj",
+            "bytes": 6452654,
+            "sha256": "5107509ccbcd32117719386a06427d9a2573f58fb043e49568ab7fc4c4e57bdc"
+          }
+        }
+      ],
+      "privateHost": null,
+      "module": null,
+      "finiteContributionOnly": true,
+      "completeCompilerInputBinding": false,
+      "qualificationPassed": false
+    },
+    {
+      "kind": "host",
+      "target": "soui_public_host_startup_fence",
+      "executable": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\Release\\soui_public_host_startup_fence.exe",
+        "bytes": 774144,
+        "sha256": "0e4a9592a454887c8bb31131fe8ddbaddd2dee39dd64f9beedfad4f95c3b0ae9"
+      },
+      "pe": {
+        "machine": 34404,
+        "optionalHeaderMagic": 523,
+        "dll": false,
+        "exports": []
+      },
+      "cl": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\soui_public_host_startup_fence.dir\\Release\\soui_pub.2C02F650.tlog\\CL.command.1.tlog",
+        "bytes": 3718,
+        "sha256": "418e8436f591321cd49a310271e567148b5e1cb1d93483da5e589bf930adc2c8",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\TESTS\\NATIVE\\HOST_STARTUP_FENCE\\FIXTURE.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\TESTS\\NATIVE\\HOST_STARTUP_FENCE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D SOUI_STARTUP_FENCE_TEST_OBSERVER /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_PUBLIC_HOST_STARTUP_FENCE.DIR\\RELEASE\\\\\" /Fd\"SOUI_PUBLIC_HOST_STARTUP_FENCE.DIR\\RELEASE\\VC143.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\TESTS\\NATIVE\\HOST_STARTUP_FENCE\\FIXTURE.CPP\r\n^F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\HOST_FENCE\\GENERATED\\STARTUP_OBSERVED_HOST.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\TESTS\\NATIVE\\HOST_STARTUP_FENCE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\SRC\\HOST\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D ENABLE_WKE=0 /D SOUI_SOURCE_KERNEL_HOST /D _CRT_SECURE_NO_WARNINGS /D SOUI_STARTUP_FENCE_TEST_OBSERVER /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_PUBLIC_HOST_STARTUP_FENCE.DIR\\RELEASE\\\\\" /Fd\"SOUI_PUBLIC_HOST_STARTUP_FENCE.DIR\\RELEASE\\VC143.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\HOST_FENCE\\GENERATED\\STARTUP_OBSERVED_HOST.CPP\r\n"
+      },
+      "objects": [
+        {
+          "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\soui_public_host_startup_fence.dir\\Release\\fixture.obj",
+          "bytes": 5215049,
+          "sha256": "a007c077ebe67facdafcd5718464e104abddd7fedf0f8f2819d8e383e20e4101"
+        },
+        {
+          "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\soui_public_host_startup_fence.dir\\Release\\startup_observed_host.obj",
+          "bytes": 7018210,
+          "sha256": "90ad2934c537790055fd8303eaaf7061915fb78e3df0ff27103fc01f3cf3ab9a"
+        }
+      ],
+      "link": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\soui_public_host_startup_fence.dir\\Release\\soui_pub.2C02F650.tlog\\link.command.1.tlog",
+        "bytes": 2352,
+        "sha256": "bef549ed74934f63264157f89c9f2c71a71be071612bc4c01eed5a1662108617",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\HOST_FENCE\\SOUI_PUBLIC_HOST_STARTUP_FENCE.DIR\\RELEASE\\FIXTURE.OBJ|F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\HOST_FENCE\\SOUI_PUBLIC_HOST_STARTUP_FENCE.DIR\\RELEASE\\STARTUP_OBSERVED_HOST.OBJ\r\n/OUT:\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\HOST_FENCE\\RELEASE\\SOUI_PUBLIC_HOST_STARTUP_FENCE.EXE\" /INCREMENTAL:NO /NOLOGO ..\\SDK\\RELEASE\\SOUI_SDK.LIB USER32.LIB GDI32.LIB IMM32.LIB SHELL32.LIB OLE32.LIB OLEAUT32.LIB UUID.LIB COMCTL32.LIB ADVAPI32.LIB WINMM.LIB BCRYPT.LIB KERNEL32.LIB USER32.LIB GDI32.LIB WINSPOOL.LIB SHELL32.LIB OLE32.LIB OLEAUT32.LIB UUID.LIB COMDLG32.LIB ADVAPI32.LIB /MANIFEST /MANIFESTUAC:\"level='asInvoker' uiAccess='false'\" /manifest:embed /PDB:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/HOST_FENCE/RELEASE/SOUI_PUBLIC_HOST_STARTUP_FENCE.PDB\" /MAP:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/HOST_FENCE/SOUI_PUBLIC_HOST_STARTUP_FENCE.MAP\" /SUBSYSTEM:WINDOWS /TLBID:1 /IMPLIB:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/HOST_FENCE/RELEASE/SOUI_PUBLIC_HOST_STARTUP_FENCE.LIB\" /MACHINE:X64  /machine:x64 SOUI_PUBLIC_HOST_STARTUP_FENCE.DIR\\RELEASE\\FIXTURE.OBJ\r\nSOUI_PUBLIC_HOST_STARTUP_FENCE.DIR\\RELEASE\\STARTUP_OBSERVED_HOST.OBJ\r\n"
+      },
+      "project": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\soui_public_host_startup_fence.vcxproj",
+        "bytes": 36479,
+        "sha256": "5ef0b01e046df3970ebdd780905a9a131691cc4142f1299c7caee9b061c779aa",
+        "versions": [
+          "10.0.19041.0"
+        ]
+      },
+      "relativeLinkCwd": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence",
+      "linkRead": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\soui_public_host_startup_fence.dir\\Release\\soui_pub.2C02F650.tlog\\link.read.1.tlog",
+        "bytes": 4520,
+        "sha256": "05e196bc553fe91ef16f10bb57f7ded72dcd6b3dd514420a9d08ff1267e4dfcf",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\HOST_FENCE\\SOUI_PUBLIC_HOST_STARTUP_FENCE.DIR\\RELEASE\\FIXTURE.OBJ|F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\HOST_FENCE\\SOUI_PUBLIC_HOST_STARTUP_FENCE.DIR\\RELEASE\\STARTUP_OBSERVED_HOST.OBJ\r\nF:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\USER32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\GDI32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\IMM32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\SHELL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OLE32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OLEAUT32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\UUID.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\COMCTL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\ADVAPI32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WINMM.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\BCRYPT.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\KERNEL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WINSPOOL.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\COMDLG32.LIB\r\nF:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\HOST_FENCE\\SOUI_PUBLIC_HOST_STARTUP_FENCE.DIR\\RELEASE\\FIXTURE.OBJ\r\nF:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\HOST_FENCE\\SOUI_PUBLIC_HOST_STARTUP_FENCE.DIR\\RELEASE\\STARTUP_OBSERVED_HOST.OBJ\r\nC:\\WINDOWS\\GLOBALIZATION\\SORTING\\SORTDEFAULT.NLS\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCPRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\OLDNAMES.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\VCRUNTIME.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UCRT\\X64\\UCRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\BIN\\HOSTX64\\X64\\CVTRES.EXE\r\nC:\\WINDOWS\\SYSTEM32\\TZRES.DLL\r\n"
+      },
+      "actualSdkReadRow": "F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.LIB",
+      "sdkArchive": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\Release\\soui_sdk.lib",
+        "bytes": 49509652,
+        "sha256": "ae06f572b932b7803f51b39b9af34600d7f41441945cdee7092410ccfd961ba6"
+      },
+      "map": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\soui_public_host_startup_fence.map",
+        "bytes": 2987792,
+        "sha256": "c7314730f896f094f945cc33b2edc30f54b59757ab11423b9bb4a28e90dbf9c9"
+      },
+      "sdkPublicRowCount": 796,
+      "requiredDefinitions": [
+        {
+          "line": " 0001:00001240       ??R?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QEBA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@0@Z 0000000140002240 f i soui_sdk:json_bridge.obj",
+          "index": 160,
+          "symbol": "??R?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QEBA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@0@Z",
+          "module": "soui_sdk:json_bridge.obj",
+          "producerObject": {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\json_bridge.obj",
+            "bytes": 4292603,
+            "sha256": "f3e430445938f7649e88747c64a67f813ee7afdf3e6d058d8793bb71e959b1a8"
+          }
+        },
+        {
+          "line": " 0001:0000b2c0       ??1?$_Alloc_construct_ptr@V?$allocator@U?$_List_node@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V12@@std@@PEAX@std@@@std@@@std@@QEAA@XZ 000000014000c2c0 f i soui_sdk:task_service.obj",
+          "index": 303,
+          "symbol": "??1?$_Alloc_construct_ptr@V?$allocator@U?$_List_node@U?$pair@$$CBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@V12@@std@@PEAX@std@@@std@@@std@@QEAA@XZ",
+          "module": "soui_sdk:task_service.obj",
+          "producerObject": {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\task_service.obj",
+            "bytes": 6452654,
+            "sha256": "5107509ccbcd32117719386a06427d9a2573f58fb043e49568ab7fc4c4e57bdc"
+          }
+        }
+      ],
+      "privateHost": {
+        "wholeGenerated": {
+          "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\generated\\startup_observed_host.cpp",
+          "bytes": 175057,
+          "sha256": "e07d66d390ee2592aa5d6c3dbef8f517d434892d0f4418a207b5b06fe6c4b371"
+        },
+        "observerSpans": 6,
+        "observer": {
+          "line": " 0001:0004af30       ?read@startup_fence_test@detail@sdk@soui@@YA?AUsnapshot@1234@PEBX@Z 000000014004bf30 f   startup_observed_host.obj",
+          "index": 1096,
+          "symbol": "?read@startup_fence_test@detail@sdk@soui@@YA?AUsnapshot@1234@PEBX@Z",
+          "module": "startup_observed_host.obj"
+        },
+        "host": {
+          "line": " 0001:0000b500       ??1?$shared_ptr@Uevent_dispatch_lifetime@dynamic_miniblink_adapter@sdk@soui@@@std@@QEAA@XZ 000000014000c500 f i startup_observed_host.obj",
+          "index": 346,
+          "symbol": "??1?$shared_ptr@Uevent_dispatch_lifetime@dynamic_miniblink_adapter@sdk@soui@@@std@@QEAA@XZ",
+          "module": "startup_observed_host.obj"
+        },
+        "objects": [
+          {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\soui_public_host_startup_fence.dir\\Release\\fixture.obj",
+            "bytes": 5215049,
+            "sha256": "a007c077ebe67facdafcd5718464e104abddd7fedf0f8f2819d8e383e20e4101"
+          },
+          {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\host_fence\\soui_public_host_startup_fence.dir\\Release\\startup_observed_host.obj",
+            "bytes": 7018210,
+            "sha256": "90ad2934c537790055fd8303eaaf7061915fb78e3df0ff27103fc01f3cf3ab9a"
+          }
+        ]
+      },
+      "module": null,
+      "finiteContributionOnly": true,
+      "completeCompilerInputBinding": false,
+      "qualificationPassed": false
+    },
+    {
+      "kind": "uia",
+      "target": "soui_windows_uia_provider_tests",
+      "executable": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\uia\\Release\\soui_windows_uia_provider_tests.exe",
+        "bytes": 260096,
+        "sha256": "d9f0f9ddf1732f8ceccaa931bc57d6c537be32d3e3bca1665cc95ad76f782eca"
+      },
+      "pe": {
+        "machine": 34404,
+        "optionalHeaderMagic": 523,
+        "dll": false,
+        "exports": []
+      },
+      "cl": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\uia\\soui_windows_uia_provider_tests.dir\\Release\\soui_win.F4F49F7B.tlog\\CL.command.1.tlog",
+        "bytes": 1540,
+        "sha256": "ad7ba6831a454a6b162bd0b7382665a7756e47701cdab68040fb099b128f4d96",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\TESTS\\NATIVE\\WINDOWS_UIA_PROVIDER_TESTS.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\THIRD_PARTY\\INCLUDE\\JSON\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\ACCESSIBILITY\\UIA\\..\\..\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_WINDOWS_UIA_PROVIDER_TESTS.DIR\\RELEASE\\\\\" /Fd\"SOUI_WINDOWS_UIA_PROVIDER_TESTS.DIR\\RELEASE\\VC143.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\TESTS\\NATIVE\\WINDOWS_UIA_PROVIDER_TESTS.CPP\r\n"
+      },
+      "objects": [
+        {
+          "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\uia\\soui_windows_uia_provider_tests.dir\\Release\\windows_uia_provider_tests.obj",
+          "bytes": 2812093,
+          "sha256": "c6dcfcb26a4eec66395f1ff81df67442800a3562cb9f43a44f282e7697e86f82"
+        }
+      ],
+      "link": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\uia\\soui_windows_uia_provider_tests.dir\\Release\\soui_win.F4F49F7B.tlog\\link.command.1.tlog",
+        "bytes": 2110,
+        "sha256": "a5e098c9659d08fc3d03db5a3a7f270d11a34e152a3603cc70a8f61844bf6ee0",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\UIA\\SOUI_WINDOWS_UIA_PROVIDER_TESTS.DIR\\RELEASE\\WINDOWS_UIA_PROVIDER_TESTS.OBJ\r\n/OUT:\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\UIA\\RELEASE\\SOUI_WINDOWS_UIA_PROVIDER_TESTS.EXE\" /INCREMENTAL:NO /NOLOGO ..\\SDK\\ACCESSIBILITY\\UIA\\RELEASE\\SOUI_UIA.LIB GDI32.LIB ..\\SDK\\RELEASE\\SOUI_SDK.LIB GDI32.LIB IMM32.LIB SHELL32.LIB UUID.LIB COMCTL32.LIB ADVAPI32.LIB WINMM.LIB BCRYPT.LIB OLE32.LIB OLEAUT32.LIB USER32.LIB KERNEL32.LIB USER32.LIB GDI32.LIB WINSPOOL.LIB SHELL32.LIB OLE32.LIB OLEAUT32.LIB UUID.LIB COMDLG32.LIB ADVAPI32.LIB /MANIFEST /MANIFESTUAC:\"level='asInvoker' uiAccess='false'\" /manifest:embed /PDB:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/UIA/RELEASE/SOUI_WINDOWS_UIA_PROVIDER_TESTS.PDB\" /MAP:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/SOUI_WINDOWS_UIA_PROVIDER_TESTS-RELEASE.MAP\" /SUBSYSTEM:CONSOLE /TLBID:1 /IMPLIB:\"F:/WORK/SM05-BROKER/OUT/REG25/X64/BUILD/UIA/RELEASE/SOUI_WINDOWS_UIA_PROVIDER_TESTS.LIB\" /MACHINE:X64  /machine:x64 SOUI_WINDOWS_UIA_PROVIDER_TESTS.DIR\\RELEASE\\WINDOWS_UIA_PROVIDER_TESTS.OBJ\r\n"
+      },
+      "project": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\uia\\soui_windows_uia_provider_tests.vcxproj",
+        "bytes": 30866,
+        "sha256": "d756fcb48aed8e4068445507d31ef0dc6d9d314efaada6b16044d27c0235e8c4",
+        "versions": [
+          "10.0.19041.0"
+        ]
+      },
+      "relativeLinkCwd": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\uia",
+      "linkRead": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\uia\\soui_windows_uia_provider_tests.dir\\Release\\soui_win.F4F49F7B.tlog\\link.read.1.tlog",
+        "bytes": 4258,
+        "sha256": "f49ff98d3b2288656aa64c5219b58c5bb6a5458fb1f3480331a0385effa7b494",
+        "text": "^F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\UIA\\SOUI_WINDOWS_UIA_PROVIDER_TESTS.DIR\\RELEASE\\WINDOWS_UIA_PROVIDER_TESTS.OBJ\r\nF:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\ACCESSIBILITY\\UIA\\RELEASE\\SOUI_UIA.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\GDI32.LIB\r\nF:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\IMM32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\SHELL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\UUID.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\COMCTL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\ADVAPI32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WINMM.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\BCRYPT.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OLE32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\OLEAUT32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\USER32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\KERNEL32.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\WINSPOOL.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UM\\X64\\COMDLG32.LIB\r\nF:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\UIA\\SOUI_WINDOWS_UIA_PROVIDER_TESTS.DIR\\RELEASE\\WINDOWS_UIA_PROVIDER_TESTS.OBJ\r\nC:\\WINDOWS\\GLOBALIZATION\\SORTING\\SORTDEFAULT.NLS\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCPRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\MSVCRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\OLDNAMES.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\LIB\\X64\\VCRUNTIME.LIB\r\nC:\\PROGRAM FILES (X86)\\WINDOWS KITS\\10\\LIB\\10.0.19041.0\\UCRT\\X64\\UCRT.LIB\r\nC:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.44.35207\\BIN\\HOSTX64\\X64\\CVTRES.EXE\r\nC:\\WINDOWS\\SYSTEM32\\TZRES.DLL\r\n"
+      },
+      "actualSdkReadRow": "F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\RELEASE\\SOUI_SDK.LIB",
+      "sdkArchive": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\Release\\soui_sdk.lib",
+        "bytes": 49509652,
+        "sha256": "ae06f572b932b7803f51b39b9af34600d7f41441945cdee7092410ccfd961ba6"
+      },
+      "map": {
+        "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\soui_windows_uia_provider_tests-Release.map",
+        "bytes": 1293367,
+        "sha256": "2fce922b519d06d59b0e9b3e864ef9ba5a4412181a792bbd04616c673c530ae6"
+      },
+      "sdkPublicRowCount": 187,
+      "requiredDefinitions": [
+        {
+          "line": " 0001:00000600       ??R?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QEBA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@0@Z 0000000140001600 f i soui_sdk:action_contract.obj",
+          "index": 87,
+          "symbol": "??R?$less@V?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@@std@@QEBA_NAEBV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@1@0@Z",
+          "module": "soui_sdk:action_contract.obj",
+          "producerObject": {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\soui_sdk.dir\\Release\\action_contract.obj",
+            "bytes": 3000907,
+            "sha256": "71cb21239f7fede1e85cbb4460654153355500c254fc62ad24020c1d2120cac5"
+          }
+        }
+      ],
+      "privateHost": null,
+      "module": {
+        "archive": {
+          "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\accessibility\\uia\\Release\\soui_uia.lib",
+          "bytes": 891714,
+          "sha256": "d16ee8c529641a6c12402c3b124c26a2c8c85d33d49ca757d56a325615417851"
+        },
+        "objects": [
+          {
+            "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\accessibility\\uia\\soui_uia.dir\\Release\\windows_uia_provider.obj",
+            "bytes": 793847,
+            "sha256": "fa8716216c9cbc24050e941d1ed89299d2812bf37d511b6fcd5cda7468387237"
+          }
+        ],
+        "cl": {
+          "path": "F:\\work\\sm05-broker\\out\\reg25\\x64\\build\\sdk\\accessibility\\uia\\soui_uia.dir\\Release\\soui_uia.tlog\\CL.command.1.tlog",
+          "bytes": 1418,
+          "sha256": "641ddd4e61151f73199329bade2aaf1a3b8cd1d3183a49553eb3e521b7ad3f45",
+          "text": "^F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\ACCESSIBILITY\\UIA\\WINDOWS_UIA_PROVIDER.CPP\r\n/c /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\ACCESSIBILITY\\UIA\\..\\..\\INCLUDE\" /I\"F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\INCLUDE\" /nologo /W4 /WX- /diagnostics:column /O2 /Ob2 /D _UNICODE /D UNICODE /D WIN32 /D _WINDOWS /D NDEBUG /D UNICODE /D _UNICODE /D NOMINMAX /D WINVER=0x0601 /D _WIN32_WINNT=0x0601 /D \"CMAKE_INTDIR=\\\"Release\\\"\" /U_DEBUG /EHsc /MD /std:c++17 /Fo\"SOUI_UIA.DIR\\RELEASE\\\\\" /Fd\"F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\ACCESSIBILITY\\UIA\\RELEASE\\SOUI_UIA.PDB\" /external:W4 /TP  /utf-8 F:\\WORK\\SM05-BROKER\\OUT\\N25-B7920345\\SOURCE\\SDK\\ACCESSIBILITY\\UIA\\WINDOWS_UIA_PROVIDER.CPP\r\n"
+        },
+        "actualReadRow": "F:\\WORK\\SM05-BROKER\\OUT\\REG25\\X64\\BUILD\\SDK\\ACCESSIBILITY\\UIA\\RELEASE\\SOUI_UIA.LIB",
+        "definition": {
+          "line": " 0001:0000b220       ??1invalid_argument@std@@UEAA@XZ 000000014000c220 f i soui_uia:windows_uia_provider.obj",
+          "index": 233,
+          "symbol": "??1invalid_argument@std@@UEAA@XZ",
+          "module": "soui_uia:windows_uia_provider.obj"
+        },
+        "staticUiAutomationCoreLibrary": false
+      },
+      "finiteContributionOnly": true,
+      "completeCompilerInputBinding": false,
+      "qualificationPassed": false
+    }
+  ],
+  "normalSdkCpp25": 25,
+  "uiaOutsideGlobCpp": 1,
+  "testkit": false,
+  "completeCompilerInputBinding": false,
+  "qualificationPassed": false
+}

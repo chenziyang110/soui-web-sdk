@@ -1,0 +1,29 @@
+# Win32 link recovery — Root execution only
+
+This inert packet reuses the current failed Win32 producer's 3024 objects, one resource and eleven gathered dependency libraries. It performs no source compilation. Root must fully read the driver, mapping and guard before execution. The author ran only filesystem preparation.
+
+The exact failed command is extracted from kernel-83e67b12/runs/Win32/miniblink/build.binlog. Its UTF-8 string starts at uncompressed byte 3189352, length 272361, with the observed three-byte encoded length and adjacent record bytes 24/12. link.command.1.tlog contains only its BOM. The saved original command is data, never evaluated.
+
+link.rsp removes exactly the original executable prefix and redirects only OUT, ILK, PDB, LTCGOUT and IMPLIB to a fresh image directory. All other command bytes and ordered input tokens remain exact. MANIFEST/manifest:embed produce derived files beside the fresh DLL; TEMP/TMP and the user profile are fresh. No DEF/ORDER/PGD/MAP/PDBSTRIPPED/other explicit file switch is present. The native command is the absolute Hostx64/x86/link.exe with one @response argument, never a 272 KB CreateProcess argument.
+
+The child inherits no ambient LIB/INCLUDE/PATH or CL/_CL_/LINK/_LINK_/NODE options. LIB explicitly names VC14.44.35207/x86 and SDK19041/ucrt/x86 + um/x86; INCLUDE explicitly names the same VC and SDK include roots. The original /LIBPATH still selects the eleven old gathered libraries. All selected tool-directory and standard-library directory members are byte-pinned before and after. System module closure remains unqualified.
+
+The driver full-stream hashes the entire closed old Win32 output tree (5234 files, 11397560752 bytes) and the historical source copy (23536 files, 320885839 bytes) before/after, checks membership and metadata between stages, and binds old 11 library artifact receipts. Historical main PID20048/134360376349000084 stays root1/supervisor1/false. Its source and output bytes are never overwritten.
+
+Four Root Owned stages: link; dumpbin /headers; /imports; /exports. Every raw report, context, ready identity, stdout/stderr, finished record and stage verdict is saved. Only natural 0/0 satisfies ordinary stages. A unique root0/supervisor124 compiler descendant drain, >=2000 ms after root exit and before the finite deadline, may let PE inspection continue, but generic false and final exit1 remain. Any true timeout, native failure, identity mismatch or input mutation stops later stages and preserves the record. Failure summaries do not authorize later loads.
+
+The static PE reader checks x86 DLL format and 59 required, non-forwarded concrete exports. This is filesystem image inspection, not loading, an ABI call, Host behavior or a complete toolchain claim. fullRecompile, historicalCompilerFormalPassed, completeToolchainProvenance, fullSdkQualified, win7Qualified, qualificationPassed and releaseReady all remain false.
+
+Full-Main-Next.cmd is an unexecuted proposed later complete main-TU build entry, with amd64 MSBuild and explicit CL/Link/LIB tool paths plus TargetName=node. It still uses the already-built dependency libraries and is not invoked by this recovery driver. Root must separately supervise and review a future fresh producer before using it.
+
+Original producer and all startup design/candidate packets remain unchanged.
+
+V2 excludes exactly the known Windows INetCache Content.IE5 junction alias from regular-file membership. It never follows the alias or treats it as a compiler input; all 5234 original regular-file pins/counts remain exact. The guard requires Junction type, exact native link target and ordinary resolved target directory before/after Node; each driver membership check requires the same exact path, lstat symlink shape, literal readlink target, realpath and a nonlinked target inside the protected root. Every other symlink/reparse alias remains refused. The V1 preflight stopped before output creation/native stages; the Root observation is an explicitly labeled tool-result observation, not a preserved raw stderr stream. All native/provenance limits remain unchanged.
+
+V3 explicitly supplements the original 5234-file inventory with its one pre-existing hidden regular file container.dat (0 bytes, empty SHA-256; created/last-written 2026-10-09T16:32:16.7304037Z). Original manifest bytes are untouched. Current exact regular-file membership is5235; full before/after hashes and every stage metadata check protect all5235, excluding only the same exact Content.IE5 junction without following. The supplement is not a compiler input or historical manifest claim. All source/tool inventories were checked with -Force.
+
+V4 fixes the actual LNK1158 missing rc.exe by adding only the fixed SDK19041/x64 bin to isolated PATH; rc.exe/rcdll.dll and complete colocated226-file inventory are immutable checked before/after each native phase. Existing tool/library744 members remain pinned. Original V3 root1158/sup1158/genericfalse and natural closure are preserved, not qualified. Complete OS/toolchain and full recompilation remainfalse.
+
+
+V5 changes only the owned-member image reader. Unreadable null images require a positive native error and an earlier nonempty pinned image for the same PID/decimal FILETIME. The observation is recorded separately and does not introduce an image. All original root/Job/time/verdict gates remain. The V4 failed controller and its successful natural LINK records stay unchanged; V5 requires a fresh actual LINK and three PE stages.
+Fresh V5 output: F:/work/sm05-broker/out/relink-x86-v5-a6e98a49

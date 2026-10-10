@@ -1,0 +1,9 @@
+# 旧默认拖拽的同步叶片回归
+
+一个 EXE、三个 TIMEOUT 10 的 CTest，使用实际 DragHandle.cpp 的 StartDraggingTask、LegacyDragScope 和 legacy startDragging 后半体，以及实际 CheckReEnter.cpp 的三个静态函数。夹具算法逐字节保留；声明和普通抛异常的同步 UI consumer 是支持层。配置与 mandatory prebuild 均核对两份源码整体 SHA 和三个源码/夹具 byte intervals，默认只读取相对发行根的真实源码。
+
+三个案例检查：task 普通 new 失败时尚未 admission；同步成功时 borrowed 参数仍有效、两次 engine completion 与 owner 一次销毁；同步 consumer 抛 bad_alloc 时 task/count/CheckReEnter/drag marker 恢复且不伪造 completion。既有 dragdata 十一个回归保留，覆盖部分转换分配失败、受控长度限制及 callback unwind。
+
+本公共候选尚未编译或运行，旧实际记录不自动授权新源码。Root 集成 vendor 叶片和公共测试后，应使用新封存输入实际编译原 DragHandle TU，并对本叶片、原 dragdata 十一项与其余 native registry 进行两架构监督验证。可通过父测试入口调用；独立构建可传绝对 SOUI_DISTRIBUTION_ROOT，源码整体搬移无需私有 out 路径。
+
+此处仅验证默认同步路径的有限 ownership 和 bookkeeping。外部异步 callback 的接受/失败、最终执行、plain-int 跨线程计数和任意自定义 enter/leave 抛异常没有得到证明。它不认证真实 COM/OLE、Blink GC、完整 engine 构造 OOM、DLL 卸载、物理输入、Win7、性能或发布；qualificationPassed 和 releaseReady 保持 false。

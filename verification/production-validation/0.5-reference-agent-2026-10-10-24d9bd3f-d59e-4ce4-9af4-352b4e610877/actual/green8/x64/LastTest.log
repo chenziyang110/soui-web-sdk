@@ -1,0 +1,131 @@
+Start testing: Oct 10 03:16 中国标准时间
+----------------------------------------------------------
+1/8 Testing: reference.agent.disabled-default-deny
+1/8 Test: reference.agent.disabled-default-deny
+Command: "F:/work/sm05-broker/out/ragent8/x64/build/Release/soui_reference_agent_tests.exe" "disabled-default-deny" "F:/work/sm05-broker/out/ragent8/x64/source/demos/reference-workbench/common/fixture.json"
+Directory: F:/work/sm05-broker/out/ragent8/x64/build
+"reference.agent.disabled-default-deny" start time: Oct 10 03:16 中国标准时间
+Output:
+----------------------------------------------------------
+{"case":"disabled-default-deny","children":[{"creationFileTime":"134360469776292681","exitCode":0,"jobAssigned":true,"mode":"denied-peer","pid":"22388","rawReceipt":"{\"creationFileTime\":\"134360469776292681\",\"payload\":{},\"pid\":\"22388\"}\r\n"}],"creationFileTime":"134360469776098369","guiReadyVerified":false,"passed":true,"pid":"107792","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+<end of output>
+Test time =   0.16 sec
+----------------------------------------------------------
+Test Passed.
+"reference.agent.disabled-default-deny" end time: Oct 10 03:16 中国标准时间
+"reference.agent.disabled-default-deny" time elapsed: 00:00:00
+----------------------------------------------------------
+
+2/8 Testing: reference.agent.selected-peer
+2/8 Test: reference.agent.selected-peer
+Command: "F:/work/sm05-broker/out/ragent8/x64/build/Release/soui_reference_agent_tests.exe" "selected-peer" "F:/work/sm05-broker/out/ragent8/x64/source/demos/reference-workbench/common/fixture.json"
+Directory: F:/work/sm05-broker/out/ragent8/x64/build
+"reference.agent.selected-peer" start time: Oct 10 03:16 中国标准时间
+Output:
+----------------------------------------------------------
+{"case":"selected-peer","children":[{"creationFileTime":"134360469777460559","exitCode":0,"jobAssigned":true,"mode":"denied-peer","pid":"10164","rawReceipt":"{\"creationFileTime\":\"134360469777460559\",\"payload\":{},\"pid\":\"10164\"}\r\n"},{"creationFileTime":"134360469777374828","exitCode":0,"jobAssigned":true,"mode":"describe","pid":"39436","rawReceipt":"{\"creationFileTime\":\"134360469777374828\",\"payload\":{\"fixtureId\":\"electron-smoothness-10k-v1\",\"groups\":[\"绱犳潗\",\"椤圭洰\",\"缂撳瓨\",\"瀵煎嚭\",\"褰掓。\"],\"rowCount\":10000,\"rowHeightPx\":32,\"seed\":20260915,\"statuses\":[\"ready\",\"indexed\",\"queued\",\"review\"]},\"pid\":\"39436\"}\r\n"},{"creationFileTime":"134360469778688400","exitCode":0,"jobAssigned":true,"mode":"selection-only","pid":"89924","rawReceipt":"{\"creationFileTime\":\"134360469778688400\",\"payload\":{},\"pid\":\"89924\"}\r\n"}],"creationFileTime":"134360469777207006","guiReadyVerified":false,"passed":true,"pid":"102252","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+<end of output>
+Test time =   0.20 sec
+----------------------------------------------------------
+Test Passed.
+"reference.agent.selected-peer" end time: Oct 10 03:16 中国标准时间
+"reference.agent.selected-peer" time elapsed: 00:00:00
+----------------------------------------------------------
+
+3/8 Testing: reference.agent.fixed-summary
+3/8 Test: reference.agent.fixed-summary
+Command: "F:/work/sm05-broker/out/ragent8/x64/build/Release/soui_reference_agent_tests.exe" "fixed-summary" "F:/work/sm05-broker/out/ragent8/x64/source/demos/reference-workbench/common/fixture.json"
+Directory: F:/work/sm05-broker/out/ragent8/x64/build
+"reference.agent.fixed-summary" start time: Oct 10 03:16 中国标准时间
+Output:
+----------------------------------------------------------
+{"case":"fixed-summary","children":[{"creationFileTime":"134360469779389697","exitCode":0,"jobAssigned":true,"mode":"fixed-summary","pid":"80580","rawReceipt":"{\"creationFileTime\":\"134360469779389697\",\"payload\":{\"result\":{\"fixtureId\":\"electron-smoothness-10k-v1\",\"groups\":{\"瀵煎嚭\":2060,\"褰掓。\":1936,\"绱犳潗\":2001,\"缂撳瓨\":2127,\"椤圭洰\":1876},\"matched\":10000,\"processed\":10000,\"totalSizeKb\":20760989},\"taskId\":\"sdk-task-000002\"},\"pid\":\"80580\"}\r\n"}],"creationFileTime":"134360469779235989","guiReadyVerified":false,"passed":true,"pid":"96164","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+<end of output>
+Test time =   0.65 sec
+----------------------------------------------------------
+Test Passed.
+"reference.agent.fixed-summary" end time: Oct 10 03:16 中国标准时间
+"reference.agent.fixed-summary" time elapsed: 00:00:00
+----------------------------------------------------------
+
+4/8 Testing: reference.agent.cancel
+4/8 Test: reference.agent.cancel
+Command: "F:/work/sm05-broker/out/ragent8/x64/build/Release/soui_reference_agent_tests.exe" "cancel" "F:/work/sm05-broker/out/ragent8/x64/source/demos/reference-workbench/common/fixture.json"
+Directory: F:/work/sm05-broker/out/ragent8/x64/build
+"reference.agent.cancel" start time: Oct 10 03:16 中国标准时间
+Output:
+----------------------------------------------------------
+{"case":"cancel","children":[{"creationFileTime":"134360469785899728","exitCode":0,"jobAssigned":true,"mode":"cancel","pid":"74428","rawReceipt":"{\"creationFileTime\":\"134360469785899728\",\"payload\":{\"taskId\":\"sdk-task-000001\"},\"pid\":\"74428\"}\r\n"}],"creationFileTime":"134360469785732550","guiReadyVerified":false,"passed":true,"pid":"31496","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+<end of output>
+Test time =   0.80 sec
+----------------------------------------------------------
+Test Passed.
+"reference.agent.cancel" end time: Oct 10 03:16 中国标准时间
+"reference.agent.cancel" time elapsed: 00:00:00
+----------------------------------------------------------
+
+5/8 Testing: reference.agent.invalid-form
+5/8 Test: reference.agent.invalid-form
+Command: "F:/work/sm05-broker/out/ragent8/x64/build/Release/soui_reference_agent_tests.exe" "invalid-form" "F:/work/sm05-broker/out/ragent8/x64/source/demos/reference-workbench/common/fixture.json"
+Directory: F:/work/sm05-broker/out/ragent8/x64/build
+"reference.agent.invalid-form" start time: Oct 10 03:16 中国标准时间
+Output:
+----------------------------------------------------------
+{"case":"invalid-form","children":[{"creationFileTime":"134360469793874437","exitCode":0,"jobAssigned":true,"mode":"invalid-form","pid":"97604","rawReceipt":"{\"creationFileTime\":\"134360469793874437\",\"payload\":{\"accepted\":true,\"message\":\"C++ 宸茬‘璁よ〃鍗曪紱鏈ず渚嬩笉鍐欏叆鏂囦欢銆俓",\"receiptId\":\"reference-form-2\"},\"pid\":\"97604\"}\r\n"}],"creationFileTime":"134360469793707576","guiReadyVerified":false,"passed":true,"pid":"107788","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+<end of output>
+Test time =   0.16 sec
+----------------------------------------------------------
+Test Passed.
+"reference.agent.invalid-form" end time: Oct 10 03:16 中国标准时间
+"reference.agent.invalid-form" time elapsed: 00:00:00
+----------------------------------------------------------
+
+6/8 Testing: reference.agent.revoked-document
+6/8 Test: reference.agent.revoked-document
+Command: "F:/work/sm05-broker/out/ragent8/x64/build/Release/soui_reference_agent_tests.exe" "revoked-document" "F:/work/sm05-broker/out/ragent8/x64/source/demos/reference-workbench/common/fixture.json"
+Directory: F:/work/sm05-broker/out/ragent8/x64/build
+"reference.agent.revoked-document" start time: Oct 10 03:16 中国标准时间
+Output:
+----------------------------------------------------------
+{"case":"revoked-document","children":[{"creationFileTime":"134360469795423584","exitCode":0,"jobAssigned":true,"mode":"revoked-document","pid":"62640","rawReceipt":"{\"creationFileTime\":\"134360469795423584\",\"payload\":{\"taskId\":\"sdk-task-000001\"},\"pid\":\"62640\"}\r\n"}],"creationFileTime":"134360469795266304","guiReadyVerified":false,"passed":true,"pid":"35928","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+<end of output>
+Test time =   0.74 sec
+----------------------------------------------------------
+Test Passed.
+"reference.agent.revoked-document" end time: Oct 10 03:16 中国标准时间
+"reference.agent.revoked-document" time elapsed: 00:00:00
+----------------------------------------------------------
+
+7/8 Testing: reference.agent.close-pending
+7/8 Test: reference.agent.close-pending
+Command: "F:/work/sm05-broker/out/ragent8/x64/build/Release/soui_reference_agent_tests.exe" "close-pending" "F:/work/sm05-broker/out/ragent8/x64/source/demos/reference-workbench/common/fixture.json"
+Directory: F:/work/sm05-broker/out/ragent8/x64/build
+"reference.agent.close-pending" start time: Oct 10 03:16 中国标准时间
+Output:
+----------------------------------------------------------
+{"case":"close-pending","children":[{"creationFileTime":"134360469802828809","exitCode":0,"jobAssigned":true,"mode":"close-pending","pid":"39184","rawReceipt":"{\"creationFileTime\":\"134360469802828809\",\"payload\":{\"taskId\":\"sdk-task-000001\"},\"pid\":\"39184\"}\r\n"}],"creationFileTime":"134360469802676167","guiReadyVerified":false,"passed":true,"pid":"110200","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+<end of output>
+Test time =   0.74 sec
+----------------------------------------------------------
+Test Passed.
+"reference.agent.close-pending" end time: Oct 10 03:16 中国标准时间
+"reference.agent.close-pending" time elapsed: 00:00:00
+----------------------------------------------------------
+
+8/8 Testing: reference.agent.page-isolation
+8/8 Test: reference.agent.page-isolation
+Command: "F:/work/sm05-broker/out/ragent8/x64/build/Release/soui_reference_agent_tests.exe" "page-isolation" "F:/work/sm05-broker/out/ragent8/x64/source/demos/reference-workbench/common/fixture.json"
+Directory: F:/work/sm05-broker/out/ragent8/x64/build
+"reference.agent.page-isolation" start time: Oct 10 03:16 中国标准时间
+Output:
+----------------------------------------------------------
+{"case":"page-isolation","children":[{"creationFileTime":"134360469810276601","exitCode":0,"jobAssigned":true,"mode":"page-isolation","pid":"69676","rawReceipt":"{\"creationFileTime\":\"134360469810276601\",\"payload\":{},\"pid\":\"69676\"}\r\n"}],"creationFileTime":"134360469810114807","guiReadyVerified":false,"passed":true,"pid":"70324","qualificationPassed":false,"releaseReady":false,"schema":"soui.reference-agent-native/1"}
+<end of output>
+Test time =   0.15 sec
+----------------------------------------------------------
+Test Passed.
+"reference.agent.page-isolation" end time: Oct 10 03:16 中国标准时间
+"reference.agent.page-isolation" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Oct 10 03:16 中国标准时间

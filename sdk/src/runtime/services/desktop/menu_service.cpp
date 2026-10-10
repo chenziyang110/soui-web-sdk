@@ -2,6 +2,7 @@
 
 #include "menu_platform.h"
 #include "unicode_conversion.h"
+#include "../../../host/cursor_broker.h"
 
 #include <windows.h>
 
@@ -99,6 +100,8 @@ class win32_menu_platform final : public detail::menu_platform {
   }
   detail::menu_track_result track(void* root, void* owner, int x, int y,
                                   std::uint32_t flags) noexcept override {
+    soui::sdk::detail::native_cursor_scope cursor_scope;
+    if (!cursor_scope.admitted()) return {0, ERROR_BUSY};
     SetLastError(ERROR_SUCCESS);
     const auto command = TrackPopupMenuEx(static_cast<HMENU>(root), flags, x, y,
                                           static_cast<HWND>(owner), nullptr);

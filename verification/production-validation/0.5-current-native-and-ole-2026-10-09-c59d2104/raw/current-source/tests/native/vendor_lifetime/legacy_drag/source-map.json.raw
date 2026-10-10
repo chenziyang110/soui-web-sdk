@@ -1,0 +1,51 @@
+{
+  "schema": "legacy-drag-leaf-source-map/1",
+  "sources": {
+    "drag": {
+      "relative": "third_party/sources/miniblink/content/ui/DragHandle.cpp",
+      "bytes": 52686,
+      "sha256": "083f78bf2a5921ae2ce8fbb4b736a58dea0e8f536f7c8afb965ca4128942149e"
+    },
+    "check": {
+      "relative": "third_party/sources/miniblink/content/browser/CheckReEnter.cpp",
+      "bytes": 761,
+      "sha256": "fde567d3c8476902f681190b0338d8ba387e5f63f0f16bf0f9469276d8455f05"
+    }
+  },
+  "fixture": {
+    "bytes": 10852,
+    "sha256": "c9aa58c99d5eb2ba536d1e533ac803e8335a3e26007334d57bc7506a6ae938d0"
+  },
+  "ranges": [
+    {
+      "name": "actual-CheckReEnter-static-functions",
+      "source": "check",
+      "sourceStart": 550,
+      "sourceEnd": 749,
+      "fixtureStart": 2882,
+      "fixtureEnd": 3081,
+      "bytes": 199,
+      "sha256": "700b130e43a26fbf56bfb2e37fb135270f4c8cf3c193088028a4cc0b509d0761"
+    },
+    {
+      "name": "actual-StartDraggingTask-and-LegacyDragScope",
+      "source": "drag",
+      "sourceStart": 27688,
+      "sourceEnd": 29504,
+      "fixtureStart": 4367,
+      "fixtureEnd": 6183,
+      "bytes": 1816,
+      "sha256": "9dcd30a07a8d28e0841cc18524a02b4706eb2f0dbe8bdd5e5158bb39693a1d93"
+    },
+    {
+      "name": "actual-real-legacy-startDragging-tail",
+      "source": "drag",
+      "sourceStart": 33415,
+      "sourceEnd": 34813,
+      "fixtureStart": 6404,
+      "fixtureEnd": 7802,
+      "bytes": 1398,
+      "sha256": "d1e6fea91240945ebac02f3b781fbdf59fe1d714b249954a0eea75e295f1abb8"
+    }
+  ]
+}

@@ -6,7 +6,7 @@ const {isUtf8} = require('node:buffer');
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');
 const encoded = value => JSON.stringify(value, null, 2) + '\n';
 const readJson = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
-const skipped = new Set(['out', 'dist', 'dist-legacy', 'node_modules', '.git', '.vs']);
+const skipped = new Set(['out', 'dist', 'dist-legacy', 'dist-react', 'dist-vue', 'node_modules', '.git', '.vs']);
 
 function safePath(root, name = '') {
   if (name && (typeof name !== 'string' || name.includes('\\') || name.includes(':') ||

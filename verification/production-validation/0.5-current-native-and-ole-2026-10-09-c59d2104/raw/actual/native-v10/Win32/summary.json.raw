@@ -1,0 +1,391 @@
+{
+  "schema": "private-full-native-unit-suite-v10",
+  "completed": true,
+  "packageSha256": "de167666531608ee134f6e54066da0966975a0fa02b2bc51a97b50570b8e14d7",
+  "architecture": "Win32",
+  "stages": [
+    {
+      "name": "configure",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "-S",
+        "F:\\work\\sm05-broker\\out\\full-native-suite-v10-root-5ca5450c-f113-4ae5-8df0-7cf30c649100",
+        "-B",
+        "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32,version=10.0.19041.0",
+        "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+        "-T",
+        "v143,host=x64,version=14.44.35207",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir=F:\\work\\sm05-broker\\out\\full-native-suite-v10-root-5ca5450c-f113-4ae5-8df0-7cf30c649100\\empty-user-props\\"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\native-v10\\Win32",
+      "pid": 105852,
+      "creationFileTime": "134360330652984243",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\configure.owned.jsonl",
+      "rawSha256": "a2b18b792e60ff85deb512d37c719ae33ac09045aaf60be016113334ad54680f",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\configure.owned.jsonl.context.json",
+        "bytes": 1103,
+        "sha256": "c44430a6baa12c237134c339b1d1e2c6637330eb22c165644c104f3f73ab91df"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\configure.stdout.raw",
+        "bytes": 2852,
+        "sha256": "9e2f2cd2ac53819fb20a186be63b78c7716e0297b7c682ebe8f7d0fd346a1beb"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\configure.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "build-full-native-suite",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build",
+        "--config",
+        "Release",
+        "--target",
+        "root_full_native_suite",
+        "--",
+        "/m:1",
+        "/nr:false",
+        "/p:VcpkgEnabled=false",
+        "/p:VcpkgEnableManifest=false",
+        "/p:VCToolsVersion=14.44.35207",
+        "/p:WindowsTargetPlatformVersion=10.0.19041.0",
+        "/p:ImportDirectoryBuildProps=false",
+        "/p:ImportDirectoryBuildTargets=false",
+        "/p:UseEnv=false",
+        "/p:UserRootDir=F:\\work\\sm05-broker\\out\\full-native-suite-v10-root-5ca5450c-f113-4ae5-8df0-7cf30c649100\\empty-user-props\\",
+        "/bl:F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build.binlog"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\native-v10\\Win32",
+      "pid": 57464,
+      "creationFileTime": "134360330772189145",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build-full-native-suite.owned.jsonl",
+      "rawSha256": "56ff7408dc2233299daf9a05e48d06afc12a5fbc4dc520a15e4d3a41994df78a",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build-full-native-suite.owned.jsonl.context.json",
+        "bytes": 1055,
+        "sha256": "50680de964b0eb25e687486bd2a847e04267c5f056a7d4215d24ebe9117ef4ad"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build-full-native-suite.stdout.raw",
+        "bytes": 235972,
+        "sha256": "477dd22ea3e4a82ae82aa21ca5334184a04588a75a56c4326934509b44d5f809"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build-full-native-suite.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "registered-ctest-preflight",
+      "executable": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+      "args": [
+        "--test-dir",
+        "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build",
+        "-C",
+        "Release",
+        "--show-only=json-v1"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\native-v10\\Win32",
+      "pid": 95512,
+      "creationFileTime": "134360331860648635",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\registered-ctest-preflight.owned.jsonl",
+      "rawSha256": "72f90f5c02c70dd478b32bf428fd5e83ccd40474391a913babb914da7533b738",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\registered-ctest-preflight.owned.jsonl.context.json",
+        "bytes": 529,
+        "sha256": "192080b6b00feebbf4b44f9a4c16bdb7566467a6eb439c6c2fd25746893fb96f"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\registered-ctest-preflight.stdout.raw",
+        "bytes": 91153,
+        "sha256": "d821e183e4fd7ef1088def0cfef0f362cae6481274dd70b0c4021d8e802fe792"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\registered-ctest-preflight.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "ctest-all-registered-native-units",
+      "executable": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+      "args": [
+        "--test-dir",
+        "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build",
+        "-C",
+        "Release",
+        "--output-on-failure",
+        "--no-tests=error",
+        "--timeout",
+        "60",
+        "-j",
+        "1",
+        "--output-junit",
+        "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\ctest.junit.xml"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\native-v10\\Win32",
+      "pid": 75824,
+      "creationFileTime": "134360331869395094",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\ctest-all-registered-native-units.owned.jsonl",
+      "rawSha256": "0118b12206aed7f4d98d3c3b5169352e2e1f5ee2d86910fdc391e12924f6861b",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\ctest-all-registered-native-units.owned.jsonl.context.json",
+        "bytes": 693,
+        "sha256": "1939be922686545fe5b2d00370658ae734c0d4f8f7305d6e54c0aa9d8ed91c42"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\ctest-all-registered-native-units.stdout.raw",
+        "bytes": 21474,
+        "sha256": "73b079c36b1333ffc20c05546cdb7204460a8f24e5838f926a453c8bb642bb90"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\ctest-all-registered-native-units.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "sdk-install",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--install",
+        "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build",
+        "--config",
+        "Release",
+        "--prefix",
+        "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\sdk-installed"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\native-v10\\Win32",
+      "pid": 89412,
+      "creationFileTime": "134360332376797322",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\sdk-install.owned.jsonl",
+      "rawSha256": "5df714a35f69f41532e8fe5a7e786357070637a657211da06074f2ab7a03aa19",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\sdk-install.owned.jsonl.context.json",
+        "bytes": 588,
+        "sha256": "b21af7818d59c3dcd6089ce210b1ab1a2dd176e0bbf8be011efcb0e26cf26c8b"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\sdk-install.stdout.raw",
+        "bytes": 7653,
+        "sha256": "2b535044e183da30e1a0a0bdd5eda1064295ea8f17d1039ab9d61d58b148fa34"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\sdk-install.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "consumer-configure",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "-S",
+        "F:\\work\\sm05-broker\\tests\\endpoint-consumer",
+        "-B",
+        "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-build",
+        "-G",
+        "Visual Studio 17 2022",
+        "-A",
+        "Win32,version=10.0.19041.0",
+        "-DCMAKE_GENERATOR_INSTANCE=C:/Program Files/Microsoft Visual Studio/2022/Community",
+        "-T",
+        "v143,host=x64,version=14.44.35207",
+        "-DCMAKE_SYSTEM_VERSION=10.0.19041.0",
+        "-DSouiSdk_DIR:PATH=F:\\work\\sm05-broker\\out\\native-v10\\Win32\\sdk-relocated\\lib\\cmake\\SouiSdk",
+        "-DCMAKE_FIND_USE_PACKAGE_REGISTRY=OFF",
+        "-DCMAKE_FIND_USE_SYSTEM_PACKAGE_REGISTRY=OFF",
+        "-DCMAKE_VS_GLOBALS=VcpkgEnabled=false;VcpkgEnableManifest=false;ImportDirectoryBuildProps=false;ImportDirectoryBuildTargets=false;UserRootDir=F:\\work\\sm05-broker\\out\\full-native-suite-v10-root-5ca5450c-f113-4ae5-8df0-7cf30c649100\\empty-user-props\\"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\native-v10\\Win32",
+      "pid": 82152,
+      "creationFileTime": "134360332389050675",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-configure.owned.jsonl",
+      "rawSha256": "289aeecd7757364370d6aaf851ffd3aec89e4fafcb176e2244ca516fec124103",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-configure.owned.jsonl.context.json",
+        "bytes": 1273,
+        "sha256": "124621964133d86c17b7675d0b09749501bf7de03ccb955c5a95f3d2f971d551"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-configure.stdout.raw",
+        "bytes": 505,
+        "sha256": "1fb86d9a8bfe56a75c080c03cd5ba5192839b692ba2df320378bd05153fc6c28"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-configure.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "consumer-build",
+      "executable": "C:/Program Files/CMake/bin/cmake.exe",
+      "args": [
+        "--build",
+        "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-build",
+        "--config",
+        "Release",
+        "--target",
+        "SouiEndpointConsumer",
+        "--",
+        "/m:1",
+        "/nr:false",
+        "/p:VcpkgEnabled=false",
+        "/p:VcpkgEnableManifest=false",
+        "/p:VCToolsVersion=14.44.35207",
+        "/p:WindowsTargetPlatformVersion=10.0.19041.0",
+        "/p:ImportDirectoryBuildProps=false",
+        "/p:ImportDirectoryBuildTargets=false",
+        "/p:UseEnv=false",
+        "/p:UserRootDir=F:\\work\\sm05-broker\\out\\full-native-suite-v10-root-5ca5450c-f113-4ae5-8df0-7cf30c649100\\empty-user-props\\",
+        "/bl:F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer.binlog"
+      ],
+      "cwd": "F:\\work\\sm05-broker\\out\\native-v10\\Win32",
+      "pid": 42208,
+      "creationFileTime": "134360332457693640",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-build.owned.jsonl",
+      "rawSha256": "578194c42138f047da1784159f3b0f3da68941586f4471ef26f4a63d0240023c",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-build.owned.jsonl.context.json",
+        "bytes": 1065,
+        "sha256": "8067953cce07619c4104943910a0203996b852c60ed083cb71a484b60b5c989b"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-build.stdout.raw",
+        "bytes": 308,
+        "sha256": "4456c0ad4879d50ce84dc3bfe5220cecb2a78557a83769bada73e0903604b082"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-build.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    },
+    {
+      "name": "consumer-runtime",
+      "executable": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-build\\Release\\SouiEndpointConsumer.exe",
+      "args": [],
+      "cwd": "F:\\work\\sm05-broker\\out\\native-v10\\Win32",
+      "pid": 53776,
+      "creationFileTime": "134360332495986575",
+      "rootExitCode": 0,
+      "supervisorExitCode": 0,
+      "genericPassed": true,
+      "closureConfirmed": true,
+      "rawJob": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-runtime.owned.jsonl",
+      "rawSha256": "ba1c89de878674f418d29b2e4b5a70633618ba2a1889fc6fd8aecd7620a53d42",
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-runtime.owned.jsonl.context.json",
+        "bytes": 453,
+        "sha256": "c881d0b2e237c146c18db7940124dc190c83f59cef7d6c695d27027f4e98b2fd"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-runtime.stdout.raw",
+        "bytes": 55,
+        "sha256": "4b5c9ec7ac22473e45e3d9770d25d1baa4a00d8f1cb31c484e730706d8fb576a"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\consumer-runtime.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "streamErrors": []
+    }
+  ],
+  "registeredTests": 126,
+  "nativeExecutableTargets": 46,
+  "requestClosePublicInstalled": true,
+  "requestCloseCases": 11,
+  "workerLifetimePublicInstalled": true,
+  "workerLifetimeCases": 12,
+  "windowsPeerIdentityPublicInstalled": true,
+  "windowsPeerIdentityCases": 1,
+  "dragDataCases": 11,
+  "ctorShellCases": 7,
+  "legacyDragLeafCases": 3,
+  "legacyDefaultLeafApplied": true,
+  "generatedFiniteSourceCopies": 25,
+  "publicFixtureExactSourceRanges": 21,
+  "normalSdkCppCount": 24,
+  "optionalUiaCppCount": 1,
+  "uiaPublicInstalled": true,
+  "uiaCases": 8,
+  "localEndpointPublicInstalled": true,
+  "localEndpointCases": 20,
+  "localTaskFamilyCases": 2,
+  "jsonBridgeFactoryPublicInstalled": true,
+  "jsonBridgeFactoryCases": 6,
+  "installedConsumerExecuted": true,
+  "installedConsumerRelocated": true,
+  "installedConsumerNaturalClosed": true,
+  "currentSnapshotNotHostRootCauseFix": true,
+  "taskFamilyPreparationSeamOnlyItsOwnTarget": true,
+  "expectedFatalCasesDoNotProveNaturalResourceCleanup": true,
+  "requestCloseFragmentsMatchLiveWholeSource": true,
+  "demoTaskQueryCases": 5,
+  "normalSdkSources": true,
+  "souiTestKitDefined": false,
+  "webview2BackendBuilt": false,
+  "nativeGuiAppBuilt": false,
+  "allRegisteredUnitTestsPassed": true,
+  "actualGeneratedProjectSdkVersionsMatch": true,
+  "selectedWindowsSdk": "10.0.19041.0",
+  "actualFullDllStartupCloseQualified": false,
+  "engineStartupNativeBoundaryUnitOnly": true,
+  "allPerTestPidFiletimeIndependentlyObserved": false,
+  "actualCompilerInputBindingComplete": false,
+  "targetOsQualification": false,
+  "guiRenderingQualification": false,
+  "performanceQualification": false,
+  "qualificationPassed": false,
+  "releaseReady": false,
+  "allGenericPassed": true
+}

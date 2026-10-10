@@ -1,0 +1,5 @@
+# V2 — one excluded Windows-generated alias
+
+V1 remains immutable and its failed preflight observation is pinned. The only driver change replaces list() with one exact excluded-junction branch; reverse replacement restores all 18964 original bytes. Neither traversal nor any compiler input is widened. PowerShell guard asserts exact Junction type before/after Node; Node checks exact readlink/realpath plus nonlinked target directory on every regular-file membership check. The observed old target is IE under the same protected INetCache directory.
+
+Namespace-only changes: fresh response five output values; mapping original/response pins; local helper paths in tools.json; package payload/guard/output digests and membership. Response reversal of the five output namespace substitutions restores the exact V1 RSP. Protected5234 files/11397560752B, source23536/320885839B, 3024OBJ+1RES,34 libraries,744 tool/library members and four stage logic all remain exact. No native, Node, or loader executed by author.

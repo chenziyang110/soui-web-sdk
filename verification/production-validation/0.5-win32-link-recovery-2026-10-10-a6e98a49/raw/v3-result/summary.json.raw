@@ -1,0 +1,92 @@
+{
+  "schema": "soui.win32-link-recovery.summary/1",
+  "architecture": "Win32",
+  "completed": false,
+  "failure": "Actual failure/timeout/closure is not eligible",
+  "afterFailure": null,
+  "stages": [
+    {
+      "name": "link",
+      "SubjectPID": "87404",
+      "creationFileTime": "134360426254516721",
+      "rootExitCode": 1158,
+      "supervisorExitCode": 1158,
+      "genericPassed": false,
+      "compilerTailPartial": false,
+      "naturalClosed": false,
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 37964,
+        "rootExited": true,
+        "rootExitCode": 1158,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      },
+      "subject": {
+        "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x86\\link.exe",
+        "bytes": 3252840,
+        "sha256": "ee4ce2b47beb5a14cadc9dfffd3d66723342ef97045697ffe1a5727b330324b2"
+      },
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\relink-x86-v3-68f431c0\\link.owned.ndjson",
+        "bytes": 1482,
+        "sha256": "f0979341920c1675df79e2b5533f47342a8071f5acd0ec4b8baadf7ef9f02257"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\relink-x86-v3-68f431c0\\link.owned.ndjson.context.json",
+        "bytes": 582,
+        "sha256": "bb97492032e7d58ceb625610c50114ab97a49676abbb63826ab0336d565c1714"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\relink-x86-v3-68f431c0\\link.stdout.raw",
+        "bytes": 496,
+        "sha256": "6627a765bdd78212bc1d3d6d9fa5f032e45b18cfa3b848a0f6bb23f600b1fb27"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\relink-x86-v3-68f431c0\\link.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "validationErrors": [
+        "Actual failure/timeout/closure is not eligible"
+      ],
+      "formalPassed": false
+    }
+  ],
+  "artifact": null,
+  "protectedInputsImmutable": true,
+  "sourceCopyImmutable": true,
+  "selectedToolsAndLibrariesImmutable": true,
+  "protectedOriginalFileCount": 5234,
+  "protectedCurrentFileCount": 5235,
+  "supplementalExistingHiddenInput": {
+    "path": "F:\\work\\sm05-broker\\out\\kernel-83e67b12\\runs\\Win32\\profile\\AppData\\Local\\Microsoft\\Windows\\INetCache\\IE\\container.dat",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "relative": "profile/AppData/Local/Microsoft/Windows/INetCache/IE/container.dat",
+    "compilerInput": false,
+    "originalManifestMember": false
+  },
+  "historicalSummary": {
+    "path": "F:\\work\\sm05-broker\\out\\kernel-83e67b12\\runs\\Win32\\summary.json",
+    "bytes": 24901,
+    "sha256": "da329697ef91a2149da495020b7c6b8892b7d8b9de902c75ed13bdfcaa4f235d"
+  },
+  "historicalMainFailurePreserved": true,
+  "historical11CompilerStagesGenericPassed": false,
+  "allGenericPassed": false,
+  "compilerTailPartial": false,
+  "fullRecompile": false,
+  "completeToolchainProvenance": false,
+  "fullSdkQualified": false,
+  "win7Qualified": false,
+  "qualificationPassed": false,
+  "formalPassed": false,
+  "releaseReady": false
+}

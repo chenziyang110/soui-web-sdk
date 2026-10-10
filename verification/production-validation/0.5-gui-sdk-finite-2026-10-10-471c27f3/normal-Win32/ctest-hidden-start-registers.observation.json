@@ -1,0 +1,245 @@
+{
+  "case": "hidden-start-registers",
+  "mode": "ctest",
+  "SubjectPID": "100672",
+  "creationFileTime": "134360567549636238",
+  "actualResult": {
+    "path": "F:\\work\\sm05-broker\\out\\reg25\\Win32\\build\\host_fence\\hidden-start-registers.json",
+    "bytes": 5574,
+    "sha256": "27cf6ec8134f8972bbf88e22884e0a0c7d094b6636b5a9fcd599a637c8e4c917"
+  },
+  "receipt": {
+    "actualCloseReturned": false,
+    "actualCloseSent": false,
+    "actualEngineOverlap": false,
+    "afterPageWait": {
+      "applicationReadyFlag": false,
+      "applicationReadyReceipt": "0",
+      "broker": {
+        "document": "2",
+        "geometry": "1",
+        "view": "1"
+      },
+      "contextAccepted": true,
+      "contextReceipt": "4",
+      "contextReceiptAfter": "4",
+      "documentReadyFlag": true,
+      "documentReadyReceipt": "4",
+      "nonAtomic": true,
+      "page": {
+        "nativePort": "function",
+        "readyState": "complete",
+        "souiNativePort": "function"
+      },
+      "registrationCompletion": {
+        "cancelled": false,
+        "endpointMatches": true,
+        "identity": {
+          "document": "1",
+          "geometry": "1",
+          "view": "1"
+        },
+        "identityMatches": false,
+        "kind": 3,
+        "nonAtomic": true,
+        "observed": true,
+        "scopeSequence": "0",
+        "shapeValid": true,
+        "taskSequence": "1"
+      },
+      "vendorDrain": {
+        "closing": 0,
+        "drained": 0,
+        "engineCallbacks": 0,
+        "inspected": true,
+        "nativeScopes": 0,
+        "nonAtomic": true,
+        "oleRegistered": 1,
+        "queued": 0,
+        "running": 0,
+        "status": 0,
+        "valid": true,
+        "vendorFailed": false
+      }
+    },
+    "afterPageWaitEngine": {
+      "beginQpc": "18644365832075",
+      "capacityExceeded": false,
+      "clockValid": true,
+      "confirmedQpc": "18644366135208",
+      "earlierEventsDiscarded": false,
+      "engineRequestCount": "2",
+      "fenceConfirmed": true,
+      "found": true,
+      "preNavigationDrain": {
+        "closing": 0,
+        "engineCallbacks": 0,
+        "nativeScopes": 0,
+        "oleRegistered": 1,
+        "queued": 0,
+        "running": 0,
+        "status": 0
+      },
+      "retainedEventQpc": [
+        "18644367562347",
+        "18644367823354"
+      ]
+    },
+    "architecture": "x86",
+    "bridgeDestroyedAfterHost": true,
+    "callerPumpsBeforeObservation": 0,
+    "cancellationObserved": false,
+    "case": "hidden-start-registers",
+    "creationFileTime": "134360567549636238",
+    "dllSha256": "de9178744bcf6b187312726d13e1ae5ebd9389ebad2589e70f4789681458afc1",
+    "finiteCaseAccepted": true,
+    "firstAfterSecond": null,
+    "firstBeforeSecond": null,
+    "firstEngine": {
+      "beginQpc": "0",
+      "capacityExceeded": false,
+      "clockValid": true,
+      "confirmedQpc": "0",
+      "earlierEventsDiscarded": false,
+      "engineRequestCount": "0",
+      "fenceConfirmed": false,
+      "found": false,
+      "preNavigationDrain": {
+        "closing": 0,
+        "engineCallbacks": 0,
+        "nativeScopes": 0,
+        "oleRegistered": 0,
+        "queued": 0,
+        "running": 0,
+        "status": 0
+      },
+      "retainedEventQpc": []
+    },
+    "firstFence": {
+      "beginQpc": "18644365832075",
+      "capacityExceeded": false,
+      "clockValid": true,
+      "confirmedQpc": "18644366135208",
+      "earlierEventsDiscarded": false,
+      "engineRequestCount": "0",
+      "fenceConfirmed": true,
+      "found": true,
+      "preNavigationDrain": {
+        "closing": 0,
+        "engineCallbacks": 0,
+        "nativeScopes": 0,
+        "oleRegistered": 1,
+        "queued": 0,
+        "running": 0,
+        "status": 0
+      },
+      "retainedEventQpc": []
+    },
+    "fullSdkQualified": false,
+    "hiddenOwnerAtObservation": true,
+    "immediate": {
+      "applicationReadyFlag": false,
+      "applicationReadyReceipt": "0",
+      "broker": {
+        "document": "1",
+        "geometry": "1",
+        "view": "1"
+      },
+      "contextAccepted": false,
+      "contextReceipt": "1",
+      "contextReceiptAfter": "4",
+      "documentReadyFlag": false,
+      "documentReadyReceipt": "0",
+      "nonAtomic": true,
+      "page": {
+        "nativePort": "function",
+        "readyState": "loading",
+        "souiNativePort": "undefined"
+      },
+      "registrationCompletion": {
+        "cancelled": false,
+        "endpointMatches": true,
+        "identity": {
+          "document": "1",
+          "geometry": "1",
+          "view": "1"
+        },
+        "identityMatches": true,
+        "kind": 3,
+        "nonAtomic": true,
+        "observed": true,
+        "scopeSequence": "0",
+        "shapeValid": true,
+        "taskSequence": "1"
+      },
+      "vendorDrain": {
+        "closing": 0,
+        "drained": 0,
+        "engineCallbacks": 0,
+        "inspected": true,
+        "nativeScopes": 0,
+        "nonAtomic": true,
+        "oleRegistered": 1,
+        "queued": 1,
+        "running": 0,
+        "status": 0,
+        "valid": true,
+        "vendorFailed": false
+      }
+    },
+    "moduleUnloadQualified": false,
+    "overlappingEngineEventQpc": [],
+    "owners": [
+      {
+        "closeRetries": 1,
+        "hostDestroyReturned": true,
+        "ownerWithdrawn": true,
+        "pulseCallsBeforeBridgeJoin": 2,
+        "role": "A"
+      }
+    ],
+    "pagePulseCallsAtWaitEnd": 2,
+    "pid": 100672,
+    "postedEventsBeforeObservation": 0,
+    "publishedSession": true,
+    "qpcFrequency": "10000000",
+    "qualificationPassed": false,
+    "realPageActionObserved": true,
+    "releaseReady": false,
+    "runtimeShutdownReturned": true,
+    "sameFirstDocument": false,
+    "schema": "soui.public-host-startup-fence/1",
+    "secondFence": {
+      "beginQpc": "0",
+      "capacityExceeded": false,
+      "clockValid": true,
+      "confirmedQpc": "0",
+      "earlierEventsDiscarded": false,
+      "engineRequestCount": "0",
+      "fenceConfirmed": false,
+      "found": false,
+      "preNavigationDrain": {
+        "closing": 0,
+        "engineCallbacks": 0,
+        "nativeScopes": 0,
+        "oleRegistered": 0,
+        "queued": 0,
+        "running": 0,
+        "status": 0
+      },
+      "retainedEventQpc": []
+    },
+    "secondImmediate": null,
+    "secondPublishedSession": false,
+    "secondStartCode": "",
+    "secondStarted": false,
+    "startCode": "",
+    "startReturned": true,
+    "win7Qualified": false
+  },
+  "finiteCaseAccepted": true,
+  "directOwnedIdentityBound": false,
+  "wholeJobNaturalClosed": true,
+  "genericPassed": true,
+  "formalPassed": false
+}

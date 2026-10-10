@@ -1,0 +1,20 @@
+^F:\WORK\SM05-BROKER\OUT\RAGENT6\X64\BUILD\CMAKEFILES\199DF1E4BE99308D19C47CB2D75C454D\REFERENCE_ACTIONS_CHECK.RULE
+setlocal
+C:\nvm4w\nodejs\node.exe F:/work/sm05-broker/tools/sdk/actiongen.cjs --source F:/work/sm05-broker/out/ragent6/x64/source/demos/reference-workbench/contracts/actions.json --root F:/work/sm05-broker/out/ragent6/x64/source/demos/reference-workbench --check
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
+^F:\WORK\SM05-BROKER\OUT\REFERENCE-AGENT-GREEN-CONTRACT-ROOT-C66282C8-AE37-4A48-8C60-48EC7DABD805\CMAKELISTS.TXT
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SF:/work/sm05-broker/out/reference-agent-green-contract-root-c66282c8-ae37-4a48-8c60-48ec7dabd805 -BF:/work/sm05-broker/out/ragent6/x64/build --check-stamp-file F:/work/sm05-broker/out/ragent6/x64/build/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd

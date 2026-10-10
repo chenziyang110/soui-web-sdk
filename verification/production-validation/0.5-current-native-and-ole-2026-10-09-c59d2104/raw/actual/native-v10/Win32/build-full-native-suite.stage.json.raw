@@ -1,0 +1,49 @@
+{
+  "name": "build-full-native-suite",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "--build",
+    "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build",
+    "--config",
+    "Release",
+    "--target",
+    "root_full_native_suite",
+    "--",
+    "/m:1",
+    "/nr:false",
+    "/p:VcpkgEnabled=false",
+    "/p:VcpkgEnableManifest=false",
+    "/p:VCToolsVersion=14.44.35207",
+    "/p:WindowsTargetPlatformVersion=10.0.19041.0",
+    "/p:ImportDirectoryBuildProps=false",
+    "/p:ImportDirectoryBuildTargets=false",
+    "/p:UseEnv=false",
+    "/p:UserRootDir=F:\\work\\sm05-broker\\out\\full-native-suite-v10-root-5ca5450c-f113-4ae5-8df0-7cf30c649100\\empty-user-props\\",
+    "/bl:F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build.binlog"
+  ],
+  "cwd": "F:\\work\\sm05-broker\\out\\native-v10\\Win32",
+  "pid": 57464,
+  "creationFileTime": "134360330772189145",
+  "rootExitCode": 0,
+  "supervisorExitCode": 0,
+  "genericPassed": true,
+  "closureConfirmed": true,
+  "rawJob": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build-full-native-suite.owned.jsonl",
+  "rawSha256": "56ff7408dc2233299daf9a05e48d06afc12a5fbc4dc520a15e4d3a41994df78a",
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build-full-native-suite.owned.jsonl.context.json",
+    "bytes": 1055,
+    "sha256": "50680de964b0eb25e687486bd2a847e04267c5f056a7d4215d24ebe9117ef4ad"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build-full-native-suite.stdout.raw",
+    "bytes": 235972,
+    "sha256": "477dd22ea3e4a82ae82aa21ca5334184a04588a75a56c4326934509b44d5f809"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\native-v10\\Win32\\build-full-native-suite.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "streamErrors": []
+}

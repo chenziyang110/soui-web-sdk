@@ -1,0 +1,4 @@
+#pragma once
+namespace soui::sdk::detail {
+inline constexpr char webview2_preload[] = R"SOUI_PRELOAD(@SOUI_WEBVIEW2_PRELOAD@)SOUI_PRELOAD";
+}

@@ -73,10 +73,11 @@ test('source export preserves tracked historical output paths and excludes unrel
   const root = fixture(t);
   git(root, 'init', '-q');
   write(root, '.gitattributes', '* -text\n');
-  write(root, '.gitignore', 'out/\ndist/\ndist-legacy/\nnode_modules/\n.vs/\n');
+  write(root, '.gitignore', 'out/\ndist/\ndist-legacy/\ndist-react/\ndist-vue/\nnode_modules/\n.vs/\n');
   write(root, 'VERSION', '0.5.0-preview.1\n');
   const bytes = Buffer.from([0x4d, 0x5a, 0, 13, 10, 255]);
   const names = ['out/probe.exe', 'dist/assets/probe.bin', 'dist-legacy/probe.bin',
+    'dist-react/assets/probe.bin', 'dist-vue/assets/probe.bin',
     'node_modules/frozen/probe.bin', '.vs/probe.bin'].map(name => `verification/raw/failed/${name}`);
   for (const name of names) write(root, name, bytes);
   write(root, 'out/current-build/ignored.exe', 'build cache');
@@ -91,10 +92,24 @@ test('source export preserves tracked historical output paths and excludes unrel
   assert.equal(fs.existsSync(path.join(stage, '.git')), false);
   assert.equal(fs.existsSync(path.join(stage, 'out')), false);
   for (const name of names) assert.deepEqual(fs.readFileSync(path.join(stage, name)), bytes, name);
-  for (const cache of ['out', 'dist', 'dist-legacy', 'node_modules', '.vs']) {
+  for (const cache of ['out', 'dist', 'dist-legacy', 'dist-react', 'dist-vue', 'node_modules', '.vs']) {
     write(stage, `${cache}/current-build/ignored.bin`, 'new build cache');
   }
   assert.deepEqual(archive.verify(stage).files, manifest.files);
+});
+
+test('compatibility view builds preserve source identity without Git', t => {
+  const root = fixture(t);
+  write(root, 'VERSION', '0.5.0-preview.1\n');
+  write(root, 'demos/reference-workbench/web-compat/src/main.ts', 'export const ready = true;\n');
+  const before = identity.source(root);
+  for (const view of ['react', 'vue']) {
+    write(root, `demos/reference-workbench/web-compat/dist-${view}/index.html`, '<script src="/assets/app.js"></script>');
+    write(root, `demos/reference-workbench/web-compat/dist-${view}/assets/app.js`, 'console.log("rebuilt");');
+  }
+  assert.deepEqual(identity.source(root), before);
+  write(root, 'demos/reference-workbench/web-compat/src/main.ts', 'export const ready = false;\n');
+  assert.notEqual(identity.source(root).sha256, before.sha256);
 });
 
 test('unpacked source rejects missing or equal-length modified historical binaries', t => {

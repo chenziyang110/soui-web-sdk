@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- Future fresh main compilation only. Original source/project remains unchanged. -->
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(MSBuildProjectName).pch</PrecompiledHeaderOutputFile>
+      <ProgramDataBaseFileName>$(IntDir)$(MSBuildProjectName).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile><ResourceOutputFileName>$(IntDir)%(Filename).res</ResourceOutputFileName></ResourceCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(KernelDependencyRoot)</AdditionalLibraryDirectories>
+      <OutputFile>$(OutDir)node.dll</OutputFile>
+      <ProgramDatabaseFile>$(OutDir)node.pdb</ProgramDatabaseFile>
+      <ImportLibrary>$(OutDir)node.lib</ImportLibrary>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>

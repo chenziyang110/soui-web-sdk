@@ -137,6 +137,7 @@ public:
     virtual ~CWebView();
 
     virtual bool create();
+    static CWebView* createForCursorBroker(COLORREF color);
     virtual void destroy() override;
 
     const utf8* name() const override;

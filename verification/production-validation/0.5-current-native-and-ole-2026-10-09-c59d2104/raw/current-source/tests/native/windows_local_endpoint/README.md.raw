@@ -1,0 +1,24 @@
+# Windows local endpoint finite native cases
+
+Included from the existing native test parent. The target compiles only
+endpoint_tests.cpp and links Soui::Sdk plus Soui::ActionJson. The actual SDK
+provides windows_local_endpoint.cpp and its public include directory. This child
+does not configure another SDK, compile a private provider overlay, prepend a
+candidate include path or carry the historical source-pins manifest.
+
+The 20 case names/arguments and TIMEOUT 15 remain the same as the Root-executed
+x64/Win32 fixture. Cases exercise actual Windows pipes, peer identity, owner
+dispatch, scoped revocation, bounded frames, reconnect/stop and a real child
+process. Client creation failures retain their immediate GetLastError diagnostics.
+Generic-write/create-instance alias access and competing server instances must
+still be denied. No WILL_FAIL or expected-failure CTest conversion is present.
+
+The public parent must already enable testing and make Soui::Sdk/Soui::ActionJson
+available. Add add_subdirectory(windows_local_endpoint) alongside its existing
+children after the SDK's real endpoint source/public header have been integrated.
+Root must bind and execute the final public SDK source/object/test composition;
+the earlier private overlay results do not prove that new installed composition.
+
+Finite same-host x64/Win32 cases do not qualify Win7 or other target systems,
+cross-account/session deployment, a complete authorization UI, sustained bounds,
+TypeScript Agent client deployment or full SDK release readiness.

@@ -1,0 +1,21 @@
+# Finite toolchain audit and next evidence
+
+Read-only audit: actual x64 twelve stages and Win32 eleven libraries used MSVC14.44.35207 Hostx86 tools despite the wrapper's -host_arch=x64 / PreferredToolArchitecture=x64. The x64 main and Win32 V8 libraries also observed Hostx64 link children. Every successful root remained supervisor124/forced owned drain/generic false. Win32 main PID20048/134360376349000084 failed root1/supervisor1/C1002, then logged a 64-bit-link restart; its terminal killed the remaining owned descendants. None is promoted.
+
+Actual selection is explained by a concrete unpinned setting: the caller constructs an isolated environment that omits both PROCESSOR_ARCHITECTURE and PROCESSOR_ARCHITEW6432 (run-root.cjs:125–131). Their effective evaluated values were not separately captured. Microsoft.Cpp.ToolsetLocation.props:80 locally overrides PreferredToolArchitecture=x64 to x86 when neither processor variable identifies AMD64. Microsoft.Cpp.Common.props:62–82 selects Native64Bit only for effective x64 preference and installed tools; otherwise Native32Bit. Microsoft.CppCommon.targets:1305–1306 passes LinkToolExe/LinkToolPath to the actual LINK task. This is a source-supported mechanism, not an assertion about all possible MSBuild hosts.
+
+Observed source projects are direct MSBuild .vcxproj, not CMake. There is no CMakeCache to supplement this producer. Plan command-line overrides v143/VC14.44.35207/SDK19041 over historical project v141_xp/8.1 declarations. The raw main CL command has /MT, /EHsc; normal public SDK /MD evidence is a separate producer. Win32 Release Link.OutputFile=node.dll and ImportLibrary=node.lib, while default TargetName=miniblink caused MSB8012. The next entry sets TargetName=node and fresh final node.dll/node.lib/node.pdb explicitly.
+
+Concrete completeToolchainProvenance gaps:
+1. Prior tools.json pins only Hostx64 compilers/librarians/linkers; actual Hostx86 cl/lib/link/ml/mspdbsrv/vctip plus Tracker and setup helper executables were not byte-bound before compilation.
+2. Executable pins omit compiler backends/support DLLs and the effective transitive MSBuild props/targets/task assemblies. No closed evaluated import graph or loaded-module inventory was sealed.
+3. CL.read tlogs identify actual consumed VC/SDK headers, but no pre/post whole-byte external-header manifest exists. Link.read for successful x64 identifies SDK19041 and VC14.44 runtime/system libraries; these were not pre-pinned. Win32 failed Link tlog is empty and cannot establish completed resolved read closure.
+4. The last stage has no independent full tool post-check. Earlier stage prechecks and current installed bytes cannot retrospectively prove every compiler input was unchanged during compilation.
+5. Compiler cleanup is forced partial: no complete pre-cleanup tail snapshot/identity-specific natural release qualification. Root0 does not close this gate.
+6. Exact selected toolchain packages/build identities can be documented; vendor/toolchain maintenance support, security updates, full license chain, all OS, full SDK and release qualification require separate real evidence.
+
+Can supplement existing observations without rebuilding: pin raw stage/context/finished/stdout files, exact CL/Lib/Link command/read tlogs and evaluated binlogs; inventory historical source project imports; extract effective properties/tool paths and actual consumed external-path union from binlogs/tlogs; reconcile produced artifact bytes with raw subject IDs and machine fields. Current hashes of formerly unpinned tools/headers/libs must be labeled retrospective observations, not historical compile provenance.
+
+For a future provenance producer: select amd64 MSBuild and explicitly pin/force CLToolPath, LinkToolPath and LIBToolPath; preserve processor architecture identity; seal the evaluated import/task/backend closure and actual include/lib dependency union with exact directory memberships before/after; retain raw actual image/argv/context receipts; close compiler descendants naturally or retain the same partial false. Do not weaken the generic native gate.
+
+This link-only recovery adds a bounded pre/post snapshot of the selected Hostx64/x86 directory and fixed x86 library search roots, while retaining every old producer claim as false. It cannot repair historical compilation provenance.

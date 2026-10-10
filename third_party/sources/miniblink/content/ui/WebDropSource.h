@@ -27,6 +27,7 @@
 #define WebDropSource_h
 
 #include <objidl.h>
+#include <functional>
 
 namespace content {
 
@@ -39,12 +40,13 @@ public:
     virtual HRESULT STDMETHODCALLTYPE QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState);
     virtual HRESULT STDMETHODCALLTYPE GiveFeedback(DWORD dwEffect);
 
-    static HRESULT createInstance(IDropSource** result);
+    static HRESULT createInstance(IDropSource** result, std::function<bool()> cancelled = std::function<bool()>());
 private:
-    WebDropSource();
+    explicit WebDropSource(std::function<bool()> cancelled);
     ~WebDropSource();
     long m_ref { 1 };
     bool m_dropped { false };
+    std::function<bool()> m_cancelled;
 
 };
 

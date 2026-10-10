@@ -1,0 +1,23 @@
+# Public json_bridge endpoint composition
+
+These six unapplied, unexecuted cases link the normal Soui::Sdk and its public
+ActionJson target. They use actual json_bridge registrations, bridge-owned
+stopped endpoint creation, production named pipes, native authorization and the
+same registered task service. No private macro/store/alternate registry,
+TestKit or clock override is used. The small existing public client body is
+copied byte-for-byte and its source interval is recorded in the candidate.
+
+Creation freezes method/task/policy registration. It does not start I/O or
+grant authority. The returned pointer is borrowed, must not be deleted, and is
+invalid when json_bridge is destroyed. Explicit stop/poll must finish before
+bridge destruction. Task-handler context remains alive until the bridge's
+task-service destructor/join returns; endpoint stopped alone is not a business
+barrier. Pending native I/O or remote-thread failure exits the test process
+under external Owned supervision rather than releasing borrowed storage.
+
+Cases cover all registration/policy gates, an actual factory allocation failure,
+post-bootstrap rejection, typed action/page isolation, projected family results
+and real disconnect cancellation. Existing endpoint peer/framing tests retain
+their original scope. TIMEOUT 15 is a failure boundary, not cancellation proof.
+This candidate has not been compiled or run and adds no Win7, cross-account,
+long-run, full-SDK or release qualification.

@@ -1,4 +1,5 @@
 #include <atomic>
+#include <memory>
 
 #include "config.h"
 #include "content/web_impl_win/BlinkPlatformImpl.h"
@@ -143,6 +144,18 @@ void scrt_initialize_thread_safe_statics();
 extern "C" void x86_check_features(void);
 
 namespace content {
+
+class WebThreadRegistryLock {
+public:
+    explicit WebThreadRegistryLock(CRITICAL_SECTION* lock) : m_lock(lock) { ::EnterCriticalSection(lock); }
+    ~WebThreadRegistryLock() { ::LeaveCriticalSection(m_lock); }
+private:
+    WebThreadRegistryLock(const WebThreadRegistryLock&) = delete;
+    WebThreadRegistryLock& operator=(const WebThreadRegistryLock&) = delete;
+    CRITICAL_SECTION* m_lock;
+};
+
+
 
 class DOMStorageMapWrap {
 public:
@@ -501,38 +514,40 @@ void BlinkPlatformImpl::setResGcTimer(double intervalSec)
 }
 
 void BlinkPlatformImpl::closeThread()
-{   
+{
+    WebThreadRegistryLock lock(m_lock);
     if (0 != m_threadNum)
         DebugBreak();
-
-    ::EnterCriticalSection(m_lock);
     for (size_t i = 0; i < m_threads.size(); ++i) {
         if (nullptr != m_threads[i])
             DebugBreak();
     }
-    ::LeaveCriticalSection(m_lock);
 }
 
 blink::WebThread* BlinkPlatformImpl::createThread(const char* name)
 {
-    if (0 != strcmp(name, "MainThread")) {
+    if (0 != strcmp(name, "MainThread"))
         RELEASE_ASSERT(-1 != sCurrentThreadTlsKey);
-    }
-    WebThreadImpl* threadImpl = new WebThreadImpl(name);
-
-    ::EnterCriticalSection(m_lock);
-    m_threads.push_back(threadImpl);
+    // The lock excludes registry enumeration/close during the known startup prefix.
+    // The worker has no posted task/observer before it is returned to its caller.
+    WebThreadRegistryLock lock(m_lock);
+    if (m_threads.size() == m_threads.max_size())
+        throw std::bad_alloc();
+    m_threads.reserve(m_threads.size() + 1); // Allocation occurs before native launch.
+    std::unique_ptr<WebThreadImpl> thread(new WebThreadImpl(name));
+    // Pointer insertion cannot allocate after reserve under the same lock.
+    // The local owner still performs native join before lock release on failure.
+    m_threads.push_back(thread.get());
+    thread->m_hasPlatformRegistration = true;
     ++m_threadNum;
     if (m_threadNum > m_maxThreadNum)
         DebugBreak();
-    ::LeaveCriticalSection(m_lock);
-
-    return threadImpl;
+    return thread.release();
 }
 
 void BlinkPlatformImpl::onThreadExit(WebThreadImpl* threadImpl)
 {
-    ::EnterCriticalSection(m_lock);
+    WebThreadRegistryLock lock(m_lock);
     bool find = false;
     for (std::vector<WebThreadImpl*>::iterator i = m_threads.begin(); i != m_threads.end(); ++i) {
         if (*i != threadImpl)
@@ -544,7 +559,6 @@ void BlinkPlatformImpl::onThreadExit(WebThreadImpl* threadImpl)
     }
     if (!find || m_threadNum < 0)
         DebugBreak();
-    ::LeaveCriticalSection(m_lock);
 }
 
 void BlinkPlatformImpl::onCurrentThreadWhenWebThreadImplCreated(blink::WebThread* thread)
