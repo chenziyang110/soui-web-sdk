@@ -1,0 +1,15 @@
+if(NOT TARGET Soui::Sdk OR NOT TARGET Soui::ActionJson)
+  message(FATAL_ERROR "scope_capacity requires normal Soui::Sdk and Soui::ActionJson")
+endif()
+add_executable(soui_scope_capacity_tests scope_capacity_tests.cpp)
+target_compile_features(soui_scope_capacity_tests PRIVATE cxx_std_17)
+target_compile_options(soui_scope_capacity_tests PRIVATE /W4 /EHsc /utf-8 /U_DEBUG)
+set_property(TARGET soui_scope_capacity_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+target_link_libraries(soui_scope_capacity_tests PRIVATE Soui::Sdk Soui::ActionJson)
+set(scope_capacity_cases store-limit-expiry module-limit-held issuer-death aliases-bounded
+  exception-refund pending-store-boundary concurrent-module-boundary disabled-zero
+  bootstrap-capacity-envelope retirement-outside-lock)
+foreach(case IN LISTS scope_capacity_cases)
+  add_test(NAME sdk.native.scope-capacity.${case} COMMAND soui_scope_capacity_tests ${case})
+  set_tests_properties(sdk.native.scope-capacity.${case} PROPERTIES TIMEOUT 30 RUN_SERIAL TRUE)
+endforeach()

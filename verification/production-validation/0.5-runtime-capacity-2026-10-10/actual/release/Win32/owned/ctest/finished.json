@@ -1,0 +1,75 @@
+{
+  "job": {
+    "name": "ctest",
+    "executable": "C:\\Program Files\\CMake\\bin\\ctest.exe",
+    "args": [
+      "--test-dir",
+      "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/build",
+      "-C",
+      "Release",
+      "--output-on-failure",
+      "--parallel",
+      "1",
+      "-R",
+      "^(sdk[.]native[.]runtime-metrics[.]disabled-epoch|sdk[.]native[.]runtime-metrics[.]task-capacity|sdk[.]native[.]runtime-metrics[.]task-subscriptions|sdk[.]native[.]runtime-metrics[.]task-retention|sdk[.]native[.]runtime-metrics[.]permission-aliases|sdk[.]native[.]runtime-metrics[.]permission-owners|sdk[.]native[.]runtime-metrics[.]engine-fifo|sdk[.]native[.]runtime-metrics[.]software-lanes|sdk[.]native[.]runtime-metrics[.]gui-facade|sdk[.]native[.]runtime-metrics[.]software-owner|sdk[.]native[.]runtime-metrics[.]scalar-boundaries|sdk[.]native[.]engine-capacity[.]ordinary-limit|sdk[.]native[.]engine-capacity[.]all-lanes-fifo|sdk[.]native[.]engine-capacity[.]reply-reservation|sdk[.]native[.]engine-capacity[.]ticket-refund-generation|sdk[.]native[.]engine-capacity[.]rejection-retirement|sdk[.]native[.]engine-capacity[.]stop-retirement|sdk[.]native[.]engine-capacity[.]executing-retirement|sdk[.]native[.]engine-capacity[.]invoke-timeout-metrics|sdk[.]native[.]scope-capacity[.]store-limit-expiry|sdk[.]native[.]scope-capacity[.]module-limit-held|sdk[.]native[.]scope-capacity[.]issuer-death|sdk[.]native[.]scope-capacity[.]aliases-bounded|sdk[.]native[.]scope-capacity[.]exception-refund|sdk[.]native[.]scope-capacity[.]pending-store-boundary|sdk[.]native[.]scope-capacity[.]concurrent-module-boundary|sdk[.]native[.]scope-capacity[.]disabled-zero|sdk[.]native[.]scope-capacity[.]bootstrap-capacity-envelope|sdk[.]native[.]scope-capacity[.]retirement-outside-lock)$",
+      "--no-tests=error",
+      "--output-junit",
+      "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/junit.xml"
+    ],
+    "cwd": "F:/work/sm05-broker",
+    "timeoutMs": 180000,
+    "expectedExitCode": 0
+  },
+  "result": {
+    "pid": 68128,
+    "creationFileTime": "134360958920875524",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 20236,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 31,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\ctest.owned.jsonl",
+    "reportSha256": "addd48ecc0a16a9ea2e6d82cdb51124672ee944265c91e936c7d8421f0adec98",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+  },
+  "accepted": true,
+  "raw": {
+    "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\ctest.owned.jsonl",
+    "bytes": 16969,
+    "sha256": "addd48ecc0a16a9ea2e6d82cdb51124672ee944265c91e936c7d8421f0adec98"
+  },
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\ctest.owned.jsonl.context.json",
+    "bytes": 2147,
+    "sha256": "ae72c115804048944f24dfc74093dd298a27c4c138a8346afa8e3efbeb309ca9"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\ctest.stdout.raw",
+    "bytes": 4729,
+    "sha256": "44e177feb91f12377675008f7a9bcfa2c139a681aced8e7df9cc9220f6c6f43a"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\ctest.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

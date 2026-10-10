@@ -1,0 +1,87 @@
+{
+  "job": {
+    "name": "configure",
+    "executable": "C:/Program Files/CMake/bin/cmake.exe",
+    "args": [
+      "-S",
+      "F:/work/sm05-broker",
+      "-B",
+      "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build",
+      "-G",
+      "Visual Studio 17 2022",
+      "-A",
+      "x64",
+      "-T",
+      "v143,host=x64,version=14.44.35207",
+      "-DCMAKE_GENERATOR_INSTANCE:PATH=C:/Program Files/Microsoft Visual Studio/2022/Community",
+      "-DCMAKE_SYSTEM_VERSION:STRING=10.0.19041.0",
+      "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug",
+      "-DCMAKE_MAKE_PROGRAM:FILEPATH=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+      "-DCMAKE_PROJECT_INCLUDE:FILEPATH=F:/work/sm05-broker/out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/fixed-compiler.cmake",
+      "-DSOUI_ROOT_EXPECTED_ARCH:STRING=x64",
+      "-DCMAKE_VS_GLOBALS:STRING=VcpkgEnabled=false;VcpkgEnableManifest=false;UseEnv=false;UserRootDir=F:/work/sm05-broker/out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/empty-user-props/",
+      "-DSOUI_BUILD_TEMPLATE:BOOL=OFF",
+      "-DSOUI_BUILD_DEMOS:BOOL=OFF",
+      "-DSOUI_BUILD_TESTS:BOOL=ON",
+      "-DSOUI_BUILD_WEBVIEW2:BOOL=OFF",
+      "-DSOUI_BUILD_UIA:BOOL=OFF",
+      "-DSOUI_BUILD_HOST_STARTUP_FENCE_TESTS:BOOL=OFF",
+      "-DSOUI_BUILD_ENGINE_CAPACITY_HOST_TESTS:BOOL=OFF"
+    ],
+    "cwd": "F:/work/sm05-broker",
+    "timeoutMs": 120000,
+    "expectedExitCode": 0
+  },
+  "result": {
+    "pid": 85276,
+    "creationFileTime": "134360956187204955",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 11171,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 47,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\configure.owned.jsonl",
+    "reportSha256": "e751b50abffcd153599523c3acf740b873d6275087be27db7a58ca9d0716ecc9",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "accepted": true,
+  "raw": {
+    "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\configure.owned.jsonl",
+    "bytes": 48385,
+    "sha256": "e751b50abffcd153599523c3acf740b873d6275087be27db7a58ca9d0716ecc9"
+  },
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\configure.owned.jsonl.context.json",
+    "bytes": 1622,
+    "sha256": "95578deec381568d6fbd380cbc2232e699a985de6fef3431c3391c159f3b4681"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\configure.stdout.raw",
+    "bytes": 2861,
+    "sha256": "45aaca61c17a379c38c439465b41db953cb209d3f08704175e448b3bc085bc00"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\configure.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

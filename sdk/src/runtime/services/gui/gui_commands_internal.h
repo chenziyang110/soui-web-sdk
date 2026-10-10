@@ -58,6 +58,7 @@ struct gui_effect_request final {
   std::shared_ptr<gui_job_context> context;
   std::chrono::steady_clock::time_point deadline;
   std::atomic<unsigned> phase{0}; // 0 queued, 1 owner started, 2 replied, 3 abandoned before start.
+  std::uint64_t metrics_enqueued_us{0}; // Immutable after publication, zero while disabled.
   std::mutex mutex;
   std::condition_variable changed;
   std::string response;
@@ -66,7 +67,9 @@ struct gui_effect_request final {
 class gui_commands_state final : public std::enable_shared_from_this<gui_commands_state> {
  public:
   static std::shared_ptr<gui_commands_state> create(capability_registry&, bridge_transport&,
-      task_service&, std::vector<gui_command_definition>);
+      task_service&, std::vector<gui_command_definition>,
+      soui::sdk::diagnostics::mode = soui::sdk::diagnostics::mode::disabled);
+  [[nodiscard]] soui::sdk::diagnostics::status read_runtime_metrics(soui::sdk::diagnostics::gui&) const noexcept;
   bool bind(std::string generation, std::function<bool()> current);
   gui_owner_result poll();
   void close() noexcept;
@@ -74,7 +77,7 @@ class gui_commands_state final : public std::enable_shared_from_this<gui_command
   void set_page(std::shared_ptr<const authorization_scope>, std::string session, std::string origin);
   void set_sink(std::shared_ptr<const task_service::event_sink>);
  private:
-  gui_commands_state(capability_registry&, bridge_transport&, task_service&);
+  gui_commands_state(capability_registry&, bridge_transport&, task_service&, soui::sdk::diagnostics::mode);
   std::shared_ptr<gui_job_context> prepare(const std::shared_ptr<const gui_command_definition>&,
       const bridge_request&);
   task_outcome run(const std::shared_ptr<gui_job_context>&, const task_control&);
@@ -88,9 +91,12 @@ class gui_commands_state final : public std::enable_shared_from_this<gui_command
   bridge_transport& transport;
   task_service& tasks;
   const std::thread::id owner{std::this_thread::get_id()};
+  const soui::sdk::diagnostics::mode metrics_mode;
+  const std::uint64_t metrics_epoch;
+  std::uint64_t metrics_effect_high_water{0};
   std::shared_ptr<gui_capacity> capacity{std::make_shared<gui_capacity>()};
   std::atomic<bool> closed{false}, binding_started{false};
-  std::mutex mutex;
+  mutable std::mutex mutex;
   std::shared_ptr<gui_document> document;
   std::shared_ptr<const std::function<bool()>> current;
   bool polling{false}, page_ready{false};

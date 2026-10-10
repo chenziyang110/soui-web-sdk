@@ -1,0 +1,963 @@
+{
+  "schema": "soui.live-capacity-crt-root-actual/v1",
+  "results": [
+    {
+      "architecture": "x64",
+      "configuration": "Debug",
+      "plan": {
+        "path": "F:\\work\\sm05-broker\\out\\live-capacity-crt-root-44dcdd8d-1743-46b5-a549-581157961991\\plan.x64.Debug.json",
+        "bytes": 47860,
+        "sha256": "01663e3044e55d505ba1ab4b1cee8e4ed91bac108c41877c12d5b8121d47ca73"
+      },
+      "summary": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/summary.json",
+        "bytes": 11009,
+        "sha256": "abaa0009e76bf9160ce96f5c87b0ea40fb3437f8926e5a9a919ef428781ca283"
+      },
+      "stages": [
+        {
+          "name": "configure",
+          "pid": 85276,
+          "creationFileTime": "134360956187204955",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 11171,
+          "jobMembers": 47,
+          "naturalClosed": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\configure.owned.jsonl",
+            "bytes": 48385,
+            "sha256": "e751b50abffcd153599523c3acf740b873d6275087be27db7a58ca9d0716ecc9"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\configure.owned.jsonl.context.json",
+            "bytes": 1622,
+            "sha256": "95578deec381568d6fbd380cbc2232e699a985de6fef3431c3391c159f3b4681"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\configure.stdout.raw",
+            "bytes": 2861,
+            "sha256": "45aaca61c17a379c38c439465b41db953cb209d3f08704175e448b3bc085bc00"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\configure.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "name": "build",
+          "pid": 32264,
+          "creationFileTime": "134360956304033290",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 31826,
+          "jobMembers": 60,
+          "naturalClosed": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build.owned.jsonl",
+            "bytes": 57421,
+            "sha256": "753a2d447e5d52dddc0b6f0a2dd13487285385242eb168b744b931370bbea24a"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build.owned.jsonl.context.json",
+            "bytes": 621,
+            "sha256": "15c603349f34b2d47e3d253c0fbaeb82e5436a5a7c51f518da38b33bbbf46821"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build.stdout.raw",
+            "bytes": 8904,
+            "sha256": "510fdf783fc952990b80c1c5f50f8ea75a504209878cf4b2674923b3f9793b87"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "name": "ctest",
+          "pid": 89784,
+          "creationFileTime": "134360956625698564",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 16448,
+          "jobMembers": 31,
+          "naturalClosed": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\ctest.owned.jsonl",
+            "bytes": 18675,
+            "sha256": "1de2d9ff56c04f5ca5b0de415ce2195d78a954ba7d086c939c3172f3056cb7b3"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\ctest.owned.jsonl.context.json",
+            "bytes": 2137,
+            "sha256": "04f6cf49cac0589e881ff4109dc6b1ca1016a26a8e0f356e9e0725b32980500e"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\ctest.stdout.raw",
+            "bytes": 4725,
+            "sha256": "cda350effef577c2bac6192736b42d702e7cec48ad61d299bace97e1debbe869"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\ctest.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ],
+      "JUnit": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/junit.xml",
+        "bytes": 7585,
+        "sha256": "f2cd12c99ab3a7344bd37085179d1cbbe4abeda135aa635c0937a822529def5e"
+      },
+      "testCount": 29,
+      "caseNames": [
+        "sdk.native.engine-capacity.all-lanes-fifo",
+        "sdk.native.engine-capacity.executing-retirement",
+        "sdk.native.engine-capacity.invoke-timeout-metrics",
+        "sdk.native.engine-capacity.ordinary-limit",
+        "sdk.native.engine-capacity.rejection-retirement",
+        "sdk.native.engine-capacity.reply-reservation",
+        "sdk.native.engine-capacity.stop-retirement",
+        "sdk.native.engine-capacity.ticket-refund-generation",
+        "sdk.native.runtime-metrics.disabled-epoch",
+        "sdk.native.runtime-metrics.engine-fifo",
+        "sdk.native.runtime-metrics.gui-facade",
+        "sdk.native.runtime-metrics.permission-aliases",
+        "sdk.native.runtime-metrics.permission-owners",
+        "sdk.native.runtime-metrics.scalar-boundaries",
+        "sdk.native.runtime-metrics.software-lanes",
+        "sdk.native.runtime-metrics.software-owner",
+        "sdk.native.runtime-metrics.task-capacity",
+        "sdk.native.runtime-metrics.task-retention",
+        "sdk.native.runtime-metrics.task-subscriptions",
+        "sdk.native.scope-capacity.aliases-bounded",
+        "sdk.native.scope-capacity.bootstrap-capacity-envelope",
+        "sdk.native.scope-capacity.concurrent-module-boundary",
+        "sdk.native.scope-capacity.disabled-zero",
+        "sdk.native.scope-capacity.exception-refund",
+        "sdk.native.scope-capacity.issuer-death",
+        "sdk.native.scope-capacity.module-limit-held",
+        "sdk.native.scope-capacity.pending-store-boundary",
+        "sdk.native.scope-capacity.retirement-outside-lock",
+        "sdk.native.scope-capacity.store-limit-expiry"
+      ],
+      "binaries": [
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build/sdk/Debug/soui_sdk.lib",
+          "bytes": 93588432,
+          "sha256": "767894bacda0e802571515c111523da5233349d0e0285e44487a1a38bbc8aa74"
+        },
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build/tests/native/runtime_metrics/Debug/soui_runtime_metrics_tests.exe",
+          "bytes": 3464704,
+          "sha256": "6d54cdb066d7a3059e920aaef856f96f39b3ee81310ed0cae66e635496a3770f"
+        },
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build/tests/native/engine_capacity/Debug/soui_engine_capacity_tests.exe",
+          "bytes": 269312,
+          "sha256": "843c9b5f9ec1e46489af5bd720e9d03be9207f04649426b2c705e6625342df35"
+        },
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build/tests/native/scope_capacity/Debug/soui_scope_capacity_tests.exe",
+          "bytes": 2392576,
+          "sha256": "8f59894bc7c076da0ab8fb1673889df16d568ff66d30942a13d8bcc5610b66af"
+        }
+      ],
+      "testCommands": [
+        {
+          "target": "soui_runtime_metrics_tests",
+          "cl": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build\\tests\\native\\runtime_metrics\\soui_runtime_metrics_tests.dir\\Debug\\soui_run.DF3E7DB2.tlog\\CL.command.1.tlog",
+            "bytes": 1192,
+            "sha256": "e4535a0d01c5fe34372299c2f5e00e3079def12213e92904e722e23515ffffb5"
+          },
+          "link": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build\\tests\\native\\runtime_metrics\\soui_runtime_metrics_tests.dir\\Debug\\soui_run.DF3E7DB2.tlog\\link.command.1.tlog",
+            "bytes": 2220,
+            "sha256": "765b13a6ea572e4081aa20098824d3c1176f6e0e98f5d13cf1a2245c7e509337"
+          },
+          "linkRead": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build\\tests\\native\\runtime_metrics\\soui_runtime_metrics_tests.dir\\Debug\\soui_run.DF3E7DB2.tlog\\link.read.1.tlog",
+            "bytes": 4660,
+            "sha256": "4782cb80e4a413445696ba66acaede7ce5c5bc5fce5a2cced82928f2a68ab68f"
+          },
+          "fixedCrt": "MD",
+          "undefDebug": true,
+          "normalSdkArchiveLinked": true
+        },
+        {
+          "target": "soui_engine_capacity_tests",
+          "cl": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build\\tests\\native\\engine_capacity\\soui_engine_capacity_tests.dir\\Debug\\soui_eng.A2E9BB25.tlog\\CL.command.1.tlog",
+            "bytes": 1168,
+            "sha256": "4d1888a7b1ee63cfeaf3bbede02e538c5a0e00ff855f3f182913d444481bf168"
+          },
+          "link": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build\\tests\\native\\engine_capacity\\soui_engine_capacity_tests.dir\\Debug\\soui_eng.A2E9BB25.tlog\\link.command.1.tlog",
+            "bytes": 2220,
+            "sha256": "503c74458e5165f7d6dcf3c525a0e298f53b89e05e9269f17f839811b3854912"
+          },
+          "linkRead": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build\\tests\\native\\engine_capacity\\soui_engine_capacity_tests.dir\\Debug\\soui_eng.A2E9BB25.tlog\\link.read.1.tlog",
+            "bytes": 4660,
+            "sha256": "66b7966e67027e902b4db580e83c62474fd9c4b6e91e9bd57d97b7c834c4f890"
+          },
+          "fixedCrt": "MD",
+          "undefDebug": true,
+          "normalSdkArchiveLinked": true
+        },
+        {
+          "target": "soui_scope_capacity_tests",
+          "cl": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build\\tests\\native\\scope_capacity\\soui_scope_capacity_tests.dir\\Debug\\soui_sco.BE980151.tlog\\CL.command.1.tlog",
+            "bytes": 1180,
+            "sha256": "9cb91fb9c258a82b6a151d0b4e4ca18f451f9634ba659764150fd9cc565dcdd1"
+          },
+          "link": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build\\tests\\native\\scope_capacity\\soui_scope_capacity_tests.dir\\Debug\\soui_sco.BE980151.tlog\\link.command.1.tlog",
+            "bytes": 2194,
+            "sha256": "ddda33564b4aa5d44167e228525433637dfa4a8f3212754ca25103501df01e69"
+          },
+          "linkRead": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-x64\\build\\tests\\native\\scope_capacity\\soui_scope_capacity_tests.dir\\Debug\\soui_sco.BE980151.tlog\\link.read.1.tlog",
+            "bytes": 4644,
+            "sha256": "347b90363737887daf93a849796f3ea592c15f2e309b8e986c1608e6f1e885d3"
+          },
+          "fixedCrt": "MD",
+          "undefDebug": true,
+          "normalSdkArchiveLinked": true
+        }
+      ],
+      "lastTestLog": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-x64/build/Testing/Temporary/LastTest.log",
+        "bytes": 26308,
+        "sha256": "028530c47de6400cbfeea0ed2a6507a56d0ed2f61d797e69eb7d7aeedfd90aca"
+      },
+      "liveInputPinsPostMatched": 183,
+      "qualified": false
+    },
+    {
+      "architecture": "Win32",
+      "configuration": "Debug",
+      "plan": {
+        "path": "F:\\work\\sm05-broker\\out\\live-capacity-crt-root-44dcdd8d-1743-46b5-a549-581157961991\\plan.Win32.Debug.json",
+        "bytes": 47878,
+        "sha256": "3b74743227e372fbee5f24c1209da93e0381f6052aa691018caae5929dc3febb"
+      },
+      "summary": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/summary.json",
+        "bytes": 11053,
+        "sha256": "b90d9d42ac55ff0196b6ae7673d6e72becc143391a7c261fad436ec3eb68c462"
+      },
+      "stages": [
+        {
+          "name": "configure",
+          "pid": 11332,
+          "creationFileTime": "134360956805808619",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 9533,
+          "jobMembers": 47,
+          "naturalClosed": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\configure.owned.jsonl",
+            "bytes": 46959,
+            "sha256": "6d5560b7d5f2e01481053b0efca0f494f4beb0b1ed556894c1bc502f6a57b890"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\configure.owned.jsonl.context.json",
+            "bytes": 1628,
+            "sha256": "f32f03b06dc3620c36ce07ae346fee7a71e17b0d9971d0afb50d472bcd5dc72f"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\configure.stdout.raw",
+            "bytes": 2862,
+            "sha256": "f9a8c119f7ee9f73a3dcb6d66bd817df373b60c9ee10cada06f3960974ac4a11"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\configure.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "name": "build",
+          "pid": 91600,
+          "creationFileTime": "134360956904789505",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 30281,
+          "jobMembers": 60,
+          "naturalClosed": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build.owned.jsonl",
+            "bytes": 60942,
+            "sha256": "2d2660b9110d5941f34e93bf1d48bf03f4802e5b022be18f355bd5548dba1574"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build.owned.jsonl.context.json",
+            "bytes": 623,
+            "sha256": "5a6b87d0014a57075edddd42d6a06cbca697f7fab287e5e3f889bb2318b4b9bc"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build.stdout.raw",
+            "bytes": 8956,
+            "sha256": "de7ca26ff5183a74e14a96e26d82b50645ff22e5f78bce910b8cc51764ef6287"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "name": "ctest",
+          "pid": 110124,
+          "creationFileTime": "134360957210953293",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 13684,
+          "jobMembers": 31,
+          "naturalClosed": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\ctest.owned.jsonl",
+            "bytes": 18182,
+            "sha256": "3296db19d44432b439b177bb6dd811bf39022feec307a5b79870def0a81a3775"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\ctest.owned.jsonl.context.json",
+            "bytes": 2141,
+            "sha256": "453cfa322032a989536606d766ff6bb09a64f9de9e893f154923fe50bb020ae9"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\ctest.stdout.raw",
+            "bytes": 4727,
+            "sha256": "630f8b0f73dc330064076405752303eee77240ef79fc07dde62b982080352c8f"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\ctest.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ],
+      "JUnit": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/junit.xml",
+        "bytes": 7586,
+        "sha256": "24e756b94036044b79dd0ceda4da5ff879e1e735afe02ec4dc9de989944a6b47"
+      },
+      "testCount": 29,
+      "caseNames": [
+        "sdk.native.engine-capacity.all-lanes-fifo",
+        "sdk.native.engine-capacity.executing-retirement",
+        "sdk.native.engine-capacity.invoke-timeout-metrics",
+        "sdk.native.engine-capacity.ordinary-limit",
+        "sdk.native.engine-capacity.rejection-retirement",
+        "sdk.native.engine-capacity.reply-reservation",
+        "sdk.native.engine-capacity.stop-retirement",
+        "sdk.native.engine-capacity.ticket-refund-generation",
+        "sdk.native.runtime-metrics.disabled-epoch",
+        "sdk.native.runtime-metrics.engine-fifo",
+        "sdk.native.runtime-metrics.gui-facade",
+        "sdk.native.runtime-metrics.permission-aliases",
+        "sdk.native.runtime-metrics.permission-owners",
+        "sdk.native.runtime-metrics.scalar-boundaries",
+        "sdk.native.runtime-metrics.software-lanes",
+        "sdk.native.runtime-metrics.software-owner",
+        "sdk.native.runtime-metrics.task-capacity",
+        "sdk.native.runtime-metrics.task-retention",
+        "sdk.native.runtime-metrics.task-subscriptions",
+        "sdk.native.scope-capacity.aliases-bounded",
+        "sdk.native.scope-capacity.bootstrap-capacity-envelope",
+        "sdk.native.scope-capacity.concurrent-module-boundary",
+        "sdk.native.scope-capacity.disabled-zero",
+        "sdk.native.scope-capacity.exception-refund",
+        "sdk.native.scope-capacity.issuer-death",
+        "sdk.native.scope-capacity.module-limit-held",
+        "sdk.native.scope-capacity.pending-store-boundary",
+        "sdk.native.scope-capacity.retirement-outside-lock",
+        "sdk.native.scope-capacity.store-limit-expiry"
+      ],
+      "binaries": [
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/build/sdk/Debug/soui_sdk.lib",
+          "bytes": 59046360,
+          "sha256": "1e10fc04903537cf1e3147fd1700107b0ce572d62b2f499439e4fd8ffbd19b50"
+        },
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/build/tests/native/runtime_metrics/Debug/soui_runtime_metrics_tests.exe",
+          "bytes": 2665472,
+          "sha256": "7b37d8488110a685932f38edc24fa4a263130c0ee56fcc5564bb23a4a4075abc"
+        },
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/build/tests/native/engine_capacity/Debug/soui_engine_capacity_tests.exe",
+          "bytes": 219136,
+          "sha256": "695c7baf4ba91cfba0c3544d754d6c40b6f652132cd27043babe6a4379556749"
+        },
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/build/tests/native/scope_capacity/Debug/soui_scope_capacity_tests.exe",
+          "bytes": 1853440,
+          "sha256": "7793b5e9f03a2d4de322b6a7beaa6fdda48ad15199ab4d1c12b191707f45b871"
+        }
+      ],
+      "testCommands": [
+        {
+          "target": "soui_runtime_metrics_tests",
+          "cl": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build\\tests\\native\\runtime_metrics\\soui_runtime_metrics_tests.dir\\Debug\\soui_run.A27D9322.tlog\\CL.command.1.tlog",
+            "bytes": 1222,
+            "sha256": "9ce2e7ff8615aae498108c5c60d7ee87938efaf8646a1c78b98350f7caa623dd"
+          },
+          "link": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build\\tests\\native\\runtime_metrics\\soui_runtime_metrics_tests.dir\\Debug\\soui_run.A27D9322.tlog\\link.command.1.tlog",
+            "bytes": 2236,
+            "sha256": "d56127fdc1308cb949c81e2fa1bbaccce4e7a82ae79f7a1c7fc70750cbdd9609"
+          },
+          "linkRead": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build\\tests\\native\\runtime_metrics\\soui_runtime_metrics_tests.dir\\Debug\\soui_run.A27D9322.tlog\\link.read.1.tlog",
+            "bytes": 4680,
+            "sha256": "e0c82f6580c2ae7fcdce8bd99889a0680bfb7145feb94ae029d7919b4fe1df02"
+          },
+          "fixedCrt": "MD",
+          "undefDebug": true,
+          "normalSdkArchiveLinked": true
+        },
+        {
+          "target": "soui_engine_capacity_tests",
+          "cl": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build\\tests\\native\\engine_capacity\\soui_engine_capacity_tests.dir\\Debug\\soui_eng.3CB81413.tlog\\CL.command.1.tlog",
+            "bytes": 1198,
+            "sha256": "c9ae8359ac673e4f72dc3f2990c5b20ac45314145a4f50977225494a98fc229a"
+          },
+          "link": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build\\tests\\native\\engine_capacity\\soui_engine_capacity_tests.dir\\Debug\\soui_eng.3CB81413.tlog\\link.command.1.tlog",
+            "bytes": 2236,
+            "sha256": "eb3937c5a72b24aee2bbb9327e741ff60e5606fcfb289fc2111ae67a6f61de33"
+          },
+          "linkRead": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build\\tests\\native\\engine_capacity\\soui_engine_capacity_tests.dir\\Debug\\soui_eng.3CB81413.tlog\\link.read.1.tlog",
+            "bytes": 4680,
+            "sha256": "805a43910d907090cd4f606be316587f23f3389edb30b522e67c0024597f22bd"
+          },
+          "fixedCrt": "MD",
+          "undefDebug": true,
+          "normalSdkArchiveLinked": true
+        },
+        {
+          "target": "soui_scope_capacity_tests",
+          "cl": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build\\tests\\native\\scope_capacity\\soui_scope_capacity_tests.dir\\Debug\\soui_sco.1BD797DE.tlog\\CL.command.1.tlog",
+            "bytes": 1210,
+            "sha256": "0f1c2029311d3bee3e0d575c4eeb6bd07d01c58df955f922b712f5f83ed799b9"
+          },
+          "link": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build\\tests\\native\\scope_capacity\\soui_scope_capacity_tests.dir\\Debug\\soui_sco.1BD797DE.tlog\\link.command.1.tlog",
+            "bytes": 2210,
+            "sha256": "8103f6f15c43c91cb5839339bff435a6066495fedf9a40c3843283415fe2ea73"
+          },
+          "linkRead": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-debug-Win32\\build\\tests\\native\\scope_capacity\\soui_scope_capacity_tests.dir\\Debug\\soui_sco.1BD797DE.tlog\\link.read.1.tlog",
+            "bytes": 4664,
+            "sha256": "83e45267e40ee539d3b514c61d3076bcccd8e363645d10415eb17d9a06000e26"
+          },
+          "fixedCrt": "MD",
+          "undefDebug": true,
+          "normalSdkArchiveLinked": true
+        }
+      ],
+      "lastTestLog": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-debug-Win32/build/Testing/Temporary/LastTest.log",
+        "bytes": 26424,
+        "sha256": "54194ac2aa277ca08b8840bef1ff46ce2b71f51afdedf4d29bb93a91aacc5bf4"
+      },
+      "liveInputPinsPostMatched": 183,
+      "qualified": false
+    },
+    {
+      "architecture": "x64",
+      "configuration": "Release",
+      "plan": {
+        "path": "F:\\work\\sm05-broker\\out\\live-capacity-crt-root-44dcdd8d-1743-46b5-a549-581157961991\\plan.x64.Release.json",
+        "bytes": 47878,
+        "sha256": "3f029466af5f3e0c25c01e8c5d0599ec2d990ef83ef2f8aa48442fda181bb22e"
+      },
+      "summary": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/summary.json",
+        "bytes": 11056,
+        "sha256": "e44dfe1b15d38f9ed80cb4eb9aff7bc55b5fb53e9869cf3ffdcfce871b9914cd"
+      },
+      "stages": [
+        {
+          "name": "configure",
+          "pid": 94888,
+          "creationFileTime": "134360957756752051",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 9820,
+          "jobMembers": 47,
+          "naturalClosed": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\configure.owned.jsonl",
+            "bytes": 46442,
+            "sha256": "b6f7bd095439a40925335408ee61fe38072197121fe6fd2ea19333e42d09889d"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\configure.owned.jsonl.context.json",
+            "bytes": 1626,
+            "sha256": "31bce3e5bebf9f76b55314b37e00cc98dbdc5c9761fcb56cef769bba51a3472e"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\configure.stdout.raw",
+            "bytes": 2862,
+            "sha256": "88e0a89ec7c0b64984a920262455d01a91a41f8c0ecd17f1881b7fc981c1d18c"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\configure.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "name": "build",
+          "pid": 110384,
+          "creationFileTime": "134360957858408702",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 40401,
+          "jobMembers": 60,
+          "naturalClosed": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build.owned.jsonl",
+            "bytes": 59277,
+            "sha256": "c8984e5cb385552691315592ddeb8f77041e8eebd454e5896845b2c0ce48921c"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build.owned.jsonl.context.json",
+            "bytes": 625,
+            "sha256": "8c7302e3e147fd0facb9102cdc28c98060b838561415397c478f0f95cbb45735"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build.stdout.raw",
+            "bytes": 8783,
+            "sha256": "a06d7b1354ebc0d252d377cb858db67e32bea120a78f563c21682bb84ad42a18"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "name": "ctest",
+          "pid": 111836,
+          "creationFileTime": "134360958265808393",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 20283,
+          "jobMembers": 31,
+          "naturalClosed": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\ctest.owned.jsonl",
+            "bytes": 16710,
+            "sha256": "144863c84ca473c5c7ff25638225e5d5d179e8f11a1ae71771c6a6ceceb74d06"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\ctest.owned.jsonl.context.json",
+            "bytes": 2143,
+            "sha256": "4cae1f8da35ad1256c7c866909c3cc49136bd27f41b60fc3cde1a654674f4e9d"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\ctest.stdout.raw",
+            "bytes": 4727,
+            "sha256": "7f6ef43157ca9c613239774f7971efd95e43972a08cf60a6bb6a5803e1b7f001"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\ctest.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ],
+      "JUnit": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/junit.xml",
+        "bytes": 7585,
+        "sha256": "303b2e0270d631243cb84e7ad64adfc5885d03941130081ded181563306b90e5"
+      },
+      "testCount": 29,
+      "caseNames": [
+        "sdk.native.engine-capacity.all-lanes-fifo",
+        "sdk.native.engine-capacity.executing-retirement",
+        "sdk.native.engine-capacity.invoke-timeout-metrics",
+        "sdk.native.engine-capacity.ordinary-limit",
+        "sdk.native.engine-capacity.rejection-retirement",
+        "sdk.native.engine-capacity.reply-reservation",
+        "sdk.native.engine-capacity.stop-retirement",
+        "sdk.native.engine-capacity.ticket-refund-generation",
+        "sdk.native.runtime-metrics.disabled-epoch",
+        "sdk.native.runtime-metrics.engine-fifo",
+        "sdk.native.runtime-metrics.gui-facade",
+        "sdk.native.runtime-metrics.permission-aliases",
+        "sdk.native.runtime-metrics.permission-owners",
+        "sdk.native.runtime-metrics.scalar-boundaries",
+        "sdk.native.runtime-metrics.software-lanes",
+        "sdk.native.runtime-metrics.software-owner",
+        "sdk.native.runtime-metrics.task-capacity",
+        "sdk.native.runtime-metrics.task-retention",
+        "sdk.native.runtime-metrics.task-subscriptions",
+        "sdk.native.scope-capacity.aliases-bounded",
+        "sdk.native.scope-capacity.bootstrap-capacity-envelope",
+        "sdk.native.scope-capacity.concurrent-module-boundary",
+        "sdk.native.scope-capacity.disabled-zero",
+        "sdk.native.scope-capacity.exception-refund",
+        "sdk.native.scope-capacity.issuer-death",
+        "sdk.native.scope-capacity.module-limit-held",
+        "sdk.native.scope-capacity.pending-store-boundary",
+        "sdk.native.scope-capacity.retirement-outside-lock",
+        "sdk.native.scope-capacity.store-limit-expiry"
+      ],
+      "binaries": [
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build/sdk/Release/soui_sdk.lib",
+          "bytes": 49987154,
+          "sha256": "c2f053b2dc231e58bd6729735ead0939384f49b3f238a5c0810a13014dfddbda"
+        },
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build/tests/native/runtime_metrics/Release/soui_runtime_metrics_tests.exe",
+          "bytes": 946176,
+          "sha256": "b6be0d91041d296d2d98b8147b7b3010370944eb1edd8c71bdb468a01de854c5"
+        },
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build/tests/native/engine_capacity/Release/soui_engine_capacity_tests.exe",
+          "bytes": 77312,
+          "sha256": "3e0e0b6ef6e2cbbab8cf0ebf911cc6409c73ce0ed70e6a288b0242f94226a7fe"
+        },
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build/tests/native/scope_capacity/Release/soui_scope_capacity_tests.exe",
+          "bytes": 459264,
+          "sha256": "a3421fc5aa8c50f89fde50b12b0c83b17f1cc7efbc748afdece14a3c0aafc660"
+        }
+      ],
+      "testCommands": [
+        {
+          "target": "soui_runtime_metrics_tests",
+          "cl": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build\\tests\\native\\runtime_metrics\\soui_runtime_metrics_tests.dir\\Release\\soui_run.FFBFBB77.tlog\\CL.command.1.tlog",
+            "bytes": 1204,
+            "sha256": "df8b4d9a4e6098f81e5dd9dd79e664c36e32e6796d6d11915996b4d16e4c21aa"
+          },
+          "link": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build\\tests\\native\\runtime_metrics\\soui_runtime_metrics_tests.dir\\Release\\soui_run.FFBFBB77.tlog\\link.command.1.tlog",
+            "bytes": 2102,
+            "sha256": "b21843c947c2326419d6a9405c3062b0f676af7575b10c0cf0933fe57571445b"
+          },
+          "linkRead": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build\\tests\\native\\runtime_metrics\\soui_runtime_metrics_tests.dir\\Release\\soui_run.FFBFBB77.tlog\\link.read.1.tlog",
+            "bytes": 4258,
+            "sha256": "90497035e3de4ec3fdb96c0a0b7f35020093c8214b70c011cdc9b09540b0bcbe"
+          },
+          "fixedCrt": "MD",
+          "undefDebug": true,
+          "normalSdkArchiveLinked": true
+        },
+        {
+          "target": "soui_engine_capacity_tests",
+          "cl": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build\\tests\\native\\engine_capacity\\soui_engine_capacity_tests.dir\\Release\\soui_eng.3C3B7F01.tlog\\CL.command.1.tlog",
+            "bytes": 1180,
+            "sha256": "109f7f475b7968f31dbe684792438ce009ee53bd50daaaa87e8b5945502a1b58"
+          },
+          "link": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build\\tests\\native\\engine_capacity\\soui_engine_capacity_tests.dir\\Release\\soui_eng.3C3B7F01.tlog\\link.command.1.tlog",
+            "bytes": 2102,
+            "sha256": "7d77e6061df8fc6a952ce8c0663be452522ae475e1763bd1f4be488ce591f66a"
+          },
+          "linkRead": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build\\tests\\native\\engine_capacity\\soui_engine_capacity_tests.dir\\Release\\soui_eng.3C3B7F01.tlog\\link.read.1.tlog",
+            "bytes": 4258,
+            "sha256": "a0dd5cd02dd84aa40881a342d8f1a3ed8f3352796b05aa19e20d11e72500fb96"
+          },
+          "fixedCrt": "MD",
+          "undefDebug": true,
+          "normalSdkArchiveLinked": true
+        },
+        {
+          "target": "soui_scope_capacity_tests",
+          "cl": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build\\tests\\native\\scope_capacity\\soui_scope_capacity_tests.dir\\Release\\soui_sco.B5D21466.tlog\\CL.command.1.tlog",
+            "bytes": 1192,
+            "sha256": "6ff689de21d5985eaf8625cb99823513820b0e7b6fb5ef546c13ecbdf9b7a3a4"
+          },
+          "link": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build\\tests\\native\\scope_capacity\\soui_scope_capacity_tests.dir\\Release\\soui_sco.B5D21466.tlog\\link.command.1.tlog",
+            "bytes": 2080,
+            "sha256": "0bc9491b2af1f377f9197609c1305da8829bf637c506e9cf9b73c1941e586f4a"
+          },
+          "linkRead": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build\\tests\\native\\scope_capacity\\soui_scope_capacity_tests.dir\\Release\\soui_sco.B5D21466.tlog\\link.read.1.tlog",
+            "bytes": 4246,
+            "sha256": "e7f7da3231454d1f8a2f74f9a3e91076804dea029dff3d9e736981963756275f"
+          },
+          "fixedCrt": "MD",
+          "undefDebug": true,
+          "normalSdkArchiveLinked": true
+        }
+      ],
+      "lastTestLog": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build/Testing/Temporary/LastTest.log",
+        "bytes": 26482,
+        "sha256": "2fa06085578f4270e8db062e76cce2ee0d01630b60e44a07bd8582f9a1e10bc3"
+      },
+      "liveInputPinsPostMatched": 183,
+      "qualified": false
+    },
+    {
+      "architecture": "Win32",
+      "configuration": "Release",
+      "plan": {
+        "path": "F:\\work\\sm05-broker\\out\\live-capacity-crt-root-44dcdd8d-1743-46b5-a549-581157961991\\plan.Win32.Release.json",
+        "bytes": 47896,
+        "sha256": "30ff50f6ea94095501a38f5930374e3df49f8aa52419c8cd6365c1a9f4335ef0"
+      },
+      "summary": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/summary.json",
+        "bytes": 11098,
+        "sha256": "7da36f2eb29cfccbfc143863601c8e17b8b48516399f43f9afbd2198c70e5c6b"
+      },
+      "stages": [
+        {
+          "name": "configure",
+          "pid": 80772,
+          "creationFileTime": "134360958478115370",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 9517,
+          "jobMembers": 47,
+          "naturalClosed": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\configure.owned.jsonl",
+            "bytes": 46572,
+            "sha256": "8d23afa81ad2d7f4157520473aa887d6aba37495e1ed1aeee36ef0e66702a416"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\configure.owned.jsonl.context.json",
+            "bytes": 1632,
+            "sha256": "a387d9f3e6ea713b3e3fc1354c778cac42249b5c44ff830a9c93739bb8e2d220"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\configure.stdout.raw",
+            "bytes": 2864,
+            "sha256": "fb9c5ee80969aaca28ef282c90d1b678a15a413269abcdb601e20017b32f0b05"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\configure.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "name": "build",
+          "pid": 76792,
+          "creationFileTime": "134360958576206936",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 34154,
+          "jobMembers": 60,
+          "naturalClosed": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build.owned.jsonl",
+            "bytes": 54615,
+            "sha256": "10d8c9f8f673a43b32712dc174c18f4681858ed3c2d33da80909466978b18b2b"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build.owned.jsonl.context.json",
+            "bytes": 627,
+            "sha256": "29c766d785ddcfbb15bf111462cea9eaddb4ad9eb56ce91a627c333c78b39475"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build.stdout.raw",
+            "bytes": 8833,
+            "sha256": "bf897c901a38d3ba33ab4a5008fe20dba8a63b6d9453f9c8c37304e4e5d7b11d"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        },
+        {
+          "name": "ctest",
+          "pid": 68128,
+          "creationFileTime": "134360958920875524",
+          "rootExitCode": 0,
+          "supervisorExitCode": 0,
+          "elapsedMs": 20236,
+          "jobMembers": 31,
+          "naturalClosed": true,
+          "raw": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\ctest.owned.jsonl",
+            "bytes": 16969,
+            "sha256": "addd48ecc0a16a9ea2e6d82cdb51124672ee944265c91e936c7d8421f0adec98"
+          },
+          "context": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\ctest.owned.jsonl.context.json",
+            "bytes": 2147,
+            "sha256": "ae72c115804048944f24dfc74093dd298a27c4c138a8346afa8e3efbeb309ca9"
+          },
+          "stdout": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\ctest.stdout.raw",
+            "bytes": 4729,
+            "sha256": "44e177feb91f12377675008f7a9bcfa2c139a681aced8e7df9cc9220f6c6f43a"
+          },
+          "stderr": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\ctest.stderr.raw",
+            "bytes": 0,
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+          }
+        }
+      ],
+      "JUnit": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/junit.xml",
+        "bytes": 7585,
+        "sha256": "257cddeaade5cca4ef2acab3ddecf05ed2a7dc566e4494a9ae89c15291b5e775"
+      },
+      "testCount": 29,
+      "caseNames": [
+        "sdk.native.engine-capacity.all-lanes-fifo",
+        "sdk.native.engine-capacity.executing-retirement",
+        "sdk.native.engine-capacity.invoke-timeout-metrics",
+        "sdk.native.engine-capacity.ordinary-limit",
+        "sdk.native.engine-capacity.rejection-retirement",
+        "sdk.native.engine-capacity.reply-reservation",
+        "sdk.native.engine-capacity.stop-retirement",
+        "sdk.native.engine-capacity.ticket-refund-generation",
+        "sdk.native.runtime-metrics.disabled-epoch",
+        "sdk.native.runtime-metrics.engine-fifo",
+        "sdk.native.runtime-metrics.gui-facade",
+        "sdk.native.runtime-metrics.permission-aliases",
+        "sdk.native.runtime-metrics.permission-owners",
+        "sdk.native.runtime-metrics.scalar-boundaries",
+        "sdk.native.runtime-metrics.software-lanes",
+        "sdk.native.runtime-metrics.software-owner",
+        "sdk.native.runtime-metrics.task-capacity",
+        "sdk.native.runtime-metrics.task-retention",
+        "sdk.native.runtime-metrics.task-subscriptions",
+        "sdk.native.scope-capacity.aliases-bounded",
+        "sdk.native.scope-capacity.bootstrap-capacity-envelope",
+        "sdk.native.scope-capacity.concurrent-module-boundary",
+        "sdk.native.scope-capacity.disabled-zero",
+        "sdk.native.scope-capacity.exception-refund",
+        "sdk.native.scope-capacity.issuer-death",
+        "sdk.native.scope-capacity.module-limit-held",
+        "sdk.native.scope-capacity.pending-store-boundary",
+        "sdk.native.scope-capacity.retirement-outside-lock",
+        "sdk.native.scope-capacity.store-limit-expiry"
+      ],
+      "binaries": [
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/build/sdk/Release/soui_sdk.lib",
+          "bytes": 34241718,
+          "sha256": "803fcdf8440e3f5c1fb8cb616ef8c26a29d2e5190e97eda7dd6408294c519ad7"
+        },
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/build/tests/native/runtime_metrics/Release/soui_runtime_metrics_tests.exe",
+          "bytes": 821248,
+          "sha256": "fe0b469cb80b9711d4a20994ef4186ed282186892efb032f0a89dbf5d690251b"
+        },
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/build/tests/native/engine_capacity/Release/soui_engine_capacity_tests.exe",
+          "bytes": 68096,
+          "sha256": "cc64af3a1ecc0de6c1c6cf62e2a889908b28ff39407fa602650a405d1dd7827a"
+        },
+        {
+          "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/build/tests/native/scope_capacity/Release/soui_scope_capacity_tests.exe",
+          "bytes": 392192,
+          "sha256": "9521e5c006ba71c93acb7d25bd3e12364adce26a7a9b4c98537e9812006ef0b8"
+        }
+      ],
+      "testCommands": [
+        {
+          "target": "soui_runtime_metrics_tests",
+          "cl": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build\\tests\\native\\runtime_metrics\\soui_runtime_metrics_tests.dir\\Release\\soui_run.6B6C2F41.tlog\\CL.command.1.tlog",
+            "bytes": 1234,
+            "sha256": "d686e94d407b05fc85e312954d11a7f31b72c23f05b617649943a5c392aa81db"
+          },
+          "link": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build\\tests\\native\\runtime_metrics\\soui_runtime_metrics_tests.dir\\Release\\soui_run.6B6C2F41.tlog\\link.command.1.tlog",
+            "bytes": 2118,
+            "sha256": "b2425c89dc00b1803cd32e877c48a00d2baa7b0c8afc2d3a46af8e3f3ac8c048"
+          },
+          "linkRead": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build\\tests\\native\\runtime_metrics\\soui_runtime_metrics_tests.dir\\Release\\soui_run.6B6C2F41.tlog\\link.read.1.tlog",
+            "bytes": 4270,
+            "sha256": "589a99ab297ef6e3ad7af6bf2f5060a11ae7e3aeb289edcadf71973f5bab44a0"
+          },
+          "fixedCrt": "MD",
+          "undefDebug": true,
+          "normalSdkArchiveLinked": true
+        },
+        {
+          "target": "soui_engine_capacity_tests",
+          "cl": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build\\tests\\native\\engine_capacity\\soui_engine_capacity_tests.dir\\Release\\soui_eng.4285E101.tlog\\CL.command.1.tlog",
+            "bytes": 1210,
+            "sha256": "4c890a79fb3fc4bcd575f86ae2443f793c46fb8a473a7d191907d0ba40d4e7ca"
+          },
+          "link": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build\\tests\\native\\engine_capacity\\soui_engine_capacity_tests.dir\\Release\\soui_eng.4285E101.tlog\\link.command.1.tlog",
+            "bytes": 2118,
+            "sha256": "0523b10a2cc8ca56ab9d78bd5151dd9a6d3dae79349892372806575e19b81862"
+          },
+          "linkRead": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build\\tests\\native\\engine_capacity\\soui_engine_capacity_tests.dir\\Release\\soui_eng.4285E101.tlog\\link.read.1.tlog",
+            "bytes": 4270,
+            "sha256": "b2612e210e409d779a9601a2e7555949f2afc8ed54c88e9856dfbec79c4433b2"
+          },
+          "fixedCrt": "MD",
+          "undefDebug": true,
+          "normalSdkArchiveLinked": true
+        },
+        {
+          "target": "soui_scope_capacity_tests",
+          "cl": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build\\tests\\native\\scope_capacity\\soui_scope_capacity_tests.dir\\Release\\soui_sco.A4DFBB3C.tlog\\CL.command.1.tlog",
+            "bytes": 1222,
+            "sha256": "19af8196627d97871b7f339bc700747fa0cd5bf5ce525476877ec321995ca1dc"
+          },
+          "link": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build\\tests\\native\\scope_capacity\\soui_scope_capacity_tests.dir\\Release\\soui_sco.A4DFBB3C.tlog\\link.command.1.tlog",
+            "bytes": 2096,
+            "sha256": "5983fd000b093173883ce896d187a4cf3844719347dccb90755d0621093a1f8c"
+          },
+          "linkRead": {
+            "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-Win32\\build\\tests\\native\\scope_capacity\\soui_scope_capacity_tests.dir\\Release\\soui_sco.A4DFBB3C.tlog\\link.read.1.tlog",
+            "bytes": 4258,
+            "sha256": "0f1d478a05ca671fcb17ec012a7aa53b0ed1dde08aa25b883e8099d5bd5ba0d6"
+          },
+          "fixedCrt": "MD",
+          "undefDebug": true,
+          "normalSdkArchiveLinked": true
+        }
+      ],
+      "lastTestLog": {
+        "path": "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-Win32/build/Testing/Temporary/LastTest.log",
+        "bytes": 26598,
+        "sha256": "08bbb6c5412c7981cff42ee2fb2c00c938af7d67c85c2edc1cfc20e127f3d5c3"
+      },
+      "liveInputPinsPostMatched": 183,
+      "qualified": false
+    }
+  ],
+  "actualStageCount": 12,
+  "actualTestCount": 116,
+  "rootAndSupervisorNaturallyZero": true,
+  "debugAndReleaseVerified": true,
+  "mountedHostExecuted": false,
+  "resourceQualified": false,
+  "compatibilityQualified": false,
+  "completeToolchainProvenance": false,
+  "qualificationPassed": false,
+  "releaseReady": false
+}

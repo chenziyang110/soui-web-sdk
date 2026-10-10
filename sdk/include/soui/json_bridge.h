@@ -19,6 +19,8 @@ namespace soui::sdk {
 class json_bridge final : public bridge_adapter {
  public:
   explicit json_bridge(std::string origin);
+  json_bridge(std::string origin, diagnostics::mode metrics);
+  [[nodiscard]] diagnostics::status read_runtime_metrics(diagnostics::bridge_runtime&) const noexcept;
   ~json_bridge() override;
   // Native opt-in after all registration, before the first page bootstrap.
   // Creates one stopped, bridge-owned endpoint using this bridge's services.
@@ -64,6 +66,7 @@ class json_bridge final : public bridge_adapter {
 
  private:
   std::string origin_;
+  const diagnostics::mode metrics_mode_;
   soui::runtime::permission_store permissions_;
   soui::runtime::directory_picker directory_{permissions_};
   soui::runtime::clipboard_service clipboard_{permissions_};
@@ -76,7 +79,7 @@ class json_bridge final : public bridge_adapter {
   soui::runtime::task_service tasks_;
   std::vector<std::string> capabilities_;
   std::vector<std::string> session_capabilities_;
-  std::mutex mutex_;
+  mutable std::mutex mutex_;
   std::string active_session_;
   bool registration_closed_{false};
   bool session_capabilities_configured_{false};

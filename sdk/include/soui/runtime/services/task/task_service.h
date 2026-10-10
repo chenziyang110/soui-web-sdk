@@ -1,5 +1,6 @@
 #pragma once
 
+#include <soui/diagnostics/runtime_metrics.h>
 #include <soui/runtime/bridge/bridge_transport.h>
 #include <soui/runtime/core/result/result.h>
 
@@ -82,6 +83,9 @@ class task_service final {
   using event_sink = std::function<void(std::string_view)>;
 
   task_service();
+  explicit task_service(soui::sdk::diagnostics::mode);
+  [[nodiscard]] soui::sdk::diagnostics::status read_runtime_metrics(
+      soui::sdk::diagnostics::tasks&) const noexcept;
   ~task_service();
   task_service(const task_service&) = delete;
   task_service& operator=(const task_service&) = delete;

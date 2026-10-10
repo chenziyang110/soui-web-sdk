@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Engine capacity regression</title></head><body>Local native regression
+<script>
+(function () {
+  var deadline = Date.now() + 10000;
+  function start(port) {
+    var first = JSON.parse(port(JSON.stringify({requestId:'capacity-bootstrap',sessionId:'',origin:'',token:'',method:'bridge.bootstrap',params:{protocol:'soui.bridge/1'}})));
+    if (!first || first.ok !== true || !first.result) return;
+    var grant = first.result;
+    var business = port(JSON.stringify({requestId:'capacity-baseline',sessionId:grant.sessionId,origin:grant.origin,token:grant.token,method:'capacity.business',params:{value:7},timeoutMs:5000}));
+    if (!business || typeof business.then !== 'function') return;
+    business.then(function (raw) {
+      var response = JSON.parse(raw);
+      if (!response || response.ok !== true || !response.result || response.result.observed !== true) return;
+      // This one confirmation observes the real baseline promise resolution.
+      port(JSON.stringify({requestId:'capacity-confirm',sessionId:grant.sessionId,origin:grant.origin,token:grant.token,method:'capacity.confirm',params:{observed:true},timeoutMs:5000}));
+    });
+  }
+  function waitForPort() {
+    if (window.SouiNative && typeof window.SouiNative.postMessage === 'function') { start(window.SouiNative.postMessage); return; }
+    if (Date.now() < deadline) setTimeout(waitForPort,10); // Observation only; no request is retried.
+  }
+  waitForPort();
+})();
+</script></body></html>

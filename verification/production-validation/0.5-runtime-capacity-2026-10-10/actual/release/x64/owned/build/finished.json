@@ -1,0 +1,73 @@
+{
+  "job": {
+    "name": "build",
+    "executable": "C:/Program Files/CMake/bin/cmake.exe",
+    "args": [
+      "--build",
+      "F:/work/sm05-broker/out/capcrt-44dcdd8d-release-x64/build",
+      "--config",
+      "Release",
+      "--target",
+      "soui_runtime_metrics_tests",
+      "soui_engine_capacity_tests",
+      "soui_scope_capacity_tests",
+      "--parallel",
+      "2"
+    ],
+    "cwd": "F:/work/sm05-broker",
+    "timeoutMs": 900000,
+    "expectedExitCode": 0
+  },
+  "result": {
+    "pid": 110384,
+    "creationFileTime": "134360957858408702",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 40401,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 60,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build.owned.jsonl",
+    "reportSha256": "c8984e5cb385552691315592ddeb8f77041e8eebd454e5896845b2c0ce48921c",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "accepted": true,
+  "raw": {
+    "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build.owned.jsonl",
+    "bytes": 59277,
+    "sha256": "c8984e5cb385552691315592ddeb8f77041e8eebd454e5896845b2c0ce48921c"
+  },
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build.owned.jsonl.context.json",
+    "bytes": 625,
+    "sha256": "8c7302e3e147fd0facb9102cdc28c98060b838561415397c478f0f95cbb45735"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build.stdout.raw",
+    "bytes": 8783,
+    "sha256": "a06d7b1354ebc0d252d377cb858db67e32bea120a78f563c21682bb84ad42a18"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\capcrt-44dcdd8d-release-x64\\build.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

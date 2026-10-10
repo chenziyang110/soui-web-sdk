@@ -1,0 +1,73 @@
+{
+  "job": {
+    "name": "build",
+    "executable": "C:/Program Files/CMake/bin/cmake.exe",
+    "args": [
+      "--build",
+      "F:/work/sm05-broker/out/capdbg-c6ed77b2-x64/build",
+      "--config",
+      "Debug",
+      "--target",
+      "soui_runtime_metrics_tests",
+      "soui_engine_capacity_tests",
+      "soui_scope_capacity_tests",
+      "--parallel",
+      "2"
+    ],
+    "cwd": "F:/work/sm05-broker",
+    "timeoutMs": 900000,
+    "expectedExitCode": 0
+  },
+  "result": {
+    "pid": 54112,
+    "creationFileTime": "134360944009992271",
+    "exitCode": 1,
+    "supervisorExitCode": 1,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": false,
+    "terminal": {
+      "event": "terminal",
+      "reason": "root-failed",
+      "elapsedMs": 28048,
+      "rootExited": true,
+      "rootExitCode": 1,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 30,
+      "limitTerminatedProcesses": 0,
+      "passed": false
+    },
+    "report": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\build.owned.jsonl",
+    "reportSha256": "87df3266eaf692ad10f1fc50c2a3ccbeb410fb36a0f2a8e9769bca892a3d6203",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+  },
+  "accepted": false,
+  "raw": {
+    "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\build.owned.jsonl",
+    "bytes": 32334,
+    "sha256": "87df3266eaf692ad10f1fc50c2a3ccbeb410fb36a0f2a8e9769bca892a3d6203"
+  },
+  "context": {
+    "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\build.owned.jsonl.context.json",
+    "bytes": 615,
+    "sha256": "948ce29d87d3c477f03ba01200c81e0cd8a742d77b22ef114773d81368c837c4"
+  },
+  "stdout": {
+    "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\build.stdout.raw",
+    "bytes": 19345,
+    "sha256": "bdcdf5e71eb0189368bd80c8b7a42a7e1ea8d82fd4198715df9c5b4e26d72502"
+  },
+  "stderr": {
+    "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-x64\\build.stderr.raw",
+    "bytes": 0,
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

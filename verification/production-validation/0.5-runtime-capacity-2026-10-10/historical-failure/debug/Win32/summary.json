@@ -1,0 +1,174 @@
+{
+  "schema": "soui.root-finite-owned-result/v1",
+  "completed": false,
+  "failure": "Finite stage did not satisfy frozen predicates: build",
+  "plan": {
+    "path": "F:\\work\\sm05-broker\\out\\live-capacity-debug-draft-c6ed77b2-6101-4a9f-8437-32a8737b1a8c\\plan.Win32.draft.json",
+    "bytes": 47842,
+    "sha256": "633c2cbe121d69e36c985747f7f152aa17c2d97146ab3dda637f4198b1e65303"
+  },
+  "stages": [
+    {
+      "job": {
+        "name": "configure",
+        "executable": "C:/Program Files/CMake/bin/cmake.exe",
+        "args": [
+          "-S",
+          "F:/work/sm05-broker",
+          "-B",
+          "F:/work/sm05-broker/out/capdbg-c6ed77b2-Win32/build",
+          "-G",
+          "Visual Studio 17 2022",
+          "-A",
+          "Win32",
+          "-T",
+          "v143,host=x64,version=14.44.35207",
+          "-DCMAKE_GENERATOR_INSTANCE:PATH=C:/Program Files/Microsoft Visual Studio/2022/Community",
+          "-DCMAKE_SYSTEM_VERSION:STRING=10.0.19041.0",
+          "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug",
+          "-DCMAKE_MAKE_PROGRAM:FILEPATH=C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+          "-DCMAKE_PROJECT_INCLUDE:FILEPATH=F:/work/sm05-broker/out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/fixed-compiler.cmake",
+          "-DSOUI_ROOT_EXPECTED_ARCH:STRING=Win32",
+          "-DCMAKE_VS_GLOBALS:STRING=VcpkgEnabled=false;VcpkgEnableManifest=false;UseEnv=false;UserRootDir=F:/work/sm05-broker/out/live-capacity-integration-root-3350b8e9-52e6-4826-96fa-db82d6d457bf/empty-user-props/",
+          "-DSOUI_BUILD_TEMPLATE:BOOL=OFF",
+          "-DSOUI_BUILD_DEMOS:BOOL=OFF",
+          "-DSOUI_BUILD_TESTS:BOOL=ON",
+          "-DSOUI_BUILD_WEBVIEW2:BOOL=OFF",
+          "-DSOUI_BUILD_UIA:BOOL=OFF",
+          "-DSOUI_BUILD_HOST_STARTUP_FENCE_TESTS:BOOL=OFF",
+          "-DSOUI_BUILD_ENGINE_CAPACITY_HOST_TESTS:BOOL=OFF"
+        ],
+        "cwd": "F:/work/sm05-broker",
+        "timeoutMs": 120000,
+        "expectedExitCode": 0
+      },
+      "result": {
+        "pid": 73568,
+        "creationFileTime": "134360944300874767",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 10567,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 47,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\configure.owned.jsonl",
+        "reportSha256": "89d9520f61a5fdb8f5b4cad7c59858fbf2d0c39fc1728fd6e28edb8f4599f94e",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "accepted": true,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\configure.owned.jsonl",
+        "bytes": 47812,
+        "sha256": "89d9520f61a5fdb8f5b4cad7c59858fbf2d0c39fc1728fd6e28edb8f4599f94e"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\configure.owned.jsonl.context.json",
+        "bytes": 1622,
+        "sha256": "2f6dfa76ac94667f68946731f8f35ac4f9d7c1533038135fcd66961f5ed7be51"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\configure.stdout.raw",
+        "bytes": 2856,
+        "sha256": "e5136ab556790203d2493bf0f642d7f1bb46bd8066c5640ba3e027d88067f497"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\configure.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "job": {
+        "name": "build",
+        "executable": "C:/Program Files/CMake/bin/cmake.exe",
+        "args": [
+          "--build",
+          "F:/work/sm05-broker/out/capdbg-c6ed77b2-Win32/build",
+          "--config",
+          "Debug",
+          "--target",
+          "soui_runtime_metrics_tests",
+          "soui_engine_capacity_tests",
+          "soui_scope_capacity_tests",
+          "--parallel",
+          "2"
+        ],
+        "cwd": "F:/work/sm05-broker",
+        "timeoutMs": 900000,
+        "expectedExitCode": 0
+      },
+      "result": {
+        "pid": 61512,
+        "creationFileTime": "134360944410662788",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 26500,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 30,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\build.owned.jsonl",
+        "reportSha256": "5429cfc38c5c1787d8ab565c94ec4ba3f06de321bce4bfa05d5927c44be43c90",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "accepted": false,
+      "raw": {
+        "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\build.owned.jsonl",
+        "bytes": 28376,
+        "sha256": "5429cfc38c5c1787d8ab565c94ec4ba3f06de321bce4bfa05d5927c44be43c90"
+      },
+      "context": {
+        "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\build.owned.jsonl.context.json",
+        "bytes": 617,
+        "sha256": "e2b0e6dd91d09d45f78807ae51f0a798832e10bda52f5b3212744db3e2737df2"
+      },
+      "stdout": {
+        "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\build.stdout.raw",
+        "bytes": 19469,
+        "sha256": "c509356c1c15764982614544697f3a99174780dbb808fea5ce64f656d0182698"
+      },
+      "stderr": {
+        "path": "F:\\work\\sm05-broker\\out\\capdbg-c6ed77b2-Win32\\build.stderr.raw",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "qualificationPassed": false,
+  "releaseReady": false
+}

@@ -1,4 +1,5 @@
 #include "gui_commands_internal.h"
+#include "../../diagnostics/runtime_metrics_internal.h"
 #include <json.hpp>
 #include <windows.h>
 #include <objbase.h>
@@ -7,6 +8,7 @@
 #include <stdexcept>
 #include <utility>
 
+namespace dm = soui::sdk::diagnostics;
 namespace soui::runtime::detail {
 namespace {
 using json = nlohmann::json;
@@ -67,15 +69,47 @@ bool gui_job_context::authorizes_effect(const bridge_request& request) const {
       request.request_id == request_id && request.method == row->effect_method && request.params_json == effect_params &&
       request.token.empty() && !request.native_user_gesture;
 }
-gui_commands_state::gui_commands_state(capability_registry& r, bridge_transport& t, task_service& s)
-    : registry{r}, transport{t}, tasks{s} { pending.reserve(capacity_limit); effects.reserve(capacity_limit); }
+gui_commands_state::gui_commands_state(capability_registry& r, bridge_transport& t, task_service& s,
+    dm::mode enabled)
+    : registry{r}, transport{t}, tasks{s}, metrics_mode{enabled},
+      metrics_epoch{enabled == dm::mode::scalar ? dm::detail::epoch() : 0} {
+  pending.reserve(capacity_limit); effects.reserve(capacity_limit);
+}
+
+dm::status gui_commands_state::read_runtime_metrics(dm::gui& out) const noexcept {
+  out = {};
+  if (metrics_mode != dm::mode::scalar) return out.observation.state;
+  out.observation = dm::detail::begin(metrics_mode, metrics_epoch);
+  if (out.observation.state == dm::status::unavailable) { dm::detail::end(out.observation); return out.observation.state; }
+  try {
+    std::unique_lock<std::mutex> lock(mutex, std::try_to_lock);
+    if (!lock.owns_lock()) out.observation.state = dm::status::busy;
+    else {
+      out.context_limit = capacity_limit;
+      out.context_slots_used = capacity->used.load(std::memory_order_acquire);
+      out.retained_weak_slots = pending.size();
+      // No strong promotion: the final context owner may call out/destruct.
+      for (const auto& value : pending) if (!value.expired()) ++out.pending_live_contexts;
+      out.effect_queue_limit = capacity_limit; out.queued_effects = effects.size();
+      out.effect_borrows = effect_borrows; out.effect_queue_high_water = metrics_effect_high_water;
+      const auto now = dm::detail::now_us();
+      for (const auto& value : effects) {
+        if (value->phase.load(std::memory_order_acquire) != 0) continue;
+        const auto age = dm::detail::age(value->metrics_enqueued_us, now, out.observation);
+        out.oldest_queued_effect_age_us = (std::max)(out.oldest_queued_effect_age_us, age);
+      }
+      out.closed = closed.load(std::memory_order_acquire); out.owner_poll_active = polling;
+    }
+    dm::detail::end(out.observation); return out.observation.state;
+  } catch (...) { out = {}; out.observation.state = dm::status::unavailable; return out.observation.state; }
+}
 
 std::shared_ptr<gui_commands_state> gui_commands_state::create(capability_registry& registry,
-    bridge_transport& transport, task_service& tasks, std::vector<gui_command_definition> rows) {
+    bridge_transport& transport, task_service& tasks, std::vector<gui_command_definition> rows, dm::mode enabled) {
   try {
     if (rows.empty() || rows.size() > capacity_limit || registry.contains("gui.bind") ||
         registry.contains("gui.effect") || registry.contains("gui.ack")) return {};
-    auto state = std::shared_ptr<gui_commands_state>(new gui_commands_state(registry,transport,tasks));
+    auto state = std::shared_ptr<gui_commands_state>(new gui_commands_state(registry,transport,tasks,enabled));
     const std::weak_ptr<gui_commands_state> weak{state};
     capability_registry candidate = registry;
     const auto id = string_schema(128), data = string_schema(32768);
@@ -337,6 +371,10 @@ std::string gui_commands_state::page_effect(const bridge_request& request) {
       if (context->effect_enqueued || context->consumption.load()!=0) return reject("E_GUI_EFFECT_USED");
       if (effects.size()>=capacity_limit) return reject("E_BUSY");
       effects.push_back(queued); context->effect_enqueued=true;
+      if (metrics_mode == dm::mode::scalar) {
+        queued->metrics_enqueued_us = dm::detail::now_us();
+        dm::detail::high_water(metrics_effect_high_water, effects.size());
+      }
     }
     std::unique_lock<std::mutex> lock(queued->mutex);
     while (queued->phase.load(std::memory_order_acquire)<2 && !closed.load() &&

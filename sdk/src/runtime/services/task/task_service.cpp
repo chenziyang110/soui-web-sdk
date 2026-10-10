@@ -1,4 +1,5 @@
 #include <soui/runtime/services/task/task_service.h>
+#include "../../diagnostics/runtime_metrics_internal.h"
 #include <soui/runtime/core/task/task_store.h>
 #include "../gui/gui_commands_internal.h"
 
@@ -17,6 +18,7 @@
 #include "task_family_test_hooks.h"
 #endif
 
+namespace dm = soui::sdk::diagnostics;
 namespace soui::runtime {
 namespace {
 using json = nlohmann::json;
@@ -142,6 +144,8 @@ struct task_service::impl {
     std::shared_ptr<const handler> callback;
     std::shared_ptr<const local_task_family> family;
     std::shared_ptr<detail::gui_job_context> gui;
+    std::uint64_t metrics_enqueued_us{0};
+    bool metrics_handler_entered{false};
     std::atomic<bool> cancel_requested{false};
     void cancel() noexcept {
       cancel_requested.store(true, std::memory_order_release);
@@ -167,6 +171,13 @@ struct task_service::impl {
     std::string task_id;
   };
 
+  explicit impl(dm::mode enabled) : metrics_mode(enabled),
+      metrics_epoch(enabled == dm::mode::scalar ? dm::detail::epoch() : 0), tasks("sdk-task-", enabled) {}
+  const dm::mode metrics_mode;
+  const std::uint64_t metrics_epoch;
+  dm::tasks metrics;
+  bool metrics_saturated{false};
+  std::uint64_t active_handlers{0};
   mutable std::mutex mutex;
   std::condition_variable ready;
   bool stopping{false};
@@ -180,7 +191,7 @@ struct task_service::impl {
   std::unordered_map<std::string, std::string> operations;
   std::unordered_map<std::string, subscription> subscriptions;
   std::vector<std::thread> workers;
-  task_store tasks{"sdk-task-"};
+  task_store tasks;
   std::shared_ptr<const event_sink> sink;
 
   bool owns_family(const std::shared_ptr<const local_task_family>& family) const {
@@ -226,7 +237,9 @@ struct task_service::impl {
           owner->second.family == family && owner->second.kind == kind) {
         if (owner->second.scope_key != scope_key)
           return error("E_OPERATION_CONFLICT", "operationId belongs to a different task request.");
-        return json{{"taskId", previous->second}, {"accepted", true}, {"duplicate", true}}.dump();
+        auto receipt = json{{"taskId", previous->second}, {"accepted", true}, {"duplicate", true}}.dump();
+        if (metrics_mode == dm::mode::scalar) dm::detail::increment(metrics.duplicate_starts_total, metrics_saturated);
+        return receipt;
       }
       return error("E_OPERATION_CONFLICT", "operationId belongs to a different task scope or family.");
     }
@@ -236,7 +249,10 @@ struct task_service::impl {
     })) return error("E_UNAUTHORIZED", "GUI tasks require their native local family.");
     if (callback == handlers.end()) return error("E_UNKNOWN_METHOD", "No native task handler is registered for kind.");
     if (family && family->data_->gui && !gui) return error("E_BUSY", "GUI command capacity is unavailable.");
-    if (inflight >= task_service::max_inflight) return error("E_BUSY", "The native task queue is full.");
+    if (inflight >= task_service::max_inflight) {
+      if (metrics_mode == dm::mode::scalar) dm::detail::increment(metrics.inflight_full_rejections_total, metrics_saturated);
+      return error("E_BUSY", "The native task queue is full.");
+    }
     if (workers.empty()) {
       try {
         for (std::size_t index = 0; index < task_service::max_workers; ++index)
@@ -253,7 +269,10 @@ struct task_service::impl {
     if (!live()) return error("E_UNAUTHORIZED", "Task authorization expired before admission.");
     auto prepared = tasks.prepare_start_scoped(operation_key, scope_key);
     const auto& snapshot = prepared->snapshot;
-    if (prepared->capacity) return error("E_BUSY", "The native task store capacity is exhausted.");
+    if (prepared->capacity) {
+      if (metrics_mode == dm::mode::scalar) dm::detail::increment(metrics.store_full_rejections_total, metrics_saturated);
+      return error("E_BUSY", "The native task store capacity is exhausted.");
+    }
     if (prepared->conflict || prepared->duplicate || snapshot.task_id.empty())
       return error("E_OPERATION_CONFLICT", "Native task operation identity is inconsistent.");
     item->id = snapshot.task_id;
@@ -303,6 +322,12 @@ struct task_service::impl {
     queue.swap(candidate_queue);
     subscriptions.swap(candidate_subscriptions);
     ++inflight;
+    if (metrics_mode == dm::mode::scalar) {
+      item->metrics_enqueued_us = dm::detail::now_us();
+      dm::detail::increment(metrics.committed_starts_total, metrics_saturated);
+      dm::detail::high_water(metrics.inflight_high_water, inflight);
+      dm::detail::high_water(metrics.queued_high_water, queue.size());
+    }
     ready.notify_one();
     return receipt;
     } catch (...) { return error("E_NATIVE_FAILURE", "Native task preparation failed."); }
@@ -473,6 +498,8 @@ struct task_service::impl {
       found->second.active.reset();
     }
     (void)tasks.complete(item->id, outcome.kind, item->family ? std::string{} : outcome.message);
+    if (metrics_mode == dm::mode::scalar && !item->metrics_handler_entered)
+      dm::detail::increment(metrics.cancelled_before_handler_total, metrics_saturated);
     if (inflight) --inflight;
   }
 
@@ -519,10 +546,19 @@ struct task_service::impl {
             emit(item->id);
             return true;
           });
+      if (metrics_mode == dm::mode::scalar) {
+        std::lock_guard<std::mutex> lock(mutex);
+        item->metrics_handler_entered = true; ++active_handlers;
+      }
       task_outcome outcome;
       try { outcome = item->gui ? item->family->data_->gui->run(item->gui, control)
                                : (*item->callback)(item->invocation, control); }
       catch (...) { outcome = {result_kind::failure, "{}", "Native task handler failed."}; }
+      if (metrics_mode == dm::mode::scalar) {
+        std::lock_guard<std::mutex> lock(mutex);
+        --active_handlers;
+        dm::detail::increment(metrics.finished_handlers_total, metrics_saturated);
+      }
       finish(item, std::move(outcome));
       emit(item->id);
     }
@@ -530,7 +566,33 @@ struct task_service::impl {
 
 };
 
-task_service::task_service() : impl_{std::make_shared<impl>()} {}
+task_service::task_service() : task_service(dm::mode::disabled) {}
+task_service::task_service(dm::mode enabled) : impl_{std::make_shared<impl>(enabled)} {}
+
+dm::status task_service::read_runtime_metrics(dm::tasks& out) const noexcept {
+  out = {};
+  if (impl_->metrics_mode != dm::mode::scalar) return dm::status::disabled;
+  try {
+    auto observed = dm::detail::begin(impl_->metrics_mode, impl_->metrics_epoch);
+    std::unique_lock<std::mutex> lock(impl_->mutex, std::try_to_lock);
+    if (!lock.owns_lock()) { observed.state = dm::status::busy; dm::detail::end(observed); out.observation = observed; return observed.state; }
+    out = impl_->metrics; out.observation = observed;
+    out.observation.counter_saturated = impl_->metrics_saturated;
+    out.worker_limit = max_workers; out.inflight_limit = max_inflight; out.subscription_limit = max_subscriptions;
+    out.worker_slots = impl_->workers.size(); out.active_handlers = impl_->active_handlers;
+    out.inflight = impl_->inflight; out.queued = impl_->queue.size(); out.subscriptions = impl_->subscriptions.size();
+    out.owner_entries = impl_->owners.size(); out.operation_entries = impl_->operations.size(); out.stopping = impl_->stopping;
+    if (!impl_->queue.empty()) out.oldest_queued_age_us = dm::detail::age(
+        impl_->queue.front()->metrics_enqueued_us, dm::detail::now_us(), out.observation);
+    for (const auto& entry : impl_->owners) if (entry.second.result) {
+      ++out.result_cache_entries;
+      dm::detail::strings(entry.second.result->json, out.result_string_size_bytes,
+                          out.result_string_capacity_bytes, out.observation.counter_saturated);
+    }
+    if (!impl_->tasks.read_metrics_locked(out)) out.observation.state = dm::status::busy;
+    dm::detail::end(out.observation); return out.observation.state;
+  } catch (...) { out = {}; out.observation.state = dm::status::unavailable; return out.observation.state; }
+}
 
 task_service::~task_service() {
   {
@@ -809,10 +871,14 @@ std::string task_service::subscribe(const bridge_request& request) {
   const auto owner = impl_->owners.find(task_id);
   if (owner == impl_->owners.end() || owner->second.family || owner->second.revoked || !owner->second.context.matches(request) ||
       !impl_->tasks.query(task_id)) return error("E_TASK_NOT_FOUND", "The task is not valid for this session.");
-  if (impl_->subscriptions.size() >= max_subscriptions)
+  if (impl_->subscriptions.size() >= max_subscriptions) {
+    if (impl_->metrics_mode == dm::mode::scalar) dm::detail::increment(impl_->metrics.subscription_full_rejections_total, impl_->metrics_saturated);
     return error("E_BUSY", "Native task subscription capacity is exhausted.");
+  }
   const auto id = "sdk-subscription-" + std::to_string(impl_->next_subscription++);
   impl_->subscriptions.emplace(id, impl::subscription{{request.session_id, request.origin, request.authorization}, task_id});
+  if (impl_->metrics_mode == dm::mode::scalar)
+    dm::detail::high_water(impl_->metrics.subscription_high_water, impl_->subscriptions.size());
   return json{{"subscriptionId", id}}.dump();
 }
 
