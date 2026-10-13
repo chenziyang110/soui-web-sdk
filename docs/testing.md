@@ -62,6 +62,12 @@ HTTPS 内核的[回环证书验证](../verification/production-validation/previe
 
 0.3 基础切片可使用 `node tools/Collect-Verification.cjs --foundation`：要求 x86/x64 Release 的三种启动场景及四个单应用运行包；重跑单元与原生契约测试。结果明确为 `scope: foundation`、`sourceDeliveryVerified: false`，不等同于完整候选验收。汇总失败会留下未验收状态，不能继续引用历史绿色结果。汇总会更新证据文件，需随后刷新完整源码清单。
 
+## 命名缓存数据与真实接口
+
+`node --test tests/acceptance/native-cache-validation.test.cjs tests/sdk/long-run-cache-observation.test.cjs tests/sdk/long-run-policy.test.cjs` 只验证 DTO、采样范围和监督契约；C++ `soui_cache_observation_tests` 只验证消费者数据逻辑与 ABI 布局。独立真实 Host 用例 `sdk.native.engine-host-capacity.renderer-cache-abi` 还需绑定当前源码重编的内核、对应 SHA-256 和独立资源，按原 30 秒限制执行。它检查接口参数、初始化/线程边界、异步完成副本及关闭后的晚任务，不能代替真实缓存资源或目标系统验收。
+
+公开八小时 mixed/session 入口按 [ADR-0071](adr/0071-long-run-cache-sampling.md) 明确传入 `--cache-observation=1`。原生采样时间、重复和退休副本保留在报告里；命名缓存数据本身不会把资源、缓存限额或八小时门标为通过。
+
 ## 明确请求厂商回归
 
 `powershell.exe -File tools/Test.ps1 -Architecture x64 -Configuration Release -RequireVendorTests -UnitOnly` 要求当前根构建的私有厂商测试为 ON；x86 使用对应架构。`-UnitOnly` 仅省略桌面 smoke，仍执行原生 CTest。`-RequireVendorTests` 不能与仅做桌面 smoke 的 `-NativeOnly` 共用。

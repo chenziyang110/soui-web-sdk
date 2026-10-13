@@ -465,6 +465,10 @@ struct process_runtime_state {
   wkeRendererDiagnosticsApi renderer_api{};
   wkeRendererModelDiagnosticsApi renderer_model_api{};
   diagnostics::detail::renderer_model_binding renderer_model_binding;
+  wkeCacheDiagnosticsApi cache_api{};
+  diagnostics::detail::cache_sample_slot cache_slot;
+  diagnostics::detail::cache_identity_binding cache_binding;
+  diagnostics::cache_observation cache_completed;
   std::string renderer_module_path;
   bool renderer_module_matches{false};
   std::uint64_t renderer_pid{0};
@@ -484,6 +488,18 @@ struct process_runtime_state {
   // The process-lifetime owner is intentionally retained on Pending/Failed.
   // Static destruction must not bypass prepare and call an unbounded stop.
 };
+
+// Only startup writes this optional table while Runtime.starting protects readers.
+void prepare_cache_observer(process_runtime_state& runtime) noexcept {
+  runtime.cache_api = {};
+  if (runtime.renderer_mode != diagnostics::mode::scalar || !runtime.renderer_module_matches) return;
+  try {
+    using get_api = const wkeCacheDiagnosticsApi* (__cdecl*)(std::uint32_t);
+    const auto get = reinterpret_cast<get_api>(GetProcAddress(runtime.module, "wkeGetCacheDiagnosticsApi"));
+    const auto* api = get ? get(WKE_CACHE_ABI_VERSION) : nullptr;
+    if (diagnostics::detail::cache_api_supported(api)) runtime.cache_api = *api;
+  } catch (...) { runtime.cache_api = {}; }
+}
 
 process_runtime_state& process_runtime() {
   static auto* state = new process_runtime_state;
@@ -652,6 +668,7 @@ host_result acquire_runtime(const host_config& config, engine_thread*& thread, v
       runtime.module = LoadLibraryW(binary.c_str());
       if (!runtime.module) { result = failure("E_DEPENDENCY_LOAD", "Miniblink binary could not be loaded."); return false; }
       prepare_renderer_observer(runtime, binary, metrics);
+      prepare_cache_observer(runtime);
       if (!GetProcAddress(runtime.module, "wkeInitializeEx")) {
         result = failure("E_DEPENDENCY_API", "Miniblink initialization API is missing."); return false;
       }
@@ -784,6 +801,8 @@ host_result shutdown_miniblink_runtime() {
     if (engine->is_owner_thread()) return failure("E_RUNTIME_THREAD", "Runtime shutdown must run outside the engine owner.");
     if (!runtime.shutdown_pending) {
       runtime.shutdown_pending = true;
+      runtime.cache_slot.retire(); // Late sampling tasks cannot publish across close.
+      runtime.cache_completed.state = diagnostics::cache_status::unavailable;
       ++runtime.shutdown_generation; // This process runtime cannot be restarted.
     }
     generation = runtime.shutdown_generation;
@@ -880,6 +899,91 @@ diagnostics::renderer_status read_miniblink_renderer_model_metrics(
     if (!lock.owns_lock()) { out.state = diagnostics::renderer_status::busy; return out.state; }
     read_renderer_model_observer(runtime, out); return out.state;
   } catch (...) { out = {}; }
+#endif
+  return out.state;
+}
+
+diagnostics::cache_status request_miniblink_cache_sample() noexcept {
+#ifdef _WIN32
+  process_runtime_state* retained = nullptr;
+  engine_thread* engine = nullptr;
+  HMODULE module = nullptr;
+  wkeCacheDiagnosticsApi api{};
+  diagnostics::cache_observation envelope;
+  std::uint64_t token = 0;
+  try {
+    auto& runtime = process_runtime();
+    retained = &runtime;
+    {
+      std::unique_lock<std::mutex> lock(runtime.mutex, std::try_to_lock);
+      if (!lock.owns_lock() || runtime.starting) return diagnostics::cache_status::busy;
+      if (!runtime.thread) return diagnostics::cache_status::not_started;
+      if (runtime.renderer_mode != diagnostics::mode::scalar) return diagnostics::cache_status::disabled;
+      if (!runtime.initialized || runtime.shutdown_pending || runtime.retired ||
+          !diagnostics::detail::cache_api_supported(&runtime.cache_api) || runtime.cache_binding.invalid())
+        return diagnostics::cache_status::unavailable;
+      if (runtime.cache_slot.inflight()) return diagnostics::cache_status::pending;
+      token = runtime.cache_slot.begin();
+      if (!token) return diagnostics::cache_status::unavailable;
+      engine = runtime.thread.get(); module = runtime.module; api = runtime.cache_api;
+      envelope.module_path = runtime.renderer_module_path;
+      envelope.module_matches = runtime.renderer_module_matches;
+      runtime.cache_completed.state = diagnostics::cache_status::pending;
+    }
+    const auto admitted = detail::engine_admission::post(*engine, detail::engine_lane::ordinary,
+        [&runtime, engine, module, api, token, envelope = std::move(envelope)]() mutable {
+      wkeCacheSnapshot candidate{}; candidate.structSize = sizeof(candidate);
+      unsigned result = WKE_CACHE_UNAVAILABLE;
+      {
+        std::lock_guard<std::mutex> lock(runtime.mutex);
+        if (runtime.starting || runtime.shutdown_pending || runtime.retired || !runtime.initialized ||
+            runtime.thread.get() != engine || runtime.module != module) return;
+      }
+      // No Runtime mutex spans component locks or DLL invocation. This runs on Engine.
+      try { result = api.sampleExistingCaches(&candidate); } catch (...) { result = WKE_CACHE_UNAVAILABLE; }
+      std::lock_guard<std::mutex> lock(runtime.mutex);
+      if (runtime.thread.get() != engine || runtime.module != module || runtime.shutdown_pending ||
+          runtime.retired || !runtime.cache_slot.finish(token)) return;
+      auto& completed = runtime.cache_completed;
+      completed.state = result == WKE_CACHE_BUSY ? diagnostics::cache_status::busy : diagnostics::cache_status::unavailable;
+      if (result != WKE_CACHE_READY || candidate.status != result ||
+          !runtime.cache_binding.observe(candidate, runtime.renderer_pid, runtime.renderer_creation)) return;
+      envelope.native = candidate;
+      envelope.identity_bound = true; envelope.has_completed_sample = true;
+      envelope.state = diagnostics::cache_status::sampled;
+      completed = std::move(envelope); // Fixed fields and std::string move; no allocation during publication.
+    });
+    if (admitted == detail::engine_admission_result::accepted) return diagnostics::cache_status::pending;
+    std::lock_guard<std::mutex> lock(runtime.mutex);
+    if (runtime.cache_slot.finish(token)) runtime.cache_completed.state =
+        admitted == detail::engine_admission_result::full ? diagnostics::cache_status::busy : diagnostics::cache_status::unavailable;
+    return runtime.cache_completed.state;
+  } catch (...) {
+    if (retained && token) {
+      try {
+        std::lock_guard<std::mutex> lock(retained->mutex);
+        if (retained->cache_slot.finish(token)) retained->cache_completed.state = diagnostics::cache_status::unavailable;
+      } catch (...) {} // A failed Runtime mutex cannot produce a valid completed sample.
+    }
+  }
+#endif
+  return diagnostics::cache_status::unavailable;
+}
+
+diagnostics::cache_status read_miniblink_cache_metrics(diagnostics::cache_observation& out) noexcept {
+  out = {};
+#ifdef _WIN32
+  try {
+    auto& runtime = process_runtime();
+    std::unique_lock<std::mutex> lock(runtime.mutex, std::try_to_lock);
+    if (!lock.owns_lock() || runtime.starting) { out.state = diagnostics::cache_status::busy; return out.state; }
+    if (!runtime.thread) return out.state;
+    if (runtime.renderer_mode != diagnostics::mode::scalar) { out.state = diagnostics::cache_status::disabled; return out.state; }
+    out = runtime.cache_completed;
+    out.inflight = runtime.cache_slot.inflight(); out.runtime_retired = runtime.retired;
+    if (!diagnostics::detail::cache_api_supported(&runtime.cache_api)) out.state = diagnostics::cache_status::unavailable;
+    return out.state;
+  } catch (...) { out = {}; out.state = diagnostics::cache_status::unavailable; }
 #endif
   return out.state;
 }

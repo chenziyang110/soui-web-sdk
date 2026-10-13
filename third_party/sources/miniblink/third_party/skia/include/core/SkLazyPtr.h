@@ -117,6 +117,9 @@ T consume_load(T* ptr) {
 template <typename T, T* (*Create)() = sk_new<T>, void (*Destroy)(T*) = sk_delete<T> >
 class SkStaticLazyPtr {
 public:
+    // Observe publication without invoking Create(). Static pointers are retained.
+    T* peek() { return sk_atomic_load(&fPtr, sk_memory_order_acquire); }
+
     T* get() {
         // If fPtr has already been filled, we need a consume barrier when loading it.
         // If not, we need a release barrier when setting it.  try_cas will do that.

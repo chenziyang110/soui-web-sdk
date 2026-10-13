@@ -415,7 +415,7 @@ async function run(suite,config,options) {
   const bin=path.join(suite,'runtime');
   const mixed=config.mode==='mixed', session=config.mode==='session';
   const duration=mixed || session;
-  const args=duration?
+  const args=longRun?require('./long-run-validation.cjs').nativeArgs(config,log):duration?
     [`--mode=${config.mode}`,`--duration-ms=${config.durationMs}`,`--idle-ms=${config.idleMs}`,
       `--settle-ms=${config.settleMs}`,`--timeout-ms=${config.timeoutMs}`,`--report=${log}`]:
     [`--mode=${config.mode}`,`--cycles=${config.cycles}`,`--warmup=${config.warmup}`,

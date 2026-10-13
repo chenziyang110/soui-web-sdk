@@ -60,8 +60,39 @@ function checkedAggregate(analysis,mode){
 }
 function nativeArgs(config,eventLogPath){
   return config.durationMs!==undefined?
-    ['--mode='+config.mode,'--duration-ms='+config.durationMs,'--idle-ms='+config.idleMs,'--settle-ms='+config.settleMs,'--timeout-ms='+config.timeoutMs,'--report='+eventLogPath]:
+    ['--mode='+config.mode,'--duration-ms='+config.durationMs,'--idle-ms='+config.idleMs,'--settle-ms='+config.settleMs,'--timeout-ms='+config.timeoutMs,'--report='+eventLogPath,'--cache-observation=1']:
     ['--mode='+config.mode,'--cycles='+config.cycles,'--warmup='+config.warmup,'--settle-ms='+config.settleMs,'--timeout-ms='+config.timeoutMs,'--report='+eventLogPath];
+}
+function namedCacheObservations(records,subject,modulePin){
+  const cache=require('./native-cache-validation.cjs');
+  const result={scope:cache.scope,dataGate:NE,sampleRows:0,completedCopies:0,missingSamples:0,
+    invalidSamples:0,partialSamples:0,newCompletedSamples:0,repeatedCompletedCopies:0,retiredCopies:0,
+    maximumAgeMicroseconds:'0',lastSampleQpc:null,resourceGate:NE,qualified:false,failure:null};
+  let previous=null,maxAge=0n;
+  for(const row of records){
+    if(row.event!=='sample'||row.phase==='process')continue;
+    ++result.sampleRows;
+    const dto=row.nativeSdk?.namedCaches,clock=row.nativeSdk?.captureClock;
+    if(!dto){++result.missingSamples;continue;}
+    const observed=cache.analyzeNamedCache(dto,{subject,modulePin,captureClock:clock,previous});
+    if(observed.dataGate==='invalid'){
+      ++result.invalidSamples;result.failure??=observed.failure;continue;
+    }
+    if(observed.dataGate===NE){++result.missingSamples;continue;}
+    ++result.completedCopies;
+    if(observed.dataGate==='partial')++result.partialSamples;
+    const qpc=cache.decimal(dto.sampleQpc),prior=previous?cache.decimal(previous.sampleQpc):null;
+    if(prior!==null&&qpc===prior)++result.repeatedCompletedCopies;
+    if(observed.freshRequestCompleted&&(prior===null||qpc>prior))++result.newCompletedSamples;
+    if(observed.retainedSnapshot)++result.retiredCopies;
+    const age=(cache.decimal(clock.qpc)-qpc)*1000000n/cache.decimal(dto.qpcFrequency);
+    if(age>maxAge)maxAge=age;
+    previous=dto;result.lastSampleQpc=dto.sampleQpc;
+  }
+  result.maximumAgeMicroseconds=maxAge.toString();
+  result.dataGate=result.invalidSamples?'invalid':!result.completedCopies?NE:
+    result.partialSamples||result.missingSamples?'partial':'matched';
+  return result;
 }
 function processBudget(config){
   return config.durationMs!==undefined?config.durationMs+Math.max(180000,2*config.timeoutMs+config.idleMs):
@@ -303,6 +334,8 @@ function analyzeLong(result,eventRaw,evidence){
         {gate:NE,failure:'Compatibility single-owned-tree not proved'};
       output.gates.native=output.native.gate;
       output.owners=owners.analyzeOwners(records);
+      output.namedCaches=owned.treeGate==='passed'?namedCacheObservations(records,owned.subject,evidence.modulePin):
+        {scope:policy.RULE.namedCacheScope,dataGate:NE,resourceGate:NE,qualified:false,failure:'single-owned-tree-not-proved'};
       output.gates.ownerCaps=output.owners.capacityGate;output.gates.terminalDrain=output.owners.terminalDrainGate;
       output.gates.cacheBudget=output.owners.cacheBudgetGate;
       output.requiredGates=['inputs','operations','owned','tree','duration','sampling','resources','actions','native','ownerCaps','terminalDrain','cacheBudget'];
@@ -393,5 +426,5 @@ function captureResult(operation,operationPin,policyPin,evidence){
     passed:matched&&analysis.passed===true&&analysis.longRunGate==='passed',releaseReady:false,
     failure:matched?analysis.failure:contractFailure||evidence.failure||operation.failure||'complete-current-long-analysis-not-bound'};
 }
-module.exports={nearestRank,percentCeil,amplitude,trend,checkSeries,combine,nativeArgs,processBudget,verifyOwned,
+module.exports={nearestRank,percentCeil,amplitude,trend,checkSeries,combine,nativeArgs,namedCacheObservations,processBudget,verifyOwned,
   verifyRunClock,originFor,hourlySamples,resourceTrends,actionTrends,nativeScope,requiredGates,aggregate,checkedAggregate,analyzeLong,analyzeFile,captureResult};

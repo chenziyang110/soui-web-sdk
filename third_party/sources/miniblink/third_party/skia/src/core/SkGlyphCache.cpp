@@ -7,6 +7,7 @@
 
 #include "SkGlyphCache.h"
 #include "SkGlyphCache_Globals.h"
+#include "SkCacheObservation.h"
 #include "SkGraphics.h"
 #include "SkLazyPtr.h"
 #include "SkMutex.h"
@@ -31,6 +32,32 @@ SK_DECLARE_STATIC_LAZY_PTR(SkGlyphCache_Globals, globals, create_globals);
 // Returns the shared globals
 static SkGlyphCache_Globals& get_globals() {
     return *globals.get();
+}
+
+SkGlyphCacheObservation SkPeekAttachedGlyphCache() {
+    SkGlyphCacheObservation result = {};
+    SkGlyphCache_Globals* published = globals.peek();
+    if (!published) return result;
+    if (!published->fLock.tryAcquire()) {
+        result.status = kBusy_SkCacheObservation;
+        return result;
+    }
+    struct Held {
+        SkSpinlock& lock;
+        ~Held() { lock.release(); }
+    } held = {published->fLock};
+    const int count = published->getCacheCountUsed();
+    const int limit = published->getCacheCountLimit();
+    if (count < 0 || limit < 0) {
+        result.status = kUnavailable_SkCacheObservation;
+        return result;
+    }
+    result.bytes = published->getTotalMemoryUsed();
+    result.count = static_cast<uint64_t>(count);
+    result.byteLimit = published->getCacheSizeLimit();
+    result.countLimit = static_cast<uint64_t>(limit);
+    result.status = kReady_SkCacheObservation;
+    return result;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -60,7 +60,7 @@ settings arguments() {
   require(rows.size()==11 && rows[1]==L"--kernel" && rows[3]==L"--kernel-sha" && rows[5]==L"--resources" && rows[7]==L"--output" && rows[9]==L"--case","argument-shape");
   settings out{rows[2],rows[6],rows[8],std::string(rows[4].begin(),rows[4].end()),std::string(rows[10].begin(),rows[10].end())};
   require(out.selected=="reply-full-zero-business" || out.selected=="cleanup-full-retains-owner" ||
-    out.selected=="renderer-model-abi","fixed-case");
+    out.selected=="renderer-model-abi" || out.selected=="renderer-cache-abi","fixed-case");
   require(out.kernel.is_absolute() && out.resources.is_absolute() && out.output.is_absolute() && fs::is_regular_file(out.kernel) &&
     fs::is_regular_file(out.resources/"index.html") && !fs::exists(out.output) && fs::is_directory(out.output.parent_path()),"actual-inputs-fresh-output");
   require(out.kernel_sha.size()==64 && out.kernel_sha.find_first_not_of("0123456789abcdef")==std::string::npos,"kernel-hash-format");
@@ -296,6 +296,48 @@ class real_renderer_model_probe final {
   std::uint64_t captured_qpc_{};
 };
 
+class real_cache_probe final {
+ public:
+  explicit real_cache_probe(const settings& options) {
+    module_=LoadLibraryW(options.kernel.c_str()); require(module_!=nullptr,"cache-actual-module-load");
+    std::array<wchar_t,32768> path{};
+    const auto count=GetModuleFileNameW(module_,path.data(),static_cast<DWORD>(path.size()));
+    require(count>0&&count<path.size()&&fs::equivalent(fs::path(path.data()),options.kernel),"cache-actual-module-route");
+    get_=reinterpret_cast<get_api>(GetProcAddress(module_,"wkeGetCacheDiagnosticsApi"));
+    require(get_!=nullptr,"cache-required-export"); table_=get_(1);
+    require(soui::sdk::diagnostics::detail::cache_api_supported(table_),"cache-actual-table");
+    invalid_outputs(); preinit_=read();
+    require(preinit_.status==WKE_CACHE_NOT_STARTED&&preinit_.processId==0&&preinit_.processCreationFileTime==0&&
+      preinit_.recordingEpoch==0&&preinit_.initializedQpc==0&&preinit_.sampleQpc==0&&
+      preinit_.blinkStatus==0&&preinit_.glyphStatus==0&&preinit_.resourceStatus==0,"cache-preinit-not-started");
+  }
+  ~real_cache_probe() { if(module_)require(FreeLibrary(module_)!=FALSE,"cache-probe-extra-module-release"); }
+  real_cache_probe(const real_cache_probe&)=delete;
+  real_cache_probe& operator=(const real_cache_probe&)=delete;
+  void invalid_outputs() const {
+    for(const auto version:std::array<unsigned,3>{0,2,(std::numeric_limits<unsigned>::max)()})
+      require(get_(version)==nullptr,"cache-wrong-version-rejected");
+    require(table_->sampleExistingCaches(nullptr)==WKE_CACHE_INVALID_ARGUMENT,"cache-null-output");
+    struct guarded final { std::array<unsigned char,16> before; wkeCacheSnapshot value; std::array<unsigned char,16> after; };
+    for(const auto size:std::array<unsigned,3>{0,215,217}) {
+      guarded output;std::memset(&output,0xa5,sizeof(output));output.value.structSize=size;
+      std::array<unsigned char,sizeof(output)> original{};std::memcpy(original.data(),&output,sizeof(output));
+      require(table_->sampleExistingCaches(&output.value)==WKE_CACHE_INVALID_ARGUMENT&&
+        std::memcmp(original.data(),&output,sizeof(output))==0,"cache-invalid-size-no-write");
+    }
+  }
+  wkeCacheSnapshot read() const {
+    require(get_(1)==table_,"cache-table-stable");
+    wkeCacheSnapshot output{};output.structSize=sizeof(output);
+    const auto state=table_->sampleExistingCaches(&output);
+    require(output.structSize==216&&output.abiVersion==1&&output.status==state,"cache-return-envelope-match");return output;
+  }
+  const wkeCacheSnapshot& preinit() const noexcept { return preinit_; }
+ private:
+  using get_api=const wkeCacheDiagnosticsApi* (__cdecl*)(unsigned);
+  HMODULE module_{};get_api get_{};const wkeCacheDiagnosticsApi* table_{};wkeCacheSnapshot preinit_{};
+};
+
 int execute(const settings& options,HINSTANCE instance) {
   const auto case_began=GetTickCount64();
   auto app=std::make_unique<application>(); // Catch while all lifecycle owners remain alive.
@@ -308,6 +350,8 @@ int execute(const settings& options,HINSTANCE instance) {
     require(held_kernel!=INVALID_HANDLE_VALUE && hash_file(held_kernel)==options.kernel_sha,"actual-held-kernel-sha");
     std::unique_ptr<real_renderer_model_probe> model;
     if(options.selected=="renderer-model-abi")model=std::make_unique<real_renderer_model_probe>(options);
+    std::unique_ptr<real_cache_probe> cache;
+    if(options.selected=="renderer-cache-abi")cache=std::make_unique<real_cache_probe>(options);
     const std::wstring class_name=L"SouiEngineCapacity_"+std::to_wstring(GetCurrentProcessId());
     WNDCLASSW type{}; type.lpfnWndProc=procedure; type.hInstance=instance; type.lpszClassName=class_name.c_str();
     require(RegisterClassW(&type)!=0,"actual-owner-class");
@@ -345,6 +389,79 @@ int execute(const settings& options,HINSTANCE instance) {
     const auto path_size=GetModuleFileNameW(module_before,module_path.data(),static_cast<DWORD>(module_path.size()));
     require(path_size!=0 && path_size<module_path.size() && fs::equivalent(fs::path(module_path.data()),options.kernel),
       "actual-loaded-kernel-path");
+    if(cache) {
+      using namespace soui::sdk::diagnostics;
+      std::atomic<DWORD> engine_tid{0};
+      require(engine->post([&]{engine_tid.store(GetCurrentThreadId(),std::memory_order_release);}),"cache-real-owner-query");
+      while(!engine_tid.load(std::memory_order_acquire)) {within_case(case_began);pump(*app);}
+      require(engine_tid.load()!=GetCurrentThreadId(),"cache-owner-distinct-from-ui");
+      cache->invalid_outputs(); wkeCacheSnapshot wrong_owner{};
+      for(;;) {
+        within_case(case_began);wrong_owner=cache->read();
+        if(wrong_owner.status!=WKE_CACHE_BUSY)break;
+        pump(*app);require(MsgWaitForMultipleObjects(0,nullptr,FALSE,1,QS_ALLINPUT)!=WAIT_FAILED,"cache-wrong-owner-busy-poll");
+      }
+      require(wrong_owner.status==WKE_CACHE_WRONG_OWNER,"cache-wrong-ui-owner-refused");
+      require(soui::sdk::request_miniblink_cache_sample()==cache_status::pending,"cache-real-request-admitted");
+      cache_observation completed;
+      for(;;) {
+        within_case(case_began);const auto state=soui::sdk::read_miniblink_cache_metrics(completed);
+        if(state==cache_status::sampled&&completed.has_completed_sample&&!completed.inflight)break;
+        require(state==cache_status::pending||state==cache_status::busy,"cache-request-completion-invalid");
+        pump(*app);require(MsgWaitForMultipleObjects(0,nullptr,FALSE,1,QS_ALLINPUT)!=WAIT_FAILED,"cache-completion-owner-service");
+      }
+      LARGE_INTEGER captured{},frequency{};
+      require(QueryPerformanceCounter(&captured)&&captured.QuadPart>0&&QueryPerformanceFrequency(&frequency)&&frequency.QuadPart>0,"cache-actual-clock");
+      const auto& raw=completed.native;
+      soui::sdk::diagnostics::detail::cache_identity_binding identity;
+      require(completed.module_matches&&completed.identity_bound&&fs::equivalent(fs::path(completed.module_path),options.kernel)&&
+        identity.observe(raw,GetCurrentProcessId(),creation)&&raw.engineOwnerThreadId==engine_tid.load()&&
+        raw.qpcFrequency==static_cast<std::uint64_t>(frequency.QuadPart)&&raw.sampleQpc<=static_cast<std::uint64_t>(captured.QuadPart),
+        "cache-completed-actual-identity-clock-components");
+      cache_observation repeated;
+      require(soui::sdk::read_miniblink_cache_metrics(repeated)==cache_status::sampled&&
+        std::memcmp(&raw,&repeated.native,sizeof(raw))==0,"cache-pure-getter-does-not-resample");
+      close_retained(*app);app->withdrawal_allowed=true;
+      require(DestroyWindow(owner)!=FALSE&&!IsWindow(owner),"cache-real-owner-withdrawal");app->owner=nullptr;app.reset();
+      require(engine->drain_for(2s),"cache-actual-quiet-after-host-close");
+      hold->begin(*engine); // Existing finite hold blocks actual Engine, not a fake sample provider.
+      const auto before=engine_admission::observe(*engine);
+      require(soui::sdk::request_miniblink_cache_sample()==cache_status::pending,"cache-after-last-host-request-admitted");
+      require(soui::sdk::request_miniblink_cache_sample()==cache_status::pending,"cache-single-flight-duplicate");
+      const auto queued=engine_admission::observe(*engine);
+      require(queued.queued[0]==before.queued[0]+1,"cache-exactly-one-ordinary-lane-task");
+      cache_observation pending;
+      require(soui::sdk::read_miniblink_cache_metrics(pending)==cache_status::pending&&pending.inflight&&
+        std::memcmp(&raw,&pending.native,sizeof(raw))==0,"cache-pending-keeps-old-completion");
+      const auto shutdown=soui::sdk::shutdown_miniblink_runtime();
+      require(!shutdown.ok&&shutdown.code=="E_RUNTIME_SHUTDOWN_PENDING","cache-real-close-starts-while-task-queued");
+      cache_observation closing;
+      require(soui::sdk::read_miniblink_cache_metrics(closing)==cache_status::unavailable&&!closing.inflight&&
+        closing.has_completed_sample&&std::memcmp(&raw,&closing.native,sizeof(raw))==0&&
+        soui::sdk::request_miniblink_cache_sample()==cache_status::unavailable,"cache-close-cancels-late-publication");
+      hold->release();shutdown_within_case(case_began);
+      cache_observation terminal;
+      require(soui::sdk::read_miniblink_cache_metrics(terminal)==cache_status::unavailable&&terminal.runtime_retired&&
+        !terminal.inflight&&terminal.has_completed_sample&&std::memcmp(&raw,&terminal.native,sizeof(raw))==0,
+        "cache-late-real-task-cannot-replace-retained-snapshot");
+      cache->invalid_outputs();require(cache->read().status==WKE_CACHE_UNAVAILABLE,"cache-finalized-provider-does-not-sample");
+      shutdown_within_case(case_began);
+      cache_observation final_copy;
+      require(soui::sdk::read_miniblink_cache_metrics(final_copy)==cache_status::unavailable&&
+        std::memcmp(&raw,&final_copy.native,sizeof(raw))==0,"cache-idempotent-close-keeps-original-qpc");
+      require(UnregisterClassW(class_name.c_str(),instance)!=FALSE&&CloseHandle(held_kernel)!=FALSE,"cache-class-kernel-handle-close");
+      const json result{{"schema","soui.renderer-cache-real-abi/v1"},{"case",options.selected},{"pid",GetCurrentProcessId()},
+        {"creationFileTime",std::to_string(creation)},{"architecture",architecture()},{"kernelSha256",options.kernel_sha},
+        {"snapshotBytes",216},{"tableBytes",sizeof(wkeCacheDiagnosticsApi)},{"version",1},{"capabilities","7"},
+        {"preinitStatus",cache->preinit().status},{"wrongVersionsRejected",3},{"invalidOutputNoWrite",true},
+        {"wrongUiOwnerRejected",true},{"completed",soui::acceptance::metrics::serialize(completed)},
+        {"pending",soui::acceptance::metrics::serialize(pending)},{"terminal",soui::acceptance::metrics::serialize(terminal)},
+        {"captureQpc",std::to_string(captured.QuadPart)},{"singleFlightOneOrdinaryTask",true},
+        {"lateQueuedTaskRejectedAfterRealClose",true},{"retainedSnapshotUnchanged",true},
+        {"hostDestroyed",true},{"ownerWithdrawn",true},{"bridgeJoined",true},{"runtimeShutdown",true},
+        {"resourceQualification",false},{"fullQualification",false}};
+      require(output_new(options.output,result.dump(2)+"\n"),"cache-actual-receipt-create-new");return 0;
+    }
     if(model) {
       std::atomic<DWORD> engine_tid{0};
       require(engine->post([&]{engine_tid.store(GetCurrentThreadId(),std::memory_order_release);}),"actual-model-owner-query-admitted");

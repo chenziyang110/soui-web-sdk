@@ -1,6 +1,7 @@
 #pragma once
 
 #include <soui/diagnostics/runtime_metrics.h>
+#include <soui/diagnostics/cache_observation.h>
 #include <json.hpp>
 #include <string>
 
@@ -192,6 +193,42 @@ inline json serialize(const diagnostics::process_engine_runtime& value) {
               {"initialized", value.initialized}, {"retired", value.retired},
               {"terminal_snapshot", value.terminal_snapshot}};
   SOUI_ACCEPTANCE_COUNT(mounted_hosts);
+  return result;
+}
+
+inline const char* cache_status_name(diagnostics::cache_status state) noexcept {
+  switch (state) {
+    case diagnostics::cache_status::disabled: return "disabled";
+    case diagnostics::cache_status::not_started: return "not_started";
+    case diagnostics::cache_status::pending: return "pending";
+    case diagnostics::cache_status::busy: return "busy";
+    case diagnostics::cache_status::sampled: return "sampled";
+    default: return "unavailable";
+  }
+}
+inline json serialize(const diagnostics::cache_observation& value) {
+  const auto& raw = value.native;
+  json result{{"schemaVersion", 1}, {"scope", "named-process-cache-scalars"},
+      {"state", cache_status_name(value.state)}, {"modulePath", value.module_path},
+      {"moduleMatches", value.module_matches}, {"identityBound", value.identity_bound},
+      {"hasCompletedSample", value.has_completed_sample}, {"inflight", value.inflight},
+      {"runtimeRetired", value.runtime_retired}, {"structSize", raw.structSize},
+      {"abiVersion", raw.abiVersion}, {"status", raw.status}, {"reserved", raw.reserved},
+      {"blinkStatus", raw.blinkStatus}, {"blinkReserved", raw.blinkReserved},
+      {"glyphStatus", raw.glyphStatus}, {"glyphReserved", raw.glyphReserved},
+      {"resourceStatus", raw.resourceStatus}, {"resourceDiscardable", raw.resourceDiscardable}};
+#define SOUI_CACHE_COUNT(name) result[#name] = std::to_string(raw.name)
+  SOUI_CACHE_COUNT(processId); SOUI_CACHE_COUNT(processCreationFileTime);
+  SOUI_CACHE_COUNT(engineOwnerThreadId); SOUI_CACHE_COUNT(recordingEpoch);
+  SOUI_CACHE_COUNT(initializedQpc); SOUI_CACHE_COUNT(sampleQpc); SOUI_CACHE_COUNT(qpcFrequency);
+  SOUI_CACHE_COUNT(blinkLiveBytes); SOUI_CACHE_COUNT(blinkDeadBytes); SOUI_CACHE_COUNT(blinkCapacity);
+  SOUI_CACHE_COUNT(blinkMinDeadCapacity); SOUI_CACHE_COUNT(blinkMaxDeadCapacity);
+  SOUI_CACHE_COUNT(glyphAttachedBytes); SOUI_CACHE_COUNT(glyphAttachedCount);
+  SOUI_CACHE_COUNT(glyphByteLimit); SOUI_CACHE_COUNT(glyphCountLimit);
+  SOUI_CACHE_COUNT(resourceRetainedBytes); SOUI_CACHE_COUNT(resourceRetainedCount);
+  SOUI_CACHE_COUNT(resourceByteLimit); SOUI_CACHE_COUNT(resourceCountLimit);
+  SOUI_CACHE_COUNT(resourceRawSingleLimit); SOUI_CACHE_COUNT(resourceEffectiveSingleLimit);
+#undef SOUI_CACHE_COUNT
   return result;
 }
 

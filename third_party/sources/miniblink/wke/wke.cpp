@@ -10,6 +10,9 @@
 #include "wke/wke2.h"
 #include "wke/RendererDiagnosticsState.h"
 #include "wke/RendererModelState.h"
+#include "core/fetch/MemoryCache.h"
+#include "third_party/skia/src/core/SkCacheObservation.h"
+#include "third_party/skia/src/core/SkResourceCache.h"
 #include "core/workers/WorkerMessagingProxy.h"
 #if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
 #include "platform/heap/SafePoint.h"
@@ -164,6 +167,65 @@ const wkeRendererModelDiagnosticsApi renderer_model_api = {
     WKE_RENDER_MODEL_CAP_BOUND_BACKEND | WKE_RENDER_MODEL_CAP_FACTORY_HISTORY
         | WKE_RENDER_MODEL_CAP_COHERENT_COMPOSITOR, &read_renderer_model_snapshot
 };
+uint32_t WKE_CACHE_CALL sample_existing_caches(wkeCacheSnapshot* output)
+{
+    if (!output || output->structSize != sizeof(wkeCacheSnapshot))
+        return WKE_CACHE_INVALID_ARGUMENT;
+    wkeCacheSnapshot value{};
+    value.structSize = sizeof(value);
+    value.abiVersion = WKE_CACHE_ABI_VERSION;
+    wkeRendererProcessSnapshot identity{};
+    identity.structSize = sizeof(identity);
+    const uint32_t identityStatus = read_renderer_process_snapshot(&identity);
+    value.status = identityStatus == WKE_RENDER_DIAGNOSTICS_BUSY ? WKE_CACHE_BUSY : WKE_CACHE_NOT_STARTED;
+    constexpr uint32_t required = WKE_RENDER_DIAGNOSTICS_IDENTITY_VALID
+        | WKE_RENDER_DIAGNOSTICS_CLOCK_VALID | WKE_RENDER_DIAGNOSTICS_ENGINE_INITIALIZED;
+    constexpr uint32_t faults = WKE_RENDER_DIAGNOSTICS_COUNTER_FAULT
+        | WKE_RENDER_DIAGNOSTICS_IDENTITY_MISMATCH | WKE_RENDER_DIAGNOSTICS_CLOCK_FAILURE
+        | WKE_RENDER_DIAGNOSTICS_ENGINE_FINALIZED;
+    if (identity.flags & faults) {
+        value.status = WKE_CACHE_UNAVAILABLE;
+    } else if ((identityStatus == WKE_RENDER_DIAGNOSTICS_READY || identityStatus == WKE_RENDER_DIAGNOSTICS_CLOSED
+        || identityStatus == WKE_RENDER_DIAGNOSTICS_NOT_STARTED) && (identity.flags & required) == required) {
+        // Initialized identity precedes the compositor's first draw. Draw history
+        // is not a prerequisite for these independently named cache owners.
+        value.status = WKE_CACHE_UNAVAILABLE;
+        if (identity.engineOwnerThreadId == GetCurrentThreadId()) {
+            value.processId = identity.processId;
+            value.processCreationFileTime = identity.processCreationFileTime;
+            value.engineOwnerThreadId = identity.engineOwnerThreadId;
+            value.recordingEpoch = identity.recordingEpoch;
+            value.initializedQpc = identity.initializedQpc;
+            value.qpcFrequency = identity.qpcFrequency;
+            const auto memory = blink::peekMemoryCache();
+            const auto glyph = SkPeekAttachedGlyphCache();
+            const auto resource = SkResourceCache::PeekRetainedGlobalCache();
+            value.blinkStatus = memory.status;
+            value.blinkLiveBytes = memory.liveBytes; value.blinkDeadBytes = memory.deadBytes;
+            value.blinkCapacity = memory.capacity;
+            value.blinkMinDeadCapacity = memory.minDeadCapacity; value.blinkMaxDeadCapacity = memory.maxDeadCapacity;
+            value.glyphStatus = glyph.status;
+            value.glyphAttachedBytes = glyph.bytes; value.glyphAttachedCount = glyph.count;
+            value.glyphByteLimit = glyph.byteLimit; value.glyphCountLimit = glyph.countLimit;
+            value.resourceStatus = resource.status; value.resourceDiscardable = resource.discardable;
+            value.resourceRetainedBytes = resource.bytes; value.resourceRetainedCount = resource.count;
+            value.resourceByteLimit = resource.byteLimit; value.resourceCountLimit = resource.countLimit;
+            value.resourceRawSingleLimit = resource.rawSingleLimit;
+            value.resourceEffectiveSingleLimit = resource.effectiveSingleLimit;
+            if (renderer_qpc(value.sampleQpc) && value.sampleQpc >= value.initializedQpc)
+                value.status = WKE_CACHE_READY; // Completed sample, not all-component completeness.
+        } else {
+            value.status = WKE_CACHE_WRONG_OWNER;
+        }
+    } else if (identityStatus != WKE_RENDER_DIAGNOSTICS_NOT_STARTED
+        && identityStatus != WKE_RENDER_DIAGNOSTICS_BUSY) value.status = WKE_CACHE_UNAVAILABLE;
+    *output = value;
+    return value.status;
+}
+const wkeCacheDiagnosticsApi cache_api = {
+    sizeof(wkeCacheDiagnosticsApi), WKE_CACHE_ABI_VERSION, WKE_CACHE_CAP_NAMED_SCALARS, &sample_existing_caches
+};
+
 void renderer_platform_initialized(bool matched) noexcept
 {
     renderer_write_lock held(renderer_cache_lock);
@@ -243,6 +305,10 @@ const wkeRendererDiagnosticsApi* renderer_api_for_version(unsigned int version) 
 const wkeRendererModelDiagnosticsApi* WKE_CALL_TYPE wkeGetRendererModelDiagnosticsApi(unsigned int version)
 {
     return version == WKE_RENDER_MODEL_ABI_VERSION ? &wke::diagnostics::renderer_model_api : nullptr;
+}
+const wkeCacheDiagnosticsApi* WKE_CALL_TYPE wkeGetCacheDiagnosticsApi(unsigned int version)
+{
+    return version == WKE_CACHE_ABI_VERSION ? &wke::diagnostics::cache_api : nullptr;
 }
 const wkeRendererDiagnosticsApi* WKE_CALL_TYPE wkeGetRendererDiagnosticsApi(
     unsigned int requestedVersion)

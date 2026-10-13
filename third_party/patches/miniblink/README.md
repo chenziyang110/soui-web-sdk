@@ -36,3 +36,9 @@
 `0010-default-font-unicode.patch` 在 0009 之后应用，只修正 `WebPageImpl::initSetting` 的默认字体字面量。原字面量含乱码且显式取前两个字符，实际 x86 诊断观察到请求 `U+7039/U+5B29`，而系统字体名称为“宋体”（`U+5B8B/U+4F53`）。字体族比较因此拒绝该对象，后续在 `ComputedStyle::computedLineHeight` 读取空字体时出现访问冲突。
 
 新字面量使用 Unicode 转义，明确保留两个正确字符，不依赖源码中文编码。没有增加空字体兜底或修改比较规则。该修正尚待重新构建并复测原 `reply-full-zero-business`、清理及 ABI 用例；后备字体路径仍需单独核实。上节的固定源码和原始散列仅对应 0009 采用时点，本次后续变化由顶层源码清单记录。
+
+## 有限命名缓存观测：0011
+
+`0011-finite-cache-observation.patch` 以已包含 0010 的 `18da0e9` Native 子树为前件，记录 10 个已有文件的新增观测接线和 2 个新头。它新增独立 216 字节 cache snapshot/table，不改变原 renderer 168/264 字节 ABI；通过原 WKE ITERATOR 导出机制暴露可选 `wkeGetCacheDiagnosticsApi`。Blink 仅 owner-thread 读取现存 MemoryCache；Skia 仅对已发布 attached glyph/global retained resource 实例 try-lock，不触发 lazy-create、遍历、purge、消息消费或 limit setter。既有锁 acquire 算法保留，仅增加非阻塞 try 方法。
+
+策略字段来自当前组件实际配置，不能解释为全部 heap 硬上限。detached/TLS/外部借用对象、其他缓存实例与 allocator 不在范围。SDK 显式异步请求、完成副本、缺失/忙/不可用以及原采样时间见 [ADR-0070](../../../docs/adr/0070-finite-cache-observation.md)。`git apply --reverse --check` 已对当前工作树进行非写入检查；Node 纯数据/源码检查不证明 Native 编译、真实缓存行为或长期资源验收。所有旧补丁和历史结果保持原角色，新 Native 实际验证尚未执行。

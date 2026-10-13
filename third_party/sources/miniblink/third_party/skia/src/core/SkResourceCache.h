@@ -9,6 +9,7 @@
 #define SkResourceCache_DEFINED
 
 #include "SkBitmap.h"
+#include "SkCacheObservation.h"
 #include "SkMessageBus.h"
 #include "SkTDArray.h"
 
@@ -134,6 +135,7 @@ public:
     static void Add(Rec*);
 
     static size_t GetTotalBytesUsed();
+    static SkResourceCacheObservation PeekRetainedGlobalCache();
     static size_t GetTotalByteLimit();
     static size_t SetTotalByteLimit(size_t newLimit);
 

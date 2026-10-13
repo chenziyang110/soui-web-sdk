@@ -1,0 +1,69 @@
+'use strict';
+// DTO-only scalar validation. Supplied file pins are external evidence; this
+// function neither inspects modules nor certifies a DLL or resource outcome.
+const path=require('node:path');
+const scope='named-process-cache-scalars';
+const u64Names=['processId','processCreationFileTime','engineOwnerThreadId','recordingEpoch',
+  'initializedQpc','sampleQpc','qpcFrequency','blinkLiveBytes','blinkDeadBytes','blinkCapacity',
+  'blinkMinDeadCapacity','blinkMaxDeadCapacity','glyphAttachedBytes','glyphAttachedCount',
+  'glyphByteLimit','glyphCountLimit','resourceRetainedBytes','resourceRetainedCount',
+  'resourceByteLimit','resourceCountLimit','resourceRawSingleLimit','resourceEffectiveSingleLimit'];
+const uncovered=['Blink entries/decoded allocation heap','detached glyph strikes','TLS caches',
+  'other Skia instances','externally held evicted image data','all font/image heap','V8 compile cache','allocator overhead'];
+function decimal(value) {
+  if(typeof value!=='string'||!/^(0|[1-9][0-9]*)$/.test(value)||value.length>20||BigInt(value)>18446744073709551615n)
+    throw new Error('Expected canonical uint64 decimal');
+  return BigInt(value);
+}
+function analyzeNamedCache(value,{subject,modulePin,captureClock,previous}={}) {
+  const result={scope,dataGate:'not-evaluated',components:{},uncovered:[...uncovered],
+    resourceGate:'not-evaluated',qualified:false,passed:false};
+  try {
+    if(!value||value.schemaVersion!==1||value.scope!==scope)throw new Error('Invalid cache DTO');
+    if(!['disabled','not_started','pending','busy','unavailable','sampled'].includes(value.state))throw new Error('Invalid state');
+    for(const flag of ['hasCompletedSample','inflight','runtimeRetired'])
+      if(typeof value[flag]!=='boolean')throw new Error('Invalid completion flag');
+    if((value.state==='sampled'&&(!value.hasCompletedSample||value.inflight||value.runtimeRetired))||
+        (value.hasCompletedSample&&['disabled','not_started'].includes(value.state)))throw new Error('Contradictory completion state');
+    if(!value.hasCompletedSample)return result;
+    if(value.structSize!==216||value.abiVersion!==1||value.status!==1||value.reserved!==0||value.blinkReserved!==0||value.glyphReserved!==0)
+      throw new Error('Invalid ABI envelope');
+    if(value.identityBound!==true||value.moduleMatches!==true||!modulePin||
+        !Number.isSafeInteger(modulePin.bytes)||modulePin.bytes<=0||!/^[0-9a-f]{64}$/.test(modulePin.sha256)||
+        typeof value.modulePath!=='string'||!path.win32.isAbsolute(modulePin.path)||
+        path.win32.normalize(value.modulePath).toLowerCase()!==path.win32.normalize(modulePin.path).toLowerCase())
+      throw new Error('Missing external module binding');
+    const n=Object.fromEntries(u64Names.map(name=>[name,decimal(value[name])]));
+    if(!subject||n.processId!==decimal(String(subject.pid))||!n.processId||
+        n.processCreationFileTime!==decimal(subject.creationFileTime)||!n.processCreationFileTime||
+        !n.engineOwnerThreadId||!n.qpcFrequency||!n.recordingEpoch||n.recordingEpoch!==n.initializedQpc||
+        !captureClock||captureClock.valid!==true||decimal(captureClock.frequency)!==n.qpcFrequency||
+        n.sampleQpc<n.initializedQpc||n.sampleQpc>decimal(captureClock.qpc))throw new Error('Identity/clock mismatch');
+    if(previous){
+      for(const key of ['processId','processCreationFileTime','engineOwnerThreadId','recordingEpoch','initializedQpc','qpcFrequency'])
+        if(value[key]!==previous[key])throw new Error('Epoch identity changed');
+      if(n.sampleQpc<decimal(previous.sampleQpc))throw new Error('Sample time regressed');
+    }
+    for(const name of ['blink','glyph','resource']){
+      const status=value[`${name}Status`];
+      if(!Number.isInteger(status)||status<0||status>3)throw new Error('Invalid component state');
+      result.components[name]=['not_started','ready','busy','unavailable'][status];
+    }
+    if(value.resourceDiscardable!==0&&value.resourceDiscardable!==1)throw new Error('Invalid discardable mode');
+    if(value.blinkStatus===1&&(n.blinkMinDeadCapacity>n.blinkMaxDeadCapacity||n.blinkMaxDeadCapacity>n.blinkCapacity))
+      throw new Error('Invalid Blink prune policy');
+    if(value.resourceStatus===1){
+      const raw=n.resourceRawSingleLimit,total=n.resourceByteLimit;
+      const effective=value.resourceDiscardable?raw:(raw===0n?total:(raw<total?raw:total));
+      if(n.resourceEffectiveSingleLimit!==effective||(value.resourceDiscardable&&total!==0n))throw new Error('Invalid single-allocation policy');
+      result.resourcePolicy={byteBudget:value.resourceDiscardable?'absent':'retained-record-purge-threshold',
+        singleAllocationCap:value.resourceDiscardable&&raw===0n?'not-explicit':'current-configured-limit'};
+    }
+    result.dataGate=Object.values(result.components).every(state=>state==='ready')?'matched':'partial';
+    result.retainedSnapshot=value.runtimeRetired===true;
+    result.freshRequestCompleted=value.state==='sampled'&&value.inflight===false&&!value.runtimeRetired;
+    // Usage may exceed a soft threshold; sizes/limits may legitimately decrease.
+    return result;
+  }catch(error){result.dataGate='invalid';result.failure=error.message;return result;}
+}
+module.exports={scope,u64Names,decimal,analyzeNamedCache};

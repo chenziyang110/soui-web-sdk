@@ -99,6 +99,7 @@ typedef struct _tagWkeString* wkeString;
 #include "wke_cursor_broker.h"
 #include "wke_renderer_diagnostics.h"
 #include "wke_renderer_model_diagnostics.h"
+#include "wke_cache_diagnostics.h"
 
 // Versioned cross-thread interaction ABI. Only functions exposed through this
 // table are safe to call away from the WKE owner thread.
@@ -1038,6 +1039,7 @@ public:
     ITERATOR1(const wkeInteractionApi*, wkeGetInteractionApi, unsigned int requestedVersion, "") \
     ITERATOR1(const wkeRendererDiagnosticsApi*, wkeGetRendererDiagnosticsApi, unsigned int requestedVersion, "") \
     ITERATOR1(const wkeRendererModelDiagnosticsApi*, wkeGetRendererModelDiagnosticsApi, unsigned int requestedVersion, "") \
+    ITERATOR1(const wkeCacheDiagnosticsApi*, wkeGetCacheDiagnosticsApi, unsigned int requestedVersion, "") \
     ITERATOR1(void, wkeDestroyWebView, wkeWebView webView, "") \
     \
     ITERATOR2(void, wkeSetMemoryCacheEnable, wkeWebView webView, bool b, "") \

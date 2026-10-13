@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 23595,
-      "sha256": "b3a3254562acdbac74ad3ca82c068dbc1aa3c02882fd07404380c7b829e93939"
+      "bytes": 23904,
+      "sha256": "8cb5f12edbee824d52d51b64ddb458f4125ad338e3b3ac1898223cdfc755cbfa"
     },
     {
       "path": "CMakeLists.txt",
@@ -1901,6 +1901,12 @@
       "sha256": "cc11f158d946be54c24b7e464113a545279e8f9b25419b7f776a30cb83f43110"
     },
     {
+      "path": "docs/acceptance/cache-observation.md",
+      "normalization": "lf",
+      "bytes": 3619,
+      "sha256": "447cd5f4abfeffe6fba82d574b8726aa6f6e3e3ce17378c598edacf807a34186"
+    },
+    {
       "path": "docs/acceptance/capabilities.md",
       "normalization": "lf",
       "bytes": 21929,
@@ -2393,10 +2399,22 @@
       "sha256": "e44cf7319d0fdecaa083776f3fc6a368a5ada4bc7a9d496e6084ec5a7d63b036"
     },
     {
+      "path": "docs/adr/0070-finite-cache-observation.md",
+      "normalization": "lf",
+      "bytes": 4198,
+      "sha256": "4c3135a716c5a45aa8d2c2689097eb88bdf40dcb00261bd28ba77d3200d920d6"
+    },
+    {
+      "path": "docs/adr/0071-long-run-cache-sampling.md",
+      "normalization": "lf",
+      "bytes": 2131,
+      "sha256": "bbaf34f820ed311213cfe4d2ccffa7dc8b3ddbec3d900422e8c06e8ff912c158"
+    },
+    {
       "path": "docs/adr/README.md",
       "normalization": "lf",
-      "bytes": 1433,
-      "sha256": "01f4059d700cf8f1d5997aa9d175a545fb02b710ee48a5d2a8819f6d66ad87ba"
+      "bytes": 1737,
+      "sha256": "1666017b0f293d3dbdc504636950c95d1ffaad9434f818aca3441af3722f76ce"
     },
     {
       "path": "docs/adr/llvm-validation-profile.draft.md",
@@ -2407,8 +2425,8 @@
     {
       "path": "docs/api.md",
       "normalization": "lf",
-      "bytes": 30468,
-      "sha256": "61eab76df55d6982ed70f61e75e88f1aaecdda8aac0dc0556a76e8da101b4fda"
+      "bytes": 31826,
+      "sha256": "2467752ec7b08f45e6f3d0e60609e5b4dff0c2ad9a4372fdba42254d87db7413"
     },
     {
       "path": "docs/architecture.md",
@@ -2551,8 +2569,8 @@
     {
       "path": "docs/testing.md",
       "normalization": "lf",
-      "bytes": 14676,
-      "sha256": "591459a8bcd3f9433e50837c7896b34db3bbfe3c42b9811922a5a5d86a99ab11"
+      "bytes": 15594,
+      "sha256": "b25b9499d31d520f2331b95cf8bf9418f26468e41cc60bae2bee0fd28cf7be1a"
     },
     {
       "path": "docs/troubleshooting.md",
@@ -2759,6 +2777,18 @@
       "sha256": "e172cdf617b5fc0b95dac51c43e2126d98607f41a23c77f00bb3f11d39142079"
     },
     {
+      "path": "sdk/include/soui/diagnostics/cache_observation.h",
+      "normalization": "lf",
+      "bytes": 3742,
+      "sha256": "ee0a798a1c4028d99b544e6d3999da0fcbe4bb463be40cf98b1b18bea00f798d"
+    },
+    {
+      "path": "sdk/include/soui/diagnostics/cache_observation_abi.h",
+      "normalization": "lf",
+      "bytes": 1757,
+      "sha256": "2bf5e6ba0a1b10b71b35d80d29354b476fd96965f511fe7387323ab1b8f8f39c"
+    },
+    {
       "path": "sdk/include/soui/diagnostics/renderer_model_abi.h",
       "normalization": "lf",
       "bytes": 2262,
@@ -2821,8 +2851,8 @@
     {
       "path": "sdk/include/soui/host/soui_miniblink_host.h",
       "normalization": "lf",
-      "bytes": 11937,
-      "sha256": "79f1132cd06fe47e88f1b7efe9c9dbc68e7c1e07e4ef407491b286eb8465f639"
+      "bytes": 12347,
+      "sha256": "88ea8f147f9d1fb987f6fa77a5465b7a0a2604cc0081d697f587fc8d59af0ac8"
     },
     {
       "path": "sdk/include/soui/host/webview2_host.h",
@@ -3115,8 +3145,8 @@
     {
       "path": "sdk/src/host/soui_miniblink_host.cpp",
       "normalization": "lf",
-      "bytes": 192658,
-      "sha256": "6b8eafb540bfd2ce91109df7f6562006afd5554b3f49393f184c4b0cbb82fa85"
+      "bytes": 198536,
+      "sha256": "17fcb716b8bcb1486568fd65a664bddea956bff5b2d464974277ab7d0d0289a9"
     },
     {
       "path": "sdk/src/host/source_kernel_api.h",
@@ -3637,14 +3667,14 @@
     {
       "path": "tests/acceptance-app/main.cpp",
       "normalization": "lf",
-      "bytes": 39934,
-      "sha256": "7eb8bd048505f0733a07c368e1f8ea6db110f5db6dd5f1a82e8cc423b10bc728"
+      "bytes": 40669,
+      "sha256": "3706d2f3e973869e348e991ef51e5b6434f5cda8277097cc048e57c631748195"
     },
     {
       "path": "tests/acceptance-app/native-owner-metrics.h",
       "normalization": "lf",
-      "bytes": 11542,
-      "sha256": "d1449f451f0b71fbdc415729b7d42f6979954d2c42051eef1b0d002a018f738e"
+      "bytes": 13864,
+      "sha256": "514178d0dccf4f2f8006be07adac5a8d5f759bbb86d434a5fcc8a8087a5adc6e"
     },
     {
       "path": "tests/acceptance-app/shutdown-poll.h",
@@ -3709,14 +3739,14 @@
     {
       "path": "tests/acceptance/long-run-policy.cjs",
       "normalization": "lf",
-      "bytes": 4581,
-      "sha256": "bdb3557928772d3a4f383a9ea3cec794b23181217f473471b233f2577056766b"
+      "bytes": 4873,
+      "sha256": "00fcc9e6abee93d909515c8bb1858b8a227ba700d82705f4e10848a37fff9d1a"
     },
     {
       "path": "tests/acceptance/long-run-validation.cjs",
       "normalization": "lf",
-      "bytes": 32318,
-      "sha256": "89da93014559654c852b428cc3665fb1f01534c8a078799be4545a0957e64754"
+      "bytes": 34374,
+      "sha256": "5f75e99e789e4a592e98b5697268a37ee021b103f12418f2dd8d29fdcc173ab4"
     },
     {
       "path": "tests/acceptance/message-port-ab-controller.cjs",
@@ -3771,6 +3801,18 @@
       "normalization": "lf",
       "bytes": 3798,
       "sha256": "043e517c51044a69158c0fb625fca103640b66e3a8023767d69230115b6919aa"
+    },
+    {
+      "path": "tests/acceptance/native-cache-validation.cjs",
+      "normalization": "lf",
+      "bytes": 5276,
+      "sha256": "784967e4405c4b363350b531f3e5a0c81253da55a7a2ce3c2709e1ca86655f3b"
+    },
+    {
+      "path": "tests/acceptance/native-cache-validation.test.cjs",
+      "normalization": "lf",
+      "bytes": 11214,
+      "sha256": "c424d9fa090fb73bc01269f7a9bb0242fedbd0f69ef3f1a928a9f369013128e0"
     },
     {
       "path": "tests/acceptance/native-renderer-model-validation.cjs",
@@ -3859,8 +3901,8 @@
     {
       "path": "tests/acceptance/runner.cjs",
       "normalization": "lf",
-      "bytes": 38225,
-      "sha256": "0454c80465ddbc7bed52206b3212c361efc83c666d0e4d547a8108e4d1d9d187"
+      "bytes": 38293,
+      "sha256": "d22b56a379667893573fa781d4d854d341d33c5568a1d3f5b2875177d9bcaffc"
     },
     {
       "path": "tests/acceptance/runner.test.cjs",
@@ -4369,8 +4411,8 @@
     {
       "path": "tests/native/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 26812,
-      "sha256": "2eb281554028c3caa9032e32b966b2084f51e9e24da4e7cce319a9a658e890dd"
+      "bytes": 27405,
+      "sha256": "809ec5263527f45bd7a0a0fe32d3e65190b7eecafe7cae10a3bd0f117882e7f5"
     },
     {
       "path": "tests/native/action_contract_tests.cpp",
@@ -4383,6 +4425,12 @@
       "normalization": "lf",
       "bytes": 4641,
       "sha256": "8db19a923b938a3877256cb8114ad64a0d0c56bc79b82909aa7b94f59b30415a"
+    },
+    {
+      "path": "tests/native/cache_observation_tests.cpp",
+      "normalization": "lf",
+      "bytes": 5279,
+      "sha256": "cf4da1b67e1ab9de63deb81fd284d395dcc044c83c177b61fccb9880c79a8723"
     },
     {
       "path": "tests/native/cursor_broker_scope_tests.cpp",
@@ -4435,8 +4483,8 @@
     {
       "path": "tests/native/engine_capacity/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 3805,
-      "sha256": "5ecaece849299684b24c0b8efa5507a5407928d3dc925b511d075616cfe0534b"
+      "bytes": 3824,
+      "sha256": "c78e88a6e4e7fc735369f8538aa9044ffbf14c4c260ee792933a2e6c7385a516"
     },
     {
       "path": "tests/native/engine_capacity/README.md",
@@ -4453,8 +4501,8 @@
     {
       "path": "tests/native/engine_capacity/host_capacity_fixture.cpp",
       "normalization": "lf",
-      "bytes": 30910,
-      "sha256": "e8a552e20253b179b891bc05d0f03ab315e6ebc9e60de166ddf0193d1b461b28"
+      "bytes": 39937,
+      "sha256": "a6fe47669b98b79700bf7c4ad3590df66a5e5f98ee52c6ff76aeb6a706c67987"
     },
     {
       "path": "tests/native/engine_capacity/resources/index.html",
@@ -5253,6 +5301,12 @@
       "normalization": "lf",
       "bytes": 5100,
       "sha256": "e144fa7c61c4ecee16581aea4e3393fa93fa6d70d9687b2b2290999c3c59066b"
+    },
+    {
+      "path": "tests/sdk/long-run-cache-observation.test.cjs",
+      "normalization": "lf",
+      "bytes": 4610,
+      "sha256": "c5d085528b17e15207a5f8349616dd26b82bea35fc21b47ce952cd1b8b1e7ec5"
     },
     {
       "path": "tests/sdk/long-run-policy.test.cjs",
@@ -6833,10 +6887,16 @@
       "sha256": "5252f1a757cfa6532d9fee75f39bc7c32bc8940e708a4973aba1e51fd30016a1"
     },
     {
+      "path": "third_party/patches/miniblink/0011-finite-cache-observation.patch",
+      "normalization": "lf",
+      "bytes": 18422,
+      "sha256": "97f8bfe627600aa98601afabf89755f0342f92ec86cf44ec4aafebc14ffe2cce"
+    },
+    {
       "path": "third_party/patches/miniblink/README.md",
       "normalization": "lf",
-      "bytes": 9000,
-      "sha256": "86806306ac1c5d138d7e3f6de2ae0f15275bc1e9607f24abd0d430c1d630936a"
+      "bytes": 10207,
+      "sha256": "057379528a4e4d34162078df818723319b70769a4a0a14c4254f6c771c8ef663"
     },
     {
       "path": "third_party/prebuilt/x64/miniblink/node.dll",
@@ -52195,14 +52255,14 @@
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/MemoryCache.cpp",
       "normalization": "lf",
-      "bytes": 32693,
-      "sha256": "df397f18bb653564b9d6fcc14710de21fb07f0a9706e8d58744e1175073855d3"
+      "bytes": 33238,
+      "sha256": "03caa14faad8256d67416d25f2bdf6125c60c46f5488291e8d8aa9131a368085"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/MemoryCache.h",
       "normalization": "lf",
-      "bytes": 12362,
-      "sha256": "02ff900e3bebd42ac03a6b41ed6428c6facad25dbac45875f0138af9648e9776"
+      "bytes": 12635,
+      "sha256": "be356f18a969af2f35b5d9ecec3a4ac7a90de2600f94ddab57682c1241ca9c38"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/MemoryCacheTest.cpp",
@@ -118477,8 +118537,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/skia/include/core/SkLazyPtr.h",
       "normalization": "lf",
-      "bytes": 6742,
-      "sha256": "7b816087acfcc4564f8e00e104c29b6f6c742e05d7efa98c977128614595027b"
+      "bytes": 6900,
+      "sha256": "0fa6092f43be2a6b17166dfa871e933697e17541d8b8573a23bed29969987667"
     },
     {
       "path": "third_party/sources/miniblink/third_party/skia/include/core/SkMallocPixelRef.h",
@@ -118681,8 +118741,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/skia/include/core/SkSpinlock.h",
       "normalization": "lf",
-      "bytes": 1179,
-      "sha256": "3ec0bba85cd2817cca1a4fc0508fd3ed68ae47652d5e8810d2b222c7fcd7879c"
+      "bytes": 1287,
+      "sha256": "e3eeb2d1212fbc193e570ae3eb05c2959ca32faf35163a750c76113446f9b8b4"
     },
     {
       "path": "third_party/sources/miniblink/third_party/skia/include/core/SkStream.h",
@@ -119485,8 +119545,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/skia/include/ports/SkMutex_win.h",
       "normalization": "lf",
-      "bytes": 1933,
-      "sha256": "62f686c7b523f0fe1f221a18d024213a61754dcf119ca27850d452f3e29c05b7"
+      "bytes": 2100,
+      "sha256": "46e1aa7d11531b517dbc1da42dc38a8430000f92c94c57ca2a34f1bbc6b2d657"
     },
     {
       "path": "third_party/sources/miniblink/third_party/skia/include/ports/SkRemotableFontMgr.h",
@@ -123401,6 +123461,12 @@
       "sha256": "f35501d0bc418db11b02879d7b77405a09898040a73d362c6c8b3d4a945050ee"
     },
     {
+      "path": "third_party/sources/miniblink/third_party/skia/src/core/SkCacheObservation.h",
+      "normalization": "lf",
+      "bytes": 691,
+      "sha256": "9b701be97ba8177c0440d28501894aec9f45e62018ccb9b3315a528b0d42c237"
+    },
+    {
       "path": "third_party/sources/miniblink/third_party/skia/src/core/SkCachedData.cpp",
       "normalization": "lf",
       "bytes": 5151,
@@ -123817,8 +123883,8 @@
     {
       "path": "third_party/sources/miniblink/third_party/skia/src/core/SkGlyphCache.cpp",
       "normalization": "lf",
-      "bytes": 21748,
-      "sha256": "01e606c32d0a7242b0838c0d0f25175ef6e8f48d958725869e25c2e617d84674"
+      "bytes": 22705,
+      "sha256": "42aff85f73eba2d4fc928fc8096797a788b0c5d7d7dbb115779b9d3e2a6eea1b"
     },
     {
       "path": "third_party/sources/miniblink/third_party/skia/src/core/SkGlyphCache.h",
@@ -124423,14 +124489,14 @@
     {
       "path": "third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.cpp",
       "normalization": "lf",
-      "bytes": 17315,
-      "sha256": "5f634f3cda872dcd15e3c6851bba54450a6f4a12c099ce9b12b8d2b896b994f5"
+      "bytes": 18674,
+      "sha256": "f344e31a12798291e8221ba673d816c891744f79f8f0513f585664b25764bbe6"
     },
     {
       "path": "third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.h",
       "normalization": "lf",
-      "bytes": 9112,
-      "sha256": "d687d73b6b5f733acbfef1da513008c21a156ffa65cccb09afa2ba8973c79cb8"
+      "bytes": 9209,
+      "sha256": "2f0943442a3ad262155d5b7b42ee84282a4f7da19951672f4e26e6490ad5ff97"
     },
     {
       "path": "third_party/sources/miniblink/third_party/skia/src/core/SkScalar.cpp",
@@ -148705,8 +148771,8 @@
     {
       "path": "third_party/sources/miniblink/wke/wke.cpp",
       "normalization": "lf",
-      "bytes": 94252,
-      "sha256": "ad99af21cfb3f2e36cd7c120cff4016dc66acae03431cbf4d1d039a36ed7ea4d"
+      "bytes": 98317,
+      "sha256": "46b92f710a9cbfc260bbbb61a2bbe3a11ed64c892df0efd31669352cfcafbdab"
     },
     {
       "path": "third_party/sources/miniblink/wke/wke.h",
@@ -148811,6 +148877,12 @@
       "sha256": "5ebb284e1889623124ddc93a3f64f9708c28f10a19cbf510e16801e95a283174"
     },
     {
+      "path": "third_party/sources/miniblink/wke/wke_cache_diagnostics.h",
+      "normalization": "lf",
+      "bytes": 1757,
+      "sha256": "2bf5e6ba0a1b10b71b35d80d29354b476fd96965f511fe7387323ab1b8f8f39c"
+    },
+    {
       "path": "third_party/sources/miniblink/wke/wke_cursor_broker.h",
       "normalization": "lf",
       "bytes": 6597,
@@ -148831,8 +148903,8 @@
     {
       "path": "third_party/sources/miniblink/wke/wkedefine.h",
       "normalization": "lf",
-      "bytes": 70107,
-      "sha256": "4656024c1f28c2ff2688291f8fa085926acefeeaf9b1ad1f07e6634da23312b0"
+      "bytes": 70251,
+      "sha256": "674827ef4572feb31d417b9ce14e007f95a30dd4b26ed284c9c04a96e1bf9369"
     },
     {
       "path": "third_party/sources/miniblink/wkexe/MtRender/CallMgr.cpp",

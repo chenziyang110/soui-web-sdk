@@ -17,6 +17,10 @@
 // This class has no constructor and must be zero-initialized (the macro above does this).
 class SkPODSpinlock {
 public:
+    bool tryAcquire() {
+        return !sk_atomic_exchange(&fLocked, true, sk_memory_order_acquire);
+    }
+
     void acquire() {
         // To act as a mutex, we need an acquire barrier if we take the lock.
         if (sk_atomic_exchange(&fLocked, true, sk_memory_order_acquire)) {

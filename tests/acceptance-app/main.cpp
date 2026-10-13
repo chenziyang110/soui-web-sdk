@@ -177,6 +177,7 @@ struct options {
   unsigned idle_ms{0};
   unsigned settle_ms{0};
   unsigned timeout_ms{0};
+  bool cache_observation{false};
   std::filesystem::path report;
 };
 
@@ -191,8 +192,8 @@ unsigned number(const std::wstring& value, unsigned maximum) {
 options parse(int argc, wchar_t** argv) {
   options result;
   // Exactly these arguments are required; duplicates and unknown arguments fail.
-  if (argc != 7) throw std::runtime_error("Expected --mode --cycles --warmup --settle-ms --timeout-ms --report");
-  std::array<bool, 8> seen{};
+  if (argc != 7 && argc != 8) throw std::runtime_error("Expected existing scenario arguments and optional --cache-observation=1");
+  std::array<bool, 9> seen{};
   for (int i = 1; i < argc; ++i) {
     const std::wstring arg{argv[i]};
     const auto separator = arg.find(L'=');
@@ -213,11 +214,16 @@ options parse(int argc, wchar_t** argv) {
     else if (key == L"--report") { index = 5; result.report = value; }
     else if (key == L"--duration-ms") { index = 6; result.duration_ms = number(value, 43200000); }
     else if (key == L"--idle-ms") { index = 7; result.idle_ms = number(value, 60000); }
+    else if (key == L"--cache-observation") {
+      index = 8; if (value != L"1") throw std::runtime_error("Cache observation requires explicit =1");
+      result.cache_observation = true;
+    }
     else throw std::runtime_error("Unknown argument");
     if (seen[index]) throw std::runtime_error("Duplicate argument");
     seen[index] = true;
   }
   if (!seen[0] || !seen[3] || !seen[4] || !seen[5] ||
+      (seen[8] != (argc == 8)) ||
       !result.timeout_ms || result.report.empty() ||
       ((result.mode == "mixed" || result.mode == "session") ? (!result.duration_ms || !result.idle_ms || seen[1] || seen[2] ||
           (result.mode == "mixed" && result.idle_ms >= result.timeout_ms))
@@ -720,6 +726,11 @@ class runner final {
                 {"renderer", serialize(renderer)},
                 {"rendererModel", serialize(model)},
                 {"views", json::array()}};
+    if (settings_.cache_observation) {
+      soui::sdk::diagnostics::cache_observation cache;
+      (void)soui::sdk::read_miniblink_cache_metrics(cache);
+      native["namedCaches"] = serialize(cache);
+    }
     for (const auto& window : windows_) if (window) native["views"].push_back(window->native_owner_metrics());
     native["captureClock"] = capture_clock();
     log_.emit("sample", "\"phase\":" + quote(phase) + ",\"cycle\":" + std::to_string(cycle)
@@ -728,6 +739,9 @@ class runner final {
       + ",\"gdiObjects\":" + std::to_string(GetGuiResources(GetCurrentProcess(), GR_GDIOBJECTS))
       + ",\"userObjects\":" + std::to_string(GetGuiResources(GetCurrentProcess(), GR_USEROBJECTS))
       + ",\"windowClasses\":" + process_window_classes() + ",\"nativeSdk\":" + native.dump());
+    // Explicit opt-in, one request per existing sample; never wait/pump for it.
+    // The next sample may carry this completion with its original native QPC.
+    if (settings_.cache_observation) (void)soui::sdk::request_miniblink_cache_sample();
   }
   const options& settings_;
   log_writer& log_;

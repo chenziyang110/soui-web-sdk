@@ -162,6 +162,14 @@ WndProc 将 WM_HOTKEY 的完整参数交给 `dispatch_message()`，仅在 `activ
 
 `describe_local` 使用同一连接授权过滤发现列表，再分页；canonical `bridge.describe` 不执行应用业务 callback。本地业务错误和异常返回固定错误，非法输出不回送原文。参数与页面 envelope 在解析阶段检查深度，不可表示的数值返回固定 schema 错误。输出 schema 约束结构，应用仍须审核字段和业务授权。当前内建 `task.start/query/cancel` 为 plain 方法，不能通过此入口开放；安全任务包装层、真实传输、OS 主体验证和发送边界尚待实现。关闭后的检查可丢弃已完成结果，不能回滚已执行的业务或代替 I/O 清理。详见 [ADR-0037](adr/0037-shared-local-action-dispatch.md)。
 
+## 可选 Miniblink 命名缓存观测
+
+包含 `soui/host/soui_miniblink_host.h`，在宿主启用 scalar 诊断时调用 `request_miniblink_cache_sample()` 显式提交一个普通 Engine 任务。返回 `pending` 表示任务在途；排队满、关闭开始或接口缺失分别保留 busy/unavailable 状态。`read_miniblink_cache_metrics(out)` 仅尝试读取已完成副本，不提交任务或等待。读取可能仍是旧样本；使用 `has_completed_sample`、`inflight`、`runtime_retired` 和原 `sampleQpc` 判断，不能把当前读取时间当作新采样时间。
+
+新可选 ABI 为版本 1 / 216 字节，与原 renderer 168/264 字节接口分开。加载内核没有新接口时返回 unavailable；不据路径相等授予二进制身份。组件数值只在对应 native status 为 READY 时有效，其他状态不能解释成零。采样不创建缓存、触发回收或修改限额。
+
+覆盖范围是现有 Blink MemoryCache 的 live/dead 与软 prune 配置、Skia 已附着全局 glyph strikes、全局保留 resource records 及实际配置。它不包含 detached/TLS 缓存、其他实例、被外部持有的已淘汰对象、全部字体/图像 heap 或 V8 compile cache。策略阈值不是统一 heap 硬上限；进程缓存可在最后宿主关闭后保留。详见 [ADR-0070](adr/0070-finite-cache-observation.md)。
+
 ## 错误与超时
 
 `SouiBridgeError` 包含 `code` 和 `requestId`。非法响应、相关 ID 不匹配、权限拒绝、会话失效和页面等待超时都有独立错误。页面超时不代表原生任务已经取消；需要调用服务自己的取消接口。
@@ -177,7 +185,7 @@ Host 独立限制 256 个普通请求和 128 个取消/释放请求，涵盖排�
 安装后在外部工程使用：
 
 ```cmake
-find_package(SouiSdk 0.3.0 EXACT CONFIG REQUIRED)
+find_package(SouiSdk 0.5.0 EXACT CONFIG REQUIRED)
 target_link_libraries(MyTarget PRIVATE Soui::Sdk)
 ```
 

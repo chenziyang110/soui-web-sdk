@@ -15,6 +15,7 @@
 #include <soui/host/engine_thread.h>
 #include <soui/host/interaction_protocol.h>
 #include <soui/host/window_chrome.h>
+#include <soui/diagnostics/cache_observation.h>
 #ifdef SOUI_TEST_KIT
 #include "../../test-kit/native/pipe_agent.h"
 #endif
@@ -44,6 +45,11 @@ inline constexpr std::uint32_t ime_position_message = 0x84D3U;
     diagnostics::renderer_observation&) noexcept;
 [[nodiscard]] diagnostics::renderer_status read_miniblink_renderer_model_metrics(
     diagnostics::renderer_model_observation&) noexcept;
+// Explicit, single-flight asynchronous Engine ordinary-lane request. No wait.
+[[nodiscard]] diagnostics::cache_status request_miniblink_cache_sample() noexcept;
+// Pure completed-copy getter: no posting, pump, initialization or DLL invocation.
+[[nodiscard]] diagnostics::cache_status read_miniblink_cache_metrics(
+    diagnostics::cache_observation&) noexcept;
 
 [[nodiscard]] bool binary_matches_architecture(const std::filesystem::path& binary,
                                                 std::string_view architecture);

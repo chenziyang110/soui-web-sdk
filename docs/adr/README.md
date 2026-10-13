@@ -18,3 +18,5 @@
 
 - [ADR-0068：原生运行状态与兼容内核诊断](0068-native-runtime-diagnostics.md)（proposed；32 位修复正在重建，完整兼容性验收待完成）
 - [ADR-0069：SDK 源码交付与验收入口](0069-sdk-source-delivery.md)（proposed；源码已采用，正式交付验收待完成）
+- [ADR-0070：有限命名缓存观测](0070-finite-cache-observation.md)（proposed；纯数据检查不构成原生缓存或长期资源验收）
+- [ADR-0071：长期运行中的命名缓存采样](0071-long-run-cache-sampling.md)（accepted；采集已接线，实际原生与长期验收待执行）

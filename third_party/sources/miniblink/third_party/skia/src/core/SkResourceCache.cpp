@@ -543,6 +543,38 @@ static SkResourceCache* get_cache() {
     return gResourceCache;
 }
 
+SkResourceCacheObservation SkResourceCache::PeekRetainedGlobalCache() {
+    SkResourceCacheObservation result = {};
+#if defined(SK_BUILD_FOR_WIN) && !SK_DEVELOPER
+    if (!gMutex.tryAcquire()) {
+        result.status = kBusy_SkCacheObservation;
+        return result;
+    }
+    struct Held {
+        SkBaseMutex& lock;
+        ~Held() { lock.release(); }
+    } held = {gMutex};
+    if (!gResourceCache) return result;
+    if (gResourceCache->fCount < 0) {
+        result.status = kUnavailable_SkCacheObservation;
+        return result;
+    }
+    result.discardable = gResourceCache->fDiscardableFactory ? 1U : 0U;
+    result.bytes = gResourceCache->fTotalBytesUsed;
+    result.count = static_cast<uint64_t>(gResourceCache->fCount);
+    result.byteLimit = gResourceCache->fTotalByteLimit;
+    // Actual purge thresholds; neither field asserts all-image-heap coverage.
+    result.countLimit = result.discardable ? SK_DISCARDABLEMEMORY_SCALEDIMAGECACHE_COUNT_LIMIT : SK_MaxS32;
+    result.rawSingleLimit = gResourceCache->getSingleAllocationByteLimit();
+    result.effectiveSingleLimit = gResourceCache->getEffectiveSingleAllocationByteLimit();
+    result.status = kReady_SkCacheObservation;
+#else
+    // Developer atexit deletion has no concurrent observation lifetime contract.
+    result.status = kUnavailable_SkCacheObservation;
+#endif
+    return result;
+}
+
 size_t SkResourceCache::GetTotalBytesUsed() {
     SkAutoMutexAcquire am(gMutex);
     return get_cache()->getTotalBytesUsed();

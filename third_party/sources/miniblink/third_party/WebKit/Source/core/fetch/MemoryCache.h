@@ -326,6 +326,12 @@ private:
 
 // Returns the global cache.
 CORE_EXPORT MemoryCache* memoryCache();
+// Owner-only, bounded scalar peek. Does not create a MemoryCache or visit resources.
+struct MemoryCacheObservation {
+    unsigned status;
+    size_t liveBytes, deadBytes, capacity, minDeadCapacity, maxDeadCapacity;
+};
+CORE_EXPORT MemoryCacheObservation peekMemoryCache();
 
 // Sets the global cache, used to swap in a test instance. Returns the old
 // MemoryCache object.

@@ -59,6 +59,21 @@ MemoryCache* memoryCache()
     return gMemoryCache->get();
 }
 
+MemoryCacheObservation peekMemoryCache()
+{
+    MemoryCacheObservation result = {};
+    if (!WTF::isMainThread()) { result.status = 3; return result; }
+    if (!gMemoryCache || !gMemoryCache->get()) return result;
+    const MemoryCache* cache = gMemoryCache->get();
+    result.liveBytes = cache->liveSize();
+    result.deadBytes = cache->deadSize();
+    result.capacity = cache->capacity();
+    result.minDeadCapacity = cache->minDeadCapacity();
+    result.maxDeadCapacity = cache->maxDeadCapacity();
+    result.status = 1;
+    return result;
+}
+
 MemoryCache* replaceMemoryCacheForTesting(MemoryCache* cache)
 {
     /// weolar

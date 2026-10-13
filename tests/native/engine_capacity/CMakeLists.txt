@@ -47,7 +47,7 @@ if(SOUI_BUILD_ENGINE_CAPACITY_HOST_TESTS)
   target_compile_options(soui_engine_host_capacity_tests PRIVATE /W4 /EHsc /utf-8 /U_DEBUG)
   set_property(TARGET soui_engine_host_capacity_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
   target_link_libraries(soui_engine_host_capacity_tests PRIVATE Soui::Sdk Soui::ActionJson)
-  foreach(case IN ITEMS reply-full-zero-business cleanup-full-retains-owner renderer-model-abi)
+  foreach(case IN ITEMS reply-full-zero-business cleanup-full-retains-owner renderer-model-abi renderer-cache-abi)
     add_test(NAME sdk.native.engine-host-capacity.${case} COMMAND soui_engine_host_capacity_tests
       --kernel "${SOUI_ENGINE_CAPACITY_KERNEL}" --kernel-sha "${SOUI_ENGINE_CAPACITY_KERNEL_SHA256}"
       --resources "${SOUI_ENGINE_CAPACITY_RESOURCES}" --output "${CMAKE_CURRENT_BINARY_DIR}/${case}.json" --case ${case})
