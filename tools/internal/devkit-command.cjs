@@ -30,7 +30,9 @@ const definitions={
     '--windows-sdk-root':'windowsSdkRoot','--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe'},
   package:{'--kind':'kind','--output':'output','--with-gui-bindings':'withGuiBindings'},
   upgrade:{'--sdk-package':'sdkPackage','--project':'project'},
-  dev:{'--web-root':'webRoot','--port':'port','--duration-ms':'durationMs'}
+  dev:{'--web-root':'webRoot','--port':'port','--duration-ms':'durationMs',
+    '--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
+    '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe'}
 };
 const booleans=new Set(['sdkOnly','skipWeb','withWebView2','withGuiBindings','withVendorTests','install','freshConfigure','compilerTail']);
 const pathKeys=new Set(['runner','devkitRoot','outputRoot','sdkPackage','tailImage','output','project','webRoot']);
@@ -72,10 +74,12 @@ function parseArgs(args) {
     (value.kind!=='applications'||value.output===undefined),'E_ARGUMENT','Select source/sdk/applications; sdk requires output, and applications uses its existing fixed archive names.');
   if(command==='test')need(['contract','unit','native','desktop'].includes(value.scope),'E_ARGUMENT','Select contract, unit, native or desktop test scope.');
   value.scopeExplicit=seen.has('scope');
-  if(['doctor','test'].includes(command)&&value.nativeToolchain!==undefined) {
+  if(command==='dev'&&value.nativeToolchain!==undefined)need(value.nativeToolchain==='LLVM22MSVC142',
+    'E_ARGUMENT','Dev selects LLVM only with the explicit LLVM22MSVC142 profile and all six paths.');
+  if(['doctor','test','dev'].includes(command)&&value.nativeToolchain!==undefined) {
     const profileFlags=Object.entries(definitions.doctor).flatMap(([flag,key])=>value[key]===undefined?[]:[flag,value[key]]);
     try{standard.parseArgs(profileFlags);}catch{throw new CommandError('E_ARGUMENT','Use the explicit LLVM profile with all six paths; helper overrides are not accepted.');}
-  } else if(['doctor','test'].includes(command))need(Object.values(definitions.doctor).every(key=>value[key]===undefined),
+  } else if(['doctor','test','dev'].includes(command))need(Object.values(definitions.doctor).every(key=>value[key]===undefined),
     'E_ARGUMENT','LLVM paths require explicit native-toolchain selection.');
   if(command==='build') {
     try{standard.parseArgs(buildOptions(value));}catch{throw new CommandError('E_ARGUMENT','Use the documented standard-build flags and explicit reviewed compiler-tail pin.');}
@@ -196,6 +200,37 @@ function workspace(root,v) {
   need(!(v.command==='test'&&v.scope==='contract'),'E_WORKSPACE_CAPABILITY','Contract scope verifies an installed sdk-lock.json; use source unit/native tests here.');
   return {generated:false,profile:'compatibility'};
 }
+// Selection checks follow the existing reader's authentication of actual stock inputs.
+function validatePreviewPreparation(v,prepared,previous) {
+  const report=prepared?.setup?.report,request=prepared?.request,stockRoot=prepared?.toolsRoot;
+  need(v.command==='dev'&&v.nativeToolchain==='LLVM22MSVC142'&&
+    typeof stockRoot==='string'&&path.isAbsolute(stockRoot)&&
+    report?.schema==='soui.measurement-tool-preparation/v2'&&report.prepared===true&&report.buildExitCode===0&&
+    report.configuration==='Release'&&report.architecture===v.architecture&&
+    request?.schema==='soui.build-toolchain-request/v1'&&request.profile===v.nativeToolchain&&request.architecture===v.architecture&&
+    report.nativeToolchain?.profile===v.nativeToolchain,
+    'E_VALIDATION_TOOLS','Explicit LLVM preview requires current Release/v2 tools and their independently owned request for the selected architecture.');
+  const directory=path.join(stockRoot,'out',v.architecture==='x64'?'benchmark-protocol':'benchmark-protocol-x86');
+  for(const [row,name] of [[prepared.requestPin,'llvm-profile-request-Release.json'],[prepared.reportPin,'measurement-tools.json']])
+    need(row&&typeof row.path==='string'&&path.resolve(row.path)===path.join(directory,name)&&
+      Number.isSafeInteger(row.bytes)&&row.bytes>0&&/^[a-f0-9]{64}$/.test(row.sha256),
+      'E_VALIDATION_TOOLS','Preview request and preparation must keep their exact stock-owned raw pins.');
+  need(isDeepStrictEqual(report.nativeToolchain.requestFile,prepared.requestPin),
+    'E_VALIDATION_TOOLS','The prepared report names another toolchain request.');
+  const fields={llvmRoot:'SOUI_LLVM_ROOT',msvcRoot:'SOUI_MSVC142_ROOT',windowsSdkRoot:'SOUI_WINDOWS_SDK_ROOT',
+    ninjaExe:'SOUI_NINJA_EXECUTABLE',windowsCmdExe:'SOUI_WINDOWS_CMD_EXECUTABLE',powerShellExe:'SOUI_TOOL_IDENTITY_POWERSHELL_EXECUTABLE'};
+  for(const [key,name] of Object.entries(fields)) {
+    const expected=request.discovery?.CMakeDefinitions?.[name];
+    need(typeof v[key]==='string'&&typeof expected==='string'&&
+      path.win32.normalize(v[key]).toLowerCase()===path.win32.normalize(expected).toLowerCase(),
+      'E_VALIDATION_TOOLS','The explicit preview paths differ from the independently prepared tools.');
+  }
+  const binding={profile:v.nativeToolchain,architecture:v.architecture,toolsRoot:stockRoot,
+    requestFile:{...prepared.requestPin},preparation:{...prepared.reportPin}};
+  if(previous!==undefined)need(isDeepStrictEqual(binding,previous),
+    'E_INPUT_CHANGED','Preview toolchain request or preparation raw bytes changed during execution.');
+  return binding;
+}
 const callerInputs=['tools/Soui.ps1','tools/internal/devkit-command.cjs','tools/internal/owned-process.cjs',
   'tools/internal/owned-tail-evidence.cjs','tools/internal/delivery-identity.cjs','tools/internal/standard-build.cjs',
   'tools/internal/measurement-validation.cjs','tools/internal/build-evidence.cjs','tools/internal/sdk-version.cjs',
@@ -213,9 +248,13 @@ async function runCommand(v) {
     'For an installed project, pass --devkit-root pointing to the complete source devkit with reviewed prepared validation tools.');
   const measurement=v.nativeToolchain==='LLVM22MSVC142'?require('./measurement-validation.cjs'):
     require(path.join(toolsRoot,'tools/internal/measurement-validation.cjs'));
-  let setup;
-  try{setup=v.nativeToolchain==='LLVM22MSVC142'?
-    require('./llvm-build-observer.cjs').preparation(toolsRoot,v.architecture).setup:measurement.prepared(v.architecture);
+  let setup,previewBinding;
+  try{
+    if(v.nativeToolchain==='LLVM22MSVC142') {
+      const prepared=require('./llvm-build-observer.cjs').preparation(toolsRoot,v.architecture);
+      if(v.command==='dev')previewBinding=validatePreviewPreparation(v,prepared);
+      setup=prepared.setup;
+    } else setup=measurement.prepared(v.architecture);
   }catch{throw new CommandError('E_VALIDATION_TOOLS','Prepare Build-ValidationTools in the selected full devkit root, then retry; this command never silently builds or substitutes its runner.');}
   const runner=setup.tools.OwnedProcessRunner;
   if(v.runner)need(path.resolve(v.runner).toLowerCase()===runner.toLowerCase(),'E_RUNNER','Use the current prepared runner for the selected architecture.');
@@ -232,7 +271,8 @@ async function runCommand(v) {
   const frozen=pins(root,[...callerInputs,...(v.nativeToolchain==='LLVM22MSVC142'?require('./llvm-build-observer.cjs').codeNames:[]),...({create:['tools/New-Project.ps1'],doctor:['tools/Doctor.ps1','tools/internal/Find-Toolchain.ps1'],
     build:['tools/Build.ps1'],test:v.scope==='unit'||v.scope==='desktop'&&!space.generated?['tools/Test.ps1']:[],package:v.kind==='source'?['tools/Package.ps1']:v.kind==='applications'?['tools/Package-Applications.ps1']:[],upgrade:[],dev:[]}[v.command])]);
   write(folder,'inputs.json',{schema:'soui.devkit-inputs/v1',command:v.command,options:v,callerInputs:frozen,
-    selectedPreparation:setup.report,toolsRoot,workspaceKind:space.generated?'installed-project':'source-devkit',qualificationPassed:false,releaseReady:false});
+    selectedPreparation:setup.report,...(previewBinding?{previewToolchain:previewBinding}:{}),
+    toolsRoot,workspaceKind:space.generated?'installed-project':'source-devkit',qualificationPassed:false,releaseReady:false});
   let active=null,interrupted=false,graceTimer=null;
   const interrupt=()=>{interrupted=true;if(active) {
     if(v.command==='dev') {if(!fs.existsSync(path.join(folder,'preview-stop.json')))write(folder,'preview-stop.json',{nonce:previewNonce});
@@ -344,7 +384,10 @@ async function runCommand(v) {
     }
     need(!interrupted,'E_CANCELLED','The user interrupted this command; any retained closure receipt is not a command success.');
     need(isDeepStrictEqual(pins(root,frozen.map(x=>x.path)),frozen),'E_INPUT_CHANGED','Tool scripts changed during execution; retain this attempt and review changes.');
-    if(v.nativeToolchain==='LLVM22MSVC142')require('./llvm-build-observer.cjs').preparation(toolsRoot,v.architecture);
+    if(v.nativeToolchain==='LLVM22MSVC142') {
+      const prepared=require('./llvm-build-observer.cjs').preparation(toolsRoot,v.architecture);
+      if(v.command==='dev')validatePreviewPreparation(v,prepared,previewBinding);
+    }
     else measurement.prepared(v.architecture);
     if(space.generated)require('../sdk/soui-sdk.cjs').readLock(root);
     answer={schema:'soui.devkit-result/v1',command:v.command,accepted:true,code:'OK',identity:actual.identity,
@@ -378,7 +421,7 @@ async function previewWorker(args) {
     'E_WEB_DEPENDENCIES','Install the existing package-lock dependencies in this web root before dev.');
   const packageText=fs.readFileSync(pkgFile),lockText=fs.readFileSync(lockFile),pkg=parseStrictJson(packageText.toString('utf8'));
   const vitePackage=identity.safePath(web,'node_modules/vite/package.json'),vitePkg=parseStrictJson(fs.readFileSync(vitePackage,'utf8'));
-  need(['6.4.3','8.3.3'].includes(vitePkg.version)&&pkg.devDependencies?.vite===vitePkg.version,
+  need(['6.4.3','6.4.4','8.3.3'].includes(vitePkg.version)&&pkg.devDependencies?.vite===vitePkg.version,
     'E_WEB_DEPENDENCIES','Install the existing frozen package-lock dependencies in this web root; dependencies are never installed or upgraded by dev.');
   const [major,minor]=process.versions.node.split('.').map(Number);
   need((vitePkg.version==='8.3.3'?major>22||(major===22&&minor>=12):major>22||(major===22&&minor>=12)||(major===20&&minor>=19)),
@@ -410,7 +453,7 @@ async function previewWorker(args) {
   need(['budget','requested'].includes(reason),'E_PREVIEW_CLOSE','Preview control was invalid.');
   write(folder,'preview-closed.json',{serverClosed:true,reason,qualificationPassed:false,releaseReady:false});
 }
-module.exports={CommandError,parseArgs,planCommand,commandDispatch,buildOptions,validateStage,workspace};
+module.exports={CommandError,parseArgs,planCommand,commandDispatch,buildOptions,validateStage,workspace,validatePreviewPreparation};
 if(require.main===module)(async()=>{
   if(process.argv[2]==='__preview-worker'){await previewWorker(process.argv.slice(3));return;}
   let v;

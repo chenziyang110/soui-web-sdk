@@ -9,7 +9,7 @@ $keys=@('SOUI_DEVKIT_ENTRY_NONCE','SOUI_DEVKIT_POWERSHELL','SOUI_DEVKIT_CTEST')
 $exitCode=1
 try {
   try { $acquired=$lease.WaitOne(0) }
-  catch [Threading.AbandonedMutexException] { $acquired=$true }
+  catch [Threading.AbandonedMutexException] { $acquired=$true; throw 'E_DESKTOP_ABANDONED' }
   if(-not $acquired) { throw 'E_DESKTOP_BUSY' }
   foreach($key in $keys) { $previous[$key]=[Environment]::GetEnvironmentVariable($key,'Process') }
   $node=(Get-Command node.exe -ErrorAction Stop).Source
@@ -23,14 +23,17 @@ try {
   $exitCode=$LASTEXITCODE
   if($null -eq $exitCode) { $exitCode=1 }
 } catch {
-  $code=if($_.Exception.Message -eq 'E_DESKTOP_BUSY'){'E_DESKTOP_BUSY'}else{'E_ENTRY_SETUP'}
-  $fix=if($code -eq 'E_DESKTOP_BUSY'){'Wait for the current SOUI desktop/build/dev owner to finish.'}else{'Install the required Node.js/PowerShell tools and inspect the entry setup error.'}
+  $code=if($_.Exception.Message -in @('E_DESKTOP_BUSY','E_DESKTOP_ABANDONED')){$_.Exception.Message}else{'E_ENTRY_SETUP'}
+  $fix=if($code -eq 'E_DESKTOP_BUSY'){'Wait for the current SOUI desktop/build/dev owner to finish.'}elseif($code -eq 'E_DESKTOP_ABANDONED'){'Inspect the previous desktop owner failure before retrying.'}else{'Install the required Node.js/PowerShell tools and inspect the entry setup error.'}
   [Console]::Error.WriteLine('SOUI '+$code+': '+$fix)
   [ordered]@{schema='soui.devkit-event/v1';command=if($commandArguments.Count){$commandArguments[0]}else{''};stage='entry';status='failed';code=$code;fix=$fix;releaseReady=$false} | ConvertTo-Json -Compress
   $exitCode=1
 } finally {
-  foreach($key in $previous.Keys) { [Environment]::SetEnvironmentVariable($key,$previous[$key],'Process') }
-  if($acquired) { $lease.ReleaseMutex() }
-  $lease.Dispose()
+  try {
+    foreach($key in $previous.Keys) { [Environment]::SetEnvironmentVariable($key,$previous[$key],'Process') }
+  } finally {
+    try { if($acquired) { $lease.ReleaseMutex() } }
+    finally { $lease.Dispose() }
+  }
 }
 exit $exitCode

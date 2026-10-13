@@ -5,6 +5,7 @@ const fs=require('node:fs');
 const os=require('node:os');
 const path=require('node:path');
 const sdk=require('../../tools/sdk/soui-sdk.cjs');
+const identity=require('../../tools/internal/delivery-identity.cjs');
 const repo=path.resolve(__dirname,'../..');
 test('the real SDK pack/install transaction delivers the entry without Demo/templates and refuses same-version replacement',()=>{
   const temporary=fs.mkdtempSync(path.join(os.tmpdir(),'soui-devkit-delivery-'));
@@ -23,7 +24,10 @@ test('the real SDK pack/install transaction delivers the entry without Demo/temp
       assert(manifest.files.some(x=>x.path===name));
     assert.equal(manifest.files.some(x=>/^(templates|demos)\//.test(x.path)),false);
     write(project,'app/business.txt','business stays');sdk.install(first,project);
-    assert.deepEqual(fs.readFileSync(path.join(project,'tools/Soui.ps1')),fs.readFileSync(path.join(repo,'tools/Soui.ps1')));
+    const entry=manifest.files.find(file=>file.path==='tools/Soui.ps1');
+    assert.equal(entry.sourceNormalization,'lf');
+    assert.deepEqual(fs.readFileSync(path.join(project,'tools/Soui.ps1')),
+      identity.normalize(fs.readFileSync(path.join(repo,'tools/Soui.ps1')),entry.sourceNormalization));
     write(source,'tools/Soui.ps1','different contents under same version');sdk.pack(source,second,'0.5.0');
     assert.throws(()=>sdk.install(second,project),/version cannot identify different contents/);
     assert.equal(fs.readFileSync(path.join(project,'app/business.txt'),'utf8'),'business stays');

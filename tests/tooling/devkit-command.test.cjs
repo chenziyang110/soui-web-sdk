@@ -3,11 +3,64 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const path=require('node:path');
 const crypto=require('node:crypto');
+const fs=require('node:fs');
+const vm=require('node:vm');
 const kit=require('../../tools/internal/devkit-command.cjs');
 const root=path.resolve(__dirname,'../..');
 const ps='C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe';
 const hash=bytes=>crypto.createHash('sha256').update(bytes).digest('hex');
 const bad=(args,code='E_ARGUMENT')=>assert.throws(()=>kit.parseArgs(args),error=>error.code===code);
+
+// Execute the real worker's data checks, stopping before any Vite import/server.
+function previewDataCheck(version,declared=version,nodeVersion='24.14.0') {
+  const file=path.join(root,'tools/internal/devkit-command.cjs');
+  const web=path.join(root,'templates/desktop-app/web'),folder=path.join(root,'out/devkit/data-only');
+  const entry=path.join(web,'node_modules/vite/dist/node/index.js');
+  const inputs=new Map([
+    [path.join(web,'package.json'),Buffer.from(JSON.stringify({devDependencies:{vite:declared}}))],
+    [path.join(web,'package-lock.json'),Buffer.from('{"lockfileVersion":3}')],
+    [path.join(web,'node_modules/vite/package.json'),Buffer.from(JSON.stringify({version}))]
+  ]);
+  const fakeFs={existsSync:file=>inputs.has(file),readFileSync:file=>{
+    assert(inputs.has(file),'Unexpected preview data read: '+file);return inputs.get(file);
+  }};
+  const fakeIdentity={safePath:(...parts)=>{
+    const value=path.resolve(...parts);
+    if(value===entry)throw Object.assign(new Error('Vite entry boundary reached'),{code:'TEST_VITE_ENTRY_BOUNDARY'});
+    return value;
+  }};
+  const module={exports:{}};
+  const localRequire=name=>{
+    if(name==='node:fs')return fakeFs;
+    if(name==='./delivery-identity.cjs')return fakeIdentity;
+    if(name==='./owned-tail-evidence.cjs')return {parseStrictJson:JSON.parse};
+    if(name==='./owned-process.cjs'||name==='./standard-build.cjs')return {};
+    assert(name.startsWith('node:'),'Unexpected preview dependency: '+name);return require(name);
+  };
+  const source=fs.readFileSync(file,'utf8')+'\nmodule.exports.previewDataWorker=previewWorker;\n';
+  new vm.Script(source,{filename:file}).runInNewContext({module,require:localRequire,Buffer,
+    __dirname:path.dirname(file),process:{env:{SOUI_DEVKIT_ENTRY_NONCE:'a'.repeat(32)},versions:{node:nodeVersion}}});
+  return module.exports.previewDataWorker([web,'1000','5173',folder,'b'.repeat(32)]);
+}
+
+test('preview accepts exactly the supported frozen Vite patch profiles before import',async()=>{
+  for(const version of ['6.4.3','6.4.4','8.3.3'])
+    await assert.rejects(previewDataCheck(version),error=>error.code==='TEST_VITE_ENTRY_BOUNDARY',version);
+});
+test('preview refuses unselected Vite versions and package/installed version drift',async()=>{
+  for(const version of ['6.4.2','6.4.5','7.0.0','8.3.4','^6.4.4'])
+    await assert.rejects(previewDataCheck(version),error=>error.code==='E_WEB_DEPENDENCIES',version);
+  await assert.rejects(previewDataCheck('6.4.4','6.4.3'),error=>error.code==='E_WEB_DEPENDENCIES');
+});
+test('preview retains the selected Vite profiles Node version floors',async()=>{
+  for(const version of ['6.4.3','6.4.4']) {
+    await assert.rejects(previewDataCheck(version,version,'20.19.0'),error=>error.code==='TEST_VITE_ENTRY_BOUNDARY');
+    for(const node of ['20.18.0','22.11.0'])
+      await assert.rejects(previewDataCheck(version,version,node),error=>error.code==='E_NODE_VERSION');
+  }
+  await assert.rejects(previewDataCheck('8.3.3','8.3.3','22.12.0'),error=>error.code==='TEST_VITE_ENTRY_BOUNDARY');
+  await assert.rejects(previewDataCheck('8.3.3','8.3.3','20.19.0'),error=>error.code==='E_NODE_VERSION');
+});
 
 test('unknown commands and arbitrary command-line escape hatches are refused',()=>{
   bad(['shell'],'E_COMMAND');bad(['doctor','--command','Write-Host 1']);
@@ -151,4 +204,67 @@ test('non-build commands keep their original command argv, external lease and fi
   assert.equal(dispatch.timeoutMs,value.timeoutMs);
   const dev=kit.parseArgs(['dev']);
   assert.equal(kit.commandDispatch(dev,{generated:true},root,ps).invocation,null);
+});
+
+const previewLlvm=['--native-toolchain','LLVM22MSVC142','--llvm-root','F:/llvm','--msvc-root','F:/msvc',
+  '--windows-sdk-root','F:/winsdk','--ninja-exe','F:/ninja.exe','--windows-cmd-exe','C:/Windows/System32/cmd.exe',
+  '--powershell-exe',ps];
+function preparedPreviewDto(architecture='x64') {
+  const value=kit.parseArgs(['dev',...previewLlvm,'--architecture',architecture]);
+  const toolsRoot='F:/PreparedTools',directory=path.join(toolsRoot,'out',architecture==='x64'?'benchmark-protocol':'benchmark-protocol-x86');
+  const requestPin={path:path.join(directory,'llvm-profile-request-Release.json'),bytes:10,sha256:'a'.repeat(64)};
+  const reportPin={path:path.join(directory,'measurement-tools.json'),bytes:20,sha256:'b'.repeat(64)};
+  const CMakeDefinitions={SOUI_LLVM_ROOT:value.llvmRoot,SOUI_MSVC142_ROOT:value.msvcRoot,
+    SOUI_WINDOWS_SDK_ROOT:value.windowsSdkRoot,SOUI_NINJA_EXECUTABLE:value.ninjaExe,
+    SOUI_WINDOWS_CMD_EXECUTABLE:value.windowsCmdExe,SOUI_TOOL_IDENTITY_POWERSHELL_EXECUTABLE:value.powerShellExe};
+  return {value,prepared:{toolsRoot,requestPin,reportPin,
+    request:{schema:'soui.build-toolchain-request/v1',profile:'LLVM22MSVC142',architecture,discovery:{CMakeDefinitions}},
+    setup:{report:{schema:'soui.measurement-tool-preparation/v2',architecture,configuration:'Release',prepared:true,
+      buildExitCode:0,nativeToolchain:{profile:'LLVM22MSVC142',requestFile:{...requestPin}}}}}};
+}
+test('dev explicit LLVM accepts the existing six-path CLI without changing default budgets',()=>{
+  const normal=kit.parseArgs(['dev']),selected=kit.parseArgs(['dev',...previewLlvm]);
+  assert.equal(normal.nativeToolchain,undefined);assert.equal(selected.nativeToolchain,'LLVM22MSVC142');
+  for(const key of ['timeoutMs','drainMs','durationMs','port'])assert.equal(selected[key],normal[key]);
+  bad(['dev','--native-toolchain','MSVC143']);bad(['dev','--native-toolchain','LLVM99']);
+  bad(['dev',...previewLlvm.slice(0,-2)]);bad(['dev','--llvm-root','F:/llvm']);
+});
+// These supplied DTOs test selection only; the production reader authenticates actual stock bytes.
+test('explicit preview selects complete current v2 stock metadata for either architecture',()=>{
+  for(const architecture of ['x64','x86']) {
+    const f=preparedPreviewDto(architecture),binding=kit.validatePreviewPreparation(f.value,f.prepared);
+    assert.equal(binding.profile,'LLVM22MSVC142');assert.equal(binding.architecture,architecture);
+    assert.deepEqual(binding.requestFile,f.prepared.requestPin);assert.deepEqual(binding.preparation,f.prepared.reportPin);
+  }
+});
+test('explicit LLVM preview refuses fallback, wrong architecture and unprepared stock',()=>{
+  for(const mutate of [f=>{f.prepared.setup.report.schema='soui.measurement-tool-preparation/v1';},
+    f=>{f.prepared.request=null;f.prepared.requestPin=null;},f=>{f.prepared.setup.report.architecture='x86';},
+    f=>{f.prepared.request.architecture='x86';},f=>{f.prepared.setup.report.prepared=false;},
+    f=>{f.prepared.setup.report.configuration='Debug';},f=>{f.prepared.setup.report.buildExitCode=1;},
+    f=>{f.prepared.request.profile='MSVC143';},f=>{f.prepared.reportPin=null;},
+    f=>{f.prepared.requestPin.path='F:/Other/request.json';},
+    f=>{f.prepared.setup.report.nativeToolchain.requestFile.sha256='c'.repeat(64);}]) {
+    const f=preparedPreviewDto();mutate(f);
+    assert.throws(()=>kit.validatePreviewPreparation(f.value,f.prepared),error=>error.code==='E_VALIDATION_TOOLS');
+  }
+});
+test('explicit preview binds all six CLI paths to the independently prepared selection',()=>{
+  for(const key of ['llvmRoot','msvcRoot','windowsSdkRoot','ninjaExe','windowsCmdExe','powerShellExe']) {
+    const f=preparedPreviewDto();f.value[key]='F:/Other/selection';
+    assert.throws(()=>kit.validatePreviewPreparation(f.value,f.prepared),error=>error.code==='E_VALIDATION_TOOLS',key);
+  }
+});
+test('preview postcheck refuses request or preparation raw pin changes',()=>{
+  for(const role of ['requestPin','reportPin']) {
+    const f=preparedPreviewDto(),before=kit.validatePreviewPreparation(f.value,f.prepared);
+    f.prepared[role]={...f.prepared[role],sha256:'d'.repeat(64)};
+    if(role==='requestPin')f.prepared.setup.report.nativeToolchain.requestFile={...f.prepared.requestPin};
+    assert.throws(()=>kit.validatePreviewPreparation(f.value,f.prepared,before),error=>error.code==='E_INPUT_CHANGED');
+  }
+});
+test('public entry statically refuses abandoned ownership and always disposes after restore/release',()=>{
+  const source=fs.readFileSync(path.join(root,'tools/Soui.ps1'),'utf8');
+  assert.match(source,/catch \[Threading\.AbandonedMutexException\]\s*\{\s*\$acquired=\$true\s*;\s*throw 'E_DESKTOP_ABANDONED'/);
+  assert.match(source,/finally\s*\{\s*try\s*\{[\s\S]*?SetEnvironmentVariable[\s\S]*?finally\s*\{\s*try\s*\{[\s\S]*?ReleaseMutex\(\)[\s\S]*?finally\s*\{\s*\$lease\.Dispose\(\)/);
 });
