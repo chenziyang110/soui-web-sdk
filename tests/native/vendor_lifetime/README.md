@@ -9,3 +9,19 @@ This directory can be included with `add_subdirectory(vendor_lifetime)` from `te
 There are seven endpoint cases and two activation cases, each with a 10-second CTest timeout. Every case must pass; there is no expected-failure CTest flag or separate baseline implementation. Fault-injection diagnostics remain failures when run against the old production code.
 
 These tests prove narrow allocation and lock behavior. They do not qualify real Blink object creation, concurrent endpoint use in the full engine, constructor rollback, native resource drain, PartitionAlloc exhaustion, GUI, target-system compatibility or release readiness.
+
+## Current input binding maintenance (2026-10-13)
+
+The 0.5 Native adoption changes complete-source pins and moves some preserved
+method ranges. Worker inputs pin the current complete files and extract the new
+WebThread retirement/witness interface as exact source bytes. Dragdata refreshes
+three complete-file pins and four source offsets; the existing fixture bytes and
+all ten range lengths remain unchanged. The ctor-shell and legacy-drag pins and
+ranges already match current Source and remain untouched. No historical result
+or frozen before fixture is reclassified as current validation.
+
+`node --test tests/native/vendor_lifetime/source-maps.test.cjs` checks the current
+file pins and byte ranges with file/data operations only. It does not configure
+CMake, compile, run a Native fixture, or close any runtime/release qualification.
+The configure and mandatory pre-build byte/HEX gates remain strict; only their
+reviewed current input metadata and the Worker's exact copy count change.
