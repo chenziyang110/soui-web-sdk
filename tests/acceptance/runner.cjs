@@ -64,7 +64,9 @@ function verifyNativeIdentity(records, outcome) {
 function resourceBinding(config, options) {
   if (options === undefined) return null;
   if (!options || typeof options !== 'object' || Array.isArray(options) ||
-      Object.keys(options).length !== 1 || typeof options.resource !== 'boolean')
+      Object.keys(options).some(key=>!['resource','cacheObservation'].includes(key)) || typeof options.resource !== 'boolean' ||
+      (Object.prototype.hasOwnProperty.call(options,'cacheObservation')&&
+        (options.resource!==true||options.cacheObservation!==true)))
     throw new Error('Only an explicit trusted resource boolean is supported');
   if (!options.resource) return null;
   if (config.mode !== 'reload' || config.cycles !== 100 || config.warmup !== 10 ||
@@ -73,12 +75,14 @@ function resourceBinding(config, options) {
   // Root pins this actual module and its dependencies before loading the runner.
   // Neither a request file nor a caller-provided hash selects the policy.
   const reader = require('./resource-validation.cjs');
-  const policyRaw = reader.policyBytes();
+  const cache=options.cacheObservation===true;
+  const policyRaw = cache?reader.calibrationPolicyBytes():reader.policyBytes();
   const policySha256 = identity.hash(policyRaw);
-  if (!Buffer.isBuffer(policyRaw) || policySha256 !== reader.POLICY_SHA256)
+  if (!Buffer.isBuffer(policyRaw) || policySha256 !== (cache?reader.CALIBRATION_POLICY_SHA256:reader.POLICY_SHA256))
     throw new Error('Loaded resource policy bytes do not match the reader');
   return {policyRaw, requestFields:{resourcePolicySha256:policySha256,
-    resourceScope:{kernel:'miniblink', renderer:'software', processModel:'single-process'}}};
+    resourceScope:{kernel:'miniblink', renderer:'software', processModel:'single-process'},
+    ...(cache?{namedCacheObservation:reader.CALIBRATION_POLICY.namedCacheObservation}:{})}};
 }
 function longRunBinding(config,options){
   if(options===undefined||!Object.prototype.hasOwnProperty.call(options,'longRun'))return null;
@@ -97,8 +101,9 @@ function parseRunCommand(command, args) {
     return {config:require('./long-run-policy.cjs').fixedConfig(command==='run-long-session'?'session':'mixed'),options:{longRun:true}};
   }
   if (command === 'run-resource') {
-    if (args.length) throw new Error('Resource capture takes only SUITE; its protocol cannot be overridden');
-    return {config:settings('reload',100,10,5000,20000), options:{resource:true}};
+    if (args.length&&!(args.length===1&&args[0]==='--cache-observation=1'))
+      throw new Error('Resource capture takes SUITE and only the explicit cache opt-in; its protocol cannot be overridden');
+    return {config:settings('reload',100,10,5000,20000), options:{resource:true,...(args.length?{cacheObservation:true}:{})}};
   }
   if (command === 'run' && args.length === 5)
     return {config:settings(args[0],...args.slice(1).map(Number))};
@@ -183,6 +188,21 @@ function completeResourceCaptureResult(operation, operationPin, policyPin, evide
   const workloadMatched=finalMatched && analysis?.inputsMatched===true &&
     analysis.inputBindingScope==='complete-acceptance-inputs' && workloadAnalysis;
   const resourceEvaluated=workloadMatched && ['passed','failed'].includes(analysis.resourceGate);
+  const cacheEnabled=policyPin?.sha256===require('./resource-validation.cjs').CALIBRATION_POLICY_SHA256;
+  let cacheGate='not-evaluated';
+  if(analysis?.cacheObservation===true&&!cacheEnabled)
+    throw new Error('Cache observation requires its exact explicit frozen policy');
+  if(cacheEnabled&&analysis?.namedCacheCalibration){
+    const reader=require('./resource-validation.cjs');
+    const expected=reader.cacheCalibration(analysis.allSamples||[],analysis.subject,analysis.cacheModulePin);
+    if(analysis.cacheObservation!==true||analysis.policySha256!==policyPin.sha256||
+      JSON.stringify(analysis.namedCacheCalibration)!==JSON.stringify(expected)||
+      (workloadMatched&&JSON.stringify(analysis.cacheModulePin)!==JSON.stringify(analysis.nativeModel.modulePin)))
+      throw new Error('Cache calibration must retain the bound samples and exact finite aggregate');
+    if(finalMatched&&analysis.inputsMatched===true)cacheGate=expected.finiteGate;
+  }
+  const captureGate=cacheEnabled?require('./long-run-validation.cjs').combine([
+    resourceEvaluated?analysis.resourceGate:'not-evaluated',cacheGate]):resourceEvaluated?analysis.resourceGate:'not-evaluated';
   return {...capture,bindings:evidence.bindingFile,inputBindingGate:finalMatched?'matched':'not-evaluated',
     inputRecheck:finalMatched?inputs:null,inputRecheckDiagnostic:inputs || null,analysis:evidence.analysis?.file || null,
     resourceRuleObservation:analysis?.resourceRuleObservation || 'not-evaluated',
@@ -192,8 +212,13 @@ function completeResourceCaptureResult(operation, operationPin, policyPin, evide
     nativeSoftware:finalMatched?(analysis?.nativeSoftware || null):null,
     nativeModel:finalMatched?(analysis?.nativeModel || null):null,
     softwareProcessModelGate:workloadMatched?'matched-bound-workload':'not-evaluated',
-    resourceGate:resourceEvaluated?analysis.resourceGate:'not-evaluated',passed:resourceEvaluated&&analysis.passed===true,
-    failure:operation.failure || evidence.failure || analysis?.failure || (resourceEvaluated?null:'native-software-scope-not-observed'),
+    resourceGate:resourceEvaluated?analysis.resourceGate:'not-evaluated',passed:captureGate==='passed',
+    ...(cacheEnabled?{cacheObservationGate:cacheGate,captureGate,namedCacheCalibration:finalMatched?analysis?.namedCacheCalibration||null:null,
+      cacheBudgetGate:'not-evaluated',calibratedByteBudgets:null,cacheRequiredEvidence:[
+        ...(cacheGate==='passed'?[]:['fresh-complete-named-cache-calibration']),
+        'current-calibrated-byte-budgets-and-broader-cache-coverage']}:{}),
+    failure:operation.failure || evidence.failure || analysis?.failure ||
+      (cacheEnabled&&cacheGate!=='passed'?'named-cache-calibration:'+cacheGate:null) || (resourceEvaluated?null:'native-software-scope-not-observed'),
     requiredEvidence:finalMatched?(analysis?.inputsMatched===true&&analysis?.inputBindingScope==='complete-acceptance-inputs'?
       workloadMatched?resourceEvaluated?[]:['complete-original-resource-observations']:
         compositorMatched?['broader-software-process-workload-coverage']:['actual-native-software-scope']:
@@ -415,7 +440,8 @@ async function run(suite,config,options) {
   const bin=path.join(suite,'runtime');
   const mixed=config.mode==='mixed', session=config.mode==='session';
   const duration=mixed || session;
-  const args=longRun?require('./long-run-validation.cjs').nativeArgs(config,log):duration?
+  const args=longRun?require('./long-run-validation.cjs').nativeArgs(config,log):resource?
+    require('./resource-validation.cjs').resourceNativeArgs({...config,...resource.requestFields},log):duration?
     [`--mode=${config.mode}`,`--duration-ms=${config.durationMs}`,`--idle-ms=${config.idleMs}`,
       `--settle-ms=${config.settleMs}`,`--timeout-ms=${config.timeoutMs}`,`--report=${log}`]:
     [`--mode=${config.mode}`,`--cycles=${config.cycles}`,`--warmup=${config.warmup}`,
@@ -537,7 +563,8 @@ async function run(suite,config,options) {
   const capturePath=path.join(output,'result.json');
   write(capturePath,captured);
   return {...summary,passed:captured.passed,operationPassed:captured.operationPassed,
-    resourceGate:captured.resourceGate,result:path.relative(root,capturePath).replaceAll('\\','/'),
+    resourceGate:captured.resourceGate,...(resource.requestFields.namedCacheObservation!==undefined?{cacheObservationGate:captured.cacheObservationGate,
+      captureGate:captured.captureGate,cacheBudgetGate:captured.cacheBudgetGate}:{}),result:path.relative(root,capturePath).replaceAll('\\','/'),
     operationResult:summary.result,failure:result.failure || captured.failure};
 }
 module.exports={settings,expectedSteps,validateRecords,mixedSettings,validateMixedRecords,sessionSettings,validateSessionRecords,verifyNativeIdentity,resourceBinding,longRunBinding,parseRunCommand,resourceCaptureResult,matchResourceBindingPin,completeResourceCaptureResult,prepare,stage,verify,run};

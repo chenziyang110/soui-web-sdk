@@ -63,3 +63,56 @@ test('frozen request rejects a scope that disables the declared eight-hour sampl
   request.longRunScope.namedCacheObservation='not-requested';
   assert.throws(()=>policy.validateFrozenRequest(request,build,'mixed-'+runId));
 });
+
+test('finite configurations expose a known violation while the full cache budget stays uncalibrated',()=>{
+  const valid=validation.namedCacheObservations([sample()],subject,modulePin);
+  assert.equal(valid.configurationGate,'passed');assert.equal(valid.cacheBudgetGate,'not-evaluated');
+  const bad=sample();bad.nativeSdk.namedCaches.resourceRetainedBytes='1000';
+  const out=validation.namedCacheObservations([bad],subject,modulePin);
+  assert.equal(out.configurationGate,'failed');assert.equal(out.configurationFailures.length,1);
+  assert.equal(out.cacheBudgetGate,'not-evaluated');assert.equal(out.calibratedByteBudgets,null);
+});
+function cacheHours(){
+  const rows=[{event:'cycle.begin',cycle:1,elapsedMs:0}];
+  for(let hour=0;hour<8;hour++)for(let i=0;i<30;i++){
+    const time=hour*policy.HOUR+60000+i*120000,row=sample(String(time));
+    row.elapsedMs=time;row.cycle=hour*30+i+1;row.nativeSdk.captureClock.qpc=String(time+10);rows.push(row);
+  }
+  return rows;
+}
+test('fresh completion coverage includes hourly edges and never counts a repeated copy twice',()=>{
+  const config=policy.fixedConfig('mixed'),rows=cacheHours();
+  const out=validation.namedCacheObservations(rows,subject,modulePin,config);
+  assert.equal(out.freshCoverageGate,'passed');assert.equal(out.freshCoverage.cadence.length,8);
+  assert.equal(out.freshCoverage.cadence[0].newCompleteCopies,30);assert.equal(out.cacheBudgetGate,'not-evaluated');
+  rows[2].nativeSdk.namedCaches.sampleQpc=rows[1].nativeSdk.namedCaches.sampleQpc;
+  assert.equal(validation.namedCacheObservations(rows,subject,modulePin,config).freshCoverageGate,'not-evaluated');
+});
+test('partial or stale completions cannot borrow an OS sample to fill cache coverage',()=>{
+  for(const mutate of [row=>row.nativeSdk.namedCaches.glyphStatus=2,
+    row=>row.nativeSdk.captureClock.qpc=String(BigInt(row.nativeSdk.namedCaches.sampleQpc)+180001n),
+    row=>{row.nativeSdk.namedCaches.state='unavailable';row.nativeSdk.namedCaches.runtimeRetired=true;}]){
+    const rows=cacheHours();mutate(rows[1]);
+    const out=validation.namedCacheObservations(rows,subject,modulePin,policy.fixedConfig('mixed'));
+    assert.equal(out.freshCoverageGate,'not-evaluated');assert.equal(out.cacheBudgetGate,'not-evaluated');
+  }
+});
+
+test('noneligible points stay diagnostic when a complete independent cadence still exists',()=>{
+  const rows=cacheHours(),partial=structuredClone(rows[1]);
+  partial.elapsedMs--;partial.nativeSdk.namedCaches.sampleQpc=String(BigInt(partial.nativeSdk.namedCaches.sampleQpc)-1n);
+  partial.nativeSdk.namedCaches.glyphStatus=2;rows.splice(1,0,partial);
+  const out=validation.namedCacheObservations(rows,subject,modulePin,policy.fixedConfig('mixed'));
+  assert.equal(out.configurationPoints[0].configurationGate,'not-evaluated');
+  assert.equal(out.configurationGate,'passed');assert.equal(out.freshCoverageGate,'passed');
+  assert.equal(out.dataGate,'partial');assert.equal(out.cacheBudgetGate,'not-evaluated');
+});
+
+test('sufficient fresh hourly coverage cannot swallow a known contradiction in a separate clock-missing point',()=>{
+  const rows=cacheHours(),bad=sample('100000');bad.elapsedMs=100000;bad.cycle=999;
+  bad.nativeSdk.namedCaches.structSize=215;delete bad.nativeSdk.captureClock;rows.splice(2,0,bad);
+  const out=validation.namedCacheObservations(rows,subject,modulePin,policy.fixedConfig('mixed'));
+  assert.equal(out.dataGate,'invalid');assert.equal(out.invalidSamples,1);assert.equal(out.freshCoverageGate,'passed');
+  assert.equal(out.configurationGate,'failed');assert.equal(out.configurationFailures.length,1);
+  assert.equal(out.cacheBudgetGate,'not-evaluated');
+});

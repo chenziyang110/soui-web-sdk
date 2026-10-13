@@ -38,7 +38,7 @@ function checkSeries(points,medianMinimum,p95Minimum,medianPercent,p95Percent){
 }
 function gate(fn){try{return fn();}catch(error){return {gate:error.failed?'failed':NE,failure:error.message||'invalid-long-observation'};}}
 function combine(values){return values.includes('failed')?'failed':values.every(value=>value==='passed')?'passed':NE;}
-const durationGates=['inputs','operations','owned','tree','duration','sampling','resources','actions','native','ownerCaps','terminalDrain','cacheBudget'];
+const durationGates=['inputs','operations','owned','tree','duration','sampling','resources','actions','native','ownerCaps','terminalDrain','namedCacheConfiguration','namedCacheCoverage','cacheBudget'];
 const ordinaryGates=['inputs','operations','owned','tree'];
 function requiredGates(mode){return ['mixed','session'].includes(mode)?durationGates:['inputs','operations','owned'];}
 function aggregate(mode,gates){
@@ -53,6 +53,18 @@ function aggregate(mode,gates){
     failure:overall==='passed'?null:required.filter(name=>gates[name]!=='passed').map(name=>name+':'+gates[name]).join(',')};
 }
 function checkedAggregate(analysis,mode){
+  if(['mixed','session'].includes(mode)){
+    need(analysis.gates?.cacheBudget===NE,'uncalibrated-full-cache-budget-cannot-pass');
+    if(analysis.namedCaches){
+      const named=analysis.namedCaches,points=named.configurationPoints||[];
+      const configuration=points.some(row=>row.configurationGate==='failed')?'failed':
+        points.some(row=>row.configurationGate==='passed')?'passed':NE;
+      need(named.configurationGate===configuration&&analysis.gates.namedCacheConfiguration===configuration&&
+        analysis.gates.namedCacheCoverage===named.freshCoverageGate&&named.cacheBudgetGate===NE&&
+        named.calibratedByteBudgetGate===NE&&named.calibratedByteBudgets===null,
+        'inconsistent-finite-cache-analysis-gates');
+    }
+  }
   const current=aggregate(mode,analysis.gates);
   need(same(analysis.requiredGates,current.requiredGates)&&['longRunGate','resourceGate','eightHourGate','thousandCycleOperationGate','passed','failure']
     .every(name=>analysis[name]===current[name]),'inconsistent-long-analysis-aggregate');
@@ -63,16 +75,23 @@ function nativeArgs(config,eventLogPath){
     ['--mode='+config.mode,'--duration-ms='+config.durationMs,'--idle-ms='+config.idleMs,'--settle-ms='+config.settleMs,'--timeout-ms='+config.timeoutMs,'--report='+eventLogPath,'--cache-observation=1']:
     ['--mode='+config.mode,'--cycles='+config.cycles,'--warmup='+config.warmup,'--settle-ms='+config.settleMs,'--timeout-ms='+config.timeoutMs,'--report='+eventLogPath];
 }
-function namedCacheObservations(records,subject,modulePin){
+function namedCacheObservations(records,subject,modulePin,config){
   const cache=require('./native-cache-validation.cjs');
   const result={scope:cache.scope,dataGate:NE,sampleRows:0,completedCopies:0,missingSamples:0,
     invalidSamples:0,partialSamples:0,newCompletedSamples:0,repeatedCompletedCopies:0,retiredCopies:0,
-    maximumAgeMicroseconds:'0',lastSampleQpc:null,resourceGate:NE,qualified:false,failure:null};
-  let previous=null,maxAge=0n;
+    maximumAgeMicroseconds:'0',lastSampleQpc:null,resourceGate:NE,qualified:false,failure:null,
+    configurationGate:NE,freshCoverageGate:NE,calibratedByteBudgetGate:NE,cacheBudgetGate:NE,
+    calibratedByteBudgets:null,configurationFailures:[],configurationPoints:[],freshCoverage:null};
+  let previous=null,maxAge=0n;const fresh=[];
   for(const row of records){
     if(row.event!=='sample'||row.phase==='process')continue;
     ++result.sampleRows;
     const dto=row.nativeSdk?.namedCaches,clock=row.nativeSdk?.captureClock;
+    const configuration=cache.analyzeNamedCacheConfiguration(dto,{subject,modulePin,captureClock:clock,previous});
+    result.configurationPoints.push({elapsedMs:row.elapsedMs??null,phase:row.phase,cycle:row.cycle??null,
+      sampleQpc:dto?.sampleQpc??null,...configuration});
+    if(configuration.configurationGate==='failed')result.configurationFailures.push(configuration.failure);
+    if(configuration.configurationGate==='passed')fresh.push(row);
     if(!dto){++result.missingSamples;continue;}
     const observed=cache.analyzeNamedCache(dto,{subject,modulePin,captureClock:clock,previous});
     if(observed.dataGate==='invalid'){
@@ -92,6 +111,29 @@ function namedCacheObservations(records,subject,modulePin){
   result.maximumAgeMicroseconds=maxAge.toString();
   result.dataGate=result.invalidSamples?'invalid':!result.completedCopies?NE:
     result.partialSamples||result.missingSamples?'partial':'matched';
+  result.configurationGate=result.configurationFailures.length?'failed':fresh.length?'passed':NE;
+  result.configurationScope='eligible-fresh-complete-points; all other points retained as diagnostics and coverage exclusions';
+  if(config?.durationMs!==undefined){
+    result.freshCoverage=gate(()=>{
+      const origin=originFor(records,config),phase=config.mode==='session'?'anchor':'cycle';
+      const hours=Array.from({length:8},()=>[]);
+      for(const row of fresh){
+        if(row.phase!==phase)continue;
+        need(integer(row.elapsedMs)&&row.elapsedMs>=origin,'invalid-named-cache-observation-time');
+        const hour=Math.floor((row.elapsedMs-origin)/policy.HOUR);if(hour<8)hours[hour].push(row.elapsedMs);
+      }
+      const cadence=hours.map((times,hour)=>{
+        need(times.every((time,i)=>i===0||time>=times[i-1]),'named-cache-observation-time-reversed',true);
+        const start=origin+hour*policy.HOUR,end=start+policy.HOUR;
+        const gaps=times.length?[times[0]-start,...times.slice(1).map((time,i)=>time-times[i]),end-times.at(-1)]:[policy.HOUR];
+        return {hour,newCompleteCopies:times.length,maxGapMs:Math.max(...gaps)};
+      });
+      const rule=policy.RULE.namedCacheConfigurationPolicy;
+      return {gate:cadence.every(row=>row.newCompleteCopies>=rule.minNewSamplesPerHour&&row.maxGapMs<=rule.maxNewSampleGapMs)?'passed':NE,
+        phase,originMs:origin,cadence,scope:'distinct-fresh-completed-copies-observed-at-native-phase-times'};
+    });
+    result.freshCoverageGate=result.freshCoverage.gate;
+  }
   return result;
 }
 function processBudget(config){
@@ -334,13 +376,15 @@ function analyzeLong(result,eventRaw,evidence){
         {gate:NE,failure:'Compatibility single-owned-tree not proved'};
       output.gates.native=output.native.gate;
       output.owners=owners.analyzeOwners(records);
-      output.namedCaches=owned.treeGate==='passed'?namedCacheObservations(records,owned.subject,evidence.modulePin):
+      output.namedCaches=owned.treeGate==='passed'?namedCacheObservations(records,owned.subject,evidence.modulePin,config):
         {scope:policy.RULE.namedCacheScope,dataGate:NE,resourceGate:NE,qualified:false,failure:'single-owned-tree-not-proved'};
       output.gates.ownerCaps=output.owners.capacityGate;output.gates.terminalDrain=output.owners.terminalDrainGate;
       output.gates.cacheBudget=output.owners.cacheBudgetGate;
-      output.requiredGates=['inputs','operations','owned','tree','duration','sampling','resources','actions','native','ownerCaps','terminalDrain','cacheBudget'];
+      output.gates.namedCacheConfiguration=output.namedCaches.configurationGate||NE;
+      output.gates.namedCacheCoverage=output.namedCaches.freshCoverageGate||NE;
+      output.requiredGates=[...durationGates];
       output.eightHourGate=combine(output.requiredGates.map(name=>output.gates[name]));
-      output.resourceGate=combine(['inputs','tree','sampling','resources','native','ownerCaps','terminalDrain','cacheBudget'].map(name=>output.gates[name]));
+      output.resourceGate=combine(['inputs','tree','sampling','resources','native','ownerCaps','terminalDrain','namedCacheConfiguration','namedCacheCoverage','cacheBudget'].map(name=>output.gates[name]));
       output.longRunGate=output.eightHourGate;output.thousandCycleOperationGate=NE;
       output.coverage=config.mode==='session'?'same-document authenticated task/subscription renewals':'mixed lifecycle business';
       output.retention={originalEvents:records.length,rawLogSha256:policy.hash(eventRaw),allTailAndBoundaryEventsRetained:true};

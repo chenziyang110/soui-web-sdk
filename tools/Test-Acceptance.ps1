@@ -12,6 +12,7 @@ param(
   [string]$RuntimeBinary,
   [ValidateSet('ordinary','message-port')][string]$Fixture='ordinary',
   [switch]$ResourceCapture,
+  [switch]$CacheObservation,
   [switch]$LongRunCapture,
   [switch]$PrepareOnly,
   [switch]$SkipSdkBuild,
@@ -22,6 +23,7 @@ param(
   [string]$DevkitRoot
 )
 $ErrorActionPreference='Stop'
+if($CacheObservation -and -not $ResourceCapture){throw 'CacheObservation requires the explicit ResourceCapture calibration route'}
 $llvmPaths=[ordered]@{LlvmRoot=$LlvmRoot;MsvcRoot=$MsvcRoot;WindowsSdkRoot=$WindowsSdkRoot;
   NinjaExe=$NinjaExe;WindowsCmdExe=$WindowsCmdExe;PowerShellExe=$PowerShellExe}
 if($NativeToolchain -eq 'LLVM22MSVC142'){
@@ -207,7 +209,9 @@ if($PrepareOnly){Write-Output "Acceptance build prepared; no desktop scenarios e
     & node $runner $command $suite $DurationMs $SettleMs $StepTimeoutMs $IdleMs
     if($LASTEXITCODE -ne 0){$failed=$true}
   } elseif($ResourceCapture){
-    & node $runner run-resource $suite
+    $resourceArgs=@('run-resource',$suite)
+    if($CacheObservation){$resourceArgs+='--cache-observation=1'}
+    & node $runner @resourceArgs
     if($LASTEXITCODE -ne 0){$failed=$true}
   } else {
     $modes=if($Scenario -eq 'all'){@('reload','recreate','multiwindow','bridge')}else{@($Scenario)}

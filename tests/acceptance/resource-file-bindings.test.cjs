@@ -5,7 +5,7 @@ const fs=require('node:fs');
 const path=require('node:path');
 const os=require('node:os');
 const identity=require('../../tools/internal/delivery-identity.cjs');
-const {exactSnapshot,validateRecordSet,verifyCompleteBinding,freeze}=require('./resource-file-bindings.cjs');
+const {exactSnapshot,validateRecordSet,verifyCompleteBinding,freeze,requestFor}=require('./resource-file-bindings.cjs');
 const {analyzeFile}=require('./resource-validation.cjs');
 
 function tree(t) {
@@ -128,4 +128,24 @@ test('freeze rejects outside-suite paths before constructing a file binding',t=>
   const {root}=tree(t);
   assert.throws(()=>freeze(root,path.join(root,'run')),/current SDK acceptance suite/);
   assert.ok(!fs.existsSync(path.join(root,'run','file-bindings.json')));
+});
+
+test('the actual request/policy freeze binds explicit calibration and rejects a synchronized legacy choice',t=>{
+  const {root}=tree(t),reader=require('./resource-validation.cjs');
+  const build={consumerBuildId:'fixture-build',sourceSha256:'a'.repeat(64),payload:{sha256:'b'.repeat(64)}};
+  const runId='44444444-4444-4444-8444-444444444444',run=path.join(root,'reload-'+runId);fs.mkdirSync(run);
+  const record={schema:'soui.acceptance-request/v1',runId,mode:'reload',cycles:100,warmup:10,settleMs:5000,timeoutMs:20000,
+    consumerBuildId:build.consumerBuildId,sourceSha256:build.sourceSha256,payloadSha256:build.payload.sha256,
+    resourceScope:{kernel:'miniblink',renderer:'software',processModel:'single-process'}};
+  const set=(enabled,raw)=>{
+    const request={...record,resourcePolicySha256:enabled?reader.CALIBRATION_POLICY_SHA256:reader.POLICY_SHA256,
+      ...(enabled?{namedCacheObservation:'named-process-cache-scalars'}:{})};
+    fs.writeFileSync(path.join(run,'request.json'),JSON.stringify(request)+'\n');
+    fs.writeFileSync(path.join(run,'resource-policy.json'),raw);return request;
+  };
+  set(false,reader.policyBytes());assert.doesNotThrow(()=>requestFor(run,build));
+  set(true,reader.calibrationPolicyBytes());assert.equal(requestFor(run,build).policy.pin.sha256,reader.CALIBRATION_POLICY_SHA256);
+  set(true,reader.policyBytes());assert.throws(()=>requestFor(run,build),/policy bytes differ/);
+  const mismatched=set(false,reader.policyBytes());mismatched.namedCacheObservation='named-process-cache-scalars';
+  fs.writeFileSync(path.join(run,'request.json'),JSON.stringify(mismatched)+'\n');assert.throws(()=>requestFor(run,build),/choice-differs/);
 });

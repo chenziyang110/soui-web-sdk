@@ -194,14 +194,15 @@ function requestFor(runRoot,build) {
     need(policy.raw.equals(long.policyBytes(record.mode)),'Actual frozen long policy bytes differ');
     return {request,policy};
   }
+  const selected=reader.resourcePolicySelection(record);
   need(record.schema==='soui.acceptance-request/v1'&&uuid.test(record.runId)&&record.mode==='reload'&&
     record.cycles===100&&record.warmup===10&&record.settleMs===5000&&record.timeoutMs===20000&&
     record.consumerBuildId===build.consumerBuildId&&record.sourceSha256===build.sourceSha256&&
-    record.payloadSha256===build.payload.sha256&&record.resourcePolicySha256===reader.POLICY_SHA256&&
+    record.payloadSha256===build.payload.sha256&&record.resourcePolicySha256===selected.policySha256&&
     same(record.resourceScope,{kernel:'miniblink',renderer:'software',processModel:'single-process'})&&
     path.basename(runRoot)===`reload-${record.runId}`,'Frozen current resource request differs');
   const policy=pinFile(path.join(runRoot,'resource-policy.json'));
-  need(policy.raw.equals(reader.policyBytes()),'Actual resource policy bytes differ');
+  need(policy.raw.equals(selected.policyRaw),'Actual resource policy bytes differ');
   return {request,policy};
 }
 function snapshotInputs(suite,build) {
@@ -293,4 +294,4 @@ function recheck(bindingFile) {
   return {...checked,resourceGate:'not-evaluated',passed:false,nativeScopeGate:'not-observed',releaseReady:false,
     closureObserved:false};
 }
-module.exports={freeze,recheck,verifyCompleteBinding,exactSnapshot,validateRecordSet,validateNativeSelection,mergeNativePins};
+module.exports={freeze,recheck,verifyCompleteBinding,exactSnapshot,validateRecordSet,validateNativeSelection,mergeNativePins,requestFor};
