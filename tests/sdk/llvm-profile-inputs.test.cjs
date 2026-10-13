@@ -6,6 +6,18 @@ const os = require('node:os');
 const path = require('node:path');
 const profile = require('../../tools/internal/llvm-profile-inputs.cjs');
 const {headerFiles} = require('../../tools/internal/llvm-reference-sdk.cjs');
+test('LLVM resource selection binds compiler and initialization to the same Windows SDK RC', () => {
+  const source = fs.readFileSync(path.join(__dirname, '../../cmake/toolchains/SouiLLVM22.cmake'), 'utf8');
+  const selections = ['CMAKE_RC_COMPILER', 'CMAKE_RC_COMPILER_INIT'].map(name => {
+    const rows = [...source.matchAll(new RegExp('_soui_llvm_bind\\(' + name + '\\s+"([^"\\n]+)"\\s+FILEPATH\\)', 'g'))];
+    assert.equal(rows.length, 1, name + ' requires one strict toolchain binding');
+    return rows[0][1];
+  });
+  assert.equal(selections[0], '${SOUI_WINDOWS_SDK_ROOT}/bin/10.0.19041.0/x64/rc.exe');
+  assert.equal(selections[1], selections[0]);
+  assert.equal(/(?:set|_soui_llvm_bind)\(CMAKE_(?:RC_COMPILE_OBJECT|DEPFILE_FLAGS_RC|NINJA_CMCLDEPS_RC)\b/.test(source), false,
+    'RC selection must preserve CMake dependency/compile rules');
+});
 function fixture(t) {
   const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'soui-llvm-input-unit-')));
   t.after(() => fs.rmSync(root, {recursive: true, force: true}));
@@ -575,7 +587,7 @@ test('fresh LLVM preparation reads a foreign stock module strictly as pinned dat
     assert.equal(prepared.toolsRoot, f.toolsRoot);
     assert.equal(prepared.setup.report.nativeToolchain.qualificationPassed, undefined);
     assert.equal(prepared.setup.report.nativeToolchain.observation.qualificationPassed, false);
-    assert.equal(prepared.requestPin.path, f.requestFile);
+    assert.equal(path.resolve(prepared.requestPin.path), path.resolve(f.requestFile));
     assert.deepEqual(prepared.setup.report, f.report);
   }
 });

@@ -290,6 +290,9 @@ _soui_llvm_bind(CMAKE_LINKER_LLD "${SOUI_LLVM_ROOT}/bin/lld-link.exe" FILEPATH)
 _soui_llvm_bind(CMAKE_LINKER_TYPE LLD STRING)
 _soui_llvm_bind(CMAKE_AR "${SOUI_LLVM_ROOT}/bin/llvm-lib.exe" FILEPATH)
 _soui_llvm_bind(CMAKE_RC_COMPILER "${SOUI_WINDOWS_SDK_ROOT}/bin/10.0.19041.0/x64/rc.exe" FILEPATH)
+# Windows-Clang also consults INIT when choosing LLVM RC preprocessing, even
+# with COMPILER already fixed. Keep PATH's llvm-rc fallback out of this profile.
+_soui_llvm_bind(CMAKE_RC_COMPILER_INIT "${SOUI_WINDOWS_SDK_ROOT}/bin/10.0.19041.0/x64/rc.exe" FILEPATH)
 _soui_llvm_bind(CMAKE_MT "${SOUI_WINDOWS_SDK_ROOT}/bin/10.0.19041.0/x64/mt.exe" FILEPATH)
 _soui_llvm_bind(CMAKE_MAKE_PROGRAM "${SOUI_NINJA_EXECUTABLE}" FILEPATH)
 
