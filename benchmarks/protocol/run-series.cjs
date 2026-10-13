@@ -257,19 +257,23 @@ function frozenIdentity(run) {
   const record = run.record;
   return {machine: record.machine, pageSha256: record.pageSha256,
     pageFiles: record.pageFiles, hostExeSha256: record.hostExeSha256,
-    dependency: record.dependency, identity: record.identity, tools: record.tools};
+    dependency: record.dependency, identity: record.identity, tools: record.tools,
+    ...(record.desktopObservation === true ? {desktopObservation:true} : {})};
 }
 
 async function main() {
+  const arguments_ = process.argv.slice(2);
+  const desktopObservation = arguments_.at(-1) === '--desktop-observe';
+  if (desktopObservation) arguments_.pop();
   const [scene, pageArgument, souiArgument, nodeArgument, electronArgument,
     appArgument, samplerArgument, inputArgument, outputArgument,
-    libraryArgument, lockArgument, roundsArgument] = process.argv.slice(2);
-  if (![13, 14].includes(process.argv.length) ||
+    libraryArgument, lockArgument, roundsArgument] = arguments_;
+  if (![11, 12].includes(arguments_.length) ||
       !['S01', 'S02', 'S04', 'S05'].includes(scene))
     throw new Error('Usage: node run-series.cjs S01|S02|S04|S05 ABS_PAGE_DIR '
       + 'ABS_SOUI_EXE ABS_NODE_DLL ABS_ELECTRON_EXE ABS_ELECTRON_APP_DIR '
       + 'ABS_SAMPLER_EXE ABS_INPUT_EXE ABS_NEW_OUTPUT_DIR ABS_SDK_LIB '
-      + 'ABS_ELECTRON_LOCKFILE [ROUNDS=5]');
+      + 'ABS_ELECTRON_LOCKFILE [ROUNDS=5] [--desktop-observe]');
   const rounds = roundsArgument === undefined ? 5 : Number(roundsArgument);
   if (!Number.isSafeInteger(rounds) || rounds < 1 || rounds > 20)
     throw new Error('ROUNDS must be an integer from 1 to 20');
@@ -292,6 +296,7 @@ async function main() {
     scene, plannedPairs: rounds, startedAt: new Date().toISOString(),
     order: 'alternating-soui-electron-and-electron-soui', checks: [firstCheck],
     pairs: [], benchmarkValid: false, releaseReady: false};
+  if (desktopObservation) record.desktopObservation = true;
   const liveGateFile = path.join(root, 'live-interference-gates.ndjson');
   fs.writeFileSync(liveGateFile, '', {flag: 'wx'});
   record.liveInterferenceGate = {path: path.basename(liveGateFile),
@@ -313,6 +318,7 @@ async function main() {
         const args = host === 'soui'
           ? ['soui', scene, frozenPage, souiExe, nodeDll, sampler, input, runPath, library]
           : ['electron', scene, frozenPage, electronExe, app, sampler, input, runPath, lock];
+        if (desktopObservation) args.push('--desktop-observe');
         const runner = await runOne(args, liveGateFile, index + 1, host);
         if (!pair.runnerProcesses) pair.runnerProcesses = {};
         pair.runnerProcesses[host] = runner;

@@ -8,6 +8,13 @@
 #include "wke/wkeWebWindow.h"
 #include "wke/wkeGlobalVar.h"
 #include "wke/wke2.h"
+#include "wke/RendererDiagnosticsState.h"
+#include "wke/RendererModelState.h"
+#include "core/workers/WorkerMessagingProxy.h"
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+#include "platform/heap/SafePoint.h"
+#endif
+#include <exception>
 #include "wke/CursorDescriptorBroker.h"
 #include "content/browser/WebPage.h"
 #include "content/browser/WebPageImpl.h"
@@ -66,6 +73,184 @@ extern char* g_navigatorPlatform;
 namespace wke {
 DWORD wkeThreadId = 0;
 }
+
+namespace wke {
+namespace diagnostics {
+namespace {
+
+SRWLOCK renderer_cache_lock = SRWLOCK_INIT;
+renderer_process_state renderer_cache;
+renderer_backend_model_state renderer_model_cache;
+
+class renderer_write_lock final {
+public:
+    explicit renderer_write_lock(SRWLOCK& lock) noexcept : lock_(lock)
+    {
+        AcquireSRWLockExclusive(&lock_);
+    }
+    ~renderer_write_lock() { ReleaseSRWLockExclusive(&lock_); }
+    renderer_write_lock(const renderer_write_lock&) = delete;
+    renderer_write_lock& operator=(const renderer_write_lock&) = delete;
+    renderer_write_lock(renderer_write_lock&&) = delete;
+    renderer_write_lock& operator=(renderer_write_lock&&) = delete;
+private:
+    SRWLOCK& lock_;
+};
+
+class renderer_read_lock final {
+public:
+    // Construct only after the caller successfully acquired the shared lock.
+    explicit renderer_read_lock(SRWLOCK& lock) noexcept : lock_(lock) {}
+    ~renderer_read_lock() { ReleaseSRWLockShared(&lock_); }
+    renderer_read_lock(const renderer_read_lock&) = delete;
+    renderer_read_lock& operator=(const renderer_read_lock&) = delete;
+    renderer_read_lock(renderer_read_lock&&) = delete;
+    renderer_read_lock& operator=(renderer_read_lock&&) = delete;
+private:
+    SRWLOCK& lock_;
+};
+
+bool renderer_qpc(uint64_t& value) noexcept
+{
+    LARGE_INTEGER now{};
+    const bool valid = QueryPerformanceCounter(&now) != FALSE && now.QuadPart >= 0;
+    value = valid ? static_cast<uint64_t>(now.QuadPart) : 0;
+    return valid;
+}
+
+uint32_t WKE_RENDER_DIAGNOSTICS_CALL read_renderer_process_snapshot(
+    wkeRendererProcessSnapshot* output)
+{
+    if (!output || output->structSize != sizeof(wkeRendererProcessSnapshot))
+        return WKE_RENDER_DIAGNOSTICS_INVALID_ARGUMENT;
+    auto snapshot = busy_snapshot();
+    if (TryAcquireSRWLockShared(&renderer_cache_lock)) {
+        renderer_read_lock held(renderer_cache_lock);
+        snapshot = renderer_cache.snapshot();
+    }
+    // Caller owns output; never hold the cache lock while writing caller memory.
+    *output = snapshot;
+    return snapshot.status;
+}
+
+const wkeRendererDiagnosticsApi renderer_api = {
+    sizeof(wkeRendererDiagnosticsApi),
+    WKE_RENDER_DIAGNOSTICS_ABI_VERSION,
+    WKE_RENDER_DIAGNOSTICS_CAP_PROCESS_CACHE
+        | WKE_RENDER_DIAGNOSTICS_CAP_COMPLETED_DRAW_CALLS,
+    &read_renderer_process_snapshot
+};
+
+} // namespace
+
+uint32_t WKE_RENDER_DIAGNOSTICS_CALL read_renderer_model_snapshot(wkeRendererModelSnapshot* output)
+{
+    if (!output || output->structSize != sizeof(wkeRendererModelSnapshot))
+        return WKE_RENDER_DIAGNOSTICS_INVALID_ARGUMENT;
+    wkeRendererModelSnapshot snapshot{};
+    snapshot.structSize = sizeof(snapshot);
+    snapshot.abiVersion = WKE_RENDER_MODEL_ABI_VERSION;
+    snapshot.status = WKE_RENDER_DIAGNOSTICS_BUSY;
+    snapshot.compiledGpuSupport = WKE_RENDER_MODEL_GPU_UNKNOWN;
+    if (TryAcquireSRWLockShared(&renderer_cache_lock)) {
+        renderer_read_lock held(renderer_cache_lock);
+        snapshot = renderer_model_cache.snapshot(renderer_cache.snapshot());
+    }
+    *output = snapshot;
+    return snapshot.status;
+}
+const wkeRendererModelDiagnosticsApi renderer_model_api = {
+    sizeof(wkeRendererModelDiagnosticsApi), WKE_RENDER_MODEL_ABI_VERSION,
+    WKE_RENDER_MODEL_CAP_BOUND_BACKEND | WKE_RENDER_MODEL_CAP_FACTORY_HISTORY
+        | WKE_RENDER_MODEL_CAP_COHERENT_COMPOSITOR, &read_renderer_model_snapshot
+};
+void renderer_platform_initialized(bool matched) noexcept
+{
+    renderer_write_lock held(renderer_cache_lock);
+    uint64_t qpc = 0;
+    const bool valid = renderer_qpc(qpc) && qpc != 0;
+    renderer_model_cache.platform_initialized(matched, qpc, valid);
+}
+void renderer_factory_entered(uint32_t kind) noexcept
+{
+    renderer_write_lock held(renderer_cache_lock);
+    renderer_model_cache.factory_entered(kind);
+}
+void renderer_initialized() noexcept
+{
+    FILETIME created{}, exited{}, kernel{}, user{};
+    const bool identity_valid =
+        GetProcessTimes(GetCurrentProcess(), &created, &exited, &kernel, &user) != FALSE;
+    const uint64_t creation =
+        (static_cast<uint64_t>(created.dwHighDateTime) << 32) | created.dwLowDateTime;
+    LARGE_INTEGER frequency{};
+    const bool clock_valid = QueryPerformanceFrequency(&frequency) != FALSE
+        && frequency.QuadPart > 0;
+    const uint64_t hz = clock_valid ? static_cast<uint64_t>(frequency.QuadPart) : 0;
+    renderer_write_lock held(renderer_cache_lock);
+    uint64_t initialized_qpc = 0;
+    const bool initialized_clock_valid = renderer_qpc(initialized_qpc)
+        && initialized_qpc != 0;
+    renderer_cache.initialized(GetCurrentProcessId(), creation, GetCurrentThreadId(),
+        hz, initialized_qpc, identity_valid, clock_valid && initialized_clock_valid);
+#ifdef SOUI_GPU_COMPOSITOR
+    renderer_model_cache.compilation_observed(true);
+#else
+    renderer_model_cache.compilation_observed(false);
+#endif
+}
+
+void renderer_created() noexcept
+{
+    renderer_write_lock held(renderer_cache_lock);
+    renderer_cache.renderer_created();
+    renderer_model_cache.backend_created();
+}
+
+void renderer_closed() noexcept
+{
+    renderer_write_lock held(renderer_cache_lock);
+    uint64_t qpc = 0;
+    const bool clock_valid = renderer_qpc(qpc);
+    renderer_cache.renderer_closed(qpc, clock_valid);
+}
+
+void renderer_draw_completed(uint32_t kind) noexcept
+{
+    renderer_write_lock held(renderer_cache_lock);
+    uint64_t qpc = 0;
+    const bool clock_valid = renderer_qpc(qpc);
+    renderer_cache.draw_completed(kind, GetCurrentProcessId(), GetCurrentThreadId(),
+        qpc, clock_valid);
+}
+
+void renderer_finalized() noexcept
+{
+    renderer_write_lock held(renderer_cache_lock);
+    uint64_t qpc = 0;
+    const bool clock_valid = renderer_qpc(qpc);
+    renderer_cache.finalized(qpc, clock_valid);
+}
+
+const wkeRendererDiagnosticsApi* renderer_api_for_version(unsigned int version) noexcept
+{
+    return version == WKE_RENDER_DIAGNOSTICS_ABI_VERSION ? &renderer_api : nullptr;
+}
+
+} // namespace diagnostics
+} // namespace wke
+
+const wkeRendererModelDiagnosticsApi* WKE_CALL_TYPE wkeGetRendererModelDiagnosticsApi(unsigned int version)
+{
+    return version == WKE_RENDER_MODEL_ABI_VERSION ? &wke::diagnostics::renderer_model_api : nullptr;
+}
+const wkeRendererDiagnosticsApi* WKE_CALL_TYPE wkeGetRendererDiagnosticsApi(
+    unsigned int requestedVersion)
+{
+    // No WKE initialization/thread check and no raw instance access.
+    return wke::diagnostics::renderer_api_for_version(requestedVersion);
+}
+
 
 namespace {
 
@@ -390,6 +575,7 @@ void WKE_CALL_TYPE wkeInitialize()
 
     content::WebPage::initBlink();
     wke::wkeIsInit = true;
+    wke::diagnostics::renderer_initialized();
 }
 
 //struct wkeProxyInfo {
@@ -471,11 +657,132 @@ bool WKE_CALL_TYPE wkeIsInitialize()
     return wke::wkeIsInit;
 }
 
+namespace {
+bool workerFinalizationCompleted = false;
+}
+
+unsigned WKE_CALL_TYPE wkeWorkerRetirementWitnessCount()
+{
+    wke::checkThreadCallIsValid(__FUNCTION__);
+    return blink::WorkerMessagingProxy::diagnosticWitnessCount();
+}
+void* WKE_CALL_TYPE wkeCaptureWorkerRetirementWitness(unsigned index)
+{
+    wke::checkThreadCallIsValid(__FUNCTION__);
+    return blink::WorkerMessagingProxy::captureRetirementWitness(index);
+}
+void* WKE_CALL_TYPE wkeWorkerRetirementNativeHandle(void* token)
+{
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+    const auto* witness = static_cast<blink::WorkerMessagingProxy::RetirementWitness*>(token);
+    return witness ? witness->native.handle : nullptr;
+#else
+    return nullptr;
+#endif
+}
+bool WKE_CALL_TYPE wkeReadWorkerRetirementWitness(void* token, unsigned* values, unsigned count)
+{
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+    const auto* witness = static_cast<blink::WorkerMessagingProxy::RetirementWitness*>(token);
+    if (!witness || !values || count != 8) return false;
+    const auto state = witness->record->snapshot();
+    values[0] = state.payloads; values[1] = state.rawActive;
+    values[2] = state.callbackActive; values[3] = state.callbacks;
+    values[4] = state.prepared; values[5] = state.joined; values[6] = state.failed;
+    values[7] = witness->record->nativeTargetsRetired();
+    return true; // Independent record, callable after engine exit; no raw Worker/platform.
+#else
+    return false;
+#endif
+}
+void WKE_CALL_TYPE wkeReleaseWorkerRetirementWitness(void* token)
+{
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+    auto* witness = static_cast<blink::WorkerMessagingProxy::RetirementWitness*>(token);
+    if (!witness) return;
+    witness->record->backlogDiagnostic().abort();
+    if (witness->native.handle && !::CloseHandle(witness->native.handle)) std::terminate();
+    delete witness; // Independent record/cancelled tombstones only, never a raw Worker.
+#endif
+}
+
+bool WKE_CALL_TYPE wkeArmWorkerMessageBacklog(void* token, unsigned generation, unsigned timeoutMs)
+{
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+    wke::checkThreadCallIsValid(__FUNCTION__);
+    auto* witness = static_cast<blink::WorkerMessagingProxy::RetirementWitness*>(token);
+    return witness && witness->native.handle && witness->native.threadId
+        && witness->record->canArmBacklogDiagnostic()
+        && witness->record->backlogDiagnostic().arm(generation, witness->native.threadId, timeoutMs);
+#else
+    return false;
+#endif
+}
+bool WKE_CALL_TYPE wkeWaitWorkerMessageBacklogEntered(void* token, unsigned generation, unsigned timeoutMs)
+{
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+    wke::checkThreadCallIsValid(__FUNCTION__);
+    auto* witness = static_cast<blink::WorkerMessagingProxy::RetirementWitness*>(token);
+    if (!witness) return false;
+    blink::ThreadState* state = blink::ThreadState::current();
+    if (!state || state->isAtSafePoint()) {
+        witness->record->backlogDiagnostic().abort(); return false;
+    }
+    blink::SafePointScope safePoint(blink::ThreadState::HeapPointersOnStack, state);
+    return witness->record->backlogDiagnostic().waitEntered(generation, timeoutMs);
+#else
+    return false;
+#endif
+}
+bool WKE_CALL_TYPE wkeReadWorkerMessageBacklog(void* token, unsigned* values, unsigned count)
+{
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+    auto* witness = static_cast<blink::WorkerMessagingProxy::RetirementWitness*>(token);
+    if (!witness || !values || count != 18) return false;
+    witness->record->backlogDiagnostic().read(values);
+    values[17] = witness->record->closing(); // No diagnostic lock held while ordinary record is read.
+    return true; // Same independently retained record; valid borrowed token required.
+#else
+    return false;
+#endif
+}
+bool WKE_CALL_TYPE wkeReleaseWorkerMessageBacklog(void* token, unsigned generation)
+{
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+    auto* witness = static_cast<blink::WorkerMessagingProxy::RetirementWitness*>(token);
+    return witness && witness->record->backlogDiagnostic().release(generation);
+#else
+    return false;
+#endif
+}
+
+// Internal opt-in SDK handshake. No blocking wait or general JS/Windows pump.
+unsigned WKE_CALL_TYPE wkePrepareWorkerShutdown()
+{
+    wke::checkThreadCallIsValid(__FUNCTION__);
+    if (workerFinalizationCompleted) return 0;
+    const unsigned retired = static_cast<unsigned>(blink::WorkerMessagingProxy::prepareAllWorkerRetirements());
+    if (retired != 0) return retired;
+    return wke::brokerMayFinalize() ? 0 : 1; // Pending broker callbacks must not stop the SDK owner loop.
+}
+
+unsigned WKE_CALL_TYPE wkeFinalizePrepared()
+{
+    wke::checkThreadCallIsValid(__FUNCTION__);
+    if (workerFinalizationCompleted) return 0;
+    if (!wke::brokerMayFinalize()) return 1;
+    const unsigned prepared = wkePrepareWorkerShutdown();
+    if (prepared != 0) return prepared;
+    wkeFinalize();
+    return workerFinalizationCompleted ? 0 : 2;
+}
+
 void WKE_CALL_TYPE wkeFinalize()
 {
     wke::checkThreadCallIsValid(__FUNCTION__);
     if (!wke::brokerMayFinalize())
         return;
+    if (wkePrepareWorkerShutdown() != 0) return; // Before the first destructive loader/main/IO step.
     content::BlinkPlatformImpl* platform = (content::BlinkPlatformImpl*)blink::Platform::current();
     platform->shutdown();
 
@@ -484,6 +791,8 @@ void WKE_CALL_TYPE wkeFinalize()
     if (wke::s_versionString)
         delete wke::s_versionString;
     wke::s_versionString = nullptr;
+    workerFinalizationCompleted = true;
+    wke::diagnostics::renderer_finalized();
 }
 
 void WKE_CALL_TYPE wkeSetMemoryCacheEnable(wkeWebView webView, bool b)
@@ -1777,6 +2086,7 @@ void WKE_CALL_TYPE wkeSetDragFiles(wkeWebView webView, const POINT* clintPos, co
 
 wkeWebView WKE_CALL_TYPE wkeCreateWebWindow(wkeWindowType type, HWND parent, int x, int y, int width, int height)
 {
+    wke::diagnostics::renderer_factory_entered(WKE_RENDER_MODEL_FACTORY_EXTERNAL_VIEW);
     wke::checkThreadCallIsValid(__FUNCTION__);
     if (!wke::brokerMayCreateRawView())
         return nullptr;
@@ -2087,6 +2397,7 @@ void WKE_CALL_TYPE wkeSetDeviceParameter(wkeWebView webView, const char* device,
 
 void WKE_CALL_TYPE wkeAddNpapiPlugin(wkeWebView webView, void* initializeFunc, void* getEntryPointsFunc, void* shutdownFunc)
 {
+    wke::diagnostics::renderer_factory_entered(WKE_RENDER_MODEL_FACTORY_PLUGIN);
     wke::checkThreadCallIsValid(__FUNCTION__);
     if (!wke::brokerPluginEntry())
         return;
@@ -2141,6 +2452,7 @@ bool WKE_CALL_TYPE wkeRegisterEmbedderCustomElement(wkeWebView webView, wkeWebFr
 
 void WKE_CALL_TYPE wkeSetMediaPlayerFactory(wkeWebView webView, wkeMediaPlayerFactory factory, wkeOnIsMediaPlayerSupportsMIMEType callback)
 {
+    wke::diagnostics::renderer_factory_entered(WKE_RENDER_MODEL_FACTORY_MEDIA);
     wke::g_wkeMediaPlayerFactory = factory;
     wke::g_onIsMediaPlayerSupportsMIMETypeCallback = callback;
 }

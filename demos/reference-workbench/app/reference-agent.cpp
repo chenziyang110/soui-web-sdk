@@ -1,4 +1,5 @@
 #include "reference-agent.h"
+#include "reference-gui.h"
 #include "reference-business.h"
 #include <atomic>
 #include <limits>
@@ -125,9 +126,11 @@ struct agent::impl final {
   std::atomic<bool> closed{false};
   std::atomic<bool> binding_started{false}; // Monotonic; never reopened after trusted binding begins.
   bool started{false}, stopped{true};
-  impl(soui::sdk::json_bridge& target, agent_options input) : bridge{target}, options{std::move(input)} {
+  const bool gui_commands;
+  impl(soui::sdk::json_bridge& target, agent_options input, bool gui) : bridge{target}, options{std::move(input)}, gui_commands{gui} {
     if (!options.enabled) {
       if (!options.pipe_component.empty() || options.approved_process) configuration_failure();
+      if (gui_commands && (!register_local_business(bridge) || !register_gui_business(bridge))) configuration_failure();
       return;
     }
     if (!component_valid(options.pipe_component) || !options.approved_process || options.approved_process == GetCurrentProcessId()) configuration_failure();
@@ -139,6 +142,7 @@ struct agent::impl final {
     control.reset(CreateEventW(nullptr, TRUE, FALSE, nullptr));
     if (!control.get()) configuration_failure();
     if (!register_local_business(bridge)) configuration_failure();
+    if (gui_commands && !register_gui_business(bridge)) configuration_failure();
     endpoint = bridge.create_local_endpoint();
     if (!endpoint || endpoint->state() != local_endpoint_state::stopped) configuration_failure();
   }
@@ -159,12 +163,18 @@ struct agent::impl final {
     policy.origin = "app://reference-agent";
     policy.methods = {"bridge.describe", "reference.fixture.describe", "reference.form.submit",
       "reference.summary.local.start", "reference.summary.local.query", "reference.summary.local.cancel"};
-    policy.capabilities = policy.methods;
+    if (gui_commands) {
+      const auto methods = gui_command_methods();
+      policy.methods.insert(policy.methods.end(), methods.begin(), methods.end());
+    }
+    policy.capabilities = policy.methods; // Exact families plus their declared business effects; no gui.* wildcard.
     if (!current_scope(key)) return {};
     return policy;
   }
 };
-agent::agent(soui::sdk::json_bridge& bridge, agent_options options) : data_{std::make_unique<impl>(bridge, std::move(options))} {}
+agent::agent(soui::sdk::json_bridge& bridge, agent_options options) : agent{bridge, std::move(options), false} {}
+agent::agent(soui::sdk::json_bridge& bridge, agent_options options, bool gui_commands)
+    : data_{std::make_unique<impl>(bridge, std::move(options), gui_commands)} {}
 agent::~agent() { if (!data_->stopped) std::terminate(); } // No dereference of endpoint after Bridge join.
 bool agent::start_bound_document(std::function<bool()> current) {
   auto& d = *data_;

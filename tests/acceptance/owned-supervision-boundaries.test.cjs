@@ -19,7 +19,7 @@ function transcript(pid = 125) {
   const sample = (phase, cycle) => ({event: 'sample', phase, cycle, privateBytes: 20000000,
     workingSetBytes: 10000000, handles: 100, threads: 3, gdiObjects: 2, userObjects: 3});
   const pair = (action, window, cycle) => ['step.begin', 'step.complete'].map(event => ({event, action, window, cycle}));
-  return [{event: 'run.begin', ...config, pid}, sample('process', 0), ...pair('mount', 1, 0),
+  return [{event: 'run.begin', ...config, pid, creationFileTime:'133999999999999999'}, sample('process', 0), ...pair('mount', 1, 0),
     ...pair('runtime.reject-busy', 0, 0), sample('mounted', 0), ...pair('reload', 1, 1),
     sample('cycle', 1), ...pair('close', 1, 2), sample('closed', 2), ...pair('runtime.shutdown', 0, 2),
     sample('runtime-closed', 2), ...pair('runtime.reject-restart', 0, 2),
@@ -34,7 +34,7 @@ function fixture({readyError, setupError, owned = {}, log = transcript()} = {}) 
   let descriptor = 0;
   let stopped = 0;
   const completed = {pid: 125, creationFileTime: '133999999999999999', exitCode: 0,
-    signal: null, spawnError: null, passed: true, closureConfirmed: true,
+    signal: null, spawnError: null, passed: true, closureConfirmed: true, runnerSha256:'f'.repeat(64),
     terminal: {reason: 'completed'}, ...owned};
   const io = {
     mkdirSync() {},
@@ -76,10 +76,12 @@ function fixture({readyError, setupError, owned = {}, log = transcript()} = {}) 
     setTimeout: () => 1, clearTimeout() {}, setInterval: () => 2, clearInterval() {},
     fixtureDirectory: value => value,
     fixtureVerify: () => ({consumerBuildId: 'fixture', sourceSha256: 'fixture', payload: {sha256: 'fixture'}}),
+    // Preparation is a mocked precondition; this test exercises actual app supervision only.
+    fixtureMeasurementRunner: () => ({runner:'fixture-only-not-an-executable',binding:{source:'unit-fixture',runner:{sha256:'f'.repeat(64)}}}),
   });
   // Keep the entire actual run() and transcript validators. Only expensive
-  // build/directory preconditions are replaced, and run is exposed for this VM.
-  vm.runInContext(source + '\ndirectory = fixtureDirectory; verify = fixtureVerify; module.exports.fixtureRun = run;\n',
+  // build/directory/measurement preconditions are replaced, and run is exposed for this VM.
+  vm.runInContext(source + '\ndirectory = fixtureDirectory; verify = fixtureVerify; measurementRunner = fixtureMeasurementRunner; module.exports.fixtureRun = run;\n',
     sandbox, {filename});
   return {
     async run() {
@@ -144,4 +146,26 @@ test('a complete-looking native transcript without its terminal newline stays fa
   assert.equal(result.passed, false);
   assert.equal(saved.passed, false);
   assert.match(saved.failure, /truncated/i);
+});
+
+test('a completed Job cannot accept a native transcript from a reused PID', options, async () => {
+  const {result,saved}=await fixture({owned:{creationFileTime:'134000000000000000'}}).run();
+  assert.equal(result.passed,false); assert.equal(saved.passed,false);
+  assert.match(saved.failure,/creation FILETIME/);
+});
+test('missing native FILETIME remains failed despite a complete green Job', options, async () => {
+  const raw=transcript().split('\n').map(line=>{
+    if(!line)return line; const row=JSON.parse(line);
+    if(row.event==='run.begin')delete row.creationFileTime;
+    return JSON.stringify(row);
+  }).join('\n');
+  const {result,saved}=await fixture({log:raw}).run();
+  assert.equal(result.passed,false); assert.equal(saved.passed,false);
+  assert.match(saved.failure,/creation FILETIME/);
+});
+
+test('accepted inner app cannot borrow a different actual Owned Runner hash', options, async () => {
+  const {result,saved}=await fixture({owned:{runnerSha256:'b'.repeat(64)}}).run();
+  assert.equal(result.passed,false);
+  assert.match(saved.failure,/Actual Owned Runner differs/);
 });

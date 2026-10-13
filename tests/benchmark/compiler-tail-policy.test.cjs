@@ -27,6 +27,22 @@ function input() {
 function rebindRaw(value) {
   value.rawReport=value.value.raw(); value.reviewedInvocation.reportSha256=digest(value.rawReport); value.result.reportSha256=value.reviewedInvocation.reportSha256;
 }
+for (const version of ['0.5.0-rc.1', '0.5.0']) test('compiler continuation preserves false supervision for ' + version, () => {
+  const v = input();
+  v.build.version = v.reviewedInvocation.version = version;
+  v.buildReportBytes = encode(v.build);
+  v.reviewedInvocation.buildReportSha256 = digest(v.buildReportBytes);
+  const result = acceptCompilerTail(v);
+  assert.equal(result.compilerTailAcceptance, true, result.failure);
+  assert.equal(result.genericSupervisionPassed, false);
+  assert.equal(v.result.passed, false);
+  assert.equal(v.result.supervisorExitCode, 124);
+  v.build.version = v.reviewedInvocation.version = '0.5.0-beta.1';
+  v.buildReportBytes = encode(v.build);
+  v.reviewedInvocation.buildReportSha256 = digest(v.buildReportBytes);
+  assert.equal(acceptCompilerTail(v).compilerTailAcceptance, false);
+});
+
 test('explicit synthetic reviewed build keeps completed/generic/compiler exception separate',()=>{
   const result=acceptCompilerTail(input());
   assert.equal(result.compilationCompleted,true); assert.equal(result.genericSupervisionPassed,false);

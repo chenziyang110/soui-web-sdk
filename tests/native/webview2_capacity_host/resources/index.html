@@ -1,0 +1,140 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Real WebView2 capacity reserve regression</title>
+<script type="module">
+import {SouiNativeClientImpl} from './soui-web-sdk/index.js';
+'use strict';
+(async function () {
+  const require = (ok, why) => { if (!ok) throw Error(why); };
+  const host = window.chrome.webview;
+  const realPost = host.postMessage.bind(host);
+  let documentId, wireWork = 0, settled = 0, grant, controlsCompleted = 0;
+  let ordinaryAtRenewal, ordinaryAtCleanup;
+  // Observe the actual production preload wire. Do not supply another preload,
+  // manufacture a document/session, or replace the transport implementation.
+  host.postMessage = function (raw) {
+    const wire = JSON.parse(raw), packet = JSON.parse(wire.request);
+    if (packet.method === 'capacity.work') {
+      require(typeof wire.documentId === 'string' && wire.documentId.length > 0, 'real document identity absent');
+      if (documentId !== undefined) require(documentId === wire.documentId, 'document changed during saturation');
+      documentId = wire.documentId; ++wireWork;
+    }
+    realPost(raw);
+  };
+  const envelope = (id, method, params) => ({requestId:id, sessionId:grant.sessionId,
+    origin:grant.origin, token:grant.token, method, params, timeoutMs:10000});
+  const rawCall = async (id, method, params) => {
+    const answer = JSON.parse(await window.__souiNativePostMessage(JSON.stringify(envelope(id, method, params))));
+    require(answer.requestId === id, 'response identity mismatch');
+    return answer;
+  };
+  const success = async (id, method, params) => {
+    const answer = await rawCall(id, method, params);
+    require(answer.ok === true, method + ': ' + (answer.error && answer.error.code));
+    return answer.result;
+  };
+  const bootstrap = JSON.parse(await window.__souiNativePostMessage(JSON.stringify({
+    requestId:'bootstrap', sessionId:'', origin:'', token:'', method:'bridge.bootstrap',
+    params:{protocol:'soui.bridge/1'}})));
+  require(bootstrap.ok === true && bootstrap.requestId === 'bootstrap', 'real bootstrap failed');
+  grant = bootstrap.result;
+  require(grant.lease.generation === 1 && grant.lease.renewAfterMs > 0, 'unexpected actual lease window');
+  const task = await success('task-start', 'task.start', {kind:'capacity.done', operationId:'capacity-task', input:{}});
+  const queryDeadline = performance.now() + 2000;
+  for (;;) {
+    const query = await success('task-query-' + performance.now(), 'task.query', {taskId:task.taskId});
+    if (query.state === 'succeeded') break;
+    require(performance.now() < queryDeadline, 'real task did not complete');
+    await new Promise(resolve => setTimeout(resolve, 10));
+  }
+  const client = new SouiNativeClientImpl({
+    request:raw => window.__souiNativePostMessage(raw),
+    onEvent:listener => {
+      const receive = event => { if (event.data && event.data.kind === 'event') listener(event.data.data); };
+      host.addEventListener('message', receive);
+      return () => host.removeEventListener('message', receive);
+    }
+  }, grant); // Original default128/10s client; no changed capacity/clock.
+  window.addEventListener('pagehide', () => client.dispose(), {once:true});
+  const firstSub = client.subscribe(task.taskId, 'task.progress', () => {});
+  await firstSub.ready;
+  const secondSub = client.subscribe(task.taskId, 'task.progress', () => {});
+  await secondSub.ready;
+  require(client.subscriptionCount === 2, 'real client subscriptions absent');
+  await success('ready', 'bridge.probe.report', {ready:true});
+
+  // All 128 use the original preload and real native handler. The first native
+  // callback waits on a one-second deadline; its actual elapsed time is recorded
+  // natively. Windows/COM messages keep running. No page telemetry grants slots.
+  const ordinary = [];
+  for (let index = 0; index < 128; ++index) {
+    ordinary.push(client.call('capacity.work', {index}).then(result => {
+      require(result.index === index, 'ordinary response changed'); ++settled; return result;
+    }));
+  }
+  require(client.pendingRequestCount === 128, 'actual public client pending count not128');
+  let clientError, pageError;
+  try { await client.call('capacity.work', {index:999}); }
+  catch (error) { clientError = error.code; }
+  require(clientError === 'E_BUSY' && client.pendingRequestCount === 128 && wireWork === 128,
+    'real public client overflow changed native business');
+  try { await rawCall('page-excess', 'capacity.work', {index:999}); }
+  catch (error) { pageError = error.message; }
+  require(pageError === 'Transport capacity exceeded.' && wireWork === 128 && settled === 0,
+    'preload ordinary 128 boundary was not actually held');
+
+  // Deliberately probe the SECOND boundary via the public WebView2 messaging
+  // API. Reuse the observed real document ID and grant; a fresh ID rules out
+  // duplicate rejection. This does not bypass native authorization or policy.
+  const nativeExcess = await new Promise((resolve, reject) => {
+    const timer = setTimeout(() => { host.removeEventListener('message', observe); reject(Error('native overflow occupancy gate expired')); }, 1000);
+    function observe(event) {
+      const data = event.data;
+      if (!data || data.kind !== 'response' || data.requestId !== 'native-excess') return;
+      host.removeEventListener('message', observe); clearTimeout(timer);
+      try {
+        require(data.documentId === documentId && settled === 0, 'overflow did not coincide with page occupancy');
+        resolve(JSON.parse(data.raw));
+      } catch (error) { reject(error); }
+    }
+    host.addEventListener('message', observe);
+    realPost(JSON.stringify({documentId, request:JSON.stringify(envelope('native-excess', 'capacity.work', {index:999}))}));
+  });
+  require(nativeExcess.requestId === 'native-excess' && nativeExcess.ok === false &&
+    nativeExcess.error.code === 'E_BUSY', 'real native ordinary 128 boundary was not refused');
+  require(settled === 0, 'ordinary delivery preceded control admission');
+  const renewal = rawCall('renew-primary', 'bridge.session.renew', {operationId:'capacity-renew'}).then(answer => {
+    require(answer.ok === false && answer.error.code === 'E_RENEW_TOO_EARLY',
+      'renewal reserve did not deliver the real early-renewal denial');
+    ordinaryAtRenewal = settled;
+    ++controlsCompleted;
+  });
+  const cleanup = firstSub.unsubscribe().then(() => {
+    ordinaryAtCleanup = settled;
+    ++controlsCompleted;
+  });
+  // A second REAL unsubscribe is a worker commit barrier. The bridge wrapper
+  // permits owner delivery only on entry to this call, after both prior outputs
+  // have been committed by the original worker. It is not a synthetic response.
+  const barrier = secondSub.unsubscribe();
+  await Promise.all([renewal, cleanup]);
+  require(controlsCompleted === 2, 'reserved replies incomplete');
+  await barrier;
+  require(client.subscriptionCount === 0, 'real client subscriptions not released');
+  await Promise.all(ordinary);
+  require(settled === 128 && wireWork === 128, 'ordinary work lost or duplicated');
+  const recovered = await client.call('capacity.work', {index:128});
+  require(recovered.index === 128 && wireWork === 129 && client.pendingRequestCount === 0,
+    'ordinary capacity did not recover');
+  await success('report', 'capacity.report', {pageOrdinaryLimit:128, pageRefusal:pageError,
+    clientRefusal:clientError, clientPendingAtFull:128, clientPendingAtRecovery:client.pendingRequestCount,
+    nativeRefusal:nativeExcess.error.code, ordinaryAtRenewal, ordinaryAtCleanup, pageControlReplies:controlsCompleted, ordinaryCompleted:settled,
+    ordinaryRecovered:true, cleanupRemoved:2, renewalError:'E_RENEW_TOO_EARLY'});
+  client.dispose();
+  document.title = 'PASS: real WebView2 reserved capacity';
+})().catch(error => {
+  document.title = 'FAIL: ' + error.message;
+  // No unverified page state can make the native fixture return success.
+  console.error(error);
+});
+</script>

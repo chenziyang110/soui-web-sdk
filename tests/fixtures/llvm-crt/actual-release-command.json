@@ -1,0 +1,44 @@
+{
+  "schema": "soui.actual-normal-release-crt-fixture/v1",
+  "sourceOnly": true,
+  "configuration": "Release",
+  "rootCause": {
+    "path": "F:/work/sm05-broker/out/normal-sdk-only-rootcause-independent-74afd070/compact-review.json",
+    "bytes": 12816,
+    "sha256": "a254d5714679402a9d78e522ba099169976e71a8186866359beb85733425dd30"
+  },
+  "frozenObserver": {
+    "path": "F:\\work\\sm05-broker\\out\\normal-v3-source-controls-bb8cfd7d\\sources\\release-x64\\tools\\internal\\Observe-LlvmBuild.ps1",
+    "bytes": 46557,
+    "sha256": "bd67b4ad8a3a4e487625c86f87630ee3c69777cb22b388c84507b6c8a2138ad0"
+  },
+  "databasePin": {
+    "path": "F:/work/sm05-broker/out/normal-v3-source-controls-bb8cfd7d/sources/release-x64/out/sdk-x64/compile_commands.json",
+    "bytes": 205259,
+    "sha256": "0fdf0c46c43ceffbade85ae9ff6d89bdf7dc274db1dadd43558946f0b2aeed70"
+  },
+  "databaseRecord": {
+    "directory": "F:/work/sm05-broker/out/normal-v3-source-controls-bb8cfd7d/sources/release-x64/out/sdk-x64",
+    "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DENABLE_WKE=0 -DNDEBUG -DNOMINMAX -DSOUI_SOURCE_KERNEL_HOST -DUNICODE -DWINVER=0x0601 -D_CRT_SECURE_NO_WARNINGS -D_UNICODE -D_WIN32_WINNT=0x0601 -DCMAKE_INTDIR=\\\"Release\\\" -IF:\\work\\sm05-broker\\out\\normal-v3-source-controls-bb8cfd7d\\sources\\release-x64\\sdk\\include -IF:\\work\\sm05-broker\\out\\normal-v3-source-controls-bb8cfd7d\\sources\\release-x64\\third_party\\include\\json --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /utf-8 /W4 /U_DEBUG /FoCMakeFiles\\soui_sdk.dir\\Release\\src\\host\\cursor_broker.cpp.obj /FdCMakeFiles\\soui_sdk.dir\\Release\\soui_sdk.pdb -c -- F:\\work\\sm05-broker\\out\\normal-v3-source-controls-bb8cfd7d\\sources\\release-x64\\sdk\\src\\host\\cursor_broker.cpp",
+    "file": "F:/work/sm05-broker/out/normal-v3-source-controls-bb8cfd7d/sources/release-x64/sdk/src/host/cursor_broker.cpp",
+    "output": "F:/work/sm05-broker/out/normal-v3-source-controls-bb8cfd7d/sources/release-x64/out/sdk-x64/CMakeFiles/soui_sdk.dir/Release/src/host/cursor_broker.cpp.obj"
+  },
+  "actualVerbosePin": {
+    "path": "F:\\work\\sm05-broker\\out\\normal-v3-source-controls-bb8cfd7d\\sources\\release-x64\\out\\sdk-x64\\native-Release.log",
+    "bytes": 92633,
+    "sha256": "673d609c581d5a52cfb19adc17d92afc645c5af4aac20fa94f1da555b7c5c853"
+  },
+  "actualVerboseLineNumber": 7,
+  "actualVerboseLine": "[3/39] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DENABLE_WKE=0 -DNDEBUG -DNOMINMAX -DSOUI_SOURCE_KERNEL_HOST -DUNICODE -DWINVER=0x0601 -D_CRT_SECURE_NO_WARNINGS -D_UNICODE -D_WIN32_WINNT=0x0601 -DCMAKE_INTDIR=\\\"Release\\\" -IF:\\work\\sm05-broker\\out\\normal-v3-source-controls-bb8cfd7d\\sources\\release-x64\\sdk\\include -IF:\\work\\sm05-broker\\out\\normal-v3-source-controls-bb8cfd7d\\sources\\release-x64\\third_party\\include\\json --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /utf-8 /W4 /U_DEBUG /showIncludes /FoCMakeFiles\\soui_sdk.dir\\Release\\src\\host\\cursor_broker.cpp.obj /FdCMakeFiles\\soui_sdk.dir\\Release\\soui_sdk.pdb -c -- F:\\work\\sm05-broker\\out\\normal-v3-source-controls-bb8cfd7d\\sources\\release-x64\\sdk\\src\\host\\cursor_broker.cpp",
+  "sdkCmake": {
+    "path": "F:\\work\\sm05-broker\\out\\normal-v3-source-controls-bb8cfd7d\\sources\\release-x64\\sdk\\CMakeLists.txt",
+    "bytes": 4308,
+    "sha256": "956e4a28577a6928a4a91c1d5c4bf51410b9e9d7e775dae84806674d2829d321"
+  },
+  "actualBuildNatural": true,
+  "actualObserverFailed": true,
+  "normalSdkAccepted": false,
+  "oldPredicate": "(?<!\\S)/md(?!\\S)",
+  "candidateFunctionExecuted": false,
+  "qualificationPassed": false
+}

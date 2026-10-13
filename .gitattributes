@@ -42,6 +42,12 @@ verification/production-validation/pr-integration-2026-10-08/README.md text eol=
 verification/production-validation/pr58-2026-10-08/** binary
 verification/production-validation/pr58-2026-10-08/README.md text eol=lf diff
 third_party/patches/miniblink/*.patch whitespace=-blank-at-eol
+# Retain the exact historical records and the CRT regression's captured before source.
+third_party/manifests/provenance/preview14/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+tests/fixtures/llvm-crt/before-Observe-LlvmBuild.ps1 -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+# Upstream notice text, patch context and captured parser input keep their original bytes.
+third_party/patches/miniblink/0009-0.5.0-native-runtime-diagnostics.patch whitespace=-blank-at-eol,-space-before-tab
+tests/benchmark/fixtures/llvm-ninja-msvc-header-only-deps.txt -text -eol whitespace=cr-at-eol,-blank-at-eof
 third_party/licenses/ijg-jpeg-9a-README.txt -text
 third_party/licenses/libcurl-7.61.1-COPYING.txt -text
 third_party/licenses/ots-5.0.0-LICENSE.txt -text
@@ -59,6 +65,7 @@ verification/production-validation/benchmark-live-gate-2026-09-28/raw/** -text w
 # SDK and deployed legal manifests bind the original license bytes.
 third_party/licenses/** -text whitespace=cr-at-eol
 third_party/licenses/webview2-sdk-1.0.4258.31-LICENSE.txt whitespace=cr-at-eol,-blank-at-eol
+third_party/licenses/d52/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 verification/production-validation/**/events.ndjson -text
 verification/production-validation/**/events.ndjson.phases.ndjson -text
 verification/production-validation/webview2-experiment-2026-10-03/**/*.jsonl -text

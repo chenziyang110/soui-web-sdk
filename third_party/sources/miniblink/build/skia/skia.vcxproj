@@ -974,11 +974,17 @@
     <ClCompile Include="..\..\third_party\skia\src\opts\opts_check_x86.cpp" />
     <ClCompile Include="..\..\third_party\skia\src\opts\SkBitmapFilter_opts_SSE2.cpp" />
     <ClCompile Include="..\..\third_party\skia\src\opts\SkBitmapProcState_opts_SSE2.cpp" />
-    <ClCompile Include="..\..\third_party\skia\src\opts\SkBitmapProcState_opts_SSSE3.cpp" />
+    <ClCompile Include="..\..\third_party\skia\src\opts\SkBitmapProcState_opts_SSSE3.cpp">
+      <AdditionalOptions Condition="'$(PlatformToolset)'=='ClangCL'">/clang:-mssse3 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="..\..\third_party\skia\src\opts\SkBlitRow_opts_SSE2.cpp" />
-    <ClCompile Include="..\..\third_party\skia\src\opts\SkBlitRow_opts_SSE4.cpp" />
+    <ClCompile Include="..\..\third_party\skia\src\opts\SkBlitRow_opts_SSE4.cpp">
+      <AdditionalOptions Condition="'$(PlatformToolset)'=='ClangCL'">/clang:-msse4.1 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="..\..\third_party\skia\src\opts\SkBlurImage_opts_SSE2.cpp" />
-    <ClCompile Include="..\..\third_party\skia\src\opts\SkBlurImage_opts_SSE4.cpp" />
+    <ClCompile Include="..\..\third_party\skia\src\opts\SkBlurImage_opts_SSE4.cpp">
+      <AdditionalOptions Condition="'$(PlatformToolset)'=='ClangCL'">/clang:-msse4.1 %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
     <ClCompile Include="..\..\third_party\skia\src\opts\SkMorphology_opts_SSE2.cpp" />
     <ClCompile Include="..\..\third_party\skia\src\opts\SkUtils_opts_SSE2.cpp" />
     <ClCompile Include="..\..\third_party\skia\src\opts\SkXfermode_opts_SSE2.cpp" />
@@ -1035,7 +1041,6 @@
     <ClCompile Include="..\..\third_party\skia\src\ports\SkFontMgr_win_gdi_factory.cpp" />
     <ClCompile Include="..\..\third_party\skia\src\ports\SkGlobalInitialization_chromium.cpp" />
     <ClCompile Include="..\..\third_party\skia\src\ports\SkImageGenerator_skia.cpp" />
-    <ClCompile Include="..\..\third_party\skia\src\ports\SkMemory_malloc.cpp" />
     <ClCompile Include="..\..\third_party\skia\src\ports\SkOSFile_stdio.cpp" />
     <ClCompile Include="..\..\third_party\skia\src\ports\SkOSFile_win.cpp" />
     <ClCompile Include="..\..\third_party\skia\src\ports\SkTime_win.cpp" />

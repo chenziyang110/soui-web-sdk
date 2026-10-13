@@ -21,6 +21,8 @@ struct command_line final { bool valid{false}, smoke{false}; agent_options agent
 class agent final : public soui::sdk::bridge_adapter {
  public:
   agent(soui::sdk::json_bridge& bridge, agent_options options);
+  // App-only GUI composition; default/headless callers keep the old overload.
+  agent(soui::sdk::json_bridge& bridge, agent_options options, bool gui_commands);
   ~agent() override;
   agent(const agent&) = delete;
   agent& operator=(const agent&) = delete;

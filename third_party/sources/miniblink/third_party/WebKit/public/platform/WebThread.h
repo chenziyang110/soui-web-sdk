@@ -57,6 +57,9 @@ public:
     public:
         virtual ~Task() { }
         virtual void run() = 0;
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+        virtual void diagnosticQueueCommitted() noexcept { }
+#endif
     };
 
     class BLINK_PLATFORM_EXPORT TaskObserver {
@@ -82,6 +85,13 @@ public:
     virtual WebScheduler* scheduler() const = 0;
 
     virtual ~WebThread() { }
+
+    // Internal embedder extension: one nonblocking poll on the originally held
+    // native handle. Unsupported embedders must retain the owner, not claim exit.
+    enum class Retirement { Joined, Pending, Failed, Unsupported };
+    virtual Retirement tryShutdownAndJoin() { return Retirement::Unsupported; }
+    struct ShutdownWitness { void* handle; uint64_t creationFileTime; uint32_t threadId; };
+    virtual bool duplicateShutdownWitness(ShutdownWitness&) { return false; }
 
 #ifdef INSIDE_BLINK
     // Helpers for posting bound functions as tasks.

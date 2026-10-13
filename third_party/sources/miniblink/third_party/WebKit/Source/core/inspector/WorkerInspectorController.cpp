@@ -92,10 +92,15 @@ private:
 class RunInspectorCommandsTask final : public InspectorTaskRunner::Task {
 public:
     explicit RunInspectorCommandsTask(WorkerThread* thread)
-        : m_thread(thread) { }
-    virtual ~RunInspectorCommandsTask() { }
+        : m_thread(thread), m_record(thread->managedShutdown() ? thread->shutdownRecord() : nullptr),
+          m_admitted(!m_record || m_record->admit(WorkerShutdownRecord::Debugger)), m_running(false) { }
+    virtual ~RunInspectorCommandsTask() {
+        if (m_record && m_admitted) m_record->finish(WorkerShutdownRecord::Debugger, m_running);
+    }
     virtual void run() override
     {
+        if (!m_admitted || (m_record && !m_record->begin(WorkerShutdownRecord::Debugger))) return;
+        m_running = true;
         // Process all queued debugger commands. WorkerThread is certainly
         // alive if this task is being executed.
         m_thread->willEnterNestedLoop();
@@ -105,6 +110,8 @@ public:
 
 private:
     WorkerThread* m_thread;
+    RefPtr<WorkerShutdownRecord> m_record;
+    bool m_admitted, m_running;
 };
 
 }
@@ -128,6 +135,8 @@ WorkerInspectorController::WorkerInspectorController(WorkerGlobalScope* workerGl
     , m_beforeInitlizedScope(adoptPtr(new InspectorTaskRunner::IgnoreInterruptsScope(m_inspectorTaskRunner.get())))
     , m_paused(false)
 {
+    if (workerGlobalScope->thread()->managedShutdown())
+        m_inspectorTaskRunner->setWorkerShutdownRecord(workerGlobalScope->thread()->shutdownRecord());
     OwnPtrWillBeRawPtr<WorkerRuntimeAgent> workerRuntimeAgent = WorkerRuntimeAgent::create(m_injectedScriptManager.get(), m_workerThreadDebugger->debugger(), workerGlobalScope, this);
     m_workerRuntimeAgent = workerRuntimeAgent.get();
     m_agents.append(workerRuntimeAgent.release());
@@ -204,6 +213,7 @@ void WorkerInspectorController::dispatchMessageFromFrontend(const String& messag
 
 void WorkerInspectorController::dispose()
 {
+    m_inspectorTaskRunner->cancelPendingTasks();
     m_instrumentingAgents->reset();
     disconnectFrontend();
 }

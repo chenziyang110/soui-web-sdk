@@ -7,6 +7,8 @@
 #include "engine_admission.h"
 #include "cursor_broker.h"
 #include "main_context_gate.h"
+#include <soui/diagnostics/renderer_observation_binding.h>
+#include <soui/diagnostics/renderer_model_binding.h>
 #ifdef SOUI_PERFORMANCE_DIAGNOSTICS
 #include "diagnostic_result.h"
 #endif
@@ -455,18 +457,136 @@ struct process_runtime_state {
   HMODULE module{nullptr};
   std::filesystem::path binary;
   std::size_t hosts{0};
-  bool initialized{false};
-  bool retired{false};
+  std::atomic<bool> initialized{false};
+  std::atomic<bool> retired{false};
+  diagnostics::queue terminal_engine_metrics;
+  bool terminal_engine_metrics_recorded{false};
+  diagnostics::mode renderer_mode{diagnostics::mode::disabled};
+  wkeRendererDiagnosticsApi renderer_api{};
+  wkeRendererModelDiagnosticsApi renderer_model_api{};
+  diagnostics::detail::renderer_model_binding renderer_model_binding;
+  std::string renderer_module_path;
+  bool renderer_module_matches{false};
+  std::uint64_t renderer_pid{0};
+  std::uint64_t renderer_creation{0};
+  diagnostics::detail::renderer_observation_binding renderer_binding;
+  bool starting{false};
+  bool shutdown_pending{false};
+  bool prepare_inflight{false};
+  bool prepare_ready{false};
+  bool shutdown_failed{false};
+  unsigned preparation_status{1};
+  std::uint64_t shutdown_generation{0};
   wkeCursorBrokerApi cursor_api{};
   wkeCursorBrokerRealm cursor_realm{};
   // Accessed only on the engine owner, including JS callbacks and destruction.
   std::unordered_map<wkeWebView, dynamic_miniblink_adapter*> views;
-  ~process_runtime_state() { if (thread) thread->stop(); }
+  // The process-lifetime owner is intentionally retained on Pending/Failed.
+  // Static destruction must not bypass prepare and call an unbounded stop.
 };
 
 process_runtime_state& process_runtime() {
-  static process_runtime_state state;
-  return state;
+  static auto* state = new process_runtime_state;
+  return *state;
+}
+
+// Startup owns these writes while Runtime.starting is true. Readers hold the
+// Runtime mutex and refuse starting before accessing any optional API field.
+void prepare_renderer_observer(process_runtime_state& runtime,
+                               const std::filesystem::path& binary,
+                               diagnostics::mode metrics) noexcept {
+  runtime.renderer_mode = metrics;
+  runtime.renderer_api = {};
+  runtime.renderer_model_api = {};
+  runtime.renderer_module_matches = false;
+  if (metrics != diagnostics::mode::scalar) return;
+  try {
+    std::wstring loaded(32768, L'\0');
+    const auto length = GetModuleFileNameW(runtime.module, loaded.data(), static_cast<DWORD>(loaded.size()));
+    if (length == 0 || length >= loaded.size()) return;
+    loaded.resize(length);
+    const auto actual = canonical_path(std::filesystem::path(loaded));
+    runtime.renderer_module_path = actual.u8string();
+    runtime.renderer_module_matches = CompareStringOrdinal(actual.c_str(), -1, binary.c_str(), -1, TRUE) == CSTR_EQUAL;
+    FILETIME creation{}, exit{}, kernel{}, user{};
+    if (!GetProcessTimes(GetCurrentProcess(), &creation, &exit, &kernel, &user)) return;
+    runtime.renderer_pid = GetCurrentProcessId();
+    runtime.renderer_creation = (static_cast<std::uint64_t>(creation.dwHighDateTime) << 32) | creation.dwLowDateTime;
+    if (metrics != diagnostics::mode::scalar || !runtime.renderer_module_matches) return;
+    using get_api = const wkeRendererDiagnosticsApi* (__cdecl*)(std::uint32_t);
+    const auto get = reinterpret_cast<get_api>(GetProcAddress(runtime.module, "wkeGetRendererDiagnosticsApi"));
+    if (!get) return;
+    const auto* api = get(WKE_RENDER_DIAGNOSTICS_ABI_VERSION);
+    if (!diagnostics::detail::renderer_api_supported(api)) return;
+    runtime.renderer_api = *api;
+    using get_model_api = const wkeRendererModelDiagnosticsApi* (__cdecl*)(std::uint32_t);
+    const auto get_model = reinterpret_cast<get_model_api>(GetProcAddress(runtime.module, "wkeGetRendererModelDiagnosticsApi"));
+    if (!get_model) return;
+    const auto* model_api = get_model(2);
+    if (diagnostics::detail::renderer_model_api_supported(model_api)) runtime.renderer_model_api = *model_api;
+  } catch (...) {
+    runtime.renderer_api = {};
+    runtime.renderer_model_api = {};
+    runtime.renderer_module_matches = false;
+  }
+}
+
+void read_renderer_observer(process_runtime_state& runtime,
+                            diagnostics::renderer_observation& output) {
+  output = {};
+  if (runtime.starting) { output.state = diagnostics::renderer_status::busy; return; }
+  if (runtime.renderer_mode != diagnostics::mode::scalar) {
+    output.state = runtime.thread ? diagnostics::renderer_status::disabled : diagnostics::renderer_status::not_started;
+    return;
+  }
+  output.module_path = runtime.renderer_module_path;
+  output.module_matches = runtime.renderer_module_matches;
+  if (!output.module_matches || !runtime.renderer_api.readProcessSnapshot || runtime.renderer_binding.invalid()) return;
+  if (runtime.renderer_binding.terminal_recorded()) {
+    output.native = runtime.renderer_binding.terminal();
+    output.state = diagnostics::renderer_status::closed;
+    output.identity_bound = true;
+    output.terminal_snapshot = true;
+    return;
+  }
+  wkeRendererProcessSnapshot candidate{};
+  candidate.structSize = sizeof(candidate);
+  const auto state = runtime.renderer_api.readProcessSnapshot(&candidate);
+  output.native = candidate; // Unknown/busy retains the actual diagnostic envelope.
+  if (state == WKE_RENDER_DIAGNOSTICS_BUSY) { output.state = diagnostics::renderer_status::busy; return; }
+  if (state == WKE_RENDER_DIAGNOSTICS_NOT_STARTED) { output.state = diagnostics::renderer_status::not_started; return; }
+  if (candidate.status != state || !runtime.renderer_binding.observe(candidate, runtime.renderer_pid, runtime.renderer_creation)) return;
+  output.native = candidate;
+  output.identity_bound = true;
+  output.state = state == WKE_RENDER_DIAGNOSTICS_CLOSED ? diagnostics::renderer_status::closed : diagnostics::renderer_status::ready;
+  output.terminal_snapshot = runtime.renderer_binding.retain_terminal(candidate, runtime.retired.load(std::memory_order_acquire));
+}
+
+void read_renderer_model_observer(process_runtime_state& runtime,
+                                  diagnostics::renderer_model_observation& output) {
+  output = {};
+  if (runtime.starting) { output.state = diagnostics::renderer_status::busy; return; }
+  if (runtime.renderer_mode != diagnostics::mode::scalar) {
+    output.state = runtime.thread ? diagnostics::renderer_status::disabled : diagnostics::renderer_status::not_started;
+    return;
+  }
+  output.module_path = runtime.renderer_module_path;
+  output.module_matches = runtime.renderer_module_matches;
+  if (!output.module_matches || !runtime.renderer_model_api.readProcessModel || runtime.renderer_model_binding.invalid()) return;
+  if (runtime.renderer_model_binding.terminal_recorded()) {
+    output.native = runtime.renderer_model_binding.terminal();
+    output.state = diagnostics::renderer_status::closed;
+    output.identity_bound = true; output.terminal_snapshot = true; return;
+  }
+  wkeRendererModelSnapshot candidate{}; candidate.structSize = sizeof(candidate);
+  const auto state = runtime.renderer_model_api.readProcessModel(&candidate);
+  output.native = candidate;
+  if (state == WKE_RENDER_DIAGNOSTICS_BUSY) { output.state = diagnostics::renderer_status::busy; return; }
+  if (state == WKE_RENDER_DIAGNOSTICS_NOT_STARTED) { output.state = diagnostics::renderer_status::not_started; return; }
+  if (candidate.status != state || !runtime.renderer_model_binding.observe(candidate, runtime.renderer_pid, runtime.renderer_creation)) return;
+  output.identity_bound = true;
+  output.state = state == WKE_RENDER_DIAGNOSTICS_CLOSED ? diagnostics::renderer_status::closed : diagnostics::renderer_status::ready;
+  output.terminal_snapshot = runtime.renderer_model_binding.retain_terminal(candidate, runtime.retired.load(std::memory_order_acquire));
 }
 
 wkeCursorBrokerIdentity cursor_identity(interaction_generation generation) noexcept {
@@ -509,8 +629,11 @@ lifecycle_invocation invoke_lifecycle(engine_thread* thread, engine_thread::task
 host_result acquire_runtime(const host_config& config, engine_thread*& thread, void*& module,
     diagnostics::mode metrics) {
   auto& runtime = process_runtime();
-  std::lock_guard<std::mutex> lock(runtime.mutex);
+  std::unique_lock<std::mutex> lock(runtime.mutex);
   if (runtime.retired) return failure("E_RUNTIME_SHUTDOWN", "The process runtime has already shut down.");
+  if (runtime.starting) return failure("E_RUNTIME_STARTING", "The process runtime initializer still owns this generation.");
+  if (runtime.shutdown_pending || runtime.shutdown_failed)
+    return failure("E_RUNTIME_SHUTDOWN_PENDING", "Runtime shutdown owns this generation; new hosts are refused.");
   const auto binary = canonical_path(config.miniblink_binary);
   if (!std::filesystem::is_regular_file(binary)) return failure("E_DEPENDENCY_MISSING", "Miniblink binary is missing.");
   if (!binary_matches_architecture(binary, config.architecture)) return failure("E_WRONG_ARCHITECTURE", "Miniblink binary architecture does not match the host.");
@@ -521,9 +644,14 @@ host_result acquire_runtime(const host_config& config, engine_thread*& thread, v
     // Later views neither replace nor enable an existing disabled engine.
     auto candidate = std::make_unique<engine_thread>(metrics);
     host_result result = failure("E_DEPENDENCY_INIT", "Miniblink process initialization failed.");
-    const bool started = candidate->start([&runtime, binary, config, &result] {
+    runtime.starting = true;
+    lock.unlock(); // Startup/failure finalizers cannot acquire a mutex held by their waiter.
+    bool started = false;
+    try {
+      started = candidate->start([&runtime, binary, config, metrics, &result] {
       runtime.module = LoadLibraryW(binary.c_str());
       if (!runtime.module) { result = failure("E_DEPENDENCY_LOAD", "Miniblink binary could not be loaded."); return false; }
+      prepare_renderer_observer(runtime, binary, metrics);
       if (!GetProcAddress(runtime.module, "wkeInitializeEx")) {
         result = failure("E_DEPENDENCY_API", "Miniblink initialization API is missing."); return false;
       }
@@ -569,16 +697,46 @@ host_result acquire_runtime(const host_config& config, engine_thread*& thread, v
       return true;
     }, [&runtime] {
       if (runtime.initialized) {
-        if (wkeShutdown) wkeShutdown();
-        else if (wkeFinalize) wkeFinalize();
+        using finalize_prepared = unsigned (__cdecl*)();
+        finalize_prepared finalize = nullptr;
+        {
+          std::lock_guard<std::mutex> lock(runtime.mutex);
+          if (!runtime.prepare_ready) throw std::runtime_error("Worker shutdown was not prepared");
+          finalize = reinterpret_cast<finalize_prepared>(GetProcAddress(runtime.module, "wkeFinalizePrepared"));
+        }
+        if (!finalize || finalize() != 0) {
+          std::lock_guard<std::mutex> lock(runtime.mutex);
+          runtime.shutdown_failed = true;
+          throw std::runtime_error("Prepared kernel finalization failed; runtime owner retained");
+        }
+        std::lock_guard<std::mutex> lock(runtime.mutex);
         runtime.initialized = false;
         runtime.retired = true;
-        // Preserve the pinned engine's loader lifetime; do not unload its CRT
-        // and process statics a second time after kernel shutdown.
-      } else if (runtime.module) FreeLibrary(runtime.module);
-      runtime.module = nullptr;
+        runtime.module = nullptr; // Preserve existing loaded module lifetime; no FreeLibrary.
+      } else if (runtime.module) {
+        FreeLibrary(runtime.module);
+        runtime.module = nullptr;
+        runtime.renderer_api = {};
+        runtime.renderer_model_api = {};
+        runtime.renderer_module_matches = false;
+      }
     });
-    if (!started) return result;
+    } catch (...) {
+      lock.lock();
+      runtime.starting = false;
+      runtime.shutdown_failed = true;
+      runtime.thread = std::move(candidate); // Exception retains any real backing/module owner.
+      return failure("E_RUNTIME_STARTUP_FAILED", "Runtime startup threw; owner and module retained.");
+    }
+    lock.lock();
+    runtime.starting = false;
+    if (!started) {
+      if (runtime.module || runtime.initialized) {
+        runtime.shutdown_failed = true;
+        runtime.thread = std::move(candidate);
+      }
+      return result;
+    }
     runtime.binary = binary;
     runtime.thread = std::move(candidate);
   }
@@ -612,25 +770,150 @@ dynamic_miniblink_adapter* adapter_for_context(jsExecState state) {
 host_result shutdown_miniblink_runtime() {
 #ifdef _WIN32
   auto& runtime = process_runtime();
-  std::lock_guard<std::mutex> lock(runtime.mutex);
-  if (runtime.hosts) return failure("E_RUNTIME_IN_USE", "Destroy all hosts before shutting down the process runtime.");
-  if (runtime.thread) {
-    if (runtime.thread->is_owner_thread()) return failure("E_RUNTIME_THREAD", "Runtime shutdown must run outside the engine owner.");
-    if (runtime.cursor_realm.low || runtime.cursor_realm.high) {
-      unsigned status = WKE_CURSOR_BROKER_FAILED;
-      if (!invoke_lifecycle(runtime.thread.get(), [&runtime, &status] {
-            status = runtime.cursor_api.endRealm(runtime.cursor_realm);
-            if (status == WKE_CURSOR_BROKER_OK) runtime.cursor_realm = {};
-          },detail::engine_lane::cleanup) || status != WKE_CURSOR_BROKER_OK)
-        return failure("E_CURSOR_CLOSE_PENDING", "Controlled native callbacks have not finished draining.");
+  engine_thread* engine = nullptr;
+  std::uint64_t generation = 0;
+  bool submit_prepare = false;
+  {
+    std::lock_guard<std::mutex> lock(runtime.mutex);
+    if (runtime.hosts) return failure("E_RUNTIME_IN_USE", "Destroy all hosts before shutting down the process runtime.");
+    if (runtime.starting) return failure("E_RUNTIME_SHUTDOWN_PENDING", "Runtime startup still owns the native initializer.");
+    if (runtime.shutdown_failed) return failure(runtime.preparation_status == 3 ? "E_WORKER_SHUTDOWN_UNSUPPORTED" : "E_RUNTIME_SHUTDOWN_FAILED", "Unsupported or failed Worker shutdown; module and owner retained.");
+    if (runtime.retired && !runtime.thread) return success("Miniblink process runtime shutdown completed.");
+    if (!runtime.thread) return success("No process runtime exists.");
+    engine = runtime.thread.get(); // Process-lifetime owner cannot reset while this generation is pending.
+    if (engine->is_owner_thread()) return failure("E_RUNTIME_THREAD", "Runtime shutdown must run outside the engine owner.");
+    if (!runtime.shutdown_pending) {
+      runtime.shutdown_pending = true;
+      ++runtime.shutdown_generation; // This process runtime cannot be restarted.
     }
-    runtime.thread->stop();
-    runtime.thread.reset();
+    generation = runtime.shutdown_generation;
+    if (!runtime.prepare_ready && !runtime.prepare_inflight) {
+      runtime.prepare_inflight = true;
+      submit_prepare = true;
+    }
   }
-  runtime.retired = true;
+  if (submit_prepare) {
+    const auto admitted = detail::engine_admission::post(*engine, detail::engine_lane::cleanup, [&runtime, generation] {
+      unsigned result = 2;
+      try {
+        using prepare_workers = unsigned (__cdecl*)();
+        const auto prepare = reinterpret_cast<prepare_workers>(GetProcAddress(runtime.module, "wkePrepareWorkerShutdown"));
+        if (prepare) {
+          bool cursor_ready = true;
+          if (runtime.cursor_realm.low || runtime.cursor_realm.high) {
+            const auto status = runtime.cursor_api.endRealm(runtime.cursor_realm);
+            cursor_ready = status == WKE_CURSOR_BROKER_OK;
+            if (cursor_ready) runtime.cursor_realm = {};
+          }
+          result = cursor_ready ? prepare() : 1;
+        }
+      } catch (...) { result = 2; }
+      std::lock_guard<std::mutex> lock(runtime.mutex);
+      if (runtime.shutdown_generation != generation) return;
+      runtime.prepare_inflight = false;
+      runtime.prepare_ready = result == 0;
+      runtime.shutdown_failed = result >= 2;
+      runtime.preparation_status = result;
+    });
+    if (admitted != detail::engine_admission_result::accepted) {
+      std::lock_guard<std::mutex> lock(runtime.mutex);
+      if (runtime.shutdown_generation == generation) runtime.prepare_inflight = false;
+    }
+    return failure("E_RUNTIME_SHUTDOWN_PENDING", "Worker prepare has not completed; retry this retained shutdown generation.");
+  }
+  {
+    std::lock_guard<std::mutex> lock(runtime.mutex);
+    if (!runtime.prepare_ready)
+      return failure("E_RUNTIME_SHUTDOWN_PENDING", "Worker raw tasks, callback payloads or native backing are not retired.");
+  }
+  // Both kernel and engine perform only held-HANDLE zero-time polls. No runtime
+  // mutex spans callback, provider detach, payload destruction or native join.
+  const auto stopped = engine->try_stop();
+  if (stopped == engine_thread::stop_result::pending)
+    return failure("E_RUNTIME_SHUTDOWN_PENDING", "Prepared finalization/native engine exit is pending.");
+  std::lock_guard<std::mutex> lock(runtime.mutex);
+  if (stopped != engine_thread::stop_result::stopped || !runtime.retired) {
+    runtime.shutdown_failed = true;
+    return failure("E_RUNTIME_SHUTDOWN_FAILED", "Finalization did not commit retirement; module and owner are retained.");
+  }
+  // Preserve the first successful terminal sample for this retained owner.
+  // Incomplete reads never overwrite the cache and may be retried later.
+  if (!runtime.terminal_engine_metrics_recorded) {
+    diagnostics::queue candidate;
+    const auto sampled = engine->read_runtime_metrics(candidate);
+    if (sampled == diagnostics::status::ready || sampled == diagnostics::status::disabled) {
+      runtime.terminal_engine_metrics = candidate;
+      runtime.terminal_engine_metrics_recorded = true;
+    }
+  }
   return success("Miniblink process runtime shutdown completed.");
 #else
   return failure("E_UNSUPPORTED", "The Miniblink runtime requires Windows.");
+#endif
+}
+
+diagnostics::renderer_status read_miniblink_renderer_metrics(
+    diagnostics::renderer_observation& out) noexcept {
+  out = {};
+#ifdef _WIN32
+  try {
+    auto& runtime = process_runtime();
+    std::unique_lock<std::mutex> lock(runtime.mutex, std::try_to_lock);
+    if (!lock.owns_lock()) {
+      out.state = diagnostics::renderer_status::busy;
+      return out.state;
+    }
+    read_renderer_observer(runtime, out);
+    return out.state;
+  } catch (...) { out = {}; }
+#endif
+  return out.state;
+}
+
+diagnostics::renderer_status read_miniblink_renderer_model_metrics(
+    diagnostics::renderer_model_observation& out) noexcept {
+  out = {};
+#ifdef _WIN32
+  try {
+    auto& runtime = process_runtime();
+    std::unique_lock<std::mutex> lock(runtime.mutex, std::try_to_lock);
+    if (!lock.owns_lock()) { out.state = diagnostics::renderer_status::busy; return out.state; }
+    read_renderer_model_observer(runtime, out); return out.state;
+  } catch (...) { out = {}; }
+#endif
+  return out.state;
+}
+
+diagnostics::status read_miniblink_process_runtime_metrics(
+    diagnostics::process_engine_runtime& out) noexcept {
+  out = {};
+#ifdef _WIN32
+  try {
+    auto& runtime = process_runtime();
+    std::unique_lock<std::mutex> lock(runtime.mutex, std::try_to_lock);
+    if (!lock.owns_lock()) {
+      out.engine_fifo.observation.state = diagnostics::status::busy;
+      return diagnostics::status::busy;
+    }
+    out.mounted_hosts = static_cast<std::uint64_t>(runtime.hosts);
+    out.initialized = runtime.initialized.load(std::memory_order_acquire);
+    out.retired = runtime.retired.load(std::memory_order_acquire);
+    if (out.retired && runtime.terminal_engine_metrics_recorded) {
+      out.engine_fifo = runtime.terminal_engine_metrics;
+      out.terminal_snapshot = true;
+      return out.engine_fifo.observation.state;
+    }
+    if (runtime.thread) return runtime.thread->read_runtime_metrics(out.engine_fifo);
+    out.engine_fifo.observation.state = diagnostics::status::not_started;
+    return diagnostics::status::not_started;
+  } catch (...) {
+    out = {};
+    out.engine_fifo.observation.state = diagnostics::status::unavailable;
+    return diagnostics::status::unavailable;
+  }
+#else
+  out.engine_fifo.observation.state = diagnostics::status::unavailable;
+  return diagnostics::status::unavailable;
 #endif
 }
 

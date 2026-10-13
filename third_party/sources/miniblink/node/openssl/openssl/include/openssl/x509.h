@@ -755,6 +755,8 @@ int X509_ALGOR_set0(X509_ALGOR *alg, ASN1_OBJECT *aobj, int ptype,
                     void *pval);
 void X509_ALGOR_get0(ASN1_OBJECT **paobj, int *pptype, void **ppval,
                      X509_ALGOR *algor);
+void openssl_X509_ALGOR_get0(ASN1_OBJECT **paobj, int *pptype, void **ppval,
+                     X509_ALGOR *algor);
 void X509_ALGOR_set_md(X509_ALGOR *alg, const EVP_MD *md);
 int X509_ALGOR_cmp(const X509_ALGOR *a, const X509_ALGOR *b);
 
@@ -1216,6 +1218,9 @@ int X509_PUBKEY_set0_param(X509_PUBKEY *pub, ASN1_OBJECT *aobj,
                            int ptype, void *pval,
                            unsigned char *penc, int penclen);
 int X509_PUBKEY_get0_param(ASN1_OBJECT **ppkalg,
+                           const unsigned char **pk, int *ppklen,
+                           X509_ALGOR **pa, X509_PUBKEY *pub);
+int openssl_X509_PUBKEY_get0_param(ASN1_OBJECT **ppkalg,
                            const unsigned char **pk, int *ppklen,
                            X509_ALGOR **pa, X509_PUBKEY *pub);
 

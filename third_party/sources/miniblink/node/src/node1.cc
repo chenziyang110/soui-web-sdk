@@ -40,6 +40,12 @@
 #include "zlib.h"
 
 #include "node_natives.h"
+#if defined(SOUI_NODE_ARCH_DIAGNOSTIC) && SOUI_NODE_ARCH_DIAGNOSTIC == 1
+#include "node_arch_diagnostic.h"
+#include <Windows.h>
+#include <new>
+namespace wke { extern bool wkeIsInit; extern DWORD wkeThreadId; }
+#endif
 
 #include <shlwapi.h>
 
@@ -3822,6 +3828,9 @@ namespace node {
 		uv_close(handle, HandleCloseCb);
 	}
 
+#if defined(SOUI_NODE_ARCH_DIAGNOSTIC) && SOUI_NODE_ARCH_DIAGNOSTIC == 1
+#include "node_arch_diagnostic.inc"
+#endif
 	Environment* CreateEnvironment(Isolate* isolate, uv_loop_t* loop, Local<Context> context, int argc, const char* const* argv, int exec_argc, const char* const* exec_argv) {
 		HandleScope handle_scope(isolate);
 
@@ -3887,6 +3896,9 @@ namespace node {
 
 		SetupProcessObject(env, argc, argv, exec_argc, exec_argv);
 		LoadAsyncWrapperInfo(env);
+#if defined(SOUI_NODE_ARCH_DIAGNOSTIC) && SOUI_NODE_ARCH_DIAGNOSTIC == 1
+		SouiNodeArchCapture(env);
+#endif
 
 		return env;
 	}

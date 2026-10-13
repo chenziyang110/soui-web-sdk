@@ -98,7 +98,7 @@ PPERF_COUNTERSET_INSTANCE perfctr_instance;
 namespace node {
 
 
-EXTERN_C DECLSPEC_SELECTANY HANDLE NodeCounterProvider = nullptr;
+DECLSPEC_SELECTANY HANDLE NodeCounterProvider = nullptr;
 
 void InitPerfCountersWin32() {
   ULONG status;

@@ -10,7 +10,8 @@ const sdk = require('../../tools/sdk/soui-sdk.cjs');
 const identity = require('../../tools/internal/delivery-identity.cjs');
 const version = '0.5.0-preview.1';
 const repository = path.resolve(__dirname, '../..');
-function fixture(t) {
+function fixture(t, targetVersion = version) {
+  const version = targetVersion;
   const root = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-optional-gui-'));
   t.after(() => {
     assert.ok(fs.realpathSync(root).startsWith(fs.realpathSync(os.tmpdir()) + path.sep));
@@ -22,6 +23,7 @@ function fixture(t) {
   for (const name of sdk.managedFiles) write(name, 'fixture\n');
   write('VERSION', version + '\n');
   write('tools/sdk/gui-bindings-delivery.cjs', fs.readFileSync(path.join(repository, 'tools/sdk/gui-bindings-delivery.cjs')));
+  write('tools/internal/sdk-version.cjs', fs.readFileSync(path.join(repository, 'tools/internal/sdk-version.cjs')));
   write('sdk/bindings/shared/controller.ts', 'export const shared = true;\n');
   for (const entry of gui.packages) {
     const meta = {name: entry.name, version, type: 'module', main: `./${entry.import}`, types: `./${entry.types}`,
@@ -62,6 +64,145 @@ function fixture(t) {
   record();
   return {root, source, write, record};
 }
+function legacyToolBytes() {
+  // The real previous producer is data only: never require or execute it.
+  const bytes = identity.normalize(fs.readFileSync(path.join(__dirname,
+    'fixtures/gui-bindings-delivery-preview-legacy.cjs.txt')), 'lf');
+  assert.equal(bytes.length, 13693);
+  assert.equal(identity.hash(bytes), '26305269c19891cd5dfb6d781985114f7b6aa1d6437d22213d4cb6ba25c10ec3');
+  return bytes;
+}
+function historicalPackage(t, targetVersion = version, tool = legacyToolBytes()) {
+  const f = fixture(t, targetVersion), packed = path.join(f.root, 'historical-package');
+  f.write('tools/sdk/gui-bindings-delivery.cjs', tool);
+  fs.unlinkSync(path.join(f.source, 'tools/internal/sdk-version.cjs'));
+  // Construct the previous declaration as data using its full source set.
+  const names = ['sdk/web/src', 'sdk/bindings/shared', 'sdk/bindings/react/src', 'sdk/bindings/vue/src']
+    .flatMap(name => identity.walk(f.source, name, (_, leaf) => identity.skipped.has(leaf)));
+  for (const entry of gui.packages) for (const file of ['package.json', 'package-lock.json', 'tsconfig.json']) names.push(`${entry.root}/${file}`);
+  names.push('tools/sdk/gui-bindings-delivery.cjs');
+  const input = identity.snapshot(f.source, names, true), output = gui.outputs(f.source);
+  // The source-only packer copies bytes and does not execute the saved tool.
+  sdk.pack(f.source, packed, targetVersion);
+  const manifestFile = path.join(packed, 'sdk-manifest.json');
+  const manifest = JSON.parse(fs.readFileSync(manifestFile));
+  manifest.optionalGuiBindings = gui.declaration('', targetVersion, input, output);
+  for (const file of output.files) {
+    const target = path.join(packed, 'payload', file.path);
+    fs.mkdirSync(path.dirname(target), {recursive: true});
+    fs.copyFileSync(path.join(f.source, file.path), target);
+    manifest.files.push({...file, sourceNormalization: 'none'});
+  }
+  manifest.files.sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0);
+  fs.writeFileSync(manifestFile, identity.encoded(manifest));
+  return {...f, packed, manifest};
+}
+test('previous preview optional GUI reads, installs and downgrades with its fixed declaration', t => {
+  const old = historicalPackage(t), project = path.join(old.root, 'project');
+  const read = sdk.readPackage(old.packed);
+  assert.equal(read.optionalGuiBindings.source.files.some(file => file.path === 'tools/internal/sdk-version.cjs'), false);
+  fs.mkdirSync(path.join(project, 'app'), {recursive: true});
+  fs.writeFileSync(path.join(project, 'app/business.txt'), 'business-owned\n');
+  sdk.install(old.packed, project);
+  assert.deepEqual(gui.verify(project), read.optionalGuiBindings);
+  const next = fixture(t, '0.5.0'), packed = path.join(next.root, 'stable');
+  sdk.pack(next.source, packed, '0.5.0', {withGuiBindings: true});
+  sdk.install(packed, project);
+  assert.equal(gui.verify(project).sdkVersion, '0.5.0');
+  assert.equal(sdk.readLock(project).manifest.optionalGuiBindings.source.files.some(file => file.path === 'tools/internal/sdk-version.cjs'), true);
+  sdk.install(old.packed, project);
+  assert.equal(sdk.readLock(project).manifest.version, version);
+  assert.deepEqual(gui.verify(project), read.optionalGuiBindings);
+  assert.equal(fs.existsSync(path.join(project, 'tools/internal/sdk-version.cjs')), false);
+  assert.equal(fs.readFileSync(path.join(project, 'app/business.txt'), 'utf8'), 'business-owned\n');
+});
+test('historical optional GUI verifies the complete source and output sets', t => {
+  for (const mutate of [
+    root => fs.writeFileSync(path.join(root, 'sdk/web/src/undeclared.ts'), 'extra source\n'),
+    root => fs.writeFileSync(path.join(root, 'sdk/web/dist/index.js'), 'changed output\n'),
+    root => fs.writeFileSync(path.join(root, 'sdk/web/dist/undeclared.js'), 'extra output\n')
+  ]) {
+    const old = historicalPackage(t);
+    assert.equal(sdk.readPackage(old.packed).version, version);
+    mutate(path.join(old.packed, 'payload'));
+    assert.throws(() => sdk.readPackage(old.packed), /modified|file set changed/);
+  }
+});
+test('an installed historical lock does not hide a failed or changed GUI build record', t => {
+  const old = historicalPackage(t), project = path.join(old.root, 'installed');
+  sdk.install(old.packed, project);
+  fs.cpSync(path.join(old.source, 'out/gui-bindings'), path.join(project, 'out/gui-bindings'), {recursive: true});
+  const reportFile = path.join(project, gui.reportName), report = JSON.parse(fs.readFileSync(reportFile));
+  report.source = old.manifest.optionalGuiBindings.source;
+  report.output = old.manifest.optionalGuiBindings.output;
+  fs.writeFileSync(reportFile, identity.encoded(report));
+  assert.deepEqual(gui.verify(project), old.manifest.optionalGuiBindings);
+  report.commands[0].exitCode = 1;
+  fs.writeFileSync(reportFile, identity.encoded(report));
+  assert.throws(() => gui.verify(project), /compile command/);
+  report.commands[0].exitCode = 0;
+  fs.writeFileSync(reportFile, identity.encoded(report));
+  fs.writeFileSync(path.join(project, report.evidenceDirectory, report.commands[0].stdout), 'changed log\n');
+  assert.throws(() => gui.verify(project), /compile log changed/);
+});
+test('historical producer cannot authorize RC or stable declarations', t => {
+  for (const targetVersion of ['0.5.0-rc.1', '0.5.0']) {
+    const old = historicalPackage(t, targetVersion);
+    assert.throws(() => sdk.readPackage(old.packed), /Historical GUI source identity/);
+  }
+});
+test('current GUI producer cannot omit the helper in packages or installed locks', t => {
+  const current = fs.readFileSync(path.join(repository, 'tools/sdk/gui-bindings-delivery.cjs'));
+  for (const targetVersion of [version, '0.5.0-rc.1', '0.5.0']) {
+    const invalid = historicalPackage(t, targetVersion, current);
+    assert.throws(() => sdk.readPackage(invalid.packed), /Historical GUI/);
+    const installed = path.join(invalid.root, 'invalid-installed');
+    fs.cpSync(path.join(invalid.packed, 'payload'), installed, {recursive: true});
+    fs.writeFileSync(path.join(installed, 'sdk-lock.json'), identity.encoded({schema: 'soui.sdk-lock/v1',
+      manifestSha256: identity.hash(identity.encoded(invalid.manifest)), manifest: invalid.manifest}));
+    assert.throws(() => gui.verify(installed), /Historical GUI/);
+    assert.throws(() => gui.source(invalid.source));
+    const output = path.join(invalid.root, 'new-package');
+    assert.throws(() => sdk.pack(invalid.source, output, targetVersion, {withGuiBindings: true}));
+    assert.equal(fs.existsSync(output), false);
+  }
+});
+test('historical compatibility requires exact previous producer bytes and absent helper', t => {
+  const changed = historicalPackage(t, version, Buffer.concat([legacyToolBytes(), Buffer.from('// changed\n')]));
+  assert.throws(() => sdk.readPackage(changed.packed), /Historical GUI producer bytes differ/);
+  const old = historicalPackage(t);
+  const helper = path.join(old.packed, 'payload/tools/internal/sdk-version.cjs');
+  fs.writeFileSync(helper, fs.readFileSync(path.join(repository, 'tools/internal/sdk-version.cjs')));
+  assert.throws(() => sdk.readPackage(old.packed), /Historical GUI source identity/);
+});
+test('an installed historical declaration cannot bypass new GUI packaging input requirements', t => {
+  const old = historicalPackage(t), project = path.join(old.root, 'installed');
+  sdk.install(old.packed, project);
+  assert.deepEqual(gui.verify(project), old.manifest.optionalGuiBindings);
+  const output = path.join(old.root, 'repacked');
+  assert.throws(() => sdk.pack(project, output, version, {withGuiBindings: true}));
+  assert.equal(fs.existsSync(output), false);
+  // Even an extra helper cannot turn the old source declaration into a new one.
+  fs.copyFileSync(path.join(repository, 'tools/internal/sdk-version.cjs'), path.join(project, 'tools/internal/sdk-version.cjs'));
+  assert.throws(() => sdk.pack(project, output, version, {withGuiBindings: true}), /Historical GUI source identity/);
+  assert.equal(fs.existsSync(output), false);
+});
+for (const targetVersion of ['0.5.0-rc.1', '0.5.0']) test('optional GUI delivery preserves exact ' + targetVersion + ' identity', t => {
+  const f = fixture(t, targetVersion), packed = path.join(f.root, 'packed'), installed = path.join(f.root, 'installed');
+  sdk.pack(f.source, packed, targetVersion, {withGuiBindings: true});
+  const manifest = sdk.readPackage(packed);
+  assert.equal(manifest.version, targetVersion);
+  assert.equal(manifest.channel, targetVersion.includes('-rc.') ? 'rc' : 'stable');
+  assert.equal(manifest.releaseReady, false);
+  assert.equal(manifest.optionalGuiBindings.sdkVersion, targetVersion);
+  sdk.install(packed, installed);
+  assert.equal(gui.verify(installed).sdkVersion, targetVersion);
+  const packageFile = path.join(installed, 'sdk/bindings/react/package.json');
+  const metadata = JSON.parse(fs.readFileSync(packageFile));
+  fs.writeFileSync(packageFile, identity.encoded({...metadata, version: '0.5.0-preview.1'}));
+  assert.throws(() => gui.verify(installed), /differ|modified/);
+});
+
 test('default source delivery remains framework-free and does not require compiled GUI output', t => {
   const f = fixture(t);
   fs.rmSync(path.join(f.source, 'sdk/bindings/react/dist'), {recursive: true});

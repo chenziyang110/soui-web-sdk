@@ -72,7 +72,7 @@
 #endif
 
 void* (__cdecl *userOpenFile)(const char * _Filename) = 0;
-void(__cdecl *userCloseFile)(void* userFileHandle) = 0;
+int(__cdecl *userCloseFile)(void* userFileHandle) = 0;
 size_t(__cdecl *userFileSize)(void* userFileHandle) = 0;
 int(__cdecl *userReadFile)(void* userFileHandle, void *buf, size_t count) = 0;
 int(__cdecl *userSeekFile)(void* userFileHandle, size_t _Offset, int origin) = 0;
@@ -464,15 +464,15 @@ static CURLcode file_upload(struct connectdata *conn)
     }
 
     while (!result) {
-        int readcount;
-        result = Curl_fillreadbuffer(conn, (int)data->set.buffer_size, &readcount);
+        size_t readcount;
+        result = Curl_fillreadbuffer(conn, data->set.buffer_size, &readcount);
         if (result)
             break;
 
-        if (readcount <= 0)  /* fix questionable compare error. curlvms */
+        if (readcount == 0)  /* fix questionable compare error. curlvms */
             break;
 
-        nread = (size_t)readcount;
+        nread = readcount;
 
         /*skip bytes before resume point*/
         if (data->state.resume_from) {

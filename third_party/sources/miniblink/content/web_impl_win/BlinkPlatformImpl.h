@@ -33,6 +33,20 @@ public:
 
     static void initialize();
 
+    blink::WebGraphicsContext3D* createOffscreenGraphicsContext3D(
+        const blink::WebGraphicsContext3D::Attributes&, blink::WebGraphicsContext3D*) override;
+    blink::WebGraphicsContext3D* createOffscreenGraphicsContext3D(
+        const blink::WebGraphicsContext3D::Attributes&, blink::WebGraphicsContext3D*, blink::WebGLInfo*) override;
+    blink::WebGraphicsContext3D* createOffscreenGraphicsContext3D(
+        const blink::WebGraphicsContext3D::Attributes&) override;
+    blink::WebGraphicsContext3DProvider* createSharedOffscreenGraphicsContext3DProvider() override;
+    bool canAccelerate2dCanvas() override { return false; }
+    blink::WebAudioDevice* createAudioDevice(size_t, unsigned, unsigned, double,
+        blink::WebAudioDevice::RenderCallback*, const blink::WebString&) override;
+    blink::WebRTCPeerConnectionHandler* createRTCPeerConnectionHandler(
+        blink::WebRTCPeerConnectionHandlerClient*) override;
+    blink::WebMediaStreamCenter* createMediaStreamCenter(blink::WebMediaStreamCenterClient*) override;
+
     void setGcTimer(double intervalSec);
     void setResGcTimer(double intervalSec);
    

@@ -65,18 +65,30 @@ function snapshot(root, names, source = false) {
   validateFiles(files);
   return {sha256: hash(encoded(files)), bytes: files.reduce((n, f) => n + f.bytes, 0), files};
 }
-function source(root) {
+function excludeSource(relative, leaf) {
+  return skipped.has(leaf) ||
+    relative === 'demos/workbench/web/benchmarks/electron-smoothness/source-navigation.log';
+}
+function sourceInventory(root) {
   const generated = fs.existsSync(safePath(root, 'project.json'));
   const roots = ['sdk', 'cmake', 'tools', 'third_party/include', 'third_party/prebuilt', 'third_party/sources/zlib',
     'third_party/licenses',
     ...(generated ? ['app', 'web', 'contracts', 'resources'] : ['templates', 'demos', 'tests', 'benchmarks'])];
-  const names = roots.filter(name => fs.existsSync(safePath(root, name)))
-    .flatMap(name => walk(root, name, (relative, leaf) => skipped.has(leaf) ||
-      relative === 'demos/workbench/web/benchmarks/electron-smoothness/source-navigation.log'));
+  const inventoryRoots = roots.filter(name => fs.existsSync(safePath(root, name)));
+  const names = inventoryRoots.flatMap(name => walk(root, name, excludeSource));
   for (const name of ['VERSION', 'CMakeLists.txt', 'THIRD_PARTY_NOTICES.md', 'project.json', 'sdk-lock.json']) {
-    if (fs.existsSync(safePath(root, name))) names.push(name);
+    if (fs.existsSync(safePath(root, name))) { names.push(name); inventoryRoots.push(name); }
   }
-  return snapshot(root, names, true);
+  return {names, inventoryRoots};
+}
+function source(root) {
+  return snapshot(root, sourceInventory(root).names, true);
+}
+function sourceSnapshot(root) {
+  root = safePath(root);
+  const inventory = sourceInventory(root);
+  return {...snapshot(root, inventory.names, true), root,
+    inventoryMode: 'sdk-source', inventoryRoots: inventory.inventoryRoots};
 }
 const diagnostics = new Set(['smoke.log', 'webview-smoke.log', 'source-navigation.log', 'gpu-present-trace.txt']);
 function payload(root, target, backend = 'miniblink') {
@@ -100,4 +112,4 @@ function verifyPayload(root, target, expected, backend = 'miniblink') {
   return current;
 }
 module.exports = {hash, encoded, readJson, safePath, walk, skipped, normalization, normalize, validateFiles,
-  snapshot, source, payload, verifyPayload};
+  snapshot, excludeSource, sourceInventory, source, sourceSnapshot, payload, verifyPayload};

@@ -46,6 +46,7 @@ function cache(f, options = {}) {
   write(path.join(f.build, 'CMakeCache.txt'), [
     'CMAKE_GENERATOR:INTERNAL=Visual Studio 17 2022',
     `CMAKE_GENERATOR_PLATFORM:INTERNAL=${options.platform || 'x64,version=10.0.19041.0'}`,
+    ...(options.toolset === null ? [] : [`CMAKE_GENERATOR_TOOLSET:INTERNAL=${options.toolset || 'v143,host=x64,version=14.44.35207'}`]),
     `CMAKE_HOME_DIRECTORY:INTERNAL=${f.source.replace(/\\/g, '/')}`,
     `CMAKE_CACHEFILE_DIR:INTERNAL=${f.build.replace(/\\/g, '/')}`,
     'CMAKE_SYSTEM_VERSION:UNINITIALIZED=10.0.19041.0',
@@ -84,6 +85,7 @@ test('CMake version and architecture select a compatible exact SDK request', {sk
       assert.equal(args[args.indexOf('-A') + 1], Number(version.split('.')[0]) >= 4 || version.startsWith('3.27.')
         ? `${expected},version=10.0.19041.0` : expected);
       assert.ok(args.includes('-DCMAKE_SYSTEM_VERSION=10.0.19041.0'));
+      assert.equal(args[args.indexOf('-T') + 1], 'v143,host=x64,version=14.44.35207');
       assert.ok(args.some(arg => arg.startsWith('-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:STRING=') && arg.includes('SouiWindowsSdk.cmake')));
       assert.equal(args.includes('--fresh'), false);
     }
@@ -105,6 +107,23 @@ test('platform and persisted system conflicts are refused without changing cache
     assert.notEqual(result.status, 0);
     assert.match(result.stderr, /FreshConfigure/);
     assert.deepEqual(snapshot(f.build), before);
+  }
+});
+
+test('toolset conflicts and missing selection require explicit owned refresh', {skip: !windows}, t => {
+  const f = fixture(t);
+  for (const toolset of ['v143', 'v143,host=x86,version=14.44.35207',
+    'v143,host=x64,version=14.43.34808', null]) {
+    cache(f, {toolset});
+    const before = snapshot(f.build);
+    const refused = argumentsFor(f);
+    assert.notEqual(refused.status, 0);
+    assert.match(refused.stderr, /CMAKE_GENERATOR_TOOLSET.*FreshConfigure/);
+    assert.deepEqual(snapshot(f.build), before);
+    const refreshed = succeeded(argumentsFor(f, {fresh: true}));
+    assert.equal(refreshed[refreshed.indexOf('-T') + 1], 'v143,host=x64,version=14.44.35207');
+    assert.ok(refreshed.includes('--fresh'));
+    assert.deepEqual(snapshot(f.build), before, 'argument construction must not mutate the cache');
   }
 });
 

@@ -1,0 +1,127 @@
+{
+  "schema": "acceptance-desktop-entry-regressions/v1",
+  "executed": false,
+  "futureExecutablePin": null,
+  "prerequisite": "Actual new Windows-subsystem EXE with normal installed SDK and its Root build/PE/Owned identity proof",
+  "invocation": "Fixed Owned helper, explicit executable and literal argv; no shell",
+  "negatives": [
+    {
+      "name": "missing-arguments",
+      "args": [],
+      "exit": 1,
+      "stderr": "Expected --mode --cycles --warmup --settle-ms --timeout-ms --report"
+    },
+    {
+      "name": "unknown-argument",
+      "args": [
+        "--mode=reload",
+        "--cycles=3",
+        "--warmup=0",
+        "--settle-ms=500",
+        "--timeout-ms=20000",
+        "--surprise=1"
+      ],
+      "exit": 1,
+      "stderr": "Unknown argument"
+    },
+    {
+      "name": "duplicate-mode",
+      "args": [
+        "--mode=reload",
+        "--mode=reload",
+        "--warmup=0",
+        "--settle-ms=500",
+        "--timeout-ms=20000",
+        "--report=@REPORT@"
+      ],
+      "exit": 1,
+      "stderr": "Duplicate argument"
+    },
+    {
+      "name": "missing-equals",
+      "args": [
+        "--mode",
+        "--cycles=3",
+        "--warmup=0",
+        "--settle-ms=500",
+        "--timeout-ms=20000",
+        "--report=@REPORT@"
+      ],
+      "exit": 1,
+      "stderr": "Arguments require =value"
+    },
+    {
+      "name": "unknown-mode",
+      "args": [
+        "--mode=not-a-mode",
+        "--cycles=3",
+        "--warmup=0",
+        "--settle-ms=500",
+        "--timeout-ms=20000",
+        "--report=@REPORT@"
+      ],
+      "exit": 1,
+      "stderr": "Unknown scenario"
+    },
+    {
+      "name": "non-numeric-literal",
+      "args": [
+        "--mode=reload",
+        "--cycles=1;echo not-executed",
+        "--warmup=0",
+        "--settle-ms=500",
+        "--timeout-ms=20000",
+        "--report=@REPORT@"
+      ],
+      "exit": 1,
+      "stderr": "Expected an unsigned integer argument"
+    },
+    {
+      "name": "empty-report",
+      "args": [
+        "--mode=reload",
+        "--cycles=3",
+        "--warmup=0",
+        "--settle-ms=500",
+        "--timeout-ms=20000",
+        "--report="
+      ],
+      "exit": 1,
+      "stderr": "Invalid scenario arguments"
+    }
+  ],
+  "negativeSemantics": {
+    "expectedGenericPassed": false,
+    "expectedRootExit": 1,
+    "expectedSupervisorExit": 1,
+    "naturalClosureRequired": true,
+    "reportMustNotExist": true,
+    "stderrExactMessageAndNewlineRequired": true,
+    "jobMembershipMustBeRecorded": true
+  },
+  "reportReplacement": "Fresh absolute Root-owned path, not existing; use Unicode+spaces path for one positive real short run",
+  "positives": {
+    "modes": [
+      "reload",
+      "recreate",
+      "multiwindow",
+      "bridge"
+    ],
+    "cycles": 3,
+    "warmup": 0,
+    "settleMs": 500,
+    "timeoutMs": 20000,
+    "cliOriginal": true,
+    "unicodeReportBasename": "验收 λ space report.ndjson",
+    "actualWholeJobRequired": true
+  },
+  "resource": {
+    "separateActualRun": true,
+    "reloadCycles": 100,
+    "warmup": 10,
+    "settleMs": 5000,
+    "strictActualTotalProcesses": 1,
+    "notAuthorizedBySubsystemAlone": true
+  },
+  "budgetsChanged": false
+}

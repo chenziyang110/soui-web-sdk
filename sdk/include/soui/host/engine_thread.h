@@ -48,7 +48,12 @@ class engine_thread final {
   [[nodiscard]] bool invoke(task work,
                             std::chrono::milliseconds timeout = std::chrono::seconds(10));
   [[nodiscard]] bool drain_for(std::chrono::milliseconds timeout);
+  // On the engine owner this only requests stopping; an outside owner must join.
   void stop(bool drain_pending = true);
+  enum class stop_result { stopped, pending, failed };
+  // One nonblocking held-native-handle poll; owner-thread calls request stop
+  // and return Pending. Pending always keeps the engine object alive.
+  [[nodiscard]] stop_result try_stop();
 
   [[nodiscard]] engine_thread_state state() const noexcept;
   [[nodiscard]] bool is_owner_thread(std::thread::id candidate) const noexcept;
@@ -61,8 +66,15 @@ class engine_thread final {
   detail::engine_admission_result reserve_reply(detail::engine_lane, detail::engine_reply_ticket&);
   detail::engine_capacity_snapshot capacity_snapshot() const;
   void run(initializer initialize, task shutdown) noexcept;
+  class join_claim;
+  void request_stop(bool drain_pending);
+  void retire_joined_worker();
 
   mutable std::mutex mutex_;
+  std::mutex join_mutex_;
+  std::condition_variable join_ready_;
+  bool join_claimed_{false};
+  std::thread::id join_claim_owner_{};
   std::condition_variable work_ready_;
   std::condition_variable state_changed_;
   std::condition_variable idle_;
@@ -81,6 +93,7 @@ class engine_thread final {
   std::thread::id owner_thread_{};
   engine_thread_state state_{engine_thread_state::stopped};
   bool startup_complete_{false};
+  bool stop_requested_{false};
   std::size_t executing_{0};
 #ifdef _WIN32
   // Auto-reset event used together with MsgWaitForMultipleObjectsEx so the

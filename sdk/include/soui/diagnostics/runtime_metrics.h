@@ -4,6 +4,9 @@
 // Native callers explicitly opt in at construction. No Bridge/wire method.
 #include <array>
 #include <cstdint>
+#include <string>
+#include <soui/diagnostics/renderer_observation_abi.h>
+#include <soui/diagnostics/renderer_model_abi.h>
 
 namespace soui::sdk::diagnostics {
 
@@ -119,6 +122,35 @@ struct software_host_runtime final {
   queue process_engine_fifo; // shared process runtime, not one view's work
   bool bridge_accepting{false};
   std::uint64_t context_receipt_before{0}, context_receipt_after{0};
+};
+
+// The shared Engine is one process owner, not one queue per mounted view.
+// A terminal snapshot retains its original timestamp after actual stop/join.
+enum class renderer_status : std::uint32_t { disabled, not_started, busy, unknown, ready, closed };
+
+// Completed compositor calls in one loaded DLL; path alone does not bind bytes.
+struct renderer_observation final {
+  static constexpr std::uint32_t schema_version{1};
+  renderer_status state{renderer_status::unknown};
+  std::string module_path;
+  bool module_matches{false}, identity_bound{false}, terminal_snapshot{false};
+  wkeRendererProcessSnapshot native{};
+};
+
+struct process_engine_runtime final {
+  static constexpr std::uint32_t schema_version{1};
+  queue engine_fifo;
+  std::uint64_t mounted_hosts{0};
+  bool initialized{false}, retired{false}, terminal_snapshot{false};
+};
+
+// Independent optional v2 DTO. The existing renderer/queue layouts are retained.
+struct renderer_model_observation final {
+  static constexpr std::uint32_t schema_version{2};
+  renderer_status state{renderer_status::unknown};
+  std::string module_path;
+  bool module_matches{false}, identity_bound{false}, terminal_snapshot{false};
+  wkeRendererModelSnapshot native{};
 };
 
 } // namespace soui::sdk::diagnostics

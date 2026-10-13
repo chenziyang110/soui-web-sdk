@@ -29,7 +29,21 @@ inline constexpr std::uint32_t ime_position_message = 0x84D3U;
 // Final application exit, after every Host has been destroyed. Window teardown
 // keeps the process runtime available for subsequent windows. Shutdown is final:
 // this Miniblink version cannot initialize again in the same process.
+// Poll from outside the engine owner after every Host is destroyed. Pending
+// keeps the engine pumping; retry within the caller's finite close deadline.
+// Failed/Unsupported retain the runtime/module and must not be treated as closed.
 [[nodiscard]] host_result shutdown_miniblink_runtime();
+
+// Native-only, non-blocking observation. No pump, work posting or kernel
+// initialization. Disabled/busy/not_started are incomplete data, not zeros.
+[[nodiscard]] diagnostics::status read_miniblink_process_runtime_metrics(
+    diagnostics::process_engine_runtime&) noexcept;
+// Optional, read-only observations from the already loaded provider DLL.
+// Existing owner metrics DTO layout and queue getter remain unchanged.
+[[nodiscard]] diagnostics::renderer_status read_miniblink_renderer_metrics(
+    diagnostics::renderer_observation&) noexcept;
+[[nodiscard]] diagnostics::renderer_status read_miniblink_renderer_model_metrics(
+    diagnostics::renderer_model_observation&) noexcept;
 
 [[nodiscard]] bool binary_matches_architecture(const std::filesystem::path& binary,
                                                 std::string_view architecture);

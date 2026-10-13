@@ -97,9 +97,10 @@ const char* WKE_CALL_TYPE wkeNetGetMIMEType(wkeNetJob jobPtr, wkeString mime)
 void WKE_CALL_TYPE wkeNetSetData(wkeNetJob jobPtr, void* buf, int len)
 {
     wke::checkThreadCallIsValid(__FUNCTION__);
+    const void* source = buf;
     if (0 == len) {
         len = 1;
-        buf = " ";
+        source = " ";
     }
 
     net::WebURLLoaderInternal* job = (net::WebURLLoaderInternal*)jobPtr;
@@ -108,7 +109,7 @@ void WKE_CALL_TYPE wkeNetSetData(wkeNetJob jobPtr, void* buf, int len)
 
     if (job->m_hookBufForEndHook) {
         job->m_hookBufForEndHook->resize(len);
-        memcpy(job->m_hookBufForEndHook->data(), buf, len);
+        memcpy(job->m_hookBufForEndHook->data(), source, len);
         return;
     }
 
@@ -117,7 +118,7 @@ void WKE_CALL_TYPE wkeNetSetData(wkeNetJob jobPtr, void* buf, int len)
     if (!job->m_asynWkeNetSetData)
         job->m_asynWkeNetSetData = new Vector<char>();
     job->m_asynWkeNetSetData->resize(len);
-    memcpy(job->m_asynWkeNetSetData->data(), buf, len);
+    memcpy(job->m_asynWkeNetSetData->data(), source, len);
     
     job->m_isHoldJobToAsynCommit = false;
     job->m_isWkeNetSetDataBeSetted = true;

@@ -104,8 +104,8 @@ static void runDebuggerTaskForWorker(WorkerThread* workerThread)
 
 void WorkerInspectorProxy::addDebuggerTaskForWorker(const WebTraceLocation& location, PassOwnPtr<WebThread::Task> task)
 {
-    m_workerThread->appendDebuggerTask(task);
-    m_workerThread->backingThread().postTask(location, new Task(threadSafeBind(&runDebuggerTaskForWorker, AllowCrossThreadAccess(m_workerThread))));
+    if (!m_workerThread->appendDebuggerTask(task)) return;
+    m_workerThread->backingThread().postTask(location, m_workerThread->wrapRawTask(adoptPtr(new Task(threadSafeBind(&runDebuggerTaskForWorker, AllowCrossThreadAccess(m_workerThread)))), WorkerShutdownRecord::Debugger));
 }
 
 } // namespace blink

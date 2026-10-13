@@ -1,10 +1,12 @@
-import {connectSouiNative, createSouiGui, type SouiCoreMethodMap, type SouiJson} from '@soui-sdk';
+import {connectSouiNative, createSouiGui, type SouiCoreMethodMap, type SouiJson,
+  type SouiGuiBinding, type SouiGuiCommandContext} from '@soui-sdk';
 import {callAction, authorizedActionTools, type ActionMethods, type SubmitFormInput} from '../web/src/generated/actions';
 import fixtureJson from './fixture.json';
 import {makeRows, validateFixture, readState, defaultState, restoreState, saveState, selectRow, deriveRows,
   summarize, utf8Bytes, type UiState} from './model.mjs';
 import {ReferenceTask, taskControls, type TaskView} from './task-controller.mjs';
 import {initializeReference} from './initialization.mjs';
+import {submitReferenceForm, AgentTaskObservation} from './gui-effects.mjs';
 
 const fixture = validateFixture(fixtureJson);
 const storageKey = 'soui.reference-ui/v1';
@@ -35,6 +37,8 @@ export function createReferenceController(profile: string) {
   let dialog = false, returnFocus: HTMLElement | null = null, error = '', message = '正在连接真实原生宿主…', formBusy = false;
   const listeners = new Set<() => void>();
   const publish = () => {if (!stopped) for (const listener of listeners) listener();};
+  const agentTask = new AgentTaskObservation(fixture,publish);
+  let guiBinding: SouiGuiBinding | undefined;
   const persist = () => {
     try {localStorage.setItem(storageKey, saveState({...state, previousTask:task?.historicalReference() || state.previousTask}, fixture)); storageStatus='saved';}
     catch {storageStatus='storage-unavailable';}
@@ -47,18 +51,19 @@ export function createReferenceController(profile: string) {
   const fail = (failure: unknown) => {error=errorCode(failure); message='操作未确认。请查看错误码；不会自动重放任务。'; publish();};
   const openDialog = () => {returnFocus=document.activeElement as HTMLElement | null; dialog=true; publish(); return {open:true};};
   const closeDialog = () => {dialog=false; publish(); returnFocus?.focus(); return {open:false};};
-  const actions: Record<string, Record<string, (input: SouiJson) => unknown | Promise<unknown>>> = {
+  const actions: Record<string, Record<string, (input: SouiJson, context?: SouiGuiCommandContext) => unknown | Promise<unknown>>> = {
     filter:{set:input=>{const value=record(input);keys(value,['query','category']);
       return update({query:value.query===undefined?state.query:value.query as string,category:value.category===undefined?state.category:value.category as string},true);}},
     sort:{set:input=>{const value=record(input);keys(value,['sort','descending']);return update({sort:value.sort as UiState['sort'],descending:value.descending as boolean},true);}},
     selection:{set:input=>{const value=record(input);keys(value,['id','selected']);state=selectRow(state,value.id as number,value.selected as boolean,fixture);persist();publish();return {selectedCount:state.selectedIds.length};}},
     form:{set:input=>{const value=record(input);keys(value,['name','notes']);return update({draftName:value.name as string,draftNotes:value.notes as string});},
-      submit:async()=> {
+      submit:async(input,context)=> {
         if (!client || !ready || formBusy) throw new Error('E_REFERENCE_NOT_READY');
         formBusy=true;publish();
         try {
-          const result=await callAction(client,'reference.form.submit',{name:state.draftName,notes:state.draftNotes,
-            category:(state.category==='all'?fixture.groups[0]:state.category) as SubmitFormInput['category']});
+          const draft={name:state.draftName,notes:state.draftNotes,
+            category:(state.category==='all'?fixture.groups[0]:state.category) as SubmitFormInput['category']};
+          const result=await submitReferenceForm(input,context,draft,value=>callAction(client!,'reference.form.submit',value));
           if (!stopped) {message=result.message;error=result.accepted?'':'E_FORM_NAME';publish();}
           return result;
         } finally {formBusy=false;publish();}
@@ -67,6 +72,10 @@ export function createReferenceController(profile: string) {
       await task.start(state.category,value.durationMs===undefined?5000:value.durationMs as number);return {state:task.snapshot().state};}},
     query:{activate:async()=>{if(!task)throw new Error('E_REFERENCE_NOT_READY');await task.query();return {state:task.snapshot().state};}},
     cancel:{activate:async()=>{if(!task)throw new Error('E_REFERENCE_NOT_READY');await task.cancel();return {state:task.snapshot().state};}},
+    // This read-only component has no manual task client or ambient Agent grant.
+    // Every command receives a fresh SDK closure for exactly one native effect.
+    'agent-task':{start:(input,context)=>agentTask.start(input,context),
+      query:(input,context)=>agentTask.query(input,context),cancel:(input,context)=>agentTask.cancel(input,context)},
     theme:{activate:()=>update({theme:state.theme==='dark'?'light':'dark'})},
     dialog:{open:openDialog,close:closeDialog},
     reload:{activate:()=>{persist();window.location.reload();return {requested:true};}},
@@ -75,11 +84,12 @@ export function createReferenceController(profile: string) {
       storageStatus,filteredRows:filtered.length,selectedCount:state.selectedIds.length})},
   };
   const publicState = (id: string) => ({
-    enabled:id==='form'?ready:
+    enabled:['form','agent-task'].includes(id)?ready:
       ['start','query','cancel'].includes(id)?taskControls(ready,taskView)[id as 'start'|'query'|'cancel'].enabled:true,
     busy:id==='form'?formBusy:
       ['start','query','cancel'].includes(id)?taskControls(ready,taskView)[id as 'start'|'query'|'cancel'].busy:false,
     state:{ready,taskState:taskView.state,progress:taskView.progress,filteredRows:filtered.length,
+      agentTaskState:agentTask.snapshot().state,agentTaskProgress:agentTask.snapshot().progress,
       selectedCount:state.selectedIds.length,theme:state.theme,dialogOpen:dialog,restoreStatus,taskRecovery,
       storageStatus,nameBytes:utf8Bytes(state.draftName),notesBytes:utf8Bytes(state.draftNotes),error},
   });
@@ -90,7 +100,7 @@ export function createReferenceController(profile: string) {
     for (const id of Object.keys(actions)) {
       const element=document.getElementById('reference-'+id);
       if (!element) throw new Error('E_REFERENCE_ELEMENT');
-      gui.register({id:'reference.'+id,role:['filter','form'].includes(id)?'form':'button',
+      gui.register({id:'reference.'+id,role:id==='agent-task'?'group':['filter','form'].includes(id)?'form':'button',
         name:'Reference '+id,element,actions:actions[id],state:()=>publicState(id)});
     }
     try {
@@ -98,7 +108,7 @@ export function createReferenceController(profile: string) {
         alive:()=>!stopped,
         connect:()=>connectSouiNative<SouiCoreMethodMap & ActionMethods>({maxPendingRequests:16,maxSubscriptions:2,
           onError:failure=>{if(!stopped)fail(failure);}}),
-        adoptClient:connected=>{client=connected;},
+        adoptClient:connected=>{client=connected;guiBinding=connected.bindGui(gui);},
         discover:connected=>connected.discover(),
         validateTools:catalog=>{
           const tools=authorizedActionTools(catalog);
@@ -111,7 +121,12 @@ export function createReferenceController(profile: string) {
           task=new ReferenceTask(connected,fixture);
           task.observe(next=>{taskView=next;persist();publish();});
         },
-        probe:connected=>connected.call('bridge.probe.report',{ready:true}),
+        probe:async connected=>{
+          if(!guiBinding)throw new Error('E_REFERENCE_GUI_BIND');
+          await guiBinding.ready;
+          if(stopped)return;
+          await connected.call('bridge.probe.report',{ready:true});
+        },
         ready:()=>{ready=true;message='已连接 C++；表单和任务使用同一公开 Bridge。';publish();},
       });
     } catch (failure) {if(!stopped)fail(failure);}
@@ -122,7 +137,7 @@ export function createReferenceController(profile: string) {
   }
   const shutdown = () => {
     if (stopped) return;
-    persist();stopped=true;ready=false;task?.dispose();gui.dispose();listeners.clear();
+    persist();stopped=true;ready=false;guiBinding?.dispose();agentTask.dispose();task?.dispose();gui.dispose();listeners.clear();
     window.removeEventListener('pagehide',shutdown);window.removeEventListener('beforeunload',shutdown);
     // connectSouiNative owns document client disposal; native navigation owns grant revocation.
   };
@@ -130,7 +145,7 @@ export function createReferenceController(profile: string) {
   return {
     fixture,gui,initialize,perform,shutdown,
     snapshot:()=>({profile,state:{...state,selectedIds:state.selectedIds.slice()},rows:filtered,chart,ready,task:{...taskView},controls:taskControls(ready,taskView),
-      dialog,error,message,formBusy,restoreStatus,taskRecovery,storageStatus}),
+      agentTask:agentTask.snapshot(),dialog,error,message,formBusy,restoreStatus,taskRecovery,storageStatus}),
     observe:(listener:()=>void)=>{if(listeners.size>=8)throw new Error('E_REFERENCE_OBSERVERS');listeners.add(listener);return()=>listeners.delete(listener);},
   };
 }

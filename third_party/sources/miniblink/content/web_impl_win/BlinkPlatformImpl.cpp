@@ -1,4 +1,5 @@
 #include <atomic>
+#include "wke/RendererModelState.h"
 #include <memory>
 
 #include "config.h"
@@ -200,6 +201,46 @@ static void setRuntimeEnabledFeatures()
 
 typedef BOOL (WINAPI* PFN_SetThreadStackGuarantee)(PULONG StackSizeInBytes);
 
+blink::WebGraphicsContext3D* BlinkPlatformImpl::createOffscreenGraphicsContext3D(
+    const blink::WebGraphicsContext3D::Attributes&, blink::WebGraphicsContext3D*)
+{
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_OFFSCREEN);
+    return nullptr;
+}
+blink::WebGraphicsContext3D* BlinkPlatformImpl::createOffscreenGraphicsContext3D(
+    const blink::WebGraphicsContext3D::Attributes&, blink::WebGraphicsContext3D*, blink::WebGLInfo*)
+{
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_OFFSCREEN);
+    return nullptr;
+}
+blink::WebGraphicsContext3D* BlinkPlatformImpl::createOffscreenGraphicsContext3D(
+    const blink::WebGraphicsContext3D::Attributes&)
+{
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_OFFSCREEN);
+    return nullptr;
+}
+blink::WebGraphicsContext3DProvider* BlinkPlatformImpl::createSharedOffscreenGraphicsContext3DProvider()
+{
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_SHARED_CONTEXT);
+    return nullptr;
+}
+blink::WebRTCPeerConnectionHandler* BlinkPlatformImpl::createRTCPeerConnectionHandler(
+    blink::WebRTCPeerConnectionHandlerClient*)
+{
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_RTC_STREAM);
+    return nullptr;
+}
+blink::WebMediaStreamCenter* BlinkPlatformImpl::createMediaStreamCenter(blink::WebMediaStreamCenterClient*)
+{
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_RTC_STREAM);
+    return nullptr;
+}
+blink::WebAudioDevice* BlinkPlatformImpl::createAudioDevice(size_t, unsigned, unsigned, double,
+    blink::WebAudioDevice::RenderCallback*, const blink::WebString&)
+{
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_MEDIA);
+    return nullptr;
+}
 void BlinkPlatformImpl::initialize()
 {
 #if USING_VC6RT == 1
@@ -222,6 +263,7 @@ void BlinkPlatformImpl::initialize()
     blink::Platform::initialize(platform);
     gin::IsolateHolder::Initialize(gin::IsolateHolder::kNonStrictMode, gin::ArrayBufferAllocator::SharedInstance());
     blink::initialize(blink::Platform::current());
+    wke::diagnostics::observe_renderer_platform(blink::Platform::current() == platform);
     //initializeOffScreenTimerWindow();
 
     // Maximum allocation size allowed for image scaling filters that

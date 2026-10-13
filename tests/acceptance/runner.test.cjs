@@ -3,11 +3,13 @@ const test=require('node:test');
 const assert=require('node:assert/strict');
 const {settings,validateRecords}=require('./runner.cjs');
 const config=settings('reload',1,0,500,20000);
-const outcome={exitCode:0,signal:null,timedOut:false,pid:125};
+const creationFileTime='134360198253710104';
+const outcome={exitCode:0,signal:null,timedOut:false,pid:125,
+  ownedProcess:{pid:125,creationFileTime}};
 const sample=(phase,cycle)=>({event:'sample',phase,cycle,privateBytes:20000000,workingSetBytes:10000000,handles:100,threads:3,gdiObjects:2,userObjects:3});
 const pair=(action,window,cycle)=>['step.begin','step.complete'].map(event=>({event,action,window,cycle}));
 function transcript() {
-  return [{event:'run.begin',...config,pid:125},sample('process',0),...pair('mount',1,0),...pair('runtime.reject-busy',0,0),sample('mounted',0),
+  return [{event:'run.begin',...config,pid:125,creationFileTime},sample('process',0),...pair('mount',1,0),...pair('runtime.reject-busy',0,0),sample('mounted',0),
     ...pair('reload',1,1),sample('cycle',1),...pair('close',1,2),sample('closed',2),
     ...pair('runtime.shutdown',0,2),sample('runtime-closed',2),...pair('runtime.reject-restart',0,2),
     ...pair('runtime.shutdown-idempotent',0,2),{event:'run.complete'}]
@@ -43,7 +45,7 @@ test('cycle counts, sample completeness and native failure records are mandatory
 test('multiwindow requires surviving windows to reload and the closed slot to be recreated',()=>{
   const multi=settings('multiwindow',1,0,500,20000);
   const operations=[['mount',1],['runtime.reject-busy',0],['mount',2],['mount',3],['close',2],['reload',1],['reload',3],['mount',2],['close',3],['close',2],['close',1]];
-  const records=[{event:'run.begin',...multi,pid:125},sample('process',0),
+  const records=[{event:'run.begin',...multi,pid:125,creationFileTime},sample('process',0),
     ...operations.flatMap(([action,window])=>pair(action,window,1)),sample('cycle',1),sample('closed',2),
     ...pair('runtime.shutdown',0,2),sample('runtime-closed',2),...pair('runtime.reject-restart',0,2),
     ...pair('runtime.shutdown-idempotent',0,2),{event:'run.complete'}]
@@ -62,7 +64,7 @@ test('invalid scenario parameters and backwards clocks are rejected',()=>{
 
 test('bridge contract mode requires its own real process, complete mount and teardown',()=>{
   const bridge=settings('bridge',1,0,0,10000);
-  const records=[{event:'run.begin',...bridge,pid:125},sample('process',0),
+  const records=[{event:'run.begin',...bridge,pid:125,creationFileTime},sample('process',0),
     ...pair('mount',1,1),...pair('runtime.reject-busy',0,1),...pair('close',1,1),sample('cycle',1),sample('closed',2),
     ...pair('runtime.shutdown',0,2),sample('runtime-closed',2),...pair('runtime.reject-restart',0,2),
     ...pair('runtime.shutdown-idempotent',0,2),{event:'run.complete'}].map((x,i)=>({...x,elapsedMs:i*100}));

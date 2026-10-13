@@ -1,6 +1,9 @@
 #include <soui/host/soui_miniblink_host.h>
 #include <soui/json_bridge.h>
 #include "engine_admission.h"
+#include <soui/diagnostics/renderer_model_binding.h>
+#include "../../acceptance-app/native-owner-metrics.h"
+#include "../../acceptance-app/shutdown-poll.h"
 #include <windows.h>
 #include <shellapi.h>
 #include <bcrypt.h>
@@ -9,9 +12,12 @@
 #include <atomic>
 #include <chrono>
 #include <condition_variable>
+#include <cstddef>
+#include <cstring>
 #include <cstdio>
 #include <filesystem>
 #include <memory>
+#include <limits>
 #include <mutex>
 #include <string>
 #include <thread>
@@ -53,7 +59,8 @@ settings arguments() {
   LocalFree(values);
   require(rows.size()==11 && rows[1]==L"--kernel" && rows[3]==L"--kernel-sha" && rows[5]==L"--resources" && rows[7]==L"--output" && rows[9]==L"--case","argument-shape");
   settings out{rows[2],rows[6],rows[8],std::string(rows[4].begin(),rows[4].end()),std::string(rows[10].begin(),rows[10].end())};
-  require(out.selected=="reply-full-zero-business" || out.selected=="cleanup-full-retains-owner","fixed-case");
+  require(out.selected=="reply-full-zero-business" || out.selected=="cleanup-full-retains-owner" ||
+    out.selected=="renderer-model-abi","fixed-case");
   require(out.kernel.is_absolute() && out.resources.is_absolute() && out.output.is_absolute() && fs::is_regular_file(out.kernel) &&
     fs::is_regular_file(out.resources/"index.html") && !fs::exists(out.output) && fs::is_directory(out.output.parent_path()),"actual-inputs-fresh-output");
   require(out.kernel_sha.size()==64 && out.kernel_sha.find_first_not_of("0123456789abcdef")==std::string::npos,"kernel-hash-format");
@@ -147,7 +154,150 @@ const char* architecture() noexcept {
   return "x86";
 #endif
 }
+constexpr ULONGLONG case_budget_ms=30000;
+void within_case(ULONGLONG began) { require(GetTickCount64()-began<case_budget_ms,"original-30-second-case-deadline"); }
+void service_retired_owner() {
+  MSG message{};
+  for(unsigned i=0;i!=64 && PeekMessageW(&message,nullptr,0,0,PM_REMOVE);++i) {
+    TranslateMessage(&message); DispatchMessageW(&message);
+  }
+  require(MsgWaitForMultipleObjects(0,nullptr,FALSE,1,QS_ALLINPUT)!=WAIT_FAILED,"runtime-owner-wait");
+}
+void shutdown_within_case(ULONGLONG began) {
+  const auto result=soui::acceptance::poll_runtime_shutdown([&](auto completed) {
+    for(;;) { within_case(began); if(completed()) return; service_retired_owner(); }
+  },[]{return soui::sdk::shutdown_miniblink_runtime();});
+  require(result.ok,"actual-runtime-shutdown-nonpending-failure");
+}
+
+static_assert(sizeof(wkeRendererModelSnapshot)==264);
+static_assert(sizeof(wkeRendererProcessSnapshot)==168);
+static_assert(sizeof(wkeRendererModelDiagnosticsApi)==24);
+static_assert(offsetof(wkeRendererModelDiagnosticsApi,readProcessModel)==16);
+static_assert(offsetof(wkeRendererModelSnapshot,compositor)==16);
+static_assert(offsetof(wkeRendererModelSnapshot,providerId)==184);
+static_assert(offsetof(wkeRendererModelSnapshot,backendInitializationQpc)==200);
+static_assert(offsetof(wkeRendererModelSnapshot,unknownRouteTotal)==256);
+class real_renderer_model_probe final {
+ public:
+  explicit real_renderer_model_probe(const settings& options) {
+    module_=LoadLibraryW(options.kernel.c_str()); require(module_!=nullptr,"actual-abi-module-load");
+    std::array<wchar_t,32768> path{};
+    const auto count=GetModuleFileNameW(module_,path.data(),static_cast<DWORD>(path.size()));
+    require(count>0&&count<path.size()&&fs::equivalent(fs::path(path.data()),options.kernel),"actual-abi-module-route");
+    module_path_=fs::weakly_canonical(fs::path(path.data())).u8string();
+    get_=reinterpret_cast<get_api>(GetProcAddress(module_,"wkeGetRendererModelDiagnosticsApi"));
+    require(get_!=nullptr,"required-real-model-export-missing");
+    table_=get_(2); require(soui::sdk::diagnostics::detail::renderer_model_api_supported(table_),"real-model-table-contract");
+    using get_v1_api=const wkeRendererDiagnosticsApi* (__cdecl*)(unsigned);
+    const auto get_v1=reinterpret_cast<get_v1_api>(GetProcAddress(module_,"wkeGetRendererDiagnosticsApi"));
+    require(get_v1!=nullptr,"required-real-v1-export-missing"); v1_=get_v1(1);
+    require(soui::sdk::diagnostics::detail::renderer_api_supported(v1_),"real-embedded-v1-table-contract");
+    invalid_outputs();
+    preinit_=read();
+    require(preinit_.status==WKE_RENDER_DIAGNOSTICS_NOT_STARTED&&
+      preinit_.compiledGpuSupport==WKE_RENDER_MODEL_GPU_UNKNOWN&&(preinit_.flags&19U)==0&&
+      preinit_.compositor.structSize==168&&preinit_.compositor.abiVersion==1&&
+      preinit_.compositor.status==WKE_RENDER_DIAGNOSTICS_NOT_STARTED&&preinit_.compositor.flags==0&&
+      preinit_.compositor.processId==0&&preinit_.compositor.processCreationFileTime==0&&
+      preinit_.compositor.recordingEpoch==0&&preinit_.compositor.initializedQpc==0&&
+      preinit_.compositor.rasterDrawsTotal==0&&preinit_.compositor.gpuSkiaDrawsTotal==0,"raw-preinit-is-unknown-not-ready");
+  }
+  ~real_renderer_model_probe() { if(module_)require(FreeLibrary(module_)!=FALSE,"probe-extra-module-reference-release"); }
+  real_renderer_model_probe(const real_renderer_model_probe&)=delete;
+  real_renderer_model_probe& operator=(const real_renderer_model_probe&)=delete;
+  void invalid_outputs() const {
+    for(const auto version:std::array<unsigned,4>{0,1,3,(std::numeric_limits<unsigned>::max)()})
+      require(get_(version)==nullptr,"wrong-real-model-version-not-rejected");
+    require(table_->readProcessModel(nullptr)==WKE_RENDER_DIAGNOSTICS_INVALID_ARGUMENT,"actual-null-output-rejected");
+    struct guarded final { std::array<unsigned char,16> before; wkeRendererModelSnapshot value; std::array<unsigned char,16> after; };
+    for(const auto size:std::array<unsigned,3>{0,263,265}) {
+      guarded output; std::memset(&output,0xa5,sizeof(output)); output.value.structSize=size;
+      std::array<unsigned char,sizeof(guarded)> original{}; std::memcpy(original.data(),&output,sizeof(output));
+      require(table_->readProcessModel(&output.value)==WKE_RENDER_DIAGNOSTICS_INVALID_ARGUMENT&&
+        std::memcmp(original.data(),&output,sizeof(output))==0,"actual-bad-size-rejected-with-no-buffer-write");
+    }
+  }
+  wkeRendererModelSnapshot read() const {
+    require(get_(2)==table_,"real-api-table-pointer-changed");
+    wkeRendererModelSnapshot value{}; value.structSize=sizeof(value);
+    const auto state=table_->readProcessModel(&value);
+    require(value.structSize==264&&value.abiVersion==2&&value.status==state,"actual-model-envelope-return-differs");
+    return value;
+  }
+  bool observe(unsigned expected_state,DWORD owner,std::uint64_t creation,ULONGLONG frequency,
+               wkeRendererModelSnapshot& output,bool terminal) {
+    wkeRendererProcessSnapshot before{},after{}; before.structSize=after.structSize=168;
+    const auto before_state=v1_->readProcessSnapshot(&before);
+    const auto value=read(); const auto after_state=v1_->readProcessSnapshot(&after);
+    if(before_state==WKE_RENDER_DIAGNOSTICS_BUSY||value.status==WKE_RENDER_DIAGNOSTICS_BUSY||
+      after_state==WKE_RENDER_DIAGNOSTICS_BUSY)return false;
+    if(std::memcmp(&before,&after,sizeof(before))!=0||std::memcmp(&after,&value.compositor,sizeof(after))!=0)return false;
+    require(value.status==expected_state,"actual-model-state-does-not-match-phase");
+    soui::sdk::diagnostics::renderer_model_observation scalar;
+    const auto sdk_status=soui::sdk::read_miniblink_renderer_model_metrics(scalar);
+    if(sdk_status==soui::sdk::diagnostics::renderer_status::busy)return false;
+    require((sdk_status==soui::sdk::diagnostics::renderer_status::ready||sdk_status==soui::sdk::diagnostics::renderer_status::closed)&&
+      scalar.module_matches&&scalar.identity_bound&&fs::equivalent(fs::u8path(scalar.module_path),fs::u8path(module_path_)),
+      "actual-sdk-model-binding-unavailable");
+    const auto latest=read();
+    if(std::memcmp(&value,&latest,sizeof(value))!=0||std::memcmp(&scalar.native,&value,sizeof(value))!=0)return false;
+    const auto& raw=value.compositor;
+    LARGE_INTEGER captured{}; require(QueryPerformanceCounter(&captured)&&captured.QuadPart>0,"actual-model-capture-qpc");
+    require(raw.processId==GetCurrentProcessId()&&raw.processCreationFileTime==creation&&raw.engineOwnerThreadId==owner&&owner>0&&
+      raw.qpcFrequency==frequency&&raw.recordingEpoch==raw.initializedQpc&&raw.initializedQpc>0&&
+      value.backendInitializationQpc>0&&value.backendInitializationQpc<=raw.initializedQpc&&
+      raw.initializedQpc<=static_cast<std::uint64_t>(captured.QuadPart),
+      "actual-model-process-owner-clock-epoch-differs");
+    require(value.flags==19&&value.providerId==1&&value.backendId==1&&value.compiledGpuSupport==0&&value.factoryCoverageMask==127&&
+      value.mediaFactoryAttempts==0&&value.pluginFactoryAttempts==0&&value.offscreenFactoryAttempts==0&&
+      value.sharedContextFactoryAttempts==0&&value.externalFactoryAttempts==0&&value.platformMismatchTotal==0&&value.unknownRouteTotal==0,
+      "actual-compatibility-model-differs");
+    require(binding_.observe(value,GetCurrentProcessId(),creation),"actual-model-history-binding-differs");
+    if(expected_state==WKE_RENDER_DIAGNOSTICS_READY&&raw.drawEventsTotal==0) {
+      require(raw.renderersCreatedTotal>0&&raw.renderersLive>0&&raw.rasterDrawsTotal==0&&raw.gpuSkiaDrawsTotal==0&&
+        raw.lastDrawKind==WKE_RENDER_DIAGNOSTICS_DRAW_UNKNOWN&&raw.lastDrawQpc==0&&raw.lastDrawProcessId==0&&raw.lastDrawThreadId==0&&
+        (raw.flags&(WKE_RENDER_DIAGNOSTICS_OBSERVED_RASTER|WKE_RENDER_DIAGNOSTICS_OBSERVED_GPU_SKIA|WKE_RENDER_DIAGNOSTICS_ENGINE_FINALIZED))==0,
+        "actual-first-draw-history-not-self-consistent");
+      return false; // A valid live renderer still owes an actual completed CPU draw.
+    }
+    require(raw.lastDrawQpc>=raw.initializedQpc&&raw.lastDrawQpc<=static_cast<std::uint64_t>(captured.QuadPart)&&
+      raw.lastDrawProcessId==GetCurrentProcessId()&&raw.lastDrawThreadId>0&&raw.lastDrawThreadId<=MAXDWORD,
+      "actual-completed-draw-clock-identity-differs");
+    require(
+      raw.rasterDrawsTotal>0&&raw.gpuSkiaDrawsTotal==0&&raw.lastDrawKind==WKE_RENDER_DIAGNOSTICS_DRAW_BITMAP_RASTER&&
+      (raw.flags&WKE_RENDER_DIAGNOSTICS_OBSERVED_RASTER)!=0&&(raw.flags&WKE_RENDER_DIAGNOSTICS_OBSERVED_GPU_SKIA)==0,
+      "actual-completed-cpu-raster-and-model-not-observed");
+    if(terminal) {
+      require(scalar.terminal_snapshot&&raw.renderersLive==0&&(raw.flags&WKE_RENDER_DIAGNOSTICS_ENGINE_FINALIZED)&&
+        raw.closedSnapshotQpc>=raw.initializedQpc&&raw.engineFinalizedQpc>=raw.closedSnapshotQpc&&
+        raw.engineFinalizedQpc<=static_cast<std::uint64_t>(captured.QuadPart)&&
+        binding_.retain_terminal(value,true),"actual-finalized-terminal-not-observed");
+    }
+    captured_qpc_=static_cast<std::uint64_t>(captured.QuadPart); output=value; return true;
+  }
+  json serialize(const wkeRendererModelSnapshot& raw,bool terminal=false) const {
+    soui::sdk::diagnostics::renderer_model_observation value;
+    value.native=raw;value.module_path=module_path_;value.module_matches=true;
+    value.identity_bound=raw.status==1||raw.status==4;value.terminal_snapshot=terminal;
+    value.state=raw.status==0?soui::sdk::diagnostics::renderer_status::not_started:
+      raw.status==4?soui::sdk::diagnostics::renderer_status::closed:soui::sdk::diagnostics::renderer_status::ready;
+    return soui::acceptance::metrics::serialize(value);
+  }
+  const wkeRendererModelSnapshot& preinit() const noexcept { return preinit_; }
+  std::uint64_t captured_qpc() const noexcept { return captured_qpc_; }
+  std::string capabilities() const { return std::to_string(table_->capabilities); }
+ private:
+  using get_api=const wkeRendererModelDiagnosticsApi* (__cdecl*)(unsigned);
+  HMODULE module_{}; get_api get_{};
+  const wkeRendererModelDiagnosticsApi* table_{}; const wkeRendererDiagnosticsApi* v1_{};
+  std::string module_path_;wkeRendererModelSnapshot preinit_{};
+  soui::sdk::diagnostics::detail::renderer_model_binding binding_;
+  std::uint64_t captured_qpc_{};
+};
+
 int execute(const settings& options,HINSTANCE instance) {
+  const auto case_began=GetTickCount64();
   auto app=std::make_unique<application>(); // Catch while all lifecycle owners remain alive.
   auto hold=std::make_unique<engine_hold>(); // Also survives the catch with an executing Engine borrow.
   try {
@@ -156,6 +306,8 @@ int execute(const settings& options,HINSTANCE instance) {
     const auto creation=(std::uint64_t(created.dwHighDateTime)<<32)|created.dwLowDateTime;
     const auto held_kernel=CreateFileW(options.kernel.c_str(),GENERIC_READ,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL|FILE_FLAG_SEQUENTIAL_SCAN,nullptr);
     require(held_kernel!=INVALID_HANDLE_VALUE && hash_file(held_kernel)==options.kernel_sha,"actual-held-kernel-sha");
+    std::unique_ptr<real_renderer_model_probe> model;
+    if(options.selected=="renderer-model-abi")model=std::make_unique<real_renderer_model_probe>(options);
     const std::wstring class_name=L"SouiEngineCapacity_"+std::to_wstring(GetCurrentProcessId());
     WNDCLASSW type{}; type.lpfnWndProc=procedure; type.hInstance=instance; type.lpszClassName=class_name.c_str();
     require(RegisterClassW(&type)!=0,"actual-owner-class");
@@ -193,6 +345,53 @@ int execute(const settings& options,HINSTANCE instance) {
     const auto path_size=GetModuleFileNameW(module_before,module_path.data(),static_cast<DWORD>(module_path.size()));
     require(path_size!=0 && path_size<module_path.size() && fs::equivalent(fs::path(module_path.data()),options.kernel),
       "actual-loaded-kernel-path");
+    if(model) {
+      std::atomic<DWORD> engine_tid{0};
+      require(engine->post([&]{engine_tid.store(GetCurrentThreadId(),std::memory_order_release);}),"actual-model-owner-query-admitted");
+      while(engine_tid.load(std::memory_order_acquire)==0) { within_case(case_began);pump(*app); }
+      LARGE_INTEGER frequency{};require(QueryPerformanceFrequency(&frequency)&&frequency.QuadPart>0,"actual-qpc-frequency");
+      ShowWindow(owner,SW_SHOWNOACTIVATE);require(IsWindowVisible(owner),"actual-model-owner-visible");
+      require(RedrawWindow(owner,nullptr,nullptr,RDW_INVALIDATE|RDW_ALLCHILDREN|RDW_UPDATENOW)!=FALSE,"actual-owned-normal-paint");
+      wkeRendererModelSnapshot rendered{};
+      for(;;) {
+        within_case(case_began);
+        if(model->observe(WKE_RENDER_DIAGNOSTICS_READY,engine_tid.load(std::memory_order_acquire),creation,
+          static_cast<ULONGLONG>(frequency.QuadPart),rendered,false))break;
+        pump(*app);require(MsgWaitForMultipleObjects(0,nullptr,FALSE,1,QS_ALLINPUT)!=WAIT_FAILED,"actual-model-render-wait");
+      }
+      model->invalid_outputs();
+      close_retained(*app);app->withdrawal_allowed=true;
+      require(DestroyWindow(owner)!=FALSE&&!IsWindow(owner),"model-owner-withdrawal-after-real-close");app->owner=nullptr;
+      app.reset(); // Actual Bridge task-service join before runtime finalization.
+      shutdown_within_case(case_began);
+      wkeRendererModelSnapshot terminal{};
+      for(;;) { within_case(case_began);
+        if(model->observe(WKE_RENDER_DIAGNOSTICS_CLOSED,engine_tid.load(std::memory_order_acquire),creation,
+          static_cast<ULONGLONG>(frequency.QuadPart),terminal,true))break;
+        service_retired_owner();
+      }
+      model->invalid_outputs();shutdown_within_case(case_began);
+      wkeRendererModelSnapshot repeated{};
+      for(;;) { within_case(case_began);
+        if(model->observe(WKE_RENDER_DIAGNOSTICS_CLOSED,engine_tid.load(std::memory_order_acquire),creation,
+          static_cast<ULONGLONG>(frequency.QuadPart),repeated,true))break;
+        service_retired_owner();
+      }
+      require(std::memcmp(&terminal,&repeated,sizeof(terminal))==0,
+        "actual-idempotent-shutdown-getter-terminal-changed");
+      require(UnregisterClassW(class_name.c_str(),instance)!=FALSE&&CloseHandle(held_kernel)!=FALSE,"model-class-kernel-handle-close");
+      const json result{{"schema","soui.renderer-model-real-abi/v1"},{"case",options.selected},{"pid",GetCurrentProcessId()},
+        {"creationFileTime",std::to_string(creation)},{"architecture",architecture()},{"kernelSha256",options.kernel_sha},
+        {"tableBytes",sizeof(wkeRendererModelDiagnosticsApi)},{"snapshotBytes",sizeof(wkeRendererModelSnapshot)},
+        {"version",2},{"capabilities",model->capabilities()},{"wrongVersionsRejectedPerPhase",4},{"wrongVersionPhases",3},
+        {"invalidOutputShapesRejectedPerPhase",4},
+        {"invalidOutputPhases",3},{"rejectedOutputBytesUnchanged",true},{"preinit",model->serialize(model->preinit())},
+        {"completedRaster",model->serialize(rendered)},{"terminal",model->serialize(terminal,true)},
+        {"repeatedTerminalEqual",true},{"captureQpc",std::to_string(model->captured_qpc())},
+        {"hostDestroyed",true},{"ownerWithdrawn",true},{"bridgeJoined",true},{"runtimeShutdown",true},
+        {"resourceQualification",false},{"fullQualification",false}};
+      require(output_new(options.output,result.dump(2)+"\n"),"model-actual-receipt-create-new");return 0;
+    }
     hold->begin(*engine);
     for (unsigned i=0;i!=512;++i) require(engine->post([]{}),"actual-ordinary-fill");
     const auto refused=app->renderer->try_enqueue_bridge_message(app->bridge.request(),false,receipt);
@@ -228,7 +427,7 @@ int execute(const settings& options,HINSTANCE instance) {
     app->withdrawal_allowed=true;
     require(DestroyWindow(owner)!=FALSE && !IsWindow(owner),"real-owner-withdrawal-after-destroy"); app->owner=nullptr;
     app.reset(); // Real Bridge task_service destructor/join precedes Runtime shutdown.
-    require(soui::sdk::shutdown_miniblink_runtime().ok,"actual-runtime-shutdown");
+    shutdown_within_case(case_began);
     require(UnregisterClassW(class_name.c_str(),instance)!=FALSE && CloseHandle(held_kernel)!=FALSE,"real-class-kernel-handle-close");
     const json result{{"schema","soui.engine-host-capacity/1"},{"case",options.selected},{"pid",GetCurrentProcessId()},
       {"creationFileTime",std::to_string(creation)},{"kernelSha256",options.kernel_sha},{"baselineBusinessCalls",1},{"refusedBusinessDelta",0},

@@ -9,3 +9,12 @@
 
 - [ADR-0016：运行档位与可选现代渲染后端](0016-runtime-profiles-and-modern-backend.md)
 - [ADR-0017：版本分支整合与固定 SDK 身份](0017-pr-stack-integration.md)
+
+## 0.5 新增提案
+
+- [ADR-0066：版本化原生工具链输入与固定 WinRT 搜索根](0066-versioned-native-toolchain-inputs.md)（proposed；实际构建与验收仍待 Root）
+
+- [ADR-0067：分别绑定 LLVM 项目与验证工具的请求](0067-owned-llvm-project-and-validation-requests.md)（proposed；源码和有限逻辑检查通过，实际工具准备与界面验收待完成）
+
+- [ADR-0068：原生运行状态与兼容内核诊断](0068-native-runtime-diagnostics.md)（proposed；32 位修复正在重建，完整兼容性验收待完成）
+- [ADR-0069：SDK 源码交付与验收入口](0069-sdk-source-delivery.md)（proposed；源码已采用，正式交付验收待完成）

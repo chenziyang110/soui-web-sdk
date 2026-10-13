@@ -10,6 +10,7 @@ const builds = require('../../tools/internal/build-evidence.cjs');
 const {captureTimeout} = require('./timeout-diagnostics.cjs');
 const {createSupervisor} = require('./monotonic-supervisor.cjs');
 const {mixedSettings, validateMixedRecords} = require('./mixed-validation.cjs');
+const {sessionSettings, validateSessionRecords} = require('./session-validation.cjs');
 const root = path.resolve(__dirname, '../..');
 const modes = ['reload', 'recreate', 'multiwindow', 'bridge'];
 
@@ -47,11 +48,164 @@ function expectedSteps(config) {
   add('runtime.shutdown-idempotent', 0, total+1);
   return steps;
 }
+function verifyNativeIdentity(records, outcome) {
+  const start = Array.isArray(records) ? records[0] : null;
+  const owned = outcome?.ownedProcess;
+  const fileTime = value => typeof value === 'string' && /^[1-9]\d{0,19}$/.test(value) &&
+    BigInt(value) <= 18446744073709551615n;
+  if (!start || start.event !== 'run.begin' || !Number.isSafeInteger(start.pid) ||
+      start.pid <= 0 || start.pid > 0xffffffff || !fileTime(start.creationFileTime) ||
+      !owned || !Number.isSafeInteger(owned.pid) || !fileTime(owned.creationFileTime) ||
+      start.pid !== outcome.pid || start.pid !== owned.pid ||
+      start.creationFileTime !== owned.creationFileTime)
+    throw new Error('Native process identity must match the actual Owned PID and creation FILETIME');
+  return {pid:owned.pid, creationFileTime:owned.creationFileTime};
+}
+function resourceBinding(config, options) {
+  if (options === undefined) return null;
+  if (!options || typeof options !== 'object' || Array.isArray(options) ||
+      Object.keys(options).length !== 1 || typeof options.resource !== 'boolean')
+    throw new Error('Only an explicit trusted resource boolean is supported');
+  if (!options.resource) return null;
+  if (config.mode !== 'reload' || config.cycles !== 100 || config.warmup !== 10 ||
+      config.settleMs !== 5000 || config.timeoutMs !== 20000)
+    throw new Error('Resource entry requires the frozen 100+10 software reload protocol');
+  // Root pins this actual module and its dependencies before loading the runner.
+  // Neither a request file nor a caller-provided hash selects the policy.
+  const reader = require('./resource-validation.cjs');
+  const policyRaw = reader.policyBytes();
+  const policySha256 = identity.hash(policyRaw);
+  if (!Buffer.isBuffer(policyRaw) || policySha256 !== reader.POLICY_SHA256)
+    throw new Error('Loaded resource policy bytes do not match the reader');
+  return {policyRaw, requestFields:{resourcePolicySha256:policySha256,
+    resourceScope:{kernel:'miniblink', renderer:'software', processModel:'single-process'}}};
+}
+function longRunBinding(config,options){
+  if(options===undefined||!Object.prototype.hasOwnProperty.call(options,'longRun'))return null;
+  if(!options||typeof options!=='object'||Array.isArray(options)||Object.keys(options).length!==1||options.longRun!==true)
+    throw Error('Long capture requires only the explicit trusted longRun=true option');
+  return require('./long-run-policy.cjs').policySelection(config);
+}
+function parseRunCommand(command, args) {
+  if (!Array.isArray(args)) throw new Error('Invalid acceptance command arguments');
+  if(command==='run-long'){
+    if(args.length!==1||!modes.includes(args[0]))throw Error('Frozen thousand-cycle capture takes SUITE and one public mode');
+    return {config:require('./long-run-policy.cjs').fixedConfig(args[0]),options:{longRun:true}};
+  }
+  if(command==='run-long-mixed'||command==='run-long-session'){
+    if(args.length)throw Error('Frozen eight-hour capture takes only SUITE');
+    return {config:require('./long-run-policy.cjs').fixedConfig(command==='run-long-session'?'session':'mixed'),options:{longRun:true}};
+  }
+  if (command === 'run-resource') {
+    if (args.length) throw new Error('Resource capture takes only SUITE; its protocol cannot be overridden');
+    return {config:settings('reload',100,10,5000,20000), options:{resource:true}};
+  }
+  if (command === 'run' && args.length === 5)
+    return {config:settings(args[0],...args.slice(1).map(Number))};
+  if (command === 'run-mixed' && args.length === 4)
+    return {config:mixedSettings(...args.map(Number))};
+  if (command === 'run-session' && args.length === 4)
+    return {config:sessionSettings(...args.map(Number))};
+  throw new Error('Invalid acceptance command');
+}
+function filePin(file) {
+  const current=identity.safePath(file);
+  if (!fs.statSync(current).isFile()) throw new Error('Resource capture evidence must be a regular file');
+  const bytes=fs.readFileSync(current);
+  return {path:current,bytes:bytes.length,sha256:identity.hash(bytes)};
+}
+function resourceCaptureResult(operation, operationPin, policyPin) {
+  if (operation?.schema !== 'soui.acceptance-run/v1' || typeof operation.passed !== 'boolean')
+    throw new Error('A retained lifecycle operation result is required');
+  return {schema:'soui.acceptance-resource-capture/v1',runId:operation.runId,config:operation.config,
+    operationPassed:operation.passed,operationFailure:operation.failure || null,
+    resourceGate:'not-evaluated',passed:false,releaseReady:false,m0Complete:false,
+    operationResult:operationPin,policy:policyPin,bindings:null,analysis:null,
+    failure:'Trusted complete input bindings and actual software scope are not yet independently verified',
+    requiredEvidence:['complete-current-source-and-consumer-input-bindings','actual-native-software-scope',
+      'independent-resource-file-analysis'],
+    scope:'Frozen resource sampling only; lifecycle completion is not a resource gate'};
+}
+function matchResourceBindingPin(expected, current, output) {
+  const fixed=path.join(output,'file-bindings.json');
+  for(const pin of [expected,current]) {
+    if(!pin || path.resolve(pin.path)!==path.resolve(fixed) || !Number.isSafeInteger(pin.bytes) ||
+        pin.bytes<0 || pin.bytes>16*1024*1024 || typeof pin.sha256!=='string' || !/^[a-f0-9]{64}$/.test(pin.sha256))
+      throw new Error('Frozen resource binding must have its exact run file pin');
+  }
+  if(expected.bytes!==current.bytes || expected.sha256!==current.sha256)
+    throw new Error('Frozen resource binding bytes changed');
+  return Object.freeze({path:fixed,bytes:expected.bytes,sha256:expected.sha256});
+}
+function resourceBindingFilePin(output) {
+  const file=identity.safePath(output,'file-bindings.json'),stat=fs.statSync(file);
+  if(!stat.isFile() || stat.size>16*1024*1024) throw new Error('Frozen resource binding is not a bounded regular file');
+  return filePin(file);
+}
+function completeResourceCaptureResult(operation, operationPin, policyPin, evidence) {
+  const capture=resourceCaptureResult(operation,operationPin,policyPin);
+  if(!evidence || typeof evidence!=='object' || Array.isArray(evidence) ||
+      Object.keys(evidence).some(key=>!['bindingFile','inputs','analysis','failure','finalVerified'].includes(key)))
+    throw new Error('Fixed complete binding observations are required');
+  const inputs=evidence.inputs,analysis=evidence.analysis?.record;
+  const finalMatched=operation.passed===true && !operation.failure && evidence.finalVerified===true && evidence.failure===null && !!inputs;
+  const workloadAnalysis=analysis?.nativeScopeGate==='matched-compatibility-workload';
+  if(inputs && (inputs.inputsMatched!==true || inputs.inputBindingScope!=='complete-acceptance-inputs' ||
+      inputs.closureObserved!==false || inputs.resourceGate!=='not-evaluated' || inputs.passed!==false ||
+      inputs.nativeScopeGate!=='not-observed' || inputs.releaseReady!==false))
+    throw new Error('An input-only recheck cannot assert resource or native qualification');
+  if(analysis && !workloadAnalysis && (analysis.resourceGate!=='not-evaluated' || analysis.passed!==false ||
+      analysis.releaseReady!==false || ![undefined,'not-observed','matched-compositor-only'].includes(analysis.nativeScopeGate) ||
+      ![undefined,'matched','failed','not-evaluated'].includes(analysis.nativeSoftwareGate) ||
+      (analysis.nativeSoftwareGate==='matched' && analysis.nativeScopeGate!=='matched-compositor-only') ||
+      (analysis.nativeScopeGate==='matched-compositor-only' && (analysis.nativeSoftwareGate!=='matched' ||
+        analysis.nativeSoftware?.schema!=='soui.bound-dll-compositor-observation/v1' ||
+        analysis.nativeSoftware.scope!=='bound-dll-completed-compositor-calls' ||
+        analysis.nativeSoftware.nativeSoftwareGate!=='matched' || analysis.nativeSoftware.qualified!==false ||
+        analysis.softwareProcessModelGate!=='not-evaluated'))))
+    throw new Error('Complete file analysis cannot assert wider native software qualification');
+  if(workloadAnalysis && (!['passed','failed','not-evaluated'].includes(analysis.resourceGate) ||
+      analysis.resourceRuleObservation!==analysis.resourceGate ||
+      analysis.passed!==(analysis.resourceGate==='passed') || analysis.releaseReady!==false || analysis.m0Complete!==false ||
+      (analysis.resourceGate==='passed'&&analysis.failure!==null) ||
+      analysis.softwareProcessModelGate!=='matched-bound-workload' || analysis.nativeSoftwareGate!=='matched' ||
+      analysis.nativeSoftware?.schema!=='soui.bound-dll-compositor-observation/v1' ||
+      analysis.nativeSoftware.scope!=='bound-dll-completed-compositor-calls' || analysis.nativeSoftware.qualified!==false ||
+      analysis.nativeSoftware.nativeSoftwareGate!=='matched' ||
+      analysis.nativeModel?.schema!=='soui.bound-compatibility-backend-observation/v2' ||
+      analysis.nativeModel.scope!=='bound-compatibility-backend-workload' || analysis.nativeModel.qualified!==false ||
+      analysis.nativeModel.softwareWorkloadGate!=='matched' || analysis.nativeModel.failure!==null ||
+      ['sdkPrivateCacheQueueGate','thousandCycleOperationGate','eightHourGate','targetOsGate']
+        .some(key=>analysis[key]!=='not-evaluated')))
+    throw new Error('Only the finite frozen Compatibility workload resource gate can be evaluated');
+  const compositorMatched=finalMatched && analysis?.inputsMatched===true &&
+    analysis.inputBindingScope==='complete-acceptance-inputs' && analysis.nativeScopeGate==='matched-compositor-only';
+  const workloadMatched=finalMatched && analysis?.inputsMatched===true &&
+    analysis.inputBindingScope==='complete-acceptance-inputs' && workloadAnalysis;
+  const resourceEvaluated=workloadMatched && ['passed','failed'].includes(analysis.resourceGate);
+  return {...capture,bindings:evidence.bindingFile,inputBindingGate:finalMatched?'matched':'not-evaluated',
+    inputRecheck:finalMatched?inputs:null,inputRecheckDiagnostic:inputs || null,analysis:evidence.analysis?.file || null,
+    resourceRuleObservation:analysis?.resourceRuleObservation || 'not-evaluated',
+    observationFailure:analysis?.observationFailure || null,
+    nativeScopeGate:workloadMatched?'matched-compatibility-workload':compositorMatched?'matched-compositor-only':'not-observed',
+    nativeSoftwareGate:(workloadMatched||compositorMatched)?'matched':finalMatched?(analysis?.nativeSoftwareGate || 'not-evaluated'):'not-evaluated',
+    nativeSoftware:finalMatched?(analysis?.nativeSoftware || null):null,
+    nativeModel:finalMatched?(analysis?.nativeModel || null):null,
+    softwareProcessModelGate:workloadMatched?'matched-bound-workload':'not-evaluated',
+    resourceGate:resourceEvaluated?analysis.resourceGate:'not-evaluated',passed:resourceEvaluated&&analysis.passed===true,
+    failure:operation.failure || evidence.failure || analysis?.failure || (resourceEvaluated?null:'native-software-scope-not-observed'),
+    requiredEvidence:finalMatched?(analysis?.inputsMatched===true&&analysis?.inputBindingScope==='complete-acceptance-inputs'?
+      workloadMatched?resourceEvaluated?[]:['complete-original-resource-observations']:
+        compositorMatched?['broader-software-process-workload-coverage']:['actual-native-software-scope']:
+      ['actual-native-software-scope','independent-resource-file-analysis']):capture.requiredEvidence,
+    scope:'Only frozen100reload Compatibility workload; global SDK queues,1000cycles,8hour,OS,ABI and release remain pending'};
+}
 function validateRecords(records, config, outcome) {
   if (outcome.timedOut !== false || outcome.exitCode !== 0 || outcome.signal || !Number.isInteger(outcome.pid) || outcome.pid <= 0)
     throw new Error('Process failed, timed out, or has no valid identity');
   if (!Array.isArray(records) || records.length < 4 || records[0].event !== 'run.begin' || records.at(-1).event !== 'run.complete')
     throw new Error('Missing run boundaries');
+  verifyNativeIdentity(records, outcome);
   const start = records[0];
   if (start.pid !== outcome.pid || Object.keys(config).some(k=>start[k]!==config[k])) throw new Error('Scenario parameters or process identity differ');
   const steps = expectedSteps(config);
@@ -95,9 +249,12 @@ function write(file,value) { fs.writeFileSync(file,identity.encoded(value),{flag
 function payload(bin) {
   return identity.snapshot(bin,identity.walk(bin,'',name=>name==='resources/source-navigation.log'));
 }
-function prepare(suite,architecture,configuration,runtimeBinary) {
+function prepare(suite,architecture,configuration,runtimeBinary,fixture='ordinary',nativeToolchain) {
+  if(!['ordinary','message-port'].includes(fixture)) throw new Error('Unknown trusted acceptance fixture');
+  if(nativeToolchain && fixture!=='ordinary') throw new Error('Installed LLVM acceptance supports only the ordinary fixture');
   suite=directory(suite);
-  const build=builds.verifyBuild(root,architecture,configuration,true);
+  const build=nativeToolchain===undefined?builds.verifyBuild(root,architecture,configuration,true):
+    require('../../tools/internal/llvm-installed-acceptance.cjs').current(root,architecture,configuration,nativeToolchain).build;
   const webRecord=identity.readJson(path.join(root,'out','web-sdk.json'));
   if(webRecord.schema!=='soui.web-build/v1' || webRecord.sourceSha256!==build.source.sha256 ||
      identity.snapshot(root,identity.walk(root,'sdk/web/dist')).sha256!==webRecord.artifacts.sha256)
@@ -109,27 +266,30 @@ function prepare(suite,architecture,configuration,runtimeBinary) {
   const kernel={kind:input===prebuilt?'prebuilt':'explicit-candidate',bytes:bytes.length,sha256:identity.hash(bytes)};
   fs.mkdirSync(path.join(suite,'kernel-input'));
   fs.writeFileSync(path.join(suite,'kernel-input','node.dll'),bytes,{flag:'wx'});
-  const original=path.join(root,'tests','acceptance-app');
+  const original=path.join(root,'tests',fixture==='message-port'?'message-port-app':'acceptance-app');
   const consumerSource=identity.snapshot(original,identity.walk(original));
   const copy=path.join(suite,'consumer-source');
-  fs.cpSync(original,copy,{recursive:true,errorOnExist:true,force:false});
+  fs.cpSync(original,copy,{recursive:true,errorOnExist:true,force:false,filter:()=>true});
   if(identity.snapshot(copy,identity.walk(copy)).sha256!==consumerSource.sha256) throw new Error('Consumer source changed during snapshot');
   const webSdkRoot=path.join(suite,'web-sdk');
-  fs.cpSync(path.join(root,'sdk/web/dist'),path.join(webSdkRoot,'dist'),{recursive:true,errorOnExist:true,force:false});
+  fs.cpSync(path.join(root,'sdk/web/dist'),path.join(webSdkRoot,'dist'),{recursive:true,errorOnExist:true,force:false,filter:()=>true});
   fs.copyFileSync(path.join(root,'sdk/web/package.json'),path.join(webSdkRoot,'package.json'));
   const webSdk=identity.snapshot(webSdkRoot,identity.walk(webSdkRoot));
   for(const file of webRecord.artifacts.files) {
     if(identity.hash(fs.readFileSync(path.join(webSdkRoot,file.path.slice('sdk/web/'.length))))!==file.sha256)
       throw new Error('Public Web SDK changed during snapshot');
   }
-  write(path.join(suite,'pending.json'),{architecture,configuration,sourceSha256:build.source.sha256,buildId:build.buildId,version:build.version,consumerSource,webSdk,kernel});
+  write(path.join(suite,'pending.json'),{architecture,configuration,sourceSha256:build.source.sha256,buildId:build.buildId,version:build.version,consumerSource,webSdk,kernel,
+    ...(nativeToolchain===undefined?{}:{nativeToolchain})});
   return {buildId:build.buildId,sourceSha256:build.source.sha256};
 }
 function stage(suite) {
   suite=directory(suite);
   const pending=identity.readJson(path.join(suite,'pending.json'));
   const {architecture,configuration}=pending;
-  const build=builds.verifyBuild(root,architecture,configuration,true);
+  const native=pending.nativeToolchain===undefined?null:
+    require('../../tools/internal/llvm-installed-acceptance.cjs').verify(root,suite,pending.nativeToolchain);
+  const build=native?native.build:builds.verifyBuild(root,architecture,configuration,true);
   if (build.buildId!==pending.buildId || build.source.sha256!==pending.sourceSha256) throw new Error('SDK/source changed during consumer build');
   const consumerSource=path.join(suite,'consumer-source');
   if(identity.snapshot(consumerSource,identity.walk(consumerSource)).sha256!==pending.consumerSource.sha256)
@@ -149,7 +309,7 @@ function stage(suite) {
   fs.mkdirSync(bin);
   fs.copyFileSync(path.join(suite,'consumer','bin',configuration,'SouiAcceptance.exe'),path.join(bin,'SouiAcceptance.exe'));
   fs.writeFileSync(path.join(bin,'node.dll'),kernel,{flag:'wx'});
-  fs.cpSync(path.join(suite,'consumer','resources'),path.join(bin,'resources'),{recursive:true,errorOnExist:true,force:false});
+  fs.cpSync(path.join(suite,'consumer','resources'),path.join(bin,'resources'),{recursive:true,errorOnExist:true,force:false,filter:()=>true});
   for(let window=1;window<=3;window++) {
     const resources=path.join(bin,'resources',`window-${window}`);
     if(identity.snapshot(resources,identity.walk(resources)).sha256!==web.output.sha256)
@@ -164,6 +324,7 @@ function stage(suite) {
     fs.copyFileSync(path.join(root,file),destination);
   }
   const evidence={schema:'soui.acceptance-build/v3',...pending,web,consumerBuildId:crypto.randomUUID(),
+    ...(native?{nativeToolchain:{...pending.nativeToolchain,consumer:native.consumer}}:{}),
     installedSdk:identity.snapshot(install,identity.walk(install)),payload:payload(bin),
     environment:{platform:os.platform(),release:os.release(),architecture:os.arch(),node:process.version,cpu:os.cpus()[0]?.model,logicalProcessors:os.cpus().length},
     completedAt:new Date().toISOString(),releaseReady:false};
@@ -190,7 +351,8 @@ function verify(suite) {
   const build=identity.readJson(path.join(suite,'build.json'));
   if(build.schema!=='soui.acceptance-build/v3') throw new Error('A fresh acceptance build with the public Web SDK consumer is required');
   if(JSON.stringify(verifyWeb(suite,build))!==JSON.stringify(build.web))throw new Error('Independent Web build record drift');
-  const sdk=builds.verifyBuild(root,build.architecture,build.configuration,true);
+  const sdk=build.nativeToolchain===undefined?builds.verifyBuild(root,build.architecture,build.configuration,true):
+    require('../../tools/internal/llvm-installed-acceptance.cjs').verify(root,suite,build.nativeToolchain).build;
   if (sdk.buildId!==build.buildId || sdk.source.sha256!==build.sourceSha256 || payload(path.join(suite,'runtime')).sha256!==build.payload.sha256)
     throw new Error('Acceptance source, SDK build, or runtime drift');
   const install=path.join(suite,'install');
@@ -202,36 +364,76 @@ function verify(suite) {
     throw new Error('Runtime candidate input drift');
   return build;
 }
-async function run(suite,config) {
+function finishLongCapture(output,operation,summary,frozenBinding,files){
+  const evidence={bindingFile:frozenBinding,inputs:null,analysis:null,failure:null,finalVerified:false};
+  if(operation.passed){
+    try{
+      matchResourceBindingPin(frozenBinding,resourceBindingFilePin(output),output);
+      evidence.inputs=files.recheck(frozenBinding.path);
+      matchResourceBindingPin(frozenBinding,resourceBindingFilePin(output),output);
+      const analysis=require('./long-run-validation.cjs').analyzeFile(path.join(output,'operation-result.json'),frozenBinding.path);
+      matchResourceBindingPin(frozenBinding,resourceBindingFilePin(output),output);
+      evidence.inputs=files.recheck(frozenBinding.path);
+      matchResourceBindingPin(frozenBinding,resourceBindingFilePin(output),output);
+      const analysisPath=path.join(output,'long-run-analysis.json');write(analysisPath,analysis);
+      evidence.analysis={record:analysis,file:filePin(analysisPath)};evidence.finalVerified=true;
+    }catch(error){evidence.failure=error.message;evidence.finalVerified=false;}
+  }
+  const reader=require('./long-run-validation.cjs');
+  const capture=reader.captureResult(operation,filePin(path.join(output,'operation-result.json')),
+    filePin(path.join(output,'long-run-policy.json')),evidence);
+  const capturePath=path.join(output,'result.json');write(capturePath,capture);
+  return {...summary,passed:capture.passed,operationPassed:capture.operationPassed,longRunGate:capture.longRunGate,
+    resourceGate:capture.resourceGate,eightHourGate:capture.eightHourGate,thousandCycleOperationGate:capture.thousandCycleOperationGate,
+    result:path.relative(root,capturePath).replaceAll('\\','/'),operationResult:summary.result,failure:capture.failure};
+}
+function measurementRunner(build) {
+  const runner=build.nativeToolchain===undefined?
+    (process.env.SOUI_OWNED_PROCESS_RUNNER || path.join(root,'out/benchmark-protocol/Release/OwnedProcessRunner.exe')):
+    require('../../tools/internal/llvm-installed-acceptance.cjs').runtimeRunner(root,build.architecture,build.configuration,build.nativeToolchain);
+  return {runner,binding:{runner:filePin(runner)}};
+}
+async function run(suite,config,options) {
+  const longRun=longRunBinding(config,options);
+  const resource = longRun?null:resourceBinding(config,options);
+  const capture=longRun||resource;
   suite=directory(suite);
   const build=verify(suite);
   const runId=crypto.randomUUID();
   const output=path.join(suite,`${config.mode}-${runId}`);
   fs.mkdirSync(output);
-  write(path.join(output,'request.json'),{schema:'soui.acceptance-request/v1',runId,...config,consumerBuildId:build.consumerBuildId,
+  if(capture)fs.writeFileSync(path.join(output,longRun?'long-run-policy.json':'resource-policy.json'),capture.policyRaw,{flag:'wx'});
+  write(path.join(output,'request.json'),{schema:'soui.acceptance-request/v1',runId,...config,
+    ...(capture ? capture.requestFields : {}),consumerBuildId:build.consumerBuildId,
     payloadSha256:build.payload.sha256,sourceSha256:build.sourceSha256,startedAt:new Date().toISOString()});
+  const resourceFiles=capture?require('./resource-file-bindings.cjs'):null;
+  const frozen=resourceFiles?resourceFiles.freeze(suite,output):null;
+  const frozenBinding=capture?matchResourceBindingPin(frozen.bindingFile,resourceBindingFilePin(output),output):null;
   const log=path.join(output,'events.ndjson');
   const stdout=fs.openSync(path.join(output,'stdout.log'),'wx');
   const stderr=fs.openSync(path.join(output,'stderr.log'),'wx');
   const bin=path.join(suite,'runtime');
-  const mixed=config.mode==='mixed';
-  const args=mixed?
-    [`--mode=mixed`,`--duration-ms=${config.durationMs}`,`--idle-ms=${config.idleMs}`,
+  const mixed=config.mode==='mixed', session=config.mode==='session';
+  const duration=mixed || session;
+  const args=duration?
+    [`--mode=${config.mode}`,`--duration-ms=${config.durationMs}`,`--idle-ms=${config.idleMs}`,
       `--settle-ms=${config.settleMs}`,`--timeout-ms=${config.timeoutMs}`,`--report=${log}`]:
     [`--mode=${config.mode}`,`--cycles=${config.cycles}`,`--warmup=${config.warmup}`,
       `--settle-ms=${config.settleMs}`,`--timeout-ms=${config.timeoutMs}`,`--report=${log}`];
-  const processTimeoutMs=mixed?config.durationMs+Math.max(180000,2*config.timeoutMs+config.idleMs):
+  const processTimeoutMs=duration?config.durationMs+Math.max(180000,2*config.timeoutMs+config.idleMs):
     Math.min(12*60*60*1000,Math.max(60000,expectedSteps(config).length*(config.timeoutMs+config.settleMs)+30000));
   let timedOut=false;
   let timeoutReason=null;
   let child;
   let outcome;
+  let preparedRunner;
   let timeoutDiagnosticPromise=Promise.resolve(null);
   let timer;
   let monitor;
   try {
+      preparedRunner=measurementRunner(build);
       child=launchOwned(path.join(bin,'SouiAcceptance.exe'),args,{
-        runner:process.env.SOUI_OWNED_PROCESS_RUNNER || path.join(root,'out/benchmark-protocol/Release/OwnedProcessRunner.exe'),
+        runner:preparedRunner.runner,
         cwd:bin,report:path.join(output,'owned-process.ndjson'),
         timeoutMs:processTimeoutMs+180000,stdout,stderr});
       await child.ready;
@@ -292,25 +494,67 @@ async function run(suite,config) {
   try {
     if(outcome.spawnError || outcome.timedOut || outcome.ownedProcess?.passed!==true)
       throw new Error('Owned process exit, supervision or complete Job cleanup was not verified');
+    const currentRunner=measurementRunner(build).binding.runner;
+    if(outcome.ownedProcess.runnerSha256!==preparedRunner.binding.runner.sha256 ||
+        currentRunner.path!==preparedRunner.binding.runner.path ||
+        currentRunner.bytes!==preparedRunner.binding.runner.bytes ||
+        currentRunner.sha256!==preparedRunner.binding.runner.sha256)
+      throw new Error('Actual Owned Runner differs from the selected current runner');
     verify(suite);
     const bytes=fs.readFileSync(log);
     result.logSha256=identity.hash(bytes);
     if (!bytes.toString('utf8').endsWith('\n')) throw new Error('Truncated native log');
     const records=bytes.toString('utf8').trimEnd().split('\n').map(line=>JSON.parse(line));
-    result.validation=mixed?validateMixedRecords(records,config,outcome):validateRecords(records,config,outcome);
+    verifyNativeIdentity(records,outcome);
+    result.validation=session?validateSessionRecords(records,config,outcome):mixed?validateMixedRecords(records,config,outcome):validateRecords(records,config,outcome);
     result.passed=true;
   } catch(error) { result.failure=error.message; }
-  write(path.join(output,'result.json'),result);
-  return {passed:result.passed,mode:config.mode,runId,result:path.relative(root,path.join(output,'result.json')).replaceAll('\\','/'),failure:result.failure,outcome};
+  // The original operation schema remains the strict reader's lifecycle input.
+  // Resource capture has its own overall result and cannot report a green gate.
+  const operationPath=path.join(output,capture?'operation-result.json':'result.json');
+  write(operationPath,result);
+  const summary={passed:result.passed,mode:config.mode,runId,
+    result:path.relative(root,operationPath).replaceAll('\\','/'),failure:result.failure,outcome};
+  if(longRun)return finishLongCapture(output,result,summary,frozenBinding,resourceFiles);
+  if (!resource) return summary;
+  const bindingEvidence={bindingFile:frozenBinding,inputs:null,analysis:null,failure:null,finalVerified:false};
+  if(result.passed) {
+    try {
+      matchResourceBindingPin(frozenBinding,resourceBindingFilePin(output),output);
+      bindingEvidence.inputs=resourceFiles.recheck(frozenBinding.path);
+      matchResourceBindingPin(frozenBinding,resourceBindingFilePin(output),output);
+      const analysis=require('./resource-validation.cjs').analyzeFile(operationPath,frozenBinding.path);
+      matchResourceBindingPin(frozenBinding,resourceBindingFilePin(output),output);
+      bindingEvidence.inputs=resourceFiles.recheck(frozenBinding.path);
+      matchResourceBindingPin(frozenBinding,resourceBindingFilePin(output),output);
+      const analysisPath=path.join(output,'resource-analysis.json');
+      write(analysisPath,analysis);
+      bindingEvidence.analysis={record:analysis,file:filePin(analysisPath)};
+      bindingEvidence.finalVerified=true;
+    } catch(error) { bindingEvidence.finalVerified=false;bindingEvidence.failure=error.message; }
+  }
+  const captured=completeResourceCaptureResult(result,filePin(operationPath),filePin(path.join(output,'resource-policy.json')),bindingEvidence);
+  const capturePath=path.join(output,'result.json');
+  write(capturePath,captured);
+  return {...summary,passed:captured.passed,operationPassed:captured.operationPassed,
+    resourceGate:captured.resourceGate,result:path.relative(root,capturePath).replaceAll('\\','/'),
+    operationResult:summary.result,failure:result.failure || captured.failure};
 }
-module.exports={settings,expectedSteps,validateRecords,mixedSettings,validateMixedRecords};
+module.exports={settings,expectedSteps,validateRecords,mixedSettings,validateMixedRecords,sessionSettings,validateSessionRecords,verifyNativeIdentity,resourceBinding,longRunBinding,parseRunCommand,resourceCaptureResult,matchResourceBindingPin,completeResourceCaptureResult,prepare,stage,verify,run};
 if(require.main===module) (async()=>{
   const [command,suite,...args]=process.argv.slice(2);
   let result;
   if(command==='prepare'&&(args.length===2||args.length===3))result=prepare(suite,...args);
+  else if(command==='prepare-llvm'&&args.length===4) {
+    const selected=require('../../tools/internal/llvm-installed-acceptance.cjs').select(root,args[0],args[1],args[3]);
+    result=prepare(suite,args[0],args[1],args[2],'ordinary',selected.selection);
+  }
+  else if(command==='prepare-message-port'&&(args.length===2||args.length===3))result=prepare(suite,args[0],args[1],args[2],'message-port');
   else if(command==='stage'&&!args.length)result=stage(suite);
-  else if(command==='run'&&args.length===5)result=await run(suite,settings(args[0],...args.slice(1).map(Number)));
-  else if(command==='run-mixed'&&args.length===4)result=await run(suite,mixedSettings(...args.map(Number)));
+  else if(['run','run-resource','run-mixed','run-session','run-long','run-long-mixed','run-long-session'].includes(command)) {
+    const selected=parseRunCommand(command,args);
+    result=await run(suite,selected.config,selected.options);
+  }
   else throw new Error('Invalid acceptance command');
   console.log(identity.encoded(result));
   if(result.passed===false)process.exitCode=1;

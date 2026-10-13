@@ -46,6 +46,10 @@ HTTPS 内核的[回环证书验证](../verification/production-validation/previe
 
 桌面测试需要可交互 Windows 会话，脚本串行运行并使用互斥锁。结果在 `out/<架构>/smoke-<配置>.json`，绑定构建 ID、源码身份及全部 EXE/DLL/HTML/JS/CSS 资源。模板、Demo 默认入口、Demo React 入口分别验证。单元测试不能替代真实宿主启动。
 
+拟议 Owned 桌面迁移保持上述 `soui.native-smoke/v2` 字段和 ready/close 行为。`Test.ps1` 的桌面段持有原有单一租约，调用共用 `desktop-smoke.cjs`；每个应用使用所选架构已准备的 OwnedProcessRunner，要求真实自然 0/0、零存活成员及无强制清理。每次新建 `out/<架构>/smoke-owned-<uuid>/`，保留前一次 smoke JSON、应用旧日志、当前 raw/context/finished/stdout/stderr 与新日志；失败不覆盖旧原始样本。新报告的 Owned 扩展另核对实际参数、执行文件和 runner 散列，旧 v2 记录保持历史含义。
+
+统一 Soui 的 desktop scope 在已有外层租约内派发 UnitOnly，再直接运行共用 helper，避免嵌套调用完整 Test.ps1 造成第二租约冲突。controller 的 Owned 闭合与各应用的 Job 闭合分开核验。UnitOnly 会尝试准备验证工具，因此统一入口在它前后复核正在使用的 runner 字节；锁定文件、重建或替换失败均保留实际错误。独立 Test.ps1 的旧前置单元命令仍未全部迁入 Owned，不能声称整个独立脚本已完成监督迁移。新 resource/session/devkit reader 测试必须实际存在，不跳过缺失文件；session、52 分钟、8 小时及资源预算运行仍是各自显式入口。本候选尚未执行，05-09a、长期稳定性和发布资格继续待验收。
+
 `tools/Build.ps1` 在开始构建时使旧成功记录失效；结束时检查编译输入未改变并记录载荷。`-SkipWeb` 只接受源码及 Web 输出均与上次构建匹配的记录，首次构建或文件改变后必须完整构建。通过 CMake 直接编译可以调试，但不能代替这些打包所需证据。改变页面、DLL、编译输入或目标集合后，测试和打包都会要求重新构建。
 
 `node --test tests/sdk/delivery-identity.test.cjs` 验证源码换行、文件集合、路径安全、资源篡改、部署清理、安装字节身份和旧证据失效。
@@ -57,3 +61,9 @@ HTTPS 内核的[回环证书验证](../verification/production-validation/previe
 完成四组构建、依赖重编译与运行、外部 CMake 和独立项目验证后，维护者可以运行 `node tools/Collect-Verification.cjs` 汇总当前交付结果。该入口会重跑单元测试，核对运行产物散列，并在证据缺失时失败；它不会把未执行项自动标为通过。
 
 0.3 基础切片可使用 `node tools/Collect-Verification.cjs --foundation`：要求 x86/x64 Release 的三种启动场景及四个单应用运行包；重跑单元与原生契约测试。结果明确为 `scope: foundation`、`sourceDeliveryVerified: false`，不等同于完整候选验收。汇总失败会留下未验收状态，不能继续引用历史绿色结果。汇总会更新证据文件，需随后刷新完整源码清单。
+
+## 明确请求厂商回归
+
+`powershell.exe -File tools/Test.ps1 -Architecture x64 -Configuration Release -RequireVendorTests -UnitOnly` 要求当前根构建的私有厂商测试为 ON；x86 使用对应架构。`-UnitOnly` 仅省略桌面 smoke，仍执行原生 CTest。`-RequireVendorTests` 不能与仅做桌面 smoke 的 `-NativeOnly` 共用。
+
+所有单元测试模式先读取实际 `out/<架构>/CMakeCache.txt`，核对源码根、构建目录、架构、配置和 SDK 测试开关，再调用实际 CTest 的 `--show-only=json-v1`。ON 必须注册 [清单](../tools/internal/vendor-test-names.json) 中完整的 54 个名称，不能缺少、重复、额外注册或禁用厂商用例；随后仍运行私有 ABI 比较及原有 CTest，注册成功本身没有通过资格。即使未指定 `-RequireVendorTests`，配置为 ON 时也采用同一完整注册要求。OFF 会明确报告厂商回归及私有 ABI 源码比较未验收；[公开 Host 断言](../tests/native/miniblink_public_host.test.cjs) 始终随单元测试执行。缺少配置、空注册或查询失败均不能视为成功。

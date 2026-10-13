@@ -1,4 +1,5 @@
 'use strict';
+const versioning = require('./sdk-version.cjs');
 const crypto = require('node:crypto');
 const path = require('node:path');
 const {isDeepStrictEqual} = require('node:util');
@@ -98,7 +99,7 @@ function acceptCompilerTail({reviewedInvocation:review,context,contextBytes,rawR
     const build=jsonBytes(buildReportBytes,review.buildReportSha256,'build report');
     need(build.schema==='soui.source-build/v2'&&build.nativeBuild==='passed'&&build.releaseReady===false&&
       typeof build.buildId==='string'&&/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(build.buildId)&&build.buildId===review.buildId&&
-      build.version===review.version&&/^\d+\.\d+\.\d+-preview\.\d+$/.test(build.version)&&
+      build.version===review.version&&versioning.isVersion(build.version)&&
       build.architecture===review.architecture&&build.configuration===review.configuration&&build.sdkOnly===review.sdkOnly&&
       build.source?.sha256===currentSourceSha256,'Build report is stale or not the reviewed completed build');
     const actualArtifacts=artifacts(build);

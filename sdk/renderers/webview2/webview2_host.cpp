@@ -8,6 +8,9 @@
 #include <bcrypt.h>
 #include <WebView2.h>
 #include <wrl.h>
+#include <WebView2EnvironmentOptions.h>
+#include <exception>
+#include <iterator>
 #include <json.hpp>
 #include <atomic>
 #include <chrono>
@@ -124,6 +127,259 @@ json parse_bounded(const std::string& raw) {
 }
 }  // namespace
 
+struct webview2_runtime_exit_watch::state {
+  DWORD ui_thread{GetCurrentThreadId()};
+  ComPtr<ICoreWebView2Environment5> environment;
+  ComPtr<IUnknown> environment_identity;
+  EventRegistrationToken token{};
+  HANDLE process{};
+  std::filesystem::path image;
+  std::uint32_t pid{};
+  std::uint64_t creation{};
+  std::mutex mutex;
+  webview2_runtime_exit_error failure{webview2_runtime_exit_error::none};
+  HRESULT failure_hresult{S_OK};
+  DWORD failure_win32{};
+  UINT32 event_pid{}, callbacks{};
+  webview2_browser_exit_kind exit_kind{webview2_browser_exit_kind::absent};
+  bool event_observed{}, signaled{}, registered{}, armed{}, acquired{}, finishing{}, finished{};
+  ~state() {
+    // All resource-bearing states are owned until explicit successful finish.
+    if (environment || environment_identity || process || registered || callbacks) std::terminate();
+  }
+};
+
+namespace {
+using exit_state = webview2_runtime_exit_watch::state;
+void exit_failure(const std::shared_ptr<exit_state>& value, webview2_runtime_exit_error failure,
+                  HRESULT result = S_OK, DWORD win32_error = 0) noexcept {
+  std::lock_guard<std::mutex> lock(value->mutex);
+  if (value->failure == webview2_runtime_exit_error::none) {
+    value->failure = failure; value->failure_hresult = result; value->failure_win32 = win32_error;
+  }
+}
+struct exit_callback_borrow {
+  const std::shared_ptr<exit_state> value;
+  explicit exit_callback_borrow(std::shared_ptr<exit_state> input) : value(std::move(input)) {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    if (value->callbacks == UINT32_MAX) std::terminate();
+    ++value->callbacks;
+  }
+  ~exit_callback_borrow() {
+    std::lock_guard<std::mutex> lock(value->mutex);
+    if (!value->callbacks) std::terminate();
+    --value->callbacks;
+  }
+};
+HRESULT exit_event(const std::shared_ptr<exit_state>& value,
+                   ICoreWebView2Environment* sender,
+                   ICoreWebView2BrowserProcessExitedEventArgs* args) noexcept {
+  try {
+    exit_callback_borrow borrow(value);
+    if (GetCurrentThreadId() != value->ui_thread) {
+      exit_failure(value, webview2_runtime_exit_error::wrong_thread); return S_OK;
+    }
+    ComPtr<IUnknown> identity;
+    const auto identity_result = sender ? sender->QueryInterface(IID_PPV_ARGS(&identity)) : E_POINTER;
+    if (FAILED(identity_result) || identity.Get() != value->environment_identity.Get()) {
+      exit_failure(value, webview2_runtime_exit_error::sender_identity, identity_result); return S_OK;
+    }
+    UINT32 pid{};
+    COREWEBVIEW2_BROWSER_PROCESS_EXIT_KIND kind{};
+    const auto pid_result = args ? args->get_BrowserProcessId(&pid) : E_POINTER;
+    const auto kind_result = args ? args->get_BrowserProcessExitKind(&kind) : E_POINTER;
+    if (FAILED(pid_result) || FAILED(kind_result)) {
+      exit_failure(value, webview2_runtime_exit_error::event_read,
+                   FAILED(pid_result) ? pid_result : kind_result); return S_OK;
+    }
+    std::lock_guard<std::mutex> lock(value->mutex);
+    if (!value->event_observed) {
+      value->event_observed = true; value->event_pid = pid;
+      value->exit_kind = kind == COREWEBVIEW2_BROWSER_PROCESS_EXIT_KIND_NORMAL
+          ? webview2_browser_exit_kind::normal : webview2_browser_exit_kind::failed;
+    }
+    if (value->failure == webview2_runtime_exit_error::none) {
+      if (pid != value->pid) value->failure = webview2_runtime_exit_error::browser_changed;
+      else if (kind != COREWEBVIEW2_BROWSER_PROCESS_EXIT_KIND_NORMAL)
+        value->failure = webview2_runtime_exit_error::abnormal_exit;
+    }
+    return S_OK;
+  } catch (...) {
+    exit_failure(value, webview2_runtime_exit_error::callback_exception, E_FAIL); return S_OK;
+  }
+}
+HRESULT arm_exit_monitor(const std::shared_ptr<exit_state>& value, ICoreWebView2* core) noexcept {
+  try {
+    if (!value || !core) return E_POINTER;
+    if (GetCurrentThreadId() != value->ui_thread) {
+      exit_failure(value, webview2_runtime_exit_error::wrong_thread); return RPC_E_WRONG_THREAD;
+    }
+    if (value->armed) return S_OK;
+    UINT32 pid{};
+    auto result = core->get_BrowserProcessId(&pid);
+    if (FAILED(result) || !pid) {
+      exit_failure(value, webview2_runtime_exit_error::process_query, FAILED(result) ? result : E_FAIL);
+      return FAILED(result) ? result : E_FAIL;
+    }
+    value->pid = pid;
+    value->process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION | SYNCHRONIZE, FALSE, pid);
+    if (!value->process) {
+      const auto native = GetLastError();
+      exit_failure(value, webview2_runtime_exit_error::process_query, HRESULT_FROM_WIN32(native), native);
+      return FAILED(HRESULT_FROM_WIN32(native)) ? HRESULT_FROM_WIN32(native) : E_FAIL;
+    }
+    FILETIME created{}, exited{}, kernel{}, user{};
+    wchar_t image[32768]{}; DWORD length = static_cast<DWORD>(std::size(image));
+    if (!GetProcessTimes(value->process, &created, &exited, &kernel, &user) ||
+        !QueryFullProcessImageNameW(value->process, 0, image, &length) || !length) {
+      const auto native = GetLastError();
+      exit_failure(value, webview2_runtime_exit_error::process_query, HRESULT_FROM_WIN32(native), native);
+      return FAILED(HRESULT_FROM_WIN32(native)) ? HRESULT_FROM_WIN32(native) : E_FAIL;
+    }
+    value->creation = (static_cast<std::uint64_t>(created.dwHighDateTime) << 32U) | created.dwLowDateTime;
+    value->image = std::filesystem::path(std::wstring(image, length));
+    const auto initial_wait = WaitForSingleObject(value->process, 0);
+    if (initial_wait == WAIT_FAILED) {
+      const auto native = GetLastError();
+      exit_failure(value, webview2_runtime_exit_error::process_wait, S_OK, native); return E_FAIL;
+    }
+    if (!value->creation || initial_wait != WAIT_TIMEOUT) {
+      exit_failure(value, webview2_runtime_exit_error::browser_changed); return E_FAIL;
+    }
+    const std::weak_ptr<exit_state> weak(value);
+    auto callback = Callback<ICoreWebView2BrowserProcessExitedEventHandler>(
+        [weak](ICoreWebView2Environment* sender, ICoreWebView2BrowserProcessExitedEventArgs* args) -> HRESULT {
+          const auto held = weak.lock(); return held ? exit_event(held, sender, args) : S_OK;
+        });
+    if (!callback) {
+      exit_failure(value, webview2_runtime_exit_error::registration, E_OUTOFMEMORY); return E_OUTOFMEMORY;
+    }
+    result = value->environment->add_BrowserProcessExited(callback.Get(), &value->token);
+    if (FAILED(result)) {
+      exit_failure(value, webview2_runtime_exit_error::registration, result); return result;
+    }
+    { std::lock_guard<std::mutex> lock(value->mutex); value->registered = true; }
+    UINT32 current_pid{};
+    result = core->get_BrowserProcessId(&current_pid);
+    FILETIME current_created{};
+    if (FAILED(result) || current_pid != pid ||
+        !GetProcessTimes(value->process, &current_created, &exited, &kernel, &user) ||
+        ((static_cast<std::uint64_t>(current_created.dwHighDateTime) << 32U) | current_created.dwLowDateTime) != value->creation) {
+      exit_failure(value, webview2_runtime_exit_error::browser_changed, result); return E_FAIL;
+    }
+    const auto confirmed_wait = WaitForSingleObject(value->process, 0);
+    if (confirmed_wait == WAIT_FAILED) {
+      const auto native = GetLastError();
+      exit_failure(value, webview2_runtime_exit_error::process_wait, S_OK, native); return E_FAIL;
+    }
+    if (confirmed_wait != WAIT_TIMEOUT) {
+      exit_failure(value, webview2_runtime_exit_error::browser_changed); return E_FAIL;
+    }
+    std::lock_guard<std::mutex> lock(value->mutex);
+    if (value->failure != webview2_runtime_exit_error::none) return E_FAIL;
+    value->armed = true; return S_OK;
+  } catch (...) {
+    if (value) exit_failure(value, webview2_runtime_exit_error::callback_exception, E_FAIL);
+    return E_FAIL;
+  }
+}
+bool exit_finished(const std::shared_ptr<exit_state>& value) noexcept {
+  if (!value) return true;
+  std::lock_guard<std::mutex> lock(value->mutex);
+  return value->finished && !value->callbacks;
+}
+void check_exit_owner(const std::shared_ptr<exit_state>& value) noexcept {
+  if (value && GetCurrentThreadId() != value->ui_thread) std::terminate();
+}
+}  // namespace
+
+webview2_runtime_exit_watch::webview2_runtime_exit_watch(std::shared_ptr<state> value)
+    : state_(std::move(value)) {}
+webview2_runtime_exit_watch::~webview2_runtime_exit_watch() {
+  check_exit_owner(state_);
+  if (!exit_finished(state_)) std::terminate();
+}
+webview2_runtime_exit_watch::webview2_runtime_exit_watch(webview2_runtime_exit_watch&& other) noexcept {
+  check_exit_owner(other.state_); state_ = std::move(other.state_);
+}
+webview2_runtime_exit_watch& webview2_runtime_exit_watch::operator=(webview2_runtime_exit_watch&& other) noexcept {
+  if (this == &other) return *this;
+  check_exit_owner(state_); check_exit_owner(other.state_);
+  if (!exit_finished(state_)) std::terminate();
+  state_ = std::move(other.state_); return *this;
+}
+webview2_runtime_exit_observation webview2_runtime_exit_watch::observe() const {
+  webview2_runtime_exit_observation result;
+  const auto value = state_;
+  if (!value) { result.phase = webview2_runtime_exit_phase::failed; result.error = webview2_runtime_exit_error::unavailable; return result; }
+  if (GetCurrentThreadId() != value->ui_thread) {
+    result.phase = webview2_runtime_exit_phase::failed; result.error = webview2_runtime_exit_error::wrong_thread; return result;
+  }
+  // No COM/native call is made under the scalar lock. The process handle is
+  // released only by finish on this same STA; a finished snapshot is historical.
+  if (value->process) {
+    const auto waited = WaitForSingleObject(value->process, 0);
+    if (waited == WAIT_OBJECT_0) { std::lock_guard<std::mutex> lock(value->mutex); value->signaled = true; }
+    else if (waited == WAIT_FAILED) exit_failure(value, webview2_runtime_exit_error::process_wait, S_OK, GetLastError());
+  }
+  result.browser_process_id = value->pid; result.creation_file_time = value->creation; result.image_path = value->image;
+  std::lock_guard<std::mutex> lock(value->mutex);
+  result.error = value->failure; result.hresult = static_cast<std::int32_t>(value->failure_hresult);
+  result.win32_error = value->failure_win32; result.event_observed = value->event_observed;
+  result.event_browser_process_id = value->event_pid; result.exit_kind = value->exit_kind;
+  result.process_signaled = value->signaled; result.registered = value->registered; result.active_callbacks = value->callbacks;
+  if (value->failure != webview2_runtime_exit_error::none) result.phase = webview2_runtime_exit_phase::failed;
+  else if (value->finished) result.phase = webview2_runtime_exit_phase::finished;
+  else if (!value->finishing && value->armed && value->event_observed && value->event_pid == value->pid &&
+           value->exit_kind == webview2_browser_exit_kind::normal && value->signaled && !value->callbacks)
+    result.phase = webview2_runtime_exit_phase::complete;
+  return result;
+}
+host_result webview2_runtime_exit_watch::finish() {
+  const auto value = state_;
+  if (!value) return error("E_RUNTIME_WATCH_UNAVAILABLE", "The runtime exit watch is moved from.");
+  if (GetCurrentThreadId() != value->ui_thread) return error("E_THREAD", "Runtime exit finish requires its UI STA.");
+  const auto observation = observe();
+  if (observation.phase == webview2_runtime_exit_phase::finished) return ok();
+  if (observation.phase == webview2_runtime_exit_phase::failed)
+    return error("E_RUNTIME_WATCH_FAILED", "The runtime exit watch recorded a failure.");
+  if (observation.phase != webview2_runtime_exit_phase::complete)
+    return error("E_BUSY", "The actual runtime exit event/process/callback is pending.");
+  bool registered{};
+  { std::lock_guard<std::mutex> lock(value->mutex);
+    if (value->finishing || value->callbacks) return error("E_BUSY", "Runtime exit finish is already borrowed.");
+    value->finishing = true; registered = value->registered;
+  }
+  if (registered) {
+    const auto removed = value->environment->remove_BrowserProcessExited(value->token);
+    if (FAILED(removed)) {
+      exit_failure(value, webview2_runtime_exit_error::removal, removed);
+      { std::lock_guard<std::mutex> lock(value->mutex); value->finishing = false; }
+      return error("E_RUNTIME_WATCH_FAILED", "Runtime exit event removal failed.");
+    }
+    { std::lock_guard<std::mutex> lock(value->mutex); value->registered = false; }
+  }
+  { std::lock_guard<std::mutex> lock(value->mutex);
+    if (value->callbacks || value->failure != webview2_runtime_exit_error::none) {
+      value->finishing = false; return error("E_RUNTIME_WATCH_FAILED", "Runtime exit callback cleanup is unresolved.");
+    }
+  }
+  if (value->process && !CloseHandle(value->process)) {
+    exit_failure(value, webview2_runtime_exit_error::process_handle_close, S_OK, GetLastError());
+    { std::lock_guard<std::mutex> lock(value->mutex); value->finishing = false; }
+    return error("E_RUNTIME_WATCH_FAILED", "Runtime exit process handle release failed.");
+  }
+  value->process = nullptr;
+  value->environment.Reset(); value->environment_identity.Reset();
+  { std::lock_guard<std::mutex> lock(value->mutex);
+    if (value->callbacks || value->failure != webview2_runtime_exit_error::none) {
+      value->finishing = false; return error("E_RUNTIME_WATCH_FAILED", "Runtime exit release was reentered.");
+    }
+    value->finished = true; value->finishing = false;
+  }
+  return ok();
+}
+
 struct webview2_adapter::state {
   enum class phase { created, preparing, prepared, mounted, closing, closed, failed };
   struct request {
@@ -143,6 +399,11 @@ struct webview2_adapter::state {
   HWND owner{};
   DWORD ui_thread{GetCurrentThreadId()};
   std::filesystem::path profile, fixed_runtime;
+  webview2_profile_access profile_access{webview2_profile_access::shared};
+  std::shared_ptr<webview2_runtime_exit_watch::state> exit_monitor;
+  bool controller_creation_failed{false};
+  bool failed_preparation_cleanup_in_progress{false};
+  bool failed_preparation_cleanup_done{false};
   std::function<void(host_result)> prepared;
   detail::preparation_lifetime preparation;
   std::string preload, runtime_version, script_id;
@@ -182,6 +443,60 @@ bool live(const std::shared_ptr<state>& value) {
   return value && value->current != state::phase::closing && value->current != state::phase::closed &&
       value->current != state::phase::failed;
 }
+host_result release_failed_controller_monitor(const std::shared_ptr<state>& value) {
+  const auto monitor = value->exit_monitor;
+  if (!monitor) return error("E_RUNTIME_WATCH_FAILED", "Failed Controller monitor is absent.");
+  if (GetCurrentThreadId() != value->ui_thread || GetCurrentThreadId() != monitor->ui_thread)
+    return error("E_THREAD", "Failed Controller cleanup requires its UI STA.");
+  struct release_borrow {
+    bool& active;
+    explicit release_borrow(bool& input) noexcept : active(input) { active = true; }
+    ~release_borrow() { active = false; }
+  } borrowed(value->failed_preparation_cleanup_in_progress);
+  bool registered{};
+  {
+    std::lock_guard<std::mutex> lock(monitor->mutex);
+    if (monitor->callbacks || monitor->finishing)
+      return error("E_BUSY", "Failed Controller monitor is borrowed.");
+    if (monitor->armed || monitor->acquired || monitor->finished || monitor->process || monitor->pid ||
+        monitor->creation || !monitor->image.empty() || monitor->event_observed || monitor->event_pid ||
+        monitor->exit_kind != webview2_browser_exit_kind::absent || monitor->signaled ||
+        monitor->failure != webview2_runtime_exit_error::none ||
+        !monitor->environment || !monitor->environment_identity)
+      return error("E_RUNTIME_WATCH_FAILED", "Failed Controller cleanup cannot discard browser ownership.");
+    monitor->finishing = true; registered = monitor->registered;
+  }
+  if (registered) {
+    const auto removed = monitor->environment->remove_BrowserProcessExited(monitor->token);
+    if (FAILED(removed)) {
+      exit_failure(monitor, webview2_runtime_exit_error::removal, removed);
+      { std::lock_guard<std::mutex> lock(monitor->mutex); monitor->finishing = false; }
+      return error("E_RUNTIME_WATCH_FAILED", "Failed Controller event removal failed.");
+    }
+    { std::lock_guard<std::mutex> lock(monitor->mutex); monitor->registered = false; }
+  }
+  {
+    std::lock_guard<std::mutex> lock(monitor->mutex);
+    if (monitor->callbacks || monitor->failure != webview2_runtime_exit_error::none) {
+      monitor->finishing = false;
+      return error("E_RUNTIME_WATCH_FAILED", "Failed Controller removal was reentered.");
+    }
+  }
+  // No Core or held browser was established. These are local failed-initializer
+  // references, not permission to await or stop another environment's browser.
+  monitor->environment.Reset(); monitor->environment_identity.Reset(); value->environment.Reset();
+  {
+    std::lock_guard<std::mutex> lock(monitor->mutex);
+    if (monitor->callbacks || monitor->failure != webview2_runtime_exit_error::none) {
+      monitor->finishing = false;
+      return error("E_RUNTIME_WATCH_FAILED", "Failed Controller release was reentered.");
+    }
+    monitor->finishing = false; // Intentionally never mark a runtime watch finished.
+  }
+  value->exit_monitor.reset(); value->failed_preparation_cleanup_done = true;
+  return ok();
+}
+
 void finish_preparation(const std::shared_ptr<state>& value, const host_result& result) {
   auto completed = std::move(value->prepared);
   if (!completed) return;
@@ -498,6 +813,9 @@ webview2_adapter::~webview2_adapter() {
   // Applications must finish close before destruction. Joining preserves the
   // borrowed Bridge's lifetime even when a consumer violates that contract.
   auto value = state_;
+  if (value->profile_access == webview2_profile_access::exclusive &&
+      (GetCurrentThreadId() != value->ui_thread || !value->preparation.settled() || !exit_finished(value->exit_monitor)))
+    std::terminate(); // Pending application-exclusive ownership cannot be silently discarded.
   value->preparation.cancel();
   value->current = state::phase::closing;
   auto completed = std::move(value->prepared);
@@ -519,6 +837,44 @@ webview2_adapter::~webview2_adapter() {
   value->current = state::phase::closed;
 }
 
+host_result webview2_adapter::configure_profile_access(webview2_profile_access access) {
+  const auto value = state_;
+  if (GetCurrentThreadId() != value->ui_thread) return error("E_THREAD", "Profile access requires the UI STA.");
+  if (value->current != state::phase::created) return error("E_INVALID_STATE", "Profile access is frozen before preparation.");
+  if (access != webview2_profile_access::shared && access != webview2_profile_access::exclusive)
+    return error("E_INVALID_PARAMS", "Unknown profile access policy.");
+  value->profile_access = access; return ok();
+}
+host_result webview2_adapter::acquire_runtime_exit_watch(std::unique_ptr<webview2_runtime_exit_watch>& output) {
+  const auto value = state_;
+  if (GetCurrentThreadId() != value->ui_thread) return error("E_THREAD", "Runtime exit acquisition requires the UI STA.");
+  if (value->profile_access != webview2_profile_access::exclusive)
+    return error("E_RUNTIME_WATCH_SHARED", "A shared profile has no application-exclusive runtime barrier.");
+  if (output || (value->exit_monitor && value->exit_monitor->acquired))
+    return error("E_RUNTIME_WATCH_ALREADY_ACQUIRED", "The owning runtime exit watch was already acquired.");
+  const auto monitor = value->exit_monitor;
+  bool armed{}, failed{};
+  if (monitor) {
+    std::lock_guard<std::mutex> lock(monitor->mutex);
+    armed = monitor->armed; failed = monitor->failure != webview2_runtime_exit_error::none;
+  }
+  if (!monitor || (!armed && !failed)) {
+    if (!value->preparation.settled()) return error("E_PENDING", "Runtime exit identity is not yet available.");
+    return error("E_RUNTIME_WATCH_UNAVAILABLE", "No real browser exit identity was established.");
+  }
+  auto acquired = std::unique_ptr<webview2_runtime_exit_watch>(new webview2_runtime_exit_watch(monitor));
+  monitor->acquired = true; output = std::move(acquired); return ok();
+}
+
+bool webview2_adapter::failed_preparation_cleanup_complete() const noexcept {
+  const auto& value = state_;
+  return GetCurrentThreadId() == value->ui_thread && value->failed_preparation_cleanup_done &&
+      !value->failed_preparation_cleanup_in_progress && value->current == state::phase::closed &&
+      value->preparation.settled() && !value->exit_monitor && !value->environment && !value->controller &&
+      !value->core && !value->core3 && !value->core4 && !value->core22 && !value->bridge &&
+      value->worker_done.load(std::memory_order_acquire) && !value->worker.joinable();
+}
+
 void webview2_adapter::prepare_async(std::function<void(host_result)> completed) {
   auto value = state_;
   if (!completed) throw std::invalid_argument("WebView2 preparation requires a completion callback.");
@@ -533,6 +889,18 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
     completed(error("E_INVALID_PATH", "Profile and fixed-runtime directories must be explicit absolute paths."));
     return;
   }
+  ComPtr<ICoreWebView2EnvironmentOptions> options;
+  if (value->profile_access == webview2_profile_access::exclusive) {
+    auto exclusive = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
+    if (!exclusive) { completed(error("E_WEBVIEW2_OPTIONS", "Exclusive environment options allocation failed.")); return; }
+    BOOL actual{};
+    auto configured = exclusive->put_ExclusiveUserDataFolderAccess(TRUE);
+    if (SUCCEEDED(configured)) configured = exclusive->get_ExclusiveUserDataFolderAccess(&actual);
+    if (FAILED(configured)) { completed(error("E_WEBVIEW2_OPTIONS", hresult_text(configured))); return; }
+    if (actual != TRUE) { completed(error("E_WEBVIEW2_OPTIONS", "Exclusive options returned a false readback.")); return; }
+    configured = exclusive.As(&options);
+    if (FAILED(configured)) { completed(error("E_WEBVIEW2_OPTIONS", hresult_text(configured))); return; }
+  }
   value->current = state::phase::preparing;
   value->prepared = std::move(completed);
   const std::weak_ptr<state> weak(value);
@@ -544,6 +912,13 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
               check(result, "Create WebView2 environment");
               if (!environment || !IsWindow(current->owner)) throw std::runtime_error("Owner closed during preparation");
               current->environment = environment;
+              if (current->profile_access == webview2_profile_access::exclusive) {
+                ComPtr<ICoreWebView2Environment5> exit_environment;
+                check(current->environment.As(&exit_environment), "Exclusive runtime exit interface");
+                current->exit_monitor = std::make_shared<exit_state>();
+                current->exit_monitor->environment = std::move(exit_environment);
+                check(current->exit_monitor->environment.As(&current->exit_monitor->environment_identity), "Runtime environment IUnknown identity");
+              }
               task_string runtime;
               check(environment->get_BrowserVersionString(&runtime.value), "Runtime identity");
               current->runtime_version = utf8(runtime.value ? runtime.value : L"");
@@ -558,6 +933,16 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
                           // a returned initialization callback is not proof of
                           // successful controller teardown.
                           current->controller = controller;
+                          if (current->exit_monitor) {
+                            ComPtr<ICoreWebView2> cancelled_core;
+                            const auto core_result = controller->get_CoreWebView2(&cancelled_core);
+                            const auto armed = SUCCEEDED(core_result) ? arm_exit_monitor(current->exit_monitor, cancelled_core.Get()) : core_result;
+                            if (FAILED(armed)) {
+                              exit_failure(current->exit_monitor, webview2_runtime_exit_error::process_query, armed);
+                              current->failure = error("E_RUNTIME_WATCH_FAILED", "Cancelled controller exit identity could not be armed.");
+                              return armed; // Actual controller remains retained for original unmount.
+                            }
+                          }
                           const auto closed = controller->Close();
                           if (FAILED(closed)) {
                             current->failure = error("E_WEBVIEW2_CLOSE", hresult_text(closed));
@@ -566,11 +951,15 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
                           current->controller.Reset();
                           return S_OK;
                         }
+                        if (GetCurrentThreadId() == current->ui_thread && FAILED(controller_result) && !controller)
+                          current->controller_creation_failed = true;
                         return boundary(weak, [weak, controller_result, controller](const auto& prepared) {
                           check(controller_result, "Create WebView2 controller");
                           if (!controller) throw std::runtime_error("WebView2 controller missing");
                           prepared->controller = controller;
                           check(controller->get_CoreWebView2(&prepared->core), "Get WebView2 core");
+                          if (prepared->exit_monitor)
+                            check(arm_exit_monitor(prepared->exit_monitor, prepared->core.Get()), "Arm exclusive runtime exit watch");
                           install_policy(prepared);
                           register_preload(prepared, [weak] {
                             const auto ready = weak.lock();
@@ -592,12 +981,13 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
     return;
   }
   const auto result = CreateCoreWebView2EnvironmentWithOptions(
-      value->fixed_runtime.empty() ? nullptr : value->fixed_runtime.c_str(), value->profile.c_str(), nullptr, callback.Get());
+      value->fixed_runtime.empty() ? nullptr : value->fixed_runtime.c_str(), value->profile.c_str(), options.Get(), callback.Get());
   if (FAILED(result)) (void)value->preparation.settle(detail::preparation_lifetime::operation::environment);
   if (FAILED(result)) fail(value, hresult_text(result));
 }
 
 host_result webview2_adapter::status() const {
+  if (state_->failed_preparation_cleanup_done) return state_->failure;
   if (state_->failure.code == "E_CALLBACK" || state_->failure.code == "E_WEBVIEW2_CLOSE") return state_->failure;
   if (state_->current == state::phase::failed) return state_->failure;
   if (state_->current == state::phase::created || state_->current == state::phase::preparing)
@@ -675,6 +1065,8 @@ host_result webview2_adapter::unmount() {
   auto value = state_;
   if (GetCurrentThreadId() != value->ui_thread) return error("E_THREAD", "Unmount requires the UI STA.");
   if (value->current == state::phase::closed) return ok();
+  if (value->failed_preparation_cleanup_in_progress)
+    return error("E_BUSY", "Failed Controller ownership release is already active.");
   value->preparation.cancel();
   value->current = state::phase::closing;
   finish_preparation(value, error("E_CANCELLED", "WebView2 preparation was cancelled."));
@@ -693,6 +1085,18 @@ host_result webview2_adapter::unmount() {
   if (!value->worker_done.load(std::memory_order_acquire)) return error("E_BUSY", "Bridge worker is finishing bounded teardown.");
   if (value->worker.joinable()) value->worker.join();
   if (value->bridge) { value->bridge->set_event_sink({}); value->bridge->set_owner_window(nullptr); value->bridge = nullptr; }
+  if (value->profile_access == webview2_profile_access::exclusive && value->controller_creation_failed &&
+      value->failure.code == "E_WEBVIEW2" && !value->controller && !value->core && !value->core3 &&
+      !value->core4 && !value->core22) {
+    const auto cleaned = release_failed_controller_monitor(value);
+    if (!cleaned.ok) return cleaned;
+  }
+  if (value->exit_monitor && value->core) {
+    UINT32 current_pid{};
+    const auto identified = value->core->get_BrowserProcessId(&current_pid);
+    if (FAILED(identified) || current_pid != value->exit_monitor->pid)
+      exit_failure(value->exit_monitor, webview2_runtime_exit_error::browser_changed, identified);
+  }
   const auto result = value->controller ? value->controller->Close() : S_OK;
   if (FAILED(result)) return error("E_WEBVIEW2_CLOSE", hresult_text(result));
   value->core22.Reset(); value->core4.Reset(); value->core3.Reset(); value->core.Reset();

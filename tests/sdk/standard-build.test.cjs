@@ -10,6 +10,18 @@ const caller = require('../../tools/internal/standard-build.cjs');
 const encode = value => Buffer.from(JSON.stringify(value, null, 2) + '\n');
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 
+const llvmArguments=['--native-toolchain','LLVM22MSVC142','--llvm-root','F:\\llvm','--msvc-root','F:\\msvc',
+  '--windows-sdk-root','F:\\winsdk','--ninja-exe','F:\\ninja.exe','--windows-cmd-exe','C:\\Windows\\System32\\cmd.exe',
+  '--powershell-exe','C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'];
+test('LLVM selection requires all six paths and the fixed natural drain, without changing MSVC defaults',()=>{
+  assert.equal(caller.parseArgs([]).drainMs,30000);
+  const value=caller.parseArgs(llvmArguments);assert.equal(value.drainMs,2000);
+  const args=caller.buildArguments('F:\\sdk',value);assert.ok(args.includes('-NativeToolchain'));assert.ok(args.includes('-PowerShellExe'));
+  for(let i=2;i<llvmArguments.length;i+=2)assert.throws(()=>caller.parseArgs(llvmArguments.filter((_,index)=>index!==i&&index!==i+1)));
+  for(const extra of [['--drain-ms','30000'],['--compiler-tail'],['--tool-identity-helper','F:\\arbitrary.ps1']])
+    assert.throws(()=>caller.parseArgs([...llvmArguments,...extra]));
+});
+
 test('strict CLI rejects unknown, repeated and partially specified tail permissions', () => {
   for (const args of [['--script','tools/Test.ps1'],['--architecture','x64','--architecture','x86'],
     ['--architecture','arm64'],['--configuration','RC'],['--compiler-tail'],
@@ -57,6 +69,50 @@ function input(tail = false) {
       scripts:structuredClone(frozen.scripts),artifacts:structuredClone(artifacts),compilerVerified:true}};
 }
 function rebind(v) { v.rawReport=v.f.raw();v.result.reportSha256=sha(v.rawReport);v.result.terminal=v.f.rows.at(-1); }
+function llvmInput(){
+  const v=input(),selection=caller.parseArgs(llvmArguments);
+  Object.assign(v.frozen,{nativeToolchain:'LLVM22MSVC142',llvm:{inputIdentity:'a'.repeat(64),bridgeIdentity:'b'.repeat(64)}});
+  for(const key of Object.keys(caller.llvmPaths))v.frozen[key]=selection[key];
+  v.frozen.context.args=caller.buildArguments('F:\\sdk',{...selection,architecture:'x86'});
+  v.frozen.context.drainMs=2000;v.f.rows[0].drainMs=2000;
+  v.contextBytes=encode(v.frozen.context);v.frozen.contextSha256=sha(v.contextBytes);rebind(v);
+  v.observed.llvm={profile:'LLVM22MSVC142',architecture:'x86',configuration:'Release',inputIdentity:'a'.repeat(64),bridgeIdentity:'b'.repeat(64),
+    observedPointerBytes:4,buildPid:v.ready.pid,buildCreationFileTime:v.ready.creationFileTime,
+    observerNaturalClosure:true,observation:{path:'F:\\observed.json',bytes:1,sha256:'d'.repeat(64)},observerCapture:{ready:v.ready}};
+  v.observed.llvm.requestFile={path:'F:\\sdk\\out\\x86\\llvm-profile-request-Release.json',bytes:1,sha256:'9'.repeat(64)};
+  v.build.nativeToolchain={profile:'LLVM22MSVC142',request:{profile:'LLVM22MSVC142',architecture:'x86',discovery:{InputIdentity:'a'.repeat(64),BridgeIdentity:'b'.repeat(64)}},requestFile:v.observed.llvm.requestFile};
+  v.buildReportBytes=encode(v.build);
+  return v;
+}
+test('LLVM caller needs its own current compile observation and naturally closed build identity',()=>{
+  const valid=llvmInput();assert.equal(caller.evaluateBuild(valid).accepted,true,'pure parser fixture, not a compiler qualification');
+  for(const mutate of [v=>{delete v.observed.llvm;},v=>{v.observed.llvm.inputIdentity='c'.repeat(64);},
+    v=>{v.observed.llvm.bridgeIdentity='c'.repeat(64);},v=>{v.observed.llvm.observedPointerBytes=8;},
+    v=>{v.observed.llvm.buildCreationFileTime=(BigInt(v.ready.creationFileTime)+1n).toString();},
+    v=>{v.observed.llvm.buildPid++;},v=>{v.observed.llvm.observerNaturalClosure=false;},
+    v=>{delete v.build.nativeToolchain;v.buildReportBytes=encode(v.build);},
+    v=>{v.build.nativeToolchain.request.discovery.InputIdentity='c'.repeat(64);v.buildReportBytes=encode(v.build);},
+    v=>{delete v.observed.llvm.observerCapture.ready;},v=>{v.frozen.compilerTail=true;},
+    v=>{v.frozen.context.drainMs=30000;v.f.rows[0].drainMs=30000;v.contextBytes=encode(v.frozen.context);v.frozen.contextSha256=sha(v.contextBytes);rebind(v);}]){
+    const v=llvmInput();mutate(v);assert.equal(caller.evaluateBuild(v).accepted,false);
+  }
+});
+for (const version of ['0.5.0-rc.1', '0.5.0']) test('build supervision preserves its gates for ' + version, () => {
+  for (const tail of [false, true]) {
+    const v = input(tail);
+    v.build.version = v.frozen.version = version;
+    v.buildReportBytes = encode(v.build);
+    const answer = caller.evaluateBuild(v);
+    assert.equal(answer.accepted, true, answer.failure);
+    assert.equal(answer.genericSupervisionPassed, !tail);
+    assert.equal(answer.compilerTailAcceptance, tail);
+    assert.equal(answer.releaseReady, false);
+    v.build.version = version + '-beta.1'; v.frozen.version = v.build.version;
+    v.buildReportBytes = encode(v.build);
+    assert.equal(caller.evaluateBuild(v).accepted, false);
+  }
+});
+
 test('natural completed build needs current payload and a new build identity', () => {
   const answer = caller.evaluateBuild(input());
   assert.equal(answer.accepted,true,answer.failure);assert.equal(answer.compilationCompleted,true);
@@ -182,4 +238,17 @@ test('real temporary SDK library drift fails the existing build evidence verific
   assert.equal(build.verifyBuild(root,'x86','Release',true).nativeBuild,'passed');
   put('out/sdk-x86/Release/soui_sdk.lib',Buffer.from('changed library bytes'));
   assert.throws(()=>build.verifyBuild(root,'x86','Release',true),/drift/i);
+});
+
+test('explicit vendor testing reaches Build.ps1 for both native profiles',()=>{
+  for(const selection of [[],llvmArguments]){
+    const value=caller.parseArgs([...selection,'--with-vendor-tests']);
+    assert.equal(value.withVendorTests,true);
+    const argv=caller.buildArguments('F:\\sdk',value);
+    assert.equal(argv.filter(flag=>flag==='-WithVendorTests').length,1);
+    assert.equal(caller.buildArguments('F:\\sdk',caller.parseArgs(selection)).includes('-WithVendorTests'),false);
+    assert.throws(()=>caller.parseArgs([...selection,'--with-vendor-tests','--sdk-only']),/source devkit/i);
+  }
+  for(const args of [['--with-vendor-tests','false'],['--with-vendor-tests','--with-vendor-tests']])
+    assert.throws(()=>caller.parseArgs(args));
 });
