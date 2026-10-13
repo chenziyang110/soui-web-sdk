@@ -15,6 +15,15 @@ test('named cache DTO completion is data only and closes no resource gate',()=>{
   const result=analyzeNamedCache(fixture(),input);assert.equal(result.dataGate,'matched');
   assert.equal(result.passed,false);assert.equal(result.qualified,false);assert.equal(result.resourceGate,'not-evaluated');
 });
+
+test('unsupported envelopes remain unqualified while known v1 contradictions fail the finite subgate',()=>{
+  const reader=require('./native-cache-validation.cjs');
+  for(const change of [{schemaVersion:2},{abiVersion:2},{scope:'future-process-cache'}]){
+    const out=reader.analyzeNamedCacheConfiguration({...fixture(),...change},input);
+    assert.equal(out.configurationGate,'not-evaluated');assert.equal(out.cacheBudgetGate,'not-evaluated');
+  }
+  assert.equal(reader.analyzeNamedCacheConfiguration({...fixture(),structSize:215},input).configurationGate,'failed');
+});
 test('uint64 remains exact and rejects numbers, signs, exponents and overflow',()=>{
   assert.equal(decimal('18446744073709551615'),18446744073709551615n);
   for(const value of [1,'01','-1','1e3','18446744073709551616'])assert.throws(()=>decimal(value));
@@ -124,4 +133,60 @@ test('cache owner admission distinguishes real preinit from initialized identity
   assert.equal(analyzeNamedCache(preinit,input).dataGate,'not-evaluated');
   // Cache DTO requires initialized identity/clock, never a compositor draw DTO.
   assert.equal(analyzeNamedCache({...fixture(),blinkStatus:0,glyphStatus:0,resourceStatus:0},input).dataGate,'partial');
+});
+
+const configuration=require('./native-cache-validation.cjs');
+test('finite configuration checks keep soft excess valid and all byte calibration pending',()=>{
+  const v=fixture();v.blinkCapacity='1';v.blinkLiveBytes='9007199254740993';
+  v.glyphByteLimit='1';v.glyphAttachedBytes='99';
+  const out=configuration.analyzeNamedCacheConfiguration(v,input);
+  assert.equal(out.configurationGate,'passed');
+  assert.equal(out.targets.blink.comparison,'over');assert.equal(out.targets.glyphBytes.comparison,'over');
+  assert.equal(out.targets.blink.usage,'9007199254740993');
+  assert.equal(out.calibratedByteBudgetGate,'not-evaluated');assert.equal(out.cacheBudgetGate,'not-evaluated');
+  assert.equal(out.qualified,false);
+});
+test('retained resource purge boundaries are evaluated without an aggregate-single false comparison',()=>{
+  const v=fixture();v.resourceRawSingleLimit='10';v.resourceEffectiveSingleLimit='10';
+  v.resourceRetainedBytes='999';v.resourceRetainedCount='2';
+  assert.equal(configuration.analyzeNamedCacheConfiguration(v,input).configurationGate,'passed');
+  v.resourceRetainedBytes='1000';assert.equal(configuration.analyzeNamedCacheConfiguration(v,input).configurationGate,'failed');
+  v.resourceDiscardable=1;v.resourceByteLimit='0';v.resourceRawSingleLimit=v.resourceEffectiveSingleLimit='0';
+  v.resourceRetainedBytes='9007199254740993';v.resourceCountLimit='1024';v.resourceRetainedCount='1023';
+  const out=configuration.analyzeNamedCacheConfiguration(v,input);
+  assert.equal(out.configurationGate,'passed');assert.equal(out.targets.resourceBytes.limitKind,'absent');
+  v.resourceRetainedCount='1024';assert.equal(configuration.analyzeNamedCacheConfiguration(v,input).configurationGate,'failed');
+});
+test('partial stale duplicate and retired completed data never gains finite freshness qualification',()=>{
+  for(const change of [{glyphStatus:2},{resourceStatus:0},{state:'pending',inflight:true},
+    {state:'unavailable',runtimeRetired:true}])
+    assert.equal(configuration.analyzeNamedCacheConfiguration({...fixture(),...change},input).configurationGate,'not-evaluated');
+  assert.equal(configuration.analyzeNamedCacheConfiguration(fixture(),{...input,previous:fixture()}).freshnessGate,'not-evaluated');
+  assert.equal(configuration.analyzeNamedCacheConfiguration(fixture(),{...input,captureClock:{...input.captureClock,qpc:'180110'}}).freshnessGate,'passed');
+  assert.equal(configuration.analyzeNamedCacheConfiguration(fixture(),{...input,captureClock:{...input.captureClock,qpc:'180111'}}).freshnessGate,'not-evaluated');
+});
+test('known configuration violations survive partial data and zero limit has its retained-record meaning',()=>{
+  const v=fixture();v.glyphStatus=2;v.resourceRetainedBytes='1000';
+  const failed=configuration.analyzeNamedCacheConfiguration(v,input);
+  assert.equal(failed.configurationGate,'failed');assert.equal(failed.cacheBudgetGate,'not-evaluated');
+  v.glyphStatus=1;v.resourceByteLimit=v.resourceEffectiveSingleLimit='0';v.resourceRetainedBytes='0';
+  assert.equal(configuration.analyzeNamedCacheConfiguration(v,input).configurationGate,'passed');
+  v.resourceRetainedCount='1';assert.equal(configuration.analyzeNamedCacheConfiguration(v,input).configurationGate,'failed');
+});
+
+for(const [name,change] of [['ABI size',{structSize:215}],['uint64 overflow',{resourceRetainedBytes:'18446744073709551616'}],
+  ['retained threshold equality',{resourceRetainedCount:'1',resourceRetainedBytes:'1000'}]])
+  test('known '+name+' failure survives a missing external capture clock',()=>{
+    const {captureClock,...withoutClock}=input;
+    const out=configuration.analyzeNamedCacheConfiguration({...fixture(),...change},withoutClock);
+    assert.equal(out.configurationGate,'failed');assert.equal(out.freshnessGate,'not-evaluated');
+    assert.equal(out.cacheBudgetGate,'not-evaluated');assert.equal(out.calibratedByteBudgets,null);
+  });
+test('genuinely missing binding remains noneligible without turning a valid DTO into a known failure',()=>{
+  for(const key of ['subject','modulePin','captureClock']){
+    const binding={...input};delete binding[key];
+    const out=configuration.analyzeNamedCacheConfiguration(fixture(),binding);
+    assert.equal(out.configurationGate,'not-evaluated');assert.equal(out.freshnessGate,'not-evaluated');
+    assert.equal(out.qualified,false);assert.equal(out.failure,'missing-external-cache-binding');
+  }
 });

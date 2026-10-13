@@ -195,3 +195,85 @@ test('compositor DTO cannot claim wider process software scope or replace the ex
     assert.throws(()=>completeResourceCaptureResult(operation,null,null,{bindingFile:binding,finalVerified:true,
       inputs,analysis:{record:changed,file:binding},failure:null}));
 });
+
+test('resource cache calibration is an explicit exact option with its own frozen policy',()=>{
+  const invocation=parseRunCommand('run-resource',['--cache-observation=1']);
+  assert.deepEqual(invocation.config,settings('reload',100,10,5000,20000));
+  assert.deepEqual(invocation.options,{resource:true,cacheObservation:true});
+  const binding=resourceBinding(invocation.config,invocation.options);
+  assert.ok(binding.policyRaw.equals(reader.calibrationPolicyBytes()));
+  assert.notEqual(binding.requestFields.resourcePolicySha256,reader.POLICY_SHA256);
+  assert.equal(binding.requestFields.namedCacheObservation,'named-process-cache-scalars');
+  assert.deepEqual(reader.resourceNativeArgs({...invocation.config,...binding.requestFields},'fixture-events.ndjson'),
+    ['--mode=reload','--cycles=100','--warmup=10','--settle-ms=5000','--timeout-ms=20000',
+      '--report=fixture-events.ndjson','--cache-observation=1']);
+});
+
+test('public cache opt-in is wired only to the frozen resource branch before side effects',()=>{
+  const fs=require('node:fs'),path=require('node:path');
+  const source=fs.readFileSync(path.join(__dirname,'../../tools/Test-Acceptance.ps1'),'utf8');
+  assert.match(source,/\[switch\]\$CacheObservation/);
+  const refusal=source.indexOf('if($CacheObservation -and -not $ResourceCapture)');
+  assert.ok(refusal>0&&refusal<source.indexOf('New-Item'));
+  assert.match(source,/elseif\(\$ResourceCapture\)\{\s*\$resourceArgs=@\('run-resource',\$suite\)\s*if\(\$CacheObservation\)\{\$resourceArgs\+='--cache-observation=1'\}\s*& node \$runner @resourceArgs/);
+  assert.equal((source.match(/--cache-observation=1/g)||[]).length,1);
+});
+
+// DTO classifier fixtures exercise scope/aggregate rejection, not native evidence.
+function calibrationCaptureFixture(){
+  const cache=require('./native-cache-validation.cjs');
+  const modulePin={path:'C:\\fixture\\node.dll',bytes:123,sha256:'a'.repeat(64)},subject={pid:9,creationFileTime:'123'};
+  const allSamples=Array.from({length:101},(_,i)=>({event:'sample',phase:'cycle',cycle:i+10,elapsedMs:i*5000,
+    nativeSdk:{captureClock:{valid:true,qpc:String(120+i),frequency:'1000'},namedCaches:{
+      ...Object.fromEntries(cache.u64Names.map(key=>[key,'0'])),schemaVersion:1,scope:cache.scope,state:'sampled',
+      hasCompletedSample:true,identityBound:true,moduleMatches:true,modulePath:modulePin.path,inflight:false,runtimeRetired:false,
+      structSize:216,abiVersion:1,status:1,reserved:0,blinkReserved:0,glyphReserved:0,blinkStatus:1,glyphStatus:1,resourceStatus:1,
+      resourceDiscardable:0,processId:'9',processCreationFileTime:'123',engineOwnerThreadId:'10',recordingEpoch:'100',initializedQpc:'100',
+      sampleQpc:String(110+i),qpcFrequency:'1000',resourceByteLimit:'1000',resourceEffectiveSingleLimit:'1000'}}}));
+  const record={resourceGate:'passed',resourceRuleObservation:'passed',passed:true,releaseReady:false,m0Complete:false,failure:null,
+    inputBindingScope:'complete-acceptance-inputs',inputsMatched:true,nativeScopeGate:'matched-compatibility-workload',
+    softwareProcessModelGate:'matched-bound-workload',nativeSoftwareGate:'matched',
+    nativeSoftware:{schema:'soui.bound-dll-compositor-observation/v1',scope:'bound-dll-completed-compositor-calls',
+      nativeSoftwareGate:'matched',qualified:false},nativeModel:{schema:'soui.bound-compatibility-backend-observation/v2',
+      scope:'bound-compatibility-backend-workload',qualified:false,softwareWorkloadGate:'matched',failure:null,modulePin},
+    sdkPrivateCacheQueueGate:'not-evaluated',thousandCycleOperationGate:'not-evaluated',eightHourGate:'not-evaluated',targetOsGate:'not-evaluated',
+    cacheObservation:true,policySha256:reader.CALIBRATION_POLICY_SHA256,cacheModulePin:modulePin,allSamples,subject};
+  const policy={sha256:reader.CALIBRATION_POLICY_SHA256};
+  const classify=()=>{
+    record.namedCacheCalibration=reader.cacheCalibration(allSamples,subject,modulePin);
+    return completeResourceCaptureResult(operation,null,policy,{bindingFile:binding,finalVerified:true,inputs,
+      analysis:{record,file:binding},failure:null});
+  };
+  return {record,allSamples,policy,classify};
+}
+test('explicit calibration has its own truthful exit gate while the original resource math remains equal',()=>{
+  const f=calibrationCaptureFixture();let out=f.classify();
+  assert.equal(out.captureGate,'passed');assert.equal(out.passed,true);assert.equal(out.cacheBudgetGate,'not-evaluated');
+  delete f.allSamples[3].nativeSdk.namedCaches;out=f.classify();
+  assert.equal(out.resourceGate,'passed');assert.equal(out.resourceRuleObservation,'passed');
+  assert.equal(out.captureGate,'not-evaluated');assert.equal(out.passed,false);
+  f.allSamples[4].nativeSdk.namedCaches.resourceRetainedBytes='1000';out=f.classify();
+  assert.equal(out.cacheObservationGate,'failed');assert.equal(out.captureGate,'failed');assert.equal(out.passed,false);
+  assert.equal(out.cacheBudgetGate,'not-evaluated');assert.equal(out.calibratedByteBudgets,null);
+});
+test('calibration classifier rejects stale aggregate, fake full budget and changed external module pin',()=>{
+  const f=calibrationCaptureFixture();f.classify();
+  const classify=()=>completeResourceCaptureResult(operation,null,f.policy,{bindingFile:binding,finalVerified:true,inputs,
+    analysis:{record:f.record,file:binding},failure:null});
+  for(const field of ['finiteGate','cacheBudgetGate','calibratedByteBudgetGate']){
+    const original=f.record.namedCacheCalibration[field];f.record.namedCacheCalibration[field]='failed';
+    assert.throws(classify,/finite aggregate/);f.record.namedCacheCalibration[field]=original;
+  }
+  f.record.cacheModulePin={...f.record.cacheModulePin,sha256:'b'.repeat(64)};
+  assert.throws(classify,/finite aggregate/);
+});
+test('cache option cannot replace default protocol or enter ordinary/duration routes',()=>{
+  for(const args of [['--cache-observation=0'],['--cache-observation=1','--cache-observation=1'],['--cache-observation'],['--cache-observation=1','500']])
+    assert.throws(()=>parseRunCommand('run-resource',args));
+  assert.throws(()=>parseRunCommand('run-mixed',['60000','500','20000','10000','--cache-observation=1']));
+  assert.throws(()=>resourceBinding(settings('reload',100,10,5000,20000),{resource:false,cacheObservation:true}));
+  assert.throws(()=>reader.resourcePolicySelection({resourcePolicySha256:reader.POLICY_SHA256,namedCacheObservation:'named-process-cache-scalars'}));
+  const selected=resourceBinding(settings('reload',100,10,5000,20000),{resource:true});
+  assert.ok(selected.policyRaw.equals(reader.policyBytes()));
+  assert.equal(selected.requestFields.namedCacheObservation,undefined);
+});

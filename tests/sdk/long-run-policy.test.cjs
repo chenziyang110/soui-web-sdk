@@ -5,6 +5,13 @@ const p=require('../acceptance/long-run-policy.cjs'),v=require('../acceptance/lo
 const o=require('../acceptance/long-run-owners.cjs'),runner=require('../acceptance/runner.cjs');
 const encode=value=>Buffer.from(JSON.stringify(value)+'\n');
 const clone=value=>JSON.parse(JSON.stringify(value));
+test('finite cache revision freezes temporal coverage with no empirical byte allowance',()=>{
+  assert.equal(p.RULE.revision,'0.5.0-m0-named-cache-configuration-v2');
+  const rule=p.RULE.namedCacheConfigurationPolicy;
+  assert.equal(rule.maxCompletedCopyAgeMs,180000);assert.equal(rule.minNewSamplesPerHour,30);
+  assert.equal(rule.maxNewSampleGapMs,180000);assert.equal(rule.calibratedByteBudgets,null);
+  assert.equal(rule.broadCacheCoverage,false);
+});
 const obs=()=>({state:'ready',owner_epoch:'1',begin_monotonic_us:'10',end_monotonic_us:'11',clock_invalid:false,counter_saturated:false});
 const fifo=()=>({observation:obs(),has_capacity_bound:true,capacity_bound:'580',queued:'0',executing:'0',high_water:'0'});
 const tasks=()=>({observation:obs(),worker_limit:'2',inflight_limit:'32',subscription_limit:'128',store_limit:'1024',
@@ -338,6 +345,29 @@ test('a coherent measured failure outranks a separate missing-cache gate',()=>{
   const f=captureFixture('session'),analysis=f.evidence.analysis.record;
   analysis.gates.cacheBudget='not-evaluated';analysis.gates.actions='failed';Object.assign(analysis,v.aggregate('session',analysis.gates));
   assert.equal(captured(f).longRunGate,'failed');assert.equal(captured(f).passed,false);
+});
+
+test('finite named cache failure outranks full budget NE in both long aggregate and classifier',()=>{
+  for(const mode of ['mixed','session']){
+    const f=captureFixture(mode),analysis=f.evidence.analysis.record;
+    analysis.gates.cacheBudget='not-evaluated';analysis.gates.namedCacheConfiguration='failed';
+    analysis.gates.namedCacheCoverage='not-evaluated';Object.assign(analysis,v.aggregate(mode,analysis.gates));
+    assert.equal(analysis.longRunGate,'failed');assert.equal(analysis.resourceGate,'failed');
+    assert.equal(captured(f).longRunGate,'failed');assert.equal(captured(f).passed,false);
+    analysis.gates.namedCacheConfiguration='passed';Object.assign(analysis,v.aggregate(mode,analysis.gates));
+    assert.equal(captured(f).longRunGate,'not-evaluated');assert.equal(analysis.gates.cacheBudget,'not-evaluated');
+  }
+});
+
+test('long classifier cannot hide a failed named point or manufacture a calibrated whole budget',()=>{
+  const f=captureFixture('mixed'),analysis=f.evidence.analysis.record;
+  assert.equal(captured(f).passed,false);
+  analysis.gates.cacheBudget='not-evaluated';analysis.gates.namedCacheConfiguration='failed';
+  analysis.namedCaches={configurationPoints:[{configurationGate:'failed'}],configurationGate:'failed',
+    freshCoverageGate:'passed',cacheBudgetGate:'not-evaluated',calibratedByteBudgetGate:'not-evaluated',calibratedByteBudgets:null};
+  Object.assign(analysis,v.aggregate('mixed',analysis.gates));assert.equal(captured(f).longRunGate,'failed');
+  analysis.gates.namedCacheConfiguration='passed';Object.assign(analysis,v.aggregate('mixed',analysis.gates));
+  assert.equal(captured(f).longRunGate,'not-evaluated');assert.equal(captured(f).passed,false);
 });
 test('missing group response samples never borrow resource cadence',()=>{
   const rows=actions().filter(row=>row.cycle%30!==0);assert.equal(v.actionTrends(rows,0).gate,'not-evaluated');

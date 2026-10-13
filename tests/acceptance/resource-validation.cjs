@@ -17,6 +17,39 @@ const policyText = JSON.stringify(POLICY, null, 2) + '\n';
 const hash = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const POLICY_SHA256 = hash(Buffer.from(policyText));
 const policyBytes = () => Buffer.from(policyText);
+const CALIBRATION_POLICY=Object.freeze({...POLICY,revision:'0.5.0-named-cache-calibration-v1',
+  namedCacheObservation:'named-process-cache-scalars',calibratedByteBudgets:null});
+const calibrationText=JSON.stringify(CALIBRATION_POLICY,null,2)+'\n';
+const CALIBRATION_POLICY_SHA256=hash(Buffer.from(calibrationText));
+const calibrationPolicyBytes=()=>Buffer.from(calibrationText);
+function resourcePolicySelection(request){
+  const enabled=Object.prototype.hasOwnProperty.call(request||{},'namedCacheObservation');
+  requireObservation(!enabled||request.namedCacheObservation===CALIBRATION_POLICY.namedCacheObservation,
+    'invalid-resource-cache-selection');
+  const digest=enabled?CALIBRATION_POLICY_SHA256:POLICY_SHA256;
+  requireObservation(request?.resourcePolicySha256===digest,'request-cache-policy-choice-differs');
+  return {cacheObservation:enabled,policySha256:digest,policyRaw:enabled?calibrationPolicyBytes():policyBytes()};
+}
+function resourceNativeArgs(request,eventLogPath){
+  const selection=resourcePolicySelection(request);
+  return [`--mode=${request.mode}`,`--cycles=${request.cycles}`,`--warmup=${request.warmup}`,
+    `--settle-ms=${request.settleMs}`,`--timeout-ms=${request.timeoutMs}`,`--report=${eventLogPath}`,
+    ...(selection.cacheObservation?['--cache-observation=1']:[])];
+}
+function cacheCalibration(records,subject,modulePin){
+  const long=require('./long-run-validation.cjs');
+  const observed=long.namedCacheObservations(records,subject,modulePin);
+  const points=observed.configurationPoints.filter(row=>row.phase==='cycle'&&row.cycle>=10&&row.cycle<=110);
+  const complete=points.length===101&&points.every((row,i)=>row.cycle===i+10);
+  const configurationGate=observed.configurationFailures.length?'failed':
+    complete?long.combine(points.map(row=>row.configurationGate)):'not-evaluated';
+  const freshCoverageGate=complete?long.combine(points.map(row=>row.freshnessGate)):'not-evaluated';
+  return {schema:'soui.reload-named-cache-calibration/v1',scope:'baseline-10-and-100-measured-reload-cache-copies',
+    configurationGate,freshCoverageGate,finiteGate:long.combine([configurationGate,freshCoverageGate]),
+    expectedPoints:101,observedPoints:points.length,points,diagnostics:observed,
+    cacheBudgetGate:'not-evaluated',calibratedByteBudgetGate:'not-evaluated',calibratedByteBudgets:null,
+    qualified:false,releaseReady:false};
+}
 const metrics = ['privateBytes','workingSetBytes','handles','threads','gdiObjects','userObjects'];
 const counters = metrics.slice(2);
 const shaPattern = /^[a-f0-9]{64}$/;
@@ -88,8 +121,7 @@ function verifyOwned(result,evidence,request) {
     members.length>0&&members.every(value=>value.pid===start.pid&&value.creationFileTime===start.creationFileTime),
     'entire-job-single-process-not-observed');
   const samePath=(a,b)=>typeof a==='string'&&typeof b==='string'&&path.resolve(a).toLowerCase()===path.resolve(b).toLowerCase();
-  const args=[`--mode=${request.mode}`,`--cycles=${request.cycles}`,`--warmup=${request.warmup}`,
-    `--settle-ms=${request.settleMs}`,`--timeout-ms=${request.timeoutMs}`,`--report=${evidence.eventLogPath}`];
+  const args=resourceNativeArgs(request,evidence.eventLogPath);
   requireObservation(context.schema==='soui.owned-process-context/v1'&&
     samePath(context.executable,evidence.executablePath)&&samePath(context.cwd,evidence.payloadRoot)&&
     members.every(value=>samePath(value.image,evidence.executablePath))&&
@@ -112,10 +144,12 @@ function analyzeResource(result,raw,evidence) {
       typeof result.consumerBuildId==='string'&&result.consumerBuildId.length>0&&evidence,'missing-operation-result');
     failRule(result.config?.mode==='reload'&&result.config.cycles===100&&result.config.warmup===10&&
       result.config.settleMs===5000,'wrong-resource-scenario');
-    requireObservation(Buffer.isBuffer(evidence.policyRaw)&&evidence.policyRaw.equals(policyBytes()),'missing-or-different-frozen-policy');
     const request=parseRaw(evidence.requestRaw);
+    const selection=resourcePolicySelection(request);
+    requireObservation(Buffer.isBuffer(evidence.policyRaw)&&evidence.policyRaw.equals(selection.policyRaw),'missing-or-different-frozen-policy');
+    output.policySha256=selection.policySha256;
     requireObservation(request.schema==='soui.acceptance-request/v1'&&request.runId===result.runId&&
-      request.consumerBuildId===result.consumerBuildId&&request.resourcePolicySha256===POLICY_SHA256&&
+      request.consumerBuildId===result.consumerBuildId&&request.resourcePolicySha256===selection.policySha256&&
       Object.keys(result.config).every(key=>request[key]===result.config[key])&&
       request.resourceScope?.kernel==='miniblink'&&request.resourceScope.renderer==='software'&&
       request.resourceScope.processModel==='single-process'&&Object.keys(request.resourceScope).length===3,
@@ -127,6 +161,7 @@ function analyzeResource(result,raw,evidence) {
       hash(raw)===result.logSha256,'missing-current-input-or-log-binding');
     const records=parseRaw(raw,true);
     output.subject=verifyOwned(result,evidence,request);
+    if(selection.cacheObservation)output.cacheObservation=true;
     requireObservation(typeof records[0]?.creationFileTime==='string'&&
       records[0].creationFileTime===output.subject.creationFileTime,'native-creation-file-time-not-bound');
     let validated;
@@ -168,6 +203,10 @@ function analyzeResource(result,raw,evidence) {
       measuredSamples:measured,allSamples:validated.samples,completedSteps:validated.completedSteps,
       measuredCycles:100,resources,windowClassesStable:classesStable,resourceGate:passed?'passed':'failed',passed,
       ownershipScope:'process window classes and four OS counter trends; SDK private caches/queues remain pending'});
+    if(selection.cacheObservation){
+      output.cacheModulePin=evidence.modulePin||null;
+      output.namedCacheCalibration=cacheCalibration(records,output.subject,output.cacheModulePin);
+    }
   } catch(error) {
     output.resourceGate=error instanceof ObservationError&&error.evaluated?'failed':'not-evaluated';
     output.failure=error instanceof ObservationError?error.message:'invalid-observation';
@@ -212,7 +251,7 @@ function verifySnapshot(snapshot) {
   }
   return snapshot.sha256;
 }
-function completeResourceAnalysis(analysis,complete,records) {
+function completeResourceAnalysis(analysis,complete,records=[]) {
   requireObservation(complete?.inputsMatched===true&&complete.nativeScopeObserved===false&&
     ['MSVC143','LLVM22MSVC142'].includes(complete.nativeToolchainProfile),'missing-complete-native-input-selection');
   const renderer=require('./native-renderer-validation.cjs').analyzeNativeRenderer(
@@ -224,6 +263,8 @@ function completeResourceAnalysis(analysis,complete,records) {
   const evaluated=modelMatched&&['passed','failed'].includes(analysis.resourceGate);
   return {...analysis,inputBindingScope:complete.inputBindingScope,inputsMatched:true,
     nativeToolchainProfile:complete.nativeToolchainProfile,
+    ...(analysis.cacheObservation===true?{cacheModulePin:complete.loadedPayloadModule||null,
+      namedCacheCalibration:cacheCalibration(records,analysis.subject,complete.loadedPayloadModule)}:{}),
     resourceRuleObservation:analysis.resourceGate,observationFailure:analysis.failure||null,
     resourceGate:evaluated?analysis.resourceGate:'not-evaluated',passed:evaluated&&analysis.passed===true,
     nativeScopeGate:modelMatched?'matched-compatibility-workload':renderer.nativeSoftwareGate==='matched'?'matched-compositor-only':'not-observed',
@@ -254,7 +295,8 @@ function analyzeFile(resultPath,bindingPath) {
       policyRaw:readPinned(binding.policy), requestRaw:fs.readFileSync(identity.safePath(path.join(outputRoot,'request.json'))),
       ownedRaw:fs.readFileSync(identity.safePath(owned.report)),contextRaw:fs.readFileSync(identity.safePath(owned.report+'.context.json')),
       currentInputsMatched:true,sourceSha256,payloadSha256,runnerSha256:hash(readPinned(binding.runner)),
-      executableSha256:executableFile.sha256,executablePath:executable,payloadRoot:binding.payload.root,eventLogPath});
+      executableSha256:executableFile.sha256,executablePath:executable,payloadRoot:binding.payload.root,eventLogPath,
+      modulePin:complete?.loadedPayloadModule});
     if(complete) {
       const final=require('./resource-file-bindings.cjs').verifyCompleteBinding(binding,outputRoot,result);
       requireObservation(JSON.stringify(final)===JSON.stringify(complete)&&
@@ -274,7 +316,8 @@ function analyzeFile(resultPath,bindingPath) {
       failure:error instanceof ObservationError?error.message:'missing-or-invalid-file-observation'};
   }
 }
-module.exports={POLICY,POLICY_SHA256,policyBytes,hash,medianRatio,theilSen,analyzeResource,analyzeFile,completeResourceAnalysis};
+module.exports={POLICY,POLICY_SHA256,policyBytes,CALIBRATION_POLICY,CALIBRATION_POLICY_SHA256,calibrationPolicyBytes,
+  resourcePolicySelection,resourceNativeArgs,cacheCalibration,hash,medianRatio,theilSen,analyzeResource,analyzeFile,completeResourceAnalysis};
 if(require.main===module) {
   try {
     if(process.argv.length!==5)throw new Error('Usage: resource-validation.cjs RESULT_JSON BINDINGS_JSON OUTPUT_JSON');

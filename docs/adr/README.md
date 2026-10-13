@@ -20,3 +20,4 @@
 - [ADR-0069：SDK 源码交付与验收入口](0069-sdk-source-delivery.md)（proposed；源码已采用，正式交付验收待完成）
 - [ADR-0070：有限命名缓存观测](0070-finite-cache-observation.md)（proposed；纯数据检查不构成原生缓存或长期资源验收）
 - [ADR-0071：长期运行中的命名缓存采样](0071-long-run-cache-sampling.md)（accepted；采集已接线，实际原生与长期验收待执行）
+- [ADR-0074：有限命名缓存配置检查与重载校准采样](0074-finite-named-cache-validation.md)（proposed；经验字节预算与真实原生校准尚未完成）

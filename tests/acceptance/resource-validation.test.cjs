@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs'), path = require('node:path'), os = require('node:os');
 const {expectedSteps} = require('./runner.cjs');
 const {POLICY_SHA256, policyBytes, medianRatio, theilSen, analyzeResource, analyzeFile, hash} = require('./resource-validation.cjs');
+const cacheReader=require('./native-cache-validation.cjs'),resourceReader=require('./resource-validation.cjs');
 
 const config = {mode:'reload', cycles:100, warmup:10, settleMs:5000, timeoutMs:20000};
 const scope = {kernel:'miniblink', renderer:'software', processModel:'single-process'};
@@ -60,6 +61,84 @@ function evaluate(data, editEvidence = value => value) {
     executablePath:data.context.executable, payloadRoot:data.context.cwd, eventLogPath:'C:/events.ndjson'}));
 }
 function measured(data) { return data.records.filter(record => record.event==='sample' && record.phase==='cycle' && record.cycle>10); }
+
+const cacheModulePin={path:'C:\\payload\\node.dll',bytes:1234,sha256:'e'.repeat(64)};
+function cacheFixture(){
+  const data=fixture();
+  Object.assign(data.request,{namedCacheObservation:cacheReader.scope,resourcePolicySha256:resourceReader.CALIBRATION_POLICY_SHA256});
+  data.context.args=resourceReader.resourceNativeArgs(data.request,'C:/events.ndjson');
+  for(const row of data.records.filter(row=>row.event==='sample'&&row.phase!=='process')){
+    const qpc=String(row.elapsedMs+100);
+    row.nativeSdk={namedCaches:{...Object.fromEntries(cacheReader.u64Names.map(name=>[name,'0'])),
+      schemaVersion:1,scope:cacheReader.scope,state:'sampled',hasCompletedSample:true,identityBound:true,moduleMatches:true,
+      modulePath:cacheModulePin.path,inflight:false,runtimeRetired:false,structSize:216,abiVersion:1,status:1,reserved:0,
+      blinkReserved:0,glyphReserved:0,blinkStatus:1,glyphStatus:1,resourceStatus:1,resourceDiscardable:0,
+      processId:String(pid),processCreationFileTime:creationFileTime,engineOwnerThreadId:'42',recordingEpoch:'100',
+      initializedQpc:'100',sampleQpc:qpc,qpcFrequency:'1000',resourceByteLimit:'1000',resourceEffectiveSingleLimit:'1000'},
+      captureClock:{valid:true,frequency:'1000',qpc:String(row.elapsedMs+110)}};
+    if(row.phase==='runtime-closed'){row.nativeSdk.namedCaches.state='unavailable';row.nativeSdk.namedCaches.runtimeRetired=true;}
+  }
+  return data;
+}
+const evaluateCache=data=>evaluate(data,value=>({...value,policyRaw:resourceReader.calibrationPolicyBytes(),modulePin:cacheModulePin}));
+
+test('explicit cache calibration retains all101 required copies and never creates a byte budget',()=>{
+  const out=evaluateCache(cacheFixture());
+  assert.equal(out.resourceGate,'passed');assert.equal(out.cacheObservation,true);
+  const cache=out.namedCacheCalibration;
+  assert.equal(cache.configurationGate,'passed');assert.equal(cache.freshCoverageGate,'passed');assert.equal(cache.finiteGate,'passed');
+  assert.equal(cache.observedPoints,101);assert.equal(cache.points[0].cycle,10);assert.equal(cache.points.at(-1).cycle,110);
+  assert.equal(cache.cacheBudgetGate,'not-evaluated');assert.equal(cache.calibratedByteBudgets,null);assert.equal(cache.qualified,false);
+});
+test('missing, partial, stale, repeated or retired required calibration copies stay unqualified',()=>{
+  for(const edit of [row=>delete row.nativeSdk.namedCaches,row=>row.nativeSdk.namedCaches.glyphStatus=2,
+    row=>row.nativeSdk.captureClock.qpc=String(BigInt(row.nativeSdk.namedCaches.sampleQpc)+180001n),
+    (row,data)=>row.nativeSdk.namedCaches.sampleQpc=measured(data)[1].nativeSdk.namedCaches.sampleQpc,
+    row=>{row.nativeSdk.namedCaches.runtimeRetired=true;row.nativeSdk.namedCaches.state='unavailable';}]){
+    const data=cacheFixture();edit(measured(data)[2],data);
+    const out=evaluateCache(data);assert.equal(out.resourceGate,'passed');assert.equal(out.namedCacheCalibration.finiteGate,'not-evaluated');
+    assert.equal(out.namedCacheCalibration.freshCoverageGate,'not-evaluated');
+    assert.equal(out.namedCacheCalibration.cacheBudgetGate,'not-evaluated');
+  }
+});
+test('known cache contradictions or retained violations outrank a separate missing calibration copy',()=>{
+  for(const edit of [row=>row.nativeSdk.namedCaches.resourceRetainedBytes='1000',
+    row=>row.nativeSdk.namedCaches.structSize=215]){
+    const data=cacheFixture();delete measured(data)[1].nativeSdk.namedCaches;edit(measured(data)[2]);
+    const cache=evaluateCache(data).namedCacheCalibration;
+    assert.equal(cache.finiteGate,'failed');assert.equal(cache.configurationGate,'failed');
+    assert.equal(cache.cacheBudgetGate,'not-evaluated');
+  }
+});
+
+test('a required reload copy with known ABI contradiction and missing clock still fails calibration',()=>{
+  const data=cacheFixture(),row=measured(data)[4];
+  row.nativeSdk.namedCaches.structSize=215;delete row.nativeSdk.captureClock;
+  const out=evaluateCache(data);
+  assert.equal(out.resourceGate,'passed');assert.equal(out.namedCacheCalibration.diagnostics.invalidSamples,1);
+  assert.equal(out.namedCacheCalibration.finiteGate,'failed');assert.equal(out.namedCacheCalibration.cacheBudgetGate,'not-evaluated');
+});
+test('calibration selection requires matching original policy bytes and actual seven-argument Owned context',()=>{
+  for(const edit of [data=>data.request.resourcePolicySha256=POLICY_SHA256,
+    data=>delete data.request.namedCacheObservation,
+    data=>data.context.args.pop(),data=>data.context.args.push('--cache-observation=1')]){
+    const data=cacheFixture();edit(data);assert.equal(evaluateCache(data).resourceGate,'not-evaluated');
+  }
+  assert.equal(evaluate(fixture()).namedCacheCalibration,undefined);
+});
+
+test('missing or empty complete-analysis records cannot inherit native, model, resource or calibration qualification',()=>{
+  const analysis={resourceGate:'passed',passed:true,cacheObservation:true,
+    namedCacheCalibration:{finiteGate:'passed'},subject:{pid,creationFileTime}};
+  const complete={inputsMatched:true,nativeScopeObserved:false,inputBindingScope:'complete-acceptance-inputs',
+    nativeToolchainProfile:'LLVM22MSVC142',loadedPayloadModule:cacheModulePin};
+  for(const rows of [undefined,[]]){
+    const out=resourceReader.completeResourceAnalysis(analysis,complete,rows);
+    assert.equal(out.nativeScopeGate,'not-observed');assert.equal(out.nativeSoftwareGate,'not-evaluated');
+    assert.equal(out.softwareProcessModelGate,'not-evaluated');assert.equal(out.resourceGate,'not-evaluated');
+    assert.equal(out.namedCacheCalibration.finiteGate,'not-evaluated');assert.equal(out.passed,false);
+  }
+});
 
 test('complete constant100 samples pass only the finite reload resource gate', () => {
   const result = evaluate(fixture());
