@@ -30,3 +30,9 @@
 对序列化 unified 补丁按文件做正向与反向原始字节重构，51 个结果分别匹配目标与采用前内容；保留 BOM、旧编码和行尾。此核对没有执行 Git 应用。维护者可在仓库根目录对采用前基线运行 `git apply --check third_party/patches/miniblink/0009-0.5.0-native-runtime-diagnostics.patch`；当前已采用树使用同一路径的 `git apply --reverse --check`。正常重放仍须固定原有补丁和基线，不能把不同来源的工作树当成同一补丁前件。
 
 此次采用是源码变更，没有替换预编译 DLL/LIB、更新旧二进制身份或把历史诊断升级为当前验收。当前两架构的完整重编、实际 ABI/应用/长期资源、目标系统和许可发布门槛仍须按各自原件核实，不能从诊断接口存在或源码散列一致推导通过。接口与迁移边界见 [ADR-0068](../../../docs/adr/0068-native-runtime-diagnostics.md)。
+
+## 0.5.0 默认字体名称修正：0010
+
+`0010-default-font-unicode.patch` 在 0009 之后应用，只修正 `WebPageImpl::initSetting` 的默认字体字面量。原字面量含乱码且显式取前两个字符，实际 x86 诊断观察到请求 `U+7039/U+5B29`，而系统字体名称为“宋体”（`U+5B8B/U+4F53`）。字体族比较因此拒绝该对象，后续在 `ComputedStyle::computedLineHeight` 读取空字体时出现访问冲突。
+
+新字面量使用 Unicode 转义，明确保留两个正确字符，不依赖源码中文编码。没有增加空字体兜底或修改比较规则。该修正尚待重新构建并复测原 `reply-full-zero-business`、清理及 ABI 用例；后备字体路径仍需单独核实。上节的固定源码和原始散列仅对应 0009 采用时点，本次后续变化由顶层源码清单记录。

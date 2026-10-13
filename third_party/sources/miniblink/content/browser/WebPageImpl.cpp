@@ -2417,7 +2417,7 @@ bool WebPageImpl::initSetting()
     settings->setTextAreasAreResizable(true);
     
     //settings->setStandardFontFamily(WebString(L"寰蒋闆呴粦", 4));
-    settings->setStandardFontFamily(blink::WebString(L"瀹嬩綋", 2));
+    settings->setStandardFontFamily(blink::WebString(L"\u5B8B\u4F53", 2));
     settings->setUsesEncodingDetector(true);
     settings->setJavaScriptEnabled(true);
     settings->setAllowFileAccessFromFileURLs(true);
