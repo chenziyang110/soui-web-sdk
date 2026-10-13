@@ -21,6 +21,7 @@ class json_bridge final : public bridge_adapter {
   explicit json_bridge(std::string origin);
   json_bridge(std::string origin, diagnostics::mode metrics);
   [[nodiscard]] diagnostics::status read_runtime_metrics(diagnostics::bridge_runtime&) const noexcept;
+  [[nodiscard]] diagnostics::status read_task_store_storage_metrics(diagnostics::task_store_storage&) const noexcept;
   ~json_bridge() override;
   // Native opt-in after all registration, before the first page bootstrap.
   // Creates one stopped, bridge-owned endpoint using this bridge's services.

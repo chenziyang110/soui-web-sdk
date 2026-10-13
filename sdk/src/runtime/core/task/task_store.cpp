@@ -24,7 +24,56 @@ std::string make_task_id(std::string_view prefix, std::uint64_t number) {
 
 task_store::task_store(std::string id_prefix, dm::mode metrics)
     : metrics_mode_(metrics), metrics_epoch_(metrics == dm::mode::scalar ? dm::detail::epoch() : 0),
-      id_prefix_(std::move(id_prefix)) {}
+      allocation_ledger_(metrics == dm::mode::scalar), id_prefix_(std::move(id_prefix)),
+      tasks_(storage_map<task_snapshot>::allocator_type{&allocation_ledger_}),
+      operation_to_task_(storage_map<std::string>::allocator_type{&allocation_ledger_}),
+      operation_to_scope_(storage_map<std::string>::allocator_type{&allocation_ledger_}) {}
+
+dm::status task_store::read_storage_metrics(dm::task_store_storage& out) const noexcept {
+  out = {};
+  if (metrics_mode_ != dm::mode::scalar) return dm::status::disabled;
+  try {
+    out.observation = dm::detail::begin(metrics_mode_, metrics_epoch_);
+    std::unique_lock<std::mutex> lock(mutex_, std::try_to_lock);
+    if (!lock.owns_lock()) {
+      out.observation.state = dm::status::busy;
+      dm::detail::end(out.observation); return out.observation.state;
+    }
+    out.coverage_mask = dm::task_store_storage::map_allocator_requests |
+        dm::task_store_storage::committed_string_diagnostics;
+    out.gap_mask = dm::task_store_storage::string_allocator_gap |
+        dm::task_store_storage::phase_partition_gap |
+        dm::task_store_storage::prepared_retiring_strings_gap |
+        dm::task_store_storage::other_sdk_owners_gap |
+        dm::task_store_storage::allocator_heap_external_gap |
+        dm::task_store_storage::final_disposal_receipt_gap;
+    out.map_requests = allocation_ledger_.snapshot();
+    out.observation.counter_saturated = allocation_ledger_.saturated;
+    if (allocation_ledger_.invalid) out.observation.state = dm::status::unavailable;
+    out.task_entries = tasks_.size(); out.operation_entries = operation_to_task_.size();
+    out.scope_entries = operation_to_scope_.size();
+    const auto strings = [&](const std::string& value, dm::storage_strings& totals) {
+      dm::detail::increment(totals.fields, out.observation.counter_saturated);
+      dm::detail::strings(value, totals.size_bytes, totals.capacity_bytes,
+                          out.observation.counter_saturated);
+    };
+    for (const auto& entry : tasks_) {
+      strings(entry.first, out.task_keys);
+      const auto& value = entry.second;
+      for (const auto* field : {&value.task_id, &value.operation_id, &value.message,
+                                &value.result.task_id, &value.result.message})
+        strings(*field, out.snapshot_strings);
+    }
+    for (const auto& entry : operation_to_task_) {
+      strings(entry.first, out.operation_strings); strings(entry.second, out.operation_strings);
+    }
+    for (const auto& entry : operation_to_scope_) {
+      strings(entry.first, out.scope_strings); strings(entry.second, out.scope_strings);
+    }
+    strings(id_prefix_, out.id_prefix);
+    dm::detail::end(out.observation); return out.observation.state;
+  } catch (...) { out = {}; out.observation.state = dm::status::unavailable; return out.observation.state; }
+}
 
 bool task_store::read_metrics_locked(dm::tasks& out) const {
   std::unique_lock<std::mutex> lock(mutex_, std::try_to_lock);
@@ -68,7 +117,7 @@ task_snapshot task_store::start_scoped(std::string operation_id, std::string sco
 
 std::unique_ptr<task_store::prepared_start> task_store::prepare_start_scoped(
     std::string operation_id, std::string scope_key) {
-  auto prepared = std::make_unique<prepared_start>(mutex_);
+  auto prepared = std::make_unique<prepared_start>(mutex_, allocation_ledger_);
   const auto existing = operation_to_task_.find(operation_id);
   if (existing != operation_to_task_.end()) {
     const auto scope = operation_to_scope_.find(operation_id);

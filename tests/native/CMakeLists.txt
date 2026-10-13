@@ -204,6 +204,27 @@ target_compile_options(soui_bridge_budget_tests PRIVATE /utf-8 /W4 /U_DEBUG)
 set_property(TARGET soui_bridge_budget_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.bridge-budget COMMAND soui_bridge_budget_tests)
 add_executable(soui_task_store_capacity_tests task_store_capacity_tests.cpp)
+
+add_executable(soui_task_store_storage_tests task_store_storage_tests.cpp)
+target_link_libraries(soui_task_store_storage_tests PRIVATE Soui::Sdk Soui::ActionJson)
+target_compile_features(soui_task_store_storage_tests PRIVATE cxx_std_17)
+target_compile_options(soui_task_store_storage_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET soui_task_store_storage_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.task-store-storage COMMAND soui_task_store_storage_tests)
+set_tests_properties(sdk.native.task-store-storage PROPERTIES TIMEOUT 60)
+
+# Instrument the actual Store source, with no copied owner and no normal-SDK TU
+# in this target. Its private allocation/final-refund seams are absent in production.
+add_executable(soui_task_store_storage_fault_tests task_store_storage_tests.cpp
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/runtime/core/task/task_store.cpp")
+target_include_directories(soui_task_store_storage_fault_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
+target_link_libraries(soui_task_store_storage_fault_tests PRIVATE Soui::ActionJson)
+target_compile_features(soui_task_store_storage_fault_tests PRIVATE cxx_std_17)
+target_compile_definitions(soui_task_store_storage_fault_tests PRIVATE SOUI_TASK_STORE_STORAGE_TEST_ONLY)
+target_compile_options(soui_task_store_storage_fault_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+set_property(TARGET soui_task_store_storage_fault_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+add_test(NAME sdk.native.task-store-storage-faults COMMAND soui_task_store_storage_fault_tests)
+set_tests_properties(sdk.native.task-store-storage-faults PROPERTIES TIMEOUT 60)
 target_link_libraries(soui_task_store_capacity_tests PRIVATE Soui::Sdk)
 target_compile_features(soui_task_store_capacity_tests PRIVATE cxx_std_17)
 target_compile_options(soui_task_store_capacity_tests PRIVATE /utf-8 /W4 /U_DEBUG)

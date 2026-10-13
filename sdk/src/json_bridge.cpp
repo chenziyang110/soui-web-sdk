@@ -63,6 +63,9 @@ json_bridge::json_bridge(std::string origin, diagnostics::mode metrics)
   });
 }
 json_bridge::~json_bridge() { close_gui_commands(); }
+diagnostics::status json_bridge::read_task_store_storage_metrics(diagnostics::task_store_storage& out) const noexcept {
+  return tasks_.read_storage_metrics(out);
+}
 diagnostics::status json_bridge::read_runtime_metrics(diagnostics::bridge_runtime& out) const noexcept {
   out = {};
   if (metrics_mode_ != diagnostics::mode::scalar) return diagnostics::status::disabled;

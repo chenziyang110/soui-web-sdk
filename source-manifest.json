@@ -2429,10 +2429,16 @@
       "sha256": "569f9e841a08b326dce8172cf616f20329a66cb81c7196397725071a17ff04b6"
     },
     {
+      "path": "docs/adr/0075-task-store-storage-observation.md",
+      "normalization": "lf",
+      "bytes": 6716,
+      "sha256": "87e4630cf5acb40b8019c43d3381e3fbf7333b8364c98867b7585feb9a71319b"
+    },
+    {
       "path": "docs/adr/README.md",
       "normalization": "lf",
-      "bytes": 1911,
-      "sha256": "928985282189ce0dce0127098ff64ec9243236f4e546d313f585def7f71b88f9"
+      "bytes": 2098,
+      "sha256": "94841e424319b30b6ed9bee356df2073ac33231b6ad9dac496e96afa7001a8f0"
     },
     {
       "path": "docs/adr/llvm-validation-profile.draft.md",
@@ -2837,6 +2843,12 @@
       "sha256": "61f27473cdbbfa08699592d5dabdef803a5986019e83162fee7596919ac5c4c5"
     },
     {
+      "path": "sdk/include/soui/diagnostics/storage_observation.h",
+      "normalization": "lf",
+      "bytes": 1760,
+      "sha256": "00625b26f0c774b8116b512360af51f903e89d408dd4d5cedb7233aad168b005"
+    },
+    {
       "path": "sdk/include/soui/host/async_result_slot.h",
       "normalization": "lf",
       "bytes": 2015,
@@ -2899,8 +2911,8 @@
     {
       "path": "sdk/include/soui/json_bridge.h",
       "normalization": "lf",
-      "bytes": 5192,
-      "sha256": "45d9e94dfe46143524509564ba58abdf71b8c7f9d47388e9fe92bf9cc9453c8e"
+      "bytes": 5310,
+      "sha256": "b73a5a52175ee089143c4882d1730be38aa089b1c56444e7706bb90ec098dc36"
     },
     {
       "path": "sdk/include/soui/runtime/accessibility/windows_uia_provider.h",
@@ -2945,10 +2957,16 @@
       "sha256": "6517bbb345eba2c02df8267fc5467217ddd3107f57bda8541c622522b1f2c5ec"
     },
     {
+      "path": "sdk/include/soui/runtime/core/task/detail/storage_allocator.h",
+      "normalization": "lf",
+      "bytes": 4957,
+      "sha256": "97d2ea164f115151f38f4bffe41e9d9b6a368b97bddcb9e1d4bc2fb8108870b1"
+    },
+    {
       "path": "sdk/include/soui/runtime/core/task/task_store.h",
       "normalization": "lf",
-      "bytes": 3507,
-      "sha256": "5c8481a5a05369ced39b405f4873a8dafeb732936a1c7b51a99cf930e7d33321"
+      "bytes": 4273,
+      "sha256": "6c067090c9ec743ee01f88311c2fb9111354695142bd628cfc34593fe761a1b6"
     },
     {
       "path": "sdk/include/soui/runtime/host/session/webview_session.h",
@@ -3019,8 +3037,8 @@
     {
       "path": "sdk/include/soui/runtime/services/task/task_service.h",
       "normalization": "lf",
-      "bytes": 5774,
-      "sha256": "a7885f6b70a5d5d67ac06d287cc06e60c6074ea83620302f453b75752e630d0c"
+      "bytes": 5960,
+      "sha256": "2e99a8af6d91f88c5ed02b19c0c3b8899cb18f62120a21ef43a0639ce7b2d4d4"
     },
     {
       "path": "sdk/include/soui/version.h",
@@ -3175,8 +3193,8 @@
     {
       "path": "sdk/src/json_bridge.cpp",
       "normalization": "lf",
-      "bytes": 18205,
-      "sha256": "d622e1e3b3e2aa3ded6e23013bac5a4fc6c2f038d1e475475e0614f6f6a35449"
+      "bytes": 18370,
+      "sha256": "0f83c7bfffa7408c3c34dff7a25ab6ea9d4aa7782e808e9a3db9d5fa34199750"
     },
     {
       "path": "sdk/src/runtime/agent/windows_local_endpoint.cpp",
@@ -3217,8 +3235,8 @@
     {
       "path": "sdk/src/runtime/core/task/task_store.cpp",
       "normalization": "lf",
-      "bytes": 11386,
-      "sha256": "2e6fa3c06b934a049ac5751f515d8c88c6ae43744c66f42885f0dca3a0a1e9bf"
+      "bytes": 14198,
+      "sha256": "afd84c254cb5f7dd67cb523ca9ac5bfecc073001a52559214ad98db38f4f5b5b"
     },
     {
       "path": "sdk/src/runtime/diagnostics/runtime_metrics_internal.h",
@@ -3331,8 +3349,8 @@
     {
       "path": "sdk/src/runtime/services/task/task_service.cpp",
       "normalization": "lf",
-      "bytes": 47365,
-      "sha256": "898fec34ec83e936cc5e4e08fb576294d6d1f64e09bee1b9a677f94c3c570510"
+      "bytes": 47928,
+      "sha256": "78a2b93a393f494b8fefe53aa67272926b8932d51e92321149c18abfc1a8210e"
     },
     {
       "path": "sdk/web/package-lock.json",
@@ -3685,14 +3703,14 @@
     {
       "path": "tests/acceptance-app/main.cpp",
       "normalization": "lf",
-      "bytes": 40669,
-      "sha256": "3706d2f3e973869e348e991ef51e5b6434f5cda8277097cc048e57c631748195"
+      "bytes": 41007,
+      "sha256": "7214bb384ef818cc3aba308885413edcbae02187c7deab3270b68dfe9c005ffa"
     },
     {
       "path": "tests/acceptance-app/native-owner-metrics.h",
       "normalization": "lf",
-      "bytes": 13864,
-      "sha256": "514178d0dccf4f2f8006be07adac5a8d5f759bbb86d434a5fcc8a8087a5adc6e"
+      "bytes": 16112,
+      "sha256": "d16c1359360c7c57e40e937532f0d2468cd170395f47d63c08a496c9170e9952"
     },
     {
       "path": "tests/acceptance-app/shutdown-poll.h",
@@ -4429,8 +4447,8 @@
     {
       "path": "tests/native/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 27405,
-      "sha256": "809ec5263527f45bd7a0a0fe32d3e65190b7eecafe7cae10a3bd0f117882e7f5"
+      "bytes": 29050,
+      "sha256": "2ca08d9b51da158bd8bbf823353ed72bd6d535d94d449f8ca402463076735e39"
     },
     {
       "path": "tests/native/action_contract_tests.cpp",
@@ -4851,6 +4869,12 @@
       "normalization": "lf",
       "bytes": 16948,
       "sha256": "a7a6e9f9bcf9cc88781fea72204961f259a24363a3f0152abc9e077c2b6b2d86"
+    },
+    {
+      "path": "tests/native/task_store_storage_tests.cpp",
+      "normalization": "lf",
+      "bytes": 13929,
+      "sha256": "acf00b3e0f6ca65291c2733e2f6cb4ea58c263b26cf7541fc48d63b34ebe7e82"
     },
     {
       "path": "tests/native/tray_service_tests.cpp",

@@ -2,6 +2,7 @@
 
 #include <soui/diagnostics/runtime_metrics.h>
 #include <soui/diagnostics/cache_observation.h>
+#include <soui/diagnostics/storage_observation.h>
 #include <json.hpp>
 #include <string>
 
@@ -34,6 +35,40 @@ inline json serialize(const diagnostics::sample& value) {
 // Keep SDK field names and exact decimal uint64 values. JSON numbers would lose
 // precision in downstream JavaScript well before a native uint64 saturates.
 #define SOUI_ACCEPTANCE_COUNT(field) result[#field] = std::to_string(value.field)
+
+inline json serialize(const diagnostics::allocation_requests& value) {
+  json result{{"current_bytes_exact", value.current_bytes_exact},
+              {"current_allocations_exact", value.current_allocations_exact}};
+  SOUI_ACCEPTANCE_COUNT(current_bytes); SOUI_ACCEPTANCE_COUNT(high_water_bytes);
+  SOUI_ACCEPTANCE_COUNT(current_allocations); SOUI_ACCEPTANCE_COUNT(high_water_allocations);
+  SOUI_ACCEPTANCE_COUNT(allocations_total); SOUI_ACCEPTANCE_COUNT(deallocations_total);
+  SOUI_ACCEPTANCE_COUNT(failed_allocations_total); SOUI_ACCEPTANCE_COUNT(allocated_bytes_total);
+  SOUI_ACCEPTANCE_COUNT(deallocated_bytes_total);
+  return result;
+}
+
+inline json serialize(const diagnostics::storage_strings& value) {
+  json result = json::object();
+  SOUI_ACCEPTANCE_COUNT(fields); SOUI_ACCEPTANCE_COUNT(size_bytes); SOUI_ACCEPTANCE_COUNT(capacity_bytes);
+  return result;
+}
+
+inline json serialize(const diagnostics::task_store_storage& value) {
+  json result{{"schemaVersion", diagnostics::task_store_storage::schema_version},
+      {"scope", "task-store-map-allocator-requests"}, {"observation", serialize(value.observation)},
+      {"map_requests", serialize(value.map_requests)}, {"snapshot_strings", serialize(value.snapshot_strings)},
+      {"task_keys", serialize(value.task_keys)}, {"operation_strings", serialize(value.operation_strings)},
+      {"scope_strings", serialize(value.scope_strings)}, {"id_prefix", serialize(value.id_prefix)},
+      {"phasePartitionObserved", false}, {"stringAllocatorExact", false},
+      {"mapsIncludePreparationAndRetirement", true}, {"cacheBudgetGate", "not-evaluated"},
+      {"configuration", nullptr}, {"budgets", nullptr}, {"quota", nullptr}, {"calibrationPin", nullptr},
+      {"gaps", {"string allocator requests", "committed/prepared/retiring partition",
+                 "prepared/retiring strings", "other SDK owners and shared pointees",
+                 "allocator reserve/whole heap/external bytes", "final public disposal receipt"}}};
+  SOUI_ACCEPTANCE_COUNT(coverage_mask); SOUI_ACCEPTANCE_COUNT(gap_mask);
+  SOUI_ACCEPTANCE_COUNT(task_entries); SOUI_ACCEPTANCE_COUNT(operation_entries); SOUI_ACCEPTANCE_COUNT(scope_entries);
+  return result;
+}
 
 inline json serialize(const diagnostics::queue& value) {
   json result{{"observation", serialize(value.observation)},

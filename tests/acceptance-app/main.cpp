@@ -439,18 +439,24 @@ class test_window final {
   }
   unsigned ready_count() const { return ready_count_.load(std::memory_order_acquire); }
   std::string diagnostics() { return host_.application_diagnostics(); }
-  soui::acceptance::metrics::json native_owner_metrics(bool host_closed = false) const {
+  soui::acceptance::metrics::json native_owner_metrics(bool host_closed = false, bool storage_observation = false) const {
     using namespace soui::acceptance::metrics;
     soui::sdk::diagnostics::bridge_runtime bridge;
     soui::sdk::diagnostics::software_host_runtime adapter;
     const auto bridge_status = bridge_.read_runtime_metrics(bridge);
     const auto adapter_status = native_adapter_ ? native_adapter_->read_runtime_metrics(adapter)
         : soui::sdk::diagnostics::status::unavailable;
-    return {{"window", std::to_string(id_)}, {"ownerAlive", true}, {"hostClosed", host_closed},
+    json result{{"window", std::to_string(id_)}, {"ownerAlive", true}, {"hostClosed", host_closed},
             {"lifetime", host_closed ? "after-host-close-before-owner-destruction" : "owner-alive"},
             {"captureThreadId", std::to_string(GetCurrentThreadId())},
             {"bridgeStatus", status_name(bridge_status)}, {"bridge", serialize(bridge)},
             {"adapterStatus", status_name(adapter_status)}, {"adapter", serialize(adapter)}};
+    if (storage_observation) {
+      soui::sdk::diagnostics::task_store_storage storage;
+      (void)bridge_.read_task_store_storage_metrics(storage);
+      result["taskStoreStorage"] = serialize(storage);
+    }
+    return result;
   }
   static LRESULT CALLBACK procedure(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
     auto* self = reinterpret_cast<test_window*>(GetWindowLongPtrW(window, GWLP_USERDATA));
@@ -683,7 +689,7 @@ class runner final {
       for (;;) {
         const auto result = window->close();
         if (result.ok) {
-          last_retired_owner_ = window->native_owner_metrics(true);
+          last_retired_owner_ = window->native_owner_metrics(true, settings_.cache_observation);
           window.reset();
           return result;
         }
@@ -731,7 +737,8 @@ class runner final {
       (void)soui::sdk::read_miniblink_cache_metrics(cache);
       native["namedCaches"] = serialize(cache);
     }
-    for (const auto& window : windows_) if (window) native["views"].push_back(window->native_owner_metrics());
+    for (const auto& window : windows_) if (window)
+      native["views"].push_back(window->native_owner_metrics(false, settings_.cache_observation));
     native["captureClock"] = capture_clock();
     log_.emit("sample", "\"phase\":" + quote(phase) + ",\"cycle\":" + std::to_string(cycle)
       + ",\"privateBytes\":" + std::to_string(memory.PrivateUsage) + ",\"workingSetBytes\":" + std::to_string(memory.WorkingSetSize)

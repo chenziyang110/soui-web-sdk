@@ -1,8 +1,11 @@
 #pragma once
 
 #include <soui/diagnostics/runtime_metrics.h>
+#include <soui/diagnostics/storage_observation.h>
+#include <soui/runtime/core/task/detail/storage_allocator.h>
 #include <cstddef>
 #include <cstdint>
+#include <functional>
 #include <mutex>
 #include <memory>
 #include <optional>
@@ -44,6 +47,9 @@ class task_store {
   task_store(const task_store&) = delete;
   task_store& operator=(const task_store&) = delete;
 
+  [[nodiscard]] soui::sdk::diagnostics::status read_storage_metrics(
+      soui::sdk::diagnostics::task_store_storage&) const noexcept;
+
   [[nodiscard]] task_snapshot start(std::string operation_id);
   [[nodiscard]] task_snapshot start_scoped(std::string operation_id, std::string scope_key,
                                            bool* duplicate = nullptr, bool* conflict = nullptr,
@@ -61,11 +67,17 @@ class task_store {
 
  private:
   friend class task_service;
+  template <class Value>
+  using storage_map = std::unordered_map<std::string, Value, std::hash<std::string>,
+      std::equal_to<std::string>, detail::task_store_allocator<std::pair<const std::string, Value>>>;
   struct prepared_start {
-    explicit prepared_start(std::mutex& mutex) : lock{mutex} {}
+    prepared_start(std::mutex& mutex, detail::task_store_allocation_ledger& ledger)
+        : lock{mutex}, tasks{storage_map<task_snapshot>::allocator_type{&ledger}},
+          operations{storage_map<std::string>::allocator_type{&ledger}},
+          scopes{storage_map<std::string>::allocator_type{&ledger}} {}
     std::unique_lock<std::mutex> lock;
-    std::unordered_map<std::string, task_snapshot> tasks;
-    std::unordered_map<std::string, std::string> operations, scopes;
+    storage_map<task_snapshot> tasks;
+    storage_map<std::string> operations, scopes;
     task_snapshot snapshot;
     std::string evicted_id;
     bool duplicate{false}, conflict{false}, capacity{false}, publish{false};
@@ -81,13 +93,15 @@ class task_store {
   const std::uint64_t metrics_epoch_;
   std::uint64_t metrics_evictions_{0};
   bool metrics_saturated_{false};
+  // Declared before maps: the ledger outlives every actual map deallocation.
+  detail::task_store_allocation_ledger allocation_ledger_;
   mutable std::mutex mutex_;
   std::string id_prefix_;
   std::uint64_t next_task_number_{1};
   std::uint64_t next_sequence_{1};
-  std::unordered_map<std::string, task_snapshot> tasks_;
-  std::unordered_map<std::string, std::string> operation_to_task_;
-  std::unordered_map<std::string, std::string> operation_to_scope_;
+  storage_map<task_snapshot> tasks_;
+  storage_map<std::string> operation_to_task_;
+  storage_map<std::string> operation_to_scope_;
 };
 
 }  // namespace soui::runtime
