@@ -22,3 +22,4 @@
 - [ADR-0071：长期运行中的命名缓存采样](0071-long-run-cache-sampling.md)（accepted；采集已接线，实际原生与长期验收待执行）
 - [ADR-0074：有限命名缓存配置检查与重载校准采样](0074-finite-named-cache-validation.md)（proposed；经验字节预算与真实原生校准尚未完成）
 - [ADR-0075：TaskStore map 分配请求观测](0075-task-store-storage-observation.md)（proposed；Source-only，未编译/Native/实际资源验收，完整缓存预算仍未评估）
+- [ADR-0076：直接原生任务输入的准入上限](0076-native-task-input-admission-bound.md)（proposed；Source-only，未编译/C++执行；逻辑输入限制不等于完整字节预算）

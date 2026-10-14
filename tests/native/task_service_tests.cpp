@@ -47,6 +47,95 @@ soui::runtime::permission_store::clock_type::time_point renewal_now() {
       std::chrono::milliseconds(renewal_clock_ms.load())};
 }
 
+// Compact exponent spellings exercise normalization using the actual JSON library.
+std::string normalized_input_wire(std::size_t target_bytes) {
+  std::string wire{"{\"values\":["};
+  for (unsigned index = 0; index < 1000U; ++index) {
+    if (index) wire += ',';
+    wire += "1e7";
+  }
+  wire += "],\"padding\":\"";
+  const auto base_bytes = json::parse(wire + "\"}").dump().size();
+  require(base_bytes <= target_bytes, "normalization fixture does not leave padding space");
+  wire += std::string(target_bytes - base_bytes, 'p');
+  wire += "\"}";
+  require(json::parse(wire).dump().size() == target_bytes, "normalization fixture missed its exact boundary");
+  return wire;
+}
+
+void test_direct_native_input_admission_bound() {
+  using namespace soui::runtime;
+  namespace dm = soui::sdk::diagnostics;
+  for (const auto observed : {dm::mode::disabled, dm::mode::scalar}) {
+    permission_store permissions;
+    const auto bearer = permissions.issue("input-bound", "app://input-bound", {"task.start", "task.query"});
+    std::atomic<unsigned> calls{0};
+    task_service service{observed}; // Joins before the captured call counter is destroyed.
+    require(service.register_handler("bound", [&](const task_invocation& invocation, const task_control&) {
+      require(invocation.parameters_json.size() <= bridge_transport::max_params_bytes,
+              "worker received oversized normalized input");
+      ++calls;
+      return task_outcome{};
+    }), "input-bound handler registration failed");
+    bridge_request request;
+    request.session_id = "input-bound"; request.origin = "app://input-bound"; request.token = bearer;
+    request.authorization = permissions.resolve(request.session_id, request.origin, bearer, "task.start").scope;
+    const auto envelope = [](std::string input, const char* operation = "rejected-then-valid") {
+      return std::string{"{\"kind\":\"bound\",\"operationId\":\""} + operation + "\",\"input\":" + input + '}';
+    };
+    dm::task_store_storage before;
+    if (observed == dm::mode::scalar)
+      require(service.read_storage_metrics(before) == dm::status::ready, "initial Store ledger unavailable");
+    const auto reject = [&](const std::string& raw) {
+      request.params_json = raw;
+      require(json::parse(service.start(request)).value("error", "") == "E_INVALID_PARAMS",
+              "direct native start bypassed raw/depth/normalized input bound");
+      require(calls.load() == 0U, "rejected input entered a handler");
+      if (observed == dm::mode::scalar) {
+        dm::tasks metrics;
+        require(service.read_runtime_metrics(metrics) == dm::status::ready && metrics.worker_slots == 0U &&
+            metrics.active_handlers == 0U && metrics.inflight == 0U && metrics.queued == 0U &&
+            metrics.committed_starts_total == 0U && metrics.store_entries == 0U && metrics.owner_entries == 0U &&
+            metrics.operation_entries == 0U && metrics.result_cache_entries == 0U,
+            "rejected input started workers or published task ownership");
+        dm::task_store_storage after;
+        require(service.read_storage_metrics(after) == dm::status::ready &&
+            after.map_requests.allocations_total == before.map_requests.allocations_total &&
+            after.map_requests.deallocations_total == before.map_requests.deallocations_total &&
+            after.map_requests.current_bytes == before.map_requests.current_bytes &&
+            after.map_requests.high_water_bytes == before.map_requests.high_water_bytes &&
+            after.map_requests.current_allocations == before.map_requests.current_allocations &&
+            after.task_entries == before.task_entries && after.operation_entries == before.operation_entries &&
+            after.scope_entries == before.scope_entries,
+            "rejected input changed Store allocation requests or retention");
+      }
+    };
+    const auto oversized = envelope(json{{"text", std::string(bridge_transport::max_params_bytes, 'x')}}.dump());
+    require(oversized.size() > bridge_transport::max_params_bytes, "raw oversize fixture is not oversized");
+    reject(oversized);
+    reject(envelope(std::string{"{\"nested\":"} + std::string(40, '[') + "0" + std::string(40, ']') + '}'));
+    const auto expanded = envelope(normalized_input_wire(bridge_transport::max_params_bytes + 1U));
+    require(expanded.size() < bridge_transport::max_params_bytes, "normalization regression did not bypass raw size");
+    reject(expanded);
+
+    request.params_json = envelope(normalized_input_wire(bridge_transport::max_params_bytes));
+    require(request.params_json.size() < bridge_transport::max_params_bytes, "normalized boundary wire is too large");
+    const auto started = json::parse(service.start(request));
+    require(started.value("taskId", "") == "sdk-task-000001", "rejected input consumed task identity");
+    const auto duplicate = json::parse(service.start(request));
+    require(duplicate.value("duplicate", false) && duplicate.at("taskId") == started.at("taskId"),
+            "bounded normalized input lost duplicate operation identity");
+    wait_until([&] { return calls.load() == 1U; }, "bounded normalized input did not reach the handler");
+    request.params_json = envelope(normalized_input_wire(bridge_transport::max_params_bytes - 1U), "below-boundary");
+    require(json::parse(service.start(request)).contains("taskId"), "below-boundary normalized input was rejected");
+    auto raw_boundary = envelope("{}", "raw-boundary");
+    raw_boundary.append(bridge_transport::max_params_bytes - raw_boundary.size(), ' ');
+    request.params_json = std::move(raw_boundary);
+    require(json::parse(service.start(request)).contains("taskId"), "exact raw byte boundary was rejected");
+    wait_until([&] { return calls.load() == 3U; }, "accepted boundary tasks did not execute once each");
+  }
+}
+
 void test_stable_task_authorization() {
   using namespace soui::runtime;
   renewal_clock_ms.store(0);
@@ -226,6 +315,7 @@ void test_live_revoke_before_task_admission() {
 
 int main() {
   try {
+    test_direct_native_input_admission_bound();
     test_stable_task_authorization();
     test_live_revoke_before_task_admission();
     soui::sdk::json_bridge bridge("app://task-test");

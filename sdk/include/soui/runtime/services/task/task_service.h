@@ -110,6 +110,8 @@ class task_service final {
   // It removes only this object's subscriptions, including on repeated calls.
   [[nodiscard]] bool shutdown_scope(const std::shared_ptr<const authorization_scope>& scope);
   void shutdown_session(const std::string& session_id);
+  // Both native start paths enforce Bridge max_params_bytes/max_json_depth before
+  // admission, and cap the retained normalized input at max_params_bytes.
   [[nodiscard]] std::string start(const bridge_request& request);
   // Read-only exact params: {taskId} XOR {operationId}, one bounded ASCII
   // identifier (1-128 characters, letters/digits/-_.:), no other fields.

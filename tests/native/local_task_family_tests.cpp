@@ -84,7 +84,9 @@ const std::vector<std::string> all_methods{"one.start", "one.query", "one.cancel
     "bridge.describe", "bridge.session.renew"};
 
 struct fixture {
-  explicit fixture(permission_store::clock_source now = nullptr) : permissions{now} {
+  explicit fixture(permission_store::clock_source now = nullptr,
+      soui::sdk::diagnostics::mode metrics = soui::sdk::diagnostics::mode::disabled)
+      : permissions{now}, service{metrics} {
     binding = permissions.create_local_binding(session, origin);
     grant = permissions.issue_local(binding, all_capabilities, all_methods);
     scope = permissions.resolve_local(binding, grant.token, "one.start", "local.start").scope;
@@ -259,6 +261,65 @@ void test_strict_direct_input() {
   require(json::parse(f.service.cancel_local(one, f.request("one.cancel", {{"taskId", "x"}, {"extra", true}})))
               .value("error", "") == "E_INVALID_PARAMS", "direct cancel allowed extra fields");
   require(calls.load() == 0, "rejected input ran the handler");
+}
+
+void test_typed_normalized_input_admission_bound() {
+  namespace dm = soui::sdk::diagnostics;
+  std::atomic<unsigned> calls{0};
+  fixture f{nullptr, dm::mode::scalar};
+  f.handler([&](const auto& invocation, const auto&) {
+    require(invocation.parameters_json.size() <= bridge_transport::max_params_bytes,
+            "typed worker received oversized normalized input");
+    ++calls;
+    return task_outcome{result_kind::success, R"({"value":1})", {}};
+  });
+  auto typed = definition();
+  typed.input_schema_json = R"({"type":"object","properties":{"values":{"type":"array","items":{"type":"number","minimum":0,"maximum":100000000},"maxItems":1024},"padding":{"type":"string","maxLength":32768}},"required":["values","padding"],"additionalProperties":false})";
+  const auto one = f.family(std::move(typed));
+  const auto wire = [](std::size_t target_bytes) {
+    std::string input{"{\"values\":["};
+    for (unsigned index = 0; index < 1000U; ++index) {
+      if (index) input += ',';
+      input += "1e7";
+    }
+    input += "],\"padding\":\"";
+    const auto base_bytes = json::parse(input + "\"}").dump().size();
+    require(base_bytes <= target_bytes, "typed normalization fixture has no padding space");
+    input += std::string(target_bytes - base_bytes, 'p') + "\"}";
+    require(json::parse(input).dump().size() == target_bytes, "typed normalization fixture missed its boundary");
+    return std::string{"{\"operationId\":\"normalized-boundary\",\"input\":"} + input + '}';
+  };
+  dm::task_store_storage before;
+  require(f.service.read_storage_metrics(before) == dm::status::ready, "initial typed Store ledger unavailable");
+  auto request = f.request("one.start", json::object());
+  request.params_json = wire(bridge_transport::max_params_bytes + 1U);
+  require(request.params_json.size() < bridge_transport::max_params_bytes, "typed normalization wire was not raw-bounded");
+  require(json::parse(f.service.start_local(one, request)).value("error", "") == "E_INVALID_PARAMS",
+          "typed native input normalization exceeded retained bound");
+  dm::tasks metrics;
+  require(f.service.read_runtime_metrics(metrics) == dm::status::ready && metrics.worker_slots == 0U &&
+      metrics.active_handlers == 0U && metrics.inflight == 0U && metrics.queued == 0U &&
+      metrics.committed_starts_total == 0U && metrics.store_entries == 0U && metrics.owner_entries == 0U &&
+      metrics.operation_entries == 0U && metrics.result_cache_entries == 0U && calls.load() == 0U,
+      "typed normalization rejection started workers or published ownership");
+  dm::task_store_storage after;
+  require(f.service.read_storage_metrics(after) == dm::status::ready &&
+      after.map_requests.allocations_total == before.map_requests.allocations_total &&
+      after.map_requests.deallocations_total == before.map_requests.deallocations_total &&
+      after.map_requests.current_bytes == before.map_requests.current_bytes &&
+      after.map_requests.high_water_bytes == before.map_requests.high_water_bytes &&
+      after.map_requests.current_allocations == before.map_requests.current_allocations &&
+      after.task_entries == before.task_entries && after.operation_entries == before.operation_entries &&
+      after.scope_entries == before.scope_entries,
+      "typed normalization rejection mutated Store allocations or retention");
+  request.params_json = wire(bridge_transport::max_params_bytes);
+  const auto started = json::parse(f.service.start_local(one, request));
+  require(started.value("taskId", "") == "sdk-task-000001", "typed normalization rejection consumed task identity");
+  const auto duplicate = json::parse(f.service.start_local(one, request));
+  require(duplicate.value("duplicate", false) && duplicate.at("taskId") == started.at("taskId"),
+          "typed bounded normalization lost duplicate identity");
+  (void)f.terminal(one, started.at("taskId").get<std::string>());
+  require(calls.load() == 1U, "typed normalized boundary task did not execute exactly once");
 }
 
 void test_projection_once_and_actual_cancel() {
@@ -651,7 +712,9 @@ int main() {
     const std::vector<std::pair<const char*, void(*)()>> tests{
       {"atomic registration", test_atomic_registration}, {"immutable registry callback", test_registry_immutable_callback},
       {"family/plain/scope isolation", test_family_and_plain_isolation}, {"method/cap/page isolation", test_method_capability_and_page_isolation},
-      {"strict direct parsing", test_strict_direct_input}, {"once projection and honest cancel", test_projection_once_and_actual_cancel},
+      {"strict direct parsing", test_strict_direct_input},
+      {"typed normalized input admission bound", test_typed_normalized_input_admission_bound},
+      {"once projection and honest cancel", test_projection_once_and_actual_cancel},
       {"projection/normalizer failures", test_projection_and_normalization_failures},
       {"page message UTF-8 and worker recovery", test_page_terminal_message_and_worker_recovery},
       {"actual brand lifetime", test_brand_lifetime_and_foreign_service},

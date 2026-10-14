@@ -343,6 +343,8 @@ struct task_service::impl {
     if (!valid_name(operation_id) || (!request.operation_id.empty() && request.operation_id != operation_id))
       return error("E_INVALID_PARAMS", "A bounded consistent operationId is required.");
     const auto input = params["input"].dump();
+    if (input.size() > bridge_transport::max_params_bytes)
+      return error("E_INVALID_PARAMS", "The normalized task input exceeds the native byte bound.");
     std::shared_ptr<detail::gui_job_context> context;
     if (family->data_->gui) {
       {
@@ -803,7 +805,7 @@ void task_service::shutdown_session(const std::string& session_id) {
 }
 
 std::string task_service::start(const bridge_request& request) {
-  const auto params = parameters(request);
+  const auto params = bounded_json(request.params_json);
   if (!params.is_object() || params.size() != 3U || !params.contains("kind") ||
       !params.contains("operationId") || !params.contains("input") || !params["input"].is_object())
     return error("E_INVALID_PARAMS", "kind, operationId and object input are required.");
@@ -812,6 +814,8 @@ std::string task_service::start(const bridge_request& request) {
   if (!valid_name(kind) || !valid_name(operation_id))
     return error("E_INVALID_PARAMS", "kind and operationId must be bounded identifiers.");
   const auto input = params["input"].dump();
+  if (input.size() > bridge_transport::max_params_bytes)
+    return error("E_INVALID_PARAMS", "The normalized task input exceeds the native byte bound.");
   std::lock_guard<std::mutex> lock(impl_->mutex);
   return impl_->admit_locked(request, kind, operation_id, input);
 }
