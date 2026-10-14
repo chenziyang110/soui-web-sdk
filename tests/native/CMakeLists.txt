@@ -374,3 +374,8 @@ target_compile_options(soui_renderer_model_consumer_tests PRIVATE /utf-8 /W4 /U_
 set_property(TARGET soui_renderer_model_consumer_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.renderer-model-consumer-data-contract COMMAND soui_renderer_model_consumer_tests)
 set_tests_properties(sdk.native.renderer-model-consumer-data-contract PROPERTIES TIMEOUT 30)
+
+# Link the private terminal regression against the same rebuilt SDK headers.
+include(task_terminal_quota.cmake)
+target_link_options(soui_task_terminal_quota_tests PRIVATE
+  "/MAP:${CMAKE_CURRENT_BINARY_DIR}/soui_task_terminal_quota_tests.map")

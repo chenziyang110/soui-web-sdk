@@ -29,3 +29,5 @@
 - [ADR-0080：编译数据库分类与 RC 完整命令绑定](0080-rc-database-observation-bindings.md)（proposed；Source/pure-only，RC/MT 真实进程观测与常规 SDK 验收仍待完成）
 - [ADR-0083：便携 host AMD64 构建调试观察器](0083-host64-build-debug-observer.md)（proposed；显式双根 Source 接线，便携 producer、正常两架构与安装消费者实际验证待执行）
 - [ADR-0084：TaskStore 私有分配请求配额](0084-task-store-private-request-quota.md)（proposed；x86/x64 独立原生回归通过，默认未启用；任务服务、完整 SDK 与完整缓存预算待验收）
+- [ADR-0085：任务终态的预留失败记录](0085-task-terminal-funded-failure.md)（proposed；独立源码复核通过，两架构原生与完整 SDK 验收待执行）
+- [ADR-0086：LLVM 观察器中的 Windows 扩展驱动器路径](0086-llvm-observer-local-tool-spelling.md)（proposed；严格路径回归通过，完整 SDK 重新构建验收待执行）

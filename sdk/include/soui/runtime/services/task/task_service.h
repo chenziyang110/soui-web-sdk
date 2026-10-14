@@ -5,11 +5,13 @@
 #include <soui/diagnostics/task_store_private_storage.h>
 #include <soui/runtime/bridge/bridge_transport.h>
 #include <soui/runtime/core/result/result.h>
+#include <soui/runtime/core/task/detail/storage_allocator.h>
 
 #include <cstdint>
 #include <cstddef>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 #include <string_view>
@@ -86,6 +88,10 @@ class task_service final {
 
   task_service();
   explicit task_service(soui::sdk::diagnostics::mode);
+  // Applies only to the service's private TaskStore requested allocations.
+  // nullopt preserves the existing unconfigured policy; no Bridge forwarding.
+  task_service(soui::sdk::diagnostics::mode,
+               std::optional<task_store_request_quota_policy>);
   [[nodiscard]] soui::sdk::diagnostics::status read_runtime_metrics(
       soui::sdk::diagnostics::tasks&) const noexcept;
   [[nodiscard]] soui::sdk::diagnostics::status read_storage_metrics(

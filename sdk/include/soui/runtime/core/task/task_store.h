@@ -22,6 +22,9 @@
 #include <soui/runtime/core/result/result.h>
 
 namespace soui::runtime {
+#ifdef SOUI_TASK_TERMINAL_QUOTA_TEST_ONLY
+namespace detail { struct task_terminal_quota_test_access; }
+#endif
 
 enum class task_state {
   queued,
@@ -83,6 +86,9 @@ class task_store {
 
  private:
   friend class task_service;
+#ifdef SOUI_TASK_TERMINAL_QUOTA_TEST_ONLY
+  friend struct detail::task_terminal_quota_test_access;
+#endif
   struct allocation_owner {
     allocation_owner(bool observed, std::optional<task_store_request_quota_policy> policy) noexcept
         : quota(policy), aggregate(observed), maps(observed), strings(observed) {}
@@ -143,8 +149,9 @@ class task_store {
   class retained_string {
    public:
     using buffer_type = std::basic_string<char, std::char_traits<char>, storage_allocator<char, true>>;
-    retained_string(std::string_view value, allocation_owner& owner)
+    retained_string(std::string_view value, allocation_owner& owner, std::size_t capacity_floor = 0)
         : buffer_(std::in_place, storage_allocator<char, true>{&owner}) {
+      if (capacity_floor) buffer_->reserve(capacity_floor);
       if (!value.empty()) buffer_->assign(value.data(), value.size());
     }
     // No basic_string is constructed for lookup, even on a checked STL.
@@ -183,10 +190,24 @@ class task_store {
     retained_string task_id, message;
   };
   struct retained_snapshot {
-    retained_snapshot(const task_snapshot& value, allocation_owner& owner)
+    struct funded_failure {
+      static constexpr std::string_view text{"Native task terminal storage publication failed."};
+      static constexpr std::size_t message_capacity{64};
+      funded_failure(allocation_owner& owner, std::string_view id)
+          : message(text, owner, message_capacity), result(owner, result_kind::failure, id) {
+        static_assert(text.size() < message_capacity, "The funded failure text must fit its fixed reserve");
+        retained_string funded_message(text, owner, message_capacity);
+        result.message.swap(funded_message);
+      }
+      retained_string message;
+      retained_result result;
+    };
+    retained_snapshot(const task_snapshot& value, allocation_owner& owner, bool fund_failure = false)
         : task_id(value.task_id, owner), operation_id(value.operation_id, owner), state(value.state),
           progress(value.progress), sequence(value.sequence), message(value.message, owner),
-          result(owner, value.result.kind, value.result.task_id, value.result.message) {}
+          result(owner, value.result.kind, value.result.task_id, value.result.message) {
+      if (fund_failure) failure_reserve.emplace(owner, value.task_id);
+    }
     [[nodiscard]] task_snapshot public_copy() const {
       return {task_id.public_copy(), operation_id.public_copy(), state, progress, sequence, message.public_copy(),
               operation_result{result.kind, result.task_id.public_copy(), result.message.public_copy()}};
@@ -197,6 +218,7 @@ class task_store {
     std::uint64_t sequence;
     retained_string message;
     retained_result result;
+    std::optional<funded_failure> failure_reserve;
   };
   template <class Value>
   using storage_map = std::unordered_map<retained_string, Value, retained_hash,
@@ -215,8 +237,22 @@ class task_store {
     bool duplicate{false}, conflict{false}, capacity{false}, publish{false};
   };
   [[nodiscard]] std::unique_ptr<prepared_start> prepare_start_scoped(
-      std::string operation_id, std::string scope_key);
+      std::string operation_id, std::string scope_key, bool fund_terminal_failure = false);
   void commit_start_scoped(prepared_start& prepared) noexcept;
+  struct prepared_completion {
+    explicit prepared_completion(std::mutex& mutex) : lock(mutex) {}
+    std::unique_lock<std::mutex> lock;
+    retained_snapshot* target{nullptr};
+    std::optional<retained_string> message;
+    std::optional<retained_result> result;
+    task_state state{task_state::failed};
+    bool publish{false};
+  };
+  void prepare_complete(prepared_completion&, const std::string& task_id,
+                        result_kind kind, std::string_view message);
+  void commit_complete(prepared_completion&) noexcept;
+  // Requires admission's actual same-owner buffers. No allocation or retry.
+  [[nodiscard]] bool commit_funded_failure(const std::string& task_id) noexcept;
   [[nodiscard]] static bool is_terminal(task_state state) noexcept;
   [[nodiscard]] static task_state state_for(result_kind kind) noexcept;
 

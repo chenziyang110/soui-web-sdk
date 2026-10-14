@@ -170,7 +170,7 @@ task_snapshot task_store::start_scoped(std::string operation_id, std::string sco
 }
 
 std::unique_ptr<task_store::prepared_start> task_store::prepare_start_scoped(
-    std::string operation_id, std::string scope_key) {
+    std::string operation_id, std::string scope_key, bool fund_terminal_failure) {
   auto prepared = std::make_unique<prepared_start>(mutex_, allocation_owner_);
   const auto existing = operation_to_task_.find(retained_string::lookup(operation_id));
   if (existing != operation_to_task_.end()) {
@@ -233,7 +233,8 @@ std::unique_ptr<task_store::prepared_start> task_store::prepare_start_scoped(
     prepared->tasks.erase(retained_string::lookup(evicted_id));
   }
   // Every stored key/value owns its bytes; borrowed lookup views never enter a map.
-  prepared->tasks.emplace(retained_string{snapshot.task_id, allocation_owner_}, retained_snapshot{snapshot, allocation_owner_});
+  prepared->tasks.emplace(retained_string{snapshot.task_id, allocation_owner_},
+                         retained_snapshot{snapshot, allocation_owner_, fund_terminal_failure});
   prepared->operations.emplace(retained_string{snapshot.operation_id, allocation_owner_}, retained_string{snapshot.task_id, allocation_owner_});
   prepared->scopes.emplace(retained_string{snapshot.operation_id, allocation_owner_}, retained_string{scope_key, allocation_owner_});
   prepared->evicted_id = std::move(evicted_id);
@@ -336,20 +337,51 @@ bool task_store::complete(const std::string& task_id, result_kind kind, std::str
 }
 
 bool task_store::complete(operation_result result) {
+  prepared_completion prepared(mutex_);
+  prepare_complete(prepared, result.task_id, result.kind, result.message);
+  if (!prepared.publish) return false;
+  commit_complete(prepared);
+  return true;
+}
+
+void task_store::prepare_complete(prepared_completion& prepared, const std::string& task_id,
+                                 result_kind kind, std::string_view message) {
+  assert(prepared.lock.owns_lock() && prepared.lock.mutex() == &mutex_ && !prepared.publish);
+  const auto found = tasks_.find(retained_string::lookup(task_id));
+  if (found == tasks_.end() || is_terminal(found->second.state)) return;
+  prepared.message.emplace(message, allocation_owner_);
+  prepared.result.emplace(allocation_owner_, kind, task_id, message);
+  prepared.target = &found->second;
+  prepared.state = state_for(kind);
+  prepared.publish = true;
+}
+
+void task_store::commit_complete(prepared_completion& prepared) noexcept {
+  if (!prepared.publish) return;
+  assert(prepared.lock.owns_lock() && prepared.lock.mutex() == &mutex_ && prepared.target);
+  auto& target = *prepared.target;
+  target.message.swap(*prepared.message);
+  target.result.swap(*prepared.result);
+  target.state = prepared.state;
+  if (target.state == task_state::succeeded || target.state == task_state::partial) target.progress = 100;
+  target.sequence = next_sequence_++;
+  // Credit is returned by the actual buffer deallocations, never by phase.
+  if (is_terminal(target.state)) target.failure_reserve.reset();
+  prepared.publish = false;
+}
+
+bool task_store::commit_funded_failure(const std::string& task_id) noexcept {
   std::lock_guard<std::mutex> lock(mutex_);
-  const auto found = tasks_.find(retained_string::lookup(result.task_id));
-  if (found == tasks_.end() || is_terminal(found->second.state)) {
-    return false;
-  }
-  retained_string candidate_message(result.message, allocation_owner_);
-  retained_result candidate_result(allocation_owner_, result.kind, result.task_id, result.message);
-  found->second.message.swap(candidate_message);
-  found->second.result.swap(candidate_result);
-  found->second.state = state_for(result.kind);
-  if (found->second.state == task_state::succeeded || found->second.state == task_state::partial) {
-    found->second.progress = 100;
-  }
-  found->second.sequence = next_sequence_++;
+  const auto found = tasks_.find(retained_string::lookup(task_id));
+  if (found == tasks_.end() || is_terminal(found->second.state) || !found->second.failure_reserve) return false;
+  auto& target = found->second;
+  auto& funded = *target.failure_reserve;
+  target.message.swap(funded.message);
+  target.result.swap(funded.result);
+  target.state = task_state::failed;
+  target.sequence = next_sequence_++;
+  // Swapped-out old buffers remain charged until this physical destruction.
+  target.failure_reserve.reset();
   return true;
 }
 

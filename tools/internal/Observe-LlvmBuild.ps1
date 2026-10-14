@@ -368,9 +368,23 @@ Need ($request.schema-ceq'soui.build-toolchain-request/v1'-and$request.profile-c
 $roleNames=@('CLANG','LINKER','ARCHIVER','RC','MT','NINJA','CMD','POWERSHELL');Need (($profile.ToolPins.PSObject.Properties.Name-join',')-ceq($roleNames-join',')-and(($profile.InputIdentitySchema-ceq'soui.llvm-profile-inputs/v2'-and$profile.RequiredInputPins.Count-eq17)-or($profile.InputIdentitySchema-ceq'soui.llvm-profile-inputs/v3'-and$profile.RequiredInputPins.Count-eq18))-and$profile.BridgePins.Count-eq2) 'Exact fixed profile inputs'
 $helper=Join-Path $PSScriptRoot 'Tool-FileIdentity.ps1';Need ((Norm $profile.CMakeDefinitions.SOUI_TOOL_IDENTITY_HELPER)-ceq(Norm $helper)) 'Fixed product helper only';[void](MatchPin (@($profile.BridgePins|Where-Object{(Norm $_.path)-ceq(Norm $helper)})[0]));. $helper
 $toolIdentities=@{};$aliases=@{}
+function LocalToolSpelling([string]$observed){
+ # Translate only the Win32 local-drive final-path spelling. This is not
+ # identity proof; the unchanged helper must still authenticate both handles.
+ $checked=$observed
+ if($observed.StartsWith('\\?\',[StringComparison]::Ordinal)){
+  Need ($observed-cmatch'^\\\\\?\\[A-Za-z]:\\'-and-not$observed.Contains('/')) 'Only a Win32 extended local-drive tool spelling is supported'
+  $checked=$observed.Substring(4)
+ }
+ Need ($checked-cmatch'^[A-Za-z]:[\\/]' -and $checked.Length-gt3 -and $checked-notmatch'[<>"|?*\x00-\x1f\x7f-\x9f]' -and -not$checked.Substring(2).Contains(':')) 'An ordinary absolute local tool spelling is required'
+ foreach($part in ($checked.Substring(3)-split'[\\/]')){
+  Need ($part.Length-gt0-and$part-cne'.'-and$part-cne'..'-and-not$part.EndsWith('.')-and-not$part.EndsWith(' ')-and$part-notmatch'^(?:CON|PRN|AUX|NUL|COM[1-9]|LPT[1-9])(?:\.|$)') 'Malformed or device tool path component'
+ }
+ return $checked
+}
 function ToolIdentity([string]$observed,[string]$role){
- Need ($roleNames-ccontains$role) 'Fixed role only';$key=$role+'|'+(Norm $observed)
- if(-not$toolIdentities.ContainsKey($key)){$receipt=Assert-ToolFileIdentity -ObservedPath $observed -ExpectedPin $profile.ToolPins.$role;$toolIdentities[$key]=$receipt;$aliases[(Norm $observed)]=Norm $profile.ToolPins.$role.path}
+ Need ($roleNames-ccontains$role) 'Fixed role only';$checked=LocalToolSpelling $observed;$key=$role+'|'+(Norm $observed)
+ if(-not$toolIdentities.ContainsKey($key)){$receipt=Assert-ToolFileIdentity -ObservedPath $checked -ExpectedPin $profile.ToolPins.$role;$toolIdentities[$key]=$receipt;$aliases[(Norm $observed)]=Norm $profile.ToolPins.$role.path;$aliases[(Norm $checked)]=Norm $profile.ToolPins.$role.path}
  return $toolIdentities[$key]
 }
 foreach($role in $roleNames){[void](MatchPin $profile.ToolPins.$role)};foreach($pin in @($profile.RequiredInputPins)+@($profile.BridgePins)){[void](MatchPin $pin)}
@@ -527,8 +541,8 @@ function ResourceWrapperIdentity([string]$observed){
  Need ($cfg.PSObject.Properties.Name-ccontains'resourceWrapperPin'-and$null-ne$cfg.resourceWrapperPin) 'Frozen selected CMake resource wrapper pin required'
  $pin=$cfg.resourceWrapperPin;[void](MatchPin $pin)
  Need ([IO.Path]::GetFileName($pin.path)-ieq'cmcldeps.exe'-and@($cfg.dependencyPins|Where-Object{(Norm $_.path)-ceq(Norm $pin.path)-and$_.bytes-eq$pin.bytes-and$_.sha256-ceq$pin.sha256}).Count-eq1) 'Resource wrapper must be in the whole frozen dependency envelope'
- $key='CMCLDEPS|'+(Norm $observed)
- if(-not$toolIdentities.ContainsKey($key)){$receipt=Assert-ToolFileIdentity -ObservedPath $observed -ExpectedPin $pin;$toolIdentities[$key]=$receipt;$aliases[(Norm $observed)]=Norm $pin.path}
+ $checked=LocalToolSpelling $observed;$key='CMCLDEPS|'+(Norm $observed)
+ if(-not$toolIdentities.ContainsKey($key)){$receipt=Assert-ToolFileIdentity -ObservedPath $checked -ExpectedPin $pin;$toolIdentities[$key]=$receipt;$aliases[(Norm $observed)]=Norm $pin.path;$aliases[(Norm $checked)]=Norm $pin.path}
  return $toolIdentities[$key]
 }
 function AuthenticateResource($query){

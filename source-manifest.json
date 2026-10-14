@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 24687,
-      "sha256": "2236584e6d594f35214ba4c60bc054af3ff00fec826827f55201f5670cba5dee"
+      "bytes": 24873,
+      "sha256": "40e3dd116887e2fb031b240c77e23d3df2e02e117da98c04573941f29b157389"
     },
     {
       "path": "CMakeLists.txt",
@@ -2501,10 +2501,22 @@
       "sha256": "f5122e9b40e34cb8d071689651e1a19baef28bd5eae0e7c3a9ab78fc8a60303f"
     },
     {
+      "path": "docs/adr/0085-task-terminal-funded-failure.md",
+      "normalization": "lf",
+      "bytes": 4846,
+      "sha256": "3e1dd585107d234d20c04f4d94ae789a49862224a7f2690660aff7ca1ba1ce6a"
+    },
+    {
+      "path": "docs/adr/0086-llvm-observer-local-tool-spelling.md",
+      "normalization": "lf",
+      "bytes": 2924,
+      "sha256": "27a52efbf4b72ead6ae1a1bad9889778074f332334b1e7b61802a5c7f7cf8943"
+    },
+    {
       "path": "docs/adr/README.md",
       "normalization": "lf",
-      "bytes": 3514,
-      "sha256": "184c4fc41695b7e5e84400a2b6108e4d0eba94ac24315ad5b3aeae35ccc34f8d"
+      "bytes": 3880,
+      "sha256": "a1af94113434e584744d9c31f1251e540193a3b6eea18305b47d3e5a4d797728"
     },
     {
       "path": "docs/adr/llvm-validation-profile.draft.md",
@@ -3037,8 +3049,8 @@
     {
       "path": "sdk/include/soui/runtime/core/task/task_store.h",
       "normalization": "lf",
-      "bytes": 11620,
-      "sha256": "ffde2485d88b1a703d9d08daa7047ce8e3994a980027b52474909e1b175127de"
+      "bytes": 13457,
+      "sha256": "d2676de1562f0aded66ee8386d8e95506df332904448800714d5dc341f3a5209"
     },
     {
       "path": "sdk/include/soui/runtime/host/session/webview_session.h",
@@ -3109,8 +3121,8 @@
     {
       "path": "sdk/include/soui/runtime/services/task/task_service.h",
       "normalization": "lf",
-      "bytes": 6327,
-      "sha256": "f93afea37985becff649e0993d3721b9ec6f9275b95c081c6d002a0e0646181f"
+      "bytes": 6672,
+      "sha256": "d577498d481abbf81ebb5cec53130f11071c5e3ae63d26efd3f5309ea815aba6"
     },
     {
       "path": "sdk/include/soui/version.h",
@@ -3307,8 +3319,8 @@
     {
       "path": "sdk/src/runtime/core/task/task_store.cpp",
       "normalization": "lf",
-      "bytes": 18698,
-      "sha256": "03245c45fd80a31a4273e3d9cb3a582f830df9faef6c4e18a28dac96999ada6b"
+      "bytes": 20209,
+      "sha256": "154d86b74da6a9bb31b6bbbd6dc6413b10f22e029abf51ce4c712a701cfa2497"
     },
     {
       "path": "sdk/src/runtime/diagnostics/runtime_metrics_internal.h",
@@ -3421,8 +3433,8 @@
     {
       "path": "sdk/src/runtime/services/task/task_service.cpp",
       "normalization": "lf",
-      "bytes": 48834,
-      "sha256": "fe7811cb5d20fd32d0d459ffb912cd1f90f23da68bc39936aa63475a06b23bf5"
+      "bytes": 55700,
+      "sha256": "996bc0a098bf29d26c377cb590850de114e17084898337bcbc80c17f7632eeac"
     },
     {
       "path": "sdk/web/package-lock.json",
@@ -4525,8 +4537,8 @@
     {
       "path": "tests/native/CMakeLists.txt",
       "normalization": "lf",
-      "bytes": 29104,
-      "sha256": "c7eb1141e35d84e459203f4083d69760fb43f0c01a37b049ca639578e121f90a"
+      "bytes": 29349,
+      "sha256": "992ec14ea63575ba1a31912a27c19ad626ffb552792a042c22d83b858f09aa90"
     },
     {
       "path": "tests/native/action_contract_tests.cpp",
@@ -4953,6 +4965,18 @@
       "normalization": "lf",
       "bytes": 51976,
       "sha256": "9194af03f99db01bd0cb5bfbf514207b382c872ee18ae9b93fe75b1adc71a8aa"
+    },
+    {
+      "path": "tests/native/task_terminal_quota.cmake",
+      "normalization": "lf",
+      "bytes": 1308,
+      "sha256": "e2fbcc9a70f6bfb7ae3969db4a6892f408252d0cf449e5d4a739420e5b16fa4f"
+    },
+    {
+      "path": "tests/native/task_terminal_quota_tests.cpp",
+      "normalization": "lf",
+      "bytes": 18647,
+      "sha256": "64289eed98d0a86efb07c7bd874dac2feb6e0fdfc40f2574028ab66f1b21a1c8"
     },
     {
       "path": "tests/native/tray_service_tests.cpp",
@@ -5409,6 +5433,12 @@
       "normalization": "lf",
       "bytes": 9085,
       "sha256": "e4306f6c9b1084e44fbf28d46b5f9dacd51e6b6a9ac43d9a7463447d7500fa8d"
+    },
+    {
+      "path": "tests/sdk/llvm-local-tool-spelling.Tests.ps1",
+      "normalization": "lf",
+      "bytes": 12394,
+      "sha256": "cf54847b29e2a1fe94c94aac8f58b0f5b62dab9ce050666261a409f3acdd2bcc"
     },
     {
       "path": "tests/sdk/llvm-measurement-observation.test.cjs",
@@ -177001,8 +177031,8 @@
     {
       "path": "tools/internal/Observe-LlvmBuild.ps1",
       "normalization": "lf",
-      "bytes": 92602,
-      "sha256": "451a5fd8e8cc10974783069ef9fb786b5ac8a2712f7481c33e5d787aabac3440"
+      "bytes": 93752,
+      "sha256": "38539c5a6301fa46562c48d89e71705ca4812e415d8a22fb66c459540fe208ff"
     },
     {
       "path": "tools/internal/Prepare-Host64BuildObserver.ps1",
