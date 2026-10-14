@@ -20,6 +20,8 @@
 namespace dm = soui::sdk::diagnostics;
 using soui::runtime::task_store;
 using soui::runtime::result_kind;
+using soui::runtime::task_store_request_quota_policy;
+using soui::runtime::task_store_request_quota_exceeded;
 namespace {
 void require(bool condition, const char* text) { if (!condition) throw std::runtime_error(text); }
 dm::task_store_storage read(const task_store& store) {
@@ -396,8 +398,18 @@ dm::allocation_requests retired_domains[3];
 std::size_t retirement_count{0};
 bool retired_saturated{false};
 soui::runtime::detail::task_store_allocation_ledger* last_allocation_ledger{nullptr};
+const soui::runtime::detail::task_store_request_quota* last_quota{nullptr};
+std::uint64_t quota_peak{0}, retired_quota_live{0};
+bool retired_quota_valid{true};
 }
 namespace soui::runtime::detail::task_store_storage_test {
+void quota_before_allocate(const task_store_request_quota& quota) noexcept {
+  last_quota = &quota;
+  if (quota.live_requested_bytes() > quota_peak) quota_peak = quota.live_requested_bytes();
+}
+void quota_retired(const task_store_request_quota& quota) noexcept {
+  retired_quota_live = quota.live_requested_bytes(); retired_quota_valid = quota.valid();
+}
 void before_allocate(task_store_allocation_ledger& ledger, std::size_t bytes) {
   last_allocation_ledger = &ledger;
   const auto call = ++calls;
@@ -424,26 +436,29 @@ void prepare_base(task_store& store) {
     if (index == 0) require(store.complete(item.task_id, result_kind::success, std::string(2048, 't')), "Preparation terminal base");
   }
 }
-void nth_allocator_failure_rolls_back() {
+void nth_allocator_failure_rolls_back(std::optional<task_store_request_quota_policy> quota = std::nullopt) {
   std::size_t preparation_calls = 0;
   const std::string prefix(256, 'p'), next_operation(256, 'n'), next_scope(4096, 's');
   {
-    task_store probe(prefix, dm::mode::scalar);
+    task_store probe(prefix, dm::mode::scalar, quota);
     prepare_base(probe);
     calls = 0; (void)probe.start_scoped(next_operation, next_scope); preparation_calls = calls.load();
   }
   require(preparation_calls > 3, "Preparation map/string allocation path not exercised");
   for (std::size_t fail = 1; fail <= preparation_calls; ++fail) {
-    task_store store(prefix, dm::mode::scalar);
+    task_store store(prefix, dm::mode::scalar, quota);
     prepare_base(store);
     const auto first = store.query(prefix + "000001");
     const auto before = read_retained(store);
+    const auto before_quota = last_quota->live_requested_bytes();
     calls = 0; fail_on = fail;
     bool threw = false;
     try { (void)store.start_scoped(next_operation, next_scope); } catch (const std::bad_alloc&) { threw = true; }
     fail_on = 0;
     require(threw, "nth allocation did not fail");
     const auto after = read_retained(store);
+    require(last_quota->valid() && last_quota->live_requested_bytes() == before_quota,
+        "Underlying start allocation failure leaked or duplicated quota credit");
     require(after.metadata.task_entries == before.metadata.task_entries &&
         after.aggregate.failed_allocations_total == before.aggregate.failed_allocations_total + 1,
         "Rollback changed retention or lost failure domain");
@@ -469,24 +484,25 @@ bool apply_mutation(task_store& store, const std::string& id, mutation which) {
   }
   return false;
 }
-void message_result_candidates_roll_back() {
+void message_result_candidates_roll_back(std::optional<task_store_request_quota_policy> quota = std::nullopt) {
   const std::string prefix(256, 'p');
   for (const auto which : {mutation::running, mutation::progress, mutation::timeout, mutation::cancel_request,
                            mutation::complete, mutation::cancel_confirm}) {
     std::size_t candidate_calls = 0;
     {
-      task_store probe(prefix, dm::mode::scalar);
+      task_store probe(prefix, dm::mode::scalar, quota);
       const auto item = probe.start("operation");
       require(probe.update_progress(item.task_id, 7, std::string(2048, 'b')), "Mutation base");
       calls = 0; require(apply_mutation(probe, item.task_id, which), "Mutation probe"); candidate_calls = calls.load();
     }
     require(candidate_calls > 0, "Mutation char allocator path not exercised");
     for (std::size_t fail = 1; fail <= candidate_calls; ++fail) {
-      task_store store(prefix, dm::mode::scalar);
+      task_store store(prefix, dm::mode::scalar, quota);
       const auto item = store.start("operation");
       require(store.update_progress(item.task_id, 7, std::string(2048, 'b')), "Mutation setup");
       const auto before_snapshot = *store.query(item.task_id);
       const auto before = read_retained(store);
+      const auto before_quota = last_quota->live_requested_bytes();
       calls = 0; fail_on = fail;
       bool threw = false;
       try { (void)apply_mutation(store, item.task_id, which); } catch (const std::bad_alloc&) { threw = true; }
@@ -494,6 +510,8 @@ void message_result_candidates_roll_back() {
       require(threw, "Mutation nth allocation did not fail");
       const auto after_snapshot = *store.query(item.task_id);
       const auto after = read_retained(store);
+      require(last_quota->valid() && last_quota->live_requested_bytes() == before_quota,
+          "Underlying mutation allocation failure leaked or duplicated quota credit");
       require(after_snapshot.task_id == before_snapshot.task_id && after_snapshot.operation_id == before_snapshot.operation_id &&
           after_snapshot.state == before_snapshot.state && after_snapshot.progress == before_snapshot.progress &&
           after_snapshot.sequence == before_snapshot.sequence && after_snapshot.message == before_snapshot.message &&
@@ -508,6 +526,156 @@ void message_result_candidates_roll_back() {
       require(store.update_progress(item.task_id, 8) && store.query(item.task_id)->sequence == before_snapshot.sequence + 1,
           "Failed candidate consumed sequence or changed active lookup");
     }
+  }
+}
+
+bool equal_business(const soui::runtime::task_snapshot& a, const soui::runtime::task_snapshot& b) {
+  return a.task_id == b.task_id && a.operation_id == b.operation_id && a.state == b.state &&
+      a.progress == b.progress && a.sequence == b.sequence && a.message == b.message &&
+      a.result.kind == b.result.kind && a.result.task_id == b.result.task_id && a.result.message == b.result.message;
+}
+
+void request_quota_primitive_contract() {
+  using pool = soui::runtime::detail::task_store_request_quota;
+  {
+    pool unlimited;
+    require(!unlimited.policy(), "Unconfigured quota acquired a production limit");
+    { pool::reservation provisional(&unlimited, 23); require(unlimited.live_requested_bytes() == 23, "Reservation not charged"); }
+    require(unlimited.live_requested_bytes() == 0, "Uncommitted credit not returned");
+    { pool::reservation owned(&unlimited, 23); owned.commit(); }
+    require(unlimited.live_requested_bytes() == 23, "Commit released live allocation credit");
+    unlimited.release(23);
+  }
+  {
+    pool zero(task_store_request_quota_policy{0});
+    { pool::reservation empty(&zero, 0); empty.commit(); }
+    zero.release(0);
+    bool rejected = false;
+    try { pool::reservation positive(&zero, 1); } catch (const task_store_request_quota_exceeded&) { rejected = true; }
+    require(rejected && zero.policy() && zero.policy()->max_live_requested_bytes == 0 &&
+        zero.live_requested_bytes() == 0 && zero.valid(), "Explicit zero became unlimited or leaked credit");
+  }
+  {
+    pool bounded(task_store_request_quota_policy{8});
+    pool::reservation exact(&bounded, 8);
+    bool rejected = false;
+    try { pool::reservation over(&bounded, 1); } catch (const task_store_request_quota_exceeded&) { rejected = true; }
+    require(rejected && bounded.live_requested_bytes() == 8 && bounded.valid(), "Exact quota boundary changed live credit");
+  }
+  {
+    pool overflow;
+    const auto maximum = (std::numeric_limits<std::uint64_t>::max)();
+    { pool::reservation owned(&overflow, maximum); owned.commit(); }
+    bool rejected = false;
+    try { pool::reservation over(&overflow, 1); } catch (const task_store_request_quota_exceeded&) { rejected = true; }
+    require(rejected && !overflow.valid() && overflow.live_requested_bytes() == maximum, "Quota overflow wrapped to available credit");
+    overflow.release(maximum);
+    rejected = false;
+    try { pool::reservation after(&overflow, 0); } catch (const task_store_request_quota_exceeded&) { rejected = true; }
+    require(rejected && overflow.live_requested_bytes() == 0, "Invalid pool admitted another allocation");
+  }
+  {
+    pool underflow;
+    underflow.release(1);
+    bool rejected = false;
+    try { pool::reservation after(&underflow, 1); } catch (const task_store_request_quota_exceeded&) { rejected = true; }
+    require(rejected && !underflow.valid() && underflow.live_requested_bytes() == 0, "Mismatched refund minted credit");
+  }
+  require(pool::checked_request_bytes(0, sizeof(std::uint64_t)) == 0 &&
+      pool::checked_request_bytes(3, sizeof(std::uint64_t)) == 24, "Checked request multiplication changed valid bytes");
+  bool rejected = false;
+  try { (void)pool::checked_request_bytes((std::numeric_limits<std::size_t>::max)(), 2); }
+  catch (const std::bad_array_new_length&) { rejected = true; }
+  require(rejected, "Request-byte multiplication wrapped before reservation");
+}
+
+void actual_store_quota_boundary_and_diagnostics() {
+  const std::string prefix(256, 'p'), operation(256, 'o'), scope(4096, 's');
+  for (const auto mode : {dm::mode::disabled, dm::mode::scalar}) {
+    std::uint64_t required_peak = 0;
+    std::size_t required_calls = 0;
+    {
+      quota_peak = 0; calls = 0;
+      task_store probe(prefix, mode, task_store_request_quota_policy{(std::numeric_limits<std::uint64_t>::max)()});
+      const auto item = probe.start_scoped(operation, scope);
+      required_peak = quota_peak; required_calls = calls.load();
+      require(required_peak > 4096 && required_calls > 3 && last_quota && last_quota->valid(), "Real map/string quota path missing");
+      if (mode == dm::mode::scalar) {
+        const auto observed = read_retained(probe);
+        require(last_quota->live_requested_bytes() == observed.aggregate.current_bytes &&
+            observed.metadata.map_requests.current_bytes > 0 && observed.strings.current_bytes > 4096,
+            "Map and string domains did not share one actual byte pool");
+      }
+      require(probe.query(item.task_id).has_value(), "Quota probe lost real Store entry");
+    }
+    require(retired_quota_valid && retired_quota_live == 0, "Quota owner retired before real buffers");
+    {
+      quota_peak = 0; calls = 0;
+      task_store exact(prefix, mode, task_store_request_quota_policy{required_peak});
+      const auto item = exact.start_scoped(operation, scope);
+      require(exact.query(item.task_id).has_value() && quota_peak == required_peak && calls == required_calls,
+          "Exact measured fixture boundary did not admit the same real requests");
+    }
+    {
+      task_store denied(prefix, mode, task_store_request_quota_policy{required_peak - 1});
+      require(last_quota && last_quota->policy(), "Constructor did not own immutable quota");
+      const auto initial = last_quota->live_requested_bytes();
+      const auto before_calls = calls.load();
+      bool rejected = false;
+      try { (void)denied.start_scoped(operation, scope); } catch (const task_store_request_quota_exceeded&) { rejected = true; }
+      require(rejected && last_quota->valid() && last_quota->live_requested_bytes() == initial &&
+          calls.load() - before_calls < required_calls && !denied.query(prefix + "000001"),
+          "Quota denial published a candidate, reached all underlying calls, or leaked provisional credit");
+      require(denied.start("small").task_id == prefix + "000001", "Rejected quota preparation consumed identity or credit");
+    }
+    calls = 0;
+    bool zero_rejected = false;
+    try { task_store zero(prefix, mode, task_store_request_quota_policy{0}); (void)zero.start("zero"); }
+    catch (const task_store_request_quota_exceeded&) { zero_rejected = true; }
+    require(zero_rejected && calls == 0 && retired_quota_live == 0, "Zero quota reached allocator hook or failed partial-construction refund");
+  }
+  // Sticky diagnostic saturation must neither supply nor deny allocation credit.
+  std::uint64_t peak = 0;
+  { quota_peak = 0; task_store probe(prefix, dm::mode::scalar); (void)probe.start_scoped(operation, scope); peak = quota_peak; }
+  saturate_next = true;
+  task_store saturated(prefix, dm::mode::scalar, task_store_request_quota_policy{peak - 1});
+  bool rejected = false;
+  try { (void)saturated.start_scoped(operation, scope); } catch (const task_store_request_quota_exceeded&) { rejected = true; }
+  dm::task_store_private_storage diagnostic;
+  (void)saturated.read_private_storage_metrics(diagnostic);
+  require(rejected && last_quota->valid() && diagnostic.observation.counter_saturated &&
+      !diagnostic.aggregate_requests.current_bytes_exact && last_quota->live_requested_bytes() < peak,
+      "Diagnostic unknown state replaced independent quota enforcement");
+}
+
+void actual_store_quota_candidate_overlap() {
+  const std::string prefix(256, 'p');
+  // mark_running creates the same bounded task-id result as prior setup; the
+  // configured nth-allocation tests cover its exceptional rollback separately.
+  for (const auto which : {mutation::progress, mutation::timeout, mutation::cancel_request,
+                           mutation::complete, mutation::cancel_confirm}) {
+    std::uint64_t base_bytes = 0, candidate_peak = 0, final_bytes = 0;
+    {
+      task_store probe(prefix, dm::mode::scalar);
+      const auto item = probe.start("operation");
+      require(probe.update_progress(item.task_id, 7, std::string(2048, 'b')), "Quota mutation setup");
+      base_bytes = last_quota->live_requested_bytes(); quota_peak = base_bytes;
+      require(apply_mutation(probe, item.task_id, which), "Quota candidate probe");
+      candidate_peak = quota_peak; final_bytes = last_quota->live_requested_bytes();
+    }
+    const auto limit = candidate_peak - 1;
+    require(candidate_peak > base_bytes && limit >= final_bytes && limit >= base_bytes,
+        "Candidate fixture did not require old and new storage together");
+    task_store store(prefix, dm::mode::scalar, task_store_request_quota_policy{limit});
+    const auto item = store.start("operation");
+    require(store.update_progress(item.task_id, 7, std::string(2048, 'b')), "Bounded quota mutation setup");
+    const auto before = *store.query(item.task_id); const auto bytes = last_quota->live_requested_bytes();
+    bool rejected = false;
+    try { (void)apply_mutation(store, item.task_id, which); } catch (const task_store_request_quota_exceeded&) { rejected = true; }
+    require(rejected && equal_business(before, *store.query(item.task_id)) && last_quota->valid() &&
+        last_quota->live_requested_bytes() == bytes, "Quota failure partially published state or prematurely retired old storage");
+    require(store.mark_running(item.task_id) && store.query(item.task_id)->sequence == before.sequence + 1,
+        "Quota candidate failure consumed sequence or failed to refund credit");
   }
 }
 
@@ -548,6 +716,7 @@ void busy_and_actual_final_refund() {
   require(retirement_count == 3 && retired_domains[2].allocated_bytes_total ==
       retired_domains[0].allocated_bytes_total + retired_domains[1].allocated_bytes_total,
       "Owner retirement did not include both domains");
+  require(retired_quota_valid && retired_quota_live == 0, "Quota credit survived final physical buffer free");
   for (const auto& domain : retired_domains)
     require(domain.current_bytes == 0 && domain.current_allocations == 0 && domain.current_bytes_exact &&
         domain.allocations_total == domain.deallocations_total && domain.allocated_bytes_total == domain.deallocated_bytes_total,
@@ -617,6 +786,9 @@ int main() {
 #ifdef SOUI_TASK_STORE_STORAGE_TEST_ONLY
     nth_allocator_failure_rolls_back(); message_result_candidates_roll_back(); busy_and_actual_final_refund();
     sticky_current_saturation_and_invalid_underflow();
+    request_quota_primitive_contract(); actual_store_quota_boundary_and_diagnostics(); actual_store_quota_candidate_overlap();
+    const auto configured = task_store_request_quota_policy{(std::numeric_limits<std::uint64_t>::max)()};
+    nth_allocator_failure_rolls_back(configured); message_result_candidates_roll_back(configured);
 #endif
     std::cout << "TaskStore storage observation contract passed\n";
     return 0;

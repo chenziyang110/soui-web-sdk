@@ -27,3 +27,5 @@
 - [ADR-0078：独立采集 TaskStore 私有 allocator 请求](0078-task-store-private-storage-collection.md)（proposed；Phase 2 Source-only，未执行真实 capture，完整缓存预算仍未评估）
 - [ADR-0079：Ninja 工作目录变量与编译观测快照](0079-ninja-workdir-observation-snapshots.md)（proposed；纯 Reader 回归通过，真实公开 SDK 重跑仍待执行）
 - [ADR-0080：编译数据库分类与 RC 完整命令绑定](0080-rc-database-observation-bindings.md)（proposed；Source/pure-only，RC/MT 真实进程观测与常规 SDK 验收仍待完成）
+- [ADR-0083：便携 host AMD64 构建调试观察器](0083-host64-build-debug-observer.md)（proposed；显式双根 Source 接线，便携 producer、正常两架构与安装消费者实际验证待执行）
+- [ADR-0084：TaskStore 私有分配请求配额](0084-task-store-private-request-quota.md)（proposed；x86/x64 独立原生回归通过，默认未启用；任务服务、完整 SDK 与完整缓存预算待验收）

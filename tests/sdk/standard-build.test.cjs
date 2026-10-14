@@ -13,6 +13,15 @@ const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const llvmArguments=['--native-toolchain','LLVM22MSVC142','--llvm-root','F:\\llvm','--msvc-root','F:\\msvc',
   '--windows-sdk-root','F:\\winsdk','--ninja-exe','F:\\ninja.exe','--windows-cmd-exe','C:\\Windows\\System32\\cmd.exe',
   '--powershell-exe','C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe'];
+test('host AMD64 observer is an explicit separately prepared mode and never a Build.ps1 flag',()=>{
+  const selected=[...llvmArguments,'--host64-build-observer','--host64-observer-prepared','F:\\records\\prepared.json','--host64-observer-sha256','a'.repeat(64)];
+  const value=caller.parseArgs(selected);assert.equal(value.host64BuildObserver,true);
+  assert.equal(caller.buildArguments('F:\\sdk',value).includes('--host64-build-observer'),false);
+  assert.equal(caller.buildArguments('F:\\sdk',value).includes('-Host64BuildObserver'),false);
+  for(const args of [selected.filter(x=>x!=='--host64-build-observer'),selected.slice(0,-2),[...selected,'--timeout-ms','1'],
+    ['--host64-build-observer','--host64-observer-prepared','F:\\records\\prepared.json','--host64-observer-sha256','a'.repeat(64)]])assert.throws(()=>caller.parseArgs(args));
+  assert.equal(caller.parseArgs(llvmArguments).host64BuildObserver,undefined);
+});
 test('LLVM selection requires all six paths and the fixed natural drain, without changing MSVC defaults',()=>{
   assert.equal(caller.parseArgs([]).drainMs,30000);
   const value=caller.parseArgs(llvmArguments);assert.equal(value.drainMs,2000);

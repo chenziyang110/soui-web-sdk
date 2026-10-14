@@ -67,8 +67,8 @@
     {
       "path": "CHANGELOG.md",
       "normalization": "lf",
-      "bytes": 23904,
-      "sha256": "8cb5f12edbee824d52d51b64ddb458f4125ad338e3b3ac1898223cdfc755cbfa"
+      "bytes": 24687,
+      "sha256": "2236584e6d594f35214ba4c60bc054af3ff00fec826827f55201f5670cba5dee"
     },
     {
       "path": "CMakeLists.txt",
@@ -97,8 +97,8 @@
     {
       "path": "README.md",
       "normalization": "lf",
-      "bytes": 6158,
-      "sha256": "9d64abf310c23de2242704fd1562b3217209dab82c4d1c735ba1017da87e9a70"
+      "bytes": 7352,
+      "sha256": "6c51b188f10fd5c1cf45bc7997e436536ea0e50357d35e4bbc99169147f1219a"
     },
     {
       "path": "SECURITY.md",
@@ -225,6 +225,18 @@
       "normalization": "lf",
       "bytes": 30392,
       "sha256": "062c20ff1a4a1ba2542afb4ab03afdd97bcf263b2fbb78f4875984a659b67ccf"
+    },
+    {
+      "path": "benchmarks/protocol/host64-build-debug-observer.cpp",
+      "normalization": "lf",
+      "bytes": 54928,
+      "sha256": "1b2f60befe1d51933fe5a3300295e2865ff7f5bbd007819e2a86bd067be49106"
+    },
+    {
+      "path": "benchmarks/protocol/host64-build-debug-observer/CMakeLists.txt",
+      "normalization": "lf",
+      "bytes": 1997,
+      "sha256": "5fef36590331cf0015280f907c718812031a149c506a7f29829ead2769bd4282"
     },
     {
       "path": "benchmarks/protocol/input-trace.cpp",
@@ -2477,10 +2489,22 @@
       "sha256": "9553117f7b21dd019098fcb5d2886c124a56d662088082afe6f9127def45a319"
     },
     {
+      "path": "docs/adr/0083-host64-build-debug-observer.md",
+      "normalization": "lf",
+      "bytes": 5425,
+      "sha256": "3adeea95f4d5b211d226b6bb76e9d2194a9f47bdaa9b62b1485c283a638b9a3b"
+    },
+    {
+      "path": "docs/adr/0084-task-store-private-request-quota.md",
+      "normalization": "lf",
+      "bytes": 2689,
+      "sha256": "f5122e9b40e34cb8d071689651e1a19baef28bd5eae0e7c3a9ab78fc8a60303f"
+    },
+    {
       "path": "docs/adr/README.md",
       "normalization": "lf",
-      "bytes": 3086,
-      "sha256": "e98c203a4ac04d0a49f9b9896a986b73e3585a6b303567e04f27508373e7894d"
+      "bytes": 3514,
+      "sha256": "184c4fc41695b7e5e84400a2b6108e4d0eba94ac24315ad5b3aeae35ccc34f8d"
     },
     {
       "path": "docs/adr/llvm-validation-profile.draft.md",
@@ -3007,14 +3031,14 @@
     {
       "path": "sdk/include/soui/runtime/core/task/detail/storage_allocator.h",
       "normalization": "lf",
-      "bytes": 4957,
-      "sha256": "97d2ea164f115151f38f4bffe41e9d9b6a368b97bddcb9e1d4bc2fb8108870b1"
+      "bytes": 8163,
+      "sha256": "768274f7049cdc831d5da6f34732b58a14058826a5d9cb35ebf78ba27734b870"
     },
     {
       "path": "sdk/include/soui/runtime/core/task/task_store.h",
       "normalization": "lf",
-      "bytes": 11042,
-      "sha256": "0ca9218ed585de083e5ac0d2d6e7cc81503d0cd69e26d7f688709f5080dab807"
+      "bytes": 11620,
+      "sha256": "ffde2485d88b1a703d9d08daa7047ce8e3994a980027b52474909e1b175127de"
     },
     {
       "path": "sdk/include/soui/runtime/host/session/webview_session.h",
@@ -3283,8 +3307,8 @@
     {
       "path": "sdk/src/runtime/core/task/task_store.cpp",
       "normalization": "lf",
-      "bytes": 18503,
-      "sha256": "f96f604d48b9b14aecb2fef5a7c2d76e2ff6a149294513a275bf8fafe38f344d"
+      "bytes": 18698,
+      "sha256": "03245c45fd80a31a4273e3d9cb3a582f830df9faef6c4e18a28dac96999ada6b"
     },
     {
       "path": "sdk/src/runtime/diagnostics/runtime_metrics_internal.h",
@@ -4927,8 +4951,8 @@
     {
       "path": "tests/native/task_store_storage_tests.cpp",
       "normalization": "lf",
-      "bytes": 40994,
-      "sha256": "04efb0e709bc3536afa83de69226f76c1ef40b766dd003ae2f3594fcbd8dcd9e"
+      "bytes": 51976,
+      "sha256": "9194af03f99db01bd0cb5bfbf514207b382c872ee18ae9b93fe75b1adc71a8aa"
     },
     {
       "path": "tests/native/tray_service_tests.cpp",
@@ -5357,6 +5381,12 @@
       "sha256": "5a4ac10f974b7045c3a7f57d713c0c7d5fc60bfadf3e4569d8a974ea51c0d77a"
     },
     {
+      "path": "tests/sdk/host64-build-debug-observer.test.cjs",
+      "normalization": "lf",
+      "bytes": 41299,
+      "sha256": "db366aceaee78883ba3a1af9df9e21dc9d1b8f2ede7e4c026ee1e5b9eadc7021"
+    },
+    {
       "path": "tests/sdk/installation-interruption-worker.cjs",
       "normalization": "lf",
       "bytes": 1937,
@@ -5377,8 +5407,8 @@
     {
       "path": "tests/sdk/llvm-evidence-readers.test.cjs",
       "normalization": "lf",
-      "bytes": 5752,
-      "sha256": "885c22b54bd2a436e7c4fbb0a0d8a16187fe87108d042750de41bc0a0a0ad5f4"
+      "bytes": 9085,
+      "sha256": "e4306f6c9b1084e44fbf28d46b5f9dacd51e6b6a9ac43d9a7463447d7500fa8d"
     },
     {
       "path": "tests/sdk/llvm-measurement-observation.test.cjs",
@@ -5485,8 +5515,8 @@
     {
       "path": "tests/sdk/standard-build.test.cjs",
       "normalization": "lf",
-      "bytes": 19195,
-      "sha256": "0abbc461775482f27fbeb3c891d2b937bd28411a5306f1a36d30565b2ce8476c"
+      "bytes": 20123,
+      "sha256": "1f02e82ca4965ccbc673d7e0a8b21a2188d01c418b53924275ff8e1cd90a240f"
     },
     {
       "path": "tests/sdk/vendor-tests.test.cjs",
@@ -176971,8 +177001,14 @@
     {
       "path": "tools/internal/Observe-LlvmBuild.ps1",
       "normalization": "lf",
-      "bytes": 84164,
-      "sha256": "57a657c2b7e1a4b8d1ee2f16919625d20500997b40b5054b04c92625cb2e825f"
+      "bytes": 92602,
+      "sha256": "451a5fd8e8cc10974783069ef9fb786b5ac8a2712f7481c33e5d787aabac3440"
+    },
+    {
+      "path": "tools/internal/Prepare-Host64BuildObserver.ps1",
+      "normalization": "lf",
+      "bytes": 805,
+      "sha256": "c085f1d11ce0e49a4c298b50d8a319ef258a79292380d1a2f2862a048ee66cb8"
     },
     {
       "path": "tools/internal/Restore-WebView2.ps1",
@@ -177041,6 +177077,12 @@
       "sha256": "fa5794ac68df0ab55ec9b20a0f1776dbdee4789da6d638b323e9fd4e368a2a0e"
     },
     {
+      "path": "tools/internal/host64-build-debug-observer.cjs",
+      "normalization": "lf",
+      "bytes": 41233,
+      "sha256": "884d14557bba371b4e9202d9e1bd7aacea6392af8038e57979ea9fc6322903bb"
+    },
+    {
       "path": "tools/internal/kernel-llvm-output.targets",
       "normalization": "lf",
       "bytes": 8932,
@@ -177049,8 +177091,8 @@
     {
       "path": "tools/internal/llvm-build-observer.cjs",
       "normalization": "lf",
-      "bytes": 35387,
-      "sha256": "eaceff5812f0a6ebe7640f656bd943a3b4d396cf2474bdbd232e069fb09369cc"
+      "bytes": 40619,
+      "sha256": "fe578a3ade06b337ee81d44634c97c24f944338187224f0775dc470715fba1d1"
     },
     {
       "path": "tools/internal/llvm-installed-acceptance.cjs",
@@ -177127,8 +177169,8 @@
     {
       "path": "tools/internal/standard-build.cjs",
       "normalization": "lf",
-      "bytes": 36758,
-      "sha256": "f360b94a38c36e61c6634a5ec13d1567f956440fb1d7346d969a00605f9ad1b0"
+      "bytes": 39060,
+      "sha256": "da161d62926c2d3cdedd766b52345978f6421fae4d939c80ebcbe72372e3c6fe"
     },
     {
       "path": "tools/internal/vendor-test-names.json",

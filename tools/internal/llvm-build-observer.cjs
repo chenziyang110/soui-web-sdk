@@ -17,7 +17,9 @@ const providerNames=['NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','GIT
 const codeNames=['tools/internal/Find-LlvmToolchain.ps1','cmake/toolchains/SouiLLVM22.cmake',
   'tools/internal/Invoke-ToolFileIdentity.ps1','tools/internal/Tool-FileIdentity.ps1',
   'tools/internal/Observe-LlvmBuild.ps1','tools/internal/llvm-build-observer.cjs','tools/internal/llvm-profile-inputs.cjs',
-  'tools/internal/measurement-validation.cjs','tools/internal/llvm-measurement-observation.cjs'];
+  'tools/internal/measurement-validation.cjs','tools/internal/llvm-measurement-observation.cjs',
+  'benchmarks/protocol/host64-build-debug-observer.cpp','benchmarks/protocol/host64-build-debug-observer/CMakeLists.txt',
+  'tools/internal/Prepare-Host64BuildObserver.ps1','tools/internal/host64-build-debug-observer.cjs','third_party/include/json/json.hpp'];
 function pin(filename){
   const full=id.safePath(path.resolve(filename)),s=fs.statSync(full);need(s.isFile(),'Plain input required: '+full);
   const bytes=fs.readFileSync(full);return {path:full,bytes:bytes.length,sha256:sha(bytes)};
@@ -175,16 +177,28 @@ function validateNinjaScope(row, root, arch, config, sdkOnly) {
 function validateObservation(row,root,v,profile,build,capture,observationRun,verifyStream){
   validateNinjaScope(row,root,v.architecture,v.configuration,!!v.sdkOnly);
   const natural=nativeNatural(capture,verifyStream);nativeNatural(observationRun,verifyStream);
-  need(row.schema==='soui.standard-llvm-build-observation/v1'&&row.profile===profileName&&path.resolve(row.root)===root&&
+  const debugMode=row.schema==='soui.standard-llvm-build-observation/v2';
+  let debugProof=null;
+  if(debugMode){
+    need(row.debugCapture&&row.outerObserverCapture,'Explicit dual-root LLVM observation required');
+    const input=read(row.debugCapture.input.path);
+    debugProof=require('./host64-build-debug-observer.cjs').recordedEvidence(row.debugCapture,capture,root,row.debugCapture.rootArguments);
+    need(input.sdkArchitecture===v.architecture&&input.configuration===v.configuration&&
+      isDeepStrictEqual(row.fastToolEvidence,debugProof)&&isDeepStrictEqual(row.debugCapture.rootArguments,input.rootArguments),'Actual independent fast-tool evidence differs');
+  }
+  need((debugMode||row.schema==='soui.standard-llvm-build-observation/v1')&&row.profile===profileName&&path.resolve(row.root)===root&&
     row.architecture===v.architecture&&row.configuration===v.configuration&&row.sdkOnly===!!v.sdkOnly&&
     row.inputIdentity===profile.InputIdentity&&row.bridgeIdentity===profile.BridgeIdentity&&row.compilerVerified===true&&
     row.observedCompilerId==='Clang'&&row.observedFrontend==='MSVC'&&row.observedVersion==='22.1.3'&&
     row.observedPointerBytes===(v.architecture==='x64'?8:4)&&row.qualificationPassed===false&&row.releaseReady===false,
     'Actual LLVM observation identity differs');
-  need(row.buildCapture.pid===natural.start.pid&&row.buildCapture.creationFileTime===natural.start.creationFileTime&&
-    row.buildCapture.raw.sha256===capture.result.reportSha256&&row.buildCapture.wholeJobClosed===true&&!row.buildCapture.forced,
+  const outer=debugMode?row.outerObserverCapture:row.buildCapture;
+  need(outer.pid===natural.start.pid&&outer.creationFileTime===natural.start.creationFileTime&&
+    outer.raw.sha256===capture.result.reportSha256&&outer.wholeJobClosed===true&&!outer.forced,
     'Observer did not bind the current naturally closed Build');
-  match(row.buildCapture.raw);match(row.buildCapture.context);match(row.buildCapture.ready);match(row.buildCapture.finished);match(row.requestFile);match(row.buildReport);
+  if(debugMode)need(row.buildCapture.role==='inner-build'&&row.buildCapture.pid===debugProof.innerBuild.pid&&row.buildCapture.creationFileTime===debugProof.innerBuild.creationFileTime&&
+    samePin(row.buildCapture.raw,row.debugCapture.raw)&&samePin(row.buildCapture.input,row.debugCapture.input)&&row.buildCapture.wholeJobClosed===true&&row.buildCapture.forced===false,'Inner Build must bind actual CREATE/argv/EXIT, not a synthesized Owned start');
+  match(outer.raw);match(outer.context);match(outer.ready);match(outer.finished);match(row.requestFile);match(row.buildReport);
   need(isDeepStrictEqual(row.requestFile,build.nativeToolchain.requestFile),'Observed request file differs from current build');
   need(isDeepStrictEqual(read(row.buildReport.path),build),'Observed source-build identity differs');
   need(Array.isArray(row.compileRecords)&&row.compileRecords.length>0&&Array.isArray(row.ninjaCompileEdges)&&row.ninjaCompileEdges.length===row.compileRecords.length&&
@@ -210,8 +224,11 @@ function validateObservation(row,root,v,profile,build,capture,observationRun,ver
 async function run(root,v,folder,api){
   const toolsRoot=id.safePath(path.resolve(v.devkitRoot||root)),prepared=preparation(toolsRoot,v.architecture);
   need(prepared.requestPin,'LLVM requires current independently owned validation-tool inputs');
-  const runner=path.resolve(v.runner||prepared.setup.tools.OwnedProcessRunner);
-  need(runner.toLowerCase()===prepared.setup.tools.OwnedProcessRunner.toLowerCase(),'Runner must be the actual prepared selected architecture tool');
+  const debug=v.host64BuildObserver?require('./host64-build-debug-observer.cjs'):null;
+  const hostPrepared=debug?debug.loadPrepared(v.host64ObserverPrepared,v.host64ObserverSha256,root):null;
+  const expectedRunner=hostPrepared?hostPrepared.value.outerRunner.path:prepared.setup.tools.OwnedProcessRunner;
+  const runner=path.resolve(v.runner||expectedRunner);
+  need(runner.toLowerCase()===expectedRunner.toLowerCase(),'Runner must be the actual prepared selected architecture or explicit host observer tool');
   const powershell=path.resolve(v.powerShellExe);need(!v.powershell||path.resolve(v.powershell).toLowerCase()===powershell.toLowerCase(),'LLVM PowerShell role must equal caller PowerShell');
   const ps=api.inspectTool(powershell),runnerPin=pin(runner),codePins=codeNames.map(name=>pin(path.join(root,name)));
   let env=environment(process.env,v.windowsCmdExe);write(folder,'selected-preparation.json',prepared.setup.report);
@@ -251,15 +268,21 @@ async function run(root,v,folder,api){
     const previous=priorObservation(root,v.architecture,v.configuration,!!v.sdkOnly,profile,validationTools);
     previousObservation=pin(previous.observationPath);
   }
-  const context={schema:'soui.owned-process-context/v1',runnerSha256:runnerPin.sha256,executableSha256:ps.sha256,
+  const debugPlanned=debug?debug.makeInput(root,v,folder,profile,tools,[...codePins,...scriptRows.map(row=>({path:path.join(root,row.path),bytes:row.bytes,sha256:row.sha256})),
+    pin(path.join(root,'source-manifest.json')),pin(probeOutput),...profile.RequiredInputPins,...profile.BridgePins],hostPrepared,args):null;
+  const context={schema:'soui.owned-process-context/v1',runnerSha256:runnerPin.sha256,executableSha256:debug?hostPrepared.value.executable.sha256:ps.sha256,
     executable:powershell,args,cwd:root,timeoutMs:v.timeoutMs,drainMs:v.drainMs};
-  const frozen={schema:'soui.standard-build-inputs/v1',version:api.buildEvidence.version(root),architecture:v.architecture,configuration:v.configuration,
+  if(debug){context.executable=hostPrepared.value.executable.path;context.args=['--input',debugPlanned.pin.path,'--input-sha256',debugPlanned.pin.sha256,'--report',debugPlanned.value.report,'--nonce',debugPlanned.value.nonce];}
+  const frozen={schema:debug?'soui.standard-build-inputs/v2':'soui.standard-build-inputs/v1',version:api.buildEvidence.version(root),architecture:v.architecture,configuration:v.configuration,
     sdkOnly:!!v.sdkOnly,compilerTail:false,nativeToolchain:profileName,...Object.fromEntries(Object.keys(api.llvmPaths).map(key=>[key,v[key]])),
     source,rawSource,scripts:scriptRows,tools,scriptSha256:scriptRows.find(row=>row.path==='tools/Build.ps1').sha256,
     context,contextSha256:sha(encoded(context)),oldBuild,environment:env,llvm:{inputIdentity:profile.InputIdentity,bridgeIdentity:profile.BridgeIdentity,discovery:pin(probeOutput),
        sourceCodePins:codePins,dependencyInventories:dependency.inventories,dependencyPins:dependency.dependencyPins,resourceWrapperPin,validationTools,previousObservation}};
+  if(debug){frozen.invocationOptions=v;frozen.llvm.debugBinding={input:debugPlanned.pin,raw:{path:debugPlanned.value.report,bytes:null,sha256:null},prepared:hostPrepared.pin,observer:hostPrepared.value.executable,rootArguments:args};}
   write(folder,'inputs.json',frozen);assertInventory(dependency.dependencyPins);tools.forEach(api.verifyToolCompatible);
-  const launched=await api.capture(folder,'build',powershell,args,{runner,cwd:root,timeoutMs:v.timeoutMs,drainMs:v.drainMs,env});
+  const debugRun=debug?await debug.captureBuild(root,v,folder,profile,tools,[],hostPrepared,args,env,api,debugPlanned):null;
+  const launched=debugRun?debugRun.capture:await api.capture(folder,'build',powershell,args,{runner,cwd:root,timeoutMs:v.timeoutMs,drainMs:v.drainMs,env});
+  if(debugRun){frozen.llvm.debugBinding.raw=debugRun.raw;write(folder,'closed-debug-inputs.json',frozen);}
   nativeNatural(launched,api.verifyStream);
   const buildBytes=fs.readFileSync(buildPath);write(folder,'current-build.json.bin',buildBytes);
   const requested=read(profileRequestPath(root,v));requestMatches(root,v,requested,profile);
@@ -268,11 +291,12 @@ async function run(root,v,folder,api){
   need(isDeepStrictEqual(parseStrictJson(buildBytes.toString('utf8')),build),'Build report changed during verification');
   const raw=rawCapturePins(folder,'build');const observerDirectory=path.join(folder,'llvm-observer');fs.mkdirSync(observerDirectory);
   const observerPath=path.join(root,'tools/internal/Observe-LlvmBuild.ps1'),observationPath=path.join(observerDirectory,'llvm-observation.json');
-  const cfg={schema:'soui.standard-llvm-observer-inputs/v1',profile:profileName,root,architecture:v.architecture,configuration:v.configuration,sdkOnly:!!v.sdkOnly,
+  const cfg={schema:debug?'soui.standard-llvm-observer-inputs/v2':'soui.standard-llvm-observer-inputs/v1',profile:profileName,root,architecture:v.architecture,configuration:v.configuration,sdkOnly:!!v.sdkOnly,
     withWebView2:!!v.withWebView2,buildDirectory:path.dirname(buildPath),evidenceDirectory:observerDirectory,inputIdentity:profile.InputIdentity,bridgeIdentity:profile.BridgeIdentity,
     requestFile:pin(profileRequestPath(root,v)),buildReport:pin(buildPath),buildCapture:{...raw,timeoutMs:v.timeoutMs,drainMs:v.drainMs},
     controlPins:codePins,dependencyPins:dependency.dependencyPins,resourceWrapperPin,nativeLog:pin(path.join(path.dirname(buildPath),`native-${v.configuration}.log`)),
     previousObservation,qualificationPassed:false,releaseReady:false};
+  if(debugRun){cfg.debugCapture=frozen.llvm.debugBinding;cfg.fastToolEvidence=debugRun.proof;}
   const cfgFile=write(folder,'llvm-observer-inputs.json',cfg),cfgPin=pin(cfgFile);
   const observationRun=await api.capture(folder,'llvm-observer',powershell,['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',observerPath,
     '-InputFile',cfgFile,'-InputSha',cfgPin.sha256,'-ObservationPath',observationPath],{runner,cwd:root,timeoutMs:120000,drainMs:2000,env});
@@ -286,13 +310,14 @@ async function run(root,v,folder,api){
   const currentSource=id.source(root),observed={sourceSha256:currentSource.sha256,rawSourceSha256:id.snapshot(root,currentSource.files.map(row=>row.path)).sha256,
     scriptSha256:pin(path.join(root,'tools/Build.ps1')).sha256,scripts:api.scripts(root,v),tools:tools.map(api.currentTool),artifacts:api.artifacts(build),compilerVerified:true,
     llvm:{profile:profileName,architecture:v.architecture,configuration:v.configuration,inputIdentity:profile.InputIdentity,bridgeIdentity:profile.BridgeIdentity,
-      observedPointerBytes:observation.observedPointerBytes,buildPid:launched.result.pid,buildCreationFileTime:launched.result.creationFileTime,
+      observedPointerBytes:observation.observedPointerBytes,buildPid:debugRun?debugRun.proof.innerBuild.pid:launched.result.pid,buildCreationFileTime:debugRun?debugRun.proof.innerBuild.creationFileTime:launched.result.creationFileTime,
       requestFile:cfg.requestFile,validationTools,
       observation:pin(observationPath),observerCapture:rawCapturePins(folder,'llvm-observer'),observerNaturalClosure:true}};
+  if(debugRun)observed.llvm.debugProof=debugRun.proof;
   write(folder,'compiler-observation.json',observation);write(folder,'observed.json',observed);
-  const answer=api.evaluateBuild({...launched,frozen,buildReportBytes:buildBytes,observed});
-  if(answer.accepted){const accepted={schema:'soui.standard-llvm-accepted-build/v1',architecture:v.architecture,configuration:v.configuration,sdkOnly:!!v.sdkOnly,
-    buildId:build.buildId,sourceSha256:build.source.sha256,attemptDirectory:folder,observation:pin(observationPath),inputs:pin(path.join(folder,'inputs.json')),
+  const answer=api.evaluateBuild({...launched,frozen,buildReportBytes:buildBytes,observed,...(debugRun?{debugReportBytes:fs.readFileSync(debugRun.raw.path),debugInputBytes:fs.readFileSync(debugRun.input.path)}:{})});
+  if(answer.accepted){const accepted={schema:debug?'soui.standard-llvm-accepted-build/v2':'soui.standard-llvm-accepted-build/v1',architecture:v.architecture,configuration:v.configuration,sdkOnly:!!v.sdkOnly,
+    buildId:build.buildId,sourceSha256:build.source.sha256,attemptDirectory:folder,observation:pin(observationPath),inputs:pin(path.join(folder,debug?'closed-debug-inputs.json':'inputs.json')),
     observed:pin(path.join(folder,'observed.json')),buildCapture:raw,observerCapture:rawCapturePins(folder,'llvm-observer'),requestFile:pin(profileRequestPath(root,v)),
     buildReportSnapshot:pin(path.join(folder,'current-build.json.bin')),validationTools,qualificationPassed:false,releaseReady:false};
     const temporary=write(folder,'accepted-build.json',accepted);fs.copyFileSync(temporary,acceptedFile);}
@@ -303,7 +328,7 @@ function priorObservation(root,arch,config,sdkOnly,profile,validationTools){
   // old observations. Current source/header hashes are checked separately for
   // each reused object below; a source edit must not invalidate unrelated TUs.
   const directory=path.join(root,'out',(sdkOnly?'sdk-':'')+arch),accepted=read(path.join(directory,`standard-llvm-${config}.json`));
-  need(accepted.schema==='soui.standard-llvm-accepted-build/v1'&&accepted.architecture===arch&&accepted.configuration===config&&accepted.sdkOnly===sdkOnly&&
+  need(['soui.standard-llvm-accepted-build/v1','soui.standard-llvm-accepted-build/v2'].includes(accepted.schema)&&accepted.architecture===arch&&accepted.configuration===config&&accepted.sdkOnly===sdkOnly&&
     accepted.qualificationPassed===false&&accepted.releaseReady===false,'Prior LLVM acceptance scope differs');
   const folder=id.safePath(accepted.attemptDirectory);need(path.dirname(folder)===path.join(root,'out/standard-build')&&path.basename(folder).startsWith('attempt-'),'Prior attempt ownership differs');
   for(const row of [accepted.observation,accepted.inputs,accepted.observed,accepted.buildReportSnapshot,accepted.requestFile])match(row);
@@ -311,16 +336,24 @@ function priorObservation(root,arch,config,sdkOnly,profile,validationTools){
   const standard=require('./standard-build.cjs'),buildCapture=recordedCapture(accepted.buildCapture),observerCapture=recordedCapture(accepted.observerCapture);
   const natural=nativeNatural(buildCapture,standard.verifyStream);nativeNatural(observerCapture,standard.verifyStream);
   const old=read(accepted.observation.path),frozen=read(accepted.inputs.path),build=read(accepted.buildReportSnapshot.path);
+  const priorDebug=accepted.schema==='soui.standard-llvm-accepted-build/v2';
+  let historicalSubject=natural.start;
+  if(priorDebug){
+    need(frozen.schema==='soui.standard-build-inputs/v2'&&old.schema==='soui.standard-llvm-build-observation/v2'&&isDeepStrictEqual(old.debugCapture,frozen.llvm.debugBinding),'Historical dual-root schema/binding differs');
+    const proof=require('./host64-build-debug-observer.cjs').recordedEvidence(old.debugCapture,buildCapture,root,standard.buildArguments(root,frozen.invocationOptions));
+    need(isDeepStrictEqual(old.fastToolEvidence,proof)&&old.outerObserverCapture.pid===natural.start.pid&&old.outerObserverCapture.creationFileTime===natural.start.creationFileTime&&old.outerObserverCapture.raw.sha256===buildCapture.result.reportSha256,'Historical real outer observer differs');
+    historicalSubject=proof.innerBuild;
+  }
   verifyCurrentCodePins(root,frozen.llvm.sourceCodePins);
   validateResourceWrapperBinding(old,frozen);
   validateNinjaScope(old,root,arch,config,sdkOnly);
   need(isDeepStrictEqual(accepted.validationTools,validationTools)&&isDeepStrictEqual(frozen.llvm.validationTools,validationTools)&&
     isDeepStrictEqual(old.frozenDependencyPins,frozen.llvm.dependencyPins),'Historical validation-tool ownership differs');
   validateValidationBinding(validationTools,root,{architecture:arch},accepted.requestFile.path,frozen.llvm.dependencyPins);
-  need(old.schema==='soui.standard-llvm-build-observation/v1'&&old.compilerVerified===true&&path.resolve(old.root)===root&&
+  need((priorDebug||old.schema==='soui.standard-llvm-build-observation/v1')&&old.compilerVerified===true&&path.resolve(old.root)===root&&
     old.architecture===arch&&old.configuration===config&&old.sdkOnly===sdkOnly&&old.inputIdentity===profile.InputIdentity&&
-    old.bridgeIdentity===profile.BridgeIdentity&&old.buildCapture.pid===natural.start.pid&&old.buildCapture.creationFileTime===natural.start.creationFileTime&&
-    old.buildCapture.raw.sha256===buildCapture.result.reportSha256&&old.buildReport.sha256===accepted.buildReportSnapshot.sha256&&
+    old.bridgeIdentity===profile.BridgeIdentity&&old.buildCapture.pid===historicalSubject.pid&&old.buildCapture.creationFileTime===historicalSubject.creationFileTime&&
+    old.buildCapture.raw.sha256===(priorDebug?old.debugCapture.raw.sha256:buildCapture.result.reportSha256)&&old.buildReport.sha256===accepted.buildReportSnapshot.sha256&&
     build.buildId===accepted.buildId&&build.source.sha256===accepted.sourceSha256&&build.nativeBuild==='passed'&&
     frozen.llvm.inputIdentity===profile.InputIdentity&&frozen.llvm.bridgeIdentity===profile.BridgeIdentity,
     'Historical observation does not bind its actual source-build and native capture');
@@ -330,13 +363,19 @@ function verifyStandardBuild(root,arch,config,sdkOnly=false,request={}){
   root=id.safePath(path.resolve(root));need(request.nativeToolchain===profileName,'An explicit LLVM request is required');
   const build=require('./build-evidence.cjs').verifyBuild(root,arch,config,sdkOnly,request);
   const directory=path.join(root,'out',(sdkOnly?'sdk-':'')+arch),accepted=read(path.join(directory,`standard-llvm-${config}.json`));
-  need(accepted.schema==='soui.standard-llvm-accepted-build/v1'&&accepted.architecture===arch&&accepted.configuration===config&&accepted.sdkOnly===sdkOnly&&
+  need(['soui.standard-llvm-accepted-build/v1','soui.standard-llvm-accepted-build/v2'].includes(accepted.schema)&&accepted.architecture===arch&&accepted.configuration===config&&accepted.sdkOnly===sdkOnly&&
     accepted.buildId===build.buildId&&accepted.sourceSha256===build.source.sha256&&!accepted.qualificationPassed&&!accepted.releaseReady,'Current accepted LLVM build identity missing');
   const folder=id.safePath(accepted.attemptDirectory);need(path.dirname(folder)===path.join(root,'out/standard-build')&&path.basename(folder).startsWith('attempt-'),'Actual standard attempt ownership differs');
   const result=read(path.join(folder,'result.json'));need(result.accepted===true&&result.genericSupervisionPassed===true&&!result.compilerTailAcceptance,'Original standard build not accepted naturally');
   for(const row of [accepted.observation,accepted.inputs,accepted.observed,accepted.requestFile,accepted.buildReportSnapshot])match(row);
   const standard=require('./standard-build.cjs');
   const current=read(accepted.observation.path),frozen=read(accepted.inputs.path),profile=read(accepted.requestFile.path).discovery;
+  if(accepted.schema==='soui.standard-llvm-accepted-build/v2'){
+    need(frozen.schema==='soui.standard-build-inputs/v2'&&current.schema==='soui.standard-llvm-build-observation/v2'&&isDeepStrictEqual(current.debugCapture,frozen.llvm.debugBinding)&&
+      frozen.invocationOptions.architecture===arch&&frozen.invocationOptions.configuration===config&&!!frozen.invocationOptions.sdkOnly===sdkOnly,'Current dual-root schema/target differs');
+    const proof=require('./host64-build-debug-observer.cjs').recordedEvidence(current.debugCapture,recordedCapture(accepted.buildCapture),root,standard.buildArguments(root,frozen.invocationOptions));
+    need(isDeepStrictEqual(proof,current.fastToolEvidence),'Current recorded inner/outer proof differs');
+  }else need(frozen.schema==='soui.standard-build-inputs/v1'&&current.schema==='soui.standard-llvm-build-observation/v1','Schema1 must retain its original single root');
   verifyCurrentCodePins(root,frozen.llvm.sourceCodePins);
   validateResourceWrapperBinding(current,frozen);
   need(isDeepStrictEqual(accepted.validationTools,frozen.llvm.validationTools)&&
@@ -346,7 +385,7 @@ function verifyStandardBuild(root,arch,config,sdkOnly=false,request={}){
   need(frozen.nativeToolchain===profileName&&frozen.llvm.inputIdentity===profile.InputIdentity&&frozen.llvm.bridgeIdentity===profile.BridgeIdentity,'Prior frozen profile differs');
   return {build,observation:current,observationPath:accepted.observation.path,accepted,compilerVerified:true,qualificationPassed:false,releaseReady:false};
 }
-module.exports={freezeResourceWrapper,validateResourceWrapperBinding,validateNinjaScope,codeNames,providerNames,preparation,profileRequestPath,selected,verifyCurrentCodePins,validatePreparedProfile,validateValidationBinding,run,verifyStandardBuild};
+module.exports={freezeResourceWrapper,validateResourceWrapperBinding,validateNinjaScope,codeNames,providerNames,preparation,profileRequestPath,selected,verifyCurrentCodePins,validatePreparedProfile,validateValidationBinding,run,verifyStandardBuild,cleanEnvironment:environment};
 if(require.main===module){
   try{
     const args=process.argv.slice(2);

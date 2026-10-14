@@ -2,6 +2,8 @@
 
 ## 0.5.0-preview.1（开发中：可靠性基础，尚未发布）
 
+- TaskStore 新增显式可选的私有分配请求配额，共享计算 map、retained strings 与事务替换期间仍存活的内存；拒绝和底层分配失败保持原状态。默认未启用，两架构独立原生回归通过；任务服务安全接线、完整 SDK 与长期资源验收另行完成。
+
 - 新增可选命名缓存观测接口：显式异步采样现有 Blink/Skia 缓存，界面读取完成副本；独立 216 字节接口保留原 renderer ABI。八小时入口明确开启采样并保留原采样时间、重复和退休副本；纯数据验证不代表缓存、内存或长期验收通过。
 - 为 Miniblink 引擎的普通工作、续期、回复和清理设置独立容量，权限范围同时限制待创建、活跃和仍被持有的对象；超限返回明确错误，同范围续期保留原归属。新增默认关闭的原生标量诊断。公共 C++ 布局变化需要 SDK 与消费者一起重编译；常规 x86/x64 × Debug/Release 四配置共 116 项回归通过，长期资源及目标系统验收仍待完成。
 - 修复 GUI 原生动作经 Bridge 线程调用时任务卡住的问题：由已有界面线程有界执行，保留原授权、期限和一次执行限制；未执行动作的失败确认可正确结束。两架构原生回归及 x64 React、Vue、现代后端的完整 Agent 界面流程分别通过有限验证，物理输入、性能、目标系统和正式发布仍待验收。
@@ -173,3 +175,11 @@ preview.1 的开发包在验证期间生成后保留不变；本次修复历史�
 - 新项目生成、固定版本、完整性校验、安装升级与失败回滚。
 - 整理 SOUI / Miniblink 源码、运行依赖、重编译入口及验收文档。
 - 仍为预览交付，生产门槛见 docs/known-issues.md。
+## Unreleased: host AMD64 build observation
+
+- Added an explicit portable LLVM debug observer producer and schema2 caller
+  route, retaining separate real observer/Build identities, original polling
+  diagnostics and existing SDK build/output/install gates.
+- Source/pure checks only for this integration. Portable native producer,
+  normal x86/x64 builds and installed consumers are pending; no compatibility,
+  performance, quota or release qualification is promoted.

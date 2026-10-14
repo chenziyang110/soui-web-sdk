@@ -267,7 +267,8 @@ function NaturalImportedCapture($capture){
 }
 function ReadInstalledSdk($paths){
  $value=$cfg.installedConsumer;$acceptedPin=RememberInstalled $value.sdkAccepted;$accepted=RawText $acceptedPin.path|ConvertFrom-Json
- Need ($accepted.schema-ceq'soui.standard-llvm-accepted-build/v1'-and$accepted.architecture-ceq$cfg.architecture-and$accepted.configuration-ceq$cfg.configuration-and$accepted.sdkOnly-eq$true-and$accepted.qualificationPassed-eq$false-and$accepted.releaseReady-eq$false-and$accepted.buildId-ceq$sourceBuild.buildId-and$accepted.sourceSha256-ceq$sourceBuild.source.sha256) 'Current independently accepted SDK build identity'
+ $importedDebug=$accepted.schema-ceq'soui.standard-llvm-accepted-build/v2'
+ Need (($importedDebug-or$accepted.schema-ceq'soui.standard-llvm-accepted-build/v1')-and$accepted.architecture-ceq$cfg.architecture-and$accepted.configuration-ceq$cfg.configuration-and$accepted.sdkOnly-eq$true-and$accepted.qualificationPassed-eq$false-and$accepted.releaseReady-eq$false-and$accepted.buildId-ceq$sourceBuild.buildId-and$accepted.sourceSha256-ceq$sourceBuild.source.sha256) 'Current independently accepted SDK build identity'
  $attempt=[IO.Path]::GetFullPath($accepted.attemptDirectory);Need ((Norm ([IO.Path]::GetDirectoryName($attempt)))-ceq(Norm (Join-Path $root 'out/standard-build'))-and[IO.Path]::GetFileName($attempt)-cmatch'^attempt-[0-9a-z-]+$') 'Owned accepted SDK attempt directory'
  foreach($name in @('observation','inputs','observed','requestFile','buildReportSnapshot')){[void](RememberInstalled $accepted.$name);if($name-cne'requestFile'){Need ((Norm ([IO.Path]::GetFullPath($accepted.$name.path))).StartsWith(((Norm $attempt).TrimEnd('/')+'/'),[StringComparison]::Ordinal)) 'SDK accepted proof must belong to its actual attempt'}}
  Need (InstalledPinSame $accepted.requestFile $requestPin) 'SDK accepted request differs from current own request'
@@ -275,9 +276,19 @@ function ReadInstalledSdk($paths){
  $resultPin=RememberInstalled (ObsPin (Join-Path $attempt 'result.json'));$result=RawText $resultPin.path|ConvertFrom-Json
  Need ($result.accepted-eq$true-and$result.genericSupervisionPassed-eq$true-and$result.compilerTailAcceptance-eq$false) 'Imported SDK original standard acceptance failed'
  $sdk=RawText $accepted.observation.path|ConvertFrom-Json;$frozen=RawText $accepted.inputs.path|ConvertFrom-Json
- Need ($sdk.schema-ceq'soui.standard-llvm-build-observation/v1'-and$sdk.compilerVerified-eq$true-and$sdk.profile-ceq$cfg.profile-and$sdk.sdkOnly-eq$true-and(Norm $sdk.root)-ceq(Norm $root)-and$sdk.architecture-ceq$cfg.architecture-and$sdk.configuration-ceq$cfg.configuration-and$sdk.inputIdentity-ceq$profile.InputIdentity-and$sdk.bridgeIdentity-ceq$profile.BridgeIdentity-and$sdk.qualificationPassed-eq$false-and$sdk.releaseReady-eq$false-and$sdk.buildReport.sha256-ceq$sourceBuildPin.sha256-and(InstalledPinSame $sdk.requestFile $requestPin)-and$frozen.schema-ceq'soui.standard-build-inputs/v1'-and$frozen.architecture-ceq$cfg.architecture-and$frozen.configuration-ceq$cfg.configuration-and$frozen.sdkOnly-eq$true-and$frozen.compilerTail-eq$false-and$frozen.nativeToolchain-ceq'LLVM22MSVC142'-and$frozen.llvm.inputIdentity-ceq$profile.InputIdentity-and$frozen.llvm.bridgeIdentity-ceq$profile.BridgeIdentity) 'Imported SDK observation/profile/source-build binding'
+ Need ($(if($importedDebug){$sdk.schema-ceq'soui.standard-llvm-build-observation/v2'-and$frozen.schema-ceq'soui.standard-build-inputs/v2'}else{$sdk.schema-ceq'soui.standard-llvm-build-observation/v1'-and$frozen.schema-ceq'soui.standard-build-inputs/v1'})-and$sdk.compilerVerified-eq$true-and$sdk.profile-ceq$cfg.profile-and$sdk.sdkOnly-eq$true-and(Norm $sdk.root)-ceq(Norm $root)-and$sdk.architecture-ceq$cfg.architecture-and$sdk.configuration-ceq$cfg.configuration-and$sdk.inputIdentity-ceq$profile.InputIdentity-and$sdk.bridgeIdentity-ceq$profile.BridgeIdentity-and$sdk.qualificationPassed-eq$false-and$sdk.releaseReady-eq$false-and$sdk.buildReport.sha256-ceq$sourceBuildPin.sha256-and(InstalledPinSame $sdk.requestFile $requestPin)-and$frozen.architecture-ceq$cfg.architecture-and$frozen.configuration-ceq$cfg.configuration-and$frozen.sdkOnly-eq$true-and$frozen.compilerTail-eq$false-and$frozen.nativeToolchain-ceq'LLVM22MSVC142'-and$frozen.llvm.inputIdentity-ceq$profile.InputIdentity-and$frozen.llvm.bridgeIdentity-ceq$profile.BridgeIdentity) 'Imported SDK observation/profile/source-build binding'
  $subject=NaturalImportedCapture $accepted.buildCapture;[void](NaturalImportedCapture $accepted.observerCapture)
- Need ($sdk.buildCapture.pid-eq$subject.pid-and$sdk.buildCapture.creationFileTime-ceq$subject.creationFileTime-and(InstalledPinSame $sdk.buildCapture.raw $accepted.buildCapture.raw)-and(InstalledPinSame $sdk.buildCapture.context $accepted.buildCapture.context)-and(InstalledPinSame $sdk.buildCapture.ready $accepted.buildCapture.ready)-and(InstalledPinSame $sdk.buildCapture.finished $accepted.buildCapture.finished)-and$sdk.buildCapture.wholeJobClosed-eq$true-and$sdk.buildCapture.forced-eq$false) 'Imported SDK observer must bind the actual closed build'
+ $importedOuter=if($importedDebug){$sdk.outerObserverCapture}else{$sdk.buildCapture}
+ Need ($importedOuter.pid-eq$subject.pid-and$importedOuter.creationFileTime-ceq$subject.creationFileTime-and(InstalledPinSame $importedOuter.raw $accepted.buildCapture.raw)-and(InstalledPinSame $importedOuter.context $accepted.buildCapture.context)-and(InstalledPinSame $importedOuter.ready $accepted.buildCapture.ready)-and(InstalledPinSame $importedOuter.finished $accepted.buildCapture.finished)-and$importedOuter.wholeJobClosed-eq$true-and$importedOuter.forced-eq$false) 'Imported SDK observer must bind the actual closed build'
+ if($importedDebug){
+  foreach($pin in @($sdk.debugCapture.input,$sdk.debugCapture.raw,$sdk.debugCapture.prepared,$sdk.debugCapture.observer)){[void](RememberInstalled $pin)}
+  Need ((ConvertTo-Json -InputObject $sdk.debugCapture -Depth 20 -Compress)-ceq(ConvertTo-Json -InputObject $frozen.llvm.debugBinding -Depth 20 -Compress)) 'Imported dual-root original binding differs'
+  $native=RawText $sdk.debugCapture.input.path|ConvertFrom-Json;$text=RawText $sdk.debugCapture.raw.path;Need ($text.EndsWith("`n")-and$text-notmatch'\r') 'Imported complete native stream'
+  $rows=@($text.TrimEnd([char]10).Split([char]10)|ForEach-Object{$_|ConvertFrom-Json});Need ($rows.Count-gt1-and$rows.Count-le100000) 'Imported finite native stream'
+  for($i=0;$i-lt$rows.Count;$i++){Need ($rows[$i].schema-ceq'soui.host64-build-debug-addendum/2'-and$rows[$i].sequence-eq$i+1-and$rows[$i].nonce-ceq$native.nonce-and$rows[$i].inputSha256-ceq$sdk.debugCapture.input.sha256) 'Imported raw nonce/sequence/input SHA'}
+  $begin=$rows[0];$end=$rows[-1];$roots=@($rows|Where-Object{$_.event-ceq'create-paused'-and$_.buildRoot-eq$true});$rootQueries=@($rows|Where-Object{$_.event-ceq'commandline-paused'-and$_.buildRoot-eq$true})
+  Need ($native.schema-ceq'soui.host64-build-debug-inputs/2'-and$native.sdkArchitecture-ceq$cfg.architecture-and$native.configuration-ceq$cfg.configuration-and(Norm $native.root)-ceq(Norm $root)-and$begin.observerPid-eq$subject.pid-and$begin.observerCreationFileTime-ceq$subject.creationFileTime-and$end.event-ceq'terminal'-and$end.passed-eq$true-and$end.forced-eq$false-and$end.allMembersSignaled-eq$true-and$end.allPausedQueriesClosed-eq$true-and$end.allLoaderSequences-eq$true-and$end.debugProtocolValid-eq$true-and$end.activeProcesses-eq0-and$end.limitTerminatedProcesses-eq0-and$end.rootExitCode-eq0-and$roots.Count-eq1-and$rootQueries.Count-eq1-and$roots[0].pid-eq$end.rootPid-and$roots[0].creationFileTime-ceq$end.rootCreationFileTime-and$sdk.buildCapture.pid-eq$end.rootPid-and$sdk.buildCapture.creationFileTime-ceq$end.rootCreationFileTime-and$sdk.buildCapture.role-ceq'inner-build'-and(InstalledPinSame $sdk.buildCapture.raw $sdk.debugCapture.raw)-and(InstalledPinSame $sdk.buildCapture.input $sdk.debugCapture.input)-and$sdk.fastToolEvidence.actualDebugRawSha256-ceq$sdk.debugCapture.raw.sha256-and$sdk.fastToolEvidence.experimentalLifecycleObserved-eq$true) 'Imported actual inner CREATE/whole-argv/EXIT binding'
+ }
  $rawInputs=@{};foreach($pin in $sdk.frozenDependencyPins){$key=Norm $pin.path;Need (-not$rawInputs.ContainsKey($key)) 'Unique accepted SDK raw dependency pins';$rawInputs[$key]=$pin}
  foreach($row in $sourceBuild.source.files){$p=Full $row.path $root;$key=Norm $p;Need ($rawInputs.ContainsKey($key)) 'Every accepted SDK source member needs its original raw pin';[void](RememberInstalled $rawInputs[$key])}
  foreach($pin in $sdk.evidencePins){[void](RememberInstalled $pin)}
@@ -334,10 +345,12 @@ function ReadReleaseSdk($paths){
 }
 $inputPin=ObsPin $InputFile;Need ($inputPin.sha256-ceq$InputSha) 'Observer input bytes differ'
 $cfg=RawText $InputFile|ConvertFrom-Json
-Need ($cfg.schema-ceq'soui.standard-llvm-observer-inputs/v1'-and$cfg.profile-ceq'LLVM22MSVC142'-and$cfg.architecture-cin@('x64','x86')-and$cfg.configuration-cin@('Debug','Release')-and$cfg.qualificationPassed-eq$false) 'Explicit current observer scope'
+$debugMode=$cfg.schema-ceq'soui.standard-llvm-observer-inputs/v2'
+Need (($debugMode-or$cfg.schema-ceq'soui.standard-llvm-observer-inputs/v1')-and$cfg.profile-ceq'LLVM22MSVC142'-and$cfg.architecture-cin@('x64','x86')-and$cfg.configuration-cin@('Debug','Release')-and$cfg.qualificationPassed-eq$false) 'Explicit current observer scope'
 $root=[IO.Path]::GetFullPath($cfg.root);$build=[IO.Path]::GetFullPath($cfg.buildDirectory);$folder=[IO.Path]::GetFullPath($cfg.evidenceDirectory)
 $installedMode=$cfg.PSObject.Properties.Name-ccontains'installedConsumer';$installedPaths=$null;$installedBinding=$null;$installedPins=@{}
 $releaseMode=$cfg.PSObject.Properties.Name-ccontains'releaseConsumer';Need (-not($installedMode-and$releaseMode)) 'One explicit imported consumer context only'
+Need (-not$debugMode-or(-not$installedMode-and-not$releaseMode)) 'Dual-root collection is an explicit ordinary source-build mode'
 if($installedMode){$installedPaths=InstalledPaths $root $cfg}elseif($releaseMode){$installedPaths=ReleaseConsumerPaths $root $cfg}else{
 Need ((Norm $build)-ceq(Norm (Join-Path $root ('out/'+$(if($cfg.sdkOnly){'sdk-'}else{''})+$cfg.architecture)))) 'Actual owned SDK/application build directory'
 }
@@ -542,6 +555,32 @@ foreach($row in $events){if($row.event-cne'owned-member'-or$null-eq$row.image){c
  }}
 }
 
+# Original polling events and actualToolRows remain unchanged. This separate
+# input is a projection of the complete native debug stream, validated by the
+# current pinned JS collector before launch and again after this reader exits.
+$independentRoles=@{};$independentToolRows=[Collections.Generic.List[object]]::new();$debugRows=@();$innerBuild=$null
+if($debugMode){
+ $binding=$cfg.debugCapture;$fast=$cfg.fastToolEvidence
+ foreach($p in @($binding.input,$binding.raw,$binding.prepared,$binding.observer)){$evidencePins.Add((MatchPin $p))}
+ $nativeInput=RawText $binding.input.path|ConvertFrom-Json
+ Need ($nativeInput.schema-ceq'soui.host64-build-debug-inputs/2'-and$nativeInput.profile-ceq$cfg.profile-and$nativeInput.sdkArchitecture-ceq$cfg.architecture-and$nativeInput.configuration-ceq$cfg.configuration-and(Norm $nativeInput.root)-ceq(Norm $root)-and$nativeInput.nonce-ceq$fast.nonce-and$fast.originalPollingUnmodified-eq$true-and$fast.actualDebugRawSha256-ceq$binding.raw.sha256-and$fast.actualDebugRawBytes-eq$binding.raw.bytes-and$fast.experimentalLifecycleObserved-eq$true) 'Actual independent fast-tool raw/input identity'
+ Need ((Norm $context.executable)-ceq(Norm $binding.observer.path)-and$context.executableSha256-ceq$binding.observer.sha256-and$context.runnerSha256-ceq$nativeInput.outerRunner.sha256-and$context.args.Count-eq8-and$context.args[0]-ceq'--input'-and(Norm $context.args[1])-ceq(Norm $binding.input.path)-and$context.args[2]-ceq'--input-sha256'-and$context.args[3]-ceq$binding.input.sha256-and$context.args[4]-ceq'--report'-and(Norm $context.args[5])-ceq(Norm $binding.raw.path)-and$context.args[6]-ceq'--nonce'-and$context.args[7]-ceq$nativeInput.nonce) 'Original outer context must remain the real observer'
+ $debugText=RawText $binding.raw.path;Need ($debugText.EndsWith("`n")-and$debugText-notmatch'\r') 'Complete native debug stream'
+ $debugRows=@($debugText.TrimEnd([char]10).Split([char]10)|ForEach-Object{$_|ConvertFrom-Json});Need ($debugRows.Count-gt1-and$debugRows.Count-le100000) 'Bounded complete debug records'
+ for($i=0;$i-lt$debugRows.Count;$i++){$r=$debugRows[$i];Need ($r.schema-ceq'soui.host64-build-debug-addendum/2'-and$r.sequence-eq$i+1-and$r.nonce-ceq$nativeInput.nonce-and$r.inputSha256-ceq$binding.input.sha256) 'Native debug row sequence/nonce/input hash'}
+ $debugStart=$debugRows[0];$debugTerminal=$debugRows[-1]
+ Need ($debugStart.event-ceq'observer-start'-and$debugStart.observerPid-eq$start.pid-and$debugStart.observerCreationFileTime-ceq$start.creationFileTime-and$debugTerminal.event-ceq'terminal'-and$debugTerminal.passed-eq$true-and$debugTerminal.forced-eq$false-and$debugTerminal.rootExitCode-eq0-and$debugTerminal.activeProcesses-eq0-and$debugTerminal.limitTerminatedProcesses-eq0-and$debugTerminal.allMembersSignaled-eq$true-and$debugTerminal.allPausedQueriesClosed-eq$true-and$debugTerminal.allLoaderSequences-eq$true-and$debugTerminal.debugProtocolValid-eq$true-and$terminal.totalProcesses-eq$debugTerminal.historicalMembers+1) 'Independent complete inner history and exact natural outer membership'
+ $creates=@($debugRows|Where-Object{$_.event-ceq'create-paused'});$queries=@($debugRows|Where-Object{$_.event-ceq'commandline-paused'});$exits=@($debugRows|Where-Object{$_.event-ceq'member-exit'})
+ Need ($creates.Count-eq$debugTerminal.historicalMembers-and$exits.Count-eq$creates.Count-and$queries.Count-eq$debugTerminal.queryCount-and(ConvertTo-Json -InputObject $creates -Depth 20 -Compress)-ceq(ConvertTo-Json -InputObject $fast.created -Depth 20 -Compress)-and(ConvertTo-Json -InputObject $queries -Depth 20 -Compress)-ceq(ConvertTo-Json -InputObject $fast.queries -Depth 20 -Compress)) 'Projection cannot replace actual native frames'
+ $roots=@($creates|Where-Object{$_.buildRoot-eq$true});Need ($roots.Count-eq1-and$roots[0].role-ceq'POWERSHELL'-and$roots[0].pid-eq$fast.innerBuild.pid-and$roots[0].creationFileTime-ceq$fast.innerBuild.creationFileTime-and$roots[0].pid-eq$debugTerminal.rootPid-and$roots[0].creationFileTime-ceq$debugTerminal.rootCreationFileTime) 'Unique real inner Build CREATE identity'
+ $innerBuild=$roots[0]
+ foreach($r in $creates){
+  if($roleNames-cnotcontains$r.role){continue};$receipt=ToolIdentity $r.imageFile.finalPath $r.role
+  Need ($r.imageFile.sha256-ceq$profile.ToolPins.($r.role).sha256-and[uint64]::Parse($r.imageFile.bytes)-eq$profile.ToolPins.($r.role).bytes-and$r.imageFile.machine-eq34404) 'Independent current fixed-role physical image'
+  $independentRoles[$r.role]=$true;$independentToolRows.Add([ordered]@{role=$r.role;pid=$r.pid;creationFileTime=$r.creationFileTime;image=$r.imageFile.finalPath;identity=$receipt;source='independent-debug-create'})
+ }
+}
+
 $cache=@{};foreach($line in (RawText ($build+'/CMakeCache.txt')).Split([char]10)){
  if($line-match'^([^#/:][^:]*):[^=]+=(.*)$'){Need (-not$cache.ContainsKey($Matches[1])) 'Duplicate actual CMake cache key';$cache[$Matches[1]]=$Matches[2].TrimEnd([char]13)}
 }
@@ -621,7 +660,7 @@ Need ($graphCommands.Count-gt0) 'No default graph compiler commands'
 $selectedObjects=@{};foreach($command in $graphCommands){$selectedObjects[(Norm (Full $command.output $build))]=$true}
 $graphEdges=@($edges|Where-Object{$_.rule-cmatch'^(C|CXX)_COMPILER(?:_|$)'-and$_.outputs.Count-eq1-and$selectedObjects.ContainsKey((Norm (Full $_.outputs[0] $build)))})
 $bindings=@(CompileBindings $build $graphCommands $graphEdges);$deps=DependencyBindings $build $graphCommands (RawText $depsFile)
-$previous=$null;if($null-ne$cfg.previousObservation){[void](MatchPin $cfg.previousObservation);$previous=RawText $cfg.previousObservation.path|ConvertFrom-Json;Need ($previous.schema-ceq'soui.standard-llvm-build-observation/v1'-and$previous.compilerVerified-eq$true-and$previous.architecture-ceq$cfg.architecture-and$previous.configuration-ceq$cfg.configuration-and$previous.inputIdentity-ceq$cfg.inputIdentity-and$previous.bridgeIdentity-ceq$cfg.bridgeIdentity) 'Prior observation scope/inputs differ'}
+$previous=$null;if($null-ne$cfg.previousObservation){[void](MatchPin $cfg.previousObservation);$previous=RawText $cfg.previousObservation.path|ConvertFrom-Json;Need ($previous.schema-cin@('soui.standard-llvm-build-observation/v1','soui.standard-llvm-build-observation/v2')-and$previous.compilerVerified-eq$true-and$previous.architecture-ceq$cfg.architecture-and$previous.configuration-ceq$cfg.configuration-and$previous.inputIdentity-ceq$cfg.inputIdentity-and$previous.bridgeIdentity-ceq$cfg.bridgeIdentity) 'Prior observation scope/inputs differ'}
 $compileRecords=[Collections.Generic.List[object]]::new();$objects=@{};$neededRoles=@{NINJA=$true};$currentCompileCount=0
 foreach($command in $graphCommands){
  $source=Full $command.file $build;$sourcePin=DependencyPin $source;$object=Full $command.output $build;$objectPin=ObsPin $object;$bytes=[IO.File]::ReadAllBytes($object);$machine=CoffMachine $bytes 0 $bytes.Length;Need ($machine-eq$expectedMachine) 'Actual compiler object architecture'
@@ -710,12 +749,21 @@ $sdkArchive=Join-Path $build ($(if($cfg.sdkOnly){''}else{'sdk/'})+$cfg.configura
 Need (@($binaryRecords|Where-Object{(Norm $_.output.path)-ceq(Norm $sdkArchive)-and$_.role-ceq'ARCHIVER'}).Count-eq1) 'Actual normal SDK archive missing from proof'
 }
 foreach($key in $requiredLibraryKeys.Keys){Need (@($binaryRecords|Where-Object{(Norm $_.output.path)-ceq$key}).Count-eq1) 'Generated library dependency lacks an actual archive binding'}
-foreach($role in $neededRoles.Keys){Need ($currentRoles.ContainsKey($role)) ('Actual owned tool process was not observed: '+$role)}
+foreach($role in $neededRoles.Keys){Need ($currentRoles.ContainsKey($role)-or($debugMode-and$independentRoles.ContainsKey($role))) ('Actual owned or independent debug tool process was not observed: '+$role)}
 foreach($p in @(($build+'/CMakeCache.txt'),($build+'/CMakeFiles/CMakeConfigureLog.yaml'),($build+'/compile_commands.json'),$impl,$common,$rules,$queryFile,$depsFile,$cfg.nativeLog.path)){$evidencePins.Add((ObsPin $p))}
 foreach($pin in $cfg.controlPins){[void](MatchPin $pin)};foreach($pin in $cfg.dependencyPins){[void](MatchPin $pin)};Need ((ObsPin $InputFile).sha256-ceq$InputSha) 'Observer input changed'
 foreach($pin in $ninjaScopePins.Values){[void](MatchPin $pin)}
 $record=[ordered]@{ninjaWorkdirBinding=$ninjaWorkdirBinding;ninjaScopePins=$ninjaScopePins;schema='soui.standard-llvm-build-observation/v1';profile=$cfg.profile;root=$root;architecture=$cfg.architecture;configuration=$cfg.configuration;sdkOnly=$cfg.sdkOnly;inputIdentity=$cfg.inputIdentity;bridgeIdentity=$cfg.bridgeIdentity;requestFile=$requestPin;buildReport=$cfg.buildReport;buildCapture=[ordered]@{raw=$buildRaw;context=$contextPin;ready=$readyPin;finished=$finishedPin;pid=$start.pid;creationFileTime=$start.creationFileTime;naturalRootExitCode=0;naturalSupervisorExitCode=0;wholeJobClosed=$true;forced=$false};compilerVerified=$true;observedCompilerId='Clang';observedFrontend='MSVC';observedVersion='22.1.3';observedPointerBytes=$expectedWidth;compilerFacts=$compilerFacts.ToArray();ninjaCompileEdges=$bindings;ninjaDependencyRecords=$deps.selected;outsideSelectedDependencyScope=$deps.outsideScope;outsideDefaultGraph=$outsideGraph;compileRecords=$compileRecords.ToArray();resourceRecords=$resourceRecords.ToArray();frozenDependencyPins=$cfg.dependencyPins;derivedDependencies=$derivedDependencies.ToArray();binaryRecords=$binaryRecords.ToArray();actualToolRows=$currentToolRows.ToArray();toolFileIdentities=@($toolIdentities.Values);currentCompileCount=$currentCompileCount;currentBinaryCount=$currentBinaryCount;dependencyPins=@($dependencyPins.Values);evidencePins=$evidencePins.ToArray();scope='Actual selected configuration/default ALL graph; current commands or hash-bound prior natural compile records. No CTest/runtime/OS qualification or filesystem library-read trace.';completeToolchainProvenance=$false;kernelQualified=$false;abiQualified=$false;win7Qualified=$false;qualificationPassed=$false;releaseReady=$false}
 $record.resourceWrapperPin=$(if($cfg.PSObject.Properties.Name-ccontains'resourceWrapperPin'){$cfg.resourceWrapperPin}else{$null})
+if($debugMode){
+ foreach($pin in @($cfg.debugCapture.input,$cfg.debugCapture.raw,$cfg.debugCapture.prepared,$cfg.debugCapture.observer)){[void](MatchPin $pin)}
+ $record.schema='soui.standard-llvm-build-observation/v2'
+ $record.outerObserverCapture=$record.buildCapture
+ $record.buildCapture=[ordered]@{role='inner-build';raw=$cfg.debugCapture.raw;input=$cfg.debugCapture.input;pid=$innerBuild.pid;creationFileTime=$innerBuild.creationFileTime;naturalRootExitCode=0;wholeJobClosed=$true;forced=$false}
+ $record.debugCapture=$cfg.debugCapture;$record.fastToolEvidence=$cfg.fastToolEvidence
+ $record.independentActualToolRows=$independentToolRows.ToArray()
+ $record.originalPollingCapture=$cfg.buildCapture
+}
 if($installedMode){
   foreach($pin in $installedPins.Values){[void](MatchPin $pin)}
  foreach($role in $roleNames){[void](MatchPin $profile.ToolPins.$role)};foreach($pin in @($profile.RequiredInputPins)+@($profile.BridgePins)){[void](MatchPin $pin)}

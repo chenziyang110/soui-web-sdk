@@ -90,3 +90,22 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Build-Dependencies
 - [生产验证执行记录与原始证据](docs/acceptance/progress.md)
 
 当前是预览源码交付。独立构建与接入验证通过，不等于生产发布验收完成；x64 长时间内存与关闭稳定性、目标系统矩阵等剩余项目在已知限制中逐项记录。
+# Explicit host AMD64 build observation
+
+The standard LLVM caller has an opt-in `--host64-build-observer` mode described
+in [ADR-0083](docs/adr/0083-host64-build-debug-observer.md). It preserves the
+original build and semantic gates and keeps the original polling diagnostics.
+The observer is a separate host AMD64/Windows 8+ helper; it does not change the
+SDK output architecture or establish Windows 7 compatibility.
+
+`tools/internal/Prepare-Host64BuildObserver.ps1` defaults to a read-only plan.
+It requires explicit `ProfileRequestFile` (prepared host x64 LLVM request),
+`DevkitRoot`, `CMakeExe`, `NodeExe` and a fresh `OutputDirectory`. A separate
+explicit `-Prepare` operation creates the actual producer receipt. Standard
+build requires `--host64-observer-prepared` with that receipt's absolute path
+and `--host64-observer-sha256` with its actual SHA, as well as the existing six
+explicit LLVM paths. It never automatically compiles or replaces the helper.
+
+This portable integration currently has Source/pure verification only. Real
+producer, normal x86/x64 builds, installed consumers and runtime checks remain
+pending; the earlier isolated SDKOnly experiment is not their acceptance.

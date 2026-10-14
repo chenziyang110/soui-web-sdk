@@ -6,6 +6,31 @@ const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),vm=r
 const {createRequire}=require('node:module');
 const evidenceFile=path.resolve(__dirname,'../../tools/internal/build-evidence.cjs');
 const actualRequire=createRequire(evidenceFile);
+test('LLVM schema2 identity adapter retains separate roots and original semantic predicates',()=>{
+  // The native parser has its own complete raw fixtures. These controlled
+  // dependencies isolate the actual adapter function, without any actor.
+  const source=fs.readFileSync(path.resolve(__dirname,'../../tools/internal/llvm-build-observer.cjs'),'utf8');
+  const body=source.slice(source.indexOf('function validateObservation('),source.indexOf('async function run('));
+  const root='F:\\mock-sdk',proof={innerBuild:{pid:22,creationFileTime:'2'},outerObserver:{pid:11,creationFileTime:'1'}};
+  const pin=name=>({path:'F:\\mock\\'+name,bytes:1,sha256:'a'.repeat(64)}),report={nativeToolchain:{requestFile:pin('request')},payloads:{},optionalPayloads:{}};
+  const row={schema:'soui.standard-llvm-build-observation/v2',root,profile:'LLVM22MSVC142',architecture:'x64',configuration:'Release',sdkOnly:true,inputIdentity:'a',bridgeIdentity:'b',compilerVerified:true,
+    observedCompilerId:'Clang',observedFrontend:'MSVC',observedVersion:'22.1.3',observedPointerBytes:8,qualificationPassed:false,releaseReady:false,
+    debugCapture:{input:pin('input'),raw:pin('debug'),prepared:pin('prepared'),rootArguments:['fixed whole argv']},fastToolEvidence:proof,
+    outerObserverCapture:{pid:11,creationFileTime:'1',raw:pin('outer'),context:pin('context'),ready:pin('ready'),finished:pin('finished'),wholeJobClosed:true,forced:false},
+    buildCapture:{role:'inner-build',pid:22,creationFileTime:'2',raw:pin('debug'),input:pin('input'),wholeJobClosed:true,forced:false},requestFile:pin('request'),buildReport:pin('build'),
+    compileRecords:[{source:pin('source'),object:pin('object'),headers:[pin('header')]}],ninjaCompileEdges:[{}],ninjaDependencyRecords:[{}],resourceRecords:[],binaryRecords:[{output:pin('archive'),inputObjects:[pin('object')],inputLibraries:[],inputResources:[]}],evidencePins:[],dependencyPins:[],frozenDependencyPins:[]};
+  const need=(ok,message)=>{if(!ok)throw Error(message);};let scopeCalls=0;
+  const context={path,need,profileName:'LLVM22MSVC142',isDeepStrictEqual:require('node:util').isDeepStrictEqual,
+    validateNinjaScope(){scopeCalls++;},nativeNatural(){return {start:{pid:11,creationFileTime:'1'}};},samePin:(a,b)=>JSON.stringify(a)===JSON.stringify(b),match:p=>p,
+    read:p=>p===pin('build').path?report:{sdkArchitecture:'x64',configuration:'Release',rootArguments:['fixed whole argv']},
+    require:name=>{assert.equal(name,'./host64-build-debug-observer.cjs');return {recordedEvidence:()=>proof};}};
+  const check=vm.runInNewContext(body+'\nvalidateObservation;',context);
+  const run=value=>check(value,root,{architecture:'x64',configuration:'Release',sdkOnly:true},{InputIdentity:'a',BridgeIdentity:'b'},report,{result:{reportSha256:'a'.repeat(64)}},{},()=>{});
+  assert.equal(run(row),true);assert.equal(scopeCalls,1);
+  for(const change of [v=>v.outerObserverCapture.pid=22,v=>v.buildCapture.pid=11,v=>v.buildCapture.role='owned-start',v=>v.fastToolEvidence={...proof,innerBuild:{pid:23,creationFileTime:'2'}},v=>v.observedPointerBytes=4,v=>v.compileRecords=[],v=>v.ninjaCompileEdges=[],v=>v.binaryRecords=[],v=>v.compilerVerified=false,v=>v.schema='soui.standard-llvm-build-observation/v1']){
+    const candidate=structuredClone(row);change(candidate);assert.throws(()=>run(candidate));
+  }
+});
 function fixture(t,llvm){
   const root=fs.mkdtempSync(path.join(os.tmpdir(),'soui-evidence-readers-'));
   t.after(()=>fs.rmSync(root,{recursive:true,force:true}));

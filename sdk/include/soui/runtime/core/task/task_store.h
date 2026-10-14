@@ -50,6 +50,8 @@ class task_store {
 
   explicit task_store(std::string id_prefix = "task-") : task_store(std::move(id_prefix), soui::sdk::diagnostics::mode::disabled) {}
   task_store(std::string id_prefix, soui::sdk::diagnostics::mode metrics);
+  task_store(std::string id_prefix, soui::sdk::diagnostics::mode metrics,
+             std::optional<task_store_request_quota_policy> quota);
   task_store(const task_store&) = delete;
   task_store& operator=(const task_store&) = delete;
 
@@ -82,7 +84,10 @@ class task_store {
  private:
   friend class task_service;
   struct allocation_owner {
-    explicit allocation_owner(bool observed) noexcept : aggregate(observed), maps(observed), strings(observed) {}
+    allocation_owner(bool observed, std::optional<task_store_request_quota_policy> policy) noexcept
+        : quota(policy), aggregate(observed), maps(observed), strings(observed) {}
+    // The pool retires after all buffers and both diagnostic domains.
+    detail::task_store_request_quota quota;
     // aggregate retires last, after both domains and every actual buffer free.
     detail::task_store_allocation_ledger aggregate, maps, strings;
   };
@@ -101,13 +106,18 @@ class task_store {
     [[nodiscard]] allocation_owner* owner() const noexcept { return owner_; }
     [[nodiscard]] T* allocate(std::size_t count) {
       try {
-        if (count > (std::numeric_limits<std::size_t>::max)() / sizeof(T)) throw std::bad_array_new_length();
+        const auto bytes = detail::task_store_request_quota::checked_request_bytes(count, sizeof(T));
+        detail::task_store_request_quota::reservation credit(owner_ ? &owner_->quota : nullptr, bytes);
 #ifdef SOUI_TASK_STORE_STORAGE_TEST_ONLY
-        if (owner_) detail::task_store_storage_test::before_allocate(owner_->aggregate, count * sizeof(T));
+        if (owner_) {
+          detail::task_store_storage_test::quota_before_allocate(owner_->quota);
+          detail::task_store_storage_test::before_allocate(owner_->aggregate, bytes);
+        }
 #endif
         auto allocator = std::allocator<T>{};
         auto* result = std::allocator_traits<std::allocator<T>>::allocate(allocator, count);
-        if (owner_) { domain().allocated(count * sizeof(T)); owner_->aggregate.allocated(count * sizeof(T)); }
+        if (owner_) { domain().allocated(bytes); owner_->aggregate.allocated(bytes); }
+        credit.commit();
         return result;
       } catch (...) {
         if (owner_) { domain().failed(); owner_->aggregate.failed(); }
@@ -119,7 +129,10 @@ class task_store {
       if (pointer == nullptr && count == 0) return;
       auto allocator = std::allocator<T>{};
       std::allocator_traits<std::allocator<T>>::deallocate(allocator, pointer, count);
-      if (owner_) { domain().deallocated(count * sizeof(T)); owner_->aggregate.deallocated(count * sizeof(T)); }
+      if (owner_) {
+        owner_->quota.release(count * sizeof(T));
+        domain().deallocated(count * sizeof(T)); owner_->aggregate.deallocated(count * sizeof(T));
+      }
     }
     template <class U> bool operator==(const storage_allocator<U, StringDomain>& other) const noexcept { return owner_ == other.owner(); }
     template <class U> bool operator!=(const storage_allocator<U, StringDomain>& other) const noexcept { return !(*this == other); }

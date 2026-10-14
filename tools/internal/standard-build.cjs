@@ -19,10 +19,11 @@ const cli = {'--root':'root','--architecture':'architecture','--configuration':'
   '--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-gui-bindings':'withGuiBindings','--with-vendor-tests':'withVendorTests',
   '--install':'install','--fresh-configure':'freshConfigure','--compiler-tail':'compilerTail',
   '--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
-  '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe','--devkit-root':'devkitRoot'};
+  '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe','--devkit-root':'devkitRoot',
+  '--host64-build-observer':'host64BuildObserver','--host64-observer-prepared':'host64ObserverPrepared','--host64-observer-sha256':'host64ObserverSha256'};
 const llvmPaths={llvmRoot:'-LlvmRoot',msvcRoot:'-MsvcRoot',windowsSdkRoot:'-WindowsSdkRoot',
   ninjaExe:'-NinjaExe',windowsCmdExe:'-WindowsCmdExe',powerShellExe:'-PowerShellExe'};
-const booleans = new Set([...Object.keys(switches),'compilerTail']);
+const booleans = new Set([...Object.keys(switches),'compilerTail','host64BuildObserver']);
 // An opt-in is permission to use the reviewed policy, not to select a new
 // helper by name. The policy independently rechecks these measured bytes.
 const reviewedTailSha256={x86:'1c1ca5f9c04171c02caca6863e29eca3550333219486d23e65bf01fb02951311',
@@ -49,6 +50,11 @@ function options(value) {
     else need(result[key]===undefined,'LLVM paths require explicit LLVM22MSVC142');
   }
   need(profile!=='LLVM22MSVC142'||!result.compilerTail,'LLVM does not admit the MSVC compiler-tail exception');
+  if(result.host64BuildObserver){
+    need(profile==='LLVM22MSVC142'&&result.timeoutMs===900000&&!result.compilerTail,'Host observer requires the explicit fixed LLVM whole-Job mode');
+    need(typeof result.host64ObserverPrepared==='string'&&/^[A-Za-z]:[\\/]/.test(result.host64ObserverPrepared)&&
+      !/[\x00-\x1f]/.test(result.host64ObserverPrepared)&&/^[a-f0-9]{64}$/.test(result.host64ObserverSha256||''),'Explicit actual prepared observer receipt and SHA required');
+  }else need(result.host64ObserverPrepared===undefined&&result.host64ObserverSha256===undefined,'Prepared observer inputs require explicit host64-build-observer');
   if(result.compilerTail) {
     need(!result.withGuiBindings,'Compiler-tail policy does not include WithGuiBindings');
     validateTailImagePin({image:result.tailImage,sha256:result.tailSha256,nonce:'0'.repeat(32)});
@@ -176,15 +182,28 @@ function verifyStream(raw,context,ready,result) {
 // The public pure boundary below consumes explicitly supplied observations for
 // regression fixtures. runBuild obtains every observation directly from disk.
 // Neither this function nor SHA consistency authenticates a same-user rewrite.
-function evaluateBuild({frozen,ready,result,contextBytes,rawReport,buildReportBytes,observed}={}) {
+function evaluateBuild({frozen,ready,result,contextBytes,rawReport,buildReportBytes,observed,debugReportBytes,debugInputBytes}={}) {
   const answer={schema:'soui.standard-build-result/v1',compilationCompleted:false,genericSupervisionPassed:false,
     closureConfirmed:result?.closureConfirmed===true,compilerTailAcceptance:false,accepted:false,releaseReady:false,
     rootExitCode:result?.exitCode??null,supervisorExitCode:result?.supervisorExitCode??null,
     clientGenericSupervisionPassed:result?.passed===true,failure:null};
   try {
-    need(frozen?.schema==='soui.standard-build-inputs/v1'&&observed,'Missing frozen build inputs/current observations');
+    const debugMode=frozen?.schema==='soui.standard-build-inputs/v2';
+    if(debugMode)answer.schema='soui.standard-build-result/v2';
+    need((debugMode||frozen?.schema==='soui.standard-build-inputs/v1')&&observed,'Missing frozen build inputs/current observations');
     const context=json(contextBytes,'context');need(sha(contextBytes)===frozen.contextSha256&&isDeepStrictEqual(context,frozen.context),'Actual context differs from prelaunch bytes');
-    validateInvocation(context,frozen);
+    let debugProof=null;
+    if(debugMode){
+      need(frozen.nativeToolchain==='LLVM22MSVC142'&&!frozen.compilerTail&&frozen.llvm?.debugBinding&&Buffer.isBuffer(debugReportBytes)&&Buffer.isBuffer(debugInputBytes),'Explicit dual-root actual inputs required');
+      const binding=frozen.llvm.debugBinding,c=json(debugInputBytes,'host observer input');
+      need(sha(debugInputBytes)===binding.input.sha256&&sha(debugReportBytes)===binding.raw.sha256,'Actual debug input/raw hashes differ');
+      const reader=require('./host64-build-debug-observer.cjs');
+      need(c.root===context.cwd&&c.sdkArchitecture===frozen.architecture&&c.configuration===frozen.configuration,'Debug SDK target differs');
+      debugProof=reader.validateEvidence(debugReportBytes,{...c,inputPin:binding.input},{ready,result,contextBytes,rawReport},binding.observer,buildArguments(context.cwd,frozen.invocationOptions));
+      need(isDeepStrictEqual(observed.llvm?.debugProof,debugProof),'Independent debug evidence differs');
+      answer.outerObserver=debugProof.outerObserver;answer.innerBuild=debugProof.innerBuild;
+      answer.actualDebugRawSha256=debugProof.actualDebugRawSha256;
+    }else validateInvocation(context,frozen);
     need(Array.isArray(frozen.tools)&&frozen.tools.length>0&&Array.isArray(frozen.scripts)&&frozen.scripts.length>0,'Missing actual source/tool raw inputs');
     need(/^[a-f0-9]{64}$/.test(frozen.rawSource?.sha256||'')&&observed.rawSourceSha256===frozen.rawSource.sha256&&
       observed.sourceSha256===frozen.source.sha256&&observed.scriptSha256===frozen.scriptSha256&&
@@ -196,7 +215,7 @@ function evaluateBuild({frozen,ready,result,contextBytes,rawReport,buildReportBy
       need(!frozen.compilerTail&&context.drainMs===2000&&llvm?.profile==='LLVM22MSVC142'&&llvm.architecture===frozen.architecture&&
         llvm.configuration===frozen.configuration&&llvm.inputIdentity===frozen.llvm?.inputIdentity&&
         llvm.bridgeIdentity===frozen.llvm?.bridgeIdentity&&llvm.observedPointerBytes===(frozen.architecture==='x64'?8:4)&&
-        llvm.buildPid===start.pid&&llvm.buildCreationFileTime===start.creationFileTime&&llvm.observerNaturalClosure===true&&
+        llvm.buildPid===(debugMode?debugProof.innerBuild.pid:start.pid)&&llvm.buildCreationFileTime===(debugMode?debugProof.innerBuild.creationFileTime:start.creationFileTime)&&llvm.observerNaturalClosure===true&&
         /^[a-f0-9]{64}$/.test(llvm.observation?.sha256||'')&&llvm.observerCapture?.ready,
         'LLVM build lacks the actual closed Ninja observation bound to this Build');
     }
@@ -212,7 +231,7 @@ function evaluateBuild({frozen,ready,result,contextBytes,rawReport,buildReportBy
       /^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(build.buildId)&&build.buildId!==frozen.oldBuild?.buildId&&
       versioning.isVersion(build.version)&&build.version===frozen.version&&build.architecture===frozen.architecture&&
       build.configuration===frozen.configuration&&build.sdkOnly===frozen.sdkOnly&&build.source?.sha256===frozen.source.sha256&&
-      time(build.startedAt)>=BigInt(start.creationFileTime)&&time(build.finishedAt)>=time(build.startedAt),'Old/stale/incomplete build report');
+      time(build.startedAt)>=BigInt(debugMode?debugProof.innerBuild.creationFileTime:start.creationFileTime)&&time(build.finishedAt)>=time(build.startedAt),'Old/stale/incomplete build report');
     need(isDeepStrictEqual(artifacts(build),observed.artifacts),'Current payload/library differs');
     need(terminal.rootExited===true&&terminal.rootExitCode===0&&result.exitCode===0,'Compiler root did not finish successfully');
     answer.compilationCompleted=true;
