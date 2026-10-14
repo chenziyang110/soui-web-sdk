@@ -115,6 +115,8 @@ class task_store {
       }
     }
     void deallocate(T* pointer, std::size_t count) noexcept {
+      // Empty STL cleanup did not acquire storage and must not refund a request.
+      if (pointer == nullptr && count == 0) return;
       auto allocator = std::allocator<T>{};
       std::allocator_traits<std::allocator<T>>::deallocate(allocator, pointer, count);
       if (owner_) { domain().deallocated(count * sizeof(T)); owner_->aggregate.deallocated(count * sizeof(T)); }

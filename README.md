@@ -71,6 +71,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Build-Dependencies
 
 - [接入与开发](docs/getting-started.md)
 - [架构与目录所有权](docs/architecture.md)
+- [TaskStore 空存储清理的退款记账（ADR-0081）](docs/adr/0081-task-store-empty-deallocation-accounting.md)（独立 x86 fault 回归已通过；完整 SDK 与 x64 回归仍待验证）
 - [C++ / Web API](docs/api.md)
 - [完整构建与底层源码](docs/build.md)
 - [版本、升级与兼容性](docs/versioning.md)

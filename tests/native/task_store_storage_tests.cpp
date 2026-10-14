@@ -65,6 +65,43 @@ dm::task_store_private_storage read_private(const task_store& store) {
   return value;
 }
 #ifdef SOUI_TASK_STORE_STORAGE_TEST_ONLY
+bool refund_changed(const dm::allocation_requests& before, const dm::allocation_requests& after) {
+  return after.current_bytes != before.current_bytes || after.current_allocations != before.current_allocations ||
+      after.allocated_bytes_total - before.allocated_bytes_total !=
+          after.deallocated_bytes_total - before.deallocated_bytes_total;
+}
+void print_refund_domain(const char* domain, const char* moment, const dm::allocation_requests& value) {
+  std::cerr << "rollback-domain=" << domain << " moment=" << moment
+      << " current_bytes=" << value.current_bytes << " current_allocations=" << value.current_allocations
+      << " current_bytes_exact=" << value.current_bytes_exact
+      << " current_allocations_exact=" << value.current_allocations_exact
+      << " allocations_total=" << value.allocations_total << " deallocations_total=" << value.deallocations_total
+      << " allocated_bytes_total=" << value.allocated_bytes_total
+      << " deallocated_bytes_total=" << value.deallocated_bytes_total
+      << " failed_allocations_total=" << value.failed_allocations_total
+      << " high_water_bytes=" << value.high_water_bytes
+      << " high_water_allocations=" << value.high_water_allocations << '\n';
+}
+void diagnose_refund_change(const char* phase, std::size_t fail_nth, int mutation_kind,
+                           std::size_t allocation_calls, const retained_storage& before,
+                           const retained_storage& after) {
+  if (!refund_changed(before.metadata.map_requests, after.metadata.map_requests) &&
+      !refund_changed(before.strings, after.strings) && !refund_changed(before.aggregate, after.aggregate)) return;
+  std::cerr << "rollback-phase=" << phase << " failNth=" << fail_nth << " mutation=" << mutation_kind
+      << " allocation_calls=" << allocation_calls
+      << " before_task_entries=" << before.metadata.task_entries
+      << " after_task_entries=" << after.metadata.task_entries
+      << " before_operation_entries=" << before.metadata.operation_entries
+      << " after_operation_entries=" << after.metadata.operation_entries
+      << " before_scope_entries=" << before.metadata.scope_entries
+      << " after_scope_entries=" << after.metadata.scope_entries << '\n';
+  print_refund_domain("maps", "before", before.metadata.map_requests);
+  print_refund_domain("maps", "after", after.metadata.map_requests);
+  print_refund_domain("strings", "before", before.strings);
+  print_refund_domain("strings", "after", after.strings);
+  print_refund_domain("aggregate", "before", before.aggregate);
+  print_refund_domain("aggregate", "after", after.aggregate);
+}
 void require_refunded(const dm::allocation_requests& before, const dm::allocation_requests& after) {
   require(after.current_bytes == before.current_bytes && after.current_allocations == before.current_allocations,
       "Rollback leaked live requests");
@@ -410,6 +447,7 @@ void nth_allocator_failure_rolls_back() {
     require(after.metadata.task_entries == before.metadata.task_entries &&
         after.aggregate.failed_allocations_total == before.aggregate.failed_allocations_total + 1,
         "Rollback changed retention or lost failure domain");
+    diagnose_refund_change("prepare-start", fail, -1, calls.load(), before, after);
     require_refunded(before.metadata.map_requests, after.metadata.map_requests);
     require_refunded(before.strings, after.strings); require_refunded(before.aggregate, after.aggregate);
     require(first && store.query(first->task_id)->message == first->message &&
@@ -461,6 +499,7 @@ void message_result_candidates_roll_back() {
           after_snapshot.sequence == before_snapshot.sequence && after_snapshot.message == before_snapshot.message &&
           after_snapshot.result.kind == before_snapshot.result.kind && after_snapshot.result.task_id == before_snapshot.result.task_id &&
           after_snapshot.result.message == before_snapshot.result.message, "Failed candidate partially published business state");
+      diagnose_refund_change("message-result", fail, static_cast<int>(which), calls.load(), before, after);
       require_refunded(before.metadata.map_requests, after.metadata.map_requests);
       require_refunded(before.strings, after.strings); require_refunded(before.aggregate, after.aggregate);
       require(after.strings.failed_allocations_total == before.strings.failed_allocations_total + 1 &&
