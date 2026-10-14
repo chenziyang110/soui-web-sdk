@@ -31,3 +31,4 @@
 - [ADR-0084：TaskStore 私有分配请求配额](0084-task-store-private-request-quota.md)（proposed；x86/x64 独立原生回归通过，默认未启用；任务服务、完整 SDK 与完整缓存预算待验收）
 - [ADR-0085：任务终态的预留失败记录](0085-task-terminal-funded-failure.md)（proposed；独立源码复核通过，两架构原生与完整 SDK 验收待执行）
 - [ADR-0086：LLVM 观察器中的 Windows 扩展驱动器路径](0086-llvm-observer-local-tool-spelling.md)（proposed；严格路径回归通过，完整 SDK 重新构建验收待执行）
+- [ADR-0087：移除默认导航调试日志](0087-navigation-default-trace-removal.md)（proposed；仅移除同步追加，权限判定不变；实际运行与长期验收待完成）

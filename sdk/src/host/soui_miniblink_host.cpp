@@ -3047,12 +3047,6 @@ void dynamic_miniblink_adapter::benchmark_gallery(bool all_components) {
 void dynamic_miniblink_adapter::notify_document_ready() { on_document_ready(); }
 
 bool dynamic_miniblink_adapter::allow_document_navigation(std::string_view url) const noexcept {
-#ifdef SOUI_SOURCE_KERNEL_HOST
-  try {
-    std::ofstream trace(resource_root_.parent_path() / "source-navigation.log", std::ios::app);
-    trace << "allowed=" << soui::runtime::is_trusted_entry_url(url, resource_root_) << " url=" << std::string(url) << '\n';
-  } catch (...) { }
-#endif
   return soui::runtime::is_trusted_entry_url(url, resource_root_);
 }
 

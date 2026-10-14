@@ -498,7 +498,7 @@ struct task_service::impl {
   void commit_owner_terminal(ownership& owner, const std::shared_ptr<job>& item,
       std::optional<result_kind> observed, std::optional<std::string>& published,
       bool projection_failed, bool outcome_rejected, result_cache::storage_error storage_error) noexcept {
-    static_assert(noexcept(owner.result->json.swap(*published)), "Result cache publication must not allocate");
+    static_assert(noexcept(owner.result->json.swap(std::declval<std::string&>())), "Result cache publication must not allocate");
     if (published) owner.result->json.swap(*published);
     owner.result->projection_failed = projection_failed;
     owner.result->terminal_storage_error = storage_error;

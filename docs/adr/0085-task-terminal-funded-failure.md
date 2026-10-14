@@ -72,3 +72,7 @@ operation_result constructor omission. Those native tests remain unexecuted.
 
 Store/full cacheBudget subgates, production quota/calibration, full SDK
 compatibility, performance, qualification and release remain not-evaluated/false.
+
+## Supported STL assertion correction
+
+The first real Source17 SDK compilation failed at the cache publication static assertion. MSVC 14.29.30133 optional::operator* is not declared noexcept, so the assertion tested both the accessor and the swap. The published value is optional<string>, the cache field is string, and the existing if(published) guard precedes the actual dereference. The corrected assertion uses declval<string&> for the argument and still checks the actual cache receiver string swap. It does not remove the assertion, change either transaction, retry an allocation or publish an empty optional. The original failed compiler/observer/Job records remain failed. This source correction has not been compiled or executed; new actual x86/x64 tests and full SDK acceptance are required.
