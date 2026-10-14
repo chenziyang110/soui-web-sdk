@@ -50,6 +50,18 @@ function cacheCalibration(records,subject,modulePin){
     cacheBudgetGate:'not-evaluated',calibratedByteBudgetGate:'not-evaluated',calibratedByteBudgets:null,
     qualified:false,releaseReady:false};
 }
+function privateStorageCalibration(records,binding){
+  const owners=require('./long-run-owners.cjs'),diagnostics=owners.privateStorageObservations(records,binding);
+  const points=records.flatMap((row,eventIndex)=>row.event==='sample'&&row.phase==='cycle'&&row.cycle>=10&&row.cycle<=110?
+    [{eventIndex,cycle:row.cycle,points:diagnostics.points.filter(point=>point.eventIndex===eventIndex)}]:[]);
+  const complete=points.length===101&&points.every((point,i)=>point.cycle===i+10);
+  const finiteGate=diagnostics.counts.invalid?'failed':diagnostics.bindingGate==='matched'&&complete&&
+    points.every(point=>point.points.length>0&&point.points.every(value=>value.derived!==null))?'passed':'not-evaluated';
+  return {schema:'soui.reload-private-storage-calibration/v1',scope:owners.privateScope,
+    expectedPoints:101,observedPoints:points.length,finiteGate,points,diagnostics,
+    fullCacheBudget:'not-evaluated',calibratedByteBudget:'not-evaluated',configuration:null,budgets:null,
+    quota:null,calibrationPin:null,qualified:false,releaseReady:false};
+}
 const metrics = ['privateBytes','workingSetBytes','handles','threads','gdiObjects','userObjects'];
 const counters = metrics.slice(2);
 const shaPattern = /^[a-f0-9]{64}$/;
@@ -200,12 +212,16 @@ function analyzeResource(result,raw,evidence) {
     Object.assign(output,{runId:result.runId,sourceSha256:result.sourceSha256,payloadSha256:result.payloadSha256,
       nativeLogSha256:result.logSha256,ownedLogSha256:hash(evidence.ownedRaw),contextSha256:hash(evidence.contextRaw),
       requestSha256:hash(evidence.requestRaw),policyRawSha256:hash(evidence.policyRaw),baseline,
-      measuredSamples:measured,allSamples:validated.samples,completedSteps:validated.completedSteps,
+      measuredSamples:measured,allSamples:selection.cacheObservation?records:validated.samples,completedSteps:validated.completedSteps,
       measuredCycles:100,resources,windowClassesStable:classesStable,resourceGate:passed?'passed':'failed',passed,
       ownershipScope:'process window classes and four OS counter trends; SDK private caches/queues remain pending'});
     if(selection.cacheObservation){
       output.cacheModulePin=evidence.modulePin||null;
       output.namedCacheCalibration=cacheCalibration(records,output.subject,output.cacheModulePin);
+      output.consumerBuildId=result.consumerBuildId;
+      output.privateStorageBinding=require('./long-run-owners.cjs').privateBinding(result,output.subject,evidence.executablePin,
+        {ownedLogSha256:output.ownedLogSha256,contextSha256:output.contextSha256},evidence.completeInputsMatched===true);
+      output.privateStorageCalibration=privateStorageCalibration(records,output.privateStorageBinding);
     }
   } catch(error) {
     output.resourceGate=error instanceof ObservationError&&error.evaluated?'failed':'not-evaluated';
@@ -264,7 +280,8 @@ function completeResourceAnalysis(analysis,complete,records=[]) {
   return {...analysis,inputBindingScope:complete.inputBindingScope,inputsMatched:true,
     nativeToolchainProfile:complete.nativeToolchainProfile,
     ...(analysis.cacheObservation===true?{cacheModulePin:complete.loadedPayloadModule||null,
-      namedCacheCalibration:cacheCalibration(records,analysis.subject,complete.loadedPayloadModule)}:{}),
+      namedCacheCalibration:cacheCalibration(records,analysis.subject,complete.loadedPayloadModule),
+      privateStorageCalibration:privateStorageCalibration(records,analysis.privateStorageBinding)}:{}),
     resourceRuleObservation:analysis.resourceGate,observationFailure:analysis.failure||null,
     resourceGate:evaluated?analysis.resourceGate:'not-evaluated',passed:evaluated&&analysis.passed===true,
     nativeScopeGate:modelMatched?'matched-compatibility-workload':renderer.nativeSoftwareGate==='matched'?'matched-compositor-only':'not-observed',
@@ -296,7 +313,8 @@ function analyzeFile(resultPath,bindingPath) {
       ownedRaw:fs.readFileSync(identity.safePath(owned.report)),contextRaw:fs.readFileSync(identity.safePath(owned.report+'.context.json')),
       currentInputsMatched:true,sourceSha256,payloadSha256,runnerSha256:hash(readPinned(binding.runner)),
       executableSha256:executableFile.sha256,executablePath:executable,payloadRoot:binding.payload.root,eventLogPath,
-      modulePin:complete?.loadedPayloadModule});
+      modulePin:complete?.loadedPayloadModule,completeInputsMatched:!!complete,
+      executablePin:complete?binding.additionalInputs.executable:null});
     if(complete) {
       const final=require('./resource-file-bindings.cjs').verifyCompleteBinding(binding,outputRoot,result);
       requireObservation(JSON.stringify(final)===JSON.stringify(complete)&&
@@ -317,7 +335,7 @@ function analyzeFile(resultPath,bindingPath) {
   }
 }
 module.exports={POLICY,POLICY_SHA256,policyBytes,CALIBRATION_POLICY,CALIBRATION_POLICY_SHA256,calibrationPolicyBytes,
-  resourcePolicySelection,resourceNativeArgs,cacheCalibration,hash,medianRatio,theilSen,analyzeResource,analyzeFile,completeResourceAnalysis};
+  resourcePolicySelection,resourceNativeArgs,cacheCalibration,privateStorageCalibration,hash,medianRatio,theilSen,analyzeResource,analyzeFile,completeResourceAnalysis};
 if(require.main===module) {
   try {
     if(process.argv.length!==5)throw new Error('Usage: resource-validation.cjs RESULT_JSON BINDINGS_JSON OUTPUT_JSON');

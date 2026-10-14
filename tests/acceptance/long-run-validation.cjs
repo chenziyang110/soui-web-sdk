@@ -53,6 +53,9 @@ function aggregate(mode,gates){
     failure:overall==='passed'?null:required.filter(name=>gates[name]!=='passed').map(name=>name+':'+gates[name]).join(',')};
 }
 function checkedAggregate(analysis,mode){
+  if(analysis.privateStorage)need(same(analysis.privateStorage,
+    owners.privateStorageObservations(analysis.allSamples||[],analysis.privateStorageBinding)),
+    'inconsistent-private-storage-partial-aggregate');
   if(['mixed','session'].includes(mode)){
     need(analysis.gates?.cacheBudget===NE,'uncalibrated-full-cache-budget-cannot-pass');
     if(analysis.namedCaches){
@@ -363,6 +366,10 @@ function analyzeLong(result,eventRaw,evidence){
       output.resourceGate=NE;output.eightHourGate=NE;
       output.coverage='Only this public mode: 1000 same-process operations; other modes and process restart remain separate';
     }else{
+      output.allSamples=records;
+      output.privateStorageBinding=owners.privateBinding(result,owned.subject,evidence.executablePin,
+        {ownedLogSha256:policy.hash(evidence.ownedRaw),contextSha256:policy.hash(evidence.contextRaw)},evidence.completeInputsMatched===true);
+      output.privateStorage=owners.privateStorageObservations(records,output.privateStorageBinding);
       const sampled=gate(()=>hourlySamples(records,config));output.sampling=sampled;output.gates.sampling=sampled.gate;
       output.duration=gate(()=>{
         const origin=originFor(records,config);
@@ -422,7 +429,8 @@ function analyzeFile(resultPath,bindingPath){
     need(exe&&exe.normalization!=='lf','original-long-executable-pin-missing');
     const analysis=analyzeLong(result,eventRaw,{requestRaw,policyRaw,ownedRaw,contextRaw,runRoot,currentInputsMatched:true,
       sourceSha256:complete.sourceSha256,payloadSha256:complete.payloadSha256,runnerSha256:policy.hash(runnerRaw),
-      executableSha256:exe.sha256,executablePath:executable,payloadRoot:binding.payload.root,eventLogPath,modulePin:complete.loadedPayloadModule});
+      executableSha256:exe.sha256,executablePath:executable,payloadRoot:binding.payload.root,eventLogPath,modulePin:complete.loadedPayloadModule,
+      completeInputsMatched:true,executablePin:binding.additionalInputs.executable});
     const final=files.verifyCompleteBinding(binding,runRoot,result);
     need(same(final,complete)&&readBounded(resultPath).equals(resultRaw)&&readBounded(bindingPath).equals(bindingRaw)&&
       readBounded(eventLogPath).equals(eventRaw)&&readBounded(path.join(runRoot,'request.json')).equals(requestRaw)&&
@@ -467,6 +475,7 @@ function captureResult(operation,operationPin,policyPin,evidence){
     analysis:evidence.analysis?.file||null,gates:matched?analysis.gates:null,longRunGate:matched?analysis.longRunGate:operation.passed===false?'failed':NE,
     resourceGate:matched?analysis.resourceGate:NE,eightHourGate:matched?analysis.eightHourGate:NE,
     thousandCycleOperationGate:matched?analysis.thousandCycleOperationGate:NE,
+    privateStorage:matched?analysis.privateStorage||null:null,
     passed:matched&&analysis.passed===true&&analysis.longRunGate==='passed',releaseReady:false,
     failure:matched?analysis.failure:contractFailure||evidence.failure||operation.failure||'complete-current-long-analysis-not-bound'};
 }

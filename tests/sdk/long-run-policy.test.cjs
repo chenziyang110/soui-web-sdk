@@ -5,6 +5,83 @@ const p=require('../acceptance/long-run-policy.cjs'),v=require('../acceptance/lo
 const o=require('../acceptance/long-run-owners.cjs'),runner=require('../acceptance/runner.cjs');
 const encode=value=>Buffer.from(JSON.stringify(value)+'\n');
 const clone=value=>JSON.parse(JSON.stringify(value));
+// Synthetic private DTOs exercise reader boundaries only, never Native collection.
+function privateView(epoch='7',time='10'){
+  const request={current_bytes:'10',high_water_bytes:'40',current_allocations:'1',high_water_allocations:'4',
+    allocations_total:'3',deallocations_total:'2',failed_allocations_total:'1',allocated_bytes_total:'30',deallocated_bytes_total:'20',
+    current_bytes_exact:true,current_allocations_exact:true};
+  const aggregate={...request,current_bytes:'20',high_water_bytes:'60',current_allocations:'2',high_water_allocations:'6',
+    allocations_total:'6',deallocations_total:'4',failed_allocations_total:'2',allocated_bytes_total:'60',deallocated_bytes_total:'40'};
+  return {...view(),taskStorePrivateStorageStatus:'ready',taskStorePrivateStorage:{schemaVersion:1,scope:o.privateScope,
+    observation:{state:'ready',owner_epoch:epoch,begin_monotonic_us:time,end_monotonic_us:String(BigInt(time)+1n),
+      clock_invalid:false,counter_saturated:false},map_requests:{...request},private_string_requests:{...request},aggregate_requests:aggregate,
+    task_entries:'1',operation_entries:'1',scope_entries:'1',coverage_mask:'7',gap_mask:'31',
+    privateStringAllocatorRequestsCovered:true,requestsIncludePrivatePreparationAndRetirement:true,
+    publicCopiesObserved:false,phasePartitionObserved:false,wholeHeapObserved:false,finalDisposalReceiptObserved:false,
+    cacheBudgetGate:'not-evaluated',configuration:null,budgets:null,quota:null,calibrationPin:null}};
+}
+const privateFixtureBinding=()=>o.privateBinding({sourceSha256:'a'.repeat(64),payloadSha256:'b'.repeat(64),consumerBuildId:'synthetic',
+  logSha256:'c'.repeat(64)},{pid:9,creationFileTime:'123'},{path:'C:/fixture/SouiAcceptance.exe',bytes:100,sha256:'d'.repeat(64)},
+  {ownedLogSha256:'e'.repeat(64),contextSha256:'f'.repeat(64)},true);
+const privateSample=(value,cycle=1)=>({event:'sample',phase:'cycle',cycle,elapsedMs:cycle,
+  nativeSdk:{producer:'native-sdk-owner',pid:'9',creationFileTime:'123',captureClock:{valid:true,qpc:'100',frequency:'1000'},views:[value]}});
+
+test('private request U64 and bool shapes reject numbers, leading zeros, overflow and truthy strings',()=>{
+  for(const value of [1,'01','-1','18446744073709551616','1.0']){
+    const v=privateView();v.taskStorePrivateStorage.map_requests.current_bytes=value;
+    assert.equal(o.privateStoragePoint(v).state,'invalid');
+  }
+  const v=privateView();v.taskStorePrivateStorage.observation.clock_invalid='false';
+  assert.equal(o.privateStoragePoint(v).state,'invalid');
+  delete v.taskStorePrivateStorage.observation.clock_invalid;
+  assert.equal(o.privateStoragePoint(v).state,'partial');
+});
+test('private aggregate checks actual refunds but retains independent event peaks',()=>{
+  const v=privateView(),out=o.privateStoragePoint(v);
+  assert.equal(out.state,'ready');assert.equal(out.derived.domains.aggregate_requests.high_water_bytes,'60');
+  assert.equal(BigInt(out.raw.map_requests.high_water_bytes)+BigInt(out.raw.private_string_requests.high_water_bytes),80n);
+  v.taskStorePrivateStorage.aggregate_requests.current_bytes='21';assert.equal(o.privateStoragePoint(v).state,'invalid');
+  const bad=privateView();bad.taskStorePrivateStorage.map_requests.deallocations_total='3';
+  assert.equal(o.privateStoragePoint(bad).state,'invalid');
+  const peak=privateView();peak.taskStorePrivateStorage.aggregate_requests.high_water_bytes='39';
+  assert.equal(o.privateStoragePoint(peak).state,'invalid');
+});
+test('busy default zero, saturation and inexact requests retain raw with no derived zero',()=>{
+  for(const mutate of [v=>{v.taskStorePrivateStorageStatus='busy';v.taskStorePrivateStorage.observation.state='busy';
+      for(const name of o.domainNames)for(const key of o.requestFields)v.taskStorePrivateStorage[name][key]='0';},
+    v=>v.taskStorePrivateStorage.observation.counter_saturated=true,
+    v=>v.taskStorePrivateStorage.map_requests.high_water_bytes='18446744073709551615',
+    v=>v.taskStorePrivateStorage.map_requests.current_bytes_exact=false]){
+    const v=privateView();mutate(v);const out=o.privateStoragePoint(v);
+    assert.equal(out.state,'partial');assert.equal(out.derived,null);assert.deepEqual(out.raw,v.taskStorePrivateStorage);
+  }
+});
+test('Store epoch is stable within a mounted owner and may change only on a new lifetime',()=>{
+  const mount={event:'step.complete',action:'mount',window:1},first=privateSample(privateView()),second=privateSample(privateView('8','20'),2);
+  assert.equal(o.privateStorageObservations([mount,first,second],privateFixtureBinding()).dataGate,'invalid');
+  const closed={event:'step.complete',action:'close',window:1,retiredOwner:{...privateView(),hostClosed:true,
+    lifetime:'after-host-close-before-owner-destruction'}};
+  const out=o.privateStorageObservations([mount,first,closed,closed,mount,second],privateFixtureBinding());
+  assert.notEqual(out.dataGate,'invalid');assert.equal(out.counts.retired,2);
+  assert.equal(out.counts.repeated,2);
+  assert.equal(out.points.at(-1).derived.cumulativeDelta,null);
+  assert.equal(out.points[1].derived,null);assert.equal(out.points[2].derived,null);
+  closed.retiredOwner.taskStorePrivateStorage.aggregate_requests.high_water_bytes='61';
+  const changed=clone(closed);changed.retiredOwner.taskStorePrivateStorage.aggregate_requests.high_water_bytes='62';
+  assert.equal(o.privateStorageObservations([mount,first,closed,changed],privateFixtureBinding()).dataGate,'invalid');
+});
+test('same Store copies, reversed clocks and missing capture clocks never create fresh points',()=>{
+  const mount={event:'step.complete',action:'mount',window:1},row=privateSample(privateView());
+  const out=o.privateStorageObservations([mount,row,clone(row)],privateFixtureBinding());
+  assert.equal(out.counts.fresh,1);assert.equal(out.counts.repeated,1);assert.equal(out.points[1].derived,null);
+  const reverse=privateSample(privateView('7','9'));
+  assert.equal(o.privateStorageObservations([mount,row,reverse],privateFixtureBinding()).dataGate,'invalid');
+  const duplicate=clone(row);duplicate.nativeSdk.views.push(privateView());
+  assert.equal(o.privateStorageObservations([mount,duplicate],privateFixtureBinding()).dataGate,'invalid');
+  assert.notEqual(o.privateStorageObservations([mount,{event:'sample',phase:'cycle'}],privateFixtureBinding()).dataGate,'invalid');
+  row.nativeSdk.views[0].taskStorePrivateStorage.aggregate_requests.current_bytes='21';delete row.nativeSdk.captureClock;
+  assert.equal(o.privateStorageObservations([mount,row],privateFixtureBinding()).dataGate,'invalid');
+});
 test('finite cache revision freezes temporal coverage with no empirical byte allowance',()=>{
   assert.equal(p.RULE.revision,'0.5.0-m0-named-cache-configuration-v2');
   const rule=p.RULE.namedCacheConfigurationPolicy;

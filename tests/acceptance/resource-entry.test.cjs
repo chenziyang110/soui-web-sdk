@@ -277,3 +277,40 @@ test('cache option cannot replace default protocol or enter ordinary/duration ro
   assert.ok(selected.policyRaw.equals(reader.policyBytes()));
   assert.equal(selected.requestFields.namedCacheObservation,undefined);
 });
+
+test('private partial aggregate is recomputed from the same events and independently retained SDK bindings',()=>{
+  const owners=require('./long-run-owners.cjs'),f=calibrationCaptureFixture();
+  const operationBound={...operation,sourceSha256:'b'.repeat(64),payloadSha256:'c'.repeat(64),consumerBuildId:'synthetic',logSha256:'d'.repeat(64),
+    outcome:{pid:9,ownedProcess:{creationFileTime:'123',reportSha256:'e'.repeat(64)}}};
+  const proof={executablePin:{path:'C:/fixture/SouiAcceptance.exe',bytes:100,sha256:'f'.repeat(64)},contextSha256:'a'.repeat(64)};
+  proof.allSamplesSha256=reader.hash(Buffer.from(JSON.stringify(f.allSamples)));
+  const completeInputs={...inputs,sourceSha256:operationBound.sourceSha256,payloadSha256:operationBound.payloadSha256,
+    consumerBuildId:operationBound.consumerBuildId,privateStorageProof:proof};
+  f.record.privateStorageBinding=owners.privateBinding(operationBound,f.record.subject,proof.executablePin,
+    {ownedLogSha256:'e'.repeat(64),contextSha256:proof.contextSha256},true);
+  f.record.privateStorageCalibration=reader.privateStorageCalibration(f.allSamples,f.record.privateStorageBinding);
+  f.record.namedCacheCalibration=reader.cacheCalibration(f.allSamples,f.record.subject,f.record.cacheModulePin);
+  const classify=()=>completeResourceCaptureResult(operationBound,null,f.policy,{bindingFile:binding,finalVerified:true,inputs:completeInputs,
+    analysis:{record:f.record,file:binding},failure:null});
+  assert.equal(classify().privateStorageCalibration.finiteGate,'not-evaluated');
+  const original=structuredClone(f.record.privateStorageCalibration);
+  f.record.privateStorageCalibration.fullCacheBudget='passed';assert.throws(classify,/partial aggregate/);
+  f.record.privateStorageCalibration=original;
+  for(const [key,value] of [['sourceSha256','a'.repeat(64)],['payloadSha256','a'.repeat(64)],['rawLogSha256','a'.repeat(64)]]){
+    const prior=f.record.privateStorageBinding[key];f.record.privateStorageBinding[key]=value;
+    assert.throws(classify,/binding differs/);f.record.privateStorageBinding[key]=prior;
+  }
+  const originalPin=proof.executablePin;proof.executablePin=f.record.cacheModulePin;
+  assert.throws(classify,/binding differs/);proof.executablePin=originalPin;
+  const originalSubject=f.record.privateStorageBinding.subject;f.record.privateStorageBinding.subject={pid:10,creationFileTime:'123'};
+  assert.throws(classify,/binding differs/);f.record.privateStorageBinding.subject=originalSubject;
+  f.allSamples.splice(3,1);assert.throws(classify,/bound event sequence/);
+  f.record.privateStorageCalibration=reader.privateStorageCalibration(f.allSamples,f.record.privateStorageBinding);
+  assert.throws(classify,/bound event sequence/);
+});
+test('private proof collection remains inside the existing opt-in resource or duration branches',()=>{
+  const analysis={resourceGate:'not-evaluated',passed:false,releaseReady:false,nativeScopeGate:'not-observed',allSamples:[]};
+  const result=completeResourceCaptureResult(operation,null,null,{bindingFile:binding,finalVerified:true,
+    inputs:{...inputs,privateStorageProof:{}},analysis:{record:analysis,file:binding},failure:null});
+  assert.equal(result.privateStorageCalibration,undefined);assert.equal(result.resourceGate,'not-evaluated');
+});

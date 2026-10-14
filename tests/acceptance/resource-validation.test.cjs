@@ -81,6 +81,80 @@ function cacheFixture(){
   return data;
 }
 const evaluateCache=data=>evaluate(data,value=>({...value,policyRaw:resourceReader.calibrationPolicyBytes(),modulePin:cacheModulePin}));
+// Synthetic rows check private-reader classification, not getter/collector proof.
+function privateCacheFixture(){
+  const data=cacheFixture(),request={current_bytes:'0',high_water_bytes:'0',current_allocations:'0',high_water_allocations:'0',
+    allocations_total:'0',deallocations_total:'0',failed_allocations_total:'0',allocated_bytes_total:'0',deallocated_bytes_total:'0',
+    current_bytes_exact:true,current_allocations_exact:true};
+  for(const row of data.records){
+    if(row.event==='sample'&&row.nativeSdk){
+      Object.assign(row.nativeSdk,{producer:'native-sdk-owner',pid:String(pid),creationFileTime});
+      row.nativeSdk.views=row.phase==='closed'||row.phase==='runtime-closed'?[]:[{window:'1',ownerAlive:true,hostClosed:false,lifetime:'owner-alive',
+        taskStorePrivateStorageStatus:'ready',taskStorePrivateStorage:{schemaVersion:1,scope:'task-store-private-allocator-requests',
+          observation:{state:'ready',owner_epoch:'7',begin_monotonic_us:String(row.elapsedMs+1),end_monotonic_us:String(row.elapsedMs+2),
+            counter_saturated:false,clock_invalid:false},map_requests:{...request},private_string_requests:{...request},aggregate_requests:{...request},
+          coverage_mask:'7',gap_mask:'31',task_entries:'0',operation_entries:'0',scope_entries:'0',
+          privateStringAllocatorRequestsCovered:true,requestsIncludePrivatePreparationAndRetirement:true,
+          publicCopiesObserved:false,phasePartitionObserved:false,wholeHeapObserved:false,finalDisposalReceiptObserved:false,
+          cacheBudgetGate:'not-evaluated',configuration:null,budgets:null,quota:null,calibrationPin:null}}];
+    }
+    if(row.event==='step.complete'&&row.action==='close'){
+      const source=data.records.find(value=>value.event==='sample'&&value.phase==='cycle'&&value.cycle===110).nativeSdk.views[0];
+      row.retiredOwner={...structuredClone(source),hostClosed:true,lifetime:'after-host-close-before-owner-destruction'};
+    }
+  }
+  return data;
+}
+const evaluatePrivate=data=>evaluate(data,value=>({...value,policyRaw:resourceReader.calibrationPolicyBytes(),modulePin:cacheModulePin,
+  completeInputsMatched:true,executablePin:{path:data.context.executable,bytes:100,sha256:data.context.executableSha256}}));
+test('private reload calibration retains101 independent positions with nullable deltas and no full budget',()=>{
+  const out=evaluatePrivate(privateCacheFixture()),privateResult=out.privateStorageCalibration;
+  assert.equal(out.resourceGate,'passed');assert.equal(privateResult.finiteGate,'passed');assert.equal(privateResult.observedPoints,101);
+  assert.equal(privateResult.points[0].cycle,10);assert.equal(privateResult.points.at(-1).cycle,110);
+  assert.equal(privateResult.diagnostics.counts.retired,1);assert.equal(privateResult.diagnostics.points.at(-1).derived,null);
+  assert.equal(privateResult.fullCacheBudget,'not-evaluated');assert.equal(privateResult.calibratedByteBudget,'not-evaluated');
+  for(const key of ['configuration','budgets','quota','calibrationPin'])assert.equal(privateResult[key],null);
+  assert.equal(privateResult.qualified,false);assert.equal(privateResult.releaseReady,false);
+});
+test('one missing or busy private required copy stays partial without weakening existing resource or named-cache gates',()=>{
+  for(const mutate of [row=>delete row.nativeSdk.views[0].taskStorePrivateStorage,
+    row=>row.nativeSdk.views[0].taskStorePrivateStorageStatus='busy',
+    row=>row.nativeSdk.views[0].taskStorePrivateStorage.observation.counter_saturated=true]){
+    const data=privateCacheFixture();mutate(measured(data)[3]);const out=evaluatePrivate(data);
+    assert.equal(out.resourceGate,'passed');assert.equal(out.namedCacheCalibration.finiteGate,'passed');
+    assert.equal(out.privateStorageCalibration.finiteGate,'not-evaluated');
+    assert.equal(out.privateStorageCalibration.points[4].points[0].derived,null);
+  }
+});
+test('missing private owner epoch stays partial while malformed values and live epoch drift remain invalid',()=>{
+  assert.equal(evaluatePrivate(privateCacheFixture()).privateStorageCalibration.finiteGate,'passed');
+  const data=privateCacheFixture();
+  delete measured(data)[3].nativeSdk.views[0].taskStorePrivateStorage.observation.owner_epoch;
+  const out=evaluatePrivate(data).privateStorageCalibration,point=out.points[4].points[0];
+  assert.equal(point.state,'partial');assert.equal(point.reason,'private-storage-fields-missing');
+  assert.equal(point.derived,null);assert.equal(point.raw.observation.owner_epoch,undefined);
+  assert.equal(out.diagnostics.dataGate,'partial');assert.equal(out.diagnostics.counts.invalid,0);
+  assert.equal(out.finiteGate,'not-evaluated');assert.equal(out.fullCacheBudget,'not-evaluated');
+  for(const value of [7,'07','18446744073709551616',null,'8']){
+    const bad=privateCacheFixture();measured(bad)[3].nativeSdk.views[0].taskStorePrivateStorage.observation.owner_epoch=value;
+    const result=evaluatePrivate(bad).privateStorageCalibration;
+    assert.equal(result.diagnostics.dataGate,'invalid');assert.equal(result.finiteGate,'failed');
+    assert.equal(result.points[4].points[0].derived,null);
+  }
+});
+
+test('private contradictions survive a missing point and wrong native PID cannot borrow Owned identity',()=>{
+  for(const mutate of [row=>row.nativeSdk.views[0].taskStorePrivateStorage.gap_mask='63',
+    row=>row.nativeSdk.views[0].taskStorePrivateStorage.aggregate_requests.allocations_total='1',
+    row=>row.nativeSdk.pid='126']){
+    const data=privateCacheFixture();delete measured(data)[2].nativeSdk.views[0].taskStorePrivateStorage;
+    mutate(measured(data)[3]);assert.equal(evaluatePrivate(data).privateStorageCalibration.finiteGate,'failed');
+  }
+  const data=privateCacheFixture();
+  const out=evaluate(data,value=>({...value,policyRaw:resourceReader.calibrationPolicyBytes(),modulePin:cacheModulePin,
+    completeInputsMatched:true,executablePin:cacheModulePin}));
+  assert.equal(out.privateStorageCalibration.finiteGate,'not-evaluated');
+});
 
 test('explicit cache calibration retains all101 required copies and never creates a byte budget',()=>{
   const out=evaluateCache(cacheFixture());
@@ -143,6 +217,7 @@ test('missing or empty complete-analysis records cannot inherit native, model, r
 test('complete constant100 samples pass only the finite reload resource gate', () => {
   const result = evaluate(fixture());
   assert.equal(result.resourceGate,'passed'); assert.equal(result.measuredSamples.length,100);
+  assert.equal(result.privateStorageCalibration,undefined);assert.ok(result.allSamples.every(row=>row.event==='sample'));
   assert.equal(result.baseline.cycle,10); assert.equal(result.releaseReady,false);
   assert.equal(result.m0Complete,false); assert.equal(result.eightHourGate,'not-evaluated');
 });

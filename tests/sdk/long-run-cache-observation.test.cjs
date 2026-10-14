@@ -5,6 +5,21 @@ const validation=require('../acceptance/long-run-validation.cjs');
 const cache=require('../acceptance/native-cache-validation.cjs');
 const modulePin={path:'C:\\fixture\\node.dll',bytes:123,sha256:'a'.repeat(64)};
 const subject={pid:9,creationFileTime:'123'};
+test('SDK private observations require the consumer EXE and complete source/Owned/raw bindings',()=>{
+  const owners=require('../acceptance/long-run-owners.cjs');
+  const binding=owners.privateBinding({sourceSha256:'a'.repeat(64),payloadSha256:'b'.repeat(64),consumerBuildId:'synthetic',logSha256:'c'.repeat(64)},
+    subject,{path:'C:/fixture/SouiAcceptance.exe',bytes:100,sha256:'d'.repeat(64)},
+    {ownedLogSha256:'e'.repeat(64),contextSha256:'f'.repeat(64)},true);
+  assert.equal(owners.privateBindingValid(binding),true);
+  for(const changed of [{...binding,executablePin:modulePin},{...binding,inputsMatched:false},
+    {...binding,rawLogSha256:null},{...binding,subject:{pid:9,creationFileTime:'0123'}},
+    {...binding,sourceSha256:123},{...binding,consumerBuildId:null}]){
+    assert.equal(owners.privateBindingValid(changed),false);
+    const out=owners.privateStorageObservations([],changed);
+    assert.equal(out.bindingGate,'not-evaluated');assert.equal(out.fullCacheBudget,'not-evaluated');
+    assert.equal(out.qualified,false);assert.equal(out.budgets,null);
+  }
+});
 function sample(qpc='110',state='sampled'){
   const dto={...Object.fromEntries(cache.u64Names.map(key=>[key,'0'])),
     schemaVersion:1,scope:cache.scope,state,hasCompletedSample:true,identityBound:true,moduleMatches:true,

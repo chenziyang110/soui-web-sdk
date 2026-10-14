@@ -137,4 +137,172 @@ function analyzeOwners(records){
     if(retired)retiredEpochs.set(key,view);
   }
 }
-module.exports={count,observation,queue,tasks,requests,permissions,gui,analyzeOwners};
+const privateScope='task-store-private-allocator-requests';
+const requestFields=['current_bytes','high_water_bytes','current_allocations','high_water_allocations',
+  'allocations_total','deallocations_total','failed_allocations_total','allocated_bytes_total','deallocated_bytes_total'];
+const cumulativeFields=requestFields.slice(4),domainNames=['map_requests','private_string_requests','aggregate_requests'];
+const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+function privateBinding(result,subject,executablePin,logs={},inputsMatched=false){
+  return {inputsMatched,inputBindingScope:'complete-acceptance-inputs',sourceSha256:result?.sourceSha256??null,
+    payloadSha256:result?.payloadSha256??null,consumerBuildId:result?.consumerBuildId??null,
+    rawLogSha256:result?.logSha256??null,ownedLogSha256:logs.ownedLogSha256??null,
+    contextSha256:logs.contextSha256??null,subject:subject?{pid:subject.pid,creationFileTime:subject.creationFileTime}:null,
+    executablePin:executablePin??null};
+}
+function privateBindingValid(binding){
+  try{
+    const pin=binding?.executablePin,sha=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
+    return binding?.inputsMatched===true&&binding.inputBindingScope==='complete-acceptance-inputs'&&
+      ['sourceSha256','payloadSha256','rawLogSha256','ownedLogSha256','contextSha256'].every(name=>sha(binding[name]))&&
+      typeof binding.consumerBuildId==='string'&&binding.consumerBuildId.length>0&&
+      Number.isSafeInteger(binding.subject?.pid)&&binding.subject.pid>0&&binding.subject.pid<=0xffffffff&&count(binding.subject.creationFileTime)>0n&&
+      pin&&typeof pin.path==='string'&&/^(?:[A-Za-z]:[\\/]|\/)/.test(pin.path)&&
+      /(?:^|[\\/])SouiAcceptance\.exe$/i.test(pin.path)&&Number.isSafeInteger(pin.bytes)&&pin.bytes>0&&sha(pin.sha256);
+  }catch{return false;}
+}
+function privateStoragePoint(view){
+  const raw=view?.taskStorePrivateStorage??null,getterStatus=view?.taskStorePrivateStorageStatus??null;
+  const out={raw,getterStatus,state:'partial',reason:null,derived:null};
+  try{
+    need(raw&&typeof raw==='object'&&!Array.isArray(raw),'private-storage-missing');
+    const required=['schemaVersion','scope','observation','coverage_mask','gap_mask','task_entries','operation_entries','scope_entries',
+      ...domainNames,'privateStringAllocatorRequestsCovered','requestsIncludePrivatePreparationAndRetirement',
+      'publicCopiesObserved','phasePartitionObserved','wholeHeapObserved','finalDisposalReceiptObserved',
+      'cacheBudgetGate','configuration','budgets','quota','calibrationPin'];
+    need(getterStatus!==null&&required.every(key=>Object.hasOwn(raw,key)),'private-storage-fields-missing');
+    need(raw.schemaVersion===1&&raw.scope===privateScope,'private-storage-schema-or-scope',true);
+    const o=raw.observation;
+    need(o&&['state','owner_epoch','begin_monotonic_us','end_monotonic_us','counter_saturated','clock_invalid']
+      .every(key=>Object.hasOwn(o,key)),'private-storage-fields-missing');
+    need(o&&['ready','busy','disabled','unavailable','not_started','wrong_owner_thread'].includes(o.state)&&
+      ['ready','busy','disabled','unavailable','not_started','wrong_owner_thread'].includes(getterStatus),
+      'private-storage-status-shape',true);
+    for(const key of ['counter_saturated','clock_invalid'])need(typeof o[key]==='boolean','private-storage-bool-'+key,true);
+    const epoch=count(o.owner_epoch),begin=count(o.begin_monotonic_us),end=count(o.end_monotonic_us);
+    const masks={coverage:count(raw.coverage_mask),gaps:count(raw.gap_mask)};
+    const entries=['task_entries','operation_entries','scope_entries'].map(key=>count(raw[key]));
+    const domains={};
+    for(const name of domainNames){
+      const value=raw[name];need(value&&typeof value==='object'&&!Array.isArray(value),'private-storage-domain-missing',true);
+      need([...requestFields,'current_bytes_exact','current_allocations_exact'].every(key=>Object.hasOwn(value,key)),
+        'private-storage-fields-missing');
+      for(const key of ['current_bytes_exact','current_allocations_exact'])need(typeof value[key]==='boolean','private-storage-exact-shape',true);
+      domains[name]=Object.fromEntries(requestFields.map(key=>[key,count(value[key])]));
+    }
+    for(const [key,expected] of Object.entries({privateStringAllocatorRequestsCovered:(masks.coverage&2n)!==0n,
+      requestsIncludePrivatePreparationAndRetirement:true,publicCopiesObserved:false,phasePartitionObserved:false,
+      wholeHeapObserved:false,finalDisposalReceiptObserved:false}))need(raw[key]===expected,'private-storage-scope-flags',true);
+    need(raw.cacheBudgetGate==='not-evaluated'&&['configuration','budgets','quota','calibrationPin'].every(key=>raw[key]===null),
+      'private-storage-unproven-budget',true);
+    if(getterStatus==='ready')need(o.state==='ready','private-storage-status-differs',true);
+    if(getterStatus!=='ready'||o.state!=='ready'){out.reason='private-storage-'+getterStatus;return out;}
+    need(masks.coverage===7n&&masks.gaps===31n,'private-storage-mask-differs',true);
+    if(o.counter_saturated||entries.includes(U64)||Object.values(domains).some(value=>Object.values(value).includes(U64))){out.reason='private-storage-saturated';return out;}
+    if(o.clock_invalid||epoch===0n||begin===0n||end<begin){out.reason='private-storage-clock-unobserved';return out;}
+    if(domainNames.some(name=>raw[name].current_bytes_exact!==true||raw[name].current_allocations_exact!==true)){
+      out.reason='private-storage-inexact';return out;
+    }
+    for(const value of Object.values(domains)){
+      need(value.allocations_total>=value.deallocations_total&&value.allocations_total-value.deallocations_total===value.current_allocations&&
+        value.allocated_bytes_total>=value.deallocated_bytes_total&&value.allocated_bytes_total-value.deallocated_bytes_total===value.current_bytes&&
+        value.high_water_bytes>=value.current_bytes&&value.high_water_allocations>=value.current_allocations,
+        'private-storage-refund-accounting',true);
+    }
+    for(const key of ['current_bytes','current_allocations',...cumulativeFields])need(
+      domains.aggregate_requests[key]===domains.map_requests[key]+domains.private_string_requests[key],
+      'private-storage-aggregate-accounting',true);
+    for(const key of ['high_water_bytes','high_water_allocations'])need(
+      domains.aggregate_requests[key]>=domains.map_requests[key]&&domains.aggregate_requests[key]>=domains.private_string_requests[key]&&
+      domains.aggregate_requests[key]<=domains.map_requests[key]+domains.private_string_requests[key],
+      'private-storage-event-peak-accounting',true);
+    out.state='ready';out.derived={ownerEpoch:epoch.toString(),beginMonotonicUs:begin.toString(),endMonotonicUs:end.toString(),
+      domains:Object.fromEntries(domainNames.map(name=>[name,Object.fromEntries(requestFields.map(key=>[key,domains[name][key].toString()]))])),
+      cumulativeDelta:null};return out;
+  }catch(error){out.state=['private-storage-missing','private-storage-fields-missing'].includes(error.message)?'partial':'invalid';
+    out.reason=error.message||'private-storage-invalid';return out;}
+}
+function privateStorageObservations(records,binding){
+  const bound=privateBindingValid(binding),points=[],lifetimes=new Map(),retired=new Map();let nextLifetime=0;
+  const counts={missing:0,busy:0,invalid:0,retired:0,repeated:0,fresh:0};
+  const add=(row,eventIndex,view,life,isRetired,native)=>{
+    const point={eventIndex,event:row.event,phase:row.phase??null,cycle:row.cycle??null,elapsedMs:row.elapsedMs??null,
+      window:view?.window??null,lifetime:life?.id??null,ownerLifetime:view?.lifetime??null,retired:isRetired,
+      ...privateStoragePoint(view)};
+    if(point.raw===null)++counts.missing;if(point.getterStatus==='busy')++counts.busy;if(isRetired)++counts.retired;
+    let repeated=false;const repeat=()=>{if(!repeated){++counts.repeated;repeated=true;}};
+    const reject=(reason,invalid=false)=>{if(point.state==='invalid'&&!invalid)return;
+      point.state=invalid?'invalid':'partial';point.reason=reason;point.derived=null;};
+    try{
+      if(!life)reject('private-storage-owner-lifetime-missing');
+      else{
+        need(!life.invalid,'private-storage-duplicate-mount',true);
+        need(count(view.window)>0n,'private-storage-window-shape',true);
+        if(point.raw?.observation?.state==='ready'&&point.raw.observation.owner_epoch!==undefined&&count(point.raw.observation.owner_epoch)>0n){
+          const epoch=point.raw.observation.owner_epoch;
+          need(!life.epoch||life.epoch===epoch,'private-storage-epoch-changed-within-owner',true);life.epoch=epoch;
+        }
+        need(view.ownerAlive===true&&view.hostClosed===isRetired&&view.lifetime===(isRetired?
+          'after-host-close-before-owner-destruction':'owner-alive'),'private-storage-owner-lifetime-differs',true);
+        if(point.derived){
+          const epoch=point.derived.ownerEpoch;
+          need(!life.epoch||life.epoch===epoch,'private-storage-epoch-changed-within-owner',true);life.epoch=epoch;
+          const prior=life.previous;
+          if(prior){
+            need(count(point.derived.beginMonotonicUs)>=count(prior.derived.beginMonotonicUs)&&
+              count(point.derived.endMonotonicUs)>=count(prior.derived.endMonotonicUs),'private-storage-clock-reversed',true);
+            for(const name of domainNames)for(const key of ['high_water_bytes','high_water_allocations',...cumulativeFields])need(count(point.derived.domains[name][key])>=
+              count(prior.derived.domains[name][key]),'private-storage-total-reversed',true);
+            if(same(point.raw,prior.raw)){repeat();reject('private-storage-repeated-copy');}
+            else point.derived.cumulativeDelta=Object.fromEntries(domainNames.map(name=>[name,Object.fromEntries(cumulativeFields.map(key=>
+              [key,(count(point.derived.domains[name][key])-count(prior.derived.domains[name][key])).toString()]))]));
+          }
+        }
+      }
+      if(isRetired){
+        if(row.action==='close')need(String(row.window)===view.window,'private-storage-retired-window-differs',true);
+        const prior=retired.get(view.window);
+        if(prior){need(same(prior.raw,point.raw)&&prior.getterStatus===point.getterStatus,'private-storage-retired-copy-changed',true);repeat();}
+        else retired.set(view.window,{...point,life});
+        if(point.state!=='invalid')reject('private-storage-retired-copy');
+      }else{
+        if(!native||native.producer===undefined||native.pid===undefined||native.creationFileTime===undefined)
+          reject('private-storage-native-subject-missing');
+        else if(binding?.subject)need(native.producer==='native-sdk-owner'&&native.pid===String(binding.subject.pid)&&
+          native.creationFileTime===binding.subject.creationFileTime,'private-storage-native-subject-differs',true);
+        const clock=native?.captureClock;
+        if(clock)need(typeof clock.valid==='boolean','private-storage-capture-clock-bool',true);
+        if(!clock||clock.valid!==true)reject('private-storage-capture-clock-unobserved');
+        else need(count(clock.qpc)>0n&&count(clock.frequency)>0n,'private-storage-capture-clock-shape',true);
+      }
+      if(!bound&&point.state!=='invalid')reject('private-storage-complete-binding-missing');
+      if(point.derived){++counts.fresh;life.previous=structuredClone(point);}
+    }catch(error){reject(error.message||'private-storage-lifetime-invalid',true);}
+    if(point.state==='invalid')++counts.invalid;points.push(point);
+  };
+  for(const [eventIndex,row] of records.entries()){
+    if(row.event==='step.complete'&&row.action==='mount'){
+      const window=String(row.window),invalid=lifetimes.has(window)||!Number.isSafeInteger(row.window)||row.window<1;
+      lifetimes.set(window,{id:++nextLifetime,epoch:null,previous:null,invalid});retired.delete(window);
+    }
+    if(row.event==='sample'&&row.phase!=='process'){
+      const views=row.nativeSdk?.views;
+      if(!Array.isArray(views)||views.length===0&&lifetimes.size){add(row,eventIndex,null,null,false,row.nativeSdk);continue;}
+      const seen=new Set();
+      for(const view of views||[]){
+        const window=view?.window,life=lifetimes.get(window);
+        add(row,eventIndex,view,seen.has(window)?{...life,invalid:true}:life,false,row.nativeSdk);seen.add(window);
+      }
+      for(const window of lifetimes.keys())if(!seen.has(window))add(row,eventIndex,{window},null,false,row.nativeSdk);
+    }
+    if(row.retiredOwner){const window=row.retiredOwner.window;
+      add(row,eventIndex,row.retiredOwner,lifetimes.get(window)||retired.get(window)?.life,true,null);
+      if(row.action==='close')lifetimes.delete(window);
+    }
+  }
+  return {schema:'soui.task-store-private-storage-observations/v1',scope:privateScope,binding:binding??null,bindingGate:bound?'matched':'not-evaluated',
+    dataGate:counts.invalid?'invalid':counts.fresh&&points.every(point=>point.state==='ready'||point.retired)?'matched':'partial',
+    points,counts,fullCacheBudget:'not-evaluated',calibratedByteBudget:'not-evaluated',
+    configuration:null,budgets:null,quota:null,calibrationPin:null,qualified:false,releaseReady:false};
+}
+module.exports={count,observation,queue,tasks,requests,permissions,gui,analyzeOwners,
+  requestFields,domainNames,privateScope,privateBinding,privateBindingValid,privateStoragePoint,privateStorageObservations};

@@ -153,6 +153,7 @@ function completeResourceCaptureResult(operation, operationPin, policyPin, evide
       Object.keys(evidence).some(key=>!['bindingFile','inputs','analysis','failure','finalVerified'].includes(key)))
     throw new Error('Fixed complete binding observations are required');
   const inputs=evidence.inputs,analysis=evidence.analysis?.record;
+  verifyPrivateStorageAggregate(analysis,operation,inputs);
   const finalMatched=operation.passed===true && !operation.failure && evidence.finalVerified===true && evidence.failure===null && !!inputs;
   const workloadAnalysis=analysis?.nativeScopeGate==='matched-compatibility-workload';
   if(inputs && (inputs.inputsMatched!==true || inputs.inputBindingScope!=='complete-acceptance-inputs' ||
@@ -214,6 +215,7 @@ function completeResourceCaptureResult(operation, operationPin, policyPin, evide
     softwareProcessModelGate:workloadMatched?'matched-bound-workload':'not-evaluated',
     resourceGate:resourceEvaluated?analysis.resourceGate:'not-evaluated',passed:captureGate==='passed',
     ...(cacheEnabled?{cacheObservationGate:cacheGate,captureGate,namedCacheCalibration:finalMatched?analysis?.namedCacheCalibration||null:null,
+      privateStorageCalibration:finalMatched?analysis?.privateStorageCalibration||null:null,
       cacheBudgetGate:'not-evaluated',calibratedByteBudgets:null,cacheRequiredEvidence:[
         ...(cacheGate==='passed'?[]:['fresh-complete-named-cache-calibration']),
         'current-calibrated-byte-budgets-and-broader-cache-coverage']}:{}),
@@ -224,6 +226,46 @@ function completeResourceCaptureResult(operation, operationPin, policyPin, evide
         compositorMatched?['broader-software-process-workload-coverage']:['actual-native-software-scope']:
       ['actual-native-software-scope','independent-resource-file-analysis']):capture.requiredEvidence,
     scope:'Only frozen100reload Compatibility workload; global SDK queues,1000cycles,8hour,OS,ABI and release remain pending'};
+}
+// These pins come from the already rechecked fixed binding and Owned context,
+// separately from node.dll's named-cache identity.
+function privateStorageInputs(inputs,bindingPin,operation){
+  const read=(file,limit)=>{const current=identity.safePath(file),stat=fs.statSync(current);
+    if(!stat.isFile()||stat.size<=0||stat.size>limit)throw new Error('Private storage requires bounded original files');
+    return fs.readFileSync(current);};
+  const binding=JSON.parse(read(bindingPin.path,16*1024*1024).toString('utf8'));
+  const report=operation.outcome.ownedProcess.report,eventRaw=read(path.join(path.dirname(report),'events.ndjson'),256*1024*1024);
+  if(identity.hash(eventRaw)!==operation.logSha256)throw new Error('Private storage original event log changed');
+  const events=eventRaw.toString('utf8').trimEnd().split('\n').map(line=>JSON.parse(line));
+  return {...inputs,privateStorageProof:{executablePin:binding.additionalInputs.executable,
+    contextSha256:identity.hash(read(report+'.context.json',16*1024*1024)),
+    allSamplesSha256:identity.hash(Buffer.from(JSON.stringify(events)))}};
+}
+function verifyPrivateStorageAggregate(analysis,operation,inputs){
+  const calibration=analysis?.privateStorageCalibration,observed=analysis?.privateStorage;
+  if(!calibration&&!observed){
+    if(inputs?.privateStorageProof&&(analysis?.cacheObservation===true||
+      ['mixed','session'].includes(operation.config?.mode)&&analysis?.allSamples))
+      throw new Error('Private storage analysis is missing its bound partial aggregate');
+    return;
+  }
+  const owners=require('./long-run-owners.cjs'),binding=analysis.privateStorageBinding;
+  if(calibration&&observed||!Array.isArray(analysis.allSamples)||
+      identity.hash(Buffer.from(JSON.stringify(analysis.allSamples)))!==inputs?.privateStorageProof?.allSamplesSha256)
+    throw new Error('Private storage must retain the original bound event sequence');
+  const expectedBinding=owners.privateBinding(operation,
+    {pid:operation.outcome?.pid,creationFileTime:operation.outcome?.ownedProcess?.creationFileTime},
+    inputs?.privateStorageProof?.executablePin,
+    {ownedLogSha256:operation.outcome?.ownedProcess?.reportSha256,contextSha256:inputs?.privateStorageProof?.contextSha256},
+    inputs?.inputsMatched===true&&inputs.inputBindingScope==='complete-acceptance-inputs'&&
+      inputs.sourceSha256===operation.sourceSha256&&inputs.payloadSha256===operation.payloadSha256&&
+      inputs.consumerBuildId===operation.consumerBuildId);
+  if(JSON.stringify(binding)!==JSON.stringify(expectedBinding))
+    throw new Error('Private storage Source/payload/Owned/SDK EXE binding differs');
+  const expected=calibration?require('./resource-validation.cjs').privateStorageCalibration(analysis.allSamples||[],expectedBinding):
+    owners.privateStorageObservations(analysis.allSamples||[],expectedBinding);
+  if(JSON.stringify(calibration||observed)!==JSON.stringify(expected))
+    throw new Error('Private storage must retain the same events and exact partial aggregate');
 }
 function validateRecords(records, config, outcome) {
   if (outcome.timedOut !== false || outcome.exitCode !== 0 || outcome.signal || !Number.isInteger(outcome.pid) || outcome.pid <= 0)
@@ -399,7 +441,9 @@ function finishLongCapture(output,operation,summary,frozenBinding,files){
       const analysis=require('./long-run-validation.cjs').analyzeFile(path.join(output,'operation-result.json'),frozenBinding.path);
       matchResourceBindingPin(frozenBinding,resourceBindingFilePin(output),output);
       evidence.inputs=files.recheck(frozenBinding.path);
+      if(['mixed','session'].includes(operation.config.mode))evidence.inputs=privateStorageInputs(evidence.inputs,frozenBinding,operation);
       matchResourceBindingPin(frozenBinding,resourceBindingFilePin(output),output);
+      verifyPrivateStorageAggregate(analysis,operation,evidence.inputs);
       const analysisPath=path.join(output,'long-run-analysis.json');write(analysisPath,analysis);
       evidence.analysis={record:analysis,file:filePin(analysisPath)};evidence.finalVerified=true;
     }catch(error){evidence.failure=error.message;evidence.finalVerified=false;}
@@ -552,7 +596,9 @@ async function run(suite,config,options) {
       const analysis=require('./resource-validation.cjs').analyzeFile(operationPath,frozenBinding.path);
       matchResourceBindingPin(frozenBinding,resourceBindingFilePin(output),output);
       bindingEvidence.inputs=resourceFiles.recheck(frozenBinding.path);
+      if(analysis.cacheObservation===true)bindingEvidence.inputs=privateStorageInputs(bindingEvidence.inputs,frozenBinding,result);
       matchResourceBindingPin(frozenBinding,resourceBindingFilePin(output),output);
+      verifyPrivateStorageAggregate(analysis,result,bindingEvidence.inputs);
       const analysisPath=path.join(output,'resource-analysis.json');
       write(analysisPath,analysis);
       bindingEvidence.analysis={record:analysis,file:filePin(analysisPath)};
@@ -567,7 +613,7 @@ async function run(suite,config,options) {
       captureGate:captured.captureGate,cacheBudgetGate:captured.cacheBudgetGate}:{}),result:path.relative(root,capturePath).replaceAll('\\','/'),
     operationResult:summary.result,failure:result.failure || captured.failure};
 }
-module.exports={settings,expectedSteps,validateRecords,mixedSettings,validateMixedRecords,sessionSettings,validateSessionRecords,verifyNativeIdentity,resourceBinding,longRunBinding,parseRunCommand,resourceCaptureResult,matchResourceBindingPin,completeResourceCaptureResult,prepare,stage,verify,run};
+module.exports={settings,expectedSteps,validateRecords,mixedSettings,validateMixedRecords,sessionSettings,validateSessionRecords,verifyNativeIdentity,resourceBinding,longRunBinding,parseRunCommand,resourceCaptureResult,matchResourceBindingPin,completeResourceCaptureResult,verifyPrivateStorageAggregate,prepare,stage,verify,run};
 if(require.main===module) (async()=>{
   const [command,suite,...args]=process.argv.slice(2);
   let result;
