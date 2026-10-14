@@ -32,6 +32,19 @@ function tree(root){
   return id.walk(root).map(name=>pin(id.safePath(root,name))).sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0);
 }
 function assertInventory(rows){for(const row of rows)match(row);return rows;}
+function freezeResourceWrapper(cmake){
+  const selected=pin(cmake);need(path.basename(selected.path).toLowerCase()==='cmake.exe','Selected CMake executable required for resource wrapper');
+  return pin(path.join(path.dirname(selected.path),'cmcldeps.exe'));
+}
+function validateResourceWrapperBinding(row,frozen){
+  const wrapper=frozen.llvm.resourceWrapperPin,cmake=frozen.tools.filter(item=>item.role==='cmake');
+  need(cmake.length===1&&wrapper&&path.resolve(wrapper.path)===path.join(path.dirname(cmake[0].path),'cmcldeps.exe'),
+    'Resource wrapper must belong to the selected frozen CMake directory');
+  match(wrapper);
+  need(Array.isArray(frozen.llvm.dependencyPins)&&frozen.llvm.dependencyPins.filter(item=>samePin(item,wrapper)).length===1&&
+    row.resourceWrapperPin&&samePin(row.resourceWrapperPin,wrapper),'Resource wrapper is missing from the whole frozen observation envelope');
+  return wrapper;
+}
 function verifyCurrentCodePins(root,rows){
   need(Array.isArray(rows)&&rows.length===codeNames.length,'Complete current LLVM reader code pins required');
   for(const name of codeNames){
@@ -216,14 +229,17 @@ async function run(root,v,folder,api){
   const profiles=validatePreparedProfile(root,v,prepared,discoveredRequest),validationPins=stockDependencyPins(prepared,profiles.validation);
   const validationTools={root:toolsRoot,preparation:prepared.reportPin,requestFile:profiles.validation.pin,
     inputIdentity:profiles.validation.inputIdentity,bridgeIdentity:profiles.validation.bridgeIdentity,sourceFingerprint:prepared.setup.report.source.sha256};
-  const toolPaths={...facts.tools,...Object.fromEntries(Object.entries(profile.ToolPins).map(([role,row])=>[role,row.path]))};
+  // CMake's fixed RC launcher is an independent prelaunch input. Its file pin
+  // authenticates a later observed path; it never proves process execution.
+  const resourceWrapperPin=freezeResourceWrapper(facts.tools.cmake);
+  const toolPaths={...facts.tools,resourceWrapper:resourceWrapperPin.path,...Object.fromEntries(Object.entries(profile.ToolPins).map(([role,row])=>[role,row.path]))};
   const tools=[{role:'powershell',...ps},{role:'runner',...runnerPin},{role:'callerNode',...api.inspectTool(process.execPath)},
     ...Object.entries(toolPaths).map(([role,p])=>({role,...api.inspectTool(p)}))];
   need(path.resolve(facts.tools.node).toLowerCase()===path.resolve(process.execPath).toLowerCase(),'Build must use the current pinned Node runtime');
   // Keep the actual first-resolution tools at the front in every child, while
   // retaining the inherited PATH. No user/profile command provider is loaded.
   env.PATH=[...new Set([path.dirname(facts.tools.cmake),path.dirname(facts.tools.node),path.dirname(facts.tools.npm)]),env.PATH??env.Path??''].join(';');delete env.Path;
-  const source=id.source(root),rawSource=id.snapshot(root,source.files.map(row=>row.path)),dependency=inputs(root,source,profile,validationPins),scriptRows=api.scripts(root,v);
+  const source=id.source(root),rawSource=id.snapshot(root,source.files.map(row=>row.path)),dependency=inputs(root,source,profile,[...validationPins,resourceWrapperPin]),scriptRows=api.scripts(root,v);
   const args=api.buildArguments(root,v),buildPath=path.join(root,'out',(v.sdkOnly?'sdk-':'')+v.architecture,`build-${v.configuration}.json`);
   let oldBuild={exists:false,buildId:null},previousObservation=null;
   if(fs.existsSync(buildPath)){const bytes=fs.readFileSync(buildPath);let buildId=null;try{buildId=read(buildPath).buildId;}catch{}
@@ -241,7 +257,7 @@ async function run(root,v,folder,api){
     sdkOnly:!!v.sdkOnly,compilerTail:false,nativeToolchain:profileName,...Object.fromEntries(Object.keys(api.llvmPaths).map(key=>[key,v[key]])),
     source,rawSource,scripts:scriptRows,tools,scriptSha256:scriptRows.find(row=>row.path==='tools/Build.ps1').sha256,
     context,contextSha256:sha(encoded(context)),oldBuild,environment:env,llvm:{inputIdentity:profile.InputIdentity,bridgeIdentity:profile.BridgeIdentity,discovery:pin(probeOutput),
-      sourceCodePins:codePins,dependencyInventories:dependency.inventories,dependencyPins:dependency.dependencyPins,validationTools,previousObservation}};
+       sourceCodePins:codePins,dependencyInventories:dependency.inventories,dependencyPins:dependency.dependencyPins,resourceWrapperPin,validationTools,previousObservation}};
   write(folder,'inputs.json',frozen);assertInventory(dependency.dependencyPins);tools.forEach(api.verifyToolCompatible);
   const launched=await api.capture(folder,'build',powershell,args,{runner,cwd:root,timeoutMs:v.timeoutMs,drainMs:v.drainMs,env});
   nativeNatural(launched,api.verifyStream);
@@ -255,12 +271,12 @@ async function run(root,v,folder,api){
   const cfg={schema:'soui.standard-llvm-observer-inputs/v1',profile:profileName,root,architecture:v.architecture,configuration:v.configuration,sdkOnly:!!v.sdkOnly,
     withWebView2:!!v.withWebView2,buildDirectory:path.dirname(buildPath),evidenceDirectory:observerDirectory,inputIdentity:profile.InputIdentity,bridgeIdentity:profile.BridgeIdentity,
     requestFile:pin(profileRequestPath(root,v)),buildReport:pin(buildPath),buildCapture:{...raw,timeoutMs:v.timeoutMs,drainMs:v.drainMs},
-    controlPins:codePins,dependencyPins:dependency.dependencyPins,nativeLog:pin(path.join(path.dirname(buildPath),`native-${v.configuration}.log`)),
+    controlPins:codePins,dependencyPins:dependency.dependencyPins,resourceWrapperPin,nativeLog:pin(path.join(path.dirname(buildPath),`native-${v.configuration}.log`)),
     previousObservation,qualificationPassed:false,releaseReady:false};
   const cfgFile=write(folder,'llvm-observer-inputs.json',cfg),cfgPin=pin(cfgFile);
   const observationRun=await api.capture(folder,'llvm-observer',powershell,['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',observerPath,
     '-InputFile',cfgFile,'-InputSha',cfgPin.sha256,'-ObservationPath',observationPath],{runner,cwd:root,timeoutMs:120000,drainMs:2000,env});
-  nativeNatural(observationRun,api.verifyStream);const observation=read(observationPath);validateObservation(observation,root,v,profile,build,launched,observationRun,api.verifyStream);
+  nativeNatural(observationRun,api.verifyStream);const observation=read(observationPath);validateResourceWrapperBinding(observation,frozen);validateObservation(observation,root,v,profile,build,launched,observationRun,api.verifyStream);
   assertInventory(dependency.dependencyPins);for(const inventory of dependency.inventories)need(isDeepStrictEqual(tree(inventory.root),inventory.files),'Tool input inventory changed');
   tools.forEach(api.verifyToolCompatible);codePins.forEach(match);
   const finalPreparation=preparation(toolsRoot,v.architecture);
@@ -296,6 +312,7 @@ function priorObservation(root,arch,config,sdkOnly,profile,validationTools){
   const natural=nativeNatural(buildCapture,standard.verifyStream);nativeNatural(observerCapture,standard.verifyStream);
   const old=read(accepted.observation.path),frozen=read(accepted.inputs.path),build=read(accepted.buildReportSnapshot.path);
   verifyCurrentCodePins(root,frozen.llvm.sourceCodePins);
+  validateResourceWrapperBinding(old,frozen);
   validateNinjaScope(old,root,arch,config,sdkOnly);
   need(isDeepStrictEqual(accepted.validationTools,validationTools)&&isDeepStrictEqual(frozen.llvm.validationTools,validationTools)&&
     isDeepStrictEqual(old.frozenDependencyPins,frozen.llvm.dependencyPins),'Historical validation-tool ownership differs');
@@ -321,6 +338,7 @@ function verifyStandardBuild(root,arch,config,sdkOnly=false,request={}){
   const standard=require('./standard-build.cjs');
   const current=read(accepted.observation.path),frozen=read(accepted.inputs.path),profile=read(accepted.requestFile.path).discovery;
   verifyCurrentCodePins(root,frozen.llvm.sourceCodePins);
+  validateResourceWrapperBinding(current,frozen);
   need(isDeepStrictEqual(accepted.validationTools,frozen.llvm.validationTools)&&
     isDeepStrictEqual(current.frozenDependencyPins,frozen.llvm.dependencyPins),'Accepted validation-tool binding differs');
   validateValidationBinding(frozen.llvm.validationTools,root,{architecture:arch},accepted.requestFile.path,frozen.llvm.dependencyPins);
@@ -328,7 +346,7 @@ function verifyStandardBuild(root,arch,config,sdkOnly=false,request={}){
   need(frozen.nativeToolchain===profileName&&frozen.llvm.inputIdentity===profile.InputIdentity&&frozen.llvm.bridgeIdentity===profile.BridgeIdentity,'Prior frozen profile differs');
   return {build,observation:current,observationPath:accepted.observation.path,accepted,compilerVerified:true,qualificationPassed:false,releaseReady:false};
 }
-module.exports={validateNinjaScope,codeNames,providerNames,preparation,profileRequestPath,selected,verifyCurrentCodePins,validatePreparedProfile,validateValidationBinding,run,verifyStandardBuild};
+module.exports={freezeResourceWrapper,validateResourceWrapperBinding,validateNinjaScope,codeNames,providerNames,preparation,profileRequestPath,selected,verifyCurrentCodePins,validatePreparedProfile,validateValidationBinding,run,verifyStandardBuild};
 if(require.main===module){
   try{
     const args=process.argv.slice(2);

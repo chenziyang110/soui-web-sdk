@@ -26,3 +26,4 @@
 - [ADR-0077：TaskStore 私有 retained string 分配请求](0077-task-store-private-retained-string-requests.md)（proposed；Phase 1 Source-only，collector 尚未接入，完整缓存预算仍未评估）
 - [ADR-0078：独立采集 TaskStore 私有 allocator 请求](0078-task-store-private-storage-collection.md)（proposed；Phase 2 Source-only，未执行真实 capture，完整缓存预算仍未评估）
 - [ADR-0079：Ninja 工作目录变量与编译观测快照](0079-ninja-workdir-observation-snapshots.md)（proposed；纯 Reader 回归通过，真实公开 SDK 重跑仍待执行）
+- [ADR-0080：编译数据库分类与 RC 完整命令绑定](0080-rc-database-observation-bindings.md)（proposed；Source/pure-only，RC/MT 真实进程观测与常规 SDK 验收仍待完成）

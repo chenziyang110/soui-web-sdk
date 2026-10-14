@@ -433,6 +433,100 @@ function CompileVerboseRecords([string]$text){
   if($null-ne$canonical){[ordered]@{canonical=$canonical;raw=($raw-replace'^\[[1-9][0-9]*/[1-9][0-9]*\] ','')}}
  }
 }
+function DatabaseCommand([string]$text){
+ [string[]]$arguments=@(CompileArgv $text)
+ Need (@($arguments|Where-Object{$_-match'^@|^[/-]clang:@'-or$_-cin@('&&','||','&','|')}).Count-eq0) 'Direct database command without response file or shell required'
+ $kind=$(if($arguments[0]-imatch'(?:^|[\\/])clang-cl\.exe$'){'CLANG'}elseif($arguments[0]-imatch'(?:^|[\\/])rc\.exe$'){'RC'}else{$null})
+ Need ($null-ne$kind) 'Selected database command requires a fixed direct CLANG or RC compiler'
+ return [ordered]@{kind=$kind;arguments=$arguments}
+}
+function ResourceDatabaseArgs($command,[string]$build){
+ $parsed=DatabaseCommand $command.command;Need ($parsed.kind-ceq'RC') 'Direct RC database command required'
+ [string[]]$arguments=$parsed.arguments
+ Need ((Norm (Full $command.directory $build))-ceq(Norm $build)-and$command.file-match'^[A-Za-z]:[\\/]'-and$command.file.EndsWith('.rc',[StringComparison]::OrdinalIgnoreCase)) 'RC database cwd/source required'
+ $output=Full $command.output $build
+ Need ((Norm $output).StartsWith(((Norm $build).TrimEnd('/')+'/'),[StringComparison]::Ordinal)-and$output.EndsWith('.res',[StringComparison]::OrdinalIgnoreCase)) 'RC output must belong to the current build'
+ $fo=@(for($i=1;$i-lt$arguments.Count;$i++){if($arguments[$i]-imatch'^[/-]fo'){$i}})
+ Need ($fo.Count-eq1-and$arguments[$fo[0]]-ceq'/fo'-and$fo[0]+1-lt$arguments.Count-1-and(Norm (Full $arguments[$fo[0]+1] $build))-ceq(Norm $output)-and(Norm (Full $arguments[-1] $build))-ceq(Norm (Full $command.file $build))) 'Exact RC database source/output operands required'
+ $arguments[0]=ToolNorm $arguments[0];return ,$arguments
+}
+function ResourceQuery([string]$text){
+ $head=[regex]::Match($text.Trim(),'^(?:"([^"\r\n]+)"|([^ \t"\r\n]+))(?=[ \t]|$)')
+ if(-not$head.Success){return $null}
+ $program=$(if($head.Groups[1].Success){$head.Groups[1].Value}else{$head.Groups[2].Value})
+ if($program-inotmatch'(?:^|[\\/])(?:rc|cmcldeps)\.exe$'){return $null}
+ [string[]]$arguments=@(CompileArgv $text)
+ Need (@($arguments|Where-Object{$_-match'^@'-or$_-cin@('&&','||','&','|')}).Count-eq0) 'Direct resource command without response file or shell required'
+ $wrapped=$program-imatch'(?:^|[\\/])cmcldeps\.exe$'
+ if($wrapped){
+  # Fixed CMake RC wrapper: launcher, RC, source, depfile, output, prefix,
+  # clang preprocessor, rc compiler; the remaining vector is the DB RC args.
+  Need ($arguments.Count-ge9-and$arguments[1]-ceq'RC'-and$arguments[5]-ceq'Note: including file: '-and$arguments[6]-imatch'(?:^|[\\/])clang-cl\.exe$'-and$arguments[7]-imatch'(?:^|[\\/])rc\.exe$') 'Fixed cmcldeps RC wrapper slots required'
+  [string[]]$direct=$arguments[7..($arguments.Count-1)]
+ }else{[string[]]$direct=$arguments}
+ return [ordered]@{kind=$(if($wrapped){'cmcldeps-RC'}else{'direct-RC'});arguments=$arguments;directArguments=$direct;raw=$text}
+}
+function ResourceQueryNorm($query){
+ [string[]]$arguments=$query.arguments.Clone();$arguments[0]=ToolNorm $arguments[0]
+ if($query.kind-ceq'cmcldeps-RC'){$arguments[6]=ToolNorm $arguments[6];$arguments[7]=ToolNorm $arguments[7]}
+ return (ConvertTo-Json -InputObject $arguments -Compress)
+}
+function ResourceBindings([string]$build,$commands,$edges,$queries){
+ $wanted=@{};foreach($command in $commands){
+  [string[]]$arguments=ResourceDatabaseArgs $command $build;$key=Norm (Full $command.output $build)
+  Need (-not$wanted.ContainsKey($key)) 'Unique RC database output required'
+  $wanted[$key]=[ordered]@{command=$command;canonical=(ConvertTo-Json -InputObject $arguments -Compress)}
+ }
+ $seen=@{};$records=[Collections.Generic.List[object]]::new()
+ foreach($query in $queries){
+  [string[]]$direct=$query.directArguments.Clone();$direct[0]=ToolNorm $direct[0]
+  $canonical=ConvertTo-Json -InputObject $direct -Compress
+  $matches=@($wanted.Keys|Where-Object{$wanted[$_].canonical-ceq$canonical})
+  Need ($matches.Count-eq1) 'Complete RC query argv must bind exactly one database record'
+  $key=$matches[0];Need (-not$seen.ContainsKey($key)) 'Unique generated RC command required';$entry=$wanted[$key];$command=$entry.command
+  $bound=@($edges|Where-Object{$_.rule-cmatch'^RC_COMPILER(?:_|$)'-and$_.outputs.Count-eq1-and(Norm (Full $_.outputs[0] $build))-ceq$key})
+  Need ($bound.Count-eq1) 'RC query requires one matching resource edge';$edge=$bound[0]
+  Need ($edge.inputs.Count-eq1-and$edge.implicitOutputs.Count-eq0-and$edge.validations.Count-eq0-and(Norm (Full $edge.inputs[0] $build))-ceq(Norm (Full $command.file $build))) 'Exact RC edge source/output required'
+  if($query.kind-ceq'cmcldeps-RC'){
+   Need ((Norm (Full $query.arguments[2] $build))-ceq(Norm (Full $command.file $build))-and(Norm (Full $query.arguments[4] $build))-ceq$key-and(Norm (Full $query.arguments[3] $build))-ceq($key+'.d')) 'Exact cmcldeps RC source/output/depfile slots required'
+  }
+  $seen[$key]=$true;$records.Add([ordered]@{command=$command;edge=$edge;query=$query;databaseCanonical=$canonical;canonical=(ResourceQueryNorm $query)})
+ }
+ $outside=@($wanted.Keys|Where-Object{-not$seen.ContainsKey($_)}|ForEach-Object{[ordered]@{source=$wanted[$_].command.file;output=$wanted[$_].command.output;scope='RC database declaration outside selected default ALL graph; not compiled proof'}})
+ return [ordered]@{selected=$records.ToArray();outsideScope=$outside}
+}
+function ResourceVerboseRecords([string]$text){
+ foreach($raw in ($text-split'\r?\n')){
+  $progress=[regex]::Match($raw,'^\[([1-9][0-9]*)/([1-9][0-9]*)\] (.+)$');if(-not$progress.Success){continue}
+  Need ([uint64]::Parse($progress.Groups[1].Value)-le[uint64]::Parse($progress.Groups[2].Value)) 'Invalid Ninja progress prefix'
+  $query=ResourceQuery $progress.Groups[3].Value;if($null-ne$query){[ordered]@{query=$query;raw=$progress.Groups[3].Value}}
+ }
+}
+function ResourceActual($binding,$records){
+ $matches=@($records|Where-Object{(ResourceQueryNorm $_.query)-ceq$binding.canonical})
+ Need ($matches.Count-le1) 'Resource command observed repeatedly';return $matches
+}
+function ResourceInput([string]$path,$resources){
+ $key=Norm $path;Need ($resources.ContainsKey($key)) 'Selected binary resource input requires a complete RC database/query binding'
+ return $resources[$key]
+}
+function ResourceWrapperIdentity([string]$observed){
+ Need ($cfg.PSObject.Properties.Name-ccontains'resourceWrapperPin'-and$null-ne$cfg.resourceWrapperPin) 'Frozen selected CMake resource wrapper pin required'
+ $pin=$cfg.resourceWrapperPin;[void](MatchPin $pin)
+ Need ([IO.Path]::GetFileName($pin.path)-ieq'cmcldeps.exe'-and@($cfg.dependencyPins|Where-Object{(Norm $_.path)-ceq(Norm $pin.path)-and$_.bytes-eq$pin.bytes-and$_.sha256-ceq$pin.sha256}).Count-eq1) 'Resource wrapper must be in the whole frozen dependency envelope'
+ $key='CMCLDEPS|'+(Norm $observed)
+ if(-not$toolIdentities.ContainsKey($key)){$receipt=Assert-ToolFileIdentity -ObservedPath $observed -ExpectedPin $pin;$toolIdentities[$key]=$receipt;$aliases[(Norm $observed)]=Norm $pin.path}
+ return $toolIdentities[$key]
+}
+function AuthenticateResource($query){
+ if($query.kind-ceq'cmcldeps-RC'){[void](ResourceWrapperIdentity $query.arguments[0]);[void](ToolIdentity $query.arguments[6] 'CLANG')}
+ [void](ToolIdentity $query.directArguments[0] 'RC')
+}
+function AuthenticateClang([string]$text){
+ $head=[regex]::Match($text.Trim(),'^(?:"([^"\r\n]+)"|([^ \t"\r\n]+))(?=[ \t]|$)');if(-not$head.Success){return}
+ $program=$(if($head.Groups[1].Success){$head.Groups[1].Value}else{$head.Groups[2].Value})
+ if($program-imatch'(?:^|[\\/])clang-cl\.exe$'){[void](ToolIdentity $program 'CLANG')}
+}
 $buildRaw=MatchPin $cfg.buildCapture.raw;$contextPin=MatchPin $cfg.buildCapture.context;$finishedPin=MatchPin $cfg.buildCapture.finished;$readyPin=MatchPin $cfg.buildCapture.ready
 $eventsText=RawText $cfg.buildCapture.raw.path;Need ($eventsText.EndsWith("`n")) 'Complete original owned stream';$events=@($eventsText.TrimEnd([char]10).Split([char]10)|ForEach-Object{$_|ConvertFrom-Json})
 $context=RawText $cfg.buildCapture.context.path|ConvertFrom-Json;$finished=RawText $cfg.buildCapture.finished.path|ConvertFrom-Json;$ready=RawText $cfg.buildCapture.ready.path|ConvertFrom-Json;$start=$events[0];$terminal=$events[-1]
@@ -516,8 +610,13 @@ try{
  & $profile.ToolPins.NINJA.path -f ('build-'+$cfg.configuration+'.ninja') -t commands *> $queryFile;Need ($LASTEXITCODE-eq0) 'Actual Ninja commands query failed'
  & $profile.ToolPins.NINJA.path -f ('build-'+$cfg.configuration+'.ninja') -t deps *> $depsFile;Need ($LASTEXITCODE-eq0) 'Actual Ninja dependency query failed'
 }finally{Pop-Location}
-$generated=[string[]]@((RawText $queryFile)-split'\r?\n'|Where-Object{$_-cne''});$normalizedGenerated=@($generated|ForEach-Object{CompileNorm $_ $true});$normalizedVerbose=@(CompileVerboseRecords $nativeText)
-$graphCommands=@();$outsideGraph=@();foreach($command in $selectedCommands){$needle=CompileNorm $command.command;Need ($null-ne$needle) 'Selected compile database record must be a direct clang command';$matches=@($normalizedGenerated|Where-Object{$_-ceq$needle});Need ($matches.Count-le1) 'Ambiguous generated compile command';if($matches.Count){$graphCommands+=,$command}else{$outsideGraph+=,[ordered]@{source=$command.file;output=$command.output;scope='compile database declaration outside selected default ALL graph; not compiled proof'}}}
+$clangCommands=@();$rcCommands=@();foreach($command in $selectedCommands){$direct=DatabaseCommand $command.command;[void](ToolIdentity $direct.arguments[0] $direct.kind);if($direct.kind-ceq'CLANG'){$clangCommands+=,$command}else{$rcCommands+=,$command}}
+$generated=[string[]]@((RawText $queryFile)-split'\r?\n'|Where-Object{$_-cne''});$resourceQueries=@();foreach($text in $generated){$query=ResourceQuery $text;if($null-ne$query){AuthenticateResource $query;$resourceQueries+=,$query}else{AuthenticateClang $text}}
+$resourceVerbose=@(ResourceVerboseRecords $nativeText);foreach($entry in $resourceVerbose){AuthenticateResource $entry.query}
+foreach($raw in ($nativeText-split'\r?\n')){$progress=[regex]::Match($raw,'^\[([1-9][0-9]*)/([1-9][0-9]*)\] (.+)$');if($progress.Success){AuthenticateClang $progress.Groups[3].Value}}
+$normalizedGenerated=@($generated|ForEach-Object{CompileNorm $_ $true});$normalizedVerbose=@(CompileVerboseRecords $nativeText)
+$graphCommands=@();$outsideGraph=@();foreach($command in $clangCommands){$needle=CompileNorm $command.command;Need ($null-ne$needle) 'Selected clang database record must be a direct clang command';$matches=@($normalizedGenerated|Where-Object{$_-ceq$needle});Need ($matches.Count-le1) 'Ambiguous generated compile command';if($matches.Count){$graphCommands+=,$command}else{$outsideGraph+=,[ordered]@{source=$command.file;output=$command.output;scope='compile database declaration outside selected default ALL graph; not compiled proof'}}}
+$resourceBindings=ResourceBindings $build $rcCommands $edges $resourceQueries;$outsideGraph+=@($resourceBindings.outsideScope)
 Need ($graphCommands.Count-gt0) 'No default graph compiler commands'
 $selectedObjects=@{};foreach($command in $graphCommands){$selectedObjects[(Norm (Full $command.output $build))]=$true}
 $graphEdges=@($edges|Where-Object{$_.rule-cmatch'^(C|CXX)_COMPILER(?:_|$)'-and$_.outputs.Count-eq1-and$selectedObjects.ContainsKey((Norm (Full $_.outputs[0] $build)))})
@@ -554,24 +653,20 @@ Need ($sdkExpected.Count-gt0-and(SameSet $sdkExpected ([string[]]@($graphCommand
 }
 
 $resourceRecords=[Collections.Generic.List[object]]::new();$resources=@{}
-foreach($edge in $edges){
- if($edge.rule-cnotmatch'^RC_COMPILER(?:_|$)'){continue}
- Need ($edge.outputs.Count-eq1-and$edge.inputs.Count-eq1-and$edge.implicitOutputs.Count-eq0) 'One explicit resource source/output required'
- $output=Full $edge.outputs[0] $build;$source=Full $edge.inputs[0] $build
- $candidates=@($generated|Where-Object{(Norm (ToolNorm $_)).Contains((Norm $profile.ToolPins.RC.path))-and(Norm $_).Contains((Norm $edge.outputs[0]))})
- if(-not$candidates.Count){continue};Need ($candidates.Count-eq1-and$source.EndsWith('.rc',[StringComparison]::OrdinalIgnoreCase)) 'Exact selected RC command/source'
- $sourcePin=DependencyPin $source;$outputPin=ObsPin $output;$needle=ToolNorm $candidates[0]
- $actual=@($verbose|Where-Object{(ToolNorm $_)-ceq$needle});Need ($actual.Count-le1) 'Resource command observed repeatedly';$reuse=$null
+foreach($binding in $resourceBindings.selected){
+ $command=$binding.command;$output=Full $command.output $build;$source=Full $command.file $build
+ $sourcePin=DependencyPin $source;$outputPin=ObsPin $output;$needle=$binding.canonical
+ $actual=@(ResourceActual $binding $resourceVerbose);$reuse=$null
  if($actual.Count){$neededRoles.RC=$true}else{
   Need ($null-ne$previous) 'Resource output lacks current command/prior natural proof'
   $old=@($previous.resourceRecords|Where-Object{(Norm $_.output.path)-ceq(Norm $output)})
-  Need ($old.Count-eq1-and$old[0].normalizedCommand-ceq$needle-and$old[0].source.sha256-ceq$sourcePin.sha256-and$old[0].output.sha256-ceq$outputPin.sha256) 'Incremental resource proof differs'
+   Need ($old.Count-eq1-and$old[0].normalizedCommand-ceq$needle-and$old[0].databaseNormalizedCommand-ceq$binding.databaseCanonical-and$old[0].source.sha256-ceq$sourcePin.sha256-and$old[0].source.bytes-eq$sourcePin.bytes-and$old[0].output.sha256-ceq$outputPin.sha256-and$old[0].output.bytes-eq$outputPin.bytes) 'Incremental resource proof differs'
   # RC does not publish Ninja deps. Require every pre-frozen source/tool input
   # unchanged for reuse instead of claiming a reconstructed header-read trace.
   Need (SameSet ([string[]]@($cfg.dependencyPins|ForEach-Object{(Norm $_.path)+'|'+$_.bytes+'|'+$_.sha256})) ([string[]]@($previous.frozenDependencyPins|ForEach-Object{(Norm $_.path)+'|'+$_.bytes+'|'+$_.sha256}))) 'Incremental resource dependency inventory differs'
   $reuse=$cfg.previousObservation
  }
- $record=[ordered]@{source=$sourcePin;output=$outputPin;normalizedCommand=$needle;generatedCommand=$candidates[0];actualVerbose=$(if($actual.Count){$actual[0]}else{$null});reusedFrom=$reuse;dependencyReadTraceAvailable=$false}
+  $record=[ordered]@{source=$sourcePin;output=$outputPin;databaseRaw=$command.command;databaseNormalizedCommand=$binding.databaseCanonical;normalizedCommand=$needle;generatedCommand=$binding.query.raw;actualVerbose=$(if($actual.Count){$actual[0].raw}else{$null});reusedFrom=$reuse;dependencyReadTraceAvailable=$false}
  $resourceRecords.Add($record);$resources[(Norm $output)]=$outputPin
 }
 $binaryRecords=[Collections.Generic.List[object]]::new();$requiredLibraryKeys=@{};$currentBinaryCount=0
@@ -588,7 +683,7 @@ foreach($edge in $edges){
  $inputObjects=@();$inputLibraries=@();$inputResources=@();foreach($relative in @($edge.inputs)+@($edge.implicitInputs)){
   $p=Full $relative $build;$key=Norm $p
   if($objects.ContainsKey($key)){$inputObjects+=,$objects[$key].object}
-  elseif($resources.ContainsKey($key)){$inputResources+=,$resources[$key]}
+  elseif($p.EndsWith('.res',[StringComparison]::OrdinalIgnoreCase)){$inputResources+=,(ResourceInput $p $resources)}
   elseif($p.EndsWith('.lib',[StringComparison]::OrdinalIgnoreCase)){
    if($key.StartsWith(((Norm $build).TrimEnd('/')+'/'),[StringComparison]::Ordinal)){$inputLibraries+=,(ObsPin $p);$requiredLibraryKeys[$key]=$true}else{$inputLibraries+=,(DependencyPin $p)}
   }
@@ -620,8 +715,9 @@ foreach($p in @(($build+'/CMakeCache.txt'),($build+'/CMakeFiles/CMakeConfigureLo
 foreach($pin in $cfg.controlPins){[void](MatchPin $pin)};foreach($pin in $cfg.dependencyPins){[void](MatchPin $pin)};Need ((ObsPin $InputFile).sha256-ceq$InputSha) 'Observer input changed'
 foreach($pin in $ninjaScopePins.Values){[void](MatchPin $pin)}
 $record=[ordered]@{ninjaWorkdirBinding=$ninjaWorkdirBinding;ninjaScopePins=$ninjaScopePins;schema='soui.standard-llvm-build-observation/v1';profile=$cfg.profile;root=$root;architecture=$cfg.architecture;configuration=$cfg.configuration;sdkOnly=$cfg.sdkOnly;inputIdentity=$cfg.inputIdentity;bridgeIdentity=$cfg.bridgeIdentity;requestFile=$requestPin;buildReport=$cfg.buildReport;buildCapture=[ordered]@{raw=$buildRaw;context=$contextPin;ready=$readyPin;finished=$finishedPin;pid=$start.pid;creationFileTime=$start.creationFileTime;naturalRootExitCode=0;naturalSupervisorExitCode=0;wholeJobClosed=$true;forced=$false};compilerVerified=$true;observedCompilerId='Clang';observedFrontend='MSVC';observedVersion='22.1.3';observedPointerBytes=$expectedWidth;compilerFacts=$compilerFacts.ToArray();ninjaCompileEdges=$bindings;ninjaDependencyRecords=$deps.selected;outsideSelectedDependencyScope=$deps.outsideScope;outsideDefaultGraph=$outsideGraph;compileRecords=$compileRecords.ToArray();resourceRecords=$resourceRecords.ToArray();frozenDependencyPins=$cfg.dependencyPins;derivedDependencies=$derivedDependencies.ToArray();binaryRecords=$binaryRecords.ToArray();actualToolRows=$currentToolRows.ToArray();toolFileIdentities=@($toolIdentities.Values);currentCompileCount=$currentCompileCount;currentBinaryCount=$currentBinaryCount;dependencyPins=@($dependencyPins.Values);evidencePins=$evidencePins.ToArray();scope='Actual selected configuration/default ALL graph; current commands or hash-bound prior natural compile records. No CTest/runtime/OS qualification or filesystem library-read trace.';completeToolchainProvenance=$false;kernelQualified=$false;abiQualified=$false;win7Qualified=$false;qualificationPassed=$false;releaseReady=$false}
+$record.resourceWrapperPin=$(if($cfg.PSObject.Properties.Name-ccontains'resourceWrapperPin'){$cfg.resourceWrapperPin}else{$null})
 if($installedMode){
- foreach($pin in $installedPins.Values){[void](MatchPin $pin)}
+  foreach($pin in $installedPins.Values){[void](MatchPin $pin)}
  foreach($role in $roleNames){[void](MatchPin $profile.ToolPins.$role)};foreach($pin in @($profile.RequiredInputPins)+@($profile.BridgePins)){[void](MatchPin $pin)}
  foreach($pair in @(@($installedPaths.source,$installedBinding.consumerSources),@((Join-Path $installedPaths.install 'include'),$installedBinding.installedHeaders),@((Join-Path $root 'sdk/include'),$installedBinding.originalSdkHeaders),@($installedPaths.originalSource,$installedBinding.originalConsumerSources))){Need (SameSet ([string[]]@(InstalledTree $pair[0]|ForEach-Object{Norm $_})) ([string[]]@($pair[1]|ForEach-Object{Norm $_.path}))) 'Installed input inventory changed during observation'}
  $record.schema='soui.installed-acceptance-llvm-build-observation/v1';$record.installedConsumer=$installedBinding;$record.installedEvidencePins=@($installedPins.Values)

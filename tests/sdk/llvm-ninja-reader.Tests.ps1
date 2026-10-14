@@ -8,7 +8,7 @@ $ast=[Management.Automation.Language.Parser]::ParseFile($source,[ref]$tokens,[re
 if($errors.Count){throw 'Real reader source has parse errors'}
 # Load only the actual pure parsing functions; never invoke the Observer body,
 # tool identity helper, native tools or a copied implementation of the parser.
-foreach($name in @('Need','Norm','Full','NinjaLogicalLines','NinjaLiteralValue','BoundNinjaWorkdir','NinjaWorkdirScope','NinjaWords','NinjaBuildEdges','CompileBindings','NinjaDependencyBlocks','DependencyBindings','ToolNorm','CompileArgv','CompileNorm','CompileVerboseNorm','CompileVerboseRecords')){
+foreach($name in @('Need','Norm','Full','NinjaLogicalLines','NinjaLiteralValue','BoundNinjaWorkdir','NinjaWorkdirScope','NinjaWords','NinjaBuildEdges','CompileBindings','NinjaDependencyBlocks','DependencyBindings','ToolNorm','CompileArgv','CompileNorm','CompileVerboseNorm','CompileVerboseRecords','DatabaseCommand','ResourceDatabaseArgs','ResourceQuery','ResourceQueryNorm','ResourceBindings','ResourceVerboseRecords','ResourceActual','ResourceInput')){
  $definitions=@($ast.FindAll({param($node)$node-is[Management.Automation.Language.FunctionDefinitionAst]-and$node.Name-ceq$name},$true))
  if($definitions.Count-ne1){throw 'Unique actual pure reader function required'}
  . ([ScriptBlock]::Create($definitions[0].Extent.Text))
@@ -116,7 +116,57 @@ Case 'known-workdir-value-itself-is-drive-absolute' {
  }
 }
 
-$record=[ordered]@{schema='soui.pure-standard-ninja-reader-regression/v1';source=$source;cases=$results.ToArray();count=$results.Count;nativeOrToolFileIdentityTested=$false;qualificationPassed=$false;releaseReady=$false}
+# These aliases are explicit inert test inputs. They cannot establish physical
+# identity or satisfy a real Owned process role, and no helper is loaded.
+$aliases=@{'c:/sdkto~1/rc.exe'='c:/sdk tools/rc.exe';'c:/sdk tools/rc.exe'='c:/sdk tools/rc.exe';'c:/cmake~1/bin/cmcldeps.exe'='c:/cmake tools/bin/cmcldeps.exe';'c:/cmake tools/bin/cmcldeps.exe'='c:/cmake tools/bin/cmcldeps.exe';'c:/llvm tools/clang-cl.exe'='c:/llvm tools/clang-cl.exe'}
+$rb='F:/resource-reader-fixture/build'
+$rcTail='-DCMAKE_INTDIR=\"Release\" -I "F:\source folder\include" /fo "obj folder\demo.rc.res" "F:\source folder\demo.rc"'
+$rcDb='"C:\SDK Tools\rc.exe" '+$rcTail
+$rc=[pscustomobject]@{directory=$rb;file='F:/source folder/demo.rc';output=($rb+'/obj folder/demo.rc.res');command=$rcDb}
+$rcEdge=@(NinjaBuildEdges 'build obj$ folder/demo.rc.res: RC_COMPILER_r F$:/source$ folder/demo.rc')[0]
+$rcWrapped='"C:\CMAKE~1\bin\cmcldeps.exe" RC "F:\source folder\demo.rc" "obj folder\demo.rc.res.d" "obj folder\demo.rc.res" "Note: including file: " "C:\LLVM Tools\clang-cl.exe" "C:\SDKTO~1\rc.exe" '+$rcTail
+Case 'database-classifies-clang-and-rc-without-discarding-rc' {Need ((DatabaseCommand $compileDb).kind-ceq'CLANG'-and(DatabaseCommand $rcDb).kind-ceq'RC') 'classification'}
+Case 'unknown-database-program-rejected' {DatabaseCommand 'cmd.exe /c rc.exe /fo a.res a.rc'} 'fixed direct CLANG or RC'
+Case 'database-response-and-shell-rejected' {foreach($value in @($rcDb+' @flags.rsp',$rcDb+' && other.exe')){$rejected=$false;try{DatabaseCommand $value|Out-Null}catch{$rejected=$_.Exception.Message.Contains('without response file or shell')};Need $rejected 'direct database only'}}
+Case 'direct-rc-binds-complete-database-edge-query' {$x=ResourceBindings $rb @($rc) @($rcEdge) @((ResourceQuery $rcDb));Need ($x.selected.Count-eq1-and$x.outsideScope.Count-eq0-and$x.selected[0].query.raw-ceq$rcDb) 'direct RC binding'}
+Case 'cmcldeps-eight-fixed-slots-and-entire-db-suffix-bind' {$x=ResourceBindings $rb @($rc) @($rcEdge) @((ResourceQuery $rcWrapped));Need ($x.selected.Count-eq1-and$x.selected[0].query.kind-ceq'cmcldeps-RC'-and$x.selected[0].query.arguments[5]-ceq'Note: including file: ') 'wrapped RC binding'}
+Case 'rc-link-substring-is-never-a-resource-candidate' {$link='cmd.exe /C "C:\CMake Tools\bin\cmake.exe -E vs_link_exe --rc=C:\SDK Tools\rc.exe linker.exe obj folder\demo.rc.res"';Need ($null-eq(ResourceQuery $link)) 'link is not resource compile'}
+Case 'rc-no-query-retains-outside-default-graph-declaration' {$x=ResourceBindings $rb @($rc) @($rcEdge) @();Need ($x.selected.Count-eq0-and$x.outsideScope.Count-eq1-and$x.outsideScope[0].output-ceq$rc.output) 'uncompiled declaration retained'}
+Case 'rc-duplicate-database-output-rejected' {ResourceBindings $rb @($rc,$rc) @($rcEdge) @((ResourceQuery $rcWrapped))} 'Unique RC database'
+Case 'rc-duplicate-generated-command-rejected' {ResourceBindings $rb @($rc) @($rcEdge) @((ResourceQuery $rcWrapped),(ResourceQuery $rcWrapped))} 'Unique generated RC'
+Case 'rc-duplicate-edge-rejected' {ResourceBindings $rb @($rc) @($rcEdge,$rcEdge) @((ResourceQuery $rcWrapped))} 'one matching resource edge'
+Case 'rc-missing-edge-rejected' {ResourceBindings $rb @($rc) @() @((ResourceQuery $rcWrapped))} 'one matching resource edge'
+Case 'rc-edge-source-mismatch-rejected' {$bad=@(NinjaBuildEdges 'build obj$ folder/demo.rc.res: RC_COMPILER_r F$:/source$ folder/other.rc')[0];ResourceBindings $rb @($rc) @($bad) @((ResourceQuery $rcWrapped))} 'Exact RC edge'
+Case 'rc-query-entire-suffix-extra-or-reordered-arguments-reject' {foreach($changed in @($rcWrapped+' -DEXTRA=1',$rcWrapped.Replace('-I "F:\source folder\include" /fo','/fo'))){$rejected=$false;try{ResourceBindings $rb @($rc) @($rcEdge) @((ResourceQuery $changed))|Out-Null}catch{$rejected=$_.Exception.Message.Contains('Complete RC query argv')};Need $rejected 'whole suffix contract'}}
+Case 'rc-foreign-inner-tool-path-does-not-normalize-by-basename' {ResourceBindings $rb @($rc) @($rcEdge) @((ResourceQuery $rcWrapped.Replace('C:\SDKTO~1\rc.exe','C:\other\rc.exe')))} 'Complete RC query argv'
+Case 'rc-wrapper-language-prefix-and-compiler-slots-reject' {foreach($changed in @($rcWrapped.Replace('" RC ','" CXX '),$rcWrapped.Replace('Note: including file: ','other prefix'),$rcWrapped.Replace('clang-cl.exe','not-clang.exe'))){$rejected=$false;try{ResourceQuery $changed|Out-Null}catch{$rejected=$_.Exception.Message.Contains('Fixed cmcldeps RC wrapper slots')};Need $rejected 'fixed wrapper slots'}}
+Case 'rc-wrapper-source-output-and-depfile-slots-reject' {foreach($changed in @($rcWrapped.Replace('RC "F:\source folder\demo.rc"','RC "F:\source folder\other.rc"'),$rcWrapped.Replace('demo.rc.res.d','other.rc.res.d'),$rcWrapped.Replace('"obj folder\demo.rc.res" "Note:','"obj folder\other.rc.res" "Note:'))){$rejected=$false;try{ResourceBindings $rb @($rc) @($rcEdge) @((ResourceQuery $changed))|Out-Null}catch{$rejected=$_.Exception.Message.Contains('Exact cmcldeps RC source/output/depfile')};Need $rejected 'wrapper positional operands'}}
+Case 'rc-database-cwd-source-output-and-fo-are-independent-contracts' {foreach($field in @('directory','file','output','command')){$bad=[pscustomobject]@{directory=$rc.directory;file=$rc.file;output=$rc.output;command=$rc.command};switch($field){directory{$bad.directory='F:/other'}file{$bad.file='F:/source folder/other.rc'}output{$bad.output='F:/outside/demo.rc.res'}command{$bad.command=$rcDb.Replace('/fo ','/fo other.res /fo ')}};$rejected=$false;try{ResourceDatabaseArgs $bad $rb|Out-Null}catch{$rejected=$true};Need $rejected 'independent RC DB field validation'}}
+Case 'rc-verbose-needs-progress-and-one-whole-vector-match' {$binding=(ResourceBindings $rb @($rc) @($rcEdge) @((ResourceQuery $rcWrapped))).selected[0];Need (@(ResourceActual $binding @(ResourceVerboseRecords ($rcWrapped+"`n"+'diagnostic mentions '+$rcWrapped))).Count-eq0) 'bare/diagnostic is not actual command';Need (@(ResourceActual $binding @(ResourceVerboseRecords ('[2/22] '+$rcWrapped))).Count-eq1) 'progress actual';Need (@(ResourceActual $binding @(ResourceVerboseRecords ('[2/22] '+$rcWrapped+' EXTRA'))).Count-eq0) 'whole argv only'}
+Case 'rc-duplicate-actual-verbose-rejected' {$binding=(ResourceBindings $rb @($rc) @($rcEdge) @((ResourceQuery $rcWrapped))).selected[0];ResourceActual $binding @(ResourceVerboseRecords ('[2/22] '+$rcWrapped+"`n"+'[3/22] '+$rcWrapped))} 'Resource command observed repeatedly'
+Case 'rc-invalid-progress-rejected' {ResourceVerboseRecords ('[23/22] '+$rcWrapped)} 'Invalid Ninja progress prefix'
+Case 'selected-binary-resource-input-requires-actual-bound-resource-map' {$pin=[ordered]@{path=$rc.output;bytes=17;sha256='synthetic-only'};$resources=@{};$resources[(Norm $rc.output)]=$pin;Need ((ResourceInput $rc.output $resources).path-ceq$rc.output) 'bound input membership'}
+Case 'selected-binary-cannot-omit-an-unbound-res-input' {ResourceInput $rc.output @{}} 'complete RC database/query binding'
+Case 'rc-database-root-relative-source-rejected-before-normalization' {
+ $cwd=[IO.Path]::GetFullPath((Get-Location).Path);$saved=[Environment]::CurrentDirectory
+ try{
+  [Environment]::CurrentDirectory=$cwd;$absolute=Join-Path $cwd 'ambient-source.rc';$relative=$absolute.Substring(2)
+  Need ([IO.Path]::IsPathRooted($relative)-and$relative-notmatch'^[A-Za-z]:[\\/]'-and(Norm (Full $relative $cwd))-ceq(Norm $absolute)) 'meaningful legacy rooted/same-source precondition'
+  $db=[pscustomobject]@{directory=$cwd;file=$relative;output=(Join-Path $cwd 'Release/ambient-source.rc.res');command=('"C:\SDK Tools\rc.exe" /fo "'+(Join-Path $cwd 'Release/ambient-source.rc.res')+'" "'+$absolute+'"')}
+  ResourceDatabaseArgs $db $cwd
+ }finally{[Environment]::CurrentDirectory=$saved}
+} 'RC database cwd/source required'
+Case 'rc-database-drive-relative-source-rejected-before-normalization' {
+ $cwd=[IO.Path]::GetFullPath((Get-Location).Path);$saved=[Environment]::CurrentDirectory
+ try{
+  [Environment]::CurrentDirectory=$cwd;$absolute=Join-Path $cwd 'ambient-source.rc';$relative=$absolute.Substring(0,2)+'ambient-source.rc'
+  Need ([IO.Path]::IsPathRooted($relative)-and$relative-notmatch'^[A-Za-z]:[\\/]'-and(Norm (Full $relative $cwd))-ceq(Norm $absolute)) 'meaningful legacy rooted/same-source precondition'
+  $db=[pscustomobject]@{directory=$cwd;file=$relative;output=(Join-Path $cwd 'Release/ambient-source.rc.res');command=('"C:\SDK Tools\rc.exe" /fo "'+(Join-Path $cwd 'Release/ambient-source.rc.res')+'" "'+$absolute+'"')}
+  ResourceDatabaseArgs $db $cwd
+ }finally{[Environment]::CurrentDirectory=$saved}
+} 'RC database cwd/source required'
+$aliases=@{}
+$record=[ordered]@{schema='soui.pure-standard-ninja-reader-regression/v1';source=$source;cases=$results.ToArray();count=$results.Count;resourceAliasesAreExplicitSynthetic=$true;nativeOrToolFileIdentityTested=$false;qualificationPassed=$false;releaseReady=$false}
 $bytes=[Text.UTF8Encoding]::new($false).GetBytes(($record|ConvertTo-Json -Depth 6))
 $stream=[IO.File]::Open($OutputPath,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
 try{$stream.Write($bytes,0,$bytes.Length);$stream.Flush($true)}finally{$stream.Dispose()}

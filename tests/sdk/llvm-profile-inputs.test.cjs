@@ -618,3 +618,42 @@ test('cached LLVM validation binding rejects a preparation snapshot missing requ
   assert.throws(() => buildObserver.validateValidationBinding(binding, f.project.root, {architecture: 'x64'}, project.pin.path, dependencies),
     /Pinned Ninja impl\/common\/rules and workdir binding are required/);
 });
+
+function resourceWrapperFixture(t) {
+  const root=fixture(t),cmake=path.join(root,'cmake.exe'),wrapper=path.join(root,'cmcldeps.exe');
+  // Inert file-data pins only. Neither file is executed or a PE identity proof.
+  fs.writeFileSync(cmake,'synthetic selected CMake bytes\n');fs.writeFileSync(wrapper,'synthetic fixed RC wrapper bytes\n');
+  const selected=profile.pin(cmake),resourceWrapperPin=buildObserver.freezeResourceWrapper(cmake);
+  const frozen={tools:[{role:'cmake',...selected}],llvm:{resourceWrapperPin,dependencyPins:[resourceWrapperPin]}};
+  return {root,cmake,wrapper,resourceWrapperPin,frozen,row:{resourceWrapperPin}};
+}
+test('resource wrapper freezes the selected CMake sibling before Build and binds current observation', t => {
+  const f=resourceWrapperFixture(t);
+  const expected=profile.pin(f.wrapper);
+  assert.equal(path.resolve(f.resourceWrapperPin.path),path.resolve(expected.path));
+  assert.equal(f.resourceWrapperPin.bytes,expected.bytes);assert.equal(f.resourceWrapperPin.sha256,expected.sha256);
+  assert.deepEqual(buildObserver.validateResourceWrapperBinding(f.row,f.frozen),f.resourceWrapperPin);
+});
+test('resource wrapper cannot come from a foreign directory or missing selected CMake', t => {
+  const f=resourceWrapperFixture(t);
+  assert.throws(()=>buildObserver.freezeResourceWrapper(f.wrapper),/Selected CMake executable/);
+  fs.unlinkSync(f.wrapper);assert.throws(()=>buildObserver.freezeResourceWrapper(f.cmake),/ENOENT/);
+  const g=resourceWrapperFixture(t),foreign=path.join(g.root,'other');fs.mkdirSync(foreign);
+  fs.writeFileSync(path.join(foreign,'cmcldeps.exe'),'same basename does not authorize a wrapper\n');
+  const pin=profile.pin(path.join(foreign,'cmcldeps.exe'));
+  g.frozen.llvm.resourceWrapperPin=pin;g.frozen.llvm.dependencyPins=[pin];g.row.resourceWrapperPin=pin;
+  assert.throws(()=>buildObserver.validateResourceWrapperBinding(g.row,g.frozen),/selected frozen CMake directory/);
+});
+test('resource wrapper requires one whole dependency pin and identical observation pin', t => {
+  for(const mutation of ['missing','duplicate','observation']) {
+    const f=resourceWrapperFixture(t);
+    if(mutation==='missing')f.frozen.llvm.dependencyPins=[];
+    if(mutation==='duplicate')f.frozen.llvm.dependencyPins.push(f.resourceWrapperPin);
+    if(mutation==='observation')f.row.resourceWrapperPin={...f.resourceWrapperPin,sha256:'0'.repeat(64)};
+    assert.throws(()=>buildObserver.validateResourceWrapperBinding(f.row,f.frozen),/whole frozen observation envelope/);
+  }
+});
+test('resource wrapper changed after prelaunch freeze is rejected without executing a tool', t => {
+  const f=resourceWrapperFixture(t);fs.appendFileSync(f.wrapper,'changed after freeze\n');
+  assert.throws(()=>buildObserver.validateResourceWrapperBinding(f.row,f.frozen),/Pinned bytes changed/);
+});
