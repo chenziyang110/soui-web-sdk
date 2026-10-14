@@ -67,6 +67,28 @@ dm::status task_store::read_retained_string_storage(dm::task_store_storage& meta
   }
 }
 
+dm::status task_store::read_private_storage_metrics(dm::task_store_private_storage& out) const noexcept {
+  out = {};
+  dm::task_store_storage metadata;
+  // All three request domains/entries come from this one Store-lock envelope.
+  const auto state = read_retained_string_storage(metadata, out.private_string_requests, out.aggregate_requests);
+  out.observation = metadata.observation;
+  out.map_requests = metadata.map_requests;
+  out.task_entries = metadata.task_entries; out.operation_entries = metadata.operation_entries;
+  out.scope_entries = metadata.scope_entries;
+  if (metadata.coverage_mask) {
+    out.coverage_mask = dm::task_store_private_storage::map_allocator_requests |
+        dm::task_store_private_storage::private_string_allocator_requests |
+        dm::task_store_private_storage::aggregate_allocator_requests;
+    out.gap_mask = dm::task_store_private_storage::public_temporary_copies_gap |
+        dm::task_store_private_storage::phase_partition_gap |
+        dm::task_store_private_storage::other_sdk_owners_gap |
+        dm::task_store_private_storage::allocator_heap_external_gap |
+        dm::task_store_private_storage::final_disposal_receipt_gap;
+  }
+  return state;
+}
+
 void task_store::read_storage_locked(dm::task_store_storage& out) const noexcept {
   out.coverage_mask = dm::task_store_storage::map_allocator_requests |
       dm::task_store_storage::committed_string_diagnostics;

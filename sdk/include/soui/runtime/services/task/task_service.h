@@ -2,6 +2,7 @@
 
 #include <soui/diagnostics/runtime_metrics.h>
 #include <soui/diagnostics/storage_observation.h>
+#include <soui/diagnostics/task_store_private_storage.h>
 #include <soui/runtime/bridge/bridge_transport.h>
 #include <soui/runtime/core/result/result.h>
 
@@ -89,6 +90,8 @@ class task_service final {
       soui::sdk::diagnostics::tasks&) const noexcept;
   [[nodiscard]] soui::sdk::diagnostics::status read_storage_metrics(
       soui::sdk::diagnostics::task_store_storage&) const noexcept;
+  [[nodiscard]] soui::sdk::diagnostics::status read_private_storage_metrics(
+      soui::sdk::diagnostics::task_store_private_storage&) const noexcept;
   ~task_service();
   task_service(const task_service&) = delete;
   task_service& operator=(const task_service&) = delete;

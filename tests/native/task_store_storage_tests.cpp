@@ -4,6 +4,7 @@
 #endif
 #include "../acceptance-app/native-owner-metrics.h"
 #include <atomic>
+#include <chrono>
 #include <condition_variable>
 #include <cstdint>
 #include <exception>
@@ -51,6 +52,18 @@ retained_storage read_retained(const task_store& store) {
       "Aggregate is not the actual sum of both request domains");
   return value;
 }
+dm::task_store_private_storage read_private(const task_store& store) {
+  dm::task_store_private_storage value;
+  require(store.read_private_storage_metrics(value) == dm::status::ready &&
+      !value.observation.counter_saturated && !value.observation.clock_invalid && value.observation.owner_epoch != 0,
+      "Independent private Store DTO not ready");
+  require(value.coverage_mask == 7 && value.gap_mask == 31 && value.map_requests.current_bytes_exact &&
+      value.private_string_requests.current_bytes_exact && value.aggregate_requests.current_bytes_exact &&
+      value.aggregate_requests.current_bytes == value.map_requests.current_bytes + value.private_string_requests.current_bytes &&
+      value.aggregate_requests.current_allocations == value.map_requests.current_allocations + value.private_string_requests.current_allocations,
+      "Independent private DTO combined inconsistent domains or scope");
+  return value;
+}
 #ifdef SOUI_TASK_STORE_STORAGE_TEST_ONLY
 void require_refunded(const dm::allocation_requests& before, const dm::allocation_requests& after) {
   require(after.current_bytes == before.current_bytes && after.current_allocations == before.current_allocations,
@@ -67,6 +80,9 @@ void public_contract_and_disabled() {
   static_assert(std::is_same_v<decltype(soui::runtime::operation_result{}.message), std::string>);
   static_assert(std::is_standard_layout_v<dm::task_store_storage>);
   static_assert(std::is_trivially_copyable_v<dm::task_store_storage>);
+  static_assert(std::is_standard_layout_v<dm::task_store_private_storage>);
+  static_assert(std::is_trivially_copyable_v<dm::task_store_private_storage>);
+  static_assert(dm::task_store_private_storage::schema_version == 1);
   static_assert(sizeof(wkeRendererProcessSnapshot) == 168); // Old ABIs remain independent.
   static_assert(sizeof(wkeRendererModelSnapshot) == 264);
   static_assert(sizeof(wkeCacheSnapshot) == 216);
@@ -84,13 +100,29 @@ void public_contract_and_disabled() {
       strings.current_bytes == 0 && aggregate.current_bytes == 0 &&
       !strings.current_bytes_exact && !aggregate.current_bytes_exact,
       "Disabled new getter manufactured observed zeros");
+  dm::task_store_private_storage private_storage;
+  private_storage.aggregate_requests.current_bytes = 99;
+  require(store.read_private_storage_metrics(private_storage) == dm::status::disabled &&
+      private_storage.coverage_mask == 0 && private_storage.aggregate_requests.current_bytes == 0 &&
+      !private_storage.aggregate_requests.current_bytes_exact && !private_storage.private_string_requests.current_bytes_exact,
+      "Disabled independent DTO retained or qualified data");
 #ifndef SOUI_TASK_STORE_STORAGE_TEST_ONLY
   soui::sdk::json_bridge bridge("app://storage-disabled");
   require(bridge.read_task_store_storage_metrics(value) == dm::status::disabled, "Facade must preserve default disabled");
+  require(bridge.read_task_store_private_storage_metrics(private_storage) == dm::status::disabled &&
+      private_storage.observation.state == dm::status::disabled && private_storage.coverage_mask == 0,
+      "New facade must preserve default disabled");
+  soui::runtime::task_service disabled_service;
+  require(disabled_service.read_private_storage_metrics(private_storage) == dm::status::disabled &&
+      private_storage.coverage_mask == 0 && !private_storage.aggregate_requests.current_bytes_exact,
+      "New service getter must preserve default disabled");
   soui::sdk::json_bridge enabled("app://storage-enabled", dm::mode::scalar);
   require(enabled.read_task_store_storage_metrics(value) == dm::status::ready &&
       value.coverage_mask == 3 && value.gap_mask == 63 && value.task_entries == 0,
       "Public facade did not observe its actual Store");
+  require(enabled.read_task_store_private_storage_metrics(private_storage) == dm::status::ready &&
+      private_storage.coverage_mask == 7 && private_storage.gap_mask == 31 && private_storage.task_entries == 0 &&
+      private_storage.aggregate_requests.current_bytes_exact, "Public facade lost independent private DTO");
 #endif
 }
 
@@ -144,6 +176,12 @@ void owned_bytes_lookup_and_terminal_retention() {
   require(store.complete(item.task_id, result_kind::success, message), "Terminal long-string complete");
   const auto terminal = read_retained(store);
   require(terminal.strings.current_bytes >= message.size() * 2 + scope.size(), "Actual retained char buffers missing");
+  const auto collected = read_private(store);
+  require(collected.observation.owner_epoch == terminal.metadata.observation.owner_epoch && collected.task_entries == 1 &&
+      collected.private_string_requests.current_bytes == terminal.strings.current_bytes &&
+      collected.aggregate_requests.allocations_total == terminal.aggregate.allocations_total &&
+      collected.aggregate_requests.high_water_bytes == terminal.aggregate.high_water_bytes,
+      "DTO mapping changed owner identity or allocator events");
   for (int index = 0; index < 5; ++index) (void)store.start("other-" + std::to_string(index));
   auto queried = store.query(item.task_id);
   require(queried && queried->message == message && queried->result.message == message &&
@@ -204,6 +242,109 @@ void serialization_is_independent() {
       encoded.at("phasePartitionObserved") == false && encoded.at("stringAllocatorExact") == false,
       "Serialization invented qualification or phase/heap accounting");
 }
+
+void private_serialization_scope_and_status() {
+  dm::task_store_private_storage value;
+  value.observation.state = dm::status::ready;
+  value.coverage_mask = 7; value.gap_mask = 31;
+  value.map_requests.current_bytes = 9007199254740993ULL;
+  value.private_string_requests.current_bytes = 9007199254740995ULL;
+  value.aggregate_requests.current_bytes = 18014398509481988ULL;
+  value.aggregate_requests.high_water_bytes = (std::numeric_limits<std::uint64_t>::max)();
+  value.map_requests.current_bytes_exact = value.private_string_requests.current_bytes_exact = value.aggregate_requests.current_bytes_exact = true;
+  const auto record = soui::acceptance::metrics::json::parse(soui::acceptance::metrics::serialize(value).dump());
+  require(record.at("schemaVersion") == 1 && record.at("scope") == "task-store-private-allocator-requests" &&
+      record.at("map_requests").at("current_bytes") == "9007199254740993" &&
+      record.at("private_string_requests").at("current_bytes") == "9007199254740995" &&
+      record.at("aggregate_requests").at("current_bytes") == "18014398509481988" &&
+      record.at("aggregate_requests").at("high_water_bytes") == "18446744073709551615",
+      "Independent DTO lost native integer precision or scope");
+  require(record.at("coverage_mask") == "7" && record.at("gap_mask") == "31" && record.at("gaps").size() == 5 &&
+      record.at("privateStringAllocatorRequestsCovered") == true && !record.contains("stringAllocatorExact") &&
+      record.at("publicCopiesObserved") == false && record.at("phasePartitionObserved") == false &&
+      record.at("wholeHeapObserved") == false && record.at("finalDisposalReceiptObserved") == false &&
+      record.at("cacheBudgetGate") == "not-evaluated" && record.at("configuration").is_null() &&
+      record.at("budgets").is_null() && record.at("quota").is_null() && record.at("calibrationPin").is_null(),
+      "New private scope claimed public copies/phases/heap/budgets");
+  for (const auto state : {dm::status::disabled, dm::status::busy, dm::status::unavailable}) {
+    dm::task_store_private_storage incomplete;
+    incomplete.observation.state = state;
+    if (state == dm::status::unavailable) {
+      incomplete.coverage_mask = 7; incomplete.gap_mask = 31;
+      incomplete.observation.counter_saturated = true;
+      incomplete.aggregate_requests.current_bytes = (std::numeric_limits<std::uint64_t>::max)();
+    }
+    const auto encoded = soui::acceptance::metrics::serialize(incomplete);
+    require(encoded.at("observation").at("state") == soui::acceptance::metrics::status_name(state) &&
+        encoded.at("aggregate_requests").at("current_bytes_exact") == false &&
+        encoded.at("private_string_requests").at("current_bytes_exact") == false &&
+        encoded.at("cacheBudgetGate") == "not-evaluated", "Incomplete private DTO became exact ready zeros");
+  }
+}
+
+#ifndef SOUI_TASK_STORE_STORAGE_TEST_ONLY
+template <class Getter>
+dm::task_store_private_storage completed_public_storage(Getter&& getter) {
+  const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+  for (;;) {
+    dm::task_store_private_storage value;
+    const auto state = getter(value);
+    if (state == dm::status::ready && value.task_entries == 1 && value.private_string_requests.current_bytes >= 8192) {
+      require(value.coverage_mask == 7 && value.gap_mask == 31 && value.observation.owner_epoch != 0 &&
+          !value.observation.clock_invalid && !value.observation.counter_saturated && value.aggregate_requests.current_bytes_exact &&
+          value.aggregate_requests.current_bytes == value.map_requests.current_bytes + value.private_string_requests.current_bytes,
+          "Public new getter broke the same-Store observation");
+      return value;
+    }
+    require(state == dm::status::ready || state == dm::status::busy, "Public private getter unavailable or disabled");
+    require(std::chrono::steady_clock::now() < deadline, "Real public task did not retain result strings");
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+  }
+}
+void service_and_facade_private_storage() {
+  using namespace soui::runtime;
+  using json = soui::acceptance::metrics::json;
+  const auto handler = [](const task_invocation&, const task_control&) {
+    return task_outcome{result_kind::success, "{}", std::string(4096, 'm')};
+  };
+  const auto input = json{{"payload", std::string(4096, 'i')}};
+  permission_store permissions;
+  const auto bearer = permissions.issue("storage-native", "app://storage-native", {"task.start", "task.query"});
+  task_service service(dm::mode::scalar);
+  require(service.register_handler("ledger", handler), "Real service handler registration");
+  bridge_request request;
+  request.session_id = "storage-native"; request.origin = "app://storage-native"; request.token = bearer;
+  request.authorization = permissions.resolve(request.session_id, request.origin, bearer, "task.start").scope;
+  request.params_json = json{{"kind", "ledger"}, {"operationId", "native-ledger"}, {"input", input}}.dump();
+  const auto started = json::parse(service.start(request));
+  require(started.contains("taskId"), "Real native service start failed");
+  const auto native = completed_public_storage([&](dm::task_store_private_storage& out) { return service.read_private_storage_metrics(out); });
+  request.params_json = json{{"taskId", started.at("taskId")}}.dump();
+  require(json::parse(service.query(request)).at("state") == "succeeded", "New service getter did not observe terminal retention");
+  dm::task_store_storage legacy;
+  require(service.read_storage_metrics(legacy) == dm::status::ready && legacy.coverage_mask == 3 && legacy.gap_mask == 63 &&
+      legacy.observation.owner_epoch == native.observation.owner_epoch, "Service changed legacy scope or Store identity");
+
+  soui::sdk::json_bridge bridge("app://storage-facade", dm::mode::scalar);
+  require(bridge.register_task_handler("ledger", handler), "Real facade handler registration");
+  const auto bootstrap = json::parse(bridge.handle_json(json{{"requestId", "storage-bootstrap"}, {"sessionId", ""},
+      {"origin", ""}, {"token", ""}, {"method", "bridge.bootstrap"}, {"params", {{"protocol", "soui.bridge/1"}}}}.dump()));
+  require(bootstrap.at("ok").get<bool>(), "Real facade bootstrap failed");
+  const auto& auth = bootstrap.at("result");
+  const auto call = [&](const char* id, const char* method, json params) {
+    return json::parse(bridge.handle_json(json{{"requestId", id}, {"sessionId", auth.at("sessionId")},
+        {"origin", auth.at("origin")}, {"token", auth.at("token")}, {"method", method}, {"params", std::move(params)}, {"timeoutMs", 10000}}.dump()));
+  };
+  const auto facade_start = call("storage-start", "task.start", {{"kind", "ledger"}, {"operationId", "facade-ledger"}, {"input", input}});
+  require(facade_start.at("ok").get<bool>(), "Real facade start failed");
+  const auto facade = completed_public_storage([&](dm::task_store_private_storage& out) { return bridge.read_task_store_private_storage_metrics(out); });
+  const auto queried = call("storage-query", "task.query", {{"taskId", facade_start.at("result").at("taskId")}});
+  require(queried.at("ok").get<bool>() && queried.at("result").at("state") == "succeeded", "Facade lost retained task state");
+  require(bridge.read_task_store_storage_metrics(legacy) == dm::status::ready && legacy.coverage_mask == 3 && legacy.gap_mask == 63 &&
+      legacy.observation.owner_epoch == facade.observation.owner_epoch && facade.observation.owner_epoch != native.observation.owner_epoch,
+      "Facade changed legacy scope or fused different Store owners");
+}
+#endif
 }
 
 #ifdef SOUI_TASK_STORE_STORAGE_TEST_ONLY
@@ -345,6 +486,8 @@ void busy_and_actual_final_refund() {
     const auto state = store.read_storage_metrics(value);
     retained_storage retained;
     const auto retained_state = store.read_retained_string_storage(retained.metadata, retained.strings, retained.aggregate);
+    dm::task_store_private_storage private_storage;
+    const auto private_state = store.read_private_storage_metrics(private_storage);
     { std::lock_guard<std::mutex> lock(allocation_mutex); allocation_released = true; }
     allocation_changed.notify_all(); worker.join();
     if (error) std::rethrow_exception(error);
@@ -354,6 +497,10 @@ void busy_and_actual_final_refund() {
         !retained.strings.current_bytes_exact && !retained.aggregate.current_bytes_exact &&
         retained.strings.current_bytes == 0 && retained.aggregate.current_bytes == 0,
         "Busy new getter pretended observed zero bytes");
+    require(private_state == dm::status::busy && private_storage.observation.state == dm::status::busy &&
+        private_storage.coverage_mask == 0 && !private_storage.map_requests.current_bytes_exact &&
+        !private_storage.private_string_requests.current_bytes_exact && !private_storage.aggregate_requests.current_bytes_exact,
+        "Independent DTO turned busy into observed exact zeros");
   }
   require(!retired_saturated && retired_totals.current_bytes == 0 && retired_totals.current_allocations == 0 &&
       retired_totals.allocations_total == retired_totals.deallocations_total &&
@@ -378,6 +525,12 @@ void sticky_current_saturation_and_invalid_underflow() {
         value.metadata.observation.counter_saturated && !value.aggregate.current_bytes_exact &&
         value.aggregate.current_bytes == (std::numeric_limits<std::uint64_t>::max)(),
         "Injected saturation lost unknown state");
+    dm::task_store_private_storage independent;
+    require(store.read_private_storage_metrics(independent) == dm::status::ready && independent.coverage_mask == 7 &&
+        independent.gap_mask == 31 && independent.observation.counter_saturated &&
+        !independent.aggregate_requests.current_bytes_exact &&
+        independent.aggregate_requests.current_bytes == (std::numeric_limits<std::uint64_t>::max)(),
+        "Independent DTO erased sticky aggregate saturation");
     const auto old = read(store);
     require(old.map_requests.current_bytes_exact, "Aggregate-only saturation changed old map scope");
     require(store.complete(item.task_id, result_kind::success) && store.erase(item.task_id), "Saturation changed normal data semantics");
@@ -404,6 +557,12 @@ void sticky_current_saturation_and_invalid_underflow() {
       value.metadata.observation.counter_saturated && !value.aggregate.current_bytes_exact &&
       value.aggregate.current_bytes == (std::numeric_limits<std::uint64_t>::max)(),
       "Unavailable mismatch was replaced with an exact zero");
+  dm::task_store_private_storage independent;
+  require(store.read_private_storage_metrics(independent) == dm::status::unavailable && independent.coverage_mask == 7 &&
+      independent.gap_mask == 31 && independent.observation.counter_saturated &&
+      !independent.aggregate_requests.current_bytes_exact &&
+      independent.aggregate_requests.current_bytes == (std::numeric_limits<std::uint64_t>::max)(),
+      "Independent DTO erased unavailable accounting data");
   require(read(store).map_requests.current_bytes_exact, "Aggregate mismatch hid old exact map requests");
 }
 }
@@ -412,7 +571,10 @@ void sticky_current_saturation_and_invalid_underflow() {
 int main() {
   try {
     public_contract_and_disabled(); retained_strings_and_prepare_peak(); owned_bytes_lookup_and_terminal_retention();
-    oldest_terminal_eviction(); serialization_is_independent();
+    oldest_terminal_eviction(); serialization_is_independent(); private_serialization_scope_and_status();
+#ifndef SOUI_TASK_STORE_STORAGE_TEST_ONLY
+    service_and_facade_private_storage();
+#endif
 #ifdef SOUI_TASK_STORE_STORAGE_TEST_ONLY
     nth_allocator_failure_rolls_back(); message_result_candidates_roll_back(); busy_and_actual_final_refund();
     sticky_current_saturation_and_invalid_underflow();

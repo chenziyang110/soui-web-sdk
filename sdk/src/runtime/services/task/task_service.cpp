@@ -606,6 +606,16 @@ dm::status task_service::read_storage_metrics(dm::task_store_storage& out) const
   } catch (...) { out = {}; out.observation.state = dm::status::unavailable; return dm::status::unavailable; }
 }
 
+dm::status task_service::read_private_storage_metrics(dm::task_store_private_storage& out) const noexcept {
+  out = {};
+  if (impl_->metrics_mode != dm::mode::scalar) return dm::status::disabled;
+  try {
+    std::unique_lock<std::mutex> lock(impl_->mutex, std::try_to_lock);
+    if (!lock.owns_lock()) { out.observation.state = dm::status::busy; return dm::status::busy; }
+    return impl_->tasks.read_private_storage_metrics(out); // Same service-to-Store order.
+  } catch (...) { out = {}; out.observation.state = dm::status::unavailable; return dm::status::unavailable; }
+}
+
 task_service::~task_service() {
   {
     std::lock_guard<std::mutex> lock(impl_->mutex);

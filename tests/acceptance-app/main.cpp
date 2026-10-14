@@ -455,6 +455,11 @@ class test_window final {
       soui::sdk::diagnostics::task_store_storage storage;
       (void)bridge_.read_task_store_storage_metrics(storage);
       result["taskStoreStorage"] = serialize(storage);
+      // Separate same-Store-lock request domains; the legacy sample remains independent.
+      soui::sdk::diagnostics::task_store_private_storage private_storage;
+      const auto private_status = bridge_.read_task_store_private_storage_metrics(private_storage);
+      result["taskStorePrivateStorageStatus"] = status_name(private_status);
+      result["taskStorePrivateStorage"] = serialize(private_storage);
     }
     return result;
   }

@@ -2,6 +2,7 @@
 
 #include <soui/diagnostics/runtime_metrics.h>
 #include <soui/diagnostics/storage_observation.h>
+#include <soui/diagnostics/task_store_private_storage.h>
 #include <soui/runtime/core/task/detail/storage_allocator.h>
 #include <cassert>
 #include <cstddef>
@@ -60,6 +61,8 @@ class task_store {
       soui::sdk::diagnostics::task_store_storage& metadata,
       soui::sdk::diagnostics::allocation_requests& strings,
       soui::sdk::diagnostics::allocation_requests& aggregate) const noexcept;
+  [[nodiscard]] soui::sdk::diagnostics::status read_private_storage_metrics(
+      soui::sdk::diagnostics::task_store_private_storage&) const noexcept;
 
   [[nodiscard]] task_snapshot start(std::string operation_id);
   [[nodiscard]] task_snapshot start_scoped(std::string operation_id, std::string scope_key,

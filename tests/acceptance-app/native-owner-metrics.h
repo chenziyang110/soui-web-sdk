@@ -3,6 +3,7 @@
 #include <soui/diagnostics/runtime_metrics.h>
 #include <soui/diagnostics/cache_observation.h>
 #include <soui/diagnostics/storage_observation.h>
+#include <soui/diagnostics/task_store_private_storage.h>
 #include <json.hpp>
 #include <string>
 
@@ -65,6 +66,27 @@ inline json serialize(const diagnostics::task_store_storage& value) {
       {"gaps", {"string allocator requests", "committed/prepared/retiring partition",
                  "prepared/retiring strings", "other SDK owners and shared pointees",
                  "allocator reserve/whole heap/external bytes", "final public disposal receipt"}}};
+  SOUI_ACCEPTANCE_COUNT(coverage_mask); SOUI_ACCEPTANCE_COUNT(gap_mask);
+  SOUI_ACCEPTANCE_COUNT(task_entries); SOUI_ACCEPTANCE_COUNT(operation_entries); SOUI_ACCEPTANCE_COUNT(scope_entries);
+  return result;
+}
+
+inline json serialize(const diagnostics::task_store_private_storage& value) {
+  json result{{"schemaVersion", diagnostics::task_store_private_storage::schema_version},
+      {"scope", "task-store-private-allocator-requests"}, {"observation", serialize(value.observation)},
+      {"map_requests", serialize(value.map_requests)},
+      {"private_string_requests", serialize(value.private_string_requests)},
+      {"aggregate_requests", serialize(value.aggregate_requests)},
+      {"privateStringAllocatorRequestsCovered", (value.coverage_mask & diagnostics::task_store_private_storage::private_string_allocator_requests) != 0},
+      {"requestsIncludePrivatePreparationAndRetirement", true},
+      {"publicCopiesObserved", false}, {"phasePartitionObserved", false},
+      {"wholeHeapObserved", false}, {"finalDisposalReceiptObserved", false},
+      {"cacheBudgetGate", "not-evaluated"},
+      {"configuration", nullptr}, {"budgets", nullptr}, {"quota", nullptr}, {"calibrationPin", nullptr},
+      {"gaps", {"public parameters/prepared receipt/evicted ID/formatted ID/returned copies",
+                 "committed/prepared/retiring partition", "other SDK owners and shared pointees",
+                 "object/external storage/allocator reserve/fragmentation/whole heap/kernel caches",
+                 "final public disposal receipt"}}};
   SOUI_ACCEPTANCE_COUNT(coverage_mask); SOUI_ACCEPTANCE_COUNT(gap_mask);
   SOUI_ACCEPTANCE_COUNT(task_entries); SOUI_ACCEPTANCE_COUNT(operation_entries); SOUI_ACCEPTANCE_COUNT(scope_entries);
   return result;
