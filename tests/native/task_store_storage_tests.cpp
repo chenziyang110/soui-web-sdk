@@ -27,10 +27,44 @@ dm::task_store_storage read(const task_store& store) {
   require(!value.observation.counter_saturated && !value.observation.clock_invalid, "Unqualified Store observation");
   return value;
 }
+struct retained_storage {
+  dm::task_store_storage metadata;
+  dm::allocation_requests strings, aggregate;
+};
+retained_storage read_retained(const task_store& store) {
+  retained_storage value;
+  require(store.read_retained_string_storage(value.metadata, value.strings, value.aggregate) == dm::status::ready,
+      "Retained string storage not ready");
+  require(!value.metadata.observation.counter_saturated && !value.metadata.observation.clock_invalid,
+      "Unqualified retained observation");
+  const auto& maps = value.metadata.map_requests;
+  require(maps.current_bytes_exact && value.strings.current_bytes_exact && value.aggregate.current_bytes_exact &&
+      maps.current_allocations_exact && value.strings.current_allocations_exact && value.aggregate.current_allocations_exact,
+      "Live private requests are not exact");
+  require(value.aggregate.current_bytes == maps.current_bytes + value.strings.current_bytes &&
+      value.aggregate.current_allocations == maps.current_allocations + value.strings.current_allocations &&
+      value.aggregate.allocations_total == maps.allocations_total + value.strings.allocations_total &&
+      value.aggregate.deallocations_total == maps.deallocations_total + value.strings.deallocations_total &&
+      value.aggregate.failed_allocations_total == maps.failed_allocations_total + value.strings.failed_allocations_total &&
+      value.aggregate.allocated_bytes_total == maps.allocated_bytes_total + value.strings.allocated_bytes_total &&
+      value.aggregate.deallocated_bytes_total == maps.deallocated_bytes_total + value.strings.deallocated_bytes_total,
+      "Aggregate is not the actual sum of both request domains");
+  return value;
+}
+#ifdef SOUI_TASK_STORE_STORAGE_TEST_ONLY
+void require_refunded(const dm::allocation_requests& before, const dm::allocation_requests& after) {
+  require(after.current_bytes == before.current_bytes && after.current_allocations == before.current_allocations,
+      "Rollback leaked live requests");
+  require(after.allocated_bytes_total - before.allocated_bytes_total ==
+      after.deallocated_bytes_total - before.deallocated_bytes_total, "Rollback did not refund successful requests");
+}
+#endif
 
 void public_contract_and_disabled() {
   static_assert(std::is_same_v<decltype(soui::runtime::task_snapshot{}.operation_id), std::string>);
   static_assert(std::is_same_v<decltype(soui::runtime::task_snapshot{}.message), std::string>);
+  static_assert(std::is_same_v<decltype(soui::runtime::task_snapshot{}.task_id), std::string>);
+  static_assert(std::is_same_v<decltype(soui::runtime::operation_result{}.message), std::string>);
   static_assert(std::is_standard_layout_v<dm::task_store_storage>);
   static_assert(std::is_trivially_copyable_v<dm::task_store_storage>);
   static_assert(sizeof(wkeRendererProcessSnapshot) == 168); // Old ABIs remain independent.
@@ -43,6 +77,13 @@ void public_contract_and_disabled() {
   require(store.read_storage_metrics(value) == dm::status::disabled && value.coverage_mask == 0 &&
       value.map_requests.current_bytes == 0 && value.task_entries == 0 && value.snapshot_strings.fields == 0 &&
       !value.map_requests.current_bytes_exact, "Disabled getter retained diagnostic data");
+  dm::allocation_requests strings, aggregate;
+  strings.current_bytes = aggregate.current_bytes = 99;
+  require(store.read_retained_string_storage(value, strings, aggregate) == dm::status::disabled &&
+      value.coverage_mask == 0 && value.map_requests.current_bytes == 0 &&
+      strings.current_bytes == 0 && aggregate.current_bytes == 0 &&
+      !strings.current_bytes_exact && !aggregate.current_bytes_exact,
+      "Disabled new getter manufactured observed zeros");
 #ifndef SOUI_TASK_STORE_STORAGE_TEST_ONLY
   soui::sdk::json_bridge bridge("app://storage-disabled");
   require(bridge.read_task_store_storage_metrics(value) == dm::status::disabled, "Facade must preserve default disabled");
@@ -61,8 +102,9 @@ void retained_strings_and_prepare_peak() {
   const auto capacity = message.capacity();
   require(store.update_progress(item.task_id, 10, std::move(message)), "Progress update");
   const auto large = read(store);
-  require(large.snapshot_strings.capacity_bytes >= capacity &&
-      large.snapshot_strings.size_bytes < large.snapshot_strings.capacity_bytes, "Capacity must retain large short string");
+  require(store.query(item.task_id)->message == "x" && large.snapshot_strings.capacity_bytes < capacity &&
+      large.snapshot_strings.size_bytes <= large.snapshot_strings.capacity_bytes,
+      "Private storage must copy the value without stealing foreign reserve");
   require(large.scope_strings.fields == 2 && large.scope_strings.size_bytes >= scope.size(), "Scope-map strings missing");
   require(store.complete(item.task_id, result_kind::success, "terminal"), "Complete retained task");
   for (int index = 0; index < 8; ++index)
@@ -82,6 +124,54 @@ void retained_strings_and_prepare_peak() {
       unchanged.map_requests.high_water_bytes == value.map_requests.high_water_bytes, "Getter mutated ledger");
   require(store.query(item.task_id)->message == "terminal", "Terminal history disappeared");
   require(store.start_scoped("first", scope).task_id == item.task_id, "Duplicate lookup semantics changed");
+  const auto retained = read_retained(store);
+  require(retained.strings.current_bytes > 0 && retained.strings.high_water_bytes > retained.strings.current_bytes &&
+      retained.aggregate.high_water_bytes > retained.aggregate.current_bytes && retained.strings.deallocations_total > 0,
+      "Candidate/retiring string overlap was not charged at allocation time");
+  const auto again = read_retained(store);
+  require(again.aggregate.allocations_total == retained.aggregate.allocations_total &&
+      again.aggregate.deallocations_total == retained.aggregate.deallocations_total &&
+      again.aggregate.high_water_bytes == retained.aggregate.high_water_bytes, "New getter allocated or changed peaks");
+}
+
+void owned_bytes_lookup_and_terminal_retention() {
+  const std::string prefix(256, 'p'), message(4096, 'm');
+  std::string operation(256, 'o'); operation += std::string("\0one", 4);
+  std::string scope(4096, 's'); scope += std::string("\0one", 4);
+  task_store store(prefix, dm::mode::scalar);
+  const auto item = store.start_scoped(operation, scope);
+  require(item.task_id == prefix + "000001" && item.operation_id == operation, "Owned ID/op bytes changed");
+  require(store.complete(item.task_id, result_kind::success, message), "Terminal long-string complete");
+  const auto terminal = read_retained(store);
+  require(terminal.strings.current_bytes >= message.size() * 2 + scope.size(), "Actual retained char buffers missing");
+  for (int index = 0; index < 5; ++index) (void)store.start("other-" + std::to_string(index));
+  auto queried = store.query(item.task_id);
+  require(queried && queried->message == message && queried->result.message == message &&
+      queried->result.task_id == item.task_id && queried->state == soui::runtime::task_state::succeeded,
+      "Candidate copy lost terminal owned strings");
+  const auto before_lookup = read_retained(store);
+  for (int index = 0; index < 8; ++index) {
+    require(store.query(item.task_id).has_value() && !store.query(prefix + "missing") &&
+        !store.mark_running(item.task_id) && !store.erase(prefix + "missing"), "Borrowed lookup changed behavior");
+  }
+  const auto after_lookup = read_retained(store);
+  require(after_lookup.aggregate.allocations_total == before_lookup.aggregate.allocations_total &&
+      after_lookup.aggregate.deallocations_total == before_lookup.aggregate.deallocations_total,
+      "Lookup allocated private storage");
+  bool duplicate = false, conflict = false;
+  require(store.start_scoped(operation, scope, &duplicate, &conflict).task_id == item.task_id && duplicate && !conflict,
+      "Owned scope duplicate failed");
+  scope.back() = '2';
+  require(store.start_scoped(operation, scope, &duplicate, &conflict).task_id.empty() && !duplicate && conflict,
+      "Scope equality ignored bytes after NUL");
+  operation.back() = '2';
+  require(store.start_scoped(operation, scope).task_id != item.task_id, "Hash/equality ignored operation bytes after NUL");
+  const auto before_erase = read_retained(store);
+  require(store.erase(item.task_id), "Terminal erase failed");
+  const auto after_erase = read_retained(store);
+  require(!store.query(item.task_id) && after_erase.strings.current_bytes < before_erase.strings.current_bytes &&
+      after_erase.strings.deallocations_total > before_erase.strings.deallocations_total,
+      "Actual erase did not release retained char requests");
 }
 
 void oldest_terminal_eviction() {
@@ -124,6 +214,8 @@ std::mutex allocation_mutex;
 std::condition_variable allocation_changed;
 bool allocation_entered{false}, allocation_released{false};
 dm::allocation_requests retired_totals;
+dm::allocation_requests retired_domains[3];
+std::size_t retirement_count{0};
 bool retired_saturated{false};
 soui::runtime::detail::task_store_allocation_ledger* last_allocation_ledger{nullptr};
 }
@@ -140,45 +232,110 @@ void before_allocate(task_store_allocation_ledger& ledger, std::size_t bytes) {
   }
 }
 void ledger_retired(const task_store_allocation_ledger& ledger) noexcept {
-  if (ledger.enabled) { retired_totals = ledger.snapshot(); retired_saturated = ledger.saturated; }
+  if (ledger.enabled) {
+    retired_totals = ledger.snapshot(); retired_saturated = ledger.saturated;
+    retired_domains[retirement_count++ % 3] = retired_totals;
+  }
 }
 }
 namespace {
+void prepare_base(task_store& store) {
+  for (int index = 0; index < 4; ++index) {
+    const auto item = store.start_scoped(std::string(256, 'o') + std::to_string(index), std::string(4096, 's'));
+    require(store.update_progress(item.task_id, 7, std::string(2048, 'm')), "Preparation base message");
+    if (index == 0) require(store.complete(item.task_id, result_kind::success, std::string(2048, 't')), "Preparation terminal base");
+  }
+}
 void nth_allocator_failure_rolls_back() {
   std::size_t preparation_calls = 0;
+  const std::string prefix(256, 'p'), next_operation(256, 'n'), next_scope(4096, 's');
   {
-    task_store probe("task-", dm::mode::scalar);
-    for (int index = 0; index < 4; ++index) (void)probe.start("base-" + std::to_string(index));
-    calls = 0; (void)probe.start("new"); preparation_calls = calls.load();
+    task_store probe(prefix, dm::mode::scalar);
+    prepare_base(probe);
+    calls = 0; (void)probe.start_scoped(next_operation, next_scope); preparation_calls = calls.load();
   }
-  require(preparation_calls > 3, "Preparation allocation path not exercised");
+  require(preparation_calls > 3, "Preparation map/string allocation path not exercised");
   for (std::size_t fail = 1; fail <= preparation_calls; ++fail) {
-    task_store store("task-", dm::mode::scalar);
-    const auto first = store.start("base-0");
-    for (int index = 1; index < 4; ++index) (void)store.start("base-" + std::to_string(index));
-    const auto before = read(store);
+    task_store store(prefix, dm::mode::scalar);
+    prepare_base(store);
+    const auto first = store.query(prefix + "000001");
+    const auto before = read_retained(store);
     calls = 0; fail_on = fail;
     bool threw = false;
-    try { (void)store.start("new"); } catch (const std::bad_alloc&) { threw = true; }
+    try { (void)store.start_scoped(next_operation, next_scope); } catch (const std::bad_alloc&) { threw = true; }
     fail_on = 0;
     require(threw, "nth allocation did not fail");
-    const auto after = read(store);
-    require(after.task_entries == before.task_entries && after.map_requests.current_bytes == before.map_requests.current_bytes &&
-        after.map_requests.current_allocations == before.map_requests.current_allocations &&
-        after.map_requests.failed_allocations_total == before.map_requests.failed_allocations_total + 1,
-        "Rollback leaked allocator credits or changed retention");
-    require(after.map_requests.allocated_bytes_total - before.map_requests.allocated_bytes_total ==
-        after.map_requests.deallocated_bytes_total - before.map_requests.deallocated_bytes_total, "Successful temporary allocations not refunded");
-    require(store.query(first.task_id).has_value() && store.start("base-0").task_id == first.task_id,
+    const auto after = read_retained(store);
+    require(after.metadata.task_entries == before.metadata.task_entries &&
+        after.aggregate.failed_allocations_total == before.aggregate.failed_allocations_total + 1,
+        "Rollback changed retention or lost failure domain");
+    require_refunded(before.metadata.map_requests, after.metadata.map_requests);
+    require_refunded(before.strings, after.strings); require_refunded(before.aggregate, after.aggregate);
+    require(first && store.query(first->task_id)->message == first->message &&
+        store.start_scoped(first->operation_id, std::string(4096, 's')).task_id == first->task_id,
         "Failure changed committed operation lookup");
-    require(store.start("new").task_id == "task-000005", "Failed preparation consumed task identity");
+    require(store.start_scoped(next_operation, next_scope).task_id == prefix + "000005", "Failed preparation consumed task identity");
+  }
+}
+
+enum class mutation { running, progress, timeout, cancel_request, complete, cancel_confirm };
+bool apply_mutation(task_store& store, const std::string& id, mutation which) {
+  switch (which) {
+    case mutation::running: return store.mark_running(id);
+    case mutation::progress: return store.update_progress(id, 88, std::string(4096, 'n'));
+    case mutation::timeout: return store.observe_timeout(id, std::string(4096, 'n'));
+    case mutation::cancel_request: return store.request_cancel(id);
+    case mutation::complete: return store.complete(id, result_kind::success, std::string(4096, 'n'));
+    case mutation::cancel_confirm: return store.confirm_cancelled(id, std::string(4096, 'n'));
+  }
+  return false;
+}
+void message_result_candidates_roll_back() {
+  const std::string prefix(256, 'p');
+  for (const auto which : {mutation::running, mutation::progress, mutation::timeout, mutation::cancel_request,
+                           mutation::complete, mutation::cancel_confirm}) {
+    std::size_t candidate_calls = 0;
+    {
+      task_store probe(prefix, dm::mode::scalar);
+      const auto item = probe.start("operation");
+      require(probe.update_progress(item.task_id, 7, std::string(2048, 'b')), "Mutation base");
+      calls = 0; require(apply_mutation(probe, item.task_id, which), "Mutation probe"); candidate_calls = calls.load();
+    }
+    require(candidate_calls > 0, "Mutation char allocator path not exercised");
+    for (std::size_t fail = 1; fail <= candidate_calls; ++fail) {
+      task_store store(prefix, dm::mode::scalar);
+      const auto item = store.start("operation");
+      require(store.update_progress(item.task_id, 7, std::string(2048, 'b')), "Mutation setup");
+      const auto before_snapshot = *store.query(item.task_id);
+      const auto before = read_retained(store);
+      calls = 0; fail_on = fail;
+      bool threw = false;
+      try { (void)apply_mutation(store, item.task_id, which); } catch (const std::bad_alloc&) { threw = true; }
+      fail_on = 0;
+      require(threw, "Mutation nth allocation did not fail");
+      const auto after_snapshot = *store.query(item.task_id);
+      const auto after = read_retained(store);
+      require(after_snapshot.task_id == before_snapshot.task_id && after_snapshot.operation_id == before_snapshot.operation_id &&
+          after_snapshot.state == before_snapshot.state && after_snapshot.progress == before_snapshot.progress &&
+          after_snapshot.sequence == before_snapshot.sequence && after_snapshot.message == before_snapshot.message &&
+          after_snapshot.result.kind == before_snapshot.result.kind && after_snapshot.result.task_id == before_snapshot.result.task_id &&
+          after_snapshot.result.message == before_snapshot.result.message, "Failed candidate partially published business state");
+      require_refunded(before.metadata.map_requests, after.metadata.map_requests);
+      require_refunded(before.strings, after.strings); require_refunded(before.aggregate, after.aggregate);
+      require(after.strings.failed_allocations_total == before.strings.failed_allocations_total + 1 &&
+          after.aggregate.failed_allocations_total == before.aggregate.failed_allocations_total + 1,
+          "Failed candidate lost char/aggregate failure count");
+      require(store.update_progress(item.task_id, 8) && store.query(item.task_id)->sequence == before_snapshot.sequence + 1,
+          "Failed candidate consumed sequence or changed active lookup");
+    }
   }
 }
 
 void busy_and_actual_final_refund() {
+  retirement_count = 0;
   {
-    task_store store("task-", dm::mode::scalar);
-    (void)store.start("existing");
+    task_store store(std::string(256, 'p'), dm::mode::scalar);
+    (void)store.start(std::string(256, 'e'));
     { std::lock_guard<std::mutex> lock(allocation_mutex); allocation_entered = allocation_released = false; }
     block_next = true;
     std::exception_ptr error;
@@ -186,16 +343,29 @@ void busy_and_actual_final_refund() {
     { std::unique_lock<std::mutex> lock(allocation_mutex); allocation_changed.wait(lock, [] { return allocation_entered; }); }
     dm::task_store_storage value;
     const auto state = store.read_storage_metrics(value);
+    retained_storage retained;
+    const auto retained_state = store.read_retained_string_storage(retained.metadata, retained.strings, retained.aggregate);
     { std::lock_guard<std::mutex> lock(allocation_mutex); allocation_released = true; }
     allocation_changed.notify_all(); worker.join();
     if (error) std::rethrow_exception(error);
     require(state == dm::status::busy && value.coverage_mask == 0 && !value.map_requests.current_bytes_exact,
         "Busy observation pretended exact storage");
+    require(retained_state == dm::status::busy && retained.metadata.coverage_mask == 0 &&
+        !retained.strings.current_bytes_exact && !retained.aggregate.current_bytes_exact &&
+        retained.strings.current_bytes == 0 && retained.aggregate.current_bytes == 0,
+        "Busy new getter pretended observed zero bytes");
   }
   require(!retired_saturated && retired_totals.current_bytes == 0 && retired_totals.current_allocations == 0 &&
       retired_totals.allocations_total == retired_totals.deallocations_total &&
       retired_totals.allocated_bytes_total == retired_totals.deallocated_bytes_total,
-      "Actual map deallocation did not precede ledger retirement");
+      "Actual aggregate deallocation did not precede owner retirement");
+  require(retirement_count == 3 && retired_domains[2].allocated_bytes_total ==
+      retired_domains[0].allocated_bytes_total + retired_domains[1].allocated_bytes_total,
+      "Owner retirement did not include both domains");
+  for (const auto& domain : retired_domains)
+    require(domain.current_bytes == 0 && domain.current_allocations == 0 && domain.current_bytes_exact &&
+        domain.allocations_total == domain.deallocations_total && domain.allocated_bytes_total == domain.deallocated_bytes_total,
+        "A domain retired before its actual buffer free");
 }
 
 void sticky_current_saturation_and_invalid_underflow() {
@@ -203,13 +373,17 @@ void sticky_current_saturation_and_invalid_underflow() {
     task_store store("task-", dm::mode::scalar);
     saturate_next = true;
     const auto item = store.start("saturated");
-    dm::task_store_storage value;
-    require(store.read_storage_metrics(value) == dm::status::ready && value.observation.counter_saturated &&
-        !value.map_requests.current_bytes_exact && value.map_requests.current_bytes == (std::numeric_limits<std::uint64_t>::max)(),
+    retained_storage value;
+    require(store.read_retained_string_storage(value.metadata, value.strings, value.aggregate) == dm::status::ready &&
+        value.metadata.observation.counter_saturated && !value.aggregate.current_bytes_exact &&
+        value.aggregate.current_bytes == (std::numeric_limits<std::uint64_t>::max)(),
         "Injected saturation lost unknown state");
+    const auto old = read(store);
+    require(old.map_requests.current_bytes_exact, "Aggregate-only saturation changed old map scope");
     require(store.complete(item.task_id, result_kind::success) && store.erase(item.task_id), "Saturation changed normal data semantics");
-    require(store.read_storage_metrics(value) == dm::status::ready && value.observation.counter_saturated &&
-        value.map_requests.current_bytes == (std::numeric_limits<std::uint64_t>::max)(), "Refund manufactured finite saturated current");
+    require(store.read_retained_string_storage(value.metadata, value.strings, value.aggregate) == dm::status::ready &&
+        value.metadata.observation.counter_saturated && value.aggregate.current_bytes == (std::numeric_limits<std::uint64_t>::max)(),
+        "Refund manufactured finite saturated current");
   }
   // Exercise the same real allocator's underflow guard with an isolated private ledger.
   soui::runtime::detail::task_store_allocation_ledger ledger(true);
@@ -221,23 +395,26 @@ void sticky_current_saturation_and_invalid_underflow() {
       ledger.snapshot().current_bytes == (std::numeric_limits<std::uint64_t>::max)(), "Mismatch manufactured a zero current");
   task_store store("task-", dm::mode::scalar);
   const auto item = store.start("mismatched");
-  require(last_allocation_ledger != nullptr, "Actual map allocator ledger absent");
-  last_allocation_ledger->totals.current_bytes = 0; // Inject a diagnostic mismatch in the actual Store ledger.
-  require(store.complete(item.task_id, result_kind::success) && store.erase(item.task_id), "Mismatch changed data operations");
-  dm::task_store_storage value;
-  require(store.read_storage_metrics(value) == dm::status::unavailable && value.observation.counter_saturated &&
-      !value.map_requests.current_bytes_exact && value.map_requests.current_bytes == (std::numeric_limits<std::uint64_t>::max)(),
+  require(store.complete(item.task_id, result_kind::success, std::string(4096, 't')), "Mismatch terminal setup");
+  require(last_allocation_ledger != nullptr, "Actual aggregate allocator ledger absent");
+  last_allocation_ledger->totals.current_bytes = 0; // Inject a mismatch only in the actual aggregate ledger.
+  require(store.erase(item.task_id), "Mismatch changed data operations");
+  retained_storage value;
+  require(store.read_retained_string_storage(value.metadata, value.strings, value.aggregate) == dm::status::unavailable &&
+      value.metadata.observation.counter_saturated && !value.aggregate.current_bytes_exact &&
+      value.aggregate.current_bytes == (std::numeric_limits<std::uint64_t>::max)(),
       "Unavailable mismatch was replaced with an exact zero");
+  require(read(store).map_requests.current_bytes_exact, "Aggregate mismatch hid old exact map requests");
 }
 }
 #endif
 
 int main() {
   try {
-    public_contract_and_disabled(); retained_strings_and_prepare_peak();
+    public_contract_and_disabled(); retained_strings_and_prepare_peak(); owned_bytes_lookup_and_terminal_retention();
     oldest_terminal_eviction(); serialization_is_independent();
 #ifdef SOUI_TASK_STORE_STORAGE_TEST_ONLY
-    nth_allocator_failure_rolls_back(); busy_and_actual_final_refund();
+    nth_allocator_failure_rolls_back(); message_result_candidates_roll_back(); busy_and_actual_final_refund();
     sticky_current_saturation_and_invalid_underflow();
 #endif
     std::cout << "TaskStore storage observation contract passed\n";
