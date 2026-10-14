@@ -427,11 +427,43 @@ function CompileArgv([string]$text){
  }
  return $result.ToArray()
 }
-function Test-CrtOption([string[]]$arguments,[ValidateSet('MD','MDd')][string]$expectedCRT){
- # The SDK currently fixes MultiThreadedDLL (MD) in every configuration.
+function Test-CrtOption([string[]]$arguments,[ValidateSet('MD','MDd','MT')][string]$expectedCRT){
+ # The SDK keeps its existing MD policy. The exact Doctor target alone requests MT.
  # A caller must name its policy; a substring cannot select a CRT library.
  $runtime=@($arguments|Where-Object{$_-imatch'^[/-](?:md|mdd|mt|mtd)$'})
+ if($expectedCRT-ieq'MT'){
+  $overrides=@($arguments|Where-Object{$_-imatch'^(?:[/-]clang:)?[/-]+(?:Xclang=[/-]*)?fms-runtime-lib(?:=|$)' -or $_-imatch'^[/-]clang:[/-](?:md|mdd|mt|mtd)$'})
+  return ($runtime.Count-eq1-and$runtime[0]-cmatch'^[/-]MT$'-and$overrides.Count-eq0)
+ }
  return ($runtime.Count-eq1-and[String]::Equals($runtime[0].Substring(1),$expectedCRT,[StringComparison]::OrdinalIgnoreCase))
+}
+function Test-RuntimeDoctorCompileBinding([string]$Source,[string]$Object,[string]$DistributionRoot,[string]$BuildRoot,[ValidateSet('Debug','Release','RelWithDebInfo')][string]$Configuration){
+ $sourcePath=Norm (Full $Source $BuildRoot);$objectPath=Norm (Full $Object $BuildRoot)
+ $mainSource=Norm (Full 'tools/runtime-doctor/main.cpp' $DistributionRoot)
+ $profileSource=Norm (Full 'sdk/src/host/runtime_profile.cpp' $DistributionRoot)
+ $targetRoot=(Norm (Full 'tools/runtime-doctor/CMakeFiles/SouiRuntimeDoctor.dir/' $BuildRoot)).TrimEnd('/')+'/'
+ $pairs=@(
+  @($mainSource,(Norm (Full ('tools/runtime-doctor/CMakeFiles/SouiRuntimeDoctor.dir/'+$Configuration+'/main.cpp.obj') $BuildRoot))),
+  @($profileSource,(Norm (Full ('tools/runtime-doctor/CMakeFiles/SouiRuntimeDoctor.dir/'+$Configuration+'/__/__/sdk/src/host/runtime_profile.cpp.obj') $BuildRoot)))
+ )
+ if($objectPath.StartsWith($targetRoot,[StringComparison]::Ordinal)-or$sourcePath-ceq$mainSource){
+  $matches=@($pairs|Where-Object{$_[0]-ceq$sourcePath-and$_[1]-ceq$objectPath})
+  Need ($matches.Count-eq1) 'RuntimeDoctor exact source/object/configuration pair'
+  return $true
+ }
+ return $false
+}
+function Test-RuntimeDoctorCompileOptions([string[]]$Arguments,[ValidateSet('Debug','Release','RelWithDebInfo')][string]$Configuration){
+ if(-not(Test-CrtOption -Arguments $Arguments -ExpectedCRT MT)){return $false}
+ $configurationFlags=@($Arguments|Where-Object{$_-cmatch'^[/-]DCMAKE_INTDIR(?:=|$)'})
+ $configurationPattern='^[/-]DCMAKE_INTDIR=(?:"'+[regex]::Escape($Configuration)+'"|'+[regex]::Escape($Configuration)+')$'
+ if($configurationFlags.Count-ne1-or$configurationFlags[0]-cnotmatch$configurationPattern){return $false}
+ foreach($macro in @('UNICODE','_UNICODE','NOMINMAX','WINVER','_WIN32_WINNT')){
+  $macroFlags=@($Arguments|Where-Object{$_-cmatch('^[/-][DU]'+[regex]::Escape($macro)+'(?:=|$)')})
+  $wanted='^[/-]D'+[regex]::Escape($macro)+$(if($macro-cin@('WINVER','_WIN32_WINNT')){'=0x0601$'}else{'$'})
+  if($macroFlags.Count-eq0-or@($macroFlags|Where-Object{$_-cnotmatch$wanted}).Count-ne0){return $false}
+ }
+ return $true
 }
 
 function CompileNorm([string]$text,[bool]$actual=$false){
@@ -681,7 +713,9 @@ foreach($command in $graphCommands){
  $needle=CompileNorm $command.command;[string[]]$flagArgs=@(CompileArgv $command.command);$flagArgs[0]=ToolNorm $flagArgs[0];$flags=Norm ($flagArgs-join' ');Need ($flags.Contains((Norm $profile.ToolPins.CLANG.path))-and$flags.Contains('--no-default-config')-and$flags.Contains('--target='+$profile.Target)-and$flags-match'(?<!\S)/x(?!\S)'-and$flags.Contains('-fms-compatibility-version=19.29.30159')-and$flags-notmatch'(?<!\S)/gl(?!\S)') 'Actual compiler profile command differs'
  foreach($include in $profile.IncludeDirectories){Need ($flags.Contains((Norm $include))) 'Actual compiler include root missing'}
  $isSdk=$source.StartsWith((Join-Path $root 'sdk/src/').Replace('\','/'),[StringComparison]::OrdinalIgnoreCase)-or(Norm $source).StartsWith((Norm (Join-Path $root 'sdk/src/')),[StringComparison]::Ordinal)
- if($isSdk){Need ((Test-CrtOption -Arguments $flagArgs -ExpectedCRT MD)-and$flags-match'(?<!\S)/u_debug(?!\S)'-and$flags-match'(?<!\S)[/-]dwinver=0x0601(?!\S)'-and$flags-match'(?<!\S)[/-]d_win32_winnt=0x0601(?!\S)') 'SDK target CRT/Unicode OS macro contract'}
+ $isRuntimeDoctor=Test-RuntimeDoctorCompileBinding -Source $source -Object $object -DistributionRoot $root -BuildRoot $build -Configuration $cfg.configuration
+ if($isRuntimeDoctor){Need (Test-RuntimeDoctorCompileOptions -Arguments $flagArgs -Configuration $cfg.configuration) 'RuntimeDoctor static CRT/Unicode Win7 macro contract'}
+ elseif($isSdk){Need ((Test-CrtOption -Arguments $flagArgs -ExpectedCRT MD)-and$flags-match'(?<!\S)/u_debug(?!\S)'-and$flags-match'(?<!\S)[/-]dwinver=0x0601(?!\S)'-and$flags-match'(?<!\S)[/-]d_win32_winnt=0x0601(?!\S)') 'SDK target CRT/Unicode OS macro contract'}
  if($installedMode){Need ((Test-CrtOption -Arguments $flagArgs -ExpectedCRT MD)-and$flags-match'(?<!\S)/u_debug(?!\S)') 'Installed acceptance target retains its actual MD/U_DEBUG contract'}
  if($releaseMode){Need ((Test-CrtOption -Arguments $flagArgs -ExpectedCRT MD)-and$flags-match'(?<!\S)/u_debug(?!\S)') 'Installed release target retains its actual MD/U_DEBUG contract'}
  $dependency=@($deps.selected|Where-Object{(Norm $_.object)-ceq(Norm $object)})[0];$headers=@();foreach($header in $dependency.headers){$headers+=,(DependencyPin $header.resolved)}

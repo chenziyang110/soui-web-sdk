@@ -32,3 +32,4 @@
 - [ADR-0085：任务终态的预留失败记录](0085-task-terminal-funded-failure.md)（proposed；独立源码复核通过，两架构原生与完整 SDK 验收待执行）
 - [ADR-0086：LLVM 观察器中的 Windows 扩展驱动器路径](0086-llvm-observer-local-tool-spelling.md)（proposed；严格路径回归通过，完整 SDK 重新构建验收待执行）
 - [ADR-0087：移除默认导航调试日志](0087-navigation-default-trace-removal.md)（proposed；仅移除同步追加，权限判定不变；实际运行与长期验收待完成）
+- [ADR-0088：独立诊断工具编译契约](0088-runtime-doctor-compile-contract.md)（proposed；精确目标使用静态运行库，SDK 校验规则保持；完整候选重建与交付验收待完成）
