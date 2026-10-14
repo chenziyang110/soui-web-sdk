@@ -34,12 +34,72 @@ function logicalLines(value) {
   }
   need(!continued, 'Unterminated Ninja continuation'); return result;
 }
-function words(value) {
+function literalNinjaValue(value) {
+  let result = '';
+  for (let i = 0; i < value.length; i++) {
+    if (value[i] !== '$') result += value[i];
+    else { const next = value[++i]; need(['$', ':', ' '].includes(next), 'Unsupported Ninja variable/escape in workdir definition'); result += next; }
+  }
+  return result;
+}
+function boundNinjaWorkdir(build, value) {
+  need(typeof build === 'string' && /^[A-Za-z]:[\\/]/.test(build) &&
+    typeof value === 'string' && /^[A-Za-z]:[\\/]/.test(value) && /[\\/]$/.test(value) && !/[\x00-\x1f]/.test(value) &&
+    norm(value) === norm(build), 'Ninja workdir differs from bound build root');
+  return value;
+}
+function ninjaWorkdirScope(impl, common, rules, build) {
+  const texts = {impl: logicalLines(impl), common: logicalLines(common), rules: logicalLines(rules)};
+  const definitions = Object.entries(texts).flatMap(([scope, lines]) => lines.flatMap((raw, index) =>
+    /^[ \t]*cmake_ninja_workdir[ \t]*=/.test(raw) ? [{scope, index, raw}] : []));
+  need(definitions.length === 1 && definitions[0].scope === 'common' &&
+    definitions[0].raw.startsWith('cmake_ninja_workdir'), 'Unique top-level common Ninja workdir definition required; shadow is forbidden');
+  const routes = name => texts[name].flatMap((raw, index) => {
+    const match = /^[ \t]*(include|subninja)[ \t]+(.+)$/.exec(raw);
+    return match ? [{kind: match[1], value: match[2].replaceAll('\\', '/'), index, raw}] : [];
+  });
+  const implRoutes = routes('impl'), commonRoutes = routes('common');
+  need(implRoutes.length === 1 && implRoutes[0].raw.startsWith('include ') && implRoutes[0].value === 'CMakeFiles/common.ninja' &&
+    commonRoutes.length === 1 && commonRoutes[0].raw.startsWith('include ') && commonRoutes[0].value === 'CMakeFiles/rules.ninja' &&
+    routes('rules').length === 0, 'Foreign Ninja include/subninja scope');
+  const uses = name => texts[name].flatMap((raw, index) => /\$(?:\{cmake_ninja_workdir\}|cmake_ninja_workdir\b)/.test(raw) ? [index] : []);
+  need(uses('rules').length === 0 && uses('impl').every(index => index > implRoutes[0].index) &&
+    uses('common').every(index => index > definitions[0].index) && definitions[0].index > commonRoutes[0].index,
+    'Ninja workdir used before its declared include scope');
+  const match = /^cmake_ninja_workdir[ \t]*=[ \t]*(.*)$/.exec(definitions[0].raw);
+  const value = boundNinjaWorkdir(build, literalNinjaValue(match[1]));
+  return {buildRoot: build, value, definition: definitions[0].raw, definitionLine: definitions[0].index + 1};
+}
+function verifyNinjaWorkdirRecords(records, binding, build, configuration = 'Release') {
+  need(records?.ninja && records?.common && records?.rules && binding,
+    'Pinned Ninja impl/common/rules and workdir binding are required');
+  for (const [key, relative] of Object.entries({ninja: 'impl-' + configuration + '.ninja', common: 'common.ninja', rules: 'rules.ninja'})) {
+    need(norm(records[key].path) === norm(path.join(build, 'CMakeFiles', relative)), 'Ninja scope record path differs');
+    profile.verifyPin(records[key]);
+  }
+  need(norm(binding.buildRoot) === norm(build), 'Ninja binding build root differs');
+  const current = ninjaWorkdirScope(text(records.ninja.path).value, text(records.common.path).value, text(records.rules.path).value, build);
+  need(JSON.stringify({...binding, buildRoot: build}) === JSON.stringify(current), 'Ninja workdir declaration/binding differs');
+  for (const key of ['ninja', 'common', 'rules']) profile.verifyPin(records[key]);
+}
+function words(value, build, workdir) {
+  if (workdir !== undefined) boundNinjaWorkdir(build, workdir);
   const result = []; let word = '';
   const flush = () => { if (word) { result.push({kind: 'path', value: word}); word = ''; } };
   for (let i = 0; i < value.length; i++) {
     const c = value[i];
-    if (c === '$') { const next = value[++i]; need(['$', ':', ' '].includes(next), 'Unsupported Ninja variable/escape'); word += next; }
+    if (c === '$') {
+      const next = value[++i];
+      if (['$', ':', ' '].includes(next)) word += next;
+      else {
+        let name;
+        if (next === '{') { const end = value.indexOf('}', i + 1); need(end >= 0, 'Unterminated Ninja variable'); name = value.slice(i + 1, end); i = end; }
+        else { const match = /^[A-Za-z0-9_.-]+/.exec(value.slice(i)); need(match, 'Unsupported Ninja variable/escape'); name = match[0]; i += name.length - 1; }
+        need(name === 'cmake_ninja_workdir' && workdir !== undefined, 'Unsupported Ninja variable/escape');
+        // Expanded paths are literal content, never a second token stream.
+        word += workdir;
+      }
+    }
     else if (c === ' ' || c === '\t') flush();
     else if (c === ':' || c === '|') {
       flush(); let separator = c;
@@ -49,9 +109,9 @@ function words(value) {
   }
   flush(); return result;
 }
-function edges(value) {
+function edges(value, build, workdir) {
   return logicalLines(value).filter(line => line.startsWith('build ')).map(raw => {
-    const tokens = words(raw.slice(6)), colons = tokens.flatMap((token, i) => token.kind === 'colon' ? [i] : []);
+    const tokens = words(raw.slice(6), build, workdir), colons = tokens.flatMap((token, i) => token.kind === 'colon' ? [i] : []);
     need(colons.length === 1 && colons[0] > 0 && colons[0] + 1 < tokens.length, 'Malformed Ninja edge');
     const split = colons[0], outputSections = [[], []]; let section = 0;
     for (const token of tokens.slice(0, split)) {
@@ -174,12 +234,15 @@ function coff(filename, architecture) {
 function observe(request, build, root) {
   const configured = profile.inspectCache(request, build, path.join(root, 'benchmarks/protocol'), 'Release');
   const records = {database: text(path.join(build, 'compile_commands.json')), ninja: text(path.join(build, 'CMakeFiles/impl-Release.ninja')),
+    common: text(path.join(build, 'CMakeFiles/common.ninja')), rules: text(path.join(build, 'CMakeFiles/rules.ninja')),
     commands: text(path.join(build, 'ninja-commands-Release.log')), dependencies: text(path.join(build, 'ninja-deps-Release.log')),
     verbose: text(path.join(build, 'compile.log'))};
   const commands = JSON.parse(records.database.value).filter(row => /(?:^|[\\/])Release[\\/]/.test(row.output || ''));
   const wanted = Object.entries(targets).flatMap(([target, files]) => files.map(relative => ({target, source: path.join(root, relative)})));
   need(commands.length === wanted.length && commands.length === 13, 'All nine measurement targets require exactly 13 Release compile records');
-  const compileEdges = edges(records.ninja.value).filter(edge => /^CXX_COMPILER(?:_|$)/.test(edge.rule));
+  const ninjaWorkdirBinding = ninjaWorkdirScope(records.ninja.value, records.common.value, records.rules.value, build);
+  const observedEdges = edges(records.ninja.value, build, ninjaWorkdirBinding.value);
+  const compileEdges = observedEdges.filter(edge => /^CXX_COMPILER(?:_|$)/.test(edge.rule));
   need(compileEdges.length === commands.length, 'Measurement Release compiler edge count differs');
   const blocks = dependencies(records.dependencies.value); need(blocks.length === commands.length, 'Measurement dependency object count differs');
   const seen = new Set(), sourceSeen = new Set(), dependencyPins = new Map(), bindings = [];
@@ -219,7 +282,7 @@ function observe(request, build, root) {
   const links = [], d = request.value.discovery;
   for (const target of Object.keys(targets)) {
     const output = path.join(build, 'Release', target + '.exe');
-    const matches = edges(records.ninja.value).filter(edge => /^CXX_EXECUTABLE_LINKER(?:_|$)/.test(edge.rule) &&
+    const matches = observedEdges.filter(edge => /^CXX_EXECUTABLE_LINKER(?:_|$)/.test(edge.rule) &&
       edge.outputs.length === 1 && norm(path.resolve(build, edge.outputs[0])) === norm(output));
     need(matches.length === 1 && bindings.filter(item => item.target === target).every(item =>
       matches[0].inputs.some(input => norm(path.resolve(build, input)) === norm(item.object.path))), 'Measurement linker edge omits its own actual objects');
@@ -234,7 +297,8 @@ function observe(request, build, root) {
     const linker = profile.toolPath(tools[0][1] || tools[0][2], d.ToolPins.LINKER, request);
     links.push({target, command: actual[0], linker, edge: matches[0], executable: profile.pin(output)});
   }
-  return {schema: 'soui.llvm-measurement-observation/v1', ...configured, records: Object.fromEntries(Object.entries(records).map(([key, value]) => [key, value.pin])),
+  Object.values(records).forEach(record => profile.verifyPin(record.pin));
+  return {schema: 'soui.llvm-measurement-observation/v1', ninjaWorkdirBinding, ...configured, records: Object.fromEntries(Object.entries(records).map(([key, value]) => [key, value.pin])),
     bindings, links, dependencyPins: [...dependencyPins.values()].sort((a, b) => a.path < b.path ? -1 : a.path > b.path ? 1 : 0),
     compileObjects: 13, executableTargets: 9, compiledObjectsVerified: true,
     compilerVerified: false, nativeClosureVerified: false, genericSupervisionPassed: null, qualificationPassed: false};
@@ -243,10 +307,13 @@ function verify(observation) {
   need(observation?.schema === 'soui.llvm-measurement-observation/v1' && observation.compileObjects === 13 &&
     observation.executableTargets === 9 && observation.bindings?.length === 13 && observation.links?.length === 9 && observation.compilerVerified === false &&
     observation.nativeClosureVerified === false && observation.qualificationPassed === false, 'Invalid measurement observation scope');
+  need(observation.records?.ninja, 'Pinned Ninja impl/common/rules and workdir binding are required');
+  const build = path.dirname(path.dirname(observation.records.ninja.path));
+  verifyNinjaWorkdirRecords(observation.records, observation.ninjaWorkdirBinding, build);
   Object.values(observation.records).forEach(profile.verifyPin);
   profile.verifyPin(observation.cache); observation.compilerRecords.forEach(record => profile.verifyPin(record.pin));
   observation.bindings.forEach(binding => { profile.verifyPin(binding.source); profile.verifyPin(binding.object); });
   observation.links.forEach(link => profile.verifyPin(link.executable));
   observation.dependencyPins.forEach(profile.verifyPin);
 }
-module.exports = {observe, verify, logicalLines, words, edges, dependencies, bindDependencies, argv, verboseCommands, bindCompileCommand, targets};
+module.exports = {observe, verify, logicalLines, words, edges, literalNinjaValue, boundNinjaWorkdir, ninjaWorkdirScope, verifyNinjaWorkdirRecords, dependencies, bindDependencies, argv, verboseCommands, bindCompileCommand, targets};

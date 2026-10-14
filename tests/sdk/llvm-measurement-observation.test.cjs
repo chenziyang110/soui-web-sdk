@@ -76,3 +76,57 @@ test('Ninja progress must be complete and ordered within its declared total', ()
   assert.throws(() => bind(generated, '[23/22] ' + generated), /Invalid Ninja progress/);
   assert.throws(() => bind(generated, '[0/22] ' + generated), /Unique actual/);
 });
+
+const workdirFixture = require('../benchmark/fixtures/ninja-workdir-reader.json');
+const fixtureImpl = workdirFixture.implInclude + '\n' + workdirFixture.actualBuildLines.join('\n');
+const fixtureCommon = workdirFixture.commonInclude + '\n' + workdirFixture.definition;
+const fixtureRules = '# no further scope\n';
+const expansion = '$' + '{cmake_ninja_workdir}';
+test('the nine actual failed CUSTOM_COMMAND rows retain raw text and literal implicit outputs', () => {
+  const binding = reader.ninjaWorkdirScope(fixtureImpl, fixtureCommon, fixtureRules, workdirFixture.buildRoot);
+  const parsed = reader.edges(fixtureImpl, workdirFixture.buildRoot, binding.value);
+  assert.equal(parsed.length, 9);
+  parsed.forEach((edge, index) => {
+    assert.equal(edge.raw, workdirFixture.actualBuildLines[index]);
+    assert.equal(edge.rule, 'CUSTOM_COMMAND');
+    assert.equal(edge.implicitOutputs.length, 1);
+    assert.ok(edge.implicitOutputs[0].startsWith(binding.value));
+  });
+});
+test('expanded drive colon, spaces and dollar remain a single literal path', () => {
+  const build = 'F:/ninja reader/$literal/build';
+  const row = 'build a | ' + expansion + 'sidecar: rule source';
+  const value = reader.ninjaWorkdirScope('include CMakeFiles/common.ninja\n' + row,
+    'include CMakeFiles/rules.ninja\ncmake_ninja_workdir = F$:/ninja$ reader/$$literal/build/', '', build).value;
+  assert.deepEqual(reader.edges(row, build, value)[0].implicitOutputs, ['F:/ninja reader/$literal/build/sidecar']);
+  assert.deepEqual(reader.edges('build a | $cmake_ninja_workdir/sidecar: rule source', build, value)[0].implicitOutputs,
+    ['F:/ninja reader/$literal/build//sidecar']);
+  assert.throws(() => reader.edges('build a: rule $' + '{foreign}', build, value), /Unsupported Ninja variable/);
+  assert.throws(() => reader.edges('build a: rule ' + expansion, build, 'F:/foreign/'), /bound build root/);
+});
+test('missing, duplicate, shadow and foreign Ninja declaration scopes reject', () => {
+  const reject = (impl, common, rules = fixtureRules) => assert.throws(() =>
+    reader.ninjaWorkdirScope(impl, common, rules, workdirFixture.buildRoot), /Ninja|workdir|shadow/);
+  reject(fixtureImpl, workdirFixture.commonInclude);
+  reject(fixtureImpl, fixtureCommon + '\n' + workdirFixture.definition);
+  reject(fixtureImpl, workdirFixture.commonInclude + '\n  ' + workdirFixture.definition);
+  reject(fixtureImpl + '\n' + workdirFixture.definition, fixtureCommon);
+  reject(fixtureImpl, fixtureCommon, '  ' + workdirFixture.definition);
+  reject(fixtureImpl.replace('CMakeFiles/common.ninja', '../foreign.ninja'), fixtureCommon);
+  reject(fixtureImpl.replace('include ', 'subninja '), fixtureCommon);
+  reject(fixtureImpl, fixtureCommon + '\ninclude foreign.ninja');
+  reject(fixtureImpl, fixtureCommon, 'include foreign.ninja');
+  reject(workdirFixture.actualBuildLines[0] + '\n' + workdirFixture.implInclude, fixtureCommon);
+  reject(fixtureImpl, fixtureCommon, 'build a: rule ' + expansion + 'source');
+  reject(fixtureImpl, fixtureCommon.replace(workdirFixture.definition, 'cmake_ninja_workdir = F$:/foreign/'));
+  reject(fixtureImpl, fixtureCommon.replace(workdirFixture.definition, 'cmake_ninja_workdir = $' + '{foreign}'));
+});
+
+test('known workdir value itself must be drive-absolute even when relative normalization matches cwd', () => {
+  const path = require('node:path'), build = process.cwd();
+  for (const value of ['./', '../' + path.basename(build) + '/', build.slice(2).replaceAll('\\', '/') + '/', build.slice(0, 2) + 'relative/']) {
+    assert.throws(() => reader.boundNinjaWorkdir(build, value), /bound build root/);
+    assert.throws(() => reader.ninjaWorkdirScope('include CMakeFiles/common.ninja',
+      'include CMakeFiles/rules.ninja\ncmake_ninja_workdir = ' + value.replaceAll(':', '$:'), '', build), /bound build root/);
+  }
+});

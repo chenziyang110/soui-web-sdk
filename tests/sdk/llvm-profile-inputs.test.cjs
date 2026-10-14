@@ -502,7 +502,15 @@ function validationBindingFixture(t, architecture = 'x64') {
   const record = put(path.relative(f.toolsRoot, path.join(build, 'inert-observation.log')), 'inert log; no actual compile\n');
   const bindings = Array.from({length: 13}, (_, index) => ({source,
     object: put(path.relative(f.toolsRoot, path.join(build, 'fixture-' + index + '.obj')), 'inert object bytes\n')}));
-  const observation = {schema: 'soui.llvm-measurement-observation/v1', ...configured, records: {fixture: record}, bindings,
+  const ninja = put(path.relative(f.toolsRoot, path.join(build, 'CMakeFiles/impl-Release.ninja')), 'include CMakeFiles/common.ninja\n');
+  const workdir = cmake(build).replaceAll('$', () => '$$').replaceAll(':', '$:').replaceAll(' ', '$ ') + '/';
+  const common = put(path.relative(f.toolsRoot, path.join(build, 'CMakeFiles/common.ninja')),
+    'include CMakeFiles/rules.ninja\ncmake_ninja_workdir = ' + workdir + '\n');
+  const rules = put(path.relative(f.toolsRoot, path.join(build, 'CMakeFiles/rules.ninja')), '# inert scope leaf; no actual compiler\n');
+  const ninjaWorkdirBinding = require('../../tools/internal/llvm-measurement-observation.cjs').ninjaWorkdirScope(
+    fs.readFileSync(ninja.path, 'utf8'), fs.readFileSync(common.path, 'utf8'), fs.readFileSync(rules.path, 'utf8'), build);
+  const observation = {schema: 'soui.llvm-measurement-observation/v1', ...configured,
+    records: {fixture: record, ninja, common, rules}, ninjaWorkdirBinding, bindings,
     links: executables.map(row => ({executable: profile.pin(path.join(f.toolsRoot, row.path))})), dependencyPins: [source],
     compileObjects: 13, executableTargets: 9, compilerVerified: false, nativeClosureVerified: false, qualificationPassed: false};
   const report = {schema: 'soui.measurement-tool-preparation/v2', prepared: true, architecture, configuration: 'Release', buildExitCode: 0,
@@ -514,7 +522,7 @@ function validationBindingFixture(t, architecture = 'x64') {
     inputIdentity: request.inputIdentity, bridgeIdentity: request.bridgeIdentity, sourceFingerprint: report.source.sha256};
   const dependencies = [binding.preparation, binding.requestFile, ...report.source.files.map(row => profile.pin(path.join(f.toolsRoot, row.path))),
     ...executables.map(row => profile.pin(path.join(f.toolsRoot, row.path))), ...request.value.discovery.BridgePins, request.value.toolchain,
-    record, cache, ...configured.compilerRecords.map(row => row.pin), ...bindings.map(row => row.object)];
+    record, ninja, common, rules, cache, ...configured.compilerRecords.map(row => row.pin), ...bindings.map(row => row.object)];
   return {...f, architecture, binding, dependencies, source, cache, record, report, reportFile};
 }
 test('cached LLVM validation binding checks real request, preparation fingerprint and every frozen stock member', t => {
@@ -598,4 +606,15 @@ test('fresh LOCAL LLVM preparation still refuses changed Source or native observ
     fs.appendFileSync(f[member].path, '\nchanged after frozen stock report\n');
     assert.throws(() => buildObserver.preparation(f.toolsRoot, f.architecture), /missing or stale|input bytes changed/);
   }
+});
+
+test('cached LLVM validation binding rejects a preparation snapshot missing required common', t => {
+  const f = validationBindingFixture(t), project = f.project.read();
+  delete f.report.nativeToolchain.observation.records.common;
+  fs.writeFileSync(f.reportFile, JSON.stringify(f.report));
+  const preparation = profile.pin(f.reportFile);
+  const binding = {...f.binding, preparation};
+  const dependencies = f.dependencies.map(row => row.path === f.binding.preparation.path ? preparation : row);
+  assert.throws(() => buildObserver.validateValidationBinding(binding, f.project.root, {architecture: 'x64'}, project.pin.path, dependencies),
+    /Pinned Ninja impl\/common\/rules and workdir binding are required/);
 });

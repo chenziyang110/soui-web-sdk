@@ -2453,10 +2453,16 @@
       "sha256": "5ef3b122adb8ee5485deeeb9d05d27e7e8c8997ff168feb61ae37a418dc87384"
     },
     {
+      "path": "docs/adr/0079-ninja-workdir-observation-snapshots.md",
+      "normalization": "lf",
+      "bytes": 3413,
+      "sha256": "4ca9e4467191f91ccf6cd28e9adfc8340e511a305d0ece90998f1a63710461a3"
+    },
+    {
       "path": "docs/adr/README.md",
       "normalization": "lf",
-      "bytes": 2706,
-      "sha256": "32c394c398b0abe87b58c5f5f81dbb786cabdc3e649a62f2d59d24e7b25ffeee"
+      "bytes": 2890,
+      "sha256": "f767c5606a5dd34682522b9ba491969163e8d921da906b601a7792e8ccae2b17"
     },
     {
       "path": "docs/adr/llvm-validation-profile.draft.md",
@@ -4091,6 +4097,12 @@
       "sha256": "10809cc84b44c7ccc2f8e381671c019a3dabe964a5ad0eb4dcda9acd042fd177"
     },
     {
+      "path": "tests/benchmark/fixtures/ninja-workdir-reader.json",
+      "normalization": "lf",
+      "bytes": 2782,
+      "sha256": "be6a1281237370bac059e1f15a3be092801ee7d9962e41574d998f47b9eeaa28"
+    },
+    {
       "path": "tests/benchmark/input-trace.test.cjs",
       "normalization": "lf",
       "bytes": 1183,
@@ -4099,8 +4111,8 @@
     {
       "path": "tests/benchmark/llvm-measurement-observation.test.cjs",
       "normalization": "lf",
-      "bytes": 4948,
-      "sha256": "0768c3aa8c12259046ff894c0a5d773993e0b1e02b242afcf9ea9d66ba3588b9"
+      "bytes": 8001,
+      "sha256": "48ae0c9cb6a60640760ed861a9b6c17724dd48973b6713615a69bef9796215eb"
     },
     {
       "path": "tests/benchmark/measurement-preparation-source.test.cjs",
@@ -5353,20 +5365,20 @@
     {
       "path": "tests/sdk/llvm-measurement-observation.test.cjs",
       "normalization": "lf",
-      "bytes": 5253,
-      "sha256": "b69e444f73f39b3324747df726fe556099aed2a4c4827d89c0d5b916d1607a6d"
+      "bytes": 9088,
+      "sha256": "57389eb2312018f6e62b8700102bf835b95868f958d97d209a59fa2303f9fd7e"
     },
     {
       "path": "tests/sdk/llvm-ninja-reader.Tests.ps1",
       "normalization": "lf",
-      "bytes": 10024,
-      "sha256": "ee4f1f6572a7cda106718ca4189604ada4578a125ed181b007687abc9982fd2e"
+      "bytes": 14797,
+      "sha256": "218704b5e03fdfde0dc939e2bd4238a673f6697d994cb824fde809ee510b4ad5"
     },
     {
       "path": "tests/sdk/llvm-profile-inputs.test.cjs",
       "normalization": "lf",
-      "bytes": 46280,
-      "sha256": "267eaa35e7f47caeebace45f725483f853a46487956d75e46108f8ebb45ca545"
+      "bytes": 47866,
+      "sha256": "ca69c4f82a970e874c3f9d03c1070ad0babe200466edc56fb4aede223e205ae4"
     },
     {
       "path": "tests/sdk/llvm-reference-sdk-configuration.test.cjs",
@@ -176941,8 +176953,8 @@
     {
       "path": "tools/internal/Observe-LlvmBuild.ps1",
       "normalization": "lf",
-      "bytes": 71885,
-      "sha256": "a2038d4ac2527432762414ee88932caa530f604daf68c024c8ad9d28074ab43a"
+      "bytes": 75931,
+      "sha256": "474b6bf7cddb432bc0c0717ed164e0df6635f1d2dd1d7b7cad4f138e075e8294"
     },
     {
       "path": "tools/internal/Restore-WebView2.ps1",
@@ -177019,8 +177031,8 @@
     {
       "path": "tools/internal/llvm-build-observer.cjs",
       "normalization": "lf",
-      "bytes": 33193,
-      "sha256": "b36b305b40830ef7f67041b14d83baa3484d4cdad537fccba78cb1f3025e16d9"
+      "bytes": 33944,
+      "sha256": "f9e11d0addb3e920829d12c5cb5039ebb48afe0bc50899b326469704f0a7250d"
     },
     {
       "path": "tools/internal/llvm-installed-acceptance.cjs",
@@ -177031,8 +177043,8 @@
     {
       "path": "tools/internal/llvm-measurement-observation.cjs",
       "normalization": "lf",
-      "bytes": 18457,
-      "sha256": "930f04d01aba732b646ad09b81ddf612b1c9d3ebb8700e6a5281c7fe6ea7352a"
+      "bytes": 23359,
+      "sha256": "baae76021622b83092ff930337e7f3751568bb254ee6eed3b74e6f79c56dc9ca"
     },
     {
       "path": "tools/internal/llvm-profile-inputs.cjs",

@@ -70,3 +70,39 @@ test('VALID zero-header records remain complete while stale, duplicate and misma
   assert.throws(() => reader.bindDependencies([{...empty, count: 2, headers: ['header.h', './header.h']}], build, object), /duplicate/);
   assert.throws(() => reader.bindDependencies([empty], build, path.join(build, 'other.obj')), /Missing/);
 });
+
+test('common is mandatory in measurement and ordinary SDK snapshots and raw tampering rejects', () => {
+  const fs = require('node:fs'), path = require('node:path'), os = require('node:os');
+  const profile = require('../../tools/internal/llvm-profile-inputs.cjs');
+  const standard = require('../../tools/internal/llvm-build-observer.cjs');
+  const fixture = require('./fixtures/ninja-workdir-reader.json');
+  const temporary = fs.mkdtempSync(path.join(os.tmpdir(), 'soui-ninja-common-'));
+  try {
+    const build = path.join(temporary, 'out', 'x86'), cmake = path.join(build, 'CMakeFiles');
+    fs.mkdirSync(cmake, {recursive: true});
+    const definition = 'cmake_ninja_workdir = ' + build.replaceAll('\\', '/').replaceAll('$', () => '$$').replaceAll(':', '$:').replaceAll(' ', '$ ') + '/';
+    const impl = fixture.implInclude + '\n' + fixture.actualBuildLines.join('\n');
+    fs.writeFileSync(path.join(cmake, 'impl-Release.ninja'), impl);
+    fs.writeFileSync(path.join(cmake, 'common.ninja'), fixture.commonInclude + '\n' + definition);
+    fs.writeFileSync(path.join(cmake, 'rules.ninja'), '# scope leaf\n');
+    const records = Object.fromEntries(Object.entries({ninja: 'impl-Release.ninja', common: 'common.ninja', rules: 'rules.ninja'})
+      .map(([key, file]) => [key, profile.pin(path.join(cmake, file))]));
+    const binding = reader.ninjaWorkdirScope(impl, fs.readFileSync(records.common.path, 'utf8'), '', build);
+    reader.verifyNinjaWorkdirRecords(records, binding, build);
+    const row = {ninjaScopePins: records, ninjaWorkdirBinding: binding, evidencePins: Object.values(records)};
+    standard.validateNinjaScope(row, temporary, 'x86', 'Release', false);
+    assert.throws(() => reader.verifyNinjaWorkdirRecords({...records, common: undefined}, binding, build), /required/);
+    assert.throws(() => standard.validateNinjaScope({...row, ninjaScopePins: undefined}, temporary, 'x86', 'Release', false), /required/);
+    assert.throws(() => standard.validateNinjaScope({...row, evidencePins: row.evidencePins.filter(pin => pin !== records.common)}, temporary, 'x86', 'Release', false), /evidence snapshot/);
+    assert.throws(() => reader.verifyNinjaWorkdirRecords(records, {...binding, value: 'F:/foreign/'}, build), /binding differs/);
+    fs.appendFileSync(records.common.path, '\n# changed after observation\n');
+    assert.throws(() => reader.verifyNinjaWorkdirRecords(records, binding, build), /changed/);
+    assert.throws(() => standard.validateNinjaScope(row, temporary, 'x86', 'Release', false), /changed/);
+    const scope = {schema: 'soui.llvm-measurement-observation/v1', compileObjects: 13, executableTargets: 9, bindings: Array(13), links: Array(9),
+      compilerVerified: false, nativeClosureVerified: false, qualificationPassed: false, records: {ninja: records.ninja}};
+    assert.throws(() => reader.verify(scope), /required/);
+  } finally {
+    assert.ok(path.dirname(temporary) === os.tmpdir() && path.basename(temporary).startsWith('soui-ninja-common-'));
+    fs.rmSync(temporary, {recursive: true});
+  }
+});

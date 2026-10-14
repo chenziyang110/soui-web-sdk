@@ -80,15 +80,56 @@ function NinjaLogicalLines([string]$text){
  return $result.ToArray()
 }
 
-function NinjaWords([string]$text){
+function NinjaLiteralValue([string]$text){
+ $value=[Text.StringBuilder]::new()
+ for($i=0;$i -lt $text.Length;$i++){
+  if($text[$i] -cne '$'){[void]$value.Append($text[$i]);continue}
+  $i++;Need ($i -lt $text.Length -and ($text[$i] -ceq '$' -or $text[$i] -ceq ':' -or $text[$i] -ceq ' ')) 'Unsupported Ninja variable/escape in workdir definition'
+  [void]$value.Append($text[$i])
+ }
+ return $value.ToString()
+}
+function BoundNinjaWorkdir([string]$build,[string]$value){
+ Need ($build -cmatch '^[A-Za-z]:[\\/]' -and $value -cmatch '^[A-Za-z]:[\\/]' -and $value -cmatch '[\\/]$' -and $value -notmatch '[\x00-\x1f]' -and (Norm (Full $value $build)).TrimEnd('/') -ceq (Norm (Full $build $build)).TrimEnd('/')) 'Ninja workdir differs from bound build root'
+ return $value
+}
+function NinjaWorkdirScope([string]$impl,[string]$common,[string]$rules,[string]$build){
+ $texts=[ordered]@{impl=@(NinjaLogicalLines $impl);common=@(NinjaLogicalLines $common);rules=@(NinjaLogicalLines $rules)}
+ $definitions=@();$routes=@{};$uses=@{}
+ foreach($scope in @('impl','common','rules')){
+  $routes[$scope]=@();$uses[$scope]=@()
+  for($i=0;$i -lt $texts[$scope].Count;$i++){
+   $raw=$texts[$scope][$i].text
+   if($raw -cmatch '^[ \t]*cmake_ninja_workdir[ \t]*='){$definitions+=,[ordered]@{scope=$scope;index=$i;raw=$raw}}
+   if($raw -cmatch '^[ \t]*(include|subninja)[ \t]+(.+)$'){$routes[$scope]+=,[ordered]@{kind=$Matches[1];value=$Matches[2].Replace('\','/');index=$i;raw=$raw}}
+   if($raw -cmatch '\$(?:\{cmake_ninja_workdir\}|cmake_ninja_workdir\b)'){$uses[$scope]+=$i}
+  }
+ }
+ Need ($definitions.Count -eq 1 -and $definitions[0].scope -ceq 'common' -and $definitions[0].raw.StartsWith('cmake_ninja_workdir',[StringComparison]::Ordinal)) 'Unique top-level common Ninja workdir definition required; shadow is forbidden'
+ Need ($routes.impl.Count -eq 1 -and $routes.impl[0].raw.StartsWith('include ',[StringComparison]::Ordinal) -and $routes.impl[0].value -ceq 'CMakeFiles/common.ninja' -and $routes.common.Count -eq 1 -and $routes.common[0].raw.StartsWith('include ',[StringComparison]::Ordinal) -and $routes.common[0].value -ceq 'CMakeFiles/rules.ninja' -and $routes.rules.Count -eq 0) 'Foreign Ninja include/subninja scope'
+ Need ($uses.rules.Count -eq 0 -and @($uses.impl|Where-Object{$_ -le $routes.impl[0].index}).Count -eq 0 -and @($uses.common|Where-Object{$_ -le $definitions[0].index}).Count -eq 0 -and $definitions[0].index -gt $routes.common[0].index) 'Ninja workdir used before its declared include scope'
+ Need ($definitions[0].raw -cmatch '^cmake_ninja_workdir[ \t]*=[ \t]*(.*)$') 'Ninja workdir declaration syntax'
+ $value=BoundNinjaWorkdir $build (NinjaLiteralValue $Matches[1])
+ return [ordered]@{buildRoot=$build;value=$value;definition=$definitions[0].raw;definitionLine=$definitions[0].index+1}
+}
+
+function NinjaWords([string]$text,[string]$build,[string]$workdir){
+ if($PSBoundParameters.ContainsKey('workdir')){[void](BoundNinjaWorkdir $build $workdir)}
  $tokens=[Collections.Generic.List[object]]::new();$word=[Text.StringBuilder]::new()
  for($i=0;$i -lt $text.Length;$i++){
   $c=$text[$i]
   if($c -ceq '$'){
    Need ($i+1 -lt $text.Length) 'Unterminated Ninja escape'
    $i++;$next=$text[$i]
-   Need ($next -ceq '$' -or $next -ceq ':' -or $next -ceq ' ') 'Unsupported Ninja variable/escape'
-   [void]$word.Append($next);continue
+   if($next -ceq '$' -or $next -ceq ':' -or $next -ceq ' '){[void]$word.Append($next);continue}
+   if($next -ceq '{'){
+    $end=$text.IndexOf('}',$i+1);Need ($end -ge 0) 'Unterminated Ninja variable';$name=$text.Substring($i+1,$end-$i-1);$i=$end
+   }else{
+    Need ($text.Substring($i) -cmatch '^[A-Za-z0-9_.-]+') 'Unsupported Ninja variable/escape';$name=$Matches[0];$i+=$name.Length-1
+   }
+   Need ($name -ceq 'cmake_ninja_workdir' -and $PSBoundParameters.ContainsKey('workdir')) 'Unsupported Ninja variable/escape'
+   # Expanded paths are literal content, never a second token stream.
+   [void]$word.Append($workdir);continue
   }
   if($c -ceq ' ' -or $c -eq [char]9 -or $c -ceq ':' -or $c -ceq '|'){
    if($word.Length){$tokens.Add([ordered]@{kind='path';value=$word.ToString()});[void]$word.Clear()}
@@ -106,11 +147,11 @@ function NinjaWords([string]$text){
  return $tokens.ToArray()
 }
 
-function NinjaBuildEdges([string]$text){
+function NinjaBuildEdges([string]$text,[string]$build,[string]$workdir){
  $edges=[Collections.Generic.List[object]]::new()
  foreach($line in @(NinjaLogicalLines $text)){
   if(-not $line.text.StartsWith('build ',[StringComparison]::Ordinal)){continue}
-  $tokens=@(NinjaWords $line.text.Substring(6));$colon=@()
+  if($PSBoundParameters.ContainsKey('workdir')){$tokens=@(NinjaWords $line.text.Substring(6) $build $workdir)}else{$tokens=@(NinjaWords $line.text.Substring(6))};$colon=@()
   for($i=0;$i -lt $tokens.Count;$i++){if($tokens[$i].kind -ceq 'colon'){$colon+=$i}}
   Need ($colon.Count -eq 1 -and $colon[0] -gt 0 -and $colon[0]+1 -lt $tokens.Count) 'Malformed Ninja build edge'
   $explicitOutputs=@();$implicitOutputs=@();$implicit=$false
@@ -464,7 +505,11 @@ $allCommands=@((RawText ($build+'/compile_commands.json'))|ConvertFrom-Json);Nee
 $selectedCommands=@($allCommands|Where-Object{(Norm $_.output)-match('/'+$cfg.configuration.ToLowerInvariant()+'/')})
 Need ($selectedCommands.Count-gt0) 'No compile database objects for selected configuration'
 $nativeText=RawText $cfg.nativeLog.path;[void](MatchPin $cfg.nativeLog);$verbose=[string[]]@($nativeText-split'\r?\n'|ForEach-Object{$_-replace'^\[[0-9]+/[0-9]+\] ',''})
-$impl=$build+'/CMakeFiles/impl-'+$cfg.configuration+'.ninja';$edges=@(NinjaBuildEdges (RawText $impl));$queryFile=Join-Path $folder 'ninja-commands.txt';$depsFile=Join-Path $folder 'ninja-dependencies.txt'
+$impl=$build+'/CMakeFiles/impl-'+$cfg.configuration+'.ninja';$common=$build+'/CMakeFiles/common.ninja';$rules=$build+'/CMakeFiles/rules.ninja'
+$ninjaScopePins=[ordered]@{ninja=(ObsPin $impl);common=(ObsPin $common);rules=(ObsPin $rules)}
+$ninjaWorkdirBinding=NinjaWorkdirScope (RawText $impl) (RawText $common) (RawText $rules) $build
+foreach($pin in $ninjaScopePins.Values){[void](MatchPin $pin)}
+$edges=@(NinjaBuildEdges (RawText $impl) $build $ninjaWorkdirBinding.value);$queryFile=Join-Path $folder 'ninja-commands.txt';$depsFile=Join-Path $folder 'ninja-dependencies.txt'
 foreach($output in @($queryFile,$depsFile)){Need (-not(Test-Path -LiteralPath $output)) 'Fresh actual Ninja readout required'}
 Push-Location $build
 try{
@@ -571,9 +616,10 @@ Need (@($binaryRecords|Where-Object{(Norm $_.output.path)-ceq(Norm $sdkArchive)-
 }
 foreach($key in $requiredLibraryKeys.Keys){Need (@($binaryRecords|Where-Object{(Norm $_.output.path)-ceq$key}).Count-eq1) 'Generated library dependency lacks an actual archive binding'}
 foreach($role in $neededRoles.Keys){Need ($currentRoles.ContainsKey($role)) ('Actual owned tool process was not observed: '+$role)}
-foreach($p in @(($build+'/CMakeCache.txt'),($build+'/CMakeFiles/CMakeConfigureLog.yaml'),($build+'/compile_commands.json'),$impl,($build+'/CMakeFiles/rules.ninja'),$queryFile,$depsFile,$cfg.nativeLog.path)){$evidencePins.Add((ObsPin $p))}
+foreach($p in @(($build+'/CMakeCache.txt'),($build+'/CMakeFiles/CMakeConfigureLog.yaml'),($build+'/compile_commands.json'),$impl,$common,$rules,$queryFile,$depsFile,$cfg.nativeLog.path)){$evidencePins.Add((ObsPin $p))}
 foreach($pin in $cfg.controlPins){[void](MatchPin $pin)};foreach($pin in $cfg.dependencyPins){[void](MatchPin $pin)};Need ((ObsPin $InputFile).sha256-ceq$InputSha) 'Observer input changed'
-$record=[ordered]@{schema='soui.standard-llvm-build-observation/v1';profile=$cfg.profile;root=$root;architecture=$cfg.architecture;configuration=$cfg.configuration;sdkOnly=$cfg.sdkOnly;inputIdentity=$cfg.inputIdentity;bridgeIdentity=$cfg.bridgeIdentity;requestFile=$requestPin;buildReport=$cfg.buildReport;buildCapture=[ordered]@{raw=$buildRaw;context=$contextPin;ready=$readyPin;finished=$finishedPin;pid=$start.pid;creationFileTime=$start.creationFileTime;naturalRootExitCode=0;naturalSupervisorExitCode=0;wholeJobClosed=$true;forced=$false};compilerVerified=$true;observedCompilerId='Clang';observedFrontend='MSVC';observedVersion='22.1.3';observedPointerBytes=$expectedWidth;compilerFacts=$compilerFacts.ToArray();ninjaCompileEdges=$bindings;ninjaDependencyRecords=$deps.selected;outsideSelectedDependencyScope=$deps.outsideScope;outsideDefaultGraph=$outsideGraph;compileRecords=$compileRecords.ToArray();resourceRecords=$resourceRecords.ToArray();frozenDependencyPins=$cfg.dependencyPins;derivedDependencies=$derivedDependencies.ToArray();binaryRecords=$binaryRecords.ToArray();actualToolRows=$currentToolRows.ToArray();toolFileIdentities=@($toolIdentities.Values);currentCompileCount=$currentCompileCount;currentBinaryCount=$currentBinaryCount;dependencyPins=@($dependencyPins.Values);evidencePins=$evidencePins.ToArray();scope='Actual selected configuration/default ALL graph; current commands or hash-bound prior natural compile records. No CTest/runtime/OS qualification or filesystem library-read trace.';completeToolchainProvenance=$false;kernelQualified=$false;abiQualified=$false;win7Qualified=$false;qualificationPassed=$false;releaseReady=$false}
+foreach($pin in $ninjaScopePins.Values){[void](MatchPin $pin)}
+$record=[ordered]@{ninjaWorkdirBinding=$ninjaWorkdirBinding;ninjaScopePins=$ninjaScopePins;schema='soui.standard-llvm-build-observation/v1';profile=$cfg.profile;root=$root;architecture=$cfg.architecture;configuration=$cfg.configuration;sdkOnly=$cfg.sdkOnly;inputIdentity=$cfg.inputIdentity;bridgeIdentity=$cfg.bridgeIdentity;requestFile=$requestPin;buildReport=$cfg.buildReport;buildCapture=[ordered]@{raw=$buildRaw;context=$contextPin;ready=$readyPin;finished=$finishedPin;pid=$start.pid;creationFileTime=$start.creationFileTime;naturalRootExitCode=0;naturalSupervisorExitCode=0;wholeJobClosed=$true;forced=$false};compilerVerified=$true;observedCompilerId='Clang';observedFrontend='MSVC';observedVersion='22.1.3';observedPointerBytes=$expectedWidth;compilerFacts=$compilerFacts.ToArray();ninjaCompileEdges=$bindings;ninjaDependencyRecords=$deps.selected;outsideSelectedDependencyScope=$deps.outsideScope;outsideDefaultGraph=$outsideGraph;compileRecords=$compileRecords.ToArray();resourceRecords=$resourceRecords.ToArray();frozenDependencyPins=$cfg.dependencyPins;derivedDependencies=$derivedDependencies.ToArray();binaryRecords=$binaryRecords.ToArray();actualToolRows=$currentToolRows.ToArray();toolFileIdentities=@($toolIdentities.Values);currentCompileCount=$currentCompileCount;currentBinaryCount=$currentBinaryCount;dependencyPins=@($dependencyPins.Values);evidencePins=$evidencePins.ToArray();scope='Actual selected configuration/default ALL graph; current commands or hash-bound prior natural compile records. No CTest/runtime/OS qualification or filesystem library-read trace.';completeToolchainProvenance=$false;kernelQualified=$false;abiQualified=$false;win7Qualified=$false;qualificationPassed=$false;releaseReady=$false}
 if($installedMode){
  foreach($pin in $installedPins.Values){[void](MatchPin $pin)}
  foreach($role in $roleNames){[void](MatchPin $profile.ToolPins.$role)};foreach($pin in @($profile.RequiredInputPins)+@($profile.BridgePins)){[void](MatchPin $pin)}

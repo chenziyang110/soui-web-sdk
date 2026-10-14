@@ -8,7 +8,7 @@ $ast=[Management.Automation.Language.Parser]::ParseFile($source,[ref]$tokens,[re
 if($errors.Count){throw 'Real reader source has parse errors'}
 # Load only the actual pure parsing functions; never invoke the Observer body,
 # tool identity helper, native tools or a copied implementation of the parser.
-foreach($name in @('Need','Norm','Full','NinjaLogicalLines','NinjaWords','NinjaBuildEdges','CompileBindings','NinjaDependencyBlocks','DependencyBindings','ToolNorm','CompileArgv','CompileNorm','CompileVerboseNorm','CompileVerboseRecords')){
+foreach($name in @('Need','Norm','Full','NinjaLogicalLines','NinjaLiteralValue','BoundNinjaWorkdir','NinjaWorkdirScope','NinjaWords','NinjaBuildEdges','CompileBindings','NinjaDependencyBlocks','DependencyBindings','ToolNorm','CompileArgv','CompileNorm','CompileVerboseNorm','CompileVerboseRecords')){
  $definitions=@($ast.FindAll({param($node)$node-is[Management.Automation.Language.FunctionDefinitionAst]-and$node.Name-ceq$name},$true))
  if($definitions.Count-ne1){throw 'Unique actual pure reader function required'}
  . ([ScriptBlock]::Create($definitions[0].Extent.Text))
@@ -75,6 +75,47 @@ Case 'compile-eligible-record-retains-its-own-raw-line-after-diagnostics' {
  $canonical=CompileNorm $compileDb;$records=@(CompileVerboseRecords ($canonical+"`n"+'diagnostic mentions '+$compileActual+"`n"+'[2/22] '+$compileActual))
  Need ($records.Count-eq1-and$records[0].canonical-ceq$canonical-and$records[0].raw-ceq$compileActual) 'original actual record association'
 }
+
+$fixture=([IO.File]::ReadAllText((Join-Path $PSScriptRoot '../benchmark/fixtures/ninja-workdir-reader.json'))|ConvertFrom-Json);$nl=[Environment]::NewLine
+$fixtureImpl=$fixture.implInclude+$nl+($fixture.actualBuildLines-join$nl)
+$fixtureCommon=$fixture.commonInclude+$nl+$fixture.definition
+Case 'nine-real-CUSTOM_COMMAND-rows-literal-implicit-outputs' {
+ $binding=NinjaWorkdirScope $fixtureImpl $fixtureCommon '' $fixture.buildRoot
+ $parsed=@(NinjaBuildEdges $fixtureImpl $fixture.buildRoot $binding.value)
+ Need ($parsed.Count-eq9) 'actual nine rows'
+ for($i=0;$i-lt9;$i++){Need ($parsed[$i].rawLogical-ceq$fixture.actualBuildLines[$i]-and$parsed[$i].rule-ceq'CUSTOM_COMMAND'-and$parsed[$i].implicitOutputs.Count-eq1-and$parsed[$i].implicitOutputs[0].StartsWith($binding.value,[StringComparison]::Ordinal)) 'raw row and implicit output'}
+}
+Case 'expanded-colon-space-dollar-is-one-literal-path' {
+ $b='F:/ninja reader/$literal/build';$row='build a | '+('$'+'{cmake_ninja_workdir}')+'sidecar: rule source'
+ $binding=NinjaWorkdirScope ('include CMakeFiles/common.ninja'+$nl+$row) ('include CMakeFiles/rules.ninja'+$nl+'cmake_ninja_workdir = F$:/ninja$ reader/$$literal/build/') '' $b
+ $edge=@(NinjaBuildEdges $row $b $binding.value)[0];Need ($edge.implicitOutputs.Count-eq1-and$edge.implicitOutputs[0]-ceq'F:/ninja reader/$literal/build/sidecar') 'literal expansion'
+ $edge=@(NinjaBuildEdges 'build a | $cmake_ninja_workdir/sidecar: rule source' $b $binding.value)[0];Need ($edge.implicitOutputs[0]-ceq'F:/ninja reader/$literal/build//sidecar') 'unbraced variable'
+}
+Case 'known-value-does-not-authorize-unknown-variable' {NinjaBuildEdges 'build a: rule $foreign' $fixture.buildRoot 'D:/work/sm05-sdk-native-input-normalized-v2/out/x86/'} 'Unsupported Ninja variable'
+Case 'known-value-must-equal-bound-build-root' {NinjaBuildEdges 'build a: rule $cmake_ninja_workdir' $fixture.buildRoot 'F:/foreign/'} 'bound build root'
+Case 'missing-common-definition' {NinjaWorkdirScope $fixtureImpl $fixture.commonInclude '' $fixture.buildRoot} 'Unique top-level'
+Case 'duplicate-common-definition' {NinjaWorkdirScope $fixtureImpl ($fixtureCommon+$nl+$fixture.definition) '' $fixture.buildRoot} 'Unique top-level'
+Case 'indented-common-shadow' {NinjaWorkdirScope $fixtureImpl ($fixture.commonInclude+$nl+'  '+$fixture.definition) '' $fixture.buildRoot} 'shadow'
+Case 'impl-shadow' {NinjaWorkdirScope ($fixtureImpl+$nl+$fixture.definition) $fixtureCommon '' $fixture.buildRoot} 'shadow'
+Case 'rules-shadow' {NinjaWorkdirScope $fixtureImpl $fixtureCommon ('  '+$fixture.definition) $fixture.buildRoot} 'shadow'
+Case 'foreign-common-include' {NinjaWorkdirScope $fixtureImpl.Replace('CMakeFiles/common.ninja','../foreign.ninja') $fixtureCommon '' $fixture.buildRoot} 'Foreign Ninja'
+Case 'subninja-is-a-foreign-scope' {NinjaWorkdirScope $fixtureImpl.Replace('include ','subninja ') $fixtureCommon '' $fixture.buildRoot} 'Foreign Ninja'
+Case 'extra-common-include' {NinjaWorkdirScope $fixtureImpl ($fixtureCommon+$nl+'include foreign.ninja') '' $fixture.buildRoot} 'Foreign Ninja'
+Case 'extra-rules-include' {NinjaWorkdirScope $fixtureImpl $fixtureCommon 'include foreign.ninja' $fixture.buildRoot} 'Foreign Ninja'
+Case 'workdir-used-before-include' {NinjaWorkdirScope ($fixture.actualBuildLines[0]+$nl+$fixture.implInclude) $fixtureCommon '' $fixture.buildRoot} 'declared include scope'
+Case 'workdir-used-before-definition-in-rules' {NinjaWorkdirScope $fixtureImpl $fixtureCommon 'build a: rule $cmake_ninja_workdir/source' $fixture.buildRoot} 'declared include scope'
+Case 'foreign-workdir-value' {NinjaWorkdirScope $fixtureImpl $fixtureCommon.Replace($fixture.definition,'cmake_ninja_workdir = F$:/foreign/') '' $fixture.buildRoot} 'bound build root'
+Case 'definition-cannot-expand-unknown-variable' {NinjaWorkdirScope $fixtureImpl $fixtureCommon.Replace($fixture.definition,'cmake_ninja_workdir = $foreign') '' $fixture.buildRoot} 'Unsupported Ninja variable'
+
+
+Case 'known-workdir-value-itself-is-drive-absolute' {
+ $b=[IO.Path]::GetFullPath((Get-Location).Path)
+ foreach($value in @('./',('../'+[IO.Path]::GetFileName($b)+'/'),($b.Substring(2).Replace('\','/')+'/'),($b.Substring(0,2)+'relative/'))){
+  $rejected=$false;try{BoundNinjaWorkdir $b $value|Out-Null}catch{$rejected=$_.Exception.Message.Contains('bound build root')};Need $rejected 'relative/root-relative/drive-relative value must reject'
+  $rejected=$false;try{NinjaWorkdirScope 'include CMakeFiles/common.ninja' ('include CMakeFiles/rules.ninja'+[Environment]::NewLine+'cmake_ninja_workdir = '+$value.Replace(':','$:')) '' $b|Out-Null}catch{$rejected=$_.Exception.Message.Contains('bound build root')};Need $rejected 'relative declaration must reject'
+ }
+}
+
 $record=[ordered]@{schema='soui.pure-standard-ninja-reader-regression/v1';source=$source;cases=$results.ToArray();count=$results.Count;nativeOrToolFileIdentityTested=$false;qualificationPassed=$false;releaseReady=$false}
 $bytes=[Text.UTF8Encoding]::new($false).GetBytes(($record|ConvertTo-Json -Depth 6))
 $stream=[IO.File]::Open($OutputPath,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)

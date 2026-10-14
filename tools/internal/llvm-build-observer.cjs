@@ -151,7 +151,16 @@ function inputs(root,source,profile,validationPins=[]){
   }
   return {inventories,dependencyPins:[...map.values()].sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0)};
 }
+function validateNinjaScope(row, root, arch, config, sdkOnly) {
+  const build = path.join(root, 'out', (sdkOnly ? 'sdk-' : '') + arch);
+  require('./llvm-measurement-observation.cjs').verifyNinjaWorkdirRecords(row.ninjaScopePins, row.ninjaWorkdirBinding, build, config);
+  for (const record of Object.values(row.ninjaScopePins)) {
+    const matches = row.evidencePins.filter(item => path.resolve(item.path).toLowerCase() === path.resolve(record.path).toLowerCase());
+    need(matches.length === 1 && isDeepStrictEqual(matches[0], record), 'Required Ninja scope pin differs from evidence snapshot');
+  }
+}
 function validateObservation(row,root,v,profile,build,capture,observationRun,verifyStream){
+  validateNinjaScope(row,root,v.architecture,v.configuration,!!v.sdkOnly);
   const natural=nativeNatural(capture,verifyStream);nativeNatural(observationRun,verifyStream);
   need(row.schema==='soui.standard-llvm-build-observation/v1'&&row.profile===profileName&&path.resolve(row.root)===root&&
     row.architecture===v.architecture&&row.configuration===v.configuration&&row.sdkOnly===!!v.sdkOnly&&
@@ -287,6 +296,7 @@ function priorObservation(root,arch,config,sdkOnly,profile,validationTools){
   const natural=nativeNatural(buildCapture,standard.verifyStream);nativeNatural(observerCapture,standard.verifyStream);
   const old=read(accepted.observation.path),frozen=read(accepted.inputs.path),build=read(accepted.buildReportSnapshot.path);
   verifyCurrentCodePins(root,frozen.llvm.sourceCodePins);
+  validateNinjaScope(old,root,arch,config,sdkOnly);
   need(isDeepStrictEqual(accepted.validationTools,validationTools)&&isDeepStrictEqual(frozen.llvm.validationTools,validationTools)&&
     isDeepStrictEqual(old.frozenDependencyPins,frozen.llvm.dependencyPins),'Historical validation-tool ownership differs');
   validateValidationBinding(validationTools,root,{architecture:arch},accepted.requestFile.path,frozen.llvm.dependencyPins);
@@ -318,7 +328,7 @@ function verifyStandardBuild(root,arch,config,sdkOnly=false,request={}){
   need(frozen.nativeToolchain===profileName&&frozen.llvm.inputIdentity===profile.InputIdentity&&frozen.llvm.bridgeIdentity===profile.BridgeIdentity,'Prior frozen profile differs');
   return {build,observation:current,observationPath:accepted.observation.path,accepted,compilerVerified:true,qualificationPassed:false,releaseReady:false};
 }
-module.exports={codeNames,providerNames,preparation,profileRequestPath,selected,verifyCurrentCodePins,validatePreparedProfile,validateValidationBinding,run,verifyStandardBuild};
+module.exports={validateNinjaScope,codeNames,providerNames,preparation,profileRequestPath,selected,verifyCurrentCodePins,validatePreparedProfile,validateValidationBinding,run,verifyStandardBuild};
 if(require.main===module){
   try{
     const args=process.argv.slice(2);

@@ -25,3 +25,4 @@
 - [ADR-0076：直接原生任务输入的准入上限](0076-native-task-input-admission-bound.md)（proposed；Source-only，未编译/C++执行；逻辑输入限制不等于完整字节预算）
 - [ADR-0077：TaskStore 私有 retained string 分配请求](0077-task-store-private-retained-string-requests.md)（proposed；Phase 1 Source-only，collector 尚未接入，完整缓存预算仍未评估）
 - [ADR-0078：独立采集 TaskStore 私有 allocator 请求](0078-task-store-private-storage-collection.md)（proposed；Phase 2 Source-only，未执行真实 capture，完整缓存预算仍未评估）
+- [ADR-0079：Ninja 工作目录变量与编译观测快照](0079-ninja-workdir-observation-snapshots.md)（proposed；纯 Reader 回归通过，真实公开 SDK 重跑仍待执行）
