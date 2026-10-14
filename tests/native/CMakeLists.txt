@@ -213,10 +213,11 @@ set_property(TARGET soui_task_store_storage_tests PROPERTY MSVC_RUNTIME_LIBRARY 
 add_test(NAME sdk.native.task-store-storage COMMAND soui_task_store_storage_tests)
 set_tests_properties(sdk.native.task-store-storage PROPERTIES TIMEOUT 60)
 
-# Instrument the actual Store source, with no copied owner and no normal-SDK TU
-# in this target. Its private allocation/final-refund seams are absent in production.
+# Instrument the actual Store source without linking a normal-SDK copy of Store.
+# Its private allocation/final-refund seams are absent in production.
 add_executable(soui_task_store_storage_fault_tests task_store_storage_tests.cpp
-  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/runtime/core/task/task_store.cpp")
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/runtime/core/task/task_store.cpp"
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/src/runtime/core/result/result.cpp")
 target_include_directories(soui_task_store_storage_fault_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
 target_link_libraries(soui_task_store_storage_fault_tests PRIVATE Soui::ActionJson)
 target_compile_features(soui_task_store_storage_fault_tests PRIVATE cxx_std_17)
