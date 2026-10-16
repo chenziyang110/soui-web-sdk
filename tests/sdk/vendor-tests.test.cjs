@@ -191,3 +191,82 @@ test('real entrypoints reject unsupported vendor flag combinations before buildi
   assert.notEqual(generated.status, 0);
   assert.match(generated.stderr + generated.stdout, /WithVendorTests requires the source devkit root/);
 });
+
+// Exercise CMake itself, independently of the synthetic cache/registry tests above.
+// These fixtures test configuration policy only; they do not compile a private kernel.
+function configureFixture(t, privateSource = 'absent') {
+  const parent = fs.realpathSync(os.tmpdir());
+  const root = fs.mkdtempSync(path.join(parent, 'soui-vendor-configure-'));
+  t.after(() => {
+    const resolved = fs.realpathSync(root);
+    assert.equal(path.dirname(resolved), parent);
+    assert.ok(path.basename(resolved).startsWith('soui-vendor-configure-'));
+    fs.rmSync(resolved, {recursive: true, force: true});
+  });
+  fs.mkdirSync(path.join(root, 'cmake'));
+  fs.copyFileSync(path.join(repository, 'cmake/SouiVendorTests.cmake'), path.join(root, 'cmake/SouiVendorTests.cmake'));
+  fs.writeFileSync(path.join(root, 'CMakeLists.txt'), 'cmake_minimum_required(VERSION 3.24)\n' +
+    'project(VendorConfigurationBoundary NONE)\noption(SOUI_BUILD_TESTS "SDK tests" ON)\ninclude(cmake/SouiVendorTests.cmake)\n');
+  const privateRoot = path.join(root, 'third_party/sources/miniblink');
+  if (privateSource !== 'absent') fs.mkdirSync(privateRoot, {recursive: true});
+  if (privateSource === 'complete') {
+    // Synthetic regular files suffice for this preflight. Do not require private
+    // sources just to run the portable SDK's configuration-policy tests.
+    const moduleText = fs.readFileSync(path.join(root, 'cmake/SouiVendorTests.cmake'), 'utf8');
+    const block = moduleText.match(/set\(_soui_vendor_required\s+([\s\S]*?)\n\)/);
+    assert.ok(block);
+    for (const match of block[1].matchAll(/"([^"]+)"/g)) {
+      const destination = path.join(root, match[1]);
+      fs.mkdirSync(path.dirname(destination), {recursive: true});
+      fs.writeFileSync(destination, '// Configuration-only fixture; not kernel source or build evidence.\n');
+    }
+  }
+  const configure = (args = []) => cp.spawnSync('cmake', ['-S', root, '-B', path.join(root, 'build'), ...args],
+    {encoding: 'utf8', windowsHide: true, timeout: 30000});
+  const cache = () => fs.readFileSync(path.join(root, 'build/CMakeCache.txt'), 'utf8');
+  return {root, privateRoot, configure, cache};
+}
+
+test('actual fresh CMake defaults portable sources OFF and preserves SDK tests ON', t => {
+  const f = configureFixture(t), result = f.configure();
+  assert.equal(result.status, 0, result.stderr || result.error?.message);
+  assert.match(f.cache(), /^SOUI_BUILD_VENDOR_TESTS:BOOL=OFF$/m);
+  assert.match(f.cache(), /^SOUI_BUILD_TESTS:BOOL=ON$/m);
+  assert.match(result.stdout, /vendor regression gate not evaluated/);
+});
+
+test('actual fresh CMake defaults a complete private root ON', t => {
+  const f = configureFixture(t, 'complete'), result = f.configure();
+  assert.equal(result.status, 0, result.stderr || result.error?.message);
+  assert.match(f.cache(), /^SOUI_BUILD_VENDOR_TESTS:BOOL=ON$/m);
+  assert.match(result.stdout, /existing source-byte gates still apply/);
+});
+
+for (const scenario of [
+  {name: 'absent root explicitly ON', source: 'absent', args: ['-DSOUI_BUILD_VENDOR_TESTS=ON'], error: /lack required regular files/},
+  {name: 'existing incomplete root by default', source: 'incomplete', args: [], error: /lack required regular files/},
+  {name: 'SDK tests OFF with vendor ON', source: 'complete', args: ['-DSOUI_BUILD_TESTS=OFF', '-DSOUI_BUILD_VENDOR_TESTS=ON'], error: /requires SOUI_BUILD_TESTS=ON/},
+  {name: 'required source replaced by a directory', source: 'complete', args: [], directory: true, error: /lack required regular files/},
+]) {
+  test('actual CMake rejects ' + scenario.name, t => {
+    const f = configureFixture(t, scenario.source);
+    if (scenario.directory) {
+      const file = path.join(f.privateRoot, 'wke/wke.cpp');
+      fs.unlinkSync(file); fs.mkdirSync(file);
+    }
+    const result = f.configure(scenario.args);
+    assert.equal(result.signal, null); assert.equal(result.error, undefined);
+    assert.notEqual(result.status, 0);
+    assert.match(result.stderr + result.stdout, scenario.error);
+  });
+}
+
+test('actual CMake keeps cached ON and refuses a later missing private input', t => {
+  const f = configureFixture(t, 'complete');
+  assert.equal(f.configure().status, 0);
+  fs.unlinkSync(path.join(f.privateRoot, 'wke/wke.cpp'));
+  const result = f.configure();
+  assert.notEqual(result.status, 0);
+  assert.match(result.stderr, /lack required regular files/);
+  assert.match(f.cache(), /^SOUI_BUILD_VENDOR_TESTS:BOOL=ON$/m);
+});

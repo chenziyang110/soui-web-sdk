@@ -113,6 +113,8 @@ HTTPS 内核的[回环证书验证](../verification/production-validation/previe
 
 ## 明确请求厂商回归
 
+`node --test tests/sdk/vendor-tests.test.cjs` 调用真实 CMake 检查默认 OFF/ON、缺根显式 ON、不完整根、目录替代源码、SDK tests OFF/vendor ON 和缓存 ON 后输入缺失。临时配置工程不编译私有内核，完整输入形状使用合成普通文件，因此便携源码也能运行这些策略回归。[2026-10-16 专项记录](../verification/production-validation/issue-maintenance-2026-10-16/README.md)另保留真正的两架构默认 ALL 构建及准确 54 项既有执行证据。
+
 `powershell.exe -File tools/Test.ps1 -Architecture x64 -Configuration Release -RequireVendorTests -UnitOnly` 要求当前根构建的私有厂商测试为 ON；x86 使用对应架构。`-UnitOnly` 仅省略桌面 smoke，仍执行原生 CTest。`-RequireVendorTests` 不能与仅做桌面 smoke 的 `-NativeOnly` 共用。
 
 所有单元测试模式先读取实际 `out/<架构>/CMakeCache.txt`，核对源码根、构建目录、架构、配置和 SDK 测试开关，再调用实际 CTest 的 `--show-only=json-v1`。ON 必须注册 [清单](../tools/internal/vendor-test-names.json) 中完整的 54 个名称，不能缺少、重复、额外注册或禁用厂商用例；随后仍运行私有 ABI 比较及原有 CTest，注册成功本身没有通过资格。即使未指定 `-RequireVendorTests`，配置为 ON 时也采用同一完整注册要求。OFF 会明确报告厂商回归及私有 ABI 源码比较未验收；[公开 Host 断言](../tests/native/miniblink_public_host.test.cjs) 始终随单元测试执行。缺少配置、空注册或查询失败均不能视为成功。
