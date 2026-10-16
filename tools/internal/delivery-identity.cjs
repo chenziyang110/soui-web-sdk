@@ -76,7 +76,7 @@ function sourceInventory(root) {
     ...(generated ? ['app', 'web', 'contracts', 'resources'] : ['templates', 'demos', 'tests', 'benchmarks'])];
   const inventoryRoots = roots.filter(name => fs.existsSync(safePath(root, name)));
   const names = inventoryRoots.flatMap(name => walk(root, name, excludeSource));
-  for (const name of ['VERSION', 'CMakeLists.txt', 'THIRD_PARTY_NOTICES.md', 'project.json', 'sdk-lock.json']) {
+  for (const name of ['VERSION', 'CMakeLists.txt', 'LICENSE.md', 'THIRD_PARTY_NOTICES.md', 'project.json', 'sdk-lock.json']) {
     if (fs.existsSync(safePath(root, name))) { names.push(name); inventoryRoots.push(name); }
   }
   return {names, inventoryRoots};

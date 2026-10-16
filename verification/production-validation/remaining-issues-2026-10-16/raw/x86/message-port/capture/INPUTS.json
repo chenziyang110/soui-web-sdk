@@ -1,0 +1,22 @@
+{
+  "root": "F:/work/soui-issue96",
+  "architecture": "x86",
+  "executable": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+  "args": [
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "F:/work/soui-issue96/tools/Test-Acceptance.ps1",
+    "-Architecture",
+    "x86",
+    "-Configuration",
+    "Release",
+    "-Fixture",
+    "message-port",
+    "-PrepareOnly",
+    "-FreshConfigure"
+  ],
+  "runner": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe"
+}

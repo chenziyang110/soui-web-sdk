@@ -28,7 +28,7 @@ npm install ../sdk/web ../sdk/bindings/react --install-links
 
 应用必须把所有 `@soui/native-sdk` 导入指向同一实例。不要让现有 SDK 源码 alias 和 bare package 指向两份 SDK；可统一使用 package 或统一应用的 alias/dedupe 配置。绑定只使用 SDK 类型并借用传入对象，不创建客户端或 GUI。不要导入绑定包内部 `dist` 路径。
 
-SDK peer 明确为 `>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0`：支持 0.4/0.5 稳定线以及 0.4.0/0.5.0 这两个版本 tuple 的预发行，不自动承诺其他 minor/patch tuple 的预发行（例如 0.4.1-preview.1、0.5.1-preview.1）或 0.6。包测试分别验证本次真实同版本源码的 tarball 消费，以及临时元数据夹具的 npm peer 解析；后者不认证相应 SDK 源码或平台。
+SDK peer 明确为 `>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.5.1 || >=0.5.1-0 <0.6.0`：支持 0.4/0.5 稳定线以及 0.4.0、0.5.0、0.5.1 的预发行，不自动承诺其他 minor/patch 组合的预发行（例如 0.4.1-preview.1、0.5.2-preview.1）或 0.6。包测试分别验证本次真实同版本源码的 tarball 消费，以及临时元数据夹具的 npm peer 解析；后者不认证相应 SDK 源码或平台。原范围的历史回归保留，新范围用于本次 0.5.1-preview.1 交付。
 
 输出是 ES2015 ESM，由应用构建为目标页面载荷。兼容应用仍须执行现有 Chrome 49 转换和所需 polyfill；React 19 属于现代档。本次 DOM 组件测试不证明 Win7/PE 或旧引擎认证。
 
