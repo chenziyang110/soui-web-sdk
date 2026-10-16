@@ -336,6 +336,8 @@ struct task_service::impl {
     }
     ready.notify_one();
     return receipt;
+    } catch (const task_store_request_quota_exceeded&) {
+      return error("E_TASK_STORE_QUOTA", "Native task admission storage quota exceeded.");
     } catch (...) { return error("E_NATIVE_FAILURE", "Native task preparation failed."); }
   }
 
@@ -677,9 +679,19 @@ struct task_service::impl {
 };
 
 task_service::task_service() : task_service(dm::mode::disabled) {}
-task_service::task_service(dm::mode enabled) : task_service(enabled, std::nullopt) {}
+task_service::task_service(dm::mode enabled) : task_service(enabled, default_task_store_request_quota) {}
 task_service::task_service(dm::mode enabled, std::optional<task_store_request_quota_policy> quota)
     : impl_{std::make_shared<impl>(enabled, quota)} {}
+
+task_store_request_quota_status task_service::read_request_quota(
+    task_store_request_quota_snapshot& out) const noexcept {
+  out = {};
+  try {
+    std::unique_lock<std::mutex> lock(impl_->mutex, std::try_to_lock);
+    if (!lock.owns_lock()) { out.status = task_store_request_quota_status::busy; return out.status; }
+    return impl_->tasks.read_request_quota(out); // Preserve service-to-Store lock order.
+  } catch (...) { out = {}; return out.status; }
+}
 
 dm::status task_service::read_runtime_metrics(dm::tasks& out) const noexcept {
   out = {};

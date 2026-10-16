@@ -1,0 +1,303 @@
+{
+  "schema": "soui.benchmark-single-run/v2",
+  "runId": "7f9891eb-cacc-44a8-a9e3-30320434fd4f",
+  "host": "webview2",
+  "scene": "S05",
+  "startedAt": "2026-10-16T07:39:08.698Z",
+  "captureRoot": "C:\\work\\sm05-source30-modern-presentation-7\\desktop-x64-s05-source30-1\\run",
+  "runnerPid": 62224,
+  "machine": {
+    "hostname": "Robin11",
+    "platform": "win32",
+    "release": "10.0.26200",
+    "architecture": "x64",
+    "cpuModel": "AMD Ryzen 9 9950X 16-Core Processor            ",
+    "logicalCpus": 32,
+    "totalMemoryBytes": 66094223360
+  },
+  "pageSha256": "0d3449a715e68a17cdcfc6eb9d773123e2c8247eec3768e9f253f3cf73d82418",
+  "pageBundle": "page-bundle",
+  "pageFiles": [
+    {
+      "path": ".vite/manifest.json",
+      "bytes": 734,
+      "sha256": "b7abbc61af8742d9c45c9df6d581c05b2fa97fee42d932602559c5d6746109a6"
+    },
+    {
+      "path": "assets/benchmark-CMyB3Cpu.js",
+      "bytes": 234479,
+      "sha256": "88de5596f65c54efa7fef1c4a92694d6eed9e0e27cb10d07d959122372d59480"
+    },
+    {
+      "path": "assets/benchmark-DwZzutO7.css",
+      "bytes": 72227,
+      "sha256": "ad2d8ae4171706676aab387fb3ee1df6a8400fddc284e66dacfc22715f14f83b"
+    },
+    {
+      "path": "assets/benchmark-legacy-BXmf0_A2.js",
+      "bytes": 309420,
+      "sha256": "2bffe9b2d38b0468ef9d785aa3dadaf8fc9fbef9e85725f99a769feb986c4285"
+    },
+    {
+      "path": "assets/polyfills-BfWLlxAn.js",
+      "bytes": 142663,
+      "sha256": "9a93ce92cd760e772fe33fc136e0b93063ba1578fa1898860c456c06f114a19c"
+    },
+    {
+      "path": "assets/polyfills-legacy-VVdV9S1d.js",
+      "bytes": 165889,
+      "sha256": "75e43289eaef6ab3263d3364ed574d5a82af67af57495a6b69f1cd3d0100bb7e"
+    },
+    {
+      "path": "benchmark-smoke.html",
+      "bytes": 1412,
+      "sha256": "56bbdd5bc1217f0e1796c46870eb8fe6657a5025400fe1a7026ef5ce94752250"
+    },
+    {
+      "path": "benchmark.html",
+      "bytes": 1071,
+      "sha256": "0d3449a715e68a17cdcfc6eb9d773123e2c8247eec3768e9f253f3cf73d82418"
+    },
+    {
+      "path": "index.html",
+      "bytes": 1071,
+      "sha256": "0d3449a715e68a17cdcfc6eb9d773123e2c8247eec3768e9f253f3cf73d82418"
+    }
+  ],
+  "hostExeSha256": "c3f8fcfeb4a7931fa088a5bf436c244a447f30d8e5fcba58be0cc9e1ecfd0165",
+  "dependency": {
+    "webview2ProfileDirectory": "C:\\work\\sm05-source30-modern-presentation-7\\desktop-x64-s05-source30-1\\browser-profile",
+    "renderer": "webview2"
+  },
+  "identity": {
+    "kind": "webview2-sdk-library",
+    "bytes": 2061662,
+    "sha256": "d5be9336dd0ca51dcd6373a2138704e3416d9c283c513d5bebbd3ab546f36777"
+  },
+  "tools": {
+    "samplerSha256": "e8132cab068293fa4a38fb4a812eb9a9a9ae82d2c38c0aed575b2cb886dd22da",
+    "inputSha256": "14e53cb6285e7016aeaf54a996d8f7974e475d7279d1c7aa74051d42c679b5de",
+    "ownedRunnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c"
+  },
+  "maxDurationMs": 250000,
+  "cleanup": [
+    {
+      "name": "host",
+      "pid": 76452,
+      "method": "held-job-stdin",
+      "stopRequested": true,
+      "treeCleanupVerified": true,
+      "nativeReportSha256": "dca584c7b5dc7a2da08267b664f1e837488e6a67f0f2d3d8f89c903002eb8e2c"
+    },
+    {
+      "name": "sampler",
+      "pid": 2944,
+      "method": "held-job-stdin",
+      "stopRequested": true,
+      "treeCleanupVerified": true,
+      "nativeReportSha256": "f4692bf2ca3922515721de24c62822feda1b69855f69e1471c451db47be65cea"
+    }
+  ],
+  "releaseReady": false,
+  "benchmarkValid": false,
+  "desktopObservation": true,
+  "rendererBackend": "webview2",
+  "startupPreparation": {
+    "actualDocumentReady": true,
+    "elapsedMs": 3855,
+    "settlingMs": 3000
+  },
+  "processes": [
+    {
+      "name": "host",
+      "pid": 76452,
+      "contextSha256": "67bd563733a5beda5f8de83d0cdfb0c806f0960a48a4260173d53b5781423f4f",
+      "code": 124,
+      "signal": null,
+      "error": "supervisor-stop",
+      "ownedProcess": {
+        "pid": 76452,
+        "creationFileTime": "134366099487357086",
+        "exitCode": 124,
+        "supervisorExitCode": 124,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": true,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "supervisor-stop",
+          "elapsedMs": 4239,
+          "rootExited": true,
+          "rootExitCode": 124,
+          "activeBeforeCleanup": 7,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 7,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "C:\\work\\sm05-source30-modern-presentation-7\\desktop-x64-s05-source30-1\\run\\host.owned.ndjson",
+        "reportSha256": "dca584c7b5dc7a2da08267b664f1e837488e6a67f0f2d3d8f89c903002eb8e2c",
+        "runnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c",
+        "executableSha256": "c3f8fcfeb4a7931fa088a5bf436c244a447f30d8e5fcba58be0cc9e1ecfd0165"
+      }
+    },
+    {
+      "name": "sampler",
+      "pid": 2944,
+      "contextSha256": "f5031800f5a9345bada28ccf4f21632122576bc70215deb0f5127861e5991561",
+      "code": 124,
+      "signal": null,
+      "error": "supervisor-stop",
+      "ownedProcess": {
+        "pid": 2944,
+        "creationFileTime": "134366099527106344",
+        "exitCode": 124,
+        "supervisorExitCode": 124,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": true,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "supervisor-stop",
+          "elapsedMs": 296,
+          "rootExited": true,
+          "rootExitCode": 124,
+          "activeBeforeCleanup": 2,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "C:\\work\\sm05-source30-modern-presentation-7\\desktop-x64-s05-source30-1\\run\\sampler.owned.ndjson",
+        "reportSha256": "f4692bf2ca3922515721de24c62822feda1b69855f69e1471c451db47be65cea",
+        "runnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c",
+        "executableSha256": "e8132cab068293fa4a38fb4a812eb9a9a9ae82d2c38c0aed575b2cb886dd22da"
+      }
+    },
+    {
+      "name": "input",
+      "pid": 78668,
+      "contextSha256": "645302613d35f5b8bae48fb7b1799b6b9199cc87b50bda3d408c5832d4540f49",
+      "code": 1,
+      "signal": null,
+      "error": "root-failed",
+      "ownedProcess": {
+        "pid": 78668,
+        "creationFileTime": "134366099527252357",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 240,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "C:\\work\\sm05-source30-modern-presentation-7\\desktop-x64-s05-source30-1\\run\\input.owned.ndjson",
+        "reportSha256": "d1769a0f3183ad00d7891661eab79820039a9c00d5a9107aeec45ca3c0eabd77",
+        "runnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c",
+        "executableSha256": "14e53cb6285e7016aeaf54a996d8f7974e475d7279d1c7aa74051d42c679b5de"
+      }
+    }
+  ],
+  "status": "failed",
+  "error": "Benchmark process failed",
+  "ownedEvidence": [
+    {
+      "name": "host",
+      "report": {
+        "path": "host.owned.ndjson",
+        "bytes": 5477,
+        "sha256": "dca584c7b5dc7a2da08267b664f1e837488e6a67f0f2d3d8f89c903002eb8e2c"
+      },
+      "context": {
+        "path": "host.owned.ndjson.context.json",
+        "bytes": 861,
+        "sha256": "67bd563733a5beda5f8de83d0cdfb0c806f0960a48a4260173d53b5781423f4f"
+      },
+      "stdout": {
+        "path": "host.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "host.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "sampler",
+      "report": {
+        "path": "sampler.owned.ndjson",
+        "bytes": 1025,
+        "sha256": "f4692bf2ca3922515721de24c62822feda1b69855f69e1471c451db47be65cea"
+      },
+      "context": {
+        "path": "sampler.owned.ndjson.context.json",
+        "bytes": 631,
+        "sha256": "f5031800f5a9345bada28ccf4f21632122576bc70215deb0f5127861e5991561"
+      },
+      "stdout": {
+        "path": "sampler.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "sampler.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    },
+    {
+      "name": "input",
+      "report": {
+        "path": "input.owned.ndjson",
+        "bytes": 1287,
+        "sha256": "d1769a0f3183ad00d7891661eab79820039a9c00d5a9107aeec45ca3c0eabd77"
+      },
+      "context": {
+        "path": "input.owned.ndjson.context.json",
+        "bytes": 621,
+        "sha256": "645302613d35f5b8bae48fb7b1799b6b9199cc87b50bda3d408c5832d4540f49"
+      },
+      "stdout": {
+        "path": "input.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "input.stderr.log",
+        "bytes": 35,
+        "sha256": "ecda8935976222a10ea4f0d226a9e63f551261b7915225e68cb3cab332b58326"
+      }
+    }
+  ],
+  "finishedAt": "2026-10-16T07:39:13.063Z"
+}

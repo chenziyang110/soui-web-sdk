@@ -82,8 +82,13 @@ test('same Store copies, reversed clocks and missing capture clocks never create
   row.nativeSdk.views[0].taskStorePrivateStorage.aggregate_requests.current_bytes='21';delete row.nativeSdk.captureClock;
   assert.equal(o.privateStorageObservations([mount,row],privateFixtureBinding()).dataGate,'invalid');
 });
-test('finite cache revision freezes temporal coverage with no empirical byte allowance',()=>{
-  assert.equal(p.RULE.revision,'0.5.0-m0-named-cache-configuration-v2');
+test('cache revision retains named policies and freezes the whole software address envelope',()=>{
+  assert.equal(p.RULE.revision,'0.5.0-m0-software-cache-envelope-v4');
+  assert.equal(p.RULE.softwareCacheBudget.maximumCommittedBytes,'1073741824');
+  assert.equal(p.RULE.softwareCacheBudget.allSamplePhases,true);
+  assert.equal(p.RULE.softwareCacheBudget.allocatorHardLimit,false);
+  assert.equal(p.RULE.taskStoreRequestQuota.maxLiveRequestedBytes,'134217728');
+  assert.equal(p.RULE.taskStoreRequestQuota.finalDisposalObserved,false);
   const rule=p.RULE.namedCacheConfigurationPolicy;
   assert.equal(rule.maxCompletedCopyAgeMs,180000);assert.equal(rule.minNewSamplesPerHour,30);
   assert.equal(rule.maxNewSampleGapMs,180000);assert.equal(rule.calibratedByteBudgets,null);
@@ -385,6 +390,7 @@ function captureFixture(mode='reload'){
   const operation={schema:'soui.acceptance-run/v1',runId:'00000000-0000-4000-8000-000000000001',config,passed:true,
     consumerBuildId:'a'.repeat(64),sourceSha256:'b'.repeat(64),payloadSha256:'c'.repeat(64),logSha256:'d'.repeat(64),releaseReady:false};
   const gates=Object.fromEntries((['mixed','session'].includes(mode)?v.requiredGates(mode):['inputs','operations','owned','tree']).map(name=>[name,'passed']));
+  if(['mixed','session'].includes(mode)&&Object.hasOwn(gates,'taskStoreQuota'))gates.taskStoreQuota='not-evaluated';
   const analysis={schema:'soui.long-run-acceptance-analysis/v1',mode,runId:operation.runId,gates,...v.aggregate(mode,gates),
     consumerBuildId:operation.consumerBuildId,sourceSha256:operation.sourceSha256,payloadSha256:operation.payloadSha256,
     policySha256:policyPin.sha256,logSha256:operation.logSha256,releaseReady:false};
@@ -529,4 +535,42 @@ test('F3 clock contradiction remains failed through analyzer and classifier befo
   assert.equal(analysis.logSha256,p.hash(eventRaw));
   const fixture=captureFixture('mixed');fixture.operation=operation;fixture.policyPin.sha256=p.hash(policyRaw);fixture.evidence.analysis.record=analysis;
   assert.equal(captured(fixture).longRunGate,'failed');assert.equal(captured(fixture).passed,false);
+});
+
+test('long quota is required, retains failures and is recomputed from original parsed records',()=>{
+  const quota=require('../acceptance/task-store-request-quota.cjs');
+  const {fixture}=require('../acceptance/long-run-task-quota-fixture.cjs');
+  for(const mode of ['mixed','session']){
+    assert(v.requiredGates(mode).includes('taskStoreQuota'));
+    const f=fixture(mode),raw=Buffer.from(f.records.map(row=>JSON.stringify(row)).join('\n')+'\n');
+    f.binding.rawLogSha256=p.hash(raw);
+    const actual=quota.analyzeLongTaskStoreQuota(raw,f.binding),gates=Object.fromEntries(v.requiredGates(mode).map(name=>[name,'passed']));
+    gates.cacheBudget='not-evaluated';gates.taskStoreQuota=actual.quotaGate;
+    const {schema,expectedPolicy,expectedRun,...privateStorageBinding}=structuredClone(f.binding);
+    const analysis={allSamples:f.records,privateStorageBinding,taskStoreQuota:actual,gates,sourceSha256:f.binding.sourceSha256,
+      payloadSha256:f.binding.payloadSha256,consumerBuildId:f.binding.consumerBuildId,logSha256:f.binding.rawLogSha256,
+      subject:f.binding.subject,...v.aggregate(mode,gates)};
+    assert.equal(v.checkedAggregate(analysis,mode).longRunGate,'not-evaluated');
+    analysis.taskStoreQuota.points[0].observation.chargedPeakRequestedBytes='0';
+    assert.throws(()=>v.checkedAggregate(analysis,mode),/task-store-quota/);
+    analysis.taskStoreQuota=actual;
+  }
+});
+test('missing long quota observations cannot be promoted through a classifier DTO',()=>{
+  const f=captureFixture('mixed'),analysis=f.evidence.analysis.record;
+  assert(v.requiredGates('mixed').includes('taskStoreQuota'));
+  analysis.gates.cacheBudget='not-evaluated';analysis.gates.taskStoreQuota='passed';Object.assign(analysis,v.aggregate('mixed',analysis.gates));
+  assert.match(captured(f).failure,/task-store-quota/);
+});
+
+test('long quota binding cannot substitute the frozen executable or original Owned/context inputs',()=>{
+  const quota=require('../acceptance/task-store-request-quota.cjs'),{fixture}=require('../acceptance/long-run-task-quota-fixture.cjs');
+  for(const field of ['executablePin','ownedLogSha256','contextSha256']){
+    const f=fixture(),raw=Buffer.from(f.records.map(row=>JSON.stringify(row)).join('\n')+'\n');f.binding.rawLogSha256=p.hash(raw);
+    const {schema,expectedPolicy,expectedRun,...privateStorageBinding}=structuredClone(f.binding);
+    const changed=structuredClone(f.binding);if(field==='executablePin')changed.executablePin.sha256='f'.repeat(64);else changed[field]='f'.repeat(64);
+    const actual=quota.analyzeLongTaskStoreQuota(raw,changed),gates=Object.fromEntries(v.requiredGates('session').map(name=>[name,'passed']));gates.cacheBudget='not-evaluated';
+    const analysis={allSamples:f.records,privateStorageBinding,taskStoreQuota:actual,gates,sourceSha256:f.binding.sourceSha256,payloadSha256:f.binding.payloadSha256,consumerBuildId:f.binding.consumerBuildId,logSha256:f.binding.rawLogSha256,subject:f.binding.subject,...v.aggregate('session',gates)};
+    assert.throws(()=>v.checkedAggregate(analysis,'session'),/task-store-quota/);
+  }
 });

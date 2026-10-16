@@ -1,4 +1,5 @@
 #pragma once
+#include "runtime_shutdown_api.h"
 // Experimental host only. Bind the APIs actually used by this adapter, not
 // every optional entry in a newer vendor header. Missing required APIs fail
 // before initialization; no stub exports or weakened origin checks.
@@ -32,7 +33,7 @@ inline bool initialize_source_kernel(HMODULE module) {
   wkeGetCursorBrokerApi = reinterpret_cast<FN_wkeGetCursorBrokerApi>(
       GetProcAddress(module, "wkeGetCursorBrokerApi")); // optional, versioned capability
   const auto initialize = reinterpret_cast<FN_wkeInitializeEx>(GetProcAddress(module, "wkeInitializeEx"));
-  if (!initialize) return false;
+  if (!initialize || !has_runtime_shutdown_api(module)) return false;
   initialize(nullptr);
   return wkeIsInitialize() != 0;
 }

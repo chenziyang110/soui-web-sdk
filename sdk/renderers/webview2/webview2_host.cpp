@@ -401,6 +401,7 @@ struct webview2_adapter::state {
   std::filesystem::path profile, fixed_runtime;
   webview2_profile_access profile_access{webview2_profile_access::shared};
   std::shared_ptr<webview2_runtime_exit_watch::state> exit_monitor;
+  bool preparation_failed_without_environment{false};
   bool controller_creation_failed{false};
   bool failed_preparation_cleanup_in_progress{false};
   bool failed_preparation_cleanup_done{false};
@@ -882,24 +883,30 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
     completed(error("E_INVALID_STATE", "Prepare requires a live owner window on its UI STA."));
     return;
   }
+  const auto reject_before_environment = [&](host_result result) {
+    value->preparation_failed_without_environment = true;
+    value->failure = std::move(result);
+    value->current = state::phase::failed;
+    completed(value->failure);
+  };
   const auto selected = select_runtime_profile(inspect_runtime_environment(), {false, true}, runtime_profile::modern);
-  if (!selected.ok) { completed(error(selected.code.c_str(), selected.reason)); return; }
+  if (!selected.ok) { reject_before_environment(error(selected.code.c_str(), selected.reason)); return; }
   if (value->profile.empty() || !value->profile.is_absolute() ||
       (!value->fixed_runtime.empty() && !value->fixed_runtime.is_absolute())) {
-    completed(error("E_INVALID_PATH", "Profile and fixed-runtime directories must be explicit absolute paths."));
+    reject_before_environment(error("E_INVALID_PATH", "Profile and fixed-runtime directories must be explicit absolute paths."));
     return;
   }
   ComPtr<ICoreWebView2EnvironmentOptions> options;
   if (value->profile_access == webview2_profile_access::exclusive) {
     auto exclusive = Microsoft::WRL::Make<CoreWebView2EnvironmentOptions>();
-    if (!exclusive) { completed(error("E_WEBVIEW2_OPTIONS", "Exclusive environment options allocation failed.")); return; }
+    if (!exclusive) { reject_before_environment(error("E_WEBVIEW2_OPTIONS", "Exclusive environment options allocation failed.")); return; }
     BOOL actual{};
     auto configured = exclusive->put_ExclusiveUserDataFolderAccess(TRUE);
     if (SUCCEEDED(configured)) configured = exclusive->get_ExclusiveUserDataFolderAccess(&actual);
-    if (FAILED(configured)) { completed(error("E_WEBVIEW2_OPTIONS", hresult_text(configured))); return; }
-    if (actual != TRUE) { completed(error("E_WEBVIEW2_OPTIONS", "Exclusive options returned a false readback.")); return; }
+    if (FAILED(configured)) { reject_before_environment(error("E_WEBVIEW2_OPTIONS", hresult_text(configured))); return; }
+    if (actual != TRUE) { reject_before_environment(error("E_WEBVIEW2_OPTIONS", "Exclusive options returned a false readback.")); return; }
     configured = exclusive.As(&options);
-    if (FAILED(configured)) { completed(error("E_WEBVIEW2_OPTIONS", hresult_text(configured))); return; }
+    if (FAILED(configured)) { reject_before_environment(error("E_WEBVIEW2_OPTIONS", hresult_text(configured))); return; }
   }
   value->current = state::phase::preparing;
   value->prepared = std::move(completed);
@@ -909,6 +916,7 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
             auto environment_completion = value->preparation.receive(detail::preparation_lifetime::operation::environment);
             if (!environment_completion || value->preparation.cancelled()) return S_OK;
             return boundary(weak, [weak, result, environment](const auto& current) {
+              if (FAILED(result) && !environment) current->preparation_failed_without_environment = true;
               check(result, "Create WebView2 environment");
               if (!environment || !IsWindow(current->owner)) throw std::runtime_error("Owner closed during preparation");
               current->environment = environment;
@@ -982,7 +990,10 @@ void webview2_adapter::prepare_async(std::function<void(host_result)> completed)
   }
   const auto result = CreateCoreWebView2EnvironmentWithOptions(
       value->fixed_runtime.empty() ? nullptr : value->fixed_runtime.c_str(), value->profile.c_str(), options.Get(), callback.Get());
-  if (FAILED(result)) (void)value->preparation.settle(detail::preparation_lifetime::operation::environment);
+  if (FAILED(result)) {
+    (void)value->preparation.settle(detail::preparation_lifetime::operation::environment);
+    value->preparation_failed_without_environment = true;
+  }
   if (FAILED(result)) fail(value, hresult_text(result));
 }
 
@@ -1085,6 +1096,10 @@ host_result webview2_adapter::unmount() {
   if (!value->worker_done.load(std::memory_order_acquire)) return error("E_BUSY", "Bridge worker is finishing bounded teardown.");
   if (value->worker.joinable()) value->worker.join();
   if (value->bridge) { value->bridge->set_event_sink({}); value->bridge->set_owner_window(nullptr); value->bridge = nullptr; }
+  if (value->preparation_failed_without_environment && !value->failure.ok &&
+      !value->exit_monitor && !value->environment && !value->controller && !value->core &&
+      !value->core3 && !value->core4 && !value->core22)
+    value->failed_preparation_cleanup_done = true; // Local failure cleanup, never a browser exit receipt.
   if (value->profile_access == webview2_profile_access::exclusive && value->controller_creation_failed &&
       value->failure.code == "E_WEBVIEW2" && !value->controller && !value->core && !value->core3 &&
       !value->core4 && !value->core22) {

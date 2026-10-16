@@ -4,6 +4,8 @@
 #include <soui/diagnostics/cache_observation.h>
 #include <soui/diagnostics/storage_observation.h>
 #include <soui/diagnostics/task_store_private_storage.h>
+#include <soui/runtime/core/task/task_store_quota.h>
+#include <windows.h>
 #include <json.hpp>
 #include <string>
 
@@ -286,6 +288,97 @@ inline json serialize(const diagnostics::cache_observation& value) {
   SOUI_CACHE_COUNT(resourceByteLimit); SOUI_CACHE_COUNT(resourceCountLimit);
   SOUI_CACHE_COUNT(resourceRawSingleLimit); SOUI_CACHE_COUNT(resourceEffectiveSingleLimit);
 #undef SOUI_CACHE_COUNT
+  return result;
+}
+
+// Independent caller envelope for the one real Bridge quota getter. These QPC
+// ticks never reuse a diagnostic end timestamp or its unrelated owner epoch.
+struct task_store_quota_capture {
+  std::uint64_t window_id{0}, window_handle{0}, process_creation_file_time{0};
+  DWORD process_id{0}, capture_thread_id{0}, window_thread_id{0};
+  std::uint64_t qpc_frequency{0}, begin_qpc{0}, end_qpc{0};
+  bool identity_valid{false}, clock_valid{false};
+};
+
+inline task_store_quota_capture begin_task_store_quota_capture(unsigned window_id, HWND window) noexcept {
+  task_store_quota_capture value;
+  value.window_id = window_id;
+  value.window_handle = static_cast<std::uint64_t>(reinterpret_cast<std::uintptr_t>(window));
+  value.process_id = GetCurrentProcessId(); value.capture_thread_id = GetCurrentThreadId();
+  DWORD window_process_id = 0;
+  value.window_thread_id = GetWindowThreadProcessId(window, &window_process_id);
+  FILETIME created{}, exited{}, kernel{}, user{};
+  if (GetProcessTimes(GetCurrentProcess(), &created, &exited, &kernel, &user)) {
+    ULARGE_INTEGER stamp{}; stamp.LowPart = created.dwLowDateTime; stamp.HighPart = created.dwHighDateTime;
+    value.process_creation_file_time = stamp.QuadPart;
+  }
+  value.identity_valid = value.window_id != 0 && value.window_handle != 0 && value.process_id != 0 &&
+      value.process_creation_file_time != 0 && value.capture_thread_id != 0 &&
+      window_process_id == value.process_id && value.window_thread_id == value.capture_thread_id;
+  LARGE_INTEGER frequency{}, timestamp{};
+  value.clock_valid = QueryPerformanceFrequency(&frequency) && frequency.QuadPart > 0 &&
+      QueryPerformanceCounter(&timestamp) && timestamp.QuadPart > 0;
+  if (value.clock_valid) {
+    value.qpc_frequency = static_cast<std::uint64_t>(frequency.QuadPart);
+    value.begin_qpc = static_cast<std::uint64_t>(timestamp.QuadPart);
+  }
+  return value;
+}
+
+inline void end_task_store_quota_capture(task_store_quota_capture& value, HWND window) noexcept {
+  LARGE_INTEGER timestamp{};
+  const bool end_valid = QueryPerformanceCounter(&timestamp) && timestamp.QuadPart > 0;
+  if (end_valid) value.end_qpc = static_cast<std::uint64_t>(timestamp.QuadPart);
+  value.clock_valid = value.clock_valid && end_valid && value.end_qpc >= value.begin_qpc;
+  DWORD window_process_id = 0;
+  const auto window_thread_id = GetWindowThreadProcessId(window, &window_process_id);
+  value.identity_valid = value.identity_valid && value.process_id == GetCurrentProcessId() &&
+      value.capture_thread_id == GetCurrentThreadId() && window_process_id == value.process_id &&
+      window_thread_id == value.window_thread_id &&
+      value.window_handle == static_cast<std::uint64_t>(reinterpret_cast<std::uintptr_t>(window));
+}
+
+inline const char* quota_status_name(soui::runtime::task_store_request_quota_status state) noexcept {
+  switch (state) {
+    case soui::runtime::task_store_request_quota_status::available: return "available";
+    case soui::runtime::task_store_request_quota_status::busy: return "busy";
+    case soui::runtime::task_store_request_quota_status::invalid: return "invalid";
+    case soui::runtime::task_store_request_quota_status::unavailable: return "unavailable";
+  }
+  return "unknown";
+}
+
+inline json serialize_task_store_request_quota(const soui::runtime::task_store_request_quota_snapshot& value,
+    soui::runtime::task_store_request_quota_status getter_status, const task_store_quota_capture& capture,
+    const diagnostics::sample& service_diagnostics) {
+  json result{{"schema", "soui.acceptance-task-store-request-quota/1"},
+      {"scope", "task-store-private-request-byte-quota"},
+      {"state", quota_status_name(value.status)}, {"getterStatus", quota_status_name(getter_status)},
+      {"captureState", capture.identity_valid && capture.clock_valid ? "valid" : "invalid"},
+      {"maxLiveRequestedBytes", nullptr}, {"poolEpoch", std::to_string(value.owner_epoch)},
+      {"poolEpochValid", value.owner_epoch_valid}, {"creditValid", value.credit_valid},
+      {"chargedLiveRequestedBytes", std::to_string(value.charged_live_requested_bytes)},
+      {"chargedPeakRequestedBytes", std::to_string(value.charged_peak_requested_bytes)},
+      {"successfulLiveRequestedBytes", std::to_string(value.successful_live_requested_bytes)},
+      {"successfulPeakRequestedBytes", std::to_string(value.successful_peak_requested_bytes)},
+      {"deniedRequests", std::to_string(value.denied_requests)}, {"deniedRequestsExact", value.denied_requests_exact},
+      {"diagnosticsServiceEpoch", std::to_string(service_diagnostics.owner_epoch)},
+      {"diagnosticsServiceState", status_name(service_diagnostics.state)},
+      {"capture", {{"windowId", std::to_string(capture.window_id)},
+          {"windowHandle", std::to_string(capture.window_handle)}, {"pid", std::to_string(capture.process_id)},
+          {"creationFileTime", std::to_string(capture.process_creation_file_time)},
+          {"captureThreadId", std::to_string(capture.capture_thread_id)},
+          {"windowThreadId", std::to_string(capture.window_thread_id)}, {"identityValid", capture.identity_valid},
+          {"clock", {{"source", "QueryPerformanceCounter"}, {"unit", "ticks"},
+              {"frequency", nullptr}, {"begin", nullptr}, {"end", nullptr}, {"valid", capture.clock_valid}}}}},
+      {"productionDefaultGate", "not-evaluated"}, {"fullCacheBudgetGate", "not-evaluated"},
+      {"calibrationPin", nullptr}};
+  if (value.max_live_requested_bytes) result["maxLiveRequestedBytes"] = std::to_string(*value.max_live_requested_bytes);
+  if (capture.clock_valid) {
+    result["capture"]["clock"]["frequency"] = std::to_string(capture.qpc_frequency);
+    result["capture"]["clock"]["begin"] = std::to_string(capture.begin_qpc);
+    result["capture"]["clock"]["end"] = std::to_string(capture.end_qpc);
+  }
   return result;
 }
 

@@ -272,6 +272,8 @@ void BlinkPlatformImpl::initialize()
     // allocation that exceeds this limit.
     const size_t kImageCacheSingleAllocationByteLimit = 64 * 1024 * 1024;
     SkGraphics::SetResourceCacheSingleAllocationByteLimit(kImageCacheSingleAllocationByteLimit);
+    // Explicit retained-record budget; external pixels and active filters are separate.
+    SkGraphics::SetResourceCacheTotalByteLimit(8 * 1024 * 1024);
 
     platform->m_defaultGcTimer = new blink::Timer<BlinkPlatformImpl>(platform, &BlinkPlatformImpl::garbageCollectedTimer);
     platform->m_defaultGcTimer->start(40, 40, FROM_HERE);

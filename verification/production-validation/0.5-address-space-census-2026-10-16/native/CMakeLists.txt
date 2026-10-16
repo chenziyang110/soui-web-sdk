@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.29)
+project(SouiAddressCensus LANGUAGES CXX)
+add_executable(SouiAddressCensusTests ../proposal/tests/native/process_address_census_tests.cpp)
+target_compile_features(SouiAddressCensusTests PRIVATE cxx_std_17)
+target_compile_options(SouiAddressCensusTests PRIVATE /W4 /utf-8 /EHsc /U_DEBUG)
+target_compile_definitions(SouiAddressCensusTests PRIVATE WIN32_LEAN_AND_MEAN NOMINMAX _WIN32_WINNT=0x0601 WINVER=0x0601)
+target_include_directories(SouiAddressCensusTests PRIVATE C:/work/sm05-release-050/third_party/include/json)
+set_property(TARGET SouiAddressCensusTests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)

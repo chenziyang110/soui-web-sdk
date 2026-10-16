@@ -1,0 +1,16 @@
+<!doctype html><html><head><meta charset="utf-8"></head><body>Release fixture lifecycle regression<script>
+(function(){
+ var deadline=Date.now()+10000;
+ function start(port){
+  var first=JSON.parse(port(JSON.stringify({requestId:'release-bootstrap',sessionId:'',origin:'',token:'',method:'bridge.bootstrap',params:{protocol:'soui.bridge/1'}})));
+  if(!first||!first.ok||!first.result)throw Error('bootstrap failed');
+  var g=first.result;
+  function call(id,method,params){return port(JSON.stringify({requestId:id,sessionId:g.sessionId,origin:g.origin,token:g.token,method:method,params:params,timeoutMs:5000}));}
+  call('release-greet','app.greet',{name:'release-upgrade'}).then(function(raw){
+   var value=JSON.parse(raw);if(!value.ok||value.result.message!=='Hello, release-upgrade.')throw Error('greet failed');
+   return call('release-ready','bridge.probe.report',{ready:true});
+  });
+ }
+ function wait(){if(window.SouiNative&&typeof window.SouiNative.postMessage==='function')return start(window.SouiNative.postMessage);if(Date.now()<deadline)setTimeout(wait,10);}
+ wait();
+})();</script></body></html>

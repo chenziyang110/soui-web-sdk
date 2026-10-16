@@ -85,13 +85,18 @@ need(kernel.imports[0].sourceInputSha256 === kernel.imports[1].sourceInputSha256
  'Kernel imports must bind the same source-input identity');
 verifiedInputs.set(provenanceSource, provenanceBytes);
 const definitions = [
- ['soui-source', 'third_party/manifests/provenance/soui/SOURCE-MANIFEST.json', 'SOUI 2.9.0.3 lineage', 'upstream source notices'],
+ ['soui-source', 'third_party/sources/soui/SOURCE-MANIFEST.json', 'SOUI 2.9.0.3 historical import snapshot', 'upstream source notices'],
+ ['soui-llvm-patch', 'third_party/patches/soui/0001-llvm-conformance.patch', '0.5 LLVM C++ conformance fixes', 'same terms as SOUI source'],
+ ['soui-llvm-source', 'third_party/manifests/soui-llvm-source-050.json', '0.5 source delta and replay identity', 'source identity record'],
+ ['soui-build-provenance', 'third_party/manifests/soui-build-050.json', '0.5 dual-architecture LLVM source import', 'build identity record'],
  ['miniblink-source', 'third_party/manifests/provenance/preview14/third_party/sources/miniblink/SOURCE-MANIFEST.json', 'Miniblink49 VS2022 working snapshot', 'upstream and bundled dependency notices'],
  ['miniblink-encoding-patch', 'third_party/manifests/provenance/preview14/third_party/patches/miniblink/0007-mark-utf8-source-encoding.patch', 'preview.7 post-import patch', 'same terms as Miniblink source'],
  ['miniblink-scheduler-patch', 'third_party/manifests/provenance/preview14/third_party/patches/miniblink/0008-bound-ready-task-priority-wait.patch', 'preview.14 ready-task fairness', 'same terms as Miniblink source'],
  ['miniblink-build-provenance', provenanceSource, kernel.sdkVersion+' dual-architecture import', 'build identity record'],
+ ['miniblink-cache-budget-patch', 'third_party/patches/miniblink/0012-retained-resource-byte-budget.patch', '0.5 retained-resource byte budget', 'same terms as Miniblink and Skia source'],
+ ['miniblink-cache-source', 'third_party/manifests/kernel-cache-source-050.json', '0.5 exact retained-cache source delta', 'source identity record'],
  ['zlib-source', 'third_party/sources/zlib/source-manifest.json', '1.2.11', 'Zlib'],
- ['json', 'third_party/include/json/json.hpp', 'pinned single header', 'MIT'],
+ ['json', 'third_party/include/json/json.hpp', '3.11.3 with allocation-free destruction backport (9b179cee)', 'MIT'],
  ['tailwind-utility-css', 'demos/workbench/web/apps/react/utility.css', '3.4.17 generated utility subset', 'MIT; third_party/licenses/tailwindcss-3.4.17-LICENSE.txt'],
  ...['x86','x64'].flatMap(arch => [
    ['miniblink-'+arch, 'third_party/prebuilt/'+arch+'/miniblink/node.dll', ('imported binary '+kernel.sdkVersion), 'binary redistribution review incomplete'],

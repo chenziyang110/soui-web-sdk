@@ -7,6 +7,7 @@
 #include "engine_admission.h"
 #include "cursor_broker.h"
 #include "main_context_gate.h"
+#include "runtime_shutdown_poll.h"
 #include <soui/diagnostics/renderer_observation_binding.h>
 #include <soui/diagnostics/renderer_model_binding.h>
 #ifdef SOUI_PERFORMANCE_DIAGNOSTICS
@@ -48,6 +49,7 @@
 #include <imm.h>
 #include <windows.h>
 #include <windowsx.h>
+#include "runtime_shutdown_api.h"
 #ifdef SOUI_SOURCE_KERNEL_HOST
 #include "source_kernel_api.h"
 #endif
@@ -669,8 +671,8 @@ host_result acquire_runtime(const host_config& config, engine_thread*& thread, v
       if (!runtime.module) { result = failure("E_DEPENDENCY_LOAD", "Miniblink binary could not be loaded."); return false; }
       prepare_renderer_observer(runtime, binary, metrics);
       prepare_cache_observer(runtime);
-      if (!GetProcAddress(runtime.module, "wkeInitializeEx")) {
-        result = failure("E_DEPENDENCY_API", "Miniblink initialization API is missing."); return false;
+      if (!GetProcAddress(runtime.module, "wkeInitializeEx") || !has_runtime_shutdown_api(runtime.module)) {
+        result = failure("E_DEPENDENCY_API", "Miniblink initialization or prepared-shutdown API is missing; rebuild the matching kernel."); return false;
       }
       wkeSetWkeDllHandle(runtime.module);
 #ifdef SOUI_BRIDGE_BENCHMARK
@@ -813,7 +815,7 @@ host_result shutdown_miniblink_runtime() {
   }
   if (submit_prepare) {
     const auto admitted = detail::engine_admission::post(*engine, detail::engine_lane::cleanup, [&runtime, generation] {
-      unsigned result = 2;
+      unsigned result = 3; // Absent handshake is unsupported, never successful finalization.
       try {
         using prepare_workers = unsigned (__cdecl*)();
         const auto prepare = reinterpret_cast<prepare_workers>(GetProcAddress(runtime.module, "wkePrepareWorkerShutdown"));
@@ -868,6 +870,40 @@ host_result shutdown_miniblink_runtime() {
   return success("Miniblink process runtime shutdown completed.");
 #else
   return failure("E_UNSUPPORTED", "The Miniblink runtime requires Windows.");
+#endif
+}
+
+host_result wait_for_miniblink_runtime_shutdown(std::chrono::milliseconds timeout) {
+#ifdef _WIN32
+  struct quit_message {
+    bool seen{false};
+    int code{0};
+    ~quit_message() { if (seen) PostQuitMessage(code); }
+  } quit;
+  const auto now = [] { return std::chrono::steady_clock::now(); };
+  return detail::wait_runtime_shutdown(timeout, shutdown_miniblink_runtime,
+      [&](std::chrono::milliseconds quantum) {
+        const auto began = now();
+        MSG message{};
+        for (unsigned count = 0; count != 32 && now() - began < quantum; ++count) {
+          if (!PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE)) break;
+          if (message.message == WM_QUIT) {
+            if (!quit.seen) { quit.seen = true; quit.code = static_cast<int>(message.wParam); }
+          } else {
+            TranslateMessage(&message);
+            DispatchMessageW(&message);
+          }
+        }
+        const auto remaining = quantum - std::chrono::duration_cast<std::chrono::milliseconds>(now() - began);
+        if (remaining.count() > 0 && MsgWaitForMultipleObjects(0, nullptr, FALSE,
+            static_cast<DWORD>(remaining.count()), QS_ALLINPUT) == WAIT_FAILED)
+          return failure("E_RUNTIME_SHUTDOWN_WAIT", "The application shutdown message wait failed.");
+        return success();
+      }, now);
+#else
+  return detail::wait_runtime_shutdown(timeout, shutdown_miniblink_runtime,
+      [](std::chrono::milliseconds) { return host_result{false, "E_UNSUPPORTED", "Windows is required."}; },
+      [] { return std::chrono::steady_clock::now(); });
 #endif
 }
 
@@ -2129,7 +2165,7 @@ void dynamic_miniblink_adapter::pump_on_engine() {
       const int rate = bridge_adapter_ ? static_cast<bridge_adapter*>(bridge_adapter_)->active_frame_rate() : 60;
       // The GPU path is paced by the display clock and can draw as soon as a
       // dirty frame is ready. CPU-safe fallback follows the same selected
-      // 60/120/144 Hz tier so the reported draw budget matches the actual
+      // integer display-limited target so the reported draw budget matches the actual
       // cadence; the engine may still miss a pulse when the CPU cannot keep up.
       char cpu_high_option[2] = {};
       const bool cpu_high_refresh = GetEnvironmentVariableA("SOUI_CPU_HIGH_REFRESH", cpu_high_option,
@@ -3901,14 +3937,28 @@ const soui::runtime::webview_session* soui_miniblink_host::session() const noexc
 
 host_result soui_miniblink_host::validate_local_resources(const std::filesystem::path& root) {
   std::error_code error;
-  if (root.empty() || !std::filesystem::is_directory(root, error) || error) {
+  auto readable_root = root;
+#ifdef _WIN32
+  if (!root.empty()) {
+    readable_root = std::filesystem::absolute(root, error).lexically_normal();
+    if (error) return failure("E_RESOURCE_MISSING", "Local Web resource root could not be resolved.");
+    const auto native = readable_root.make_preferred().native();
+    // The CRT stream and directory traversal both need the extended spelling.
+    // This also works on supported Windows versions without a long-path opt-in.
+    if (native.rfind(L"\\\\?\\", 0) != 0 && native.rfind(L"\\\\.\\", 0) != 0) {
+      readable_root = native.rfind(L"\\\\", 0) == 0
+          ? L"\\\\?\\UNC\\" + native.substr(2) : L"\\\\?\\" + native;
+    }
+  }
+#endif
+  if (root.empty() || !std::filesystem::is_directory(readable_root, error) || error) {
     return failure("E_RESOURCE_MISSING", "Local Web resource root does not exist.");
   }
-  const auto index = root / "index.html";
+  const auto index = readable_root / "index.html";
   if (!std::filesystem::is_regular_file(index, error) || error) {
     return failure("E_RESOURCE_MISSING", "Local Web resource root must contain index.html.");
   }
-  for (const auto& file : std::filesystem::recursive_directory_iterator(root, error)) {
+  for (const auto& file : std::filesystem::recursive_directory_iterator(readable_root, error)) {
     if (error) break;
     if (!file.is_regular_file(error)) continue;
     std::ifstream input(file.path(), std::ios::binary);
@@ -3921,6 +3971,7 @@ host_result soui_miniblink_host::validate_local_resources(const std::filesystem:
       return failure("E_REMOTE_RESOURCE", "Remote Web runtime URLs are forbidden.");
     }
   }
+  if (error) return failure("E_RESOURCE_READ", "Local Web resources could not be enumerated.");
   return success();
 }
 

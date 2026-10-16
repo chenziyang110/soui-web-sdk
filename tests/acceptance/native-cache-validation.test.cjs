@@ -190,3 +190,29 @@ test('genuinely missing binding remains noneligible without turning a valid DTO 
     assert.equal(out.qualified,false);assert.equal(out.failure,'missing-external-cache-binding');
   }
 });
+
+test('explicit discardable retained-byte budget and independent count threshold are enforced',()=>{
+  const v=fixture();v.resourceDiscardable=1;v.resourceByteLimit='8388608';v.resourceCountLimit='1024';
+  v.resourceRawSingleLimit=v.resourceEffectiveSingleLimit='67108864';v.resourceRetainedCount='2';v.resourceRetainedBytes='8388607';
+  const data=analyzeNamedCache(v,input);assert.equal(data.dataGate,'matched');
+  assert.deepEqual(data.resourcePolicy,{byteBudget:'retained-record-purge-threshold',singleAllocationCap:'current-configured-limit'});
+  let out=configuration.analyzeNamedCacheConfiguration(v,input);
+  assert.equal(out.configurationGate,'passed');assert.equal(out.targets.resourceBytes.comparison,'under');
+  assert.equal(out.targets.resourceBytes.limitKind,'retained-purge-threshold');
+  assert.equal(out.singleAllocationPolicy.effective,'67108864');
+  assert.equal(out.cacheBudgetGate,'not-evaluated');assert.equal(out.qualified,false);
+  for(const bytes of ['8388608','8388609','18446744073709551615']){
+    v.resourceRetainedBytes=bytes;assert.equal(analyzeNamedCache(v,input).dataGate,'matched');
+    for(const bindings of [input,{}]){
+      out=configuration.analyzeNamedCacheConfiguration({...v,glyphStatus:2},bindings);
+      assert.equal(out.configurationGate,'failed');assert.equal(out.failure,'retained-resource-purge-threshold-exceeded');
+    }
+  }
+  v.resourceRetainedBytes='1';v.resourceRetainedCount='1024';
+  assert.equal(configuration.analyzeNamedCacheConfiguration(v,input).configurationGate,'failed');
+  v.resourceRetainedCount='1023';v.resourceRawSingleLimit=v.resourceEffectiveSingleLimit='0';
+  out=configuration.analyzeNamedCacheConfiguration(v,input);assert.equal(out.configurationGate,'passed');
+  assert.equal(out.singleAllocationPolicy.explicit,false);
+  v.resourceEffectiveSingleLimit=v.resourceByteLimit;
+  assert.equal(analyzeNamedCache(v,input).dataGate,'invalid');
+});

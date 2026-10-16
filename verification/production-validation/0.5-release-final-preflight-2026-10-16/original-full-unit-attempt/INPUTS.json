@@ -1,0 +1,47 @@
+{
+  "arch": "x64",
+  "configuration": "Release",
+  "mode": "unit",
+  "pins": [
+    {
+      "path": "C:/work/sm05-release-050/source-manifest.json",
+      "sha256": "dddbfff7f8603cbda0e3c590f47e640b102eeae861b848d6693db6a94d7b028a"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/x64/build-Release.json",
+      "sha256": "8fa433463b2506bab5f4121aa4b47b49a0056c028afecb30126fe1dbe91faf3b"
+    },
+    {
+      "path": "C:\\work\\sm05-source26-pipeline-1\\run-unit.cjs",
+      "sha256": "64d3855a326afe93774c0ebd454ddfda912cb62018254dfb6aeee8a3d7a99efe"
+    }
+  ],
+  "executable": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+  "args": [
+    "-NoProfile",
+    "-NonInteractive",
+    "-File",
+    "C:/work/sm05-release-050/tools/Test.ps1",
+    "-Architecture",
+    "x64",
+    "-Configuration",
+    "Release",
+    "-NativeToolchain",
+    "LLVM22MSVC142",
+    "-LlvmRoot",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64",
+    "-MsvcRoot",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133",
+    "-WindowsSdkRoot",
+    "C:/Program Files (x86)/Windows Kits/10",
+    "-NinjaExe",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe",
+    "-WindowsCmdExe",
+    "C:/Windows/System32/cmd.exe",
+    "-PowerShellExe",
+    "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+    "-UnitOnly",
+    "-RequireVendorTests",
+    "-WithGuiBindings"
+  ]
+}

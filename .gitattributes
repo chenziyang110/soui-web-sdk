@@ -312,3 +312,62 @@ verification/production-validation/0.5-standard-build-2026-10-09/** -text -eol w
 verification/production-validation/0.5-display-configuration-2026-10-09/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 verification/production-validation/0.5-local-task-families-2026-10-09/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
 verification/production-validation/0.5-engine-startup-2026-10-09/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+verification/production-validation/0.5-soui-rebuild-2026-10-15/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+verification/production-validation/0.5-kernel-rebuild-2026-10-15/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+verification/production-validation/0.5-reference-gui-2026-10-15/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+verification/production-validation/0.5-task-store-calibration-2026-10-15/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+# Immutable vendor patch: context lines retain upstream indentation and blank lines.
+third_party/patches/soui/0001-llvm-conformance.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+# Historical regression inputs are exact captured bytes, including line endings.
+tests/fixtures/source-regressions/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+
+third_party/patches/miniblink/0012-retained-resource-byte-budget.patch -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+verification/production-validation/0.5-focused-fixes-2026-10-15/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol,-space-before-tab
+
+# Preserve exact npm archive declarations and license bytes.
+third_party/licenses/npm/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+# Preserve original npm audit reports and process observations.
+verification/production-validation/0.5-npm-audit-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+# Preserve release fixture lifecycle regression originals.
+verification/production-validation/0.5-release-fixture-shutdown-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+# Preserve Worker source-map regression originals.
+verification/production-validation/0.5-worker-cache-source-map-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+# Preserve original observer writer-pin regression evidence.
+verification/production-validation/0.5-worker-observer-map-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+# Preserve 0.5.0 candidate preparation and audit originals.
+verification/production-validation/0.5.0-candidate-inputs-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+# LLVM stock and installed SDK requests bind these exact shared input bytes.
+cmake/toolchains/SouiLLVM22.cmake text eol=lf
+tools/internal/Invoke-ToolFileIdentity.ps1 text eol=lf
+tools/internal/Tool-FileIdentity.ps1 text eol=lf
+
+# Preserve release routing verification originals.
+verification/production-validation/0.5-release-stock-routing-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/0.5-inert-license-metadata-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+# Preserve the original UIA, configure-log and address-census records.
+verification/production-validation/0.5-uia-and-build-log-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/0.5-address-space-census-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+third_party/licenses/kernel-source/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+verification/production-validation/0.5-uia-invoke-and-clock-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+verification/production-validation/0.5-observer-uia-switch-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+verification/production-validation/0.5-release-final-preflight-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+verification/production-validation/0.5-incremental-tool-alias-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+# Preserve original UIA runtime, regression and release-fix evidence bytes.
+verification/production-validation/0.5-release-fixes-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+
+# Preserve post-upgrade build records and scoped release originals byte-for-byte.
+verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
+verification/production-validation/0.5-source30-release-2026-10-16/** -text -eol whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol

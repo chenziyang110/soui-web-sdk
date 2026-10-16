@@ -281,6 +281,7 @@ function completeResourceAnalysis(analysis,complete,records=[]) {
     nativeToolchainProfile:complete.nativeToolchainProfile,
     ...(analysis.cacheObservation===true?{cacheModulePin:complete.loadedPayloadModule||null,
       namedCacheCalibration:cacheCalibration(records,analysis.subject,complete.loadedPayloadModule),
+      addressSpaceObservation:require('./process-address-census.cjs').addressSpaceObservations(records,analysis.subject,complete.architecture),
       privateStorageCalibration:privateStorageCalibration(records,analysis.privateStorageBinding)}:{}),
     resourceRuleObservation:analysis.resourceGate,observationFailure:analysis.failure||null,
     resourceGate:evaluated?analysis.resourceGate:'not-evaluated',passed:evaluated&&analysis.passed===true,

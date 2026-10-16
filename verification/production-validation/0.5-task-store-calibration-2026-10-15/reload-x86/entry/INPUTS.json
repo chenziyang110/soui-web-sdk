@@ -1,0 +1,54 @@
+{
+  "phase": "resource",
+  "arch": "x86",
+  "configuration": "Release",
+  "pins": [
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-050\\run-acceptance-11.cjs",
+      "sha256": "bcb8ca904b10092d3b57d8ef2ca5366c682e678514d3711548f1291f25c55eb6"
+    },
+    {
+      "path": "C:/work/sm05-release-050/source-manifest.json",
+      "sha256": "1e92dfcb55e1bef4396acccc467245fd74a305cc5b3a6907a752ee6840821958"
+    },
+    {
+      "path": "C:/work/sm05-release-050/tools/internal/Observe-LlvmBuild.ps1",
+      "sha256": "09d11ed85012d16dc0ef988ac407add8a243e8e99bbca335e8b4e8c3de21993c"
+    },
+    {
+      "path": "C:/work/sm05-release-050/tools/Test-Acceptance.ps1",
+      "sha256": "333dd11b9a692d0992002bb6886290f0f7c6cffcfdb8bc8a360275597884fb67"
+    }
+  ],
+  "executable": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+  "args": [
+    "-NoProfile",
+    "-NonInteractive",
+    "-File",
+    "C:/work/sm05-release-050/tools/Test-Acceptance.ps1",
+    "-Architecture",
+    "x86",
+    "-Configuration",
+    "Release",
+    "-NativeToolchain",
+    "LLVM22MSVC142",
+    "-LlvmRoot",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64",
+    "-MsvcRoot",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133",
+    "-WindowsSdkRoot",
+    "C:/Program Files (x86)/Windows Kits/10",
+    "-NinjaExe",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe",
+    "-WindowsCmdExe",
+    "C:/Windows/System32/cmd.exe",
+    "-PowerShellExe",
+    "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+    "-DevkitRoot",
+    "C:/work/sm05-release-050",
+    "-SkipSdkBuild",
+    "-ResourceCapture",
+    "-CacheObservation"
+  ],
+  "timeoutMs": 5400000
+}

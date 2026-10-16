@@ -1,0 +1,18 @@
+{
+  "scope": "Explicitly deferred from the default preview release sequence at the user's request to reduce unnecessary repeated testing",
+  "currentProductionGatesPassed": false,
+  "items": [
+    {"item":"Actual eight-hour mixed/session runs", "gate":"not-evaluated", "helper":"resource/run-qualification.cjs eight-hour"},
+    {"item":"1000 cycles in four lifecycle modes on both architectures", "gate":"not-evaluated", "helper":"run-post-core-extended.cjs lifecycle"},
+    {"item":"Full five-pair performance series or Electron comparisons", "gate":"not-evaluated"},
+    {"item":"Browser double-layer capacity/excess-load repetition", "gate":"not-evaluated", "helper":"run-post-core-extended.cjs major"},
+    {"item":"Repeated installation interruption/recovery or generated-project validation", "gate":"not-repeated-for-release"},
+    {"item":"Full current source ZIP extraction followed by x64 and x86 SDK rebuilds", "gate":"not-evaluated", "history":"Source29 extraction evidence is historical; no current rebuild is inferred"},
+    {"item":"NVDA speech-text/native-provider desktop workflows", "gate":"not-evaluated", "helper":"run-post-core-extended.cjs major"},
+    {"item":"Full reference application rebuild and all GUI workflows", "gate":"not-repeated-for-release"},
+    {"item":"Finite full resource/census series on both architectures", "gate":"not-evaluated", "helper":"run-post-core-extended.cjs finite"},
+    {"item":"60 Hz secondary display presentation", "gate":"not-evaluated", "reason":"Public InputTrace targets the primary display; no display settings or feature extension is requested"}
+  ],
+  "retainedSource29ReportsAreCurrentPasses": false,
+  "releaseReady": false
+}

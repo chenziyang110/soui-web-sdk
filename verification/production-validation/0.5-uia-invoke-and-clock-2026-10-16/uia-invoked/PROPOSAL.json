@@ -1,0 +1,106 @@
+{
+  "schema": "soui.proposal-overlay/v1",
+  "basePacket": {
+    "path": "C:\\work\\sm05-source25-integration-2\\PREPARED.json",
+    "bytes": 72338,
+    "sha256": "eae1302438da2d1a965f12a2e773fb5ea75b69e46d329456e380a73c993a9b16"
+  },
+  "source24": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 15734831,
+    "sha256": "52e19555127cff41afabb4ee9e7b0af662630cbdfce35f270d0d4753473d1cf4"
+  },
+  "files": [
+    {
+      "relative": "sdk/accessibility/uia/windows_uia_provider.cpp",
+      "supersedes": {
+        "path": "C:\\work\\sm05-source25-integration-2\\proposal\\sdk\\accessibility\\uia\\windows_uia_provider.cpp",
+        "bytes": 54701,
+        "sha256": "11fbd7a0c9d754ce1c9c0462036d69bdaa9f640b7e84bfbf3a53bb98b1a0d85c"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-invoked-1\\proposal\\sdk\\accessibility\\uia\\windows_uia_provider.cpp",
+        "bytes": 56389,
+        "sha256": "406bff0994d3dca7f1e0ecfa97d9b9af47706b5135ba64c2393763cca860411b"
+      }
+    },
+    {
+      "relative": "sdk/include/soui/runtime/accessibility/windows_uia_provider.h",
+      "supersedes": {
+        "path": "C:\\work\\sm05-source25-integration-2\\proposal\\sdk\\include\\soui\\runtime\\accessibility\\windows_uia_provider.h",
+        "bytes": 5426,
+        "sha256": "c5e22d3c923ba9b6f682d883ac0884142f687b434754d82fed93ff36c810f540"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-invoked-1\\proposal\\sdk\\include\\soui\\runtime\\accessibility\\windows_uia_provider.h",
+        "bytes": 5582,
+        "sha256": "6fd1b520a100efa855d55ca3be9d6bd35387d22b578925c081017e4a1aec78bc"
+      }
+    },
+    {
+      "relative": "tests/native/windows_uia_provider_tests.cpp",
+      "supersedes": {
+        "path": "C:\\work\\sm05-source25-integration-2\\proposal\\tests\\native\\windows_uia_provider_tests.cpp",
+        "bytes": 39614,
+        "sha256": "4327cf0290efd38ac074c7f379e08da601e69456b1cfeaaf20084162571b67bc"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-invoked-1\\proposal\\tests\\native\\windows_uia_provider_tests.cpp",
+        "bytes": 44530,
+        "sha256": "efc11af1be6862d02747dc49592265190a6c495b9d854686dc89b7988aa428a2"
+      }
+    },
+    {
+      "relative": "tests/native/uia/CMakeLists.txt",
+      "supersedes": {
+        "path": "C:\\work\\sm05-source25-integration-2\\proposal\\tests\\native\\uia\\CMakeLists.txt",
+        "bytes": 1053,
+        "sha256": "4e677a2a66e952c3d5f056f29ea799e4956595a24938016522440b9a74c9c3e4"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-invoked-1\\proposal\\tests\\native\\uia\\CMakeLists.txt",
+        "bytes": 1133,
+        "sha256": "52edfcffa6278bb35cd836ad456979b4e3bd3e0ac339197b36cea2c6e783de0f"
+      }
+    },
+    {
+      "relative": "docs/adr/0109-uia-state-notifications.md",
+      "supersedes": {
+        "path": "C:\\work\\sm05-source25-integration-2\\proposal\\docs\\adr\\0109-uia-state-notifications.md",
+        "bytes": 3996,
+        "sha256": "36df7460332fa5a4922ad2cb1b54c5c8fb64b93375f85d7e6edfeeb1a9ee5cda"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-invoked-1\\proposal\\docs\\adr\\0109-uia-state-notifications.md",
+        "bytes": 5090,
+        "sha256": "5fbf5453b7706fc322c03d9c4045e70f9b68d362170db95b07aa1ea782f4ff11"
+      }
+    }
+  ],
+  "proofs": [
+    {
+      "path": "C:\\work\\sm05-uia-invoked-1\\x64-red1\\RESULT.json",
+      "bytes": 3463,
+      "sha256": "494f83a450684ff9da2560c7b0ca660d7250cf5c6d3ff466c28958ff28de99b2"
+    },
+    {
+      "path": "C:\\work\\sm05-uia-invoked-1\\x64-red1\\events-stderr.bin",
+      "bytes": 102,
+      "sha256": "a04bde400b14a64e54319007f82b95e4fa6260e6ea474a23cf5e0e8d8361e0ca"
+    },
+    {
+      "path": "C:\\work\\sm05-uia-invoked-1\\x64-green1-VERIFIED.json",
+      "bytes": 28544,
+      "sha256": "68798a937b513c7d048821e5f388f6ceeaa774bc48146e22e637150f283c531e"
+    },
+    {
+      "path": "C:\\work\\sm05-uia-invoked-1\\x86-green1-VERIFIED.json",
+      "bytes": 28541,
+      "sha256": "d892e3c492673aea275c289ddf701268a129677363ef16ee8503487e4be70e18"
+    }
+  ],
+  "actualNativeCasesPassedPerArchitecture": 15,
+  "scope": "Invoked after successful typed UIA dispatch; shared 16-event pump budget; denied, failed and revoked actions emit no success notification",
+  "adopted": false,
+  "releaseReady": false
+}

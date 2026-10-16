@@ -71,8 +71,9 @@ class webview2_adapter final : public sdk::webview_host_adapter {
   // runtime watch finish before destroying the adapter; shared mode is unchanged.
   [[nodiscard]] host_result configure_profile_access(webview2_profile_access);
   [[nodiscard]] host_result acquire_runtime_exit_watch(std::unique_ptr<webview2_runtime_exit_watch>& empty_output);
-  // True only after a real failed no-Core Controller callback has settled and
-  // unmount released its failed preparation ownership. Never a browser exit.
+  // True only after a real failure before Environment ownership or a failed
+  // no-Core Controller callback has settled and unmount released all failed
+  // preparation ownership. Never a browser exit.
   [[nodiscard]] bool failed_preparation_cleanup_complete() const noexcept;
   void prepare_async(std::function<void(sdk::host_result)> completed);
   [[nodiscard]] sdk::host_result status() const;

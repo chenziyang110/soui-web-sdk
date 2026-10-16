@@ -14,7 +14,19 @@ schema只支持明确的object/properties/required/additionalProperties:false、
 
 Web `discover()` 保留已校验的可选 `method.action`。`souiToolDefinitions(catalog)` 只为这些方法生成通用工具定义；`validateSouiActionInput/Output` 提供相同子集的客户端检查，原生检查仍是最终边界。工具定义本身不执行动作或授予权限。
 
-`createSouiGui()` 为应用明确注册的元素提供 `register`、`snapshot`、`perform`、`waitFor` 和 `dispose`。节点有稳定ID、role/name、enabled/busy、显式应用state和命名动作。调用只进入注册处理器，不执行任意选择器或脚本；禁用、断开、忙碌、移除与销毁均有错误。等待有上限，调用超时不代表原生任务已取消，实际处理器结束前仍保留busy。示例见模板；UIA与外部Agent服务不在本版实现范围内。
+`createSouiGui()` 为应用明确注册的元素提供 `register`、`snapshot`、`perform`、`waitFor` 和 `dispose`。节点有稳定ID、role/name、enabled/busy、显式应用state和命名动作。调用只进入注册处理器，不执行任意选择器或脚本；禁用、断开、忙碌、移除与销毁均有错误。等待有上限，调用超时不代表原生任务已取消，实际处理器结束前仍保留busy。示例见模板。0.5 的原生 UIA 与本地 Agent 分别显式启用，边界如下；页面 GUI 注册本身不会自动启用它们。
+
+## 可选原生 UIA 与本地 Agent（0.5）
+
+`Soui::Uia` 导出 `<soui/runtime/accessibility/windows_uia_provider.h>`。使用 `Build.ps1 -WithUia` 或 `Soui.ps1 build --with-uia` 构建；CMake 消费者显式请求 `Uia` 组件并链接 `Soui::Uia`。应用在实际 HWND 所有者线程初始化 COM、创建 provider、发布审核后的公开投影，并转发 `WM_GETOBJECT` 与选定的唤醒消息。普通 owner 消息泵继续调用 `pump()`，导航或退出时先撤销并等待 `close()` 返回 `S_OK`，再释放控制器与 HWND。模块不扫描 DOM，也不自动接入 Host 业务。
+
+首批控件为按钮、非敏感单行输入、单选列表与只读任务状态。`publish()` 接纳状态后，由有界消息泵发送属性、结构及焦点通知；成功 Invoke 发送 Invoked 通知。Invoke 的返回表示排队受理，业务结果须另行观察。策略默认拒绝；应用将动作绑定到既有 typed native 业务入口，UIA 不提供 Agent 身份或原生用户手势。敏感输入不提供 Value pattern。构建、线程及关闭细节见 [UIA 设计](adr/0047-finite-windows-uia-provider.md)、[状态通知](adr/0109-uia-state-notifications.md)和[构建与交付](adr/0110-uia-build-delivery.md)。
+
+同步 SetValue、Select、SetFocus 成功表示业务和公开投影已提交。Windows 在窗口线程调用时，provider 通过已配置的唤醒消息同步处理一批有界命令；应用必须正确转发消息。回调重入拒绝，未完成的排队请求取消并超时；其他线程仍最多等待 250 毫秒。详见[同步 owner 派发](adr/0116-uia-owner-command-dispatch.md)。
+
+`json_bridge::create_local_endpoint()` 在业务注册完成、首个页面 bootstrap 之前显式创建停止状态的 Windows 本地端点。应用配置允许的调用主体与能力后才启动；`allow_local_action()` 只公开已经注册的 typed action，长任务通过 `register_local_task_family()` 复用同一 Bridge 的任务服务。页面授权、UIA 桌面访问和本地 Agent 授权分别处理。端点由 Bridge 持有，应用必须在销毁 Bridge 前完成真实停止与 owner 收尾；详见[端点契约](adr/0046-windows-local-agent-endpoint.md)和[本地任务 family](local-task-families.md)。
+
+`enable_gui_commands()` 为明确注册的 GUI 操作接入任务协议；`bind_gui_document()` 由原生 owner 绑定实际 Host 文档身份和有效性检查。关闭时先 `close_gui_commands()`，由 owner 持续 `poll_gui_commands()` 至 closed，再销毁 Host。它不会把任意页面 handler 转成可远程调用的方法；原生效果与页面确认各有独立校验，见 [GUI 授权边界](adr/0054-gui-command-authority.md)。这些接口可用不代表读屏器、所有参考应用或目标系统已通过验收。
 
 ## C++ 接入
 
@@ -34,13 +46,14 @@ bridge.register_method("app.ping", "app.ping",
 | `soui::sdk::host_config` | 内核路径、本地资源根、窗口句柄和适配器 |
 | `soui::sdk::soui_miniblink_host` | 启动、消息泵、缩放、显示、重载、销毁 |
 | `soui::sdk::shutdown_miniblink_runtime` | 所有 Host 销毁后关闭进程级内核及所有者线程；此后本进程不能重新初始化 |
+| `soui::sdk::wait_for_miniblink_runtime_shutdown` | 应用最终退出时，在总期限内泵送窗口消息并等待上述异步关闭；错误或超时保持失败 |
 | `soui::runtime::permission_store` | 与 session/origin 绑定的能力授权及撤销 |
 | `soui::runtime::task_store` | 任务状态与取消等底层能力 |
 | `soui::runtime::task_service` | 公共长任务调度、会话归属、事件及取消 |
 
-完整窗口、计时器和关闭顺序参考模板的 `app/main.cpp`。C++ 参数和返回类型以 `sdk/include/soui` 的头文件为准。
+完整窗口、计时器和关闭顺序参考模板的 `app/main.cpp`。C++ 参数和返回类型以 `sdk/include/soui` 的头文件为准。兼容内核必须同时提供 `wkePrepareWorkerShutdown` 与 `wkeFinalizePrepared`；缺少任一接口时在初始化前返回 `E_DEPENDENCY_API`，不能混用旧 DLL。
 
-从 preview.3 起，多个 Host 共用进程级 Miniblink 所有者线程。`destroy()` 只销毁本窗口；即使没有窗口，内核仍保留以支持同进程重建。应用最终退出时，先销毁所有 Host，再调用 `shutdown_miniblink_runtime()`，最后释放应用的 COM 等进程资源。仍有 Host 时返回 `E_RUNTIME_IN_USE`；最终关闭后新 Host 启动返回 `E_RUNTIME_SHUTDOWN`。重复关闭 Runtime 可以成功返回。不同窗口必须使用同一内核路径，否则返回 `E_RUNTIME_BINARY`。这不是独立进程或崩溃隔离承诺。
+从 preview.3 起，多个 Host 共用进程级 Miniblink 所有者线程。`destroy()` 只销毁本窗口；即使没有窗口，内核仍保留以支持同进程重建。应用最终退出时，先销毁所有 Host，再完成 Runtime 关闭，最后释放应用的 COM 等进程资源。非阻塞 `shutdown_miniblink_runtime()` 返回 `E_RUNTIME_SHUTDOWN_PENDING` 时仍须在原关闭期限内继续调用，不能把首次提交当成成功。最小应用可在 UI 线程调用 `wait_for_miniblink_runtime_shutdown(std::chrono::seconds{20})`；它只重试 pending，按单调总预算处理有限批次消息，保留已读取的 `WM_QUIT`，负预算返回 `E_RUNTIME_SHUTDOWN_ARGUMENT`，零预算只尝试一次，超时返回 `E_RUNTIME_SHUTDOWN_TIMEOUT`。不能从引擎所有者或仍持有 Host 的回调中等待。真实错误及超时不证明内核已释放。仍有 Host 时返回 `E_RUNTIME_IN_USE`；最终关闭后新 Host 启动返回 `E_RUNTIME_SHUTDOWN`。重复关闭 Runtime 可以成功返回。不同窗口必须使用同一内核路径，否则返回 `E_RUNTIME_BINARY`。这不是独立进程或崩溃隔离承诺。
 
 原生 `__souiNativePostMessage` 的 bootstrap 返回 JSON 字符串，普通请求返回解析为 JSON 字符串的 Promise；连接器必须等待实际结果。仅凭 TypeScript 返回类型声明不能判断原生调用是否同步。
 
@@ -122,6 +135,18 @@ Web 方法类型为 `SouiClipboardMethodMap`，与 `SouiCoreMethodMap` 组合使
 
 默认上限为 2 个原生工作线程、32 个未完成任务、128 个订阅和 1,024 个保留的任务结果。超限返回 `E_BUSY`，旧终态记录按最早序号淘汰；任务结果只保留在进程内，没有持久化保证。返回结果须为不超过 32 KiB 的 JSON 对象，进度与终态消息最多 4 KiB；违反返回约束会形成失败终态。应用的处理器应按自己的数据来源继续验证 `input`，及时响应取消，并自行约束阻塞外部调用的最长时间。当前公共任务模块仍待独立真实页面、Demo、长稳和目标机整组验收。
 
+`task_store`、`task_service` 和 `json_bridge` 不传 policy 时，每个 Store 默认采用
+`default_task_store_request_quota`（128 MiB，即 134,217,728 字节）。额度覆盖该
+Store 的私有分配请求及事务期间仍存活的缓冲、失败终态预留，不是进程总内存
+或浏览器缓存限制。诊断关闭不会关闭额度。原生显式 policy 构造仍接受
+`std::nullopt`（未配置）、零（拒绝正分配）或自己的字节额度；页面不能调整它。
+零额度也可能在构造时因容器初始化的正分配而抛出配额异常；此时对象未构造，
+不能读取它的快照。构造成功时零额度仍拒绝后续正分配。
+Bridge 准入超过额度返回 `E_TASK_STORE_QUOTA`，直接 Core 调用抛出
+`task_store_request_quota_exceeded`。拒绝保留任务身份和原状态，后续合法任务
+仍可执行；需要超过公开 Bridge 边界的大型 Core 数据时，请显式选择原生 policy。
+详见 [默认额度与迁移](adr/0101-default-task-store-request-quota.md)。
+
 `task.query` 接受 `{taskId}` 或 `{operationId}`，对象恰好有一个字段；两者不能同时提供，也不能附加其他字段。标识均为 1–128 字节，仅允许 ASCII 字母、数字和 `-_.:`。`client.query(taskId)` 保留，新增 `client.queryOperation(operationId)`；直接 `call('task.query', params)` 使用同一参数校验。原生 operation 查询只在本次实际活跃授权 scope 中定位，并再次核对实际对象、session/origin 和保留记录；同一 scope 续租不改变归属，不同 grant/store 或重连的新 scope 不能读取旧任务。查询不启动、重放或取消任务，不修改快照或保留顺序。结果字段与 taskId 查询相同。未知或被淘汰的记录返回 `E_TASK_NOT_FOUND`，失效或缺能力的授权返回 `E_UNAUTHORIZED`；not-found 不证明从未执行，不授权自动重试。
 
 已授权 catalog 中无 action 的 `task.query` 可获得工具描述。受限 schema 只表达两个可选的有界字符串和禁止额外属性，**不能单独表达互斥或 ASCII 字符集合**；描述明确要求 exactly one，TS 运行时及原生最终校验负责完整约束。schema 通过或工具出现均不是执行授权。参见 [operation 查询迁移](migration/task-operation-query.md) 与 [ADR-0032](adr/0032-read-only-task-operation-query.md)。
@@ -194,3 +219,14 @@ target_link_libraries(MyTarget PRIVATE Soui::Sdk)
 ## 本地 typed 任务 family
 
 `task_service::register_local_family` 和 `json_bridge::register_local_task_family` 原子注册具名 start/query/cancel 三动作，绑定已有 handler kind，仅供明确授予 method AND capability 的实际本地 scope。实际 scope/family/kind 隔离在核心锁内复验；页面、其他 family 与 plain 任务互拒，终态仅返回一次缓存的安全投影。既有 worker、队列和有界保留共用，not-found 不授权自动重试。详见 [接入与限制](local-task-families.md) 和 [ADR 0039](adr/0039-local-typed-task-families.md)；本接口不代表本地端点或 OS 主体认证完成。
+
+## 整数帧节拍
+
+头文件 soui/host/frame_rate_policy.h 提供 is_supported_frame_rate(unsigned) 与
+clamp_frame_rate_to_display(requested, display)。合法目标为 30–1000 Hz 整数；无效请求返回 0，
+未知显示配置以 60 Hz 为上限，合法配置直接限制目标而不向 60/120/144 档位取整。
+frame_pacer::start 使用相同范围。工作台的 desktop.rendering.setTargetRate 校验整数参数，
+保留请求值与实际调度值的区分。移动窗口或更改显示设置后会重新查询配置。
+调度目标、系统配置和实际呈现是不同观测；诊断覆盖与计时器回调不证明物理刷新率。
+
+资源缓存观测允许 discardable 模式报告正的 resourceByteLimit；它是驻留记录淘汰阈值。零表示未配置，resourceEffectiveSingleLimit 仍保持独立。8 MiB 策略不代表全部图像堆或进程内存上限，详见 ADR-0102。

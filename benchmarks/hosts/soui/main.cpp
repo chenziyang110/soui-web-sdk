@@ -165,6 +165,23 @@ class benchmark_window final {
                    bool smoke, bool exit_on_result)
       : host_(host), sink_(sink), smoke_(smoke), exit_on_result_(exit_on_result) {}
   HWND handle() const { return handle_; }
+  void request_close() {
+    if (!closing_) { closing_ = true; close_started_ = GetTickCount64(); }
+  }
+  void close_step(HWND window) {
+    const auto closed = host_.destroy();
+    if (!closed.ok) {
+      if ((closed.code == "E_BUSY" || closed.code == "E_CURSOR_CLOSE_PENDING") &&
+          GetTickCount64() - close_started_ < 20000) return;
+      std::cerr << "Benchmark host close failed: " << closed.code << ": " << closed.message << '\n';
+      exit_code_ = 2;
+      KillTimer(window, 1);
+      PostQuitMessage(exit_code_);
+      return;
+    }
+    KillTimer(window, 1);
+    DestroyWindow(window);
+  }
   void set_handle(HWND handle) { handle_ = handle; }
   int exit_code() const { return exit_code_; }
   static LRESULT CALLBACK procedure(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
@@ -180,6 +197,7 @@ class benchmark_window final {
     }
     switch (message) {
       case WM_TIMER:
+        if (self->closing_) { self->close_step(window); return 0; }
         self->host_.pump();
         if ((self->smoke_ || self->exit_on_result_) && self->sink_.has_result())
           PostMessageW(window, WM_CLOSE, 0, 0);
@@ -197,10 +215,7 @@ class benchmark_window final {
         return 0;
       case WM_SETFOCUS: (void)self->host_.focus(); return 0;
       case WM_CLOSE: {
-        KillTimer(window, 1);
-        const auto closed = self->host_.destroy();
-        if (!closed.ok) self->exit_code_ = 2;
-        DestroyWindow(window);
+        self->request_close();
         return 0;
       }
       case WM_DESTROY: PostQuitMessage(self->exit_code_); return 0;
@@ -215,6 +230,8 @@ class benchmark_window final {
   bool smoke_;
   bool exit_on_result_;
   ULONGLONG started_{GetTickCount64()};
+  bool closing_{false};
+  ULONGLONG close_started_{0};
   HWND handle_{nullptr};
   int exit_code_{0};
 };
@@ -284,7 +301,7 @@ int run(int argc, wchar_t** argv) {
     TranslateMessage(&message);
     DispatchMessageW(&message);
   }
-  const auto shutdown = soui::sdk::shutdown_miniblink_runtime();
+  const auto shutdown = soui::sdk::wait_for_miniblink_runtime_shutdown(std::chrono::seconds{20});
   if (!shutdown.ok) throw std::runtime_error(shutdown.code + ": " + shutdown.message);
   return window.exit_code();
 }

@@ -6,6 +6,7 @@ const id=require('./delivery-identity.cjs');
 const profiles=require('./llvm-profile-inputs.cjs');
 const llvm=require('./llvm-build-observer.cjs');
 const standard=require('./standard-build.cjs');
+const debug=require('./host64-build-debug-observer.cjs');
 const {parseStrictJson}=require('./owned-tail-evidence.cjs');
 const profile='LLVM22MSVC142',owner=path.resolve(__dirname,'../..');
 const need=(value,message)=>{if(!value)throw new Error(message);};
@@ -117,20 +118,30 @@ function recheckFrozen(frozen){match(frozen.pending);match(frozen.request);match
   for(const item of frozen.dependencies.inventories)need(isDeepStrictEqual(tree(item.root),item.files),'Installed/tool input inventory changed');
   frozen.tools.forEach(standard.verifyTool);}
 function validateObservationFacts(row,cfg,subject,build,archive){
+  const dual=cfg.schema==='soui.standard-llvm-observer-inputs/v2',version=dual?'v2':'v1';
   need((cfg.releaseConsumer===undefined)!==(cfg.installedConsumer===undefined),'One explicit fixed imported consumer context required');
   const release=cfg.releaseConsumer!==undefined,context=cfg.releaseConsumer||cfg.installedConsumer,
     binding=release?row?.releaseConsumer:row?.installedConsumer;
   need((release?row?.installedConsumer:row?.releaseConsumer)===undefined,
     'Imported observation cannot substitute or mix consumer context roles');
-  need(row?.schema===(release?'soui.installed-release-llvm-build-observation/v1':'soui.installed-acceptance-llvm-build-observation/v1')&&row.profile===profile&&norm(row.root)===norm(cfg.root)&&
+  need(row?.schema===(release?'soui.installed-release-llvm-build-observation/':'soui.installed-acceptance-llvm-build-observation/')+version&&row.profile===profile&&norm(row.root)===norm(cfg.root)&&
     row.architecture===cfg.architecture&&row.configuration===cfg.configuration&&row.sdkOnly===false&&row.compilerVerified===true&&
     row.inputIdentity===cfg.inputIdentity&&row.bridgeIdentity===cfg.bridgeIdentity&&row.observedCompilerId==='Clang'&&
     row.observedFrontend==='MSVC'&&row.observedVersion==='22.1.3'&&row.observedPointerBytes===(cfg.architecture==='x64'?8:4)&&
     row.completeToolchainProvenance===false&&row.kernelQualified===false&&row.abiQualified===false&&row.win7Qualified===false&&
     row.qualificationPassed===false&&row.releaseReady===false,'Dedicated installed observation identity/scope differs');
-  need(row.buildCapture?.pid===subject.start.pid&&row.buildCapture.creationFileTime===subject.start.creationFileTime&&
-    row.buildCapture.wholeJobClosed===true&&row.buildCapture.forced===false&&
-    ['raw','context','ready','finished'].every(key=>samePin(row.buildCapture[key],cfg.buildCapture[key])), 'Installed observer did not bind the original naturally closed build');
+  const outer=dual?row.outerObserverCapture:row.buildCapture;
+  need(outer?.pid===subject.start.pid&&outer.creationFileTime===subject.start.creationFileTime&&
+    outer.wholeJobClosed===true&&outer.forced===false&&
+    ['raw','context','ready','finished'].every(key=>samePin(outer[key],cfg.buildCapture[key])), 'Installed observer did not bind the original naturally closed build');
+  if(dual)need(row.buildCapture?.role==='inner-build'&&row.buildCapture.pid===cfg.fastToolEvidence?.innerBuild?.pid&&
+    row.buildCapture.creationFileTime===cfg.fastToolEvidence.innerBuild.creationFileTime&&row.buildCapture.pid!==outer.pid&&
+    row.buildCapture.wholeJobClosed===true&&row.buildCapture.forced===false&&row.buildCapture.naturalRootExitCode===0&&
+    samePin(row.buildCapture.raw,cfg.debugCapture.raw)&&samePin(row.buildCapture.input,cfg.debugCapture.input)&&
+    isDeepStrictEqual(row.originalPollingCapture,cfg.buildCapture)&&isDeepStrictEqual(row.debugCapture,cfg.debugCapture)&&
+    isDeepStrictEqual(row.fastToolEvidence,cfg.fastToolEvidence)&&cfg.fastToolEvidence.experimentalLifecycleObserved===true&&
+    cfg.fastToolEvidence.outerObserver.pid===outer.pid&&cfg.fastToolEvidence.outerObserver.creationFileTime===outer.creationFileTime,
+    'Installed consumer inner build and outer observer identities differ');
   need(samePin(row.requestFile,cfg.requestFile)&&samePin(row.buildReport,cfg.buildReport)&&
     binding?.sdkBuildId===build.buildId&&binding.sdkSourceSha256===build.source.sha256&&
     samePin(binding.sdkAccepted,context.sdkAccepted)&&samePin(binding.pending,context.pending)&&
@@ -149,15 +160,24 @@ function validateObservationFacts(row,cfg,subject,build,archive){
     'Current ordinary acceptance EXE must freshly link the separately accepted installed archive');
   need(isDeepStrictEqual(row.frozenDependencyPins,cfg.dependencyPins),'Installed frozen dependency set differs');return true;
 }
-function validateObservation(row,cfg,subject,sdk){
+function validateObservation(row,cfg,subject,sdk,observationPath,observerContextBytes){
   const context=cfg.releaseConsumer||cfg.installedConsumer,kind=cfg.releaseConsumer?'release':'acceptance';
   validateObservationFacts(row,cfg,subject,sdk.build,pin(paths(owner,context.suiteDirectory,cfg.architecture,cfg.configuration,kind).installedArchive));
+  if(row.configureLogCapture!==undefined)require('./configure-log-evidence.cjs').validate(row.configureLogCapture,{
+    buildDirectory:cfg.buildDirectory,observationPath,observerContextBytes,evidencePins:row.evidencePins});
   for(const item of row.compileRecords){match(item.source);match(item.object);item.headers.forEach(match);}
   for(const item of row.resourceRecords){match(item.source);match(item.output);}
   for(const item of row.binaryRecords){match(item.output);[...item.inputObjects,...item.inputLibraries,...item.inputResources].forEach(match);}
   [...row.evidencePins,...row.dependencyPins,...row.frozenDependencyPins,...row.installedEvidencePins].forEach(match);
 }
-function controls(root,kind){return [...codeNames,...(kind==='release'?['tools/Verify-Release.ps1','tools/internal/release-verification.cjs','tools/internal/desktop-smoke.cjs']:[])].map(name=>pin(path.join(root,name)));}
+function controls(root,kind){return [...new Set([...codeNames,...debug.sourceNames,...(kind==='release'?['tools/Verify-Release.ps1','tools/internal/release-verification.cjs','tools/internal/desktop-smoke.cjs']:[])])].map(name=>pin(path.join(root,name)));}
+function consumerDebug(binding,capture,root,p,kind,args){
+  need(binding&&isDeepStrictEqual(binding.rootArguments,args),'Exact consumer debug build vector required');
+  const input=read(binding.input.path);
+  need(input.schema==='soui.host64-build-debug-inputs/3'&&input.consumerKind===kind&&norm(input.buildDirectory)===norm(p.build)&&
+    input.sdkArchitecture===p.architecture&&input.configuration===p.configuration,'Consumer debug scope differs');
+  return debug.recordedEvidence(binding,capture,root,args);
+}
 async function run(suite,kind='acceptance'){
   const pending=read(path.join(suite,kind==='release'?'consumer-pending.json':'pending.json')),p=paths(owner,suite,pending.architecture,pending.configuration,kind);
   if(kind==='release')need(pending.schema==='soui.release-installed-consumer-pending/v1','Explicit release consumer pending input required');
@@ -187,33 +207,47 @@ async function run(suite,kind='acceptance'){
     const configure=await launch('configure',command.cmake,args,cmake,900000);
     write(path.join(suite,'configure.log'),fs.readFileSync(configure.rows.stdout.path));
     const buildArgs=['--build',p.build,'--config',p.configuration,'--parallel','2','--verbose'];
-    const built=await launch('build',command.cmake,buildArgs,cmake,900000);
+    const sdkDebug=sdkFrozen.llvm.debugBinding;
+    need(sdkDebug?.prepared,'A current SDK with prepared native debug observer is required');
+    const prepared=debug.loadPrepared(sdkDebug.prepared.path,sdkDebug.prepared.sha256,owner);
+    const buildRunner=standard.inspectTool(prepared.value.outerRunner.path);
+    need(samePin(prepared.value.outerRunner,buildRunner),'Consumer debug runner differs from its verified host producer');
+    const planned=debug.makeInput(owner,p,p.evidence,request.value.discovery,sdkFrozen.tools,
+      [...controlPins,frozenPin],prepared,buildArgs,{kind,buildDirectory:p.build});
+    recheckFrozen(frozen);match(frozenPin);
+    const captured=await debug.captureBuild(owner,p,p.evidence,request.value.discovery,sdkFrozen.tools,controlPins,prepared,buildArgs,env,standard,planned);
+    const debugCapture={input:captured.input,raw:captured.raw,prepared:captured.prepared,observer:prepared.value.executable,rootArguments:buildArgs};
+    const expected={executable:prepared.value.executable.path,args:['--input',captured.input.path,'--input-sha256',captured.input.sha256,'--report',captured.raw.path,'--nonce',planned.value.nonce],tool:prepared.value.executable,runner:buildRunner,timeoutMs:900000};
+    const built={rows:captures(p.evidence,'build'),subject:natural(captured.capture,expected),expected};
+    const fastToolEvidence=consumerDebug(debugCapture,captured.capture,owner,p,kind,buildArgs);
     const nativeLog=write(p.nativeLog,fs.readFileSync(built.rows.stdout.path));
     need(samePin({...nativeLog,path:built.rows.stdout.path},built.rows.stdout),'Compile log must retain exact original build stdout bytes');
     current(owner,p.architecture,p.configuration,pending.nativeToolchain);recheckFrozen(frozen);
-    const cfg={schema:'soui.standard-llvm-observer-inputs/v1',profile,root:owner,architecture:p.architecture,configuration:p.configuration,
+    const cfg={schema:'soui.standard-llvm-observer-inputs/v2',profile,root:owner,architecture:p.architecture,configuration:p.configuration,
       sdkOnly:false,withWebView2:false,previousObservation:null,buildDirectory:p.build,evidenceDirectory:p.evidence,
       inputIdentity:request.inputIdentity,bridgeIdentity:request.bridgeIdentity,requestFile:sdk.selection.requestFile,buildReport:pin(p.sdkReport),
-      controlPins,dependencyPins:deps.pins,nativeLog,buildCapture:{...built.rows,timeoutMs:900000,drainMs:2000},
+      controlPins,dependencyPins:deps.pins,nativeLog,buildCapture:{...built.rows,timeoutMs:900000,drainMs:2000},debugCapture,fastToolEvidence,
       ...{[kind==='release'?'releaseConsumer':'installedConsumer']:{schema:kind==='release'?'soui.installed-release-llvm-context/v1':'soui.installed-acceptance-llvm-context/v1',suiteDirectory:p.suite,pending:frozen.pending,
         requestFile:request.pin,sdkAccepted:sdk.selection.sdkAccepted}},qualificationPassed:false,releaseReady:false};
     const cfgPin=write(path.join(p.evidence,'observer-inputs.json'),cfg),observationPath=path.join(p.evidence,'llvm-observation.json');
     const observerArgs=['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(owner,'tools/internal/Observe-LlvmBuild.ps1'),
       '-InputFile',cfgPin.path,'-InputSha',cfgPin.sha256,'-ObservationPath',observationPath];
     const observed=await launch('observer',ps.requestedPath,observerArgs,ps,120000),observation=read(observationPath);
-    validateObservation(observation,cfg,built.subject,sdk);recheckFrozen(frozen);match(frozenPin);match(cfgPin);
+    need(isDeepStrictEqual(consumerDebug(debugCapture,recorded(built.rows),owner,p,kind,buildArgs),fastToolEvidence),'Consumer debug evidence changed during semantic observation');
+    validateObservation(observation,cfg,built.subject,sdk,observationPath,fs.readFileSync(observed.rows.context.path));recheckFrozen(frozen);match(frozenPin);match(cfgPin);
     current(owner,p.architecture,p.configuration,pending.nativeToolchain);
-    const result={schema:kind==='release'?'soui.installed-release-llvm-build/v1':'soui.installed-acceptance-llvm-build/v1',accepted:true,compilerVerified:true,selection:sdk.selection,
+    const result={schema:kind==='release'?'soui.installed-release-llvm-build/v2':'soui.installed-acceptance-llvm-build/v2',accepted:true,compilerVerified:true,selection:sdk.selection,
       inputs:frozenPin,observerInputs:cfgPin,observation:pin(observationPath),configure,build:built,observer:observed,
       qualificationPassed:false,releaseReady:false};write(p.record,result);return {accepted:true,record:pin(p.record),qualificationPassed:false,releaseReady:false};
   }catch(error){write(path.join(p.evidence,'failure.json'),{accepted:false,failure:error.message,qualificationPassed:false,releaseReady:false});throw error;}
 }
-function verify(root,suite,selection,kind='acceptance'){
+function verifyWithInputs(root,suite,selection,kind='acceptance'){
   const pending=read(path.join(suite,kind==='release'?'consumer-pending.json':'pending.json')),p=paths(root,suite,pending.architecture,pending.configuration,kind);
   if(kind==='release')need(pending.schema==='soui.release-installed-consumer-pending/v1','Explicit release consumer pending input required');
   const sdk=current(root,p.architecture,p.configuration,selection),recordPin=pin(p.record);
   if(selection.consumer)need(samePin(selection.consumer,recordPin),'Staged installed output differs');
-  const result=read(p.record);need(result.schema===(kind==='release'?'soui.installed-release-llvm-build/v1':'soui.installed-acceptance-llvm-build/v1')&&result.accepted===true&&result.compilerVerified===true&&
+  const result=read(p.record),base=kind==='release'?'soui.installed-release-llvm-build/':'soui.installed-acceptance-llvm-build/',dual=result.schema===base+'v2';
+  need((dual||result.schema===base+'v1')&&result.accepted===true&&result.compilerVerified===true&&
     result.qualificationPassed===false&&result.releaseReady===false&&isDeepStrictEqual(result.selection,sdk.selection),'Dedicated installed acceptance missing');
   match(result.inputs);match(result.observerInputs);match(result.observation);
   const frozen=read(result.inputs.path),cfg=read(result.observerInputs.path);
@@ -242,11 +276,22 @@ function verify(root,suite,selection,kind='acceptance'){
   const expectedStages={configure:{executable:command.cmake,args:expectedArgs,tool:cmake,runner,timeoutMs:900000},
     build:{executable:command.cmake,args:['--build',p.build,'--config',p.configuration,'--parallel','2','--verbose'],tool:cmake,runner,timeoutMs:900000},
     observer:{executable:ps.requestedPath,args:observerArgs,tool:ps,runner,timeoutMs:120000}};
-  const expectedCfg={schema:'soui.standard-llvm-observer-inputs/v1',profile,root,architecture:p.architecture,configuration:p.configuration,
+  let fastToolEvidence;
+  if(dual){
+    const binding=cfg.debugCapture,buildArgs=expectedStages.build.args;
+    fastToolEvidence=consumerDebug(binding,recorded(result.build.rows),root,p,kind,buildArgs);
+    const input=read(binding.input.path),sdkFrozen=read(sdk.accepted.inputs.path);
+    need(samePin(binding.prepared,sdkFrozen.llvm.debugBinding.prepared),'Current SDK observer producer required for consumer');
+    const prepared=debug.loadPrepared(binding.prepared.path,binding.prepared.sha256,root),
+      buildRunner=standard.inspectTool(prepared.value.outerRunner.path);
+    need(samePin(input.outerRunner,prepared.value.outerRunner)&&samePin(input.outerRunner,buildRunner),'Current physical host runner required for consumer build');
+    expectedStages.build={executable:binding.observer.path,args:['--input',binding.input.path,'--input-sha256',binding.input.sha256,'--report',binding.raw.path,'--nonce',input.nonce],tool:binding.observer,runner:buildRunner,timeoutMs:900000};
+  }
+  const expectedCfg={schema:'soui.standard-llvm-observer-inputs/'+(dual?'v2':'v1'),profile,root,architecture:p.architecture,configuration:p.configuration,
     sdkOnly:false,withWebView2:false,previousObservation:null,buildDirectory:p.build,evidenceDirectory:p.evidence,
     inputIdentity:consumer.inputIdentity,bridgeIdentity:consumer.bridgeIdentity,requestFile:sdk.selection.requestFile,buildReport:pin(p.sdkReport),
     controlPins:frozen.controls,dependencyPins:frozen.dependencies.pins,nativeLog:pin(p.nativeLog),
-    buildCapture:{...result.build.rows,timeoutMs:900000,drainMs:2000},
+    buildCapture:{...result.build.rows,timeoutMs:900000,drainMs:2000},...(dual?{debugCapture:cfg.debugCapture,fastToolEvidence}:{}),
     ...{[kind==='release'?'releaseConsumer':'installedConsumer']:{schema:kind==='release'?'soui.installed-release-llvm-context/v1':'soui.installed-acceptance-llvm-context/v1',suiteDirectory:p.suite,pending:frozen.pending,
       requestFile:consumer.pin,sdkAccepted:sdk.selection.sdkAccepted}},qualificationPassed:false,releaseReady:false};
   need(isDeepStrictEqual(cfg,expectedCfg),'Dedicated observer input roles/paths/current pins differ');
@@ -256,17 +301,21 @@ function verify(root,suite,selection,kind='acceptance'){
     subjects[name]=natural(recorded(stage.rows),expectedStages[name]);
   }
   need(isDeepStrictEqual(result.configure.expected.args,expectedArgs)&&result.configure.expected.timeoutMs===900000&&
-    isDeepStrictEqual(result.build.expected.args,['--build',p.build,'--config',p.configuration,'--parallel','2','--verbose'])&&
+    isDeepStrictEqual(dual?cfg.debugCapture.rootArguments:result.build.expected.args,['--build',p.build,'--config',p.configuration,'--parallel','2','--verbose'])&&
     result.build.expected.timeoutMs===900000&&result.observer.expected.timeoutMs===120000,
     'Recorded configure/build budgets/argv differ');
   const log=pin(p.nativeLog);need(log.bytes===result.build.rows.stdout.bytes&&log.sha256===result.build.rows.stdout.sha256&&samePin(log,cfg.nativeLog),
     'Current native log differs from original captured build stdout');
-  validateObservation(read(result.observation.path),cfg,subjects.build,sdk);recheckFrozen(frozen);
-  current(root,p.architecture,p.configuration,selection);return {build:sdk.build,consumer:recordPin};
+  validateObservation(read(result.observation.path),cfg,subjects.build,sdk,result.observation.path,fs.readFileSync(result.observer.rows.context.path));recheckFrozen(frozen);
+  current(root,p.architecture,p.configuration,selection);return {sdk,consumer:recordPin};
+}
+function verify(root,suite,selection,kind='acceptance'){
+  const verified=verifyWithInputs(root,suite,selection,kind);
+  return {build:verified.sdk.build,consumer:verified.consumer};
 }
 function runtimeRunner(root,architecture,configuration,selection){const sdk=current(root,architecture,configuration,selection),runner=sdk.prepared.setup.tools.OwnedProcessRunner;
   need(!process.env.SOUI_OWNED_PROCESS_RUNNER||norm(process.env.SOUI_OWNED_PROCESS_RUNNER)===norm(runner),'LLVM runtime Runner override differs from selected current stock');return runner;}
 const runRelease=suite=>run(suite,'release'),verifyRelease=(root,suite,selection)=>verify(root,suite,selection,'release');
-module.exports={select,current,configureArguments,validateObservationFacts,run,verify,runtimeRunner,runRelease,verifyRelease,releasePaths};
+module.exports={select,current,configureArguments,validateObservationFacts,run,verify,verifyWithInputs,runtimeRunner,runRelease,verifyRelease,releasePaths};
 if(require.main===module)run(process.argv.length===4&&['build','build-release'].includes(process.argv[2])?process.argv[3]:(()=>{throw new Error('Usage: llvm-installed-acceptance.cjs build ABS_SUITE | build-release ABS_RELEASE_OUTPUT');})(),process.argv[2]==='build-release'?'release':'acceptance')
   .then(result=>console.log(id.encoded(result))).catch(error=>{console.error(error.message);process.exitCode=1;});

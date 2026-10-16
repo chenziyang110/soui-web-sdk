@@ -1,0 +1,25 @@
+{
+  "schema": "soui.root-current-sdk-compile-contract-diagnosis/1",
+  "compileDatabase": {
+    "path": "D:/work/sm05-terminal-trace-fixed-sdk-v1/out/x64/compile_commands.json",
+    "bytes": 654778,
+    "sha256": "213f0475184433aee14d3d7e8aa0cb3e7d5cabe63cb37f4e6afa7e0bdf84d12a"
+  },
+  "selectedSdkReleaseRows": 41,
+  "failures": [
+    {
+      "file": "D:/work/sm05-terminal-trace-fixed-sdk-v1/sdk/src/host/runtime_profile.cpp",
+      "object": "D:/work/sm05-terminal-trace-fixed-sdk-v1/out/x64/tools/runtime-doctor/CMakeFiles/SouiRuntimeDoctor.dir/Release/__/__/sdk/src/host/runtime_profile.cpp.obj",
+      "actualCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DNOMINMAX -DUNICODE -DWINVER=0x0601 -D_UNICODE -D_WIN32_WINNT=0x0601 -DCMAKE_INTDIR=\\\"Release\\\" -ID:\\work\\sm05-terminal-trace-fixed-sdk-v1\\sdk\\include --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MT /utf-8 /W4 /Fotools\\runtime-doctor\\CMakeFiles\\SouiRuntimeDoctor.dir\\Release\\__\\__\\sdk\\src\\host\\runtime_profile.cpp.obj /Fdtools\\runtime-doctor\\CMakeFiles\\SouiRuntimeDoctor.dir\\Release\\ -c -- D:\\work\\sm05-terminal-trace-fixed-sdk-v1\\sdk\\src\\host\\runtime_profile.cpp",
+      "facts": {
+        "md": false,
+        "uDebug": false,
+        "winver": true,
+        "win32Winnt": true
+      }
+    }
+  ],
+  "originalNativeCompiled": true,
+  "semanticAcceptance": false,
+  "actualCompilerInvoked": false
+}

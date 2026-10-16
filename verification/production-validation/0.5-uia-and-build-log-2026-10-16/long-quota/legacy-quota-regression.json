@@ -1,0 +1,553 @@
+{
+  "schema": "soui.task-store-quota-acceptance-source-pure/1",
+  "sourceOnly": true,
+  "sourceAuthor": "/root",
+  "passed": 106,
+  "failed": 0,
+  "tests": [
+    {
+      "name": "entire-acceptance-main-raw-reversal-exact",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "all-old-storage-schema1-and-null-serialization-raw-exact",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "legacy-long-owner-reader-byteexact-not-imported-or-weakened",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "qpc-getter-actual-order-and-not-old-diagnostic-end",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "native-caller-real-identity-qpc-and-failed-clock-null",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "existing-bridge-construction-default-and-closures-remain-original",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "serialized-null-unconfigured-model-still-never-budget-pass",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "serialized-explicit-policy-0",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "serialized-explicit-policy-100",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "serialized-explicit-policy-18446744073709551615",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "same-numeric-pool-and-diagnostic-epoch-stay-separate",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "canonical-u64-and-qpc-above-2pow53-not-rounded",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "serialized-uint64-counters-above-2pow53-preserve-original-decimals",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "valid-unicode-scalar-utf8-surrogate-pair-decodes",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "canonical-u64-reject--1",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "canonical-u64-reject-01",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "canonical-u64-reject-1.0",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "canonical-u64-reject-1e3",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "canonical-u64-reject-18446744073709551616",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "canonical-u64-reject-9007199254740992",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "canonical-u64-reject-null",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "missing-quota-record-is-partial",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "missing-field",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "unknown-field",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "wrong-schema",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "getter-state-mismatch",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "null-cannot-borrow-finite-expected-policy",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "finite-policy-cannot-be-null",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "available-credit-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "owner-epoch-zero-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "owner-epoch-sentinel-never-valid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "owner-epoch-changed-within-bridge",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "diagnostics-service-owner-changed",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "diagnostics-epoch-not-borrowed-from-pool",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "success-live-over-charged",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "live-over-peak",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "successful-peak-over-charged-peak",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "available-denial-inexact",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "saturated-denial-invalid-not-later-green",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "denial-reversed",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "charged-peak-reversed",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "window-id-wrong",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "window-handle-changed",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "native-pid-wrong",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "native-creation-time-wrong",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "thread-is-not-native-window-owner",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "native-identity-api-failed",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "native-capture-invalid-has-no-zero-clock-success",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "clock-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "clock-end-before-begin",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "clock-unit-wrong",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "clock-source-wrong",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "parent-clock-predates-real-quota-read",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "frequency-differs",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "capture-replay-not-fresh",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "parent-thread-wrong",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "live-owner-wrong-lifetime",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "missing-one-cycle-sample-is-partial",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "wrong-reload-order",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "duplicated-live-view",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "retired-copy-replayed-after-destruction",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "native-failure-before-complete-stays-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "cleanup-failure-after-complete-stays-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "early-complete-not-finite-reload-evidence",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "fake-production-budget-pass",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "fake-calibration",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "binding-source-sha-malformed",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "binding-extra-field",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "complete-physical-inputs-mismatch-is-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "wrong-expected-run-mode",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "wrong-bind-pid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "cleared-busy-cannot-be-null-configured-green",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "cleared-unavailable-cannot-be-null-configured-green",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "busy-leaked-counter-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "partial-busy-cannot-hide-later-definite-failure",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "old-diagnostics-disabled-does-not-disable-independent-quota",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "raw-duplicate-field",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "raw-missing-final-lf",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "raw-bom",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "raw-invalid-utf8",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "raw-crlf-not-native-binary-lf",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "raw-too-large",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "raw-too-many-rows",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "raw-depth-bound",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "raw-unpaired-surrogate",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "raw-original-sha-must-match-not-decoded-projection",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "binding-getter-throw-never-false-green-undefined",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "binding-getter-throw-never-false-green-null",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "binding-getter-throw-never-false-green-string",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "binding-getter-throw-never-false-green-object",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "peer-regression-extra-owner-before-known-single-lifetime",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "peer-regression-runtime-closed-before-closed",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "second-mount-after-real-close-is-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "premature-close-before-declared-reloads-is-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "mounted-sample-before-process-is-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "cycle-sample-after-closed-is-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "one-missing-cycle-remains-partial-not-complete",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "peer-residual-wrong-terminal-cycle-old-readers-match-new-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "exact-known-cycle-for-process",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "exact-known-cycle-for-mounted",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "exact-known-cycle-for-closed",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "exact-known-cycle-for-runtime-closed",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "mount-cycle-must-be-zero",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "close-cycle-must-be-declared-total-plus-one",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "terminal-cycle-unsafe-number-is-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    },
+    {
+      "name": "terminal-cycle-string-is-invalid",
+      "passed": true,
+      "kind": "EXPLICIT_PURE_MODEL_OR_SOURCE_ONLY"
+    }
+  ],
+  "allFixturesExplicitModels": true,
+  "modelsAreNativeEvidence": false,
+  "cppCompiled": false,
+  "cppExecuted": false,
+  "actualNative": null,
+  "actualSdk": null,
+  "actualAcceptance": null,
+  "actual100Reload": null,
+  "calibrationPin": null,
+  "productionDefaultQuota": null,
+  "productionDefaultGate": "not-evaluated",
+  "fullCacheBudgetGate": "not-evaluated",
+  "qualificationPassed": false,
+  "releaseReady": false
+}

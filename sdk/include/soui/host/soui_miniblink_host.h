@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <soui/bridge_adapter.h>
 #include <atomic>
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <mutex>
@@ -34,6 +35,13 @@ inline constexpr std::uint32_t ime_position_message = 0x84D3U;
 // keeps the engine pumping; retry within the caller's finite close deadline.
 // Failed/Unsupported retain the runtime/module and must not be treated as closed.
 [[nodiscard]] host_result shutdown_miniblink_runtime();
+
+// Application convenience for the same final shutdown, on the caller's UI
+// thread after every Host is destroyed. Pumps bounded Windows message batches,
+// retries only pending, and preserves WM_QUIT for the outer loop. Nonnegative
+// timeout is a total monotonic budget; zero makes one non-blocking attempt.
+// Timeout/failure retains the runtime and is never evidence of completed exit.
+[[nodiscard]] host_result wait_for_miniblink_runtime_shutdown(std::chrono::milliseconds timeout);
 
 // Native-only, non-blocking observation. No pump, work posting or kernel
 // initialization. Disabled/busy/not_started are incomplete data, not zeros.

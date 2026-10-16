@@ -5,7 +5,7 @@
 #include <mmsystem.h>
 #include <atomic>
 #include <cstdint>
-#include <cstdlib>
+#include <soui/host/frame_rate_policy.h>
 #include <thread>
 #pragma comment(lib, "winmm.lib")
 
@@ -23,7 +23,7 @@ class frame_pacer final {
 
   bool start(HWND window, unsigned target, bool prefer_high_resolution = true) {
     stop();
-    if (!IsWindow(window) || (target != 60 && target != 120 && target != 144)) return false;
+    if (!IsWindow(window) || !is_supported_frame_rate(target)) return false;
     LARGE_INTEGER frequency{}, now{};
     if (!QueryPerformanceFrequency(&frequency) || !QueryPerformanceCounter(&now)) return false;
     window_ = window;
@@ -79,9 +79,14 @@ class frame_pacer final {
     const DWORD override_length = GetEnvironmentVariableA("SOUI_DISPLAY_REFRESH_OVERRIDE",
                                                            override_value, sizeof(override_value));
     if (override_length && override_length < sizeof(override_value)) {
-      const unsigned requested = static_cast<unsigned>(strtoul(override_value, nullptr, 10));
-      if (requested == 60 || requested == 120 || requested == 144)
-        return requested;
+      unsigned requested = 0;
+      bool decimal = true;
+      for (DWORD i = 0; i < override_length; ++i) {
+        const char digit = override_value[i];
+        if (digit < '0' || digit > '9') { decimal = false; break; }
+        requested = requested * 10 + static_cast<unsigned>(digit - '0');
+      }
+      if (decimal && is_supported_frame_rate(requested)) return requested;
     }
     if (!window) return 0;
     const HMONITOR monitor = MonitorFromWindow(window, MONITOR_DEFAULTTONEAREST);
@@ -93,7 +98,7 @@ class frame_pacer final {
     mode.dmSize = sizeof(mode);
     if (!EnumDisplaySettingsExW(monitor_info.szDevice, ENUM_CURRENT_SETTINGS, &mode, 0)) return 0;
     const DWORD value = mode.dmDisplayFrequency;
-    return value >= 30 && value <= 1000 ? static_cast<unsigned>(value) : 0;
+    return is_supported_frame_rate(value) ? static_cast<unsigned>(value) : 0;
   }
   [[nodiscard]] bool failed() const noexcept { return clock_failed_.load(); }
   [[nodiscard]] unsigned backend() const noexcept { return backend_; }

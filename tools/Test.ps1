@@ -100,6 +100,13 @@ if(-not $NativeOnly){
     [IO.Directory]::CreateDirectory($crtResultDirectory) | Out-Null
     & $PowerShellExe -NoLogo -NoProfile -File (Join-Path $root 'tests/sdk/llvm-crt-options.Tests.ps1') -BeforeObserverPath (Join-Path $root 'tests/fixtures/llvm-crt/before-Observe-LlvmBuild.ps1') -OutputPath (Join-Path $crtResultDirectory 'result.json')
     if($LASTEXITCODE-ne0){throw 'LLVM CRT option regressions failed'}
+    $webviewResultDirectory=Join-Path $output ('llvm-webview2-dependencies-'+[Guid]::NewGuid().ToString('N'))
+    & $PowerShellExe -NoLogo -NoProfile -File (Join-Path $root 'tests/sdk/llvm-webview2-dependencies.Tests.ps1') -OutputRoot $webviewResultDirectory
+    if($LASTEXITCODE-ne0){throw 'LLVM authenticated WebView2 dependency regressions failed'}
+    & $PowerShellExe -NoLogo -NoProfile -File (Join-Path $root 'tests/sdk/llvm-binary-command-index.Tests.ps1')
+    if($LASTEXITCODE-ne0){throw 'LLVM binary command index regressions failed'}
+    & $PowerShellExe -NoLogo -NoProfile -File (Join-Path $root 'tests/sdk/soui-llvm-entry.Tests.ps1')
+    if($LASTEXITCODE-ne0){throw 'SOUI LLVM public entry boundary regressions failed'}
   }
   $validationRunner=& (Join-Path $PSScriptRoot 'internal/Build-ValidationTools.ps1') -Architecture $Architecture @validationProfile
   if($LASTEXITCODE -ne 0){throw 'Owned process supervision tools build failed'}
@@ -126,15 +133,24 @@ if(-not $NativeOnly){
   if($LASTEXITCODE -ne 0){throw 'SDK native payload tests failed'}
   & node --test (Join-Path $root 'tests/sdk/installation-interruption.test.cjs') (Join-Path $root 'tests/sdk/profile-installation-integration.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'SDK installation interruption tests failed'}
-  & node --test (Join-Path $root 'tests/sdk/delivery-identity.test.cjs') (Join-Path $root 'tests/sdk/release-verification.test.cjs') (Join-Path $root 'tests/sdk/stage-soui-source.test.cjs') (Join-Path $root 'tests/native/miniblink_public_host.test.cjs') (Join-Path $root 'tests/sdk/llvm-evidence-readers.test.cjs')
+  & node --test (Join-Path $root 'tests/sdk/delivery-identity.test.cjs') (Join-Path $root 'tests/sdk/legal-notice-materials.test.cjs') (Join-Path $root 'tests/sdk/release-verification.test.cjs') (Join-Path $root 'tests/sdk/release-stock-routing.test.cjs') (Join-Path $root 'tests/sdk/sdk-build-inputs.test.cjs') (Join-Path $root 'tests/sdk/verification-profile.test.cjs') (Join-Path $root 'tests/sdk/build-source-manifest.test.cjs') (Join-Path $root 'tests/sdk/stage-soui-source.test.cjs') (Join-Path $root 'tests/native/miniblink_public_host.test.cjs') (Join-Path $root 'tests/sdk/llvm-evidence-readers.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'Delivery identity or public Host tests failed'}
+  & node --test (Join-Path $root 'tests/sdk/dependency-evidence.test.cjs') (Join-Path $root 'tests/sdk/dependency-input-archive.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'Dependency source/runtime evidence regressions failed'}
+  & node --test (Join-Path $root 'tests/calibration/reader.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'Native TaskStore calibration reader regressions failed'}
   if($vendorState.mode -eq 'ON'){
     & node --test (Join-Path $root 'tests/native/miniblink_header_abi.test.cjs')
     if($LASTEXITCODE -ne 0){throw 'Private Miniblink source ABI comparison failed'}
   }
-  & node --test (Join-Path $root 'tests/sdk/modern-evidence.test.cjs')
+  & node --test (Join-Path $root 'tests/sdk/modern-evidence.test.cjs') (Join-Path $root 'tests/sdk/application-package.test.cjs') (Join-Path $root 'tests/sdk/console-json.test.cjs')
   if($LASTEXITCODE -ne 0){throw 'Modern delivery evidence tests failed'}
-  $newReaderTests=@('tests/acceptance/unicode-copy.test.cjs','tests/acceptance/resource-validation.test.cjs','tests/acceptance/session-validation.test.cjs',
+  $acceptanceInstall=Join-Path $output ('acceptance-toolchain-'+[Guid]::NewGuid().ToString('N'))
+  [IO.Directory]::CreateDirectory($acceptanceInstall) | Out-Null
+  & npm.cmd --prefix (Join-Path $root 'tests/acceptance') ci --no-audit --no-fund *> (Join-Path $acceptanceInstall 'install.log')
+  if($LASTEXITCODE -ne 0){throw "Acceptance reader toolchain install failed; inspect $acceptanceInstall"}
+  $newReaderTests=@('tests/acceptance/process-address-census.test.cjs','tests/acceptance/unicode-copy.test.cjs','tests/acceptance/resource-validation.test.cjs','tests/acceptance/session-validation.test.cjs',
+    'tests/acceptance/installed-host-runner.test.cjs','tests/acceptance/resource-input-reuse.test.cjs','tests/acceptance/llvm-resource-inputs.test.cjs',
     'tests/tooling/devkit-command.test.cjs','tests/tooling/devkit-delivery.test.cjs','tests/tooling/desktop-smoke.test.cjs') |
     ForEach-Object { Join-Path $root $_ }
   foreach($testFile in $newReaderTests){if(-not [IO.File]::Exists($testFile)){throw "Required adopted test is missing: $testFile"}}
@@ -158,6 +174,8 @@ if(-not $NativeOnly){
   if($LASTEXITCODE -ne 0){throw 'Web runtime feature tests failed'}
   & node --test (Join-Path $root 'tests/web/session-renewal.test.mjs') (Join-Path $root 'tests/web/agent-session-renewal.test.mjs') (Join-Path $root 'tests/web/webview2-preload.test.mjs')
   if($LASTEXITCODE -ne 0){throw 'Web session renewal tests failed'}
+  & node --test (Join-Path $root 'tests/acceptance/software-cache-budget.test.cjs') (Join-Path $root 'tests/acceptance/long-run-task-quota.test.cjs') (Join-Path $root 'tests/sdk/long-run-policy.test.cjs') (Join-Path $root 'tests/sdk/long-run-cache-observation.test.cjs') (Join-Path $root 'tests/acceptance/resource-validation.test.cjs')
+  if($LASTEXITCODE -ne 0){throw 'Long-run quota, owner, cache or resource reader regressions failed'}
   if((Get-FileHash -LiteralPath $vendorState.cache -Algorithm SHA256).Hash.ToLowerInvariant() -cne $vendorState.cacheSha256){
     throw 'Native test configuration changed during unit tests; rerun against a stable build.'
   }

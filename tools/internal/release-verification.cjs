@@ -40,7 +40,7 @@ function externalWorkspace(source, workspace) {
   return full;
 }
 function businessSnapshot(project) {
-  const names = ['app', 'web', 'contracts', 'resources'].filter(name => fs.existsSync(id.safePath(project, name)))
+  const names = ['app', 'web', 'contracts', 'resources', 'docs/generated'].filter(name => fs.existsSync(id.safePath(project, name)))
     .flatMap(name => id.walk(project, name, (_relative, leaf) => id.skipped.has(leaf)));
   for (const name of ['CMakeLists.txt', 'project.json', 'VERSION', '.gitattributes', '.gitignore'])
     if (fs.existsSync(id.safePath(project, name))) names.push(name);
@@ -103,17 +103,32 @@ function save(file, value) {
 }
 function create(file, value) { fs.writeFileSync(id.safePath(file), id.encoded(value), {flag: 'wx'}); }
 function validateReleaseProfile(value) {
-  requireTrue(value?.schema==='soui.release-requested-profile/v1'&&value.profile==='LLVM22MSVC142'&&
+  requireTrue(['soui.release-requested-profile/v1','soui.release-requested-profile/v2'].includes(value?.schema)&&value.profile==='LLVM22MSVC142'&&
     typeof value.toolsRoot==='string'&&path.isAbsolute(value.toolsRoot)&&
-    id.safePath(value.toolsRoot).toLowerCase()!==root.toLowerCase()&&value.legacyToolsRoot===root&&
+    typeof value.legacyToolsRoot==='string'&&path.isAbsolute(value.legacyToolsRoot)&&
+    [value.toolsRoot,value.legacyToolsRoot].every(item=>/^[A-Za-z]:[\\/]/.test(item)&&!/[;"\x00-\x1f]/.test(item))&&
+    id.safePath(value.toolsRoot).toLowerCase()!==id.safePath(value.legacyToolsRoot).toLowerCase()&&
+    (value.schema==='soui.release-requested-profile/v2'||value.legacyToolsRoot===root)&&
     isDeepStrictEqual(Object.keys(value.paths||{}).sort(),[...llvmPathNames].sort())&&
     Object.values(value.paths).every(item=>typeof item==='string'&&/^[A-Za-z]:[\\/]/.test(item)&&!/[;"\x00-\x1f]/.test(item))&&
     value.qualificationPassed===false&&value.releaseReady===false,'Explicit independent LLVM stock and six safe inputs required');
   return value;
 }
+function validateStockOwners(value) {
+  validateReleaseProfile(value);
+  const modern=id.safePath(value.toolsRoot),legacy=id.safePath(value.legacyToolsRoot);
+  requireTrue(fs.statSync(modern).isDirectory()&&fs.statSync(legacy).isDirectory()&&
+    fs.realpathSync.native(modern).toLowerCase()!==fs.realpathSync.native(legacy).toLowerCase(),
+    'LLVM and historical MSVC stock must have physically distinct source owners');
+  return value;
+}
 function phaseProfile(run,name) {
   requireTrue(phaseNames.includes(name),'Unknown release phase');
   return run.nativeToolchain&&!['baseline','rollback'].includes(name)?'LLVM22MSVC142':'MSVC143';
+}
+function releaseToolsRoot(run,name) {
+  return phaseProfile(run,name)==='LLVM22MSVC142'?run.nativeToolchain.requested.toolsRoot:
+    run.nativeToolchain?.requested.legacyToolsRoot||root;
 }
 function selectedFor(run,name) {
   return phaseProfile(run,name)==='LLVM22MSVC142'?{nativeToolchain:'LLVM22MSVC142',
@@ -179,8 +194,7 @@ function begin(file, workspace, packagePath, oldPackage, architecture = 'x64', p
     workspace: external, startedAt: new Date().toISOString(), steps: [], releaseReady: false};
   if(profileFile){requireTrue(id.safePath(profileFile)===path.join(path.dirname(file),'requested-profile.json'),'Fixed requested profile input required');
     const bytes=fs.readFileSync(profileFile),requested=validateReleaseProfile(JSON.parse(bytes.toString('utf8')));
-    requireTrue(fs.realpathSync.native(requested.toolsRoot).toLowerCase()!==fs.realpathSync.native(root).toLowerCase(),
-      'LLVM and historical MSVC stock must have physically distinct source owners');
+    validateStockOwners(requested);
     run.nativeToolchain={requested,input:{path:id.safePath(profileFile),bytes:bytes.length,sha256:id.hash(bytes)}};
     run.phaseSources={};}
   fs.mkdirSync(path.dirname(id.safePath(file)), {recursive: true});
@@ -199,7 +213,9 @@ function preparePhase(file,name){
   const source=transactionProject(run,name),destination=projectFor(run,name),lock=sdk.readLock(source);
   requireTrue(!fs.existsSync(destination),'Phase Source/output cannot be reused');
   const before=id.source(source),business=businessSnapshot(source),names=new Set([...before.files.map(row=>row.path),
-    ...lock.manifest.files.map(row=>row.path),'.gitattributes','.gitignore','sdk-lock.json']);
+    ...lock.manifest.files.map(row=>row.path),
+    ...(fs.existsSync(id.safePath(source,'docs/generated'))?id.walk(source,'docs/generated'):[]),
+    '.gitattributes','.gitignore','sdk-lock.json']);
   fs.mkdirSync(destination,{recursive:true});
   for(const relative of [...names].sort()){
     requireTrue(!relative.split('/').some(part=>['out','.git','.vs','node_modules'].includes(part))&&!/\.(obj|pch)$/i.test(relative),
@@ -212,7 +228,7 @@ function preparePhase(file,name){
     'Transaction Source/lock/business changed during phase copying');
   run.phaseSources[name]={transaction:source,project:destination,sourceSha256:before.sha256,businessSha256:business.sha256,
     sdkManifestSha256:lock.manifestSha256,nativeToolchain:phaseProfile(run,name)};save(file,run);
-  return {project:destination,nativeToolchain:phaseProfile(run,name),toolsRoot:phaseProfile(run,name)==='LLVM22MSVC142'?run.nativeToolchain.requested.toolsRoot:root};
+  return {project:destination,nativeToolchain:phaseProfile(run,name),toolsRoot:releaseToolsRoot(run,name)};
 }
 function setBusiness(file) {
   const run = readRun(file);
@@ -234,7 +250,7 @@ async function smoke(file, name, nonce) {
   if(profile==='LLVM22MSVC142')compilerBinding(project,run.architecture);
   else buildEvidence.verifyBuild(project, run.architecture, 'Release');
   const result = await desktopSmoke.runSmoke(project, {architecture: run.architecture,
-    configuration: 'Release',toolsRoot:profile==='LLVM22MSVC142'?run.nativeToolchain.requested.toolsRoot:root,
+    configuration: 'Release',toolsRoot:releaseToolsRoot(run,name),
     ...(profile==='LLVM22MSVC142'?{toolchainRequest:selected.profileRequest}:{})});
   // runSmoke preserves every application raw Job/finished/log attempt, including failures.
   create(receipt, result);
@@ -452,13 +468,13 @@ function complete(file) {
   save(file, run);
   return {...common, phases: run.steps.length, consumer: run.consumer, receipts: run.receipts};
 }
-module.exports = {externalWorkspace, businessSnapshot, validateStep, validateUpgrade, validateReports, verifyConsumer,validateReleaseProfile,phaseProfile};
+module.exports = {externalWorkspace, businessSnapshot, validateStep, validateUpgrade, validateReports, verifyConsumer,validateReleaseProfile,phaseProfile,releaseToolsRoot,validateStockOwners};
 if (require.main === module) (async () => {
   try {
     const [command, ...args] = process.argv.slice(2);
-    const surface = {begin: [5, begin], business: [1, setBusiness], smoke: [3, smoke], record: [2, record],'prepare-phase':[2,preparePhase],'prepare-consumer':[1,prepareConsumer],
+    const surface = {profile:[1,file=>validateStockOwners(id.readJson(id.safePath(file)))],begin: [5, begin], business: [1, setBusiness], smoke: [3, smoke], record: [2, record],'prepare-phase':[2,preparePhase],'prepare-consumer':[1,prepareConsumer],
       'copy-files': [1, copyFiles], consumer: [1, consumer], complete: [1, complete]};
-    requireTrue(surface[command] && (args.length === surface[command][0]||(command==='begin'&&args.length===6)), 'Usage: release-verification.cjs begin RUN WORKSPACE PACKAGE OLD_PACKAGE x86|x64 [REQUESTED_PROFILE] | prepare-phase RUN PHASE | business RUN | smoke RUN PHASE NONCE | record RUN PHASE | copy-files RUN | consumer RUN | complete RUN');
+    requireTrue(surface[command] && (args.length === surface[command][0]||(command==='begin'&&args.length===6)), 'Usage: release-verification.cjs profile REQUESTED_PROFILE | begin RUN WORKSPACE PACKAGE OLD_PACKAGE x86|x64 [REQUESTED_PROFILE] | prepare-phase RUN PHASE | business RUN | smoke RUN PHASE NONCE | record RUN PHASE | copy-files RUN | consumer RUN | complete RUN');
     process.stdout.write(id.encoded(await surface[command][1](...args)));
   } catch (error) { process.stderr.write(`Release verification: ${error.message}\n`); process.exitCode = 1; }
 })();

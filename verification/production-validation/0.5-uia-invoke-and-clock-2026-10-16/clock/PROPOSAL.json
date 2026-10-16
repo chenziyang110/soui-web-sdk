@@ -1,0 +1,56 @@
+{
+  "schema": "soui.proposal-overlay/v1",
+  "basePacket": {
+    "path": "C:\\work\\sm05-memory-envelope-1\\PROPOSAL.json",
+    "bytes": 5252,
+    "sha256": "24a64b285fab4f7a144c9db9a3aba752676e94c82728bce3ce857293ffa79b67"
+  },
+  "source24": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 15734831,
+    "sha256": "52e19555127cff41afabb4ee9e7b0af662630cbdfce35f270d0d4753473d1cf4"
+  },
+  "files": [
+    {
+      "relative": "tests/acceptance/process-address-census.cjs",
+      "supersedes": {
+        "path": "C:\\work\\sm05-memory-envelope-1\\proposal\\tests\\acceptance\\process-address-census.cjs",
+        "bytes": 6596,
+        "sha256": "d75d89ac0546d6fca1bfdb00da1b73cba90aae57a834390700fb47f6cf80b44c"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-memory-envelope-2\\proposal\\tests\\acceptance\\process-address-census.cjs",
+        "bytes": 6871,
+        "sha256": "26cc05fc4ffb8e8641dfd5a1f66802d87c336890dcf2511f91208bab52ca161e"
+      }
+    },
+    {
+      "relative": "tests/acceptance/process-address-census.test.cjs",
+      "supersedes": {
+        "path": "C:\\work\\sm05-memory-envelope-1\\proposal\\tests\\acceptance\\process-address-census.test.cjs",
+        "bytes": 5802,
+        "sha256": "413b8ad57053c2acd9c15e66084de3d8786f5d19a4421afa5ae589037ed537f7"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-memory-envelope-2\\proposal\\tests\\acceptance\\process-address-census.test.cjs",
+        "bytes": 6484,
+        "sha256": "434ad38a0b30bf920a5a6757ae2de82d7f710db8594990eb83246930dfc32aaa"
+      }
+    }
+  ],
+  "proofs": [
+    {
+      "path": "C:\\work\\sm05-memory-envelope-2\\red.txt",
+      "bytes": 1995,
+      "sha256": "3f973a162e4677410b43ec3ebc145a8ae7ecaac3e13da1774c3f46569415de60"
+    },
+    {
+      "path": "C:\\work\\sm05-memory-envelope-2\\green.txt",
+      "bytes": 937,
+      "sha256": "ad177801711ccf89eaea935131325b7c596adc1c1976c306385fc1d6e75d3298"
+    }
+  ],
+  "scope": "Reject uint64-encoded QPC values that cannot originate from signed Windows LARGE_INTEGER; native collector and all budgets unchanged",
+  "adopted": false,
+  "releaseReady": false
+}

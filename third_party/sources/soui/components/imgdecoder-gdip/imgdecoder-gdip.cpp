@@ -136,11 +136,17 @@ namespace SOUI
 
     int SImgX_GDIP::_InitFromGdipBitmap(Bitmap * bmpSrc)
     {
+        const UINT width = bmpSrc->GetWidth(), height = bmpSrc->GetHeight();
+        if (!width || !height || width > MAXLONG || height > MAXLONG)
+        {
+            m_nFrameCount = 0;
+            return 0;
+        }
         GUID   pageGuid = FrameDimensionTime;
         // Get the number of frames in the first dimension.
         m_nFrameCount = max(1, bmpSrc->GetFrameCount(&pageGuid));
         
-        SIZE imSize={bmpSrc->GetWidth(),bmpSrc->GetHeight()};
+        SIZE imSize={static_cast<LONG>(width),static_cast<LONG>(height)};
 
         if (m_nFrameCount>1)
         {

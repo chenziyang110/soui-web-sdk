@@ -1,0 +1,2480 @@
+
+File: C:/work/sm05-release-050/third_party/prebuilt/x86/soui/bin/utilities.dll
+Format: COFF-i386
+Arch: i386
+AddressSize: 32bit
+ImageFileHeader {
+  Machine: IMAGE_FILE_MACHINE_I386 (0x14C)
+  SectionCount: 5
+  TimeDateStamp: 2026-05-11 09:50:35 (0x6A01A66B)
+  PointerToSymbolTable: 0x0
+  SymbolCount: 0
+  StringTableSize: 0
+  OptionalHeaderSize: 224
+  Characteristics [ (0x2102)
+    IMAGE_FILE_32BIT_MACHINE (0x100)
+    IMAGE_FILE_DLL (0x2000)
+    IMAGE_FILE_EXECUTABLE_IMAGE (0x2)
+  ]
+}
+ImageOptionalHeader {
+  Magic: 0x10B
+  MajorLinkerVersion: 14
+  MinorLinkerVersion: 16
+  SizeOfCode: 45568
+  SizeOfInitializedData: 107520
+  SizeOfUninitializedData: 0
+  AddressOfEntryPoint: 0xB297
+  BaseOfCode: 0x1000
+  BaseOfData: 0xD000
+  ImageBase: 0x10000000
+  SectionAlignment: 4096
+  FileAlignment: 512
+  MajorOperatingSystemVersion: 6
+  MinorOperatingSystemVersion: 0
+  MajorImageVersion: 0
+  MinorImageVersion: 0
+  MajorSubsystemVersion: 6
+  MinorSubsystemVersion: 0
+  SizeOfImage: 167936
+  SizeOfHeaders: 1024
+  CheckSum: 0x0
+  Subsystem: IMAGE_SUBSYSTEM_WINDOWS_GUI (0x2)
+  Characteristics [ (0x140)
+    IMAGE_DLL_CHARACTERISTICS_DYNAMIC_BASE (0x40)
+    IMAGE_DLL_CHARACTERISTICS_NX_COMPAT (0x100)
+  ]
+  SizeOfStackReserve: 1048576
+  SizeOfStackCommit: 4096
+  SizeOfHeapReserve: 1048576
+  SizeOfHeapCommit: 4096
+  NumberOfRvaAndSize: 16
+  DataDirectory {
+    ExportTableRVA: 0xE660
+    ExportTableSize: 0x6C4C
+    ImportTableRVA: 0x152AC
+    ImportTableSize: 0xF0
+    ResourceTableRVA: 0x27000
+    ResourceTableSize: 0x4D0
+    ExceptionTableRVA: 0x0
+    ExceptionTableSize: 0x0
+    CertificateTableRVA: 0x0
+    CertificateTableSize: 0x0
+    BaseRelocationTableRVA: 0x28000
+    BaseRelocationTableSize: 0x804
+    DebugRVA: 0xD950
+    DebugSize: 0x1C
+    ArchitectureRVA: 0x0
+    ArchitectureSize: 0x0
+    GlobalPtrRVA: 0x0
+    GlobalPtrSize: 0x0
+    TLSTableRVA: 0x0
+    TLSTableSize: 0x0
+    LoadConfigTableRVA: 0xD970
+    LoadConfigTableSize: 0x40
+    BoundImportRVA: 0x0
+    BoundImportSize: 0x0
+    IATRVA: 0xD000
+    IATSize: 0x1A8
+    DelayImportDescriptorRVA: 0x0
+    DelayImportDescriptorSize: 0x0
+    CLRRuntimeHeaderRVA: 0x0
+    CLRRuntimeHeaderSize: 0x0
+    ReservedRVA: 0x0
+    ReservedSize: 0x0
+  }
+}
+DOSHeader {
+  Magic: MZ
+  UsedBytesInTheLastPage: 144
+  FileSizeInPages: 3
+  NumberOfRelocationItems: 0
+  HeaderSizeInParagraphs: 4
+  MinimumExtraParagraphs: 0
+  MaximumExtraParagraphs: 65535
+  InitialRelativeSS: 0
+  InitialSP: 184
+  Checksum: 0
+  InitialIP: 0
+  InitialRelativeCS: 0
+  AddressOfRelocationTable: 64
+  OverlayNumber: 0
+  OEMid: 0
+  OEMinfo: 0
+  AddressOfNewExeHeader: 264
+}
+Import {
+  Name: KERNEL32.dll
+  ImportLookupTableRVA: 0x153B0
+  ImportAddressTableRVA: 0xD014
+  Symbol: ReleaseSemaphore (1206)
+  Symbol: WaitForSingleObject (1497)
+  Symbol: CreateSemaphoreW (236)
+  Symbol: GetLastError (609)
+  Symbol: MultiByteToWideChar (1009)
+  Symbol: WideCharToMultiByte (1536)
+  Symbol: MulDiv (1008)
+  Symbol: CloseHandle (134)
+  Symbol: IsDebuggerPresent (897)
+  Symbol: InitializeSListHead (869)
+  Symbol: DisableThreadLibraryCalls (286)
+  Symbol: GetSystemTimeAsFileTime (745)
+  Symbol: GetCurrentThreadId (540)
+  Symbol: GetCurrentProcessId (536)
+  Symbol: QueryPerformanceCounter (1103)
+  Symbol: DeleteCriticalSection (272)
+  Symbol: LeaveCriticalSection (959)
+  Symbol: EnterCriticalSection (305)
+  Symbol: InitializeCriticalSection (864)
+  Symbol: IsProcessorFeaturePresent (904)
+  Symbol: TerminateProcess (1422)
+  Symbol: GetCurrentProcess (535)
+  Symbol: SetUnhandledExceptionFilter (1391)
+  Symbol: UnhandledExceptionFilter (1455)
+}
+Import {
+  Name: USER32.dll
+  ImportLookupTableRVA: 0x15414
+  ImportAddressTableRVA: 0xD078
+  Symbol: LoadStringW (604)
+  Symbol: LoadStringA (603)
+  Symbol: OffsetRect (672)
+  Symbol: IntersectRect (534)
+  Symbol: GetDC (319)
+  Symbol: ReleaseDC (766)
+}
+Import {
+  Name: GDI32.dll
+  ImportLookupTableRVA: 0x1539C
+  ImportAddressTableRVA: 0xD000
+  Symbol: GetObjectW (682)
+  Symbol: GetViewportOrgEx (727)
+  Symbol: GetCurrentObject (624)
+  Symbol: GetDeviceCaps (632)
+}
+Import {
+  Name: VCRUNTIME140.dll
+  ImportLookupTableRVA: 0x15430
+  ImportAddressTableRVA: 0xD094
+  Symbol: __std_type_info_destroy_list (37)
+  Symbol: _CxxThrowException (1)
+  Symbol: memmove (71)
+  Symbol: memcmp (69)
+  Symbol: __std_exception_destroy (34)
+  Symbol: __std_exception_copy (33)
+  Symbol: _except_handler4_common (53)
+  Symbol: wcsstr (80)
+  Symbol: wcsrchr (79)
+  Symbol: wcschr (78)
+  Symbol: memcpy (70)
+  Symbol: memset (72)
+  Symbol: __CxxFrameHandler3 (16)
+  Symbol: _purecall (61)
+  Symbol: __std_terminate (35)
+}
+Import {
+  Name: api-ms-win-crt-heap-l1-1-0.dll
+  ImportLookupTableRVA: 0x15480
+  ImportAddressTableRVA: 0xD0E4
+  Symbol: malloc (25)
+  Symbol: free (24)
+  Symbol: _callnewh (8)
+  Symbol: realloc (26)
+  Symbol: calloc (23)
+}
+Import {
+  Name: api-ms-win-crt-stdio-l1-1-0.dll
+  ImportLookupTableRVA: 0x154EC
+  ImportAddressTableRVA: 0xD150
+  Symbol: ferror (118)
+  Symbol: fopen (125)
+  Symbol: _wfopen (98)
+  Symbol: fread (131)
+  Symbol: __stdio_common_vswprintf_s (19)
+  Symbol: __stdio_common_vsprintf (13)
+  Symbol: fclose (116)
+  Symbol: fseek (135)
+  Symbol: __stdio_common_vsprintf_s (15)
+  Symbol: fwrite (138)
+  Symbol: _ftelli64 (51)
+  Symbol: ftell (137)
+  Symbol: _fseeki64 (47)
+  Symbol: __stdio_common_vswprintf (17)
+}
+Import {
+  Name: api-ms-win-crt-string-l1-1-0.dll
+  ImportLookupTableRVA: 0x15528
+  ImportAddressTableRVA: 0xD18C
+  Symbol: _wcsicmp (74)
+  Symbol: _wcslwr (78)
+  Symbol: _wcsupr (93)
+  Symbol: wcslen (163)
+  Symbol: wcscmp (158)
+  Symbol: strlen (139)
+}
+Import {
+  Name: api-ms-win-crt-convert-l1-1-0.dll
+  ImportLookupTableRVA: 0x15470
+  ImportAddressTableRVA: 0xD0D4
+  Symbol: wcstod (107)
+  Symbol: wcstoul (115)
+  Symbol: wcstol (110)
+}
+Import {
+  Name: api-ms-win-crt-multibyte-l1-1-0.dll
+  ImportLookupTableRVA: 0x154A0
+  ImportAddressTableRVA: 0xD104
+  Symbol: _mbsicmp (107)
+  Symbol: _mbscmp (96)
+  Symbol: _mbschr (94)
+  Symbol: _mbslwr (115)
+  Symbol: _mbsrchr (171)
+  Symbol: _mbsstr (183)
+  Symbol: _mbsupr (195)
+  Symbol: _mbsinc (111)
+}
+Import {
+  Name: api-ms-win-crt-runtime-l1-1-0.dll
+  ImportLookupTableRVA: 0x154C4
+  ImportAddressTableRVA: 0xD128
+  Symbol: terminate (106)
+  Symbol: _cexit (23)
+  Symbol: _initterm (56)
+  Symbol: _initterm_e (57)
+  Symbol: _seh_filter_dll (65)
+  Symbol: _configure_narrow_argv (25)
+  Symbol: _initialize_narrow_environment (53)
+  Symbol: _initialize_onexit_table (54)
+  Symbol: _execute_onexit_table (36)
+}
+Import {
+  Name: api-ms-win-crt-math-l1-1-0.dll
+  ImportLookupTableRVA: 0x15498
+  ImportAddressTableRVA: 0xD0FC
+  Symbol: _except1 (64)
+}
+Export {
+  Ordinal: 1
+  Name: ??0?$SObjectImpl@UIObject@SOUI@@@SOUI@@QAE@$$QAV01@@Z
+  RVA: 0xA2CA
+}
+Export {
+  Ordinal: 2
+  Name: ??0?$SObjectImpl@UIObject@SOUI@@@SOUI@@QAE@ABV01@@Z
+  RVA: 0xA2CA
+}
+Export {
+  Ordinal: 3
+  Name: ??0?$SObjectImpl@UIObject@SOUI@@@SOUI@@QAE@XZ
+  RVA: 0xA2D5
+}
+Export {
+  Ordinal: 4
+  Name: ??0?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAE@ABV01@@Z
+  RVA: 0x16DC
+}
+Export {
+  Ordinal: 5
+  Name: ??0?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAE@DH@Z
+  RVA: 0x170D
+}
+Export {
+  Ordinal: 6
+  Name: ??0?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAE@PBD@Z
+  RVA: 0x1795
+}
+Export {
+  Ordinal: 7
+  Name: ??0?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAE@PBDH@Z
+  RVA: 0x17DA
+}
+Export {
+  Ordinal: 8
+  Name: ??0?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAE@XZ
+  RVA: 0x1826
+}
+Export {
+  Ordinal: 9
+  Name: ??0?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAE@ABV01@@Z
+  RVA: 0x1830
+}
+Export {
+  Ordinal: 10
+  Name: ??0?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAE@PB_W@Z
+  RVA: 0x1861
+}
+Export {
+  Ordinal: 11
+  Name: ??0?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAE@PB_WH@Z
+  RVA: 0x18AA
+}
+Export {
+  Ordinal: 12
+  Name: ??0?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAE@XZ
+  RVA: 0x1826
+}
+Export {
+  Ordinal: 13
+  Name: ??0?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAE@_WH@Z
+  RVA: 0x18FA
+}
+Export {
+  Ordinal: 14
+  Name: ??0IObject@SOUI@@QAE@ABU01@@Z
+  RVA: 0xA2DE
+}
+Export {
+  Ordinal: 15
+  Name: ??0IObject@SOUI@@QAE@XZ
+  RVA: 0xA2E9
+}
+Export {
+  Ordinal: 16
+  Name: ??0SAutoLock@SOUI@@QAE@AAVSCriticalSection@1@@Z
+  RVA: 0x1000
+}
+Export {
+  Ordinal: 17
+  Name: ??0SCriticalSection@SOUI@@QAE@ABV01@@Z
+  RVA: 0x101C
+}
+Export {
+  Ordinal: 18
+  Name: ??0SCriticalSection@SOUI@@QAE@XZ
+  RVA: 0x103F
+}
+Export {
+  Ordinal: 19
+  Name: ??0SNoCopyable@SOUI@@QAE@XZ
+  RVA: 0x1126
+}
+Export {
+  Ordinal: 20
+  Name: ??0SSemaphore@SOUI@@QAE@XZ
+  RVA: 0x1129
+}
+Export {
+  Ordinal: 21
+  Name: ??0xml_attribute@pugi@@QAE@PAUxml_attribute_struct@1@@Z
+  RVA: 0x199B
+}
+Export {
+  Ordinal: 22
+  Name: ??0xml_attribute@pugi@@QAE@XZ
+  RVA: 0x19A9
+}
+Export {
+  Ordinal: 23
+  Name: ??0xml_attribute_iterator@pugi@@AAE@PAUxml_attribute_struct@1@PAUxml_node_struct@1@@Z
+  RVA: 0x19AF
+}
+Export {
+  Ordinal: 24
+  Name: ??0xml_attribute_iterator@pugi@@QAE@ABVxml_attribute@1@ABVxml_node@1@@Z
+  RVA: 0x19C3
+}
+Export {
+  Ordinal: 25
+  Name: ??0xml_attribute_iterator@pugi@@QAE@XZ
+  RVA: 0x19DB
+}
+Export {
+  Ordinal: 26
+  Name: ??0xml_document@pugi@@QAE@XZ
+  RVA: 0x1A27
+}
+Export {
+  Ordinal: 27
+  Name: ??0xml_node@pugi@@QAE@PAUxml_node_struct@1@@Z
+  RVA: 0x199B
+}
+Export {
+  Ordinal: 28
+  Name: ??0xml_node@pugi@@QAE@XZ
+  RVA: 0x19A9
+}
+Export {
+  Ordinal: 29
+  Name: ??0xml_node_iterator@pugi@@AAE@PAUxml_node_struct@1@0@Z
+  RVA: 0x19AF
+}
+Export {
+  Ordinal: 30
+  Name: ??0xml_node_iterator@pugi@@QAE@ABVxml_node@1@@Z
+  RVA: 0x1A3A
+}
+Export {
+  Ordinal: 31
+  Name: ??0xml_node_iterator@pugi@@QAE@XZ
+  RVA: 0x19DB
+}
+Export {
+  Ordinal: 32
+  Name: ??0xml_parse_result@pugi@@QAE@XZ
+  RVA: 0x1A57
+}
+Export {
+  Ordinal: 33
+  Name: ??0xml_text@pugi@@AAE@PAUxml_node_struct@1@@Z
+  RVA: 0x199B
+}
+Export {
+  Ordinal: 34
+  Name: ??0xml_text@pugi@@QAE@XZ
+  RVA: 0x19A9
+}
+Export {
+  Ordinal: 35
+  Name: ??0xml_tree_walker@pugi@@QAE@ABV01@@Z
+  RVA: 0x1A68
+}
+Export {
+  Ordinal: 36
+  Name: ??0xml_tree_walker@pugi@@QAE@XZ
+  RVA: 0x1A80
+}
+Export {
+  Ordinal: 37
+  Name: ??0xml_writer@pugi@@QAE@ABV01@@Z
+  RVA: 0x1A8D
+}
+Export {
+  Ordinal: 38
+  Name: ??0xml_writer@pugi@@QAE@XZ
+  RVA: 0x1A98
+}
+Export {
+  Ordinal: 39
+  Name: ??0xml_writer_buff@pugi@@QAE@ABV01@@Z
+  RVA: 0x1AA1
+}
+Export {
+  Ordinal: 40
+  Name: ??0xml_writer_buff@pugi@@QAE@XZ
+  RVA: 0x1ABF
+}
+Export {
+  Ordinal: 41
+  Name: ??1?$SObjectImpl@UIObject@SOUI@@@SOUI@@UAE@XZ
+  RVA: 0xA2F2
+}
+Export {
+  Ordinal: 42
+  Name: ??1?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAE@XZ
+  RVA: 0x1B2D
+}
+Export {
+  Ordinal: 43
+  Name: ??1?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAE@XZ
+  RVA: 0x1B2D
+}
+Export {
+  Ordinal: 44
+  Name: ??1IObject@SOUI@@UAE@XZ
+  RVA: 0xA2F2
+}
+Export {
+  Ordinal: 45
+  Name: ??1SAutoLock@SOUI@@QAE@XZ
+  RVA: 0x1056
+}
+Export {
+  Ordinal: 46
+  Name: ??1SCriticalSection@SOUI@@UAE@XZ
+  RVA: 0x1063
+}
+Export {
+  Ordinal: 47
+  Name: ??1SNoCopyable@SOUI@@QAE@XZ
+  RVA: 0x1162
+}
+Export {
+  Ordinal: 48
+  Name: ??1SSemaphore@SOUI@@UAE@XZ
+  RVA: 0x1163
+}
+Export {
+  Ordinal: 49
+  Name: ??1xml_document@pugi@@QAE@XZ
+  RVA: 0x1BE7
+}
+Export {
+  Ordinal: 50
+  Name: ??1xml_tree_walker@pugi@@UAE@XZ
+  RVA: 0x1C1B
+}
+Export {
+  Ordinal: 51
+  Name: ??1xml_writer@pugi@@UAE@XZ
+  RVA: 0x1C22
+}
+Export {
+  Ordinal: 52
+  Name: ??1xml_writer_buff@pugi@@UAE@XZ
+  RVA: 0x1C29
+}
+Export {
+  Ordinal: 53
+  Name: ??4?$SObjectImpl@UIObject@SOUI@@@SOUI@@QAEAAV01@$$QAV01@@Z
+  RVA: 0x125A
+}
+Export {
+  Ordinal: 54
+  Name: ??4?$SObjectImpl@UIObject@SOUI@@@SOUI@@QAEAAV01@ABV01@@Z
+  RVA: 0x125A
+}
+Export {
+  Ordinal: 55
+  Name: ??4?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEAAV01@ABV01@@Z
+  RVA: 0x1C49
+}
+Export {
+  Ordinal: 56
+  Name: ??4?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEAAV01@PBD@Z
+  RVA: 0x1C95
+}
+Export {
+  Ordinal: 57
+  Name: ??4?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEABV01@D@Z
+  RVA: 0x1CE1
+}
+Export {
+  Ordinal: 58
+  Name: ??4?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEAAV01@ABV01@@Z
+  RVA: 0x1CF9
+}
+Export {
+  Ordinal: 59
+  Name: ??4?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEAAV01@PB_W@Z
+  RVA: 0x1D45
+}
+Export {
+  Ordinal: 60
+  Name: ??4?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEABV01@_W@Z
+  RVA: 0x1D91
+}
+Export {
+  Ordinal: 61
+  Name: ??4CGdiAlpha@SOUI@@QAEAAV01@$$QAV01@@Z
+  RVA: 0x125A
+}
+Export {
+  Ordinal: 62
+  Name: ??4CGdiAlpha@SOUI@@QAEAAV01@ABV01@@Z
+  RVA: 0x125A
+}
+Export {
+  Ordinal: 63
+  Name: ??4IObject@SOUI@@QAEAAU01@ABU01@@Z
+  RVA: 0x125A
+}
+Export {
+  Ordinal: 64
+  Name: ??4SCriticalSection@SOUI@@QAEAAV01@ABV01@@Z
+  RVA: 0x1074
+}
+Export {
+  Ordinal: 65
+  Name: ??4SStrCpCvt@SOUI@@QAEAAV01@$$QAV01@@Z
+  RVA: 0x125A
+}
+Export {
+  Ordinal: 66
+  Name: ??4SStrCpCvt@SOUI@@QAEAAV01@ABV01@@Z
+  RVA: 0x125A
+}
+Export {
+  Ordinal: 67
+  Name: ??4soui_mem_wrapper@SOUI@@QAEAAV01@$$QAV01@@Z
+  RVA: 0x125A
+}
+Export {
+  Ordinal: 68
+  Name: ??4soui_mem_wrapper@SOUI@@QAEAAV01@ABV01@@Z
+  RVA: 0x125A
+}
+Export {
+  Ordinal: 69
+  Name: ??4xml_attribute@pugi@@QAEAAV01@$$QAV01@@Z
+  RVA: 0x1DA9
+}
+Export {
+  Ordinal: 70
+  Name: ??4xml_attribute@pugi@@QAEAAV01@ABV01@@Z
+  RVA: 0x1DA9
+}
+Export {
+  Ordinal: 71
+  Name: ??4xml_attribute@pugi@@QAEAAV01@H@Z
+  RVA: 0x1DB9
+}
+Export {
+  Ordinal: 72
+  Name: ??4xml_attribute@pugi@@QAEAAV01@I@Z
+  RVA: 0x1DCE
+}
+Export {
+  Ordinal: 73
+  Name: ??4xml_attribute@pugi@@QAEAAV01@N@Z
+  RVA: 0x1DE3
+}
+Export {
+  Ordinal: 74
+  Name: ??4xml_attribute@pugi@@QAEAAV01@PB_W@Z
+  RVA: 0x1E01
+}
+Export {
+  Ordinal: 75
+  Name: ??4xml_attribute@pugi@@QAEAAV01@_N@Z
+  RVA: 0x1E16
+}
+Export {
+  Ordinal: 76
+  Name: ??4xml_attribute_iterator@pugi@@QAEAAV01@$$QAV01@@Z
+  RVA: 0x1E2B
+}
+Export {
+  Ordinal: 77
+  Name: ??4xml_attribute_iterator@pugi@@QAEAAV01@ABV01@@Z
+  RVA: 0x1E2B
+}
+Export {
+  Ordinal: 78
+  Name: ??4xml_node@pugi@@QAEAAV01@$$QAV01@@Z
+  RVA: 0x1DA9
+}
+Export {
+  Ordinal: 79
+  Name: ??4xml_node@pugi@@QAEAAV01@ABV01@@Z
+  RVA: 0x1DA9
+}
+Export {
+  Ordinal: 80
+  Name: ??4xml_node_iterator@pugi@@QAEAAV01@$$QAV01@@Z
+  RVA: 0x1E2B
+}
+Export {
+  Ordinal: 81
+  Name: ??4xml_node_iterator@pugi@@QAEAAV01@ABV01@@Z
+  RVA: 0x1E2B
+}
+Export {
+  Ordinal: 82
+  Name: ??4xml_parse_result@pugi@@QAEAAU01@$$QAU01@@Z
+  RVA: 0x1E41
+}
+Export {
+  Ordinal: 83
+  Name: ??4xml_parse_result@pugi@@QAEAAU01@ABU01@@Z
+  RVA: 0x1E5D
+}
+Export {
+  Ordinal: 84
+  Name: ??4xml_text@pugi@@QAEAAV01@$$QAV01@@Z
+  RVA: 0x1DA9
+}
+Export {
+  Ordinal: 85
+  Name: ??4xml_text@pugi@@QAEAAV01@ABV01@@Z
+  RVA: 0x1DA9
+}
+Export {
+  Ordinal: 86
+  Name: ??4xml_text@pugi@@QAEAAV01@H@Z
+  RVA: 0x1E72
+}
+Export {
+  Ordinal: 87
+  Name: ??4xml_text@pugi@@QAEAAV01@I@Z
+  RVA: 0x1E87
+}
+Export {
+  Ordinal: 88
+  Name: ??4xml_text@pugi@@QAEAAV01@N@Z
+  RVA: 0x1E9C
+}
+Export {
+  Ordinal: 89
+  Name: ??4xml_text@pugi@@QAEAAV01@PB_W@Z
+  RVA: 0x1EBA
+}
+Export {
+  Ordinal: 90
+  Name: ??4xml_text@pugi@@QAEAAV01@_N@Z
+  RVA: 0x1ECF
+}
+Export {
+  Ordinal: 91
+  Name: ??4xml_tree_walker@pugi@@QAEAAV01@ABV01@@Z
+  RVA: 0x1EE4
+}
+Export {
+  Ordinal: 92
+  Name: ??4xml_writer@pugi@@QAEAAV01@ABV01@@Z
+  RVA: 0x125A
+}
+Export {
+  Ordinal: 93
+  Name: ??4xml_writer_buff@pugi@@QAEAAV01@ABV01@@Z
+  RVA: 0x1EF6
+}
+Export {
+  Ordinal: 94
+  Name: ??7xml_attribute@pugi@@QBE_NXZ
+  RVA: 0x1F0E
+}
+Export {
+  Ordinal: 95
+  Name: ??7xml_node@pugi@@QBE_NXZ
+  RVA: 0x1F0E
+}
+Export {
+  Ordinal: 96
+  Name: ??7xml_text@pugi@@QBE_NXZ
+  RVA: 0x1F15
+}
+Export {
+  Ordinal: 97
+  Name: ??8xml_attribute@pugi@@QBE_NABV01@@Z
+  RVA: 0x1F21
+}
+Export {
+  Ordinal: 98
+  Name: ??8xml_attribute_iterator@pugi@@QBE_NABV01@@Z
+  RVA: 0x1F32
+}
+Export {
+  Ordinal: 99
+  Name: ??8xml_node@pugi@@QBE_NABV01@@Z
+  RVA: 0x1F21
+}
+Export {
+  Ordinal: 100
+  Name: ??8xml_node_iterator@pugi@@QBE_NABV01@@Z
+  RVA: 0x1F32
+}
+Export {
+  Ordinal: 101
+  Name: ??9xml_attribute@pugi@@QBE_NABV01@@Z
+  RVA: 0x1F50
+}
+Export {
+  Ordinal: 102
+  Name: ??9xml_attribute_iterator@pugi@@QBE_NABV01@@Z
+  RVA: 0x1F61
+}
+Export {
+  Ordinal: 103
+  Name: ??9xml_node@pugi@@QBE_NABV01@@Z
+  RVA: 0x1F50
+}
+Export {
+  Ordinal: 104
+  Name: ??9xml_node_iterator@pugi@@QBE_NABV01@@Z
+  RVA: 0x1F61
+}
+Export {
+  Ordinal: 105
+  Name: ??A?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBEDH@Z
+  RVA: 0x1FB8
+}
+Export {
+  Ordinal: 106
+  Name: ??A?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBE_WH@Z
+  RVA: 0x1FC7
+}
+Export {
+  Ordinal: 107
+  Name: ??B?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBEPBDXZ
+  RVA: 0x1FD7
+}
+Export {
+  Ordinal: 108
+  Name: ??B?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBEPB_WXZ
+  RVA: 0x1FD7
+}
+Export {
+  Ordinal: 109
+  Name: ??Bxml_attribute@pugi@@QBEP6AXPAPAPAV01@@ZXZ
+  RVA: 0x1FDA
+}
+Export {
+  Ordinal: 110
+  Name: ??Bxml_node@pugi@@QBEP6AXPAPAPAV01@@ZXZ
+  RVA: 0x1FDA
+}
+Export {
+  Ordinal: 111
+  Name: ??Bxml_parse_result@pugi@@QBE_NXZ
+  RVA: 0x1F0E
+}
+Export {
+  Ordinal: 112
+  Name: ??Bxml_text@pugi@@QBEP6AXPAPAPAV01@@ZXZ
+  RVA: 0x1FE7
+}
+Export {
+  Ordinal: 113
+  Name: ??Cxml_attribute_iterator@pugi@@QBEPAVxml_attribute@1@XZ
+  RVA: 0x1126
+}
+Export {
+  Ordinal: 114
+  Name: ??Cxml_node_iterator@pugi@@QBEPAVxml_node@1@XZ
+  RVA: 0x1126
+}
+Export {
+  Ordinal: 115
+  Name: ??Dxml_attribute_iterator@pugi@@QBEAAVxml_attribute@1@XZ
+  RVA: 0x1126
+}
+Export {
+  Ordinal: 116
+  Name: ??Dxml_node_iterator@pugi@@QBEAAVxml_node@1@XZ
+  RVA: 0x1126
+}
+Export {
+  Ordinal: 117
+  Name: ??Exml_attribute_iterator@pugi@@QAE?AV01@H@Z
+  RVA: 0x1FF6
+}
+Export {
+  Ordinal: 118
+  Name: ??Exml_attribute_iterator@pugi@@QAEABV01@XZ
+  RVA: 0x2011
+}
+Export {
+  Ordinal: 119
+  Name: ??Exml_node_iterator@pugi@@QAE?AV01@H@Z
+  RVA: 0x201B
+}
+Export {
+  Ordinal: 120
+  Name: ??Exml_node_iterator@pugi@@QAEABV01@XZ
+  RVA: 0x2036
+}
+Export {
+  Ordinal: 121
+  Name: ??Fxml_attribute_iterator@pugi@@QAE?AV01@H@Z
+  RVA: 0x2040
+}
+Export {
+  Ordinal: 122
+  Name: ??Fxml_attribute_iterator@pugi@@QAEABV01@XZ
+  RVA: 0x205D
+}
+Export {
+  Ordinal: 123
+  Name: ??Fxml_node_iterator@pugi@@QAE?AV01@H@Z
+  RVA: 0x208A
+}
+Export {
+  Ordinal: 124
+  Name: ??Fxml_node_iterator@pugi@@QAEABV01@XZ
+  RVA: 0x20A7
+}
+Export {
+  Ordinal: 125
+  Name: ??Mxml_attribute@pugi@@QBE_NABV01@@Z
+  RVA: 0x20D4
+}
+Export {
+  Ordinal: 126
+  Name: ??Mxml_node@pugi@@QBE_NABV01@@Z
+  RVA: 0x20D4
+}
+Export {
+  Ordinal: 127
+  Name: ??Nxml_attribute@pugi@@QBE_NABV01@@Z
+  RVA: 0x20E5
+}
+Export {
+  Ordinal: 128
+  Name: ??Nxml_node@pugi@@QBE_NABV01@@Z
+  RVA: 0x20E5
+}
+Export {
+  Ordinal: 129
+  Name: ??Oxml_attribute@pugi@@QBE_NABV01@@Z
+  RVA: 0x20F7
+}
+Export {
+  Ordinal: 130
+  Name: ??Oxml_node@pugi@@QBE_NABV01@@Z
+  RVA: 0x20F7
+}
+Export {
+  Ordinal: 131
+  Name: ??Pxml_attribute@pugi@@QBE_NABV01@@Z
+  RVA: 0x2108
+}
+Export {
+  Ordinal: 132
+  Name: ??Pxml_node@pugi@@QBE_NABV01@@Z
+  RVA: 0x2108
+}
+Export {
+  Ordinal: 133
+  Name: ??Y?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEABV01@ABV01@@Z
+  RVA: 0x211A
+}
+Export {
+  Ordinal: 134
+  Name: ??Y?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEABV01@D@Z
+  RVA: 0x2123
+}
+Export {
+  Ordinal: 135
+  Name: ??Y?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEABV01@PBD@Z
+  RVA: 0x2141
+}
+Export {
+  Ordinal: 136
+  Name: ??Y?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEABV01@ABV01@@Z
+  RVA: 0x214A
+}
+Export {
+  Ordinal: 137
+  Name: ??Y?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEABV01@PB_W@Z
+  RVA: 0x2153
+}
+Export {
+  Ordinal: 138
+  Name: ??Y?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEABV01@_W@Z
+  RVA: 0x215C
+}
+Export {
+  Ordinal: 139
+  Name: ??_7?$SObjectImpl@UIObject@SOUI@@@SOUI@@6B@
+  RVA: 0xD810
+}
+Export {
+  Ordinal: 140
+  Name: ??_7IObject@SOUI@@6B@
+  RVA: 0xD7C4
+}
+Export {
+  Ordinal: 141
+  Name: ??_7SCriticalSection@SOUI@@6B@
+  RVA: 0xD1D4
+}
+Export {
+  Ordinal: 142
+  Name: ??_7SSemaphore@SOUI@@6B@
+  RVA: 0xD1DC
+}
+Export {
+  Ordinal: 143
+  Name: ??_7xml_tree_walker@pugi@@6B@
+  RVA: 0xD208
+}
+Export {
+  Ordinal: 144
+  Name: ??_7xml_writer@pugi@@6B@
+  RVA: 0xD1E4
+}
+Export {
+  Ordinal: 145
+  Name: ??_7xml_writer_buff@pugi@@6B@
+  RVA: 0xD1FC
+}
+Export {
+  Ordinal: 146
+  Name: ?ALPHABACKUP@CGdiAlpha@SOUI@@CAPAEPAUtagBITMAP@@HHHH@Z
+  RVA: 0x125F
+}
+Export {
+  Ordinal: 147
+  Name: ?ALPHARESTORE@CGdiAlpha@SOUI@@CAXPAUtagBITMAP@@HHHHPAE@Z
+  RVA: 0x131B
+}
+Export {
+  Ordinal: 148
+  Name: ?AfterAttribute@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UAEJABV?$TStringT@_WUwchar_traits@SOUI@@@2@0HJ@Z
+  RVA: 0xA37C
+}
+Export {
+  Ordinal: 149
+  Name: ?AllocBeforeWrite@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IAE_NH@Z
+  RVA: 0x2323
+}
+Export {
+  Ordinal: 150
+  Name: ?AllocBeforeWrite@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IAE_NH@Z
+  RVA: 0x2353
+}
+Export {
+  Ordinal: 151
+  Name: ?AllocBuffer@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IAE_NH@Z
+  RVA: 0x2383
+}
+Export {
+  Ordinal: 152
+  Name: ?AllocBuffer@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IAE_NH@Z
+  RVA: 0x23A9
+}
+Export {
+  Ordinal: 153
+  Name: ?AllocCopy@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IBEXAAV12@HHH@Z
+  RVA: 0x23CF
+}
+Export {
+  Ordinal: 154
+  Name: ?AllocCopy@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IBEXAAV12@HHH@Z
+  RVA: 0x2414
+}
+Export {
+  Ordinal: 155
+  Name: ?AllocData@?$TStringT@DUchar_traits@SOUI@@@SOUI@@KAPAUTStringData@2@HPAU32@@Z
+  RVA: 0x245F
+}
+Export {
+  Ordinal: 156
+  Name: ?AllocData@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@KAPAUTStringData@2@HPAU32@@Z
+  RVA: 0x24A4
+}
+Export {
+  Ordinal: 157
+  Name: ?AlphaBackup@CGdiAlpha@SOUI@@SAHPAUHDC__@@PBUtagRECT@@AAUtagALPHAINFO@2@@Z
+  RVA: 0x13B8
+}
+Export {
+  Ordinal: 158
+  Name: ?AlphaRestore@CGdiAlpha@SOUI@@SAXAAUtagALPHAINFO@2@@Z
+  RVA: 0x1478
+}
+Export {
+  Ordinal: 159
+  Name: ?Append@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEABV12@ABV12@@Z
+  RVA: 0x24EF
+}
+Export {
+  Ordinal: 160
+  Name: ?Append@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEABV12@D@Z
+  RVA: 0x253B
+}
+Export {
+  Ordinal: 161
+  Name: ?Append@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEABV12@PBD@Z
+  RVA: 0x2553
+}
+Export {
+  Ordinal: 162
+  Name: ?Append@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEABV12@ABV12@@Z
+  RVA: 0x259F
+}
+Export {
+  Ordinal: 163
+  Name: ?Append@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEABV12@PB_W@Z
+  RVA: 0x25EB
+}
+Export {
+  Ordinal: 164
+  Name: ?Append@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEABV12@_W@Z
+  RVA: 0x2637
+}
+Export {
+  Ordinal: 165
+  Name: ?AppendFormat@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAA?AV12@PBDZZ
+  RVA: 0x264F
+}
+Export {
+  Ordinal: 166
+  Name: ?AppendFormat@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAAXPAUHINSTANCE__@@IZZ
+  RVA: 0x2671
+}
+Export {
+  Ordinal: 167
+  Name: ?AppendFormat@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAA?AV12@PB_WZZ
+  RVA: 0x26C8
+}
+Export {
+  Ordinal: 168
+  Name: ?AppendFormat@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAAXPAUHINSTANCE__@@IZZ
+  RVA: 0x26EA
+}
+Export {
+  Ordinal: 169
+  Name: ?AssignCopy@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IAEXHPBD@Z
+  RVA: 0x2741
+}
+Export {
+  Ordinal: 170
+  Name: ?AssignCopy@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IAEXHPB_W@Z
+  RVA: 0x2774
+}
+Export {
+  Ordinal: 171
+  Name: ?Compare@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBEHPBD@Z
+  RVA: 0x27AE
+}
+Export {
+  Ordinal: 172
+  Name: ?Compare@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBEHPB_W@Z
+  RVA: 0x27C2
+}
+Export {
+  Ordinal: 173
+  Name: ?CompareNoCase@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBEHPBD@Z
+  RVA: 0x27D6
+}
+Export {
+  Ordinal: 174
+  Name: ?CompareNoCase@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBEHPB_W@Z
+  RVA: 0x27EA
+}
+Export {
+  Ordinal: 175
+  Name: ?ConcatCopy@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IAE_NHPBDH0@Z
+  RVA: 0x27FE
+}
+Export {
+  Ordinal: 176
+  Name: ?ConcatCopy@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IAE_NHPB_WH0@Z
+  RVA: 0x2845
+}
+Export {
+  Ordinal: 177
+  Name: ?ConcatInPlace@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IAEXHPBD@Z
+  RVA: 0x2891
+}
+Export {
+  Ordinal: 178
+  Name: ?ConcatInPlace@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IAEXHPB_W@Z
+  RVA: 0x28FB
+}
+Export {
+  Ordinal: 179
+  Name: ?CopyBeforeWrite@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IAEXXZ
+  RVA: 0x296E
+}
+Export {
+  Ordinal: 180
+  Name: ?CopyBeforeWrite@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IAEXXZ
+  RVA: 0x29A0
+}
+Export {
+  Ordinal: 181
+  Name: ?CvtA2A@SStrCpCvt@SOUI@@SA?AV?$TStringT@DUchar_traits@SOUI@@@2@ABV32@II@Z
+  RVA: 0xA650
+}
+Export {
+  Ordinal: 182
+  Name: ?CvtA2W@SStrCpCvt@SOUI@@SA?AV?$TStringT@_WUwchar_traits@SOUI@@@2@ABV?$TStringT@DUchar_traits@SOUI@@@2@II@Z
+  RVA: 0xA6B9
+}
+Export {
+  Ordinal: 183
+  Name: ?CvtW2A@SStrCpCvt@SOUI@@SA?AV?$TStringT@DUchar_traits@SOUI@@@2@ABV?$TStringT@_WUwchar_traits@SOUI@@@2@I@Z
+  RVA: 0xA7BD
+}
+Export {
+  Ordinal: 184
+  Name: ?CvtW2W@SStrCpCvt@SOUI@@SA?AV?$TStringT@_WUwchar_traits@SOUI@@@2@ABV32@I@Z
+  RVA: 0xA8BB
+}
+Export {
+  Ordinal: 185
+  Name: ?DefAttributeProc@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UAEJABV?$TStringT@_WUwchar_traits@SOUI@@@2@0H@Z
+  RVA: 0xA386
+}
+Export {
+  Ordinal: 186
+  Name: ?Delete@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEHHH@Z
+  RVA: 0x2A51
+}
+Export {
+  Ordinal: 187
+  Name: ?Delete@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEHHH@Z
+  RVA: 0x2AB3
+}
+Export {
+  Ordinal: 188
+  Name: ?Empty@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEXXZ
+  RVA: 0x2B1F
+}
+Export {
+  Ordinal: 189
+  Name: ?Empty@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEXXZ
+  RVA: 0x2B46
+}
+Export {
+  Ordinal: 190
+  Name: ?EndsWith@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBE_NABV12@_N@Z
+  RVA: 0x2B70
+}
+Export {
+  Ordinal: 191
+  Name: ?EndsWith@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBE_NABV12@_N@Z
+  RVA: 0x2BE9
+}
+Export {
+  Ordinal: 192
+  Name: ?Enter@SCriticalSection@SOUI@@QAEXXZ
+  RVA: 0x1110
+}
+Export {
+  Ordinal: 193
+  Name: ?Find@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBEHDH@Z
+  RVA: 0x2C62
+}
+Export {
+  Ordinal: 194
+  Name: ?Find@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBEHPBDH@Z
+  RVA: 0x2C93
+}
+Export {
+  Ordinal: 195
+  Name: ?Find@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBEHPB_WH@Z
+  RVA: 0x2CC1
+}
+Export {
+  Ordinal: 196
+  Name: ?Find@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBEH_WH@Z
+  RVA: 0x2CF1
+}
+Export {
+  Ordinal: 197
+  Name: ?Format@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAA?AV12@PBDZZ
+  RVA: 0x2D59
+}
+Export {
+  Ordinal: 198
+  Name: ?Format@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAAHPAUHINSTANCE__@@IZZ
+  RVA: 0x2D7B
+}
+Export {
+  Ordinal: 199
+  Name: ?Format@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAA?AV12@PB_WZZ
+  RVA: 0x2DDE
+}
+Export {
+  Ordinal: 200
+  Name: ?Format@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAAHPAUHINSTANCE__@@IZZ
+  RVA: 0x2E00
+}
+Export {
+  Ordinal: 201
+  Name: ?FreeExtra@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEXXZ
+  RVA: 0x2F00
+}
+Export {
+  Ordinal: 202
+  Name: ?FreeExtra@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEXXZ
+  RVA: 0x2F11
+}
+Export {
+  Ordinal: 203
+  Name: ?GetAllocLength@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBEHXZ
+  RVA: 0x2F8D
+}
+Export {
+  Ordinal: 204
+  Name: ?GetAllocLength@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBEHXZ
+  RVA: 0x2F8D
+}
+Export {
+  Ordinal: 205
+  Name: ?GetAt@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBEDH@Z
+  RVA: 0x1FB8
+}
+Export {
+  Ordinal: 206
+  Name: ?GetAt@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBE_WH@Z
+  RVA: 0x1FC7
+}
+Export {
+  Ordinal: 207
+  Name: ?GetAttribute@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UBE?AV?$TStringT@_WUwchar_traits@SOUI@@@2@ABV32@@Z
+  RVA: 0xA38E
+}
+Export {
+  Ordinal: 208
+  Name: ?GetBuffer@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEPADH@Z
+  RVA: 0x2F93
+}
+Export {
+  Ordinal: 209
+  Name: ?GetBuffer@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEPA_WH@Z
+  RVA: 0x2FC5
+}
+Export {
+  Ordinal: 210
+  Name: ?GetBufferSetLength@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEPADH@Z
+  RVA: 0x2FF7
+}
+Export {
+  Ordinal: 211
+  Name: ?GetBufferSetLength@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEPA_WH@Z
+  RVA: 0x301E
+}
+Export {
+  Ordinal: 212
+  Name: ?GetClassNameW@IObject@SOUI@@SAPB_WXZ
+  RVA: 0xA3A0
+}
+Export {
+  Ordinal: 213
+  Name: ?GetClassType@IObject@SOUI@@SAHXZ
+  RVA: 0xA3A6
+}
+Export {
+  Ordinal: 214
+  Name: ?GetData@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IBEPAUTStringData@2@XZ
+  RVA: 0x3047
+}
+Export {
+  Ordinal: 215
+  Name: ?GetData@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IBEPAUTStringData@2@XZ
+  RVA: 0x3047
+}
+Export {
+  Ordinal: 216
+  Name: ?GetID@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UBEHXZ
+  RVA: 0xA3AA
+}
+Export {
+  Ordinal: 217
+  Name: ?GetLength@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBEHXZ
+  RVA: 0x304D
+}
+Export {
+  Ordinal: 218
+  Name: ?GetLength@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBEHXZ
+  RVA: 0x304D
+}
+Export {
+  Ordinal: 219
+  Name: ?GetName@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UBEPB_WXZ
+  RVA: 0xA3AA
+}
+Export {
+  Ordinal: 220
+  Name: ?GetObjectClass@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UBEPB_WXZ
+  RVA: 0xA3AA
+}
+Export {
+  Ordinal: 221
+  Name: ?GetObjectType@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UBEHXZ
+  RVA: 0xA3A6
+}
+Export {
+  Ordinal: 222
+  Name: ?Init@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IAEXXZ
+  RVA: 0x3114
+}
+Export {
+  Ordinal: 223
+  Name: ?Init@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IAEXXZ
+  RVA: 0x3114
+}
+Export {
+  Ordinal: 224
+  Name: ?InitFromXml@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UAEHVxml_node@pugi@@@Z
+  RVA: 0xA3AD
+}
+Export {
+  Ordinal: 225
+  Name: ?Insert@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEHHD@Z
+  RVA: 0x3172
+}
+Export {
+  Ordinal: 226
+  Name: ?Insert@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEHHPBD@Z
+  RVA: 0x31D5
+}
+Export {
+  Ordinal: 227
+  Name: ?Insert@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEHHPB_W@Z
+  RVA: 0x3273
+}
+Export {
+  Ordinal: 228
+  Name: ?Insert@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEHH_W@Z
+  RVA: 0x3329
+}
+Export {
+  Ordinal: 229
+  Name: ?IsAttributeHandled@IObject@SOUI@@SA_NVxml_attribute@pugi@@@Z
+  RVA: 0xA49B
+}
+Export {
+  Ordinal: 230
+  Name: ?IsBlankChar@?$TStringT@DUchar_traits@SOUI@@@SOUI@@SA_NABD@Z
+  RVA: 0x3393
+}
+Export {
+  Ordinal: 231
+  Name: ?IsBlankChar@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@SA_NAB_W@Z
+  RVA: 0x33B9
+}
+Export {
+  Ordinal: 232
+  Name: ?IsClass@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UBEHPB_W@Z
+  RVA: 0xA4AD
+}
+Export {
+  Ordinal: 233
+  Name: ?IsEmpty@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBE_NXZ
+  RVA: 0x340C
+}
+Export {
+  Ordinal: 234
+  Name: ?IsEmpty@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBE_NXZ
+  RVA: 0x340C
+}
+Export {
+  Ordinal: 235
+  Name: ?Leave@SCriticalSection@SOUI@@QAEXXZ
+  RVA: 0x111B
+}
+Export {
+  Ordinal: 236
+  Name: ?Left@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBE?AV12@H@Z
+  RVA: 0x3416
+}
+Export {
+  Ordinal: 237
+  Name: ?Left@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBE?AV12@H@Z
+  RVA: 0x3462
+}
+Export {
+  Ordinal: 238
+  Name: ?LoadStringW@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEHIPAUHINSTANCE__@@@Z
+  RVA: 0x34AE
+}
+Export {
+  Ordinal: 239
+  Name: ?LoadStringW@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEHIPAUHINSTANCE__@@@Z
+  RVA: 0x3502
+}
+Export {
+  Ordinal: 240
+  Name: ?LockBuffer@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEPADXZ
+  RVA: 0x3556
+}
+Export {
+  Ordinal: 241
+  Name: ?LockBuffer@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEPA_WXZ
+  RVA: 0x3572
+}
+Export {
+  Ordinal: 242
+  Name: ?MakeLower@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEAAV12@XZ
+  RVA: 0x35AC
+}
+Export {
+  Ordinal: 243
+  Name: ?MakeLower@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEAAV12@XZ
+  RVA: 0x35C6
+}
+Export {
+  Ordinal: 244
+  Name: ?MakeUpper@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEAAV12@XZ
+  RVA: 0x35E0
+}
+Export {
+  Ordinal: 245
+  Name: ?MakeUpper@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEAAV12@XZ
+  RVA: 0x35FA
+}
+Export {
+  Ordinal: 246
+  Name: ?MarkAttributeHandled@IObject@SOUI@@SAXVxml_attribute@pugi@@_N@Z
+  RVA: 0xA4B2
+}
+Export {
+  Ordinal: 247
+  Name: ?Mid@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBE?AV12@H@Z
+  RVA: 0x3614
+}
+Export {
+  Ordinal: 248
+  Name: ?Mid@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBE?AV12@HH@Z
+  RVA: 0x3632
+}
+Export {
+  Ordinal: 249
+  Name: ?Mid@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBE?AV12@H@Z
+  RVA: 0x369C
+}
+Export {
+  Ordinal: 250
+  Name: ?Mid@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBE?AV12@HH@Z
+  RVA: 0x36BA
+}
+Export {
+  Ordinal: 251
+  Name: ?OnInitFinished@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UAEXVxml_node@pugi@@@Z
+  RVA: 0xA4C4
+}
+Export {
+  Ordinal: 252
+  Name: ?Preallocate@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEXH@Z
+  RVA: 0x3803
+}
+Export {
+  Ordinal: 253
+  Name: ?Preallocate@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEXH@Z
+  RVA: 0x3825
+}
+Export {
+  Ordinal: 254
+  Name: ?ReallocBuffer@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IAE_NH@Z
+  RVA: 0x3847
+}
+Export {
+  Ordinal: 255
+  Name: ?ReallocBuffer@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IAE_NH@Z
+  RVA: 0x38BD
+}
+Export {
+  Ordinal: 256
+  Name: ?RectHeight@SOUI@@YAHPBUtagRECT@@@Z
+  RVA: 0xA8CE
+}
+Export {
+  Ordinal: 257
+  Name: ?RectWidth@SOUI@@YAHPBUtagRECT@@@Z
+  RVA: 0xA8DC
+}
+Export {
+  Ordinal: 258
+  Name: ?Release@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IAEXXZ
+  RVA: 0x39F4
+}
+Export {
+  Ordinal: 259
+  Name: ?Release@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IAEXXZ
+  RVA: 0x39F4
+}
+Export {
+  Ordinal: 260
+  Name: ?ReleaseBuffer@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEXH@Z
+  RVA: 0x3A26
+}
+Export {
+  Ordinal: 261
+  Name: ?ReleaseBuffer@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEXH@Z
+  RVA: 0x3A5A
+}
+Export {
+  Ordinal: 262
+  Name: ?ReleaseData@?$TStringT@DUchar_traits@SOUI@@@SOUI@@KAXPAUTStringData@2@@Z
+  RVA: 0x3A91
+}
+Export {
+  Ordinal: 263
+  Name: ?ReleaseData@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@KAXPAUTStringData@2@@Z
+  RVA: 0x3A91
+}
+Export {
+  Ordinal: 264
+  Name: ?Remove@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEHD@Z
+  RVA: 0x3AA7
+}
+Export {
+  Ordinal: 265
+  Name: ?Remove@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEH_W@Z
+  RVA: 0x3AFA
+}
+Export {
+  Ordinal: 266
+  Name: ?Replace@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEHDD@Z
+  RVA: 0x3BBB
+}
+Export {
+  Ordinal: 267
+  Name: ?Replace@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEHPBD0@Z
+  RVA: 0x3BF9
+}
+Export {
+  Ordinal: 268
+  Name: ?Replace@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEHPB_W0@Z
+  RVA: 0x3D7D
+}
+Export {
+  Ordinal: 269
+  Name: ?Replace@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEH_W0@Z
+  RVA: 0x3F21
+}
+Export {
+  Ordinal: 270
+  Name: ?ReverseFind@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBEHD@Z
+  RVA: 0x3F73
+}
+Export {
+  Ordinal: 271
+  Name: ?ReverseFind@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBEH_W@Z
+  RVA: 0x3F98
+}
+Export {
+  Ordinal: 272
+  Name: ?Right@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBE?AV12@H@Z
+  RVA: 0x3FBC
+}
+Export {
+  Ordinal: 273
+  Name: ?Right@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBE?AV12@H@Z
+  RVA: 0x4012
+}
+Export {
+  Ordinal: 274
+  Name: ?SHiMetricToPixel@SOUI@@YAXPBUtagSIZE@@PAU2@@Z
+  RVA: 0xA8E9
+}
+Export {
+  Ordinal: 275
+  Name: ?SPixelToHiMetric@SOUI@@YAXPBUtagSIZE@@PAU2@@Z
+  RVA: 0xA949
+}
+Export {
+  Ordinal: 276
+  Name: ?STraceA@SOUI@@YAXPBDZZ
+  RVA: 0x1162
+}
+Export {
+  Ordinal: 277
+  Name: ?STraceW@SOUI@@YAXPB_WZZ
+  RVA: 0x1162
+}
+Export {
+  Ordinal: 278
+  Name: ?SafeStrlen@?$TStringT@DUchar_traits@SOUI@@@SOUI@@SAHPBD@Z
+  RVA: 0x4068
+}
+Export {
+  Ordinal: 279
+  Name: ?SafeStrlen@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@SAHPB_W@Z
+  RVA: 0x407B
+}
+Export {
+  Ordinal: 280
+  Name: ?SetAt@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEXHD@Z
+  RVA: 0x408F
+}
+Export {
+  Ordinal: 281
+  Name: ?SetAt@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEXH_W@Z
+  RVA: 0x40AA
+}
+Export {
+  Ordinal: 282
+  Name: ?SetAttribute@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UAEJABV?$TStringT@DUchar_traits@SOUI@@@2@0H@Z
+  RVA: 0xA4C7
+}
+Export {
+  Ordinal: 283
+  Name: ?SetAttribute@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UAEJABV?$TStringT@_WUwchar_traits@SOUI@@@2@0H@Z
+  RVA: 0xA54C
+}
+Export {
+  Ordinal: 284
+  Name: ?SetAttribute@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UAEJPBD0H@Z
+  RVA: 0xA555
+}
+Export {
+  Ordinal: 285
+  Name: ?SetLength@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEXH@Z
+  RVA: 0x40C7
+}
+Export {
+  Ordinal: 286
+  Name: ?SetLength@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEXH@Z
+  RVA: 0x40E5
+}
+Export {
+  Ordinal: 287
+  Name: ?SouiCalloc@soui_mem_wrapper@SOUI@@SAPAXII@Z
+  RVA: 0xA62C
+}
+Export {
+  Ordinal: 288
+  Name: ?SouiFree@soui_mem_wrapper@SOUI@@SAXPAX@Z
+  RVA: 0xA636
+}
+Export {
+  Ordinal: 289
+  Name: ?SouiMalloc@soui_mem_wrapper@SOUI@@SAPAXI@Z
+  RVA: 0xA63C
+}
+Export {
+  Ordinal: 290
+  Name: ?SouiRealloc@soui_mem_wrapper@SOUI@@SAPAXPAXI@Z
+  RVA: 0xA646
+}
+Export {
+  Ordinal: 291
+  Name: ?StartsWith@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QBE_NABV12@_N@Z
+  RVA: 0x4105
+}
+Export {
+  Ordinal: 292
+  Name: ?StartsWith@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QBE_NABV12@_N@Z
+  RVA: 0x417E
+}
+Export {
+  Ordinal: 293
+  Name: ?Trim@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEAAV12@D@Z
+  RVA: 0x41F7
+}
+Export {
+  Ordinal: 294
+  Name: ?Trim@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEAAV12@_W@Z
+  RVA: 0x4216
+}
+Export {
+  Ordinal: 295
+  Name: ?TrimBlank@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEXXZ
+  RVA: 0x4235
+}
+Export {
+  Ordinal: 296
+  Name: ?TrimBlank@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEXXZ
+  RVA: 0x42C4
+}
+Export {
+  Ordinal: 297
+  Name: ?TrimLeft@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEAAV12@D@Z
+  RVA: 0x436A
+}
+Export {
+  Ordinal: 298
+  Name: ?TrimLeft@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEAAV12@_W@Z
+  RVA: 0x43C0
+}
+Export {
+  Ordinal: 299
+  Name: ?TrimRight@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEAAV12@D@Z
+  RVA: 0x440E
+}
+Export {
+  Ordinal: 300
+  Name: ?TrimRight@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEAAV12@_W@Z
+  RVA: 0x445F
+}
+Export {
+  Ordinal: 301
+  Name: ?UnlockBuffer@?$TStringT@DUchar_traits@SOUI@@@SOUI@@QAEXXZ
+  RVA: 0x44B3
+}
+Export {
+  Ordinal: 302
+  Name: ?UnlockBuffer@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QAEXXZ
+  RVA: 0x44B3
+}
+Export {
+  Ordinal: 303
+  Name: ?_AddStr2Map@xml_document@pugi@@ABEXAAV?$SMap@V?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@HV?$CElementTraits@V?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@@2@V?$CElementTraits@H@2@@SOUI@@PB_W@Z
+  RVA: 0x4528
+}
+Export {
+  Ordinal: 304
+  Name: ?_AppendFormat@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IAEXPBDPAD@Z
+  RVA: 0x458C
+}
+Export {
+  Ordinal: 305
+  Name: ?_AppendFormat@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IAEXPB_WPAD@Z
+  RVA: 0x460B
+}
+Export {
+  Ordinal: 306
+  Name: ?_Format@?$TStringT@DUchar_traits@SOUI@@@SOUI@@IAEHPBDPAD@Z
+  RVA: 0x4689
+}
+Export {
+  Ordinal: 307
+  Name: ?_Format@?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@IAEHPB_WPAD@Z
+  RVA: 0x4714
+}
+Export {
+  Ordinal: 308
+  Name: ?_build_str_map@xml_document@pugi@@ABEXVxml_node@2@AAV?$SMap@V?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@HV?$CElementTraits@V?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@@2@V?$CElementTraits@H@2@@SOUI@@@Z
+  RVA: 0x479E
+}
+Export {
+  Ordinal: 309
+  Name: ?_data@xml_text@pugi@@ABEPAUxml_node_struct@2@XZ
+  RVA: 0x488F
+}
+Export {
+  Ordinal: 310
+  Name: ?_data_new@xml_text@pugi@@AAEPAUxml_node_struct@2@XZ
+  RVA: 0x48C0
+}
+Export {
+  Ordinal: 311
+  Name: ?_load_bin@xml_document@pugi@@AAEXPAUxml_node_struct@2@AAPBDAAHPAPA_WH@Z
+  RVA: 0x4935
+}
+Export {
+  Ordinal: 312
+  Name: ?_save_bin@xml_document@pugi@@AAEXABV?$SMap@V?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@HV?$CElementTraits@V?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@@2@V?$CElementTraits@H@2@@SOUI@@Vxml_node@2@PAU_iobuf@@@Z
+  RVA: 0x4A42
+}
+Export {
+  Ordinal: 313
+  Name: ?_save_bin@xml_document@pugi@@AAEXPAU_iobuf@@@Z
+  RVA: 0x4B78
+}
+Export {
+  Ordinal: 314
+  Name: ?append_attribute@xml_node@pugi@@QAE?AVxml_attribute@2@PB_W@Z
+  RVA: 0x4E37
+}
+Export {
+  Ordinal: 315
+  Name: ?append_child@xml_node@pugi@@QAE?AV12@PB_W@Z
+  RVA: 0x4EB6
+}
+Export {
+  Ordinal: 316
+  Name: ?append_child@xml_node@pugi@@QAE?AV12@W4xml_node_type@2@@Z
+  RVA: 0x4ED5
+}
+Export {
+  Ordinal: 317
+  Name: ?append_copy@xml_node@pugi@@QAE?AV12@ABV12@@Z
+  RVA: 0x4F2F
+}
+Export {
+  Ordinal: 318
+  Name: ?append_copy@xml_node@pugi@@QAE?AVxml_attribute@2@ABV32@@Z
+  RVA: 0x4F64
+}
+Export {
+  Ordinal: 319
+  Name: ?as_bool@xml_attribute@pugi@@QBE_N_N@Z
+  RVA: 0x4FE9
+}
+Export {
+  Ordinal: 320
+  Name: ?as_bool@xml_text@pugi@@QBE_N_N@Z
+  RVA: 0x5009
+}
+Export {
+  Ordinal: 321
+  Name: ?as_double@xml_attribute@pugi@@QBENN@Z
+  RVA: 0x502C
+}
+Export {
+  Ordinal: 322
+  Name: ?as_double@xml_text@pugi@@QBENN@Z
+  RVA: 0x505E
+}
+Export {
+  Ordinal: 323
+  Name: ?as_float@xml_attribute@pugi@@QBEMM@Z
+  RVA: 0x5093
+}
+Export {
+  Ordinal: 324
+  Name: ?as_float@xml_text@pugi@@QBEMM@Z
+  RVA: 0x50BA
+}
+Export {
+  Ordinal: 325
+  Name: ?as_int@xml_attribute@pugi@@QBEHH@Z
+  RVA: 0x50E4
+}
+Export {
+  Ordinal: 326
+  Name: ?as_int@xml_text@pugi@@QBEHH@Z
+  RVA: 0x5103
+}
+Export {
+  Ordinal: 327
+  Name: ?as_string@xml_attribute@pugi@@QBEPB_WPB_W@Z
+  RVA: 0x5125
+}
+Export {
+  Ordinal: 328
+  Name: ?as_string@xml_text@pugi@@QBEPB_WPB_W@Z
+  RVA: 0x513C
+}
+Export {
+  Ordinal: 329
+  Name: ?as_uint@xml_attribute@pugi@@QBEII@Z
+  RVA: 0x5156
+}
+Export {
+  Ordinal: 330
+  Name: ?as_uint@xml_text@pugi@@QBEII@Z
+  RVA: 0x5175
+}
+Export {
+  Ordinal: 331
+  Name: ?attribute@xml_node@pugi@@QBE?AVxml_attribute@2@PB_W_N@Z
+  RVA: 0x5197
+}
+Export {
+  Ordinal: 332
+  Name: ?attributes@xml_node@pugi@@QBE?AV?$xml_object_range@Vxml_attribute_iterator@pugi@@@2@XZ
+  RVA: 0x51DA
+}
+Export {
+  Ordinal: 333
+  Name: ?attributes_begin@xml_node@pugi@@QBE?AVxml_attribute_iterator@2@XZ
+  RVA: 0x5206
+}
+Export {
+  Ordinal: 334
+  Name: ?attributes_end@xml_node@pugi@@QBE?AVxml_attribute_iterator@2@XZ
+  RVA: 0x5222
+}
+Export {
+  Ordinal: 335
+  Name: ?begin@xml_node@pugi@@QBE?AVxml_node_iterator@2@XZ
+  RVA: 0x5234
+}
+Export {
+  Ordinal: 336
+  Name: ?begin@xml_tree_walker@pugi@@UAE_NAAVxml_node@2@@Z
+  RVA: 0x5250
+}
+Export {
+  Ordinal: 337
+  Name: ?buffer@xml_writer_buff@pugi@@QAEPB_WXZ
+  RVA: 0x5255
+}
+Export {
+  Ordinal: 338
+  Name: ?child@xml_node@pugi@@QBE?AV12@PB_W_N@Z
+  RVA: 0x5259
+}
+Export {
+  Ordinal: 339
+  Name: ?child_value@xml_node@pugi@@QBEPB_WPB_W_N@Z
+  RVA: 0x529C
+}
+Export {
+  Ordinal: 340
+  Name: ?child_value@xml_node@pugi@@QBEPB_WXZ
+  RVA: 0x52B9
+}
+Export {
+  Ordinal: 341
+  Name: ?children@xml_node@pugi@@QBE?AV?$xml_object_range@Vxml_named_node_iterator@pugi@@@2@PB_W@Z
+  RVA: 0x52EA
+}
+Export {
+  Ordinal: 342
+  Name: ?children@xml_node@pugi@@QBE?AV?$xml_object_range@Vxml_node_iterator@pugi@@@2@XZ
+  RVA: 0x5314
+}
+Export {
+  Ordinal: 343
+  Name: ?create@xml_document@pugi@@AAEXXZ
+  RVA: 0x5636
+}
+Export {
+  Ordinal: 344
+  Name: ?data@xml_text@pugi@@QBE?AVxml_node@2@XZ
+  RVA: 0x569D
+}
+Export {
+  Ordinal: 345
+  Name: ?depth@xml_tree_walker@pugi@@IBEHXZ
+  RVA: 0x5255
+}
+Export {
+  Ordinal: 346
+  Name: ?description@xml_parse_result@pugi@@QBEPBDXZ
+  RVA: 0x5D0E
+}
+Export {
+  Ordinal: 347
+  Name: ?destroy@xml_document@pugi@@AAEXXZ
+  RVA: 0x5DBA
+}
+Export {
+  Ordinal: 348
+  Name: ?document_element@xml_document@pugi@@QBE?AVxml_node@2@XZ
+  RVA: 0x5EBB
+}
+Export {
+  Ordinal: 349
+  Name: ?empty@xml_attribute@pugi@@QBE_NXZ
+  RVA: 0x1F0E
+}
+Export {
+  Ordinal: 350
+  Name: ?empty@xml_node@pugi@@QBE_NXZ
+  RVA: 0x1F0E
+}
+Export {
+  Ordinal: 351
+  Name: ?empty@xml_text@pugi@@QBE_NXZ
+  RVA: 0x1F15
+}
+Export {
+  Ordinal: 352
+  Name: ?end@xml_node@pugi@@QBE?AVxml_node_iterator@2@XZ
+  RVA: 0x5222
+}
+Export {
+  Ordinal: 353
+  Name: ?end@xml_tree_walker@pugi@@UAE_NAAVxml_node@2@@Z
+  RVA: 0x5250
+}
+Export {
+  Ordinal: 354
+  Name: ?find_child_by_attribute@xml_node@pugi@@QBE?AV12@PB_W00_N@Z
+  RVA: 0x5EE4
+}
+Export {
+  Ordinal: 355
+  Name: ?find_child_by_attribute@xml_node@pugi@@QBE?AV12@PB_W0_N@Z
+  RVA: 0x5F65
+}
+Export {
+  Ordinal: 356
+  Name: ?first_attribute@xml_node@pugi@@QBE?AVxml_attribute@2@XZ
+  RVA: 0x5FCB
+}
+Export {
+  Ordinal: 357
+  Name: ?first_child@xml_node@pugi@@QBE?AV12@XZ
+  RVA: 0x5FE4
+}
+Export {
+  Ordinal: 358
+  Name: ?first_element_by_path@xml_node@pugi@@QBE?AV12@PB_W_W@Z
+  RVA: 0x5FFD
+}
+Export {
+  Ordinal: 359
+  Name: ?get@xml_text@pugi@@QBEPB_WXZ
+  RVA: 0x6249
+}
+Export {
+  Ordinal: 360
+  Name: ?get_memory_allocation_function@pugi@@YAP6APAXI@ZXZ
+  RVA: 0x62B5
+}
+Export {
+  Ordinal: 361
+  Name: ?get_memory_deallocation_function@pugi@@YAP6AXPAX@ZXZ
+  RVA: 0x62BB
+}
+Export {
+  Ordinal: 362
+  Name: ?get_userdata@xml_attribute@pugi@@QBEHXZ
+  RVA: 0x6345
+}
+Export {
+  Ordinal: 363
+  Name: ?get_userdata@xml_node@pugi@@QBEHXZ
+  RVA: 0x6352
+}
+Export {
+  Ordinal: 364
+  Name: ?hash_value@xml_attribute@pugi@@QBEIXZ
+  RVA: 0x646E
+}
+Export {
+  Ordinal: 365
+  Name: ?hash_value@xml_node@pugi@@QBEIXZ
+  RVA: 0x6478
+}
+Export {
+  Ordinal: 366
+  Name: ?insert_attribute_after@xml_node@pugi@@QAE?AVxml_attribute@2@PB_WABV32@@Z
+  RVA: 0x64D4
+}
+Export {
+  Ordinal: 367
+  Name: ?insert_attribute_before@xml_node@pugi@@QAE?AVxml_attribute@2@PB_WABV32@@Z
+  RVA: 0x655E
+}
+Export {
+  Ordinal: 368
+  Name: ?insert_child_after@xml_node@pugi@@QAE?AV12@PB_WABV12@@Z
+  RVA: 0x65EC
+}
+Export {
+  Ordinal: 369
+  Name: ?insert_child_after@xml_node@pugi@@QAE?AV12@W4xml_node_type@2@ABV12@@Z
+  RVA: 0x660E
+}
+Export {
+  Ordinal: 370
+  Name: ?insert_child_before@xml_node@pugi@@QAE?AV12@PB_WABV12@@Z
+  RVA: 0x66A3
+}
+Export {
+  Ordinal: 371
+  Name: ?insert_child_before@xml_node@pugi@@QAE?AV12@W4xml_node_type@2@ABV12@@Z
+  RVA: 0x66C5
+}
+Export {
+  Ordinal: 372
+  Name: ?insert_copy_after@xml_node@pugi@@QAE?AV12@ABV12@0@Z
+  RVA: 0x675E
+}
+Export {
+  Ordinal: 373
+  Name: ?insert_copy_after@xml_node@pugi@@QAE?AVxml_attribute@2@ABV32@0@Z
+  RVA: 0x6796
+}
+Export {
+  Ordinal: 374
+  Name: ?insert_copy_before@xml_node@pugi@@QAE?AV12@ABV12@0@Z
+  RVA: 0x67E1
+}
+Export {
+  Ordinal: 375
+  Name: ?insert_copy_before@xml_node@pugi@@QAE?AVxml_attribute@2@ABV32@0@Z
+  RVA: 0x6819
+}
+Export {
+  Ordinal: 376
+  Name: ?internal_object@xml_attribute@pugi@@QBEPAUxml_attribute_struct@2@XZ
+  RVA: 0x1FD7
+}
+Export {
+  Ordinal: 377
+  Name: ?internal_object@xml_node@pugi@@QBEPAUxml_node_struct@2@XZ
+  RVA: 0x1FD7
+}
+Export {
+  Ordinal: 378
+  Name: ?isOK@xml_parse_result@pugi@@QBE_NXZ
+  RVA: 0x1F0E
+}
+Export {
+  Ordinal: 379
+  Name: ?last_attribute@xml_node@pugi@@QBE?AVxml_attribute@2@XZ
+  RVA: 0x6864
+}
+Export {
+  Ordinal: 380
+  Name: ?last_child@xml_node@pugi@@QBE?AV12@XZ
+  RVA: 0x6884
+}
+Export {
+  Ordinal: 381
+  Name: ?load@xml_document@pugi@@QAE?AUxml_parse_result@2@PB_WI@Z
+  RVA: 0x68A4
+}
+Export {
+  Ordinal: 382
+  Name: ?load_bin@xml_document@pugi@@QAE?AUxml_parse_result@2@PBDH@Z
+  RVA: 0x68D1
+}
+Export {
+  Ordinal: 383
+  Name: ?load_bin_file@xml_document@pugi@@QAE?AUxml_parse_result@2@PBD@Z
+  RVA: 0x69EF
+}
+Export {
+  Ordinal: 384
+  Name: ?load_bin_file@xml_document@pugi@@QAE?AUxml_parse_result@2@PB_W@Z
+  RVA: 0x6A99
+}
+Export {
+  Ordinal: 385
+  Name: ?load_buffer@xml_document@pugi@@QAE?AUxml_parse_result@2@PBXIIW4xml_encoding@2@@Z
+  RVA: 0x6B43
+}
+Export {
+  Ordinal: 386
+  Name: ?load_buffer_impl@xml_document@pugi@@AAE?AUxml_parse_result@2@PAXIIW4xml_encoding@2@_N2@Z
+  RVA: 0x6B65
+}
+Export {
+  Ordinal: 387
+  Name: ?load_buffer_inplace@xml_document@pugi@@QAE?AUxml_parse_result@2@PAXIIW4xml_encoding@2@@Z
+  RVA: 0x6C4A
+}
+Export {
+  Ordinal: 388
+  Name: ?load_buffer_inplace_own@xml_document@pugi@@QAE?AUxml_parse_result@2@PAXIIW4xml_encoding@2@@Z
+  RVA: 0x6C6C
+}
+Export {
+  Ordinal: 389
+  Name: ?load_file@xml_document@pugi@@QAE?AUxml_parse_result@2@PBDIW4xml_encoding@2@@Z
+  RVA: 0x6C8E
+}
+Export {
+  Ordinal: 390
+  Name: ?load_file@xml_document@pugi@@QAE?AUxml_parse_result@2@PB_WIW4xml_encoding@2@@Z
+  RVA: 0x6CC2
+}
+Export {
+  Ordinal: 391
+  Name: ?name@xml_attribute@pugi@@QBEPB_WXZ
+  RVA: 0x6E17
+}
+Export {
+  Ordinal: 392
+  Name: ?name@xml_node@pugi@@QBEPB_WXZ
+  RVA: 0x6E2A
+}
+Export {
+  Ordinal: 393
+  Name: ?next_attribute@xml_attribute@pugi@@QBE?AV12@XZ
+  RVA: 0x6E76
+}
+Export {
+  Ordinal: 394
+  Name: ?next_sibling@xml_node@pugi@@QBE?AV12@PB_W_N@Z
+  RVA: 0x6E8F
+}
+Export {
+  Ordinal: 395
+  Name: ?next_sibling@xml_node@pugi@@QBE?AV12@XZ
+  RVA: 0x6ECF
+}
+Export {
+  Ordinal: 396
+  Name: ?notify@SSemaphore@SOUI@@QAEXXZ
+  RVA: 0x1207
+}
+Export {
+  Ordinal: 397
+  Name: ?offset_debug@xml_node@pugi@@QBEHXZ
+  RVA: 0x73F4
+}
+Export {
+  Ordinal: 398
+  Name: ?parent@xml_node@pugi@@QBE?AV12@XZ
+  RVA: 0x745B
+}
+Export {
+  Ordinal: 399
+  Name: ?prepend_attribute@xml_node@pugi@@QAE?AVxml_attribute@2@PB_W@Z
+  RVA: 0x8A66
+}
+Export {
+  Ordinal: 400
+  Name: ?prepend_child@xml_node@pugi@@QAE?AV12@PB_W@Z
+  RVA: 0x8AD2
+}
+Export {
+  Ordinal: 401
+  Name: ?prepend_child@xml_node@pugi@@QAE?AV12@W4xml_node_type@2@@Z
+  RVA: 0x8AF1
+}
+Export {
+  Ordinal: 402
+  Name: ?prepend_copy@xml_node@pugi@@QAE?AV12@ABV12@@Z
+  RVA: 0x8B73
+}
+Export {
+  Ordinal: 403
+  Name: ?prepend_copy@xml_node@pugi@@QAE?AVxml_attribute@2@ABV32@@Z
+  RVA: 0x8BA8
+}
+Export {
+  Ordinal: 404
+  Name: ?previous_attribute@xml_attribute@pugi@@QBE?AV12@XZ
+  RVA: 0x8BF0
+}
+Export {
+  Ordinal: 405
+  Name: ?previous_sibling@xml_node@pugi@@QBE?AV12@PB_W_N@Z
+  RVA: 0x8C0D
+}
+Export {
+  Ordinal: 406
+  Name: ?previous_sibling@xml_node@pugi@@QBE?AV12@XZ
+  RVA: 0x8C4F
+}
+Export {
+  Ordinal: 407
+  Name: ?print@xml_node@pugi@@QBEXAAVxml_writer@2@PB_WIW4xml_encoding@2@I@Z
+  RVA: 0x8C72
+}
+Export {
+  Ordinal: 408
+  Name: ?remove_attribute@xml_node@pugi@@QAE_NABVxml_attribute@2@@Z
+  RVA: 0x8EDE
+}
+Export {
+  Ordinal: 409
+  Name: ?remove_attribute@xml_node@pugi@@QAE_NPB_W@Z
+  RVA: 0x8F65
+}
+Export {
+  Ordinal: 410
+  Name: ?remove_child@xml_node@pugi@@QAE_NABV12@@Z
+  RVA: 0x8F86
+}
+Export {
+  Ordinal: 411
+  Name: ?remove_child@xml_node@pugi@@QAE_NPB_W@Z
+  RVA: 0x8FEB
+}
+Export {
+  Ordinal: 412
+  Name: ?reset@xml_document@pugi@@QAEXABV12@@Z
+  RVA: 0x900C
+}
+Export {
+  Ordinal: 413
+  Name: ?reset@xml_document@pugi@@QAEXXZ
+  RVA: 0x9054
+}
+Export {
+  Ordinal: 414
+  Name: ?root@xml_node@pugi@@QBE?AV12@XZ
+  RVA: 0x9064
+}
+Export {
+  Ordinal: 415
+  Name: ?s_byAlphaBack@CGdiAlpha@SOUI@@0PAEA
+  RVA: 0x16218
+}
+Export {
+  Ordinal: 416
+  Name: ?save@xml_document@pugi@@QBEXAAVxml_writer@2@PB_WIW4xml_encoding@2@@Z
+  RVA: 0x908E
+}
+Export {
+  Ordinal: 417
+  Name: ?save_bin@xml_document@pugi@@QAE_NPBD@Z
+  RVA: 0x91FB
+}
+Export {
+  Ordinal: 418
+  Name: ?save_bin@xml_document@pugi@@QAE_NPB_W@Z
+  RVA: 0x9234
+}
+Export {
+  Ordinal: 419
+  Name: ?save_file@xml_document@pugi@@QBE_NPBDPB_WIW4xml_encoding@2@@Z
+  RVA: 0x926D
+}
+Export {
+  Ordinal: 420
+  Name: ?save_file@xml_document@pugi@@QBE_NPB_W0IW4xml_encoding@2@@Z
+  RVA: 0x92A6
+}
+Export {
+  Ordinal: 421
+  Name: ?set@xml_text@pugi@@QAE_NH@Z
+  RVA: 0x9336
+}
+Export {
+  Ordinal: 422
+  Name: ?set@xml_text@pugi@@QAE_NI@Z
+  RVA: 0x935C
+}
+Export {
+  Ordinal: 423
+  Name: ?set@xml_text@pugi@@QAE_NN@Z
+  RVA: 0x9382
+}
+Export {
+  Ordinal: 424
+  Name: ?set@xml_text@pugi@@QAE_NPB_W@Z
+  RVA: 0x93E7
+}
+Export {
+  Ordinal: 425
+  Name: ?set@xml_text@pugi@@QAE_N_N@Z
+  RVA: 0x940D
+}
+Export {
+  Ordinal: 426
+  Name: ?set_memory_management_functions@pugi@@YAXP6APAXI@ZP6AXPAX@Z@Z
+  RVA: 0x9433
+}
+Export {
+  Ordinal: 427
+  Name: ?set_name@xml_attribute@pugi@@QAE_NPB_W@Z
+  RVA: 0x9448
+}
+Export {
+  Ordinal: 428
+  Name: ?set_name@xml_node@pugi@@QAE_NPB_W@Z
+  RVA: 0x946B
+}
+Export {
+  Ordinal: 429
+  Name: ?set_userdata@xml_attribute@pugi@@QAE_NH@Z
+  RVA: 0x94A2
+}
+Export {
+  Ordinal: 430
+  Name: ?set_userdata@xml_node@pugi@@QAE_NH@Z
+  RVA: 0x94BB
+}
+Export {
+  Ordinal: 431
+  Name: ?set_value@xml_attribute@pugi@@QAE_NH@Z
+  RVA: 0x94D4
+}
+Export {
+  Ordinal: 432
+  Name: ?set_value@xml_attribute@pugi@@QAE_NI@Z
+  RVA: 0x94F7
+}
+Export {
+  Ordinal: 433
+  Name: ?set_value@xml_attribute@pugi@@QAE_NN@Z
+  RVA: 0x951A
+}
+Export {
+  Ordinal: 434
+  Name: ?set_value@xml_attribute@pugi@@QAE_NPB_W@Z
+  RVA: 0x957A
+}
+Export {
+  Ordinal: 435
+  Name: ?set_value@xml_attribute@pugi@@QAE_N_N@Z
+  RVA: 0x959D
+}
+Export {
+  Ordinal: 436
+  Name: ?set_value@xml_node@pugi@@QAE_NPB_W@Z
+  RVA: 0x95C0
+}
+Export {
+  Ordinal: 437
+  Name: ?size@xml_writer_buff@pugi@@QAEHXZ
+  RVA: 0x971D
+}
+Export {
+  Ordinal: 438
+  Name: ?text@xml_node@pugi@@QBE?AVxml_text@2@XZ
+  RVA: 0x9BB3
+}
+Export {
+  Ordinal: 439
+  Name: ?traverse@xml_node@pugi@@QAE_NAAVxml_tree_walker@2@@Z
+  RVA: 0x9DEE
+}
+Export {
+  Ordinal: 440
+  Name: ?type@xml_node@pugi@@QBE?AW4xml_node_type@2@XZ
+  RVA: 0x9EDF
+}
+Export {
+  Ordinal: 441
+  Name: ?value@xml_attribute@pugi@@QBEPB_WXZ
+  RVA: 0x6E2A
+}
+Export {
+  Ordinal: 442
+  Name: ?value@xml_node@pugi@@QBEPB_WXZ
+  RVA: 0x9EEF
+}
+Export {
+  Ordinal: 443
+  Name: ?wait@SSemaphore@SOUI@@QAEHI@Z
+  RVA: 0x121E
+}
+Export {
+  Ordinal: 444
+  Name: ?wait@SSemaphore@SOUI@@QAEHXZ
+  RVA: 0x1248
+}
+Export {
+  Ordinal: 445
+  Name: ?write@xml_writer_buff@pugi@@UAEXPBXI@Z
+  RVA: 0xA157
+}

@@ -411,6 +411,7 @@ struct frozen_spec { std::wstring role,path; std::uint64_t bytes; std::string sh
 std::vector<frozen_spec> images,controls;
 frozen_spec ntdllSpec;
 std::wstring buildCwd;
+bool consumerBuild=false;
 std::vector<std::wstring> buildArgs;
 std::wstring wide(const std::string& raw) {
     need(raw.size()<=32766 && raw.find('\0')==std::string::npos,"input-string-bound");
@@ -448,8 +449,10 @@ void load_input(const std::wstring& file,const std::string& expected,const std::
         return true;
     };
     const auto input=nlohmann::json::parse(raw,callback);
-    exact_keys(input,{"schema","nonce","root","rootArguments","images","modules","controlPins","report","profile","sdkArchitecture","configuration","sourceSetSha256","producer","outerRunner","budgets"});
-    need(input["schema"]=="soui.host64-build-debug-inputs/2"&&input["profile"]=="LLVM22MSVC142"&&wide(input["nonce"].get<std::string>())==nonce&&full(wide(input["report"].get<std::string>()))==report,"input-protocol");
+    consumerBuild=input.value("schema",std::string{})=="soui.host64-build-debug-inputs/3";
+    if(consumerBuild)exact_keys(input,{"schema","nonce","root","rootArguments","images","modules","controlPins","report","profile","sdkArchitecture","configuration","sourceSetSha256","producer","outerRunner","budgets","consumerKind","buildDirectory"});
+    else exact_keys(input,{"schema","nonce","root","rootArguments","images","modules","controlPins","report","profile","sdkArchitecture","configuration","sourceSetSha256","producer","outerRunner","budgets"});
+    need((consumerBuild||input["schema"]=="soui.host64-build-debug-inputs/2")&&input["profile"]=="LLVM22MSVC142"&&wide(input["nonce"].get<std::string>())==nonce&&full(wide(input["report"].get<std::string>()))==report,"input-protocol");
     need((input["sdkArchitecture"]=="x64"||input["sdkArchitecture"]=="x86")&&(input["configuration"]=="Release"||input["configuration"]=="Debug"),"input-target");
     need(input["budgets"]==nlohmann::json({{"outerMs",900000},{"innerMs",880000},{"drainMs",2000},{"queryMs",10000},{"closeMs",5000},{"members",2048},{"queries",2048},{"events",100000},{"reportBytes",67108864}}),"input-fixed-budgets");
     (void)hash_text(input["sourceSetSha256"]);buildCwd=full(wide(input["root"].get<std::string>()));plain_ancestors(buildCwd);
@@ -461,14 +464,26 @@ void load_input(const std::wstring& file,const std::string& expected,const std::
     controls.push_back({L"INPUT",file,size,expected});
     // Producer and original runner remain real pinned artifacts, never guessed PE labels.
     controls.push_back(input_pin(input["producer"],false));controls.push_back(input_pin(input["outerRunner"],false));
-    need(input["rootArguments"].is_array()&&input["rootArguments"].size()>=24&&input["rootArguments"].size()<=40,"input-root-vector-bound");
+    need(input["rootArguments"].is_array()&&(consumerBuild?input["rootArguments"].size()==7:(input["rootArguments"].size()>=24&&input["rootArguments"].size()<=40)),"input-root-vector-bound");
     for(const auto& arg:input["rootArguments"])need(arg.is_string(),"input-argument-type");
     for(const auto& arg:input["rootArguments"])buildArgs.push_back(wide(arg.get<std::string>()));
+    if(consumerBuild){
+        const auto kind=input["consumerKind"].get<std::string>();need(kind=="acceptance"||kind=="release","input-consumer-kind");
+        auto spelling=wide(input["buildDirectory"].get<std::string>());for(auto& ch:spelling)if(ch==L'/')ch=L'\\';
+        const auto directory=full(spelling);need(_wcsicmp(directory.c_str(),spelling.c_str())==0,"input-consumer-canonical-directory");plain_ancestors(directory);
+        const auto end=directory.find_last_of(L"\\/");const auto suite=directory.substr(0,end);const auto split=suite.find_last_of(L"\\/");
+        need(end!=std::wstring::npos&&split!=std::wstring::npos&&directory.substr(end+1)==L"consumer","input-consumer-directory");
+        const auto name=suite.substr(split+1),parent=full(buildCwd+(kind=="acceptance"?L"/out/acceptance":L"/out/release-validation/"+wide(input["sdkArchitecture"].get<std::string>())));
+        need(_wcsicmp(suite.substr(0,split).c_str(),parent.c_str())==0&&name.size()==(kind=="acceptance"?36:32),"input-consumer-owner");
+        for(std::size_t i=0;i<name.size();++i){const bool hyphen=kind=="acceptance"&&(i==8||i==13||i==18||i==23);need(hyphen?name[i]==L'-':(name[i]>=L'0'&&name[i]<=L'9')||(name[i]>=L'a'&&name[i]<=L'f'),"input-consumer-id");}
+        need(buildArgs==std::vector<std::wstring>{L"--build",wide(input["buildDirectory"].get<std::string>()),L"--config",wide(input["configuration"].get<std::string>()),L"--parallel",L"2",L"--verbose"},"input-fixed-consumer-entry");
+    }else{
     need(buildArgs[0]==L"-NoProfile"&&buildArgs[1]==L"-NonInteractive"&&buildArgs[2]==L"-ExecutionPolicy"&&buildArgs[3]==L"Bypass"&&buildArgs[4]==L"-File"&&_wcsicmp(full(buildArgs[5]).c_str(),full(buildCwd+L"/tools/Build.ps1").c_str())==0&&buildArgs[6]==L"-Architecture"&&buildArgs[7]==wide(input["sdkArchitecture"].get<std::string>())&&buildArgs[8]==L"-Configuration"&&buildArgs[9]==wide(input["configuration"].get<std::string>()),"input-fixed-build-entry");
-    std::size_t at=10;std::set<std::wstring> flags;const std::set<std::wstring> allowed={L"-SdkOnly",L"-SkipWeb",L"-WithWebView2",L"-WithGuiBindings",L"-WithVendorTests",L"-Install",L"-FreshConfigure"};
+    std::size_t at=10;std::set<std::wstring> flags;const std::set<std::wstring> allowed={L"-SdkOnly",L"-SkipWeb",L"-WithWebView2",L"-WithUia",L"-WithGuiBindings",L"-WithVendorTests",L"-Install",L"-FreshConfigure"};
     while(at<buildArgs.size()&&allowed.count(buildArgs[at])){need(flags.insert(buildArgs[at]).second,"input-duplicate-switch");++at;}
     need(at+14==buildArgs.size()&&buildArgs[at++]==L"-NativeToolchain"&&buildArgs[at++]==L"LLVM22MSVC142","input-explicit-profile");
     for(const auto flag:{L"-LlvmRoot",L"-MsvcRoot",L"-WindowsSdkRoot",L"-NinjaExe",L"-WindowsCmdExe",L"-PowerShellExe"}){need(buildArgs[at++]==flag,"input-profile-vector");(void)full(buildArgs[at++]);}
+    }
     check(GetFileInformationByHandle(held.get(),&after)!=FALSE,"input-after");need(before.dwVolumeSerialNumber==after.dwVolumeSerialNumber&&before.nFileIndexHigh==after.nFileIndexHigh&&before.nFileIndexLow==after.nFileIndexLow&&CompareFileTime(&before.ftLastWriteTime,&after.ftLastWriteTime)==0&&sha256(held.get())==expected,"input-stable");
 }
 
@@ -566,7 +581,7 @@ int run(const options& cfg) {
     limits.BasicLimitInformation.LimitFlags=JOB_OBJECT_LIMIT_KILL_ON_JOB_CLOSE;check(SetInformationJobObject(job.get(),JobObjectExtendedLimitInformation,&limits,sizeof(limits))!=FALSE,"inner-job-limits");
     std::vector<std::unique_ptr<pinned_image>> frozen;for(const auto& image:images)frozen.push_back(std::make_unique<pinned_image>(image));
     pinned_image ntdll(ntdllSpec);const auto layout=code_layout(ntdll.file.get(),ntdll.physical);source_pins();budget();
-    auto ps=frozen.front().get();std::wstring command=quote(ps->spec->path);for(const auto& arg:buildArgs)command+=L" "+quote(arg);
+    auto entry=frozen[consumerBuild?1:0].get();std::wstring command=quote(entry->spec->path);for(const auto& arg:buildArgs)command+=L" "+quote(arg);
     handle out(child_standard(STD_OUTPUT_HANDLE)),err(child_standard(STD_ERROR_HANDLE));SECURITY_ATTRIBUTES security{sizeof(security),nullptr,TRUE};
     handle input(CreateFileW(L"NUL",GENERIC_READ,FILE_SHARE_READ|FILE_SHARE_WRITE,&security,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr));check(input.valid(),"child-null-input");
     inherited_handles inheritance({input.get(),out.get(),err.get()});STARTUPINFOEXW startup{};startup.StartupInfo.cb=sizeof(startup);
@@ -574,7 +589,7 @@ int run(const options& cfg) {
     PROCESS_INFORMATION pi{};std::vector<std::unique_ptr<debug_member>> history;handle root,initialProcess,initialThread;DWORD rootPid=0,rootTid=0,rootExit=STILL_ACTIVE;std::uint64_t rootFt=0;
     unsigned queries=0,events=0;bool assigned=false,rootExitSeen=false,forced=false,protocol=true;std::string failure;unsigned long failureCode=0;
     try {
-        auto mutableCommand=command;check(CreateProcessW(ps->spec->path.c_str(),mutableCommand.data(),nullptr,nullptr,TRUE,
+        auto mutableCommand=command;check(CreateProcessW(entry->spec->path.c_str(),mutableCommand.data(),nullptr,nullptr,TRUE,
             DEBUG_PROCESS|CREATE_SUSPENDED|CREATE_NO_WINDOW|EXTENDED_STARTUPINFO_PRESENT,nullptr,buildCwd.c_str(),&startup.StartupInfo,&pi)!=FALSE,"debug-build-create");
         initialProcess.reset(pi.hProcess);initialThread.reset(pi.hThread);root.reset(duplicate(pi.hProcess));rootPid=pi.dwProcessId;rootTid=pi.dwThreadId;rootFt=creation(root.get());
         check(AssignProcessToJobObject(job.get(),root.get())!=FALSE,"inner-job-assignment");assigned=true;member(root.get(),job.get(),rootPid,rootFt,true);
@@ -593,7 +608,7 @@ int run(const options& cfg) {
                     check(eventFile.valid(),"create-hfile-required");value->image=identity(eventFile.get());BOOL wow=FALSE;check(IsWow64Process(value->held.get(),&wow)!=FALSE,"member-wow64");need(!wow && value->image.machine==IMAGE_FILE_MACHINE_AMD64,"all-host-images-amd64");
                     const pinned_image* selected=nullptr;for(const auto& image:frozen)if(physical_matches(image->physical,value->image)){need(selected==nullptr,"ambiguous-image-role");selected=image.get();}
                     need(selected!=nullptr,"unknown-host-image");value->role=selected->spec->role;value->root=value->pid==rootPid;
-                    if(value->root){need(value->ft==rootFt && value->mainTid==rootTid && value->role==L"POWERSHELL","actual-build-root");
+                    if(value->root){need(value->ft==rootFt && value->mainTid==rootTid && value->role==entry->spec->role,"actual-build-root");
                         if(initialProcess.get()==event.u.CreateProcessInfo.hProcess)initialProcess.release();if(initialThread.get()==event.u.CreateProcessInfo.hThread)initialThread.release();}
                     value->imageFile.reset(duplicate(eventFile.get()));report.row("create-paused",",\"pid\":"+std::to_string(value->pid)+",\"creationFileTime\":\""+std::to_string(value->ft)+
                         "\",\"mainTid\":"+std::to_string(value->mainTid)+",\"role\":"+jtext(value->role)+",\"buildRoot\":"+(value->root?"true":"false")+",\"inInnerJob\":true,\"alive\":true,\"wow64\":false,\"imageFile\":{"+value->image.fields()+"}");

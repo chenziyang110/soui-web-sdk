@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.29)
+project(SouiLegalNativeProbe LANGUAGES CXX)
+find_package(SouiSdk CONFIG REQUIRED)
+add_executable(legal_native_probe main.cpp)
+target_link_libraries(legal_native_probe PRIVATE Soui::Sdk)
+target_compile_options(legal_native_probe PRIVATE /U_DEBUG /utf-8)
+set_property(TARGET legal_native_probe PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)

@@ -7,18 +7,24 @@ param(
   [switch]$FreshConfigure,
   [ValidateSet('MSVC143','LLVM22MSVC142')][string]$NativeToolchain='MSVC143',
   [string]$LlvmRoot,[string]$MsvcRoot,[string]$WindowsSdkRoot,
-  [string]$NinjaExe,[string]$WindowsCmdExe,[string]$PowerShellExe,[string]$DevkitRoot
+  [string]$NinjaExe,[string]$WindowsCmdExe,[string]$PowerShellExe,[string]$DevkitRoot,
+  [string]$LegacyDevkitRoot
 )
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $sdkArchitecture=if($Architecture-eq'Win32'){'x86'}else{'x64'}
+$legacyToolsRoot=$root
 $llvmPaths=[ordered]@{LlvmRoot=$LlvmRoot;MsvcRoot=$MsvcRoot;WindowsSdkRoot=$WindowsSdkRoot;NinjaExe=$NinjaExe;WindowsCmdExe=$WindowsCmdExe;PowerShellExe=$PowerShellExe}
 if($NativeToolchain-eq'LLVM22MSVC142'){
   foreach($value in $llvmPaths.Values){if([string]::IsNullOrWhiteSpace($value)-or$value-notmatch'^[A-Za-z]:[\\/]'-or$value-match'[;"\x00-\x1f]'){throw 'LLVM release validation requires all six explicit safe tool paths'}}
   if(-not$DevkitRoot-or$DevkitRoot-notmatch'^[A-Za-z]:[\\/]'-or$DevkitRoot-match'[;"\x00-\x1f]'){throw 'LLVM release validation requires a separate explicit stock DevkitRoot'}
   $DevkitRoot=[IO.Path]::GetFullPath($DevkitRoot)
-  if([string]::Equals($DevkitRoot,$root,[StringComparison]::OrdinalIgnoreCase)){throw 'LLVM stock T and historical MSVC stock R must be distinct'}
-}elseif(@($llvmPaths.Values|Where-Object{$_}).Count-or$PSBoundParameters.ContainsKey('DevkitRoot')){throw 'LLVM paths and DevkitRoot require explicit LLVM22MSVC142'}
+  if($PSBoundParameters.ContainsKey('LegacyDevkitRoot')){
+    if(-not$LegacyDevkitRoot-or$LegacyDevkitRoot-notmatch'^[A-Za-z]:[\\/]'-or$LegacyDevkitRoot-match'[;"\x00-\x1f]'){throw 'LegacyDevkitRoot must be an explicit absolute safe MSVC stock owner'}
+    $legacyToolsRoot=[IO.Path]::GetFullPath($LegacyDevkitRoot)
+  }
+  if([string]::Equals($DevkitRoot,$legacyToolsRoot,[StringComparison]::OrdinalIgnoreCase)){throw 'LLVM stock T and historical MSVC stock R must be distinct'}
+}elseif(@($llvmPaths.Values|Where-Object{$_}).Count-or($PSBoundParameters.ContainsKey('DevkitRoot')-or$PSBoundParameters.ContainsKey('LegacyDevkitRoot'))){throw 'LLVM paths and stock roots require explicit LLVM22MSVC142'}
 . (Join-Path $PSScriptRoot 'internal/CMake-Configure.ps1')
 $version=([IO.File]::ReadAllText((Join-Path $root 'VERSION'))).Trim()
 if(-not $ExpectedVersion){$ExpectedVersion=$version}
@@ -50,7 +56,7 @@ function Build-And-Smoke([string]$Project,[string]$Phase){
   $llvmPhase=$NativeToolchain-eq'LLVM22MSVC142'-and$Phase-notin@('baseline','rollback')
   if($NativeToolchain-eq'LLVM22MSVC142'){$prepared=Invoke-Json @('prepare-phase',$runFile,$Phase);$compileProject=[string]$prepared.project}
   if($llvmPhase){
-    $arguments=@((Join-Path $root 'tools/internal/standard-build.cjs'),'--root',$compileProject,'--devkit-root',$DevkitRoot,
+    $arguments=@((Join-Path $compileProject 'tools/internal/standard-build.cjs'),'--root',$compileProject,'--devkit-root',$DevkitRoot,
       '--architecture',$sdkArchitecture,'--configuration','Release','--native-toolchain',$NativeToolchain,'--fresh-configure')
     $flags=[ordered]@{LlvmRoot='--llvm-root';MsvcRoot='--msvc-root';WindowsSdkRoot='--windows-sdk-root';NinjaExe='--ninja-exe';WindowsCmdExe='--windows-cmd-exe';PowerShellExe='--powershell-exe'}
     foreach($entry in $flags.GetEnumerator()){$arguments+=@($entry.Value,[string]$llvmPaths[$entry.Key])}
@@ -108,6 +114,32 @@ function Install-Sdk([string]$SdkPackage,[string]$Project){
   & $node (Join-Path $root 'tools/sdk/soui-sdk.cjs') install --package $SdkPackage --project $Project
   if($LASTEXITCODE -ne 0){throw 'SDK upgrade or rollback failed; retain its recovery evidence.'}
 }
+function Build-InstalledSdk {
+$refresh=if($FreshConfigure){@('-FreshConfigure')}else{@()}
+if($NativeToolchain-eq'LLVM22MSVC142'){
+  # The installed consumer requires this SDK's actual host observer producer.
+  # x86 SDKs still use the x64 host tools, kept in the selected independent stock.
+  if($sdkArchitecture-ne'x64'){
+    $hostStock=@('-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',(Join-Path $DevkitRoot 'tools/internal/Build-ValidationTools.ps1'),'-Architecture','x64','-NativeToolchain',$NativeToolchain)
+    foreach($entry in $llvmPaths.GetEnumerator()){$hostStock+=@(('-'+$entry.Key),[string]$entry.Value)}
+    if($FreshConfigure){$hostStock+='-FreshConfigure'}
+    Invoke-Checked $PowerShellExe $hostStock (Join-Path $output 'llvm-host-stock-build.log')
+  }
+  $hostRequest=Join-Path $DevkitRoot 'out/benchmark-protocol/llvm-profile-request-Release.json'
+  $hostDirectory=Join-Path $output 'installed-sdk-host-observer'
+  Invoke-Checked $node @((Join-Path $root 'tools/internal/host64-build-debug-observer.cjs'),'prepare',$root,$hostRequest,$DevkitRoot,$cmake,$hostDirectory) (Join-Path $output 'installed-sdk-host-observer.log')
+  $hostReceipt=Join-Path $hostDirectory 'prepared.json'
+  $hostSha=(Get-FileHash -LiteralPath $hostReceipt -Algorithm SHA256).Hash.ToLowerInvariant()
+  $sdkArgs=@((Join-Path $root 'tools/internal/standard-build.cjs'),'--root',$root,'--devkit-root',$DevkitRoot,'--architecture',$sdkArchitecture,'--configuration','Release','--sdk-only','--install','--native-toolchain',$NativeToolchain)
+  $sdkArgs+=@('--host64-build-observer','--host64-observer-prepared',$hostReceipt,'--host64-observer-sha256',$hostSha)
+  $flags=[ordered]@{LlvmRoot='--llvm-root';MsvcRoot='--msvc-root';WindowsSdkRoot='--windows-sdk-root';NinjaExe='--ninja-exe';WindowsCmdExe='--windows-cmd-exe';PowerShellExe='--powershell-exe'}
+  foreach($entry in $flags.GetEnumerator()){$sdkArgs+=@($entry.Value,[string]$llvmPaths[$entry.Key])};if($FreshConfigure){$sdkArgs+='--fresh-configure'}
+  Invoke-Checked $node $sdkArgs (Join-Path $output 'installed-sdk-build.log')
+}else{
+Invoke-Checked $powershell (@('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $root 'tools/Build.ps1'),
+  '-Architecture',$sdkArchitecture,'-Configuration','Release','-SdkOnly','-Install')+$refresh) (Join-Path $output 'installed-sdk-build.log')
+}
+}
 $releaseEnvironment=@{}
 try{
 if($NativeToolchain-eq'LLVM22MSVC142'){
@@ -122,12 +154,15 @@ if($NativeToolchain-eq'LLVM22MSVC142'){
   $env:ComSpec=$WindowsCmdExe;$env:VcpkgEnabled='false';$env:VcpkgEnableManifest='false';$env:MSBUILDDISABLENODEREUSE='1'
   New-Item -ItemType Directory -Force -Path $output|Out-Null
   $profileFile=Join-Path $output 'requested-profile.json'
-  $requested=[ordered]@{schema='soui.release-requested-profile/v1';profile=$NativeToolchain;toolsRoot=$DevkitRoot;legacyToolsRoot=$root;paths=$llvmPaths;qualificationPassed=$false;releaseReady=$false}
+  $requestedSchema=if($PSBoundParameters.ContainsKey('LegacyDevkitRoot')){'soui.release-requested-profile/v2'}else{'soui.release-requested-profile/v1'}
+  $requested=[ordered]@{schema=$requestedSchema;profile=$NativeToolchain;toolsRoot=$DevkitRoot;legacyToolsRoot=$legacyToolsRoot;paths=$llvmPaths;qualificationPassed=$false;releaseReady=$false}
   [IO.File]::WriteAllText($profileFile,($requested|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))
+  # Refuse linked or physically aliased owners before either stock build can write.
+  Invoke-Json @('profile',$profileFile) | Out-Null
   # These two actual stock directories remain independent for the entire run.
-  Invoke-Checked $powershell (@('-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',(Join-Path $root 'tools/internal/Build-ValidationTools.ps1'),'-Architecture',$sdkArchitecture,'-NativeToolchain','MSVC143')+$(if($FreshConfigure){@('-FreshConfigure')}else{@()})) (Join-Path $output 'legacy-stock-build.log')
+  Invoke-Checked $powershell (@('-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',(Join-Path $legacyToolsRoot 'tools/internal/Build-ValidationTools.ps1'),'-Architecture',$sdkArchitecture,'-NativeToolchain','MSVC143')+$(if($FreshConfigure){@('-FreshConfigure')}else{@()})) (Join-Path $output 'legacy-stock-build.log')
   $stock=@('-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',(Join-Path $DevkitRoot 'tools/internal/Build-ValidationTools.ps1'),'-Architecture',$sdkArchitecture,'-NativeToolchain',$NativeToolchain)
-  foreach($entry in $llvmPaths.GetEnumerator()){$stock+=@('-'+$entry.Key,[string]$entry.Value)}
+  foreach($entry in $llvmPaths.GetEnumerator()){$stock+=@(('-'+$entry.Key),[string]$entry.Value)}
   if($FreshConfigure){$stock+='-FreshConfigure'}
   Invoke-Checked $PowerShellExe $stock (Join-Path $output 'llvm-stock-build.log')
 }
@@ -148,6 +183,8 @@ $fixtureNative=@'
 #include <windows.h>
 #include <soui/host/soui_miniblink_host.h>
 #include <soui/json_bridge.h>
+#include <soui/version.h>
+#include <chrono>
 #include <json.hpp>
 #include <algorithm>
 #include <filesystem>
@@ -226,7 +263,12 @@ int APIENTRY wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int){
   const HRESULT com=CoInitializeEx(nullptr,COINIT_APARTMENTTHREADED);
   if(FAILED(com))return 10;
   int result=1;try{result=run(instance);}catch(const std::exception&){}
-  const auto shutdown=soui::sdk::shutdown_miniblink_runtime();if(!shutdown.ok && result==0)result=11;
+#if SOUI_SDK_VERSION_MAJOR > 0 || SOUI_SDK_VERSION_MINOR >= 5
+  const auto shutdown=soui::sdk::wait_for_miniblink_runtime_shutdown(std::chrono::seconds(20));
+#else
+  const auto shutdown=soui::sdk::shutdown_miniblink_runtime();
+#endif
+  if(!shutdown.ok && result==0)result=11;
   CoUninitialize();return result;
 }
 '@
@@ -277,16 +319,7 @@ foreach($relative in @(Invoke-Json @('copy-files',$runFile))){
 }
 Build-And-Smoke $relocated 'relocation'
 Write-Output 'Building installed SDK and external CMake consumer'
-$refresh=if($FreshConfigure){@('-FreshConfigure')}else{@()}
-if($NativeToolchain-eq'LLVM22MSVC142'){
-  $sdkArgs=@((Join-Path $root 'tools/internal/standard-build.cjs'),'--root',$root,'--devkit-root',$DevkitRoot,'--architecture',$sdkArchitecture,'--configuration','Release','--sdk-only','--install','--native-toolchain',$NativeToolchain)
-  $flags=[ordered]@{LlvmRoot='--llvm-root';MsvcRoot='--msvc-root';WindowsSdkRoot='--windows-sdk-root';NinjaExe='--ninja-exe';WindowsCmdExe='--windows-cmd-exe';PowerShellExe='--powershell-exe'}
-  foreach($entry in $flags.GetEnumerator()){$sdkArgs+=@($entry.Value,[string]$llvmPaths[$entry.Key])};if($FreshConfigure){$sdkArgs+='--fresh-configure'}
-  Invoke-Checked $node $sdkArgs (Join-Path $output 'installed-sdk-build.log')
-}else{
-Invoke-Checked $powershell (@('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $root 'tools/Build.ps1'),
-  '-Architecture',$sdkArchitecture,'-Configuration','Release','-SdkOnly','-Install')+$refresh) (Join-Path $output 'installed-sdk-build.log')
-}
+Build-InstalledSdk
 $consumer=Join-Path $output 'consumer'
 if($NativeToolchain-eq'LLVM22MSVC142'){
   . (Join-Path $root 'tools/internal/Find-LlvmToolchain.ps1')

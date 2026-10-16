@@ -1,0 +1,1231 @@
+{
+  "sourceManifest": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 16115595,
+    "sha256": "161b4c4edeced87e68c4078895089749af0371d0fde54cb1823881947af92bac"
+  },
+  "pins": [
+    {
+      "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+      "bytes": 16115595,
+      "sha256": "161b4c4edeced87e68c4078895089749af0371d0fde54cb1823881947af92bac"
+    },
+    {
+      "path": "C:\\work\\sm05-cache-budget-3\\candidate\\tests\\acceptance\\software-cache-budget.cjs",
+      "bytes": 5072,
+      "sha256": "d495f85f795c5de19c6be96dc56f4dc5de22520570271b17566050069118efbf"
+    },
+    {
+      "path": "C:\\work\\sm05-cache-budget-3\\PROPOSAL.json",
+      "bytes": 4016,
+      "sha256": "a6d37dc289594c52574ba03c7e22d4d86426a779150c9f7491787ec7d145eca8"
+    },
+    {
+      "path": "C:\\work\\sm05-source28-resource-1\\calibrate-envelope.cjs",
+      "bytes": 4057,
+      "sha256": "a59dff263260025b9b31a238f0babc220218724092b7f4b742edf782ec20f3a0"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\acceptance\\0c008b33-5e9e-4537-865c-d5367592410f\\reload-eab97d4c-c780-44df-9287-2f78a6a4ab5e\\operation-result.json",
+      "bytes": 2742271,
+      "sha256": "4563a23a33ad501d3f68e709ffc7e211cdbaf527603c1dd8afd5b9047522b9b2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\acceptance\\0c008b33-5e9e-4537-865c-d5367592410f\\reload-eab97d4c-c780-44df-9287-2f78a6a4ab5e\\file-bindings.json",
+      "bytes": 3350218,
+      "sha256": "92f9a86fa94d4eda5947adecc32497186176727112b944e0603a6668c528f9a4"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\acceptance\\0c008b33-5e9e-4537-865c-d5367592410f\\reload-eab97d4c-c780-44df-9287-2f78a6a4ab5e\\events.ndjson",
+      "bytes": 1905710,
+      "sha256": "e231d821e49ae7fccc6944ae00996c10e7c84c37adc377e8ee28bcd26d29487e"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\acceptance\\0c008b33-5e9e-4537-865c-d5367592410f\\reload-eab97d4c-c780-44df-9287-2f78a6a4ab5e\\resource-policy.json",
+      "bytes": 774,
+      "sha256": "b69ec99692f815e7e2d644acff5a7906f0b265a9b69785f8ea995b94e61613be"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\acceptance\\0c008b33-5e9e-4537-865c-d5367592410f\\reload-eab97d4c-c780-44df-9287-2f78a6a4ab5e\\request.json",
+      "bytes": 738,
+      "sha256": "ccd37dd880b7d9a9bfef22bd6474b83cf610284fa148e5415d084d9af5a5a00d"
+    }
+  ],
+  "run": "C:\\work\\sm05-release-050\\out\\acceptance\\0c008b33-5e9e-4537-865c-d5367592410f\\reload-eab97d4c-c780-44df-9287-2f78a6a4ab5e",
+  "architecture": "x64",
+  "originalMode": "reload",
+  "originalResourceGate": "passed",
+  "originalFailure": null,
+  "originalSubject": {
+    "pid": 37388,
+    "creationFileTime": "134365862849641447",
+    "entireJobProcesses": 1,
+    "nativeExitCode": 0,
+    "supervisorExitCode": 0,
+    "naturalClosure": true,
+    "forcedClosure": false
+  },
+  "prospectivePolicy": {
+    "schema": "soui.software-cache-budget-policy/v1",
+    "revision": "0.5.0-committed-envelope-v1",
+    "maximumCommittedBytes": "1073741824",
+    "maximumCompletedAgeMs": 180000,
+    "scope": "software-single-process-complete-committed-address-range",
+    "components": "MEM_PRIVATE+MEM_MAPPED+MEM_IMAGE",
+    "allSamplePhases": true,
+    "subtractNonCacheBytes": false,
+    "atomic": false,
+    "physicalMemory": false,
+    "allocatorHardLimit": false,
+    "perCacheOwnershipObserved": false
+  },
+  "points": [
+    {
+      "index": 1,
+      "phase": "process",
+      "cycle": 0,
+      "dataGate": "matched",
+      "committedBytes": "42475520",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 6,
+      "phase": "mounted",
+      "cycle": 0,
+      "dataGate": "matched",
+      "committedBytes": "135958528",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 9,
+      "phase": "cycle",
+      "cycle": 1,
+      "dataGate": "matched",
+      "committedBytes": "137654272",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 12,
+      "phase": "cycle",
+      "cycle": 2,
+      "dataGate": "matched",
+      "committedBytes": "141787136",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 15,
+      "phase": "cycle",
+      "cycle": 3,
+      "dataGate": "matched",
+      "committedBytes": "144572416",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 18,
+      "phase": "cycle",
+      "cycle": 4,
+      "dataGate": "matched",
+      "committedBytes": "148582400",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 21,
+      "phase": "cycle",
+      "cycle": 5,
+      "dataGate": "matched",
+      "committedBytes": "148566016",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 24,
+      "phase": "cycle",
+      "cycle": 6,
+      "dataGate": "matched",
+      "committedBytes": "150257664",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 27,
+      "phase": "cycle",
+      "cycle": 7,
+      "dataGate": "matched",
+      "committedBytes": "136404992",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 30,
+      "phase": "cycle",
+      "cycle": 8,
+      "dataGate": "matched",
+      "committedBytes": "136994816",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 33,
+      "phase": "cycle",
+      "cycle": 9,
+      "dataGate": "matched",
+      "committedBytes": "139030528",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 36,
+      "phase": "cycle",
+      "cycle": 10,
+      "dataGate": "matched",
+      "committedBytes": "142360576",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 39,
+      "phase": "cycle",
+      "cycle": 11,
+      "dataGate": "matched",
+      "committedBytes": "146669568",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 42,
+      "phase": "cycle",
+      "cycle": 12,
+      "dataGate": "matched",
+      "committedBytes": "146657280",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 45,
+      "phase": "cycle",
+      "cycle": 13,
+      "dataGate": "matched",
+      "committedBytes": "149336064",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 48,
+      "phase": "cycle",
+      "cycle": 14,
+      "dataGate": "matched",
+      "committedBytes": "135417856",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 51,
+      "phase": "cycle",
+      "cycle": 15,
+      "dataGate": "matched",
+      "committedBytes": "138227712",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 54,
+      "phase": "cycle",
+      "cycle": 16,
+      "dataGate": "matched",
+      "committedBytes": "144199680",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 57,
+      "phase": "cycle",
+      "cycle": 17,
+      "dataGate": "matched",
+      "committedBytes": "143261696",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 60,
+      "phase": "cycle",
+      "cycle": 18,
+      "dataGate": "matched",
+      "committedBytes": "145649664",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 63,
+      "phase": "cycle",
+      "cycle": 19,
+      "dataGate": "matched",
+      "committedBytes": "150044672",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 66,
+      "phase": "cycle",
+      "cycle": 20,
+      "dataGate": "matched",
+      "committedBytes": "149680128",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 69,
+      "phase": "cycle",
+      "cycle": 21,
+      "dataGate": "matched",
+      "committedBytes": "151425024",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 72,
+      "phase": "cycle",
+      "cycle": 22,
+      "dataGate": "matched",
+      "committedBytes": "136204288",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 75,
+      "phase": "cycle",
+      "cycle": 23,
+      "dataGate": "matched",
+      "committedBytes": "139390976",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 78,
+      "phase": "cycle",
+      "cycle": 24,
+      "dataGate": "matched",
+      "committedBytes": "140763136",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 81,
+      "phase": "cycle",
+      "cycle": 25,
+      "dataGate": "matched",
+      "committedBytes": "142655488",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 84,
+      "phase": "cycle",
+      "cycle": 26,
+      "dataGate": "matched",
+      "committedBytes": "148045824",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 87,
+      "phase": "cycle",
+      "cycle": 27,
+      "dataGate": "matched",
+      "committedBytes": "148348928",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 90,
+      "phase": "cycle",
+      "cycle": 28,
+      "dataGate": "matched",
+      "committedBytes": "150056960",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 93,
+      "phase": "cycle",
+      "cycle": 29,
+      "dataGate": "matched",
+      "committedBytes": "135159808",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 96,
+      "phase": "cycle",
+      "cycle": 30,
+      "dataGate": "matched",
+      "committedBytes": "140894208",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 99,
+      "phase": "cycle",
+      "cycle": 31,
+      "dataGate": "matched",
+      "committedBytes": "142692352",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 102,
+      "phase": "cycle",
+      "cycle": 32,
+      "dataGate": "matched",
+      "committedBytes": "141357056",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 105,
+      "phase": "cycle",
+      "cycle": 33,
+      "dataGate": "matched",
+      "committedBytes": "143450112",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 108,
+      "phase": "cycle",
+      "cycle": 34,
+      "dataGate": "matched",
+      "committedBytes": "149176320",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 111,
+      "phase": "cycle",
+      "cycle": 35,
+      "dataGate": "matched",
+      "committedBytes": "149086208",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 114,
+      "phase": "cycle",
+      "cycle": 36,
+      "dataGate": "matched",
+      "committedBytes": "135974912",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 117,
+      "phase": "cycle",
+      "cycle": 37,
+      "dataGate": "matched",
+      "committedBytes": "138076160",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 120,
+      "phase": "cycle",
+      "cycle": 38,
+      "dataGate": "matched",
+      "committedBytes": "141971456",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 123,
+      "phase": "cycle",
+      "cycle": 39,
+      "dataGate": "matched",
+      "committedBytes": "145256448",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 126,
+      "phase": "cycle",
+      "cycle": 40,
+      "dataGate": "matched",
+      "committedBytes": "145412096",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 129,
+      "phase": "cycle",
+      "cycle": 41,
+      "dataGate": "matched",
+      "committedBytes": "147828736",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 132,
+      "phase": "cycle",
+      "cycle": 42,
+      "dataGate": "matched",
+      "committedBytes": "151527424",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 135,
+      "phase": "cycle",
+      "cycle": 43,
+      "dataGate": "matched",
+      "committedBytes": "150773760",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 138,
+      "phase": "cycle",
+      "cycle": 44,
+      "dataGate": "matched",
+      "committedBytes": "136089600",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 141,
+      "phase": "cycle",
+      "cycle": 45,
+      "dataGate": "matched",
+      "committedBytes": "137854976",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 144,
+      "phase": "cycle",
+      "cycle": 46,
+      "dataGate": "matched",
+      "committedBytes": "139022336",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 147,
+      "phase": "cycle",
+      "cycle": 47,
+      "dataGate": "matched",
+      "committedBytes": "143159296",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 150,
+      "phase": "cycle",
+      "cycle": 48,
+      "dataGate": "matched",
+      "committedBytes": "147472384",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 153,
+      "phase": "cycle",
+      "cycle": 49,
+      "dataGate": "matched",
+      "committedBytes": "147603456",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 156,
+      "phase": "cycle",
+      "cycle": 50,
+      "dataGate": "matched",
+      "committedBytes": "149839872",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 159,
+      "phase": "cycle",
+      "cycle": 51,
+      "dataGate": "matched",
+      "committedBytes": "136134656",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 162,
+      "phase": "cycle",
+      "cycle": 52,
+      "dataGate": "matched",
+      "committedBytes": "141594624",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 165,
+      "phase": "cycle",
+      "cycle": 53,
+      "dataGate": "matched",
+      "committedBytes": "143065088",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 168,
+      "phase": "cycle",
+      "cycle": 54,
+      "dataGate": "matched",
+      "committedBytes": "141623296",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 171,
+      "phase": "cycle",
+      "cycle": 55,
+      "dataGate": "matched",
+      "committedBytes": "143859712",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 174,
+      "phase": "cycle",
+      "cycle": 56,
+      "dataGate": "matched",
+      "committedBytes": "149303296",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 177,
+      "phase": "cycle",
+      "cycle": 57,
+      "dataGate": "matched",
+      "committedBytes": "149450752",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 180,
+      "phase": "cycle",
+      "cycle": 58,
+      "dataGate": "matched",
+      "committedBytes": "136138752",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 183,
+      "phase": "cycle",
+      "cycle": 59,
+      "dataGate": "matched",
+      "committedBytes": "138022912",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 186,
+      "phase": "cycle",
+      "cycle": 60,
+      "dataGate": "matched",
+      "committedBytes": "141840384",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 189,
+      "phase": "cycle",
+      "cycle": 61,
+      "dataGate": "matched",
+      "committedBytes": "144936960",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 192,
+      "phase": "cycle",
+      "cycle": 62,
+      "dataGate": "matched",
+      "committedBytes": "145240064",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 195,
+      "phase": "cycle",
+      "cycle": 63,
+      "dataGate": "matched",
+      "committedBytes": "147292160",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 198,
+      "phase": "cycle",
+      "cycle": 64,
+      "dataGate": "matched",
+      "committedBytes": "151281664",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 201,
+      "phase": "cycle",
+      "cycle": 65,
+      "dataGate": "matched",
+      "committedBytes": "151281664",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 204,
+      "phase": "cycle",
+      "cycle": 66,
+      "dataGate": "matched",
+      "committedBytes": "137142272",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 207,
+      "phase": "cycle",
+      "cycle": 67,
+      "dataGate": "matched",
+      "committedBytes": "138551296",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 210,
+      "phase": "cycle",
+      "cycle": 68,
+      "dataGate": "matched",
+      "committedBytes": "139792384",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 213,
+      "phase": "cycle",
+      "cycle": 69,
+      "dataGate": "matched",
+      "committedBytes": "143126528",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 216,
+      "phase": "cycle",
+      "cycle": 70,
+      "dataGate": "matched",
+      "committedBytes": "147415040",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 219,
+      "phase": "cycle",
+      "cycle": 71,
+      "dataGate": "matched",
+      "committedBytes": "148635648",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 222,
+      "phase": "cycle",
+      "cycle": 72,
+      "dataGate": "matched",
+      "committedBytes": "150835200",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 225,
+      "phase": "cycle",
+      "cycle": 73,
+      "dataGate": "matched",
+      "committedBytes": "137633792",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 228,
+      "phase": "cycle",
+      "cycle": 74,
+      "dataGate": "matched",
+      "committedBytes": "139382784",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 231,
+      "phase": "cycle",
+      "cycle": 75,
+      "dataGate": "matched",
+      "committedBytes": "145756160",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 234,
+      "phase": "cycle",
+      "cycle": 76,
+      "dataGate": "matched",
+      "committedBytes": "144711680",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 237,
+      "phase": "cycle",
+      "cycle": 77,
+      "dataGate": "matched",
+      "committedBytes": "147017728",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 240,
+      "phase": "cycle",
+      "cycle": 78,
+      "dataGate": "matched",
+      "committedBytes": "151592960",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 243,
+      "phase": "cycle",
+      "cycle": 79,
+      "dataGate": "matched",
+      "committedBytes": "151085056",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 246,
+      "phase": "cycle",
+      "cycle": 80,
+      "dataGate": "matched",
+      "committedBytes": "138985472",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 249,
+      "phase": "cycle",
+      "cycle": 81,
+      "dataGate": "matched",
+      "committedBytes": "139788288",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 252,
+      "phase": "cycle",
+      "cycle": 82,
+      "dataGate": "matched",
+      "committedBytes": "142708736",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 255,
+      "phase": "cycle",
+      "cycle": 83,
+      "dataGate": "matched",
+      "committedBytes": "146051072",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 258,
+      "phase": "cycle",
+      "cycle": 84,
+      "dataGate": "matched",
+      "committedBytes": "146206720",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 261,
+      "phase": "cycle",
+      "cycle": 85,
+      "dataGate": "matched",
+      "committedBytes": "149381120",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 264,
+      "phase": "cycle",
+      "cycle": 86,
+      "dataGate": "matched",
+      "committedBytes": "153042944",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 267,
+      "phase": "cycle",
+      "cycle": 87,
+      "dataGate": "matched",
+      "committedBytes": "153153536",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 270,
+      "phase": "cycle",
+      "cycle": 88,
+      "dataGate": "matched",
+      "committedBytes": "137691136",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 273,
+      "phase": "cycle",
+      "cycle": 89,
+      "dataGate": "matched",
+      "committedBytes": "139522048",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 276,
+      "phase": "cycle",
+      "cycle": 90,
+      "dataGate": "matched",
+      "committedBytes": "140685312",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 279,
+      "phase": "cycle",
+      "cycle": 91,
+      "dataGate": "matched",
+      "committedBytes": "146485248",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 282,
+      "phase": "cycle",
+      "cycle": 92,
+      "dataGate": "matched",
+      "committedBytes": "146751488",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 285,
+      "phase": "cycle",
+      "cycle": 93,
+      "dataGate": "matched",
+      "committedBytes": "151162880",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 288,
+      "phase": "cycle",
+      "cycle": 94,
+      "dataGate": "matched",
+      "committedBytes": "151212032",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 291,
+      "phase": "cycle",
+      "cycle": 95,
+      "dataGate": "matched",
+      "committedBytes": "137842688",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 294,
+      "phase": "cycle",
+      "cycle": 96,
+      "dataGate": "matched",
+      "committedBytes": "139612160",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 297,
+      "phase": "cycle",
+      "cycle": 97,
+      "dataGate": "matched",
+      "committedBytes": "142544896",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 300,
+      "phase": "cycle",
+      "cycle": 98,
+      "dataGate": "matched",
+      "committedBytes": "146292736",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 303,
+      "phase": "cycle",
+      "cycle": 99,
+      "dataGate": "matched",
+      "committedBytes": "146595840",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 306,
+      "phase": "cycle",
+      "cycle": 100,
+      "dataGate": "matched",
+      "committedBytes": "148832256",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 309,
+      "phase": "cycle",
+      "cycle": 101,
+      "dataGate": "matched",
+      "committedBytes": "152616960",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 312,
+      "phase": "cycle",
+      "cycle": 102,
+      "dataGate": "matched",
+      "committedBytes": "152895488",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 315,
+      "phase": "cycle",
+      "cycle": 103,
+      "dataGate": "matched",
+      "committedBytes": "137531392",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 318,
+      "phase": "cycle",
+      "cycle": 104,
+      "dataGate": "matched",
+      "committedBytes": "140992512",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 321,
+      "phase": "cycle",
+      "cycle": 105,
+      "dataGate": "matched",
+      "committedBytes": "142176256",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 324,
+      "phase": "cycle",
+      "cycle": 106,
+      "dataGate": "matched",
+      "committedBytes": "144461824",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 327,
+      "phase": "cycle",
+      "cycle": 107,
+      "dataGate": "matched",
+      "committedBytes": "147771392",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 330,
+      "phase": "cycle",
+      "cycle": 108,
+      "dataGate": "matched",
+      "committedBytes": "152236032",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 333,
+      "phase": "cycle",
+      "cycle": 109,
+      "dataGate": "matched",
+      "committedBytes": "152383488",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 336,
+      "phase": "cycle",
+      "cycle": 110,
+      "dataGate": "matched",
+      "committedBytes": "137719808",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 339,
+      "phase": "closed",
+      "cycle": 111,
+      "dataGate": "matched",
+      "committedBytes": "134299648",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    },
+    {
+      "index": 342,
+      "phase": "runtime-closed",
+      "cycle": 111,
+      "dataGate": "matched",
+      "committedBytes": "113889280",
+      "withinProspectiveCap": true,
+      "sequenceFresh": true,
+      "failure": null
+    }
+  ],
+  "peakCommittedBytes": "153153536",
+  "allFinitePointsCompleteFreshAndWithinCap": true,
+  "originalSoftwareScopeMatched": true,
+  "actualEightHour": false,
+  "cacheBudgetGate": "not-evaluated",
+  "adopted": false,
+  "releaseReady": false
+}

@@ -1,0 +1,480 @@
+{
+  "pins": [
+    {
+      "path": "C:\\work\\sm05-legal-text-fix-1\\run-native-tests3.cjs",
+      "bytes": 3721,
+      "sha256": "ca046b704add6225fa197ba1fba978c793c5868cc92bf06d7ebd9ac53edfd067"
+    },
+    {
+      "path": "C:\\work\\sm05-legal-text-fix-1\\native\\main.cpp",
+      "bytes": 727,
+      "sha256": "bfae1aca997cc410b425b4b0d78721e2e142a21606960edcfd5a1058943b5223"
+    },
+    {
+      "path": "C:\\work\\sm05-legal-text-fix-1\\native\\CMakeLists.txt",
+      "bytes": 377,
+      "sha256": "6c1f5cfd07c0feec79de4636e985083a6f3389b3039fc9b26ec8a69434f989de"
+    },
+    {
+      "path": "C:\\work\\sm05-legal-text-fix-1\\build-native3.ps1",
+      "bytes": 1497,
+      "sha256": "0bbf8095ba8d552dc6162a05f65ac93105bbea425e3d1301f0fa0b255621fd18"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\install\\x64\\lib\\Release\\soui_sdk.lib",
+      "bytes": 12191140,
+      "sha256": "de3a6766afcb6b04d79da84869ade66bde0ab56773bc10237c420eb05d0b8c38"
+    },
+    {
+      "path": "C:\\work\\sm05-legal-text-fix-1\\out\\native-build3\\Release\\legal_native_probe.exe",
+      "bytes": 501248,
+      "sha256": "5fe54d91ad926345a8f3cf4c516209f2df285ce228e07c6a3007e47afc8040ea"
+    }
+  ],
+  "records": [
+    {
+      "name": "build3",
+      "args": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-File",
+        "C:\\work\\sm05-legal-text-fix-1/build-native3.ps1"
+      ],
+      "expected": 0,
+      "matched": true,
+      "natural": true,
+      "text": "-- SOUI explicit LLVM profile selected; real language checks follow project()\n-- The CXX compiler identification is Clang 22.1.3 with MSVC-like command-line\n-- Detecting CXX compiler ABI info\n-- Detecting CXX compiler ABI info - done\n-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe - skipped\n-- Detecting CXX compile features\n-- Detecting CXX compile features - done\n-- LLVM22MSVC142 observed language identity verified; target=x86_64-pc-windows-msvc; SDK files=10.0.19041.0; linker=C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe; librarian=C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-lib.exe\n-- Configuring done (17.0s)\n-- Generating done (0.1s)\n-- Build files have been written to: C:/work/sm05-legal-text-fix-1/out/native-build3\n[1/2] Building CXX object CMakeFiles\\legal_native_probe.dir\\Release\\main.cpp.obj\r\n[2/2] Linking CXX executable Release\\legal_native_probe.exe",
+      "result": {
+        "pid": 60604,
+        "creationFileTime": "134365621202394234",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 19467,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 61,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-legal-text-fix-1\\build3\\build3.ndjson",
+        "reportSha256": "8ef93da0cbbc85b93de32b732f26084143388162146472d0d90a8d3862208277",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 19467,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 61,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "original-denied",
+      "args": [
+        "C:\\work\\sm05-legal-text-fix-1/original/app/resources"
+      ],
+      "expected": 1,
+      "matched": true,
+      "natural": false,
+      "text": "E_REMOTE_RESOURCE",
+      "result": {
+        "pid": 51996,
+        "creationFileTime": "134365621398168305",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 91,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "C:\\work\\sm05-legal-text-fix-1\\original-denied\\original-denied.ndjson",
+        "reportSha256": "35b0a502b2f4ce435774f21d1ad396909412a56dc2b83fde11136c324089e28e",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "5fe54d91ad926345a8f3cf4c516209f2df285ce228e07c6a3007e47afc8040ea"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 91,
+        "rootExited": true,
+        "rootExitCode": 1,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    },
+    {
+      "name": "proposed-accepted",
+      "args": [
+        "C:\\work\\sm05-legal-text-fix-1/proposed/app/resources"
+      ],
+      "expected": 0,
+      "matched": true,
+      "natural": true,
+      "text": "accepted",
+      "result": {
+        "pid": 73724,
+        "creationFileTime": "134365621400197896",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 110,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-legal-text-fix-1\\proposed-accepted\\proposed-accepted.ndjson",
+        "reportSha256": "80716b2e90ed4a73fb8e81dd13db92b19953fde7ac815fb05734e337491034e3",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "5fe54d91ad926345a8f3cf4c516209f2df285ce228e07c6a3007e47afc8040ea"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 110,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "remote-script",
+      "args": [
+        "C:\\work\\sm05-legal-text-fix-1/negative-remote-script"
+      ],
+      "expected": 1,
+      "matched": true,
+      "natural": false,
+      "text": "E_REMOTE_RESOURCE",
+      "result": {
+        "pid": 112716,
+        "creationFileTime": "134365621402229634",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 46,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "C:\\work\\sm05-legal-text-fix-1\\remote-script\\remote-script.ndjson",
+        "reportSha256": "deba33833d905f7e21ce6eee12e5d81287a2cb605901a1dee92b5bfaaba494b1",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "5fe54d91ad926345a8f3cf4c516209f2df285ce228e07c6a3007e47afc8040ea"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 46,
+        "rootExited": true,
+        "rootExitCode": 1,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    },
+    {
+      "name": "remote-manifest",
+      "args": [
+        "C:\\work\\sm05-legal-text-fix-1/negative-remote-manifest"
+      ],
+      "expected": 1,
+      "matched": true,
+      "natural": false,
+      "text": "E_REMOTE_RESOURCE",
+      "result": {
+        "pid": 93688,
+        "creationFileTime": "134365621403529127",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 47,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "C:\\work\\sm05-legal-text-fix-1\\remote-manifest\\remote-manifest.ndjson",
+        "reportSha256": "52be241b5cb175f00762d5f467c0ceced5c6c88ea760ec301834b4e17a560792",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "5fe54d91ad926345a8f3cf4c516209f2df285ce228e07c6a3007e47afc8040ea"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 47,
+        "rootExited": true,
+        "rootExitCode": 1,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    },
+    {
+      "name": "remote-css",
+      "args": [
+        "C:\\work\\sm05-legal-text-fix-1/negative-remote-css"
+      ],
+      "expected": 1,
+      "matched": true,
+      "natural": false,
+      "text": "E_REMOTE_RESOURCE",
+      "result": {
+        "pid": 90808,
+        "creationFileTime": "134365621404854659",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 54,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "C:\\work\\sm05-legal-text-fix-1\\remote-css\\remote-css.ndjson",
+        "reportSha256": "2e1f93177a815085536c93c6669cbf5e4c47bbe8e85604e1fc50babd385a34ca",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "5fe54d91ad926345a8f3cf4c516209f2df285ce228e07c6a3007e47afc8040ea"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 54,
+        "rootExited": true,
+        "rootExitCode": 1,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    },
+    {
+      "name": "frame",
+      "args": [
+        "C:\\work\\sm05-legal-text-fix-1/negative-frame"
+      ],
+      "expected": 1,
+      "matched": true,
+      "natural": false,
+      "text": "E_UNTRUSTED_FRAME",
+      "result": {
+        "pid": 75892,
+        "creationFileTime": "134365621406356216",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 46,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "C:\\work\\sm05-legal-text-fix-1\\frame\\frame.ndjson",
+        "reportSha256": "33882d15cc1b515f610dec37a7b40697d1751e667aa805414ad0befc5060f26b",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "5fe54d91ad926345a8f3cf4c516209f2df285ce228e07c6a3007e47afc8040ea"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 46,
+        "rootExited": true,
+        "rootExitCode": 1,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    },
+    {
+      "name": "legal-remote",
+      "args": [
+        "C:\\work\\sm05-legal-text-fix-1/negative-legal-remote"
+      ],
+      "expected": 1,
+      "matched": true,
+      "natural": false,
+      "text": "E_REMOTE_RESOURCE",
+      "result": {
+        "pid": 107720,
+        "creationFileTime": "134365621407521138",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 42,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "C:\\work\\sm05-legal-text-fix-1\\legal-remote\\legal-remote.ndjson",
+        "reportSha256": "4ca44dd25e8d1ef412f9a0ff6b9973045851dd8c57774756267357ffd5ec0510",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "5fe54d91ad926345a8f3cf4c516209f2df285ce228e07c6a3007e47afc8040ea"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 42,
+        "rootExited": true,
+        "rootExitCode": 1,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    }
+  ],
+  "currentVersionQualified": false
+}

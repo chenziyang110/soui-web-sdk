@@ -1,0 +1,32 @@
+✔ selection requires both actual components, matching architecture and explicit profile (1.619ms)
+✔ file pins reject changed contents (8.0828ms)
+✖ large static libraries are hashed completely without a whole-file buffer (278.5686ms)
+✔ source inventory binds directories and every physical file without normalization (12.9522ms)
+✔ source receipt cannot substitute another root or an inconsistent file roster (4.9163ms)
+✔ DLL matching requires exactly the rebuilt bytes in every actual application payload (0.3258ms)
+✔ PE validation rejects opposite architecture, truncation and non-DLL images (0.1929ms)
+✔ actual component invocation binds public entry, source owner, architecture and all selected tool roots (0.9841ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 7
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 439.157
+
+✖ failing tests:
+
+test at tests\sdk\dependency-evidence.test.cjs:23:1
+✖ large static libraries are hashed completely without a whole-file buffer (278.5686ms)
+  Error: Missing or oversized dependency input
+      at need (C:\work\sm05-release-050\tools\internal\dependency-evidence.cjs:14:40)
+      at fileBytes (C:\work\sm05-release-050\tools\internal\dependency-evidence.cjs:16:92)
+      at Object.pin (C:\work\sm05-release-050\tools\internal\dependency-evidence.cjs:17:32)
+      at TestContext.<anonymous> (C:\work\sm05-release-050\tests\sdk\dependency-evidence.test.cjs:29:26)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)

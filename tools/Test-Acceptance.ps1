@@ -110,7 +110,7 @@ if($LASTEXITCODE -ne 0){throw 'Independent Web consumer toolchain install failed
 if($NativeToolchain -eq 'LLVM22MSVC142'){
   $stockArgs=@('-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',
     (Join-Path $toolsRoot 'tools/internal/Build-ValidationTools.ps1'),'-Architecture',$Architecture,'-NativeToolchain',$NativeToolchain)
-  foreach($entry in $llvmPaths.GetEnumerator()){$stockArgs+=@('-'+$entry.Key,[string]$entry.Value)}
+  foreach($entry in $llvmPaths.GetEnumerator()){$stockArgs+=@(('-'+$entry.Key),[string]$entry.Value)}
   if($FreshConfigure){$stockArgs+='-FreshConfigure'}
   & $PowerShellExe @stockArgs
   if($LASTEXITCODE -ne 0){throw 'Selected architecture LLVM stock preparation failed'}

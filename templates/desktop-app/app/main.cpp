@@ -187,7 +187,7 @@ int APIENTRY wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR command,int) {
   const HRESULT com=CoInitializeEx(nullptr,COINIT_APARTMENTTHREADED);
   int result=1;
   try{result=run(instance,smoke);}catch(const std::exception& ex){if(!smoke)MessageBoxA(nullptr,ex.what(),"SouiStarter",MB_ICONERROR);}
-  const auto shutdown=soui::sdk::shutdown_miniblink_runtime();
+  const auto shutdown=soui::sdk::wait_for_miniblink_runtime_shutdown(std::chrono::seconds{20});
   if(!shutdown.ok && result==0)result=7;
   if(SUCCEEDED(com))CoUninitialize();
   return result;

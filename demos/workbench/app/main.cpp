@@ -294,13 +294,19 @@ class demo_soui_window final : public SOUI::SHostWnd {
 #endif
   }
 
+  LRESULT OnDisplayPathChanged(UINT, WPARAM, LPARAM) {
+    display_refresh_hz_ = 0;
+    failed_target_ = 0;
+    SetMsgHandled(FALSE); // Preserve SHostWnd and default position processing.
+    return 0;
+  }
+
   void UpdatePacer() {
     if (close_requested_) return;
     if (!display_refresh_hz_)
       display_refresh_hz_ = soui::sdk::frame_pacer::query_display_refresh(m_hWnd);
     bridge_.set_display_refresh(display_refresh_hz_);
     const auto desired = bridge_.requested_frame_rate();
-    if (pacer_.failed()) { pacer_.stop(); failed_target_ = desired; }
     const auto foreground = ::GetForegroundWindow();
     bool eligible = foreground == m_hWnd || ::GetAncestor(foreground, GA_ROOTOWNER) == m_hWnd;
     // The GPU experiment owns its presentation clock. Foreground ownership
@@ -311,24 +317,11 @@ class demo_soui_window final : public SOUI::SHostWnd {
     eligible = eligible || background_pacing_experiment_;
 #endif
     const bool active = ::IsWindowVisible(m_hWnd) && !::IsIconic(m_hWnd) && eligible;
-    unsigned effective = desired;
-    // Never advertise a pacing tier that the current monitor cannot present.
-    // The bridge still reports the requested value separately, while the
-    // active value follows the physical display tier (60/120/144).
-    if (display_refresh_hz_ >= 30) {
-      const auto display_tier = display_refresh_hz_ >= 144 ? 144U
-                              : (display_refresh_hz_ >= 120 ? 120U : 60U);
-      if (effective > display_tier) effective = display_tier;
-    } else if (effective > 60U) {
-      // A missing mode query is a conservative 60 Hz fallback. This avoids
-      // reporting a high-rate target that cannot be verified by the host.
-      effective = 60U;
-    }
-    // Use the same coalesced high-resolution pulse for an explicit 60 Hz
-    // target. This removes the ordinary WM_TIMER jitter on software-only
-    // machines while keeping 120/144 Hz behavior unchanged.
-    const bool precise60 = active && effective == 60 && (auto_high_refresh_ || desired == 60);
-    const auto target = active && (effective > 60 || precise60) ? effective : 0;
+    // Keep requested scheduling and physical presentation distinct. Respect
+    // the current monitor's integer rate without rounding it to a coarse tier.
+    const unsigned effective = soui::sdk::clamp_frame_rate_to_display(desired, display_refresh_hz_);
+    const unsigned target = active ? effective : 0;
+    if (pacer_.failed()) { pacer_.stop(); failed_target_ = target; }
     if (target == 0) { if (pacer_.target()) pacer_.stop(); failed_target_ = 0; }
     else if (pacer_.target() != target && failed_target_ != target) {
       bool prefer_high_resolution = true;
@@ -526,6 +519,8 @@ class demo_soui_window final : public SOUI::SHostWnd {
  protected:
 
   BEGIN_MSG_MAP_EX(demo_soui_window)
+    MESSAGE_HANDLER_EX(WM_DISPLAYCHANGE, OnDisplayPathChanged)
+    MESSAGE_HANDLER_EX(WM_WINDOWPOSCHANGED, OnDisplayPathChanged)
     MSG_WM_DPICHANGED(OnDpiChanged)
     MSG_WM_SIZE(OnSize)
     MSG_WM_SETFOCUS(OnSetFocus)
@@ -1022,7 +1017,7 @@ int APIENTRY wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR, int) {
   const HRESULT com_result = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
   resident_run_context resident_log;
   const int result = run_gui(instance, args, resident_log);
-  const auto shutdown = soui::sdk::shutdown_miniblink_runtime();
+  const auto shutdown = soui::sdk::wait_for_miniblink_runtime_shutdown(std::chrono::seconds{20});
   (void)resident_write(resident_log, "runtime.shutdown-fallback",
       {{"ok", shutdown.ok}, {"code", shutdown.code}, {"message", shutdown.message}});
   if (SUCCEEDED(com_result)) CoUninitialize();

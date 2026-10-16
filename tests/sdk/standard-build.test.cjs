@@ -261,3 +261,44 @@ test('explicit vendor testing reaches Build.ps1 for both native profiles',()=>{
   for(const args of [['--with-vendor-tests','false'],['--with-vendor-tests','--with-vendor-tests']])
     assert.throws(()=>caller.parseArgs(args));
 });
+
+test('UIA delivery is an explicit standard build opt-in on both compiler profiles',()=>{
+ for(const profile of [[],llvmArguments]){
+  const value=caller.parseArgs([...profile,'--with-uia']);
+  assert.equal(value.withUia,true);assert.equal(caller.buildArguments('F:\\sdk',value).filter(v=>v==='-WithUia').length,1);
+ }
+ assert.equal(caller.parseArgs([]).withUia,undefined);
+ assert.throws(()=>caller.parseArgs(['--with-uia','--with-uia']));
+ assert.throws(()=>caller.parseArgs(['--with-uia','false']));
+ assert.throws(()=>caller.parseArgs(['--architecture','x86','--compiler-tail','--tail-image',fixture().context.tailImagePin.image,
+  '--tail-sha256',fixture().context.tailImagePin.sha256,'--with-uia']),/UIA/);
+});
+test('UIA selection must agree with the actual optional archive in standard evaluation',()=>{
+ const v=input();v.frozen.context.args.push('-WithUia');v.contextBytes=encode(v.frozen.context);v.frozen.contextSha256=sha(v.contextBytes);
+ assert.equal(caller.evaluateBuild(v).accepted,false,'flag without library must not authorize a build');
+ v.build.optionalLibraries.uia=structuredClone(v.build.payloads.SouiStarter);
+ v.build.optionalLibraries.uia.files[0].path='sdk/accessibility/uia/Release/soui_uia.lib';v.observed.artifacts.optionalLibraries=structuredClone(v.build.optionalLibraries);v.buildReportBytes=encode(v.build);
+ assert.equal(caller.evaluateBuild(v).accepted,true,'pure invocation/artifact fixture only');
+ v.frozen.context.args.pop();v.contextBytes=encode(v.frozen.context);v.frozen.contextSha256=sha(v.contextBytes);
+ assert.equal(caller.evaluateBuild(v).accepted,false,'an unselected archive must not inherit permission');
+});
+test('public Build declares UIA and resets the CMake option explicitly on each invocation',()=>{
+ const source=fs.readFileSync(path.resolve(__dirname,'../../tools/Build.ps1'),'utf8');
+ assert.match(source,/\[switch\]\$WithUia/);assert.match(source,/SOUI_BUILD_UIA/);
+});
+
+test('Soui command entry forwards only an explicit build UIA option',()=>{
+ const command=require('../../tools/internal/devkit-command.cjs');
+ for(const profile of [[],llvmArguments]){
+  const selected=command.parseArgs(['build',...profile,'--with-uia']);
+  assert.equal(selected.withUia,true);
+  assert.equal(command.buildOptions(selected).filter(value=>value==='--with-uia').length,1);
+  const plan=command.planCommand(selected,'F:\\sdk','C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe','F:\\ctest.exe');
+  assert.equal(plan.args.filter(value=>value==='--with-uia').length,1);
+  const generated=command.commandDispatch(selected,{generated:true},'F:\\sdk','C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe','F:\\ctest.exe');
+  assert.equal(generated.invocation.args.filter(value=>value===(profile.length?'--with-uia':'-WithUia')).length,1);
+ }
+ assert.equal(command.parseArgs(['build']).withUia,undefined);
+ assert.throws(()=>command.parseArgs(['test','--with-uia']));
+ assert.throws(()=>command.parseArgs(['build','--with-uia','--with-uia']));
+});

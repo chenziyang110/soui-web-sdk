@@ -1,7 +1,45 @@
 [CmdletBinding()]
-param([ValidateSet('x86','x64')][string]$Architecture='x64')
+param([ValidateSet('x86','x64')][string]$Architecture='x64',
+  [ValidateSet('MSVC143','LLVM22MSVC142')][string]$NativeToolchain='MSVC143',
+  [string]$KernelBuildReport,[string]$KernelOwnedCapture,[string]$SouiBuildReport,[string]$SouiOwnedCapture,
+  [string]$ProfileRequest,[string]$DevkitRoot,[string]$BuildRunner,
+  [string]$KernelProducerRoot,[string]$SouiProducerRoot,
+  [string]$KernelInputArchive,[string]$SouiInputArchive)
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+if($NativeToolchain -eq 'LLVM22MSVC142'){
+  if(@($KernelBuildReport,$KernelOwnedCapture,$SouiBuildReport,$SouiOwnedCapture,$ProfileRequest,$BuildRunner)|Where-Object{[string]::IsNullOrWhiteSpace($_)}){
+    throw 'LLVM dependency verification requires both actual reports/captures, profile request and build runner.'
+  }
+  if(-not $DevkitRoot){$DevkitRoot=$root}
+  $producerArgs=@()
+  if($KernelProducerRoot -or $SouiProducerRoot -or $KernelInputArchive -or $SouiInputArchive){
+    if(-not $KernelProducerRoot){$KernelProducerRoot=$root}
+    if(-not $SouiProducerRoot){$SouiProducerRoot=$root}
+    $producerArgs=@($KernelProducerRoot,$SouiProducerRoot)
+    if($KernelInputArchive -or $SouiInputArchive){
+      if(-not $KernelInputArchive){$KernelInputArchive='-'}
+      if(-not $SouiInputArchive){$SouiInputArchive='-'}
+      $producerArgs+=@($KernelInputArchive,$SouiInputArchive)
+    }
+  }
+  $lease=[Threading.Mutex]::new($false,'Local\SouiDevKit.DesktopValidation');$acquired=$false
+  $previousNonce=Get-Item -LiteralPath Env:SOUI_TEST_DEPENDENCIES_NONCE -ErrorAction SilentlyContinue
+  try{
+    try{$acquired=$lease.WaitOne(0)}catch [Threading.AbandonedMutexException]{$acquired=$true;throw 'Abandoned SOUI desktop validation lease'}
+    if(-not $acquired){throw 'Another desktop validation is running.'}
+    $env:SOUI_TEST_DEPENDENCIES_NONCE=[Guid]::NewGuid().ToString('N')
+    & node (Join-Path $PSScriptRoot 'internal/dependency-evidence.cjs') run $Architecture $KernelBuildReport $KernelOwnedCapture $SouiBuildReport $SouiOwnedCapture $ProfileRequest $DevkitRoot $BuildRunner @producerArgs
+    if($LASTEXITCODE -ne 0){throw 'Rebuilt LLVM dependency validation failed; retain the original evidence.'}
+  }finally{
+    if($acquired){$lease.ReleaseMutex()};$lease.Dispose()
+    if($null -ne $previousNonce){$env:SOUI_TEST_DEPENDENCIES_NONCE=$previousNonce.Value}else{Remove-Item -LiteralPath Env:SOUI_TEST_DEPENDENCIES_NONCE -ErrorAction SilentlyContinue}
+  }
+  return
+}
+if(@($KernelBuildReport,$KernelOwnedCapture,$SouiBuildReport,$SouiOwnedCapture,$ProfileRequest,$DevkitRoot,$BuildRunner,$KernelProducerRoot,$SouiProducerRoot,$KernelInputArchive,$SouiInputArchive)|Where-Object{$_}){
+  throw 'Explicit LLVM dependency inputs require NativeToolchain LLVM22MSVC142.'
+}
 $deps=Join-Path $root "out/dependencies/$Architecture"
 $kernelName=if($Architecture -eq 'x86'){'node.dll'}else{'miniblink.dll'}
 $kernel=Join-Path $deps "miniblink/bin/$kernelName"

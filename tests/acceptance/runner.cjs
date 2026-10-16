@@ -414,12 +414,13 @@ function verifyWeb(suite,build) {
     throw new Error('Independent public Web SDK inputs/output drift');
   return web;
 }
-function verify(suite) {
+function verifyInputs(suite) {
   const build=identity.readJson(path.join(suite,'build.json'));
   if(build.schema!=='soui.acceptance-build/v3') throw new Error('A fresh acceptance build with the public Web SDK consumer is required');
   if(JSON.stringify(verifyWeb(suite,build))!==JSON.stringify(build.web))throw new Error('Independent Web build record drift');
-  const sdk=build.nativeToolchain===undefined?builds.verifyBuild(root,build.architecture,build.configuration,true):
-    require('../../tools/internal/llvm-installed-acceptance.cjs').verify(root,suite,build.nativeToolchain).build;
+  const installed=build.nativeToolchain===undefined?null:
+    require('../../tools/internal/llvm-installed-acceptance.cjs').verifyWithInputs(root,suite,build.nativeToolchain);
+  const sdk=installed?installed.sdk.build:builds.verifyBuild(root,build.architecture,build.configuration,true);
   if (sdk.buildId!==build.buildId || sdk.source.sha256!==build.sourceSha256 || payload(path.join(suite,'runtime')).sha256!==build.payload.sha256)
     throw new Error('Acceptance source, SDK build, or runtime drift');
   const install=path.join(suite,'install');
@@ -429,8 +430,9 @@ function verify(suite) {
     throw new Error('Independent consumer source drift');
   if(identity.hash(fs.readFileSync(path.join(suite,'kernel-input','node.dll')))!==build.kernel.sha256)
     throw new Error('Runtime candidate input drift');
-  return build;
+  return {build,sdk,installed};
 }
+function verify(suite) { return verifyInputs(suite).build; }
 function finishLongCapture(output,operation,summary,frozenBinding,files){
   const evidence={bindingFile:frozenBinding,inputs:null,analysis:null,failure:null,finalVerified:false};
   if(operation.passed){
@@ -613,7 +615,7 @@ async function run(suite,config,options) {
       captureGate:captured.captureGate,cacheBudgetGate:captured.cacheBudgetGate}:{}),result:path.relative(root,capturePath).replaceAll('\\','/'),
     operationResult:summary.result,failure:result.failure || captured.failure};
 }
-module.exports={settings,expectedSteps,validateRecords,mixedSettings,validateMixedRecords,sessionSettings,validateSessionRecords,verifyNativeIdentity,resourceBinding,longRunBinding,parseRunCommand,resourceCaptureResult,matchResourceBindingPin,completeResourceCaptureResult,verifyPrivateStorageAggregate,prepare,stage,verify,run};
+module.exports={settings,expectedSteps,validateRecords,mixedSettings,validateMixedRecords,sessionSettings,validateSessionRecords,verifyNativeIdentity,resourceBinding,longRunBinding,parseRunCommand,resourceCaptureResult,matchResourceBindingPin,completeResourceCaptureResult,verifyPrivateStorageAggregate,prepare,stage,verify,verifyInputs,run};
 if(require.main===module) (async()=>{
   const [command,suite,...args]=process.argv.slice(2);
   let result;

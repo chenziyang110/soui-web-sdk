@@ -30,6 +30,18 @@ function fixture(architecture='x64',kind='release'){
   return {row,cfg,subject,build,archive,key,suite};
 }
 const accepts=f=>adapter.validateObservationFacts(f.row,f.cfg,f.subject,f.build,f.archive);
+
+test('dual root consumer observations retain both architectures and both explicit contexts',()=>{
+ for(const architecture of ['x86','x64'])for(const kind of ['release','acceptance']){
+  const f=fixture(architecture,kind),rawDebug=raw(path.join(f.suite,'host64-debug.ndjson')),input=raw(path.join(f.suite,'host64-inputs.json'));
+  f.cfg.schema='soui.standard-llvm-observer-inputs/v2';f.cfg.debugCapture={raw:rawDebug,input};
+  f.cfg.fastToolEvidence={innerBuild:{pid:43,creationFileTime:'123456790'},outerObserver:f.subject.start,experimentalLifecycleObserved:true};
+  f.row.schema=f.row.schema.replace('/v1','/v2');f.row.outerObserverCapture=f.row.buildCapture;
+  f.row.buildCapture={role:'inner-build',...f.cfg.fastToolEvidence.innerBuild,raw:rawDebug,input,naturalRootExitCode:0,wholeJobClosed:true,forced:false};
+  f.row.originalPollingCapture=f.cfg.buildCapture;f.row.debugCapture=f.cfg.debugCapture;f.row.fastToolEvidence=f.cfg.fastToolEvidence;
+  assert.equal(accepts(f),true);f.row.schema=f.row.schema.replace(kind,kind==='release'?'acceptance':'release');assert.throws(()=>accepts(f));
+ }
+});
 test('fixed package and ordinary acceptance CXX contexts remain distinct and support both architectures',()=>{
   for(const architecture of ['x86','x64'])for(const kind of ['release','acceptance'])assert.equal(accepts(fixture(architecture,kind)),true);
 });

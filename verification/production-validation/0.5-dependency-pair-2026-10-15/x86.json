@@ -1,0 +1,192 @@
+{
+  "schema": "soui.dependency-source-pair-observation/v1",
+  "selection": {
+    "schema": "soui.dependency-selection/v2",
+    "profile": "LLVM22MSVC142",
+    "architecture": "x86",
+    "runner": "F:/work/sm05/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+    "kernel": {
+      "producerRoot": "C:/work/sm05-kernel-cache-source1",
+      "report": "C:/work/sm05-kernel-cache-050-x86-1/build-Miniblink.json",
+      "capture": "F:\\work\\SOUI_WEB\\out\\release-050/kernel-cache-x86-1/kernel"
+    },
+    "soui": {
+      "producerRoot": "C:/work/sm05-release-050",
+      "report": "C:/work/sm05-release-050/out/dependencies/x86-soui-public-3/build-SOUI.json",
+      "capture": "F:\\work\\SOUI_WEB\\out\\release-050/soui-public-x86-3/soui"
+    }
+  },
+  "proof": {
+    "kernel": {
+      "report": {
+        "path": "C:\\work\\sm05-kernel-cache-050-x86-1\\build-Miniblink.json",
+        "bytes": 5608,
+        "sha256": "a1381c26da93bfa8417781c2c152480e46d0c9a5ed8b00613492564f434447c2"
+      },
+      "sourceIdentity": "0bbed0bfd1b81a0c924ca3927cd4c53dfa2e916ac3aa5da43c51c2b70bba091f",
+      "inputs": {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/kernel-llvm-inputs.json",
+        "bytes": 25541,
+        "sha256": "952b7353a6c07efce4553eca76e924ff0f262873cb6fb6bd95e5ca649ab3d208"
+      },
+      "supervision": {
+        "context": {
+          "path": "F:\\work\\SOUI_WEB\\out\\release-050\\kernel-cache-x86-1\\kernel.ndjson.context.json",
+          "bytes": 1421,
+          "sha256": "75f56a8555969e8b8cf373761ef018be198c24cee136cbd44cd3c35547f01f33"
+        },
+        "raw": {
+          "path": "F:\\work\\SOUI_WEB\\out\\release-050\\kernel-cache-x86-1\\kernel.ndjson",
+          "bytes": 9316919,
+          "sha256": "0008832fa551e876ab43fd460369cca3c2f4897730acc25f2d15ec19358ebf75"
+        },
+        "ready": {
+          "path": "F:\\work\\SOUI_WEB\\out\\release-050\\kernel-cache-x86-1\\kernel-ready.json",
+          "bytes": 63,
+          "sha256": "5714d7bcab745c83ff79071ab7ab152bf725031ba7a6054061e038dfdb7a29e3"
+        },
+        "finished": {
+          "path": "F:\\work\\SOUI_WEB\\out\\release-050\\kernel-cache-x86-1\\kernel-finished.json",
+          "bytes": 963,
+          "sha256": "91541248dda23f287762ae924dec60741f2d5b2805d75a4a03ac78d548c89de3"
+        }
+      },
+      "artifacts": [
+        {
+          "path": "C:\\work\\sm05-kernel-cache-050-x86-1\\miniblink\\bin\\node.dll",
+          "bytes": 28115968,
+          "sha256": "ecf11ba99a25ae39a9674c03338e1366258899618b6d81b7fda08802263ee0b6",
+          "kind": "miniblink"
+        }
+      ],
+      "scope": "actual-component-source-and-natural-process-closure",
+      "toolchainQualification": false,
+      "producerRoot": "C:\\work\\sm05-kernel-cache-source1",
+      "deliveredSource": {
+        "root": "C:/work/sm05-release-050/third_party/sources/miniblink",
+        "sourceIdentity": "0bbed0bfd1b81a0c924ca3927cd4c53dfa2e916ac3aa5da43c51c2b70bba091f",
+        "fileCount": 23545,
+        "directoryCount": 1330,
+        "totalBytes": 321015498
+      }
+    },
+    "soui": {
+      "report": {
+        "path": "C:\\work\\sm05-release-050\\out\\dependencies\\x86-soui-public-3\\build-SOUI.json",
+        "bytes": 12378,
+        "sha256": "1e58f67278f70e757153a241ded37e12a4cd30cc9186e50a6c414928d8d89a5b"
+      },
+      "sourceIdentity": "c633158960d39a7cc5e94b4ef959df0cfe59aef7e660aeaf4b4f131fcf1ae4da",
+      "inputs": {
+        "path": "C:/work/sm05-release-050/out/dependencies/x86-soui-public-3/soui-llvm-inputs.json",
+        "bytes": 23736,
+        "sha256": "4f7d059b6b45203f072634f5ed6d46062ae52746c69869eb6e98e9c548e8814c"
+      },
+      "supervision": {
+        "context": {
+          "path": "F:\\work\\SOUI_WEB\\out\\release-050\\soui-public-x86-3\\soui.ndjson.context.json",
+          "bytes": 1468,
+          "sha256": "2ca2a62ebda3323ddabb6a4a7b3c7190ab1cc14ae8a9718608a77e23b5d44995"
+        },
+        "raw": {
+          "path": "F:\\work\\SOUI_WEB\\out\\release-050\\soui-public-x86-3\\soui.ndjson",
+          "bytes": 216767,
+          "sha256": "e715a667b927043ba758943e8e86130a90eb70831c6c206424cd64827d2af506"
+        },
+        "ready": {
+          "path": "F:\\work\\SOUI_WEB\\out\\release-050\\soui-public-x86-3\\soui-ready.json",
+          "bytes": 62,
+          "sha256": "3df97f2bbb784e9a20abdfd092ce2202aefb079531129afeb61a3a6b769ec9ee"
+        },
+        "finished": {
+          "path": "F:\\work\\SOUI_WEB\\out\\release-050\\soui-public-x86-3\\soui-finished.json",
+          "bytes": 957,
+          "sha256": "99fffdb351fa4904a449505968108bcd10c0e6b41fe2b024dfcd65e716e7b679"
+        }
+      },
+      "artifacts": [
+        {
+          "path": "C:\\work\\sm05-release-050\\out\\dependencies\\x86-soui-public-3\\source\\bin\\utilities.dll",
+          "bytes": 91648,
+          "sha256": "551a7a49ae704c3e944754ce6c920c10a9b5ae7e5a832e8122854af67c372894",
+          "kind": "utilities"
+        },
+        {
+          "path": "C:\\work\\sm05-release-050\\out\\dependencies\\x86-soui-public-3\\source\\bin\\soui.dll",
+          "bytes": 1021440,
+          "sha256": "5ea9d07047aeca5fecc636d5ff68527e9a4b9b47d1503aee5ab6e84d8edfc56c",
+          "kind": "soui"
+        },
+        {
+          "path": "C:\\work\\sm05-release-050\\out\\dependencies\\x86-soui-public-3\\source\\bin\\render-gdi.dll",
+          "bytes": 36864,
+          "sha256": "300c0c6480662a7a8190aee645504a69c274ef1f8aabb458aa9a15dc14e398ab",
+          "kind": "render-gdi"
+        },
+        {
+          "path": "C:\\work\\sm05-release-050\\out\\dependencies\\x86-soui-public-3\\source\\bin\\imgdecoder-gdip.dll",
+          "bytes": 15872,
+          "sha256": "36d08a11c051dc0f0cc4640afefcee7d1bd2c2c82ffbce6fed4f120a997f38bc",
+          "kind": "imgdecoder-gdip"
+        },
+        {
+          "path": "C:\\work\\sm05-release-050\\out\\dependencies\\x86-soui-public-3\\source\\bin\\soui-sys-resource.dll",
+          "bytes": 121856,
+          "sha256": "9697fcf6649dc2afede54ea2e629ce149894048e1a8eab2a8aba32295d741294",
+          "kind": "soui-sys-resource"
+        }
+      ],
+      "scope": "actual-component-source-and-natural-process-closure",
+      "toolchainQualification": false,
+      "producerRoot": "C:\\work\\sm05-release-050",
+      "deliveredSource": {
+        "root": "C:/work/sm05-release-050/third_party/sources/soui",
+        "sourceIdentity": "c633158960d39a7cc5e94b4ef959df0cfe59aef7e660aeaf4b4f131fcf1ae4da",
+        "fileCount": 4591,
+        "directoryCount": 370,
+        "totalBytes": 88107645
+      }
+    },
+    "artifacts": [
+      {
+        "path": "C:\\work\\sm05-kernel-cache-050-x86-1\\miniblink\\bin\\node.dll",
+        "bytes": 28115968,
+        "sha256": "ecf11ba99a25ae39a9674c03338e1366258899618b6d81b7fda08802263ee0b6",
+        "kind": "miniblink"
+      },
+      {
+        "path": "C:\\work\\sm05-release-050\\out\\dependencies\\x86-soui-public-3\\source\\bin\\utilities.dll",
+        "bytes": 91648,
+        "sha256": "551a7a49ae704c3e944754ce6c920c10a9b5ae7e5a832e8122854af67c372894",
+        "kind": "utilities"
+      },
+      {
+        "path": "C:\\work\\sm05-release-050\\out\\dependencies\\x86-soui-public-3\\source\\bin\\soui.dll",
+        "bytes": 1021440,
+        "sha256": "5ea9d07047aeca5fecc636d5ff68527e9a4b9b47d1503aee5ab6e84d8edfc56c",
+        "kind": "soui"
+      },
+      {
+        "path": "C:\\work\\sm05-release-050\\out\\dependencies\\x86-soui-public-3\\source\\bin\\render-gdi.dll",
+        "bytes": 36864,
+        "sha256": "300c0c6480662a7a8190aee645504a69c274ef1f8aabb458aa9a15dc14e398ab",
+        "kind": "render-gdi"
+      },
+      {
+        "path": "C:\\work\\sm05-release-050\\out\\dependencies\\x86-soui-public-3\\source\\bin\\imgdecoder-gdip.dll",
+        "bytes": 15872,
+        "sha256": "36d08a11c051dc0f0cc4640afefcee7d1bd2c2c82ffbce6fed4f120a997f38bc",
+        "kind": "imgdecoder-gdip"
+      },
+      {
+        "path": "C:\\work\\sm05-release-050\\out\\dependencies\\x86-soui-public-3\\source\\bin\\soui-sys-resource.dll",
+        "bytes": 121856,
+        "sha256": "9697fcf6649dc2afede54ea2e629ce149894048e1a8eab2a8aba32295d741294",
+        "kind": "soui-sys-resource"
+      }
+    ]
+  },
+  "actualOriginalProducerAndDeliverySourcesMatched": true,
+  "applicationPayloadVerified": false,
+  "releaseReady": false
+}

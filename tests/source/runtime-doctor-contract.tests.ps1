@@ -2,10 +2,11 @@
 param([Parameter(Mandatory)][string]$OutputPath)
 $ErrorActionPreference='Stop';Set-StrictMode -Version Latest
 $candidate=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '../../tools/internal/Observe-LlvmBuild.ps1'))
-$original='D:/work/sm05-terminal-trace-fixed-sdk-v1/tools/internal/Observe-LlvmBuild.ps1'
-$diagnosisPath='C:/work/sm05-terminal-contract-fix-source-v1/ACTUAL-FAILING-ROWS.json'
+$fixtures=Join-Path $PSScriptRoot '../fixtures/source-regressions'
+$original=Join-Path $fixtures 'doctor-before-observer.ps1.txt'
+$diagnosisPath=Join-Path $fixtures 'doctor-actual-failing-rows.json'
 $diagnosis=[IO.File]::ReadAllText($diagnosisPath)|ConvertFrom-Json
-$databasePath=$diagnosis.compileDatabase.path
+$databasePath=Join-Path $fixtures 'doctor-compile-commands.json'
 if((Get-FileHash -LiteralPath $databasePath -Algorithm SHA256).Hash.ToLowerInvariant()-cne$diagnosis.compileDatabase.sha256){throw 'Original actual database changed'}
 function Read-FunctionText([string]$File,[string[]]$Names){
  $tokens=$null;$errors=$null;$ast=[Management.Automation.Language.Parser]::ParseFile($File,[ref]$tokens,[ref]$errors)
@@ -18,7 +19,7 @@ function Read-FunctionText([string]$File,[string[]]$Names){
 $oldText=Read-FunctionText $original @('Test-CrtOption')
 . ([scriptblock]::Create(($oldText-replace'function Test-CrtOption\(','function Old-Test-CrtOption(')))
 $database=@([IO.File]::ReadAllText($databasePath)|ConvertFrom-Json)
-$failedSource=[string]$diagnosis.failures[0].file;$root=$failedSource.Substring(0,(Norm $failedSource).IndexOf('/sdk/src/'));$build=[IO.Path]::GetDirectoryName($databasePath);$configuration='Release'
+$failedSource=[string]$diagnosis.failures[0].file;$root=$failedSource.Substring(0,(Norm $failedSource).IndexOf('/sdk/src/'));$build=[IO.Path]::GetDirectoryName($diagnosis.compileDatabase.path);$configuration='Release'
 $doctor=@($database|Where-Object{(Norm $_.output).StartsWith(((Norm $build).TrimEnd('/')+'/tools/runtime-doctor/cmakefiles/souiruntimedoctor.dir/release/'),[StringComparison]::Ordinal)})
 Need ($doctor.Count-eq2) 'Exact two original Release Doctor rows'
 $profileRow=@($doctor|Where-Object{(Norm $_.file)-ceq(Norm $failedSource)})[0]

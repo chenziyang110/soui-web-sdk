@@ -127,13 +127,13 @@ function mergeNativePins(rows) {
   }
   return [...pins.values()].sort((a,b)=>a.path<b.path?-1:a.path>b.path?1:0);
 }
-function nativeInputs(suite,build,sdk) {
+function nativeInputs(suite,build,sdk,verified) {
   const selection=validateNativeSelection(build,readJson(path.join(suite,'pending.json')).record,sdk,suite);
   if(selection===null)return null;
   // All executable readers are fixed local modules. Selection roots locate data only.
   const installed=require('../../tools/internal/llvm-installed-acceptance.cjs');
-  const verified=installed.verify(sdkRoot,suite,selection),current=installed.current(sdkRoot,build.architecture,build.configuration,selection);
-  need(same(verified.build,sdk)&&same(current.build,sdk),'Current accepted LLVM SDK changed');
+  const current=verified?.sdk;
+  need(current&&same(current.build,sdk),'Current accepted LLVM SDK changed');
   const consumer=readJson(selection.consumer.path,64*1024*1024),record=consumer.record;
   checkPin(selection.consumer,consumer.pin.path,64*1024*1024);
   const inputs=readJson(record.inputs.path,64*1024*1024),observation=readJson(record.observation.path,64*1024*1024);
@@ -159,10 +159,9 @@ function nativeInputs(suite,build,sdk) {
 }
 function currentRecords(suite) {
   const acceptance=readJson(path.join(suite,'build.json'));
-  const build=require('./runner.cjs').verify(suite);
+  const verified=require('./runner.cjs').verifyInputs(suite),build=verified.build;
   need(same(build,acceptance.record),'Acceptance build changed during verification');
-  const sdk=build.nativeToolchain===undefined?builds.verifyBuild(sdkRoot,build.architecture,build.configuration,true):
-    require('../../tools/internal/llvm-installed-acceptance.cjs').verify(sdkRoot,suite,build.nativeToolchain).build;
+  const sdk=verified.sdk;
   const sdkRecord=readJson(path.join(sdkRoot,`out/sdk-${build.architecture}/build-${build.configuration}.json`));
   need(same(sdk,sdkRecord.record),'SDK build changed during verification');
   const pending=readJson(path.join(suite,'pending.json'));
@@ -180,7 +179,7 @@ function currentRecords(suite) {
     const copied=pinFile(identity.safePath(path.join(suite,'web-sdk'),file.path.slice('sdk/web/'.length)));
     need(copied.pin.bytes===file.bytes&&copied.pin.sha256===file.sha256,'Copied public Web SDK artifact differs');
   }
-  return {records,ids,source,nativeToolchain:nativeInputs(suite,build,sdk),pins:{sdkBuild:sdkRecord.pin,build:acceptance.pin,pending:pending.pin,
+  return {records,ids,source,nativeToolchain:nativeInputs(suite,build,sdk,verified.installed),pins:{sdkBuild:sdkRecord.pin,build:acceptance.pin,pending:pending.pin,
     webBuild:web.pin,publicWeb:publicWeb.pin}};
 }
 function requestFor(runRoot,build) {

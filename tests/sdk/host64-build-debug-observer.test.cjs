@@ -132,6 +132,39 @@ nodeTest('schema2 build classification retains semantic proof and accepts distin
 for(const [name,change] of [['synthesized inner Owned subject',f=>f.observed.llvm.buildPid=f.result.pid],['input projection SHA',f=>f.frozen.llvm.debugBinding.raw.sha256=crypto.createHash('sha256').update(JSON.stringify(f.observed.llvm.debugProof)).digest('hex')],['missing actual raw',f=>delete f.debugReportBytes],['schema1 laundering',f=>f.frozen.schema='soui.standard-build-inputs/v1'],['source drift',f=>f.observed.sourceSha256='0'.repeat(64)],['SDK compiler unverified',f=>f.observed.compilerVerified=false],['wrong SDK width',f=>f.observed.llvm.observedPointerBytes=4],['old semantic gate bypass',f=>delete f.observed.llvm.observerCapture.ready],['false fast evidence',f=>f.observed.llvm.debugProof.innerBuild.pid++],['disguised Test entry',f=>f.frozen.invocationOptions={...options,configuration:'Debug'}]])nodeTest('schema2 build retains rejection: '+name,()=>{const f=buildClassification();change(f);assert.equal(standard.evaluateBuild(f).accepted,false);});
 module.exports={dualRoot,c,inputBytes,inputPin,options};
 
+function consumerInput(kind='acceptance'){
+ const value=structuredClone(c),base=kind==='acceptance'?'out/acceptance/'+nonce:'out/release-validation/x64/'+'a'.repeat(32);
+ value.schema='soui.host64-build-debug-inputs/3';value.consumerKind=kind;value.buildDirectory=value.root+'/'+base+'/consumer';
+ value.rootArguments=['--build',value.buildDirectory,'--config',value.configuration,'--parallel','2','--verbose'];
+ return value;
+}
+function consumerCapture(kind){
+ const f=dualRoot(),input=consumerInput(kind),rawInput=Buffer.from(JSON.stringify(input,null,2)+'\n');
+ input.inputPin={...inputPin,bytes:rawInput.length,sha256:crypto.createHash('sha256').update(rawInput).digest('hex')};
+ const rows=JSON.parse('['+f.debug.toString().trim().split('\n').join(',')+']'),cmake=input.images.find(x=>x.role==='CMAKE');
+ for(const row of rows){row.inputSha256=input.inputPin.sha256;if(row.buildRoot){row.role='CMAKE';if(row.event==='create-paused')row.imageFile=physical(cmake);else if(row.event==='commandline-paused'){row.wholeArgv=[cmake.path,...input.rootArguments];row.raw=row.wholeArgv.map(r.quote).join(' ');row.argv0File=physical(cmake);}}}
+ const ctx=JSON.parse(f.capture.contextBytes);ctx.args[3]=input.inputPin.sha256;
+ return {...f,input,debug:bytes(rows),capture:{...f.capture,contextBytes:Buffer.from(JSON.stringify(ctx))}};
+}
+for(const kind of ['acceptance','release'])nodeTest('explicit '+kind+' CMake root keeps original outer and complete inner history',()=>{
+ const f=consumerCapture(kind),p=r.validateEvidence(f.debug,f.input,f.capture,f.observer,f.input.rootArguments);
+ assert.equal(p.innerBuild.pid,7001);assert.equal(p.outerObserver.pid,7000);assert.equal(p.mtObserved,true);assert.equal(p.normalSdkAccepted,false);
+});
+for(const [name,change] of [
+ ['schema2 command substitution',x=>{delete x.consumerKind;delete x.buildDirectory;x.schema=c.schema;}],
+ ['unknown consumer kind',x=>x.consumerKind='arbitrary'],['wrong kind directory',x=>x.consumerKind='release'],
+ ['unowned directory',x=>x.buildDirectory='F:/unowned/consumer'],['traversal directory',x=>x.buildDirectory+='/../consumer'],
+ ['SDK build directory',x=>x.buildDirectory=x.root+'/out/sdk-x64'],['target configuration',x=>x.configuration='Debug'],
+ ['extra target',x=>x.rootArguments.push('--target','all')],['altered parallelism',x=>x.rootArguments[5]='8'],
+ ['unknown field',x=>x.extra=true]
+])nodeTest('installed native input rejects '+name,()=>{const x=consumerInput();change(x);assert.throws(()=>r.validateInput(x,x.rootArguments));});
+nodeTest('release native input rejects a different architecture directory',()=>{const x=consumerInput('release');x.sdkArchitecture='x86';assert.throws(()=>r.validateInput(x,x.rootArguments));});
+nodeTest('consumer stream cannot relabel the actual CMake process as PowerShell',()=>{
+ const f=consumerCapture('acceptance'),rows=f.debug.toString().trim().split('\n').map(JSON.parse),ps=c.images[0];
+ for(const row of rows)if(row.buildRoot){row.role='POWERSHELL';if(row.imageFile)row.imageFile=physical(ps);if(row.wholeArgv){row.wholeArgv[0]=ps.path;row.raw=row.wholeArgv.map(r.quote).join(' ');row.argv0File=physical(ps);}}
+ assert.throws(()=>r.validateEvidence(bytes(rows),f.input,f.capture,f.observer,f.input.rootArguments));
+});
+
 // Exact preparation Source in a VM. Every capture is controlled data and
 // child-process/native entry points are unavailable, including on failures.
 function preparationFault(kind){

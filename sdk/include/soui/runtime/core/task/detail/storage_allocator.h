@@ -1,6 +1,8 @@
 #pragma once
 // Private TaskStore representation dependency. Public string allocators are unchanged.
 #include <soui/diagnostics/storage_observation.h>
+#include <soui/runtime/core/task/task_store_quota.h>
+#include <atomic>
 #include <cassert>
 #include <cstddef>
 #include <cstdint>
@@ -9,18 +11,6 @@
 #include <new>
 #include <optional>
 #include <type_traits>
-
-namespace soui::runtime {
-// An explicit zero forbids positive private allocation requests. No policy is
-// unconfigured; neither value describes heap reservation or public temporaries.
-struct task_store_request_quota_policy {
-  std::uint64_t max_live_requested_bytes;
-};
-class task_store_request_quota_exceeded final : public std::bad_alloc {
- public:
-  const char* what() const noexcept override { return "TaskStore private request quota exceeded"; }
-};
-}
 
 namespace soui::runtime::detail {
 class task_store_allocation_ledger;
@@ -39,7 +29,7 @@ void quota_retired(const task_store_request_quota&) noexcept;
 class task_store_request_quota final {
  public:
   explicit task_store_request_quota(std::optional<task_store_request_quota_policy> policy = std::nullopt) noexcept
-      : policy_(policy) {}
+      : policy_(policy), owner_epoch_(next_owner_epoch()) {}
   ~task_store_request_quota() {
     assert(!valid_ || live_bytes_ == 0);
 #ifdef SOUI_TASK_STORE_STORAGE_TEST_ONLY
@@ -51,6 +41,19 @@ class task_store_request_quota final {
   [[nodiscard]] std::uint64_t live_requested_bytes() const noexcept { return live_bytes_; }
   [[nodiscard]] bool valid() const noexcept { return valid_; }
   [[nodiscard]] const std::optional<task_store_request_quota_policy>& policy() const noexcept { return policy_; }
+  [[nodiscard]] task_store_request_quota_snapshot snapshot() const noexcept {
+    task_store_request_quota_snapshot out;
+    if (policy_) out.max_live_requested_bytes = policy_->max_live_requested_bytes;
+    out.owner_epoch = owner_epoch_; out.owner_epoch_valid = owner_epoch_ != 0;
+    out.charged_live_requested_bytes = live_bytes_; out.charged_peak_requested_bytes = peak_bytes_;
+    out.successful_live_requested_bytes = successful_bytes_;
+    out.successful_peak_requested_bytes = successful_peak_bytes_;
+    out.denied_requests = denied_requests_; out.denied_requests_exact = denied_requests_exact_;
+    out.credit_valid = valid_;
+    out.status = valid_ && out.owner_epoch_valid && denied_requests_exact_
+        ? task_store_request_quota_status::available : task_store_request_quota_status::invalid;
+    return out;
+  }
   [[nodiscard]] static std::size_t checked_request_bytes(std::size_t count, std::size_t element_bytes) {
     if (!element_bytes || count > (std::numeric_limits<std::size_t>::max)() / element_bytes ||
         count > (std::numeric_limits<std::uint64_t>::max)() / element_bytes)
@@ -63,33 +66,73 @@ class task_store_request_quota final {
     reservation(task_store_request_quota* owner, std::uint64_t bytes) : owner_(owner), bytes_(bytes) {
       if (owner_) owner_->acquire(bytes_);
     }
-    ~reservation() { if (owner_) owner_->release(bytes_); }
+    ~reservation() { if (owner_) owner_->cancel_reservation(bytes_); }
     reservation(const reservation&) = delete;
     reservation& operator=(const reservation&) = delete;
     // A successful allocator now owns the credit until its physical free.
-    void commit() noexcept { owner_ = nullptr; }
+    void commit() noexcept {
+      if (owner_) owner_->commit_reservation(bytes_);
+      owner_ = nullptr;
+    }
    private:
     task_store_request_quota* owner_;
     const std::uint64_t bytes_;
   };
 
   void release(std::uint64_t bytes) noexcept {
-    if (bytes > live_bytes_) { valid_ = false; return; }
-    live_bytes_ -= bytes;
+    if (bytes > live_bytes_ || bytes > successful_bytes_) { valid_ = false; return; }
+    live_bytes_ -= bytes; successful_bytes_ -= bytes;
   }
  private:
+  // Process-local pool identity. Exhaustion stays at the sentinel, never wraps
+  // or reuses an identity. Identity invalidity changes evidence, not admission.
+  [[nodiscard]] static std::uint64_t next_owner_epoch() noexcept {
+    static std::atomic<std::uint64_t> next{1};
+    auto value = next.load(std::memory_order_relaxed);
+    const auto maximum = (std::numeric_limits<std::uint64_t>::max)();
+    while (value != maximum) {
+      if (next.compare_exchange_weak(value, value + 1, std::memory_order_relaxed)) return value;
+    }
+    return 0;
+  }
+  void denied() noexcept {
+    const auto maximum = (std::numeric_limits<std::uint64_t>::max)();
+    if (denied_requests_ == maximum) denied_requests_exact_ = false;
+    else ++denied_requests_;
+  }
+  void cancel_reservation(std::uint64_t bytes) noexcept {
+    if (successful_bytes_ > live_bytes_ || bytes > live_bytes_ - successful_bytes_) {
+      valid_ = false; return;
+    }
+    live_bytes_ -= bytes;
+  }
+  void commit_reservation(std::uint64_t bytes) noexcept {
+    if (successful_bytes_ > live_bytes_ || bytes > live_bytes_ - successful_bytes_) {
+      valid_ = false; return;
+    }
+    successful_bytes_ += bytes;
+    if (successful_bytes_ > successful_peak_bytes_) successful_peak_bytes_ = successful_bytes_;
+  }
   void acquire(std::uint64_t bytes) {
-    if (!valid_) throw task_store_request_quota_exceeded{};
+    if (!valid_) { denied(); throw task_store_request_quota_exceeded{}; }
     if (bytes > (std::numeric_limits<std::uint64_t>::max)() - live_bytes_) {
-      valid_ = false;
+      valid_ = false; denied();
       throw task_store_request_quota_exceeded{};
     }
-    if (policy_ && bytes > policy_->max_live_requested_bytes - live_bytes_)
+    if (policy_ && (live_bytes_ > policy_->max_live_requested_bytes ||
+                   bytes > policy_->max_live_requested_bytes - live_bytes_)) {
+      if (live_bytes_ > policy_->max_live_requested_bytes) valid_ = false;
+      denied();
       throw task_store_request_quota_exceeded{};
+    }
     live_bytes_ += bytes;
+    if (live_bytes_ > peak_bytes_) peak_bytes_ = live_bytes_;
   }
   const std::optional<task_store_request_quota_policy> policy_;
-  std::uint64_t live_bytes_{0};
+  const std::uint64_t owner_epoch_;
+  std::uint64_t live_bytes_{0}, peak_bytes_{0}, successful_bytes_{0}, successful_peak_bytes_{0};
+  std::uint64_t denied_requests_{0};
+  bool denied_requests_exact_{true};
   bool valid_{true};
 };
 

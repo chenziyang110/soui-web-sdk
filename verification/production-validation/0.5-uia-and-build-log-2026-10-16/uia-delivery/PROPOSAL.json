@@ -1,0 +1,256 @@
+{
+  "schema": "soui.private-change-proposal/1",
+  "adopted": false,
+  "supersedes": {
+    "path": "C:\\work\\sm05-uia-delivery-1\\PROPOSAL.json",
+    "bytes": 5647,
+    "sha256": "dd538930f3a91b068689e37461bb1bf077ad433f9af2d0c8410b36ac334e16c1"
+  },
+  "currentSource": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 15734831,
+    "sha256": "52e19555127cff41afabb4ee9e7b0af662630cbdfce35f270d0d4753473d1cf4"
+  },
+  "scope": "Explicit optional UIA delivery and immutable shared CMake log capture; final public build and Debug desktop remain pending",
+  "files": [
+    {
+      "relative": "tools/Build.ps1",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tools\\Build.ps1",
+        "bytes": 10329,
+        "sha256": "185bdc80d2502bac3553517c1fffbc25ebf5d301f598bcd85ccd8305932e1729"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\tools\\Build.ps1",
+        "bytes": 10415,
+        "sha256": "d0fbfbe846b1422b83197ce4e7bce58c8a9e760125a5c2b2753239c9d8409ba9"
+      }
+    },
+    {
+      "relative": "tools/internal/standard-build.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tools\\internal\\standard-build.cjs",
+        "bytes": 39060,
+        "sha256": "da161d62926c2d3cdedd766b52345978f6421fae4d939c80ebcbe72372e3c6fe"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\tools\\internal\\standard-build.cjs",
+        "bytes": 39757,
+        "sha256": "0411e6813baae2d4134c5b1735f56c63a31579168f4f8be12c1ea189d8cb220e"
+      }
+    },
+    {
+      "relative": "tools/internal/build-evidence.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tools\\internal\\build-evidence.cjs",
+        "bytes": 20638,
+        "sha256": "8cd513f89cda5fb5b658566ab32b0356a139a6635d0f9ee1efce6e9b03ec4880"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\tools\\internal\\build-evidence.cjs",
+        "bytes": 20851,
+        "sha256": "b394c012a1f896571fd24dd23859d4a1d6d4381a0555f165f5de8e9217573bf8"
+      }
+    },
+    {
+      "relative": "tools/internal/llvm-build-observer.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tools\\internal\\llvm-build-observer.cjs",
+        "bytes": 41337,
+        "sha256": "2ecb40e1b45b88aa0feca6655235dbb34c1e66d531ebb2fb1216ca53778a2d31"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\tools\\internal\\llvm-build-observer.cjs",
+        "bytes": 42846,
+        "sha256": "6581d16ba28826275a4a5aa17eeeb028d75f555386fc542445c1b7742a6bd390"
+      }
+    },
+    {
+      "relative": "tests/sdk/standard-build.test.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tests\\sdk\\standard-build.test.cjs",
+        "bytes": 20123,
+        "sha256": "1f02e82ca4965ccbc673d7e0a8b21a2188d01c418b53924275ff8e1cd90a240f"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\tests\\sdk\\standard-build.test.cjs",
+        "bytes": 23135,
+        "sha256": "2cabe7fe23b28decc8b83d4ad19c2b1e67ed8a7e2d93d9186c3b2eeb6a5a6c67"
+      }
+    },
+    {
+      "relative": "tests/sdk/llvm-evidence-readers.test.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tests\\sdk\\llvm-evidence-readers.test.cjs",
+        "bytes": 10669,
+        "sha256": "40bb2256f18c76c7752a391a89588323ce47a62666eca8ce0ffe1a194426b47c"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\tests\\sdk\\llvm-evidence-readers.test.cjs",
+        "bytes": 16165,
+        "sha256": "56b613a33bd0a9b6cc23da5954ad8a16ff32810e6b5e5d409892ce77e1e3d340"
+      }
+    },
+    {
+      "relative": "tools/internal/devkit-command.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tools\\internal\\devkit-command.cjs",
+        "bytes": 38459,
+        "sha256": "ab63f6861859b211a3ca3a77c8c35859fea5acde4da2731483f4cb81f1b9c591"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\tools\\internal\\devkit-command.cjs",
+        "bytes": 38492,
+        "sha256": "4743688be1ab18cdf3c179a3c7fd6b98e983ef7ecc964ca6d4f2d6a24875a004"
+      }
+    },
+    {
+      "relative": "docs/adr/0110-uia-build-delivery.md",
+      "before": null,
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\docs\\adr\\0110-uia-build-delivery.md",
+        "bytes": 2374,
+        "sha256": "14e8cda6d4cb7e6c743fe8dca103524f4e25329fab281ec0c14cabec9da16324"
+      }
+    },
+    {
+      "relative": "docs/acceptance/uia-build-delivery.md",
+      "before": null,
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\docs\\acceptance\\uia-build-delivery.md",
+        "bytes": 1626,
+        "sha256": "58ec02097bbaa6523029a6035ec673bb423a22db91ab45c000fd989f4ad5719b"
+      }
+    },
+    {
+      "relative": "tools/internal/Observe-LlvmBuild.ps1",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tools\\internal\\Observe-LlvmBuild.ps1",
+        "bytes": 114709,
+        "sha256": "1684a12558875084f0bd462e1ea9bfe0dc4401a2ec4320491ed0961db69c3580"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\tools\\internal\\Observe-LlvmBuild.ps1",
+        "bytes": 115016,
+        "sha256": "4a8d54916eafadbd24069971f1e5d8060465cfc5f1deef651738fcb0185f376c"
+      }
+    },
+    {
+      "relative": "tools/internal/configure-log-evidence.cjs",
+      "before": null,
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\tools\\internal\\configure-log-evidence.cjs",
+        "bytes": 2938,
+        "sha256": "279987f1e6c7aa3b1b2988819009d9dd43f3091ad2e2964ca018f244a7b38062"
+      }
+    },
+    {
+      "relative": "tools/internal/Capture-CMakeConfigureLog.ps1",
+      "before": null,
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\tools\\internal\\Capture-CMakeConfigureLog.ps1",
+        "bytes": 983,
+        "sha256": "39f0da6530cb6a6af47aeb73072a245658843316f1db73b03a9038f0aab99090"
+      }
+    },
+    {
+      "relative": "docs/adr/0111-immutable-cmake-configure-log.md",
+      "before": null,
+      "after": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\proposal\\docs\\adr\\0111-immutable-cmake-configure-log.md",
+        "bytes": 1926,
+        "sha256": "d56722972d05de23d6ff5e01f2e8009def809b6c3f94d3311bc2626aa1bfcfd4"
+      }
+    }
+  ],
+  "checks": [
+    {
+      "file": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\standard-build.test.cjs.txt",
+        "bytes": 3390,
+        "sha256": "9867704b0c3b5b8583cf9826a6652021667344642585164bb8bfedb2a1885804"
+      },
+      "passed": 46,
+      "skipped": 0
+    },
+    {
+      "file": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\integration-green2.txt",
+        "bytes": 1608,
+        "sha256": "0513506f54b41bf2ba2595663d9782bbcab9946e90cae803d83ccaac023ce25a"
+      },
+      "passed": 14,
+      "skipped": 0
+    },
+    {
+      "file": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\host64-build-debug-observer.test.cjs.txt",
+        "bytes": 10875,
+        "sha256": "8db9636af54a8db70f3f62cfcc91d7a11d86eb393471147b93ae2e118d1654c3"
+      },
+      "passed": 175,
+      "skipped": 0
+    },
+    {
+      "file": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\devkit-command.test.cjs.txt",
+        "bytes": 2440,
+        "sha256": "3647b34c7d4a2f05f6ac1c4273ff5f5cb4bffded7e1ff24cad1fe8e9dcb2ef96"
+      },
+      "passed": 24,
+      "skipped": 0
+    },
+    {
+      "file": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\build-source-manifest.test.cjs.txt",
+        "bytes": 660,
+        "sha256": "843287de069d415a778fd7c573ca624602d7e57472d5ea308ebef56719aced5a"
+      },
+      "passed": 6,
+      "skipped": 0
+    },
+    {
+      "file": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\llvm-profile-green3.txt",
+        "bytes": 4283,
+        "sha256": "f4bda381eba493ab3f4df2dd1c3e4429ccd71a4f56a534381785953516cd788d"
+      },
+      "passed": 39,
+      "skipped": 1
+    },
+    {
+      "file": {
+        "path": "C:\\work\\sm05-uia-delivery-2\\sdk-build-inputs.test.cjs.txt",
+        "bytes": 319,
+        "sha256": "8b72b774562c0469dbca72d65b7d85d651ba7b2a1d1ee680aa67e9da0f6c34a4"
+      },
+      "passed": 2,
+      "skipped": 0
+    }
+  ],
+  "purePassed": 306,
+  "pureSkipped": 1,
+  "actualRepeatedConfigure": {
+    "path": "C:\\work\\sm05-uia-delivery-2\\ACTUAL-LOG-RESULT.json",
+    "bytes": 2590,
+    "sha256": "649e8a237c5df7dc28cb77747dbb6edacd22552857d4ea20a88f584c284f1e00"
+  },
+  "installedUia": [
+    {
+      "path": "C:\\work\\sm05-uia-install-2\\x64-2-VERIFIED.json",
+      "bytes": 24060,
+      "sha256": "e6d2ae80306b2771bf65a01e91446185fe3812fef2867a19415060eda2392af3"
+    },
+    {
+      "path": "C:\\work\\sm05-uia-install-2\\x86-2-VERIFIED.json",
+      "bytes": 25161,
+      "sha256": "558d0cd9927591e7319a1d5b25eee3dfca0cedf0894598dec524d560c67500f2"
+    }
+  ],
+  "source24DebugFailure": {
+    "path": "C:\\work\\sm05-source24-pipeline-2\\desktop-x64-Debug-source24-2\\RESULT.json",
+    "bytes": 1997,
+    "sha256": "9f8932d15ec7515d32d106aeee9751973403d4b3bb90e325c8bb60d6124cb5f4"
+  },
+  "releaseReady": false
+}

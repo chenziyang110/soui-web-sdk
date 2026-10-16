@@ -168,11 +168,11 @@ public:
     ///////////////////////////////////////////////////////////////////////////
 
     /**
-     *  Construct the cache to call DiscardableFactory when it
-     *  allocates memory for the pixels. In this mode, the cache has
-     *  not explicit budget, and so methods like getTotalBytesUsed()
-     *  and getTotalByteLimit() will return 0, and setTotalByteLimit
-     *  will ignore its argument and return 0.
+     *  Construct the cache using discardable pixel memory. A zero byte limit
+     *  preserves the legacy count-only policy. A positive setTotalByteLimit()
+     *  additionally bounds bytes reported by retained records, with strict
+     *  less-than-threshold eviction. This does not bound externally held pixel
+     *  data, allocator overhead, or a single active filter allocation.
      */
     SkResourceCache(DiscardableFactory);
 

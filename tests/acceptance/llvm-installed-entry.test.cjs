@@ -3,6 +3,67 @@ const test=require('node:test'),assert=require('node:assert/strict'),path=requir
 const {validateObservationFacts,configureArguments}=require('../../tools/internal/llvm-installed-acceptance.cjs');
 const root=path.resolve(__dirname,'../..'),suite=path.join(root,'out/acceptance/00000000-0000-0000-0000-000000000001');
 const raw=(file,hash='a')=>({path:file,bytes:123,sha256:hash.repeat(64)}),clone=value=>JSON.parse(JSON.stringify(value));
+test('actual CMake manifest mode parser distinguishes configured tools from required execution',
+  {skip:process.platform!=='win32'},()=>{
+    const result=require('node:child_process').spawnSync(process.env.SOUI_GUI_TEST_POWERSHELL||'powershell.exe',
+      ['-NoProfile','-NonInteractive','-File',path.join(root,'tests/sdk/llvm-cmake-manifest-mode.Tests.ps1')],
+      {encoding:'utf8',timeout:30000,windowsHide:true});
+    assert.ifError(result.error);assert.equal(result.status,0,result.stderr);assert.equal(JSON.parse(result.stdout.trim()).testsPassed,22);
+  });
+for(const entryPoint of ['Test-Acceptance.ps1','Verify-Release.ps1'])
+test(entryPoint+' forwards six separate named paths through the real PowerShell binder',
+  {skip:process.platform!=='win32'},()=>{
+    const {spawnSync}=require('node:child_process'),os=require('node:os');
+    const shell=process.env.SOUI_GUI_TEST_POWERSHELL||'powershell.exe';
+    const directory=fs.mkdtempSync(path.join(os.tmpdir(),'soui-llvm-argv-'));
+    try{
+      const names=['LlvmRoot','MsvcRoot','WindowsSdkRoot','NinjaExe','WindowsCmdExe','PowerShellExe'];
+      const expected=Object.fromEntries(names.map((name,index)=>[name,`C:\\tool paths\\测试 ${index}\\${name}`]));
+      fs.writeFileSync(path.join(directory,'values.json'),JSON.stringify(expected));
+      fs.writeFileSync(path.join(directory,'probe.ps1'),
+        '[CmdletBinding()]param('+names.map(name=>'[string]$'+name).join(',')+')\n'+
+        '[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new($false)\n$PSBoundParameters|ConvertTo-Json -Compress');
+      fs.writeFileSync(path.join(directory,'driver.ps1'),String.raw`
+param([string]$SourcePath,[string]$ValuesPath,[string]$ProbePath,[string]$ShellPath)
+$ErrorActionPreference='Stop'
+[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new($false)
+$tokens=$null;$errors=$null
+$ast=[System.Management.Automation.Language.Parser]::ParseFile($SourcePath,[ref]$tokens,[ref]$errors)
+if($errors.Count){throw 'Acceptance entry must parse'}
+$loops=@($ast.FindAll({param($node)
+  $node -is [System.Management.Automation.Language.ForEachStatementAst] -and
+  $node.Body.Extent.Text -match '\$stock(?:Args)?\s*\+='
+},$true))
+if($loops.Count -ne 1){throw 'Expected one real LLVM stock argument forwarding loop'}
+$llvmPaths=[ordered]@{}
+($values=Get-Content -LiteralPath $ValuesPath -Raw -Encoding UTF8|ConvertFrom-Json).PSObject.Properties|
+  ForEach-Object{$llvmPaths[$_.Name]=$_.Value}
+if($loops[0].Body.Extent.Text -notmatch '\$(stock(?:Args)?)\s*\+='){throw 'Forwarding variable missing'}
+$stockVariable=$Matches[1]
+Set-Variable -Name $stockVariable -Value @('-NoProfile','-NonInteractive','-File',$ProbePath)
+. ([scriptblock]::Create($loops[0].Extent.Text))
+$forwarded=Get-Variable -Name $stockVariable -ValueOnly
+& $ShellPath @forwarded
+exit $LASTEXITCODE
+`);
+      const result=spawnSync(shell,['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',
+        path.join(directory,'driver.ps1'),'-SourcePath',path.join(root,'tools',entryPoint),
+        '-ValuesPath',path.join(directory,'values.json'),'-ProbePath',path.join(directory,'probe.ps1'),'-ShellPath',shell],
+      {encoding:'utf8',timeout:30000,windowsHide:true});
+      assert.ifError(result.error);
+      assert.equal(result.status,0,result.stderr);
+      assert.deepEqual(JSON.parse(result.stdout.trim()),expected);
+    }finally{fs.rmSync(directory,{recursive:true,force:true});}
+  });
+test('actual installed archive comparison handles Int64 sizes and rejects changed member multisets',
+  {skip:process.platform!=='win32'},()=>{
+    const {spawnSync}=require('node:child_process');
+    const result=spawnSync(process.env.SOUI_GUI_TEST_POWERSHELL||'powershell.exe',
+      ['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.join(root,'tests/sdk/llvm-installed-archive.Tests.ps1')],
+      {encoding:'utf8',timeout:30000,windowsHide:true});
+    assert.ifError(result.error);assert.equal(result.status,0,result.stderr);
+    assert.equal(JSON.parse(result.stdout.trim()).testsPassed,7);
+  });
 // Every value below is a logical DTO fixture, never file/compiler/Owned proof.
 function fixture(architecture='x64'){
   const machine=architecture==='x64'?34404:332,buildDirectory=path.join(suite,'consumer');
@@ -30,6 +91,59 @@ function fixture(architecture='x64'){
   return {row,cfg,subject,build,archive};
 }
 const accepts=value=>validateObservationFacts(value.row,value.cfg,value.subject,value.build,value.archive);
+
+for(const kind of ['acceptance','release'])
+test(kind+' installed reader authenticates the immutable configure log and original observer output',t=>{
+  // Execute the actual file-reading adapter. Unrelated SDK/compiler facts are
+  // substituted here; the snapshot bytes, binding and path checks are real.
+  const folder=fs.mkdtempSync(path.join(require('node:os').tmpdir(),'soui-consumer-config-log-'));
+  t.after(()=>{const actual=fs.realpathSync(folder);assert(actual.startsWith(fs.realpathSync(require('node:os').tmpdir())+path.sep));fs.rmSync(actual,{recursive:true,force:true});});
+  const buildDirectory=path.join(folder,'consumer'),evidence=path.join(folder,'consumer-llvm-observer');
+  fs.mkdirSync(path.join(buildDirectory,'CMakeFiles'),{recursive:true});fs.mkdirSync(evidence,{recursive:true});
+  const live=path.join(buildDirectory,'CMakeFiles/CMakeConfigureLog.yaml'),snapshot=path.join(evidence,'cmake-configure-log.input.yaml');
+  const observationPath=path.join(evidence,'llvm-observation.json');
+  const pin=file=>{const bytes=fs.readFileSync(file);return {path:file,bytes:bytes.length,sha256:require('node:crypto').createHash('sha256').update(bytes).digest('hex')};};
+  fs.writeFileSync(live,'Actual fixture configure bytes\n');fs.copyFileSync(live,snapshot);
+  const binding={schema:'soui.cmake-configure-log-capture/v1',live:pin(live),snapshot:pin(snapshot)};
+  const context={schema:'soui.owned-process-context/v1',args:['-ObservationPath',observationPath]};
+  const cfg={buildDirectory,[kind==='release'?'releaseConsumer':'installedConsumer']:{suiteDirectory:folder}};
+  const row={configureLogCapture:binding,compileRecords:[],resourceRecords:[],binaryRecords:[],evidencePins:[binding.snapshot],dependencyPins:[],frozenDependencyPins:[],installedEvidencePins:[]};
+  const source=fs.readFileSync(path.join(root,'tools/internal/llvm-installed-acceptance.cjs'),'utf8');
+  const body=source.slice(source.indexOf('function validateObservation('),source.indexOf('function controls('));
+  const check=require('node:vm').runInNewContext(body+'\nvalidateObservation;',{
+    owner:root,path,Buffer,validateObservationFacts(){},paths:()=>({installedArchive:snapshot}),pin,
+    match:p=>assert.deepEqual(pin(p.path),p),
+    require:name=>{assert.equal(name,'./configure-log-evidence.cjs');return require('../../tools/internal/configure-log-evidence.cjs');}
+  });
+  const run=(value=row,args=context.args)=>check(value,cfg,{}, {build:{}},observationPath,Buffer.from(JSON.stringify({...context,args})));
+  run();fs.appendFileSync(live,'Later configure\n');run();
+  for(const mutate of [v=>v.configureLogCapture.schema='substituted',v=>v.configureLogCapture.live.path+='-other',
+    v=>v.configureLogCapture.snapshot.path+='-other',v=>v.configureLogCapture.snapshot.sha256='b'.repeat(64),
+    v=>v.evidencePins=[],v=>v.evidencePins.push({...binding.snapshot})]){
+    const altered=clone(row);mutate(altered);assert.throws(()=>run(altered),/Configure log capture/);
+  }
+  for(const args of [[],['-ObservationPath',observationPath+'-other'],['-ObservationPath',observationPath,'-ObservationPath',observationPath]])
+    assert.throws(()=>run(row,args),/Configure log capture/);
+  fs.writeFileSync(snapshot,'X'.repeat(binding.snapshot.bytes));assert.throws(()=>run(),/Configure log capture file bytes differs|Configure log capture file bytes differ/);
+});
+
+function dualFixture(){
+ const f=fixture();f.cfg.schema='soui.standard-llvm-observer-inputs/v2';
+ f.cfg.debugCapture={input:raw(path.join(suite,'host64-inputs.json')),raw:raw(path.join(suite,'host64-debug.ndjson'))};
+ f.cfg.fastToolEvidence={innerBuild:{pid:43,creationFileTime:'123456790'},outerObserver:f.subject.start,experimentalLifecycleObserved:true};
+ f.row.schema='soui.installed-acceptance-llvm-build-observation/v2';
+ f.row.outerObserverCapture=f.row.buildCapture;f.row.originalPollingCapture=f.cfg.buildCapture;
+ f.row.buildCapture={role:'inner-build',...f.cfg.fastToolEvidence.innerBuild,raw:f.cfg.debugCapture.raw,input:f.cfg.debugCapture.input,wholeJobClosed:true,forced:false,naturalRootExitCode:0};
+ f.row.debugCapture=f.cfg.debugCapture;f.row.fastToolEvidence=f.cfg.fastToolEvidence;return f;
+}
+test('consumer dual root DTO retains actual CMake identity and original owned observer identity',()=>assert.equal(accepts(dualFixture()),true));
+test('consumer dual root DTO rejects swapped roots, changed raw pins and schema laundering',()=>{
+ for(const mutate of [f=>f.row.buildCapture.pid=42,f=>f.row.outerObserverCapture.pid=43,
+  f=>f.row.buildCapture.raw={...f.row.buildCapture.raw,sha256:'0'.repeat(64)},f=>f.row.buildCapture.forced=true,
+  f=>f.row.buildCapture.role='outer',f=>f.row.schema='soui.installed-acceptance-llvm-build-observation/v1',
+  f=>f.row.fastToolEvidence={...f.row.fastToolEvidence,experimentalLifecycleObserved:false},
+  f=>f.row.originalPollingCapture={}]){const f=clone(dualFixture());mutate(f);assert.throws(()=>accepts(f));}
+});
 test('dedicated fresh CXX import DTOs preserve unqualified scope for both target architectures',()=>{
   for(const architecture of ['x86','x64']){const f=fixture(architecture);assert.equal(accepts(f),true);
     for(const key of ['completeToolchainProvenance','kernelQualified','abiQualified','win7Qualified','qualificationPassed','releaseReady'])assert.equal(f.row[key],false);}

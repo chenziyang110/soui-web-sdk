@@ -1,0 +1,7 @@
+'use strict';
+const fs=require('node:fs');const p=__dirname+'/proposal/tests/native/windows_uia_provider_tests.cpp';let s=fs.readFileSync(p,'utf8');
+s=s.replace('if (!sender || FAILED(sender->get_CurrentAutomationId(&id))) { failed = true;', 'const auto identity_status = sender ? sender->get_CurrentAutomationId(&id) : E_POINTER;\n    std::fprintf(stderr,"event property=%ld identity=%08lx type=%u\\n",property,static_cast<unsigned long>(identity_status),value.vt);\n    if (FAILED(identity_status)) { failed = true;');
+s=s.replace('const bool expected = id && std::wstring(id, SysStringLen(id)) == L"title";', 'std::fprintf(stderr,"event id=%ls payload=%ls\\n",id?id:L"(null)",value.vt==VT_BSTR&&value.bstrVal?value.bstrVal:L"(nontext)");\n    const bool expected = id && std::wstring(id, SysStringLen(id)) == L"title";');
+s=s.replace('if (FAILED(sender->GetCurrentPropertyValue(UIA_ValueValuePropertyId, &current)) ||', 'const auto read_status=sender->GetCurrentPropertyValue(UIA_ValueValuePropertyId, &current);\n    std::fprintf(stderr,"event current=%08lx type=%u value=%ls\\n",static_cast<unsigned long>(read_status),current.vt,current.vt==VT_BSTR&&current.bstrVal?current.bstrVal:L"(nontext)");\n    if (FAILED(read_status) ||');
+s=s.replace('require(received == WAIT_OBJECT_0 && sink->count == 1 && !sink->failed,', 'std::fprintf(stderr,"event wait=%lu count=%u failed=%d\\n",received,sink->count.load(),sink->failed.load());\n    require(received == WAIT_OBJECT_0 && sink->count == 1 && !sink->failed,');
+fs.writeFileSync(p,s);

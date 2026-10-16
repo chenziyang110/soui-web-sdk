@@ -5,6 +5,13 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const id = require('./delivery-identity.cjs');
 
+// PowerShell may decode native stdout using the active Windows code page.
+// Keep this machine JSON ASCII-only so file names survive that boundary.
+function consoleJson(value) {
+  return id.encoded(value).replace(/[\u0080-\uffff]/g, character =>
+    '\\u' + character.charCodeAt(0).toString(16).padStart(4, '0'));
+}
+
 function version(root) {
   const lockFile = id.safePath(root, 'sdk-lock.json');
   const value = fs.existsSync(lockFile) ? id.readJson(lockFile).manifest.version : fs.readFileSync(id.safePath(root, 'VERSION'), 'utf8').trim();
@@ -33,10 +40,14 @@ function output(root, arch, config, sdkOnly = false) {
   return id.safePath(root, `out/${sdkOnly ? 'sdk-' : ''}${arch}`);
 }
 function optionalLibraries(root, arch, config, sdkOnly) {
-  const dir = output(root, arch, config, sdkOnly);
-  const cache = path.join(dir, 'CMakeCache.txt');
-  if (!fs.existsSync(cache) || !/^SOUI_BUILD_WEBVIEW2:BOOL=ON\r?$/m.test(fs.readFileSync(cache, 'utf8'))) return {};
-  return {webview2: id.snapshot(dir, [`${sdkOnly ? '' : 'sdk/'}renderers/webview2/${config}/soui_webview2.lib`])};
+  const dir = output(root, arch, config, sdkOnly), cache = path.join(dir, 'CMakeCache.txt');
+  if (!fs.existsSync(cache)) return {};
+  const text = fs.readFileSync(cache, 'utf8'), prefix = sdkOnly ? '' : 'sdk/', libraries = {};
+  if (/^SOUI_BUILD_WEBVIEW2:BOOL=ON\r?$/m.test(text))
+    libraries.webview2 = id.snapshot(dir, [prefix+'renderers/webview2/'+config+'/soui_webview2.lib']);
+  if (/^SOUI_BUILD_UIA:BOOL=ON\r?$/m.test(text))
+    libraries.uia = id.snapshot(dir, [prefix+'accessibility/uia/'+config+'/soui_uia.lib']);
+  return libraries;
 }
 function profileRequest(root, arch, config, sdkOnly, selected = {}) {
   const profile=selected.nativeToolchain||'MSVC143';
@@ -203,43 +214,54 @@ function verifySmoke(root, arch, config, selected = {}) {
   if (smoke.passed !== true || !smoke.finishedAt || JSON.stringify(smoke.payloads) !== JSON.stringify(build.payloads)) throw new Error('Smoke payload identity missing');
   return {build, smoke};
 }
-function validateModernSmoke(build, smoke, target, payload) {
-  if (!build.optionalLibraries?.webview2 || !payload || smoke.schema !== 'soui.modern-smoke/1' ||
+function validateModernSmoke(build, smoke, target, payload, options = {}) {
+  if (smoke?.schema !== 'soui.modern-smoke/v2')
+    throw new Error('Modern legacy PID-only receipts are not accepted');
+  if (!build.optionalLibraries?.webview2 || !payload || typeof options.root !== 'string' || !options.root ||
       smoke.version !== build.version || smoke.buildId !== build.buildId || smoke.sourceSha256 !== build.source.sha256 ||
       smoke.architecture !== build.architecture || smoke.configuration !== build.configuration || smoke.target !== target ||
       smoke.passed !== true || smoke.exitCode !== 0 || smoke.timedOut !== false || !smoke.finishedAt ||
       !Number.isSafeInteger(smoke.pid) || smoke.pid <= 0 || JSON.stringify(smoke.payload) !== JSON.stringify(payload) ||
+      typeof smoke.creationFileTime !== 'string' || !/^[1-9]\d{0,19}$/.test(smoke.creationFileTime) ||
+      BigInt(smoke.creationFileTime) > 18446744073709551615n ||
       typeof smoke.log !== 'string' || !['application-ready', 'host-close-complete', 'host-started;runtime='].every(text => smoke.log.includes(text)))
-    throw new Error('Modern smoke identity or lifecycle evidence is incomplete');
+    throw new Error('Modern native PID/FILETIME, selected build or lifecycle evidence is incomplete');
+  return require('./modern-smoke.cjs').validateReport(options.root, smoke, build, payload,
+    options.selected || {}, options.toolsRoot || options.root);
 }
-function verifyModernSmoke(root, arch, config, selected = {}) {
-  const {build} = verifyAcceptedBuild(root, arch, config, false, selected);
+function verifyModernSmoke(root, arch, config, selected = {}, toolsRoot = root) {
+  const verified = verifyAcceptedBuild(root, arch, config, false, selected);
+  const {build} = verified;
   const generated = fs.existsSync(path.join(root, 'project.json'));
   if (generated && backend(root) !== 'webview2') throw new Error('Not a modern application');
   const target = generated ? targets(root)[0] : 'SouiModernStarter';
   const payload = generated ? build.payloads[target] : build.optionalPayloads?.[target];
   const smoke = id.readJson(path.join(output(root, arch, config), `modern-smoke-${config}.json`));
-  validateModernSmoke(build, smoke, target, payload);
+  validateModernSmoke(build, smoke, target, payload, {root, selected: verified.selected, toolsRoot});
   return {build, smoke};
 }
 function stageApp(root, arch, config, target, destination, selected = {}) {
-  if (!targets(root).includes(target)) throw new Error('Unknown application target');
-  const {build} = verifySmoke(root, arch, config, selected);
+  const generated = fs.existsSync(id.safePath(root, 'project.json'));
+  const optionalModern = !generated && target === 'SouiModernStarter';
+  if (!targets(root).includes(target) && !optionalModern) throw new Error('Unknown application target');
+  const modern = optionalModern || backend(root) === 'webview2';
+  const {build} = modern ? verifyModernSmoke(root, arch, config, selected) : verifySmoke(root, arch, config, selected);
+  const expected = optionalModern ? build.optionalPayloads[target] : build.payloads[target];
   destination = id.safePath(destination);
   if (fs.existsSync(destination)) throw new Error('Application stage already exists');
   const app = path.join(output(root, arch, config), 'bin', config, target);
-  for (const entry of build.payloads[target].files) {
+  for (const entry of expected.files) {
     const to = id.safePath(destination, entry.path);
     fs.mkdirSync(path.dirname(to), {recursive: true});
     fs.copyFileSync(id.safePath(app, entry.path), to);
   }
-  const payload = id.verifyPayload(destination, target, build.payloads[target], backend(root));
+  const payload = id.verifyPayload(destination, target, expected, modern ? 'webview2' : 'miniblink');
   const categories = {executable: 0, kernel: 0, libraries: 0, web: 0};
   for (const file of payload.files) categories[file.path.startsWith('resources/') ? 'web' : file.path === 'node.dll' ? 'kernel' : file.path === `${target}.exe` ? 'executable' : 'libraries'] += file.bytes;
   return {schema: 'soui.application-size/v1', version: build.version, target, architecture: arch, configuration: config,
     buildId: build.buildId, sourceSha256: build.source.sha256, payload, categories, releaseReady: false};
 }
-module.exports = {version, targets, start, finish, verifyBuild, verifyAcceptedBuild, beginSmoke, validateRuns, finishSmoke, verifySmoke, validateModernSmoke, verifyModernSmoke, stageApp};
+module.exports = {version, targets, start, finish, verifyBuild, verifyAcceptedBuild, beginSmoke, validateRuns, finishSmoke, verifySmoke, validateModernSmoke, verifyModernSmoke, stageApp, consoleJson};
 if (require.main === module) {
   try {
     const [command, arch, config, ...args] = process.argv.slice(2);
@@ -263,6 +285,6 @@ if (require.main === module) {
       else {if(sdkOnly)throw new Error('Smoke requires application build');result=commands[command](root,arch,config,selected);}
     }
     else throw new Error('Invalid build-evidence command/arguments');
-    console.log(id.encoded(result));
+    console.log(consoleJson(result));
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }

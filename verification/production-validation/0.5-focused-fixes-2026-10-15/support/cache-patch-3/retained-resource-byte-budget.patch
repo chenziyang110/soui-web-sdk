@@ -1,0 +1,76 @@
+diff --git a/third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp b/third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp
+index f5f68e95..71d3c051 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp
++++ b/third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp
+@@ -272,6 +272,8 @@ void BlinkPlatformImpl::initialize()
+     // allocation that exceeds this limit.
+     const size_t kImageCacheSingleAllocationByteLimit = 64 * 1024 * 1024;
+     SkGraphics::SetResourceCacheSingleAllocationByteLimit(kImageCacheSingleAllocationByteLimit);
++    // Explicit retained-record budget; external pixels and active filters are separate.
++    SkGraphics::SetResourceCacheTotalByteLimit(8 * 1024 * 1024);
+ 
+     platform->m_defaultGcTimer = new blink::Timer<BlinkPlatformImpl>(platform, &BlinkPlatformImpl::garbageCollectedTimer);
+     platform->m_defaultGcTimer->start(40, 40, FROM_HERE);
+diff --git a/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.cpp b/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.cpp
+index c1aa4c4d..759a02bb 100644
+--- a/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.cpp
++++ b/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.cpp
+@@ -246,6 +246,19 @@ void SkResourceCache::add(Rec* rec) {
+         return;
+     }
+ 
++    // The discardable store retains records independently of externally held
++    // pixel data. A configured byte threshold governs only this cache ownership.
++    // Evict before adding so the sum cannot overflow even at a size_t limit.
++    if (fDiscardableFactory && fTotalByteLimit) {
++        const size_t incomingBytes = rec->bytesUsed();
++        if (incomingBytes >= fTotalByteLimit) {
++            SkDELETE(rec);
++            return;
++        }
++        while (fTail && fTotalBytesUsed >= fTotalByteLimit - incomingBytes)
++            this->remove(fTail);
++    }
++
+     this->addToHead(rec);
+     fHash->add(rec);
+ 
+@@ -288,7 +301,7 @@ void SkResourceCache::purgeAsNeeded(bool forcePurge) {
+ 
+     if (fDiscardableFactory) {
+         countLimit = SK_DISCARDABLEMEMORY_SCALEDIMAGECACHE_COUNT_LIMIT;
+-        byteLimit = SK_MaxU32;  // no limit based on bytes
++        byteLimit = fTotalByteLimit ? fTotalByteLimit : SK_MaxU32; // zero preserves the legacy policy
+     } else {
+         countLimit = SK_MaxS32; // no limit based on count
+         byteLimit = fTotalByteLimit;
+@@ -350,7 +363,7 @@ void SkResourceCache::purgeSharedID(uint64_t sharedID) {
+ size_t SkResourceCache::setTotalByteLimit(size_t newLimit) {
+     size_t prevLimit = fTotalByteLimit;
+     fTotalByteLimit = newLimit;
+-    if (newLimit < prevLimit) {
++    if (newLimit < prevLimit || (fDiscardableFactory && !prevLimit && newLimit)) {
+         this->purgeAsNeeded();
+     }
+     return prevLimit;
+diff --git a/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.h b/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.h
+index 587920f0..d4989193 100644
+--- a/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.h
++++ b/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.h
+@@ -168,11 +168,11 @@ public:
+     ///////////////////////////////////////////////////////////////////////////
+ 
+     /**
+-     *  Construct the cache to call DiscardableFactory when it
+-     *  allocates memory for the pixels. In this mode, the cache has
+-     *  not explicit budget, and so methods like getTotalBytesUsed()
+-     *  and getTotalByteLimit() will return 0, and setTotalByteLimit
+-     *  will ignore its argument and return 0.
++     *  Construct the cache using discardable pixel memory. A zero byte limit
++     *  preserves the legacy count-only policy. A positive setTotalByteLimit()
++     *  additionally bounds bytes reported by retained records, with strict
++     *  less-than-threshold eviction. This does not bound externally held pixel
++     *  data, allocator overhead, or a single active filter allocation.
+      */
+     SkResourceCache(DiscardableFactory);
+ 

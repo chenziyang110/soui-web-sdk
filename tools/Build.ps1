@@ -6,6 +6,7 @@ param(
   [switch]$WithVendorTests,
   [switch]$SkipWeb,
   [switch]$WithWebView2,
+  [switch]$WithUia,
   [switch]$WithGuiBindings,
   [switch]$Install,
   [switch]$FreshConfigure,
@@ -145,6 +146,7 @@ if($WithWebView2){
   $webview2Package=& (Join-Path $PSScriptRoot 'internal/Restore-WebView2.ps1')
   $optional=@('-DSOUI_BUILD_WEBVIEW2=ON',"-DSOUI_WEBVIEW2_SDK_ROOT=$webview2Package")
 }
+$optional+=('-DSOUI_BUILD_UIA='+$(if($WithUia){'ON'}else{'OFF'}))
 if($WithVendorTests){$optional+=@('-DSOUI_BUILD_TESTS=ON','-DSOUI_BUILD_VENDOR_TESTS=ON')}
 & $cmake.Source @configure @optional
 if($LASTEXITCODE -ne 0){throw 'CMake configure failed'}

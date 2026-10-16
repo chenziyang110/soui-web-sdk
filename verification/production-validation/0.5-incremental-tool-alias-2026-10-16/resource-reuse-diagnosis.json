@@ -1,0 +1,49 @@
+{
+  "sourceManifest": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 16099315,
+    "sha256": "e5a69acb53a0c6503f8b9ce05508c043baa4274a4d0557b962593f4c47748667"
+  },
+  "changed": [
+    {
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tests\\acceptance\\installed-host-runner.test.cjs",
+        "bytes": 6576,
+        "sha256": "e3bee70fad796809f0b2a7b1ce9c6f3bc60b29d31c7f7e8040d04a1a5d2b6084"
+      },
+      "current": {
+        "path": "C:\\work\\sm05-release-050\\tests\\acceptance\\installed-host-runner.test.cjs",
+        "bytes": 6605,
+        "sha256": "e0e53c03feb6f7913a44317e818958abb9d4e3f1de76f60c13d7f18c5aeb9969"
+      }
+    },
+    {
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tests\\sdk\\verification-profile.test.cjs",
+        "bytes": 6984,
+        "sha256": "a9322fef1223e52c5e9b3f8c7f3e5ffb7a22b48b7f27995d2a065ccc61d937e0"
+      },
+      "current": {
+        "path": "C:\\work\\sm05-release-050\\tests\\sdk\\verification-profile.test.cjs",
+        "bytes": 7129,
+        "sha256": "cb345d990d5bbc247a2a92877bb937a92cbf647b0d1ec2c4d75418961c1ee1b6"
+      }
+    }
+  ],
+  "previousObservation": {
+    "path": "C:\\work\\sm05-release-050\\out\\standard-build\\attempt-40b59c0a-f29f-4e1c-8974-63a93559f071\\llvm-observer\\llvm-observation.json",
+    "bytes": 9092652,
+    "sha256": "2900f4afd01c3fc22a1e54411a88612cb5dd87eb730fd197c91650e1f5689680"
+  },
+  "failedInputs": {
+    "path": "C:\\work\\sm05-release-050\\out\\standard-build\\attempt-c75d96f1-8195-46e5-a392-c249aa30042d\\llvm-observer-inputs.json",
+    "bytes": 1545244,
+    "sha256": "dd38c722dad64d6882652c943cd3d519b421ddec4c9a5b9281aeab3170b48357"
+  },
+  "failedResult": {
+    "path": "C:\\work\\sm05-release-050\\out\\standard-build\\attempt-c75d96f1-8195-46e5-a392-c249aa30042d\\result.json",
+    "bytes": 380,
+    "sha256": "eb54322aef0239c4b93b378a3ea755d0a99a11de88bafa01034680315581a600"
+  },
+  "reason": "The strict RC reuse contract freezes all dependency inputs. Two test fixtures changed. Recompile only the two resource objects using the existing captured clean-resources phase; retain exact production validation."
+}

@@ -1,0 +1,208 @@
+
+File: C:/work/sm05-release-050/third_party/prebuilt/x64/soui/bin/imgdecoder-gdip.dll
+Format: COFF-x86-64
+Arch: x86_64
+AddressSize: 64bit
+ImageFileHeader {
+  Machine: IMAGE_FILE_MACHINE_AMD64 (0x8664)
+  SectionCount: 6
+  TimeDateStamp: 2026-05-11 09:46:06 (0x6A01A55E)
+  PointerToSymbolTable: 0x0
+  SymbolCount: 0
+  StringTableSize: 0
+  OptionalHeaderSize: 240
+  Characteristics [ (0x2022)
+    IMAGE_FILE_DLL (0x2000)
+    IMAGE_FILE_EXECUTABLE_IMAGE (0x2)
+    IMAGE_FILE_LARGE_ADDRESS_AWARE (0x20)
+  ]
+}
+ImageOptionalHeader {
+  Magic: 0x20B
+  MajorLinkerVersion: 14
+  MinorLinkerVersion: 16
+  SizeOfCode: 8704
+  SizeOfInitializedData: 13824
+  SizeOfUninitializedData: 0
+  AddressOfEntryPoint: 0x2440
+  BaseOfCode: 0x1000
+  ImageBase: 0x180000000
+  SectionAlignment: 4096
+  FileAlignment: 512
+  MajorOperatingSystemVersion: 6
+  MinorOperatingSystemVersion: 0
+  MajorImageVersion: 0
+  MinorImageVersion: 0
+  MajorSubsystemVersion: 6
+  MinorSubsystemVersion: 0
+  SizeOfImage: 40960
+  SizeOfHeaders: 1024
+  CheckSum: 0x0
+  Subsystem: IMAGE_SUBSYSTEM_WINDOWS_GUI (0x2)
+  Characteristics [ (0x160)
+    IMAGE_DLL_CHARACTERISTICS_DYNAMIC_BASE (0x40)
+    IMAGE_DLL_CHARACTERISTICS_HIGH_ENTROPY_VA (0x20)
+    IMAGE_DLL_CHARACTERISTICS_NX_COMPAT (0x100)
+  ]
+  SizeOfStackReserve: 1048576
+  SizeOfStackCommit: 4096
+  SizeOfHeapReserve: 1048576
+  SizeOfHeapCommit: 4096
+  NumberOfRvaAndSize: 16
+  DataDirectory {
+    ExportTableRVA: 0x54C0
+    ExportTableSize: 0x58
+    ImportTableRVA: 0x5518
+    ImportTableSize: 0x8C
+    ResourceTableRVA: 0x8000
+    ResourceTableSize: 0x4F8
+    ExceptionTableRVA: 0x7000
+    ExceptionTableSize: 0x39C
+    CertificateTableRVA: 0x0
+    CertificateTableSize: 0x0
+    BaseRelocationTableRVA: 0x9000
+    BaseRelocationTableSize: 0xB0
+    DebugRVA: 0x4570
+    DebugSize: 0x1C
+    ArchitectureRVA: 0x0
+    ArchitectureSize: 0x0
+    GlobalPtrRVA: 0x0
+    GlobalPtrSize: 0x0
+    TLSTableRVA: 0x0
+    TLSTableSize: 0x0
+    LoadConfigTableRVA: 0x4590
+    LoadConfigTableSize: 0x100
+    BoundImportRVA: 0x0
+    BoundImportSize: 0x0
+    IATRVA: 0x4000
+    IATSize: 0x250
+    DelayImportDescriptorRVA: 0x0
+    DelayImportDescriptorSize: 0x0
+    CLRRuntimeHeaderRVA: 0x0
+    CLRRuntimeHeaderSize: 0x0
+    ReservedRVA: 0x0
+    ReservedSize: 0x0
+  }
+}
+DOSHeader {
+  Magic: MZ
+  UsedBytesInTheLastPage: 144
+  FileSizeInPages: 3
+  NumberOfRelocationItems: 0
+  HeaderSizeInParagraphs: 4
+  MinimumExtraParagraphs: 0
+  MaximumExtraParagraphs: 65535
+  InitialRelativeSS: 0
+  InitialSP: 184
+  Checksum: 0
+  InitialIP: 0
+  InitialRelativeCS: 0
+  AddressOfRelocationTable: 64
+  OverlayNumber: 0
+  OEMid: 0
+  OEMinfo: 0
+  AddressOfNewExeHeader: 288
+}
+Import {
+  Name: KERNEL32.dll
+  ImportLookupTableRVA: 0x55A8
+  ImportAddressTableRVA: 0x4000
+  Symbol: GetLastError (615)
+  Symbol: GlobalAlloc (824)
+  Symbol: GlobalUnlock (842)
+  Symbol: GlobalLock (835)
+  Symbol: MultiByteToWideChar (1012)
+  Symbol: IsDebuggerPresent (900)
+  Symbol: InitializeSListHead (878)
+  Symbol: DisableThreadLibraryCalls (290)
+  Symbol: GetSystemTimeAsFileTime (752)
+  Symbol: GetCurrentThreadId (546)
+  Symbol: GetCurrentProcessId (542)
+  Symbol: QueryPerformanceCounter (1106)
+  Symbol: IsProcessorFeaturePresent (907)
+  Symbol: TerminateProcess (1436)
+  Symbol: GetCurrentProcess (541)
+  Symbol: SetUnhandledExceptionFilter (1405)
+  Symbol: UnhandledExceptionFilter (1470)
+  Symbol: RtlVirtualUnwind (1251)
+  Symbol: RtlLookupFunctionEntry (1244)
+  Symbol: RtlCaptureContext (1237)
+}
+Import {
+  Name: ole32.dll
+  ImportLookupTableRVA: 0x57E8
+  ImportAddressTableRVA: 0x4240
+  Symbol: CreateStreamOnHGlobal (171)
+}
+Import {
+  Name: gdiplus.dll
+  ImportLookupTableRVA: 0x5720
+  ImportAddressTableRVA: 0x4178
+  Symbol: GdipCreateBitmapFromFile (73)
+  Symbol: GdipGetImageEncoders (286)
+  Symbol: GdipGetImageEncodersSize (287)
+  Symbol: GdipDrawImageRectI (184)
+  Symbol: GdipGraphicsClear (405)
+  Symbol: GdipDeleteGraphics (144)
+  Symbol: GdipBitmapUnlockBits (46)
+  Symbol: GdipBitmapLockBits (43)
+  Symbol: GdipCreateBitmapFromScan0 (80)
+  Symbol: GdipGetPropertyItem (374)
+  Symbol: GdipGetPropertyItemSize (375)
+  Symbol: GdipImageSelectActiveFrame (412)
+  Symbol: GdipImageGetFrameCount (408)
+  Symbol: GdipGetImageHeight (290)
+  Symbol: GdipGetImageWidth (300)
+  Symbol: GdipGetImageGraphicsContext (289)
+  Symbol: GdipSaveImageToFile (496)
+  Symbol: GdipDisposeImage (152)
+  Symbol: GdipCloneImage (54)
+  Symbol: GdiplusShutdown (628)
+  Symbol: GdiplusStartup (629)
+  Symbol: GdipFree (237)
+  Symbol: GdipAlloc (33)
+  Symbol: GdipCreateBitmapFromStream (81)
+}
+Import {
+  Name: VCRUNTIME140.dll
+  ImportLookupTableRVA: 0x5650
+  ImportAddressTableRVA: 0x40A8
+  Symbol: __CxxFrameHandler3 (14)
+  Symbol: __std_type_info_destroy_list (37)
+  Symbol: _CxxThrowException (1)
+  Symbol: __std_exception_destroy (34)
+  Symbol: __std_exception_copy (33)
+  Symbol: __C_specific_handler (8)
+  Symbol: memset (62)
+  Symbol: memcpy (60)
+  Symbol: memcmp (59)
+  Symbol: __std_terminate (35)
+  Symbol: _purecall (54)
+}
+Import {
+  Name: api-ms-win-crt-heap-l1-1-0.dll
+  ImportLookupTableRVA: 0x56B0
+  ImportAddressTableRVA: 0x4108
+  Symbol: free (24)
+  Symbol: _callnewh (8)
+  Symbol: malloc (25)
+}
+Import {
+  Name: api-ms-win-crt-runtime-l1-1-0.dll
+  ImportLookupTableRVA: 0x56D0
+  ImportAddressTableRVA: 0x4128
+  Symbol: _initterm (54)
+  Symbol: _initialize_narrow_environment (51)
+  Symbol: _cexit (22)
+  Symbol: _initialize_onexit_table (52)
+  Symbol: _configure_narrow_argv (24)
+  Symbol: _seh_filter_dll (63)
+  Symbol: _execute_onexit_table (34)
+  Symbol: terminate (103)
+  Symbol: _initterm_e (55)
+}
+Export {
+  Ordinal: 1
+  Name: SCreateInstance
+  RVA: 0x1D58
+}

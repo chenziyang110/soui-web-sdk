@@ -246,6 +246,19 @@ void SkResourceCache::add(Rec* rec) {
         return;
     }
 
+    // The discardable store retains records independently of externally held
+    // pixel data. A configured byte threshold governs only this cache ownership.
+    // Evict before adding so the sum cannot overflow even at a size_t limit.
+    if (fDiscardableFactory && fTotalByteLimit) {
+        const size_t incomingBytes = rec->bytesUsed();
+        if (incomingBytes >= fTotalByteLimit) {
+            SkDELETE(rec);
+            return;
+        }
+        while (fTail && fTotalBytesUsed >= fTotalByteLimit - incomingBytes)
+            this->remove(fTail);
+    }
+
     this->addToHead(rec);
     fHash->add(rec);
 
@@ -288,7 +301,7 @@ void SkResourceCache::purgeAsNeeded(bool forcePurge) {
 
     if (fDiscardableFactory) {
         countLimit = SK_DISCARDABLEMEMORY_SCALEDIMAGECACHE_COUNT_LIMIT;
-        byteLimit = SK_MaxU32;  // no limit based on bytes
+        byteLimit = fTotalByteLimit ? fTotalByteLimit : SK_MaxU32; // zero preserves the legacy policy
     } else {
         countLimit = SK_MaxS32; // no limit based on count
         byteLimit = fTotalByteLimit;
@@ -350,7 +363,7 @@ void SkResourceCache::purgeSharedID(uint64_t sharedID) {
 size_t SkResourceCache::setTotalByteLimit(size_t newLimit) {
     size_t prevLimit = fTotalByteLimit;
     fTotalByteLimit = newLimit;
-    if (newLimit < prevLimit) {
+    if (newLimit < prevLimit || (fDiscardableFactory && !prevLimit && newLimit)) {
         this->purgeAsNeeded();
     }
     return prevLimit;

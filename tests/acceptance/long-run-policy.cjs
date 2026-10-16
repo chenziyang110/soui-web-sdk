@@ -4,7 +4,7 @@ const crypto=require('node:crypto');
 // inherited certification, the100reload rule, RTT or presentation budgets.
 const HOUR=3600000,DURATION=8*HOUR;
 const MODES=['reload','recreate','multiwindow','bridge','mixed','session'];
-const RULE=Object.freeze({schema:'soui.long-run-acceptance-policy/v1',revision:'0.5.0-m0-named-cache-configuration-v2',
+const RULE=Object.freeze({schema:'soui.long-run-acceptance-policy/v1',revision:'0.5.0-m0-software-cache-envelope-v4',
   durationMs:DURATION,hours:8,minSamplesPerHour:30,minActionsPerGroupPerHour:30,maxSampleGapMs:180000,
   percentile:'nearest-rank',privateMedianMinimumBytes:32*1024*1024,privateMedianPercent:20,
   privateP95MinimumBytes:64*1024*1024,privateP95Percent:25,
@@ -21,6 +21,9 @@ const RULE=Object.freeze({schema:'soui.long-run-acceptance-policy/v1',revision:'
   namedCacheScope:'named-process-cache-scalars',
   namedCacheQualification:'data-only-original-native-qpc-independent-resource-budget',
   namedCacheConfigurationPolicy:require('./native-cache-validation.cjs').CONFIGURATION_POLICY,
+  taskStoreRequestQuota:Object.freeze({maxLiveRequestedBytes:'134217728',scope:'task-store-private-request-byte-quota',
+    coverage:'all-observed-live-and-retired-native-owners',finalDisposalObserved:false}),
+  softwareCacheBudget:require('./software-cache-budget.cjs').POLICY,
   forcedGc:false,workingSetCompression:false,periodicProcessRestart:false,dropOutliers:false,
   incompleteFinalHour:'retain-separate-not-in-eight-hour-trend',releaseReady:false});
 function fixedConfig(mode){

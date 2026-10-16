@@ -1,0 +1,1298 @@
+{
+  "phase": "native",
+  "arch": "x64",
+  "configuration": "Debug",
+  "stable": true,
+  "natural": true,
+  "result": {
+    "pid": 66900,
+    "creationFileTime": "134365601287010651",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 60550,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 236,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "C:\\work\\sm05-source22-pipeline-1\\native-x64-Debug-source22-2\\native.ndjson",
+    "reportSha256": "ecb2a3b3d17be0babff8a25c67ba505df6a6f2820cbf7dffe1d1287b9f41687d",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "0befb42121d9baf862ae21165788c08d45ca06c6ce12b9e68101a31542dd572c"
+  },
+  "terminal": {
+    "event": "terminal",
+    "reason": "completed",
+    "elapsedMs": 60550,
+    "rootExited": true,
+    "rootExitCode": 0,
+    "activeBeforeCleanup": 0,
+    "terminatedOwnedJob": false,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 236,
+    "limitTerminatedProcesses": 0,
+    "passed": true
+  },
+  "sourcePins": [
+    {
+      "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+      "sha256": "3dc25e48b13ea9ececa6f08801b84a83d62e75b480acffc7936564b2c711553f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\third_party\\include\\json\\json.hpp",
+      "sha256": "78496a32103398f5936cec4df6cf42fa52f2cb2495caf4270fa42c8ed8c4e851"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\Observe-LlvmBuild.ps1",
+      "sha256": "1684a12558875084f0bd462e1ea9bfe0dc4401a2ec4320491ed0961db69c3580"
+    },
+    {
+      "path": "C:\\work\\sm05-source22-pipeline-1\\run-native2.cjs",
+      "sha256": "d12ce618d824c87431cd1877babc346fadb9fe9528599e633b5f83eaba10dbe2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\build-Debug.json",
+      "sha256": "a7f3af01118243f7f53416a170cc0dd4cf3ab63f66be01649e59c21a2cb8e6a9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\sdk\\Debug\\soui_sdk.lib",
+      "sha256": "d75e521582dc9317c96619dd65526df08d2ea2d1f63aff875a0ca492c1a1048d"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\sdk\\Debug\\soui_zlib.lib",
+      "sha256": "618f214e39c3b7cdc4c6e57d9c004e7eec85fc97467777e2f3fdd41c5416bec6"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\soui_task_terminal_quota_tests.map",
+      "sha256": "83df3fee904570c74accba6df1efa86550de4a268494dc5a15224f907f9d81cc"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-console-l1-1-0.dll",
+      "sha256": "6801f5306be9f07a8376fd72d95ee6f2c286d02a940822af4f9c873c58a8c79b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-console-l1-2-0.dll",
+      "sha256": "3239f73115b8614296dfb0dc72a79cbcc9c6e26e528fcb18e044c7bd673ef122"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-datetime-l1-1-0.dll",
+      "sha256": "bea649ba3dedf2b6e46d2085f3b354fc3eeb1440e1c2c5ea97721b147921cc85"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-debug-l1-1-0.dll",
+      "sha256": "3de02d9fa11365c84d9da6a29841cc130239ce3bede7535847d001172def18a8"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-errorhandling-l1-1-0.dll",
+      "sha256": "848cd0fc6f7b994af337a1b895709949c4a1d2380a32737c86b81b73f6f4aab1"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-file-l1-1-0.dll",
+      "sha256": "a261e91aee4552d2f4d4bccf73afb0124d45ef12f37fd617e9818c7c41644556"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-file-l1-2-0.dll",
+      "sha256": "d7add947980a5ce1bb875cc2340dd318739c717898366b27542b4386cafed530"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-file-l2-1-0.dll",
+      "sha256": "a3e5f16c901f3aa34927d848628fdadb2bf39948da958785872a204940327365"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-handle-l1-1-0.dll",
+      "sha256": "c0874c137181bf40542b9fda3443063247962e7cbf87a43109a2f1d4b2231dba"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-heap-l1-1-0.dll",
+      "sha256": "691f8c9d3a52396851400870a25eb4ed864d89fa4579d6cf82fff99e5393fdd2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-interlocked-l1-1-0.dll",
+      "sha256": "7a35ed8d0d3f917e51c1c9be4a465f298e01cc26d4b090c4611b4045365e3471"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-libraryloader-l1-1-0.dll",
+      "sha256": "5ce62d6356f80fbcab69bd53b4b31cbb7b3cbcfb69736bb56d32272c56a107fc"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-localization-l1-2-0.dll",
+      "sha256": "b6158bf61526b05ba5569f5191fce05f2d78dac356aade761c110a645c9ebc7f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-memory-l1-1-0.dll",
+      "sha256": "49caa4ac64640e07642d5332850b09d7765a263d418e31c4ea563f72b53ad6ac"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-namedpipe-l1-1-0.dll",
+      "sha256": "0db4d342deb40d02dd84d8d1242c2c455eda11dadaf7d1c0da24887c368b55c2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-processenvironment-l1-1-0.dll",
+      "sha256": "df7819c1f49c5070fec9289c6c91f3b78da3eb2dbb54267c6ee17fdbd1d75aab"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-processthreads-l1-1-0.dll",
+      "sha256": "378000df20aaa09fb41deecf06a9bd868cd1424c695971e2cb4f19de39b127e3"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-processthreads-l1-1-1.dll",
+      "sha256": "ec26ab8014c7e3b102b2f5e7268f025fad1993027571a0fcb26b82606be31f4d"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-profile-l1-1-0.dll",
+      "sha256": "3a2d5d94142c0eab0336cae355776d46aab81511fe85a81ea5d1cb58fcfc6f44"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-rtlsupport-l1-1-0.dll",
+      "sha256": "f3e88425e086c99ba9b50301272eb5fedbea93975848496c4c929dead0f4b3b6"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-string-l1-1-0.dll",
+      "sha256": "f5deaf128637170e8a5c5f5c18b0d14b3c4541a33d54ee0b9c4ab2d8bb748415"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-synch-l1-1-0.dll",
+      "sha256": "6b043a1dd6a02e6a09e2d9c2047e95df9b091f641fd8e0a61a74599697360017"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-synch-l1-2-0.dll",
+      "sha256": "af7d60e1f7d127be7be92519bc2b24f0ad5a095cb04a8784b2337e81895ff7f7"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-sysinfo-l1-1-0.dll",
+      "sha256": "1fd75b049056b219195e1ac36f207d59b1c0aea37b7be63c659733fe9f428f84"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-timezone-l1-1-0.dll",
+      "sha256": "d216b9631f0e1e561a910b1b17a7b0ef6ec78614c38991617e31fb98213bca08"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-core-util-l1-1-0.dll",
+      "sha256": "ced4c182964a46b9ee461c2845a90e728c67843a77635b06354617544534630f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-conio-l1-1-0.dll",
+      "sha256": "f1737997ec35f7f00638297b4fab5450b93f4128c2927ab47a54c361addf7499"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-convert-l1-1-0.dll",
+      "sha256": "25fe8493624b0a0d9d00a46fb41e4356c1cd01fa80f7b1e6ab831df2ccac762a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-environment-l1-1-0.dll",
+      "sha256": "16e8b7c5f5c806bf831c81f2124c86ed8da1d34d7c430475894f49d3007e499a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-filesystem-l1-1-0.dll",
+      "sha256": "790495652731de7e51e4803e3ecb0c050d95749e8e84bc4bcf6f3b67d756e9ed"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-heap-l1-1-0.dll",
+      "sha256": "49f8312f15018bbf386704dd8fc62e0043ed38b98413b5a19f3776bc780d1253"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-locale-l1-1-0.dll",
+      "sha256": "880127e94c1437d94e508f8c806e24413d95d1e0b131f88bc45606e4dece23ca"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-math-l1-1-0.dll",
+      "sha256": "26effb6000a24e3c1c597009e148f48a44498bbcf4218f0119c7301f8ac5a78c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-multibyte-l1-1-0.dll",
+      "sha256": "b674a5e4ec8446c411f6a7ebfd179a2b385714c60adf4b21f9f81650b415b61c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-private-l1-1-0.dll",
+      "sha256": "6b33bdfb8c6589541d0211eb44b173f8aae5f2df9db82f535cb90a5054d69f49"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-process-l1-1-0.dll",
+      "sha256": "820aeb34862d0058bc66af68859f6ffce1af4c9d0cf83fe7df58611e4ce3d6b9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-runtime-l1-1-0.dll",
+      "sha256": "6a95a2ea68320591a955c2930462798083a8cc7e6d79754122c21b293ba9a1a8"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-stdio-l1-1-0.dll",
+      "sha256": "18d8b00e797538bc4767c19ae1762df18c64479a54e7041b8b4da99e32cda8bd"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-string-l1-1-0.dll",
+      "sha256": "c94bb2053a6541cc065b806ea945d420eb3207c3bee1d760401a600506e99589"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-time-l1-1-0.dll",
+      "sha256": "26376455bd746d87e150e73856d0db88303e0af2533f32956999c505e29db6fb"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\api-ms-win-crt-utility-l1-1-0.dll",
+      "sha256": "39b254cb97f25869d3c335899c6d3bab346cd6b000f2803ca9ddc8f2540c3a32"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\concrt140.dll",
+      "sha256": "2405355f0a58067b258f8df33c327e3a3d716eaac5a3a5aebb757842d85bd376"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\msvcp140.dll",
+      "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\msvcp140_1.dll",
+      "sha256": "bfad5aef4c63a669e3c140655cdfdf395b6c979b400a447bd5dcb65ed8826c3d"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\msvcp140_2.dll",
+      "sha256": "3ea06f0ee098b4823cb79599df3780e7f23cce52c19aac31d2a0d47efe33a5e9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\msvcp140_atomic_wait.dll",
+      "sha256": "640b2aefced484d0368eea5bdd06addd0658a3a70a49256e560d6923b404a479"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\msvcp140_codecvt_ids.dll",
+      "sha256": "f2069a52880ec885ee7f0511186100eb7fada0411a2b4948fafea7735b878a18"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\SouiModernStarter.exe",
+      "sha256": "b85c2c9e1f686c916a6216bb34ad774b8272b7d08cca6ee62a77328b3bd56680"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\ucrtbase.dll",
+      "sha256": "0a2be4a529a46fe0579150e205af3518988a58e70000dd4053bae541e98fc3f2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\vccorlib140.dll",
+      "sha256": "19839407c3fdbc824e5bce189bf68ddf8097f12ec28b757797ffa0415c144ddd"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\vcruntime140.dll",
+      "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\vcruntime140_1.dll",
+      "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\vcruntime140_threads.dll",
+      "sha256": "219915cf20822f34d5e7c1fdd4e21ae7f3396881096c51036225fb8f84b47afa"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiModernStarter\\zlib1.dll",
+      "sha256": "fb6726dbcd7bb3659ca126ef4d5c7f83de46ab5e2b470316925e1d5873ec9045"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiRuntimeDoctor\\SouiRuntimeDoctor.exe",
+      "sha256": "8deaff673ab636690e1bb9cac74f62c1ed61975e09506d44be568fe6d4822f2d"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-console-l1-1-0.dll",
+      "sha256": "6801f5306be9f07a8376fd72d95ee6f2c286d02a940822af4f9c873c58a8c79b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-console-l1-2-0.dll",
+      "sha256": "3239f73115b8614296dfb0dc72a79cbcc9c6e26e528fcb18e044c7bd673ef122"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-datetime-l1-1-0.dll",
+      "sha256": "bea649ba3dedf2b6e46d2085f3b354fc3eeb1440e1c2c5ea97721b147921cc85"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-debug-l1-1-0.dll",
+      "sha256": "3de02d9fa11365c84d9da6a29841cc130239ce3bede7535847d001172def18a8"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-errorhandling-l1-1-0.dll",
+      "sha256": "848cd0fc6f7b994af337a1b895709949c4a1d2380a32737c86b81b73f6f4aab1"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-file-l1-1-0.dll",
+      "sha256": "a261e91aee4552d2f4d4bccf73afb0124d45ef12f37fd617e9818c7c41644556"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-file-l1-2-0.dll",
+      "sha256": "d7add947980a5ce1bb875cc2340dd318739c717898366b27542b4386cafed530"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-file-l2-1-0.dll",
+      "sha256": "a3e5f16c901f3aa34927d848628fdadb2bf39948da958785872a204940327365"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-handle-l1-1-0.dll",
+      "sha256": "c0874c137181bf40542b9fda3443063247962e7cbf87a43109a2f1d4b2231dba"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-heap-l1-1-0.dll",
+      "sha256": "691f8c9d3a52396851400870a25eb4ed864d89fa4579d6cf82fff99e5393fdd2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-interlocked-l1-1-0.dll",
+      "sha256": "7a35ed8d0d3f917e51c1c9be4a465f298e01cc26d4b090c4611b4045365e3471"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-libraryloader-l1-1-0.dll",
+      "sha256": "5ce62d6356f80fbcab69bd53b4b31cbb7b3cbcfb69736bb56d32272c56a107fc"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-localization-l1-2-0.dll",
+      "sha256": "b6158bf61526b05ba5569f5191fce05f2d78dac356aade761c110a645c9ebc7f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-memory-l1-1-0.dll",
+      "sha256": "49caa4ac64640e07642d5332850b09d7765a263d418e31c4ea563f72b53ad6ac"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-namedpipe-l1-1-0.dll",
+      "sha256": "0db4d342deb40d02dd84d8d1242c2c455eda11dadaf7d1c0da24887c368b55c2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-processenvironment-l1-1-0.dll",
+      "sha256": "df7819c1f49c5070fec9289c6c91f3b78da3eb2dbb54267c6ee17fdbd1d75aab"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-processthreads-l1-1-0.dll",
+      "sha256": "378000df20aaa09fb41deecf06a9bd868cd1424c695971e2cb4f19de39b127e3"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-processthreads-l1-1-1.dll",
+      "sha256": "ec26ab8014c7e3b102b2f5e7268f025fad1993027571a0fcb26b82606be31f4d"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-profile-l1-1-0.dll",
+      "sha256": "3a2d5d94142c0eab0336cae355776d46aab81511fe85a81ea5d1cb58fcfc6f44"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-rtlsupport-l1-1-0.dll",
+      "sha256": "f3e88425e086c99ba9b50301272eb5fedbea93975848496c4c929dead0f4b3b6"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-string-l1-1-0.dll",
+      "sha256": "f5deaf128637170e8a5c5f5c18b0d14b3c4541a33d54ee0b9c4ab2d8bb748415"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-synch-l1-1-0.dll",
+      "sha256": "6b043a1dd6a02e6a09e2d9c2047e95df9b091f641fd8e0a61a74599697360017"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-synch-l1-2-0.dll",
+      "sha256": "af7d60e1f7d127be7be92519bc2b24f0ad5a095cb04a8784b2337e81895ff7f7"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-sysinfo-l1-1-0.dll",
+      "sha256": "1fd75b049056b219195e1ac36f207d59b1c0aea37b7be63c659733fe9f428f84"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-timezone-l1-1-0.dll",
+      "sha256": "d216b9631f0e1e561a910b1b17a7b0ef6ec78614c38991617e31fb98213bca08"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-core-util-l1-1-0.dll",
+      "sha256": "ced4c182964a46b9ee461c2845a90e728c67843a77635b06354617544534630f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-conio-l1-1-0.dll",
+      "sha256": "f1737997ec35f7f00638297b4fab5450b93f4128c2927ab47a54c361addf7499"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-convert-l1-1-0.dll",
+      "sha256": "25fe8493624b0a0d9d00a46fb41e4356c1cd01fa80f7b1e6ab831df2ccac762a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-environment-l1-1-0.dll",
+      "sha256": "16e8b7c5f5c806bf831c81f2124c86ed8da1d34d7c430475894f49d3007e499a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-filesystem-l1-1-0.dll",
+      "sha256": "790495652731de7e51e4803e3ecb0c050d95749e8e84bc4bcf6f3b67d756e9ed"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-heap-l1-1-0.dll",
+      "sha256": "49f8312f15018bbf386704dd8fc62e0043ed38b98413b5a19f3776bc780d1253"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-locale-l1-1-0.dll",
+      "sha256": "880127e94c1437d94e508f8c806e24413d95d1e0b131f88bc45606e4dece23ca"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-math-l1-1-0.dll",
+      "sha256": "26effb6000a24e3c1c597009e148f48a44498bbcf4218f0119c7301f8ac5a78c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-multibyte-l1-1-0.dll",
+      "sha256": "b674a5e4ec8446c411f6a7ebfd179a2b385714c60adf4b21f9f81650b415b61c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-private-l1-1-0.dll",
+      "sha256": "6b33bdfb8c6589541d0211eb44b173f8aae5f2df9db82f535cb90a5054d69f49"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-process-l1-1-0.dll",
+      "sha256": "820aeb34862d0058bc66af68859f6ffce1af4c9d0cf83fe7df58611e4ce3d6b9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-runtime-l1-1-0.dll",
+      "sha256": "6a95a2ea68320591a955c2930462798083a8cc7e6d79754122c21b293ba9a1a8"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-stdio-l1-1-0.dll",
+      "sha256": "18d8b00e797538bc4767c19ae1762df18c64479a54e7041b8b4da99e32cda8bd"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-string-l1-1-0.dll",
+      "sha256": "c94bb2053a6541cc065b806ea945d420eb3207c3bee1d760401a600506e99589"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-time-l1-1-0.dll",
+      "sha256": "26376455bd746d87e150e73856d0db88303e0af2533f32956999c505e29db6fb"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\api-ms-win-crt-utility-l1-1-0.dll",
+      "sha256": "39b254cb97f25869d3c335899c6d3bab346cd6b000f2803ca9ddc8f2540c3a32"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\concrt140.dll",
+      "sha256": "2405355f0a58067b258f8df33c327e3a3d716eaac5a3a5aebb757842d85bd376"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\imgdecoder-gdip.dll",
+      "sha256": "9aac63a372aa6a84d4beb094ed5612bab956e4b9e037b8c347d84881d264f08b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\msvcp140.dll",
+      "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\msvcp140_1.dll",
+      "sha256": "bfad5aef4c63a669e3c140655cdfdf395b6c979b400a447bd5dcb65ed8826c3d"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\msvcp140_2.dll",
+      "sha256": "3ea06f0ee098b4823cb79599df3780e7f23cce52c19aac31d2a0d47efe33a5e9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\msvcp140_atomic_wait.dll",
+      "sha256": "640b2aefced484d0368eea5bdd06addd0658a3a70a49256e560d6923b404a479"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\msvcp140_codecvt_ids.dll",
+      "sha256": "f2069a52880ec885ee7f0511186100eb7fada0411a2b4948fafea7735b878a18"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\node.dll",
+      "sha256": "1c763337615c1298a54bb8557d8d79aaeec539dfd5027a9d6d60c245bf2f1382"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\render-gdi.dll",
+      "sha256": "0e482f84b95df231c5f6373d5660b0950f26563a80ec4db8d83f7049887041f3"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\soui-sys-resource.dll",
+      "sha256": "1ed54517adb1b3ea00cbe9f98aeef3cbf5c1d3f34382fce9fbe9114a3c3c142a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\soui.dll",
+      "sha256": "4da894ea9c63b4f52ed645b549c8d58cf2db6b08cceea1be7530f084562b1a8b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\SouiStarter.exe",
+      "sha256": "92e2732e36ece639d6c566c14f452bb21cf4de416efa211593358f13fea667ad"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\ucrtbase.dll",
+      "sha256": "0a2be4a529a46fe0579150e205af3518988a58e70000dd4053bae541e98fc3f2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\utilities.dll",
+      "sha256": "1e1f803c8b1f4e03d51a287b390ea6b9f0c60865505f7d043d513b156377fc06"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\vccorlib140.dll",
+      "sha256": "19839407c3fdbc824e5bce189bf68ddf8097f12ec28b757797ffa0415c144ddd"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\vcruntime140.dll",
+      "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\vcruntime140_1.dll",
+      "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\vcruntime140_threads.dll",
+      "sha256": "219915cf20822f34d5e7c1fdd4e21ae7f3396881096c51036225fb8f84b47afa"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiStarter\\zlib1.dll",
+      "sha256": "fb6726dbcd7bb3659ca126ef4d5c7f83de46ab5e2b470316925e1d5873ec9045"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-console-l1-1-0.dll",
+      "sha256": "6801f5306be9f07a8376fd72d95ee6f2c286d02a940822af4f9c873c58a8c79b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-console-l1-2-0.dll",
+      "sha256": "3239f73115b8614296dfb0dc72a79cbcc9c6e26e528fcb18e044c7bd673ef122"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-datetime-l1-1-0.dll",
+      "sha256": "bea649ba3dedf2b6e46d2085f3b354fc3eeb1440e1c2c5ea97721b147921cc85"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-debug-l1-1-0.dll",
+      "sha256": "3de02d9fa11365c84d9da6a29841cc130239ce3bede7535847d001172def18a8"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-errorhandling-l1-1-0.dll",
+      "sha256": "848cd0fc6f7b994af337a1b895709949c4a1d2380a32737c86b81b73f6f4aab1"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-file-l1-1-0.dll",
+      "sha256": "a261e91aee4552d2f4d4bccf73afb0124d45ef12f37fd617e9818c7c41644556"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-file-l1-2-0.dll",
+      "sha256": "d7add947980a5ce1bb875cc2340dd318739c717898366b27542b4386cafed530"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-file-l2-1-0.dll",
+      "sha256": "a3e5f16c901f3aa34927d848628fdadb2bf39948da958785872a204940327365"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-handle-l1-1-0.dll",
+      "sha256": "c0874c137181bf40542b9fda3443063247962e7cbf87a43109a2f1d4b2231dba"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-heap-l1-1-0.dll",
+      "sha256": "691f8c9d3a52396851400870a25eb4ed864d89fa4579d6cf82fff99e5393fdd2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-interlocked-l1-1-0.dll",
+      "sha256": "7a35ed8d0d3f917e51c1c9be4a465f298e01cc26d4b090c4611b4045365e3471"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-libraryloader-l1-1-0.dll",
+      "sha256": "5ce62d6356f80fbcab69bd53b4b31cbb7b3cbcfb69736bb56d32272c56a107fc"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-localization-l1-2-0.dll",
+      "sha256": "b6158bf61526b05ba5569f5191fce05f2d78dac356aade761c110a645c9ebc7f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-memory-l1-1-0.dll",
+      "sha256": "49caa4ac64640e07642d5332850b09d7765a263d418e31c4ea563f72b53ad6ac"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-namedpipe-l1-1-0.dll",
+      "sha256": "0db4d342deb40d02dd84d8d1242c2c455eda11dadaf7d1c0da24887c368b55c2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-processenvironment-l1-1-0.dll",
+      "sha256": "df7819c1f49c5070fec9289c6c91f3b78da3eb2dbb54267c6ee17fdbd1d75aab"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-processthreads-l1-1-0.dll",
+      "sha256": "378000df20aaa09fb41deecf06a9bd868cd1424c695971e2cb4f19de39b127e3"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-processthreads-l1-1-1.dll",
+      "sha256": "ec26ab8014c7e3b102b2f5e7268f025fad1993027571a0fcb26b82606be31f4d"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-profile-l1-1-0.dll",
+      "sha256": "3a2d5d94142c0eab0336cae355776d46aab81511fe85a81ea5d1cb58fcfc6f44"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-rtlsupport-l1-1-0.dll",
+      "sha256": "f3e88425e086c99ba9b50301272eb5fedbea93975848496c4c929dead0f4b3b6"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-string-l1-1-0.dll",
+      "sha256": "f5deaf128637170e8a5c5f5c18b0d14b3c4541a33d54ee0b9c4ab2d8bb748415"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-synch-l1-1-0.dll",
+      "sha256": "6b043a1dd6a02e6a09e2d9c2047e95df9b091f641fd8e0a61a74599697360017"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-synch-l1-2-0.dll",
+      "sha256": "af7d60e1f7d127be7be92519bc2b24f0ad5a095cb04a8784b2337e81895ff7f7"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-sysinfo-l1-1-0.dll",
+      "sha256": "1fd75b049056b219195e1ac36f207d59b1c0aea37b7be63c659733fe9f428f84"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-timezone-l1-1-0.dll",
+      "sha256": "d216b9631f0e1e561a910b1b17a7b0ef6ec78614c38991617e31fb98213bca08"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-core-util-l1-1-0.dll",
+      "sha256": "ced4c182964a46b9ee461c2845a90e728c67843a77635b06354617544534630f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-conio-l1-1-0.dll",
+      "sha256": "f1737997ec35f7f00638297b4fab5450b93f4128c2927ab47a54c361addf7499"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-convert-l1-1-0.dll",
+      "sha256": "25fe8493624b0a0d9d00a46fb41e4356c1cd01fa80f7b1e6ab831df2ccac762a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-environment-l1-1-0.dll",
+      "sha256": "16e8b7c5f5c806bf831c81f2124c86ed8da1d34d7c430475894f49d3007e499a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-filesystem-l1-1-0.dll",
+      "sha256": "790495652731de7e51e4803e3ecb0c050d95749e8e84bc4bcf6f3b67d756e9ed"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-heap-l1-1-0.dll",
+      "sha256": "49f8312f15018bbf386704dd8fc62e0043ed38b98413b5a19f3776bc780d1253"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-locale-l1-1-0.dll",
+      "sha256": "880127e94c1437d94e508f8c806e24413d95d1e0b131f88bc45606e4dece23ca"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-math-l1-1-0.dll",
+      "sha256": "26effb6000a24e3c1c597009e148f48a44498bbcf4218f0119c7301f8ac5a78c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-multibyte-l1-1-0.dll",
+      "sha256": "b674a5e4ec8446c411f6a7ebfd179a2b385714c60adf4b21f9f81650b415b61c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-private-l1-1-0.dll",
+      "sha256": "6b33bdfb8c6589541d0211eb44b173f8aae5f2df9db82f535cb90a5054d69f49"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-process-l1-1-0.dll",
+      "sha256": "820aeb34862d0058bc66af68859f6ffce1af4c9d0cf83fe7df58611e4ce3d6b9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-runtime-l1-1-0.dll",
+      "sha256": "6a95a2ea68320591a955c2930462798083a8cc7e6d79754122c21b293ba9a1a8"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-stdio-l1-1-0.dll",
+      "sha256": "18d8b00e797538bc4767c19ae1762df18c64479a54e7041b8b4da99e32cda8bd"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-string-l1-1-0.dll",
+      "sha256": "c94bb2053a6541cc065b806ea945d420eb3207c3bee1d760401a600506e99589"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-time-l1-1-0.dll",
+      "sha256": "26376455bd746d87e150e73856d0db88303e0af2533f32956999c505e29db6fb"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\api-ms-win-crt-utility-l1-1-0.dll",
+      "sha256": "39b254cb97f25869d3c335899c6d3bab346cd6b000f2803ca9ddc8f2540c3a32"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\concrt140.dll",
+      "sha256": "2405355f0a58067b258f8df33c327e3a3d716eaac5a3a5aebb757842d85bd376"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\imgdecoder-gdip.dll",
+      "sha256": "9aac63a372aa6a84d4beb094ed5612bab956e4b9e037b8c347d84881d264f08b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\msvcp140.dll",
+      "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\msvcp140_1.dll",
+      "sha256": "bfad5aef4c63a669e3c140655cdfdf395b6c979b400a447bd5dcb65ed8826c3d"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\msvcp140_2.dll",
+      "sha256": "3ea06f0ee098b4823cb79599df3780e7f23cce52c19aac31d2a0d47efe33a5e9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\msvcp140_atomic_wait.dll",
+      "sha256": "640b2aefced484d0368eea5bdd06addd0658a3a70a49256e560d6923b404a479"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\msvcp140_codecvt_ids.dll",
+      "sha256": "f2069a52880ec885ee7f0511186100eb7fada0411a2b4948fafea7735b878a18"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\node.dll",
+      "sha256": "1c763337615c1298a54bb8557d8d79aaeec539dfd5027a9d6d60c245bf2f1382"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\render-gdi.dll",
+      "sha256": "0e482f84b95df231c5f6373d5660b0950f26563a80ec4db8d83f7049887041f3"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\soui-sys-resource.dll",
+      "sha256": "1ed54517adb1b3ea00cbe9f98aeef3cbf5c1d3f34382fce9fbe9114a3c3c142a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\soui.dll",
+      "sha256": "4da894ea9c63b4f52ed645b549c8d58cf2db6b08cceea1be7530f084562b1a8b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\SouiWorkbench.exe",
+      "sha256": "8c9f7a8ba3465ea2c87ab0f4972200509a38f5ad36702265420315dcfb3d8dc3"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\ucrtbase.dll",
+      "sha256": "0a2be4a529a46fe0579150e205af3518988a58e70000dd4053bae541e98fc3f2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\utilities.dll",
+      "sha256": "1e1f803c8b1f4e03d51a287b390ea6b9f0c60865505f7d043d513b156377fc06"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\vccorlib140.dll",
+      "sha256": "19839407c3fdbc824e5bce189bf68ddf8097f12ec28b757797ffa0415c144ddd"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\vcruntime140.dll",
+      "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\vcruntime140_1.dll",
+      "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\vcruntime140_threads.dll",
+      "sha256": "219915cf20822f34d5e7c1fdd4e21ae7f3396881096c51036225fb8f84b47afa"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\bin\\Debug\\SouiWorkbench\\zlib1.dll",
+      "sha256": "fb6726dbcd7bb3659ca126ef4d5c7f83de46ab5e2b470316925e1d5873ec9045"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-console-l1-1-0.dll",
+      "sha256": "6801f5306be9f07a8376fd72d95ee6f2c286d02a940822af4f9c873c58a8c79b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-console-l1-2-0.dll",
+      "sha256": "3239f73115b8614296dfb0dc72a79cbcc9c6e26e528fcb18e044c7bd673ef122"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-datetime-l1-1-0.dll",
+      "sha256": "bea649ba3dedf2b6e46d2085f3b354fc3eeb1440e1c2c5ea97721b147921cc85"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-debug-l1-1-0.dll",
+      "sha256": "3de02d9fa11365c84d9da6a29841cc130239ce3bede7535847d001172def18a8"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-errorhandling-l1-1-0.dll",
+      "sha256": "848cd0fc6f7b994af337a1b895709949c4a1d2380a32737c86b81b73f6f4aab1"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-file-l1-1-0.dll",
+      "sha256": "a261e91aee4552d2f4d4bccf73afb0124d45ef12f37fd617e9818c7c41644556"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-file-l1-2-0.dll",
+      "sha256": "d7add947980a5ce1bb875cc2340dd318739c717898366b27542b4386cafed530"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-file-l2-1-0.dll",
+      "sha256": "a3e5f16c901f3aa34927d848628fdadb2bf39948da958785872a204940327365"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-handle-l1-1-0.dll",
+      "sha256": "c0874c137181bf40542b9fda3443063247962e7cbf87a43109a2f1d4b2231dba"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-heap-l1-1-0.dll",
+      "sha256": "691f8c9d3a52396851400870a25eb4ed864d89fa4579d6cf82fff99e5393fdd2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-interlocked-l1-1-0.dll",
+      "sha256": "7a35ed8d0d3f917e51c1c9be4a465f298e01cc26d4b090c4611b4045365e3471"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-libraryloader-l1-1-0.dll",
+      "sha256": "5ce62d6356f80fbcab69bd53b4b31cbb7b3cbcfb69736bb56d32272c56a107fc"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-localization-l1-2-0.dll",
+      "sha256": "b6158bf61526b05ba5569f5191fce05f2d78dac356aade761c110a645c9ebc7f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-memory-l1-1-0.dll",
+      "sha256": "49caa4ac64640e07642d5332850b09d7765a263d418e31c4ea563f72b53ad6ac"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-namedpipe-l1-1-0.dll",
+      "sha256": "0db4d342deb40d02dd84d8d1242c2c455eda11dadaf7d1c0da24887c368b55c2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-processenvironment-l1-1-0.dll",
+      "sha256": "df7819c1f49c5070fec9289c6c91f3b78da3eb2dbb54267c6ee17fdbd1d75aab"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-processthreads-l1-1-0.dll",
+      "sha256": "378000df20aaa09fb41deecf06a9bd868cd1424c695971e2cb4f19de39b127e3"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-processthreads-l1-1-1.dll",
+      "sha256": "ec26ab8014c7e3b102b2f5e7268f025fad1993027571a0fcb26b82606be31f4d"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-profile-l1-1-0.dll",
+      "sha256": "3a2d5d94142c0eab0336cae355776d46aab81511fe85a81ea5d1cb58fcfc6f44"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-rtlsupport-l1-1-0.dll",
+      "sha256": "f3e88425e086c99ba9b50301272eb5fedbea93975848496c4c929dead0f4b3b6"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-string-l1-1-0.dll",
+      "sha256": "f5deaf128637170e8a5c5f5c18b0d14b3c4541a33d54ee0b9c4ab2d8bb748415"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-synch-l1-1-0.dll",
+      "sha256": "6b043a1dd6a02e6a09e2d9c2047e95df9b091f641fd8e0a61a74599697360017"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-synch-l1-2-0.dll",
+      "sha256": "af7d60e1f7d127be7be92519bc2b24f0ad5a095cb04a8784b2337e81895ff7f7"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-sysinfo-l1-1-0.dll",
+      "sha256": "1fd75b049056b219195e1ac36f207d59b1c0aea37b7be63c659733fe9f428f84"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-timezone-l1-1-0.dll",
+      "sha256": "d216b9631f0e1e561a910b1b17a7b0ef6ec78614c38991617e31fb98213bca08"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-core-util-l1-1-0.dll",
+      "sha256": "ced4c182964a46b9ee461c2845a90e728c67843a77635b06354617544534630f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-conio-l1-1-0.dll",
+      "sha256": "f1737997ec35f7f00638297b4fab5450b93f4128c2927ab47a54c361addf7499"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-convert-l1-1-0.dll",
+      "sha256": "25fe8493624b0a0d9d00a46fb41e4356c1cd01fa80f7b1e6ab831df2ccac762a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-environment-l1-1-0.dll",
+      "sha256": "16e8b7c5f5c806bf831c81f2124c86ed8da1d34d7c430475894f49d3007e499a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-filesystem-l1-1-0.dll",
+      "sha256": "790495652731de7e51e4803e3ecb0c050d95749e8e84bc4bcf6f3b67d756e9ed"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-heap-l1-1-0.dll",
+      "sha256": "49f8312f15018bbf386704dd8fc62e0043ed38b98413b5a19f3776bc780d1253"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-locale-l1-1-0.dll",
+      "sha256": "880127e94c1437d94e508f8c806e24413d95d1e0b131f88bc45606e4dece23ca"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-math-l1-1-0.dll",
+      "sha256": "26effb6000a24e3c1c597009e148f48a44498bbcf4218f0119c7301f8ac5a78c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-multibyte-l1-1-0.dll",
+      "sha256": "b674a5e4ec8446c411f6a7ebfd179a2b385714c60adf4b21f9f81650b415b61c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-private-l1-1-0.dll",
+      "sha256": "6b33bdfb8c6589541d0211eb44b173f8aae5f2df9db82f535cb90a5054d69f49"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-process-l1-1-0.dll",
+      "sha256": "820aeb34862d0058bc66af68859f6ffce1af4c9d0cf83fe7df58611e4ce3d6b9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-runtime-l1-1-0.dll",
+      "sha256": "6a95a2ea68320591a955c2930462798083a8cc7e6d79754122c21b293ba9a1a8"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-stdio-l1-1-0.dll",
+      "sha256": "18d8b00e797538bc4767c19ae1762df18c64479a54e7041b8b4da99e32cda8bd"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-string-l1-1-0.dll",
+      "sha256": "c94bb2053a6541cc065b806ea945d420eb3207c3bee1d760401a600506e99589"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-time-l1-1-0.dll",
+      "sha256": "26376455bd746d87e150e73856d0db88303e0af2533f32956999c505e29db6fb"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\api-ms-win-crt-utility-l1-1-0.dll",
+      "sha256": "39b254cb97f25869d3c335899c6d3bab346cd6b000f2803ca9ddc8f2540c3a32"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\concrt140.dll",
+      "sha256": "2405355f0a58067b258f8df33c327e3a3d716eaac5a3a5aebb757842d85bd376"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\imgdecoder-gdip.dll",
+      "sha256": "9aac63a372aa6a84d4beb094ed5612bab956e4b9e037b8c347d84881d264f08b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\msvcp140.dll",
+      "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\msvcp140_1.dll",
+      "sha256": "bfad5aef4c63a669e3c140655cdfdf395b6c979b400a447bd5dcb65ed8826c3d"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\msvcp140_2.dll",
+      "sha256": "3ea06f0ee098b4823cb79599df3780e7f23cce52c19aac31d2a0d47efe33a5e9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\msvcp140_atomic_wait.dll",
+      "sha256": "640b2aefced484d0368eea5bdd06addd0658a3a70a49256e560d6923b404a479"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\msvcp140_codecvt_ids.dll",
+      "sha256": "f2069a52880ec885ee7f0511186100eb7fada0411a2b4948fafea7735b878a18"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\render-gdi.dll",
+      "sha256": "0e482f84b95df231c5f6373d5660b0950f26563a80ec4db8d83f7049887041f3"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui-sys-resource.dll",
+      "sha256": "1ed54517adb1b3ea00cbe9f98aeef3cbf5c1d3f34382fce9fbe9114a3c3c142a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui.dll",
+      "sha256": "4da894ea9c63b4f52ed645b549c8d58cf2db6b08cceea1be7530f084562b1a8b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_action_contract_tests.exe",
+      "sha256": "c45e73bc6d3c54e0d23c76e2cf368c11156ff3b22a296554a2b9eb3ab7af1134"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_bridge_budget_tests.exe",
+      "sha256": "a4a858d1c1a86fad76339b61676223973a259ecc5f449253bf3ccd9ab479db6a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_cache_observation_tests.exe",
+      "sha256": "4cf078b38040a8b6314325e5584cf020a64b27af4c4d96708d92527ff28cadce"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_cursor_broker_scope_tests.exe",
+      "sha256": "3c2319b2d78e3f97d38152ca76e98db89ac9503bbca7cf02a7bfea9b641d1250"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_cursor_queue_tests.exe",
+      "sha256": "6dcbe2dbab0fbab811d87f587bd4bd1c689cd4bca2325f15a9257ff780bf7317"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_cursor_resource_tests.exe",
+      "sha256": "ec371a62170b7031d3ec436f0b4528cd764a243a0b2ba1112bee5beb0a08665f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_demo_session_renewal_tests.exe",
+      "sha256": "fb3532b9f4c96f54cb48d46c635c42edc359d73090b8dd15aa74916004f458c5"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_demo_task_query_tests.exe",
+      "sha256": "302c3051f05eba867e970e15ec317cbb9523b7636b2eed466beae22d44c22f6b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_dependency_tests.exe",
+      "sha256": "8bd804bdc226525cb08e96a23bab5333e7b7bcfbfe5e7f3ed2ca1688c7a735b7"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_desktop_unicode_tests.exe",
+      "sha256": "a820a658fb6d154bbf623d888422e061a4e4eab6f5c72ad6907c272301c88977"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_directory_dialog_tests.exe",
+      "sha256": "002d0ab5bde7bb4bb3e6790558e24a0963336ca01b4910a2a27e29a686d66879"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_engine_thread_startup_tests.exe",
+      "sha256": "349057e758b06493d0b018255e2dfcd5556e6b0ee49cda79ef73c965a5d51fa9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_engine_thread_timeout_tests.exe",
+      "sha256": "24eb39a5af46fcbf9cee044d279fff6bd43a4d941bd0e5412788f9d6372162a9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_frame_pacer_tests.exe",
+      "sha256": "ed9fb8ce6b09e4732d489c36245c64407194d036463a76e49dd9c59d378cf0e6"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_global_shortcut_tests.exe",
+      "sha256": "de02a835632c070b91c5d958cfc1aba637d88932283804d3f05ff0536e1e4985"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_host_adapter_tests.exe",
+      "sha256": "89cb4328d206e803442c8f2b90e36d9f87ade6a9dbe38d37c40df4b106f84fab"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_json_destruction_0_tests.exe",
+      "sha256": "f3c27ce76d0f02cce40ee55abcdcd59946b1f765302ff73843c968c179875f37"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_json_destruction_1_tests.exe",
+      "sha256": "5d102c52c5e680303790a69e0f99c72ab8b581366dfedd2432e83a66647c4c77"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_local_action_dispatch_tests.exe",
+      "sha256": "30d7572310a8c4f0142f125fa44f3cb4457b62c662ba6204e83405ffc7ebb08e"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_local_authorization_tests.exe",
+      "sha256": "c4158f3be2ac8f1cda3ab5a509421a49f802f185ae8d0888a3748a90760e3ff3"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_local_task_family_prepare_tests.exe",
+      "sha256": "79a9e407e7be42bfa8f1617b991d01e665640c418ca89e5b14509e5140a4adc6"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_local_task_family_tests.exe",
+      "sha256": "b742cbba5b37b8eff8ac1a5279651e56a4d6933ce9f9705b02bba4133a3295b1"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_main_context_gate_tests.exe",
+      "sha256": "e575fa2da14aced46449125041e65fbb206520f55740a1832e2feed3ee2978dc"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_menu_service_tests.exe",
+      "sha256": "70c1e193f3f7f4d9ab4249f5eddd5764c0083d67159f8f50913b826030efa787"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_native_owner_metrics_tests.exe",
+      "sha256": "e9ec3623c32f6997addcc57beba6a4b1d42d8a788bd38a1def7cc0a4ab1cde42"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_renderer_consumer_tests.exe",
+      "sha256": "bb0019b908418d1cd10de5099784f703a00603d629ae9c1c25d724165f06f565"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_renderer_model_consumer_tests.exe",
+      "sha256": "1d5fa737f0bf1dde610607289526f1f5beecdee132d66eb346df3447f5df1de8"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_runtime_profile_tests.exe",
+      "sha256": "51afd78dce9085674f52bb323a30d638e3f4d442f24ca2dd5570a598bd55062b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_scheduler_fairness_tests.exe",
+      "sha256": "65d8b24418307123d858487bf83985c5194e368c293b20d39b53dc31757b3c8b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_sdk_contract_tests.exe",
+      "sha256": "b1dd6f367d40de477204e6ee0be9964ff8588c46f21242ff23335ded32487ba7"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_session_action_integration_tests.exe",
+      "sha256": "20118568e897bc942534f625e22ba973e0c250f87d1700c8596308f7373fc58b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_session_renewal_tests.exe",
+      "sha256": "9b2752f69afa358953fc0368563ac99c4fb5ae4b679b2790e61a46fbfc251fa9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_source_kernel_api_tests.exe",
+      "sha256": "2d7a8bb28dbb26c6e1c0158a337b23c9c4e3c21c040c76639e365ac417fd3f92"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_operation_query_tests.exe",
+      "sha256": "53b770ed2572b057386f6c8969e91db5f968137b1814bd596b7f2395fa16ebf8"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_scope_tests.exe",
+      "sha256": "7c8cc4fa534aa4d02db3682816873224e104959b1eafa1f549ed12783384a8f3"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_service_tests.exe",
+      "sha256": "2e43aa4c26d4c17ddd45463f25152787fff6f985dea92d23705ab4ac99a9da95"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_store_capacity_tests.exe",
+      "sha256": "66aa54cf4ece872d5cc0e179e0a195d0f7d56fa741757f25b239f2c3b4759b73"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_store_default_quota_tests-Debug.map",
+      "sha256": "37991cf8b903780f6abf7d2e1821c816a44e30281c33dd9a9704b840f22e4986"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_store_default_quota_tests.exe",
+      "sha256": "a4027e233165c119ae3d754030660ba8a067d9549a6952daa2036d5a0e356316"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_store_policy_bridge_tests-Debug.map",
+      "sha256": "49b018c6155893c58166384fd222316d122eb592acfa35cef52f1ac151c9700c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_store_policy_bridge_tests.exe",
+      "sha256": "1c48d3458ff0c8ffde53396e44f7625de601ef4c6218d8b000bf324935859c73"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_store_policy_pool_tests-Debug.map",
+      "sha256": "572086edf9a7a8db11aa32ab346d68f56f8f919915f7a65371bf38464bd82560"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_store_policy_pool_tests.exe",
+      "sha256": "8999b4b73e1a9da8ace41a6880e66b31a090ff55b881d181f1b46061b874f352"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_store_quota_typed_gui_tests-Debug.map",
+      "sha256": "999524edb49381180c5524756627ed56f53b3ebfed656615e860de590b368351"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_store_quota_typed_gui_tests.exe",
+      "sha256": "0b53169728f36500584179a33a7247457f2dad14bcde5a077da67d52fd209ba2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_store_storage_fault_tests.exe",
+      "sha256": "39978477f07d97f17d96026a428e8ddaf15ddb77d18517020c75f95a3b466aad"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_store_storage_tests.exe",
+      "sha256": "347eb69231d1acc522287409e443e742db579e1fb21897c49f8483fb18be3177"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_task_terminal_quota_tests.exe",
+      "sha256": "b6410903ff62614f20e635f1e075a42ac4016fd1cc6d1a50085f608d48ec22fe"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_tray_service_tests.exe",
+      "sha256": "8ed8212d21b953414412773cca9d3e4155c6ff27f66dfe9407ac40d0765f2bf3"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_webview2_preparation_lifetime_tests.exe",
+      "sha256": "99b3ac0ca695cf9eca745f4d7ea9da8761f20a31b6818a61a56675af1c3a3d95"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_webview2_prepare_tests.exe",
+      "sha256": "2ed12441ee21244c1617d48da4751c22b378611eee7979c82f777017e0dad51f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_webview2_request_capacity_tests.exe",
+      "sha256": "8ec9664d14efcd162bcf96fe22b40bd07c1542b9072c8b03b0ee93b879c1277b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_windows_peer_identity_tests.exe",
+      "sha256": "950d9bf208ca3854502cb7627c24d75b29c02963fc849512d49b19393fdb4bdf"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_workbench_interaction_tests.exe",
+      "sha256": "77a8e271e94cf3f87d89123393dae853921df395e45758a13cb9187f9f042ef5"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\soui_workbench_window_placement_tests.exe",
+      "sha256": "d34a30d0398fb06da14862ec6350a9c6754073fb21053e0010e6207b9d957310"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\ucrtbase.dll",
+      "sha256": "0a2be4a529a46fe0579150e205af3518988a58e70000dd4053bae541e98fc3f2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\utilities.dll",
+      "sha256": "1e1f803c8b1f4e03d51a287b390ea6b9f0c60865505f7d043d513b156377fc06"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\vccorlib140.dll",
+      "sha256": "19839407c3fdbc824e5bce189bf68ddf8097f12ec28b757797ffa0415c144ddd"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\vcruntime140.dll",
+      "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\vcruntime140_1.dll",
+      "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\vcruntime140_threads.dll",
+      "sha256": "219915cf20822f34d5e7c1fdd4e21ae7f3396881096c51036225fb8f84b47afa"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\Debug\\zlib1.dll",
+      "sha256": "fb6726dbcd7bb3659ca126ef4d5c7f83de46ab5e2b470316925e1d5873ec9045"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\sdk\\renderers\\webview2\\Debug\\soui_webview2.lib",
+      "sha256": "ded2f2c2cb306d4527b2b27db3aabbef126ac636884c8a4d45a3f4c1ea6d978e"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\engine_capacity\\Debug\\soui_engine_capacity_tests.exe",
+      "sha256": "f2f36530ae03d20ee4c2dc2bbc33a423855e7b0a06765fd92781bbcdcaf69423"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\gui_commands\\Debug\\soui_gui_command_tests.exe",
+      "sha256": "fa4acd961eee441e6962bbb976d54a514cbcf1823d14bd6b18e8719389ad2551"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\json_bridge_endpoint\\Debug\\soui_json_bridge_endpoint_tests.exe",
+      "sha256": "0c9ebd1d007bb97ee9b64c60be2272dde88b3b413426ef79aa7459946f170f4a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\request_close\\Debug\\soui_request_close_regressions.exe",
+      "sha256": "9246faf17e199ad2199d29464d0082531ee9bcdc795b3b0e38418d38dfcb4677"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\resident_shutdown\\Debug\\soui_resident_shutdown_policy_tests.exe",
+      "sha256": "2f96a36eb5ef017cc28ae15cbbedb6c86b143eb5c76d7becde1c9ed9b01793a1"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\runtime_metrics\\Debug\\soui_runtime_metrics_tests.exe",
+      "sha256": "f38e8f45880e431254f9e5a8b688fa9885e9a7b9c6823ce5312f327b85990e6e"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\scope_capacity\\Debug\\soui_scope_capacity_tests.exe",
+      "sha256": "6f8c1609f7fc8108dcd96f8175474c8424b5a725cc96b50ab5d79466c819d65f"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\vendor_lifetime\\Debug\\soui_vendor_activation_lock_tests.exe",
+      "sha256": "01d6f89fc518848b64224b04b3a16857c467741e6ec43180b24654fbfc8ae01c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\vendor_lifetime\\Debug\\soui_vendor_endpoint_lifetime_tests.exe",
+      "sha256": "7c47cc73d14b63a61a1167dbc52ca4a17eaf546687c6f4cc2540a13e6a319146"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\windows_local_endpoint\\Debug\\soui_windows_local_endpoint_tests.exe",
+      "sha256": "bc2c48ced64461eb7da066f4a2201d784d79c82fecaaf9260cc6bd68506b30eb"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\vendor_lifetime\\ctor_shell\\Debug\\soui_vendor_ctor_shell_tests.exe",
+      "sha256": "3c0426349d72260036393a06c94a96578f3b3d4ed1674a8d838f571fcd093880"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\vendor_lifetime\\dragdata\\Debug\\soui_vendor_dragdata_ownership_tests.exe",
+      "sha256": "6d054f5f4b1a7b68724fa078d036ab3c9aec259d9247b24055267dabbcba7c96"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\vendor_lifetime\\legacy_drag\\Debug\\soui_vendor_legacy_drag_leaf_tests.exe",
+      "sha256": "aee395a665af077ad646d5662c52df7e9a961b42d93a60fc117e20c65b5afa26"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\tests\\native\\vendor_lifetime\\worker_lifetime\\Debug\\soui_worker_lifetime_regressions.exe",
+      "sha256": "6bc5d6850d67b9cd584fcc3aa060e608542f7c3b8f525e5f5dd4f72682081fd9"
+    }
+  ]
+}

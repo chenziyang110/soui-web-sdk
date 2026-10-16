@@ -1,0 +1,291 @@
+
+File: C:/work/sm05-release-050/third_party/prebuilt/x64/soui/bin/render-gdi.dll
+Format: COFF-x86-64
+Arch: x86_64
+AddressSize: 64bit
+ImageFileHeader {
+  Machine: IMAGE_FILE_MACHINE_AMD64 (0x8664)
+  SectionCount: 6
+  TimeDateStamp: 2026-05-11 09:47:26 (0x6A01A5AE)
+  PointerToSymbolTable: 0x0
+  SymbolCount: 0
+  StringTableSize: 0
+  OptionalHeaderSize: 240
+  Characteristics [ (0x2022)
+    IMAGE_FILE_DLL (0x2000)
+    IMAGE_FILE_EXECUTABLE_IMAGE (0x2)
+    IMAGE_FILE_LARGE_ADDRESS_AWARE (0x20)
+  ]
+}
+ImageOptionalHeader {
+  Magic: 0x20B
+  MajorLinkerVersion: 14
+  MinorLinkerVersion: 16
+  SizeOfCode: 22016
+  SizeOfInitializedData: 29696
+  SizeOfUninitializedData: 0
+  AddressOfEntryPoint: 0x5664
+  BaseOfCode: 0x1000
+  ImageBase: 0x180000000
+  SectionAlignment: 4096
+  FileAlignment: 512
+  MajorOperatingSystemVersion: 6
+  MinorOperatingSystemVersion: 0
+  MajorImageVersion: 0
+  MinorImageVersion: 0
+  MajorSubsystemVersion: 6
+  MinorSubsystemVersion: 0
+  SizeOfImage: 65536
+  SizeOfHeaders: 1024
+  CheckSum: 0x0
+  Subsystem: IMAGE_SUBSYSTEM_WINDOWS_GUI (0x2)
+  Characteristics [ (0x160)
+    IMAGE_DLL_CHARACTERISTICS_DYNAMIC_BASE (0x40)
+    IMAGE_DLL_CHARACTERISTICS_HIGH_ENTROPY_VA (0x20)
+    IMAGE_DLL_CHARACTERISTICS_NX_COMPAT (0x100)
+  ]
+  SizeOfStackReserve: 1048576
+  SizeOfStackCommit: 4096
+  SizeOfHeapReserve: 1048576
+  SizeOfHeapCommit: 4096
+  NumberOfRvaAndSize: 16
+  DataDirectory {
+    ExportTableRVA: 0xA940
+    ExportTableSize: 0x54
+    ImportTableRVA: 0xA994
+    ImportTableSize: 0xDC
+    ResourceTableRVA: 0xE000
+    ResourceTableSize: 0x4D8
+    ExceptionTableRVA: 0xD000
+    ExceptionTableSize: 0x774
+    CertificateTableRVA: 0x0
+    CertificateTableSize: 0x0
+    BaseRelocationTableRVA: 0xF000
+    BaseRelocationTableSize: 0x43C
+    DebugRVA: 0x8670
+    DebugSize: 0x1C
+    ArchitectureRVA: 0x0
+    ArchitectureSize: 0x0
+    GlobalPtrRVA: 0x0
+    GlobalPtrSize: 0x0
+    TLSTableRVA: 0x0
+    TLSTableSize: 0x0
+    LoadConfigTableRVA: 0x8690
+    LoadConfigTableSize: 0x100
+    BoundImportRVA: 0x0
+    BoundImportSize: 0x0
+    IATRVA: 0x7000
+    IATSize: 0x468
+    DelayImportDescriptorRVA: 0x0
+    DelayImportDescriptorSize: 0x0
+    CLRRuntimeHeaderRVA: 0x0
+    CLRRuntimeHeaderSize: 0x0
+    ReservedRVA: 0x0
+    ReservedSize: 0x0
+  }
+}
+DOSHeader {
+  Magic: MZ
+  UsedBytesInTheLastPage: 144
+  FileSizeInPages: 3
+  NumberOfRelocationItems: 0
+  HeaderSizeInParagraphs: 4
+  MinimumExtraParagraphs: 0
+  MaximumExtraParagraphs: 65535
+  InitialRelativeSS: 0
+  InitialSP: 184
+  Checksum: 0
+  InitialIP: 0
+  InitialRelativeCS: 0
+  AddressOfRelocationTable: 64
+  OverlayNumber: 0
+  OEMid: 0
+  OEMinfo: 0
+  AddressOfNewExeHeader: 272
+}
+Import {
+  Name: utilities.dll
+  ImportLookupTableRVA: 0xADC8
+  ImportAddressTableRVA: 0x7358
+  Symbol: ?AlphaBackup@CGdiAlpha@SOUI@@SAHPEAUHDC__@@PEBUtagRECT@@AEAUtagALPHAINFO@2@@Z (156)
+  Symbol: ?AlphaRestore@CGdiAlpha@SOUI@@SAXAEAUtagALPHAINFO@2@@Z (157)
+  Symbol: ?AfterAttribute@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEAAJAEBV?$TStringT@_WUwchar_traits@SOUI@@@2@0HJ@Z (147)
+  Symbol: ?DefAttributeProc@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEAAJAEBV?$TStringT@_WUwchar_traits@SOUI@@@2@0H@Z (184)
+  Symbol: ?GetAttribute@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEBA?AV?$TStringT@_WUwchar_traits@SOUI@@@2@AEBV32@@Z (206)
+  Symbol: ?GetID@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEBAHXZ (215)
+  Symbol: ?GetName@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEBAPEB_WXZ (218)
+  Symbol: ?GetObjectClass@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEBAPEB_WXZ (219)
+  Symbol: ?GetObjectType@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEBAHXZ (220)
+  Symbol: ?InitFromXml@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEAAHVxml_node@pugi@@@Z (223)
+  Symbol: ?IsClass@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEBAHPEB_W@Z (231)
+  Symbol: ?OnInitFinished@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEAAXVxml_node@pugi@@@Z (250)
+  Symbol: ?SetAttribute@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEAAJAEBV?$TStringT@DUchar_traits@SOUI@@@2@0H@Z (281)
+  Symbol: ??1?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEAA@XZ (40)
+  Symbol: ?SetAttribute@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEAAJAEBV?$TStringT@_WUwchar_traits@SOUI@@@2@0H@Z (282)
+  Symbol: ?SetAttribute@?$SObjectImpl@UIObject@SOUI@@@SOUI@@UEAAJPEBD0H@Z (283)
+  Symbol: ??0?$TStringT@DUchar_traits@SOUI@@@SOUI@@QEAA@PEBD@Z (5)
+  Symbol: ??0?$SObjectImpl@UIObject@SOUI@@@SOUI@@QEAA@XZ (2)
+  Symbol: ??0IObject@SOUI@@QEAA@XZ (14)
+  Symbol: ??1IObject@SOUI@@UEAA@XZ (43)
+  Symbol: ?first_attribute@xml_node@pugi@@QEBA?AVxml_attribute@2@XZ (355)
+  Symbol: ??7xml_node@pugi@@QEBA_NXZ (94)
+  Symbol: ?get_userdata@xml_attribute@pugi@@QEBAHXZ (361)
+  Symbol: ?next_attribute@xml_attribute@pugi@@QEBA?AV12@XZ (392)
+  Symbol: ?value@xml_attribute@pugi@@QEBAPEB_WXZ (440)
+  Symbol: ?name@xml_attribute@pugi@@QEBAPEB_WXZ (390)
+  Symbol: ??Bxml_attribute@pugi@@QEBAP6AXPEAPEAPEAV01@@ZXZ (108)
+  Symbol: ?CvtW2W@SStrCpCvt@SOUI@@SA?AV?$TStringT@_WUwchar_traits@SOUI@@@2@AEBV32@I@Z (183)
+  Symbol: ?CvtA2W@SStrCpCvt@SOUI@@SA?AV?$TStringT@_WUwchar_traits@SOUI@@@2@AEBV?$TStringT@DUchar_traits@SOUI@@@2@II@Z (181)
+  Symbol: ??1?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QEAA@XZ (42)
+  Symbol: ??0?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QEAA@PEB_W@Z (9)
+  Symbol: ??0?$TStringT@_WUwchar_traits@SOUI@@@SOUI@@QEAA@XZ (11)
+  Symbol: ??1?$TStringT@DUchar_traits@SOUI@@@SOUI@@QEAA@XZ (41)
+}
+Import {
+  Name: KERNEL32.dll
+  ImportLookupTableRVA: 0xABE8
+  ImportAddressTableRVA: 0x7178
+  Symbol: MulDiv (1011)
+  Symbol: RtlCaptureContext (1237)
+  Symbol: RtlLookupFunctionEntry (1244)
+  Symbol: RtlVirtualUnwind (1251)
+  Symbol: UnhandledExceptionFilter (1470)
+  Symbol: SetUnhandledExceptionFilter (1405)
+  Symbol: GetCurrentProcess (541)
+  Symbol: TerminateProcess (1436)
+  Symbol: IsProcessorFeaturePresent (907)
+  Symbol: QueryPerformanceCounter (1106)
+  Symbol: GetCurrentProcessId (542)
+  Symbol: GetCurrentThreadId (546)
+  Symbol: GetSystemTimeAsFileTime (752)
+  Symbol: DisableThreadLibraryCalls (290)
+  Symbol: InitializeSListHead (878)
+  Symbol: IsDebuggerPresent (900)
+}
+Import {
+  Name: USER32.dll
+  ImportLookupTableRVA: 0xAC88
+  ImportAddressTableRVA: 0x7218
+  Symbol: InflateRect (516)
+  Symbol: InvertRect (541)
+  Symbol: OffsetRect (676)
+  Symbol: ReleaseDC (770)
+  Symbol: GetDC (321)
+  Symbol: DrawTextW (221)
+  Symbol: DrawIconEx (213)
+  Symbol: GetIconInfo (347)
+  Symbol: FillRect (271)
+}
+Import {
+  Name: GDI32.dll
+  ImportLookupTableRVA: 0xAA70
+  ImportAddressTableRVA: 0x7000
+  Symbol: RectInRegion (794)
+  Symbol: GetClipBox (619)
+  Symbol: ExcludeClipRect (458)
+  Symbol: Ellipse (390)
+  Symbol: DeleteObject (381)
+  Symbol: DeleteDC (378)
+  Symbol: CreateSolidBrush (89)
+  Symbol: CreateRoundRectRgn (85)
+  Symbol: CreateRectRgnIndirect (84)
+  Symbol: CreateRectRgn (83)
+  Symbol: CreatePatternBrush (78)
+  Symbol: CreatePen (79)
+  Symbol: CreateFontIndirectW (67)
+  Symbol: CreateEllipticRgnIndirect (60)
+  Symbol: CreateCompatibleDC (49)
+  Symbol: CreateCompatibleBitmap (48)
+  Symbol: CombineRgn (34)
+  Symbol: BitBlt (19)
+  Symbol: SetViewportOrgEx (912)
+  Symbol: Polyline (788)
+  Symbol: GetObjectW (682)
+  Symbol: ExtCreatePen (459)
+  Symbol: CreateDIBSection (55)
+  Symbol: SetWorldTransform (917)
+  Symbol: GetWorldTransform (731)
+  Symbol: SetTextColor (909)
+  Symbol: SetROP2 (902)
+  Symbol: SetRectRgn (903)
+  Symbol: SetGraphicsMode (884)
+  Symbol: SetBkMode (870)
+  Symbol: SelectObject (862)
+  Symbol: ExtSelectClipRgn (463)
+  Symbol: SaveDC (813)
+  Symbol: RoundRect (807)
+  Symbol: Arc (11)
+  Symbol: RestoreDC (806)
+  Symbol: Rectangle (796)
+  Symbol: GetRgnBox (698)
+  Symbol: PtInRegion (790)
+  Symbol: Pie (773)
+  Symbol: OffsetRgn (762)
+  Symbol: IntersectClipRect (735)
+  Symbol: GetTextExtentPoint32W (716)
+  Symbol: GetTextColor (710)
+  Symbol: GetStockObject (699)
+  Symbol: GetClipRgn (620)
+}
+Import {
+  Name: MSIMG32.dll
+  ImportLookupTableRVA: 0xAC70
+  ImportAddressTableRVA: 0x7200
+  Symbol: AlphaBlend (0)
+  Symbol: GradientFill (2)
+}
+Import {
+  Name: VCRUNTIME140.dll
+  ImportLookupTableRVA: 0xACD8
+  ImportAddressTableRVA: 0x7268
+  Symbol: __std_exception_destroy (34)
+  Symbol: __std_exception_copy (33)
+  Symbol: __C_specific_handler (8)
+  Symbol: __CxxFrameHandler3 (14)
+  Symbol: memset (62)
+  Symbol: memcpy (60)
+  Symbol: _purecall (54)
+  Symbol: __std_type_info_destroy_list (37)
+  Symbol: _CxxThrowException (1)
+}
+Import {
+  Name: api-ms-win-crt-string-l1-1-0.dll
+  ImportLookupTableRVA: 0xADA8
+  ImportAddressTableRVA: 0x7338
+  Symbol: wcscmp (158)
+  Symbol: wcslen (163)
+  Symbol: wcscpy (160)
+}
+Import {
+  Name: api-ms-win-crt-math-l1-1-0.dll
+  ImportLookupTableRVA: 0xAD48
+  ImportAddressTableRVA: 0x72D8
+  Symbol: cosf (145)
+  Symbol: sinf (275)
+}
+Import {
+  Name: api-ms-win-crt-heap-l1-1-0.dll
+  ImportLookupTableRVA: 0xAD28
+  ImportAddressTableRVA: 0x72B8
+  Symbol: free (24)
+  Symbol: _callnewh (8)
+  Symbol: malloc (25)
+}
+Import {
+  Name: api-ms-win-crt-runtime-l1-1-0.dll
+  ImportLookupTableRVA: 0xAD60
+  ImportAddressTableRVA: 0x72F0
+  Symbol: _initialize_onexit_table (52)
+  Symbol: _execute_onexit_table (34)
+  Symbol: _configure_narrow_argv (24)
+  Symbol: _cexit (22)
+  Symbol: _initialize_narrow_environment (51)
+  Symbol: _initterm_e (55)
+  Symbol: _initterm (54)
+  Symbol: _seh_filter_dll (63)
+}
+Export {
+  Ordinal: 1
+  Name: SCreateInstance
+  RVA: 0x50F4
+}

@@ -1,0 +1,636 @@
+{
+  "pins": [
+    {
+      "path": "C:\\work\\sm05-source22-preparation-1\\web-sboms.cjs",
+      "bytes": 3476,
+      "sha256": "840ae15df4e6ae6a3f4ef32b7115e508fa5d66a7554d36ea4d65f29b498d4f1b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\VERSION",
+      "bytes": 7,
+      "sha256": "c2f2fc398169dfaf4b6a16077a5938b7361aefac1143f532b17ea18c3229cf3a"
+    },
+    {
+      "path": "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node_modules\\npm\\bin\\npm-cli.js",
+      "bytes": 56,
+      "sha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+    },
+    {
+      "path": "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\sdk\\web\\package.json",
+      "bytes": 412,
+      "sha256": "e70dfe8bca3746d189d564e5613720b1359a0f137686fc7a6a3a68afab57bb9b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\sdk\\web\\package-lock.json",
+      "bytes": 715,
+      "sha256": "93daed232967e7a8005dc64b9217bcaba5e9f516eee92ebeec436873ff6e7295"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\sdk\\bindings\\react\\package.json",
+      "bytes": 623,
+      "sha256": "28d124765fe82ceacc7eb9214cae3284827e270dd6a89a85b1cd89583db8b2d9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\sdk\\bindings\\react\\package-lock.json",
+      "bytes": 3286,
+      "sha256": "aee6a5e957ffb10772b949cc855d0bb0fc6f394f461feab6da88a3dc43d22d28"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\sdk\\bindings\\vue\\package.json",
+      "bytes": 570,
+      "sha256": "aa09cd68ef2823f0ef55fe2907817fd61c3a39d387de6357b184b5acf5aaac20"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\sdk\\bindings\\vue\\package-lock.json",
+      "bytes": 11632,
+      "sha256": "037b6fd310bc207216c98690c29eb2c1edfac67eef48799fa0e6c6d14bd73a9c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\templates\\desktop-app\\web\\package.json",
+      "bytes": 578,
+      "sha256": "4a5baf67bea2fc745378f4a1a8eb677c32ba5d6f683fc2be27e2e6d171cb0629"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\templates\\desktop-app\\web\\package-lock.json",
+      "bytes": 130655,
+      "sha256": "6435783ec7c66172ee4ceb1566eacfa5a55453490df070154c756333a65b0ed0"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\templates\\modern-app\\web\\package.json",
+      "bytes": 414,
+      "sha256": "4a97746f955a4e545679337daadeefd9b0e4a7e6dc1d96edadf21dae0ab57766"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\templates\\modern-app\\web\\package-lock.json",
+      "bytes": 28768,
+      "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\demos\\workbench\\web\\package.json",
+      "bytes": 1362,
+      "sha256": "c55c856d0c30cfef0e6832d99b2b1b0a6c87605a37ccf6c13807ac5f0b28ffc6"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\demos\\workbench\\web\\package-lock.json",
+      "bytes": 166926,
+      "sha256": "871269a6963f27af6d0c9b60e7c115be3dccc3f3dfe1d239c075c5563c2483a0"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\demos\\reference-workbench\\web-compat\\package.json",
+      "bytes": 1361,
+      "sha256": "74fb298cb4ce68dd3d2b8ed04f5ec11019ad4b17184ad9fc765d34c7f97f1ec4"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\demos\\reference-workbench\\web-compat\\package-lock.json",
+      "bytes": 167788,
+      "sha256": "74ff68042f8b210cac922db10969a7acb0d13ae2ab1b9f7aa1178e7c901376ac"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\demos\\reference-workbench\\web-modern\\package.json",
+      "bytes": 414,
+      "sha256": "4a97746f955a4e545679337daadeefd9b0e4a7e6dc1d96edadf21dae0ab57766"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\demos\\reference-workbench\\web-modern\\package-lock.json",
+      "bytes": 28768,
+      "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde"
+    }
+  ],
+  "results": [
+    {
+      "name": "web-sdk",
+      "relative": "sdk/web",
+      "args": [
+        "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node_modules\\npm\\bin\\npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "natural": true,
+      "result": {
+        "pid": 103044,
+        "creationFileTime": "134365586438230702",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 930,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\web-sdk.ndjson",
+        "reportSha256": "340a909486008e79e6f8b8b2d97beb97de525553afe8790632060b736e01ac82",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 930,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "sbom": {
+        "path": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\sbom-web-sdk.cdx.json",
+        "bytes": 1884,
+        "sha256": "227a3e09bd0edb93cbfc3aab4cb08b200ba1ad8a1b071a4e3292af9596c5f293"
+      },
+      "components": 1,
+      "packageVersion": "0.5.0"
+    },
+    {
+      "name": "gui-react",
+      "relative": "sdk/bindings/react",
+      "args": [
+        "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node_modules\\npm\\bin\\npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "natural": true,
+      "result": {
+        "pid": 79400,
+        "creationFileTime": "134365586450356870",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 803,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\gui-react.ndjson",
+        "reportSha256": "4099eda75f66843cf38861bb1a1fb4f24974d00ec9f30e6b1ff4881f28f1be79",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 803,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "sbom": {
+        "path": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\sbom-gui-react.cdx.json",
+        "bytes": 8102,
+        "sha256": "82e9c665ef5b864a83c8caed7ca14e4da8335b31b50f9279ea88acde1a8ce5fe"
+      },
+      "components": 8,
+      "packageVersion": "0.5.0"
+    },
+    {
+      "name": "gui-vue",
+      "relative": "sdk/bindings/vue",
+      "args": [
+        "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node_modules\\npm\\bin\\npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "natural": true,
+      "result": {
+        "pid": 110184,
+        "creationFileTime": "134365586461127951",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 808,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\gui-vue.ndjson",
+        "reportSha256": "2c5d12bae82965d9c0c516753c3c5e61513ee11ed155c32a154efaebbb9c2fe3",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 808,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "sbom": {
+        "path": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\sbom-gui-vue.cdx.json",
+        "bytes": 25325,
+        "sha256": "2d0a2c5b2e8acc98d5781ea1c22e38073caa6c0748dacdc89964b332590c0e4d"
+      },
+      "components": 25,
+      "packageVersion": "0.5.0"
+    },
+    {
+      "name": "template",
+      "relative": "templates/desktop-app/web",
+      "args": [
+        "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node_modules\\npm\\bin\\npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "natural": true,
+      "result": {
+        "pid": 66696,
+        "creationFileTime": "134365586472695548",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 907,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\template.ndjson",
+        "reportSha256": "b529ef403a5f29cd18294fa3d931d1b33a3f7d3f7c8e3604884ba9eef4ef82b2",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 907,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "sbom": {
+        "path": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\sbom-template.cdx.json",
+        "bytes": 251496,
+        "sha256": "6aa5bd909e4ea5dd3e2f2a0a06a5dc2392cd9686a776052d92146f4dbe5febb4"
+      },
+      "components": 230,
+      "packageVersion": "0.1.0"
+    },
+    {
+      "name": "modern-template",
+      "relative": "templates/modern-app/web",
+      "args": [
+        "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node_modules\\npm\\bin\\npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "natural": true,
+      "result": {
+        "pid": 81184,
+        "creationFileTime": "134365586484709789",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 927,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\modern-template.ndjson",
+        "reportSha256": "1c96c41980cfb5c32b8b0ac52770557557a8944860e256ebc9be28103e004f34",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 927,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "sbom": {
+        "path": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\sbom-modern-template.cdx.json",
+        "bytes": 49238,
+        "sha256": "d823bba589f323609d6a9e766a72faad85f709828111f6e24d4f5573096b17d4"
+      },
+      "components": 48,
+      "packageVersion": "0.1.0"
+    },
+    {
+      "name": "demo",
+      "relative": "demos/workbench/web",
+      "args": [
+        "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node_modules\\npm\\bin\\npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "natural": true,
+      "result": {
+        "pid": 64744,
+        "creationFileTime": "134365586496815486",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 897,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\demo.ndjson",
+        "reportSha256": "9a73681572e7d8ad02dd9b1e530ed38cbf2d1b89e070fc30606aadf63c317831",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 897,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "sbom": {
+        "path": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\sbom-demo.cdx.json",
+        "bytes": 319373,
+        "sha256": "1801773a0a04fd3b9a61281639a3b95ac90a0b82a1972966b7be64a784cbdcbd"
+      },
+      "components": 304,
+      "packageVersion": "0.1.0"
+    },
+    {
+      "name": "reference-compat",
+      "relative": "demos/reference-workbench/web-compat",
+      "args": [
+        "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node_modules\\npm\\bin\\npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "natural": true,
+      "result": {
+        "pid": 48992,
+        "creationFileTime": "134365586508833948",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 1034,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\reference-compat.ndjson",
+        "reportSha256": "b89ff58b8a57ebb2b13046c4d98b04c0609ede4956276c5e5f13ceba539ac86e",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 1034,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "sbom": {
+        "path": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\sbom-reference-compat.cdx.json",
+        "bytes": 320350,
+        "sha256": "f968fde47902eb421f97cff9e15f7919499f4cfd2e64adc8233fc42815bf6365"
+      },
+      "components": 305,
+      "packageVersion": "0.1.0"
+    },
+    {
+      "name": "reference-modern",
+      "relative": "demos/reference-workbench/web-modern",
+      "args": [
+        "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node_modules\\npm\\bin\\npm-cli.js",
+        "sbom",
+        "--package-lock-only",
+        "--sbom-format=cyclonedx",
+        "--offline",
+        "--ignore-scripts",
+        "--install-links"
+      ],
+      "natural": true,
+      "result": {
+        "pid": 55680,
+        "creationFileTime": "134365586522002126",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 819,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\reference-modern.ndjson",
+        "reportSha256": "13940ef0a4cef06f8b84d73c69748b4dfea745f666446c90ff6bcb67482effd5",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 819,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "sbom": {
+        "path": "C:\\work\\sm05-source22-preparation-1\\web-sboms-2\\sbom-reference-modern.cdx.json",
+        "bytes": 49245,
+        "sha256": "7e9fb0e43ae712aa17541acdedfdecd5fc221646cca3cc4379b9fe13e3b7423a"
+      },
+      "components": 48,
+      "packageVersion": "0.1.0"
+    }
+  ],
+  "licenseReviewComplete": false,
+  "releaseReady": false
+}

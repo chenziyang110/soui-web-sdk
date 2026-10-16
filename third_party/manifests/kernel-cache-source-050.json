@@ -1,0 +1,72 @@
+{
+  "schema": "soui.kernel-source-delta/v1",
+  "sdkVersion": "0.5.0-preview.1",
+  "scope": "Exact raw-byte retained-resource-cache policy change after patch 0011",
+  "patch": {
+    "path": "third_party/patches/miniblink/0012-retained-resource-byte-budget.patch",
+    "bytes": 4134,
+    "sha256": "aeb6b37d0241512b90e7a18546ec05d344f5888de633fd6e06e435aad29e121a"
+  },
+  "sourceBefore": {
+    "identity": "f3c288b8a81b669c05cb45e2eca9c781f9c6dfb34a0fb6420affd5c03f4f1380",
+    "fileCount": 23545,
+    "directoryCount": 1330,
+    "totalBytes": 321014617
+  },
+  "sourceAfter": {
+    "identity": "0bbed0bfd1b81a0c924ca3927cd4c53dfa2e916ac3aa5da43c51c2b70bba091f",
+    "fileCount": 23545,
+    "directoryCount": 1330,
+    "totalBytes": 321015498
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+      "before": {
+        "bytes": 40076,
+        "sha256": "15cc05feed6bd3c9214925815aff19a9ef7730361b9679bf6a4b432007c81beb"
+      },
+      "after": {
+        "bytes": 40230,
+        "sha256": "6f2da672656096a926f0710d10ef94ca84b2c57b1dc2f290fabf1f302a793bce"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.cpp",
+      "before": {
+        "bytes": 18674,
+        "sha256": "f344e31a12798291e8221ba673d816c891744f79f8f0513f585664b25764bbe6"
+      },
+      "after": {
+        "bytes": 19333,
+        "sha256": "956d0958adb6d416f7f959cf18ab9202676cdbe0d076cd3b4ec12841420a1f45"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.h",
+      "before": {
+        "bytes": 9209,
+        "sha256": "2f0943442a3ad262155d5b7b42ee84282a4f7da19951672f4e26e6490ad5ff97"
+      },
+      "after": {
+        "bytes": 9277,
+        "sha256": "3c35517e30f1cf5a8d7e52a850c926cc95660395e412fbb57d95e915e8f3955c"
+      }
+    }
+  ],
+  "replay": {
+    "rawBytesMatched": true,
+    "lineEndingConversion": false
+  },
+  "historicalImportManifest": "third_party/sources/miniblink/SOURCE-MANIFEST.json",
+  "historicalImportManifestMeaning": "Original imported working-tree snapshot; current compiler source identity is recorded separately",
+  "policy": {
+    "scope": "global-discardable-retained-resource-records",
+    "byteLimit": 8388608,
+    "countThreshold": 1024,
+    "singleAllocationLimit": 67108864,
+    "fullImageHeapCoverage": false
+  },
+  "fullKernelValidationComplete": false,
+  "releaseReady": false
+}

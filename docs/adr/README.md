@@ -12,6 +12,9 @@
 
 ## 0.5 新增提案
 
+- [ADR-0095：发布汇总的编译档位与冻结输入](0095-release-collection-inputs.md)
+- [ADR-0096：SOUI 依赖构建的 LLVM 档位](0096-soui-llvm-dependency-build.md)（实施与真实回归进行中）
+
 - [ADR-0066：版本化原生工具链输入与固定 WinRT 搜索根](0066-versioned-native-toolchain-inputs.md)（proposed；实际构建与验收仍待 Root）
 
 - [ADR-0067：分别绑定 LLVM 项目与验证工具的请求](0067-owned-llvm-project-and-validation-requests.md)（proposed；源码和有限逻辑检查通过，实际工具准备与界面验收待完成）
@@ -33,3 +36,33 @@
 - [ADR-0086：LLVM 观察器中的 Windows 扩展驱动器路径](0086-llvm-observer-local-tool-spelling.md)（proposed；严格路径回归通过，完整 SDK 重新构建验收待执行）
 - [ADR-0087：移除默认导航调试日志](0087-navigation-default-trace-removal.md)（proposed；仅移除同步追加，权限判定不变；实际运行与长期验收待完成）
 - [ADR-0088：独立诊断工具编译契约](0088-runtime-doctor-compile-contract.md)（proposed；精确目标使用静态运行库，SDK 校验规则保持；完整候选重建与交付验收待完成）
+
+- [ADR-0089：原生 Bridge 的 TaskStore 配额与独立快照](0089-native-bridge-task-store-policy.md)（proposed；独立源码审查通过，实际编译、校准及生产默认待验证）
+- [ADR-0090：由冻结测试源码推导生成依赖](0090-frozen-test-source-derived-dependencies.md)（proposed；完整字节回归通过，新的 SDK 构建验收待执行）
+
+- [ADR-0091：同一 Bridge 的原生 TaskStore 额度验收通道](0091-task-store-quota-native-acceptance-channel.md)（proposed；独立源码与序列回归通过，实际采样及校准待验证）
+
+- [ADR-0093：内存不足时仍可释放 JSON](0093-allocation-free-json-destruction.md)（定向回归通过；完整候选验收进行中）
+- [ADR-0094：应用等待真实 Runtime 关闭](0094-application-runtime-shutdown.md)（真实桌面失败已复现，修复与重验进行中）
+- [ADR-0095：发布汇总的编译档位与冻结输入](0095-release-collection-inputs.md)（实施与当前构建验证进行中）
+- [ADR-0096：SOUI 的显式 LLVM 依赖构建](0096-soui-llvm-dependency-build.md)（两架构组件通过，完整 SDK 验收进行中）
+- [ADR-0097：0.5 内核重建与公开接口验收](0097-kernel-rebuild-import.md)（两架构重建与应用验收进行中）
+- [ADR-0098：公开 Bridge 配额的可重复校准负载](0098-task-store-calibration-workload.md)（独立消费者实施中，生产默认额度未冻结）
+- [ADR-0099：安装消费者的原生构建观察](0099-installed-consumer-debug-capture.md)（x64 实际重载通过，x86 修复重验中）
+- [ADR-0100：单次验收核验复用实际已验证输入](0100-acceptance-input-reuse.md)（实施与真实验收进行中）
+
+- [ADR-0101：TaskStore 默认请求字节额度](0101-default-task-store-request-quota.md)（128 MiB 决策已采用；新默认入口实际验收进行中）
+
+- [ADR-0103：整数显示频率与高刷节拍](0103-integer-high-refresh-policy.md)（双架构定向验证通过；实际呈现单列）
+
+- [ADR-0102：图像缓存驻留记录预算](0102-retained-resource-cache-budget.md)
+- [ADR-0104：依赖构建来源与交付源码](0104-dependency-producer-roots.md)
+- [ADR-0107：依赖来源声明以纯文本随包交付](0107-inert-upstream-license-metadata.md)
+
+- [ADR-0108：长期负载中的 TaskStore 请求字节限额](0108-long-task-request-quota.md)（独立 proposal，冻结候选尚未采用）
+
+- [ADR-0109：有限 UIA 投影变化通知](0109-uia-state-notifications.md)（双架构定向验证通过；实际业务与读屏单列）
+- [ADR-0110：显式构建与绑定可选 UIA 交付](0110-uia-build-delivery.md)（ON/OFF 搬移消费者通过；最终公开入口待验）
+- [ADR-0111：保存每次构建的独立 CMake 配置日志](0111-immutable-cmake-configure-log.md)（真实重配置探针通过；四配置完整复验待执行）
+
+- [ADR-0112：有界的进程地址空间观察](0112-bounded-process-address-census.md)（双架构真实扫描及独立读取回归通过；实际负载预算待校准）

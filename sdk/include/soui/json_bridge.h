@@ -7,6 +7,7 @@
 #include <atomic>
 #include <memory>
 #include <mutex>
+#include <optional>
 #include <vector>
 
 namespace soui::runtime::agent { class windows_local_endpoint; }
@@ -20,6 +21,13 @@ class json_bridge final : public bridge_adapter {
  public:
   explicit json_bridge(std::string origin);
   json_bridge(std::string origin, diagnostics::mode metrics);
+  // Native construction only; immutable policy reaches this bridge's one Store.
+  // Constructors without a policy use default_task_store_request_quota.
+  // Explicit nullopt is unconfigured; zero refuses positive requested bytes.
+  json_bridge(std::string origin, diagnostics::mode metrics,
+              std::optional<soui::runtime::task_store_request_quota_policy>);
+  [[nodiscard]] soui::runtime::task_store_request_quota_status read_task_store_request_quota(
+      soui::runtime::task_store_request_quota_snapshot&) const noexcept;
   [[nodiscard]] diagnostics::status read_runtime_metrics(diagnostics::bridge_runtime&) const noexcept;
   [[nodiscard]] diagnostics::status read_task_store_storage_metrics(diagnostics::task_store_storage&) const noexcept;
   [[nodiscard]] diagnostics::status read_task_store_private_storage_metrics(diagnostics::task_store_private_storage&) const noexcept;

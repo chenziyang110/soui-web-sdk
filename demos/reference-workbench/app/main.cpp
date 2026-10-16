@@ -33,7 +33,7 @@ struct application final {
 #ifdef SOUI_REFERENCE_MODERN
   soui::sdk::webview2_adapter* renderer{};
   std::unique_ptr<soui::sdk::webview2_runtime_exit_watch> runtime_watch;
-  bool controller_closed{};
+  bool preparation_started{},preparation_completed{},controller_closed{};
   ULONGLONG close_began{};
 #else
   soui::sdk::dynamic_miniblink_adapter* renderer{};
@@ -162,8 +162,13 @@ struct application final {
       if(agent->enabled()&&!agent_stopped_logged){agent_stopped_logged=true;log("agent-stop-complete");observe("agent-stop-complete");}
     }
 #ifdef SOUI_REFERENCE_MODERN
+    if(preparation_started&&!preparation_completed) {
+      if(!SetTimer(window,2,20,nullptr))std::terminate();
+      return; // Keep the initializer and owner until a real exit identity is available.
+    }
     if(!controller_closed) {
-      const auto result=host?host->destroy():soui::sdk::host_result{true,{},{}};
+      auto result=host?host->destroy():soui::sdk::host_result{true,{},{}};
+      if(result.ok&&renderer)result=renderer->unmount(); // Also closes a prepared, never-mounted adapter.
       if(!result.ok) {
         if(result.code!="E_BUSY") {if(result.code!="E_CURSOR_CLOSE_PENDING")exit_code=3;log(result.code);}
         if(!SetTimer(window,2,20,nullptr))std::terminate();
@@ -172,7 +177,7 @@ struct application final {
       controller_closed=true;KillTimer(window,1);
       log("host-close-complete");observe("host-close-complete");
     }
-    if(!runtime_watch) {
+    if(preparation_started&&!runtime_watch) {
       const auto acquired=renderer?renderer->acquire_runtime_exit_watch(runtime_watch):
         soui::sdk::host_result{false,"E_RUNTIME_WATCH_UNAVAILABLE","No actual adapter remains."};
       if(!acquired.ok) {
@@ -337,17 +342,19 @@ int run(HINSTANCE instance,const reference::command_line& arguments) {
     app.renderer=adapter.get();app.host=std::make_unique<soui::sdk::webview_host>(std::move(adapter));
     const auto access=app.renderer->configure_profile_access(soui::sdk::webview2_profile_access::exclusive);
     if(!access.ok)throw std::runtime_error(access.code);
+    app.preparation_started=true;
     app.renderer->prepare_async([&app,config](auto result) {
-      if(app.closing)return;
+      app.preparation_completed=true;
       if(result.ok)result=app.renderer->acquire_runtime_exit_watch(app.runtime_watch);
       if(result.ok) {
         const auto actual=app.runtime_watch->observe();app.observe_runtime_exit("armed",actual);
         if(actual.phase==soui::sdk::webview2_runtime_exit_phase::failed)
           result={false,"E_RUNTIME_WATCH_FAILED","The exclusive runtime watch failed before mount."};
-        else result=app.host->start(config);
+        else if(!app.closing)result=app.host->start(config);
       }
       if(!result.ok){app.exit_code=3;app.log(result.code);
         if(!PostMessageW(app.window,WM_CLOSE,0,0))std::terminate();}
+      else if(app.closing&&!PostMessageW(app.window,WM_CLOSE,0,0))std::terminate();
     });
 #else
     config.miniblink_binary=app.root/"node.dll";
@@ -381,7 +388,7 @@ int run(HINSTANCE instance,const reference::command_line& arguments) {
   app.agent.reset(); // Policy and held process remained alive through all Bridge worker joins.
   app.business.reset();
 #ifndef SOUI_REFERENCE_MODERN
-  const auto shutdown=soui::sdk::shutdown_miniblink_runtime();
+  const auto shutdown=soui::sdk::wait_for_miniblink_runtime_shutdown(std::chrono::seconds{20});
   if(!shutdown.ok){app.log(shutdown.code);app.exit_code=3;}
   else {app.log("runtime-shutdown-complete");app.observe("runtime-shutdown-complete");}
 #endif

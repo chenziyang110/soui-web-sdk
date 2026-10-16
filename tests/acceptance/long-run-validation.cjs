@@ -38,7 +38,7 @@ function checkSeries(points,medianMinimum,p95Minimum,medianPercent,p95Percent){
 }
 function gate(fn){try{return fn();}catch(error){return {gate:error.failed?'failed':NE,failure:error.message||'invalid-long-observation'};}}
 function combine(values){return values.includes('failed')?'failed':values.every(value=>value==='passed')?'passed':NE;}
-const durationGates=['inputs','operations','owned','tree','duration','sampling','resources','actions','native','ownerCaps','terminalDrain','namedCacheConfiguration','namedCacheCoverage','cacheBudget'];
+const durationGates=['inputs','operations','owned','tree','duration','sampling','resources','actions','native','ownerCaps','terminalDrain','namedCacheConfiguration','namedCacheCoverage','taskStoreQuota','cacheBudget'];
 const ordinaryGates=['inputs','operations','owned','tree'];
 function requiredGates(mode){return ['mixed','session'].includes(mode)?durationGates:['inputs','operations','owned'];}
 function aggregate(mode,gates){
@@ -57,7 +57,30 @@ function checkedAggregate(analysis,mode){
     owners.privateStorageObservations(analysis.allSamples||[],analysis.privateStorageBinding)),
     'inconsistent-private-storage-partial-aggregate');
   if(['mixed','session'].includes(mode)){
-    need(analysis.gates?.cacheBudget===NE,'uncalibrated-full-cache-budget-cannot-pass');
+    if(analysis.taskStoreQuota){
+      const quota=analysis.taskStoreQuota,binding=quota.binding;
+      const expectedBinding={...analysis.privateStorageBinding,schema:'soui.long-task-store-quota-binding/1',
+        expectedPolicy:policy.RULE.taskStoreRequestQuota.maxLiveRequestedBytes,expectedRun:policy.fixedConfig(mode)};
+      need(analysis.privateStorageBinding&&binding&&Object.keys(expectedBinding).every(name=>same(binding[name],expectedBinding[name]))&&
+        ['sourceSha256','payloadSha256','consumerBuildId','rawLogSha256'].every(name=>
+        binding[name]===analysis[name==='rawLogSha256'?'logSha256':name])&&
+        binding.subject?.pid===analysis.subject?.pid&&binding.subject?.creationFileTime===analysis.subject?.creationFileTime&&
+        same(quota,require('./task-store-request-quota.cjs').recheckLongTaskStoreQuota(analysis.allSamples||[],binding))&&
+        analysis.gates.taskStoreQuota===quota.quotaGate,'inconsistent-task-store-quota-analysis');
+    }else need(analysis.gates.taskStoreQuota===NE,'missing-task-store-quota-analysis');
+    if(analysis.softwareCacheBudget){
+      const budget=analysis.softwareCacheBudget,binding=budget.binding;
+      const expected={...analysis.privateStorageBinding,schema:'soui.software-cache-budget-binding/v1',
+        subject:analysis.subject,architecture:analysis.architecture,
+        scope:{kernel:'miniblink',renderer:'software',processModel:'single-process'},
+        expectedPolicy:policy.RULE.softwareCacheBudget,expectedRun:policy.fixedConfig(mode)};
+      need(analysis.privateStorageBinding&&binding&&same(Object.keys(binding).sort(),Object.keys(expected).sort())&&
+        Object.keys(expected).every(name=>same(binding[name],expected[name]))&&
+        ['sourceSha256','payloadSha256','consumerBuildId','rawLogSha256'].every(name=>
+          binding[name]===analysis[name==='rawLogSha256'?'logSha256':name])&&
+        same(budget,require('./software-cache-budget.cjs').recheckSoftwareCacheBudget(analysis.allSamples||[],binding))&&
+        analysis.gates.cacheBudget===budget.budgetGate,'inconsistent-software-cache-budget-analysis');
+    }else need(analysis.gates?.cacheBudget===NE,'missing-software-cache-budget-analysis');
     if(analysis.namedCaches){
       const named=analysis.namedCaches,points=named.configurationPoints||[];
       const configuration=points.some(row=>row.configurationGate==='failed')?'failed':
@@ -370,6 +393,10 @@ function analyzeLong(result,eventRaw,evidence){
       output.privateStorageBinding=owners.privateBinding(result,owned.subject,evidence.executablePin,
         {ownedLogSha256:policy.hash(evidence.ownedRaw),contextSha256:policy.hash(evidence.contextRaw)},evidence.completeInputsMatched===true);
       output.privateStorage=owners.privateStorageObservations(records,output.privateStorageBinding);
+      output.taskStoreQuota=require('./task-store-request-quota.cjs').analyzeLongTaskStoreQuota(eventRaw,
+        {...output.privateStorageBinding,schema:'soui.long-task-store-quota-binding/1',
+          expectedPolicy:policy.RULE.taskStoreRequestQuota.maxLiveRequestedBytes,expectedRun:config});
+      output.gates.taskStoreQuota=output.taskStoreQuota.quotaGate;
       const sampled=gate(()=>hourlySamples(records,config));output.sampling=sampled;output.gates.sampling=sampled.gate;
       output.duration=gate(()=>{
         const origin=originFor(records,config);
@@ -386,12 +413,18 @@ function analyzeLong(result,eventRaw,evidence){
       output.namedCaches=owned.treeGate==='passed'?namedCacheObservations(records,owned.subject,evidence.modulePin,config):
         {scope:policy.RULE.namedCacheScope,dataGate:NE,resourceGate:NE,qualified:false,failure:'single-owned-tree-not-proved'};
       output.gates.ownerCaps=output.owners.capacityGate;output.gates.terminalDrain=output.owners.terminalDrainGate;
-      output.gates.cacheBudget=output.owners.cacheBudgetGate;
+      output.architecture=evidence.architecture;
+      output.softwareCacheBudget=require('./software-cache-budget.cjs').analyzeSoftwareCacheBudget(eventRaw,
+        {...output.privateStorageBinding,schema:'soui.software-cache-budget-binding/v1',
+          subject:owned.subject,architecture:evidence.architecture,
+          scope:{kernel:'miniblink',renderer:'software',processModel:'single-process'},
+          expectedPolicy:policy.RULE.softwareCacheBudget,expectedRun:config});
+      output.gates.cacheBudget=output.softwareCacheBudget.budgetGate;
       output.gates.namedCacheConfiguration=output.namedCaches.configurationGate||NE;
       output.gates.namedCacheCoverage=output.namedCaches.freshCoverageGate||NE;
       output.requiredGates=[...durationGates];
       output.eightHourGate=combine(output.requiredGates.map(name=>output.gates[name]));
-      output.resourceGate=combine(['inputs','tree','sampling','resources','native','ownerCaps','terminalDrain','namedCacheConfiguration','namedCacheCoverage','cacheBudget'].map(name=>output.gates[name]));
+      output.resourceGate=combine(['inputs','tree','sampling','resources','native','ownerCaps','terminalDrain','namedCacheConfiguration','namedCacheCoverage','taskStoreQuota','cacheBudget'].map(name=>output.gates[name]));
       output.longRunGate=output.eightHourGate;output.thousandCycleOperationGate=NE;
       output.coverage=config.mode==='session'?'same-document authenticated task/subscription renewals':'mixed lifecycle business';
       output.retention={originalEvents:records.length,rawLogSha256:policy.hash(eventRaw),allTailAndBoundaryEventsRetained:true};
@@ -430,7 +463,7 @@ function analyzeFile(resultPath,bindingPath){
     const analysis=analyzeLong(result,eventRaw,{requestRaw,policyRaw,ownedRaw,contextRaw,runRoot,currentInputsMatched:true,
       sourceSha256:complete.sourceSha256,payloadSha256:complete.payloadSha256,runnerSha256:policy.hash(runnerRaw),
       executableSha256:exe.sha256,executablePath:executable,payloadRoot:binding.payload.root,eventLogPath,modulePin:complete.loadedPayloadModule,
-      completeInputsMatched:true,executablePin:binding.additionalInputs.executable});
+      completeInputsMatched:true,executablePin:binding.additionalInputs.executable,architecture:complete.architecture});
     const final=files.verifyCompleteBinding(binding,runRoot,result);
     need(same(final,complete)&&readBounded(resultPath).equals(resultRaw)&&readBounded(bindingPath).equals(bindingRaw)&&
       readBounded(eventLogPath).equals(eventRaw)&&readBounded(path.join(runRoot,'request.json')).equals(requestRaw)&&
@@ -476,6 +509,8 @@ function captureResult(operation,operationPin,policyPin,evidence){
     resourceGate:matched?analysis.resourceGate:NE,eightHourGate:matched?analysis.eightHourGate:NE,
     thousandCycleOperationGate:matched?analysis.thousandCycleOperationGate:NE,
     privateStorage:matched?analysis.privateStorage||null:null,
+    taskStoreQuota:matched?analysis.taskStoreQuota||null:null,
+    softwareCacheBudget:matched?analysis.softwareCacheBudget||null:null,
     passed:matched&&analysis.passed===true&&analysis.longRunGate==='passed',releaseReady:false,
     failure:matched?analysis.failure:contractFailure||evidence.failure||operation.failure||'complete-current-long-analysis-not-bound'};
 }

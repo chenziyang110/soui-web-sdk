@@ -285,6 +285,63 @@ test('deployment replaces stale Web assets and preserves app data outside resour
   assert.notEqual(identity.source(root).sha256, before);
 });
 
+test('deployment survives a temporary Windows denial while publishing staged resources', {skip: process.platform !== 'win32'}, t => {
+  const root = fixture(t), source = path.join(root, 'web'), app = path.join(root, 'app');
+  write(source, 'index.html', 'new');
+  write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
+  write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
+  write(app, 'resources/index.html', 'old');
+  const rename = fs.renameSync;
+  let publicationAttempts = 0;
+  t.mock.method(fs, 'renameSync', (from, to) => {
+    if (path.basename(from).startsWith('.resources-new-') && ++publicationAttempts <= 2) {
+      throw Object.assign(new Error('temporary Windows directory denial'), {code: publicationAttempts === 1 ? 'EPERM' : 'EACCES'});
+    }
+    return rename(from, to);
+  });
+  deploy.replace(source, app, root);
+  assert.equal(publicationAttempts, 3);
+  assert.equal(fs.readFileSync(path.join(app, 'resources/index.html'), 'utf8'), 'new');
+  assert.equal(fs.readFileSync(path.join(app, 'resources/legal/THIRD_PARTY_NOTICES.md'), 'utf8'), 'SDK notices');
+  assert.deepEqual(fs.readdirSync(app), ['resources']);
+});
+
+test('deployment bounds persistent Windows publication denials and restores old resources', {skip: process.platform !== 'win32'}, t => {
+  const root = fixture(t), source = path.join(root, 'web'), app = path.join(root, 'app');
+  write(source, 'index.html', 'new');
+  write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
+  write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
+  write(app, 'resources/index.html', 'old');
+  const rename = fs.renameSync, denial = Object.assign(new Error('persistent denial'), {code: 'EPERM'});
+  let publicationAttempts = 0;
+  t.mock.method(fs, 'renameSync', (from, to) => {
+    if (path.basename(from).startsWith('.resources-new-')) { ++publicationAttempts; throw denial; }
+    return rename(from, to);
+  });
+  assert.throws(() => deploy.replace(source, app, root), error => error === denial);
+  assert.equal(publicationAttempts, 6);
+  assert.equal(fs.readFileSync(path.join(app, 'resources/index.html'), 'utf8'), 'old');
+  assert.deepEqual(fs.readdirSync(app), ['resources']);
+});
+
+test('deployment immediately propagates other publication errors and restores old resources', t => {
+  const root = fixture(t), source = path.join(root, 'web'), app = path.join(root, 'app');
+  write(source, 'index.html', 'new');
+  write(root, 'THIRD_PARTY_NOTICES.md', 'SDK notices');
+  write(root, 'third_party/licenses/example-LICENSE.txt', 'Dependency license');
+  write(app, 'resources/index.html', 'old');
+  const rename = fs.renameSync, failure = Object.assign(new Error('I/O failure'), {code: 'EIO'});
+  let publicationAttempts = 0;
+  t.mock.method(fs, 'renameSync', (from, to) => {
+    if (path.basename(from).startsWith('.resources-new-')) { ++publicationAttempts; throw failure; }
+    return rename(from, to);
+  });
+  assert.throws(() => deploy.replace(source, app, root), error => error === failure);
+  assert.equal(publicationAttempts, 1);
+  assert.equal(fs.readFileSync(path.join(app, 'resources/index.html'), 'utf8'), 'old');
+  assert.deepEqual(fs.readdirSync(app), ['resources']);
+});
+
 test('linked resource directories are rejected before deployment changes', t => {
   const root = fixture(t);
   write(root, 'source/index.html', 'new');

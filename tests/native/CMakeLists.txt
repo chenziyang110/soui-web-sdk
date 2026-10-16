@@ -1,4 +1,28 @@
 add_executable(soui_sdk_contract_tests sdk_contract_tests.cpp)
+add_executable(soui_dependency_tests soui_dependency_tests.cpp)
+target_compile_features(soui_dependency_tests PRIVATE cxx_std_17)
+target_compile_options(soui_dependency_tests PRIVATE /utf-8 /W4 /U_DEBUG)
+target_compile_definitions(soui_dependency_tests PRIVATE UNICODE _UNICODE NDEBUG _CRT_SECURE_NO_WARNINGS)
+set_property(TARGET soui_dependency_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+  set(soui_dependency_arch x64)
+else()
+  set(soui_dependency_arch x86)
+endif()
+target_include_directories(soui_dependency_tests PRIVATE
+  "${SOUI_DISTRIBUTION_ROOT}/third_party/include/soui/config"
+  "${SOUI_DISTRIBUTION_ROOT}/third_party/include/soui/SOUI/include"
+  "${SOUI_DISTRIBUTION_ROOT}/third_party/include/soui/utilities/include"
+  "${SOUI_DISTRIBUTION_ROOT}/third_party/include/soui/components")
+target_link_directories(soui_dependency_tests PRIVATE "${SOUI_DISTRIBUTION_ROOT}/third_party/prebuilt/${soui_dependency_arch}/soui/lib")
+target_link_libraries(soui_dependency_tests PRIVATE soui utilities shlwapi)
+file(GLOB soui_dependency_dlls "${SOUI_DISTRIBUTION_ROOT}/third_party/prebuilt/${soui_dependency_arch}/soui/bin/*.dll")
+list(FILTER soui_dependency_dlls EXCLUDE REGEX "(souid|utilitiesd|render-gdid|imgdecoder-gdipd|soui-sys-resourced)\\.dll$")
+file(GLOB_RECURSE soui_dependency_crt "${SOUI_DISTRIBUTION_ROOT}/third_party/prebuilt/${soui_dependency_arch}/runtime/*.dll")
+add_custom_command(TARGET soui_dependency_tests POST_BUILD COMMAND "${CMAKE_COMMAND}" -E copy_if_different
+  ${soui_dependency_dlls} ${soui_dependency_crt} "$<TARGET_FILE_DIR:soui_dependency_tests>" VERBATIM)
+add_test(NAME sdk.native.soui-dependency-contract COMMAND soui_dependency_tests)
+set_tests_properties(sdk.native.soui-dependency-contract PROPERTIES TIMEOUT 10)
 add_executable(soui_cache_observation_tests cache_observation_tests.cpp)
 target_link_libraries(soui_cache_observation_tests PRIVATE Soui::Sdk Soui::ActionJson)
 target_compile_features(soui_cache_observation_tests PRIVATE cxx_std_17)
@@ -6,6 +30,19 @@ target_compile_options(soui_cache_observation_tests PRIVATE /utf-8 /W4 /U_DEBUG)
 set_property(TARGET soui_cache_observation_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 add_test(NAME sdk.native.cache-observation-data-contract COMMAND soui_cache_observation_tests)
 set_tests_properties(sdk.native.cache-observation-data-contract PROPERTIES TIMEOUT 10)
+add_executable(soui_process_address_census_tests process_address_census_tests.cpp)
+target_compile_features(soui_process_address_census_tests PRIVATE cxx_std_17)
+target_compile_options(soui_process_address_census_tests PRIVATE /utf-8 /W4 /EHsc /U_DEBUG)
+target_compile_definitions(soui_process_address_census_tests PRIVATE
+  WIN32_LEAN_AND_MEAN NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+target_include_directories(soui_process_address_census_tests PRIVATE
+  "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
+set_property(TARGET soui_process_address_census_tests PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+foreach(address_census_case contracts actual)
+  add_test(NAME sdk.native.address-space-${address_census_case}
+    COMMAND soui_process_address_census_tests ${address_census_case})
+  set_tests_properties(sdk.native.address-space-${address_census_case} PROPERTIES TIMEOUT 15)
+endforeach()
 add_executable(soui_native_owner_metrics_tests native_owner_metrics_tests.cpp)
 target_link_libraries(soui_native_owner_metrics_tests PRIVATE Soui::Sdk Soui::ActionJson)
 target_compile_features(soui_native_owner_metrics_tests PRIVATE cxx_std_17)
@@ -379,3 +416,22 @@ set_tests_properties(sdk.native.renderer-model-consumer-data-contract PROPERTIES
 include(task_terminal_quota.cmake)
 target_link_options(soui_task_terminal_quota_tests PRIVATE
   "/MAP:${CMAKE_CURRENT_BINARY_DIR}/soui_task_terminal_quota_tests.map")
+
+# Exercise the public Bridge policy through the actual rebuilt SDK.
+include(task_store_policy.cmake)
+
+# Exercise the public typed endpoint and actual SDK GUI context lifetime.
+include(task_store_quota_typed_gui.cmake)
+
+# Exercise the delivered JSON header under persistent allocation failure.
+foreach(json_diagnostics IN ITEMS 0 1)
+  set(json_destruction_target soui_json_destruction_${json_diagnostics}_tests)
+  add_executable(${json_destruction_target} json_destruction_tests.cpp)
+  target_compile_features(${json_destruction_target} PRIVATE cxx_std_17)
+  target_include_directories(${json_destruction_target} PRIVATE "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
+  target_compile_definitions(${json_destruction_target} PRIVATE JSON_DIAGNOSTICS=${json_diagnostics})
+  target_compile_options(${json_destruction_target} PRIVATE /utf-8 /W4 /U_DEBUG /UNDEBUG)
+  set_property(TARGET ${json_destruction_target} PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+  add_test(NAME sdk.native.json-destruction-${json_diagnostics} COMMAND ${json_destruction_target})
+  set_tests_properties(sdk.native.json-destruction-${json_diagnostics} PROPERTIES TIMEOUT 60)
+endforeach()

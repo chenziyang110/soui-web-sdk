@@ -22,9 +22,15 @@ foreach($name in @('Need','Norm','ToolNorm','CompileArgv','CompileNorm','Compile
  . ([ScriptBlock]::Create($definitions[0].Extent.Text))
 }
 function SdkGate($sourceAst){
- $matches=@($sourceAst.FindAll({param($node)$node-is[Management.Automation.Language.IfStatementAst]-and$node.Extent.Text.Contains("'SDK target CRT/Unicode OS macro contract'")},$true))
- if($matches.Count-ne1-or $matches[0].Clauses.Count-ne1){throw 'Unique actual SDK gate required'}
- $statements=@($matches[0].Clauses[0].Item2.Statements)
+ # RuntimeDoctor has a separate CRT branch before the SDK elseif. Select the
+ # actual SDK condition, never the first clause or a surrounding statement.
+ $matches=@($sourceAst.FindAll({param($node)$node-is[Management.Automation.Language.IfStatementAst]},$true)|ForEach-Object{
+  foreach($clause in $_.Clauses){
+   if($clause.Item1.Extent.Text-ceq'$isSdk'-and$clause.Item2.Extent.Text.Contains("'SDK target CRT/Unicode OS macro contract'")){$clause.Item2}
+  }
+ })
+ if($matches.Count-ne1){throw 'Unique actual SDK gate required'}
+ $statements=@($matches[0].Statements)
  if($statements.Count-ne1){throw 'The actual SDK gate must be one Need statement'}
  return [ScriptBlock]::Create($statements[0].Extent.Text)
 }
@@ -46,6 +52,15 @@ function SetFlags([string]$command){
  $script:flagArgs=[string[]]@(CompileArgv $command)
  $script:flags=Norm ($script:flagArgs-join' ')
 }
+Case 'SDK-selector-rejects-doctor-only-message' {
+ SdkGate ([ScriptBlock]::Create("if(`$isRuntimeDoctor){Need `$true 'SDK target CRT/Unicode OS macro contract'} elseif(`$isSdk){Need `$true 'another contract'}").Ast)
+} 'Unique actual SDK gate required'
+Case 'SDK-selector-rejects-duplicate-conditions' {
+ SdkGate ([ScriptBlock]::Create("if(`$isSdk){Need `$true 'SDK target CRT/Unicode OS macro contract'}; if(`$isSdk){Need `$true 'SDK target CRT/Unicode OS macro contract'}").Ast)
+} 'Unique actual SDK gate required'
+Case 'SDK-selector-rejects-additional-statements' {
+ SdkGate ([ScriptBlock]::Create("if(`$isSdk){Need `$true 'SDK target CRT/Unicode OS macro contract'; Write-Output 'unexpected'}").Ast)
+} 'The actual SDK gate must be one Need statement'
 Case 'captured-normal-before-rejects-real-dash-MD' {SetFlags $fixture.databaseRecord.command;&$beforeGate} 'SDK target CRT/Unicode OS macro contract'
 Case 'captured-normal-after-accepts-real-dash-MD' {SetFlags $fixture.databaseRecord.command;&$candidateGate}
 Case 'captured-query-verbose-order-and-showIncludes-unchanged' {Need ((CompileNorm $fixture.databaseRecord.command)-ceq(CompileVerboseNorm $fixture.actualVerboseLine)) 'Captured actual command differs'}

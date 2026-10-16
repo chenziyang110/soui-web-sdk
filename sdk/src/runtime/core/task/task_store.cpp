@@ -23,7 +23,7 @@ std::string make_task_id(std::string_view prefix, std::uint64_t number) {
 }  // namespace
 
 task_store::task_store(std::string id_prefix, dm::mode metrics)
-    : task_store(std::move(id_prefix), metrics, std::nullopt) {}
+    : task_store(std::move(id_prefix), metrics, default_task_store_request_quota) {}
 
 task_store::task_store(std::string id_prefix, dm::mode metrics,
     std::optional<task_store_request_quota_policy> quota)
@@ -32,6 +32,17 @@ task_store::task_store(std::string id_prefix, dm::mode metrics,
       tasks_(storage_map<retained_snapshot>::allocator_type{&allocation_owner_}),
       operation_to_task_(storage_map<retained_string>::allocator_type{&allocation_owner_}),
       operation_to_scope_(storage_map<retained_string>::allocator_type{&allocation_owner_}) {}
+
+task_store_request_quota_status task_store::read_request_quota(
+    task_store_request_quota_snapshot& out) const noexcept {
+  out = {};
+  try {
+    std::unique_lock<std::mutex> lock(mutex_, std::try_to_lock);
+    if (!lock.owns_lock()) { out.status = task_store_request_quota_status::busy; return out.status; }
+    out = allocation_owner_.quota.snapshot();
+    return out.status;
+  } catch (...) { out = {}; return out.status; }
+}
 
 dm::status task_store::read_storage_metrics(dm::task_store_storage& out) const noexcept {
   out = {};

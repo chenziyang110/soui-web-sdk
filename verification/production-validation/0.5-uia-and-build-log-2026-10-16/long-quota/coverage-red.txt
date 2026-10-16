@@ -1,0 +1,80 @@
+✔ session evaluates every native owner including slot reuse with a distinct pool (4.0335ms)
+✔ mixed evaluates every native owner including slot reuse with a distinct pool (1.3672ms)
+✔ configured bytes differ from the frozen production quota (0.9723ms)
+✔ a transient peak above the cap fails even when current usage is small (1.7562ms)
+✔ same document cannot change pool identity (0.8757ms)
+✔ retired pool cannot be reused by another lifetime (0.6465ms)
+✔ missing retired observations retain an incomplete gate (0.76ms)
+✔ nonempty current roster cannot be removed (0.5281ms)
+✔ a view cannot be observed after its owner has closed (0.6523ms)
+✔ unknown window slots are refused (0.6833ms)
+✔ native process identity must match the bound consumer (0.7962ms)
+✔ capture replay cannot count as another observation (0.5873ms)
+✔ reversed cumulative counters cannot hide earlier allocation pressure (0.5176ms)
+✔ original native failure survives later successful samples (0.7105ms)
+✔ caller cannot replace the fixed long workload settings (0.4124ms)
+✔ caller cannot claim a different finite default (0.3828ms)
+✔ missing full source binding cannot qualify a quota (0.35ms)
+✔ an unclosed owner remains incomplete (0.6067ms)
+✔ missing terminal marker remains incomplete (0.4281ms)
+✔ busy quota observation is incomplete rather than silently zero (0.4792ms)
+✔ unavailable quota cannot preserve a finite policy or charged data (0.5734ms)
+✔ missing private quota does not become an observed zero (0.5176ms)
+✔ a known quota violation wins over a separate missing observation (0.4625ms)
+✔ a valid original byte hash is required and parsed consistency cannot authenticate raw bytes (1.4011ms)
+✔ long logs use a separate bound without enlarging the original reload parser (13.4742ms)
+✔ duplicate fields are rejected before decoding the original bytes (0.3687ms)
+✖ mixed mode must preserve one sample per completed cycle (1.3848ms)
+✖ retired owner must belong to the current cycle (0.7991ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 26
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 169.8061
+
+✖ failing tests:
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:53:1
+✖ mixed mode must preserve one sample per completed cycle (1.3848ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'passed' !== 'failed'
+  
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:55:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'passed',
+    expected: 'failed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:17:48
+✖ retired owner must belong to the current cycle (0.7991ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'passed' !== 'failed'
+  
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:17:120)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'passed',
+    expected: 'failed',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

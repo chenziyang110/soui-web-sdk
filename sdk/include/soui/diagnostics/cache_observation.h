@@ -57,7 +57,7 @@ class cache_identity_binding final {
       const auto raw = value.resourceRawSingleLimit;
       const auto total = value.resourceByteLimit;
       const auto effective = value.resourceDiscardable ? raw : (!raw ? total : (raw < total ? raw : total));
-      if (value.resourceEffectiveSingleLimit != effective || (value.resourceDiscardable && total != 0)) {
+      if (value.resourceEffectiveSingleLimit != effective) {
         invalid_ = true; return false;
       }
     }

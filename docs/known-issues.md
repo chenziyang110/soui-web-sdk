@@ -1,10 +1,12 @@
 # 已知限制与生产门槛
 
+2026-10-16 一次原生 UIA `mutations` 复测在焦点请求处失败，旧日志未保留 HRESULT；随后 120 次定向诊断未复现，不能据此判定已修复。当前测试已补充失败时的错误码、实际焦点和阶段时间，断言与等待上限不变。系统随后重启并升级，受影响工具与最终候选验证重新执行；旧失败保持原始环境归属。
+
 现代模板现显式启用会话续租。0.5 主线已分离普通请求、清理和专用续期容量，并完成页面策略与原生回归；此前业务填满传输导致续期容量错误的复现保留为历史证据。真实宿主双层满载、跨续期任务保留和八小时持续压力仍未验收，见 [0.5 执行清单](roadmap/0.5.0-execution.md)。
 
 0.5 主线已修正无 Git 校验器跳过清单内历史 `out/` 文件的问题，15 项回归及仓库外搬移源码后的双架构 SDK-only 重建通过。历史原件字节与路径保留；最终集成候选的完整应用、离线重建与搬移验证仍需重新执行。
 
-本交付解决分层、接入、自行构建和验证的问题，仍为预览版本。当前开发身份为 `0.5.0-preview.1`，尚未冻结或发布；已发布版本为 `0.4.0-preview.1`。以下带版本的证据均只适用于各自冻结载荷，完整交付与生产门槛不继承。
+本交付解决分层、接入、自行构建和验证的问题。本次预发布交付身份为 `0.5.0`，生产验收保持 `releaseReady=false`；本轮实际范围和保留失败见[发布说明](releases/0.5.0.md)，`0.4.0-preview.1` 为历史发布。以下带版本的证据均只适用于各自冻结载荷，完整交付与生产门槛不继承。
 
 0.4 预览版将 WebView2 适配器纳入可选公共组件，并提供独立现代模板；下文 0.3 的实验记录保留历史含义。公共组件可用不等于全环境认证。Win7/PE 规划采用兼容路径；现代档要求支持的桌面系统与实际 WebView2 Runtime。0.4.0-preview.1 的 Win7 SP1 x86 短启动通过，但固定兼容内核在 Setup PE 3.1 x86 中因 OPENGL32.dll 静态依赖失败。另建 x86 无 GPU 候选在该 PE 完成就绪、关闭并退出 0；其结果不覆盖固定 SDK 内核。高刷性能、GPU 资源、8 小时稳定性、输入法及 PE 镜像矩阵仍按 [0.4 执行清单](roadmap/0.4.0.md) 验收。
 
@@ -41,7 +43,7 @@ preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/
 | 项目 | 当前状态 / 必须补齐 |
 |---|---|
 | x64 重载内存与关闭稳定性 | 独立消费者已复现并修复逐窗口初始化导致的重建崩溃/多窗口挂起；100 次重载操作通过，资源和长期稳定门槛仍未关闭，见 [本轮记录](acceptance/lifecycle.md) |
-| 资源部署改名失败 | 本轮 x86 构建有一次 `EPERM`；旧资源恢复、未改源码重试及后续启动通过，失败日志保留，具体占用原因未确认 |
+| 资源部署改名失败 | 0.5.0 发布构建中两次完整 x64 Release 重现 `EPERM`；现沿用 SDK 安装器的有界 Windows 重试，相关回归与修复后的两架构四配置构建通过。原失败保留，具体占用方仍未确定，持续拒绝仍报错并恢复旧资源 |
 | SDK 包阶段目录改名失败 | preview.9 与 preview.10 首次源包发布目录改名均出现 `EPERM`；未改源码的新目标重试和文件核验通过。保留 [preview.9](../verification/production-validation/preview9-public-tray-preflight-2026-09-26/README.md) 与 [preview.10](../verification/production-validation/preview10-residency-preflight-2026-09-26/README.md) 原失败；日志缺瞬时锁持有者与逐次原生错误，根因未确定，重试成功不关闭缺陷 |
 | 完整源码搬移重编 | preview.6 无 Git 源包在 CP936 下重编 x86 Miniblink 曾因 UTF-8 误读失败；preview.7 定点 BOM 修复后重编通过，但旧 SOUI 工程在源码树生成 112 个额外产物。[preview.8 候选源码包](../verification/production-validation/preview8-isolated-source-build-2026-09-25/README.md)将 SOUI 构建隔离到 `out/`，在两个全新无 Git 解压目录完成 x86/x64 全量底层重编、四组应用构建与测试、重编 DLL 启动，且编译后完整清单仍分别复验通过；[Win7 SP1 x86 QEMU](../verification/production-validation/win7-sp1-x86-qemu-preview8-isolated-source-2026-09-25/README.md)三入口短测通过。[独立业务小样升级回退](../verification/production-validation/preview8-independent-upgrade-2026-09-25/README.md)双架构通过。最终打包、目标物理设备与完整交付门仍未闭合，`sourceDeliveryVerified=false` |
 | x86 公共连接器 ABI | 已修正交付动态绑定头中 54 个 `bool`/`BOOL` 返回类型不一致；preview.4 x86 软件路径四模式各 1,000 轮正常退出。[preview.5 Win7 SP1 x86 QEMU 公共消费者四模式](../verification/production-validation/win7-sp1-x86-qemu-preview5-consumer-2026-09-24/README.md)各 3 轮通过，[三应用入口](../verification/production-validation/win7-sp1-x86-qemu-preview5-apps-2026-09-24/README.md)短测通过；[新诊断源码的 100 次重载](../verification/production-validation/win7-sp1-x86-qemu-preview5-reload-2026-09-24/README.md)也退出 0。preview.5 宿主 x86 Bridge 千次循环两次超时，完整资源门槛、物理目标机和业务链仍缺失 |

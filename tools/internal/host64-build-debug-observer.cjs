@@ -14,6 +14,7 @@ function argv(raw){need(typeof raw==='string'&&raw.length>0&&raw.length<=32766&&
 const quote=s=>'"'+s.replace(/(\\*)"/g,'$1$1\\"').replace(/(\\+)$/,'$1$1')+'"';
 function image(file,pin){need(file&&Object.keys(file).length===6&&['machine','bytes','sha256','finalPath','fileIndex','volumeSerial'].every(k=>Object.hasOwn(file,k))&&count(file.machine)&&file.machine===34404&&typeof file.bytes==='string'&&/^[1-9]\d*$/.test(file.bytes)&&BigInt(file.bytes)===BigInt(pin.bytes)&&file.sha256===pin.sha256&&norm(file.finalPath)===norm(pin.path)&&ft(file.fileIndex)&&typeof file.volumeSerial==='string'&&/^(?:0|[1-9]\d{0,9})$/.test(file.volumeSerial)&&BigInt(file.volumeSerial)<=4294967295n,'physical-image');}
 function analyze(raw,c,identity){
+ const rootRole=c.schema==='soui.host64-build-debug-inputs/3'?'CMAKE':'POWERSHELL';
  need(Buffer.isBuffer(raw)&&raw.length>0&&raw.length<=67108864&&raw.at(-1)===10,'debug-raw-bound');need(guid(identity.nonce)&&positive(identity.observerPid)&&ft(identity.observerCreationFileTime),'outer-identity');
  const text=new TextDecoder('utf-8',{fatal:true}).decode(raw);const lines=text.slice(0,-1).split('\n');need(lines.length<=100000,'record-count');
  const fields={'observer-start':['observerPid','observerCreationFileTime','observerBits','outerJobPresent','sdkProof'],'build-created':['pid','creationFileTime','mainTid','assignedBeforeResume','breakawayAllowed'],'create-paused':['pid','creationFileTime','mainTid','role','buildRoot','inInnerJob','alive','wow64','imageFile'],'commandline-paused':['pid','creationFileTime','role','buildRoot','raw','wholeArgv','argv0File','argv0HeldBeforeAndAfter','provider','heldBeforeAndAfter','wmiThreadExited','providerCancellationProved'],'create-continued':['pid','creationFileTime','sameHeldProcess'],'ntdll-load':['pid','creationFileTime','moduleBase','moduleFile','peLayout'],'exception-disposition':['pid','creationFileTime','tid','code','address','firstChance','initialLoader','continueStatus'],'member-exit':['pid','creationFileTime','exitCode'],'rip':['pid','error'],'wmi-closeout-pending':['pid','passed','wmiThreadExited','providerCancellationProved'],'terminal':['passed','failure','failureCode','rootPid','rootCreationFileTime','rootExitCode','historicalMembers','totalProcesses','activeProcesses','limitTerminatedProcesses','allMembersSignaled','allPausedQueriesClosed','allLoaderSequences','debugProtocolValid','forced','queryCount','eventCount','sdkProof','normalSdkIntegrated','win7Proof']};
@@ -28,10 +29,10 @@ function analyze(raw,c,identity){
   else if(r.event==='create-paused'){
    need(created&&ledger.size<2048&&positive(r.pid)&&ft(r.creationFileTime)&&positive(r.mainTid)&&!active.has(r.pid)&&!ledger.has(r.pid+':'+r.creationFileTime)&&r.inInnerJob===true&&r.alive===true&&r.wow64===false&&typeof r.buildRoot==='boolean'&&imageMap.has(r.role),'create-identity');image(r.imageFile,imageMap.get(r.role));
    const p={...r,continued:false,query:false,loader:false,module:null,exit:null};ledger.set(r.pid+':'+r.creationFileTime,p);active.set(r.pid,p);
-   if(r.buildRoot){need(!root&&r.pid===created.pid&&r.creationFileTime===created.creationFileTime&&r.mainTid===created.mainTid&&r.role==='POWERSHELL','build-root');root=p;}
+   if(r.buildRoot){need(!root&&r.pid===created.pid&&r.creationFileTime===created.creationFileTime&&r.mainTid===created.mainTid&&r.role===rootRole,'build-root');root=p;}
   }else if(r.event==='commandline-paused'){
    const p=lookup(r);need(!p.continued&&!p.query&&p.exit===null&&(p.buildRoot||['CLANG','RC','MT'].includes(p.role))&&r.role===p.role&&r.buildRoot===p.buildRoot&&r.provider==='Win32_Process.CommandLine'&&r.heldBeforeAndAfter===true&&r.wmiThreadExited===true&&r.providerCancellationProved===false&&Array.isArray(r.wholeArgv),'paused-query');
-   const parsed=argv(r.raw);need(eq(parsed,r.wholeArgv)&&/^[a-z]:[\\/]/i.test(parsed[0])&&r.argv0HeldBeforeAndAfter===true,'whole-argv');image(r.argv0File,imageMap.get(p.role));need(r.argv0File.volumeSerial===p.imageFile.volumeSerial&&r.argv0File.fileIndex===p.imageFile.fileIndex,'argv0-create-physical-identity');if(p.buildRoot)need(eq(parsed,[imageMap.get('POWERSHELL').path,...c.rootArguments])&&r.raw===[imageMap.get('POWERSHELL').path,...c.rootArguments].map(quote).join(' '),'fixed-root-argv');
+   const parsed=argv(r.raw);need(eq(parsed,r.wholeArgv)&&/^[a-z]:[\\/]/i.test(parsed[0])&&r.argv0HeldBeforeAndAfter===true,'whole-argv');image(r.argv0File,imageMap.get(p.role));need(r.argv0File.volumeSerial===p.imageFile.volumeSerial&&r.argv0File.fileIndex===p.imageFile.fileIndex,'argv0-create-physical-identity');if(p.buildRoot)need(eq(parsed,[imageMap.get(rootRole).path,...c.rootArguments])&&r.raw===[imageMap.get(rootRole).path,...c.rootArguments].map(quote).join(' '),'fixed-root-argv');
    p.query=true;need(++queries<=2048,'query-count');if(!p.buildRoot)tools[p.role]++;
   }else if(r.event==='create-continued'){const p=lookup(r);need(!p.continued&&p.exit===null&&r.sameHeldProcess===true&&(!(p.buildRoot||['CLANG','RC','MT'].includes(p.role))||p.query),'create-before-continue');p.continued=true;}
   else if(r.event==='ntdll-load'){const p=lookup(r);need(p.continued&&!p.module&&p.exit===null&&ft(r.moduleBase)&&eq(r.peLayout,c.modules[0].codeLayout),'ntdll-order');image(r.moduleFile,c.modules[0]);p.module=r;}
@@ -233,15 +234,24 @@ function failureInfo(error){return {name:typeof error?.name==='string'?error.nam
 function checkPostPins(pins){let passed=true;const rows=[];for(const p of pins){try{rows.push({expected:p,actual:match(p),matched:true});}catch{passed=false;rows.push({expected:p,actual:null,matched:false});}}return {passed,rows};}
 function validateInput(c,rootArguments){
  const keys=['schema','nonce','root','rootArguments','images','modules','controlPins','report','profile','sdkArchitecture','configuration','sourceSetSha256','producer','outerRunner','budgets'];
+ const consumer=c?.schema==='soui.host64-build-debug-inputs/3';if(consumer)keys.push('consumerKind','buildDirectory');
  need(c&&keys.every(k=>Object.hasOwn(c,k))&&Object.keys(c).every(k=>keys.includes(k)||k==='inputPin'),'debug-exact-input-fields');
- need(c.schema==='soui.host64-build-debug-inputs/2'&&guid(c.nonce)&&['x64','x86'].includes(c.sdkArchitecture)&&['Release','Debug'].includes(c.configuration)&&c.profile==='LLVM22MSVC142'&&eq(c.budgets,budgets)&&/^[a-f0-9]{64}$/.test(c.sourceSetSha256),'debug-input-scope');
+ need((consumer||c.schema==='soui.host64-build-debug-inputs/2')&&guid(c.nonce)&&['x64','x86'].includes(c.sdkArchitecture)&&['Release','Debug'].includes(c.configuration)&&c.profile==='LLVM22MSVC142'&&eq(c.budgets,budgets)&&/^[a-f0-9]{64}$/.test(c.sourceSetSha256),'debug-input-scope');
  need(typeof c.root==='string'&&/^[a-z]:[\\/]/i.test(c.root)&&typeof c.report==='string'&&path.win32.basename(c.report)==='host64-debug.ndjson'&&/^[a-z]:[\\/]/i.test(c.report),'debug-local-paths');
+ need(Array.isArray(c.rootArguments)&&c.rootArguments.every(x=>typeof x==='string')&&eq(c.rootArguments,rootArguments),'debug-expected-root-vector');
+ if(consumer){
+  need(['acceptance','release'].includes(c.consumerKind)&&typeof c.buildDirectory==='string'&&/^[a-z]:[\\/]/i.test(c.buildDirectory)&&!c.buildDirectory.split(/[\\/]/).some(x=>x==='.'||x==='..'),'debug-consumer-scope');
+  const suite=path.win32.dirname(c.buildDirectory),parent=path.win32.join(c.root,c.consumerKind==='acceptance'?'out/acceptance':'out/release-validation/'+c.sdkArchitecture);
+  need(path.win32.basename(c.buildDirectory)==='consumer'&&norm(path.win32.dirname(suite))===norm(parent)&&(c.consumerKind==='acceptance'?guid(path.win32.basename(suite)):/^[a-f0-9]{32}$/.test(path.win32.basename(suite))),'debug-consumer-owned-directory');
+  need(eq(c.rootArguments,['--build',c.buildDirectory,'--config',c.configuration,'--parallel','2','--verbose']),'debug-fixed-consumer-vector');
+ }else{
  need(eq(c.rootArguments,rootArguments)&&norm(c.rootArguments[5])===norm(path.win32.join(c.root,'tools/Build.ps1')),'debug-fixed-root-vector');
  need(eq(c.rootArguments.slice(0,5),['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File'])&&c.rootArguments[6]==='-Architecture'&&c.rootArguments[7]===c.sdkArchitecture&&c.rootArguments[8]==='-Configuration'&&c.rootArguments[9]===c.configuration,'debug-build-target-vector');
+ }
  need(c.images.length===12&&c.images.every((x,i)=>x.role===imageRoles[i]&&x.machine===34404&&positive(x.bytes)&&/^[a-f0-9]{64}$/.test(x.sha256))&&c.modules.length===1&&c.modules[0].role==='NTDLL'&&c.modules[0].machine===34404,'debug-fixed-image-slots');
  need(c.controlPins.length>0&&c.controlPins.length<=128&&new Set(c.controlPins.map(x=>norm(x.path))).size===c.controlPins.length,'debug-control-members');return c;
 }
-function makeInput(root,v,folder,profile,tools,controlPins,prepared,args){
+function makeInput(root,v,folder,profile,tools,controlPins,prepared,args,consumer=null){
  const byRole=Object.fromEntries(tools.map(x=>[x.role,x]));const selected={POWERSHELL:profile.ToolPins.POWERSHELL,CMAKE:byRole.cmake,NODE:byRole.node,CMD:profile.ToolPins.CMD,
   NINJA:profile.ToolPins.NINJA,CLANG:profile.ToolPins.CLANG,LINKER:profile.ToolPins.LINKER,ARCHIVER:profile.ToolPins.ARCHIVER,RC:profile.ToolPins.RC,MT:profile.ToolPins.MT,CMCLDEPS:byRole.resourceWrapper,
   CONHOST:pin(path.join(process.env.SystemRoot,'System32/conhost.exe'))};
@@ -249,6 +259,7 @@ function makeInput(root,v,folder,profile,tools,controlPins,prepared,args){
  const current=sourcePins(root);const unique=new Map([...controlPins,...current,prepared.pin,prepared.value.executable].map(x=>[norm(x.path),{path:x.path,bytes:x.bytes,sha256:x.sha256}]));
  const c={schema:'soui.host64-build-debug-inputs/2',nonce:crypto.randomUUID(),root,rootArguments:args,images:imageRoles.map(role=>executable(selected[role],role)),modules:[module],controlPins:[...unique.values()],
   report:path.join(folder,'host64-debug.ndjson'),profile:'LLVM22MSVC142',sdkArchitecture:v.architecture,configuration:v.configuration,sourceSetSha256:sourceSet(current,root),producer:prepared.pin,outerRunner:prepared.value.outerRunner,budgets};
+ if(consumer){need(Object.keys(consumer).sort().join(',')==='buildDirectory,kind','debug-consumer-plan-fields');Object.assign(c,{schema:'soui.host64-build-debug-inputs/3',consumerKind:consumer.kind,buildDirectory:consumer.buildDirectory});}
  validateInput(c,args);return {value:c,pin:write(folder,'host64-inputs.json',c)};
 }
 function validateEvidence(raw,c,capture,observer,expectedArgs){

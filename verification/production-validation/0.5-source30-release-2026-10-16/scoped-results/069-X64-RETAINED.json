@@ -1,0 +1,96 @@
+{
+  "source": "C:\\work\\sm05-release-050\\out\\x64",
+  "target": "C:\\work\\sm05-release-050\\out\\release-build-history\\source30-revision2-unaccepted-x64",
+  "retained": [
+    {
+      "original": {
+        "path": "C:\\work\\sm05-release-050\\out\\x64\\build-Debug.json",
+        "bytes": 599718,
+        "sha256": "9f28a63eaefc7ff9231007b5725c0b44b67328784543464bcdf654c1c7394d76"
+      },
+      "retained": {
+        "path": "C:\\work\\sm05-release-050\\out\\release-build-history\\source30-revision2-unaccepted-x64\\build-Debug.json",
+        "bytes": 599718,
+        "sha256": "9f28a63eaefc7ff9231007b5725c0b44b67328784543464bcdf654c1c7394d76"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\work\\sm05-release-050\\out\\x64\\build-Release.json",
+        "bytes": 346203,
+        "sha256": "2ad9af2abb1ade3a6d7cbac7b20abe015e4507de406ea0817b1a0b4cee885703"
+      },
+      "retained": {
+        "path": "C:\\work\\sm05-release-050\\out\\release-build-history\\source30-revision2-unaccepted-x64\\build-Release.json",
+        "bytes": 346203,
+        "sha256": "2ad9af2abb1ade3a6d7cbac7b20abe015e4507de406ea0817b1a0b4cee885703"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\work\\sm05-release-050\\out\\x64\\compile_commands.json",
+        "bytes": 679643,
+        "sha256": "2de51579731a6fa338679f674f67de729f0d1941aa3ec4b6b384514c03013fdd"
+      },
+      "retained": {
+        "path": "C:\\work\\sm05-release-050\\out\\release-build-history\\source30-revision2-unaccepted-x64\\compile_commands.json",
+        "bytes": 679643,
+        "sha256": "2de51579731a6fa338679f674f67de729f0d1941aa3ec4b6b384514c03013fdd"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\work\\sm05-release-050\\out\\x64\\llvm-profile-request-Debug.json",
+        "bytes": 11951,
+        "sha256": "f617592d1d8a84d129b3d9aa7f2ba44d6f6f2d7d4f24e430989a08e05552efa0"
+      },
+      "retained": {
+        "path": "C:\\work\\sm05-release-050\\out\\release-build-history\\source30-revision2-unaccepted-x64\\llvm-profile-request-Debug.json",
+        "bytes": 11951,
+        "sha256": "f617592d1d8a84d129b3d9aa7f2ba44d6f6f2d7d4f24e430989a08e05552efa0"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\work\\sm05-release-050\\out\\x64\\llvm-profile-request-Release.json",
+        "bytes": 11951,
+        "sha256": "ffc4504ee7af53ac04770724018d6bbbae03fb36fd8da45f7afd165114f00b9d"
+      },
+      "retained": {
+        "path": "C:\\work\\sm05-release-050\\out\\release-build-history\\source30-revision2-unaccepted-x64\\llvm-profile-request-Release.json",
+        "bytes": 11951,
+        "sha256": "ffc4504ee7af53ac04770724018d6bbbae03fb36fd8da45f7afd165114f00b9d"
+      }
+    },
+    {
+      "original": {
+        "path": "C:\\work\\sm05-release-050\\out\\x64\\standard-llvm-Debug.json",
+        "bytes": 5673,
+        "sha256": "017ce8b1728e6d409678c01dbb45c01d977dea8d072c43b56010fb1cb76b0b7b"
+      },
+      "retained": {
+        "path": "C:\\work\\sm05-release-050\\out\\release-build-history\\source30-revision2-unaccepted-x64\\standard-llvm-Debug.json",
+        "bytes": 5673,
+        "sha256": "017ce8b1728e6d409678c01dbb45c01d977dea8d072c43b56010fb1cb76b0b7b"
+      }
+    }
+  ],
+  "failed": [
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\build-x64-Debug-source30-1\\RESULT.json",
+      "bytes": 2219,
+      "sha256": "131595fc907a82369675f0202700e4e9fbf30eee26942d302e0a79e03ff8a732"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\build-x64-Debug-source30-2\\RESULT.json",
+      "bytes": 2215,
+      "sha256": "d01a09bd533e4fec0bc18a1c1e43d9385769eaf4b4150a1ea30cf37c09452edc"
+    }
+  ],
+  "sourceManifest": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 16240065,
+    "sha256": "ad031346ae01ff74fa840e8c2ca820bd3e879a0848d41e8cb7c20f408c68e4b6"
+  },
+  "reason": "The failed incremental build rewrote the original accepted profile request. Preserve the entire output tree, then build a fresh x64 output with actual compile observations. No stale proof is copied forward and no reader assertion is relaxed."
+}

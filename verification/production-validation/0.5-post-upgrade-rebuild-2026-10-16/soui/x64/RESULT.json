@@ -1,0 +1,90 @@
+{
+  "arch": "x64",
+  "component": "soui",
+  "output": "C:/work/sm05-release-050/out/dependencies/source30-post-upgrade-x64-2",
+  "stable": true,
+  "natural": true,
+  "result": {
+    "pid": 54728,
+    "creationFileTime": "134365958834058712",
+    "exitCode": 0,
+    "supervisorExitCode": 0,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": true,
+    "terminal": {
+      "event": "terminal",
+      "reason": "completed",
+      "elapsedMs": 410966,
+      "rootExited": true,
+      "rootExitCode": 0,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 161,
+      "limitTerminatedProcesses": 0,
+      "passed": true
+    },
+    "report": "C:\\work\\sm05-system-transition-1\\soui-x64-2\\soui.ndjson",
+    "reportSha256": "7fbe5a3a4f53f69a1f972764d0d1a56adac51e812f8f54387b9855cbcb3630ad",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+  },
+  "terminal": {
+    "event": "terminal",
+    "reason": "completed",
+    "elapsedMs": 410966,
+    "rootExited": true,
+    "rootExitCode": 0,
+    "activeBeforeCleanup": 0,
+    "terminatedOwnedJob": false,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 161,
+    "limitTerminatedProcesses": 0,
+    "passed": true
+  },
+  "pins": [
+    {
+      "path": "C:\\work\\sm05-system-transition-1\\rebuild-soui.cjs",
+      "bytes": 3827,
+      "sha256": "c3f8b7242d1343e5246b9adafcb6757f3ec9a7ef665f05f9bdf75724935cd298"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\Build-SouiLlvm.ps1",
+      "bytes": 9448,
+      "sha256": "7aa1ac152f129f82a78d1d746825aaa280c50fcf036796d5d4795c0b0b28c6c2"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\Find-LlvmToolchain.ps1",
+      "bytes": 11427,
+      "sha256": "2a81487d800b50a55032839b96abc2844188161d3dca7598e04ff1b9af2609ef"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\Kernel-LlvmInputs.ps1",
+      "bytes": 8099,
+      "sha256": "69b42eae472597a97061741e5a401c19e3bf665aa134646ba555645afe432d36"
+    },
+    {
+      "path": "C:\\Windows\\System32\\cmd.exe",
+      "bytes": 339968,
+      "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b"
+    },
+    {
+      "path": "C:\\Users\\11034\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+      "bytes": 301368,
+      "sha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+    },
+    {
+      "path": "F:\\work\\sm05\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+      "bytes": 60928,
+      "sha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f"
+    }
+  ],
+  "releaseReady": false
+}

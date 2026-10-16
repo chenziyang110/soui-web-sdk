@@ -1,0 +1,2714 @@
+{
+  "schema": "soui.npm-notice-materials/v1",
+  "scope": "All registry dependencies marked runtime in at least one of the five shipped application lockfiles, conservatively including their type/compiler dependencies; not a binary member inventory",
+  "collectionLocks": [
+    {
+      "scope": "templates/desktop-app/web",
+      "sha256": "6435783ec7c66172ee4ceb1566eacfa5a55453490df070154c756333a65b0ed0",
+      "bytes": 130655
+    },
+    {
+      "scope": "templates/modern-app/web",
+      "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde",
+      "bytes": 28768
+    },
+    {
+      "scope": "demos/workbench/web",
+      "sha256": "871269a6963f27af6d0c9b60e7c115be3dccc3f3dfe1d239c075c5563c2483a0",
+      "bytes": 166926
+    },
+    {
+      "scope": "demos/reference-workbench/web-compat",
+      "sha256": "74ff68042f8b210cac922db10969a7acb0d13ae2ab1b9f7aa1178e7c901376ac",
+      "bytes": 167788
+    },
+    {
+      "scope": "demos/reference-workbench/web-modern",
+      "sha256": "366801daa343066c7d1b4f6d5a61758662449929f0c55b933fda70d35a2cccde",
+      "bytes": 28768
+    }
+  ],
+  "packages": [
+    {
+      "name": "@babel/helper-string-parser",
+      "version": "7.29.7",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@babel/helper-string-parser/-/helper-string-parser-7.29.7.tgz",
+      "integrity": "sha512-Pb5ijPrZ89GDH8223L4UP8i6QApWxs04RbPQJTeWDV0/keR2E36MeKnyr6LYmUUvqRRI+Iv87SuF1W6ErINzYw==",
+      "tarballSha256": "124565ecd300d7187973060ba6b1d1c4f296e55f0489ddfd6af794f516fed127",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/@babel/helper-string-parser",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@babel/helper-string-parser",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@babel/helper-string-parser",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/babel__helper-string-parser-7.29.7/LICENSE",
+          "bytes": 1106,
+          "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/babel__helper-string-parser-7.29.7/upstream-package.json.txt",
+        "bytes": 758,
+        "sha256": "ecbd1aaffa9ad000d3bc5a526067b89244cb3ec64c738fbae8b64a9e805f401b"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@babel/helper-validator-identifier",
+      "version": "7.29.7",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@babel/helper-validator-identifier/-/helper-validator-identifier-7.29.7.tgz",
+      "integrity": "sha512-qehxGkRj55h/ff8EMaJ+cYhyaKlHIxqYDn682wQD7RNp9UujOQsHog2uS0r2vzr4pW+sXf90NeeayjcNaX3fFg==",
+      "tarballSha256": "7a31904bc45f1bb232d5e5dd797d12296f4a27fb4bf0f6d517827700f997dc1f",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/@babel/helper-validator-identifier",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@babel/helper-validator-identifier",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@babel/helper-validator-identifier",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/babel__helper-validator-identifier-7.29.7/LICENSE",
+          "bytes": 1106,
+          "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/babel__helper-validator-identifier-7.29.7/upstream-package.json.txt",
+        "bytes": 738,
+        "sha256": "1ad6aeced8b186ac259da45fea50ab9d65d3d958f6458c80e3c8013649d1b12d"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@babel/parser",
+      "version": "7.29.8",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@babel/parser/-/parser-7.29.8.tgz",
+      "integrity": "sha512-E8lTAYNB1KW+FH+VGJuZM1ioAx2E6oVlvQFRrf5P8ZZmsiJXYAD9vTFV7yyEURNzgh1dFqMZuO6tUwcARbqFCA==",
+      "tarballSha256": "20f1459b23066ba65d0dec68ee59ff5e2284c72fe22f98a7153a6cccef903c80",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@babel/parser",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@babel/parser",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/babel__parser-7.29.8/LICENSE",
+          "bytes": 1086,
+          "sha256": "2e97627cb278aa7556fb9e8817368302301a595b6c7582512b8d74c57b773652",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/babel__parser-7.29.8/upstream-package.json.txt",
+        "bytes": 1382,
+        "sha256": "6d6a65b879cd7cd249a4367c0b57cce00e78c728de45056ac2a5ca1d1f528d1a"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@babel/runtime",
+      "version": "7.29.7",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@babel/runtime/-/runtime-7.29.7.tgz",
+      "integrity": "sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==",
+      "tarballSha256": "4d7f1bd502a1a64d47625cc738d13284865f0666d2ed01f244de0adf05b69aa5",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@babel/runtime",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@babel/runtime",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/babel__runtime-7.29.7/LICENSE",
+          "bytes": 1106,
+          "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/babel__runtime-7.29.7/upstream-package.json.txt",
+        "bytes": 41106,
+        "sha256": "8c4bf20c55e3f3a93df034b12746bf72185cf2acb0ef52847a3465d6e67c61e7"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@babel/types",
+      "version": "7.29.8",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@babel/types/-/types-7.29.8.tgz",
+      "integrity": "sha512-Vj1jF3cPfxg7OAfoI7QnVKLoILlm2JF9pnVHrX8qx7AHMiYWT+NDAA7jChlNgRS4WTLc/fD1lXLmPixluj+3Gg==",
+      "tarballSha256": "514a4ed09355fe1417f03e89c5a5f518745e2eb75a4069d25b55a3e7298069de",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/@babel/types",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@babel/types",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@babel/types",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/babel__types-7.29.8/LICENSE",
+          "bytes": 1106,
+          "sha256": "117da2af0d4ce0fe1c8e19b5cff9dcd806adf973d328d27b11d4448c4ff24f76",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/babel__types-7.29.8/upstream-package.json.txt",
+        "bytes": 1065,
+        "sha256": "f32460a35cc4649d81f10d4bc6dcfa1ade7a47f95df5db4bb4483f34d24b476e"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@ctrl/tinycolor",
+      "version": "4.2.1",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@ctrl/tinycolor/-/tinycolor-4.2.1.tgz",
+      "integrity": "sha512-Vh5uy9Y1JBMId6J1f68TMXnZrTCvNdo9Fu2k0d1YnJngR+sM5kWTKl441c/3TFs+cG0NWOjRWgQ/iaWhbYx+7A==",
+      "tarballSha256": "c0f5da86791a353e46095577de2dc39a361fbb7efbce2dfb55d6431bd3f310cd",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@ctrl/tinycolor",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@ctrl/tinycolor",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/ctrl__tinycolor-4.2.1/LICENSE",
+          "bytes": 1072,
+          "sha256": "40623170cffa92890b9a2decc5456de6bba6d4f75a7a7b7abc60cc9fdaf78b65",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/ctrl__tinycolor-4.2.1/upstream-package.json.txt",
+        "bytes": 1864,
+        "sha256": "59a309c461acb1af5046e8c43634605019813535df23d0f489172466675b36ba"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@element-plus/icons-vue",
+      "version": "2.3.2",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@element-plus/icons-vue/-/icons-vue-2.3.2.tgz",
+      "integrity": "sha512-OzIuTaIfC8QXEPmJvB4Y4kw34rSXdCJzxcD1kFStBvr8bK6X1zQAYDo0CNMjojnfTqRQCJ0I7prlErcoRiET2A==",
+      "tarballSha256": "7a9f77393372226882c396ac57fff4558e8ff50eeec1895320a1b174c4e6ffc0",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@element-plus/icons-vue",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@element-plus/icons-vue",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/element-plus__icons-vue-2.3.2/LICENSE",
+          "bytes": 1121,
+          "sha256": "5db4ebb3abd8353774ae148723ccc14087d6dab99473f77a7b799b55defd8dfe",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/element-plus__icons-vue-2.3.2/upstream-package.json.txt",
+        "bytes": 2112,
+        "sha256": "bef1df5b66af31c0cb3164857d70f0db4b768617780dc87a5c7a642b127e9325"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@floating-ui/core",
+      "version": "1.8.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@floating-ui/core/-/core-1.8.0.tgz",
+      "integrity": "sha512-0CIZ5itps/8x7BG8dEIhs53BvCUH2PCoogtakwRTut+Arm58sJooJ0AuZhLw2HJYIR5cMLNPBSS728sPho2khQ==",
+      "tarballSha256": "c86371bdb19948a71591d36f23ec33d2b54e06503bd5c2e00a2dbbfa389622fd",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@floating-ui/core",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@floating-ui/core",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/floating-ui__core-1.8.0/LICENSE",
+          "bytes": 1089,
+          "sha256": "0e4c9a9b6c71019cbbea3bdc20b01223110a9035700f9c960c8fcbf78c2325ce",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/floating-ui__core-1.8.0/upstream-package.json.txt",
+        "bytes": 1655,
+        "sha256": "2f24216dd2a32b10e6c868173832a0667c3cdbee92886797b219aadac48d8b99"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@floating-ui/dom",
+      "version": "1.8.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@floating-ui/dom/-/dom-1.8.0.tgz",
+      "integrity": "sha512-yXSrzeHZBTZadLOlfyhCkJHNeLJnHRnRInwdZ40L7ZiaAtrBwoYlsDrX3v5zB1Utk7CLfzcOVnVVWoXEky7Ceg==",
+      "tarballSha256": "b9511cc8fd8898c7c67143ff8dd93a3d427108632c801a546ae72ab1df3cd6a5",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@floating-ui/dom",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@floating-ui/dom",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/floating-ui__dom-1.8.0/LICENSE",
+          "bytes": 1089,
+          "sha256": "0e4c9a9b6c71019cbbea3bdc20b01223110a9035700f9c960c8fcbf78c2325ce",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/floating-ui__dom-1.8.0/upstream-package.json.txt",
+        "bytes": 1929,
+        "sha256": "59643af1b1bfc5a80b172c21ccbe21ea56eaa0115378f6077d9934458db25ac1"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@floating-ui/utils",
+      "version": "0.2.12",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@floating-ui/utils/-/utils-0.2.12.tgz",
+      "integrity": "sha512-HpCo8tmWzLVad5s2d19EhAz5zqrrQ6s69qd6moPMQvkOuSwDT1YgRfWSVuc4ennqrgv3OHppiOGMQ7oC13yIww==",
+      "tarballSha256": "fe0800a3de3d9c819bf63e525bf26080ce692969dda400c715780141a187928f",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@floating-ui/utils",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@floating-ui/utils",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/floating-ui__utils-0.2.12/LICENSE",
+          "bytes": 1089,
+          "sha256": "0e4c9a9b6c71019cbbea3bdc20b01223110a9035700f9c960c8fcbf78c2325ce",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/floating-ui__utils-0.2.12/upstream-package.json.txt",
+        "bytes": 1988,
+        "sha256": "b2138e8855520f4313f26ace0d93a9a9c9e6a862f0299a5aeaccb2370dd1bf40"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@jridgewell/sourcemap-codec",
+      "version": "1.6.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@jridgewell/sourcemap-codec/-/sourcemap-codec-1.6.0.tgz",
+      "integrity": "sha512-T7jf+5zgsZHwNJ4lvQ7/aezbyk0nNX+zJVWpmHA7VYsEx7a7qr5Rg5IbtJFqkgze5Y2sruq1RUY8Q837Od7iFw==",
+      "tarballSha256": "f30a35f6af8c347d01b8ff2f8662272f7d986cf21b916704d86c249a90b97e25",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/@jridgewell/sourcemap-codec",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@jridgewell/sourcemap-codec",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@jridgewell/sourcemap-codec",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/jridgewell__sourcemap-codec-1.6.0/LICENSE",
+          "bytes": 1080,
+          "sha256": "769d154fbde32a915af110b1123650bc79f4cbe675acc66e005265bf069c6c6c",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/jridgewell__sourcemap-codec-1.6.0/upstream-package.json.txt",
+        "bytes": 2185,
+        "sha256": "ac7afd57294dbee1f891ca797e19e405340f2cd6031808e6d3845fec60a5b43f"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@sxzz/popperjs-es",
+      "version": "2.11.8",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@sxzz/popperjs-es/-/popperjs-es-2.11.8.tgz",
+      "integrity": "sha512-wOwESXvvED3S8xBmcPWHs2dUuzrE4XiZeFu7e1hROIJkm02a49N120pmOXxY33sBb6hArItm5W5tcg1cBtV+HQ==",
+      "tarballSha256": "98bcbc57105f0cbc3461405ed047cf64eff3779f4f835b932edc63141eecc2e9",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@popperjs/core",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@popperjs/core",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/sxzz__popperjs-es-2.11.8/LICENSE.md",
+          "bytes": 1082,
+          "sha256": "bf67e2c9b7974543bb18ced3a0b37f53729aaff953b442dd89a3adaf90fd93e8",
+          "sourcePath": "LICENSE.md",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/sxzz__popperjs-es-2.11.8/upstream-package.json.txt",
+        "bytes": 4133,
+        "sha256": "94c7268e4a9f66375345e13a951fa66d015ff166a963506edee6027c4a658c56"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@tanstack/query-core",
+      "version": "5.104.1",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@tanstack/query-core/-/query-core-5.104.1.tgz",
+      "integrity": "sha512-TiRghcrGkUTE+M4JBxvpPSpBhxvIzQairw+cksrHYGr+2uwC77yW1SY9nYxnYRYOppvucf8rEg6b5byoz4rTpw==",
+      "tarballSha256": "7b09d92e8abf84713a3a33aa17fb3066d04e7a54c25f54b5b6d40b53daf5fd66",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@tanstack/query-core",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@tanstack/query-core",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/tanstack__query-core-5.104.1/LICENSE",
+          "bytes": 1079,
+          "sha256": "a405ee70c632bb938acb7ac5f210e814409b3760ea9d2329d8ed8ffcfd11a0e7",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/tanstack__query-core-5.104.1/upstream-package.json.txt",
+        "bytes": 2712,
+        "sha256": "ac5d0763eb06a76a1881315f806d634fb4e88321c37db4ffd757a8e167a85ace"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@tanstack/react-query",
+      "version": "5.104.1",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@tanstack/react-query/-/react-query-5.104.1.tgz",
+      "integrity": "sha512-Zz70EgjahNI7aCz8BZxM3vUGU44ycxEAzMuCUjLeA7SVhhOkg3ZgPjPJPvHjs6Rmky/dtmnu1WzjGHNHmhCoZQ==",
+      "tarballSha256": "d1a592011f2a344214006dbf4511ab0e46d0c171148595523447cd45db7e1ab5",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@tanstack/react-query",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@tanstack/react-query",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/tanstack__react-query-5.104.1/LICENSE",
+          "bytes": 1079,
+          "sha256": "a405ee70c632bb938acb7ac5f210e814409b3760ea9d2329d8ed8ffcfd11a0e7",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/tanstack__react-query-5.104.1/upstream-package.json.txt",
+        "bytes": 3629,
+        "sha256": "8e747c939b5ba98420d21118a689d52c17bee3407be126608c3591e82841c19c"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@types/lodash",
+      "version": "4.17.25",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@types/lodash/-/lodash-4.17.25.tgz",
+      "integrity": "sha512-+K1NIO8I+F9/wNulfVvu23QYd0Pe9/OCqRrim4NoYIf1VoEDL90Ve4ClzpyqBLc7NpGGWRvYNCKZ1BE/Jpf8dQ==",
+      "tarballSha256": "c5456b6e776ce6c61572bfda3a652af6977f31daf6307cb6a62a93c9dfcd3d03",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@types/lodash",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@types/lodash",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/types__lodash-4.17.25/LICENSE",
+          "bytes": 1141,
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/types__lodash-4.17.25/upstream-package.json.txt",
+        "bytes": 1691,
+        "sha256": "cf8bca120f8ddfea677ae74c80e4b92a70035f889a5721009c062d6baa5f9bbe"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@types/lodash-es",
+      "version": "4.17.12",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@types/lodash-es/-/lodash-es-4.17.12.tgz",
+      "integrity": "sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==",
+      "tarballSha256": "40866e90d4accef642c87704e8eae99724fe7cd7454f4d38f1757e793ee8462a",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@types/lodash-es",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@types/lodash-es",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/types__lodash-es-4.17.12/LICENSE",
+          "bytes": 1141,
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/types__lodash-es-4.17.12/upstream-package.json.txt",
+        "bytes": 1008,
+        "sha256": "6d8438f1cf2daf420336353e53326acc1476099dc95b4facc171a5efa9acb5dd"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@types/prop-types",
+      "version": "15.7.15",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.15.tgz",
+      "integrity": "sha512-F6bEyamV9jKGAFBEmlQnesRPGOQqS2+Uwi0Em15xenOxHaf2hv6L8YCVn3rPdPJOiJfPiCnLIRyvwVaqMY3MIw==",
+      "tarballSha256": "6a917895a313fc1d3c161c28fe39970c10bf2344cbb62e6eb7e9105c7ef43f62",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/@types/prop-types",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@types/prop-types",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@types/prop-types",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/types__prop-types-15.7.15/LICENSE",
+          "bytes": 1141,
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/types__prop-types-15.7.15/upstream-package.json.txt",
+        "bytes": 1152,
+        "sha256": "ec2aa770e306720d83d14e146d2fa59df6bd2a379a206f9a492e4d5f87e12179"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@types/react",
+      "version": "18.3.12",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@types/react/-/react-18.3.12.tgz",
+      "integrity": "sha512-D2wOSq/d6Agt28q7rSI3jhU7G6aiuzljDGZ2hTZHIkrTLUI+AF3WMeKkEZ9nN2fkBAlcktT6vcZjDFiIhMYEQw==",
+      "tarballSha256": "76e6197373bbd5d9c6e835b9050cced5847f1a875b38663278ea5625f89da2ae",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/@types/react",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@types/react",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@types/react",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/types__react-18.3.12/LICENSE",
+          "bytes": 1141,
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/types__react-18.3.12/upstream-package.json.txt",
+        "bytes": 6010,
+        "sha256": "f09f5e617e3e6695a7b0eb331a5991a91afa840f116f8e3145f9b5262d739266"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@types/react-transition-group",
+      "version": "4.4.12",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@types/react-transition-group/-/react-transition-group-4.4.12.tgz",
+      "integrity": "sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==",
+      "tarballSha256": "9b448e8d9197113c90c03cce0d2324caf9255192ecf85b76f1b0c087440c3576",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@types/react-transition-group",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@types/react-transition-group",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/types__react-transition-group-4.4.12/LICENSE",
+          "bytes": 1141,
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/types__react-transition-group-4.4.12/upstream-package.json.txt",
+        "bytes": 1344,
+        "sha256": "4bbc4d5ef67b5b515aab52042d049e19b5559504f3792e746adb6d876e79fd27"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@types/web-bluetooth",
+      "version": "0.0.21",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@types/web-bluetooth/-/web-bluetooth-0.0.21.tgz",
+      "integrity": "sha512-oIQLCGWtcFZy2JW77j9k8nHzAOpqMHLQejDA48XXMWH6tjCQHz5RCFz1bzsmROyL6PUm+LLnUiI4BCn221inxA==",
+      "tarballSha256": "4a4f306ca21c82e2dd4af488f32835101e30668463902643bf20ce14b076d5db",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@types/web-bluetooth",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@types/web-bluetooth",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/types__web-bluetooth-0.0.21/LICENSE",
+          "bytes": 1141,
+          "sha256": "c2cfccb812fe482101a8f04597dfc5a9991a6b2748266c47ac91b6a5aae15383",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/types__web-bluetooth-0.0.21/upstream-package.json.txt",
+        "bytes": 1432,
+        "sha256": "74f7dfe22ba2256a690ed3859d832bfeeb0470d019f0064613e4d25c6a8ca67a"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@vue/compiler-core",
+      "version": "3.5.43",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@vue/compiler-core/-/compiler-core-3.5.43.tgz",
+      "integrity": "sha512-zdiLhnbe1QQqgDT8xZMpNmyqZ3qlI+/Q/FHQco57Kwl/b05HhCzN6eVGN9QU9rbga4CrS0H5SYY8VGHZCt/1Hg==",
+      "tarballSha256": "70b573e270ee99268a15cb5df28043d17a7061940a13605f447bba4e135f5737",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@vue/compiler-core",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vue/compiler-core",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vue__compiler-core-3.5.43/LICENSE",
+          "bytes": 1091,
+          "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vue__compiler-core-3.5.43/upstream-package.json.txt",
+        "bytes": 1386,
+        "sha256": "807770bded967c94fb831230b89125c49a57c96517a7e4b8445be6f429fead04"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@vue/compiler-dom",
+      "version": "3.5.43",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@vue/compiler-dom/-/compiler-dom-3.5.43.tgz",
+      "integrity": "sha512-PEZoAk3NQmsn/ejMzSOCyTYqwGqczrWm70PuhBKjjv1+TCoQAaO/zOqNwjV+honlNstT5ILxtc+8r8UUfj+iEQ==",
+      "tarballSha256": "6aef009ad384ea23f257ad4320d8a947e5a13c55ba7c3be568055496843f9ac6",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@vue/compiler-dom",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vue/compiler-dom",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vue__compiler-dom-3.5.43/LICENSE",
+          "bytes": 1091,
+          "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vue__compiler-dom-3.5.43/upstream-package.json.txt",
+        "bytes": 1380,
+        "sha256": "0f18de20306ea6c4100cd46debb89b7503bfd2a62022cc890e67428d6747ef12"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@vue/compiler-sfc",
+      "version": "3.5.43",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@vue/compiler-sfc/-/compiler-sfc-3.5.43.tgz",
+      "integrity": "sha512-FCbrG3XNCRl+js3huuKx4IVHBLTvMkJhVepjbxSPu1gn4yWLaYtGNQdjJGZaMytXB6qb76qQDDmDSLy/vkmleQ==",
+      "tarballSha256": "8bbf67af327f2e8d1c4c09e37119f72e8bb5de19dcc5e8441ad2c1d06d162b9a",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@vue/compiler-sfc",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vue/compiler-sfc",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vue__compiler-sfc-3.5.43/LICENSE",
+          "bytes": 1091,
+          "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vue__compiler-sfc-3.5.43/upstream-package.json.txt",
+        "bytes": 1710,
+        "sha256": "add07941324745443d8414cf988e0cd2c1e11daceb346304a636fedaec715025"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@vue/compiler-ssr",
+      "version": "3.5.43",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@vue/compiler-ssr/-/compiler-ssr-3.5.43.tgz",
+      "integrity": "sha512-GF62orf7KiJX9RqrHNGrYBudsQGD0OhJ5nDs90O8UiDuS40+YMYomiXu6w6EuvtXuRDc3MSNis3EaaSKAVSWpg==",
+      "tarballSha256": "9c3e88f85b6e4bc866ed9c77983296cc215fb4467a5d470f483b660fcf3eb93c",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@vue/compiler-ssr",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vue/compiler-ssr",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vue__compiler-ssr-3.5.43/LICENSE",
+          "bytes": 1091,
+          "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vue__compiler-ssr-3.5.43/upstream-package.json.txt",
+        "bytes": 728,
+        "sha256": "a197fdd82cb501fde4214e8f782d482d1e534ce8b08473e7d04caca0fe253e45"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@vue/reactivity",
+      "version": "3.5.43",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@vue/reactivity/-/reactivity-3.5.43.tgz",
+      "integrity": "sha512-G/c9GyOZNI2jVaaS6OX1EF1SSFSv7H0ERqNTl4+DTFMlZmB5eVAB53aLQNam/7NL2NPtaDD7RdVrzf8uJzMuOA==",
+      "tarballSha256": "ef7feacb5854e48e624816ac51b4860119ad833e1a4d8a58fdcadc80190075e7",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@vue/reactivity",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vue/reactivity",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vue__reactivity-3.5.43/LICENSE",
+          "bytes": 1091,
+          "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vue__reactivity-3.5.43/upstream-package.json.txt",
+        "bytes": 1297,
+        "sha256": "6802677cbb164158a6211705d5f9c2b97090da80686721e967208159b593d7ba"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@vue/runtime-core",
+      "version": "3.5.43",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@vue/runtime-core/-/runtime-core-3.5.43.tgz",
+      "integrity": "sha512-hU6U6VnVhBGQDpvlnnDlIB8ZGJBiOcgk2lh/0InltHiz3D8oSkluvuvY+do1G2H3+udeKFsmaBlgVYP7gXQzEw==",
+      "tarballSha256": "7b70acd11986827e3dffc3b890f352471598c335687de4f7a566be291b473471",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@vue/runtime-core",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vue/runtime-core",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vue__runtime-core-3.5.43/LICENSE",
+          "bytes": 1091,
+          "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vue__runtime-core-3.5.43/upstream-package.json.txt",
+        "bytes": 1233,
+        "sha256": "5305e8a668b201b4726126f2a7815696ea41915ecb478b96f96f42cca0b5854c"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@vue/runtime-dom",
+      "version": "3.5.43",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@vue/runtime-dom/-/runtime-dom-3.5.43.tgz",
+      "integrity": "sha512-Bb2Jc0YjjJdMt1SJmb9b2L/IWd3I8lIT9x9eS/xvvP9CiVgna0ffua74xKRmt4/uSJ+0r4iN8ex1jrqkhQGWQw==",
+      "tarballSha256": "2c6c69faedd00a8122875df90d6600afcc4881b2fc3c3e8a9fb2d3b9117de9d5",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@vue/runtime-dom",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vue/runtime-dom",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vue__runtime-dom-3.5.43/LICENSE",
+          "bytes": 1091,
+          "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vue__runtime-dom-3.5.43/upstream-package.json.txt",
+        "bytes": 1424,
+        "sha256": "abfce0719cb6a045568c5aaf803209b79809c0945e32b3363ecc9100d869a6ac"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@vue/server-renderer",
+      "version": "3.5.43",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@vue/server-renderer/-/server-renderer-3.5.43.tgz",
+      "integrity": "sha512-l2Ygjv9NehV94PSBxNWsAHC0j/eIIKbn92mBuWXAPGLnn6HfJ6MH5ubsd+Nk0YoZ5FRuxWI1P2VSoh+dbPQhCQ==",
+      "tarballSha256": "63563e6194fd97dade57fbea984b768911ffb1580d2d589906d27a9770a47406",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@vue/server-renderer",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vue/server-renderer",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vue__server-renderer-3.5.43/LICENSE",
+          "bytes": 1091,
+          "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vue__server-renderer-3.5.43/upstream-package.json.txt",
+        "bytes": 1302,
+        "sha256": "6b880dfac934aa70d8a5b1cf08482ca387ac001c9a7b37779ae26500f79fab4e"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@vue/shared",
+      "version": "3.5.43",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@vue/shared/-/shared-3.5.43.tgz",
+      "integrity": "sha512-uksS7YGMR5NZyr4JNq0Rp+QyLns0ueaz20KwzIPW9R0LH1Vnt4E+XUM29PNseEbf1www2gOuhuDi5AKOIXag9Q==",
+      "tarballSha256": "759b4f863f44b01e115574fb7083b024ac5dd820b9a861aeff2cb554a87c70a8",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@vue/shared",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vue/shared",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vue__shared-3.5.43/LICENSE",
+          "bytes": 1091,
+          "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vue__shared-3.5.43/upstream-package.json.txt",
+        "bytes": 1082,
+        "sha256": "d07532b80ccae41694f2dc2f1a66ed598d2be8c96d540b82630e9f40c85b5189"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@vueuse/core",
+      "version": "15.0.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@vueuse/core/-/core-15.0.0.tgz",
+      "integrity": "sha512-Zv67h5mrk7YHDJsRObx+DXaCBz6RKBUpxqLesJ+3xZNPG6yuQs7ja7kg3veFrrouYLWAqydQ7CwGEbLVxB43Ng==",
+      "tarballSha256": "d80df4cb654da853938dece8f68553bfae78ecb660d8aad1b34e0d8165c92bec",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@vueuse/core",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vueuse/core",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vueuse__core-15.0.0/LICENSE",
+          "bytes": 1101,
+          "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vueuse__core-15.0.0/upstream-package.json.txt",
+        "bytes": 1317,
+        "sha256": "474d54c4c405bde477162052aadaf789b9de092b901ce10ba8f5dab9524d37de"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@vueuse/metadata",
+      "version": "15.0.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@vueuse/metadata/-/metadata-15.0.0.tgz",
+      "integrity": "sha512-sfWE5LADAKJ0KnjtGliMdSN8Ij/L7uP6rXIZlgPloAI4zvvefbw6H5Lt7KJA6RqQOYgVqWF5Guj50HHMIzygBg==",
+      "tarballSha256": "e7a8d8ba13ec8d1c2783445b6f9991cd344bee314a75262d01b8c43bb4c54965",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@vueuse/metadata",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vueuse/metadata",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vueuse__metadata-15.0.0/LICENSE",
+          "bytes": 1101,
+          "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vueuse__metadata-15.0.0/upstream-package.json.txt",
+        "bytes": 958,
+        "sha256": "70a2557d0d95e34e512fbb080e5c373427e70e4c1ad21fb1798f74c720e6fcb9"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "@vueuse/shared",
+      "version": "15.0.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/@vueuse/shared/-/shared-15.0.0.tgz",
+      "integrity": "sha512-vbNXhGrbV53xPOMSyOzMHQRvhMgZf7oNDw2RChUetVxwTIEkInQ1joZ9JbT0G3z2n2AJNjvmCWeM9ySYrnvogA==",
+      "tarballSha256": "a666633dc0b5827ffdb2a7bd7920a7401ca23829aa9763562028b10127a8405a",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/@vueuse/shared",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vueuse/shared",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vueuse__shared-15.0.0/LICENSE",
+          "bytes": 1101,
+          "sha256": "0f844b1160603552a01662ac2999c14e5fb4df487e65619b9ed4406e43eb3c0b",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vueuse__shared-15.0.0/upstream-package.json.txt",
+        "bytes": 1006,
+        "sha256": "c0db6ce5b63842434470dabd7ff491673a822e11a9e76fd7cdc40f1b7ed17906"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "async-validator",
+      "version": "4.2.5",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/async-validator/-/async-validator-4.2.5.tgz",
+      "integrity": "sha512-7HhHjtERjqlNbZtqNqy2rckN/SpOOlmDliet+lP7k+eKZEjPk3DgyeU9lIXLdeLz0uBbbVp+9Qdow9wJWgwwfg==",
+      "tarballSha256": "874ba8a95745f43093e9f9b0b04a9d84ee2f1550bd11450ebbcaed65f37c01c2",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/async-validator",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/async-validator",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/async-validator-4.2.5/LICENSE.md",
+          "bytes": 1083,
+          "sha256": "5d0427088e37071c4b942de990f6365d5c2d195f3e957ce925322d184784e2eb",
+          "sourcePath": "LICENSE.md",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/async-validator-4.2.5/upstream-package.json.txt",
+        "bytes": 1167,
+        "sha256": "3f91af4429bb8871ebd4c59dcf8b52b06fa9f4d6f6398a1d72f9258c255f40cc"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "csstype",
+      "version": "3.2.3",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/csstype/-/csstype-3.2.3.tgz",
+      "integrity": "sha512-z1HGKcYy2xA8AGQfwrn0PAy+PB7X/GSj3UVJW9qKyn43xWa+gl5nXmU4qqLMRzWVLFC8KusUX8T/0kCiOYpAIQ==",
+      "tarballSha256": "f3501f8ee1c73f7568fecb22c11231162c0467e59262461da5579519307427a3",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/csstype",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "templates/modern-app/web",
+          "relative": "node_modules/csstype",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/csstype",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/csstype",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-modern",
+          "relative": "node_modules/csstype",
+          "development": true,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/csstype-3.2.3/LICENSE",
+          "bytes": 1062,
+          "sha256": "11d55bd4541c75ee7879547ac49089c489163dae49551389713c3d026cab383e",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/csstype-3.2.3/upstream-package.json.txt",
+        "bytes": 1985,
+        "sha256": "c818b74a9bc1556488b7ec2a65399224738f6619228f9a6491c5c02ca91f849e"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "dayjs",
+      "version": "1.11.23",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/dayjs/-/dayjs-1.11.23.tgz",
+      "integrity": "sha512-QDTCU0M0MxR3hQfnlDJfwekQiaanm1ubOD231u73WBckQ/fsamwRLiE2GBz6D3a/xF1NgfiDLJjXBa1hYOYTtQ==",
+      "tarballSha256": "7da0ff55ddb6d4050b91ea0a11a8e9d92c048305155039387373f20be080e594",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/dayjs",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/dayjs",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/dayjs-1.11.23/LICENSE",
+          "bytes": 1072,
+          "sha256": "5faab7526d055651be3aab769d58897be6bd91f3d39d137f25f12dba1b31d5dc",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/dayjs-1.11.23/upstream-package.json.txt",
+        "bytes": 2974,
+        "sha256": "680d74784223a074188617adc534fa5460171176d9904501241bbea087c3963b"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "dom-helpers",
+      "version": "5.2.1",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/dom-helpers/-/dom-helpers-5.2.1.tgz",
+      "integrity": "sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==",
+      "tarballSha256": "8391d72aaa505137d4db8701c3331197cf0cb0e7346d0fab0750a7d55443c89a",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/dom-helpers",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/dom-helpers",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/dom-helpers-5.2.1/LICENSE",
+          "bytes": 1078,
+          "sha256": "1b0a9ba95a67bc484e028b13c61b83fc5aa1ca7957d1e2d43c2b0f70d9e9dd45",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/dom-helpers-5.2.1/upstream-package.json.txt",
+        "bytes": 1029,
+        "sha256": "efce7444ae9b3409183abbf4f09fdb5207217a38ad504c87ace88e1975a1d083"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "element-plus",
+      "version": "2.14.7",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/element-plus/-/element-plus-2.14.7.tgz",
+      "integrity": "sha512-lrG7pZyCS+mpCNVpzxxyu5r35+T6V0hzkAeIwn7HA6to772XSTHKuYCZG51OfzlqaxGbNegLxs650zAF1j43gA==",
+      "tarballSha256": "dd25576c491fab924dd0fb4d16cc079531a9b860cd07f6b0b3431b657e2fa85a",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/element-plus",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/element-plus",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/element-plus-2.14.7/LICENSE",
+          "bytes": 1077,
+          "sha256": "0790118bb4d66681db1d63181f72ef68e632d632f6db0373ef87cf328561af27",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/element-plus-2.14.7/upstream-package.json.txt",
+        "bytes": 2808,
+        "sha256": "0961f44f974f854a8899154d48e1726bfb5f8a85e8875c2efed987e826a39f6a"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "entities",
+      "version": "7.0.1",
+      "declaredLicense": "BSD-2-Clause",
+      "resolved": "https://registry.npmjs.org/entities/-/entities-7.0.1.tgz",
+      "integrity": "sha512-TWrgLOFUQTH994YUyl1yT4uyavY5nNB5muff+RtWaqNVCAK408b5ZnnbNAUEWLTCpum9w6arT70i1XdQ4UeOPA==",
+      "tarballSha256": "554b7e2a79fa9eda0439714011fa42d77c6829842faa91e022070015bfd483a0",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/entities",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/entities",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/entities-7.0.1/LICENSE",
+          "bytes": 1260,
+          "sha256": "cb992345949ccd6e8394b2cd6c465f7b897c864f845937dbf64e8997f389e164",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/entities-7.0.1/upstream-package.json.txt",
+        "bytes": 3740,
+        "sha256": "b33b5d3fd4a8e196d3245c10ebb8feb2e076fc8d392f99a1050377d6e2b8b641"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "estree-walker",
+      "version": "2.0.2",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/estree-walker/-/estree-walker-2.0.2.tgz",
+      "integrity": "sha512-Rfkk/Mp/DL7JVje3u18FxFujQlTNR2q6QfMSMB7AvCBx91NGj/ba3kCfza0f6dVDbw7YlRf/nDrn7pQrCCyQ/w==",
+      "tarballSha256": "302931e539a9c5568d56634119290c4df9a7bde64a2f2dbc646d6013e3b03c58",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/estree-walker",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/estree-walker",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/estree-walker-2.0.2/LICENSE",
+          "bytes": 1126,
+          "sha256": "8a6dcbabe7179f9c8489c08a7d874d0f1e093ae7449e03756ccf87cb9d0e296e",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/estree-walker-2.0.2/upstream-package.json.txt",
+        "bytes": 848,
+        "sha256": "6f08430331daeaedaa35e7a8ca347cdb7493922fe9485bf57eb4d619cfb0b3ad"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "js-tokens",
+      "version": "4.0.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/js-tokens/-/js-tokens-4.0.0.tgz",
+      "integrity": "sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==",
+      "tarballSha256": "d884c7a2d8adb5568c1272d92b4f9c62707f4226cf9e7b22e7b957c7361e3c53",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/js-tokens",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/js-tokens",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/js-tokens",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/js-tokens-4.0.0/LICENSE",
+          "bytes": 1103,
+          "sha256": "2213d91c606205c71eb051a199478cdc2adde945893404d7f1421436dd6d5cc1",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/js-tokens-4.0.0/upstream-package.json.txt",
+        "bytes": 649,
+        "sha256": "47345931827b3e26db9fe690abb81f856a0d040cbca8af1e69711a64cd58ce0d"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "lodash",
+      "version": "4.18.1",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/lodash/-/lodash-4.18.1.tgz",
+      "integrity": "sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==",
+      "tarballSha256": "696942c2a488c9d7428e9ca5f12ccf03b52de01dcdbfe4d4751d392f0491ae16",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/lodash",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/lodash",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/lodash-4.18.1/LICENSE",
+          "bytes": 1952,
+          "sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/lodash-4.18.1/upstream-package.json.txt",
+        "bytes": 583,
+        "sha256": "5ef0a453b679125b155af19e1477f93b577ea826a57e1545f77608d326966e6a"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "lodash-es",
+      "version": "4.18.1",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/lodash-es/-/lodash-es-4.18.1.tgz",
+      "integrity": "sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A==",
+      "tarballSha256": "b0c810e5cd4cd580ed7b18fc71384b9a80c151dc5c85b1729bd656a49e3f16f8",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/lodash-es",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/lodash-es",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/lodash-es-4.18.1/LICENSE",
+          "bytes": 1952,
+          "sha256": "f71e8ed126b46346494aad5486874cd8f0aafe95092ed67d2e3cb6110f939abc",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/lodash-es-4.18.1/upstream-package.json.txt",
+        "bytes": 724,
+        "sha256": "83d054ea84cf0efe4db931cf24c4ca9dde533a0e49779d26176be9d43061c903"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "lodash-unified",
+      "version": "1.0.3",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/lodash-unified/-/lodash-unified-1.0.3.tgz",
+      "integrity": "sha512-WK9qSozxXOD7ZJQlpSqOT+om2ZfcT4yO+03FuzAHD0wF6S0l0090LRPDx3vhTTLZ8cFKpBn+IOcVXK6qOcIlfQ==",
+      "tarballSha256": "22282888b7d6042186f7b241a6d3376a059feffa3ebe1647bbfdd9893b16e3a2",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/lodash-unified",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/lodash-unified",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [],
+      "declaration": {
+        "path": "third_party/licenses/npm/lodash-unified-1.0.3/upstream-package.json.txt",
+        "bytes": 637,
+        "sha256": "23fa098f88e0f8718bb68854b3574b4649f593065ecf56632c7f4adf23836c24"
+      },
+      "completeTextSupplied": false
+    },
+    {
+      "name": "loose-envify",
+      "version": "1.4.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/loose-envify/-/loose-envify-1.4.0.tgz",
+      "integrity": "sha512-lyuxPGr/Wfhrlem2CL/UcnUc1zcqKAImBDzukY7Y5F/yQiNdko6+fRLevlw1HgMySw7f611UIY408EtxRSoK3Q==",
+      "tarballSha256": "1218830a93538a4f730d530138e945ea6a65b45e099ee7a9ea538a05141babdc",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/loose-envify",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/loose-envify",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/loose-envify",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/loose-envify-1.4.0/LICENSE",
+          "bytes": 1100,
+          "sha256": "4eb7543b08d955a6d23fcc224601d43ff566e775be918805e26210d7f6eb4893",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/loose-envify-1.4.0/upstream-package.json.txt",
+        "bytes": 809,
+        "sha256": "8c2e27dae366396ced36fe0f7c6d35d71a1440fd8e82df5f2005a5297888a0d4"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "magic-string",
+      "version": "0.30.21",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/magic-string/-/magic-string-0.30.21.tgz",
+      "integrity": "sha512-vd2F4YUyEXKGcLHoq+TEyCjxueSeHnFxyyjNp80yg0XV4vUhnDer/lvvlqM/arB5bXQN5K2/3oinyCRyx8T2CQ==",
+      "tarballSha256": "fa49762567dca44e8ccf327f365d250e04c482bf7a4ed0ae7d03659b09ac656f",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/magic-string",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/magic-string",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/magic-string",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/magic-string-0.30.21/LICENSE",
+          "bytes": 1051,
+          "sha256": "1cbe51b907662f6cb1492b16c359384a595180bf0e4d101603ed525e75c4e484",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/magic-string-0.30.21/upstream-package.json.txt",
+        "bytes": 1840,
+        "sha256": "86814aaf7dacba9d31fbf361c3285981f1cbbda0a87108caa4131d297bd9eba2"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "memoize-one",
+      "version": "6.0.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/memoize-one/-/memoize-one-6.0.0.tgz",
+      "integrity": "sha512-rkpe71W0N0c0Xz6QD0eJETuWAJGnJ9afsl1srmwPrI+yBCkge5EycXXbYRyvL29zZVUWQCY7InPRCv3GDXuZNw==",
+      "tarballSha256": "7e6d483e2b10e027b1592f8c47d95972039f8b205e2906ae58026620591b1fdb",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/memoize-one",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/memoize-one",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/memoize-one-6.0.0/LICENSE",
+          "bytes": 1073,
+          "sha256": "b1c501095de70182748cb8e8d97ac5577701a4ef3b755ba30d59fd87b24bdb0f",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/memoize-one-6.0.0/upstream-package.json.txt",
+        "bytes": 3179,
+        "sha256": "9941ebd5b052013e100b477c272a8e20d63c1bc7c57646da077a895c0b483e2f"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "nanoid",
+      "version": "3.3.20",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/nanoid/-/nanoid-3.3.20.tgz",
+      "integrity": "sha512-uKdg2G3GNCKQn9byYOpxbGqrT2fGO5KRt5J/8b3pok8rT6qxGWF6hxMyJiEYtAf+FVyYuD9hRaDqX5uPFYJ4ZQ==",
+      "tarballSha256": "5ae134779aa22c2c04b691d361bc1f3c004c354e81c7ee166ea1c6e848eedc4f",
+      "uses": [
+        {
+          "scope": "templates/modern-app/web",
+          "relative": "node_modules/nanoid",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/nanoid",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/nanoid",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-modern",
+          "relative": "node_modules/nanoid",
+          "development": true,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/nanoid-3.3.20/LICENSE",
+          "bytes": 1095,
+          "sha256": "da4db1480d9beea3483a2eda5c53b22238d0827d57da162b48f122e04d2d9987",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/nanoid-3.3.20/upstream-package.json.txt",
+        "bytes": 2295,
+        "sha256": "e2a77185ded1c006171e4e2f8b316d0e3b4c51a135a190851cfc888ea428f6bf"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "normalize-wheel-es",
+      "version": "1.2.0",
+      "declaredLicense": "BSD-3-Clause",
+      "resolved": "https://registry.npmjs.org/normalize-wheel-es/-/normalize-wheel-es-1.2.0.tgz",
+      "integrity": "sha512-Wj7+EJQ8mSuXr2iWfnujrimU35R2W4FAErEyTmJoJ7ucwTn2hOUSsRehMb5RSYkxXGTM7Y9QpvPmp++w5ftoJw==",
+      "tarballSha256": "0d5cc3a7cbaad3a284f434bb8ad63b82e10db81bd47b3e8d18f86a13d7a46e81",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/normalize-wheel-es",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/normalize-wheel-es",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/normalize-wheel-es-1.2.0/LICENSE",
+          "bytes": 1527,
+          "sha256": "658d037c5c078a24c27ab1e0f37050d407ad6628be94886a4e48f3e761f47f7d",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/normalize-wheel-es-1.2.0/upstream-package.json.txt",
+        "bytes": 967,
+        "sha256": "32d56b12d2ca2af82888c231d65efd173e2898b22966129038b6b555e36f9606"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "object-assign",
+      "version": "4.1.1",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/object-assign/-/object-assign-4.1.1.tgz",
+      "integrity": "sha512-rJgTQnkUnH1sFw8yT6VSU3zD3sWmu6sZhIseY8VX+GRu3P6F7Fu+JNDoXfklElbLJSnc3FUQHVe4cU5hj+BcUg==",
+      "tarballSha256": "782d726a263ba7b26cced612af97b80035516df4b0cd788524e7b2cebc4e29ed",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/object-assign",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/object-assign",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/object-assign-4.1.1/license",
+          "bytes": 1119,
+          "sha256": "6fb9754611c20f6649f68805e8c990e83261f29316e29de9e6cedae607b8634c",
+          "sourcePath": "license",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/object-assign-4.1.1/upstream-package.json.txt",
+        "bytes": 764,
+        "sha256": "5990bbffa235fc675debd925d50f6c3f48a2b4526d8c9f7555cadec9029d0d7f"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "picocolors",
+      "version": "1.1.1",
+      "declaredLicense": "ISC",
+      "resolved": "https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz",
+      "integrity": "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA==",
+      "tarballSha256": "d3aedb2807967b7eb37fd11b03b7e3701e725af79c650d0812ff7213f8f882d9",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/picocolors",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "templates/modern-app/web",
+          "relative": "node_modules/picocolors",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/picocolors",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/picocolors",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-modern",
+          "relative": "node_modules/picocolors",
+          "development": true,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/picocolors-1.1.1/LICENSE",
+          "bytes": 787,
+          "sha256": "6582629e2979466878f6014313dcc2f3756c9616148682227ce3063dde310750",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/picocolors-1.1.1/upstream-package.json.txt",
+        "bytes": 552,
+        "sha256": "ef2ac226c4811d312e12c64214c453878653e834482125ae475f27cea60de737"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "postcss",
+      "version": "8.5.29",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/postcss/-/postcss-8.5.29.tgz",
+      "integrity": "sha512-49cGhUbXj8Qenv0iTMxA1cFBzxXoctpC9Ujd77t1WcbJIr6nF/eI7g/8MgxrYldFRuAXvja7xQRwavoW7kgrxQ==",
+      "tarballSha256": "c02fcaea0bef927cae3a287dd6c316d8a9da12c8b9ba104f2387978fbe16234d",
+      "uses": [
+        {
+          "scope": "templates/modern-app/web",
+          "relative": "node_modules/postcss",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/postcss",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/@vue/compiler-sfc/node_modules/postcss",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-modern",
+          "relative": "node_modules/postcss",
+          "development": true,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/postcss-8.5.29/LICENSE",
+          "bytes": 1095,
+          "sha256": "5be1f3465bba68a626777f984878814aaf35e7ef8e9fd314d469bcf887050fb8",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/postcss-8.5.29/upstream-package.json.txt",
+        "bytes": 2497,
+        "sha256": "d6f3d1e4970b5f3b4424348769974fecc13afccefccb95f09f8883f70b7f3d2e"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "primeicons",
+      "version": "7.0.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/primeicons/-/primeicons-7.0.0.tgz",
+      "integrity": "sha512-jK3Et9UzwzTsd6tzl2RmwrVY/b8raJ3QZLzoDACj+oTJ0oX7L9Hy+XnVwgo4QVKlKpnP/Ur13SXV/pVh4LzaDw==",
+      "tarballSha256": "74fa5e13924747d4d99bbfcc2b4944b7f806f23dc5b24cf9e5fbd8c99ad4afcf",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/primeicons",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/primeicons",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/primeicons-7.0.0/LICENSE",
+          "bytes": 1070,
+          "sha256": "140e5886a54d897d852dbf7eeffd2c464467eddfcb04374241f90c61658493bd",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/primeicons-7.0.0/upstream-package.json.txt",
+        "bytes": 420,
+        "sha256": "e89d41dd5a675f1a92959991bd5c51b333500b5af8e05d246b9df2c1fa8d7ed0"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "primereact",
+      "version": "10.9.9",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/primereact/-/primereact-10.9.9.tgz",
+      "integrity": "sha512-cM2mI1+usdIhQQQZre85Lv2GaiYrKaRlTUT+xXQSWwhPmel+YwhljNQ210mpjuY30aF3eQg6hU5Yl0VwJp0PWQ==",
+      "tarballSha256": "41f18aa2af269513b8494330199b2af05e262951f071a181d2d917b5ae53a8ff",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/primereact",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/primereact",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/primereact-10.9.9/LICENSE.md",
+          "bytes": 1080,
+          "sha256": "9ec5e42e1b43dec267b8a8a43fc975d22039cb1cd4dde8dbf92561cf203fb3cc",
+          "sourcePath": "LICENSE.md",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/primereact-10.9.9/upstream-package.json.txt",
+        "bytes": 1817,
+        "sha256": "681beee9345620e296d1cf329096a457b01cfabe508ee964702a3f5486338961"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "prop-types",
+      "version": "15.8.1",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz",
+      "integrity": "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==",
+      "tarballSha256": "1c739eb05d8a462c286a4e9dd02f2ce5485c6fa3529244e9ff9b13a3671aa557",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/prop-types",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/prop-types",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/prop-types-15.8.1/LICENSE",
+          "bytes": 1080,
+          "sha256": "f657f99d3fb9647db92628e96007aabb46e5f04f33e49999075aab8e250ca7ce",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/prop-types-15.8.1/upstream-package.json.txt",
+        "bytes": 1656,
+        "sha256": "96aa387585c686397a80616d6a563759576e9b9fac1f80d57874aa4ee4730a2c"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "react",
+      "version": "18.3.1",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/react/-/react-18.3.1.tgz",
+      "integrity": "sha512-wS+hAgJShR0KhEvPJArfuPVN1+Hz1t0Y6n5jLrGQbkb4urgPE/0Rve+1kMB1v/oWgHgm4WIcV+i7F2pTVj+2iQ==",
+      "tarballSha256": "8d9bed01a672e7eaf387942d781ad47c6a43089a30a0306060f9fd5ac7870347",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/react",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/react",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/react",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/react-18.3.1/LICENSE",
+          "bytes": 1086,
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/react-18.3.1/upstream-package.json.txt",
+        "bytes": 999,
+        "sha256": "d4e68a5c96babb20cad1daafea8b78822eae45b341552cf5418d06a5304fa64c"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "react",
+      "version": "19.3.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/react/-/react-19.3.0.tgz",
+      "integrity": "sha512-E8LUcbtBWt20bbl2YoHfx4ZDBdxVTfOKtCZn9cDSJ4l6/nuoApcpIBcj47t2wZoVX8g2ZHuMHbiShgCR1T5Sog==",
+      "tarballSha256": "5a4024110c49476e1538a70fd65b9e59d038fcc280b78eb933c24e10453afbf9",
+      "uses": [
+        {
+          "scope": "templates/modern-app/web",
+          "relative": "node_modules/react",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-modern",
+          "relative": "node_modules/react",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/react-19.3.0/LICENSE",
+          "bytes": 1088,
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/react-19.3.0/upstream-package.json.txt",
+        "bytes": 1242,
+        "sha256": "6e003e4e9ed25afa7fdd55613f8aa877cefa9b359d9c13f81ee704030248e24e"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "react-dom",
+      "version": "18.3.1",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-18.3.1.tgz",
+      "integrity": "sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==",
+      "tarballSha256": "031d4427a99f2f3f6cac18bbbf308594a67e4f47d10f4896fdec446505b040e0",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/react-dom",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/react-dom",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/react-dom",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/react-dom-18.3.1/LICENSE",
+          "bytes": 1086,
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/react-dom-18.3.1/upstream-package.json.txt",
+        "bytes": 1353,
+        "sha256": "d2f29e31bd48b833e48cd7bbf41f192e8ee4ff8da249fdbe10d4ac4114b8b12e"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "react-dom",
+      "version": "19.3.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/react-dom/-/react-dom-19.3.0.tgz",
+      "integrity": "sha512-JDk8dgif51OjFoDE70+OT9ICyYr+69HlmihNwp1+Nsfbna3t5sIiCa9ZJktDmQ4/1b/rn26hIAR2uYXDMr5r0Q==",
+      "tarballSha256": "dbeffb1e6cdbbbba07f799da4635333d0e20c210a32278dded85441ec4cb6a17",
+      "uses": [
+        {
+          "scope": "templates/modern-app/web",
+          "relative": "node_modules/react-dom",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-modern",
+          "relative": "node_modules/react-dom",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/react-dom-19.3.0/LICENSE",
+          "bytes": 1088,
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/react-dom-19.3.0/upstream-package.json.txt",
+        "bytes": 3054,
+        "sha256": "136d4af63de473392ea79d6a21932b0ed9eb37fe518ce70f4621250f3d79e9bb"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "react-is",
+      "version": "16.13.1",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz",
+      "integrity": "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==",
+      "tarballSha256": "0bdbb5d473ddc13e850987f3937666e261b6a3a8fcaffddd8195953ff0faee8f",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/react-is",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/react-is",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/react-is-16.13.1/LICENSE",
+          "bytes": 1086,
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/react-is-16.13.1/upstream-package.json.txt",
+        "bytes": 530,
+        "sha256": "06784c4340af9853928c519791684487b83076b3c84e8de6ba5f240e33700b71"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "react-transition-group",
+      "version": "4.4.5",
+      "declaredLicense": "BSD-3-Clause",
+      "resolved": "https://registry.npmjs.org/react-transition-group/-/react-transition-group-4.4.5.tgz",
+      "integrity": "sha512-pZcd1MCJoiKiBR2NRxeCRg13uCXbydPnmB4EOeRrY7480qNWO8IIgQG6zlDkm6uRMsURXPuKq0GWtiM59a5Q6g==",
+      "tarballSha256": "30a70dea3287ae9638e9d31974add118ff34011c3642d4f83d31e90c0a8a034a",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/react-transition-group",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/react-transition-group",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/react-transition-group-4.4.5/LICENSE",
+          "bytes": 1608,
+          "sha256": "b9adc17ad75a847d8743be2843935f0842a0ea4f45e7b0c7e17ed0be98614b9b",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/react-transition-group-4.4.5/upstream-package.json.txt",
+        "bytes": 1546,
+        "sha256": "2c6a5bfbbe8f65366df04ef7ea28a32fe6d8a8e582f3d68afb84ff3d3c86436a"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "resize-observer-polyfill",
+      "version": "1.5.1",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/resize-observer-polyfill/-/resize-observer-polyfill-1.5.1.tgz",
+      "integrity": "sha512-LwZrotdHOo12nQuZlHEmtuXdqGoOD0OhaxopaNFxWzInpEgaLWoVuAMbTzixuosCx2nEG58ngzW3vxdWoxIgdg==",
+      "tarballSha256": "40fcbb21fabb32098277c04b9afce8b1f0d45a0c37ae9bd968482dc59076fa8d",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/resize-observer-polyfill",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/resize-observer-polyfill",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/resize-observer-polyfill-1.5.1/LICENSE",
+          "bytes": 1097,
+          "sha256": "49fad6f35ac45600d018ee56051c63e52103820d97d5ad512fe7018ec395b3df",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/resize-observer-polyfill-1.5.1/upstream-package.json.txt",
+        "bytes": 2450,
+        "sha256": "c4ae0c7a3684661179b5fda9db8f9fa45b2f0ad1840c43812374c1e1df5a3894"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "scheduler",
+      "version": "0.23.2",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/scheduler/-/scheduler-0.23.2.tgz",
+      "integrity": "sha512-UOShsPwz7NrMUqhR6t0hWjFduvOzbtv7toDH1/hIrfRNIDBnnBWd0CwJTGvTpngVlmwGCdP9/Zl/tVrDqcuYzQ==",
+      "tarballSha256": "e4f1d8fe63a9ab93ef66c92b0ad1af9c1326adbf7f1bd5e9053cac0fee6f26ae",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/scheduler",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/scheduler",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/scheduler",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/scheduler-0.23.2/LICENSE",
+          "bytes": 1086,
+          "sha256": "52412d7bc7ce4157ea628bbaacb8829e0a9cb3c58f57f99176126bc8cf2bfc85",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/scheduler-0.23.2/upstream-package.json.txt",
+        "bytes": 700,
+        "sha256": "0893643a24576d727174e639586b8833a53f2a7b4a2199a719b9cfcebe9bae88"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "scheduler",
+      "version": "0.28.0",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/scheduler/-/scheduler-0.28.0.tgz",
+      "integrity": "sha512-juorfCmIkIw8tT+p5BXSm6PJjQF/ycEYmKyzURCIt/RaZIhL+PulbQ9Yu2z1HdOJDdqDTlxA1+xKBmHXJsczAw==",
+      "tarballSha256": "302995d590e3c0a11eeb40d1d0f299c1df1800135d599d85cdd5faeb614f32d6",
+      "uses": [
+        {
+          "scope": "templates/modern-app/web",
+          "relative": "node_modules/scheduler",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-modern",
+          "relative": "node_modules/scheduler",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/scheduler-0.28.0/LICENSE",
+          "bytes": 1088,
+          "sha256": "da6d3703ed11cbe42bd212c725957c98da23cbff1998c05fa4b3d976d1a58e93",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/scheduler-0.28.0/upstream-package.json.txt",
+        "bytes": 558,
+        "sha256": "06290718f22bcd93f29eaa1ac8d2ec9a7592ba4fec12bf1230e7cdd9a871b324"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "source-map-js",
+      "version": "1.2.2",
+      "declaredLicense": "BSD-3-Clause",
+      "resolved": "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.2.tgz",
+      "integrity": "sha512-KGj/8Y43x35aZVDtt+J4mK1hoLGHULMYfSkODJNQjNDC3oW1PqPoxMwo0pLUsWM/UEGzON/NxeHywEfNXNP3Vw==",
+      "tarballSha256": "05c8cf8e7c3a6b56cada7668fe9342b10f4b625efc92aba9ba05b9e8fe4d71a3",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/source-map-js",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "templates/modern-app/web",
+          "relative": "node_modules/source-map-js",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/source-map-js",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/source-map-js",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-modern",
+          "relative": "node_modules/source-map-js",
+          "development": true,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/source-map-js-1.2.2/LICENSE",
+          "bytes": 1526,
+          "sha256": "6cb0631f71c7749763fd3dd1d5bee52dd1070ec17f2edc1710079ad070bd2fbd",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/source-map-js-1.2.2/upstream-package.json.txt",
+        "bytes": 2548,
+        "sha256": "9f1ea63b1661d0f6e5fcd50b625d86cddd77de870a0019b23262360987b487f5"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "typescript",
+      "version": "5.9.3",
+      "declaredLicense": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-5.9.3.tgz",
+      "integrity": "sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==",
+      "tarballSha256": "10e108c9cf7d5f2879053dff18515fb405abf2ccef63eaaf017d9c571687a1d3",
+      "uses": [
+        {
+          "scope": "templates/desktop-app/web",
+          "relative": "node_modules/typescript",
+          "development": true,
+          "optional": false
+        },
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/typescript",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/typescript",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/typescript-5.9.3/LICENSE.txt",
+          "bytes": 9197,
+          "sha256": "a7d00bfd54525bc694b6e32f64c7ebcf5e6b7ae3657be5cc12767bce74654a47",
+          "sourcePath": "LICENSE.txt",
+          "installedMatched": true
+        },
+        {
+          "path": "third_party/licenses/npm/typescript-5.9.3/ThirdPartyNoticeText.txt",
+          "bytes": 37824,
+          "sha256": "1af3c68039c57e539422da82a4faada506ce6d0ea6f90e0b699d02dbcdb7a90c",
+          "sourcePath": "ThirdPartyNoticeText.txt",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/typescript-5.9.3/upstream-package.json.txt",
+        "bytes": 3620,
+        "sha256": "822ef7ca6452205657b6288b066481ecf508bfbf43455d715cf7d3ec457561e6"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "vue",
+      "version": "3.5.43",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/vue/-/vue-3.5.43.tgz",
+      "integrity": "sha512-o5qZoksdnjIKvW1srZ3ab7pcDNYAerBjRe54D0LBLfRdCYFrSgBHVXokMas35czQc0//lmx4/tuY4ZNQ+Rf2Ng==",
+      "tarballSha256": "9ab4d3b320a0ef7f0174039a622bb3a81c2c59d8808824250723b3b3f94511c6",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/vue",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/vue",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vue-3.5.43/LICENSE",
+          "bytes": 1091,
+          "sha256": "1bb85cc9b13b81ef41c81c51866172fc345e0503c86726a6755b796590b70175",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vue-3.5.43/upstream-package.json.txt",
+        "bytes": 2769,
+        "sha256": "b5cbf896563ac8087e8acdfe81ff5155db2eb75aced9725cdc05820be483cdda"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "vue-component-type-helpers",
+      "version": "3.3.12",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/vue-component-type-helpers/-/vue-component-type-helpers-3.3.12.tgz",
+      "integrity": "sha512-HwCqmgTfLFskQc4P5TRnbduCMyPat2Ezu0elLWOGn0dD/6BKHP15B5bxce6aDi+E4kblPtru8amIBQzu0Di3qQ==",
+      "tarballSha256": "0f25a5a676472367bbc62d349bf37b6c2a058c273d382d1b61c7002f8faa5a73",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/vue-component-type-helpers",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/vue-component-type-helpers",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/vue-component-type-helpers-3.3.12/LICENSE",
+          "bytes": 1076,
+          "sha256": "ac07310d94980d9819cf2c28b3a2f63d11db283f48f02f67208b549f44860ac0",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/vue-component-type-helpers-3.3.12/upstream-package.json.txt",
+        "bytes": 350,
+        "sha256": "6ed3f209bdd4cd3fded3cd9f265c85d6bc81de4ea804944d65025e9497694ab8"
+      },
+      "completeTextSupplied": true
+    },
+    {
+      "name": "zustand",
+      "version": "5.0.15",
+      "declaredLicense": "MIT",
+      "resolved": "https://registry.npmjs.org/zustand/-/zustand-5.0.15.tgz",
+      "integrity": "sha512-MpSEjRiBkA9crSYeOUH32rJC7SVqAbm0Fqcqge/bUi2PPoLcBWKOsG+C8mevmpr8TwXHBVkChbbJiyvkE+i/3A==",
+      "tarballSha256": "dc60866da01a09f07555726d60d85c72d6674988a0dfa4acf0a7dc7ce9216dc3",
+      "uses": [
+        {
+          "scope": "demos/workbench/web",
+          "relative": "node_modules/zustand",
+          "development": false,
+          "optional": false
+        },
+        {
+          "scope": "demos/reference-workbench/web-compat",
+          "relative": "node_modules/zustand",
+          "development": false,
+          "optional": false
+        }
+      ],
+      "notices": [
+        {
+          "path": "third_party/licenses/npm/zustand-5.0.15/LICENSE",
+          "bytes": 1070,
+          "sha256": "c1e6e266563517467b1bf874817d23e426f3149252bd7d42758cd697514b8417",
+          "sourcePath": "LICENSE",
+          "installedMatched": true
+        }
+      ],
+      "declaration": {
+        "path": "third_party/licenses/npm/zustand-5.0.15/upstream-package.json.txt",
+        "bytes": 2139,
+        "sha256": "b53b4d5e7f6baeb1e832792390354f8af54edaefbd6fe23b490a4d2d2e37dff1"
+      },
+      "completeTextSupplied": true
+    }
+  ],
+  "missingText": [
+    {
+      "name": "lodash-unified",
+      "version": "1.0.3",
+      "declaredLicense": "MIT"
+    }
+  ],
+  "exactTarballsVerified": true,
+  "licenseApproval": false,
+  "releaseReady": false
+}

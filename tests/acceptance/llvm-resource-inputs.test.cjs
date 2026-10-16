@@ -73,8 +73,12 @@ test('complete LLVM and MSVC file inputs never elevate descriptive rules to nati
 test('fixed selected readers freeze original observations and complete inventories with a final recheck',()=>{
   const helper=fs.readFileSync(path.join(__dirname,'resource-file-bindings.cjs'),'utf8');
   assert.ok(helper.includes("require('../../tools/internal/llvm-installed-acceptance.cjs')"));
-  assert.ok(helper.includes('installed.verify(sdkRoot,suite,selection)'));
-  assert.ok(helper.includes('installed.current(sdkRoot,build.architecture,build.configuration,selection)'));
+  assert.ok(helper.includes("require('./runner.cjs').verifyInputs(suite)"));
+  assert.ok(helper.includes('nativeInputs(suite,build,sdk,verified.installed)'));
+  const runner=fs.readFileSync(path.join(__dirname,'runner.cjs'),'utf8');
+  assert.ok(runner.includes('.verifyWithInputs(root,suite,build.nativeToolchain)'));
+  const installed=fs.readFileSync(path.join(__dirname,'../../tools/internal/llvm-installed-acceptance.cjs'),'utf8');
+  assert.ok(installed.includes('current(root,p.architecture,p.configuration,selection);return {sdk,consumer:recordPin};'));
   assert.ok(helper.includes('inventories:inputs.record.dependencies.inventories'));
   assert.ok(helper.includes('...observation.record.installedEvidencePins'));
   assert.ok(helper.includes('same(extra.nativeToolchain,current.nativeToolchain)'));

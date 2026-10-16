@@ -1,0 +1,144 @@
+{
+  "app": "SouiReferenceCompatVue",
+  "child": {
+    "appCreationFileTime": "134365326517983277",
+    "appPid": 36164,
+    "coordinatorCreationFileTime": "134365326509178023",
+    "coordinatorPid": 94620,
+    "event": "app-created",
+    "owned": true,
+    "qpc": "23403339079088"
+  },
+  "families": [
+    "status",
+    "filter",
+    "dialog_open",
+    "dialog_close",
+    "form_set",
+    "form_submit",
+    "summary_start",
+    "summary_query",
+    "summary_cancel"
+  ],
+  "terminal": [
+    {
+      "cancel": false,
+      "event": "business-terminal",
+      "gui": {
+        "observed": true,
+        "progress": 100,
+        "sequence": "65",
+        "state": "succeeded",
+        "taskId": "sdk-task-000009"
+      },
+      "native": {
+        "progress": 100,
+        "result": {
+          "fixtureId": "electron-smoothness-10k-v1",
+          "groups": {
+            "导出": 2060,
+            "归档": 1936,
+            "素材": 2001,
+            "缓存": 2127,
+            "项目": 1876
+          },
+          "matched": 10000,
+          "processed": 10000,
+          "totalSizeKb": 20760989
+        },
+        "sequence": "65",
+        "state": "succeeded",
+        "taskId": "sdk-task-000009"
+      },
+      "qpc": "23403375753745",
+      "taskId": "sdk-task-000009"
+    },
+    {
+      "cancel": true,
+      "event": "business-terminal",
+      "gui": {
+        "observed": true,
+        "progress": 1,
+        "sequence": "85",
+        "state": "cancelled",
+        "taskId": "sdk-task-000013"
+      },
+      "native": {
+        "progress": 1,
+        "result": {},
+        "sequence": "85",
+        "state": "cancelled",
+        "taskId": "sdk-task-000013"
+      },
+      "qpc": "23403392676582",
+      "taskId": "sdk-task-000013"
+    }
+  ],
+  "observations": {
+    "bound": {
+      "closing": false,
+      "contextReceipt": "4",
+      "creationFileTime": "134365326517983277",
+      "currentThread": "106544",
+      "exitCode": 0,
+      "guiBound": true,
+      "nonAtomic": true,
+      "ownerHwnd": "137632456",
+      "ownerProcess": "36164",
+      "ownerThread": "106544",
+      "ownerValid": true,
+      "phase": "gui-native-document-bound",
+      "pid": "36164",
+      "proofRecheckedForObservation": false,
+      "qpc": "23403348837808",
+      "qualificationPassed": false,
+      "releaseReady": false,
+      "renderer": "compat",
+      "runtimeVersion": null,
+      "schema": "soui.reference-application-observation/1",
+      "sequence": 3,
+      "sessionDigest": null,
+      "sessionId": "session-000001"
+    },
+    "agent": {
+      "closing": false,
+      "contextReceipt": "4",
+      "creationFileTime": "134365326517983277",
+      "currentThread": "106544",
+      "exitCode": 0,
+      "guiBound": true,
+      "nonAtomic": true,
+      "ownerHwnd": "137632456",
+      "ownerProcess": "36164",
+      "ownerThread": "106544",
+      "ownerValid": true,
+      "phase": "agent-ready-native-document-bound",
+      "pid": "36164",
+      "proofRecheckedForObservation": false,
+      "qpc": "23403348852642",
+      "qualificationPassed": false,
+      "releaseReady": false,
+      "renderer": "compat",
+      "runtimeVersion": null,
+      "schema": "soui.reference-application-observation/1",
+      "sequence": 4,
+      "sessionDigest": null,
+      "sessionId": "session-000001"
+    },
+    "phases": [
+      "native.begin",
+      "application-ready",
+      "gui-native-document-bound",
+      "agent-ready-native-document-bound",
+      "gui-stop-complete",
+      "agent-stop-complete",
+      "host-close-complete",
+      "bridge-join-complete",
+      "runtime-shutdown-complete",
+      "native.end"
+    ]
+  },
+  "finiteGuiWorkflowPassed": true,
+  "physicalInputQualified": false,
+  "releaseReady": false
+}

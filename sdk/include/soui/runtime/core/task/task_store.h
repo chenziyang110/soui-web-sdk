@@ -51,12 +51,18 @@ class task_store {
  public:
   static constexpr std::size_t max_tasks{1024};
 
+  // Constructors without a policy use default_task_store_request_quota.
+  // The explicit optional policy remains native-only and immutable per Store.
   explicit task_store(std::string id_prefix = "task-") : task_store(std::move(id_prefix), soui::sdk::diagnostics::mode::disabled) {}
   task_store(std::string id_prefix, soui::sdk::diagnostics::mode metrics);
   task_store(std::string id_prefix, soui::sdk::diagnostics::mode metrics,
              std::optional<task_store_request_quota_policy> quota);
   task_store(const task_store&) = delete;
   task_store& operator=(const task_store&) = delete;
+
+  // One actual pool under the existing Store lock; independent of diagnostics.
+  [[nodiscard]] task_store_request_quota_status read_request_quota(
+      task_store_request_quota_snapshot&) const noexcept;
 
   [[nodiscard]] soui::sdk::diagnostics::status read_storage_metrics(
       soui::sdk::diagnostics::task_store_storage&) const noexcept;

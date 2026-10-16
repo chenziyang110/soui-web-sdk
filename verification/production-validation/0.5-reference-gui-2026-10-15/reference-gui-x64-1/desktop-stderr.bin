@@ -1,0 +1,11 @@
+Error: ENOENT: no such file or directory, open 'F:\work\SOUI_WEB\out\release-050\reference-gui-x64-1\local-app-data\SouiReferenceWorkbench\SouiReferenceCompatReact\app-observation.ndjson'
+    at Object.openSync (node:fs:560:18)
+    at Object.readFileSync (node:fs:444:35)
+    at applicationLog (F:\work\SOUI_WEB\out\release-050\run-reference-gui-1.cjs:25:22)
+    at F:\work\SOUI_WEB\out\release-050\run-reference-gui-1.cjs:53:23
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {
+  errno: -4058,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: 'F:\\work\\SOUI_WEB\\out\\release-050\\reference-gui-x64-1\\local-app-data\\SouiReferenceWorkbench\\SouiReferenceCompatReact\\app-observation.ndjson'
+}

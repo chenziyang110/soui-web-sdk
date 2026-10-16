@@ -211,6 +211,9 @@ test('missing or empty complete-analysis records cannot inherit native, model, r
     assert.equal(out.nativeScopeGate,'not-observed');assert.equal(out.nativeSoftwareGate,'not-evaluated');
     assert.equal(out.softwareProcessModelGate,'not-evaluated');assert.equal(out.resourceGate,'not-evaluated');
     assert.equal(out.namedCacheCalibration.finiteGate,'not-evaluated');assert.equal(out.passed,false);
+    assert.equal(out.addressSpaceObservation.dataGate,'not-evaluated');
+    assert.equal(out.addressSpaceObservation.cacheBudgetGate,'not-evaluated');
+    assert.equal(out.addressSpaceObservation.qualified,false);
   }
 });
 

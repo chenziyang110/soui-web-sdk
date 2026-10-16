@@ -1,0 +1,115 @@
+INFO - __main__ (09:50:57.628) - MainThread (69124):
+Starting NVDA version 2026.2 AMD64
+INFO - core.main (09:50:57.647) - MainThread (69124):
+Config dir: C:\work\sm05-native-uia-desktop-9\desktop-x86-fixed3\nvda-config
+INFO - config.ConfigManager._loadConfig (09:50:57.650) - MainThread (69124):
+Loading config: C:\work\sm05-native-uia-desktop-9\desktop-x86-fixed3\nvda-config\nvda.ini
+INFO - core.main (09:50:58.446) - MainThread (69124):
+Windows version: Windows 11 25H2 (10.0.26200.9457) workstation AMD64
+INFO - core.main (09:50:58.446) - MainThread (69124):
+Using Python version 3.13.13 (tags/v3.13.13:01104ce, Apr  7 2026, 19:25:48) [MSC v.1944 64 bit (AMD64)]
+INFO - core.main (09:50:58.446) - MainThread (69124):
+Using comtypes version 1.4.13
+INFO - core.main (09:50:58.448) - MainThread (69124):
+Using configobj version 5.1.0 with validate version 1.0.1
+INFO - core.main (09:50:58.495) - MainThread (69124):
+Add-ons are disabled. Restart NVDA to enable them.
+INFO - _asyncioEventLoop.initialize (09:50:58.517) - MainThread (69124):
+Initializing asyncio event loop
+INFO - speechDictHandler.dictFormatUpgrade._doSynthVoiceDictBackupAndMove (09:50:58.805) - MainThread (69124):
+Upgrading voice dictionaries for espeak
+INFO - speechDictHandler.dictFormatUpgrade._doSynthVoiceDictBackupAndMove (09:50:58.805) - MainThread (69124):
+Upgrading voice dictionaries for silence
+INFO - synthDriverHandler.setSynth (09:50:58.806) - MainThread (69124):
+Loaded synthDriver silence
+INFO - mathPres.MathCAT.MathCAT.MathCAT.__init__ (09:50:58.816) - MainThread (69124):
+MathCAT 0.7.2 installed. Using rules dir: C:\work\sm05-screenreader-1\extracted\$PLUGINSDIR\app\include\nvda-mathcat\assets\Rules
+INFO - core._setUpWxApp (09:50:58.825) - MainThread (69124):
+Using wx version 4.2.4 msw (phoenix) wxWidgets 3.2.8
+INFO - brailleInput.initialize (09:50:58.829) - MainThread (69124):
+Braille input initialized
+INFO - braille.initialize (09:50:58.829) - MainThread (69124):
+Using liblouis version 3.37.0
+INFO - braille.initialize (09:50:58.829) - MainThread (69124):
+Using pySerial version 3.5
+INFO - braille.BrailleHandler._setDisplay (09:50:58.831) - MainThread (69124):
+Loaded braille display driver 'noBraille', current display has 0 cells.
+DEBUGWARNING - hwPortUtils.listUsbDevices (09:50:58.833) - ThreadPoolExecutor-0_0 (95516):
+Couldn't get DEVPKEY_Device_BusReportedDeviceDesc for {'hardwareID': 'USB\\VID_0489&PID_E10A&REV_0001', 'usbID': 'VID_0489&PID_E10A', 'devicePath': '\\\\?\\usb#vid_0489&pid_e10a#8&8dbc5f2&0&17#{a5dcbf10-6530-11d2-901f-00c04fb951ed}'}: [WinError 1168] 找不到元素。
+DEBUGWARNING - appModuleHandler.getProcessHandleFromProcessId (09:50:59.071) - MainThread (69124):
+Unable to open process for processId 1844
+Traceback (most recent call last):
+  File "appModuleHandler.pyc", line 207, in getProcessHandleFromProcessId
+PermissionError: [WinError 5] 拒绝访问。
+DEBUGWARNING - appModuleHandler.getProcessHandleFromProcessId (09:50:59.076) - MainThread (69124):
+Unable to get process handle for process 1844 using window enumeration and subsequently getting process handle from that window
+Traceback (most recent call last):
+  File "appModuleHandler.pyc", line 220, in getProcessHandleFromProcessId
+RuntimeError: No window handle found for process 1844 to create process handle
+INFO - core.main (09:50:59.343) - MainThread (69124):
+Java Access Bridge support initialized
+INFO - UIAHandler.UIAHandler.MTAThreadFunc (09:50:59.472) - UIAHandler.UIAHandler.MTAThread (68084):
+UIAutomation: IUIAutomation6
+DEBUGWARNING - inputCore.InputManager.loadLocaleGestureMap (09:50:59.999) - MainThread (69124):
+No locale gesture map for language en
+DEBUGWARNING - inputCore.InputManager.loadUserGestureMap (09:50:59.999) - MainThread (69124):
+No user gesture map
+DEBUGWARNING - touchHandler.touchSupported (09:51:00.069) - MainThread (69124):
+Touch only supported on installed copies
+DEBUGWARNING - updateCheck.initialize (09:51:00.078) - MainThread (69124):
+Couldn't retrieve update state
+Traceback (most recent call last):
+  File "updateCheck.pyc", line 1041, in initialize
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\work\\sm05-native-uia-desktop-9\\desktop-x86-fixed3\\nvda-config\\updateCheckState.pickle'
+INFO - core.main (09:51:00.079) - MainThread (69124):
+NVDA initialized
+IO - speech.speech.speak (09:51:00.215) - MainThread (69124):
+Speaking [LangChangeCommand ('en'), 'Native title', 'edit', 'initial', CancellableSpeech (still valid)]
+IO - speech.speech.speak (09:51:00.291) - MainThread (69124):
+Speaking [LangChangeCommand ('en'), 'Commit form', 'button', CancellableSpeech (still valid)]
+DEBUGWARNING - RPC process 58160 (ChatGPT.exe) (09:51:00.434) - Dummy-6 (40792):
+Thread 105156, build\x86_64\remote\ia2Support.cpp, IA2Support_inProcess_initialize, 177:
+Not installing IA2 support as  process is suspendable
+
+IO - speech.speech.speak (09:51:00.590) - MainThread (69124):
+Speaking [LangChangeCommand ('en'), 'Native title', 'edit', 'initial', CancellableSpeech (still valid)]
+IO - inputCore.InputManager.executeGesture (09:51:00.618) - winInputHook (27032):
+Input: kb(desktop):
+IO - inputCore.InputManager.executeGesture (09:51:00.712) - winInputHook (27032):
+Input: kb(desktop):K
+IO - inputCore.InputManager.executeGesture (09:51:00.725) - winInputHook (27032):
+Input: kb(desktop):tab
+DEBUGWARNING - UIAHandler.UIAHandler.getNearestWindowHandle (09:51:00.740) - Dummy-7 (95884):
+error walking up to an element with a valid windowHandle
+Traceback (most recent call last):
+  File "UIAHandler\__init__.pyc", line 1383, in getNearestWindowHandle
+_ctypes.COMError: (-2147467259, '未指定的错误', (None, None, None, 0, None))
+DEBUGWARNING - UIAHandler.UIAHandler.getNearestWindowHandle (09:51:00.742) - Dummy-8 (95884):
+error walking up to an element with a valid windowHandle
+Traceback (most recent call last):
+  File "UIAHandler\__init__.pyc", line 1383, in getNearestWindowHandle
+_ctypes.COMError: (-2147467259, '未指定的错误', (None, None, None, 0, None))
+IO - speech.speech.speak (09:51:00.771) - MainThread (69124):
+Speaking [LangChangeCommand ('en'), '英语 (not supported)', CharacterModeCommand(True), 'K', EndUtteranceCommand(), CharacterModeCommand(False)]
+IO - speech.speech.speakTypedCharacters (09:51:00.772) - MainThread (69124):
+typed word: K
+IO - speech.speech.speak (09:51:00.783) - MainThread (69124):
+Speaking [LangChangeCommand ('en'), 'Commit form', 'button', CancellableSpeech (still valid)]
+IO - inputCore.InputManager.executeGesture (09:51:00.808) - winInputHook (27032):
+Input: kb(desktop):enter
+IO - speech.speech.speak (09:51:01.908) - MainThread (69124):
+Speaking [LangChangeCommand ('en'), 'ChatGPT', 'window', CancellableSpeech (still valid)]
+IO - speech.speech.speak (09:51:01.910) - MainThread (69124):
+Speaking [LangChangeCommand ('en'), '发布 0.5.0', 'document', CancellableSpeech (still valid)]
+IO - speech.speech.speak (09:51:01.914) - MainThread (69124):
+Speaking [LangChangeCommand ('en'), 'main landmark', CancellableSpeech (still valid)]
+IO - speech.speech.speak (09:51:01.915) - MainThread (69124):
+Speaking [LangChangeCommand ('en'), 'Conversation', 'region', CancellableSpeech (still valid)]
+IO - speech.speech.speak (09:51:01.946) - MainThread (69124):
+Speaking [LangChangeCommand ('en'), 'Remove title', 'button', CancellableSpeech (still valid)]
+INFO - core.main (09:51:01.969) - MainThread (69124):
+Exiting
+INFO - _asyncioEventLoop.terminate (09:51:02.190) - MainThread (69124):
+Terminating asyncio event loop
+INFO - __main__ (09:51:02.462) - MainThread (69124):
+NVDA exit

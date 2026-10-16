@@ -1,0 +1,26 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+  "executableSha256": "2c6f2c64612cf45349f15850e4647b2fe594c2759de63a695ec4cbe13b2404da",
+  "executable": "C:/Program Files/Git/usr/bin/openssl.exe",
+  "args": [
+    "req",
+    "-x509",
+    "-newkey",
+    "rsa:2048",
+    "-nodes",
+    "-keyout",
+    "C:/work/sm05-tls-x64-2/private-fixture-key.pem",
+    "-out",
+    "C:/work/sm05-tls-x64-2/certificate.pem",
+    "-subj",
+    "/CN=localhost",
+    "-addext",
+    "subjectAltName=DNS:localhost",
+    "-days",
+    "2"
+  ],
+  "cwd": "C:/work/sm05-tls-x64-2",
+  "timeoutMs": 30000,
+  "drainMs": 2000
+}

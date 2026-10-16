@@ -4,7 +4,7 @@
 
 namespace SOUI
 {
-    SWindowFinder * SSingleton<SWindowFinder>::ms_Singleton = NULL;
+    template<> SWindowFinder * SSingleton<SWindowFinder>::ms_Singleton = NULL;
     
 	SFindInfo::SFindInfo(SWindow *pParent,const SStringW & _strName,int _nDeep)
 		:hParent(pParent->GetSwnd()),strName(_strName),nDeep(_nDeep),findByName(true)

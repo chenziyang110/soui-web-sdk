@@ -55,8 +55,8 @@ function analyzeNamedCache(value,{subject,modulePin,captureClock,previous}={}) {
     if(value.resourceStatus===1){
       const raw=n.resourceRawSingleLimit,total=n.resourceByteLimit;
       const effective=value.resourceDiscardable?raw:(raw===0n?total:(raw<total?raw:total));
-      if(n.resourceEffectiveSingleLimit!==effective||(value.resourceDiscardable&&total!==0n))throw new Error('Invalid single-allocation policy');
-      result.resourcePolicy={byteBudget:value.resourceDiscardable?'absent':'retained-record-purge-threshold',
+      if(n.resourceEffectiveSingleLimit!==effective)throw new Error('Invalid single-allocation policy');
+      result.resourcePolicy={byteBudget:value.resourceDiscardable&&total===0n?'absent':'retained-record-purge-threshold',
         singleAllocationCap:value.resourceDiscardable&&raw===0n?'not-explicit':'current-configured-limit'};
     }
     result.dataGate=Object.values(result.components).every(state=>state==='ready')?'matched':'partial';
@@ -105,7 +105,7 @@ function analyzeNamedCacheConfiguration(value,bindings={}){
       if(value.resourceStatus===1){
         const raw=n.resourceRawSingleLimit,total=n.resourceByteLimit;
         const effective=value.resourceDiscardable?raw:(raw===0n?total:(raw<total?raw:total));
-        if(n.resourceEffectiveSingleLimit!==effective||(value.resourceDiscardable&&total!==0n))throw Error('Invalid single-allocation policy');
+        if(n.resourceEffectiveSingleLimit!==effective)throw Error('Invalid single-allocation policy');
       }
     }
   }catch(error){return {...result,dataGate:'invalid',configurationGate:'failed',failure:error.message};}
@@ -118,14 +118,17 @@ function analyzeNamedCacheConfiguration(value,bindings={}){
   let failure=null;
   if(value.resourceStatus===1){
     const discardable=value.resourceDiscardable===1;
-    result.targets.resourceBytes=target(n.resourceRetainedBytes,n.resourceByteLimit,discardable?'absent':'retained-purge-threshold');
+    result.targets.resourceBytes=target(n.resourceRetainedBytes,n.resourceByteLimit,discardable&&n.resourceByteLimit===0n?'absent':'retained-purge-threshold');
     result.targets.resourceCount=target(n.resourceRetainedCount,n.resourceCountLimit,discardable?'retained-purge-threshold':'not-a-count-budget');
     result.singleAllocationPolicy={raw:n.resourceRawSingleLimit.toString(),effective:n.resourceEffectiveSingleLimit.toString(),
       explicit:!(discardable&&n.resourceRawSingleLimit===0n),allocationUsageGate:'not-evaluated'};
     if(n.resourceRetainedCount===0n&&n.resourceRetainedBytes!==0n)failure='empty-resource-records-have-nonzero-bytes';
-    if(discardable ? (n.resourceCountLimit===0n ? n.resourceRetainedCount!==0n||n.resourceRetainedBytes!==0n :
-      n.resourceRetainedCount>=n.resourceCountLimit) : (n.resourceByteLimit===0n ?
-      n.resourceRetainedCount!==0n||n.resourceRetainedBytes!==0n : n.resourceRetainedBytes>=n.resourceByteLimit))
+    const countExceeded=discardable&&(n.resourceCountLimit===0n
+      ? n.resourceRetainedCount!==0n||n.resourceRetainedBytes!==0n : n.resourceRetainedCount>=n.resourceCountLimit);
+    const byteExceeded=n.resourceByteLimit===0n
+      ? !discardable&&(n.resourceRetainedCount!==0n||n.resourceRetainedBytes!==0n)
+      : n.resourceRetainedBytes>=n.resourceByteLimit;
+    if(countExceeded||byteExceeded)
       failure='retained-resource-purge-threshold-exceeded';
   }
   if(failure)return {...result,configurationGate:'failed',failure};

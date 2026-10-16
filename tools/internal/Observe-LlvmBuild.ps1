@@ -26,6 +26,19 @@ function RawText([string]$value){
  return [Text.UTF8Encoding]::new($false,$true).GetString($raw,$offset,$raw.Length-$offset)
 }
 function SameSet([string[]]$left,[string[]]$right){$a=[string[]]@($left);$b=[string[]]@($right);[Array]::Sort($a,[StringComparer]::Ordinal);[Array]::Sort($b,[StringComparer]::Ordinal);return (($a-join"`n")-ceq($b-join"`n"))}
+function NormalSdkSourceCommands([string]$sourceRoot,[string]$buildRoot,[string]$configuration,[bool]$sdkOnly,$frozenPins,$graphCommands){
+ $sourcePrefix=(Norm (Full 'sdk/src' $sourceRoot)).TrimEnd('/')+'/'
+ $expected=[string[]]@($frozenPins|Where-Object{(Norm $_.path).StartsWith($sourcePrefix,[StringComparison]::Ordinal)-and$_.path.EndsWith('.cpp',[StringComparison]::Ordinal)}|ForEach-Object{Norm $_.path})
+ $sdkCommands=@($graphCommands|Where-Object{(Norm $_.file).StartsWith($sourcePrefix,[StringComparison]::Ordinal)})
+ $allSources=[string[]]@($sdkCommands|ForEach-Object{Norm $_.file}|Sort-Object -Unique)
+ Need ($expected.Count-gt0-and(SameSet $expected $allSources)) 'All frozen normal SDK C++ sources must have selected default graph coverage'
+ $objectRelative=$(if($sdkOnly){''}else{'sdk/'})+'CMakeFiles/soui_sdk.dir/'+$configuration+'/'
+ $objectPrefix=(Norm (Full $objectRelative $buildRoot)).TrimEnd('/')+'/'
+ $production=@($sdkCommands|Where-Object{(Norm (Full $_.output $buildRoot)).StartsWith($objectPrefix,[StringComparison]::Ordinal)})
+ Need (SameSet $expected ([string[]]@($production|ForEach-Object{Norm $_.file}))) 'Exactly one production SDK object binding per frozen C++ source is required'
+ return $production
+}
+
 function CoffMachine([byte[]]$raw,[int]$offset,[int]$length){
  Need ($offset-ge0-and$length-ge20-and$offset-le$raw.Length-$length) 'Truncated bounded COFF object'
  if([BitConverter]::ToUInt16($raw,$offset)-eq0-and[BitConverter]::ToUInt16($raw,$offset+2)-eq65535){
@@ -231,6 +244,75 @@ function DependencyBindings([string]$build,$commands,[string]$text){
  };Need ($records.Count-eq$wanted.Count) 'Every current compiler object needs a real dependency block';[ordered]@{selected=$records.ToArray();outsideScope=$other.ToArray()}
 }
 
+# Exact generated compiler inputs are derived from frozen test writers and bytes.
+# These helpers never run CMake or a tool; selected Ninja bindings choose roles.
+function GeneratedTestHash([byte[]]$bytes){$hash=[Security.Cryptography.SHA256]::Create();try{return [BitConverter]::ToString($hash.ComputeHash($bytes)).Replace('-','').ToLowerInvariant()}finally{$hash.Dispose()}}
+function GeneratedTestRelative([string]$value){Need ($value.Length-gt0-and$value.Length-le1024-and$value-notmatch'[\\:;\x00-\x1f]'-and-not$value.StartsWith('/')-and($value-split'/').Where({$_-ceq''-or$_-ceq'.'-or$_-ceq'..'-or$_.EndsWith('.')-or$_.EndsWith(' ')}).Count-eq0) 'Exact portable generated test path';return $value}
+function GeneratedTestFrozen([string]$value,$allowed,[scriptblock]$readBytes){
+ $key=Norm $value;Need ($allowed.ContainsKey($key)) ('Generated test source was not frozen: '+$value);$pin=$allowed[$key]
+ [byte[]]$bytes=& $readBytes $value;Need ($bytes.Length-eq$pin.bytes-and(GeneratedTestHash $bytes)-ceq$pin.sha256) ('Frozen generated test input changed: '+$value);return ,$bytes
+}
+function GeneratedTestWriter([string]$root,[string]$relative,[string]$expected,$allowed,[scriptblock]$readBytes){
+ $value=Join-Path $root $relative;$bytes=GeneratedTestFrozen $value $allowed $readBytes
+ $text=[Text.UTF8Encoding]::new($false,$true).GetString($bytes)
+ # Only checkout CRLF is normalized for the locked writer text, never fragments.
+ $text=$text.Replace([string]([char]13)+[char]10,[string][char]10)
+ Need ((GeneratedTestHash ([Text.Encoding]::UTF8.GetBytes($text)))-ceq$expected) ('Unsupported frozen generated test writer: '+$relative);return $text
+}
+function GeneratedTestInterval([byte[]]$source,[int]$start,[int]$end,[bool]$whole){
+ Need ($start-ge0-and$end-gt$start-and$end-le$source.Length) 'Generated test source interval bounds'
+ [byte[]]$bytes=[byte[]]::new($end-$start);[Array]::Copy($source,$start,$bytes,0,$bytes.Length)
+ if($whole){Need ($start-eq0-and$end-eq$source.Length) 'Generated test whole-file copy interval'}else{Need ($bytes[-1]-eq10-and-not($bytes-ccontains[byte]0)-and-not($bytes-ccontains[byte]13)) 'Generated test fragment requires terminal LF and no CR/NUL'}
+ return ,$bytes
+}
+function GeneratedTestMarker([byte[]]$source,[string]$begin,[string]$end){
+ $hex=[BitConverter]::ToString($source).Replace('-','').ToLowerInvariant();$a=[BitConverter]::ToString([Text.Encoding]::UTF8.GetBytes($begin)).Replace('-','').ToLowerInvariant();$b=[BitConverter]::ToString([Text.Encoding]::UTF8.GetBytes($end)).Replace('-','').ToLowerInvariant()
+ Need ([regex]::Matches($hex,$a).Count-eq1-and[regex]::Matches($hex,$b).Count-eq1) 'Generated test requires two unique source markers';$start=$hex.IndexOf($a,[StringComparison]::Ordinal);$stop=$hex.IndexOf($b,[StringComparison]::Ordinal)
+ Need ($start%2-eq0-and$stop%2-eq0-and$stop-gt$start) 'Generated test marker byte alignment/order';return [ordered]@{startByte=$start/2;endByteExclusive=$stop/2;bytes=(GeneratedTestInterval $source ($start/2) ($stop/2) $false)}
+}
+function GeneratedTestActual($derived,$actual,[byte[]]$bytes){
+ Need ((Norm $actual.path)-ceq(Norm $derived.pin.path)-and$actual.bytes-eq$derived.pin.bytes-and$actual.sha256-ceq$derived.pin.sha256-and$bytes.Length-eq$derived.pin.bytes-and(GeneratedTestHash $bytes)-ceq$derived.pin.sha256-and[BitConverter]::ToString($bytes)-ceq[BitConverter]::ToString($derived.expectedBytes)) 'Generated test compiler dependency differs from frozen exact source bytes'
+ return $actual
+}
+function GeneratedTestDependencies([string]$root,[string]$build,[string]$configuration,$allowed,$selected,[scriptblock]$readBytes){
+ Need ($configuration-cin@('Debug','Release','RelWithDebInfo')) 'Selected generated test configuration'
+ $roles=@(
+  [ordered]@{kind='endpoint';directory='tests/native/vendor_lifetime';target='soui_vendor_endpoint_lifetime_tests';unit='endpoint_tests.cpp'},
+  [ordered]@{kind='worker';directory='tests/native/vendor_lifetime/worker_lifetime';target='soui_worker_lifetime_regressions';unit='fixture.cpp'},
+  [ordered]@{kind='request-close';directory='tests/native/request_close';target='soui_request_close_regressions';unit='request_close_tests.cpp'})
+ $result=[Collections.Generic.List[object]]::new()
+ foreach($role in $roles){
+  $object=Full ($role.directory+'/CMakeFiles/'+$role.target+'.dir/'+$configuration+'/'+$role.unit+'.obj') $build;$records=@($selected|Where-Object{(Norm $_.object)-ceq(Norm $object)})
+  if($records.Count-eq0){continue};Need ($records.Count-eq1-and$records[0].status-ceq'VALID') 'Unique selected generated test object binding'
+  $base=Full ($role.directory+'/generated') $build;$candidates=@{};$support=[Collections.Generic.List[object]]::new();$writerPath=Join-Path $root ($role.directory+'/CMakeLists.txt')
+  if($role.kind-ceq'endpoint'){
+   [void](GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') '9be46c7881da9a5a2c4222a216a87d7604abef0355ddc1158b04eb664c22be63' $allowed $readBytes);$support.Add($allowed[(Norm $writerPath)])
+   $sourcePath=Join-Path $root 'third_party/sources/miniblink/wke/wke.cpp';$sourceBytes=GeneratedTestFrozen $sourcePath $allowed $readBytes;$range=GeneratedTestMarker $sourceBytes 'struct InteractionEndpointImpl {' 'void WKE_CALL_TYPE retainInteractionEndpoint('
+   $candidates[(Norm (Join-Path $base 'interaction_endpoint_source.inc'))]=[ordered]@{source=$allowed[(Norm $sourcePath)];range=$range;output='interaction_endpoint_source.inc'}
+  }elseif($role.kind-ceq'worker'){
+   [void](GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') '120cec610c085ddd4fc3f269c71a289a5d03678c2baf837795d393fd273d023e' $allowed $readBytes)
+   [void](GeneratedTestWriter $root ($role.directory+'/source-bytes.cmake') 'b86288c3d3abe01bceeb99513499872c5d5e6be8e32355ac60c363848f3cac62' $allowed $readBytes)
+   $mapText=GeneratedTestWriter $root ($role.directory+'/source-map.json') '3c60c2dc31efd40c1a8c714e6837c77da43451c73aaba5840e77faa2edb41bd3' $allowed $readBytes;$map=$mapText|ConvertFrom-Json
+   Need ($map.schema-ceq'worker-lifetime-source-map/1'-and$map.sources.Count-eq13-and$map.copies.Count-eq12-and$map.payloads.Count-eq22) 'Exact frozen worker source map'
+   foreach($relative in @('CMakeLists.txt','source-bytes.cmake','source-map.json')){$support.Add($allowed[(Norm (Join-Path $root ($role.directory+'/'+$relative)))])}
+   $sources=@{};foreach($p in $map.sources){$relative=GeneratedTestRelative $p.path;$value=Join-Path $root $relative;Need (-not$sources.ContainsKey((Norm $value))) 'Unique frozen worker source';$raw=GeneratedTestFrozen $value $allowed $readBytes;Need ($raw.Length-eq$p.bytes-and(GeneratedTestHash $raw)-ceq$p.sha256) 'Worker map whole-source pin differs';$sources[(Norm $value)]=$raw;$support.Add($allowed[(Norm $value)])}
+   foreach($p in $map.payloads){$relative=GeneratedTestRelative $p.path;$value=Join-Path $root ($role.directory+'/'+$relative);$raw=GeneratedTestFrozen $value $allowed $readBytes;Need ($raw.Length-eq$p.bytes-and(GeneratedTestHash $raw)-ceq$p.sha256) 'Worker map payload pin differs';$support.Add($allowed[(Norm $value)])}
+   foreach($copy in $map.copies){$relative=GeneratedTestRelative $copy.source;$output=GeneratedTestRelative $copy.output;$value=Join-Path $root $relative;Need ($sources.ContainsKey((Norm $value))-and$copy.exactWholeFile-is[bool]) 'Worker copy needs exact frozen source and boolean kind';$raw=$sources[(Norm $value)];Need ($copy.startByte-is[long]-or$copy.startByte-is[int]) 'Worker start-byte integer';Need ($copy.endByteExclusive-is[long]-or$copy.endByteExclusive-is[int]) 'Worker end-byte integer';$bytes=GeneratedTestInterval $raw $copy.startByte $copy.endByteExclusive $copy.exactWholeFile
+    Need ($bytes.Length-eq$copy.bytes-and(GeneratedTestHash $bytes)-ceq$copy.sha256) 'Worker exact source range differs from map';$key=Norm (Join-Path $base $output);Need (-not$candidates.ContainsKey($key)) 'Unique worker generated output';$candidates[$key]=[ordered]@{source=$allowed[(Norm $value)];range=[ordered]@{startByte=$copy.startByte;endByteExclusive=$copy.endByteExclusive;bytes=$bytes};output=$output;exactWholeFile=$copy.exactWholeFile}
+   }
+  }else{
+   $text=GeneratedTestWriter $root ($role.directory+'/CMakeLists.txt') '4c74467ea0349b1a2a5efb0f8893fa5c972ad770023c8c861ee2e0d08318f1a6' $allowed $readBytes;$support.Add($allowed[(Norm $writerPath)])
+   $matches=[regex]::Matches($text,'(?m)^close_extract\(([a-z0-9-]+) "\$\{(close_source|close_header)\}" "([^"\r\n]+)" "([^"\r\n]+)"\)$');Need ($matches.Count-eq13) 'Exact request-close extraction declarations'
+   foreach($match in $matches){$extension=$(if($match.Groups[2].Value-ceq'close_source'){'.cpp'}else{'.h'});$value=Join-Path $root ('third_party/sources/miniblink/wke/CursorDescriptorBroker'+$extension);$raw=GeneratedTestFrozen $value $allowed $readBytes;$range=GeneratedTestMarker $raw $match.Groups[3].Value $match.Groups[4].Value;$output=$match.Groups[1].Value+'.inc';$key=Norm (Join-Path $base $output);Need (-not$candidates.ContainsKey($key)) 'Unique request-close output';$candidates[$key]=[ordered]@{source=$allowed[(Norm $value)];range=$range;output=$output}}
+  }
+  $seen=@{};foreach($header in $records[0].headers){$key=Norm $header.resolved;if(-not$key.StartsWith(((Norm $base).TrimEnd('/')+'/'),[StringComparison]::Ordinal)){continue}
+   Need ($candidates.ContainsKey($key)) ('Unknown generated test dependency: '+$header.resolved);Need (-not$allowed.ContainsKey($key)) 'Generated test output cannot masquerade as pre-Build frozen input';Need (-not$seen.ContainsKey($key)) 'Duplicate selected generated test dependency';$seen[$key]=$true;$entry=$candidates[$key];$bytes=$entry.range.bytes
+   $result.Add([ordered]@{pin=[ordered]@{path=(Join-Path $base $entry.output);bytes=$bytes.Length;sha256=(GeneratedTestHash $bytes)};kind='exact test source bytes from frozen writer';derivationSchema='soui.generated-test-source-bytes/1';preBuildFrozen=$false;writerFamily=$role.kind;selectedObject=$object;source=$entry.source;writerPins=$support.ToArray();startByte=$entry.range.startByte;endByteExclusive=$entry.range.endByteExclusive;exactWholeFile=$(if($entry.Contains('exactWholeFile')){$entry.exactWholeFile}else{$false});expectedBytes=$bytes})
+  };Need ($seen.Count-eq$candidates.Count) 'Complete selected generated test dependency set required'
+ }
+ return $result.ToArray()
+}
+
 function InstalledPinSame($left,$right){return ((Norm $left.path)-ceq(Norm $right.path)-and$left.bytes-eq$right.bytes-and$left.sha256-ceq$right.sha256)}
 function InstalledPaths([string]$owner,$contextInput){
  $value=$contextInput.installedConsumer
@@ -299,7 +381,7 @@ function ReadInstalledSdk($paths){
  $actual=ArchiveMembers $paths.sdkArchive
  Need (SameSet ([string[]]@($actual.members|ForEach-Object{$_.name+'|'+$_.bytes+'|'+$_.sha256+'|'+$_.machine})) ([string[]]@($archives[0].archiveMembers|ForEach-Object{$_.name+'|'+$_.bytes+'|'+$_.sha256+'|'+$_.machine}))) 'Current SDK archive members differ from accepted compiled objects'
  Need (@($actual.members|Where-Object{$_.machine-ne$expectedMachine}).Count-eq0) 'Imported SDK archive architecture differs'
- Need ($archives[0].inputObjects.Count-gt0-and$actual.members.Count-eq$archives[0].inputObjects.Count-and(SameSet ([string[]]@($actual.members|ForEach-Object{$_.bytes+'|'+$_.sha256})) ([string[]]@($archives[0].inputObjects|ForEach-Object{$_.bytes+'|'+$_.sha256})))) 'Imported SDK archive must still equal its actually compiled input objects'
+ Need ($archives[0].inputObjects.Count-gt0-and$actual.members.Count-eq$archives[0].inputObjects.Count-and(SameSet ([string[]]@($actual.members|ForEach-Object{[string]$_.bytes+'|'+$_.sha256})) ([string[]]@($archives[0].inputObjects|ForEach-Object{[string]$_.bytes+'|'+$_.sha256})))) 'Imported SDK archive must still equal its actually compiled input objects'
  foreach($object in $archives[0].inputObjects){[void](RememberInstalled $object)}
  $headerRows=@($sourceBuild.source.files|Where-Object{$_.path.StartsWith('sdk/include/',[StringComparison]::Ordinal)});Need ($headerRows.Count-gt0) 'Accepted current SDK header inventory required';$headerPins=@();$sourceHeaderPins=@()
  foreach($row in $headerRows){$sourcePath=Full $row.path $root;$raw=RememberInstalled $rawInputs[(Norm $sourcePath)];$copy=RememberInstalled (ObsPin (Join-Path $paths.install $row.path.Substring(4)));Need ($copy.bytes-eq$raw.bytes-and$copy.sha256-ceq$raw.sha256) 'Installed SDK header differs from accepted current raw source';$headerPins+=,$copy;$sourceHeaderPins+=,$raw}
@@ -350,7 +432,7 @@ Need (($debugMode-or$cfg.schema-ceq'soui.standard-llvm-observer-inputs/v1')-and$
 $root=[IO.Path]::GetFullPath($cfg.root);$build=[IO.Path]::GetFullPath($cfg.buildDirectory);$folder=[IO.Path]::GetFullPath($cfg.evidenceDirectory)
 $installedMode=$cfg.PSObject.Properties.Name-ccontains'installedConsumer';$installedPaths=$null;$installedBinding=$null;$installedPins=@{}
 $releaseMode=$cfg.PSObject.Properties.Name-ccontains'releaseConsumer';Need (-not($installedMode-and$releaseMode)) 'One explicit imported consumer context only'
-Need (-not$debugMode-or(-not$installedMode-and-not$releaseMode)) 'Dual-root collection is an explicit ordinary source-build mode'
+$consumerDebug=$debugMode-and($installedMode-or$releaseMode)
 if($installedMode){$installedPaths=InstalledPaths $root $cfg}elseif($releaseMode){$installedPaths=ReleaseConsumerPaths $root $cfg}else{
 Need ((Norm $build)-ceq(Norm (Join-Path $root ('out/'+$(if($cfg.sdkOnly){'sdk-'}else{''})+$cfg.architecture)))) 'Actual owned SDK/application build directory'
 }
@@ -398,6 +480,54 @@ function ToolNorm([string]$text){
   $value=[regex]::Replace($value,'(?<![a-z0-9_./-])'+[regex]::Escape($alias)+'(?![a-z0-9_./-])',[Text.RegularExpressions.MatchEvaluator]{param($m)$replacement},[Text.RegularExpressions.RegexOptions]::IgnoreCase)
  };return $value
 }
+function BinaryCommandTools([string]$command){
+ # A configured command can name a physical 8.3 alias even when its tool does
+ # not run in an incremental build. Classify only the known direct/CMake
+ # wrapper shapes here. ToolIdentity separately checks held file identities;
+ # this function never supplies an actual process row or an execution role.
+ $body=$command.Trim();$cmd=$null
+ $wrapper=[regex]::Match($body,'^(?:"(?<cmd>[^"\r\n]+)"|(?<cmd>[^ \t"\r\n]+))[ \t]+/C[ \t]+"cd \.[ \t]+&&[ \t]+(?<body>[^\r\n]+)[ \t]+&&[ \t]+cd \."$')
+ if($wrapper.Success){$cmd=$wrapper.Groups['cmd'].Value;$body=$wrapper.Groups['body'].Value}
+ try{
+  $args=@(CompileArgv $body)
+  if($args.Count-lt2-or@($args|Where-Object{$_-match'[&|<>]'}).Count){return @()}
+  $first=LocalToolSpelling $args[0];$name=[IO.Path]::GetFileName($first)
+  $tools=@()
+  if($name-ieq'llvm-lib.exe'){$tools+=@{path=$first;role='ARCHIVER'}}
+  elseif($name-ieq'lld-link.exe'){$tools+=@{path=$first;role='LINKER'}}
+  elseif($cmd-and$name-ieq'cmake.exe'-and$args.Count-ge11-and$args[1]-ceq'-E'-and$args[2]-cin@('vs_link_exe','vs_link_dll')-and
+    $args[3]-cmatch'^--msvc-ver=[0-9]{1,6}$'-and$args[4].StartsWith('--intdir=')-and$args[4].Length-gt9-and
+    $args[5].StartsWith('--rc=')-and$args[6].StartsWith('--mt=')-and$args[7]-ceq'--manifests'-and$args[8]-ceq'--'){
+   $linker=LocalToolSpelling $args[9]
+   if([IO.Path]::GetFileName($linker)-ine'lld-link.exe'){return @()}
+   $tools+=@{path=(LocalToolSpelling $args[5].Substring(5));role='RC'}
+   $tools+=@{path=(LocalToolSpelling $args[6].Substring(5));role='MT'}
+   $tools+=@{path=$linker;role='LINKER'}
+  }else{return @()}
+  if($cmd){
+   $cmd=LocalToolSpelling $cmd
+   if([IO.Path]::GetFileName($cmd)-ine'cmd.exe'){return @()}
+   $tools+=@{path=$cmd;role='CMD'}
+  }
+  return $tools
+ }catch{return @()}
+}
+function BinaryCommandIndex([string[]]$generated,[string[]]$verbose){
+ # Authenticate configured tool spellings independently of current execution.
+ # Historical compile/link records and actual role requirements remain intact.
+ foreach($raw in @($generated)+@($verbose)){foreach($tool in @(BinaryCommandTools $raw)){[void](ToolIdentity $tool.path $tool.role)}}
+ # Tool aliases are authenticated before this snapshot. Preserve every row,
+ # including duplicates, while avoiding normalization for each binary edge.
+ $commands=[Collections.Generic.List[object]]::new()
+ foreach($raw in $generated){$canonical=ToolNorm $raw;$commands.Add([ordered]@{raw=$raw;canonical=$canonical;search=$canonical.ToLowerInvariant()})}
+ $actual=[Collections.Generic.Dictionary[string,Collections.Generic.List[string]]]::new([StringComparer]::Ordinal)
+ foreach($raw in $verbose){
+  $canonical=ToolNorm $raw
+  if(-not$actual.ContainsKey($canonical)){$actual[$canonical]=[Collections.Generic.List[string]]::new()}
+  $actual[$canonical].Add($raw)
+ }
+ return [ordered]@{generated=$commands.ToArray();actual=$actual}
+}
 function CompileArgv([string]$text){
  Need ($text-notmatch'[\x00-\x08\x0a-\x1f]') 'Invalid compile command'
  $result=[Collections.Generic.List[string]]::new();$i=0;$program=[Text.StringBuilder]::new();$quoted=$false
@@ -427,6 +557,29 @@ function CompileArgv([string]$text){
  }
  return $result.ToArray()
 }
+function Read-CmakeManifestMode([string]$command,[string]$cmakeVersion){
+ # This narrow classifier follows the pinned CMake 4.2.3 cmVSLink path.
+ # Unknown versions, shell shapes, response files and manifest inputs retain
+ # the conservative requirement for actual mt.exe evidence.
+ if($cmakeVersion-cne'4.2.3'){return $null}
+ $wrapper=[regex]::Match($command,'^(?:"(?<cmd>[^"\r\n]+)"|(?<cmd>[^ \t"\r\n]+))[ \t]+/C[ \t]+"cd \.[ \t]+&&[ \t]+(?<body>[^\r\n]+)[ \t]+&&[ \t]+cd \."$')
+ if(-not$wrapper.Success){return $null}
+ try {$commandArgs=@(CompileArgv $wrapper.Groups['body'].Value)}catch{return $null}
+ if($commandArgs.Count-lt11-or$commandArgs[1]-cne'-E'-or$commandArgs[2]-cne'vs_link_exe'-or$commandArgs[3]-cnotmatch'^--msvc-ver=[0-9]{1,6}$'-or
+    -not$commandArgs[4].StartsWith('--intdir=')-or$commandArgs[4].Length-le9-or-not$commandArgs[5].StartsWith('--rc=')-or
+    -not$commandArgs[6].StartsWith('--mt=')-or$commandArgs[7]-cne'--manifests'-or$commandArgs[8]-cne'--'){return $null}
+ $toolPaths=@($wrapper.Groups['cmd'].Value,$commandArgs[0],$commandArgs[5].Substring(5),$commandArgs[6].Substring(5),$commandArgs[9])
+ if(@($toolPaths|Where-Object{$_-notmatch'^[A-Za-z]:[\\/]'-or$_-match'[<>|?*\x00-\x1f]'}).Count){return $null}
+ $linkArgs=@($commandArgs[10..($commandArgs.Count-1)])
+ if(@($linkArgs|Where-Object{$_.StartsWith('@')-or$_-in@('&&','&','|','||','>','<')}).Count){return $null}
+ $incremental=@($linkArgs|Where-Object{$_-imatch'^[/-]INCREMENTAL(?::(?:YES|NO))?$'})
+ if($incremental.Count-ne1){return $null}
+ $version=[uint32]$commandArgs[3].Substring(11);$nonincremental=$incremental[0]-imatch'^[/-]INCREMENTAL:NO$'
+ return [ordered]@{schema='soui.cmake-manifest-mode/v1';cmakeVersion=$cmakeVersion;msvcVersion=$version;
+   nonIncremental=$nonincremental;requiresManifestTool=(-not$nonincremental-or$version-le1600);
+   cmd=$toolPaths[0];cmake=$toolPaths[1];rc=$toolPaths[2];mt=$toolPaths[3];linker=$toolPaths[4]}
+}
+
 function Test-CrtOption([string[]]$arguments,[ValidateSet('MD','MDd','MT')][string]$expectedCRT){
  # The SDK keeps its existing MD policy. The exact Doctor target alone requests MT.
  # A caller must name its policy; a substring cannot select a CRT library.
@@ -609,7 +762,14 @@ if($debugMode){
  $binding=$cfg.debugCapture;$fast=$cfg.fastToolEvidence
  foreach($p in @($binding.input,$binding.raw,$binding.prepared,$binding.observer)){$evidencePins.Add((MatchPin $p))}
  $nativeInput=RawText $binding.input.path|ConvertFrom-Json
- Need ($nativeInput.schema-ceq'soui.host64-build-debug-inputs/2'-and$nativeInput.profile-ceq$cfg.profile-and$nativeInput.sdkArchitecture-ceq$cfg.architecture-and$nativeInput.configuration-ceq$cfg.configuration-and(Norm $nativeInput.root)-ceq(Norm $root)-and$nativeInput.nonce-ceq$fast.nonce-and$fast.originalPollingUnmodified-eq$true-and$fast.actualDebugRawSha256-ceq$binding.raw.sha256-and$fast.actualDebugRawBytes-eq$binding.raw.bytes-and$fast.experimentalLifecycleObserved-eq$true) 'Actual independent fast-tool raw/input identity'
+ $nativeSchema=$(if($consumerDebug){'soui.host64-build-debug-inputs/3'}else{'soui.host64-build-debug-inputs/2'})
+ $rootRole=$(if($consumerDebug){'CMAKE'}else{'POWERSHELL'})
+ Need ($nativeInput.schema-ceq$nativeSchema-and$nativeInput.profile-ceq$cfg.profile-and$nativeInput.sdkArchitecture-ceq$cfg.architecture-and$nativeInput.configuration-ceq$cfg.configuration-and(Norm $nativeInput.root)-ceq(Norm $root)-and$nativeInput.nonce-ceq$fast.nonce-and$fast.originalPollingUnmodified-eq$true-and$fast.actualDebugRawSha256-ceq$binding.raw.sha256-and$fast.actualDebugRawBytes-eq$binding.raw.bytes-and$fast.experimentalLifecycleObserved-eq$true) 'Actual independent fast-tool raw/input identity'
+ if($consumerDebug){
+  $expectedKind=$(if($installedMode){'acceptance'}else{'release'})
+  $expectedArgs=@('--build',$build,'--config',$cfg.configuration,'--parallel','2','--verbose')
+  Need ($nativeInput.consumerKind-ceq$expectedKind-and(Norm $nativeInput.buildDirectory)-ceq(Norm $build)-and(ConvertTo-Json -InputObject @($nativeInput.rootArguments) -Compress)-ceq(ConvertTo-Json -InputObject $expectedArgs -Compress)) 'Exact owned consumer CMake vector'
+ }
  Need ((Norm $context.executable)-ceq(Norm $binding.observer.path)-and$context.executableSha256-ceq$binding.observer.sha256-and$context.runnerSha256-ceq$nativeInput.outerRunner.sha256-and$context.args.Count-eq8-and$context.args[0]-ceq'--input'-and(Norm $context.args[1])-ceq(Norm $binding.input.path)-and$context.args[2]-ceq'--input-sha256'-and$context.args[3]-ceq$binding.input.sha256-and$context.args[4]-ceq'--report'-and(Norm $context.args[5])-ceq(Norm $binding.raw.path)-and$context.args[6]-ceq'--nonce'-and$context.args[7]-ceq$nativeInput.nonce) 'Original outer context must remain the real observer'
  $debugText=RawText $binding.raw.path;Need ($debugText.EndsWith("`n")-and$debugText-notmatch'\r') 'Complete native debug stream'
  $debugRows=@($debugText.TrimEnd([char]10).Split([char]10)|ForEach-Object{$_|ConvertFrom-Json});Need ($debugRows.Count-gt1-and$debugRows.Count-le100000) 'Bounded complete debug records'
@@ -618,7 +778,9 @@ if($debugMode){
  Need ($debugStart.event-ceq'observer-start'-and$debugStart.observerPid-eq$start.pid-and$debugStart.observerCreationFileTime-ceq$start.creationFileTime-and$debugTerminal.event-ceq'terminal'-and$debugTerminal.passed-eq$true-and$debugTerminal.forced-eq$false-and$debugTerminal.rootExitCode-eq0-and$debugTerminal.activeProcesses-eq0-and$debugTerminal.limitTerminatedProcesses-eq0-and$debugTerminal.allMembersSignaled-eq$true-and$debugTerminal.allPausedQueriesClosed-eq$true-and$debugTerminal.allLoaderSequences-eq$true-and$debugTerminal.debugProtocolValid-eq$true-and$terminal.totalProcesses-eq$debugTerminal.historicalMembers+1) 'Independent complete inner history and exact natural outer membership'
  $creates=@($debugRows|Where-Object{$_.event-ceq'create-paused'});$queries=@($debugRows|Where-Object{$_.event-ceq'commandline-paused'});$exits=@($debugRows|Where-Object{$_.event-ceq'member-exit'})
  Need ($creates.Count-eq$debugTerminal.historicalMembers-and$exits.Count-eq$creates.Count-and$queries.Count-eq$debugTerminal.queryCount-and(ConvertTo-Json -InputObject $creates -Depth 20 -Compress)-ceq(ConvertTo-Json -InputObject $fast.created -Depth 20 -Compress)-and(ConvertTo-Json -InputObject $queries -Depth 20 -Compress)-ceq(ConvertTo-Json -InputObject $fast.queries -Depth 20 -Compress)) 'Projection cannot replace actual native frames'
- $roots=@($creates|Where-Object{$_.buildRoot-eq$true});Need ($roots.Count-eq1-and$roots[0].role-ceq'POWERSHELL'-and$roots[0].pid-eq$fast.innerBuild.pid-and$roots[0].creationFileTime-ceq$fast.innerBuild.creationFileTime-and$roots[0].pid-eq$debugTerminal.rootPid-and$roots[0].creationFileTime-ceq$debugTerminal.rootCreationFileTime) 'Unique real inner Build CREATE identity'
+ $roots=@($creates|Where-Object{$_.buildRoot-eq$true});Need ($roots.Count-eq1-and$roots[0].role-ceq$rootRole-and$roots[0].pid-eq$fast.innerBuild.pid-and$roots[0].creationFileTime-ceq$fast.innerBuild.creationFileTime-and$roots[0].pid-eq$debugTerminal.rootPid-and$roots[0].creationFileTime-ceq$debugTerminal.rootCreationFileTime) 'Unique real inner Build CREATE identity'
+ $rootQueries=@($queries|Where-Object{$_.buildRoot-eq$true});$rootImages=@($nativeInput.images|Where-Object{$_.role-ceq$rootRole})
+ Need ($rootQueries.Count-eq1-and$rootImages.Count-eq1-and$rootQueries[0].pid-eq$roots[0].pid-and$rootQueries[0].creationFileTime-ceq$roots[0].creationFileTime-and$rootQueries[0].role-ceq$rootRole-and(ConvertTo-Json -InputObject @($rootQueries[0].wholeArgv) -Compress)-ceq(ConvertTo-Json -InputObject (@($rootImages[0].path)+@($nativeInput.rootArguments)) -Compress)) 'Actual complete inner root argv and identity'
  $innerBuild=$roots[0]
  foreach($r in $creates){
   if($roleNames-cnotcontains$r.role){continue};$receipt=ToolIdentity $r.imageFile.finalPath $r.role
@@ -663,7 +825,7 @@ if($cfg.withWebView2){
  $archivePin=ObsPin $archivePath;Need ($archivePin.sha256-ceq$descriptor.sha256) 'Optional dependency archive does not match frozen source'
  Add-Type -AssemblyName System.IO.Compression.FileSystem
  $zip=[IO.Compression.ZipFile]::OpenRead($archivePath)
- try{foreach($relative in @('build/native/include/WebView2.h',('build/native/'+$cfg.architecture+'/WebView2LoaderStatic.lib'),'LICENSE.txt','NOTICE.txt')){
+ try{foreach($relative in @('build/native/include/WebView2.h','build/native/include/WebView2EnvironmentOptions.h',('build/native/'+$cfg.architecture+'/WebView2LoaderStatic.lib'),'LICENSE.txt','NOTICE.txt')){
   $matches=@($zip.Entries|Where-Object{$_.FullName-ceq$relative});Need ($matches.Count-eq1) 'Unique authenticated optional dependency member'
   $entry=$matches[0];$stream=$entry.Open();$hash=[Security.Cryptography.SHA256]::Create()
   try{$expected=[BitConverter]::ToString($hash.ComputeHash($stream)).Replace('-','').ToLowerInvariant()}finally{$stream.Dispose();$hash.Dispose()}
@@ -706,6 +868,15 @@ Need ($graphCommands.Count-gt0) 'No default graph compiler commands'
 $selectedObjects=@{};foreach($command in $graphCommands){$selectedObjects[(Norm (Full $command.output $build))]=$true}
 $graphEdges=@($edges|Where-Object{$_.rule-cmatch'^(C|CXX)_COMPILER(?:_|$)'-and$_.outputs.Count-eq1-and$selectedObjects.ContainsKey((Norm (Full $_.outputs[0] $build)))})
 $bindings=@(CompileBindings $build $graphCommands $graphEdges);$deps=DependencyBindings $build $graphCommands (RawText $depsFile)
+# Only validated selected compiler/Ninja dependency bindings may select a role.
+$readGeneratedSource={param($value)[void](MatchPin $allowed[(Norm $value)]);return ,([IO.File]::ReadAllBytes($value))}
+foreach($derived in @(GeneratedTestDependencies $root $build $cfg.configuration $allowed $deps.selected $readGeneratedSource)){
+ $actual=ObsPin $derived.pin.path;$actualBytes=[IO.File]::ReadAllBytes($derived.pin.path)
+ [void](GeneratedTestActual $derived $actual $actualBytes)
+ [void](MatchPin $derived.source);foreach($writer in $derived.writerPins){[void](MatchPin $writer)}
+ [void]$derived.Remove('expectedBytes');$allowed[(Norm $derived.pin.path)]=$actual;$derivedDependencies.Add($derived)
+}
+
 $previous=$null;if($null-ne$cfg.previousObservation){[void](MatchPin $cfg.previousObservation);$previous=RawText $cfg.previousObservation.path|ConvertFrom-Json;Need ($previous.schema-cin@('soui.standard-llvm-build-observation/v1','soui.standard-llvm-build-observation/v2')-and$previous.compilerVerified-eq$true-and$previous.architecture-ceq$cfg.architecture-and$previous.configuration-ceq$cfg.configuration-and$previous.inputIdentity-ceq$cfg.inputIdentity-and$previous.bridgeIdentity-ceq$cfg.bridgeIdentity) 'Prior observation scope/inputs differ'}
 $compileRecords=[Collections.Generic.List[object]]::new();$objects=@{};$neededRoles=@{NINJA=$true};$currentCompileCount=0
 foreach($command in $graphCommands){
@@ -735,8 +906,7 @@ if($installedMode){
 }elseif($releaseMode){
  Need ($graphCommands.Count-eq1-and$bindings.Count-eq1-and(Norm $graphCommands[0].file)-ceq(Norm (Join-Path $installedPaths.source 'main.cpp'))-and$bindings[0].rule-cmatch'^CXX_COMPILER(?:_|$)') 'Exact current installed release CXX consumer default graph'
 }else{
-$sdkExpected=[string[]]@($cfg.dependencyPins|Where-Object{(Norm $_.path).StartsWith((Norm (Join-Path $root 'sdk/src/')),[StringComparison]::Ordinal)-and$_.path.EndsWith('.cpp',[StringComparison]::Ordinal)}|ForEach-Object{Norm $_.path})
-Need ($sdkExpected.Count-gt0-and(SameSet $sdkExpected ([string[]]@($graphCommands|Where-Object{(Norm $_.file).StartsWith((Norm (Join-Path $root 'sdk/src/')),[StringComparison]::Ordinal)}|ForEach-Object{Norm $_.file})))) 'All current normal SDK C++ sources must belong to the actual default graph'
+$normalSdkCommands=@(NormalSdkSourceCommands $root $build $cfg.configuration ([bool]$cfg.sdkOnly) $cfg.dependencyPins $graphCommands)
 }
 
 $resourceRecords=[Collections.Generic.List[object]]::new();$resources=@{}
@@ -756,17 +926,19 @@ foreach($binding in $resourceBindings.selected){
   $record=[ordered]@{source=$sourcePin;output=$outputPin;databaseRaw=$command.command;databaseNormalizedCommand=$binding.databaseCanonical;normalizedCommand=$needle;generatedCommand=$binding.query.raw;actualVerbose=$(if($actual.Count){$actual[0].raw}else{$null});reusedFrom=$reuse;dependencyReadTraceAvailable=$false}
  $resourceRecords.Add($record);$resources[(Norm $output)]=$outputPin
 }
+$binaryCommands=BinaryCommandIndex $generated $verbose
 $binaryRecords=[Collections.Generic.List[object]]::new();$requiredLibraryKeys=@{};$currentBinaryCount=0
 foreach($edge in $edges){
  if($edge.rule-cnotmatch'^(C|CXX)_(STATIC_LIBRARY|EXECUTABLE|SHARED_LIBRARY|MODULE_LIBRARY)_LINKER(?:_|$)'){continue}
  Need ($edge.outputs.Count-eq1) 'One archive/link output per selected edge';$output=Full $edge.outputs[0] $build
  if(-not(Test-Path -LiteralPath $output)){continue} # Declared non-ALL targets are recorded above, never called built.
  $role=$(if($edge.rule-match'_STATIC_LIBRARY_'){'ARCHIVER'}else{'LINKER'});$needleToken=Norm $profile.ToolPins.$role.path
- $candidates=@($generated|Where-Object{(Norm (ToolNorm $_)).Contains($needleToken)-and((Norm (ToolNorm $_)).Contains((Norm $edge.outputs[0]))-or(Norm (ToolNorm $_)).Contains((Norm $output)))})
- if(-not$candidates.Count){continue};Need ($candidates.Count-eq1) 'One generated archive/link command for output';$needle=ToolNorm $candidates[0]
+ $relativeOutput=Norm $edge.outputs[0];$absoluteOutput=Norm $output
+ $candidates=@($binaryCommands.generated|Where-Object{$_.search.Contains($needleToken)-and($_.search.Contains($relativeOutput)-or$_.search.Contains($absoluteOutput))})
+ if(-not$candidates.Count){continue};Need ($candidates.Count-eq1) 'One generated archive/link command for output';$needle=$candidates[0].canonical
  Need ($needle-notmatch'(?<!\S)/(gl|ltcg)(?::[^\s]+)?(?!\S)') 'No mixed MSVC GL/LTCG in LLVM profile'
  if($role-ceq'LINKER'){foreach($directory in $profile.LibraryDirectories){Need ((Norm $needle).Contains((Norm $directory))) 'Selected CRT/SDK linker search root absent'}}
- $actual=@($verbose|Where-Object{(ToolNorm $_)-ceq$needle});Need ($actual.Count-le1) 'Repeated archive/link command';$outputPin=ObsPin $output;$reuse=$null
+ $actual=@();if($binaryCommands.actual.ContainsKey($needle)){$actual=$binaryCommands.actual[$needle].ToArray()};Need ($actual.Count-le1) 'Repeated archive/link command';$outputPin=ObsPin $output;$reuse=$null
  $inputObjects=@();$inputLibraries=@();$inputResources=@();foreach($relative in @($edge.inputs)+@($edge.implicitInputs)){
   $p=Full $relative $build;$key=Norm $p
   if($objects.ContainsKey($key)){$inputObjects+=,$objects[$key].object}
@@ -779,13 +951,30 @@ foreach($edge in $edges){
   Need ($null-ne$previous) ('No actual link/archive command or authenticated prior output: '+$output)
   $old=@($previous.binaryRecords|Where-Object{(Norm $_.output.path)-ceq(Norm $output)})
   Need ($old.Count-eq1-and$old[0].normalizedCommand-ceq$needle-and$old[0].output.sha256-ceq$outputPin.sha256-and$old[0].output.bytes-eq$outputPin.bytes-and(SameSet ([string[]]@($inputObjects|ForEach-Object{$_.sha256+'|'+$_.bytes})) ([string[]]@($old[0].inputObjects|ForEach-Object{$_.sha256+'|'+$_.bytes})))-and(SameSet ([string[]]@($inputLibraries|ForEach-Object{(Norm $_.path)+'|'+$_.sha256+'|'+$_.bytes})) ([string[]]@($old[0].inputLibraries|ForEach-Object{(Norm $_.path)+'|'+$_.sha256+'|'+$_.bytes})))-and(SameSet ([string[]]@($inputResources|ForEach-Object{(Norm $_.path)+'|'+$_.sha256+'|'+$_.bytes})) ([string[]]@($old[0].inputResources|ForEach-Object{(Norm $_.path)+'|'+$_.sha256+'|'+$_.bytes})))) 'Incremental link/archive inputs/output provenance differs';$reuse=$cfg.previousObservation
- }else{$currentBinaryCount++;$neededRoles[$role]=$true;if((Norm $needle).Contains((Norm $profile.ToolPins.MT.path))){$neededRoles.MT=$true}}
+ }else{
+  $currentBinaryCount++;$neededRoles[$role]=$true
+  if((Norm $needle).Contains((Norm $profile.ToolPins.MT.path))){
+   $requiresManifestTool=$true
+   if($consumerDebug-and$role-ceq'LINKER'){
+    $mode=Read-CmakeManifestMode $candidates[0].raw $configurationFiles[0].Name
+    if($null-ne$mode-and$mode.requiresManifestTool-eq$false){
+     $cmakePins=@($nativeInput.images|Where-Object{$_.role-ceq'CMAKE'});Need ($cmakePins.Count-eq1) 'Unique native CMake image required for manifest mode'
+     [void](MatchPin $cmakePins[0]);[void](Assert-ToolFileIdentity -ObservedPath $mode.cmake -ExpectedPin $cmakePins[0])
+     Need ([Diagnostics.FileVersionInfo]::GetVersionInfo($cmakePins[0].path).ProductVersion-ceq$mode.cmakeVersion) 'Actual pinned CMake version must match the recognized manifest implementation'
+     foreach($pair in @(@($mode.cmd,'CMD'),@($mode.rc,'RC'),@($mode.mt,'MT'),@($mode.linker,'LINKER'))){[void](ToolIdentity $pair[0] $pair[1])}
+     # This is a configured-tool receipt, never a fabricated MT process row.
+     $requiresManifestTool=$false
+    }
+   }
+   if($requiresManifestTool){$neededRoles.MT=$true}
+  }
+ }
  $members=$null;$machine=$expectedMachine
  if($role-ceq'ARCHIVER'){
   Need ($inputObjects.Count-gt0) 'Built archive has no current object inputs';$archive=ArchiveMembers $output;$members=$archive.members
   Need ($members.Count-eq$inputObjects.Count-and@($members|Where-Object{$_.machine-ne$expectedMachine}).Count-eq0-and(SameSet ([string[]]@($members|ForEach-Object{$_.sha256+'|'+$_.bytes})) ([string[]]@($inputObjects|ForEach-Object{$_.sha256+'|'+$_.bytes})))) 'Archive members must equal actual object bodies exactly'
  }else{$pe=PeMachine $output;$machine=$pe.machine;Need ($machine-eq$expectedMachine) 'Actual linked PE target architecture'}
- $binaryRecords.Add([ordered]@{output=$outputPin;role=$role;machine=$machine;edge=$edge;generatedCommand=$candidates[0];normalizedCommand=$needle;actualVerbose=$(if($actual.Count){$actual[0]}else{$null});reusedFrom=$reuse;inputObjects=$inputObjects;inputLibraries=$inputLibraries;inputResources=$inputResources;archiveMembers=$members})
+ $binaryRecords.Add([ordered]@{output=$outputPin;role=$role;machine=$machine;edge=$edge;generatedCommand=$candidates[0].raw;normalizedCommand=$needle;actualVerbose=$(if($actual.Count){$actual[0]}else{$null});reusedFrom=$reuse;inputObjects=$inputObjects;inputLibraries=$inputLibraries;inputResources=$inputResources;archiveMembers=$members})
 }
 Need ($binaryRecords.Count-gt0) 'No actual SDK archive/application link proof'
 if($installedMode){
@@ -794,14 +983,20 @@ if($installedMode){
  Need ($binaryRecords.Count-eq1-and$binaryRecords[0].role-ceq'LINKER'-and(Norm $binaryRecords[0].output.path)-ceq(Norm $installedPaths.executable)-and@($binaryRecords[0].inputLibraries|Where-Object{InstalledPinSame $_ $installedBinding.installedSdkArchive}).Count-eq1) 'Actual release EXE must link the exact independently accepted installed SDK archive'
 }else{
 $sdkArchive=Join-Path $build ($(if($cfg.sdkOnly){''}else{'sdk/'})+$cfg.configuration+'/soui_sdk.lib')
-Need (@($binaryRecords|Where-Object{(Norm $_.output.path)-ceq(Norm $sdkArchive)-and$_.role-ceq'ARCHIVER'}).Count-eq1) 'Actual normal SDK archive missing from proof'
+$normalSdkArchive=@($binaryRecords|Where-Object{(Norm $_.output.path)-ceq(Norm $sdkArchive)-and$_.role-ceq'ARCHIVER'})
+Need ($normalSdkArchive.Count-eq1) 'Actual normal SDK archive missing from proof'
+Need (SameSet ([string[]]@($normalSdkCommands|ForEach-Object{Norm (Full $_.output $build)})) ([string[]]@($normalSdkArchive[0].inputObjects|ForEach-Object{Norm $_.path}))) 'Production SDK archive inputs must exactly equal all frozen-source production objects'
 }
 foreach($key in $requiredLibraryKeys.Keys){Need (@($binaryRecords|Where-Object{(Norm $_.output.path)-ceq$key}).Count-eq1) 'Generated library dependency lacks an actual archive binding'}
 foreach($role in $neededRoles.Keys){Need ($currentRoles.ContainsKey($role)-or($debugMode-and$independentRoles.ContainsKey($role))) ('Actual owned or independent debug tool process was not observed: '+$role)}
-foreach($p in @(($build+'/CMakeCache.txt'),($build+'/CMakeFiles/CMakeConfigureLog.yaml'),($build+'/compile_commands.json'),$impl,$common,$rules,$queryFile,$depsFile,$cfg.nativeLog.path)){$evidencePins.Add((ObsPin $p))}
+. (Join-Path $root 'tools/internal/Capture-CMakeConfigureLog.ps1')
+$configureLogCapture=Copy-SouiCMakeConfigureLog -BuildDirectory $build -EvidenceDirectory $folder
+$evidencePins.Add($configureLogCapture.snapshot)
+foreach($p in @(($build+'/CMakeCache.txt'),($build+'/compile_commands.json'),$impl,$common,$rules,$queryFile,$depsFile,$cfg.nativeLog.path)){$evidencePins.Add((ObsPin $p))}
 foreach($pin in $cfg.controlPins){[void](MatchPin $pin)};foreach($pin in $cfg.dependencyPins){[void](MatchPin $pin)};Need ((ObsPin $InputFile).sha256-ceq$InputSha) 'Observer input changed'
 foreach($pin in $ninjaScopePins.Values){[void](MatchPin $pin)}
 $record=[ordered]@{ninjaWorkdirBinding=$ninjaWorkdirBinding;ninjaScopePins=$ninjaScopePins;schema='soui.standard-llvm-build-observation/v1';profile=$cfg.profile;root=$root;architecture=$cfg.architecture;configuration=$cfg.configuration;sdkOnly=$cfg.sdkOnly;inputIdentity=$cfg.inputIdentity;bridgeIdentity=$cfg.bridgeIdentity;requestFile=$requestPin;buildReport=$cfg.buildReport;buildCapture=[ordered]@{raw=$buildRaw;context=$contextPin;ready=$readyPin;finished=$finishedPin;pid=$start.pid;creationFileTime=$start.creationFileTime;naturalRootExitCode=0;naturalSupervisorExitCode=0;wholeJobClosed=$true;forced=$false};compilerVerified=$true;observedCompilerId='Clang';observedFrontend='MSVC';observedVersion='22.1.3';observedPointerBytes=$expectedWidth;compilerFacts=$compilerFacts.ToArray();ninjaCompileEdges=$bindings;ninjaDependencyRecords=$deps.selected;outsideSelectedDependencyScope=$deps.outsideScope;outsideDefaultGraph=$outsideGraph;compileRecords=$compileRecords.ToArray();resourceRecords=$resourceRecords.ToArray();frozenDependencyPins=$cfg.dependencyPins;derivedDependencies=$derivedDependencies.ToArray();binaryRecords=$binaryRecords.ToArray();actualToolRows=$currentToolRows.ToArray();toolFileIdentities=@($toolIdentities.Values);currentCompileCount=$currentCompileCount;currentBinaryCount=$currentBinaryCount;dependencyPins=@($dependencyPins.Values);evidencePins=$evidencePins.ToArray();scope='Actual selected configuration/default ALL graph; current commands or hash-bound prior natural compile records. No CTest/runtime/OS qualification or filesystem library-read trace.';completeToolchainProvenance=$false;kernelQualified=$false;abiQualified=$false;win7Qualified=$false;qualificationPassed=$false;releaseReady=$false}
+$record.configureLogCapture=$configureLogCapture
 $record.resourceWrapperPin=$(if($cfg.PSObject.Properties.Name-ccontains'resourceWrapperPin'){$cfg.resourceWrapperPin}else{$null})
 if($debugMode){
  foreach($pin in @($cfg.debugCapture.input,$cfg.debugCapture.raw,$cfg.debugCapture.prepared,$cfg.debugCapture.observer)){[void](MatchPin $pin)}
@@ -816,15 +1011,16 @@ if($installedMode){
   foreach($pin in $installedPins.Values){[void](MatchPin $pin)}
  foreach($role in $roleNames){[void](MatchPin $profile.ToolPins.$role)};foreach($pin in @($profile.RequiredInputPins)+@($profile.BridgePins)){[void](MatchPin $pin)}
  foreach($pair in @(@($installedPaths.source,$installedBinding.consumerSources),@((Join-Path $installedPaths.install 'include'),$installedBinding.installedHeaders),@((Join-Path $root 'sdk/include'),$installedBinding.originalSdkHeaders),@($installedPaths.originalSource,$installedBinding.originalConsumerSources))){Need (SameSet ([string[]]@(InstalledTree $pair[0]|ForEach-Object{Norm $_})) ([string[]]@($pair[1]|ForEach-Object{Norm $_.path}))) 'Installed input inventory changed during observation'}
- $record.schema='soui.installed-acceptance-llvm-build-observation/v1';$record.installedConsumer=$installedBinding;$record.installedEvidencePins=@($installedPins.Values)
+ $record.schema='soui.installed-acceptance-llvm-build-observation/'+$(if($debugMode){'v2'}else{'v1'});$record.installedConsumer=$installedBinding;$record.installedEvidencePins=@($installedPins.Values)
  $record.scope='Actual fresh ordinary installed CXX acceptance consumer compile/link and imported separately accepted SDK archive. No current SDK archive reclassification, runtime or release qualification.'
 }
 if($releaseMode){
  foreach($pin in $installedPins.Values){[void](MatchPin $pin)}
  foreach($role in $roleNames){[void](MatchPin $profile.ToolPins.$role)};foreach($pin in @($profile.RequiredInputPins)+@($profile.BridgePins)){[void](MatchPin $pin)}
  foreach($pair in @(@($installedPaths.source,$installedBinding.consumerSources),@((Join-Path $installedPaths.install 'include'),$installedBinding.installedHeaders),@((Join-Path $root 'sdk/include'),$installedBinding.originalSdkHeaders),@($installedPaths.originalSource,$installedBinding.originalConsumerSources))){Need (SameSet ([string[]]@(InstalledTree $pair[0]|ForEach-Object{Norm $_})) ([string[]]@($pair[1]|ForEach-Object{Norm $_.path}))) 'Release input inventory changed during observation'}
- $record.schema='soui.installed-release-llvm-build-observation/v1';$record.releaseConsumer=$installedBinding;$record.installedEvidencePins=@($installedPins.Values)
+ $record.schema='soui.installed-release-llvm-build-observation/'+$(if($debugMode){'v2'}else{'v1'});$record.releaseConsumer=$installedBinding;$record.installedEvidencePins=@($installedPins.Values)
  $record.scope='Actual fresh installed package CXX consumer compile/link and imported separately accepted SDK archive. No current SDK archive reclassification, runtime or release qualification.'
 }
+[void](MatchPin $configureLogCapture.live);[void](MatchPin $configureLogCapture.snapshot)
 $body=[Text.UTF8Encoding]::new($false).GetBytes(($record|ConvertTo-Json -Depth 30));$stream=[IO.File]::Open($ObservationPath,[IO.FileMode]::CreateNew,[IO.FileAccess]::Write,[IO.FileShare]::None)
 try{$stream.Write($body,0,$body.Length);$stream.Flush($true)}finally{$stream.Dispose()}

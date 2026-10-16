@@ -59,6 +59,13 @@ void partial_usage_and_soft_policy_changes_are_data() {
   value.resourceStatus=WKE_CACHE_READY; value.resourceDiscardable=1;
   value.resourceByteLimit=value.resourceRawSingleLimit=value.resourceEffectiveSingleLimit=0;
   require(binding.observe(value,9,123),"discardable default was interpreted as zero-byte cap");
+  value.resourceByteLimit=8*1024*1024;
+  value.resourceRawSingleLimit=value.resourceEffectiveSingleLimit=64*1024*1024;
+  require(binding.observe(value,9,123),"explicit discardable retained-byte budget rejected");
+  value.resourceRetainedBytes=value.resourceByteLimit+1;
+  require(binding.observe(value,9,123),"budget overage must remain observable data for the finite policy reader");
+  value.resourceEffectiveSingleLimit=value.resourceByteLimit;
+  require(!binding.observe(value,9,123),"retained total incorrectly capped independent single allocation");
 }
 void completed_copy_preserves_u64_and_retired_nonzero_data() {
   cache_observation value; value.state=cache_status::unavailable; value.native=fixture();

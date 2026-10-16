@@ -1,0 +1,280 @@
+✖ session evaluates every native owner including slot reuse with a distinct pool (1.268ms)
+✖ mixed evaluates every native owner including slot reuse with a distinct pool (0.2181ms)
+✖ configured bytes differ from the frozen production quota (0.6503ms)
+✖ a transient peak above the cap fails even when current usage is small (0.1291ms)
+✖ same document cannot change pool identity (0.1285ms)
+✖ retired pool cannot be reused by another lifetime (0.151ms)
+✖ missing retired observations retain an incomplete gate (0.1323ms)
+✖ nonempty current roster cannot be removed (0.0923ms)
+✖ a view cannot be observed after its owner has closed (0.321ms)
+✖ unknown window slots are refused (0.1984ms)
+✖ native process identity must match the bound consumer (0.1515ms)
+✖ capture replay cannot count as another observation (0.1529ms)
+✖ reversed cumulative counters cannot hide earlier allocation pressure (0.1138ms)
+✖ original native failure survives later successful samples (0.0931ms)
+✖ caller cannot replace the fixed long workload settings (0.0819ms)
+✖ caller cannot claim a different finite default (0.104ms)
+✖ missing full source binding cannot qualify a quota (0.1002ms)
+✖ an unclosed owner remains incomplete (0.0977ms)
+✖ missing terminal marker remains incomplete (0.083ms)
+✖ long logs use a separate bound without enlarging the original reload parser (1.8229ms)
+✖ duplicate fields are rejected before decoding the original bytes (0.1689ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 0
+ℹ fail 21
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 152.6191
+
+✖ failing tests:
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:38:39
+✖ session evaluates every native owner including slot reuse with a distinct pool (1.268ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:39:13)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:38:39
+✖ mixed evaluates every native owner including slot reuse with a distinct pool (0.2181ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:39:13)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ configured bytes differ from the frozen production quota (0.6503ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ a transient peak above the cap fails even when current usage is small (0.1291ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ same document cannot change pool identity (0.1285ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ retired pool cannot be reused by another lifetime (0.151ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ missing retired observations retain an incomplete gate (0.1323ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ nonempty current roster cannot be removed (0.0923ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ a view cannot be observed after its owner has closed (0.321ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ unknown window slots are refused (0.1984ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ native process identity must match the bound consumer (0.1515ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ capture replay cannot count as another observation (0.1529ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ reversed cumulative counters cannot hide earlier allocation pressure (0.1138ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ original native failure survives later successful samples (0.0931ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ caller cannot replace the fixed long workload settings (0.0819ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ caller cannot claim a different finite default (0.104ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ missing full source binding cannot qualify a quota (0.1002ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ an unclosed owner remains incomplete (0.0977ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:48
+✖ missing terminal marker remains incomplete (0.083ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:42:101)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:60:1
+✖ long logs use a separate bound without enlarging the original reload parser (1.8229ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at evaluate (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:35:148)
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:62:16)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:64:1
+✖ duplicate fields are rejected before decoding the original bytes (0.1689ms)
+  TypeError: reader.analyzeLongTaskStoreQuota is not a function
+      at TestContext.<anonymous> (C:\work\sm05-long-quota-1\proposal\tests\acceptance\long-run-task-quota.test.cjs:66:20)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)

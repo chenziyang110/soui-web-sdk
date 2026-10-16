@@ -5,6 +5,7 @@
 #include <soui/json_bridge.h>
 #include "native-owner-metrics.h"
 #include "shutdown-poll.h"
+#include "process-address-census.h"
 #include <array>
 #include <atomic>
 #include <chrono>
@@ -446,11 +447,17 @@ class test_window final {
     const auto bridge_status = bridge_.read_runtime_metrics(bridge);
     const auto adapter_status = native_adapter_ ? native_adapter_->read_runtime_metrics(adapter)
         : soui::sdk::diagnostics::status::unavailable;
+    soui::runtime::task_store_request_quota_snapshot request_quota;
+    auto quota_capture = begin_task_store_quota_capture(id_, handle_);
+    const auto quota_status = bridge_.read_task_store_request_quota(request_quota);
+    end_task_store_quota_capture(quota_capture, handle_);
     json result{{"window", std::to_string(id_)}, {"ownerAlive", true}, {"hostClosed", host_closed},
             {"lifetime", host_closed ? "after-host-close-before-owner-destruction" : "owner-alive"},
             {"captureThreadId", std::to_string(GetCurrentThreadId())},
             {"bridgeStatus", status_name(bridge_status)}, {"bridge", serialize(bridge)},
             {"adapterStatus", status_name(adapter_status)}, {"adapter", serialize(adapter)}};
+    result["taskStoreRequestQuota"] = serialize_task_store_request_quota(request_quota, quota_status,
+        quota_capture, bridge.task_service.observation);
     if (storage_observation) {
       soui::sdk::diagnostics::task_store_storage storage;
       (void)bridge_.read_task_store_storage_metrics(storage);
@@ -738,6 +745,7 @@ class runner final {
                 {"rendererModel", serialize(model)},
                 {"views", json::array()}};
     if (settings_.cache_observation) {
+      native["addressSpace"] = soui::acceptance::address_census::serialize(soui::acceptance::address_census::capture());
       soui::sdk::diagnostics::cache_observation cache;
       (void)soui::sdk::read_miniblink_cache_metrics(cache);
       native["namedCaches"] = serialize(cache);

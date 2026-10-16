@@ -21,20 +21,20 @@ const definitions={
   create:{'--name':'name','--output-root':'outputRoot','--sdk-package':'sdkPackage','--profile':'profile'},
   doctor:{'--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
     '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe'},
-  build:{'--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2',
+  build:{'--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-uia':'withUia',
     '--with-gui-bindings':'withGuiBindings','--with-vendor-tests':'withVendorTests','--install':'install','--fresh-configure':'freshConfigure',
     '--compiler-tail':'compilerTail','--tail-image':'tailImage','--tail-sha256':'tailSha256',
     '--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
     '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe'},
   test:{'--scope':'scope','--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot',
     '--windows-sdk-root':'windowsSdkRoot','--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe'},
-  package:{'--kind':'kind','--output':'output','--with-gui-bindings':'withGuiBindings'},
+  package:{'--kind':'kind','--output':'output','--with-gui-bindings':'withGuiBindings','--profile':'profile'},
   upgrade:{'--sdk-package':'sdkPackage','--project':'project'},
   dev:{'--web-root':'webRoot','--port':'port','--duration-ms':'durationMs',
     '--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
     '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe'}
 };
-const booleans=new Set(['sdkOnly','skipWeb','withWebView2','withGuiBindings','withVendorTests','install','freshConfigure','compilerTail']);
+const booleans=new Set(['sdkOnly','skipWeb','withWebView2','withUia','withGuiBindings','withVendorTests','install','freshConfigure','compilerTail']);
 const pathKeys=new Set(['runner','devkitRoot','outputRoot','sdkPackage','tailImage','output','project','webRoot']);
 const defaults={architecture:'x64',configuration:'Release',format:'human',drainMs:2000,
   profile:'compatibility',scope:'unit',kind:'source',port:5173,durationMs:900000};
@@ -71,6 +71,7 @@ function parseArgs(args) {
   if(command==='upgrade')need(value.sdkPackage&&value.project,'E_ARGUMENT','Upgrade requires sdk-package and project.');
   if(command==='package')need(['source','sdk','applications'].includes(value.kind)&&
     (value.kind!=='sdk'||value.output)&&(!value.withGuiBindings||value.kind==='sdk')&&
+    (!seen.has('profile')||value.kind==='applications')&&['compatibility','modern'].includes(value.profile)&&
     (value.kind!=='applications'||value.output===undefined),'E_ARGUMENT','Select source/sdk/applications; sdk requires output, and applications uses its existing fixed archive names.');
   if(command==='test')need(['contract','unit','native','desktop'].includes(value.scope),'E_ARGUMENT','Select contract, unit, native or desktop test scope.');
   value.scopeExplicit=seen.has('scope');
@@ -111,7 +112,7 @@ function planCommand(v,root,powershell,ctest) {
       {executable:ctest,args:['--test-dir',path.join(root,'out',v.architecture),'-C',v.configuration,'--output-on-failure']};
   }
   if(v.command==='package'&&v.kind!=='sdk')return ps(v.kind==='source'?'Package.ps1':'Package-Applications.ps1',
-    v.kind==='source'?(v.output?['-OutputFile',v.output]:[]):['-Architecture',v.architecture]);
+    v.kind==='source'?(v.output?['-OutputFile',v.output]:[]):['-Architecture',v.architecture,...(v.profile==='modern'?['-Profile','modern']:[])]);
   const sdk=path.join(root,'tools/sdk/soui-sdk.cjs');
   if(v.command==='upgrade')return {executable:process.execPath,args:[sdk,'install','--package',v.sdkPackage,'--project',v.project]};
   if(v.command==='package')return {executable:process.execPath,args:[sdk,'pack','--source',root,'--output',v.output,'--version',

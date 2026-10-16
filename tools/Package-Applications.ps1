@@ -1,5 +1,6 @@
 [CmdletBinding()]
-param([ValidateSet('x86','x64')][string]$Architecture='x64')
+param([ValidateSet('x86','x64')][string]$Architecture='x64',
+  [ValidateSet('compatibility','modern')][string]$Profile='compatibility')
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
 $version=([IO.File]::ReadAllText((Join-Path $root 'VERSION'))).Trim()
@@ -8,7 +9,8 @@ $zip=Get-Command 7z.exe -ErrorAction SilentlyContinue
 $zipPath=if($zip){$zip.Source}else{Join-Path $env:ProgramFiles '7-Zip/7z.exe'}
 if(-not(Test-Path -LiteralPath $zipPath)){throw 'Install 7-Zip or put 7z.exe on PATH.'}
 New-Item -ItemType Directory -Force -Path (Join-Path $root 'out/package'),(Join-Path $root 'dist') | Out-Null
-foreach($target in @('SouiStarter','SouiWorkbench')){
+$targets=if($Profile-eq'modern'){@('SouiModernStarter')}else{@('SouiStarter','SouiWorkbench')}
+foreach($target in $targets){
  $archive=Join-Path $root "dist/$target-$version-windows-$Architecture.zip"
  if(Test-Path -LiteralPath $archive){throw "Archive already exists: $archive"}
  $stage=Join-Path $root ('out/package/'+$target+'-'+[Guid]::NewGuid().ToString('N'))

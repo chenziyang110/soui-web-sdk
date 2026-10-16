@@ -1,0 +1,166 @@
+{
+  "schema": "soui.benchmark-single-run/v2",
+  "runId": "587eafc1-83e3-4f1d-a973-e1c131d9c8fc",
+  "host": "webview2",
+  "scene": "S05",
+  "startedAt": "2026-10-16T07:36:00.234Z",
+  "captureRoot": "C:\\work\\sm05-source30-modern-presentation-5\\desktop-x64-s05-source30-1\\run",
+  "runnerPid": 44624,
+  "machine": {
+    "hostname": "Robin11",
+    "platform": "win32",
+    "release": "10.0.26200",
+    "architecture": "x64",
+    "cpuModel": "AMD Ryzen 9 9950X 16-Core Processor            ",
+    "logicalCpus": 32,
+    "totalMemoryBytes": 66094223360
+  },
+  "pageSha256": "0d3449a715e68a17cdcfc6eb9d773123e2c8247eec3768e9f253f3cf73d82418",
+  "pageBundle": "page-bundle",
+  "pageFiles": [
+    {
+      "path": ".vite/manifest.json",
+      "bytes": 734,
+      "sha256": "b7abbc61af8742d9c45c9df6d581c05b2fa97fee42d932602559c5d6746109a6"
+    },
+    {
+      "path": "assets/benchmark-CMyB3Cpu.js",
+      "bytes": 234479,
+      "sha256": "88de5596f65c54efa7fef1c4a92694d6eed9e0e27cb10d07d959122372d59480"
+    },
+    {
+      "path": "assets/benchmark-DwZzutO7.css",
+      "bytes": 72227,
+      "sha256": "ad2d8ae4171706676aab387fb3ee1df6a8400fddc284e66dacfc22715f14f83b"
+    },
+    {
+      "path": "assets/benchmark-legacy-BXmf0_A2.js",
+      "bytes": 309420,
+      "sha256": "2bffe9b2d38b0468ef9d785aa3dadaf8fc9fbef9e85725f99a769feb986c4285"
+    },
+    {
+      "path": "assets/polyfills-BfWLlxAn.js",
+      "bytes": 142663,
+      "sha256": "9a93ce92cd760e772fe33fc136e0b93063ba1578fa1898860c456c06f114a19c"
+    },
+    {
+      "path": "assets/polyfills-legacy-VVdV9S1d.js",
+      "bytes": 165889,
+      "sha256": "75e43289eaef6ab3263d3364ed574d5a82af67af57495a6b69f1cd3d0100bb7e"
+    },
+    {
+      "path": "benchmark-smoke.html",
+      "bytes": 1412,
+      "sha256": "56bbdd5bc1217f0e1796c46870eb8fe6657a5025400fe1a7026ef5ce94752250"
+    },
+    {
+      "path": "benchmark.html",
+      "bytes": 1071,
+      "sha256": "0d3449a715e68a17cdcfc6eb9d773123e2c8247eec3768e9f253f3cf73d82418"
+    },
+    {
+      "path": "index.html",
+      "bytes": 1071,
+      "sha256": "0d3449a715e68a17cdcfc6eb9d773123e2c8247eec3768e9f253f3cf73d82418"
+    }
+  ],
+  "hostExeSha256": "70547e31f0a33535f424c46e03b6301e5859bfe98f0377136a19c441987c3fd8",
+  "dependency": {
+    "webview2ProfileDirectory": "C:\\work\\sm05-source30-modern-presentation-5\\desktop-x64-s05-source30-1\\browser-profile",
+    "renderer": "webview2"
+  },
+  "identity": {
+    "kind": "webview2-sdk-library",
+    "bytes": 2061662,
+    "sha256": "d5be9336dd0ca51dcd6373a2138704e3416d9c283c513d5bebbd3ab546f36777"
+  },
+  "tools": {
+    "samplerSha256": "e8132cab068293fa4a38fb4a812eb9a9a9ae82d2c38c0aed575b2cb886dd22da",
+    "inputSha256": "14e53cb6285e7016aeaf54a996d8f7974e475d7279d1c7aa74051d42c679b5de",
+    "ownedRunnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c"
+  },
+  "maxDurationMs": 250000,
+  "cleanup": [
+    {
+      "name": "host",
+      "pid": 12056,
+      "method": "held-job-stdin",
+      "stopRequested": true,
+      "treeCleanupVerified": true,
+      "nativeReportSha256": "7a708d421c4d6ddf31551ede9576b9970ff459f778a77ecd247fec12b8574fad"
+    }
+  ],
+  "releaseReady": false,
+  "benchmarkValid": false,
+  "desktopObservation": true,
+  "rendererBackend": "webview2",
+  "status": "failed",
+  "error": "Modern sample document readiness failed",
+  "processes": [
+    {
+      "name": "host",
+      "pid": 12056,
+      "contextSha256": "c5618137d72383bd578fe077b46cc658c94c1d46d9c4bfc51b6b2c715f86722c",
+      "code": 124,
+      "signal": null,
+      "error": "supervisor-stop",
+      "ownedProcess": {
+        "pid": 12056,
+        "creationFileTime": "134366097602700728",
+        "exitCode": 124,
+        "supervisorExitCode": 124,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": true,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "supervisor-stop",
+          "elapsedMs": 45110,
+          "rootExited": true,
+          "rootExitCode": 124,
+          "activeBeforeCleanup": 7,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 7,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "C:\\work\\sm05-source30-modern-presentation-5\\desktop-x64-s05-source30-1\\run\\host.owned.ndjson",
+        "reportSha256": "7a708d421c4d6ddf31551ede9576b9970ff459f778a77ecd247fec12b8574fad",
+        "runnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c",
+        "executableSha256": "70547e31f0a33535f424c46e03b6301e5859bfe98f0377136a19c441987c3fd8"
+      }
+    }
+  ],
+  "ownedEvidence": [
+    {
+      "name": "host",
+      "report": {
+        "path": "host.owned.ndjson",
+        "bytes": 5478,
+        "sha256": "7a708d421c4d6ddf31551ede9576b9970ff459f778a77ecd247fec12b8574fad"
+      },
+      "context": {
+        "path": "host.owned.ndjson.context.json",
+        "bytes": 861,
+        "sha256": "c5618137d72383bd578fe077b46cc658c94c1d46d9c4bfc51b6b2c715f86722c"
+      },
+      "stdout": {
+        "path": "host.stdout.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "stderr": {
+        "path": "host.stderr.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      }
+    }
+  ],
+  "finishedAt": "2026-10-16T07:36:45.479Z"
+}

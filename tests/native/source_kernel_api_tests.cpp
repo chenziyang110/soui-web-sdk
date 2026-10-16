@@ -115,6 +115,18 @@ void unsuccessful_initialization_is_reported() {
   require(!initialize_source_kernel(exports.module), "engine initialization status must be checked");
   require(exports.initialize_calls == 1, "initialization status is checked after the real call site");
 }
+void missing_shutdown_prepare_prevents_initialization() {
+  exports = {};
+  exports.missing = "wkePrepareWorkerShutdown";
+  require(!initialize_source_kernel(exports.module), "kernel missing shutdown preparation was accepted");
+  require(exports.initialize_calls == 0, "missing shutdown preparation was discovered after initialization");
+}
+void missing_prepared_finalizer_prevents_initialization() {
+  exports = {};
+  exports.missing = "wkeFinalizePrepared";
+  require(!initialize_source_kernel(exports.module), "kernel missing prepared finalization was accepted");
+  require(exports.initialize_calls == 0, "missing prepared finalization was discovered after initialization");
+}
 }  // namespace
 
 int main() {
@@ -125,13 +137,15 @@ int main() {
       {"required-export-failure", missing_required_export_prevents_initialization},
       {"initializer-export-failure", missing_initializer_prevents_initialization},
       {"initialization-status-failure", unsuccessful_initialization_is_reported},
+      {"shutdown-prepare-export-failure", missing_shutdown_prepare_prevents_initialization},
+      {"prepared-finalizer-export-failure", missing_prepared_finalizer_prevents_initialization},
   };
   try {
     for (const auto& test : cases) {
       test.run();
       std::cout << "PASS " << test.name << '\n';
     }
-    std::cout << "source-kernel loader: 6 passed; actual DLL and GUI not exercised\n";
+    std::cout << "source-kernel loader: 8 passed; actual DLL and GUI not exercised\n";
     return 0;
   } catch (const std::exception& error) {
     std::cerr << "FAIL " << error.what() << '\n';

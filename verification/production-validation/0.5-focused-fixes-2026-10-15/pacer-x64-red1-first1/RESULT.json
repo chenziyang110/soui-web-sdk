@@ -1,0 +1,210 @@
+{
+  "arch": "x64",
+  "variant": "red1",
+  "pins": [
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-050\\run-pacer-probe-1.cjs",
+      "bytes": 3515,
+      "sha256": "55f8a7ea3eaa955545f01636925e99becb0b926abf05c9be062f9a2993dc54db"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\llvm-profile-request-Release.json",
+      "bytes": 11951,
+      "sha256": "88c2837ac3ee5df7cc03caeef518d19f8986e9fafa6e33f1adfdde2b6d4c7664"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\cmake\\toolchains\\SouiLLVM22.cmake",
+      "bytes": 23132,
+      "sha256": "ebba063e275fdbd54e5225142b328682b97fb86bfc6c6c9923000a5e5be9e837"
+    },
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-050\\high-refresh-prototype\\DECISION.md",
+      "bytes": 2597,
+      "sha256": "018e65d80756e75509337e429689aa9ba87af07f944b91f861644f65d724ee21"
+    }
+  ],
+  "snapshot": {
+    "schema": "soui.kernel-source-files/v1",
+    "root": "F:/work/SOUI_WEB/out/release-050/high-refresh-prototype/red1",
+    "files": [
+      {
+        "path": "CMakeLists.txt",
+        "bytes": 554,
+        "sha256": "2265f6d83a2b8a275756d50f30363d0d34f3a084240f254aef4ee8e9b64a9c40"
+      },
+      {
+        "path": "main.cpp",
+        "bytes": 422,
+        "sha256": "2e6f8e2a3721750c5ec29ef173ec2882fce6925aa22d6fb145c56c4a0889aa0d"
+      },
+      {
+        "path": "sdk/include/soui/host/frame_pacer.h",
+        "bytes": 7240,
+        "sha256": "49ddae57332a45e11586dd60ac074a717f57dbd2c64a3280248b82a054358342"
+      }
+    ],
+    "directories": [
+      "sdk",
+      "sdk/include",
+      "sdk/include/soui",
+      "sdk/include/soui/host"
+    ],
+    "fileCount": 3,
+    "directoryCount": 4,
+    "totalBytes": 8216,
+    "identity": "53a0ade29a22f1faef9f44a3f283ca8a3080fc657a909405b73ecd983fa9e3e3"
+  },
+  "records": [
+    {
+      "name": "configure",
+      "expectedExit": 0,
+      "natural": true,
+      "result": {
+        "pid": 93804,
+        "creationFileTime": "134365475943094950",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 20215,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 53,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\SOUI_WEB\\out\\release-050\\pacer-x64-red1-first1\\configure.ndjson",
+        "reportSha256": "edfeafe63b2d64c7e3592f4f90ab1370e54f7f02ea93f073e3d3209c61db8fb7",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 20215,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 53,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "build",
+      "expectedExit": 0,
+      "natural": true,
+      "result": {
+        "pid": 88840,
+        "creationFileTime": "134365476146556196",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 961,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 7,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "F:\\work\\SOUI_WEB\\out\\release-050\\pacer-x64-red1-first1\\build.ndjson",
+        "reportSha256": "fe86ec2be224c05acc19ef04d49e3dad769beec14394778a1eced0a98302fa76",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 961,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 7,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "probe",
+      "expectedExit": 1,
+      "natural": false,
+      "result": {
+        "pid": 91720,
+        "creationFileTime": "134365476157640452",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 130,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 1,
+          "terminatedOwnedJob": true,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "F:\\work\\SOUI_WEB\\out\\release-050\\pacer-x64-red1-first1\\probe.ndjson",
+        "reportSha256": "b3c4bc760d5a5d3a9a0994e8a13c99d8b0865608981c0efd41db0266a05372cf",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "1f16328091fef9b4e361d10030f700701f546ca150cb35911f41ecb084d29562"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 130,
+        "rootExited": true,
+        "rootExitCode": 1,
+        "activeBeforeCleanup": 1,
+        "terminatedOwnedJob": true,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    }
+  ],
+  "physicalPresentation": false
+}

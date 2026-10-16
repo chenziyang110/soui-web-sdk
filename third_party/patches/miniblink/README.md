@@ -42,3 +42,7 @@
 `0011-finite-cache-observation.patch` 以已包含 0010 的 `18da0e9` Native 子树为前件，记录 10 个已有文件的新增观测接线和 2 个新头。它新增独立 216 字节 cache snapshot/table，不改变原 renderer 168/264 字节 ABI；通过原 WKE ITERATOR 导出机制暴露可选 `wkeGetCacheDiagnosticsApi`。Blink 仅 owner-thread 读取现存 MemoryCache；Skia 仅对已发布 attached glyph/global retained resource 实例 try-lock，不触发 lazy-create、遍历、purge、消息消费或 limit setter。既有锁 acquire 算法保留，仅增加非阻塞 try 方法。
 
 策略字段来自当前组件实际配置，不能解释为全部 heap 硬上限。detached/TLS/外部借用对象、其他缓存实例与 allocator 不在范围。SDK 显式异步请求、完成副本、缺失/忙/不可用以及原采样时间见 [ADR-0070](../../../docs/adr/0070-finite-cache-observation.md)。`git apply --reverse --check` 已对当前工作树进行非写入检查；Node 纯数据/源码检查不证明 Native 编译、真实缓存行为或长期资源验收。所有旧补丁和历史结果保持原角色，新 Native 实际验证尚未执行。
+
+## 驻留资源记录字节预算：0012
+
+`0012-retained-resource-byte-budget.patch` 在 0011 后只改变 Blink 初始化、SkResourceCache 的正字节限制及对应注释三个文件。原始字节重放已核对，不转码上游文件或转换行尾。前后完整源码树身份、三个文件散列和补丁散列见 `third_party/manifests/kernel-cache-source-050.json`。历史 SOURCE-MANIFEST 保持原导入角色，当前编译身份由实际构建前后完整清单记录。策略及真实像素引用验证见 ADR-0102；完整新内核和应用结果另计。

@@ -1,0 +1,246 @@
+{
+  "version": "0.5.0",
+  "scopedReleaseChecksPassed": true,
+  "builds": {
+    "architectures": [
+      "x64",
+      "x86"
+    ],
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "nativeContractConfigurations": [
+      "Release"
+    ],
+    "nativeCasesPerArchitecture": 208,
+    "duplicateDirectCTestExecuted": false
+  },
+  "highRefresh": {
+    "backend": "webview2",
+    "architecture": "x64",
+    "scenario": "S05",
+    "sampleDurationMs": 120000,
+    "displayBinding": {
+      "before": {
+        "target": {
+          "deviceName": "\\\\.\\DISPLAY5",
+          "adapterLuid": "0000000000010bff",
+          "sourceId": 0,
+          "targetId": 268,
+          "friendlyName": "P24FBA-RA",
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "configuredSignalVSync": {
+            "numerator": 100,
+            "denominator": 1
+          }
+        },
+        "raw": {
+          "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\display-before-stdout.bin",
+          "bytes": 8439,
+          "sha256": "ebcaf11081861796a0ee956c2d7d1aa28227df3ba7e22cec848294fe9b10a5ef"
+        },
+        "result": {
+          "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\display-before-RESULT.json",
+          "bytes": 2264,
+          "sha256": "d400f4c57622cc53bde3b40fbe8fac809b410d9c1ecbadec1cfdf8a8262482b4"
+        },
+        "collector": {
+          "pid": 26516,
+          "creationFileTime": "134366103318082761"
+        }
+      },
+      "after": {
+        "target": {
+          "deviceName": "\\\\.\\DISPLAY5",
+          "adapterLuid": "0000000000010bff",
+          "sourceId": 0,
+          "targetId": 268,
+          "friendlyName": "P24FBA-RA",
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "configuredSignalVSync": {
+            "numerator": 100,
+            "denominator": 1
+          }
+        },
+        "raw": {
+          "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\display-after-stdout.bin",
+          "bytes": 8439,
+          "sha256": "493248cda54db69edc434730f59e2e7ba8066b1ea738a55840dd09aafcea4921"
+        },
+        "result": {
+          "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\display-after-RESULT.json",
+          "bytes": 2263,
+          "sha256": "9e9be37d7973fc0a243d1e8117ac8f5a406ce6f9289a3b81eb7d73999ed0d37d"
+        },
+        "collector": {
+          "pid": 55432,
+          "creationFileTime": "134366104594771215"
+        }
+      },
+      "initialWindow": {
+        "bottom": 1080,
+        "configuredFrequency": 100,
+        "deviceName": "\\\\.\\DISPLAY5",
+        "left": 0,
+        "right": 1920,
+        "top": 0,
+        "windowBottom": 919,
+        "windowLeft": 402,
+        "windowRight": 1518,
+        "windowTop": 160
+      },
+      "finalWindow": {
+        "bottom": 1080,
+        "configuredFrequency": 100,
+        "deviceName": "\\\\.\\DISPLAY5",
+        "left": 0,
+        "right": 1920,
+        "top": 0,
+        "windowBottom": 919,
+        "windowLeft": 402,
+        "windowRight": 1518,
+        "windowTop": 160
+      },
+      "actualWindowOutputMatched": true,
+      "configuredSignalHz": 100
+    },
+    "actualCompositorMarkerObservation": false,
+    "actualSchedulingDiagnostic": true,
+    "automaticScene": true,
+    "realInputBenchmark": false,
+    "observedRafIntervalsMs": {
+      "count": 11972,
+      "p50": 10,
+      "p95": 10.10000000000582,
+      "p99": 10.19999999999709,
+      "max": 283.59999999962747
+    },
+    "observedMedianRafCadenceHz": 100,
+    "above60HzSchedulingDemonstrated": true,
+    "productionFrameRateGateEvaluated": false,
+    "opticalCalibration": false,
+    "pairedPerformanceQualified": false,
+    "compositorQualification": "not-passed: strict desktop capture rejected accumulated frames; original failures retained, no assertion relaxed"
+  },
+  "applicationArchives": [
+    {
+      "architecture": "x64",
+      "profile": "compatibility",
+      "target": "SouiStarter",
+      "name": "SouiStarter-0.5.0-windows-x64.zip",
+      "bytes": 16817792,
+      "sha256": "7a940c70468bb5e28f736ceb0a9ce48566698f6f9472d84310336e4bef3ebd77"
+    },
+    {
+      "architecture": "x64",
+      "profile": "compatibility",
+      "target": "SouiWorkbench",
+      "name": "SouiWorkbench-0.5.0-windows-x64.zip",
+      "bytes": 23295790,
+      "sha256": "5decc6dc363b3af589b954dea7c1ad035affed7384691d40e71c381d9ebc51bd"
+    },
+    {
+      "architecture": "x64",
+      "profile": "modern",
+      "target": "SouiModernStarter",
+      "name": "SouiModernStarter-0.5.0-windows-x64.zip",
+      "bytes": 2477338,
+      "sha256": "624c9088214b21ee0285dff56f8840f68b034ddd54c90acb534f5f5908b29724"
+    },
+    {
+      "architecture": "x86",
+      "profile": "compatibility",
+      "target": "SouiStarter",
+      "name": "SouiStarter-0.5.0-windows-x86.zip",
+      "bytes": 14226508,
+      "sha256": "4992cc2f367c4085237eb3398e6be7afacd3594cdff2bd6a17184e57bd784f2e"
+    },
+    {
+      "architecture": "x86",
+      "profile": "compatibility",
+      "target": "SouiWorkbench",
+      "name": "SouiWorkbench-0.5.0-windows-x86.zip",
+      "bytes": 20676093,
+      "sha256": "418587756a146155f53a6bcfe71a1cefdb9f2616be2e487d6f61bfaf36b7eb98"
+    },
+    {
+      "architecture": "x86",
+      "profile": "modern",
+      "target": "SouiModernStarter",
+      "name": "SouiModernStarter-0.5.0-windows-x86.zip",
+      "bytes": 2412447,
+      "sha256": "faed8e7c4f8aeb87d92f1104bcdd60375f78644a4bc4ca732717f63df3b3ef18"
+    }
+  ],
+  "applicationStartups": 8,
+  "sdkManifestSha256": "4190f588ef3f0355486d6498854e085da2316e7098e1e2414f0575726286563a",
+  "buildSourceManifestSha256": "ad031346ae01ff74fa840e8c2ca820bd3e879a0848d41e8cb7c20f408c68e4b6",
+  "archiveIndexSha256": "a6405751e07ebaa180e68152e513bbc9b974f63b4c4af4f4b7ed2c95f999be88",
+  "codeSigned": false,
+  "productionQualificationComplete": false,
+  "licenseReviewComplete": false,
+  "releaseReady": false,
+  "knownFailure": "The earlier Source29 UIA typed-owner-focus failure lacked an HRESULT. Its cause is unresolved; later passes do not erase the original failure.",
+  "deferred": {
+    "scope": "Explicitly deferred from the default preview release sequence at the user's request to reduce unnecessary repeated testing",
+    "currentProductionGatesPassed": false,
+    "items": [
+      {
+        "item": "Actual eight-hour mixed/session runs",
+        "gate": "not-evaluated",
+        "helper": "resource/run-qualification.cjs eight-hour"
+      },
+      {
+        "item": "1000 cycles in four lifecycle modes on both architectures",
+        "gate": "not-evaluated",
+        "helper": "run-post-core-extended.cjs lifecycle"
+      },
+      {
+        "item": "Full five-pair performance series or Electron comparisons",
+        "gate": "not-evaluated"
+      },
+      {
+        "item": "Browser double-layer capacity/excess-load repetition",
+        "gate": "not-evaluated",
+        "helper": "run-post-core-extended.cjs major"
+      },
+      {
+        "item": "Repeated installation interruption/recovery or generated-project validation",
+        "gate": "not-repeated-for-release"
+      },
+      {
+        "item": "Full current source ZIP extraction followed by x64 and x86 SDK rebuilds",
+        "gate": "not-evaluated",
+        "history": "Source29 extraction evidence is historical; no current rebuild is inferred"
+      },
+      {
+        "item": "NVDA speech-text/native-provider desktop workflows",
+        "gate": "not-evaluated",
+        "helper": "run-post-core-extended.cjs major"
+      },
+      {
+        "item": "Full reference application rebuild and all GUI workflows",
+        "gate": "not-repeated-for-release"
+      },
+      {
+        "item": "Finite full resource/census series on both architectures",
+        "gate": "not-evaluated",
+        "helper": "run-post-core-extended.cjs finite"
+      },
+      {
+        "item": "60 Hz secondary display presentation",
+        "gate": "not-evaluated",
+        "reason": "Public InputTrace targets the primary display; no display settings or feature extension is requested"
+      }
+    ],
+    "retainedSource29ReportsAreCurrentPasses": false,
+    "releaseReady": false
+  }
+}

@@ -50,7 +50,7 @@ namespace SOUI
 				break;
 			}
 		}
-		return SStringW().Format(L"%s%s",strValue,s_pszUnit[unit]);
+		return SStringW().Format(L"%s%s",static_cast<LPCWSTR>(strValue),s_pszUnit[unit]);
 	}
 
 

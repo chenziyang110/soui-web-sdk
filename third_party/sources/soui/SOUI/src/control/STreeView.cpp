@@ -984,7 +984,8 @@ namespace SOUI
 		else {
             if(uMsg==WM_LBUTTONDOWN || uMsg== WM_RBUTTONDOWN || uMsg==WM_MBUTTONDOWN)
 			{//交给panel处理
-				SItemPanel* pPanel = HitTest(CPoint(pt));
+				CPoint hitPoint(pt);
+				SItemPanel* pPanel = HitTest(hitPoint);
 				if (!pPanel && m_hSelected)  //hit in none-item area,so make item to killfocus 
 				{
 					SItemPanel *pSelItem = GetItemPanel(m_hSelected);

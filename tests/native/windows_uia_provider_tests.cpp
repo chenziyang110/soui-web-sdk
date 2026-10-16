@@ -3,6 +3,7 @@
 #include <objbase.h>
 #include <json.hpp>
 
+#include <algorithm>
 #include <atomic>
 #include <cstdio>
 #include <functional>
@@ -22,7 +23,10 @@ constexpr UINT wake_message = WM_APP + 0x477;
 constexpr wchar_t class_name[] = L"SouiFiniteUiaProviderTests";
 
 void require(bool value, const char* message) { if (!value) throw std::runtime_error(message); }
-void ok(HRESULT status, const char* message) { require(status == S_OK, message); }
+void ok(HRESULT status, const char* message) {
+  if (status != S_OK) std::fprintf(stderr, "UIA native HRESULT: %s hr=0x%08lx\n", message, static_cast<unsigned long>(status));
+  require(status == S_OK, message);
+}
 
 template<class T> class com_ref final {
  public:
@@ -75,19 +79,74 @@ struct callback_lifetime final {
   ~callback_lifetime() { *destroyed_in_callback = running->load(); *destroyed = true; }
 };
 
+// Diagnostics only: individual atomic observations, not a provider queue trace.
+// No output occurs unless the original focus assertion or request fails.
+struct focus_diagnostics final {
+  enum point : unsigned { client_call, owner_callback, native_call, native_return,
+                          publish_return, owner_return, client_return, point_count };
+  struct snapshot final {
+    LONGLONG ticks[point_count]{};
+    HWND previous{}, actual{};
+    DWORD native_error{}, owner_thread{};
+    unsigned policies{}, dispatches{};
+    bool running{};
+  };
+  std::atomic<bool> enabled{};
+  std::atomic<LONGLONG> ticks[point_count]{};
+  std::atomic<HWND> previous{}, actual{};
+  std::atomic<DWORD> native_error{}, owner_thread{};
+  snapshot at_client_return;
+  DWORD client_thread{};
+  HRESULT result{S_OK};
+
+  static LONGLONG now() noexcept {
+    LARGE_INTEGER value{}; QueryPerformanceCounter(&value); return value.QuadPart;
+  }
+  void mark(point index) noexcept { ticks[index] = now(); }
+  snapshot capture(unsigned policies, unsigned dispatches, bool running) const noexcept {
+    snapshot value;
+    for (unsigned index = 0; index != point_count; ++index) value.ticks[index] = ticks[index].load();
+    value.previous = previous.load(); value.actual = actual.load();
+    value.native_error = native_error.load(); value.owner_thread = owner_thread.load();
+    value.policies = policies; value.dispatches = dispatches; value.running = running;
+    return value;
+  }
+  void print(const char* phase, const snapshot& value, HWND expected) const noexcept {
+    LARGE_INTEGER frequency{}; QueryPerformanceFrequency(&frequency);
+    std::fprintf(stderr,
+      "UIA focus diagnostic: phase=%s hr=0x%08lx qpcFrequency=%lld clientThread=%lu ownerThread=%lu "
+      "clientCall=%lld ownerCallback=%lld nativeCall=%lld nativeReturn=%lld publishReturn=%lld ownerReturn=%lld clientReturn=%lld "
+      "previous=%p actual=%p expected=%p win32error=%lu policy=%u dispatch=%u running=%u\n",
+      phase, static_cast<unsigned long>(result), static_cast<long long>(frequency.QuadPart), client_thread, value.owner_thread,
+      static_cast<long long>(value.ticks[client_call]), static_cast<long long>(value.ticks[owner_callback]),
+      static_cast<long long>(value.ticks[native_call]), static_cast<long long>(value.ticks[native_return]),
+      static_cast<long long>(value.ticks[publish_return]), static_cast<long long>(value.ticks[owner_return]),
+      static_cast<long long>(value.ticks[client_return]), static_cast<void*>(value.previous), static_cast<void*>(value.actual),
+      static_cast<void*>(expected), value.native_error, value.policies, value.dispatches, value.running ? 1u : 0u);
+  }
+};
+
 struct fixture final {
   HWND window{};
   std::unique_ptr<windows_uia_provider> provider;
   uia_projection projection;
   bool allow{true};
+  std::function<HRESULT()> event_mutation;
+  std::function<void()> inside_dispatch;
+  bool drop_wake{};
   bool close_inside{};
+  bool mark_invoked{};
+  HRESULT dispatch_result{S_OK};
   HRESULT callback_close{E_FAIL};
+  std::atomic<unsigned> policy_count{};
   std::atomic<unsigned> dispatch_count{};
+  std::vector<uia_operation> dispatched;
   std::atomic<unsigned> getobject_count{};
   std::atomic<DWORD> dispatch_thread{};
   std::atomic<bool> running{};
   std::atomic<bool> destroyed{};
   std::atomic<bool> destroyed_in_callback{};
+  focus_diagnostics focus_diagnostic;
 
   explicit fixture(bool permitted = true, bool observe_lifetime = false) : allow(permitted) {
     window = CreateWindowExW(0, class_name, L"Finite native accessibility test", WS_OVERLAPPEDWINDOW,
@@ -100,11 +159,21 @@ struct fixture final {
         lifetime->running = &running; lifetime->destroyed = &destroyed; lifetime->destroyed_in_callback = &destroyed_in_callback;
       }
       const HRESULT created = windows_uia_provider::create(window, wake_message, 7,
-        [this](const uia_action_request& request) { require(!request.native_user_gesture(), "no gesture"); return allow; },
+        [this](const uia_action_request& request) { ++policy_count; require(!request.native_user_gesture(), "no gesture"); return allow; },
         [this, lifetime](const uia_action_request& request) {
+          const bool trace_focus = request.operation == uia_operation::focus && focus_diagnostic.enabled.load();
+          if (trace_focus) {
+            focus_diagnostic.owner_thread = GetCurrentThreadId();
+            focus_diagnostic.mark(focus_diagnostics::owner_callback);
+          }
           running = true;
           dispatch_thread = GetCurrentThreadId(); ++dispatch_count;
+          dispatched.push_back(request.operation);
+          if (inside_dispatch) inside_dispatch();
           if (close_inside) { callback_close = provider->close(); running = false; return uia_action_result{S_OK, "{}"}; }
+          if (FAILED(dispatch_result)) { running = false; return uia_action_result{dispatch_result, "{}"}; }
+          if (mark_invoked && request.operation == uia_operation::invoke)
+            for (auto& node : projection.nodes) if (node.id == request.node_id) node.status = L"invoked";
           if (request.operation == uia_operation::set_value) {
             // The business method consumes the real validated existing-schema input.
             const auto parsed = nlohmann::json::parse(request.parameters_json);
@@ -117,12 +186,29 @@ struct fixture final {
           } else if (request.operation == uia_operation::select) {
             for (auto& node : projection.nodes) if (node.parent_id == "choices") node.selected = node.id == request.node_id;
           } else if (request.operation == uia_operation::focus) {
-            SetFocus(window); require(GetFocus() == window, "actual owner keyboard focus");
+            if (trace_focus) focus_diagnostic.mark(focus_diagnostics::native_call);
+            const HWND previous = SetFocus(window);
+            const DWORD native_error = GetLastError();
+            const LONGLONG returned = trace_focus ? focus_diagnostics::now() : 0;
+            const HWND actual = GetFocus();
+            if (trace_focus) {
+              focus_diagnostic.previous = previous; focus_diagnostic.actual = actual;
+              focus_diagnostic.native_error = native_error;
+              focus_diagnostic.ticks[focus_diagnostics::native_return] = returned;
+            }
+            if (actual != window) std::fprintf(stderr,
+              "UIA owner focus assertion: previous=%p actual=%p expected=%p win32error=%lu ownerThread=%lu\n",
+              static_cast<void*>(previous), static_cast<void*>(actual), static_cast<void*>(window), native_error, GetCurrentThreadId());
+            require(actual == window, "actual owner keyboard focus");
             projection.focused_id = request.node_id;
           }
-          ok(provider->publish(projection), "owner publishes actual result");
+          const HRESULT published = provider->publish(projection);
+          if (trace_focus) focus_diagnostic.mark(focus_diagnostics::publish_return);
+          ok(published, "owner publishes actual result");
           InvalidateRect(window, nullptr, FALSE);
-          running = false; return uia_action_result{S_OK, "{}"};
+          running = false;
+          if (trace_focus) focus_diagnostic.mark(focus_diagnostics::owner_return);
+          return uia_action_result{S_OK, "{}"};
         }, provider);
       ok(created, "opt-in provider create: missing UIA is a real failure, never skipped");
       projection.document_generation = 7; projection.name = L"Finite native document";
@@ -192,6 +278,8 @@ struct fixture final {
 LRESULT CALLBACK window_proc(HWND window, UINT message, WPARAM wparam, LPARAM lparam) {
   if (message == WM_NCCREATE) SetWindowLongPtrW(window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(reinterpret_cast<CREATESTRUCTW*>(lparam)->lpCreateParams));
   auto* host = reinterpret_cast<fixture*>(GetWindowLongPtrW(window, GWLP_USERDATA));
+  if (host && message == WM_APP + 0x478 && host->event_mutation) return host->event_mutation();
+  if (host && message == wake_message && host->drop_wake) return 0;
   if (host && host->provider) {
     if (message == WM_GETOBJECT && static_cast<DWORD>(lparam) == static_cast<DWORD>(UiaRootObjectId)) ++host->getobject_count;
     LRESULT result{}; if (host->provider->handle_message(message, wparam, lparam, result)) return result;
@@ -259,8 +347,7 @@ void properties_case() {
   require(item_pattern->AddToSelection() == UIA_E_INVALIDOPERATION, "single selection cannot add second");
   require(item_pattern->RemoveFromSelection() == S_OK, "unselected remove no-op");
   auto first = host.node("choice.first"); require(query<ISelectionItemProvider>(first.get())->RemoveFromSelection() == UIA_E_INVALIDOPERATION, "required selected cannot remove");
-  require(value->SetValue(L"owner") == UIA_E_INVALIDOPERATION, "owner synchronous call rejects");
-  require(host.dispatch_count == 0, "properties/owner reject never execute business");
+  require(host.dispatch_count == 0, "properties never execute business");
 }
 
 void mutation_case() {
@@ -275,8 +362,28 @@ void mutation_case() {
   auto item = host.node("choice.second"); auto selection = query<ISelectionItemProvider>(item.get());
   run_mta(host, [&] { ok(selection->Select(), "sync Select"); });
   BOOL selected{}; ok(selection->get_IsSelected(&selected), "selection after return"); require(selected, "actual owner selected before S_OK");
-  run_mta(host, [&] { ok(input->SetFocus(), "typed owner focus"); });
-  require(host.projection.focused_id == "title", "native focus entry committed");
+  host.focus_diagnostic.enabled = true;
+  try {
+    run_mta(host, [&] {
+      auto& diagnostic = host.focus_diagnostic;
+      diagnostic.client_thread = GetCurrentThreadId();
+      diagnostic.mark(focus_diagnostics::client_call);
+      diagnostic.result = input->SetFocus();
+      diagnostic.mark(focus_diagnostics::client_return);
+      diagnostic.at_client_return = diagnostic.capture(host.policy_count.load(), host.dispatch_count.load(), host.running.load());
+      ok(diagnostic.result, "typed owner focus");
+    });
+    require(host.projection.focused_id == "title", "native focus entry committed");
+  } catch (...) {
+    // run_mta joined its worker before throwing: plain client fields are now safe.
+    // The return snapshot may precede an already committed owner's completion.
+    host.focus_diagnostic.enabled = false;
+    host.focus_diagnostic.print("client-return", host.focus_diagnostic.at_client_return, host.window);
+    host.focus_diagnostic.print("owner-after-join", host.focus_diagnostic.capture(
+      host.policy_count.load(), host.dispatch_count.load(), host.running.load()), host.window);
+    throw;
+  }
+  host.focus_diagnostic.enabled = false;
   host.allow = false;
   run_mta(host, [&] { require(value->SetValue(L"denied") == E_ACCESSDENIED, "native policy denies"); });
   require(host.dispatch_count == 3, "denied policy never business");
@@ -343,6 +450,455 @@ void client_case() {
   require(host.dispatch_count == 1 && host.dispatch_thread == GetCurrentThreadId(), "real UIA routed owner business");
 }
 
+void owner_focus_case() {
+  {
+    fixture host;
+    auto input = host.node("title");
+    ok(input->SetFocus(), "owner focus uses the configured bounded pump");
+    require(host.dispatch_count == 1 && host.projection.focused_id == "title" && GetFocus() == host.window,
+            "owner focus commits actual window and projection");
+    require(host.policy_count == 1, "owner focus passes application authorization once");
+  }
+  {
+    fixture host(false);
+    auto input = host.node("title");
+    require(input->SetFocus() == E_ACCESSDENIED && host.policy_count == 1 && host.dispatch_count == 0,
+            "owner focus retains application authorization");
+  }
+  {
+    fixture host;
+    auto input = host.node("title");
+    host.inside_dispatch = [&] {
+      require(input->SetFocus() == UIA_E_INVALIDOPERATION, "nested owner focus rejected before queueing");
+    };
+    ok(input->SetFocus(), "outer owner focus remains valid");
+    ok(host.provider->pump(), "no latent nested focus");
+    require(host.dispatch_count == 1 && host.policy_count == 1, "nested focus cannot enter policy or business");
+  }
+  {
+    fixture host;
+    auto input = host.node("title");
+    host.drop_wake = true;
+    require(input->SetFocus() == UIA_E_TIMEOUT && host.dispatch_count == 0,
+            "missing wake forwarding fails without waiting for owner");
+    host.drop_wake = false;
+    ok(host.provider->pump(), "drain cancelled owner focus");
+    require(host.dispatch_count == 0, "failed owner focus cannot execute later");
+  }
+  {
+    fixture host;
+    auto input = host.node("title"), button = host.node("commit");
+    auto invoke = query<IInvokeProvider>(button.get());
+    for (unsigned i = 0; i != 9; ++i) ok(invoke->Invoke(), "queue preceding actions");
+    require(input->SetFocus() == UIA_E_TIMEOUT && host.dispatch_count == 8,
+            "owner focus preserves eight-command batch and FIFO order");
+    ok(host.provider->pump(), "drain remaining preceding action");
+    require(host.dispatch_count == 9 && host.projection.focused_id.empty(),
+            "budget-rejected focus is cancelled without reordering");
+  }
+  {
+    fixture host(true, true);
+    host.close_inside = true;
+    auto input = host.node("title");
+    require(input->SetFocus() == UIA_E_ELEMENTNOTAVAILABLE, "close revokes synchronous owner focus");
+    require(host.callback_close == S_FALSE && !host.destroyed && !host.destroyed_in_callback,
+            "focus HWND borrow retains callbacks through synchronous wake");
+    ok(host.provider->close(), "owner completes close after focus borrow");
+    require(host.destroyed && !host.destroyed_in_callback, "callback capture released after borrow");
+    require(input->SetFocus() == UIA_E_ELEMENTNOTAVAILABLE, "closed focus reference remains inert");
+  }
+}
+
+void owner_sync_case() {
+  for (bool select : {false, true}) {
+    auto mutate = [select](fixture& host) {
+      if (select) return query<ISelectionItemProvider>(host.node("choice.second").get())->Select();
+      return query<IValueProvider>(host.node("title").get())->SetValue(L"owner mutation");
+    };
+    {
+      fixture host;
+      ok(mutate(host), "owner mutation uses the configured bounded pump");
+      require(host.policy_count == 1 && host.dispatch_count == 1 &&
+              host.dispatch_thread == GetCurrentThreadId(), "owner mutation commits exactly once");
+      if (select) {
+        BOOL selected{};
+        ok(query<ISelectionItemProvider>(host.node("choice.second").get())->get_IsSelected(&selected), "owner selection read");
+        require(selected, "owner selection committed before success");
+      } else {
+        BSTR value{};
+        ok(query<IValueProvider>(host.node("title").get())->get_Value(&value), "owner value read");
+        const bool committed = value && std::wstring(value, SysStringLen(value)) == L"owner mutation";
+        SysFreeString(value); require(committed, "owner value committed before success");
+      }
+    }
+    {
+      fixture host(false);
+      require(mutate(host) == E_ACCESSDENIED && host.policy_count == 1 && host.dispatch_count == 0,
+              "owner mutation retains application authorization");
+    }
+    {
+      fixture host;
+      host.inside_dispatch = [&] { require(mutate(host) == UIA_E_INVALIDOPERATION,
+                                          "nested owner mutation rejected before admission"); };
+      ok(mutate(host), "outer owner mutation");
+      ok(host.provider->pump(), "drain without nested mutation");
+      require(host.policy_count == 1 && host.dispatch_count == 1, "no latent nested mutation");
+    }
+    {
+      fixture host; host.drop_wake = true;
+      require(mutate(host) == UIA_E_TIMEOUT && host.dispatch_count == 0, "unhandled owner mutation cancelled");
+      host.drop_wake = false; ok(host.provider->pump(), "drain cancelled mutation");
+      require(host.dispatch_count == 0, "timed out mutation cannot execute later");
+    }
+  }
+}
+
+void client_mutations_case() {
+  fixture host;
+  run_mta(host, [&] {
+    com_ref<IUIAutomation> client;
+    ok(CoCreateInstance(__uuidof(CUIAutomation), nullptr, CLSCTX_INPROC_SERVER,
+       __uuidof(IUIAutomation), reinterpret_cast<void**>(client.put())), "actual mutation client");
+    com_ref<IUIAutomationElement> root;
+    ok(client->ElementFromHandle(host.window, root.put()), "actual mutation root");
+    auto find_element = [&](const wchar_t* name) {
+      VARIANT id; VariantInit(&id); id.vt = VT_BSTR; id.bstrVal = SysAllocString(name);
+      require(id.bstrVal != nullptr, "mutation AutomationId");
+      com_ref<IUIAutomationCondition> condition;
+      const auto result = client->CreatePropertyCondition(UIA_AutomationIdPropertyId, id, condition.put());
+      VariantClear(&id); ok(result, "mutation condition");
+      com_ref<IUIAutomationElement> element;
+      ok(root->FindFirst(TreeScope_Descendants, condition.get(), element.put()), "actual mutation element");
+      require(element.get() != nullptr, "actual mutation control present");
+      return element;
+    };
+    auto input = find_element(L"title");
+    com_ref<IUIAutomationValuePattern> value;
+    ok(input->GetCurrentPatternAs(UIA_ValuePatternId, __uuidof(IUIAutomationValuePattern),
+       reinterpret_cast<void**>(value.put())), "actual Value pattern");
+    BSTR text = SysAllocString(L"UIA committed value"); require(text != nullptr, "actual value input");
+    const auto set_result = value->SetValue(text); SysFreeString(text);
+    ok(set_result, "Windows UIA SetValue dispatch");
+    BSTR observed{}; ok(value->get_CurrentValue(&observed), "actual committed value");
+    const bool committed = observed && std::wstring(observed, SysStringLen(observed)) == L"UIA committed value";
+    SysFreeString(observed); require(committed, "Windows UIA reads committed input");
+    auto item = find_element(L"choice.second");
+    com_ref<IUIAutomationSelectionItemPattern> selection;
+    ok(item->GetCurrentPatternAs(UIA_SelectionItemPatternId, __uuidof(IUIAutomationSelectionItemPattern),
+       reinterpret_cast<void**>(selection.put())), "actual SelectionItem pattern");
+    ok(selection->Select(), "Windows UIA Select dispatch");
+    BOOL selected{}; ok(selection->get_CurrentIsSelected(&selected), "actual committed selection");
+    require(selected, "Windows UIA reads committed selection");
+  });
+  // UIAutomationCore can request focus before a pattern mutation. Count the
+  // actual mutations separately, retaining authorization for every dispatch.
+  const auto values = std::count(host.dispatched.begin(), host.dispatched.end(), uia_operation::set_value);
+  const auto selections = std::count(host.dispatched.begin(), host.dispatched.end(), uia_operation::select);
+  const auto focuses = std::count(host.dispatched.begin(), host.dispatched.end(), uia_operation::focus);
+  std::fprintf(stderr, "actual UIA values=%td selections=%td focuses=%td policy=%u dispatch=%u\n",
+               values, selections, focuses, host.policy_count.load(), host.dispatch_count.load());
+  require(host.getobject_count > 0 && values == 1 && selections == 1 &&
+          host.dispatched.size() == static_cast<std::size_t>(values + selections + focuses) &&
+          host.policy_count == host.dispatch_count && host.dispatched.size() == host.dispatch_count &&
+          host.dispatch_thread == GetCurrentThreadId(), "actual UIA mutations each commit once through owner policy");
+}
+
+void client_focus_case() {
+  fixture host;
+  run_mta(host, [&] {
+    com_ref<IUIAutomation> client;
+    ok(CoCreateInstance(__uuidof(CUIAutomation), nullptr, CLSCTX_INPROC_SERVER,
+       __uuidof(IUIAutomation), reinterpret_cast<void**>(client.put())), "real focus client");
+    com_ref<IUIAutomationElement> root;
+    ok(client->ElementFromHandle(host.window, root.put()), "real focus root");
+    VARIANT id; VariantInit(&id); id.vt = VT_BSTR; id.bstrVal = SysAllocString(L"title");
+    require(id.bstrVal != nullptr, "focus AutomationId");
+    com_ref<IUIAutomationCondition> condition;
+    const auto result = client->CreatePropertyCondition(UIA_AutomationIdPropertyId, id, condition.put());
+    VariantClear(&id); ok(result, "focus condition");
+    com_ref<IUIAutomationElement> input;
+    ok(root->FindFirst(TreeScope_Children, condition.get(), input.put()), "real focus input");
+    require(input.get() != nullptr, "real focus input found");
+    ok(input->SetFocus(), "Windows UIA focus dispatch");
+    BOOL focused{}; ok(input->get_CurrentHasKeyboardFocus(&focused), "focus projection read");
+    require(focused, "Windows UIA observes committed focus");
+  });
+  require(host.getobject_count > 0 && host.dispatch_count == 1 &&
+          host.dispatch_thread == GetCurrentThreadId() && GetFocus() == host.window,
+          "real Windows UIA committed one owner focus");
+}
+
+// Real UIAutomationCore subscription on a separate MTA. The owner publishes
+// the same typed business result exercised by the existing mutation case.
+class property_events final : public IUIAutomationPropertyChangedEventHandler {
+ public:
+  HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** result) noexcept override {
+    if (!result) return E_POINTER;
+    *result = nullptr;
+    if (iid != __uuidof(IUnknown) && iid != __uuidof(IUIAutomationPropertyChangedEventHandler)) return E_NOINTERFACE;
+    *result = static_cast<IUIAutomationPropertyChangedEventHandler*>(this); AddRef(); return S_OK;
+  }
+  ULONG STDMETHODCALLTYPE AddRef() noexcept override { return ++references_; }
+  ULONG STDMETHODCALLTYPE Release() noexcept override {
+    const auto remaining = --references_; if (!remaining) delete this; return remaining;
+  }
+  HRESULT STDMETHODCALLTYPE HandlePropertyChangedEvent(IUIAutomationElement* sender,
+      PROPERTYID property, VARIANT value) noexcept override {
+    if (property != UIA_ValueValuePropertyId) return S_OK;
+    BSTR id{};
+    const auto identity_status = sender ? sender->get_CurrentAutomationId(&id) : E_POINTER;
+    std::fprintf(stderr,"event property=%ld identity=%08lx type=%u\n",property,static_cast<unsigned long>(identity_status),value.vt);
+    if (FAILED(identity_status)) { failed = true; SetEvent(received.get()); return S_OK; }
+    std::fprintf(stderr,"event id=%ls payload=%ls\n",id?id:L"(null)",value.vt==VT_BSTR&&value.bstrVal?value.bstrVal:L"(nontext)");
+    const bool expected = id && std::wstring(id, SysStringLen(id)) == L"title";
+    SysFreeString(id);
+    if (!expected) { failed = true; SetEvent(received.get()); return S_OK; }
+    if (value.vt != VT_BSTR || !value.bstrVal ||
+        std::wstring(value.bstrVal, SysStringLen(value.bstrVal)) != L"visible update") failed = true;
+    // This real reentrant query must observe the committed snapshot, without
+    // requiring the owner to reacquire a lock held across event publication.
+    VARIANT current; VariantInit(&current);
+    const auto read_status=sender->GetCurrentPropertyValue(UIA_ValueValuePropertyId, &current);
+    std::fprintf(stderr,"event current=%08lx type=%u value=%ls\n",static_cast<unsigned long>(read_status),current.vt,current.vt==VT_BSTR&&current.bstrVal?current.bstrVal:L"(nontext)");
+    if (FAILED(read_status) ||
+        current.vt != VT_BSTR || !current.bstrVal ||
+        std::wstring(current.bstrVal, SysStringLen(current.bstrVal)) != L"visible update") failed = true;
+    VariantClear(&current); last_event = GetTickCount64(); ++count; SetEvent(received.get()); return S_OK;
+  }
+  event received;
+  std::atomic<unsigned> count{};
+  std::atomic<ULONGLONG> last_event{};
+  std::atomic<bool> failed{};
+ private:
+  std::atomic<ULONG> references_{1};
+};
+
+void property_events_case() {
+  fixture host;
+  unsigned publications{};
+  host.event_mutation = [&] {
+    require(GetCurrentThreadId() == GetWindowThreadProcessId(host.window, nullptr), "actual publication owner");
+    host.projection.nodes[1].value = L"visible update"; ++publications;
+    return host.provider->publish(host.projection);
+  };
+  run_mta(host, [&] {
+    com_ref<IUIAutomation> client;
+    ok(CoCreateInstance(__uuidof(CUIAutomation), nullptr, CLSCTX_INPROC_SERVER,
+      __uuidof(IUIAutomation), reinterpret_cast<void**>(client.put())), "event client activation");
+    com_ref<IUIAutomationElement> root;
+    ok(client->ElementFromHandle(host.window, root.put()), "event client HWND");
+    VARIANT id; VariantInit(&id); id.vt = VT_BSTR; id.bstrVal = SysAllocString(L"title");
+    require(id.bstrVal != nullptr, "event client id");
+    com_ref<IUIAutomationCondition> condition;
+    const auto condition_result = client->CreatePropertyCondition(UIA_AutomationIdPropertyId, id, condition.put());
+    VariantClear(&id); ok(condition_result, "event client condition");
+    com_ref<IUIAutomationElement> input;
+    ok(root->FindFirst(TreeScope_Children, condition.get(), input.put()), "event client finds input");
+    require(input.get() != nullptr, "event client actual input");
+    com_ref<IUIAutomationValuePattern> pattern;
+    ok(input->GetCurrentPatternAs(UIA_ValuePatternId, __uuidof(IUIAutomationValuePattern),
+      reinterpret_cast<void**>(pattern.put())), "event client actual Value pattern");
+    com_ref<property_events> sink; sink.reset(new property_events);
+    PROPERTYID properties[]{UIA_ValueValuePropertyId};
+    ok(client->AddPropertyChangedEventHandlerNativeArray(root.get(), TreeScope_Subtree,
+      nullptr, sink.get(), properties, 1), "real value event subscription");
+    DWORD_PTR published{};
+    const bool sent = SendMessageTimeoutW(host.window, WM_APP + 0x478, 0, 0, SMTO_ABORTIFHUNG, 2000, &published) != 0;
+    const HRESULT set_result = sent ? static_cast<HRESULT>(published) : E_FAIL;
+    const auto received = WaitForSingleObject(sink->received.get(), 1500);
+    const auto deadline = GetTickCount64() + 1500;
+    while (sink->count && GetTickCount64() - sink->last_event.load() < 150 && GetTickCount64() < deadline) Sleep(5);
+    const auto delivered = sink->count.load();
+    DWORD_PTR unchanged{};
+    const bool republished = SendMessageTimeoutW(host.window, WM_APP + 0x478, 0, 0, SMTO_ABORTIFHUNG, 2000, &unchanged) != 0;
+    Sleep(200); // Owner keeps pumping; a no-op publication must not emit another value change.
+    const auto final_count = sink->count.load();
+    const auto removal = client->RemovePropertyChangedEventHandler(root.get(), sink.get());
+    require(republished && static_cast<HRESULT>(unchanged) == S_OK && final_count == delivered, "unchanged publication emits no new property event");
+    ok(removal, "event subscription removed on registering MTA");
+    ok(set_result, "native owner projection committed");
+    std::fprintf(stderr,"event wait=%lu count=%u failed=%d\n",received,sink->count.load(),sink->failed.load());
+    require(received == WAIT_OBJECT_0 && sink->count >= 1 && !sink->failed,
+      "real subscribed client must receive committed nonsecret Value change");
+  });
+  require(publications == 2, "changed and unchanged native publications completed");
+}
+
+class tree_events final : public IUIAutomationStructureChangedEventHandler,
+                          public IUIAutomationFocusChangedEventHandler {
+ public:
+  HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** out) noexcept override {
+    if (!out) return E_POINTER; *out = nullptr;
+    if (iid == __uuidof(IUnknown) || iid == __uuidof(IUIAutomationStructureChangedEventHandler))
+      *out = static_cast<IUIAutomationStructureChangedEventHandler*>(this);
+    else if (iid == __uuidof(IUIAutomationFocusChangedEventHandler))
+      *out = static_cast<IUIAutomationFocusChangedEventHandler*>(this);
+    else return E_NOINTERFACE;
+    AddRef(); return S_OK;
+  }
+  ULONG STDMETHODCALLTYPE AddRef() noexcept override { return ++references_; }
+  ULONG STDMETHODCALLTYPE Release() noexcept override {
+    const auto remaining = --references_; if (!remaining) delete this; return remaining;
+  }
+  HRESULT STDMETHODCALLTYPE HandleStructureChangedEvent(IUIAutomationElement* sender,
+      StructureChangeType change, SAFEARRAY*) noexcept override {
+    BSTR id{};
+    if (!sender || FAILED(sender->get_CurrentAutomationId(&id))) { failed = true; SetEvent(structure.get()); return S_OK; }
+    if (!id || std::wstring(id, SysStringLen(id)) != L"soui-uia-root" ||
+        change != StructureChangeType_ChildrenInvalidated) failed = true;
+    SysFreeString(id); ++structures; SetEvent(structure.get()); return S_OK;
+  }
+  HRESULT STDMETHODCALLTYPE HandleFocusChangedEvent(IUIAutomationElement* sender) noexcept override {
+    BSTR id{}; int pid{};
+    if (!sender || FAILED(sender->get_CurrentProcessId(&pid)) || pid != static_cast<int>(GetCurrentProcessId()) ||
+        FAILED(sender->get_CurrentAutomationId(&id))) return S_OK;
+    const bool expected = id && std::wstring(id, SysStringLen(id)) == L"title";
+    SysFreeString(id); if (!expected) return S_OK; // Other desktop focus is outside this registration's assertion.
+    BOOL focused{}; if (FAILED(sender->get_CurrentHasKeyboardFocus(&focused)) || !focused) failed = true;
+    ++focuses; SetEvent(focus.get()); return S_OK;
+  }
+  event structure, focus;
+  std::atomic<unsigned> structures{}, focuses{};
+  std::atomic<bool> failed{};
+ private: std::atomic<ULONG> references_{1};
+};
+
+void tree_events_case() {
+  fixture host;
+  host.event_mutation = [&] {
+    auto extra = host.projection.nodes[5]; extra.id = "new-task"; extra.name = L"New task";
+    host.projection.nodes.push_back(std::move(extra));
+    SetFocus(host.window); require(GetFocus() == host.window, "actual owner focus before projection");
+    host.projection.focused_id = "title";
+    return host.provider->publish(host.projection);
+  };
+  run_mta(host, [&] {
+    com_ref<IUIAutomation> client;
+    ok(CoCreateInstance(__uuidof(CUIAutomation), nullptr, CLSCTX_INPROC_SERVER,
+      __uuidof(IUIAutomation), reinterpret_cast<void**>(client.put())), "tree event client");
+    com_ref<IUIAutomationElement> root;
+    ok(client->ElementFromHandle(host.window, root.put()), "tree event HWND");
+    com_ref<tree_events> sink; sink.reset(new tree_events);
+    ok(client->AddStructureChangedEventHandler(root.get(), TreeScope_Element, nullptr, sink.get()), "structure subscription");
+    const auto focus_registered = client->AddFocusChangedEventHandler(nullptr, sink.get());
+    if (FAILED(focus_registered)) {
+      client->RemoveStructureChangedEventHandler(root.get(), sink.get()); ok(focus_registered, "focus subscription");
+    }
+    DWORD_PTR published{};
+    const bool sent = SendMessageTimeoutW(host.window, WM_APP + 0x478, 0, 0, SMTO_ABORTIFHUNG, 2000, &published) != 0;
+    HANDLE signals[]{sink->structure.get(), sink->focus.get()};
+    const auto delivered = WaitForMultipleObjects(2, signals, TRUE, 1500);
+    const auto removed_focus = client->RemoveFocusChangedEventHandler(sink.get());
+    const auto removed_structure = client->RemoveStructureChangedEventHandler(root.get(), sink.get());
+    ok(removed_focus, "focus handler removal"); ok(removed_structure, "structure handler removal");
+    require(sent && static_cast<HRESULT>(published) == S_OK, "owner tree mutation published");
+    require(delivered == WAIT_OBJECT_0 && sink->structures > 0 && sink->focuses > 0 && !sink->failed,
+      "real subscribed client receives structure and actual focus changes");
+  });
+}
+
+void revoked_events_case() {
+  fixture host;
+  host.event_mutation = [&] {
+    auto invalid = host.projection; invalid.nodes.back().value = L"not-public";
+    require(host.provider->publish(invalid) == E_INVALIDARG, "secret rejected before notification admission");
+    host.projection.nodes[1].value = L"revoked-before-pump";
+    ok(host.provider->publish(host.projection), "public change queued before close");
+    return host.provider->close(); // No event/API borrow has started, so revocation discards the pending batch.
+  };
+  run_mta(host, [&] {
+    com_ref<IUIAutomation> client;
+    ok(CoCreateInstance(__uuidof(CUIAutomation), nullptr, CLSCTX_INPROC_SERVER,
+      __uuidof(IUIAutomation), reinterpret_cast<void**>(client.put())), "revocation event client");
+    com_ref<IUIAutomationElement> root;
+    ok(client->ElementFromHandle(host.window, root.put()), "revocation event HWND");
+    com_ref<property_events> sink; sink.reset(new property_events);
+    PROPERTYID properties[]{UIA_ValueValuePropertyId};
+    ok(client->AddPropertyChangedEventHandlerNativeArray(root.get(), TreeScope_Subtree,
+      nullptr, sink.get(), properties, 1), "revocation subscription");
+    DWORD_PTR closed{};
+    const bool sent = SendMessageTimeoutW(host.window, WM_APP + 0x478, 0, 0, SMTO_ABORTIFHUNG, 2000, &closed) != 0;
+    const auto received = WaitForSingleObject(sink->received.get(), 250);
+    const auto removed = client->RemovePropertyChangedEventHandler(root.get(), sink.get());
+    ok(removed, "revoked handler removal");
+    require(sent && static_cast<HRESULT>(closed) == S_OK, "close completes before HWND destruction");
+    require(received == WAIT_TIMEOUT && sink->count == 0 && !sink->failed,
+      "neither secret rejection nor revoked pending publication sends Value event");
+  });
+}
+
+class invoke_events final : public IUIAutomationEventHandler {
+ public:
+  HRESULT STDMETHODCALLTYPE QueryInterface(REFIID iid, void** out) noexcept override {
+    if (!out) return E_POINTER; *out = nullptr;
+    if (iid != __uuidof(IUnknown) && iid != __uuidof(IUIAutomationEventHandler)) return E_NOINTERFACE;
+    *out = static_cast<IUIAutomationEventHandler*>(this); AddRef(); return S_OK;
+  }
+  ULONG STDMETHODCALLTYPE AddRef() noexcept override { return ++references_; }
+  ULONG STDMETHODCALLTYPE Release() noexcept override {
+    const auto remaining = --references_; if (!remaining) delete this; return remaining;
+  }
+  HRESULT STDMETHODCALLTYPE HandleAutomationEvent(IUIAutomationElement* sender, EVENTID id) noexcept override {
+    BSTR name{}; VARIANT status; VariantInit(&status);
+    const bool matched = sender && id == UIA_Invoke_InvokedEventId &&
+      SUCCEEDED(sender->get_CurrentAutomationId(&name)) && name && std::wstring(name, SysStringLen(name)) == L"commit" &&
+      SUCCEEDED(sender->GetCurrentPropertyValue(UIA_ItemStatusPropertyId, &status)) && status.vt == VT_BSTR &&
+      status.bstrVal && std::wstring(status.bstrVal, SysStringLen(status.bstrVal)) == L"invoked";
+    SysFreeString(name); VariantClear(&status);
+    if (!matched) failed = true;
+    ++count; SetEvent(received.get()); return S_OK;
+  }
+  event received;
+  std::atomic<unsigned> count{};
+  std::atomic<bool> failed{};
+ private:
+  std::atomic<ULONG> references_{1};
+};
+
+void invoke_event_scenario(unsigned mode) {
+  fixture host(mode != 1); host.mark_invoked = true;
+  if (mode == 2) host.dispatch_result = E_FAIL;
+  if (mode == 3) host.close_inside = true;
+  run_mta(host, [&] {
+    com_ref<IUIAutomation> client;
+    ok(CoCreateInstance(__uuidof(CUIAutomation), nullptr, CLSCTX_INPROC_SERVER,
+      __uuidof(IUIAutomation), reinterpret_cast<void**>(client.put())), "invoke event client activation");
+    com_ref<IUIAutomationElement> root;
+    ok(client->ElementFromHandle(host.window, root.put()), "invoke event real HWND");
+    VARIANT id; VariantInit(&id); id.vt = VT_BSTR; id.bstrVal = SysAllocString(L"commit");
+    require(id.bstrVal != nullptr, "invoke event identity");
+    com_ref<IUIAutomationCondition> condition;
+    const auto condition_result = client->CreatePropertyCondition(UIA_AutomationIdPropertyId, id, condition.put());
+    VariantClear(&id); ok(condition_result, "invoke event condition");
+    com_ref<IUIAutomationElement> button;
+    ok(root->FindFirst(TreeScope_Children, condition.get(), button.put()), "invoke event finds button");
+    require(button.get() != nullptr, "invoke event actual button");
+    com_ref<IUIAutomationInvokePattern> pattern;
+    ok(button->GetCurrentPatternAs(UIA_InvokePatternId, __uuidof(IUIAutomationInvokePattern),
+      reinterpret_cast<void**>(pattern.put())), "invoke event actual pattern");
+    com_ref<invoke_events> sink; sink.reset(new invoke_events);
+    ok(client->AddAutomationEventHandler(UIA_Invoke_InvokedEventId, button.get(), TreeScope_Element,
+      nullptr, sink.get()), "real Invoked event subscription");
+    const auto admitted = pattern->Invoke();
+    const auto received = WaitForSingleObject(sink->received.get(), mode == 0 ? 1500 : 300);
+    const auto removed = client->RemoveAutomationEventHandler(UIA_Invoke_InvokedEventId, button.get(), sink.get());
+    ok(removed, "Invoked handler removed on registering MTA");
+    ok(admitted, "Invoke admission is asynchronous");
+    require(host.policy_count == 1 && host.dispatch_count == (mode == 1 ? 0U : 1U),
+      "queued request actually reached expected policy/dispatch boundary");
+    if (mode == 0)
+      require(received == WAIT_OBJECT_0 && sink->count >= 1 && !sink->failed,
+        "real client receives Invoked only after committed observable business result");
+    else require(received == WAIT_TIMEOUT && sink->count == 0 && !sink->failed,
+      "denied, failed or revoked Invoke never emits success notification");
+  });
+  if (mode == 3) require(host.callback_close == S_FALSE, "close retains in-flight dispatch borrow");
+}
+void invoke_events_case() { invoke_event_scenario(0); }
+void denied_invoke_events_case() { invoke_event_scenario(1); }
+void failed_invoke_events_case() { invoke_event_scenario(2); }
+void closed_invoke_events_case() { invoke_event_scenario(3); }
+
 void com_initialization_case() {
   fixture host;
   event completed; HRESULT observed = E_FAIL;
@@ -383,6 +939,11 @@ int main(int argc, char** argv) {
     const std::pair<const char*, void(*)()> cases[] = {
       {"properties", properties_case}, {"mutations", mutation_case}, {"stale-secret", stale_secret_case},
       {"bounded", bounded_case}, {"callback-close", callback_close_case}, {"uia-client", client_case},
+      {"owner-focus", owner_focus_case}, {"uia-focus", client_focus_case},
+      {"owner-sync", owner_sync_case}, {"uia-mutations", client_mutations_case},
+      {"property-events", property_events_case}, {"tree-events", tree_events_case}, {"revoked-events", revoked_events_case},
+      {"invoke-events", invoke_events_case}, {"denied-invoke-events", denied_invoke_events_case},
+      {"failed-invoke-events", failed_invoke_events_case}, {"closed-invoke-events", closed_invoke_events_case},
       {"com-initialization", com_initialization_case}, {"api-close", api_close_case}};
     bool found = selected == "all";
     for (const auto& item : cases) if (selected == "all" || selected == item.first) { found = true; item.second(); std::cout << "case=" << item.first << " passed\n"; }

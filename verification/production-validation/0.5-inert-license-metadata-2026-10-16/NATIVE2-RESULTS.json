@@ -1,0 +1,90 @@
+{
+  "pins": [
+    {
+      "path": "C:\\work\\sm05-legal-text-fix-1\\run-native-tests2.cjs",
+      "bytes": 3718,
+      "sha256": "4553b8f53d5a7db101843efc14239a17326266bebbb21c5898f6f25986781a1a"
+    },
+    {
+      "path": "C:\\work\\sm05-legal-text-fix-1\\native\\main.cpp",
+      "bytes": 727,
+      "sha256": "bfae1aca997cc410b425b4b0d78721e2e142a21606960edcfd5a1058943b5223"
+    },
+    {
+      "path": "C:\\work\\sm05-legal-text-fix-1\\native\\CMakeLists.txt",
+      "bytes": 377,
+      "sha256": "6c1f5cfd07c0feec79de4636e985083a6f3389b3039fc9b26ec8a69434f989de"
+    },
+    {
+      "path": "C:\\work\\sm05-legal-text-fix-1\\build-native2.ps1",
+      "bytes": 1497,
+      "sha256": "bdc8533afc4d405a42120602bfe3c8d9c30b25f8a1dbcb59f9d553b8ea97de8e"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\install\\x64\\lib\\Release\\soui_sdk.lib",
+      "bytes": 12191140,
+      "sha256": "de3a6766afcb6b04d79da84869ade66bde0ab56773bc10237c420eb05d0b8c38"
+    }
+  ],
+  "records": [
+    {
+      "name": "build2",
+      "args": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-File",
+        "C:\\work\\sm05-legal-text-fix-1/build-native2.ps1"
+      ],
+      "expected": 0,
+      "matched": false,
+      "natural": true,
+      "text": "-- Configuring incomplete, errors occurred!",
+      "result": {
+        "pid": 54076,
+        "creationFileTime": "134365621056459900",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 1466,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 4,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "C:\\work\\sm05-legal-text-fix-1\\build2\\build2.ndjson",
+        "reportSha256": "7c5465b9f1319cb32b15ba062123278d505de81ff062fec7dfeeca65ac376e14",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 1466,
+        "rootExited": true,
+        "rootExitCode": 1,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 4,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    }
+  ],
+  "currentVersionQualified": false
+}

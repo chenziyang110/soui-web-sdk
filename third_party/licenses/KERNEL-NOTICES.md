@@ -1,6 +1,6 @@
 # Kernel notice materials
 
-This index locates original declaration files for the twelve D52 source/build contexts. It is a material inventory, not a determination of applicable terms or approval to distribute a complete binary. The inherited preview.14 binary review remains `unverified` and `releaseReady=false`; its old hashes do not identify a new D52 binary.
+This index locates original declaration files for the twelve D52 source/build contexts. It is a material inventory, not a determination of applicable terms or approval to distribute a complete binary. The current `third_party/manifests/license-review.json` identifies the exact 0.5.0 candidate x86/x64 binaries and retains `unverified` and `releaseReady=false` until complete redistribution review. The archived preview.14 review identifies only its historical binaries.
 
 | Build context | Original source declaration | Retained material |
 |---|---|---|
@@ -17,7 +17,7 @@ This index locates original declaration files for the twelve D52 source/build co
 | Skia | `third_party/skia/LICENSE` | [Original LICENSE](d52/skia/LICENSE.txt) |
 | Miniblink Main | Project root LICENSE and separate WKE header declaration | [Root LICENSE](d52/miniblink/LICENSE.txt), [original WKE declaration](d52/miniblink/wke-license-declaration.h) |
 
-The recovered IJG, curl and OTS texts were already present in this SDK's license directory. The original recovery record documents version matching and local source differences; it does not establish whole-binary applicability. Source paths above identify the declaration origin, not a promise that the entire kernel source tree is contained in the portable SDK.
+The recovered IJG, curl and OTS texts were already present in this SDK's license directory. The original recovery record documents version matching and local source differences; it does not establish whole-binary applicability. Source paths above are relative to `third_party/sources/miniblink` in the complete source archive, whose contents are inventoried separately by `source-manifest.json`. The binary SDK and application runtime packages alone do not contain that complete source tree. Source availability does not establish which archive members entered a binary or complete its license review.
 
 Adjacent and aggregate original texts are also retained:
 
@@ -29,3 +29,5 @@ Adjacent and aggregate original texts are also retained:
 These different project, file and subsidiary declarations remain separate materials. Actual member selection, configuration, complete runtime payload and applicable redistribution obligations require review against each final architecture-specific binary. No single root LICENSE or API-header declaration covers that review.
 
 The source SDK retains the eight original historical evidence files under `third_party/manifests/provenance/preview14/`, followed by their original repository-relative paths. They are archived preview evidence, not a new D52 build or license approval. Their original prose, old hashes and repository-relative links are preserved as history; those embedded links are not asserted to resolve as a complete portable repository or application resource tree. Applications carry the declaration texts and this index; they do not carry the archived 5 MB historical source manifest and patches.
+
+[Supplemental source materials](kernel-source/README.md) retain 27 additional exact notice texts and index 49 named source declarations, including build/test dependencies. The index distinguishes the three excluded scripts/templates. Inclusion is not evidence of linked-member selection or completed license review.

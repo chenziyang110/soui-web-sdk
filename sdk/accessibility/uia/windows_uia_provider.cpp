@@ -92,6 +92,9 @@ struct system_api final {
   decltype(&UiaReturnRawElementProvider) return_raw{};
   decltype(&UiaHostProviderFromHwnd) host_from_window{};
   decltype(&UiaGetReservedNotSupportedValue) unsupported{};
+  decltype(&UiaRaiseAutomationPropertyChangedEvent) raise_property{};
+  decltype(&UiaRaiseStructureChangedEvent) raise_structure{};
+  decltype(&UiaRaiseAutomationEvent) raise_event{};
   std::mutex lock;
   bool pinned{};
 
@@ -119,7 +122,11 @@ struct system_api final {
     result->return_raw = reinterpret_cast<decltype(return_raw)>(GetProcAddress(result->module, "UiaReturnRawElementProvider"));
     result->host_from_window = reinterpret_cast<decltype(host_from_window)>(GetProcAddress(result->module, "UiaHostProviderFromHwnd"));
     result->unsupported = reinterpret_cast<decltype(unsupported)>(GetProcAddress(result->module, "UiaGetReservedNotSupportedValue"));
-    return result->return_raw && result->host_from_window && result->unsupported ? result : nullptr;
+    result->raise_property = reinterpret_cast<decltype(raise_property)>(GetProcAddress(result->module, "UiaRaiseAutomationPropertyChangedEvent"));
+    result->raise_structure = reinterpret_cast<decltype(raise_structure)>(GetProcAddress(result->module, "UiaRaiseStructureChangedEvent"));
+    result->raise_event = reinterpret_cast<decltype(raise_event)>(GetProcAddress(result->module, "UiaRaiseAutomationEvent"));
+    return result->return_raw && result->host_from_window && result->unsupported && result->raise_property &&
+      result->raise_structure && result->raise_event ? result : nullptr;
   }
 };
 
@@ -148,6 +155,7 @@ struct shared_state final {
   bool closing{};
   bool closed{};
   bool cleanup_in_progress{};
+  bool notification_wake_pending{};
   std::size_t api_borrows{};
   std::size_t callback_borrows{};
   std::shared_ptr<system_api> api;
@@ -510,7 +518,7 @@ HRESULT element::submit(uia_operation operation, LPCWSTR value) noexcept {
     if (!node.enabled) return UIA_E_ELEMENTNOTENABLED;
     if (node.busy) return UIA_E_INVALIDOPERATION;
     const bool synchronous = operation != uia_operation::invoke;
-    if (synchronous && GetCurrentThreadId() == state_->owner) return UIA_E_INVALIDOPERATION;
+    const bool owner_call = GetCurrentThreadId() == state_->owner;
     const auto& action = operation == uia_operation::focus ? node.focus : node.action;
     if (action.method.empty()) return UIA_E_NOTSUPPORTED;
     if ((operation == uia_operation::invoke && role_ != uia_role::button) ||
@@ -535,6 +543,9 @@ HRESULT element::submit(uia_operation operation, LPCWSTR value) noexcept {
       std::lock_guard<std::mutex> held(state_->lock);
       const auto* present = state_->view ? find(*state_->view, id_) : nullptr;
       if (state_->closing || !present || present->incarnation != incarnation_) return UIA_E_ELEMENTNOTAVAILABLE;
+      // Windows can call synchronous UIA patterns on the HWND thread. A callback or
+      // notification must not recursively enter another business dispatch.
+      if (synchronous && owner_call && state_->callback_borrows != 0) return UIA_E_INVALIDOPERATION;
       if (state_->pending.size() >= windows_uia_provider::max_pending) return UIA_E_TIMEOUT;
       state_->pending.push_back(work);
       // PostMessage cannot synchronously invoke UI/business code. Holding this
@@ -544,6 +555,22 @@ HRESULT element::submit(uia_operation operation, LPCWSTR value) noexcept {
       }
     }
     if (!synchronous) return S_OK;
+    if (owner_call) {
+      // Use the same bounded owner pump and its policy/commit checks. The HWND
+      // borrow keeps close pending throughout synchronous WndProc re-entry.
+      api_borrow borrowed(state_);
+      if (!borrowed.window) return UIA_E_ELEMENTNOTAVAILABLE;
+      SendMessageW(borrowed.window, state_->wake, static_cast<WPARAM>(state_->instance), 0);
+      std::lock_guard<std::mutex> held(state_->lock);
+      if (work->phase == command_phase::done || work->phase == command_phase::cancelled) return work->result;
+      // Never wait for this thread. A missing wake handler or a full preceding
+      // batch cannot leave a failed synchronous request queued for later execution.
+      if (work->phase == command_phase::queued || work->phase == command_phase::validating) {
+        work->phase = command_phase::cancelled;
+        work->result = UIA_E_TIMEOUT;
+      }
+      return UIA_E_TIMEOUT;
+    }
     const DWORD waited = WaitForSingleObject(work->completion, windows_uia_provider::synchronous_wait_ms);
     std::lock_guard<std::mutex> held(state_->lock);
     if (work->phase == command_phase::done || work->phase == command_phase::cancelled) return work->result;
@@ -556,12 +583,170 @@ HRESULT element::submit(uia_operation operation, LPCWSTR value) noexcept {
   });
 }
 
+enum class notification_kind { property, structure, focus };
+struct notification final {
+  notification_kind kind{notification_kind::property};
+  const record* before{};
+  const record* after{};
+  PROPERTYID property{};
+};
+struct notification_batch final {
+  std::shared_ptr<const snapshot> before, after;
+  std::vector<notification> items;
+  std::size_t cursor{};
+};
+bool equal_rect(const RECT& left, const RECT& right) noexcept {
+  return left.left == right.left && left.top == right.top && left.right == right.right && left.bottom == right.bottom;
+}
+notification_batch changes(std::shared_ptr<const snapshot> before, std::shared_ptr<const snapshot> after) {
+  notification_batch batch; batch.before = std::move(before); batch.after = std::move(after);
+  const auto& old = *batch.before; const auto& current = *batch.after;
+  auto property = [&](bool changed, const record* a, const record* b, PROPERTYID id) {
+    if (changed) batch.items.push_back({notification_kind::property, a, b, id});
+  };
+  property(old.projection.name != current.projection.name, nullptr, nullptr, UIA_NamePropertyId);
+  property(!equal_rect(old.projection.screen_bounds, current.projection.screen_bounds), nullptr, nullptr, UIA_BoundingRectanglePropertyId);
+  bool structure = old.records.size() != current.records.size();
+  for (std::size_t index = 0; index != current.records.size(); ++index) {
+    const auto& b = current.records[index]; const auto* a = find(old, b.node.id);
+    if (index >= old.records.size() || old.records[index].incarnation != b.incarnation) structure = true;
+    if (!a || a->incarnation != b.incarnation) continue; // New identities are discovered through structure invalidation.
+    property(a->node.name != b.node.name, a, &b, UIA_NamePropertyId);
+    property(a->node.enabled != b.node.enabled, a, &b, UIA_IsEnabledPropertyId);
+    property(a->node.offscreen != b.node.offscreen, a, &b, UIA_IsOffscreenPropertyId);
+    property(!equal_rect(a->node.screen_bounds, b.node.screen_bounds), a, &b, UIA_BoundingRectanglePropertyId);
+    property((old.projection.focused_id == b.node.id) != (current.projection.focused_id == b.node.id), a, &b, UIA_HasKeyboardFocusPropertyId);
+    property((a->node.busy ? L"busy" : a->node.status) != (b.node.busy ? L"busy" : b.node.status), a, &b, UIA_ItemStatusPropertyId);
+    if (b.node.role == uia_role::input && !b.node.secret)
+      property(a->node.value != b.node.value, a, &b, UIA_ValueValuePropertyId);
+    if (b.node.role == uia_role::selection_item)
+      property(a->node.selected != b.node.selected, a, &b, UIA_SelectionItemIsSelectedPropertyId);
+  }
+  if (structure) batch.items.insert(batch.items.begin(), {notification_kind::structure, nullptr, nullptr, 0});
+  if (!current.projection.focused_id.empty() && old.projection.focused_id != current.projection.focused_id)
+    batch.items.push_back({notification_kind::focus, nullptr, find(current, current.projection.focused_id), 0});
+  return batch;
+}
+class event_variant final {
+ public:
+  VARIANT value{};
+  event_variant() noexcept { VariantInit(&value); }
+  ~event_variant() { VariantClear(&value); }
+  event_variant(const event_variant&) = delete;
+  event_variant& operator=(const event_variant&) = delete;
+  HRESULT set(PROPERTYID property, const snapshot& view, const record* item) {
+    const auto* node = item ? &item->node : nullptr;
+    if (property == UIA_BoundingRectanglePropertyId) {
+      const auto& bounds = node ? node->screen_bounds : view.projection.screen_bounds;
+      const double numbers[]{static_cast<double>(bounds.left), static_cast<double>(bounds.top),
+        static_cast<double>(bounds.right) - bounds.left, static_cast<double>(bounds.bottom) - bounds.top};
+      value.parray = SafeArrayCreateVector(VT_R8, 0, 4);
+      if (!value.parray) return E_OUTOFMEMORY;
+      value.vt = VT_ARRAY | VT_R8;
+      for (LONG index = 0; index != 4; ++index) {
+        double number = numbers[index]; const auto status = SafeArrayPutElement(value.parray, &index, &number);
+        if (FAILED(status)) return status;
+      }
+      return S_OK;
+    }
+    if (property == UIA_NamePropertyId || property == UIA_ItemStatusPropertyId || property == UIA_ValueValuePropertyId) {
+      const std::wstring data = property == UIA_NamePropertyId ? (node ? node->name : view.projection.name) :
+        property == UIA_ItemStatusPropertyId ? (node->busy ? L"busy" : node->status) : node->value;
+      value.bstrVal = SysAllocStringLen(data.data(), static_cast<UINT>(data.size()));
+      if (!value.bstrVal) return E_OUTOFMEMORY;
+      value.vt = VT_BSTR; return S_OK;
+    }
+    const bool flag = property == UIA_IsEnabledPropertyId ? node->enabled :
+      property == UIA_IsOffscreenPropertyId ? node->offscreen :
+      property == UIA_HasKeyboardFocusPropertyId ? view.projection.focused_id == node->id : node->selected;
+    value.vt = VT_BOOL; value.boolVal = flag ? VARIANT_TRUE : VARIANT_FALSE; return S_OK;
+  }
+};
+struct notification_borrow final {
+  std::shared_ptr<shared_state> state;
+  explicit notification_borrow(std::shared_ptr<shared_state> shared) : state(std::move(shared)) {
+    std::lock_guard<std::mutex> held(state->lock); ++state->callback_borrows;
+  }
+  ~notification_borrow() { std::lock_guard<std::mutex> held(state->lock); --state->callback_borrows; }
+};
+HRESULT raise_invoked(const std::shared_ptr<shared_state>& shared, const uia_action_request& request) noexcept {
+  return boundary([&]() -> HRESULT {
+    api_borrow api(shared); if (!api.window) return S_FALSE;
+    notification_borrow notifying(shared);
+    const auto pinned = shared->api->pin_for_call(); if (FAILED(pinned)) return pinned;
+    std::shared_ptr<const snapshot> view;
+    const record* current{};
+    {
+      std::lock_guard<std::mutex> held(shared->lock);
+      if (shared->closing) return S_FALSE;
+      view = shared->view; current = find(*view, request.node_id);
+      if (!current || current->incarnation != request.incarnation || current->node.secret)
+        return UIA_E_ELEMENTNOTAVAILABLE;
+    }
+    element* target{};
+    const auto made = element::make(shared, current, &target); if (FAILED(made)) return made;
+    struct release { void operator()(element* value) const noexcept { value->Release(); } };
+    std::unique_ptr<element, release> retained(target);
+    return shared->api->raise_event(target, UIA_Invoke_InvokedEventId);
+  });
+}
+HRESULT drain_notifications(const std::shared_ptr<shared_state>& shared, notification_batch& batch,
+    std::shared_ptr<const snapshot>& delivered, unsigned event_limit) {
+  api_borrow api(shared); if (!api.window) return S_FALSE;
+  notification_borrow notifying(shared); // Blocks recursive pump and retains owner captures through system calls.
+  const auto pinned = shared->api->pin_for_call(); if (FAILED(pinned)) return pinned;
+  if (!batch.after) {
+    std::shared_ptr<const snapshot> latest;
+    { std::lock_guard<std::mutex> held(shared->lock); latest = shared->view; }
+    if (latest == delivered) return S_OK;
+    batch = changes(delivered, std::move(latest));
+  }
+  for (unsigned emitted = 0; batch.cursor < batch.items.size() && emitted != event_limit; ++emitted) {
+    { std::lock_guard<std::mutex> held(shared->lock); if (shared->closing) return S_FALSE; }
+    const auto& work = batch.items[batch.cursor];
+    if (work.after) {
+      std::lock_guard<std::mutex> held(shared->lock);
+      const auto* current = find(*shared->view, work.after->node.id);
+      if (!current || current->incarnation != work.after->incarnation) { ++batch.cursor; continue; }
+    }
+    element* target{};
+    if (work.after) {
+      const auto made = element::make(shared, work.after, &target); if (FAILED(made)) return made;
+    } else { std::lock_guard<std::mutex> held(shared->lock); target = shared->root; target->AddRef(); }
+    struct release { void operator()(element* value) const noexcept { value->Release(); } };
+    std::unique_ptr<element, release> retained(target);
+    HRESULT status{};
+    if (work.kind == notification_kind::structure)
+      status = shared->api->raise_structure(target, StructureChangeType_ChildrenInvalidated, nullptr, 0);
+    else if (work.kind == notification_kind::focus)
+      status = shared->api->raise_event(target, UIA_AutomationFocusChangedEventId);
+    else {
+      event_variant old, current;
+      status = old.set(work.property, *batch.before, work.before); if (FAILED(status)) return status;
+      status = current.set(work.property, *batch.after, work.after); if (FAILED(status)) return status;
+      status = shared->api->raise_property(target, work.property, old.value, current.value);
+    }
+    if (FAILED(status)) return status;
+    ++batch.cursor;
+  }
+  if (batch.cursor == batch.items.size()) { delivered = batch.after; batch = {}; }
+  std::lock_guard<std::mutex> held(shared->lock);
+  if (!shared->closing && (batch.after || shared->view != delivered) && !shared->notification_wake_pending) {
+    if (!PostMessageW(shared->window, shared->wake, static_cast<WPARAM>(shared->instance), 0))
+      return HRESULT_FROM_WIN32(GetLastError());
+    shared->notification_wake_pending = true;
+  }
+  return S_OK;
+}
+
 }  // namespace
 
 struct windows_uia_provider::impl final {
   std::shared_ptr<shared_state> shared;
   policy allow;
   dispatcher dispatch;
+  notification_batch notifications;
+  std::shared_ptr<const snapshot> notified;
   element* root{};
   ~impl() { if (root) root->Release(); }
 };
@@ -594,6 +779,7 @@ HRESULT windows_uia_provider::create(HWND window, UINT wake_message, std::uint64
     if (!state->shared->api) return HRESULT_FROM_WIN32(ERROR_MOD_NOT_FOUND);
     auto initial = std::make_shared<snapshot>(); initial->projection.document_generation = generation;
     state->shared->view = std::move(initial);
+    state->notified = state->shared->view;
     state->allow = std::move(allow); state->dispatch = std::move(dispatch);
     const HRESULT made = element::make(state->shared, nullptr, &state->root);
     // CO_E_NOTINITIALIZED is preserved: application must initialize COM first.
@@ -667,6 +853,10 @@ HRESULT windows_uia_provider::publish(const uia_projection& projection) noexcept
       }
       next->records.push_back({node, incarnation});
     }
+    if (!shared->notification_wake_pending) {
+      if (!PostMessageW(shared->window, shared->wake, static_cast<WPARAM>(shared->instance), 0)) return HRESULT_FROM_WIN32(GetLastError());
+      shared->notification_wake_pending = true;
+    }
     shared->next_incarnation = serial; shared->view = std::move(next); return S_OK;
   });
 }
@@ -679,13 +869,15 @@ HRESULT windows_uia_provider::pump() noexcept {
       std::lock_guard<std::mutex> held(shared->lock);
       if (shared->callback_borrows != 0) return S_FALSE;  // No recursive business pump.
     }
+    unsigned invoked_events{};
+    HRESULT invocation_notification_status = S_OK;
     for (unsigned batch = 0; batch != 8; ++batch) {
       std::shared_ptr<command> work;
       std::shared_ptr<const action_contract> contract;
       {
         std::lock_guard<std::mutex> held(shared->lock);
         if (shared->closing) break;
-        if (shared->pending.empty()) return S_OK;
+        if (shared->pending.empty()) break;
         work = shared->pending.front(); shared->pending.pop_front();
         if (work->phase == command_phase::cancelled) continue;
         const auto* item = find(*shared->view, work->request.node_id);
@@ -725,6 +917,13 @@ HRESULT windows_uia_provider::pump() noexcept {
                 (work->request.operation == uia_operation::focus && shared->view->projection.focused_id != work->request.node_id))
               return UIA_E_INVALIDOPERATION;
           }
+          if (work->request.operation == uia_operation::invoke) {
+            ++invoked_events;
+            const auto notified = raise_invoked(shared, work->request);
+            // The business commit is not replayed or relabelled on event failure.
+            if (FAILED(notified) && SUCCEEDED(invocation_notification_status))
+              invocation_notification_status = notified;
+          }
           return outcome.result;
         });
         {
@@ -739,6 +938,11 @@ HRESULT windows_uia_provider::pump() noexcept {
     bool closing{};
     { std::lock_guard<std::mutex> held(shared->lock); closing = shared->closing; }
     if (closing) return close();
+    const auto notified = drain_notifications(shared, state_->notifications, state_->notified, 16 - invoked_events);
+    { std::lock_guard<std::mutex> held(shared->lock); closing = shared->closing; }
+    if (closing) return close();
+    if (FAILED(invocation_notification_status)) return invocation_notification_status;
+    if (FAILED(notified)) return notified;
     // Additional batches are reached through actual queued wake messages or the
     // application's ordinary pump. No unbounded drain on the owner thread.
     return S_OK;
@@ -749,6 +953,7 @@ bool windows_uia_provider::handle_message(UINT message, WPARAM wparam, LPARAM lp
   result = 0;
   if (GetCurrentThreadId() != state_->shared->owner) return false;
   if (message == state_->shared->wake && wparam == static_cast<WPARAM>(state_->shared->instance)) {
+    { std::lock_guard<std::mutex> held(state_->shared->lock); state_->shared->notification_wake_pending = false; }
     result = pump(); return true;
   }
   if (message != WM_GETOBJECT || static_cast<DWORD>(lparam) != static_cast<DWORD>(UiaRootObjectId)) return false;
@@ -803,6 +1008,7 @@ HRESULT windows_uia_provider::close() noexcept {
     if (shared->api->used()) shared->api->return_raw(window, 0, 0, nullptr);
     state_->root->Release(); state_->root = nullptr;
     state_->allow = {}; state_->dispatch = {};
+    state_->notifications = {}; state_->notified.reset();
     {
       std::lock_guard<std::mutex> held(shared->lock);
       shared->closed = true; shared->cleanup_in_progress = false;

@@ -13,10 +13,10 @@ const {acceptCompilerTail} = require('./compiler-tail-policy.cjs');
 const encode = value => Buffer.from(JSON.stringify(value,null,2)+'\n');
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const need = (condition,message) => {if(!condition)throw new Error(message);};
-const switches = {sdkOnly:'-SdkOnly',skipWeb:'-SkipWeb',withWebView2:'-WithWebView2',withGuiBindings:'-WithGuiBindings',withVendorTests:'-WithVendorTests',install:'-Install',freshConfigure:'-FreshConfigure'};
+const switches = {sdkOnly:'-SdkOnly',skipWeb:'-SkipWeb',withWebView2:'-WithWebView2',withUia:'-WithUia',withGuiBindings:'-WithGuiBindings',withVendorTests:'-WithVendorTests',install:'-Install',freshConfigure:'-FreshConfigure'};
 const cli = {'--root':'root','--architecture':'architecture','--configuration':'configuration','--runner':'runner','--powershell':'powershell',
   '--timeout-ms':'timeoutMs','--drain-ms':'drainMs','--tail-image':'tailImage','--tail-sha256':'tailSha256',
-  '--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-gui-bindings':'withGuiBindings','--with-vendor-tests':'withVendorTests',
+  '--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-uia':'withUia','--with-gui-bindings':'withGuiBindings','--with-vendor-tests':'withVendorTests',
   '--install':'install','--fresh-configure':'freshConfigure','--compiler-tail':'compilerTail',
   '--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
   '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe','--devkit-root':'devkitRoot',
@@ -57,6 +57,7 @@ function options(value) {
   }else need(result.host64ObserverPrepared===undefined&&result.host64ObserverSha256===undefined,'Prepared observer inputs require explicit host64-build-observer');
   if(result.compilerTail) {
     need(!result.withGuiBindings,'Compiler-tail policy does not include WithGuiBindings');
+    need(!result.withUia,'Compiler-tail policy does not include UIA');
     validateTailImagePin({image:result.tailImage,sha256:result.tailSha256,nonce:'0'.repeat(32)});
     need(result.tailSha256===reviewedTailSha256[result.architecture],'Tail SHA is not the reviewed target-architecture MSVC object');
   } else need(result.tailImage===undefined&&result.tailSha256===undefined,'Tail pin requires explicit compiler-tail opt-in');
@@ -141,6 +142,7 @@ function validateInvocation(context,frozen) {
   need(values.get('-Architecture')===frozen.architecture&&values.get('-Configuration')===frozen.configuration&&
     values.has('-SdkOnly')===frozen.sdkOnly,'Build argv configuration differs');
   need(!frozen.compilerTail||!values.has('-WithGuiBindings'),'Compiler-tail policy excludes GUI bindings');
+  need(!frozen.compilerTail||!values.has('-WithUia'),'Compiler-tail policy excludes UIA');
   need((values.get('-NativeToolchain')||'MSVC143')===(frozen.nativeToolchain||'MSVC143'),'Build argv profile differs');
   for(const [key,flag] of Object.entries(llvmPaths))need(values.get(flag)===frozen[key],'Build argv LLVM path differs: '+key);
 }
@@ -233,6 +235,12 @@ function evaluateBuild({frozen,ready,result,contextBytes,rawReport,buildReportBy
       build.configuration===frozen.configuration&&build.sdkOnly===frozen.sdkOnly&&build.source?.sha256===frozen.source.sha256&&
       time(build.startedAt)>=BigInt(debugMode?debugProof.innerBuild.creationFileTime:start.creationFileTime)&&time(build.finishedAt)>=time(build.startedAt),'Old/stale/incomplete build report');
     need(isDeepStrictEqual(artifacts(build),observed.artifacts),'Current payload/library differs');
+    const uiaSelected=debugMode?frozen.invocationOptions.withUia===true:context.args.includes('-WithUia');
+    const uia=build.optionalLibraries?.uia;
+    need(uiaSelected===!!uia,'Requested UIA selection differs from current optional archive');
+    if(uia)need(Array.isArray(uia.files)&&uia.files.length===1&&
+      uia.files[0].path===(build.sdkOnly?'':'sdk/')+'accessibility/uia/'+build.configuration+'/soui_uia.lib',
+      'Current UIA archive path differs from the selected SDK layout');
     need(terminal.rootExited===true&&terminal.rootExitCode===0&&result.exitCode===0,'Compiler root did not finish successfully');
     answer.compilationCompleted=true;
     answer.genericSupervisionPassed=result.passed===true&&result.supervisorExitCode===0&&terminal.passed===true&&
