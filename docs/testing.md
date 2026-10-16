@@ -97,7 +97,9 @@ HTTPS 内核的[回环证书验证](../verification/production-validation/previe
 
 外部 CMake 接入使用 `tests/package-consumer/`：先安装 SDK，再配置 CMAKE_PREFIX_PATH 指向实际的 `out/install/x64`，以相同工具集构建并运行。SDK 单独构建和外部链接分别验证。
 
-本次交付结果见 `verification/acceptance.json`。未执行项不能用历史结果补齐。生产验收另需目标 Windows 实机、DPI/多屏/输入法、持续运行、重复关闭、重载内存、安装升级与回退、故障恢复验证。
+完整验收状态见 `verification/acceptance.json`；0.5.0 的限定范围结果见[发布说明](releases/0.5.0.md)。根文件的 `collectionExecuted=false` 表示未运行完整收集，引用记录不授予验收通过。未执行项不能用历史结果补齐。生产验收另需目标 Windows 实机、DPI/多屏/输入法、持续运行、重复关闭、重载内存、安装升级与回退、故障恢复验证。
+
+限定范围交付后，按[发布流程](releasing.md)使用 `--record-unverified --evidence-reference <相对路径>` 记录当前版本的未验收状态并保留旧报告，不为更新元数据重跑已推迟的矩阵。`node --test tests/sdk/verification-status.test.cjs tests/sdk/verification-profile.test.cjs` 检查该入口及原收集档位边界，不代表原生或生产验收。
 
 完成四组构建、依赖重编译与运行、外部 CMake 和独立项目验证后，维护者可以运行 `node tools/Collect-Verification.cjs` 汇总当前交付结果。该入口会重跑单元测试，核对运行产物散列，并在证据缺失时失败；它不会把未执行项自动标为通过。
 

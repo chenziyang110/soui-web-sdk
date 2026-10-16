@@ -21,6 +21,9 @@ verification/production-validation/win7-v11-native-resize-2026-09-29/raw/** -tex
 *.cmd text eol=crlf
 *.bat text eol=crlf
 
+# Acceptance history is an immutable snapshot, including original BOM/newlines.
+verification/history/** -text -eol
+
 # Preserve captured legal-validation scripts, reports and logs exactly.
 verification/production-validation/license-runtime-notices-2026-09-28/** -text whitespace=cr-at-eol,-blank-at-eof,-blank-at-eol
 *.sln text eol=crlf
