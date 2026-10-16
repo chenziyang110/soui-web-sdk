@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430" fill="none" role="img" aria-labelledby="title description">
+  <title id="title">从 Web 界面到 Windows 原生能力</title>
+  <desc id="description">业务界面通过 TypeScript SDK 和授权 Bridge 调用 C++ 方法、任务与桌面服务。宿主选择 SOUI 与 Miniblink 兼容路径或可选 WebView2 现代路径。</desc>
+  <defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="m1 1 5 3-5 3" stroke="#79E6D2" stroke-width="1.5"/></marker></defs>
+  <rect x="1" y="1" width="1198" height="428" rx="16" fill="#0E151D" stroke="#2B3844"/>
+  <g font-family="'Segoe UI',Arial,'Microsoft YaHei',sans-serif">
+    <text x="40" y="47" font-size="12" letter-spacing="2.5" fill="#79E6D2">THE CONNECTION IS THE PRODUCT.</text>
+    <text x="40" y="82" font-size="23" font-weight="600" fill="#ECF2F6">界面、契约、原生能力，连成一条开发路径。</text>
+    <rect x="40" y="116" width="240" height="132" rx="10" fill="#18232D" stroke="#38505C"/>
+    <text x="62" y="149" font-size="11" letter-spacing="2" fill="#93A8B8">INTERFACE</text>
+    <text x="62" y="184" font-size="23" font-weight="600" fill="#ECF2F6">Web + TypeScript</text>
+    <text x="62" y="218" font-size="14" fill="#B3C3CF">业务页面 · 类型化调用 · 事件</text>
+    <path d="M294 182H345" stroke="#79E6D2" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="360" y="116" width="292" height="132" rx="10" fill="#142926" stroke="#46786B"/>
+    <text x="383" y="149" font-size="11" letter-spacing="2" fill="#79E6D2">CONTRACT</text>
+    <text x="383" y="184" font-size="23" font-weight="600" fill="#ECF2F6">Host + JSON Bridge</text>
+    <text x="383" y="218" font-size="14" fill="#B6D6CD">会话授权 · 参数校验 · 能力发现</text>
+    <path d="M668 182H719" stroke="#79E6D2" stroke-width="2" marker-end="url(#arrow)"/>
+    <rect x="736" y="116" width="424" height="132" rx="10" fill="#18232D" stroke="#38505C"/>
+    <text x="760" y="149" font-size="11" letter-spacing="2" fill="#93A8B8">NATIVE</text>
+    <text x="760" y="184" font-size="23" font-weight="600" fill="#ECF2F6">C++ SDK + Your Business</text>
+    <text x="760" y="218" font-size="14" fill="#B3C3CF">原生方法 · 后台任务 · Windows 桌面服务</text>
+    <path d="M506 249V278M300 278H895M300 278V303M895 278V303" stroke="#56716D" stroke-width="1.5"/>
+    <rect x="40" y="304" width="520" height="82" rx="10" fill="#121C25" stroke="#2C434D"/>
+    <text x="62" y="337" font-size="18" font-weight="600" fill="#E6EEF3">SOUI + Miniblink</text>
+    <text x="62" y="364" font-size="13" fill="#A2B6C5">兼容路径 / Chrome 49 构建目标</text>
+    <rect x="636" y="304" width="524" height="82" rx="10" fill="#121C25" stroke="#2C434D"/>
+    <text x="660" y="337" font-size="18" font-weight="600" fill="#E6EEF3">WebView2</text>
+    <text x="660" y="364" font-size="13" fill="#A2B6C5">可选现代路径 / 需要 WebView2 Runtime</text>
+  </g>
+</svg>
