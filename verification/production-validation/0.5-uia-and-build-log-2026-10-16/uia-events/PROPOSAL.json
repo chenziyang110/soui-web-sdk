@@ -1,0 +1,101 @@
+{
+  "schema": "soui.private-change-proposal/1",
+  "adopted": false,
+  "currentSource": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 15734831,
+    "sha256": "52e19555127cff41afabb4ee9e7b0af662630cbdfce35f270d0d4753473d1cf4"
+  },
+  "scope": "Bounded state-change UIA notifications; no reference-business projection or full screen-reader qualification",
+  "files": [
+    {
+      "relative": "sdk/accessibility/uia/windows_uia_provider.cpp",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\sdk\\accessibility\\uia\\windows_uia_provider.cpp",
+        "bytes": 45197,
+        "sha256": "23e47f6f23b39c08e009e50548eba74a569a94bbdbd9b1a30a682d690a6dcff2"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-events-1\\proposal\\sdk\\accessibility\\uia\\windows_uia_provider.cpp",
+        "bytes": 54701,
+        "sha256": "11fbd7a0c9d754ce1c9c0462036d69bdaa9f640b7e84bfbf3a53bb98b1a0d85c"
+      }
+    },
+    {
+      "relative": "sdk/include/soui/runtime/accessibility/windows_uia_provider.h",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\sdk\\include\\soui\\runtime\\accessibility\\windows_uia_provider.h",
+        "bytes": 4974,
+        "sha256": "cc4d8482922b5fb4c9f3b65c0d3775108ad3a830981e5a9f894d962c884870be"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-events-1\\proposal\\sdk\\include\\soui\\runtime\\accessibility\\windows_uia_provider.h",
+        "bytes": 5426,
+        "sha256": "c5e22d3c923ba9b6f682d883ac0884142f687b434754d82fed93ff36c810f540"
+      }
+    },
+    {
+      "relative": "tests/native/windows_uia_provider_tests.cpp",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tests\\native\\windows_uia_provider_tests.cpp",
+        "bytes": 27123,
+        "sha256": "67f6e46b8bd4962f570a3bcc13631b33ce4b2495a38317e421e77c1d8fb5e3cb"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-events-1\\proposal\\tests\\native\\windows_uia_provider_tests.cpp",
+        "bytes": 39614,
+        "sha256": "4327cf0290efd38ac074c7f379e08da601e69456b1cfeaaf20084162571b67bc"
+      }
+    },
+    {
+      "relative": "tests/native/uia/CMakeLists.txt",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tests\\native\\uia\\CMakeLists.txt",
+        "bytes": 1010,
+        "sha256": "397755919f7858e06aefe22de01fd9b91c0a9c94c588724f571f37681f9a1e45"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-uia-events-1\\proposal\\tests\\native\\uia\\CMakeLists.txt",
+        "bytes": 1053,
+        "sha256": "4e677a2a66e952c3d5f056f29ea799e4956595a24938016522440b9a74c9c3e4"
+      }
+    },
+    {
+      "relative": "docs/adr/0109-uia-state-notifications.md",
+      "before": null,
+      "after": {
+        "path": "C:\\work\\sm05-uia-events-1\\proposal\\docs\\adr\\0109-uia-state-notifications.md",
+        "bytes": 3940,
+        "sha256": "fe9cc96b6fcf127cc938016c4f74af131deedbc766800d63dd57db77903a5eb9"
+      }
+    },
+    {
+      "relative": "docs/acceptance/uia-state-notifications.md",
+      "before": null,
+      "after": {
+        "path": "C:\\work\\sm05-uia-events-1\\proposal\\docs\\acceptance\\uia-state-notifications.md",
+        "bytes": 1516,
+        "sha256": "a0b42adf77e62c4db27afd9f089a2dfc6a0017070e16e62a78d04ead6938c07f"
+      }
+    }
+  ],
+  "evidence": [
+    {
+      "path": "C:\\work\\sm05-uia-events-1\\x64-green3-VERIFIED.json",
+      "bytes": 21743,
+      "sha256": "400d0fa7cef408982a60cc65e1104a2ef97ed99309e18896a558332faba35898"
+    },
+    {
+      "path": "C:\\work\\sm05-uia-events-1\\x86-green1-VERIFIED.json",
+      "bytes": 21745,
+      "sha256": "01e9540c9249d5aec8456f256fdb03b504bc8bde3706dfe1535ad6eeb75842f0"
+    }
+  ],
+  "testsPerArchitecture": 11,
+  "additionalAdoptionEdits": [
+    "Link ADR-0109 from docs/adr/README.md",
+    "Add CHANGELOG and docs/testing links while preserving long-quota proposal v2 additions"
+  ],
+  "currentVersionQualified": false,
+  "releaseReady": false
+}

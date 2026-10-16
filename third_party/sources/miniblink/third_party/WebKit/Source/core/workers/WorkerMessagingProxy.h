@@ -31,6 +31,8 @@
 #include "core/dom/ExecutionContext.h"
 #include "core/workers/WorkerGlobalScopeProxy.h"
 #include "core/workers/WorkerLoaderProxy.h"
+#include "core/workers/WorkerShutdownRecord.h"
+#include "public/platform/WebThread.h"
 #include "wtf/Forward.h"
 #include "wtf/Noncopyable.h"
 #include "wtf/PassOwnPtr.h"
@@ -74,6 +76,16 @@ public:
     void workerThreadTerminated();
 
     void workerThreadCreated(PassRefPtr<WorkerThread>);
+    WorkerShutdownRecord* shutdownRecord() const { return m_shutdownRecord.get(); }
+    static WorkerRetirementResult prepareAllWorkerRetirements();
+    static bool pollWorkerRetirements(bool cancelCallbacks);
+    struct RetirementWitness {
+        explicit RetirementWitness(WorkerShutdownRecord* record) : record(record), native{nullptr, 0, 0} { }
+        RefPtr<WorkerShutdownRecord> record;
+        WebThread::ShutdownWitness native;
+    };
+    static unsigned diagnosticWitnessCount();
+    static RetirementWitness* captureRetirementWitness(unsigned index);
 
 protected:
     WorkerMessagingProxy(InProcessWorkerBase*, PassOwnPtrWillBeRawPtr<WorkerClients>);
@@ -85,6 +97,7 @@ protected:
     WorkerObjectProxy& workerObjectProxy() { return *m_workerObjectProxy.get(); }
 
 private:
+    WorkerRetirementResult pollRetirement(bool cancelCallbacks);
     void workerObjectDestroyedInternal();
     void terminateInternally();
 
@@ -94,11 +107,16 @@ private:
     virtual void postTaskToLoader(PassOwnPtr<ExecutionContextTask>) override;
     virtual bool postTaskToWorkerGlobalScope(PassOwnPtr<ExecutionContextTask>) override;
 
+    RefPtr<WorkerShutdownRecord> m_shutdownRecord;
+    bool m_managedShutdown;
     RefPtrWillBePersistent<ExecutionContext> m_executionContext;
     OwnPtr<WorkerObjectProxy> m_workerObjectProxy;
     InProcessWorkerBase* m_workerObject;
     bool m_mayBeDestroyed;
     RefPtr<WorkerThread> m_workerThread;
+    RefPtr<WorkerThread> m_startingWorkerThread;
+    WorkerThread* m_loaderWorkerThread;
+    bool m_providerDetached;
 
     unsigned m_unconfirmedMessageCount; // Unconfirmed messages from worker object to worker thread.
     bool m_workerThreadHadPendingActivity; // The latest confirmation from worker thread reported that it was still active.

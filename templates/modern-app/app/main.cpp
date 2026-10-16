@@ -6,28 +6,71 @@
 #include <shellapi.h>
 #include <filesystem>
 #include <fstream>
+#include <exception>
 #include <memory>
+#include <stdexcept>
 #include <string>
 
 namespace {
 struct application {
   HWND window{};
   bool smoke{false}, closing{false};
+  bool preparation_started{false}, preparation_completed{false}, controller_closed{false};
   int exit_code{0};
   ULONGLONG started{GetTickCount64()};
+  ULONGLONG close_began{};
   std::filesystem::path root, profile;
   // Destruction is host -> bridge; borrowed Bridge stays alive through teardown.
   soui::sdk::json_bridge bridge{"app://modern-starter"};
   soui::sdk::webview2_adapter* renderer{}; // Owned by host; used only while host exists.
   std::unique_ptr<soui::sdk::webview_host> host;
+  std::unique_ptr<soui::sdk::webview2_runtime_exit_watch> runtime_watch;
   void log(const std::string& value) const { std::ofstream(profile / "smoke.log", std::ios::app) << value << '\n'; }
+  void retry_close() {
+    if (!SetTimer(window, 2, 20, nullptr)) std::terminate(); // Retained callbacks cannot be abandoned.
+  }
   void close() {
+    if (!closing) close_began = GetTickCount64();
     closing = true;
-    const auto result = host ? host->destroy() : soui::sdk::host_result{true, {}, {}};
-    if (!result.ok) {
-      if (result.code != "E_BUSY") { exit_code = 3; log(result.code + ": " + result.message); }
-      SetTimer(window, 2, 20, nullptr);
-      return;
+    if (GetTickCount64() - close_began >= 10000) {
+      exit_code = 3; log("E_RUNTIME_WATCH_DEADLINE"); std::terminate();
+    }
+    if (preparation_started && !preparation_completed) {
+      retry_close(); return; // Retain the actual initializer until its exit identity can be acquired.
+    }
+    if (!controller_closed) {
+      auto result = host ? host->destroy() : soui::sdk::host_result{true, {}, {}};
+      // Preparation precedes Host mount; a never-mounted Host has no controller
+      // to destroy. Its still-owned adapter must complete unmount explicitly.
+      if (result.ok && renderer) result = renderer->unmount();
+      if (!result.ok) {
+        if (result.code != "E_BUSY") { exit_code = 3; log(result.code + ": " + result.message); }
+        retry_close(); return;
+      }
+      controller_closed = true;
+      KillTimer(window, 1);
+    }
+    if (preparation_started && !runtime_watch) {
+      const auto acquired = renderer->acquire_runtime_exit_watch(runtime_watch);
+      if (!acquired.ok) {
+        exit_code = 3; log(acquired.code + ": " + acquired.message);
+        if (acquired.code != "E_RUNTIME_WATCH_UNAVAILABLE" || !renderer->failed_preparation_cleanup_complete())
+          std::terminate();
+        // A failed preparation never becomes a successful runtime-exit receipt.
+      }
+    }
+    if (runtime_watch) {
+      const auto observed = runtime_watch->observe();
+      if (observed.phase == soui::sdk::webview2_runtime_exit_phase::failed) {
+        exit_code = 3; log("E_RUNTIME_WATCH_FAILED"); std::terminate();
+      }
+      if (observed.phase != soui::sdk::webview2_runtime_exit_phase::finished) {
+        const auto finished = runtime_watch->finish();
+        if (!finished.ok) {
+          if (finished.code != "E_BUSY") { exit_code = 3; log(finished.code); std::terminate(); }
+          retry_close(); return;
+        }
+      }
     }
     KillTimer(window, 1); KillTimer(window, 2);
     log("host-close-complete");
@@ -107,13 +150,20 @@ int run(HINSTANCE instance, bool smoke) {
   const auto window = CreateWindowExW(0, type.lpszClassName, L"SouiModernStarter", WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
       CW_USEDEFAULT, CW_USEDEFAULT, 1100, 720, nullptr, nullptr, instance, &app);
   if (!window) return 1;
+  try {
   auto adapter = std::make_unique<soui::sdk::webview2_adapter>(window, app.profile / "browser");
   auto* renderer = adapter.get();
   app.renderer = renderer;
   app.host = std::make_unique<soui::sdk::webview_host>(std::move(adapter));
-  renderer->prepare_async([&](auto result) {
-    if (app.closing) return;
-    if (result.ok) {
+  const auto access = renderer->configure_profile_access(soui::sdk::webview2_profile_access::exclusive);
+  if (!access.ok) throw std::runtime_error(access.code);
+  app.preparation_started = true;
+  renderer->prepare_async([&app, window, smoke](auto result) {
+    app.preparation_completed = true;
+    if (result.ok) result = app.renderer->acquire_runtime_exit_watch(app.runtime_watch);
+    if (result.ok && app.runtime_watch->observe().phase == soui::sdk::webview2_runtime_exit_phase::failed)
+      result = {false, "E_RUNTIME_WATCH_FAILED", "The exclusive runtime watch failed before mount."};
+    if (result.ok && !app.closing) {
       soui::sdk::host_config config;
 #ifdef _WIN64
       config.architecture = "x64";
@@ -125,14 +175,31 @@ int run(HINSTANCE instance, bool smoke) {
     }
     if (!result.ok) {
       app.exit_code = 3; app.log(result.code + ": " + result.message);
-      if (!smoke) MessageBoxA(window, result.message.c_str(), result.code.c_str(), MB_ICONERROR);
-      PostMessageW(window, WM_CLOSE, 0, 0);
-    } else app.log("host-started;runtime=" + renderer->runtime_version());
+      if (!smoke && !app.closing) MessageBoxA(window, result.message.c_str(), result.code.c_str(), MB_ICONERROR);
+      if (!PostMessageW(window, WM_CLOSE, 0, 0)) std::terminate();
+    } else if (app.closing) {
+      if (!PostMessageW(window, WM_CLOSE, 0, 0)) std::terminate();
+    } else app.log("host-started;runtime=" + app.renderer->runtime_version());
   });
-  ShowWindow(window, smoke ? SW_SHOWNOACTIVATE : SW_SHOW);
-  if (smoke) SetTimer(window, 1, 100, nullptr);
+  if (IsWindow(window)) {
+    ShowWindow(window, smoke ? SW_SHOWNOACTIVATE : SW_SHOW);
+    if (smoke && !SetTimer(window, 1, 100, nullptr)) { app.exit_code = 3; app.close(); }
+  }
+  } catch (...) { app.exit_code = 3; app.log("E_APPLICATION_START"); app.close(); }
   MSG message{};
-  while (GetMessageW(&message, nullptr, 0, 0) > 0) { TranslateMessage(&message); DispatchMessageW(&message); }
+  while (IsWindow(window)) {
+    const auto result = GetMessageW(&message, nullptr, 0, 0);
+    if (result > 0) { TranslateMessage(&message); DispatchMessageW(&message); }
+    else {
+      // An early WM_QUIT or message failure cannot drop a live runtime watch.
+      app.exit_code = 3; app.close();
+      while (IsWindow(window)) {
+        for (unsigned count = 0; count != 32 && IsWindow(window) && PeekMessageW(&message, nullptr, 0, 0, PM_REMOVE); ++count)
+          if (message.message != WM_QUIT) { TranslateMessage(&message); DispatchMessageW(&message); }
+        if (IsWindow(window)) { app.close(); MsgWaitForMultipleObjects(0, nullptr, FALSE, 20, QS_ALLINPUT); }
+      }
+    }
+  }
   return app.exit_code;
 }
 }

@@ -53,7 +53,11 @@ function checkFileSet(root, files) {
   }
   if (JSON.stringify(names) !== JSON.stringify(expected)) throw new Error('Source file set differs from manifest');
 }
-function create(root) {
+function create(root, options) {
+  if (options) {
+    if (!options.bindingFile || !options.output || Object.keys(options).sort().join(',') !== 'bindingFile,output') throw new Error('Explicit source create requires bindingFile and output');
+    return stage(root, options.output, options.bindingFile);
+  }
   const entries = tracked(root);
   if (!entries || !entries.length) throw new Error('Manifest generation requires a Git checkout with added source files');
   checkFileSet(root, entries);
@@ -107,6 +111,10 @@ function verify(root) {
   if (![schema, 'soui.full-source/v1'].includes(manifest.schema) || manifest.releaseReady !== false ||
       manifest.version !== fs.readFileSync(id.safePath(root, 'VERSION'), 'utf8').trim()) throw new Error('Invalid source manifest/version');
   id.validateFiles(manifest.files);
+  if (manifest.sourceComposition) {
+    if (manifest.sourceComposition.schema !== 'soui.full-source-composition/v1' || manifest.sourceComposition.sourceOnly !== true ||
+        manifest.sourceComposition.currentBinaryProvenance !== null) throw new Error('Invalid explicit source composition');
+  }
   if (manifest.schema === schema) checkFileSet(root, manifest.files);
   for (const file of manifest.files) {
     if (manifest.schema === schema && !['lf', 'none'].includes(file.normalization)) throw new Error('Invalid source normalization');
@@ -114,28 +122,34 @@ function verify(root) {
   }
   return manifest;
 }
-function stage(root, output) {
-  const manifest = verify(root);
+function stage(root, output, bindingFile) {
+  const explicit = bindingFile ? require('./full-source-roots.cjs').prepare(bindingFile, output) : null;
+  const manifest = explicit ? explicit.manifest : verify(root);
   if (manifest.schema !== schema) throw new Error('New source archives require a v2 manifest');
   output = id.safePath(output);
   if (fs.existsSync(output)) throw new Error('Source stage already exists');
   for (const file of manifest.files) {
     const target = id.safePath(output, file.path);
-    const data = content(root, file, manifest.schema);
+    const data = explicit ? explicit.read(file.path) : content(root, file, manifest.schema);
     fs.mkdirSync(path.dirname(target), {recursive: true});
     fs.writeFileSync(target, data, {flag: 'wx'});
   }
   fs.writeFileSync(path.join(output, manifestName), id.encoded(manifest), {flag: 'wx'});
+  require('./full-source-roots.cjs').exact(output, manifest.files, true);
   verify(output);
+  if (explicit) explicit.recheck();
   return {stage: output, files: manifest.files.length, version: manifest.version, releaseReady: false};
 }
 module.exports = {create, verify, stage};
 if (require.main === module) {
   try {
-    const [command = 'create', output] = process.argv.slice(2);
+    const [command = 'create', output, flag, bindingFile, ...extra] = process.argv.slice(2);
     const root = path.resolve(__dirname, '../..');
-    if (!['create', 'verify', 'stage'].includes(command) || (command === 'stage' && !output)) throw new Error('Usage: source-archive.cjs create|verify|stage OUTPUT');
-    const result = command === 'stage' ? stage(root, output) : (command === 'verify' ? verify(root) : create(root));
+    if (!['create', 'verify', 'stage'].includes(command) || (command === 'stage' && !output) || extra.length ||
+        (flag !== undefined && (flag !== '--source-roots-binding' || !bindingFile || command === 'verify')) ||
+        (bindingFile && !output) || (command === 'verify' && output)) throw new Error('Usage: source-archive.cjs create|verify|stage OUTPUT [--source-roots-binding FILE]');
+    const result = command === 'stage' ? stage(root, output, bindingFile) :
+      (command === 'verify' ? verify(root) : create(root, bindingFile ? {output, bindingFile} : undefined));
     console.log(id.encoded({status: command, version: result.version, files: Array.isArray(result.files) ? result.files.length : result.files, releaseReady: false}));
   } catch (error) { console.error(error.message); process.exitCode = 1; }
 }

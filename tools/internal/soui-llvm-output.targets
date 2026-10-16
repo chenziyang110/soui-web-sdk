@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <IncludePath>$(LLVMInstallDir)/lib/clang/22/include;$(SouiMsvcRoot)/include;$(SouiMsvcRoot)/atlmfc/include;$(SouiSdkRoot)/Include/10.0.19041.0/ucrt;$(SouiSdkRoot)/Include/10.0.19041.0/shared;$(SouiSdkRoot)/Include/10.0.19041.0/um</IncludePath>
+    <ExternalIncludePath>$(IncludePath)</ExternalIncludePath>
+    <LibraryPath>$(SouiMsvcRoot)/lib/$(SouiArchitecture);$(SouiMsvcRoot)/atlmfc/lib/$(SouiArchitecture);$(SouiSdkRoot)/Lib/10.0.19041.0/ucrt/$(SouiArchitecture);$(SouiSdkRoot)/Lib/10.0.19041.0/um/$(SouiArchitecture)</LibraryPath>
+    <SouiClangOptions>--no-default-config /X /imsvc &quot;$(LLVMInstallDir)/lib/clang/22/include&quot; /imsvc &quot;$(SouiMsvcRoot)/include&quot; /imsvc &quot;$(SouiMsvcRoot)/atlmfc/include&quot; /imsvc &quot;$(SouiSdkRoot)/Include/10.0.19041.0/ucrt&quot; /imsvc &quot;$(SouiSdkRoot)/Include/10.0.19041.0/shared&quot; /imsvc &quot;$(SouiSdkRoot)/Include/10.0.19041.0/um&quot; /clang:-fms-compatibility-version=19.29.30159 /clang:-Werror=unknown-argument /clang:-Werror=unused-command-line-argument /showIncludes /U_DEBUG</SouiClangOptions>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile><DebugInformationFormat>OldStyle</DebugInformationFormat><MultiProcessorCompilation>false</MultiProcessorCompilation><WholeProgramOptimization>false</WholeProgramOptimization><ForceSynchronousPDBWrites>false</ForceSynchronousPDBWrites><RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary><ObjectFileName>$(IntDir)</ObjectFileName><PrecompiledHeaderOutputFile>$(IntDir)$(MSBuildProjectName).pch</PrecompiledHeaderOutputFile></ClCompile>
+    <ResourceCompile><ResourceOutputFileName>$(IntDir)%(Filename).res</ResourceOutputFileName></ResourceCompile>
+    <Link><LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration><LinkIncremental>false</LinkIncremental><GenerateDebugInformation>false</GenerateDebugInformation><OutputFile>$(OutDir)$(TargetName).dll</OutputFile><ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary><AdditionalOptions>%(AdditionalOptions) /DEBUG:NONE /INCREMENTAL:NO /MAP:&quot;$(OutDir)$(TargetName).map&quot;</AdditionalOptions></Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Update="@(ClCompile)"><DebugInformationFormat>OldStyle</DebugInformationFormat><MultiProcessorCompilation>false</MultiProcessorCompilation><WholeProgramOptimization>false</WholeProgramOptimization><RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary><ObjectFileName>$(IntDir)</ObjectFileName><PrecompiledHeaderOutputFile>$(IntDir)$(MSBuildProjectName).pch</PrecompiledHeaderOutputFile><AdditionalOptions>%(ClCompile.AdditionalOptions) $(SouiClangOptions)</AdditionalOptions></ClCompile>
+  </ItemGroup>
+  <Target Name="AssertSouiLlvmSelection" BeforeTargets="PrepareForBuild">
+    <Error Condition="'$(Configuration)'!='Release' or ('$(Platform)'!='x64' and '$(Platform)'!='Win32')" Text="SOUI LLVM requires a fixed Release architecture" />
+    <Error Condition="'$(PlatformToolset)'!='ClangCL' or '$(VCToolsVersion)'!='14.29.30133' or '$(WindowsTargetPlatformVersion)'!='10.0.19041.0' or '$(PreferredToolArchitecture)'!='x64' or '$(LLVMToolsVersion)'!='22.1.3'" Text="SOUI LLVM fixed compiler/SDK selection differs" />
+    <Error Condition="'$(CLToolExe)'!='clang-cl.exe' or '$(LinkToolExe)'!='lld-link.exe' or '$(LIBToolExe)'!='llvm-lib.exe'" Text="SOUI LLVM tool roles differ" />
+    <Error Condition="('$(Platform)'=='Win32' and '$(SouiArchitecture)'!='x86') or ('$(Platform)'=='x64' and '$(SouiArchitecture)'!='x64') or '$(SouiMsvcRoot)'=='' or '$(SouiSdkRoot)'==''" Text="SOUI LLVM explicit roots/architecture differ" />
+  </Target>
+</Project>

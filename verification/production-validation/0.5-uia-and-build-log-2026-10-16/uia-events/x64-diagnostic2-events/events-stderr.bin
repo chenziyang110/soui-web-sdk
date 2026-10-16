@@ -1,0 +1,10 @@
+provider raise property=30005 cursor=1 total=3
+provider raise property=30001 cursor=2 total=3
+provider raise property=30045 cursor=0 total=1
+event property=30045 identity=00000000 type=8
+event id=title payload=visible update
+event current=00000000 type=8 value=visible update
+event property=30045 identity=00000000 type=8
+event id=title payload=visible update
+event wait=0 count=1 failed=0
+event current=00000000 type=8 value=visible update

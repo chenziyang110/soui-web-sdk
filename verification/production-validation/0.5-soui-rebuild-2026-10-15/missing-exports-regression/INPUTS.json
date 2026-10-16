@@ -1,0 +1,121 @@
+{
+  "arch": "x64",
+  "dependencyAttempt": "1",
+  "pinned": [
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-050\\build-soui-contract.cjs",
+      "sha256": "59ce54e4b761bf36930d875cb9d91481d9aef9af9a11aa84d7afe566ab6a38d7"
+    },
+    {
+      "path": "C:/work/sm05-release-050/tests/native/soui_dependency_tests.cpp",
+      "sha256": "3626f66d81e446f197491e53f342910307f9b51e90fa7cdcb13e69e380485874"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-1/source/bin64/soui.dll",
+      "sha256": "ae5401c70dce8dc7543dc9f0c14116711a6fc15a9ad4092444ad1de9ace5b180"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-1/source/bin64/soui.lib",
+      "sha256": "f02b1537b7573cf3ba46c009918d3093e439b18a447ca703acfcff1bfd340986"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-1/source/bin64/utilities.dll",
+      "sha256": "d9f8210127e2d140ba060b2c287087a58e50c519494809d9c3b0c277b013b642"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-1/source/bin64/utilities.lib",
+      "sha256": "3cd84828d94bb95ddb775cba1036eeca5ee634a1e60d2f77d7d6dd7c1c00d311"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-1/source/bin64/render-gdi.dll",
+      "sha256": "2865fda935012f00374c4df8d17a66c3c4510c72edfa40ec9ed022ce73a1f568"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-1/source/bin64/render-gdi.lib",
+      "sha256": "a93bca7201012c598441383d8f48eeece0207515652f410adabb24503b18e67b"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-1/source/bin64/imgdecoder-gdip.dll",
+      "sha256": "757c6425c24fa5cd7532c83c2cc940596b3c413c8deccbf26323af635f4d05df"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-1/source/bin64/imgdecoder-gdip.lib",
+      "sha256": "9dd190cdc4a44f1b235736631b5ef07404ba3d7a96e861a2f88df5503e1e5215"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-1/source/bin64/soui-sys-resource.dll",
+      "sha256": "25aaeef781bd95128125489f4b842e04582a6685ceeb1e9fd9570c227fd18567"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-1/source/bin64/soui-sys-resource.lib",
+      "sha256": "8441b109d8de9c703e0f7784a48e18fb019b6c8e4c28da7ca27bd1d08a9332fb"
+    }
+  ],
+  "compile": {
+    "executable": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+    "args": [
+      "--no-default-config",
+      "--target=x86_64-pc-windows-msvc",
+      "/clang:-fms-compatibility-version=19.29.30159",
+      "/clang:-Werror=unknown-argument",
+      "/clang:-Werror=unused-command-line-argument",
+      "/nologo",
+      "/c",
+      "/std:c++17",
+      "/EHsc",
+      "/MD",
+      "/Z7",
+      "/utf-8",
+      "/DUNICODE",
+      "/D_UNICODE",
+      "/DNDEBUG",
+      "/D_CRT_SECURE_NO_WARNINGS",
+      "/U_DEBUG",
+      "/X",
+      "/imsvc",
+      "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+      "/imsvc",
+      "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+      "/imsvc",
+      "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/atlmfc/include",
+      "/imsvc",
+      "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+      "/imsvc",
+      "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+      "/imsvc",
+      "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+      "/IC:/work/sm05-release-050/third_party/include/soui/config",
+      "/IC:/work/sm05-release-050/third_party/include/soui/SOUI/include",
+      "/IC:/work/sm05-release-050/third_party/include/soui/utilities/include",
+      "/IC:/work/sm05-release-050/third_party/include/soui/components",
+      "C:/work/sm05-release-050/tests/native/soui_dependency_tests.cpp",
+      "/FoC:/work/sm05-soui-contract-x64-red2/test.obj"
+    ]
+  },
+  "link": {
+    "executable": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+    "args": [
+      "/nologo",
+      "/subsystem:console,6.01",
+      "/machine:x64",
+      "/out:C:/work/sm05-soui-contract-x64-red2/test.exe",
+      "C:/work/sm05-soui-contract-x64-red2/test.obj",
+      "C:/work/sm05-release-050/out/dependencies/x64-soui-public-1/source/bin64/soui.lib",
+      "C:/work/sm05-release-050/out/dependencies/x64-soui-public-1/source/bin64/utilities.lib",
+      "kernel32.lib",
+      "user32.lib",
+      "gdi32.lib",
+      "advapi32.lib",
+      "shell32.lib",
+      "ole32.lib",
+      "oleaut32.lib",
+      "uuid.lib",
+      "shlwapi.lib",
+      "comctl32.lib",
+      "/libpath:C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64",
+      "/libpath:C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/atlmfc/lib/x64",
+      "/libpath:C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64",
+      "/libpath:C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64"
+    ]
+  }
+}

@@ -1,4 +1,5 @@
 #include "demo_bridge_adapter.h"
+#include <soui/host/frame_rate_policy.h>
 #include "native_media_preview.h"
 #include "native_media_encoder.h"
 #include <soui/runtime/services/fileinsight-service/fileinsight-service.h>
@@ -1403,8 +1404,13 @@ void demo_bridge_adapter::register_methods() {
   };
   (void)register_legacy("desktop.rendering.setTargetRate", "desktop.rendering.control",
       [this](std::string_view params, const authorization_ptr& authorization) -> std::string {
-        const auto rate = size_param(std::string(params), "targetHz", 0);
-        if (rate != 60 && rate != 120 && rate != 144) return payload_error("E_INVALID_PARAMS", "Allowed targets: 60, 120, 144.");
+        const auto value = json::parse(params.begin(), params.end(), nullptr, false);
+        if (!value.is_object() || !value.contains("targetHz") || !value["targetHz"].is_number_integer())
+          return payload_error("E_INVALID_PARAMS", "targetHz must be an integer from 30 to 1000.");
+        // Validate before narrowing: a uint64 request must not wrap to a valid x86 rate.
+        const auto rate = value["targetHz"].get<std::uint64_t>();
+        if (rate > 1000 || !soui::sdk::is_supported_frame_rate(static_cast<unsigned>(rate)))
+          return payload_error("E_INVALID_PARAMS", "targetHz must be an integer from 30 to 1000.");
         preferred_frame_rate_.store(static_cast<unsigned>(rate));
         requested_frame_rate_.store(static_cast<unsigned>(rate));
         return json{{"requestedHz", rate}}.dump();

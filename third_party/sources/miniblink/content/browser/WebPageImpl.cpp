@@ -1,4 +1,5 @@
 ﻿#include "content/browser/WebPageImpl.h"
+#include "wke/RendererModelState.h"
 
 #include "base/basictypes.h"
 #include "base/rand_util.h"
@@ -614,6 +615,7 @@ WebView* WebPageImpl::createView(WebLocalFrame* creator,
     WebNavigationPolicy policy,
     bool suppressOpener)
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_EXTERNAL_VIEW);
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
     if (m_pagePtr->wkeWebView())
         return createWkeView(creator, request, features, name, policy, suppressOpener);
@@ -2296,6 +2298,7 @@ void WebPageImpl::draggableRegionsChanged()
 
 WebWidget* WebPageImpl::createPopupMenu(WebPopupType type)
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_EXTERNAL_VIEW);
     if (!m_hWnd)
         m_hWnd = ::GetActiveWindow();
     
@@ -2324,6 +2327,7 @@ void WebPageImpl::showValidationMessage(
     blink::WebTextDirection supplementalTextDir
     )
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_EXTERNAL_VIEW);
     POINT pos = { anchorInViewport.x, anchorInViewport.y };
     ::ClientToScreen(m_hWnd, &pos);
     m_validationMessageTip->show(WTF::ensureUTF16UChar((String)mainText, true).data(), &pos);
@@ -2379,6 +2383,7 @@ private:
 
 bool WebPageImpl::runFileChooser(const blink::WebFileChooserParams& params, blink::WebFileChooserCompletion* completion)
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_EXTERNAL_VIEW);
     RootWndAutoDisable rootWndAutoDisable(m_hWnd);
     bool b = runFileChooserImpl(params, completion);
     //wke::g_wkeUiThreadPostTaskCallback(m_hWnd, onDelayPopupAterFileChooser, nullptr);
@@ -2412,7 +2417,7 @@ bool WebPageImpl::initSetting()
     settings->setTextAreasAreResizable(true);
     
     //settings->setStandardFontFamily(WebString(L"寰蒋闆呴粦", 4));
-    settings->setStandardFontFamily(blink::WebString(L"瀹嬩綋", 2));
+    settings->setStandardFontFamily(blink::WebString(L"\u5B8B\u4F53", 2));
     settings->setUsesEncodingDetector(true);
     settings->setJavaScriptEnabled(true);
     settings->setAllowFileAccessFromFileURLs(true);

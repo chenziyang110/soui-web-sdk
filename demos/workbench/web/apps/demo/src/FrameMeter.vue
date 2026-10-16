@@ -125,7 +125,7 @@ onBeforeUnmount(() => { disposed = true; stop(); document.removeEventListener('v
       <button class="meter-details-toggle" :aria-expanded="detailed" aria-controls="frame-meter-details" @click="detailed = !detailed">{{ detailed ? '收起详情' : '详情与帧率设置' }}</button>
       <div v-if="detailed" id="frame-meter-details">
       <p>目标帧预算 {{ (1000 / targetHz).toFixed(2) }} ms</p>
-      <div class="rate-controls"><button v-for="rate in [60,120,144]" :key="rate" :aria-pressed="targetHz===rate" :disabled="settingRate || !nativeClient" @click="setTarget(rate)">{{rate}}</button></div>
+      <div class="rate-controls"><button v-for="rate in [60,75,100,120,144,165,240]" :key="rate" :aria-pressed="targetHz===rate" :disabled="settingRate || !nativeClient" @click="setTarget(rate)">{{rate}}</button></div>
       <small v-if="targetHz>60">实验调度；非实际帧率保证。切后台恢复常规调度，可能增加功耗。</small>
       <p v-if="rateError" role="alert">{{rateError}}</p>
       <svg width="100%" height="32" viewBox="0 0 200 32" aria-hidden="true"><polyline :points="history.map((value, index) => `${index * 5},${32 - Math.min(180, value) / 180 * 32}`).join(' ')" fill="none" stroke="#69d3b1" stroke-width="2" /></svg>
@@ -143,6 +143,6 @@ onBeforeUnmount(() => { disposed = true; stop(); document.removeEventListener('v
 @media(max-width:720px) { .frame-meter { left:auto; right:12px; bottom:12px; width:208px; max-height:45vh; } }
 .frame-meter button { border: 1px solid #5c6e85; border-radius: 4px; color: #e3eefc; background: #2d3f57; font-size: 11px; cursor: pointer; padding: 5px 8px; }
 .frame-meter .meter-toggle { width: 100%; text-align: left; border: 0; padding: 9px 12px; }
-.rate-controls { display:flex; margin:8px 0; }.rate-controls button { margin-right:8px; }.rate-controls button[aria-pressed=true] { border-color:#69d3b1; color:#69d3b1; }
+.rate-controls { display:flex; flex-wrap:wrap; margin:8px 0; }.rate-controls button { margin-right:8px; margin-bottom:6px; }.rate-controls button[aria-pressed=true] { border-color:#69d3b1; color:#69d3b1; }
 .meter-body { padding: 2px 12px 12px; }.meter-reading { display: flex; align-items: baseline; }.meter-reading strong { font-size: 27px; margin-right: 8px; color: #69d3b1; }.meter-body p { margin: 4px 0; }.meter-body small { display: block; margin-top: 8px; line-height: 1.6; color: #b1c0d5; }.meter-track { position: relative; height: 16px; margin-top: 9px; background: #142133; }.meter-track i { position: absolute; top: 3px; left: 0; width: 10px; height: 10px; background: #69d3b1; border-radius: 3px; }
 </style>

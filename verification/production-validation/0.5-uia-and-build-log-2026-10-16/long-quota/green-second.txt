@@ -1,0 +1,34 @@
+✔ session evaluates every native owner including slot reuse with a distinct pool (4.3353ms)
+✔ mixed evaluates every native owner including slot reuse with a distinct pool (1.8124ms)
+✔ configured bytes differ from the frozen production quota (2.3792ms)
+✔ a transient peak above the cap fails even when current usage is small (1.0494ms)
+✔ same document cannot change pool identity (0.7065ms)
+✔ retired pool cannot be reused by another lifetime (0.6314ms)
+✔ missing retired observations retain an incomplete gate (0.5448ms)
+✔ nonempty current roster cannot be removed (0.7352ms)
+✔ a view cannot be observed after its owner has closed (0.7097ms)
+✔ unknown window slots are refused (0.7251ms)
+✔ native process identity must match the bound consumer (0.5536ms)
+✔ capture replay cannot count as another observation (0.7468ms)
+✔ reversed cumulative counters cannot hide earlier allocation pressure (0.5676ms)
+✔ original native failure survives later successful samples (0.4901ms)
+✔ caller cannot replace the fixed long workload settings (0.6193ms)
+✔ caller cannot claim a different finite default (0.4029ms)
+✔ missing full source binding cannot qualify a quota (0.352ms)
+✔ an unclosed owner remains incomplete (0.4877ms)
+✔ missing terminal marker remains incomplete (0.6819ms)
+✔ busy quota observation is incomplete rather than silently zero (0.6623ms)
+✔ unavailable quota cannot preserve a finite policy or charged data (0.4812ms)
+✔ missing private quota does not become an observed zero (1.0091ms)
+✔ a known quota violation wins over a separate missing observation (0.6572ms)
+✔ a valid original byte hash is required and parsed consistency cannot authenticate raw bytes (1.3466ms)
+✔ long logs use a separate bound without enlarging the original reload parser (10.7413ms)
+✔ duplicate fields are rejected before decoding the original bytes (0.3271ms)
+ℹ tests 26
+ℹ suites 0
+ℹ pass 26
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 189.3825

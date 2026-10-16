@@ -1,0 +1,662 @@
+{
+  "schema": "soui.scoped-release-checks/v1",
+  "version": "0.5.0",
+  "completedAt": "2026-10-16T07:51:18.913Z",
+  "scopedReleaseChecksPassed": true,
+  "scopeAuthority": "Maintainer request on 2026-10-16 to reduce redundant and long-running tests and release within the demonstrated scope.",
+  "buildSourceManifest": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 16240065,
+    "sha256": "ad031346ae01ff74fa840e8c2ca820bd3e879a0848d41e8cb7c20f408c68e4b6"
+  },
+  "currentBuildSourceSha256": "aaea5bbe71a0c5322bd923477ef40d4572af33a55e343ccd0a111ae7c08fa7f9",
+  "builds": {
+    "architectures": [
+      "x64",
+      "x86"
+    ],
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "nativeContractConfigurations": [
+      "Release"
+    ],
+    "nativeCasesPerArchitecture": 208,
+    "duplicateDirectCTestExecuted": false
+  },
+  "installedSdkConsumers": [
+    {
+      "architecture": "x64",
+      "scope": "Actual public Soui::Sdk external compilation was already accepted. The private caller supplied a slash-form root to a strict internal reader; the canonical Windows path passes the unchanged public verifier. Reuse that authentic compile, then execute the unchanged fixture under new natural supervision. Original failed caller result is retained.",
+      "sdkBuildId": "2ac1d9ec-40a9-4ca6-ae74-6f75497dbeae",
+      "originalAttemptFailure": {
+        "path": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-1\\FAILED.json",
+        "bytes": 5023,
+        "sha256": "89a47256d105b30df1e3f6e603575e23698bdb9f6d1a2c0e3b740fa87f13cc17"
+      }
+    },
+    {
+      "architecture": "x86",
+      "scope": "Actual public Soui::Sdk installed CMake import, observed fresh external compilation/link, and natural execution of the unchanged public package-consumer fixture.",
+      "sdkBuildId": "92e222cb-a5fc-4844-838d-3c56aff01ae4",
+      "originalAttemptFailure": null
+    }
+  ],
+  "applications": {
+    "archives": [
+      {
+        "architecture": "x64",
+        "profile": "compatibility",
+        "target": "SouiStarter",
+        "archive": {
+          "path": "C:\\work\\sm05-release-050\\dist\\SouiStarter-0.5.0-windows-x64.zip",
+          "bytes": 16817792,
+          "sha256": "7a940c70468bb5e28f736ceb0a9ce48566698f6f9472d84310336e4bef3ebd77"
+        },
+        "report": {
+          "path": "C:\\work\\sm05-release-050\\dist\\SouiStarter-0.5.0-windows-x64.zip.json",
+          "bytes": 57989,
+          "sha256": "29253f2d98702f3456ba7b21b4b076393b340c66fd0c47df3dde5bd70aba74a3"
+        }
+      },
+      {
+        "architecture": "x64",
+        "profile": "compatibility",
+        "target": "SouiWorkbench",
+        "archive": {
+          "path": "C:\\work\\sm05-release-050\\dist\\SouiWorkbench-0.5.0-windows-x64.zip",
+          "bytes": 23295790,
+          "sha256": "5decc6dc363b3af589b954dea7c1ad035affed7384691d40e71c381d9ebc51bd"
+        },
+        "report": {
+          "path": "C:\\work\\sm05-release-050\\dist\\SouiWorkbench-0.5.0-windows-x64.zip.json",
+          "bytes": 133408,
+          "sha256": "310812ea32cb13fdff9f21c72a4ec06ca73e4a4b47009374347347d6cb3b0410"
+        }
+      },
+      {
+        "architecture": "x64",
+        "profile": "modern",
+        "target": "SouiModernStarter",
+        "archive": {
+          "path": "C:\\work\\sm05-release-050\\dist\\SouiModernStarter-0.5.0-windows-x64.zip",
+          "bytes": 2477338,
+          "sha256": "624c9088214b21ee0285dff56f8840f68b034ddd54c90acb534f5f5908b29724"
+        },
+        "report": {
+          "path": "C:\\work\\sm05-release-050\\dist\\SouiModernStarter-0.5.0-windows-x64.zip.json",
+          "bytes": 56612,
+          "sha256": "0d8adf9e78040782302fa6ffe402f16b8990a3cc852b24d84b32870bb1b807f7"
+        }
+      },
+      {
+        "architecture": "x86",
+        "profile": "compatibility",
+        "target": "SouiStarter",
+        "archive": {
+          "path": "C:\\work\\sm05-release-050\\dist\\SouiStarter-0.5.0-windows-x86.zip",
+          "bytes": 14226508,
+          "sha256": "4992cc2f367c4085237eb3398e6be7afacd3594cdff2bd6a17184e57bd784f2e"
+        },
+        "report": {
+          "path": "C:\\work\\sm05-release-050\\dist\\SouiStarter-0.5.0-windows-x86.zip.json",
+          "bytes": 58000,
+          "sha256": "64259693a19ee8590e9cc9e7365c7d4e9048cb70cbdc41a3e1798299771473a9"
+        }
+      },
+      {
+        "architecture": "x86",
+        "profile": "compatibility",
+        "target": "SouiWorkbench",
+        "archive": {
+          "path": "C:\\work\\sm05-release-050\\dist\\SouiWorkbench-0.5.0-windows-x86.zip",
+          "bytes": 20676093,
+          "sha256": "418587756a146155f53a6bcfe71a1cefdb9f2616be2e487d6f61bfaf36b7eb98"
+        },
+        "report": {
+          "path": "C:\\work\\sm05-release-050\\dist\\SouiWorkbench-0.5.0-windows-x86.zip.json",
+          "bytes": 133421,
+          "sha256": "4bf450ee9110df7dd602669b3d520680e0ea8201c8a889a02b087867132127a4"
+        }
+      },
+      {
+        "architecture": "x86",
+        "profile": "modern",
+        "target": "SouiModernStarter",
+        "archive": {
+          "path": "C:\\work\\sm05-release-050\\dist\\SouiModernStarter-0.5.0-windows-x86.zip",
+          "bytes": 2412447,
+          "sha256": "faed8e7c4f8aeb87d92f1104bcdd60375f78644a4bc4ca732717f63df3b3ef18"
+        },
+        "report": {
+          "path": "C:\\work\\sm05-release-050\\dist\\SouiModernStarter-0.5.0-windows-x86.zip.json",
+          "bytes": 56626,
+          "sha256": "40741ccdcf1e5571de6ec0d7d7c9383ebef65d6fd434a1dfe8c4e1058effe6ce"
+        }
+      }
+    ],
+    "startups": 8
+  },
+  "sdkPackage": {
+    "path": "C:\\work\\sm05-source30-post-2\\sdk-package-0.5.0\\sdk-manifest.json",
+    "bytes": 189596,
+    "sha256": "4190f588ef3f0355486d6498854e085da2316e7098e1e2414f0575726286563a"
+  },
+  "highRefresh": {
+    "backend": "webview2",
+    "architecture": "x64",
+    "scenario": "S05",
+    "sampleDurationMs": 120000,
+    "displayBinding": {
+      "before": {
+        "target": {
+          "deviceName": "\\\\.\\DISPLAY5",
+          "adapterLuid": "0000000000010bff",
+          "sourceId": 0,
+          "targetId": 268,
+          "friendlyName": "P24FBA-RA",
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "configuredSignalVSync": {
+            "numerator": 100,
+            "denominator": 1
+          }
+        },
+        "raw": {
+          "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\display-before-stdout.bin",
+          "bytes": 8439,
+          "sha256": "ebcaf11081861796a0ee956c2d7d1aa28227df3ba7e22cec848294fe9b10a5ef"
+        },
+        "result": {
+          "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\display-before-RESULT.json",
+          "bytes": 2264,
+          "sha256": "d400f4c57622cc53bde3b40fbe8fac809b410d9c1ecbadec1cfdf8a8262482b4"
+        },
+        "collector": {
+          "pid": 26516,
+          "creationFileTime": "134366103318082761"
+        }
+      },
+      "after": {
+        "target": {
+          "deviceName": "\\\\.\\DISPLAY5",
+          "adapterLuid": "0000000000010bff",
+          "sourceId": 0,
+          "targetId": 268,
+          "friendlyName": "P24FBA-RA",
+          "left": 0,
+          "top": 0,
+          "right": 1920,
+          "bottom": 1080,
+          "configuredSignalVSync": {
+            "numerator": 100,
+            "denominator": 1
+          }
+        },
+        "raw": {
+          "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\display-after-stdout.bin",
+          "bytes": 8439,
+          "sha256": "493248cda54db69edc434730f59e2e7ba8066b1ea738a55840dd09aafcea4921"
+        },
+        "result": {
+          "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\display-after-RESULT.json",
+          "bytes": 2263,
+          "sha256": "9e9be37d7973fc0a243d1e8117ac8f5a406ce6f9289a3b81eb7d73999ed0d37d"
+        },
+        "collector": {
+          "pid": 55432,
+          "creationFileTime": "134366104594771215"
+        }
+      },
+      "initialWindow": {
+        "bottom": 1080,
+        "configuredFrequency": 100,
+        "deviceName": "\\\\.\\DISPLAY5",
+        "left": 0,
+        "right": 1920,
+        "top": 0,
+        "windowBottom": 919,
+        "windowLeft": 402,
+        "windowRight": 1518,
+        "windowTop": 160
+      },
+      "finalWindow": {
+        "bottom": 1080,
+        "configuredFrequency": 100,
+        "deviceName": "\\\\.\\DISPLAY5",
+        "left": 0,
+        "right": 1920,
+        "top": 0,
+        "windowBottom": 919,
+        "windowLeft": 402,
+        "windowRight": 1518,
+        "windowTop": 160
+      },
+      "actualWindowOutputMatched": true,
+      "configuredSignalHz": 100
+    },
+    "actualCompositorMarkerObservation": false,
+    "actualSchedulingDiagnostic": true,
+    "automaticScene": true,
+    "realInputBenchmark": false,
+    "observedRafIntervalsMs": {
+      "count": 11972,
+      "p50": 10,
+      "p95": 10.10000000000582,
+      "p99": 10.19999999999709,
+      "max": 283.59999999962747
+    },
+    "observedMedianRafCadenceHz": 100,
+    "above60HzSchedulingDemonstrated": true,
+    "productionFrameRateGateEvaluated": false,
+    "opticalCalibration": false,
+    "pairedPerformanceQualified": false,
+    "compositorQualification": "not-passed: strict desktop capture rejected accumulated frames; original failures retained, no assertion relaxed"
+  },
+  "knownFailure": "The earlier Source29 UIA typed-owner-focus failure lacked an HRESULT. Its cause is unresolved; later passes do not erase the original failure.",
+  "resourceDeploymentIncident": {
+    "path": "C:\\work\\sm05-resource-deploy-fix-1\\ADOPTED.json",
+    "bytes": 3371,
+    "sha256": "663cfa4876aee5da76b3c62b8f2ced6e8aee614e41828de4a0912f31e0fa94ee"
+  },
+  "deferred": {
+    "scope": "Explicitly deferred from the default preview release sequence at the user's request to reduce unnecessary repeated testing",
+    "currentProductionGatesPassed": false,
+    "items": [
+      {
+        "item": "Actual eight-hour mixed/session runs",
+        "gate": "not-evaluated",
+        "helper": "resource/run-qualification.cjs eight-hour"
+      },
+      {
+        "item": "1000 cycles in four lifecycle modes on both architectures",
+        "gate": "not-evaluated",
+        "helper": "run-post-core-extended.cjs lifecycle"
+      },
+      {
+        "item": "Full five-pair performance series or Electron comparisons",
+        "gate": "not-evaluated"
+      },
+      {
+        "item": "Browser double-layer capacity/excess-load repetition",
+        "gate": "not-evaluated",
+        "helper": "run-post-core-extended.cjs major"
+      },
+      {
+        "item": "Repeated installation interruption/recovery or generated-project validation",
+        "gate": "not-repeated-for-release"
+      },
+      {
+        "item": "Full current source ZIP extraction followed by x64 and x86 SDK rebuilds",
+        "gate": "not-evaluated",
+        "history": "Source29 extraction evidence is historical; no current rebuild is inferred"
+      },
+      {
+        "item": "NVDA speech-text/native-provider desktop workflows",
+        "gate": "not-evaluated",
+        "helper": "run-post-core-extended.cjs major"
+      },
+      {
+        "item": "Full reference application rebuild and all GUI workflows",
+        "gate": "not-repeated-for-release"
+      },
+      {
+        "item": "Finite full resource/census series on both architectures",
+        "gate": "not-evaluated",
+        "helper": "run-post-core-extended.cjs finite"
+      },
+      {
+        "item": "60 Hz secondary display presentation",
+        "gate": "not-evaluated",
+        "reason": "Public InputTrace targets the primary display; no display settings or feature extension is requested"
+      }
+    ],
+    "retainedSource29ReportsAreCurrentPasses": false,
+    "releaseReady": false
+  },
+  "fullVerifyReleaseEvaluated": false,
+  "fullCollectorEvaluated": false,
+  "productionQualificationComplete": false,
+  "licenseReviewComplete": false,
+  "codeSigned": false,
+  "releaseReady": false,
+  "published": false,
+  "finalSourceArchivePending": true,
+  "selfContainedBuildProof": false,
+  "externalOriginalEvidenceRequired": true,
+  "proofs": [
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\BUILD-AND-DESKTOP-VERIFIED.json",
+      "bytes": 15929,
+      "sha256": "105b06762ca8c370504a6441cc49e09d4100f61d193caba0607229143b49bc11"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-1\\tools-x64-Release-source30-1\\RESULT.json",
+      "bytes": 2213,
+      "sha256": "74e076b24bf68505b9cd084731b51dc66dfba6abe462cb5065764443245cfb35"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-1\\tools-x86-Release-source30-1\\RESULT.json",
+      "bytes": 2213,
+      "sha256": "cfec9cde420654b44afe8352aa24b0fe2de898b4d1235ddd77f70eb143fa1c1c"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-1\\observer-x64-Release-source30-1\\RESULT.json",
+      "bytes": 2220,
+      "sha256": "3db275b19c6f5e9e068a92acfe36a59cc93c5bf502af8476d16cff2929a5e687"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\build-x64-Debug-source30-3\\RESULT.json",
+      "bytes": 2211,
+      "sha256": "f4df389e140e8bedecf3f8d35c2c00aa2c9b4f1442dc77c71d1d732eaf30d5ef"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\desktop-x64-Debug-source30-1\\RESULT.json",
+      "bytes": 2035,
+      "sha256": "3ca7bc4c18518d3dcfb83bb05171089ae393c0916c101e13f6e57f9f17211ab8"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\modern-x64-Debug-source30-1\\RESULT.json",
+      "bytes": 2030,
+      "sha256": "a3f0f8ee0fed5a276388df7a0a5512436fbafa44a13f63fca57e1356d5563898"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\modern-reader-x64-Debug-source30-1\\RESULT.json",
+      "bytes": 2497,
+      "sha256": "78d89d4bb3522fd2095afe01e4049c5e1cfbd8dedca526d3066af2b4d07dbbdf"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\build-x64-Release-source30-1\\RESULT.json",
+      "bytes": 2215,
+      "sha256": "e1efa03ce13c8cdad9e3c80070105e82d4b4dad9d7bdda316e0b97461f9545db"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\desktop-x64-Release-source30-1\\RESULT.json",
+      "bytes": 2041,
+      "sha256": "634cd836f01501bf5af0dbf48615ee445d1621fea4bfa6781e1167ee1c72cd0b"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\modern-x64-Release-source30-1\\RESULT.json",
+      "bytes": 2036,
+      "sha256": "c2f8fc78fc2fa3fcb30716d69cbe03aaf0163f773231ebe38afbcdc8aee39e44"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\modern-reader-x64-Release-source30-1\\RESULT.json",
+      "bytes": 2505,
+      "sha256": "914156eb017e14da9129266ab3841f694960d35b0973ebd609a06e3c85854676"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\build-x86-Debug-source30-1\\RESULT.json",
+      "bytes": 2211,
+      "sha256": "6774edbda7b4651572e848a35fc42d704d0f31eea798da4df09374991e726689"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\desktop-x86-Debug-source30-1\\RESULT.json",
+      "bytes": 2035,
+      "sha256": "62c47dfcb5dccbc145fe87b1f6b611a671692ce894ef84f9b33a58dd777563df"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\modern-x86-Debug-source30-1\\RESULT.json",
+      "bytes": 2030,
+      "sha256": "59040cfa85bf90207b5bf4e2b5eb3aa3756a6687f2c8a920bf3acd43ebd31da8"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\modern-reader-x86-Debug-source30-1\\RESULT.json",
+      "bytes": 2497,
+      "sha256": "a56b150f2b2935477540ef61daed1a4c21aa6de8d93222100af6bdda2f874422"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\build-x86-Release-source30-1\\RESULT.json",
+      "bytes": 2215,
+      "sha256": "acd8bdf241658a93218edfc73dbfb1cae3d6ee7f463b60a43701c22e64874141"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\desktop-x86-Release-source30-1\\RESULT.json",
+      "bytes": 2039,
+      "sha256": "3844ed3847d84635faffde7a17a299ec5f1f0f3c820432146ef1b31aec8a9c4c"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\modern-x86-Release-source30-1\\RESULT.json",
+      "bytes": 2036,
+      "sha256": "f03b39b71fc858b04d2778a526a182812106e18fe3afe5e118f6e5b78f1ed98b"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\modern-reader-x86-Release-source30-1\\RESULT.json",
+      "bytes": 2505,
+      "sha256": "5e43c1f4e3f48edcb6d4e875e19ce43844a95451da2cdc6057f7fc373ed75b06"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\unit-x64-Release-source30-1\\RESULT.json",
+      "bytes": 3001,
+      "sha256": "a1a74576d80a27e5c7019bb3274f3ae7ca727a9d4f64a0be5daf9101c9b21a43"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\acceptance-sdk-x64-Release-source30-1\\RESULT.json",
+      "bytes": 2132,
+      "sha256": "cd656a0a1a26a178b5c9828ace4d17dc8f0471b83e521495333ad96dd0f12619"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\unit-x86-Release-source30-1\\RESULT.json",
+      "bytes": 3001,
+      "sha256": "f7d5a5174ab5ee9cb28166c7cb624dc32eb11fa606b1f3a24591888c994bbca6"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\acceptance-sdk-x86-Release-source30-1\\RESULT.json",
+      "bytes": 2132,
+      "sha256": "b574c1688c1be59424cb301cac3a28f88133c5356b717bcfe69f815ff255dcbd"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\dependency-runtime-x64-source30-1\\RESULT.json",
+      "bytes": 2479,
+      "sha256": "61edbd1570f7a1d4ce8eadb6597050ed187ae767f7c8aa8449b0ce9f22b422f6"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\dependency-runtime-x86-source30-1\\RESULT.json",
+      "bytes": 2479,
+      "sha256": "314df907f05c0e069712957bfafcb8eb543eaad619ac2687c7d2bf55a4a9054e"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\unit-x64-Release-source30-1\\RESULT.json",
+      "bytes": 3001,
+      "sha256": "a1a74576d80a27e5c7019bb3274f3ae7ca727a9d4f64a0be5daf9101c9b21a43"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-2\\RESULT.json",
+      "bytes": 11570,
+      "sha256": "b513c3e1660fdf1b67dedfc31d43528146bb4ea69ebe085c1663b94751d3e502"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-1\\FAILED.json",
+      "bytes": 5023,
+      "sha256": "89a47256d105b30df1e3f6e603575e23698bdb9f6d1a2c0e3b740fa87f13cc17"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-1\\CANONICAL-ROOT-VERIFIED.json",
+      "bytes": 492,
+      "sha256": "8d1780add6f4f9fbcf624d50065a156d288dee353bf83916496212a405b3c410"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\unit-x86-Release-source30-1\\RESULT.json",
+      "bytes": 3001,
+      "sha256": "f7d5a5174ab5ee9cb28166c7cb624dc32eb11fa606b1f3a24591888c994bbca6"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-external-consumer-2\\x86-source30-2\\RESULT.json",
+      "bytes": 10961,
+      "sha256": "c2bb18ec4550df635ae0c4459a566f8b40f17c0f42765e1b703122642ae4616c"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-post-2\\POST-CORE-MODERN-SAMPLE-COMPLETED.json",
+      "bytes": 5303,
+      "sha256": "eb5917f095edc2de95a3d0c20a0cb755aa62353602d6cdc4e9a096146de0ca8e"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-post-2\\POST-CORE-PACKAGES-COMPLETED.json",
+      "bytes": 770,
+      "sha256": "3380145d8e440add41cf2783901106422eae76d75b90de9b9f024f2c72bb316a"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\VERIFIED.json",
+      "bytes": 4481,
+      "sha256": "03e0ab6fd56c5f966227bccdc469d6ddafdb61b4ba2a96cfc38e97f65e9bb9fb"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-presentation-2\\build-x64-source30-1\\RESULT.json",
+      "bytes": 1442,
+      "sha256": "34852fdd2d8f1bc4b795ad0cdc1dcc4aa46066bb0137e21664f132f8f4556107"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-presentation-2\\build-x64-source30-1\\build-stderr.bin",
+      "bytes": 591,
+      "sha256": "3df57b7c57b0f9732497cf9388e664e8fdbaa369980d6d05c609526994619bcf"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-presentation-3\\desktop-x64-s05-source30-1\\run\\run.json",
+      "bytes": 10093,
+      "sha256": "93faee779f7d0496e671bdf7ba32829cc8d615a40aa4280c36aaaffc9be38f73"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-presentation-3\\desktop-x64-s05-source30-1\\run\\input.ndjson.desktop.ndjson",
+      "bytes": 991,
+      "sha256": "6ccd7f4903979c9285a94da8de1946dd8df854de63a6596b1c0dcc447cccbc4a"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-presentation-3\\desktop-x64-s05-source30-1\\OUTER-RESULT.json",
+      "bytes": 1419,
+      "sha256": "a3000a4bf217a83614c27dae4ee64b1910aee069fbab3ae5cd63f7ca080ce576"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-presentation-4\\desktop-x64-s05-source30-1\\run\\run.json",
+      "bytes": 5564,
+      "sha256": "e389a75dd9f30ebe67687c3449375ea3665771d12c19897dbad3837176ff0833"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-presentation-5\\desktop-x64-s05-source30-1\\run\\run.json",
+      "bytes": 5561,
+      "sha256": "572464f32895d8bc02283554ed23efe6eb66b0850dc668e12f7bad3d107e433d"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-presentation-6\\desktop-x64-s05-source30-1\\run\\run.json",
+      "bytes": 10204,
+      "sha256": "274960532576b201e1a333f306d9c4f4dabf35b92febf0e6f1cbed5912199c51"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-presentation-7\\desktop-x64-s05-source30-1\\run\\run.json",
+      "bytes": 10201,
+      "sha256": "ec8498b26f10e9f99d2341024028e0cca7d6dbab9d6e9ceb38dd8fda9d1a47ed"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-presentation-7\\desktop-x64-s05-source30-1\\run\\input.ndjson.desktop.ndjson",
+      "bytes": 1752,
+      "sha256": "84e68f45abb681a4488b137678218438c1c045e80f71500ec225f640e67c1989"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-scheduling-8\\desktop-x64-s05-source30-1\\run\\page-results\\modern-72504-15874500-1.json",
+      "bytes": 1870,
+      "sha256": "825538f4dc348c14612bcc127a1f2d466cfdebce380dfb009b6a434418d7ac5f"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\HOST-RESULT.json",
+      "bytes": 1401,
+      "sha256": "99cd6c126db813b8b65143ff350180fbc7057d80268daf880ab7168c394712c7"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\results\\modern-host.json",
+      "bytes": 720,
+      "sha256": "07bb16080d2ae6e104b7b721f9180c869a5c861bfbbde31c2ef6d534245dfde2"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-scheduling-9\\build-x64-source30-1\\BUILT.json",
+      "bytes": 81023,
+      "sha256": "f0490e1d8b70aeae7252695b7d0f3ebbcae3cb93d3b9d4bd25732a0e406e265d"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-scheduling-9\\PREPARED.json",
+      "bytes": 18777,
+      "sha256": "5055f9043881b371d8e40e7e5e03550c734687756b3279e5b7eb0f0b6748302d"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\results\\modern-55800-16133046-1.json",
+      "bytes": 203086,
+      "sha256": "abb0bbfa386ff12a96847634ac9b264e465c122ec7f456854d0ee2dba9d8f10b"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-post-2\\sdk-package-capture-1\\VERIFIED.json",
+      "bytes": 9367,
+      "sha256": "34b2ee4afe03db1205a35b292ecdcf90f1e91f45eb71cef07157c909af69ee19"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-extracted-applications-2\\VERIFIED.json",
+      "bytes": 971,
+      "sha256": "b06490c2bf8af9d43fc7f985597a3cf2f9ea82df73516fb6025975a5fc2e2c1b"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-extracted-applications-2\\desktop-1\\desktop-wrapper-RESULT.json",
+      "bytes": 1923,
+      "sha256": "522b2af0f507d8cb5fc6a14cac65e8bbb52554efdd6edb304d0bd32888c0c1ce"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-extracted-applications-2\\desktop-1\\ACTUAL.json",
+      "bytes": 5936,
+      "sha256": "5142b607e4f851b1f13f6cbf8a16c5904e33818d07b63b26bfb477970487a865"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-extracted-applications-2\\desktop-1\\x64-SouiStarter-default-RESULT.json",
+      "bytes": 1712,
+      "sha256": "518127b849fcc188d1026702368c61c5cd4efb5bd66603d9abbc9ca4d1ec7786"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-extracted-applications-2\\desktop-1\\x64-SouiWorkbench-default-RESULT.json",
+      "bytes": 1748,
+      "sha256": "04edb65c47cd7b2c1027e729053fec3ab6b756aee3b5e608711880d2d72164f5"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-extracted-applications-2\\desktop-1\\x64-SouiWorkbench-react-RESULT.json",
+      "bytes": 1759,
+      "sha256": "529046dda7b564ed4413dff5e5d05f7bf81c2589162a81511a339341bc709bb3"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-extracted-applications-2\\desktop-1\\x64-SouiModernStarter-default-RESULT.json",
+      "bytes": 1742,
+      "sha256": "086d0ac3b8b5d92abb6fc2ff7387aa5b98687b02fb4b5073e8132ae35ac1b80d"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-extracted-applications-2\\desktop-1\\x86-SouiStarter-default-RESULT.json",
+      "bytes": 1712,
+      "sha256": "b6b236b4c2b6ce52e21c38241d62d1e2ae3b666ea738f714c78cec4d52f4de64"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-extracted-applications-2\\desktop-1\\x86-SouiWorkbench-default-RESULT.json",
+      "bytes": 1748,
+      "sha256": "7c218be930a345f69653057a002c2148d0e0224ee03f124c39346cd3f5792173"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-extracted-applications-2\\desktop-1\\x86-SouiWorkbench-react-RESULT.json",
+      "bytes": 1759,
+      "sha256": "a95c33a6e5677f6a4973f271cabd94196a9725aba6d0918653149235320404db"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-extracted-applications-2\\desktop-1\\x86-SouiModernStarter-default-RESULT.json",
+      "bytes": 1741,
+      "sha256": "c0057cabecf7c2f0330c10b66b3056983c33bae08158e67a450c0e371dafc226"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-extracted-applications-2\\PREPARED.json",
+      "bytes": 534045,
+      "sha256": "74961b145ff527e595370c734660070f231bb7b7fcf69aeb35990c278532e1c8"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-post-2\\DEFERRED.json",
+      "bytes": 1693,
+      "sha256": "2953dc144ab9b3db6a62d1d37965de21004abd10dafc5d133b8004867f3ba993"
+    },
+    {
+      "path": "C:\\work\\sm05-resource-deploy-fix-1\\summarize-scoped-release.cjs",
+      "bytes": 7320,
+      "sha256": "49722ad8d884dd994d23a96e36bfeabcf0b4160b6a5654847b4702099b4ce12e"
+    }
+  ]
+}

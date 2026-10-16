@@ -26,7 +26,7 @@ native incarnation 单调分配且不复用，耗尽即拒绝；同一文档同�
 
 COM 查询只复制已发布事实。所有业务变更先进入有界队列，使用实际 PostMessage 唤醒 owner，WndProc 转交模块的 private wake message，常规 Host pump 也可显式排空以避免丢失唤醒。PostMessage 只调度，不构造手势。所有 callback 和 UIA API 调用均在释放 state 锁后运行；callback 期间递归 pump 返回 S_FALSE，不嵌套执行业务。每次执行前重验 native 文档/注册身份、enabled/busy、native policy 和 `action_contract::validates_input`。
 
-Invoke 是异步排队请求，S_OK 仅表示已受理。SetValue/Selection 的 S_OK 必须表示 owner 已实际完成该同步业务变更；非 owner COM 线程最多等固定 250ms，owner 上同步 mutator 返回 UIA_E_INVALIDOPERATION，不直接执行或自等。超时取消尚未开始的命令；已提交的业务不保证回滚，不能把 timeout 当作未执行证明。owner 回调必须短且非阻塞，长任务使用现有 task_service，禁止借 provider 创建另一套任务调度器。UIA 只看到之后由 owner 发布的实际结果。
+Invoke 是异步排队请求，S_OK 仅表示已受理。SetValue/Selection 的 S_OK 必须表示 owner 已实际完成该同步业务变更；非 owner COM 线程最多等固定 250ms，原始设计在 owner 上拒绝同步 mutator；此项由 [ADR-0116](0116-uia-owner-command-dispatch.md) 修正：非回调期间通过已配置 wake 同步执行一批有界 pump，回调重入仍返回 UIA_E_INVALIDOPERATION，不等待自己。超时取消尚未开始的命令；已提交的业务不保证回滚，不能把 timeout 当作未执行证明。owner 回调必须短且非阻塞，长任务使用现有 task_service，禁止借 provider 创建另一套任务调度器。UIA 只看到之后由 owner 发布的实际结果。
 
 默认 policy 拒绝。应用显式将某项 GUI action 绑定到已注册 typed native 业务入口；UIA 调用本身不创建 authorization_scope、bearer、Agent 身份或 native_user_gesture。policy 不能只凭方法名或 UIA 客户端声称的 actor 扩权。输入和输出继续采用同一个 soui.action/1 contract，敏感/手势要求依现有原生策略拒绝。
 

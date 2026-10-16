@@ -1,0 +1,62 @@
+✔ actual CMake manifest mode parser distinguishes configured tools from required execution (1990.99ms)
+✔ Test-Acceptance.ps1 forwards six separate named paths through the real PowerShell binder (3089.2835ms)
+✔ Verify-Release.ps1 forwards six separate named paths through the real PowerShell binder (3031.4751ms)
+✔ actual installed archive comparison handles Int64 sizes and rejects changed member multisets (1911.4628ms)
+✖ acceptance installed reader authenticates the immutable configure log and original observer output (12.5389ms)
+✖ release installed reader authenticates the immutable configure log and original observer output (8.3056ms)
+✔ consumer dual root DTO retains actual CMake identity and original owned observer identity (0.8343ms)
+✔ consumer dual root DTO rejects swapped roots, changed raw pins and schema laundering (2.5687ms)
+✔ dedicated fresh CXX import DTOs preserve unqualified scope for both target architectures (0.3704ms)
+✔ normal graph and wrong owner profile compiler or full identity cannot substitute for installed output (0.6344ms)
+✔ published build subject frozen captures and natural closure cannot be replaced by DTO claims (0.7079ms)
+✔ current SDK import identity and independently owned consumer request are required (0.886ms)
+✔ empty extra foreign reused or disconnected compile and link DTOs fail the fresh ordinary graph (2.1667ms)
+✔ installed observations cannot elevate toolchain kernel ABI OS or release qualification (0.372ms)
+✔ configure argv preserves all twelve discovery definitions and fixed owner toolchain paths (3.1332ms)
+✔ Source retains resource phase classification and MSVC default while binding explicit LLVM resource entry (0.937ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 14
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10062.4205
+
+✖ failing tests:
+
+test at C:\work\sm05-release-050\tests\acceptance\llvm-installed-entry.test.cjs:96:1
+✖ acceptance installed reader authenticates the immutable configure log and original observer output (12.5389ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (C:\work\sm05-release-050\tests\acceptance\llvm-installed-entry.test.cjs:123:53)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Configure log capture/,
+    operator: 'throws',
+    diff: 'simple'
+  }
+
+test at C:\work\sm05-release-050\tests\acceptance\llvm-installed-entry.test.cjs:96:1
+✖ release installed reader authenticates the immutable configure log and original observer output (8.3056ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (C:\work\sm05-release-050\tests\acceptance\llvm-installed-entry.test.cjs:123:53)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Configure log capture/,
+    operator: 'throws',
+    diff: 'simple'
+  }

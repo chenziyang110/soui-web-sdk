@@ -1,0 +1,9 @@
+diff --git a/third_party/sources/miniblink/content/browser/WebPageImpl.cpp b/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
+index 047b7d70..53291e64 100644
+--- a/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
++++ b/third_party/sources/miniblink/content/browser/WebPageImpl.cpp
+@@ -2419,3 +2419,3 @@ bool WebPageImpl::initSetting()
+     //settings->setStandardFontFamily(WebString(L"寰蒋闆呴粦", 4));
+-    settings->setStandardFontFamily(blink::WebString(L"瀹嬩綋", 2));
++    settings->setStandardFontFamily(blink::WebString(L"\u5B8B\u4F53", 2));
+     settings->setUsesEncodingDetector(true);

@@ -1,0 +1,51 @@
+✔ deployment replaces stale Web assets and preserves app data outside resources (149.2695ms)
+✖ deployment survives a temporary Windows denial while publishing staged resources (48.6241ms)
+✖ deployment bounds persistent Windows publication denials and restores old resources (47.4386ms)
+✔ deployment immediately propagates other publication errors and restores old resources (38.6621ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 427.6335
+
+✖ failing tests:
+
+test at tests\sdk\delivery-identity.test.cjs:288:1
+✖ deployment survives a temporary Windows denial while publishing staged resources (48.6241ms)
+  Error: temporary Windows directory denial
+      at Object.<anonymous> (C:\work\sm05-release-050\tests\sdk\delivery-identity.test.cjs:298:27)
+      at Object.apply (node:internal/test_runner/mock/mock:757:20)
+      at Object.replace (C:\work\sm05-release-050\tools\internal\deploy-resources.cjs:41:14)
+      at TestContext.<anonymous> (C:\work\sm05-release-050\tests\sdk\delivery-identity.test.cjs:302:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:358:3) {
+    code: 'EPERM'
+  }
+
+test at tests\sdk\delivery-identity.test.cjs:309:1
+✖ deployment bounds persistent Windows publication denials and restores old resources (47.4386ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  1 !== 6
+  
+      at TestContext.<anonymous> (C:\work\sm05-release-050\tests\sdk\delivery-identity.test.cjs:322:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 6,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

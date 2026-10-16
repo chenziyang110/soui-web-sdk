@@ -1,0 +1,65 @@
+{
+  "before": {
+    "path": "C:\\work\\sm05-observer-uia-switch-1\\before\\host64-build-debug-observer.cpp",
+    "bytes": 56897,
+    "sha256": "44ddcdcabb60a7177168ae76280f1a62345d12c2d5937642364bad875f78fdf7"
+  },
+  "after": {
+    "path": "C:\\work\\sm05-release-050\\benchmarks\\protocol\\host64-build-debug-observer.cpp",
+    "bytes": 56909,
+    "sha256": "bd5698a21b160d3d293980020ff2e146566c6b96e4cf377d3ac06034050094be"
+  },
+  "original": {
+    "path": "C:\\work\\sm05-observer-uia-switch-1\\original-input.json",
+    "bytes": 16919,
+    "sha256": "d0c978412e9222939efbd54b9017e28948582836db1783d27d5da53f69d9877d"
+  },
+  "inputs": [
+    {
+      "name": "with-uia",
+      "expected": "accept",
+      "pin": {
+        "path": "C:\\work\\sm05-observer-uia-switch-1\\inputs\\with-uia.json",
+        "bytes": 16919,
+        "sha256": "d0c978412e9222939efbd54b9017e28948582836db1783d27d5da53f69d9877d"
+      }
+    },
+    {
+      "name": "without-uia",
+      "expected": "accept",
+      "pin": {
+        "path": "C:\\work\\sm05-observer-uia-switch-1\\inputs\\without-uia.json",
+        "bytes": 16903,
+        "sha256": "3b7307ac71689d7d92e5dfc2387e40e16672439ca1fdda3d2d1daeea000e9682"
+      }
+    },
+    {
+      "name": "duplicate-uia",
+      "expected": "input-duplicate-switch",
+      "pin": {
+        "path": "C:\\work\\sm05-observer-uia-switch-1\\inputs\\duplicate-uia.json",
+        "bytes": 16935,
+        "sha256": "f3977315b380e866257d57be6e62e1a6b174ae45ac71dc6ab4287ff8375287af"
+      }
+    },
+    {
+      "name": "unknown-uia",
+      "expected": "input-explicit-profile",
+      "pin": {
+        "path": "C:\\work\\sm05-observer-uia-switch-1\\inputs\\unknown-uia.json",
+        "bytes": 16926,
+        "sha256": "5bfc66a763c94f256aa1dcfb5591ccd020b5dadc99b28da1968148be420b6c2b"
+      }
+    },
+    {
+      "name": "wrong-profile",
+      "expected": "input-explicit-profile",
+      "pin": {
+        "path": "C:\\work\\sm05-observer-uia-switch-1\\inputs\\wrong-profile.json",
+        "bytes": 16910,
+        "sha256": "fbf1e433d6d2cfbc6c0527a3de346121a8abc94b693601ee6b5eb55d8ca213ef"
+      }
+    }
+  ],
+  "scope": "Real production load_input parser; no source-pin or build acceptance claim"
+}

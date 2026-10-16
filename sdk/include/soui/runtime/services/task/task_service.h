@@ -1,13 +1,17 @@
 #pragma once
 
 #include <soui/diagnostics/runtime_metrics.h>
+#include <soui/diagnostics/storage_observation.h>
+#include <soui/diagnostics/task_store_private_storage.h>
 #include <soui/runtime/bridge/bridge_transport.h>
 #include <soui/runtime/core/result/result.h>
+#include <soui/runtime/core/task/task_store_quota.h>
 
 #include <cstdint>
 #include <cstddef>
 #include <functional>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 #include <string_view>
@@ -84,8 +88,19 @@ class task_service final {
 
   task_service();
   explicit task_service(soui::sdk::diagnostics::mode);
+  // Applies only to the service's private TaskStore requested allocations.
+  // Without a policy use default_task_store_request_quota. Explicit nullopt
+  // remains unconfigured; Native Bridge forwards its selected policy.
+  task_service(soui::sdk::diagnostics::mode,
+               std::optional<task_store_request_quota_policy>);
+  [[nodiscard]] task_store_request_quota_status read_request_quota(
+      task_store_request_quota_snapshot&) const noexcept;
   [[nodiscard]] soui::sdk::diagnostics::status read_runtime_metrics(
       soui::sdk::diagnostics::tasks&) const noexcept;
+  [[nodiscard]] soui::sdk::diagnostics::status read_storage_metrics(
+      soui::sdk::diagnostics::task_store_storage&) const noexcept;
+  [[nodiscard]] soui::sdk::diagnostics::status read_private_storage_metrics(
+      soui::sdk::diagnostics::task_store_private_storage&) const noexcept;
   ~task_service();
   task_service(const task_service&) = delete;
   task_service& operator=(const task_service&) = delete;
@@ -107,6 +122,8 @@ class task_service final {
   // It removes only this object's subscriptions, including on repeated calls.
   [[nodiscard]] bool shutdown_scope(const std::shared_ptr<const authorization_scope>& scope);
   void shutdown_session(const std::string& session_id);
+  // Both native start paths enforce Bridge max_params_bytes/max_json_depth before
+  // admission, and cap the retained normalized input at max_params_bytes.
   [[nodiscard]] std::string start(const bridge_request& request);
   // Read-only exact params: {taskId} XOR {operationId}, one bounded ASCII
   // identifier (1-128 characters, letters/digits/-_.:), no other fields.

@@ -1,10 +1,36 @@
 cmake_minimum_required(VERSION 3.24)
 project(SouiBenchmarkSampler LANGUAGES CXX)
-if(NOT WIN32 OR NOT MSVC)
+if(SOUI_NATIVE_TOOLCHAIN STREQUAL "LLVM22MSVC142")
+  if(CMAKE_VERSION VERSION_LESS "3.29" OR NOT WIN32 OR
+      NOT CMAKE_GENERATOR STREQUAL "Ninja Multi-Config" OR
+      NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR
+      NOT CMAKE_CXX_COMPILER_VERSION VERSION_EQUAL "22.1.3" OR
+      NOT CMAKE_CXX_COMPILER_FRONTEND_VARIANT STREQUAL "MSVC" OR
+      NOT CMAKE_CXX_SIMULATE_ID STREQUAL "MSVC" OR
+      NOT CMAKE_CXX_SIMULATE_VERSION VERSION_EQUAL "19.29" OR
+      NOT CMAKE_SYSTEM_VERSION STREQUAL "10.0.19041.0")
+    message(FATAL_ERROR "LLVM measurement tools require the exact explicit LLVM22MSVC142 profile")
+  endif()
+  if(SOUI_LLVM_ARCHITECTURE STREQUAL "x64")
+    set(_soui_measurement_target "x86_64-pc-windows-msvc")
+    set(_soui_measurement_pointer 8)
+  elseif(SOUI_LLVM_ARCHITECTURE STREQUAL "x86")
+    set(_soui_measurement_target "i686-pc-windows-msvc")
+    set(_soui_measurement_pointer 4)
+  else()
+    message(FATAL_ERROR "An explicit LLVM measurement architecture is required")
+  endif()
+  get_filename_component(_soui_measurement_toolchain "${CMAKE_CURRENT_LIST_DIR}/../../cmake/toolchains/SouiLLVM22.cmake" ABSOLUTE)
+  if(NOT CMAKE_CXX_COMPILER_TARGET STREQUAL _soui_measurement_target OR
+      NOT CMAKE_SIZEOF_VOID_P EQUAL _soui_measurement_pointer OR
+      NOT CMAKE_TOOLCHAIN_FILE STREQUAL _soui_measurement_toolchain)
+    message(FATAL_ERROR "LLVM measurement target width or product toolchain differs")
+  endif()
+elseif(NOT WIN32 OR NOT MSVC)
   message(FATAL_ERROR "The process-tree sampler requires Windows and MSVC")
 endif()
 add_executable(ProcessTreeSampler process-tree-sampler.cpp)
-add_executable(InputTrace input-trace.cpp)
+add_executable(InputTrace input-trace.cpp desktop-observer.cpp)
 add_executable(OwnedProcessRunner owned-process-runner.cpp owned-tail-evidence.cpp)
 add_executable(OwnedProcessAssignmentFixture "${CMAKE_CURRENT_SOURCE_DIR}/../../tests/benchmark/owned-process-assignment-fixture.cpp" owned-tail-evidence.cpp)
 add_executable(OwnedTailProcessFixture WIN32 "${CMAKE_CURRENT_SOURCE_DIR}/../../tests/benchmark/owned-tail-process-fixture.cpp")
@@ -19,12 +45,14 @@ target_compile_features(OwnedTailMutationFixture PRIVATE cxx_std_17)
 target_compile_features(OwnedTailApiFixture PRIVATE cxx_std_17)
 target_compile_options(ProcessTreeSampler PRIVATE /W4 /utf-8)
 target_compile_options(InputTrace PRIVATE /W4 /utf-8)
+target_compile_definitions(InputTrace PRIVATE WINVER=0x0601 _WIN32_WINNT=0x0601)
 target_compile_options(OwnedProcessRunner PRIVATE /W4 /utf-8)
 target_compile_options(OwnedProcessAssignmentFixture PRIVATE /W4 /utf-8)
 target_compile_options(OwnedTailProcessFixture PRIVATE /W4 /utf-8)
 target_compile_options(OwnedTailMutationFixture PRIVATE /W4 /utf-8)
 target_compile_options(OwnedTailApiFixture PRIVATE /W4 /utf-8)
 target_link_libraries(ProcessTreeSampler PRIVATE psapi)
+target_link_libraries(InputTrace PRIVATE user32 gdi32)
 target_link_libraries(OwnedTailProcessFixture PRIVATE shell32)
 set_property(TARGET ProcessTreeSampler PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 set_property(TARGET InputTrace PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)

@@ -189,10 +189,37 @@ void closes_running_session_and_retains_fast_task() {
   require(!app.call(auth, "task.query", {{"taskId", running}}).value("ok", true), "Closed session still owned the task");
   std::cout << "session shutdown and original fast task passed\n";
 }
+
+void accepts_high_refresh_and_rejects_invalid_rate_before_narrowing() {
+  fixture app;
+  const auto auth=app.bootstrap();
+  for (unsigned rate : {30U,59U,60U,75U,100U,120U,144U,165U,240U,360U,1000U}) {
+    const auto result=app.call(auth,"desktop.rendering.setTargetRate",{{"targetHz",rate}});
+    require(result.value("ok",false),"Valid high-refresh control rejected");
+    require(result.at("result").at("requestedHz")==rate && app.bridge.requested_frame_rate()==rate,
+        "High-refresh request was rounded or changed");
+  }
+  const std::vector<json> invalid{json::object(),json{{"targetHz",nullptr}},json{{"targetHz",true}},
+    json{{"targetHz","100"}},json{{"targetHz",100.5}},json{{"targetHz",-1}},json{{"targetHz",0}},
+    json{{"targetHz",29}},json{{"targetHz",1001}},json{{"targetHz",4294967396ULL}},
+    json{{"targetHz",std::numeric_limits<std::uint64_t>::max()}}};
+  for (const auto& input : invalid) {
+    const auto result=app.call(auth,"desktop.rendering.setTargetRate",input);
+    require(!result.value("ok",true)&&result.at("error").at("code")=="E_INVALID_PARAMS","Invalid rate accepted");
+    require(app.bridge.requested_frame_rate()==1000,"Rejected rate changed pacing state");
+  }
+  auto denied=auth;denied["token"]="invalid-render-control-token";
+  require(!app.call(denied,"desktop.rendering.setTargetRate",{{"targetHz",100}}).value("ok",true),"Rate control bypassed authentication");
+  require(app.bridge.requested_frame_rate()==1000,"Unauthenticated request changed pacing state");
+  app.bridge.shutdown_session(auth.at("sessionId").get<std::string>());
+  std::cout<<"high-refresh control and strict integer boundary passed\n";
+}
+
 }  // namespace
 
 int main() {
   try {
+    accepts_high_refresh_and_rejects_invalid_rate_before_narrowing();
     succeeds_with_elapsed_time_and_events();
     cancels_active_task_and_enforces_ownership();
     rejects_invalid_duration_before_work();

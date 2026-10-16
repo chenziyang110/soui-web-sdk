@@ -1,0 +1,7 @@
+lld-link: error: undefined symbol: __declspec(dllimport) protected: static class SOUI::SApplication *SOUI::SSingleton<class SOUI::SApplication>::ms_Singleton
+>>> referenced by C:\work\sm05-release-050\tests\native\soui_dependency_tests.cpp:10
+>>>               C:/work/sm05-soui-contract-x64-red2/test.obj:(public: static class SOUI::SApplication ** __cdecl `anonymous namespace'::SingletonData<class SOUI::SApplication>::address(void))
+
+lld-link: error: undefined symbol: __declspec(dllimport) protected: static class SOUI::SNotifyCenter *SOUI::SSingleton<class SOUI::SNotifyCenter>::ms_Singleton
+>>> referenced by C:\work\sm05-release-050\tests\native\soui_dependency_tests.cpp:10
+>>>               C:/work/sm05-soui-contract-x64-red2/test.obj:(public: static class SOUI::SNotifyCenter ** __cdecl `anonymous namespace'::SingletonData<class SOUI::SNotifyCenter>::address(void))

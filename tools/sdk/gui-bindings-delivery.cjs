@@ -1,4 +1,5 @@
 'use strict';
+const versioning = require('../internal/sdk-version.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
 const cp = require('node:child_process');
@@ -24,7 +25,7 @@ function versionOf(root) {
     read(root, 'sdk/web/package.json').version;
 }
 function metadata(root, version = versionOf(root)) {
-  if (!/^\d+\.\d+\.\d+-preview\.\d+$/.test(version)) throw new Error('GUI delivery requires an exact preview SDK version');
+  if (!versioning.isVersion(version)) throw new Error('GUI delivery requires an exact SDK version');
   for (const entry of packages) {
     const meta = read(root, `${entry.root}/package.json`), lock = read(root, `${entry.root}/package-lock.json`);
     if (meta.name !== entry.name || meta.version !== version || lock.version !== version ||
@@ -43,11 +44,31 @@ function metadata(root, version = versionOf(root)) {
   }
   return version;
 }
-function source(root) {
+function sourceNames(root) {
   const names = ['sdk/web/src', 'sdk/bindings/shared', 'sdk/bindings/react/src', 'sdk/bindings/vue/src']
     .flatMap(name => identity.walk(root, name, (_, leaf) => identity.skipped.has(leaf)));
   for (const entry of packages) for (const file of ['package.json', 'package-lock.json', 'tsconfig.json']) names.push(`${entry.root}/${file}`);
   names.push('tools/sdk/gui-bindings-delivery.cjs');
+  return names;
+}
+function source(root) {
+  const names = sourceNames(root).concat('tools/internal/sdk-version.cjs');
+  names.forEach(name => regular(root, name));
+  return identity.snapshot(root, names, true);
+}
+// Read-only compatibility for the exact previous preview producer. New builds
+// and packages always use source(root), including the current version helper.
+function sourceForInstalledDeclaration(root, declared) {
+  if (declared.source.files.some(file => file.path === 'tools/internal/sdk-version.cjs')) return source(root);
+  if (versioning.channelOf(declared.sdkVersion) !== 'preview' ||
+      fs.existsSync(identity.safePath(root, 'tools/internal/sdk-version.cjs'))) {
+    throw new Error('Historical GUI source identity is limited to the previous preview producer');
+  }
+  const oldTool = identity.normalize(fs.readFileSync(regular(root, 'tools/sdk/gui-bindings-delivery.cjs')), 'lf');
+  if (oldTool.length !== 13693 || identity.hash(oldTool) !== '26305269c19891cd5dfb6d781985114f7b6aa1d6437d22213d4cb6ba25c10ec3') {
+    throw new Error('Historical GUI producer bytes differ');
+  }
+  const names = sourceNames(root);
   names.forEach(name => regular(root, name));
   return identity.snapshot(root, names, true);
 }
@@ -108,19 +129,19 @@ function validateDeclaration(value, manifest) {
   if (JSON.stringify(allOutputs) !== JSON.stringify(value.output.files.map(file => file.path).sort())) throw new Error('GUI compiled file set differs');
   return value;
 }
-function verify(root, version = versionOf(root)) {
+function verify(root, version = versionOf(root), {forPackaging = false} = {}) {
   metadata(root, version);
-  const input = source(root), output = outputs(root);
   let installed;
   if (fs.existsSync(identity.safePath(root, 'sdk-lock.json'))) {
     const lock = require('./soui-sdk.cjs').readLock(root);
     if (lock.manifest.version !== version) throw new Error('Installed SDK version differs from GUI delivery');
     if (lock.manifest.optionalGuiBindings !== undefined) {
       installed = validateDeclaration(lock.manifest.optionalGuiBindings, lock.manifest);
-      if (installed.source.sha256 !== input.sha256 || installed.output.sha256 !== output.sha256) {
-        throw new Error('Installed GUI delivery identity changed');
-      }
     }
+  }
+  const input = installed && !forPackaging ? sourceForInstalledDeclaration(root, installed) : source(root), output = outputs(root);
+  if (installed && (installed.source.sha256 !== input.sha256 || installed.output.sha256 !== output.sha256)) {
+    throw new Error('Installed GUI delivery identity changed');
   }
   const filename = identity.safePath(root, reportName);
   if (fs.existsSync(filename)) {
@@ -133,7 +154,7 @@ function verify(root, version = versionOf(root)) {
 }
 function verifyDelivered(root, declared) {
   metadata(root, declared.sdkVersion);
-  if (source(root).sha256 !== declared.source.sha256 || outputs(root).sha256 !== declared.output.sha256) {
+  if (sourceForInstalledDeclaration(root, declared).sha256 !== declared.source.sha256 || outputs(root).sha256 !== declared.output.sha256) {
     throw new Error('Delivered GUI source/output file set changed');
   }
 }

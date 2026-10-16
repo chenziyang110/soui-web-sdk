@@ -1,0 +1,684 @@
+
+---
+events:
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineSystem.cmake:207 (message)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      The target system is: Windows - 10.0.19041.0 - AMD64
+      The host system is: Windows - 10.0.26200 - AMD64
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:462 (find_file)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:500 (CMAKE_DETERMINE_COMPILER_ID_WRITE)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:8 (CMAKE_DETERMINE_COMPILER_ID_BUILD)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "file"
+    variable: "src_in"
+    description: "Path to a file."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: true
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "CMakeCXXCompilerId.cpp.in"
+    candidate_directories:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/"
+    found: "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeCXXCompilerId.cpp.in"
+    search_context:
+      ENV{PATH}:
+        - "C:\\Users\\11034\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0"
+        - "C:/Program Files/CMake/bin"
+        - "C:/Program Files/Git/cmd"
+        - "C:/Windows/System32"
+        - "C:/Windows"
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:17 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:64 (__determine_compiler_id_test)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
+      Compiler: C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe 
+      Build flags: --no-default-config;/X;/clang:-fms-compatibility-version=19.29.30159;/DWINVER=0x0601;/D_WIN32_WINNT=0x0601;/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include;/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include;/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt;/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared;/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um;/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt
+      Id flags: -c;--target=x86_64-pc-windows-msvc 
+      
+      The output was:
+      0
+      
+      
+      Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.obj"
+      
+      The CXX compiler identification is Clang, found in:
+        C:/work/sm05-uia-delivery-2/out/actual-log-build/CMakeFiles/4.2.3/CompilerIdCXX/CMakeCXXCompilerId.obj
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:1341 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerId.cmake:250 (CMAKE_DETERMINE_MSVC_SHOWINCLUDES_PREFIX)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:125 (CMAKE_DETERMINE_COMPILER_ID)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Detecting CXX compiler /showIncludes prefix:
+        Note: including file: .\\foo.h
+        
+      Found prefix "Note: including file: "
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:37 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:65 (__resolve_tool_path)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:103 (__resolve_linker_path)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "_CMAKE_TOOL_WITH_PATH"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "link"
+    candidate_directories:
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+    searched_directories:
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/link.com"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/link.exe"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/link"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/link.com"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/link.exe"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/link"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/link.com"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/link.exe"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/link"
+      - "C:/Program Files/CMake/bin/link.com"
+      - "C:/Program Files/CMake/bin/link.exe"
+      - "C:/Program Files/CMake/bin/link"
+      - "C:/Program Files/Git/cmd/link.com"
+      - "C:/Program Files/Git/cmd/link.exe"
+      - "C:/Program Files/Git/cmd/link"
+      - "C:/Windows/System32/link.com"
+      - "C:/Windows/System32/link.exe"
+      - "C:/Windows/System32/link"
+      - "C:/Windows/link.com"
+      - "C:/Windows/link.exe"
+      - "C:/Windows/link"
+    found: false
+    search_context:
+      ENV{PATH}:
+        - "C:\\Users\\11034\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0"
+        - "C:/Program Files/CMake/bin"
+        - "C:/Program Files/Git/cmd"
+        - "C:/Windows/System32"
+        - "C:/Windows"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeFindBinUtils.cmake:243 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:206 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_NM"
+    description: "Path to a program."
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "llvm-nm"
+      - "nm"
+    candidate_directories:
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+    searched_directories:
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-nm.com"
+    found: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-nm.exe"
+    search_context:
+      ENV{PATH}:
+        - "C:\\Users\\11034\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0"
+        - "C:/Program Files/CMake/bin"
+        - "C:/Program Files/Git/cmd"
+        - "C:/Windows/System32"
+        - "C:/Windows"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Compiler/Clang-FindBinUtils.cmake:26 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:207 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER_AR"
+    description: "LLVM archiver"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "llvm-ar-22.1"
+      - "llvm-ar-22"
+      - "llvm-ar22"
+      - "llvm-ar"
+    candidate_directories:
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+    searched_directories:
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ar-22.1.com"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ar-22.1.exe"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ar-22.1"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ar-22.1.com"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ar-22.1.exe"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ar-22.1"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ar-22.1.com"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ar-22.1.exe"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ar-22.1"
+      - "C:/Program Files/CMake/bin/llvm-ar-22.1.com"
+      - "C:/Program Files/CMake/bin/llvm-ar-22.1.exe"
+      - "C:/Program Files/CMake/bin/llvm-ar-22.1"
+      - "C:/Program Files/Git/cmd/llvm-ar-22.1.com"
+      - "C:/Program Files/Git/cmd/llvm-ar-22.1.exe"
+      - "C:/Program Files/Git/cmd/llvm-ar-22.1"
+      - "C:/Windows/System32/llvm-ar-22.1.com"
+      - "C:/Windows/System32/llvm-ar-22.1.exe"
+      - "C:/Windows/System32/llvm-ar-22.1"
+      - "C:/Windows/llvm-ar-22.1.com"
+      - "C:/Windows/llvm-ar-22.1.exe"
+      - "C:/Windows/llvm-ar-22.1"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ar-22.com"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ar-22.exe"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ar-22"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ar-22.com"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ar-22.exe"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ar-22"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ar-22.com"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ar-22.exe"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ar-22"
+      - "C:/Program Files/CMake/bin/llvm-ar-22.com"
+      - "C:/Program Files/CMake/bin/llvm-ar-22.exe"
+      - "C:/Program Files/CMake/bin/llvm-ar-22"
+      - "C:/Program Files/Git/cmd/llvm-ar-22.com"
+      - "C:/Program Files/Git/cmd/llvm-ar-22.exe"
+      - "C:/Program Files/Git/cmd/llvm-ar-22"
+      - "C:/Windows/System32/llvm-ar-22.com"
+      - "C:/Windows/System32/llvm-ar-22.exe"
+      - "C:/Windows/System32/llvm-ar-22"
+      - "C:/Windows/llvm-ar-22.com"
+      - "C:/Windows/llvm-ar-22.exe"
+      - "C:/Windows/llvm-ar-22"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ar22.com"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ar22.exe"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ar22"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ar22.com"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ar22.exe"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ar22"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ar22.com"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ar22.exe"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ar22"
+      - "C:/Program Files/CMake/bin/llvm-ar22.com"
+      - "C:/Program Files/CMake/bin/llvm-ar22.exe"
+      - "C:/Program Files/CMake/bin/llvm-ar22"
+      - "C:/Program Files/Git/cmd/llvm-ar22.com"
+      - "C:/Program Files/Git/cmd/llvm-ar22.exe"
+      - "C:/Program Files/Git/cmd/llvm-ar22"
+      - "C:/Windows/System32/llvm-ar22.com"
+      - "C:/Windows/System32/llvm-ar22.exe"
+      - "C:/Windows/System32/llvm-ar22"
+      - "C:/Windows/llvm-ar22.com"
+      - "C:/Windows/llvm-ar22.exe"
+      - "C:/Windows/llvm-ar22"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ar.com"
+    found: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ar.exe"
+    search_context:
+      ENV{PATH}:
+        - "C:\\Users\\11034\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0"
+        - "C:/Program Files/CMake/bin"
+        - "C:/Program Files/Git/cmd"
+        - "C:/Windows/System32"
+        - "C:/Windows"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Compiler/Clang-FindBinUtils.cmake:38 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:207 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER_RANLIB"
+    description: "Generate index for LLVM archive"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "llvm-ranlib-22.1"
+      - "llvm-ranlib-22"
+      - "llvm-ranlib22"
+      - "llvm-ranlib"
+    candidate_directories:
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+    searched_directories:
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ranlib-22.1.com"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ranlib-22.1.exe"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ranlib-22.1"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ranlib-22.1.com"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ranlib-22.1.exe"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ranlib-22.1"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ranlib-22.1.com"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ranlib-22.1.exe"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ranlib-22.1"
+      - "C:/Program Files/CMake/bin/llvm-ranlib-22.1.com"
+      - "C:/Program Files/CMake/bin/llvm-ranlib-22.1.exe"
+      - "C:/Program Files/CMake/bin/llvm-ranlib-22.1"
+      - "C:/Program Files/Git/cmd/llvm-ranlib-22.1.com"
+      - "C:/Program Files/Git/cmd/llvm-ranlib-22.1.exe"
+      - "C:/Program Files/Git/cmd/llvm-ranlib-22.1"
+      - "C:/Windows/System32/llvm-ranlib-22.1.com"
+      - "C:/Windows/System32/llvm-ranlib-22.1.exe"
+      - "C:/Windows/System32/llvm-ranlib-22.1"
+      - "C:/Windows/llvm-ranlib-22.1.com"
+      - "C:/Windows/llvm-ranlib-22.1.exe"
+      - "C:/Windows/llvm-ranlib-22.1"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ranlib-22.com"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ranlib-22.exe"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ranlib-22"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ranlib-22.com"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ranlib-22.exe"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ranlib-22"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ranlib-22.com"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ranlib-22.exe"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ranlib-22"
+      - "C:/Program Files/CMake/bin/llvm-ranlib-22.com"
+      - "C:/Program Files/CMake/bin/llvm-ranlib-22.exe"
+      - "C:/Program Files/CMake/bin/llvm-ranlib-22"
+      - "C:/Program Files/Git/cmd/llvm-ranlib-22.com"
+      - "C:/Program Files/Git/cmd/llvm-ranlib-22.exe"
+      - "C:/Program Files/Git/cmd/llvm-ranlib-22"
+      - "C:/Windows/System32/llvm-ranlib-22.com"
+      - "C:/Windows/System32/llvm-ranlib-22.exe"
+      - "C:/Windows/System32/llvm-ranlib-22"
+      - "C:/Windows/llvm-ranlib-22.com"
+      - "C:/Windows/llvm-ranlib-22.exe"
+      - "C:/Windows/llvm-ranlib-22"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ranlib22.com"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ranlib22.exe"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ranlib22"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ranlib22.com"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ranlib22.exe"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/llvm-ranlib22"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ranlib22.com"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ranlib22.exe"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/llvm-ranlib22"
+      - "C:/Program Files/CMake/bin/llvm-ranlib22.com"
+      - "C:/Program Files/CMake/bin/llvm-ranlib22.exe"
+      - "C:/Program Files/CMake/bin/llvm-ranlib22"
+      - "C:/Program Files/Git/cmd/llvm-ranlib22.com"
+      - "C:/Program Files/Git/cmd/llvm-ranlib22.exe"
+      - "C:/Program Files/Git/cmd/llvm-ranlib22"
+      - "C:/Windows/System32/llvm-ranlib22.com"
+      - "C:/Windows/System32/llvm-ranlib22.exe"
+      - "C:/Windows/System32/llvm-ranlib22"
+      - "C:/Windows/llvm-ranlib22.com"
+      - "C:/Windows/llvm-ranlib22.exe"
+      - "C:/Windows/llvm-ranlib22"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ranlib.com"
+    found: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-ranlib.exe"
+    search_context:
+      ENV{PATH}:
+        - "C:\\Users\\11034\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0"
+        - "C:/Program Files/CMake/bin"
+        - "C:/Program Files/Git/cmd"
+        - "C:/Windows/System32"
+        - "C:/Windows"
+  -
+    kind: "find-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Compiler/Clang-FindBinUtils.cmake:50 (find_program)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCXXCompiler.cmake:207 (include)"
+      - "CMakeLists.txt:2 (project)"
+    mode: "program"
+    variable: "CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS"
+    description: "`clang-scan-deps` dependency scanner"
+    settings:
+      SearchFramework: "NEVER"
+      SearchAppBundle: "NEVER"
+      CMAKE_FIND_USE_CMAKE_PATH: false
+      CMAKE_FIND_USE_CMAKE_ENVIRONMENT_PATH: false
+      CMAKE_FIND_USE_SYSTEM_ENVIRONMENT_PATH: true
+      CMAKE_FIND_USE_CMAKE_SYSTEM_PATH: true
+      CMAKE_FIND_USE_INSTALL_PREFIX: true
+    names:
+      - "clang-scan-deps-22.1"
+      - "clang-scan-deps-22"
+      - "clang-scan-deps22"
+      - "clang-scan-deps"
+    candidate_directories:
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/"
+      - "C:/Program Files/CMake/bin/"
+      - "C:/Program Files/Git/cmd/"
+      - "C:/Windows/System32/"
+      - "C:/Windows/"
+    searched_directories:
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps-22.1.com"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps-22.1.exe"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps-22.1"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/clang-scan-deps-22.1.com"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/clang-scan-deps-22.1.exe"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/clang-scan-deps-22.1"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/clang-scan-deps-22.1.com"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/clang-scan-deps-22.1.exe"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/clang-scan-deps-22.1"
+      - "C:/Program Files/CMake/bin/clang-scan-deps-22.1.com"
+      - "C:/Program Files/CMake/bin/clang-scan-deps-22.1.exe"
+      - "C:/Program Files/CMake/bin/clang-scan-deps-22.1"
+      - "C:/Program Files/Git/cmd/clang-scan-deps-22.1.com"
+      - "C:/Program Files/Git/cmd/clang-scan-deps-22.1.exe"
+      - "C:/Program Files/Git/cmd/clang-scan-deps-22.1"
+      - "C:/Windows/System32/clang-scan-deps-22.1.com"
+      - "C:/Windows/System32/clang-scan-deps-22.1.exe"
+      - "C:/Windows/System32/clang-scan-deps-22.1"
+      - "C:/Windows/clang-scan-deps-22.1.com"
+      - "C:/Windows/clang-scan-deps-22.1.exe"
+      - "C:/Windows/clang-scan-deps-22.1"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps-22.com"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps-22.exe"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps-22"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/clang-scan-deps-22.com"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/clang-scan-deps-22.exe"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/clang-scan-deps-22"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/clang-scan-deps-22.com"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/clang-scan-deps-22.exe"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/clang-scan-deps-22"
+      - "C:/Program Files/CMake/bin/clang-scan-deps-22.com"
+      - "C:/Program Files/CMake/bin/clang-scan-deps-22.exe"
+      - "C:/Program Files/CMake/bin/clang-scan-deps-22"
+      - "C:/Program Files/Git/cmd/clang-scan-deps-22.com"
+      - "C:/Program Files/Git/cmd/clang-scan-deps-22.exe"
+      - "C:/Program Files/Git/cmd/clang-scan-deps-22"
+      - "C:/Windows/System32/clang-scan-deps-22.com"
+      - "C:/Windows/System32/clang-scan-deps-22.exe"
+      - "C:/Windows/System32/clang-scan-deps-22"
+      - "C:/Windows/clang-scan-deps-22.com"
+      - "C:/Windows/clang-scan-deps-22.exe"
+      - "C:/Windows/clang-scan-deps-22"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps22.com"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps22.exe"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps22"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/clang-scan-deps22.com"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/clang-scan-deps22.exe"
+      - "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/clang-scan-deps22"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/clang-scan-deps22.com"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/clang-scan-deps22.exe"
+      - "C:/Users/11034/AppData/Local/nvm/v24.14.0/clang-scan-deps22"
+      - "C:/Program Files/CMake/bin/clang-scan-deps22.com"
+      - "C:/Program Files/CMake/bin/clang-scan-deps22.exe"
+      - "C:/Program Files/CMake/bin/clang-scan-deps22"
+      - "C:/Program Files/Git/cmd/clang-scan-deps22.com"
+      - "C:/Program Files/Git/cmd/clang-scan-deps22.exe"
+      - "C:/Program Files/Git/cmd/clang-scan-deps22"
+      - "C:/Windows/System32/clang-scan-deps22.com"
+      - "C:/Windows/System32/clang-scan-deps22.exe"
+      - "C:/Windows/System32/clang-scan-deps22"
+      - "C:/Windows/clang-scan-deps22.com"
+      - "C:/Windows/clang-scan-deps22.exe"
+      - "C:/Windows/clang-scan-deps22"
+      - "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps.com"
+    found: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps.exe"
+    search_context:
+      ENV{PATH}:
+        - "C:\\Users\\11034\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell"
+        - "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0"
+        - "C:/Program Files/CMake/bin"
+        - "C:/Program Files/Git/cmd"
+        - "C:/Windows/System32"
+        - "C:/Windows"
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:83 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting CXX compiler ABI info"
+    directories:
+      source: "C:/work/sm05-uia-delivery-2/out/actual-log-build/CMakeFiles/CMakeScratch/TryCompile-vnjqqv"
+      binary: "C:/work/sm05-uia-delivery-2/out/actual-log-build/CMakeFiles/CMakeScratch/TryCompile-vnjqqv"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps.exe"
+      CMAKE_CXX_COMPILER_TARGET: "x86_64-pc-windows-msvc"
+      CMAKE_CXX_FLAGS: "--no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
+      CMAKE_CXX_SCAN_FOR_MODULES: "OFF"
+      CMAKE_CXX_USING_LINKER_LLD: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe"
+      CMAKE_CXX_USING_LINKER_MSVC: "link"
+      CMAKE_CXX_USING_LINKER_SYSTEM: "link"
+      CMAKE_C_COMPILER_TARGET: "x86_64-pc-windows-msvc"
+      CMAKE_EXE_LINKER_FLAGS: "/LIBPATH:\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64\" /machine:x64"
+      CMAKE_LINKER_TYPE: "LLD"
+      SOUI_LLVM_ARCHITECTURE: "x64"
+      SOUI_LLVM_BRIDGE_IDENTITY: "36cbb141f978a06b6b520abf627da4ae751200fa9c4c16f8f74fb76dbc4f24dd"
+      SOUI_LLVM_CACHE_IDENTITY: "45bdd59666fa65e4908f80cbd47a9285da7a9513fcaa6939b9f8b02400fe0b9e"
+      SOUI_LLVM_INPUT_IDENTITY: "f106fbaf9bc76e0b65274638e57fcd36aedb5cbbd4ef589c0e4ab2dc6ceadcbd"
+      SOUI_LLVM_ROOT: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64"
+      SOUI_MSVC142_ROOT: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133"
+      SOUI_NATIVE_TOOLCHAIN: "LLVM22MSVC142"
+      SOUI_NINJA_EXECUTABLE: "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe"
+      SOUI_TOOL_IDENTITY_BRIDGE: "C:/work/sm05-uia-delivery-2/tools/internal/Invoke-ToolFileIdentity.ps1"
+      SOUI_TOOL_IDENTITY_HELPER: "C:/work/sm05-uia-delivery-2/tools/internal/Tool-FileIdentity.ps1"
+      SOUI_TOOL_IDENTITY_POWERSHELL_EXECUTABLE: "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe"
+      SOUI_WINDOWS_CMD_EXECUTABLE: "C:/Windows/System32/cmd.exe"
+      SOUI_WINDOWS_SDK_ROOT: "C:/Program Files (x86)/Windows Kits/10"
+    buildResult:
+      variable: "CMAKE_CXX_ABI_COMPILED"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/work/sm05-uia-delivery-2/out/actual-log-build/CMakeFiles/CMakeScratch/TryCompile-vnjqqv'
+        
+        Run Build Command(s): C:/PROGRA~1/MICROS~1/18/COMMUN~1/Common7/IDE/COMMON~1/MICROS~1/CMake/Ninja/ninja.exe -v cmTC_041a4
+        [1/2] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -D_MBCS -DCMAKE_INTDIR=\\"Debug\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include" /imsvc"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include" /imsvc"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt" /imsvc"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared" /imsvc"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um" /imsvc"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt" /DWIN32 /D_WINDOWS /EHsc  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\\cmTC_041a4.dir\\Debug\\CMakeCXXCompilerABI.cpp.obj /FdCMakeFiles\\cmTC_041a4.dir\\Debug\\ -c -- "C:\\Program Files\\CMake\\share\\cmake-4.2\\Modules\\CMakeCXXCompilerABI.cpp"
+        [2/2] C:\\Windows\\System32\\cmd.exe /C "cd . && "C:\\Program Files\\CMake\\bin\\cmake.exe" -E vs_link_exe --msvc-ver=1929 --intdir=CMakeFiles\\cmTC_041a4.dir\\Debug --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe /nologo CMakeFiles\\cmTC_041a4.dir\\Debug\\CMakeCXXCompilerABI.cpp.obj  /out:Debug\\cmTC_041a4.exe /implib:Debug\\cmTC_041a4.lib /pdb:Debug\\cmTC_041a4.pdb /version:0.0 /LIBPATH:"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64" /LIBPATH:"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64" /LIBPATH:"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64" /machine:x64  /debug /INCREMENTAL /subsystem:console   && cd ."
+        
+      exitCode: 0
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:253 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Parsed CXX implicit link information:
+        link line regex: [^( *|.*[/\\])(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|link\\.exe|lld-link(\\.exe)?|CMAKE_LINK_STARTFILE-NOTFOUND|([^/\\]+-)?ld|collect2)[^/\\]*( |$)]
+        linker tool regex: [^[ 	]*(->|"|[0-9]+>[ 	-]*Build:[ 	0-9]+ ms[ 	]*)?[ 	]*(([^"]*[/\\])?(ld[0-9]*(|\\.[a-rt-z][a-z]*|\\.s[a-np-z][a-z]*|\\.so[a-z]+)|link\\.exe|lld-link(\\.exe)?))("|,| |$)]
+        linker tool for 'CXX': C:/PROGRA~1/MICROS~1/18/COMMUN~1/VC/Tools/Llvm/x64/bin/lld-link.exe
+        implicit libs: []
+        implicit objs: []
+        implicit dirs: []
+        implicit fwks: []
+      
+      
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Internal/CMakeDetermineLinkerId.cmake:38 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:299 (cmake_determine_linker_id)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Running the CXX compiler's linker: "C:/PROGRA~1/MICROS~1/18/COMMUN~1/VC/Tools/Llvm/x64/bin/lld-link.exe" "-v"
+      lld-link: warning: ignoring unknown argument '-v'
+      lld-link: error: no input files
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Internal/CMakeDetermineLinkerId.cmake:38 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:299 (cmake_determine_linker_id)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Running the CXX compiler's linker: "C:/PROGRA~1/MICROS~1/18/COMMUN~1/VC/Tools/Llvm/x64/bin/lld-link.exe" "-V"
+      lld-link: warning: ignoring unknown argument '-V'
+      lld-link: error: no input files
+  -
+    kind: "message-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Internal/CMakeDetermineLinkerId.cmake:38 (message)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerABI.cmake:299 (cmake_determine_linker_id)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeTestCXXCompiler.cmake:26 (CMAKE_DETERMINE_COMPILER_ABI)"
+      - "CMakeLists.txt:2 (project)"
+    message: |
+      Running the CXX compiler's linker: "C:/PROGRA~1/MICROS~1/18/COMMUN~1/VC/Tools/Llvm/x64/bin/lld-link.exe" "--version"
+      LLD 22.1.3 (https://github.com/llvm/llvm-project e9846648fd6183ee6d8cbdb4502213fcf902a211)
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Internal/FeatureTesting.cmake:34 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Internal/FeatureTesting.cmake:87 (_record_compiler_features)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Compiler/CMakeCommonCompilerMacros.cmake:124 (_record_compiler_features_cxx)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerSupport.cmake:70 (cmake_record_cxx_compile_features)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeTestCXXCompiler.cmake:83 (CMAKE_DETERMINE_COMPILER_SUPPORT)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting CXX compile features"
+    directories:
+      source: "C:/work/sm05-uia-delivery-2/out/actual-log-build/CMakeFiles/CMakeScratch/TryCompile-eej3hx"
+      binary: "C:/work/sm05-uia-delivery-2/out/actual-log-build/CMakeFiles/CMakeScratch/TryCompile-eej3hx"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps.exe"
+      CMAKE_CXX_COMPILER_TARGET: "x86_64-pc-windows-msvc"
+      CMAKE_CXX_FLAGS: "--no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
+      CMAKE_CXX_USING_LINKER_LLD: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe"
+      CMAKE_CXX_USING_LINKER_MSVC: "link"
+      CMAKE_CXX_USING_LINKER_SYSTEM: "link"
+      CMAKE_C_COMPILER_TARGET: "x86_64-pc-windows-msvc"
+      CMAKE_EXE_LINKER_FLAGS: "/LIBPATH:\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64\" /machine:x64"
+      CMAKE_LINKER_TYPE: "LLD"
+      SOUI_LLVM_ARCHITECTURE: "x64"
+      SOUI_LLVM_BRIDGE_IDENTITY: "36cbb141f978a06b6b520abf627da4ae751200fa9c4c16f8f74fb76dbc4f24dd"
+      SOUI_LLVM_CACHE_IDENTITY: "45bdd59666fa65e4908f80cbd47a9285da7a9513fcaa6939b9f8b02400fe0b9e"
+      SOUI_LLVM_INPUT_IDENTITY: "f106fbaf9bc76e0b65274638e57fcd36aedb5cbbd4ef589c0e4ab2dc6ceadcbd"
+      SOUI_LLVM_ROOT: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64"
+      SOUI_MSVC142_ROOT: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133"
+      SOUI_NATIVE_TOOLCHAIN: "LLVM22MSVC142"
+      SOUI_NINJA_EXECUTABLE: "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe"
+      SOUI_TOOL_IDENTITY_BRIDGE: "C:/work/sm05-uia-delivery-2/tools/internal/Invoke-ToolFileIdentity.ps1"
+      SOUI_TOOL_IDENTITY_HELPER: "C:/work/sm05-uia-delivery-2/tools/internal/Tool-FileIdentity.ps1"
+      SOUI_TOOL_IDENTITY_POWERSHELL_EXECUTABLE: "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe"
+      SOUI_WINDOWS_CMD_EXECUTABLE: "C:/Windows/System32/cmd.exe"
+      SOUI_WINDOWS_SDK_ROOT: "C:/Program Files (x86)/Windows Kits/10"
+    buildResult:
+      variable: "CMAKE_CXX_FEATURE_TEST"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/work/sm05-uia-delivery-2/out/actual-log-build/CMakeFiles/CMakeScratch/TryCompile-eej3hx'
+        
+        Run Build Command(s): C:/PROGRA~1/MICROS~1/18/COMMUN~1/Common7/IDE/COMMON~1/MICROS~1/CMake/Ninja/ninja.exe -v cmTC_3645a
+        [1/2] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -D_MBCS -DCMAKE_INTDIR=\\"Debug\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include" /imsvc"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include" /imsvc"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt" /imsvc"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared" /imsvc"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um" /imsvc"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt" /DWIN32 /D_WINDOWS /EHsc  /Ob0 /Od /RTC1 -MDd -Zi   -std:c++14 /showIncludes /FoCMakeFiles\\cmTC_3645a.dir\\Debug\\feature_tests.cxx.obj /FdCMakeFiles\\cmTC_3645a.dir\\Debug\\ -c -- C:\\work\\sm05-uia-delivery-2\\out\\actual-log-build\\CMakeFiles\\CMakeScratch\\TryCompile-eej3hx\\feature_tests.cxx
+        [2/2] C:\\Windows\\System32\\cmd.exe /C "cd . && "C:\\Program Files\\CMake\\bin\\cmake.exe" -E vs_link_exe --msvc-ver=1929 --intdir=CMakeFiles\\cmTC_3645a.dir\\Debug --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe /nologo CMakeFiles\\cmTC_3645a.dir\\Debug\\feature_tests.cxx.obj  /out:Debug\\cmTC_3645a.exe /implib:Debug\\cmTC_3645a.lib /pdb:Debug\\cmTC_3645a.pdb /version:0.0 /LIBPATH:"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64" /LIBPATH:"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64" /LIBPATH:"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64" /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+  -
+    kind: "try_compile-v1"
+    backtrace:
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Internal/FeatureTesting.cmake:34 (try_compile)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Internal/FeatureTesting.cmake:87 (_record_compiler_features)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/Compiler/CMakeCommonCompilerMacros.cmake:132 (_record_compiler_features_cxx)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeDetermineCompilerSupport.cmake:70 (cmake_record_cxx_compile_features)"
+      - "C:/Program Files/CMake/share/cmake-4.2/Modules/CMakeTestCXXCompiler.cmake:83 (CMAKE_DETERMINE_COMPILER_SUPPORT)"
+      - "CMakeLists.txt:2 (project)"
+    checks:
+      - "Detecting CXX compile features"
+    directories:
+      source: "C:/work/sm05-uia-delivery-2/out/actual-log-build/CMakeFiles/CMakeScratch/TryCompile-koexei"
+      binary: "C:/work/sm05-uia-delivery-2/out/actual-log-build/CMakeFiles/CMakeScratch/TryCompile-koexei"
+    cmakeVariables:
+      CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-scan-deps.exe"
+      CMAKE_CXX_COMPILER_TARGET: "x86_64-pc-windows-msvc"
+      CMAKE_CXX_FLAGS: "--no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc"
+      CMAKE_CXX_FLAGS_DEBUG: "/Ob0 /Od /RTC1"
+      CMAKE_CXX_USING_LINKER_LLD: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe"
+      CMAKE_CXX_USING_LINKER_MSVC: "link"
+      CMAKE_CXX_USING_LINKER_SYSTEM: "link"
+      CMAKE_C_COMPILER_TARGET: "x86_64-pc-windows-msvc"
+      CMAKE_EXE_LINKER_FLAGS: "/LIBPATH:\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64\" /machine:x64"
+      CMAKE_LINKER_TYPE: "LLD"
+      SOUI_LLVM_ARCHITECTURE: "x64"
+      SOUI_LLVM_BRIDGE_IDENTITY: "36cbb141f978a06b6b520abf627da4ae751200fa9c4c16f8f74fb76dbc4f24dd"
+      SOUI_LLVM_CACHE_IDENTITY: "45bdd59666fa65e4908f80cbd47a9285da7a9513fcaa6939b9f8b02400fe0b9e"
+      SOUI_LLVM_INPUT_IDENTITY: "f106fbaf9bc76e0b65274638e57fcd36aedb5cbbd4ef589c0e4ab2dc6ceadcbd"
+      SOUI_LLVM_ROOT: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64"
+      SOUI_MSVC142_ROOT: "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133"
+      SOUI_NATIVE_TOOLCHAIN: "LLVM22MSVC142"
+      SOUI_NINJA_EXECUTABLE: "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe"
+      SOUI_TOOL_IDENTITY_BRIDGE: "C:/work/sm05-uia-delivery-2/tools/internal/Invoke-ToolFileIdentity.ps1"
+      SOUI_TOOL_IDENTITY_HELPER: "C:/work/sm05-uia-delivery-2/tools/internal/Tool-FileIdentity.ps1"
+      SOUI_TOOL_IDENTITY_POWERSHELL_EXECUTABLE: "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe"
+      SOUI_WINDOWS_CMD_EXECUTABLE: "C:/Windows/System32/cmd.exe"
+      SOUI_WINDOWS_SDK_ROOT: "C:/Program Files (x86)/Windows Kits/10"
+    buildResult:
+      variable: "CMAKE_CXX_FEATURE_TEST"
+      cached: true
+      stdout: |
+        Change Dir: 'C:/work/sm05-uia-delivery-2/out/actual-log-build/CMakeFiles/CMakeScratch/TryCompile-koexei'
+        
+        Run Build Command(s): C:/PROGRA~1/MICROS~1/18/COMMUN~1/Common7/IDE/COMMON~1/MICROS~1/CMake/Ninja/ninja.exe -v cmTC_dea0a
+        [1/2] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -D_MBCS -DCMAKE_INTDIR=\\"Debug\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include" /imsvc"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include" /imsvc"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt" /imsvc"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared" /imsvc"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um" /imsvc"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt" /DWIN32 /D_WINDOWS /EHsc  /Ob0 /Od /RTC1 -MDd -Zi /showIncludes /FoCMakeFiles\\cmTC_dea0a.dir\\Debug\\feature_tests.cxx.obj /FdCMakeFiles\\cmTC_dea0a.dir\\Debug\\ -c -- C:\\work\\sm05-uia-delivery-2\\out\\actual-log-build\\CMakeFiles\\CMakeScratch\\TryCompile-koexei\\feature_tests.cxx
+        [2/2] C:\\Windows\\System32\\cmd.exe /C "cd . && "C:\\Program Files\\CMake\\bin\\cmake.exe" -E vs_link_exe --msvc-ver=1929 --intdir=CMakeFiles\\cmTC_dea0a.dir\\Debug --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe /nologo CMakeFiles\\cmTC_dea0a.dir\\Debug\\feature_tests.cxx.obj  /out:Debug\\cmTC_dea0a.exe /implib:Debug\\cmTC_dea0a.lib /pdb:Debug\\cmTC_dea0a.pdb /version:0.0 /LIBPATH:"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64" /LIBPATH:"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64" /LIBPATH:"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64" /machine:x64  /debug /INCREMENTAL /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd ."
+        
+      exitCode: 0
+...

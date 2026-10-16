@@ -6,15 +6,32 @@ const os = require('node:os');
 const path = require('node:path');
 const verifier = require('../../tools/internal/release-verification.cjs');
 const sha = 'a'.repeat(64);
-function step(name, version, index = 0) {
-  return {name, sdkVersion: version, sdkManifestSha256: sha, businessSha256: sha,
-    build: {schema: 'soui.source-build/v2', version, architecture: 'x64', configuration: 'Release',
+// Synthetic receipts exercise the pure logical validator. They are not actual Job evidence.
+function step(name, version, index = 0, architecture = 'x64') {
+  return {name, architecture, sdkVersion: version, sdkManifestSha256: sha, businessSha256: sha,
+    build: {schema: 'soui.source-build/v2', version, architecture, configuration: 'Release',
       sdkOnly: false, buildId: `${name}-${index}`, source: {sha256: sha}, nativeBuild: 'passed'},
-    smoke: {schema: 'soui.native-smoke/v2', version, architecture: 'x64', configuration: 'Release',
+    smoke: {schema: 'soui.native-smoke/v2', version, architecture, configuration: 'Release',
       buildId: `${name}-${index}`, sourceSha256: sha, passed: true, finishedAt: '2026-10-03T00:00:00Z',
+      ownedSupervision: {schema: 'soui.native-smoke-owned/v1'},
       runs: [{target: 'ReleaseUpgradeCheck', scenario: 'default', passed: true, exitCode: 0,
         timedOut: false, log: 'application-ready\nhost-close-complete\n'}]}};
 }
+function aggregate(architecture = 'x64') {
+  const version = '0.3.0-preview.10', previous = '0.3.0-preview.9';
+  const common = {sdkVersion: version, rootSourceSha256: sha, sdkManifestSha256: sha,
+    passed: true, architecture, configuration: 'Release', finishedAt: '2026-10-08T00:00:00Z'};
+  const relocated = step('relocation', version, 0, architecture);
+  const reports = [
+    {...common, schema: 'soui.generated-app-validation/v3', upgradedFrom: previous, upgradeTested: true,
+      rollbackTested: true, generatedOutsideDistribution: true,
+      steps: ['baseline', 'upgrade', 'rollback', 'reupgrade'].map((name, i) => step(name, i % 2 ? version : previous, i, architecture))},
+    {...common, schema: 'soui.fresh-app-validation/v3', step: step('fresh', version, 0, architecture)},
+    {...common, schema: 'soui.relocation/v3', step: relocated, copiedOutsideDistribution: true, buildAndNativeSmoke: true},
+    {...relocated.smoke, ...common}];
+  return {reports, expected: {version, sourceSha256: sha, sdkManifestSha256: sha, architecture}};
+}
+
 test('successful exit cannot replace ready/closed, identity or timeout checks', () => {
   const valid = step('upgrade', '0.3.0-preview.10');
   assert.doesNotThrow(() => verifier.validateStep(valid, valid.sdkVersion));
@@ -62,23 +79,57 @@ test('business identity ignores build caches and detects source or metadata chan
 });
 
 test('aggregate receipts reject stale same-version source, package and missing phases', () => {
-  const version = '0.3.0-preview.10', previous = '0.3.0-preview.9';
-  const common = {sdkVersion: version, rootSourceSha256: sha, sdkManifestSha256: sha,
-    passed: true, architecture: 'x64', configuration: 'Release', finishedAt: '2026-10-08T00:00:00Z'};
-  const relocated = step('relocation', version);
-  const reports = [
-    {...common, schema: 'soui.generated-app-validation/v2', upgradedFrom: previous, upgradeTested: true,
-      rollbackTested: true, generatedOutsideDistribution: true,
-      steps: ['baseline', 'upgrade', 'rollback', 'reupgrade'].map((name, i) => step(name, i % 2 ? version : previous, i))},
-    {...common, schema: 'soui.fresh-app-validation/v2', step: step('fresh', version)},
-    {...common, schema: 'soui.relocation/v2', step: relocated, copiedOutsideDistribution: true, buildAndNativeSmoke: true},
-    {...relocated.smoke, ...common}];
-  const expected = {version, sourceSha256: sha, sdkManifestSha256: sha};
+  const {reports, expected} = aggregate();
   assert.doesNotThrow(() => verifier.validateReports(reports, expected));
   for (const alter of [r => r[0].rootSourceSha256 = 'b'.repeat(64),
     r => r[1].sdkManifestSha256 = 'b'.repeat(64), r => r[0].steps.pop(),
     r => r[0].steps[1].sdkManifestSha256 = 'b'.repeat(64), r => r[3].buildId = 'old-build',
     r => r[2].step.businessSha256 = 'b'.repeat(64), r => r[0].rollbackTested = false]) {
+    const invalid = structuredClone(reports); alter(invalid);
+    assert.throws(() => verifier.validateReports(invalid, expected));
+  }
+});
+test('x86 uses explicit step and upgrade identity, never the x64 default or a mixed phase', () => {
+  const version = '0.3.0-preview.10', previous = '0.3.0-preview.9';
+  const valid = step('upgrade', version, 0, 'x86');
+  assert.doesNotThrow(() => verifier.validateStep(valid, version, 'x86'));
+  assert.throws(() => verifier.validateStep(valid, version));
+  assert.throws(() => verifier.validateStep(valid, version, 'Win32'));
+  for (const alter of [s => s.architecture = 'x64', s => s.build.architecture = 'x64',
+    s => s.smoke.architecture = 'x64']) {
+    const invalid = structuredClone(valid); alter(invalid);
+    assert.throws(() => verifier.validateStep(invalid, version, 'x86'));
+  }
+  const phases = ['baseline', 'upgrade', 'rollback', 'reupgrade']
+    .map((name, i) => step(name, i % 2 ? version : previous, i, 'x86'));
+  assert.doesNotThrow(() => verifier.validateUpgrade(phases, previous, version, 'x86'));
+  const mixed = structuredClone(phases); mixed[2] = step('rollback', previous, 2, 'x64');
+  assert.throws(() => verifier.validateUpgrade(mixed, previous, version, 'x86'));
+});
+
+test('current release steps reject absent Owned records and unsupported profile reuse', () => {
+  const version = '0.3.0-preview.10', valid = step('upgrade', version);
+  assert.doesNotThrow(() => verifier.validateStep(valid, version));
+  for (const alter of [s => delete s.architecture, s => delete s.smoke.ownedSupervision,
+    s => s.smoke.ownedSupervision.schema = 'soui.native-smoke-owned/v0',
+    s => s.build.nativeToolchain = {profile: 'LLVM22MSVC142'}]) {
+    const invalid = structuredClone(valid); alter(invalid);
+    assert.throws(() => verifier.validateStep(invalid, version));
+  }
+});
+
+test('aggregate v3 accepts explicit x86 and rejects cross-architecture, legacy v2 and absent Owned', () => {
+  const {reports, expected} = aggregate('x86');
+  assert.doesNotThrow(() => verifier.validateReports(reports, expected));
+  assert.throws(() => verifier.validateReports(reports, {...expected, architecture: 'x64'}));
+  const legacy = structuredClone(reports);
+  legacy[0].schema = 'soui.generated-app-validation/v2';
+  legacy[1].schema = 'soui.fresh-app-validation/v2';
+  legacy[2].schema = 'soui.relocation/v2';
+  assert.throws(() => verifier.validateReports(legacy, expected));
+  for (const alter of [r => r[1].architecture = 'x64',
+    r => r[0].steps[1].smoke.architecture = 'x64',
+    r => delete r[1].step.smoke.ownedSupervision]) {
     const invalid = structuredClone(reports); alter(invalid);
     assert.throws(() => verifier.validateReports(invalid, expected));
   }

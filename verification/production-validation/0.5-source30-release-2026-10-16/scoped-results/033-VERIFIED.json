@@ -1,0 +1,142 @@
+{
+  "passed": true,
+  "source": 30,
+  "sourceManifest": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 16240065,
+    "sha256": "ad031346ae01ff74fa840e8c2ca820bd3e879a0848d41e8cb7c20f408c68e4b6"
+  },
+  "actualBackend": "webview2",
+  "actualSchedulingDiagnostic": true,
+  "actualCompositorMarkerObservation": false,
+  "automaticScene": true,
+  "realInputBenchmark": false,
+  "displayBinding": {
+    "before": {
+      "target": {
+        "deviceName": "\\\\.\\DISPLAY5",
+        "adapterLuid": "0000000000010bff",
+        "sourceId": 0,
+        "targetId": 268,
+        "friendlyName": "P24FBA-RA",
+        "left": 0,
+        "top": 0,
+        "right": 1920,
+        "bottom": 1080,
+        "configuredSignalVSync": {
+          "numerator": 100,
+          "denominator": 1
+        }
+      },
+      "raw": {
+        "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\display-before-stdout.bin",
+        "bytes": 8439,
+        "sha256": "ebcaf11081861796a0ee956c2d7d1aa28227df3ba7e22cec848294fe9b10a5ef"
+      },
+      "result": {
+        "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\display-before-RESULT.json",
+        "bytes": 2264,
+        "sha256": "d400f4c57622cc53bde3b40fbe8fac809b410d9c1ecbadec1cfdf8a8262482b4"
+      },
+      "collector": {
+        "pid": 26516,
+        "creationFileTime": "134366103318082761"
+      }
+    },
+    "after": {
+      "target": {
+        "deviceName": "\\\\.\\DISPLAY5",
+        "adapterLuid": "0000000000010bff",
+        "sourceId": 0,
+        "targetId": 268,
+        "friendlyName": "P24FBA-RA",
+        "left": 0,
+        "top": 0,
+        "right": 1920,
+        "bottom": 1080,
+        "configuredSignalVSync": {
+          "numerator": 100,
+          "denominator": 1
+        }
+      },
+      "raw": {
+        "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\display-after-stdout.bin",
+        "bytes": 8439,
+        "sha256": "493248cda54db69edc434730f59e2e7ba8066b1ea738a55840dd09aafcea4921"
+      },
+      "result": {
+        "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\display-after-RESULT.json",
+        "bytes": 2263,
+        "sha256": "9e9be37d7973fc0a243d1e8117ac8f5a406ce6f9289a3b81eb7d73999ed0d37d"
+      },
+      "collector": {
+        "pid": 55432,
+        "creationFileTime": "134366104594771215"
+      }
+    },
+    "initialWindow": {
+      "bottom": 1080,
+      "configuredFrequency": 100,
+      "deviceName": "\\\\.\\DISPLAY5",
+      "left": 0,
+      "right": 1920,
+      "top": 0,
+      "windowBottom": 919,
+      "windowLeft": 402,
+      "windowRight": 1518,
+      "windowTop": 160
+    },
+    "finalWindow": {
+      "bottom": 1080,
+      "configuredFrequency": 100,
+      "deviceName": "\\\\.\\DISPLAY5",
+      "left": 0,
+      "right": 1920,
+      "top": 0,
+      "windowBottom": 919,
+      "windowLeft": 402,
+      "windowRight": 1518,
+      "windowTop": 160
+    },
+    "actualWindowOutputMatched": true,
+    "configuredSignalHz": 100
+  },
+  "nativeHost": {
+    "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\results\\modern-host.json",
+    "bytes": 720,
+    "sha256": "07bb16080d2ae6e104b7b721f9180c869a5c861bfbbde31c2ef6d534245dfde2"
+  },
+  "pageResult": {
+    "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\results\\modern-55800-16133046-1.json",
+    "bytes": 203086,
+    "sha256": "abb0bbfa386ff12a96847634ac9b264e465c122ec7f456854d0ee2dba9d8f10b"
+  },
+  "hostRun": {
+    "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\HOST-RESULT.json",
+    "bytes": 1401,
+    "sha256": "99cd6c126db813b8b65143ff350180fbc7057d80268daf880ab7168c394712c7"
+  },
+  "built": {
+    "path": "C:\\work\\sm05-source30-modern-scheduling-9\\build-x64-source30-1\\BUILT.json",
+    "bytes": 81023,
+    "sha256": "f0490e1d8b70aeae7252695b7d0f3ebbcae3cb93d3b9d4bd25732a0e406e265d"
+  },
+  "prepared": {
+    "path": "C:\\work\\sm05-source30-modern-scheduling-9\\PREPARED.json",
+    "bytes": 18777,
+    "sha256": "5055f9043881b371d8e40e7e5e03550c734687756b3279e5b7eb0f0b6748302d"
+  },
+  "observedRafIntervalsMs": {
+    "count": 11972,
+    "p50": 10,
+    "p95": 10.10000000000582,
+    "p99": 10.19999999999709,
+    "max": 283.59999999962747
+  },
+  "observedMedianRafCadenceHz": 100,
+  "minimumFrameRateGateEvaluated": false,
+  "physicalPresentation": false,
+  "opticalCalibration": false,
+  "pairedPerformanceQualified": false,
+  "releaseReady": false
+}

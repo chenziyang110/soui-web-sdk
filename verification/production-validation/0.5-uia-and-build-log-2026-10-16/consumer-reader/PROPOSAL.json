@@ -1,0 +1,64 @@
+{
+  "schema": "soui.private-change-proposal/1",
+  "adopted": false,
+  "currentSource": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 15734831,
+    "sha256": "52e19555127cff41afabb4ee9e7b0af662630cbdfce35f270d0d4753473d1cf4"
+  },
+  "scope": "Bind newly captured immutable CMake logs for both installed acceptance and release consumers; legacy evidence checks unchanged",
+  "requires": {
+    "path": "C:\\work\\sm05-uia-delivery-2\\PROPOSAL.json",
+    "bytes": 9158,
+    "sha256": "d1ada34f42af51c7504877fab9dfff05f0a13d4bb594ba8e40121560d4cd2333"
+  },
+  "files": [
+    {
+      "relative": "tools/internal/llvm-installed-acceptance.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tools\\internal\\llvm-installed-acceptance.cjs",
+        "bytes": 33266,
+        "sha256": "13ac21e8f625a50aa0ed1ed3c2ed6204ec1637feffecbc9f0cd8c8b3e0cbfe5b"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-configure-log-consumers-1\\proposal\\tools\\internal\\llvm-installed-acceptance.cjs",
+        "bytes": 33662,
+        "sha256": "7e17a8d4bf6adbc1420c5fb25921a1311912b15de1c1c1734c4bef2a77cff5ca"
+      }
+    },
+    {
+      "relative": "tests/acceptance/llvm-installed-entry.test.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tests\\acceptance\\llvm-installed-entry.test.cjs",
+        "bytes": 14395,
+        "sha256": "549af97799c3acd95db61e554fce130dcd4ebb6d9675ec2dd533bd9a519d8e2d"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-configure-log-consumers-1\\proposal\\tests\\acceptance\\llvm-installed-entry.test.cjs",
+        "bytes": 17756,
+        "sha256": "0da557fc28b3ebe0bb5765a230989585141ec2cabcf28113be80164c4bf4dea0"
+      }
+    }
+  ],
+  "regressions": 16,
+  "skipped": 0,
+  "evidence": [
+    {
+      "path": "C:\\work\\sm05-configure-log-consumers-1\\red.txt",
+      "bytes": 3795,
+      "sha256": "5dfc6635d9059f4f56bc4bf02cf59e301a34d01519bb49927f468424dd041754"
+    },
+    {
+      "path": "C:\\work\\sm05-configure-log-consumers-1\\green.txt",
+      "bytes": 1866,
+      "sha256": "c62af5f7f8cea17048cd480ed464df79574aa49c03269374ac5c9575f41ca9a0"
+    },
+    {
+      "path": "C:\\work\\sm05-configure-log-consumers-1\\run-regression.cjs",
+      "bytes": 2778,
+      "sha256": "cd04a1b464e109530ceededbed955709adf1da2e41d24e822a91c34923f471cc"
+    }
+  ],
+  "actualPublicConsumerRun": false,
+  "releaseReady": false
+}

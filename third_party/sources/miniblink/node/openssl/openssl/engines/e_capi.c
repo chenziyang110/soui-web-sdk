@@ -897,6 +897,7 @@ int capi_rsa_priv_dec(int flen, const unsigned char *from,
                       unsigned char *to, RSA *rsa, int padding)
 {
     int i;
+    DWORD dlen = flen;
     unsigned char *tmpbuf;
     CAPI_KEY *capi_key;
     CAPI_CTX *ctx;
@@ -927,17 +928,17 @@ int capi_rsa_priv_dec(int flen, const unsigned char *from,
         tmpbuf[flen - i - 1] = from[i];
 
     /* Finally decrypt it */
-    if (!CryptDecrypt(capi_key->key, 0, TRUE, 0, tmpbuf, &flen)) {
+    if (!CryptDecrypt(capi_key->key, 0, TRUE, 0, tmpbuf, &dlen)) {
         CAPIerr(CAPI_F_CAPI_RSA_PRIV_DEC, CAPI_R_DECRYPT_ERROR);
         capi_addlasterror();
         OPENSSL_free(tmpbuf);
         return -1;
     } else
-        memcpy(to, tmpbuf, flen);
+        memcpy(to, tmpbuf, dlen);
 
     OPENSSL_free(tmpbuf);
 
-    return flen;
+    return dlen;
 }
 
 static int capi_rsa_free(RSA *rsa)
@@ -1691,7 +1692,7 @@ static int capi_load_ssl_client_cert(ENGINE *e, SSL *ssl,
     STACK_OF(X509) *certs = NULL;
     X509 *x;
     char *storename;
-    const char *p;
+    const unsigned char *p;
     int i, client_cert_idx;
     HCERTSTORE hstore;
     PCCERT_CONTEXT cert = NULL, excert = NULL;

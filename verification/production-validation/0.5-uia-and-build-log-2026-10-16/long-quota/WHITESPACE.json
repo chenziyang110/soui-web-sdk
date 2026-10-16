@@ -1,0 +1,80 @@
+[
+  {
+    "path": "CHANGELOG.md",
+    "status": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "path": "docs/acceptance/0.5.0-long-run-policy.md",
+    "status": 3,
+    "stdout": "C:\\work\\sm05-long-quota-1\\proposal\\docs\\acceptance\\0.5.0-long-run-policy.md:41: trailing whitespace.\n+Revision `0.5.0-m0-task-request-quota-v3` additionally evaluates the emitted TaskStore private allocation-request quota for every live and retired owner in mixed/session. The configured maximum remains 134217728 bytes, matching ADR 0101. The required `taskStoreQuota` gate checks peaks, immutable owner identity, caller clocks, cumulative counters, lifecycle/cycle coverage and exact binding to the raw run. Missing or busy readings remain not-evaluated, known violations fail, and parsed analysis is recomputed before capture classification. This is neither a whole-cache budget nor proof of final C++ owner disposal. Original duration, sampling, resource/action trends, other gates and raw historical v2 records remain unchanged. No actual eight-hour run is claimed by parser tests.\r\n",
+    "stderr": ""
+  },
+  {
+    "path": "docs/adr/0108-long-task-request-quota.md",
+    "status": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "path": "docs/adr/README.md",
+    "status": 3,
+    "stdout": "C:\\work\\sm05-long-quota-1\\proposal\\docs\\adr\\README.md:62: trailing whitespace.\n+- [ADR-0108：长期负载中的 TaskStore 请求字节限额](0108-long-task-request-quota.md)（独立 proposal，冻结候选尚未采用）\r\n",
+    "stderr": ""
+  },
+  {
+    "path": "docs/testing.md",
+    "status": 3,
+    "stdout": "C:\\work\\sm05-long-quota-1\\proposal\\docs\\testing.md:134: trailing whitespace.\n+长期额度读取回归已接入 Test.ps1 与 Collect-Verification：`tests/acceptance/long-run-task-quota.test.cjs`、`tests/sdk/long-run-policy.test.cjs`、`tests/sdk/long-run-cache-observation.test.cjs`、`tests/acceptance/resource-validation.test.cjs`。这些模型检查不能替代公开入口中的真实长测；新额度子门见 ADR 0108。\r\n",
+    "stderr": ""
+  },
+  {
+    "path": "tests/acceptance/long-run-policy.cjs",
+    "status": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "path": "tests/acceptance/long-run-task-quota-fixture.cjs",
+    "status": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "path": "tests/acceptance/long-run-task-quota.test.cjs",
+    "status": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "path": "tests/acceptance/long-run-validation.cjs",
+    "status": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "path": "tests/acceptance/task-store-request-quota.cjs",
+    "status": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "path": "tests/sdk/long-run-policy.test.cjs",
+    "status": 3,
+    "stdout": "C:\\work\\sm05-long-quota-1\\proposal\\tests\\sdk\\long-run-policy.test.cjs:561: trailing whitespace.\n+});\r\nC:\\work\\sm05-long-quota-1\\proposal\\tests\\sdk\\long-run-policy.test.cjs:573: trailing whitespace.\n+});\r\n",
+    "stderr": ""
+  },
+  {
+    "path": "tools/Collect-Verification.cjs",
+    "status": 1,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "path": "tools/Test.ps1",
+    "status": 3,
+    "stdout": "C:\\work\\sm05-long-quota-1\\proposal\\tools\\Test.ps1:177: trailing whitespace.\n+  & node --test (Join-Path $root 'tests/acceptance/long-run-task-quota.test.cjs') (Join-Path $root 'tests/sdk/long-run-policy.test.cjs') (Join-Path $root 'tests/sdk/long-run-cache-observation.test.cjs') (Join-Path $root 'tests/acceptance/resource-validation.test.cjs')\r\nC:\\work\\sm05-long-quota-1\\proposal\\tools\\Test.ps1:178: trailing whitespace.\n+  if($LASTEXITCODE -ne 0){throw 'Long-run quota, owner, cache or resource reader regressions failed'}\r\n",
+    "stderr": ""
+  }
+]

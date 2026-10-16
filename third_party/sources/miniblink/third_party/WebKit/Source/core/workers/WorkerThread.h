@@ -32,6 +32,7 @@
 #include "core/frame/csp/ContentSecurityPolicy.h"
 #include "core/workers/WorkerGlobalScope.h"
 #include "core/workers/WorkerLoaderProxy.h"
+#include "core/workers/WorkerShutdownRecord.h"
 #include "platform/WebThreadSupportingGC.h"
 #include "platform/weborigin/SecurityOrigin.h"
 #include "wtf/Forward.h"
@@ -96,7 +97,21 @@ public:
     WorkerReportingProxy& workerReportingProxy() const { return m_workerReportingProxy; }
 
     void postTask(const WebTraceLocation&, PassOwnPtr<ExecutionContextTask>);
-    void appendDebuggerTask(PassOwnPtr<WebThread::Task>);
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+    void postDiagnosticMessageTask(const WebTraceLocation&, PassOwnPtr<ExecutionContextTask>, unsigned generation, unsigned ordinal);
+    static bool diagnosticMessageCallbackEntered();
+#endif
+    bool appendDebuggerTask(PassOwnPtr<WebThread::Task>);
+    virtual bool supportsShutdownRetirement() const { return false; }
+    virtual WorkerRetirementResult retireBacking() { return WorkerRetirementResult::Failed; }
+    virtual bool duplicateShutdownWitness(WebThread::ShutdownWitness&) { return false; }
+    void enableShutdownRetirement(PassRefPtr<WorkerShutdownRecord>);
+    WorkerShutdownRecord* shutdownRecord() const { return m_shutdownRecord.get(); }
+    bool managedShutdown() const { return m_managedShutdown; }
+    WebThread::Task* wrapRawTask(PassOwnPtr<WebThread::Task>, WorkerShutdownRecord::TaskKind);
+    void afterTrackedTask();
+    void postShutdownTask();
+    static bool allWorkersRetirementSupported();
 
     enum WaitMode { WaitForMessage, DontWaitForMessage };
     MessageQueueWaitResult runDebuggerTask(WaitMode = WaitForMessage);
@@ -151,6 +166,8 @@ private:
     void performIdleWork(double deadlineSeconds);
     void postDelayedTask(const WebTraceLocation&, PassOwnPtr<ExecutionContextTask>, long long delayMs);
 
+    RefPtr<WorkerShutdownRecord> m_shutdownRecord;
+    bool m_managedShutdown;
     bool m_started;
     bool m_terminated;
     bool m_shutdown;

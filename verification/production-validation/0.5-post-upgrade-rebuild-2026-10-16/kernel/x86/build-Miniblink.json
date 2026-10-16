@@ -1,0 +1,141 @@
+{
+  "schema": "soui.dependency-build/v1",
+  "architecture": "x86",
+  "component": "Miniblink",
+  "experimentalGpu": false,
+  "startedAt": "2026-10-16T11:44:19.8633145+08:00",
+  "finishedAt": "2026-10-16T13:12:24.8724237+08:00",
+  "status": "built",
+  "releaseReady": false,
+  "souiSourceStage": null,
+  "artifacts": [
+    {
+      "kind": "miniblink",
+      "path": "C:\\work\\sm05-kernel-post-upgrade-x86-1\\miniblink\\bin\\node.dll",
+      "sha256": "90A214CA2D416EDA8E980CAB7AACB80FFFEF777ACE20C06179F41E584DAE093B"
+    }
+  ],
+  "kernelLlvm": {
+    "schema": "soui.public-kernel-llvm-build-files/v1",
+    "profile": "LLVM22MSVC142",
+    "architecture": "x86",
+    "inputs": {
+      "path": "C:/work/sm05-kernel-post-upgrade-x86-1/kernel-llvm-inputs.json",
+      "bytes": 25382,
+      "sha256": "9b019c68d33a0ae3b23e7a9c9788ff75ead5feb91ecb815a256a9153f3e4b7c8"
+    },
+    "sourceBefore": {
+      "path": "C:/work/sm05-kernel-post-upgrade-x86-1/kernel-source-before.json",
+      "bytes": 4585866,
+      "sha256": "a06ea699856c146c75e002be24034624874b997af485b769a58b1ec06e1df2ac"
+    },
+    "sourceAfter": {
+      "path": "C:/work/sm05-kernel-post-upgrade-x86-1/kernel-source-after.json",
+      "bytes": 4585866,
+      "sha256": "a06ea699856c146c75e002be24034624874b997af485b769a58b1ec06e1df2ac"
+    },
+    "sourceImmutable": true,
+    "inputFilesStable": true,
+    "libraries": [
+      {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/libraries/lib/zlib.lib",
+        "bytes": 397152,
+        "sha256": "4481f727e596c9c728f59b0f13347bb0248c11c63e1c564677ad893995e3e39d"
+      },
+      {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/libraries/lib/libjpeg.lib",
+        "bytes": 1699550,
+        "sha256": "da7a85ae8cdd40be0efcbb3ca9b769c7affe4a85cea13f094cc0135300016aea"
+      },
+      {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/libraries/lib/libpng.lib",
+        "bytes": 1168182,
+        "sha256": "115c8b22896d424df91574f69ac4d166500d2d0d992fec89c7e81c21a898dd61"
+      },
+      {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/libraries/lib/harfbuzz.lib",
+        "bytes": 3801718,
+        "sha256": "7f11e02e5e2a2e685fd118c5f5db0f426d14b03e137e9e8ba72dbb3d81b01120"
+      },
+      {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/libraries/lib/libxml.lib",
+        "bytes": 4805942,
+        "sha256": "bc8da2d7b74613d85a2c2cc77d136fa6fc628a465ced6de18811049e3f5b31d8"
+      },
+      {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/libraries/lib/ots.lib",
+        "bytes": 11354802,
+        "sha256": "68ec17557019daf7980acb5dea4e5828b43f3989f562fe621794a94cd62ea75f"
+      },
+      {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/libraries/lib/openssl.lib",
+        "bytes": 18048676,
+        "sha256": "106823aee8960db0106909b913677938bcae8bc84343f04b12744596c9f3b268"
+      },
+      {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/libraries/lib/libcurl.lib",
+        "bytes": 5457846,
+        "sha256": "9b17702f651d022f0d2fe4da024c560e5b3b3cc166c25b9e3161e3eed4502ef7"
+      },
+      {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/libraries/lib/v8_5_7.lib",
+        "bytes": 656525478,
+        "sha256": "524f5e8315fb5753ddca89d452eefcc110ec149405e5b4dab405c7e98f53485a"
+      },
+      {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/libraries/lib/v8_5_7_1.lib",
+        "bytes": 528600018,
+        "sha256": "1fe9a6284a43837487a2d4e4caf92b0bf691e96c6b479df6cccb1899597b23d9"
+      },
+      {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/libraries/lib/skia.lib",
+        "bytes": 27195426,
+        "sha256": "6aeb531bae9cce5e8903e024402c7b196671cea43c1902448c9edc0e9c5b6bcf"
+      }
+    ],
+    "dll": {
+      "path": "C:/work/sm05-kernel-post-upgrade-x86-1/miniblink/bin/node.dll",
+      "bytes": 28115968,
+      "sha256": "90a214ca2d416eda8e980cab7aacb80fffef777ace20c06179f41e584dae093b"
+    },
+    "map": {
+      "path": "C:/work/sm05-kernel-post-upgrade-x86-1/miniblink/bin/node.map",
+      "bytes": 48820430,
+      "sha256": "379daeffb86475e4c53866ec270ca5cd91b20e58471136aab6fc6b40bce5d6da"
+    },
+    "requestedClangVersion": "22.1.3",
+    "requestedMsvcCompatibility": "19.29.30159",
+    "compilerVersionProbe": {
+      "scope": "selected-tool-version-response",
+      "executableBefore": {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+        "bytes": 104747608,
+        "sha256": "ec094d5f8f37c106eefcfc47c9997c261a06e3bd8eaaa7255835983a58524156"
+      },
+      "executableAfter": {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+        "bytes": 104747608,
+        "sha256": "ec094d5f8f37c106eefcfc47c9997c261a06e3bd8eaaa7255835983a58524156"
+      },
+      "stdout": {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/clang-version.stdout.raw.log",
+        "bytes": 242,
+        "sha256": "a8e6844e85eb2c4633785606393c96408f24bb297f8ce85735ea196ec4919695"
+      },
+      "stderr": {
+        "path": "C:/work/sm05-kernel-post-upgrade-x86-1/clang-version.stderr.raw.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exitCode": 0,
+      "observedVersion": "22.1.3",
+      "translationUnitCompilationObserved": false,
+      "wholeJob": null
+    },
+    "compilerExecution": null,
+    "wholeJob": null,
+    "abi": null,
+    "toolchainQualification": null,
+    "releaseReady": false
+  }
+}

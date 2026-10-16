@@ -9,6 +9,7 @@ import { ProductHome, type ProductPage } from '../../apps/react/product-home';
 import { ProductTitlebar, type WindowAction } from '../../apps/react/product-shell';
 import { AsyncMemoryAdapter, FIXTURE, SCENES, type BenchmarkRow, type SceneId } from './benchmark-contract';
 import { connectSouiNative, type SouiCoreMethodMap } from '@soui-sdk';
+import { initializeVisualMarker, visualScene, visualMotionFrame, visualMarkerSnapshot } from './visual-marker';
 
 const MOTION_DURATION_MS = 120000;
 const MAX_EVENT_RECORDS = 12000;
@@ -99,6 +100,7 @@ type BenchmarkResult = {
     rawIntervalsMs: null;
   };
   scope: string;
+  visualMarker: ReturnType<typeof visualMarkerSnapshot>;
 };
 
 type WindowWithBenchmark = Window & {
@@ -170,6 +172,7 @@ function useBenchmarkTelemetry(scene: SceneId) {
       sceneChecks: { ready: true, completed, imeEvents: current.imeEvents },
       physicalPresentation: { status: 'not-collected', reason: 'PresentMon/GPUView was unavailable during the frozen capability probe; JS rAF and Miniblink paint timestamps are diagnostic only.', rawIntervalsMs: null },
       scope: 'Same local legacy React bundle and deterministic in-memory adapter. Input records are renderer event timestamps; external SendInput/Win32 timestamps are stored beside this result. No raw physical display-present timestamps were available.',
+      visualMarker: visualMarkerSnapshot(),
     };
     if (current.scene === 'S02') {
       result.sceneChecks.rowCount = FIXTURE.rowCount;
@@ -279,12 +282,13 @@ function S05Surface({ command, telemetry, recordCommit, completeAction }: { comm
       if (telemetry.current.rafIntervals.length < MAX_RAF_RECORDS && previous > 0) telemetry.current.rafIntervals.push(timestamp - previous);
       previous = timestamp;
       const nextElapsed = timestamp - started; setElapsed(nextElapsed);
+      visualMotionFrame(nextElapsed < MOTION_DURATION_MS);
       if (nextElapsed >= MOTION_DURATION_MS) { runningRef.current = false; setRunning(false); recordCommit('s05-motion-complete', String(Math.round(nextElapsed))); return; }
       window.requestAnimationFrame(tick);
     };
     window.requestAnimationFrame(tick);
   }, [command, completeAction, recordCommit, telemetry]);
-  useEffect(() => () => { runningRef.current = false; }, []);
+  useEffect(() => () => { runningRef.current = false; visualMotionFrame(false); }, []);
   return <div className="benchmark-scene benchmark-s05">
     <div className="benchmark-scene-head"><div><span className="benchmark-kicker">S05 / MOTION DIAGNOSTIC</span><h1>连续动效 120 秒</h1><p>CSS transform/opacity 是被测视觉内容；rAF 只作为 JS 调度诊断，不能替代物理呈现间隔。</p></div><div className="benchmark-state"><b>{Math.floor(elapsed / 1000)}s</b><span>{running ? 'running' : elapsed >= MOTION_DURATION_MS ? 'complete' : 'ready'}</span></div></div>
     <div className={`benchmark-motion-stage ${running ? 'is-running' : ''}`}><div className="benchmark-motion-orbit orbit-a"><i /><b>GPU-safe 2D</b></div><div className="benchmark-motion-orbit orbit-b"><i /><b>opacity track</b></div><div className="benchmark-motion-orbit orbit-c"><i /><b>fixed scene</b></div><div className="benchmark-motion-center">{running ? 'MEASURING' : 'READY'}<small>120,000 ms contract</small></div></div>
@@ -303,6 +307,8 @@ function BenchmarkApp() {
   const [scene, setScene] = useState<SceneId>(initialScene);
   const [command, setCommand] = useState<Command>(null);
   const [status, setStatus] = useState('ready');
+  useEffect(initializeVisualMarker, []);
+  useLayoutEffect(() => visualScene(Number(scene.slice(2))), [scene]);
   const telemetryApi = useBenchmarkTelemetry(scene);
   const { telemetry, reset, recordEvent, recordCommit, recordAction, completeAction, snapshot } = telemetryApi;
   const notify = useCallback((text: string) => setStatus(text), []);

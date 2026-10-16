@@ -1,0 +1,36 @@
+✔ session evaluates every native owner including slot reuse with a distinct pool (10.0625ms)
+✔ mixed evaluates every native owner including slot reuse with a distinct pool (1.45ms)
+✔ configured bytes differ from the frozen production quota (1.1344ms)
+✔ a transient peak above the cap fails even when current usage is small (1.3351ms)
+✔ same document cannot change pool identity (0.6393ms)
+✔ retired pool cannot be reused by another lifetime (0.6466ms)
+✔ missing retired observations retain an incomplete gate (0.7763ms)
+✔ nonempty current roster cannot be removed (0.5138ms)
+✔ a view cannot be observed after its owner has closed (0.6704ms)
+✔ unknown window slots are refused (0.7805ms)
+✔ native process identity must match the bound consumer (0.8171ms)
+✔ capture replay cannot count as another observation (0.5918ms)
+✔ reversed cumulative counters cannot hide earlier allocation pressure (0.5207ms)
+✔ original native failure survives later successful samples (0.7233ms)
+✔ caller cannot replace the fixed long workload settings (0.5275ms)
+✔ caller cannot claim a different finite default (0.6332ms)
+✔ missing full source binding cannot qualify a quota (0.4113ms)
+✔ an unclosed owner remains incomplete (0.6792ms)
+✔ missing terminal marker remains incomplete (0.4612ms)
+✔ busy quota observation is incomplete rather than silently zero (0.5155ms)
+✔ unavailable quota cannot preserve a finite policy or charged data (0.5393ms)
+✔ missing private quota does not become an observed zero (0.6875ms)
+✔ a known quota violation wins over a separate missing observation (0.4691ms)
+✔ a valid original byte hash is required and parsed consistency cannot authenticate raw bytes (1.4268ms)
+✔ long logs use a separate bound without enlarging the original reload parser (11.8824ms)
+✔ duplicate fields are rejected before decoding the original bytes (0.3912ms)
+✔ mixed mode must preserve one sample per completed cycle (1.288ms)
+✔ retired owner must belong to the current cycle (0.9163ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 172.4014

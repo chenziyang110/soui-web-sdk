@@ -92,13 +92,16 @@ function validateHostIdentity(trace, subject) {
 }
 
 async function main() {
+  const arguments_ = process.argv.slice(2);
+  const desktopObservation = arguments_.at(-1) === '--desktop-observe';
+  if (desktopObservation) arguments_.pop();
   const [host, scene, pageArgument, hostArgument, dependencyArgument,
-    samplerArgument, inputArgument, outputArgument, identityArgument] = process.argv.slice(2);
-  if (![10, 11].includes(process.argv.length) || !['soui', 'electron'].includes(host) ||
+    samplerArgument, inputArgument, outputArgument, identityArgument] = arguments_;
+  if (![8, 9].includes(arguments_.length) || !['soui', 'electron'].includes(host) ||
       !['S01', 'S02', 'S03', 'S04', 'S05'].includes(scene))
     throw new Error('Usage: node run-one.cjs soui|electron S01|... ABS_PAGE_DIRECTORY '
       + 'ABS_HOST_EXE ABS_NODE_DLL_OR_ELECTRON_APP_DIRECTORY ABS_SAMPLER_EXE ABS_INPUT_EXE '
-      + 'ABS_NEW_OUTPUT_DIRECTORY [ABS_SDK_LIBRARY_OR_ELECTRON_LOCKFILE]');
+      + 'ABS_NEW_OUTPUT_DIRECTORY [ABS_SDK_LIBRARY_OR_ELECTRON_LOCKFILE] [--desktop-observe]');
   const page = requirePath(pageArgument, 'page directory');
   const hostExe = requirePath(hostArgument, 'host executable');
   const dependency = requirePath(dependencyArgument,
@@ -151,6 +154,10 @@ async function main() {
       bytes: fs.statSync(identityFile).size, sha256: sha(identityFile)} : null,
     tools: {samplerSha256: sha(samplerExe), inputSha256: sha(inputExe), ownedRunnerSha256: sha(ownedRunner)},
     maxDurationMs, cleanup: [], releaseReady: false, benchmarkValid: false};
+  if (desktopObservation) {
+    if (!identityFile || scene === 'S03') throw new Error('Desktop observation requires frozen identity and does not qualify IME');
+    record.desktopObservation = true;
+  }
   let timer;
   let timedOut = false;
   try {
@@ -171,7 +178,7 @@ async function main() {
       [pid, '1000', String(maxDurationMs), path.join(output, 'process-tree.ndjson'), subject.creationFileTime],
       path.dirname(samplerExe), output, process.env, {runner: ownedRunner, timeoutMs: maxDurationMs + 10000}));
     runs.push(launch('input', inputExe,
-      [pid, scene, path.join(output, 'input.ndjson'), 'full', subject.creationFileTime],
+      [pid, scene, path.join(output, 'input.ndjson'), desktopObservation ? 'full-desktop' : 'full', subject.creationFileTime],
       path.dirname(inputExe), output, process.env, {runner: ownedRunner, timeoutMs: maxDurationMs + 10000}));
     for (const run of runs) {
       void run.finished.then(result => {
@@ -185,6 +192,7 @@ async function main() {
       throw new Error(timedOut ? 'Benchmark run exceeded deadline' : 'Benchmark process failed');
     record.ownedEvidence = captureOwnedEvidence(output, record.processes);
     record.traceEvidence = {input:describe(output, 'input.ndjson'), processTree:describe(output, 'process-tree.ndjson')};
+    if (desktopObservation) record.traceEvidence.desktop = describe(output, 'input.ndjson.desktop.ndjson');
     const verified = readOwnedRun(output, record);
     const trace = checkRunTraces(readRunLines(output, 'input.ndjson'),
       readRunLines(output, 'process-tree.ndjson'), scene, {ownedSubject:verified.subject});
@@ -203,6 +211,9 @@ async function main() {
     record.pageResult = {path: path.relative(output, pageResultPath).replaceAll('\\', '/'),
       bytes: fs.statSync(pageResultPath).size, sha256: sha(pageResultPath),
       durationMs: pageResult.timing.durationMs};
+    if (desktopObservation) record.desktop = require('./desktop-visual.cjs').checkDesktopTrace(
+      readRunLines(output, 'input.ndjson'), readRunLines(output, 'input.ndjson.desktop.ndjson'), scene,
+      {ownerSubject:verified.subject, collectorSubject:verified.processes.input.subject, pageMarker:pageResult.visualMarker});
     record.status = 'completed';
   } catch (error) {
     stop(runs, record.cleanup);

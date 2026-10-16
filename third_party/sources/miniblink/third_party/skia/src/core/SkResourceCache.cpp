@@ -246,6 +246,19 @@ void SkResourceCache::add(Rec* rec) {
         return;
     }
 
+    // The discardable store retains records independently of externally held
+    // pixel data. A configured byte threshold governs only this cache ownership.
+    // Evict before adding so the sum cannot overflow even at a size_t limit.
+    if (fDiscardableFactory && fTotalByteLimit) {
+        const size_t incomingBytes = rec->bytesUsed();
+        if (incomingBytes >= fTotalByteLimit) {
+            SkDELETE(rec);
+            return;
+        }
+        while (fTail && fTotalBytesUsed >= fTotalByteLimit - incomingBytes)
+            this->remove(fTail);
+    }
+
     this->addToHead(rec);
     fHash->add(rec);
 
@@ -288,7 +301,7 @@ void SkResourceCache::purgeAsNeeded(bool forcePurge) {
 
     if (fDiscardableFactory) {
         countLimit = SK_DISCARDABLEMEMORY_SCALEDIMAGECACHE_COUNT_LIMIT;
-        byteLimit = SK_MaxU32;  // no limit based on bytes
+        byteLimit = fTotalByteLimit ? fTotalByteLimit : SK_MaxU32; // zero preserves the legacy policy
     } else {
         countLimit = SK_MaxS32; // no limit based on count
         byteLimit = fTotalByteLimit;
@@ -350,7 +363,7 @@ void SkResourceCache::purgeSharedID(uint64_t sharedID) {
 size_t SkResourceCache::setTotalByteLimit(size_t newLimit) {
     size_t prevLimit = fTotalByteLimit;
     fTotalByteLimit = newLimit;
-    if (newLimit < prevLimit) {
+    if (newLimit < prevLimit || (fDiscardableFactory && !prevLimit && newLimit)) {
         this->purgeAsNeeded();
     }
     return prevLimit;
@@ -541,6 +554,38 @@ static SkResourceCache* get_cache() {
         atexit(cleanup_gResourceCache);
     }
     return gResourceCache;
+}
+
+SkResourceCacheObservation SkResourceCache::PeekRetainedGlobalCache() {
+    SkResourceCacheObservation result = {};
+#if defined(SK_BUILD_FOR_WIN) && !SK_DEVELOPER
+    if (!gMutex.tryAcquire()) {
+        result.status = kBusy_SkCacheObservation;
+        return result;
+    }
+    struct Held {
+        SkBaseMutex& lock;
+        ~Held() { lock.release(); }
+    } held = {gMutex};
+    if (!gResourceCache) return result;
+    if (gResourceCache->fCount < 0) {
+        result.status = kUnavailable_SkCacheObservation;
+        return result;
+    }
+    result.discardable = gResourceCache->fDiscardableFactory ? 1U : 0U;
+    result.bytes = gResourceCache->fTotalBytesUsed;
+    result.count = static_cast<uint64_t>(gResourceCache->fCount);
+    result.byteLimit = gResourceCache->fTotalByteLimit;
+    // Actual purge thresholds; neither field asserts all-image-heap coverage.
+    result.countLimit = result.discardable ? SK_DISCARDABLEMEMORY_SCALEDIMAGECACHE_COUNT_LIMIT : SK_MaxS32;
+    result.rawSingleLimit = gResourceCache->getSingleAllocationByteLimit();
+    result.effectiveSingleLimit = gResourceCache->getEffectiveSingleAllocationByteLimit();
+    result.status = kReady_SkCacheObservation;
+#else
+    // Developer atexit deletion has no concurrent observation lifetime contract.
+    result.status = kUnavailable_SkCacheObservation;
+#endif
+    return result;
 }
 
 size_t SkResourceCache::GetTotalBytesUsed() {

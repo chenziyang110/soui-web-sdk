@@ -58,6 +58,124 @@ const double kLongIdlePeriodSecs = 1.0;
 
 } // namespace
 
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+namespace {
+struct DiagnosticMessageContext {
+    WorkerShutdownRecord* record; unsigned generation, ordinal;
+};
+thread_local DiagnosticMessageContext diagnosticMessageContext = { nullptr, 0, 0 };
+class ScopedDiagnosticMessage final {
+public:
+    ScopedDiagnosticMessage(WorkerShutdownRecord* record, unsigned generation, unsigned ordinal)
+        : m_previous(diagnosticMessageContext)
+    { diagnosticMessageContext = { record, generation, ordinal }; }
+    ~ScopedDiagnosticMessage() { diagnosticMessageContext = m_previous; }
+private:
+    DiagnosticMessageContext m_previous;
+};
+} // namespace
+#endif
+
+class TrackedWorkerTask final : public WebThread::Task {
+public:
+    TrackedWorkerTask(WorkerThread* worker, PassOwnPtr<WebThread::Task> task, WorkerShutdownRecord::TaskKind kind
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+        , unsigned generation = 0, unsigned ordinal = 0
+#endif
+        )
+        : m_worker(worker), m_record(worker->shutdownRecord()), m_task(task), m_kind(kind),
+          m_admitted(m_record->admit(kind)), m_running(false)
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+          , m_diagnosticGeneration(generation), m_diagnosticOrdinal(ordinal), m_diagnosticDestroyed(false)
+#endif
+    { if (!m_admitted) m_task.clear();
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+        if (!m_admitted) retireDiagnosticPayload();
+#endif
+    }
+    ~TrackedWorkerTask() override
+    {
+        m_task.clear();
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+        retireDiagnosticPayload();
+#endif
+        if (m_admitted) m_record->finish(m_kind, m_running);
+    }
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+    void diagnosticQueueCommitted() noexcept override
+    {
+        if (m_diagnosticGeneration && m_admitted)
+            m_record->backlogDiagnostic().committed(m_diagnosticGeneration, m_diagnosticOrdinal);
+    }
+#endif
+    void run() override
+    {
+        if (!m_admitted || !m_record->begin(m_kind)) return;
+        m_running = true;
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+        if (m_diagnosticGeneration)
+            m_record->backlogDiagnostic().begun(m_diagnosticGeneration, m_diagnosticOrdinal);
+        {
+            ScopedDiagnosticMessage context(m_diagnosticGeneration ? m_record.get() : nullptr,
+                m_diagnosticGeneration, m_diagnosticOrdinal);
+#endif
+        m_task->run();
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+        }
+#endif
+        m_task.clear();
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+        retireDiagnosticPayload();
+#endif
+        // The raw lease remains held through the final access to the Worker.
+        m_worker->afterTrackedTask();
+    }
+private:
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+    void retireDiagnosticPayload() noexcept
+    {
+        if (m_diagnosticGeneration && !m_diagnosticDestroyed) {
+            m_diagnosticDestroyed = true;
+            m_record->backlogDiagnostic().destroyed(m_diagnosticGeneration, m_diagnosticOrdinal);
+        }
+    }
+#endif
+    WorkerThread* m_worker;
+    RefPtr<WorkerShutdownRecord> m_record;
+    OwnPtr<WebThread::Task> m_task;
+    WorkerShutdownRecord::TaskKind m_kind;
+    bool m_admitted, m_running;
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+    unsigned m_diagnosticGeneration, m_diagnosticOrdinal;
+    bool m_diagnosticDestroyed;
+#endif
+};
+
+class TrackedWorkerIdleTask final : public WebThread::IdleTask {
+public:
+    TrackedWorkerIdleTask(WorkerThread* worker, PassOwnPtr<Function<void(double)>> task)
+        : m_worker(worker), m_record(worker->shutdownRecord()), m_task(task),
+          m_admitted(m_record->admit(WorkerShutdownRecord::Idle)), m_running(false) { if (!m_admitted) m_task.clear(); }
+    ~TrackedWorkerIdleTask() override
+    {
+        m_task.clear();
+        if (m_admitted) m_record->finish(WorkerShutdownRecord::Idle, m_running);
+    }
+    void run(double deadline) override
+    {
+        if (!m_admitted || !m_record->begin(WorkerShutdownRecord::Idle)) return;
+        m_running = true;
+        (*m_task)(deadline);
+        m_task.clear();
+        m_worker->afterTrackedTask();
+    }
+private:
+    WorkerThread* m_worker;
+    RefPtr<WorkerShutdownRecord> m_record;
+    OwnPtr<Function<void(double)>> m_task;
+    bool m_admitted, m_running;
+};
+
 class WorkerMicrotaskRunner : public WebThread::TaskObserver {
 public:
     explicit WorkerMicrotaskRunner(WorkerThread* workerThread)
@@ -67,6 +185,8 @@ public:
 
     virtual void willProcessTask() override
     {
+        if (m_workerThread->managedShutdown())
+            return; // Closing tasks are cancellation/control payloads, not JS work.
         // No tasks should get executed after we have closed.
         WorkerGlobalScope* globalScope = m_workerThread->workerGlobalScope();
         ASSERT_UNUSED(globalScope, !globalScope || !globalScope->isClosing());
@@ -74,13 +194,28 @@ public:
 
     virtual void didProcessTask() override
     {
+        RefPtr<WorkerShutdownRecord> record = m_workerThread->managedShutdown() ? m_workerThread->shutdownRecord() : nullptr;
+        if (record && !record->beginObserver()) return;
+        struct ObserverLease {
+            ObserverLease(WorkerThread* worker, WorkerShutdownRecord* record) : worker(worker), record(record) { }
+            ~ObserverLease() { if (record) { record->finishObserver(); if (!record->rawAccessQuiescent() && record->closing()) worker->postShutdownTask(); } }
+            WorkerThread* worker;
+            RefPtr<WorkerShutdownRecord> record;
+        } observerLease(m_workerThread, record.get());
+        if (record && record->closing()) {
+            m_workerThread->postShutdownTask();
+            return;
+        }
         Microtask::performCheckpoint(m_workerThread->isolate());
         if (WorkerGlobalScope* globalScope = m_workerThread->workerGlobalScope()) {
             if (WorkerScriptController* scriptController = globalScope->script())
                 scriptController->rejectedPromises()->processQueue();
             if (globalScope->isClosing()) {
                 m_workerThread->workerReportingProxy().workerGlobalScopeClosed();
-                m_workerThread->shutdown();
+                if (record) {
+                    record->closeAdmission();
+                    m_workerThread->postShutdownTask();
+                } else m_workerThread->shutdown();
             }
         }
     }
@@ -154,7 +289,9 @@ private:
 };
 
 WorkerThread::WorkerThread(PassRefPtr<WorkerLoaderProxy> workerLoaderProxy, WorkerReportingProxy& workerReportingProxy)
-    : m_started(false)
+    : m_shutdownRecord(WorkerShutdownRecord::create())
+    , m_managedShutdown(false)
+    , m_started(false)
     , m_terminated(false)
     , m_shutdown(false)
     , m_workerLoaderProxy(workerLoaderProxy)
@@ -183,13 +320,13 @@ void WorkerThread::start(PassOwnPtr<WorkerThreadStartupData> startupData)
         return;
 
     m_started = true;
-    backingThread().postTask(FROM_HERE, new Task(threadSafeBind(&WorkerThread::initialize, AllowCrossThreadAccess(this), startupData)));
+    backingThread().postTask(FROM_HERE, wrapRawTask(adoptPtr(new Task(threadSafeBind(&WorkerThread::initialize, AllowCrossThreadAccess(this), startupData))), WorkerShutdownRecord::Initialize));
 }
 
 void WorkerThread::interruptAndDispatchInspectorCommands()
 {
     MutexLocker locker(m_workerInspectorControllerMutex);
-    if (m_workerInspectorController)
+    if ((!m_managedShutdown || m_shutdownRecord->acceptsOrdinary()) && m_workerInspectorController)
         m_workerInspectorController->interruptAndDispatchInspectorCommands();
 }
 
@@ -215,7 +352,8 @@ void WorkerThread::initialize(PassOwnPtr<WorkerThreadStartupData> startupData)
         if (m_terminated) {
             // Notify the proxy that the WorkerGlobalScope has been disposed of.
             // This can free this thread object, hence it must not be touched afterwards.
-            m_workerReportingProxy.workerThreadTerminated();
+            if (m_managedShutdown) m_shutdownRecord->scopePrepared();
+            else m_workerReportingProxy.workerThreadTerminated();
             // Notify the main thread that it is safe to deallocate our resources.
             m_terminationEvent->signal();
             return;
@@ -229,6 +367,7 @@ void WorkerThread::initialize(PassOwnPtr<WorkerThreadStartupData> startupData)
         m_workerGlobalScope = createWorkerGlobalScope(startupData);
         m_workerGlobalScope->scriptLoaded(sourceCode.length(), cachedMetaData.get() ? cachedMetaData->size() : 0);
     }
+    if (m_managedShutdown) m_shutdownRecord->initialized();
     m_webScheduler = backingThread().platformThread().scheduler();
 
     // The corresponding call to didStopRunLoop() is in ~WorkerScriptController().
@@ -249,18 +388,30 @@ void WorkerThread::initialize(PassOwnPtr<WorkerThreadStartupData> startupData)
 
     postInitialize();
 
-    m_webScheduler->postIdleTaskAfterWakeup(FROM_HERE, WTF::bind<double>(&WorkerThread::performIdleWork, this));
+    if (m_managedShutdown)
+        m_webScheduler->postIdleTaskAfterWakeup(FROM_HERE, new TrackedWorkerIdleTask(this, WTF::bind<double>(&WorkerThread::performIdleWork, this)));
+    else m_webScheduler->postIdleTaskAfterWakeup(FROM_HERE, WTF::bind<double>(&WorkerThread::performIdleWork, this));
 }
 
 void WorkerThread::shutdown()
 {
     ASSERT(isCurrentThread());
+    if (m_managedShutdown) {
+        m_shutdownRecord->closeAdmission();
+        if (!m_shutdownRecord->soleRawAccess()) return; // Nested task/interrupt/observer still uses raw state.
+    }
     {
         MutexLocker lock(m_threadStateMutex);
+        if (m_shutdown) return;
         ASSERT(!m_shutdown);
         m_shutdown = true;
     }
 
+    if (m_managedShutdown) {
+        { MutexLocker lock(m_workerInspectorControllerMutex); m_workerInspectorController = nullptr; m_debuggerMessageQueue.kill(); }
+        m_debuggerMessageQueue.kill();
+        while (OwnPtr<WebThread::Task> task = m_debuggerMessageQueue.tryGetMessageIgnoringKilled()) { }
+    }
     workerGlobalScope()->dispose();
     willDestroyIsolate();
 
@@ -285,7 +436,8 @@ void WorkerThread::shutdown()
 
     // Notify the proxy that the WorkerGlobalScope has been disposed of.
     // This can free this thread object, hence it must not be touched afterwards.
-    workerReportingProxy().workerThreadTerminated();
+    if (m_managedShutdown) m_shutdownRecord->scopePrepared();
+    else workerReportingProxy().workerThreadTerminated();
 
     m_terminationEvent->signal();
 }
@@ -320,6 +472,17 @@ void WorkerThread::terminateInternal()
     if (m_terminated)
         return;
     m_terminated = true;
+    if (m_managedShutdown) {
+        m_shutdownRecord->closeAdmission();
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+        m_shutdownRecord->backlogDiagnostic().terminatedWhileHeld();
+#endif
+        if (!m_started) {
+            m_shutdownRecord->scopePrepared(); // NeverStarted owns no native thread.
+            scheduleWorkerRetirementPoll();
+            return;
+        }
+    }
 
     // Signal the thread to notify that the thread's stopping.
     if (m_shutdownEvent)
@@ -341,7 +504,7 @@ void WorkerThread::terminateInternal()
 
     InspectorInstrumentation::didKillAllExecutionContextTasks(m_workerGlobalScope.get());
     m_debuggerMessageQueue.kill();
-    backingThread().postTask(FROM_HERE, new Task(threadSafeBind(&WorkerThread::shutdown, AllowCrossThreadAccess(this))));
+    postShutdownTask();
 }
 
 void WorkerThread::didStartRunLoop()
@@ -385,7 +548,13 @@ void WorkerThread::performIdleWork(double deadlineSeconds)
     if (m_webScheduler->canExceedIdleDeadlineIfRequired())
         gcDeadlineSeconds = Platform::current()->monotonicallyIncreasingTime() + kLongIdlePeriodSecs;
 
-    if (doIdleGc(gcDeadlineSeconds))
+    if (m_managedShutdown) {
+        if (!m_shutdownRecord->acceptsOrdinary()) return;
+        const bool finished = doIdleGc(gcDeadlineSeconds);
+        WebThread::IdleTask* next = new TrackedWorkerIdleTask(this, WTF::bind<double>(&WorkerThread::performIdleWork, this));
+        if (finished) m_webScheduler->postIdleTaskAfterWakeup(FROM_HERE, next);
+        else m_webScheduler->postIdleTask(FROM_HERE, next);
+    } else if (doIdleGc(gcDeadlineSeconds))
         m_webScheduler->postIdleTaskAfterWakeup(FROM_HERE, WTF::bind<double>(&WorkerThread::performIdleWork, this));
     else
         m_webScheduler->postIdleTask(FROM_HERE, WTF::bind<double>(&WorkerThread::performIdleWork, this));
@@ -401,12 +570,42 @@ bool WorkerThread::doIdleGc(double deadlineSeconds)
 
 void WorkerThread::postTask(const WebTraceLocation& location, PassOwnPtr<ExecutionContextTask> task)
 {
-    backingThread().postTask(location, WorkerThreadTask::create(*this, task, true).leakPtr());
+    if (m_managedShutdown && !m_shutdownRecord->acceptsOrdinary()) return;
+    backingThread().postTask(location, wrapRawTask(WorkerThreadTask::create(*this, task, !m_managedShutdown), WorkerShutdownRecord::Ordinary));
 }
+
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+void WorkerThread::postDiagnosticMessageTask(const WebTraceLocation& location,
+    PassOwnPtr<ExecutionContextTask> task, unsigned generation, unsigned ordinal)
+{
+    ASSERT(m_managedShutdown);
+    backingThread().postTask(location, new TrackedWorkerTask(this,
+        WorkerThreadTask::create(*this, task, false), WorkerShutdownRecord::Ordinary, generation, ordinal));
+}
+
+bool WorkerThread::diagnosticMessageCallbackEntered()
+{
+    const DiagnosticMessageContext context = diagnosticMessageContext;
+    if (!context.record) return true; // An ordinary/unarmed message keeps its original behavior.
+    ThreadState* state = ThreadState::current();
+    if (!state || state->isAtSafePoint()) {
+        context.record->backlogDiagnostic().abort(); return false;
+    }
+    bool entered;
+    {
+        // Blocking with conservative stack roots cannot prevent another thread's GC.
+        SafePointScope safePoint(ThreadState::HeapPointersOnStack, state);
+        entered = context.record->backlogDiagnostic().enterCallback(
+            context.generation, context.ordinal, static_cast<unsigned>(WTF::currentThread()));
+    }
+    return entered && !context.record->closing();
+}
+#endif
 
 void WorkerThread::postDelayedTask(const WebTraceLocation& location, PassOwnPtr<ExecutionContextTask> task, long long delayMs)
 {
-    backingThread().postDelayedTask(location, WorkerThreadTask::create(*this, task, true).leakPtr(), delayMs);
+    if (m_managedShutdown && !m_shutdownRecord->acceptsOrdinary()) return;
+    backingThread().postDelayedTask(location, wrapRawTask(WorkerThreadTask::create(*this, task, !m_managedShutdown), WorkerShutdownRecord::Ordinary), delayMs);
 }
 
 void WorkerThread::initializeBackingThread()
@@ -455,9 +654,49 @@ void WorkerThread::terminateV8Execution()
     v8::V8::TerminateExecution(m_isolate);
 }
 
-void WorkerThread::appendDebuggerTask(PassOwnPtr<WebThread::Task> task)
+bool WorkerThread::appendDebuggerTask(PassOwnPtr<WebThread::Task> task)
 {
-    m_debuggerMessageQueue.append(task);
+    OwnPtr<WebThread::Task> admitted = adoptPtr(wrapRawTask(task, WorkerShutdownRecord::Debugger));
+    MutexLocker admissionLock(m_workerInspectorControllerMutex);
+    if (m_managedShutdown && !m_shutdownRecord->acceptsOrdinary()) return false;
+    return m_debuggerMessageQueue.append(admitted.release());
+    // On rejection the mutex unwinds before the earlier-declared payload owner.
+}
+
+void WorkerThread::enableShutdownRetirement(PassRefPtr<WorkerShutdownRecord> record)
+{
+    ASSERT(isMainThread() && !m_started && supportsShutdownRetirement());
+    m_shutdownRecord = record; // Set before publication; never replaced or cleared afterwards.
+    m_managedShutdown = true;
+}
+
+WebThread::Task* WorkerThread::wrapRawTask(PassOwnPtr<WebThread::Task> task, WorkerShutdownRecord::TaskKind kind)
+{
+    if (!m_managedShutdown) return task.leakPtr();
+    return new TrackedWorkerTask(this, task, kind);
+}
+
+void WorkerThread::postShutdownTask()
+{
+    if (!m_managedShutdown) {
+        backingThread().postTask(FROM_HERE, new Task(threadSafeBind(&WorkerThread::shutdown, AllowCrossThreadAccess(this))));
+        return;
+    }
+    if (m_shutdownRecord->reserveShutdown())
+        backingThread().postTask(FROM_HERE, wrapRawTask(adoptPtr(new Task(threadSafeBind(&WorkerThread::shutdown, AllowCrossThreadAccess(this)))), WorkerShutdownRecord::Shutdown));
+}
+
+void WorkerThread::afterTrackedTask()
+{
+    if (m_shutdownRecord->closing()) postShutdownTask();
+}
+
+bool WorkerThread::allWorkersRetirementSupported()
+{
+    MutexLocker lock(threadSetMutex());
+    for (WorkerThread* worker : workerThreads())
+        if (!worker->m_managedShutdown) return false;
+    return true; // No wait, callback, RefPtr transfer or destruction while set mutex is held.
 }
 
 MessageQueueWaitResult WorkerThread::runDebuggerTask(WaitMode waitMode)

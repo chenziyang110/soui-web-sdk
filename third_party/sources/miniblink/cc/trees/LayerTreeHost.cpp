@@ -40,6 +40,8 @@
 #include "third_party/WebKit/Source/platform/graphics/GraphicsContext.h" // TODO
 #include "third_party/WebKit/Source/platform/geometry/win/IntRectWin.h"
 #include "wke/wkeWebView.h"
+#include "wke/RendererDiagnosticsState.h"
+#include "wke/RendererModelState.h"
 
 extern DWORD g_nowTime;
 
@@ -459,6 +461,9 @@ LayerTreeHost::LayerTreeHost(LayerTreeHostClent* hostClient, LayerTreeHostUiThre
         m_compositeThread->platformThread().postTask(FROM_HERE, WTF::bind(&initializeCompositeThread, m_compositeThread.get()));
     }
     gLayerTreeHost = this;
+#if defined(ENABLE_WKE) && ENABLE_WKE == 1
+    wke::diagnostics::renderer_created();
+#endif
 }
 
 static void shutdownCompositeThread(blink::WebThreadSupportingGC* webThread,
@@ -589,6 +594,9 @@ LayerTreeHost::~LayerTreeHost()
 
     delete m_actionsFrameGroup;
     m_actionsFrameGroup = nullptr;
+#if defined(ENABLE_WKE) && ENABLE_WKE == 1
+    wke::diagnostics::renderer_closed();
+#endif
 }
 
 void LayerTreeHost::waitForDrawFrame()
@@ -2852,8 +2860,10 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
 #if defined(SOUI_GPU_COMPOSITOR)
     if (m_gpuExperiment && m_uiThreadClient) {
         HWND window = static_cast<HWND>(m_uiThreadClient->nativeWindowHandle());
-        if (!m_gpuSurface)
+        if (!m_gpuSurface) {
+            wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_OFFSCREEN);
             m_gpuSurface = new GpuSkiaSurface();
+        }
         if (resized)
             m_gpuInitAttempted = false;
         if (!m_gpuSurface->available() && !m_gpuInitAttempted) {
@@ -2867,6 +2877,9 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
             if (m_hasTransparentBackground)
                 clearCanvas(gpuCanvas, paintRect, m_hasTransparentBackground);
             bool needNotifUi = drawToCanvas(gpuCanvas, paintRect);
+#if defined(ENABLE_WKE) && ENABLE_WKE == 1
+            wke::diagnostics::renderer_draw_completed(WKE_RENDER_DIAGNOSTICS_DRAW_GPU_SKIA);
+#endif
             // Direct presentation is frame-scoped. Several dirty rectangles
             // may be rendered into the same surface before the compositor
             // submits one window buffer at the end of the frame.
@@ -2905,6 +2918,9 @@ void LayerTreeHost::paintToMemoryCanvasInCompositeThread(const SkRect& r)
         clearCanvas(m_memoryCanvas, paintRect, m_hasTransparentBackground);
 
     bool needNotifUi = drawToCanvas(m_memoryCanvas, paintRect); // 绘制脏矩形
+#if defined(ENABLE_WKE) && ENABLE_WKE == 1
+    wke::diagnostics::renderer_draw_completed(WKE_RENDER_DIAGNOSTICS_DRAW_BITMAP_RASTER);
+#endif
 
     if (!needNotifUi)
         return;

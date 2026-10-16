@@ -72,6 +72,8 @@ public:
     bool threadClosed() { return m_threadClosed.load(std::memory_order_acquire); }
 
     void shutdown();
+    Retirement tryShutdownAndJoin() override;
+    bool duplicateShutdownWitness(ShutdownWitness&) override;
 
     static unsigned getNewCurrentHeapInsertionOrder();
 

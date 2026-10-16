@@ -1,0 +1,1929 @@
+{
+  "schema": "soui.measurement-tool-preparation/v2",
+  "architecture": "x64",
+  "configuration": "Release",
+  "prepared": true,
+  "preparedAt": "2026-10-15T21:16:32.222Z",
+  "source": {
+    "sha256": "4b54f387046942ceb287ecac9c3472f909075bd56029ebb4a63d5276841ec487",
+    "files": [
+      {
+        "path": "benchmarks/protocol/CMakeLists.txt",
+        "bytes": 4935,
+        "sha256": "b3f828b0ca8fe8e6d04f2febc71003057578caab1b0fc935c457bd6536daadb1"
+      },
+      {
+        "path": "benchmarks/protocol/owned-process-runner.cpp",
+        "bytes": 24220,
+        "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0"
+      },
+      {
+        "path": "benchmarks/protocol/owned-tail-evidence.cpp",
+        "bytes": 31483,
+        "sha256": "6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3"
+      },
+      {
+        "path": "benchmarks/protocol/owned-tail-evidence.h",
+        "bytes": 971,
+        "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790"
+      },
+      {
+        "path": "tests/benchmark/owned-process-assignment-fixture.cpp",
+        "bytes": 964,
+        "sha256": "8f96bfb07a8043052c3e77459687fd6788994b39db6e4063112aab8a40697bbf"
+      },
+      {
+        "path": "benchmarks/protocol/process-tree-sampler.cpp",
+        "bytes": 11219,
+        "sha256": "22f928f03925fbe2df6233abccc7b5528005b6a70f784e4e20304e572baf040a"
+      },
+      {
+        "path": "benchmarks/protocol/input-trace.cpp",
+        "bytes": 14496,
+        "sha256": "d00f8ed90fc25bf2ec585dcf3afc7235fa32346d6e97c1a869dc8642f7ad376d"
+      },
+      {
+        "path": "benchmarks/protocol/desktop-observer.h",
+        "bytes": 815,
+        "sha256": "d889d339787b522958aa9b860eb78a0e85e51f0bb8aac15953f01d288ee64e79"
+      },
+      {
+        "path": "benchmarks/protocol/desktop-observer.cpp",
+        "bytes": 19689,
+        "sha256": "9a1dc6b9d555810ecfd20f22da9c6eeda90917186fe5a22f587b899dc22e0a84"
+      },
+      {
+        "path": "benchmarks/protocol/trace-identity.h",
+        "bytes": 3162,
+        "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f"
+      },
+      {
+        "path": "tests/benchmark/native-trace-identity.cpp",
+        "bytes": 1708,
+        "sha256": "7b389ea9041964cb56220c81013beb1d541d4519dd897d77a36895d511545db9"
+      },
+      {
+        "path": "tools/internal/CMake-Configure.ps1",
+        "bytes": 11045,
+        "sha256": "c10a6a68510a65421568903d1d091f9a09ce0871b979f895835c31cc88155eba"
+      },
+      {
+        "path": "cmake/SouiWindowsSdk.cmake",
+        "bytes": 1299,
+        "sha256": "50dceb5ab08fd9999e3813cf8c4c26240f0035bde7b208ac6559bd67af2b0e82"
+      },
+      {
+        "path": "tools/internal/Build-ValidationTools.ps1",
+        "bytes": 8446,
+        "sha256": "ba39c09c312670080a1cd2feb88893de8e2651dda123be5cc9cd42cb1a6e1a81"
+      },
+      {
+        "path": "tools/internal/measurement-validation.cjs",
+        "bytes": 24757,
+        "sha256": "271d8b8aceecccb5007012831f16728d2e36b941df2b4e397eaa11fa81e08f55"
+      },
+      {
+        "path": "tests/benchmark/owned-tail-process-fixture.cpp",
+        "bytes": 4875,
+        "sha256": "b3f83a2f7f4b175f237c10ee8a9d9b0961c758f5e9d8a977e8a3eb64f228692a"
+      },
+      {
+        "path": "tests/benchmark/owned-tail-mutation-fixture.cpp",
+        "bytes": 1648,
+        "sha256": "49c6b1d1bbe91f94d2982dc2abe8acf3fb373583d71dc1e343c0f1d92b130fbc"
+      },
+      {
+        "path": "tests/benchmark/owned-tail-api-fixture.cpp",
+        "bytes": 2446,
+        "sha256": "1d6050f0859ae1357b672c106233a44474a277bacb0ee0e48aa1900ed96977f1"
+      },
+      {
+        "path": "benchmarks/protocol/display-calibration.cpp",
+        "bytes": 30392,
+        "sha256": "062c20ff1a4a1ba2542afb4ab03afdd97bcf263b2fbb78f4875984a659b67ccf"
+      },
+      {
+        "path": "cmake/toolchains/SouiLLVM22.cmake",
+        "bytes": 22723,
+        "sha256": "99d59e4f621c4e5ab5d4519d601e1cc984db6f356a739097229d466248b4e3ef"
+      },
+      {
+        "path": "tools/internal/Find-LlvmToolchain.ps1",
+        "bytes": 11427,
+        "sha256": "2a81487d800b50a55032839b96abc2844188161d3dca7598e04ff1b9af2609ef"
+      },
+      {
+        "path": "tools/internal/Invoke-ToolFileIdentity.ps1",
+        "bytes": 3115,
+        "sha256": "d9d3a0119dc9da8845b2469c6a60defeee7bd57a7f866ddca6e5c5330824ca45"
+      },
+      {
+        "path": "tools/internal/Tool-FileIdentity.ps1",
+        "bytes": 5543,
+        "sha256": "c36365f2758de235ac79babdccfb2b945dd70c974c51e1efaddcaa8e74555cda"
+      },
+      {
+        "path": "tools/internal/llvm-profile-inputs.cjs",
+        "bytes": 17761,
+        "sha256": "005770d57756cbc1e76f6765363e506388f4fd733b87c67b22b6aaf5bf5ae658"
+      },
+      {
+        "path": "tools/internal/llvm-measurement-observation.cjs",
+        "bytes": 23359,
+        "sha256": "baae76021622b83092ff930337e7f3751568bb254ee6eed3b74e6f79c56dc9ca"
+      },
+      {
+        "path": "tools/internal/llvm-reference-sdk.cjs",
+        "bytes": 3907,
+        "sha256": "7ac3806dc19d5b5d82c318ef407c14ac3c13f9cc3f12b0afd99a0a504d688bdb"
+      },
+      {
+        "path": "tests/benchmark/llvm-measurement-observation.test.cjs",
+        "bytes": 8001,
+        "sha256": "48ae0c9cb6a60640760ed861a9b6c17724dd48973b6713615a69bef9796215eb"
+      },
+      {
+        "path": "tests/sdk/llvm-profile-inputs.test.cjs",
+        "bytes": 50697,
+        "sha256": "f0c5f7856a5bb6b56a738d29a522a1f5deaf0abc7c1257134e38c3e2dd4f231f"
+      }
+    ]
+  },
+  "executables": [
+    {
+      "name": "OwnedProcessRunner",
+      "path": "out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+      "bytes": 234496,
+      "sha256": "2612261eb315a6c5b8e5b1f3b5c8ede14bbb4446a3837630eaf8d6dad7f88aef",
+      "coff": 34404
+    },
+    {
+      "name": "OwnedProcessAssignmentFixture",
+      "path": "out/benchmark-protocol/Release/OwnedProcessAssignmentFixture.exe",
+      "bytes": 105472,
+      "sha256": "a1256660df01f09ad5ac78ebdd3084aae640ea318b134f36247b66fd763ec268",
+      "coff": 34404
+    },
+    {
+      "name": "ProcessTreeSampler",
+      "path": "out/benchmark-protocol/Release/ProcessTreeSampler.exe",
+      "bytes": 71680,
+      "sha256": "f50035c0c1c41d77e2add81c1ef92ad143752745ad63ddf30a131c55b98178e9",
+      "coff": 34404
+    },
+    {
+      "name": "InputTrace",
+      "path": "out/benchmark-protocol/Release/InputTrace.exe",
+      "bytes": 148480,
+      "sha256": "7176d68809eb585bdc216fb9669fe8764cb858f1069a43454a597e3a75906c0e",
+      "coff": 34404
+    },
+    {
+      "name": "NativeTraceIdentity",
+      "path": "out/benchmark-protocol/Release/NativeTraceIdentity.exe",
+      "bytes": 37888,
+      "sha256": "c6c56576c71a96311fec72511fd88e7e6587e18fbf90ec889b6c0fc17339040d",
+      "coff": 34404
+    },
+    {
+      "name": "OwnedTailProcessFixture",
+      "path": "out/benchmark-protocol/Release/OwnedTailProcessFixture.exe",
+      "bytes": 35840,
+      "sha256": "7fc116f119750ffd59c358322d26e5ad705901fc98fa3f180229712bf6ca253b",
+      "coff": 34404
+    },
+    {
+      "name": "OwnedTailMutationFixture",
+      "path": "out/benchmark-protocol/Release/OwnedTailMutationFixture.exe",
+      "bytes": 236032,
+      "sha256": "9532489c12b97b3c59c861cff21fa31cb2a4184af456adaabae97ecb76969309",
+      "coff": 34404
+    },
+    {
+      "name": "OwnedTailApiFixture",
+      "path": "out/benchmark-protocol/Release/OwnedTailApiFixture.exe",
+      "bytes": 237056,
+      "sha256": "33db375bea6f6fc60a6483441c0aa1e6559ee988770372695e3273f09b954aa1",
+      "coff": 34404
+    },
+    {
+      "name": "DisplayCalibration",
+      "path": "out/benchmark-protocol/Release/DisplayCalibration.exe",
+      "bytes": 143872,
+      "sha256": "9cdc6dd2634c72d4f1d8fe3bc780963bf9ea2139cb0e60acfbca64c1f891422d",
+      "coff": 34404
+    }
+  ],
+  "logs": [
+    {
+      "path": "out/benchmark-protocol/configure.log",
+      "bytes": 898,
+      "sha256": "13ad88e11b2e69bc7e77ea461bf27a0f27863038ba46ce979d47eae339f9cafe"
+    },
+    {
+      "path": "out/benchmark-protocol/compile.log",
+      "bytes": 24722,
+      "sha256": "9a8b8b4841ff71f0f2327c027d3bbb80827ca9bfa7ff05d9683a108ca23a061c"
+    }
+  ],
+  "buildExitCode": 0,
+  "genericSupervisionPassed": null,
+  "supervision": "external-caller-evidence-required",
+  "nativeToolchain": {
+    "profile": "LLVM22MSVC142",
+    "requestFile": {
+      "path": "C:/work/sm05-release-050/out/benchmark-protocol/llvm-profile-request-Release.json",
+      "bytes": 11951,
+      "sha256": "d8eecce2d0b00a9d5eaec3a3c879fac950a26032dab611452bff1224e68acc53"
+    },
+    "inputIdentity": "9191e112d9d854b3e23b0262313d264b040b3186f597369beed1cf8e7163ea81",
+    "bridgeIdentity": "d24bef7f899c165f7da3edcabcc1db87c95b5ffe8903c89d6387985ef11ad95f",
+    "observation": {
+      "schema": "soui.llvm-measurement-observation/v1",
+      "ninjaWorkdirBinding": {
+        "buildRoot": "C:\\work\\sm05-release-050\\out\\benchmark-protocol",
+        "value": "C:\\work\\sm05-release-050\\out\\benchmark-protocol\\",
+        "definition": "cmake_ninja_workdir = C$:\\work\\sm05-release-050\\out\\benchmark-protocol\\",
+        "definitionLine": 30
+      },
+      "profile": "LLVM22MSVC142",
+      "architecture": "x64",
+      "target": "x86_64-pc-windows-msvc",
+      "targetPointerBytes": 8,
+      "inputIdentity": "9191e112d9d854b3e23b0262313d264b040b3186f597369beed1cf8e7163ea81",
+      "bridgeIdentity": "d24bef7f899c165f7da3edcabcc1db87c95b5ffe8903c89d6387985ef11ad95f",
+      "cache": {
+        "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeCache.txt",
+        "bytes": 20553,
+        "sha256": "78119347fae445ed2ea5c1b243b8774e3bb021ea6c9cfaa8c1608c985bb01eb8"
+      },
+      "compilerRecords": [
+        {
+          "language": "CXX",
+          "pin": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/4.2.3/CMakeCXXCompiler.cmake",
+            "bytes": 6931,
+            "sha256": "bfa983092cd7d0b54469da0ce0981eda8346dfb1d5d6f11c40891c5a48ec0364"
+          },
+          "configuredIdentity": {
+            "COMPILER_ID": "Clang",
+            "COMPILER_VERSION": "22.1.3",
+            "COMPILER_FRONTEND_VARIANT": "MSVC",
+            "SIMULATE_ID": "MSVC",
+            "SIMULATE_VERSION": "19.29",
+            "COMPILER_ARCHITECTURE_ID": "x64",
+            "SIZEOF_DATA_PTR": "8",
+            "COMPILER_WORKS": "TRUE"
+          }
+        }
+      ],
+      "aliases": [
+        {
+          "observed": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+          "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+          "physicalAlias": false
+        },
+        {
+          "observed": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+          "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+          "physicalAlias": false
+        },
+        {
+          "observed": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+          "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+          "physicalAlias": false
+        },
+        {
+          "observed": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+          "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+          "physicalAlias": false
+        },
+        {
+          "observed": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-lib.exe",
+          "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-lib.exe",
+          "physicalAlias": false
+        },
+        {
+          "observed": "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x64/rc.exe",
+          "expected": "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x64/rc.exe",
+          "physicalAlias": false
+        },
+        {
+          "observed": "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x64/mt.exe",
+          "expected": "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x64/mt.exe",
+          "physicalAlias": false
+        },
+        {
+          "observed": "C:/PROGRA~1/MICROS~1/18/COMMUN~1/Common7/IDE/COMMON~1/MICROS~1/CMake/Ninja/ninja.exe",
+          "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe",
+          "physicalAlias": true,
+          "volumeSerial": "1e235161",
+          "fileIndex": "005a000000425409"
+        },
+        {
+          "observed": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+          "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+          "physicalAlias": false
+        }
+      ],
+      "configuredCompilerVerified": true,
+      "compiledObjectsVerified": true,
+      "nativeClosureVerified": false,
+      "qualificationPassed": false,
+      "records": {
+        "database": {
+          "path": "C:/work/sm05-release-050/out/benchmark-protocol/compile_commands.json",
+          "bytes": 54825,
+          "sha256": "1a35100f780a481b3433dd12ca52357c4882d1724ae3906078217f7c44da5cb1"
+        },
+        "ninja": {
+          "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/impl-Release.ninja",
+          "bytes": 41909,
+          "sha256": "d00704ea24ca7c1f962335dda62d72dea1d31cf8821a3e42c3429a51cc437ade"
+        },
+        "common": {
+          "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/common.ninja",
+          "bytes": 21087,
+          "sha256": "c043701e5d7fb5b528c796a9566c926ed4d616eabab18353fbb162b860a6e829"
+        },
+        "rules": {
+          "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/rules.ninja",
+          "bytes": 32796,
+          "sha256": "a477f30dc375bfac5e8aaa94dc2a86ce3c76dd991575a3f287f01bd9a7795458"
+        },
+        "commands": {
+          "path": "C:/work/sm05-release-050/out/benchmark-protocol/ninja-commands-Release.log",
+          "bytes": 23083,
+          "sha256": "90f6b9ccca8df1c7b0d360f0e6f9597b5bacfbabb564bf437c597727265f63c7"
+        },
+        "dependencies": {
+          "path": "C:/work/sm05-release-050/out/benchmark-protocol/ninja-deps-Release.log",
+          "bytes": 2644,
+          "sha256": "1790aa0372fb4f5743618382f10bffcf430ba2fedbdffb827787e34493bd7c43"
+        },
+        "verbose": {
+          "path": "C:/work/sm05-release-050/out/benchmark-protocol/compile.log",
+          "bytes": 24722,
+          "sha256": "9a8b8b4841ff71f0f2327c027d3bbb80827ca9bfa7ff05d9683a108ca23a061c"
+        }
+      },
+      "bindings": [
+        {
+          "target": "ProcessTreeSampler",
+          "source": {
+            "path": "C:/work/sm05-release-050/benchmarks/protocol/process-tree-sampler.cpp",
+            "bytes": 11219,
+            "sha256": "22f928f03925fbe2df6233abccc7b5528005b6a70f784e4e20304e572baf040a"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/ProcessTreeSampler.dir/Release/process-tree-sampler.cpp.obj",
+            "bytes": 154862,
+            "sha256": "b693d7ee9cdeb6ea6e1053c016f67b55bc9ccaa1bff6950e38b86b6e2bdf8e34",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\ProcessTreeSampler.dir\\Release\\process-tree-sampler.cpp.obj /FdCMakeFiles\\ProcessTreeSampler.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\process-tree-sampler.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\ProcessTreeSampler.dir\\Release\\process-tree-sampler.cpp.obj /FdCMakeFiles\\ProcessTreeSampler.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\process-tree-sampler.cpp",
+            "actualVerbose": "[2/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\ProcessTreeSampler.dir\\Release\\process-tree-sampler.cpp.obj /FdCMakeFiles\\ProcessTreeSampler.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\process-tree-sampler.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\ProcessTreeSampler.dir\\Release\\process-tree-sampler.cpp.obj",
+              "/FdCMakeFiles\\ProcessTreeSampler.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\process-tree-sampler.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\ProcessTreeSampler.dir\\Release\\process-tree-sampler.cpp.obj: CXX_COMPILER__ProcessTreeSampler_unscanned_Release C$:\\work\\sm05-release-050\\benchmarks\\protocol\\process-tree-sampler.cpp || cmake_object_order_depends_target_ProcessTreeSampler_RELEASE",
+            "outputs": [
+              "CMakeFiles\\ProcessTreeSampler.dir\\Release\\process-tree-sampler.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__ProcessTreeSampler_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\process-tree-sampler.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_ProcessTreeSampler_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 1,
+            "mtime": "8138021846321859",
+            "status": "VALID",
+            "headers": [
+              {
+                "raw": "../../benchmarks/protocol/trace-identity.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/trace-identity.h",
+                  "bytes": 3162,
+                  "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "target": "InputTrace",
+          "source": {
+            "path": "C:/work/sm05-release-050/benchmarks/protocol/input-trace.cpp",
+            "bytes": 14496,
+            "sha256": "d00f8ed90fc25bf2ec585dcf3afc7235fa32346d6e97c1a869dc8642f7ad376d"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/InputTrace.dir/Release/input-trace.cpp.obj",
+            "bytes": 112339,
+            "sha256": "76712419013b8698331b865f90b42b445b35840cfd418a80591f00e2b0785216",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -DCMAKE_INTDIR=\\\"Release\\\" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\InputTrace.dir\\Release\\input-trace.cpp.obj /FdCMakeFiles\\InputTrace.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\input-trace.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\InputTrace.dir\\Release\\input-trace.cpp.obj /FdCMakeFiles\\InputTrace.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\input-trace.cpp",
+            "actualVerbose": "[1/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\InputTrace.dir\\Release\\input-trace.cpp.obj /FdCMakeFiles\\InputTrace.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\input-trace.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DWINVER=0x0601",
+              "-D_WIN32_WINNT=0x0601",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\InputTrace.dir\\Release\\input-trace.cpp.obj",
+              "/FdCMakeFiles\\InputTrace.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\input-trace.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\InputTrace.dir\\Release\\input-trace.cpp.obj: CXX_COMPILER__InputTrace_unscanned_Release C$:\\work\\sm05-release-050\\benchmarks\\protocol\\input-trace.cpp || cmake_object_order_depends_target_InputTrace_RELEASE",
+            "outputs": [
+              "CMakeFiles\\InputTrace.dir\\Release\\input-trace.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__InputTrace_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\input-trace.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_InputTrace_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 2,
+            "mtime": "8138021843388198",
+            "status": "VALID",
+            "headers": [
+              {
+                "raw": "../../benchmarks/protocol/desktop-observer.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/desktop-observer.h",
+                  "bytes": 815,
+                  "sha256": "d889d339787b522958aa9b860eb78a0e85e51f0bb8aac15953f01d288ee64e79"
+                }
+              },
+              {
+                "raw": "../../benchmarks/protocol/trace-identity.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/trace-identity.h",
+                  "bytes": 3162,
+                  "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "target": "InputTrace",
+          "source": {
+            "path": "C:/work/sm05-release-050/benchmarks/protocol/desktop-observer.cpp",
+            "bytes": 19689,
+            "sha256": "9a1dc6b9d555810ecfd20f22da9c6eeda90917186fe5a22f587b899dc22e0a84"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/InputTrace.dir/Release/desktop-observer.cpp.obj",
+            "bytes": 195322,
+            "sha256": "628ff8cdbb09169dd4f5a5d11af049ec7d5794429e4cc34c48e12125d495283a",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -DCMAKE_INTDIR=\\\"Release\\\" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\InputTrace.dir\\Release\\desktop-observer.cpp.obj /FdCMakeFiles\\InputTrace.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\desktop-observer.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\InputTrace.dir\\Release\\desktop-observer.cpp.obj /FdCMakeFiles\\InputTrace.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\desktop-observer.cpp",
+            "actualVerbose": "[3/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DWINVER=0x0601 -D_WIN32_WINNT=0x0601 -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\InputTrace.dir\\Release\\desktop-observer.cpp.obj /FdCMakeFiles\\InputTrace.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\desktop-observer.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DWINVER=0x0601",
+              "-D_WIN32_WINNT=0x0601",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\InputTrace.dir\\Release\\desktop-observer.cpp.obj",
+              "/FdCMakeFiles\\InputTrace.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\desktop-observer.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\InputTrace.dir\\Release\\desktop-observer.cpp.obj: CXX_COMPILER__InputTrace_unscanned_Release C$:\\work\\sm05-release-050\\benchmarks\\protocol\\desktop-observer.cpp || cmake_object_order_depends_target_InputTrace_RELEASE",
+            "outputs": [
+              "CMakeFiles\\InputTrace.dir\\Release\\desktop-observer.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__InputTrace_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\desktop-observer.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_InputTrace_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 2,
+            "mtime": "8138021855482098",
+            "status": "VALID",
+            "headers": [
+              {
+                "raw": "../../benchmarks/protocol/desktop-observer.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/desktop-observer.h",
+                  "bytes": 815,
+                  "sha256": "d889d339787b522958aa9b860eb78a0e85e51f0bb8aac15953f01d288ee64e79"
+                }
+              },
+              {
+                "raw": "../../benchmarks/protocol/trace-identity.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/trace-identity.h",
+                  "bytes": 3162,
+                  "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "target": "OwnedProcessRunner",
+          "source": {
+            "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-process-runner.cpp",
+            "bytes": 24220,
+            "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/OwnedProcessRunner.dir/Release/owned-process-runner.cpp.obj",
+            "bytes": 196224,
+            "sha256": "4e650f8855d8624224525062e4202e06827d5daa2a1e9778021d11678a792ca8",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-process-runner.cpp.obj /FdCMakeFiles\\OwnedProcessRunner.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-process-runner.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-process-runner.cpp.obj /FdCMakeFiles\\OwnedProcessRunner.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-process-runner.cpp",
+            "actualVerbose": "[4/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-process-runner.cpp.obj /FdCMakeFiles\\OwnedProcessRunner.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-process-runner.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-process-runner.cpp.obj",
+              "/FdCMakeFiles\\OwnedProcessRunner.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-process-runner.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-process-runner.cpp.obj: CXX_COMPILER__OwnedProcessRunner_unscanned_Release C$:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-process-runner.cpp || cmake_object_order_depends_target_OwnedProcessRunner_RELEASE",
+            "outputs": [
+              "CMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-process-runner.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__OwnedProcessRunner_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-process-runner.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_OwnedProcessRunner_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 1,
+            "mtime": "8138021856723892",
+            "status": "VALID",
+            "headers": [
+              {
+                "raw": "../../benchmarks/protocol/owned-tail-evidence.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.h",
+                  "bytes": 971,
+                  "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "target": "OwnedProcessRunner",
+          "source": {
+            "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.cpp",
+            "bytes": 31483,
+            "sha256": "6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/OwnedProcessRunner.dir/Release/owned-tail-evidence.cpp.obj",
+            "bytes": 258411,
+            "sha256": "d5830448f00c20e4558cc4b0f1fefd72c698cb03a63ccc208cc7c30bbcb287f9",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-tail-evidence.cpp.obj /FdCMakeFiles\\OwnedProcessRunner.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-tail-evidence.cpp.obj /FdCMakeFiles\\OwnedProcessRunner.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp",
+            "actualVerbose": "[6/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-tail-evidence.cpp.obj /FdCMakeFiles\\OwnedProcessRunner.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-tail-evidence.cpp.obj",
+              "/FdCMakeFiles\\OwnedProcessRunner.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-tail-evidence.cpp.obj: CXX_COMPILER__OwnedProcessRunner_unscanned_Release C$:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp || cmake_object_order_depends_target_OwnedProcessRunner_RELEASE",
+            "outputs": [
+              "CMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-tail-evidence.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__OwnedProcessRunner_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_OwnedProcessRunner_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 1,
+            "mtime": "8138021867894341",
+            "status": "VALID",
+            "headers": [
+              {
+                "raw": "../../benchmarks/protocol/owned-tail-evidence.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.h",
+                  "bytes": 971,
+                  "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "target": "OwnedProcessAssignmentFixture",
+          "source": {
+            "path": "C:/work/sm05-release-050/tests/benchmark/owned-process-assignment-fixture.cpp",
+            "bytes": 964,
+            "sha256": "8f96bfb07a8043052c3e77459687fd6788994b39db6e4063112aab8a40697bbf"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/OwnedProcessAssignmentFixture.dir/Release/C_/work/sm05-release-050/tests/benchmark/owned-process-assignment-fixture.cpp.obj",
+            "bytes": 109110,
+            "sha256": "2b26e680abd68f81c32a817d939822b6069e2b9bb3e8b5a137760ab378a96279",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp.obj /FdCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp.obj /FdCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp",
+            "actualVerbose": "[5/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp.obj /FdCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp.obj",
+              "/FdCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp.obj: CXX_COMPILER__OwnedProcessAssignmentFixture_unscanned_Release C$:\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp || cmake_object_order_depends_target_OwnedProcessAssignmentFixture_RELEASE",
+            "outputs": [
+              "CMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__OwnedProcessAssignmentFixture_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_OwnedProcessAssignmentFixture_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 2,
+            "mtime": "8138021864919510",
+            "status": "VALID",
+            "headers": [
+              {
+                "raw": "../../benchmarks/protocol/owned-process-runner.cpp",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-process-runner.cpp",
+                  "bytes": 24220,
+                  "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0"
+                }
+              },
+              {
+                "raw": "../../benchmarks/protocol/owned-tail-evidence.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.h",
+                  "bytes": 971,
+                  "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "target": "OwnedProcessAssignmentFixture",
+          "source": {
+            "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.cpp",
+            "bytes": 31483,
+            "sha256": "6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/OwnedProcessAssignmentFixture.dir/Release/owned-tail-evidence.cpp.obj",
+            "bytes": 258411,
+            "sha256": "350ce664897cd1db89627929dcf4e5c6449ded1d1afce1de8ad15f75108fb4bb",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\owned-tail-evidence.cpp.obj /FdCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\owned-tail-evidence.cpp.obj /FdCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp",
+            "actualVerbose": "[8/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\owned-tail-evidence.cpp.obj /FdCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\owned-tail-evidence.cpp.obj",
+              "/FdCMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\owned-tail-evidence.cpp.obj: CXX_COMPILER__OwnedProcessAssignmentFixture_unscanned_Release C$:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp || cmake_object_order_depends_target_OwnedProcessAssignmentFixture_RELEASE",
+            "outputs": [
+              "CMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\owned-tail-evidence.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__OwnedProcessAssignmentFixture_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_OwnedProcessAssignmentFixture_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 1,
+            "mtime": "8138021877535161",
+            "status": "VALID",
+            "headers": [
+              {
+                "raw": "../../benchmarks/protocol/owned-tail-evidence.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.h",
+                  "bytes": 971,
+                  "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "target": "OwnedTailProcessFixture",
+          "source": {
+            "path": "C:/work/sm05-release-050/tests/benchmark/owned-tail-process-fixture.cpp",
+            "bytes": 4875,
+            "sha256": "b3f83a2f7f4b175f237c10ee8a9d9b0961c758f5e9d8a977e8a3eb64f228692a"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/OwnedTailProcessFixture.dir/Release/C_/work/sm05-release-050/tests/benchmark/owned-tail-process-fixture.cpp.obj",
+            "bytes": 54739,
+            "sha256": "53ec261e490fee8f61bdb1b9426044c4a5274fec5fb92068c56794b1296029c5",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\OwnedTailProcessFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp.obj /FdCMakeFiles\\OwnedTailProcessFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedTailProcessFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp.obj /FdCMakeFiles\\OwnedTailProcessFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp",
+            "actualVerbose": "[7/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedTailProcessFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp.obj /FdCMakeFiles\\OwnedTailProcessFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\OwnedTailProcessFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp.obj",
+              "/FdCMakeFiles\\OwnedTailProcessFixture.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\OwnedTailProcessFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp.obj: CXX_COMPILER__OwnedTailProcessFixture_unscanned_Release C$:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp || cmake_object_order_depends_target_OwnedTailProcessFixture_RELEASE",
+            "outputs": [
+              "CMakeFiles\\OwnedTailProcessFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__OwnedTailProcessFixture_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_OwnedTailProcessFixture_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 0,
+            "mtime": "8138021873898071",
+            "status": "VALID",
+            "headers": []
+          }
+        },
+        {
+          "target": "OwnedTailMutationFixture",
+          "source": {
+            "path": "C:/work/sm05-release-050/tests/benchmark/owned-tail-mutation-fixture.cpp",
+            "bytes": 1648,
+            "sha256": "49c6b1d1bbe91f94d2982dc2abe8acf3fb373583d71dc1e343c0f1d92b130fbc"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/OwnedTailMutationFixture.dir/Release/C_/work/sm05-release-050/tests/benchmark/owned-tail-mutation-fixture.cpp.obj",
+            "bytes": 199484,
+            "sha256": "c25eb6655b17853d2fd34cb282522bf25771da9071637bccacb8a8381670a78d",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp.obj /FdCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp.obj /FdCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp",
+            "actualVerbose": "[9/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp.obj /FdCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp.obj",
+              "/FdCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\OwnedTailMutationFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp.obj: CXX_COMPILER__OwnedTailMutationFixture_unscanned_Release C$:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp || cmake_object_order_depends_target_OwnedTailMutationFixture_RELEASE",
+            "outputs": [
+              "CMakeFiles\\OwnedTailMutationFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__OwnedTailMutationFixture_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_OwnedTailMutationFixture_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 2,
+            "mtime": "8138021885238562",
+            "status": "VALID",
+            "headers": [
+              {
+                "raw": "../../benchmarks/protocol/owned-process-runner.cpp",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-process-runner.cpp",
+                  "bytes": 24220,
+                  "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0"
+                }
+              },
+              {
+                "raw": "../../benchmarks/protocol/owned-tail-evidence.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.h",
+                  "bytes": 971,
+                  "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "target": "OwnedTailMutationFixture",
+          "source": {
+            "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.cpp",
+            "bytes": 31483,
+            "sha256": "6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/OwnedTailMutationFixture.dir/Release/owned-tail-evidence.cpp.obj",
+            "bytes": 258411,
+            "sha256": "8c391a290979ae3ff0fa2bc2b74723a1ab73c1cfd202b6a8a01ac6c56d8a5341",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\owned-tail-evidence.cpp.obj /FdCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\owned-tail-evidence.cpp.obj /FdCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp",
+            "actualVerbose": "[10/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\owned-tail-evidence.cpp.obj /FdCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\owned-tail-evidence.cpp.obj",
+              "/FdCMakeFiles\\OwnedTailMutationFixture.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\OwnedTailMutationFixture.dir\\Release\\owned-tail-evidence.cpp.obj: CXX_COMPILER__OwnedTailMutationFixture_unscanned_Release C$:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp || cmake_object_order_depends_target_OwnedTailMutationFixture_RELEASE",
+            "outputs": [
+              "CMakeFiles\\OwnedTailMutationFixture.dir\\Release\\owned-tail-evidence.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__OwnedTailMutationFixture_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\owned-tail-evidence.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_OwnedTailMutationFixture_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 1,
+            "mtime": "8138021889467268",
+            "status": "VALID",
+            "headers": [
+              {
+                "raw": "../../benchmarks/protocol/owned-tail-evidence.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.h",
+                  "bytes": 971,
+                  "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "target": "OwnedTailApiFixture",
+          "source": {
+            "path": "C:/work/sm05-release-050/tests/benchmark/owned-tail-api-fixture.cpp",
+            "bytes": 2446,
+            "sha256": "1d6050f0859ae1357b672c106233a44474a277bacb0ee0e48aa1900ed96977f1"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/OwnedTailApiFixture.dir/Release/C_/work/sm05-release-050/tests/benchmark/owned-tail-api-fixture.cpp.obj",
+            "bytes": 433034,
+            "sha256": "bd08f4716657e1fd3363cd78321135394e7ebaea18ef3edac4e93a3dd962713d",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\OwnedTailApiFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp.obj /FdCMakeFiles\\OwnedTailApiFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedTailApiFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp.obj /FdCMakeFiles\\OwnedTailApiFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp",
+            "actualVerbose": "[12/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\OwnedTailApiFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp.obj /FdCMakeFiles\\OwnedTailApiFixture.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\OwnedTailApiFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp.obj",
+              "/FdCMakeFiles\\OwnedTailApiFixture.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\OwnedTailApiFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp.obj: CXX_COMPILER__OwnedTailApiFixture_unscanned_Release C$:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp || cmake_object_order_depends_target_OwnedTailApiFixture_RELEASE",
+            "outputs": [
+              "CMakeFiles\\OwnedTailApiFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__OwnedTailApiFixture_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_OwnedTailApiFixture_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 3,
+            "mtime": "8138021902781582",
+            "status": "VALID",
+            "headers": [
+              {
+                "raw": "../../benchmarks/protocol/owned-process-runner.cpp",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-process-runner.cpp",
+                  "bytes": 24220,
+                  "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0"
+                }
+              },
+              {
+                "raw": "../../benchmarks/protocol/owned-tail-evidence.cpp",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.cpp",
+                  "bytes": 31483,
+                  "sha256": "6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3"
+                }
+              },
+              {
+                "raw": "../../benchmarks/protocol/owned-tail-evidence.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.h",
+                  "bytes": 971,
+                  "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "target": "NativeTraceIdentity",
+          "source": {
+            "path": "C:/work/sm05-release-050/tests/benchmark/native-trace-identity.cpp",
+            "bytes": 1708,
+            "sha256": "7b389ea9041964cb56220c81013beb1d541d4519dd897d77a36895d511545db9"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/NativeTraceIdentity.dir/Release/C_/work/sm05-release-050/tests/benchmark/native-trace-identity.cpp.obj",
+            "bytes": 72458,
+            "sha256": "f3ca3483edc8bd6fcb8cb091bf05eb9478d0ba2f31161b2ffe2ea3bf224d754a",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" -IC:\\work\\sm05-release-050\\benchmarks\\protocol --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\NativeTraceIdentity.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp.obj /FdCMakeFiles\\NativeTraceIdentity.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" -IC:\\work\\sm05-release-050\\benchmarks\\protocol --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\NativeTraceIdentity.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp.obj /FdCMakeFiles\\NativeTraceIdentity.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp",
+            "actualVerbose": "[11/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" -IC:\\work\\sm05-release-050\\benchmarks\\protocol --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\NativeTraceIdentity.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp.obj /FdCMakeFiles\\NativeTraceIdentity.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "-IC:\\work\\sm05-release-050\\benchmarks\\protocol",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\NativeTraceIdentity.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp.obj",
+              "/FdCMakeFiles\\NativeTraceIdentity.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\NativeTraceIdentity.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp.obj: CXX_COMPILER__NativeTraceIdentity_unscanned_Release C$:\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp || cmake_object_order_depends_target_NativeTraceIdentity_RELEASE",
+            "outputs": [
+              "CMakeFiles\\NativeTraceIdentity.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__NativeTraceIdentity_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_NativeTraceIdentity_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 1,
+            "mtime": "8138021893430570",
+            "status": "VALID",
+            "headers": [
+              {
+                "raw": "../../benchmarks/protocol/trace-identity.h",
+                "pin": {
+                  "path": "C:/work/sm05-release-050/benchmarks/protocol/trace-identity.h",
+                  "bytes": 3162,
+                  "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "target": "DisplayCalibration",
+          "source": {
+            "path": "C:/work/sm05-release-050/benchmarks/protocol/display-calibration.cpp",
+            "bytes": 30392,
+            "sha256": "062c20ff1a4a1ba2542afb4ab03afdd97bcf263b2fbb78f4875984a659b67ccf"
+          },
+          "object": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/CMakeFiles/DisplayCalibration.dir/Release/display-calibration.cpp.obj",
+            "bytes": 300750,
+            "sha256": "612e4f409dc9ec6fa8bf66f5ca8a97c911e18872fd05431f58bc8e2c7d09aa6e",
+            "machine": 34404,
+            "format": "COFF"
+          },
+          "compiler": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "0034000000521318"
+          },
+          "command": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\" --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /FoCMakeFiles\\DisplayCalibration.dir\\Release\\display-calibration.cpp.obj /FdCMakeFiles\\DisplayCalibration.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\display-calibration.cpp",
+          "commandEvidence": {
+            "generatedCommand": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\DisplayCalibration.dir\\Release\\display-calibration.cpp.obj /FdCMakeFiles\\DisplayCalibration.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\display-calibration.cpp",
+            "actualVerbose": "[13/22] C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe --target=x86_64-pc-windows-msvc  /nologo -TP -DCMAKE_INTDIR=\\\"Release\\\"  --no-default-config /X /clang:-fms-compatibility-version=19.29.30159 /DWINVER=0x0601 /D_WIN32_WINNT=0x0601 /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include\" /imsvc\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um\" /imsvc\"C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt\" /DWIN32 /D_WINDOWS /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD /W4 /utf-8 /showIncludes /FoCMakeFiles\\DisplayCalibration.dir\\Release\\display-calibration.cpp.obj /FdCMakeFiles\\DisplayCalibration.dir\\Release\\ -c -- C:\\work\\sm05-release-050\\benchmarks\\protocol\\display-calibration.cpp",
+            "dependencyFlag": "/showIncludes",
+            "actualArgs": [
+              "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+              "--target=x86_64-pc-windows-msvc",
+              "/nologo",
+              "-TP",
+              "-DCMAKE_INTDIR=\"Release\"",
+              "--no-default-config",
+              "/X",
+              "/clang:-fms-compatibility-version=19.29.30159",
+              "/DWINVER=0x0601",
+              "/D_WIN32_WINNT=0x0601",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+              "/imsvcC:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+              "/imsvcC:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt",
+              "/DWIN32",
+              "/D_WINDOWS",
+              "/EHsc",
+              "/O2",
+              "/Ob2",
+              "/DNDEBUG",
+              "-std:c++17",
+              "-MD",
+              "/W4",
+              "/utf-8",
+              "/showIncludes",
+              "/FoCMakeFiles\\DisplayCalibration.dir\\Release\\display-calibration.cpp.obj",
+              "/FdCMakeFiles\\DisplayCalibration.dir\\Release\\",
+              "-c",
+              "--",
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\display-calibration.cpp"
+            ]
+          },
+          "edge": {
+            "raw": "build CMakeFiles\\DisplayCalibration.dir\\Release\\display-calibration.cpp.obj: CXX_COMPILER__DisplayCalibration_unscanned_Release C$:\\work\\sm05-release-050\\benchmarks\\protocol\\display-calibration.cpp || cmake_object_order_depends_target_DisplayCalibration_RELEASE",
+            "outputs": [
+              "CMakeFiles\\DisplayCalibration.dir\\Release\\display-calibration.cpp.obj"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_COMPILER__DisplayCalibration_unscanned_Release",
+            "inputs": [
+              "C:\\work\\sm05-release-050\\benchmarks\\protocol\\display-calibration.cpp"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [
+              "cmake_object_order_depends_target_DisplayCalibration_RELEASE"
+            ],
+            "validations": []
+          },
+          "dependencies": {
+            "count": 0,
+            "mtime": "8138021904476847",
+            "status": "VALID",
+            "headers": []
+          }
+        }
+      ],
+      "links": [
+        {
+          "target": "ProcessTreeSampler",
+          "command": "C:\\Windows\\System32\\cmd.exe /C \"cd . && \"C:\\Program Files\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1929 --intdir=CMakeFiles\\ProcessTreeSampler.dir\\Release --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe /nologo CMakeFiles\\ProcessTreeSampler.dir\\Release\\process-tree-sampler.cpp.obj  /out:Release\\ProcessTreeSampler.exe /implib:Release\\ProcessTreeSampler.lib /pdb:Release\\ProcessTreeSampler.pdb /version:0.0 /LIBPATH:\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64\" /machine:x64 /INCREMENTAL:NO /subsystem:console  psapi.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "linker": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "002500000052151f"
+          },
+          "edge": {
+            "raw": "build Release\\ProcessTreeSampler.exe: CXX_EXECUTABLE_LINKER__ProcessTreeSampler_Release CMakeFiles\\ProcessTreeSampler.dir\\Release\\process-tree-sampler.cpp.obj",
+            "outputs": [
+              "Release\\ProcessTreeSampler.exe"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_EXECUTABLE_LINKER__ProcessTreeSampler_Release",
+            "inputs": [
+              "CMakeFiles\\ProcessTreeSampler.dir\\Release\\process-tree-sampler.cpp.obj"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [],
+            "validations": []
+          },
+          "executable": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/Release/ProcessTreeSampler.exe",
+            "bytes": 71680,
+            "sha256": "f50035c0c1c41d77e2add81c1ef92ad143752745ad63ddf30a131c55b98178e9"
+          }
+        },
+        {
+          "target": "InputTrace",
+          "command": "C:\\Windows\\System32\\cmd.exe /C \"cd . && \"C:\\Program Files\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1929 --intdir=CMakeFiles\\InputTrace.dir\\Release --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe /nologo CMakeFiles\\InputTrace.dir\\Release\\input-trace.cpp.obj CMakeFiles\\InputTrace.dir\\Release\\desktop-observer.cpp.obj  /out:Release\\InputTrace.exe /implib:Release\\InputTrace.lib /pdb:Release\\InputTrace.pdb /version:0.0 /LIBPATH:\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64\" /machine:x64 /INCREMENTAL:NO /subsystem:console  user32.lib  gdi32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "linker": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "002500000052151f"
+          },
+          "edge": {
+            "raw": "build Release\\InputTrace.exe: CXX_EXECUTABLE_LINKER__InputTrace_Release CMakeFiles\\InputTrace.dir\\Release\\input-trace.cpp.obj CMakeFiles\\InputTrace.dir\\Release\\desktop-observer.cpp.obj",
+            "outputs": [
+              "Release\\InputTrace.exe"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_EXECUTABLE_LINKER__InputTrace_Release",
+            "inputs": [
+              "CMakeFiles\\InputTrace.dir\\Release\\input-trace.cpp.obj",
+              "CMakeFiles\\InputTrace.dir\\Release\\desktop-observer.cpp.obj"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [],
+            "validations": []
+          },
+          "executable": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/Release/InputTrace.exe",
+            "bytes": 148480,
+            "sha256": "7176d68809eb585bdc216fb9669fe8764cb858f1069a43454a597e3a75906c0e"
+          }
+        },
+        {
+          "target": "OwnedProcessRunner",
+          "command": "C:\\Windows\\System32\\cmd.exe /C \"cd . && \"C:\\Program Files\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1929 --intdir=CMakeFiles\\OwnedProcessRunner.dir\\Release --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe /nologo CMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-process-runner.cpp.obj CMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-tail-evidence.cpp.obj  /out:Release\\OwnedProcessRunner.exe /implib:Release\\OwnedProcessRunner.lib /pdb:Release\\OwnedProcessRunner.pdb /version:0.0 /LIBPATH:\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64\" /machine:x64 /INCREMENTAL:NO /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "linker": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "002500000052151f"
+          },
+          "edge": {
+            "raw": "build Release\\OwnedProcessRunner.exe: CXX_EXECUTABLE_LINKER__OwnedProcessRunner_Release CMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-process-runner.cpp.obj CMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-tail-evidence.cpp.obj",
+            "outputs": [
+              "Release\\OwnedProcessRunner.exe"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_EXECUTABLE_LINKER__OwnedProcessRunner_Release",
+            "inputs": [
+              "CMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-process-runner.cpp.obj",
+              "CMakeFiles\\OwnedProcessRunner.dir\\Release\\owned-tail-evidence.cpp.obj"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [],
+            "validations": []
+          },
+          "executable": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/Release/OwnedProcessRunner.exe",
+            "bytes": 234496,
+            "sha256": "2612261eb315a6c5b8e5b1f3b5c8ede14bbb4446a3837630eaf8d6dad7f88aef"
+          }
+        },
+        {
+          "target": "OwnedProcessAssignmentFixture",
+          "command": "C:\\Windows\\System32\\cmd.exe /C \"cd . && \"C:\\Program Files\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1929 --intdir=CMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe /nologo CMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp.obj CMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\owned-tail-evidence.cpp.obj  /out:Release\\OwnedProcessAssignmentFixture.exe /implib:Release\\OwnedProcessAssignmentFixture.lib /pdb:Release\\OwnedProcessAssignmentFixture.pdb /version:0.0 /LIBPATH:\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64\" /machine:x64 /INCREMENTAL:NO /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "linker": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "002500000052151f"
+          },
+          "edge": {
+            "raw": "build Release\\OwnedProcessAssignmentFixture.exe: CXX_EXECUTABLE_LINKER__OwnedProcessAssignmentFixture_Release CMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp.obj CMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\owned-tail-evidence.cpp.obj",
+            "outputs": [
+              "Release\\OwnedProcessAssignmentFixture.exe"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_EXECUTABLE_LINKER__OwnedProcessAssignmentFixture_Release",
+            "inputs": [
+              "CMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-process-assignment-fixture.cpp.obj",
+              "CMakeFiles\\OwnedProcessAssignmentFixture.dir\\Release\\owned-tail-evidence.cpp.obj"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [],
+            "validations": []
+          },
+          "executable": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/Release/OwnedProcessAssignmentFixture.exe",
+            "bytes": 105472,
+            "sha256": "a1256660df01f09ad5ac78ebdd3084aae640ea318b134f36247b66fd763ec268"
+          }
+        },
+        {
+          "target": "OwnedTailProcessFixture",
+          "command": "C:\\Windows\\System32\\cmd.exe /C \"cd . && \"C:\\Program Files\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1929 --intdir=CMakeFiles\\OwnedTailProcessFixture.dir\\Release --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe /nologo CMakeFiles\\OwnedTailProcessFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp.obj  /out:Release\\OwnedTailProcessFixture.exe /implib:Release\\OwnedTailProcessFixture.lib /pdb:Release\\OwnedTailProcessFixture.pdb /version:0.0 /LIBPATH:\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64\" /machine:x64 /INCREMENTAL:NO /subsystem:windows  shell32.lib  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "linker": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "002500000052151f"
+          },
+          "edge": {
+            "raw": "build Release\\OwnedTailProcessFixture.exe: CXX_EXECUTABLE_LINKER__OwnedTailProcessFixture_Release CMakeFiles\\OwnedTailProcessFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp.obj",
+            "outputs": [
+              "Release\\OwnedTailProcessFixture.exe"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_EXECUTABLE_LINKER__OwnedTailProcessFixture_Release",
+            "inputs": [
+              "CMakeFiles\\OwnedTailProcessFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-process-fixture.cpp.obj"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [],
+            "validations": []
+          },
+          "executable": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/Release/OwnedTailProcessFixture.exe",
+            "bytes": 35840,
+            "sha256": "7fc116f119750ffd59c358322d26e5ad705901fc98fa3f180229712bf6ca253b"
+          }
+        },
+        {
+          "target": "OwnedTailMutationFixture",
+          "command": "C:\\Windows\\System32\\cmd.exe /C \"cd . && \"C:\\Program Files\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1929 --intdir=CMakeFiles\\OwnedTailMutationFixture.dir\\Release --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe /nologo CMakeFiles\\OwnedTailMutationFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp.obj CMakeFiles\\OwnedTailMutationFixture.dir\\Release\\owned-tail-evidence.cpp.obj  /out:Release\\OwnedTailMutationFixture.exe /implib:Release\\OwnedTailMutationFixture.lib /pdb:Release\\OwnedTailMutationFixture.pdb /version:0.0 /LIBPATH:\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64\" /machine:x64 /INCREMENTAL:NO /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "linker": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "002500000052151f"
+          },
+          "edge": {
+            "raw": "build Release\\OwnedTailMutationFixture.exe: CXX_EXECUTABLE_LINKER__OwnedTailMutationFixture_Release CMakeFiles\\OwnedTailMutationFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp.obj CMakeFiles\\OwnedTailMutationFixture.dir\\Release\\owned-tail-evidence.cpp.obj",
+            "outputs": [
+              "Release\\OwnedTailMutationFixture.exe"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_EXECUTABLE_LINKER__OwnedTailMutationFixture_Release",
+            "inputs": [
+              "CMakeFiles\\OwnedTailMutationFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-mutation-fixture.cpp.obj",
+              "CMakeFiles\\OwnedTailMutationFixture.dir\\Release\\owned-tail-evidence.cpp.obj"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [],
+            "validations": []
+          },
+          "executable": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/Release/OwnedTailMutationFixture.exe",
+            "bytes": 236032,
+            "sha256": "9532489c12b97b3c59c861cff21fa31cb2a4184af456adaabae97ecb76969309"
+          }
+        },
+        {
+          "target": "OwnedTailApiFixture",
+          "command": "C:\\Windows\\System32\\cmd.exe /C \"cd . && \"C:\\Program Files\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1929 --intdir=CMakeFiles\\OwnedTailApiFixture.dir\\Release --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe /nologo CMakeFiles\\OwnedTailApiFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp.obj  /out:Release\\OwnedTailApiFixture.exe /implib:Release\\OwnedTailApiFixture.lib /pdb:Release\\OwnedTailApiFixture.pdb /version:0.0 /LIBPATH:\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64\" /machine:x64 /INCREMENTAL:NO /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "linker": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "002500000052151f"
+          },
+          "edge": {
+            "raw": "build Release\\OwnedTailApiFixture.exe: CXX_EXECUTABLE_LINKER__OwnedTailApiFixture_Release CMakeFiles\\OwnedTailApiFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp.obj",
+            "outputs": [
+              "Release\\OwnedTailApiFixture.exe"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_EXECUTABLE_LINKER__OwnedTailApiFixture_Release",
+            "inputs": [
+              "CMakeFiles\\OwnedTailApiFixture.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\owned-tail-api-fixture.cpp.obj"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [],
+            "validations": []
+          },
+          "executable": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/Release/OwnedTailApiFixture.exe",
+            "bytes": 237056,
+            "sha256": "33db375bea6f6fc60a6483441c0aa1e6559ee988770372695e3273f09b954aa1"
+          }
+        },
+        {
+          "target": "NativeTraceIdentity",
+          "command": "C:\\Windows\\System32\\cmd.exe /C \"cd . && \"C:\\Program Files\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1929 --intdir=CMakeFiles\\NativeTraceIdentity.dir\\Release --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe /nologo CMakeFiles\\NativeTraceIdentity.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp.obj  /out:Release\\NativeTraceIdentity.exe /implib:Release\\NativeTraceIdentity.lib /pdb:Release\\NativeTraceIdentity.pdb /version:0.0 /LIBPATH:\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64\" /machine:x64 /INCREMENTAL:NO /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "linker": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "002500000052151f"
+          },
+          "edge": {
+            "raw": "build Release\\NativeTraceIdentity.exe: CXX_EXECUTABLE_LINKER__NativeTraceIdentity_Release CMakeFiles\\NativeTraceIdentity.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp.obj",
+            "outputs": [
+              "Release\\NativeTraceIdentity.exe"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_EXECUTABLE_LINKER__NativeTraceIdentity_Release",
+            "inputs": [
+              "CMakeFiles\\NativeTraceIdentity.dir\\Release\\C_\\work\\sm05-release-050\\tests\\benchmark\\native-trace-identity.cpp.obj"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [],
+            "validations": []
+          },
+          "executable": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/Release/NativeTraceIdentity.exe",
+            "bytes": 37888,
+            "sha256": "c6c56576c71a96311fec72511fd88e7e6587e18fbf90ec889b6c0fc17339040d"
+          }
+        },
+        {
+          "target": "DisplayCalibration",
+          "command": "C:\\Windows\\System32\\cmd.exe /C \"cd . && \"C:\\Program Files\\CMake\\bin\\cmake.exe\" -E vs_link_exe --msvc-ver=1929 --intdir=CMakeFiles\\DisplayCalibration.dir\\Release --rc=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\rc.exe --mt=C:\\PROGRA~2\\WI3CF2~1\\10\\bin\\100190~1.0\\x64\\mt.exe --manifests  -- C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe /nologo CMakeFiles\\DisplayCalibration.dir\\Release\\display-calibration.cpp.obj  /out:Release\\DisplayCalibration.exe /implib:Release\\DisplayCalibration.lib /pdb:Release\\DisplayCalibration.pdb /version:0.0 /LIBPATH:\"C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64\" /LIBPATH:\"C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64\" /machine:x64 /INCREMENTAL:NO /subsystem:console  kernel32.lib user32.lib gdi32.lib winspool.lib shell32.lib ole32.lib oleaut32.lib uuid.lib comdlg32.lib advapi32.lib && cd .\"",
+          "linker": {
+            "observed": "C:\\PROGRA~1\\MICROS~1\\18\\COMMUN~1\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+            "expected": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+            "physicalAlias": true,
+            "volumeSerial": "1e235161",
+            "fileIndex": "002500000052151f"
+          },
+          "edge": {
+            "raw": "build Release\\DisplayCalibration.exe: CXX_EXECUTABLE_LINKER__DisplayCalibration_Release CMakeFiles\\DisplayCalibration.dir\\Release\\display-calibration.cpp.obj",
+            "outputs": [
+              "Release\\DisplayCalibration.exe"
+            ],
+            "implicitOutputs": [],
+            "rule": "CXX_EXECUTABLE_LINKER__DisplayCalibration_Release",
+            "inputs": [
+              "CMakeFiles\\DisplayCalibration.dir\\Release\\display-calibration.cpp.obj"
+            ],
+            "implicitInputs": [],
+            "orderOnlyInputs": [],
+            "validations": []
+          },
+          "executable": {
+            "path": "C:/work/sm05-release-050/out/benchmark-protocol/Release/DisplayCalibration.exe",
+            "bytes": 143872,
+            "sha256": "9cdc6dd2634c72d4f1d8fe3bc780963bf9ea2139cb0e60acfbca64c1f891422d"
+          }
+        }
+      ],
+      "dependencyPins": [
+        {
+          "path": "C:/work/sm05-release-050/benchmarks/protocol/desktop-observer.h",
+          "bytes": 815,
+          "sha256": "d889d339787b522958aa9b860eb78a0e85e51f0bb8aac15953f01d288ee64e79"
+        },
+        {
+          "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-process-runner.cpp",
+          "bytes": 24220,
+          "sha256": "5a0607f791d26c887a7d67502baae520f8b8caa12b9440feb1bf16cdba398ff0"
+        },
+        {
+          "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.cpp",
+          "bytes": 31483,
+          "sha256": "6323adbf5d397b725af59721533493e8ef5eb632fec56ac1b00c15f4ba9f33c3"
+        },
+        {
+          "path": "C:/work/sm05-release-050/benchmarks/protocol/owned-tail-evidence.h",
+          "bytes": 971,
+          "sha256": "0943e7ded34aa2e5a68d47d41452c77483f3bf886f745d3ce599fa407901a790"
+        },
+        {
+          "path": "C:/work/sm05-release-050/benchmarks/protocol/trace-identity.h",
+          "bytes": 3162,
+          "sha256": "31f5105382abfb8cb26145d5a7a6f15d3e8eb9ab22c964b0a72c83a09143c50f"
+        }
+      ],
+      "compileObjects": 13,
+      "executableTargets": 9,
+      "compilerVerified": false,
+      "genericSupervisionPassed": null
+    },
+    "compilerVerified": false,
+    "nativeClosureVerified": false,
+    "abiQualified": false,
+    "osQualified": false
+  }
+}

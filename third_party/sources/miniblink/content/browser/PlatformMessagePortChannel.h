@@ -35,7 +35,8 @@
 #include "third_party/WebKit/public/platform/WebMessagePortChannel.h"
 #include "third_party/WebKit/public/web/WebSerializedScriptValue.h"
 
-#include "third_party/WebKit/Source/wtf/MessageQueue.h"
+#include "third_party/WebKit/Source/wtf/Deque.h"
+#include "third_party/WebKit/Source/wtf/OwnPtr.h"
 #include "third_party/WebKit/Source/wtf/PassRefPtr.h"
 #include "third_party/WebKit/Source/wtf/Threading.h"
 #include "third_party/WebKit/Source/wtf/ThreadSafeRefCounted.h"
@@ -70,16 +71,23 @@ public:
 
         WTF::PassOwnPtr<PlatformMessagePortChannel::EventData> tryGetMessage()
         {
-            return m_queue.tryGetMessage();
+            WTF::MutexLocker lock(m_queueMutex);
+            if (m_queue.isEmpty())
+                return nullptr;
+            return m_queue.takeFirst();
         }
 
         bool appendAndCheckEmpty(WTF::PassOwnPtr<PlatformMessagePortChannel::EventData> message)
         {
-            return m_queue.appendAndCheckEmpty(WTF::adoptPtr(message.leakPtr()));
+            WTF::MutexLocker lock(m_queueMutex);
+            bool wasEmpty = m_queue.isEmpty();
+            m_queue.append(WTF::adoptPtr(message.leakPtr()));
+            return wasEmpty;
         }
 
         bool isEmpty()
         {
+            WTF::MutexLocker lock(m_queueMutex);
             return m_queue.isEmpty();
         }
 
@@ -98,7 +106,9 @@ public:
 //             OutputDebugStringA(output.utf8().data());
         }
 
-        MessageQueue<PlatformMessagePortChannel::EventData> m_queue;
+        // Port delivery never blocks; postMessage notifies the receiving client.
+        WTF::Mutex m_queueMutex;
+        WTF::Deque<WTF::OwnPtr<PlatformMessagePortChannel::EventData>> m_queue;
     };
 
     ~PlatformMessagePortChannel();

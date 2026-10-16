@@ -1,0 +1,58 @@
+-- SOUI explicit LLVM profile selected; real language checks follow project()
+-- The CXX compiler identification is Clang 22.1.3 with MSVC-like command-line
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- LLVM22MSVC142 observed language identity verified; target=x86_64-pc-windows-msvc; SDK files=10.0.19041.0; linker=C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe; librarian=C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-lib.exe
+-- Configuring done (18.3s)
+-- Generating done (0.1s)
+-- Build files have been written to: C:/work/sm05-uia-events-1/out/x64-red2
+[1/4] Building CXX object CMakeFiles\uia_event_probe.dir\Release\C_\work\sm05-release-050\sdk\src\runtime\bridge\action_contract.cpp.obj
+[2/4] Building CXX object CMakeFiles\uia_event_probe.dir\Release\C_\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp.obj
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(259,42): warning: comparison of integers of different signs: 'HRESULT' (aka 'long') and 'unsigned int' [-Wsign-compare]
+  259 |   require(item_pattern->AddToSelection() == UIA_E_INVALIDOPERATION, "single selection cannot add second");
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(261,117): warning: comparison of integers of different signs: 'HRESULT' (aka 'long') and 'unsigned int' [-Wsign-compare]
+  261 |   auto first = host.node("choice.first"); require(query<ISelectionItemProvider>(first.get())->RemoveFromSelection() == UIA_E_INVALIDOPERATION, "required selected cannot remove");
+      |                                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(262,37): warning: comparison of integers of different signs: 'HRESULT' (aka 'long') and 'unsigned int' [-Wsign-compare]
+  262 |   require(value->SetValue(L"owner") == UIA_E_INVALIDOPERATION, "owner synchronous call rejects");
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(293,90): warning: comparison of integers of different signs: 'HRESULT' (aka 'long') and 'unsigned int' [-Wsign-compare]
+  293 |   BSTR text_value = reinterpret_cast<BSTR>(1); require(old_value->get_Value(&text_value) == UIA_E_ELEMENTNOTAVAILABLE && !text_value, "removed old provider inert");
+      |                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(296,45): warning: comparison of integers of different signs: 'HRESULT' (aka 'long') and 'unsigned int' [-Wsign-compare]
+  296 |   require(old_value->get_Value(&text_value) == UIA_E_ELEMENTNOTAVAILABLE && !text_value, "old provider cannot revive");
+      |           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(297,127): warning: comparison of integers of different signs: 'HRESULT' (aka 'long') and 'unsigned int' [-Wsign-compare]
+  297 |   auto wrong_document = host.projection; ++wrong_document.document_generation; require(host.provider->publish(wrong_document) == UIA_E_ELEMENTNOTAVAILABLE, "page generation cannot replace native document");
+      |                                                                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(298,151): warning: comparison of integers of different signs: 'HRESULT' (aka 'long') and 'unsigned int' [-Wsign-compare]
+  298 |   auto root = host.root(); ok(host.provider->close(), "revoke root"); VariantInit(&value); require(root->GetPropertyValue(UIA_NamePropertyId, &value) == UIA_E_ELEMENTNOTAVAILABLE && value.vt == VT_EMPTY, "closed root inert");
+      |                                                                                                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(303,83): warning: comparison of integers of different signs: 'HRESULT' (aka 'long') and 'unsigned int' [-Wsign-compare]
+  303 |   VariantInit(&value); require(root->GetPropertyValue(UIA_NamePropertyId, &value) == UIA_E_ELEMENTNOTAVAILABLE, "old root cannot revive on HWND reattach");
+      |                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(314,59): warning: comparison of integers of different signs: 'HRESULT' (aka 'long') and 'unsigned int' [-Wsign-compare]
+  314 |   run_mta(host, [&] { require(value->SetValue(L"timeout") == UIA_E_TIMEOUT, "real owner not pumping timeout"); }, false);
+      |                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(310,28): warning: comparison of integers of different signs: 'HRESULT' (aka 'long') and 'unsigned int' [-Wsign-compare]
+  310 |   require(invoke->Invoke() == UIA_E_TIMEOUT, "queue full"); require(host.dispatch_count == 0, "no direct Invoke callback");
+      |           ~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(326,28): warning: comparison of integers of different signs: 'HRESULT' (aka 'long') and 'unsigned int' [-Wsign-compare]
+  326 |   require(invoke->Invoke() == UIA_E_ELEMENTNOTAVAILABLE, "external COM ref becomes inert");
+      |           ~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(408,44): warning: ISO C++11 does not allow conversion from string literal to 'BSTR' (aka 'wchar_t *') [-Wwritable-strings]
+  408 |     HRESULT set_result = pattern->SetValue(L"visible update");
+      |                                            ^
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(438,40): warning: comparison of integers of different signs: 'const HRESULT' (aka 'const long') and 'unsigned int' [-Wsign-compare]
+  438 |       require(status == S_OK || status == UIA_E_ELEMENTNOTAVAILABLE, "actual cross-thread Host API call"); ++queries;
+      |                                 ~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+C:\work\sm05-uia-events-1\proposal\tests\native\windows_uia_provider_tests.cpp(443,121): warning: comparison of integers of different signs: 'HRESULT' (aka 'long') and 'unsigned int' [-Wsign-compare]
+  443 |   run_mta(host, [&] { VARIANT result; VariantInit(&result); require(root->GetPropertyValue(UIA_NamePropertyId, &result) == UIA_E_ELEMENTNOTAVAILABLE, "foreign provider after revoke"); });
+      |                                                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~~~~~~~~~~~
+14 warnings generated.
+[3/4] Building CXX object CMakeFiles\uia_event_probe.dir\Release\C_\work\sm05-uia-events-1\before\sdk\accessibility\uia\windows_uia_provider.cpp.obj
+[4/4] Linking CXX executable Release\uia_event_probe.exe

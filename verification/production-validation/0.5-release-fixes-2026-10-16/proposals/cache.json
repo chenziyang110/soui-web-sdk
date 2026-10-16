@@ -1,0 +1,109 @@
+{
+  "sourceManifest": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 16115595,
+    "sha256": "161b4c4edeced87e68c4078895089749af0371d0fde54cb1823881947af92bac"
+  },
+  "prior": {
+    "path": "C:\\work\\sm05-cache-budget-2\\PROPOSAL.json",
+    "bytes": 4005,
+    "sha256": "e042730a2b98a04597ce31de4b962bbd3241051294d39108cd889fdaeaf595bb"
+  },
+  "changes": [
+    {
+      "name": "tests/acceptance/software-cache-budget.cjs",
+      "original": null,
+      "current": {
+        "path": "C:\\work\\sm05-cache-budget-3\\candidate\\tests\\acceptance\\software-cache-budget.cjs",
+        "bytes": 5072,
+        "sha256": "d495f85f795c5de19c6be96dc56f4dc5de22520570271b17566050069118efbf"
+      }
+    },
+    {
+      "name": "tests/acceptance/software-cache-budget.test.cjs",
+      "original": null,
+      "current": {
+        "path": "C:\\work\\sm05-cache-budget-3\\candidate\\tests\\acceptance\\software-cache-budget.test.cjs",
+        "bytes": 8470,
+        "sha256": "8f148b909f7e5ce662b93db848ebe293f3caf9206ef973d1f171ac2c53365a96"
+      }
+    },
+    {
+      "name": "tests/acceptance/long-run-policy.cjs",
+      "original": {
+        "path": "C:\\work\\sm05-release-050\\tests\\acceptance\\long-run-policy.cjs",
+        "bytes": 5176,
+        "sha256": "91cfc9b1e865a6706f9a3ef239499c09668195d7dc3ea94f9079b2a660ad6b1f"
+      },
+      "current": {
+        "path": "C:\\work\\sm05-cache-budget-3\\candidate\\tests\\acceptance\\long-run-policy.cjs",
+        "bytes": 5320,
+        "sha256": "bf7b44d56e89d2f06897ade11aeb055b6df71343c8049eb1881189c014ea6630"
+      }
+    },
+    {
+      "name": "tests/acceptance/long-run-validation.cjs",
+      "original": {
+        "path": "C:\\work\\sm05-release-050\\tests\\acceptance\\long-run-validation.cjs",
+        "bytes": 39753,
+        "sha256": "486962703b12208ed41e1614daddb7a1e8625eb2b4527c09f5f42018d1e60db9"
+      },
+      "current": {
+        "path": "C:\\work\\sm05-cache-budget-3\\candidate\\tests\\acceptance\\long-run-validation.cjs",
+        "bytes": 41921,
+        "sha256": "69bdeb0d3d78159e9a7620b40bdbed3507284a60a6a62d4ee65dba25cdbdd082"
+      }
+    },
+    {
+      "name": "tests/sdk/long-run-policy.test.cjs",
+      "original": {
+        "path": "C:\\work\\sm05-release-050\\tests\\sdk\\long-run-policy.test.cjs",
+        "bytes": 45931,
+        "sha256": "8d3075b327e03df45fbd940f52a44abdaa5ff2cc97e72ee86636089ece9c5234"
+      },
+      "current": {
+        "path": "C:\\work\\sm05-cache-budget-3\\candidate\\tests\\sdk\\long-run-policy.test.cjs",
+        "bytes": 46728,
+        "sha256": "e2110334afa872e3f84d5e30db01375173425a0a94ea43c658983a00c2bbea53"
+      }
+    },
+    {
+      "name": "docs/adr/0113-software-process-cache-envelope.md",
+      "original": null,
+      "current": {
+        "path": "C:\\work\\sm05-cache-budget-3\\candidate\\docs\\adr\\0113-software-process-cache-envelope.md",
+        "bytes": 4637,
+        "sha256": "6abe6008f801e3c9a23374592bc1e5d26c80f60d50f329546c049d413630c6ce"
+      }
+    }
+  ],
+  "nativeCaptureOrdering": {
+    "path": "C:\\work\\sm05-release-050\\tests\\acceptance-app\\main.cpp",
+    "bytes": 42015,
+    "sha256": "02bc1ff85205acec289b2489896d107c4c34fcad5a28f91577f3bf72754c734b"
+  },
+  "policyBeforeLongRun": {
+    "path": "C:\\work\\sm05-committed-budget-1\\OBSERVATION-POLICY.md",
+    "bytes": 1329,
+    "sha256": "2df9c0202c5268e8e90c7d9a0ac925e130ad59188ea5e28493b49c34f354b354"
+  },
+  "evidence": [
+    {
+      "path": "C:\\work\\sm05-cache-budget-3\\parent-clock-red.log",
+      "bytes": 1080,
+      "sha256": "f10077716eebb145181b3fa9faa7e323e222d01302d92027733ec28db2969cbe"
+    },
+    {
+      "path": "C:\\work\\sm05-cache-budget-3\\parent-clock-green.log",
+      "bytes": 11563,
+      "sha256": "ba46c5b62909cc36e990eff7704b81d1b1921793e11408f3a3f91b8a1f0354a0"
+    }
+  ],
+  "tests": 131,
+  "passed": 131,
+  "adopted": false,
+  "nativeExecuted": false,
+  "actualEightHoursExecuted": false,
+  "actualCurrentWorkloadBudgetQualified": false,
+  "releaseReady": false
+}

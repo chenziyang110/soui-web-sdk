@@ -6,7 +6,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {checkPagePair} = require('../../benchmarks/protocol/check-page-pair.cjs');
 
-const evidence = path.resolve(__dirname, '../../verification/production-validation/benchmark-host-smoke-2026-09-23');
+const evidence = path.resolve(__dirname, '../fixtures/protocol-history/benchmark-host-smoke-2026-09-23');
 function read(folder, prefix) {
   const name = fs.readdirSync(path.join(evidence, folder)).find(item => item.startsWith(prefix) && item.endsWith('.json'));
   return JSON.parse(fs.readFileSync(path.join(evidence, folder, name), 'utf8'));

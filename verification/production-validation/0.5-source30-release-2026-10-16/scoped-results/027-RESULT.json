@@ -1,0 +1,293 @@
+{
+  "schema": "soui.source30-external-sdk-consumer/1",
+  "source": 30,
+  "architecture": "x64",
+  "configuration": "Release",
+  "passed": true,
+  "sourceManifest": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 16240065,
+    "sha256": "ad031346ae01ff74fa840e8c2ca820bd3e879a0848d41e8cb7c20f408c68e4b6"
+  },
+  "selectedSdk": {
+    "profile": "LLVM22MSVC142",
+    "requestFile": {
+      "path": "C:/work/sm05-release-050/out/sdk-x64/llvm-profile-request-Release.json",
+      "bytes": 11951,
+      "sha256": "f617592d1d8a84d129b3d9aa7f2ba44d6f6f2d7d4f24e430989a08e05552efa0"
+    },
+    "sdkAccepted": {
+      "path": "C:\\work\\sm05-release-050\\out\\sdk-x64\\standard-llvm-Release.json",
+      "bytes": 5678,
+      "sha256": "6828fd8aeface7b2c1feed69d97ed725d8e27515e0eab411e47f01f17c1b53a5"
+    },
+    "validationTools": {
+      "root": "C:\\work\\sm05-release-050",
+      "preparation": {
+        "path": "C:\\work\\sm05-release-050\\out\\benchmark-protocol\\measurement-tools.json",
+        "bytes": 140181,
+        "sha256": "3897eb2cff579c63464eac8c44947de43c7eb6a393ffc340fe6508f364286808"
+      },
+      "requestFile": {
+        "path": "C:/work/sm05-release-050/out/benchmark-protocol/llvm-profile-request-Release.json",
+        "bytes": 11951,
+        "sha256": "85588a31b722403a313e484df3993ddd2639a7974c6dbe28a94f504bf9e9ff36"
+      },
+      "inputIdentity": "ae9d7b689d35a00273a157df8af5ff783957b0fca5e1b89aff24737c67e47896",
+      "bridgeIdentity": "d24bef7f899c165f7da3edcabcc1db87c95b5ffe8903c89d6387985ef11ad95f",
+      "sourceFingerprint": "4b54f387046942ceb287ecac9c3472f909075bd56029ebb4a63d5276841ec487"
+    }
+  },
+  "sdkBuildId": "2ac1d9ec-40a9-4ca6-ae74-6f75497dbeae",
+  "sdkSourceSha256": "aaea5bbe71a0c5322bd923477ef40d4572af33a55e343ccd0a111ae7c08fa7f9",
+  "suite": "C:\\work\\sm05-release-050\\out\\release-validation\\x64\\eb15755bfa8043d6afcc02eea72cde7d",
+  "consumerBuild": {
+    "path": "C:\\work\\sm05-release-050\\out\\release-validation\\x64\\eb15755bfa8043d6afcc02eea72cde7d\\consumer-llvm-build.json",
+    "bytes": 15865,
+    "sha256": "edfca35ee0a7829733ead9a2dfbc39a4b033bf6bc28b579e0198ec8ba05618f3"
+  },
+  "installedArchive": {
+    "path": "C:\\work\\sm05-release-050\\out\\install\\x64\\lib\\Release\\soui_sdk.lib",
+    "bytes": 12200430,
+    "sha256": "2c37fc574cc8818c063787d0b60c149f092be60c1e4f07f089de4c8a8fa13368"
+  },
+  "executable": {
+    "path": "C:\\work\\sm05-release-050\\out\\release-validation\\x64\\eb15755bfa8043d6afcc02eea72cde7d\\consumer\\Release\\soui_consumer.exe",
+    "bytes": 622592,
+    "sha256": "b73c13ff2c880d2843fbfcec24e063635498b4ab18b6e9fbcd4443d541cdae69"
+  },
+  "runtimeSubject": {
+    "pid": 35996,
+    "creationFileTime": "134366089640855005"
+  },
+  "records": [
+    {
+      "name": "request",
+      "executable": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+      "args": [
+        "-NoProfile",
+        "-NonInteractive",
+        "-File",
+        "C:\\work\\sm05-source30-external-consumer-2\\request.ps1",
+        "-Root",
+        "C:/work/sm05-release-050",
+        "-Suite",
+        "C:\\work\\sm05-release-050\\out\\release-validation\\x64\\eb15755bfa8043d6afcc02eea72cde7d",
+        "-Architecture",
+        "x64",
+        "-LlvmRoot",
+        "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64",
+        "-MsvcRoot",
+        "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133",
+        "-WindowsSdkRoot",
+        "C:/Program Files (x86)/Windows Kits/10",
+        "-NinjaExe",
+        "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe",
+        "-WindowsCmdExe",
+        "C:/Windows/System32/cmd.exe",
+        "-PowerShellExe",
+        "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe"
+      ],
+      "natural": true,
+      "result": {
+        "pid": 56616,
+        "creationFileTime": "134366086192409135",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 1282,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-1\\request.ndjson",
+        "reportSha256": "161bb40f4068bc14f4fe7014b5205bfa3303c69892f9ce122a7031ea38a12acd",
+        "runnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c",
+        "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 1282,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "build",
+      "executable": "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node.exe",
+      "args": [
+        "C:/work/sm05-release-050/tools/internal/llvm-installed-acceptance.cjs",
+        "build-release",
+        "C:\\work\\sm05-release-050\\out\\release-validation\\x64\\eb15755bfa8043d6afcc02eea72cde7d"
+      ],
+      "natural": true,
+      "result": {
+        "pid": 64324,
+        "creationFileTime": "134366086225548503",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 114584,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 100,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-1\\build.ndjson",
+        "reportSha256": "60d7778b76f5e7ca5e40f2b892cf00fa22db68b5f3059f47b7d6cdf0069ab64e",
+        "runnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c",
+        "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 114584,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 100,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "runtime",
+      "executable": "C:\\work\\sm05-release-050\\out\\release-validation\\x64\\eb15755bfa8043d6afcc02eea72cde7d\\consumer\\Release\\soui_consumer.exe",
+      "args": [],
+      "natural": true,
+      "result": {
+        "pid": 35996,
+        "creationFileTime": "134366089640855005",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 74,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-2\\runtime.ndjson",
+        "reportSha256": "0337a1ace5530bbdb59006977c2e1d7a7bf86738417ff47ae7e30db655d002e6",
+        "runnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c",
+        "executableSha256": "b73c13ff2c880d2843fbfcec24e063635498b4ab18b6e9fbcd4443d541cdae69"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 74,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    }
+  ],
+  "pins": [
+    {
+      "path": "C:\\work\\sm05-source30-external-consumer-2\\recover-x64-canonical.cjs",
+      "bytes": 4032,
+      "sha256": "1ba385332576e889b63c3d37a2b285de6097dc33b9a5ab6ddbb02c2481499a78"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-1\\INPUTS.json",
+      "bytes": 3474,
+      "sha256": "9fdff624724c7b1b8cd0aecc6b26e6db1bb173827b7ef81e730bb59cbc0bfd18"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-1\\FAILED.json",
+      "bytes": 5023,
+      "sha256": "89a47256d105b30df1e3f6e603575e23698bdb9f6d1a2c0e3b740fa87f13cc17"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-1\\STAGES.json",
+      "bytes": 4426,
+      "sha256": "d3a5a0e8af154752f1d4bbb0ff69fc609c3d14d8053ff676c1b0fe17f36a9fc8"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-1\\CANONICAL-ROOT-VERIFIED.json",
+      "bytes": 492,
+      "sha256": "8d1780add6f4f9fbcf624d50065a156d288dee353bf83916496212a405b3c410"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\release-validation\\x64\\eb15755bfa8043d6afcc02eea72cde7d\\consumer-llvm-build.json",
+      "bytes": 15865,
+      "sha256": "edfca35ee0a7829733ead9a2dfbc39a4b033bf6bc28b579e0198ec8ba05618f3"
+    }
+  ],
+  "originalAttemptFailure": {
+    "path": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-1\\FAILED.json",
+    "bytes": 5023,
+    "sha256": "89a47256d105b30df1e3f6e603575e23698bdb9f6d1a2c0e3b740fa87f13cc17"
+  },
+  "canonicalPublicVerification": {
+    "path": "C:\\work\\sm05-source30-external-consumer-2\\x64-source30-1\\CANONICAL-ROOT-VERIFIED.json",
+    "bytes": 492,
+    "sha256": "8d1780add6f4f9fbcf624d50065a156d288dee353bf83916496212a405b3c410"
+  },
+  "reusedAcceptedCompilation": true,
+  "scope": "Actual public Soui::Sdk external compilation was already accepted. The private caller supplied a slash-form root to a strict internal reader; the canonical Windows path passes the unchanged public verifier. Reuse that authentic compile, then execute the unchanged fixture under new natural supervision. Original failed caller result is retained.",
+  "webView2LinkedByThisConsumer": false,
+  "fullVerifyReleaseEvaluated": false,
+  "upgradeRollbackRelocationEvaluated": false,
+  "releaseReady": false
+}

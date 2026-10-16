@@ -4,7 +4,7 @@
 
 0.4.0-preview.3 更新 Workbench 依赖和 SDK 内的依赖清单、授权材料，因此再次使用新身份。Workbench 构建要求 Node.js 22.12 以上；基础 SDK 和兼容生成项目仍保留 Node.js 20.19 范围。详见 [ADR-0018](adr/0018-workbench-build-node22.md)。
 
-版本入口是根目录 `VERSION`，当前开发版本为 `0.4.0-preview.3`。构建工具检查 C++ 版本字符串、Web 包和锁文件保持一致，CMake 从该版本推导数值版本。生成项目以 `sdk-lock.json` 确认 SDK 版本，升级不覆盖业务项目自己的 VERSION。C++ API 使用源码编译，不承诺不同编译器、工具集或配置之间的稳定二进制 ABI。
+版本入口是根目录 `VERSION`，本次预发布交付身份为 `0.5.0`，实际范围见[发布说明](releases/0.5.0.md)，完整生产验收保持 `releaseReady=false`。构建工具检查 C++ 版本字符串、Web 包和锁文件保持一致，CMake 从该版本推导数值版本。生成项目以 `sdk-lock.json` 确认 SDK 版本，升级不覆盖业务项目自己的 VERSION。C++ API 使用源码编译，不承诺不同编译器、工具集或配置之间的稳定二进制 ABI。
 
 `tools/New-Project.ps1` 把模板与固定 SDK 包组合，生成 `project.json` 和 `sdk-lock.json`。默认 SDK 包位于 `dist/sdk/<版本>/`，包含 SDK 源码、接入工具和应用必需的固定依赖；完整底层源码保留在完整交付包中。
 
@@ -13,12 +13,24 @@
 ## 升级
 
 1. 修改 SDK 后更新 VERSION，记录兼容性变化并完成验证。
-2. 按当前 VERSION 生成新包，例如 `node tools/sdk/soui-sdk.cjs pack --source . --output dist/sdk/0.4.0-preview.3 --version 0.4.0-preview.3`；开发中应在验证收敛后生成，已生成的同版本包不允许覆盖。
+2. 按当前 VERSION 生成新包，例如 `node tools/sdk/soui-sdk.cjs pack --source . --output dist/sdk/0.5.0 --version 0.5.0`；开发中应在验证收敛后生成，已生成的同版本包不允许覆盖。先前内部 `0.5.0-preview.1` 包保留原字节。
 3. 在业务项目中提交或备份修改。
 4. 执行 `node tools/sdk/soui-sdk.cjs install --package <新SDK包目录> --project <业务项目目录>`。
 5. 重新编译、回归业务，保留旧包用于回退。
 
 默认生成器检查缓存包与当前 SDK 源码是否相符。回退通过重新安装旧版本包后重新编译完成。模板升级不自动覆盖业务文件，按变更说明手动迁移。
+
+## 0.4 → 0.5 的最终关闭
+
+0.5 的 `shutdown_miniblink_runtime()` 是非阻塞接口，首次提交后的
+`E_RUNTIME_SHUTDOWN_PENDING` 需要继续处理。应用须在全部 Host 销毁后、COM
+释放前调用 `wait_for_miniblink_runtime_shutdown(std::chrono::seconds{20})`，
+或按同一总期限继续驱动原非阻塞接口。未知错误和超时仍须作为失败处理。
+
+若同一业务源码需要回退到没有等待函数的历史 SDK，可包含 `soui/version.h`，
+在编译期按 SDK 版本选择对应接口；升级/回退验证夹具采用此方式。安装器仍不会
+修改业务 `app/`，完整重编译与实际退出验证不可省略。具体关闭顺序见
+[API 契约](api.md)和 [ADR-0094](adr/0094-application-runtime-shutdown.md)。
 
 ## preview.13 安装中断恢复
 

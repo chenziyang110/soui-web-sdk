@@ -3,10 +3,28 @@ param(
   [string]$ExpectedVersion='',
   [string]$PreviousPackage='',
   [string]$WorkspaceParent='',
-  [switch]$FreshConfigure
+  [ValidateSet('x64','Win32')][string]$Architecture='x64',
+  [switch]$FreshConfigure,
+  [ValidateSet('MSVC143','LLVM22MSVC142')][string]$NativeToolchain='MSVC143',
+  [string]$LlvmRoot,[string]$MsvcRoot,[string]$WindowsSdkRoot,
+  [string]$NinjaExe,[string]$WindowsCmdExe,[string]$PowerShellExe,[string]$DevkitRoot,
+  [string]$LegacyDevkitRoot
 )
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$sdkArchitecture=if($Architecture-eq'Win32'){'x86'}else{'x64'}
+$legacyToolsRoot=$root
+$llvmPaths=[ordered]@{LlvmRoot=$LlvmRoot;MsvcRoot=$MsvcRoot;WindowsSdkRoot=$WindowsSdkRoot;NinjaExe=$NinjaExe;WindowsCmdExe=$WindowsCmdExe;PowerShellExe=$PowerShellExe}
+if($NativeToolchain-eq'LLVM22MSVC142'){
+  foreach($value in $llvmPaths.Values){if([string]::IsNullOrWhiteSpace($value)-or$value-notmatch'^[A-Za-z]:[\\/]'-or$value-match'[;"\x00-\x1f]'){throw 'LLVM release validation requires all six explicit safe tool paths'}}
+  if(-not$DevkitRoot-or$DevkitRoot-notmatch'^[A-Za-z]:[\\/]'-or$DevkitRoot-match'[;"\x00-\x1f]'){throw 'LLVM release validation requires a separate explicit stock DevkitRoot'}
+  $DevkitRoot=[IO.Path]::GetFullPath($DevkitRoot)
+  if($PSBoundParameters.ContainsKey('LegacyDevkitRoot')){
+    if(-not$LegacyDevkitRoot-or$LegacyDevkitRoot-notmatch'^[A-Za-z]:[\\/]'-or$LegacyDevkitRoot-match'[;"\x00-\x1f]'){throw 'LegacyDevkitRoot must be an explicit absolute safe MSVC stock owner'}
+    $legacyToolsRoot=[IO.Path]::GetFullPath($LegacyDevkitRoot)
+  }
+  if([string]::Equals($DevkitRoot,$legacyToolsRoot,[StringComparison]::OrdinalIgnoreCase)){throw 'LLVM stock T and historical MSVC stock R must be distinct'}
+}elseif(@($llvmPaths.Values|Where-Object{$_}).Count-or($PSBoundParameters.ContainsKey('DevkitRoot')-or$PSBoundParameters.ContainsKey('LegacyDevkitRoot'))){throw 'LLVM paths and stock roots require explicit LLVM22MSVC142'}
 . (Join-Path $PSScriptRoot 'internal/CMake-Configure.ps1')
 $version=([IO.File]::ReadAllText((Join-Path $root 'VERSION'))).Trim()
 if(-not $ExpectedVersion){$ExpectedVersion=$version}
@@ -14,13 +32,14 @@ if($version -ne $ExpectedVersion){throw "Freeze VERSION at $ExpectedVersion befo
 $node=(Get-Command node.exe -ErrorAction Stop).Source
 $cmake=(Get-Command cmake.exe -ErrorAction Stop).Source
 $powershell=(Get-Command powershell.exe -ErrorAction Stop).Source
+if($NativeToolchain-eq'LLVM22MSVC142'){$powershell=$PowerShellExe}
 $helper=Join-Path $root 'tools/internal/release-verification.cjs'
 $package=Join-Path $root "dist/sdk/$version"
 if(-not $PreviousPackage){$PreviousPackage=Join-Path $root 'dist/sdk/0.3.0-preview.10'}
 if(-not $WorkspaceParent){$WorkspaceParent=[IO.Path]::GetFullPath((Join-Path $root '..\..'))}
 $runId=[Guid]::NewGuid().ToString('N')
-$workspace=[IO.Path]::GetFullPath((Join-Path $WorkspaceParent "soui-release-$runId"))
-$output=Join-Path $root "out/release-validation/$runId"
+$workspace=[IO.Path]::GetFullPath((Join-Path $WorkspaceParent "soui-release-$sdkArchitecture-$runId"))
+$output=Join-Path $root "out/release-validation/$sdkArchitecture/$runId"
 $runFile=Join-Path $output 'run.json'
 function Invoke-Json([string[]]$Arguments){
   $text=@(& $node $helper @Arguments)
@@ -33,6 +52,17 @@ function Invoke-Checked([string]$Executable,[string[]]$Arguments,[string]$Log){
 }
 function Build-And-Smoke([string]$Project,[string]$Phase){
   Write-Output "Building independent project: $Phase"
+  $compileProject=$Project
+  $llvmPhase=$NativeToolchain-eq'LLVM22MSVC142'-and$Phase-notin@('baseline','rollback')
+  if($NativeToolchain-eq'LLVM22MSVC142'){$prepared=Invoke-Json @('prepare-phase',$runFile,$Phase);$compileProject=[string]$prepared.project}
+  if($llvmPhase){
+    $arguments=@((Join-Path $compileProject 'tools/internal/standard-build.cjs'),'--root',$compileProject,'--devkit-root',$DevkitRoot,
+      '--architecture',$sdkArchitecture,'--configuration','Release','--native-toolchain',$NativeToolchain,'--fresh-configure')
+    $flags=[ordered]@{LlvmRoot='--llvm-root';MsvcRoot='--msvc-root';WindowsSdkRoot='--windows-sdk-root';NinjaExe='--ninja-exe';WindowsCmdExe='--windows-cmd-exe';PowerShellExe='--powershell-exe'}
+    foreach($entry in $flags.GetEnumerator()){$arguments+=@($entry.Value,[string]$llvmPaths[$entry.Key])}
+    Invoke-Checked $node $arguments (Join-Path $output "$Phase-build.log")
+  }else{
+  $Project=$compileProject
   $buildEntry=Join-Path $Project 'tools/Build.ps1'
   $refresh=@()
   if($FreshConfigure){
@@ -43,53 +73,102 @@ function Build-And-Smoke([string]$Project,[string]$Phase){
       # platform. Validate ownership using today's helper, then initialize
       # their original platform with the same actual-SDK assertion.
       $legacyConfigure=@(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $Project -SourceDirectory $Project `
-        -BuildDirectory (Join-Path $Project 'out/x64') -Architecture x64 -FreshConfigure)
-      $legacyConfigure[[Array]::IndexOf($legacyConfigure,'-A')+1]='x64'
+        -BuildDirectory (Join-Path $Project ("out/"+$sdkArchitecture)) -Architecture $sdkArchitecture -FreshConfigure)
+      $legacyConfigure[[Array]::IndexOf($legacyConfigure,'-A')+1]=$Architecture
       Write-Output "Explicitly refreshing historical configuration: $Phase; selected SDK is checked in the configure log"
       Invoke-Checked $cmake $legacyConfigure (Join-Path $output "$Phase-legacy-configure.log")
     }
   }
   Invoke-Checked $powershell (@('-NoProfile','-ExecutionPolicy','Bypass','-File',
-    $buildEntry,'-Architecture','x64','-Configuration','Release')+$refresh) (Join-Path $output "$Phase-build.log")
-  $evidence=Join-Path $Project 'tools/internal/build-evidence.cjs'
-  $metadataText=@(& $node $evidence begin-smoke x64 Release)
-  if($LASTEXITCODE -ne 0){throw 'Generated project build identity failed.'}
-  $metadata=($metadataText -join "`n") | ConvertFrom-Json
-  $target=[string]$metadata.scenarios[0].target
-  $bin=Join-Path $Project "out/x64/bin/Release/$target"
-  $log=Join-Path $bin 'smoke.log'
-  if(Test-Path -LiteralPath $log){Remove-Item -LiteralPath $log}
+    $buildEntry,'-Architecture',$sdkArchitecture,'-Configuration','Release')+$refresh) (Join-Path $output "$Phase-build.log")
+  }
+  # The current helper validates frozen historical builds without replacing their tools.
+  # The actual PowerShell entry holds the lease; the nonce only prevents accidental use.
   $mutex=[Threading.Mutex]::new($false,'Local\SouiDevKit.DesktopValidation')
   $acquired=$false
-  $process=$null
+  $noncePresent=Test-Path -LiteralPath 'Env:SOUI_RELEASE_DESKTOP_NONCE'
+  $previousNonce=if($noncePresent){(Get-Item -LiteralPath 'Env:SOUI_RELEASE_DESKTOP_NONCE').Value}else{$null}
   try{
-    try{$acquired=$mutex.WaitOne(0)}catch [Threading.AbandonedMutexException]{$acquired=$true}
-    if(-not $acquired){throw 'Another desktop validation is running; retain this attempt and retry after it finishes.'}
-    $process=Start-Process -FilePath (Join-Path $bin "$target.exe") -WorkingDirectory $bin -WindowStyle Hidden -ArgumentList '--smoke-test' -PassThru
-    $finished=$process.WaitForExit(45000)
-    if(-not $finished){$process.Kill();$process.WaitForExit()}
-    $process.Refresh()
-    $text=if(Test-Path -LiteralPath $log){[IO.File]::ReadAllText($log)}else{''}
-    $passed=$finished -and $process.ExitCode -eq 0 -and $text.Contains('application-ready') -and $text.Contains('host-close-complete')
-    $run=[ordered]@{target=$target;scenario='default';passed=$passed;exitCode=$process.ExitCode;timedOut=(-not $finished);log=$text}
-    $report=[ordered]@{schema=$metadata.schema;buildId=$metadata.buildId;sourceSha256=$metadata.sourceSha256;
-      version=$metadata.version;startedAt=$metadata.startedAt;architecture='x64';configuration='Release';
-      releaseReady=$false;runs=@($run);passed=$false}
-    [IO.File]::WriteAllText((Join-Path $Project 'out/x64/smoke-Release.json'),($report|ConvertTo-Json -Depth 12),[Text.UTF8Encoding]::new($false))
+    try{$acquired=$mutex.WaitOne(0)}catch [Threading.AbandonedMutexException]{
+      $acquired=$true # The exception transfers ownership; release it in finally, then fail.
+      throw 'Abandoned desktop validation lease refused; retain this attempt.'
+    }
+    if(-not $acquired){throw 'Another desktop validation is running; retain this attempt.'}
+    $env:SOUI_RELEASE_DESKTOP_NONCE=[Guid]::NewGuid().ToString('N')
+    Invoke-Json @('smoke',$runFile,$Phase,$env:SOUI_RELEASE_DESKTOP_NONCE) | ConvertTo-Json -Compress
   }finally{
-    if($process){$process.Dispose()}
-    if($acquired){$mutex.ReleaseMutex()}
-    $mutex.Dispose()
+    try{
+      if($noncePresent){Set-Item -LiteralPath 'Env:SOUI_RELEASE_DESKTOP_NONCE' -Value $previousNonce}
+      else{Remove-Item -LiteralPath 'Env:SOUI_RELEASE_DESKTOP_NONCE' -ErrorAction SilentlyContinue}
+      $restoredPresent=Test-Path -LiteralPath 'Env:SOUI_RELEASE_DESKTOP_NONCE'
+      if($restoredPresent-ne$noncePresent-or($noncePresent-and-not[string]::Equals([string](Get-Item -LiteralPath 'Env:SOUI_RELEASE_DESKTOP_NONCE').Value,[string]$previousNonce,[StringComparison]::Ordinal))){
+        throw 'Release desktop nonce environment was not exactly restored.'
+      }
+    }finally{
+      try{if($acquired){$mutex.ReleaseMutex()}}finally{$mutex.Dispose()}
+    }
   }
-  & $node $evidence finish-smoke x64 Release
-  if($LASTEXITCODE -ne 0){throw "Independent project startup failed: $Phase"}
   Invoke-Json @('record',$runFile,$Phase) | ConvertTo-Json -Compress
 }
 function Install-Sdk([string]$SdkPackage,[string]$Project){
   & $node (Join-Path $root 'tools/sdk/soui-sdk.cjs') install --package $SdkPackage --project $Project
   if($LASTEXITCODE -ne 0){throw 'SDK upgrade or rollback failed; retain its recovery evidence.'}
 }
-$begin=Invoke-Json @('begin',$runFile,$workspace,$package,[IO.Path]::GetFullPath($PreviousPackage))
+function Build-InstalledSdk {
+$refresh=if($FreshConfigure){@('-FreshConfigure')}else{@()}
+if($NativeToolchain-eq'LLVM22MSVC142'){
+  # The installed consumer requires this SDK's actual host observer producer.
+  # x86 SDKs still use the x64 host tools, kept in the selected independent stock.
+  if($sdkArchitecture-ne'x64'){
+    $hostStock=@('-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',(Join-Path $DevkitRoot 'tools/internal/Build-ValidationTools.ps1'),'-Architecture','x64','-NativeToolchain',$NativeToolchain)
+    foreach($entry in $llvmPaths.GetEnumerator()){$hostStock+=@(('-'+$entry.Key),[string]$entry.Value)}
+    if($FreshConfigure){$hostStock+='-FreshConfigure'}
+    Invoke-Checked $PowerShellExe $hostStock (Join-Path $output 'llvm-host-stock-build.log')
+  }
+  $hostRequest=Join-Path $DevkitRoot 'out/benchmark-protocol/llvm-profile-request-Release.json'
+  $hostDirectory=Join-Path $output 'installed-sdk-host-observer'
+  Invoke-Checked $node @((Join-Path $root 'tools/internal/host64-build-debug-observer.cjs'),'prepare',$root,$hostRequest,$DevkitRoot,$cmake,$hostDirectory) (Join-Path $output 'installed-sdk-host-observer.log')
+  $hostReceipt=Join-Path $hostDirectory 'prepared.json'
+  $hostSha=(Get-FileHash -LiteralPath $hostReceipt -Algorithm SHA256).Hash.ToLowerInvariant()
+  $sdkArgs=@((Join-Path $root 'tools/internal/standard-build.cjs'),'--root',$root,'--devkit-root',$DevkitRoot,'--architecture',$sdkArchitecture,'--configuration','Release','--sdk-only','--install','--native-toolchain',$NativeToolchain)
+  $sdkArgs+=@('--host64-build-observer','--host64-observer-prepared',$hostReceipt,'--host64-observer-sha256',$hostSha)
+  $flags=[ordered]@{LlvmRoot='--llvm-root';MsvcRoot='--msvc-root';WindowsSdkRoot='--windows-sdk-root';NinjaExe='--ninja-exe';WindowsCmdExe='--windows-cmd-exe';PowerShellExe='--powershell-exe'}
+  foreach($entry in $flags.GetEnumerator()){$sdkArgs+=@($entry.Value,[string]$llvmPaths[$entry.Key])};if($FreshConfigure){$sdkArgs+='--fresh-configure'}
+  Invoke-Checked $node $sdkArgs (Join-Path $output 'installed-sdk-build.log')
+}else{
+Invoke-Checked $powershell (@('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $root 'tools/Build.ps1'),
+  '-Architecture',$sdkArchitecture,'-Configuration','Release','-SdkOnly','-Install')+$refresh) (Join-Path $output 'installed-sdk-build.log')
+}
+}
+$releaseEnvironment=@{}
+try{
+if($NativeToolchain-eq'LLVM22MSVC142'){
+  $providers=@('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','GIT_DIR','GIT_WORK_TREE','GIT_INDEX_FILE',
+    'CL','_CL_','LINK','_LINK_','INCLUDE','LIB','LIBPATH','CPATH','C_INCLUDE_PATH','CPLUS_INCLUDE_PATH','OBJC_INCLUDE_PATH',
+    'LIBRARY_PATH','CCC_OVERRIDE_OPTIONS','CLANG_CONFIG_FILE_USER_DIR','CLANG_CONFIG_FILE_SYSTEM_DIR',
+    'CMAKE_GENERATOR','CMAKE_GENERATOR_PLATFORM','CMAKE_GENERATOR_TOOLSET','CC','CXX','AR','RC','CFLAGS','CXXFLAGS','LDFLAGS',
+    'DESTDIR','NINJA_STATUS','RCFLAGS','EXTERNAL_INCLUDE','CMAKE_BUILD_TYPE','CMAKE_TOOLCHAIN_FILE','CMAKE_PREFIX_PATH',
+    'ComSpec','VcpkgEnabled','VcpkgEnableManifest','MSBUILDDISABLENODEREUSE')
+  foreach($name in $providers){$item=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue;$releaseEnvironment[$name]=@{present=($null-ne$item);value=if($null-ne$item){[string]$item.Value}else{$null}}}
+  foreach($name in $providers){Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue;if(Test-Path -LiteralPath ('Env:'+$name)){throw ('Could not clear release provider: '+$name)}}
+  $env:ComSpec=$WindowsCmdExe;$env:VcpkgEnabled='false';$env:VcpkgEnableManifest='false';$env:MSBUILDDISABLENODEREUSE='1'
+  New-Item -ItemType Directory -Force -Path $output|Out-Null
+  $profileFile=Join-Path $output 'requested-profile.json'
+  $requestedSchema=if($PSBoundParameters.ContainsKey('LegacyDevkitRoot')){'soui.release-requested-profile/v2'}else{'soui.release-requested-profile/v1'}
+  $requested=[ordered]@{schema=$requestedSchema;profile=$NativeToolchain;toolsRoot=$DevkitRoot;legacyToolsRoot=$legacyToolsRoot;paths=$llvmPaths;qualificationPassed=$false;releaseReady=$false}
+  [IO.File]::WriteAllText($profileFile,($requested|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))
+  # Refuse linked or physically aliased owners before either stock build can write.
+  Invoke-Json @('profile',$profileFile) | Out-Null
+  # These two actual stock directories remain independent for the entire run.
+  Invoke-Checked $powershell (@('-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',(Join-Path $legacyToolsRoot 'tools/internal/Build-ValidationTools.ps1'),'-Architecture',$sdkArchitecture,'-NativeToolchain','MSVC143')+$(if($FreshConfigure){@('-FreshConfigure')}else{@()})) (Join-Path $output 'legacy-stock-build.log')
+  $stock=@('-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',(Join-Path $DevkitRoot 'tools/internal/Build-ValidationTools.ps1'),'-Architecture',$sdkArchitecture,'-NativeToolchain',$NativeToolchain)
+  foreach($entry in $llvmPaths.GetEnumerator()){$stock+=@(('-'+$entry.Key),[string]$entry.Value)}
+  if($FreshConfigure){$stock+='-FreshConfigure'}
+  Invoke-Checked $PowerShellExe $stock (Join-Path $output 'llvm-stock-build.log')
+}
+$beginArgs=@('begin',$runFile,$workspace,$package,[IO.Path]::GetFullPath($PreviousPackage),$sdkArchitecture)
+if($NativeToolchain-eq'LLVM22MSVC142'){$beginArgs+=$profileFile}
+$begin=Invoke-Json $beginArgs
 Write-Output "Release validation workspace: $($begin.workspace)"
 $fresh=Join-Path $workspace 'fresh'
 Invoke-Checked $powershell @('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $root 'tools/New-Project.ps1'),
@@ -104,6 +183,8 @@ $fixtureNative=@'
 #include <windows.h>
 #include <soui/host/soui_miniblink_host.h>
 #include <soui/json_bridge.h>
+#include <soui/version.h>
+#include <chrono>
 #include <json.hpp>
 #include <algorithm>
 #include <filesystem>
@@ -162,7 +243,13 @@ int run(HINSTANCE instance){
   if(!RegisterClassW(&klass))return 6;
   HWND window=CreateWindowW(klass.lpszClassName,L"ReleaseUpgradeCheck",WS_OVERLAPPEDWINDOW,CW_USEDEFAULT,CW_USEDEFAULT,900,600,nullptr,nullptr,instance,&state);
   if(!window)return 7;
-  soui::sdk::host_config config;config.architecture="x64";config.miniblink_binary=root/"node.dll";
+  soui::sdk::host_config config;
+#if defined(_WIN64)
+  config.architecture="x64";
+#else
+  config.architecture="x86";
+#endif
+  config.miniblink_binary=root/"node.dll";
   config.resource_root=root/"resources";config.owner_window=window;config.bridge_adapter=&bridge;
   const auto mounted=state.host.start(config);
   if(!mounted.ok){state.append(mounted.code.c_str());DestroyWindow(window);return 8;}
@@ -176,7 +263,12 @@ int APIENTRY wWinMain(HINSTANCE instance,HINSTANCE,LPWSTR,int){
   const HRESULT com=CoInitializeEx(nullptr,COINIT_APARTMENTTHREADED);
   if(FAILED(com))return 10;
   int result=1;try{result=run(instance);}catch(const std::exception&){}
-  const auto shutdown=soui::sdk::shutdown_miniblink_runtime();if(!shutdown.ok && result==0)result=11;
+#if SOUI_SDK_VERSION_MAJOR > 0 || SOUI_SDK_VERSION_MINOR >= 5
+  const auto shutdown=soui::sdk::wait_for_miniblink_runtime_shutdown(std::chrono::seconds(20));
+#else
+  const auto shutdown=soui::sdk::shutdown_miniblink_runtime();
+#endif
+  if(!shutdown.ok && result==0)result=11;
   CoUninitialize();return result;
 }
 '@
@@ -227,14 +319,37 @@ foreach($relative in @(Invoke-Json @('copy-files',$runFile))){
 }
 Build-And-Smoke $relocated 'relocation'
 Write-Output 'Building installed SDK and external CMake consumer'
-$refresh=if($FreshConfigure){@('-FreshConfigure')}else{@()}
-Invoke-Checked $powershell (@('-NoProfile','-ExecutionPolicy','Bypass','-File',(Join-Path $root 'tools/Build.ps1'),
-  '-Architecture','x64','-Configuration','Release','-SdkOnly','-Install')+$refresh) (Join-Path $output 'installed-sdk-build.log')
+Build-InstalledSdk
 $consumer=Join-Path $output 'consumer'
+if($NativeToolchain-eq'LLVM22MSVC142'){
+  . (Join-Path $root 'tools/internal/Find-LlvmToolchain.ps1')
+  $profile=Get-SouiLlvmToolchain -Architecture $sdkArchitecture @llvmPaths -ToolIdentityBridge (Join-Path $root 'tools/internal/Invoke-ToolFileIdentity.ps1') -ToolIdentityHelper (Join-Path $root 'tools/internal/Tool-FileIdentity.ps1')
+  New-Item -ItemType Directory -Path $consumer|Out-Null
+  $sdkRequestPath=Join-Path $root "out/sdk-$sdkArchitecture/llvm-profile-request-Release.json"
+  if((Get-Item -LiteralPath $sdkRequestPath).Length-gt1048576){throw 'SDK request exceeds1MiB'}
+  $sdkToolchain=([IO.File]::ReadAllText($sdkRequestPath)|ConvertFrom-Json).toolchain
+  $toolchain=Join-Path $root 'cmake/toolchains/SouiLLVM22.cmake';$values=@{path=$toolchain;bytes=(Get-Item -LiteralPath $toolchain).Length;sha256=(Get-FileHash -LiteralPath $toolchain -Algorithm SHA256).Hash.ToLowerInvariant()}
+  $names=@($sdkToolchain.PSObject.Properties.Name);if($names.Count-ne3-or@($names|Where-Object{$_-cnotin@('path','bytes','sha256')}).Count){throw 'Fixed SDK toolchain keys required'}
+  $ownToolchain=[ordered]@{};foreach($name in $names){$ownToolchain[$name]=$values[$name]}
+  $request=[ordered]@{schema='soui.build-toolchain-request/v1';profile=$NativeToolchain;architecture=$sdkArchitecture;discovery=$profile;toolchain=$ownToolchain}
+  [IO.File]::WriteAllText((Join-Path $consumer 'llvm-profile-request-Release.json'),($request|ConvertTo-Json -Depth 20),[Text.UTF8Encoding]::new($false))
+  Invoke-Json @('prepare-consumer',$runFile)|ConvertTo-Json -Compress
+  $configure=@(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $root -SourceDirectory (Join-Path $root 'tests/package-consumer') -BuildDirectory $consumer -Architecture $sdkArchitecture -FreshConfigure -NativeToolchain $NativeToolchain -LlvmToolchain $profile)
+  $consumerInstall=Join-Path $root ("out/install/"+$sdkArchitecture)
+  $configure+=@("-DSouiSdk_DIR=$consumerInstall/lib/cmake/SouiSdk")
+  $command=[ordered]@{schema='soui.installed-acceptance-llvm-configure/v1';cmake=$cmake;args=$configure}
+  [IO.File]::WriteAllText((Join-Path $output 'consumer-llvm-configure.json'),($command|ConvertTo-Json -Depth 5),[Text.UTF8Encoding]::new($false))
+  Invoke-Checked $node @((Join-Path $root 'tools/internal/llvm-installed-acceptance.cjs'),'build-release',$output) (Join-Path $output 'consumer-controller.log')
+}else{
 $configure=@(Get-SouiCMakeConfigureArguments -CMake $cmake -WorkspaceRoot $root -SourceDirectory (Join-Path $root 'tests/package-consumer') `
-  -BuildDirectory $consumer -Architecture x64 -FreshConfigure:$FreshConfigure)
-Invoke-Checked $cmake ($configure+@("-DSouiSdk_DIR=$(Join-Path $root 'out/install/x64/lib/cmake/SouiSdk')")) (Join-Path $output 'consumer-configure.log')
+  -BuildDirectory $consumer -Architecture $sdkArchitecture -FreshConfigure:$FreshConfigure)
+Invoke-Checked $cmake ($configure+@("-DSouiSdk_DIR=$(Join-Path $root ("out/install/"+$sdkArchitecture+"/lib/cmake/SouiSdk"))")) (Join-Path $output 'consumer-configure.log')
 Invoke-Checked $cmake @('--build',$consumer,'--config','Release','--parallel','2') (Join-Path $output 'consumer-build.log')
+}
 Invoke-Json @('consumer',$runFile) | ConvertTo-Json -Compress
 Invoke-Json @('complete',$runFile) | ConvertTo-Json -Depth 12
 Write-Output "Independent release validation passed; original evidence retained in $output"
+}finally{
+  $errors=[Collections.Generic.List[string]]::new();foreach($name in $releaseEnvironment.Keys){try{$state=$releaseEnvironment[$name];if($state.present){Set-Item -LiteralPath ('Env:'+$name) -Value $state.value -ErrorAction Stop}else{Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue};$current=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue;if(($null-ne$current)-ne$state.present-or($state.present-and[string]$current.Value-cne$state.value)){throw 'Presence/value differs'}}catch{$errors.Add($name+': '+$_.Exception.Message)}}
+  if($errors.Count){throw ('Release provider environment restore failed: '+($errors-join'; '))}
+}

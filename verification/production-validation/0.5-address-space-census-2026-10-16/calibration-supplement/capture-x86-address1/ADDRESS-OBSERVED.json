@@ -1,0 +1,4963 @@
+{
+  "passed": true,
+  "architecture": "x86",
+  "subject": {
+    "pid": 92948,
+    "creationFileTime": "134365717512469333"
+  },
+  "pins": [
+    {
+      "path": "C:\\work\\sm05-address-calibration-1\\read.cjs",
+      "bytes": 4411,
+      "sha256": "5d7854ed8add417b0e0fc2809fa298f9fd7db3cbccb1cb92825dd02f7cf9fcb1"
+    },
+    {
+      "path": "C:\\work\\sm05-address-calibration-1\\PREPARED.json",
+      "bytes": 99893,
+      "sha256": "af9312c12eb32f262951af9b15ef4f87a985eb08aad3f858e7989cf6e7858371"
+    },
+    {
+      "path": "C:\\work\\sm05-memory-envelope-2\\PROPOSAL.json",
+      "bytes": 2149,
+      "sha256": "d39d08460773e2949094c73475c4aa301b8d9e356f374a791993e796a306d9fe"
+    },
+    {
+      "path": "C:\\work\\sm05-memory-envelope-2\\proposal\\tests\\acceptance\\process-address-census.cjs",
+      "bytes": 6871,
+      "sha256": "26cc05fc4ffb8e8641dfd5a1f66802d87c336890dcf2511f91208bab52ca161e"
+    },
+    {
+      "path": "C:\\work\\sm05-address-calibration-1\\capture-x86-address1\\CAPTURE.json",
+      "bytes": 170250,
+      "sha256": "b5b419cf144ee118b430ab4244149a672f5babab4f47be136067498718d1dfb0"
+    },
+    {
+      "path": "C:\\work\\sm05-address-calibration-1\\capture-x86-address1\\calibration-stdout.bin",
+      "bytes": 358294,
+      "sha256": "5eaf6ead408b12ab393a4e43bbcdcd0c16b58e5609a2946a1a03ccf12acfee30"
+    },
+    {
+      "path": "C:\\work\\sm05-address-calibration-1\\capture-x86-address1\\calibration.ndjson",
+      "bytes": 1461,
+      "sha256": "241affdc23b4634b19f0f277cd65017dbeff7141dc63cfab3eb499346fa929cd"
+    },
+    {
+      "path": "C:\\work\\sm05-address-calibration-1\\capture-x86-address1\\calibration.ndjson.context.json",
+      "bytes": 736,
+      "sha256": "eaf8488e48795b25a4d8c15fc42ecbabaf16a44f677387ad96344391e1ce830d"
+    }
+  ],
+  "counts": {
+    "matched": 158,
+    "partial": 0,
+    "invalid": 0,
+    "not-evaluated": 0
+  },
+  "observations": [
+    {
+      "index": 0,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "0",
+        "page": null,
+        "sequence": 0
+      },
+      "elapsedMs": 1875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "17619",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "30019584",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "62644224",
+      "freeBytes": "1974091776"
+    },
+    {
+      "index": 1,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794355248926",
+        "page": {
+          "cycle": 0,
+          "loaded": 0,
+          "phase": "baseline"
+        },
+        "sequence": 1
+      },
+      "elapsedMs": 2875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "17511",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "29569024",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "72798208",
+      "freeBytes": "1964388352"
+    },
+    {
+      "index": 2,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794355248926",
+        "page": {
+          "cycle": 0,
+          "loaded": 0,
+          "phase": "baseline"
+        },
+        "sequence": 1
+      },
+      "elapsedMs": 3875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "18918",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "29716480",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "72650752",
+      "freeBytes": "1964388352"
+    },
+    {
+      "index": 3,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794355248926",
+        "page": {
+          "cycle": 0,
+          "loaded": 0,
+          "phase": "baseline"
+        },
+        "sequence": 1
+      },
+      "elapsedMs": 4875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "17960",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "29683712",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "72683520",
+      "freeBytes": "1964388352"
+    },
+    {
+      "index": 4,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794388160767",
+        "page": {
+          "cycle": 1,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 2
+      },
+      "elapsedMs": 5875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "38448",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "136212480",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "96583680",
+      "freeBytes": "1833959424"
+    },
+    {
+      "index": 5,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794388160767",
+        "page": {
+          "cycle": 1,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 2
+      },
+      "elapsedMs": 6875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "35114",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "136278016",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "96518144",
+      "freeBytes": "1833959424"
+    },
+    {
+      "index": 6,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794413172390",
+        "page": {
+          "cycle": 1,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 3
+      },
+      "elapsedMs": 7875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "35886",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "136716288",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "98258944",
+      "freeBytes": "1831780352"
+    },
+    {
+      "index": 7,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794413172390",
+        "page": {
+          "cycle": 1,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 3
+      },
+      "elapsedMs": 8875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "33210",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "136679424",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "98295808",
+      "freeBytes": "1831780352"
+    },
+    {
+      "index": 8,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794413172390",
+        "page": {
+          "cycle": 1,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 3
+      },
+      "elapsedMs": 9891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "43256",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "137121792",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "97853440",
+      "freeBytes": "1831780352"
+    },
+    {
+      "index": 9,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794440593746",
+        "page": {
+          "cycle": 2,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 4
+      },
+      "elapsedMs": 10875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "55750",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "237596672",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "94269440",
+      "freeBytes": "1734889472"
+    },
+    {
+      "index": 10,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794440593746",
+        "page": {
+          "cycle": 2,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 4
+      },
+      "elapsedMs": 11891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "57890",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "237514752",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "94351360",
+      "freeBytes": "1734889472"
+    },
+    {
+      "index": 11,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794440593746",
+        "page": {
+          "cycle": 2,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 4
+      },
+      "elapsedMs": 12875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "57264",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "237514752",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "94351360",
+      "freeBytes": "1734889472"
+    },
+    {
+      "index": 12,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794465607622",
+        "page": {
+          "cycle": 2,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 5
+      },
+      "elapsedMs": 13875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "53161",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "237850624",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "96182272",
+      "freeBytes": "1732722688"
+    },
+    {
+      "index": 13,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794465607622",
+        "page": {
+          "cycle": 2,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 5
+      },
+      "elapsedMs": 14875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "50945",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "237948928",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "96083968",
+      "freeBytes": "1732722688"
+    },
+    {
+      "index": 14,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794492956989",
+        "page": {
+          "cycle": 3,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 6
+      },
+      "elapsedMs": 15875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "71803",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "338300928",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "108736512",
+      "freeBytes": "1619718144"
+    },
+    {
+      "index": 15,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794492956989",
+        "page": {
+          "cycle": 3,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 6
+      },
+      "elapsedMs": 16875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "63533",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "338231296",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "108806144",
+      "freeBytes": "1619718144"
+    },
+    {
+      "index": 16,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794492956989",
+        "page": {
+          "cycle": 3,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 6
+      },
+      "elapsedMs": 17875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "59584",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "338231296",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "108806144",
+      "freeBytes": "1619718144"
+    },
+    {
+      "index": 17,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794517967856",
+        "page": {
+          "cycle": 3,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 7
+      },
+      "elapsedMs": 18875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "63499",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "339238912",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "109969408",
+      "freeBytes": "1617547264"
+    },
+    {
+      "index": 18,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794517967856",
+        "page": {
+          "cycle": 3,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 7
+      },
+      "elapsedMs": 19875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "61743",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "339075072",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "110133248",
+      "freeBytes": "1617547264"
+    },
+    {
+      "index": 19,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794517967856",
+        "page": {
+          "cycle": 3,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 7
+      },
+      "elapsedMs": 20875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "78904",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "431755264",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "106557440",
+      "freeBytes": "1528442880"
+    },
+    {
+      "index": 20,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794545232569",
+        "page": {
+          "cycle": 4,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 8
+      },
+      "elapsedMs": 21875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "51011",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "437866496",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "107839488",
+      "freeBytes": "1521049600"
+    },
+    {
+      "index": 21,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794545232569",
+        "page": {
+          "cycle": 4,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 8
+      },
+      "elapsedMs": 22875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "51856",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "437817344",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "107888640",
+      "freeBytes": "1521049600"
+    },
+    {
+      "index": 22,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794570248343",
+        "page": {
+          "cycle": 4,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 9
+      },
+      "elapsedMs": 23875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "69981",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "437809152",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "110051328",
+      "freeBytes": "1518895104"
+    },
+    {
+      "index": 23,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794570248343",
+        "page": {
+          "cycle": 4,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 9
+      },
+      "elapsedMs": 24875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "69379",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "437809152",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "110051328",
+      "freeBytes": "1518895104"
+    },
+    {
+      "index": 24,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794570248343",
+        "page": {
+          "cycle": 4,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 9
+      },
+      "elapsedMs": 25875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "76489",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "438038528",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "109821952",
+      "freeBytes": "1518895104"
+    },
+    {
+      "index": 25,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794597752684",
+        "page": {
+          "cycle": 5,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 10
+      },
+      "elapsedMs": 26875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "67545",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "430092288",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "208969728",
+      "freeBytes": "1427693568"
+    },
+    {
+      "index": 26,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794597752684",
+        "page": {
+          "cycle": 5,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 10
+      },
+      "elapsedMs": 27891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "63208",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "430092288",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "208969728",
+      "freeBytes": "1427693568"
+    },
+    {
+      "index": 27,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794622765145",
+        "page": {
+          "cycle": 5,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 11
+      },
+      "elapsedMs": 28875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "73683",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "431235072",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "209948672",
+      "freeBytes": "1425571840"
+    },
+    {
+      "index": 28,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794622765145",
+        "page": {
+          "cycle": 5,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 11
+      },
+      "elapsedMs": 29875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "75074",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "431050752",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "210132992",
+      "freeBytes": "1425571840"
+    },
+    {
+      "index": 29,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794622765145",
+        "page": {
+          "cycle": 5,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 11
+      },
+      "elapsedMs": 30875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "82270",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "431017984",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "210165760",
+      "freeBytes": "1425571840"
+    },
+    {
+      "index": 30,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794650434225",
+        "page": {
+          "cycle": 6,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 12
+      },
+      "elapsedMs": 31875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "80615",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "500322304",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "186392576",
+      "freeBytes": "1380040704"
+    },
+    {
+      "index": 31,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794650434225",
+        "page": {
+          "cycle": 6,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 12
+      },
+      "elapsedMs": 32875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "84172",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "500338688",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "186376192",
+      "freeBytes": "1380040704"
+    },
+    {
+      "index": 32,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794650434225",
+        "page": {
+          "cycle": 6,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 12
+      },
+      "elapsedMs": 33875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "85892",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "500355072",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "186359808",
+      "freeBytes": "1380040704"
+    },
+    {
+      "index": 33,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794675444157",
+        "page": {
+          "cycle": 6,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 13
+      },
+      "elapsedMs": 34875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "85641",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "499830784",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "189063168",
+      "freeBytes": "1377861632"
+    },
+    {
+      "index": 34,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794675444157",
+        "page": {
+          "cycle": 6,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 13
+      },
+      "elapsedMs": 35891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "82022",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "499683328",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "189210624",
+      "freeBytes": "1377861632"
+    },
+    {
+      "index": 35,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794703017492",
+        "page": {
+          "cycle": 7,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 14
+      },
+      "elapsedMs": 36875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "90344",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "570089472",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "164044800",
+      "freeBytes": "1332621312"
+    },
+    {
+      "index": 36,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794703017492",
+        "page": {
+          "cycle": 7,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 14
+      },
+      "elapsedMs": 37891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "103992",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "569937920",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "164196352",
+      "freeBytes": "1332621312"
+    },
+    {
+      "index": 37,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794703017492",
+        "page": {
+          "cycle": 7,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 14
+      },
+      "elapsedMs": 38875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "104205",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "569937920",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "164196352",
+      "freeBytes": "1332621312"
+    },
+    {
+      "index": 38,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794728044226",
+        "page": {
+          "cycle": 7,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 15
+      },
+      "elapsedMs": 39891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "90423",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "569667584",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "166596608",
+      "freeBytes": "1330491392"
+    },
+    {
+      "index": 39,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794728044226",
+        "page": {
+          "cycle": 7,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 15
+      },
+      "elapsedMs": 40891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "111765",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "569716736",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "166547456",
+      "freeBytes": "1330491392"
+    },
+    {
+      "index": 40,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794728044226",
+        "page": {
+          "cycle": 7,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 15
+      },
+      "elapsedMs": 41891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "108575",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "554999808",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "208179200",
+      "freeBytes": "1303576576"
+    },
+    {
+      "index": 41,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794756118669",
+        "page": {
+          "cycle": 8,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 16
+      },
+      "elapsedMs": 42875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "107796",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "556179456",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "218308608",
+      "freeBytes": "1292267520"
+    },
+    {
+      "index": 42,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794756118669",
+        "page": {
+          "cycle": 8,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 16
+      },
+      "elapsedMs": 43875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "114995",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "556224512",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "218263552",
+      "freeBytes": "1292267520"
+    },
+    {
+      "index": 43,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794781132461",
+        "page": {
+          "cycle": 8,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 17
+      },
+      "elapsedMs": 44875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "104740",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "556572672",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "220082176",
+      "freeBytes": "1290100736"
+    },
+    {
+      "index": 44,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794781132461",
+        "page": {
+          "cycle": 8,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 17
+      },
+      "elapsedMs": 45875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "112754",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "556572672",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "220082176",
+      "freeBytes": "1290100736"
+    },
+    {
+      "index": 45,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794781132461",
+        "page": {
+          "cycle": 8,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 17
+      },
+      "elapsedMs": 46875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "112288",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "556539904",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "220114944",
+      "freeBytes": "1290100736"
+    },
+    {
+      "index": 46,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794808588315",
+        "page": {
+          "cycle": 9,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 18
+      },
+      "elapsedMs": 47891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "118476",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "626724864",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "186777600",
+      "freeBytes": "1253253120"
+    },
+    {
+      "index": 47,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794808588315",
+        "page": {
+          "cycle": 9,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 18
+      },
+      "elapsedMs": 48875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "115304",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "626708480",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "186793984",
+      "freeBytes": "1253253120"
+    },
+    {
+      "index": 48,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794833599029",
+        "page": {
+          "cycle": 9,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 19
+      },
+      "elapsedMs": 49891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "108866",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "627249152",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "188375040",
+      "freeBytes": "1251131392"
+    },
+    {
+      "index": 49,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794833599029",
+        "page": {
+          "cycle": 9,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 19
+      },
+      "elapsedMs": 50875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "106198",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "626921472",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "188702720",
+      "freeBytes": "1251131392"
+    },
+    {
+      "index": 50,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794833599029",
+        "page": {
+          "cycle": 9,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 19
+      },
+      "elapsedMs": 51891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "102885",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "627036160",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "188588032",
+      "freeBytes": "1251131392"
+    },
+    {
+      "index": 51,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794861353868",
+        "page": {
+          "cycle": 10,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 20
+      },
+      "elapsedMs": 52891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "123957",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "698019840",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "161681408",
+      "freeBytes": "1207054336"
+    },
+    {
+      "index": 52,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794861353868",
+        "page": {
+          "cycle": 10,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 20
+      },
+      "elapsedMs": 53891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "106303",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "697888768",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "161812480",
+      "freeBytes": "1207054336"
+    },
+    {
+      "index": 53,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794861353868",
+        "page": {
+          "cycle": 10,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 20
+      },
+      "elapsedMs": 54891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "115041",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "698019840",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "161681408",
+      "freeBytes": "1207054336"
+    },
+    {
+      "index": 54,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794886367576",
+        "page": {
+          "cycle": 10,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 21
+      },
+      "elapsedMs": 55891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "117147",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "697716736",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "164114432",
+      "freeBytes": "1204924416"
+    },
+    {
+      "index": 55,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794886367576",
+        "page": {
+          "cycle": 10,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 21
+      },
+      "elapsedMs": 56875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "97625",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "697733120",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "164098048",
+      "freeBytes": "1204924416"
+    },
+    {
+      "index": 56,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794914447024",
+        "page": {
+          "cycle": 11,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 22
+      },
+      "elapsedMs": 57875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "78341",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "368267264",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "322600960",
+      "freeBytes": "1375887360"
+    },
+    {
+      "index": 57,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794914447024",
+        "page": {
+          "cycle": 11,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 22
+      },
+      "elapsedMs": 58875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "83570",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "367263744",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "324767744",
+      "freeBytes": "1374724096"
+    },
+    {
+      "index": 58,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794914447024",
+        "page": {
+          "cycle": 11,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 22
+      },
+      "elapsedMs": 59875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "71532",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "367263744",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "324767744",
+      "freeBytes": "1374724096"
+    },
+    {
+      "index": 59,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794939459672",
+        "page": {
+          "cycle": 11,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 23
+      },
+      "elapsedMs": 60875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "73488",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "366886912",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323375104",
+      "freeBytes": "1376493568"
+    },
+    {
+      "index": 60,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794939459672",
+        "page": {
+          "cycle": 11,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 23
+      },
+      "elapsedMs": 61875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "75369",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "366886912",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323375104",
+      "freeBytes": "1376493568"
+    },
+    {
+      "index": 61,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794939459672",
+        "page": {
+          "cycle": 11,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 23
+      },
+      "elapsedMs": 62875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "74385",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "366854144",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323407872",
+      "freeBytes": "1376493568"
+    },
+    {
+      "index": 62,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794967119838",
+        "page": {
+          "cycle": 12,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 24
+      },
+      "elapsedMs": 63891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "80567",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461586432",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "279937024",
+      "freeBytes": "1325232128"
+    },
+    {
+      "index": 63,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794967119838",
+        "page": {
+          "cycle": 12,
+          "loaded": 24,
+          "phase": "live"
+        },
+        "sequence": 24
+      },
+      "elapsedMs": 64875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "69475",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461586432",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "279937024",
+      "freeBytes": "1325232128"
+    },
+    {
+      "index": 64,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 65891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "84881",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461561856",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "282112000",
+      "freeBytes": "1323081728"
+    },
+    {
+      "index": 65,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 66875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "77413",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461512704",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "282161152",
+      "freeBytes": "1323081728"
+    },
+    {
+      "index": 66,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 67891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "84083",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461484032",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "282189824",
+      "freeBytes": "1323081728"
+    },
+    {
+      "index": 67,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 68875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "81708",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461459456",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "280903680",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 68,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 69875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "78602",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461393920",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "280969216",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 69,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 70875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "80374",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461410304",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "280952832",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 70,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 71875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "80857",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461393920",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "280969216",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 71,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 72875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "85060",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461410304",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "280952832",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 72,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 73875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "59725",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461361152",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "281001984",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 73,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 74875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "74842",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461393920",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "280969216",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 74,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 75891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "86070",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461361152",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "281001984",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 75,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 76875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "85421",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461279232",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "281083904",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 76,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 77891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "85780",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461361152",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "281001984",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 77,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 78875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "81264",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461344768",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "281018368",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 78,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 79875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "84684",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461328384",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "281034752",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 79,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 80875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "86430",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "461361152",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "281001984",
+      "freeBytes": "1324392448"
+    },
+    {
+      "index": 80,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 81891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "77248",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "381681664",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "324882432",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 81,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 82875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "70402",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "379883520",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326680576",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 82,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 83891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "78395",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380047360",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326516736",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 83,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 84875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "70914",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380088320",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326475776",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 84,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 85875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "75470",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380272640",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326291456",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 85,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 86875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "52321",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380387328",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326176768",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 86,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 87875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "79305",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380239872",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326324224",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 87,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 88875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "62612",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380272640",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326291456",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 88,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 89875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "58834",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380239872",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326324224",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 89,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 90875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "73064",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380239872",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326324224",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 90,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 91891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "68587",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380469248",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326094848",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 91,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 92875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "78746",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380239872",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326324224",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 92,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 93875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "77867",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380321792",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326242304",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 93,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 94875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "78144",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380223488",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326340608",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 94,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 95875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "70167",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380256256",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326307840",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 95,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 96875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "73545",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380239872",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326324224",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 96,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 97891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "85583",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380256256",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326307840",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 97,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 98875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "94868",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380289024",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326275072",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 98,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 99891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "74689",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380207104",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326356992",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 99,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 100875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "80113",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380272640",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326291456",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 100,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 101875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "60284",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380223488",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326340608",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 101,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 102875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "50350",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380211200",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326352896",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 102,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 103875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "74471",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380407808",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326156288",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 103,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 104875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "77483",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380456960",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326107136",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 104,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 105891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "80535",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380211200",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326352896",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 105,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 106875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "89697",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380243968",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326320128",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 106,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 107875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "54787",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380260352",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326303744",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 107,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 108875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "77175",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380260352",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326303744",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 108,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 109891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "76164",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380227584",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326336512",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 109,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 110875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "84547",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380260352",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326303744",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 110,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 111875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "77938",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380260352",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326303744",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 111,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 112875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "67622",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380260352",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326303744",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 112,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 113875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "62203",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380293120",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326270976",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 113,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 114875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "76143",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380391424",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326172672",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 114,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 115875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "77180",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380260352",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326303744",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 115,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 116875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "68217",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380375040",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326189056",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 116,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 117875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "73782",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380260352",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326303744",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 117,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 118875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "72592",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380358656",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326205440",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 118,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 119891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "77813",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380260352",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326303744",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 119,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 120875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "68636",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380260352",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326303744",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 120,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 121891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "77183",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380309504",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326254592",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 121,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 122875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "78012",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380358656",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326205440",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 122,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 123875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "76858",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380309504",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "326254592",
+      "freeBytes": "1360191488"
+    },
+    {
+      "index": 123,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 124875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "61864",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380248064",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "325005312",
+      "freeBytes": "1361502208"
+    },
+    {
+      "index": 124,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 125891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "75026",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380248064",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "325005312",
+      "freeBytes": "1361502208"
+    },
+    {
+      "index": 125,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 126875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "72730",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380248064",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "325005312",
+      "freeBytes": "1361502208"
+    },
+    {
+      "index": 126,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 127891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "81463",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380461056",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "324792320",
+      "freeBytes": "1361502208"
+    },
+    {
+      "index": 127,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 128875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "67755",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380264448",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "324988928",
+      "freeBytes": "1361502208"
+    },
+    {
+      "index": 128,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 129891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "80305",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380231680",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "325021696",
+      "freeBytes": "1361502208"
+    },
+    {
+      "index": 129,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 130875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "53654",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380231680",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "325021696",
+      "freeBytes": "1361502208"
+    },
+    {
+      "index": 130,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 131891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "73768",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380379136",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "324874240",
+      "freeBytes": "1361502208"
+    },
+    {
+      "index": 131,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 132875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "55923",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380264448",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "324988928",
+      "freeBytes": "1361502208"
+    },
+    {
+      "index": 132,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 133891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "81127",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380379136",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "324874240",
+      "freeBytes": "1361502208"
+    },
+    {
+      "index": 133,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 134875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "81304",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380264448",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "324988928",
+      "freeBytes": "1361502208"
+    },
+    {
+      "index": 134,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 135891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "76156",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380272640",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323670016",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 135,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 136875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "66361",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380256256",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323686400",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 136,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 137875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "66279",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380190720",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323751936",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 137,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 138875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "72096",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380223488",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323719168",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 138,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 139875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "101308",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380174336",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323768320",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 139,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 140875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "65844",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380174336",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323768320",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 140,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 141875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "70000",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380174336",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323768320",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 141,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 142875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "80333",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380190720",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323751936",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 142,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 143891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "80518",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380174336",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323768320",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 143,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 144875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "78541",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380190720",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323751936",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 144,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 145875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "72715",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380190720",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323751936",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 145,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 146875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "84644",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380190720",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323751936",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 146,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 147875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "50336",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380190720",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323751936",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 147,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 148875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "78554",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380289024",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323653632",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 148,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 149891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "78749",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380190720",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323751936",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 149,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 150875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "50967",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380190720",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323751936",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 150,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 151875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "73055",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380190720",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323751936",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 151,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 152875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "76163",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380174336",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323768320",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 152,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 153891,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "103179",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380174336",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323768320",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 153,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 154875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "68332",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380141568",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323801088",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 154,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 155875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "47907",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380174336",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323768320",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 155,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 156875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "69892",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380076032",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323866624",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 156,
+      "stage": "running",
+      "phase": {
+        "observedQpc": "23794992171581",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "released"
+        },
+        "sequence": 25
+      },
+      "elapsedMs": 157875,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "70572",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "380174336",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "323768320",
+      "freeBytes": "1362812928"
+    },
+    {
+      "index": 157,
+      "stage": "host-destroyed",
+      "phase": {
+        "observedQpc": "23795917758429",
+        "page": {
+          "cycle": 12,
+          "loaded": 0,
+          "phase": "finished"
+        },
+        "sequence": 26
+      },
+      "elapsedMs": 158625,
+      "scope": "current-process-virtual-address-regions",
+      "dataGate": "matched",
+      "resourceGate": "not-evaluated",
+      "cacheBudgetGate": "not-evaluated",
+      "qualified": false,
+      "releaseReady": false,
+      "state": "complete",
+      "coveredBytes": "2147352576",
+      "elapsedQpc": "65912",
+      "qpcFrequency": "10000000",
+      "committed": {
+        "private": "366583808",
+        "mapped": "13156352",
+        "image": "67440640"
+      },
+      "reservedBytes": "328400896",
+      "freeBytes": "1371770880"
+    }
+  ],
+  "peaksFromMatchedSamples": {
+    "private": "698019840",
+    "mapped": "13156352",
+    "image": "67440640",
+    "total": "778616832",
+    "privateUsage": "703008768"
+  },
+  "scope": "Same 12 image/font churn cycles,90s idle,1s sampling,180s native/210s outer bounds; add bounded address census only",
+  "processCommitIsNotPhysicalMemory": true,
+  "wholeCacheQualified": false,
+  "releaseReady": false
+}

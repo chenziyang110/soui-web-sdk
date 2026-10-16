@@ -51,6 +51,12 @@ public:
         SkDEBUGCODE(fOwner = GetCurrentThreadId();)
     }
 
+    bool tryAcquire() {
+        if (!TryEnterCriticalSection(&fStorage)) return false;
+        SkDEBUGCODE(fOwner = GetCurrentThreadId();)
+        return true;
+    }
+
     void release() {
         this->assertHeld();
         SkDEBUGCODE(fOwner = 0;)

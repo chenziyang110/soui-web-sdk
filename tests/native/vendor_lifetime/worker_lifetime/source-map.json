@@ -33,13 +33,13 @@
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.h",
-      "bytes": 7056,
-      "sha256": "6ce0895a0b2e06083b161c0d1a6ea1c92e5cea1de8e7f41261b79601b6ccd001"
+      "bytes": 8095,
+      "sha256": "af9a062a926e9f78d5a99ff5f297ed2ffb82b409e7ec3c2c302e434acf81dfad"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/public/platform/WebThread.h",
-      "bytes": 3344,
-      "sha256": "409a08b630b324ae6c149cfdbd43c3c3fdd5acc572271aad89145220ac2181ab"
+      "bytes": 3976,
+      "sha256": "71f59eecb5ce355d95db2bca7f6bca1272310a2d51617aec5eb0a57ec330cd66"
     },
     {
       "path": "third_party/sources/miniblink/third_party/WebKit/Source/wtf/Threading.h",
@@ -53,18 +53,18 @@
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
-      "bytes": 4136,
-      "sha256": "04b443f8f22bdb8c494c9286d113c366b466ac77632a7f5786ae037454462a6d"
+      "bytes": 4244,
+      "sha256": "253c1b74696c717c9145e5b5b598986354a06182f4bcb9ccfc71674d76a1e358"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
-      "bytes": 22418,
-      "sha256": "248a15a3e4a0d5c387dfe5a2c779643e416d1de6a0495e234cc342a329562e8b"
+      "bytes": 24157,
+      "sha256": "95fe2fdd2d109cf3bfed4a155222d4a13642c3980b372e5ca952c4f09a9bdad2"
     },
     {
       "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
-      "bytes": 38199,
-      "sha256": "9102329da6430ade08f7153114d32728dbef7191feb76c62f368937076e331b8"
+      "bytes": 40230,
+      "sha256": "6f2da672656096a926f0710d10ef94ca84b2c57b1dc2f290fabf1f302a793bce"
     }
   ],
   "copies": [
@@ -72,52 +72,52 @@
       "source": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
       "output": "content/web_impl_win/WebThreadImpl.h",
       "startByte": 0,
-      "endByteExclusive": 4136,
+      "endByteExclusive": 4244,
       "exactWholeFile": true,
-      "bytes": 4136,
-      "sha256": "04b443f8f22bdb8c494c9286d113c366b466ac77632a7f5786ae037454462a6d"
+      "bytes": 4244,
+      "sha256": "253c1b74696c717c9145e5b5b598986354a06182f4bcb9ccfc71674d76a1e358"
     },
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
       "output": "content/web_impl_win/WebThreadImpl.cpp",
       "startByte": 0,
-      "endByteExclusive": 22418,
+      "endByteExclusive": 24157,
       "exactWholeFile": true,
-      "bytes": 22418,
-      "sha256": "248a15a3e4a0d5c387dfe5a2c779643e416d1de6a0495e234cc342a329562e8b"
+      "bytes": 24157,
+      "sha256": "95fe2fdd2d109cf3bfed4a155222d4a13642c3980b372e5ca952c4f09a9bdad2"
     },
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
       "output": "fragments/registry_lock.inc",
-      "startByte": 4806,
-      "endByteExclusive": 5202,
+      "startByte": 4842,
+      "endByteExclusive": 5238,
       "exactWholeFile": false,
       "bytes": 396,
       "sha256": "f28320b3245b147e939fb7299797f00dd4276bf68eae722001cc55f2f1949c00",
-      "sourceStartLine": 148,
-      "sourceEndLineExclusive": 157
+      "sourceStartLine": 149,
+      "sourceEndLineExclusive": 158
     },
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
       "output": "fragments/tls.inc",
-      "startByte": 5344,
-      "endByteExclusive": 5707,
+      "startByte": 5380,
+      "endByteExclusive": 5743,
       "exactWholeFile": false,
       "bytes": 363,
       "sha256": "43594f649539ccaefe403d9a861a3366024b3aadec079618560beb2501b9129b",
-      "sourceStartLine": 171,
-      "sourceEndLineExclusive": 183
+      "sourceStartLine": 172,
+      "sourceEndLineExclusive": 184
     },
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
       "output": "fragments/registry_and_tls_methods.inc",
-      "startByte": 16526,
-      "endByteExclusive": 18787,
+      "startByte": 18557,
+      "endByteExclusive": 20818,
       "exactWholeFile": false,
       "bytes": 2261,
       "sha256": "d4d49c82a2c2a335b5641bbbce4cdf676fbb66aa678a586c26c48ee5c1e2649c",
-      "sourceStartLine": 516,
-      "sourceEndLineExclusive": 586
+      "sourceStartLine": 560,
+      "sourceEndLineExclusive": 630
     },
     {
       "source": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h",
@@ -176,6 +176,17 @@
       "sha256": "700b130e43a26fbf56bfb2e37fb135270f4c8cf3c193088028a4cc0b509d0761",
       "sourceStartLine": 27,
       "sourceEndLineExclusive": 42
+    },
+    {
+      "source": "third_party/sources/miniblink/third_party/WebKit/public/platform/WebThread.h",
+      "output": "fragments/webthread_shutdown_interface.inc",
+      "startByte": 3207,
+      "endByteExclusive": 3689,
+      "exactWholeFile": false,
+      "bytes": 482,
+      "sha256": "bc2ac917530dfb6dcdbf1a7dbce05cfdc1c1314b0752712c18dfe612c9a36fe1",
+      "sourceStartLine": 89,
+      "sourceEndLineExclusive": 96
     }
   ],
   "payloads": [
@@ -186,8 +197,8 @@
     },
     {
       "path": "README.md",
-      "bytes": 3230,
-      "sha256": "85b2147e45e06e8d286b4e5c6ca353c8c0674d10cb040991289c7cb7fdd64130"
+      "bytes": 4268,
+      "sha256": "c6dcd1587db82860f30e8eba0d26ca75c809cc82afada71c17b862e95ec8135e"
     },
     {
       "path": "expect-fail-fast.cmake",
@@ -201,13 +212,13 @@
     },
     {
       "path": "fixture_support.h",
-      "bytes": 4297,
-      "sha256": "ee936ba705685e8026aa49dcf0b7552319445b1463f046419d346d54312d28de"
+      "bytes": 4351,
+      "sha256": "a93a946bd18e1fdb648aaf2b2757994eade08c5794170916225ae1258fa6526b"
     },
     {
       "path": "source-bytes.cmake",
       "bytes": 6388,
-      "sha256": "8d93cd4ba3771705d83f0f02bddb826e95e348ac1ea814f8bfc7f4bdad13b3ee"
+      "sha256": "b86288c3d3abe01bceeb99513499872c5d5e6be8e32355ac60c363848f3cac62"
     },
     {
       "path": "stubs/base/compiler_specific.h",

@@ -430,13 +430,16 @@ static void skBitmapToBitmap(const SkBitmap& bitmap, Vector<unsigned char>* resu
     if (bitmap.colorType() != kN32_SkColorType || !bitmap.getPixels())
         return; // Only support 32 bit/pixel skia bitmaps.
 
-    if (bitmap.width() * bitmap.height() > 2024 * 2024)
+    const int width = bitmap.width();
+    const int height = bitmap.height();
+    const int maxPixels = 2024 * 2024;
+    if (width <= 0 || height <= 0 || width > maxPixels / height)
         return;
     
     BITMAPINFO bmi = { 0 };
     bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    bmi.bmiHeader.biWidth = bitmap.width();
-    bmi.bmiHeader.biHeight = -bitmap.height();
+    bmi.bmiHeader.biWidth = width;
+    bmi.bmiHeader.biHeight = -height;
     bmi.bmiHeader.biPlanes = 1;
     bmi.bmiHeader.biCompression = BI_RGB;
     bmi.bmiHeader.biBitCount = 32;
@@ -448,20 +451,22 @@ static void skBitmapToBitmap(const SkBitmap& bitmap, Vector<unsigned char>* resu
 
     SkAutoTUnref<SkData> skAutoUnrefData(encodedData);
 
-    const int bytesPerRow = bitmap.width() * 1 * 4;
-    size_t imageDataSize = bytesPerRow * bitmap.height() * 1;
+    const size_t bytesPerRow = static_cast<size_t>(width) * 4;
+    size_t imageDataSize = bytesPerRow * static_cast<size_t>(height);
     if (imageDataSize > encodedData->size())
         imageDataSize = encodedData->size();
 
+    // The pixel limit keeps the complete BMP below DWORD's maximum.
+    const size_t fileSize = sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + imageDataSize;
     BITMAPFILEHEADER fileHeader = {
         0x4d42,
-        sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + imageDataSize,
+        static_cast<DWORD>(fileSize),
         0,
         0,
         sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER),
     };
 
-    result->resize(sizeof(fileHeader) + sizeof(bmi.bmiHeader) + imageDataSize);
+    result->resize(fileSize);
 
     int pos = 0;
     memcpy(result->data() + pos, &fileHeader, sizeof(BITMAPFILEHEADER));

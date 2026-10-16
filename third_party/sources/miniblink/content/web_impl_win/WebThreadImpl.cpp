@@ -182,6 +182,38 @@ void WebThreadImpl::shutdown()
     waitForExit();
 }
 
+bool WebThreadImpl::duplicateShutdownWitness(ShutdownWitness& output)
+{
+    output = { nullptr, 0, 0 };
+    if (m_isMainThread || !m_threadHandle) return false;
+    FILETIME created, exited, kernel, user;
+    if (!::GetThreadTimes(m_threadHandle, &created, &exited, &kernel, &user)) return false;
+    const DWORD id = ::GetThreadId(m_threadHandle);
+    HANDLE duplicate = nullptr;
+    if (!id || !::DuplicateHandle(::GetCurrentProcess(), m_threadHandle, ::GetCurrentProcess(),
+        &duplicate, SYNCHRONIZE | THREAD_QUERY_INFORMATION, FALSE, 0)) return false;
+    output.handle = duplicate;
+    output.threadId = id;
+    output.creationFileTime = (static_cast<uint64_t>(created.dwHighDateTime) << 32) | created.dwLowDateTime;
+    return true; // Original held handle identity, never OpenThread(TID).
+}
+
+blink::WebThread::Retirement WebThreadImpl::tryShutdownAndJoin()
+{
+    if (m_isMainThread || !m_threadHandle || m_threadId == WTF::currentThread())
+        return Retirement::Unsupported;
+    // No caller registry/state/provider lock is held. The owner and this
+    // original HANDLE remain alive for every Pending/Failed result.
+    willExit();
+    const DWORD observed = ::WaitForSingleObject(m_threadHandle, 0);
+    if (observed == WAIT_TIMEOUT) return Retirement::Pending;
+    DWORD exitCode = STILL_ACTIVE;
+    if (observed != WAIT_OBJECT_0 || !::GetExitCodeThread(m_threadHandle, &exitCode) || exitCode != 0)
+        return Retirement::Failed;
+    m_threadClosed.store(true, std::memory_order_release);
+    return Retirement::Joined;
+}
+
 void WebThreadImpl::waitForExit()
 {
     if (m_threadId == WTF::currentThread())
@@ -311,6 +343,9 @@ void WebThreadImpl::postDelayedTaskWithPriorityCrossThread(
     }
     try {
         m_taskPairsToPost.push_back(pair.get());
+#if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+        pair->task->diagnosticQueueCommitted(); // Actual insertion, still serialized with willExit.
+#endif
         pair.release();
     } catch (...) {
         ::LeaveCriticalSection(&m_taskPairsMutex);

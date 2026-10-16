@@ -1,4 +1,5 @@
 'use strict';
+const versioning = require('./sdk-version.cjs');
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
@@ -12,12 +13,17 @@ const {acceptCompilerTail} = require('./compiler-tail-policy.cjs');
 const encode = value => Buffer.from(JSON.stringify(value,null,2)+'\n');
 const sha = bytes => crypto.createHash('sha256').update(bytes).digest('hex');
 const need = (condition,message) => {if(!condition)throw new Error(message);};
-const switches = {sdkOnly:'-SdkOnly',skipWeb:'-SkipWeb',withWebView2:'-WithWebView2',withGuiBindings:'-WithGuiBindings',install:'-Install',freshConfigure:'-FreshConfigure'};
+const switches = {sdkOnly:'-SdkOnly',skipWeb:'-SkipWeb',withWebView2:'-WithWebView2',withUia:'-WithUia',withGuiBindings:'-WithGuiBindings',withVendorTests:'-WithVendorTests',install:'-Install',freshConfigure:'-FreshConfigure'};
 const cli = {'--root':'root','--architecture':'architecture','--configuration':'configuration','--runner':'runner','--powershell':'powershell',
   '--timeout-ms':'timeoutMs','--drain-ms':'drainMs','--tail-image':'tailImage','--tail-sha256':'tailSha256',
-  '--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-gui-bindings':'withGuiBindings',
-  '--install':'install','--fresh-configure':'freshConfigure','--compiler-tail':'compilerTail'};
-const booleans = new Set([...Object.keys(switches),'compilerTail']);
+  '--sdk-only':'sdkOnly','--skip-web':'skipWeb','--with-webview2':'withWebView2','--with-uia':'withUia','--with-gui-bindings':'withGuiBindings','--with-vendor-tests':'withVendorTests',
+  '--install':'install','--fresh-configure':'freshConfigure','--compiler-tail':'compilerTail',
+  '--native-toolchain':'nativeToolchain','--llvm-root':'llvmRoot','--msvc-root':'msvcRoot','--windows-sdk-root':'windowsSdkRoot',
+  '--ninja-exe':'ninjaExe','--windows-cmd-exe':'windowsCmdExe','--powershell-exe':'powerShellExe','--devkit-root':'devkitRoot',
+  '--host64-build-observer':'host64BuildObserver','--host64-observer-prepared':'host64ObserverPrepared','--host64-observer-sha256':'host64ObserverSha256'};
+const llvmPaths={llvmRoot:'-LlvmRoot',msvcRoot:'-MsvcRoot',windowsSdkRoot:'-WindowsSdkRoot',
+  ninjaExe:'-NinjaExe',windowsCmdExe:'-WindowsCmdExe',powerShellExe:'-PowerShellExe'};
+const booleans = new Set([...Object.keys(switches),'compilerTail','host64BuildObserver']);
 // An opt-in is permission to use the reviewed policy, not to select a new
 // helper by name. The policy independently rechecks these measured bytes.
 const reviewedTailSha256={x86:'1c1ca5f9c04171c02caca6863e29eca3550333219486d23e65bf01fb02951311',
@@ -29,10 +35,29 @@ function options(value) {
   need(['x86','x64'].includes(result.architecture)&&['Debug','Release'].includes(result.configuration),'Invalid architecture/configuration');
   for(const key of booleans)need(result[key]===undefined||typeof result[key]==='boolean','Invalid boolean option: '+key);
   for(const [key,min,max] of [['timeoutMs',1,172800000],['drainMs',0,60000]])need(Number.isSafeInteger(result[key])&&result[key]>=min&&result[key]<=max,'Invalid '+key);
-  for(const key of ['root','runner','powershell'])if(result[key]!==undefined)
+  for(const key of ['root','runner','powershell','devkitRoot'])if(result[key]!==undefined)
     need(typeof result[key]==='string'&&/^[A-Za-z]:[\\/]/.test(result[key])&&!/[\x00-\x1f]/.test(result[key]),'Explicit '+key+' must be an absolute Windows path');
+  need(!result.withVendorTests||!result.sdkOnly,'Vendor tests require the complete source devkit, without sdk-only');
+  const profile=result.nativeToolchain||'MSVC143';
+  need(['MSVC143','LLVM22MSVC142'].includes(profile),'Invalid native toolchain');
+  if(profile==='LLVM22MSVC142') {
+    if(value.drainMs===undefined)result.drainMs=2000;
+    need(result.drainMs===2000,'LLVM whole Job requires the fixed 2000ms drain');
+  }
+  for(const key of Object.keys(llvmPaths)) {
+    if(profile==='LLVM22MSVC142')need(typeof result[key]==='string'&&/^[A-Za-z]:[\\/]/.test(result[key])&&
+      !/[;"\x00-\x1f]/.test(result[key]),'LLVM requires explicit local '+key);
+    else need(result[key]===undefined,'LLVM paths require explicit LLVM22MSVC142');
+  }
+  need(profile!=='LLVM22MSVC142'||!result.compilerTail,'LLVM does not admit the MSVC compiler-tail exception');
+  if(result.host64BuildObserver){
+    need(profile==='LLVM22MSVC142'&&result.timeoutMs===900000&&!result.compilerTail,'Host observer requires the explicit fixed LLVM whole-Job mode');
+    need(typeof result.host64ObserverPrepared==='string'&&/^[A-Za-z]:[\\/]/.test(result.host64ObserverPrepared)&&
+      !/[\x00-\x1f]/.test(result.host64ObserverPrepared)&&/^[a-f0-9]{64}$/.test(result.host64ObserverSha256||''),'Explicit actual prepared observer receipt and SHA required');
+  }else need(result.host64ObserverPrepared===undefined&&result.host64ObserverSha256===undefined,'Prepared observer inputs require explicit host64-build-observer');
   if(result.compilerTail) {
     need(!result.withGuiBindings,'Compiler-tail policy does not include WithGuiBindings');
+    need(!result.withUia,'Compiler-tail policy does not include UIA');
     validateTailImagePin({image:result.tailImage,sha256:result.tailSha256,nonce:'0'.repeat(32)});
     need(result.tailSha256===reviewedTailSha256[result.architecture],'Tail SHA is not the reviewed target-architecture MSVC object');
   } else need(result.tailImage===undefined&&result.tailSha256===undefined,'Tail pin requires explicit compiler-tail opt-in');
@@ -53,7 +78,9 @@ function parseArgs(args) {
 function buildArguments(root,value) {
   const v=options(value);
   return ['-NoProfile','-NonInteractive','-ExecutionPolicy','Bypass','-File',path.win32.join(root,'tools','Build.ps1'),
-    '-Architecture',v.architecture,'-Configuration',v.configuration,...Object.entries(switches).filter(([key])=>v[key]).map(([,flag])=>flag)];
+    '-Architecture',v.architecture,'-Configuration',v.configuration,...Object.entries(switches).filter(([key])=>v[key]).map(([,flag])=>flag),
+    ...(v.nativeToolchain?['-NativeToolchain',v.nativeToolchain]:[]),
+    ...(v.nativeToolchain==='LLVM22MSVC142'?Object.entries(llvmPaths).flatMap(([key,flag])=>[flag,v[key]]):[])];
 }
 function file(filePath) {
   identity.safePath(filePath);const stat=fs.statSync(filePath);need(stat.isFile(),'Expected regular file: '+filePath);
@@ -109,12 +136,15 @@ function validateInvocation(context,frozen) {
   const values=new Map();
   for(let i=index+2;i<args.length;i++) {
     const flag=args[i];need(!values.has(flag),'Repeated Build option');
-    if(['-Architecture','-Configuration'].includes(flag))values.set(flag,args[++i]);
+    if(['-Architecture','-Configuration','-NativeToolchain',...Object.values(llvmPaths)].includes(flag))values.set(flag,args[++i]);
     else {need(Object.values(switches).includes(flag),'Unknown Build option');values.set(flag,true);}
   }
   need(values.get('-Architecture')===frozen.architecture&&values.get('-Configuration')===frozen.configuration&&
     values.has('-SdkOnly')===frozen.sdkOnly,'Build argv configuration differs');
   need(!frozen.compilerTail||!values.has('-WithGuiBindings'),'Compiler-tail policy excludes GUI bindings');
+  need(!frozen.compilerTail||!values.has('-WithUia'),'Compiler-tail policy excludes UIA');
+  need((values.get('-NativeToolchain')||'MSVC143')===(frozen.nativeToolchain||'MSVC143'),'Build argv profile differs');
+  for(const [key,flag] of Object.entries(llvmPaths))need(values.get(flag)===frozen[key],'Build argv LLVM path differs: '+key);
 }
 function verifyStream(raw,context,ready,result) {
   need(Buffer.isBuffer(raw)&&raw.length>0&&raw.length<=16777216&&isUtf8(raw)&&raw.at(-1)===10,'Truncated/invalid native report');
@@ -154,28 +184,63 @@ function verifyStream(raw,context,ready,result) {
 // The public pure boundary below consumes explicitly supplied observations for
 // regression fixtures. runBuild obtains every observation directly from disk.
 // Neither this function nor SHA consistency authenticates a same-user rewrite.
-function evaluateBuild({frozen,ready,result,contextBytes,rawReport,buildReportBytes,observed}={}) {
+function evaluateBuild({frozen,ready,result,contextBytes,rawReport,buildReportBytes,observed,debugReportBytes,debugInputBytes}={}) {
   const answer={schema:'soui.standard-build-result/v1',compilationCompleted:false,genericSupervisionPassed:false,
     closureConfirmed:result?.closureConfirmed===true,compilerTailAcceptance:false,accepted:false,releaseReady:false,
     rootExitCode:result?.exitCode??null,supervisorExitCode:result?.supervisorExitCode??null,
     clientGenericSupervisionPassed:result?.passed===true,failure:null};
   try {
-    need(frozen?.schema==='soui.standard-build-inputs/v1'&&observed,'Missing frozen build inputs/current observations');
+    const debugMode=frozen?.schema==='soui.standard-build-inputs/v2';
+    if(debugMode)answer.schema='soui.standard-build-result/v2';
+    need((debugMode||frozen?.schema==='soui.standard-build-inputs/v1')&&observed,'Missing frozen build inputs/current observations');
     const context=json(contextBytes,'context');need(sha(contextBytes)===frozen.contextSha256&&isDeepStrictEqual(context,frozen.context),'Actual context differs from prelaunch bytes');
-    validateInvocation(context,frozen);
+    let debugProof=null;
+    if(debugMode){
+      need(frozen.nativeToolchain==='LLVM22MSVC142'&&!frozen.compilerTail&&frozen.llvm?.debugBinding&&Buffer.isBuffer(debugReportBytes)&&Buffer.isBuffer(debugInputBytes),'Explicit dual-root actual inputs required');
+      const binding=frozen.llvm.debugBinding,c=json(debugInputBytes,'host observer input');
+      need(sha(debugInputBytes)===binding.input.sha256&&sha(debugReportBytes)===binding.raw.sha256,'Actual debug input/raw hashes differ');
+      const reader=require('./host64-build-debug-observer.cjs');
+      need(c.root===context.cwd&&c.sdkArchitecture===frozen.architecture&&c.configuration===frozen.configuration,'Debug SDK target differs');
+      debugProof=reader.validateEvidence(debugReportBytes,{...c,inputPin:binding.input},{ready,result,contextBytes,rawReport},binding.observer,buildArguments(context.cwd,frozen.invocationOptions));
+      need(isDeepStrictEqual(observed.llvm?.debugProof,debugProof),'Independent debug evidence differs');
+      answer.outerObserver=debugProof.outerObserver;answer.innerBuild=debugProof.innerBuild;
+      answer.actualDebugRawSha256=debugProof.actualDebugRawSha256;
+    }else validateInvocation(context,frozen);
     need(Array.isArray(frozen.tools)&&frozen.tools.length>0&&Array.isArray(frozen.scripts)&&frozen.scripts.length>0,'Missing actual source/tool raw inputs');
     need(/^[a-f0-9]{64}$/.test(frozen.rawSource?.sha256||'')&&observed.rawSourceSha256===frozen.rawSource.sha256&&
       observed.sourceSha256===frozen.source.sha256&&observed.scriptSha256===frozen.scriptSha256&&
       isDeepStrictEqual(observed.tools,frozen.tools)&&isDeepStrictEqual(observed.scripts,frozen.scripts),'Current source/script/tool bytes differ');
     need(observed.compilerVerified===true,'Actual CMake/compiler/SDK was not verified');
     const {start,terminal}=verifyStream(rawReport,context,ready,result);
+    if(frozen.nativeToolchain==='LLVM22MSVC142') {
+      const llvm=observed.llvm;
+      need(!frozen.compilerTail&&context.drainMs===2000&&llvm?.profile==='LLVM22MSVC142'&&llvm.architecture===frozen.architecture&&
+        llvm.configuration===frozen.configuration&&llvm.inputIdentity===frozen.llvm?.inputIdentity&&
+        llvm.bridgeIdentity===frozen.llvm?.bridgeIdentity&&llvm.observedPointerBytes===(frozen.architecture==='x64'?8:4)&&
+        llvm.buildPid===(debugMode?debugProof.innerBuild.pid:start.pid)&&llvm.buildCreationFileTime===(debugMode?debugProof.innerBuild.creationFileTime:start.creationFileTime)&&llvm.observerNaturalClosure===true&&
+        /^[a-f0-9]{64}$/.test(llvm.observation?.sha256||'')&&llvm.observerCapture?.ready,
+        'LLVM build lacks the actual closed Ninja observation bound to this Build');
+    }
     const build=json(buildReportBytes,'build report');
+    if(frozen.nativeToolchain==='LLVM22MSVC142')need(build.nativeToolchain?.profile==='LLVM22MSVC142'&&
+      build.nativeToolchain.request?.profile==='LLVM22MSVC142'&&build.nativeToolchain.request.architecture===frozen.architecture&&
+      build.nativeToolchain.request.discovery?.InputIdentity===frozen.llvm.inputIdentity&&
+      build.nativeToolchain.request.discovery.BridgeIdentity===frozen.llvm.bridgeIdentity&&
+      /^[a-f0-9]{64}$/.test(build.nativeToolchain.requestFile?.sha256||'')&&
+      isDeepStrictEqual(build.nativeToolchain.requestFile,observed.llvm.requestFile),
+      'Current source-build request differs from the actual LLVM observation');
     need(build.schema==='soui.source-build/v2'&&build.nativeBuild==='passed'&&build.releaseReady===false&&
       /^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(build.buildId)&&build.buildId!==frozen.oldBuild?.buildId&&
-      /^\d+\.\d+\.\d+-preview\.\d+$/.test(build.version)&&build.version===frozen.version&&build.architecture===frozen.architecture&&
+      versioning.isVersion(build.version)&&build.version===frozen.version&&build.architecture===frozen.architecture&&
       build.configuration===frozen.configuration&&build.sdkOnly===frozen.sdkOnly&&build.source?.sha256===frozen.source.sha256&&
-      time(build.startedAt)>=BigInt(start.creationFileTime)&&time(build.finishedAt)>=time(build.startedAt),'Old/stale/incomplete build report');
+      time(build.startedAt)>=BigInt(debugMode?debugProof.innerBuild.creationFileTime:start.creationFileTime)&&time(build.finishedAt)>=time(build.startedAt),'Old/stale/incomplete build report');
     need(isDeepStrictEqual(artifacts(build),observed.artifacts),'Current payload/library differs');
+    const uiaSelected=debugMode?frozen.invocationOptions.withUia===true:context.args.includes('-WithUia');
+    const uia=build.optionalLibraries?.uia;
+    need(uiaSelected===!!uia,'Requested UIA selection differs from current optional archive');
+    if(uia)need(Array.isArray(uia.files)&&uia.files.length===1&&
+      uia.files[0].path===(build.sdkOnly?'':'sdk/')+'accessibility/uia/'+build.configuration+'/soui_uia.lib',
+      'Current UIA archive path differs from the selected SDK layout');
     need(terminal.rootExited===true&&terminal.rootExitCode===0&&result.exitCode===0,'Compiler root did not finish successfully');
     answer.compilationCompleted=true;
     answer.genericSupervisionPassed=result.passed===true&&result.supervisorExitCode===0&&terminal.passed===true&&
@@ -209,10 +274,11 @@ function acquireLease(root,architecture) {
     fs.unlinkSync(fileName);fs.rmdirSync(directory);released=true;}};
 }
 const scriptNames=['tools/Build.ps1','tools/internal/standard-build.cjs','tools/internal/owned-process.cjs',
-  'tools/internal/owned-tail-evidence.cjs','tools/internal/compiler-tail-policy.cjs','tools/internal/build-evidence.cjs',
+  'tools/internal/sdk-version.cjs','tools/internal/owned-tail-evidence.cjs','tools/internal/compiler-tail-policy.cjs','tools/internal/build-evidence.cjs',
   'tools/internal/delivery-identity.cjs','tools/internal/Find-Toolchain.ps1','tools/internal/CMake-Configure.ps1','cmake/SouiWindowsSdk.cmake',
   'tools/internal/measurement-validation.cjs'];
-function scripts(root){return scriptNames.map(name=>({...file(identity.safePath(root,name)),path:name}));}
+function scripts(root,v={}){return [...new Set([...scriptNames,...(v.nativeToolchain==='LLVM22MSVC142'?
+  require('./llvm-build-observer.cjs').codeNames:[])])].map(name=>({...file(identity.safePath(root,name)),path:name}));}
 function write(folder,name,bytes){const target=identity.safePath(folder,name);fs.writeFileSync(target,Buffer.isBuffer(bytes)?bytes:encode(bytes),{flag:'wx'});return target;}
 function childEnvironment(){return {...process.env,MSBUILDDISABLENODEREUSE:'1'};}
 async function capture(folder,name,executable,args,config) {
@@ -221,6 +287,9 @@ async function capture(folder,name,executable,args,config) {
     out=fs.openSync(path.join(folder,name+'-stdout.bin'),'wx');err=fs.openSync(path.join(folder,name+'-stderr.bin'),'wx');
     run=launchOwned(executable,args,{...config,report,stdout:out,stderr:err});
     let ready=null,readyError=null;try{ready=await run.ready;}catch(error){readyError=error.message;}
+    // Persist only the ready value actually published by launchOwned. A PID
+    // copied from the terminal result is not a publication observation.
+    write(folder,name+'-ready.json',ready);
     finished=await run.finished;write(folder,name+'-finished.json',finished);
     const errors=[];const read=fileName=>{try{return fs.readFileSync(fileName);}catch(error){errors.push({path:fileName,error:error.message});return null;}};
     const contextBytes=read(report+'.context.json'),rawReport=read(report);
@@ -294,10 +363,18 @@ async function runBuild(value) {
   const v=options(value);need(process.platform==='win32','Standard owned build requires Windows');
   const root=identity.safePath(path.resolve(v.root||path.join(__dirname,'../..')));
   need(root.toLowerCase()===path.resolve(__dirname,'../..').toLowerCase(),'The caller must belong to the requested workspace');
+  need(!v.withVendorTests||!fs.existsSync(identity.safePath(root,'project.json')),'Vendor tests require the complete source devkit, not a generated application');
   const base=identity.safePath(root,'out/standard-build');fs.mkdirSync(base,{recursive:true});
   const folder=path.join(base,'attempt-'+crypto.randomUUID());fs.mkdirSync(folder);let lease,answer,launched;
   try {
     lease=acquireLease(root,v.architecture);
+    if(v.nativeToolchain==='LLVM22MSVC142') {
+      answer=await require('./llvm-build-observer.cjs').run(root,v,folder,{
+        buildEvidence,llvmPaths,buildArguments,scripts,inspectTool,currentTool,verifyStream,artifacts,evaluateBuild,
+        verifyToolCompatible(row){need(isDeepStrictEqual(currentTool(row),row),'Selected tool bytes or identity changed');},
+        async capture(...args){const value=await capture(...args);if(args[1]==='build')launched=value;return value;}
+      });
+    } else {
     const powershell=path.resolve(v.powershell||path.join(process.env.SystemRoot||'C:/Windows','System32/WindowsPowerShell/v1.0/powershell.exe'));
     need(['powershell.exe','pwsh.exe'].includes(path.basename(powershell).toLowerCase()),'PowerShell executable required');
     const setup=require('./measurement-validation.cjs').prepared(v.architecture);
@@ -355,6 +432,7 @@ async function runBuild(value) {
     write(folder,'observed.json',observed);
     require('./measurement-validation.cjs').prepared(v.architecture);
     answer=evaluateBuild({...launched,frozen,buildReportBytes:buildBytes,observed});
+    }
   } catch(error) {answer={schema:'soui.standard-build-result/v1',compilationCompleted:false,genericSupervisionPassed:false,
     clientGenericSupervisionPassed:launched?.result.passed===true,closureConfirmed:launched?.result.closureConfirmed===true,
     rootExitCode:launched?.result.exitCode??null,supervisorExitCode:launched?.result.supervisorExitCode??null,
@@ -362,7 +440,7 @@ async function runBuild(value) {
   finally {if(lease){try{lease.release();}catch(error){answer={...answer,accepted:false,failure:(answer?.failure?answer.failure+'; ':'')+error.message};}}}
   write(folder,'result.json',answer);evidenceIndex(folder);return {...answer,evidenceDirectory:folder};
 }
-module.exports={parseArgs,buildArguments,evaluateBuild,acquireLease,inspectTool,verifyTool,runBuild};
+module.exports={parseArgs,buildArguments,llvmPaths,evaluateBuild,acquireLease,inspectTool,verifyTool,verifyStream,runBuild,capture};
 if(require.main===module)runBuild(parseArgs(process.argv.slice(2))).then(answer=>{
   console.log(JSON.stringify(answer));process.exitCode=answer.accepted?0:answer.supervisorExitCode===124?124:1;
 }).catch(error=>{console.error(error.message);process.exitCode=1;});

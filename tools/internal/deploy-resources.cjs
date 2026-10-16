@@ -4,6 +4,22 @@ const path = require('node:path');
 const crypto = require('node:crypto');
 const id = require('./delivery-identity.cjs');
 
+function publishStagedDirectory(stage, destination) {
+  const delay = new Int32Array(new SharedArrayBuffer(4));
+  for (let attempt = 0; ; ++attempt) {
+    try {
+      fs.renameSync(stage, destination);
+      return;
+    } catch (error) {
+      // Use the SDK installer's bounded Windows publication policy. Keep
+      // persistent errors and destination conflicts on the rollback path.
+      if (process.platform !== 'win32' || !['EPERM', 'EACCES'].includes(error.code) ||
+          attempt >= 5 || !fs.existsSync(stage) || fs.existsSync(destination)) throw error;
+      Atomics.wait(delay, 0, 0, 30 * (attempt + 1));
+    }
+  }
+}
+
 function replace(source, application, distribution) {
   source = id.safePath(source);
   application = id.safePath(application);
@@ -38,7 +54,7 @@ function replace(source, application, distribution) {
           id.hash(fs.readFileSync(id.safePath(stage, `legal/${name}`)))) throw new Error('SDK legal material changed during deployment');
     }
     if (fs.existsSync(destination)) { fs.renameSync(destination, backup); moved = true; }
-    try { fs.renameSync(stage, destination); }
+    try { publishStagedDirectory(stage, destination); }
     catch (error) {
       if (moved) fs.renameSync(backup, destination);
       throw error;

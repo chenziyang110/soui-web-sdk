@@ -1,0 +1,38 @@
+{
+  "sourceManifest": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 16042735,
+    "sha256": "dddbfff7f8603cbda0e3c590f47e640b102eeae861b848d6693db6a94d7b028a"
+  },
+  "tools": [
+    {
+      "path": "C:\\work\\sm05-release-audit-1\\run.cjs",
+      "bytes": 3538,
+      "sha256": "13b97cab58fa6aed9cf3c67018bf4d833332f2b9ba65a23671a59243e13a9dbe"
+    },
+    {
+      "path": "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+    },
+    {
+      "path": "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node_modules\\npm\\bin\\npm-cli.js",
+      "bytes": 56,
+      "sha256": "3ce7cba6f5128dd5f54c98b6a5036b0f850496878cc2e21044b675fe3c594e3e"
+    }
+  ],
+  "scopes": [
+    "sdk/web",
+    "sdk/bindings/react",
+    "sdk/bindings/vue",
+    "templates/desktop-app/web",
+    "templates/modern-app/web",
+    "demos/workbench/web",
+    "demos/reference-workbench/web-modern",
+    "demos/reference-workbench/web-compat",
+    "tests/acceptance",
+    "tests/gui-bindings",
+    "tests/gui-bindings/react18"
+  ],
+  "operation": "npm audit --json --package-lock-only --ignore-scripts; dependency contents unchanged"
+}

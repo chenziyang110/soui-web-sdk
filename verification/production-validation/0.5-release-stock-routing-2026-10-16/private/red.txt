@@ -1,0 +1,98 @@
+✖ explicit external legacy stock permits current source to retain its LLVM stock (0.8519ms)
+✔ original v1 ownership remains unchanged and cannot accept a v2-shaped override (1.0975ms)
+✖ all six phase choices keep baseline and rollback on the selected legacy stock (0.1226ms)
+✔ same owner, unsafe paths, missing explicit roots, unsupported profile and inflated qualification are rejected (0.159ms)
+✖ physical owner validation runs before tool builds and rejects an absent source directory (2.4481ms)
+✖ collector passes its explicit compiler selection into release aggregate validation (1.2805ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 2
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 169.5541
+
+✖ failing tests:
+
+test at C:\work\sm05-release-tools-fix-1\release-routing.test.cjs:13:1
+✖ explicit external legacy stock permits current source to retain its LLVM stock (0.8519ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "Explicit independent LLVM stock and six safe inputs required"
+      at TestContext.<anonymous> (C:\work\sm05-release-tools-fix-1\release-routing.test.cjs:14:9)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: Error: Explicit independent LLVM stock and six safe inputs required
+        at requireTrue (C:\work\sm05-release-050\tools\internal\release-verification.cjs:21:58)
+        at Object.validateReleaseProfile (C:\work\sm05-release-050\tools\internal\release-verification.cjs:106:3)
+        at C:\work\sm05-release-tools-fix-1\release-routing.test.cjs:14:30
+        at getActual (node:assert:611:5)
+        at strict.doesNotThrow (node:assert:779:32)
+        at TestContext.<anonymous> (C:\work\sm05-release-tools-fix-1\release-routing.test.cjs:14:9)
+        at Test.runInAsyncScope (node:async_hooks:228:14)
+        at Test.run (node:internal/test_runner/test:1118:25)
+        at Test.start (node:internal/test_runner/test:1015:17)
+        at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17),
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }
+
+test at C:\work\sm05-release-tools-fix-1\release-routing.test.cjs:22:1
+✖ all six phase choices keep baseline and rollback on the selected legacy stock (0.1226ms)
+  TypeError: api.releaseToolsRoot is not a function
+      at TestContext.<anonymous> (C:\work\sm05-release-tools-fix-1\release-routing.test.cjs:25:21)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7)
+
+test at C:\work\sm05-release-tools-fix-1\release-routing.test.cjs:36:1
+✖ physical owner validation runs before tool builds and rejects an absent source directory (2.4481ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert(validation>=0&&validation<source.indexOf("(Join-Path $legacyToolsRoot 'tools/internal/Build-ValidationTools.ps1')"))
+  
+      at TestContext.<anonymous> (C:\work\sm05-release-tools-fix-1\release-routing.test.cjs:40:2)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }
+
+test at C:\work\sm05-release-tools-fix-1\release-routing.test.cjs:42:1
+✖ collector passes its explicit compiler selection into release aggregate validation (1.2805ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + undefined
+  - 'MSVC143'
+  
+      at TestContext.<anonymous> (C:\work\sm05-release-tools-fix-1\release-routing.test.cjs:50:11)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 'MSVC143',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

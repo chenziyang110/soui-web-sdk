@@ -1,0 +1,186 @@
+diff --git a/third_party/include/soui/SOUI/include/core/SObjectFactory.h b/third_party/include/soui/SOUI/include/core/SObjectFactory.h
+index 651cd3ee..dd11913f 100644
+--- a/third_party/include/soui/SOUI/include/core/SObjectFactory.h
++++ b/third_party/include/soui/SOUI/include/core/SObjectFactory.h
+@@ -162,7 +162,8 @@ namespace SOUI
+ 		template<class T>
+ 		bool TplRegisterFactory()
+ 		{
+-			return RegisterFactory(TplSObjectFactory<T>());
++			TplSObjectFactory<T> factory;
++			return RegisterFactory(factory);
+ 		}
+ 
+ 		template<class T>
+@@ -176,4 +177,4 @@ namespace SOUI
+         void AddStandardFactory();
+     };
+ 
+-}//namespace SOUI
+\ No newline at end of file
++}//namespace SOUI
+diff --git a/third_party/include/soui/SOUI/include/core/SSingleton.h b/third_party/include/soui/SOUI/include/core/SSingleton.h
+index 6780642f..ad632bfc 100644
+--- a/third_party/include/soui/SOUI/include/core/SSingleton.h
++++ b/third_party/include/soui/SOUI/include/core/SSingleton.h
+@@ -59,4 +59,19 @@ namespace SOUI
+         SSingleton(const SSingleton&) {}
+     };
+ 
+-}//namespace SOUI
+\ No newline at end of file
++#if defined(__clang__)
++    // MSVC retains its original implicit instantiation/export behavior.
++    // These specializations have one definition in their existing cpp files.
++    // Declare them before exported classes instantiate inherited members.
++    class SApplication;
++    class SNotifyCenter;
++    class SFontPool;
++    class SWindowFinder;
++    class SScriptTimer;
++    template<> SOUI_EXP SApplication* SSingleton<SApplication>::ms_Singleton;
++    template<> SOUI_EXP SNotifyCenter* SSingleton<SNotifyCenter>::ms_Singleton;
++    template<> SFontPool* SSingleton<SFontPool>::ms_Singleton;
++    template<> SWindowFinder* SSingleton<SWindowFinder>::ms_Singleton;
++    template<> SScriptTimer* SSingleton<SScriptTimer>::ms_Singleton;
++#endif
++}//namespace SOUI
+diff --git a/third_party/sources/soui/SOUI/include/core/SObjectFactory.h b/third_party/sources/soui/SOUI/include/core/SObjectFactory.h
+index 651cd3ee..dd11913f 100644
+--- a/third_party/sources/soui/SOUI/include/core/SObjectFactory.h
++++ b/third_party/sources/soui/SOUI/include/core/SObjectFactory.h
+@@ -162,7 +162,8 @@ namespace SOUI
+ 		template<class T>
+ 		bool TplRegisterFactory()
+ 		{
+-			return RegisterFactory(TplSObjectFactory<T>());
++			TplSObjectFactory<T> factory;
++			return RegisterFactory(factory);
+ 		}
+ 
+ 		template<class T>
+@@ -176,4 +177,4 @@ namespace SOUI
+         void AddStandardFactory();
+     };
+ 
+-}//namespace SOUI
+\ No newline at end of file
++}//namespace SOUI
+diff --git a/third_party/sources/soui/SOUI/include/core/SSingleton.h b/third_party/sources/soui/SOUI/include/core/SSingleton.h
+index 6780642f..ad632bfc 100644
+--- a/third_party/sources/soui/SOUI/include/core/SSingleton.h
++++ b/third_party/sources/soui/SOUI/include/core/SSingleton.h
+@@ -59,4 +59,19 @@ namespace SOUI
+         SSingleton(const SSingleton&) {}
+     };
+ 
+-}//namespace SOUI
+\ No newline at end of file
++#if defined(__clang__)
++    // MSVC retains its original implicit instantiation/export behavior.
++    // These specializations have one definition in their existing cpp files.
++    // Declare them before exported classes instantiate inherited members.
++    class SApplication;
++    class SNotifyCenter;
++    class SFontPool;
++    class SWindowFinder;
++    class SScriptTimer;
++    template<> SOUI_EXP SApplication* SSingleton<SApplication>::ms_Singleton;
++    template<> SOUI_EXP SNotifyCenter* SSingleton<SNotifyCenter>::ms_Singleton;
++    template<> SFontPool* SSingleton<SFontPool>::ms_Singleton;
++    template<> SWindowFinder* SSingleton<SWindowFinder>::ms_Singleton;
++    template<> SScriptTimer* SSingleton<SScriptTimer>::ms_Singleton;
++#endif
++}//namespace SOUI
+diff --git a/third_party/sources/soui/SOUI/src/activex/SAxContainer.h b/third_party/sources/soui/SOUI/src/activex/SAxContainer.h
+index 416ab003..8c01a85d 100644
+--- a/third_party/sources/soui/SOUI/src/activex/SAxContainer.h
++++ b/third_party/sources/soui/SOUI/src/activex/SAxContainer.h
+@@ -126,7 +126,7 @@ class S_NO_VTABLE ActiveXSite :   public IOleClientSite,
+     {
+         if( m_spControl == 0) return E_NOINTERFACE;
+         HRESULT hr = E_POINTER;
+-        SComQIPtr<IPersistStreamInit> spPSI = m_spControl;
++        SComQIPtr<IPersistStreamInit> spPSI(m_spControl);
+         if ( spPSI != NULL )
+         {
+             if ( pStream != NULL )
+@@ -632,7 +632,7 @@ class S_NO_VTABLE ActiveXSite :   public IOleClientSite,
+             if (SUCCEEDED(hr))
+                 m_dwViewObjectType = 1;
+         }
+-        SComQIPtr<IAdviseSink> advise_sink=m_spControl;
++        SComQIPtr<IAdviseSink> advise_sink(m_spControl);
+         m_spOleObject->Advise(advise_sink, &m_dwOleObjSink);
+ 
+         if (m_spViewObject)
+@@ -726,4 +726,4 @@ private:
+ 
+ }//end of namespace SOUI
+ 
+-#endif //ATLACTIVEXCONTAINER_HPP
+\ No newline at end of file
++#endif //ATLACTIVEXCONTAINER_HPP
+diff --git a/third_party/sources/soui/SOUI/src/control/STreeView.cpp b/third_party/sources/soui/SOUI/src/control/STreeView.cpp
+index 5faac18c..463c64be 100644
+--- a/third_party/sources/soui/SOUI/src/control/STreeView.cpp
++++ b/third_party/sources/soui/SOUI/src/control/STreeView.cpp
+@@ -984,7 +984,8 @@ namespace SOUI
+ 		else {
+             if(uMsg==WM_LBUTTONDOWN || uMsg== WM_RBUTTONDOWN || uMsg==WM_MBUTTONDOWN)
+ 			{//交给panel处理
+-				SItemPanel* pPanel = HitTest(CPoint(pt));
++				CPoint hitPoint(pt);
++				SItemPanel* pPanel = HitTest(hitPoint);
+ 				if (!pPanel && m_hSelected)  //hit in none-item area,so make item to killfocus 
+ 				{
+ 					SItemPanel *pSelItem = GetItemPanel(m_hSelected);
+diff --git a/third_party/sources/soui/SOUI/src/helper/SwndFinder.cpp b/third_party/sources/soui/SOUI/src/helper/SwndFinder.cpp
+index 37185d3e..8ad3decc 100644
+--- a/third_party/sources/soui/SOUI/src/helper/SwndFinder.cpp
++++ b/third_party/sources/soui/SOUI/src/helper/SwndFinder.cpp
+@@ -4,7 +4,7 @@
+ 
+ namespace SOUI
+ {
+-    SWindowFinder * SSingleton<SWindowFinder>::ms_Singleton = NULL;
++    template<> SWindowFinder * SSingleton<SWindowFinder>::ms_Singleton = NULL;
+     
+ 	SFindInfo::SFindInfo(SWindow *pParent,const SStringW & _strName,int _nDeep)
+ 		:hParent(pParent->GetSwnd()),strName(_strName),nDeep(_nDeep),findByName(true)
+diff --git a/third_party/sources/soui/SOUI/src/layout/SLayoutSize.cpp b/third_party/sources/soui/SOUI/src/layout/SLayoutSize.cpp
+index c9e19bdc..7b70fa8d 100644
+--- a/third_party/sources/soui/SOUI/src/layout/SLayoutSize.cpp
++++ b/third_party/sources/soui/SOUI/src/layout/SLayoutSize.cpp
+@@ -50,7 +50,7 @@ namespace SOUI
+ 				break;
+ 			}
+ 		}
+-		return SStringW().Format(L"%s%s",strValue,s_pszUnit[unit]);
++		return SStringW().Format(L"%s%s",static_cast<LPCWSTR>(strValue),s_pszUnit[unit]);
+ 	}
+ 
+ 
+diff --git a/third_party/sources/soui/components/imgdecoder-gdip/imgdecoder-gdip.cpp b/third_party/sources/soui/components/imgdecoder-gdip/imgdecoder-gdip.cpp
+index 12da1276..500544f4 100644
+--- a/third_party/sources/soui/components/imgdecoder-gdip/imgdecoder-gdip.cpp
++++ b/third_party/sources/soui/components/imgdecoder-gdip/imgdecoder-gdip.cpp
+@@ -136,11 +136,17 @@ namespace SOUI
+ 
+     int SImgX_GDIP::_InitFromGdipBitmap(Bitmap * bmpSrc)
+     {
++        const UINT width = bmpSrc->GetWidth(), height = bmpSrc->GetHeight();
++        if (!width || !height || width > MAXLONG || height > MAXLONG)
++        {
++            m_nFrameCount = 0;
++            return 0;
++        }
+         GUID   pageGuid = FrameDimensionTime;
+         // Get the number of frames in the first dimension.
+         m_nFrameCount = max(1, bmpSrc->GetFrameCount(&pageGuid));
+         
+-        SIZE imSize={bmpSrc->GetWidth(),bmpSrc->GetHeight()};
++        SIZE imSize={static_cast<LONG>(width),static_cast<LONG>(height)};
+ 
+         if (m_nFrameCount>1)
+         {

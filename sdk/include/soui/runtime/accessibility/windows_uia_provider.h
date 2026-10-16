@@ -75,6 +75,10 @@ struct uia_action_result {
 // owner, outside shared-state locks. Default/empty policy denies every command.
 // They must enter registered typed native business methods, with application
 // authorization; UIA supplies no Agent scope, bearer or native user gesture.
+// Windows may call SetValue, Select or SetFocus on the HWND thread. Outside
+// callbacks, synchronous requests send the configured wake for one bounded
+// pump, never waiting for their own thread. Recursive synchronous mutations
+// are rejected before admission. Keep forwarding the configured wake.
 class windows_uia_provider final {
  public:
   static constexpr std::size_t max_nodes{256};
@@ -97,8 +101,16 @@ class windows_uia_provider final {
 
   // All controller methods require the actual HWND owner thread. Publish is
   // atomic and bounded. A new document requires close then a new controller.
+  // Accepted changes wake the owner; public property/structure/focus events are
+  // delivered later by pump(). Intermediate unnotified state may be coalesced.
+  // S_OK accepts the projection, not delivery to a client. No secret Value event.
   [[nodiscard]] HRESULT publish(const uia_projection& projection) noexcept;
-  // At most eight commands per call. WndProc must forward the wake message;
+  // At most eight commands and sixteen event API calls per call. WndProc forwards
+  // the wake message; event failures are returned without rolling back accepted
+  // state. A later pump can retry remaining state notifications. Successful
+  // Invoke dispatches send Invoked once; a notification failure never replays
+  // that business action. Invoke notifications share the same event budget.
+  // WndProc must forward the wake message;
   // an ordinary owner pump may also call this. Never call while holding a UI lock.
   [[nodiscard]] HRESULT pump() noexcept;
   // Handles only the configured wake message and UIA WM_GETOBJECT. Preserves

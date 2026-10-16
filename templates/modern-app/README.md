@@ -7,3 +7,5 @@ React + TypeScript 页面通过统一 SDK 调用 C++，使用可选 WebView2 后
 独立项目运行 `powershell.exe -File tools/Build.ps1 -Architecture x64`。需要支持的 WebView2 Runtime；业务程序不需要 Node.js。页面在 `web/`，C++ 注册在 `app/main.cpp`。用户数据与浏览器 profile 位于 Local AppData，部署的 `resources/` 只保存应用资源。
 
 窗口隐藏和恢复使用公共宿主接口。Bridge 使用有界事件通知；处理器不要同步执行长工作。关闭收到 `E_BUSY` 时保留对象并重试。示例 `--smoke-test` 验证页面、GUI 动作、C++ 响应及正常关闭，日志位于该应用 Local AppData 的独立 `smoke-<pid>` 目录。
+
+模板独占自己的持久浏览器目录；同时运行的第二个实例不能共享该目录。多实例应用应为每个实例明确分配目录，或自行接入 SDK 的共享模式及对应关闭契约。关闭 Controller 后，模板保留窗口消息循环、Host、Bridge 和退出观察器，等待浏览器实际自然退出及回调收尾，再结束应用。整个关闭阶段限十秒；超时、异常退出或无法安全释放的借用均按失败处理。

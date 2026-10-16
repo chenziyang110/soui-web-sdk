@@ -1,0 +1,141 @@
+{
+  "schema": "soui.dependency-build/v1",
+  "architecture": "x86",
+  "component": "Miniblink",
+  "experimentalGpu": false,
+  "startedAt": "2026-10-15T22:20:49.7868572+08:00",
+  "finishedAt": "2026-10-16T00:19:20.6561919+08:00",
+  "status": "built",
+  "releaseReady": false,
+  "souiSourceStage": null,
+  "artifacts": [
+    {
+      "sha256": "ECF11BA99A25AE39A9674C03338E1366258899618B6D81B7FDA08802263EE0B6",
+      "path": "C:\\work\\sm05-kernel-cache-050-x86-1\\miniblink\\bin\\node.dll",
+      "kind": "miniblink"
+    }
+  ],
+  "kernelLlvm": {
+    "schema": "soui.public-kernel-llvm-build-files/v1",
+    "profile": "LLVM22MSVC142",
+    "architecture": "x86",
+    "inputs": {
+      "path": "C:/work/sm05-kernel-cache-050-x86-1/kernel-llvm-inputs.json",
+      "bytes": 25541,
+      "sha256": "952b7353a6c07efce4553eca76e924ff0f262873cb6fb6bd95e5ca649ab3d208"
+    },
+    "sourceBefore": {
+      "path": "C:/work/sm05-kernel-cache-050-x86-1/kernel-source-before.json",
+      "bytes": 4585875,
+      "sha256": "ae3cbffa48ed9188eec0dedc6738de1dbc5bc0f70b82f5bae3ba371dfe1aa9a9"
+    },
+    "sourceAfter": {
+      "path": "C:/work/sm05-kernel-cache-050-x86-1/kernel-source-after.json",
+      "bytes": 4585875,
+      "sha256": "ae3cbffa48ed9188eec0dedc6738de1dbc5bc0f70b82f5bae3ba371dfe1aa9a9"
+    },
+    "sourceImmutable": true,
+    "inputFilesStable": true,
+    "libraries": [
+      {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/zlib.lib",
+        "bytes": 397808,
+        "sha256": "932a9ff42fdcaf87decfd437440ee109546410a34180115c1c804cce71956dea"
+      },
+      {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/libjpeg.lib",
+        "bytes": 1701776,
+        "sha256": "e0eae76a17b77565b14a8fc3d3085591a8692eba3d2c0a72f616707431cde08c"
+      },
+      {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/libpng.lib",
+        "bytes": 1169378,
+        "sha256": "f7f04c3dd1ce2cab2059615cca471a69cd4bbb588783d84e4de64335d5c02e1a"
+      },
+      {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/harfbuzz.lib",
+        "bytes": 3807668,
+        "sha256": "8e44bebb1b6bbf6176f9867bad409c39f90d3b87d5a12b84c97dd2c2d2fdbd6d"
+      },
+      {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/libxml.lib",
+        "bytes": 4810292,
+        "sha256": "c93893df2105ceed0a02e89b86dae194da1bb54bf047a202b6f2cc1a57a29692"
+      },
+      {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/ots.lib",
+        "bytes": 11361670,
+        "sha256": "9a1dfbe9494c68bbe623faed0f88189ea233dc337650d697a56e3f1347923f4a"
+      },
+      {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/openssl.lib",
+        "bytes": 18102280,
+        "sha256": "0677d91de6f350cb685d4bcbb180e9d4afae942d2c9ea51a41bf920536aa3afd"
+      },
+      {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/libcurl.lib",
+        "bytes": 5473474,
+        "sha256": "1bd201587084f24a37bc4286a2b1fdf030cd116e09625c3490f39989bf97f7be"
+      },
+      {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/v8_5_7.lib",
+        "bytes": 656720208,
+        "sha256": "d38c3dac7785d35ae9fd185cf5ccc9c7f451f613d8bad3b440ceb526731d8618"
+      },
+      {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/v8_5_7_1.lib",
+        "bytes": 528745664,
+        "sha256": "0d27d69aa541f7728e0370709a93aa129b2d54340d259e69fee8a0512254d349"
+      },
+      {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/skia.lib",
+        "bytes": 27251922,
+        "sha256": "045eab9bcfa63f240fe3c9f6818d83ebbfc5fa967fa5eee5c7d8b73621e3e68f"
+      }
+    ],
+    "dll": {
+      "path": "C:/work/sm05-kernel-cache-050-x86-1/miniblink/bin/node.dll",
+      "bytes": 28115968,
+      "sha256": "ecf11ba99a25ae39a9674c03338e1366258899618b6d81b7fda08802263ee0b6"
+    },
+    "map": {
+      "path": "C:/work/sm05-kernel-cache-050-x86-1/miniblink/bin/node.map",
+      "bytes": 48820430,
+      "sha256": "ddd73973f2e4d336cce186f3bf17063ea41ffb1d463c301323a060bed85b68be"
+    },
+    "requestedClangVersion": "22.1.3",
+    "requestedMsvcCompatibility": "19.29.30159",
+    "compilerVersionProbe": {
+      "scope": "selected-tool-version-response",
+      "executableBefore": {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+        "bytes": 104747608,
+        "sha256": "ec094d5f8f37c106eefcfc47c9997c261a06e3bd8eaaa7255835983a58524156"
+      },
+      "executableAfter": {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+        "bytes": 104747608,
+        "sha256": "ec094d5f8f37c106eefcfc47c9997c261a06e3bd8eaaa7255835983a58524156"
+      },
+      "stdout": {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/clang-version.stdout.raw.log",
+        "bytes": 242,
+        "sha256": "a8e6844e85eb2c4633785606393c96408f24bb297f8ce85735ea196ec4919695"
+      },
+      "stderr": {
+        "path": "C:/work/sm05-kernel-cache-050-x86-1/clang-version.stderr.raw.log",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "exitCode": 0,
+      "observedVersion": "22.1.3",
+      "translationUnitCompilationObserved": false,
+      "wholeJob": null
+    },
+    "compilerExecution": null,
+    "wholeJob": null,
+    "abi": null,
+    "toolchainQualification": null,
+    "releaseReady": false
+  }
+}

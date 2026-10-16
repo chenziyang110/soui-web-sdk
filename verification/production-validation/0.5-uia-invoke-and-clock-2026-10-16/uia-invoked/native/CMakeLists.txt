@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.29)
+project(SouiUiaEventProbe LANGUAGES CXX)
+set(PROVIDER_SOURCE "" CACHE FILEPATH "Exact baseline or proposed provider")
+add_executable(uia_event_probe "C:/work/sm05-uia-invoked-1/proposal/tests/native/windows_uia_provider_tests.cpp"
+  "C:/work/sm05-release-050/sdk/src/runtime/bridge/action_contract.cpp" "${PROVIDER_SOURCE}")
+target_include_directories(uia_event_probe PRIVATE "C:/work/sm05-release-050/sdk/include" "C:/work/sm05-release-050/third_party/include/json")
+target_compile_features(uia_event_probe PRIVATE cxx_std_17)
+target_compile_definitions(uia_event_probe PRIVATE UNICODE _UNICODE NOMINMAX WINVER=0x0601 _WIN32_WINNT=0x0601)
+target_compile_options(uia_event_probe PRIVATE /U_DEBUG /utf-8 /W4)
+target_link_libraries(uia_event_probe PRIVATE ole32 oleaut32 user32 gdi32)
+set_property(TARGET uia_event_probe PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)

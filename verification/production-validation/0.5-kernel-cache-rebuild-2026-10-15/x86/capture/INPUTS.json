@@ -1,0 +1,64 @@
+{
+  "arch": "x86",
+  "build": "C:/work/sm05-kernel-cache-050-x86-1",
+  "pins": [
+    {
+      "path": "F:\\work\\SOUI_WEB\\out\\release-050\\run-kernel-cache-build-1.cjs",
+      "sha256": "7c23c1d49faf997d7a4afd4fc16f0fcd58bec5a592596301b876a71240b291fc"
+    },
+    {
+      "path": "C:/work/sm05-kernel-cache-source1/tools/Build-Dependencies.ps1",
+      "sha256": "ae77f201aaa4bb65c1b2e77407eb0c7da9ce55d1040f48f392ba27e9bdd1aeca"
+    },
+    {
+      "path": "C:/work/sm05-kernel-cache-source1/tools/internal/Build-KernelLibraryArch.cmd",
+      "sha256": "f1554b50ff1c213406e896c505f5848cd628572b96b43d15ab610470d9b9826b"
+    },
+    {
+      "path": "C:/work/sm05-kernel-cache-source1/tools/internal/Build-KernelMainArch.cmd",
+      "sha256": "10ce60eb2b827102e0b10cbdcd17b1c770208030ec02dba1309803797347c5c3"
+    },
+    {
+      "path": "C:/work/sm05-kernel-cache-source1/tools/internal/Kernel-LlvmInputs.ps1",
+      "sha256": "69b42eae472597a97061741e5a401c19e3bf665aa134646ba555645afe432d36"
+    },
+    {
+      "path": "C:/work/sm05-kernel-cache-source1/tools/internal/kernel-llvm-output.targets",
+      "sha256": "0d5df417fbfac68bbb2357987c8003aaec97537b16cb88d7d357197333dc4e82"
+    },
+    {
+      "path": "C:/work/sm05-kernel-cache-source1/tools/internal/Find-LlvmToolchain.ps1",
+      "sha256": "2a81487d800b50a55032839b96abc2844188161d3dca7598e04ff1b9af2609ef"
+    }
+  ],
+  "executable": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+  "args": [
+    "-NoProfile",
+    "-NonInteractive",
+    "-File",
+    "C:/work/sm05-kernel-cache-source1/tools/Build-Dependencies.ps1",
+    "-Architecture",
+    "x86",
+    "-Component",
+    "Miniblink",
+    "-NativeToolchain",
+    "LLVM22MSVC142",
+    "-OutputRoot",
+    "C:/work/sm05-kernel-cache-050-x86-1",
+    "-LlvmRoot",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64",
+    "-MsvcRoot",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133",
+    "-WindowsSdkRoot",
+    "C:/Program Files (x86)/Windows Kits/10",
+    "-NinjaExe",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe",
+    "-WindowsCmdExe",
+    "C:/Windows/System32/cmd.exe",
+    "-PowerShellExe",
+    "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+    "-VsInstallDir",
+    "C:/Program Files/Microsoft Visual Studio/18/Community"
+  ],
+  "scope": "Actual kernel build; source subtree and provider pins also checked by the unmodified producer; SDK source outside kernel is not a kernel input"
+}

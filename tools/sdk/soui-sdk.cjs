@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 'use strict';
+const versioning = require('../internal/sdk-version.cjs');
 
 // A source SDK keeps the existing relative C++/TypeScript build layout while
 // making the upstream-owned files an explicit, independently versioned unit.
@@ -15,7 +16,10 @@ const LOCK = 'soui.sdk-lock/v1';
 const sdkId = 'soui-desktop-sdk';
 const managedRoots = ['sdk', 'cmake', 'third_party/include', 'third_party/prebuilt',
   'third_party/sources/zlib', 'third_party/licenses', 'third_party/manifests', 'tools/sdk', 'tools/internal'];
-const managedFiles = ['THIRD_PARTY_NOTICES.md', 'tools/Build.ps1', 'tools/Test-Modern.ps1'];
+const managedFiles = ['THIRD_PARTY_NOTICES.md', 'tools/Build.ps1', 'tools/Test-Modern.ps1',
+  'tools/Soui.ps1', 'tools/Doctor.ps1', 'docs/developer-workflow.md',
+  'benchmarks/protocol/host64-build-debug-observer.cpp',
+  'benchmarks/protocol/host64-build-debug-observer/CMakeLists.txt'];
 const hash = data => crypto.createHash('sha256').update(data).digest('hex');
 const fileHash = file => hash(fs.readFileSync(file));
 const json = file => JSON.parse(fs.readFileSync(file, 'utf8').replace(/^\uFEFF/, ''));
@@ -67,8 +71,8 @@ function sourceFiles(source, manifest) {
 }
 
 function validateManifest(manifest) {
-  if (manifest.schema !== PACKAGE || manifest.id !== sdkId || manifest.channel !== 'preview' ||
-      manifest.releaseReady !== false || !/^\d+\.\d+\.\d+-preview\.\d+$/.test(manifest.version) ||
+  if (manifest.schema !== PACKAGE || manifest.id !== sdkId || !versioning.isVersion(manifest.version) || manifest.channel !== versioning.channelOf(manifest.version) ||
+      manifest.releaseReady !== false ||
       !Array.isArray(manifest.files) || !manifest.files.length) throw new Error('Invalid source SDK manifest');
   const seen = new Set();
   for (const file of manifest.files) {
@@ -145,10 +149,10 @@ function pack(source, output, version, options = {}) {
     throw new Error('Package output must be outside source or under dist/sdk');
   }
   if (fs.existsSync(output)) throw new Error('Package output already exists');
-  const optionalGuiBindings = options.withGuiBindings ? guiBindings.verify(source, version) : undefined;
+  const optionalGuiBindings = options.withGuiBindings ? guiBindings.verify(source, version, {forPackaging: true}) : undefined;
   const compiled = new Set(optionalGuiBindings?.output.files.map(file => file.path) || []);
   const files = sourceFiles(source).concat([...compiled]).sort();
-  const manifest = validateManifest({schema: PACKAGE, id: sdkId, version, channel: 'preview', releaseReady: false,
+  const manifest = validateManifest({schema: PACKAGE, id: sdkId, version, channel: versioning.channelOf(version), releaseReady: false,
     format: 'source-with-native-dependencies',
     ...(optionalGuiBindings ? {optionalGuiBindings} : {}),
     applicationContract: 'Applications own app, web, contracts and resources. SDK builds independently using CMake and links through Soui::Sdk.',
@@ -237,7 +241,7 @@ function main(argv) {
     'verify-source': ['--package', '--source'], 'verify-profile': ['--package', '--profile']};
   const keys = surfaces[command];
   if (!keys || keys.some(key => !options[key]) || Object.keys(options).some(key => !keys.includes(key) && !(command === 'pack' && key === '--with-gui-bindings'))) {
-    throw new Error('Commands: pack --source DIR --output DIR --version X.Y.Z-preview.N [--with-gui-bindings] | verify --package DIR | install --package DIR --project DIR | recover --project DIR | verify-project --project DIR | verify-source --package DIR --source DIR | verify-profile --package DIR --profile compatibility|modern');
+    throw new Error('Commands: pack --source DIR --output DIR --version X.Y.Z[-preview.N|-rc.N] [--with-gui-bindings] | verify --package DIR | install --package DIR --project DIR | recover --project DIR | verify-project --project DIR | verify-source --package DIR --source DIR | verify-profile --package DIR --profile compatibility|modern');
   }
   if (command === 'pack') return pack(options['--source'], options['--output'], options['--version'], {withGuiBindings: options['--with-gui-bindings'] === true});
   if (command === 'install') return install(options['--package'], options['--project']);

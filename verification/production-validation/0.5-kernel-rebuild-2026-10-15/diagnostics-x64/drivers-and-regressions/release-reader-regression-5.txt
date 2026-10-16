@@ -1,0 +1,31 @@
+✔ capture preserves exact bytes and refuses to overwrite an attempt snapshot (25.7852ms)
+✔ metadata refresh is historical-only; during-build drift still fails (19.7039ms)
+✔ captured bytes cannot be replaced after build (13.6976ms)
+✔ snapshot ownership, exact shape, live identity and control binding are mandatory (14.2214ms)
+✔ legacy receipts retain their original live-file rule and cannot impersonate snapshots (17.4211ms)
+✔ the actual LLVM reader validates captured manifests before requiring native proof (80.4622ms)
+✔ selection requires both actual components, matching architecture and explicit profile (2.7663ms)
+✔ file pins reject changed contents (13.8702ms)
+✔ large static libraries are hashed completely without a whole-file buffer (1370.5513ms)
+✔ source inventory binds directories and every physical file without normalization (23.8011ms)
+✔ source receipt cannot substitute another root or an inconsistent file roster (9.0802ms)
+✔ DLL matching requires exactly the rebuilt bytes in every actual application payload (0.5992ms)
+✔ PE validation rejects opposite architecture, truncation and non-DLL images (0.3498ms)
+✔ actual component invocation binds public entry, source owner, architecture and all selected tool roots (1.6367ms)
+✔ collection defaults retain the MSVC full scope and optional flags (1.3416ms)
+✔ ambiguous, missing or unsupported collection options are rejected (0.6206ms)
+✔ measurement request belongs to the selected x64 preparation (0.5765ms)
+✔ measurement request belongs to the selected x86 preparation (0.1703ms)
+✔ measurement routing rejects an unknown command, architecture or profile (1.3924ms)
+✔ build requests retain architecture, configuration, SDK-only ownership and explicit profile (0.5776ms)
+✔ the actual collector cannot infer an opposite build profile from existing receipts (9.3936ms)
+✔ the actual collector forwards LLVM requests to every measurement group before later work (1.6413ms)
+✔ LLVM collection selects both genuine component readers without requesting a synthetic All report (1.9972ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1670.6775

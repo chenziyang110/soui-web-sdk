@@ -1,0 +1,42 @@
+✔ complete observation at exact time limit describes scope without qualifying resources (0.9781ms)
+✔ missing/future envelopes and external bindings never become zero or complete (0.1557ms)
+✔ every failure state retains incomplete status and never passes (0.6108ms)
+✔ canonical uint64 data rejects truncation, signs, numbers and overflows (0.852ms)
+✔ OS scope, bounds, time, count and exact range contradictions reject (0.5048ms)
+✔ process lifetime, capture thread and architecture require external agreement (0.1683ms)
+✖ unsigned DTO encoding cannot admit an impossible signed Windows performance counter (0.9313ms)
+✔ sequence validates identity/time while allowing memory to shrink (0.1837ms)
+✔ series retains every sample, missing/partial/invalid observations and exact peaks (0.6705ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 8
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 126.7505
+
+✖ failing tests:
+
+test at C:\work\sm05-memory-envelope-2\proposal\tests\acceptance\process-address-census.test.cjs:51:1
+✖ unsigned DTO encoding cannot admit an impossible signed Windows performance counter (0.9313ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'matched'
+  - 'invalid'
+  
+      at TestContext.<anonymous> (C:\work\sm05-memory-envelope-2\proposal\tests\acceptance\process-address-census.test.cjs:54:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'matched',
+    expected: 'invalid',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -162,7 +162,8 @@ namespace SOUI
 		template<class T>
 		bool TplRegisterFactory()
 		{
-			return RegisterFactory(TplSObjectFactory<T>());
+			TplSObjectFactory<T> factory;
+			return RegisterFactory(factory);
 		}
 
 		template<class T>

@@ -1,0 +1,217 @@
+{
+  "schema": "soui.private-long-quota-proposal/1",
+  "supersedes": "PROPOSAL.json",
+  "proposedAt": "2026-10-15T18:53:39.795Z",
+  "adopted": false,
+  "candidateUnchanged": true,
+  "source24Seal": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 15734831,
+    "sha256": "52e19555127cff41afabb4ee9e7b0af662630cbdfce35f270d0d4753473d1cf4"
+  },
+  "changes": [
+    {
+      "relative": "CHANGELOG.md",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\CHANGELOG.md",
+        "bytes": 30127,
+        "sha256": "57ddf9706a8dbcae120622fbbd376a113bc3bdfa94e535e30a7c34353d5a042c"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\CHANGELOG.md",
+        "bytes": 30376,
+        "sha256": "71b877a5b7a1d9f6e48322b2d165f35323a28dad91c7cc927e074160e97f855a"
+      }
+    },
+    {
+      "relative": "docs/acceptance/0.5.0-long-run-policy.md",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\docs\\acceptance\\0.5.0-long-run-policy.md",
+        "bytes": 6202,
+        "sha256": "98fd7e2184b271995e58a645f1c65cee8ad51e9a8f31dff6bd32bfb01234721c"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\docs\\acceptance\\0.5.0-long-run-policy.md",
+        "bytes": 6989,
+        "sha256": "a8bb0d5d13ebd9fae72a49c58189f5a0f775ecc4962088b4d7a8faa937d09b13"
+      }
+    },
+    {
+      "relative": "docs/adr/0108-long-task-request-quota.md",
+      "before": null,
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\docs\\adr\\0108-long-task-request-quota.md",
+        "bytes": 2946,
+        "sha256": "6d7d957297d9042b54304d442f098a88727ce7183f2e4bda8faa2fe8c8eb13a0"
+      }
+    },
+    {
+      "relative": "docs/adr/README.md",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\docs\\adr\\README.md",
+        "bytes": 6770,
+        "sha256": "65bb215900f3823a0d671db1f0f4a45304abd15c0a1a35b74327e59d5e914d57"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\docs\\adr\\README.md",
+        "bytes": 6916,
+        "sha256": "975e5d4869f4125065a44286797bdc5a7446c432f4858a977feb4ff7e05f65ce"
+      }
+    },
+    {
+      "relative": "docs/testing.md",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\docs\\testing.md",
+        "bytes": 20312,
+        "sha256": "6ae245dbf926d3709f1a17e9c2b594eb24f19c388d055c657da67a388abc8b5f"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\docs\\testing.md",
+        "bytes": 20667,
+        "sha256": "2a1c1d097420a8844d82e62837aba46b373ab8c7d12291958c83ac7063d819e4"
+      }
+    },
+    {
+      "relative": "tests/acceptance/long-run-policy.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tests\\acceptance\\long-run-policy.cjs",
+        "bytes": 4973,
+        "sha256": "58eaab671c5d9cfad0c90b158854a582287bcc620ad5e3cb6743e834ae9f81c5"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\tests\\acceptance\\long-run-policy.cjs",
+        "bytes": 5176,
+        "sha256": "91cfc9b1e865a6706f9a3ef239499c09668195d7dc3ea94f9079b2a660ad6b1f"
+      }
+    },
+    {
+      "relative": "tests/acceptance/long-run-task-quota-fixture.cjs",
+      "before": null,
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\tests\\acceptance\\long-run-task-quota-fixture.cjs",
+        "bytes": 3540,
+        "sha256": "c4423379a29151e67d7e5e5596a1f798beef0c5167d4bf78c8549f593b4d284c"
+      }
+    },
+    {
+      "relative": "tests/acceptance/long-run-task-quota.test.cjs",
+      "before": null,
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\tests\\acceptance\\long-run-task-quota.test.cjs",
+        "bytes": 6593,
+        "sha256": "2f509c18c7dff4ddea7bbaa347d1c1551763e7329e7d0c31953889667295a5d6"
+      }
+    },
+    {
+      "relative": "tests/acceptance/long-run-validation.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tests\\acceptance\\long-run-validation.cjs",
+        "bytes": 38228,
+        "sha256": "3ec8990d83835c0f739506ae4a5d3d6c40a22d1216a0e672851b2ffa09cf7922"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\tests\\acceptance\\long-run-validation.cjs",
+        "bytes": 39753,
+        "sha256": "486962703b12208ed41e1614daddb7a1e8625eb2b4527c09f5f42018d1e60db9"
+      }
+    },
+    {
+      "relative": "tests/acceptance/task-store-request-quota.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tests\\acceptance\\task-store-request-quota.cjs",
+        "bytes": 20698,
+        "sha256": "65c91919e007c63143f2adca72c37af44dcfef43b8f099384d62469a1250a0cc"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\tests\\acceptance\\task-store-request-quota.cjs",
+        "bytes": 31768,
+        "sha256": "db81b95cdf0486f3288e7b9c94b63c3dfbfc1664b306c6d0f7c091f164203f01"
+      }
+    },
+    {
+      "relative": "tests/sdk/long-run-policy.test.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tests\\sdk\\long-run-policy.test.cjs",
+        "bytes": 42573,
+        "sha256": "c58e9e9577d465d99a5dfb0555f5dd670824ed660da69291f6a1719cb2132224"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\tests\\sdk\\long-run-policy.test.cjs",
+        "bytes": 45931,
+        "sha256": "8d3075b327e03df45fbd940f52a44abdaa5ff2cc97e72ee86636089ece9c5234"
+      }
+    },
+    {
+      "relative": "tools/Collect-Verification.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tools\\Collect-Verification.cjs",
+        "bytes": 13917,
+        "sha256": "19762c1a2314143b52040ea4efbc66c78656e6169d5a1cefd124cf93d57b10a4"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\tools\\Collect-Verification.cjs",
+        "bytes": 14172,
+        "sha256": "0518ae0f3b7a90040bfd3c2cdac4710110f7b416e9cb18e6c24eec6cc877e146"
+      }
+    },
+    {
+      "relative": "tools/Test.ps1",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tools\\Test.ps1",
+        "bytes": 20156,
+        "sha256": "d770626422bc79038f3973b00c4a7af51caf5948c10ab695d68802e77d57d701"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-long-quota-1\\proposal\\tools\\Test.ps1",
+        "bytes": 20529,
+        "sha256": "33abb6220bf52bc5478dc34345e48f712cbed4c121118c173eed895e91899a4f"
+      }
+    }
+  ],
+  "tests": [
+    {
+      "count": 28,
+      "result": {
+        "path": "C:\\work\\sm05-long-quota-1\\coverage-green.txt",
+        "bytes": 2178,
+        "sha256": "a70358fc315e28dd23f4202f4464f6afda0da4f4c6d469fb7c622a4440337780"
+      }
+    },
+    {
+      "count": 71,
+      "result": {
+        "path": "C:\\work\\sm05-long-quota-1\\binding-green.txt",
+        "bytes": 6531,
+        "sha256": "b2d226b4d344d923a0f28235792aabe12a947f70d96d27c1752329e8d6a859b9"
+      }
+    },
+    {
+      "count": 12,
+      "result": {
+        "path": "C:\\work\\sm05-long-quota-1\\cache-final.txt",
+        "bytes": 1313,
+        "sha256": "08c69a69d7e9fd07b592b717cca7ad0d1de58d5f7f46bf9bc9a33e0ee0bedd5b"
+      }
+    },
+    {
+      "count": 43,
+      "result": {
+        "path": "C:\\work\\sm05-long-quota-1\\resource-final.txt",
+        "bytes": 4293,
+        "sha256": "a42fee5cc507a20f10c1f89af282e1bb1d7751aae40aefe9776b1bd5245f1f3a"
+      }
+    },
+    {
+      "count": 106,
+      "result": {
+        "path": "C:\\work\\sm05-long-quota-1\\legacy-final.json",
+        "bytes": 15065,
+        "sha256": "10ccb93b052511f7aee189dece8506802c68ce647c535189d3d8f80111b771a9"
+      }
+    }
+  ],
+  "pureRegressionCount": 260,
+  "actualLongRun": false,
+  "fullCacheBudget": "not-evaluated",
+  "releaseReady": false
+}

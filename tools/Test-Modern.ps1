@@ -1,46 +1,58 @@
 [CmdletBinding()]
-param([ValidateSet('x86','x64')][string]$Architecture='x64',
-      [ValidateSet('Debug','Release')][string]$Configuration='Release')
+param(
+  [ValidateSet('x86','x64')][string]$Architecture='x64',
+  [ValidateSet('Debug','Release')][string]$Configuration='Release',
+  [ValidateSet('MSVC143','LLVM22MSVC142')][string]$NativeToolchain='MSVC143',
+  [string]$LlvmRoot,[string]$MsvcRoot,[string]$WindowsSdkRoot,
+  [string]$NinjaExe,[string]$WindowsCmdExe,[string]$PowerShellExe,
+  [string]$ToolchainRequest,[string]$DevkitRoot
+)
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
-$output=Join-Path $root "out/$Architecture"
-$reportPath=Join-Path $output "modern-smoke-$Configuration.json"
-New-Item -ItemType Directory -Force -Path $output | Out-Null
-[IO.File]::WriteAllText($reportPath,'{"passed":false,"releaseReady":false,"status":"running"}',[Text.UTF8Encoding]::new($false))
-$metadataText=& node (Join-Path $root 'tools/internal/build-evidence.cjs') verify-build $Architecture $Configuration
-if($LASTEXITCODE -ne 0){throw 'Current build identity is required.'}
-$build=$metadataText | ConvertFrom-Json
-$target='SouiModernStarter'
-$payload=$build.optionalPayloads.SouiModernStarter
-if(Test-Path -LiteralPath (Join-Path $root 'project.json')){
-  $project=Get-Content -Raw -LiteralPath (Join-Path $root 'project.json') | ConvertFrom-Json
-  if($project.runtimeProfile -ne 'modern'){throw 'This project does not use the modern profile.'}
-  $target=$project.nativeTarget
-  $payload=$build.payloads.$target
+$toolsRoot=if($DevkitRoot){[IO.Path]::GetFullPath($DevkitRoot)}else{$root}
+$externalInputs=@($LlvmRoot,$MsvcRoot,$WindowsSdkRoot,$NinjaExe,$WindowsCmdExe,$PowerShellExe)
+if($NativeToolchain -eq 'MSVC143'){
+  if($ToolchainRequest -or @($externalInputs|Where-Object{$_}).Count){throw 'LLVM inputs require explicit NativeToolchain LLVM22MSVC142.'}
+}else{
+  if(@($externalInputs|Where-Object{[string]::IsNullOrWhiteSpace($_)}).Count){throw 'Modern LLVM verification requires all six explicit paths.'}
+  if(-not $ToolchainRequest){$ToolchainRequest=Join-Path $root "out/$Architecture/llvm-profile-request-$Configuration.json"}
+  $ToolchainRequest=[IO.Path]::GetFullPath($ToolchainRequest)
 }
-if(-not $payload -or -not $build.optionalLibraries.webview2){throw 'Build with -WithWebView2 before running the modern template.'}
+# The application uses SHGetFolderPathW, not an assumed LOCALAPPDATA override.
+$localAppData=[Environment]::GetFolderPath([Environment+SpecialFolder]::LocalApplicationData)
+if([string]::IsNullOrWhiteSpace($localAppData) -or -not [IO.Path]::IsPathRooted($localAppData)){throw 'The actual LocalApplicationData known folder is unavailable.'}
+$arguments=@('run',$Architecture,$Configuration,$toolsRoot,[IO.Path]::GetFullPath($localAppData),'--native-toolchain',$NativeToolchain)
+if($NativeToolchain -eq 'LLVM22MSVC142'){
+  $arguments+=@('--toolchain-request',$ToolchainRequest,'--llvm-root',[IO.Path]::GetFullPath($LlvmRoot),
+    '--msvc-root',[IO.Path]::GetFullPath($MsvcRoot),'--windows-sdk-root',[IO.Path]::GetFullPath($WindowsSdkRoot),
+    '--ninja-exe',[IO.Path]::GetFullPath($NinjaExe),'--windows-cmd-exe',[IO.Path]::GetFullPath($WindowsCmdExe),
+    '--powershell-exe',[IO.Path]::GetFullPath($PowerShellExe))
+}
 $lease=[Threading.Mutex]::new($false,'Local\SouiDevKit.DesktopValidation')
 $acquired=$false
-try {
+$saved=@{}
+$names=@('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','SOUI_TEST_MODERN_NONCE')
+foreach($name in $names){
+  $item=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue
+  $saved[$name]=@{present=($null-ne$item);value=if($null-ne$item){[string]$item.Value}else{$null}}
+}
+try{
   try{$acquired=$lease.WaitOne(0)}catch [Threading.AbandonedMutexException]{$acquired=$true}
   if(-not $acquired){throw 'Another SOUI desktop validation is running.'}
-  $exe=Join-Path $output "bin/$Configuration/$target/$target.exe"
-  $process=Start-Process -FilePath $exe -ArgumentList '--smoke-test' -WindowStyle Hidden -PassThru
-  try {
-    $finished=$process.WaitForExit(40000)
-    if(-not $finished){Stop-Process -Id $process.Id -Force;$process.WaitForExit()}
-    $process.Refresh()
-    $logPath=Join-Path $env:LOCALAPPDATA ($target+'/smoke-'+$process.Id+'/smoke.log')
-    $log=if(Test-Path -LiteralPath $logPath){[IO.File]::ReadAllText($logPath)}else{''}
-    $passed=$finished -and $process.ExitCode -eq 0 -and $log.Contains('application-ready') -and $log.Contains('host-close-complete')
-    & node (Join-Path $root 'tools/internal/build-evidence.cjs') verify-build $Architecture $Configuration | Out-Null
-    if($LASTEXITCODE -ne 0){throw 'Build or payload changed during native execution.'}
-    $report=[ordered]@{schema='soui.modern-smoke/1';version=$build.version;buildId=$build.buildId;
-      sourceSha256=$build.source.sha256;architecture=$Architecture;configuration=$Configuration;
-      target=$target;payload=$payload;pid=$process.Id;exitCode=$process.ExitCode;
-      timedOut=(-not $finished);log=$log;passed=$passed;releaseReady=$false;finishedAt=[DateTimeOffset]::UtcNow.ToString('o')}
-    [IO.File]::WriteAllText($reportPath,($report|ConvertTo-Json -Depth 10),[Text.UTF8Encoding]::new($false))
-    if(-not $passed){throw "Modern application failed; inspect $reportPath"}
-  } finally {$process.Dispose()}
-} finally {if($acquired){$lease.ReleaseMutex()};$lease.Dispose()}
-Write-Output "Modern application verified: $Architecture/$Configuration"
+  foreach($name in $names){Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue;if(Test-Path -LiteralPath ('Env:'+$name)){throw ('Cannot clear Modern entry environment: '+$name)}}
+  $env:SOUI_TEST_MODERN_NONCE=[Guid]::NewGuid().ToString('N')
+  & node (Join-Path $root 'tools/internal/modern-smoke.cjs') @arguments
+  if($LASTEXITCODE -ne 0){throw 'Modern startup or natural Owned tree closure failed; inspect the retained modern-owned attempt.'}
+}finally{
+  $restoreErrors=[Collections.Generic.List[string]]::new()
+  foreach($name in $saved.Keys){try{
+    $state=$saved[$name]
+    if($state.present){Set-Item -LiteralPath ('Env:'+$name) -Value $state.value -ErrorAction Stop}
+    else{Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue}
+    $actual=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue
+    if(($null-ne$actual)-ne$state.present-or($state.present-and[string]$actual.Value-cne$state.value)){throw 'Presence/value differs'}
+  }catch{$restoreErrors.Add($name+': '+$_.Exception.Message)}}
+  if($acquired){$lease.ReleaseMutex()}
+  $lease.Dispose()
+  if($restoreErrors.Count){throw ('Modern entry environment restoration failed: '+($restoreErrors -join '; '))}
+}

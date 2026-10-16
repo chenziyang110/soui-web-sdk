@@ -1,13 +1,107 @@
-import {connectSouiNative, SouiBridgeError, type SouiCoreMethodMap} from '@soui-sdk';
+import {connectSouiNative, SouiBridgeError, type SouiCoreMethodMap, type SouiNativeClientImpl} from '@soui-sdk';
 
 type Methods = SouiCoreMethodMap & {
-  'acceptance.echo': {params:{};result:{window:number;bridgeChecks:boolean}};
+  'acceptance.echo': {params:{};result:{window:number;bridgeChecks:boolean;sessionRole?:'anchor'|'background'}};
   'acceptance.reflect': {params:{index:number};result:{index:number}};
   'acceptance.delay': {params:{};result:{delayed:true}};
   'acceptance.fail': {params:{};result:never};
   'acceptance.large': {params:{};result:never};
   'acceptance.ready': {params:{};result:{}};
+  'acceptance.session.probe': {params:{};result:{scopeId:string}};
+  'acceptance.session.command': {params:{};result:{finish:boolean}};
+  'acceptance.session.report': {params:SessionReport;result:{accepted:boolean}};
 };
+
+type SessionReport = {
+  phase:'started'|'heartbeat'|'renewed'|'finished'|'background'|'failed';
+  taskId:string; generation:number; progressSequence:number;
+  pendingRequests:number; subscriptions:number; state:'running'|'cancelled'|'failed';
+};
+const delay = (milliseconds:number) => new Promise<void>(resolve => setTimeout(resolve,milliseconds));
+
+async function runAnchor(client:SouiNativeClientImpl<Methods>, scopeId:string) {
+  let taskId='session:unavailable', progressSequence=0, lastTick=performance.now(), eventFailed=false;
+  let observedGeneration=client.sessionLease?.generation ?? 0;
+  const report=async(phase:SessionReport['phase'],state:SessionReport['state'],generation:number) => {
+    if(!generation)throw new Error('Real native lease is unavailable.');
+    const acknowledgement=await client.call('acceptance.session.report',{phase,taskId,generation,progressSequence,
+      pendingRequests:client.pendingRequestCount,subscriptions:client.subscriptionCount,state});
+    if(!acknowledgement.accepted)throw new Error('Native observation was rejected.');
+  };
+  try {
+    if(observedGeneration!==1)throw new Error('Initial lease generation differs.');
+    const started=await client.call('task.start',{kind:'acceptance.session',operationId:'session-anchor-1',input:{}});
+    if(!started.accepted || started.duplicate)throw new Error('Anchor task was not started once.');
+    taskId=started.taskId;
+    const subscription=client.subscribe(taskId,'task.progress',event=>{
+      const payload=event.payload as {state?:unknown;message?:unknown;progress?:unknown};
+      if(payload.state!=='running')return;
+      // The SDK may publish mark_running before the handler's first tick.
+      if(payload.progress===0 && payload.message==='')return;
+      const match=typeof payload.message==='string' ? /^session-tick:([1-9][0-9]*)$/.exec(payload.message) : null;
+      const next=match ? Number(match[1]) : 0;
+      if(!Number.isSafeInteger(next) || next<=progressSequence){eventFailed=true;return;}
+      progressSequence=next; lastTick=performance.now();
+    });
+    await subscription.ready;
+    let running=false;
+    for(let attempt=0;attempt<200;++attempt){
+      const status=await client.call('task.query',{taskId});
+      if(status.state==='running' && progressSequence>0){running=true;break;}
+      if(status.state==='failed' || status.state==='cancelled' || status.state==='succeeded')
+        throw new Error('Anchor task ended during admission.');
+      await delay(50);
+    }
+    if(!running)throw new Error('Actual anchor task and events did not start.');
+    await report('started','running',observedGeneration);
+    await client.call('bridge.probe.report',{ready:true});
+    await client.call('acceptance.ready',{});
+    while(true){
+      const command=await client.call('acceptance.session.command',{});
+      if(eventFailed || performance.now()-lastTick>10000)throw new Error('Actual anchor progress stopped or reordered.');
+      const status=await client.call('task.query',{taskId});
+      if(status.state!=='running')throw new Error('Anchor task did not remain running.');
+      const probe=await client.call('acceptance.session.probe',{});
+      if(probe.scopeId!==scopeId)throw new Error('Native authorization scope changed.');
+      // Capture once for this actual running observation. Renewal can finish
+      // while either report is awaiting acknowledgement; both keep this value.
+      const generation=client.sessionLease?.generation;
+      if(!generation)throw new Error('Real native lease is unavailable.');
+      if(generation!==observedGeneration){
+        if(generation!==observedGeneration+1)throw new Error('Actual renewal skipped a generation.');
+        observedGeneration=generation;
+        await report('renewed','running',generation);
+      }
+      await report('heartbeat','running',generation);
+      // This is the final retained-task observation when finish is requested.
+      // Later cancellation/terminal/unsubscribe awaits can renew the lease too.
+      if(command.finish)break;
+      await delay(1000);
+    }
+    const requested=await client.call('task.cancel',{taskId});
+    if(!requested.cancelRequested)throw new Error('Anchor cancellation was not acknowledged.');
+    let cancelled=false;
+    for(let attempt=0;attempt<200;++attempt){
+      const status=await client.call('task.query',{taskId});
+      if(status.state==='cancelled'){cancelled=true;break;}
+      if(status.state==='failed' || status.state==='succeeded')throw new Error('Anchor returned the wrong terminal outcome.');
+      await delay(50);
+    }
+    if(!cancelled)throw new Error('Actual anchor handler did not confirm cancellation.');
+    await subscription.unsubscribe();
+    const probe=await client.call('acceptance.session.probe',{});
+    if(probe.scopeId!==scopeId || client.pendingRequestCount!==0 || client.subscriptionCount!==0)
+      throw new Error('Anchor identity or acknowledged cleanup differs.');
+    if(observedGeneration<3)throw new Error('Fewer than two running renewals were observed.');
+    // generation describes the last actual running observation, not the
+    // possibly newer lease after cancellation and acknowledged cleanup.
+    await report('finished','cancelled',observedGeneration);
+    app.textContent='连续文档的真实任务、订阅与续租观察完成；资源门另行判定';
+  } catch(error) {
+    try { await report('failed','failed',observedGeneration); } catch { /* The outer native/Owned timeout retains failure. */ }
+    throw error;
+  }
+}
 
 const app=document.getElementById('app')!;
 app.textContent='正在验证公共 SDK 原生连接…';
@@ -32,6 +126,10 @@ async function run() {
   if(identity.bridgeChecks)
     for(const name of ['acceptance.reflect','acceptance.delay','acceptance.fail','acceptance.large'])
       expectedCapabilities[name]=name;
+  if(identity.sessionRole){
+    for(const method of ['bridge.session.renew','acceptance.session.probe','acceptance.session.command','acceptance.session.report'])
+      expectedCapabilities[method]=method;
+  }
   const expectedNames=Object.keys(expectedCapabilities).sort();
   const catalog=await client.discover({pageSize:2,maxMethods:32});
   if(catalog.methods.length!==expectedNames.length || catalog.methods.some((method,index)=>
@@ -41,6 +139,7 @@ async function run() {
   if(firstPage.sdkVersion!==catalog.sdkVersion || firstPage.nextCursor!==2 ||
     JSON.stringify(firstPage.methods)!==JSON.stringify(catalog.methods.slice(0,2)))
     throw new Error('Repeated discovery changed within the active document session.');
+  let cancelledTaskId='';
   if(identity.bridgeChecks) {
     app.textContent='检查 32 并发…';
     const results=await Promise.all(Array.from({length:32},(_,index)=>client.call('acceptance.reflect',{index})));
@@ -116,11 +215,23 @@ async function run() {
       await new Promise<void>(resolve=>setTimeout(resolve,20));
     }
     if(!cancelled)throw new Error('Native handler did not confirm cancellation.');
+    cancelledTaskId=cancellable.taskId;
     // Capacity and error recovery must leave the same document usable.
     if((await client.call('acceptance.echo',{})).window!==expectedWindow || client.pendingRequestCount!==0)
       throw new Error('Native connection did not recover after failures.');
     if(JSON.stringify(await client.discover({pageSize:2,maxMethods:32}))!==JSON.stringify(catalog))
       throw new Error('Capability discovery changed after task, overload or error recovery.');
+  }
+  if(identity.sessionRole){
+    const probe=await client.call('acceptance.session.probe',{});
+    if(!probe.scopeId)throw new Error('Actual native scope correlation is absent.');
+    if(identity.sessionRole==='anchor'){await runAnchor(client,probe.scopeId);return;}
+    const generation=client.sessionLease?.generation;
+    if(!cancelledTaskId || generation!==1 || client.pendingRequestCount!==0 || client.subscriptionCount!==0)
+      throw new Error('Background task cancellation did not finish.');
+    const accepted=await client.call('acceptance.session.report',{phase:'background',taskId:cancelledTaskId,
+      generation,progressSequence:0,pendingRequests:0,subscriptions:0,state:'cancelled'});
+    if(!accepted.accepted)throw new Error('Background native observation failed.');
   }
   app.textContent='回报页面就绪…';
   await client.call('bridge.probe.report',{ready:true});

@@ -59,4 +59,19 @@ namespace SOUI
         SSingleton(const SSingleton&) {}
     };
 
+#if defined(__clang__)
+    // MSVC retains its original implicit instantiation/export behavior.
+    // These specializations have one definition in their existing cpp files.
+    // Declare them before exported classes instantiate inherited members.
+    class SApplication;
+    class SNotifyCenter;
+    class SFontPool;
+    class SWindowFinder;
+    class SScriptTimer;
+    template<> SOUI_EXP SApplication* SSingleton<SApplication>::ms_Singleton;
+    template<> SOUI_EXP SNotifyCenter* SSingleton<SNotifyCenter>::ms_Singleton;
+    template<> SFontPool* SSingleton<SFontPool>::ms_Singleton;
+    template<> SWindowFinder* SSingleton<SWindowFinder>::ms_Singleton;
+    template<> SScriptTimer* SSingleton<SScriptTimer>::ms_Singleton;
+#endif
 }//namespace SOUI

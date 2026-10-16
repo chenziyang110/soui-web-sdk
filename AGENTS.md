@@ -6,7 +6,7 @@
 
 本仓库维护 Windows 平台的 SOUI + Miniblink 桌面 SDK、最小应用模板、完整 Workbench Demo、第三方源码及可重复的构建和验收工具。
 
-- 当前渠道是 `preview`。不得把编译成功、短启动成功或删除 preview 标签描述为“生产就绪”。
+- 当前 `0.5.0` 候选尚未发布，生产验收未完成。不得把编译成功、短启动成功或删除 preview 标签描述为“生产就绪”。
 - 生产门槛和未关闭风险以 `docs/known-issues.md` 为准，机器可读结论以 `verification/acceptance.json` 为准。
 - 根目录 `VERSION` 是版本唯一来源。C++、Web SDK、锁文件、变更记录和交付清单必须与其一致。
 - 支持 Windows、MSVC v143、C++17、Windows SDK 10.0.19041.0。不要静默提高最低系统或工具链要求。
@@ -64,6 +64,8 @@ ADR 必须说明背景、决定、备选方案、兼容性、迁移和验证。�
 ### 3.4 验证阶梯
 
 按影响范围执行最小充分集合；发布前执行完整集合。
+
+0.5.0 本次交付按维护者 2026-10-16 的最新要求缩减重复和长时间测试，执行范围以 `docs/releasing.md` 的“0.5.0 本次发布范围”为准。保留当前载荷构建、关键回归、独立消费者、交付启动和高刷实测；长测、完整对标与重复采用演练留待后续。不得为凑齐下列完整集合恢复这些重复步骤，也不得将未执行项、既有失败或生产门槛改写为通过。
 
 1. Web SDK：`npm --prefix sdk/web ci`、`npm --prefix sdk/web run build`、`node --test tests/web/sdk-client.test.mjs`。
 2. SDK/安装器：`node tests/sdk/sdk-package-smoke.cjs`。

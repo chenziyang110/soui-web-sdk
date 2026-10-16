@@ -1,0 +1,15 @@
+# 0102 draft: explicit retained image-cache byte budget
+
+Written before prototype changes, 2026-10-15. This is an external proposal; the release candidate remains frozen for Source19 validation.
+
+The actual Skia global resource cache uses discardable storage. Current native observations report byteLimit=0, countLimit=1024 and singleAllocation=64 MiB. Its purge implementation ignores `fTotalByteLimit` in discardable mode and uses an internal UINT32_MAX sentinel. Entry count and single-allocation limits therefore do not provide an explicit retained-byte policy.
+
+Keep discardable allocation, existing count eviction, single-allocation behavior and all external data ownership. Make a positive `setTotalByteLimit()` apply to retained records in discardable mode, while zero preserves that mode's legacy absence of an explicit byte threshold. Lowering or first enabling a positive threshold purges immediately. Reject an individual record which cannot fit before inserting it; this must release only the cache's record ownership. An external data reference remains valid. Ordinary malloc-backed cache zero-limit behavior remains unchanged.
+
+The candidate process-global threshold is 8 MiB, installed explicitly during Blink platform initialization. This is the next binary MiB capacity above 1.5 times the actual 4,310,208-byte first image/font calibration peak; it is a selected retained-cache policy, not a maximum legal page size or a whole-image-heap bound. The 1024 count threshold and 64 MiB single-allocation filter limit remain independent. A 40-second collection timer already exists in the engine; no new forced collection, restart or timer change is part of this fix.
+
+Compatibility: no public SDK class or cache snapshot layout change. The existing resourceByteLimit field reports the newly configured positive value. Readers must accept and enforce positive discardable retained-byte thresholds while preserving zero as absent; they must not cap total retained bytes by the single-allocation limit. Existing unsupported/busy/partial/stale and full-cache qualification gaps remain visible. A positive scope-specific result cannot mark full cache or release readiness passed.
+
+Validation: first reproduce ignored positive byte thresholds using the actual existing SkResourceCache class/library. Then exercise exact threshold, over-size record ownership, first-enable/lower/raise/disable behavior, unchanged count eviction, LRU, shared-ID invalidation and malloc mode with the modified implementation. Rebuild both actual kernel architectures from reviewed source, update patch/provenance/SBOM, and run real image/font load plus retained-resource readers and affected host/SDK tests. Current Source19 evidence remains historical and immutable.
+
+Alternatives: retaining count-only policy leaves the byte-budget gap; disabling discardable storage or shortening GC timers changes allocation/rendering behavior unnecessarily. A whole-process heap cap is a different contract and is not claimed here.

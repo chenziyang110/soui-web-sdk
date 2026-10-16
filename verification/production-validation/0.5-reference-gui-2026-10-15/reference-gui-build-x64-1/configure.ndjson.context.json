@@ -1,0 +1,33 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+  "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+  "executable": "C:/Program Files/CMake/bin/cmake.exe",
+  "args": [
+    "-S",
+    "F:\\work\\SOUI_WEB\\out\\release-050/reference-gui-controller-1",
+    "-B",
+    "C:/work/sm05-gui-controller-x64-1",
+    "-G",
+    "Ninja Multi-Config",
+    "-DCMAKE_TOOLCHAIN_FILE=C:/work/sm05-release-050/cmake/toolchains/SouiLLVM22.cmake",
+    "-DCMAKE_PREFIX_PATH=C:/work/sm05-release-050/out/install/x64",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+    "-DREFERENCE_SOURCE_ROOT=C:/work/sm05-release-050/demos/reference-workbench",
+    "-DSOUI_NATIVE_TOOLCHAIN=LLVM22MSVC142",
+    "-DSOUI_LLVM_ARCHITECTURE=x64",
+    "-DSOUI_LLVM_ROOT=C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64",
+    "-DSOUI_MSVC142_ROOT=C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133",
+    "-DSOUI_WINDOWS_SDK_ROOT=C:/Program Files (x86)/Windows Kits/10",
+    "-DSOUI_NINJA_EXECUTABLE=C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe",
+    "-DSOUI_WINDOWS_CMD_EXECUTABLE=C:/Windows/System32/cmd.exe",
+    "-DSOUI_LLVM_INPUT_IDENTITY=01c1785185d9c131d6c5041644b025f65b0d907c4a1ef1a406bd80d5151d80ca",
+    "-DSOUI_TOOL_IDENTITY_POWERSHELL_EXECUTABLE=C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+    "-DSOUI_TOOL_IDENTITY_BRIDGE=C:/work/sm05-release-050/tools/internal/Invoke-ToolFileIdentity.ps1",
+    "-DSOUI_TOOL_IDENTITY_HELPER=C:/work/sm05-release-050/tools/internal/Tool-FileIdentity.ps1",
+    "-DSOUI_LLVM_BRIDGE_IDENTITY=8343f7d0a08c49fc00c1c0fe8963a532cd930df764bcbf6421afe5defa4aed0c"
+  ],
+  "cwd": "C:/work/sm05-gui-controller-x64-1",
+  "timeoutMs": 300000,
+  "drainMs": 2000
+}

@@ -1,0 +1,380 @@
+diff --git a/third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/MemoryCache.cpp b/third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/MemoryCache.cpp
+index 5e31e968..7ea3f0dd 100644
+--- a/third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/MemoryCache.cpp
++++ b/third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/MemoryCache.cpp
+@@ -59,6 +59,21 @@ MemoryCache* memoryCache()
+     return gMemoryCache->get();
+ }
+ 
++MemoryCacheObservation peekMemoryCache()
++{
++    MemoryCacheObservation result = {};
++    if (!WTF::isMainThread()) { result.status = 3; return result; }
++    if (!gMemoryCache || !gMemoryCache->get()) return result;
++    const MemoryCache* cache = gMemoryCache->get();
++    result.liveBytes = cache->liveSize();
++    result.deadBytes = cache->deadSize();
++    result.capacity = cache->capacity();
++    result.minDeadCapacity = cache->minDeadCapacity();
++    result.maxDeadCapacity = cache->maxDeadCapacity();
++    result.status = 1;
++    return result;
++}
++
+ MemoryCache* replaceMemoryCacheForTesting(MemoryCache* cache)
+ {
+     /// weolar
+diff --git a/third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/MemoryCache.h b/third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/MemoryCache.h
+index 5509dbef..c15d8b1c 100644
+--- a/third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/MemoryCache.h
++++ b/third_party/sources/miniblink/third_party/WebKit/Source/core/fetch/MemoryCache.h
+@@ -326,6 +326,12 @@ private:
+ 
+ // Returns the global cache.
+ CORE_EXPORT MemoryCache* memoryCache();
++// Owner-only, bounded scalar peek. Does not create a MemoryCache or visit resources.
++struct MemoryCacheObservation {
++    unsigned status;
++    size_t liveBytes, deadBytes, capacity, minDeadCapacity, maxDeadCapacity;
++};
++CORE_EXPORT MemoryCacheObservation peekMemoryCache();
+ 
+ // Sets the global cache, used to swap in a test instance. Returns the old
+ // MemoryCache object.
+diff --git a/third_party/sources/miniblink/third_party/skia/include/core/SkLazyPtr.h b/third_party/sources/miniblink/third_party/skia/include/core/SkLazyPtr.h
+index 035a269a..cddc2cb9 100644
+--- a/third_party/sources/miniblink/third_party/skia/include/core/SkLazyPtr.h
++++ b/third_party/sources/miniblink/third_party/skia/include/core/SkLazyPtr.h
+@@ -117,6 +117,9 @@ T consume_load(T* ptr) {
+ template <typename T, T* (*Create)() = sk_new<T>, void (*Destroy)(T*) = sk_delete<T> >
+ class SkStaticLazyPtr {
+ public:
++    // Observe publication without invoking Create(). Static pointers are retained.
++    T* peek() { return sk_atomic_load(&fPtr, sk_memory_order_acquire); }
++
+     T* get() {
+         // If fPtr has already been filled, we need a consume barrier when loading it.
+         // If not, we need a release barrier when setting it.  try_cas will do that.
+diff --git a/third_party/sources/miniblink/third_party/skia/include/core/SkSpinlock.h b/third_party/sources/miniblink/third_party/skia/include/core/SkSpinlock.h
+index 6edfdf03..babca896 100644
+--- a/third_party/sources/miniblink/third_party/skia/include/core/SkSpinlock.h
++++ b/third_party/sources/miniblink/third_party/skia/include/core/SkSpinlock.h
+@@ -17,6 +17,10 @@
+ // This class has no constructor and must be zero-initialized (the macro above does this).
+ class SkPODSpinlock {
+ public:
++    bool tryAcquire() {
++        return !sk_atomic_exchange(&fLocked, true, sk_memory_order_acquire);
++    }
++
+     void acquire() {
+         // To act as a mutex, we need an acquire barrier if we take the lock.
+         if (sk_atomic_exchange(&fLocked, true, sk_memory_order_acquire)) {
+diff --git a/third_party/sources/miniblink/third_party/skia/include/ports/SkMutex_win.h b/third_party/sources/miniblink/third_party/skia/include/ports/SkMutex_win.h
+index fe06336a..5913483c 100644
+--- a/third_party/sources/miniblink/third_party/skia/include/ports/SkMutex_win.h
++++ b/third_party/sources/miniblink/third_party/skia/include/ports/SkMutex_win.h
+@@ -51,6 +51,12 @@ public:
+         SkDEBUGCODE(fOwner = GetCurrentThreadId();)
+     }
+ 
++    bool tryAcquire() {
++        if (!TryEnterCriticalSection(&fStorage)) return false;
++        SkDEBUGCODE(fOwner = GetCurrentThreadId();)
++        return true;
++    }
++
+     void release() {
+         this->assertHeld();
+         SkDEBUGCODE(fOwner = 0;)
+diff --git a/third_party/sources/miniblink/third_party/skia/src/core/SkGlyphCache.cpp b/third_party/sources/miniblink/third_party/skia/src/core/SkGlyphCache.cpp
+index ae268d51..d652f3c3 100644
+--- a/third_party/sources/miniblink/third_party/skia/src/core/SkGlyphCache.cpp
++++ b/third_party/sources/miniblink/third_party/skia/src/core/SkGlyphCache.cpp
+@@ -7,6 +7,7 @@
+ 
+ #include "SkGlyphCache.h"
+ #include "SkGlyphCache_Globals.h"
++#include "SkCacheObservation.h"
+ #include "SkGraphics.h"
+ #include "SkLazyPtr.h"
+ #include "SkMutex.h"
+@@ -33,6 +34,32 @@ static SkGlyphCache_Globals& get_globals() {
+     return *globals.get();
+ }
+ 
++SkGlyphCacheObservation SkPeekAttachedGlyphCache() {
++    SkGlyphCacheObservation result = {};
++    SkGlyphCache_Globals* published = globals.peek();
++    if (!published) return result;
++    if (!published->fLock.tryAcquire()) {
++        result.status = kBusy_SkCacheObservation;
++        return result;
++    }
++    struct Held {
++        SkSpinlock& lock;
++        ~Held() { lock.release(); }
++    } held = {published->fLock};
++    const int count = published->getCacheCountUsed();
++    const int limit = published->getCacheCountLimit();
++    if (count < 0 || limit < 0) {
++        result.status = kUnavailable_SkCacheObservation;
++        return result;
++    }
++    result.bytes = published->getTotalMemoryUsed();
++    result.count = static_cast<uint64_t>(count);
++    result.byteLimit = published->getCacheSizeLimit();
++    result.countLimit = static_cast<uint64_t>(limit);
++    result.status = kReady_SkCacheObservation;
++    return result;
++}
++
+ ///////////////////////////////////////////////////////////////////////////////
+ 
+ #ifdef SK_GLYPHCACHE_TRACK_HASH_STATS
+diff --git a/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.cpp b/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.cpp
+index 6c76d350..c1aa4c4d 100644
+--- a/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.cpp
++++ b/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.cpp
+@@ -543,6 +543,38 @@ static SkResourceCache* get_cache() {
+     return gResourceCache;
+ }
+ 
++SkResourceCacheObservation SkResourceCache::PeekRetainedGlobalCache() {
++    SkResourceCacheObservation result = {};
++#if defined(SK_BUILD_FOR_WIN) && !SK_DEVELOPER
++    if (!gMutex.tryAcquire()) {
++        result.status = kBusy_SkCacheObservation;
++        return result;
++    }
++    struct Held {
++        SkBaseMutex& lock;
++        ~Held() { lock.release(); }
++    } held = {gMutex};
++    if (!gResourceCache) return result;
++    if (gResourceCache->fCount < 0) {
++        result.status = kUnavailable_SkCacheObservation;
++        return result;
++    }
++    result.discardable = gResourceCache->fDiscardableFactory ? 1U : 0U;
++    result.bytes = gResourceCache->fTotalBytesUsed;
++    result.count = static_cast<uint64_t>(gResourceCache->fCount);
++    result.byteLimit = gResourceCache->fTotalByteLimit;
++    // Actual purge thresholds; neither field asserts all-image-heap coverage.
++    result.countLimit = result.discardable ? SK_DISCARDABLEMEMORY_SCALEDIMAGECACHE_COUNT_LIMIT : SK_MaxS32;
++    result.rawSingleLimit = gResourceCache->getSingleAllocationByteLimit();
++    result.effectiveSingleLimit = gResourceCache->getEffectiveSingleAllocationByteLimit();
++    result.status = kReady_SkCacheObservation;
++#else
++    // Developer atexit deletion has no concurrent observation lifetime contract.
++    result.status = kUnavailable_SkCacheObservation;
++#endif
++    return result;
++}
++
+ size_t SkResourceCache::GetTotalBytesUsed() {
+     SkAutoMutexAcquire am(gMutex);
+     return get_cache()->getTotalBytesUsed();
+diff --git a/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.h b/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.h
+index b43572f4..587920f0 100644
+--- a/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.h
++++ b/third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.h
+@@ -9,6 +9,7 @@
+ #define SkResourceCache_DEFINED
+ 
+ #include "SkBitmap.h"
++#include "SkCacheObservation.h"
+ #include "SkMessageBus.h"
+ #include "SkTDArray.h"
+ 
+@@ -134,6 +135,7 @@ public:
+     static void Add(Rec*);
+ 
+     static size_t GetTotalBytesUsed();
++    static SkResourceCacheObservation PeekRetainedGlobalCache();
+     static size_t GetTotalByteLimit();
+     static size_t SetTotalByteLimit(size_t newLimit);
+ 
+diff --git a/third_party/sources/miniblink/wke/wke.cpp b/third_party/sources/miniblink/wke/wke.cpp
+index c9d779b2..a861c3be 100644
+--- a/third_party/sources/miniblink/wke/wke.cpp
++++ b/third_party/sources/miniblink/wke/wke.cpp
+@@ -10,6 +10,9 @@
+ #include "wke/wke2.h"
+ #include "wke/RendererDiagnosticsState.h"
+ #include "wke/RendererModelState.h"
++#include "core/fetch/MemoryCache.h"
++#include "third_party/skia/src/core/SkCacheObservation.h"
++#include "third_party/skia/src/core/SkResourceCache.h"
+ #include "core/workers/WorkerMessagingProxy.h"
+ #if defined(SOUI_WORKER_SHUTDOWN_DIAGNOSTICS) && SOUI_WORKER_SHUTDOWN_DIAGNOSTICS
+ #include "platform/heap/SafePoint.h"
+@@ -164,6 +167,65 @@ const wkeRendererModelDiagnosticsApi renderer_model_api = {
+     WKE_RENDER_MODEL_CAP_BOUND_BACKEND | WKE_RENDER_MODEL_CAP_FACTORY_HISTORY
+         | WKE_RENDER_MODEL_CAP_COHERENT_COMPOSITOR, &read_renderer_model_snapshot
+ };
++uint32_t WKE_CACHE_CALL sample_existing_caches(wkeCacheSnapshot* output)
++{
++    if (!output || output->structSize != sizeof(wkeCacheSnapshot))
++        return WKE_CACHE_INVALID_ARGUMENT;
++    wkeCacheSnapshot value{};
++    value.structSize = sizeof(value);
++    value.abiVersion = WKE_CACHE_ABI_VERSION;
++    wkeRendererProcessSnapshot identity{};
++    identity.structSize = sizeof(identity);
++    const uint32_t identityStatus = read_renderer_process_snapshot(&identity);
++    value.status = identityStatus == WKE_RENDER_DIAGNOSTICS_BUSY ? WKE_CACHE_BUSY : WKE_CACHE_NOT_STARTED;
++    constexpr uint32_t required = WKE_RENDER_DIAGNOSTICS_IDENTITY_VALID
++        | WKE_RENDER_DIAGNOSTICS_CLOCK_VALID | WKE_RENDER_DIAGNOSTICS_ENGINE_INITIALIZED;
++    constexpr uint32_t faults = WKE_RENDER_DIAGNOSTICS_COUNTER_FAULT
++        | WKE_RENDER_DIAGNOSTICS_IDENTITY_MISMATCH | WKE_RENDER_DIAGNOSTICS_CLOCK_FAILURE
++        | WKE_RENDER_DIAGNOSTICS_ENGINE_FINALIZED;
++    if (identity.flags & faults) {
++        value.status = WKE_CACHE_UNAVAILABLE;
++    } else if ((identityStatus == WKE_RENDER_DIAGNOSTICS_READY || identityStatus == WKE_RENDER_DIAGNOSTICS_CLOSED
++        || identityStatus == WKE_RENDER_DIAGNOSTICS_NOT_STARTED) && (identity.flags & required) == required) {
++        // Initialized identity precedes the compositor's first draw. Draw history
++        // is not a prerequisite for these independently named cache owners.
++        value.status = WKE_CACHE_UNAVAILABLE;
++        if (identity.engineOwnerThreadId == GetCurrentThreadId()) {
++            value.processId = identity.processId;
++            value.processCreationFileTime = identity.processCreationFileTime;
++            value.engineOwnerThreadId = identity.engineOwnerThreadId;
++            value.recordingEpoch = identity.recordingEpoch;
++            value.initializedQpc = identity.initializedQpc;
++            value.qpcFrequency = identity.qpcFrequency;
++            const auto memory = blink::peekMemoryCache();
++            const auto glyph = SkPeekAttachedGlyphCache();
++            const auto resource = SkResourceCache::PeekRetainedGlobalCache();
++            value.blinkStatus = memory.status;
++            value.blinkLiveBytes = memory.liveBytes; value.blinkDeadBytes = memory.deadBytes;
++            value.blinkCapacity = memory.capacity;
++            value.blinkMinDeadCapacity = memory.minDeadCapacity; value.blinkMaxDeadCapacity = memory.maxDeadCapacity;
++            value.glyphStatus = glyph.status;
++            value.glyphAttachedBytes = glyph.bytes; value.glyphAttachedCount = glyph.count;
++            value.glyphByteLimit = glyph.byteLimit; value.glyphCountLimit = glyph.countLimit;
++            value.resourceStatus = resource.status; value.resourceDiscardable = resource.discardable;
++            value.resourceRetainedBytes = resource.bytes; value.resourceRetainedCount = resource.count;
++            value.resourceByteLimit = resource.byteLimit; value.resourceCountLimit = resource.countLimit;
++            value.resourceRawSingleLimit = resource.rawSingleLimit;
++            value.resourceEffectiveSingleLimit = resource.effectiveSingleLimit;
++            if (renderer_qpc(value.sampleQpc) && value.sampleQpc >= value.initializedQpc)
++                value.status = WKE_CACHE_READY; // Completed sample, not all-component completeness.
++        } else {
++            value.status = WKE_CACHE_WRONG_OWNER;
++        }
++    } else if (identityStatus != WKE_RENDER_DIAGNOSTICS_NOT_STARTED
++        && identityStatus != WKE_RENDER_DIAGNOSTICS_BUSY) value.status = WKE_CACHE_UNAVAILABLE;
++    *output = value;
++    return value.status;
++}
++const wkeCacheDiagnosticsApi cache_api = {
++    sizeof(wkeCacheDiagnosticsApi), WKE_CACHE_ABI_VERSION, WKE_CACHE_CAP_NAMED_SCALARS, &sample_existing_caches
++};
++
+ void renderer_platform_initialized(bool matched) noexcept
+ {
+     renderer_write_lock held(renderer_cache_lock);
+@@ -244,6 +306,10 @@ const wkeRendererModelDiagnosticsApi* WKE_CALL_TYPE wkeGetRendererModelDiagnosti
+ {
+     return version == WKE_RENDER_MODEL_ABI_VERSION ? &wke::diagnostics::renderer_model_api : nullptr;
+ }
++const wkeCacheDiagnosticsApi* WKE_CALL_TYPE wkeGetCacheDiagnosticsApi(unsigned int version)
++{
++    return version == WKE_CACHE_ABI_VERSION ? &wke::diagnostics::cache_api : nullptr;
++}
+ const wkeRendererDiagnosticsApi* WKE_CALL_TYPE wkeGetRendererDiagnosticsApi(
+     unsigned int requestedVersion)
+ {
+diff --git a/third_party/sources/miniblink/wke/wkedefine.h b/third_party/sources/miniblink/wke/wkedefine.h
+index 88877293..f1a0e61f 100644
+--- a/third_party/sources/miniblink/wke/wkedefine.h
++++ b/third_party/sources/miniblink/wke/wkedefine.h
+@@ -99,6 +99,7 @@ typedef struct _tagWkeString* wkeString;
+ #include "wke_cursor_broker.h"
+ #include "wke_renderer_diagnostics.h"
+ #include "wke_renderer_model_diagnostics.h"
++#include "wke_cache_diagnostics.h"
+ 
+ // Versioned cross-thread interaction ABI. Only functions exposed through this
+ // table are safe to call away from the WKE owner thread.
+@@ -1038,6 +1039,7 @@ public:
+     ITERATOR1(const wkeInteractionApi*, wkeGetInteractionApi, unsigned int requestedVersion, "") \
+     ITERATOR1(const wkeRendererDiagnosticsApi*, wkeGetRendererDiagnosticsApi, unsigned int requestedVersion, "") \
+     ITERATOR1(const wkeRendererModelDiagnosticsApi*, wkeGetRendererModelDiagnosticsApi, unsigned int requestedVersion, "") \
++    ITERATOR1(const wkeCacheDiagnosticsApi*, wkeGetCacheDiagnosticsApi, unsigned int requestedVersion, "") \
+     ITERATOR1(void, wkeDestroyWebView, wkeWebView webView, "") \
+     \
+     ITERATOR2(void, wkeSetMemoryCacheEnable, wkeWebView webView, bool b, "") \
+diff --git a/third_party/sources/miniblink/third_party/skia/src/core/SkCacheObservation.h b/third_party/sources/miniblink/third_party/skia/src/core/SkCacheObservation.h
+new file mode 100644
+--- /dev/null
++++ b/third_party/sources/miniblink/third_party/skia/src/core/SkCacheObservation.h
+@@ -0,0 +1,21 @@
++/* Optional scalar observation; no creation, traversal, purge or message consumption. */
++#ifndef SkCacheObservation_DEFINED
++#define SkCacheObservation_DEFINED
++#include <stdint.h>
++
++enum SkCacheObservationStatus {
++    kNotStarted_SkCacheObservation = 0,
++    kReady_SkCacheObservation = 1,
++    kBusy_SkCacheObservation = 2,
++    kUnavailable_SkCacheObservation = 3
++};
++struct SkGlyphCacheObservation {
++    uint32_t status;
++    uint64_t bytes, count, byteLimit, countLimit;
++};
++struct SkResourceCacheObservation {
++    uint32_t status, discardable;
++    uint64_t bytes, count, byteLimit, countLimit, rawSingleLimit, effectiveSingleLimit;
++};
++SkGlyphCacheObservation SkPeekAttachedGlyphCache();
++#endif
+diff --git a/third_party/sources/miniblink/wke/wke_cache_diagnostics.h b/third_party/sources/miniblink/wke/wke_cache_diagnostics.h
+new file mode 100644
+--- /dev/null
++++ b/third_party/sources/miniblink/wke/wke_cache_diagnostics.h
+@@ -0,0 +1,41 @@
++#ifndef SOUI_WKE_CACHE_DIAGNOSTICS_H
++#define SOUI_WKE_CACHE_DIAGNOSTICS_H
++#include <stdint.h>
++#if defined(_WIN32)
++#define WKE_CACHE_CALL __cdecl
++#else
++#define WKE_CACHE_CALL
++#endif
++#define WKE_CACHE_ABI_VERSION 1U
++#define WKE_CACHE_CAP_NAMED_SCALARS 7ULL
++#define WKE_CACHE_NOT_STARTED 0U
++#define WKE_CACHE_READY 1U
++#define WKE_CACHE_BUSY 2U
++#define WKE_CACHE_UNAVAILABLE 3U
++#define WKE_CACHE_WRONG_OWNER 4U
++#define WKE_CACHE_INVALID_ARGUMENT 5U
++
++// Optional and separate from renderer v1/v2. Components are sampled under their
++// own locks, not one atomic heap snapshot. Numeric fields are valid only when
++// the corresponding status is READY. Serialize uint64_t as decimal strings.
++#pragma pack(push, 8)
++typedef struct _wkeCacheSnapshot {
++    uint32_t structSize, abiVersion, status, reserved;
++    uint64_t processId, processCreationFileTime, engineOwnerThreadId;
++    uint64_t recordingEpoch, initializedQpc, sampleQpc, qpcFrequency;
++    uint32_t blinkStatus, blinkReserved;
++    uint64_t blinkLiveBytes, blinkDeadBytes, blinkCapacity, blinkMinDeadCapacity, blinkMaxDeadCapacity;
++    uint32_t glyphStatus, glyphReserved;
++    uint64_t glyphAttachedBytes, glyphAttachedCount, glyphByteLimit, glyphCountLimit;
++    uint32_t resourceStatus, resourceDiscardable;
++    uint64_t resourceRetainedBytes, resourceRetainedCount, resourceByteLimit, resourceCountLimit;
++    uint64_t resourceRawSingleLimit, resourceEffectiveSingleLimit;
++} wkeCacheSnapshot;
++typedef struct _wkeCacheDiagnosticsApi {
++    uint32_t structSize, abiVersion;
++    uint64_t capabilities;
++    // Engine-owner only while initialized. Never creates, prunes or traverses.
++    uint32_t (WKE_CACHE_CALL* sampleExistingCaches)(wkeCacheSnapshot* output);
++} wkeCacheDiagnosticsApi;
++#pragma pack(pop)
++#endif

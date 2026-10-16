@@ -1,0 +1,70 @@
+{
+  "phase": "build",
+  "arch": "x64",
+  "configuration": "Debug",
+  "stable": true,
+  "natural": false,
+  "result": {
+    "pid": 104552,
+    "creationFileTime": "134365766859497736",
+    "exitCode": 1,
+    "supervisorExitCode": 1,
+    "signal": null,
+    "spawnError": null,
+    "reportError": null,
+    "stopRequested": false,
+    "fallbackUsed": false,
+    "closureConfirmed": true,
+    "passed": false,
+    "terminal": {
+      "event": "terminal",
+      "reason": "root-failed",
+      "elapsedMs": 36091,
+      "rootExited": true,
+      "rootExitCode": 1,
+      "activeBeforeCleanup": 0,
+      "terminatedOwnedJob": false,
+      "closureConfirmed": true,
+      "activeProcesses": 0,
+      "totalProcesses": 15,
+      "limitTerminatedProcesses": 0,
+      "passed": false
+    },
+    "report": "C:\\work\\sm05-source27-pipeline-1\\build-x64-Debug-source27-2\\build.ndjson",
+    "reportSha256": "08fe92150521c7537fdf6f06727f1a9a0d0e20274fe337d46ff3948287168d65",
+    "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+    "executableSha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088"
+  },
+  "terminal": {
+    "event": "terminal",
+    "reason": "root-failed",
+    "elapsedMs": 36091,
+    "rootExited": true,
+    "rootExitCode": 1,
+    "activeBeforeCleanup": 0,
+    "terminatedOwnedJob": false,
+    "closureConfirmed": true,
+    "activeProcesses": 0,
+    "totalProcesses": 15,
+    "limitTerminatedProcesses": 0,
+    "passed": false
+  },
+  "sourcePins": [
+    {
+      "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+      "sha256": "e5a69acb53a0c6503f8b9ce05508c043baa4274a4d0557b962593f4c47748667"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\third_party\\include\\json\\json.hpp",
+      "sha256": "78496a32103398f5936cec4df6cf42fa52f2cb2495caf4270fa42c8ed8c4e851"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\Observe-LlvmBuild.ps1",
+      "sha256": "4a8d54916eafadbd24069971f1e5d8060465cfc5f1deef651738fcb0185f376c"
+    },
+    {
+      "path": "C:\\work\\sm05-source27-pipeline-1\\run-native2.cjs",
+      "sha256": "5bb1b92bd5a180b7fafeb8bd3de6e648022a0b698c3ae417d0cab2ac6945c891"
+    }
+  ]
+}

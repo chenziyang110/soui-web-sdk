@@ -1,0 +1,71 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><title>本地图片与字体缓存负载</title>
+<style>body{margin:0;background:#eee}#status{position:fixed;bottom:0;background:white}#images img{width:160px;height:160px}canvas{display:block;width:1100px;height:480px}</style></head>
+<body><div id="images"></div><canvas id="glyphs" width="1100" height="480"></canvas><div id="status">正在连接本机 SDK…</div>
+<script>
+(function(){
+  'use strict';
+  var grant=null,sequence=0,images=[],cycles=[],canvas=document.getElementById('glyphs'),context=canvas.getContext('2d');
+  var families=['Arial','Microsoft YaHei','SimSun','Consolas'];
+  function delay(ms){return new Promise(function(resolve){setTimeout(resolve,ms);});}
+  function send(method,params){
+    var id='cache-calibration-'+(++sequence);
+    var envelope={requestId:id,sessionId:grant?grant.sessionId:'',origin:grant?grant.origin:'',token:grant?grant.token:'',method:method,params:params};
+    if(method!=='bridge.bootstrap')envelope.timeoutMs=10000;
+    return Promise.resolve(window.SouiNative.postMessage(JSON.stringify(envelope))).then(function(raw){
+      var value=JSON.parse(raw);if(!value||value.requestId!==id||value.ok!==true)throw new Error('Native report failed: '+method);return value.result;
+    });
+  }
+  function phase(cycle,name,loaded){return send('cache.calibration.phase',{cycle:cycle,phase:name,loaded:loaded}).then(function(result){if(!result.accepted)throw new Error('Phase rejected');document.getElementById('status').textContent='周期 '+cycle+' / 12：'+name;});}
+  function image(cycle,index){return new Promise(function(resolve,reject){
+    var item=new Image(),done=false,timer=setTimeout(function(){if(!done){done=true;reject(new Error('Image load timeout'));}},15000);
+    item.onload=function(){if(done)return;done=true;clearTimeout(timer);item.onload=null;item.onerror=null;if(item.naturalWidth!==512||item.naturalHeight!==512){reject(new Error('Image dimensions differ'));return;}resolve({width:item.naturalWidth,height:item.naturalHeight});item=null;};
+    item.onerror=function(){if(done)return;done=true;clearTimeout(timer);item.onload=null;item.onerror=null;item=null;reject(new Error('Image decode failed'));};
+    item.src='images/c'+cycle+'-'+index+'.bmp';document.getElementById('images').appendChild(item);images.push(item);
+  });}
+  function glyphs(cycle){
+    context.clearRect(0,0,1100,480);var row;
+    for(row=0;row<12;row++){
+      context.font=(12+row*2)+'px '+families[row%families.length];context.fillStyle='rgb('+(cycle*17%256)+','+(row*19%256)+',40)';
+      var text='';for(var j=0;j<48;j++)text+=String.fromCharCode(0x4e00+(cycle*576+row*48+j)%4096);
+      context.fillText(text,0,32+row*36);
+    }
+  }
+  function runCycles(){
+    return new Promise(function(completed,failed){
+      function cycleStep(cycle){
+        if(cycle>12){delay(90000).then(function(){return phase(12,'finished',0);}).then(completed,failed);return;}
+        var jobs=[];for(var index=0;index<24;index++)jobs.push(image(cycle,index));
+        Promise.all(jobs).then(function(loaded){
+          if(loaded.length!==24||loaded.some(function(value){return value.width!==512||value.height!==512;}))throw new Error('Incomplete image roster');
+          jobs.length=0;loaded.length=0;glyphs(cycle);
+          // Exercise retained scaled-image entries through real canvas drawing.
+          context.imageSmoothingEnabled=true;
+          for(var draw=0;draw<images.length;draw++)context.drawImage(images[draw],(draw%4)*180,(Math.floor(draw/4)%2)*32,384,384);
+          return new Promise(function(resolve){requestAnimationFrame(function(){requestAnimationFrame(resolve);});});
+        }).then(function(){
+          if(images.length!==24||images.some(function(item){return item.offsetWidth!==160||item.offsetHeight!==160;}))throw new Error('Rendered image dimensions differ');
+          return phase(cycle,'live',24);}).then(function(){return delay(2500);}).then(function(){
+          document.getElementById('images').textContent='';images.length=0;context.clearRect(0,0,1100,480);
+          return phase(cycle,'released',0);
+        }).then(function(){cycles.push({cycle:cycle,loaded:24,width:512,height:512,fontRows:12,scaledCanvasDraws:24,scaledCanvasWidth:384,scaledCanvasHeight:384,renderedImageWidth:160,renderedImageHeight:160});return delay(2500);}).then(function(){
+          setTimeout(function(){cycleStep(cycle+1);},0);
+        },failed);
+      }
+      cycleStep(1);
+    });
+  }
+  function finish(){
+    var text=JSON.stringify({hostKind:'soui-miniblink',scope:'finite-cache-image-font-calibration',completed:true,cycles:cycles,requestedFontFamilies:families,physicalPresentation:false,fullCacheQualified:false});
+    var encoded=unescape(encodeURIComponent(text)),hex='';for(var i=0;i<encoded.length;i++)hex+=('0'+encoded.charCodeAt(i).toString(16)).slice(-2);
+    return send('benchmark.result.begin',{}).then(function(){return send('benchmark.result.chunk',{hex:hex,sequence:0});}).then(function(){return send('benchmark.result.commit',{bytes:encoded.length});});
+  }
+  var deadline=Date.now()+10000;
+  function begin(){
+    if(!window.SouiNative||typeof window.SouiNative.postMessage!=='function'){if(Date.now()<deadline){setTimeout(begin,10);return;}document.getElementById('status').textContent='连接不可用';return;}
+    send('bridge.bootstrap',{protocol:'soui.bridge/1'}).then(function(value){
+      if(!value||!value.sessionId||!value.origin||!value.token)throw new Error('Invalid grant');grant=value;return phase(0,'baseline',0);
+    }).then(function(){return delay(3000);}).then(function(){return runCycles();}).then(finish).catch(function(error){document.getElementById('status').textContent=String(error);});
+  }
+  begin();
+})();
+</script></body></html>

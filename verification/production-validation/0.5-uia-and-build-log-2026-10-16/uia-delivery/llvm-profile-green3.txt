@@ -1,0 +1,48 @@
+✔ LLVM resource selection binds compiler and initialization to the same Windows SDK RC (1.0596ms)
+✔ profile comparisons preserve values while permitting object property order (0.5407ms)
+✔ relative, oversized and mismatched profile requests fail before tool invocation (9.6782ms)
+✔ raw pin mutation and non-file input are rejected independently of requested compiler identity (5.6495ms)
+✔ blank Ninja platform does not substitute for generator or target verification (8.6445ms)
+✔ installed header membership preserves all nested public leaves (3.6814ms)
+﹣ installed header membership rejects a linked file header (3.4076ms) # Host does not permit this file-symlink unit fixture (EPERM, errno=-4048)
+✔ installed header membership rejects a linked directory ancestor (5.8487ms)
+✔ configured cache accepts a CXX STRING compiler with a C FILEPATH compiler (43.0744ms)
+✔ configured cache accepts both compiler STRING entries including CRLF records (38.0131ms)
+✔ configured cache retains FILEPATH compiler compatibility (34.5633ms)
+✔ configured cache rejects duplicate compiler entries even when types differ (30.6103ms)
+✔ configured cache rejects missing or incorrectly typed compiler entries (47.5716ms)
+✔ configured cache keeps every non-compiler tool slot strictly FILEPATH (63.3642ms)
+✔ configured compiler STRING entries still require absolute existing paths and exact tool bytes (45.2218ms)
+✔ compiler cache type compatibility does not relax generated identity or scalar bindings (83.4208ms)
+✔ versioned requests accept exact historical v2 and WinRT v3 on each architecture (390.9679ms)
+✔ versioned requests reject unknown schemas and cross-version sentinel counts (126.954ms)
+✔ versioned requests reject malformed include roots and exact-count sentinel substitutions (123.4797ms)
+✔ WinRT v3 rejects missing or changed EventToken bytes and stale whole identities (139.8507ms)
+✔ relocated requests validate each owner and compare unchanged inputs on both architectures and schemas (756.4929ms)
+✔ relocated comparison rejects independently valid changed bridge, toolchain and vendor selection (575.0907ms)
+✔ relocated comparison rejects a valid different identity schema and a mutated request snapshot (549.8552ms)
+✔ desktop LLVM selection routes each request to its actual owner and keeps legacy selection unchanged (747.9167ms)
+✔ desktop LLVM selection fails on missing stock preparation, wrong architecture and changed profile inputs (340.7532ms)
+✔ LLVM build selection keeps both authentic owner identities across architectures and input schemas (1275.7559ms)
+✔ LLVM build selection refuses missing stock, cross-owner request substitution and cross-architecture use (145.8273ms)
+✔ LLVM build selection rechecks complete identities and authenticated owner-source bytes (632.2324ms)
+✔ cached LLVM validation binding checks real request, preparation fingerprint and every frozen stock member (3283.1215ms)
+✔ cached LLVM validation binding refuses historical missing owner and metadata identity substitution (808.2593ms)
+✔ cached LLVM validation binding revalidates current configuration and native observation bytes (2321.9075ms)
+✔ canonical stock source membership cannot be replaced by a self-consistent shorter declared fingerprint (636.2158ms)
+✔ cached LLVM proof verifies complete current local reader code before selected-owner data (103.5428ms)
+✔ fresh LLVM preparation reads a foreign stock module strictly as pinned data (1208.0504ms)
+✔ fresh LOCAL LLVM preparation still refuses changed Source or native observation bytes (995.6647ms)
+✔ cached LLVM validation binding rejects a preparation snapshot missing required common (678.37ms)
+✔ resource wrapper freezes the selected CMake sibling before Build and binds current observation (9.8825ms)
+✔ resource wrapper cannot come from a foreign directory or missing selected CMake (21.7452ms)
+✔ resource wrapper requires one whole dependency pin and identical observation pin (23.9941ms)
+✔ resource wrapper changed after prelaunch freeze is rejected without executing a tool (7.9908ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 16343.6691

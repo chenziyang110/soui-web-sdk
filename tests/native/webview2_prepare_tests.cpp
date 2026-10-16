@@ -32,12 +32,39 @@ int main(int argc, char** argv) {
     require(SUCCEEDED(initialized) && window, "UI STA and owner window");
     const std::string selected = argc == 1 ? "all" : argc == 2 ? argv[1] : "invalid-arguments";
     require(selected == "all" || selected == "invalid" || selected == "failure" ||
-        selected == "cancel" || selected == "reentrant" || selected == "callback-exception", "Unknown preparation case");
+        selected == "cancel" || selected == "reentrant" || selected == "callback-exception" ||
+        selected == "exclusive-invalid" || selected == "exclusive-environment", "Unknown preparation case");
     wchar_t temporary[MAX_PATH]{};
     require(GetTempPathW(MAX_PATH, temporary) > 0, "Temporary directory");
     const auto profile = std::filesystem::path(temporary) /
         (L"soui-wv2-prepare-" + std::to_wstring(GetCurrentProcessId()) + L"-" + std::to_wstring(GetTickCount64()));
     std::cout << "Native architecture: " << sizeof(void*) * 8 << "; selected case: " << selected << '\n';
+    for (const auto* scenario : {"exclusive-invalid", "exclusive-environment"}) {
+      if (selected != "all" && selected != scenario) continue;
+      const bool invalid_path = std::string(scenario) == "exclusive-invalid";
+      const auto missing_runtime = profile / "runtime-does-not-exist";
+      require(!std::filesystem::exists(missing_runtime), "Failure runtime directory must be absent");
+      webview2_adapter adapter(window, invalid_path ? std::filesystem::path("relative-profile") : profile / scenario,
+                               {}, invalid_path ? std::filesystem::path{} : missing_runtime);
+      require(adapter.configure_profile_access(soui::sdk::webview2_profile_access::exclusive).ok, "Exclusive setup");
+      unsigned calls = 0; soui::sdk::host_result failure;
+      adapter.prepare_async([&](auto result) { ++calls; failure = result; });
+      pump_until([&] { return calls != 0; });
+      require(calls == 1 && !failure.ok && failure.code == (invalid_path ? "E_INVALID_PATH" : "E_WEBVIEW2"),
+              "Actual pre-environment failure must complete exactly once");
+      require(!adapter.failed_preparation_cleanup_complete(), "Failure callback alone is not cleanup");
+      close_adapter(adapter);
+      require(adapter.failed_preparation_cleanup_complete(), "Unowned failed initialization must finish cleanup");
+      require(!adapter.status().ok && adapter.status().code == failure.code && adapter.status().message == failure.message,
+              "Cleanup preserves the original error");
+      std::unique_ptr<soui::sdk::webview2_runtime_exit_watch> watch;
+      const auto acquired = adapter.acquire_runtime_exit_watch(watch);
+      require(!acquired.ok && acquired.code == "E_RUNTIME_WATCH_UNAVAILABLE" && !watch,
+              "Failed cleanup must never manufacture a runtime exit watch");
+      require(adapter.unmount().ok && adapter.failed_preparation_cleanup_complete() && calls == 1,
+              "Repeated close is idempotent without a second callback");
+      std::cout << scenario << ": preserved " << failure.code << "; no runtime exit claim\n";
+    }
     if (selected == "all" || selected == "invalid") {
       webview2_adapter adapter(window, "relative-profile");
       unsigned calls = 0;

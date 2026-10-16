@@ -1,0 +1,228 @@
+INFO - __main__ (09:49:52.380) - MainThread (21892):
+Starting NVDA version 2026.2 AMD64
+INFO - core.main (09:49:52.399) - MainThread (21892):
+Config dir: C:\work\sm05-native-uia-desktop-9\desktop-x64-fixed3\nvda-config
+INFO - config.ConfigManager._loadConfig (09:49:52.402) - MainThread (21892):
+Loading config: C:\work\sm05-native-uia-desktop-9\desktop-x64-fixed3\nvda-config\nvda.ini
+INFO - core.main (09:49:53.109) - MainThread (21892):
+Windows version: Windows 11 25H2 (10.0.26200.9457) workstation AMD64
+INFO - core.main (09:49:53.109) - MainThread (21892):
+Using Python version 3.13.13 (tags/v3.13.13:01104ce, Apr  7 2026, 19:25:48) [MSC v.1944 64 bit (AMD64)]
+INFO - core.main (09:49:53.109) - MainThread (21892):
+Using comtypes version 1.4.13
+INFO - core.main (09:49:53.111) - MainThread (21892):
+Using configobj version 5.1.0 with validate version 1.0.1
+INFO - core.main (09:49:53.151) - MainThread (21892):
+Add-ons are disabled. Restart NVDA to enable them.
+INFO - _asyncioEventLoop.initialize (09:49:53.173) - MainThread (21892):
+Initializing asyncio event loop
+INFO - speechDictHandler.dictFormatUpgrade._doSynthVoiceDictBackupAndMove (09:49:53.435) - MainThread (21892):
+Upgrading voice dictionaries for espeak
+INFO - speechDictHandler.dictFormatUpgrade._doSynthVoiceDictBackupAndMove (09:49:53.436) - MainThread (21892):
+Upgrading voice dictionaries for silence
+INFO - synthDriverHandler.setSynth (09:49:53.436) - MainThread (21892):
+Loaded synthDriver silence
+INFO - mathPres.MathCAT.MathCAT.MathCAT.__init__ (09:49:53.444) - MainThread (21892):
+MathCAT 0.7.2 installed. Using rules dir: C:\work\sm05-screenreader-1\extracted\$PLUGINSDIR\app\include\nvda-mathcat\assets\Rules
+INFO - core._setUpWxApp (09:49:53.450) - MainThread (21892):
+Using wx version 4.2.4 msw (phoenix) wxWidgets 3.2.8
+INFO - brailleInput.initialize (09:49:53.452) - MainThread (21892):
+Braille input initialized
+INFO - braille.initialize (09:49:53.452) - MainThread (21892):
+Using liblouis version 3.37.0
+INFO - braille.initialize (09:49:53.453) - MainThread (21892):
+Using pySerial version 3.5
+INFO - braille.BrailleHandler._setDisplay (09:49:53.455) - MainThread (21892):
+Loaded braille display driver 'noBraille', current display has 0 cells.
+DEBUGWARNING - hwPortUtils.listUsbDevices (09:49:53.458) - ThreadPoolExecutor-0_0 (77988):
+Couldn't get DEVPKEY_Device_BusReportedDeviceDesc for {'hardwareID': 'USB\\VID_0489&PID_E10A&REV_0001', 'usbID': 'VID_0489&PID_E10A', 'devicePath': '\\\\?\\usb#vid_0489&pid_e10a#8&8dbc5f2&0&17#{a5dcbf10-6530-11d2-901f-00c04fb951ed}'}: [WinError 1168] 找不到元素。
+DEBUGWARNING - appModuleHandler.getProcessHandleFromProcessId (09:49:53.651) - MainThread (21892):
+Unable to open process for processId 1844
+Traceback (most recent call last):
+  File "appModuleHandler.pyc", line 207, in getProcessHandleFromProcessId
+PermissionError: [WinError 5] 拒绝访问。
+DEBUGWARNING - appModuleHandler.getProcessHandleFromProcessId (09:49:53.654) - MainThread (21892):
+Unable to get process handle for process 1844 using window enumeration and subsequently getting process handle from that window
+Traceback (most recent call last):
+  File "appModuleHandler.pyc", line 220, in getProcessHandleFromProcessId
+RuntimeError: No window handle found for process 1844 to create process handle
+INFO - core.main (09:49:53.853) - MainThread (21892):
+Java Access Bridge support initialized
+INFO - UIAHandler.UIAHandler.MTAThreadFunc (09:49:53.930) - UIAHandler.UIAHandler.MTAThread (114404):
+UIAutomation: IUIAutomation6
+DEBUGWARNING - inputCore.InputManager.loadLocaleGestureMap (09:49:54.164) - MainThread (21892):
+No locale gesture map for language en
+DEBUGWARNING - inputCore.InputManager.loadUserGestureMap (09:49:54.164) - MainThread (21892):
+No user gesture map
+DEBUGWARNING - touchHandler.touchSupported (09:49:54.217) - MainThread (21892):
+Touch only supported on installed copies
+DEBUGWARNING - updateCheck.initialize (09:49:54.222) - MainThread (21892):
+Couldn't retrieve update state
+Traceback (most recent call last):
+  File "updateCheck.pyc", line 1041, in initialize
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\work\\sm05-native-uia-desktop-9\\desktop-x64-fixed3\\nvda-config\\updateCheckState.pickle'
+INFO - core.main (09:49:54.224) - MainThread (21892):
+NVDA initialized
+DEBUGWARNING - UIAHandler.UIAHandler.getNearestWindowHandle (09:49:54.338) - Dummy-5 (3664):
+error walking up to an element with a valid windowHandle
+Traceback (most recent call last):
+  File "UIAHandler\__init__.pyc", line 1383, in getNearestWindowHandle
+_ctypes.COMError: (-2147467259, '未指定的错误', (None, None, None, 0, None))
+IO - speech.speech.speak (09:49:54.747) - MainThread (21892):
+Speaking [LangChangeCommand ('en'), '(3) 主页 / X - Google Chrome', 'window', CancellableSpeech (still valid)]
+IO - speech.speech.speak (09:49:54.790) - MainThread (21892):
+Speaking [LangChangeCommand ('en'), '(3) 主页 / X - Google Chrome', 'region', CancellableSpeech (still valid)]
+IO - speech.speech.speak (09:49:54.956) - MainThread (21892):
+Speaking [LangChangeCommand ('en'), 'clickable', 'main landmark', '主页时间线', 'grouping', '你的主页时间线', 'region', '时间线：你的主页时间线', 'grouping', '图像', 'link']
+IO - speech.speech.speak (09:49:54.966) - MainThread (21892):
+Speaking [LangChangeCommand ('en'), '(3) 主页 / X', CancellableSpeech (still valid)]
+INFO - watchdog.waitForFreezeRecovery (09:49:55.193) - watchdog (113332):
+Starting freeze recovery after 0.5005978001281619 seconds.
+DEBUGWARNING - watchdog.waitForFreezeRecovery (09:49:55.200) - watchdog (113332):
+Listing stacks for Python threads:
+Python stack for thread 113332 (watchdog):
+  File "threading.pyc", line 1015, in _bootstrap
+  File "threading.pyc", line 1044, in _bootstrap_inner
+  File "threading.pyc", line 995, in run
+  File "watchdog.pyc", line 168, in _watcher
+  File "watchdog.pyc", line 175, in waitForFreezeRecovery
+  File "logHandler.pyc", line 66, in getFormattedStacksForAllThreads
+
+Python stack for thread 11488 (winInputHook):
+  File "threading.pyc", line 1015, in _bootstrap
+  File "threading.pyc", line 1044, in _bootstrap_inner
+  File "threading.pyc", line 995, in run
+  File "winInputHook.pyc", line 123, in hookThreadFunc
+  File "winInputHook.pyc", line 98, in mouseHook
+
+Python stack for thread 114404 (UIAHandler.UIAHandler.MTAThread):
+  File "threading.pyc", line 1015, in _bootstrap
+  File "threading.pyc", line 1044, in _bootstrap_inner
+  File "threading.pyc", line 995, in run
+  File "UIAHandler\__init__.pyc", line 562, in MTAThreadFunc
+  File "queue.pyc", line 199, in get
+  File "threading.pyc", line 359, in wait
+
+Python stack for thread 77988 (ThreadPoolExecutor-0_0):
+  File "threading.pyc", line 1015, in _bootstrap
+  File "threading.pyc", line 1044, in _bootstrap_inner
+  File "threading.pyc", line 995, in run
+  File "concurrent\futures\thread.pyc", line 90, in _worker
+
+Python stack for thread 73236 (hwIo.ioThread.IoThread):
+  File "threading.pyc", line 1015, in _bootstrap
+  File "threading.pyc", line 1044, in _bootstrap_inner
+  File "hwIo\ioThread.pyc", line 265, in run
+
+Python stack for thread 104528 (Thread-2 (run_forever)):
+  File "threading.pyc", line 1015, in _bootstrap
+  File "threading.pyc", line 1044, in _bootstrap_inner
+  File "threading.pyc", line 995, in run
+  File "asyncio\base_events.pyc", line 683, in run_forever
+  File "asyncio\base_events.pyc", line 2023, in _run_once
+  File "asyncio\windows_events.pyc", line 446, in select
+  File "asyncio\windows_events.pyc", line 775, in _poll
+
+Python stack for thread 107696 (initialiseAvailableAddons):
+  File "threading.pyc", line 1015, in _bootstrap
+  File "threading.pyc", line 1044, in _bootstrap_inner
+  File "threading.pyc", line 995, in run
+  File "addonStore\dataManager.pyc", line 230, in getLatestCompatibleAddons
+  File "addonStore\dataManager.pyc", line 142, in _getCacheHash
+  File "requests\api.pyc", line 73, in get
+  File "requests\api.pyc", line 59, in request
+  File "requests\sessions.pyc", line 592, in request
+  File "requests\sessions.pyc", line 706, in send
+  File "requests\adapters.pyc", line 645, in send
+  File "urllib3\connectionpool.pyc", line 774, in urlopen
+  File "urllib3\connectionpool.pyc", line 1055, in _prepare_proxy
+  File "urllib3\connection.pyc", line 796, in connect
+  File "urllib3\connection.pyc", line 975, in _ssl_wrap_socket_and_match_hostname
+  File "urllib3\util\ssl_.pyc", line 433, in ssl_wrap_socket
+  File "urllib3\util\ssl_.pyc", line 477, in _ssl_wrap_socket_impl
+  File "ssl.pyc", line 455, in wrap_socket
+  File "ssl.pyc", line 1076, in _create
+  File "ssl.pyc", line 1372, in do_handshake
+
+Python stack for thread 54460 (ScheduleThread):
+  File "threading.pyc", line 1015, in _bootstrap
+  File "threading.pyc", line 1044, in _bootstrap_inner
+  File "utils\schedule.pyc", line 90, in run
+
+Python stack for thread 21892 (MainThread):
+  File "nvda.pyw", line 310, in <module>
+  File "core.pyc", line 1089, in main
+  File "wx\core.pyc", line 2254, in MainLoop
+  File "core.pyc", line 1028, in Notify
+  File "queueHandler.pyc", line 102, in pumpAll
+  File "queueHandler.pyc", line 67, in flushQueue
+  File "eventHandler.pyc", line 88, in _queueEventCallback
+  File "eventHandler.pyc", line 349, in executeEvent
+  File "eventHandler.pyc", line 425, in doPreGainFocus
+  File "browseMode.pyc", line 1868, in event_treeInterceptor_gainFocus
+  File "speech\sayAll.pyc", line 140, in readText
+  File "speech\sayAll.pyc", line 290, in next
+  File "speech\sayAll.pyc", line 339, in nextLine
+  File "speech\types.pyc", line 55, in _flattenNestedSequences
+  File "speech\types.pyc", line 55, in <genexpr>
+  File "speech\speech.pyc", line 1595, in getTextInfoSpeech
+  File "treeInterceptorHandler.pyc", line 266, in getTextWithFields
+  File "NVDAObjects\UIA\web.pyc", line 280, in getTextWithFields
+  File "NVDAObjects\UIA\__init__.pyc", line 1033, in getTextWithFields
+  File "NVDAObjects\UIA\__init__.pyc", line 831, in _getTextWithFieldsForUIARange
+  File "NVDAObjects\UIA\chromium.pyc", line 64, in _getControlFieldForUIAObject
+  File "NVDAObjects\UIA\web.pyc", line 266, in _getControlFieldForUIAObject
+  File "NVDAObjects\UIA\__init__.pyc", line 644, in _getControlFieldForUIAObject
+  File "baseObject.pyc", line 59, in __get__
+  File "baseObject.pyc", line 169, in _getPropertyViaCache
+  File "NVDAObjects\UIA\chromium.pyc", line 74, in _get_states
+  File "baseObject.pyc", line 59, in __get__
+  File "baseObject.pyc", line 169, in _getPropertyViaCache
+  File "NVDAObjects\UIA\web.pyc", line 381, in _get_states
+  File "baseObject.pyc", line 59, in __get__
+  File "baseObject.pyc", line 169, in _getPropertyViaCache
+  File "NVDAObjects\UIA\__init__.pyc", line 2041, in _get_states
+  File "NVDAObjects\UIA\__init__.pyc", line 1204, in _prefetchUIACacheForPropertyIDs
+
+DEBUGWARNING - UIAHandler.UIAHandler.getNearestWindowHandle (09:49:55.307) - Dummy-8 (3664):
+error walking up to an element with a valid windowHandle
+Traceback (most recent call last):
+  File "UIAHandler\__init__.pyc", line 1383, in getNearestWindowHandle
+_ctypes.COMError: (-2147467259, '未指定的错误', (None, None, None, 0, None))
+IO - speech.speech.speak (09:49:55.762) - MainThread (21892):
+Speaking [LangChangeCommand ('en'), '图像', 'link']
+INFO - watchdog.waitForFreezeRecovery (09:49:55.805) - watchdog (113332):
+Recovered from freeze after 1.1128032002598047 seconds.
+IO - speech.speech.speak (09:49:55.839) - MainThread (21892):
+Speaking [LangChangeCommand ('en'), 'Commit form', 'button', CancellableSpeech (still valid)]
+DEBUGWARNING - UIAHandler.UIAHandler.getNearestWindowHandle (09:49:55.952) - Dummy-12 (3664):
+error walking up to an element with a valid windowHandle
+Traceback (most recent call last):
+  File "UIAHandler\__init__.pyc", line 1383, in getNearestWindowHandle
+_ctypes.COMError: (-2147467259, '未指定的错误', (None, None, None, 0, None))
+IO - speech.speech.speak (09:49:55.968) - MainThread (21892):
+Speaking [LangChangeCommand ('en'), 'Native title', 'edit', 'initial', CancellableSpeech (still valid)]
+IO - speech.speech.speak (09:49:56.013) - MainThread (21892):
+Speaking [LangChangeCommand ('en'), 'Native accepted']
+IO - inputCore.InputManager.executeGesture (09:49:56.015) - winInputHook (11488):
+Input: kb(desktop):K
+IO - inputCore.InputManager.executeGesture (09:49:56.020) - winInputHook (11488):
+Input: kb(desktop):tab
+IO - speech.speech.speak (09:49:56.026) - MainThread (21892):
+Speaking [LangChangeCommand ('en'), '英语 (not supported)', CharacterModeCommand(True), 'K', EndUtteranceCommand(), CharacterModeCommand(False)]
+IO - speech.speech.speakTypedCharacters (09:49:56.027) - MainThread (21892):
+typed word: K
+IO - speech.speech.speak (09:49:56.040) - MainThread (21892):
+Speaking [LangChangeCommand ('en'), 'Commit form', 'button', CancellableSpeech (still valid)]
+IO - inputCore.InputManager.executeGesture (09:49:56.059) - winInputHook (11488):
+Input: kb(desktop):enter
+IO - speech.speech.speak (09:49:56.082) - MainThread (21892):
+Speaking [LangChangeCommand ('en'), 'Remove title', 'button', CancellableSpeech (still valid)]
+INFO - core.main (09:49:56.120) - MainThread (21892):
+Exiting
+INFO - _asyncioEventLoop.terminate (09:49:56.276) - MainThread (21892):
+Terminating asyncio event loop
+DEBUGWARNING - addonStore.dataManager._DataManager.terminate (09:49:57.285) - MainThread (21892):
+initialiseAvailableAddons thread did not terminate immediately
+INFO - __main__ (09:49:57.635) - MainThread (21892):
+NVDA exit

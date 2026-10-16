@@ -228,7 +228,7 @@ function readOwnedRun(root, record, {requireNatural = true} = {}) {
   insist(isDeepStrictEqual(verified.sampler.context.args,
     [pidText, '1000', String(record.maxDurationMs), path.join(record.captureRoot, 'process-tree.ndjson'), creation]) &&
     isDeepStrictEqual(verified.input.context.args,
-      [pidText, record.scene, path.join(record.captureRoot, 'input.ndjson'), 'full', creation]),
+      [pidText, record.scene, path.join(record.captureRoot, 'input.ndjson'), record.desktopObservation === true ? 'full-desktop' : 'full', creation]),
   'Collector context does not bind the native owned subject');
   return {subject, processes:verified, naturalCompletion:roles.every(name => verified[name].naturalCompletion),
     controlledStopClosed:roles.some(name => verified[name].controlledStopClosed)};

@@ -1,0 +1,29 @@
+# Continuation — 2026-10-16 04:05 local
+
+User goal remains finish 0.5.0 and publish. No more monitor questions; verify high-refresh capability on available machine, do not claim physical 100+ Hz. No commit/push/release/new PR/goal/automation/subagent this continuation. Candidate C:/work/sm05-release-050 remains source-frozen at Source24, manifest SHA256 52e19555127cff41afabb4ee9e7b0af662630cbdfce35f270d0d4753473d1cf4 (15734831 bytes). Git C:/work/sm05-release-050-git-2 HEAD 505e3db2db83daa38ddcd66b92a0d10c00d0594e, codex/release-0.5.0, large staged implementation/history already present; do not reset it. C about72GiB free, D full, F0.31GiB.
+
+## Active
+
+ONLY exec10804 runs C:/work/sm05-source24-pipeline-2/run-finite-rest.cjs. Started03:48:41 local. Progress finite-rest.ndjson. Both SDK-only Release builds PASS natural0/0 (x86 215154ms; x64 217234ms). Prior SDK dirs moved to owned out/release-build-history/sdk-{arch}-source19. x64 visiblefixed1 cache workload completed and independently read:156 matched,1 partial,1 not-evaluated; retained peak8298936 bytes, actual8MiB/1024/64MiB limits. x86 configure/build passed; current actual app samples beyond127seconds, no failure yet; fixed210s deadline untouched. Next both100reload ResourceCapture+CacheObservation+quota, dependencies both, reference Web/native/controller/3GUIworkflows both with24 tags. Do not mutate candidate until job closes. No functions.wait pending.
+
+Full original Source24 pipeline exec95062 CLOSED1 at x64Debug desktop: Release fresh CMake configure changed shared CMakeFiles/CMakeConfigureLog.yaml, invalidating prior Debug evidence. Both architectures Debug/Release builds and187CTest each passed; Release UnitOnly and both Release desktop/Modern/readers passed. Full matrix did NOT pass. Only shared YAML changed in Debug evidencePins. Original raw log not preserved; cannot reconstruct/repair that historical accepted record. finite-rest never claims full matrix, keeps Debug desktop pending.
+
+## Sealed pending proposals
+
+- C:/work/sm05-long-quota-1/PROPOSAL-v2.json:13files,260purechecksPASS. Long128MiB TaskStore quota raw reader/full-binding and public wiring. Overall cacheBudget deliberately still not-evaluated. Not adopted.
+- C:/work/sm05-uia-events-1/PROPOSAL.json:6files. Bounded actual state-change notifications,16calls/pump,coalescing,close/stale/secret safeguards. Botharch11nativecases each natural0/0 direct. Not adopted.
+- **C:/work/sm05-uia-delivery-2/PROPOSAL.json now SEALED**:13files,306purepassed1skipped. Supersedes delivery1; previous STATUS.md stale. Public Build/Soui WithUia option, exact enabled archive proof and observer archive binding, plus immutable CMake configure log snapshot. New source helpers configure-log-evidence.cjs and Capture-CMakeConfigureLog.ps1 are source-pinned. Current cache/compiler/Ninja/object/link checks retained. Legacy records keep original live pin behavior. Full actual public WithUia/observer build remains pending. New reader code pins require fresh actual builds after adoption.
+
+delivery2 regressions:46standard,14integration,175Host64observer,24devkit,6manifest,39profile+1skip,2SDKinputs. File-symlink fixture skip EPERM errno-4048; directory-symlink rejection passed. Earlier profile harness copyFileSync/statSync failures retained; harness fixed only private mappings. Integration RED confirmed v1 reader incorrectly accepted forged capture metadata. All3PowerShell sources AST passed. WHITESPACE.json13 comparisons no whitespace errors. seal.cjs verifies allbefore/after/evidence pins; do not rerun mutating helpers (wx/replacements).
+
+Actual repeated CMake probe exec61063 CLOSED0, ACTUAL-LOG-RESULT.json natural0/0. Production capture helper called with actual observer Need/Plain/ObsPin/MatchPin extracted by AST; two real fresh configurations changed live log, snapshot stayed exact, overwriting snapshot refused. Full SDK observer pending; not retroactive Debug recovery.
+
+Actual installed UIA: C:/work/sm05-uia-install-2/x64-2-VERIFIED.json and x86-2-VERIFIED.json passed. Current SDK core built; only proposed provider implementation/header substituted. ON install, byte-for-byte relocation, external imported Soui::Uia +ActionJson consumer,11cases perarch, OFFfreshprefix then requiredUia component rejected. All positive stages natural0/0; expected negative1/1 no cleanup. x64 first consumer failed missingjson.hpp until consumer explicitly linked ActionJson, original failure and helpercopies preserved; SDK ON output reused only after its pins checked. Sessions20996/20708/27767 CLOSED. This is independent installed SDK proof, not final public Build flag proof.
+
+## Next
+
+Finish finite job. Batch adopt reviewed longquota/UIAevents/UIAdelivery2 and docs, preserve raw archive with -text before indexadd and verify indexrawbytes. Avoid another full candidate rebuild until ready to integrate necessary remaining implementation. Source24 resource calibration informs named cache budgets; broad unmeasured heap/cache scope must not be silently waived. Final public package/VerifyRelease, allmode1000,real8h workloads,targetmatrix/input/presentation,license/maintainer/productioncollector remain outstanding. Do not declare completion from finite tests.
+
+Read-only C:/work/sm05-kernel-notices-2/AUDIT.json found52named notice candidates in wholeMiniblink source,22alreadybyte-identical underlicenses,30missingincluding3falsepositives license.py/license.pyc/copyright_block.txt. No copy/proposal/adoption yet; aggregateincludesbuild/testmaterial and is not linked-member applicability/legalapproval proof. Historical license-review remainsunverified. UIA real reference business projection/screenreader also unfinished.
+
+Other inherited constraints: keep six unrelated QEMU processes and global toolchain/pagefile untouched. All new outputs C. No current source/package publication. Continue, not final.

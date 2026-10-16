@@ -33,7 +33,10 @@ std::string new_session() {
 }
 json_bridge::json_bridge(std::string origin) : json_bridge(std::move(origin), diagnostics::mode::disabled) {}
 json_bridge::json_bridge(std::string origin, diagnostics::mode metrics)
-    : origin_{std::move(origin)}, metrics_mode_{metrics}, permissions_{metrics}, tasks_{metrics} {
+    : json_bridge(std::move(origin), metrics, soui::runtime::default_task_store_request_quota) {}
+json_bridge::json_bridge(std::string origin, diagnostics::mode metrics,
+    std::optional<soui::runtime::task_store_request_quota_policy> quota)
+    : origin_{std::move(origin)}, metrics_mode_{metrics}, permissions_{metrics}, tasks_{metrics, quota} {
   if (origin_.rfind("app://",0) != 0 || origin_.size() > 512)
     throw std::invalid_argument("Native origin must begin with app://");
   (void)register_method("bridge.probe.report", "bridge.probe", [](std::string_view params) {
@@ -63,6 +66,17 @@ json_bridge::json_bridge(std::string origin, diagnostics::mode metrics)
   });
 }
 json_bridge::~json_bridge() { close_gui_commands(); }
+soui::runtime::task_store_request_quota_status json_bridge::read_task_store_request_quota(
+    soui::runtime::task_store_request_quota_snapshot& out) const noexcept {
+  return tasks_.read_request_quota(out);
+}
+
+diagnostics::status json_bridge::read_task_store_storage_metrics(diagnostics::task_store_storage& out) const noexcept {
+  return tasks_.read_storage_metrics(out);
+}
+diagnostics::status json_bridge::read_task_store_private_storage_metrics(diagnostics::task_store_private_storage& out) const noexcept {
+  return tasks_.read_private_storage_metrics(out);
+}
 diagnostics::status json_bridge::read_runtime_metrics(diagnostics::bridge_runtime& out) const noexcept {
   out = {};
   if (metrics_mode_ != diagnostics::mode::scalar) return diagnostics::status::disabled;

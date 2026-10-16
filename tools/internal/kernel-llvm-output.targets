@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <LinkIncremental>false</LinkIncremental>
+    <KernelClangOptions>--no-default-config /X /imsvc &quot;$(LLVMInstallDir)/lib/clang/22/include&quot; /imsvc &quot;$(SOUIKernelMsvcRoot)/include&quot; /imsvc &quot;$(SOUIKernelSdkRoot)/Include/10.0.19041.0/ucrt&quot; /imsvc &quot;$(SOUIKernelSdkRoot)/Include/10.0.19041.0/shared&quot; /imsvc &quot;$(SOUIKernelSdkRoot)/Include/10.0.19041.0/um&quot; /clang:-fms-compatibility-version=19.29.30159 /clang:-Werror=unknown-argument /clang:-Werror=unused-command-line-argument /showIncludes /U_DEBUG</KernelClangOptions>
+    <IncludePath>$(LLVMInstallDir)/lib/clang/22/include;$(SOUIKernelMsvcRoot)/include;$(SOUIKernelSdkRoot)/Include/10.0.19041.0/ucrt;$(SOUIKernelSdkRoot)/Include/10.0.19041.0/shared;$(SOUIKernelSdkRoot)/Include/10.0.19041.0/um</IncludePath>
+    <ExternalIncludePath>$(IncludePath)</ExternalIncludePath>
+    <LibraryPath>$(SOUIKernelMsvcRoot)/lib/$(SOUIKernelArchitecture);$(SOUIKernelSdkRoot)/Lib/10.0.19041.0/ucrt/$(SOUIKernelArchitecture);$(SOUIKernelSdkRoot)/Lib/10.0.19041.0/um/$(SOUIKernelArchitecture)</LibraryPath>
+    <KernelMasmTool Condition="'$(Platform)' == 'Win32'">$(SOUIKernelMsvcRoot)/bin/Hostx64/x86/ml.exe</KernelMasmTool>
+    <KernelMasmTool Condition="'$(Platform)' == 'x64'">$(SOUIKernelMsvcRoot)/bin/Hostx64/x64/ml64.exe</KernelMasmTool>
+    <CurrentKernelLibraries>$(KernelDependencyRoot)/zlib.lib;$(KernelDependencyRoot)/libjpeg.lib;$(KernelDependencyRoot)/libpng.lib;$(KernelDependencyRoot)/harfbuzz.lib;$(KernelDependencyRoot)/libxml.lib;$(KernelDependencyRoot)/ots.lib;$(KernelDependencyRoot)/openssl.lib;$(KernelDependencyRoot)/libcurl.lib;$(KernelDependencyRoot)/v8_5_7.lib;$(KernelDependencyRoot)/v8_5_7_1.lib;$(KernelDependencyRoot)/skia.lib</CurrentKernelLibraries>
+    <KernelSystemLibraries>winmm.lib;Ws2_32.lib;Usp10.lib;Shlwapi.lib;wininet.lib;GDIPlus.lib;version.lib;Crypt32.lib;wldap32.lib;Imm32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;DbgHelp.lib</KernelSystemLibraries>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ForceSynchronousPDBWrites>false</ForceSynchronousPDBWrites>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(MSBuildProjectName).pch</PrecompiledHeaderOutputFile>
+      <ProgramDataBaseFileName>$(IntDir)$(MSBuildProjectName).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <ResourceCompile><ResourceOutputFileName>$(IntDir)%(Filename).res</ResourceOutputFileName></ResourceCompile>
+    <Lib>
+      <ForceSymbolReferences Condition="'$(Configuration)'=='Release' and '$(Platform)'=='Win32' and ('$(MSBuildProjectName)'=='v8_5_7' or '$(MSBuildProjectName)'=='v8_5_7_1')"></ForceSymbolReferences>
+      <OutputFile>$(OutDir)$(MSBuildProjectName).lib</OutputFile>
+      <LinkTimeCodeGeneration>false</LinkTimeCodeGeneration>
+      <AdditionalOptions>$([System.Text.RegularExpressions.Regex]::Replace('%(AdditionalOptions)', '(?i)(?&lt;!\S)/LTCG(?::[^\s]+)?(?!\S)', ''))</AdditionalOptions>
+    </Lib>
+    <MASM>
+      <CommandLineTemplate>&quot;$(KernelMasmTool)&quot; /c [AllOptions] [AdditionalOptions] /Ta[Inputs]</CommandLineTemplate>
+      <ObjectFileName>$(IntDir)%(Filename).obj</ObjectFileName>
+    </MASM>
+    <Link>
+      <ForceSymbolReferences Condition="'$(Configuration)'=='Release' and '$(Platform)'=='Win32' and '$(MSBuildProjectName)'=='miniblink'">__chkstk;%(ForceSymbolReferences)</ForceSymbolReferences>
+      <AdditionalLibraryDirectories>$(KernelDependencyRoot);$(LibraryPath)</AdditionalLibraryDirectories>
+      <AdditionalDependencies Condition="'$(MSBuildProjectName)'=='miniblink'">$(CurrentKernelLibraries);$(KernelSystemLibraries)</AdditionalDependencies>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalOptions>$([System.Text.RegularExpressions.Regex]::Replace('%(AdditionalOptions)', '(?i)(?&lt;!\S)/LTCG(?::[^\s]+)?(?!\S)', '')) /DEBUG:NONE /INCREMENTAL:NO /OPT:REF /OPT:ICF /MAP:&quot;$(OutDir)$(TargetName).map&quot;</AdditionalOptions>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OutputFile>$(OutDir)$(TargetName).dll</OutputFile>
+      <ImportLibrary>$(OutDir)$(TargetName).lib</ImportLibrary>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Update="@(ClCompile)">
+      <EnableEnhancedInstructionSet Condition="'$(MSBuildProjectName)'=='skia' and '$(Configuration)'=='Release' and '$(Platform)'=='Win32'">StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
+      <PreprocessorDefinitions Condition="'$(MSBuildProjectName)'=='miniblink'">%(ClCompile.PreprocessorDefinitions);SOUI_WORKER_SHUTDOWN_DIAGNOSTICS=1</PreprocessorDefinitions>
+      <DebugInformationFormat>OldStyle</DebugInformationFormat>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <PrecompiledHeaderOutputFile>$(IntDir)$(MSBuildProjectName).pch</PrecompiledHeaderOutputFile>
+      <AdditionalOptions>$([System.Text.RegularExpressions.Regex]::Replace('%(ClCompile.AdditionalOptions)', '(?i)(?&lt;!\S)/(GL|MP[0-9]*)(?!\S)', '')) $(KernelClangOptions)</AdditionalOptions>
+    </ClCompile>
+    <MASM Update="@(MASM)">
+      <CommandLineTemplate>&quot;$(KernelMasmTool)&quot; /c [AllOptions] [AdditionalOptions] /Ta[Inputs]</CommandLineTemplate>
+      <ObjectFileName>$(IntDir)%(Filename).obj</ObjectFileName>
+    </MASM>
+    <CustomBuild Update="..\..\third_party\WebKit\Source\platform\heap\asm\SaveRegisters_x86.asm" Condition="'$(MSBuildProjectName)'=='miniblink' and '$(Platform)'=='x64'">
+      <Command>&quot;$(KernelMasmTool)&quot; /Fo &quot;$(IntDir)%(Filename).obj&quot; /c /DX64WIN=1 &quot;%(FullPath)&quot;</Command>
+      <Outputs>$(IntDir)%(Filename).obj</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <Target Name="StripKernelLibLtcg" BeforeTargets="Lib">
+    <PropertyGroup><LibAdditionalOptions>$([System.Text.RegularExpressions.Regex]::Replace('$(LibAdditionalOptions)', '(?i)(?&lt;!\S)/LTCG(?::[^\s]+)?(?!\S)', ''))</LibAdditionalOptions></PropertyGroup>
+  </Target>
+  <Target Name="AssertKernelLlvmSelection" BeforeTargets="PrepareForBuild">
+    <Error Condition="'$(Configuration)'!='Release' or ('$(Platform)'!='x64' and '$(Platform)'!='Win32')" Text="Only frozen Release architectures are admitted" />
+    <Error Condition="'$(PlatformToolset)'!='ClangCL' or '$(VCToolsVersion)'!='14.29.30133' or '$(WindowsTargetPlatformVersion)'!='10.0.19041.0' or '$(PreferredToolArchitecture)'!='x64' or '$(LLVMToolsVersion)'!='22.1.3'" Text="Frozen LLVM/MSVC/SDK binding differs" />
+    <Error Condition="'$(CLToolExe)'!='clang-cl.exe' or '$(LinkToolExe)'!='lld-link.exe' or '$(LIBToolExe)'!='llvm-lib.exe'" Text="Frozen LLVM tool roles differ" />
+    <Error Condition="'$(SOUIKernelProfile)'!='LLVM22MSVC142' or '$(GpuExperiment)'!='false' or '$(GpuDependencyRoot)'!=''" Text="The public LLVM kernel lane requires explicit profile and GPU off" />
+    <Error Condition="'$(SOUIKernelMsvcRoot)'=='' or '$(SOUIKernelSdkRoot)'=='' or ('$(SOUIKernelArchitecture)'!='x86' and '$(SOUIKernelArchitecture)'!='x64')" Text="Explicit public kernel roots or architecture are missing" />
+    <Error Condition="('$(Platform)'=='Win32' and '$(SOUIKernelArchitecture)'!='x86') or ('$(Platform)'=='x64' and '$(SOUIKernelArchitecture)'!='x64')" Text="Public architecture and MSBuild platform differ" />
+    <Message Importance="High" Text="PUBLIC_KERNEL_LLVM: $(MSBuildProjectName) $(Platform); CL=$(CLToolPath)/$(CLToolExe); LINK=$(LinkToolPath)/$(LinkToolExe); LIB=$(LIBToolPath)/$(LIBToolExe); MASM=$(KernelMasmTool); RC=$(RCToolPath)/$(RCToolExe); MT=$(MtToolPath)/$(MtToolExe); headers=$(IncludePath); libs=$(LibraryPath)" />
+  </Target>
+  <Target Name="AssertElevenFreshLibraries" BeforeTargets="Link" Condition="'$(MSBuildProjectName)'=='miniblink'">
+    <ItemGroup><KernelRequiredLibrary Include="$(CurrentKernelLibraries)" /></ItemGroup>
+    <Error Condition="!Exists('%(KernelRequiredLibrary.Identity)')" Text="Fresh explicit library missing: %(KernelRequiredLibrary.Identity)" />
+  </Target>
+</Project>

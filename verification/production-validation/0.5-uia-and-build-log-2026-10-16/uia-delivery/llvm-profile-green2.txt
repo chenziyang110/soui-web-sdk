@@ -1,0 +1,69 @@
+✔ LLVM resource selection binds compiler and initialization to the same Windows SDK RC (1.0488ms)
+✔ profile comparisons preserve values while permitting object property order (0.5612ms)
+✔ relative, oversized and mismatched profile requests fail before tool invocation (8.4618ms)
+✔ raw pin mutation and non-file input are rejected independently of requested compiler identity (6.0025ms)
+✔ blank Ninja platform does not substitute for generator or target verification (6.5178ms)
+✔ installed header membership preserves all nested public leaves (3.9399ms)
+﹣ installed header membership rejects a linked file header (7.8098ms) # Host does not permit this file-symlink unit fixture (EPERM, errno=-4048)
+✔ installed header membership rejects a linked directory ancestor (5.4775ms)
+✔ configured cache accepts a CXX STRING compiler with a C FILEPATH compiler (47.655ms)
+✔ configured cache accepts both compiler STRING entries including CRLF records (42.895ms)
+✔ configured cache retains FILEPATH compiler compatibility (39.8015ms)
+✔ configured cache rejects duplicate compiler entries even when types differ (33.967ms)
+✔ configured cache rejects missing or incorrectly typed compiler entries (46.9937ms)
+✔ configured cache keeps every non-compiler tool slot strictly FILEPATH (69.8329ms)
+✔ configured compiler STRING entries still require absolute existing paths and exact tool bytes (40.1513ms)
+✔ compiler cache type compatibility does not relax generated identity or scalar bindings (81.9622ms)
+✔ versioned requests accept exact historical v2 and WinRT v3 on each architecture (384.1524ms)
+✔ versioned requests reject unknown schemas and cross-version sentinel counts (138.1474ms)
+✔ versioned requests reject malformed include roots and exact-count sentinel substitutions (145.2538ms)
+✔ WinRT v3 rejects missing or changed EventToken bytes and stale whole identities (130.0863ms)
+✔ relocated requests validate each owner and compare unchanged inputs on both architectures and schemas (765.3903ms)
+✔ relocated comparison rejects independently valid changed bridge, toolchain and vendor selection (590.6136ms)
+✔ relocated comparison rejects a valid different identity schema and a mutated request snapshot (600.4448ms)
+✔ desktop LLVM selection routes each request to its actual owner and keeps legacy selection unchanged (783.441ms)
+✔ desktop LLVM selection fails on missing stock preparation, wrong architecture and changed profile inputs (358.9273ms)
+✔ LLVM build selection keeps both authentic owner identities across architectures and input schemas (1294.1467ms)
+✔ LLVM build selection refuses missing stock, cross-owner request substitution and cross-architecture use (148.2329ms)
+✔ LLVM build selection rechecks complete identities and authenticated owner-source bytes (598.4915ms)
+✔ cached LLVM validation binding checks real request, preparation fingerprint and every frozen stock member (3347.1208ms)
+✔ cached LLVM validation binding refuses historical missing owner and metadata identity substitution (812.6685ms)
+✔ cached LLVM validation binding revalidates current configuration and native observation bytes (2425.3036ms)
+✔ canonical stock source membership cannot be replaced by a self-consistent shorter declared fingerprint (638.8165ms)
+✖ cached LLVM proof verifies complete current local reader code before selected-owner data (91.2028ms)
+✔ fresh LLVM preparation reads a foreign stock module strictly as pinned data (1236.7891ms)
+✔ fresh LOCAL LLVM preparation still refuses changed Source or native observation bytes (914.6397ms)
+✔ cached LLVM validation binding rejects a preparation snapshot missing required common (654.6808ms)
+✔ resource wrapper freezes the selected CMake sibling before Build and binds current observation (10.4743ms)
+✔ resource wrapper cannot come from a foreign directory or missing selected CMake (20.7686ms)
+✔ resource wrapper requires one whole dependency pin and identical observation pin (21.3665ms)
+✔ resource wrapper changed after prelaunch freeze is rejected without executing a tool (8.0482ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 38
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 1
+ℹ todo 0
+ℹ duration_ms 16576.6479
+
+✖ failing tests:
+
+test at C:\work\sm05-release-050\tests\sdk\llvm-profile-inputs.test.cjs:571:1
+✖ cached LLVM proof verifies complete current local reader code before selected-owner data (91.2028ms)
+  AssertionError [ERR_ASSERTION]: Got unwanted exception.
+  Actual message: "ENOENT: no such file or directory, stat 'C:\work\sm05-release-050\tools\internal\configure-log-evidence.cjs'"
+      at TestContext.<anonymous> (C:\work\sm05-release-050\tests\sdk\llvm-profile-inputs.test.cjs:577:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: [Error],
+    expected: undefined,
+    operator: 'doesNotThrow',
+    diff: 'simple'
+  }

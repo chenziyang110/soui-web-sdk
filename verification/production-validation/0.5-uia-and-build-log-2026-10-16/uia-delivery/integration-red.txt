@@ -1,0 +1,40 @@
+✖ LLVM schema2 identity adapter retains separate roots and original semantic predicates (4.0331ms)
+✔ beginSmoke requires actual LLVM standard proof even when selection is inferred from the current build (216.4467ms)
+✔ finishSmoke requires actual LLVM standard proof even when selection is inferred from the current build (178.9105ms)
+✔ verifySmoke requires actual LLVM standard proof even when selection is inferred from the current build (181.4248ms)
+✔ verifyModernSmoke requires actual LLVM standard proof even when selection is inferred from the current build (188.8624ms)
+✔ stageApp requires actual LLVM standard proof even when selection is inferred from the current build (164.2418ms)
+✔ an explicit opposite profile cannot reuse an LLVM smoke or deployment receipt (138.6447ms)
+✔ MSVC desktop deployment retains its proof path while Modern rejects PID-only receipts (217.9308ms)
+✔ Modern forwards caller tools and accepted MSVC selection to actual raw validation (156.1739ms)
+✔ Modern forwards caller tools and accepted LLVM selection to actual raw validation (197.4221ms)
+✔ current optional UIA archive is bound and tampering is refused (227.0542ms)
+✔ enabled UIA cannot finish with a missing archive and disabled UIA ignores stale files (222.4697ms)
+✔ UIA SDK-only x86 Debug archive uses its own installed-source layout (144.194ms)
+✔ immutable configure log survives later configuration while current evidence stays pinned (14.1116ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 13
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2256.5174
+
+✖ failing tests:
+
+test at C:\work\sm05-release-050\tests\sdk\llvm-evidence-readers.test.cjs:9:1
+✖ LLVM schema2 identity adapter retains separate roots and original semantic predicates (4.0331ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception.
+      at TestContext.<anonymous> (C:\work\sm05-release-050\tests\sdk\llvm-evidence-readers.test.cjs:45:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.start (node:internal/test_runner/test:1015:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:358:17) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: /Configure log capture schema differs/,
+    operator: 'throws',
+    diff: 'simple'
+  }

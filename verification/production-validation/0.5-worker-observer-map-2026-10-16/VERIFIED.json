@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "original": {
+    "path": "C:\\work\\sm05-release-050\\tools\\internal\\Observe-LlvmBuild.ps1",
+    "bytes": 114709,
+    "sha256": "09d11ed85012d16dc0ef988ac407add8a243e8e99bbca335e8b4e8c3de21993c"
+  },
+  "proposed": {
+    "path": "C:\\work\\sm05-worker-observer-pin-update-1\\proposed-observer.ps1",
+    "bytes": 114709,
+    "sha256": "1684a12558875084f0bd462e1ea9bfe0dc4401a2ec4320491ed0961db69c3580"
+  },
+  "map": {
+    "path": "C:\\work\\sm05-release-050\\tests\\native\\vendor_lifetime\\worker_lifetime\\source-map.json",
+    "bytes": 10924,
+    "sha256": "3c60c2dc31efd40c1a8c714e6837c77da43451c73aaba5840e77faa2edb41bd3"
+  },
+  "originalTest": {
+    "path": "C:\\work\\sm05-release-050\\tests\\sdk\\llvm-generated-test-dependencies.Tests.ps1",
+    "bytes": 17250,
+    "sha256": "5151db6bc70440a7e1fb54314e04f770833fa83aef93b1e18ccf7b9396236abd"
+  },
+  "currentGraphTest": {
+    "path": "C:\\work\\sm05-worker-observer-pin-update-1\\current-graph2.Tests.ps1",
+    "bytes": 18200,
+    "sha256": "c25a271b6a84b18d6652be70cc5366f0f4b6f3c7cfa3015e10ed481ce84456fe"
+  },
+  "facts": {
+    "pins": 6038,
+    "withVendorTests": null,
+    "hasVendorField": false,
+    "selected": 138,
+    "configuration": "Debug",
+    "missing": 29
+  },
+  "counts": {
+    "derived": 26,
+    "total": 102,
+    "originalMissing": 26,
+    "failed": 0,
+    "selected": 138
+  },
+  "scope": "Only original three vendor writer roles; current three WebView2 headers remain covered by their separate unmodified observer validators",
+  "allOriginalBehavioralAssertionsRetained": true,
+  "actualSdkAccepted": false,
+  "releaseReady": false
+}

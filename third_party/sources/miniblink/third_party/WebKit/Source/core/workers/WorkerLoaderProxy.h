@@ -32,6 +32,7 @@
 #define WorkerLoaderProxy_h
 
 #include "core/CoreExport.h"
+#include "core/workers/WorkerShutdownRecord.h"
 #include "core/dom/ExecutionContext.h"
 #include "wtf/Forward.h"
 #include "wtf/PassOwnPtr.h"
@@ -76,6 +77,7 @@ public:
     }
 
     ~WorkerLoaderProxy() override;
+    void setWorkerShutdownRecord(PassRefPtr<WorkerShutdownRecord> record) { m_shutdownRecord = record; }
 
     void postTaskToLoader(PassOwnPtr<ExecutionContextTask>) override;
     bool postTaskToWorkerGlobalScope(PassOwnPtr<ExecutionContextTask>) override;
@@ -88,6 +90,7 @@ public:
 private:
     explicit WorkerLoaderProxy(WorkerLoaderProxyProvider*);
 
+    RefPtr<WorkerShutdownRecord> m_shutdownRecord; // Assigned once before Worker publication.
     Mutex m_lock;
     WorkerLoaderProxyProvider* m_loaderProxyProvider;
 };

@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <soui/bridge_adapter.h>
 #include <atomic>
+#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <mutex>
@@ -15,6 +16,7 @@
 #include <soui/host/engine_thread.h>
 #include <soui/host/interaction_protocol.h>
 #include <soui/host/window_chrome.h>
+#include <soui/diagnostics/cache_observation.h>
 #ifdef SOUI_TEST_KIT
 #include "../../test-kit/native/pipe_agent.h"
 #endif
@@ -29,7 +31,33 @@ inline constexpr std::uint32_t ime_position_message = 0x84D3U;
 // Final application exit, after every Host has been destroyed. Window teardown
 // keeps the process runtime available for subsequent windows. Shutdown is final:
 // this Miniblink version cannot initialize again in the same process.
+// Poll from outside the engine owner after every Host is destroyed. Pending
+// keeps the engine pumping; retry within the caller's finite close deadline.
+// Failed/Unsupported retain the runtime/module and must not be treated as closed.
 [[nodiscard]] host_result shutdown_miniblink_runtime();
+
+// Application convenience for the same final shutdown, on the caller's UI
+// thread after every Host is destroyed. Pumps bounded Windows message batches,
+// retries only pending, and preserves WM_QUIT for the outer loop. Nonnegative
+// timeout is a total monotonic budget; zero makes one non-blocking attempt.
+// Timeout/failure retains the runtime and is never evidence of completed exit.
+[[nodiscard]] host_result wait_for_miniblink_runtime_shutdown(std::chrono::milliseconds timeout);
+
+// Native-only, non-blocking observation. No pump, work posting or kernel
+// initialization. Disabled/busy/not_started are incomplete data, not zeros.
+[[nodiscard]] diagnostics::status read_miniblink_process_runtime_metrics(
+    diagnostics::process_engine_runtime&) noexcept;
+// Optional, read-only observations from the already loaded provider DLL.
+// Existing owner metrics DTO layout and queue getter remain unchanged.
+[[nodiscard]] diagnostics::renderer_status read_miniblink_renderer_metrics(
+    diagnostics::renderer_observation&) noexcept;
+[[nodiscard]] diagnostics::renderer_status read_miniblink_renderer_model_metrics(
+    diagnostics::renderer_model_observation&) noexcept;
+// Explicit, single-flight asynchronous Engine ordinary-lane request. No wait.
+[[nodiscard]] diagnostics::cache_status request_miniblink_cache_sample() noexcept;
+// Pure completed-copy getter: no posting, pump, initialization or DLL invocation.
+[[nodiscard]] diagnostics::cache_status read_miniblink_cache_metrics(
+    diagnostics::cache_observation&) noexcept;
 
 [[nodiscard]] bool binary_matches_architecture(const std::filesystem::path& binary,
                                                 std::string_view architecture);

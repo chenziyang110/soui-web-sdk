@@ -1,0 +1,79 @@
+C:\work\sm05-release-050\out\benchmark-protocol-x86\Release\OwnedProcessRunner.exe
+{"schema":"soui.standard-llvm-verified-build/v1","profile":"LLVM22MSVC142","architecture":"x86","configuration":"Release","sdkOnly":true,"buildId":"a38c5e45-3392-459d-a75d-b4560d36d037","sourceSha256":"216a8750334df8907f297eee7564b4790f194edc84eea018fc4b488e80cfdc0c","inputIdentity":"9a911b3b2d15e6739a39403691eed0fbc1d3d46a48c784a0827cad82f986092c","observation":{"path":"C:\\work\\sm05-release-050\\out\\standard-build\\attempt-8e7dfb46-0741-4cb8-917f-b8e48db43953\\llvm-observer\\llvm-observation.json","bytes":2616967,"sha256":"462853c5c0a4e15d1b5c2e5a380fb47097ec44c38ebae4f6deb7a1d028c14b47"},"compilerVerified":true,"naturalBuildClosureVerified":true,"qualificationPassed":false,"releaseReady":false}
+{
+  "buildId": "a38c5e45-3392-459d-a75d-b4560d36d037",
+  "sourceSha256": "216a8750334df8907f297eee7564b4790f194edc84eea018fc4b488e80cfdc0c"
+}
+
+{
+  "accepted": true,
+  "record": {
+    "path": "C:\\work\\sm05-release-050\\out\\acceptance\\899dbdf9-7422-4072-9d77-0ab9c1b4b21e\\consumer-llvm-build.json",
+    "bytes": 15888,
+    "sha256": "e1dd5aa494462f409184c45d716d27902cd48d4d6a2459f6ddc8746d7700b2ab"
+  },
+  "qualificationPassed": false,
+  "releaseReady": false
+}
+
+{
+  "consumerBuildId": "7d25d0ef-cb91-42a8-ac82-4fa5eecfa29c",
+  "payloadSha256": "660adee61afd0460b7c4aa94c0addada1f11b28f24278e7d6d135f9aa56a1a02"
+}
+
+{
+  "passed": true,
+  "mode": "reload",
+  "runId": "d803f6a8-6e11-4789-9ffa-74bbb544e62d",
+  "result": "out/acceptance/899dbdf9-7422-4072-9d77-0ab9c1b4b21e/reload-d803f6a8-6e11-4789-9ffa-74bbb544e62d/result.json",
+  "failure": null,
+  "outcome": {
+    "pid": 18136,
+    "exitCode": 0,
+    "signal": null,
+    "timedOut": false,
+    "timeoutReason": null,
+    "spawnError": null,
+    "processTimeoutMs": 2930000,
+    "ownedProcess": {
+      "pid": 18136,
+      "creationFileTime": "134365386056789540",
+      "exitCode": 0,
+      "supervisorExitCode": 0,
+      "signal": null,
+      "spawnError": null,
+      "reportError": null,
+      "stopRequested": false,
+      "fallbackUsed": false,
+      "closureConfirmed": true,
+      "passed": true,
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 597296,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 1,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      },
+      "report": "C:\\work\\sm05-release-050\\out\\acceptance\\899dbdf9-7422-4072-9d77-0ab9c1b4b21e\\reload-d803f6a8-6e11-4789-9ffa-74bbb544e62d\\owned-process.ndjson",
+      "reportSha256": "884e30b415a63310db7c4e4b139ccd565ac7011090a8d412ffaa6ed145ed7d9f",
+      "runnerSha256": "6fcac4f957bddb91e819687609a76f2034aa12c1dcd2ccc487b888b50a217430",
+      "executableSha256": "37e689c70b4dc264cb6d95153c10d89507d0416f27dbd95d87ebac8a24292008"
+    },
+    "timeoutDiagnostic": null
+  },
+  "operationPassed": true,
+  "resourceGate": "passed",
+  "cacheObservationGate": "passed",
+  "captureGate": "passed",
+  "cacheBudgetGate": "not-evaluated",
+  "operationResult": "out/acceptance/899dbdf9-7422-4072-9d77-0ab9c1b4b21e/reload-d803f6a8-6e11-4789-9ffa-74bbb544e62d/operation-result.json"
+}
+
+Acceptance evidence: C:\work\sm05-release-050\out\acceptance\899dbdf9-7422-4072-9d77-0ab9c1b4b21e

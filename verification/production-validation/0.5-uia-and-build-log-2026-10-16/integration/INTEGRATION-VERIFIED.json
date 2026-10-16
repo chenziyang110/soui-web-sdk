@@ -1,0 +1,77 @@
+{
+  "passed": true,
+  "scope": "Combined proposal pure/source regressions; no final native or public build qualification",
+  "prepared": {
+    "path": "C:\\work\\sm05-source25-integration-1\\PREPARED.json",
+    "bytes": 61929,
+    "sha256": "636c2dbba912342d4006d3a2310784ae1c85bf5b91f3f94249f26b6190e35394"
+  },
+  "records": [
+    {
+      "file": "tests/acceptance/long-run-task-quota.test.cjs",
+      "passed": 28,
+      "output": {
+        "path": "C:\\work\\sm05-source25-integration-1\\tests--acceptance--long-run-task-quota.test.cjs.txt",
+        "bytes": 2138,
+        "sha256": "363246056bce30e80b2773295eaf248fb572d1df3cf3622c5dd0f62cc2cf5ac3"
+      }
+    },
+    {
+      "file": "tests/sdk/long-run-policy.test.cjs",
+      "passed": 71,
+      "output": {
+        "path": "C:\\work\\sm05-source25-integration-1\\tests--sdk--long-run-policy.test.cjs.txt",
+        "bytes": 6459,
+        "sha256": "aa095ca70b2863c502dabdeddff7b085edcac804ec86e62abe5b32622058659b"
+      }
+    },
+    {
+      "file": "tests/sdk/long-run-cache-observation.test.cjs",
+      "passed": 12,
+      "output": {
+        "path": "C:\\work\\sm05-source25-integration-1\\tests--sdk--long-run-cache-observation.test.cjs.txt",
+        "bytes": 1295,
+        "sha256": "fdaacc3e91add59a9d1ecae63b53166a463491896dae5a6970316116c38159fb"
+      }
+    },
+    {
+      "file": "tests/sdk/standard-build.test.cjs",
+      "passed": 46,
+      "output": {
+        "path": "C:\\work\\sm05-source25-integration-1\\tests--sdk--standard-build.test.cjs.txt",
+        "bytes": 3335,
+        "sha256": "26e832e5ffe3c2d791d6e60cd141ea4dcb9b71c9bde1eebf619ba25323462536"
+      }
+    },
+    {
+      "file": "tests/sdk/llvm-evidence-readers.test.cjs",
+      "passed": 14,
+      "output": {
+        "path": "C:\\work\\sm05-source25-integration-1\\tests--sdk--llvm-evidence-readers.test.cjs.txt",
+        "bytes": 1586,
+        "sha256": "691ab5723c71c4ccc3a9ba3ae267957654a0b08cc7adb593b2ed8cb8868d1c4d"
+      }
+    },
+    {
+      "file": "tests/acceptance/llvm-installed-entry.test.cjs",
+      "passed": 16,
+      "output": {
+        "path": "C:\\work\\sm05-source25-integration-1\\tests--acceptance--llvm-installed-entry.test.cjs.txt",
+        "bytes": 1840,
+        "sha256": "1a709845852179bbcccf9bd8b50144c4ac9aa8226c339eee7f8e9e99e506e09d"
+      }
+    },
+    {
+      "file": "tests/tooling/devkit-command.test.cjs",
+      "passed": 24,
+      "output": {
+        "path": "C:\\work\\sm05-source25-integration-1\\tests--tooling--devkit-command.test.cjs.txt",
+        "bytes": 2412,
+        "sha256": "29204c4b4687a14d7395873491edab69903701c57ae5ca0449845c718909fb69"
+      }
+    }
+  ],
+  "totalPassed": 211,
+  "preservedHarnessFailure": "Initial controller selected tests/sdk/devkit-command.test.cjs, a nonexistent path. That ENOENT is retained; correct existing test lives under tests/tooling. Earlier six passed runs reused unchanged.",
+  "releaseReady": false
+}

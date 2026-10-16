@@ -2,30 +2,45 @@
   "schema": "soui.binary-license-review/v1",
   "status": "unverified",
   "releaseReady": false,
-  "scope": "Exact preview Miniblink binaries and their linked third-party configuration",
+  "sdkVersion": "0.5.0",
+  "scope": "Exact current 0.5.0 candidate Miniblink binaries; complete redistribution review remains pending",
   "binaries": [
     {
-      "architecture": "x86",
-      "sha256": "2ed793ccccb0642df9916128e36aece733efd34ad6acb4e50caa0622a4c25ef3"
+      "architecture": "x64",
+      "path": "third_party/prebuilt/x64/miniblink/node.dll",
+      "bytes": 38959616,
+      "sha256": "f552226e00c16c9df1ef6cb94081c69b37185c44741197d5a337a4ed70d1fdef",
+      "sourceInputSha256": "0bbed0bfd1b81a0c924ca3927cd4c53dfa2e916ac3aa5da43c51c2b70bba091f",
+      "buildEvidence": "verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/kernel/x64/build-Miniblink.json",
+      "evidenceIndex": "verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/index.json"
     },
     {
-      "architecture": "x64",
-      "sha256": "fe4160a70587d027504c409b8fd2bc5c87d78392811bff0c969f69c41a44d951"
+      "architecture": "x86",
+      "path": "third_party/prebuilt/x86/miniblink/node.dll",
+      "bytes": 28115968,
+      "sha256": "90a214ca2d416eda8e980cab7aacb80fffef777ace20c06179f41e584dae093b",
+      "sourceInputSha256": "0bbed0bfd1b81a0c924ca3927cd4c53dfa2e916ac3aa5da43c51c2b70bba091f",
+      "buildEvidence": "verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/kernel/x86/build-Miniblink.json",
+      "evidenceIndex": "verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/index.json"
     }
   ],
   "evidence_refs": [
-    "third_party/sources/miniblink/SOURCE-MANIFEST.json",
-    "third_party/sources/miniblink/LOCAL-CHANGES.patch",
-    "third_party/patches/miniblink/README.md",
-    "third_party/patches/miniblink/0007-mark-utf8-source-encoding.patch",
-    "third_party/patches/miniblink/0008-bound-ready-task-priority-wait.patch",
-    "third_party/manifests/kernel-build-preview14.json",
-    "verification/production-validation/kernel-link-inputs-2026-09-25/observation.json",
-    "verification/production-validation/kernel-notice-inventory-2026-09-25/README.md",
-    "verification/production-validation/kernel-notice-recovery-2026-09-25/README.md"
+    "third_party/manifests/kernel-build-050.json",
+    "third_party/manifests/kernel-cache-source-050.json",
+    "third_party/patches/miniblink/0012-retained-resource-byte-budget.patch",
+    "verification/sbom-native.cdx.json",
+    "third_party/licenses/kernel-source/index.json.txt",
+    "verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/kernel/x64/build-Miniblink.json",
+    "verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/kernel/x86/build-Miniblink.json",
+    "verification/production-validation/0.5-post-upgrade-rebuild-2026-10-16/index.json"
   ],
   "required_evidence": [
     "Applicable redistribution terms for complete binaries",
     "Linked third-party notices and build configuration review"
+  ],
+  "limitations": [
+    "Binary identity and traceable link-input evidence are not legal approval.",
+    "Static archives listed by the SBOM do not prove every archive member was retained.",
+    "Final runtime package notice completeness and applicable redistribution terms remain to be reviewed."
   ]
 }

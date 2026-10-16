@@ -1,0 +1,762 @@
+{
+  "architecture": "x64",
+  "sourceIdentity": "f3c288b8a81b669c05cb45e2eca9c781f9c6dfb34a0fb6420affd5c03f4f1380",
+  "dll": {
+    "path": "C:\\work\\sm05-kernel-release-050-x64-1\\miniblink\\bin\\miniblink.dll",
+    "bytes": 38959616,
+    "sha256": "c19c128d0f6f1a053160ad7335909ba383fc9aa944f6ea95e8379c024eea8ed8",
+    "kind": "miniblink"
+  },
+  "headerFunctionCount": 375,
+  "oldPublicCount": 355,
+  "required": [
+    "jsAddRef",
+    "jsArg",
+    "jsArgCount",
+    "jsArgType",
+    "jsArrayBuffer",
+    "jsBindFunction",
+    "jsBindGetter",
+    "jsBindSetter",
+    "jsBoolean",
+    "jsCall",
+    "jsCallGlobal",
+    "jsDeleteObjectProp",
+    "jsDouble",
+    "jsDoubleString",
+    "jsEmptyArray",
+    "jsEmptyObject",
+    "jsEval",
+    "jsEvalExW",
+    "jsEvalW",
+    "jsFalse",
+    "jsFloat",
+    "jsFunction",
+    "jsGC",
+    "jsGet",
+    "jsGetArrayBuffer",
+    "jsGetAt",
+    "jsGetCallstack",
+    "jsGetData",
+    "jsGetGlobal",
+    "jsGetKeys",
+    "jsGetLastErrorIfException",
+    "jsGetLength",
+    "jsGetWebView",
+    "jsGlobalObject",
+    "jsInt",
+    "jsIsArray",
+    "jsIsBoolean",
+    "jsIsFalse",
+    "jsIsFunction",
+    "jsIsJsValueValid",
+    "jsIsNull",
+    "jsIsNumber",
+    "jsIsObject",
+    "jsIsString",
+    "jsIsTrue",
+    "jsIsUndefined",
+    "jsIsValidExecState",
+    "jsNull",
+    "jsObject",
+    "jsReleaseRef",
+    "jsSet",
+    "jsSetAt",
+    "jsSetGlobal",
+    "jsSetLength",
+    "jsString",
+    "jsStringW",
+    "jsThrowException",
+    "jsToBoolean",
+    "jsToDouble",
+    "jsToDoubleString",
+    "jsToFloat",
+    "jsToInt",
+    "jsToString",
+    "jsToStringW",
+    "jsToTempString",
+    "jsToTempStringW",
+    "jsToV8Value",
+    "jsTrue",
+    "jsTypeOf",
+    "jsUndefined",
+    "wkeAddDirtyArea",
+    "wkeAddNpapiPlugin",
+    "wkeAddPluginDirectory",
+    "wkeAwaken",
+    "wkeCanGoBack",
+    "wkeCanGoForward",
+    "wkeCancelComposition",
+    "wkeClearCookie",
+    "wkeConfigure",
+    "wkeConfirmComposition",
+    "wkeContentsHeight",
+    "wkeContentsWidth",
+    "wkeContextMenuEvent",
+    "wkeCookieEnabled",
+    "wkeCopy",
+    "wkeCreateMemBuf",
+    "wkeCreateString",
+    "wkeCreateStringW",
+    "wkeCreateStringWithoutNullTermination",
+    "wkeCreateWebCustomWindow",
+    "wkeCreateWebView",
+    "wkeCreateWebWindow",
+    "wkeCut",
+    "wkeDelete",
+    "wkeDeleteString",
+    "wkeDestroyWebView",
+    "wkeDestroyWebWindow",
+    "wkeDragTargetDragEnter",
+    "wkeDragTargetDragLeave",
+    "wkeDragTargetDragOver",
+    "wkeDragTargetDrop",
+    "wkeDragTargetEnd",
+    "wkeEditorCopy",
+    "wkeEditorCut",
+    "wkeEditorDelete",
+    "wkeEditorPaste",
+    "wkeEditorRedo",
+    "wkeEditorSelectAll",
+    "wkeEditorUnSelect",
+    "wkeEditorUndo",
+    "wkeEnableHighDPISupport",
+    "wkeEnableWindow",
+    "wkeFinalize",
+    "wkeFinalizePrepared",
+    "wkeFireContextMenuEvent",
+    "wkeFireKeyDownEvent",
+    "wkeFireKeyPressEvent",
+    "wkeFireKeyUpEvent",
+    "wkeFireMouseEvent",
+    "wkeFireMouseWheelEvent",
+    "wkeFireWindowsMessage",
+    "wkeFocus",
+    "wkeFreeMemBuf",
+    "wkeGC",
+    "wkeGetBlinkMainThreadIsolate",
+    "wkeGetCacheDiagnosticsApi",
+    "wkeGetCaret",
+    "wkeGetCaretRect",
+    "wkeGetCaretRect2",
+    "wkeGetClientHandler",
+    "wkeGetContentAsMarkup",
+    "wkeGetContentHeight",
+    "wkeGetContentWidth",
+    "wkeGetCookie",
+    "wkeGetCookieW",
+    "wkeGetCursorBrokerApi",
+    "wkeGetCursorInfoType",
+    "wkeGetDebugConfig",
+    "wkeGetDocumentCompleteURL",
+    "wkeGetFrameUrl",
+    "wkeGetGlobalExecByFrame",
+    "wkeGetHeight",
+    "wkeGetHostHWND",
+    "wkeGetInteractionApi",
+    "wkeGetMediaVolume",
+    "wkeGetName",
+    "wkeGetRendererDiagnosticsApi",
+    "wkeGetRendererModelDiagnosticsApi",
+    "wkeGetSource",
+    "wkeGetString",
+    "wkeGetStringLen",
+    "wkeGetStringW",
+    "wkeGetTempCallbackInfo",
+    "wkeGetTitle",
+    "wkeGetTitleW",
+    "wkeGetURL",
+    "wkeGetUserAgent",
+    "wkeGetUserKeyValue",
+    "wkeGetVersion",
+    "wkeGetVersionString",
+    "wkeGetViewDC",
+    "wkeGetWebViewByNData",
+    "wkeGetWebViewForCurrentContext",
+    "wkeGetWebviewId",
+    "wkeGetWidth",
+    "wkeGetWindowHandle",
+    "wkeGetZoomFactor",
+    "wkeGlobalExec",
+    "wkeGoBack",
+    "wkeGoForward",
+    "wkeGoToIndex",
+    "wkeGoToOffset",
+    "wkeHeight",
+    "wkeInit",
+    "wkeInitialize",
+    "wkeInitializeEx",
+    "wkeInsertCSSByFrame",
+    "wkeIsAwake",
+    "wkeIsCookieEnabled",
+    "wkeIsDirty",
+    "wkeIsDocumentReady",
+    "wkeIsInitialize",
+    "wkeIsLoadComplete",
+    "wkeIsLoadFailed",
+    "wkeIsLoaded",
+    "wkeIsLoading",
+    "wkeIsLoadingCompleted",
+    "wkeIsLoadingFailed",
+    "wkeIsLoadingSucceeded",
+    "wkeIsMainFrame",
+    "wkeIsProcessingUserGesture",
+    "wkeIsTransparent",
+    "wkeIsWebRemoteFrame",
+    "wkeIsWebviewAlive",
+    "wkeIsWebviewValid",
+    "wkeJsBindFunction",
+    "wkeJsBindGetter",
+    "wkeJsBindSetter",
+    "wkeKeyDown",
+    "wkeKeyPress",
+    "wkeKeyUp",
+    "wkeKillFocus",
+    "wkeLayoutIfNeeded",
+    "wkeLoadFile",
+    "wkeLoadFileW",
+    "wkeLoadHTML",
+    "wkeLoadHTMLW",
+    "wkeLoadHtmlWithBaseUrl",
+    "wkeLoadURL",
+    "wkeLoadURLW",
+    "wkeLoadW",
+    "wkeMediaVolume",
+    "wkeMouseEvent",
+    "wkeMouseWheel",
+    "wkeMoveToCenter",
+    "wkeMoveWindow",
+    "wkeNetAddHTTPHeaderFieldToUrlRequest",
+    "wkeNetCancelRequest",
+    "wkeNetCancelWebUrlRequest",
+    "wkeNetChangeRequestUrl",
+    "wkeNetContinueJob",
+    "wkeNetCopyWebUrlRequest",
+    "wkeNetCreatePostBodyElement",
+    "wkeNetCreatePostBodyElements",
+    "wkeNetCreateWebUrlRequest",
+    "wkeNetCreateWebUrlRequest2",
+    "wkeNetDeleteBlinkWebURLRequestPtr",
+    "wkeNetFreePostBodyElement",
+    "wkeNetFreePostBodyElements",
+    "wkeNetGetExpectedContentLength",
+    "wkeNetGetFavicon",
+    "wkeNetGetHTTPHeaderField",
+    "wkeNetGetHTTPHeaderFieldFromResponse",
+    "wkeNetGetHttpStatusCode",
+    "wkeNetGetMIMEType",
+    "wkeNetGetPostBody",
+    "wkeNetGetRawHttpHead",
+    "wkeNetGetRawResponseHead",
+    "wkeNetGetRequestMethod",
+    "wkeNetGetResponseUrl",
+    "wkeNetGetUrlByJob",
+    "wkeNetHoldJobToAsynCommit",
+    "wkeNetHookRequest",
+    "wkeNetOnResponse",
+    "wkeNetSetData",
+    "wkeNetSetHTTPHeaderField",
+    "wkeNetSetMIMEType",
+    "wkeNetStartUrlRequest",
+    "wkeNodeOnCreateProcess",
+    "wkeOnAlertBox",
+    "wkeOnConfirmBox",
+    "wkeOnConsole",
+    "wkeOnContextMenuItemClick",
+    "wkeOnCreateView",
+    "wkeOnDidCreateScriptContext",
+    "wkeOnDocumentReady",
+    "wkeOnDocumentReady2",
+    "wkeOnDownload",
+    "wkeOnDownload2",
+    "wkeOnDraggableRegionsChanged",
+    "wkeOnLoadUrlBegin",
+    "wkeOnLoadUrlEnd",
+    "wkeOnLoadUrlFail",
+    "wkeOnLoadUrlFinish",
+    "wkeOnLoadUrlHeadersReceived",
+    "wkeOnLoadingFinish",
+    "wkeOnMouseOverUrlChanged",
+    "wkeOnNavigation",
+    "wkeOnOtherLoad",
+    "wkeOnPaintBitUpdated",
+    "wkeOnPaintUpdated",
+    "wkeOnPluginFind",
+    "wkeOnPrint",
+    "wkeOnPromptBox",
+    "wkeOnStartDragging",
+    "wkeOnTitleChanged",
+    "wkeOnURLChanged",
+    "wkeOnURLChanged2",
+    "wkeOnWillMediaLoad",
+    "wkeOnWillReleaseScriptContext",
+    "wkeOnWindowClosing",
+    "wkeOnWindowDestroy",
+    "wkePaint",
+    "wkePaint2",
+    "wkePaste",
+    "wkePerformCookieCommand",
+    "wkePluginListBuilderAddFileExtensionToLastMediaType",
+    "wkePluginListBuilderAddMediaTypeToLastPlugin",
+    "wkePluginListBuilderAddPlugin",
+    "wkePostURL",
+    "wkePostURLW",
+    "wkePrepareWorkerShutdown",
+    "wkePrintToBitmap",
+    "wkeRegisterEmbedderCustomElement",
+    "wkeReload",
+    "wkeRepaintIfNeeded",
+    "wkeResize",
+    "wkeResizeWindow",
+    "wkeRunJS",
+    "wkeRunJSW",
+    "wkeRunJsByFrame",
+    "wkeRunMessageLoop",
+    "wkeSaveMemoryCache",
+    "wkeScreenshot",
+    "wkeSelectAll",
+    "wkeSetClientHandler",
+    "wkeSetComposition",
+    "wkeSetContextMenuEnabled",
+    "wkeSetContextMenuItemShow",
+    "wkeSetCookie",
+    "wkeSetCookieEnabled",
+    "wkeSetCookieJarFullPath",
+    "wkeSetCookieJarPath",
+    "wkeSetCspCheckEnable",
+    "wkeSetCursorInfoType",
+    "wkeSetDebugConfig",
+    "wkeSetDeviceParameter",
+    "wkeSetDirty",
+    "wkeSetDragDropEnable",
+    "wkeSetDragEnable",
+    "wkeSetDragFiles",
+    "wkeSetEditable",
+    "wkeSetFileSystem",
+    "wkeSetFocus",
+    "wkeSetHandle",
+    "wkeSetHandleOffset",
+    "wkeSetHeadlessEnabled",
+    "wkeSetLanguage",
+    "wkeSetLocalStorageFullPath",
+    "wkeSetMediaPlayerFactory",
+    "wkeSetMediaVolume",
+    "wkeSetMemoryCacheEnable",
+    "wkeSetMouseEnabled",
+    "wkeSetName",
+    "wkeSetNavigationToNewWindowEnable",
+    "wkeSetNpapiPluginsEnabled",
+    "wkeSetProxy",
+    "wkeSetResourceGc",
+    "wkeSetString",
+    "wkeSetStringW",
+    "wkeSetStringWithoutNullTermination",
+    "wkeSetSystemTouchEnabled",
+    "wkeSetTouchEnabled",
+    "wkeSetTransparent",
+    "wkeSetUIThreadCallback",
+    "wkeSetUserAgent",
+    "wkeSetUserAgentW",
+    "wkeSetUserKeyValue",
+    "wkeSetViewNetInterface",
+    "wkeSetViewProxy",
+    "wkeSetViewSettings",
+    "wkeSetWebViewName",
+    "wkeSetWindowTitle",
+    "wkeSetWindowTitleW",
+    "wkeSetZoomFactor",
+    "wkeShowDevtools",
+    "wkeShowWindow",
+    "wkeShutdown",
+    "wkeShutdownForDebug",
+    "wkeSleep",
+    "wkeStopLoading",
+    "wkeTitle",
+    "wkeTitleW",
+    "wkeToString",
+    "wkeToStringW",
+    "wkeUnfocus",
+    "wkeUnlockViewDC",
+    "wkeUpdate",
+    "wkeUtilBase64Decode",
+    "wkeUtilBase64Encode",
+    "wkeUtilCreateV8Snapshot",
+    "wkeUtilDecodeURLEscape",
+    "wkeUtilEncodeURLEscape",
+    "wkeUtilPrintToPdf",
+    "wkeUtilRelasePrintPdfDatas",
+    "wkeUtilSerializeToMHTML",
+    "wkeUtilSetUiCallback",
+    "wkeVersion",
+    "wkeVersionString",
+    "wkeVisitAllCookie",
+    "wkeWake",
+    "wkeWebFrameGetMainFrame",
+    "wkeWebFrameGetMainWorldScriptContext",
+    "wkeWebViewName",
+    "wkeWidth",
+    "wkeZoomFactor"
+  ],
+  "missingRequired": [
+    "jsDoubleString",
+    "jsToDoubleString",
+    "wkeClearCookie",
+    "wkeCreateStringWithoutNullTermination",
+    "wkeEnableHighDPISupport",
+    "wkeGetCaretRect2",
+    "wkeGetStringLen",
+    "wkeIsWebviewValid",
+    "wkeNetGetRawHttpHead",
+    "wkeNetGetRawResponseHead",
+    "wkePerformCookieCommand",
+    "wkePluginListBuilderAddFileExtensionToLastMediaType",
+    "wkePluginListBuilderAddMediaTypeToLastPlugin",
+    "wkePluginListBuilderAddPlugin",
+    "wkeScreenshot",
+    "wkeSetCookie",
+    "wkeSetCookieJarFullPath",
+    "wkeSetCookieJarPath",
+    "wkeSetProxy",
+    "wkeSetStringWithoutNullTermination",
+    "wkeSetSystemTouchEnabled",
+    "wkeSetViewProxy",
+    "wkeShutdownForDebug",
+    "wkeUnlockViewDC",
+    "wkeVisitAllCookie"
+  ],
+  "allExportDifferencePreserved": "F:\\work\\SOUI_WEB\\out\\release-050/kernel-x64-1/export-comparison.json",
+  "classifiedMissing": [
+    {
+      "name": "??0?$basic_ios@DU?$char_traits@D@std@@@std@@IEAA@XZ",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "??0?$basic_ios@DU?$char_traits@D@std@@@std@@QEAA@PEAV?$basic_streambuf@DU?$char_traits@D@std@@@1@@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "??1?$basic_ios@DU?$char_traits@D@std@@@std@@UEAA@XZ",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "??_7?$basic_ios@DU?$char_traits@D@std@@@std@@6B@",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?_Move_assign_unequal_alloc@?$vector@PEAVMoveOperands@compiler@internal@v8@@V?$zone_allocator@PEAVMoveOperands@compiler@internal@v8@@@34@@std@@AEAAXAEAV12@@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?_Move_assign_unequal_alloc@?$vector@UCpuProfileDeoptFrame@v8@@V?$allocator@UCpuProfileDeoptFrame@v8@@@std@@@std@@AEAAXAEAV12@@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?_Move_assign_unequal_alloc@?$vector@UCpuProfileDeoptInfo@v8@@V?$allocator@UCpuProfileDeoptInfo@v8@@@std@@@std@@AEAAXAEAV12@@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?clear@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAXH_N@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?clear@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAXI@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?copyfmt@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAAEAV12@AEBV12@@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?fill@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAADD@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?fill@?$basic_ios@DU?$char_traits@D@std@@@std@@QEBADXZ",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?imbue@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAA?AVlocale@2@AEBV32@@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?init@?$basic_ios@DU?$char_traits@D@std@@@std@@IEAAXPEAV?$basic_streambuf@DU?$char_traits@D@std@@@2@_N@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?move@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAX$$QEAV12@@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?move@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAXAEAV12@@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?narrow@?$basic_ios@DU?$char_traits@D@std@@@std@@QEBADDD@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?rdbuf@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAPEAV?$basic_streambuf@DU?$char_traits@D@std@@@2@PEAV32@@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?rdbuf@?$basic_ios@DU?$char_traits@D@std@@@std@@QEBAPEAV?$basic_streambuf@DU?$char_traits@D@std@@@2@XZ",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?set_rdbuf@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAXPEAV?$basic_streambuf@DU?$char_traits@D@std@@@2@@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?setstate@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAXH_N@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?setstate@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAXI@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?swap@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAXAEAV12@@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?tie@?$basic_ios@DU?$char_traits@D@std@@@std@@QEAAPEAV?$basic_ostream@DU?$char_traits@D@std@@@2@PEAV32@@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?tie@?$basic_ios@DU?$char_traits@D@std@@@std@@QEBAPEAV?$basic_ostream@DU?$char_traits@D@std@@@2@XZ",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "?widen@?$basic_ios@DU?$char_traits@D@std@@@std@@QEBADD@Z",
+      "category": "compiler-STL-or-V8-template"
+    },
+    {
+      "name": "ares_cancel",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_create_query",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_destroy",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_destroy_options",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_dup",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_expand_name",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_expand_string",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_fds",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_free_data",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_free_hostent",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_free_string",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_get_servers",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_get_servers_ports",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_gethostbyaddr",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_gethostbyname",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_gethostbyname_file",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_getnameinfo",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_getsock",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_inet_ntop",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_inet_pton",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_init",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_init_options",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_library_cleanup",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_library_init",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_library_init_mem",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_library_initialized",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_mkquery",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_parse_a_reply",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_parse_aaaa_reply",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_parse_mx_reply",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_parse_naptr_reply",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_parse_ns_reply",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_parse_ptr_reply",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_parse_soa_reply",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_parse_srv_reply",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_parse_txt_reply",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_parse_txt_reply_ext",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_process",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_process_fd",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_query",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_save_options",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_search",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_send",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_set_local_dev",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_set_local_ip4",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_set_local_ip6",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_set_servers",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_set_servers_csv",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_set_servers_ports",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_set_servers_ports_csv",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_set_socket_callback",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_set_socket_configure_callback",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_set_sortlist",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_strerror",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_timeout",
+      "category": "static-c-ares"
+    },
+    {
+      "name": "ares_version",
+      "category": "static-c-ares"
+    }
+  ],
+  "allOldExportsPreserved": false,
+  "publicApiSymbolsPreserved": false,
+  "binaryAbiQualified": false,
+  "fullRuntimeQualified": false
+}

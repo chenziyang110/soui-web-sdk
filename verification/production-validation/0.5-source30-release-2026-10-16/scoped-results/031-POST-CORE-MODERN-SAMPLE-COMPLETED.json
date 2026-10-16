@@ -1,0 +1,88 @@
+{
+  "passed": true,
+  "source": 30,
+  "stage": "modern-sample",
+  "sourceManifest": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 16240065,
+    "sha256": "ad031346ae01ff74fa840e8c2ca820bd3e879a0848d41e8cb7c20f408c68e4b6"
+  },
+  "currentModern": "C:/work/sm05-source30-modern-scheduling-9",
+  "verified": {
+    "path": "C:\\work\\sm05-source30-modern-scheduling-9\\automatic-s05-1\\VERIFIED.json",
+    "bytes": 4481,
+    "sha256": "03e0ab6fd56c5f966227bccdc469d6ddafdb61b4ba2a96cfc38e97f65e9bb9fb"
+  },
+  "privateCallerCorrection": {
+    "files": [
+      "run-build.cjs",
+      "run-desktop.cjs",
+      "prepare-page.cjs"
+    ],
+    "reason": "The public LLVM toolchain requires the exact native Windows ComSpec spelling. Use path.normalize in the private launcher; preserve the failed slash-form attempt and all public checks.",
+    "originalFailure": {
+      "path": "C:\\work\\sm05-source30-modern-presentation-2\\build-x64-source30-1\\RESULT.json",
+      "bytes": 1442,
+      "sha256": "34852fdd2d8f1bc4b795ad0cdc1dcc4aa46066bb0137e21664f132f8f4556107"
+    },
+    "originalStderr": {
+      "path": "C:\\work\\sm05-source30-modern-presentation-2\\build-x64-source30-1\\build-stderr.bin",
+      "bytes": 591,
+      "sha256": "3df57b7c57b0f9732497cf9388e664e8fdbaa369980d6d05c609526994619bcf"
+    }
+  },
+  "privateStartupCorrection": {
+    "reason": "Private fixture previously launched InputTrace immediately after process creation, before WebView2 preparation/page readiness. Wait for actual SDK application-ready handshake plus 3 s setup settling and create the window at its final center. Public collector, page, duration and acceptance assertions remain unchanged.",
+    "originalRun": {
+      "path": "C:\\work\\sm05-source30-modern-presentation-3\\desktop-x64-s05-source30-1\\run\\run.json",
+      "bytes": 10093,
+      "sha256": "93faee779f7d0496e671bdf7ba32829cc8d615a40aa4280c36aaaffc9be38f73"
+    },
+    "originalTrace": {
+      "path": "C:\\work\\sm05-source30-modern-presentation-3\\desktop-x64-s05-source30-1\\run\\input.ndjson.desktop.ndjson",
+      "bytes": 991,
+      "sha256": "6ccd7f4903979c9285a94da8de1946dd8df854de63a6596b1c0dcc447cccbc4a"
+    },
+    "originalOuter": {
+      "path": "C:\\work\\sm05-source30-modern-presentation-3\\desktop-x64-s05-source30-1\\OUTER-RESULT.json",
+      "bytes": 1419,
+      "sha256": "a3000a4bf217a83614c27dae4ee64b1910aee069fbab3ae5cd63f7ca080ce576"
+    },
+    "readinessCorrection": "Use real renderer document_ready plus three seconds of page settling. This benchmark first opens its Bridge session when exporting results, so application_ready is not a startup signal for it.",
+    "wrongReadinessAttempt": {
+      "path": "C:\\work\\sm05-source30-modern-presentation-4\\desktop-x64-s05-source30-1\\run\\run.json",
+      "bytes": 5564,
+      "sha256": "e389a75dd9f30ebe67687c3449375ea3665771d12c19897dbad3837176ff0833"
+    },
+    "windowsLineEndingCorrection": "Recognize actual Windows CRLF in the private host readiness log. No SDK or collector modification.",
+    "originalReadinessFailure": {
+      "path": "C:\\work\\sm05-source30-modern-presentation-5\\desktop-x64-s05-source30-1\\run\\run.json",
+      "bytes": 5561,
+      "sha256": "572464f32895d8bc02283554ed23efe6eb66b0850dc668e12f7bad3d107e433d"
+    },
+    "foregroundPreparation": "Private fixture establishes actual foreground using a bounded same-desktop input-thread attachment at document readiness. The public collector still independently enforces foreground identity before every input.",
+    "originalFocusFailure": {
+      "path": "C:\\work\\sm05-source30-modern-presentation-6\\desktop-x64-s05-source30-1\\run\\run.json",
+      "bytes": 10204,
+      "sha256": "274960532576b201e1a333f306d9c4f4dabf35b92febf0e6f1cbed5912199c51"
+    },
+    "scopeAdjustment": "Maintainer asked to reduce unnecessary tests and ensure high-refresh support. Retain the strict compositor failure; complete the unchanged 120-second S05 via ordinary public InputTrace and report only actual JS scheduling cadence plus native window/display binding. All public collector assertions stay unchanged.",
+    "strictCompositorFailure": {
+      "path": "C:\\work\\sm05-source30-modern-presentation-7\\desktop-x64-s05-source30-1\\run\\run.json",
+      "bytes": 10201,
+      "sha256": "ec8498b26f10e9f99d2341024028e0cca7d6dbab9d6e9ceb38dd8fda9d1a47ed"
+    },
+    "strictCompositorTrace": {
+      "path": "C:\\work\\sm05-source30-modern-presentation-7\\desktop-x64-s05-source30-1\\run\\input.ndjson.desktop.ndjson",
+      "bytes": 1752,
+      "sha256": "84e68f45abb681a4488b137678218438c1c045e80f71500ec225f640e67c1989"
+    },
+    "automaticScene": "Use a private HTML bootstrap to invoke existing S05 selection, start and finish handlers. The real scene/motion and measurement code are unchanged. This is an automatic scheduling diagnostic, not a real-input benchmark. Close after the real result sink commits, without waiting for an unrelated Bridge probe.",
+    "originalSchedulingFailure": {
+      "path": "C:\\work\\sm05-source30-modern-scheduling-8\\desktop-x64-s05-source30-1\\run\\page-results\\modern-72504-15874500-1.json",
+      "bytes": 1870,
+      "sha256": "825538f4dc348c14612bcc127a1f2d466cfdebce380dfb009b6a434418d7ac5f"
+    }
+  },
+  "releaseReady": false
+}

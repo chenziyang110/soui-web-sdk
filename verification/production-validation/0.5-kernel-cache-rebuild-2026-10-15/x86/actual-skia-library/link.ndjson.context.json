@@ -1,0 +1,31 @@
+{
+  "schema": "soui.owned-process-context/v1",
+  "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+  "executableSha256": "631a02cecb87f9f7f2270713d6c7f84e54a0fabce6c6638d21d3a0caea78204d",
+  "executable": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+  "args": [
+    "/nologo",
+    "/out:C:/work/sm05-skia-final-library-x86-first1/SkiaByteBudgetProbe.exe",
+    "/machine:x86",
+    "/subsystem:console",
+    "C:/work/sm05-skia-final-library-x86-first1/main.obj",
+    "C:/work/sm05-kernel-cache-050-x86-1/miniblink/obj/SkMemory_new_handler.obj",
+    "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/zlib.lib",
+    "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/libjpeg.lib",
+    "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/libpng.lib",
+    "C:/work/sm05-kernel-cache-050-x86-1/libraries/lib/skia.lib",
+    "/libpath:C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x86",
+    "/libpath:C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x86",
+    "/libpath:C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x86",
+    "kernel32.lib",
+    "user32.lib",
+    "gdi32.lib",
+    "usp10.lib",
+    "ole32.lib",
+    "advapi32.lib",
+    "fontsub.lib"
+  ],
+  "cwd": "C:/work/sm05-skia-final-library-x86-first1",
+  "timeoutMs": 180000,
+  "drainMs": 2000
+}

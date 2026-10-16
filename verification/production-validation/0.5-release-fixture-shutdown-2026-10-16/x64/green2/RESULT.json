@@ -1,0 +1,221 @@
+{
+  "arch": "x64",
+  "variant": "green2",
+  "pins": [
+    {
+      "path": "C:\\work\\sm05-release-fixture-fix-1\\run2.cjs",
+      "bytes": 4356,
+      "sha256": "4b20677cba53cecf6bb17d3f6df5907032925e35fa86bee2d59c738d23ddbd2c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\x64\\llvm-profile-request-Release.json",
+      "bytes": 11951,
+      "sha256": "88c2837ac3ee5df7cc03caeef518d19f8986e9fafa6e33f1adfdde2b6d4c7664"
+    },
+    {
+      "path": "C:\\work\\sm05-release-fixture-fix-1\\build-x64-green2\\soui_zlib.lib",
+      "bytes": 119612,
+      "sha256": "0291dfdd8ba93a76cb8898f0d967b1dd4e9371f76da3cd8211ca7b75ba9a5073"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\cmake\\toolchains\\SouiLLVM22.cmake",
+      "bytes": 23132,
+      "sha256": "ebba063e275fdbd54e5225142b328682b97fb86bfc6c6c9923000a5e5be9e837"
+    },
+    {
+      "path": "C:\\work\\sm05-release-fixture-fix-1\\DECISION.json",
+      "bytes": 663,
+      "sha256": "d222d6ceb2add143bb433dc1621fcf193e86c7412f7ba8f2ec0aaddaff5b9a25"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\third_party\\prebuilt\\x64\\miniblink\\node.dll",
+      "bytes": 38959616,
+      "sha256": "1c763337615c1298a54bb8557d8d79aaeec539dfd5027a9d6d60c245bf2f1382"
+    },
+    {
+      "path": "C:\\work\\sm05-release-fixture-fix-1\\build-x64-green2\\Release\\node.dll",
+      "bytes": 38959616,
+      "sha256": "1c763337615c1298a54bb8557d8d79aaeec539dfd5027a9d6d60c245bf2f1382"
+    }
+  ],
+  "snapshot": {
+    "schema": "soui.kernel-source-files/v1",
+    "root": "C:/work/sm05-release-fixture-fix-1/green2",
+    "files": [
+      {
+        "path": "CMakeLists.txt",
+        "bytes": 632,
+        "sha256": "d45760b5eb69c375d9a647f771cea12bf4f471d3b2ec2cca48bf7747d01699a1"
+      },
+      {
+        "path": "main.cpp",
+        "bytes": 4951,
+        "sha256": "a3ac5536ca18449aa8a5010a10aa758fefe52658bfd0ff85dcebe4b5d339035d"
+      },
+      {
+        "path": "resources/index.html",
+        "bytes": 1108,
+        "sha256": "7310b411a0307b5a03c373826f4140b378ac6b9c3cb27cda7af81a8fb6e5e9c2"
+      }
+    ],
+    "directories": [
+      "resources"
+    ],
+    "fileCount": 3,
+    "directoryCount": 1,
+    "totalBytes": 6691,
+    "identity": "e9593eff8cada834876a0838833febe8d55a2f75c904652e47e46d63bcb6ee1a"
+  },
+  "records": [
+    {
+      "name": "configure",
+      "expectedExit": 0,
+      "natural": true,
+      "result": {
+        "pid": 44440,
+        "creationFileTime": "134365559813186633",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 18717,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 53,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-release-fixture-fix-1\\evidence-x64-green2\\configure.ndjson",
+        "reportSha256": "1e3a2153b1c23871c449377dbca459710ff385b19ba4df9e14628f5c9d3ce196",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 18717,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 53,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "build",
+      "expectedExit": 0,
+      "natural": true,
+      "result": {
+        "pid": 48848,
+        "creationFileTime": "134365560001528978",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 2380,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 7,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-release-fixture-fix-1\\evidence-x64-green2\\build.ndjson",
+        "reportSha256": "9e735e29573e7a62e2bcc366eec783c0fc90c7d142d0d000b9b82b0ccba15fda",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 2380,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 7,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "probe",
+      "expectedExit": 0,
+      "natural": true,
+      "result": {
+        "pid": 62164,
+        "creationFileTime": "134365560027814221",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 1489,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 1,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-release-fixture-fix-1\\evidence-x64-green2\\probe.ndjson",
+        "reportSha256": "833cf0fa54daa5e57596a434e5529d2f9acf610fc243456084860ab7d2ccd1b5",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "e2c4b66e827eb7f8c40bfb41340a22f5c55b61325dd47d6bd5f3224232c3388a"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 1489,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 1,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    }
+  ]
+}

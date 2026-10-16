@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),Module=require('node:module');
+const root='C:/work/sm05-release-050';
+const file=path.join(root,'tools/internal/release-verification.cjs');
+const adapter=new Module(file,module);adapter.filename=file;adapter.paths=Module._nodeModulePaths(path.dirname(file));
+adapter._compile(fs.readFileSync(__dirname+'/proposed/tools/internal/release-verification.cjs','utf8'),file);
+const testfile=path.join(root,'tests/sdk/release-verification.test.cjs');
+const suite=new Module(testfile,module);suite.filename=testfile;suite.paths=Module._nodeModulePaths(path.dirname(testfile));
+const originalRequire=suite.require.bind(suite);
+suite.require=name=>name==='../../tools/internal/release-verification.cjs'?adapter.exports:originalRequire(name);
+suite._compile(fs.readFileSync(testfile,'utf8'),testfile);

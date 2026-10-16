@@ -1,0 +1,83 @@
+{
+  "schema": "soui.resource-publication-fix/v1",
+  "sourceRevision": "Source30 revision2",
+  "originalBuildFailures": [
+    "attempt-78182fd6-ef56-4a27-af66-f436044640a1",
+    "attempt-dd31512d-004a-4bf2-bda2-f5ce77af0695"
+  ],
+  "observedFailure": "EPERM publishing the populated SouiStarter resources directory during two full x64 Release builds.",
+  "specificLockOwnerEstablished": false,
+  "existingPolicy": "tools/sdk/soui-sdk.cjs publishStagedDirectory",
+  "change": "The same bounded Windows EPERM/EACCES retry at the resource publication boundary; no retry for other errors, missing source or existing destination. Original rollback preserved.",
+  "regression": {
+    "redExitCode": 1,
+    "redFailures": 2,
+    "greenExitCode": 0,
+    "greenPassed": 21,
+    "greenSkipped": 0
+  },
+  "files": [
+    {
+      "path": "C:\\work\\sm05-release-050/tools/internal/deploy-resources.cjs",
+      "bytes": 3478,
+      "sha256": "0b13effbee76d17c47f9d0597434463d8af9a1c4c8f5b6b2127078f31eaac7c5"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050/tests/sdk/delivery-identity.test.cjs",
+      "bytes": 22005,
+      "sha256": "37460565f7438e9c00869e0d1f0186c22ebbdae2c0e3b91f510e8d5b5978a140"
+    }
+  ],
+  "records": [
+    {
+      "original": {
+        "path": "C:/work/sm05-resource-deploy-fix-1/red.log",
+        "bytes": 2437,
+        "sha256": "9d0aa6bd5a38528e5fba3df6517c2f9f8e228fedc7b44556614578a8945246fa"
+      },
+      "archived": {
+        "path": "C:\\work\\sm05-release-050/verification/production-validation/0.5-source30-release-2026-10-16/resource-publication-fix/red.log",
+        "bytes": 2437,
+        "sha256": "9d0aa6bd5a38528e5fba3df6517c2f9f8e228fedc7b44556614578a8945246fa"
+      }
+    },
+    {
+      "original": {
+        "path": "C:/work/sm05-resource-deploy-fix-1/green.log",
+        "bytes": 3448,
+        "sha256": "ce1edc13fef25130f9b9c4d85bbb57c74f619305328b74d687a27f7388bc6b80"
+      },
+      "archived": {
+        "path": "C:\\work\\sm05-release-050/verification/production-validation/0.5-source30-release-2026-10-16/resource-publication-fix/green.log",
+        "bytes": 3448,
+        "sha256": "ce1edc13fef25130f9b9c4d85bbb57c74f619305328b74d687a27f7388bc6b80"
+      }
+    },
+    {
+      "original": {
+        "path": "C:/work/sm05-resource-deploy-fix-1/original-deploy-resources.cjs",
+        "bytes": 2837,
+        "sha256": "080a1559c448ba6cf7d3284dabae03d55bfacc0795508107c06f93cd1e9e4010"
+      },
+      "archived": {
+        "path": "C:\\work\\sm05-release-050/verification/production-validation/0.5-source30-release-2026-10-16/resource-publication-fix/original-deploy-resources.cjs",
+        "bytes": 2837,
+        "sha256": "080a1559c448ba6cf7d3284dabae03d55bfacc0795508107c06f93cd1e9e4010"
+      }
+    },
+    {
+      "original": {
+        "path": "C:/work/sm05-resource-deploy-fix-1/original-third-native-Release.log",
+        "bytes": 431443,
+        "sha256": "23692bbf20e0b11bbc4146a2faa79e281f6360b75accee99b9bc2aa8040fc896"
+      },
+      "archived": {
+        "path": "C:\\work\\sm05-release-050/verification/production-validation/0.5-source30-release-2026-10-16/resource-publication-fix/original-third-native-Release.log",
+        "bytes": 431443,
+        "sha256": "23692bbf20e0b11bbc4146a2faa79e281f6360b75accee99b9bc2aa8040fc896"
+      }
+    }
+  ],
+  "actualFullBuildAfterFixPassed": false,
+  "releaseReady": false
+}

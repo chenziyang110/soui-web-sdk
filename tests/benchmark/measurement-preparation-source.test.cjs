@@ -9,6 +9,7 @@ const vm = require('node:vm');
 
 const repository = path.resolve(__dirname, '../..');
 const helperPath = path.join(repository, 'tools/internal/measurement-validation.cjs');
+const helperRequire = require('node:module').createRequire(helperPath);
 const helperSource = fs.readFileSync(helperPath, 'utf8');
 const sdkCheck = 'cmake/SouiWindowsSdk.cmake';
 const tailInputs = ['benchmarks/protocol/owned-tail-evidence.cpp', 'benchmarks/protocol/owned-tail-evidence.h',
@@ -28,7 +29,7 @@ function load(workspace, launches) {
       throw new Error('Native launch prohibited in pure preparation fixture');
     }
   } : (() => {
-    const actual = require(name);
+    const actual = helperRequire(name);
     if (path.isAbsolute(name) && name.endsWith('owned-trace-subject.cjs') && launches.beforeCapture)
       return {...actual, captureOwnedEvidence(...args) {launches.beforeCapture(args[0]); return actual.captureOwnedEvidence(...args);}};
     if (path.isAbsolute(name) && name.endsWith('display-calibration.cjs') && launches.afterRead)

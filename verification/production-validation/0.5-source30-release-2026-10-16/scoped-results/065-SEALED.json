@@ -1,0 +1,158 @@
+{
+  "schema": "soui.source30-pipeline-seal/1",
+  "source": 30,
+  "revision": 2,
+  "parentSeal": {
+    "path": "C:\\work\\sm05-source30-pipeline-1\\SEALED.json",
+    "bytes": 5998,
+    "sha256": "5a3e890824d2fa44ccacfddda10905e54f7e5789530b85561a7883f514b1907d"
+  },
+  "sealedAt": "2026-10-16T06:03:42.702Z",
+  "sourceManifest": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 16240065,
+    "sha256": "ad031346ae01ff74fa840e8c2ca820bd3e879a0848d41e8cb7c20f408c68e4b6"
+  },
+  "capturedSourceManifest": {
+    "path": "C:\\work\\sm05-source30-pipeline-2\\source-manifest.json",
+    "bytes": 16240065,
+    "sha256": "ad031346ae01ff74fa840e8c2ca820bd3e879a0848d41e8cb7c20f408c68e4b6"
+  },
+  "adopted": {
+    "path": "C:\\work\\sm05-resource-deploy-fix-1\\ADOPTED.json",
+    "bytes": 3371,
+    "sha256": "663cfa4876aee5da76b3c62b8f2ced6e8aee614e41828de4a0912f31e0fa94ee"
+  },
+  "helperPreparation": {
+    "path": "C:\\work\\sm05-source30-pipeline-2\\PREPARED.json",
+    "bytes": 5713,
+    "sha256": "526f99b86d81aab1b95b3caf1298450218cda06fd5dccac7800aa3b358ebab0d"
+  },
+  "cmd": {
+    "path": "C:\\Windows\\System32\\cmd.exe",
+    "bytes": 339968,
+    "sha256": "15cd209c995b7d3009c91ca40892d5b8f1fb162f3e5f10716642ea278e8e0d7b"
+  },
+  "dependencySelection": {
+    "path": "C:\\work\\sm05-source30-pipeline-2\\DEPENDENCY-SELECTION.json",
+    "bytes": 1464,
+    "sha256": "a6c220e1104f7c3677a62b048ce0361729384d5276b918d6f8fa3943266931f7"
+  },
+  "dependencyInputs": [
+    {
+      "arch": "x64",
+      "component": "kernel",
+      "report": {
+        "path": "C:\\work\\sm05-kernel-post-upgrade-x64-1\\build-Miniblink.json",
+        "bytes": 5679,
+        "sha256": "41e5198e549e6ef7886b4f341f2d5262a8484a3535b4ecca1aff13123ff4d7c7"
+      },
+      "inputs": {
+        "path": "C:\\work\\sm05-kernel-post-upgrade-x64-1\\kernel-llvm-inputs.json",
+        "bytes": 25388,
+        "sha256": "e2ccd58256ab35334e6b752fb4121a05100aa42adce2c120885d992ba9a473b6"
+      }
+    },
+    {
+      "arch": "x64",
+      "component": "soui",
+      "report": {
+        "path": "C:\\work\\sm05-release-050\\out\\dependencies\\source30-post-upgrade-x64-2\\build-SOUI.json",
+        "bytes": 12890,
+        "sha256": "d8a6284ef0ef28ac2b1e732b6d7ea48d760644d30470d0fce3af784b874da6cd"
+      },
+      "inputs": {
+        "path": "C:\\work\\sm05-release-050\\out\\dependencies\\source30-post-upgrade-x64-2\\soui-llvm-inputs.json",
+        "bytes": 23742,
+        "sha256": "7861e0046c4e5ccb0be1d0a30726900962bd15d0a81eb751cafd9a0f656276de"
+      }
+    },
+    {
+      "arch": "x86",
+      "component": "kernel",
+      "report": {
+        "path": "C:\\work\\sm05-kernel-post-upgrade-x86-1\\build-Miniblink.json",
+        "bytes": 5665,
+        "sha256": "6eb9ad54a9332dc51c3c8c28e160ccbf948e7dd629dd3afee67924e78d1a5238"
+      },
+      "inputs": {
+        "path": "C:\\work\\sm05-kernel-post-upgrade-x86-1\\kernel-llvm-inputs.json",
+        "bytes": 25382,
+        "sha256": "9b019c68d33a0ae3b23e7a9c9788ff75ead5feb91ecb815a256a9153f3e4b7c8"
+      }
+    },
+    {
+      "arch": "x86",
+      "component": "soui",
+      "report": {
+        "path": "C:\\work\\sm05-release-050\\out\\dependencies\\source30-post-upgrade-x86-2\\build-SOUI.json",
+        "bytes": 12838,
+        "sha256": "bc600ecb82ea0ce6ce34c2d056d36cdec88d8d83dcf1db99cc0b6ddff3434292"
+      },
+      "inputs": {
+        "path": "C:\\work\\sm05-release-050\\out\\dependencies\\source30-post-upgrade-x86-2\\soui-llvm-inputs.json",
+        "bytes": 23736,
+        "sha256": "d495a87bc2955f6592d3da76127b1308774b01559d080f548f2b33ffd83d1601"
+      }
+    }
+  ],
+  "withUia": true,
+  "displayAfterRestart": {
+    "directory": "C:/work/sm05-system-transition-1/display-after-restart",
+    "reportedConfiguration": "AMD P24FBA-RA 1920x1080 at 100 Hz primary; Intel V24FAB-RA at 60 Hz secondary. Independent calibration evidence; physical frame presentation is separate.",
+    "pins": [
+      {
+        "path": "C:\\work\\sm05-system-transition-1\\display-after-restart\\display-finished.json",
+        "bytes": 958,
+        "sha256": "f7eac8ef899052deafe1cb6227c6a1819d8843c96665d8c86e1b14ff5d0f228e"
+      },
+      {
+        "path": "C:\\work\\sm05-system-transition-1\\display-after-restart\\display-ready.json",
+        "bytes": 63,
+        "sha256": "32f9a603b1272ad00e2b5aeb78186716457f1ad865cc993bb90d87a039fc1eb3"
+      },
+      {
+        "path": "C:\\work\\sm05-system-transition-1\\display-after-restart\\display-stderr.bin",
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      {
+        "path": "C:\\work\\sm05-system-transition-1\\display-after-restart\\display-stdout.bin",
+        "bytes": 8428,
+        "sha256": "14714c7cacbde134d670e5520cc55c18851815acab15792c7a6f01f5f4b9c246"
+      },
+      {
+        "path": "C:\\work\\sm05-system-transition-1\\display-after-restart\\display.ndjson",
+        "bytes": 1284,
+        "sha256": "7d8bc090c4c34c0a7821faa38cf54d6e6a9a6737d2eac55ff7888ddc22762c03"
+      },
+      {
+        "path": "C:\\work\\sm05-system-transition-1\\display-after-restart\\display.ndjson.context.json",
+        "bytes": 445,
+        "sha256": "ee2031dfc3baa96db870aa2c9fffc3d69b9dc77ccb0ea29d39b8288b2a28a757"
+      },
+      {
+        "path": "C:\\work\\sm05-system-transition-1\\display-after-restart\\RESULT.json",
+        "bytes": 1531,
+        "sha256": "89622c370e2876379988563ebb185787f2dbc4773196efec858034af7273a2b9"
+      }
+    ]
+  },
+  "unresolvedHistory": {
+    "issue": "Source29 sdk.native.uia.mutations typed owner focus failure; OS upgrade and fresh passes do not establish its root cause.",
+    "status": "unresolved-by-this-pipeline",
+    "evidence": [
+      {
+        "path": "C:\\work\\sm05-source29-pipeline-1\\unit-x64-Release-source29-2\\RESULT.json",
+        "bytes": 2000,
+        "sha256": "d2a80519a7094a4a76e74786c1428faf980637cba3cff63974349801f52b2e1a"
+      },
+      {
+        "path": "C:\\work\\sm05-source29-pipeline-1\\unit-x64-Release-source29-2\\unit-stdout.bin",
+        "bytes": 119826,
+        "sha256": "cbbf3ea9d8947d43a891f9135ea2a9a4c240f4f8e39a06e6ac9657889c0fc15d"
+      }
+    ]
+  },
+  "releaseReady": false
+}

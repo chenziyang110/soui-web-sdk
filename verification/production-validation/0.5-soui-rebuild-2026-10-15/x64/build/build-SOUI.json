@@ -1,0 +1,267 @@
+{
+  "schema": "soui.dependency-build/v1",
+  "architecture": "x64",
+  "component": "SOUI",
+  "experimentalGpu": false,
+  "startedAt": "2026-10-15T14:39:44.6241223+08:00",
+  "finishedAt": "2026-10-15T14:47:40.2636295+08:00",
+  "status": "built",
+  "releaseReady": false,
+  "souiSourceStage": "C:\\work\\sm05-release-050\\out\\dependencies\\x64-soui-public-3\\source",
+  "artifacts": [
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/utilities.dll",
+      "sha256": "1e1f803c8b1f4e03d51a287b390ea6b9f0c60865505f7d043d513b156377fc06",
+      "kind": "utilities"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/soui.dll",
+      "sha256": "4da894ea9c63b4f52ed645b549c8d58cf2db6b08cceea1be7530f084562b1a8b",
+      "kind": "soui"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/render-gdi.dll",
+      "sha256": "0e482f84b95df231c5f6373d5660b0950f26563a80ec4db8d83f7049887041f3",
+      "kind": "render-gdi"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/imgdecoder-gdip.dll",
+      "sha256": "9aac63a372aa6a84d4beb094ed5612bab956e4b9e037b8c347d84881d264f08b",
+      "kind": "imgdecoder-gdip"
+    },
+    {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/soui-sys-resource.dll",
+      "sha256": "1ed54517adb1b3ea00cbe9f98aeef3cbf5c1d3f34382fce9fbe9114a3c3c142a",
+      "kind": "soui-sys-resource"
+    }
+  ],
+  "souiLlvm": {
+    "schema": "soui.public-soui-llvm-build-files/v1",
+    "profile": "LLVM22MSVC142",
+    "architecture": "x64",
+    "inputs": {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/soui-llvm-inputs.json",
+      "bytes": 23742,
+      "sha256": "b73e6cfc531d66e1da37b24522eb6848ebbe10e5a01711461a99572721a3bc07"
+    },
+    "sourceBefore": {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/soui-source-before.json",
+      "bytes": 846736,
+      "sha256": "1f98ee1d66a40356c21a30e98ea83c37fbed9973e4630c2c4043986ab50f9585"
+    },
+    "sourceAfter": {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/soui-source-after.json",
+      "bytes": 846736,
+      "sha256": "1f98ee1d66a40356c21a30e98ea83c37fbed9973e4630c2c4043986ab50f9585"
+    },
+    "stageBefore": {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/staged-source-before.json",
+      "bytes": 846753,
+      "sha256": "3b95061360ded0b206f15b38ce50c50bdd007b9e920ac4e6178fb02ff413c12b"
+    },
+    "atl": {
+      "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/atl-before.json",
+      "bytes": 14596,
+      "sha256": "692acadcce6042a4a2b0f382efbad23c5454705d1519a30604c60d30de5a6470"
+    },
+    "sourceImmutable": true,
+    "inputFilesStable": true,
+    "records": [
+      {
+        "importLibrary": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/utilities.lib",
+          "bytes": 175080,
+          "sha256": "3cd84828d94bb95ddb775cba1036eeca5ee634a1e60d2f77d7d6dd7c1c00d311"
+        },
+        "arguments": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/utilities.arguments.json",
+          "bytes": 2117,
+          "sha256": "c49c9149ddbf52184105e12ea5533fd633b87d5c95be475aab967c304f1c80ca"
+        },
+        "log": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/utilities.log",
+          "bytes": 318818,
+          "sha256": "650a9dc700730473a6b85686c3843ae778dff033b56f5fbdecf4c23f7da747e5"
+        },
+        "project": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/utilities/utilities64.vcxproj",
+          "bytes": 10890,
+          "sha256": "24f39a3c81fa1ff95900c15420165e870c480968561aa7148330b917af4d476c"
+        },
+        "dll": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/utilities.dll",
+          "bytes": 105472,
+          "sha256": "1e1f803c8b1f4e03d51a287b390ea6b9f0c60865505f7d043d513b156377fc06"
+        },
+        "component": "utilities",
+        "map": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/utilities.map",
+          "bytes": 133354,
+          "sha256": "9944e23d136d24ebf04e6a66862182ddc7332121c3b0ad287b92dfe07fac06c0"
+        },
+        "binlog": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/utilities.binlog",
+          "bytes": 327598,
+          "sha256": "66a1767134437595ce5ff921fa53eeb06ccc62e34bf89216fc6423bba82083dd"
+        }
+      },
+      {
+        "importLibrary": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/soui.lib",
+          "bytes": 1459382,
+          "sha256": "e7913b8e90ab9a0f829bddfe9aca262a3ec1e319ce6b58202abba7c140156fc8"
+        },
+        "arguments": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/soui.arguments.json",
+          "bytes": 2092,
+          "sha256": "48fb748b8c1918b193a73005248557d5dc643ede8daa214fe433dcd1151b30cd"
+        },
+        "log": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/soui.log",
+          "bytes": 219766,
+          "sha256": "a829ff1b4c3bf98b6ed4ce5eeeecf267e15533e8234fe668bc61682c4cc2fa34"
+        },
+        "project": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/SOUI/soui64.vcxproj",
+          "bytes": 27004,
+          "sha256": "67a1ff7a440b23ff5434b56405875fa59e0efafd7bf7f1cbb2bcdd497dcdb032"
+        },
+        "dll": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/soui.dll",
+          "bytes": 1214976,
+          "sha256": "4da894ea9c63b4f52ed645b549c8d58cf2db6b08cceea1be7530f084562b1a8b"
+        },
+        "component": "soui",
+        "map": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/soui.map",
+          "bytes": 1612427,
+          "sha256": "e9fb2a1a91efdd760fc3e5933efb5dcdb4d17914db845f150f357b5dea3a2ed0"
+        },
+        "binlog": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/soui.binlog",
+          "bytes": 339544,
+          "sha256": "d6dd545a850eb1ed1e6ad66201004ffc8eeaee344342754131ee8b3dcd938146"
+        }
+      },
+      {
+        "importLibrary": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/render-gdi.lib",
+          "bytes": 1396,
+          "sha256": "a93bca7201012c598441383d8f48eeece0207515652f410adabb24503b18e67b"
+        },
+        "arguments": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/render-gdi.arguments.json",
+          "bytes": 2133,
+          "sha256": "718f967a8191ca293377168f942fba19380ac56d5d242b8f47952377b8cfde99"
+        },
+        "log": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/render-gdi.log",
+          "bytes": 46338,
+          "sha256": "90e8d6df02ba62cc9c1e8cf92e9f6af08232157f64bcb5a1269398996b4e7164"
+        },
+        "project": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/components/render-gdi/render-gdi64.vcxproj",
+          "bytes": 14485,
+          "sha256": "d8c3799d7731bfc480fb29a33f293be0f9452d31650a70cd09e51c7dec778d85"
+        },
+        "dll": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/render-gdi.dll",
+          "bytes": 45568,
+          "sha256": "0e482f84b95df231c5f6373d5660b0950f26563a80ec4db8d83f7049887041f3"
+        },
+        "component": "render-gdi",
+        "map": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/render-gdi.map",
+          "bytes": 110297,
+          "sha256": "7c7caf456d09f3002188797646235befcbdbc4f3fda42fe6cd6d1d5a2ab955d8"
+        },
+        "binlog": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/render-gdi.binlog",
+          "bytes": 311196,
+          "sha256": "d9587a6ed52f5b3c957ed82327ba7a21a31315bdeff558a6a7d065a982288154"
+        }
+      },
+      {
+        "importLibrary": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/imgdecoder-gdip.lib",
+          "bytes": 1520,
+          "sha256": "9dd190cdc4a44f1b235736631b5ef07404ba3d7a96e861a2f88df5503e1e5215"
+        },
+        "arguments": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/imgdecoder-gdip.arguments.json",
+          "bytes": 2158,
+          "sha256": "4e0c3994f85c5385d7e698c0bd3e11bdcb6571a1c4acbf8396d6b5efa194b5f8"
+        },
+        "log": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/imgdecoder-gdip.log",
+          "bytes": 45681,
+          "sha256": "46f72a29bea8eaaadae75aaf2bae13a764c1238e2223e390284251885042dd4e"
+        },
+        "project": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/components/imgdecoder-gdip/imgdecoder-gdip64.vcxproj",
+          "bytes": 9080,
+          "sha256": "828575e1f35210650c135b1b58ed42bcd5783c4d6ca6c643d0882fe9222cac4e"
+        },
+        "dll": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/imgdecoder-gdip.dll",
+          "bytes": 19968,
+          "sha256": "9aac63a372aa6a84d4beb094ed5612bab956e4b9e037b8c347d84881d264f08b"
+        },
+        "component": "imgdecoder-gdip",
+        "map": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/imgdecoder-gdip.map",
+          "bytes": 53108,
+          "sha256": "5faa2e3a14ec215125a2c252f935036b9cf3c20253a3be3fbdadfd67f999859c"
+        },
+        "binlog": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/imgdecoder-gdip.binlog",
+          "bytes": 308396,
+          "sha256": "f0477fc3775c87ed7d64282969d090bf37e43811600a44471794b222ac2426ec"
+        }
+      },
+      {
+        "importLibrary": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/soui-sys-resource.lib",
+          "bytes": 1330,
+          "sha256": "8441b109d8de9c703e0f7784a48e18fb019b6c8e4c28da7ca27bd1d08a9332fb"
+        },
+        "arguments": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/soui-sys-resource.arguments.json",
+          "bytes": 2157,
+          "sha256": "f289b65c44c517d040ce81d43fa2a9536438a5757bd06fe1b1306e8347727c34"
+        },
+        "log": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/soui-sys-resource.log",
+          "bytes": 206,
+          "sha256": "7e06d75bbd97de5d6b189d77c792ea2dec68f52ae977cf08e9a14317a8d7f96b"
+        },
+        "project": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/soui-sys-resource/soui-sys-resource64.vcxproj",
+          "bytes": 8862,
+          "sha256": "929a533b63ab94a44d891a2016b46daf34d1db39871a0ff11d8646faa8d046ae"
+        },
+        "dll": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/soui-sys-resource.dll",
+          "bytes": 121856,
+          "sha256": "1ed54517adb1b3ea00cbe9f98aeef3cbf5c1d3f34382fce9fbe9114a3c3c142a"
+        },
+        "component": "soui-sys-resource",
+        "map": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/source/bin64/soui-sys-resource.map",
+          "bytes": 4788,
+          "sha256": "a29937956d44b9ea62d6a2b470eef84a8b51c20c5d56ae05d7f4021a0f101a49"
+        },
+        "binlog": {
+          "path": "C:/work/sm05-release-050/out/dependencies/x64-soui-public-3/soui-sys-resource.binlog",
+          "bytes": 298163,
+          "sha256": "ea047239b92d7548d046c4d5280f595be3cf43394c83106b98e478f7ea7150d2"
+        }
+      }
+    ],
+    "compilerExecution": null,
+    "wholeJob": null,
+    "abi": null,
+    "toolchainQualification": null,
+    "releaseReady": false
+  }
+}

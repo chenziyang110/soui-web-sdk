@@ -1,0 +1,47 @@
+{
+  "schema": "soui.binary-license-review/v1",
+  "status": "unverified",
+  "releaseReady": false,
+  "sdkVersion": "0.5.0",
+  "scope": "Exact current 0.5.0 candidate Miniblink binaries; complete redistribution review remains pending",
+  "binaries": [
+    {
+      "architecture": "x64",
+      "path": "third_party/prebuilt/x64/miniblink/node.dll",
+      "bytes": 38959616,
+      "sha256": "1c763337615c1298a54bb8557d8d79aaeec539dfd5027a9d6d60c245bf2f1382",
+      "sourceInputSha256": "0bbed0bfd1b81a0c924ca3927cd4c53dfa2e916ac3aa5da43c51c2b70bba091f",
+      "buildEvidence": "verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/x64/build/build-Miniblink.json",
+      "evidenceIndex": "verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/x64/index.json"
+    },
+    {
+      "architecture": "x86",
+      "path": "third_party/prebuilt/x86/miniblink/node.dll",
+      "bytes": 28115968,
+      "sha256": "ecf11ba99a25ae39a9674c03338e1366258899618b6d81b7fda08802263ee0b6",
+      "sourceInputSha256": "0bbed0bfd1b81a0c924ca3927cd4c53dfa2e916ac3aa5da43c51c2b70bba091f",
+      "buildEvidence": "verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/x86/build/build-Miniblink.json",
+      "evidenceIndex": "verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/x86/index.json"
+    }
+  ],
+  "evidence_refs": [
+    "third_party/manifests/kernel-build-050.json",
+    "third_party/manifests/kernel-cache-source-050.json",
+    "third_party/patches/miniblink/0012-retained-resource-byte-budget.patch",
+    "verification/sbom-native.cdx.json",
+    "third_party/licenses/kernel-source/index.json.txt",
+    "verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/x64/build/build-Miniblink.json",
+    "verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/x64/index.json",
+    "verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/x86/build/build-Miniblink.json",
+    "verification/production-validation/0.5-kernel-cache-rebuild-2026-10-15/x86/index.json"
+  ],
+  "required_evidence": [
+    "Applicable redistribution terms for complete binaries",
+    "Linked third-party notices and build configuration review"
+  ],
+  "limitations": [
+    "Binary identity and traceable link-input evidence are not legal approval.",
+    "Static archives listed by the SBOM do not prove every archive member was retained.",
+    "Final runtime package notice completeness and applicable redistribution terms remain to be reviewed."
+  ]
+}

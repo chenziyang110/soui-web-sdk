@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:02d4abe1-f9d3-4b6b-ab50-bc445446b439",
+  "serialNumber": "urn:uuid:83f99bf1-1ca0-4700-8737-9e103337af1b",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-10-08T08:30:46.467Z",
+    "timestamp": "2026-10-15T17:24:10.525Z",
     "lifecycles": [
       {
         "phase": "pre-build"
@@ -6141,12 +6141,12 @@
       ]
     },
     {
-      "bom-ref": "@vitejs/plugin-vue@6.0.9",
+      "bom-ref": "@vitejs/plugin-vue@6.0.10",
       "type": "library",
       "name": "@vitejs/plugin-vue",
-      "version": "6.0.9",
+      "version": "6.0.10",
       "scope": "optional",
-      "purl": "pkg:npm/%40vitejs/plugin-vue@6.0.9",
+      "purl": "pkg:npm/%40vitejs/plugin-vue@6.0.10",
       "properties": [
         {
           "name": "cdx:npm:package:development",
@@ -6156,13 +6156,13 @@
       "externalReferences": [
         {
           "type": "distribution",
-          "url": "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-6.0.9.tgz"
+          "url": "https://registry.npmjs.org/@vitejs/plugin-vue/-/plugin-vue-6.0.10.tgz"
         }
       ],
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "ac3fcc3919616993255d65b4ac49f8141e303229d60b4cff0fb61ed7ad12e7e46cd660bc64301d703a784a329f5211b9b7cab592d70f570e31b9390f465ceb48"
+          "content": "6fcd1a5108779fea84cf3666e68429deb4f640899e0b1e7c2ba78597f46427777ae4a5b4913bafe6536c2d15408db5bd611529a3fc339afccc815df86d3008b4"
         }
       ],
       "licenses": [
@@ -6280,34 +6280,6 @@
         {
           "alg": "SHA-512",
           "content": "1426eb1b75cd09197e8ecde1bae2b1e0854704b4ef32426155ea636f148fbb5827e3258b698b4635076324665a332b5707aa9befaa900c398348bcbfbe49a579"
-        }
-      ],
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ]
-    },
-    {
-      "bom-ref": "postcss@8.5.29",
-      "type": "library",
-      "name": "postcss",
-      "version": "8.5.29",
-      "scope": "required",
-      "purl": "pkg:npm/postcss@8.5.29",
-      "properties": [],
-      "externalReferences": [
-        {
-          "type": "distribution",
-          "url": "https://registry.npmjs.org/postcss/-/postcss-8.5.29.tgz"
-        }
-      ],
-      "hashes": [
-        {
-          "alg": "SHA-512",
-          "content": "e3d7068546d78fc41e9efd224ccc40d5c141cf15e872da42f548ddefbb7559c6c922bea717f788ee0ffc320c6b62574546e017be36bbc504706afa16ee482bc5"
         }
       ],
       "licenses": [
@@ -8428,28 +8400,23 @@
       ]
     },
     {
-      "bom-ref": "postcss@8.5.28",
+      "bom-ref": "postcss@8.5.29",
       "type": "library",
       "name": "postcss",
-      "version": "8.5.28",
-      "scope": "optional",
-      "purl": "pkg:npm/postcss@8.5.28",
-      "properties": [
-        {
-          "name": "cdx:npm:package:development",
-          "value": "true"
-        }
-      ],
+      "version": "8.5.29",
+      "scope": "required",
+      "purl": "pkg:npm/postcss@8.5.29",
+      "properties": [],
       "externalReferences": [
         {
           "type": "distribution",
-          "url": "https://registry.npmjs.org/postcss/-/postcss-8.5.28.tgz"
+          "url": "https://registry.npmjs.org/postcss/-/postcss-8.5.29.tgz"
         }
       ],
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "451bb3a83b6de58f61deabb3e615a12be4cf9ec995b3a5b0494e8b90931e6381ecb54103b984c6f1425275ac0c4739b302d57e284a06f0ddd0836a8bcb9bccfc"
+          "content": "e3d7068546d78fc41e9efd224ccc40d5c141cf15e872da42f548ddefbb7559c6c922bea717f788ee0ffc320c6b62574546e017be36bbc504706afa16ee482bc5"
         }
       ],
       "licenses": [
@@ -9627,12 +9594,12 @@
       ]
     },
     {
-      "bom-ref": "vite@6.4.3",
+      "bom-ref": "vite@6.4.4",
       "type": "library",
       "name": "vite",
-      "version": "6.4.3",
+      "version": "6.4.4",
       "scope": "optional",
-      "purl": "pkg:npm/vite@6.4.3",
+      "purl": "pkg:npm/vite@6.4.4",
       "properties": [
         {
           "name": "cdx:npm:package:development",
@@ -9642,13 +9609,13 @@
       "externalReferences": [
         {
           "type": "distribution",
-          "url": "https://registry.npmjs.org/vite/-/vite-6.4.3.tgz"
+          "url": "https://registry.npmjs.org/vite/-/vite-6.4.4.tgz"
         }
       ],
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "3532a57108e500aecc950a326fa2e06aa1dcf2cb28fe9572509616330b378e0db5b93270fcb75da8814f70fa8fe8fce981b21c672288f39b051381c1ad00c0f0"
+          "content": "c468d4fd2ca378dc9bd04e0ac5706f633ff50bedc95eeba3bdfda15cd3ad9e5704fb9f28e5a8ddf4ddbf9f656192226fa423f6a906ac9d4a71e4f5cd788fa9d5"
         }
       ],
       "licenses": [
@@ -9795,12 +9762,12 @@
         "@types/react-dom@18.3.1",
         "@vitejs/plugin-legacy@6.1.1",
         "@vitejs/plugin-react@5.2.0",
-        "@vitejs/plugin-vue@6.0.9",
+        "@vitejs/plugin-vue@6.0.10",
         "autoprefixer@10.6.1",
-        "postcss@8.5.28",
+        "postcss@8.5.29",
         "sass@1.105.1",
         "typescript@5.9.3",
-        "vite@6.4.3"
+        "vite@6.4.4"
       ]
     },
     {
@@ -11031,7 +10998,7 @@
       "ref": "@vitejs/plugin-legacy@6.1.1",
       "dependsOn": [
         "terser@5.51.2",
-        "vite@6.4.3",
+        "vite@6.4.4",
         "@babel/core@7.29.7",
         "@babel/preset-env@7.29.7",
         "browserslist@4.29.3",
@@ -11045,7 +11012,7 @@
     {
       "ref": "@vitejs/plugin-react@5.2.0",
       "dependsOn": [
-        "vite@6.4.3",
+        "vite@6.4.4",
         "@babel/core@7.29.7",
         "@babel/plugin-transform-react-jsx-self@7.29.7",
         "@babel/plugin-transform-react-jsx-source@7.29.7",
@@ -11055,9 +11022,9 @@
       ]
     },
     {
-      "ref": "@vitejs/plugin-vue@6.0.9",
+      "ref": "@vitejs/plugin-vue@6.0.10",
       "dependsOn": [
-        "vite@6.4.3",
+        "vite@6.4.4",
         "vue@3.5.43",
         "@rolldown/pluginutils@1.0.1"
       ]
@@ -11094,14 +11061,6 @@
         "estree-walker@2.0.2",
         "magic-string@0.30.21",
         "postcss@8.5.29",
-        "source-map-js@1.2.2"
-      ]
-    },
-    {
-      "ref": "postcss@8.5.29",
-      "dependsOn": [
-        "nanoid@3.3.20",
-        "picocolors@1.1.1",
         "source-map-js@1.2.2"
       ]
     },
@@ -11176,7 +11135,7 @@
     {
       "ref": "autoprefixer@10.6.1",
       "dependsOn": [
-        "postcss@8.5.28",
+        "postcss@8.5.29",
         "browserslist@4.29.3",
         "caniuse-lite@1.0.30001815",
         "fraction.js@5.3.4",
@@ -11499,7 +11458,7 @@
       "dependsOn": []
     },
     {
-      "ref": "postcss@8.5.28",
+      "ref": "postcss@8.5.29",
       "dependsOn": [
         "nanoid@3.3.20",
         "picocolors@1.1.1",
@@ -11750,7 +11709,7 @@
       ]
     },
     {
-      "ref": "vite@6.4.3",
+      "ref": "vite@6.4.4",
       "dependsOn": [
         "@types/node@20.19.43",
         "sass@1.105.1",
@@ -11758,7 +11717,7 @@
         "esbuild@0.25.12",
         "fdir@6.5.0",
         "picomatch@4.0.7",
-        "postcss@8.5.28",
+        "postcss@8.5.29",
         "rollup@4.63.1",
         "tinyglobby@0.2.17",
         "fsevents@2.3.3"

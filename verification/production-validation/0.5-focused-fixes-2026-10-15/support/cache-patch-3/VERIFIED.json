@@ -1,0 +1,57 @@
+{
+  "scope": "Exact raw-byte patch reproduces only the three reviewed kernel changes; no file-wide UTF-8 transcoding",
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\third_party\\sources\\miniblink\\content\\web_impl_win\\BlinkPlatformImpl.cpp",
+        "bytes": 40076,
+        "sha256": "15cc05feed6bd3c9214925815aff19a9ef7730361b9679bf6a4b432007c81beb"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-kernel-cache-source1\\third_party\\sources\\miniblink\\content\\web_impl_win\\BlinkPlatformImpl.cpp",
+        "bytes": 40230,
+        "sha256": "6f2da672656096a926f0710d10ef94ca84b2c57b1dc2f290fabf1f302a793bce"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.cpp",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\third_party\\sources\\miniblink\\third_party\\skia\\src\\core\\SkResourceCache.cpp",
+        "bytes": 18674,
+        "sha256": "f344e31a12798291e8221ba673d816c891744f79f8f0513f585664b25764bbe6"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-kernel-cache-source1\\third_party\\sources\\miniblink\\third_party\\skia\\src\\core\\SkResourceCache.cpp",
+        "bytes": 19333,
+        "sha256": "956d0958adb6d416f7f959cf18ab9202676cdbe0d076cd3b4ec12841420a1f45"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/third_party/skia/src/core/SkResourceCache.h",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\third_party\\sources\\miniblink\\third_party\\skia\\src\\core\\SkResourceCache.h",
+        "bytes": 9209,
+        "sha256": "2f0943442a3ad262155d5b7b42ee84282a4f7da19951672f4e26e6490ad5ff97"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-kernel-cache-source1\\third_party\\sources\\miniblink\\third_party\\skia\\src\\core\\SkResourceCache.h",
+        "bytes": 9277,
+        "sha256": "3c35517e30f1cf5a8d7e52a850c926cc95660395e412fbb57d95e915e8f3955c"
+      }
+    }
+  ],
+  "patch": {
+    "path": "F:\\work\\SOUI_WEB\\out\\release-050\\cache-patch-3\\retained-resource-byte-budget.patch",
+    "bytes": 4134,
+    "sha256": "aeb6b37d0241512b90e7a18546ec05d344f5888de633fd6e06e435aad29e121a"
+  },
+  "git": {
+    "path": "C:\\Program Files\\Git\\cmd\\git.exe",
+    "bytes": 46480,
+    "sha256": "3cbd024d9d11ef08bd6a0cb5a973613c50825b4952bc6006f3f4222f436091e5"
+  },
+  "appliedRoot": "C:/work/sm05-cache-patch-apply3",
+  "applied": true,
+  "adopted": false
+}

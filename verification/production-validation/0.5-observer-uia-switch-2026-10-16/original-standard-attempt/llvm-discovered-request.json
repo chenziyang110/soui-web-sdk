@@ -1,0 +1,260 @@
+{
+  "schema": "soui.build-toolchain-request/v1",
+  "profile": "LLVM22MSVC142",
+  "architecture": "x64",
+  "discovery": {
+    "Profile": "LLVM22MSVC142",
+    "Architecture": "x64",
+    "HostArchitecture": "x64",
+    "RequestedClangVersion": "22.1.3",
+    "ActualCompilerVersion": null,
+    "MsvcVersion": "14.29.30133",
+    "MsvcCompatibilityVersion": "19.29.30159",
+    "WindowsSdkVersion": "10.0.19041.0",
+    "Target": "x86_64-pc-windows-msvc",
+    "Generator": "Ninja Multi-Config",
+    "GeneratorValidated": false,
+    "ToolPins": {
+      "CLANG": {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/clang-cl.exe",
+        "bytes": 104747608,
+        "sha256": "ec094d5f8f37c106eefcfc47c9997c261a06e3bd8eaaa7255835983a58524156",
+        "hostMachine": 34404,
+        "resourceFileVersion": "22.1.3"
+      },
+      "LINKER": {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/lld-link.exe",
+        "bytes": 71454768,
+        "sha256": "631a02cecb87f9f7f2270713d6c7f84e54a0fabce6c6638d21d3a0caea78204d",
+        "hostMachine": 34404,
+        "resourceFileVersion": "0"
+      },
+      "ARCHIVER": {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/bin/llvm-lib.exe",
+        "bytes": 18463832,
+        "sha256": "41ccf71f32fad386a5b7f7926175c4a8a74196d050e2bcbf7b06a93d080288f5",
+        "hostMachine": 34404,
+        "resourceFileVersion": "0"
+      },
+      "RC": {
+        "path": "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x64/rc.exe",
+        "bytes": 71208,
+        "sha256": "2cbcc6024fe41ae92fada6b3f74e6e2a1b2fe71c51b288167d6abab319da2628",
+        "hostMachine": 34404,
+        "resourceFileVersion": "10.0.19041.5609 (WinBuild.160101.0800)"
+      },
+      "MT": {
+        "path": "C:/Program Files (x86)/Windows Kits/10/bin/10.0.19041.0/x64/mt.exe",
+        "bytes": 1847888,
+        "sha256": "a86c27bb35ccf3c27c206406e26262216fadba3de0eed7173447bcbfe03ff74c",
+        "hostMachine": 34404,
+        "resourceFileVersion": "10.0.19041.5609 (WinBuild.160101.0800)"
+      },
+      "NINJA": {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe",
+        "bytes": 3776568,
+        "sha256": "9546466f0feca6d62d7d4ea9b7fbc381f8e302cb7f02f4ce327a39d8577bb293",
+        "hostMachine": 34404,
+        "resourceFileVersion": null
+      },
+      "CMD": {
+        "path": "C:/Windows/System32/cmd.exe",
+        "bytes": 344064,
+        "sha256": "97ac98b1a92c286054cce55239cfccdfc23a5517bd07fe693072c9ca96c7dabb",
+        "hostMachine": 34404,
+        "resourceFileVersion": "10.0.26100.8875 (WinBuild.160101.0800)"
+      },
+      "POWERSHELL": {
+        "path": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+        "bytes": 301368,
+        "sha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139",
+        "hostMachine": 34404,
+        "resourceFileVersion": "7.6.5.500"
+      }
+    },
+    "NativeProcessPaths": {
+      "CMD": "C:\\Windows\\System32\\cmd.exe"
+    },
+    "RequiredInputPins": [
+      {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include/stddef.h",
+        "bytes": 5053,
+        "sha256": "b3e62a046ddf28d09eedebe6eb9461cb7060e47cad2c69964b222c4eea10347e",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include/vector",
+        "bytes": 125299,
+        "sha256": "afbb65075ab35bdccc993fe0a9791decc03a6107b00b17a2d985c1ed421f64d4",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include/optional",
+        "bytes": 27622,
+        "sha256": "34880e9400c7a625eda7f2797234f60a9b1456ffa7dcb7c4210002da559a3525",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include/vcruntime.h",
+        "bytes": 10913,
+        "sha256": "28fb1fd59d1d46b03487925f8f6399eeb5aa0c57742e12094f473b1b40eb292d",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt/stdlib.h",
+        "bytes": 43968,
+        "sha256": "1576fdb40eb225dff53489db2fd52e41c7bb24f1e621e4a95c2c7f4a7216949c",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared/sdkddkver.h",
+        "bytes": 11497,
+        "sha256": "8af081872a0d03592cef7df997c6b3aeede7e702f1b288dac358e5efa5c8efb2",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/Windows.h",
+        "bytes": 7153,
+        "sha256": "65ccd069fe343519a7ec0698ccaf5a6f0388f1af180b959b8271902b983cb099",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt/EventToken.h",
+        "bytes": 1431,
+        "sha256": "d2829f1e32c6b6ce3a6066c71576c8044d8bcbf6b0f728f95320a92015c221c5",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64/msvcrt.lib",
+        "bytes": 7365180,
+        "sha256": "5648042445e736fee9b44f1931309756427e6c9ee5facc826e095d911721e38a",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64/msvcprt.lib",
+        "bytes": 1090934,
+        "sha256": "ecb158d07c71642e835ab6eaad1ed5128f49e14be30c157f8883f5ccb7dba9bb",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64/vcruntime.lib",
+        "bytes": 19128,
+        "sha256": "f53ed7df376ff500d14bfbb4e495711c4cb3f8aa186a8b15ee4ef9a937fd84eb",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64/libcmt.lib",
+        "bytes": 5576280,
+        "sha256": "ea6de3079f96374269b3530b81166a0d25c87b92c81d686ab2bad88c0d73de11",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64/libcpmt.lib",
+        "bytes": 17628572,
+        "sha256": "9fcfd079ae918372fbf8801bb29f592b1d24f60209afe10e649d03f13608571f",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64/libvcruntime.lib",
+        "bytes": 1223382,
+        "sha256": "1eb044056e692649ff362b9506f4dc12753bce8e3ef88b1cbd0a3086d6bc7489",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64/ucrt.lib",
+        "bytes": 285588,
+        "sha256": "7ef4eac926bf597d2f243f16cdfed7e0db22cb3ca34a1d7e088a84c994a03d66",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64/libucrt.lib",
+        "bytes": 35488094,
+        "sha256": "335d768550631d4f667b12c5f3a7a7155e341117cd61ce11aadc533b031be80c",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64/kernel32.lib",
+        "bytes": 300468,
+        "sha256": "d9810feacbb1150584cdd484ea1ce60b4e6b3ddec3b8afa505c0ae47330027e2",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64/user32.lib",
+        "bytes": 164334,
+        "sha256": "b44c0246135462a839e279fdfb73172bbf7dd4ff05d21212ac1867c029080f28",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      }
+    ],
+    "BridgePins": [
+      {
+        "path": "C:/work/sm05-release-050/tools/internal/Invoke-ToolFileIdentity.ps1",
+        "bytes": 3115,
+        "sha256": "d9d3a0119dc9da8845b2469c6a60defeee7bd57a7f866ddca6e5c5330824ca45",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      },
+      {
+        "path": "C:/work/sm05-release-050/tools/internal/Tool-FileIdentity.ps1",
+        "bytes": 5543,
+        "sha256": "c36365f2758de235ac79babdccfb2b945dd70c974c51e1efaddcaa8e74555cda",
+        "hostMachine": null,
+        "resourceFileVersion": null
+      }
+    ],
+    "BridgeIdentity": "d24bef7f899c165f7da3edcabcc1db87c95b5ffe8903c89d6387985ef11ad95f",
+    "InputIdentitySchema": "soui.llvm-profile-inputs/v3",
+    "IncludeDirectories": [
+      "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include",
+      "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include",
+      "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt",
+      "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared",
+      "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um",
+      "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt"
+    ],
+    "LibraryDirectories": [
+      "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64",
+      "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64",
+      "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64"
+    ],
+    "CMakeDefinitions": {
+      "SOUI_NATIVE_TOOLCHAIN": "LLVM22MSVC142",
+      "SOUI_LLVM_ARCHITECTURE": "x64",
+      "SOUI_LLVM_ROOT": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64",
+      "SOUI_MSVC142_ROOT": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133",
+      "SOUI_WINDOWS_SDK_ROOT": "C:/Program Files (x86)/Windows Kits/10",
+      "SOUI_NINJA_EXECUTABLE": "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe",
+      "SOUI_WINDOWS_CMD_EXECUTABLE": "C:/Windows/System32/cmd.exe",
+      "SOUI_LLVM_INPUT_IDENTITY": "9191e112d9d854b3e23b0262313d264b040b3186f597369beed1cf8e7163ea81",
+      "SOUI_TOOL_IDENTITY_POWERSHELL_EXECUTABLE": "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+      "SOUI_TOOL_IDENTITY_BRIDGE": "C:/work/sm05-release-050/tools/internal/Invoke-ToolFileIdentity.ps1",
+      "SOUI_TOOL_IDENTITY_HELPER": "C:/work/sm05-release-050/tools/internal/Tool-FileIdentity.ps1",
+      "SOUI_LLVM_BRIDGE_IDENTITY": "d24bef7f899c165f7da3edcabcc1db87c95b5ffe8903c89d6387985ef11ad95f"
+    },
+    "InputIdentity": "9191e112d9d854b3e23b0262313d264b040b3186f597369beed1cf8e7163ea81",
+    "WholeToolInventoryVerified": false,
+    "Qualified": false
+  },
+  "toolchain": {
+    "path": "C:\\work\\sm05-release-050\\cmake\\toolchains\\SouiLLVM22.cmake",
+    "bytes": 22723,
+    "sha256": "99d59e4f621c4e5ab5d4519d601e1cc984db6f356a739097229d466248b4e3ef"
+  }
+}

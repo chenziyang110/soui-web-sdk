@@ -1,0 +1,259 @@
+{
+  "passed": true,
+  "pins": [
+    {
+      "path": "C:\\work\\sm05-release-fixture-fix-1\\refresh-worker-map.cjs",
+      "bytes": 4847,
+      "sha256": "a51eb4af94bb5cdc0491ba371bef493485430b0f4668e1ddc6452649141aa6fd"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\third_party\\sources\\miniblink\\content\\web_impl_win\\BlinkPlatformImpl.cpp",
+      "bytes": 40230,
+      "sha256": "6f2da672656096a926f0710d10ef94ca84b2c57b1dc2f290fabf1f302a793bce"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tests\\native\\vendor_lifetime\\worker_lifetime\\source-map.json",
+      "bytes": 10924,
+      "sha256": "3b7ffe8140010195cbf4f50b6c4991afb13a511e3fcb376897ec540c9ef45637"
+    },
+    {
+      "path": "C:\\work\\sm05-release-source19-preserved\\third_party\\sources\\miniblink\\content\\web_impl_win\\BlinkPlatformImpl.cpp",
+      "bytes": 40076,
+      "sha256": "15cc05feed6bd3c9214925815aff19a9ef7730361b9679bf6a4b432007c81beb"
+    }
+  ],
+  "records": [
+    {
+      "name": "red",
+      "expectedExit": 1,
+      "natural": true,
+      "result": {
+        "pid": 58608,
+        "creationFileTime": "134365569168900034",
+        "exitCode": 1,
+        "supervisorExitCode": 1,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": false,
+        "terminal": {
+          "event": "terminal",
+          "reason": "root-failed",
+          "elapsedMs": 95,
+          "rootExited": true,
+          "rootExitCode": 1,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": false
+        },
+        "report": "C:\\work\\sm05-worker-map-cache-update-1\\red.ndjson",
+        "reportSha256": "f1ccd6211f837dfead29390bf2150df152094874683dcf42a6cb0df2d5c2319b",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "root-failed",
+        "elapsedMs": 95,
+        "rootExited": true,
+        "rootExitCode": 1,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": false
+      }
+    },
+    {
+      "name": "green-generate",
+      "expectedExit": 0,
+      "natural": true,
+      "result": {
+        "pid": 36480,
+        "creationFileTime": "134365569170893107",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 203,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-worker-map-cache-update-1\\green-generate.ndjson",
+        "reportSha256": "8f27c5287cb728ddeeb8ceefb9c33f30ec4c6d96e2d9b747c690c88cd3a97d53",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 203,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "name": "green-recheck",
+      "expectedExit": 0,
+      "natural": true,
+      "result": {
+        "pid": 78108,
+        "creationFileTime": "134365569173934307",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 148,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 2,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-worker-map-cache-update-1\\green-recheck.ndjson",
+        "reportSha256": "9734033da404d54641599dab3f87ad2297b65d426970a47b4f6e1d06a424a286",
+        "runnerSha256": "1a4cb4bea83a70ac06efb9c50e26a5c3345aab589f9c2e1306b244f68b09713f",
+        "executableSha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 148,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 2,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    }
+  ],
+  "updates": [
+    {
+      "output": "fragments/registry_lock.inc",
+      "before": {
+        "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+        "output": "fragments/registry_lock.inc",
+        "startByte": 4842,
+        "endByteExclusive": 5238,
+        "exactWholeFile": false,
+        "bytes": 396,
+        "sha256": "f28320b3245b147e939fb7299797f00dd4276bf68eae722001cc55f2f1949c00",
+        "sourceStartLine": 149,
+        "sourceEndLineExclusive": 158
+      },
+      "after": {
+        "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+        "output": "fragments/registry_lock.inc",
+        "startByte": 4842,
+        "endByteExclusive": 5238,
+        "exactWholeFile": false,
+        "bytes": 396,
+        "sha256": "f28320b3245b147e939fb7299797f00dd4276bf68eae722001cc55f2f1949c00",
+        "sourceStartLine": 149,
+        "sourceEndLineExclusive": 158
+      },
+      "identicalFragment": true
+    },
+    {
+      "output": "fragments/tls.inc",
+      "before": {
+        "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+        "output": "fragments/tls.inc",
+        "startByte": 5380,
+        "endByteExclusive": 5743,
+        "exactWholeFile": false,
+        "bytes": 363,
+        "sha256": "43594f649539ccaefe403d9a861a3366024b3aadec079618560beb2501b9129b",
+        "sourceStartLine": 172,
+        "sourceEndLineExclusive": 184
+      },
+      "after": {
+        "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+        "output": "fragments/tls.inc",
+        "startByte": 5380,
+        "endByteExclusive": 5743,
+        "exactWholeFile": false,
+        "bytes": 363,
+        "sha256": "43594f649539ccaefe403d9a861a3366024b3aadec079618560beb2501b9129b",
+        "sourceStartLine": 172,
+        "sourceEndLineExclusive": 184
+      },
+      "identicalFragment": true
+    },
+    {
+      "output": "fragments/registry_and_tls_methods.inc",
+      "before": {
+        "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+        "output": "fragments/registry_and_tls_methods.inc",
+        "startByte": 18403,
+        "endByteExclusive": 20664,
+        "exactWholeFile": false,
+        "bytes": 2261,
+        "sha256": "d4d49c82a2c2a335b5641bbbce4cdf676fbb66aa678a586c26c48ee5c1e2649c",
+        "sourceStartLine": 558,
+        "sourceEndLineExclusive": 628
+      },
+      "after": {
+        "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+        "output": "fragments/registry_and_tls_methods.inc",
+        "startByte": 18557,
+        "endByteExclusive": 20818,
+        "exactWholeFile": false,
+        "bytes": 2261,
+        "sha256": "d4d49c82a2c2a335b5641bbbce4cdf676fbb66aa678a586c26c48ee5c1e2649c",
+        "sourceStartLine": 560,
+        "sourceEndLineExclusive": 630
+      },
+      "identicalFragment": true
+    }
+  ],
+  "allTwelveGeneratedCopiesVerified": true,
+  "wholeSourceChangeRestricted": true
+}

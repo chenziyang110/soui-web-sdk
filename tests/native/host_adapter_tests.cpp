@@ -35,6 +35,17 @@ void require_same_result(const host_result& result, const host_result& expected,
               result.message == expected.message, message);
 }
 
+std::filesystem::path fixture_io_path(const std::filesystem::path& input) {
+#ifdef _WIN32
+  const auto value=std::filesystem::absolute(input).lexically_normal().make_preferred().native();
+  if(value.rfind(L"\\\\?\\",0)==0)return value;
+  if(value.rfind(L"\\\\",0)==0)return L"\\\\?\\UNC\\"+value.substr(2);
+  return L"\\\\?\\"+value;
+#else
+  return input;
+#endif
+}
+
 class resource_fixture {
  public:
   resource_fixture() {
@@ -64,7 +75,7 @@ class resource_fixture {
   ~resource_fixture() {
     std::error_code ignored;
     // root_ is only assigned after this fixture exclusively creates it.
-    std::filesystem::remove_all(root_, ignored);
+    std::filesystem::remove_all(fixture_io_path(root_), ignored);
   }
 
   host_config config() const {
@@ -427,6 +438,24 @@ void test_validation(const host_config& config) {
   require(state->mount_calls == 0, "invalid config must not mount custom adapter");
 }
 
+void test_long_resource_path(const host_config& config) {
+  auto nested=config.resource_root;
+  while(nested.native().size()<320)nested/="nested-legal-resource-directory";
+  const auto file=fixture_io_path(nested/"license.txt");
+  std::filesystem::create_directories(file.parent_path());
+  {std::ofstream out(file,std::ios::binary);out<<"Local license material\n";out.close();require(bool(out),"long-path fixture must be writable");}
+  auto state=std::make_shared<adapter_state>();
+  webview_host host(std::make_unique<fake_adapter>(state));
+  const auto started=host.start(config);
+  if(!started.ok)throw std::runtime_error("long resource path rejected: "+started.code);
+  require(state->mount_calls==1,"long resource paths still reach the real host admission");
+  require(host.destroy().ok,"long-path host cleanup");
+  const auto forbidden=fixture_io_path(nested/"forbidden.html");
+  {std::ofstream out(forbidden,std::ios::binary);out<<"<script src=\"https://example.invalid/runtime.js\"></script>";out.close();require(bool(out),"deep forbidden fixture write");}
+  require_error(host.start(config),"E_REMOTE_RESOURCE","deep resource scanning must still reject remote runtime URLs");
+  require(state->mount_calls==1,"rejected deep resources cannot remount the adapter");
+}
+
 }  // namespace
 
 int main() {
@@ -442,6 +471,7 @@ int main() {
     test_close_retry_and_reentrancy(config);
     test_destructor_retries_failed_close(config);
     test_validation(config);
+    test_long_resource_path(config);
     std::cout << "host adapter contracts passed\n";
     return 0;
   } catch (const std::exception& error) {

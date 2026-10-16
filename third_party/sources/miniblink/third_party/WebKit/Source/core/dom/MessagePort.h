@@ -40,6 +40,7 @@
 #include "wtf/RefPtr.h"
 #include "wtf/Vector.h"
 #include "wtf/WeakPtr.h"
+#include <stdint.h>
 
 namespace blink {
 
@@ -117,13 +118,19 @@ private:
     void messageAvailable() override;
     v8::Isolate* scriptIsolate() override;
     v8::Local<v8::Context> scriptContextForMessageConversion() override;
-    void dispatchMessages();
+    typedef uint64_t DispatchToken;
+    class DispatchState;
+    class DispatchTask;
+    void postReservedDispatch(DispatchToken);
+    bool canDispatchMessages() const;
+    bool dispatchMessages();
 
     OwnPtr<WebMessagePortChannel> m_entangledChannel;
 
     bool m_started;
     bool m_closed;
 
+    RefPtr<DispatchState> m_dispatchState;
     WeakPtrFactory<MessagePort> m_weakFactory;
 
     RefPtr<ScriptState> m_scriptStateForConversion;

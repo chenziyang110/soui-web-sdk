@@ -42,6 +42,11 @@ async function runScenario(){
       <progress max="100" :value="view.task.progress" aria-label="原生任务进度"/><span>{{view.task.state}} · {{view.task.progress}}%</span></div>
     <p class="task-detail">{{view.task.message}} {{view.task.observationError}} {{view.task.subscriptionError}}</p>
     <pre v-if="view.task.result" class="result">{{JSON.stringify(view.task.result)}}</pre></section>
+  <section id="reference-agent-task" aria-labelledby="agent-task-title"><h2 id="agent-task-title">Agent 子任务观察</h2>
+    <p>此区与手工任务使用同一原生业务。只有本次授权命令可以启动、查询或请求取消；页面不会借用 Agent 权限。</p>
+    <progress max="100" :value="view.agentTask.progress" aria-label="Agent 子任务已查询进度"/><span>{{view.agentTask.state}} · {{view.agentTask.progress}}%</span>
+    <p>{{view.agentTask.cancelRequested?'已确认取消请求，等待实际查询终态。':'接纳回执不等于完成；进度和终态来自实际查询。'}} {{view.agentTask.error}}</p>
+  </section>
   <div class="columns"><section><h2>固定 10,000 行</h2>
     <div id="reference-filter" class="controls"><label>过滤名称 <input :value="state.query" maxlength="128" @input="command('filter','set',{query:value($event)})"/></label>
       <label>分类 <select :value="state.category" @change="command('filter','set',{query:state.query,category:value($event)})"><option value="all">全部</option><option v-for="group in controller.fixture.groups" :key="group">{{group}}</option></select></label></div>

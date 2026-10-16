@@ -27,6 +27,7 @@
 
 
 #include "config.h"
+#include "wke/RendererModelState.h"
 #include "content/web_impl_win/npapi/PluginPackage.h"
 #include "wke/CursorDescriptorBroker.h"
 
@@ -232,6 +233,7 @@ bool PluginPackage::fetchInfo()
 
 bool PluginPackage::load()
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_PLUGIN);
     if (!wke::brokerPluginEntry())
         return false;
     if (m_isVirtual) {

@@ -1,6 +1,7 @@
 #define NOMINMAX
 #include <windows.h>
 #include "trace-identity.h"
+#include "desktop-observer.h"
 
 #include <cstdint>
 #include <filesystem>
@@ -66,21 +67,26 @@ class trace final {
  public:
   trace(HANDLE file, HANDLE process, DWORD pid, HWND window)
       : file_(file), process_(process), pid_(pid), window_(window), started_(GetTickCount64()) {}
+  void observer(soui::benchmark::desktop_observer* value) { observer_ = value; }
+  void restart_clock() { started_ = GetTickCount64(); }
   std::uint64_t elapsed() const { return GetTickCount64() - started_; }
   void wait_until(std::uint64_t target) const {
     while (elapsed() < target) {
+      if (observer_) observer_->check();
       const auto remaining = target - elapsed();
       Sleep(static_cast<DWORD>(remaining > 20 ? 20 : remaining));
     }
   }
-  void record(const char* action, int x, int y, std::uint64_t before, std::uint64_t after) {
+  void record(const char* action, int x, int y, std::uint64_t before, std::uint64_t after, std::uint32_t event = 0) {
     write_line(file_, "{\"event\":\"input\",\"action\":\"" + std::string(action) +
         "\",\"elapsedMs\":" + std::to_string(elapsed()) +
         ",\"qpcBefore\":" + std::to_string(before) +
         ",\"qpcAfter\":" + std::to_string(after) +
         ",\"clientX\":" + std::to_string(x) +
-        ",\"clientY\":" + std::to_string(y) + "}\n");
+        ",\"clientY\":" + std::to_string(y) +
+        (event ? ",\"desktopEventId\":" + std::to_string(event) + ",\"desktopQpcBefore\":\"" + std::to_string(before) + "\",\"desktopQpcAfter\":\"" + std::to_string(after) + "\"" : "") + "}\n");
     ++actions_;
+    if (event) observer_->wait_ack(event);
   }
   void foreground() const {
     DWORD current_pid = 0;
@@ -117,10 +123,12 @@ class trace final {
     for (auto& input : inputs) input.type = INPUT_MOUSE;
     inputs[0].mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
     inputs[1].mi.dwFlags = MOUSEEVENTF_LEFTUP;
+    const auto event = observer_ ? observer_->next_event() : 0;
+    for (auto& input : inputs) input.mi.dwExtraInfo = event;
     const auto before = qpc();
     ready_for_input();
     if (SendInput(2, inputs, sizeof(INPUT)) != 2) throw std::runtime_error("Click injection failed");
-    record(name, x, y, before, qpc());
+    record(name, x, y, before, qpc(), event);
   }
   void wheel(int x, int y, int amount) {
     cursor(x, y);
@@ -128,10 +136,12 @@ class trace final {
     input.type = INPUT_MOUSE;
     input.mi.dwFlags = MOUSEEVENTF_WHEEL;
     input.mi.mouseData = static_cast<DWORD>(amount);
+    const auto event = observer_ ? observer_->next_event() : 0;
+    input.mi.dwExtraInfo = event;
     const auto before = qpc();
     ready_for_input();
     if (SendInput(1, &input, sizeof(INPUT)) != 1) throw std::runtime_error("Wheel injection failed");
-    record(amount > 0 ? "wheel-up" : "wheel-down", x, y, before, qpc());
+    record(amount > 0 ? "wheel-up" : "wheel-down", x, y, before, qpc(), event);
   }
   void unicode(wchar_t character) {
     foreground();
@@ -149,6 +159,9 @@ class trace final {
   }
   void resize(int width, int height) {
     foreground();
+    RECT previous{};
+    if (!GetClientRect(window_, &previous)) throw std::runtime_error("Cannot read previous content size");
+    const auto event = observer_ && (previous.right != width || previous.bottom != height) ? observer_->next_event() : 0;
     const auto style = static_cast<DWORD>(GetWindowLongPtrW(window_, GWL_STYLE));
     const auto extended = static_cast<DWORD>(GetWindowLongPtrW(window_, GWL_EXSTYLE));
     RECT outer{0, 0, width, height};
@@ -162,7 +175,7 @@ class trace final {
     RECT actual{};
     if (!GetClientRect(window_, &actual) || actual.right != width || actual.bottom != height)
       throw std::runtime_error("Benchmark content resize differs from requested size");
-    record("window-resize", width, height, before, qpc());
+    record("window-resize", width, height, before, qpc(), event);
   }
   unsigned actions() const { return actions_; }
  private:
@@ -172,10 +185,11 @@ class trace final {
   HWND window_;
   std::uint64_t started_;
   unsigned actions_{0};
+  soui::benchmark::desktop_observer* observer_{nullptr};
 };
 
 int run(int argc, wchar_t** argv) {
-  if (argc != 5 && argc != 6) throw std::runtime_error("Usage: InputTrace PID S01|S02|S03|S04|S05 ABSOLUTE_NEW_OUTPUT.ndjson full|probe [EXPECTED_CREATION_FILETIME]");
+  if (argc != 5 && argc != 6) throw std::runtime_error("Usage: InputTrace PID S01|S02|S03|S04|S05 ABSOLUTE_NEW_OUTPUT.ndjson full|probe|full-desktop|probe-desktop [EXPECTED_CREATION_FILETIME]");
   const std::optional<std::uint64_t> expected = argc == 6 ?
       std::optional<std::uint64_t>{soui::benchmark::parse_expected_filetime(argv[5])} : std::nullopt;
   const DWORD pid = parse_pid(argv[1]);
@@ -184,11 +198,14 @@ int run(int argc, wchar_t** argv) {
     throw std::runtime_error("Unknown benchmark scene");
   const std::filesystem::path output(argv[3]);
   if (!output.is_absolute()) throw std::runtime_error("An absolute output path is required");
-  // The last argument is an explicit test-only switch. A future real run must
-  // opt out of the short path by passing the word 'full'.
+  // Probe is a short capability check. Desktop capture is explicitly optional
+  // and requires the real held host FILETIME even for a probe.
   const std::wstring duration_mode(argv[4]);
-  if (duration_mode != L"full" && duration_mode != L"probe")
-    throw std::runtime_error("Expected full or probe duration mode");
+  const bool desktop = duration_mode == L"full-desktop" || duration_mode == L"probe-desktop";
+  const bool probe = duration_mode == L"probe" || duration_mode == L"probe-desktop";
+  if (duration_mode != L"full" && duration_mode != L"probe" && !desktop)
+    throw std::runtime_error("Expected full/probe or full-desktop/probe-desktop duration mode");
+  if (desktop && (!expected || scene == L"S03")) throw std::runtime_error("Desktop observation requires expected FILETIME and does not qualify IME");
   file_handle process{OpenProcess(PROCESS_QUERY_INFORMATION | SYNCHRONIZE, FALSE, pid)};
   if (!process.value) throw std::runtime_error("Benchmark process is unavailable");
   FILETIME creation{}, process_exit{}, kernel{}, user{};
@@ -223,19 +240,32 @@ int run(int argc, wchar_t** argv) {
   LARGE_INTEGER frequency{};
   if (!QueryPerformanceFrequency(&frequency)) throw std::runtime_error("QPC frequency unavailable");
   FILETIME utc{};
-  GetSystemTimeAsFileTime(&utc);
   std::string scene_name{"S0"};
   scene_name.push_back(static_cast<char>(scene[2]));
-  write_line(file.value, soui::benchmark::input_begin(pid, scene_name, duration_mode == L"full" ? "full" : "probe",
-      filetime(creation), filetime(utc), static_cast<std::uint64_t>(frequency.QuadPart), expected));
+  const auto begin_input = [&] {
+    GetSystemTimeAsFileTime(&utc);
+    write_line(file.value, soui::benchmark::input_begin(pid, scene_name, probe ? "probe" : "full",
+        filetime(creation), filetime(utc), static_cast<std::uint64_t>(frequency.QuadPart), expected));
+  };
+  if (!desktop) begin_input();
   trace input(file.value, process.value, pid, search.found);
   input.foreground();
+  std::unique_ptr<soui::benchmark::desktop_observer> observer;
+  if (desktop) {
+    // Keep a possibly composited pointer out of the marker during baseline.
+    input.cursor(550, 500);
+    observer = std::make_unique<soui::benchmark::desktop_observer>(process.value, pid, filetime(creation), search.found,
+        std::filesystem::path(output.wstring() + L".desktop.ndjson"), static_cast<unsigned>(scene[2] - L'0'), probe);
+    input.observer(observer.get());
+    input.restart_clock();
+    begin_input();
+  }
   const int tab_x = 47 + 72 * static_cast<int>(scene[2] - L'1');
   input.click(tab_x, 654, "select-scene");
   input.wait_until(150);
   input.click(tab_x, 654, "select-scene-confirm");
   input.wait_until(800);
-  const std::uint64_t duration = duration_mode == L"probe" ? 3000 : (scene == L"S05" ? 123000 : 61000);
+  const std::uint64_t duration = probe ? 3000 : (scene == L"S05" ? 123000 : 61000);
   if (scene == L"S05") input.click(53, 698, "start-motion");
   else if (scene == L"S04") input.click(53, 698, "arm-window");
   unsigned tick = 0;
@@ -254,6 +284,7 @@ int run(int argc, wchar_t** argv) {
     input.wait_until(800 + static_cast<std::uint64_t>(tick) * 1000);
   }
   if (scene == L"S04") input.resize(1100, 720);
+  if (observer) { observer->finish(); input.observer(nullptr); }
   input.click(1040, 698, "finish-scene");
   write_line(file.value, "{\"event\":\"run.end\",\"elapsedMs\":" +
       std::to_string(input.elapsed()) + ",\"actions\":" + std::to_string(input.actions()) +

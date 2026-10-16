@@ -6,7 +6,7 @@ const path = require('node:path');
 const {analyzeFile, analyzeMixed, summarize} = require('./mixed-analysis.cjs');
 
 const evidence = path.resolve(__dirname,
-  '../../verification/production-validation/preview5-mixed-soak-preflight-2026-09-24/x86-60s/result.json');
+  '../fixtures/protocol-history/preview5-mixed-soak-preflight-2026-09-24/x86-60s/result.json');
 
 test('mixed analysis rechecks archived raw evidence and preserves the release gate', () => {
   const analysis = analyzeFile(evidence);

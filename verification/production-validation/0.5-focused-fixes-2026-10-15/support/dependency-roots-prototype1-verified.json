@@ -1,0 +1,58 @@
+{
+  "scope": "Explicit original producer-root selection and exact delivered-tree identity",
+  "files": [
+    {
+      "relative": "tools/internal/dependency-evidence.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tools\\internal\\dependency-evidence.cjs",
+        "bytes": 18056,
+        "sha256": "8c481a17c671e2a38a542708b7a8a2142e05e4092cd4e86461603f0d88822dc7"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-dependency-roots-prototype1\\tools\\internal\\dependency-evidence.cjs",
+        "bytes": 19278,
+        "sha256": "5dd57f0d66546587d143d5563f578b15320e0a68969c72e01b6cd20898d87a74"
+      }
+    },
+    {
+      "relative": "tools/Test-Dependencies.ps1",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tools\\Test-Dependencies.ps1",
+        "bytes": 6385,
+        "sha256": "debf81c4dde18463fa5754c90267c57c72900d16415be00a7cd4a0c2736283c1"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-dependency-roots-prototype1\\tools\\Test-Dependencies.ps1",
+        "bytes": 6749,
+        "sha256": "5ea2682d89c6fe95f84b328f97690079fd212461b60a185d91dd67838ed3e55e"
+      }
+    },
+    {
+      "relative": "tests/sdk/dependency-evidence.test.cjs",
+      "before": {
+        "path": "C:\\work\\sm05-release-050\\tests\\sdk\\dependency-evidence.test.cjs",
+        "bytes": 6963,
+        "sha256": "000eaa518984c718010e439b10f17b3cbbabd993bff690f9aff36484bb87b22c"
+      },
+      "after": {
+        "path": "C:\\work\\sm05-dependency-roots-prototype1\\tests\\sdk\\dependency-evidence.test.cjs",
+        "bytes": 9409,
+        "sha256": "f0497391fdff2cec1c317a77dab77b392a8d601d82532ec2bd9526fc530602f1"
+      }
+    }
+  ],
+  "decision": {
+    "path": "F:\\work\\SOUI_WEB\\out\\release-050\\dependency-producer-roots-DECISION.md",
+    "bytes": 2283,
+    "sha256": "fe2abb55a367f0f63ccb46285239f97148c191b381f4e92fd16b52fc67269238"
+  },
+  "tests": {
+    "path": "F:\\work\\SOUI_WEB\\out\\release-050\\dependency-roots-green1.log",
+    "bytes": 1051,
+    "sha256": "7feb5be966d0956866ce0a4975f0545256d2b4358989bab94ecd8bc63460b926"
+  },
+  "unitTestsPassed": 10,
+  "powershellParsePassed": true,
+  "actualNewKernelPairingVerified": false,
+  "adopted": false
+}

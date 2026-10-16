@@ -49,6 +49,7 @@ public:
     virtual void addTaskObserver(TaskObserver*) = 0;
     virtual void removeTaskObserver(TaskObserver*) = 0;
     virtual WebScheduler* scheduler() const = 0;
+#include "fragments/webthread_shutdown_interface.inc"
 };
 class Platform {
 public:

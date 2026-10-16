@@ -20,3 +20,29 @@
 不根据缺少一行 delete 就宣称所有内存或句柄增长均已解释。普通句柄和 GDI 的剩余来源仍须对照修复后逐轮数据；进程结束清理不能代替窗口级资源回收。
 
 三个补丁的完整组合现已完成 x86/x64 全依赖重编译和公共独立消费者三模式各 30 轮。x86 重建普通句柄保持 294、GDI 保持 55、USER 保持 9；x64 分别保持 280/55/9。[逐候选记录](../../../docs/acceptance/lifecycle.md)保留完整内核散列与 run-id。表中单补丁的历史验证边界不因此改写；组合候选仍需完整压力、真实应用和依赖更新验收。
+
+## 0.5.0 源码采用：0009
+
+`0009-0.5.0-native-runtime-diagnostics.patch` 记录干净仓库基线 `0201e30b` 的 Native 子树到当前固定源码的变化：44 个已有文件修改、7 个文件新增，51 个补丁路径均相对仓库根目录。内容包含此前形成的 Worker/MessagePort 生命周期、线程退出、原生诊断与构建兼容修正，以及最后生效的 `Release|Win32` 静态 libcurl 声明修复。既有 0001–0008、`SOURCE-MANIFEST.json`、`LOCAL-CHANGES.patch` 和表中的历史验证说明保持原字节。
+
+完整固定源码边界为 23,543 文件、1,330 目录、321,004,079 字节；外部原始源码清单 SHA-256 为 `426b5d537bb294f984d896c84e90cd8f5d4875ff1b7fc0910dca40f91f8aca0f`。采用仅复制这 51 个实际差异文件，23,492 个既有未变文件没有重写；采用后全体文件、目录集合及原始散列与该边界相同。补丁为 2,433,999 字节，SHA-256 为 `ba60b25f036f6103bf15e493e75492374d89ca8617f96dd70fc742d29b5be303`。
+
+对序列化 unified 补丁按文件做正向与反向原始字节重构，51 个结果分别匹配目标与采用前内容；保留 BOM、旧编码和行尾。此核对没有执行 Git 应用。维护者可在仓库根目录对采用前基线运行 `git apply --check third_party/patches/miniblink/0009-0.5.0-native-runtime-diagnostics.patch`；当前已采用树使用同一路径的 `git apply --reverse --check`。正常重放仍须固定原有补丁和基线，不能把不同来源的工作树当成同一补丁前件。
+
+此次采用是源码变更，没有替换预编译 DLL/LIB、更新旧二进制身份或把历史诊断升级为当前验收。当前两架构的完整重编、实际 ABI/应用/长期资源、目标系统和许可发布门槛仍须按各自原件核实，不能从诊断接口存在或源码散列一致推导通过。接口与迁移边界见 [ADR-0068](../../../docs/adr/0068-native-runtime-diagnostics.md)。
+
+## 0.5.0 默认字体名称修正：0010
+
+`0010-default-font-unicode.patch` 在 0009 之后应用，只修正 `WebPageImpl::initSetting` 的默认字体字面量。原字面量含乱码且显式取前两个字符，实际 x86 诊断观察到请求 `U+7039/U+5B29`，而系统字体名称为“宋体”（`U+5B8B/U+4F53`）。字体族比较因此拒绝该对象，后续在 `ComputedStyle::computedLineHeight` 读取空字体时出现访问冲突。
+
+新字面量使用 Unicode 转义，明确保留两个正确字符，不依赖源码中文编码。没有增加空字体兜底或修改比较规则。该修正尚待重新构建并复测原 `reply-full-zero-business`、清理及 ABI 用例；后备字体路径仍需单独核实。上节的固定源码和原始散列仅对应 0009 采用时点，本次后续变化由顶层源码清单记录。
+
+## 有限命名缓存观测：0011
+
+`0011-finite-cache-observation.patch` 以已包含 0010 的 `18da0e9` Native 子树为前件，记录 10 个已有文件的新增观测接线和 2 个新头。它新增独立 216 字节 cache snapshot/table，不改变原 renderer 168/264 字节 ABI；通过原 WKE ITERATOR 导出机制暴露可选 `wkeGetCacheDiagnosticsApi`。Blink 仅 owner-thread 读取现存 MemoryCache；Skia 仅对已发布 attached glyph/global retained resource 实例 try-lock，不触发 lazy-create、遍历、purge、消息消费或 limit setter。既有锁 acquire 算法保留，仅增加非阻塞 try 方法。
+
+策略字段来自当前组件实际配置，不能解释为全部 heap 硬上限。detached/TLS/外部借用对象、其他缓存实例与 allocator 不在范围。SDK 显式异步请求、完成副本、缺失/忙/不可用以及原采样时间见 [ADR-0070](../../../docs/adr/0070-finite-cache-observation.md)。`git apply --reverse --check` 已对当前工作树进行非写入检查；Node 纯数据/源码检查不证明 Native 编译、真实缓存行为或长期资源验收。所有旧补丁和历史结果保持原角色，新 Native 实际验证尚未执行。
+
+## 驻留资源记录字节预算：0012
+
+`0012-retained-resource-byte-budget.patch` 在 0011 后只改变 Blink 初始化、SkResourceCache 的正字节限制及对应注释三个文件。原始字节重放已核对，不转码上游文件或转换行尾。前后完整源码树身份、三个文件散列和补丁散列见 `third_party/manifests/kernel-cache-source-050.json`。历史 SOURCE-MANIFEST 保持原导入角色，当前编译身份由实际构建前后完整清单记录。策略及真实像素引用验证见 ADR-0102；完整新内核和应用结果另计。

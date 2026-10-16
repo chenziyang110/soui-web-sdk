@@ -1,10 +1,14 @@
 # SOUI SDK 源码交付
 
-**开发版本：0.4.0-preview.3（依赖整合，尚未发布）。** 面向 Windows 的 C++ / TypeScript 桌面 SDK，提供独立 SDK、最小模板、完整 Demo、第三方源码和构建工具。这个目录是可独立搬移的交付根目录，构建不依赖原研发仓库或开发者机器上的源码路径。
+**版本：0.5.0（预发布交付）。** 面向 Windows 的 C++ / TypeScript 桌面 SDK，提供独立 SDK、最小模板、完整 Demo、第三方源码和构建工具。这个目录是可独立搬移的交付根目录，构建不依赖原研发仓库或开发者机器上的源码路径。版本身份不表示生产验收已通过，当前 `releaseReady=false`。
 
-最近已发布版本为 0.4.0-preview.1，见 [发布说明](docs/releases/0.4.0-preview.1.md)。整合版本包含公平调度内核、会话续期、菜单/托盘/快捷键、安装恢复与 Agent 动作；历史发布标签和固定 SDK 包保持原内容。当前 0.4 工作增加可选 WebView2、现代模板、环境与前端能力探测，见 [接入说明](docs/modern-backend.md) 和 [执行清单](docs/roadmap/0.4.0.md)。历史验收不能转述为当前开发版本已通过；完整性能、Win7/PE 支持、独立 Agent 身份及生产门槛仍待实际验证。
+0.5.0 的下载、实际验证范围和升级说明见[发布说明](docs/releases/0.5.0.md)。历史 0.4.0-preview.1 的标签与固定包保留原内容。整合版本包含公平调度内核、会话续期、菜单/托盘/快捷键、安装恢复与 Agent 动作；历史发布标签和固定 SDK 包保持原内容。本版包含可选 WebView2、现代模板、环境与前端能力探测，见 [接入说明](docs/modern-backend.md) 和 [执行清单](docs/roadmap/0.4.0.md)。历史验收不能转述为当前开发版本已通过；完整性能、Win7/PE 支持、独立 Agent 身份及生产门槛仍待实际验证。
 
 长期维护、AI Agent、评审、测试和发布的统一规范见 [AGENTS.md](AGENTS.md)；所有贡献者和自动化工具在修改前都应阅读。
+
+0.5 的当前范围与未完成验收见[执行清单](docs/roadmap/0.5.0-execution.md)。
+新版关闭握手要求对应源码重建的内核；缺少关闭接口的历史 DLL 会在初始化
+前返回依赖错误。显式 LLVM 的 SDK、内核与 SOUI 构建说明见[构建文档](docs/build.md)。
 
 ```text
 soui-sdk/
@@ -71,6 +75,8 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Build-Dependencies
 
 - [接入与开发](docs/getting-started.md)
 - [架构与目录所有权](docs/architecture.md)
+- [私有存储请求的独立读端解释（ADR-0082）](docs/adr/0082-task-store-private-storage-readers.md)（Source 与纯 JS；真实长期采集和完整缓存预算仍待验证）
+- [TaskStore 空存储清理的退款记账（ADR-0081）](docs/adr/0081-task-store-empty-deallocation-accounting.md)（独立 x86 fault 回归已通过；完整 SDK 与 x64 回归仍待验证）
 - [C++ / Web API](docs/api.md)
 - [完整构建与底层源码](docs/build.md)
 - [版本、升级与兼容性](docs/versioning.md)
@@ -88,3 +94,22 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File tools/Build-Dependencies
 - [生产验证执行记录与原始证据](docs/acceptance/progress.md)
 
 当前是预览源码交付。独立构建与接入验证通过，不等于生产发布验收完成；x64 长时间内存与关闭稳定性、目标系统矩阵等剩余项目在已知限制中逐项记录。
+# Explicit host AMD64 build observation
+
+The standard LLVM caller has an opt-in `--host64-build-observer` mode described
+in [ADR-0083](docs/adr/0083-host64-build-debug-observer.md). It preserves the
+original build and semantic gates and keeps the original polling diagnostics.
+The observer is a separate host AMD64/Windows 8+ helper; it does not change the
+SDK output architecture or establish Windows 7 compatibility.
+
+`tools/internal/Prepare-Host64BuildObserver.ps1` defaults to a read-only plan.
+It requires explicit `ProfileRequestFile` (prepared host x64 LLVM request),
+`DevkitRoot`, `CMakeExe`, `NodeExe` and a fresh `OutputDirectory`. A separate
+explicit `-Prepare` operation creates the actual producer receipt. Standard
+build requires `--host64-observer-prepared` with that receipt's absolute path
+and `--host64-observer-sha256` with its actual SHA, as well as the existing six
+explicit LLVM paths. It never automatically compiles or replaces the helper.
+
+This portable integration currently has Source/pure verification only. Real
+producer, normal x86/x64 builds, installed consumers and runtime checks remain
+pending; the earlier isolated SDKOnly experiment is not their acceptance.

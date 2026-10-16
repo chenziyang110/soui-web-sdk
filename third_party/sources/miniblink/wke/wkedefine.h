@@ -97,6 +97,9 @@ typedef struct _tagWkeString* wkeString;
 #endif
 
 #include "wke_cursor_broker.h"
+#include "wke_renderer_diagnostics.h"
+#include "wke_renderer_model_diagnostics.h"
+#include "wke_cache_diagnostics.h"
 
 // Versioned cross-thread interaction ABI. Only functions exposed through this
 // table are safe to call away from the WKE owner thread.
@@ -1017,12 +1020,26 @@ public:
     ITERATOR2(void *, wkeGetDebugConfig, wkeWebView webView, const char* debugString, "") \
     \
     ITERATOR0(void, wkeFinalize, "") \
+    ITERATOR0(unsigned, wkePrepareWorkerShutdown, "Internal worker shutdown prepare/poll") \
+    ITERATOR0(unsigned, wkeFinalizePrepared, "Internal prepared finalize status") \
+    ITERATOR0(unsigned, wkeWorkerRetirementWitnessCount, "Diagnostic default OFF") \
+    ITERATOR1(void*, wkeCaptureWorkerRetirementWitness, unsigned index, "Diagnostic default OFF") \
+    ITERATOR1(void*, wkeWorkerRetirementNativeHandle, void* token, "Diagnostic default OFF") \
+    ITERATOR3(bool, wkeReadWorkerRetirementWitness, void* token, unsigned* values, unsigned count, "Diagnostic default OFF") \
+    ITERATOR1(void, wkeReleaseWorkerRetirementWitness, void* token, "Diagnostic default OFF") \
+    ITERATOR3(bool, wkeArmWorkerMessageBacklog, void* token, unsigned generation, unsigned timeoutMs, "Diagnostic default OFF; valid borrowed witness") \
+    ITERATOR3(bool, wkeWaitWorkerMessageBacklogEntered, void* token, unsigned generation, unsigned timeoutMs, "Diagnostic default OFF; bounded entered handshake") \
+    ITERATOR3(bool, wkeReadWorkerMessageBacklog, void* token, unsigned* values, unsigned count, "Diagnostic default OFF; exact18 fields") \
+    ITERATOR2(bool, wkeReleaseWorkerMessageBacklog, void* token, unsigned generation, "Diagnostic default OFF; fail-safe release") \
     ITERATOR0(void, wkeUpdate, "") \
     ITERATOR0(unsigned int, wkeGetVersion, "") \
     ITERATOR0(const utf8*, wkeGetVersionString, "") \
     \
     ITERATOR0(wkeWebView, wkeCreateWebView, "") \
     ITERATOR1(const wkeInteractionApi*, wkeGetInteractionApi, unsigned int requestedVersion, "") \
+    ITERATOR1(const wkeRendererDiagnosticsApi*, wkeGetRendererDiagnosticsApi, unsigned int requestedVersion, "") \
+    ITERATOR1(const wkeRendererModelDiagnosticsApi*, wkeGetRendererModelDiagnosticsApi, unsigned int requestedVersion, "") \
+    ITERATOR1(const wkeCacheDiagnosticsApi*, wkeGetCacheDiagnosticsApi, unsigned int requestedVersion, "") \
     ITERATOR1(void, wkeDestroyWebView, wkeWebView webView, "") \
     \
     ITERATOR2(void, wkeSetMemoryCacheEnable, wkeWebView webView, bool b, "") \

@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.5.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.5",
-  "serialNumber": "urn:uuid:6d544c91-f07a-4205-b59c-daec5289edf4",
+  "serialNumber": "urn:uuid:215a24f6-04e9-42ff-ad95-cc9eb9ddcff0",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-10-08T08:30:45.057Z",
+    "timestamp": "2026-10-15T17:24:08.134Z",
     "lifecycles": [
       {
         "phase": "pre-build"
@@ -7535,12 +7535,12 @@
       ]
     },
     {
-      "bom-ref": "vite@6.4.3",
+      "bom-ref": "vite@6.4.4",
       "type": "library",
       "name": "vite",
-      "version": "6.4.3",
+      "version": "6.4.4",
       "scope": "optional",
-      "purl": "pkg:npm/vite@6.4.3",
+      "purl": "pkg:npm/vite@6.4.4",
       "properties": [
         {
           "name": "cdx:npm:package:development",
@@ -7550,13 +7550,13 @@
       "externalReferences": [
         {
           "type": "distribution",
-          "url": "https://registry.npmjs.org/vite/-/vite-6.4.3.tgz"
+          "url": "https://registry.npmjs.org/vite/-/vite-6.4.4.tgz"
         }
       ],
       "hashes": [
         {
           "alg": "SHA-512",
-          "content": "3532a57108e500aecc950a326fa2e06aa1dcf2cb28fe9572509616330b378e0db5b93270fcb75da8814f70fa8fe8fce981b21c672288f39b051381c1ad00c0f0"
+          "content": "c468d4fd2ca378dc9bd04e0ac5706f633ff50bedc95eeba3bdfda15cd3ad9e5704fb9f28e5a8ddf4ddbf9f656192226fa423f6a906ac9d4a71e4f5cd788fa9d5"
         }
       ],
       "licenses": [
@@ -7612,7 +7612,7 @@
         "@vitejs/plugin-legacy@6.1.1",
         "@vitejs/plugin-react@5.2.0",
         "typescript@5.9.3",
-        "vite@6.4.3"
+        "vite@6.4.4"
       ]
     },
     {
@@ -8702,7 +8702,7 @@
       "ref": "@vitejs/plugin-legacy@6.1.1",
       "dependsOn": [
         "terser@5.51.2",
-        "vite@6.4.3",
+        "vite@6.4.4",
         "@babel/core@7.29.7",
         "@babel/preset-env@7.29.7",
         "browserslist@4.29.0",
@@ -8716,7 +8716,7 @@
     {
       "ref": "@vitejs/plugin-react@5.2.0",
       "dependsOn": [
-        "vite@6.4.3",
+        "vite@6.4.4",
         "@babel/core@7.29.7",
         "@babel/plugin-transform-react-jsx-self@7.29.7",
         "@babel/plugin-transform-react-jsx-source@7.29.7",
@@ -9133,7 +9133,7 @@
       ]
     },
     {
-      "ref": "vite@6.4.3",
+      "ref": "vite@6.4.4",
       "dependsOn": [
         "terser@5.51.2",
         "esbuild@0.25.12",

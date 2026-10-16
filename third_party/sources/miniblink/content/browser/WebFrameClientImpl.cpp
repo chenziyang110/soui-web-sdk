@@ -1,5 +1,6 @@
 
 #include "content/browser/WebFrameClientImpl.h"
+#include "wke/RendererModelState.h"
 #include "content/browser/WebPage.h"
 #include "content/browser/WebPageImpl.h"
 #include "content/ui/ContextMeun.h"
@@ -136,6 +137,7 @@ blink::WebPluginPlaceholder* WebFrameClientImpl::createPluginPlaceholder(WebLoca
 
 blink::WebPlugin* WebFrameClientImpl::createPlugin(WebLocalFrame* frame, const WebPluginParams& params)
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_PLUGIN);
     if (!wke::brokerPluginEntry())
         return nullptr;
     WebPluginParams newParam = params;
@@ -176,11 +178,13 @@ blink::WebPlugin* WebFrameClientImpl::createPlugin(WebLocalFrame* frame, const W
 
 blink::WebMediaPlayer* WebFrameClientImpl::createMediaPlayer(WebLocalFrame* frame, const WebURL& url , WebMediaPlayerClient* client, WebContentDecryptionModule*)
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_MEDIA);
     return new WebMediaPlayerImpl(frame, url, client);
 }
 
 blink::WebMediaPlayer* WebFrameClientImpl::createMediaPlayer(WebLocalFrame* frame, const WebURL& url, WebMediaPlayerClient* client, WebMediaPlayerEncryptedMediaClient*, WebContentDecryptionModule*)
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_MEDIA);
     return new WebMediaPlayerImpl(frame, url, client);
 }
 
@@ -194,6 +198,7 @@ blink::WebWorkerContentSettingsClientProxy* WebFrameClientImpl::createWorkerCont
 // client is responsible for rendering the contents of the popup menu.
 WebExternalPopupMenu* WebFrameClientImpl::createExternalPopupMenu(const WebPopupMenuInfo&, WebExternalPopupMenuClient*)
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_EXTERNAL_VIEW);
     return 0;
 }
 
@@ -667,6 +672,7 @@ void WebFrameClientImpl::didChangeResourcePriority(WebLocalFrame* webFrame, unsi
 
 void WebFrameClientImpl::runModalAlertDialog(const WebString& message)
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_EXTERNAL_VIEW);
     bool needCall = true;
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
     wke::AutoDisableFreeV8TempObejct autoDisableFreeV8TempObejct;
@@ -686,6 +692,7 @@ void WebFrameClientImpl::runModalAlertDialog(const WebString& message)
 
 bool WebFrameClientImpl::runModalConfirmDialog(const WebString& message)
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_EXTERNAL_VIEW);
     bool needCall = true;
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
     wke::AutoDisableFreeV8TempObejct autoDisableFreeV8TempObejct;
@@ -706,6 +713,7 @@ bool WebFrameClientImpl::runModalConfirmDialog(const WebString& message)
 
 bool WebFrameClientImpl::runModalPromptDialog(const WebString& message, const WebString& defaultValue, WebString* actualValue)
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_EXTERNAL_VIEW);
     bool needCall = true;
     bool result = false;
 #if (defined ENABLE_WKE) && (ENABLE_WKE == 1)
@@ -739,6 +747,7 @@ bool WebFrameClientImpl::runModalBeforeUnloadDialog(bool isReload, const WebStri
 
 void WebFrameClientImpl::showContextMenu(const blink::WebContextMenuData& data)
 {
+    wke::diagnostics::observe_renderer_factory(WKE_RENDER_MODEL_FACTORY_EXTERNAL_VIEW);
     if (!m_menu)
         m_menu = ContextMenu::create(m_webPage);
 

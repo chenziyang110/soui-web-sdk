@@ -1,0 +1,40 @@
+✔ collection defaults retain the MSVC full scope and optional flags (0.7976ms)
+✔ ambiguous, missing or unsupported collection options are rejected (0.3543ms)
+✔ measurement request belongs to the selected x64 preparation (0.1582ms)
+✔ measurement request belongs to the selected x86 preparation (0.0649ms)
+✔ measurement routing rejects an unknown command, architecture or profile (0.5754ms)
+✔ build requests retain architecture, configuration, SDK-only ownership and explicit profile (0.3242ms)
+✔ the actual collector cannot infer an opposite build profile from existing receipts (6.8979ms)
+✖ the actual collector forwards LLVM requests to every measurement group before later work (1.5367ms)
+✔ LLVM collection selects both genuine component readers without requesting a synthetic All report (1.3915ms)
+ℹ tests 9
+ℹ suites 0
+ℹ pass 8
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 144.0805
+
+✖ failing tests:
+
+test at C:\work\sm05-release-050\tests\sdk\verification-profile.test.cjs:55:1
+✖ the actual collector forwards LLVM requests to every measurement group before later work (1.5367ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  5 !== 6
+  
+      at TestContext.<anonymous> (C:\work\sm05-release-050\tests\sdk\verification-profile.test.cjs:72:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 5,
+    expected: 6,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

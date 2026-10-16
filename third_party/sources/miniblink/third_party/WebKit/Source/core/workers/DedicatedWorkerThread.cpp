@@ -47,6 +47,7 @@ DedicatedWorkerThread::DedicatedWorkerThread(PassRefPtr<WorkerLoaderProxy> worke
     : WorkerThread(workerLoaderProxy, workerObjectProxy)
     , m_workerObjectProxy(workerObjectProxy)
     , m_timeOrigin(timeOrigin)
+    , m_backingRetired(false)
 {
 }
 
@@ -61,9 +62,35 @@ PassRefPtrWillBeRawPtr<WorkerGlobalScope> DedicatedWorkerThread::createWorkerGlo
 
 WebThreadSupportingGC& DedicatedWorkerThread::backingThread()
 {
+    RELEASE_ASSERT(!m_backingRetired); // Retirement never reopens lazy backing creation.
     if (!m_thread)
         m_thread = WebThreadSupportingGC::create("DedicatedWorker Thread");
     return *m_thread.get();
+}
+
+bool DedicatedWorkerThread::duplicateShutdownWitness(WebThread::ShutdownWitness& output)
+{
+    ASSERT(isMainThread());
+    return m_thread && !m_backingRetired && m_thread->platformThread().duplicateShutdownWitness(output);
+}
+
+WorkerRetirementResult DedicatedWorkerThread::retireBacking()
+{
+    ASSERT(isMainThread());
+    if (!shutdownRecord()->rawAccessQuiescent()) return WorkerRetirementResult::Pending;
+    if (m_backingRetired) return WorkerRetirementResult::Ready;
+    if (m_thread) {
+        const WebThread::Retirement result = m_thread->platformThread().tryShutdownAndJoin();
+        if (result == WebThread::Retirement::Pending) return WorkerRetirementResult::Pending;
+        if (result != WebThread::Retirement::Joined) { shutdownRecord()->fail(); return WorkerRetirementResult::Failed; }
+        if (!shutdownRecord()->payloadsRetired() || !shutdownRecord()->nativeTargetsRetired()) return WorkerRetirementResult::Pending;
+        // Full Worker is still held by its original main-thread proxy owner.
+        // The wrapper preserves the existing GC safepoint and now joins immediately.
+        m_thread.clear();
+    }
+    m_backingRetired = true;
+    shutdownRecord()->nativeJoined(); // NeverStarted is explicitly the no-HANDLE case.
+    return WorkerRetirementResult::Ready;
 }
 
 void DedicatedWorkerThread::postInitialize()

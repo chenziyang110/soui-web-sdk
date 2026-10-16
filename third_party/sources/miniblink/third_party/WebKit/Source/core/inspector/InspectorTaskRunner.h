@@ -6,6 +6,7 @@
 #define InspectorTaskRunner_h
 
 #include "core/CoreExport.h"
+#include "core/workers/WorkerShutdownRecord.h"
 #include "wtf/Forward.h"
 #include "wtf/Noncopyable.h"
 #include "wtf/OwnPtr.h"
@@ -29,6 +30,8 @@ public:
     // this V8Debugger and corresponding v8::Isolate exist while this method is running.
     void interruptAndRun(PassOwnPtr<Task>);
     void runPendingTasks();
+    void setWorkerShutdownRecord(PassRefPtr<WorkerShutdownRecord>);
+    void cancelPendingTasks();
 
     class CORE_EXPORT IgnoreInterruptsScope final {
     public:
@@ -43,6 +46,10 @@ public:
 private:
     static void v8InterruptCallback(v8::Isolate*, void* data);
 
+    class InterruptCapsule;
+    RefPtr<InterruptCapsule> m_interruptCapsule;
+    static void retiredInterruptCallback(v8::Isolate*, void*);
+    RefPtr<WorkerShutdownRecord> m_workerShutdownRecord;
     v8::Isolate* m_isolate;
     class ThreadSafeTaskQueue;
     OwnPtr<ThreadSafeTaskQueue> m_taskQueue;

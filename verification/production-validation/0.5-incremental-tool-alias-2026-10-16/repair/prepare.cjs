@@ -1,0 +1,10 @@
+'use strict';
+const fs=require('node:fs'),assert=require('node:assert/strict');
+const source='C:/work/sm05-release-050/tools/internal/Observe-LlvmBuild.ps1';
+assert(fs.readFileSync(source).equals(fs.readFileSync(__dirname+'/before-Observe-LlvmBuild.ps1')));
+let text=fs.readFileSync(source,'utf8');const start='function BinaryCommandIndex([string[]]$generated,[string[]]$verbose){';
+assert.equal(text.split(start).length,2);
+const helper=fs.readFileSync(__dirname+'/BinaryCommandTools.ps1','utf8').replaceAll('\r\n','\n').trimEnd();
+text=text.replace(start,()=>helper+'\n'+start+`\n # Authenticate configured tool spellings independently of current execution.\n # Historical compile/link records and actual role requirements remain intact.\n foreach($raw in @($generated)+@($verbose)){foreach($tool in @(BinaryCommandTools $raw)){[void](ToolIdentity $tool.path $tool.role)}}`);
+fs.writeFileSync(__dirname+'/Observe-LlvmBuild-v2.ps1',text,{flag:'wx'});
+console.log('Prepared local observer proposal; product source unchanged.');

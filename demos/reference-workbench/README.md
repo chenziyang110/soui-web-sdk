@@ -1,6 +1,6 @@
 # 共享业务参考工作台（W6 / 05-06）
 
-这是独立、可选的业务示例。三个页面使用相同固定 10,000 行模型、公开 actiongen 表单和同一真实 C++ json_bridge 任务服务。2026-10-10 已完成两次真实动作生成/检查、两次 TypeScript 检查、三个 Vite 构建、两个旧内核入口转换、三个输出核对和两次依赖锁审计；十四阶段均自然退出，依赖审计为零已知漏洞。源码及实际生成物已采用，完整参考原生应用、三个宿主内业务流程尚待验证；发布、性能、资源、操作系统和 IME 资格保持 false。
+这是独立、可选的业务示例。三个页面使用相同固定 10,000 行模型、公开 actiongen 表单和同一真实 C++ json_bridge 任务服务。2026-10-15 已完成当前 Web 构建和锁文件审计，并在 Windows 11 开发主机实际构建 x64 Release 的 Compatibility React、Compatibility Vue、Modern React 三个完整原生应用；14 项原生 CTest 和三套 GUI / Native Agent 业务流程通过。对应 SDK 构建、源码清单、原始进程记录和有限验证边界见 [实际验证记录](../../verification/production-validation/0.5-reference-gui-2026-10-15/README.md)。后续源码变更仍需重验，发布、性能、完整资源、目标操作系统和 IME 资格未由本次验证授予。
 
 | 页面 | 已冻结依赖 | 原生目标 |
 |---|---|---|
@@ -14,7 +14,7 @@
 
 本地存储最多 8 KiB，仅包含草稿、筛选、选择、主题和历史任务引用。页面明确显示 empty/restored/rejected/storage-unavailable；刷新后的旧 taskId/operationId 标记 previous-document-unknown，不查询、不重放、不持久化 bearer/scope/token。窗口初次打开用同一公开 Bridge 建立真实新文档；导航的实际授权撤销仍由 SDK Host 负责。表单不写文件。
 
-SouiGui 注册 12 个明确业务节点；按钮与程序化自检进入相同动作。状态只提供长度、数量和任务状态，不把名称/备注值加入 GUI snapshot。GUI 入口不制造 native user gesture、UIA 或 Agent 权限。公开 bridge-owned stopped endpoint 工厂虽已采用，本示例不启动端点、不额外授予 Agent scope，也不把 local-only family 暴露到页面。
+SouiGui 注册 12 个明确业务节点；按钮与程序化自检进入相同动作。状态只提供长度、数量和任务状态，不把名称/备注值加入 GUI snapshot。GUI 入口不制造 native user gesture、UIA 或 Agent 权限。默认启动不开放本地端点；可信原生操作者可通过下述成对参数启用绑定到指定进程的有限 Native Agent 业务和 GUI 命令。local-only family 不暴露到页面。
 
 ## Root 的最小构建入口
 
@@ -66,7 +66,7 @@ Vue SFC 的实际编译由已锁 Vue/Vite 插件执行；TS 命令不宣称完�
 
 注册完现有业务后、首次 bootstrap 前创建公开 stopped endpoint。三个应用的接入代码要求仅在 Host `application_ready`、当前 session 与真实 Miniblink receipt / Modern digest 同时有效之后启动 listener。原生 policy 只开放两 typed 业务动作、同一真实 handler 的 `reference.summary.local.start/query/cancel` 及有限发现；没有第二 TaskService、generic task.*、任意 eval、文件操作或 native gesture。成功结果投影五个固定样本字段，取消/失败投影空对象，实际服务终态不改。
 
-撤销从任意 SDK 调用线程先 atomic close / request_stop / SetEvent；现有 owner pump 实际 revoke/poll_stop 至 stopped，再 Host destroy，随后 Bridge 的任务析构 join，最后释放政策/业务及 RuntimeShutdown。新增 `reference.agent.*` 八个 CTest 是真实外部 child/pipe 的 headless 有限组合，回执在实际 join 后产生；其原生窗口 predicate 不能证明 GUI ready。GUI 异步公开契约和 effect ticket 只在 ADR0052 设计，尚未实现；本片不声称 Agent 与人工 GUI 等价。
+撤销从任意 SDK 调用线程先 atomic close / request_stop / SetEvent；现有 owner pump 实际 revoke/poll_stop 至 stopped，再 Host destroy，随后 Bridge 的任务析构 join，最后释放政策/业务及 RuntimeShutdown。`reference.agent.*` 的 headless CTest 使用真实外部 child/pipe，回执在实际 join 后产生；其原生窗口 predicate 不证明 GUI ready。异步 GUI 契约、effect ticket 和页面执行器已按 ADR0058 接入；2026-10-15 的三个真实 GUI 实例完成九个业务 family，中文表单取得已提交回执，10,000 行任务成功、第二任务取消，GUI 与原生任务标识、序号、进度和终态一致。该有限业务验证不等同于物理输入、UIA 或性能资格。
 
 首次可信原生 binding 前，初始旧 session 清理仍实际转交 Bridge；该清理不使从未开始的 listener 永久失效，也不授予权限。单调 atomic binding latch 发布后发生的任何撤销，包括发布/start 竞争，都会永久关闭；没有自动重开。selected-peer 例实际覆盖 prebind 清理及 publication 时与外国线程 shutdown 的交错，其余绑定后旧 scope/任务和新文档拒绝保持不变。
 

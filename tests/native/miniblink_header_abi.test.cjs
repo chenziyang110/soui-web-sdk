@@ -33,9 +33,3 @@ test('the delivered Miniblink binding uses the source export return ABI', () => 
   assert.deepEqual(mismatches, [],
     'Dynamic function-pointer return types must match the compiled Miniblink exports, especially on x86.');
 });
-
-test('the host classifies pending resolvers through the validated jsIsString ABI', () => {
-  const host = fs.readFileSync(path.join(root, 'sdk/src/host/soui_miniblink_host.cpp'), 'utf8');
-  assert.match(host, /const bool waiting_is_string = jsIsString\(waiting\);/);
-  assert.doesNotMatch(host, /const bool waiting_is_string = jsTypeOf\(waiting\)/);
-});

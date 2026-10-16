@@ -146,6 +146,8 @@ struct task_service::impl {
     std::shared_ptr<detail::gui_job_context> gui;
     std::uint64_t metrics_enqueued_us{0};
     bool metrics_handler_entered{false};
+    bool handler_entered{false}; // Production truth, independent of diagnostics.
+    bool handler_threw{false};
     std::atomic<bool> cancel_requested{false};
     void cancel() noexcept {
       cancel_requested.store(true, std::memory_order_release);
@@ -155,6 +157,10 @@ struct task_service::impl {
   struct result_cache {
     std::string json{"{}"};
     bool projection_failed{false};
+    enum class storage_error { none, quota, allocation };
+    storage_error terminal_storage_error{storage_error::none};
+    std::optional<result_kind> handler_outcome;
+    bool handler_entered{false}, handler_threw{false}, outcome_rejected{false};
   };
   struct ownership {
     scope context;
@@ -171,8 +177,8 @@ struct task_service::impl {
     std::string task_id;
   };
 
-  explicit impl(dm::mode enabled) : metrics_mode(enabled),
-      metrics_epoch(enabled == dm::mode::scalar ? dm::detail::epoch() : 0), tasks("sdk-task-", enabled) {}
+  impl(dm::mode enabled, std::optional<task_store_request_quota_policy> quota) : metrics_mode(enabled),
+      metrics_epoch(enabled == dm::mode::scalar ? dm::detail::epoch() : 0), tasks("sdk-task-", enabled, quota) {}
   const dm::mode metrics_mode;
   const std::uint64_t metrics_epoch;
   dm::tasks metrics;
@@ -267,7 +273,7 @@ struct task_service::impl {
     item->family = family;
     item->gui = gui;
     if (!live()) return error("E_UNAUTHORIZED", "Task authorization expired before admission.");
-    auto prepared = tasks.prepare_start_scoped(operation_key, scope_key);
+    auto prepared = tasks.prepare_start_scoped(operation_key, scope_key, true);
     const auto& snapshot = prepared->snapshot;
     if (prepared->capacity) {
       if (metrics_mode == dm::mode::scalar) dm::detail::increment(metrics.store_full_rejections_total, metrics_saturated);
@@ -330,6 +336,8 @@ struct task_service::impl {
     }
     ready.notify_one();
     return receipt;
+    } catch (const task_store_request_quota_exceeded&) {
+      return error("E_TASK_STORE_QUOTA", "Native task admission storage quota exceeded.");
     } catch (...) { return error("E_NATIVE_FAILURE", "Native task preparation failed."); }
   }
 
@@ -343,6 +351,8 @@ struct task_service::impl {
     if (!valid_name(operation_id) || (!request.operation_id.empty() && request.operation_id != operation_id))
       return error("E_INVALID_PARAMS", "A bounded consistent operationId is required.");
     const auto input = params["input"].dump();
+    if (input.size() > bridge_transport::max_params_bytes)
+      return error("E_INVALID_PARAMS", "The normalized task input exceeds the native byte bound.");
     std::shared_ptr<detail::gui_job_context> context;
     if (family->data_->gui) {
       {
@@ -396,6 +406,7 @@ struct task_service::impl {
     if (terminal(snapshot->state)) {
       if (owner->second.result->projection_failed) result["projectionError"] = "E_RESULT_PROJECTION";
       else result["result"] = json::parse(owner->second.result->json);
+      add_terminal_errors(result, *owner->second.result);
     }
     const auto encoded=result.dump();
     if (data.gui && (encoded.size()>bridge_transport::max_params_bytes ||
@@ -460,10 +471,75 @@ struct task_service::impl {
     } catch (...) { /* Serialization and listeners cannot stop native task cleanup. */ }
   }
 
-  void finish(const std::shared_ptr<job>& item, task_outcome outcome) {
+  static const char* outcome_name(const result_cache& cache) noexcept {
+    if (!cache.handler_entered) return "not-executed";
+    if (!cache.handler_outcome) return "unknown";
+    switch (*cache.handler_outcome) {
+      case result_kind::success: return "success";
+      case result_kind::failure: return "failure";
+      case result_kind::partial: return "partial";
+      case result_kind::task_cancelled: return "task-cancelled";
+      case result_kind::user_cancelled: return "user-cancelled";
+      case result_kind::timeout_observed: return "timeout-observed";
+      case result_kind::input_required: return "input-required";
+    }
+    return "unknown";
+  }
+
+  static void add_terminal_errors(json& response, const result_cache& cache) {
+    if (cache.terminal_storage_error != result_cache::storage_error::none) {
+      response["terminalStorageError"] = cache.terminal_storage_error == result_cache::storage_error::quota
+          ? "E_TASK_STORE_QUOTA" : "E_TERMINAL_ALLOCATION";
+    }
+    if (cache.outcome_rejected) response["outcomeError"] = "E_HANDLER_OUTCOME";
+    if (cache.handler_threw) response["handlerError"] = "E_NATIVE_HANDLER";
+    if (cache.terminal_storage_error != result_cache::storage_error::none || cache.projection_failed || cache.outcome_rejected || cache.handler_threw)
+      response["handlerOutcome"] = outcome_name(cache);
+  }
+
+  void commit_owner_terminal(ownership& owner, const std::shared_ptr<job>& item,
+      std::optional<result_kind> observed, std::optional<std::string>& published,
+      bool projection_failed, bool outcome_rejected, result_cache::storage_error storage_error) noexcept {
+    static_assert(noexcept(owner.result->json.swap(std::declval<std::string&>())), "Result cache publication must not allocate");
+    if (published) owner.result->json.swap(*published);
+    owner.result->projection_failed = projection_failed;
+    owner.result->terminal_storage_error = storage_error;
+    owner.result->handler_outcome = observed;
+    owner.result->handler_entered = item->handler_entered;
+    owner.result->handler_threw = item->handler_threw;
+    owner.result->outcome_rejected = outcome_rejected;
+    owner.active.reset();
+    if (metrics_mode == dm::mode::scalar && !item->metrics_handler_entered)
+      dm::detail::increment(metrics.cancelled_before_handler_total, metrics_saturated);
+    if (inflight) --inflight;
+  }
+
+  void fail_funded_locked(const std::shared_ptr<job>& item, std::optional<result_kind> observed,
+      std::optional<std::string>& published, bool projection_failed, bool outcome_rejected,
+      result_cache::storage_error cause) noexcept {
+    const auto found = owners.find(item->id);
+    if (found == owners.end() || found->second.active != item) return; // Already committed, never replace it.
+    const bool committed = tasks.commit_funded_failure(item->id);
+    assert(committed && "Every admitted active task owns its funded failure terminal");
+    if (!committed) return; // Keep active/inflight; never claim a partial commit succeeded.
+    commit_owner_terminal(found->second, item, observed, published, projection_failed, outcome_rejected, cause);
+  }
+
+  void fail_worker(const std::shared_ptr<job>& item, result_cache::storage_error cause) noexcept {
+    std::optional<std::string> no_result;
+    std::lock_guard<std::mutex> lock(mutex);
+    fail_funded_locked(item, std::nullopt, no_result, true, false, cause);
+  }
+
+  void finish(const std::shared_ptr<job>& item, task_outcome outcome) noexcept {
+    const auto observed = item->handler_threw ? std::optional<result_kind>{} : std::optional<result_kind>{outcome.kind};
+    std::optional<std::string> published;
+    bool projection_failed = false, outcome_rejected = false, prepared_result = false;
+    try {
     // A cancellation request cannot undo work. Preserve the handler's actual
     // terminal outcome; only an unexecuted job or explicit confirmation cancels.
     if (outcome.kind == result_kind::timeout_observed || outcome.kind == result_kind::input_required) {
+      outcome_rejected = true;
       outcome.kind = result_kind::failure;
       outcome.result_json = "{}";
       outcome.message = "A task handler returned a nonterminal result.";
@@ -476,43 +552,60 @@ struct task_service::impl {
       if (valid_result) (void)json(outcome.message).dump();
     } catch (...) { valid_result = false; }
     if (!valid_result) {
+      outcome_rejected = true;
       outcome.kind = result_kind::failure;
       outcome.result_json = "{}";
       outcome.message = "A task handler returned an invalid result object.";
     }
-    bool projection_failed = false;
-    std::string published = outcome.result_json;
     if (item->family) {
       try {
-        published = item->family->data_->project_result(outcome);
-        projection_failed = published.size() > bridge_transport::max_params_bytes ||
-            !item->family->data_->result_contract->validates_output(published);
+        published.emplace(item->family->data_->project_result(outcome));
+        projection_failed = published->size() > bridge_transport::max_params_bytes ||
+            !item->family->data_->result_contract->validates_output(*published);
       } catch (...) { projection_failed = true; }
-      if (projection_failed) published = "{}";
-    }
+      if (projection_failed) published.emplace("{}");
+    } else published.emplace(std::move(outcome.result_json));
+    prepared_result = true;
+    } catch (...) { projection_failed = true; published.reset(); }
     std::lock_guard<std::mutex> lock(mutex);
     const auto found = owners.find(item->id);
-    if (found != owners.end()) {
-      found->second.result->json = std::move(published);
-      found->second.result->projection_failed = projection_failed;
-      found->second.active.reset();
+    if (found == owners.end() || found->second.active != item) return;
+    if (!prepared_result) {
+      fail_funded_locked(item, observed, published, true, outcome_rejected, result_cache::storage_error::allocation);
+      return;
     }
-    (void)tasks.complete(item->id, outcome.kind, item->family ? std::string{} : outcome.message);
-    if (metrics_mode == dm::mode::scalar && !item->metrics_handler_entered)
-      dm::detail::increment(metrics.cancelled_before_handler_total, metrics_saturated);
-    if (inflight) --inflight;
+    try {
+      task_store::prepared_completion prepared(tasks.mutex_);
+      tasks.prepare_complete(prepared, item->id, outcome.kind,
+                             item->family ? std::string_view{} : std::string_view{outcome.message});
+      assert(prepared.publish);
+      if (!prepared.publish) return;
+      // Service and Store locks cover both publications; nothing below allocates.
+      tasks.commit_complete(prepared);
+      commit_owner_terminal(found->second, item, observed, published, projection_failed, outcome_rejected,
+                            result_cache::storage_error::none);
+    } catch (const task_store_request_quota_exceeded&) {
+      fail_funded_locked(item, observed, published, projection_failed, outcome_rejected, result_cache::storage_error::quota);
+    } catch (...) {
+      fail_funded_locked(item, observed, published, projection_failed, outcome_rejected, result_cache::storage_error::allocation);
+    }
   }
 
   void run() {
     for (;;) {
       std::shared_ptr<job> item;
       bool execute = false;
+      bool handler_counted = false;
       {
         std::unique_lock<std::mutex> lock(mutex);
         ready.wait(lock, [this] { return stopping || !queue.empty(); });
         if (queue.empty() && stopping) return;
         item = std::move(queue.front());
         queue.pop_front();
+      }
+      try {
+      {
+        std::lock_guard<std::mutex> lock(mutex);
         const auto owner = owners.find(item->id);
         execute = owner != owners.end() && !owner->second.revoked && executable(owner->second) &&
             !item->cancel_requested.load(std::memory_order_acquire) && tasks.mark_running(item->id);
@@ -546,28 +639,59 @@ struct task_service::impl {
             emit(item->id);
             return true;
           });
-      if (metrics_mode == dm::mode::scalar) {
-        std::lock_guard<std::mutex> lock(mutex);
-        item->metrics_handler_entered = true; ++active_handlers;
-      }
       task_outcome outcome;
+      {
+        std::lock_guard<std::mutex> lock(mutex);
+        item->handler_entered = true;
+        if (metrics_mode == dm::mode::scalar) { item->metrics_handler_entered = true; ++active_handlers; handler_counted = true; }
+      }
       try { outcome = item->gui ? item->family->data_->gui->run(item->gui, control)
                                : (*item->callback)(item->invocation, control); }
-      catch (...) { outcome = {result_kind::failure, "{}", "Native task handler failed."}; }
+      catch (...) { item->handler_threw = true; outcome = {result_kind::failure, "{}", "Native task handler failed."}; }
       if (metrics_mode == dm::mode::scalar) {
         std::lock_guard<std::mutex> lock(mutex);
         --active_handlers;
+        handler_counted = false;
         dm::detail::increment(metrics.finished_handlers_total, metrics_saturated);
       }
       finish(item, std::move(outcome));
       emit(item->id);
+      } catch (const task_store_request_quota_exceeded&) {
+        if (handler_counted) {
+          std::lock_guard<std::mutex> lock(mutex);
+          --active_handlers;
+          dm::detail::increment(metrics.finished_handlers_total, metrics_saturated);
+        }
+        fail_worker(item, result_cache::storage_error::quota);
+      } catch (...) {
+        // Setup/mark-running/result construction failures are outside the
+        // business callback catch. Use admission's one funded terminal, no retry.
+        if (handler_counted) {
+          std::lock_guard<std::mutex> lock(mutex);
+          --active_handlers;
+          dm::detail::increment(metrics.finished_handlers_total, metrics_saturated);
+        }
+        fail_worker(item, result_cache::storage_error::allocation);
+      }
     }
   }
 
 };
 
 task_service::task_service() : task_service(dm::mode::disabled) {}
-task_service::task_service(dm::mode enabled) : impl_{std::make_shared<impl>(enabled)} {}
+task_service::task_service(dm::mode enabled) : task_service(enabled, default_task_store_request_quota) {}
+task_service::task_service(dm::mode enabled, std::optional<task_store_request_quota_policy> quota)
+    : impl_{std::make_shared<impl>(enabled, quota)} {}
+
+task_store_request_quota_status task_service::read_request_quota(
+    task_store_request_quota_snapshot& out) const noexcept {
+  out = {};
+  try {
+    std::unique_lock<std::mutex> lock(impl_->mutex, std::try_to_lock);
+    if (!lock.owns_lock()) { out.status = task_store_request_quota_status::busy; return out.status; }
+    return impl_->tasks.read_request_quota(out); // Preserve service-to-Store lock order.
+  } catch (...) { out = {}; return out.status; }
+}
 
 dm::status task_service::read_runtime_metrics(dm::tasks& out) const noexcept {
   out = {};
@@ -592,6 +716,26 @@ dm::status task_service::read_runtime_metrics(dm::tasks& out) const noexcept {
     if (!impl_->tasks.read_metrics_locked(out)) out.observation.state = dm::status::busy;
     dm::detail::end(out.observation); return out.observation.state;
   } catch (...) { out = {}; out.observation.state = dm::status::unavailable; return out.observation.state; }
+}
+
+dm::status task_service::read_storage_metrics(dm::task_store_storage& out) const noexcept {
+  out = {};
+  if (impl_->metrics_mode != dm::mode::scalar) return dm::status::disabled;
+  try {
+    std::unique_lock<std::mutex> lock(impl_->mutex, std::try_to_lock);
+    if (!lock.owns_lock()) { out.observation.state = dm::status::busy; return dm::status::busy; }
+    return impl_->tasks.read_storage_metrics(out); // Preserve service-to-Store lock order.
+  } catch (...) { out = {}; out.observation.state = dm::status::unavailable; return dm::status::unavailable; }
+}
+
+dm::status task_service::read_private_storage_metrics(dm::task_store_private_storage& out) const noexcept {
+  out = {};
+  if (impl_->metrics_mode != dm::mode::scalar) return dm::status::disabled;
+  try {
+    std::unique_lock<std::mutex> lock(impl_->mutex, std::try_to_lock);
+    if (!lock.owns_lock()) { out.observation.state = dm::status::busy; return dm::status::busy; }
+    return impl_->tasks.read_private_storage_metrics(out); // Same service-to-Store order.
+  } catch (...) { out = {}; out.observation.state = dm::status::unavailable; return dm::status::unavailable; }
 }
 
 task_service::~task_service() {
@@ -640,7 +784,11 @@ std::shared_ptr<const local_task_family> task_service::register_local_family_imp
     const auto query_output = object_schema({{"taskId", id}, {"state", states},
         {"progress", {{"type", "integer"}, {"minimum", 0}, {"maximum", 100}}},
         {"sequence", identifier_schema(20)}, {"result", output},
-        {"projectionError", {{"type", "string"}, {"maxLength", 32}, {"enum", {"E_RESULT_PROJECTION"}}}}},
+        {"projectionError", {{"type", "string"}, {"maxLength", 32}, {"enum", {"E_RESULT_PROJECTION"}}}},
+        {"terminalStorageError", {{"type", "string"}, {"maxLength", 32}, {"enum", {"E_TASK_STORE_QUOTA", "E_TERMINAL_ALLOCATION"}}}},
+        {"outcomeError", {{"type", "string"}, {"maxLength", 32}, {"enum", {"E_HANDLER_OUTCOME"}}}},
+        {"handlerError", {{"type", "string"}, {"maxLength", 32}, {"enum", {"E_NATIVE_HANDLER"}}}},
+        {"handlerOutcome", {{"type", "string"}, {"maxLength", 32}, {"enum", {"success", "failure", "partial", "task-cancelled", "user-cancelled", "timeout-observed", "input-required", "not-executed", "unknown"}}}}},
         {"taskId", "state", "progress", "sequence"});
     const auto cancel_input = object_schema({{"taskId", id}}, {"taskId"});
     const auto cancel_output = object_schema({{"taskId", id},
@@ -793,7 +941,7 @@ void task_service::shutdown_session(const std::string& session_id) {
 }
 
 std::string task_service::start(const bridge_request& request) {
-  const auto params = parameters(request);
+  const auto params = bounded_json(request.params_json);
   if (!params.is_object() || params.size() != 3U || !params.contains("kind") ||
       !params.contains("operationId") || !params.contains("input") || !params["input"].is_object())
     return error("E_INVALID_PARAMS", "kind, operationId and object input are required.");
@@ -802,6 +950,8 @@ std::string task_service::start(const bridge_request& request) {
   if (!valid_name(kind) || !valid_name(operation_id))
     return error("E_INVALID_PARAMS", "kind and operationId must be bounded identifiers.");
   const auto input = params["input"].dump();
+  if (input.size() > bridge_transport::max_params_bytes)
+    return error("E_INVALID_PARAMS", "The normalized task input exceeds the native byte bound.");
   std::lock_guard<std::mutex> lock(impl_->mutex);
   return impl_->admit_locked(request, kind, operation_id, input);
 }
@@ -836,7 +986,11 @@ std::string task_service::query(const bridge_request& request) const {
   json result = {{"taskId", task_id}, {"state", state_name(snapshot->state)},
                  {"progress", snapshot->progress}, {"message", snapshot->message},
                  {"sequence", snapshot->sequence}};
-  if (terminal(snapshot->state)) result["result"] = json::parse(owner->second.result->json);
+  if (terminal(snapshot->state)) {
+    if (owner->second.result->projection_failed) result["projectionError"] = "E_RESULT_PROJECTION";
+    else result["result"] = json::parse(owner->second.result->json);
+    impl::add_terminal_errors(result, *owner->second.result);
+  }
   return result.dump();
 }
 

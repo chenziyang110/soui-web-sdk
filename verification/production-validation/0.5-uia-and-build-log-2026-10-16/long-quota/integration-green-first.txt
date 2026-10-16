@@ -1,0 +1,104 @@
+✔ private request U64 and bool shapes reject numbers, leading zeros, overflow and truthy strings (1.4871ms)
+✔ private aggregate checks actual refunds but retains independent event peaks (0.427ms)
+✔ busy default zero, saturation and inexact requests retain raw with no derived zero (0.3664ms)
+✔ Store epoch is stable within a mounted owner and may change only on a new lifetime (1.4499ms)
+✔ same Store copies, reversed clocks and missing capture clocks never create fresh points (0.9644ms)
+✖ finite cache revision freezes temporal coverage with no empirical byte allowance (0.6106ms)
+✔ session config accepts its real existing key order and rejects extra knobs (0.5641ms)
+✔ fixed command selects 1000 for each public mode and exact independent duration modes (2.1861ms)
+✔ legacy 100reload resource command and normal default remain separate (0.8048ms)
+✔ nearest-rank p50/p95 and percentage ceiling are exact (0.302ms)
+✔ eight point exact TS contains 28 pairs and rejects a positive trend (2.3485ms)
+✔ amplitude allowance and TS are separate requirements (0.8497ms)
+✔ all eight resource hours include start/end edge gaps (0.7926ms)
+✔ short cadence cannot borrow points from another phase (0.1306ms)
+✔ session origin binds actual started and anchor0, not arbitrary run begin (0.1464ms)
+✔ tail and final boundary remain separate without deleting raw samples (0.1278ms)
+✔ same phase class change fails, working set only describes (2.8457ms)
+✔ counter p95 increase fails even if TS remains zero (1.1517ms)
+✔ response actions remain distinct by window and within-cycle position (1.3538ms)
+✔ missing hour in repeated business action does not pass via boundary actions (0.3775ms)
+✔ crossing tail action is retained outside full-hour response statistics (1.0821ms)
+✔ queue capacity excludes the independently executing callback (0.3596ms)
+✔ retired cancelled terminal history and worker slots are not false leaks (0.2014ms)
+✔ retired revoked module borrows do not require module zero (0.1037ms)
+✔ optional GUI not_started is named absence, not a fabricated zero (0.067ms)
+✔ owner cap and contractual drain can pass with an explicit cache gap (0.5454ms)
+✔ retired adapter ready and absent adapter unavailable do not substitute stopped not_started (0.216ms)
+✔ task epoch cannot change inside a retained host lifetime (0.2658ms)
+✔ request lane outstanding matches actual acquired minus released (0.0897ms)
+✔ decimal integers reject unsafe numeric DTOs and preserve all uint64 precision (0.0859ms)
+✔ natural single-owned original exact duration args prove PID resource tree (0.6737ms)
+✔ actual child membership needs per-member metrics and is specifically NE (0.3663ms)
+✔ forced cleanup, supervisor exit and FILETIME mismatch remain failures (0.3306ms)
+✔ exact argv and original 2000ms drain cannot be replaced by duration strings (0.1969ms)
+✔ required gates conjoin; observed failure takes precedence over missing cache (0.0409ms)
+✔ committed alias snapshot 257 fails even though transient high water 257 is legal (0.0744ms)
+✔ all task store state counters form an exact partition and unfinished cancellation is not drain (0.0953ms)
+✔ global Engine epoch cannot silently restart under a new history key (0.1311ms)
+✔ a ready retired FIFO must actually be drained (0.0583ms)
+✔ session final anchor close is retained as tail rather than a fabricated recurring response group (1.0813ms)
+✔ request pins bind all exact current identities and disallow duration/cycle mixing (0.5155ms)
+✔ file source input cannot manufacture a native compatibility model observation (1.6199ms)
+✔ sequential live getters may advance without pretending to be an atomic snapshot (0.6293ms)
+✔ separately observed GPU history cannot disappear in the later model getter (0.271ms)
+✔ a partial close with another live renderer does not imply a whole-process terminal (0.3834ms)
+✔ first ready no-draw prefix is retained but terminal must contain a real completed CPU draw (0.3749ms)
+✔ the first native terminal cannot be rewritten on the idempotent read (0.2978ms)
+✔ a coherent ordinary classifier DTO closes only the thousand-operation scope (0.6743ms)
+✔ a single changed operations gate cannot retain a previously green classifier (0.1563ms)
+✔ a single missing cache gate cannot retain a previously green duration classifier (0.1443ms)
+✔ mode-specific aggregate, passed and resource/eight-hour fields must all agree (0.2597ms)
+✔ a coherent measured failure outranks a separate missing-cache gate (0.1168ms)
+✔ finite named cache failure outranks full budget NE in both long aggregate and classifier (0.1861ms)
+✔ long classifier cannot hide a failed named point or manufacture a calibrated whole budget (0.1525ms)
+✔ missing group response samples never borrow resource cadence (0.5676ms)
+✔ duplicate live owner DTO cannot hide another actual window (0.0945ms)
+✔ retired owner cannot close a different live window (0.0752ms)
+✔ a previously measured GUI cannot disappear into optional-not-instantiated exemption (0.1021ms)
+✔ F3 actual original Owned terminal time is retained in the lawful positive (0.1692ms)
+✔ F3 absent and illegal elapsed fields cannot use matching natural closure as clock proof (0.3746ms)
+✔ F3 synchronized report and result with actual short Owned time fail the requested eight hours (0.1357ms)
+✔ F3 synchronized hash/result still reject longer Native clock than actual Owned observation (0.1185ms)
+✔ F3 ordinary native completion is also bounded by actual Owned time (0.047ms)
+✔ F3 known clock failure cannot disappear behind a not-evaluated cache (0.1373ms)
+✔ F3 observed time cannot exceed the unchanged original client watchdog range (0.1216ms)
+✔ F3 classifier refuses a single contradictory actual clock field (0.0857ms)
+✔ F3 classifier cannot omit actual clock while retaining passed operation/Owned gates (0.0656ms)
+✔ F3 clock contradiction remains failed through analyzer and classifier before missing cache evidence (0.7339ms)
+✔ long quota is required, retains failures and is recomputed from original parsed records (11.1392ms)
+✔ missing long quota observations cannot be promoted through a classifier DTO (0.3449ms)
+ℹ tests 70
+ℹ suites 0
+ℹ pass 69
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 52.2602
+
+✖ failing tests:
+
+test at C:\work\sm05-release-050\tests\sdk\long-run-policy.test.cjs:85:1
+✖ finite cache revision freezes temporal coverage with no empirical byte allowance (0.6106ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + '0.5.0-m0-task-request-quota-v3'
+  - '0.5.0-m0-named-cache-configuration-v2'
+              ^
+  
+      at TestContext.<anonymous> (C:\work\sm05-release-050\tests\sdk\long-run-policy.test.cjs:86:10)
+      at Test.runInAsyncScope (node:async_hooks:228:14)
+      at Test.run (node:internal/test_runner/test:1118:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:787:18)
+      at Test.postRun (node:internal/test_runner/test:1247:19)
+      at Test.run (node:internal/test_runner/test:1175:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:787:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: '0.5.0-m0-task-request-quota-v3',
+    expected: '0.5.0-m0-named-cache-configuration-v2',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

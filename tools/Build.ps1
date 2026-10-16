@@ -3,20 +3,69 @@ param(
   [ValidateSet('x86','x64')][string]$Architecture='x64',
   [ValidateSet('Debug','Release')][string]$Configuration='Release',
   [switch]$SdkOnly,
+  [switch]$WithVendorTests,
   [switch]$SkipWeb,
   [switch]$WithWebView2,
+  [switch]$WithUia,
   [switch]$WithGuiBindings,
   [switch]$Install,
-  [switch]$FreshConfigure
+  [switch]$FreshConfigure,
+  [ValidateSet('MSVC143','LLVM22MSVC142')][string]$NativeToolchain='MSVC143',
+  [string]$LlvmRoot,
+  [string]$MsvcRoot,
+  [string]$WindowsSdkRoot,
+  [string]$NinjaExe,
+  [string]$WindowsCmdExe,
+  [string]$PowerShellExe
 )
 $ErrorActionPreference='Stop'
 $root=[IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+if($WithVendorTests -and ($SdkOnly -or (Test-Path -LiteralPath (Join-Path $root 'project.json')))){
+  throw 'WithVendorTests requires the source devkit root; omit SdkOnly and do not use a generated application.'
+}
 . (Join-Path $PSScriptRoot 'internal/Find-Toolchain.ps1')
 . (Join-Path $PSScriptRoot 'internal/CMake-Configure.ps1')
-$toolchain=Get-SouiToolchain
-$cmake=Get-Command cmake.exe -ErrorAction Stop
-$node=Get-Command node.exe -ErrorAction Stop
-$npm=Get-Command npm.cmd -ErrorAction Stop
+$llvm=$null
+$externalPaths=@($LlvmRoot,$MsvcRoot,$WindowsSdkRoot,$NinjaExe,$WindowsCmdExe,$PowerShellExe)
+if($NativeToolchain -eq 'MSVC143'){
+  if(@($externalPaths|Where-Object{$_}).Count){throw 'LLVM paths require explicit NativeToolchain LLVM22MSVC142.'}
+  $toolchain=Get-SouiToolchain
+}else{
+  if(@($externalPaths|Where-Object{[string]::IsNullOrWhiteSpace($_)}).Count){throw 'LLVM22MSVC142 requires all six explicit tool paths.'}
+  . (Join-Path $PSScriptRoot 'internal/Find-LlvmToolchain.ps1')
+  $llvm=Get-SouiLlvmToolchain -Architecture $Architecture -LlvmRoot $LlvmRoot -MsvcRoot $MsvcRoot `
+    -WindowsSdkRoot $WindowsSdkRoot -NinjaExe $NinjaExe -WindowsCmdExe $WindowsCmdExe -PowerShellExe $PowerShellExe `
+    -ToolIdentityBridge (Join-Path $PSScriptRoot 'internal/Invoke-ToolFileIdentity.ps1') `
+    -ToolIdentityHelper (Join-Path $PSScriptRoot 'internal/Tool-FileIdentity.ps1')
+}
+# The LLVM branch owns process-local provider cleanup; it never changes host registry or global environment.
+$llvmEnvironment=@{}
+$llvmRemove=@('NODE_OPTIONS','NODE_PATH','NODE_REPL_EXTERNAL_MODULE','GIT_DIR','GIT_WORK_TREE','GIT_INDEX_FILE',
+  'CL','_CL_','LINK','_LINK_','INCLUDE','LIB','LIBPATH','CPATH','C_INCLUDE_PATH','CPLUS_INCLUDE_PATH','OBJC_INCLUDE_PATH',
+  'LIBRARY_PATH','CCC_OVERRIDE_OPTIONS','CLANG_CONFIG_FILE_USER_DIR','CLANG_CONFIG_FILE_SYSTEM_DIR',
+  'CMAKE_GENERATOR','CMAKE_GENERATOR_PLATFORM','CMAKE_GENERATOR_TOOLSET','CC','CXX','AR','RC','CFLAGS','CXXFLAGS','LDFLAGS',
+  'DESTDIR','NINJA_STATUS','RCFLAGS','EXTERNAL_INCLUDE','CMAKE_BUILD_TYPE','CMAKE_TOOLCHAIN_FILE','CMAKE_PREFIX_PATH')
+if($llvm){
+  foreach($name in @($llvmRemove)+@('ComSpec','VcpkgEnabled','VcpkgEnableManifest','MSBUILDDISABLENODEREUSE')){
+    $item=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue
+    $llvmEnvironment[$name]=@{present=($null-ne$item);value=if($null-ne$item){[string]$item.Value}else{$null}}
+  }
+}
+try {
+if($llvm){
+  foreach($name in $llvmRemove){Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue;if(Test-Path -LiteralPath ('Env:'+$name)){throw "Could not clear LLVM provider: $name"}}
+  $env:ComSpec=$llvm.NativeProcessPaths.CMD
+  $env:VcpkgEnabled='false';$env:VcpkgEnableManifest='false';$env:MSBUILDDISABLENODEREUSE='1'
+}
+if($llvm){
+  $cmake=@(Get-Command cmake.exe -CommandType Application -ErrorAction Stop)[0]
+  $node=@(Get-Command node.exe -CommandType Application -ErrorAction Stop)[0]
+  $npm=@(Get-Command npm.cmd -CommandType Application -ErrorAction Stop)[0]
+}else{
+  $cmake=Get-Command cmake.exe -ErrorAction Stop
+  $node=Get-Command node.exe -ErrorAction Stop
+  $npm=Get-Command npm.cmd -ErrorAction Stop
+}
 $generated=Test-Path -LiteralPath (Join-Path $root 'project.json')
 if($generated){
   $projectMetadata=Get-Content -Raw -LiteralPath (Join-Path $root 'project.json') | ConvertFrom-Json
@@ -47,11 +96,22 @@ if(-not $SdkOnly){
 $output=Join-Path $root "out/$(if($SdkOnly){'sdk-'}else{''})$Architecture"
 $source=if($SdkOnly){Join-Path $root 'sdk'}else{$root}
 $configure=@(Get-SouiCMakeConfigureArguments -CMake $cmake.Source -WorkspaceRoot $root -SourceDirectory $source `
-  -BuildDirectory $output -Architecture $Architecture -FreshConfigure:$FreshConfigure)
+  -BuildDirectory $output -Architecture $Architecture -FreshConfigure:$FreshConfigure `
+  -NativeToolchain $NativeToolchain -LlvmToolchain $llvm)
 New-Item -ItemType Directory -Force -Path $output | Out-Null
 $evidence=Join-Path $root 'tools/internal/build-evidence.cjs'
 $evidenceArgs=@($Architecture,$Configuration)
 if($SdkOnly){$evidenceArgs+='sdk-only'}
+$webEvidenceArgs=@($evidenceArgs)
+if($llvm){
+  $requestPath=Join-Path $output "llvm-profile-request-$Configuration.json"
+  $toolchainPath=Join-Path $root 'cmake/toolchains/SouiLLVM22.cmake'
+  $request=[ordered]@{schema='soui.build-toolchain-request/v1';profile=$NativeToolchain;architecture=$Architecture;
+    discovery=$llvm;toolchain=@{path=$toolchainPath;bytes=(Get-Item -LiteralPath $toolchainPath).Length;
+      sha256=(Get-FileHash -LiteralPath $toolchainPath -Algorithm SHA256).Hash.ToLowerInvariant()}}
+  [IO.File]::WriteAllText($requestPath,($request|ConvertTo-Json -Depth 20),[Text.UTF8Encoding]::new($false))
+  $evidenceArgs+=@('--native-toolchain',$NativeToolchain,'--profile-request',$requestPath)
+}
 & $node.Source $evidence start @evidenceArgs
 if($LASTEXITCODE -ne 0){throw 'Build identity initialization failed'}
 if(-not $SkipWeb) {
@@ -75,7 +135,7 @@ if(-not $SkipWeb) {
     if($LASTEXITCODE -ne 0){throw "Web build failed for $relative; inspect $output"}
   }
 }
-& $node.Source $evidence $(if($SkipWeb){'verify-web'}else{'record-web'}) @evidenceArgs
+& $node.Source $evidence $(if($SkipWeb){'verify-web'}else{'record-web'}) @webEvidenceArgs
 if($LASTEXITCODE -ne 0){throw 'Web source/output identity verification failed'}
 if($WithGuiBindings){
   & $node.Source (Join-Path $root 'tools/sdk/gui-bindings-delivery.cjs') verify --root $root
@@ -86,9 +146,13 @@ if($WithWebView2){
   $webview2Package=& (Join-Path $PSScriptRoot 'internal/Restore-WebView2.ps1')
   $optional=@('-DSOUI_BUILD_WEBVIEW2=ON',"-DSOUI_WEBVIEW2_SDK_ROOT=$webview2Package")
 }
+$optional+=('-DSOUI_BUILD_UIA='+$(if($WithUia){'ON'}else{'OFF'}))
+if($WithVendorTests){$optional+=@('-DSOUI_BUILD_TESTS=ON','-DSOUI_BUILD_VENDOR_TESTS=ON')}
 & $cmake.Source @configure @optional
 if($LASTEXITCODE -ne 0){throw 'CMake configure failed'}
-& $cmake.Source --build $output --config $Configuration --parallel 2 *> (Join-Path $output "native-$Configuration.log")
+$buildArguments=@('--build',$output,'--config',$Configuration,'--parallel','2')
+if($llvm){$buildArguments+='--verbose'}
+& $cmake.Source @buildArguments *> (Join-Path $output "native-$Configuration.log")
 if($LASTEXITCODE -ne 0){throw "Native build failed; inspect $output/native-$Configuration.log"}
 if($WithWebView2){& (Join-Path $PSScriptRoot 'internal/Restore-WebView2.ps1') | Out-Null}
 if($Install){
@@ -102,3 +166,15 @@ if($WithGuiBindings){
 & $node.Source $evidence finish @evidenceArgs
 if($LASTEXITCODE -ne 0){throw 'Build payload recording failed'}
 Write-Output "Build passed: $output / $Configuration"
+} finally {
+  $restoreErrors=[Collections.Generic.List[string]]::new()
+  foreach($name in $llvmEnvironment.Keys){
+    try {
+      $state=$llvmEnvironment[$name]
+      if($state.present){Set-Item -LiteralPath ('Env:'+$name) -Value $state.value -ErrorAction Stop}else{Remove-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue}
+      $actual=Get-Item -LiteralPath ('Env:'+$name) -ErrorAction SilentlyContinue
+      if(($null-ne$actual)-ne$state.present-or($state.present-and([string]$actual.Value-cne$state.value))){throw 'Presence/value differs'}
+    }catch{$restoreErrors.Add($name+': '+$_.Exception.Message)}
+  }
+  if($restoreErrors.Count){throw ('LLVM build environment restore failed: '+($restoreErrors-join'; '))}
+}

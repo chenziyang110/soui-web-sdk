@@ -6,6 +6,7 @@
 #include "node/src/node.h"
 #include "node/src/env.h"
 #include "node/src/env-inl.h"
+#include "node/src/base-object-inl.h"
 #include "node/uv/include/uv.h"
 
 #include "gin/v8_initializer.h"

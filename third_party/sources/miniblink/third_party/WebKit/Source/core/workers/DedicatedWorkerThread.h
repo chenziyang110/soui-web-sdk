@@ -43,6 +43,9 @@ public:
     static PassRefPtr<DedicatedWorkerThread> create(PassRefPtr<WorkerLoaderProxy>, WorkerObjectProxy&, double timeOrigin);
     WorkerObjectProxy& workerObjectProxy() const { return m_workerObjectProxy; }
     virtual ~DedicatedWorkerThread();
+    bool supportsShutdownRetirement() const override { return true; }
+    WorkerRetirementResult retireBacking() override;
+    bool duplicateShutdownWitness(WebThread::ShutdownWitness&) override;
 
 protected:
     PassRefPtrWillBeRawPtr<WorkerGlobalScope> createWorkerGlobalScope(PassOwnPtr<WorkerThreadStartupData>) override;
@@ -54,6 +57,7 @@ private:
 
     WorkerObjectProxy& m_workerObjectProxy;
     double m_timeOrigin;
+    bool m_backingRetired;
     OwnPtr<WebThreadSupportingGC> m_thread;
 };
 

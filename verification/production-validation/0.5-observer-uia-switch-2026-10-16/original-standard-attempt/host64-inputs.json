@@ -1,0 +1,448 @@
+{
+  "schema": "soui.host64-build-debug-inputs/2",
+  "nonce": "2373229d-7772-40c8-83c8-1ae3879d29c4",
+  "root": "C:\\work\\sm05-release-050",
+  "rootArguments": [
+    "-NoProfile",
+    "-NonInteractive",
+    "-ExecutionPolicy",
+    "Bypass",
+    "-File",
+    "C:\\work\\sm05-release-050\\tools\\Build.ps1",
+    "-Architecture",
+    "x64",
+    "-Configuration",
+    "Debug",
+    "-SkipWeb",
+    "-WithWebView2",
+    "-WithUia",
+    "-WithGuiBindings",
+    "-WithVendorTests",
+    "-Install",
+    "-FreshConfigure",
+    "-NativeToolchain",
+    "LLVM22MSVC142",
+    "-LlvmRoot",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64",
+    "-MsvcRoot",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133",
+    "-WindowsSdkRoot",
+    "C:/Program Files (x86)/Windows Kits/10",
+    "-NinjaExe",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe",
+    "-WindowsCmdExe",
+    "C:/Windows/System32/cmd.exe",
+    "-PowerShellExe",
+    "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe"
+  ],
+  "images": [
+    {
+      "path": "C:\\Users\\11034\\.cache\\codex-runtimes\\codex-primary-runtime\\dependencies\\native\\powershell\\pwsh.exe",
+      "bytes": 301368,
+      "sha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139",
+      "role": "POWERSHELL",
+      "machine": 34404
+    },
+    {
+      "path": "C:\\Program Files\\CMake\\bin\\cmake.exe",
+      "bytes": 12905544,
+      "sha256": "daae341e73330c9c5bf391f22d10510c0f70e5f01d2b61b0fd256cd9edd28379",
+      "role": "CMAKE",
+      "machine": 34404
+    },
+    {
+      "path": "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node.exe",
+      "bytes": 91380224,
+      "sha256": "63c259c81e5d472b5f11c8d506070130cb04a1ecf84b80377a34ed6ec9048088",
+      "role": "NODE",
+      "machine": 34404
+    },
+    {
+      "path": "C:\\Windows\\System32\\cmd.exe",
+      "bytes": 344064,
+      "sha256": "97ac98b1a92c286054cce55239cfccdfc23a5517bd07fe693072c9ca96c7dabb",
+      "role": "CMD",
+      "machine": 34404
+    },
+    {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\Common7\\IDE\\CommonExtensions\\Microsoft\\CMake\\Ninja\\ninja.exe",
+      "bytes": 3776568,
+      "sha256": "9546466f0feca6d62d7d4ea9b7fbc381f8e302cb7f02f4ce327a39d8577bb293",
+      "role": "NINJA",
+      "machine": 34404
+    },
+    {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+      "bytes": 104747608,
+      "sha256": "ec094d5f8f37c106eefcfc47c9997c261a06e3bd8eaaa7255835983a58524156",
+      "role": "CLANG",
+      "machine": 34404
+    },
+    {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+      "bytes": 71454768,
+      "sha256": "631a02cecb87f9f7f2270713d6c7f84e54a0fabce6c6638d21d3a0caea78204d",
+      "role": "LINKER",
+      "machine": 34404
+    },
+    {
+      "path": "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\Llvm\\x64\\bin\\llvm-lib.exe",
+      "bytes": 18463832,
+      "sha256": "41ccf71f32fad386a5b7f7926175c4a8a74196d050e2bcbf7b06a93d080288f5",
+      "role": "ARCHIVER",
+      "machine": 34404
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.19041.0\\x64\\rc.exe",
+      "bytes": 71208,
+      "sha256": "2cbcc6024fe41ae92fada6b3f74e6e2a1b2fe71c51b288167d6abab319da2628",
+      "role": "RC",
+      "machine": 34404
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\bin\\10.0.19041.0\\x64\\mt.exe",
+      "bytes": 1847888,
+      "sha256": "a86c27bb35ccf3c27c206406e26262216fadba3de0eed7173447bcbfe03ff74c",
+      "role": "MT",
+      "machine": 34404
+    },
+    {
+      "path": "C:\\Program Files\\CMake\\bin\\cmcldeps.exe",
+      "bytes": 1851984,
+      "sha256": "a5ecadd4ab315fa2516a2e55525d60e9ad6b6e3501479ca3a2ef9e6c4abce1c6",
+      "role": "CMCLDEPS",
+      "machine": 34404
+    },
+    {
+      "path": "C:\\WINDOWS\\System32\\conhost.exe",
+      "bytes": 1003520,
+      "sha256": "e449bce01f275cd08f3d4e64bb73b3b43ae845a0dbdb3e6131426e66537705e5",
+      "role": "CONHOST",
+      "machine": 34404
+    }
+  ],
+  "modules": [
+    {
+      "path": "C:\\WINDOWS\\System32\\ntdll.dll",
+      "bytes": 2522080,
+      "sha256": "a74f7482085eab125ccc09152ab7e0b5994bcb13e1a7b29880bdbb24179ecb8b",
+      "role": "NTDLL",
+      "machine": 34404,
+      "codeLayout": {
+        "sizeOfImage": 2519040,
+        "executableRanges": [
+          {
+            "rva": 4096,
+            "bytes": 1482908
+          },
+          {
+            "rva": 1490944,
+            "bytes": 688
+          },
+          {
+            "rva": 1495040,
+            "bytes": 688
+          },
+          {
+            "rva": 1499136,
+            "bytes": 688
+          },
+          {
+            "rva": 1503232,
+            "bytes": 688
+          },
+          {
+            "rva": 1507328,
+            "bytes": 444
+          },
+          {
+            "rva": 1511424,
+            "bytes": 2353
+          },
+          {
+            "rva": 1515520,
+            "bytes": 4096
+          }
+        ]
+      }
+    }
+  ],
+  "controlPins": [
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\Find-LlvmToolchain.ps1",
+      "bytes": 11427,
+      "sha256": "2a81487d800b50a55032839b96abc2844188161d3dca7598e04ff1b9af2609ef"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\cmake\\toolchains\\SouiLLVM22.cmake",
+      "bytes": 22723,
+      "sha256": "99d59e4f621c4e5ab5d4519d601e1cc984db6f356a739097229d466248b4e3ef"
+    },
+    {
+      "path": "C:/work/sm05-release-050/tools/internal/Invoke-ToolFileIdentity.ps1",
+      "bytes": 3115,
+      "sha256": "d9d3a0119dc9da8845b2469c6a60defeee7bd57a7f866ddca6e5c5330824ca45"
+    },
+    {
+      "path": "C:/work/sm05-release-050/tools/internal/Tool-FileIdentity.ps1",
+      "bytes": 5543,
+      "sha256": "c36365f2758de235ac79babdccfb2b945dd70c974c51e1efaddcaa8e74555cda"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\Observe-LlvmBuild.ps1",
+      "bytes": 115016,
+      "sha256": "4a8d54916eafadbd24069971f1e5d8060465cfc5f1deef651738fcb0185f376c"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\llvm-build-observer.cjs",
+      "bytes": 42846,
+      "sha256": "6581d16ba28826275a4a5aa17eeeb028d75f555386fc542445c1b7742a6bd390"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\llvm-profile-inputs.cjs",
+      "bytes": 17761,
+      "sha256": "005770d57756cbc1e76f6765363e506388f4fd733b87c67b22b6aaf5bf5ae658"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\measurement-validation.cjs",
+      "bytes": 24757,
+      "sha256": "271d8b8aceecccb5007012831f16728d2e36b941df2b4e397eaa11fa81e08f55"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\llvm-measurement-observation.cjs",
+      "bytes": 23359,
+      "sha256": "baae76021622b83092ff930337e7f3751568bb254ee6eed3b74e6f79c56dc9ca"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\benchmarks\\protocol\\host64-build-debug-observer.cpp",
+      "bytes": 56897,
+      "sha256": "44ddcdcabb60a7177168ae76280f1a62345d12c2d5937642364bad875f78fdf7"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\benchmarks\\protocol\\host64-build-debug-observer\\CMakeLists.txt",
+      "bytes": 2027,
+      "sha256": "55b2d7d053fe7f2be91ffcfad0a8fe952d8a84660fc86ac87f2e07a4639dd32a"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\Prepare-Host64BuildObserver.ps1",
+      "bytes": 821,
+      "sha256": "cd217cef3ce6acc52beb2aa38389d249a12fa0731c668de00fb0520645fc9e45"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\host64-build-debug-observer.cjs",
+      "bytes": 42661,
+      "sha256": "d21de3a1793f10e8902ca1f9b2ffbd0064acaf50ab43eab1e1ca960464ab12f8"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\third_party\\include\\json\\json.hpp",
+      "bytes": 926077,
+      "sha256": "78496a32103398f5936cec4df6cf42fa52f2cb2495caf4270fa42c8ed8c4e851"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\build-source-manifest.cjs",
+      "bytes": 3139,
+      "sha256": "0de4276d916937299f84ef052dd86baffaabb650d7aba0b3e41f96f7c3081dc9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\configure-log-evidence.cjs",
+      "bytes": 2938,
+      "sha256": "279987f1e6c7aa3b1b2988819009d9dd43f3091ad2e2964ca018f244a7b38062"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\Capture-CMakeConfigureLog.ps1",
+      "bytes": 983,
+      "sha256": "39f0da6530cb6a6af47aeb73072a245658843316f1db73b03a9038f0aab99090"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\Build.ps1",
+      "bytes": 10415,
+      "sha256": "d0fbfbe846b1422b83197ce4e7bce58c8a9e760125a5c2b2753239c9d8409ba9"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\standard-build.cjs",
+      "bytes": 39757,
+      "sha256": "0411e6813baae2d4134c5b1735f56c63a31579168f4f8be12c1ea189d8cb220e"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\owned-process.cjs",
+      "bytes": 8386,
+      "sha256": "8ccec5802c793b45990d2d7585f2c29fb618a7b170adebd5d270a7c291757ce7"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\sdk-version.cjs",
+      "bytes": 794,
+      "sha256": "7742ee81477abd00f1ff16dbef01c4c716dce03856e91cc5e1b121f1b6cf6bc0"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\owned-tail-evidence.cjs",
+      "bytes": 20024,
+      "sha256": "61bceb766ecdfae0552c26212b332c8d7dbd0c2f24833cf7d27d59932f2b23cd"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\compiler-tail-policy.cjs",
+      "bytes": 11554,
+      "sha256": "8785f1e2b7e29bce8073500bf29876c808c43dae50d8aea340c2f66dd4253511"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\build-evidence.cjs",
+      "bytes": 20851,
+      "sha256": "b394c012a1f896571fd24dd23859d4a1d6d4381a0555f165f5de8e9217573bf8"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\delivery-identity.cjs",
+      "bytes": 5972,
+      "sha256": "f4e0c71ada00946d16f58bdae4654c918d0112321f2a8e259fee8601ae042751"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\Find-Toolchain.ps1",
+      "bytes": 1471,
+      "sha256": "01bc9f21ad0f08f9a56dbb160334483078120e2fcb62b690d2dd1590db8ff936"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\CMake-Configure.ps1",
+      "bytes": 11045,
+      "sha256": "c10a6a68510a65421568903d1d091f9a09ce0871b979f895835c31cc88155eba"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\cmake\\SouiWindowsSdk.cmake",
+      "bytes": 1299,
+      "sha256": "50dceb5ab08fd9999e3813cf8c4c26240f0035bde7b208ac6559bd67af2b0e82"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\standard-build\\attempt-f1d483c8-92cc-4bb7-92b8-fcc0baf79cb7\\source-manifest.input.json",
+      "bytes": 16007119,
+      "sha256": "ed72f2bd37cefd7e28aec8a14f7c89483a077aead54e20a09e07415464276cfb"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\standard-build\\attempt-f1d483c8-92cc-4bb7-92b8-fcc0baf79cb7\\llvm-discovery.json",
+      "bytes": 11972,
+      "sha256": "7e3ed22b3898f495a1e30fa7690069af58fe6eb6be9e072ee5a15a3830873034"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64/lib/clang/22/include/stddef.h",
+      "bytes": 5053,
+      "sha256": "b3e62a046ddf28d09eedebe6eb9461cb7060e47cad2c69964b222c4eea10347e"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include/vector",
+      "bytes": 125299,
+      "sha256": "afbb65075ab35bdccc993fe0a9791decc03a6107b00b17a2d985c1ed421f64d4"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include/optional",
+      "bytes": 27622,
+      "sha256": "34880e9400c7a625eda7f2797234f60a9b1456ffa7dcb7c4210002da559a3525"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/include/vcruntime.h",
+      "bytes": 10913,
+      "sha256": "28fb1fd59d1d46b03487925f8f6399eeb5aa0c57742e12094f473b1b40eb292d"
+    },
+    {
+      "path": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/ucrt/stdlib.h",
+      "bytes": 43968,
+      "sha256": "1576fdb40eb225dff53489db2fd52e41c7bb24f1e621e4a95c2c7f4a7216949c"
+    },
+    {
+      "path": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/shared/sdkddkver.h",
+      "bytes": 11497,
+      "sha256": "8af081872a0d03592cef7df997c6b3aeede7e702f1b288dac358e5efa5c8efb2"
+    },
+    {
+      "path": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/um/Windows.h",
+      "bytes": 7153,
+      "sha256": "65ccd069fe343519a7ec0698ccaf5a6f0388f1af180b959b8271902b983cb099"
+    },
+    {
+      "path": "C:/Program Files (x86)/Windows Kits/10/Include/10.0.19041.0/winrt/EventToken.h",
+      "bytes": 1431,
+      "sha256": "d2829f1e32c6b6ce3a6066c71576c8044d8bcbf6b0f728f95320a92015c221c5"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64/msvcrt.lib",
+      "bytes": 7365180,
+      "sha256": "5648042445e736fee9b44f1931309756427e6c9ee5facc826e095d911721e38a"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64/msvcprt.lib",
+      "bytes": 1090934,
+      "sha256": "ecb158d07c71642e835ab6eaad1ed5128f49e14be30c157f8883f5ccb7dba9bb"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64/vcruntime.lib",
+      "bytes": 19128,
+      "sha256": "f53ed7df376ff500d14bfbb4e495711c4cb3f8aa186a8b15ee4ef9a937fd84eb"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64/libcmt.lib",
+      "bytes": 5576280,
+      "sha256": "ea6de3079f96374269b3530b81166a0d25c87b92c81d686ab2bad88c0d73de11"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64/libcpmt.lib",
+      "bytes": 17628572,
+      "sha256": "9fcfd079ae918372fbf8801bb29f592b1d24f60209afe10e649d03f13608571f"
+    },
+    {
+      "path": "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133/lib/x64/libvcruntime.lib",
+      "bytes": 1223382,
+      "sha256": "1eb044056e692649ff362b9506f4dc12753bce8e3ef88b1cbd0a3086d6bc7489"
+    },
+    {
+      "path": "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64/ucrt.lib",
+      "bytes": 285588,
+      "sha256": "7ef4eac926bf597d2f243f16cdfed7e0db22cb3ca34a1d7e088a84c994a03d66"
+    },
+    {
+      "path": "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/ucrt/x64/libucrt.lib",
+      "bytes": 35488094,
+      "sha256": "335d768550631d4f667b12c5f3a7a7155e341117cd61ce11aadc533b031be80c"
+    },
+    {
+      "path": "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64/kernel32.lib",
+      "bytes": 300468,
+      "sha256": "d9810feacbb1150584cdd484ea1ce60b4e6b3ddec3b8afa505c0ae47330027e2"
+    },
+    {
+      "path": "C:/Program Files (x86)/Windows Kits/10/Lib/10.0.19041.0/um/x64/user32.lib",
+      "bytes": 164334,
+      "sha256": "b44c0246135462a839e279fdfb73172bbf7dd4ff05d21212ac1867c029080f28"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\release-observer-x64-25\\prepared.json",
+      "bytes": 21584,
+      "sha256": "5787235164be7709c2981520157dd32395534de14bd80ca7da35558e87da0515"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\out\\release-observer-x64-25\\native\\Release\\Host64BuildDebugObserver.exe",
+      "bytes": 343552,
+      "sha256": "2e7792afd072690a4d14e94a5b0128c792889ef2001c6a0dd627860b54f74b51"
+    }
+  ],
+  "report": "C:\\work\\sm05-release-050\\out\\standard-build\\attempt-f1d483c8-92cc-4bb7-92b8-fcc0baf79cb7\\host64-debug.ndjson",
+  "profile": "LLVM22MSVC142",
+  "sdkArchitecture": "x64",
+  "configuration": "Debug",
+  "sourceSetSha256": "dc95cfd58a569c174a3e0fbff1e965318d392bbd0418f79bf8ff7c2f2e3ffba0",
+  "producer": {
+    "path": "C:\\work\\sm05-release-050\\out\\release-observer-x64-25\\prepared.json",
+    "bytes": 21584,
+    "sha256": "5787235164be7709c2981520157dd32395534de14bd80ca7da35558e87da0515"
+  },
+  "outerRunner": {
+    "path": "C:\\work\\sm05-release-050\\out\\benchmark-protocol\\Release\\OwnedProcessRunner.exe",
+    "bytes": 234496,
+    "sha256": "2612261eb315a6c5b8e5b1f3b5c8ede14bbb4446a3837630eaf8d6dad7f88aef"
+  },
+  "budgets": {
+    "outerMs": 900000,
+    "innerMs": 880000,
+    "drainMs": 2000,
+    "queryMs": 10000,
+    "closeMs": 5000,
+    "members": 2048,
+    "queries": 2048,
+    "events": 100000,
+    "reportBytes": 67108864
+  }
+}

@@ -97,10 +97,49 @@ diagnostics::status engine_thread::read_runtime_metrics(diagnostics::queue& out)
     diagnostics::detail::end(out.observation); return out.observation.state;
   } catch (...) { out={}; out.observation.state=diagnostics::status::unavailable; return out.observation.state; }
 }
+// One reservation protects all worker_ access, including thread construction
+// and failed-start cleanup. It is not a mutex held across a callback or join.
+class engine_thread::join_claim final {
+ public:
+  join_claim(engine_thread& owner, bool wait) : owner_(owner) {
+    std::unique_lock<std::mutex> lock(owner_.join_mutex_, std::defer_lock);
+    if (wait) lock.lock();
+    else if (!lock.try_lock()) return;
+    const auto caller = std::this_thread::get_id();
+    // A discarded capture may reenter on the outside claimant's own stack.
+    if (owner_.join_claimed_ && owner_.join_claim_owner_ == caller) return;
+    if (wait) {
+      owner_.join_ready_.wait(lock, [&] { return !owner_.join_claimed_; });
+    } else if (owner_.join_claimed_) {
+      return;
+    }
+    owner_.join_claimed_ = true;
+    owner_.join_claim_owner_ = caller;
+    held_ = true;
+  }
+  join_claim(const join_claim&) = delete;
+  join_claim& operator=(const join_claim&) = delete;
+  ~join_claim() {
+    if (!held_) return;
+    {
+      std::lock_guard<std::mutex> lock(owner_.join_mutex_);
+      owner_.join_claim_owner_ = std::thread::id{};
+      owner_.join_claimed_ = false;
+    }
+    owner_.join_ready_.notify_all();
+  }
+  explicit operator bool() const noexcept { return held_; }
+ private:
+  engine_thread& owner_;
+  bool held_{false};
+};
+
 engine_thread::~engine_thread() { stop(); }
 
 bool engine_thread::start(initializer initialize, task shutdown) {
-  if (!initialize) return false;
+  if (!initialize || is_owner_thread()) return false;
+  join_claim claim(*this, true);
+  if (!claim) return false;
   std::shared_ptr<detail::engine_capacity_state> next_capacity;
   try { next_capacity=std::make_shared<detail::engine_capacity_state>(); }
   catch (...) { return false; }
@@ -108,7 +147,7 @@ bool engine_thread::start(initializer initialize, task shutdown) {
   const HANDLE wake_event = create_engine_wake_event();
   if (wake_event == nullptr) return false;
 #endif
-  bool launch_failed = false;
+
   {
     std::lock_guard<std::mutex> lock(mutex_);
     if (state_ != engine_thread_state::stopped || worker_.joinable() ||
@@ -125,25 +164,30 @@ bool engine_thread::start(initializer initialize, task shutdown) {
     capacity_=std::move(next_capacity);
     state_ = engine_thread_state::starting;
     startup_complete_ = false;
-    try {
+    stop_requested_ = false;
+  }
+  try {
 #ifdef SOUI_ENGINE_STARTUP_TEST_ONLY
-      detail::engine_startup_test::before_worker_launch();
+    detail::engine_startup_test::before_worker_launch();
 #endif
-      worker_ = std::thread(&engine_thread::run, this, std::move(initialize),
-                            std::move(shutdown));
-    } catch (...) {
+    // The reservation gives unique worker_ access. Construct outside mutex_:
+    // launch failure may destroy moved captures that reenter this engine.
+    worker_ = std::thread(&engine_thread::run, this, std::move(initialize),
+                          std::move(shutdown));
+  } catch (...) {
+    {
+      std::lock_guard<std::mutex> lock(mutex_);
       // No worker exists to publish startup completion or own this event.
       state_ = engine_thread_state::stopped;
       startup_complete_ = true;
       owner_thread_ = std::thread::id{};
 #ifdef _WIN32
       wake_event_ = nullptr;
-      close_engine_wake_event(wake_event);
 #endif
-      launch_failed = true;
     }
-  }
-  if (launch_failed) {
+#ifdef _WIN32
+    close_engine_wake_event(wake_event);
+#endif
     state_changed_.notify_all();
     return false;
   }
@@ -153,14 +197,10 @@ bool engine_thread::start(initializer initialize, task shutdown) {
   const bool running = state_ == engine_thread_state::running;
   lock.unlock();
   if (!running) {
+    // The same reservation is still held from launch through failed/cancelled
+    // initialization, finalizer/capture retirement and this actual native join.
     if (worker_.joinable()) worker_.join();
-#ifdef _WIN32
-    lock.lock();
-    const HANDLE failed_event = static_cast<HANDLE>(wake_event_);
-    wake_event_ = nullptr;
-    lock.unlock();
-    if (failed_event != nullptr) close_engine_wake_event(failed_event);
-#endif
+    retire_joined_worker();
   }
   return running;
 }
@@ -258,42 +298,101 @@ bool engine_thread::drain_for(std::chrono::milliseconds timeout) {
                         [this] { return queued_ == 0 && executing_ == 0; });
 }
 
-void engine_thread::stop(bool drain_pending) {
+void engine_thread::request_stop(bool drain_pending) {
   std::array<task,queue_capacity> retired;
-  std::thread worker;
   {
-    std::unique_lock<std::mutex> lock(mutex_);
-    if (state_ == engine_thread_state::starting) {
-      state_changed_.wait(lock, [this] { return startup_complete_; });
-    }
+    std::lock_guard<std::mutex> lock(mutex_);
+    // Initializer reentry must survive run()'s startup publication.
+    stop_requested_ = true;
     if (state_ == engine_thread_state::running)
       state_ = engine_thread_state::stopping;
-    if (state_ == engine_thread_state::stopping) {
-      if (!drain_pending) {
-        if (metrics_mode_ == diagnostics::mode::scalar) diagnostics::detail::add(metrics_.discarded_on_stop_total,queued_,metrics_saturated_);
-        for (std::size_t i=0;i<queue_capacity;++i) retired[i].swap(work_[i].callback);
-        head_=tail_=queued_=0; lane_queued_={};
-      }
-      if (worker_.joinable()) worker = std::move(worker_);
-    } else if (worker_.joinable()) {
-      worker = std::move(worker_);
+    if (state_ == engine_thread_state::stopping && !drain_pending) {
+      if (metrics_mode_ == diagnostics::mode::scalar) diagnostics::detail::add(metrics_.discarded_on_stop_total,queued_,metrics_saturated_);
+      for (std::size_t i=0;i<queue_capacity;++i) retired[i].swap(work_[i].callback);
+      head_=tail_=queued_=0; lane_queued_={};
     }
 #ifdef _WIN32
     if (wake_event_ != nullptr) SetEvent(static_cast<HANDLE>(wake_event_));
 #endif
-    work_ready_.notify_all();
   }
-  // Captures may reenter state()/post(); retire before join and outside mutex_.
+  work_ready_.notify_all();
+  // Arbitrary capture destruction may reenter stop; no state mutex is held.
   for (auto& callback:retired) { task release; release.swap(callback); }
-  if (worker.joinable()) worker.join();
+}
+
+void engine_thread::retire_joined_worker() {
 #ifdef _WIN32
-  HANDLE wake_event = nullptr;
+  HANDLE event = nullptr;
+#endif
   {
     std::lock_guard<std::mutex> lock(mutex_);
-    wake_event = static_cast<HANDLE>(wake_event_);
-    wake_event_ = nullptr;
+    // Clear owner identity only after the thread and all its capture destructors
+    // have exited. A logical stopped state alone is not a native join receipt.
+    owner_thread_ = std::thread::id{};
+#ifdef _WIN32
+    event = static_cast<HANDLE>(wake_event_); wake_event_ = nullptr;
+#endif
   }
-  if (wake_event != nullptr) close_engine_wake_event(wake_event);
+#ifdef _WIN32
+  if (event) close_engine_wake_event(event);
+#endif
+}
+
+void engine_thread::stop(bool drain_pending) {
+  // Never wait for a reservation held by a thread joining this owner.
+  if (is_owner_thread()) {
+    request_stop(drain_pending);
+    return;
+  }
+  join_claim claim(*this, true);
+  if (!claim) {
+    // Same outside claimant's capture destructor: request only, never recurse
+    // into its own join reservation. The original outside stop still joins.
+    request_stop(drain_pending);
+    return;
+  }
+  request_stop(drain_pending);
+  if (worker_.joinable()) worker_.join();
+  retire_joined_worker();
+}
+
+engine_thread::stop_result engine_thread::try_stop() {
+  if (is_owner_thread()) {
+    request_stop(true);
+    return stop_result::pending;
+  }
+  join_claim claim(*this, false);
+  if (!claim) return stop_result::pending;
+#ifdef _WIN32
+  HANDLE native = nullptr;
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+
+    if (state_ == engine_thread_state::starting) return stop_result::pending;
+    stop_requested_ = true;
+    if (state_ == engine_thread_state::running) state_ = engine_thread_state::stopping;
+    if (!worker_.joinable())
+      return state_ == engine_thread_state::stopped ? stop_result::stopped : stop_result::failed;
+    native = static_cast<HANDLE>(worker_.native_handle());
+    if (wake_event_) SetEvent(static_cast<HANDLE>(wake_event_));
+  }
+  work_ready_.notify_all();
+  const DWORD observed = WaitForSingleObject(native, 0);
+  if (observed == WAIT_TIMEOUT) return stop_result::pending;
+  DWORD exit_code = STILL_ACTIVE;
+  if (observed != WAIT_OBJECT_0 || !GetExitCodeThread(native, &exit_code) || exit_code != 0)
+    return stop_result::failed;
+  // The original std::thread handle is held by worker_ until this real exit.
+  worker_.join();
+  retire_joined_worker();
+  engine_thread_state final_state;
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    final_state = state_;
+  }
+  return final_state == engine_thread_state::stopped ? stop_result::stopped : stop_result::failed;
+#else
+  return stop_result::failed; // This finite HANDLE profile is explicitly Windows-only.
 #endif
 }
 
@@ -312,6 +411,10 @@ bool engine_thread::is_owner_thread() const noexcept {
 }
 
 void engine_thread::run(initializer initialize, task shutdown) noexcept {
+  {
+    std::lock_guard<std::mutex> lock(mutex_);
+    owner_thread_ = std::this_thread::get_id();
+  }
   bool initialized = false;
   try {
     initialized = initialize();
@@ -321,8 +424,9 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
 
   {
     std::lock_guard<std::mutex> lock(mutex_);
-    owner_thread_ = std::this_thread::get_id();
-    state_ = initialized ? engine_thread_state::running : engine_thread_state::failed;
+    state_ = initialized
+        ? (stop_requested_ ? engine_thread_state::stopping : engine_thread_state::running)
+        : engine_thread_state::failed;
     startup_complete_ = true;
   }
   state_changed_.notify_all();
@@ -419,9 +523,11 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
     if (stopping_complete) break;
   }
 
+  bool shutdown_succeeded = true;
   try {
     if (shutdown) shutdown();
   } catch (...) {
+    shutdown_succeeded = false; // Preserve Failed; stopped is not a shutdown receipt.
   }
   std::array<task,queue_capacity> retired;
   {
@@ -431,8 +537,8 @@ void engine_thread::run(initializer initialize, task shutdown) noexcept {
     head_=tail_=queued_=0; lane_queued_={};
     executing_ = 0;
     callback_started_us_=0;
-    owner_thread_ = std::thread::id{};
-    state_ = engine_thread_state::stopped;
+    // Keep owner identity through local/parameter capture destruction at exit.
+    state_ = shutdown_succeeded ? engine_thread_state::stopped : engine_thread_state::failed;
   }
   for (auto& callback:retired) { task release; release.swap(callback); }
   idle_.notify_all();

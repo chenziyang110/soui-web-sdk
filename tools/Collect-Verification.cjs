@@ -5,18 +5,17 @@ const evidence=require('./internal/build-evidence.cjs');
 const identity=require('./internal/delivery-identity.cjs');
 const releaseVerification=require('./internal/release-verification.cjs');
 const sdkPackage=require('./sdk/soui-sdk.cjs');
+const collectionProfile=require('./internal/verification-profile.cjs');
 const read=name=>JSON.parse(fs.readFileSync(path.join(root,name),'utf8').replace(/^\uFEFF/,''));
 const digest=name=>crypto.createHash('sha256').update(fs.readFileSync(path.resolve(root,name))).digest('hex');
 const save=(name,value)=>fs.writeFileSync(path.join(output,name),JSON.stringify(value,null,2)+'\n');
 fs.mkdirSync(output,{recursive:true});
 const version=fs.readFileSync(path.join(root,'VERSION'),'utf8').trim();
-const args=process.argv.slice(2),withGuiBindings=args.includes('--with-gui-bindings'),
- withDisplayConfiguration=args.includes('--with-display-configuration');
-const scopes=args.filter(value=>!['--with-gui-bindings','--with-display-configuration'].includes(value));
-const scope=scopes[0] || 'full';
-if(scopes.length>1 || new Set(args).size!==args.length || !['full','--foundation'].includes(scope))throw new Error('Usage: Collect-Verification.cjs [--foundation] [--with-gui-bindings] [--with-display-configuration]');
+const {scope,withGuiBindings,withDisplayConfiguration,nativeToolchain}=collectionProfile.parse(process.argv.slice(2));
+const measurementArgs=(command,arch='x64')=>collectionProfile.measurementArgs(root,command,arch,nativeToolchain);
+const buildRequest=(arch,configuration,sdkOnly=false)=>collectionProfile.buildRequest(root,arch,configuration,sdkOnly,nativeToolchain);
 // A failed collection leaves an explicit non-acceptance, never yesterday's green result.
-save('acceptance.json',{schema:'soui.source-delivery-acceptance/v2',version,scope,
+save('acceptance.json',{schema:'soui.source-delivery-acceptance/v2',version,scope,nativeToolchain,
  sourceDeliveryVerified:false,releaseReady:false,status:'collecting',startedAt:new Date().toISOString()});
 function requirePassed(condition,message){if(!condition)throw new Error(message);}
 function run(name,executable,args) {
@@ -28,12 +27,13 @@ function run(name,executable,args) {
 const unit={
  ownedSupervision:run('owned-process-tests',process.execPath,['--test','tests/benchmark/owned-process-runner.test.cjs','tests/benchmark/owned-process-client.test.cjs','tests/benchmark/owned-process-client-boundaries.test.cjs','tests/acceptance/owned-supervision-boundaries.test.cjs','tests/benchmark/run-one-cleanup.test.cjs']),
  windowsSdkSelection:run('windows-sdk-selection-tests',process.execPath,['--test','tests/sdk/cmake-sdk-selection.test.cjs']),
- measurementProtocol:run('measurement-protocol-tests',process.execPath,['tools/internal/measurement-validation.cjs','protocol']),
- nativeMeasurementX64:run('native-measurement-x64',process.execPath,['tools/internal/measurement-validation.cjs','native','x64']),
- nativeMeasurementX86:run('native-measurement-x86',process.execPath,['tools/internal/measurement-validation.cjs','native','x86']),
- compilerTailProtocol:run('compiler-tail-protocol-tests',process.execPath,['tools/internal/measurement-validation.cjs','tail-protocol','x64']),
- nativeCompilerTailX64:run('native-compiler-tail-x64',process.execPath,['tools/internal/measurement-validation.cjs','tail-native','x64']),
- nativeCompilerTailX86:run('native-compiler-tail-x86',process.execPath,['tools/internal/measurement-validation.cjs','tail-native','x86']),
+ longRunReaders:run('long-run-reader-tests',process.execPath,['--test','tests/acceptance/software-cache-budget.test.cjs','tests/acceptance/long-run-task-quota.test.cjs','tests/sdk/long-run-policy.test.cjs','tests/sdk/long-run-cache-observation.test.cjs','tests/acceptance/resource-validation.test.cjs']),
+ measurementProtocol:run('measurement-protocol-tests',process.execPath,measurementArgs('protocol')),
+ nativeMeasurementX64:run('native-measurement-x64',process.execPath,measurementArgs('native','x64')),
+ nativeMeasurementX86:run('native-measurement-x86',process.execPath,measurementArgs('native','x86')),
+ compilerTailProtocol:run('compiler-tail-protocol-tests',process.execPath,measurementArgs('tail-protocol','x64')),
+ nativeCompilerTailX64:run('native-compiler-tail-x64',process.execPath,measurementArgs('tail-native','x64')),
+ nativeCompilerTailX86:run('native-compiler-tail-x86',process.execPath,measurementArgs('tail-native','x86')),
  guiDelivery:run('gui-bindings-delivery-tests',process.execPath,['--test','tests/sdk/gui-bindings-delivery.test.cjs','tests/sdk/gui-bindings-entrypoints.test.cjs']),
  actionGeneration:run('action-generation-tests',process.execPath,['--test','tests/sdk/actiongen.test.mjs','tests/web/generated-actions.test.mjs']),
  taskQuery:run('task-query-tests',process.execPath,['--test','tests/web/task-query.test.mjs']),
@@ -41,9 +41,9 @@ const unit={
  package:run('sdk-package-tests',process.execPath,['tests/sdk/sdk-package-smoke.cjs']),
  nativePayload:run('sdk-native-payload-tests',process.execPath,['--test','tests/sdk/sdk-native-payload.test.cjs']),
  interruption:run('sdk-installation-interruption-tests',process.execPath,['--test','tests/sdk/installation-interruption.test.cjs','tests/sdk/profile-installation-integration.test.cjs']),
- delivery:run('delivery-identity-tests',process.execPath,['--test','tests/sdk/delivery-identity.test.cjs']),
+ delivery:run('delivery-identity-tests',process.execPath,['--test','tests/sdk/delivery-identity.test.cjs','tests/sdk/legal-notice-materials.test.cjs']),
  modernDelivery:run('modern-evidence-tests',process.execPath,['--test','tests/sdk/modern-evidence.test.cjs']),
- release:run('release-verification-tests',process.execPath,['--test','tests/sdk/release-verification.test.cjs']),
+ release:run('release-verification-tests',process.execPath,['--test','tests/sdk/release-verification.test.cjs','tests/sdk/release-stock-routing.test.cjs','tests/sdk/sdk-build-inputs.test.cjs']),
  web:run('web-sdk-tests',process.execPath,['--test','tests/web/sdk-client.test.mjs','tests/web/capabilities.test.mjs','tests/web/action-contracts.test.mjs','tests/web/gui.test.mjs','tests/web/web-features.test.mjs','tests/web/native-resolvers.test.mjs','tests/web/session-renewal.test.mjs','tests/web/agent-session-renewal.test.mjs','tests/web/webview2-preload.test.mjs']),
  nativeActionsX64:run('native-actions-x64',path.join(root,'out/x64/tests/native/Release/soui_action_contract_tests.exe'),[]),
  nativeActionsX86:run('native-actions-x86',path.join(root,'out/x86/tests/native/Release/soui_action_contract_tests.exe'),[]),
@@ -58,7 +58,7 @@ const unit={
 };
 if(withDisplayConfiguration){
  for(const arch of ['x86','x64']){
-  const result=run('display-configuration-'+arch,process.execPath,['tools/internal/measurement-validation.cjs','display',arch]);
+  const result=run('display-configuration-'+arch,process.execPath,measurementArgs('display',arch));
   unit['displayConfiguration'+arch.toUpperCase()]={...result,configurationOnly:true,
    physicalPresentation:false,opticalCalibration:false,performanceGate:false,releaseReady:false};
  }
@@ -72,7 +72,7 @@ if(scope==='--foundation'){
  const matrix=[];
  const sizes=[];
  for(const arch of ['x86','x64']){
-  const {build,smoke}=evidence.verifySmoke(root,arch,'Release');
+  const {build,smoke}=evidence.verifySmoke(root,arch,'Release',buildRequest(arch,'Release'));
   save('native-'+arch+'-Release.json',smoke);
   matrix.push({architecture:arch,configuration:'Release',buildId:build.buildId,sourceSha256:build.source.sha256,
    scenarios:smoke.runs.map(({target,scenario,passed})=>({target,scenario,passed})),evidence:'native-'+arch+'-Release.json'});
@@ -87,7 +87,7 @@ if(scope==='--foundation'){
     evidence:'size-'+target+'-'+arch+'.json'});
   }
  }
- save('acceptance.json',{schema:'soui.source-delivery-acceptance/v2',version,scope:'foundation',status:'passed',
+ save('acceptance.json',{schema:'soui.source-delivery-acceptance/v2',version,nativeToolchain,scope:'foundation',status:'passed',
   sourceDeliveryVerified:false,releaseReady:false,finishedAt:new Date().toISOString(),unitTests:unit,
   nativeApplicationMatrix:matrix,sizes,
   limitations:['Foundation checks only, not a complete 0.3 release acceptance.',
@@ -99,7 +99,7 @@ if(scope==='--foundation'){
 }
 const matrix=[];
 for(const arch of ['x86','x64'])for(const config of ['Debug','Release']){
- const {build,smoke}=evidence.verifySmoke(root,arch,config);
+ const {build,smoke}=evidence.verifySmoke(root,arch,config,buildRequest(arch,config));
  requirePassed(build.nativeBuild==='passed' && smoke.passed,arch+' '+config+' was not verified');
  save('native-'+arch+'-'+config+'.json',smoke);
  matrix.push({architecture:arch,configuration:config,buildPassed:true,templateAndDemoPassed:true,evidence:'native-'+arch+'-'+config+'.json'});
@@ -107,13 +107,19 @@ for(const arch of ['x86','x64'])for(const config of ['Debug','Release']){
 const dependencies=[];
 const modernMatrix=[];
 for(const arch of ['x86','x64'])for(const config of ['Debug','Release']){
- const {smoke}=evidence.verifyModernSmoke(root,arch,config);
+ const {smoke}=evidence.verifyModernSmoke(root,arch,config,buildRequest(arch,config),root);
  const file='modern-'+arch+'-'+config+'.json';
  save(file,smoke);
  modernMatrix.push({architecture:arch,configuration:config,passed:true,evidence:file});
  run('native-suite-'+arch+'-'+config,'ctest',['--test-dir','out/'+arch,'-C',config,'--output-on-failure']);
 }
 for(const arch of ['x86','x64']){
+ if(nativeToolchain==='LLVM22MSVC142'){
+  const proof=require('./internal/dependency-evidence.cjs').verifyRecorded(root,arch,buildRequest(arch,'Release'));
+  save('dependencies-'+arch+'.json',proof);
+  dependencies.push({architecture:arch,sourceBuildPassed:true,rebuiltRuntimePassed:true,evidence:'dependencies-'+arch+'.json'});
+  continue;
+ }
  const build=read('out/dependencies/'+arch+'/build-All.json');
  const smoke=read('out/dependencies/'+arch+'/rebuilt-smoke.json');
  requirePassed(build.status==='built' && build.artifacts.length===6 && smoke.passed,arch+' dependency build/smoke incomplete');
@@ -130,9 +136,9 @@ const relocated=read('verification/relocation.json');
 const relocationSmoke=read('verification/relocated-native-smoke.json');
 const currentPackage=sdkPackage.readPackage(path.join(root,'dist/sdk',version));
 if(withGuiBindings)requirePassed(Boolean(currentPackage.optionalGuiBindings),'SDK package omitted the requested compiled GUI bindings');
-releaseVerification.validateReports([generated,fresh,relocated,relocationSmoke],{version,
+releaseVerification.validateReports([generated,fresh,relocated,relocationSmoke],{version,nativeToolchain,
  sourceSha256:identity.source(root).sha256,sdkManifestSha256:identity.hash(identity.encoded(currentPackage))});
-const sdkOnly=evidence.verifyBuild(root,'x64','Release',true);
+const sdkOnly=evidence.verifyAcceptedBuild(root,'x64','Release',true,buildRequest('x64','Release',true)).build;
 requirePassed(sdkOnly.sdkOnly && sdkOnly.nativeBuild==='passed','SDK independent build missing');
 const consumer=run('cmake-consumer',releaseVerification.verifyConsumer(root,generated.consumer),[]);
 const sources=[];
@@ -148,7 +154,7 @@ sources.push({path:'CMakeLists.txt',sha256:digest('CMakeLists.txt')});
 save('first-party-source-hashes.json',sources);
 const audits={};
 for(const scope of ['web-sdk','template-web','demo-web','modern-web']) audits[scope]=read('verification/'+scope+'-audit.json').metadata.vulnerabilities;
-const acceptance={schema:'soui.source-delivery-acceptance/v1',version,finishedAt:new Date().toISOString(),
+const acceptance={schema:'soui.source-delivery-acceptance/v1',version,nativeToolchain,finishedAt:new Date().toISOString(),
  sourceDeliveryVerified:true,releaseReady:false,toolchain:read('verification/toolchain.json'),
  nativeApplicationMatrix:matrix,modernApplicationMatrix:modernMatrix,unitTests:unit,sdkOnly:{passed:true,architecture:'x64',configuration:'Release'},externalCmakeConsumer:consumer,
  generatedApplication:{passed:true,upgradeTested:true,evidence:'generated-project.json',freshProjectEvidence:'fresh-project.json'},
