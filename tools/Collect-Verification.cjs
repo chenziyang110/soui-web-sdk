@@ -1,6 +1,13 @@
 'use strict';
 const fs=require('node:fs'), path=require('node:path'), crypto=require('node:crypto'), cp=require('node:child_process');
 const root=path.resolve(__dirname,'..'), output=path.join(root,'verification');
+// Explicit status recording is not a collection or an acceptance bypass.
+if(process.argv[2]==='--record-unverified'){
+ try{
+  console.log(JSON.stringify(require('./verification-status.cjs').recordUnverified(root,process.argv.slice(3))));
+ }catch(error){console.error(error.message);process.exit(1);}
+ process.exit(0);
+}
 const evidence=require('./internal/build-evidence.cjs');
 const identity=require('./internal/delivery-identity.cjs');
 const releaseVerification=require('./internal/release-verification.cjs');
@@ -25,6 +32,7 @@ function run(name,executable,args) {
  return {passed:true,exitCode:result.status,log:name+'.log'};
 }
 const unit={
+ acceptanceStatus:run('acceptance-status-tests',process.execPath,['--test','tests/sdk/verification-status.test.cjs']),
  ownedSupervision:run('owned-process-tests',process.execPath,['--test','tests/benchmark/owned-process-runner.test.cjs','tests/benchmark/owned-process-client.test.cjs','tests/benchmark/owned-process-client-boundaries.test.cjs','tests/acceptance/owned-supervision-boundaries.test.cjs','tests/benchmark/run-one-cleanup.test.cjs']),
  windowsSdkSelection:run('windows-sdk-selection-tests',process.execPath,['--test','tests/sdk/cmake-sdk-selection.test.cjs']),
  longRunReaders:run('long-run-reader-tests',process.execPath,['--test','tests/acceptance/software-cache-budget.test.cjs','tests/acceptance/long-run-task-quota.test.cjs','tests/sdk/long-run-policy.test.cjs','tests/sdk/long-run-cache-observation.test.cjs','tests/acceptance/resource-validation.test.cjs']),

@@ -10,6 +10,14 @@
 
 本轮独立接入使用公开 `tests/package-consumer` 对当前已安装 `Soui::Sdk` 分别编译和运行，现代高刷采集另以外部宿主引用当前 `Soui::WebView2`。完整 `Verify-Release.ps1` 的多阶段升级/回退与搬移演练不重复执行，既有记录保留原载荷身份。因此完整 Collector 所需的全部发布证明仍为待完成；使用范围明确的本轮结果汇总，不生成或复制一份虚假的完整验收通过报告。下面的完整流程继续供后续认证使用。
 
+完整收集未执行时，使用下面的显式入口同步根文件的当前版本与“未验收”状态：
+
+```powershell
+node tools/Collect-Verification.cjs --record-unverified --evidence-reference verification/production-validation/0.5-source30-release-2026-10-16/scoped-results/RELEASE-FACTS.json
+```
+
+该命令不运行构建或测试，退出 0 只表示状态记录成功。它核对引用的版本及非生产资格标志，保存相对路径、字节数和 SHA-256；不复验外部原件或继承通过结果。根文件保持 `scope=full`、`status=unverified`、`collectionExecuted=false`、`sourceDeliveryVerified=false`、`releaseReady=false`。旧根文件按原字节存入 `verification/history/` 并由新记录引用。与其他 Collector 串行执行，随后按下文刷新源码清单；已发布的固定包保持原样。设计与失败边界见 [ADR-0117](adr/0117-current-unverified-acceptance-status.md)。
+
 ## 交付组成
 
 - 完整源码包：SDK、模板、Demo、工具、文档、测试、第三方源码与固定运行依赖。

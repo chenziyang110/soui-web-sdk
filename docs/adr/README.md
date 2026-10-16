@@ -12,6 +12,7 @@
 
 ## 0.5 新增提案
 
+- [ADR-0117：限定范围交付后的当前未验收状态](0117-current-unverified-acceptance-status.md)
 - [ADR-0095：发布汇总的编译档位与冻结输入](0095-release-collection-inputs.md)
 - [ADR-0096：SOUI 依赖构建的 LLVM 档位](0096-soui-llvm-dependency-build.md)（实施与真实回归进行中）
 
