@@ -1,0 +1,378 @@
+{
+  "passed": true,
+  "sourceManifest": {
+    "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+    "bytes": 16240065,
+    "sha256": "ad031346ae01ff74fa840e8c2ca820bd3e879a0848d41e8cb7c20f408c68e4b6"
+  },
+  "pins": [
+    {
+      "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+      "bytes": 16240065,
+      "sha256": "ad031346ae01ff74fa840e8c2ca820bd3e879a0848d41e8cb7c20f408c68e4b6"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-post-2\\package-applications30.cjs",
+      "bytes": 4565,
+      "sha256": "8efaeaaf5df98f0e3fca118b05ab4da48c8210190c3c4a8a101e0fa87a2fed6b"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\Package-Applications.ps1",
+      "bytes": 2399,
+      "sha256": "24f0bbeead82753d808cb67e753bea06ad9e9c1911cacc23b418ae99a44d57af"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\desktop-x64-Release-source30-1\\RESULT.json",
+      "bytes": 2041,
+      "sha256": "634cd836f01501bf5af0dbf48615ee445d1621fea4bfa6781e1167ee1c72cd0b"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\modern-x64-Release-source30-1\\RESULT.json",
+      "bytes": 2036,
+      "sha256": "c2f8fc78fc2fa3fcb30716d69cbe03aaf0163f773231ebe38afbcdc8aee39e44"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\desktop-x86-Release-source30-1\\RESULT.json",
+      "bytes": 2039,
+      "sha256": "3844ed3847d84635faffde7a17a299ec5f1f0f3c820432146ef1b31aec8a9c4c"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\modern-x86-Release-source30-1\\RESULT.json",
+      "bytes": 2036,
+      "sha256": "f03b39b71fc858b04d2778a526a182812106e18fe3afe5e118f6e5b78f1ed98b"
+    }
+  ],
+  "records": [
+    {
+      "arch": "x64",
+      "profile": "compatibility",
+      "natural": true,
+      "result": {
+        "pid": 21844,
+        "creationFileTime": "134366104761224054",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 67195,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 36,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source30-application-packages-2\\x64-compatibility.ndjson",
+        "reportSha256": "8f1cebf01134e542e7dac70325befc6f3d33fc625aea84b06ff88a38eb2511a5",
+        "runnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c",
+        "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 67195,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 36,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "arch": "x64",
+      "profile": "modern",
+      "natural": true,
+      "result": {
+        "pid": 65480,
+        "creationFileTime": "134366105434485842",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 15213,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 13,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source30-application-packages-2\\x64-modern.ndjson",
+        "reportSha256": "a84aaf1ab96a4b449fb74d8d0fdfcaca41299b92f4c9ce3670f545226f79aa1e",
+        "runnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c",
+        "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 15213,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 13,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "arch": "x86",
+      "profile": "compatibility",
+      "natural": true,
+      "result": {
+        "pid": 42320,
+        "creationFileTime": "134366105588039047",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 57572,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 36,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source30-application-packages-2\\x86-compatibility.ndjson",
+        "reportSha256": "bd59b78c58ea4a17ed83ed1d2ebb8bbca738899c21d1c2fb7cda4cbea6807ccd",
+        "runnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c",
+        "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 57572,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 36,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    },
+    {
+      "arch": "x86",
+      "profile": "modern",
+      "natural": true,
+      "result": {
+        "pid": 60800,
+        "creationFileTime": "134366106164918055",
+        "exitCode": 0,
+        "supervisorExitCode": 0,
+        "signal": null,
+        "spawnError": null,
+        "reportError": null,
+        "stopRequested": false,
+        "fallbackUsed": false,
+        "closureConfirmed": true,
+        "passed": true,
+        "terminal": {
+          "event": "terminal",
+          "reason": "completed",
+          "elapsedMs": 15091,
+          "rootExited": true,
+          "rootExitCode": 0,
+          "activeBeforeCleanup": 0,
+          "terminatedOwnedJob": false,
+          "closureConfirmed": true,
+          "activeProcesses": 0,
+          "totalProcesses": 13,
+          "limitTerminatedProcesses": 0,
+          "passed": true
+        },
+        "report": "C:\\work\\sm05-source30-application-packages-2\\x86-modern.ndjson",
+        "reportSha256": "2e4ca9975ed8a336f897dd3d2677b02b9a608f48dfe9ed553119edf18ea84f1c",
+        "runnerSha256": "f4b59ae2add80cf9011deeed73abaf86a593bf951205d459a8d431952ae8ee0c",
+        "executableSha256": "362a356ce7f0940ec74f73a8fc2c990a2cc24a38a11c90bbd8eca947110ad139"
+      },
+      "terminal": {
+        "event": "terminal",
+        "reason": "completed",
+        "elapsedMs": 15091,
+        "rootExited": true,
+        "rootExitCode": 0,
+        "activeBeforeCleanup": 0,
+        "terminatedOwnedJob": false,
+        "closureConfirmed": true,
+        "activeProcesses": 0,
+        "totalProcesses": 13,
+        "limitTerminatedProcesses": 0,
+        "passed": true
+      }
+    }
+  ],
+  "archives": [
+    {
+      "arch": "x64",
+      "profile": "compatibility",
+      "target": "SouiStarter",
+      "archive": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiStarter-0.5.0-windows-x64.zip",
+        "bytes": 16817792,
+        "sha256": "7a940c70468bb5e28f736ceb0a9ce48566698f6f9472d84310336e4bef3ebd77"
+      },
+      "report": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiStarter-0.5.0-windows-x64.zip.json",
+        "bytes": 57989,
+        "sha256": "29253f2d98702f3456ba7b21b4b076393b340c66fd0c47df3dde5bd70aba74a3"
+      },
+      "checksum": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiStarter-0.5.0-windows-x64.zip.sha256",
+        "bytes": 101,
+        "sha256": "302f8c0ef0cf5e7175eeaece80b746b80caa40e0aa7fe83bd3f716b4e294bed8"
+      },
+      "payloadBytes": 46612239
+    },
+    {
+      "arch": "x64",
+      "profile": "compatibility",
+      "target": "SouiWorkbench",
+      "archive": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiWorkbench-0.5.0-windows-x64.zip",
+        "bytes": 23295790,
+        "sha256": "5decc6dc363b3af589b954dea7c1ad035affed7384691d40e71c381d9ebc51bd"
+      },
+      "report": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiWorkbench-0.5.0-windows-x64.zip.json",
+        "bytes": 133408,
+        "sha256": "310812ea32cb13fdff9f21c72a4ec06ca73e4a4b47009374347347d6cb3b0410"
+      },
+      "checksum": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiWorkbench-0.5.0-windows-x64.zip.sha256",
+        "bytes": 103,
+        "sha256": "f289ebca4686a0e9aacdac6a086bc0a8e631c17024e6d0c42713d4761dea29d1"
+      },
+      "payloadBytes": 58105671
+    },
+    {
+      "arch": "x64",
+      "profile": "modern",
+      "target": "SouiModernStarter",
+      "archive": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiModernStarter-0.5.0-windows-x64.zip",
+        "bytes": 2477338,
+        "sha256": "624c9088214b21ee0285dff56f8840f68b034ddd54c90acb534f5f5908b29724"
+      },
+      "report": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiModernStarter-0.5.0-windows-x64.zip.json",
+        "bytes": 56612,
+        "sha256": "0d8adf9e78040782302fa6ffe402f16b8990a3cc852b24d84b32870bb1b807f7"
+      },
+      "checksum": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiModernStarter-0.5.0-windows-x64.zip.sha256",
+        "bytes": 107,
+        "sha256": "48514b1c1feb2a6382e19f58ad431cc3a82bc3b398ec54e9e7062f06cd4ff312"
+      },
+      "payloadBytes": 6044046
+    },
+    {
+      "arch": "x86",
+      "profile": "compatibility",
+      "target": "SouiStarter",
+      "archive": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiStarter-0.5.0-windows-x86.zip",
+        "bytes": 14226508,
+        "sha256": "4992cc2f367c4085237eb3398e6be7afacd3594cdff2bd6a17184e57bd784f2e"
+      },
+      "report": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiStarter-0.5.0-windows-x86.zip.json",
+        "bytes": 58000,
+        "sha256": "64259693a19ee8590e9cc9e7365c7d4e9048cb70cbdc41a3e1798299771473a9"
+      },
+      "checksum": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiStarter-0.5.0-windows-x86.zip.sha256",
+        "bytes": 101,
+        "sha256": "c9f032e0a066ed98425bd3e613f85825579cab5aed1848ea491520b004c31873"
+      },
+      "payloadBytes": 35162079
+    },
+    {
+      "arch": "x86",
+      "profile": "compatibility",
+      "target": "SouiWorkbench",
+      "archive": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiWorkbench-0.5.0-windows-x86.zip",
+        "bytes": 20676093,
+        "sha256": "418587756a146155f53a6bcfe71a1cefdb9f2616be2e487d6f61bfaf36b7eb98"
+      },
+      "report": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiWorkbench-0.5.0-windows-x86.zip.json",
+        "bytes": 133421,
+        "sha256": "4bf450ee9110df7dd602669b3d520680e0ea8201c8a889a02b087867132127a4"
+      },
+      "checksum": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiWorkbench-0.5.0-windows-x86.zip.sha256",
+        "bytes": 103,
+        "sha256": "f8a931535a84bd835cdfa152db9421047f707dd2e2d1d2ed81712f2eba77c978"
+      },
+      "payloadBytes": 46445591
+    },
+    {
+      "arch": "x86",
+      "profile": "modern",
+      "target": "SouiModernStarter",
+      "archive": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiModernStarter-0.5.0-windows-x86.zip",
+        "bytes": 2412447,
+        "sha256": "faed8e7c4f8aeb87d92f1104bcdd60375f78644a4bc4ca732717f63df3b3ef18"
+      },
+      "report": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiModernStarter-0.5.0-windows-x86.zip.json",
+        "bytes": 56626,
+        "sha256": "40741ccdcf1e5571de6ec0d7d7c9383ebef65d6fd434a1dfe8c4e1058effe6ce"
+      },
+      "checksum": {
+        "path": "C:\\work\\sm05-release-050\\dist\\SouiModernStarter-0.5.0-windows-x86.zip.sha256",
+        "bytes": 107,
+        "sha256": "6bcea501781a2236e956b3985dbb9dd4a863d75bf39b66f237704166fff12224"
+      },
+      "payloadBytes": 5640798
+    }
+  ],
+  "payloadInventoryExact": true,
+  "published": false,
+  "releaseReady": false
+}

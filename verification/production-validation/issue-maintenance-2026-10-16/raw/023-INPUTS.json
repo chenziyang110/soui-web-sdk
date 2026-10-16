@@ -1,0 +1,67 @@
+{
+  "phase": "build",
+  "arch": "x64",
+  "configuration": "Release",
+  "sourcePins": [
+    {
+      "path": "C:\\work\\sm05-release-050\\source-manifest.json",
+      "sha256": "ad031346ae01ff74fa840e8c2ca820bd3e879a0848d41e8cb7c20f408c68e4b6"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\third_party\\include\\json\\json.hpp",
+      "sha256": "78496a32103398f5936cec4df6cf42fa52f2cb2495caf4270fa42c8ed8c4e851"
+    },
+    {
+      "path": "C:\\work\\sm05-release-050\\tools\\internal\\Observe-LlvmBuild.ps1",
+      "sha256": "bef2a7b8bf91ae0ed4ee1801cf22b90d5b6fd147aabd141b081cd2c1d87743d9"
+    },
+    {
+      "path": "C:\\work\\sm05-source30-pipeline-2\\run-native.cjs",
+      "sha256": "c785580b9f9ba799f190acfad3280f76462eb7a7f836fab3d9669c5951fe764b"
+    }
+  ],
+  "executable": "C:\\Users\\11034\\AppData\\Local\\nvm\\v24.14.0\\node.exe",
+  "args": [
+    "C:/work/sm05-release-050/tools/internal/standard-build.cjs",
+    "--root",
+    "C:/work/sm05-release-050",
+    "--architecture",
+    "x64",
+    "--configuration",
+    "Release",
+    "--native-toolchain",
+    "LLVM22MSVC142",
+    "--powershell",
+    "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+    "--llvm-root",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/Llvm/x64",
+    "--msvc-root",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/VC/Tools/MSVC/14.29.30133",
+    "--windows-sdk-root",
+    "C:/Program Files (x86)/Windows Kits/10",
+    "--ninja-exe",
+    "C:/Program Files/Microsoft Visual Studio/18/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/Ninja/ninja.exe",
+    "--windows-cmd-exe",
+    "C:/Windows/System32/cmd.exe",
+    "--powershell-exe",
+    "C:/Users/11034/.cache/codex-runtimes/codex-primary-runtime/dependencies/native/powershell/pwsh.exe",
+    "--devkit-root",
+    "C:/work/sm05-release-050",
+    "--timeout-ms",
+    "900000",
+    "--drain-ms",
+    "2000",
+    "--fresh-configure",
+    "--skip-web",
+    "--with-gui-bindings",
+    "--with-uia",
+    "--with-vendor-tests",
+    "--with-webview2",
+    "--install",
+    "--host64-build-observer",
+    "--host64-observer-prepared",
+    "C:/work/sm05-release-050/out/release-observer-x64-30/prepared.json",
+    "--host64-observer-sha256",
+    "3d295dea1f9f7cc458b2e87a0763c5e512ad78e31d8682b09a3ec1886be25cbe"
+  ]
+}
