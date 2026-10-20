@@ -97,3 +97,31 @@ macOS 根据实际系统版本和产物最低版本比较，系统框架可能�
 不能因某个磁盘文件不存在就误报缺失；签名、公证、quarantine 和第三方 dylib
 不由此脚本验收。诊断只输出固定状态行和下一步建议，默认不写持久日志；需要
 反馈时可显式将 doctor 输出重定向到自行选择的文件。
+
+## 交付目录完整性校验
+
+```sh
+node <SDK前缀>/share/SouiDesktop/tools/verify-desktop-app.cjs \
+  --input <已staging目录> --platform linux --arch x64
+```
+
+仓库内也可运行 `node tools/verify-desktop-app.cjs`。预期 platform/arch 可省略，
+但省略不代表跳过二进制与 manifest 一致性校验。工具只读，成功退出0，校验失败
+非零；stdout 为结构化 JSON，不执行程序、doctor、动态加载器或自动修复文件。
+不会写入报告或修改原目录，需要保存时由调用者显式重定向到包外。
+
+校验清单布局、所有文件大小/SHA-256、必要文件、实际二进制平台/架构与最低系统
+元数据；旧 /1 清单未声明 diagnostics 时不要求 doctor，若声明则必须完整一致。
+拒绝重复/非法路径、大小写碰撞、symlink、特殊文件、额外未列文件和
+多余目录，以及缺失或改变的内容。清单自身不包含自身摘要。POSIX主机可检查
+Linux/macOS程序和脚本的 owner 执行位；不验证 ACL、noexec 挂载或实际执行。
+在不支持这些权限语义的主机上不能作相同承诺。
+输入目录必须静止且可信，检查不提供对恶意并发修改的完整文件系统沙箱。
+
+自附 SHA-256 manifest 不是数字签名！文件和清单同时被替换仍可能通过。JSON
+结果明确不提供真实性认证或原生运行验收，不证明来自某位开发者、没有恶意
+内容、依赖齐全或 GUI 可运行。此工具不能代替签名、公证或可信分发通道。
+
+CMake 的 `my_app_stage` 创建完成后自动校验；单独的 `my_app_verify_stage` 只
+核对已有目录，不构建程序、不再次 staging，也不清理失败产物。选择的配置和
+APP_STAGE_DIRECTORY必须与原产物一致。旧create-only覆盖保护继续有效。

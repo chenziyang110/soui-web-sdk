@@ -166,3 +166,16 @@ Windows/macOS 原生诊断和实际窗口验收延后；此前 GUI 依赖阻塞�
 
 没有执行完整CTest、其他架构/平台编译或真实WebView交互；完整回归延后。
 生成/构建成功不代表系统引擎、窗口、模块或Bridge已在三平台实机验收。
+
+## 应用目录完整性校验增量（08:48 UTC）
+
+- verifier Node语法及7项重点测试通过：生产staging清单、修改/缺失、额外文件/
+  目录与symlink、路径/重复/身份修改、旧无doctor清单、owner执行位、CLI参数。
+- 安装SDK后，仓库外生成应用使用新CMake入口实际构建/staging；自动校验通过，
+  核对10个文件/539455字节，authenticityVerified/nativeRuntimeVerified均为false。
+- 最终修正执行权限检查为owner位后重新安装工具，独立StarterApp_verify_stage
+  通过，只出现校验目标，没有重新构建或再次staging，不运行应用/doctor。
+- 独立审查提出的仅other执行位误通过已修复；git diff --check通过。
+
+未执行完整测试矩阵、GUI、Windows/macOS真实目录/权限或正式签名验收；这些
+仍留待统一回归。该结果仅证明自附清单内部一致，不证明交付来源可信或可运行。

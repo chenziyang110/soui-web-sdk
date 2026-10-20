@@ -32,6 +32,11 @@ function(soui_stage_application)
   if(NOT EXISTS "${tool}")
     message(FATAL_ERROR "SouiDesktop application staging tool is missing")
   endif()
+  get_filename_component(tool_directory "${tool}" DIRECTORY)
+  set(verifier "${tool_directory}/verify-desktop-app.cjs")
+  if(NOT EXISTS "${verifier}")
+    message(FATAL_ERROR "SouiDesktop application verifier is missing")
+  endif()
   get_filename_component(assets "${APP_ASSETS}" ABSOLUTE BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
   get_filename_component(output "${APP_OUTPUT}" ABSOLUTE BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
   set(identifier)
@@ -43,6 +48,13 @@ function(soui_stage_application)
       --binary "$<TARGET_FILE:${APP_TARGET}>" --assets "${assets}" --output "${output}"
       --name "${APP_NAME}" --platform "${platform}" --arch "${architecture}"
       --version "${APP_VERSION}" ${identifier}
+    COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" "${verifier}"
+      --input "${output}" --platform "${platform}" --arch "${architecture}"
     DEPENDS "${APP_TARGET}" VERBATIM
     COMMENT "Stage unsigned application directory; system WebView dependencies remain external")
+  # Intentionally independent: verification must not rebuild or overwrite a handoff.
+  add_custom_target("${APP_TARGET}_verify_stage"
+    COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" "${verifier}"
+      --input "${output}" --platform "${platform}" --arch "${architecture}"
+    VERBATIM COMMENT "Verify staged application integrity without executing it")
 endfunction()
