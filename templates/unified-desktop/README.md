@@ -31,6 +31,14 @@ toolchain，生成器不下载 SDK、不安装依赖、不猜测编译器或系�
 - 保持前端相对 URL；绝对 /assets 路径不适用于窗口随机前缀。资源目录应为可信、
   不可变的应用资产，不能混入密钥或将同源不可信脚本视为权限隔离主体。
 
+## 前端类型与调用
+
+web/soui/desktop.mjs 是 SDK 的薄适配层，app.mjs 已通过它调用 app.info。相邻
+desktop.d.mts 提供可选 TypeScript/编辑器提示，不要求安装包或编译 TS。可用
+invoke、on、readAsset 和 assetBytes/assetText/assetJson；泛型只提供静态提示，
+不代替业务结果校验。无原生宿主立即报错，不模拟成功，也不增加 Bridge 权限。
+模板仍未启用 readAsset，需应用显式选择；普通同源资产继续使用 fetch。
+
 ## 应用目录与诊断
 
 ```sh

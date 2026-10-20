@@ -57,7 +57,7 @@ function templateDirectory() {
   // Source tools/../templates and installed share/SouiDesktop/tools/../templates.
   return noSymlinks(path.join(__dirname, '..', 'templates', 'unified-desktop'));
 }
-function collectTemplates(root, replacements) {
+function collectTemplates(root, replacements, required = ['CMakeLists.txt', 'main.cpp', path.join('web', 'index.html')]) {
   const files = [];
   let entries = 0, total = 0;
   const decoder = new TextDecoder('utf-8', { fatal: true });
@@ -90,8 +90,8 @@ function collectTemplates(root, replacements) {
     }
   }
   walk(root, '', 0);
-  for (const required of ['CMakeLists.txt', 'main.cpp', path.join('web', 'index.html')])
-    if (!files.some(file => file.destination === required)) throw new Error('Incomplete project template.');
+  for (const name of required)
+    if (!files.some(file => file.destination === name)) throw new Error('Incomplete project template.');
   return files;
 }
 function createProject(input) {
@@ -104,6 +104,20 @@ function createProject(input) {
   const files = collectTemplates(root, {
     '@APP_NAME@': options.name, '@APP_IDENTIFIER@': options.identifier, '@APP_VERSION@': options.version,
   });
+  // Copy the public adapter from its sole SDK source, never a divergent template fork.
+  const installedFrontend = path.join(__dirname, '..', 'frontend');
+  const frontend = noSymlinks(fs.existsSync(installedFrontend) ? installedFrontend :
+    path.join(__dirname, '..', 'sdk', 'desktop', 'frontend'));
+  const adapterFiles = collectTemplates(frontend, {}, ['desktop.mjs', 'desktop.d.mts']);
+  if (adapterFiles.length !== 2) throw new Error('Unexpected frontend adapter entries.');
+  const adapterPrefix = path.join('web', 'soui').toLowerCase();
+  if (files.some(existing => existing.destination.toLowerCase() === adapterPrefix ||
+      existing.destination.toLowerCase().startsWith(adapterPrefix + path.sep)))
+    throw new Error('Frontend adapter destination collides with template.');
+  for (const file of adapterFiles) {
+    const destination = path.join('web', 'soui', file.destination);
+    files.push({ destination, content: file.content });
+  }
   fs.mkdirSync(output); // Atomic no-overwrite. Failure never triggers recursive cleanup.
   for (const file of files) {
     const destination = path.join(output, file.destination);

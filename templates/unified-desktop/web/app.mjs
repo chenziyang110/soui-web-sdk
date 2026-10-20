@@ -1,4 +1,5 @@
 import { loadLocalConfiguration } from './feature.mjs';
+import { invoke } from './soui/desktop.mjs';
 
 const status = document.getElementById('status');
 status.textContent = 'Frontend module loaded. Choose a check above.';
@@ -11,8 +12,5 @@ function bind(id, action) {
     finally { button.disabled = false; }
   });
 }
-bind('info', () => {
-  if (!window.souiDesktop) throw new Error('The native SOUI Bridge is unavailable.');
-  return window.souiDesktop.invoke('app.info', null);
-});
+bind('info', () => invoke('app.info', null));
 bind('assets', loadLocalConfiguration);

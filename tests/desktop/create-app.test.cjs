@@ -19,6 +19,10 @@ test('creates a relocatable minimal project and refuses overwrite', () => fixtur
   assert.match(cmake, /HelloApp/);
   assert.equal(cmake.includes(root), false);
   assert.equal(cmake.includes('@APP_'), false);
+  for (const name of ['desktop.mjs', 'desktop.d.mts'])
+    assert.deepEqual(fs.readFileSync(path.join(output, 'web', 'soui', name)),
+      fs.readFileSync(path.join(__dirname, '../../sdk/desktop/frontend', name)));
+  assert.match(fs.readFileSync(path.join(output, 'web', 'app.mjs'), 'utf8'), /soui\/desktop\.mjs/);
   assert.throws(() => createProject(options(output)), /already exists/);
 }));
 test('rejects injection, reserved names and malformed metadata before writes', () => fixture(root => {

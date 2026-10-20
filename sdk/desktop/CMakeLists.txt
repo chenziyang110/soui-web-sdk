@@ -87,3 +87,5 @@ install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../../tools/create-desktop-app.cjs"
   DESTINATION share/SouiDesktop/tools)
 install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../templates/unified-desktop"
   DESTINATION share/SouiDesktop/templates)
+install(FILES frontend/desktop.mjs frontend/desktop.d.mts
+  DESTINATION share/SouiDesktop/frontend)

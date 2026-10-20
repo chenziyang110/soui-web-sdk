@@ -67,6 +67,9 @@ set_tests_properties(sdk.desktop.contract PROPERTIES TIMEOUT 30 LABELS "desktop;
 
 find_program(SOUI_DESKTOP_NODE_EXECUTABLE NAMES node node.exe)
 if(SOUI_DESKTOP_NODE_EXECUTABLE)
+  add_test(NAME sdk.desktop.frontend-adapter
+    COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" --test "${CMAKE_CURRENT_SOURCE_DIR}/frontend-adapter.test.mjs")
+  set_tests_properties(sdk.desktop.frontend-adapter PROPERTIES TIMEOUT 30 LABELS "desktop;contract;no-gui")
   add_test(NAME sdk.desktop.preload
     COMMAND "${CMAKE_COMMAND}" -E env "SOUI_DESKTOP_CONTRACT_EXECUTABLE=$<TARGET_FILE:soui_desktop_contract>"
       "${SOUI_DESKTOP_NODE_EXECUTABLE}" --test "${CMAKE_CURRENT_SOURCE_DIR}/preload.test.cjs")

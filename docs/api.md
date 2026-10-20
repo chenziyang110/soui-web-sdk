@@ -2,6 +2,8 @@
 
 ## 未发布统一桌面 API
 
+前端 ESM 薄适配、TypeScript 声明与资产解码见 [前端接入](desktop-frontend-adapter.md)。
+
 `application_resource_directory()` 按实际可执行文件位置定位默认前端目录，
 返回 `path_result {status, value}`，不依赖工作目录。应用目录和 CMake staging
 入口见 [应用交付目录](desktop-application-staging.md)。
