@@ -18,6 +18,9 @@
       <article><h2>01 / Bridge</h2><p>Send structured JSON to your native method allowlist and receive a Promise result.</p><button data-action="echo">Round-trip JSON</button></article>
       <article><h2>02 / Window</h2><p>Change native window properties without importing a platform API.</p><button data-action="title">Change title</button><button data-action="resize">Resize window</button></article>
       <article><h2>03 / System</h2><p>Use only capabilities implemented by the selected platform backend.</p><button data-action="copy">Copy greeting</button><button data-action="paste">Read clipboard</button><button data-action="directory">Choose directory</button></article>
+      <article><h2>04 / Multiple windows</h2><p>Open the same application in another window with an independent Bridge session. Closing one keeps the others alive.</p><button data-action="create">Open another window</button><button data-action="close">Close this window</button></article>
+      <article><h2>05 / Native actions</h2><p>Menu commands belong to this window. Tray availability depends on your desktop host; failures appear in the log.</p><button data-action="menu">Open native menu</button><button data-action="tray">Show tray icon</button><button data-action="clearTray">Remove tray icon</button></article>
+      <article><h2>06 / Application group</h2><p>Each window uses these same assets and native callbacks. Quit closes every window in the application group.</p><button data-action="quit">Quit all windows</button></article>
     </section>
     <section class="console"><div class="console-head"><span>EVENT LOG</span><button data-action="reload">Reload with a new session</button></div><pre id="log" aria-live="polite">Waiting for the local document…</pre></section>
     <p class="footnote">System engines differ. Platform availability and validation are documented separately; this example does not claim Electron feature parity.</p>

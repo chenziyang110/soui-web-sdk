@@ -9,6 +9,7 @@
 #include <cstring>
 #include <memory>
 #include <mutex>
+#include <set>
 #include <thread>
 #include <utility>
 #include <vector>
@@ -20,6 +21,7 @@ constexpr std::size_t max_text_bytes = 1024 * 1024;
 constexpr std::size_t max_bridge_bytes = 64 * 1024;
 constexpr guint clipboard_timeout_ms = 2000;
 constexpr std::size_t max_pending_dispatches = 1024;
+constexpr guint tray_embed_timeout_ms = 1500;
 
 struct linux_state : std::enable_shared_from_this<linux_state> {
   std::thread::id owner{std::this_thread::get_id()};
@@ -35,6 +37,10 @@ struct linux_state : std::enable_shared_from_this<linux_state> {
   GMainLoop* loop{g_main_loop_new(context, FALSE)};
   GtkWidget* directory_dialog{nullptr};  // Borrowed while its modal call is active.
   GMainLoop* clipboard_loop{nullptr};    // Borrowed while its bounded call is active.
+  GtkWidget* popup{nullptr};
+  GtkWidget* tray_menu{nullptr};
+  GtkStatusIcon* tray_icon{nullptr};
+  GMainLoop* tray_wait_loop{nullptr};    // Borrowed while confirming native embedding.
   std::mutex dispatch_mutex;
   std::vector<GSource*> dispatch_sources;
   std::uint64_t generation{0};
@@ -43,8 +49,13 @@ struct linux_state : std::enable_shared_from_this<linux_state> {
   bool load_failed{false};
   bool modal_busy{false};
   bool created{false};
+  bool initialized{false};
+  bool loop_quit_requested{false};
   bool navigation_ticket{false};
   bool renderer_reload_pending{false};
+  bool tray_was_embedded{false};
+  std::uint64_t popup_generation{0};
+  std::uint64_t tray_generation{0};
 
   ~linux_state() {
     g_main_loop_unref(loop);
@@ -70,6 +81,31 @@ bool valid_text(std::string_view text, std::size_t limit = max_text_bytes) {
 }
 
 result enqueue(linux_state& state, std::function<void()> work);
+
+void clear_menu(GtkWidget*& slot) noexcept {
+  GtkWidget* menu = std::exchange(slot, nullptr);
+  if (!menu) return;
+  gtk_menu_popdown(GTK_MENU(menu));
+  gtk_widget_destroy(menu);
+  g_object_unref(menu);
+}
+
+// GTK3's only built-in tray implementation is the deprecated XEmbed
+// GtkStatusIcon. Keep that compatibility use isolated; do not suppress other
+// deprecated API diagnostics or pretend it implements Wayland StatusNotifier.
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+void clear_native_tray(linux_state& state) noexcept {
+  ++state.tray_generation;
+  state.tray_was_embedded = false;
+  if (state.tray_wait_loop) g_main_loop_quit(state.tray_wait_loop);
+  if (auto* icon = std::exchange(state.tray_icon, nullptr)) {
+    g_signal_handlers_disconnect_by_data(icon, &state);
+    gtk_status_icon_set_visible(icon, FALSE);
+    g_object_unref(icon);
+  }
+  clear_menu(state.tray_menu);
+}
+G_GNUC_END_IGNORE_DEPRECATIONS
 
 void report(linux_state& state, result status) noexcept {
   if (!state.active.load()) return;
@@ -112,7 +148,11 @@ void shutdown(linux_state& state, bool notify, bool window_destroyed = false) no
   if (state.evaluations) g_cancellable_cancel(state.evaluations);
   if (state.clipboard_loop) g_main_loop_quit(state.clipboard_loop);
   if (state.directory_dialog) gtk_widget_destroy(state.directory_dialog);
-  g_main_loop_quit(state.loop);
+  ++state.popup_generation;
+  clear_menu(state.popup);
+  clear_native_tray(state);
+  // Window teardown never stops the group's UI loop. The common owner invokes
+  // quit_loop only when its last live window closes or explicit quit completes.
 
   // Disconnect before stopping/destroying widgets: those operations emit signals.
   if (state.content) {
@@ -428,6 +468,188 @@ struct modal_guard {
   ~modal_guard() { state.modal_busy = false; }
 };
 
+bool valid_menu(const std::vector<menu_item>& items, bool allow_empty) {
+  if ((!allow_empty && items.empty()) || items.size() > 64) return false;
+  std::set<std::string> commands;
+  for (const auto& item : items) {
+    if (item.separator) continue;
+    if (item.id.empty() || item.id.size() > 64 ||
+        item.label.empty() || !valid_text(item.label, 4096)) return false;
+    for (unsigned char character : item.id)
+      if (!((character >= 'a' && character <= 'z') ||
+            (character >= 'A' && character <= 'Z') ||
+            (character >= '0' && character <= '9') ||
+            character == '.' || character == '_' || character == '-')) return false;
+    if (!commands.insert(item.id).second) return false;
+  }
+  return true;
+}
+
+struct menu_command {
+  std::weak_ptr<linux_state> state;
+  std::string id;
+  std::uint64_t generation;
+  bool tray;
+};
+
+bool current_menu(const linux_state& state, bool tray, std::uint64_t generation) noexcept {
+  return state.active.load() &&
+      (tray ? state.tray_menu && state.tray_generation == generation
+            : state.popup && state.popup_generation == generation);
+}
+
+void menu_activated(GtkMenuItem* item, gpointer data) noexcept {
+  const auto& command = *static_cast<menu_command*>(data);
+  auto state = command.state.lock();
+  if (!state || !gtk_widget_is_sensitive(GTK_WIDGET(item)) ||
+      !current_menu(*state, command.tray, command.generation)) return;
+  try {
+    auto status = enqueue(*state, [weak = command.state, id = command.id,
+                                  generation = command.generation, tray = command.tray] {
+      auto current = weak.lock();
+      if (!current || !current_menu(*current, tray, generation)) return;
+      auto handler = current->events.command;
+      if (handler) handler(id);
+    });
+    if (!status.ok) report(*state, std::move(status));
+  } catch (...) {
+    report(*state, result::failure("E_CALLBACK", "Could not queue the native menu command."));
+  }
+}
+
+GtkWidget* make_menu(linux_state& state, const std::vector<menu_item>& items,
+                     bool tray, std::uint64_t generation) {
+  GtkWidget* menu = gtk_menu_new();
+  g_object_ref_sink(menu);
+  try {
+    for (const auto& item : items) {
+      GtkWidget* row = nullptr;
+      if (item.separator) {
+        row = gtk_separator_menu_item_new();
+      } else {
+        auto command = std::make_unique<menu_command>(
+            menu_command{state.weak_from_this(), item.id, generation, tray});
+        if (item.checked) {
+          row = gtk_check_menu_item_new_with_label(item.label.c_str());
+          gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(row), TRUE);
+        } else {
+          row = gtk_menu_item_new_with_label(item.label.c_str());
+        }
+        gtk_widget_set_sensitive(row, item.enabled);
+        g_signal_connect_data(row, "activate", G_CALLBACK(menu_activated), command.release(),
+            [](gpointer value, GClosure*) { delete static_cast<menu_command*>(value); },
+            G_CONNECT_DEFAULT);
+      }
+      gtk_menu_shell_append(GTK_MENU_SHELL(menu), row);
+    }
+    gtk_menu_attach_to_widget(GTK_MENU(menu), state.window, nullptr);
+    gtk_widget_show_all(menu);
+  } catch (...) {
+    clear_menu(menu);
+    throw;
+  }
+  return menu;
+}
+
+gboolean stop_tray_wait(gpointer data) noexcept {
+  g_main_loop_quit(static_cast<GMainLoop*>(data));
+  return G_SOURCE_REMOVE;
+}
+
+G_GNUC_BEGIN_IGNORE_DEPRECATIONS
+void tray_popup(GtkStatusIcon* icon, guint button, guint32 time, gpointer data) noexcept {
+  auto& state = *static_cast<linux_state*>(data);
+  if (!state.active.load() || state.tray_icon != icon || !state.tray_menu ||
+      !gtk_status_icon_is_embedded(icon)) return;
+  gtk_menu_popup(GTK_MENU(state.tray_menu), nullptr, nullptr, gtk_status_icon_position_menu,
+                 icon, button, time);
+}
+
+void tray_activate(GtkStatusIcon* icon, gpointer data) noexcept {
+  tray_popup(icon, 0, gtk_get_current_event_time(), data);
+}
+
+void tray_embedding_changed(GObject* object, GParamSpec*, gpointer data) noexcept {
+  auto& state = *static_cast<linux_state*>(data);
+  auto* icon = GTK_STATUS_ICON(object);
+  if (!state.active.load() || state.tray_icon != icon) return;
+  if (gtk_status_icon_is_embedded(icon)) {
+    state.tray_was_embedded = true;
+    if (state.tray_wait_loop) g_main_loop_quit(state.tray_wait_loop);
+  } else if (state.tray_was_embedded) {
+    g_object_ref(icon);
+    clear_native_tray(state);
+    g_object_unref(icon);
+    report(state, result::failure("E_TRAY_UNAVAILABLE", "The desktop tray host disappeared."));
+  }
+}
+
+result install_tray(linux_state& state, const tray_options& settings) {
+  if (state.modal_busy)
+    return result::failure("E_BUSY", "A modal desktop operation is already active.");
+  modal_guard guard(state);
+  GdkPixbuf* image = gtk_window_get_icon(GTK_WINDOW(state.window));
+  if (image) {
+    g_object_ref(image);
+  } else {
+    const char* name = gtk_window_get_icon_name(GTK_WINDOW(state.window));
+    if (!name) name = gtk_window_get_default_icon_name();
+    if (!name) name = "application-x-executable";
+    image = gtk_icon_theme_load_icon(gtk_icon_theme_get_for_screen(
+        gtk_widget_get_screen(state.window)), name, 24, GTK_ICON_LOOKUP_USE_BUILTIN, nullptr);
+  }
+  if (!image)
+    return result::failure("E_ICON_UNAVAILABLE", "The desktop theme has no native application icon.");
+  auto* icon = GTK_STATUS_ICON(g_object_new(GTK_TYPE_STATUS_ICON,
+      "pixbuf", image, "visible", FALSE, nullptr));
+  g_object_unref(image);
+  GtkWidget* menu = nullptr;
+  try {
+    if (!settings.menu.empty())
+      menu = make_menu(state, settings.menu, true, state.tray_generation + 1);
+  } catch (...) {
+    g_object_unref(icon);
+    throw;
+  }
+  clear_native_tray(state);
+  state.tray_icon = icon;
+  state.tray_menu = menu;
+  gtk_status_icon_set_title(icon, settings.label.c_str());
+  gtk_status_icon_set_tooltip_text(icon, settings.tooltip.c_str());
+  g_signal_connect(icon, "activate", G_CALLBACK(tray_activate), &state);
+  g_signal_connect(icon, "popup-menu", G_CALLBACK(tray_popup), &state);
+  g_signal_connect(icon, "notify::embedded", G_CALLBACK(tray_embedding_changed), &state);
+  // The loop pumps UI events but is bounded. Merely creating a visible status
+  // icon does NOT demonstrate that a tray host exists or displays it.
+  GMainLoop* wait = g_main_loop_new(state.context, FALSE);
+  GSource* timeout = g_timeout_source_new(tray_embed_timeout_ms);
+  g_source_set_callback(timeout, stop_tray_wait, wait, nullptr);
+  g_source_attach(timeout, state.context);
+  state.tray_wait_loop = wait;
+  g_object_ref(icon);  // A nested UI event can close this window and clear its tray.
+  gtk_status_icon_set_visible(icon, TRUE);
+  if (!gtk_status_icon_is_embedded(icon) && state.active.load())
+    g_main_loop_run(wait);
+  state.tray_wait_loop = nullptr;
+  g_source_destroy(timeout);
+  g_source_unref(timeout);
+  g_main_loop_unref(wait);
+  const bool current = state.tray_icon == icon;
+  const bool embedded = current && gtk_status_icon_is_embedded(icon);
+  g_object_unref(icon);
+  if (!state.active.load()) return unavailable();
+  if (!current)
+    return result::failure("E_CANCELLED", "Tray installation was cancelled.");
+  if (!embedded) {
+    clear_native_tray(state);
+    return result::failure("E_TRAY_UNAVAILABLE",
+        "No compatible XEmbed tray host embedded the application icon within 1500 ms.");
+  }
+  state.tray_was_embedded = true;
+  return result::success();
+}
+G_GNUC_END_IGNORE_DEPRECATIONS
+
 class linux_backend final : public backend {
  public:
   linux_backend() : state_(std::make_shared<linux_state>()) {}
@@ -437,7 +659,8 @@ class linux_backend final : public backend {
     auto& state = *state_;
     if (state.owner != std::this_thread::get_id())
       return result::failure("E_THREAD", "GTK must be initialized on the desktop UI thread.");
-    if (state.created) return result::failure("E_STATE", "The desktop window is already created.");
+    if (state.initialized || state.created)
+      return result::failure("E_STATE", "A desktop backend can only be initialized once.");
     if (!valid_text(settings.title) || settings.width < 1 || settings.height < 1)
       return result::failure("E_ARGUMENT", "Invalid window title or dimensions.");
     if (!gtk_init_check(nullptr, nullptr))
@@ -496,6 +719,7 @@ class linux_backend final : public backend {
     g_signal_connect(state.view, "context-menu", G_CALLBACK(deny_context_menu), &state);
     g_signal_connect(state.web_context, "download-started", G_CALLBACK(cancel_download), &state);
     state.events = std::move(events);
+    state.initialized = true;
     state.active.store(true);
     if (settings.visible) gtk_widget_show_all(state.window);
     else gtk_widget_show(GTK_WIDGET(state.view));
@@ -529,12 +753,24 @@ class linux_backend final : public backend {
   }
 
   result run() override {
-    auto status = check_ui(*state_);
-    if (!status.ok) return status;
+    if (state_->owner != std::this_thread::get_id())
+      return result::failure("E_THREAD", "Running the desktop loop requires the UI thread.");
+    if (!state_->initialized)
+      return result::failure("E_STATE", "The desktop backend has not been initialized.");
     if (state_->running) return result::failure("E_STATE", "The desktop event loop is already running.");
+    if (state_->loop_quit_requested) return result::success();
+    // The root window may already be closed while its children still run.
     state_->running = true;
     g_main_loop_run(state_->loop);
     state_->running = false;
+    return result::success();
+  }
+
+  result quit_loop() override {
+    if (state_->owner != std::this_thread::get_id())
+      return result::failure("E_THREAD", "Stopping the desktop loop requires the UI thread.");
+    state_->loop_quit_requested = true;
+    g_main_loop_quit(state_->loop);
     return result::success();
   }
 
@@ -659,8 +895,51 @@ class linux_backend final : public backend {
     return outcome;
   }
 
+  result popup_menu(const std::vector<menu_item>& items) override {
+    auto status = check_ui(*state_);
+    if (!status.ok) return status;
+    if (!valid_menu(items, false))
+      return result::failure("E_ARGUMENT", "A popup menu needs at most 64 valid, unique commands.");
+    if (!gtk_widget_get_mapped(state_->window))
+      return result::failure("E_WINDOW_HIDDEN", "Show the owning window before opening its popup menu.");
+    GtkWidget* menu = make_menu(*state_, items, false, state_->popup_generation + 1);
+    ++state_->popup_generation;
+    clear_menu(state_->popup);
+    state_->popup = menu;
+    GdkEvent* event = gtk_get_current_event();
+    if (!event) {
+      event = gdk_event_new(GDK_BUTTON_PRESS);
+      event->button.window = GDK_WINDOW(g_object_ref(gtk_widget_get_window(state_->window)));
+      event->button.send_event = TRUE;
+      event->button.time = GDK_CURRENT_TIME;
+      event->button.button = 3;
+      auto* seat = gdk_display_get_default_seat(gtk_widget_get_display(state_->window));
+      if (seat) gdk_event_set_device(event, gdk_seat_get_pointer(seat));
+    }
+    gtk_menu_popup_at_widget(GTK_MENU(menu), state_->window, GDK_GRAVITY_CENTER,
+                             GDK_GRAVITY_NORTH_WEST, event);
+    gdk_event_free(event);
+    return result::success();
+  }
+
+  result set_tray(const tray_options& settings) override {
+    auto status = check_ui(*state_);
+    if (!status.ok) return status;
+    if (settings.label.empty() || !valid_text(settings.label, 256) ||
+        !valid_text(settings.tooltip, 4096) || !valid_menu(settings.menu, true))
+      return result::failure("E_ARGUMENT", "Invalid native tray label, tooltip, or menu.");
+    return install_tray(*state_, settings);
+  }
+
+  result clear_tray() override {
+    auto status = check_ui(*state_);
+    if (!status.ok) return status;
+    clear_native_tray(*state_);
+    return result::success();
+  }
+
   capabilities get_capabilities() const override {
-    return {"webkitgtk", true, true, true, true, true};
+    return {"webkitgtk", true, true, true, true, true, true, true};
   }
 
   bool has_message_frame_metadata() const override { return false; }

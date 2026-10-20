@@ -156,16 +156,16 @@ Linux getrandom、macOS SecRandomCopyBytes。Linux 要求内核 3.17+ 和提供
 
 ## 桌面适配与剩余工作
 
-`Soui::Desktop` 已独立实现 GTK3/WebKitGTK、WKWebView、WebView2 主窗口和
-统一导航/Bridge/部分系统能力。它没有把原有 SOUI 产品能力完整移植，也没有
+`Soui::Desktop` 已独立实现 GTK3/WebKitGTK、WKWebView、WebView2 受管理多窗口和
+统一导航/Bridge、平面菜单/托盘及 SDK 开发 ZIP 入口。它没有把原有 SOUI 产品能力完整移植，也没有
 完成全矩阵桌面验收。仍须推进：
 
 1. 对已实现窗口/消息泵和关闭边界执行真实目标机验证，补齐输入法、DPI、多屏、
-   拖放及多主窗口能力。
+   拖放，并验证多窗口与独立会话。
 2. 完成三个系统引擎的实际编译/交互矩阵，完善 root-scoped 资源服务与现代 Web
    资源兼容性，不以 fake-backend 或 VM 代替真实页面 Bridge 测试。
 3. ARM 对应 SOUI/Miniblink 或替代后端的可追溯源码构建、二进制 ABI 与许可。
-4. 对已实现目录选择/剪贴板补实机证据，移植统一托盘、菜单、快捷键、可访问性
+4. 对已实现目录选择/剪贴板/菜单/托盘补实机证据，移植统一快捷键、可访问性
    与本地 Agent 对端认证。
 5. 平台签名/打包、安装升级回退、真实输入/窗口/长时间任务及全矩阵目标机验收。
 

@@ -11,7 +11,7 @@ const preload = generated.stdout;
 const token = 'test-navigation-token';
 
 // VM transport only: this exercises generated JavaScript, not a native engine.
-function fixture({ transport = 'chrome', subframe = false } = {}) {
+function fixture({ transport = 'chrome', subframe = false, navigationToken = token } = {}) {
   const posts = [], timers = new Map(), events = new Map();
   let nextTimer = 0;
   const window = { addEventListener: (name, callback) => events.set(name, callback) };
@@ -24,11 +24,17 @@ function fixture({ transport = 'chrome', subframe = false } = {}) {
     setTimeout: (callback, ms) => { const id = ++nextTimer; timers.set(id, { callback, ms }); return id; },
     clearTimeout: id => timers.delete(id),
   });
-  vm.runInContext(preload, context);
+  let source = preload;
+  if (navigationToken !== token) {
+    const generated = spawnSync(executable, ['--preload', navigationToken], { encoding: 'utf8' });
+    assert.equal(generated.status, 0, generated.stderr || generated.error?.message);
+    source = generated.stdout;
+  }
+  vm.runInContext(source, context);
   return {
     window, posts, timers,
     run: code => vm.runInContext(code, context),
-    deliver: value => window.__souiDesktopDeliver({ v: 1, token, ...value }),
+    deliver: value => window.__souiDesktopDeliver({ v: 1, token: navigationToken, ...value }),
     hide: () => events.get('pagehide')?.(),
   };
 }
@@ -138,4 +144,41 @@ test('events support unsubscribe and preserve JSON __proto__ as an own property'
   f.run('window.unsubscribe()');
   f.deliver({ event: 'changed', value: 2 });
   assert.equal(f.window.received.length, 1);
+});
+
+test('independent windows keep request IDs and responses scoped to their navigation token', async () => {
+  const first = fixture({ navigationToken: 'first-window-token' });
+  const second = fixture({ navigationToken: 'second-window-token' });
+  const one = first.run("window.souiDesktop.invoke('echo')");
+  const two = second.run("window.souiDesktop.invoke('echo')");
+  assert.equal(first.posts[0].id, 1);
+  assert.equal(second.posts[0].id, 1);
+  assert.notEqual(first.posts[0].token, second.posts[0].token);
+  first.deliver({ token: second.posts[0].token, id: 1, ok: true, result: 'wrong window' });
+  second.deliver({ token: first.posts[0].token, id: 1, ok: true, result: 'wrong window' });
+  assert.equal(first.timers.size, 1);
+  assert.equal(second.timers.size, 1);
+  first.deliver({ id: 1, ok: true, result: 'first' });
+  second.deliver({ id: 1, ok: true, result: 'second' });
+  assert.equal(await one, 'first');
+  assert.equal(await two, 'second');
+});
+
+test('closing one window leaves another live and a new document rejects old responses', async () => {
+  const first = fixture({ navigationToken: 'closing-window-token' });
+  const second = fixture({ navigationToken: 'live-window-token' });
+  const abandoned = first.run("window.souiDesktop.invoke('echo')");
+  const rejection = assert.rejects(abandoned, /replaced/);
+  first.hide();
+  await rejection;
+  const independent = second.run("window.souiDesktop.invoke('echo')");
+  second.deliver({ id: 1, ok: true, result: 'still live' });
+  assert.equal(await independent, 'still live');
+  const replacement = fixture({ navigationToken: 'replacement-navigation-token' });
+  const newRequest = replacement.run("window.souiDesktop.invoke('echo')");
+  replacement.deliver({ token: first.posts[0].token, id: 1, ok: true, result: 'stale result' });
+  assert.equal(replacement.timers.size, 1);
+  replacement.deliver({ id: 1, ok: true, result: 'new result' });
+  assert.equal(await newRequest, 'new result');
+  assert.deepEqual(Object.keys(replacement.window.souiDesktop).sort(), ['invoke', 'on', 'version']);
 });

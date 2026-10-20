@@ -12,15 +12,20 @@ Node 24.19。依赖来自官方 Debian 包，隔离解包供编译链接，未�
 | 检查 | 配置与命令 | 结果 |
 |---|---|---|
 | 三层源码及真实 Linux 后端 | `cmake --preset desktop`，`cmake --build --preset desktop`，Release | 编译、链接通过；包含 Runtime、Desktop、同源码示例和原生 Linux 集成测试可执行文件 |
-| 当前全部默认本地回归 | `ctest --preset desktop --output-on-failure` | 6/6 通过；其中 4 项 portable、2 项 Desktop 无窗口契约 |
-| 共用应用/协议边界 | `soui_desktop_contract` | 97 项检查、0 失败；fake backend，不调用原生窗口/系统能力 |
-| 实际 preload 脚本 | `SOUI_DESKTOP_CONTRACT_EXECUTABLE=out/desktop/tests/desktop/soui_desktop_contract node --test tests/desktop/preload.test.cjs` | 8/8 通过；从实际编译代码输出脚本，在 Node VM 运行，不是真实浏览器 |
+| 当前全部默认本地回归 | `ctest --preset desktop --output-on-failure` | 7/7 通过；其中 4 项 portable、2 项 Desktop 无窗口契约、1 项开发包工具回归 |
+| 共用应用/协议边界 | `soui_desktop_contract` | 255 项检查、0 失败；fake backend，不调用原生窗口/系统能力 |
+| 实际 preload 脚本 | `SOUI_DESKTOP_CONTRACT_EXECUTABLE=out/desktop/tests/desktop/soui_desktop_contract node --test tests/desktop/preload.test.cjs` | 10/10 通过；从实际编译代码输出脚本，在 Node VM 运行，不是真实浏览器 |
 | 平台矩阵与拒绝配置 | `node --test tests/portable/platform-matrix.test.cjs`（使用实际 CMake） | 28/28 通过；合成架构策略不代表目标交叉编译 |
 | 安装 | `cmake --install out/desktop --config Release` | Runtime / Desktop 安装包生成成功 |
 | 独立消费者 | `cmake -S examples/unified-desktop -B out/desktop-final-consumer -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="$PWD/out/desktop-install"`，随后 build | 仅使用安装后的公共头文件和目标，编译、链接通过 |
-| 独立 Debug 检查 | Desktop 关闭和开启两种配置，各运行 contract / preload | 两种配置均 2/2 通过；Desktop 开启时原生 Linux 集成目标编译链接通过，未执行 GUI |
-| Linux 后端严格编译 | GCC `-std=c++17 -Wall -Wextra -Wpedantic -Werror` 配合实际 GTK/WebKit 库 | 后端及原生测试编译、链接通过 |
+| 前一轮独立 Debug 检查（非本次多窗口增量） | Desktop 关闭和开启两种配置，各运行 contract / preload | 两种配置均 2/2 通过；Desktop 开启时原生 Linux 集成目标编译链接通过，未执行 GUI |
+| 前一轮 Linux 后端严格编译（非本次多窗口增量） | GCC `-std=c++17 -Wall -Wextra -Wpedantic -Werror` 配合实际 GTK/WebKit 库 | 后端及原生测试编译、链接通过 |
+| 开发包入口 | `node tools/package-desktop.cjs --build-dir out/desktop --output out/desktop-package-managed` | build → 7 套 CTest → install → ZIP 实际完成；另核验 ZIP CRC、归档 SHA-256、34 个载荷文件字节数及 SHA-256 |
+| 本轮独立消费者 | 使用上述开发包 `sdk` 作为唯一 `CMAKE_PREFIX_PATH`，独立配置、构建同源码多窗口示例 | 编译、链接通过，未运行 GUI |
+| 地址/未定义行为检查 | GCC ASan+UBSan 重编公共契约，`ASAN_OPTIONS=detect_leaks=0` | 255 项通过；完整 LeakSanitizer 因环境 ptrace 不兼容报 fatal，不能宣称泄漏检查通过 |
 | 补丁检查 | `git diff --check` | 通过 |
+
+本次增量新增：窗口间 token/请求序号隔离、同 URI 不同窗口、根窗口先关闭、最后一窗退出、显式整组退出、32 窗口上限、跨窗模态回调串行化、菜单命令归属与输入限制。Linux 原生集成可执行文件已重新编译，仍未运行。Windows/macOS 新增菜单与托盘只有源码审查，尚无目标编译证据。
 
 共用回归包含：URI 根边界、错误来源/frame/token、重复 ID、同 URI 原生重载、
 旧代际消息与响应、回调内导航/关闭、模态消息重入、有界 dispatch、非法响应、

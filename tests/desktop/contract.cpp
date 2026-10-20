@@ -2,6 +2,7 @@
 #include "../../sdk/src/desktop/backend.h"
 #include "../../sdk/src/desktop/protocol.h"
 
+#include <algorithm>
 #include <atomic>
 #include <chrono>
 #include <deque>
@@ -24,17 +25,30 @@ int checks = 0;
 
 result unsupported() { return result::failure("test_unsupported", "Fake capability is unavailable."); }
 
+class fake_backend;
+std::vector<fake_backend*> backends;
+struct native_counts {
+  int closed{0}, loop_quits{0}, runs{0}, popup_calls{0}, tray_calls{0}, clear_tray_calls{0};
+};
+
 // A deliberately simple transport fake. No platform API is called. Tests may
 // trigger callbacks reentrantly to model a modal native message loop.
 class fake_backend final : public detail::backend {
  public:
+  fake_backend() { backends.push_back(this); }
+  ~fake_backend() override { backends.erase(std::remove(backends.begin(), backends.end(), this), backends.end()); }
   detail::backend_events events;
+  std::shared_ptr<native_counts> counts = std::make_shared<native_counts>();
   std::atomic<bool> active{false};
   bool metadata{true};
   std::string uri, preload;
   std::vector<std::string> evaluations;
   result evaluation_status{result::success()};
   result load_status{result::success()};
+  result menu_status{unsupported()}, tray_status{unsupported()}, clear_tray_status{unsupported()};
+  std::vector<menu_item> popup_items;
+  tray_options tray_settings;
+  std::function<void()> while_popup;
   std::mutex mutex;
   std::deque<std::function<void()>> tasks;
   int loads{0};
@@ -45,9 +59,19 @@ class fake_backend final : public detail::backend {
   result load(std::string selected, std::string script) override {
     ++loads; uri = std::move(selected); preload = std::move(script); return load_status;
   }
-  result run() override { flush(); return result::success(); }
+  result run() override {
+    ++counts->runs;
+    // A fake shared loop pumps each existing window. It deliberately does not
+    // stop merely because the root window's own active flag is false.
+    const auto windows = backends;
+    for (auto* window : windows)
+      if (std::find(backends.begin(), backends.end(), window) != backends.end()) window->flush();
+    return result::success();
+  }
+  result quit_loop() override { ++counts->loop_quits; return result::success(); }
   result close() override {
     if (!active.exchange(false)) return result::success();
+    ++counts->closed;
     { std::lock_guard<std::mutex> lock(mutex); tasks.clear(); }
     const auto callback = events.closed;
     if (callback) callback();
@@ -80,7 +104,18 @@ class fake_backend final : public detail::backend {
   value_result clipboard_read() override { return {unsupported(), {}}; }
   result clipboard_write(std::string_view) override { return unsupported(); }
   value_result choose_directory() override { return {unsupported(), {}}; }
-  capabilities get_capabilities() const override { return {"test-fake", false, false, false, false, false}; }
+  result popup_menu(const std::vector<menu_item>& items) override {
+    ++counts->popup_calls; popup_items = items;
+    if (while_popup) while_popup();
+    return menu_status;
+  }
+  result set_tray(const tray_options& settings) override {
+    ++counts->tray_calls; tray_settings = settings; return tray_status;
+  }
+  result clear_tray() override { ++counts->clear_tray_calls; return clear_tray_status; }
+  capabilities get_capabilities() const override {
+    return {"test-fake", false, false, false, false, false, menu_status.ok, tray_status.ok};
+  }
   bool has_message_frame_metadata() const override { return metadata; }
 
   std::string token() const {
@@ -100,6 +135,10 @@ class fake_backend final : public detail::backend {
     callback(text, source.empty() ? uri : source, frame);
   }
   void loaded() { const auto callback = events.loaded; callback(uri); }
+  void command(std::string_view id) {
+    const auto callback = events.command;
+    if (callback) callback(id);
+  }
   json last_response() const {
     if (evaluations.empty()) throw std::runtime_error("Missing evaluated response");
     const auto& script = evaluations.back();
@@ -375,6 +414,286 @@ void initialization_contract(files& fixture) {
   CHECK(native.evaluations.size() == before);
   CHECK(!app.emit("event", "{}").ok);
 }
+
+std::shared_ptr<application> add_window(application& owner, const options& settings,
+                                      callbacks handlers = {}) {
+  auto created = owner.create_window(settings, std::move(handlers));
+  CHECK(created.status.ok && created.window);
+  if (!created.status.ok || !created.window)
+    throw std::runtime_error("Cannot create managed test window: " + created.status.code);
+  return std::move(created.window);
+}
+
+bool has_window(const application& owner, window_id id) {
+  const auto ids = owner.window_ids();
+  return std::find(ids.begin(), ids.end(), id) != ids.end();
+}
+
+void multiwindow_identity_contract(files& fixture) {
+  int root_calls = 0, child_calls = 0;
+  std::vector<std::pair<window_id, window_event>> root_events, child_events;
+  callbacks root_handlers;
+  root_handlers.invoke = [&](std::string_view, std::string_view) { ++root_calls; return std::string("{}"); };
+  root_handlers.lifecycle = [&](window_id id, window_event event) { root_events.emplace_back(id, event); };
+  application root(fixture.settings(), root_handlers);
+  CHECK(root.initialize().ok);
+  auto& root_native = *latest;
+  const auto root_counts = root_native.counts;
+  CHECK(root.id() != 0);
+  CHECK(root.window_ids().size() == 1 && has_window(root, root.id()));
+  callbacks child_handlers;
+  child_handlers.invoke = [&](std::string_view, std::string_view) { ++child_calls; return std::string("{}"); };
+  child_handlers.lifecycle = [&](window_id id, window_event event) { child_events.emplace_back(id, event); };
+  auto child = add_window(root, fixture.settings(), child_handlers);
+  auto& child_native = *latest;
+  CHECK(root.id() != child->id());
+  CHECK(child->window_ids().size() == 2 && has_window(*child, root.id()));
+  CHECK(root_native.uri == child_native.uri);
+  CHECK(root_native.token() != child_native.token());
+  root_native.loaded(); child_native.loaded();
+  CHECK(root_events.size() == 1 && root_events[0].first == root.id() &&
+        root_events[0].second == window_event::ready);
+  CHECK(child_events.size() == 1 && child_events[0].first == child->id() &&
+        child_events[0].second == window_event::ready);
+
+  root_native.send(root_native.envelope(1));
+  child_native.send(root_native.envelope(1));  // Same URI must not imply the same authority.
+  root_native.send(child_native.envelope(1));
+  CHECK(root_calls == 1 && child_calls == 0);
+  child_native.send(child_native.envelope(1));
+  root_native.send(root_native.envelope(1));
+  child_native.send(child_native.envelope(1));
+  CHECK(root_calls == 1 && child_calls == 1);
+  root_native.send(root_native.envelope(2));
+  child_native.send(child_native.envelope(2));
+  CHECK(root_calls == 2 && child_calls == 2);
+  const auto root_token = root_native.token();
+  const auto old_child_request = child_native.envelope(3);
+  CHECK(child->reload().ok);
+  CHECK(root_native.token() == root_token);
+  child_native.send(old_child_request);
+  child_native.send(child_native.envelope(1));
+  root_native.send(root_native.envelope(3));
+  CHECK(root_calls == 3 && child_calls == 3);
+  CHECK(!child->run().ok);
+  const auto old_child_id = child->id();
+  CHECK(child->close().ok);
+  CHECK(root_native.active.load() && !child_native.active.load());
+  CHECK(root_counts->loop_quits == 0);
+  CHECK(root.window_ids().size() == 1 && !has_window(root, old_child_id));
+  CHECK(child_events.size() == 2 && child_events.back().first == old_child_id &&
+        child_events.back().second == window_event::closed);
+  child_native.send(child_native.envelope(2));
+  CHECK(child_calls == 3);
+  auto replacement = add_window(root, fixture.settings());
+  CHECK(replacement->id() != old_child_id && replacement->id() != root.id());
+  CHECK(root.close().ok);
+  CHECK(root_counts->loop_quits == 0);
+  CHECK(root.window_ids().size() == 1 && has_window(root, replacement->id()));
+  CHECK(root_events.size() == 2 && root_events.back().second == window_event::closed);
+  CHECK(replacement->dispatch([replacement] { CHECK(replacement->close().ok); }).ok);
+  CHECK(root.run().ok);  // The loop owner may have a closed native window.
+  CHECK(root_counts->runs == 1 && root_counts->loop_quits == 1);
+  CHECK(root.window_ids().empty());
+  CHECK(!root.run().ok);
+}
+
+void group_lifetime_contract(files& fixture) {
+  window_id prior_id = 0;
+  {
+    application root(fixture.settings());
+    CHECK(root.initialize().ok);
+    auto& root_native = *latest;
+    const auto root_counts = root_native.counts;
+    auto child = add_window(root, fixture.settings());
+    auto& child_native = *latest;
+    auto grandchild = add_window(*child, fixture.settings());
+    auto& grandchild_native = *latest;
+    CHECK(root.window_ids().size() == 3);
+    CHECK(root.close().ok);
+    CHECK(root_counts->loop_quits == 0);
+    auto after_root_close = add_window(root, fixture.settings());
+    CHECK(root.window_ids().size() == 3);
+    CHECK(child->quit().ok);
+    CHECK(root.window_ids().empty());
+    CHECK(!child_native.active.load() && !grandchild_native.active.load());
+    CHECK(root_counts->loop_quits == 1);
+    CHECK(!after_root_close->dispatch([] {}).ok);
+    CHECK(!root.create_window(fixture.settings()).status.ok);
+    prior_id = after_root_close->id();
+  }
+  std::shared_ptr<application> orphan;
+  std::shared_ptr<native_counts> root_counts, orphan_counts;
+  {
+    auto root = std::make_unique<application>(fixture.settings());
+    CHECK(root->initialize().ok);
+    CHECK(root->id() > prior_id);
+    root_counts = latest->counts;
+    orphan = add_window(*root, fixture.settings());
+    orphan_counts = latest->counts;
+    prior_id = orphan->id();
+    root.reset();  // An outstanding child handle cannot keep the group alive.
+  }
+  CHECK(root_counts->closed == 1 && orphan_counts->closed == 1);
+  CHECK(root_counts->loop_quits == 1);
+  CHECK(orphan->window_ids().empty());
+  CHECK(!orphan->dispatch([] {}).ok);
+  CHECK(!orphan->navigate("index.html").ok);
+  {
+    application replacement(fixture.settings());
+    CHECK(replacement.initialize().ok);  // Old invalid handles do not retain the process slot.
+    CHECK(replacement.id() > prior_id);
+    auto child = add_window(replacement, fixture.settings());
+    auto request_quit = latest->events.quit_requested;
+    CHECK(static_cast<bool>(request_quit));
+    request_quit();
+    CHECK(replacement.window_ids().empty() && !child->dispatch([] {}).ok);
+  }
+}
+
+void window_capacity_contract(files& fixture) {
+  application root(fixture.settings());
+  CHECK(root.initialize().ok);
+  std::vector<std::shared_ptr<application>> children;
+  for (int i = 0; i < 31; ++i) children.push_back(add_window(root, fixture.settings()));
+  CHECK(root.window_ids().size() == 32);
+  const auto rejected = root.create_window(fixture.settings());
+  CHECK(!rejected.status.ok && !rejected.window);
+  CHECK(root.window_ids().size() == 32);
+  const auto previous = children.back()->id();
+  CHECK(children.back()->close().ok);
+  children.push_back(add_window(root, fixture.settings()));
+  CHECK(children.back()->id() > previous && root.window_ids().size() == 32);
+  auto invalid = fixture.settings(); invalid.entry = "../outside.html";
+  CHECK(children.back()->close().ok);
+  CHECK(!root.create_window(invalid).status.ok);
+  CHECK(root.window_ids().size() == 31);
+}
+
+void cross_window_callbacks_contract(files& fixture) {
+  bool in_root = false, reentered = false;
+  int child_calls = 0, child_ready = 0, child_commands = 0, child_work = 0, child_closed = 0;
+  fake_backend* child_native = nullptr;
+  std::shared_ptr<application> child;
+  callbacks root_handlers;
+  root_handlers.invoke = [&](std::string_view method, std::string_view) {
+    in_root = true;
+    child_native->send(child_native->envelope(1));
+    child_native->loaded();
+    child_native->command("action");
+    CHECK(child->dispatch([&] { reentered |= in_root; ++child_work; }).ok);
+    child_native->flush();
+    if (method == "close-child") CHECK(child->close().ok);
+    CHECK(child_calls == 0 && child_ready == 0 && child_commands == 0 && child_work == 0 && child_closed == 0);
+    in_root = false;
+    return std::string("{}");
+  };
+  application root(fixture.settings(), root_handlers);
+  CHECK(root.initialize().ok);
+  auto& root_native = *latest;
+  callbacks child_handlers;
+  child_handlers.invoke = [&](std::string_view, std::string_view) {
+    reentered |= in_root; ++child_calls; return std::string("{}");
+  };
+  child_handlers.ready = [&] { reentered |= in_root; ++child_ready; };
+  child_handlers.command = [&](std::string_view) { reentered |= in_root; ++child_commands; };
+  child_handlers.closed = [&] { reentered |= in_root; ++child_closed; };
+  child = add_window(root, fixture.settings(), child_handlers);
+  child_native = latest;
+  child_native->menu_status = result::success();
+  CHECK(child->popup_menu({{"action", "Action"}}).ok);
+  root_native.send(root_native.envelope(1));
+  CHECK(child_calls == 1 && child_ready == 1 && child_commands == 1 && child_work == 1);
+  CHECK(!reentered);
+  CHECK(child->close().ok && child_closed == 1);
+
+  // With close occurring inside the other window's modal callback, queued
+  // commands, work and requests are discarded; the close notification remains.
+  child_calls = child_ready = child_commands = child_work = child_closed = 0;
+  child = add_window(root, fixture.settings(), child_handlers);
+  child_native = latest;
+  child_native->menu_status = result::success();
+  CHECK(child->popup_menu({{"action", "Action"}}).ok);
+  root_native.send(root_native.envelope(2, "close-child"));
+  CHECK(child_calls == 0 && child_ready == 0 && child_commands == 0 && child_work == 0);
+  CHECK(child_closed == 1 && !reentered);
+}
+
+void native_actions_contract(files& fixture) {
+  std::vector<std::string> root_commands, child_commands;
+  callbacks root_handlers;
+  root_handlers.command = [&](std::string_view id) { root_commands.emplace_back(id); };
+  application root(fixture.settings(), root_handlers);
+  CHECK(root.initialize().ok);
+  auto& native = *latest;
+  CHECK(root.popup_menu({{"unsupported", "Unavailable"}}).code == "test_unsupported");
+  native.command("unsupported");
+  CHECK(root_commands.empty());
+  native.menu_status = native.tray_status = native.clear_tray_status = result::success();
+  CHECK(root.get_capabilities().popup_menu && root.get_capabilities().tray);
+  const auto unchanged = native.counts->popup_calls;
+  CHECK(!root.popup_menu({}).ok);
+  CHECK(!root.popup_menu({{"bad id", "Label"}}).ok);
+  CHECK(!root.popup_menu({{"valid", ""}}).ok);
+  CHECK(!root.popup_menu({{"same", "One"}, {"same", "Two"}}).ok);
+  CHECK(!root.popup_menu({{"separator", "", true, false, true}}).ok);
+  CHECK(!root.popup_menu({{"", "separator", true, false, true}}).ok);
+  CHECK(!root.popup_menu({{"valid", std::string(4097, 'x')}}).ok);
+  CHECK(!root.popup_menu({{"valid", std::string("bad\0label", 9)}}).ok);
+  CHECK(!root.popup_menu({{"valid", std::string("\xC0\xAF", 2)}}).ok);
+  std::vector<menu_item> maximum;
+  for (int i = 0; i < 65; ++i) maximum.push_back({"item" + std::to_string(i), "Item"});
+  CHECK(!root.popup_menu(maximum).ok);
+  CHECK(native.counts->popup_calls == unchanged);
+  maximum.pop_back();
+  CHECK(root.popup_menu(maximum).ok);
+  CHECK(native.popup_items.size() == 64);
+  const std::string maximum_id(64, 'x');
+  CHECK(root.popup_menu({{maximum_id, std::string(4096, 'x')}}).ok);
+  CHECK(!root.popup_menu({{maximum_id + "x", "Label"}}).ok);
+  CHECK(root.popup_menu({{"enabled", "Enabled"}, {"disabled", "Disabled", false},
+                         {"", "", true, false, true}}).ok);
+  native.command("enabled"); native.command("disabled"); native.command("unknown");
+  CHECK(root_commands == std::vector<std::string>{"enabled"});
+  CHECK(native.evaluations.empty());  // No command is silently sent to the web page.
+
+  callbacks child_handlers;
+  child_handlers.command = [&](std::string_view id) { child_commands.emplace_back(id); };
+  auto child = add_window(root, fixture.settings(), child_handlers);
+  auto& child_native = *latest;
+  child_native.menu_status = result::success();
+  CHECK(child->popup_menu({{"enabled", "Same ID, separate owner"}}).ok);
+  child_native.command("enabled");
+  CHECK(root_commands.size() == 1 && child_commands.size() == 1);
+  native.command("enabled");
+  CHECK(root_commands.size() == 2 && child_commands.size() == 1);
+
+  tray_options tray;
+  tray.label = std::string(32, 'S');
+  tray.tooltip = std::string(4096, 't');
+  tray.menu = {{"tray-only", "Tray"}, {"disabled-tray", "Disabled", false}, {"enabled", "Shared command"}};
+  CHECK(root.set_tray(tray).ok);
+  native.command("tray-only"); native.command("disabled-tray"); native.command("enabled");
+  CHECK(root_commands.size() == 4 && root_commands[2] == "tray-only");
+  const auto tray_calls = native.counts->tray_calls;
+  auto invalid = tray; invalid.label += "S"; CHECK(!root.set_tray(invalid).ok);
+  invalid = tray; invalid.label.clear(); CHECK(!root.set_tray(invalid).ok);
+  invalid = tray; invalid.tooltip += "t"; CHECK(!root.set_tray(invalid).ok);
+  invalid = tray; invalid.menu = {{"same", "One"}, {"same", "Two"}};
+  CHECK(!root.set_tray(invalid).ok);
+  CHECK(native.counts->tray_calls == tray_calls);
+  CHECK(root.clear_tray().ok);
+  native.command("tray-only"); native.command("enabled");
+  CHECK(root_commands.size() == 5 && root_commands.back() == "enabled");
+  CHECK(root.set_tray(tray_options{}).ok);  // A tray may have no menu.
+  native.menu_status = result::failure("test_menu_failure", "The platform rejected the menu.");
+  CHECK(root.popup_menu({{"failed-registration", "No action"}}).code == "test_menu_failure");
+  native.command("failed-registration");
+  CHECK(root_commands.size() == 5);
+  CHECK(child->close().ok);
+  child_native.command("enabled");
+  CHECK(child_commands.size() == 1);
+}
 }  // namespace
 
 namespace soui::desktop::detail {
@@ -384,8 +703,8 @@ std::unique_ptr<backend> make_backend() {
 }  // namespace soui::desktop::detail
 
 int main(int argc, char** argv) {
-  if (argc == 2 && std::string(argv[1]) == "--preload") {
-    std::cout << soui::desktop::detail::make_preload("test-navigation-token"); return 0;
+  if ((argc == 2 || argc == 3) && std::string(argv[1]) == "--preload") {
+    std::cout << soui::desktop::detail::make_preload(argc == 3 ? argv[2] : "test-navigation-token"); return 0;
   }
   try {
     files fixture;
@@ -394,6 +713,11 @@ int main(int argc, char** argv) {
     navigation_contract(fixture);
     callback_and_thread_contract(fixture);
     initialization_contract(fixture);
+    multiwindow_identity_contract(fixture);
+    group_lifetime_contract(fixture);
+    window_capacity_contract(fixture);
+    cross_window_callbacks_contract(fixture);
+    native_actions_contract(fixture);
   } catch (const std::exception& error) {
     ++failures; std::cerr << "Unexpected test exception: " << error.what() << '\n';
   }

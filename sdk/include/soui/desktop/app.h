@@ -1,11 +1,13 @@
 #pragma once
 
 #include <filesystem>
+#include <cstdint>
 #include <functional>
 #include <memory>
 #include <string>
 #include <string_view>
 #include <utility>
+#include <vector>
 
 namespace soui::desktop {
 
@@ -31,7 +33,28 @@ struct capabilities {
   bool directory_dialog{false};
   bool window_resize{false};
   bool window_focus{false};
+  bool popup_menu{false};
+  bool tray{false};
 };
+
+struct menu_item {
+  std::string id;
+  std::string label;
+  bool enabled{true};
+  bool checked{false};
+  bool separator{false};
+};
+
+struct tray_options {
+  // Platforms use their native application/status icon. The short label is
+  // used where the platform supports text status items.
+  std::string label{"S"};
+  std::string tooltip{"SOUI application"};
+  std::vector<menu_item> menu;
+};
+
+using window_id = std::uint64_t;
+enum class window_event { ready, closed };
 
 struct options {
   std::filesystem::path resource_root;
@@ -50,10 +73,21 @@ struct callbacks {
   std::function<void()> ready;
   std::function<void()> closed;
   std::function<void(const result&)> error;
+  // Native menu/tray actions are delivered only to this window's callback.
+  std::function<void(std::string_view command)> command;
+  std::function<void(window_id, window_event)> lifecycle;
 };
 
-// One application/main window per process. Create, call and destroy on the main
-// UI thread. Do not destroy the application from one of its callbacks.
+class application;
+struct window_result {
+  result status;
+  std::shared_ptr<application> window;
+};
+
+// One application group per process. The first application owns its event loop;
+// create_window adds independently authorized windows in that group. Keep the
+// returned window handle alive. Create/call/destroy on the main UI thread.
+// Do not destroy an application from its callbacks; close() is safe there.
 // No engine-specific types leak into this public interface.
 class application final {
  public:
@@ -64,6 +98,10 @@ class application final {
   [[nodiscard]] result initialize();
   [[nodiscard]] result run();
   [[nodiscard]] result close();
+  [[nodiscard]] result quit();
+  [[nodiscard]] window_result create_window(options settings, callbacks handlers = {});
+  [[nodiscard]] window_id id() const noexcept;
+  [[nodiscard]] std::vector<window_id> window_ids() const;
   [[nodiscard]] result navigate(const std::filesystem::path& relative_html);
   [[nodiscard]] result reload();
   [[nodiscard]] result emit(std::string_view event, std::string_view json_value);
@@ -77,9 +115,13 @@ class application final {
   [[nodiscard]] value_result clipboard_read();
   [[nodiscard]] result clipboard_write(std::string_view text);
   [[nodiscard]] value_result choose_directory();
+  [[nodiscard]] result popup_menu(const std::vector<menu_item>& items);
+  [[nodiscard]] result set_tray(const tray_options& settings);
+  [[nodiscard]] result clear_tray();
   [[nodiscard]] capabilities get_capabilities() const;
  private:
   struct implementation;
+  explicit application(std::unique_ptr<implementation>);
   std::unique_ptr<implementation> impl_;
 };
 

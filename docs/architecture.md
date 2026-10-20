@@ -7,6 +7,11 @@ WebView 后端、统一 API 和实际验收边界见 [统一桌面入口](unifie
 [ADR-0119](adr/0119-unified-system-webview-desktop.md)。以下 `Soui::Sdk` 说明仍适用
 原 Windows 路径，其历史验收不能自动转移给新入口。
 
+新入口的根 application 管理一个事件循环和至多 32 个活动窗口；子窗口独立
+持有资源根、Bridge 授权和导航代际，所有业务回调按组串行。`close` 关闭当前窗，
+`quit` 关闭整组；根析构撤销所有子窗口。原生菜单/托盘归属具体窗口而非网页，
+细节见 [ADR-0120](adr/0120-managed-desktop-windows-and-native-actions.md)。
+
 0.4 的可选现代适配器由 `sdk/renderers/webview2/` 持有，链接为 `Soui::WebView2`，通过公共 Host 和 Bridge 服务业务。基础 `Soui::Sdk` 默认不引入 Loader；现代模板由 `templates/modern-app/` 持有。环境策略与兼容应用共用 SDK，现代/兼容前端分别构建；具体边界见 [ADR-0016](adr/0016-runtime-profiles-and-modern-backend.md)。
 
 ## 三层交付

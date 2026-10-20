@@ -81,8 +81,10 @@ preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/
 `Soui::Runtime` 新增无窗口跨平台构建路径；另有独立 `Soui::Desktop` 系统
 WebView 后端和统一示例。Linux 真实头库编译链接与独立安装消费已通过，但 GUI
 环境受限，窗口/JavaScript 集成尚未验收；Windows/macOS 源码未目标编译运行。
-原有完整桌面能力、多窗口、托盘/菜单/快捷键、可访问性、Agent 及交付流程尚未
-全部迁移。矩阵/fake/VM 测试不代替实机。详见[统一桌面限制](unified-desktop.md)
+受管理多窗口、平面菜单和窗口所属托盘已有实现，仍缺目标机交互证据；Linux
+托盘依赖 XEmbed 宿主，无兼容宿主明确失败。原有完整快捷键、可访问性、Agent
+及应用安装/签名/更新流程尚未全部迁移。统一 SDK 开发 ZIP 不是正式安装器。
+矩阵/fake/VM 测试不代替实机。详见[统一桌面限制](unified-desktop.md)
 及[Runtime 范围](cross-platform.md)。
 本开发 PR 不改变既有发布与生产门槛，也不替换冻结的 0.5.0 包。
 

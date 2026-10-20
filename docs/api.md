@@ -1,5 +1,13 @@
 # SDK API
 
+## 未发布统一桌面 API
+
+独立的 `Soui::Desktop` 使用 `<soui/desktop/app.h>`，提供 `application` 窗口组、
+`create_window`、每窗口 Bridge、原生平面菜单、托盘及 command/lifecycle 回调。
+其线程、生命周期、限制和打包方式见 [统一桌面入口](unified-desktop.md)。
+这不是以下 Windows `Soui::Sdk` / TypeScript API 的逐项跨平台替代；既有行为
+和测试结论不会自动转移到新后端。
+
 ## 0.4 现代后端与环境探测
 
 可选 `Soui::WebView2` 导出 `<soui/host/webview2_host.h>`；UI STA 异步准备后使用相同 `webview_host`。`show()` 恢复隐藏视图并保留会话。公共 `<soui/host/runtime_profile.h>` 提供实际系统/PE/架构探测和候选档位选择；Web SDK 导出 `inspectSouiWebFeatures`、`requireSouiWebFeatures`。这些探测不授予原生权限，不代表目标环境认证。完整初始化、通知、关闭和部署契约见 [现代后端](modern-backend.md)。
@@ -230,3 +238,4 @@ frame_pacer::start 使用相同范围。工作台的 desktop.rendering.setTarget
 调度目标、系统配置和实际呈现是不同观测；诊断覆盖与计时器回调不证明物理刷新率。
 
 资源缓存观测允许 discardable 模式报告正的 resourceByteLimit；它是驻留记录淘汰阈值。零表示未配置，resourceEffectiveSingleLimit 仍保持独立。8 MiB 策略不代表全部图像堆或进程内存上限，详见 ADR-0102。
+

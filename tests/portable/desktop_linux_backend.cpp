@@ -50,6 +50,7 @@ gboolean watchdog(gpointer data) {
   auto& test = *static_cast<fixture*>(data);
   test.expect(false, "real WebKit backend completed before the watchdog");
   (void)test.desktop->close();
+  (void)test.desktop->quit_loop();
   return G_SOURCE_REMOVE;
 }
 
@@ -133,7 +134,7 @@ if (self === top) {
     else test.expect(false, "preload and evaluated message content");
     test.maybe_close();
   };
-  events.closed = [&] { ++test.closed; };
+  events.closed = [&] { ++test.closed; (void)test.desktop->quit_loop(); };
   events.error = [&](const soui::desktop::result& result) {
     ++test.failures;
     std::cerr << result.code << ": " << result.message << '\n';
@@ -171,7 +172,8 @@ if (self === top) {
   const auto capabilities = test.desktop->get_capabilities();
   test.expect(capabilities.backend == "webkitgtk" && capabilities.clipboard_read &&
               capabilities.clipboard_write && capabilities.directory_dialog &&
-              capabilities.window_resize && capabilities.window_focus, "native capability report");
+              capabilities.window_resize && capabilities.window_focus &&
+              capabilities.popup_menu && capabilities.tray, "native capability report");
   test.expect(test.desktop->set_title("SOUI integration \xE4\xB8\xAD\xE6\x96\x87").ok, "UTF-8 title");
   test.expect(test.desktop->resize(700, 500).ok, "native resize");
   test.expect(test.desktop->show(false).ok && test.desktop->show(true).ok, "hide and show");
@@ -245,7 +247,7 @@ window.addEventListener("DOMContentLoaded", function () {
     test.expect(test.desktop->load(test.uri, "window.__linuxPreload='fresh-generation';").ok,
                 "reload callback provides a fresh native preload");
   };
-  reload_events.closed = [&] { reload_closed = true; };
+  reload_events.closed = [&] { reload_closed = true; (void)test.desktop->quit_loop(); };
   reload_events.error = [&](const soui::desktop::result& error) {
     test.expect(false, error.message.c_str());
     (void)test.desktop->close();

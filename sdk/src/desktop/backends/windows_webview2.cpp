@@ -5,6 +5,7 @@
 #define WIN32_LEAN_AND_MEAN
 #endif
 #include <windows.h>
+#include <shellapi.h>
 #include <shlobj.h>
 #include <shobjidl.h>
 #include <wrl.h>
@@ -12,6 +13,7 @@
 
 #include "../backend.h"
 
+#include <algorithm>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
@@ -29,9 +31,14 @@ using Microsoft::WRL::ComPtr;
 constexpr wchar_t window_class[] = L"Soui.UnifiedDesktop.WebView2.v1";
 constexpr UINT dispatch_message = WM_APP + 0x491;
 constexpr UINT failure_message = WM_APP + 0x492;
+constexpr UINT tray_message = WM_APP + 0x493;
+constexpr UINT tray_icon_id = 1;
 constexpr std::size_t max_dispatch_queue = 1024;
 constexpr std::size_t max_message_characters = 65536;
 constexpr std::size_t max_clipboard_bytes = 1024 * 1024;
+// EndMenu operates on the calling thread. A nested popup belonging to another
+// window must not steal ownership of the native menu currently being tracked.
+thread_local HWND active_menu_owner = nullptr;
 
 result hresult_failure(const char* operation, HRESULT code) {
   char number[16]{};
@@ -107,6 +114,14 @@ struct global_lock {
   void* data;
 };
 
+struct popup_handle {
+  HMENU value{CreatePopupMenu()};
+  ~popup_handle() { if (value) DestroyMenu(value); }
+  popup_handle() = default;
+  popup_handle(const popup_handle&) = delete;
+  popup_handle& operator=(const popup_handle&) = delete;
+};
+
 struct state : std::enable_shared_from_this<state> {
   HWND window{nullptr};
   bool closed{false};
@@ -129,6 +144,13 @@ struct state : std::enable_shared_from_this<state> {
   ComPtr<ICoreWebView2> webview;
   ComPtr<ICoreWebView2_18> secured_webview;
   ComPtr<IFileOpenDialog> directory_dialog;
+  UINT taskbar_created_message{0};
+  bool tray_desired{false};
+  bool tray_present{false};
+  bool tray_ready{false};
+  std::uint64_t tray_revision{0};
+  std::wstring tray_tooltip;
+  std::vector<menu_item> tray_items;
 
   // Workers touch only these fields under queue_mutex. Posted messages carry no
   // pointer/ownership payload, so DestroyWindow cannot strand allocated work.
@@ -139,6 +161,197 @@ struct state : std::enable_shared_from_this<state> {
   std::deque<std::function<void()>> queue;
 
   bool active() const { return created && !closed && terminal_status.ok; }
+
+  NOTIFYICONDATAW tray_identity() const {
+    NOTIFYICONDATAW data{};
+    data.cbSize = sizeof(data);
+    data.hWnd = window;
+    // HWND + uID is the Shell identity; equal IDs on different windows do not
+    // share icons, command handlers, or mutable menu configuration.
+    data.uID = tray_icon_id;
+    return data;
+  }
+
+  result remove_tray() {
+    tray_desired = false;
+    tray_ready = false;
+    ++tray_revision;
+    tray_items.clear();
+    tray_tooltip.clear();
+    if (!tray_present) return result::success();
+    auto data = tray_identity();
+    if (!Shell_NotifyIconW(NIM_DELETE, &data))
+      return result::failure("E_TRAY_REMOVE", "Windows Shell did not confirm tray icon removal");
+    tray_present = false;
+    return result::success();
+  }
+
+  result publish_tray(const std::wstring& tooltip) {
+    auto data = tray_identity();
+    // A failed version negotiation may have left an unconfigured icon.
+    if (tray_present && !tray_ready) {
+      if (!Shell_NotifyIconW(NIM_DELETE, &data))
+        return result::failure("E_TRAY_CLEANUP", "Windows Shell refused stale tray cleanup");
+      tray_present = false;
+    }
+    data.uFlags = NIF_MESSAGE | NIF_ICON | NIF_TIP | NIF_SHOWTIP;
+    data.uCallbackMessage = tray_message;
+    // This is a shared system icon. It is never destroyed by an individual
+    // backend, and no icon file/parser or SOUI legacy dependency is required.
+    data.hIcon = LoadIconW(nullptr, MAKEINTRESOURCEW(32512));
+    if (!data.hIcon) return win32_failure("LoadIconW");
+    if (tooltip.size() >= sizeof(data.szTip) / sizeof(data.szTip[0]))
+      return result::failure("E_TRAY_TOOLTIP", "Windows tray tooltips allow 127 UTF-16 units");
+    std::copy(tooltip.begin(), tooltip.end(), data.szTip);
+    if (tray_present) {
+      if (!Shell_NotifyIconW(NIM_MODIFY, &data))
+        return result::failure("E_TRAY_UPDATE", "Windows Shell did not update the tray icon");
+      return result::success();
+    }
+    if (!Shell_NotifyIconW(NIM_ADD, &data))
+      return result::failure("E_TRAY_UNAVAILABLE",
+                             "Windows Shell notification area is unavailable or rejected the icon");
+    tray_present = true;
+    data.uVersion = NOTIFYICON_VERSION_4;
+    if (!Shell_NotifyIconW(NIM_SETVERSION, &data)) {
+      tray_present = !Shell_NotifyIconW(NIM_DELETE, &data);
+      return result::failure(tray_present ? "E_TRAY_CLEANUP" : "E_TRAY_VERSION",
+          tray_present ? "Tray version negotiation and rollback both failed" :
+                         "Windows Shell does not support the required tray event format");
+    }
+    tray_ready = true;
+    return result::success();
+  }
+
+  result update_tray(const tray_options& settings) {
+    if (!active()) return closed_error();
+    std::wstring tooltip;
+    if (settings.tooltip.find('\0') != std::string::npos ||
+        !to_wide(settings.tooltip, tooltip) || tooltip.size() > 127)
+      return result::failure("E_TRAY_TOOLTIP",
+                             "Windows tray tooltip must be UTF-8 and at most 127 UTF-16 units");
+    // Copy before calling the Shell so allocation failure cannot leave native
+    // and stored command configurations describing different successful updates.
+    auto items = settings.menu;
+    if (!taskbar_created_message) {
+      taskbar_created_message = RegisterWindowMessageW(L"TaskbarCreated");
+      if (!taskbar_created_message) return win32_failure("RegisterWindowMessageW");
+    }
+    const auto published = publish_tray(tooltip);
+    if (!published.ok) return published;
+    tray_tooltip = std::move(tooltip);
+    tray_items = std::move(items);
+    tray_desired = true;
+    ++tray_revision;
+    return result::success();
+  }
+
+  void restore_tray() {
+    // Explorer discards notification icons on restart. Keep the user's desired
+    // state, but do not pretend recovery succeeded when no Shell host accepts it.
+    tray_present = false;
+    tray_ready = false;
+    if (!active() || !tray_desired) return;
+    const auto restored = publish_tray(tray_tooltip);
+    if (!restored.ok) report(restored);
+  }
+
+  result show_menu(const std::vector<menu_item>& items, POINT position,
+                   std::uint64_t expected_tray_revision = 0) {
+    if (!active()) return closed_error();
+    if (items.empty() || items.size() > 64)
+      return result::failure("E_MENU_ITEMS", "A popup menu requires between 1 and 64 items");
+    if (active_menu_owner)
+      return result::failure("E_BUSY", "Another native popup menu is already active");
+    const auto snapshot = items;
+    popup_handle menu;
+    if (!menu.value) return win32_failure("CreatePopupMenu");
+    for (std::size_t i = 0; i < snapshot.size(); ++i) {
+      const auto& item = snapshot[i];
+      if (item.separator) {
+        if (!AppendMenuW(menu.value, MF_SEPARATOR, 0, nullptr))
+          return win32_failure("AppendMenuW");
+        continue;
+      }
+      std::wstring label;
+      if (item.label.find('\0') != std::string::npos || !to_wide(item.label, label))
+        return result::failure("E_MENU_LABEL", "A menu label is not valid UTF-8");
+      std::wstring literal;
+      literal.reserve(label.size());
+      for (const wchar_t character : label) {
+        literal += character;
+        if (character == L'&') literal += L'&';
+      }
+      const UINT flags = MF_STRING | (item.enabled ? MF_ENABLED : MF_GRAYED) |
+                         (item.checked ? MF_CHECKED : MF_UNCHECKED);
+      if (!AppendMenuW(menu.value, flags, static_cast<UINT_PTR>(i + 1), literal.c_str()))
+        return win32_failure("AppendMenuW");
+    }
+    const HWND owner = window;
+    if (GetForegroundWindow() != owner && !SetForegroundWindow(owner) &&
+        GetForegroundWindow() != owner)
+      return result::failure("E_FOCUS", "Windows refused foreground activation for the popup");
+    active_menu_owner = owner;
+    SetLastError(ERROR_SUCCESS);
+    const UINT command = static_cast<UINT>(TrackPopupMenuEx(
+        menu.value, TPM_RETURNCMD | TPM_NONOTIFY | TPM_RIGHTBUTTON |
+        (GetSystemMetrics(SM_MENUDROPALIGNMENT) ? TPM_RIGHTALIGN : TPM_LEFTALIGN),
+        position.x, position.y, owner, nullptr));
+    const DWORD track_error = command ? ERROR_SUCCESS : GetLastError();
+    active_menu_owner = nullptr;
+    // Required for reliable dismissal when opened from a notification icon.
+    if (IsWindow(owner)) PostMessageW(owner, WM_NULL, 0, 0);
+    if (!active()) return closed_error();
+    if (expected_tray_revision &&
+        (!tray_ready || !tray_desired || tray_revision != expected_tray_revision))
+      return result::success();
+    if (expected_tray_revision) {
+      auto data = tray_identity();
+      Shell_NotifyIconW(NIM_SETFOCUS, &data);
+    }
+    if (!command) {
+      // TPM_RETURNCMD uses zero for both dismissal and failure. Do not claim a
+      // command ran; preserve a supplied error and otherwise finish with none.
+      return track_error ? hresult_failure("TrackPopupMenuEx", HRESULT_FROM_WIN32(track_error)) :
+                           result::success();
+    }
+    if (command > snapshot.size() || !snapshot[command - 1].enabled ||
+        snapshot[command - 1].separator)
+      return result::failure("E_MENU_COMMAND", "Windows returned an invalid menu command");
+    const std::weak_ptr<state> weak = shared_from_this();
+    return enqueue([weak, expected_tray_revision, id = snapshot[command - 1].id] {
+      if (const auto self = weak.lock(); self && self->active() && self->events.command &&
+          (!expected_tray_revision || (self->tray_desired && self->tray_ready &&
+                                      self->tray_revision == expected_tray_revision)))
+        self->events.command(id);
+    });
+  }
+
+  void open_tray_menu() {
+    if (!active() || !tray_desired || !tray_ready || tray_items.empty()) return;
+    POINT position{};
+    NOTIFYICONIDENTIFIER identity{};
+    identity.cbSize = sizeof(identity);
+    identity.hWnd = window;
+    identity.uID = tray_icon_id;
+    RECT icon_bounds{};
+    if (SUCCEEDED(Shell_NotifyIconGetRect(&identity, &icon_bounds))) {
+      position = {icon_bounds.left, icon_bounds.bottom};
+    } else if (!GetCursorPos(&position)) {
+      report(win32_failure("GetCursorPos"));
+      return;
+    }
+    const auto revision = tray_revision;
+    const std::weak_ptr<state> weak = shared_from_this();
+    const auto queued = enqueue([weak, revision, position] {
+      if (const auto self = weak.lock(); self && self->active() && self->tray_ready &&
+          self->tray_desired && self->tray_revision == revision) {
+        const auto displayed = self->show_menu(self->tray_items, position, revision);
+        if (!displayed.ok && self->active()) self->report(displayed);
+      }
+    });
+    if (!queued.ok) report(queued);
+  }
 
   result enqueue(std::function<void()> work) {
     if (!work) return result::failure("E_ARGUMENT", "The dispatched callback is empty");
@@ -226,8 +439,8 @@ struct state : std::enable_shared_from_this<state> {
     shutdown(true);
   }
 
-  void shutdown(bool notify) {
-    if (closed) return;
+  result shutdown(bool notify, bool destroy_window = true) {
+    if (closed) return result::success();
     closed = true;  // Revoke all async completions before releasing COM objects.
     ++generation;
     std::deque<std::function<void()>> discarded;
@@ -239,7 +452,10 @@ struct state : std::enable_shared_from_this<state> {
       discarded.swap(queue);
     }
     auto on_closed = notify ? std::move(events.closed) : std::function<void()>{};
+    auto on_error = notify ? std::move(events.error) : std::function<void(result)>{};
     events = {};
+    if (active_menu_owner == window) EndMenu();
+    const auto tray_removed = remove_tray();
     if (directory_dialog) directory_dialog->Close(HRESULT_FROM_WIN32(ERROR_CANCELLED));
     directory_dialog.Reset();
     if (webview) webview->Stop();
@@ -250,10 +466,14 @@ struct state : std::enable_shared_from_this<state> {
     environment.Reset();
     const HWND old_window = window;
     window = nullptr;
-    if (old_window && IsWindow(old_window)) DestroyWindow(old_window);
+    if (destroy_window && old_window && IsWindow(old_window)) DestroyWindow(old_window);
+    if (!tray_removed.ok && on_error) {
+      try { on_error(tray_removed); } catch (...) {}
+    }
     if (on_closed) {
       try { on_closed(); } catch (...) {}
     }
+    return tray_removed;
   }
 
   void update_bounds() {
@@ -530,14 +750,17 @@ LRESULT CALLBACK window_procedure(HWND window, UINT message, WPARAM wparam, LPAR
   }
   if (!self) return DefWindowProcW(window, message, wparam, lparam);
   try {
+    if (self->taskbar_created_message && message == self->taskbar_created_message) {
+      self->restore_tray();
+      return 0;
+    }
     switch (message) {
       case WM_CLOSE:
         self->shutdown(true);
         return 0;
       case WM_DESTROY:
         // Also handle destruction initiated by the owning native application.
-        self->window = nullptr;
-        self->shutdown(true);
+        self->shutdown(true, false);
         return 0;
       case WM_NCDESTROY:
         SetWindowLongPtrW(window, GWLP_USERDATA, 0);
@@ -570,6 +793,17 @@ LRESULT CALLBACK window_procedure(HWND window, UINT message, WPARAM wparam, LPAR
         return 0;
       case failure_message:
         self->finish_failure();
+        return 0;
+      case tray_message:
+        if (HIWORD(lparam) == tray_icon_id &&
+            (LOWORD(lparam) == WM_CONTEXTMENU || LOWORD(lparam) == NIN_SELECT ||
+             LOWORD(lparam) == NIN_KEYSELECT))
+          self->open_tray_menu();
+        return 0;
+      case WM_QUERYENDSESSION:
+        return TRUE;
+      case WM_ENDSESSION:
+        if (wparam && self->events.quit_requested) self->events.quit_requested();
         return 0;
       default:
         break;
@@ -616,6 +850,10 @@ class windows_backend final : public backend {
     if (creation_attempted_ || state_->closed)
       return result::failure("E_STATE", "The desktop backend can only be created once");
     creation_attempted_ = true;
+    owner_thread_ = GetCurrentThreadId();
+    // Root run() can outlive its own HWND. Retain only this group-level callback
+    // independently; ordinary window callbacks are revoked by state::shutdown.
+    quit_requested_ = events.quit_requested;
     HRESULT hr = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
     if (FAILED(hr))
       return hresult_failure("CoInitializeEx (WebView2 requires an STA UI thread)", hr);
@@ -641,6 +879,8 @@ class windows_backend final : public backend {
     type.hInstance = GetModuleHandleW(nullptr);
     type.lpfnWndProc = window_procedure;
     type.hCursor = LoadCursorW(nullptr, MAKEINTRESOURCEW(32512));
+    type.hIcon = LoadIconW(nullptr, MAKEINTRESOURCEW(32512));
+    type.hIconSm = type.hIcon;
     type.hbrBackground = reinterpret_cast<HBRUSH>(COLOR_WINDOW + 1);
     type.lpszClassName = window_class;
     if (!RegisterClassExW(&type) && GetLastError() != ERROR_CLASS_ALREADY_EXISTS)
@@ -781,16 +1021,23 @@ class windows_backend final : public backend {
 
   result run() override {
     if (!state_->created) return closed_error();
+    if (loop_running_) return result::failure("E_STATE", "The desktop loop is already running");
+    if (quit_loop_requested_) return state_->terminal_status;
+    loop_running_ = true;
+    struct running_guard {
+      bool& running;
+      ~running_guard() { running = false; }
+    } reset{loop_running_};
     MSG message{};
-    while (!state_->closed) {
+    while (!quit_loop_requested_) {
       const BOOL received = GetMessageW(&message, nullptr, 0, 0);
       if (received == -1) {
         const result failure = win32_failure("GetMessageW");
-        state_->shutdown(true);
+        request_group_quit();
         return failure;
       }
       if (!received) {
-        state_->shutdown(true);
+        request_group_quit();
         break;
       }
       TranslateMessage(&message);
@@ -799,9 +1046,18 @@ class windows_backend final : public backend {
     return state_->terminal_status;
   }
 
-  result close() override {
-    state_->shutdown(true);
+  result quit_loop() override {
+    if (quit_loop_requested_) return result::success();
+    quit_loop_requested_ = true;
+    // A thread message remains valid after the root window has closed. Do not
+    // use WM_QUIT: an unconsumed quit could poison a later application group.
+    if (loop_running_ && !PostThreadMessageW(owner_thread_, WM_NULL, 0, 0))
+      return win32_failure("PostThreadMessageW");
     return result::success();
+  }
+
+  result close() override {
+    return state_->shutdown(true);
   }
 
   result evaluate(std::string script) override {
@@ -972,14 +1228,48 @@ class windows_backend final : public backend {
     return {result::success(), std::move(value)};
   }
 
+  result popup_menu(const std::vector<menu_item>& items) override {
+    if (!state_->active()) return closed_error();
+    if (!IsWindowVisible(state_->window))
+      return result::failure("E_WINDOW_HIDDEN", "Show the owning window before opening its popup menu");
+    POINT position{};
+    if (!GetCursorPos(&position)) return win32_failure("GetCursorPos");
+    return state_->show_menu(items, position);
+  }
+
+  result set_tray(const tray_options& settings) override {
+    return state_->update_tray(settings);
+  }
+
+  result clear_tray() override {
+    if (!state_->active()) return closed_error();
+    return state_->remove_tray();
+  }
+
   capabilities get_capabilities() const override {
-    return {"webview2", true, true, true, true, true};
+    return {"webview2", true, true, true, true, true, true, true};
   }
 
  private:
+  void request_group_quit() {
+    // WM_QUIT and a broken message pump are process-loop events, not a request
+    // to close just the root HWND. The common layer owns closing every member.
+    quit_loop_requested_ = true;
+    if (quit_requested_) {
+      try { quit_requested_(); }
+      catch (...) { state_->shutdown(true); }
+    } else {
+      state_->shutdown(true);
+    }
+  }
+
   std::shared_ptr<state> state_;
   bool creation_attempted_{false};
   bool com_initialized_{false};
+  bool loop_running_{false};
+  bool quit_loop_requested_{false};
+  DWORD owner_thread_{0};
+  std::function<void()> quit_requested_;
 };
 
 }  // namespace

@@ -1,5 +1,9 @@
 # 测试与验收
 
+统一桌面开发包工具回归：`node --test tests/desktop/package.test.cjs`。它验证参数、
+目标身份、步骤失败中断、拒绝覆盖/链接和散列，不以模拟命令冒充真实编译。
+完整构建/CTest/安装/压缩入口及平台限制见 [统一桌面入口](unified-desktop.md)。
+
 [当前发布修复记录](../verification/production-validation/0.5-release-fixes-2026-10-16/README.md)保存两架构 UIA 专项、实际读屏文本与表单操作、有限资源校准及依赖审计；最终公开构建和交付物另行验证。
 
 可选 UIA 的 `owner-sync`、`owner-focus`、`uia-mutations` 和 `uia-focus` 覆盖窗口线程及真实 Windows UIAutomationCore 同步操作。各用例按 CTest 注册在独立进程运行；前序 UIA 客户端可能建立进程 MTA，不能把同进程 `all` 的 COM 初始化状态当作独立用例。填写与选择分别计数，Windows 可能另外请求焦点；每次业务仍须经过授权。

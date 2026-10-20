@@ -14,10 +14,12 @@ if (!window.souiDesktop) {
   document.getElementById('status').textContent = 'Open this page with the native example executable.';
 } else {
   window.souiDesktop.on('native.ready', value => record('native.ready', value));
+  window.souiDesktop.on('native.command', value => record('native.command', value));
   invoke('app.capabilities').then(caps => {
     document.getElementById('status').textContent = `${caps.backend} / local Bridge connected`;
     document.getElementById('dot').classList.add('connected');
-    for (const [action, available] of [['copy', caps.clipboardWrite], ['paste', caps.clipboardRead], ['directory', caps.directoryDialog]])
+    for (const [action, available] of [['copy', caps.clipboardWrite], ['paste', caps.clipboardRead],
+      ['directory', caps.directoryDialog], ['menu', caps.popupMenu], ['tray', caps.tray], ['clearTray', caps.tray]])
       document.querySelector(`[data-action="${action}"]`).disabled = !available;
   }).catch(() => {});
   const actions = {
@@ -28,6 +30,12 @@ if (!window.souiDesktop) {
     paste: () => invoke('clipboard.read'),
     directory: () => invoke('directory.choose'),
     reload: () => invoke('app.reload'),
+    create: () => invoke('window.create'),
+    close: () => invoke('window.close'),
+    menu: () => invoke('window.menu'),
+    tray: () => invoke('window.tray'),
+    clearTray: () => invoke('window.clearTray'),
+    quit: () => invoke('app.quit'),
   };
   for (const button of document.querySelectorAll('[data-action]')) button.addEventListener('click', () => {
     const action = actions[button.dataset.action];

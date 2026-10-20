@@ -11,6 +11,7 @@
 #include <exception>
 #include <memory>
 #include <mutex>
+#include <set>
 #include <system_error>
 #include <utility>
 
@@ -29,6 +30,23 @@ using soui::desktop::result;
 using soui::desktop::value_result;
 
 struct macos_state;
+// AppKit has one application per process. A managed window group owns these
+// controls once; closing its root window must not remove them from its children.
+struct macos_application {
+  NSApplication* application{nil};
+  id delegate{nil};
+  NSMenu* previous_menu{nil};
+  NSMenu* installed_menu{nil};
+  NSApplicationActivationPolicy previous_activation{NSApplicationActivationPolicyProhibited};
+  std::function<void()> request_quit;
+  bool controls_installed{false};
+  bool running{false};
+  bool quit_requested{false};
+  bool retired{false};
+  std::size_t modal_depth{0};
+};
+std::weak_ptr<macos_application> current_application;
+
 enum class job_kind { native_work, message, notification, terminal };
 struct ui_job {
   job_kind kind;
@@ -43,8 +61,7 @@ struct macos_state {
   std::atomic<bool> accepting_work{false};
   std::atomic<bool> terminal_failure{false};
   bool created{false};
-  bool running{false};
-  bool owns_application{false};
+  bool loop_owner{false};
   bool native_navigation_ticket{false};
   bool native_provisional_authorized{false};
   bool document_committed{false};
@@ -56,16 +73,18 @@ struct macos_state {
   std::size_t message_jobs{0};
   bool drain_scheduled{false};
   backend_events events;
-  NSApplication* application{nil};
+  std::shared_ptr<macos_application> application_group;
   NSWindow* window{nil};
   WKWebView* webview{nil};
   WKNavigation* navigation{nil};
   NSURL* resource_root{nil};
   NSOpenPanel* directory_panel{nil};
   id delegate{nil};
-  NSMenu* previous_menu{nil};
-  NSMenu* installed_menu{nil};
-  NSApplicationActivationPolicy previous_activation{NSApplicationActivationPolicyProhibited};
+  NSMenu* popup{nil};
+  NSStatusItem* tray{nil};
+  NSMenu* tray_menu{nil};
+  std::uint64_t popup_generation{0};
+  std::uint64_t tray_generation{0};
 };
 
 NSString* cocoa_string(std::string_view text) {
@@ -235,9 +254,26 @@ bool is_fragment_navigation(const std::shared_ptr<macos_state>& state,
   return from && to && !same_fragment && [from.URL isEqual:to.URL];
 }
 
-void stop_event_loop(const std::shared_ptr<macos_state>& state) {
-  if (!state->running || !state->application) return;
-  [state->application stop:nil];
+void restore_application(const std::shared_ptr<macos_application>& group) {
+  if (!group || !group->quit_requested || group->running || group->modal_depth ||
+      group->retired) return;
+  if (group->controls_installed) {
+    if (group->application.delegate == group->delegate) group->application.delegate = nil;
+    if (group->application.mainMenu == group->installed_menu)
+      group->application.mainMenu = group->previous_menu;
+    [group->application setActivationPolicy:group->previous_activation];
+    group->controls_installed = false;
+  }
+  group->delegate = nil;
+  group->installed_menu = nil;
+  group->previous_menu = nil;
+  group->request_quit = {};
+  group->retired = true;
+}
+
+void stop_event_loop(const std::shared_ptr<macos_application>& group) {
+  if (!group || !group->quit_requested || !group->running || !group->application) return;
+  [group->application stop:nil];
   // stop: alone does not wake NSApplication when invoked from a dispatch block
   // or a WebKit completion rather than an NSEvent.
   NSEvent* wake = [NSEvent otherEventWithType:NSEventTypeApplicationDefined
@@ -249,7 +285,16 @@ void stop_event_loop(const std::shared_ptr<macos_state>& state) {
                                     subtype:0
                                       data1:0
                                       data2:0];
-  [state->application postEvent:wake atStart:YES];
+  [group->application postEvent:wake atStart:YES];
+}
+
+void remove_tray(const std::shared_ptr<macos_state>& state) {
+  ++state->tray_generation;
+  [state->tray_menu cancelTrackingWithoutAnimation];
+  state->tray.menu = nil;
+  if (state->tray) [[NSStatusBar systemStatusBar] removeStatusItem:state->tray];
+  state->tray = nil;
+  state->tray_menu = nil;
 }
 
 void shut_down(const std::shared_ptr<macos_state>& state, bool notify) {
@@ -263,12 +308,14 @@ void shut_down(const std::shared_ptr<macos_state>& state, bool notify) {
   auto callbacks = std::move(state->events);
   state->events = {};
 
-  // Invalidate the common host/session before releasing either native object.
-  if (was_live && notify && callbacks.closed) {
-    try { callbacks.closed(); } catch (...) {}
-  }
+  // Native callbacks are already revoked above. Cancel native tracking before
+  // notifying the group: its last-window handler may restore process menus.
   [state->directory_panel cancel:nil];
   state->directory_panel = nil;
+  [state->popup cancelTrackingWithoutAnimation];
+  ++state->popup_generation;
+  state->popup = nil;
+  remove_tray(state);
   [state->webview stopLoading];
   state->webview.navigationDelegate = nil;
   state->webview.UIDelegate = nil;
@@ -283,17 +330,10 @@ void shut_down(const std::shared_ptr<macos_state>& state, bool notify) {
   state->webview = nil;
   state->window = nil;
   state->resource_root = nil;
-  if (state->owns_application) {
-    if (state->application.delegate == state->delegate) state->application.delegate = nil;
-    if (state->application.mainMenu == state->installed_menu)
-      state->application.mainMenu = state->previous_menu;
-    [state->application setActivationPolicy:state->previous_activation];
-    state->owns_application = false;
-  }
   state->delegate = nil;
-  state->installed_menu = nil;
-  state->previous_menu = nil;
-  stop_event_loop(state);
+  if (was_live && notify && callbacks.closed) {
+    try { callbacks.closed(); } catch (...) {}
+  }
 }
 
 result require_main_thread() {
@@ -311,7 +351,7 @@ result require_open(const std::shared_ptr<macos_state>& state) {
   return result::success();
 }
 
-NSMenu* application_menu(NSWindow* window) {
+NSMenu* application_menu() {
   NSMenu* menu = [[NSMenu alloc] initWithTitle:@""];
   NSMenuItem* app_item = [[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""];
   NSMenu* app_menu = [[NSMenu alloc] initWithTitle:@"Application"];
@@ -337,7 +377,8 @@ NSMenu* application_menu(NSWindow* window) {
   NSMenuItem* window_item = [[NSMenuItem alloc] initWithTitle:@"Window" action:NULL keyEquivalent:@""];
   NSMenu* window_menu = [[NSMenu alloc] initWithTitle:@"Window"];
   NSMenuItem* close = [window_menu addItemWithTitle:@"Close" action:@selector(performClose:) keyEquivalent:@"w"];
-  close.target = window;
+  // The responder chain selects the current key window, not the closed root.
+  close.target = nil;
   window_item.submenu = window_menu;
   [menu addItem:window_item];
   return menu;
@@ -346,12 +387,48 @@ NSMenu* application_menu(NSWindow* window) {
 }  // namespace
 
 @interface SOUIDesktopWKDelegate : NSObject
-    <NSApplicationDelegate, NSWindowDelegate, WKNavigationDelegate,
+    <NSWindowDelegate, WKNavigationDelegate,
      WKUIDelegate, WKScriptMessageHandler> {
  @private
   std::weak_ptr<macos_state> _state;
 }
 - (instancetype)initWithState:(const std::shared_ptr<macos_state>&)state;
+- (void)onNativeMenuCommand:(NSMenuItem*)sender;
+@end
+
+@interface SOUIDesktopApplicationDelegate : NSObject <NSApplicationDelegate> {
+ @private
+  std::weak_ptr<macos_application> _group;
+}
+- (instancetype)initWithGroup:(const std::shared_ptr<macos_application>&)group;
+@end
+
+@implementation SOUIDesktopApplicationDelegate
+- (instancetype)initWithGroup:(const std::shared_ptr<macos_application>&)group {
+  self = [super init];
+  if (self) _group = group;
+  return self;
+}
+
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)sender {
+  auto group = _group.lock();
+  if (group && sender == group->application && !group->quit_requested) {
+    // Leave the AppKit delegate stack before common code closes every window.
+    const std::weak_ptr<macos_application> weak_group = group;
+    schedule_main_block([weak_group] {
+      auto live = weak_group.lock();
+      if (!live || live->quit_requested || live->retired) return;
+      const auto callback = live->request_quit;
+      if (callback) { try { callback(); } catch (...) {} }
+    });
+  }
+  // Return from application::run() so C++ destructors run; never call exit().
+  return NSTerminateCancel;
+}
+
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)sender {
+  return NO;
+}
 @end
 
 @implementation SOUIDesktopWKDelegate
@@ -373,15 +450,30 @@ NSMenu* application_menu(NSWindow* window) {
   if (state && notification.object == state->window) shut_down(state, true);
 }
 
-- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication*)sender {
-  auto state = _state.lock();
-  if (state && sender == state->application) shut_down(state, true);
-  // Return from application::run() so C++ destructors run; never call exit().
-  return NSTerminateCancel;
-}
-
-- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication*)sender {
-  return NO;
+- (void)onNativeMenuCommand:(NSMenuItem*)sender {
+  try {
+    auto state = _state.lock();
+    if (!is_live(state) || !sender.enabled ||
+        (sender.menu != state->popup && sender.menu != state->tray_menu) ||
+        ![sender.representedObject isKindOfClass:[NSString class]]) return;
+    const auto command = utf8_string((NSString*)sender.representedObject);
+    const bool tray = sender.menu == state->tray_menu;
+    const auto generation = tray ? state->tray_generation : state->popup_generation;
+    // Commands belong to the native window lifetime, not a renderer generation.
+    const auto status = enqueue_job(state, {job_kind::native_work, 0,
+        [command, tray, generation](const std::shared_ptr<macos_state>& live) {
+      if (generation != (tray ? live->tray_generation : live->popup_generation)) return;
+      const auto callback = live->events.command;
+      if (callback) {
+        try { callback(command); }
+        catch (...) { report_error(live, result::failure("E_CALLBACK", "Menu callback failed")); }
+      }
+    }});
+    if (!status.ok) report_error(state, status);
+  } catch (...) {
+    if (auto state = _state.lock())
+      report_error(state, result::failure("E_CALLBACK", "Could not queue native menu command"));
+  }
 }
 
 - (void)userContentController:(WKUserContentController*)controller
@@ -591,6 +683,51 @@ NSMenu* application_menu(NSWindow* window) {
 namespace soui::desktop::detail {
 namespace {
 
+// Nested AppKit loops can consume stop:. Repeat it after the final modal loop
+// unwinds, and do not restore process-global menus/delegates while they run.
+struct modal_guard {
+  std::shared_ptr<macos_application> group;
+  explicit modal_guard(std::shared_ptr<macos_application> value) : group(std::move(value)) {
+    ++group->modal_depth;
+  }
+  ~modal_guard() {
+    --group->modal_depth;
+    stop_event_loop(group);
+    restore_application(group);
+  }
+};
+
+NSMenu* make_native_menu(const std::vector<menu_item>& items, id target, bool allow_empty) {
+  if (items.size() > 64 || (!allow_empty && items.empty())) return nil;
+  NSMenu* menu = [[NSMenu alloc] initWithTitle:@""];
+  menu.autoenablesItems = NO;
+  std::set<std::string> ids;
+  for (const auto& item : items) {
+    if (item.separator) {
+      [menu addItem:[NSMenuItem separatorItem]];
+      continue;
+    }
+    NSString* label = cocoa_string(item.label);
+    NSString* command = cocoa_string(item.id);
+    if (item.id.empty() || item.id.size() > 64 || item.label.empty() ||
+        item.label.size() > 4096 || !label || !command || !ids.insert(item.id).second)
+      return nil;
+    for (unsigned char character : item.id)
+      if (!((character >= 'a' && character <= 'z') ||
+            (character >= 'A' && character <= 'Z') ||
+            (character >= '0' && character <= '9') ||
+            character == '.' || character == '_' || character == '-')) return nil;
+    NSMenuItem* native = [[NSMenuItem alloc] initWithTitle:label
+        action:@selector(onNativeMenuCommand:) keyEquivalent:@""];
+    native.target = target;
+    native.representedObject = command;
+    native.enabled = item.enabled;
+    native.state = item.checked ? NSControlStateValueOn : NSControlStateValueOff;
+    [menu addItem:native];
+  }
+  return menu;
+}
+
 class wkwebview_backend final : public backend {
  public:
   wkwebview_backend() : state_(std::make_shared<macos_state>()) {}
@@ -601,9 +738,23 @@ class wkwebview_backend final : public backend {
     state_->accepting_work.store(false, std::memory_order_release);
     const auto state = state_;
     if ([NSThread isMainThread]) {
-      @autoreleasepool { shut_down(state, false); }
+      @autoreleasepool {
+        shut_down(state, false);
+        if (state->loop_owner && state->application_group) {
+          state->application_group->quit_requested = true;
+          stop_event_loop(state->application_group);
+          restore_application(state->application_group);
+        }
+      }
     } else {
-      schedule_main_block([state] { shut_down(state, false); });
+      schedule_main_block([state] {
+        shut_down(state, false);
+        if (state->loop_owner && state->application_group) {
+          state->application_group->quit_requested = true;
+          stop_event_loop(state->application_group);
+          restore_application(state->application_group);
+        }
+      });
     }
   }
 
@@ -627,15 +778,30 @@ class wkwebview_backend final : public backend {
         if (!title || !root_path)
           return result::failure("E_UTF8", "Title and resource root must be valid UTF-8");
         NSApplication* app = [NSApplication sharedApplication];
-        if (app.isRunning || app.delegate)
-          return result::failure("E_APPLICATION_IN_USE",
-              "Soui::Desktop requires ownership of the macOS application event loop");
-        state_->application = app;
-        state_->previous_activation = app.activationPolicy;
-        state_->previous_menu = app.mainMenu;
-        if (![app setActivationPolicy:NSApplicationActivationPolicyRegular])
-          return result::failure("E_APPLICATION", "Could not activate a regular macOS application");
-        state_->owns_application = true;
+        auto group = current_application.lock();
+        if (group && group->retired) group.reset();
+        if (!group) {
+          if (app.isRunning || app.delegate)
+            return result::failure("E_APPLICATION_IN_USE",
+                "Soui::Desktop requires ownership of the macOS application event loop");
+          group = std::make_shared<macos_application>();
+          group->application = app;
+          group->previous_activation = app.activationPolicy;
+          group->previous_menu = app.mainMenu;
+          if (![app setActivationPolicy:NSApplicationActivationPolicyRegular])
+            return result::failure("E_APPLICATION", "Could not activate a regular macOS application");
+          group->delegate = [[SOUIDesktopApplicationDelegate alloc] initWithGroup:group];
+          group->installed_menu = application_menu();
+          group->request_quit = events.quit_requested;
+          group->controls_installed = true;
+          app.mainMenu = group->installed_menu;
+          app.delegate = group->delegate;
+          current_application = group;
+          state_->loop_owner = true;
+        } else if (group->quit_requested || app.delegate != group->delegate) {
+          return result::failure("E_APPLICATION_IN_USE", "The macOS application group is unavailable");
+        }
+        state_->application_group = group;
         state_->events = std::move(events);
         state_->resource_root = [NSURL fileURLWithPath:root_path isDirectory:YES];
         SOUIDesktopWKDelegate* delegate = [[SOUIDesktopWKDelegate alloc] initWithState:state_];
@@ -653,6 +819,10 @@ class wkwebview_backend final : public backend {
         state_->webview = [[WKWebView alloc] initWithFrame:rect configuration:config];
         if (!state_->window || !state_->webview || !state_->delegate) {
           shut_down(state_, false);
+          if (state_->loop_owner) {
+            group->quit_requested = true;
+            restore_application(group);
+          }
           return result::failure("E_WEBVIEW_CREATE", "Could not create the native WKWebView window");
         }
         state_->webview.autoresizingMask = NSViewWidthSizable | NSViewHeightSizable;
@@ -662,9 +832,6 @@ class wkwebview_backend final : public backend {
         state_->window.title = title;
         state_->window.delegate = delegate;
         [state_->window center];
-        state_->installed_menu = application_menu(state_->window);
-        app.mainMenu = state_->installed_menu;
-        app.delegate = delegate;
         state_->created = true;
         state_->accepting_work.store(true, std::memory_order_release);
         if (settings.visible) {
@@ -712,17 +879,36 @@ class wkwebview_backend final : public backend {
   }
 
   result run() override {
-    auto open = require_open(state_);
-    if (!open.ok) return open;
-    if (state_->running || state_->application.isRunning)
+    auto thread = require_main_thread();
+    if (!thread.ok) return thread;
+    const auto group = state_->application_group;
+    if (!state_->created || !state_->loop_owner || !group)
+      return result::failure("E_STATE", "Only the initialized application owner can run the loop");
+    if (group->quit_requested) return result::success();
+    if (group->running || group->application.isRunning)
       return result::failure("E_STATE", "The macOS event loop is already running");
     @autoreleasepool {
-      state_->running = true;
-      [state_->application run];
-      state_->running = false;
-      // An external stop must not leave the common host appearing live.
-      if (is_live(state_)) shut_down(state_, true);
+      group->running = true;
+      [group->application run];
+      group->running = false;
+      if (!group->quit_requested) {
+        const auto callback = group->request_quit;
+        if (callback) { try { callback(); } catch (...) {} }
+        group->quit_requested = true;
+      }
+      restore_application(group);
     }
+    return result::success();
+  }
+
+  result quit_loop() override {
+    auto thread = require_main_thread();
+    if (!thread.ok) return thread;
+    const auto group = state_->application_group;
+    if (!group) return result::failure("E_STATE", "The application has not been initialized");
+    group->quit_requested = true;
+    stop_event_loop(group);
+    restore_application(group);
     return result::success();
   }
 
@@ -797,7 +983,7 @@ class wkwebview_backend final : public backend {
     [state_->window deminiaturize:nil];
     [state_->window makeKeyAndOrderFront:nil];
     [state_->window makeFirstResponder:state_->webview];
-    [state_->application activateIgnoringOtherApps:YES];
+    [state_->application_group->application activateIgnoringOtherApps:YES];
     return result::success();
   }
 
@@ -852,11 +1038,11 @@ class wkwebview_backend final : public backend {
       panel.resolvesAliases = YES;
       panel.title = @"Choose a directory";
       state->directory_panel = panel;
+      modal_guard guard(state->application_group);
       const auto response = [panel runModal];
       if (state->directory_panel == panel) state->directory_panel = nil;
       if (!is_live(state)) {
         // stop: called inside runModal may stop that loop rather than run().
-        stop_event_loop(state);
         return {result::failure("E_CLOSED", "The window closed while choosing a directory"), {}};
       }
       if (response != NSModalResponseOK)
@@ -873,8 +1059,61 @@ class wkwebview_backend final : public backend {
     }
   }
 
+  result popup_menu(const std::vector<menu_item>& items) override {
+    auto open = require_open(state_);
+    if (!open.ok) return open;
+    if (state_->application_group->modal_depth)
+      return result::failure("E_BUSY", "A native modal operation is already active");
+    if (!state_->window.visible)
+      return result::failure("E_WINDOW_HIDDEN", "Show the owning window before opening a popup");
+    @autoreleasepool {
+      NSMenu* menu = make_native_menu(items, state_->delegate, false);
+      if (!menu) return result::failure("E_ARGUMENT", "Invalid native menu items");
+      [state_->popup cancelTrackingWithoutAnimation];
+      ++state_->popup_generation;
+      state_->popup = menu;
+      modal_guard guard(state_->application_group);
+      [menu popUpMenuPositioningItem:nil atLocation:NSMakePoint(0, state_->webview.bounds.size.height)
+                             inView:state_->webview];
+      if (!is_live(state_)) return result::failure("E_CLOSED", "The owning window closed");
+      return result::success();
+    }
+  }
+
+  result set_tray(const tray_options& settings) override {
+    auto open = require_open(state_);
+    if (!open.ok) return open;
+    @autoreleasepool {
+      NSString* label = cocoa_string(settings.label);
+      NSString* tooltip = cocoa_string(settings.tooltip);
+      NSMenu* menu = make_native_menu(settings.menu, state_->delegate, true);
+      if (!label || !label.length || settings.label.size() > 256 || !tooltip ||
+          settings.tooltip.size() > 4096 || !menu)
+        return result::failure("E_ARGUMENT", "Invalid native tray options");
+      NSStatusItem* tray = [[NSStatusBar systemStatusBar] statusItemWithLength:NSVariableStatusItemLength];
+      if (!tray || !tray.button) {
+        if (tray) [[NSStatusBar systemStatusBar] removeStatusItem:tray];
+        return result::failure("E_TRAY_UNAVAILABLE", "AppKit did not create a status item");
+      }
+      tray.button.title = label;
+      tray.button.toolTip = tooltip;
+      tray.menu = menu;
+      remove_tray(state_);
+      state_->tray = tray;
+      state_->tray_menu = menu;
+      return result::success();
+    }
+  }
+
+  result clear_tray() override {
+    auto open = require_open(state_);
+    if (!open.ok) return open;
+    @autoreleasepool { remove_tray(state_); }
+    return result::success();
+  }
+
   capabilities get_capabilities() const override {
-    return {"wkwebview", true, true, true, true, true};
+    return {"wkwebview", true, true, true, true, true, true, true};
   }
 
  private:

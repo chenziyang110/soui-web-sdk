@@ -17,6 +17,10 @@ struct backend_events {
   // first, then queued here. Common code creates a fresh token before a native
   // load. Never allow a new document to inherit an earlier preload/session.
   std::function<void()> reload;
+  // Native menu/tray callbacks. Never route commands between backend instances.
+  std::function<void(std::string_view command)> command;
+  // OS-level application quit, distinct from closing one native window.
+  std::function<void()> quit_requested;
   // Only the current native-selected document (plus a fragment) is admissible.
   std::function<bool(std::string_view uri)> allow_navigation;
 };
@@ -29,6 +33,10 @@ class backend {
   // the most recent request and never execute an earlier navigation's preload.
   virtual result load(std::string uri, std::string preload) = 0;
   virtual result run() = 0;
+  // Closing one window MUST NOT stop the shared UI loop. Common code stops it
+  // only after the last window closes or explicit application quit completes.
+  // The loop owner may already have a closed window. Both are UI-thread calls.
+  virtual result quit_loop() = 0;
   virtual result close() = 0;
   virtual result evaluate(std::string script) = 0;
   // Thread-safe submission; never execute work after close.
@@ -40,6 +48,9 @@ class backend {
   virtual value_result clipboard_read() = 0;
   virtual result clipboard_write(std::string_view) = 0;
   virtual value_result choose_directory() = 0;
+  virtual result popup_menu(const std::vector<menu_item>&) = 0;
+  virtual result set_tray(const tray_options&) = 0;
+  virtual result clear_tray() = 0;
   virtual capabilities get_capabilities() const = 0;
   // GTK's script-message signal has no native sender-frame metadata. Its
   // explicit false policy additionally relies on the top-only closure token.
