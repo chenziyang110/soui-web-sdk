@@ -100,3 +100,23 @@ preload16项和打包11项均通过，刷新/关闭后旧结果不交付。
 CRC/归档散列核对通过。原生 GTK/WebKit 后端与 fixture 已编译链接，但未运行。
 没有重试系统安装、修改安全配置或使用远程CI；Windows/macOS/ARM和真实GUI
 验收缺口保持不变，未扩大正式发布或性能声明。
+
+## 本地 HTTP 资源源代码增量（07:12 UTC）
+
+按本轮“以实现为主，少量检查，后续统一回归”范围执行：
+
+- Linux 隔离的真实 GTK/WebKitGTK 头库下构建 `soui_desktop`、
+  `soui_desktop_example`、`soui_desktop_contract` 成功。
+- 公共/fake-backend 契约 333 项通过（含新 loopback URI/来源边界）；
+  app.js、feature.mjs、module-label.mjs 的 Node 语法检查通过。
+- 临时 C++ 驱动直接包含生产 resource_server.cpp，20 项解析器/真实临时文件
+  重点检查通过：精确 Host、GET/HEAD/非法方法、一次解码、穿越、非法编码、
+  MIME、根外 symlink、目录/缺失文件、8 MiB 上限。未增加正式测试目标。
+- 临时驱动实际启动 loopback 服务，一次 HTTP GET 返回预期字节和 no-store。
+  这是服务冒烟检查，不是 WebView/窗口/模块链路运行证据。
+- 独立边界审查修正 NOMINMAX、HEAD 错误响应正文与重复同步根目录检查；
+  Linux 原子设置 socket/accept4 的 CLOEXEC/NONBLOCK。`git diff --check` 通过。
+
+未执行本增量的完整 CTest、打包、重复压力或 sanitizer 矩阵；Windows/macOS
+编译、真实三引擎模块/fetch/CSP、网络对抗、关闭/导航竞争、目标架构运行与
+跨窗口存储隔离仍待统一验收。既有 GUI 运行依赖阻塞没有被此次 HTTP 检查解决。

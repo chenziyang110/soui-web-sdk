@@ -18,11 +18,18 @@ if (!window.souiDesktop) {
   invoke('app.capabilities').then(caps => {
     document.getElementById('status').textContent = `${caps.backend} / local Bridge connected`;
     document.getElementById('dot').classList.add('connected');
+    document.querySelector('[data-action="modules"]').disabled = !caps.resourceServer;
     for (const [action, available] of [['copy', caps.clipboardWrite], ['paste', caps.clipboardRead],
       ['directory', caps.directoryDialog], ['menu', caps.popupMenu], ['tray', caps.tray], ['clearTray', caps.tray]])
       document.querySelector(`[data-action="${action}"]`).disabled = !available;
   }).catch(() => {});
   const actions = {
+    modules: async () => {
+      try {
+        const feature = await import('./feature.mjs');
+        record('ES modules / fetch', await feature.loadConfiguration());
+      } catch (error) { record('resource error', error.message); }
+    },
     asset: async () => {
       try {
         const asset = await window.souiDesktop.readAsset('config.json');

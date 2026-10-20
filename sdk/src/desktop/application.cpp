@@ -3,6 +3,8 @@
 #include "protocol.h"
 #include "assets.h"
 #include "asset_executor.h"
+#include "resource_server.h"
+#include "resource_uri.h"
 #include "../runtime/platform/secure_random.h"
 #include "../runtime/platform/strict_utf8.h"
 #include <algorithm>
@@ -108,6 +110,7 @@ struct application_state : std::enable_shared_from_this<application_state> {
   detail::asset_cancellation asset_session;
   bool assets_submitted{false};
   std::shared_ptr<asset_completion_channel> asset_channel = std::make_shared<asset_completion_channel>();
+  detail::resource_server resources;
 
   void cancel_assets() noexcept {
     if (asset_session) {
@@ -231,6 +234,7 @@ struct application_state : std::enable_shared_from_this<application_state> {
     drain();
   }
   void on_closed() noexcept {
+    resources.stop();
     asset_channel->revoke();
     cancel_assets();
     accepting.store(false);
@@ -331,6 +335,9 @@ struct application_state : std::enable_shared_from_this<application_state> {
     detail::document next;
     const auto resolved = detail::resolve_document(settings.resource_root, relative, next);
     if (!resolved.ok) return resolved;
+    if (settings.enable_resource_server)
+      next.uri = detail::resource_path_uri(resources.base_uri(),
+        next.path.lexically_relative(settings.resource_root).generic_u8string());
     unsigned char bytes[32]{};
     cancel_assets();
     if (settings.enable_asset_read) asset_session = std::make_shared<std::atomic<bool>>(false);
@@ -349,6 +356,7 @@ struct application_state : std::enable_shared_from_this<application_state> {
   }
   result close() {
     if (!initialized) return unavailable();
+    resources.stop();
     asset_channel->revoke();
     cancel_assets();
     accepting.store(false);
@@ -436,6 +444,7 @@ application::~application() {
     (void)state->group->quit();
   }
   state->accepting.store(false);
+  state->resources.stop();
   state->asset_channel->revoke();
   state->cancel_assets();
   state->token.clear();
@@ -476,6 +485,10 @@ result application::initialize() {
   state->native = detail::make_backend();
   if (!state->native) return result::failure("not_supported", "No desktop backend was built.");
   state->asset_channel->target = state->native.get();
+  if (state->settings.enable_resource_server) {
+    const auto started = state->resources.start(state->settings.resource_root);
+    if (!started.ok) return started;
+  }
   const std::weak_ptr<application_state> weak = state;
   detail::backend_events events;
   events.allow_navigation = [weak](std::string_view uri) {
@@ -503,7 +516,7 @@ result application::initialize() {
   };
   events.error = [weak](result failure) { if (const auto live = weak.lock()) live->report(std::move(failure)); };
   auto created = state->native->create(state->settings, std::move(events));
-  if (!created.ok) return created;
+  if (!created.ok) { state->resources.stop(); return created; }
   state->initialized = true;
   state->group->seen_window = true;
   // Native creation may pump a nested UI loop. A quit issued there cannot see

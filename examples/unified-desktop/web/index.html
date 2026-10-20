@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>SOUI unified desktop</title>
   <link rel="stylesheet" href="style.css">
@@ -15,7 +15,7 @@
     <p class="intro">The same C++ entry point and local Web assets. A small, explicit bridge between your interface and native code.</p>
     <div class="status"><span id="dot"></span><span id="status">Connecting to the native host…</span></div>
     <section class="grid">
-      <article><h2>01 / Bridge and assets</h2><p>Send structured JSON to your native allowlist, or read an explicitly enabled local asset without fetch or network access.</p><button data-action="echo">Round-trip JSON</button><button data-action="asset">Read local JSON</button></article>
+      <article><h2>01 / Bridge and assets</h2><p>Use the explicit native allowlist or local asset reader. Opt-in resource-server mode also supports standard frontend resource URLs.</p><button data-action="echo">Round-trip JSON</button><button data-action="asset">Read local JSON</button><button data-action="modules" disabled>Load modules and fetch JSON</button></article>
       <article><h2>02 / Window</h2><p>Change native window properties without importing a platform API.</p><button data-action="title">Change title</button><button data-action="resize">Resize window</button></article>
       <article><h2>03 / System</h2><p>Use only capabilities implemented by the selected platform backend.</p><button data-action="copy">Copy greeting</button><button data-action="paste">Read clipboard</button><button data-action="directory">Choose directory</button></article>
       <article><h2>04 / Multiple windows</h2><p>Open the same application in another window with an independent Bridge session. Closing one keeps the others alive.</p><button data-action="create">Open another window</button><button data-action="close">Close this window</button></article>

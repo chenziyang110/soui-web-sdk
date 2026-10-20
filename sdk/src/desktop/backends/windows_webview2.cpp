@@ -12,6 +12,7 @@
 #include <WebView2.h>
 
 #include "../backend.h"
+#include "../resource_uri.h"
 
 #include <algorithm>
 #include <cstdint>
@@ -128,6 +129,7 @@ struct state : std::enable_shared_from_this<state> {
   bool created{false};
   bool dispatching{false};
   bool visible{true};
+  bool enable_resource_server{false};
   bool installing_script{false};
   bool has_load{false};
   bool navigation_ticket{false};
@@ -407,7 +409,11 @@ struct state : std::enable_shared_from_this<state> {
   }
 
   bool allowed(std::string_view uri) const {
-    return active() && events.allow_navigation && events.allow_navigation(uri);
+    // Opting in permits the native-selected loopback document, not arbitrary
+    // HTTP pages or even other documents served by the same resource server.
+    const bool local_uri = uri.compare(0, 7, "file://") == 0 ||
+        (enable_resource_server && is_resource_uri(uri));
+    return active() && local_uri && events.allow_navigation && events.allow_navigation(uri);
   }
 
   bool current_source(std::string& source) const {
@@ -540,7 +546,7 @@ struct state : std::enable_shared_from_this<state> {
                   self->fail(result::failure("E_ARGUMENT", "The navigation URI is not UTF-8"));
                   return S_OK;
                 }
-                // Navigate to the currently selected file can be interpreted
+                // Navigate to the currently selected document can be interpreted
                 // as a fragment-only transition. Reload guarantees a new
                 // document and execution of this generation's fresh preload.
                 com_string native_source;
@@ -897,6 +903,7 @@ class windows_backend final : public backend {
       return win32_failure("AdjustWindowRectEx");
     state_->events = std::move(events);
     state_->visible = settings.visible;
+    state_->enable_resource_server = settings.enable_resource_server;
     state_->window = CreateWindowExW(
         0, window_class, title.c_str(), WS_OVERLAPPEDWINDOW,
         CW_USEDEFAULT, CW_USEDEFAULT, bounds.right - bounds.left, bounds.bottom - bounds.top,

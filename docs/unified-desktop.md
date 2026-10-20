@@ -166,7 +166,7 @@ Windows/macOS 使用原生主 frame/来源信息。GTK 的消息信号没有 sen
 因此诚实记录 unknown，依靠顶层注入的每导航随机闭包令牌及当前文档上下文。
 这不是同源 frame 隔离：同源/about:blank/srcdoc 子帧、顶层第三方脚本、XSS
 或同 realm monkeypatch 可能取得顶层应用能力，必须视同受信应用代码。
-不要加载不受信任脚本；示例 CSP 禁止网络、iframe、对象与外部连接。
+不要加载不受信任脚本；示例 CSP 禁止 iframe、对象与跨源连接，仅允许同源 fetch。
 
 主 HTML 根边界检查不是完整文件系统沙箱；它不证明所有脚本、CSS、图片资源
 均在根内，也不消除资源目录被其他进程改动的 TOCTOU。保护资源目录完整性、
@@ -176,7 +176,7 @@ GTK 保守拒绝无原生 ticket 的同 URI `location.assign` 等完整导航，
 renderer reload 则转公共重载；应用主动导航应走原生 API。只有引擎确认为真正
 同文档的 fragment 更新保留当前会话。WebKitGTK 的 file-origin 防护保持开启，
 任意本地 fetch/ES module 或 Vite 绝对资源路径不保证与 Electron 相同；需使用
-适合本地页面的资源输出，后续 root-scoped 资源服务应单独设计和验证。
+适合本地页面的资源输出，或显式启用下述本地 HTTP 资源源（真实引擎验证待完成）。
 
 字体、CSS、媒体编解码、焦点、输入法、DPI 和渲染时序随系统引擎变化。当前尚无
 统一全局快捷键、跨平台 accessibility/Agent endpoint、自动更新、
@@ -221,6 +221,47 @@ path 是至多 4096 UTF-8 字节的根相对路径，不是 URL。拒绝空段�
 若原生投递队列已满或关闭而拒绝完成消息，结果释放，Promise 由原有30秒超时
 或 pagehide 拒绝收束；不会无限重试或跨线程强行交付。
 详见 [ADR-0124](adr/0124-asynchronous-asset-read-lifetime.md)。
+
+## 显式本地 HTTP 资源源
+
+设置 `options.enable_resource_server = true`，原生选定的 HTML 改由窗口专属的
+`http://127.0.0.1:<随机端口>/<随机前缀>/` 加载。默认关闭，旧 file URL 和
+`readAsset` 调用均不变；此选项不隐式开启 `readAsset`。三个后端已接入同一
+服务与导航授权，目的是支持标准相对 CSS/图片、ES module、动态 import 和
+fetch，不宣称这些功能已在三引擎实测通过，也不是 Electron API 兼容层。
+
+示例运行 `soui_desktop_example <资源目录> --resource-server`，点击
+“Load modules and fetch JSON” 执行动态模块 → 静态依赖 → 同源 JSON fetch。
+前端构建应使用相对 base（例如 `./`）；绝对 `/assets/...` 会跳出随机前缀并
+返回错误，不自动改写 HTML、模块或 URL。仅 GET/HEAD，query 不参与文件定位，
+无 SPA fallback、Range、目录列表、重定向、上传或代理。MIME 按扩展名映射，
+`.js/.mjs` 为 `text/javascript`，未知类型为 `application/octet-stream`；
+响应为原始字节，不做转码，应用应提供 UTF-8 文本与正确 HTML charset。
+
+每窗口一个后台服务，进程最多16个存活服务；已停止但系统读取未返回的服务
+继续占额度。每文件最多8 MiB、请求头最多16 KiB，每次网络接收/发送阶段有
+2秒截止时间，每服务串行处理连接，无 keep-alive。读文件在后台，关闭仅撤销
+服务、不等待 I/O，无法硬取消系统读取；资源根/入口的既有初始化校验仍有
+同步文件元数据操作，因此不承诺任意网络盘上的启动或导航无阻塞。
+
+仅绑定 IPv4 loopback，要求精确 Host 和系统熵随机前缀，拒绝路径穿越、非法
+编码、根外 symlink 和非普通文件。响应使用 no-store、nosniff、no-referrer，
+不设置 CORS 放宽。资源树必须可信、由应用拥有且保持不可变；不是完整文件系统
+沙箱，不消除并发替换竞态。随机前缀不防同用户恶意进程，不应分享资源 URL。
+不同窗口端口隔离 origin；同一窗口内路径和端口稳定，重启后改变，不承诺跨重启
+存储身份。此 HTTP 地址不是 HTTPS，不承诺所有安全上下文 API 或系统代理/
+防火墙策略下均可用。监听失败明确报错，不降级绕过安全策略。
+
+根内资源可供该页面读取，不代表根内其他页面获得 Bridge。顶层文档仍由原生
+显式选择，来源、每导航令牌、代际和子 frame 限制保持原有契约；服务不会开放
+远程导航。应用仍需 CSP 约束脚本和子资源网络，不能把同源不可信脚本当作隔离
+主体。详见 [ADR-0125](adr/0125-opt-in-loopback-resource-origin.md)。
+
+本增量只做必要构建、语法与高风险边界检查，完整统一回归延后：
+- Windows/macOS 编译与三引擎模块、动态 import、相对资源、fetch、CSP 实际运行。
+- 真实 HTTP Host/方法/编码/大小/慢连接及窗口关闭、导航、进行中请求的竞争。
+- 多窗口源隔离、存储行为、目标机网络策略，以及各架构和安装包回归。
+这些待验收项不能由下方早期基线测试结果替代。
 
 ## 实际验证和待验收
 

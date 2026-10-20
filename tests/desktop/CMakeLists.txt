@@ -4,9 +4,13 @@ add_executable(soui_desktop_contract
   contract.cpp
   ../../sdk/src/desktop/assets.cpp
   ../../sdk/src/desktop/asset_executor.cpp
+  ../../sdk/src/desktop/resource_server.cpp
   ../../sdk/src/desktop/application.cpp
   ../../sdk/src/desktop/protocol.cpp)
 target_link_libraries(soui_desktop_contract PRIVATE Soui::Runtime)
+if(WIN32)
+  target_link_libraries(soui_desktop_contract PRIVATE ws2_32)
+endif()
 target_include_directories(soui_desktop_contract PRIVATE
   "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
 target_compile_features(soui_desktop_contract PRIVATE cxx_std_17)

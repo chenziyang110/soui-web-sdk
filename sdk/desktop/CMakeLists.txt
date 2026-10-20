@@ -1,6 +1,6 @@
 soui_require_capability(system_desktop)
 add_library(soui_desktop STATIC ../src/desktop/application.cpp ../src/desktop/protocol.cpp
-  ../src/desktop/assets.cpp ../src/desktop/asset_executor.cpp)
+  ../src/desktop/assets.cpp ../src/desktop/asset_executor.cpp ../src/desktop/resource_server.cpp)
 add_library(Soui::Desktop ALIAS soui_desktop)
 set_target_properties(soui_desktop PROPERTIES EXPORT_NAME Desktop)
 target_compile_features(soui_desktop PUBLIC cxx_std_17)
@@ -53,7 +53,7 @@ elseif(SOUI_TARGET_OS STREQUAL "windows")
   target_link_libraries(soui_desktop PRIVATE
     "$<BUILD_INTERFACE:${SOUI_DESKTOP_WEBVIEW2_LOADER}>"
     "$<INSTALL_INTERFACE:Soui::DesktopWebView2Loader>"
-    ole32 shell32 user32 uuid version shlwapi)
+    ole32 shell32 user32 uuid version shlwapi ws2_32)
   install(FILES "${SOUI_DESKTOP_WEBVIEW2_LOADER}" DESTINATION lib/SouiDesktop/webview2)
   install(FILES "${SOUI_WEBVIEW2_SDK_ROOT}/LICENSE.txt" "${SOUI_WEBVIEW2_SDK_ROOT}/NOTICE.txt"
     DESTINATION share/SouiDesktop/webview2)

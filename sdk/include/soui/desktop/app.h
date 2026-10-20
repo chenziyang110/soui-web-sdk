@@ -67,6 +67,9 @@ struct options {
   // Opt-in bounded reads of app-owned immutable resource_root assets through
   // souiDesktop.readAsset. Does not enable network access or native ES modules.
   bool enable_asset_read{false};
+  // Opt-in per-window loopback HTTP origin for standard frontend resource URLs.
+  // Keeps file:// loading as the default; not a general-purpose network server.
+  bool enable_resource_server{false};
 };
 
 struct callbacks {

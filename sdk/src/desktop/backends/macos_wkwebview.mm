@@ -1,4 +1,5 @@
 #include "../backend.h"
+#include "../resource_uri.h"
 
 #import <AppKit/AppKit.h>
 #import <CoreFoundation/CoreFoundation.h>
@@ -62,6 +63,7 @@ struct macos_state {
   std::atomic<bool> terminal_failure{false};
   bool created{false};
   bool loop_owner{false};
+  bool enable_resource_server{false};
   bool native_navigation_ticket{false};
   bool native_provisional_authorized{false};
   bool document_committed{false};
@@ -209,11 +211,16 @@ void report_error(const std::shared_ptr<macos_state>& state, result error) {
 
 bool allows_main_document(const std::shared_ptr<macos_state>& state, NSURL* url) {
   if (!is_live(state) || state->terminal_failure.load(std::memory_order_acquire) ||
-      !url || !url.isFileURL || !url.absoluteString ||
+      !url || !url.absoluteString ||
       !state->events.allow_navigation) return false;
-  const auto callback = state->events.allow_navigation;
   try {
-    const bool allowed = callback(utf8_string(url.absoluteString));
+    const auto uri = utf8_string(url.absoluteString);
+    // Loopback syntax is only the transport gate. The common policy still binds
+    // every navigation, response and message to the current native selection.
+    if (!url.isFileURL && !(state->enable_resource_server &&
+        soui::desktop::detail::is_resource_uri(uri))) return false;
+    const auto callback = state->events.allow_navigation;
+    const bool allowed = callback(uri);
     return allowed && is_live(state);
   } catch (...) {
     report_error(state, result::failure("E_NAVIGATION_POLICY", "Navigation policy failed"));
@@ -803,6 +810,7 @@ class wkwebview_backend final : public backend {
         }
         state_->application_group = group;
         state_->events = std::move(events);
+        state_->enable_resource_server = settings.enable_resource_server;
         state_->resource_root = [NSURL fileURLWithPath:root_path isDirectory:YES];
         SOUIDesktopWKDelegate* delegate = [[SOUIDesktopWKDelegate alloc] initWithState:state_];
         state_->delegate = delegate;
@@ -868,11 +876,18 @@ class wkwebview_backend final : public backend {
       WKUserScript* script = [[WKUserScript alloc] initWithSource:script_string
           injectionTime:WKUserScriptInjectionTimeAtDocumentStart forMainFrameOnly:YES];
       [controller addUserScript:script];
-      // The sole file-system read grant is the canonical configured resource root.
-      state_->navigation = [state_->webview loadFileURL:url allowingReadAccessToURL:state_->resource_root];
+      if (url.isFileURL) {
+        // The sole file-system read grant is the canonical configured resource root.
+        state_->navigation =
+            [state_->webview loadFileURL:url allowingReadAccessToURL:state_->resource_root];
+      } else {
+        // Only the opt-in loopback URL admitted above reaches the HTTP loader.
+        // Do not change ATS or grant file access to the HTTP document.
+        state_->navigation = [state_->webview loadRequest:[NSURLRequest requestWithURL:url]];
+      }
       if (!state_->navigation) {
         state_->native_navigation_ticket = false;
-        return result::failure("E_NAVIGATION", "WKWebView did not start the file navigation");
+        return result::failure("E_NAVIGATION", "WKWebView did not start the selected navigation");
       }
       return result::success();
     }

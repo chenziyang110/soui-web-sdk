@@ -1,4 +1,5 @@
 #include "protocol.h"
+#include "resource_uri.h"
 #include "../runtime/platform/strict_utf8.h"
 #include <algorithm>
 #include <cctype>
@@ -91,6 +92,17 @@ result resolve_document(const std::filesystem::path& root,
 bool same_document_uri(std::string_view actual, std::string_view selected) noexcept {
   try {
     if (actual.size() > 65536 || selected.size() > 65536) return false;
+    if (is_resource_uri(actual) && is_resource_uri(selected)) {
+      actual = actual.substr(0, actual.find('#'));
+      selected = selected.substr(0, selected.find('#'));
+      const auto actual_path = actual.find('/', 17);
+      const auto selected_path = selected.find('/', 17);
+      if (actual.substr(0, actual_path) != selected.substr(0, selected_path)) return false;
+      std::string left, right;
+      return decode_file_uri("file://" + std::string(actual.substr(actual_path)), left) &&
+        decode_file_uri("file://" + std::string(selected.substr(selected_path)), right) &&
+        left == right;
+    }
     std::string left, right;
     if (!decode_file_uri(actual, left) || !decode_file_uri(selected, right)) return false;
 #ifdef _WIN32

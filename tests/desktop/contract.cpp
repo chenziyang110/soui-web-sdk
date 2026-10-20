@@ -1,6 +1,7 @@
 #include <soui/desktop/app.h>
 #include "../../sdk/src/desktop/backend.h"
 #include "../../sdk/src/desktop/protocol.h"
+#include "../../sdk/src/desktop/resource_uri.h"
 
 #include <algorithm>
 #include <atomic>
@@ -275,6 +276,20 @@ void asynchronous_asset_contract(files& fixture) {
 }
 
 void path_and_json_contract(files& fixture) {
+  const auto base = "http://127.0.0.1:43210/" + std::string(64, 'a') + "/";
+  const auto resource = detail::resource_path_uri(base, "folder space/中文.html");
+  CHECK(detail::is_resource_uri(resource));
+  CHECK(detail::same_document_uri(resource + "#fragment", resource));
+  CHECK(!detail::same_document_uri(resource + "?query=1", resource));
+  CHECK(!detail::same_document_uri(resource, "http://127.0.0.1:43211/" + std::string(64, 'a') + "/folder%20space/%E4%B8%AD%E6%96%87.html"));
+  CHECK(!detail::same_document_uri(resource, detail::resource_path_uri(
+      "http://127.0.0.1:43210/" + std::string(64, 'b') + "/", "folder space/中文.html")));
+  for (const auto& origin : {"http://localhost:43210/", "http://127.0.0.1:0/",
+      "http://127.0.0.1:65536/", "http://127.0.0.1:043210/",
+      "http://127.0.0.1:43210@evil.invalid/", "https://127.0.0.1:43210/",
+      "http://127.0.0.1.evil.invalid:43210/"})
+    CHECK(!detail::is_resource_uri(std::string(origin) + std::string(64, 'a') + "/index.html"));
+  CHECK(!detail::is_resource_uri("http://127.0.0.1:43210/short/index.html"));
   detail::document document;
   CHECK(detail::resolve_document(fixture.root, "index.html", document).ok);
   CHECK(document.uri.find("%23") != std::string::npos);

@@ -1,4 +1,5 @@
 #include "../backend.h"
+#include "../resource_uri.h"
 
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
@@ -50,6 +51,7 @@ struct linux_state : std::enable_shared_from_this<linux_state> {
   bool modal_busy{false};
   bool created{false};
   bool initialized{false};
+  bool enable_resource_server{false};
   bool loop_quit_requested{false};
   bool navigation_ticket{false};
   bool renderer_reload_pending{false};
@@ -119,6 +121,11 @@ void report(linux_state& state, result status) noexcept {
 
 bool admissible(linux_state& state, const char* uri) noexcept {
   if (!state.active.load() || !uri || !state.events.allow_navigation) return false;
+  const std::string_view candidate(uri);
+  // A loopback-shaped URL alone is not authority: common code must also
+  // recognize this window's current native-selected document.
+  if (candidate.substr(0, 7) != "file://" &&
+      !(state.enable_resource_server && is_resource_uri(candidate))) return false;
   try {
     auto handler = state.events.allow_navigation;
     return handler(uri);
@@ -719,6 +726,7 @@ class linux_backend final : public backend {
     g_signal_connect(state.view, "context-menu", G_CALLBACK(deny_context_menu), &state);
     g_signal_connect(state.web_context, "download-started", G_CALLBACK(cancel_download), &state);
     state.events = std::move(events);
+    state.enable_resource_server = settings.enable_resource_server;
     state.initialized = true;
     state.active.store(true);
     if (settings.visible) gtk_widget_show_all(state.window);
