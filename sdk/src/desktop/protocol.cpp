@@ -155,6 +155,20 @@ function invoke(method,params){
     catch(error){clearTimeout(timer);pending.delete(id);reject(error);}
   });
 }
+function readAsset(path){
+  if(typeof path!=='string'||!path.length||path.length>4096)
+    return Promise.reject(new Error('Invalid asset path'));
+  for(let i=0;i<path.length;++i){
+    const unit=path.charCodeAt(i);
+    if(unit>=0xd800&&unit<=0xdbff){
+      const low=path.charCodeAt(++i);
+      if(!(low>=0xdc00&&low<=0xdfff))return Promise.reject(new Error('Invalid asset path'));
+    }else if(unit>=0xdc00&&unit<=0xdfff)return Promise.reject(new Error('Invalid asset path'));
+  }
+  if(new TextEncoder().encode(path).length>4096)
+    return Promise.reject(new Error('Invalid asset path'));
+  return invoke('soui.asset.read',{path:path});
+}
 function on(event,listener){
   if(!live||typeof event!=='string'||!/^[A-Za-z0-9_.-]{1,64}$/.test(event)||typeof listener!=='function')
     throw new Error('Invalid event listener');
@@ -176,7 +190,7 @@ Object.defineProperty(window,'__souiDesktopDeliver',{configurable:false,writable
   else{const error=new Error(value.error&&value.error.message||'Native request failed');
     error.code=value.error&&value.error.code||'native_failure';item.reject(error);}
 }});
-Object.defineProperty(window,'souiDesktop',{configurable:false,writable:false,value:Object.freeze({version:1,invoke:invoke,on:on})});
+Object.defineProperty(window,'souiDesktop',{configurable:false,writable:false,value:Object.freeze({version:1,invoke:invoke,on:on,readAsset:readAsset})});
 window.addEventListener('pagehide',function(){live=false;for(const item of pending.values()){
   clearTimeout(item.timer);item.reject(new Error('Document session was replaced'));}
   pending.clear();listeners.clear();},{once:true});

@@ -1,5 +1,10 @@
 # 测试与验收
 
+资产文件边界：`ctest --preset desktop -R sdk.desktop.assets --output-on-failure`，
+使用真实临时文件调用生产读取器。`sdk.desktop.contract` 另测启用/禁用、来源、
+令牌、导航和窗口隔离，`sdk.desktop.preload` 测实际生成的 JavaScript；均不等于
+原生 WebView 已运行通过。
+
 统一桌面开发包工具回归：`node --test tests/desktop/package.test.cjs`。它验证参数、
 目标身份、步骤失败中断、拒绝覆盖/链接和散列，不以模拟命令冒充真实编译。
 完整构建/CTest/安装/压缩入口及平台限制见 [统一桌面入口](unified-desktop.md)。

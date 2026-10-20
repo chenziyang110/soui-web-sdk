@@ -1,6 +1,7 @@
 #include <soui/desktop/app.h>
 #include "backend.h"
 #include "protocol.h"
+#include "assets.h"
 #include "../runtime/platform/secure_random.h"
 #include "../runtime/platform/strict_utf8.h"
 #include <algorithm>
@@ -225,7 +226,24 @@ struct application_state : std::enable_shared_from_this<application_state> {
       last_request = id;
       const auto request_generation = generation;
       nlohmann::json response{{"id", id}};
-      if (!handlers.invoke) {
+      if (method == "soui.asset.read") {
+        const auto& params = input.at("params");
+        result status = result::failure("asset_read_disabled", "Local asset reading is not enabled.");
+        if (settings.enable_asset_read) {
+          if (!params.is_object() || params.size() != 1 ||
+              !params.contains("path") || !params.at("path").is_string()) {
+            status = result::failure("invalid_asset_path", "Expected exactly one asset path string.");
+          } else {
+            const auto asset = detail::read_asset(settings.resource_root,
+                params.at("path").get_ref<const std::string&>());
+            status = asset.status;
+            if (status.ok)
+              response["result"] = {{"mime", asset.mime}, {"size", asset.size}, {"base64", asset.base64}};
+          }
+        }
+        response["ok"] = status.ok;
+        if (!status.ok) response["error"] = {{"code", status.code}, {"message", status.message}};
+      } else if (!handlers.invoke) {
         response["ok"] = false;
         response["error"] = {{"code", "method_not_registered"}, {"message", "No native method handler is registered."}};
       } else {

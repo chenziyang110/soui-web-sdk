@@ -45,7 +45,7 @@ test('top-only injection exposes a frozen capability without a token property', 
   assert.equal(child.window.__souiDesktopDeliver, undefined);
   const f = fixture();
   assert.equal(Object.isFrozen(f.window.souiDesktop), true);
-  assert.deepEqual(Object.keys(f.window.souiDesktop).sort(), ['invoke', 'on', 'version']);
+  assert.deepEqual(Object.keys(f.window.souiDesktop).sort(), ['invoke', 'on', 'readAsset', 'version']);
   assert.equal(Object.getOwnPropertyDescriptor(f.window, 'souiDesktop').writable, false);
   assert.equal(Object.getOwnPropertyDescriptor(f.window, '__souiDesktopDeliver').configurable, false);
 });
@@ -62,6 +62,117 @@ test('Promise transport works through chrome and WebKit and ignores wrong tokens
     f.deliver({ id: 1, ok: true, result: { text: 'done' } });
     assert.deepEqual(await pending, { text: 'done' });
     assert.equal(f.timers.size, 0);
+  }
+});
+
+test('readAsset uses both native transports and returns the unchanged asset result', async () => {
+  for (const transport of ['chrome', 'webkit']) {
+    const f = fixture({ transport });
+    const pending = f.run("window.souiDesktop.readAsset('assets/中文.bin')");
+    assert.equal(typeof pending.then, 'function');
+    assert.deepEqual(f.posts, [{
+      v: 1, token, id: 1, method: 'soui.asset.read', params: { path: 'assets/中文.bin' },
+    }]);
+    const result = { mime: 'application/octet-stream', size: 4, base64: 'AP/+gA==' };
+    f.deliver({ id: 1, ok: true, result });
+    assert.equal(await pending, result);
+    assert.equal(f.timers.size, 0);
+  }
+});
+
+test('readAsset rejects invalid path types and empty paths without posting', async () => {
+  const f = fixture();
+  for (const value of ['undefined', 'null', 'false', '0', '{}', '[]', "new String('asset.txt')", "''"]) {
+    // A rejected Promise, not a synchronous throw, is the public error contract.
+    const pending = f.run(`window.souiDesktop.readAsset(${value})`);
+    assert.equal(typeof pending.then, 'function');
+    await assert.rejects(pending, /Invalid asset path/);
+  }
+  assert.equal(f.posts.length, 0);
+  assert.equal(f.timers.size, 0);
+});
+
+test('readAsset rejects unpaired UTF-16 surrogates but preserves valid astral characters', async () => {
+  for (const transport of ['chrome', 'webkit']) {
+    const f = fixture({ transport });
+    for (const path of ['\ud800', '\udbff', '\udc00', '\udfff', '\ud800\ud800',
+      '\udc00\udc00', '\udc00\ud800', 'assets/\ud800.bin', 'assets/\udc00.bin', '😀\ud800']) {
+      const pending = f.run(`window.souiDesktop.readAsset(${JSON.stringify(path)})`);
+      assert.equal(typeof pending.then, 'function');
+      await assert.rejects(pending, /Invalid asset path/);
+      assert.equal(f.posts.length, 0);
+      assert.equal(f.timers.size, 0);
+    }
+    const pending = f.run("window.souiDesktop.readAsset('assets/😀.bin')");
+    assert.equal(f.posts.length, 1);
+    assert.equal(f.posts[0].params.path, 'assets/😀.bin');
+    const result = { mime: 'application/octet-stream', size: 0, base64: '' };
+    f.deliver({ id: 1, ok: true, result });
+    assert.equal(await pending, result);
+    assert.equal(f.timers.size, 0);
+  }
+});
+
+test('readAsset bounds paths by UTF-8 bytes and accepts the exact boundary', async () => {
+  for (const expression of ["'a'.repeat(4096)", "'汉'.repeat(1365)+'a'", "'😀'.repeat(1024)"]) {
+    const f = fixture();
+    const pending = f.run(`window.souiDesktop.readAsset(${expression})`);
+    assert.equal(f.posts.length, 1);
+    assert.equal(Buffer.byteLength(f.posts[0].params.path), 4096);
+    f.deliver({ id: 1, ok: true, result: { mime: 'text/plain', size: 0, base64: '' } });
+    await pending;
+    assert.equal(f.timers.size, 0);
+  }
+  const f = fixture();
+  for (const expression of ["'a'.repeat(4097)", "'汉'.repeat(1365)+'ab'", "'😀'.repeat(1024)+'a'"]) {
+    await assert.rejects(f.run(`window.souiDesktop.readAsset(${expression})`), /Invalid asset path/);
+  }
+  assert.equal(f.posts.length, 0);
+  assert.equal(f.timers.size, 0);
+});
+
+test('readAsset preserves native validation errors and missing transport failures', async () => {
+  for (const transport of ['chrome', 'webkit']) {
+    const f = fixture({ transport });
+    const pending = f.run("window.souiDesktop.readAsset('../outside.bin')");
+    assert.equal(f.posts[0].params.path, '../outside.bin');
+    const rejected = assert.rejects(pending, error =>
+      error.code === 'invalid_asset_path' && error.message === 'Asset path is outside the resource root');
+    f.deliver({ id: 1, ok: false, error: {
+      code: 'invalid_asset_path', message: 'Asset path is outside the resource root',
+    } });
+    await rejected;
+    assert.equal(f.timers.size, 0);
+    f.deliver({ id: 1, ok: true, result: { mime: 'text/plain', size: 4, base64: 'bGF0ZQ==' } });
+    assert.equal(f.timers.size, 0);
+  }
+  const missing = fixture({ transport: 'none' });
+  await assert.rejects(missing.run("window.souiDesktop.readAsset('asset.txt')"), /unavailable/);
+  assert.equal(missing.timers.size, 0);
+});
+
+test('readAsset inherits pagehide cancellation and rejects stale responses after reload', async () => {
+  for (const transport of ['chrome', 'webkit']) {
+    const previous = fixture({ transport, navigationToken: 'previous-asset-document' });
+    const pending = previous.run("window.souiDesktop.readAsset('asset.bin')");
+    const rejected = assert.rejects(pending, /replaced/);
+    previous.hide();
+    await rejected;
+    assert.equal(previous.timers.size, 0);
+    await assert.rejects(previous.run("window.souiDesktop.readAsset('asset.bin')"), /closed/);
+    assert.equal(previous.posts.length, 1);
+    previous.deliver({ id: 1, ok: true, result: { mime: 'text/plain', size: 3, base64: 'b2xk' } });
+
+    const replacement = fixture({ transport, navigationToken: 'replacement-asset-document' });
+    const current = replacement.run("window.souiDesktop.readAsset('asset.bin')");
+    assert.equal(replacement.posts[0].id, 1);
+    replacement.deliver({ token: previous.posts[0].token, id: 1, ok: true,
+      result: { mime: 'text/plain', size: 3, base64: 'b2xk' } });
+    assert.equal(replacement.timers.size, 1);
+    const result = { mime: 'application/octet-stream', size: 3, base64: 'bmV3' };
+    replacement.deliver({ id: 1, ok: true, result });
+    assert.equal(await current, result);
+    assert.equal(replacement.timers.size, 0);
   }
 });
 
@@ -180,5 +291,5 @@ test('closing one window leaves another live and a new document rejects old resp
   assert.equal(replacement.timers.size, 1);
   replacement.deliver({ id: 1, ok: true, result: 'new result' });
   assert.equal(await newRequest, 'new result');
-  assert.deepEqual(Object.keys(replacement.window.souiDesktop).sort(), ['invoke', 'on', 'version']);
+  assert.deepEqual(Object.keys(replacement.window.souiDesktop).sort(), ['invoke', 'on', 'readAsset', 'version']);
 });

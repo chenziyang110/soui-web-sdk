@@ -124,6 +124,7 @@ int main(int argc, char** argv) {
   state.settings.resource_root = argc > 1 ? std::filesystem::u8path(argv[1]) :
     std::filesystem::absolute(std::filesystem::u8path(argv[0])).parent_path() / "web";
   state.settings.title = "SOUI · one application";
+  state.settings.enable_asset_read = true;
   state.children.reserve(31); // No handle-storage allocation after native create.
   auto context = std::make_shared<window_context>();
   soui::desktop::application app(state.settings, make_callbacks(state, context));

@@ -23,6 +23,14 @@ if (!window.souiDesktop) {
       document.querySelector(`[data-action="${action}"]`).disabled = !available;
   }).catch(() => {});
   const actions = {
+    asset: async () => {
+      try {
+        const asset = await window.souiDesktop.readAsset('config.json');
+        const bytes = Uint8Array.from(atob(asset.base64), value => value.charCodeAt(0));
+        const config = JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes));
+        record('local asset', { mime: asset.mime, size: asset.size, config });
+      } catch (error) { record(error.code || 'asset error', error.message); }
+    },
     echo: () => invoke('app.echo', { greeting: 'Hello / 你好', values: [1, true, null] }),
     title: () => invoke('window.title'),
     resize: () => invoke('window.resize'),

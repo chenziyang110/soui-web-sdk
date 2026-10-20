@@ -181,6 +181,58 @@ struct files {
   options settings() const { options out; out.resource_root = root; out.visible = false; return out; }
 };
 
+void asset_bridge_contract(files& fixture) {
+  { std::ofstream out(fixture.root / "config.json", std::ios::binary); out << "{\"ok\":true}"; }
+  int business_calls = 0;
+  callbacks handlers;
+  handlers.invoke = [&](std::string_view, std::string_view) { ++business_calls; return "null"; };
+  auto settings = fixture.settings();
+  application root(settings, handlers);
+  CHECK(root.initialize().ok);
+  auto* disabled = latest;
+  disabled->send(disabled->envelope(1, "soui.asset.read", {{"path", "config.json"}}));
+  CHECK(disabled->last_response()["error"]["code"] == "asset_read_disabled");
+  CHECK(business_calls == 0);
+  settings.enable_asset_read = true;
+  auto child = root.create_window(settings, handlers);
+  CHECK(child.status.ok);
+  auto* enabled = latest;
+  enabled->send(enabled->envelope(1, "soui.asset.read", {{"path", "config.json"}}));
+  CHECK(enabled->last_response()["ok"] == true);
+  CHECK(enabled->last_response()["result"]["mime"] == "application/json");
+  CHECK(enabled->last_response()["result"]["size"] == 11);
+  CHECK(enabled->last_response()["result"]["base64"] == "eyJvayI6dHJ1ZX0=");
+  CHECK(business_calls == 0);
+  enabled->send(enabled->envelope(2, "soui.asset.read", {{"path", "../outside.html"}}));
+  CHECK(enabled->last_response()["ok"] == false);
+  enabled->send(enabled->envelope(3, "soui.asset.read", {{"path", "config.json"}, {"extra", true}}));
+  CHECK(enabled->last_response()["error"]["code"] == "invalid_asset_path");
+  const auto count = enabled->evaluations.size();
+  auto stale = enabled->envelope(4, "soui.asset.read", {{"path", "config.json"}});
+  auto foreign = stale;
+  foreign["token"] = disabled->token();
+  enabled->send(foreign);
+  enabled->send(stale, message_frame::subframe);
+  enabled->send(stale, message_frame::main, "https://example.invalid/");
+  CHECK(enabled->evaluations.size() == count);
+  CHECK(child.window->reload().ok);
+  enabled->send(stale);
+  CHECK(enabled->evaluations.size() == count);
+  enabled->send(enabled->envelope(1, "soui.asset.read", {{"path", "config.json"}}));
+  CHECK(enabled->last_response()["ok"] == true);
+  // A separate root must not inherit the first child's resource directory.
+  settings.resource_root = fixture.base / "resources-other";
+  auto other = root.create_window(settings);
+  CHECK(other.status.ok);
+  auto* separate = latest;
+  separate->send(separate->envelope(1, "soui.asset.read", {{"path", "config.json"}}));
+  CHECK(separate->last_response()["ok"] == false);
+  CHECK(child.window->close().ok);
+  const auto closed_count = enabled->evaluations.size();
+  enabled->send(enabled->envelope(2, "soui.asset.read", {{"path", "config.json"}}));
+  CHECK(enabled->evaluations.size() == closed_count);
+}
+
 void path_and_json_contract(files& fixture) {
   detail::document document;
   CHECK(detail::resolve_document(fixture.root, "index.html", document).ok);
@@ -793,6 +845,7 @@ int main(int argc, char** argv) {
   }
   try {
     files fixture;
+    asset_bridge_contract(fixture);
     path_and_json_contract(fixture);
     protocol_contract(fixture);
     navigation_contract(fixture);

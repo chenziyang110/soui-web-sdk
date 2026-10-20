@@ -2,6 +2,7 @@
 # They never initialize a renderer, clipboard, file picker, or native window.
 add_executable(soui_desktop_contract
   contract.cpp
+  ../../sdk/src/desktop/assets.cpp
   ../../sdk/src/desktop/application.cpp
   ../../sdk/src/desktop/protocol.cpp)
 target_link_libraries(soui_desktop_contract PRIVATE Soui::Runtime)
@@ -14,6 +15,18 @@ if(MSVC)
 else()
   target_compile_options(soui_desktop_contract PRIVATE -Wall -Wextra -Wpedantic)
 endif()
+
+add_executable(soui_desktop_assets assets.cpp ../../sdk/src/desktop/assets.cpp)
+target_compile_features(soui_desktop_assets PRIVATE cxx_std_17)
+target_include_directories(soui_desktop_assets PRIVATE "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
+if(MSVC)
+  target_compile_options(soui_desktop_assets PRIVATE /utf-8 /W4)
+  set_property(TARGET soui_desktop_assets PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+else()
+  target_compile_options(soui_desktop_assets PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME sdk.desktop.assets COMMAND soui_desktop_assets)
+set_tests_properties(sdk.desktop.assets PROPERTIES TIMEOUT 30 LABELS "desktop;contract;no-gui")
 
 if(SOUI_BUILD_DESKTOP AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
   # sdk/desktop's imported pkg-config target has directory scope. The fixture

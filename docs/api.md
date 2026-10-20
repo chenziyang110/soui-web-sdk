@@ -2,6 +2,10 @@
 
 ## 未发布统一桌面 API
 
+显式启用 `options.enable_asset_read` 可使用 `window.souiDesktop.readAsset(path)`
+读取根内小型资产；默认关闭，保留内置方法名 `soui.asset.read`，返回 MIME、
+字节数和 base64。边界与迁移见 [资产读取契约](unified-desktop.md#显式本地资产读取)。
+
 独立的 `Soui::Desktop` 使用 `<soui/desktop/app.h>`，提供 `application` 窗口组、
 `create_window`、每窗口 Bridge、原生平面菜单、托盘及 command/lifecycle 回调。
 其线程、生命周期、限制和打包方式见 [统一桌面入口](unified-desktop.md)。

@@ -64,6 +64,9 @@ struct options {
   int width{1024};
   int height{720};
   bool visible{true};
+  // Opt-in bounded reads of app-owned immutable resource_root assets through
+  // souiDesktop.readAsset. Does not enable network access or native ES modules.
+  bool enable_asset_read{false};
 };
 
 struct callbacks {

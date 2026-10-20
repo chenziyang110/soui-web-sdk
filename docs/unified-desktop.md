@@ -183,6 +183,34 @@ renderer reload 则转公共重载；应用主动导航应走原生 API。只有
 安装签名或完整 Electron API 兼容。macOS 默认非持久 WebKit 会话且不支持任意
 `user_data_directory`（明确报错）；Windows/Linux 的数据目录策略见后端说明。
 
+## 显式本地资产读取
+
+`file://` 上的原生 fetch、ES module 和 CORS 在系统引擎之间并不等价。
+配置 `options.enable_asset_read = true` 后，同一份前端可以调用
+`await window.souiDesktop.readAsset('config.json')`；默认关闭，按窗口单独授权。
+返回 `{mime, size, base64}`：size 是原始字节数，base64 是原始字节的标准编码，
+MIME 按扩展名推断，不做内容识别，也不声称文本必为 UTF-8。调用方应显式解码，
+例如示例使用 `atob` → `Uint8Array` → 严格 UTF-8 `TextDecoder` → `JSON.parse`。
+
+每文件至多 256 KiB，base64 至多 349,528 字节，仍受现有 1 MiB Bridge 响应上限
+约束。读取在 UI 线程同步执行，仅适合小型本地配置/资产，不适合流媒体或网络盘；
+大小限制不保证操作系统 I/O 延迟。资源树必须由应用拥有且运行期间不被不可信
+进程修改，规范化边界检查不是完整文件系统沙箱，也不消除恶意并发替换竞态。
+
+path 是至多 4096 UTF-8 字节的根相对路径，不是 URL。拒绝空段、`.`/`..`、
+绝对路径、反斜杠、冒号、百分号、query/fragment、控制字符，根外 symlink、
+目录和非普通文件。目录选择不扩大授权。内置 `soui.asset.read` 保留方法名
+不能作为业务 handler 使用；未启用时返回 `asset_read_disabled`，非法参数返回
+`invalid_asset_path`，其余文件错误通过 Promise 错误 code 返回。
+
+读取使用原有顶层 Bridge、随机令牌、请求 ID 与导航代际，拒绝远程导航上下文、
+可识别的子 frame、旧会话和其他窗口的令牌。GTK 没有原生 frame 来源证明，
+仍依赖顶层 preload 闭包令牌；同源脚本可调用父页公开接口，不是独立安全主体。
+既有 `invoke` 不变；此 API 不拦截 fetch、
+不提供 HTTP/Range、自定义 origin、原生 ES module 或网络能力。详见
+[ADR-0123](adr/0123-opt-in-local-asset-reader.md)。示例的“Read local JSON”按钮
+展示实际消费路径，不能以 VM 或 fake-backend 测试代替真实 WebView 验收。
+
 ## 实际验证和待验收
 
 本轮成功：Linux x64 真实头库编译/链接、独立安装包消费者构建、公共
@@ -222,4 +250,4 @@ ctest --preset desktop -R sdk.desktop.linux-native --output-on-failure
 
 ### 开发包失败关闭补充
 
-入口在构建后重新核对缓存和 CTest JSON 注册清单，七项必需测试须唯一、启用并具有执行命令。多配置生成器仅接受已配置的目标；安装版本须匹配源码 VERSION，且必须包含选中配置的 Runtime/ Desktop 静态库。它不以其他测试通过、旧缓存或其他配置文件替代这些条件。
+入口在构建后重新核对缓存和 CTest JSON 注册清单，八项必需测试（含真实文件资产边界）须唯一、启用并具有执行命令。多配置生成器仅接受已配置的目标；安装版本须匹配源码 VERSION，且必须包含选中配置的 Runtime/ Desktop 静态库。它不以其他测试通过、旧缓存或其他配置文件替代这些条件。
