@@ -2,6 +2,12 @@
 
 ## 未发布维护
 
+- 新增显式跨平台 `Soui::Runtime` 构建与独立 CMake 包，复用任务、事件、权限、
+  Bridge 动作协议、GUI 协调和只读文件扫描；移植系统安全随机数和 UTF-8 校验。
+  目标架构由编译器核验，拒绝未知目标、错误位宽和不存在的桌面后端。新增本地
+  矩阵、真实 Runtime 与安装消费者测试；未将合成架构测试声明为实机通过。
+  Windows 桌面默认路径和已发布 0.5.0 包保持原样，完整桌面跨平台移植仍开放。
+
 - 重排仓库 README 为 SDK 展示首页，加入原创品牌封面、架构图、双后端比较和模板调用示例；同步当前 0.5.0 预发布身份、可选 Agent / UIA 能力及授权与验收边界。
 - 补齐便携源码两架构默认 ALL 构建和私有测试注册边界证据，增加真实 CMake 配置策略回归；核对六个已发布应用包的声明材料，授权审核仍未完成。
 - 发布收集入口增加显式的未验收状态记录：同步当前版本，按原字节归档旧报告，并仅引用限定范围记录的散列。完整交付和生产通过标志始终为 false，不重跑构建或桌面验收，不改变固定 0.5.0 SDK 包。
@@ -257,3 +263,4 @@ preview.1 的开发包在验证期间生成后保留不变；本次修复历史�
 - Source/pure checks only for this integration. Portable native producer,
   normal x86/x64 builds and installed consumers are pending; no compatibility,
   performance, quota or release qualification is promoted.
+

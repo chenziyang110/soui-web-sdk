@@ -156,3 +156,12 @@ UIA 原生断言失败会保留 HRESULT。`mutations` 焦点失败还记录客�
 UIA 成功按钮调用的真实事件订阅与拒绝/失败/关闭回归、时钟整数边界回归的原始记录见 [补充记录](../verification/production-validation/0.5-uia-invoke-and-clock-2026-10-16/README.md)。Invoked 通知不重放已执行业务，发送失败由 pump 返回；仅状态变化通知可在后续 pump 重试。
 
 LLVM 增量构建会单独认证生成命令中的工具路径（含 Windows 8.3 路径），即使本轮没有再次运行该工具。此认证只证明工具文件身份；复用产物仍须匹配历史自然构建、当前对象及依赖，不能据此添加实际进程记录。
+
+## 跨平台 Runtime 补充验证
+
+开发中的 portable 档位使用 `cmake --preset portable`、
+`cmake --build --preset portable`、`ctest --preset portable`。
+另验证 `tests/portable/consumer` 对已安装 `SouiRuntime` 包的独立消费。
+完整命令和目标矩阵见 [跨平台说明](cross-platform.md)。合成架构/拒绝测试、
+本机编译、目标机运行与真实桌面验收必须分开报告；不新增远程 CI。
+

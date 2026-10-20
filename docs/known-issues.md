@@ -75,3 +75,11 @@ preview.11 Win7 SP1 x86 [第三轮客体](../verification/production-validation/
 [V9 当前 Workbench Win7 SP1 x86 可见交互探索](../verification/production-validation/win7-sp1-x86-v02-workarea-v9-failure-2026-09-29/README.md)在新冻结输入和 1024×768 桌面下，九次窗口探测仍未找到可见顶层窗口，客体整轮退出 1。应用由测试脚本发出关闭请求后原生退出 0，不能证明可见页面或工作区定位修正。需在新输入中诊断窗口可见性和启动时序；缩放、滚动、任务和中文输入仍开放。
 
 [V10 只读时序诊断](../verification/production-validation/win7-sp1-x86-v02-window-visibility-v10-2026-09-29/README.md)在同一官方 x86 构建及 Win7 SP1 x86 快照中，10–40 秒的七次窗口探针未检出窗口，客体单调计时 46.933 秒首次检出，之后至 105 秒保持可见。该轮应用和客体均原生退出 0，但关闭由夹具请求，未执行缩放、滚动、真实中文 IME 或公共任务并行；V9 的真实失败和 Issue 42 均保持开放。尚不能判断可见性波动原因或放行 Win7 工作区定位。
+
+## 跨平台开发状态
+
+`Soui::Runtime` 新增无窗口跨平台构建路径，Linux/macOS 和 Windows ARM 的
+完整桌面 Host、渲染器及系统集成尚未移植。除本轮实际运行环境外，其他
+目标机编译/运行均未验证；矩阵单测不代替实机。详见[跨平台范围与剩余工作](cross-platform.md)。
+本开发 PR 不改变既有发布与生产门槛，也不替换冻结的 0.5.0 包。
+

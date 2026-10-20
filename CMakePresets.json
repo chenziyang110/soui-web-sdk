@@ -1,0 +1,53 @@
+{
+  "version": 5,
+  "cmakeMinimumRequired": { "major": 3, "minor": 24, "patch": 0 },
+  "configurePresets": [
+    {
+      "name": "portable",
+      "displayName": "Portable Runtime (native target)",
+      "binaryDir": "${sourceDir}/out/portable",
+      "cacheVariables": {
+        "SOUI_BUILD_PORTABLE": "ON",
+        "SOUI_BUILD_TEMPLATE": "OFF",
+        "SOUI_BUILD_DEMOS": "OFF",
+        "SOUI_BUILD_WEBVIEW2": "OFF",
+        "SOUI_BUILD_UIA": "OFF",
+        "SOUI_BUILD_VENDOR_TESTS": "OFF",
+        "SOUI_BUILD_TESTS": "ON",
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/portable-install"
+      }
+    },
+    {
+      "name": "portable-macos-universal2",
+      "inherits": "portable",
+      "displayName": "Portable Runtime (macOS universal2)",
+      "binaryDir": "${sourceDir}/out/portable-universal2",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Darwin" },
+      "cacheVariables": {
+        "CMAKE_OSX_ARCHITECTURES": "x86_64;arm64",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/portable-universal2-install"
+      }
+    }
+  ],
+  "buildPresets": [
+    { "name": "portable", "configurePreset": "portable", "configuration": "Release" },
+    { "name": "portable-macos-universal2", "configurePreset": "portable-macos-universal2", "configuration": "Release" }
+  ],
+  "testPresets": [
+    {
+      "name": "portable",
+      "configurePreset": "portable",
+      "configuration": "Release",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    },
+    {
+      "name": "portable-macos-universal2",
+      "configurePreset": "portable-macos-universal2",
+      "configuration": "Release",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    }
+  ]
+}

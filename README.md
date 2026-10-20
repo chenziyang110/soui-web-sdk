@@ -33,6 +33,11 @@
 
 > **当前版本：`0.5.0`（预发布交付）**，以 [VERSION](VERSION) 为准。下载与本轮实际验证范围见 [0.5.0 发布说明](docs/releases/0.5.0.md)。完整生产验收尚未完成，`releaseReady=false`；详情见[已知限制](docs/known-issues.md)，使用与再分发条件见[许可说明](LICENSE.md)。
 
+开发分支新增显式 [跨平台 Runtime](docs/cross-platform.md)：无窗口的任务、权限、
+Bridge 协议和文件扫描可独立构建为 `Soui::Runtime`，覆盖 Windows/Linux
+x86/x64/ARM32/ARM64 与 macOS x64/ARM64/universal2 的目标策略。
+Linux/macOS 桌面窗口后端和其余目标机实测仍待完成；现有下载包不含此功能。
+
 <a id="capabilities"></a>
 
 ## 从一个界面，到一整个桌面应用
@@ -283,3 +288,4 @@ pending; the earlier isolated SDKOnly experiment is not their acceptance.
 </p>
 
 <p align="center"><sub>开发与自动化协作请先阅读 <a href="AGENTS.md">AGENTS.md</a>。安全问题请遵循 <a href="SECURITY.md">SECURITY.md</a>。</sub></p>
+

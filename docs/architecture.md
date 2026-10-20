@@ -1,5 +1,10 @@
 # 架构与所有权
 
+开发分支可显式构建独立的 `Soui::Runtime` 无窗口子集，目标平台、头文件
+交付边界、系统熵与未完成的桌面后端见 [跨平台说明](cross-platform.md) 和
+[ADR-0118](adr/0118-portable-runtime-core.md)。以下 `Soui::Sdk` 桌面说明仍适用
+原 Windows 路径，不能推导出 Linux/macOS Host 已实现。
+
 0.4 的可选现代适配器由 `sdk/renderers/webview2/` 持有，链接为 `Soui::WebView2`，通过公共 Host 和 Bridge 服务业务。基础 `Soui::Sdk` 默认不引入 Loader；现代模板由 `templates/modern-app/` 持有。环境策略与兼容应用共用 SDK，现代/兼容前端分别构建；具体边界见 [ADR-0016](adr/0016-runtime-profiles-and-modern-backend.md)。
 
 ## 三层交付
@@ -66,3 +71,4 @@ preview.10 的动作契约是方法注册的可选元数据和原生校验边界
 当前是 C++17 静态源码 SDK，使用 MSVC v143、动态 Release CRT（包括带调试符号的 Debug 配置）。公开 C++ 类不是跨编译器稳定的 DLL ABI；应用、SDK 和接口宏必须使用一致的构建设置。CMake 导出携带必要的头文件、编译特性和系统链接库。
 
 性能实验宏和测试注入宏不属于标准发行构建契约。标准 SDK 的目标、模板和 Demo 使用相同的公开类型布局。
+
