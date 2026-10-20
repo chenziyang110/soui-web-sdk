@@ -15,9 +15,29 @@
 - renderer `location.reload()` 被取消并请求新的原生 preload；
 - reload 之前排队的消息不得送入新的文档代际；
 - 幂等关闭和关闭后的 API 拒绝。
+- 根原生窗口在进入事件循环前关闭后，子窗口仍能加载、收发消息并结束共享循环。
 
-目录对话框由测试自身的 GTK 回调取消，不需要人工输入。每轮窗口有 20 秒看门狗；
+目录对话框由测试自身的 GTK 回调取消，不需要人工输入。三个阶段各有 20 秒看门狗；
 超时、缺少显示服务、WebKit 进程错误均返回非零。
+
+## CMake 验收入口
+
+在正常图形会话的终端中从仓库根目录执行，使用发行版完整安装的开发和运行依赖：
+若之前使用隔离 sysroot 编译，应先使用没有这些环境变量的终端和新的构建目录，
+避免 CMake 缓存继续引用旧头库；下面 preset 假定 `out/desktop` 未缓存其他依赖。
+
+```bash
+cmake --preset desktop -DSOUI_DESKTOP_GUI_TESTS=ON
+cmake --build --preset desktop
+ctest --preset desktop -R '^sdk.desktop.linux-native$' --output-on-failure \
+  --output-log "$PWD/out/desktop/linux-native.log" \
+  --output-junit "$PWD/out/desktop/linux-native.xml"
+```
+
+CTest 总超时为 70 秒。保留日志、JUnit、当前源码提交和依赖版本；退出码非零时
+不能记录为通过。运行前可用 `ctest --preset desktop -N -R '^sdk.desktop.linux-native$'`
+确认恰好注册一个专项用例，但列出测试不等于运行。不得把只执行无 GUI 测试的
+开发包构建结果当作原生验收。
 
 ## 单独编译
 
@@ -65,6 +85,9 @@ GTK clipboard API 是异步的，本同步外观使用仍处理 UI 事件的嵌�
 头文件及库已实际完成后端和专项测试的严格编译、链接：
 `-std=c++17 -Wall -Wextra -Wpedantic -Werror`，依赖目录使用 system include。
 
-已执行测试二进制，但运行环境没有可连接的 X11 / Wayland 服务，测试返回
-`E_DISPLAY`、退出码 `2`。真实窗口、网页 IPC、目录对话框、剪贴板、reload 与
+最初执行测试二进制时没有可连接的 X11 / Wayland 服务，测试返回
+`E_DISPLAY`、退出码 `2`。后续在受支持的既有云图形桌面启动样例，但系统前缀
+缺少 `WebKitNetworkProcess`，尚未加载页面；详见
+[实际记录](../../docs/acceptance/unified-desktop-2026-10-20.md)。
+真实窗口、网页 IPC、目录对话框、剪贴板、reload 与
 关闭竞态均尚未取得运行通过证据；编译通过不代表上述 GUI 行为通过。

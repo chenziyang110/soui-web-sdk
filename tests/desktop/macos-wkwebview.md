@@ -73,11 +73,16 @@ xcrun lipo -info "$build_dir/wkwebview-universal2.o"
    late JavaScript completion、旧导航完成/失败不得访问旧宿主或污染新导航。
    dispatch 队列在 1024 个待执行工作处拒绝额外提交；普通 native work 不因导航
    被丢弃。脚本消息独立限制为 64 KiB/条、1024 条排队，脱离 WK 委托栈异步交付。
-8. 模态关闭：目录 picker 的嵌套 modal loop 中从后台通过 dispatch 请求 close；
+8. 模态关闭：私有 backend 专项测试中，目录 picker 的嵌套 modal loop 从后台
+   通过 backend dispatch 请求 close；
    picker 必须退出，choose_directory 返回 `E_CLOSED`，外层 run 也须退出。
-   必须包含由 dispatch 工作自身打开 picker、第二个后台 dispatch 请求 close
+   必须包含由 backend dispatch 工作自身打开 picker、第二个后台 dispatch 请求 close
    的场景，以及在 run/第一次 drain 前已经连续排入 picker 和 close 的场景，
    防止串行 main queue 或 run-loop 批处理的模态重入死锁。
+   公共 `application::dispatch` 则遵循业务回调串行契约：若第一项工作同步打开
+   picker，第二项工作须等 picker 返回，不能用它要求中断第一项。验证取消
+   picker 后第二项才执行，且回调没有重入；另测原生窗口关闭/应用退出路径
+   在模态期间的取消与延迟 closed 通知，不将私有 backend 能力等同公共取消 API。
    验证在 ready/error/业务回调中调用 close，以及启动后立刻关闭和未 run 前关闭。
    禁止从回调里销毁 application 对象，此限制不因 shared state 而改变。
 9. 进程与重复生命周期：终止 WebKit 内容进程后应收到 `E_WEB_PROCESS` 并关闭，

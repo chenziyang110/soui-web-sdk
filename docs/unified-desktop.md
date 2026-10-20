@@ -150,6 +150,8 @@ Wayland-only/无兼容托盘宿主不保证可用，后续宿主消失也会报�
 - UI API 只允许创建线程；后台通过 `dispatch` 投递 UI 工作，最多 1024 项，
   关闭后不执行。业务 invoke/ready/error/closed/work 回调经公共队列串行化，防止
   原生模态消息泵重入业务回调。应用必须活过所有后台调用者。
+  若当前回调同步等待目录选择，后续 `dispatch`（包括调用 `close` 的工作）
+  也须等该回调返回；`dispatch` 不是中断当前模态操作的取消接口。
 - 剪贴板文本上限 1 MiB UTF-8，目录选择取消返回失败/取消状态。错误 `code`
   包含共用错误与后端 `E_*`，不应假定不同系统的细节码完全相同。
 - `get_capabilities()` 是实际实现能力，缺失能力不会返回空成功。`evaluate`
@@ -187,9 +189,11 @@ renderer reload 则转公共重载；应用主动导航应走原生 API。只有
 application/protocol 的 fake-backend 契约测试、真实 preload 的 Node VM 测试。
 fake 和 VM 不构成真实浏览器或窗口验收。
 
-本轮 GUI 阻塞：执行环境不能创建 Xvfb/D-Bus 所需 Unix socket，受支持的提升
-执行入口也无法初始化。没有修改权限或关闭 WebKit sandbox。原生二进制启动
-在无显示服务时明确返回 `E_DISPLAY`，不是通过或 skip。
+本轮 GUI 尚未通过：最初无显示服务时原生测试返回 `E_DISPLAY`，不能创建
+Xvfb/D-Bus 所需 Unix socket，提升入口也未能初始化。后续在受支持的既有云
+图形桌面启动样例，因系统前缀缺少 `WebKitNetworkProcess` 而在加载页面前中止。
+当前需要正确安装的系统 WebKitGTK 运行依赖，不能只提供隔离的编译头库。
+没有修改权限或关闭 WebKit sandbox；两次启动均不是通过或 skip。
 
 在已有正常图形会话和依赖的 Linux 目标机：
 
