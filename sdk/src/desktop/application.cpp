@@ -51,6 +51,7 @@ struct application_group {
   bool loop_started{false};
   bool seen_window{false};
   std::size_t open_count() const;
+  std::size_t reserved_count() const;
   void drain() noexcept;
   void stop_if_empty() noexcept;
   result quit();
@@ -76,7 +77,11 @@ struct application_state : std::enable_shared_from_this<application_state> {
   std::deque<queued_request> requests;
   std::deque<result> errors;
   std::deque<std::function<void()>> work_items;
-  std::deque<std::string> commands;
+  struct queued_command { std::string id; std::uint64_t revision; };
+  std::deque<queued_command> commands;
+  std::uint64_t action_revision{0};
+  std::uint64_t popup_revision{0};
+  std::uint64_t tray_revision{0};
   std::set<std::string> popup_commands;
   std::set<std::string> tray_commands;
   std::atomic<std::size_t> pending_work{0};
@@ -135,9 +140,10 @@ struct application_state : std::enable_shared_from_this<application_state> {
         }
       } else if (!commands.empty()) {
         auto command = std::move(commands.front()); commands.pop_front();
-        if (accepting.load() && command_allowed(command) && handlers.command) {
+        if (accepting.load() && command.revision == action_revision &&
+            command_allowed(command.id) && handlers.command) {
           ++group->callback_depth;
-          try { handlers.command(command); }
+          try { handlers.command(command.id); }
           catch (...) { report(result::failure("callback_failed", "A native command callback failed.")); }
           --group->callback_depth;
         }
@@ -165,7 +171,7 @@ struct application_state : std::enable_shared_from_this<application_state> {
   void on_command(std::string_view command) {
     if (!accepting.load() || !detail::valid_name(command) || !command_allowed(command) ||
         commands.size() >= 128) return;
-    commands.emplace_back(command);
+    commands.push_back({std::string(command), action_revision});
     drain();
   }
   void on_closed() noexcept {
@@ -281,6 +287,12 @@ std::size_t application_group::open_count() const {
   std::size_t count = 0;
   for (const auto& weak : windows)
     if (const auto state = weak.lock(); state && state->initialized && !state->notified_closed) ++count;
+  return count;
+}
+std::size_t application_group::reserved_count() const {
+  std::size_t count = 0;
+  for (const auto& weak : windows)
+    if (const auto state = weak.lock(); state && state->native && !state->notified_closed) ++count;
   return count;
 }
 void application_group::drain() noexcept {
@@ -415,6 +427,14 @@ result application::initialize() {
   if (!created.ok) return created;
   state->initialized = true;
   state->group->seen_window = true;
+  // Native creation may pump a nested UI loop. A quit issued there cannot see
+  // this not-yet-initialized window in open_count(), so finish its teardown
+  // rather than resurrecting a window after the application's loop stopped.
+  if (state->group->quitting) {
+    (void)state->close();
+    state->group->stop_if_empty();
+    return result::failure("closed", "The application quit during native window initialization.");
+  }
   if (state->notified_closed) {
     state->group->stop_if_empty();
     return result::failure("closed", "The native window closed during initialization.");
@@ -453,7 +473,9 @@ window_result application::create_window(options settings, callbacks handlers) {
   if (!checked.ok) return {checked, {}};
   if (!state->initialized || state->group->quitting || !state->group->open_count())
     return {unavailable(), {}};
-  if (state->group->open_count() >= 32)
+  // Native create() may enter a nested UI loop before initialized becomes true.
+  // Count those reserved slots too, without treating them as live loop owners.
+  if (state->group->reserved_count() >= 32)
     return {result::failure("window_limit", "The application supports at most 32 live windows."), {}};
   auto value = std::make_unique<implementation>();
   value->state->settings = std::move(settings);
@@ -550,9 +572,18 @@ result application::popup_menu(const std::vector<menu_item>& items) {
   const auto valid = validate_menu(items, false);
   if (!valid.ok) return valid;
   auto previous = std::move(state->popup_commands);
+  // Backends validate their native menu generation before entering common code.
+  // A command deferred by another window's callback must not outlive a later
+  // action reconfiguration, even when the new menu reuses the same command ID.
+  // Conservatively invalidate both popup and tray queued commands per window.
+  ++state->action_revision;
+  const auto revision = ++state->popup_revision;
   state->popup_commands = enabled_commands(items);
   auto shown = state->native->popup_menu(items);
-  if (!shown.ok) state->popup_commands = std::move(previous);
+  if (!shown.ok && state->popup_revision == revision) {
+    state->popup_commands = std::move(previous);
+    ++state->action_revision;
+  }
   return shown;
 }
 result application::set_tray(const tray_options& settings) {
@@ -563,16 +594,26 @@ result application::set_tray(const tray_options& settings) {
   if (settings.label.empty() || !valid_text(settings.label, 32) || !valid_text(settings.tooltip, 4096))
     return result::failure("invalid_tray", "Tray label and tooltip must be bounded UTF-8.");
   auto previous = std::move(state->tray_commands);
+  ++state->action_revision;
+  const auto revision = ++state->tray_revision;
   state->tray_commands = enabled_commands(settings.menu);
   auto changed = state->native->set_tray(settings);
-  if (!changed.ok) state->tray_commands = std::move(previous);
+  if (!changed.ok && state->tray_revision == revision) {
+    state->tray_commands = std::move(previous);
+    ++state->action_revision;
+  }
   return changed;
 }
 result application::clear_tray() {
   auto state = impl_->state; const auto checked = state->check();
   if (!checked.ok) return checked;
+  ++state->action_revision;
+  const auto revision = ++state->tray_revision;
   auto cleared = state->native->clear_tray();
-  if (cleared.ok) state->tray_commands.clear();
+  if (state->tray_revision == revision) {
+    if (cleared.ok) state->tray_commands.clear();
+    else ++state->action_revision;
+  }
   return cleared;
 }
 capabilities application::get_capabilities() const {

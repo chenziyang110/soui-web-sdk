@@ -10,6 +10,11 @@ const { spawnSync } = require('node:child_process');
 
 const root = path.resolve(__dirname, '..');
 const configurations = ['Debug', 'Release', 'RelWithDebInfo', 'MinSizeRel'];
+const requiredTests = [
+  'sdk.portable.integration', 'sdk.portable.primitives', 'sdk.portable.installed-consumer',
+  'sdk.portable.platform-matrix', 'sdk.desktop.contract', 'sdk.desktop.preload',
+  'sdk.desktop.package-tool',
+];
 function parseArgs(args) {
   const options = { configuration: 'Release' };
   const names = { '--build-dir': 'build', '--output': 'output', '--config': 'configuration' };
@@ -25,10 +30,14 @@ function parseArgs(args) {
     throw new Error('Usage: node tools/package-desktop.cjs --build-dir DIR --output NEW_DIR [--config Release|Debug|RelWithDebInfo|MinSizeRel]');
   return options;
 }
-function run(command, args, cwd) {
-  const result = spawnSync(command, args, { cwd, stdio: 'inherit', shell: false });
+function run(command, args, cwd, capture = false) {
+  const result = spawnSync(command, args, {
+    cwd, stdio: capture ? ['ignore', 'pipe', 'inherit'] : 'inherit',
+    encoding: 'utf8', maxBuffer: 16 * 1024 * 1024, shell: false,
+  });
   if (result.error) throw result.error;
   if (result.status !== 0) throw new Error(`${command} failed (${result.signal || result.status}).`);
+  return result.stdout;
 }
 function readCache(file) {
   const values = {};
@@ -40,6 +49,35 @@ function readCache(file) {
 }
 function hash(bytes) {
   return crypto.createHash('sha256').update(bytes).digest('hex');
+}
+function validateCache(build, source, config) {
+  const cache = readCache(path.join(build, 'CMakeCache.txt'));
+  if (!cache.CMAKE_HOME_DIRECTORY ||
+      fs.realpathSync(cache.CMAKE_HOME_DIRECTORY) !== fs.realpathSync(source))
+    throw new Error('Build directory does not belong to this source checkout.');
+  if (cache.SOUI_BUILD_DESKTOP !== 'ON' || cache.SOUI_BUILD_TESTS !== 'ON')
+    throw new Error('A desktop build with SOUI_BUILD_TESTS=ON is required.');
+  if (cache.CMAKE_CONFIGURATION_TYPES) {
+    if (!cache.CMAKE_CONFIGURATION_TYPES.split(';').includes(config))
+      throw new Error('Requested configuration is not available in this multi-config build.');
+  } else if (cache.CMAKE_BUILD_TYPE !== config) {
+    throw new Error('Requested configuration does not match the single-config build.');
+  }
+}
+function validateTests(text) {
+  let listing;
+  try { listing = JSON.parse(text); } catch { throw new Error('CTest registration is not valid JSON.'); }
+  if (!listing || listing.kind !== 'ctestInfo' || !Array.isArray(listing.tests))
+    throw new Error('CTest registration is incomplete.');
+  for (const name of requiredTests) {
+    const matches = listing.tests.filter(test => test.name === name);
+    if (matches.length !== 1 || !Array.isArray(matches[0].command) || !matches[0].command.length ||
+        !Array.isArray(matches[0].properties) ||
+        matches[0].properties.some(property => property.name === 'DISABLED' &&
+          ![false, 0, '0', 'FALSE', 'OFF'].includes(property.value)))
+      throw new Error(`Required CTest is missing, disabled or invalid: ${name}. Reconfigure this checkout.`);
+  }
+  return requiredTests.slice();
 }
 function filesIn(directory, relative = '') {
   const files = [];
@@ -79,13 +117,7 @@ function packageDesktop(options, execute = run, source = root) {
   const output = path.resolve(options.output);
   const config = options.configuration;
   if (!configurations.includes(config)) throw new Error('Invalid build configuration.');
-  const cache = readCache(path.join(build, 'CMakeCache.txt'));
-  if (fs.realpathSync(cache.CMAKE_HOME_DIRECTORY || '') !== fs.realpathSync(source))
-    throw new Error('Build directory does not belong to this source checkout.');
-  if (cache.SOUI_BUILD_DESKTOP !== 'ON' || cache.SOUI_BUILD_TESTS !== 'ON')
-    throw new Error('A desktop build with SOUI_BUILD_TESTS=ON is required.');
-  if (!cache.CMAKE_CONFIGURATION_TYPES && cache.CMAKE_BUILD_TYPE !== config)
-    throw new Error('Requested configuration does not match the single-config build.');
+  validateCache(build, source, config);
   if (fs.existsSync(output)) throw new Error('Output already exists; choose a new directory.');
   // Non-recursive mkdir reserves a new destination without ever replacing data.
   fs.mkdirSync(output);
@@ -94,20 +126,29 @@ function packageDesktop(options, execute = run, source = root) {
   try {
     execute('cmake', ['--build', build, '--config', config], source);
     completed.push('build');
+    // Building may regenerate CMake. Revalidate the actual cache and required
+    // registration rather than accepting an unrelated surviving test as proof.
+    validateCache(build, source, config);
+    const tested = validateTests(execute('ctest',
+      ['--test-dir', build, '-C', config, '--show-only=json-v1'], source, true));
     execute('ctest', ['--test-dir', build, '-C', config, '--output-on-failure', '--no-tests=error'], source);
     completed.push('registered-tests');
     execute('cmake', ['--install', build, '--config', config, '--prefix', stage], source);
     completed.push('install');
     const target = identity(stage);
+    if (target.version !== fs.readFileSync(path.join(source, 'VERSION'), 'utf8').trim())
+      throw new Error('Installed package version does not match source VERSION.');
     const files = filesIn(stage);
     if (!files.some(file => file.path === 'include/soui/desktop/app.h') ||
-        !files.some(file => /(?:^|\/)(?:lib)?soui_desktop\.(?:a|lib)$/.test(file.path)))
-      throw new Error('Installed desktop header or static library is missing.');
+        !['desktop', 'runtime'].every(component =>
+          files.some(file => file.path === `lib/${config}/${target.os === 'windows' ? '' : 'lib'}soui_${component}.${target.os === 'windows' ? 'lib' : 'a'}`)))
+      throw new Error('Installed desktop header or matching configuration static library is missing.');
     const contentHash = hash(JSON.stringify(files));
     const manifest = {
       schema: 1, kind: 'soui-desktop-development-snapshot', ...target,
       configuration: config, contentSha256: contentHash, releaseReady: false,
-      validation: { build: 'passed', registeredTests: 'passed', nativeGui: 'not-certified', targetRuntime: 'not-certified' },
+      validation: { build: 'passed', registeredTests: 'passed', requiredTests: tested,
+        nativeGui: 'not-certified', targetRuntime: 'not-certified' },
       files,
     };
     fs.writeFileSync(path.join(stage, 'development-manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, { flag: 'wx' });
@@ -131,4 +172,4 @@ if (require.main === module) {
     process.exitCode = 1;
   }
 }
-module.exports = { parseArgs, readCache, filesIn, identity, packageDesktop };
+module.exports = { parseArgs, readCache, filesIn, identity, validateTests, requiredTests, packageDesktop };

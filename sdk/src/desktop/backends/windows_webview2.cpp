@@ -149,6 +149,7 @@ struct state : std::enable_shared_from_this<state> {
   bool tray_present{false};
   bool tray_ready{false};
   std::uint64_t tray_revision{0};
+  std::uint64_t popup_revision{0};
   std::wstring tray_tooltip;
   std::vector<menu_item> tray_items;
 
@@ -291,6 +292,10 @@ struct state : std::enable_shared_from_this<state> {
     if (GetForegroundWindow() != owner && !SetForegroundWindow(owner) &&
         GetForegroundWindow() != owner)
       return result::failure("E_FOCUS", "Windows refused foreground activation for the popup");
+    // TrackPopupMenuEx enters a nested message loop. Invalidate a previously
+    // selected popup command before that loop can dispatch it into this newer
+    // menu registration, even when both registrations reuse the same ID.
+    const auto expected_popup_revision = expected_tray_revision ? 0 : ++popup_revision;
     active_menu_owner = owner;
     SetLastError(ERROR_SUCCESS);
     const UINT command = static_cast<UINT>(TrackPopupMenuEx(
@@ -319,10 +324,12 @@ struct state : std::enable_shared_from_this<state> {
         snapshot[command - 1].separator)
       return result::failure("E_MENU_COMMAND", "Windows returned an invalid menu command");
     const std::weak_ptr<state> weak = shared_from_this();
-    return enqueue([weak, expected_tray_revision, id = snapshot[command - 1].id] {
+    return enqueue([weak, expected_tray_revision, expected_popup_revision,
+                    id = snapshot[command - 1].id] {
       if (const auto self = weak.lock(); self && self->active() && self->events.command &&
           (!expected_tray_revision || (self->tray_desired && self->tray_ready &&
-                                      self->tray_revision == expected_tray_revision)))
+                                      self->tray_revision == expected_tray_revision)) &&
+          (expected_tray_revision || self->popup_revision == expected_popup_revision))
         self->events.command(id);
     });
   }

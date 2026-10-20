@@ -215,3 +215,7 @@ ctest --preset desktop -R sdk.desktop.linux-native --output-on-failure
 [ADR-0119](adr/0119-unified-system-webview-desktop.md)、
 [多窗口与原生动作决策](adr/0120-managed-desktop-windows-and-native-actions.md)、
 [开发包决策](adr/0121-unified-desktop-development-package.md)。
+
+### 开发包失败关闭补充
+
+入口在构建后重新核对缓存和 CTest JSON 注册清单，七项必需测试须唯一、启用并具有执行命令。多配置生成器仅接受已配置的目标；安装版本须匹配源码 VERSION，且必须包含选中配置的 Runtime/ Desktop 静态库。它不以其他测试通过、旧缓存或其他配置文件替代这些条件。

@@ -27,6 +27,7 @@ result unsupported() { return result::failure("test_unsupported", "Fake capabili
 
 class fake_backend;
 std::vector<fake_backend*> backends;
+std::function<void()> during_next_create;
 struct native_counts {
   int closed{0}, loop_quits{0}, runs{0}, popup_calls{0}, tray_calls{0}, clear_tray_calls{0};
 };
@@ -54,7 +55,11 @@ class fake_backend final : public detail::backend {
   int loads{0};
 
   result create(const options&, detail::backend_events callbacks) override {
-    events = std::move(callbacks); active.store(true); return result::success();
+    events = std::move(callbacks); active.store(true);
+    auto nested = std::move(during_next_create);
+    during_next_create = {};
+    if (nested) nested();
+    return result::success();
   }
   result load(std::string selected, std::string script) override {
     ++loads; uri = std::move(selected); preload = std::move(script); return load_status;
@@ -551,6 +556,26 @@ void group_lifetime_contract(files& fixture) {
   }
 }
 
+void quit_during_window_creation_contract(files& fixture) {
+  application root(fixture.settings());
+  CHECK(root.initialize().ok);
+  const auto root_counts = latest->counts;
+  std::shared_ptr<native_counts> child_counts;
+  during_next_create = [&] {
+    // Native creation can pump a nested event loop (COM/AppKit/GTK). The
+    // initializing child is not a live window until native create returns.
+    child_counts = latest->counts;
+    CHECK(root.quit().ok);
+    CHECK(root.window_ids().empty());
+  };
+  const auto child = root.create_window(fixture.settings());
+  CHECK(!child.status.ok && child.status.code == "closed" && !child.window);
+  CHECK(child_counts && child_counts->closed == 1);
+  CHECK(root_counts->loop_quits == 1);
+  CHECK(root.window_ids().empty());
+  CHECK(!root.run().ok);
+}
+
 void window_capacity_contract(files& fixture) {
   application root(fixture.settings());
   CHECK(root.initialize().ok);
@@ -568,6 +593,16 @@ void window_capacity_contract(files& fixture) {
   CHECK(children.back()->close().ok);
   CHECK(!root.create_window(invalid).status.ok);
   CHECK(root.window_ids().size() == 31);
+  window_result nested;
+  during_next_create = [&] {
+    // The outer native window already reserves the final slot even though it
+    // has not finished create(). Nested UI pumping must not overbook it.
+    nested = root.create_window(fixture.settings());
+  };
+  auto final_window = root.create_window(fixture.settings());
+  CHECK(final_window.status.ok && final_window.window);
+  CHECK(!nested.status.ok && nested.status.code == "window_limit" && !nested.window);
+  CHECK(root.window_ids().size() == 32);
 }
 
 void cross_window_callbacks_contract(files& fixture) {
@@ -694,6 +729,56 @@ void native_actions_contract(files& fixture) {
   child_native.command("enabled");
   CHECK(child_commands.size() == 1);
 }
+
+void deferred_native_action_revision_contract(files& fixture) {
+  std::shared_ptr<application> child;
+  fake_backend* child_native = nullptr;
+  int commands = 0;
+  callbacks root_handlers;
+  root_handlers.invoke = [&](std::string_view method, std::string_view) {
+    child_native->command("shared");
+    CHECK(commands == 0); // Deferred until the other window's callback returns.
+    if (method == "replace") {
+      CHECK(child->popup_menu({{"shared", "Replacement action"}}).ok);
+    } else if (method == "remove-tray") {
+      CHECK(child->clear_tray().ok);
+    } else {
+      child_native->menu_status = result::failure("test_menu_failure", "Menu rejected.");
+      CHECK(!child->popup_menu({{"shared", "Failed action"}}).ok);
+    }
+    return std::string("{}");
+  };
+  application root(fixture.settings(), root_handlers);
+  CHECK(root.initialize().ok);
+  auto& root_native = *latest;
+  callbacks handlers;
+  handlers.command = [&](std::string_view) { ++commands; };
+  child = add_window(root, fixture.settings(), handlers);
+  child_native = latest;
+  child_native->menu_status = child_native->tray_status =
+      child_native->clear_tray_status = result::success();
+  CHECK(child->popup_menu({{"shared", "Original action"}}).ok);
+  root_native.send(root_native.envelope(1, "replace"));
+  CHECK(commands == 0);
+  tray_options tray;
+  tray.menu = {{"shared", "Tray action"}};
+  CHECK(child->set_tray(tray).ok);
+  root_native.send(root_native.envelope(2, "remove-tray"));
+  CHECK(commands == 0); // Same ID still exists in popup but old tray event is stale.
+  root_native.send(root_native.envelope(3, "failed-replacement"));
+  CHECK(commands == 0); // Failed reconfiguration also cancels deferred actions.
+  child_native->command("shared");
+  CHECK(commands == 1); // The retained popup still accepts newly generated events.
+  // A native popup can pump a tray update before returning failure. The
+  // unrelated tray revision must not prevent restoring the prior popup IDs.
+  child_native->while_popup = [&] { CHECK(child->set_tray(tray_options{}).ok); };
+  CHECK(!child->popup_menu({{"rejected", "Rejected popup"}}).ok);
+  child_native->while_popup = {};
+  child_native->command("rejected");
+  CHECK(commands == 1);
+  child_native->command("shared");
+  CHECK(commands == 2);
+}
 }  // namespace
 
 namespace soui::desktop::detail {
@@ -715,9 +800,11 @@ int main(int argc, char** argv) {
     initialization_contract(fixture);
     multiwindow_identity_contract(fixture);
     group_lifetime_contract(fixture);
+    quit_during_window_creation_contract(fixture);
     window_capacity_contract(fixture);
     cross_window_callbacks_contract(fixture);
     native_actions_contract(fixture);
+    deferred_native_action_revision_contract(fixture);
   } catch (const std::exception& error) {
     ++failures; std::cerr << "Unexpected test exception: " << error.what() << '\n';
   }

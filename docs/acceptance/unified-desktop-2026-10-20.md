@@ -33,9 +33,8 @@ UTF-8 请求边界、超时/pagehide Promise 拒绝及 `__proto__` JSON 语义�
 
 ## 明确未通过验收
 
-- Linux 真实窗口和 JavaScript/Bridge 集成：当前执行环境不能创建 Xvfb/D-Bus
-  所需 Unix socket；受支持的提升执行入口也无法初始化。未绕过权限或关闭 WebKit
-  sandbox。原生程序在没有显示服务时返回 `E_DISPLAY`，该失败不是测试通过。
+- Linux 真实窗口和 JavaScript/Bridge 集成：早期 shell 环境不能创建 Xvfb/D-Bus
+  所需 Unix socket，提升入口也未能初始化。后续使用受支持的既有云图形桌面，经文件管理器确认同一源码目录可访问，并在该会话启动样例；不再把“没有显示服务”视为唯一阻塞。实际启动因系统前缀缺少 `WebKitNetworkProcess` 辅助进程而中止，尚未加载页面。隔离开发库仅能支撑编译；正式发行库没有采用临时辅助程序路径覆盖。当前仍需正确安装的系统 WebKitGTK 运行依赖。未绕过权限、修改第三方二进制或关闭 WebKit sandbox。
 - Windows x86/x64/ARM64：没有 Windows SDK/MSVC 目标环境，后端只完成实现与
   源码/API 审查，未编译、链接或运行。原 Windows SOUI/Miniblink 默认路径未在
   本环境重建。
@@ -53,3 +52,9 @@ reload、双向 Bridge、系统能力、关闭与晚回调检查。真实引擎�
 顺序必须在各目标机确认，不能由 fake backend 的通过结论替代。
 
 本仓库按既有约定不新增远程 CI。PR 保持 Draft，等待维护者审查及目标机验收。
+
+## 生命周期及打包稳健性增量
+
+本轮最终代码重新编译后通过全部七套 CTest：公共契约284项、preload10项、打包工具11项，以及portable四套检查。新增生命周期用例先对旧HEAD复现12个断言失败，修复后通过。独立安装包再次完成真实 build、CTest注册核对/执行、install和ZIP；仅引用该包的示例消费者编译链接通过。ZIP CRC、归档SHA-256及34个载荷文件哈希已重新核对。
+
+新增Linux原生阶段覆盖“根窗口先关闭、子窗口仍加载/交换消息、最后结束根循环”，已用实际GTK/WebKit库严格编译链接。它未实际运行，不计入七套默认无窗口测试。Windows旧菜单选择的生成代际修复仍只有源码审查，未目标编译。上述GUI运行依赖阻塞尚未解决；本轮没有安装系统包。

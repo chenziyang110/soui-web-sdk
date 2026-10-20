@@ -261,6 +261,53 @@ window.addEventListener("DOMContentLoaded", function () {
   test.expect(reloads == 1 && reload_loads == 2 && old_message && fresh_message && reload_closed,
               "renderer reload rotates the preload and completes exactly once");
   test.desktop.reset();
+
+  // The real loop owner can lose its native window before run(), while another
+  // managed backend must still load, exchange messages, and stop that loop.
+  // This is native GTK/WebKit coverage, not the fake common-layer lifecycle test.
+  {
+    std::ofstream html(entry);
+    html << "<!doctype html><meta charset=\"utf-8\"><body>Managed child</body>";
+  }
+  test.desktop = soui::desktop::detail::make_backend();
+  auto child = soui::desktop::detail::make_backend();
+  int root_closed = 0;
+  int child_closed = 0;
+  int child_messages = 0;
+  backend_events root_events;
+  root_events.closed = [&] { ++root_closed; };
+  test.expect(test.desktop->create(options, std::move(root_events)).ok,
+              "create a real managed-loop owner");
+  backend_events child_events;
+  child_events.allow_navigation = [&](std::string_view uri) { return uri == test.uri; };
+  child_events.loaded = [&](std::string_view) {
+    test.expect(child->evaluate(
+        "window.webkit.messageHandlers.soui.postMessage('managed-child');").ok,
+        "child evaluates after the root native window closes");
+  };
+  child_events.message = [&](std::string_view message, std::string_view, message_frame) {
+    test.expect(message == "managed-child", "child message remains independent of the closed root");
+    ++child_messages;
+    (void)child->close();
+  };
+  child_events.closed = [&] {
+    ++child_closed;
+    (void)test.desktop->quit_loop();
+  };
+  child_events.error = [&](const soui::desktop::result& error) {
+    test.expect(false, error.message.c_str());
+    (void)child->close();
+  };
+  test.expect(child->create(options, std::move(child_events)).ok, "create a real managed child");
+  test.expect(child->load(test.uri, "void 0").ok, "load the independently managed child");
+  test.expect(test.desktop->close().ok && root_closed == 1, "close only the native root before run");
+  timeout = g_timeout_add_seconds(20, watchdog, &test);
+  test.expect(test.desktop->run().ok, "closed root still owns the shared native loop");
+  if (g_main_context_find_source_by_id(nullptr, timeout)) g_source_remove(timeout);
+  test.expect(root_closed == 1 && child_closed == 1 && child_messages == 1,
+              "child stays operational until it closes and stops the shared loop");
+  child.reset();
+  test.desktop.reset();
   std::filesystem::remove_all(test.root);
   if (test.failures) return 1;
   std::cout << "Linux WebKitGTK backend integration passed.\n";
