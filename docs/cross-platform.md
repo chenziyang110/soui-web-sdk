@@ -170,4 +170,4 @@ Linux getrandom、macOS SecRandomCopyBytes。Linux 要求内核 3.17+ 和提供
 5. 平台签名/打包、安装升级回退、真实输入/窗口/长时间任务及全矩阵目标机验收。
 
 这些缺口不会通过返回空成功或声称“全部架构已适配”来隐藏。
-设计记录见 [ADR-0118](adr/0118-portable-runtime-core.md)。
+设计记录见 [ADR-0122](adr/0122-portable-runtime-core.md)。

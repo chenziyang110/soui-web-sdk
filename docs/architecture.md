@@ -2,7 +2,7 @@
 
 开发分支可显式构建独立的 `Soui::Runtime` 无窗口子集，目标平台、头文件
 交付边界与系统熵见 [跨平台说明](cross-platform.md) 和
-[ADR-0118](adr/0118-portable-runtime-core.md)。独立 `Soui::Desktop` 的三系统
+[ADR-0122](adr/0122-portable-runtime-core.md)。独立 `Soui::Desktop` 的三系统
 WebView 后端、统一 API 和实际验收边界见 [统一桌面入口](unified-desktop.md) 与
 [ADR-0119](adr/0119-unified-system-webview-desktop.md)。以下 `Soui::Sdk` 说明仍适用
 原 Windows 路径，其历史验收不能自动转移给新入口。
