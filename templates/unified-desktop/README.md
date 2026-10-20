@@ -57,3 +57,10 @@ WebView2/VC runtime，macOS 使用系统 WebKit。诊断的 unknown 或退出0�
 staging 目录，不重新构建或覆盖它。stage目标创建产物后也会自动执行此校验。
 输出是结构化结果；文件与自附SHA-256清单一致不等于签名或来源可信，也不表示
 系统依赖与窗口运行已验收。不要把报告写入被校验目录，否则会成为额外文件。
+
+## 创建交付归档
+
+已有staging目录校验通过后，构建 `@APP_NAME@_archive_stage`（多配置构建同样传
+`--config Release`）。默认产生 `<staging目录>-delivery`，其中有ZIP、SHA-256和
+交付清单。归档目标不重新构建或覆盖staging，输出须为新目录；自附散列不是签名，
+此步骤也不会自动发布或验证真实窗口运行。详见SDK应用staging文档。

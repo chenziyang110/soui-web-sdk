@@ -179,3 +179,18 @@ Windows/macOS 原生诊断和实际窗口验收延后；此前 GUI 依赖阻塞�
 
 未执行完整测试矩阵、GUI、Windows/macOS真实目录/权限或正式签名验收；这些
 仍留待统一回归。该结果仅证明自附清单内部一致，不证明交付来源可信或可运行。
+
+## 已校验应用归档增量（09:18 UTC）
+
+- archive工具3项重点测试、Node语法与git diff --check通过：ZIP元数据/权限、
+  create-only、损坏源/预期身份、路径重叠/symlink与CLI错误。
+- 安装SDK后，仓库外生成应用的StarterApp_archive_stage独立目标成功，未重新
+  构建/staging或执行应用。产物ZIP为543833字节，包含11个文件、13个归档条目。
+- 独立Python zipfile读取通过CRC、全部载荷SHA-256、UTF-8标志与程序/脚本owner
+  执行位检查；ZIP SHA-256与交付清单一致：
+  `0ba63c1cccaaa86311efb2ac2cc14ea58ee76930b714547b64810aa10b07a2d6`。
+- 实现worker另对既有Linux示例目录做过一次独立ZIP读取冒烟；没有执行应用。
+  已安装与源码archive工具SHA-256一致，独立只读审查未发现具体待修问题。
+
+没有自动上传、发布、签名、解压执行或安装依赖。Windows/macOS解压器和真实
+.app启动、正式分发及完整矩阵仍待统一验收；散列/清单不构成来源认证。

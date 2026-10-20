@@ -3,7 +3,7 @@ include_guard(GLOBAL)
 # Creates an explicit, non-ALL staging target. Re-running it refuses an existing
 # output directory; callers choose a new destination for each staged artifact.
 function(soui_stage_application)
-  cmake_parse_arguments(PARSE_ARGV 0 APP "" "TARGET;NAME;ASSETS;OUTPUT;VERSION;IDENTIFIER" "")
+  cmake_parse_arguments(PARSE_ARGV 0 APP "" "TARGET;NAME;ASSETS;OUTPUT;VERSION;IDENTIFIER;ARCHIVE_OUTPUT" "")
   if(APP_UNPARSED_ARGUMENTS OR APP_KEYWORDS_MISSING_VALUES)
     message(FATAL_ERROR "soui_stage_application received unknown or incomplete arguments")
   endif()
@@ -37,8 +37,17 @@ function(soui_stage_application)
   if(NOT EXISTS "${verifier}")
     message(FATAL_ERROR "SouiDesktop application verifier is missing")
   endif()
+  set(archiver "${tool_directory}/archive-desktop-app.cjs")
+  if(NOT EXISTS "${archiver}")
+    message(FATAL_ERROR "SouiDesktop application archiver is missing")
+  endif()
   get_filename_component(assets "${APP_ASSETS}" ABSOLUTE BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
   get_filename_component(output "${APP_OUTPUT}" ABSOLUTE BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+  if(DEFINED APP_ARCHIVE_OUTPUT)
+    get_filename_component(archive_output "${APP_ARCHIVE_OUTPUT}" ABSOLUTE BASE_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+  else()
+    set(archive_output "${output}-delivery")
+  endif()
   set(identifier)
   if(DEFINED APP_IDENTIFIER)
     list(APPEND identifier --identifier "${APP_IDENTIFIER}")
@@ -57,4 +66,9 @@ function(soui_stage_application)
     COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" "${verifier}"
       --input "${output}" --platform "${platform}" --arch "${architecture}"
     VERBATIM COMMENT "Verify staged application integrity without executing it")
+  add_custom_target("${APP_TARGET}_archive_stage"
+    COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" "${archiver}"
+      --input "${output}" --output "${archive_output}"
+      --platform "${platform}" --arch "${architecture}"
+    VERBATIM COMMENT "Archive verified staged application into a new delivery directory")
 endfunction()

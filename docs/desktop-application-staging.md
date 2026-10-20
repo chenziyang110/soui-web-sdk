@@ -125,3 +125,33 @@ Linux/macOS程序和脚本的 owner 执行位；不验证 ACL、noexec 挂载或
 CMake 的 `my_app_stage` 创建完成后自动校验；单独的 `my_app_verify_stage` 只
 核对已有目录，不构建程序、不再次 staging，也不清理失败产物。选择的配置和
 APP_STAGE_DIRECTORY必须与原产物一致。旧create-only覆盖保护继续有效。
+
+## 生成可分发归档（不发布）
+
+```sh
+node <SDK前缀>/share/SouiDesktop/tools/archive-desktop-app.cjs \
+  --input <已staging目录> --output <新的交付目录> --platform linux --arch x64
+```
+
+仓库内入口为 `tools/archive-desktop-app.cjs`。归档前必须通过已有 verifier；
+工具不会执行应用或 doctor。交付目录包含一个 ZIP、对应 `.sha256` 和最后写入
+的 `delivery-manifest.json`。输出父目录须存在、目标必须不存在，不能位于输入
+内或包含输入；不覆盖、不自动删除失败产物，不自动上传、发布或签名。
+
+ZIP 使用 UTF-8、store模式（不压缩），不依赖额外 zip/tar 程序或第三方 Node
+包。每份归档有一个应用名/版本/平台/架构组成的根目录，保留 .app 层次和 Unix
+执行权限（不传播 setuid/setgid/sticky）。ZIP32容量或条目数超限直接失败，不
+静默截断。Windows主机不能可靠保存Linux/macOS执行位，因此明确拒绝该跨主机
+归档组合；应在POSIX主机打包这些目标。不同解压器可能忽略Unix权限，目标机
+解压后仍应重新校验和运行验收。
+
+写入时重新核对每个文件的大小/SHA-256并计算CRC，完成后回读ZIP结构、条目、
+内容散列和权限，再写最终交付清单。输入必须在过程中保持不变，这不是抵抗
+恶意并发替换的文件系统沙箱。SHA-256及交付清单不是数字签名；攻击者同时换掉
+归档和清单仍可能通过。交付结果明确不提供真实性或原生运行认证。
+
+已有 CMake 调用增加独立 `<target>_archive_stage` 目标，它只读取既有staging
+目录，不隐式重建或重新staging。默认交付目录为原staging路径加 `-delivery`，
+可通过 `soui_stage_application(... ARCHIVE_OUTPUT <新目录>)` 指定。
+完整顺序是先构建 `<target>_stage`，再构建 `<target>_archive_stage`；后者失败
+不删除原应用目录。重复生成交付物应选择新输出，不能绕过create-only保护。
