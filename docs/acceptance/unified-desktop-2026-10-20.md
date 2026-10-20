@@ -136,3 +136,19 @@ CRC/归档散列核对通过。原生 GTK/WebKit 后端与 fixture 已编译链�
 未运行本增量 GUI、完整 CTest、打包矩阵或压力测试。Windows/macOS 编译和真实
 快捷方式/Finder 启动、搬移后的目标运行、外部依赖、签名、公证及安装器仍待
 统一验收。应用 staging 不提供系统 WebView，不改变已记录 GUI 依赖阻塞。
+
+## 应用运行依赖诊断增量（07:47 UTC）
+
+- Linux 实际头库下 Desktop/example 增量构建通过；Linux 原生后端严格语法检查
+  通过。Windows 的 WebView2 发现 API 按官方文档接入，但未编译或运行。
+- doctor 生成器5项与应用 staging 8项重点测试通过；Node 与生成的 Linux/macOS
+  shell 语法检查通过。Windows PowerShell 和 macOS 实机检查未执行。
+- 源码工具生成真实 Linux 应用目录，`launch.sh --doctor` 返回0且不执行应用：
+  GTK 库缓存有候选，WebKit/JavaScriptCore 库及两个 helper 未建立标准位置候选，
+  显示变量未设置；这些情况均诚实报告 unknown，不能当作依赖安装或 GUI 成功。
+- 安装到独立 SDK 前缀后，工具及新生成器模块一起安装，实际应用 staging 通过。
+- 独立审查修正“缺少显示变量就阻止启动”的错误假设，保留默认 Wayland 连接
+  可能性，由 GTK 实际连接决定结果；最终只读复核通过，git diff --check 通过。
+
+没有安装系统运行库、关闭沙箱、变更执行策略或重新尝试提升入口。完整回归、
+Windows/macOS 原生诊断和实际窗口验收延后；此前 GUI 依赖阻塞未因此消除。

@@ -5,6 +5,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const crypto = require('node:crypto');
+const { generatePreflight } = require('./desktop-preflight.cjs');
 const maximumFiles = 10000;
 const maximumFileBytes = 256 * 1024 * 1024;
 const maximumTotalBytes = 1024 * 1024 * 1024;
@@ -232,19 +233,23 @@ function stage(options) {
   }
   copy(binary, binaryRelative, stat.size, 0o755);
   for (const file of assetsList) copy(file.source, `${assetsRelative}/${file.relative}`, file.size, 0o644);
-  if (options.platform === 'linux') generated('launch.sh', `#!/bin/sh\nset -eu\nHERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)\nexec "$HERE/${options.name}" "$@"\n`, 0o755);
+  const doctor = generatePreflight({ platform: options.platform, arch: identity.arch,
+    minimumOSVersion: identity.minimumOSVersion || null });
+  generated(doctor.filename, doctor.content, doctor.mode);
+  if (options.platform === 'linux') generated('launch.sh', `#!/bin/sh\nset -eu\nHERE=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)\nif [ "\${1-}" = "--doctor" ]; then\n  shift\n  if [ "$#" -ne 0 ]; then printf '%s\\n' 'SOUI_PREFLIGHT_ARGUMENTS: --doctor accepts no arguments.' >&2; exit 2; fi\n  exec /bin/sh "$HERE/doctor.sh"\nfi\nif /bin/sh "$HERE/doctor.sh"; then :; else\n  code=$?\n  printf '%s\\n' 'SOUI_STARTUP_BLOCKED: resolve the reported runtime issue before launching.' >&2\n  exit "$code"\nfi\nexec "$HERE/${options.name}" "$@"\n`, 0o755);
   if (mac) generated(`${options.name}.app/Contents/Info.plist`, `<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0"><dict>\n<key>CFBundleExecutable</key><string>${options.name}</string>\n<key>CFBundleIdentifier</key><string>${options.identifier}</string>\n<key>CFBundleName</key><string>${options.name}</string>\n<key>CFBundlePackageType</key><string>APPL</string>\n<key>CFBundleShortVersionString</key><string>${options.version}</string>\n<key>CFBundleVersion</key><string>${options.version}</string>\n<key>LSMinimumSystemVersion</key><string>${identity.minimumOSVersion}</string>\n<key>NSHighResolutionCapable</key><true/>\n</dict></plist>\n`);
   const dependencies = {
     windows: ['Compatible Windows installation', 'Microsoft Edge WebView2 Runtime matching the application architecture', 'Microsoft Visual C++ v14 runtime matching the application architecture for /MD builds', 'Any additional DLLs required by the supplied binary'],
     linux: ['Compatible Linux distribution, libc/C++ runtime and display session', 'GTK >= 3.24 and WebKitGTK 4.1 >= 2.40, including system helper processes and resources', 'Other shared libraries required by the supplied binary; inspect on the target machine'],
     macos: [`macOS >= ${identity.minimumOSVersion || '12.0'}`, 'System AppKit/Foundation/WebKit frameworks', 'Any additional libraries required by the supplied binary'],
   }[options.platform];
-  generated('DEPENDENCIES.txt', `Development application directory, not a self-contained installer.\nRequired target runtime (not bundled or installed):\n${dependencies.map(item => `- ${item}`).join('\n')}\n\nNo signing, notarization, runtime installation or GUI acceptance performed.\nBinary headers establish format/architecture only, not ABI/dependency compatibility.\nConservative format support excludes static PIE without PT_INTERP and fat/universal Mach-O.\nInput assets must be trusted and immutable during staging; this is not a filesystem sandbox.\nThe optional HTTP resource service supports files up to 8 MiB even though staging permits larger assets.\nInclude all applicable application/SDK/third-party license notices before distribution.\n`);
+  generated('DEPENDENCIES.txt', `Development application directory, not a self-contained installer.\nRequired target runtime (not bundled or installed):\n${dependencies.map(item => `- ${item}`).join('\n')}\n\nRuntime diagnostics: ${doctor.filename} (no Node required). Linux: launch.sh --doctor; macOS: /bin/sh doctor.sh; Windows: PowerShell -NoProfile -File doctor.ps1 under existing execution policy.\nDiagnostic output uses fixed status codes and no user paths; redirect it explicitly if a report is needed. Exit 0 is not runtime acceptance. No persistent application log is captured.\nNo signing, notarization, runtime installation or GUI acceptance performed.\nBinary headers establish format/architecture only, not ABI/dependency compatibility.\nConservative format support excludes static PIE without PT_INTERP and fat/universal Mach-O.\nInput assets must be trusted and immutable during staging; this is not a filesystem sandbox.\nThe optional HTTP resource service supports files up to 8 MiB even though staging permits larger assets.\nInclude all applicable application/SDK/third-party license notices before distribution.\n`);
   const manifest = { schema: 'soui.desktop.application-stage/1', name: options.name,
     applicationVersion: options.version, identifier: options.identifier || null,
     platform: identity.platform, architecture: identity.arch, executableFormat: identity.format,
     executable: binaryRelative, assets: assetsRelative, minimumOSVersion: identity.minimumOSVersion || null, developmentOnly: true,
     signed: false, dependenciesBundled: false, nativeRuntimeVerified: false,
+    diagnostics: { entry: doctor.filename, requiresNode: false, executesApplication: false, successMeans: 'no-known-blocker-not-runtime-acceptance' },
     requiredRuntime: dependencies, files: entries.sort((a, b) => a.path.localeCompare(b.path)) };
   // Written last: its absence identifies an incomplete staging directory.
   fs.writeFileSync(path.join(output, 'application-manifest.json'), JSON.stringify(manifest, null, 2) + '\n', { flag: 'wx' });

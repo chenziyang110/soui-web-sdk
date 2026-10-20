@@ -47,6 +47,21 @@ result hresult_failure(const char* operation, HRESULT code) {
   return result::failure("E_WINDOWS", std::string(operation) + " failed (" + number + ")");
 }
 
+// Loader discovery and asynchronous environment creation can both report a
+// missing runtime. Never expose browser/profile paths or environment overrides.
+result webview_startup_failure(const char* operation, HRESULT code) {
+  auto failure = hresult_failure(operation, code);
+  if (code == HRESULT_FROM_WIN32(ERROR_FILE_NOT_FOUND)) {
+    failure.code = "E_WEBVIEW2_RUNTIME";
+    failure.message += ". No compatible WebView2 runtime was found. Install or repair the "
+      "official Microsoft Edge WebView2 Runtime for this application architecture, then retry.";
+  } else {
+    failure.message += ". Check the WebView2 Runtime installation, application architecture "
+      "and user-data-directory permissions. Run the staged runtime doctor for deployment guidance.";
+  }
+  return failure;
+}
+
 result win32_failure(const char* operation) {
   const DWORD error = GetLastError();
   return hresult_failure(operation, HRESULT_FROM_WIN32(error ? error : ERROR_GEN_FAILURE));
@@ -872,6 +887,15 @@ class windows_backend final : public backend {
       return hresult_failure("CoInitializeEx (WebView2 requires an STA UI thread)", hr);
     com_initialized_ = true;
 
+    // Use the same loader discovery rules as environment creation. Discovery
+    // success is not proof that controller creation or the application will run.
+    LPWSTR runtime_version = nullptr;
+    hr = GetAvailableCoreWebView2BrowserVersionString(nullptr, &runtime_version);
+    const bool version_found = runtime_version && runtime_version[0] != L'\0';
+    CoTaskMemFree(runtime_version);
+    if (FAILED(hr) || !version_found)
+      return webview_startup_failure("Discover WebView2 Runtime", FAILED(hr) ? hr : E_UNEXPECTED);
+
     std::wstring title;
     if (settings.title.find('\0') != std::string::npos || !to_wide(settings.title, title))
       return result::failure("E_ARGUMENT", "The window title must be valid UTF-8 without NUL");
@@ -929,8 +953,8 @@ class windows_backend final : public backend {
               if (!self || !self->active()) return S_OK;
               try {
                 if (FAILED(error) || !environment) {
-                  self->fail(hresult_failure(
-                      "Create WebView2 environment (install Microsoft WebView2 Runtime separately)",
+                  self->fail(webview_startup_failure(
+                      "Create WebView2 environment",
                       FAILED(error) ? error : E_UNEXPECTED));
                   return S_OK;
                 }
@@ -998,7 +1022,7 @@ class windows_backend final : public backend {
               return S_OK;
             }).Get());
     if (FAILED(hr)) {
-      const result failure = hresult_failure("CreateCoreWebView2EnvironmentWithOptions", hr);
+      const result failure = webview_startup_failure("CreateCoreWebView2EnvironmentWithOptions", hr);
       state_->shutdown(false);
       return failure;
     }

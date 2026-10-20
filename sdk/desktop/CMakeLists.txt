@@ -79,4 +79,5 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SouiDesktopConfig.cmake"
 include("${CMAKE_CURRENT_SOURCE_DIR}/SouiDesktopApplication.cmake")
 install(FILES SouiDesktopApplication.cmake DESTINATION lib/cmake/SouiDesktop)
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../../tools/stage-desktop-app.cjs"
+  "${CMAKE_CURRENT_SOURCE_DIR}/../../tools/desktop-preflight.cjs"
   DESTINATION share/SouiDesktop/tools)

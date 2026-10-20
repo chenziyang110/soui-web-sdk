@@ -331,12 +331,19 @@ gboolean load_failed(WebKitWebView*, WebKitLoadEvent, const gchar* uri, GError* 
   return TRUE;  // Do not replace the selected document with WebKit's error page.
 }
 
-void process_terminated(WebKitWebView*, WebKitWebProcessTerminationReason,
+void process_terminated(WebKitWebView*, WebKitWebProcessTerminationReason reason,
                         gpointer data) noexcept {
   auto& state = *static_cast<linux_state*>(data);
   state.load_failed = true;
   state.committed = false;
-  report(state, result::failure("E_WEB_PROCESS", "The WebKit web process terminated."));
+  const char* message = "The WebKit web process terminated. Check the installed distribution's "
+    "WebKitGTK runtime, helper processes and graphics support; use the staged runtime doctor. "
+    "This event does not identify a missing dependency. Do not disable the WebKit sandbox.";
+  if (reason == WEBKIT_WEB_PROCESS_EXCEEDED_MEMORY_LIMIT)
+    message = "The WebKit web process exceeded its memory limit. Reduce page memory use and retry.";
+  else if (reason == WEBKIT_WEB_PROCESS_TERMINATED_BY_API)
+    message = "The WebKit web process was terminated by an API request.";
+  report(state, result::failure("E_WEB_PROCESS", message));
 }
 
 gboolean deny_permission(WebKitWebView*, WebKitPermissionRequest* request, gpointer) noexcept {
@@ -671,7 +678,9 @@ class linux_backend final : public backend {
     if (!valid_text(settings.title) || settings.width < 1 || settings.height < 1)
       return result::failure("E_ARGUMENT", "Invalid window title or dimensions.");
     if (!gtk_init_check(nullptr, nullptr))
-      return result::failure("E_DISPLAY", "GTK could not connect to an X11 or Wayland display.");
+      return result::failure("E_DISPLAY", "GTK could not connect to an X11 or Wayland display. Start the application in an "
+        "active graphical user session and verify display access; setting a display variable "
+        "alone does not create a display server. No security settings were changed.");
 
     if (settings.user_data_directory.empty()) {
       state.data = webkit_website_data_manager_new_ephemeral();

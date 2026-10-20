@@ -68,3 +68,32 @@ soui_stage_application(TARGET my_app NAME my-app
 输入检查。Windows/macOS 产物布局代码不等于目标机运行通过。完整的搬移后
 GUI 启动、快捷方式/Finder 启动、依赖部署、各架构、签名和安装器验收延后。
 详见 [ADR-0126](adr/0126-relocatable-application-staging.md)。
+
+## 不依赖 Node 的运行依赖诊断
+
+每份应用目录新增 doctor 入口并写入 manifest。Linux 使用 `./launch.sh --doctor`
+或 `/bin/sh doctor.sh`，macOS 使用 `/bin/sh doctor.sh`，Windows 使用
+`powershell -NoProfile -File doctor.ps1`。Windows 执行策略阻止脚本时不要自动
+放宽策略，应由部署者按已有组织策略使用诊断工具。脚本不执行应用或 ldd，
+不下载安装软件、不提升权限、不记录环境变量值和绝对用户路径。
+
+Linux launcher 正常启动也先执行诊断；明确平台不兼容等
+已知阻塞返回1并停止。unknown 不阻止启动，也不被计为依赖满足。退出0只表示
+没有识别到已知阻塞，绝不是 GUI、ABI 或系统依赖完整性验收。直接执行应用
+二进制仍使用原有启动流程；应用自己的输出不由 doctor 捕获或过滤。
+
+Linux 库缓存只用于寻找 GTK/WebKit 候选，不解析目标的完整依赖图；常见系统
+目录下找到 helper 也不证明引擎使用同一位置。未找到时可能是缺失、定制布局
+或检查能力不足，应核对目标发行版的 GTK/WebKitGTK 完整运行包和系统 helper。
+不要仅复制共享库或改安全开关来冒充安装成功。显示环境未设置也可能使用 Wayland 默认连接，故只报告 unknown；变量已设置
+也不证明可以连接显示服务，最终仍以原生初始化结果为准。
+
+Windows 注册表仅发现 Evergreen Runtime 候选，不能覆盖固定版本 runtime 或
+证明位宽匹配；VC runtime 和应用额外 DLL 要求仍需目标机核验。原生 WebView2
+后端使用官方运行时发现 API，对明确缺失给出专用错误和部署建议；动态库导致
+程序本身无法加载时应使用外部 doctor/系统错误，而不能依赖 SDK 自诊断。
+
+macOS 根据实际系统版本和产物最低版本比较，系统框架可能存放在 dyld cache，
+不能因某个磁盘文件不存在就误报缺失；签名、公证、quarantine 和第三方 dylib
+不由此脚本验收。诊断只输出固定状态行和下一步建议，默认不写持久日志；需要
+反馈时可显式将 doctor 输出重定向到自行选择的文件。

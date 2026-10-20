@@ -71,6 +71,9 @@ if(SOUI_DESKTOP_NODE_EXECUTABLE)
     COMMAND "${CMAKE_COMMAND}" -E env "SOUI_DESKTOP_CONTRACT_EXECUTABLE=$<TARGET_FILE:soui_desktop_contract>"
       "${SOUI_DESKTOP_NODE_EXECUTABLE}" --test "${CMAKE_CURRENT_SOURCE_DIR}/preload.test.cjs")
   set_tests_properties(sdk.desktop.preload PROPERTIES TIMEOUT 30 LABELS "desktop;contract;no-gui")
+  add_test(NAME sdk.desktop.runtime-preflight
+    COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" --test "${CMAKE_CURRENT_SOURCE_DIR}/preflight.test.cjs")
+  set_tests_properties(sdk.desktop.runtime-preflight PROPERTIES TIMEOUT 30 LABELS "desktop;tooling;no-gui")
   add_test(NAME sdk.desktop.application-stage
     COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" --test "${CMAKE_CURRENT_SOURCE_DIR}/stage-app.test.cjs")
   set_tests_properties(sdk.desktop.application-stage PROPERTIES TIMEOUT 30 LABELS "desktop;tooling;no-gui")

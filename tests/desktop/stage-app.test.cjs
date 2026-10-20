@@ -31,7 +31,8 @@ test('stages synthetic ELF metadata without pretending runtime acceptance', () =
   assert.equal(manifest.architecture, 'x64');
   assert.equal(fs.readFileSync(path.join(options.output, 'web/index.html'), 'utf8'), '<!doctype html>test');
   assert.match(fs.readFileSync(path.join(options.output, 'launch.sh'), 'utf8'), /exec "\$HERE\/Example" "\$@"/);
-  assert.equal(manifest.files.length, 4);
+  assert.equal(manifest.files.length, 5);
+  assert.equal(manifest.diagnostics.entry, 'doctor.sh');
   assert.throws(() => stage(options), /already exists/);
 }));
 test('rejects metadata mismatch before creating output', () => fixture(options => {
