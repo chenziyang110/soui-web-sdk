@@ -5,6 +5,7 @@
 #include <algorithm>
 #include <atomic>
 #include <chrono>
+#include <condition_variable>
 #include <deque>
 #include <filesystem>
 #include <fstream>
@@ -51,6 +52,7 @@ class fake_backend final : public detail::backend {
   tray_options tray_settings;
   std::function<void()> while_popup;
   std::mutex mutex;
+  std::condition_variable task_ready;
   std::deque<std::function<void()>> tasks;
   int loads{0};
 
@@ -89,8 +91,13 @@ class fake_backend final : public detail::backend {
   result dispatch(std::function<void()> work) override {
     std::lock_guard<std::mutex> lock(mutex);
     if (!active.load()) return result::failure("closed", "Fake backend is closed.");
-    tasks.push_back(std::move(work)); return result::success();
+    tasks.push_back(std::move(work)); task_ready.notify_all(); return result::success();
   }
+  bool wait_tasks(std::size_t count = 1) {
+    std::unique_lock<std::mutex> lock(mutex);
+    return task_ready.wait_for(lock, std::chrono::seconds(5), [&] { return tasks.size() >= count; });
+  }
+  void await_asset() { CHECK(wait_tasks()); flush(); }
   void flush() {
     for (;;) {
       std::function<void()> work;
@@ -198,12 +205,15 @@ void asset_bridge_contract(files& fixture) {
   CHECK(child.status.ok);
   auto* enabled = latest;
   enabled->send(enabled->envelope(1, "soui.asset.read", {{"path", "config.json"}}));
+  CHECK(enabled->evaluations.empty());
+  enabled->await_asset();
   CHECK(enabled->last_response()["ok"] == true);
   CHECK(enabled->last_response()["result"]["mime"] == "application/json");
   CHECK(enabled->last_response()["result"]["size"] == 11);
   CHECK(enabled->last_response()["result"]["base64"] == "eyJvayI6dHJ1ZX0=");
   CHECK(business_calls == 0);
   enabled->send(enabled->envelope(2, "soui.asset.read", {{"path", "../outside.html"}}));
+  enabled->await_asset();
   CHECK(enabled->last_response()["ok"] == false);
   enabled->send(enabled->envelope(3, "soui.asset.read", {{"path", "config.json"}, {"extra", true}}));
   CHECK(enabled->last_response()["error"]["code"] == "invalid_asset_path");
@@ -219,6 +229,7 @@ void asset_bridge_contract(files& fixture) {
   enabled->send(stale);
   CHECK(enabled->evaluations.size() == count);
   enabled->send(enabled->envelope(1, "soui.asset.read", {{"path", "config.json"}}));
+  enabled->await_asset();
   CHECK(enabled->last_response()["ok"] == true);
   // A separate root must not inherit the first child's resource directory.
   settings.resource_root = fixture.base / "resources-other";
@@ -226,11 +237,41 @@ void asset_bridge_contract(files& fixture) {
   CHECK(other.status.ok);
   auto* separate = latest;
   separate->send(separate->envelope(1, "soui.asset.read", {{"path", "config.json"}}));
+  separate->await_asset();
   CHECK(separate->last_response()["ok"] == false);
   CHECK(child.window->close().ok);
   const auto closed_count = enabled->evaluations.size();
   enabled->send(enabled->envelope(2, "soui.asset.read", {{"path", "config.json"}}));
   CHECK(enabled->evaluations.size() == closed_count);
+}
+
+void asynchronous_asset_contract(files& fixture) {
+  auto settings = fixture.settings();
+  settings.enable_asset_read = true;
+  application app(settings);
+  CHECK(app.initialize().ok);
+  auto* native = latest;
+  // Results waiting in the native UI queue retain their admission slots.
+  for (unsigned id = 1; id <= 16; ++id)
+    native->send(native->envelope(id, "soui.asset.read", {{"path", "config.json"}}));
+  CHECK(native->evaluations.empty());
+  native->send(native->envelope(17, "soui.asset.read", {{"path", "config.json"}}));
+  CHECK(native->last_response()["error"]["code"] == "asset_queue_full");
+  CHECK(native->wait_tasks(16));
+  const auto before = native->evaluations.size();
+  CHECK(app.reload().ok);
+  native->flush(); // Already-posted old generation results must not be delivered.
+  CHECK(native->evaluations.size() == before);
+  native->send(native->envelope(1, "soui.asset.read", {{"path", "config.json"}}));
+  native->await_asset();
+  CHECK(native->last_response()["ok"] == true);
+  CHECK(native->last_response()["id"] == 1);
+  native->send(native->envelope(2, "soui.asset.read", {{"path", "config.json"}}));
+  CHECK(native->wait_tasks());
+  const auto count = native->evaluations.size();
+  CHECK(app.close().ok);
+  native->flush();
+  CHECK(native->evaluations.size() == count);
 }
 
 void path_and_json_contract(files& fixture) {
@@ -846,6 +887,7 @@ int main(int argc, char** argv) {
   try {
     files fixture;
     asset_bridge_contract(fixture);
+    asynchronous_asset_contract(fixture);
     path_and_json_contract(fixture);
     protocol_contract(fixture);
     navigation_contract(fixture);

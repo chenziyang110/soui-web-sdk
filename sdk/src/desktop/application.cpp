@@ -2,6 +2,7 @@
 #include "backend.h"
 #include "protocol.h"
 #include "assets.h"
+#include "asset_executor.h"
 #include "../runtime/platform/secure_random.h"
 #include "../runtime/platform/strict_utf8.h"
 #include <algorithm>
@@ -42,6 +43,20 @@ std::set<std::string> enabled_commands(const std::vector<menu_item>& items) {
   return ids;
 }
 struct application_state;
+// Workers retain only this independent gate, never an application or backend.
+// dispatch is non-inline and thread-safe. Revocation precedes backend teardown.
+struct asset_completion_channel {
+  std::mutex mutex;
+  detail::backend* target{nullptr};
+  void revoke() {
+    std::lock_guard<std::mutex> lock(mutex);
+    target = nullptr;
+  }
+  void post(std::function<void()> work) {
+    std::lock_guard<std::mutex> lock(mutex);
+    if (target) (void)target->dispatch(std::move(work));
+  }
+};
 struct application_group {
   std::vector<std::weak_ptr<application_state>> windows;
   std::weak_ptr<application_state> root;
@@ -90,6 +105,46 @@ struct application_state : std::enable_shared_from_this<application_state> {
   bool pending_closed{false};
   bool pending_ready{false};
   std::uint64_t ready_generation{0};
+  detail::asset_cancellation asset_session;
+  bool assets_submitted{false};
+  std::shared_ptr<asset_completion_channel> asset_channel = std::make_shared<asset_completion_channel>();
+
+  void cancel_assets() noexcept {
+    if (asset_session) {
+      asset_session->store(true);
+      if (assets_submitted) detail::process_asset_executor().cancel(asset_session);
+      asset_session.reset();
+    }
+    assets_submitted = false;
+  }
+  result submit_asset(std::uint64_t id, std::string_view path) {
+    const auto selected_generation = generation;
+    const std::weak_ptr<application_state> weak = shared_from_this();
+    const auto channel = asset_channel;
+    assets_submitted = true;
+    return detail::process_asset_executor().submit(settings.resource_root, path, asset_session,
+      [weak, channel, selected_generation, id](detail::asset_result asset, detail::asset_permit permit) mutable {
+        channel->post([weak, selected_generation, id, asset = std::move(asset), permit = std::move(permit)]() mutable {
+          if (const auto live = weak.lock(); live && live->accepting.load() &&
+              live->generation == selected_generation) {
+            // Reuse common serialization, including a nested native modal loop.
+            live->work_items.push_back(
+              [weak, selected_generation, id, asset = std::move(asset), permit = std::move(permit)]() mutable {
+                const auto current = weak.lock();
+                if (!current || !current->accepting.load() || current->generation != selected_generation) return;
+                nlohmann::json response{{"id", id}, {"ok", asset.status.ok}};
+                if (asset.status.ok)
+                  response["result"] = {{"mime", asset.mime}, {"size", asset.size}, {"base64", asset.base64}};
+                else response["error"] = {{"code", asset.status.code}, {"message", asset.status.message}};
+                const auto sent = current->deliver(std::move(response));
+                if (!sent.ok) current->report(sent);
+              });
+            live->pending_work.fetch_add(1);
+            live->drain();
+          }
+        });
+      });
+  }
 
   result check_thread() const {
     if (std::this_thread::get_id() != owner)
@@ -176,6 +231,8 @@ struct application_state : std::enable_shared_from_this<application_state> {
     drain();
   }
   void on_closed() noexcept {
+    asset_channel->revoke();
+    cancel_assets();
     accepting.store(false);
     ready = false;
     token.clear();
@@ -234,11 +291,8 @@ struct application_state : std::enable_shared_from_this<application_state> {
               !params.contains("path") || !params.at("path").is_string()) {
             status = result::failure("invalid_asset_path", "Expected exactly one asset path string.");
           } else {
-            const auto asset = detail::read_asset(settings.resource_root,
-                params.at("path").get_ref<const std::string&>());
-            status = asset.status;
-            if (status.ok)
-              response["result"] = {{"mime", asset.mime}, {"size", asset.size}, {"base64", asset.base64}};
+            status = submit_asset(id, params.at("path").get_ref<const std::string&>());
+            if (status.ok) { drain(); return; }
           }
         }
         response["ok"] = status.ok;
@@ -278,6 +332,8 @@ struct application_state : std::enable_shared_from_this<application_state> {
     const auto resolved = detail::resolve_document(settings.resource_root, relative, next);
     if (!resolved.ok) return resolved;
     unsigned char bytes[32]{};
+    cancel_assets();
+    if (settings.enable_asset_read) asset_session = std::make_shared<std::atomic<bool>>(false);
     token.clear();
     ready = false;
     ++generation;
@@ -293,6 +349,8 @@ struct application_state : std::enable_shared_from_this<application_state> {
   }
   result close() {
     if (!initialized) return unavailable();
+    asset_channel->revoke();
+    cancel_assets();
     accepting.store(false);
     ready = false;
     token.clear();
@@ -378,6 +436,8 @@ application::~application() {
     (void)state->group->quit();
   }
   state->accepting.store(false);
+  state->asset_channel->revoke();
+  state->cancel_assets();
   state->token.clear();
   if (state->native) { (void)state->native->close(); state->native.reset(); }
   if (state->owns_process_slot) process_application.store(false);
@@ -415,6 +475,7 @@ result application::initialize() {
   windows.push_back(state);
   state->native = detail::make_backend();
   if (!state->native) return result::failure("not_supported", "No desktop backend was built.");
+  state->asset_channel->target = state->native.get();
   const std::weak_ptr<application_state> weak = state;
   detail::backend_events events;
   events.allow_navigation = [weak](std::string_view uri) {

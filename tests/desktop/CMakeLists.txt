@@ -3,6 +3,7 @@
 add_executable(soui_desktop_contract
   contract.cpp
   ../../sdk/src/desktop/assets.cpp
+  ../../sdk/src/desktop/asset_executor.cpp
   ../../sdk/src/desktop/application.cpp
   ../../sdk/src/desktop/protocol.cpp)
 target_link_libraries(soui_desktop_contract PRIVATE Soui::Runtime)
@@ -27,6 +28,18 @@ else()
 endif()
 add_test(NAME sdk.desktop.assets COMMAND soui_desktop_assets)
 set_tests_properties(sdk.desktop.assets PROPERTIES TIMEOUT 30 LABELS "desktop;contract;no-gui")
+add_executable(soui_desktop_asset_executor asset_executor.cpp
+  ../../sdk/src/desktop/asset_executor.cpp ../../sdk/src/desktop/assets.cpp)
+target_link_libraries(soui_desktop_asset_executor PRIVATE Soui::Runtime)
+target_compile_features(soui_desktop_asset_executor PRIVATE cxx_std_17)
+if(MSVC)
+  target_compile_options(soui_desktop_asset_executor PRIVATE /utf-8 /W4)
+  set_property(TARGET soui_desktop_asset_executor PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+else()
+  target_compile_options(soui_desktop_asset_executor PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME sdk.desktop.asset-executor COMMAND soui_desktop_asset_executor)
+set_tests_properties(sdk.desktop.asset-executor PROPERTIES TIMEOUT 30 LABELS "desktop;contract;no-gui")
 
 if(SOUI_BUILD_DESKTOP AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
   # sdk/desktop's imported pkg-config target has directory scope. The fixture

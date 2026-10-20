@@ -13,7 +13,7 @@ const configurations = ['Debug', 'Release', 'RelWithDebInfo', 'MinSizeRel'];
 const requiredTests = [
   'sdk.portable.integration', 'sdk.portable.primitives', 'sdk.portable.installed-consumer',
   'sdk.portable.platform-matrix', 'sdk.desktop.contract', 'sdk.desktop.preload',
-  'sdk.desktop.package-tool', 'sdk.desktop.assets',
+  'sdk.desktop.package-tool', 'sdk.desktop.assets', 'sdk.desktop.asset-executor',
 ];
 function parseArgs(args) {
   const options = { configuration: 'Release' };

@@ -39,7 +39,8 @@ class backend {
   virtual result quit_loop() = 0;
   virtual result close() = 0;
   virtual result evaluate(std::string script) = 0;
-  // Thread-safe submission; never execute work after close.
+  // Thread-safe, non-inline submission. Never run work on the submitting worker
+  // or while holding the queue mutex; never execute queued work after close.
   virtual result dispatch(std::function<void()> work) = 0;
   virtual result set_title(std::string_view) = 0;
   virtual result resize(int width, int height) = 0;

@@ -2,6 +2,9 @@
 
 状态：开发分支决定，未发布。
 
+后续 [ADR-0124](0124-asynchronous-asset-read-lifetime.md) 将下述同步读取改为
+有界工作线程和会话撤销；路径、权限和结果格式不变。
+
 ## 背景
 
 三个系统 WebView 的 `file://` 页面对 fetch、CORS 和模块加载支持不同。

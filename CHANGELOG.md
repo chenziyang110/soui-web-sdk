@@ -2,6 +2,10 @@
 
 ## 未发布维护
 
+- 本地资产读取改为进程共享的有界工作线程，窗口不等待资产读取 I/O；导航/关闭撤销
+  排队和晚到结果，饱和明确失败。取消不冒充系统读取硬中断，原 readAsset 调用
+  与结果格式保持兼容。
+
 - 新增默认关闭的 `options.enable_asset_read` 和三后端共用
   `window.souiDesktop.readAsset(path)`，读取根内至多 256 KiB 的普通资产并返回
   MIME、字节数和 base64；保留 `soui.asset.read` 方法名，按窗口及导航会话授权。

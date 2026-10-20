@@ -1,6 +1,6 @@
 soui_require_capability(system_desktop)
 add_library(soui_desktop STATIC ../src/desktop/application.cpp ../src/desktop/protocol.cpp
-  ../src/desktop/assets.cpp)
+  ../src/desktop/assets.cpp ../src/desktop/asset_executor.cpp)
 add_library(Soui::Desktop ALIAS soui_desktop)
 set_target_properties(soui_desktop PROPERTIES EXPORT_NAME Desktop)
 target_compile_features(soui_desktop PUBLIC cxx_std_17)

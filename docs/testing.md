@@ -1,5 +1,9 @@
 # 测试与验收
 
+异步资产调度：`ctest --preset desktop -R sdk.desktop.asset-executor --output-on-failure`，
+用真实线程和确定性门闩验证饱和、运行中/排队撤销、结果额度及非阻塞销毁；
+公共契约另验证 UI 投递、导航代际和关闭后结果丢弃。
+
 资产文件边界：`ctest --preset desktop -R sdk.desktop.assets --output-on-failure`，
 使用真实临时文件调用生产读取器。`sdk.desktop.contract` 另测启用/禁用、来源、
 令牌、导航和窗口隔离，`sdk.desktop.preload` 测实际生成的 JavaScript；均不等于
