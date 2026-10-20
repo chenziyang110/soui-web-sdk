@@ -165,3 +165,17 @@ LLVM 增量构建会单独认证生成命令中的工具路径（含 Windows 8.3
 完整命令和目标矩阵见 [跨平台说明](cross-platform.md)。合成架构/拒绝测试、
 本机编译、目标机运行与真实桌面验收必须分开报告；不新增远程 CI。
 
+## 统一系统 WebView 桌面补充验证
+
+`cmake --preset desktop`、`cmake --build --preset desktop`、
+`ctest --preset desktop` 构建公共 Desktop 及本机后端。默认只运行无窗口回归：
+共用 application/protocol 使用 fake backend，preload 测试提取实际生产脚本并在
+Node VM 中执行。它们覆盖令牌轮换、旧消息、导航/关闭中的回调、模态重入、有界
+队列、UTF-8 请求字节和 JSON 返回语义，不能替代真实引擎验收。
+
+Linux 的 `soui_desktop_linux_integration` 始终随桌面测试配置编译；只有显式
+`-DSOUI_DESKTOP_GUI_TESTS=ON` 才注册真实 GUI 用例。该用例要求正常图形会话，
+无显示服务应失败，不能自动 skip 或禁用 WebKit sandbox。目标机命令、系统能力
+检查及未执行项见 [统一桌面说明](unified-desktop.md) 和
+[本轮实际记录](acceptance/unified-desktop-2026-10-20.md)。
+

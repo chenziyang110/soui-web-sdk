@@ -36,7 +36,11 @@
 开发分支新增显式 [跨平台 Runtime](docs/cross-platform.md)：无窗口的任务、权限、
 Bridge 协议和文件扫描可独立构建为 `Soui::Runtime`，覆盖 Windows/Linux
 x86/x64/ARM32/ARM64 与 macOS x64/ARM64/universal2 的目标策略。
-Linux/macOS 桌面窗口后端和其余目标机实测仍待完成；现有下载包不含此功能。
+另新增 [统一桌面入口](docs/unified-desktop.md) `Soui::Desktop`：同一份 C++ 与 Web
+源码接入 Linux WebKitGTK、macOS WKWebView、Windows WebView2，包含窗口生命周期、
+双向 Bridge 和显式系统能力。Linux 已完成真实依赖编译与无窗口回归；真实 GUI、
+Windows/macOS 目标编译和其余架构实测仍待验收。现有下载包不含这些未发布功能，
+不能据此宣称 Electron 全功能兼容。
 
 <a id="capabilities"></a>
 

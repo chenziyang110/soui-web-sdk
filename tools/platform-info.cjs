@@ -137,6 +137,11 @@ function getCapabilities(target) {
   return {
     portable_core: capability(portable, ['compatible C++17 target toolchain'],
       'Portable core supports Windows/Linux x86/x64/arm32/arm64 and macOS x64/arm64/universal2.'),
+    system_desktop: capability(portable && !(target.os === 'windows' && target.arch === 'arm32'),
+      target.os === 'linux' ? ['target GTK3 >= 3.24 and WebKitGTK 4.1 >= 2.40 development/runtime packages', 'working graphical session']
+        : target.os === 'macos' ? ['Apple SDK, macOS >= 12.0', 'AppKit and WKWebView']
+          : ['MSVC-compatible toolchain', 'matching Microsoft WebView2 SDK loader', 'supported Evergreen Runtime with ICoreWebView2_18'],
+      'Separate opt-in system-WebView backend; source route only, target dependencies and native GUI validation are required. Linux 32-bit availability depends on the target distribution. Windows ARM32 and macOS 32-bit are unsupported.'),
     desktop_host: capability(desktop, ['supported Windows MSVC-compatible toolchain', 'SOUI and Miniblink target dependencies'], desktopReason),
     soui_prebuilt: capability(desktop, ['matching third_party/prebuilt target files'], desktopReason),
     miniblink_prebuilt: capability(desktop, ['matching third_party/prebuilt target files'], desktopReason),
@@ -297,7 +302,7 @@ function main(argv) {
         + '  [--os windows|linux|macos --arch x86|x64|arm32|arm64|universal2]\n'
         + '  [--pointer-size 4|8] [--osx-architectures "x86_64;arm64"]\n'
         + '  [--processor NAME] [--compiler-arch NAME] [--compiler-target TRIPLE]\n'
-        + '  [--generator-platform NAME] [--require portable_core|desktop_host|soui_prebuilt|miniblink_prebuilt]\n'
+        + '  [--generator-platform NAME] [--require portable_core|system_desktop|desktop_host|soui_prebuilt|miniblink_prebuilt]\n'
         + '  [--probe-toolchain [--toolchain FILE] [--generator NAME] [--compiler FILE] [--cmake FILE]]\n'
         + 'Toolchain probing builds a temporary C++17 consumer without running it or installing tools.\n');
       return 0;

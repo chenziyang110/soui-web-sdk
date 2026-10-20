@@ -174,6 +174,16 @@ test('current-platform information identifies Node process and unprobed compiler
   notSupported(() => platform.getPlatformInfo({ pointerSize: info.target.expectedPointerSize === 8 ? 4 : 8 }));
 });
 
+test('system WebView source policy is distinct from the legacy desktop binaries', () => {
+  for (const [os, arch] of [['linux', 'x64'], ['linux', 'arm64'], ['macos', 'arm64'], ['windows', 'arm64']]) {
+    const target = platform.resolveTarget({ os, arch });
+    assert.equal(platform.requireCapability(target, 'system_desktop').status, 'supported');
+    assert.equal(platform.requireCapability(target, 'system_desktop').validation, 'not_tested');
+    notSupported(() => platform.requireCapability(target, 'desktop_host'));
+  }
+  notSupported(() => platform.requireCapability(platform.resolveTarget({ os: 'windows', arch: 'arm32' }), 'system_desktop'));
+});
+
 test('CLI produces JSON and fails unsupported requirements with nonzero status', () => {
   const matrix = spawnSync(process.execPath, [cli, '--matrix', '--json'], { encoding: 'utf8' });
   assert.equal(matrix.status, 0, matrix.stderr);

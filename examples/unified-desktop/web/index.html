@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>SOUI unified desktop</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main>
+    <p class="eyebrow">SOUI / SYSTEM WEBVIEW</p>
+    <h1>One application.<br>Platform-native windows.</h1>
+    <p class="intro">The same C++ entry point and local Web assets. A small, explicit bridge between your interface and native code.</p>
+    <div class="status"><span id="dot"></span><span id="status">Connecting to the native host…</span></div>
+    <section class="grid">
+      <article><h2>01 / Bridge</h2><p>Send structured JSON to your native method allowlist and receive a Promise result.</p><button data-action="echo">Round-trip JSON</button></article>
+      <article><h2>02 / Window</h2><p>Change native window properties without importing a platform API.</p><button data-action="title">Change title</button><button data-action="resize">Resize window</button></article>
+      <article><h2>03 / System</h2><p>Use only capabilities implemented by the selected platform backend.</p><button data-action="copy">Copy greeting</button><button data-action="paste">Read clipboard</button><button data-action="directory">Choose directory</button></article>
+    </section>
+    <section class="console"><div class="console-head"><span>EVENT LOG</span><button data-action="reload">Reload with a new session</button></div><pre id="log" aria-live="polite">Waiting for the local document…</pre></section>
+    <p class="footnote">System engines differ. Platform availability and validation are documented separately; this example does not claim Electron feature parity.</p>
+  </main>
+</body>
+</html>

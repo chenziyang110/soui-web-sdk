@@ -19,6 +19,30 @@
       }
     },
     {
+      "name": "desktop",
+      "inherits": "portable",
+      "displayName": "Unified system-WebView desktop",
+      "binaryDir": "${sourceDir}/out/desktop",
+      "cacheVariables": {
+        "SOUI_BUILD_DESKTOP": "ON",
+        "SOUI_BUILD_DESKTOP_EXAMPLE": "ON",
+        "SOUI_DESKTOP_GUI_TESTS": "OFF",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/desktop-install"
+      }
+    },
+    {
+      "name": "desktop-macos-universal2",
+      "inherits": "desktop",
+      "displayName": "Unified desktop (macOS universal2)",
+      "binaryDir": "${sourceDir}/out/desktop-universal2",
+      "condition": { "type": "equals", "lhs": "${hostSystemName}", "rhs": "Darwin" },
+      "cacheVariables": {
+        "CMAKE_OSX_ARCHITECTURES": "x86_64;arm64",
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "12.0",
+        "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/desktop-universal2-install"
+      }
+    },
+    {
       "name": "portable-macos-universal2",
       "inherits": "portable",
       "displayName": "Portable Runtime (macOS universal2)",
@@ -31,10 +55,26 @@
     }
   ],
   "buildPresets": [
+    { "name": "desktop", "configurePreset": "desktop", "configuration": "Release" },
+    { "name": "desktop-macos-universal2", "configurePreset": "desktop-macos-universal2", "configuration": "Release" },
     { "name": "portable", "configurePreset": "portable", "configuration": "Release" },
     { "name": "portable-macos-universal2", "configurePreset": "portable-macos-universal2", "configuration": "Release" }
   ],
   "testPresets": [
+    {
+      "name": "desktop",
+      "configurePreset": "desktop",
+      "configuration": "Release",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    },
+    {
+      "name": "desktop-macos-universal2",
+      "configurePreset": "desktop-macos-universal2",
+      "configuration": "Release",
+      "output": { "outputOnFailure": true },
+      "execution": { "noTestsAction": "error" }
+    },
     {
       "name": "portable",
       "configurePreset": "portable",
