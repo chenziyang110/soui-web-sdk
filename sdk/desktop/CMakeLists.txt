@@ -81,3 +81,7 @@ install(FILES SouiDesktopApplication.cmake DESTINATION lib/cmake/SouiDesktop)
 install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../../tools/stage-desktop-app.cjs"
   "${CMAKE_CURRENT_SOURCE_DIR}/../../tools/desktop-preflight.cjs"
   DESTINATION share/SouiDesktop/tools)
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../../tools/create-desktop-app.cjs"
+  DESTINATION share/SouiDesktop/tools)
+install(DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../../templates/unified-desktop"
+  DESTINATION share/SouiDesktop/templates)

@@ -152,3 +152,17 @@ CRC/归档散列核对通过。原生 GTK/WebKit 后端与 fixture 已编译链�
 
 没有安装系统运行库、关闭沙箱、变更执行策略或重新尝试提升入口。完整回归、
 Windows/macOS 原生诊断和实际窗口验收延后；此前 GUI 依赖阻塞未因此消除。
+
+## 统一桌面最小项目生成器（08:17 UTC）
+
+- 新生成器4项重点测试通过：新建/拒绝覆盖、名称/metadata注入与构建保留名称、
+  symlink父路径、重复/未知CLI参数；Node语法与git diff --check通过。
+- 模板三个JS模块语法、main.cpp Linux严格语法检查通过。模板只有单窗口、
+  app.info白名单与模块/fetch，不包含演示业务或外部下载。
+- 工具和模板随SDK安装到独立前缀后，从该已安装工具在仓库外新建StarterApp；
+  使用安装SDK完成Linux x64 CMake配置、实际编译/链接及StarterApp_stage通过。
+  输出含前端、二进制、doctor、依赖说明和manifest；没有运行GUI。
+- 独立审查发现的CMake保留名称/web冲突已拒绝，未触碰历史Windows模板。
+
+没有执行完整CTest、其他架构/平台编译或真实WebView交互；完整回归延后。
+生成/构建成功不代表系统引擎、窗口、模块或Bridge已在三平台实机验收。

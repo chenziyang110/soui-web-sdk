@@ -2,6 +2,10 @@
 
 ## 未发布维护
 
+- 新增独立统一桌面最小模板和本地项目生成器，随 SDK 安装；串联已安装 SDK、
+  单窗口/白名单 Bridge、HTTP 模块/fetch 与应用 staging/doctor。拒绝覆盖与
+  不安全输入，不下载或安装依赖，不替换历史 Windows 模板。
+
 - 应用 staging 新增无需 Node 的平台 doctor 脚本、Linux 启动前检查和诊断元数据；
   区分确认阻塞、候选发现与 unknown，不执行目标扫描或自动安装依赖。原生
   WebView2 缺失与 Linux 显示/引擎启动错误提供更明确提示，目标平台验收仍开放。

@@ -306,3 +306,6 @@ ctest --preset desktop -R sdk.desktop.linux-native --output-on-failure
 
 应用二进制与前端资源的可搬移目录入口见 [应用 staging](desktop-application-staging.md)，
 与上述 SDK 开发 ZIP 分开；不自动提供系统引擎、签名或正式安装器。
+
+需要新建应用可使用 [最小项目生成器](unified-desktop-project-generator.md)，
+直接接入已安装 SDK、前端模块和应用 staging，不复制演示业务。
