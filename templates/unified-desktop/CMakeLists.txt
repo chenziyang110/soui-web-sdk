@@ -12,12 +12,8 @@ if(MSVC)
   target_compile_options(@APP_NAME@ PRIVATE /utf-8)
   set_property(TARGET @APP_NAME@ PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
 endif()
-# This explicit target also refreshes assets after frontend-only edits.
-add_custom_target(@APP_NAME@_assets
-  COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/web"
-    "$<TARGET_FILE_DIR:@APP_NAME@>/web"
-  VERBATIM)
-add_dependencies(@APP_NAME@ @APP_NAME@_assets)
+# Refresh owned assets, including source deletions; never adopt arbitrary output.
+soui_sync_application_assets(TARGET @APP_NAME@ ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/web")
 
 set(APP_STAGE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/staged-$<CONFIG>" CACHE STRING
   "New application staging directory (must not already exist)")

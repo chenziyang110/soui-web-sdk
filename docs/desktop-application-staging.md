@@ -155,3 +155,21 @@ ZIP 使用 UTF-8、store模式（不压缩），不依赖额外 zip/tar 程序�
 可通过 `soui_stage_application(... ARCHIVE_OUTPUT <新目录>)` 指定。
 完整顺序是先构建 `<target>_stage`，再构建 `<target>_archive_stage`；后者失败
 不删除原应用目录。重复生成交付物应选择新输出，不能绕过create-only保护。
+
+## 开发构建资源同步
+
+新生成项目调用 `soui_sync_application_assets(TARGET MyApp ASSETS web)`，建立
+`MyApp_assets` 依赖目标，同步到可执行文件旁的 web。前端源删除会传播到旧受管
+副本，避免 copy_directory 遗留已删除页面。该操作仅用于开发构建目录，不修改
+create-only staging/归档行为，也不支持运行中热更新。
+
+独立入口为 `node tools/sync-desktop-assets.cjs --input SOURCE --output OUTPUT`；
+安装 SDK 对应 `share/SouiDesktop/tools/sync-desktop-assets.cjs`。首次输出必须
+不存在，父目录已存在。工具创建相邻 `OUTPUT.soui-assets.json` 所有权清单及
+短期 `.soui-assets.lock`，不把清单放进可服务的 web。后续必须匹配源身份及旧
+副本的完整清单；手工新增/修改、符号链接或不安全条目均失败，不自动删除。
+
+同步前先停止应用，不要并发构建同一输出。旧 copy_directory 目录、移动源目录
+后的旧输出请使用新的构建目录重新生成，不能靠删除清单强行接管。失败时可能
+保留工具临时/备份副本，应先检查恢复，不自动清理未知或不完整状态。这里的
+所有权清单是本地意外误操作防护，不是签名，也不能防止恶意进程同时修改文件。

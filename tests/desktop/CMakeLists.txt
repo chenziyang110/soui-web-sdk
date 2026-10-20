@@ -67,6 +67,9 @@ set_tests_properties(sdk.desktop.contract PROPERTIES TIMEOUT 30 LABELS "desktop;
 
 find_program(SOUI_DESKTOP_NODE_EXECUTABLE NAMES node node.exe)
 if(SOUI_DESKTOP_NODE_EXECUTABLE)
+  add_test(NAME sdk.desktop.sync-assets
+    COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" --test "${CMAKE_CURRENT_SOURCE_DIR}/sync-assets.test.cjs")
+  set_tests_properties(sdk.desktop.sync-assets PROPERTIES TIMEOUT 30 LABELS "desktop;tooling;no-gui")
   add_test(NAME sdk.desktop.frontend-adapter
     COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" --test "${CMAKE_CURRENT_SOURCE_DIR}/frontend-adapter.test.mjs")
   set_tests_properties(sdk.desktop.frontend-adapter PROPERTIES TIMEOUT 30 LABELS "desktop;contract;no-gui")

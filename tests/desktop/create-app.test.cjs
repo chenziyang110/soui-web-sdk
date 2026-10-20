@@ -16,6 +16,8 @@ test('creates a relocatable minimal project and refuses overwrite', () => fixtur
   assert.ok(result.files >= 6);
   const cmake = fs.readFileSync(path.join(output, 'CMakeLists.txt'), 'utf8');
   assert.match(cmake, /find_package\(SouiDesktop/);
+  assert.match(cmake, /soui_sync_application_assets\(TARGET HelloApp ASSETS/);
+  assert.equal(cmake.includes('copy_directory'), false);
   assert.match(cmake, /HelloApp/);
   assert.equal(cmake.includes(root), false);
   assert.equal(cmake.includes('@APP_'), false);

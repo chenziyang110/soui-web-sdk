@@ -1,5 +1,36 @@
 include_guard(GLOBAL)
 
+# Development resource output only. Never adopts an existing unmanaged web tree.
+function(soui_sync_application_assets)
+  cmake_parse_arguments(PARSE_ARGV 0 APP "" "TARGET;ASSETS" "")
+  if(APP_UNPARSED_ARGUMENTS OR APP_KEYWORDS_MISSING_VALUES OR
+      NOT APP_TARGET OR NOT APP_ASSETS)
+    message(FATAL_ERROR "soui_sync_application_assets requires TARGET and ASSETS only")
+  endif()
+  if(NOT TARGET "${APP_TARGET}")
+    message(FATAL_ERROR "soui_sync_application_assets TARGET must name an executable")
+  endif()
+  get_target_property(kind "${APP_TARGET}" TYPE)
+  if(NOT kind STREQUAL "EXECUTABLE")
+    message(FATAL_ERROR "soui_sync_application_assets TARGET must be an executable")
+  endif()
+  find_program(SOUI_DESKTOP_NODE_EXECUTABLE NAMES node nodejs REQUIRED)
+  set(tool "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../../share/SouiDesktop/tools/sync-desktop-assets.cjs")
+  if(NOT EXISTS "${tool}")
+    set(tool "${CMAKE_CURRENT_FUNCTION_LIST_DIR}/../../tools/sync-desktop-assets.cjs")
+  endif()
+  if(NOT EXISTS "${tool}")
+    message(FATAL_ERROR "SouiDesktop managed asset synchronizer is missing")
+  endif()
+  get_filename_component(assets "${APP_ASSETS}" ABSOLUTE BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+  add_custom_target("${APP_TARGET}_assets"
+    COMMAND "${CMAKE_COMMAND}" -E make_directory "$<TARGET_FILE_DIR:${APP_TARGET}>"
+    COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" "${tool}"
+      --input "${assets}" --output "$<TARGET_FILE_DIR:${APP_TARGET}>/web"
+    VERBATIM COMMENT "Synchronize owned development assets; refuse unmanaged or modified output")
+  add_dependencies("${APP_TARGET}" "${APP_TARGET}_assets")
+endfunction()
+
 # Creates an explicit, non-ALL staging target. Re-running it refuses an existing
 # output directory; callers choose a new destination for each staged artifact.
 function(soui_stage_application)
