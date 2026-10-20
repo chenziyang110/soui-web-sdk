@@ -2,6 +2,10 @@
 
 ## 未发布统一桌面 API
 
+`application_resource_directory()` 按实际可执行文件位置定位默认前端目录，
+返回 `path_result {status, value}`，不依赖工作目录。应用目录和 CMake staging
+入口见 [应用交付目录](desktop-application-staging.md)。
+
 显式启用 `options.enable_resource_server` 可把应用选定 HTML 和根内资产通过
 每窗口独立的 loopback HTTP 源加载；默认关闭，标准模块/fetch 的真实三引擎
 验收尚待完成。边界见 [本地 HTTP 资源源](unified-desktop.md#显式本地-http-资源源)。

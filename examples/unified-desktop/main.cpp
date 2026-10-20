@@ -121,16 +121,26 @@ soui::desktop::callbacks make_callbacks(example_state& state,
 }
 
 int main(int argc, char** argv) {
-  if (argc > 3 || (argc == 3 && std::string_view(argv[2]) != "--resource-server")) {
-    std::cerr << "Usage: soui_desktop_example [resource-root [--resource-server]]\n";
+  const bool default_http = argc == 2 && std::string_view(argv[1]) == "--resource-server";
+  if (argc > 3 || (argc == 3 && (std::string_view(argv[2]) != "--resource-server" ||
+      std::string_view(argv[1]) == "--resource-server"))) {
+    std::cerr << "Usage: soui_desktop_example [resource-root] [--resource-server]\n";
     return 2;
   }
   example_state state;
-  state.settings.resource_root = argc > 1 ? std::filesystem::u8path(argv[1]) :
-    std::filesystem::absolute(std::filesystem::u8path(argv[0])).parent_path() / "web";
+  if (argc > 1 && !default_http) {
+    state.settings.resource_root = std::filesystem::u8path(argv[1]);
+  } else {
+    const auto resources = soui::desktop::application_resource_directory();
+    if (!resources.status.ok) {
+      std::cerr << resources.status.code << ": " << resources.status.message << '\n';
+      return 1;
+    }
+    state.settings.resource_root = resources.value;
+  }
   state.settings.title = "SOUI · one application";
   state.settings.enable_asset_read = true;
-  state.settings.enable_resource_server = argc == 3;
+  state.settings.enable_resource_server = default_http || argc == 3;
   state.children.reserve(31); // No handle-storage allocation after native create.
   auto context = std::make_shared<window_context>();
   soui::desktop::application app(state.settings, make_callbacks(state, context));

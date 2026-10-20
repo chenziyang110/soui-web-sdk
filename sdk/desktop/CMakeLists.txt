@@ -1,8 +1,10 @@
 soui_require_capability(system_desktop)
 add_library(soui_desktop STATIC ../src/desktop/application.cpp ../src/desktop/protocol.cpp
-  ../src/desktop/assets.cpp ../src/desktop/asset_executor.cpp ../src/desktop/resource_server.cpp)
+  ../src/desktop/assets.cpp ../src/desktop/asset_executor.cpp ../src/desktop/resource_server.cpp ../src/desktop/app_paths.cpp)
 add_library(Soui::Desktop ALIAS soui_desktop)
-set_target_properties(soui_desktop PROPERTIES EXPORT_NAME Desktop)
+set_target_properties(soui_desktop PROPERTIES EXPORT_NAME Desktop
+  SOUI_APPLICATION_PLATFORM "${SOUI_TARGET_OS}" SOUI_APPLICATION_ARCH "${SOUI_TARGET_ARCH}"
+  EXPORT_PROPERTIES "SOUI_APPLICATION_PLATFORM;SOUI_APPLICATION_ARCH")
 target_compile_features(soui_desktop PUBLIC cxx_std_17)
 target_link_libraries(soui_desktop PUBLIC Soui::Runtime)
 target_include_directories(soui_desktop PUBLIC
@@ -73,3 +75,8 @@ write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/SouiDesktopConfigV
 install(EXPORT SouiDesktopTargets NAMESPACE Soui:: DESTINATION lib/cmake/SouiDesktop)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/SouiDesktopConfig.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/SouiDesktopConfigVersion.cmake" DESTINATION lib/cmake/SouiDesktop)
+
+include("${CMAKE_CURRENT_SOURCE_DIR}/SouiDesktopApplication.cmake")
+install(FILES SouiDesktopApplication.cmake DESTINATION lib/cmake/SouiDesktop)
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/../../tools/stage-desktop-app.cjs"
+  DESTINATION share/SouiDesktop/tools)

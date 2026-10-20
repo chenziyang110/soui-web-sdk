@@ -120,3 +120,19 @@ CRC/归档散列核对通过。原生 GTK/WebKit 后端与 fixture 已编译链�
 未执行本增量的完整 CTest、打包、重复压力或 sanitizer 矩阵；Windows/macOS
 编译、真实三引擎模块/fetch/CSP、网络对抗、关闭/导航竞争、目标架构运行与
 跨窗口存储隔离仍待统一验收。既有 GUI 运行依赖阻塞没有被此次 HTTP 检查解决。
+
+## 可搬移应用 staging 增量（07:21 UTC）
+
+- Linux x64 源码树配置、实际 Desktop/example 构建及新 CMake staging 目标通过，
+  输出包含程序、同一份前端、启动脚本、依赖说明和 SHA-256 manifest。
+- 安装 SDK 到独立前缀后，独立示例 find_package、构建、staging 通过；最终收紧
+  二进制检查后，已安装 staging 工具再次处理真实 Linux 示例通过。
+- 新工具 Node 语法和8项重点测试通过：覆盖拒绝、路径/名称、架构不匹配、
+  ELF OSABI/入口、Mach-O macOS/iOS 平台、PE 子系统；合成头测试不是实机认证。
+- 资源 helper 的 Linux 严格语法检查通过；临时生产源码 probe 从 cwd=/ 经 PATH
+  启动仍定位正确，缺失 web 时明确 resource_directory_unavailable。
+- 独立审查修复过宽二进制平台/可执行类型判断；git diff --check 通过。
+
+未运行本增量 GUI、完整 CTest、打包矩阵或压力测试。Windows/macOS 编译和真实
+快捷方式/Finder 启动、搬移后的目标运行、外部依赖、签名、公证及安装器仍待
+统一验收。应用 staging 不提供系统 WebView，不改变已记录 GUI 依赖阻塞。

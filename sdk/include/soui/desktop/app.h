@@ -26,6 +26,17 @@ struct value_result {
   std::string value;
 };
 
+struct path_result {
+  result status;
+  std::filesystem::path value;
+};
+
+// Resolve the running executable's sibling web directory, or Contents/Resources/web
+// inside a macOS app bundle. Does not use argv[0], cwd or an environment fallback.
+// Synchronous startup metadata I/O; requires a trusted, stable app deployment.
+// Returns a canonical existing directory, not a filesystem sandbox guarantee.
+[[nodiscard]] path_result application_resource_directory();
+
 struct capabilities {
   std::string backend;
   bool clipboard_read{false};

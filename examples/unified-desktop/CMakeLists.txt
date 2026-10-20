@@ -13,3 +13,11 @@ endif()
 add_custom_command(TARGET soui_desktop_example POST_BUILD
   COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_CURRENT_SOURCE_DIR}/web"
     "$<TARGET_FILE_DIR:soui_desktop_example>/web")
+
+option(SOUI_DESKTOP_STAGE_EXAMPLE "Enable explicit unsigned example application staging target" OFF)
+if(SOUI_DESKTOP_STAGE_EXAMPLE)
+  soui_stage_application(TARGET soui_desktop_example NAME soui-example
+    ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/web"
+    OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/staged-$<CONFIG>"
+    VERSION "0.1.0" IDENTIFIER "org.soui.example")
+endif()

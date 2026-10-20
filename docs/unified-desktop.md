@@ -303,3 +303,6 @@ ctest --preset desktop -R sdk.desktop.linux-native --output-on-failure
 ### 开发包失败关闭补充
 
 入口在构建后重新核对缓存和 CTest JSON 注册清单，九项必需测试（含真实文件资产边界及有界工作线程）须唯一、启用并具有执行命令。多配置生成器仅接受已配置的目标；安装版本须匹配源码 VERSION，且必须包含选中配置的 Runtime/ Desktop 静态库。它不以其他测试通过、旧缓存或其他配置文件替代这些条件。
+
+应用二进制与前端资源的可搬移目录入口见 [应用 staging](desktop-application-staging.md)，
+与上述 SDK 开发 ZIP 分开；不自动提供系统引擎、签名或正式安装器。
