@@ -2,6 +2,9 @@
 
 ## 未发布统一桌面 API
 
+Linux 构建可显式提供 SOUI_DESKTOP_WEBKIT_HELPER_DIR；已知部署缺失 helper 时
+initialize 返回 E_WEBKIT_RUNTIME。默认未知不预判，详见[统一桌面入口](unified-desktop.md#linux-显式-helper-部署预检)。
+
 前端 ESM 薄适配、TypeScript 声明与资产解码见 [前端接入](desktop-frontend-adapter.md)。
 
 `application_resource_directory()` 按实际可执行文件位置定位默认前端目录，

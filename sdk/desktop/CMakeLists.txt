@@ -11,6 +11,20 @@ target_include_directories(soui_desktop PUBLIC
   "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../include>" "$<INSTALL_INTERFACE:include>")
 target_include_directories(soui_desktop PRIVATE "${SOUI_DISTRIBUTION_ROOT}/third_party/include/json")
 if(SOUI_TARGET_OS STREQUAL "linux")
+  set(SOUI_DESKTOP_WEBKIT_HELPER_DIR "" CACHE STRING
+    "Optional actual target WebKitGTK PKGLIBEXECDIR; empty means unknown (no preflight)")
+  if(NOT SOUI_DESKTOP_WEBKIT_HELPER_DIR STREQUAL "" AND
+      NOT SOUI_DESKTOP_WEBKIT_HELPER_DIR MATCHES "^/")
+    message(FATAL_ERROR "SOUI_DESKTOP_WEBKIT_HELPER_DIR must be an absolute target Linux path")
+  endif()
+  if(SOUI_DESKTOP_WEBKIT_HELPER_DIR MATCHES "[\n\r;]")
+    message(FATAL_ERROR "SOUI_DESKTOP_WEBKIT_HELPER_DIR contains unsupported control/list characters")
+  endif()
+  string(REPLACE "\\" "\\\\" SOUI_DESKTOP_WEBKIT_HELPER_DIR_ESCAPED "${SOUI_DESKTOP_WEBKIT_HELPER_DIR}")
+  string(REPLACE "\"" "\\\"" SOUI_DESKTOP_WEBKIT_HELPER_DIR_ESCAPED "${SOUI_DESKTOP_WEBKIT_HELPER_DIR_ESCAPED}")
+  configure_file(webkit_runtime_config.h.in
+    "${CMAKE_CURRENT_BINARY_DIR}/webkit_runtime_config.h" @ONLY)
+  target_include_directories(soui_desktop PRIVATE "${CMAKE_CURRENT_BINARY_DIR}")
   find_package(PkgConfig REQUIRED)
   pkg_check_modules(SOUI_WEBKIT REQUIRED IMPORTED_TARGET "webkit2gtk-4.1>=2.40" "gtk+-3.0>=3.24")
   target_sources(soui_desktop PRIVATE ../src/desktop/backends/linux_webkitgtk.cpp)

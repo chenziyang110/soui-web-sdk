@@ -1,4 +1,11 @@
 #include "../backend.h"
+#include "linux_runtime_preflight.h"
+#if __has_include("webkit_runtime_config.h")
+#include "webkit_runtime_config.h"
+#else
+// Standalone backend builds retain the unknown/default deployment behavior.
+#define SOUI_DESKTOP_WEBKIT_HELPER_DIR ""
+#endif
 #include "../resource_uri.h"
 
 #include <gtk/gtk.h>
@@ -677,6 +684,8 @@ class linux_backend final : public backend {
       return result::failure("E_STATE", "A desktop backend can only be initialized once.");
     if (!valid_text(settings.title) || settings.width < 1 || settings.height < 1)
       return result::failure("E_ARGUMENT", "Invalid window title or dimensions.");
+    const auto runtime = check_webkit_helpers(SOUI_DESKTOP_WEBKIT_HELPER_DIR);
+    if (!runtime.ok) return runtime;
     if (!gtk_init_check(nullptr, nullptr))
       return result::failure("E_DISPLAY", "GTK could not connect to an X11 or Wayland display. Start the application in an "
         "active graphical user session and verify display access; setting a display variable "

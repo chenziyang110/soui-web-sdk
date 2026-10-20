@@ -309,3 +309,26 @@ ctest --preset desktop -R sdk.desktop.linux-native --output-on-failure
 
 需要新建应用可使用 [最小项目生成器](unified-desktop-project-generator.md)，
 直接接入已安装 SDK、前端模块和应用 staging，不复制演示业务。
+
+### Linux 显式 helper 部署预检
+
+官方发行 WebKitGTK 的 helper 位置是运行库构建时的 PKGLIBEXECDIR；开发包 .pc
+不一定提供它。仅解包共享库到用户目录可能可以链接，但会在创建 WebView 时因
+固定前缀缺少 WebKitNetworkProcess 中止进程。WEBKIT_EXEC_PATH 并非发行版通用
+覆盖项，不要通过改二进制或关闭沙箱解决。
+
+已知准确部署位置时，构建 SDK 可传入
+`-DSOUI_DESKTOP_WEBKIT_HELPER_DIR=/actual/target/webkit-helper-directory`。这是由
+部署方确认的目标系统路径，不是开发机 sysroot 路径，也不是 helper 搜索路径
+覆盖。SDK 在 GTK/WebKit 初始化前检查 WebKitNetworkProcess、WebKitWebProcess
+是否为普通可执行文件；缺失时 initialize 返回 E_WEBKIT_RUNTIME，消息不包含
+绝对路径。符号链接可指向正常安装文件，不会执行 helper 或修改权限。
+
+默认空值表示未知，保持现有行为，**不承诺默认配置可防止 WebKit abort**。
+候选存在不代表加载器、架构、辅助依赖或沙箱可运行；文件检查也无法排除并发
+修改。该契约编入静态 SDK，安装后的消费者无需重复传入，但运行库部署前缀变化
+必须重新构建 SDK。独立直接编译 backend、没有生成配置头时亦保持未知默认。
+已有 doctor 的标准位置候选仍是 UNKNOWN/PASS 候选提示，不被升级为部署事实。
+
+依据：[WebKit 2.52.6 helper 位置实现](https://raw.githubusercontent.com/WebKit/WebKit/webkitgtk-2.52.6/Source/WebKit/Shared/glib/ProcessExecutablePathGLib.cpp)
+和 [GTK 构建安装目录定义](https://raw.githubusercontent.com/WebKit/WebKit/webkitgtk-2.52.6/Source/cmake/OptionsGTK.cmake)。

@@ -46,6 +46,13 @@ add_test(NAME sdk.desktop.asset-executor COMMAND soui_desktop_asset_executor)
 set_tests_properties(sdk.desktop.asset-executor PROPERTIES TIMEOUT 30 LABELS "desktop;contract;no-gui")
 
 if(SOUI_BUILD_DESKTOP AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  add_executable(soui_desktop_linux_runtime_preflight linux_runtime_preflight.cpp)
+  target_compile_features(soui_desktop_linux_runtime_preflight PRIVATE cxx_std_17)
+  target_include_directories(soui_desktop_linux_runtime_preflight PRIVATE
+    "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
+  target_compile_options(soui_desktop_linux_runtime_preflight PRIVATE -Wall -Wextra -Wpedantic)
+  add_test(NAME sdk.desktop.linux-runtime-preflight COMMAND soui_desktop_linux_runtime_preflight)
+  set_tests_properties(sdk.desktop.linux-runtime-preflight PROPERTIES TIMEOUT 10 LABELS "desktop;contract;no-gui")
   # sdk/desktop's imported pkg-config target has directory scope. The fixture
   # includes GTK/WebKit directly and needs its own dependency in this directory.
   find_package(PkgConfig REQUIRED)

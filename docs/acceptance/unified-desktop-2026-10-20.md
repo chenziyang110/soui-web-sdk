@@ -216,3 +216,18 @@ Windows/macOS 原生诊断和实际窗口验收延后；此前 GUI 依赖阻塞�
   第二次8文件且旧输出已移除，第三次unchanged；已安装工具与源码逐字一致。
 - 没有重建/运行C++应用、GUI或跨平台全矩阵；多配置Windows/macOS真实文件锁
   和异常中断恢复仍待统一验收。正式staging仍create-only。
+
+## Linux helper 可控失败增量（15:23 UTC）
+
+- 受支持云图形桌面仍可用；系统前缀仍缺少 WebKitNetworkProcess，隔离目录虽有
+  helper，官方生产版 WebKit 不支持用 WEBKIT_EXEC_PATH 重定位。未重试安装或
+  权限提升，也未修改第三方二进制/关闭 sandbox。此前安装失败发生在执行器
+  bwrap 初始化，不能写成 apt 已执行或库安装失败。
+- 当前Linux原生integration目标及示例实际编译链接通过，尚未运行图形测试。
+- 显式配置 SOUI_DESKTOP_WEBKIT_HELPER_DIR 为当前Debian运行库的已知系统前缀，
+  构建新增预检测试与真实示例成功。重点文件检查通过；链接真实官方WebKit的
+  示例实际返回 E_WEBKIT_RUNTIME、退出码1，无abort、无绝对路径泄露。
+- SDK安装成功，安装静态库与构建静态库逐字一致，预检契约随静态库传播。
+  git diff --check通过；独立只读审查未发现具体缺陷。
+- 默认空配置仍未知，不承诺自动检测或阻止所有WebKit abort。此增量没有证明
+  GUI、模块/fetch或Bridge真实运行通过；Linux运行依赖和macOS目标机验收仍缺。
