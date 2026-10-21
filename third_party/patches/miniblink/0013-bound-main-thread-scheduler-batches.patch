@@ -1,0 +1,120 @@
+diff --git a/third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp b/third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp
+index 71d3c051..d001f8c2 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp
++++ b/third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp
+@@ -414,12 +414,12 @@ void BlinkPlatformImpl::preShutdown()
+ void BlinkPlatformImpl::shutdown()
+ {
+     wke::freeV8TempObejctOnOneFrameBefore();
+-    ((WebThreadImpl*)currentThread())->fire();
++    ((WebThreadImpl*)currentThread())->fireForShutdown();
+ 
+     net::WebURLLoaderManager::sharedInstance()->shutdown();
+     WebPage::shutdown();
+ 
+-    ((WebThreadImpl*)currentThread())->fire();
++    ((WebThreadImpl*)currentThread())->fireForShutdown();
+ 
+     blink::memoryCache()->evictResources();
+     v8::Isolate::GetCurrent()->LowMemoryNotification();
+@@ -436,7 +436,7 @@ void BlinkPlatformImpl::shutdown()
+     MemoryCache* memoryCache = MemoryCache::create();
+     replaceMemoryCacheForTesting(memoryCache);
+ 
+-    ((WebThreadImpl*)currentThread())->fire();
++    ((WebThreadImpl*)currentThread())->fireForShutdown();
+ 
+     blink::Heap::collectAllGarbage();
+ 
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
+index d2e37225..3c556a47 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
++++ b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp
+@@ -27,9 +27,11 @@
+ 
+ namespace content {
+ 
+-// 100ms is about a perceptable delay in UI, so use a half of that as a threshold.
+-// This is to prevent UI freeze when there are too many timers or machine performance is low.
++// Workers retain their existing throughput budget. The main thread must also
++// return to its owner message pump so queued host input can be dispatched.
+ static const double maxDurationOfFiringTimers = 0.050;
++static const double mainThreadTimerBudget = 0.002;
++static const unsigned mainThreadTaskBudget = 32;
+ 
+ namespace {
+ 
+@@ -629,6 +631,12 @@ void WebThreadImpl::fire()
+     schedulerTasks();
+ }
+ 
++void WebThreadImpl::fireForShutdown()
++{
++    startTriggerTasks();
++    schedulerTasks(false);
++}
++
+ void WebThreadImpl::fireTimeOnExit()
+ {
+     while (!m_timerHeap.empty()) {
+@@ -654,6 +662,11 @@ void WebThreadImpl::fireOnExit()
+ }
+ 
+ void WebThreadImpl::schedulerTasks()
++{
++    schedulerTasks(true);
++}
++
++void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
+ {
+     // Do a re-entrancy check.
+     if (m_firingTimers > 0 /*|| m_suspendTimerQueue*/) 
+@@ -666,6 +679,8 @@ void WebThreadImpl::schedulerTasks()
+ 
+     double fireTime = currentTime();
+     double timeToQuit = fireTime + maxDurationOfFiringTimers;
++    const double mainThreadTimeToQuit = fireTime + mainThreadTimerBudget;
++    unsigned completedTasks = 0;
+ 
+ #ifdef _DEBUG
+     std::vector<WebTimerBase*> dumpTimerHeap = m_timerHeap;
+@@ -700,12 +715,17 @@ void WebThreadImpl::schedulerTasks()
+         willProcessTasks();
+         timer->fired();
+         didProcessTasks();
++        ++completedTasks;
+ 
+         startTriggerTasks();
+         fireTime = currentTime();
+ 
+-        // Catch the case where the timer asked timers to fire in a nested event loop, or we are over time limit.
+-        if (!m_firingTimers || timeToQuit < currentTime())
++        // A callback or observer may exceed this cooperative budget. Leave
++        // pending timers intact for the existing next tick; exit drain keeps
++        // its original budget and the separate fireOnExit path is unchanged.
++        if (!m_firingTimers || timeToQuit < currentTime()
++            || (allowMainThreadBudget && m_isMainThread && !m_willExit
++                && (completedTasks >= mainThreadTaskBudget || mainThreadTimeToQuit < currentTime())))
+             break;
+     }
+     if (!hasFire) {
+diff --git a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h
+index a22e0040..6b06340c 100644
+--- a/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h
++++ b/third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h
+@@ -58,6 +58,7 @@ public:
+     void schedulerTasks();
+ 
+     void fire();
++    void fireForShutdown();
+     
+     void suspendTimerQueue();
+     void resumeTimerQueue();
+@@ -80,6 +81,7 @@ public:
+ private:
+     friend class BlinkPlatformImpl;
+ 
++    void schedulerTasks(bool allowMainThreadBudget);
+     void fireOnExit();
+     void waitForExit();
+     void fireTimeOnExit();

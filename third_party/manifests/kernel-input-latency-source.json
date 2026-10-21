@@ -1,0 +1,84 @@
+{
+  "schema": "soui.kernel-source-delta/v1",
+  "sdkVersion": "0.5.0",
+  "status": "source-only-unreleased-candidate",
+  "scope": "Exact raw-byte main-thread scheduler batch source change with explicit shutdown dispatch; no binary import",
+  "baseCommit": "dc1e5bca0f6467f3481c15d8f5f54dab7fa69d06",
+  "sourceIdentityScope": "The three changed vendor files only; not a complete physical source snapshot",
+  "patch": {
+    "path": "third_party/patches/miniblink/0013-bound-main-thread-scheduler-batches.patch",
+    "bytes": 4625,
+    "sha256": "8a4acaee8575e38104b8aaf5d6d908587cdbb5479e3e8aa4d77de7d019ee4534"
+  },
+  "files": [
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+      "before": {
+        "bytes": 40230,
+        "sha256": "6f2da672656096a926f0710d10ef94ca84b2c57b1dc2f290fabf1f302a793bce"
+      },
+      "after": {
+        "bytes": 40263,
+        "sha256": "b03dc07c12abfa1a43a53390d665067f6a35272e3dd11dfde15f3b70cf68cadc"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+      "before": {
+        "bytes": 24157,
+        "sha256": "95fe2fdd2d109cf3bfed4a155222d4a13642c3980b372e5ca952c4f09a9bdad2"
+      },
+      "after": {
+        "bytes": 24846,
+        "sha256": "fa7295aee946697c6a9b122daea593b7c435f39ae1585c2774e8d13476e953cc"
+      }
+    },
+    {
+      "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+      "before": {
+        "bytes": 4244,
+        "sha256": "253c1b74696c717c9145e5b5b598986354a06182f4bcb9ccfc71674d76a1e358"
+      },
+      "after": {
+        "bytes": 4325,
+        "sha256": "673e9acc5bb267a5afb733a7eb4c84de2ac845699e49fa44e27f1fbcafd2ea7d"
+      }
+    }
+  ],
+  "replay": {
+    "forwardRawBytesMatched": true,
+    "reverseRawBytesMatched": true,
+    "currentWorktreeReverseCheck": true,
+    "lineEndingConversion": false,
+    "gitConfig": {
+      "autocrlf": false,
+      "eol": "lf"
+    }
+  },
+  "historicalImportManifest": "third_party/sources/miniblink/SOURCE-MANIFEST.json",
+  "historicalImportManifestMeaning": "Original imported working-tree snapshot; preserved independently of this source-only change",
+  "binaryProvenance": {
+    "path": "third_party/manifests/kernel-build-050.json",
+    "unchanged": true,
+    "newBinaryImported": false
+  },
+  "policy": {
+    "mainThreadBudgetSeconds": 0.002,
+    "mainThreadCompletedTaskBudget": 32,
+    "workerBudgetSeconds": 0.05,
+    "continuation": "Existing repeating 16 ms shared timer",
+    "cooperativeOnly": true,
+    "workerSchedulingUnchanged": true,
+    "finalExitDrainUnchanged": true,
+    "explicitPlatformShutdown": {
+      "entry": "WebThreadImpl::fireForShutdown",
+      "callSiteCount": 3,
+      "allowMainThreadBudget": false,
+      "originalSchedulerBudgetSeconds": 0.05
+    }
+  },
+  "validationScope": "Patch replay and source byte identity only; runtime and full kernel verification use separate evidence",
+  "fullKernelValidationComplete": false,
+  "inputLatencyValidationComplete": false,
+  "releaseReady": false
+}

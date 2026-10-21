@@ -27,9 +27,11 @@
 
 namespace content {
 
-// 100ms is about a perceptable delay in UI, so use a half of that as a threshold.
-// This is to prevent UI freeze when there are too many timers or machine performance is low.
+// Workers retain their existing throughput budget. The main thread must also
+// return to its owner message pump so queued host input can be dispatched.
 static const double maxDurationOfFiringTimers = 0.050;
+static const double mainThreadTimerBudget = 0.002;
+static const unsigned mainThreadTaskBudget = 32;
 
 namespace {
 
@@ -629,6 +631,12 @@ void WebThreadImpl::fire()
     schedulerTasks();
 }
 
+void WebThreadImpl::fireForShutdown()
+{
+    startTriggerTasks();
+    schedulerTasks(false);
+}
+
 void WebThreadImpl::fireTimeOnExit()
 {
     while (!m_timerHeap.empty()) {
@@ -655,6 +663,11 @@ void WebThreadImpl::fireOnExit()
 
 void WebThreadImpl::schedulerTasks()
 {
+    schedulerTasks(true);
+}
+
+void WebThreadImpl::schedulerTasks(bool allowMainThreadBudget)
+{
     // Do a re-entrancy check.
     if (m_firingTimers > 0 /*|| m_suspendTimerQueue*/) 
         return;
@@ -666,6 +679,8 @@ void WebThreadImpl::schedulerTasks()
 
     double fireTime = currentTime();
     double timeToQuit = fireTime + maxDurationOfFiringTimers;
+    const double mainThreadTimeToQuit = fireTime + mainThreadTimerBudget;
+    unsigned completedTasks = 0;
 
 #ifdef _DEBUG
     std::vector<WebTimerBase*> dumpTimerHeap = m_timerHeap;
@@ -700,12 +715,17 @@ void WebThreadImpl::schedulerTasks()
         willProcessTasks();
         timer->fired();
         didProcessTasks();
+        ++completedTasks;
 
         startTriggerTasks();
         fireTime = currentTime();
 
-        // Catch the case where the timer asked timers to fire in a nested event loop, or we are over time limit.
-        if (!m_firingTimers || timeToQuit < currentTime())
+        // A callback or observer may exceed this cooperative budget. Leave
+        // pending timers intact for the existing next tick; exit drain keeps
+        // its original budget and the separate fireOnExit path is unchanged.
+        if (!m_firingTimers || timeToQuit < currentTime()
+            || (allowMainThreadBudget && m_isMainThread && !m_willExit
+                && (completedTasks >= mainThreadTaskBudget || mainThreadTimeToQuit < currentTime())))
             break;
     }
     if (!hasFire) {

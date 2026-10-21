@@ -1,0 +1,34 @@
+{
+  "schema": "soui-input-latency-baseline-source/v1",
+  "baseCommit": "dc1e5bca0f6467f3481c15d8f5f54dab7fa69d06",
+  "candidateDelta": "third_party/manifests/kernel-input-latency-source.json",
+  "externalSnapshotPolicy": "Actual complete physical inventories are retained outside the repository; labels and raw byte identities identify the records without rewriting them.",
+  "snapshots": [
+    {
+      "label": "kernel-x86-2/kernel-source-before.json",
+      "bytes": 4585854,
+      "sha256": "77cb5cfb5bcd74ecb645feccf7705478bd07a1760e26283510fbdbe2ac920ea0",
+      "sourceIdentity": "d43a213508fa0689880c8498333110e5af3133c32c9733730573fc8f4223c695",
+      "files": 23545,
+      "directories": 1330,
+      "totalBytes": 321016301
+    },
+    {
+      "label": "kernel-x64-2/kernel-source-before.json",
+      "bytes": 4585854,
+      "sha256": "77cb5cfb5bcd74ecb645feccf7705478bd07a1760e26283510fbdbe2ac920ea0",
+      "sourceIdentity": "d43a213508fa0689880c8498333110e5af3133c32c9733730573fc8f4223c695",
+      "files": 23545,
+      "directories": 1330,
+      "totalBytes": 321016301
+    }
+  ],
+  "currentIdentity": "d43a213508fa0689880c8498333110e5af3133c32c9733730573fc8f4223c695",
+  "changedFiles": 3,
+  "reconstructedBaselineIdentity": "0bbed0bfd1b81a0c924ca3927cd4c53dfa2e916ac3aa5da43c51c2b70bba091f",
+  "frozen050ExpectedIdentity": "0bbed0bfd1b81a0c924ca3927cd4c53dfa2e916ac3aa5da43c51c2b70bba091f",
+  "baselineMatches": true,
+  "method": "Replace only the three changed rows with exact base-commit byte pins in the captured complete physical input inventory; preserve all remaining rows and directories",
+  "runtimeValidationClaim": false,
+  "releaseReady": false
+}

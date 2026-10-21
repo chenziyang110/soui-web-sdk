@@ -1,0 +1,659 @@
+{
+  "schema": "soui-input-latency-fixture-source-builds/1",
+  "recordedAtUtc": "2026-10-21T03:45:56.2686537Z",
+  "evidenceScope": "source-and-build-only",
+  "runtimeExecuted": false,
+  "runtimeStatus": "pending-separate-authorized-guest-report",
+  "performanceMeasurementPerformed": false,
+  "testsPassed": null,
+  "sourceTruth": "Raw source byte identities; no transformed source substitutes",
+  "externalEvidencePolicy": "Artifacts, snapshots and untouched raw logs are held outside the repository. Portable labels identify them by byte count and SHA-256; raw logs are not rewritten or embedded here.",
+  "sealedBundleManifest": {
+    "artifactLabel": "guest-regression-3/artifact-manifest.json",
+    "storage": "external-held",
+    "bytes": 29564,
+    "sha256": "e7ba542071846758719173c31f3a4d97cd29013d760d67b618e063baec50d5c6"
+  },
+  "artifacts": [
+    {
+      "artifactLabel": "guest-regression-3/first1-x86/soui_worker_lifetime_regressions.exe",
+      "storage": "external-held",
+      "bytes": 50688,
+      "sha256": "62cbc415e9b3ea07c8864194999ee9304d4be77abb091cdc0ffaf412e91bcf23"
+    },
+    {
+      "artifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe",
+      "storage": "external-held",
+      "bytes": 56320,
+      "sha256": "e026a53cb5818fe7357ab77fea4feec5c8cdca46e28af1156bbcefb1cdb1db8d"
+    },
+    {
+      "artifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe",
+      "storage": "external-held",
+      "bytes": 50688,
+      "sha256": "c09efe7ee1f562afdeb6daf5217d021bd8d458da0190efd860d5c00e173e0d69"
+    },
+    {
+      "artifactLabel": "guest-regression-3/red-x86/soui_worker_lifetime_regressions.exe",
+      "storage": "external-held",
+      "bytes": 50688,
+      "sha256": "0b2c7104cfb2781a5c8ba052513e5dc801acd6cf12bb885e01b47ee8ea18aef0"
+    },
+    {
+      "artifactLabel": "guest-regression-3/Run-Scheduler-Regression.exe",
+      "storage": "external-held",
+      "bytes": 130560,
+      "sha256": "3d52d1357233f6a9bcbfd5026faaae92db5fbf6b9136fc452b3002231a4a01bd"
+    }
+  ],
+  "fixturePayloadEquality": {
+    "verified": true,
+    "versionCount": 3,
+    "payloadCount": 22,
+    "comparison": "Every payload file rehashed from each external snapshot; all bytes match across original-red, first1 and final-green",
+    "pins": [
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/CMakeLists.txt",
+        "bytes": 3299,
+        "sha256": "ddb22edb83497137119512b14a709de9fc507f244910ea4feee16e23e3d3f071"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/README.md",
+        "bytes": 5616,
+        "sha256": "f8f0161128a2ca6ff87a13e7045a432ce33c8ed7becd000500bfa7d01b23fc15"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/expect-fail-fast.cmake",
+        "bytes": 5496,
+        "sha256": "4d0abcd15d4bfad7b29228fa74b2741b033820f06990532a88a276c62a5432a3"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/fixture.cpp",
+        "bytes": 39921,
+        "sha256": "41d09dfd527d0e24fd95b039820f7a0ed88891cbbcbe6f4d1d45f14bce899e8a"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/fixture_support.h",
+        "bytes": 4351,
+        "sha256": "a93a946bd18e1fdb648aaf2b2757994eade08c5794170916225ae1258fa6526b"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/source-bytes.cmake",
+        "bytes": 10511,
+        "sha256": "2171f85404ec51b3c6cf8c0b680c9d18939489ebf493daf0cf414b8236cc043f"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/base/compiler_specific.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/base/thread.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/config.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/content/browser/CheckReEnter.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/content/web_impl_win/ActivatingTimerCheck.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/content/web_impl_win/BlinkPlatformImpl.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/content/web_impl_win/WebSchedulerImpl.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/third_party/WebKit/Source/platform/Task.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/third_party/WebKit/Source/wtf/ThreadingPrimitives.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/third_party/WebKit/public/platform/Platform.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/third_party/WebKit/public/platform/WebThread.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/third_party/WebKit/public/platform/WebTraceLocation.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/wtf/FastAllocBase.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/wtf/Noncopyable.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/wtf/Threading.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      },
+      {
+        "path": "tests/native/vendor_lifetime/worker_lifetime/stubs/wtf/Vector.h",
+        "bytes": 42,
+        "sha256": "b59ce11fe69d0c2bcd254bcf1935ae2ef7c1e384d680e6b1856f164681b2688c"
+      }
+    ]
+  },
+  "sourceSnapshots": [
+    {
+      "variant": "original-red",
+      "snapshotLabel": "source-snapshot/original-red",
+      "storage": "external-held",
+      "wholeSourcePinCount": 13,
+      "exactCopyCount": 12,
+      "sourceMap": {
+        "artifactLabel": "source-snapshot/original-red/source-map.json",
+        "storage": "external-held",
+        "bytes": 11251,
+        "sha256": "ca6ccd1507a4b57d086e9d00e69a0f2aae6dee4133dcd0f91fadb33e6b8c1ec5"
+      },
+      "wholeSourcePins": [
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h",
+          "bytes": 4454,
+          "sha256": "b249c04ad503c8c84d87ff04895edf4d97ef9381c751a5216467f66cf4eb096f"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp",
+          "bytes": 12967,
+          "sha256": "22eb8dca0f7d663c327346c2fd18f9d05cd302e9186bbcc572fce5b2ea6aa535"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h",
+          "bytes": 1599,
+          "sha256": "1db945b69bb97d90b0d3b9dd8b3e8cc84ff82bed6b58ab598d884866be3ceb84"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebSchedulerImpl.h",
+          "bytes": 4866,
+          "sha256": "baf29ee4f44cfa102a85bcbb7c979f4a2fa178f769054b25d9f3bce7f9a67809"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebSchedulerImpl.cpp",
+          "bytes": 3651,
+          "sha256": "4a444a58d081d23999c7bd1b04eb44904bf6eb9d71dd02c1fac763485ce43b33"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/browser/SharedTimerWin.h",
+          "bytes": 7482,
+          "sha256": "5a0bc9c26aa07db331e1d7d93adc5ea48765839871a08533701c3c22b4fd8497"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.h",
+          "bytes": 8095,
+          "sha256": "af9a062a926e9f78d5a99ff5f297ed2ffb82b409e7ec3c2c302e434acf81dfad"
+        },
+        {
+          "path": "third_party/sources/miniblink/third_party/WebKit/public/platform/WebThread.h",
+          "bytes": 3976,
+          "sha256": "71f59eecb5ce355d95db2bca7f6bca1272310a2d51617aec5eb0a57ec330cd66"
+        },
+        {
+          "path": "third_party/sources/miniblink/third_party/WebKit/Source/wtf/Threading.h",
+          "bytes": 4048,
+          "sha256": "8c774c8cf7f6c019c37b99dac6c5e28ddb2c7bf7a7988585f5842d9b817197d1"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/browser/CheckReEnter.cpp",
+          "bytes": 761,
+          "sha256": "fde567d3c8476902f681190b0338d8ba387e5f63f0f16bf0f9469276d8455f05"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+          "bytes": 4244,
+          "sha256": "253c1b74696c717c9145e5b5b598986354a06182f4bcb9ccfc71674d76a1e358"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+          "bytes": 24157,
+          "sha256": "95fe2fdd2d109cf3bfed4a155222d4a13642c3980b372e5ca952c4f09a9bdad2"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+          "bytes": 40230,
+          "sha256": "6f2da672656096a926f0710d10ef94ca84b2c57b1dc2f290fabf1f302a793bce"
+        }
+      ],
+      "platformShutdownProof": {
+        "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+        "output": "fragments/platform_shutdown.proof.cpp",
+        "startByte": 14267,
+        "endByteExclusive": 16439,
+        "bytes": 2172,
+        "sha256": "36b07349fc5d85b1cdf54ca297125dabfa5a5192cc65cb68f487d8496fe050f3"
+      },
+      "derivedPreShutdownEntrypoint": "fire"
+    },
+    {
+      "variant": "first1",
+      "snapshotLabel": "source-snapshot/first1",
+      "storage": "external-held",
+      "wholeSourcePinCount": 13,
+      "exactCopyCount": 12,
+      "sourceMap": {
+        "artifactLabel": "source-snapshot/first1/source-map.json",
+        "storage": "external-held",
+        "bytes": 11251,
+        "sha256": "0aa16c47169d0f3b55087cccdd7a61240750c8f9e75f7de52a94684421e72307"
+      },
+      "wholeSourcePins": [
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h",
+          "bytes": 4454,
+          "sha256": "b249c04ad503c8c84d87ff04895edf4d97ef9381c751a5216467f66cf4eb096f"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp",
+          "bytes": 12967,
+          "sha256": "22eb8dca0f7d663c327346c2fd18f9d05cd302e9186bbcc572fce5b2ea6aa535"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h",
+          "bytes": 1599,
+          "sha256": "1db945b69bb97d90b0d3b9dd8b3e8cc84ff82bed6b58ab598d884866be3ceb84"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebSchedulerImpl.h",
+          "bytes": 4866,
+          "sha256": "baf29ee4f44cfa102a85bcbb7c979f4a2fa178f769054b25d9f3bce7f9a67809"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebSchedulerImpl.cpp",
+          "bytes": 3651,
+          "sha256": "4a444a58d081d23999c7bd1b04eb44904bf6eb9d71dd02c1fac763485ce43b33"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/browser/SharedTimerWin.h",
+          "bytes": 7482,
+          "sha256": "5a0bc9c26aa07db331e1d7d93adc5ea48765839871a08533701c3c22b4fd8497"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.h",
+          "bytes": 8095,
+          "sha256": "af9a062a926e9f78d5a99ff5f297ed2ffb82b409e7ec3c2c302e434acf81dfad"
+        },
+        {
+          "path": "third_party/sources/miniblink/third_party/WebKit/public/platform/WebThread.h",
+          "bytes": 3976,
+          "sha256": "71f59eecb5ce355d95db2bca7f6bca1272310a2d51617aec5eb0a57ec330cd66"
+        },
+        {
+          "path": "third_party/sources/miniblink/third_party/WebKit/Source/wtf/Threading.h",
+          "bytes": 4048,
+          "sha256": "8c774c8cf7f6c019c37b99dac6c5e28ddb2c7bf7a7988585f5842d9b817197d1"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/browser/CheckReEnter.cpp",
+          "bytes": 761,
+          "sha256": "fde567d3c8476902f681190b0338d8ba387e5f63f0f16bf0f9469276d8455f05"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+          "bytes": 4244,
+          "sha256": "253c1b74696c717c9145e5b5b598986354a06182f4bcb9ccfc71674d76a1e358"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+          "bytes": 24632,
+          "sha256": "17b8fa8b6d40254b936495cd85b10e59cc94a74c90919d53a03e3dafb795fa4b"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+          "bytes": 40230,
+          "sha256": "6f2da672656096a926f0710d10ef94ca84b2c57b1dc2f290fabf1f302a793bce"
+        }
+      ],
+      "platformShutdownProof": {
+        "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+        "output": "fragments/platform_shutdown.proof.cpp",
+        "startByte": 14267,
+        "endByteExclusive": 16439,
+        "bytes": 2172,
+        "sha256": "36b07349fc5d85b1cdf54ca297125dabfa5a5192cc65cb68f487d8496fe050f3"
+      },
+      "derivedPreShutdownEntrypoint": "fire"
+    },
+    {
+      "variant": "final-green",
+      "snapshotLabel": "source-snapshot/final-green",
+      "storage": "external-held",
+      "wholeSourcePinCount": 13,
+      "exactCopyCount": 12,
+      "sourceMap": {
+        "artifactLabel": "source-snapshot/final-green/source-map.json",
+        "storage": "external-held",
+        "bytes": 11251,
+        "sha256": "4c46335307ba1bbbba0f81e7cb00f86a829ce83dbc8e45e0fcd4f0a3b023a726"
+      },
+      "wholeSourcePins": [
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.h",
+          "bytes": 4454,
+          "sha256": "b249c04ad503c8c84d87ff04895edf4d97ef9381c751a5216467f66cf4eb096f"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebTimerBase.cpp",
+          "bytes": 12967,
+          "sha256": "22eb8dca0f7d663c327346c2fd18f9d05cd302e9186bbcc572fce5b2ea6aa535"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/TaskSchedulingPolicy.h",
+          "bytes": 1599,
+          "sha256": "1db945b69bb97d90b0d3b9dd8b3e8cc84ff82bed6b58ab598d884866be3ceb84"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebSchedulerImpl.h",
+          "bytes": 4866,
+          "sha256": "baf29ee4f44cfa102a85bcbb7c979f4a2fa178f769054b25d9f3bce7f9a67809"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebSchedulerImpl.cpp",
+          "bytes": 3651,
+          "sha256": "4a444a58d081d23999c7bd1b04eb44904bf6eb9d71dd02c1fac763485ce43b33"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/browser/SharedTimerWin.h",
+          "bytes": 7482,
+          "sha256": "5a0bc9c26aa07db331e1d7d93adc5ea48765839871a08533701c3c22b4fd8497"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.h",
+          "bytes": 8095,
+          "sha256": "af9a062a926e9f78d5a99ff5f297ed2ffb82b409e7ec3c2c302e434acf81dfad"
+        },
+        {
+          "path": "third_party/sources/miniblink/third_party/WebKit/public/platform/WebThread.h",
+          "bytes": 3976,
+          "sha256": "71f59eecb5ce355d95db2bca7f6bca1272310a2d51617aec5eb0a57ec330cd66"
+        },
+        {
+          "path": "third_party/sources/miniblink/third_party/WebKit/Source/wtf/Threading.h",
+          "bytes": 4048,
+          "sha256": "8c774c8cf7f6c019c37b99dac6c5e28ddb2c7bf7a7988585f5842d9b817197d1"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/browser/CheckReEnter.cpp",
+          "bytes": 761,
+          "sha256": "fde567d3c8476902f681190b0338d8ba387e5f63f0f16bf0f9469276d8455f05"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.h",
+          "bytes": 4325,
+          "sha256": "673e9acc5bb267a5afb733a7eb4c84de2ac845699e49fa44e27f1fbcafd2ea7d"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/WebThreadImpl.cpp",
+          "bytes": 24846,
+          "sha256": "fa7295aee946697c6a9b122daea593b7c435f39ae1585c2774e8d13476e953cc"
+        },
+        {
+          "path": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+          "bytes": 40263,
+          "sha256": "b03dc07c12abfa1a43a53390d665067f6a35272e3dd11dfde15f3b70cf68cadc"
+        }
+      ],
+      "platformShutdownProof": {
+        "source": "third_party/sources/miniblink/content/web_impl_win/BlinkPlatformImpl.cpp",
+        "output": "fragments/platform_shutdown.proof.cpp",
+        "startByte": 14267,
+        "endByteExclusive": 16472,
+        "bytes": 2205,
+        "sha256": "f103afc1ef7519332ab7868c1d4a6c384357308a0531ab9c6718b88cb86608f1"
+      },
+      "derivedPreShutdownEntrypoint": "fireForShutdown"
+    }
+  ],
+  "toolchain": {
+    "cmakeGenerator": "Visual Studio 17 2022",
+    "toolset": "v143",
+    "compiler": "MSVC 19.44.35226.0",
+    "msvcToolDirectoryVersion": "14.44.35207",
+    "windowsSdk": "10.0.19041.0",
+    "configuration": "Release",
+    "sourceBuildOnly": true
+  },
+  "fixtureBuilds": [
+    {
+      "buildLabel": "original-red-x86",
+      "sourceSnapshotLabel": "source-snapshot/original-red",
+      "architecture": "x86",
+      "generatorPlatform": "Win32",
+      "configuration": "Release",
+      "windowsSdk": "10.0.19041.0",
+      "toolset": "v143",
+      "compiler": "MSVC 19.44.35226.0",
+      "fixtureRuntimeLibrary": "MultiThreadedDLL (/MD)",
+      "configure": {
+        "status": "completed",
+        "observedExitCode": 0,
+        "exitCodeEvidence": "actual agent exec tool result",
+        "rawLogLabel": "build/original-red-x86/configure.log"
+      },
+      "build": {
+        "status": "completed",
+        "observedExitCode": 0,
+        "exitCodeEvidence": "actual agent exec tool result",
+        "rawLogLabel": "build/original-red-x86/build.log",
+        "artifactLabel": "guest-regression-3/red-x86/soui_worker_lifetime_regressions.exe"
+      }
+    },
+    {
+      "buildLabel": "first1-x86",
+      "sourceSnapshotLabel": "source-snapshot/first1",
+      "architecture": "x86",
+      "generatorPlatform": "Win32",
+      "configuration": "Release",
+      "windowsSdk": "10.0.19041.0",
+      "toolset": "v143",
+      "compiler": "MSVC 19.44.35226.0",
+      "fixtureRuntimeLibrary": "MultiThreadedDLL (/MD)",
+      "configure": {
+        "status": "completed",
+        "observedExitCode": 0,
+        "exitCodeEvidence": "actual agent exec tool result",
+        "rawLogLabel": "build/first1-x86/configure.log"
+      },
+      "build": {
+        "status": "completed",
+        "observedExitCode": 0,
+        "exitCodeEvidence": "actual agent exec tool result",
+        "rawLogLabel": "build/first1-x86/build.log",
+        "artifactLabel": "guest-regression-3/first1-x86/soui_worker_lifetime_regressions.exe"
+      }
+    },
+    {
+      "buildLabel": "final-green-x86",
+      "sourceSnapshotLabel": "source-snapshot/final-green",
+      "architecture": "x86",
+      "generatorPlatform": "Win32",
+      "configuration": "Release",
+      "windowsSdk": "10.0.19041.0",
+      "toolset": "v143",
+      "compiler": "MSVC 19.44.35226.0",
+      "fixtureRuntimeLibrary": "MultiThreadedDLL (/MD)",
+      "configure": {
+        "status": "completed",
+        "observedExitCode": 0,
+        "exitCodeEvidence": "actual agent exec tool result",
+        "rawLogLabel": "build/final-green-x86/configure.log"
+      },
+      "build": {
+        "status": "completed",
+        "observedExitCode": 0,
+        "exitCodeEvidence": "actual agent exec tool result",
+        "rawLogLabel": "build/final-green-x86/build.log",
+        "artifactLabel": "guest-regression-3/green-x86/soui_worker_lifetime_regressions.exe"
+      }
+    },
+    {
+      "buildLabel": "final-green-x64",
+      "sourceSnapshotLabel": "source-snapshot/final-green",
+      "architecture": "x64",
+      "generatorPlatform": "x64",
+      "configuration": "Release",
+      "windowsSdk": "10.0.19041.0",
+      "toolset": "v143",
+      "compiler": "MSVC 19.44.35226.0",
+      "fixtureRuntimeLibrary": "MultiThreadedDLL (/MD)",
+      "configure": {
+        "status": "completed",
+        "observedExitCode": 0,
+        "exitCodeEvidence": "actual agent exec tool result",
+        "rawLogLabel": "build/final-green-x64/configure.log"
+      },
+      "build": {
+        "status": "completed",
+        "observedExitCode": 0,
+        "exitCodeEvidence": "actual agent exec tool result",
+        "rawLogLabel": "build/final-green-x64/build.log",
+        "artifactLabel": "guest-regression-3/green-x64/soui_worker_lifetime_regressions.exe"
+      }
+    }
+  ],
+  "launcherBuild": {
+    "architecture": "x86",
+    "configuration": "Release",
+    "runtimeLibrary": "MultiThreaded (/MT)",
+    "configure": {
+      "status": "completed",
+      "observedExitCode": 0,
+      "exitCodeEvidence": "actual agent exec tool result",
+      "rawLogLabel": "build/launcher-x86/configure.log"
+    },
+    "build": {
+      "status": "completed",
+      "observedExitCode": 0,
+      "exitCodeEvidence": "actual agent exec tool result",
+      "rawLogLabel": "build/launcher-x86/build.log",
+      "artifactLabel": "guest-regression-3/Run-Scheduler-Regression.exe"
+    }
+  },
+  "rawLogIdentities": [
+    {
+      "artifactLabel": "build/original-red-x86/configure.log",
+      "storage": "external-held",
+      "bytes": 563,
+      "sha256": "6805646ea0031053f74d89dd8f873026ce47abd92baf5d39467cc569f7abca43"
+    },
+    {
+      "artifactLabel": "build/original-red-x86/build.log",
+      "storage": "external-held",
+      "bytes": 60750,
+      "sha256": "88b1c604c4aaf54d77edd7e2b806247746490e8deef76e04ae5074c42ef6c309"
+    },
+    {
+      "artifactLabel": "build/first1-x86/configure.log",
+      "storage": "external-held",
+      "bytes": 567,
+      "sha256": "57ffafd38fe57428d8d5ad3bedce919d8ecd3f6b72df47ca18a64a2ff98debf1"
+    },
+    {
+      "artifactLabel": "build/first1-x86/build.log",
+      "storage": "external-held",
+      "bytes": 62274,
+      "sha256": "b520c928eb456772d6753794bd61a1202ed5ad0d72c4da665046e0e643a925bc"
+    },
+    {
+      "artifactLabel": "build/final-green-x86/configure.log",
+      "storage": "external-held",
+      "bytes": 565,
+      "sha256": "b1846008e52c45fd015a77a8caabcf470c391d40ced2a82ea991955d9b9009ae"
+    },
+    {
+      "artifactLabel": "build/final-green-x86/build.log",
+      "storage": "external-held",
+      "bytes": 61585,
+      "sha256": "38605109ba491a83ab809ad3aa9095c55f91522c85bfa8dae6dafedd1fea028c"
+    },
+    {
+      "artifactLabel": "build/final-green-x64/configure.log",
+      "storage": "external-held",
+      "bytes": 565,
+      "sha256": "c291880bfe6a0455a1fd15250806db799b1d0d4f434a1f0557bb630c28f47640"
+    },
+    {
+      "artifactLabel": "build/final-green-x64/build.log",
+      "storage": "external-held",
+      "bytes": 62656,
+      "sha256": "90bd09887de1189d47980a56bc574dea896a94caacc1e83185fc8feb9e60497f"
+    },
+    {
+      "artifactLabel": "build/launcher-x86/configure.log",
+      "storage": "external-held",
+      "bytes": 611,
+      "sha256": "727538fbc092deda39ffe69f9514dcc9ee8c6d3e3b3747eb553efd428622be97"
+    },
+    {
+      "artifactLabel": "build/launcher-x86/build.log",
+      "storage": "external-held",
+      "bytes": 478,
+      "sha256": "02a612616741a0b623be6f4459fb19e9b466e22f01407d7fd569b9b735c3c332"
+    }
+  ],
+  "plannedGuestChecks": {
+    "status": "not-executed-in-this-receipt",
+    "totalOutcomes": 35,
+    "originalRedX86": {
+      "count": 2,
+      "expectedProcessExitCode": 3
+    },
+    "first1LifecycleRedX86": {
+      "count": 1,
+      "expectedProcessExitCode": 3
+    },
+    "finalGreen": {
+      "architectures": [
+        "x86",
+        "x64"
+      ],
+      "ordinaryCasesPerArchitecture": 16,
+      "expectedProcessExitCode": 0
+    },
+    "mainClockBudget": {
+      "simulatedSecondsPerCompletedTask": 0.001,
+      "acceptedFirstSliceTaskMinimum": 2,
+      "acceptedFirstSliceTaskMaximum": 3
+    },
+    "childDeadlineMs": 15000,
+    "forcedCleanupCountsAsFailure": true,
+    "intentionalFailFastCasesExcluded": [
+      "native-wait-fails",
+      "worker-self-delete"
+    ]
+  },
+  "qualification": {
+    "guestRuntimeQualified": false,
+    "productionLatencyQualified": false,
+    "fullKernelBuildClaimed": false
+  }
+}

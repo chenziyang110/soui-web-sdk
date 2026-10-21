@@ -84,6 +84,22 @@
       "sha256": "53c8eb9fb873642c6c3272ee356c236bd3310049d920a2755f904c58e7c363c7"
     },
     {
+      "id": "miniblink-input-latency-patch",
+      "source": "third_party/patches/miniblink/0013-bound-main-thread-scheduler-batches.patch",
+      "version": "unreleased main-thread batch and shutdown-dispatch source candidate",
+      "license": "same terms as Miniblink source",
+      "sourceNormalization": "lf",
+      "sha256": "8a4acaee8575e38104b8aaf5d6d908587cdbb5479e3e8aa4d77de7d019ee4534"
+    },
+    {
+      "id": "miniblink-input-latency-source",
+      "source": "third_party/manifests/kernel-input-latency-source.json",
+      "version": "unreleased source-only delta; imported binaries unchanged",
+      "license": "source identity record",
+      "sourceNormalization": "lf",
+      "sha256": "bb8dbd28c9d2079205fc3c1f8d7fbe451dcf52dddca106f86e89ee8a3ef756be"
+    },
+    {
       "id": "zlib-source",
       "source": "third_party/sources/zlib/source-manifest.json",
       "version": "1.2.11",
@@ -145,7 +161,7 @@
       "version": "lockfile",
       "license": "resolved package licenses",
       "sourceNormalization": "lf",
-      "sha256": "91acf56b6e121149ca01cec69b3d447ab33ad439a992241da6ca9f75ecb00bf0"
+      "sha256": "93daed232967e7a8005dc64b9217bcaba5e9f516eee92ebeec436873ff6e7295"
     },
     {
       "id": "template-web",

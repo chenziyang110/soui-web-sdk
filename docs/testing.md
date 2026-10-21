@@ -156,3 +156,18 @@ UIA 原生断言失败会保留 HRESULT。`mutations` 焦点失败还记录客�
 UIA 成功按钮调用的真实事件订阅与拒绝/失败/关闭回归、时钟整数边界回归的原始记录见 [补充记录](../verification/production-validation/0.5-uia-invoke-and-clock-2026-10-16/README.md)。Invoked 通知不重放已执行业务，发送失败由 pump 返回；仅状态变化通知可在后续 pump 重试。
 
 LLVM 增量构建会单独认证生成命令中的工具路径（含 Windows 8.3 路径），即使本轮没有再次运行该工具。此认证只证明工具文件身份；复用产物仍须匹配历史自然构建、当前对象及依赖，不能据此添加实际进程记录。
+
+## 主线程定时任务批次回归
+
+`tests/native/vendor_lifetime/worker_lifetime` 直接构建字节绑定的生产 `WebThreadImpl` / `WebTimerBase`，不复制调度算法。新增 `main-scheduler-task-budget`、`main-scheduler-clock-budget`、`worker-scheduler-no-count-cap`、`worker-scheduler-clock-budget`、`main-scheduler-shutdown-drain` 和 `main-scheduler-pre-shutdown-drain`。主线程病例通过真实隐藏窗口与 `WM_TIMER` 检查原生 sentinel 能在任务链结束前执行、剩余任务最终各执行一次、未来任务不提前；可控时间仅用于确定预算边界，不是性能计时。关闭前病例另核对真实平台关闭函数的三处字节绑定路由，检查退出标志设置前的排空及继续接纳任务，不替代完整 Blink 销毁回归。
+
+从 SDK 根目录分别配置 `Win32,version=10.0.19041.0` 和 `x64,version=10.0.19041.0` 的 Release 构建。示例：
+
+```powershell
+cmake -S tests/native/vendor_lifetime/worker_lifetime -B ../scheduler-x86 -G "Visual Studio 17 2022" -A "Win32,version=10.0.19041.0"
+cmake --build ../scheduler-x86 --config Release
+```
+
+在授权的隔离 Windows 来宾中运行产物，并按病例记录真实退出码。旧源码的两个主线程预算病例应失败；修复源码须通过，并继续验证原工作线程和关闭病例。RED/GREEN 夹具载荷必须逐字节相同，只有绑定的生产源版本不同；源文件或夹具变化后重建当前产物，不能复用旧通过标记。
+
+该夹具不包含完整 Blink 页面、GPU 或实际物理鼠标计时。实际 DLL 重编及消费者对照需另绑定两架构编译来源、相同资源和输入，并检查加载/动画吞吐与关闭；详见 [ADR-0118](adr/0118-main-thread-timer-batches.md)。不据夹具或编译通过扩大固定 SDK 的验收状态。
