@@ -78,6 +78,17 @@ bool retryable_socket_error() noexcept {
 #endif
 }
 
+bool retryable_accept_error() noexcept {
+  // An aborted queued connection does not invalidate the listening socket.
+  // Retry it only at the accept boundary; send/recv must still drop that peer.
+#ifdef _WIN32
+  if (::WSAGetLastError() == WSAECONNRESET) return true;
+#else
+  if (errno == ECONNABORTED) return true;
+#endif
+  return retryable_socket_error();
+}
+
 bool interrupted_socket_error() noexcept {
 #ifdef _WIN32
   return ::WSAGetLastError() == WSAEINTR;
@@ -619,7 +630,7 @@ void resource_server::work(std::shared_ptr<shared_state> state) noexcept {
         reinterpret_cast<sockaddr*>(&peer), &peer_size));
 #endif
       if (connection.value == invalid_socket) {
-        if (retryable_socket_error()) continue;
+        if (retryable_accept_error()) continue;
         break;
       }
       if (state->stopping.load(std::memory_order_acquire)) break;

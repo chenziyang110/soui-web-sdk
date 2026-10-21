@@ -40,3 +40,10 @@ HTTP入口不宣称能控制应用脚本发起的任意子资源网络访问；�
 以实现为主，执行必要编译、语法及路径/Host/方法/容量边界检查。三引擎真实
 模块、动态import、fetch、CSP、关闭/导航竞争及平台网络策略统一留待目标机验收；
 源码实现不等于已通过这些项目。服务启动受环境禁止时明确失败，不能关闭安全保护。
+## 连接中止恢复补充
+
+accept 阶段的 POSIX ECONNABORTED / Winsock WSAECONNRESET 属于待接收连接失败，
+不直接终止仍有效的 listener；仍通过原停止检查和等待路径接收后续连接。
+该分类仅用于 accept，不扩大 send/recv 的重试范围；永久错误仍停止服务，
+连接处理和 shutdown 期限不变。生产源码故障注入与真实 loopback GET 可验证
+恢复路径，但不替代目标 Windows/macOS socket 行为验收。

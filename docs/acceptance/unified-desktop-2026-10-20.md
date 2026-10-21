@@ -278,3 +278,14 @@ Windows/macOS 原生诊断和实际窗口验收延后；此前 GUI 依赖阻塞�
   新检查在 mkdir 前拒绝与 adapter 源树重叠，不覆盖或清理用户目录。
 - 只编译当前 protocol.cpp 临时 preload 发射器：preload 17/17、生成器 5/5
   重点检查通过，diff 检查通过。没有主库或 WebKit 重编，也没有新增 GUI 结论。
+
+### 2026-10-21：资源 listener 单连接中止恢复
+
+- accept 专用分类识别 ECONNABORTED / WSAECONNRESET，单个中止连接不再使
+  listener 整体退出；永久 EBADF 不重试，普通 send/recv 分类未放宽。
+- 生产源码独立故障注入红绿回归实际复现旧退出问题，修复后真实 loopback GET
+  返回完整资源，stop 撤销 URI 并释放服务额度；GCC C++17 严格警告编译通过。
+- 独立 CMake 3.31.10 / Make / Linux x64 GCC 14.2 Debug 配置及资源目标单并行
+  构建成功，精确 CTest sdk.desktop.resource-server 1/1 通过（0.21 秒）。
+  Runtime 依赖中的既有初始化/符号比较警告仍在，无资源目标新增警告。
+- 未执行全量测试、Windows/macOS 编译或 GUI；未触碰后台 WebKit 构建树。
