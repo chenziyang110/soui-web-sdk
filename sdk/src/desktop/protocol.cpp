@@ -187,7 +187,10 @@ function on(event,listener){
   let group=listeners.get(event);
   if(!group){if(listeners.size>=64)throw new Error('Event limit reached');group=new Set();listeners.set(event,group);}
   if(group.size>=128)throw new Error('Listener limit reached');
-  group.add(listener);return function(){group.delete(listener);if(!group.size)listeners.delete(event);};
+  group.add(listener);return function(){
+    group.delete(listener);
+    if(!group.size&&listeners.get(event)===group)listeners.delete(event);
+  };
 }
 Object.defineProperty(window,'__souiDesktopDeliver',{configurable:false,writable:false,value:function(value){
   if(!live||!value||value.token!==token||value.v!==1)return;

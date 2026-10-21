@@ -114,6 +114,8 @@ function createProject(input) {
   const installedFrontend = path.join(__dirname, '..', 'frontend');
   const frontend = noSymlinks(fs.existsSync(installedFrontend) ? installedFrontend :
     path.join(__dirname, '..', 'sdk', 'desktop', 'frontend'));
+  if (within(frontend, output) || within(output, frontend))
+    throw new Error('Output and frontend adapter trees must not overlap.');
   const adapterFiles = collectTemplates(frontend, {}, ['desktop.mjs', 'desktop.d.mts']);
   if (adapterFiles.length !== 2) throw new Error('Unexpected frontend adapter entries.');
   const adapterPrefix = path.join('web', 'soui').toLowerCase();

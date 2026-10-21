@@ -76,6 +76,9 @@ staging 目录，不重新构建或覆盖它。stage目标创建产物后也会�
 此步骤也不会自动发布或验证真实窗口运行。详见SDK应用staging文档。
 # 安装模板完整性
 
+输出目录不得与模板树或 SDK frontend 适配源树重叠；生成器在创建任何目录前
+拒绝此类输出，避免新项目污染后续生成所需的 SDK 源文件。
+
 生成器在创建输出前检查 CMakeLists.txt、main.cpp 及 web 下的 index.html、
 app.mjs、feature.mjs、details.mjs、config.json、style.css。缺失必需依赖时
 报告缺失路径并拒绝写出半成品；README 等可选文档不作为运行依赖。

@@ -40,7 +40,7 @@ test('rejects symlink parent without touching its destination', () => fixture(ro
   assert.throws(() => createProject(options(path.join(link, 'new-app'))), /Symlink/);
   assert.deepEqual(fs.readdirSync(directory), []);
 }));
-test('installed generator rejects an incomplete frontend before creating output', () => fixture(root => {
+test('installed generator rejects source overlap and incomplete frontend before creating output', () => fixture(root => {
   const share = path.join(root, 'share', 'SouiDesktop');
   fs.mkdirSync(path.join(share, 'tools'), { recursive: true });
   fs.copyFileSync(path.join(__dirname, '../../tools/create-desktop-app.cjs'),
@@ -51,6 +51,12 @@ test('installed generator rejects an incomplete frontend before creating output'
     path.join(share, 'frontend'), { recursive: true });
   const installed = require(path.join(share, 'tools/create-desktop-app.cjs'));
   const output = path.join(root, 'new-app');
+  for (const source of ['frontend', 'templates/unified-desktop']) {
+    const unsafeOutput = path.join(share, source, 'new-app');
+    assert.throws(() => installed.createProject(options(unsafeOutput)), /trees must not overlap/);
+    assert.equal(fs.existsSync(unsafeOutput), false);
+  }
+  assert.deepEqual(fs.readdirSync(path.join(share, 'frontend')).sort(), ['desktop.d.mts', 'desktop.mjs']);
   for (const name of ['app.mjs', 'feature.mjs', 'details.mjs', 'config.json', 'style.css']) {
     const file = path.join(share, 'templates/unified-desktop/web', name);
     const saved = fs.readFileSync(file);

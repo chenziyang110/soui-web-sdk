@@ -257,6 +257,18 @@ test('events support unsubscribe and preserve JSON __proto__ as an own property'
   assert.equal(f.window.received.length, 1);
 });
 
+test('a stale unsubscribe cannot remove a replacement event group', () => {
+  const f = fixture();
+  f.run("window.received=[];window.old=window.souiDesktop.on('changed', v=>window.received.push('old:'+v))");
+  f.deliver({ event: 'changed', value: 1 });
+  f.run("window.old();window.current=window.souiDesktop.on('changed', v=>window.received.push('new:'+v));window.old();window.old()");
+  f.deliver({ event: 'changed', value: 2 });
+  assert.deepEqual(Array.from(f.window.received), ['old:1', 'new:2']);
+  f.run('window.current();window.old()');
+  f.deliver({ event: 'changed', value: 3 });
+  assert.deepEqual(Array.from(f.window.received), ['old:1', 'new:2']);
+});
+
 test('independent windows keep request IDs and responses scoped to their navigation token', async () => {
   const first = fixture({ navigationToken: 'first-window-token' });
   const second = fixture({ navigationToken: 'second-window-token' });
