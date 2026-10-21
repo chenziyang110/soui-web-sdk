@@ -231,3 +231,19 @@ Windows/macOS 原生诊断和实际窗口验收延后；此前 GUI 依赖阻塞�
   git diff --check通过；独立只读审查未发现具体缺陷。
 - 默认空配置仍未知，不承诺自动检测或阻止所有WebKit abort。此增量没有证明
   GUI、模块/fetch或Bridge真实运行通过；Linux运行依赖和macOS目标机验收仍缺。
+
+## 2026-10-21：并行原生后端终态修复（ADR-0134）
+
+- Linux：主文档失败/进程终止撤销 generation、navigation ticket、reload pending
+  与异步求值；旧文档 queued loaded/message/reload 不再越过终态，窗口级工作保留。
+- 独立生产回调 fixture 在真实 GTK/WebKit 头库下 C++17 严格警告编译链接成功，
+  78 checks / 0 failures；旧 HEAD 探针复现四项终态不变量失败。新增 CMake 目标
+  独立构建及 CTest 注册核验、定向 1/1 执行通过，未初始化 GUI/renderer。
+- macOS：关闭前置单次门闩，撤销 delegate、清空对外句柄，再清理；系统
+  windowWillClose 不递归 close。精确 strong 生命周期与调用方 autorelease pool
+  保留窗口覆盖外层 close/performClose 调用，关闭后不允许复用 create。
+- macOS 仅执行源码不变量及 diff 检查，无 Apple SDK/编译器，未原生编译、链接
+  或运行。ARC 语义参考 Clang 官方 Automatic Reference Counting / Semantics，
+  不是 AppKit 行为验收。目标机检查清单已更新。
+- 完整 WebKitGTK 用户前缀构建继续独立单并行执行，尚未完成真实窗口、Bridge、
+  module/fetch 验收；本次没有等待它才开发代码，也没有扩大完整测试集合。

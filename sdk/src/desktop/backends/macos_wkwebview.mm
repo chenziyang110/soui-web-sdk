@@ -62,6 +62,7 @@ struct macos_state {
   std::atomic<bool> accepting_work{false};
   std::atomic<bool> terminal_failure{false};
   bool created{false};
+  bool shutdown_started{false};
   bool loop_owner{false};
   bool enable_resource_server{false};
   bool native_navigation_ticket{false};
@@ -304,7 +305,14 @@ void remove_tray(const std::shared_ptr<macos_state>& state) {
   state->tray_menu = nil;
 }
 
-void shut_down(const std::shared_ptr<macos_state>& state, bool notify) {
+enum class window_close_origin { backend, appkit };
+
+void shut_down(const std::shared_ptr<macos_state>& state, bool notify,
+               window_close_origin origin = window_close_origin::backend) {
+  // Native cancellation and close can synchronously notify observers. Do not
+  // enter cleanup twice, even before the public closed callback is delivered.
+  if (state->shutdown_started) return;
+  state->shutdown_started = true;
   const bool was_live = state->accepting_work.exchange(false, std::memory_order_acq_rel);
   ++state->generation;
   state->native_navigation_ticket = false;
@@ -315,6 +323,20 @@ void shut_down(const std::shared_ptr<macos_state>& state, bool notify) {
   auto callbacks = std::move(state->events);
   state->events = {};
 
+  // ARC must keep the native objects alive through cleanup and any synchronous
+  // observers, not merely through their last ordinary use. Revoke delegates and
+  // clear the published handles before sending any reentrant native messages.
+  NSWindow* __attribute__((objc_precise_lifetime)) window = state->window;
+  WKWebView* __attribute__((objc_precise_lifetime)) webview = state->webview;
+  id __attribute__((objc_precise_lifetime)) delegate = state->delegate;
+  (void)delegate;
+  window.delegate = nil;
+  webview.navigationDelegate = nil;
+  webview.UIDelegate = nil;
+  state->window = nil;
+  state->webview = nil;
+  state->delegate = nil;
+
   // Native callbacks are already revoked above. Cancel native tracking before
   // notifying the group: its last-window handler may restore process menus.
   [state->directory_panel cancel:nil];
@@ -323,21 +345,20 @@ void shut_down(const std::shared_ptr<macos_state>& state, bool notify) {
   ++state->popup_generation;
   state->popup = nil;
   remove_tray(state);
-  [state->webview stopLoading];
-  state->webview.navigationDelegate = nil;
-  state->webview.UIDelegate = nil;
-  [state->webview.configuration.userContentController removeScriptMessageHandlerForName:@"soui"];
-  [state->webview.configuration.userContentController removeAllUserScripts];
-  [state->webview removeFromSuperview];
-  state->window.delegate = nil;
-  state->window.contentView = nil;
-  [state->window orderOut:nil];
-  [state->window close];
+  [webview stopLoading];
+  [webview.configuration.userContentController removeScriptMessageHandlerForName:@"soui"];
+  [webview.configuration.userContentController removeAllUserScripts];
+  [webview removeFromSuperview];
+  window.contentView = nil;
+  // windowWillClose: is already inside -[NSWindow close]. Calling close again
+  // from that notification sends a second will-close to all other observers.
+  // AppKit owns the pending native close; only backend-initiated teardown sends it.
+  if (origin == window_close_origin::backend) {
+    [window orderOut:nil];
+    [window close];
+  }
   state->navigation = nil;
-  state->webview = nil;
-  state->window = nil;
   state->resource_root = nil;
-  state->delegate = nil;
   if (was_live && notify && callbacks.closed) {
     try { callbacks.closed(); } catch (...) {}
   }
@@ -447,14 +468,26 @@ NSMenu* application_menu() {
 }
 
 - (BOOL)windowShouldClose:(NSWindow*)sender {
+  id __attribute__((objc_precise_lifetime)) delegate = self;
+  (void)delegate;
+  // performClose: still has work to do after this delegate returns. Keep its
+  // receiver alive in the caller's pool when shutdown clears state->window.
+  NSWindow* __autoreleasing closing_window = sender;
   auto state = _state.lock();
-  if (state && sender == state->window) shut_down(state, true);
+  if (state && closing_window == state->window) shut_down(state, true);
   return NO;  // shut_down owns the close sequence.
 }
 
 - (void)windowWillClose:(NSNotification*)notification {
+  id __attribute__((objc_precise_lifetime)) delegate = self;
+  (void)delegate;
   auto state = _state.lock();
-  if (state && notification.object == state->window) shut_down(state, true);
+  // Clearing the last owning state reference must not destroy NSWindow while
+  // its outer close invocation is still unwinding. Use the caller's autorelease
+  // pool, not a new pool scoped to this delegate callback.
+  NSWindow* __autoreleasing closing_window = notification.object;
+  if (state && closing_window == state->window)
+    shut_down(state, true, window_close_origin::appkit);
 }
 
 - (void)onNativeMenuCommand:(NSMenuItem*)sender {
@@ -768,7 +801,8 @@ class wkwebview_backend final : public backend {
   result create(const options& settings, backend_events events) override {
     auto thread = require_main_thread();
     if (!thread.ok) return thread;
-    if (state_->created) return result::failure("E_STATE", "A backend cannot be created twice");
+    if (state_->created || state_->shutdown_started)
+      return result::failure("E_STATE", "A backend cannot be created twice or after closing");
     if (!settings.user_data_directory.empty())
       return result::failure("E_UNSUPPORTED",
           "WKWebView uses an ephemeral data store; custom user_data_directory is unsupported");

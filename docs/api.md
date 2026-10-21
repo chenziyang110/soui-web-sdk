@@ -256,3 +256,10 @@ frame_pacer::start 使用相同范围。工作台的 desktop.rendering.setTarget
 
 资源缓存观测允许 discardable 模式报告正的 resourceByteLimit；它是驻留记录淘汰阈值。零表示未配置，resourceEffectiveSingleLimit 仍保持独立。8 MiB 策略不代表全部图像堆或进程内存上限，详见 ADR-0102。
 
+# 原生后端失败与关闭边界（实验性统一桌面入口）
+
+Linux 当前文档加载失败或 WebProcess 终止后，旧文档排队的 loaded/message/reload
+回调与未完成求值被撤销；窗口级 dispatch/close 仍可用，显式原生 load/reload
+可开启新代际。macOS 区分系统关闭通知与主动关闭，清理幂等且不递归 close。
+这些内部修复不新增权限或公共 API；具体决策见 ADR-0134，原生运行验收单独记录。
+

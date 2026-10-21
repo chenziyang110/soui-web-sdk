@@ -70,6 +70,11 @@ xcrun lipo -info "$build_dir/wkwebview-universal2.o"
    `E_BUSY`。仅返回目录路径，不自动授予网页读取或上传能力。
 7. 关闭与异步：窗口关闭按钮、Cmd-W、Cmd-Q、native close、页面 close 均必须
    恰好一次通知 closed 并使 run 返回。close 前提交的 dispatch 在关闭后不得执行；
+   另从 AppKit 直接发送 `NSWindow.close`，用独立观察者统计 will-close 通知，
+   应只有一次，不能从 delegate 再次 close。在该通知和清理同步回调中再次请求
+   backend close，确认清理不重入，ARC 保持窗口至外层 close/performClose 返回，
+   委托至少存活到当前委托调用结束；
+   重复 close/析构仍只通知一次，不得重新 create 已关闭的私有 backend。
    late JavaScript completion、旧导航完成/失败不得访问旧宿主或污染新导航。
    dispatch 队列在 1024 个待执行工作处拒绝额外提交；普通 native work 不因导航
    被丢弃。脚本消息独立限制为 64 KiB/条、1024 条排队，脱离 WK 委托栈异步交付。
@@ -99,4 +104,6 @@ xcrun lipo -info "$build_dir/wkwebview-universal2.o"
 - [WKUIDelegate 文件上传回调](https://developer.apple.com/documentation/webkit/wkuidelegate/webview(_:runopenpanelwith:initiatedbyframe:completionhandler:))
 - [WKDownload 取消](https://developer.apple.com/documentation/webkit/wkdownload/cancel(_:))
 - [NSApplication stop 与事件循环唤醒](https://developer.apple.com/documentation/appkit/nsapplication/stop(_:))
+- [NSWindow close 与关闭通知](https://developer.apple.com/documentation/appkit/nswindow/close())
+- [ARC 所有权与精确生命周期](https://clang.llvm.org/docs/AutomaticReferenceCounting.html)
 - [CFRunLoopPerformBlock 跨线程调度](https://developer.apple.com/documentation/corefoundation/cfrunloopperformblock(_:_:_:))

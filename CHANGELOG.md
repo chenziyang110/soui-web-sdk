@@ -2,6 +2,12 @@
 
 ## 未发布维护
 
+- Linux 文档加载失败或 WebProcess 终止时撤销旧代际回调、导航票据及求值；
+  保留窗口级 dispatch/close，只有显式原生加载可开始新文档。
+- macOS 关闭清理增加重入门闩，区分 AppKit 已进行中的关闭与后端主动关闭，
+  撤销 delegate 后清理并保留原生对象生命周期，避免重复发送 close。
+  macOS 原生编译和交互验证仍待目标机执行。
+
 - Linux SDK 新增显式可选 WebKitGTK helper 部署目录预检：已知目录缺失普通可执行
   helper 时返回 E_WEBKIT_RUNTIME，避免进入该已知失败路径。默认目录未知不阻断，
   不猜系统路径、不改变 WebKit 搜索或沙箱行为，不宣称 GUI 已通过。

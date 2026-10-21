@@ -91,6 +91,26 @@ bool valid_text(std::string_view text, std::size_t limit = max_text_bytes) {
 
 result enqueue(linux_state& state, std::function<void()> work);
 
+// Native/window work can survive a failed document. Document callbacks cannot:
+// retain the generation at submission and reject a failure before dispatch.
+result enqueue_document(linux_state& state, std::function<void(linux_state&)> work) {
+  const auto generation = state.generation;
+  return enqueue(state, [weak = state.weak_from_this(), generation, work = std::move(work)] {
+    auto current = weak.lock();
+    if (!current || current->generation != generation || current->load_failed) return;
+    work(*current);
+  });
+}
+
+void fail_document(linux_state& state) noexcept {
+  state.load_failed = true;
+  state.committed = false;
+  state.navigation_ticket = false;
+  state.renderer_reload_pending = false;
+  ++state.generation;
+  if (state.evaluations) g_cancellable_cancel(state.evaluations);
+}
+
 void clear_menu(GtkWidget*& slot) noexcept {
   GtkWidget* menu = std::exchange(slot, nullptr);
   if (!menu) return;
@@ -207,6 +227,10 @@ void window_destroy(GtkWidget*, gpointer data) noexcept {
 gboolean decide_policy(WebKitWebView*, WebKitPolicyDecision* decision,
                        WebKitPolicyDecisionType type, gpointer data) noexcept {
   auto& state = *static_cast<linux_state*>(data);
+  if (!state.active.load() || state.load_failed) {
+    webkit_policy_decision_ignore(decision);
+    return TRUE;
+  }
   bool allow = false;
   if (type == WEBKIT_POLICY_DECISION_TYPE_NAVIGATION_ACTION) {
     auto* action = webkit_navigation_policy_decision_get_navigation_action(
@@ -231,12 +255,9 @@ gboolean decide_policy(WebKitWebView*, WebKitPolicyDecision* decision,
       ++state.generation;  // Invalidate already queued old-document callbacks.
       if (state.evaluations) g_cancellable_cancel(state.evaluations);
       try {
-        const auto generation = state.generation;
-        auto status = enqueue(state, [weak = state.weak_from_this(), generation] {
-          auto current = weak.lock();
-          if (!current || current->generation != generation) return;
-          current->renderer_reload_pending = false;
-          auto handler = current->events.reload;
+        auto status = enqueue_document(state, [](linux_state& current) {
+          current.renderer_reload_pending = false;
+          auto handler = current.events.reload;
           if (handler) handler();
         });
         if (!status.ok) report(state, std::move(status));
@@ -263,7 +284,7 @@ gboolean decide_policy(WebKitWebView*, WebKitPolicyDecision* decision,
 void script_message(WebKitUserContentManager*, WebKitJavascriptResult* message,
                     gpointer data) noexcept {
   auto& state = *static_cast<linux_state*>(data);
-  if (!state.active.load() || !state.view) return;
+  if (!state.active.load() || state.load_failed || !state.view) return;
   try {
     JSCValue* value = webkit_javascript_result_get_js_value(message);
     if (!jsc_value_is_string(value)) return;
@@ -278,12 +299,10 @@ void script_message(WebKitUserContentManager*, WebKitJavascriptResult* message,
         std::memchr(payload, '\0', size) != nullptr) return;
     const char* uri = webkit_web_view_get_uri(state.view);
     if (!admissible(state, uri)) return;
-    const auto generation = state.generation;
-    auto status = enqueue(state, [weak = state.weak_from_this(), generation,
-                                  payload = std::string(payload, size), uri = std::string(uri)] {
-      auto current = weak.lock();
-      if (!current || current->generation != generation || !admissible(*current, uri.c_str())) return;
-      auto handler = current->events.message;
+    auto status = enqueue_document(state, [payload = std::string(payload, size),
+                                           uri = std::string(uri)](linux_state& current) {
+      if (!admissible(current, uri.c_str())) return;
+      auto handler = current.events.message;
       // WebKitGTK 4.1 provides no sender frame/origin on this signal. This URI
       // describes the view's navigation context, NOT proof of the sender origin.
       // Common code authenticates the per-navigation token from the top-only
@@ -298,10 +317,10 @@ void script_message(WebKitUserContentManager*, WebKitJavascriptResult* message,
 
 void load_changed(WebKitWebView* view, WebKitLoadEvent event, gpointer data) noexcept {
   auto& state = *static_cast<linux_state*>(data);
-  if (!state.active.load()) return;
+  if (!state.active.load() || state.load_failed) return;
   if (event == WEBKIT_LOAD_STARTED) {
     state.committed = false;
-    state.load_failed = false;
+    // Only native load() clears a failed document, never a late engine signal.
   } else if (event == WEBKIT_LOAD_COMMITTED) {
     state.committed = admissible(state, webkit_web_view_get_uri(view));
     if (!state.committed) webkit_web_view_stop_loading(view);
@@ -309,11 +328,9 @@ void load_changed(WebKitWebView* view, WebKitLoadEvent event, gpointer data) noe
     const char* uri = webkit_web_view_get_uri(view);
     if (!admissible(state, uri)) return;
     try {
-      const auto generation = state.generation;
-      auto status = enqueue(state, [weak = state.weak_from_this(), generation, uri = std::string(uri)] {
-        auto current = weak.lock();
-        if (!current || current->generation != generation || !admissible(*current, uri.c_str())) return;
-        auto handler = current->events.loaded;
+      auto status = enqueue_document(state, [uri = std::string(uri)](linux_state& current) {
+        if (!admissible(current, uri.c_str())) return;
+        auto handler = current.events.loaded;
         if (handler) handler(uri);
       });
       if (!status.ok) report(state, std::move(status));
@@ -332,7 +349,7 @@ gboolean load_failed(WebKitWebView*, WebKitLoadEvent, const gchar* uri, GError* 
       g_error_matches(error, WEBKIT_POLICY_ERROR,
                       WEBKIT_POLICY_ERROR_FRAME_LOAD_INTERRUPTED_BY_POLICY_CHANGE)) return TRUE;
   if (admissible(state, uri)) {
-    state.load_failed = true;
+    fail_document(state);
     report(state, result::failure("E_LOAD", error ? error->message : "Document loading failed."));
   }
   return TRUE;  // Do not replace the selected document with WebKit's error page.
@@ -341,8 +358,8 @@ gboolean load_failed(WebKitWebView*, WebKitLoadEvent, const gchar* uri, GError* 
 void process_terminated(WebKitWebView*, WebKitWebProcessTerminationReason reason,
                         gpointer data) noexcept {
   auto& state = *static_cast<linux_state*>(data);
-  state.load_failed = true;
-  state.committed = false;
+  if (!state.active.load()) return;
+  fail_document(state);
   const char* message = "The WebKit web process terminated. Check the installed distribution's "
     "WebKitGTK runtime, helper processes and graphics support; use the staged runtime doctor. "
     "This event does not identify a missing dependency. Do not disable the WebKit sandbox.";

@@ -58,6 +58,16 @@ if(SOUI_BUILD_DESKTOP AND CMAKE_SYSTEM_NAME STREQUAL "Linux")
   find_package(PkgConfig REQUIRED)
   pkg_check_modules(SOUI_DESKTOP_TEST_WEBKIT REQUIRED IMPORTED_TARGET
     "webkit2gtk-4.1>=2.40" "gtk+-3.0>=3.24")
+  # Includes production callback code, but never creates GTK/WebKit objects.
+  # Do not link Soui::Desktop: that would duplicate the backend implementation.
+  add_executable(soui_desktop_linux_document_lifecycle linux_document_lifecycle.cpp)
+  target_link_libraries(soui_desktop_linux_document_lifecycle PRIVATE PkgConfig::SOUI_DESKTOP_TEST_WEBKIT)
+  target_include_directories(soui_desktop_linux_document_lifecycle PRIVATE
+    "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
+  target_compile_features(soui_desktop_linux_document_lifecycle PRIVATE cxx_std_17)
+  target_compile_options(soui_desktop_linux_document_lifecycle PRIVATE -Wall -Wextra -Wpedantic)
+  add_test(NAME sdk.desktop.linux-document-lifecycle COMMAND soui_desktop_linux_document_lifecycle)
+  set_tests_properties(sdk.desktop.linux-document-lifecycle PROPERTIES TIMEOUT 10 LABELS "desktop;contract;no-gui")
   add_executable(soui_desktop_linux_integration ../portable/desktop_linux_backend.cpp)
   target_link_libraries(soui_desktop_linux_integration PRIVATE Soui::Desktop PkgConfig::SOUI_DESKTOP_TEST_WEBKIT)
   target_compile_features(soui_desktop_linux_integration PRIVATE cxx_std_17)
