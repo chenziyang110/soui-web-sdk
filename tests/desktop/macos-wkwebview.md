@@ -76,6 +76,11 @@ xcrun lipo -info "$build_dir/wkwebview-universal2.o"
    委托至少存活到当前委托调用结束；
    重复 close/析构仍只通知一次，不得重新 create 已关闭的私有 backend。
    late JavaScript completion、旧导航完成/失败不得访问旧宿主或污染新导航。
+   导航失败、拒绝 commit 或等待原生 reload 时，native emit/私有 evaluate 不得
+   继续提交 JavaScript；后端同步返回 `E_NAVIGATION`，内容进程终止仍优先
+   `E_WEB_PROCESS`。正常 document-start 私有 evaluate 保持可用，不要求 ready。
+   已提交的旧 evaluate completion 在文档失效后不再报告脚本错误；明确 native
+   load 才清除失败状态，不能由晚到的引擎事件重新开放。
    dispatch 队列在 1024 个待执行工作处拒绝额外提交；普通 native work 不因导航
    被丢弃。脚本消息独立限制为 64 KiB/条、1024 条排队，脱离 WK 委托栈异步交付。
 8. 模态关闭：私有 backend 专项测试中，目录 picker 的嵌套 modal loop 从后台

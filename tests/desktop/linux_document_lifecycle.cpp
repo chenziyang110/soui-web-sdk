@@ -143,6 +143,37 @@ void fresh_generation() {
   process_terminated(nullptr, WEBKIT_WEB_PROCESS_CRASHED, test.state.get());
   CHECK(test.errors == 1 && test.state->generation == generation);
 }
+
+void evaluation_admission() {
+  fixture test;
+  auto& state = *test.state;
+  state.renderer_reload_pending = false;
+  state.committed = false;
+  CHECK(check_evaluation(state).ok);  // Document-start bootstrap is still valid.
+  state.renderer_reload_pending = true;
+  CHECK(check_evaluation(state).code == "E_NAVIGATION");
+  // A reload callback that did not supply a fresh load has no pending task,
+  // but its cancelled evaluation channel must still reject new submissions.
+  state.renderer_reload_pending = false;
+  g_cancellable_cancel(state.evaluations);
+  CHECK(check_evaluation(state).code == "E_NAVIGATION");
+  fail_document(state);
+  CHECK(check_evaluation(state).code == "E_LOAD");
+  CHECK(check_ui(state).ok);  // Native/window operations remain available.
+
+  // Model load() replacing the document channel, not actual engine recovery.
+  ++state.generation;
+  state.load_failed = false;
+  g_clear_object(&state.evaluations);
+  state.evaluations = g_cancellable_new();
+  CHECK(check_evaluation(state).ok);
+  result worker_result;
+  std::thread worker([&] { worker_result = check_evaluation(state); });
+  worker.join();
+  CHECK(worker_result.code == "E_THREAD");
+  shutdown(state, false);
+  CHECK(check_evaluation(state).code == "E_CLOSED");
+}
 }  // namespace
 
 int main() {
@@ -155,6 +186,7 @@ int main() {
                         WEBKIT_POLICY_ERROR_FRAME_LOAD_INTERRUPTED_BY_POLICY_CHANGE);
   unrelated_failure();
   fresh_generation();
+  evaluation_admission();
   std::cout << "Linux document lifecycle: " << checks << " checks, " << failures << " failures\n";
   return failures ? 1 : 0;
 }

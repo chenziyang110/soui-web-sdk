@@ -83,6 +83,19 @@ result check_ui(const linux_state& state) {
   return result::success();
 }
 
+result check_evaluation(const linux_state& state) {
+  auto status = check_ui(state);
+  if (!status.ok) return status;
+  if (state.load_failed)
+    return result::failure("E_LOAD", "The document failed. Navigate or reload before evaluating JavaScript.");
+  if (state.renderer_reload_pending ||
+      (state.evaluations && g_cancellable_is_cancelled(state.evaluations)))
+    return result::failure("E_NAVIGATION", "A fresh native document load is required before evaluating JavaScript.");
+  // Do not require LOAD_COMMITTED or the public ready callback: the normal
+  // document-start Bridge can need a native reply before loading finishes.
+  return result::success();
+}
+
 bool valid_text(std::string_view text, std::size_t limit = max_text_bytes) {
   if (text.empty()) return true;
   return text.size() <= limit && text.find('\0') == std::string_view::npos &&
@@ -825,7 +838,7 @@ class linux_backend final : public backend {
   }
 
   result evaluate(std::string script) override {
-    auto status = check_ui(*state_);
+    auto status = check_evaluation(*state_);
     if (!status.ok) return status;
     if (!valid_text(script)) return result::failure("E_ARGUMENT", "Invalid JavaScript source.");
     auto* pending = new evaluation{state_, state_->generation};

@@ -68,6 +68,7 @@ struct macos_state {
   bool native_navigation_ticket{false};
   bool native_provisional_authorized{false};
   bool document_committed{false};
+  bool document_failed{false};
   bool reload_pending{false};
   std::uint64_t generation{0};
   std::mutex jobs_mutex;
@@ -590,6 +591,7 @@ NSMenu* application_menu() {
   if (navigation != state->navigation) {
     state->native_provisional_authorized = false;
     state->document_committed = false;
+    state->document_failed = true;
     [webView stopLoading];
     request_fresh_navigation(state);
   } else {
@@ -604,6 +606,7 @@ NSMenu* application_menu() {
       !allows_main_document(state, webView.URL)) {
     state->native_provisional_authorized = false;
     state->document_committed = false;
+    state->document_failed = true;
     [webView stopLoading];
     request_fresh_navigation(state);
     return;
@@ -636,6 +639,7 @@ NSMenu* application_menu() {
   state->native_provisional_authorized = false;
   if ([error.domain isEqualToString:NSURLErrorDomain] && error.code == NSURLErrorCancelled) return;
   state->document_committed = false;
+  state->document_failed = true;
   report_error(state, result::failure("E_NAVIGATION", utf8_string(error.localizedDescription)));
 }
 
@@ -902,8 +906,12 @@ class wkwebview_backend final : public backend {
       state_->native_navigation_ticket = true;
       state_->native_provisional_authorized = false;
       state_->document_committed = false;
+      // Only a new native load reopens JavaScript delivery after a failed page.
+      state_->document_failed = false;
       state_->reload_pending = false;
       discard_jobs(state_, false);
+      // Cancellation belongs to the previous request, not this new generation.
+      state_->navigation = nil;
       [state_->webview stopLoading];
       WKUserContentController* controller = state_->webview.configuration.userContentController;
       [controller removeAllUserScripts];
@@ -921,6 +929,7 @@ class wkwebview_backend final : public backend {
       }
       if (!state_->navigation) {
         state_->native_navigation_ticket = false;
+        state_->document_failed = true;
         return result::failure("E_NAVIGATION", "WKWebView did not start the selected navigation");
       }
       return result::success();
@@ -971,6 +980,11 @@ class wkwebview_backend final : public backend {
   result evaluate(std::string script) override {
     auto open = require_open(state_);
     if (!open.ok) return open;
+    // The common layer's ready flag is not revoked by every backend load error.
+    // Reject failed/reloading documents before submitting JavaScript, while
+    // retaining normal document-start evaluation before the commit callback.
+    if (state_->document_failed || state_->reload_pending)
+      return result::failure("E_NAVIGATION", "The current document is not available for JavaScript");
     @autoreleasepool {
       NSString* source = cocoa_string(script);
       if (!source) return result::failure("E_UTF8", "JavaScript must be valid UTF-8");
@@ -978,7 +992,8 @@ class wkwebview_backend final : public backend {
       const auto generation = state_->generation;
       [state_->webview evaluateJavaScript:source completionHandler:^(id value, NSError* error) {
         auto state = weak_state.lock();
-        if (!is_live(state) || generation != state->generation || !error) return;
+        if (!is_live(state) || generation != state->generation ||
+            state->document_failed || state->reload_pending || !error) return;
         report_error(state, result::failure("E_JAVASCRIPT", utf8_string(error.localizedDescription)));
       }];
       return result::success();

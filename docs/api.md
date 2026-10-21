@@ -2,6 +2,12 @@
 
 ## 未发布统一桌面 API
 
+Linux 文档失败后的新脚本提交返回 E_LOAD；等待原生 reload 或旧求值通道已取消
+时返回 E_NAVIGATION。正常文档启动不要求额外 ready 门槛，窗口级操作仍保留。
+在途脚本取消不保证其副作用未发生。
+macOS 明确失败或等待重载的文档返回 E_NAVIGATION，进程终止仍优先返回
+E_WEB_PROCESS；正常 precommit 求值不受影响。
+
 Linux 构建可显式提供 SOUI_DESKTOP_WEBKIT_HELPER_DIR；已知部署缺失 helper 时
 initialize 返回 E_WEBKIT_RUNTIME。默认未知不预判，详见[统一桌面入口](unified-desktop.md#linux-显式-helper-部署预检)。
 

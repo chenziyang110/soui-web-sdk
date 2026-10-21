@@ -247,3 +247,16 @@ Windows/macOS 原生诊断和实际窗口验收延后；此前 GUI 依赖阻塞�
   不是 AppKit 行为验收。目标机检查清单已更新。
 - 完整 WebKitGTK 用户前缀构建继续独立单并行执行，尚未完成真实窗口、Bridge、
   module/fetch 验收；本次没有等待它才开发代码，也没有扩大完整测试集合。
+
+### 2026-10-21：失效文档求值提交门禁
+
+- Linux 在调用引擎前拒绝失败文档（E_LOAD）及重载等待/已取消通道
+  （E_NAVIGATION），不要求额外 ready/commit。独立轻量目标重新编译链接及
+  CTest 定向 1/1 通过，86 checks / 0 failures。无 GUI。
+- macOS 增加明确 document_failed/reload_pending 门禁，保持正常 precommit
+  求值与 terminal_failure 错误优先级；替换加载前撤下旧 navigation identity。
+  实际生产 guard/completion 条件抽取为 C++ 状态矩阵编译运行通过；它不是
+  Objective-C++、AppKit 或 WKWebView 运行测试。目标机检查清单已补充。
+- common error 回调只报告错误，不等于撤销所有 native emit 的 ready 状态，
+  因此由各 backend 同步拒绝失效文档的新提交。已在途脚本取消不保证副作用回滚。
+- 未重跑完整测试，WebKit 完整编译继续并行，macOS 原生验收仍未执行。
