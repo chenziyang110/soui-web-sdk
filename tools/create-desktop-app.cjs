@@ -57,7 +57,7 @@ function templateDirectory() {
   // Source tools/../templates and installed share/SouiDesktop/tools/../templates.
   return noSymlinks(path.join(__dirname, '..', 'templates', 'unified-desktop'));
 }
-function collectTemplates(root, replacements, required = ['CMakeLists.txt', 'main.cpp', path.join('web', 'index.html')]) {
+function collectTemplates(root, replacements, required) {
   const files = [];
   let entries = 0, total = 0;
   const decoder = new TextDecoder('utf-8', { fatal: true });
@@ -91,7 +91,7 @@ function collectTemplates(root, replacements, required = ['CMakeLists.txt', 'mai
   }
   walk(root, '', 0);
   for (const name of required)
-    if (!files.some(file => file.destination === name)) throw new Error('Incomplete project template.');
+    if (!files.some(file => file.destination === name)) throw new Error(`Incomplete project template: missing ${name}.`);
   return files;
 }
 function createProject(input) {
@@ -103,7 +103,13 @@ function createProject(input) {
   if (within(root, output) || within(output, root)) throw new Error('Output and template trees must not overlap.');
   const files = collectTemplates(root, {
     '@APP_NAME@': options.name, '@APP_IDENTIFIER@': options.identifier, '@APP_VERSION@': options.version,
-  });
+  }, [
+    'CMakeLists.txt', 'main.cpp',
+    // Include the full starter module graph and its fetch/style dependencies.
+    // A partial SDK installation must fail here, before creating any output.
+    ...['index.html', 'app.mjs', 'feature.mjs', 'details.mjs', 'config.json', 'style.css']
+      .map(name => path.join('web', name)),
+  ]);
   // Copy the public adapter from its sole SDK source, never a divergent template fork.
   const installedFrontend = path.join(__dirname, '..', 'frontend');
   const frontend = noSymlinks(fs.existsSync(installedFrontend) ? installedFrontend :

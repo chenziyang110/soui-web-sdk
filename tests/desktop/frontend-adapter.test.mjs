@@ -71,6 +71,22 @@ test('asset decoding accepts canonical payloads through the exact size cap', () 
   assert.deepEqual(assetJson(asset('{"ready":true}')), { ready: true });
 });
 
+test('asset decoding snapshots accessor values before validation and allocation', () => {
+  let sizeReads = 0, base64Reads = 0;
+  const response = {
+    mime: 'text/plain',
+    get size() {
+      // This coerces to a small number but allocates an oversized typed array
+      // if validation reads a different value from the allocation step.
+      return ++sizeReads <= 2 ? 1 : { length: MAX_ASSET_BYTES + 1, valueOf: () => 1 };
+    },
+    get base64() { ++base64Reads; return 'YQ=='; }
+  };
+  assert.deepEqual(assetBytes(response), new Uint8Array([97]));
+  assert.equal(sizeReads, 1);
+  assert.equal(base64Reads, 1);
+});
+
 test('asset decoding rejects malformed size, encoding, UTF-8 and JSON locally', () => {
   for (const invalid of [
     null, {}, { ...asset('a'), mime: 1 }, { ...asset('a'), size: -1 },

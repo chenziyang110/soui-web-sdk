@@ -40,6 +40,29 @@ test('rejects symlink parent without touching its destination', () => fixture(ro
   assert.throws(() => createProject(options(path.join(link, 'new-app'))), /Symlink/);
   assert.deepEqual(fs.readdirSync(directory), []);
 }));
+test('installed generator rejects an incomplete frontend before creating output', () => fixture(root => {
+  const share = path.join(root, 'share', 'SouiDesktop');
+  fs.mkdirSync(path.join(share, 'tools'), { recursive: true });
+  fs.copyFileSync(path.join(__dirname, '../../tools/create-desktop-app.cjs'),
+    path.join(share, 'tools/create-desktop-app.cjs'));
+  fs.cpSync(path.join(__dirname, '../../templates/unified-desktop'),
+    path.join(share, 'templates/unified-desktop'), { recursive: true });
+  fs.cpSync(path.join(__dirname, '../../sdk/desktop/frontend'),
+    path.join(share, 'frontend'), { recursive: true });
+  const installed = require(path.join(share, 'tools/create-desktop-app.cjs'));
+  const output = path.join(root, 'new-app');
+  for (const name of ['app.mjs', 'feature.mjs', 'details.mjs', 'config.json', 'style.css']) {
+    const file = path.join(share, 'templates/unified-desktop/web', name);
+    const saved = fs.readFileSync(file);
+    fs.unlinkSync(file);
+    assert.throws(() => installed.createProject(options(output)), /Incomplete project template/);
+    assert.equal(fs.existsSync(output), false);
+    fs.writeFileSync(file, saved);
+  }
+  installed.createProject(options(output));
+  assert.deepEqual(fs.readFileSync(path.join(output, 'web/soui/desktop.mjs')),
+    fs.readFileSync(path.join(share, 'frontend/desktop.mjs')));
+}));
 test('CLI requires identity and rejects duplicate or unknown arguments', () => {
   const args = ['--output', 'new-app', '--name', 'HelloApp', '--identifier', 'org.example.hello'];
   assert.equal(parseArgs(args).version, '0.1.0');

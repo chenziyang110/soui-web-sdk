@@ -74,3 +74,8 @@ staging 目录，不重新构建或覆盖它。stage目标创建产物后也会�
 `--config Release`）。默认产生 `<staging目录>-delivery`，其中有ZIP、SHA-256和
 交付清单。归档目标不重新构建或覆盖staging，输出须为新目录；自附散列不是签名，
 此步骤也不会自动发布或验证真实窗口运行。详见SDK应用staging文档。
+# 安装模板完整性
+
+生成器在创建输出前检查 CMakeLists.txt、main.cpp 及 web 下的 index.html、
+app.mjs、feature.mjs、details.mjs、config.json、style.css。缺失必需依赖时
+报告缺失路径并拒绝写出半成品；README 等可选文档不作为运行依赖。

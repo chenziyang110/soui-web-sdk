@@ -260,3 +260,12 @@ Windows/macOS 原生诊断和实际窗口验收延后；此前 GUI 依赖阻塞�
 - common error 回调只报告错误，不等于撤销所有 native emit 的 ready 状态，
   因此由各 backend 同步拒绝失效文档的新提交。已在途脚本取消不保证副作用回滚。
 - 未重跑完整测试，WebKit 完整编译继续并行，macOS 原生验收仍未执行。
+
+### 2026-10-21：前端解码与生成项目完整性
+
+- assetBytes 使用一次性输入快照，严格类型/长度校验和分配使用同一组 primitive。
+  旧 HEAD accessor 探针实测分配 262145 字节，超过 262144 上界；修复后拒绝绕过。
+- 安装模板缺失 app/feature/details/config/style 任一必要资源时，在创建输出前
+  拒绝；完整模板仍生成成功，可选文档不设硬依赖。
+- frontend-adapter 4 项 + create-app 5 项，共 9/9 Node 重点测试通过；diff 检查
+  通过。未执行完整回归、CI 或三引擎 GUI。本轮不新增 API、权限、依赖或模板功能。

@@ -43,12 +43,17 @@ const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789
 
 // Validate lengths before allocation; reject noncanonical padding and unused bits.
 export function assetBytes(asset) {
-  if (!asset || typeof asset !== 'object' || typeof asset.mime !== 'string' ||
-      !Number.isSafeInteger(asset.size) || asset.size < 0 ||
-      typeof asset.base64 !== 'string') {
+  if (!asset || typeof asset !== 'object') {
     fail('invalid_asset', 'Expected an asset with mime, integer size and base64');
   }
-  const { size, base64 } = asset;
+  // Snapshot before validation: callers can supply objects with accessors, not
+  // only the plain JSON records returned by the native host. Every subsequent
+  // bound and allocation must use the same validated primitive values.
+  const { mime, size, base64 } = asset;
+  if (typeof mime !== 'string' || !Number.isSafeInteger(size) || size < 0 ||
+      typeof base64 !== 'string') {
+    fail('invalid_asset', 'Expected an asset with mime, integer size and base64');
+  }
   if (size > MAX_ASSET_BYTES) {
     fail('asset_too_large', 'Asset exceeds the 256 KiB decoding limit');
   }
