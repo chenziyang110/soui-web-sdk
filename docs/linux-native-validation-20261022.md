@@ -111,3 +111,60 @@ linux_document_lifecycle、desktop_linux_backend）。验证时仅代码补丁�
 `out/userprefix-validated-sdk.patch` SHA-256：
 `36b74bf02bcb50d780ed4548a4cb56c5e3a1e95d44bde543d32aa08f41606f24`。
 本记录是后补证据说明，不改变版本、发布范围或全平台验收结论。
+
+## 安装 SDK → 生成项目 → 搬移应用目录（2026-10-22）
+
+后续基线为远端 `9b92d07924d1f1b39ce29da12e436ff46197837a`
+（本地快照 `145ad84`）。复用上文同一自构建 WebKitGTK 2.52.6 和 sandbox
+配置；未重新构建引擎、安装系统包或关闭安全保护。
+
+从最新 SDK 构建安装到新的 `out/sdk-generated-live-20261022`，仅调用已安装
+生成器创建仓库外 `../SouiGeneratedLive20261022`（12 个文件），不修改生成
+源码。配置使用安装 SDK，而非直接包含仓库源码：
+
+```sh
+source .build-tools/webkit-source/env-userprefix.sh
+unset PKG_CONFIG_SYSROOT_DIR
+export PKG_CONFIG_LIBDIR="$PWD/.build-tools/webkit-runtime/lib/pkgconfig:$PWD/out/userprefix-sdk-pc"
+export LD_LIBRARY_PATH="$PWD/.build-tools/webkit-runtime/lib:$LD_LIBRARY_PATH"
+cmake --build out/desktop-userprefix-live --target soui_desktop --parallel 2
+cmake --install out/desktop-userprefix-live --prefix "$PWD/out/sdk-generated-live-20261022"
+node out/sdk-generated-live-20261022/share/SouiDesktop/tools/create-desktop-app.cjs \
+  --output ../SouiGeneratedLive20261022 --name SouiGeneratedLive \
+  --identifier org.example.souigeneratedlive
+cmake -S ../SouiGeneratedLive20261022 -B ../SouiGeneratedLive20261022/build \
+  -G Ninja -DCMAKE_BUILD_TYPE=Release \
+  -DCMAKE_PREFIX_PATH="$PWD/out/sdk-generated-live-20261022"
+cmake --build ../SouiGeneratedLive20261022/build --target SouiGeneratedLive_stage --parallel 2
+cp -a ../SouiGeneratedLive20261022/build/staged-Release '../Soui Delivery 20261022'
+node out/sdk-generated-live-20261022/share/SouiDesktop/tools/verify-desktop-app.cjs \
+  --input '../Soui Delivery 20261022'
+```
+
+构建/staging 成功，搬移后校验 12 个文件、555815 字节，完整性一致。
+在既有云桌面会话中从 `/tmp` 工作目录启动搬移目录中的 `launch.sh`，沿用
+上述运行库环境，另设置解包依赖的 GSettings schema 与独立 XDG cache/data
+目录。真实窗口已验证：
+
+- 默认资源路径不依赖 cwd，含空格的搬移目录可正常启动；
+- 前端适配层 `invoke('app.info', null)` 返回正确名称、标识及版本；
+- 静态 ES module → 动态 import → 同源 JSON fetch 返回正确配置；
+- 正常关闭窗口后退出码 0，没有应用错误输出。
+
+没有发现新的生产代码缺陷，本轮不制造功能改动，也没有重复全量测试。
+独立只读复核确认生成文件与已安装 SDK 的关联及资源路径逻辑。
+
+**限制：同机可搬移应用目录不等于无依赖、离线或跨发行版独立分发。**
+此 consumer ELF 的 RUNPATH 包含工作区 `.build-tools/webkit-runtime/lib` 的
+绝对位置，且测试显式提供外部依赖环境；WebKit 库、helper 及其传递依赖没有
+打入应用目录。doctor 在本机对非系统前缀的 WebKit/JSC/helper 报 UNKNOWN，
+未阻止运行，也未被解释成依赖已满足。干净目标机、Windows/macOS、其他架构、
+签名与部署许可仍未由本次验收覆盖。
+
+保留的本地证据：`out/generated-live-sdk-build.log`、
+`out/generated-live-sdk-install.log`、`out/generated-live-consumer-configure.log`、
+`out/generated-live-consumer-stage.log`、`out/generated-live-relocated-verify.log`、
+`out/run-generated-staged-live.sh`、`out/generated-live-launch.log`、
+`out/generated-live-launch.exit`（0）、`out/generated-live-bridge.png`、
+`out/generated-live-modules.png`。生成项目、原 staging 与搬移副本均保留，
+截图和二进制不作为源码或可分发运行时提交。
