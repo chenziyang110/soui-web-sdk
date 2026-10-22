@@ -174,6 +174,60 @@ void evaluation_admission() {
   shutdown(state, false);
   CHECK(check_evaluation(state).code == "E_CLOSED");
 }
+void evaluation_completion() {
+  CHECK(!report_evaluation_error(nullptr));
+  auto classification = [](GQuark domain, int code, bool expected) {
+    // Identical text ensures classification cannot accidentally match a message.
+    GError* error = g_error_new_literal(domain, code, "Unsupported result type");
+    CHECK(report_evaluation_error(error) == expected);
+    g_error_free(error);
+  };
+  classification(WEBKIT_JAVASCRIPT_ERROR, WEBKIT_JAVASCRIPT_ERROR_INVALID_RESULT, false);
+  classification(WEBKIT_JAVASCRIPT_ERROR, WEBKIT_JAVASCRIPT_ERROR_SCRIPT_FAILED, true);
+  classification(G_IO_ERROR, WEBKIT_JAVASCRIPT_ERROR_INVALID_RESULT, true);
+  classification(G_IO_ERROR, G_IO_ERROR_CANCELLED, false);
+  classification(WEBKIT_JAVASCRIPT_ERROR, G_IO_ERROR_CANCELLED, true);
+  classification(G_IO_ERROR, G_IO_ERROR_FAILED, true);
+
+  // Real JS engine, no GTK/display initialization. Submit unmodified source as
+  // production does: even incomplete statements must remain syntax errors.
+  JSCContext* context = jsc_context_new();
+  auto run = [&](std::string script) {
+    return jsc_context_evaluate(context, script.data(), static_cast<gssize>(script.size()));
+  };
+  JSCValue* value = jsc_context_evaluate(context, "Promise.resolve(1)", -1);
+  CHECK(jsc_value_is_object(value));
+  g_object_unref(value);
+  for (const char* source : {"Promise.resolve(1)", "(function () {})",
+                             "({ self: globalThis })"}) {
+    value = run(source);
+    CHECK(!jsc_context_get_exception(context));
+    CHECK(jsc_value_is_object(value));
+    g_object_unref(value);
+  }
+  value = run("42 // trailing comment");
+  CHECK(!jsc_context_get_exception(context));
+  CHECK(jsc_value_to_int32(value) == 42);
+  g_object_unref(value);
+  value = run("'use strict'; var globalVar = 7; let globalLexical = 11;");
+  CHECK(!jsc_context_get_exception(context));
+  g_object_unref(value);
+  value = jsc_context_evaluate(context, "globalVar + globalLexical", -1);
+  CHECK(!jsc_context_get_exception(context));
+  CHECK(jsc_value_to_int32(value) == 18);
+  g_object_unref(value);
+  for (const char* source : {"'use strict'; undeclaredAssignment = 1;",
+                             "throw new Error('real failure');",
+                             "throw Promise.resolve(1);",
+                             "const invalid = ;", "return 1;",
+                             "if (true)", "while (false)"}) {
+    value = run(source);
+    CHECK(jsc_context_get_exception(context));
+    if (value) g_object_unref(value);
+    jsc_context_clear_exception(context);
+  }
+  g_object_unref(context);
+}
 }  // namespace
 
 int main() {
@@ -187,6 +241,7 @@ int main() {
   unrelated_failure();
   fresh_generation();
   evaluation_admission();
+  evaluation_completion();
   std::cout << "Linux document lifecycle: " << checks << " checks, " << failures << " failures\n";
   return failures ? 1 : 0;
 }

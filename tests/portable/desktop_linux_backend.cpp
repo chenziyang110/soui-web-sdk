@@ -226,7 +226,13 @@ window.addEventListener("DOMContentLoaded", function () {
   reload_events.message = [&](std::string_view message, std::string_view, message_frame) {
     if (message == "old-generation") old_message = true;
     else if (message == "fresh-generation") fresh_message = true;
-    else test.expect(false, "queued old-document message was invalidated");
+    else if (message == "stale-after-reload") {
+      // location.reload() requests asynchronous navigation. A message sent in
+      // the same JS task may reach the host before its navigation policy
+      // callback observes that request. Authorization is revoked at the native
+      // reload boundary, not retroactively when JS calls location.reload().
+      test.expect(reloads == 0, "old-document messages never cross the native reload boundary");
+    } else test.expect(false, "only expected reload fixture messages are delivered");
     if (fresh_message && reload_loads == 2) (void)test.desktop->close();
   };
   reload_events.loaded = [&](std::string_view) {
@@ -274,6 +280,7 @@ window.addEventListener("DOMContentLoaded", function () {
   int root_closed = 0;
   int child_closed = 0;
   int child_messages = 0;
+  int child_script_errors = 0;
   backend_events root_events;
   root_events.closed = [&] { ++root_closed; };
   test.expect(test.desktop->create(options, std::move(root_events)).ok,
@@ -281,9 +288,8 @@ window.addEventListener("DOMContentLoaded", function () {
   backend_events child_events;
   child_events.allow_navigation = [&](std::string_view uri) { return uri == test.uri; };
   child_events.loaded = [&](std::string_view) {
-    test.expect(child->evaluate(
-        "window.webkit.messageHandlers.soui.postMessage('managed-child');").ok,
-        "child evaluates after the root native window closes");
+    test.expect(child->evaluate("if (true)").ok,
+                "submit incomplete script without silently completing its syntax");
   };
   child_events.message = [&](std::string_view message, std::string_view, message_frame) {
     test.expect(message == "managed-child", "child message remains independent of the closed root");
@@ -295,8 +301,19 @@ window.addEventListener("DOMContentLoaded", function () {
     (void)test.desktop->quit_loop();
   };
   child_events.error = [&](const soui::desktop::result& error) {
-    test.expect(false, error.message.c_str());
-    (void)child->close();
+    test.expect(error.code == "E_JAVASCRIPT", "actual script failures retain their error category");
+    ++child_script_errors;
+    if (child_script_errors == 1) {
+      test.expect(child->evaluate("throw Promise.resolve(1);").ok,
+                  "a thrown Promise is an exception, not a discarded return value");
+    } else if (child_script_errors == 2) {
+      test.expect(child->evaluate(
+          "window.webkit.messageHandlers.soui.postMessage('managed-child');").ok,
+          "child evaluates after real script errors and closed root");
+    } else {
+      test.expect(false, error.message.c_str());
+      (void)child->close();
+    }
   };
   test.expect(child->create(options, std::move(child_events)).ok, "create a real managed child");
   test.expect(child->load(test.uri, "void 0").ok, "load the independently managed child");
@@ -304,7 +321,7 @@ window.addEventListener("DOMContentLoaded", function () {
   timeout = g_timeout_add_seconds(20, watchdog, &test);
   test.expect(test.desktop->run().ok, "closed root still owns the shared native loop");
   if (g_main_context_find_source_by_id(nullptr, timeout)) g_source_remove(timeout);
-  test.expect(root_closed == 1 && child_closed == 1 && child_messages == 1,
+  test.expect(root_closed == 1 && child_closed == 1 && child_messages == 1 && child_script_errors == 2,
               "child stays operational until it closes and stops the shared loop");
   child.reset();
   test.desktop.reset();

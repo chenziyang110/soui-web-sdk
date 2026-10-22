@@ -289,3 +289,18 @@ Windows/macOS 原生诊断和实际窗口验收延后；此前 GUI 依赖阻塞�
   构建成功，精确 CTest sdk.desktop.resource-server 1/1 通过（0.21 秒）。
   Runtime 依赖中的既有初始化/符号比较警告仍在，无资源目标新增警告。
 - 未执行全量测试、Windows/macOS 编译或 GUI；未触碰后台 WebKit 构建树。
+
+## 2026-10-22：Linux x86_64 真实原生验证补充
+
+此前“系统 helper 缺失、未完成 GUI”的结论保留为历史记录。现在已通过官方源码
+在用户前缀构建 WebKitGTK 2.52.6，并保持 sandbox 开启，完成限定真实桌面验证。
+该运行时带可追溯构建补丁，不是系统发行二进制或 SDK 发布载荷。
+
+实际发现并修复 evaluate 正常完成值序列化错误，同时纠正 native reload 观察
+边界之前消息的 fixture 时序假设。修复后 sdk.desktop.linux-native 1/1 通过，
+同代码示例验证 Bridge JSON、readAsset、ES module、dynamic import、同源 fetch，
+并正常退出。完整来源、配置、散列、失败与通过记录见
+[Linux 原生验证记录](../linux-native-validation-20261022.md)。
+
+未执行全量回归、长期稳定性、DPI/多屏或 Windows/macOS/ARM 原生验收；不改变
+releaseReady、版本号、许可或正式分发资格。

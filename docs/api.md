@@ -2,6 +2,11 @@
 
 ## 未发布统一桌面 API
 
+Linux x86_64 已完成限定真实窗口、Bridge 和同源模块资源链路验证，使用带记录
+补丁的 WebKitGTK 2.52.6 自构建运行时；详见
+[2026-10-22 原生验证](linux-native-validation-20261022.md)。不代表其他架构、
+系统发行 WebKit 包、macOS/Windows 或生产验收通过。
+
 Linux 文档失败后的新脚本提交返回 E_LOAD；等待原生 reload 或旧求值通道已取消
 时返回 E_NAVIGATION。正常文档启动不要求额外 ready 门槛，窗口级操作仍保留。
 在途脚本取消不保证其副作用未发生。

@@ -418,6 +418,16 @@ struct evaluation {
   std::uint64_t generation;
 };
 
+bool report_evaluation_error(const GError* error) {
+  // We do not expose JS completion values. WebKit reports INVALID_RESULT when
+  // execution has no exception but its value (e.g. postMessage's Promise) cannot
+  // be serialized. Real script exceptions use SCRIPT_FAILED and must surface.
+  // Match both domain and code, never the human-readable error text.
+  return error &&
+      !g_error_matches(error, G_IO_ERROR, G_IO_ERROR_CANCELLED) &&
+      !g_error_matches(error, WEBKIT_JAVASCRIPT_ERROR, WEBKIT_JAVASCRIPT_ERROR_INVALID_RESULT);
+}
+
 void evaluation_finished(GObject* object, GAsyncResult* outcome, gpointer data) noexcept {
   std::unique_ptr<evaluation> pending(static_cast<evaluation*>(data));
   GError* error = nullptr;
@@ -426,7 +436,7 @@ void evaluation_finished(GObject* object, GAsyncResult* outcome, gpointer data) 
   if (value) g_object_unref(value);
   if (auto state = pending->state.lock()) {
     if (state->active.load() && state->generation == pending->generation &&
-        error && !g_error_matches(error, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
+        report_evaluation_error(error)) {
       report(*state, result::failure("E_JAVASCRIPT", error->message));
     }
   }
