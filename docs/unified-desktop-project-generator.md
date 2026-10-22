@@ -47,3 +47,9 @@ Linux x64 consumer 和应用目录。未运行 GUI；Windows/macOS 编译、三�
 Bridge 交互、外部依赖和正式交付验收仍待完成。详见
 [ADR-0128](adr/0128-generated-unified-desktop-project.md) 和
 [应用 staging](desktop-application-staging.md)。
+
+构建产物保留名还包括 `CMakeFiles` 与 `Makefile`，大小写不敏感地拒绝，以免
+在跨平台或大小写不敏感文件系统上冲突。前者与 CMake 构建目录冲突导致链接失败；
+后者在 Unix Makefiles 生成器中可能覆盖构建文件。`MakefileApp` 等非精确匹配名称
+不受影响；含点的 `CMakeCache.txt`、`cmake_install.cmake`、`build.ninja` 已由名称
+语法拒绝。校验均在创建输出前进行，不修改已生成的项目。

@@ -58,6 +58,32 @@ test('CLI requires portable names, supported architectures and explicit macOS id
   assert.throws(() => parseArgs([...args, '--name', 'Other']), /repeated/);
 });
 
+test('module entry rejects traversal and invalid options before writing', () => fixture(options => {
+  const escaped = path.join(path.dirname(options.output), 'outside');
+  assert.throws(() => stage({ ...options, name: '../outside' }), /portable ASCII name/);
+  assert.equal(fs.existsSync(escaped), false);
+  assert.equal(fs.existsSync(options.output), false);
+  for (const change of [
+    { name: 'Bad"Name' }, { name: 123 }, { version: 123 },
+    { platform: 'unknown' }, { arch: 'unknown' }, { identifier: 123 },
+    { binary: null }, { assets: '' }, { output: `${options.output}\0` },
+  ]) {
+    assert.throws(() => stage({ ...options, ...change }));
+    assert.equal(fs.existsSync(options.output), false);
+  }
+}));
+
+test('CLI and module identifier bounds match the staged manifest verifier', () => fixture(options => {
+  const identifier = `${'a'.repeat(4094)}.b`;
+  const args = Object.entries({ ...options, identifier }).flatMap(([name, value]) => [`--${name}`, value]);
+  assert.equal(parseArgs(args).identifier.length, 4096);
+  assert.throws(() => parseArgs([...args.slice(0, -1), `${identifier}b`]), /identifier/);
+  assert.throws(() => stage({ ...options, identifier: `${identifier}b` }), /identifier/);
+  assert.equal(fs.existsSync(options.output), false);
+  stage({ ...options, identifier });
+  assert.equal(require('../../tools/verify-desktop-app.cjs').verifyStage(options.output).ok, true);
+}));
+
 test('rejects non-Linux ELF and ET_DYN without interpreter', () => fixture(options => {
   const original = fs.readFileSync(options.binary);
   const foreign = Buffer.from(original); foreign[7] = 9;

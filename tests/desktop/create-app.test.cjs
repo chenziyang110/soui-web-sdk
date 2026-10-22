@@ -27,6 +27,19 @@ test('creates a relocatable minimal project and refuses overwrite', () => fixtur
   assert.match(fs.readFileSync(path.join(output, 'web', 'app.mjs'), 'utf8'), /soui\/desktop\.mjs/);
   assert.throws(() => createProject(options(output)), /already exists/);
 }));
+test('rejects build-file collisions before creating a project', () => fixture(root => {
+  const output = path.join(root, 'new-app');
+  for (const name of ['CMakeFiles', 'cmakefiles', 'CMAKEFILES', 'Makefile', 'makefile', 'MAKEFILE']) {
+    assert.throws(() => createProject({ ...options(output), name }), /reserved/);
+    assert.equal(fs.existsSync(output), false);
+  }
+  // These collide too, but are already excluded by the ASCII identifier grammar.
+  for (const name of ['CMakeCache.txt', 'cmake_install.cmake', 'build.ninja']) {
+    assert.throws(() => createProject({ ...options(output), name }), /Name must/);
+    assert.equal(fs.existsSync(output), false);
+  }
+  assert.equal(createProject({ ...options(output), name: 'MakefileApp' }).name, 'MakefileApp');
+}));
 test('rejects injection, reserved names and malformed metadata before writes', () => fixture(root => {
   const output = path.join(root, 'new-app');
   for (const change of [{ name: 'Bad;Code' }, { name: 'CON' }, { name: 'ALL_BUILD' }, { name: 'install' }, { name: 'web' }, { identifier: 'bad"id' }, { version: '1.0.0;code' }])

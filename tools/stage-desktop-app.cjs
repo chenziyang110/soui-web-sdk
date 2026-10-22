@@ -9,18 +9,27 @@ const { generatePreflight } = require('./desktop-preflight.cjs');
 const maximumFiles = 10000;
 const maximumFileBytes = 256 * 1024 * 1024;
 const maximumTotalBytes = 1024 * 1024 * 1024;
+const optionNames = ['binary', 'assets', 'output', 'name', 'platform', 'arch', 'version', 'identifier'];
 
 function parseArgs(args) {
-  const names = ['binary', 'assets', 'output', 'name', 'platform', 'arch', 'version', 'identifier'];
   const options = {};
   for (let i = 0; i < args.length; i += 2) {
     const name = args[i].startsWith('--') ? args[i].slice(2) : '';
-    if (!names.includes(name) || options[name] !== undefined || !args[i + 1] || args[i + 1].startsWith('--'))
+    if (!optionNames.includes(name) || options[name] !== undefined || !args[i + 1] || args[i + 1].startsWith('--'))
       throw new Error(`Invalid or repeated option: ${args[i]}`);
     options[name] = args[i + 1];
   }
-  for (const name of names.filter(name => name !== 'identifier'))
-    if (!options[name]) throw new Error(`Missing --${name}.`);
+  return validateOptions(options);
+}
+
+function validateOptions(options) {
+  if (!options || typeof options !== 'object' || Array.isArray(options) ||
+      Object.keys(options).some(name => !optionNames.includes(name))) throw new Error('Invalid staging options.');
+  for (const name of optionNames) {
+    if (name === 'identifier' && options[name] === undefined) continue;
+    if (typeof options[name] !== 'string' || !options[name] || options[name].includes('\0'))
+      throw new Error(`Missing or invalid --${name}.`);
+  }
   if (!/^[A-Za-z][A-Za-z0-9_-]{0,63}$/.test(options.name) || !portableName(options.name))
     throw new Error('Application name must be a portable ASCII name, starting with a letter (max 64 characters).');
   if (!['windows', 'linux', 'macos'].includes(options.platform) ||
@@ -32,7 +41,8 @@ function parseArgs(args) {
     throw new Error('Application --version must have three numeric components (not an SDK version claim).');
   if (options.platform === 'macos' && !options.identifier)
     throw new Error('macOS requires an explicit --identifier, such as com.example.application.');
-  if (options.identifier && !/^[A-Za-z][A-Za-z0-9-]*(?:\.[A-Za-z][A-Za-z0-9-]*)+$/.test(options.identifier))
+  if (options.identifier && (options.identifier.length > 4096 ||
+      !/^[A-Za-z][A-Za-z0-9-]*(?:\.[A-Za-z][A-Za-z0-9-]*)+$/.test(options.identifier)))
     throw new Error('Invalid reverse-DNS application identifier.');
   return options;
 }
@@ -194,6 +204,7 @@ function hashFile(file) {
   return hash.digest('hex');
 }
 function stage(options) {
+  validateOptions(options);
   const binary = noSymlinkAncestors(options.binary);
   const assets = noSymlinkAncestors(options.assets);
   const output = path.resolve(options.output);

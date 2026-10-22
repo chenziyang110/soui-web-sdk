@@ -197,3 +197,11 @@ soui_stage_application(TARGET my_app NAME my-app
 flags、绝对 DT_NEEDED 和依赖库自身搜索路径仍需应用审查；全局 CMake skip-RPATH
 开关仍生效。无开发 RUNPATH 不等于无依赖分发，系统 WebKit/helper 仍须完整部署。
 见 [ADR-0135](adr/0135-explicit-linux-deployment-rpath.md)。
+
+## 模块调用与 manifest 身份边界
+
+CLI 和导出的 `stage(options)` 使用同一输入校验，并在创建输出前拒绝非法
+应用名称、平台/架构、版本和标识，不能通过模块调用绕过名称中的路径限制。
+可选反向 DNS identifier 最多4096字符，与已有 verifier manifest 上限一致；
+生成器仍采用更小的240字符限制。过长标识直接拒绝，而不是生成随后无法校验的
+目录。此修复不替代可信、复制期间不可变输入要求，也不宣称防并发文件系统修改。

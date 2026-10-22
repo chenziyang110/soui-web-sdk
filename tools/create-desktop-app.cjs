@@ -20,7 +20,9 @@ function validate(options) {
     throw new Error('Name must start with an ASCII letter and contain at most 64 letters, digits or underscores.');
   if (new Set(['all', 'all_build', 'clean', 'help', 'install', 'test', 'run_tests', 'package',
       'package_source', 'edit_cache', 'rebuild_cache', 'preinstall', 'list_install_components',
-      'zero_check', 'web']).has(options.name.toLowerCase()))
+      // CMakeFiles is a build directory; Makefile is a generated build file.
+      // Fold case so projects also remain safe on case-insensitive filesystems.
+      'zero_check', 'web', 'cmakefiles', 'makefile']).has(options.name.toLowerCase()))
     throw new Error('Application name is reserved by the build or staging layout.');
   if (typeof options.identifier !== 'string' || options.identifier.length > 240 ||
       !/^[A-Za-z][A-Za-z0-9-]*(?:\.[A-Za-z][A-Za-z0-9-]*)+$/.test(options.identifier))
