@@ -173,3 +173,27 @@ create-only staging/归档行为，也不支持运行中热更新。
 后的旧输出请使用新的构建目录重新生成，不能靠删除清单强行接管。失败时可能
 保留工具临时/备份副本，应先检查恢复，不自动清理未知或不完整状态。这里的
 所有权清单是本地意外误操作防护，不是签名，也不能防止恶意进程同时修改文件。
+
+## Linux 部署期 RPATH（显式选择）
+
+CMake 的 staging 复制构建可执行文件，并不运行 install/relink。可添加
+`USE_INSTALL_RPATH`，让本地非 alias、非 imported Linux executable 在链接时
+采用已有 `INSTALL_RPATH`，并禁止自动追加开发依赖的链接目录：
+
+```cmake
+# 可选，由应用负责部署对应依赖；默认 INSTALL_RPATH 为空。
+set_property(TARGET my_app PROPERTY INSTALL_RPATH "$ORIGIN/runtime")
+soui_stage_application(TARGET my_app NAME my-app
+  ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/web" OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/new-stage"
+  VERSION "1.0.0" USE_INSTALL_RPATH)
+```
+
+生成模板和开启 staging 的统一示例在 Linux 选择此策略。它同时影响构建目录
+中的开发启动、IDE 和测试；非系统前缀的依赖需要由部署者提供正常外部运行环境，
+工具不自动注入 LD_LIBRARY_PATH。旧调用不加选项保持不变，其他平台拒绝该选项。
+直接 Node CLI 仍按输入原样复制，不修改 ELF 或第三方二进制。
+
+这不是绝对路径清洗、依赖扫描或运行时打包：显式 INSTALL_RPATH、toolchain/link
+flags、绝对 DT_NEEDED 和依赖库自身搜索路径仍需应用审查；全局 CMake skip-RPATH
+开关仍生效。无开发 RUNPATH 不等于无依赖分发，系统 WebKit/helper 仍须完整部署。
+见 [ADR-0135](adr/0135-explicit-linux-deployment-rpath.md)。

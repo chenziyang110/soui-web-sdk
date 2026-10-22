@@ -82,3 +82,11 @@ staging 目录，不重新构建或覆盖它。stage目标创建产物后也会�
 生成器在创建输出前检查 CMakeLists.txt、main.cpp 及 web 下的 index.html、
 app.mjs、feature.mjs、details.mjs、config.json、style.css。缺失必需依赖时
 报告缺失路径并拒绝写出半成品；README 等可选文档不作为运行依赖。
+
+## Linux 链接搜索路径
+
+本模板 Linux staging 显式使用 CMake 安装期 RPATH 策略，默认不把开发依赖目录
+自动写入应用 RUNPATH。该策略也影响构建目录直接启动；使用用户前缀依赖时需
+自行提供正常运行环境。可在 CMake 中显式设置目标 INSTALL_RPATH，但相应库与
+helper 的部署仍由应用负责。它不会打包 WebKit、清洗所有绝对链接路径或使产物
+变成无依赖分发包；其他平台的链接行为不变。

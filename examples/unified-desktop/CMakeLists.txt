@@ -16,8 +16,12 @@ add_custom_command(TARGET soui_desktop_example POST_BUILD
 
 option(SOUI_DESKTOP_STAGE_EXAMPLE "Enable explicit unsigned example application staging target" OFF)
 if(SOUI_DESKTOP_STAGE_EXAMPLE)
+  set(deployment_rpath)
+  if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+    list(APPEND deployment_rpath USE_INSTALL_RPATH)
+  endif()
   soui_stage_application(TARGET soui_desktop_example NAME soui-example
     ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/web"
     OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/staged-$<CONFIG>"
-    VERSION "0.1.0" IDENTIFIER "org.soui.example")
+    VERSION "0.1.0" IDENTIFIER "org.soui.example" ${deployment_rpath})
 endif()

@@ -100,6 +100,16 @@ set_tests_properties(sdk.desktop.contract PROPERTIES TIMEOUT 30 LABELS "desktop;
 
 find_program(SOUI_DESKTOP_NODE_EXECUTABLE NAMES node node.exe)
 if(SOUI_DESKTOP_NODE_EXECUTABLE)
+  # Native ELF tooling probe only; never executes the linked applications.
+  if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux" AND NOT CMAKE_CROSSCOMPILING)
+    find_program(SOUI_DESKTOP_TEST_NINJA NAMES ninja ninja-build)
+    if(SOUI_DESKTOP_TEST_NINJA)
+      add_test(NAME sdk.desktop.rpath-policy
+        COMMAND "${CMAKE_COMMAND}" -E env "CMAKE=${CMAKE_COMMAND}" "NINJA=${SOUI_DESKTOP_TEST_NINJA}"
+          "${SOUI_DESKTOP_NODE_EXECUTABLE}" --test "${CMAKE_CURRENT_SOURCE_DIR}/rpath-policy.test.cjs")
+      set_tests_properties(sdk.desktop.rpath-policy PROPERTIES TIMEOUT 120 LABELS "desktop;tooling;no-gui")
+    endif()
+  endif()
   add_test(NAME sdk.desktop.sync-assets
     COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" --test "${CMAKE_CURRENT_SOURCE_DIR}/sync-assets.test.cjs")
   set_tests_properties(sdk.desktop.sync-assets PROPERTIES TIMEOUT 30 LABELS "desktop;tooling;no-gui")

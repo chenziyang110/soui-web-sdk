@@ -17,6 +17,10 @@ soui_sync_application_assets(TARGET @APP_NAME@ ASSETS "${CMAKE_CURRENT_SOURCE_DI
 
 set(APP_STAGE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/staged-$<CONFIG>" CACHE STRING
   "New application staging directory (must not already exist)")
+set(deployment_rpath)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  list(APPEND deployment_rpath USE_INSTALL_RPATH)
+endif()
 soui_stage_application(TARGET @APP_NAME@ NAME @APP_NAME@
   ASSETS "${CMAKE_CURRENT_SOURCE_DIR}/web" OUTPUT "${APP_STAGE_DIRECTORY}"
-  VERSION "@APP_VERSION@" IDENTIFIER "@APP_IDENTIFIER@")
+  VERSION "@APP_VERSION@" IDENTIFIER "@APP_IDENTIFIER@" ${deployment_rpath})
