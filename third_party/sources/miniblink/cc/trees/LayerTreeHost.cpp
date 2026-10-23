@@ -951,6 +951,21 @@ static void flattenTo2d(SkMatrix44& matrix)
     matrix.set(2, 3, 0.0);
 }
 
+// Kept only while recording one scene: the refresh must inspect exactly the
+// window requested before TileGrid::update(), which consumes that request.
+struct ScrollRasterCoverageRequest {
+    int layerId;
+    ScrollNodeKey key;
+    uint64_t scrollEpoch;
+    ScrollCoverageWindow coverage;
+    blink::IntRect rasterRect;
+};
+
+static void refreshScrollRasterCoverage(LayerTreeHost* host,
+    ScrollTreeSnapshot* scrollTree,
+    const std::vector<ScrollRasterCoverageRequest>& coverageRequests,
+    bool hasResourceFence);
+
 void LayerTreeHost::recordDraw()
 {
     if (blink::RuntimeEnabledFeatures::headlessEnabled())
@@ -959,7 +974,8 @@ void LayerTreeHost::recordDraw()
         return;
 
     ScrollTreeSnapshot scrollTree;
-    updateLayersDrawProperties(&scrollTree);
+    std::vector<ScrollRasterCoverageRequest> coverageRequests;
+    updateLayersDrawProperties(&scrollTree, &coverageRequests);
     const int64 actionBefore = m_actionsFrameGroup->newestActionId();
 
     cc::RasterTaskGroup* taskGroup = RasterTaskWorkerThreadPool::shared()->beginPostRasterTask(this);
@@ -976,10 +992,13 @@ void LayerTreeHost::recordDraw()
     const bool noRasterCommit = taskGroup->endPostRasterTask();
     const int64 actionAfter = m_actionsFrameGroup->newestActionId();
     const bool hasActions = actionAfter > actionBefore;
+    const bool resourcesReady = noRasterCommit || !hasActions;
+    refreshScrollRasterCoverage(this, &scrollTree, coverageRequests,
+        !resourcesReady);
     submitSceneTransaction(scrollTree,
         hasActions ? actionBefore + 1 : 0,
         hasActions ? actionAfter : 0,
-        noRasterCommit || !hasActions);
+        resourcesReady);
 }
 
 void printTrans(const SkMatrix44& transform, int deep)
@@ -1082,7 +1101,8 @@ bool LayerTreeHost::drawCompositorScrollbarLayer(int layerId,
 
 static ScrollNodeKey appendScrollNodeSnapshot(LayerTreeHost* host,
     cc_blink::WebLayerImpl* layer, uint64_t sceneVersion,
-    ScrollTreeSnapshot* scrollTree)
+    ScrollTreeSnapshot* scrollTree,
+    std::vector<ScrollRasterCoverageRequest>* coverageRequests)
 {
     if (!layer->scrollable())
         return ScrollNodeKey();
@@ -1159,6 +1179,13 @@ static ScrollNodeKey appendScrollNodeSnapshot(LayerTreeHost* host,
     const blink::IntRect requiredRasterCoverage(rasterX, rasterY,
         std::max(0, static_cast<int>(std::ceil(rasterRight)) - rasterX),
         std::max(0, static_cast<int>(std::ceil(rasterBottom)) - rasterY));
+    ScrollRasterCoverageRequest request;
+    request.layerId = layer->id();
+    request.key = node.key;
+    request.scrollEpoch = node.scrollEpoch;
+    request.coverage = coverage;
+    request.rasterRect = requiredRasterCoverage;
+    coverageRequests->push_back(request);
     if (layer->tileGrid())
         layer->tileGrid()->setRasterCoverageWindow(requiredRasterCoverage);
     node.coverageComplete = layer->tileGrid()
@@ -1177,6 +1204,24 @@ static ScrollNodeKey appendScrollNodeSnapshot(LayerTreeHost* host,
         scrollTree->addHitTestRegion(ScrollHitTestRegion(
             node.viewportClip, node.key));
     return node.key;
+}
+
+static void refreshScrollRasterCoverage(LayerTreeHost* host,
+    ScrollTreeSnapshot* scrollTree,
+    const std::vector<ScrollRasterCoverageRequest>& coverageRequests,
+    bool hasResourceFence)
+{
+    for (size_t i = 0; i < coverageRequests.size(); ++i) {
+        const ScrollRasterCoverageRequest& request = coverageRequests[i];
+        cc_blink::WebLayerImpl* layer = host->getLayerById(request.layerId);
+        const bool coveragePrepared = layer
+            && scrollNodeKeyForLayer(host, layer) == request.key
+            && layer->compositorScrollEpoch() == request.scrollEpoch
+            && layer->tileGrid()
+            && layer->tileGrid()->hasReadyCoverage(request.rasterRect);
+        scrollTree->refreshCoverage(request.key, request.scrollEpoch,
+            request.coverage, coveragePrepared, hasResourceFence);
+    }
 }
 
 static void appendLayerHitTestRegion(cc_blink::WebLayerImpl* layer,
@@ -1210,7 +1255,8 @@ static void updateChildLayersDrawProperties(cc_blink::WebLayerImpl* layer,
     LayerTreeHost* host, LayerSorter& layerSorter,
     const DrawPropertiesFromAncestor& propFromAncestor, int deep,
     uint64_t sceneVersion, const ScrollNodeKey& inheritedScrollTarget,
-    ScrollTreeSnapshot* scrollTree)
+    ScrollTreeSnapshot* scrollTree,
+    std::vector<ScrollRasterCoverageRequest>* coverageRequests)
 {
     WTF::Vector<cc_blink::WebLayerImpl*>& children = layer->children();
     
@@ -1270,7 +1316,7 @@ static void updateChildLayersDrawProperties(cc_blink::WebLayerImpl* layer,
         if (explicitScrollParent && explicitScrollParent->scrollable())
             scrollTarget = scrollNodeKeyForLayer(host, explicitScrollParent);
         const ScrollNodeKey childScrollTarget = appendScrollNodeSnapshot(
-            host, child, sceneVersion, scrollTree);
+            host, child, sceneVersion, scrollTree, coverageRequests);
         if (childScrollTarget.isValid())
             scrollTarget = childScrollTarget;
         else
@@ -1278,7 +1324,7 @@ static void updateChildLayersDrawProperties(cc_blink::WebLayerImpl* layer,
 
         prop.subtreeCanUseLcdText = subtreeCanUseLcdText;
         updateChildLayersDrawProperties(child, host, layerSorter, prop,
-            deep + 1, sceneVersion, scrollTarget, scrollTree);
+            deep + 1, sceneVersion, scrollTarget, scrollTree, coverageRequests);
     }
 
     if (children.size() && layer->layerTreeHost()->has3dNodes() && layer->is3dSorted()) {
@@ -1352,7 +1398,8 @@ static void attachCompositorScrollbarSnapshots(
     }
 }
 
-void LayerTreeHost::updateLayersDrawProperties(ScrollTreeSnapshot* output)
+void LayerTreeHost::updateLayersDrawProperties(ScrollTreeSnapshot* output,
+    std::vector<ScrollRasterCoverageRequest>* coverageRequests)
 {
     LayerSorter layerSorter;
     SkMatrix44 transform(SkMatrix44::kIdentity_Constructor);
@@ -1364,7 +1411,7 @@ void LayerTreeHost::updateLayersDrawProperties(ScrollTreeSnapshot* output)
     ScrollTreeSnapshot scrollTree;
     scrollTree.setSceneVersion(m_nextScrollSceneVersion);
     updateChildLayersDrawProperties(m_rootLayer, this, layerSorter, prop, 0,
-        m_nextScrollSceneVersion, ScrollNodeKey(), &scrollTree);
+        m_nextScrollSceneVersion, ScrollNodeKey(), &scrollTree, coverageRequests);
     attachCompositorScrollbarSnapshots(m_rootLayer, this, &scrollTree);
     if (output)
         *output = scrollTree;
