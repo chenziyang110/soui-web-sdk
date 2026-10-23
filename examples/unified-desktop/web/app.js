@@ -12,6 +12,9 @@ async function invoke(method, params) {
 }
 // Keep the classic-script example usable without the optional HTTP module origin.
 // The SDK ESM windowControls facade wraps these same invoke/on operations.
+// Standard desktop.* services replace the old example-only window.title,
+// window.resize, clipboard.read/write and directory.choose handlers. No copy of
+// the optional ESM adapter is needed for this default file-mode page.
 let stateRevision = 0;
 function showWindowState(state) {
   if (!state || typeof state.minimized !== 'boolean' || typeof state.maximized !== 'boolean') {
@@ -86,15 +89,30 @@ if (!window.souiDesktop) {
       } catch (error) { record(error.code || 'asset error', error.message); }
     },
     echo: () => invoke('app.echo', { greeting: 'Hello / 你好', values: [1, true, null] }),
-    title: () => invoke('window.title'),
-    resize: () => invoke('window.resize'),
+    title: () => invoke('desktop.window.setTitle', { title: 'SOUI · native title changed' }),
+    resize: () => invoke('desktop.window.resize', { width: 1100, height: 760 }),
+    show: () => invoke('desktop.window.show', { visible: true }),
+    focus: () => invoke('desktop.window.focus', {}),
     minimize: () => invoke('desktop.window.minimize', {}),
     maximize: () => invoke('desktop.window.maximize', {}),
     restore: () => invoke('desktop.window.restore', {}),
     state: readWindowState,
-    copy: () => invoke('clipboard.write'),
-    paste: () => invoke('clipboard.read'),
-    directory: () => invoke('directory.choose'),
+    // Clipboard access is only initiated by these explicit button clicks.
+    copy: async () => {
+      const result = await invoke('desktop.clipboard.writeText', { text: 'Hello from one SOUI application' });
+      document.getElementById('system-status').textContent = result.accepted === true ?
+        'Clipboard write accepted.' : 'Clipboard write was not accepted.';
+    },
+    paste: async () => {
+      const result = await invoke('desktop.clipboard.readText', {});
+      document.getElementById('system-status').textContent = result.text === '' ?
+        'Clipboard contains empty text.' : `Clipboard text: ${result.text}`;
+    },
+    directory: async () => {
+      const result = await invoke('desktop.dialog.chooseDirectory', {});
+      document.getElementById('system-status').textContent = result.cancelled ?
+        'Directory selection cancelled.' : `Selected directory: ${result.path}`;
+    },
     reload: () => invoke('app.reload'),
     create: () => invoke('window.create'),
     close: () => invoke('window.close'),
@@ -105,6 +123,9 @@ if (!window.souiDesktop) {
   };
   for (const button of document.querySelectorAll('[data-action]')) button.addEventListener('click', () => {
     const action = actions[button.dataset.action];
-    if (action) action().catch(() => {});
+    if (action) action().catch(() => {
+      if (['copy', 'paste', 'directory'].indexOf(button.dataset.action) !== -1)
+        document.getElementById('system-status').textContent = 'The system action failed. See the event log for details.';
+    });
   });
 }

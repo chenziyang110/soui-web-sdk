@@ -380,3 +380,32 @@ Promise；异步确认先拒绝本次请求，保存完成或用户明确确认�
 网页不因此自动获得新的强制关闭权限。统一示例的“未保存修改”选项是每窗口独立
 业务状态，通过显式 invoke 更新；文档重新就绪时重置，拒绝时发送 app.closeBlocked。
 它演示保护接线，不实现自动保存。详见[ADR-0138](adr/0138-cancellable-user-close.md)。
+
+## 统一桌面服务（默认拒绝）
+
+宿主通过 `options.services` 独立授权 `window_properties`、`clipboard_read`、
+`clipboard_write`、`directory_dialog`，全部默认 false，与窗口状态控制开关分离。
+这是应用对可信页面的预授权，不证明用户做了原生手势，不接受网页 userGesture、
+窗口句柄或任意权限字段，不自动接受操作系统权限提示。只作用于当前窗口。
+
+| 固定方法 | 精确参数 | 成功结果 |
+|---|---|---|
+| desktop.window.setTitle | {title:string} | {accepted:true} |
+| desktop.window.resize | {width:integer,height:integer} | {accepted:true} |
+| desktop.window.show | {visible:boolean} | {accepted:true} |
+| desktop.window.focus | {} | {accepted:true} |
+| desktop.clipboard.readText | {} | {text:string} |
+| desktop.clipboard.writeText | {text:string} | {accepted:true} |
+| desktop.dialog.chooseDirectory | {} | {cancelled:boolean,path:string} |
+
+标题最多4096字节UTF-8，尺寸64..16384，剪贴板写入最多32KiB、读取最多64KiB，
+目录路径最多64KiB；文本拒绝NUL和非法UTF-8。原64KiB请求和1MiB响应限制仍适用。
+窗口操作成功只代表请求被接纳；OS焦点策略等仍可能限制最终表现。目录取消仅将
+后端E_CANCELLED映射成 `{cancelled:true,path:""}`；其他原生错误保留，所选路径
+本身不是文件读写授权。原生调用与业务回调串行，导航或关闭后不发送迟到响应。
+
+这些固定方法名保留，其他同前缀方法仍走业务invoke。示例删除的是私有演示方法，
+不是旧Host公共接口；旧业务如占用固定标准名称须迁移。适配器和示例不在加载时
+自动读取或写入剪贴板。模态对话框及系统剪贴板仍使用既有原生同步API；网页超时
+不代表系统操作自动取消，不新增后台OS权限或硬取消承诺。
+见[ADR-0139](adr/0139-explicit-desktop-services.md)。

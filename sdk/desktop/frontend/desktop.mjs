@@ -64,6 +64,75 @@ export const windowControls = Object.freeze({
   }
 });
 
+function serviceAcceptance(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value) || value.accepted !== true) {
+    fail('invalid_service_acceptance', 'Expected desktop service acceptance');
+  }
+  return { accepted: true };
+}
+
+// Count strict UTF-8 without requiring TextEncoder or allocating a second copy.
+// Reject lone surrogates rather than silently replacing malformed native text.
+function boundedServiceText(text, code) {
+  if (typeof text !== 'string' || text.length > 65536) {
+    fail(code, 'Expected desktop service text within 64 KiB UTF-8');
+  }
+  let bytes = 0;
+  for (let i = 0; i < text.length; ++i) {
+    const unit = text.charCodeAt(i);
+    if (unit === 0) fail(code, 'Desktop service text must not contain NUL');
+    if (unit >= 0xd800 && unit <= 0xdbff) {
+      const low = text.charCodeAt(++i);
+      if (!(low >= 0xdc00 && low <= 0xdfff)) fail(code, 'Expected valid UTF-8 service text');
+      bytes += 4;
+    } else {
+      if (unit >= 0xdc00 && unit <= 0xdfff) fail(code, 'Expected valid UTF-8 service text');
+      bytes += unit < 0x80 ? 1 : unit < 0x800 ? 2 : 3;
+    }
+    if (bytes > 65536) fail(code, 'Desktop service text exceeds 64 KiB UTF-8');
+  }
+  return text;
+}
+
+function clipboardText(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    fail('invalid_clipboard_text', 'Expected a native clipboard text result');
+  }
+  return boundedServiceText(value.text, 'invalid_clipboard_text');
+}
+
+function directorySelection(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    fail('invalid_directory_selection', 'Expected a native directory selection');
+  }
+  const { cancelled, path } = value;
+  const text = boundedServiceText(path, 'invalid_directory_selection');
+  if (typeof cancelled !== 'boolean' || (cancelled ? text !== '' : text === '')) {
+    fail('invalid_directory_selection', 'Expected cancellation with an empty path or a selected path');
+  }
+  return { cancelled, path: text };
+}
+
+// All services require independent, default-off native permissions. Inputs are
+// validated by native dispatch; these facades never grant permission or retry.
+export const windowProperties = Object.freeze({
+  setTitle(title) { return invoke('desktop.window.setTitle', { title }).then(serviceAcceptance); },
+  resize(width, height) {
+    return invoke('desktop.window.resize', { width, height }).then(serviceAcceptance);
+  },
+  show(visible) { return invoke('desktop.window.show', { visible }).then(serviceAcceptance); },
+  focus() { return invoke('desktop.window.focus', {}).then(serviceAcceptance); }
+});
+
+export const clipboard = Object.freeze({
+  readText() { return invoke('desktop.clipboard.readText', {}).then(clipboardText); },
+  writeText(text) { return invoke('desktop.clipboard.writeText', { text }).then(serviceAcceptance); }
+});
+
+export const dialogs = Object.freeze({
+  chooseDirectory() { return invoke('desktop.dialog.chooseDirectory', {}).then(directorySelection); }
+});
+
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 // Validate lengths before allocation; reject noncanonical padding and unused bits.

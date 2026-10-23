@@ -51,26 +51,15 @@ soui::desktop::callbacks make_callbacks(example_state& state,
     if (method == "app.capabilities") {
       const auto caps = window->get_capabilities();
       return "{\"backend\":" + json_string(caps.backend) +
-        ",\"clipboardRead\":" + (caps.clipboard_read ? "true" : "false") +
-        ",\"clipboardWrite\":" + (caps.clipboard_write ? "true" : "false") +
-        ",\"directoryDialog\":" + (caps.directory_dialog ? "true" : "false") +
+        ",\"clipboardRead\":" + (caps.clipboard_read && state.settings.services.clipboard_read ? "true" : "false") +
+        ",\"clipboardWrite\":" + (caps.clipboard_write && state.settings.services.clipboard_write ? "true" : "false") +
+        ",\"directoryDialog\":" + (caps.directory_dialog && state.settings.services.directory_dialog ? "true" : "false") +
         ",\"popupMenu\":" + (caps.popup_menu ? "true" : "false") +
         ",\"tray\":" + (caps.tray ? "true" : "false") +
         ",\"resourceServer\":" + (state.settings.enable_resource_server ? "true" : "false") + "}";
     }
-    if (method == "window.title") return checked(window->set_title("SOUI · native title changed"));
-    if (method == "window.resize") return checked(window->resize(1100, 760));
-    if (method == "clipboard.write") return checked(window->clipboard_write("Hello from one SOUI application"));
-    if (method == "clipboard.read") {
-      const auto value = window->clipboard_read();
-      (void)checked(value.status);
-      return json_string(value.value);
-    }
-    if (method == "directory.choose") {
-      const auto value = window->choose_directory();
-      (void)checked(value.status);
-      return json_string(value.value);
-    }
+    // Window properties, clipboard and directory selection now use the SDK's
+    // desktop.* services. Only example-specific business methods belong here.
     if (method == "app.reload") {
       return checked(window->dispatch([context] { (void)context->window->reload(); }));
     }
@@ -165,6 +154,12 @@ int main(int argc, char** argv) {
   state.settings.title = "SOUI · one application";
   state.settings.enable_asset_read = true;
   state.settings.enable_window_controls = true;
+  // Independent, default-off grants for this trusted example page. These are
+  // not proof of a native user gesture and do not accept OS permission prompts.
+  state.settings.services.window_properties = true;
+  state.settings.services.clipboard_read = true;
+  state.settings.services.clipboard_write = true;
+  state.settings.services.directory_dialog = true;
   state.settings.enable_resource_server = default_http || argc == 3;
   state.children.reserve(31); // No handle-storage allocation after native create.
   auto context = std::make_shared<window_context>();

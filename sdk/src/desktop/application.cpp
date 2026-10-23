@@ -79,6 +79,19 @@ struct application_group {
   result quit();
   result request_quit();
 };
+struct callback_scope {
+  unsigned& depth;
+  explicit callback_scope(unsigned& value) : depth(value) { ++depth; }
+  ~callback_scope() { --depth; }
+  callback_scope(const callback_scope&) = delete;
+  callback_scope& operator=(const callback_scope&) = delete;
+};
+bool desktop_service(std::string_view method) {
+  return method == "desktop.window.setTitle" || method == "desktop.window.resize" ||
+    method == "desktop.window.show" || method == "desktop.window.focus" ||
+    method == "desktop.clipboard.readText" || method == "desktop.clipboard.writeText" ||
+    method == "desktop.dialog.chooseDirectory";
+}
 struct application_state : std::enable_shared_from_this<application_state> {
   options settings;
   callbacks handlers;
@@ -312,6 +325,57 @@ struct application_state : std::enable_shared_from_this<application_state> {
       nlohmann::json(text).dump() + "));");
     return sent;
   }
+  result invoke_service(std::string_view method, const nlohmann::json& params,
+                        nlohmann::json& returned) {
+    const bool read = method == "desktop.clipboard.readText";
+    const bool write = method == "desktop.clipboard.writeText";
+    const bool directory = method == "desktop.dialog.chooseDirectory";
+    const bool permitted = read ? settings.services.clipboard_read :
+      write ? settings.services.clipboard_write : directory ? settings.services.directory_dialog :
+      settings.services.window_properties;
+    if (!permitted) return result::failure("permission_denied", "This desktop service is not enabled.");
+    const auto invalid = result::failure("invalid_params", "Desktop service parameters have invalid fields, types or bounds.");
+    if (!params.is_object()) return invalid;
+    // Native services can run a modal message loop. Queue all business callbacks
+    // until the native operation returns, including when it throws.
+    callback_scope scope(group->callback_depth);
+    result status;
+    if (method == "desktop.window.setTitle" || write) {
+      const char* field = write ? "text" : "title";
+      if (params.size() != 1 || !params.contains(field) || !params.at(field).is_string()) return invalid;
+      const auto& text = params.at(field).get_ref<const std::string&>();
+      if (!valid_text(text, write ? 32768 : 4096)) return invalid;
+      status = write ? native->clipboard_write(text) : native->set_title(text);
+    } else if (method == "desktop.window.resize") {
+      if (params.size() != 2 || !params.contains("width") || !params.contains("height")) return invalid;
+      for (const char* field : {"width", "height"}) {
+        const auto& value = params.at(field);
+        if (!value.is_number_integer() || value < 64 || value > 16384) return invalid;
+      }
+      status = native->resize(params.at("width").get<int>(), params.at("height").get<int>());
+    } else if (method == "desktop.window.show") {
+      if (params.size() != 1 || !params.contains("visible") || !params.at("visible").is_boolean()) return invalid;
+      status = native->show(params.at("visible").get<bool>());
+    } else {
+      if (!params.empty()) return invalid;
+      if (read || directory) {
+        auto value = read ? native->clipboard_read() : native->choose_directory();
+        if (directory && !value.status.ok && value.status.code == "E_CANCELLED") {
+          returned = {{"cancelled", true}, {"path", ""}};
+          return result::success();
+        }
+        if (!value.status.ok) return value.status;
+        if (!valid_text(value.value, 65536) || (directory && value.value.empty()))
+          return result::failure("invalid_result", "Native desktop service returned invalid or oversized UTF-8 text.");
+        returned = read ? nlohmann::json{{"text", value.value}} :
+          nlohmann::json{{"cancelled", false}, {"path", value.value}};
+        return result::success();
+      }
+      status = native->focus();
+    }
+    if (status.ok) returned = {{"accepted", true}};
+    return status;
+  }
   void receive(std::string_view payload, std::string_view source, detail::message_frame frame) {
     if (!accepting.load() || !allowed(source) ||
         frame == detail::message_frame::subframe ||
@@ -336,7 +400,16 @@ struct application_state : std::enable_shared_from_this<application_state> {
       last_request = id;
       const auto request_generation = generation;
       nlohmann::json response{{"id", id}};
-      if (method == "desktop.window.minimize" || method == "desktop.window.maximize" ||
+      if (desktop_service(method)) {
+        result status;
+        try { status = invoke_service(method, input.at("params"), response["result"]); }
+        catch (...) { status = result::failure("service_failed", "The native desktop service failed."); }
+        response["ok"] = status.ok;
+        if (!status.ok) {
+          response.erase("result");
+          response["error"] = {{"code", status.code}, {"message", status.message}};
+        }
+      } else if (method == "desktop.window.minimize" || method == "desktop.window.maximize" ||
           method == "desktop.window.restore" || method == "desktop.window.getState") {
         const auto& params = input.at("params");
         result status = result::failure("permission_denied", "Window controls are not enabled.");

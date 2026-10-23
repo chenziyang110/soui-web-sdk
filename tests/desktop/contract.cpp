@@ -59,6 +59,14 @@ class fake_backend final : public detail::backend {
   int minimize_calls{0}, maximize_calls{0}, restore_calls{0};
   result window_status{result::success()};
   window_state_result observed{result::success(), {}};
+  int service_calls{0};
+  result service_status{unsupported()};
+  value_result clipboard_value{unsupported(), {}}, directory_value{unsupported(), {}};
+  std::string service_text;
+  int service_width{0}, service_height{0};
+  bool service_visible{false};
+  std::function<void()> while_service;
+  void service_enter() { ++service_calls; if (while_service) while_service(); }
 
   result create(const options&, detail::backend_events callbacks) override {
     events = std::move(callbacks); active.store(true);
@@ -113,17 +121,19 @@ class fake_backend final : public detail::backend {
       if (active.load()) work();
     }
   }
-  result set_title(std::string_view) override { return unsupported(); }
-  result resize(int, int) override { return unsupported(); }
-  result show(bool) override { return unsupported(); }
-  result focus() override { return unsupported(); }
+  result set_title(std::string_view text) override { service_text = text; service_enter(); return service_status; }
+  result resize(int width, int height) override {
+    service_width = width; service_height = height; service_enter(); return service_status;
+  }
+  result show(bool visible) override { service_visible = visible; service_enter(); return service_status; }
+  result focus() override { service_enter(); return service_status; }
   result minimize() override { ++minimize_calls; return window_status; }
   result maximize() override { ++maximize_calls; return window_status; }
   result restore() override { ++restore_calls; return window_status; }
   window_state_result get_window_state() const override { return observed; }
-  value_result clipboard_read() override { return {unsupported(), {}}; }
-  result clipboard_write(std::string_view) override { return unsupported(); }
-  value_result choose_directory() override { return {unsupported(), {}}; }
+  value_result clipboard_read() override { service_enter(); return clipboard_value; }
+  result clipboard_write(std::string_view text) override { service_text = text; service_enter(); return service_status; }
+  value_result choose_directory() override { service_enter(); return directory_value; }
   result popup_menu(const std::vector<menu_item>& items) override {
     ++counts->popup_calls; popup_items = items;
     if (while_popup) while_popup();
@@ -195,6 +205,167 @@ struct files {
   ~files() { std::error_code ignored; std::filesystem::remove_all(base, ignored); }
   options settings() const { options out; out.resource_root = root; out.visible = false; return out; }
 };
+
+void desktop_services_contract(files& fixture) {
+  const std::vector<std::pair<std::string, json>> methods = {
+    {"desktop.window.setTitle", {{"title", "Title"}}},
+    {"desktop.window.resize", {{"width", 640}, {"height", 480}}},
+    {"desktop.window.show", {{"visible", true}}},
+    {"desktop.window.focus", json::object()},
+    {"desktop.clipboard.readText", json::object()},
+    {"desktop.clipboard.writeText", {{"text", "Text"}}},
+    {"desktop.dialog.chooseDirectory", json::object()}
+  };
+  // Each grant is independent, including from the older window-control grant.
+  for (int permission = -1; permission < 4; ++permission) {
+    auto settings = fixture.settings();
+    settings.enable_window_controls = true;
+    settings.services.window_properties = permission == 0;
+    settings.services.clipboard_read = permission == 1;
+    settings.services.clipboard_write = permission == 2;
+    settings.services.directory_dialog = permission == 3;
+    int business = 0;
+    callbacks handlers;
+    handlers.invoke = [&](std::string_view, std::string_view) { ++business; return "42"; };
+    application app(settings, handlers);
+    CHECK(app.initialize().ok);
+    auto& native = *latest;
+    native.service_status = result::success();
+    native.clipboard_value = {result::success(), ""};
+    native.directory_value = {result::success(), "/chosen"};
+    std::uint64_t id = 0;
+    for (std::size_t i = 0; i < methods.size(); ++i) {
+      const bool allowed = permission == (i < 4 ? 0 : static_cast<int>(i) - 3);
+      const auto before = native.service_calls;
+      native.send(native.envelope(++id, methods[i].first, methods[i].second));
+      const auto response = native.last_response();
+      CHECK(response["ok"] == allowed);
+      CHECK(native.service_calls == before + (allowed ? 1 : 0));
+      if (!allowed) CHECK(response["error"]["code"] == "permission_denied");
+    }
+    CHECK(business == 0);
+    for (const char* method : {"desktop.window.custom", "desktop.clipboard.custom", "desktop.dialog.custom"}) {
+      native.send(native.envelope(++id, method));
+      CHECK(native.last_response()["result"] == 42);
+    }
+    CHECK(business == 3);
+  }
+  auto settings = fixture.settings();
+  settings.services = {true, true, true, true};
+  application app(settings);
+  CHECK(app.initialize().ok);
+  auto& native = *latest;
+  native.service_status = result::success();
+  std::uint64_t id = 0;
+  const auto call = [&](const std::string& method, json params) {
+    native.send(native.envelope(++id, method, std::move(params)));
+    return native.last_response();
+  };
+  for (const auto& method : methods) {
+    const auto before = native.service_calls;
+    CHECK(call(method.first, nullptr)["error"]["code"] == "invalid_params");
+    auto extra = method.second; extra["windowId"] = 123;
+    CHECK(call(method.first, extra)["error"]["code"] == "invalid_params");
+    CHECK(native.service_calls == before);
+  }
+  const auto invalid = [&](const std::string& method, json params) {
+    const auto before = native.service_calls;
+    CHECK(call(method, std::move(params))["error"]["code"] == "invalid_params");
+    CHECK(native.service_calls == before);
+  };
+  invalid(methods[0].first, {{"title", 1}});
+  invalid(methods[0].first, {{"title", std::string(4097, 'x')}});
+  invalid(methods[0].first, {{"title", std::string("a\0b", 3)}});
+  invalid(methods[0].first, json::object());
+  for (const json& width : std::vector<json>{63, 16385, -1, 64.0, true, "64", UINT64_MAX})
+    invalid(methods[1].first, {{"width", width}, {"height", 64}});
+  invalid(methods[1].first, {{"width", 64}, {"height", 16385}});
+  invalid(methods[1].first, {{"width", 64}});
+  invalid(methods[2].first, {{"visible", 1}});
+  invalid(methods[5].first, {{"text", false}});
+  invalid(methods[5].first, {{"text", std::string(32769, 'x')}});
+  invalid(methods[5].first, {{"text", std::string("\0", 1)}});
+  CHECK(call(methods[0].first, {{"title", std::string(4096, 'x')}})["result"] == json({{"accepted", true}}));
+  CHECK(native.service_text.size() == 4096);
+  CHECK(call(methods[1].first, {{"width", 64}, {"height", 16384}})["ok"] == true);
+  CHECK(native.service_width == 64 && native.service_height == 16384);
+  CHECK(call(methods[2].first, {{"visible", false}})["ok"] == true && !native.service_visible);
+  CHECK(call(methods[3].first, json::object())["result"] == json({{"accepted", true}}));
+  CHECK(call(methods[5].first, {{"text", std::string(32768, 'x')}})["ok"] == true);
+  CHECK(native.service_text.size() == 32768);
+  CHECK(call(methods[5].first, {{"text", ""}})["ok"] == true && native.service_text.empty());
+  for (const auto& text : {std::string(), std::string(65536, '\n'), std::string(u8"中文")}) {
+    native.clipboard_value = {result::success(), text};
+    CHECK(call(methods[4].first, json::object())["result"] == json({{"text", text}}));
+  }
+  for (const auto& text : {std::string(65537, 'x'), std::string("a\0b", 3), std::string("\xC0\xAF", 2)}) {
+    native.clipboard_value = {result::success(), text};
+    CHECK(call(methods[4].first, json::object())["error"]["code"] == "invalid_result");
+    native.directory_value = {result::success(), text};
+    CHECK(call(methods[6].first, json::object())["error"]["code"] == "invalid_result");
+  }
+  native.directory_value = {result::success(), ""};
+  CHECK(call(methods[6].first, json::object())["error"]["code"] == "invalid_result");
+  native.directory_value = {result::success(), std::string(65536, 'x')};
+  CHECK(call(methods[6].first, json::object())["result"] ==
+    json({{"cancelled", false}, {"path", native.directory_value.value}}));
+  native.directory_value = {result::failure("E_CANCELLED", "User cancelled."), "ignored"};
+  CHECK(call(methods[6].first, json::object())["result"] == json({{"cancelled", true}, {"path", ""}}));
+  native.service_status = result::failure("native_denied", "OS denied access.");
+  native.clipboard_value = native.directory_value = {native.service_status, "ignored"};
+  for (const auto& method : methods) {
+    const auto response = call(method.first, method.second);
+    CHECK(response["error"] == json({{"code", "native_denied"}, {"message", "OS denied access."}}));
+    CHECK(!response.contains("result"));
+  }
+  native.directory_value.status.code = "cancelled";
+  CHECK(call(methods[6].first, json::object())["error"]["code"] == "cancelled");
+}
+
+void desktop_service_reentry_contract(files& fixture) {
+  auto settings = fixture.settings(); settings.services.directory_dialog = true;
+  bool in_service = false;
+  int business = 0, closed = 0, ready = 0;
+  callbacks handlers;
+  handlers.invoke = [&](std::string_view, std::string_view) { CHECK(!in_service); ++business; return "null"; };
+  handlers.closed = [&] { CHECK(!in_service); ++closed; };
+  handlers.ready = [&] { CHECK(!in_service); ++ready; };
+  application app(settings, handlers);
+  CHECK(app.initialize().ok);
+  auto& native = *latest;
+  native.directory_value = {result::success(), "/chosen"};
+  native.while_service = [&] {
+    in_service = true;
+    native.send(native.envelope(2)); native.loaded();
+    CHECK(business == 0 && ready == 0);
+    in_service = false;
+  };
+  native.send(native.envelope(1, "desktop.dialog.chooseDirectory", json::object()));
+  CHECK(business == 1 && ready == 1 && native.evaluations.size() == 2);
+  // Even exceptional native exits release callback serialization.
+  native.while_service = [&] { native.send(native.envelope(4)); throw std::runtime_error("native failure"); };
+  native.send(native.envelope(3, "desktop.dialog.chooseDirectory", json::object()));
+  CHECK(business == 2 && native.evaluations.size() == 4);
+  native.while_service = [&] {
+    in_service = true;
+    native.send(native.envelope(6));
+    CHECK(app.navigate("second.html").ok);
+    native.loaded();
+    CHECK(ready == 1);
+    in_service = false;
+  };
+  native.send(native.envelope(5, "desktop.dialog.chooseDirectory", json::object()));
+  CHECK(business == 2 && ready == 2 && native.evaluations.size() == 4);
+  native.while_service = [&] {
+    in_service = true;
+    native.send(native.envelope(2));
+    CHECK(app.close().ok);
+    CHECK(closed == 0);
+    in_service = false;
+  };
+  native.send(native.envelope(1, "desktop.dialog.chooseDirectory", json::object()));
+  CHECK(business == 2 && closed == 1 && native.evaluations.size() == 4);
+}
 
 void window_state_contract(files& fixture) {
   int business_calls = 0, state_calls = 0;
@@ -1192,6 +1363,8 @@ int main(int argc, char** argv) {
   }
   try {
     files fixture;
+    desktop_services_contract(fixture);
+    desktop_service_reentry_contract(fixture);
     window_state_contract(fixture);
     asset_bridge_contract(fixture);
     asynchronous_asset_contract(fixture);

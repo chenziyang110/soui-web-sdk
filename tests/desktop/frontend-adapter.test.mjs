@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import {
   MAX_ASSET_BYTES, DesktopAdapterError, requireDesktop, invoke, on, readAsset,
-  assetBytes, assetText, assetJson, windowControls
+  assetBytes, assetText, assetJson, windowControls, windowProperties, clipboard, dialogs
 } from '../../sdk/desktop/frontend/desktop.mjs';
 
 const asset = (value) => {
@@ -11,6 +11,97 @@ const asset = (value) => {
 };
 const adapterError = (code) => (error) =>
   error instanceof DesktopAdapterError && error.code === `desktop_adapter_${code}`;
+
+test('desktop service facades use reserved methods and preserve native failures', async () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  try {
+    const calls = [];
+    let response = { accepted: true };
+    const host = {
+      version: 1, on() {}, readAsset() {},
+      invoke(method, params) {
+        assert.equal(this, host);
+        calls.push([method, params]);
+        return Promise.resolve(response);
+      }
+    };
+    globalThis.window = { souiDesktop: host };
+    for (const facade of [windowProperties, clipboard, dialogs]) assert.ok(Object.isFrozen(facade));
+    assert.deepEqual(await windowProperties.setTitle('中文'), { accepted: true });
+    assert.deepEqual(await windowProperties.resize(640, 480), { accepted: true });
+    assert.deepEqual(await windowProperties.show(false), { accepted: true });
+    assert.deepEqual(await windowProperties.focus(), { accepted: true });
+    assert.deepEqual(await clipboard.writeText('hello'), { accepted: true });
+    response = { text: '' };
+    assert.equal(await clipboard.readText(), '');
+    response = { cancelled: true, path: '' };
+    assert.deepEqual(await dialogs.chooseDirectory(), response);
+    response = { cancelled: false, path: '/中文/🦊' };
+    assert.deepEqual(await dialogs.chooseDirectory(), response);
+    assert.deepEqual(calls, [
+      ['desktop.window.setTitle', { title: '中文' }],
+      ['desktop.window.resize', { width: 640, height: 480 }],
+      ['desktop.window.show', { visible: false }], ['desktop.window.focus', {}],
+      ['desktop.clipboard.writeText', { text: 'hello' }], ['desktop.clipboard.readText', {}],
+      ['desktop.dialog.chooseDirectory', {}], ['desktop.dialog.chooseDirectory', {}]
+    ]);
+    const operations = [() => windowProperties.setTitle(''), () => windowProperties.resize(1, 2),
+      () => windowProperties.show(true), () => windowProperties.focus(),
+      () => clipboard.writeText(''), () => clipboard.readText(), () => dialogs.chooseDirectory()];
+    const nativeError = Object.assign(new Error('denied'), { code: 'E_PERMISSION' });
+    host.invoke = () => Promise.reject(nativeError);
+    for (const operation of operations) await assert.rejects(operation(), error => error === nativeError);
+    delete globalThis.window;
+    for (const operation of operations) assert.throws(operation, adapterError('missing_host'));
+  } finally {
+    if (previous) Object.defineProperty(globalThis, 'window', previous);
+    else delete globalThis.window;
+  }
+});
+
+test('desktop service results reject false defaults and enforce strict bounded UTF-8', async () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  try {
+    let response;
+    globalThis.window = { souiDesktop: {
+      version: 1, on() {}, readAsset() {}, invoke() { return Promise.resolve(response); }
+    } };
+    for (response of [null, [], {}, { accepted: false }, { accepted: 1 }]) {
+      await assert.rejects(windowProperties.focus(), adapterError('invalid_service_acceptance'));
+      await assert.rejects(clipboard.writeText(''), adapterError('invalid_service_acceptance'));
+    }
+    for (response of [null, [], {}, { text: null }, { text: 'a\0b' }, { text: '\ud800' },
+      { text: '\udc00' }, { text: 'a'.repeat(65537) }, { text: '🦊'.repeat(16385) }]) {
+      await assert.rejects(clipboard.readText(), adapterError('invalid_clipboard_text'));
+    }
+    for (const text of ['a'.repeat(65536), '🦊'.repeat(16384), '中文']) {
+      response = { text };
+      assert.equal(await clipboard.readText(), text);
+      response = { cancelled: false, path: text };
+      assert.deepEqual(await dialogs.chooseDirectory(), response);
+    }
+    for (response of [null, [], {}, { cancelled: false, path: '' }, { cancelled: true, path: '/x' },
+      { cancelled: 0, path: '/x' }, { cancelled: false, path: '/\0' },
+      { cancelled: false, path: '\ud800' }, { cancelled: false, path: '中'.repeat(21846) }]) {
+      await assert.rejects(dialogs.chooseDirectory(), adapterError('invalid_directory_selection'));
+    }
+    let reads = 0;
+    response = { get text() { return ++reads === 1 ? 'valid' : '\0'; } };
+    assert.equal(await clipboard.readText(), 'valid');
+    assert.equal(reads, 1);
+    let cancelledReads = 0, pathReads = 0;
+    response = {
+      get cancelled() { ++cancelledReads; return false; },
+      get path() { return ++pathReads === 1 ? '/valid' : ''; }
+    };
+    assert.deepEqual(await dialogs.chooseDirectory(), { cancelled: false, path: '/valid' });
+    assert.equal(cancelledReads, 1);
+    assert.equal(pathReads, 1);
+  } finally {
+    if (previous) Object.defineProperty(globalThis, 'window', previous);
+    else delete globalThis.window;
+  }
+});
 
 test('host checks are immediate, and calls preserve native identity and receiver', async () => {
   const previous = Object.getOwnPropertyDescriptor(globalThis, 'window');

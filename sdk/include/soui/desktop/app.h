@@ -81,6 +81,15 @@ struct tray_options {
 using window_id = std::uint64_t;
 enum class window_event { ready, closed };
 
+// Trusted-application preauthorization, not proof of a user gesture.
+// These permissions do not accept OS prompts or grant filesystem access.
+struct service_permissions {
+  bool window_properties{false};
+  bool clipboard_read{false};
+  bool clipboard_write{false};
+  bool directory_dialog{false};
+};
+
 struct options {
   std::filesystem::path resource_root;
   std::filesystem::path entry{"index.html"};
@@ -97,6 +106,7 @@ struct options {
   bool enable_resource_server{false};
   // Explicit permission for current-page desktop.window.* controls and state events.
   bool enable_window_controls{false};
+  service_permissions services;
 };
 
 struct callbacks {

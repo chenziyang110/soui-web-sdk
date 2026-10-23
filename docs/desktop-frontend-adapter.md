@@ -58,3 +58,21 @@ assetBytes 对 mime、size、base64 只读取一次，再对同一组值验证�
 
 类型 `WindowState` / `WindowControlAcceptance` 描述这两个不同结果；格式错误的
 状态快照抛出 `desktop_adapter_invalid_window_state`，不会把缺字段猜为 false。
+
+## 常用系统服务
+
+`windowProperties.setTitle(title)/resize(width,height)/show(visible)/focus()` 与
+`clipboard.writeText(text)` 返回 `{accepted:true}`；`clipboard.readText()` 返回文本，
+`dialogs.chooseDirectory()` 返回 `{cancelled,path}`。它们仍通过原始invoke调用，
+宿主须分别开启 options.services 的窗口属性、剪贴板读取、写入和目录对话框权限。
+默认拒绝；这些开关是可信应用预授权，不是用户手势检测，也不会代用户批准OS提示。
+
+示例业务调用已迁移到标准服务；没有删除旧Host接口或改写已有生成项目。目录取消
+是正常结果，不应当作异常；返回路径不授予文件读取能力。网页超时不代表模态系统
+对话框或原生剪贴板操作已取消，关闭/导航的迟到响应仍受既有隔离规则约束。
+
+返回类型为 `DesktopServiceAcceptance` 与取消/已选择两种分支的 `DirectorySelection`。
+适配器对返回文本按严格UTF-8计数（最多64KiB），拒绝NUL及孤立代理字符；本地校验
+失败分别使用 `desktop_adapter_invalid_service_acceptance`、
+`desktop_adapter_invalid_clipboard_text`、`desktop_adapter_invalid_directory_selection`。
+原生拒绝、权限错误和系统错误保留，不由这些本地格式错误替代。

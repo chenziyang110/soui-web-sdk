@@ -23,6 +23,9 @@ export type DesktopAdapterErrorCode =
   | 'desktop_adapter_missing_host'
   | 'desktop_adapter_incompatible_host'
   | 'desktop_adapter_invalid_window_state'
+  | 'desktop_adapter_invalid_service_acceptance'
+  | 'desktop_adapter_invalid_clipboard_text'
+  | 'desktop_adapter_invalid_directory_selection'
   | 'desktop_adapter_invalid_asset'
   | 'desktop_adapter_asset_too_large'
   | 'desktop_adapter_text_decoder_unavailable'
@@ -63,6 +66,46 @@ export const windowControls: Readonly<{
   getState(): Promise<WindowState>;
   /** Validates snapshots; returns the native unsubscribe function unchanged. */
   onStateChanged(listener: (state: WindowState) => void): Unsubscribe;
+}>;
+/** Accepted is not proof that the window manager has applied an operation. */
+export interface DesktopServiceAcceptance {
+  readonly accepted: true;
+}
+/** Requires default-off options.services.window_properties, not window controls.
+ * Malformed responses reject with desktop_adapter_invalid_service_acceptance.
+ * Native input/permission errors pass through unchanged; no retries.
+ */
+export const windowProperties: Readonly<{
+  /** UTF-8 title at most 4096 bytes, without NUL. */
+  setTitle(title: string): Promise<DesktopServiceAcceptance>;
+  /** Integer dimensions in the inclusive range 64..16384. */
+  resize(width: number, height: number): Promise<DesktopServiceAcceptance>;
+  show(visible: boolean): Promise<DesktopServiceAcceptance>;
+  focus(): Promise<DesktopServiceAcceptance>;
+}>;
+export const clipboard: Readonly<{
+  /** Requires options.services.clipboard_read. Empty text is valid; malformed,
+   * NUL-containing or over-64-KiB UTF-8 results reject with desktop_adapter_invalid_clipboard_text.
+   */
+  readText(): Promise<string>;
+  /** Requires independent options.services.clipboard_write. At most 32768 UTF-8
+   * bytes without NUL; native validates inputs. Malformed acceptance rejects with
+   * desktop_adapter_invalid_service_acceptance. Native errors pass through.
+   */
+  writeText(text: string): Promise<DesktopServiceAcceptance>;
+}>;
+/** Cancellation is explicit; successful path is nonempty, valid UTF-8 without
+ * NUL, at most 65536 bytes. A selection does not grant file access.
+ */
+export type DirectorySelection =
+  | { readonly cancelled: true; readonly path: '' }
+  | { readonly cancelled: false; readonly path: string };
+export const dialogs: Readonly<{
+  /** Requires options.services.directory_dialog. Malformed results reject with
+   * desktop_adapter_invalid_directory_selection. Native errors pass through,
+   * rather than being converted to cancellation. No implicit permission prompts.
+   */
+  chooseDirectory(): Promise<DirectorySelection>;
 }>;
 /** Synchronously decode a bounded, canonical base64 asset response. */
 export function assetBytes(asset: DesktopAsset): Uint8Array;
