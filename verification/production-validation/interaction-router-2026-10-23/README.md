@@ -1,12 +1,12 @@
-# Interaction router regression — 2026-10-23
+# 输入路由器回归 — 2026-10-23
 
-Scope: x86 Release SDK router contract tests for stale scroll-barrier handling.
+范围：x86 Release SDK 路由器对过期滚动屏障的契约回归。
 
-The original implementation failed 5 of 12 cases; the candidate passed all 12. The exact test binary was run in an isolated Windows guest, returned exit code 0, and had SHA-256 `D09F7E0E1C545C04DD965E04E9738DFDFCB0176F3353500C4C4B37845E913DD6`.
+原实现与修复候选的十二项差分用例分别为 7/12 和 12/12 通过。随后维护测试目标链接生产 `Soui::Sdk`，在隔离 Windows 来宾运行，十二项全部通过、退出码 0；测试 EXE 的 SHA-256 为 `D09F7E0E1C545C04DD965E04E9738DFDFCB0176F3353500C4C4B37845E913DD6`。
 
-The cases cover pointer-down after wheel input or prior valid barriers when a new capture fails, partial failed output, successful barrier field preservation, cache integrity, pointer-up FIFO ordering, caller-supplied barriers, stale generations, and later recovery. This confirms the router contract only. It does not establish smooth scrolling performance, complete GUI behavior, x64 behavior, or release readiness.
+用例覆盖滚轮或前次有效屏障之后的新捕获失败、失败时部分写入输出、成功屏障字段完整保留、缓存不被污染、抬起 FIFO 顺序、调用方屏障、过期代际及后续成功恢复。结果只证明路由器契约，不代表滚动流畅性、完整 GUI、x64 或发布资格验收。
 
-The isolated guest serial record is maintained outside this repository; its relevant result is reproduced below:
+隔离来宾原始串口记录保存在仓库外；以下摘录对应的实际测试结果：
 
 ```text
 JZMAINTENANCE PASS wheel_then_false_untouched
