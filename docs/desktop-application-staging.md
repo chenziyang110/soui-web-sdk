@@ -226,3 +226,9 @@ CLI 和导出的 `stage(options)` 使用同一输入校验，并在创建输出�
 的SDK身份。显式未知架构/生成器表达式和当前构建配置的任何显式
 `OSX_ARCHITECTURES_<CONFIG>` 覆盖（包括空字符串）拒绝，配置级变化应使用独立构建目录；
 非macOS路径保持原行为。配置fixture不代表Mac编译或运行。
+
+Ninja Multi-Config 使用 `CMAKE_CROSS_CONFIGS=all` 时，`app_stage:Release`
+会先构建输出配置 Release 的程序，再写入对应 `$<CONFIG>` 目录，即使由
+Debug 构建图调用。CMake 的隐式目标顺序依赖也可能构建 command-config，
+但不能以该程序替代输出配置产物。归档目标仍独立验证所选配置的已有目录，
+不隐式重建或重新 staging。该路径仅用极小 Linux ELF 验证，不代表原生 WebView 验收。

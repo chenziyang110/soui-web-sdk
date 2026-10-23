@@ -2,6 +2,9 @@
 
 ## 未发布维护
 
+- 修复 Ninja Multi-Config 跨配置 staging 依赖错误，确保构建实际被打包的
+  输出配置程序，而非仅构建命令配置，避免缺失或打包陈旧程序。
+
 - macOS staging 拒绝显式空的配置级架构覆盖，避免 CMake 退回默认架构后
   仍按通用双 slice 属性错误声明 universal2。
 

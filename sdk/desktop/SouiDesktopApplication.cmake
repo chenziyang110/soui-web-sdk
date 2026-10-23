@@ -158,7 +158,9 @@ function(soui_stage_application)
       --version "${APP_VERSION}" ${identifier}
     COMMAND "${SOUI_DESKTOP_NODE_EXECUTABLE}" "${verifier}"
       --input "${output}" --platform "${platform}" --arch "${architecture}"
-    DEPENDS "${APP_TARGET}" VERBATIM
+    # A bare target dependency selects command-config in Ninja cross-config
+    # builds; the staged file must instead be built in output-config.
+    DEPENDS "$<TARGET_FILE:${APP_TARGET}>" VERBATIM
     COMMENT "Stage unsigned application directory; system WebView dependencies remain external")
   # Intentionally independent: verification must not rebuild or overwrite a handoff.
   add_custom_target("${APP_TARGET}_verify_stage"
