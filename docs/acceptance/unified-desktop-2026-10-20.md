@@ -304,3 +304,16 @@ Windows/macOS 原生诊断和实际窗口验收延后；此前 GUI 依赖阻塞�
 
 未执行全量回归、长期稳定性、DPI/多屏或 Windows/macOS/ARM 原生验收；不改变
 releaseReady、版本号、许可或正式分发资格。
+
+
+## 2026-10-23 状态补充（不改写上文历史结果）
+
+| 平台 / 范围 | 最新限定结果 | 仍未验收 |
+|---|---|---|
+| macOS universal2 / ARM64 宿主 | AppleClang 21 编译链接通过，含 WKWebView 后端；两程序含 x64/ARM64 slice；公共 fake-backend CTest 1/1；安装SDK→生成项目→构建→stage/verify/archive通过 | GUI应用激活阻塞；真实Bridge、模块/fetch与关闭；Intel slice运行、最低系统版本兼容性及签名公证 |
+| Linux x64 | 2026-10-22历史限定真实GUI/Bridge/模块验证通过 | 后续部署RPATH策略GUI未复验，原自构建runtime快照已丢失 |
+| Windows / 其他未验证架构 | 保持原未验收状态 | 不以Mac编译或合成配置结果代替目标机证据 |
+
+Mac依据与边界见[2026-10-23记录](../macos-native-validation-20261023.md)，
+Linux见[2026-10-22记录](../linux-native-validation-20261022.md)。
+本补充不修改 `verification/acceptance.json` 的正式生产验收结论。

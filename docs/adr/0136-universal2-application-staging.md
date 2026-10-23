@@ -36,3 +36,8 @@ x64/arm64 宿主匹配，不把未知架构视为通过。ZIP不改二进制或�
 空配置属性并非未设置：CMake 会采用该空值而非通用 slice 列表，可能退回工具链默认架构。
 因此在配置期拒绝该覆盖，避免 staging 对实际薄片产物声明 universal2。
 依据：[CMake 3.24 GetAppleArchs](https://raw.githubusercontent.com/Kitware/CMake/v3.24.0/Source/cmGeneratorTarget.cxx)。
+
+macOS 下 CMake 的 C/C++ `COMPILER_ARCHITECTURE_ID` 可报告多个 slice
+（如 `arm64;x86_64`）；平台检测逐项规范化并沿用已有目标列表/编译器探针
+一致性校验。空元素、未知架构及与单 slice 目标冲突仍拒绝；其他平台和生成器
+平台提示保持单架构语义。合成脚本回归只验证此解析边界，不代替原生编译验收。

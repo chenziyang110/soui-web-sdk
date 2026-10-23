@@ -104,10 +104,20 @@ function(soui_detect_platform)
   foreach(variable CMAKE_GENERATOR_PLATFORM CMAKE_VS_PLATFORM_NAME
       CMAKE_CXX_COMPILER_ARCHITECTURE_ID CMAKE_C_COMPILER_ARCHITECTURE_ID)
     if(DEFINED ${variable} AND NOT "${${variable}}" STREQUAL "")
-      # Visual Studio permits "x64,version=..." in generator-platform settings.
-      string(REGEX REPLACE ",.*$" "" value "${${variable}}")
-      _soui_normalize_arch("${value}" normalized)
-      list(APPEND declared_arches "${normalized}")
+      if(target_os STREQUAL "macos" AND "${variable}" MATCHES "_COMPILER_ARCHITECTURE_ID$")
+        # CMake can identify every slice of an Apple universal compiler output.
+        # Do not drop malformed empty entries from a compiler slice list.
+        foreach(value IN LISTS ${variable})
+          _soui_normalize_arch("${value}" normalized)
+          list(APPEND declared_arches "${normalized}")
+        endforeach()
+      else()
+        # Visual Studio permits "x64,version=..." in generator-platform settings.
+        # Other hints remain single-architecture, including outside macOS.
+        string(REGEX REPLACE ",.*$" "" value "${${variable}}")
+        _soui_normalize_arch("${value}" normalized)
+        list(APPEND declared_arches "${normalized}")
+      endif()
     endif()
   endforeach()
   foreach(variable CMAKE_CXX_COMPILER_TARGET CMAKE_C_COMPILER_TARGET)

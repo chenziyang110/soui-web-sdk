@@ -452,3 +452,35 @@ test('legacy libstdc++ ABI fails configuration without weakening TaskStore swap 
     fs.rmSync(directory, { recursive: true, force: true });
   }
 });
+
+
+test('CMake macOS compiler identification accepts slice lists without relaxing other hints', { skip: !cmake && 'CMake is not installed' }, () => {
+  const base = { CMAKE_SYSTEM_NAME: 'Darwin', CMAKE_SYSTEM_PROCESSOR: 'arm64',
+    CMAKE_OSX_ARCHITECTURES: 'arm64;x86_64', CMAKE_SIZEOF_VOID_P: 8 };
+  for (const field of ['CMAKE_C_COMPILER_ARCHITECTURE_ID', 'CMAKE_CXX_COMPILER_ARCHITECTURE_ID']) {
+    for (const value of ['arm64;x86_64', 'x86_64;arm64']) {
+      const result = cmakeScript({ ...base, [field]: value });
+      assert.equal(result.status, 0, result.stderr);
+      assert.match(result.stdout, /TARGET=macos\/universal2;ARCHES=x64;arm64/);
+    }
+    const thin = cmakeScript({ ...base, CMAKE_OSX_ARCHITECTURES: 'arm64', [field]: 'arm64' });
+    assert.equal(thin.status, 0, thin.stderr);
+    assert.match(thin.stdout, /TARGET=macos\/arm64;/);
+    for (const value of ['arm64;;x86_64', ';arm64;x86_64', 'arm64;x86_64;', 'arm64;ARM64EC', 'arm64;mips64']) {
+      const result = cmakeScript({ ...base, [field]: value });
+      assert.notEqual(result.status, 0, value);
+      assert.match(result.stderr, /not_supported/);
+    }
+    const conflict = cmakeScript({ ...base, CMAKE_OSX_ARCHITECTURES: 'arm64', [field]: 'arm64;x86_64' });
+    assert.notEqual(conflict.status, 0);
+    assert.match(conflict.stderr, /conflicting/);
+    for (const system of ['Linux', 'Windows']) {
+      const result = cmakeScript({ ...base, CMAKE_SYSTEM_NAME: system, CMAKE_OSX_ARCHITECTURES: '', [field]: 'arm64;x86_64' });
+      assert.notEqual(result.status, 0, system);
+      assert.match(result.stderr, /unknown target architecture/);
+    }
+  }
+  const generator = cmakeScript({ ...base, CMAKE_GENERATOR_PLATFORM: 'arm64;x86_64' });
+  assert.notEqual(generator.status, 0);
+  assert.match(generator.stderr, /unknown target architecture/);
+});

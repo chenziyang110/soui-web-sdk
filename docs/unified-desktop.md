@@ -6,7 +6,9 @@ GTK3/WebKitGTK、AppKit/WKWebView 或 Win32/WebView2 后端。业务代码不需
 `#ifdef`。示例位于 [examples/unified-desktop](../examples/unified-desktop)。
 
 这是未发布开发功能，不是 Electron 全功能替代或“全部架构完美运行”声明。
-Windows/macOS 代码尚未目标编译；Linux于2026-10-22完成限定真实GUI、Bridge和模块
+Windows 代码尚未目标编译；macOS 于2026-10-23完成限定 universal2 原生编译及
+安装SDK交付链，GUI仍因应用激活受阻，见[记录](macos-native-validation-20261023.md)。
+Linux于2026-10-22完成限定真实GUI、Bridge和模块
 验证，见[记录](linux-native-validation-20261022.md)。后续环境快照丢失该自构建
 运行时，新增部署RPATH策略尚未重新GUI验收，不能推广为干净目标机部署通过。
 正式分发前必须完成目标机验收与版本、许可、交付清单更新。
@@ -17,7 +19,7 @@ Windows/macOS 代码尚未目标编译；Linux于2026-10-22完成限定真实GUI
 |---|---|---|---|
 | Linux | x64、ARM64 | GTK 3.24+、WebKitGTK 4.1 2.40+、C++17、正常图形会话 | Debian 13 x64 / GCC 14.2 / GTK 3.24.49 / WebKitGTK 2.52.6 编译链接、安装消费者通过；限定x64 GUI/Bridge/模块链已验证；后续部署策略未复验，ARM64未编译 |
 | Linux | x86、ARM32 | 仅当目标发行版提供上述架构的完整开发/运行包；需正确 ISA/浮点 ABI/sysroot | 未编译或 GUI 验证，不承诺所有 32 位发行版可用 |
-| macOS | x64、ARM64、universal2 | macOS 12+，Apple SDK，Objective-C++17/ARC，AppKit、Foundation、WebKit、CoreFoundation | 源码实现与审查；未编译/运行 |
+| macOS | x64、ARM64、universal2 | macOS 12+，Apple SDK，Objective-C++17/ARC，AppKit、Foundation、WebKit、CoreFoundation | AppleClang 21 原生 universal2 编译/链接、安装SDK消费者与交付通过；ARM宿主fake契约通过；GUI激活阻塞、Intel slice未运行 |
 | Windows | x86、x64、ARM64 | MSVC-compatible C++17、Windows SDK、匹配架构 WebView2 SDK loader、当前受支持 Evergreen Runtime | 源码实现与审查；未编译/运行 |
 | Windows ARM32、macOS x86/ARM32、ARM64EC | 不支持 | 不伪造缺失的后端发行物或现代 32 位 macOS 支持 | 配置拒绝 |
 
@@ -260,7 +262,7 @@ fetch，不宣称这些功能已在三引擎实测通过，也不是 Electron AP
 主体。详见 [ADR-0125](adr/0125-opt-in-loopback-resource-origin.md)。
 
 本增量只做必要构建、语法与高风险边界检查，完整统一回归延后：
-- Windows/macOS 编译与三引擎模块、动态 import、相对资源、fetch、CSP 实际运行。
+- Windows 编译与三引擎完整模块、动态 import、相对资源、fetch、CSP 运行验收；macOS限定编译已通过，GUI仍阻塞。
 - 真实 HTTP Host/方法/编码/大小/慢连接及窗口关闭、导航、进行中请求的竞争。
 - 多窗口源隔离、存储行为、目标机网络策略，以及各架构和安装包回归。
 这些待验收项不能由下方早期基线测试结果替代。
@@ -271,10 +273,11 @@ fetch，不宣称这些功能已在三引擎实测通过，也不是 Electron AP
 application/protocol 的 fake-backend 契约测试、真实 preload 的 Node VM 测试。
 fake 和 VM 不构成真实浏览器或窗口验收。
 
-本轮 GUI 尚未通过：最初无显示服务时原生测试返回 `E_DISPLAY`，不能创建
+以下为2026-10-20的历史阻塞，Linux后续限定通过见[2026-10-22记录](linux-native-validation-20261022.md)，
+不代表新增部署策略已复验。最初无显示服务时原生测试返回 `E_DISPLAY`，不能创建
 Xvfb/D-Bus 所需 Unix socket，提升入口也未能初始化。后续在受支持的既有云
 图形桌面启动样例，因系统前缀缺少 `WebKitNetworkProcess` 而在加载页面前中止。
-当前需要正确安装的系统 WebKitGTK 运行依赖，不能只提供隔离的编译头库。
+当时需要正确安装的系统 WebKitGTK 运行依赖，不能只提供隔离的编译头库。
 没有修改权限或关闭 WebKit sandbox；两次启动均不是通过或 skip。
 
 在已有正常图形会话和依赖的 Linux 目标机：
@@ -286,7 +289,7 @@ ctest --preset desktop -R sdk.desktop.linux-native --output-on-failure
 ```
 
 原生测试有真实页面/JavaScript/Bridge、剪贴板、目录取消、线程调度、重载和
-关闭用例，缺少显示服务时必须失败。Windows/macOS 编译及这些交互都尚未执行。
+关闭用例，缺少显示服务时必须失败。Windows 编译尚未执行；macOS限定原生编译已通过，但这些原生交互仍未验收。
 多窗口/原生动作还须在目标机手动检查：
 
 - 根窗口关闭后子窗口继续响应，最后一个窗口关闭才退出，显式 quit 关闭整个组。
