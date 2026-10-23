@@ -5,6 +5,7 @@
 #import <Carbon/Carbon.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
+#import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import <WebKit/WebKit.h>
 
 #include <atomic>
@@ -130,7 +131,8 @@ struct macos_state {
   WKWebView* webview{nil};
   WKNavigation* navigation{nil};
   NSURL* resource_root{nil};
-  NSOpenPanel* directory_panel{nil};
+  // NSOpenPanel subclasses NSSavePanel. All path pickers share close/cancel.
+  NSSavePanel* directory_panel{nil};
   id delegate{nil};
   NSMenu* popup{nil};
   NSStatusItem* tray{nil};
@@ -1021,6 +1023,61 @@ struct modal_guard {
   }
 };
 
+result configure_file_panel(NSSavePanel* panel, std::string_view title,
+                            const std::vector<std::string>& extensions) {
+  if (!panel)
+    return result::failure("E_FILE_DIALOG", "AppKit did not create a file dialog");
+  NSString* native_title = cocoa_string(title);
+  if (!native_title)
+    return result::failure("E_UTF8", "The file dialog title is not valid UTF-8");
+  // Common code validates and normalizes the suffixes. Keep every requested
+  // type in one union; a failed native conversion must never widen the filter.
+  NSMutableArray<UTType*>* types = [NSMutableArray arrayWithCapacity:extensions.size()];
+  if (!types)
+    return result::failure("E_FILE_DIALOG", "Could not allocate the file dialog filter");
+  for (const auto& extension : extensions) {
+    NSString* suffix = cocoa_string(extension);
+    UTType* type = suffix ? [UTType typeWithFilenameExtension:suffix] : nil;
+    if (!type)
+      return result::failure("E_FILE_DIALOG", "A file extension has no native content type");
+    [types addObject:type];
+  }
+  panel.title = native_title;
+  panel.allowedContentTypes = types;
+  panel.allowsOtherFileTypes = extensions.empty();
+  panel.canCreateDirectories = NO;
+  panel.treatsFilePackagesAsDirectories = YES;
+  return result::success();
+}
+
+file_selection_result selected_file_paths(NSArray<NSURL*>* urls, bool multiple) {
+  if (!urls.count || urls.count > 32 || (!multiple && urls.count != 1))
+    return {result::failure("E_FILE_DIALOG_RESULT", "The file dialog returned an invalid selection count"), {}};
+  std::vector<std::string> paths;
+  paths.reserve(urls.count);
+  std::size_t total_bytes = 0;
+  for (NSURL* url in urls) {
+    NSString* host = url.host;
+    if (!url.isFileURL || url.hasDirectoryPath ||
+        (host.length && [host caseInsensitiveCompare:@"localhost"] != NSOrderedSame))
+      return {result::failure("E_FILE_DIALOG_RESULT", "The selection is not a local file URL"), {}};
+    NSString* native_path = url.path;
+    if (!native_path.isAbsolutePath || !native_path.length || native_path.length > 32768 ||
+        [native_path lengthOfBytesUsingEncoding:NSUTF8StringEncoding] > 32768)
+      return {result::failure("E_FILE_DIALOG_RESULT", "The selected path is invalid or too long"), {}};
+    NSData* bytes = [native_path dataUsingEncoding:NSUTF8StringEncoding allowLossyConversion:NO];
+    if (!bytes || !bytes.length || bytes.length > 32768 || bytes.length > 128 * 1024 - total_bytes)
+      return {result::failure("E_FILE_DIALOG_RESULT", "The selected paths exceed the UTF-8 limits"), {}};
+    std::string path(static_cast<const char*>(bytes.bytes), bytes.length);
+    if (path.front() != '/' || path.find('\0') != std::string::npos)
+      return {result::failure("E_FILE_DIALOG_RESULT", "The selected path is not a valid absolute path"), {}};
+    total_bytes += path.size();
+    paths.push_back(std::move(path));
+  }
+  // No reads, writes, security bookmarks, or WebView access grants follow a pick.
+  return {result::success(), std::move(paths)};
+}
+
 NSMenu* make_native_menu_level(const std::vector<menu_item>& items, id target,
                               std::set<std::string>& ids, std::size_t& count,
                               std::size_t depth, bool ancestors_enabled) {
@@ -1457,17 +1514,23 @@ class wkwebview_backend final : public backend {
   value_result choose_directory() override {
     auto open = require_open(state_);
     if (!open.ok) return {open, {}};
-    if (state_->directory_panel)
-      return {result::failure("E_BUSY", "A directory picker is already open"), {}};
+    if (state_->directory_panel || state_->application_group->modal_depth)
+      return {result::failure("E_BUSY", "A native modal operation is already active"), {}};
     @autoreleasepool {
       // Keep state and panel alive if shutdown runs in the nested modal loop.
       const auto state = state_;
+      NSWindow* __attribute__((objc_precise_lifetime)) owner = state->window;
+      (void)owner;
       NSOpenPanel* panel = [NSOpenPanel openPanel];
+      if (!panel)
+        return {result::failure("E_DIRECTORY", "AppKit did not create a directory picker"), {}};
       panel.canChooseDirectories = YES;
       panel.canChooseFiles = NO;
       panel.canCreateDirectories = NO;
       panel.allowsMultipleSelection = NO;
       panel.resolvesAliases = YES;
+      panel.allowedContentTypes = @[];
+      panel.allowsOtherFileTypes = YES;
       panel.title = @"Choose a directory";
       state->directory_panel = panel;
       modal_guard guard(state->application_group);
@@ -1488,6 +1551,74 @@ class wkwebview_backend final : public backend {
         return {result::failure("E_DIRECTORY", "The selected directory is unavailable"), {}};
       // Returning a path does not expand WKWebView's file-access grant.
       return {result::success(), path};
+    }
+  }
+
+  file_selection_result choose_files(const open_file_options& settings) override {
+    auto open = require_open(state_);
+    if (!open.ok) return {open, {}};
+    if (state_->directory_panel || state_->application_group->modal_depth)
+      return {result::failure("E_BUSY", "A native modal operation is already active"), {}};
+    @autoreleasepool {
+      const auto state = state_;
+      NSWindow* __attribute__((objc_precise_lifetime)) owner = state->window;
+      (void)owner;
+      NSOpenPanel* panel = [NSOpenPanel openPanel];
+      const auto configured = configure_file_panel(panel,
+          settings.title.empty() ? "Choose files" : settings.title, settings.extensions);
+      if (!configured.ok) return {configured, {}};
+      panel.canChooseDirectories = NO;
+      panel.canChooseFiles = YES;
+      panel.allowsMultipleSelection = settings.multiple;
+      panel.resolvesAliases = YES;
+      state->directory_panel = panel;
+      modal_guard guard(state->application_group);
+      const auto response = [panel runModal];
+      if (state->directory_panel == panel) state->directory_panel = nil;
+      // Closing cancels the panel too, but must not look like user cancellation.
+      if (!is_live(state))
+        return {result::failure("E_CLOSED", "The window closed while choosing files"), {}};
+      if (response == NSModalResponseCancel)
+        return {result::failure("E_CANCELLED", "File selection was cancelled"), {}};
+      if (response != NSModalResponseOK)
+        return {result::failure("E_FILE_DIALOG", "The file dialog did not complete"), {}};
+      return selected_file_paths(panel.URLs, settings.multiple);
+    }
+  }
+
+  value_result choose_save_file(const save_file_options& settings) override {
+    auto open = require_open(state_);
+    if (!open.ok) return {open, {}};
+    if (state_->directory_panel || state_->application_group->modal_depth)
+      return {result::failure("E_BUSY", "A native modal operation is already active"), {}};
+    @autoreleasepool {
+      const auto state = state_;
+      NSWindow* __attribute__((objc_precise_lifetime)) owner = state->window;
+      (void)owner;
+      NSSavePanel* panel = [NSSavePanel savePanel];
+      const auto configured = configure_file_panel(panel,
+          settings.title.empty() ? "Choose a save path" : settings.title, settings.extensions);
+      if (!configured.ok) return {configured, {}};
+      NSString* name = cocoa_string(settings.default_name);
+      if (!name)
+        return {result::failure("E_UTF8", "The suggested filename is not valid UTF-8"), {}};
+      // Common validation guarantees a basename. AppKit owns any extension
+      // adjustment and overwrite confirmation; the SDK never creates the file.
+      panel.nameFieldStringValue = name;
+      state->directory_panel = panel;
+      modal_guard guard(state->application_group);
+      const auto response = [panel runModal];
+      if (state->directory_panel == panel) state->directory_panel = nil;
+      if (!is_live(state))
+        return {result::failure("E_CLOSED", "The window closed while choosing a save path"), {}};
+      if (response == NSModalResponseCancel)
+        return {result::failure("E_CANCELLED", "Save path selection was cancelled"), {}};
+      if (response != NSModalResponseOK)
+        return {result::failure("E_FILE_DIALOG", "The save dialog did not complete"), {}};
+      NSURL* selected = panel.URL;
+      auto selection = selected_file_paths(selected ? @[selected] : @[], false);
+      if (!selection.status.ok) return {std::move(selection.status), {}};
+      return {result::success(), std::move(selection.paths.front())};
     }
   }
 
@@ -1631,7 +1762,8 @@ class wkwebview_backend final : public backend {
   }
 
   capabilities get_capabilities() const override {
-    return {"wkwebview", true, true, true, true, true, true, true, true, true, true, true, true};
+    return {"wkwebview", true, true, true, true, true, true, true, true, true, true, true, true,
+            true, true};
   }
 
  private:

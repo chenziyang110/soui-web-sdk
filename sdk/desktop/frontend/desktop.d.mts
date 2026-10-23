@@ -26,6 +26,9 @@ export type DesktopAdapterErrorCode =
   | 'desktop_adapter_invalid_service_acceptance'
   | 'desktop_adapter_invalid_clipboard_text'
   | 'desktop_adapter_invalid_directory_selection'
+  | 'desktop_adapter_invalid_file_dialog_options'
+  | 'desktop_adapter_invalid_open_file_selection'
+  | 'desktop_adapter_invalid_save_file_selection'
   | 'desktop_adapter_invalid_asset'
   | 'desktop_adapter_asset_too_large'
   | 'desktop_adapter_text_decoder_unavailable'
@@ -100,12 +103,55 @@ export const clipboard: Readonly<{
 export type DirectorySelection =
   | { readonly cancelled: true; readonly path: '' }
   | { readonly cancelled: false; readonly path: string };
+export interface OpenFileOptions {
+  /** Optional title, at most 4096 UTF-8 bytes without NUL. */
+  readonly title?: string;
+  /** At most 16 entries of 1..16 ASCII letters/digits, normalized to lowercase
+   * and deduplicated in order. Empty means all files. UI hint, not content validation.
+   */
+  readonly extensions?: readonly string[];
+  /** Defaults to false; true permits at most 32 paths. */
+  readonly multiple?: boolean;
+}
+export interface SaveFileOptions {
+  /** Optional title, at most 4096 UTF-8 bytes without NUL. */
+  readonly title?: string;
+  /** Same extension rules as OpenFileOptions; the OS may adjust the final suffix. */
+  readonly extensions?: readonly string[];
+  /** Empty or a portable basename of at most 255 UTF-8 bytes. No path separators,
+   * control characters, Windows-invalid/reserved names, or trailing dots/spaces.
+   */
+  readonly defaultName?: string;
+}
+/** Native absolute paths, each nonempty and at most 32768 UTF-8 bytes without NUL;
+ * at most 32 paths and 128 KiB total. Selecting paths does not grant file access.
+ */
+export type OpenFileSelection =
+  | { readonly cancelled: true; readonly paths: [] }
+  | { readonly cancelled: false; readonly paths: string[] };
+export type SaveFileSelection =
+  | { readonly cancelled: true; readonly path: '' }
+  | { readonly cancelled: false; readonly path: string };
 export const dialogs: Readonly<{
   /** Requires options.services.directory_dialog. Malformed results reject with
    * desktop_adapter_invalid_directory_selection. Native errors pass through,
    * rather than being converted to cancellation. No implicit permission prompts.
    */
   chooseDirectory(): Promise<DirectorySelection>;
+  /** Requires independent default-off options.services.file_open_dialog.
+   * Invalid options throw desktop_adapter_invalid_file_dialog_options before
+   * dispatch; malformed responses reject with desktop_adapter_invalid_open_file_selection.
+   * Only native E_CANCELLED is converted to cancellation by the host; all errors
+   * reaching this facade pass through unchanged. No filesystem reads or grants.
+   */
+  openFiles(options?: OpenFileOptions): Promise<OpenFileSelection>;
+  /** Requires independent default-off options.services.file_save_dialog. Selects
+   * a path only, without creating/truncating/writing a file or granting access.
+   * Invalid options throw desktop_adapter_invalid_file_dialog_options; malformed
+   * results reject with desktop_adapter_invalid_save_file_selection. Successful
+   * path is nonempty and at most 32768 UTF-8 bytes; other errors pass through.
+   */
+  saveFile(options?: SaveFileOptions): Promise<SaveFileSelection>;
 }>;
 /** Synchronously decode a bounded, canonical base64 asset response. */
 export function assetBytes(asset: DesktopAsset): Uint8Array;

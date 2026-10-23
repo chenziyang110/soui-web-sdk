@@ -27,6 +27,91 @@ bool valid_text(std::string_view value, std::size_t limit) {
     soui::runtime::detail::valid_utf8(value);
 }
 result unavailable() { return result::failure("closed", "The desktop application is not active."); }
+result invalid_file_options() {
+  return result::failure("invalid_params", "File dialog parameters have invalid fields, types or bounds.");
+}
+result normalize_file_options(std::string_view title, const std::vector<std::string>& extensions,
+                              std::vector<std::string>& normalized) {
+  if (!valid_text(title, 4096) || extensions.size() > 16) return invalid_file_options();
+  normalized.clear();
+  for (const auto& source : extensions) {
+    if (source.empty() || source.size() > 16) return invalid_file_options();
+    auto extension = source;
+    for (auto& character : extension) {
+      if (character >= 'A' && character <= 'Z') character += 'a' - 'A';
+      else if (!(character >= 'a' && character <= 'z') && !(character >= '0' && character <= '9'))
+        return invalid_file_options();
+    }
+    if (std::find(normalized.begin(), normalized.end(), extension) == normalized.end())
+      normalized.push_back(std::move(extension));
+  }
+  return result::success();
+}
+bool portable_basename(std::string_view name) {
+  if (!valid_text(name, 255)) return false;
+  if (name.empty()) return true;
+  if (name.back() == '.' || name.back() == ' ') return false;
+  for (std::size_t i = 0; i < name.size(); ++i) {
+    const auto byte = static_cast<unsigned char>(name[i]);
+    if (byte < 32 || byte == 127 || std::string_view("/\\:*?\"<>|").find(name[i]) != std::string_view::npos)
+      return false;
+    // UTF-8 C1 controls are also not portable display names.
+    if (byte == 0xc2 && i + 1 < name.size() &&
+        static_cast<unsigned char>(name[i + 1]) >= 0x80 &&
+        static_cast<unsigned char>(name[i + 1]) <= 0x9f) return false;
+  }
+  std::string stem(name.substr(0, name.find('.')));
+  while (!stem.empty() && (stem.back() == ' ' || stem.back() == '.')) stem.pop_back();
+  for (auto& character : stem)
+    if (character >= 'a' && character <= 'z') character -= 'a' - 'A';
+  if (stem == "CON" || stem == "PRN" || stem == "AUX" || stem == "NUL" ||
+      stem == "CLOCK$" || stem == "CONIN$" || stem == "CONOUT$") return false;
+  if (stem.compare(0, 3, "COM") == 0 || stem.compare(0, 3, "LPT") == 0) {
+    const auto suffix = stem.substr(3);
+    if ((suffix.size() == 1 && suffix[0] >= '1' && suffix[0] <= '9') ||
+        suffix == "\xc2\xb9" || suffix == "\xc2\xb2" || suffix == "\xc2\xb3") return false;
+  }
+  return true;
+}
+bool local_absolute_path(std::string_view value) {
+  if (value.empty() || !valid_text(value, 32768)) return false;
+  try { return std::filesystem::u8path(value.begin(), value.end()).is_absolute(); }
+  catch (...) { return false; }
+}
+result validate_file_paths(const std::vector<std::string>& paths, bool multiple) {
+  const auto invalid = result::failure("invalid_result", "Native file dialog returned invalid, oversized or nonlocal paths.");
+  if (paths.empty() || paths.size() > (multiple ? 32U : 1U)) return invalid;
+  std::size_t total = 0;
+  for (const auto& path : paths) {
+    if (!local_absolute_path(path) || path.size() > 131072 - total) return invalid;
+    total += path.size();
+  }
+  return result::success();
+}
+bool parse_file_options(const nlohmann::json& params, bool save,
+                        std::string& title, std::vector<std::string>& extensions,
+                        bool& multiple, std::string& default_name) {
+  if (!params.is_object()) return false;
+  for (auto field = params.begin(); field != params.end(); ++field) {
+    if (field.key() == "title") {
+      if (!field.value().is_string()) return false;
+      title = field.value().get<std::string>();
+    } else if (field.key() == "extensions") {
+      if (!field.value().is_array() || field.value().size() > 16) return false;
+      for (const auto& extension : field.value()) {
+        if (!extension.is_string()) return false;
+        extensions.push_back(extension.get<std::string>());
+      }
+    } else if (!save && field.key() == "multiple") {
+      if (!field.value().is_boolean()) return false;
+      multiple = field.value().get<bool>();
+    } else if (save && field.key() == "defaultName") {
+      if (!field.value().is_string()) return false;
+      default_name = field.value().get<std::string>();
+    } else return false;
+  }
+  return true;
+}
 result normalize_shortcut(const global_shortcut& input, global_shortcut& output) {
   using namespace shortcut_modifiers;
   if (input.key < shortcut_key::f1 || input.key > shortcut_key::delete_key ||
@@ -127,7 +212,8 @@ bool desktop_service(std::string_view method) {
   return method == "desktop.window.setTitle" || method == "desktop.window.resize" ||
     method == "desktop.window.show" || method == "desktop.window.focus" ||
     method == "desktop.clipboard.readText" || method == "desktop.clipboard.writeText" ||
-    method == "desktop.dialog.chooseDirectory";
+    method == "desktop.dialog.chooseDirectory" || method == "desktop.dialog.openFiles" ||
+    method == "desktop.dialog.saveFile";
 }
 struct application_state : std::enable_shared_from_this<application_state> {
   options settings;
@@ -436,13 +522,53 @@ struct application_state : std::enable_shared_from_this<application_state> {
       nlohmann::json(text).dump() + "));");
     return sent;
   }
+  file_selection_result choose_files(const open_file_options& settings) {
+    open_file_options normalized;
+    const auto valid = normalize_file_options(settings.title, settings.extensions, normalized.extensions);
+    if (!valid.ok) return {valid, {}};
+    normalized.title = settings.title;
+    normalized.multiple = settings.multiple;
+    file_selection_result selected;
+    {
+      callback_scope scope(group->callback_depth);
+      try { selected = native->choose_files(normalized); }
+      catch (...) { selected.status = result::failure("service_failed", "The native file open dialog failed."); }
+    }
+    if (!accepting.load()) return {unavailable(), {}};
+    if (!selected.status.ok) return {std::move(selected.status), {}};
+    selected.status = validate_file_paths(selected.paths, normalized.multiple);
+    if (!selected.status.ok) selected.paths.clear();
+    return selected;
+  }
+  value_result choose_save_file(const save_file_options& settings) {
+    save_file_options normalized;
+    const auto valid = normalize_file_options(settings.title, settings.extensions, normalized.extensions);
+    if (!valid.ok) return {valid, {}};
+    if (!portable_basename(settings.default_name)) return {invalid_file_options(), {}};
+    normalized.title = settings.title;
+    normalized.default_name = settings.default_name;
+    value_result selected;
+    {
+      callback_scope scope(group->callback_depth);
+      try { selected = native->choose_save_file(normalized); }
+      catch (...) { selected.status = result::failure("service_failed", "The native file save dialog failed."); }
+    }
+    if (!accepting.load()) return {unavailable(), {}};
+    if (!selected.status.ok) return {std::move(selected.status), {}};
+    if (!local_absolute_path(selected.value))
+      return {result::failure("invalid_result", "Native file dialog returned an invalid, oversized or nonlocal path."), {}};
+    return selected;
+  }
   result invoke_service(std::string_view method, const nlohmann::json& params,
                         nlohmann::json& returned) {
     const bool read = method == "desktop.clipboard.readText";
     const bool write = method == "desktop.clipboard.writeText";
     const bool directory = method == "desktop.dialog.chooseDirectory";
+    const bool open_file = method == "desktop.dialog.openFiles";
+    const bool save_file = method == "desktop.dialog.saveFile";
     const bool permitted = read ? settings.services.clipboard_read :
       write ? settings.services.clipboard_write : directory ? settings.services.directory_dialog :
+      open_file ? settings.services.file_open_dialog : save_file ? settings.services.file_save_dialog :
       settings.services.window_properties;
     if (!permitted) return result::failure("permission_denied", "This desktop service is not enabled.");
     const auto invalid = result::failure("invalid_params", "Desktop service parameters have invalid fields, types or bounds.");
@@ -451,7 +577,28 @@ struct application_state : std::enable_shared_from_this<application_state> {
     // until the native operation returns, including when it throws.
     callback_scope scope(group->callback_depth);
     result status;
-    if (method == "desktop.window.setTitle" || write) {
+    if (open_file || save_file) {
+      open_file_options open;
+      save_file_options save;
+      if (!parse_file_options(params, save_file, open.title, open.extensions, open.multiple, save.default_name))
+        return invalid;
+      if (open_file) {
+        auto selected = choose_files(open);
+        if (!selected.status.ok && selected.status.code == "E_CANCELLED")
+          returned = {{"cancelled", true}, {"paths", nlohmann::json::array()}};
+        else if (!selected.status.ok) return selected.status;
+        else returned = {{"cancelled", false}, {"paths", std::move(selected.paths)}};
+      } else {
+        save.title = std::move(open.title);
+        save.extensions = std::move(open.extensions);
+        auto selected = choose_save_file(save);
+        if (!selected.status.ok && selected.status.code == "E_CANCELLED")
+          returned = {{"cancelled", true}, {"path", ""}};
+        else if (!selected.status.ok) return selected.status;
+        else returned = {{"cancelled", false}, {"path", std::move(selected.value)}};
+      }
+      return result::success();
+    } else if (method == "desktop.window.setTitle" || write) {
       const char* field = write ? "text" : "title";
       if (params.size() != 1 || !params.contains(field) || !params.at(field).is_string()) return invalid;
       const auto& text = params.at(field).get_ref<const std::string&>();
@@ -1024,6 +1171,20 @@ result application::clipboard_write(std::string_view text) {
 value_result application::choose_directory() {
   auto state = impl_->state; const auto checked = state->check();
   return checked.ok ? state->native->choose_directory() : value_result{checked, {}};
+}
+file_selection_result application::choose_files(const open_file_options& settings) {
+  auto state = impl_->state; const auto checked = state->check();
+  if (!checked.ok) return {checked, {}};
+  auto selected = state->choose_files(settings);
+  state->drain();
+  return state->accepting.load() ? std::move(selected) : file_selection_result{unavailable(), {}};
+}
+value_result application::choose_save_file(const save_file_options& settings) {
+  auto state = impl_->state; const auto checked = state->check();
+  if (!checked.ok) return {checked, {}};
+  auto selected = state->choose_save_file(settings);
+  state->drain();
+  return state->accepting.load() ? std::move(selected) : value_result{unavailable(), {}};
 }
 result application::popup_menu(const std::vector<menu_item>& items) {
   auto state = impl_->state; const auto checked = state->check();

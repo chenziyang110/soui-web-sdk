@@ -73,9 +73,9 @@ function serviceAcceptance(value) {
 
 // Count strict UTF-8 without requiring TextEncoder or allocating a second copy.
 // Reject lone surrogates rather than silently replacing malformed native text.
-function boundedServiceText(text, code) {
-  if (typeof text !== 'string' || text.length > 65536) {
-    fail(code, 'Expected desktop service text within 64 KiB UTF-8');
+function boundedTextBytes(text, limit, code) {
+  if (typeof text !== 'string' || text.length > limit) {
+    fail(code, `Expected desktop text within ${limit} UTF-8 bytes`);
   }
   let bytes = 0;
   for (let i = 0; i < text.length; ++i) {
@@ -89,8 +89,13 @@ function boundedServiceText(text, code) {
       if (unit >= 0xdc00 && unit <= 0xdfff) fail(code, 'Expected valid UTF-8 service text');
       bytes += unit < 0x80 ? 1 : unit < 0x800 ? 2 : 3;
     }
-    if (bytes > 65536) fail(code, 'Desktop service text exceeds 64 KiB UTF-8');
+    if (bytes > limit) fail(code, `Desktop text exceeds ${limit} UTF-8 bytes`);
   }
+  return bytes;
+}
+
+function boundedServiceText(text, code) {
+  boundedTextBytes(text, 65536, code);
   return text;
 }
 
@@ -113,6 +118,98 @@ function directorySelection(value) {
   return { cancelled, path: text };
 }
 
+function fileDialogKeys(value, allowed, code, exact = false) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    fail(code, 'Expected a file dialog record');
+  }
+  const prototype = Object.getPrototypeOf(value);
+  if (prototype !== null && prototype !== Object.prototype) fail(code, 'Expected a plain file dialog record');
+  const keys = Reflect.ownKeys(value);
+  if ((exact && keys.length !== allowed.length) ||
+      keys.some(key => !allowed.includes(key))) {
+    fail(code, 'Unexpected or missing file dialog fields');
+  }
+  return keys;
+}
+
+function fileDialogOptions(options, save) {
+  const code = 'invalid_file_dialog_options';
+  const keys = fileDialogKeys(options, ['title', 'extensions', save ? 'defaultName' : 'multiple'], code);
+  const params = {};
+  // Snapshot and validate each supplied value once, then send only our own
+  // record. Accessors/toJSON cannot replace validated fields during transport.
+  for (const key of keys) {
+    const value = options[key];
+    if (key === 'title') {
+      boundedTextBytes(value, 4096, code);
+      params.title = value;
+    } else if (key === 'extensions') {
+      if (!Array.isArray(value)) fail(code, 'Expected an array of file extensions');
+      const count = value.length;
+      if (!Number.isInteger(count) || count < 0 || count > 16) fail(code, 'Expected at most 16 file extensions');
+      const extensions = [];
+      for (let i = 0; i < count; ++i) {
+        const extension = value[i];
+        if (typeof extension !== 'string' || extension.length < 1 || extension.length > 16 ||
+            /[^A-Za-z0-9]/.test(extension)) {
+          fail(code, 'Expected 1..16 ASCII letters or digits per extension');
+        }
+        const normalized = extension.toLowerCase();
+        if (!extensions.includes(normalized)) extensions.push(normalized);
+      }
+      params.extensions = extensions;
+    } else if (key === 'multiple') {
+      if (typeof value !== 'boolean') fail(code, 'Expected a boolean multiple option');
+      params.multiple = value;
+    } else {
+      boundedTextBytes(value, 255, code);
+      // Match the native portable basename rules, not a browser OS heuristic.
+      const stem = value.split('.')[0].replace(/[ .]+$/, '').replace(/[a-z]/g, c => c.toUpperCase());
+      if (/[\x00-\x1f\x7f-\x9f<>:"/\\|?*]/.test(value) || /[ .]$/.test(value) ||
+          /^(CON|PRN|AUX|NUL|CLOCK\$|CONIN\$|CONOUT\$|COM[1-9¹²³]|LPT[1-9¹²³])$/.test(stem)) {
+        fail(code, 'Expected a portable default basename without reserved names');
+      }
+      params.defaultName = value;
+    }
+  }
+  return params;
+}
+
+function openFileSelection(value, multiple) {
+  const code = 'invalid_open_file_selection';
+  fileDialogKeys(value, ['cancelled', 'paths'], code, true);
+  const { cancelled, paths } = value;
+  if (typeof cancelled !== 'boolean' || !Array.isArray(paths)) {
+    fail(code, 'Expected an explicit open-file selection');
+  }
+  const count = paths.length;
+  if (!Number.isInteger(count) || (cancelled ? count !== 0 : count < 1 || count > (multiple ? 32 : 1))) {
+    fail(code, 'Unexpected number of selected file paths');
+  }
+  const selected = [];
+  let total = 0;
+  for (let i = 0; i < count; ++i) {
+    const path = paths[i];
+    total += boundedTextBytes(path, 32768, code);
+    if (path === '' || total > 128 * 1024) fail(code, 'Selected file paths exceed their bounds');
+    selected.push(path);
+  }
+  // The native host validates absolute paths using the actual platform's
+  // filesystem semantics. Do not guess the host OS from browser path strings.
+  return { cancelled, paths: selected };
+}
+
+function saveFileSelection(value) {
+  const code = 'invalid_save_file_selection';
+  fileDialogKeys(value, ['cancelled', 'path'], code, true);
+  const { cancelled, path } = value;
+  boundedTextBytes(path, 32768, code);
+  if (typeof cancelled !== 'boolean' || (cancelled ? path !== '' : path === '')) {
+    fail(code, 'Expected cancellation with an empty path or a selected file path');
+  }
+  return { cancelled, path };
+}
+
 // All services require independent, default-off native permissions. Inputs are
 // validated by native dispatch; these facades never grant permission or retry.
 export const windowProperties = Object.freeze({
@@ -130,7 +227,16 @@ export const clipboard = Object.freeze({
 });
 
 export const dialogs = Object.freeze({
-  chooseDirectory() { return invoke('desktop.dialog.chooseDirectory', {}).then(directorySelection); }
+  chooseDirectory() { return invoke('desktop.dialog.chooseDirectory', {}).then(directorySelection); },
+  openFiles(options = {}) {
+    const params = fileDialogOptions(options, false);
+    const multiple = params.multiple === true;
+    return invoke('desktop.dialog.openFiles', params).then(value => openFileSelection(value, multiple));
+  },
+  saveFile(options = {}) {
+    const params = fileDialogOptions(options, true);
+    return invoke('desktop.dialog.saveFile', params).then(saveFileSelection);
+  }
 });
 
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';

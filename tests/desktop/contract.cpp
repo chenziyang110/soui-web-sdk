@@ -67,6 +67,10 @@ class fake_backend final : public detail::backend {
   int service_calls{0};
   result service_status{unsupported()};
   value_result clipboard_value{unsupported(), {}}, directory_value{unsupported(), {}};
+  file_selection_result open_value{unsupported(), {}};
+  value_result save_value{unsupported(), {}};
+  open_file_options open_options;
+  save_file_options save_options;
   std::string service_text;
   int service_width{0}, service_height{0};
   bool service_visible{false};
@@ -140,6 +144,12 @@ class fake_backend final : public detail::backend {
   value_result clipboard_read() override { service_enter(); return clipboard_value; }
   result clipboard_write(std::string_view text) override { service_text = text; service_enter(); return service_status; }
   value_result choose_directory() override { service_enter(); return directory_value; }
+  file_selection_result choose_files(const open_file_options& settings) override {
+    open_options = settings; service_enter(); return open_value;
+  }
+  value_result choose_save_file(const save_file_options& settings) override {
+    save_options = settings; service_enter(); return save_value;
+  }
   result popup_menu(const std::vector<menu_item>& items) override {
     ++counts->popup_calls; popup_items = items;
     if (while_popup) while_popup();
@@ -162,6 +172,7 @@ class fake_backend final : public detail::backend {
   capabilities get_capabilities() const override {
     capabilities value{"test-fake", false, false, false, false, false, menu_status.ok, tray_status.ok};
     value.global_shortcuts = true;
+    value.file_open_dialog = value.file_save_dialog = true;
     return value;
   }
   bool has_message_frame_metadata() const override { return metadata; }
@@ -231,6 +242,221 @@ struct files {
   ~files() { std::error_code ignored; std::filesystem::remove_all(base, ignored); }
   options settings() const { options out; out.resource_root = root; out.visible = false; return out; }
 };
+
+void file_dialog_contract(files& fixture) {
+  const auto selected_path = (fixture.base / std::filesystem::u8path("selected 中文.txt")).u8string();
+  for (int permission = -1; permission < 7; ++permission) {
+    auto settings = fixture.settings();
+    settings.services.window_properties = permission == 0;
+    settings.services.clipboard_read = permission == 1;
+    settings.services.clipboard_write = permission == 2;
+    settings.services.directory_dialog = permission == 3;
+    settings.services.file_open_dialog = permission == 4 || permission == 6;
+    settings.services.file_save_dialog = permission == 5 || permission == 6;
+    settings.enable_window_controls = true;
+    int business = 0;
+    callbacks handlers;
+    handlers.invoke = [&](std::string_view, std::string_view) { ++business; return "42"; };
+    application app(settings, handlers);
+    CHECK(app.initialize().ok);
+    auto& native = *latest;
+    native.open_value = {result::success(), {selected_path}};
+    native.save_value = {result::success(), selected_path};
+    CHECK(app.get_capabilities().file_open_dialog && app.get_capabilities().file_save_dialog);
+    for (int save = 0; save < 2; ++save) {
+      const bool allowed = save ? settings.services.file_save_dialog : settings.services.file_open_dialog;
+      const auto before = native.service_calls;
+      native.send(native.envelope(save + 1, save ? "desktop.dialog.saveFile" : "desktop.dialog.openFiles", json::object()));
+      CHECK(native.last_response()["ok"] == allowed);
+      CHECK(native.service_calls == before + (allowed ? 1 : 0));
+      if (!allowed) CHECK(native.last_response()["error"]["code"] == "permission_denied");
+    }
+    CHECK(business == 0);
+    native.send(native.envelope(3, "desktop.dialog.openFiles.custom", json::object()));
+    CHECK(native.last_response()["result"] == 42 && business == 1);
+    // Trusted native APIs are not gated by webpage grants.
+    CHECK(app.choose_files().status.ok && app.choose_save_file().status.ok);
+  }
+  auto settings = fixture.settings();
+  settings.services.file_open_dialog = settings.services.file_save_dialog = true;
+  application app(settings);
+  CHECK(app.initialize().ok);
+  auto& native = *latest;
+  native.open_value = {result::success(), {selected_path}};
+  native.save_value = {result::success(), selected_path};
+  std::uint64_t id = 0;
+  const auto call = [&](bool save, json params) {
+    native.send(native.envelope(++id, save ? "desktop.dialog.saveFile" : "desktop.dialog.openFiles", std::move(params)));
+    return native.last_response();
+  };
+  const auto invalid = [&](bool save, json params) {
+    const auto before = native.service_calls;
+    CHECK(call(save, std::move(params))["error"]["code"] == "invalid_params");
+    CHECK(native.service_calls == before);
+  };
+  for (bool save : {false, true}) {
+    for (const json& params : std::vector<json>{nullptr, false, 1, "name", json::array(),
+        {{"path", selected_path}}, {{"userGesture", true}}, {{"title", false}},
+        {{"title", std::string(4097, 't')}}, {{"title", std::string("x\0y", 3)}},
+        {{"extensions", "txt"}}, {{"extensions", {1}}}, {{"extensions", {""}}},
+        {{"extensions", {".txt"}}}, {{"extensions", {"*.txt"}}}, {{"extensions", {"a/b"}}},
+        {{"extensions", {"text/plain"}}}, {{"extensions", {u8"中文"}}},
+        {{"extensions", {std::string(17, 'a')}}}, {{"extensions", std::vector<std::string>(17, "txt")}}})
+      invalid(save, params);
+    CHECK(call(save, {{"title", std::string(4096, 't')}, {"extensions", {"TXT", "png", "txt", "A1"}}})["ok"] == true);
+    CHECK((save ? native.save_options.title : native.open_options.title).size() == 4096);
+    CHECK((save ? native.save_options.extensions : native.open_options.extensions) ==
+      std::vector<std::string>({"txt", "png", "a1"}));
+    CHECK(call(save, {{"extensions", json::array()}})["ok"] == true);
+    CHECK((save ? native.save_options.extensions : native.open_options.extensions).empty());
+  }
+  invalid(false, {{"multiple", 1}});
+  invalid(false, {{"defaultName", "file.txt"}});
+  invalid(true, {{"multiple", false}});
+  invalid(true, {{"default_name", "file.txt"}});
+  invalid(true, {{"defaultName", false}});
+  for (const auto& name : std::vector<std::string>{".", "..", "/name", "a/b", "a\\b", "C:name", "a*", "a?",
+      "a\"", "a<", "a>", "a|", "name.", "name ", "CON", "con.txt", "PRN", "AUX", "NUL",
+      "COM1", "lpt9.log", "CON .txt", "CLOCK$", "CONIN$", "CONOUT$", u8"COM¹.txt", u8"LPT²", u8"COM³",
+      std::string(256, 'a'), std::string("a\0b", 3), "line\nname", std::string(1, '\x7f'), "\xc2\x85"})
+    invalid(true, {{"defaultName", name}});
+  for (const auto& name : {std::string(), std::string(255, 'a'), std::string("COM10.txt"), std::string(u8"报告.txt")}) {
+    CHECK(call(true, {{"defaultName", name}})["ok"] == true);
+    CHECK(native.save_options.default_name == name);
+  }
+  const auto before_invalid = native.service_calls;
+  CHECK(app.choose_files({std::string("\xc0\xaf", 2), {}, false}).status.code == "invalid_params");
+  CHECK(app.choose_files({"", {"TXT", ".png"}, true}).status.code == "invalid_params");
+  CHECK(app.choose_save_file({"", {}, std::string("\xc0\xaf", 2)}).status.code == "invalid_params");
+  CHECK(native.service_calls == before_invalid);
+  CHECK(call(false, json::object())["result"] == json({{"cancelled", false}, {"paths", {selected_path}}}));
+  CHECK(!native.open_options.multiple);
+  CHECK(call(true, json::object())["result"] == json({{"cancelled", false}, {"path", selected_path}}));
+  for (const auto& failure : {result::failure("E_CANCELLED", "cancel"), result::failure("cancelled", "not cancellation"),
+      result::failure("native_failure", "OS error"), result::failure("closed", "Owner closed")}) {
+    native.open_value = {failure, {selected_path}};
+    native.save_value = {failure, selected_path};
+    for (bool save : {false, true}) {
+      const auto response = call(save, json::object());
+      if (failure.code == "E_CANCELLED") {
+        CHECK(response["ok"] == true);
+        CHECK(response["result"] == (save ? json{{"cancelled", true}, {"path", ""}} :
+          json{{"cancelled", true}, {"paths", json::array()}}));
+      } else CHECK(response["error"] == json({{"code", failure.code}, {"message", failure.message}}));
+    }
+    const auto opened = app.choose_files();
+    const auto saved = app.choose_save_file();
+    CHECK(opened.status.code == failure.code && opened.paths.empty());
+    CHECK(saved.status.code == failure.code && saved.value.empty());
+  }
+  const auto root = fixture.base.root_path().u8string();
+  const auto max_path = root + std::string(32768 - root.size(), 'x');
+  native.open_value = {result::success(), {max_path}};
+  native.save_value = {result::success(), max_path};
+  CHECK(call(false, json::object())["ok"] == true);
+  CHECK(call(true, json::object())["ok"] == true);
+  for (const auto& path : {std::string(), std::string("relative.txt"), std::string("file:///tmp/name"),
+      std::string("https://example.test/name"), max_path + "x", selected_path + std::string("\0", 1)}) {
+    native.open_value = {result::success(), {path}};
+    native.save_value = {result::success(), path};
+    CHECK(call(false, json::object())["error"]["code"] == "invalid_result");
+    CHECK(call(true, json::object())["error"]["code"] == "invalid_result");
+  }
+#if defined(_WIN32)
+  const std::string wrong_platform_path = "/posix-only/name";
+#else
+  const std::string wrong_platform_path = "C:\\windows-only\\name";
+#endif
+  for (const auto& path : {wrong_platform_path, selected_path + std::string("\xc0\xaf", 2)}) {
+    native.open_value = {result::success(), {path}};
+    native.save_value = {result::success(), path};
+    CHECK(app.choose_files().status.code == "invalid_result");
+    CHECK(app.choose_save_file().status.code == "invalid_result");
+  }
+  native.open_value = {result::success(), {}};
+  CHECK(call(false, {{"multiple", true}})["error"]["code"] == "invalid_result");
+  native.open_value.paths = {selected_path, selected_path};
+  CHECK(call(false, json::object())["error"]["code"] == "invalid_result");
+  CHECK(call(false, {{"multiple", true}})["ok"] == true && native.open_options.multiple);
+  native.open_value.paths.assign(32, selected_path);
+  CHECK(call(false, {{"multiple", true}})["ok"] == true);
+  native.open_value.paths.push_back(selected_path);
+  CHECK(call(false, {{"multiple", true}})["error"]["code"] == "invalid_result");
+  native.open_value.paths.assign(4, max_path);
+  CHECK(call(false, {{"multiple", true}})["ok"] == true); // Exactly 128 KiB.
+  native.open_value.paths.push_back(root + "x");
+  CHECK(call(false, {{"multiple", true}})["error"]["code"] == "invalid_result");
+  CHECK(app.close().ok);
+  CHECK(app.choose_files().status.code == "closed" && app.choose_save_file().status.code == "closed");
+}
+
+void file_dialog_reentry_contract(files& fixture) {
+  for (bool save : {false, true}) {
+    auto settings = fixture.settings();
+    settings.services.file_open_dialog = settings.services.file_save_dialog = true;
+    bool inside = false;
+    int business = 0, closed = 0, ready = 0;
+    callbacks handlers;
+    handlers.invoke = [&](std::string_view, std::string_view) { CHECK(!inside); ++business; return "null"; };
+    handlers.closed = [&] { CHECK(!inside); ++closed; };
+    handlers.ready = [&] { CHECK(!inside); ++ready; };
+    application app(settings, handlers);
+    CHECK(app.initialize().ok);
+    auto& native = *latest;
+    const auto path = (fixture.base / "not-created.txt").u8string();
+    native.open_value = {result::success(), {path}};
+    native.save_value = {result::success(), path};
+    const auto call = [&](std::uint64_t id) {
+      native.send(native.envelope(id, save ? "desktop.dialog.saveFile" : "desktop.dialog.openFiles", json::object()));
+    };
+    native.while_service = [&] {
+      inside = true;
+      native.send(native.envelope(2)); native.loaded();
+      CHECK(business == 0 && ready == 0);
+      inside = false;
+    };
+    call(1);
+    CHECK(business == 1 && ready == 1 && native.evaluations.size() == 2);
+    native.while_service = [&] { native.send(native.envelope(4)); throw std::runtime_error("native failure"); };
+    call(3);
+    CHECK(business == 2 && native.evaluations.size() == 4);
+    native.while_service = [&] {
+      inside = true;
+      native.send(native.envelope(6));
+      CHECK(app.navigate("second.html").ok);
+      native.loaded();
+      CHECK(ready == 1);
+      inside = false;
+    };
+    call(5);
+    CHECK(business == 2 && ready == 2 && native.evaluations.size() == 4);
+    native.while_service = [&] {
+      inside = true;
+      native.send(native.envelope(2));
+      CHECK(app.close().ok);
+      CHECK(closed == 0);
+      inside = false;
+    };
+    call(1);
+    CHECK(business == 2 && closed == 1 && native.evaluations.size() == 4);
+  }
+  for (bool save : {false, true}) {
+    bool inside = false;
+    int closed = 0;
+    callbacks handlers;
+    handlers.closed = [&] { CHECK(!inside); ++closed; };
+    application app(fixture.settings(), handlers);
+    CHECK(app.initialize().ok);
+    auto& native = *latest;
+    native.open_value = {result::failure("E_CANCELLED", "Late native cancellation"), {}};
+    native.save_value = {result::failure("E_CANCELLED", "Late native cancellation"), {}};
+    native.while_service = [&] {
+      inside = true; CHECK(app.close().ok); CHECK(closed == 0); inside = false;
+    };
+    const auto status = save ? app.choose_save_file().status : app.choose_files().status;
+    CHECK(status.code == "closed" && closed == 1);
+  }
+}
 
 void desktop_services_contract(files& fixture) {
   const std::vector<std::pair<std::string, json>> methods = {
@@ -1754,6 +1980,13 @@ int main(int argc, char** argv) {
   }
   try {
     files fixture;
+    if (argc == 2 && std::string(argv[1]) == "--file-dialogs") {
+      file_dialog_contract(fixture);
+      file_dialog_reentry_contract(fixture);
+      std::cout << "Desktop file-dialog fake contract: " << checks << " checks, "
+                << failures << " failures. No native file dialog verification.\n";
+      return failures ? 1 : 0;
+    }
     global_shortcut_contract(fixture);
     global_shortcut_capacity_contract(fixture);
     global_shortcut_reentry_contract(fixture);
@@ -1765,6 +1998,8 @@ int main(int argc, char** argv) {
     }
     desktop_services_contract(fixture);
     desktop_service_reentry_contract(fixture);
+    file_dialog_contract(fixture);
+    file_dialog_reentry_contract(fixture);
     window_state_contract(fixture);
     asset_bridge_contract(fixture);
     asynchronous_asset_contract(fixture);

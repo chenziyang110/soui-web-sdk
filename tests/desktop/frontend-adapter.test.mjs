@@ -153,6 +153,147 @@ test('host checks are immediate, and calls preserve native identity and receiver
   }
 });
 
+test('file dialogs dispatch sanitized options, snapshot values and preserve native errors', async () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  try {
+    const calls = [];
+    let response = { cancelled: true, paths: [] };
+    const host = { version: 1, on() {}, readAsset() {}, invoke(method, params) {
+      calls.push([method, params]);
+      return Promise.resolve(response);
+    } };
+    globalThis.window = { souiDesktop: host };
+    assert.deepEqual(await dialogs.openFiles(), response);
+    response = { cancelled: true, path: '' };
+    assert.deepEqual(await dialogs.saveFile(), response);
+    const extensions = Object.freeze(['TXT', 'txt', 'Md', '7Z']);
+    let multipleReads = 0;
+    const options = { title: '选择 🦊', extensions,
+      get multiple() { return ++multipleReads === 1; } };
+    response = { cancelled: false, paths: ['/one.txt', '/two.md'] };
+    const opened = await dialogs.openFiles(options);
+    assert.deepEqual(opened, response);
+    assert.notEqual(opened.paths, response.paths);
+    assert.equal(multipleReads, 1);
+    assert.deepEqual(extensions, ['TXT', 'txt', 'Md', '7Z']);
+    response = { cancelled: false, path: 'C:\\中文\\report.txt' };
+    assert.deepEqual(await dialogs.saveFile({ title: '', defaultName: '报告.txt', extensions: [] }), response);
+    assert.deepEqual(calls, [
+      ['desktop.dialog.openFiles', {}], ['desktop.dialog.saveFile', {}],
+      ['desktop.dialog.openFiles', { title: '选择 🦊', extensions: ['txt', 'md', '7z'], multiple: true }],
+      ['desktop.dialog.saveFile', { title: '', defaultName: '报告.txt', extensions: [] }]
+    ]);
+    for (const code of ['E_PERMISSION', 'E_CANCELLED', 'closed', 'E_NAVIGATION']) {
+      const nativeError = Object.assign(new Error(code), { code });
+      host.invoke = () => Promise.reject(nativeError);
+      await assert.rejects(dialogs.openFiles(), error => error === nativeError);
+      await assert.rejects(dialogs.saveFile(), error => error === nativeError);
+    }
+    delete globalThis.window;
+    assert.throws(() => dialogs.openFiles(), adapterError('missing_host'));
+    assert.throws(() => dialogs.saveFile(), adapterError('missing_host'));
+  } finally {
+    if (previous) Object.defineProperty(globalThis, 'window', previous);
+    else delete globalThis.window;
+  }
+});
+
+test('file dialog options reject unknown fields, coercion and nonportable save names before dispatch', async () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  try {
+    let calls = 0;
+    globalThis.window = { souiDesktop: { version: 1, on() {}, readAsset() {}, invoke(method) {
+      ++calls;
+      return Promise.resolve(method === 'desktop.dialog.openFiles' ?
+        { cancelled: true, paths: [] } : { cancelled: true, path: '' });
+    } } };
+    const invalid = [null, [], true, new Date(), { unknown: true }, { [Symbol('unknown')]: true },
+      { title: undefined }, { title: 1 }, { title: 'a\0b' }, { title: '\ud800' },
+      { title: '🦊'.repeat(1025) }, { extensions: 'txt' }, { extensions: [1] },
+      { extensions: [''] }, { extensions: ['.txt'] }, { extensions: ['*.txt'] },
+      { extensions: ['text/plain'] }, { extensions: ['txt\n'] }, { extensions: ['é'] },
+      { extensions: ['a'.repeat(17)] },
+      { extensions: Array(17).fill('txt') }, { extensions: Array(1) }];
+    for (const options of invalid) {
+      assert.throws(() => dialogs.openFiles(options), adapterError('invalid_file_dialog_options'));
+      assert.throws(() => dialogs.saveFile(options), adapterError('invalid_file_dialog_options'));
+    }
+    for (const options of [{ multiple: 1 }, { multiple: 'false' }, { defaultName: 'name' }]) {
+      assert.throws(() => dialogs.openFiles(options), adapterError('invalid_file_dialog_options'));
+    }
+    for (const name of [undefined, 1, '.', '..', '../name', 'a\\b', 'a:b', 'a*', 'a?', 'a"',
+      'a<', 'a>', 'a|', 'a.', 'a ', 'a\n', 'a\x7f', 'a\x85', '\udc00',
+      'con.txt', 'NUL', 'aux .txt', 'LPT9.log', 'COM¹.txt', 'LPT³', 'CLOCK$', 'conin$', 'CONOUT$',
+      'a'.repeat(256), '中'.repeat(86)]) {
+      assert.throws(() => dialogs.saveFile({ defaultName: name }), adapterError('invalid_file_dialog_options'));
+    }
+    assert.throws(() => dialogs.saveFile({ multiple: true }), adapterError('invalid_file_dialog_options'));
+    assert.throws(() => dialogs.saveFile({ default_name: 'name' }), adapterError('invalid_file_dialog_options'));
+    assert.equal(calls, 0);
+    await dialogs.openFiles({ title: '🦊'.repeat(1024), extensions: ['a'.repeat(16)], multiple: false });
+    for (const defaultName of ['', '.env', 'com10.txt', 'auxiliary', '中'.repeat(85)]) {
+      await dialogs.saveFile({ defaultName });
+    }
+    assert.equal(calls, 6);
+  } finally {
+    if (previous) Object.defineProperty(globalThis, 'window', previous);
+    else delete globalThis.window;
+  }
+});
+
+test('file selections enforce exact cancellation shapes, UTF-8 and per-path/aggregate limits', async () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  try {
+    let response;
+    globalThis.window = { souiDesktop: {
+      version: 1, on() {}, readAsset() {}, invoke() { return Promise.resolve(response); }
+    } };
+    for (response of [null, [], {}, { cancelled: 0, paths: [] }, { cancelled: true, paths: ['/x'] },
+      { cancelled: false, paths: [] }, { cancelled: false, paths: '/x' },
+      { cancelled: true, paths: [], extra: true }, { cancelled: false, paths: Array(33).fill('/x') },
+      { cancelled: false, paths: Array(1) }, { cancelled: false, paths: Array(5).fill('/'.repeat(32768)) }]) {
+      await assert.rejects(dialogs.openFiles({ multiple: true }), adapterError('invalid_open_file_selection'));
+    }
+    response = { cancelled: false, paths: ['/one', '/two'] };
+    await assert.rejects(dialogs.openFiles(), adapterError('invalid_open_file_selection'));
+    for (response of [null, [], {}, { cancelled: false, path: '' }, { cancelled: true, path: '/x' },
+      { cancelled: 'false', path: '/x' }, { cancelled: true, path: '', extra: true }]) {
+      await assert.rejects(dialogs.saveFile(), adapterError('invalid_save_file_selection'));
+    }
+    for (const path of [null, 1, '', '/\0', '\ud800', '\udc00', '/'.repeat(32769), '🦊'.repeat(8193)]) {
+      response = { cancelled: false, paths: [path] };
+      await assert.rejects(dialogs.openFiles(), adapterError('invalid_open_file_selection'));
+      response = { cancelled: false, path };
+      await assert.rejects(dialogs.saveFile(), adapterError('invalid_save_file_selection'));
+    }
+    for (const path of ['/' + 'a'.repeat(32767), '/' + '中'.repeat(10922) + 'x', 'C:\\file.txt']) {
+      response = { cancelled: false, paths: [path] };
+      assert.deepEqual(await dialogs.openFiles(), response);
+      response = { cancelled: false, path };
+      assert.deepEqual(await dialogs.saveFile(), response);
+    }
+    for (const paths of [Array(32).fill('/x'), Array(4).fill('/'.repeat(32768))]) {
+      response = { cancelled: false, paths };
+      assert.deepEqual(await dialogs.openFiles({ multiple: true }), response);
+    }
+    let cancelledReads = 0, pathsReads = 0, itemReads = 0;
+    response = {
+      get cancelled() { ++cancelledReads; return false; },
+      get paths() {
+        ++pathsReads;
+        return Object.defineProperty(['/placeholder'], 0, {
+          get() { return ++itemReads === 1 ? '/once' : '\0'; }
+        });
+      }
+    };
+    assert.deepEqual(await dialogs.openFiles(), { cancelled: false, paths: ['/once'] });
+    assert.deepEqual([cancelledReads, pathsReads, itemReads], [1, 1, 1]);
+  } finally {
+    if (previous) Object.defineProperty(globalThis, 'window', previous);
+    else delete globalThis.window;
+  }
+});
+
 test('window controls delegate reserved methods and observe state independently of acceptance', async () => {
   const previous = Object.getOwnPropertyDescriptor(globalThis, 'window');
   try {

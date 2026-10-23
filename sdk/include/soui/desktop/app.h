@@ -26,6 +26,25 @@ struct value_result {
   std::string value;
 };
 
+struct open_file_options {
+  std::string title;
+  // ASCII alphanumeric suffixes without dots; empty means all files.
+  std::vector<std::string> extensions;
+  bool multiple{false};
+};
+
+struct save_file_options {
+  std::string title;
+  std::vector<std::string> extensions;
+  // Optional portable basename, never a directory or initial path.
+  std::string default_name;
+};
+
+struct file_selection_result {
+  result status;
+  std::vector<std::string> paths;
+};
+
 struct path_result {
   result status;
   std::filesystem::path value;
@@ -62,6 +81,8 @@ struct capabilities {
   bool window_state_observation{false};
   // Implementation availability, not a promise that any combination is free.
   bool global_shortcuts{false};
+  bool file_open_dialog{false};
+  bool file_save_dialog{false};
 };
 
 enum class shortcut_key {
@@ -109,6 +130,8 @@ struct service_permissions {
   bool clipboard_read{false};
   bool clipboard_write{false};
   bool directory_dialog{false};
+  bool file_open_dialog{false};
+  bool file_save_dialog{false};
 };
 
 struct options {
@@ -195,6 +218,11 @@ class application final {
   [[nodiscard]] value_result clipboard_read();
   [[nodiscard]] result clipboard_write(std::string_view text);
   [[nodiscard]] value_result choose_directory();
+  // Path selection only: no file reads/writes or persistent access grants.
+  // Open selects 1..32 paths (one unless multiple); save selects one path.
+  // Cancellation is E_CANCELLED; owner closure remains a closed error.
+  [[nodiscard]] file_selection_result choose_files(const open_file_options& = {});
+  [[nodiscard]] value_result choose_save_file(const save_file_options& = {});
   // Popup/tray trees allow 0..64 total nodes and at most 4 levels (root = 1).
   // Leaf IDs are unique per tree; disabled ancestors suppress leaf commands.
   [[nodiscard]] result popup_menu(const std::vector<menu_item>& items);

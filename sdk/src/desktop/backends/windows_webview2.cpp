@@ -40,6 +40,9 @@ constexpr UINT tray_icon_id = 1;
 constexpr std::size_t max_dispatch_queue = 1024;
 constexpr std::size_t max_message_characters = 65536;
 constexpr std::size_t max_clipboard_bytes = 1024 * 1024;
+constexpr std::size_t max_file_selection_count = 32;
+constexpr std::size_t max_file_path_bytes = 32768;
+constexpr std::size_t max_file_selection_bytes = 128 * 1024;
 constexpr std::size_t max_global_shortcuts = 32;
 constexpr unsigned int max_global_shortcut_id = 0xBFFF;
 // HWND values may be recycled while old messages remain queued. Use one
@@ -168,6 +171,72 @@ struct com_string {
   com_string(const com_string&) = delete;
   com_string& operator=(const com_string&) = delete;
 };
+
+result configure_file_dialog(IFileDialog* dialog, const std::string& title,
+                             const std::vector<std::string>& extensions, bool saving) {
+  std::wstring native_title;
+  if (title.size() > 4096 || title.find('\0') != std::string::npos ||
+      !to_wide(title, native_title) || extensions.size() > 16)
+    return result::failure("E_ARGUMENT", "File dialog options are invalid");
+  if (!native_title.empty()) {
+    const HRESULT hr = dialog->SetTitle(native_title.c_str());
+    if (FAILED(hr)) return hresult_failure("Set file dialog title", hr);
+  }
+
+  // Common validation normalizes suffixes; keep the native filter grammar
+  // bounded as well. A single union filter does not imply content validation.
+  std::wstring pattern;
+  std::wstring default_extension;
+  for (const auto& extension : extensions) {
+    if (extension.empty() || extension.size() > 16)
+      return result::failure("E_ARGUMENT", "A file extension is invalid");
+    std::wstring native_extension;
+    for (const unsigned char character : extension) {
+      if (!((character >= 'a' && character <= 'z') ||
+            (character >= 'A' && character <= 'Z') ||
+            (character >= '0' && character <= '9')))
+        return result::failure("E_ARGUMENT", "A file extension is invalid");
+      native_extension += static_cast<wchar_t>(
+          character >= 'A' && character <= 'Z' ? character - 'A' + 'a' : character);
+    }
+    if (default_extension.empty()) default_extension = native_extension;
+    if (!pattern.empty()) pattern += L';';
+    pattern += L"*.";
+    pattern += native_extension;
+  }
+  if (pattern.empty()) pattern = L"*.*";
+  const COMDLG_FILTERSPEC filter{
+      extensions.empty() ? L"All files" : L"Supported files", pattern.c_str()};
+  HRESULT hr = dialog->SetFileTypes(1, &filter);
+  if (SUCCEEDED(hr) && saving && !default_extension.empty())
+    hr = dialog->SetDefaultExtension(default_extension.c_str());
+  if (FAILED(hr)) return hresult_failure("Set file dialog extensions", hr);
+  return result::success();
+}
+
+value_result selected_file_path(IShellItem* selected) {
+  if (!selected)
+    return {result::failure("E_PATH", "No local file path was selected"), {}};
+  com_string path;
+  const HRESULT hr = selected->GetDisplayName(SIGDN_FILESYSPATH, &path.value);
+  if (FAILED(hr)) return {hresult_failure("Read selected file path", hr), {}};
+  if (!path.value)
+    return {result::failure("E_PATH", "The selected file path is invalid"), {}};
+  std::size_t length = 0;
+  while (length <= max_file_path_bytes && path.value[length]) ++length;
+  if (!length || length > max_file_path_bytes)
+    return {result::failure("E_PATH", "The selected file path is too large or empty"), {}};
+  // Bound both the native scan and the UTF-8 allocation before converting.
+  const int bytes = WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, path.value,
+      static_cast<int>(length), nullptr, 0, nullptr, nullptr);
+  if (bytes <= 0 || static_cast<std::size_t>(bytes) > max_file_path_bytes)
+    return {result::failure("E_PATH", "The selected file path is too large or invalid"), {}};
+  std::string value(static_cast<std::size_t>(bytes), '\0');
+  if (WideCharToMultiByte(CP_UTF8, WC_ERR_INVALID_CHARS, path.value,
+          static_cast<int>(length), value.data(), bytes, nullptr, nullptr) != bytes)
+    return {result::failure("E_PATH", "The selected file path is invalid"), {}};
+  return {result::success(), std::move(value)};
+}
 
 struct clipboard_lock {
   explicit clipboard_lock(HWND owner) : opened(OpenClipboard(owner) != FALSE) {}
@@ -310,7 +379,8 @@ struct state : std::enable_shared_from_this<state> {
   ComPtr<ICoreWebView2Controller> controller;
   ComPtr<ICoreWebView2> webview;
   ComPtr<ICoreWebView2_18> secured_webview;
-  ComPtr<IFileOpenDialog> directory_dialog;
+  // Directory, open and save share one window-owned modal slot.
+  ComPtr<IFileDialog> file_dialog;
   UINT taskbar_created_message{0};
   bool tray_desired{false};
   bool tray_present{false};
@@ -802,8 +872,8 @@ struct state : std::enable_shared_from_this<state> {
     const auto shortcuts_removed = remove_all_global_shortcuts();
     const auto tray_removed = remove_tray();
     shutdown_status = shortcuts_removed.ok ? tray_removed : shortcuts_removed;
-    if (directory_dialog) directory_dialog->Close(HRESULT_FROM_WIN32(ERROR_CANCELLED));
-    directory_dialog.Reset();
+    if (file_dialog) file_dialog->Close(HRESULT_FROM_WIN32(ERROR_CANCELLED));
+    file_dialog.Reset();
     if (webview) webview->Stop();
     if (controller) controller->Close();
     secured_webview.Reset();
@@ -1213,6 +1283,25 @@ result default_profile_directory(std::filesystem::path& directory,
   return result::success();
 }
 
+result show_file_dialog(const std::shared_ptr<state>& current, IFileDialog* dialog,
+                        const char* operation) {
+  const HWND owner = current->window;
+  if (!current->active() || !owner || !IsWindow(owner)) return closed_error();
+  if (current->file_dialog)
+    return result::failure("E_BUSY", "A file or directory dialog is already open");
+  current->file_dialog = dialog;
+  const HRESULT hr = dialog->Show(owner);
+  if (current->file_dialog.Get() == dialog) current->file_dialog.Reset();
+  // Show pumps native messages. The owner can die (and release the backend)
+  // while the shared state and local COM dialog remain alive on this stack.
+  if (!current->active() || current->window != owner || !IsWindow(owner))
+    return closed_error();
+  if (hr == HRESULT_FROM_WIN32(ERROR_CANCELLED))
+    return result::failure("E_CANCELLED", "File selection was cancelled");
+  if (FAILED(hr)) return hresult_failure(operation, hr);
+  return result::success();
+}
+
 class windows_backend final : public backend {
  public:
   windows_backend() : state_(std::make_shared<state>()) {}
@@ -1603,9 +1692,10 @@ class windows_backend final : public backend {
   }
 
   value_result choose_directory() override {
-    if (!state_->active()) return {closed_error(), {}};
-    if (state_->directory_dialog)
-      return {result::failure("E_BUSY", "A directory dialog is already open"), {}};
+    const auto current = state_;
+    if (!current->active()) return {closed_error(), {}};
+    if (current->file_dialog)
+      return {result::failure("E_BUSY", "A file or directory dialog is already open"), {}};
     ComPtr<IFileOpenDialog> dialog;
     HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER,
                                  IID_PPV_ARGS(dialog.GetAddressOf()));
@@ -1616,13 +1706,8 @@ class windows_backend final : public backend {
       hr = dialog->SetOptions(flags | FOS_PICKFOLDERS | FOS_FORCEFILESYSTEM |
                               FOS_PATHMUSTEXIST | FOS_NOCHANGEDIR);
     if (FAILED(hr)) return {hresult_failure("Configure directory dialog", hr), {}};
-    state_->directory_dialog = dialog;
-    hr = dialog->Show(state_->window);
-    state_->directory_dialog.Reset();
-    if (!state_->active()) return {closed_error(), {}};
-    if (hr == HRESULT_FROM_WIN32(ERROR_CANCELLED))
-      return {result::failure("E_CANCELLED", "Directory selection was cancelled"), {}};
-    if (FAILED(hr)) return {hresult_failure("Show directory dialog", hr), {}};
+    const auto shown = show_file_dialog(current, dialog.Get(), "Show directory dialog");
+    if (!shown.ok) return {shown, {}};
     ComPtr<IShellItem> selected;
     hr = dialog->GetResult(selected.GetAddressOf());
     if (FAILED(hr)) return {hresult_failure("Read directory selection", hr), {}};
@@ -1632,7 +1717,106 @@ class windows_backend final : public backend {
     std::string value;
     if (!bounded_utf8(path.value, 32768, value))
       return {result::failure("E_PATH", "The selected directory path is invalid"), {}};
+    if (!current->active()) return {closed_error(), {}};
     return {result::success(), std::move(value)};
+  }
+
+  file_selection_result choose_files(const open_file_options& settings) override {
+    const auto current = state_;
+    if (!current->active()) return {closed_error(), {}};
+    if (current->file_dialog)
+      return {result::failure("E_BUSY", "A file or directory dialog is already open"), {}};
+    const bool multiple = settings.multiple;
+    ComPtr<IFileOpenDialog> dialog;
+    HRESULT hr = CoCreateInstance(CLSID_FileOpenDialog, nullptr, CLSCTX_INPROC_SERVER,
+                                 IID_PPV_ARGS(dialog.GetAddressOf()));
+    if (FAILED(hr)) return {hresult_failure("Create file open dialog", hr), {}};
+    FILEOPENDIALOGOPTIONS flags{};
+    hr = dialog->GetOptions(&flags);
+    if (SUCCEEDED(hr)) {
+      flags &= ~(FOS_PICKFOLDERS | FOS_ALLOWMULTISELECT | FOS_ALLNONSTORAGEITEMS |
+                 FOS_NOVALIDATE | FOS_STRICTFILETYPES);
+      flags |= FOS_FORCEFILESYSTEM | FOS_PATHMUSTEXIST | FOS_FILEMUSTEXIST | FOS_NOCHANGEDIR;
+      if (multiple) flags |= FOS_ALLOWMULTISELECT;
+      hr = dialog->SetOptions(flags);
+    }
+    if (FAILED(hr)) return {hresult_failure("Configure file open dialog", hr), {}};
+    const auto configured = configure_file_dialog(dialog.Get(), settings.title,
+                                                  settings.extensions, false);
+    if (!configured.ok) return {configured, {}};
+    const auto shown = show_file_dialog(current, dialog.Get(), "Show file open dialog");
+    if (!shown.ok) return {shown, {}};
+    ComPtr<IShellItemArray> selected;
+    hr = dialog->GetResults(selected.GetAddressOf());
+    if (FAILED(hr)) return {hresult_failure("Read file selections", hr), {}};
+    if (!selected)
+      return {result::failure("E_PATH", "No local files were selected"), {}};
+    DWORD count = 0;
+    hr = selected->GetCount(&count);
+    if (FAILED(hr)) return {hresult_failure("Count file selections", hr), {}};
+    if (!count || count > max_file_selection_count || (!multiple && count != 1))
+      return {result::failure("E_PATH", "The selected file count is invalid"), {}};
+    std::vector<std::string> paths;
+    paths.reserve(count);
+    std::size_t total = 0;
+    for (DWORD index = 0; index < count; ++index) {
+      ComPtr<IShellItem> item;
+      hr = selected->GetItemAt(index, item.GetAddressOf());
+      if (FAILED(hr)) return {hresult_failure("Read file selection", hr), {}};
+      auto path = selected_file_path(item.Get());
+      if (!path.status.ok) return {std::move(path.status), {}};
+      if (path.value.size() > max_file_selection_bytes - total)
+        return {result::failure("E_PATH", "The selected file paths exceed 128 KiB"), {}};
+      total += path.value.size();
+      paths.push_back(std::move(path.value));
+    }
+    if (!current->active()) return {closed_error(), {}};
+    return {result::success(), std::move(paths)};
+  }
+
+  value_result choose_save_file(const save_file_options& settings) override {
+    const auto current = state_;
+    if (!current->active()) return {closed_error(), {}};
+    if (current->file_dialog)
+      return {result::failure("E_BUSY", "A file or directory dialog is already open"), {}};
+    std::wstring name;
+    // Common validation additionally rejects nonportable/reserved basenames.
+    if (settings.default_name.size() > 255 ||
+        settings.default_name.find_first_of("\\/:") != std::string::npos ||
+        settings.default_name.find('\0') != std::string::npos ||
+        !to_wide(settings.default_name, name))
+      return {result::failure("E_ARGUMENT", "The default file name is invalid"), {}};
+    ComPtr<IFileSaveDialog> dialog;
+    HRESULT hr = CoCreateInstance(CLSID_FileSaveDialog, nullptr, CLSCTX_INPROC_SERVER,
+                                 IID_PPV_ARGS(dialog.GetAddressOf()));
+    if (FAILED(hr)) return {hresult_failure("Create file save dialog", hr), {}};
+    FILEOPENDIALOGOPTIONS flags{};
+    hr = dialog->GetOptions(&flags);
+    if (SUCCEEDED(hr)) {
+      flags &= ~(FOS_PICKFOLDERS | FOS_ALLOWMULTISELECT | FOS_ALLNONSTORAGEITEMS |
+                 FOS_NOVALIDATE | FOS_STRICTFILETYPES | FOS_FILEMUSTEXIST | FOS_CREATEPROMPT);
+      // Selecting a path must not create even a temporary write-test file.
+      flags |= FOS_FORCEFILESYSTEM | FOS_PATHMUSTEXIST | FOS_NOCHANGEDIR |
+               FOS_OVERWRITEPROMPT | FOS_NOTESTFILECREATE;
+      hr = dialog->SetOptions(flags);
+    }
+    if (FAILED(hr)) return {hresult_failure("Configure file save dialog", hr), {}};
+    const auto configured = configure_file_dialog(dialog.Get(), settings.title,
+                                                  settings.extensions, true);
+    if (!configured.ok) return {configured, {}};
+    if (!name.empty()) {
+      hr = dialog->SetFileName(name.c_str());
+      if (FAILED(hr)) return {hresult_failure("Set default file name", hr), {}};
+    }
+    const auto shown = show_file_dialog(current, dialog.Get(), "Show file save dialog");
+    if (!shown.ok) return {shown, {}};
+    ComPtr<IShellItem> selected;
+    hr = dialog->GetResult(selected.GetAddressOf());
+    if (FAILED(hr)) return {hresult_failure("Read file save selection", hr), {}};
+    // Return the actual final selection, including any native extension change.
+    auto path = selected_file_path(selected.Get());
+    if (!current->active()) return {closed_error(), {}};
+    return path;
   }
 
   result popup_menu(const std::vector<menu_item>& items) override {
@@ -1664,7 +1848,8 @@ class windows_backend final : public backend {
   }
 
   capabilities get_capabilities() const override {
-    return {"webview2", true, true, true, true, true, true, true, true, true, true, true, true};
+    return {"webview2", true, true, true, true, true, true, true, true, true, true, true, true,
+            true, true};
   }
 
  private:

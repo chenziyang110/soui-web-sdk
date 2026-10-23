@@ -34,6 +34,9 @@ constexpr std::size_t max_bridge_bytes = 64 * 1024;
 constexpr guint clipboard_timeout_ms = 2000;
 constexpr std::size_t max_pending_dispatches = 1024;
 constexpr guint tray_embed_timeout_ms = 1500;
+constexpr std::size_t max_selected_files = 32;
+constexpr std::size_t max_selected_path_bytes = 32768;
+constexpr std::size_t max_selected_total_bytes = 128 * 1024;
 
 #if defined(SOUI_DESKTOP_X11_SHORTCUTS)
 struct x11_shortcut;
@@ -879,6 +882,97 @@ struct modal_guard {
   ~modal_guard() { state.modal_busy = false; }
 };
 
+struct file_dialog_guard {
+  linux_state& state;
+  GtkWidget* dialog;
+  file_dialog_guard(linux_state& owner, GtkWidget* widget) : state(owner), dialog(widget) {
+    g_object_ref_sink(dialog);
+    state.directory_dialog = dialog;
+  }
+  ~file_dialog_guard() {
+    if (state.directory_dialog == dialog) state.directory_dialog = nullptr;
+    gtk_widget_destroy(dialog);
+    g_object_unref(dialog);
+  }
+};
+
+struct selected_filenames {
+  GSList* values;
+  ~selected_filenames() { g_slist_free_full(values, g_free); }
+};
+
+// Keep the owner alive while GTK dispatches arbitrary application callbacks in
+// its modal loop. The same slot lets shutdown destroy any active file chooser.
+file_selection_result choose_file_paths(std::shared_ptr<linux_state> state,
+    GtkFileChooserAction action, const std::string& title,
+    const std::vector<std::string>& extensions, bool multiple,
+    const std::string& default_name = {}) {
+  auto status = check_ui(*state);
+  if (!status.ok) return {status, {}};
+  if (state->modal_busy)
+    return {result::failure("E_BUSY", "A modal desktop operation is already active."), {}};
+  modal_guard modal(*state);
+  const bool saving = action == GTK_FILE_CHOOSER_ACTION_SAVE;
+  GtkWidget* dialog = gtk_file_chooser_dialog_new(title.empty() ? nullptr : title.c_str(),
+      GTK_WINDOW(state->window), action, "_Cancel", GTK_RESPONSE_CANCEL,
+      saving ? "_Save" : "_Open", GTK_RESPONSE_ACCEPT, nullptr);
+  if (!dialog)
+    return {result::failure("E_DIALOG", "The native file chooser could not be created."), {}};
+  file_dialog_guard dialog_guard(*state, dialog);
+  auto* chooser = GTK_FILE_CHOOSER(dialog);
+  gtk_file_chooser_set_local_only(chooser, TRUE);
+  gtk_file_chooser_set_select_multiple(chooser, multiple ? TRUE : FALSE);
+  gtk_file_chooser_set_create_folders(chooser, FALSE);
+  if (saving) {
+    gtk_file_chooser_set_do_overwrite_confirmation(chooser, TRUE);
+    if (!default_name.empty()) gtk_file_chooser_set_current_name(chooser, default_name.c_str());
+  }
+  if (!extensions.empty()) {
+    auto* filter = gtk_file_filter_new();
+    gtk_file_filter_set_name(filter, "Supported files");
+    for (const auto& extension : extensions) {
+      const auto pattern = "*." + extension;
+      gtk_file_filter_add_pattern(filter, pattern.c_str());
+    }
+    gtk_file_chooser_add_filter(chooser, filter);
+    gtk_file_chooser_set_filter(chooser, filter);
+  }
+
+  const gint response = gtk_dialog_run(GTK_DIALOG(dialog));
+  if (!state->active.load()) return {unavailable(), {}};
+  if (response == GTK_RESPONSE_CANCEL || response == GTK_RESPONSE_DELETE_EVENT)
+    return {result::failure("E_CANCELLED", "File selection was cancelled."), {}};
+  if (response != GTK_RESPONSE_ACCEPT)
+    return {result::failure("E_DIALOG", "The native file chooser did not complete."), {}};
+
+  selected_filenames filenames{gtk_file_chooser_get_filenames(chooser)};
+  if (!filenames.values)
+    return {result::failure("E_DIALOG", "No local file was selected."), {}};
+  file_selection_result outcome{result::success(), {}};
+  std::size_t total_bytes = 0;
+  const std::size_t limit = multiple ? max_selected_files : 1;
+  for (auto* item = filenames.values; item; item = item->next) {
+    if (outcome.paths.size() == limit)
+      return {result::failure("E_DIALOG", "The file chooser returned too many paths."), {}};
+    const auto* filename = static_cast<const gchar*>(item->data);
+    if (!filename)
+      return {result::failure("E_DIALOG", "The file chooser returned no local path."), {}};
+    gsize bytes = 0;
+    std::unique_ptr<gchar, decltype(&g_free)> utf8(
+        g_filename_to_utf8(filename, -1, nullptr, &bytes, nullptr), g_free);
+    if (!utf8)
+      return {result::failure("E_ENCODING", "The selected path is not valid UTF-8."), {}};
+    if (bytes == 0 || bytes > max_selected_path_bytes ||
+        bytes > max_selected_total_bytes - total_bytes ||
+        !valid_text(std::string_view(utf8.get(), bytes), max_selected_path_bytes) ||
+        !g_path_is_absolute(utf8.get()))
+      return {result::failure("E_DIALOG", "The file chooser returned an invalid or oversized local path."), {}};
+    total_bytes += bytes;
+    outcome.paths.emplace_back(utf8.get(), bytes);
+  }
+  return outcome;
+}
+
 bool valid_menu_level(const std::vector<menu_item>& items, std::size_t depth,
                       std::size_t& count, std::set<std::string>& commands) {
   if (depth > 4 || items.size() > 64 - count) return false;
@@ -1345,22 +1439,25 @@ class linux_backend final : public backend {
   }
 
   value_result choose_directory() override {
-    auto status = check_ui(*state_);
+    auto state = state_;
+    auto status = check_ui(*state);
     if (!status.ok) return {status, {}};
-    if (state_->modal_busy)
+    if (state->modal_busy)
       return {result::failure("E_BUSY", "A modal desktop operation is already active."), {}};
-    modal_guard guard(*state_);
-    GtkWidget* dialog = gtk_file_chooser_dialog_new("Choose directory", GTK_WINDOW(state_->window),
+    modal_guard guard(*state);
+    GtkWidget* dialog = gtk_file_chooser_dialog_new("Choose directory", GTK_WINDOW(state->window),
         GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER, "_Cancel", GTK_RESPONSE_CANCEL,
         "_Select", GTK_RESPONSE_ACCEPT, nullptr);
+    if (!dialog)
+      return {result::failure("E_DIALOG", "The native directory chooser could not be created."), {}};
     g_object_ref_sink(dialog);
     gtk_file_chooser_set_local_only(GTK_FILE_CHOOSER(dialog), TRUE);
     gtk_file_chooser_set_create_folders(GTK_FILE_CHOOSER(dialog), FALSE);
-    state_->directory_dialog = dialog;
+    state->directory_dialog = dialog;
     gint response = gtk_dialog_run(GTK_DIALOG(dialog));
-    state_->directory_dialog = nullptr;
+    state->directory_dialog = nullptr;
     value_result outcome{result::failure("E_CANCELLED", "Directory selection was cancelled."), {}};
-    if (!state_->active.load()) {
+    if (!state->active.load()) {
       outcome.status = unavailable();
     } else if (response == GTK_RESPONSE_ACCEPT) {
       gchar* filename = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
@@ -1377,6 +1474,18 @@ class linux_backend final : public backend {
     gtk_widget_destroy(dialog);
     g_object_unref(dialog);
     return outcome;
+  }
+
+  file_selection_result choose_files(const open_file_options& options) override {
+    return choose_file_paths(state_, GTK_FILE_CHOOSER_ACTION_OPEN, options.title,
+                             options.extensions, options.multiple);
+  }
+
+  value_result choose_save_file(const save_file_options& options) override {
+    auto outcome = choose_file_paths(state_, GTK_FILE_CHOOSER_ACTION_SAVE, options.title,
+                                    options.extensions, false, options.default_name);
+    if (!outcome.status.ok) return {std::move(outcome.status), {}};
+    return {result::success(), std::move(outcome.paths.front())};
   }
 
   result popup_menu(const std::vector<menu_item>& items) override {
@@ -1464,6 +1573,8 @@ class linux_backend final : public backend {
     supported.window_maximize = true;
     supported.window_restore = true;
     supported.window_state_observation = true;
+    supported.file_open_dialog = true;
+    supported.file_save_dialog = true;
 #if defined(SOUI_DESKTOP_X11_SHORTCUTS)
     supported.global_shortcuts = x11_shortcuts_available(*state_);
 #endif

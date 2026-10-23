@@ -76,3 +76,48 @@ assetBytes 对 mime、size、base64 只读取一次，再对同一组值验证�
 失败分别使用 `desktop_adapter_invalid_service_acceptance`、
 `desktop_adapter_invalid_clipboard_text`、`desktop_adapter_invalid_directory_selection`。
 原生拒绝、权限错误和系统错误保留，不由这些本地格式错误替代。
+
+## 打开与保存文件路径
+
+`dialogs.openFiles(options = {})` 调用 `desktop.dialog.openFiles`；
+`dialogs.saveFile(options = {})` 调用 `desktop.dialog.saveFile`。宿主须独立开启
+`options.services.file_open_dialog` / `file_save_dialog`，两者默认 false，不继承
+目录选择权限。这些接口只选择路径，不读取、创建、截断或写入文件，不授予持续
+访问、资源根目录访问或安全书签权限，也不隐式触发权限申请。
+
+```js
+import { dialogs } from './soui/desktop.mjs';
+const opened = await dialogs.openFiles({ extensions: ['txt', 'md'], multiple: true });
+if (!opened.cancelled) console.log(opened.paths);
+const saved = await dialogs.saveFile({ title: '保存位置', defaultName: 'notes.txt' });
+if (!saved.cancelled) console.log(saved.path); // 仅最终确认路径，文件尚未由 SDK 写入
+```
+
+类型 `OpenFileOptions` / `SaveFileOptions` 只接受以下字段，不做隐式类型转换。
+选项须为普通对象（也允许无 prototype 的记录）；未知字段、字段值显式 undefined、
+null 或错误类型均拒绝。省略参数或传入 undefined 使用空选项：
+
+- `title?`：最多 4096 UTF-8 字节，允许空字符串，不允许 NUL 或孤立代理字符。
+- `extensions?`：原始数组最多 16 项，每项为 1..16 位 ASCII 字母或数字；转为
+  小写并按原顺序去重。省略或空数组不限文件类型；不接受点、通配符、MIME 或路径。
+- 打开的 `multiple?`：仅 boolean，默认 false；true 时最多 32 个路径。
+- 保存的 `defaultName?`：允许空字符串；非空时最多 255 UTF-8 字节的便携 basename。
+  拒绝 C0/C1/DEL 控制字符、`<>:"/\\|?*`、末尾点或空格及 `.` / `..`。
+  首个点前的基名去掉末尾空格后，按 ASCII 大小写不敏感拒绝 CON、PRN、AUX、NUL、
+  CLOCK$、CONIN$、CONOUT$、COM1..9、LPT1..9 及 COM/LPT 后接 ¹²³ 的保留名。
+
+扩展名仅为选择 UI 提示，不保证内容类型或安全；原生面板可能调整默认后缀，
+以返回的最终路径为准。默认名的便携规则不限制用户最终选择的本平台合法名称。
+
+`OpenFileSelection` 是 `{cancelled:true, paths:[]}` 或
+`{cancelled:false, paths:string[]}`；单选成功必须恰好一项。
+`SaveFileSelection` 是 `{cancelled:true, path:''}` 或
+`{cancelled:false, path:string}`。成功路径非空，每项最多 32768 UTF-8 字节，
+打开的全部路径最多 128 KiB；拒绝 NUL、孤立代理字符、错误字段/类型与额外字段。
+原生公共层按实际平台的 filesystem 规则验证绝对路径，浏览器适配器不猜测 OS
+或重写跨系统路径解析器，只验证响应形状、文本编码与额度。
+
+非法选项同步抛出 `desktop_adapter_invalid_file_dialog_options`；非法响应分别拒绝为
+`desktop_adapter_invalid_open_file_selection` / `desktop_adapter_invalid_save_file_selection`。
+只有原生公共层将 `E_CANCELLED` 转为取消分支；适配器不捕获或吞掉权限、关闭、导航、
+系统错误，也不把异常转换成取消。超时不保证系统面板已关闭，不自动重试。

@@ -145,6 +145,37 @@ GTK3 XEmbed 托盘，必须在 1500 ms 内确认宿主嵌入，否则 `E_TRAY_UN
 Wayland-only/无兼容托盘宿主不保证可用，后续宿主消失也会报告失败。
 能力标志表示后端实现，不保证当前桌面会话有可用托盘或已授予焦点。
 
+## 打开与保存路径选择（不读写文件）
+
+所选值是本平台文件系统绝对路径而非 URL；网络挂载或 UNC 路径不代表物理本机存储。
+
+`choose_files(open_file_options)` 返回 `file_selection_result{status, paths}`；
+`choose_save_file(save_file_options)` 返回 `value_result{status, value}`。原有目录选择不变。
+原生取消为 `E_CANCELLED`；拥有窗口关闭、编码错误或原生失败不转成取消。
+
+参数 title 最多 4096 UTF-8 字节；extensions 最多 16 个、每个 1..16 ASCII 字母数字，
+小写去重，空集合不限类型。它只给原生选择 UI 提示，不是内容校验或安全白名单；
+不支持 MIME、任意 glob 或过滤器分组。打开默认单选，multiple=true 时最多 32 个路径；
+保存只有一个。返回路径每项最多 32768 UTF-8 字节、总计最多 128 KiB，使用实际平台
+filesystem 校验绝对路径，不接受 NUL/无效 UTF-8，不截断超限返回。
+
+保存 default_name 是最多 255 字节的便携 basename 建议，可留空。拒绝路径分隔、控制字符、
+Windows 保留名/字符及末尾空格或点；不提供任意默认目录。原生面板可能调整扩展名，
+返回用户最后确认的路径，而不是 SDK 拼造的文件名。
+
+网页通过 `services.file_open_dialog` 与 `services.file_save_dialog` 两个独立默认 false
+开关授权 `desktop.dialog.openFiles` / `desktop.dialog.saveFile`；前端 `dialogs.openFiles()` /
+`dialogs.saveFile()` 提供 typed 结果。只有明确取消解析为 cancelled=true 及空数组/空路径；
+其他错误拒绝 Promise。授权属于宿主信任策略，不是系统验证的网页手势。
+
+模态操作持有窗口状态，共用目录/文件选择的忙碌与关闭槽。关闭结束原生面板，导航后
+旧请求不能把路径结果发给新文档；网页请求超时本身不表示系统面板已取消。
+
+保存只是选择目标路径，不表示文件已经保存。SDK 不读取、创建、截断或写入所选文件，
+不生成文件访问令牌、持久授权或安全书签，也不扩大资源根目录/WebView 文件读取范围。
+保留原生覆盖确认，GTK/Mac 面板禁建目录，Windows 禁保存前测试文件创建；系统自身行为
+和用户在系统界面的动作仍由对应系统处理。示例按钮仅显示路径，没有文件读写操作。
+
 ## 原生宿主全局快捷键
 
 `register_global_shortcut(id, global_shortcut{key, modifiers})` 与
@@ -418,7 +449,8 @@ Promise；异步确认先拒绝本次请求，保存完成或用户明确确认�
 ## 统一桌面服务（默认拒绝）
 
 宿主通过 `options.services` 独立授权 `window_properties`、`clipboard_read`、
-`clipboard_write`、`directory_dialog`，全部默认 false，与窗口状态控制开关分离。
+`clipboard_write`、`directory_dialog`、`file_open_dialog`、`file_save_dialog`，
+全部默认 false，与窗口状态控制开关分离。
 这是应用对可信页面的预授权，不证明用户做了原生手势，不接受网页 userGesture、
 窗口句柄或任意权限字段，不自动接受操作系统权限提示。只作用于当前窗口。
 
@@ -431,9 +463,12 @@ Promise；异步确认先拒绝本次请求，保存完成或用户明确确认�
 | desktop.clipboard.readText | {} | {text:string} |
 | desktop.clipboard.writeText | {text:string} | {accepted:true} |
 | desktop.dialog.chooseDirectory | {} | {cancelled:boolean,path:string} |
+| desktop.dialog.openFiles | {title?,extensions?,multiple?} | {cancelled:boolean,paths:string[]} |
+| desktop.dialog.saveFile | {title?,extensions?,defaultName?} | {cancelled:boolean,path:string} |
 
 标题最多4096字节UTF-8，尺寸64..16384，剪贴板写入最多32KiB、读取最多64KiB，
-目录路径最多64KiB；文本拒绝NUL和非法UTF-8。原64KiB请求和1MiB响应限制仍适用。
+目录路径最多64KiB；文件选择的选项、路径和取消联合类型见上文“打开与保存路径选择”。
+文本拒绝NUL和非法UTF-8。原64KiB请求和1MiB响应限制仍适用。
 窗口操作成功只代表请求被接纳；OS焦点策略等仍可能限制最终表现。目录取消仅将
 后端E_CANCELLED映射成 `{cancelled:true,path:""}`；其他原生错误保留，所选路径
 本身不是文件读写授权。原生调用与业务回调串行，导航或关闭后不发送迟到响应。

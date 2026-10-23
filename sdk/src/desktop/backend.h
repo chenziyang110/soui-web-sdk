@@ -62,6 +62,12 @@ class backend {
   virtual value_result clipboard_read() = 0;
   virtual result clipboard_write(std::string_view) = 0;
   virtual value_result choose_directory() = 0;
+  virtual file_selection_result choose_files(const open_file_options&) {
+    return {result::failure("not_supported", "File open dialogs are unavailable."), {}};
+  }
+  virtual value_result choose_save_file(const save_file_options&) {
+    return {result::failure("not_supported", "File save dialogs are unavailable."), {}};
+  }
   virtual result popup_menu(const std::vector<menu_item>&) = 0;
   virtual result set_tray(const tray_options&) = 0;
   virtual result clear_tray() = 0;

@@ -57,7 +57,7 @@ elseif(SOUI_TARGET_OS STREQUAL "macos")
   target_compile_options(soui_desktop PRIVATE "$<$<COMPILE_LANGUAGE:OBJCXX>:-fobjc-arc>")
   target_compile_options(soui_desktop PRIVATE "-mmacosx-version-min=${SOUI_DESKTOP_MIN_MACOS}")
   target_link_libraries(soui_desktop PRIVATE "-framework AppKit" "-framework Foundation"
-    "-framework WebKit" "-framework CoreFoundation" "-framework Carbon")
+    "-framework WebKit" "-framework CoreFoundation" "-framework Carbon" "-framework UniformTypeIdentifiers")
   set(SOUI_DESKTOP_BACKEND wkwebview)
 elseif(SOUI_TARGET_OS STREQUAL "windows")
   if(NOT MSVC OR SOUI_TARGET_ARCH STREQUAL "arm32")

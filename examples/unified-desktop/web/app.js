@@ -70,7 +70,7 @@ if (!window.souiDesktop) {
     document.getElementById('dot').classList.add('connected');
     document.querySelector('[data-action="modules"]').disabled = !caps.resourceServer;
     for (const [action, available] of [['copy', caps.clipboardWrite], ['paste', caps.clipboardRead],
-      ['directory', caps.directoryDialog], ['menu', caps.popupMenu], ['tray', caps.tray], ['clearTray', caps.tray], ['registerShortcut', caps.globalShortcuts], ['unregisterShortcut', caps.globalShortcuts]])
+      ['directory', caps.directoryDialog], ['openFiles', caps.fileOpenDialog], ['saveFile', caps.fileSaveDialog], ['menu', caps.popupMenu], ['tray', caps.tray], ['clearTray', caps.tray], ['registerShortcut', caps.globalShortcuts], ['unregisterShortcut', caps.globalShortcuts]])
       document.querySelector(`[data-action="${action}"]`).disabled = !available;
   }).catch(() => {});
   const actions = {
@@ -113,6 +113,20 @@ if (!window.souiDesktop) {
       document.getElementById('system-status').textContent = result.cancelled ?
         'Directory selection cancelled.' : `Selected directory: ${result.path}`;
     },
+    openFiles: async () => {
+      const result = await invoke('desktop.dialog.openFiles', {
+        title: 'Choose text files (paths only)', extensions: ['txt', 'json'], multiple: true,
+      });
+      document.getElementById('system-status').textContent = result.cancelled ?
+        'File selection cancelled.' : `Selected paths (not read): ${result.paths.join(', ')}`;
+    },
+    saveFile: async () => {
+      const result = await invoke('desktop.dialog.saveFile', {
+        title: 'Choose an export path (no file is written)', extensions: ['txt'], defaultName: 'example.txt',
+      });
+      document.getElementById('system-status').textContent = result.cancelled ?
+        'Save-path selection cancelled.' : `Selected destination (not saved): ${result.path}`;
+    },
     reload: () => invoke('app.reload'),
     create: () => invoke('window.create'),
     close: () => invoke('window.close'),
@@ -126,7 +140,7 @@ if (!window.souiDesktop) {
   for (const button of document.querySelectorAll('[data-action]')) button.addEventListener('click', () => {
     const action = actions[button.dataset.action];
     if (action) action().catch(() => {
-      if (['copy', 'paste', 'directory'].indexOf(button.dataset.action) !== -1)
+      if (['copy', 'paste', 'directory', 'openFiles', 'saveFile'].indexOf(button.dataset.action) !== -1)
         document.getElementById('system-status').textContent = 'The system action failed. See the event log for details.';
     });
   });

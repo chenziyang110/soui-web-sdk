@@ -62,6 +62,8 @@ soui::desktop::callbacks make_callbacks(example_state& state,
         ",\"clipboardRead\":" + (caps.clipboard_read && state.settings.services.clipboard_read ? "true" : "false") +
         ",\"clipboardWrite\":" + (caps.clipboard_write && state.settings.services.clipboard_write ? "true" : "false") +
         ",\"directoryDialog\":" + (caps.directory_dialog && state.settings.services.directory_dialog ? "true" : "false") +
+        ",\"fileOpenDialog\":" + (caps.file_open_dialog && state.settings.services.file_open_dialog ? "true" : "false") +
+        ",\"fileSaveDialog\":" + (caps.file_save_dialog && state.settings.services.file_save_dialog ? "true" : "false") +
         ",\"popupMenu\":" + (caps.popup_menu ? "true" : "false") +
         ",\"tray\":" + (caps.tray ? "true" : "false") +
         ",\"globalShortcuts\":" + (caps.global_shortcuts ? "true" : "false") +
@@ -184,6 +186,8 @@ int main(int argc, char** argv) {
   state.settings.services.clipboard_read = true;
   state.settings.services.clipboard_write = true;
   state.settings.services.directory_dialog = true;
+  state.settings.services.file_open_dialog = true;
+  state.settings.services.file_save_dialog = true;
   state.settings.enable_resource_server = default_http || argc == 3;
   state.children.reserve(31); // No handle-storage allocation after native create.
   auto context = std::make_shared<window_context>();
