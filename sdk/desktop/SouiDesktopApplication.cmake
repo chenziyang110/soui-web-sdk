@@ -65,9 +65,10 @@ function(soui_stage_application)
     set(configurations ${CMAKE_CONFIGURATION_TYPES} "${CMAKE_BUILD_TYPE}")
     foreach(configuration IN LISTS configurations)
       string(TOUPPER "${configuration}" configuration)
-      get_target_property(config_architectures "${APP_TARGET}" "OSX_ARCHITECTURES_${configuration}")
-      if(NOT config_architectures STREQUAL "config_architectures-NOTFOUND" AND
-          NOT config_architectures STREQUAL "")
+      get_property(config_architectures_set TARGET "${APP_TARGET}"
+        PROPERTY "OSX_ARCHITECTURES_${configuration}" SET)
+      # Even an empty per-config value overrides the generic slice list.
+      if(config_architectures_set)
         message(FATAL_ERROR "Per-configuration OSX_ARCHITECTURES is not supported by staging; use a separate build directory")
       endif()
     endforeach()

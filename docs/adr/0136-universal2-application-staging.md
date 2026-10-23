@@ -29,6 +29,10 @@ x64/arm64 宿主匹配，不把未知架构视为通过。ZIP不改二进制或�
 消费架构保存于安装SDK imported target的独立属性，不依赖find_package调用结束后
 仍可见的普通变量。未设置目标架构仅可使用已验证的薄片消费身份；空值或已清除的目标架构不能继承非空全局架构选择或universal2
 声明，须指定slice。源码树默认使用同一工具链
-的SDK身份。显式未知架构/生成器表达式和当前构建配置的非空
-`OSX_ARCHITECTURES_<CONFIG>` 覆盖拒绝，配置级变化应使用独立构建目录；
+的SDK身份。显式未知架构/生成器表达式和当前构建配置的任何显式
+`OSX_ARCHITECTURES_<CONFIG>` 覆盖（包括空字符串）拒绝，配置级变化应使用独立构建目录；
 非macOS路径保持原行为。配置fixture不代表Mac编译或运行。
+
+空配置属性并非未设置：CMake 会采用该空值而非通用 slice 列表，可能退回工具链默认架构。
+因此在配置期拒绝该覆盖，避免 staging 对实际薄片产物声明 universal2。
+依据：[CMake 3.24 GetAppleArchs](https://raw.githubusercontent.com/Kitware/CMake/v3.24.0/Source/cmGeneratorTarget.cxx)。

@@ -48,6 +48,9 @@ endif()
 if(BAD_CONFIG)
   set_property(TARGET default_app PROPERTY OSX_ARCHITECTURES_RELEASE arm64)
 endif()
+if(EMPTY_CONFIG)
+  set_property(TARGET universal_app PROPERTY OSX_ARCHITECTURES_RELEASE "")
+endif()
 if(THIN_SDK)
   set_property(TARGET Soui::Desktop PROPERTY SOUI_APPLICATION_ARCH x64)
 endif()
@@ -56,7 +59,7 @@ foreach(name default_app thin_arm universal_app)
     OUTPUT "\${CMAKE_BINARY_DIR}/stage-\${name}" VERSION 0.1.0 IDENTIFIER org.example.app)
 endforeach()
 `);
-  const configure = (name, args = []) => spawnSync(cmake, ['-S', dir, '-B', path.join(dir, name), '-G', 'Ninja',
+  const configure = (name, args = [], generator = 'Ninja') => spawnSync(cmake, ['-S', dir, '-B', path.join(dir, name), '-G', generator,
     `-DCMAKE_MAKE_PROGRAM=${ninja}`, '-DCMAKE_BUILD_TYPE=Release', ...args], { encoding: 'utf8', timeout: 60000 });
   const good = configure('good'); assert.equal(good.status, 0, good.stdout + good.stderr);
   const build = fs.readFileSync(path.join(dir, 'good/build.ninja'), 'utf8');
@@ -65,6 +68,7 @@ endforeach()
   for (const [name, args, diagnostic] of [
     ['unsupported', ['-DBAD_ARCH=OFF'], /only x86_64 and arm64/],
     ['config', ['-DBAD_CONFIG=ON'], /Per-configuration/],
+    ['empty-config', ['-DEMPTY_CONFIG=ON'], /Per-configuration/],
     ['empty', ['-DBAD_ARCH=', '-DFORCE_UNIVERSAL=ON'], /empty target/],
     ['cleared', ['-DCLEAR_ARCH=ON', '-DFORCE_UNIVERSAL=ON'], /unset OSX_ARCHITECTURES/],
     ['subset', ['-DTHIN_SDK=ON'], /does not contain/],
@@ -72,4 +76,7 @@ endforeach()
     const result = configure(name, args); assert.notEqual(result.status, 0);
     assert.match(result.stdout + result.stderr, diagnostic);
   }
+  const multi = configure('empty-multi-config', ['-DEMPTY_CONFIG=ON'], 'Ninja Multi-Config');
+  assert.notEqual(multi.status, 0);
+  assert.match(multi.stdout + multi.stderr, /Per-configuration/);
 });

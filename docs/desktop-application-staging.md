@@ -223,6 +223,6 @@ CLI 和导出的 `stage(options)` 使用同一输入校验，并在创建输出�
 消费架构保存于安装SDK imported target的独立属性，不依赖find_package调用结束后
 仍可见的普通变量。未设置目标架构仅可使用已验证的薄片消费身份；空值或已清除的目标架构不能继承非空全局架构选择或universal2
 声明，须指定slice。源码树默认使用同一工具链
-的SDK身份。显式未知架构/生成器表达式和当前构建配置的非空
-`OSX_ARCHITECTURES_<CONFIG>` 覆盖拒绝，配置级变化应使用独立构建目录；
+的SDK身份。显式未知架构/生成器表达式和当前构建配置的任何显式
+`OSX_ARCHITECTURES_<CONFIG>` 覆盖（包括空字符串）拒绝，配置级变化应使用独立构建目录；
 非macOS路径保持原行为。配置fixture不代表Mac编译或运行。

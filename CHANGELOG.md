@@ -2,6 +2,9 @@
 
 ## 未发布维护
 
+- macOS staging 拒绝显式空的配置级架构覆盖，避免 CMake 退回默认架构后
+  仍按通用双 slice 属性错误声明 universal2。
+
 - macOS staging按应用实际slice选择架构，修复使用universal2 SDK构建薄片应用
   时错误传入universal2导致身份校验失败；拒绝请求SDK未包含的slice。
 
