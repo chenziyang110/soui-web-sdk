@@ -70,3 +70,4 @@
 - [ADR-0112：有界的进程地址空间观察](0112-bounded-process-address-census.md)（双架构真实扫描及独立读取回归通过；实际负载预算待校准）
 
 - [ADR-0119：在临时光栅覆盖边界保留已接收的滚动目标](0119-preserve-scroll-target-beyond-raster-coverage.md)（proposed；源码候选与端到端验证分开）
+- [ADR-0120：区分合成滚动确认与外部滚动意图](0120-preserve-compositor-scroll-acknowledgements.md)（proposed；默认整数元素滚动源码候选；完整 x86 构建、限定 GUI 位移与同值 CSS 取消已验证，性能及完整配置资格未完成）

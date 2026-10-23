@@ -116,6 +116,9 @@ struct ScrollNodeSnapshot {
     uint64_t acknowledgedSample;
     ScrollVector acknowledgedTotal;
     ScrollVector baseOffset;
+    // Blink's canonical base minus the raw visual of its acknowledged sample.
+    // Zero for scenes without canonicalization. Admission must use the raw base.
+    ScrollVector canonicalAdjustment;
     // Input-thread prediction of the logical target, including accepted motion
     // waiting for raster coverage. Only real content bounds limit it; baseOffset
     // remains the owner's committed position.

@@ -26,6 +26,7 @@
 #define WebLayerScrollClient_h
 
 #include "WebCommon.h"
+#include "WebDoublePoint.h"
 
 namespace blink {
 
@@ -33,6 +34,13 @@ namespace blink {
 class BLINK_PLATFORM_EXPORT WebLayerScrollClient {
 public:
     virtual void didScroll() = 0;
+    // Synchronous query: no script, client callbacks or message pumping.
+    virtual bool canonicalizeCompositorScrollPosition(const WebDoublePoint& visual,
+        WebDoublePoint& canonical) const
+    {
+        canonical = visual;
+        return true;
+    }
 protected:
     virtual ~WebLayerScrollClient() { }
 };

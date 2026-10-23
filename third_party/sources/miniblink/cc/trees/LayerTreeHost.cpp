@@ -1117,6 +1117,7 @@ static ScrollNodeKey appendScrollNodeSnapshot(LayerTreeHost* host,
     node.acknowledgedTotal = ScrollVector(acknowledged.x, acknowledged.y);
     const blink::WebDoublePoint base = layer->scrollPositionDouble();
     node.baseOffset = ScrollVector(base.x, base.y);
+    node.canonicalAdjustment = layer->compositorCanonicalAdjustment();
     node.minimumOffset = ScrollVector(0.0, 0.0);
 
     cc_blink::WebLayerImpl* clipLayer =
@@ -2546,16 +2547,8 @@ bool LayerTreeHost::dispatchCompositorScrollOnMainThread(int layerId,
     if (acknowledged >= sample.sampleSequence) {
         if (acknowledged > sample.sampleSequence)
             return true;
-        const blink::WebDoublePoint acknowledgedTotal =
-            layer->acknowledgedCompositorTotal();
-        const blink::WebDoublePoint position = layer->scrollPositionDouble();
-        const double epsilon = 0.01;
-        return std::fabs(acknowledgedTotal.x - sample.consumedTotal.x)
-                <= epsilon
-            && std::fabs(acknowledgedTotal.y - sample.consumedTotal.y)
-                <= epsilon
-            && std::fabs(position.x - visualOffset.x) <= epsilon
-            && std::fabs(position.y - visualOffset.y) <= epsilon;
+        return layer->matchesCompositorScrollReceipt(sample.scrollEpoch,
+            sample.sampleSequence, sample.consumedTotal, visualOffset);
     }
 
     return layer->setScrollPositionFromCompositor(sample.scrollEpoch,

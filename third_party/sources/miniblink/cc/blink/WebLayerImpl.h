@@ -25,6 +25,7 @@
 #include "third_party/WebKit/public/platform/WebContentLayerClient.h"
 #include "third_party/skia/include/utils/SkMatrix44.h"
 #include "cc/blink/WebLayerImplClient.h"
+#include "cc/input/CompositorScrollAcknowledgement.h"
 
 namespace blink {
 class WebCompositorAnimationDelegate;
@@ -132,12 +133,31 @@ public:
     void setForceRenderSurface(bool force) override;
     void setScrollPositionDouble(blink::WebDoublePoint position) override;
     blink::WebDoublePoint scrollPositionDouble() const override;
+    void invalidateCompositorScroll() override;
     bool setScrollPositionFromCompositor(uint64_t scrollEpoch,
         uint64_t sampleSequence, double consumedTotalX,
         double consumedTotalY, const blink::WebDoublePoint& position);
-    uint64_t compositorScrollEpoch() const { return m_compositorScrollEpoch; }
-    uint64_t acknowledgedCompositorSample() const { return m_acknowledgedCompositorSample; }
-    blink::WebDoublePoint acknowledgedCompositorTotal() const { return m_acknowledgedCompositorTotal; }
+    uint64_t compositorScrollEpoch() const { return m_scrollAcknowledgement.epoch(); }
+    uint64_t acknowledgedCompositorSample() const { return m_scrollAcknowledgement.sample(); }
+    blink::WebDoublePoint acknowledgedCompositorTotal() const
+    {
+        const cc::ScrollVector total = m_scrollAcknowledgement.total();
+        return blink::WebDoublePoint(total.x, total.y);
+    }
+    cc::ScrollVector compositorCanonicalAdjustment() const
+    {
+        return m_scrollAcknowledgement.canonicalAdjustment();
+    }
+    bool matchesCompositorScrollReceipt(uint64_t epoch, uint64_t sample,
+        const cc::ScrollVector& total, const cc::ScrollVector& visual) const
+    {
+        if (!sample) {
+            return m_scrollAcknowledgement.matchesInitial(epoch, sample,
+                total, visual, cc::ScrollVector(m_scrollPositionDouble.x,
+                    m_scrollPositionDouble.y));
+        }
+        return m_scrollAcknowledgement.matchesRaw(epoch, sample, total, visual);
+    }
     void setScrollCompensationAdjustment(blink::WebDoublePoint position) override;
     void setScrollClipLayer(blink::WebLayer* clip_layer) override;
     int scrollClipLayerId() const { return m_scrollClipLayerId; }
@@ -251,9 +271,7 @@ protected:
     bool m_isDoubleSided;
     blink::WebColor m_backgroundColor;
     blink::WebDoublePoint m_scrollPositionDouble;
-    uint64_t m_compositorScrollEpoch;
-    uint64_t m_acknowledgedCompositorSample;
-    blink::WebDoublePoint m_acknowledgedCompositorTotal;
+    cc::CompositorScrollAcknowledgement m_scrollAcknowledgement;
     blink::WebDoublePoint m_scrollCompensationAdjustment;
     int m_scrollClipLayerId;
     bool m_userScrollableHorizontal;

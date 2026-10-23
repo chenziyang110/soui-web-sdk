@@ -290,6 +290,11 @@ bool ScrollNodeSnapshot::isValid() const
     if (!key.isValid() || !sceneVersion || !scrollEpoch)
         return false;
     if (!isFinite(acknowledgedTotal) || !isFinite(baseOffset)
+        || !isFinite(canonicalAdjustment)
+        || !isFinite(baseOffset.x - canonicalAdjustment.x)
+        || !isFinite(baseOffset.y - canonicalAdjustment.y)
+        || !isFinite(baseOffset.x - acknowledgedTotal.x)
+        || !isFinite(baseOffset.y - acknowledgedTotal.y)
         || !isFinite(inputPrediction)
         || !isFinite(minimumOffset) || !isFinite(maximumOffset)
         || !isFinite(coverageMinimum) || !isFinite(coverageMaximum)) {
@@ -327,11 +332,13 @@ bool ScrollNodeSnapshot::canConsumeDelta(const ScrollVector& delta) const
     if (!compositorEligible() || !isFinite(delta))
         return false;
     const bool canConsumeX = (inputAxes & ScrollInputAxisHorizontal)
-        && canAcceptAxis(delta.x, inputPrediction.x, baseOffset.x,
+        && canAcceptAxis(delta.x, inputPrediction.x,
+            baseOffset.x - canonicalAdjustment.x,
             minimumOffset.x, maximumOffset.x, coverageMinimum.x,
             coverageMaximum.x, viewportClip.width);
     const bool canConsumeY = (inputAxes & ScrollInputAxisVertical)
-        && canAcceptAxis(delta.y, inputPrediction.y, baseOffset.y,
+        && canAcceptAxis(delta.y, inputPrediction.y,
+            baseOffset.y - canonicalAdjustment.y,
             minimumOffset.y, maximumOffset.y, coverageMinimum.y,
             coverageMaximum.y, viewportClip.height);
     return canConsumeX || canConsumeY;
