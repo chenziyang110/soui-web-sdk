@@ -77,7 +77,7 @@
     "LayerTreeHost recordDraw integration and real GUI behavior are not covered",
     "Failing baseline is retained; aggregate suite exit is 1 while both corrected tests exit 0",
     "Full x86 CPU kernel built; full x64 browser kernel and system matrix remain unverified",
-    "Instrumented HTML integration observed; uninstrumented final-package acceptance remains separate",
+    "Instrumented and ordinary final-package interaction scopes observed; smoothness and install/uninstall acceptance remain separate",
     "Continuous sample gaps shortened in this run but actual input cadences differ; no FPS or universal smoothness claim"
   ],
   "fullKernelBuild": {
@@ -104,7 +104,7 @@
     "operationsObserved": [
       "isolated wheel",
       "continuous wheel down and up",
-      "14 pixel thumb drag",
+      "short thumb drag: 14px requested, 8px native displacement",
       "return to start page",
       "confirm cancellation and exit"
     ],
@@ -127,6 +127,23 @@
     ],
     "pixelScope": "4096 sampled BGR points in a fixed body ROI; not complete image or screen presentation",
     "performanceConclusion": "Limited observation only; different actual native input spans and one run per kernel do not establish overall smoothness or universal latency improvement",
-    "unInstrumentedFinalPackageValidated": false
+    "unInstrumentedFinalPackageValidated": true,
+    "unInstrumentedFinalPackageScope": {
+      "pid": 3760,
+      "exitCode": 1,
+      "diagnosticEnvironmentDisabled": true,
+      "observed": [
+        "body scroll displacement",
+        "short thumb displacement",
+        "caption drag after scrolling",
+        "return",
+        "modal background caption drag blocked",
+        "cancel close",
+        "protocol reopen",
+        "confirm cancellation and exit"
+      ],
+      "smoothnessAccepted": false,
+      "installationOrUninstallationExecuted": false
+    }
   }
 }
