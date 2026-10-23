@@ -26,6 +26,10 @@ struct backend_events {
   std::function<void()> quit_requested;
   // Only the current native-selected document (plus a fragment) is admissible.
   std::function<bool(std::string_view uri)> allow_navigation;
+  // A never-reused registration token, delivered only to its owning window.
+  // Defer off the OS event stack through a bounded window-lifetime queue,
+  // independent of renderer health. Common code serializes business callbacks.
+  std::function<void(std::uint64_t token)> global_shortcut;
 };
 
 class backend {
@@ -61,6 +65,15 @@ class backend {
   virtual result popup_menu(const std::vector<menu_item>&) = 0;
   virtual result set_tray(const tray_options&) = 0;
   virtual result clear_tray() = 0;
+  // A failed registration must leave no native resource, except the explicit
+  // shortcut_cleanup_pending status: retain that token inactive for unregister
+  // retry. Common code keeps its logical ID and capacity slot reserved.
+  virtual result register_global_shortcut(std::uint64_t, const global_shortcut&) {
+    return result::failure("not_supported", "Global shortcuts are unavailable.");
+  }
+  virtual result unregister_global_shortcut(std::uint64_t) {
+    return result::failure("not_supported", "Global shortcuts are unavailable.");
+  }
   virtual capabilities get_capabilities() const = 0;
   // GTK's script-message signal has no native sender-frame metadata. Its
   // explicit false policy additionally relies on the top-only closure token.

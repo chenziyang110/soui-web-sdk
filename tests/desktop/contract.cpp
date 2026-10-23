@@ -47,11 +47,16 @@ class fake_backend final : public detail::backend {
   std::string uri, preload;
   std::vector<std::string> evaluations;
   result evaluation_status{result::success()};
+  result dispatch_status{result::success()};
   result load_status{result::success()};
   result menu_status{unsupported()}, tray_status{unsupported()}, clear_tray_status{unsupported()};
   std::vector<menu_item> popup_items;
   tray_options tray_settings;
   std::function<void()> while_popup;
+  result shortcut_register_status{result::success()}, shortcut_unregister_status{result::success()};
+  std::vector<std::pair<std::uint64_t, global_shortcut>> shortcut_registrations;
+  std::vector<std::uint64_t> shortcut_unregistrations;
+  std::function<void(std::uint64_t)> while_shortcut_register, while_shortcut_unregister;
   std::mutex mutex;
   std::condition_variable task_ready;
   std::deque<std::function<void()>> tasks;
@@ -103,6 +108,7 @@ class fake_backend final : public detail::backend {
   result dispatch(std::function<void()> work) override {
     std::lock_guard<std::mutex> lock(mutex);
     if (!active.load()) return result::failure("closed", "Fake backend is closed.");
+    if (!dispatch_status.ok) return dispatch_status;
     tasks.push_back(std::move(work)); task_ready.notify_all(); return result::success();
   }
   bool wait_tasks(std::size_t count = 1) {
@@ -143,8 +149,20 @@ class fake_backend final : public detail::backend {
     ++counts->tray_calls; tray_settings = settings; return tray_status;
   }
   result clear_tray() override { ++counts->clear_tray_calls; return clear_tray_status; }
+  result register_global_shortcut(std::uint64_t token, const global_shortcut& chord) override {
+    shortcut_registrations.emplace_back(token, chord);
+    if (while_shortcut_register) while_shortcut_register(token);
+    return shortcut_register_status;
+  }
+  result unregister_global_shortcut(std::uint64_t token) override {
+    shortcut_unregistrations.push_back(token);
+    if (while_shortcut_unregister) while_shortcut_unregister(token);
+    return shortcut_unregister_status;
+  }
   capabilities get_capabilities() const override {
-    return {"test-fake", false, false, false, false, false, menu_status.ok, tray_status.ok};
+    capabilities value{"test-fake", false, false, false, false, false, menu_status.ok, tray_status.ok};
+    value.global_shortcuts = true;
+    return value;
   }
   bool has_message_frame_metadata() const override { return metadata; }
 
@@ -168,6 +186,14 @@ class fake_backend final : public detail::backend {
   void command(std::string_view id) {
     const auto callback = events.command;
     if (callback) callback(id);
+  }
+  void shortcut(std::uint64_t token) {
+    // Model backend deferral off the native OS callback stack. This queue is
+    // deliberately independent of the renderer-dependent dispatch status.
+    std::lock_guard<std::mutex> lock(mutex);
+    if (!active.load()) return;
+    const auto callback = events.global_shortcut;
+    tasks.push_back([callback, token] { if (callback) callback(token); });
   }
   json last_response() const {
     if (evaluations.empty()) throw std::runtime_error("Missing evaluated response");
@@ -1360,6 +1386,290 @@ void close_approval_contract(files& fixture) {
   }
 }
 
+void global_shortcut_contract(files& fixture) {
+  using namespace shortcut_modifiers;
+  int delivered = 0;
+  window_id delivered_window = 0;
+  std::string delivered_id;
+  callbacks handlers;
+  handlers.global_shortcut = [&](window_id owner, std::string_view id) {
+    ++delivered; delivered_window = owner; delivered_id = id;
+  };
+  application app(fixture.settings(), handlers);
+  const global_shortcut chord{shortcut_key::f1, control};
+  CHECK(app.register_global_shortcut("open", chord).code == "closed");
+  CHECK(app.initialize().ok);
+  auto& native = *latest;
+  CHECK(app.get_capabilities().global_shortcuts);
+  for (const auto& id : {std::string{}, std::string("has space"), std::string(129, 'x')}) {
+    CHECK(app.register_global_shortcut(id, chord).code == "invalid_shortcut_id");
+    CHECK(app.unregister_global_shortcut(id).code == "invalid_shortcut_id");
+  }
+  for (const auto invalid : {global_shortcut{}, global_shortcut{shortcut_key::f2, shift},
+      global_shortcut{static_cast<shortcut_key>(-1), control},
+      global_shortcut{static_cast<shortcut_key>(1000), control},
+      global_shortcut{shortcut_key::f3, 16U | control}})
+    CHECK(app.register_global_shortcut("bad", invalid).code == "invalid_shortcut");
+  CHECK(native.shortcut_registrations.empty());
+  native.shortcut_register_status = unsupported();
+  native.while_shortcut_register = [&](std::uint64_t token) { native.shortcut(token); native.flush(); };
+  CHECK(app.register_global_shortcut("open", chord).code == "test_unsupported");
+  const auto failed_token = native.shortcut_registrations.back().first;
+  CHECK(delivered == 0);
+  native.shortcut_register_status = result::success();
+  native.while_shortcut_register = [&](std::uint64_t token) {
+    CHECK(app.unregister_global_shortcut("cancelled").code == "shortcut_cleanup_pending");
+    native.shortcut(token); native.flush();
+  };
+  CHECK(app.register_global_shortcut("cancelled", chord).code == "shortcut_cancelled");
+  const auto cancelled_token = native.shortcut_registrations.back().first;
+  CHECK(native.shortcut_unregistrations.back() == cancelled_token && delivered == 0);
+  native.shortcut(cancelled_token); native.flush();
+  CHECK(delivered == 0);
+  native.while_shortcut_register = [&](std::uint64_t token) { native.shortcut(token); native.flush(); };
+  CHECK(app.register_global_shortcut("open", chord).ok);
+  const auto first_token = native.shortcut_registrations.back().first;
+  CHECK(first_token > failed_token && delivered == 0);
+  CHECK(app.register_global_shortcut("open", {shortcut_key::f2, alt}).code == "duplicate_shortcut_id");
+  CHECK(app.register_global_shortcut("same-chord", chord).code == "duplicate_shortcut");
+#if defined(__APPLE__)
+  CHECK(app.register_global_shortcut("primary", {shortcut_key::f1, primary}).ok);
+  CHECK(native.shortcut_registrations.back().second.modifiers == primary);
+  CHECK(app.unregister_global_shortcut("primary").ok);
+#else
+  CHECK(app.register_global_shortcut("primary", {shortcut_key::f1, primary | control}).code == "duplicate_shortcut");
+  CHECK(app.register_global_shortcut("primary", {shortcut_key::f2, primary | shift}).ok);
+  CHECK(native.shortcut_registrations.back().second.modifiers == (control | shift));
+  CHECK(app.unregister_global_shortcut("primary").ok);
+#endif
+  native.shortcut(failed_token);
+  native.shortcut(first_token);
+  CHECK(delivered == 0); // No inline shortcut callback from the native event.
+  native.flush();
+  CHECK(delivered == 1 && delivered_window == app.id() && delivered_id == "open");
+  CHECK(native.evaluations.empty()); // No automatic renderer event.
+  native.shortcut(first_token);
+  CHECK(app.navigate("second.html").ok);
+  native.menu_status = result::success();
+  CHECK(app.popup_menu({{"menu", "Menu"}}).ok);
+  native.flush();
+  CHECK(delivered == 2); // Neither page nor menu generations revoke registrations.
+  native.shortcut(first_token);
+  native.shortcut_unregister_status = unsupported();
+  native.while_shortcut_unregister = [&](std::uint64_t token) { native.shortcut(token); native.flush(); };
+  CHECK(app.unregister_global_shortcut("open").code == "test_unsupported");
+  CHECK(delivered == 2); // Revoked before even a failed native unregister.
+  CHECK(app.register_global_shortcut("open", chord).code == "duplicate_shortcut_id");
+  CHECK(app.register_global_shortcut("other", chord).code == "duplicate_shortcut");
+  native.shortcut(first_token); native.flush();
+  CHECK(delivered == 2);
+  native.shortcut_unregister_status = result::success();
+  CHECK(app.unregister_global_shortcut("open").ok);
+  const auto cleanup_count = native.shortcut_unregistrations.size();
+  CHECK(app.unregister_global_shortcut("open").ok);
+  CHECK(native.shortcut_unregistrations.size() == cleanup_count);
+  CHECK(app.register_global_shortcut("open", chord).ok);
+  const auto next_token = native.shortcut_registrations.back().first;
+  CHECK(next_token > first_token);
+  native.shortcut(first_token); native.shortcut(next_token); native.flush();
+  CHECK(delivered == 3);
+  std::thread worker([&] {
+    CHECK(app.register_global_shortcut("worker", chord).code == "wrong_thread");
+    CHECK(app.unregister_global_shortcut("open").code == "wrong_thread");
+  });
+  worker.join();
+  native.shortcut(next_token);
+  native.shortcut_unregister_status = unsupported();
+  CHECK(app.close().code == "test_unsupported");
+  CHECK(native.counts->closed == 1 && delivered == 3);
+  native.shortcut(next_token); native.flush();
+  CHECK(delivered == 3 && app.register_global_shortcut("closed", chord).code == "closed");
+  native.shortcut_unregister_status = result::success();
+  CHECK(app.close().ok); // Common retries; only this fake guarantees cleanup after close.
+}
+
+void global_shortcut_capacity_contract(files& fixture) {
+  using namespace shortcut_modifiers;
+  int delivered = 0;
+  callbacks handlers;
+  handlers.global_shortcut = [&](window_id, std::string_view) { ++delivered; };
+  application app(fixture.settings(), handlers);
+  CHECK(app.initialize().ok);
+  auto& native = *latest;
+  for (unsigned i = 0; i < 32; ++i)
+    CHECK(app.register_global_shortcut("slot" + std::to_string(i),
+      {static_cast<shortcut_key>(i % 11), i < 11 ? control : i < 22 ? alt : control | alt}).ok);
+  const global_shortcut extra{shortcut_key::delete_key, alt};
+  CHECK(app.register_global_shortcut("extra", extra).code == "shortcut_limit");
+  native.shortcut_unregister_status = unsupported();
+  CHECK(app.unregister_global_shortcut("slot0").code == "test_unsupported");
+  CHECK(app.register_global_shortcut("extra", extra).code == "shortcut_limit");
+  native.shortcut_unregister_status = result::success();
+  CHECK(app.unregister_global_shortcut("slot0").ok);
+  native.shortcut_register_status = result::failure("shortcut_cleanup_pending", "Native rollback failed.");
+  CHECK(app.register_global_shortcut("extra", extra).code == "shortcut_cleanup_pending");
+  CHECK(app.register_global_shortcut("extra", extra).code == "duplicate_shortcut_id");
+  CHECK(app.register_global_shortcut("same-extra", extra).code == "duplicate_shortcut");
+  CHECK(app.register_global_shortcut("beyond-limit", {shortcut_key::home, alt}).code == "shortcut_limit");
+  const auto pending_token = native.shortcut_registrations.back().first;
+  native.shortcut(pending_token); native.flush();
+  CHECK(delivered == 0);
+  CHECK(app.unregister_global_shortcut("extra").ok);
+  CHECK(native.shortcut_unregistrations.back() == pending_token);
+  native.shortcut_register_status = result::success();
+  CHECK(app.register_global_shortcut("extra", extra).ok);
+  const auto token = native.shortcut_registrations.back().first;
+  CHECK(app.dispatch([&] {
+    // A nested native pump cannot enter another business callback. Its 300
+    // notifications must fit the common 128-event queue, not the work queue.
+    for (unsigned i = 0; i < 300; ++i) native.shortcut(token);
+    native.flush();
+    CHECK(delivered == 0);
+  }).ok);
+  CHECK(delivered == 0);
+  native.flush();
+  CHECK(delivered == 128); // Independent bounded native shortcut notification queue.
+  native.shortcut(token); native.flush();
+  CHECK(delivered == 129);
+  native.dispatch_status = result::failure("E_WEB_PROCESS", "Fake renderer terminated.");
+  CHECK(app.dispatch([] {}).code == "E_WEB_PROCESS");
+  native.shortcut(token); native.flush();
+  CHECK(delivered == 130); // Native shortcut delivery does not require a renderer.
+  const auto before = native.shortcut_unregistrations.size();
+  native.while_shortcut_unregister = [&](std::uint64_t selected) {
+    // Cleanup revokes every registration, not just the one currently being removed.
+    native.shortcut(token); native.shortcut(selected); native.flush();
+    CHECK(delivered == 130);
+  };
+  CHECK(app.close().ok);
+  CHECK(native.shortcut_unregistrations.size() == before + 32);
+}
+
+void global_shortcut_reentry_contract(files& fixture) {
+  using namespace shortcut_modifiers;
+  application* app = nullptr;
+  std::shared_ptr<application> child;
+  fake_backend* root_native = nullptr;
+  fake_backend* child_native = nullptr;
+  std::uint64_t root_token = 0, child_token = 0;
+  bool inside_invoke = false, inside_shortcut = false;
+  int root_calls = 0, child_calls = 0, errors = 0;
+  callbacks handlers;
+  handlers.invoke = [&](std::string_view, std::string_view) {
+    inside_invoke = true;
+    root_native->shortcut(root_token); child_native->shortcut(child_token);
+    root_native->flush(); child_native->flush();
+    CHECK(root_calls == 0 && child_calls == 0);
+    inside_invoke = false;
+    return "{}";
+  };
+  handlers.global_shortcut = [&](window_id owner, std::string_view id) {
+    CHECK(!inside_invoke && !inside_shortcut && owner == app->id() && id == "open");
+    ++root_calls;
+    inside_shortcut = true;
+    child_native->shortcut(child_token); child_native->flush();
+    CHECK(child_calls == 0);
+    // The queued old token must not acquire the reused logical ID.
+    root_native->shortcut(root_token);
+    CHECK(app->unregister_global_shortcut("open").ok);
+    CHECK(app->register_global_shortcut("open", {shortcut_key::f1, control}).ok);
+    CHECK(id == "open"); // Callback argument survives registration-vector mutation.
+    inside_shortcut = false;
+  };
+  handlers.error = [&](const result& error) { CHECK(error.code == "callback_failed"); ++errors; };
+  application root(fixture.settings(), handlers); app = &root;
+  CHECK(root.initialize().ok); root_native = latest;
+  callbacks child_handlers;
+  child_handlers.global_shortcut = [&](window_id owner, std::string_view id) {
+    CHECK(!inside_invoke && !inside_shortcut && owner == child->id() && id == "open");
+    ++child_calls;
+  };
+  child = add_window(root, fixture.settings(), child_handlers); child_native = latest;
+  CHECK(root.register_global_shortcut("open", {shortcut_key::f1, control}).ok);
+  CHECK(child->register_global_shortcut("open", {shortcut_key::f1, alt}).ok);
+  root_token = root_native->shortcut_registrations.back().first;
+  child_token = child_native->shortcut_registrations.back().first;
+  CHECK(child_token > root_token);
+  root_native->shortcut(child_token); child_native->shortcut(root_token);
+  root_native->flush(); child_native->flush();
+  CHECK(root_calls == 0 && child_calls == 0);
+  root_native->send(root_native->envelope(1));
+  root_native->flush(); child_native->flush();
+  CHECK(root_calls == 1 && child_calls == 2 && errors == 0);
+  const auto replacement = root_native->shortcut_registrations.back().first;
+  CHECK(replacement > child_token);
+  root_native->shortcut(replacement);
+  root_native->while_shortcut_unregister = [&](std::uint64_t token) {
+    root_native->shortcut(token); root_native->flush();
+  };
+  CHECK(root.close().ok);
+  CHECK(root_calls == 1 && child_calls == 2 && child_native->active.load());
+  child_native->shortcut(child_token); child_native->flush();
+  CHECK(child_calls == 3);
+}
+
+void global_shortcut_close_contract(files& fixture) {
+  {
+    application* app = nullptr;
+    bool in_callback = false;
+    int calls = 0, errors = 0, closes = 0;
+    callbacks handlers;
+    handlers.global_shortcut = [&](window_id, std::string_view) {
+      CHECK(!in_callback);
+      if (++calls == 1) throw std::runtime_error("business callback failure");
+      in_callback = true;
+      CHECK(app->close().ok);
+      CHECK(closes == 0);
+      in_callback = false;
+    };
+    handlers.error = [&](const result& error) { CHECK(error.code == "callback_failed"); ++errors; };
+    handlers.closed = [&] { CHECK(!in_callback); ++closes; };
+    application root(fixture.settings(), handlers); app = &root;
+    CHECK(root.initialize().ok);
+    auto& native = *latest;
+    CHECK(root.register_global_shortcut("close", {shortcut_key::end, shortcut_modifiers::alt}).ok);
+    const auto token = native.shortcut_registrations.back().first;
+    native.while_shortcut_unregister = [&](std::uint64_t selected) { native.shortcut(selected); native.flush(); };
+    for (int i = 0; i < 3; ++i) native.shortcut(token);
+    native.flush();
+    CHECK(calls == 2 && errors == 1 && closes == 1 && native.counts->closed == 1);
+  }
+  {
+    int delivered = 0, closes = 0;
+    bool in_registration = false;
+    callbacks handlers;
+    handlers.global_shortcut = [&](window_id, std::string_view) { ++delivered; };
+    handlers.closed = [&] { CHECK(!in_registration); ++closes; };
+    application root(fixture.settings(), handlers);
+    CHECK(root.initialize().ok);
+    auto& native = *latest;
+    native.while_shortcut_register = [&](std::uint64_t token) {
+      in_registration = true;
+      native.shortcut(token);
+      CHECK(root.close().code == "shortcut_cleanup_pending"); // Close while this native call is still in progress.
+      CHECK(closes == 0);
+      in_registration = false;
+    };
+    CHECK(root.register_global_shortcut("close", {shortcut_key::end, shortcut_modifiers::alt}).code == "closed");
+    CHECK(delivered == 0 && closes == 1 && native.shortcut_unregistrations.size() == 1);
+  }
+  {
+    application root(fixture.settings());
+    CHECK(root.initialize().ok);
+    auto& native = *latest;
+    CHECK(root.register_global_shortcut("first", {shortcut_key::home, shortcut_modifiers::alt}).ok);
+    CHECK(root.register_global_shortcut("second", {shortcut_key::end, shortcut_modifiers::alt}).ok);
+    bool nested = false;
+    native.while_shortcut_unregister = [&](std::uint64_t) {
+      if (nested) return;
+      nested = true;
+      CHECK(root.close().code == "shortcut_cleanup_pending");
+    };
+    CHECK(root.unregister_global_shortcut("first").ok);
+    CHECK(native.shortcut_unregistrations.size() == 2 && native.counts->closed == 1);
+  }
+}
+
 void quit_approval_contract(files& fixture) {
   {
     int approvals = 0;
@@ -1444,6 +1754,15 @@ int main(int argc, char** argv) {
   }
   try {
     files fixture;
+    global_shortcut_contract(fixture);
+    global_shortcut_capacity_contract(fixture);
+    global_shortcut_reentry_contract(fixture);
+    global_shortcut_close_contract(fixture);
+    if (argc == 2 && std::string(argv[1]) == "--global-shortcuts") {
+      std::cout << "Desktop global-shortcut fake contract: " << checks << " checks, "
+                << failures << " failures. No native shortcut registration verification.\n";
+      return failures ? 1 : 0;
+    }
     desktop_services_contract(fixture);
     desktop_service_reentry_contract(fixture);
     window_state_contract(fixture);

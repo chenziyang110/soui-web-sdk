@@ -2,14 +2,18 @@
 #include "../resource_uri.h"
 
 #import <AppKit/AppKit.h>
+#import <Carbon/Carbon.h>
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 #import <WebKit/WebKit.h>
 
 #include <atomic>
+#include <cstdio>
 #include <cstdint>
 #include <deque>
 #include <exception>
+#include <limits>
+#include <map>
 #include <memory>
 #include <mutex>
 #include <set>
@@ -31,6 +35,48 @@ using soui::desktop::result;
 using soui::desktop::value_result;
 
 struct macos_state;
+struct macos_hotkey {
+  std::weak_ptr<macos_state> owner;
+  std::uint64_t token{0};
+  UInt32 native_id{0};
+  UInt32 key_code{0};
+  UInt32 modifiers{0};
+  EventHotKeyRef reference{nullptr};
+  bool active{false};
+};
+
+// Carbon delivers to an application target, not an NSWindow. The process-wide
+// router outlives every window and retains failed unregisters for final cleanup.
+// Its IDs never restart, even when all windows have closed and a new group opens.
+struct macos_hotkey_router {
+  EventHandlerRef handler{nullptr};
+  std::uint64_t next_id{1};
+  std::map<UInt32, std::shared_ptr<macos_hotkey>> registrations;
+
+  ~macos_hotkey_router() {
+    for (auto& entry : registrations) entry.second->active = false;
+    for (auto& entry : registrations) {
+      auto& registration = entry.second;
+      if (!registration->reference) continue;
+      const auto status = UnregisterEventHotKey(registration->reference);
+      if (status != noErr)
+        std::fprintf(stderr, "SOUI: final global shortcut cleanup failed (OSStatus %ld)\n",
+                     static_cast<long>(status));
+    }
+    if (handler) {
+      const auto status = RemoveEventHandler(handler);
+      if (status != noErr)
+        std::fprintf(stderr, "SOUI: global shortcut router cleanup failed (OSStatus %ld)\n",
+                     static_cast<long>(status));
+    }
+  }
+};
+
+macos_hotkey_router& hotkey_router() {
+  static macos_hotkey_router router;
+  return router;
+}
+
 // AppKit has one application per process. A managed window group owns these
 // controls once; closing its root window must not remove them from its children.
 struct macos_application {
@@ -91,6 +137,11 @@ struct macos_state {
   NSMenu* tray_menu{nil};
   std::uint64_t popup_generation{0};
   std::uint64_t tray_generation{0};
+  std::map<std::uint64_t, std::shared_ptr<macos_hotkey>> shortcuts;
+  // Native shortcuts survive navigation and renderer failure. Do not put them
+  // in the document-generation queue or let renderer traffic consume their cap.
+  std::deque<std::uint64_t> shortcut_jobs;
+  bool shortcut_drain_scheduled{false};
 };
 
 NSString* cocoa_string(std::string_view text) {
@@ -213,6 +264,143 @@ void report_error(const std::shared_ptr<macos_state>& state, result error) {
   }});
 }
 
+bool active_shortcut(const std::shared_ptr<macos_state>& state, std::uint64_t token) {
+  if (!is_live(state)) return false;
+  const auto found = state->shortcuts.find(token);
+  return found != state->shortcuts.end() && found->second->active;
+}
+
+void drain_shortcuts(const std::weak_ptr<macos_state>& weak_state) {
+  const auto state = weak_state.lock();
+  if (!state) return;
+  state->shortcut_drain_scheduled = false;
+  if (!is_live(state) || state->shortcut_jobs.empty()) return;
+  const auto token = state->shortcut_jobs.front();
+  state->shortcut_jobs.pop_front();
+  if (!state->shortcut_jobs.empty()) {
+    state->shortcut_drain_scheduled = true;
+    schedule_main_block([weak_state] { drain_shortcuts(weak_state); });
+  }
+  // Recheck after queueing, including unregister/re-register and nested close.
+  if (!active_shortcut(state, token)) return;
+  const auto callback = state->events.global_shortcut;
+  if (callback) {
+    try { callback(token); }
+    catch (...) {
+      report_error(state, result::failure("E_CALLBACK", "Global shortcut callback failed"));
+    }
+  }
+}
+
+constexpr UInt32 shortcut_signature = 0x534F5549;  // SOUI, not a window identity.
+
+OSStatus handle_global_shortcut(EventHandlerCallRef, EventRef event, void* context) {
+  if (GetEventClass(event) != kEventClassKeyboard ||
+      GetEventKind(event) != kEventHotKeyPressed) return eventNotHandledErr;
+  EventHotKeyID identity{};
+  if (GetEventParameter(event, kEventParamDirectObject, typeEventHotKeyID, nullptr,
+                        sizeof(identity), nullptr, &identity) != noErr ||
+      identity.signature != shortcut_signature) return eventNotHandledErr;
+  auto& router = *static_cast<macos_hotkey_router*>(context);
+  const auto found = router.registrations.find(identity.id);
+  if (found == router.registrations.end()) return eventNotHandledErr;
+  try {
+    const auto registration = found->second;
+    const auto state = registration->owner.lock();
+    if (!registration->active || !active_shortcut(state, registration->token)) return noErr;
+    // Drop excess repeat events instead of growing memory without bound. There
+    // is no cross-platform guarantee of one callback per physical key press.
+    if (state->shortcut_jobs.size() >= 256) return noErr;
+    state->shortcut_jobs.push_back(registration->token);
+    if (!state->shortcut_drain_scheduled) {
+      const std::weak_ptr<macos_state> weak_state = state;
+      state->shortcut_drain_scheduled = true;
+      schedule_main_block([weak_state] { drain_shortcuts(weak_state); });
+    }
+  } catch (...) {
+    // Never unwind a C++ exception through Carbon's event dispatcher.
+  }
+  return noErr;
+}
+
+result hotkey_error(const char* code, const char* operation, OSStatus status) {
+  return result::failure(code, std::string(operation) + " (OSStatus " +
+                                  std::to_string(status) + ")");
+}
+
+result native_shortcut(const soui::desktop::global_shortcut& shortcut,
+                       UInt32& key, UInt32& modifiers) {
+  using soui::desktop::shortcut_key;
+  namespace bits = soui::desktop::shortcut_modifiers;
+  const auto allowed = bits::control | bits::alt | bits::shift | bits::primary;
+  if ((shortcut.modifiers & ~allowed) ||
+      !(shortcut.modifiers & (bits::control | bits::alt | bits::primary)))
+    return result::failure("E_ARGUMENT", "A global shortcut requires Control, Alt or Primary");
+  switch (shortcut.key) {
+    case shortcut_key::f1: key = kVK_F1; break;
+    case shortcut_key::f2: key = kVK_F2; break;
+    case shortcut_key::f3: key = kVK_F3; break;
+    case shortcut_key::f4: key = kVK_F4; break;
+    case shortcut_key::f5: key = kVK_F5; break;
+    case shortcut_key::f6: key = kVK_F6; break;
+    case shortcut_key::f7: key = kVK_F7; break;
+    case shortcut_key::f8: key = kVK_F8; break;
+    case shortcut_key::f9: key = kVK_F9; break;
+    case shortcut_key::f10: key = kVK_F10; break;
+    case shortcut_key::f11: key = kVK_F11; break;
+    case shortcut_key::left: key = kVK_LeftArrow; break;
+    case shortcut_key::right: key = kVK_RightArrow; break;
+    case shortcut_key::up: key = kVK_UpArrow; break;
+    case shortcut_key::down: key = kVK_DownArrow; break;
+    case shortcut_key::home: key = kVK_Home; break;
+    case shortcut_key::end: key = kVK_End; break;
+    case shortcut_key::page_up: key = kVK_PageUp; break;
+    case shortcut_key::page_down: key = kVK_PageDown; break;
+    case shortcut_key::delete_key: key = kVK_ForwardDelete; break;
+    // kVK_Help is not Insert, and kVK_Delete is Backspace. Do not silently
+    // substitute either one for the public logical key.
+    case shortcut_key::insert_key:
+      return result::failure("not_supported", "macOS has no exact Insert shortcut mapping");
+    default:
+      return result::failure("E_ARGUMENT", "Unknown global shortcut key");
+  }
+  modifiers = 0;
+  if (shortcut.modifiers & bits::control) modifiers |= controlKey;
+  if (shortcut.modifiers & bits::alt) modifiers |= optionKey;
+  if (shortcut.modifiers & bits::shift) modifiers |= shiftKey;
+  if (shortcut.modifiers & bits::primary) modifiers |= cmdKey;
+  return result::success();
+}
+
+result release_shortcut(const std::shared_ptr<macos_state>& state, std::uint64_t token) {
+  const auto found = state->shortcuts.find(token);
+  if (found == state->shortcuts.end()) return result::success();
+  const auto registration = found->second;
+  registration->active = false;
+  if (registration->reference) {
+    const auto status = UnregisterEventHotKey(registration->reference);
+    if (status != noErr)
+      return hotkey_error("E_SHORTCUT_UNREGISTER", "Could not unregister the global shortcut", status);
+    registration->reference = nullptr;
+  }
+  hotkey_router().registrations.erase(registration->native_id);
+  state->shortcuts.erase(found);
+  return result::success();
+}
+
+result release_shortcuts(const std::shared_ptr<macos_state>& state) {
+  // Revoke all delivery before the first OS operation, including close reentry.
+  for (auto& entry : state->shortcuts) entry.second->active = false;
+  state->shortcut_jobs.clear();
+  result first_error = result::success();
+  for (auto it = state->shortcuts.begin(); it != state->shortcuts.end();) {
+    const auto token = (it++)->first;
+    const auto status = release_shortcut(state, token);
+    if (!status.ok && first_error.ok) first_error = status;
+  }
+  return first_error;
+}
+
 bool allows_main_document(const std::shared_ptr<macos_state>& state, NSURL* url) {
   if (!is_live(state) || state->terminal_failure.load(std::memory_order_acquire) ||
       !url || !url.absoluteString ||
@@ -310,11 +498,11 @@ void remove_tray(const std::shared_ptr<macos_state>& state) {
 
 enum class window_close_origin { backend, appkit };
 
-void shut_down(const std::shared_ptr<macos_state>& state, bool notify,
+result shut_down(const std::shared_ptr<macos_state>& state, bool notify,
                window_close_origin origin = window_close_origin::backend) {
   // Native cancellation and close can synchronously notify observers. Do not
   // enter cleanup twice, even before the public closed callback is delivered.
-  if (state->shutdown_started) return;
+  if (state->shutdown_started) return release_shortcuts(state);
   state->shutdown_started = true;
   const bool was_live = state->accepting_work.exchange(false, std::memory_order_acq_rel);
   ++state->generation;
@@ -325,6 +513,9 @@ void shut_down(const std::shared_ptr<macos_state>& state, bool notify,
   discard_jobs(state, true);
   auto callbacks = std::move(state->events);
   state->events = {};
+  // The OS registrations must be released before their native owner disappears.
+  // Failed records remain inactive, so a later close/destructor can retry them.
+  const auto shortcut_status = release_shortcuts(state);
 
   // ARC must keep the native objects alive through cleanup and any synchronous
   // observers, not merely through their last ordinary use. Revoke delegates and
@@ -362,9 +553,13 @@ void shut_down(const std::shared_ptr<macos_state>& state, bool notify,
   }
   state->navigation = nil;
   state->resource_root = nil;
+  if (was_live && notify && !shortcut_status.ok && callbacks.error) {
+    try { callbacks.error(shortcut_status); } catch (...) {}
+  }
   if (was_live && notify && callbacks.closed) {
     try { callbacks.closed(); } catch (...) {}
   }
+  return shortcut_status;
 }
 
 result require_main_thread() {
@@ -896,7 +1091,10 @@ class wkwebview_backend final : public backend {
     const auto state = state_;
     if ([NSThread isMainThread]) {
       @autoreleasepool {
-        shut_down(state, false);
+        const auto cleanup = shut_down(state, false);
+        if (!cleanup.ok)
+          std::fprintf(stderr, "SOUI: final window shortcut cleanup failed: %s\n",
+                       cleanup.message.c_str());
         if (state->loop_owner && state->application_group) {
           state->application_group->quit_requested = true;
           stop_event_loop(state->application_group);
@@ -905,7 +1103,10 @@ class wkwebview_backend final : public backend {
       }
     } else {
       schedule_main_block([state] {
-        shut_down(state, false);
+        const auto cleanup = shut_down(state, false);
+        if (!cleanup.ok)
+          std::fprintf(stderr, "SOUI: final window shortcut cleanup failed: %s\n",
+                       cleanup.message.c_str());
         if (state->loop_owner && state->application_group) {
           state->application_group->quit_requested = true;
           stop_event_loop(state->application_group);
@@ -1090,8 +1291,7 @@ class wkwebview_backend final : public backend {
   result close() override {
     auto thread = require_main_thread();
     if (!thread.ok) return thread;
-    @autoreleasepool { shut_down(state_, true); }
-    return result::success();
+    @autoreleasepool { return shut_down(state_, true); }
   }
 
   result evaluate(std::string script) override {
@@ -1350,8 +1550,88 @@ class wkwebview_backend final : public backend {
     return result::success();
   }
 
+  result register_global_shortcut(std::uint64_t token, const global_shortcut& shortcut) override {
+    auto thread = require_main_thread();
+    if (!thread.ok) return thread;
+    if (!is_live(state_))
+      return result::failure("E_CLOSED", "The macOS desktop window is not open");
+    if (!token) return result::failure("E_ARGUMENT", "A global shortcut token cannot be zero");
+    if (state_->shortcuts.count(token))
+      return result::failure("E_SHORTCUT_DUPLICATE", "The global shortcut token is already registered");
+    if (state_->shortcuts.size() >= 32)
+      return result::failure("E_SHORTCUT_LIMIT", "The window global shortcut limit is 32");
+    UInt32 key = 0;
+    UInt32 modifiers = 0;
+    auto mapped = native_shortcut(shortcut, key, modifiers);
+    if (!mapped.ok) return mapped;
+
+    auto& router = hotkey_router();
+    // Failed unregisters may outlive their windows. Keep those resource records,
+    // but never let repeated failed close/recreate cycles grow without bound.
+    if (router.registrations.size() >= 1024)
+      return result::failure("E_SHORTCUT_LIMIT", "The process global shortcut limit is 1024");
+    for (const auto& entry : router.registrations) {
+      const auto& registration = entry.second;
+      if (registration->key_code == key && registration->modifiers == modifiers)
+        return result::failure("E_SHORTCUT_CONFLICT", "The global shortcut is already owned by this application");
+    }
+    if (router.next_id > std::numeric_limits<UInt32>::max())
+      return result::failure("E_SHORTCUT_LIMIT", "The native global shortcut identity space is exhausted");
+    if (!router.handler) {
+      const EventTypeSpec type{kEventClassKeyboard, kEventHotKeyPressed};
+      const auto status = InstallEventHandler(GetApplicationEventTarget(), &handle_global_shortcut,
+                                             1, &type, &router, &router.handler);
+      if (status != noErr)
+        return hotkey_error("E_SHORTCUT_REGISTER", "Could not install the global shortcut handler", status);
+    }
+
+    // Reserve both ownership records before the native registration. No allocation
+    // after OS success is required to retain the resource or make it active.
+    const auto native_id = static_cast<UInt32>(router.next_id++);
+    try {
+      const auto registration = std::make_shared<macos_hotkey>();
+      registration->owner = state_;
+      registration->token = token;
+      registration->native_id = native_id;
+      registration->key_code = key;
+      registration->modifiers = modifiers;
+      state_->shortcuts.emplace(token, registration);
+      try {
+        router.registrations.emplace(native_id, registration);
+      } catch (...) {
+        state_->shortcuts.erase(token);
+        throw;
+      }
+      const EventHotKeyID identity{shortcut_signature, native_id};
+      const auto status = RegisterEventHotKey(key, modifiers, identity, GetApplicationEventTarget(),
+                                             0, &registration->reference);
+      if (status != noErr) {
+        // Normally Carbon returns no reference on failure. If it does return a
+        // resource, keep an inactive record unless native rollback succeeds.
+        const auto cleanup = release_shortcut(state_, token);
+        if (!cleanup.ok)
+          return result::failure("shortcut_cleanup_pending",
+              "Global shortcut registration failed (OSStatus " + std::to_string(status) +
+              "); " + cleanup.message);
+        return hotkey_error(status == eventHotKeyExistsErr ? "E_SHORTCUT_CONFLICT" : "E_SHORTCUT_REGISTER",
+                            "Could not register the global shortcut", status);
+      }
+      registration->active = true;
+      return result::success();
+    } catch (...) {
+      return result::failure("E_SHORTCUT_REGISTER", "Could not allocate the global shortcut registration");
+    }
+  }
+
+  result unregister_global_shortcut(std::uint64_t token) override {
+    auto thread = require_main_thread();
+    if (!thread.ok) return thread;
+    // Cleanup retry remains possible after close and renderer termination.
+    return release_shortcut(state_, token);
+  }
+
   capabilities get_capabilities() const override {
-    return {"wkwebview", true, true, true, true, true, true, true, true, true, true, true};
+    return {"wkwebview", true, true, true, true, true, true, true, true, true, true, true, true};
   }
 
  private:

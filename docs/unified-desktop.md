@@ -136,7 +136,7 @@ node tools/package-desktop.cjs --build-dir out/desktop --output out/desktop-pack
 不派发命令。尾部 `children` 非空表示子菜单，父项必须有标题、空 id、checked=false。
 分隔符 id/label/children 必须为空；叶命令 ID 在整棵树中唯一有界、文本必须有效 UTF-8。
 禁用父项同时禁用全部后代，公共层也阻止其命令派发；替换菜单后旧 revision 回调失效。
-popup 与 tray 共享模型；菜单栏和快捷键仍不在本轮契约内。这些接口仅供原生业务显式调用，不给网页任意创建或控制其他
+popup 与 tray 共享模型；菜单栏和应用内 accelerator 仍不在本轮契约内。这些接口仅供原生业务显式调用，不给网页任意创建或控制其他
 窗口的权限。
 
 托盘绑定所属窗口生命周期，要保留托盘可隐藏该窗口，显式 `quit()` 结束进程。
@@ -144,6 +144,37 @@ popup 与 tray 共享模型；菜单栏和快捷键仍不在本轮契约内。�
 GTK3 XEmbed 托盘，必须在 1500 ms 内确认宿主嵌入，否则 `E_TRAY_UNAVAILABLE`；
 Wayland-only/无兼容托盘宿主不保证可用，后续宿主消失也会报告失败。
 能力标志表示后端实现，不保证当前桌面会话有可用托盘或已授予焦点。
+
+## 原生宿主全局快捷键
+
+`register_global_shortcut(id, global_shortcut{key, modifiers})` 与
+`unregister_global_shortcut(id)` 只供可信 C++ 宿主使用。`callbacks.global_shortcut(window_id, id)`
+与菜单命令分开，不自动发网页事件、不证明用户手势；网页没有标准注册方法或默认权限。
+示例只允许用户点击注册一个固定的 Primary+Shift+F9“显示此窗”业务绑定，不在启动时注册。
+
+键枚举限 F1..F11、方向键、Home/End/PageUp/PageDown/Insert/Delete；F12、字符键、
+数字键及媒体键不接受。`control/alt/shift/primary` 为位集合，primary 在 Mac 为 Command，
+其他平台为 Control；至少包含 control/alt/primary，Shift 单独不足。Mac Insert 不支持，
+Delete 指 Forward Delete 而不是退格；系统 Fn 设置、占用和布局差异不保证相同物理按法。
+
+每窗最多 32 项，含注销失败待清理项。同 ID 或规范化组合重复注册会失败，不隐式替换；
+未知 ID 注销幂等成功。注销立即禁回调，即使 OS 清理失败；失败记录保留供同 ID 重试。
+若注册失败后的回滚也失败，`shortcut_cleanup_pending` 同样保留逻辑 ID/配额，需按原 ID 注销重试。
+注册身份不复用，旧事件不能触发重注册后的绑定；有限原生 ID 池耗尽会明确失败，不能回绕。
+Mac 进程级 router 另限制 1024 项（含保留清理项）。关闭先撤销回调，再尝试全部原生清理，
+最终析构是 best-effort，不把错误描述为确认释放。宿主注册跨导航保持，到显式注销或窗口关闭
+结束；长期按住可能依平台重复，SDK不保证“一次物理按键恰好一次回调”。
+
+Windows 使用 RegisterHotKey；Mac 使用 Carbon EventHotKey，不添加全局键盘监听或
+Accessibility 授权。Linux 用可选 X11 实现，每个注册独立拥有显示连接，既不复用旧事件身份，
+也不排空主 GTK 事件队列。仅 `XDG_SESSION_TYPE=x11` 且未设置 `WAYLAND_DISPLAY` 的确认 X11 会话可尝试；Wayland（含 XWayland）及未知会话
+返回 not_supported，不使用模拟按键作为替代。X11 键位/修饰映射有歧义也拒绝；
+映射变化会使原注册失效，需要显式注销并重新注册。Portal 注册/用户重绑定是后续独立能力。
+
+构建默认探测 `gdk-x11-3.0`/`x11`，缺失仍能构建但全局快捷键不可用；
+`-DSOUI_DESKTOP_ENABLE_X11_SHORTCUTS=OFF` 可明确禁用。启用依赖会传播至安装 SDK
+消费者，不能把有 X11 静态依赖的包说成无需 X11。`global_shortcuts` capability 表示后端
+实现可尝试，不表示组合键一定能注册。注册错误不全部归为占用冲突。
 
 ## 公共行为与失败
 

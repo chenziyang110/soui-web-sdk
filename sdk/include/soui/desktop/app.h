@@ -60,6 +60,24 @@ struct capabilities {
   bool window_maximize{false};
   bool window_restore{false};
   bool window_state_observation{false};
+  // Implementation availability, not a promise that any combination is free.
+  bool global_shortcuts{false};
+};
+
+enum class shortcut_key {
+  f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11,
+  left, right, up, down, home, end, page_up, page_down, insert_key, delete_key
+};
+namespace shortcut_modifiers {
+inline constexpr std::uint32_t control = 1;
+inline constexpr std::uint32_t alt = 2;
+inline constexpr std::uint32_t shift = 4;
+// Command on macOS, Control on other platforms.
+inline constexpr std::uint32_t primary = 8;
+}
+struct global_shortcut {
+  shortcut_key key{shortcut_key::f1};
+  std::uint32_t modifiers{0};
 };
 
 struct menu_item {
@@ -127,6 +145,8 @@ struct callbacks {
   // User-requested close approval. Default allows; false/exception cancels.
   // Never wait for a webpage Promise here. close()/quit() bypass this hook.
   std::function<bool(window_id)> close_requested;
+  // Native-only notification, not proof of a user gesture or Web permission.
+  std::function<void(window_id, std::string_view id)> global_shortcut;
 };
 
 class application;
@@ -180,6 +200,13 @@ class application final {
   [[nodiscard]] result popup_menu(const std::vector<menu_item>& items);
   [[nodiscard]] result set_tray(const tray_options& settings);
   [[nodiscard]] result clear_tray();
+  // At most 32 registrations per window, including pending native cleanup.
+  // IDs/combinations are unique; at least Control, Alt or Primary is required.
+  // Registrations survive navigation; close revokes delivery before cleanup.
+  // shortcut_cleanup_pending reserves an inactive ID until unregister succeeds.
+  [[nodiscard]] result register_global_shortcut(std::string_view id, const global_shortcut&);
+  // Unknown IDs succeed. Failure keeps an inactive record for cleanup retry.
+  [[nodiscard]] result unregister_global_shortcut(std::string_view id);
   [[nodiscard]] capabilities get_capabilities() const;
  private:
   struct implementation;

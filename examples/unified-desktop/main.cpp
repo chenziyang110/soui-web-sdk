@@ -64,6 +64,7 @@ soui::desktop::callbacks make_callbacks(example_state& state,
         ",\"directoryDialog\":" + (caps.directory_dialog && state.settings.services.directory_dialog ? "true" : "false") +
         ",\"popupMenu\":" + (caps.popup_menu ? "true" : "false") +
         ",\"tray\":" + (caps.tray ? "true" : "false") +
+        ",\"globalShortcuts\":" + (caps.global_shortcuts ? "true" : "false") +
         ",\"resourceServer\":" + (state.settings.enable_resource_server ? "true" : "false") + "}";
     }
     // Window properties, clipboard and directory selection now use the SDK's
@@ -93,6 +94,14 @@ soui::desktop::callbacks make_callbacks(example_state& state,
       return native_result(window->set_tray(tray));
     }
     if (method == "window.clearTray") return native_result(window->clear_tray());
+    // Fixed, host-owned business binding only. Nothing registers at startup.
+    if (method == "window.registerRevealShortcut") {
+      return native_result(window->register_global_shortcut("window.reveal",
+        {soui::desktop::shortcut_key::f9,
+         soui::desktop::shortcut_modifiers::primary | soui::desktop::shortcut_modifiers::shift}));
+    }
+    if (method == "window.unregisterRevealShortcut")
+      return native_result(window->unregister_global_shortcut("window.reveal"));
     if (method == "window.setCloseProtection") {
       // This example business method accepts a JSON boolean, not truthy strings
       // or arbitrary objects. It does not grant a standard SDK close permission.
@@ -133,6 +142,13 @@ soui::desktop::callbacks make_callbacks(example_state& state,
     if (command == "window.focus") { (void)window->show(true); (void)window->focus(); }
     else if (command == "window.close") (void)window->request_close();
     else if (command == "app.quit") (void)window->request_quit();
+  };
+  callbacks.global_shortcut = [context](soui::desktop::window_id, std::string_view id) {
+    // Native business action, not a gesture proof or an automatic page event.
+    if (id == "window.reveal" && context->window) {
+      (void)context->window->show(true);
+      (void)context->window->focus();
+    }
   };
   callbacks.error = [](const soui::desktop::result& status) {
     std::cerr << status.code << ": " << status.message << '\n';

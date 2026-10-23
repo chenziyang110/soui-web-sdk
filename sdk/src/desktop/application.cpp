@@ -19,11 +19,26 @@ namespace soui::desktop {
 namespace {
 std::atomic<bool> process_application{false};
 std::atomic<window_id> next_window_id{1};
+// Process-wide identity prevents stale notifications from matching a later
+// registration, including one created by a different application group.
+std::atomic<std::uint64_t> next_shortcut_token{1};
 bool valid_text(std::string_view value, std::size_t limit) {
   return value.size() <= limit && value.find('\0') == std::string_view::npos &&
     soui::runtime::detail::valid_utf8(value);
 }
 result unavailable() { return result::failure("closed", "The desktop application is not active."); }
+result normalize_shortcut(const global_shortcut& input, global_shortcut& output) {
+  using namespace shortcut_modifiers;
+  if (input.key < shortcut_key::f1 || input.key > shortcut_key::delete_key ||
+      (input.modifiers & ~(control | alt | shift | primary)) ||
+      !(input.modifiers & (control | alt | primary)))
+    return result::failure("invalid_shortcut", "A supported key and Control, Alt or Primary modifier are required.");
+  output = input;
+#if !defined(__APPLE__)
+  if (output.modifiers & primary) output.modifiers = (output.modifiers & ~primary) | control;
+#endif
+  return result::success();
+}
 result validate_menu_level(const std::vector<menu_item>& items, unsigned depth,
                            std::size_t& count, std::set<std::string>& ids) {
   if (depth > 4 || items.size() > 64 - count)
@@ -142,6 +157,18 @@ struct application_state : std::enable_shared_from_this<application_state> {
   std::uint64_t tray_revision{0};
   std::set<std::string> popup_commands;
   std::set<std::string> tray_commands;
+  struct shortcut_registration {
+    std::string id;
+    global_shortcut chord;
+    std::uint64_t token;
+    bool active{false};
+    bool native_pending{false};
+    bool revoked{false};
+  };
+  std::vector<shortcut_registration> shortcuts;
+  // Separate from menu revisions and document generations. Each notification
+  // still rechecks its token and active flag immediately before delivery.
+  std::deque<std::uint64_t> shortcut_events;
   std::atomic<std::size_t> pending_work{0};
   bool draining{false};
   bool pending_closed{false};
@@ -217,6 +244,7 @@ struct application_state : std::enable_shared_from_this<application_state> {
         requests.clear();
         work_items.clear();
         commands.clear();
+        shortcut_events.clear();
         pending_ready = false;
         pending_state_changed = false;
         pending_close_request = false;
@@ -280,6 +308,22 @@ struct application_state : std::enable_shared_from_this<application_state> {
           catch (...) { report(result::failure("callback_failed", "A native command callback failed.")); }
           --group->callback_depth;
         }
+      } else if (!shortcut_events.empty()) {
+        const auto selected = shortcut_events.front(); shortcut_events.pop_front();
+        const auto found = std::find_if(shortcuts.begin(), shortcuts.end(), [selected](const auto& item) {
+          return item.token == selected && item.active;
+        });
+        if (accepting.load() && found != shortcuts.end() && handlers.global_shortcut) {
+          // The callback may unregister/re-register, invalidating the record.
+          const auto id = found->id;
+          ++group->callback_depth;
+          try {
+            const auto callback = handlers.global_shortcut;
+            callback(identity, id);
+          }
+          catch (...) { report(result::failure("callback_failed", "A global shortcut callback failed.")); }
+          --group->callback_depth;
+        }
       } else if (!requests.empty()) {
         auto request = std::move(requests.front()); requests.pop_front();
         receive(request.payload, request.source, request.frame);
@@ -315,11 +359,56 @@ struct application_state : std::enable_shared_from_this<application_state> {
     commands.push_back({std::string(command), action_revision});
     drain();
   }
+  void on_global_shortcut(std::uint64_t selected) {
+    if (!accepting.load() || shortcut_events.size() >= 128 ||
+        std::none_of(shortcuts.begin(), shortcuts.end(), [selected](const auto& item) {
+          return item.token == selected && item.active;
+        })) return;
+    shortcut_events.push_back(selected);
+    // Backends already defer OS notifications on a window-lifetime queue. Do
+    // not route these through renderer-dependent application dispatch again.
+    drain();
+  }
+  void revoke_shortcuts() noexcept {
+    for (auto& item : shortcuts) { item.active = false; item.revoked = true; }
+    shortcut_events.clear();
+  }
+  result cleanup_shortcuts() {
+    // Revoke all registrations before the first native cleanup can pump events.
+    revoke_shortcuts();
+    result status = result::success();
+    callback_scope scope(group->callback_depth);
+    std::vector<std::uint64_t> pending;
+    for (const auto& item : shortcuts) pending.push_back(item.token);
+    for (const auto selected : pending) {
+      auto item = std::find_if(shortcuts.begin(), shortcuts.end(), [selected](const auto& value) {
+        return value.token == selected;
+      });
+      if (item == shortcuts.end()) continue;
+      if (item->native_pending) {
+        if (status.ok) status = result::failure("shortcut_cleanup_pending", "A native shortcut operation has not returned yet.");
+        continue;
+      }
+      item->native_pending = true;
+      const auto cleared = native->unregister_global_shortcut(selected);
+      // Native cleanup can synchronously close or reconfigure another window.
+      item = std::find_if(shortcuts.begin(), shortcuts.end(), [selected](const auto& value) {
+        return value.token == selected;
+      });
+      if (item != shortcuts.end()) {
+        item->native_pending = false;
+        if (cleared.ok) shortcuts.erase(item);
+      }
+      if (!cleared.ok && status.ok) status = cleared;
+    }
+    return status;
+  }
   void on_closed() noexcept {
+    accepting.store(false);
+    revoke_shortcuts();
     resources.stop();
     asset_channel->revoke();
     cancel_assets();
-    accepting.store(false);
     pending_close_request = false;
     ready = false;
     token.clear();
@@ -529,7 +618,15 @@ struct application_state : std::enable_shared_from_this<application_state> {
     ready = false;
     token.clear();
     ++generation;
-    return native->close();
+    result cleared;
+    result closed;
+    {
+      callback_scope scope(group->callback_depth);
+      cleared = cleanup_shortcuts();
+      closed = native->close();
+    }
+    drain();
+    return closed.ok ? cleared : closed;
   }
   bool approve_close() noexcept {
     bool approved = true;
@@ -587,7 +684,8 @@ void application_group::drain() noexcept {
     const auto snapshot = windows; // A callback can create another window.
     for (const auto& weak : snapshot) if (const auto state = weak.lock(); state && !state->draining) {
       if (pending_quit || state->pending_close_request || state->pending_closed || state->pending_ready || state->pending_state_changed || !state->errors.empty() ||
-          !state->commands.empty() || !state->requests.empty() || !state->work_items.empty()) {
+          !state->commands.empty() || !state->shortcut_events.empty() ||
+          !state->requests.empty() || !state->work_items.empty()) {
         progressed = true;
         state->drain();
       }
@@ -677,7 +775,11 @@ application::~application() {
   state->asset_channel->revoke();
   state->cancel_assets();
   state->token.clear();
-  if (state->native) { (void)state->native->close(); state->native.reset(); }
+  if (state->native) {
+    (void)state->cleanup_shortcuts();
+    (void)state->native->close();
+    state->native.reset();
+  }
   if (state->owns_process_slot) process_application.store(false);
 }
 
@@ -740,6 +842,9 @@ result application::initialize() {
     if (const auto live = weak.lock()) live->on_state_changed(value);
   };
   events.command = [weak](std::string_view command) { if (const auto live = weak.lock()) live->on_command(command); };
+  events.global_shortcut = [weak](std::uint64_t token) {
+    if (const auto live = weak.lock()) live->on_global_shortcut(token);
+  };
   events.close_requested = [weak]() { if (const auto live = weak.lock()) (void)live->request_close(); };
   events.quit_requested = [weak]() { if (const auto live = weak.lock()) (void)live->group->request_quit(); };
   events.reload = [weak]() {
@@ -968,6 +1073,89 @@ result application::clear_tray() {
     if (cleared.ok) state->tray_commands.clear();
     else ++state->action_revision;
   }
+  return cleared;
+}
+result application::register_global_shortcut(std::string_view id, const global_shortcut& shortcut) {
+  auto state = impl_->state; const auto checked = state->check();
+  if (!checked.ok) return checked;
+  if (!detail::valid_name(id))
+    return result::failure("invalid_shortcut_id", "Shortcut IDs must be bounded ASCII names.");
+  global_shortcut normalized;
+  const auto valid = normalize_shortcut(shortcut, normalized);
+  if (!valid.ok) return valid;
+  for (const auto& item : state->shortcuts) {
+    if (item.id == id)
+      return result::failure("duplicate_shortcut_id", "This shortcut ID already has a registration or pending cleanup.");
+    if (item.chord.key == normalized.key && item.chord.modifiers == normalized.modifiers)
+      return result::failure("duplicate_shortcut", "This shortcut combination is already registered or awaiting cleanup.");
+  }
+  if (state->shortcuts.size() >= 32)
+    return result::failure("shortcut_limit", "Each window supports at most 32 registrations including pending cleanup.");
+  auto selected = next_shortcut_token.load();
+  do {
+    if (selected == std::numeric_limits<std::uint64_t>::max())
+      return result::failure("shortcut_id_exhausted", "Shortcut identifiers cannot be reused.");
+  } while (!next_shortcut_token.compare_exchange_weak(selected, selected + 1));
+  state->shortcuts.push_back({std::string(id), normalized, selected, false, true});
+  result registered;
+  {
+    callback_scope scope(state->group->callback_depth);
+    registered = state->native->register_global_shortcut(selected, normalized);
+    auto item = std::find_if(state->shortcuts.begin(), state->shortcuts.end(), [selected](const auto& value) {
+      return value.token == selected;
+    });
+    if (item != state->shortcuts.end()) item->native_pending = false;
+    if (!registered.ok) {
+      if (registered.code != "shortcut_cleanup_pending" && item != state->shortcuts.end())
+        state->shortcuts.erase(item);
+    } else if (state->accepting.load() && item != state->shortcuts.end() && !item->revoked) item->active = true;
+    else {
+      // A nested native operation can revoke or close a pending registration.
+      if (item != state->shortcuts.end()) item->native_pending = true;
+      const auto cleared = state->native->unregister_global_shortcut(selected);
+      item = std::find_if(state->shortcuts.begin(), state->shortcuts.end(), [selected](const auto& value) {
+        return value.token == selected;
+      });
+      if (item != state->shortcuts.end()) {
+        item->native_pending = false;
+        if (cleared.ok) state->shortcuts.erase(item);
+      }
+      registered = !state->accepting.load() ? unavailable() : cleared.ok ?
+        result::failure("shortcut_cancelled", "Shortcut registration was revoked before it completed.") :
+        result::failure("shortcut_cleanup_pending", cleared.message);
+    }
+  }
+  state->drain();
+  return registered;
+}
+result application::unregister_global_shortcut(std::string_view id) {
+  auto state = impl_->state; const auto checked = state->check();
+  if (!checked.ok) return checked;
+  if (!detail::valid_name(id))
+    return result::failure("invalid_shortcut_id", "Shortcut IDs must be bounded ASCII names.");
+  auto item = std::find_if(state->shortcuts.begin(), state->shortcuts.end(), [id](const auto& value) {
+    return value.id == id;
+  });
+  if (item == state->shortcuts.end()) return result::success();
+  item->active = false;
+  item->revoked = true;
+  if (item->native_pending)
+    return result::failure("shortcut_cleanup_pending", "A native shortcut operation has not returned yet.");
+  const auto selected = item->token;
+  item->native_pending = true;
+  result cleared;
+  {
+    callback_scope scope(state->group->callback_depth);
+    cleared = state->native->unregister_global_shortcut(selected);
+    item = std::find_if(state->shortcuts.begin(), state->shortcuts.end(), [selected](const auto& value) {
+      return value.token == selected;
+    });
+    if (item != state->shortcuts.end()) {
+      item->native_pending = false;
+      if (cleared.ok) state->shortcuts.erase(item);
+    }
+  }
+  state->drain();
   return cleared;
 }
 capabilities application::get_capabilities() const {

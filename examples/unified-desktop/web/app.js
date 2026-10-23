@@ -70,7 +70,7 @@ if (!window.souiDesktop) {
     document.getElementById('dot').classList.add('connected');
     document.querySelector('[data-action="modules"]').disabled = !caps.resourceServer;
     for (const [action, available] of [['copy', caps.clipboardWrite], ['paste', caps.clipboardRead],
-      ['directory', caps.directoryDialog], ['menu', caps.popupMenu], ['tray', caps.tray], ['clearTray', caps.tray]])
+      ['directory', caps.directoryDialog], ['menu', caps.popupMenu], ['tray', caps.tray], ['clearTray', caps.tray], ['registerShortcut', caps.globalShortcuts], ['unregisterShortcut', caps.globalShortcuts]])
       document.querySelector(`[data-action="${action}"]`).disabled = !available;
   }).catch(() => {});
   const actions = {
@@ -119,6 +119,8 @@ if (!window.souiDesktop) {
     menu: () => invoke('window.menu'),
     tray: () => invoke('window.tray'),
     clearTray: () => invoke('window.clearTray'),
+    registerShortcut: () => invoke('window.registerRevealShortcut'),
+    unregisterShortcut: () => invoke('window.unregisterRevealShortcut'),
     quit: () => invoke('app.quit'),
   };
   for (const button of document.querySelectorAll('[data-action]')) button.addEventListener('click', () => {

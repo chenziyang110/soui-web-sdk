@@ -15,11 +15,13 @@
 #include "../resource_uri.h"
 
 #include <algorithm>
+#include <atomic>
 #include <cstdint>
 #include <cstdio>
 #include <cstring>
 #include <deque>
 #include <limits>
+#include <map>
 #include <mutex>
 #include <set>
 #include <utility>
@@ -38,6 +40,11 @@ constexpr UINT tray_icon_id = 1;
 constexpr std::size_t max_dispatch_queue = 1024;
 constexpr std::size_t max_message_characters = 65536;
 constexpr std::size_t max_clipboard_bytes = 1024 * 1024;
+constexpr std::size_t max_global_shortcuts = 32;
+constexpr unsigned int max_global_shortcut_id = 0xBFFF;
+// HWND values may be recycled while old messages remain queued. Use one
+// process-wide, saturating ID pool so even a later window cannot inherit them.
+std::atomic<unsigned int> next_global_shortcut_id{1};
 // EndMenu operates on the calling thread. A nested popup belonging to another
 // window must not steal ownership of the native menu currently being tracked.
 thread_local HWND active_menu_owner = nullptr;
@@ -70,6 +77,50 @@ result win32_failure(const char* operation) {
 
 result closed_error() {
   return result::failure("E_CLOSED", "The desktop window is closed or unavailable");
+}
+
+result shortcut_failure(const char* code, const char* operation, DWORD error) {
+  auto failure = hresult_failure(operation,
+      HRESULT_FROM_WIN32(error ? error : ERROR_GEN_FAILURE));
+  failure.code = code;
+  return failure;
+}
+
+int consume_global_shortcut_id() {
+  auto candidate = next_global_shortcut_id.load(std::memory_order_relaxed);
+  while (candidate <= max_global_shortcut_id) {
+    if (next_global_shortcut_id.compare_exchange_weak(candidate, candidate + 1,
+                                                     std::memory_order_relaxed))
+      return static_cast<int>(candidate);
+  }
+  return 0;
+}
+
+UINT shortcut_virtual_key(shortcut_key key) {
+  switch (key) {
+    case shortcut_key::f1: return VK_F1;
+    case shortcut_key::f2: return VK_F2;
+    case shortcut_key::f3: return VK_F3;
+    case shortcut_key::f4: return VK_F4;
+    case shortcut_key::f5: return VK_F5;
+    case shortcut_key::f6: return VK_F6;
+    case shortcut_key::f7: return VK_F7;
+    case shortcut_key::f8: return VK_F8;
+    case shortcut_key::f9: return VK_F9;
+    case shortcut_key::f10: return VK_F10;
+    case shortcut_key::f11: return VK_F11;
+    case shortcut_key::left: return VK_LEFT;
+    case shortcut_key::right: return VK_RIGHT;
+    case shortcut_key::up: return VK_UP;
+    case shortcut_key::down: return VK_DOWN;
+    case shortcut_key::home: return VK_HOME;
+    case shortcut_key::end: return VK_END;
+    case shortcut_key::page_up: return VK_PRIOR;
+    case shortcut_key::page_down: return VK_NEXT;
+    case shortcut_key::insert_key: return VK_INSERT;
+    case shortcut_key::delete_key: return VK_DELETE;
+  }
+  return 0;
 }
 
 bool to_wide(std::string_view input, std::wstring& output) {
@@ -226,6 +277,14 @@ result append_menu_tree(HMENU menu, const std::vector<menu_item>& items,
   return result::success();
 }
 
+struct shortcut_registration {
+  int native_id;
+  UINT modifiers;
+  UINT virtual_key;
+  std::uint64_t revision{1};
+  bool active{false};
+};
+
 struct state : std::enable_shared_from_this<state> {
   HWND window{nullptr};
   bool closed{false};
@@ -246,6 +305,7 @@ struct state : std::enable_shared_from_this<state> {
   std::wstring script_id;
   backend_events events;
   result terminal_status{result::success()};
+  result shutdown_status{result::success()};
   ComPtr<ICoreWebView2Environment> environment;
   ComPtr<ICoreWebView2Controller> controller;
   ComPtr<ICoreWebView2> webview;
@@ -259,6 +319,7 @@ struct state : std::enable_shared_from_this<state> {
   std::uint64_t popup_revision{0};
   std::wstring tray_tooltip;
   std::vector<menu_item> tray_items;
+  std::map<std::uint64_t, shortcut_registration> shortcuts;
 
   // Workers touch only these fields under queue_mutex. Posted messages carry no
   // pointer/ownership payload, so DestroyWindow cannot strand allocated work.
@@ -338,6 +399,114 @@ struct state : std::enable_shared_from_this<state> {
     // later document reached before a backend dispatch queue drains.
     const auto callback = events.state_changed;
     callback(observed.value);
+  }
+
+  result add_global_shortcut(std::uint64_t token, const global_shortcut& shortcut) {
+    if (!active() || !window || !IsWindow(window)) return closed_error();
+    constexpr auto allowed_modifiers = shortcut_modifiers::control | shortcut_modifiers::alt |
+                                       shortcut_modifiers::shift | shortcut_modifiers::primary;
+    const UINT key = shortcut_virtual_key(shortcut.key);
+    if (!token || !key || (shortcut.modifiers & ~allowed_modifiers) ||
+        !(shortcut.modifiers & (shortcut_modifiers::control | shortcut_modifiers::alt |
+                                shortcut_modifiers::primary)))
+      return result::failure("E_SHORTCUT", "The global shortcut key or modifiers are invalid");
+    UINT modifiers = 0;
+    if (shortcut.modifiers & (shortcut_modifiers::control | shortcut_modifiers::primary))
+      modifiers |= MOD_CONTROL;
+    if (shortcut.modifiers & shortcut_modifiers::alt) modifiers |= MOD_ALT;
+    if (shortcut.modifiers & shortcut_modifiers::shift) modifiers |= MOD_SHIFT;
+    if (shortcuts.find(token) != shortcuts.end())
+      return result::failure("E_SHORTCUT_DUPLICATE", "The global shortcut token is already registered");
+    for (const auto& entry : shortcuts)
+      if (entry.second.modifiers == modifiers && entry.second.virtual_key == key)
+        return result::failure("E_SHORTCUT_DUPLICATE", "The global shortcut combination is still registered");
+    if (shortcuts.size() >= max_global_shortcuts)
+      return result::failure("E_SHORTCUT_LIMIT", "The window has reached its global shortcut limit");
+    // Consume on every native attempt, including failures, without wraparound
+    // or reuse by another HWND or a subsequently created application group.
+    const int native_id = consume_global_shortcut_id();
+    if (!native_id)
+      return result::failure("E_SHORTCUT_EXHAUSTED", "The process has exhausted its native shortcut IDs");
+    // Allocate ownership before registering with Windows; no allocation after
+    // native success may strand a hotkey without its cleanup record.
+    const auto inserted = shortcuts.emplace(token, shortcut_registration{native_id, modifiers, key});
+    SetLastError(ERROR_SUCCESS);
+    if (!RegisterHotKey(window, native_id, modifiers | MOD_NOREPEAT, key)) {
+      const DWORD error = GetLastError();
+      shortcuts.erase(inserted.first);
+      return shortcut_failure("E_SHORTCUT_REGISTER", "RegisterHotKey", error);
+    }
+    inserted.first->second.active = true;
+    return result::success();
+  }
+
+  result remove_global_shortcut(std::uint64_t token) {
+    const auto found = shortcuts.find(token);
+    if (found == shortcuts.end()) return result::success();
+    auto& registration = found->second;
+    // Revoke callbacks before native cleanup. A failed unregister retains the
+    // original ID and combination for retry, but can never activate again.
+    if (registration.active) {
+      registration.active = false;
+      ++registration.revision;
+    }
+    SetLastError(ERROR_SUCCESS);
+    if (!UnregisterHotKey(window, registration.native_id))
+      return shortcut_failure("E_SHORTCUT_UNREGISTER", "UnregisterHotKey", GetLastError());
+    shortcuts.erase(found);
+    return result::success();
+  }
+
+  result remove_all_global_shortcuts() {
+    DWORD first_error = ERROR_SUCCESS;
+    bool failed = false;
+    for (auto it = shortcuts.begin(); it != shortcuts.end();) {
+      auto& registration = it->second;
+      if (registration.active) {
+        registration.active = false;
+        ++registration.revision;
+      }
+      SetLastError(ERROR_SUCCESS);
+      if (UnregisterHotKey(window, registration.native_id)) {
+        it = shortcuts.erase(it);
+      } else {
+        if (!failed) first_error = GetLastError();
+        failed = true;
+        ++it;
+      }
+    }
+    // Attempt every registration before allocating an error or destroying the
+    // HWND. Destruction is best effort, not confirmed native unregistration.
+    return failed ? shortcut_failure("E_SHORTCUT_UNREGISTER", "UnregisterHotKey during close",
+                                     first_error) : result::success();
+  }
+
+  void notify_global_shortcut(HWND owner, WPARAM wparam, LPARAM lparam) {
+    if (!active() || window != owner || !events.global_shortcut) return;
+    for (const auto& entry : shortcuts) {
+      const auto& registration = entry.second;
+      const auto expected = (static_cast<std::uintptr_t>(registration.virtual_key) << 16U) |
+                            registration.modifiers;
+      // Compare the complete parameters, not truncated words. MOD_NOREPEAT
+      // controls registration only and is absent from WM_HOTKEY modifiers.
+      if (!registration.active || wparam != static_cast<WPARAM>(registration.native_id) ||
+          static_cast<std::uintptr_t>(lparam) != expected)
+        continue;
+      const std::weak_ptr<state> weak = shared_from_this();
+      const auto queued = enqueue([weak, token = entry.first, native_id = registration.native_id,
+                                   revision = registration.revision] {
+        const auto self = weak.lock();
+        if (!self || !self->active() || !self->events.global_shortcut) return;
+        const auto found = self->shortcuts.find(token);
+        if (found == self->shortcuts.end() || !found->second.active ||
+            found->second.native_id != native_id || found->second.revision != revision)
+          return;
+        const auto callback = self->events.global_shortcut;
+        callback(token);
+      });
+      if (!queued.ok) report(queued);
+      return;
+    }
   }
 
   NOTIFYICONDATAW tray_identity() const {
@@ -615,7 +784,7 @@ struct state : std::enable_shared_from_this<state> {
   }
 
   result shutdown(bool notify, bool destroy_window = true) {
-    if (closed) return result::success();
+    if (closed) return shutdown_status;
     closed = true;  // Revoke all async completions before releasing COM objects.
     ++generation;
     std::deque<std::function<void()>> discarded;
@@ -630,7 +799,9 @@ struct state : std::enable_shared_from_this<state> {
     auto on_error = notify ? std::move(events.error) : std::function<void(result)>{};
     events = {};
     if (active_menu_owner == window) EndMenu();
+    const auto shortcuts_removed = remove_all_global_shortcuts();
     const auto tray_removed = remove_tray();
+    shutdown_status = shortcuts_removed.ok ? tray_removed : shortcuts_removed;
     if (directory_dialog) directory_dialog->Close(HRESULT_FROM_WIN32(ERROR_CANCELLED));
     directory_dialog.Reset();
     if (webview) webview->Stop();
@@ -642,13 +813,16 @@ struct state : std::enable_shared_from_this<state> {
     const HWND old_window = window;
     window = nullptr;
     if (destroy_window && old_window && IsWindow(old_window)) DestroyWindow(old_window);
+    if (!shortcuts_removed.ok && on_error) {
+      try { on_error(shortcuts_removed); } catch (...) {}
+    }
     if (!tray_removed.ok && on_error) {
       try { on_error(tray_removed); } catch (...) {}
     }
     if (on_closed) {
       try { on_closed(); } catch (...) {}
     }
-    return tray_removed;
+    return shutdown_status;
   }
 
   void update_bounds() {
@@ -975,6 +1149,9 @@ LRESULT CALLBACK window_procedure(HWND window, UINT message, WPARAM wparam, LPAR
       case WM_SETFOCUS:
         if (self->controller)
           self->controller->MoveFocus(COREWEBVIEW2_MOVE_FOCUS_REASON_PROGRAMMATIC);
+        return 0;
+      case WM_HOTKEY:
+        self->notify_global_shortcut(window, wparam, lparam);
         return 0;
       case WM_DPICHANGED: {
         const auto* bounds = reinterpret_cast<const RECT*>(lparam);
@@ -1477,8 +1654,17 @@ class windows_backend final : public backend {
     return state_->remove_tray();
   }
 
+  result register_global_shortcut(std::uint64_t token, const global_shortcut& shortcut) override {
+    return state_->add_global_shortcut(token, shortcut);
+  }
+
+  result unregister_global_shortcut(std::uint64_t token) override {
+    if (!state_->active()) return closed_error();
+    return state_->remove_global_shortcut(token);
+  }
+
   capabilities get_capabilities() const override {
-    return {"webview2", true, true, true, true, true, true, true, true, true, true, true};
+    return {"webview2", true, true, true, true, true, true, true, true, true, true, true, true};
   }
 
  private:

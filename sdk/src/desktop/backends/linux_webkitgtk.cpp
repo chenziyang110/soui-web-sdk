@@ -10,6 +10,10 @@
 
 #include <gtk/gtk.h>
 #include <webkit2/webkit2.h>
+#if defined(SOUI_DESKTOP_X11_SHORTCUTS)
+#include <gdk/gdkx.h>
+#include <X11/keysym.h>
+#endif
 
 #include <algorithm>
 #include <atomic>
@@ -30,6 +34,10 @@ constexpr std::size_t max_bridge_bytes = 64 * 1024;
 constexpr guint clipboard_timeout_ms = 2000;
 constexpr std::size_t max_pending_dispatches = 1024;
 constexpr guint tray_embed_timeout_ms = 1500;
+
+#if defined(SOUI_DESKTOP_X11_SHORTCUTS)
+struct x11_shortcut;
+#endif
 
 struct linux_state : std::enable_shared_from_this<linux_state> {
   std::thread::id owner{std::this_thread::get_id()};
@@ -65,6 +73,9 @@ struct linux_state : std::enable_shared_from_this<linux_state> {
   bool tray_was_embedded{false};
   std::uint64_t popup_generation{0};
   std::uint64_t tray_generation{0};
+#if defined(SOUI_DESKTOP_X11_SHORTCUTS)
+  std::vector<std::shared_ptr<x11_shortcut>> shortcuts;
+#endif
 
   ~linux_state() {
     g_main_loop_unref(loop);
@@ -159,6 +170,300 @@ void report(linux_state& state, result status) noexcept {
   }
 }
 
+#if defined(SOUI_DESKTOP_X11_SHORTCUTS)
+GdkFilterReturn shortcut_filter(GdkXEvent*, GdkEvent*, gpointer) noexcept;
+
+// XGrabKey carries no registration ID. Never reuse a connection for another
+// registration: even an already queued native event belongs only to this token.
+// GDK owns event processing; no XNextEvent/draining of GTK's connection is used.
+struct x11_shortcut : std::enable_shared_from_this<x11_shortcut> {
+  std::weak_ptr<linux_state> state;
+  std::uint64_t token{0};
+  GdkDisplay* display{nullptr};  // An extra owned reference, never GTK's display.
+  GdkKeymap* keymap{nullptr};
+  std::vector<Window> roots;
+  std::vector<unsigned int> variants;
+  unsigned int keycode{0};
+  unsigned int modifiers{0};
+  unsigned int lock_mask{0};
+  bool enabled{false};
+  bool filter_installed{false};
+  bool callback_pending{false};
+
+  void close_connection() noexcept {
+    enabled = false;
+    if (std::exchange(filter_installed, false))
+      gdk_window_remove_filter(nullptr, shortcut_filter, this);
+    if (keymap) {
+      g_signal_handlers_disconnect_by_data(keymap, this);
+      g_clear_object(&keymap);
+    }
+    if (auto* owned = std::exchange(display, nullptr)) {
+      g_signal_handlers_disconnect_by_data(owned, this);
+      // Closing our connection releases even partially acquired/failed grabs.
+      if (!gdk_display_is_closed(owned)) gdk_display_close(owned);
+      g_object_unref(owned);
+    }
+  }
+
+  ~x11_shortcut() { close_connection(); }
+};
+
+bool x11_shortcuts_available(const linux_state& state) noexcept {
+  const auto* session = g_getenv("XDG_SESSION_TYPE");
+  // XWayland is not a desktop-global implementation. An unknown session also
+  // fails closed instead of guessing from DISPLAY or GDK's backend alone.
+  if (g_getenv("WAYLAND_DISPLAY") || !session || g_ascii_strcasecmp(session, "x11") != 0)
+    return false;
+  auto* display = state.window ? gtk_widget_get_display(state.window) : gdk_display_get_default();
+  return display && !gdk_display_is_closed(display) && GDK_IS_X11_DISPLAY(display);
+}
+
+guint shortcut_keyval(shortcut_key key) noexcept {
+  switch (key) {
+    case shortcut_key::f1: return XK_F1;
+    case shortcut_key::f2: return XK_F2;
+    case shortcut_key::f3: return XK_F3;
+    case shortcut_key::f4: return XK_F4;
+    case shortcut_key::f5: return XK_F5;
+    case shortcut_key::f6: return XK_F6;
+    case shortcut_key::f7: return XK_F7;
+    case shortcut_key::f8: return XK_F8;
+    case shortcut_key::f9: return XK_F9;
+    case shortcut_key::f10: return XK_F10;
+    case shortcut_key::f11: return XK_F11;
+    case shortcut_key::left: return XK_Left;
+    case shortcut_key::right: return XK_Right;
+    case shortcut_key::up: return XK_Up;
+    case shortcut_key::down: return XK_Down;
+    case shortcut_key::home: return XK_Home;
+    case shortcut_key::end: return XK_End;
+    case shortcut_key::page_up: return XK_Page_Up;
+    case shortcut_key::page_down: return XK_Page_Down;
+    case shortcut_key::insert_key: return XK_Insert;
+    case shortcut_key::delete_key: return XK_Delete;
+  }
+  return 0;
+}
+
+int ungrab_shortcut(x11_shortcut& shortcut) noexcept {
+  shortcut.enabled = false;  // Disable queued callbacks before any native work.
+  if (!shortcut.display || gdk_display_is_closed(shortcut.display)) return 0;
+  auto* display = gdk_x11_display_get_xdisplay(shortcut.display);
+  gdk_x11_display_error_trap_push(shortcut.display);
+  for (const auto root : shortcut.roots)
+    for (const auto modifiers : shortcut.variants)
+      XUngrabKey(display, static_cast<int>(shortcut.keycode), modifiers, root);
+  // pop synchronizes outstanding requests on this display and reports errors.
+  return gdk_x11_display_error_trap_pop(shortcut.display);
+}
+
+void invalidate_shortcut(x11_shortcut& shortcut, bool mapping_changed) noexcept {
+  if (!shortcut.enabled) return;
+  const auto cleanup_error = ungrab_shortcut(shortcut);
+  try {
+    auto state = shortcut.state.lock();
+    if (!state || !state->active.load()) return;
+    // Keep the inactive native record until explicit unregister/close. A failed
+    // ungrab can be retried, and errors never reactivate the registration.
+    (void)enqueue(*state, [weak = shortcut.weak_from_this(), mapping_changed, cleanup_error] {
+      auto registration = weak.lock();
+      if (!registration || !registration->display) return;
+      auto current = registration->state.lock();
+      if (!current || !current->active.load()) return;
+      report(*current, result::failure(cleanup_error ? "E_SHORTCUT_UNREGISTER" : "E_SHORTCUT_INVALIDATED", cleanup_error
+          ? "The X11 shortcut was disabled, but native cleanup failed. Unregister it again or close the window."
+          : mapping_changed
+              ? "The X11 keyboard mapping changed. Unregister and register the global shortcut again."
+              : "The X11 shortcut connection closed. Unregister and register the global shortcut again."));
+    });
+  } catch (...) {
+    // The registration remains disabled even if no error callback can be queued.
+  }
+}
+
+void shortcut_mapping_changed(GdkKeymap*, gpointer data) noexcept {
+  invalidate_shortcut(*static_cast<x11_shortcut*>(data), true);
+}
+
+void shortcut_display_closed(GdkDisplay*, gboolean, gpointer data) noexcept {
+  invalidate_shortcut(*static_cast<x11_shortcut*>(data), false);
+}
+
+GdkFilterReturn shortcut_filter(GdkXEvent* native, GdkEvent*, gpointer data) noexcept {
+  auto& shortcut = *static_cast<x11_shortcut*>(data);
+  auto& event = *static_cast<XEvent*>(native);
+  if (!shortcut.display || event.xany.display != gdk_x11_display_get_xdisplay(shortcut.display))
+    return GDK_FILTER_CONTINUE;
+  if (event.type == MappingNotify &&
+      (event.xmapping.request == MappingKeyboard || event.xmapping.request == MappingModifier)) {
+    invalidate_shortcut(shortcut, true);
+    return GDK_FILTER_CONTINUE;
+  }
+  if ((event.type != KeyPress && event.type != KeyRelease) || event.xkey.keycode != shortcut.keycode)
+    return GDK_FILTER_CONTINUE;
+  constexpr unsigned int modifier_mask = ShiftMask | LockMask | ControlMask |
+      Mod1Mask | Mod2Mask | Mod3Mask | Mod4Mask | Mod5Mask;
+  if (event.type != KeyPress || event.xkey.send_event || !shortcut.enabled || shortcut.callback_pending ||
+      (event.xkey.state & modifier_mask & ~shortcut.lock_mask) != shortcut.modifiers)
+    return GDK_FILTER_REMOVE;
+  try {
+    auto state = shortcut.state.lock();
+    if (!state || !state->active.load()) return GDK_FILTER_REMOVE;
+    // Coalesce repeat events while one callback is pending: at most one queued
+    // event per registration, in addition to the common bounded dispatch queue.
+    shortcut.callback_pending = true;
+    const auto status = enqueue(*state, [weak = shortcut.weak_from_this()] {
+      auto registration = weak.lock();
+      if (!registration) return;
+      registration->callback_pending = false;
+      auto current = registration->state.lock();
+      if (!current || !current->active.load() || !registration->enabled) return;
+      auto handler = current->events.global_shortcut;
+      if (handler) handler(registration->token);
+    });
+    if (!status.ok) shortcut.callback_pending = false;
+  } catch (...) {
+    shortcut.callback_pending = false;
+  }
+  return GDK_FILTER_REMOVE;
+}
+
+bool stable_shortcut_key(x11_shortcut& shortcut, guint keyval) {
+  auto* display = gdk_x11_display_get_xdisplay(shortcut.display);
+  shortcut.keycode = XKeysymToKeycode(display, keyval);
+  if (!shortcut.keycode) return false;
+  GdkKeymapKey* keys = nullptr;
+  guint* values = nullptr;
+  gint count = 0;
+  const bool found = gdk_keymap_get_entries_for_keycode(
+      shortcut.keymap, shortcut.keycode, &keys, &values, &count);
+  bool base_found = false;
+  bool stable = found;
+  for (gint i = 0; i < count; ++i) {
+    if (keys[i].level != 0) continue;
+    base_found = true;
+    // Do not silently interpret one physical key as a different navigation key
+    // when the active layout group changes without a mapping-change event.
+    if (values[i] != keyval) stable = false;
+  }
+  g_free(keys);
+  g_free(values);
+  return stable && base_found;
+}
+
+bool shortcut_modifier_masks(x11_shortcut& shortcut, std::uint32_t requested) {
+  auto* display = gdk_x11_display_get_xdisplay(shortcut.display);
+  auto* mapping = XGetModifierMapping(display);
+  if (!mapping) return false;
+  int first_code = 0;
+  int last_code = 0;
+  XDisplayKeycodes(display, &first_code, &last_code);
+  int symbols_per_code = 0;
+  auto* symbols = XGetKeyboardMapping(display, static_cast<KeyCode>(first_code),
+      last_code - first_code + 1, &symbols_per_code);
+  if (!symbols || symbols_per_code < 1) {
+    if (symbols) XFree(symbols);
+    XFreeModifiermap(mapping);
+    return false;
+  }
+  unsigned int alt_mask = 0;
+  unsigned int lock_mask = 0;
+  bool ambiguous_lock = false;
+  for (int modifier = 0; modifier < 8; ++modifier) {
+    bool has_lock = false;
+    bool has_other = false;
+    for (int slot = 0; slot < mapping->max_keypermod; ++slot) {
+      const auto code = mapping->modifiermap[modifier * mapping->max_keypermod + slot];
+      if (!code) continue;
+      const auto symbol = code >= first_code && code <= last_code
+          ? symbols[(code - first_code) * symbols_per_code] : NoSymbol;
+      if (symbol == XK_Alt_L || symbol == XK_Alt_R) alt_mask |= 1u << modifier;
+      const bool lock = symbol == XK_Caps_Lock || symbol == XK_Shift_Lock ||
+          symbol == XK_Num_Lock || symbol == XK_Scroll_Lock;
+      has_lock = has_lock || lock;
+      has_other = has_other || !lock;
+    }
+    if (has_lock) lock_mask |= 1u << modifier;
+    ambiguous_lock = ambiguous_lock || (has_lock && has_other);
+  }
+  XFree(symbols);
+  XFreeModifiermap(mapping);
+  // Mixed-purpose lock masks cannot safely be ignored. Alt must name one real
+  // modifier, not a guess that Mod1 is Alt on every user's keyboard mapping.
+  if (ambiguous_lock || (lock_mask & (ControlMask | ShiftMask)) ||
+      ((requested & shortcut_modifiers::alt) && (!alt_mask || (alt_mask & (alt_mask - 1)) ||
+        (alt_mask & (lock_mask | ControlMask | ShiftMask))))) return false;
+  if (requested & (shortcut_modifiers::control | shortcut_modifiers::primary))
+    shortcut.modifiers |= ControlMask;
+  if (requested & shortcut_modifiers::alt) shortcut.modifiers |= alt_mask;
+  if (requested & shortcut_modifiers::shift) shortcut.modifiers |= ShiftMask;
+  shortcut.lock_mask = lock_mask;
+  for (unsigned int variant = 0; variant < 256; ++variant)
+    if ((variant & ~lock_mask) == 0) shortcut.variants.push_back(shortcut.modifiers | variant);
+  return true;
+}
+
+result install_shortcut(linux_state& state, std::uint64_t token, const global_shortcut& chord) {
+  if (!x11_shortcuts_available(state))
+    return result::failure("not_supported", "Global shortcuts require a confirmed X11 session (XDG_SESSION_TYPE=x11), not Wayland or XWayland.");
+  constexpr auto all_modifiers = shortcut_modifiers::control | shortcut_modifiers::alt |
+      shortcut_modifiers::shift | shortcut_modifiers::primary;
+  const auto keyval = shortcut_keyval(chord.key);
+  if (!token || !keyval || (chord.modifiers & ~all_modifiers) ||
+      !(chord.modifiers & (shortcut_modifiers::control | shortcut_modifiers::alt | shortcut_modifiers::primary)))
+    return result::failure("E_ARGUMENT", "Invalid global shortcut key, modifiers, or registration token.");
+  if (state.shortcuts.size() >= 32)
+    return result::failure("E_SHORTCUT_LIMIT", "A window can own at most 32 global shortcut registrations.");
+  for (const auto& existing : state.shortcuts)
+    if (existing->token == token)
+      return result::failure("E_SHORTCUT_DUPLICATE", "The global shortcut token is already registered.");
+  state.shortcuts.reserve(state.shortcuts.size() + 1);
+  auto registration = std::make_shared<x11_shortcut>();
+  registration->state = state.weak_from_this();
+  registration->token = token;
+  auto* main_display = gtk_widget_get_display(state.window);
+  auto* display = gdk_display_open(gdk_display_get_name(main_display));
+  if (!display)
+    return result::failure("E_DISPLAY", "Could not open a dedicated X11 shortcut connection.");
+  // gdk_display_open is transfer-none; hold a reference across display close.
+  // Never close/reconfigure GTK's main display, even on an unexpected result.
+  if (display == main_display)
+    return result::failure("E_DISPLAY", "The shortcut connection was not independent of GTK.");
+  registration->display = GDK_DISPLAY(g_object_ref(display));
+  if (!GDK_IS_X11_DISPLAY(display))
+    return result::failure("not_supported", "The shortcut connection is not X11.");
+  registration->keymap = GDK_KEYMAP(g_object_ref(gdk_keymap_get_for_display(display)));
+  if (!stable_shortcut_key(*registration, keyval) || !shortcut_modifier_masks(*registration, chord.modifiers))
+    return result::failure("not_supported", "The X11 keyboard mapping cannot represent this shortcut unambiguously.");
+  auto* native = gdk_x11_display_get_xdisplay(display);
+  for (int screen = 0; screen < ScreenCount(native); ++screen)
+    registration->roots.push_back(RootWindow(native, screen));
+  g_signal_connect(registration->keymap, "keys-changed", G_CALLBACK(shortcut_mapping_changed), registration.get());
+  g_signal_connect(display, "closed", G_CALLBACK(shortcut_display_closed), registration.get());
+  // A global GDK filter sees MappingNotify (which has no window), but inspects
+  // and consumes key events ONLY from this registration's dedicated connection.
+  gdk_window_add_filter(nullptr, shortcut_filter, registration.get());
+  registration->filter_installed = true;
+  gdk_x11_display_error_trap_push(display);
+  for (const auto root : registration->roots)
+    for (const auto modifiers : registration->variants)
+      XGrabKey(native, static_cast<int>(registration->keycode), modifiers, root,
+               False, GrabModeAsync, GrabModeAsync);
+  const auto error = gdk_x11_display_error_trap_pop(display);
+  if (error)
+    return result::failure(error == BadAccess ? "E_SHORTCUT_CONFLICT" : "E_SHORTCUT_REGISTER",
+        error == BadAccess ? "The global shortcut is already grabbed or reserved on X11."
+                           : "X11 rejected the global shortcut registration.");
+  // Opening a display can synchronously notify application signal handlers.
+  // If one closed the owner, let this unpublished record release every grab.
+  if (!state.active.load() || !state.created || !state.window) return unavailable();
+  registration->enabled = true;
+  state.shortcuts.push_back(std::move(registration));
+  return result::success();
+}
+#endif
+
 bool admissible(linux_state& state, const char* uri) noexcept {
   if (!state.active.load() || !uri || !state.events.allow_navigation) return false;
   const std::string_view candidate(uri);
@@ -182,6 +487,13 @@ void shutdown(linux_state& state, bool notify, bool window_destroyed = false) no
   if (notify) on_closed = std::move(state.events.closed);
   state.events = {};
   ++state.generation;
+#if defined(SOUI_DESKTOP_X11_SHORTCUTS)
+  // Closing each private connection also releases failed/partial ungrabs before
+  // destroying the owning GTK window. All queued callbacks use weak records.
+  for (const auto& shortcut : state.shortcuts) shortcut->enabled = false;
+  for (const auto& shortcut : state.shortcuts) shortcut->close_connection();
+  state.shortcuts.clear();
+#endif
 
   std::vector<GSource*> sources;
   {
@@ -1115,12 +1427,46 @@ class linux_backend final : public backend {
     return result::success();
   }
 
+  result register_global_shortcut(std::uint64_t token, const global_shortcut& chord) override {
+    auto status = check_ui(*state_);
+    if (!status.ok) return status;
+#if defined(SOUI_DESKTOP_X11_SHORTCUTS)
+    return install_shortcut(*state_, token, chord);
+#else
+    (void)token;
+    (void)chord;
+    return result::failure("not_supported", "This Linux build has no X11 global shortcut implementation.");
+#endif
+  }
+
+  result unregister_global_shortcut(std::uint64_t token) override {
+    auto status = check_ui(*state_);
+    if (!status.ok) return status;
+#if defined(SOUI_DESKTOP_X11_SHORTCUTS)
+    auto& shortcuts = state_->shortcuts;
+    const auto found = std::find_if(shortcuts.begin(), shortcuts.end(),
+        [token](const auto& shortcut) { return shortcut->token == token; });
+    if (found == shortcuts.end()) return result::success();
+    if (ungrab_shortcut(**found))
+      return result::failure("E_SHORTCUT_UNREGISTER", "The X11 shortcut was disabled, but native cleanup failed. Retry unregistering it.");
+    (*found)->close_connection();
+    shortcuts.erase(found);
+    return result::success();
+#else
+    (void)token;
+    return result::failure("not_supported", "This Linux build has no X11 global shortcut implementation.");
+#endif
+  }
+
   capabilities get_capabilities() const override {
     auto supported = capabilities{"webkitgtk", true, true, true, true, true, true, true};
     supported.window_minimize = true;
     supported.window_maximize = true;
     supported.window_restore = true;
     supported.window_state_observation = true;
+#if defined(SOUI_DESKTOP_X11_SHORTCUTS)
+    supported.global_shortcuts = x11_shortcuts_available(*state_);
+#endif
     return supported;
   }
 
