@@ -108,6 +108,10 @@ if(SOUI_DESKTOP_NODE_EXECUTABLE)
         COMMAND "${CMAKE_COMMAND}" -E env "CMAKE=${CMAKE_COMMAND}" "NINJA=${SOUI_DESKTOP_TEST_NINJA}"
           "${SOUI_DESKTOP_NODE_EXECUTABLE}" --test "${CMAKE_CURRENT_SOURCE_DIR}/rpath-policy.test.cjs")
       set_tests_properties(sdk.desktop.rpath-policy PROPERTIES TIMEOUT 120 LABELS "desktop;tooling;no-gui")
+      add_test(NAME sdk.desktop.consumer-architecture
+        COMMAND "${CMAKE_COMMAND}" -E env "CMAKE=${CMAKE_COMMAND}" "NINJA=${SOUI_DESKTOP_TEST_NINJA}"
+          "${SOUI_DESKTOP_NODE_EXECUTABLE}" --test "${CMAKE_CURRENT_SOURCE_DIR}/consumer-architecture.test.cjs")
+      set_tests_properties(sdk.desktop.consumer-architecture PROPERTIES TIMEOUT 120 LABELS "desktop;tooling;no-gui")
     endif()
   endif()
   add_test(NAME sdk.desktop.sync-assets

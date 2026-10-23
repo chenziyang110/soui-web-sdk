@@ -210,10 +210,19 @@ CLI 和导出的 `stage(options)` 使用同一输入校验，并在创建输出�
 
 ## universal2 交付范围
 
-已有 `desktop-macos-universal2` SDK 的架构属性由CMake staging入口直接传给
-工具；必须使用同样包含x64与arm64的应用，薄片应用不能冒充universal2。
+已有 `desktop-macos-universal2` SDK可构建双架构或薄片应用。CMake staging按
+应用目标的 `OSX_ARCHITECTURES`（只接受x86_64/arm64列表）选择架构；未显式设置
+则采用Runtime已验证的consumer架构。请求必须为SDK可提供slice的子集，薄片
+应用不会误标universal2；最终仍由二进制头检查身份。
 验证器和归档共享二进制身份判断，doctor接受x64/arm64宿主但未知架构仍UNKNOWN。
 整个.app最低系统版本取两个slice及框架下限的最大值；不修改输入二进制/签名。
 当前仅在Linux执行合成结构解析与stage→verify→archive检查，不是Mac编译、
 签名、公证或两个slice的运行验收。旧工具拒绝新架构值，请使用同版SDK工具。
 见[ADR-0136](adr/0136-universal2-application-staging.md)。
+
+消费架构保存于安装SDK imported target的独立属性，不依赖find_package调用结束后
+仍可见的普通变量。未设置目标架构仅可使用已验证的薄片消费身份；空值或已清除的目标架构不能继承非空全局架构选择或universal2
+声明，须指定slice。源码树默认使用同一工具链
+的SDK身份。显式未知架构/生成器表达式和当前构建配置的非空
+`OSX_ARCHITECTURES_<CONFIG>` 覆盖拒绝，配置级变化应使用独立构建目录；
+非macOS路径保持原行为。配置fixture不代表Mac编译或运行。

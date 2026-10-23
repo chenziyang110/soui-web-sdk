@@ -11,7 +11,9 @@ macOS load commands；不接受额外/重复 slice、arm64e 或 x86_64h 专用�
 
 staging/verification 共用 inspectBinary；架构为 universal2，format 仍为 Mach-O。
 最低系统版本按整数取两 slice 实际要求与框架12.0下限的最大值，作为整个 .app
-保守下限。SDK CMake 目标既有 universal2 属性直接传播到交付工具。doctor 仅对
+保守下限。SDK CMake 目标属性描述可提供的slice；staging按应用目标的OSX_ARCHITECTURES，
+或Runtime验证的consumer架构选择实际交付架构，允许universal2 SDK薄片消费。
+显式目标架构只接受x86_64/arm64列表，拒绝未知值/生成器表达式和超出SDK的slice。doctor 仅对
 x64/arm64 宿主匹配，不把未知架构视为通过。ZIP不改二进制或签名，保持现有布局。
 
 不泛化为任意 fat 文件，不提取/重写 slice，也不调用 lipo 或下载工具。仍是输入
@@ -23,3 +25,10 @@ x64/arm64 宿主匹配，不把未知架构视为通过。ZIP不改二进制或�
 官方依据：[Apple fat.h](https://raw.githubusercontent.com/apple-oss-distributions/cctools/main/include/mach-o/fat.h)、
 [CPU subtype定义](https://raw.githubusercontent.com/apple-oss-distributions/xnu/main/osfmk/mach/machine.h)、
 [dyld FatFile识别与slice检查](https://raw.githubusercontent.com/apple-oss-distributions/dyld/main/common/MachOFile.cpp)。
+
+消费架构保存于安装SDK imported target的独立属性，不依赖find_package调用结束后
+仍可见的普通变量。未设置目标架构仅可使用已验证的薄片消费身份；空值或已清除的目标架构不能继承非空全局架构选择或universal2
+声明，须指定slice。源码树默认使用同一工具链
+的SDK身份。显式未知架构/生成器表达式和当前构建配置的非空
+`OSX_ARCHITECTURES_<CONFIG>` 覆盖拒绝，配置级变化应使用独立构建目录；
+非macOS路径保持原行为。配置fixture不代表Mac编译或运行。

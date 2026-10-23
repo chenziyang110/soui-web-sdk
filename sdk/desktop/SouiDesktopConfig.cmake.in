@@ -15,6 +15,10 @@ elseif(SouiDesktop_BACKEND STREQUAL "webview2" AND NOT TARGET Soui::DesktopWebVi
     IMPORTED_LOCATION "${PACKAGE_PREFIX_DIR}/lib/SouiDesktop/webview2/WebView2LoaderStatic.lib")
 endif()
 include("${CMAKE_CURRENT_LIST_DIR}/SouiDesktopTargets.cmake")
+# Preserve validated consumer identity beyond find_package function scope.
+if(DEFINED SOUI_TARGET_ARCH AND SOUI_TARGET_ARCH MATCHES "^(x86|x64|arm32|arm64|universal2)$")
+  set_property(TARGET Soui::Desktop PROPERTY SOUI_APPLICATION_CONSUMER_ARCH "${SOUI_TARGET_ARCH}")
+endif()
 include("${CMAKE_CURRENT_LIST_DIR}/SouiDesktopApplication.cmake")
 set(SouiDesktop_Desktop_FOUND TRUE)
 check_required_components(SouiDesktop)

@@ -17,6 +17,9 @@ cmake --build build --config Release --target @APP_NAME@
 Windows 使用兼容 MSVC 的工具链；macOS 在 project() 前默认最低12.0，若已安装
 SDK 要求更高版本，请配置 CMAKE_OSX_DEPLOYMENT_TARGET。交叉编译应传入正确
 toolchain，生成器不下载 SDK、不安装依赖、不猜测编译器或系统权限。
+使用macOS universal2 SDK时，可配置 `-DCMAKE_OSX_ARCHITECTURES="x86_64;arm64"`
+生成双架构应用，或只指定一个slice生成薄片应用；staging按应用架构而非SDK
+包含的全部slice标记。薄片SDK不能提供另一个架构，仍需目标Mac实际编译和运行。
 
 运行构建目录中的 @APP_NAME@（Windows 为 .exe，多配置生成器通常放在 Release
 子目录）。程序通过 SDK 获取实际可执行文件旁的 web，不依赖启动工作目录。

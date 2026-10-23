@@ -2,6 +2,9 @@
 
 ## 未发布维护
 
+- macOS staging按应用实际slice选择架构，修复使用universal2 SDK构建薄片应用
+  时错误传入universal2导致身份校验失败；拒绝请求SDK未包含的slice。
+
 - macOS 应用 staging/verification/archive 支持受限 universal2（big-endian fat32/64，
   恰好通用 x64 与 arm64 两个slice），校验范围、对齐、内部身份和最低系统版本；
   doctor识别两个宿主架构。仅合成结构交付检查，不代表Mac原生编译/运行或签名通过。
