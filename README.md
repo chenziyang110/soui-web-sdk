@@ -40,9 +40,11 @@ x86/x64/ARM32/ARM64 与 macOS x64/ARM64/universal2 的目标策略。
 源码接入 Linux WebKitGTK、macOS WKWebView、Windows WebView2，包含窗口生命周期、
 独立会话的多窗口、双向 Bridge、层级原生菜单和有明确失败的托盘能力。
 新增 `tools/package-desktop.cjs` 统一构建、测试、安装与 SDK 开发快照打包入口，
-不是应用安装器。Linux 已完成真实依赖编译与无窗口回归；真实 GUI、
-Windows/macOS 目标编译和其余架构实测仍待验收。现有下载包不含这些未发布功能，
-不能据此宣称 Electron 全功能兼容。
+不是应用安装器。窗口状态/关闭保护、独立授权系统服务、层级菜单、宿主全局快捷键及
+打开/保存路径选择已接入统一接口。Linux 有历史限定真实 GUI/Bridge 证据，最新功能尚未
+重新进行原生交互验收；macOS universal2 最新六纵切原生编译与安装 SDK 到独立双架构应用的交付链已过，但 GUI 激活受阻。
+Windows 目标编译及其余架构实测仍待验收。当前状态见[集中验收矩阵](docs/acceptance/unified-desktop-2026-10-23.md)。
+现有下载包不含这些未发布功能，不能据此宣称 Electron 全功能兼容。
 
 <a id="capabilities"></a>
 
