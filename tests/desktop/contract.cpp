@@ -1023,6 +1023,161 @@ void deferred_native_action_revision_contract(files& fixture) {
   child_native->command("shared");
   CHECK(commands == 2);
 }
+void close_approval_contract(files& fixture) {
+  {
+    application app(fixture.settings());
+    CHECK(app.request_close().code == "closed");
+    CHECK(app.request_quit().code == "closed");
+    CHECK(app.initialize().ok);
+    auto* native = latest;
+    std::thread worker([&] {
+      CHECK(app.request_close().code == "wrong_thread");
+      CHECK(app.request_quit().code == "wrong_thread");
+    });
+    worker.join();
+    native->events.close_requested(); // Missing handler defaults to allow.
+    CHECK(native->counts->closed == 1);
+    CHECK(app.request_close().code == "closed");
+  }
+  {
+    application* app = nullptr;
+    int approvals = 0, errors = 0;
+    bool allow = false, throwing = false;
+    callbacks handlers;
+    handlers.close_requested = [&](window_id id) {
+      ++approvals;
+      CHECK(id == app->id());
+      CHECK(app->request_close().code == "close_busy");
+      CHECK(app->request_quit().code == "close_busy");
+      if (throwing) throw std::runtime_error("approval failure");
+      return allow;
+    };
+    handlers.error = [&](const result& error) {
+      ++errors;
+      CHECK(error.code == "close_callback_failed");
+      CHECK(app->request_close().code == "close_busy");
+      CHECK(app->request_quit().code == "close_busy");
+    };
+    application root(fixture.settings(), handlers); app = &root;
+    CHECK(root.initialize().ok);
+    auto* native = latest;
+    CHECK(root.request_close().code == "close_cancelled");
+    native->events.close_requested();
+    CHECK(approvals == 2 && errors == 0 && native->active.load());
+    throwing = true;
+    CHECK(root.request_close().code == "close_cancelled");
+    CHECK(approvals == 3 && errors == 1 && native->active.load());
+    throwing = false; allow = true;
+    CHECK(root.request_close().ok);
+    CHECK(approvals == 4 && native->counts->closed == 1);
+  }
+  {
+    application* app = nullptr;
+    bool in_callback = false;
+    int approvals = 0;
+    callbacks handlers;
+    handlers.invoke = [&](std::string_view, std::string_view) {
+      in_callback = true;
+      CHECK(app->request_close().ok);
+      CHECK(app->request_close().ok); // Pending requests coalesce.
+      CHECK(approvals == 0);
+      in_callback = false;
+      return std::string("{}");
+    };
+    handlers.close_requested = [&](window_id) { CHECK(!in_callback); ++approvals; return true; };
+    application root(fixture.settings(), handlers); app = &root;
+    CHECK(root.initialize().ok);
+    auto* native = latest;
+    native->send(native->envelope(1));
+    CHECK(approvals == 1 && native->counts->closed == 1);
+  }
+  {
+    application* app = nullptr;
+    int approvals = 0;
+    callbacks handlers;
+    handlers.invoke = [&](std::string_view, std::string_view) {
+      CHECK(app->request_close().ok);
+      CHECK(app->close().ok); // Force-close discards queued approval.
+      return std::string("{}");
+    };
+    handlers.close_requested = [&](window_id) { ++approvals; return false; };
+    application root(fixture.settings(), handlers); app = &root;
+    CHECK(root.initialize().ok);
+    latest->send(latest->envelope(1));
+    CHECK(approvals == 0);
+  }
+}
+
+void quit_approval_contract(files& fixture) {
+  {
+    int approvals = 0;
+    bool allow = false;
+    application root(fixture.settings());
+    CHECK(root.initialize().ok);
+    callbacks child_handlers;
+    child_handlers.close_requested = [&](window_id) { ++approvals; return allow; };
+    auto child = add_window(root, fixture.settings(), child_handlers);
+    CHECK(root.close().ok);
+    CHECK(root.request_quit().code == "close_cancelled");
+    CHECK(approvals == 1 && root.window_ids().size() == 1);
+    allow = true;
+    CHECK(root.request_quit().ok);
+    CHECK(approvals == 2 && root.window_ids().empty());
+  }
+  application* app = nullptr;
+  std::shared_ptr<application> child, created;
+  fake_backend* root_native = nullptr;
+  bool veto = true, create_during_approval = false, force_close = false;
+  bool inside_invoke = false;
+  int root_approvals = 0, child_approvals = 0;
+  callbacks handlers;
+  handlers.close_requested = [&](window_id) {
+    CHECK(!inside_invoke);
+    ++root_approvals;
+    CHECK(child->request_close().code == (has_window(*app, child->id()) ?
+      "close_busy" : "closed"));
+    CHECK(app->request_quit().code == "close_busy");
+    if (create_during_approval) created = add_window(*app, fixture.settings());
+    if (force_close) CHECK(child->close().ok);
+    return true;
+  };
+  handlers.invoke = [&](std::string_view, std::string_view) {
+    inside_invoke = true;
+    const int before = root_approvals;
+    CHECK(child->request_close().ok);
+    CHECK(app->request_quit().ok);
+    CHECK(app->request_quit().ok);
+    CHECK(root_approvals == before);
+    inside_invoke = false;
+    return std::string("{}");
+  };
+  application root(fixture.settings(), handlers); app = &root;
+  CHECK(root.initialize().ok); root_native = latest;
+  callbacks child_handlers;
+  child_handlers.close_requested = [&](window_id) {
+    CHECK(!inside_invoke);
+    CHECK(root_native->counts->closed == 0); // Approve all before closing any.
+    ++child_approvals;
+    return !veto;
+  };
+  child = add_window(root, fixture.settings(), child_handlers);
+  auto child_counts = latest->counts;
+  CHECK(root.request_quit().code == "close_cancelled");
+  CHECK(root.window_ids().size() == 2 && root_approvals == 1 && child_approvals == 1);
+  root_native->events.quit_requested();
+  CHECK(root_native->counts->closed == 0 && child_counts->closed == 0);
+  root_native->send(root_native->envelope(1));
+  CHECK(root_approvals == 3 && child_approvals == 3 && root.window_ids().size() == 2);
+  veto = false; create_during_approval = true;
+  CHECK(root.request_quit().code == "close_cancelled");
+  CHECK(root.window_ids().size() == 3 && child_counts->closed == 0);
+  create_during_approval = false; force_close = true;
+  CHECK(root.request_quit().code == "close_cancelled");
+  CHECK(child_counts->closed == 1 && root_native->counts->closed == 0);
+  force_close = false;
+  CHECK(root.request_quit().ok);
+  CHECK(root.window_ids().empty() && root_native->counts->closed == 1);
+}
 }  // namespace
 
 namespace soui::desktop::detail {
@@ -1052,6 +1207,8 @@ int main(int argc, char** argv) {
     cross_window_callbacks_contract(fixture);
     native_actions_contract(fixture);
     deferred_native_action_revision_contract(fixture);
+    close_approval_contract(fixture);
+    quit_approval_contract(fixture);
   } catch (const std::exception& error) {
     ++failures; std::cerr << "Unexpected test exception: " << error.what() << '\n';
   }

@@ -513,8 +513,15 @@ NSMenu* application_menu() {
   // receiver alive in the caller's pool when shutdown clears state->window.
   NSWindow* __autoreleasing closing_window = sender;
   auto state = _state.lock();
-  if (state && closing_window == state->window) shut_down(state, true);
-  return NO;  // shut_down owns the close sequence.
+  if (is_live(state) && closing_window == state->window) {
+    // Approval may synchronously close the window and clear events. Keep both
+    // the shared state and a copy of the callback alive through that decision.
+    const auto callback = state->events.close_requested;
+    if (callback) { try { callback(); } catch (...) {} }
+  }
+  // Common approval invokes backend::close(), whose shutdown revokes this
+  // delegate before closing. Never let AppKit bypass a veto or ask twice.
+  return NO;
 }
 
 - (void)windowWillClose:(NSNotification*)notification {
@@ -1003,13 +1010,16 @@ class wkwebview_backend final : public backend {
     if (group->running || group->application.isRunning)
       return result::failure("E_STATE", "The macOS event loop is already running");
     @autoreleasepool {
-      group->running = true;
-      [group->application run];
-      group->running = false;
-      if (!group->quit_requested) {
-        const auto callback = group->request_quit;
-        if (callback) { try { callback(); } catch (...) {} }
-        group->quit_requested = true;
+      while (!group->quit_requested) {
+        group->running = true;
+        [group->application run];
+        group->running = false;
+        if (!group->quit_requested) {
+          const auto callback = group->request_quit;
+          if (callback) { try { callback(); } catch (...) {} }
+          // A native stop is only a quit proposal. Common code sets the flag
+          // through quit_loop() after approval; a veto resumes event handling.
+        }
       }
       restore_application(group);
     }

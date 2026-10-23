@@ -27,6 +27,7 @@ std::string native_result(const soui::desktop::result& status) {
 }
 struct window_context {
   soui::desktop::application* window{nullptr}; // Borrowed; never owns its callbacks.
+  bool close_protected{false}; // This window's current document, not group state.
 };
 struct example_state {
   soui::desktop::options settings;
@@ -95,23 +96,46 @@ soui::desktop::callbacks make_callbacks(example_state& state,
       return native_result(window->set_tray(tray));
     }
     if (method == "window.clearTray") return native_result(window->clear_tray());
+    if (method == "window.setCloseProtection") {
+      // This example business method accepts a JSON boolean, not truthy strings
+      // or arbitrary objects. It does not grant a standard SDK close permission.
+      const auto first = parameters.find_first_not_of(" \t\r\n");
+      const auto last = parameters.find_last_not_of(" \t\r\n");
+      const auto value = first == std::string_view::npos ? std::string_view{} :
+        parameters.substr(first, last - first + 1);
+      if (value != "true" && value != "false")
+        throw std::runtime_error("window.setCloseProtection requires a JSON boolean");
+      context->close_protected = value == "true";
+      return context->close_protected ? "true" : "false";
+    }
     if (method == "window.close")
-      return checked(window->dispatch([context] { (void)context->window->close(); }));
+      return checked(window->request_close());
     if (method == "app.quit")
-      return checked(window->dispatch([context] { (void)context->window->quit(); }));
+      return checked(window->request_quit());
     throw std::runtime_error("Method is not allowed by this application");
   };
   callbacks.ready = [context] {
+    // Reload/navigation starts a new document with an unchecked UI. Never carry
+    // the old document's business protection flag into that new session.
+    context->close_protected = false;
     if (context->window)
       (void)context->window->emit("native.ready", "{\"message\":\"Native → Web events are connected\"}");
+  };
+  callbacks.close_requested = [context](soui::desktop::window_id) {
+    if (!context->close_protected) return true;
+    if (context->window)
+      (void)context->window->emit("app.closeBlocked",
+        "{\"message\":\"This window has simulated unsaved changes. Uncheck close protection here, then try closing or quitting again.\"}");
+    // Cancel synchronously. Do not wait on a page Promise in a native callback.
+    return false;
   };
   callbacks.command = [context](std::string_view command) {
     auto* window = context->window;
     if (!window) return;
     (void)window->emit("native.command", json_string(command));
     if (command == "window.focus") { (void)window->show(true); (void)window->focus(); }
-    else if (command == "window.close") (void)window->close();
-    else if (command == "app.quit") (void)window->quit();
+    else if (command == "window.close") (void)window->request_close();
+    else if (command == "app.quit") (void)window->request_quit();
   };
   callbacks.error = [](const soui::desktop::result& status) {
     std::cerr << status.code << ": " << status.message << '\n';

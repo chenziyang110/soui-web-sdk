@@ -68,11 +68,16 @@ struct application_group {
   bool stopped{false};
   bool loop_started{false};
   bool seen_window{false};
+  bool approving_close{false};
+  bool close_error_callback{false};
+  bool pending_quit{false};
+  std::uint64_t window_revision{0};
   std::size_t open_count() const;
   std::size_t reserved_count() const;
   void drain() noexcept;
   void stop_if_empty() noexcept;
   result quit();
+  result request_quit();
 };
 struct application_state : std::enable_shared_from_this<application_state> {
   options settings;
@@ -105,6 +110,7 @@ struct application_state : std::enable_shared_from_this<application_state> {
   std::atomic<std::size_t> pending_work{0};
   bool draining{false};
   bool pending_closed{false};
+  bool pending_close_request{false};
   bool pending_ready{false};
   std::uint64_t ready_generation{0};
   bool pending_state_changed{false};
@@ -168,7 +174,7 @@ struct application_state : std::enable_shared_from_this<application_state> {
     drain();
   }
   void drain() noexcept {
-    if (group->callback_depth || draining) return;
+    if (group->callback_depth || group->approving_close || draining) return;
     draining = true;
     while (true) {
       if (pending_closed) {
@@ -178,6 +184,7 @@ struct application_state : std::enable_shared_from_this<application_state> {
         commands.clear();
         pending_ready = false;
         pending_state_changed = false;
+        pending_close_request = false;
         ++group->callback_depth;
         try { if (handlers.closed) handlers.closed(); } catch (...) {}
         try { if (handlers.lifecycle) handlers.lifecycle(identity, window_event::closed); } catch (...) {}
@@ -186,9 +193,17 @@ struct application_state : std::enable_shared_from_this<application_state> {
         auto error = std::move(errors.front()); errors.pop_front();
         if (handlers.error) {
           ++group->callback_depth;
+          group->close_error_callback = error.code == "close_callback_failed";
           try { handlers.error(error); } catch (...) {}
+          group->close_error_callback = false;
           --group->callback_depth;
         }
+      } else if (group->pending_quit) {
+        group->pending_quit = false;
+        (void)group->request_quit();
+      } else if (pending_close_request) {
+        pending_close_request = false;
+        if (accepting.load()) (void)request_close();
       } else if (pending_ready) {
         pending_ready = false;
         if (accepting.load() && ready_generation == generation) {
@@ -270,10 +285,12 @@ struct application_state : std::enable_shared_from_this<application_state> {
     asset_channel->revoke();
     cancel_assets();
     accepting.store(false);
+    pending_close_request = false;
     ready = false;
     token.clear();
     ++generation;
     if (!notified_closed) {
+      ++group->window_revision;
       notified_closed = true;
       pending_closed = true;
       drain();
@@ -412,11 +429,45 @@ struct application_state : std::enable_shared_from_this<application_state> {
     resources.stop();
     asset_channel->revoke();
     cancel_assets();
-    accepting.store(false);
+    if (accepting.exchange(false)) ++group->window_revision;
+    pending_close_request = false;
     ready = false;
     token.clear();
     ++generation;
     return native->close();
+  }
+  bool approve_close() noexcept {
+    bool approved = true;
+    ++group->callback_depth;
+    try {
+      const auto handler = handlers.close_requested;
+      if (handler) approved = handler(identity);
+    }
+    catch (...) {
+      approved = false;
+      report(result::failure("close_callback_failed", "The close approval callback failed."));
+    }
+    --group->callback_depth;
+    return approved;
+  }
+  result request_close() {
+    const auto checked = check();
+    if (!checked.ok) return checked;
+    if (group->approving_close || group->close_error_callback)
+      return result::failure("close_busy", "Close approval is already in progress.");
+    if (group->callback_depth) {
+      pending_close_request = true;
+      return result::success();
+    }
+    pending_close_request = false;
+    group->approving_close = true;
+    const bool approved = approve_close();
+    // A handler's explicit force-close remains effective, even if it vetoes.
+    auto status = approved ? (accepting.load() ? close() : result::success()) :
+      result::failure("close_cancelled", "The application cancelled the close request.");
+    group->approving_close = false;
+    drain();
+    return status;
   }
 };
 
@@ -433,14 +484,14 @@ std::size_t application_group::reserved_count() const {
   return count;
 }
 void application_group::drain() noexcept {
-  if (draining || callback_depth) return;
+  if (draining || callback_depth || approving_close) return;
   draining = true;
   bool progressed;
   do {
     progressed = false;
     const auto snapshot = windows; // A callback can create another window.
     for (const auto& weak : snapshot) if (const auto state = weak.lock(); state && !state->draining) {
-      if (state->pending_closed || state->pending_ready || state->pending_state_changed || !state->errors.empty() ||
+      if (pending_quit || state->pending_close_request || state->pending_closed || state->pending_ready || state->pending_state_changed || !state->errors.empty() ||
           !state->commands.empty() || !state->requests.empty() || !state->work_items.empty()) {
         progressed = true;
         state->drain();
@@ -462,6 +513,7 @@ void application_group::stop_if_empty() noexcept {
 }
 result application_group::quit() {
   quitting = true;
+  pending_quit = false;
   result status = result::success();
   const auto snapshot = windows;
   for (const auto& weak : snapshot) if (const auto state = weak.lock();
@@ -470,6 +522,35 @@ result application_group::quit() {
     if (!closed.ok && status.ok) status = closed;
   }
   stop_if_empty();
+  return status;
+}
+result application_group::request_quit() {
+  if (approving_close || close_error_callback)
+    return result::failure("close_busy", "Close approval is already in progress.");
+  if (quitting || !open_count()) return unavailable();
+  if (callback_depth) {
+    pending_quit = true;
+    return result::success();
+  }
+  pending_quit = false;
+  std::vector<std::shared_ptr<application_state>> snapshot;
+  for (const auto& weak : windows)
+    if (const auto state = weak.lock(); state && state->accepting.load()) snapshot.push_back(state);
+  const auto revision = window_revision;
+  approving_close = true;
+  bool approved = true;
+  // Coalesce older per-window requests into this all-or-nothing preflight.
+  for (const auto& state : snapshot) state->pending_close_request = false;
+  for (const auto& state : snapshot) {
+    if (!state->approve_close() || revision != window_revision || quitting) {
+      approved = false;
+      break;
+    }
+  }
+  auto status = approved ? quit() :
+    result::failure("close_cancelled", "The application cancelled quit or changed its windows.");
+  approving_close = false;
+  drain();
   return status;
 }
 }  // namespace
@@ -535,6 +616,7 @@ result application::initialize() {
   auto& windows = state->group->windows;
   windows.erase(std::remove_if(windows.begin(), windows.end(), [](const auto& weak) { return weak.expired(); }), windows.end());
   windows.push_back(state);
+  ++state->group->window_revision;
   state->native = detail::make_backend();
   if (!state->native) return result::failure("not_supported", "No desktop backend was built.");
   state->asset_channel->target = state->native.get();
@@ -563,7 +645,8 @@ result application::initialize() {
     if (const auto live = weak.lock()) live->on_state_changed(value);
   };
   events.command = [weak](std::string_view command) { if (const auto live = weak.lock()) live->on_command(command); };
-  events.quit_requested = [weak]() { if (const auto live = weak.lock()) (void)live->group->quit(); };
+  events.close_requested = [weak]() { if (const auto live = weak.lock()) (void)live->request_close(); };
+  events.quit_requested = [weak]() { if (const auto live = weak.lock()) (void)live->group->request_quit(); };
   events.reload = [weak]() {
     if (const auto live = weak.lock(); live && live->accepting.load()) {
       auto restarted = live->navigate(live->current.path.lexically_relative(live->settings.resource_root));
@@ -615,12 +698,24 @@ result application::quit() {
   if (!state->initialized) return unavailable();
   return state->group->quit();
 }
+result application::request_close() {
+  auto state = impl_->state;
+  return state->request_close();
+}
+result application::request_quit() {
+  auto state = impl_->state;
+  const auto checked = state->check_thread();
+  if (!checked.ok) return checked;
+  return state->initialized ? state->group->request_quit() : unavailable();
+}
 window_result application::create_window(options settings, callbacks handlers) {
   auto state = impl_->state;
   const auto checked = state->check_thread();
   if (!checked.ok) return {checked, {}};
   if (!state->initialized || state->group->quitting || !state->group->open_count())
     return {unavailable(), {}};
+  // Even an unsuccessful create attempt invalidates a running quit preflight.
+  ++state->group->window_revision;
   // Native create() may enter a nested UI loop before initialized becomes true.
   // Count those reserved slots too, without treating them as live loop owners.
   if (state->group->reserved_count() >= 32)

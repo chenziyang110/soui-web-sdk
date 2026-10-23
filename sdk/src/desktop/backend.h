@@ -12,6 +12,8 @@ struct backend_events {
   std::function<void(std::string_view payload, std::string_view source_uri, message_frame)> message;
   std::function<void(std::string_view uri)> loaded;
   std::function<void()> closed;
+  // A user/WM request only: common approval decides whether to call close().
+  std::function<void()> close_requested;
   std::function<void(window_state)> state_changed;
   std::function<void(result)> error;
   // Renderer-initiated full reloads of the selected document are cancelled

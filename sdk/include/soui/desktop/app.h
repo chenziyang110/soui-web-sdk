@@ -111,6 +111,9 @@ struct callbacks {
   std::function<void(window_id, window_event)> lifecycle;
   // Observed native state, not a promise that an earlier request was applied.
   std::function<void(window_id, window_state)> state_changed;
+  // User-requested close approval. Default allows; false/exception cancels.
+  // Never wait for a webpage Promise here. close()/quit() bypass this hook.
+  std::function<bool(window_id)> close_requested;
 };
 
 class application;
@@ -134,6 +137,10 @@ class application final {
   [[nodiscard]] result run();
   [[nodiscard]] result close();
   [[nodiscard]] result quit();
+  // Request approval; may defer until an active callback unwinds.
+  // Success means accepted for processing, not proof the window has closed.
+  [[nodiscard]] result request_close();
+  [[nodiscard]] result request_quit();
   [[nodiscard]] window_result create_window(options settings, callbacks handlers = {});
   [[nodiscard]] window_id id() const noexcept;
   [[nodiscard]] std::vector<window_id> window_ids() const;

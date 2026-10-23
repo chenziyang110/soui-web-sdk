@@ -859,7 +859,22 @@ LRESULT CALLBACK window_procedure(HWND window, UINT message, WPARAM wparam, LPAR
     }
     switch (message) {
       case WM_CLOSE:
-        self->shutdown(true);
+        // This is only a proposal. Approval calls backend::close() directly,
+        // so a veto must leave both the HWND and its pending work intact.
+        // Copy before calling out: approval can synchronously clear events.
+        try {
+          if (self->active() && self->window == window) {
+            const auto callback = self->events.close_requested;
+            if (callback) callback();
+          }
+        } catch (...) {
+          // A failed proposal is not permission to destroy the window, even
+          // if reporting the failure itself cannot allocate or enqueue work.
+          try {
+            self->report(result::failure("E_CALLBACK", "The desktop close request failed"));
+          } catch (...) {}
+        }
+        // Never fall through to DefWindowProc, including on callback failure.
         return 0;
       case WM_DESTROY:
         // Also handle destruction initiated by the owning native application.
@@ -907,9 +922,13 @@ LRESULT CALLBACK window_procedure(HWND window, UINT message, WPARAM wparam, LPAR
         return 0;
       case WM_QUERYENDSESSION:
         return TRUE;
-      case WM_ENDSESSION:
-        if (wparam && self->events.quit_requested) self->events.quit_requested();
+      case WM_ENDSESSION: {
+        // Session termination is already committed by Windows. This is a
+        // best-effort notification, not a promise that an app veto stops it.
+        const auto callback = self->events.quit_requested;
+        if (wparam && callback) callback();
         return 0;
+      }
       default:
         break;
     }
@@ -1153,7 +1172,9 @@ class windows_backend final : public backend {
       }
       if (!received) {
         request_group_quit();
-        break;
+        // WM_QUIT has been consumed, but approval may be deferred or denied.
+        // Only the common layer's quit_loop() commits normal loop shutdown.
+        continue;
       }
       TranslateMessage(&message);
       DispatchMessageW(&message);
@@ -1388,12 +1409,20 @@ class windows_backend final : public backend {
   void request_group_quit() {
     // WM_QUIT and a broken message pump are process-loop events, not a request
     // to close just the root HWND. The common layer owns closing every member.
-    quit_loop_requested_ = true;
     if (quit_requested_) {
-      try { quit_requested_(); }
-      catch (...) { state_->shutdown(true); }
+      try {
+        const auto callback = quit_requested_;
+        callback();
+      } catch (...) {
+        // As with WM_CLOSE, callback failure must not turn a proposal into a
+        // forced close. GetMessage errors are still returned by run().
+        try {
+          state_->report(result::failure("E_CALLBACK", "The desktop quit request failed"));
+        } catch (...) {}
+      }
     } else {
       state_->shutdown(true);
+      quit_loop();
     }
   }
 

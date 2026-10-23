@@ -362,3 +362,21 @@ ctest --preset desktop -R sdk.desktop.linux-native --output-on-failure
 统一示例显式授权，展示按钮与观测状态；前端 SDK 提供 `windowControls` 封装。
 本增量不是完整 Electron API 等价，不包含全屏、无边框拖动或可取消关闭请求。
 详见 [ADR-0137](adr/0137-observed-window-state-controls.md)。
+
+## 用户关闭审批与未保存业务
+
+`request_close()` 和 `request_quit()` 请求 `callbacks.close_requested(window_id)`
+同步审批，未提供回调时默认允许，返回 false 或抛异常时取消。回调内不应等待网页
+Promise；异步确认先拒绝本次请求，保存完成或用户明确确认后由业务调用 force
+`close()` / `quit()`。再次 request 会再次询问。现有程序 close/quit 行为不变。
+
+请求可能等待正在执行的业务回调退栈，返回成功表示接纳处理而非保证已经关闭；
+审批期间重复请求被拒绝，关闭后待处理请求失效。请求属于原生窗口，已接纳后不会
+因网页导航撤销，审批使用宿主当前业务状态。系统应用退出先预检所有现有窗口，
+任何拒绝、异常或窗口集合改变都取消整组操作，不先关闭已同意的那一部分。
+应用自己在审批回调调用 force close/quit 属于显式业务行为，框架不撤销它。
+
+标题栏关闭与应用退出使用此路径；不保证可以撤销操作系统强制终止或关机。
+网页不因此自动获得新的强制关闭权限。统一示例的“未保存修改”选项是每窗口独立
+业务状态，通过显式 invoke 更新；文档重新就绪时重置，拒绝时发送 app.closeBlocked。
+它演示保护接线，不实现自动保存。详见[ADR-0138](adr/0138-cancellable-user-close.md)。

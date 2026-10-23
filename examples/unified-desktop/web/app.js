@@ -31,7 +31,34 @@ async function readWindowState() {
 if (!window.souiDesktop) {
   document.getElementById('status').textContent = 'Open this page with the native example executable.';
 } else {
-  window.souiDesktop.on('native.ready', value => record('native.ready', value));
+  const protection = document.getElementById('close-protection');
+  const closeStatus = document.getElementById('close-status');
+  let closeProtected = false;
+  protection.checked = false;
+  protection.disabled = false;
+  protection.addEventListener('change', async () => {
+    protection.disabled = true;
+    try {
+      closeProtected = await invoke('window.setCloseProtection', protection.checked);
+      closeStatus.textContent = closeProtected ?
+        'Unsaved-change protection is active for this window.' : 'This window can be closed.';
+    } catch (error) {
+      closeStatus.textContent = 'Could not update close protection. The previous setting is unchanged.';
+    } finally {
+      protection.checked = closeProtected;
+      protection.disabled = false;
+    }
+  });
+  window.souiDesktop.on('native.ready', value => {
+    closeProtected = false;
+    protection.checked = false;
+    closeStatus.textContent = 'This window can be closed.';
+    record('native.ready', value);
+  });
+  window.souiDesktop.on('app.closeBlocked', value => {
+    closeStatus.textContent = value.message;
+    record('app.closeBlocked', value);
+  });
   window.souiDesktop.on('native.command', value => record('native.command', value));
   window.souiDesktop.on('desktop.window.stateChanged', showWindowState);
   readWindowState().catch(() => {});

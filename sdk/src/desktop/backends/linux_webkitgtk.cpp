@@ -227,8 +227,21 @@ void shutdown(linux_state& state, bool notify, bool window_destroyed = false) no
   }
 }
 
-gboolean window_delete(GtkWidget*, GdkEvent*, gpointer data) noexcept {
-  shutdown(*static_cast<linux_state*>(data), true);
+gboolean window_delete(GtkWidget* window, GdkEvent*, gpointer data) noexcept {
+  auto& state = *static_cast<linux_state*>(data);
+  if (!state.active.load() || state.window != window) return TRUE;
+  try {
+    // Approval belongs to the common layer. It may close the window or destroy
+    // its application synchronously, so retain state and copy the callback.
+    auto keep_alive = state.shared_from_this();
+    auto handler = state.events.close_requested;
+    if (handler) handler();
+  } catch (...) {
+    // A missing or failed request must not bypass approval, and no C++
+    // exception may cross the GTK signal boundary.
+  }
+  // Never let GTK destroy the window automatically. An approved request uses
+  // backend close(), which destroys it directly without another delete-event.
   return TRUE;
 }
 
