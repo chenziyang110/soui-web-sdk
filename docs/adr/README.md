@@ -68,3 +68,5 @@
 - [ADR-0111：保存每次构建的独立 CMake 配置日志](0111-immutable-cmake-configure-log.md)（真实重配置探针通过；四配置完整复验待执行）
 
 - [ADR-0112：有界的进程地址空间观察](0112-bounded-process-address-census.md)（双架构真实扫描及独立读取回归通过；实际负载预算待校准）
+
+- [ADR-0119：在临时光栅覆盖边界保留已接收的滚动目标](0119-preserve-scroll-target-beyond-raster-coverage.md)（proposed；源码候选与端到端验证分开）

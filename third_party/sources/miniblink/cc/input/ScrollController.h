@@ -116,8 +116,9 @@ struct ScrollNodeSnapshot {
     uint64_t acknowledgedSample;
     ScrollVector acknowledgedTotal;
     ScrollVector baseOffset;
-    // Input-thread prediction of the smooth-scroll target. It is deliberately
-    // separate from baseOffset, which remains the owner's committed position.
+    // Input-thread prediction of the logical target, including accepted motion
+    // waiting for raster coverage. Only real content bounds limit it; baseOffset
+    // remains the owner's committed position.
     ScrollVector inputPrediction;
     ScrollVector minimumOffset;
     ScrollVector maximumOffset;
@@ -185,13 +186,17 @@ private:
         MotionAxis();
 
         void reset(double position, double monotonicTime);
-        void setBounds(double minimum, double maximum);
+        void setBounds(double minimum, double maximum,
+            double drawableMinimum, double drawableMaximum);
+        void correctPosition(double position, double monotonicTime);
         void addDelta(double delta, double monotonicTime, bool smooth);
         double advance(double monotonicTime);
         bool isActive() const;
 
     private:
         double clamp(double value) const;
+        double drawableTarget() const;
+        double clampDrawable(double value) const;
 
         double m_position;
         double m_target;
@@ -199,7 +204,10 @@ private:
         double m_lastTime;
         double m_minimum;
         double m_maximum;
+        double m_drawableMinimum;
+        double m_drawableMaximum;
         bool m_initialized;
+        bool m_reanchorTime;
     };
 
     void updateMotionBounds();
