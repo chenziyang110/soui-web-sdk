@@ -7,7 +7,8 @@ GTK3/WebKitGTK、AppKit/WKWebView 或 Win32/WebView2 后端。业务代码不需
 
 这是未发布开发功能，不是 Electron 全功能替代或“全部架构完美运行”声明。
 Windows 代码尚未目标编译；macOS 于2026-10-23完成限定 universal2 原生编译及
-安装SDK交付链，GUI仍因应用激活受阻，见[记录](macos-native-validation-20261023.md)。
+安装SDK交付链；最终 DeliveryConsumerFinal 的 Finder 无窗口现象根因尚未确认。
+旧 SouiMacVerify 的应用激活失败不能套用到最终包，见[历史记录](macos-native-validation-20261023.md)。
 Linux于2026-10-22完成限定真实GUI、Bridge和模块
 验证，见[记录](linux-native-validation-20261022.md)。后续环境快照丢失该自构建
 运行时，新增部署RPATH策略尚未重新GUI验收，不能推广为干净目标机部署通过。
@@ -21,7 +22,7 @@ Linux于2026-10-22完成限定真实GUI、Bridge和模块
 |---|---|---|---|
 | Linux | x64、ARM64 | GTK 3.24+、WebKitGTK 4.1 2.40+、C++17、正常图形会话 | Debian 13 x64 / GCC 14.2 / GTK 3.24.49 / WebKitGTK 2.52.6 编译链接、安装消费者通过；限定x64 GUI/Bridge/模块链已验证；后续部署策略未复验，ARM64未编译 |
 | Linux | x86、ARM32 | 仅当目标发行版提供上述架构的完整开发/运行包；需正确 ISA/浮点 ABI/sysroot | 未编译或 GUI 验证，不承诺所有 32 位发行版可用 |
-| macOS | x64、ARM64、universal2 | macOS 12+，Apple SDK，Objective-C++17/ARC，AppKit、Foundation、WebKit、CoreFoundation | AppleClang 21 原生 universal2 编译/链接、安装SDK消费者与交付通过；ARM宿主fake契约通过；GUI激活阻塞、Intel slice未运行 |
+| macOS | x64、ARM64、universal2 | macOS 12+，Apple SDK，Objective-C++17/ARC，AppKit、Foundation、WebKit、CoreFoundation | AppleClang 21 原生 universal2 编译/链接、安装SDK消费者与交付通过；ARM宿主fake契约通过；最终包Finder无窗口根因待确认，旧包激活失败不外推；Intel slice未运行 |
 | Windows | x86、x64、ARM64 | MSVC-compatible C++17、Windows SDK、匹配架构 WebView2 SDK loader、当前受支持 Evergreen Runtime | 源码实现与审查；未编译/运行 |
 | Windows ARM32、macOS x86/ARM32、ARM64EC | 不支持 | 不伪造缺失的后端发行物或现代 32 位 macOS 支持 | 配置拒绝 |
 
@@ -488,3 +489,14 @@ bind、listen、getsockname 系统调用失败分别在消息中标明操作和�
 loopback 不变量时不附带旧的系统错误码。不会自动退回 file://、更换绑定地址或放宽安全设置。
 生成应用启动初始化失败会向 stderr 写入错误并退出；Finder 双击时未显示窗口
 本身不能区分资源解析、监听器、AppKit 或其他初始化失败，需核对同一最终包的实际诊断。
+
+
+### 生成应用的可见提示与便携诊断
+
+新生成项目对启动失败提供尽力而为的原生提示，正常启动不弹框；无显示会话或原生
+提示不可用时安全保留 stderr。不改变 SDK/Bridge 权限，也不自动回退资源加载协议。
+应用 `--diagnose` 输出去敏 `soui.desktop.startup/1` JSON，隐藏初始化后退出，
+不安装业务回调或运行正常事件循环；不会自动写日志或上传信息。该模式仍创建隐藏
+原生对象和临时监听器，成功仅表示有限初始化，不能标 nativeRuntimeVerified。
+动态加载器/系统在 main 前拒绝执行时此入口不可用，仍需交付目录 doctor。
+详见生成模板 README 与 [ADR0143](adr/0143-generated-startup-diagnostics.md)。

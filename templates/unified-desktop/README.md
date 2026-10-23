@@ -93,3 +93,24 @@ app.mjs、feature.mjs、details.mjs、config.json、style.css。缺失必需依�
 自行提供正常运行环境。可在 CMake 中显式设置目标 INSTALL_RPATH，但相应库与
 helper 的部署仍由应用负责。它不会打包 WebKit、清洗所有绝对链接路径或使产物
 变成无依赖分发包；其他平台的链接行为不变。
+
+## 启动失败与便携报告
+
+新生成的应用在启动失败时向 stderr 输出去敏诊断，并尽力显示一次原生错误框。
+运行期 error 回调的首个去敏错误立即写 stderr，后续不重复；退出清理后才尝试原生提示，
+不会在回调中嵌套弹框。正常启动不弹框；无显示会话或系统拒绝原生提示时仍只有 stderr，不保证任何环境都可见。
+该提示不自动安装运行库、修改权限或切换资源协议，也不证明启动根因已解决。
+
+无需 Node 的应用内诊断入口为 `@APP_NAME@ --diagnose`；Mac bundle 可运行
+`@APP_NAME@.app/Contents/MacOS/@APP_NAME@ --diagnose`。输出一条
+`soui.desktop.startup/1` JSON，可由调用者显式重定向后分享，不自动持久化或上传。
+报告仅含固定阶段、白名单错误码以及允许的监听器原生数字错误，不输出任意错误消息、
+资源 URL、能力令牌或用户路径。`--diagnose` 使用隐藏窗口完成有限初始化后关闭，
+不安装业务回调、不运行正常应用事件循环、不调用剪贴板/选择器/全局快捷键。
+它仍会创建临时 loopback listener 与隐藏原生 WebView，不是纯静态检查；
+退出 0 不代表页面/Bridge/GUI/原生运行时验收通过，失败非零，未知参数退出 2。
+
+如果程序连 main 都没进入（动态库缺失或系统拒绝执行），应用不能自己弹框或报告，
+使用交付目录现有 doctor 入口。Linux 原生错误框使用既有 GTK3，Windows 使用 user32，
+Mac 模板额外编译 Objective-C++17/ARC helper 并链接系统 AppKit。
+旧生成项目不会被覆盖；需重新生成到新目录，或人工迁移 main、startup_* 源及 CMake 接线。

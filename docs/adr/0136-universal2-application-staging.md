@@ -17,8 +17,9 @@ staging/verification 共用 inspectBinary；架构为 universal2，format 仍为
 x64/arm64 宿主匹配，不把未知架构视为通过。ZIP不改二进制或签名，保持现有布局。
 
 不泛化为任意 fat 文件，不提取/重写 slice，也不调用 lipo 或下载工具。仍是输入
-身份/结构校验，不是完整 Mach-O loader、安全签名或可运行性认证。旧 thin 行为
-保持；现有manifest schema/1增加已知架构值，旧版校验器会拒绝新产物，须使用
+身份/结构校验，不是完整 Mach-O loader、安全签名或可运行性认证。thin 与 fat slice 均校验 generic CPU subtype：x64 接受 3/0x80000003，arm64 接受 0；
+拒绝 x86_64h、arm64e 与未知 subtype，不能把专用 slice 误标为通用架构。
+现有manifest schema/1增加已知架构值，旧版校验器会拒绝新产物，须使用
 同版SDK工具。使用合成结构做少量解析和stage→verify→archive验证，不声称在Mac
 编译、启动或两个架构实跑通过。
 

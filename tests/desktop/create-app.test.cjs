@@ -19,6 +19,11 @@ test('creates a relocatable minimal project and refuses overwrite', () => fixtur
   assert.match(cmake, /soui_sync_application_assets\(TARGET HelloApp ASSETS/);
   assert.equal(cmake.includes('copy_directory'), false);
   assert.match(cmake, /HelloApp/);
+  for (const name of ['startup_report.h', 'startup_dialog.h', 'startup_dialog.cpp', 'startup_dialog_macos.mm'])
+    assert.ok(fs.statSync(path.join(output, name)).isFile());
+  assert.match(fs.readFileSync(path.join(output, 'main.cpp'), 'utf8'), /--diagnose/);
+  assert.match(cmake, /startup_dialog_macos\.mm/);
+  assert.match(cmake, /PkgConfig::SOUI_APP_GTK/);
   assert.equal(cmake.includes(root), false);
   assert.equal(cmake.includes('@APP_'), false);
   for (const name of ['desktop.mjs', 'desktop.d.mts'])
@@ -72,6 +77,14 @@ test('installed generator rejects source overlap and incomplete frontend before 
   assert.deepEqual(fs.readdirSync(path.join(share, 'frontend')).sort(), ['desktop.d.mts', 'desktop.mjs']);
   for (const name of ['app.mjs', 'feature.mjs', 'details.mjs', 'config.json', 'style.css']) {
     const file = path.join(share, 'templates/unified-desktop/web', name);
+    const saved = fs.readFileSync(file);
+    fs.unlinkSync(file);
+    assert.throws(() => installed.createProject(options(output)), /Incomplete project template/);
+    assert.equal(fs.existsSync(output), false);
+    fs.writeFileSync(file, saved);
+  }
+  for (const name of ['startup_report.h', 'startup_dialog.h', 'startup_dialog.cpp', 'startup_dialog_macos.mm']) {
+    const file = path.join(share, 'templates/unified-desktop', name);
     const saved = fs.readFileSync(file);
     fs.unlinkSync(file);
     assert.throws(() => installed.createProject(options(output)), /Incomplete project template/);

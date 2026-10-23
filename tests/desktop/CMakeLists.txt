@@ -1,5 +1,18 @@
 # These tests use the real common application/protocol with a fake backend.
 # They never initialize a renderer, clipboard, file picker, or native window.
+add_executable(soui_desktop_startup_report startup_report.cpp)
+target_compile_features(soui_desktop_startup_report PRIVATE cxx_std_17)
+target_include_directories(soui_desktop_startup_report PRIVATE
+  "${SOUI_DISTRIBUTION_ROOT}/sdk/include")
+if(MSVC)
+  target_compile_options(soui_desktop_startup_report PRIVATE /utf-8 /W4)
+  set_property(TARGET soui_desktop_startup_report PROPERTY MSVC_RUNTIME_LIBRARY MultiThreadedDLL)
+else()
+  target_compile_options(soui_desktop_startup_report PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+add_test(NAME sdk.desktop.startup-report COMMAND soui_desktop_startup_report)
+set_tests_properties(sdk.desktop.startup-report PROPERTIES TIMEOUT 10 LABELS "desktop;contract;no-gui")
+
 add_executable(soui_desktop_contract
   contract.cpp
   ../../sdk/src/desktop/assets.cpp

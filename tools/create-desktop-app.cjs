@@ -106,7 +106,8 @@ function createProject(input) {
   const files = collectTemplates(root, {
     '@APP_NAME@': options.name, '@APP_IDENTIFIER@': options.identifier, '@APP_VERSION@': options.version,
   }, [
-    'CMakeLists.txt', 'main.cpp',
+    'CMakeLists.txt', 'main.cpp', 'startup_report.h', 'startup_dialog.h',
+    'startup_dialog.cpp', 'startup_dialog_macos.mm',
     // Include the full starter module graph and its fetch/style dependencies.
     // A partial SDK installation must fail here, before creating any output.
     ...['index.html', 'app.mjs', 'feature.mjs', 'details.mjs', 'config.json', 'style.css']

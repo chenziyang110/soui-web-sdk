@@ -138,6 +138,29 @@ function universalFixture(wide = false, little = false) {
   }
   return bytes;
 }
+test('thin Mach-O requires the same generic CPU subtypes as universal2', () => fixture(options => {
+  for (const [cpu, subtype, arch] of [
+    [0x1000007, 3, 'x64'], [0x1000007, 0x80000003, 'x64'], [0x100000c, 0, 'arm64'],
+  ]) {
+    const bytes = Buffer.from(universalFixture().subarray(4096, 4160));
+    bytes.writeUInt32LE(cpu, 4); bytes.writeUInt32LE(subtype, 8);
+    fs.writeFileSync(options.binary, bytes);
+    assert.equal(inspectBinary(options.binary).arch, arch);
+  }
+  for (const [cpu, subtype, arch] of [
+    [0x1000007, 8, 'x64'], // x86_64h is not generic x86_64.
+    [0x1000007, 0, 'x64'], [0x1000007, 0x40000003, 'x64'],
+    [0x100000c, 2, 'arm64'], // arm64e is not generic arm64.
+    [0x100000c, 0x80000000, 'arm64'], [0x100000c, 0xffffffff, 'arm64'],
+  ]) {
+    const bytes = Buffer.from(universalFixture().subarray(4096, 4160));
+    bytes.writeUInt32LE(cpu, 4); bytes.writeUInt32LE(subtype, 8);
+    fs.writeFileSync(options.binary, bytes);
+    assert.throws(() => inspectBinary(options.binary), /generic/);
+    assert.throws(() => stage({ ...options, platform: 'macos', arch, identifier: 'org.example.thin' }), /generic/);
+    assert.equal(fs.existsSync(options.output), false);
+  }
+}));
 test('universal2 accepts both fat widths, rejects swapped byte order and delivers intact', () => fixture(options => {
   for (const wide of [false, true]) for (const little of [false, true]) {
     fs.writeFileSync(options.binary, universalFixture(wide, little));

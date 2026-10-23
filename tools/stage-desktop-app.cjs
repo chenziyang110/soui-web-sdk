@@ -69,11 +69,17 @@ function noSymlinkAncestors(input) {
   }
   return absolute;
 }
+function genericMachCpu(cpu, subtype) {
+  return (cpu === 0x1000007 && [3, 0x80000003].includes(subtype)) ||
+    (cpu === 0x100000c && subtype === 0);
+}
 function inspectMachSlice(sliceRead) {
   const head = sliceRead(0, 32);
   if (head.readUInt32LE(0) !== 0xfeedfacf) throw new Error('Expected a little-endian 64-bit Mach-O slice.');
   const arch = { 0x1000007: 'x64', 0x100000c: 'arm64' }[head.readUInt32LE(4)];
   if (!arch || head.readUInt32LE(12) !== 2) throw new Error('Unsupported Mach-O executable.');
+  if (!genericMachCpu(head.readUInt32LE(4), head.readUInt32LE(8)))
+    throw new Error('Mach-O requires a generic x86_64 or arm64 CPU subtype.');
   const count = head.readUInt32LE(16), size = head.readUInt32LE(20);
   if (!count || count > 4096 || size > 1024 * 1024 || size < count * 8)
     throw new Error('Invalid Mach-O load command bounds.');
@@ -193,7 +199,7 @@ function inspectBinary(file) {
             (wide && u32(table, at + 28) !== 0)) throw new Error('Invalid universal2 slice bounds or alignment.');
         if (slices.some(other => offset < other.end && other.start < offset + size))
           throw new Error('Overlapping universal2 slices.');
-        if (!((cpu === 0x1000007 && [3, 0x80000003].includes(subtype)) || (cpu === 0x100000c && subtype === 0)) || architectures.has(cpu))
+        if (!genericMachCpu(cpu, subtype) || architectures.has(cpu))
           throw new Error('Universal2 requires generic x86_64 and arm64 slices.');
         if (offset % BigInt(cpu === 0x100000c ? 16384 : 4096) !== 0n)
           throw new Error('Mach-O slice does not satisfy loader page alignment.');
