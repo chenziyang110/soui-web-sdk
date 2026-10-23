@@ -87,6 +87,52 @@ Mac 子任务核对 9 个增量文件 blob 与上述基线一致。显式 Xcode 
 选择双架构后才获得以上最终结果。此为执行接线错误，不据此报告产品源码缺陷，
 也不将旧包数字混入最终通过结果。未运行生成程序 GUI、真实对话框/热键或 Intel slice。
 
+## 生成应用启动诊断与架构身份校验（后续限定检查）
+
+本节源码基线为远端提交
+[`14bc147f2ee424cca9763a2a53ec7583d0d81660`](https://github.com/chenziyang110/soui-web-sdk/commit/14bc147f2ee424cca9763a2a53ec7583d0d81660)，
+17 个文件已逐 blob 核对；不将此前六纵切的结果自动推广到本次模板变更。
+
+生成模板新增去敏 `--diagnose`、启动失败原生提示及即时首错 stderr。诊断模式不调用
+业务回调、不进入应用事件循环，但可能创建隐藏原生窗口/WebView 与短暂本地监听器；
+成功仅表示有限初始化完成，不代表 GUI、Bridge 或 `nativeRuntimeVerified`。
+原生提示为 best-effort，显示条件不满足时保留 stderr。错误输出不包含原始任意消息、
+资源根路径或带凭据的 origin。加载器在进入 main 前失败仍需现有 doctor 等外部诊断。
+同时统一 thin/fat Mach-O 的 generic CPU subtype 校验，拒绝把 arm64e、x86_64h 或
+未知 subtype 错标为通用目标。
+
+### 云端限定检查
+
+- `node --test tests/desktop/create-app.test.cjs`：6/6。
+- `tests/desktop/startup_report.cpp` 的 C++17 编译及执行通过，覆盖报告去敏和实际
+  模板 main 的 fake SDK 流程，包括有限初始化、立即首错日志与退出后提示顺序。
+- Linux 提示 helper 使用现有 GTK 头文件的严格语法检查通过，非原生提示运行。
+- staging：13/13；verify/archive：10/10。新增 subtype 案例已验证旧实现失败、
+  新实现通过；这些合成二进制检查不是目标平台执行证据。
+- 独立审查、`git diff --check` 与暂存差异检查通过。未重跑全量回归或 CI。
+
+### macOS 最新模板编译与 staging
+
+沿用上文 Mac 工具链与显式 Xcode SDK 26.5。首轮大 base64 传输失败且未写源码，
+不计作编译失败；随后 8,804 字节 gzip 小补丁核对 SHA-256
+`4c2e14a2664bc8bf90059b0f74ddf339129fea950183dd31f9c7a4c46e9ee7fb`、应用退出 0，
+9 个增量文件 blob 全部匹配本节基线。
+
+- 已有 `resource-server-diagnostic-sdk-build` 重新安装 Release，退出 0。
+- 通过安装 SDK 生成全新 `StartupDiagnosticConsumer`，16 文件、退出 0；配置显式
+  `arm64;x86_64`、SDK 26.5 及最新 SouiDesktop/SouiRuntime，退出 0。
+- 编译 `main.cpp`、`startup_dialog_macos.mm` 并链接成功，退出 0。
+- 源码、安装 SDK 与生成模板在替换占位符后内容一致；两个 frontend 文件一致。
+- 消费者与两个 SDK 静态库的 `lipo` 均确认 x86_64、arm64 两个 slice。
+- stage 与独立 verify 均退出 0，结果 `integrity_consistent`：12 个 manifest 文件，
+  1,441,901 字节，`diagnosticsPresent=true`、`nativeRuntimeVerified=false`、`signed=false`。
+- 产物为 `out/startup-diagnostic-consumer-staged/StartupDiagnosticConsumer.app`；
+  原 DeliveryConsumerFinal 与手动诊断包保留，未覆盖。
+
+本次未运行应用、`--diagnose` 或 GUI，未签名；原生提示的实际可见性、Finder 启动、
+真实窗口/Bridge/系统服务交互仍未验收。编译和交付通过不表示旧诊断包的启动根因已解决。
+Windows 原生构建、新增 Linux GUI 路径及其他未测架构仍保留原有缺口。
+
 ## 平台/架构事实矩阵
 
 | 平台/架构 | 实现/目标策略 | 当前原生证据及缺口 |
@@ -106,8 +152,10 @@ Linux Wayland（包括处于 Wayland 会话中的 XWayland）及未知会话的�
 
 阶段一/二六项核心代码已实现，最新 Mac 原生构建及安装 SDK → 生成 universal2 消费者
 → stage/verify/archive 已通过。限定集中非 GUI 交付检查完成，但阶段三真实平台验收仍未闭环。
-Mac 真实 GUI 曾因 AppKit regular application 激活失败受阻，未确认是源码缺陷；
-不重复提权、绕过系统保护或把 fake 运行当 WKWebView 通过。
+最终 DeliveryConsumerFinal 的 Finder 无窗口现象根因尚未确认。普通直接执行已捕获
+资源监听 bind 失败，但不能据此确定 Finder 启动根因。旧 SouiMacVerify 的 AppKit
+激活失败仅作为旧包历史证据，不套用于最终包。不重复提权、绕过系统保护或把 fake
+运行当 WKWebView 通过。
 
 Linux 历史证据见 [2026-10-22 记录](../linux-native-validation-20261022.md)，
 Mac 环境/历史交付与 GUI 阻塞见 [2026-10-23 记录](../macos-native-validation-20261023.md)。
