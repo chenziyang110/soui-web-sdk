@@ -12,6 +12,7 @@ struct backend_events {
   std::function<void(std::string_view payload, std::string_view source_uri, message_frame)> message;
   std::function<void(std::string_view uri)> loaded;
   std::function<void()> closed;
+  std::function<void(window_state)> state_changed;
   std::function<void(result)> error;
   // Renderer-initiated full reloads of the selected document are cancelled
   // first, then queued here. Common code creates a fresh token before a native
@@ -46,6 +47,12 @@ class backend {
   virtual result resize(int width, int height) = 0;
   virtual result show(bool) = 0;
   virtual result focus() = 0;
+  virtual result minimize() { return result::failure("not_supported", "Window minimization is unavailable."); }
+  virtual result maximize() { return result::failure("not_supported", "Window maximization is unavailable."); }
+  virtual result restore() { return result::failure("not_supported", "Window restoration is unavailable."); }
+  virtual window_state_result get_window_state() const {
+    return {result::failure("not_supported", "Window state observation is unavailable."), {}};
+  }
   virtual value_result clipboard_read() = 0;
   virtual result clipboard_write(std::string_view) = 0;
   virtual value_result choose_directory() = 0;

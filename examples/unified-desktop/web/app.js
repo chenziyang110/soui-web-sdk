@@ -10,11 +10,31 @@ async function invoke(method, params) {
   try { const result = await window.souiDesktop.invoke(method, params); record(method, result); return result; }
   catch (error) { record(error.code || 'error', error.message); throw error; }
 }
+// Keep the classic-script example usable without the optional HTTP module origin.
+// The SDK ESM windowControls facade wraps these same invoke/on operations.
+let stateRevision = 0;
+function showWindowState(state) {
+  if (!state || typeof state.minimized !== 'boolean' || typeof state.maximized !== 'boolean') {
+    record('window state error', 'Malformed observed state');
+    return;
+  }
+  ++stateRevision;
+  document.getElementById('window-state').textContent =
+    `Observed: minimized=${state.minimized}, maximized=${state.maximized}`;
+}
+async function readWindowState() {
+  const revision = stateRevision;
+  const state = await invoke('desktop.window.getState', {});
+  // An intervening stateChanged event is newer than this query's snapshot.
+  if (revision === stateRevision) showWindowState(state);
+}
 if (!window.souiDesktop) {
   document.getElementById('status').textContent = 'Open this page with the native example executable.';
 } else {
   window.souiDesktop.on('native.ready', value => record('native.ready', value));
   window.souiDesktop.on('native.command', value => record('native.command', value));
+  window.souiDesktop.on('desktop.window.stateChanged', showWindowState);
+  readWindowState().catch(() => {});
   invoke('app.capabilities').then(caps => {
     document.getElementById('status').textContent = `${caps.backend} / local Bridge connected`;
     document.getElementById('dot').classList.add('connected');
@@ -41,6 +61,10 @@ if (!window.souiDesktop) {
     echo: () => invoke('app.echo', { greeting: 'Hello / 你好', values: [1, true, null] }),
     title: () => invoke('window.title'),
     resize: () => invoke('window.resize'),
+    minimize: () => invoke('desktop.window.minimize', {}),
+    maximize: () => invoke('desktop.window.maximize', {}),
+    restore: () => invoke('desktop.window.restore', {}),
+    state: readWindowState,
     copy: () => invoke('clipboard.write'),
     paste: () => invoke('clipboard.read'),
     directory: () => invoke('directory.choose'),

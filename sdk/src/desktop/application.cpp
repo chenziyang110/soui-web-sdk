@@ -107,6 +107,10 @@ struct application_state : std::enable_shared_from_this<application_state> {
   bool pending_closed{false};
   bool pending_ready{false};
   std::uint64_t ready_generation{0};
+  bool pending_state_changed{false};
+  window_state observed_state;
+  std::uint64_t state_generation{0};
+  bool state_document_ready{false};
   detail::asset_cancellation asset_session;
   bool assets_submitted{false};
   std::shared_ptr<asset_completion_channel> asset_channel = std::make_shared<asset_completion_channel>();
@@ -173,6 +177,7 @@ struct application_state : std::enable_shared_from_this<application_state> {
         work_items.clear();
         commands.clear();
         pending_ready = false;
+        pending_state_changed = false;
         ++group->callback_depth;
         try { if (handlers.closed) handlers.closed(); } catch (...) {}
         try { if (handlers.lifecycle) handlers.lifecycle(identity, window_event::closed); } catch (...) {}
@@ -195,6 +200,25 @@ struct application_state : std::enable_shared_from_this<application_state> {
             if (accepting.load() && generation == active_generation && handlers.lifecycle)
               handlers.lifecycle(identity, window_event::ready);
           } catch (...) { report(result::failure("callback_failed", "The lifecycle callback failed.")); }
+          --group->callback_depth;
+        }
+      } else if (pending_state_changed) {
+        pending_state_changed = false;
+        const auto snapshot = observed_state;
+        const auto snapshot_generation = state_generation;
+        const bool notify_page = state_document_ready;
+        if (accepting.load()) {
+          ++group->callback_depth;
+          try { if (handlers.state_changed) handlers.state_changed(identity, snapshot); }
+          catch (...) { report(result::failure("callback_failed", "The window state callback failed.")); }
+          // Native callbacks belong to the window. Page notifications additionally
+          // belong to the document that was ready when the observation arrived.
+          if (settings.enable_window_controls && notify_page && accepting.load() &&
+              ready && generation == snapshot_generation) {
+            const auto sent = deliver({{"event", "desktop.window.stateChanged"},
+              {"value", {{"minimized", snapshot.minimized}, {"maximized", snapshot.maximized}}}});
+            if (!sent.ok) report(sent);
+          }
           --group->callback_depth;
         }
       } else if (!commands.empty()) {
@@ -226,6 +250,14 @@ struct application_state : std::enable_shared_from_this<application_state> {
   bool command_allowed(std::string_view command) const {
     const std::string value(command);
     return popup_commands.count(value) || tray_commands.count(value);
+  }
+  void on_state_changed(window_state value) {
+    if (!accepting.load()) return;
+    observed_state = value;
+    state_generation = generation;
+    state_document_ready = ready;
+    pending_state_changed = true;
+    drain();
   }
   void on_command(std::string_view command) {
     if (!accepting.load() || !detail::valid_name(command) || !command_allowed(command) ||
@@ -287,7 +319,28 @@ struct application_state : std::enable_shared_from_this<application_state> {
       last_request = id;
       const auto request_generation = generation;
       nlohmann::json response{{"id", id}};
-      if (method == "soui.asset.read") {
+      if (method == "desktop.window.minimize" || method == "desktop.window.maximize" ||
+          method == "desktop.window.restore" || method == "desktop.window.getState") {
+        const auto& params = input.at("params");
+        result status = result::failure("permission_denied", "Window controls are not enabled.");
+        if (settings.enable_window_controls) {
+          if (!params.is_object() || !params.empty()) {
+            status = result::failure("invalid_params", "Window controls require an empty object.");
+          } else if (method == "desktop.window.getState") {
+            const auto observed = native->get_window_state();
+            status = observed.status;
+            if (status.ok) response["result"] = {{"minimized", observed.value.minimized},
+              {"maximized", observed.value.maximized}};
+          } else {
+            if (method == "desktop.window.minimize") status = native->minimize();
+            else if (method == "desktop.window.maximize") status = native->maximize();
+            else status = native->restore();
+            if (status.ok) response["result"] = {{"accepted", true}};
+          }
+        }
+        response["ok"] = status.ok;
+        if (!status.ok) response["error"] = {{"code", status.code}, {"message", status.message}};
+      } else if (method == "soui.asset.read") {
         const auto& params = input.at("params");
         result status = result::failure("asset_read_disabled", "Local asset reading is not enabled.");
         if (settings.enable_asset_read) {
@@ -387,7 +440,7 @@ void application_group::drain() noexcept {
     progressed = false;
     const auto snapshot = windows; // A callback can create another window.
     for (const auto& weak : snapshot) if (const auto state = weak.lock(); state && !state->draining) {
-      if (state->pending_closed || state->pending_ready || !state->errors.empty() ||
+      if (state->pending_closed || state->pending_ready || state->pending_state_changed || !state->errors.empty() ||
           !state->commands.empty() || !state->requests.empty() || !state->work_items.empty()) {
         progressed = true;
         state->drain();
@@ -506,6 +559,9 @@ result application::initialize() {
     }
   };
   events.closed = [weak]() { if (const auto live = weak.lock()) live->on_closed(); };
+  events.state_changed = [weak](window_state value) {
+    if (const auto live = weak.lock()) live->on_state_changed(value);
+  };
   events.command = [weak](std::string_view command) { if (const auto live = weak.lock()) live->on_command(command); };
   events.quit_requested = [weak]() { if (const auto live = weak.lock()) (void)live->group->quit(); };
   events.reload = [weak]() {
@@ -643,6 +699,22 @@ result application::show(bool visible) {
 result application::focus() {
   auto state = impl_->state; const auto checked = state->check();
   return checked.ok ? state->native->focus() : checked;
+}
+result application::minimize() {
+  auto state = impl_->state; const auto checked = state->check();
+  return checked.ok ? state->native->minimize() : checked;
+}
+result application::maximize() {
+  auto state = impl_->state; const auto checked = state->check();
+  return checked.ok ? state->native->maximize() : checked;
+}
+result application::restore() {
+  auto state = impl_->state; const auto checked = state->check();
+  return checked.ok ? state->native->restore() : checked;
+}
+window_state_result application::get_window_state() const {
+  auto state = impl_->state; const auto checked = state->check();
+  return checked.ok ? state->native->get_window_state() : window_state_result{checked, {}};
 }
 value_result application::clipboard_read() {
   auto state = impl_->state; const auto checked = state->check();

@@ -237,6 +237,31 @@ void window_destroy(GtkWidget*, gpointer data) noexcept {
   shutdown(*static_cast<linux_state*>(data), true, true);
 }
 
+window_state observed_window_state(GdkWindowState native) noexcept {
+  // An iconified window may retain its maximized bit. Do not make the flags
+  // mutually exclusive or infer either one from the last requested operation.
+  return {(native & GDK_WINDOW_STATE_ICONIFIED) != 0,
+          (native & GDK_WINDOW_STATE_MAXIMIZED) != 0};
+}
+
+gboolean window_state_changed(GtkWidget* window, GdkEventWindowState* event,
+                              gpointer data) noexcept {
+  auto& state = *static_cast<linux_state*>(data);
+  if (!state.active.load() || state.window != window || !event ||
+      !(event->changed_mask & (GDK_WINDOW_STATE_ICONIFIED | GDK_WINDOW_STATE_MAXIMIZED)))
+    return FALSE;
+  try {
+    // The handler can close or destroy its application. Keep the native state
+    // alive across that callback, and never access the window afterward.
+    auto keep_alive = state.shared_from_this();
+    auto handler = state.events.state_changed;
+    if (handler) handler(observed_window_state(event->new_window_state));
+  } catch (...) {
+    // No C++ exception may cross the GTK signal boundary.
+  }
+  return FALSE;
+}
+
 gboolean decide_policy(WebKitWebView*, WebKitPolicyDecision* decision,
                        WebKitPolicyDecisionType type, gpointer data) noexcept {
   auto& state = *static_cast<linux_state*>(data);
@@ -773,6 +798,7 @@ class linux_backend final : public backend {
     gtk_container_add(GTK_CONTAINER(state.window), GTK_WIDGET(state.view));
     g_signal_connect(state.window, "delete-event", G_CALLBACK(window_delete), &state);
     g_signal_connect(state.window, "destroy", G_CALLBACK(window_destroy), &state);
+    g_signal_connect(state.window, "window-state-event", G_CALLBACK(window_state_changed), &state);
     g_signal_connect(state.view, "decide-policy", G_CALLBACK(decide_policy), &state);
     g_signal_connect(state.view, "load-changed", G_CALLBACK(load_changed), &state);
     g_signal_connect(state.view, "load-failed", G_CALLBACK(load_failed), &state);
@@ -895,6 +921,44 @@ class linux_backend final : public backend {
     return result::success();  // Window-manager focus-stealing policy still applies.
   }
 
+  result minimize() override {
+    auto status = check_ui(*state_);
+    if (!status.ok) return status;
+    gtk_window_iconify(GTK_WINDOW(state_->window));
+    return result::success();  // A request, not confirmation from the window manager.
+  }
+
+  result maximize() override {
+    auto state = state_;
+    auto status = check_ui(*state);
+    if (!status.ok) return status;
+    gtk_window_deiconify(GTK_WINDOW(state->window));
+    if (!state->active.load()) return unavailable();
+    gtk_window_maximize(GTK_WINDOW(state->window));
+    return result::success();
+  }
+
+  result restore() override {
+    auto state = state_;
+    auto status = check_ui(*state);
+    if (!status.ok) return status;
+    gtk_window_deiconify(GTK_WINDOW(state->window));
+    if (!state->active.load()) return unavailable();
+    gtk_window_unmaximize(GTK_WINDOW(state->window));
+    return result::success();
+  }
+
+  window_state_result get_window_state() const override {
+    auto status = check_ui(*state_);
+    if (!status.ok) return {status, {}};
+    // A hidden window need not have been realized yet. Its default false bits
+    // are not an observed normal state, so return an explicit failure instead.
+    auto* native = gtk_widget_get_window(state_->window);
+    if (!gtk_widget_get_realized(state_->window) || !native || gdk_window_is_destroyed(native))
+      return {result::failure("E_STATE", "The native window state is not available before realization."), {}};
+    return {result::success(), observed_window_state(gdk_window_get_state(native))};
+  }
+
   value_result clipboard_read() override {
     auto status = check_ui(*state_);
     if (!status.ok) return {status, {}};
@@ -1005,7 +1069,12 @@ class linux_backend final : public backend {
   }
 
   capabilities get_capabilities() const override {
-    return {"webkitgtk", true, true, true, true, true, true, true};
+    auto supported = capabilities{"webkitgtk", true, true, true, true, true, true, true};
+    supported.window_minimize = true;
+    supported.window_maximize = true;
+    supported.window_restore = true;
+    supported.window_state_observation = true;
+    return supported;
   }
 
   bool has_message_frame_metadata() const override { return false; }

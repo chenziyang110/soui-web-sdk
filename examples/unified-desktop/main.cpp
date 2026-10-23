@@ -140,6 +140,7 @@ int main(int argc, char** argv) {
   }
   state.settings.title = "SOUI · one application";
   state.settings.enable_asset_read = true;
+  state.settings.enable_window_controls = true;
   state.settings.enable_resource_server = default_http || argc == 3;
   state.children.reserve(31); // No handle-storage allocation after native create.
   auto context = std::make_shared<window_context>();

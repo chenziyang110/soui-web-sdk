@@ -47,3 +47,14 @@ TypeScript 使用支持 `.d.mts` 的模块解析方式（例如 NodeNext/Bundler
 assetBytes 对 mime、size、base64 只读取一次，再对同一组值验证和分配。
 调用方传入带 accessor 的对象也不能借重复读取改变校验后的大小；256 KiB
 限制不变。这不限制调用方 getter 自身的副作用，原生返回仍为普通 JSON 数据。
+
+## 统一窗口控制
+
+`windowControls.minimize/maximize/restore()` 返回 `{accepted:true}`，只表示提交原生
+请求。`getState()` 返回观测的 `{minimized,maximized}`；`onStateChanged(listener)`
+订阅同型状态并返回取消函数。两标志允许同时为 true，不能用命令返回值猜测状态。
+宿主必须显式启用 `enable_window_controls`，默认调用被拒绝；适配器不授予权限，
+不缓存先前页面的窗口对象、不绕过原来的 invoke/on 会话与超时。
+
+类型 `WindowState` / `WindowControlAcceptance` 描述这两个不同结果；格式错误的
+状态快照抛出 `desktop_adapter_invalid_window_state`，不会把缺字段猜为 false。

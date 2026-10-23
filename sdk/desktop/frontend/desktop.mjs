@@ -39,6 +39,31 @@ export function readAsset(path) {
   return requireDesktop().readAsset(path);
 }
 
+function windowState(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    fail('invalid_window_state', 'Expected an observed minimized/maximized snapshot');
+  }
+  const { minimized, maximized } = value;
+  if (typeof minimized !== 'boolean' || typeof maximized !== 'boolean') {
+    fail('invalid_window_state', 'Expected an observed minimized/maximized snapshot');
+  }
+  // Both flags may be true: a minimized window can retain its maximized state.
+  return { minimized, maximized };
+}
+
+// Requires explicit native enable_window_controls permission. Acceptance is not
+// an observed transition; only getState/stateChanged supply window state.
+export const windowControls = Object.freeze({
+  minimize() { return invoke('desktop.window.minimize', {}); },
+  maximize() { return invoke('desktop.window.maximize', {}); },
+  restore() { return invoke('desktop.window.restore', {}); },
+  getState() { return invoke('desktop.window.getState', {}).then(windowState); },
+  onStateChanged(listener) {
+    if (typeof listener !== 'function') throw new TypeError('Expected a window state listener');
+    return on('desktop.window.stateChanged', value => listener(windowState(value)));
+  }
+});
+
 const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 // Validate lengths before allocation; reject noncanonical padding and unused bits.

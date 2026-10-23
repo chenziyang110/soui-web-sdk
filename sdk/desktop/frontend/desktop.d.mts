@@ -22,6 +22,7 @@ export interface DesktopHost {
 export type DesktopAdapterErrorCode =
   | 'desktop_adapter_missing_host'
   | 'desktop_adapter_incompatible_host'
+  | 'desktop_adapter_invalid_window_state'
   | 'desktop_adapter_invalid_asset'
   | 'desktop_adapter_asset_too_large'
   | 'desktop_adapter_text_decoder_unavailable'
@@ -44,6 +45,25 @@ export function on<TPayload = unknown>(
   event: string, listener: (payload: TPayload) => void
 ): Unsubscribe;
 export function readAsset(path: string): Promise<DesktopAsset>;
+/** System-observed flags, not mutually exclusive or inferred from a request. */
+export interface WindowState {
+  readonly minimized: boolean;
+  readonly maximized: boolean;
+}
+/** The request was accepted; the window manager may not have applied it yet. */
+export interface WindowControlAcceptance {
+  readonly accepted: true;
+}
+/** Requires native options.enable_window_controls; never polls or retries. */
+export const windowControls: Readonly<{
+  minimize(): Promise<WindowControlAcceptance>;
+  maximize(): Promise<WindowControlAcceptance>;
+  restore(): Promise<WindowControlAcceptance>;
+  /** Rejects when no observed state is available; malformed snapshots also reject. */
+  getState(): Promise<WindowState>;
+  /** Validates snapshots; returns the native unsubscribe function unchanged. */
+  onStateChanged(listener: (state: WindowState) => void): Unsubscribe;
+}>;
 /** Synchronously decode a bounded, canonical base64 asset response. */
 export function assetBytes(asset: DesktopAsset): Uint8Array;
 /** Synchronously decode UTF-8; malformed input throws rather than replacing bytes. */

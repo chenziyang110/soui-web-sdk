@@ -37,6 +37,16 @@ struct path_result {
 // Returns a canonical existing directory, not a filesystem sandbox guarantee.
 [[nodiscard]] path_result application_resource_directory();
 
+struct window_state {
+  bool minimized{false};
+  bool maximized{false};
+};
+
+struct window_state_result {
+  result status;
+  window_state value;
+};
+
 struct capabilities {
   std::string backend;
   bool clipboard_read{false};
@@ -46,6 +56,10 @@ struct capabilities {
   bool window_focus{false};
   bool popup_menu{false};
   bool tray{false};
+  bool window_minimize{false};
+  bool window_maximize{false};
+  bool window_restore{false};
+  bool window_state_observation{false};
 };
 
 struct menu_item {
@@ -81,6 +95,8 @@ struct options {
   // Opt-in per-window loopback HTTP origin for standard frontend resource URLs.
   // Keeps file:// loading as the default; not a general-purpose network server.
   bool enable_resource_server{false};
+  // Explicit permission for current-page desktop.window.* controls and state events.
+  bool enable_window_controls{false};
 };
 
 struct callbacks {
@@ -93,6 +109,8 @@ struct callbacks {
   // Native menu/tray actions are delivered only to this window's callback.
   std::function<void(std::string_view command)> command;
   std::function<void(window_id, window_event)> lifecycle;
+  // Observed native state, not a promise that an earlier request was applied.
+  std::function<void(window_id, window_state)> state_changed;
 };
 
 class application;
@@ -129,6 +147,11 @@ class application final {
   [[nodiscard]] result resize(int width, int height);
   [[nodiscard]] result show(bool visible);
   [[nodiscard]] result focus();
+  // Success accepts a native request; query/events report observed state.
+  [[nodiscard]] result minimize();
+  [[nodiscard]] result maximize();
+  [[nodiscard]] result restore();
+  [[nodiscard]] window_state_result get_window_state() const;
   [[nodiscard]] value_result clipboard_read();
   [[nodiscard]] result clipboard_write(std::string_view text);
   [[nodiscard]] value_result choose_directory();

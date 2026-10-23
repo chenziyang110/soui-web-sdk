@@ -70,6 +70,8 @@ struct macos_state {
   bool document_committed{false};
   bool document_failed{false};
   bool reload_pending{false};
+  bool state_observation_scheduled{false};
+  soui::desktop::window_state last_window_state;
   std::uint64_t generation{0};
   std::mutex jobs_mutex;
   std::deque<ui_job> jobs;
@@ -380,6 +382,42 @@ result require_open(const std::shared_ptr<macos_state>& state) {
   return result::success();
 }
 
+soui::desktop::window_state_result observe_window_state(
+    const std::shared_ptr<macos_state>& state) {
+  auto open = require_open(state);
+  if (!open.ok) return {open, {}};
+  if (!state->window)
+    return {result::failure("E_WINDOW_STATE", "The native window is unavailable"), {}};
+  // Zoom is the AppKit windowed maximization operation, not full screen.
+  // A miniaturized window can retain its zoomed state: keep the two bits independent.
+  return {result::success(), {state->window.miniaturized != NO, state->window.zoomed != NO}};
+}
+
+void schedule_window_state_observation(const std::shared_ptr<macos_state>& state) {
+  if (!is_live(state) || state->state_observation_scheduled) return;
+  state->state_observation_scheduled = true;
+  const std::weak_ptr<macos_state> weak_state = state;
+  // AppKit resize notifications may precede the final zoom flag update. Observe
+  // after the native stack unwinds, coalescing animation/resize notifications.
+  // This belongs to the window, not a navigation generation, and carries no old
+  // page snapshot into a newly loaded page.
+  schedule_main_block([weak_state] {
+    auto live = weak_state.lock();
+    if (!is_live(live)) return;
+    live->state_observation_scheduled = false;
+    const auto observed = observe_window_state(live);
+    if (!observed.status.ok) return;
+    if (observed.value.minimized == live->last_window_state.minimized &&
+        observed.value.maximized == live->last_window_state.maximized) return;
+    live->last_window_state = observed.value;
+    const auto callback = live->events.state_changed;
+    if (callback) {
+      try { callback(observed.value); }
+      catch (...) { report_error(live, result::failure("E_CALLBACK", "Window state callback failed")); }
+    }
+  });
+}
+
 NSMenu* application_menu() {
   NSMenu* menu = [[NSMenu alloc] initWithTitle:@""];
   NSMenuItem* app_item = [[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""];
@@ -489,6 +527,24 @@ NSMenu* application_menu() {
   NSWindow* __autoreleasing closing_window = notification.object;
   if (state && closing_window == state->window)
     shut_down(state, true, window_close_origin::appkit);
+}
+
+- (void)windowDidMiniaturize:(NSNotification*)notification {
+  auto state = _state.lock();
+  if (is_live(state) && notification.object == state->window)
+    schedule_window_state_observation(state);
+}
+
+- (void)windowDidDeminiaturize:(NSNotification*)notification {
+  auto state = _state.lock();
+  if (is_live(state) && notification.object == state->window)
+    schedule_window_state_observation(state);
+}
+
+- (void)windowDidResize:(NSNotification*)notification {
+  auto state = _state.lock();
+  if (is_live(state) && notification.object == state->window)
+    schedule_window_state_observation(state);
 }
 
 - (void)onNativeMenuCommand:(NSMenuItem*)sender {
@@ -880,6 +936,7 @@ class wkwebview_backend final : public backend {
         [state_->window center];
         state_->created = true;
         state_->accepting_work.store(true, std::memory_order_release);
+        state_->last_window_state = observe_window_state(state_).value;
         if (settings.visible) {
           [state_->window makeKeyAndOrderFront:nil];
           [app activateIgnoringOtherApps:YES];
@@ -1051,6 +1108,57 @@ class wkwebview_backend final : public backend {
     return result::success();
   }
 
+  result minimize() override {
+    const auto state = state_;
+    auto observed = observe_window_state(state);
+    if (!observed.status.ok) return observed.status;
+    if (observed.value.minimized) return result::success();
+    NSWindow* __attribute__((objc_precise_lifetime)) window = state->window;
+    if (!(window.styleMask & NSWindowStyleMaskMiniaturizable))
+      return result::failure("not_supported", "This native window cannot be minimized");
+    [window miniaturize:nil];
+    // Completion and any subsequent changes are reported only by observation.
+    if (!is_live(state)) return result::failure("E_CLOSED", "The owning window closed");
+    schedule_window_state_observation(state);
+    return result::success();
+  }
+
+  result maximize() override {
+    const auto state = state_;
+    auto observed = observe_window_state(state);
+    if (!observed.status.ok) return observed.status;
+    NSWindow* __attribute__((objc_precise_lifetime)) window = state->window;
+    if (!(window.styleMask & NSWindowStyleMaskResizable) ||
+        (window.styleMask & NSWindowStyleMaskFullScreen))
+      return result::failure("not_supported", "Windowed maximization is unavailable");
+    if (window.miniaturized) [window deminiaturize:nil];
+    if (!is_live(state)) return result::failure("E_CLOSED", "The owning window closed");
+    // zoom: toggles, so an unconditional call would undo a prior maximize.
+    if (!window.zoomed) [window zoom:nil];
+    if (!is_live(state)) return result::failure("E_CLOSED", "The owning window closed");
+    schedule_window_state_observation(state);
+    return result::success();
+  }
+
+  result restore() override {
+    const auto state = state_;
+    auto observed = observe_window_state(state);
+    if (!observed.status.ok) return observed.status;
+    NSWindow* __attribute__((objc_precise_lifetime)) window = state->window;
+    if (window.styleMask & NSWindowStyleMaskFullScreen)
+      return result::failure("not_supported", "Full-screen restoration is outside window controls");
+    if (window.miniaturized) [window deminiaturize:nil];
+    if (!is_live(state)) return result::failure("E_CLOSED", "The owning window closed");
+    if (window.zoomed) [window zoom:nil];
+    if (!is_live(state)) return result::failure("E_CLOSED", "The owning window closed");
+    schedule_window_state_observation(state);
+    return result::success();
+  }
+
+  window_state_result get_window_state() const override {
+    return observe_window_state(state_);
+  }
+
   value_result clipboard_read() override {
     auto open = require_open(state_);
     if (!open.ok) return {open, {}};
@@ -1177,7 +1285,7 @@ class wkwebview_backend final : public backend {
   }
 
   capabilities get_capabilities() const override {
-    return {"wkwebview", true, true, true, true, true, true, true};
+    return {"wkwebview", true, true, true, true, true, true, true, true, true, true, true};
   }
 
  private:

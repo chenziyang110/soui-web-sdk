@@ -56,6 +56,9 @@ class fake_backend final : public detail::backend {
   std::condition_variable task_ready;
   std::deque<std::function<void()>> tasks;
   int loads{0};
+  int minimize_calls{0}, maximize_calls{0}, restore_calls{0};
+  result window_status{result::success()};
+  window_state_result observed{result::success(), {}};
 
   result create(const options&, detail::backend_events callbacks) override {
     events = std::move(callbacks); active.store(true);
@@ -114,6 +117,10 @@ class fake_backend final : public detail::backend {
   result resize(int, int) override { return unsupported(); }
   result show(bool) override { return unsupported(); }
   result focus() override { return unsupported(); }
+  result minimize() override { ++minimize_calls; return window_status; }
+  result maximize() override { ++maximize_calls; return window_status; }
+  result restore() override { ++restore_calls; return window_status; }
+  window_state_result get_window_state() const override { return observed; }
   value_result clipboard_read() override { return {unsupported(), {}}; }
   result clipboard_write(std::string_view) override { return unsupported(); }
   value_result choose_directory() override { return {unsupported(), {}}; }
@@ -188,6 +195,135 @@ struct files {
   ~files() { std::error_code ignored; std::filesystem::remove_all(base, ignored); }
   options settings() const { options out; out.resource_root = root; out.visible = false; return out; }
 };
+
+void window_state_contract(files& fixture) {
+  int business_calls = 0, state_calls = 0;
+  application* app = nullptr;
+  fake_backend* native = nullptr;
+  callbacks handlers;
+  handlers.invoke = [&](std::string_view method, std::string_view) {
+    ++business_calls;
+    if (method == "defer") {
+      native->events.state_changed({true, false});
+      native->events.state_changed({true, true});
+      CHECK(state_calls == 0); // No nested user callback; consecutive observations coalesce.
+    } else if (method == "navigate") {
+      native->events.state_changed({false, true});
+      CHECK(app->navigate("second.html").ok);
+      native->loaded();
+    } else if (method == "close") {
+      native->events.state_changed({true, false});
+      CHECK(app->close().ok);
+    }
+    return "null";
+  };
+  bool close_on_state = false;
+  handlers.state_changed = [&](window_id id, window_state value) {
+    ++state_calls;
+    CHECK(id == app->id());
+    CHECK(value.minimized || value.maximized);
+    if (close_on_state) CHECK(app->close().ok);
+  };
+  auto settings = fixture.settings();
+  callbacks disabled_handlers;
+  disabled_handlers.invoke = [&](std::string_view, std::string_view) { ++business_calls; return "null"; };
+  application root(settings, disabled_handlers);
+  CHECK(root.minimize().code == "closed");
+  CHECK(root.get_window_state().status.code == "closed");
+  CHECK(root.initialize().ok);
+  auto* disabled = latest;
+  for (const auto* method : {"minimize", "maximize", "restore", "getState"}) {
+    disabled->send(disabled->envelope(disabled->evaluations.size() + 1,
+      std::string("desktop.window.") + method, json::object()));
+    CHECK(disabled->last_response()["error"]["code"] == "permission_denied");
+  }
+  CHECK(business_calls == 0);
+  // Only the four standardized methods are reserved, not the whole prefix.
+  disabled->send(disabled->envelope(5, "desktop.window.unknown", {{"business", true}}));
+  CHECK(disabled->last_response()["ok"] == true && disabled->last_response()["result"].is_null());
+  CHECK(business_calls == 1);
+  CHECK(root.minimize().ok); // Native controls do not require page permission.
+  CHECK(disabled->minimize_calls == 1);
+  disabled->loaded();
+  const auto disabled_count = disabled->evaluations.size();
+  disabled->events.state_changed({true, true});
+  CHECK(disabled->evaluations.size() == disabled_count);
+
+  settings.enable_window_controls = true;
+  auto child = root.create_window(settings, handlers);
+  CHECK(child.status.ok);
+  app = child.window.get(); native = latest;
+  native->loaded();
+  std::uint64_t id = 0;
+  const auto send = [&](std::string method, json params = json::object()) {
+    native->send(native->envelope(++id, std::move(method), std::move(params)));
+  };
+  auto untrusted = native->envelope(1, "desktop.window.minimize", json::object());
+  native->send(untrusted, message_frame::subframe);
+  native->send(untrusted, message_frame::main, "https://example.invalid/");
+  untrusted["token"] = disabled->token();
+  native->send(untrusted);
+  CHECK(native->evaluations.empty() && native->minimize_calls == 0);
+  for (const auto* method : {"minimize", "maximize", "restore"}) {
+    send(std::string("desktop.window.") + method);
+    CHECK(native->last_response()["result"] == json({{"accepted", true}}));
+  }
+  CHECK(native->minimize_calls == 1 && native->maximize_calls == 1 && native->restore_calls == 1);
+  CHECK(state_calls == 0); // Accepted requests do not synthesize observations.
+  native->observed.value = {true, true}; // OS observations need not be exclusive.
+  CHECK(app->get_window_state().value.minimized && app->get_window_state().value.maximized);
+  send("desktop.window.getState");
+  CHECK(native->last_response()["result"] == json({{"minimized", true}, {"maximized", true}}));
+  native->observed.status = unsupported();
+  send("desktop.window.getState");
+  CHECK(native->last_response()["error"]["code"] == "test_unsupported");
+  CHECK(!native->last_response().contains("result"));
+  native->window_status = unsupported();
+  send("desktop.window.restore");
+  CHECK(native->last_response()["error"]["code"] == "test_unsupported");
+  for (const auto& params : {json(nullptr), json::array(), json({{"windowId", app->id()}})}) {
+    send("desktop.window.minimize", params);
+    CHECK(native->last_response()["error"]["code"] == "invalid_params");
+  }
+  CHECK(business_calls == 1); // Standard methods never fall through to business code.
+  send("desktop.window.unknown", {{"business", true}});
+  CHECK(native->last_response()["ok"] == true && native->last_response()["result"].is_null());
+  CHECK(business_calls == 2 && native->minimize_calls == 1);
+  std::thread worker([&] {
+    CHECK(app->minimize().code == "wrong_thread");
+    CHECK(app->maximize().code == "wrong_thread");
+    CHECK(app->restore().code == "wrong_thread");
+    CHECK(app->get_window_state().status.code == "wrong_thread");
+  });
+  worker.join();
+  send("defer");
+  CHECK(state_calls == 1);
+  CHECK(native->last_response()["event"] == "desktop.window.stateChanged");
+  CHECK(native->last_response()["value"] == json({{"minimized", true}, {"maximized", true}}));
+  const auto count = native->evaluations.size();
+  send("navigate");
+  CHECK(state_calls == 2); // Native observation survives navigation.
+  CHECK(native->evaluations.size() == count); // Old page event and response do not.
+  id = 0;
+  CHECK(app->reload().ok);
+  native->events.state_changed({false, true});
+  CHECK(state_calls == 3 && native->evaluations.size() == count); // Not ready.
+  native->loaded();
+  close_on_state = true;
+  native->events.state_changed({true, false});
+  CHECK(state_calls == 4 && native->evaluations.size() == count); // Callback close barrier.
+  native->events.state_changed({false, true});
+  CHECK(state_calls == 4);
+  CHECK(app->maximize().code == "closed" && app->restore().code == "closed");
+  CHECK(app->get_window_state().status.code == "closed");
+
+  close_on_state = false;
+  auto closing = root.create_window(settings, handlers);
+  CHECK(closing.status.ok);
+  app = closing.window.get(); native = latest; native->loaded(); id = 0;
+  send("close");
+  CHECK(state_calls == 4 && native->evaluations.empty()); // Pending observations discarded.
+}
 
 void asset_bridge_contract(files& fixture) {
   { std::ofstream out(fixture.root / "config.json", std::ios::binary); out << "{\"ok\":true}"; }
@@ -901,6 +1037,7 @@ int main(int argc, char** argv) {
   }
   try {
     files fixture;
+    window_state_contract(fixture);
     asset_bridge_contract(fixture);
     asynchronous_asset_contract(fixture);
     path_and_json_contract(fixture);

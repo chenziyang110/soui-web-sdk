@@ -144,6 +144,8 @@ struct state : std::enable_shared_from_this<state> {
   bool created{false};
   bool dispatching{false};
   bool visible{true};
+  bool window_state_known{false};
+  window_state last_window_state{};
   bool enable_resource_server{false};
   bool installing_script{false};
   bool has_load{false};
@@ -179,6 +181,76 @@ struct state : std::enable_shared_from_this<state> {
   std::deque<std::function<void()>> queue;
 
   bool active() const { return created && !closed && terminal_status.ok; }
+
+  window_state_result observed_window_state() const {
+    if (!active() || !window || !IsWindow(window)) return {closed_error(), {}};
+    WINDOWPLACEMENT placement{};
+    placement.length = sizeof(placement);
+    if (!GetWindowPlacement(window, &placement))
+      return {win32_failure("GetWindowPlacement"), {}};
+    // GetWindowPlacement reports these three show states, including for a
+    // hidden window. Do not interpret an unknown native value as normal.
+    switch (placement.showCmd) {
+      case SW_SHOWNORMAL:
+        return {result::success(), {false, false}};
+      case SW_SHOWMINIMIZED:
+        return {result::success(),
+                {true, (placement.flags & WPF_RESTORETOMAXIMIZED) != 0}};
+      case SW_SHOWMAXIMIZED:
+        return {result::success(), {false, true}};
+      default:
+        return {result::failure("E_STATE", "Windows returned an unknown window state"), {}};
+    }
+  }
+
+  result request_window_state(UINT show_command) {
+    if (!active() || !window || !IsWindow(window)) return closed_error();
+    WINDOWPLACEMENT placement{};
+    placement.length = sizeof(placement);
+    if (!GetWindowPlacement(window, &placement)) return win32_failure("GetWindowPlacement");
+    placement.showCmd = show_command;
+    // SW_RESTORE can return a minimized window to its earlier maximized state.
+    // The unified restore contract instead requests a normal, non-iconic window.
+    if (show_command == SW_SHOWNORMAL) placement.flags &= ~WPF_RESTORETOMAXIMIZED;
+    const HWND owner = window;
+    // SetWindowPlacement, unlike ShowWindow, reports request failure rather
+    // than the previous visibility. Its synchronous messages may close us.
+    if (!SetWindowPlacement(owner, &placement)) return win32_failure("SetWindowPlacement");
+    if (!active() || window != owner) return closed_error();
+    visible = IsWindowVisible(owner) != FALSE;
+    // These commands can show a previously hidden window. WM_SIZE may have
+    // run with the former visibility preference; synchronize the renderer with
+    // the actual native state after the request, without predicting its result.
+    const auto current_controller = controller;
+    if (current_controller) {
+      const HRESULT hr = current_controller->put_IsVisible(
+          visible && !IsIconic(owner) ? TRUE : FALSE);
+      if (FAILED(hr)) return hresult_failure("WebView2 put_IsVisible", hr);
+    }
+    if (!active() || window != owner) return closed_error();
+    return result::success();
+  }
+
+  void notify_window_state() {
+    if (!active() || !events.state_changed) return;
+    const auto observed = observed_window_state();
+    if (!observed.status.ok) {
+      report(observed.status);
+      return;
+    }
+    if (window_state_known && last_window_state.minimized == observed.value.minimized &&
+        last_window_state.maximized == observed.value.maximized)
+      return;
+    // Commit only a successful native observation, before a callback can
+    // reenter and cause another WM_SIZE for this same state.
+    last_window_state = observed.value;
+    window_state_known = true;
+    // Capture the callback before calling out: close clears events. Notify the
+    // common layer now so it binds webpage delivery to this navigation, not a
+    // later document reached before a backend dispatch queue drains.
+    const auto callback = events.state_changed;
+    callback(observed.value);
+  }
 
   NOTIFYICONDATAW tray_identity() const {
     NOTIFYICONDATAW data{};
@@ -777,6 +849,9 @@ LRESULT CALLBACK window_procedure(HWND window, UINT message, WPARAM wparam, LPAR
     SetWindowLongPtrW(window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(self));
   }
   if (!self) return DefWindowProcW(window, message, wparam, lparam);
+  // Native messages and state callbacks can synchronously close the owning
+  // backend. Keep its HWND userdata alive until this invocation has returned.
+  const auto keep_alive = self->weak_from_this().lock();
   try {
     if (self->taskbar_created_message && message == self->taskbar_created_message) {
       self->restore_tray();
@@ -794,12 +869,14 @@ LRESULT CALLBACK window_procedure(HWND window, UINT message, WPARAM wparam, LPAR
         SetWindowLongPtrW(window, GWLP_USERDATA, 0);
         break;
       case WM_SIZE:
+        if (!self->active() || self->window != window) return 0;
         if (self->controller) {
           const HRESULT hr = self->controller->put_IsVisible(
               self->visible && wparam != SIZE_MINIMIZED ? TRUE : FALSE);
           if (FAILED(hr)) self->fail(hresult_failure("WebView2 put_IsVisible", hr));
         }
         self->update_bounds();
+        self->notify_window_state();
         return 0;
       case WM_MOVE:
       case WM_MOVING:
@@ -1175,6 +1252,25 @@ class windows_backend final : public backend {
     return result::success();
   }
 
+  result minimize() override {
+    const auto self = state_;
+    return self->request_window_state(SW_SHOWMINIMIZED);
+  }
+
+  result maximize() override {
+    const auto self = state_;
+    return self->request_window_state(SW_SHOWMAXIMIZED);
+  }
+
+  result restore() override {
+    const auto self = state_;
+    return self->request_window_state(SW_SHOWNORMAL);
+  }
+
+  window_state_result get_window_state() const override {
+    return state_->observed_window_state();
+  }
+
   value_result clipboard_read() override {
     if (!state_->active()) return {closed_error(), {}};
     clipboard_lock clipboard(state_->window);
@@ -1285,7 +1381,7 @@ class windows_backend final : public backend {
   }
 
   capabilities get_capabilities() const override {
-    return {"webview2", true, true, true, true, true, true, true};
+    return {"webview2", true, true, true, true, true, true, true, true, true, true, true};
   }
 
  private:

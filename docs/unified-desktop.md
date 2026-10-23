@@ -13,6 +13,8 @@ Linux于2026-10-22完成限定真实GUI、Bridge和模块
 运行时，新增部署RPATH策略尚未重新GUI验收，不能推广为干净目标机部署通过。
 正式分发前必须完成目标机验收与版本、许可、交付清单更新。
 
+整体目标、三阶段代码主线与收口门槛见[跨平台迭代路线](cross-platform-roadmap.md)。
+
 ## 源码路径、依赖与本轮证据
 
 | 平台 | 桌面目标 | 后端与最低前提 | 本轮证据 |
@@ -337,3 +339,26 @@ ctest --preset desktop -R sdk.desktop.linux-native --output-on-failure
 
 依据：[WebKit 2.52.6 helper 位置实现](https://raw.githubusercontent.com/WebKit/WebKit/webkitgtk-2.52.6/Source/WebKit/Shared/glib/ProcessExecutablePathGLib.cpp)
 和 [GTK 构建安装目录定义](https://raw.githubusercontent.com/WebKit/WebKit/webkitgtk-2.52.6/Source/cmake/OptionsGTK.cmake)。
+
+## 窗口状态控制（显式网页授权）
+
+统一 C++ 接口 `minimize()`、`maximize()`、`restore()` 与 `get_window_state()`
+不要求业务选择平台 API。请求返回成功仅表示已提交；窗口管理器可能延迟或拒绝
+最终效果。`window_state_result.status` 成功时才可读观测值，未知/未实现窗口返回
+错误，不能把默认 `false,false` 当作 normal。`minimized` 与 `maximized` 独立，
+系统可保留最小化前的最大化状态；macOS 使用窗口 zoom，不是全屏。
+`callbacks.state_changed(window_id, window_state)` 报告原生观测变化，可合并连续状态。
+能力字段 `window_minimize/window_maximize/window_restore/window_state_observation`
+表明后端接口可用，不保证当前桌面管理器立即执行请求。
+
+网页默认没有这些权限。宿主设置 `options.enable_window_controls=true` 后才注册
+当前窗口保留服务 `desktop.window.minimize/maximize/restore/getState`（参数为空对象）。
+前三者返回 `{accepted:true}`，查询与 `desktop.window.stateChanged` 返回
+`{minimized,maximized}`。仅这四个固定方法名保留，其他 desktop.window.* 仍走业务 invoke；使用固定名称
+的旧业务应重命名或迁移到显式授权服务。不能通过传入窗口 ID
+控制其他窗口。沿用现有来源、令牌、请求上限、pagehide 和导航代际失效规则。
+原生窗口回调与页面事件分开：旧文档事件不会在新页面接收，关闭后不再发出。
+
+统一示例显式授权，展示按钮与观测状态；前端 SDK 提供 `windowControls` 封装。
+本增量不是完整 Electron API 等价，不包含全屏、无边框拖动或可取消关闭请求。
+详见 [ADR-0137](adr/0137-observed-window-state-controls.md)。

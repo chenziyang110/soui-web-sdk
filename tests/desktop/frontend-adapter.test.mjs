@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import {
   MAX_ASSET_BYTES, DesktopAdapterError, requireDesktop, invoke, on, readAsset,
-  assetBytes, assetText, assetJson
+  assetBytes, assetText, assetJson, windowControls
 } from '../../sdk/desktop/frontend/desktop.mjs';
 
 const asset = (value) => {
@@ -56,6 +56,105 @@ test('host checks are immediate, and calls preserve native identity and receiver
     await assert.rejects(rejected, (error) => error === nativeError);
     host.invoke = () => { throw nativeError; };
     assert.throws(() => invoke('app.ping'), (error) => error === nativeError);
+  } finally {
+    if (previous) Object.defineProperty(globalThis, 'window', previous);
+    else delete globalThis.window;
+  }
+});
+
+test('window controls delegate reserved methods and observe state independently of acceptance', async () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  try {
+    delete globalThis.window;
+    for (const method of ['minimize', 'maximize', 'restore', 'getState']) {
+      assert.throws(() => windowControls[method](), adapterError('missing_host'));
+    }
+    assert.throws(() => windowControls.onStateChanged(() => {}), adapterError('missing_host'));
+    const calls = [];
+    const accepted = Promise.resolve({ accepted: true });
+    const observed = { minimized: true, maximized: true };
+    let callback;
+    let unsubscriptions = 0;
+    const unsubscribe = () => { ++unsubscriptions; };
+    const host = {
+      version: 1,
+      invoke(method, params) {
+        assert.equal(this, host);
+        assert.deepEqual(params, {});
+        calls.push(method);
+        return method === 'desktop.window.getState' ? Promise.resolve(observed) : accepted;
+      },
+      on(event, listener) {
+        assert.equal(this, host);
+        assert.equal(event, 'desktop.window.stateChanged');
+        callback = listener;
+        return unsubscribe;
+      },
+      readAsset() {}
+    };
+    globalThis.window = { souiDesktop: host };
+    const events = [];
+    assert.equal(windowControls.onStateChanged(value => events.push(value)), unsubscribe);
+    for (const method of ['minimize', 'maximize', 'restore']) {
+      assert.equal(windowControls[method](), accepted);
+    }
+    assert.deepEqual(events, []); // Acceptance must not synthesize an observation.
+    const state = await windowControls.getState();
+    assert.deepEqual(state, observed);
+    assert.notEqual(state, observed);
+    callback(observed);
+    assert.deepEqual(events, [observed]);
+    assert.notEqual(events[0], observed);
+    assert.deepEqual(calls, ['desktop.window.minimize', 'desktop.window.maximize',
+      'desktop.window.restore', 'desktop.window.getState']);
+    unsubscribe();
+    assert.equal(unsubscriptions, 1);
+    const nativeError = Object.assign(new Error('No native observation'), { code: 'E_STATE' });
+    globalThis.window.souiDesktop = {
+      ...host, invoke() { return Promise.reject(nativeError); }
+    };
+    for (const method of ['minimize', 'maximize', 'restore', 'getState']) {
+      await assert.rejects(windowControls[method](), error => error === nativeError);
+    }
+  } finally {
+    if (previous) Object.defineProperty(globalThis, 'window', previous);
+    else delete globalThis.window;
+  }
+});
+
+test('window state snapshots validate booleans once and reject missing or malformed observations', async () => {
+  const previous = Object.getOwnPropertyDescriptor(globalThis, 'window');
+  try {
+    let response;
+    let callback;
+    const states = [];
+    globalThis.window = { souiDesktop: {
+      version: 1,
+      invoke() { return Promise.resolve(response); },
+      on(event, listener) { callback = listener; return () => {}; },
+      readAsset() {}
+    } };
+    windowControls.onStateChanged(state => states.push(state));
+    for (const invalid of [undefined, null, {}, [], { minimized: false },
+      { minimized: 0, maximized: false }, { minimized: false, maximized: 'false' }]) {
+      response = invalid;
+      await assert.rejects(windowControls.getState(), adapterError('invalid_window_state'));
+      assert.throws(() => callback(invalid), adapterError('invalid_window_state'));
+    }
+    assert.deepEqual(states, []);
+    assert.throws(() => windowControls.onStateChanged(null), TypeError);
+    for (const minimized of [false, true]) for (const maximized of [false, true]) {
+      response = { minimized, maximized };
+      assert.deepEqual(await windowControls.getState(), response);
+    }
+    let minimizedReads = 0, maximizedReads = 0;
+    response = {
+      get minimized() { return ++minimizedReads === 1 ? false : 'changed'; },
+      get maximized() { return ++maximizedReads === 1 ? true : 'changed'; }
+    };
+    assert.deepEqual(await windowControls.getState(), { minimized: false, maximized: true });
+    assert.equal(minimizedReads, 1);
+    assert.equal(maximizedReads, 1);
   } finally {
     if (previous) Object.defineProperty(globalThis, 'window', previous);
     else delete globalThis.window;
