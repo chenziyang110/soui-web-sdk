@@ -92,18 +92,38 @@ function sourceSnapshot(root) {
 }
 const diagnostics = new Set(['smoke.log', 'webview-smoke.log', 'source-navigation.log', 'gpu-present-trace.txt']);
 function payload(root, target, backend = 'miniblink') {
-  if (!['miniblink', 'webview2'].includes(backend)) throw new Error('Unknown renderer backend');
+  if (!['miniblink', 'webview2', 'auto'].includes(backend)) throw new Error('Unknown renderer backend');
   safePath(root, `${target}.exe`);
   const names = walk(root, '', name => diagnostics.has(name) || name === `${target}.pdb`);
-  for (const required of [`${target}.exe`, 'resources/index.html', ...(backend === 'miniblink' ? ['node.dll'] : [])]) {
+  for (const required of [`${target}.exe`, ...(backend === 'auto' ?
+    ['resources/web-modern/index.html', 'resources/web-compat/index.html', '.soui-runtime.json'] : ['resources/index.html']),
+    ...(['miniblink', 'auto'].includes(backend) ? ['node.dll'] : [])]) {
     if (!names.includes(required)) throw new Error(`Runtime file missing: ${required}`);
   }
+  if (backend === 'auto') require('./deploy-resources.cjs').verifyAutoDirectory(root);
+  let runtime, runtimeReceiptSha256;
+  if (names.includes('.soui-runtime.json')) {
+    runtimeReceiptSha256 = hash(fs.readFileSync(safePath(root, '.soui-runtime.json')));
+    runtime = require('./runtime-deployment.cjs').verifyDirectory(path.resolve(root));
+    if (runtime.backend !== backend) throw new Error('Runtime deployment belongs to another renderer');
+  }
   for (const name of names) {
-    if (name !== `${target}.exe` && !/^[^/]+\.dll$/i.test(name) && !name.startsWith('resources/')) {
+    if (name !== `${target}.exe` && name !== '.soui-runtime.json' && !/^[^/]+\.dll$/i.test(name) && !name.startsWith('resources/')) {
       throw new Error(`Unknown runtime file (keep application data outside build output): ${name}`);
     }
   }
-  return snapshot(root, names);
+  const result = snapshot(root, names);
+  if (runtime) {
+    const files = new Map(result.files.map(file => [file.path, file]));
+    for (const expected of runtime.files) {
+      const current = files.get(expected.path);
+      if (!current || current.bytes !== expected.bytes || current.sha256 !== expected.sha256)
+        throw new Error('Runtime deployment changed during payload capture');
+    }
+    if (files.get('.soui-runtime.json')?.sha256 !== runtimeReceiptSha256)
+      throw new Error('Runtime receipt changed during payload capture');
+  }
+  return result;
 }
 function verifyPayload(root, target, expected, backend = 'miniblink') {
   if (!expected || !Array.isArray(expected.files) || hash(encoded(expected.files)) !== expected.sha256) throw new Error('Invalid payload evidence');

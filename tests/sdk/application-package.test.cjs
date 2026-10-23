@@ -23,7 +23,8 @@ test('package profile cannot silently select source or SDK packaging and rejects
 });
 function stageFixture(target,{generated=false,proofFailure=false,existing=false}={}){
   const calls=[],copied=[];const base='C:/Fixture',destination='C:/Staged';
-  const payload={files:[{path:target+'.exe',bytes:10},{path:'resources/index.html',bytes:5}],bytes:15,sha256:'x'};
+  const payload={files:[{path:target+'.exe',bytes:10,sha256:'a'.repeat(64)},
+    {path:'resources/index.html',bytes:5,sha256:'b'.repeat(64)}],bytes:15,sha256:'c'.repeat(64)};
   const build={version:'0.5.0',buildId:'synthetic',source:{sha256:'source'},payloads:{SouiStarter:payload,GeneratedModern:payload},optionalPayloads:{SouiModernStarter:payload}};
   const fakeFs={existsSync:file=>file===path.resolve(base,'project.json')?generated:file===path.resolve(destination)?existing:false,
     mkdirSync:()=>{},copyFileSync:(from,to)=>copied.push({from,to})};

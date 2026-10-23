@@ -1,8 +1,30 @@
 # SDK API
 
+## 可选自动后端宿主
+
+`Soui::AutoHost` 导出 `<soui/host/auto_webview_host.h>`。`auto_host_config` 指定
+公共 Host 参数、现代/兼容资源根、WebView2 用户数据与可选 Fixed Runtime 目录。
+`auto_webview_host::start_async` 的返回值表示接纳，单次完成回调表示实际启动结果；
+回调可以同步执行，不得在回调栈内销毁宿主。`selection()` 与 `discovery()`
+保留选择原因、实际 Runtime 版本及探测 HRESULT。宿主单次启动，不进行运行中降级。
+
+窗口 UI STA 持续派发消息并调用 `pump()`。`shutdown()` 返回 `E_BUSY` 时保留
+宿主、Bridge、窗口及消息泵继续重试；成功后可销毁对象。WebView2 独占 Runtime
+退出屏障由组件持有，MiniBlink 最终进程级退出仍由应用在所有宿主销毁后执行。
+基础 `Soui::Sdk` 和原始宿主 API 保留。使用与验证入口见[自动后端](auto-backend.md)。
+
 ## 0.4 现代后端与环境探测
 
 可选 `Soui::WebView2` 导出 `<soui/host/webview2_host.h>`；UI STA 异步准备后使用相同 `webview_host`。`show()` 恢复隐藏视图并保留会话。公共 `<soui/host/runtime_profile.h>` 提供实际系统/PE/架构探测和候选档位选择；Web SDK 导出 `inspectSouiWebFeatures`、`requireSouiWebFeatures`。这些探测不授予原生权限，不代表目标环境认证。完整初始化、通知、关闭和部署契约见 [现代后端](modern-backend.md)。
+
+## MiniBlink 关闭继续状态
+
+MiniBlink 的 `close()/destroy()` 在引擎 FIFO 或 Bridge worker 尚未完成清理时返回
+`E_CURSOR_CLOSE_PENDING`；调用者必须继续持有 Host、借用的 Bridge 和两个 HWND，
+在原关闭总期限内从后续 UI 轮次重试。第一次调用即撤回该适配器的文档和普通
+操作准入，pending 期间 reload/show/resize/focus 也返回该状态，pump 只推进清理。
+只有实际清理完成才可销毁对象；排队成功、窗口隐藏或重试计时器不表示关闭成功。
+这不改变进程级 Runtime 关闭入口，详见 [ADR 0118](adr/0118-miniblink-nonblocking-unmount.md)。
 
 ## 动作契约与受控界面（preview.10）
 

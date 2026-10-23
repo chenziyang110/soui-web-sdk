@@ -20,6 +20,15 @@ node tools/Collect-Verification.cjs --record-unverified --evidence-reference ver
 
 ## 交付组成
 
+未发布候选新增[可选运行时去重 Bundle](runtime-packaging.md)：原单应用 ZIP
+保持默认，新格式需要先恢复为完整独立应用目录，不能直接当作既有安装器使用。
+
+应用及 Bundle 可显式选择[压缩档位](compression-profiles.md)。省略参数时 ZIP
+格式、原参数和文件名不变；7z 档位的接收方需要相应解压工具。
+
+显式 `-Profile auto` 包含现代与兼容页面和本地 MiniBlink；WebView2 Runtime
+仍是外部依赖。打包要求同一构建的两条真实启动路径通过，详见[自动后端](auto-backend.md)。
+
 - 完整源码包：SDK、模板、Demo、工具、文档、测试、第三方源码与固定运行依赖。
 - SDK 安装包：通过 `tools/sdk/soui-sdk.cjs pack` 生成，包含逐文件身份清单。
 - 可运行程序：分别暂存、验证和压缩的最小模板与 Workbench；诊断日志、PDB 和未知用户文件不进入运行包。

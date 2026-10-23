@@ -12,7 +12,8 @@ const packages = [
   ...['react', 'vue'].map(framework => ({name: `@soui/gui-${framework}`, root: `sdk/bindings/${framework}`,
     import: `dist/${framework}/src/index.js`, types: `dist/${framework}/src/index.d.ts`, framework}))
 ];
-const peerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
+const previousPeerRange = '>=0.4.0-0 <0.5.0 || >=0.5.0-0 <0.6.0';
+const peerRange = previousPeerRange + ' || 0.6.0-preview.3';
 const reportName = 'out/gui-bindings/build.json';
 function regular(root, name) {
   const file = identity.safePath(root, name), stat = fs.lstatSync(file);
@@ -26,6 +27,11 @@ function versionOf(root) {
 }
 function metadata(root, version = versionOf(root)) {
   if (!versioning.isVersion(version)) throw new Error('GUI delivery requires an exact SDK version');
+  // Old installed packages keep their original peer declaration. Only the
+  // stable lines and prerelease tuples covered by that declaration may use it.
+  const acceptsPreviousPeer = /^0\.[45]\.(0|[1-9][0-9]*)$/.test(version) ||
+    /^0\.[45]\.0-(preview|rc)\.(0|[1-9][0-9]*)$/.test(version);
+  const acceptsCurrentPeer = acceptsPreviousPeer || version === '0.6.0-preview.3';
   for (const entry of packages) {
     const meta = read(root, `${entry.root}/package.json`), lock = read(root, `${entry.root}/package-lock.json`);
     if (meta.name !== entry.name || meta.version !== version || lock.version !== version ||
@@ -35,7 +41,9 @@ function metadata(root, version = versionOf(root)) {
         (meta.dependencies && Object.keys(meta.dependencies).length)) throw new Error(`GUI package identity/imports differ: ${entry.name}`);
     if (entry.framework) {
       if (Object.keys(meta.peerDependencies || {}).sort().join(',') !== ['@soui/native-sdk', entry.framework].sort().join(',') ||
-          meta.peerDependencies['@soui/native-sdk'] !== peerRange || !meta.peerDependencies[entry.framework] ||
+          (!(acceptsCurrentPeer && meta.peerDependencies['@soui/native-sdk'] === peerRange) &&
+            !(acceptsPreviousPeer && meta.peerDependencies['@soui/native-sdk'] === previousPeerRange)) ||
+          !meta.peerDependencies[entry.framework] ||
           meta.devDependencies?.['@soui/native-sdk'] !== 'file:../../web' ||
           lock.packages?.['node_modules/@soui/native-sdk']?.version !== version) {
         throw new Error(`GUI package must borrow the exact local SDK and framework peers: ${entry.name}`);
