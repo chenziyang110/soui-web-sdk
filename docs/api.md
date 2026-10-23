@@ -31,7 +31,7 @@ initialize 返回 E_WEBKIT_RUNTIME。默认未知不预判，详见[统一桌面
 字节数和 base64。边界与迁移见 [资产读取契约](unified-desktop.md#显式本地资产读取)。
 
 独立的 `Soui::Desktop` 使用 `<soui/desktop/app.h>`，提供 `application` 窗口组、
-`create_window`、每窗口 Bridge、原生平面菜单、托盘及 command/lifecycle 回调。
+`create_window`、每窗口 Bridge、原生层级菜单、托盘及 command/lifecycle 回调。
 其线程、生命周期、限制和打包方式见 [统一桌面入口](unified-desktop.md)。
 这不是以下 Windows `Soui::Sdk` / TypeScript API 的逐项跨平台替代；既有行为
 和测试结论不会自动转移到新后端。

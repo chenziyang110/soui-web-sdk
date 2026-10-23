@@ -21,6 +21,7 @@
 #include <deque>
 #include <limits>
 #include <mutex>
+#include <set>
 #include <utility>
 
 namespace soui::desktop::detail {
@@ -136,7 +137,94 @@ struct popup_handle {
   popup_handle() = default;
   popup_handle(const popup_handle&) = delete;
   popup_handle& operator=(const popup_handle&) = delete;
+  HMENU release() noexcept { return std::exchange(value, nullptr); }
 };
+
+result validate_menu_tree(const std::vector<menu_item>& items, std::size_t depth,
+                          std::size_t& count, std::set<std::string_view>& ids) {
+  if (depth > 4 || items.size() > 64 - count)
+    return result::failure("E_MENU_ITEMS", "A menu tree allows at most 64 items and 4 levels");
+  count += items.size();
+  for (const auto& item : items) {
+    if (item.separator) {
+      if (!item.children.empty() || !item.id.empty() || !item.label.empty())
+        return result::failure("E_MENU_ITEM", "Separators must have no children, ID or label");
+      continue;
+    }
+    std::wstring label;
+    if (item.label.empty() || item.label.size() > 4096 ||
+        item.label.find('\0') != std::string::npos || !to_wide(item.label, label))
+      return result::failure("E_MENU_LABEL", "A menu label must be bounded, nonempty UTF-8");
+    if (!item.children.empty()) {
+      if (!item.id.empty() || item.checked)
+        return result::failure("E_MENU_ITEM", "Submenus must have an empty ID and cannot be checked");
+      const auto valid = validate_menu_tree(item.children, depth + 1, count, ids);
+      if (!valid.ok) return valid;
+      continue;
+    }
+    if (item.id.empty() || item.id.size() > 64 || !ids.insert(item.id).second)
+      return result::failure("E_MENU_ID", "Menu command IDs must be bounded and unique in the tree");
+    for (const unsigned char character : item.id)
+      if (!((character >= 'a' && character <= 'z') ||
+            (character >= 'A' && character <= 'Z') ||
+            (character >= '0' && character <= '9') ||
+            character == '.' || character == '_' || character == '-'))
+        return result::failure("E_MENU_ID", "A menu command ID contains an invalid character");
+  }
+  return result::success();
+}
+
+result validate_menu_tree(const std::vector<menu_item>& items) {
+  std::size_t count = 0;
+  std::set<std::string_view> ids;
+  return validate_menu_tree(items, 1, count, ids);
+}
+
+struct popup_command {
+  std::string id;
+  bool enabled;
+};
+
+result append_menu_tree(HMENU menu, const std::vector<menu_item>& items,
+                        std::vector<popup_command>& commands, bool ancestors_enabled) {
+  for (const auto& item : items) {
+    if (item.separator) {
+      if (!AppendMenuW(menu, MF_SEPARATOR, 0, nullptr)) return win32_failure("AppendMenuW");
+      continue;
+    }
+    std::wstring label;
+    if (!to_wide(item.label, label))
+      return result::failure("E_MENU_LABEL", "A menu label is not valid UTF-8");
+    std::wstring literal;
+    literal.reserve(label.size());
+    for (const wchar_t character : label) {
+      literal += character;
+      if (character == L'&') literal += L'&';
+    }
+    const bool enabled = ancestors_enabled && item.enabled;
+    const UINT flags = MF_STRING | (enabled ? MF_ENABLED : MF_GRAYED) |
+                       (item.checked ? MF_CHECKED : MF_UNCHECKED);
+    if (!item.children.empty()) {
+      popup_handle submenu;
+      if (!submenu.value) return win32_failure("CreatePopupMenu");
+      const auto built = append_menu_tree(submenu.value, item.children, commands, enabled);
+      if (!built.ok) return built;
+      if (!AppendMenuW(menu, flags | MF_POPUP, reinterpret_cast<UINT_PTR>(submenu.value),
+                       literal.c_str()))
+        return win32_failure("AppendMenuW");
+      // DestroyMenu recursively frees attached submenus. Until AppendMenuW
+      // succeeds, this scope alone owns the child and every descendant.
+      submenu.release();
+    } else {
+      // Stable, one-based native IDs enumerate leaves, not sibling positions.
+      // Retain effective enablement so a native result cannot bypass a parent.
+      commands.push_back({item.id, enabled});
+      if (!AppendMenuW(menu, flags, static_cast<UINT_PTR>(commands.size()), literal.c_str()))
+        return win32_failure("AppendMenuW");
+    }
+  }
+  return result::success();
+}
 
 struct state : std::enable_shared_from_this<state> {
   HWND window{nullptr};
@@ -315,6 +403,8 @@ struct state : std::enable_shared_from_this<state> {
 
   result update_tray(const tray_options& settings) {
     if (!active()) return closed_error();
+    const auto valid = validate_menu_tree(settings.menu);
+    if (!valid.ok) return valid;
     std::wstring tooltip;
     if (settings.tooltip.find('\0') != std::string::npos ||
         !to_wide(settings.tooltip, tooltip) || tooltip.size() > 127)
@@ -349,34 +439,20 @@ struct state : std::enable_shared_from_this<state> {
   result show_menu(const std::vector<menu_item>& items, POINT position,
                    std::uint64_t expected_tray_revision = 0) {
     if (!active()) return closed_error();
-    if (items.empty() || items.size() > 64)
-      return result::failure("E_MENU_ITEMS", "A popup menu requires between 1 and 64 items");
     if (active_menu_owner)
       return result::failure("E_BUSY", "Another native popup menu is already active");
-    const auto snapshot = items;
+    if (items.empty()) {
+      if (!expected_tray_revision) ++popup_revision;
+      return result::success();
+    }
+    const auto valid = validate_menu_tree(items);
+    if (!valid.ok) return valid;
+    std::vector<popup_command> commands;
+    commands.reserve(64);
     popup_handle menu;
     if (!menu.value) return win32_failure("CreatePopupMenu");
-    for (std::size_t i = 0; i < snapshot.size(); ++i) {
-      const auto& item = snapshot[i];
-      if (item.separator) {
-        if (!AppendMenuW(menu.value, MF_SEPARATOR, 0, nullptr))
-          return win32_failure("AppendMenuW");
-        continue;
-      }
-      std::wstring label;
-      if (item.label.find('\0') != std::string::npos || !to_wide(item.label, label))
-        return result::failure("E_MENU_LABEL", "A menu label is not valid UTF-8");
-      std::wstring literal;
-      literal.reserve(label.size());
-      for (const wchar_t character : label) {
-        literal += character;
-        if (character == L'&') literal += L'&';
-      }
-      const UINT flags = MF_STRING | (item.enabled ? MF_ENABLED : MF_GRAYED) |
-                         (item.checked ? MF_CHECKED : MF_UNCHECKED);
-      if (!AppendMenuW(menu.value, flags, static_cast<UINT_PTR>(i + 1), literal.c_str()))
-        return win32_failure("AppendMenuW");
-    }
+    const auto built = append_menu_tree(menu.value, items, commands, true);
+    if (!built.ok) return built;
     const HWND owner = window;
     if (GetForegroundWindow() != owner && !SetForegroundWindow(owner) &&
         GetForegroundWindow() != owner)
@@ -409,12 +485,11 @@ struct state : std::enable_shared_from_this<state> {
       return track_error ? hresult_failure("TrackPopupMenuEx", HRESULT_FROM_WIN32(track_error)) :
                            result::success();
     }
-    if (command > snapshot.size() || !snapshot[command - 1].enabled ||
-        snapshot[command - 1].separator)
+    if (command > commands.size() || !commands[command - 1].enabled)
       return result::failure("E_MENU_COMMAND", "Windows returned an invalid menu command");
     const std::weak_ptr<state> weak = shared_from_this();
     return enqueue([weak, expected_tray_revision, expected_popup_revision,
-                    id = snapshot[command - 1].id] {
+                    id = commands[command - 1].id] {
       if (const auto self = weak.lock(); self && self->active() && self->events.command &&
           (!expected_tray_revision || (self->tray_desired && self->tray_ready &&
                                       self->tray_revision == expected_tray_revision)) &&
@@ -1385,6 +1460,7 @@ class windows_backend final : public backend {
 
   result popup_menu(const std::vector<menu_item>& items) override {
     if (!state_->active()) return closed_error();
+    if (items.empty()) return state_->show_menu(items, POINT{});
     if (!IsWindowVisible(state_->window))
       return result::failure("E_WINDOW_HIDDEN", "Show the owning window before opening its popup menu");
     POINT position{};

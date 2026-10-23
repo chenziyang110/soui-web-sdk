@@ -38,7 +38,7 @@ Bridge 协议和文件扫描可独立构建为 `Soui::Runtime`，覆盖 Windows/
 x86/x64/ARM32/ARM64 与 macOS x64/ARM64/universal2 的目标策略。
 另新增 [统一桌面入口](docs/unified-desktop.md) `Soui::Desktop`：同一份 C++ 与 Web
 源码接入 Linux WebKitGTK、macOS WKWebView、Windows WebView2，包含窗口生命周期、
-独立会话的多窗口、双向 Bridge、平面原生菜单和有明确失败的托盘能力。
+独立会话的多窗口、双向 Bridge、层级原生菜单和有明确失败的托盘能力。
 新增 `tools/package-desktop.cjs` 统一构建、测试、安装与 SDK 开发快照打包入口，
 不是应用安装器。Linux 已完成真实依赖编译与无窗口回归；真实 GUI、
 Windows/macOS 目标编译和其余架构实测仍待验收。现有下载包不含这些未发布功能，

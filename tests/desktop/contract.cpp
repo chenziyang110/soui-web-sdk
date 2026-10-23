@@ -1081,8 +1081,9 @@ void native_actions_contract(files& fixture) {
   CHECK(root_commands.empty());
   native.menu_status = native.tray_status = native.clear_tray_status = result::success();
   CHECK(root.get_capabilities().popup_menu && root.get_capabilities().tray);
+  CHECK(root.popup_menu({}).ok);
+  CHECK(native.popup_items.empty());
   const auto unchanged = native.counts->popup_calls;
-  CHECK(!root.popup_menu({}).ok);
   CHECK(!root.popup_menu({{"bad id", "Label"}}).ok);
   CHECK(!root.popup_menu({{"valid", ""}}).ok);
   CHECK(!root.popup_menu({{"same", "One"}, {"same", "Two"}}).ok);
@@ -1145,21 +1146,101 @@ void native_actions_contract(files& fixture) {
   CHECK(child_commands.size() == 1);
 }
 
+void hierarchical_native_actions_contract(files& fixture) {
+  std::vector<std::string> commands;
+  callbacks handlers;
+  handlers.command = [&](std::string_view id) { commands.emplace_back(id); };
+  application app(fixture.settings(), handlers);
+  CHECK(app.initialize().ok);
+  auto& native = *latest;
+  native.menu_status = native.tray_status = result::success();
+  const auto check_tree = [&](const std::vector<menu_item>& tree, bool valid) {
+    const auto popup_calls = native.counts->popup_calls;
+    const auto tray_calls = native.counts->tray_calls;
+    const auto popup = app.popup_menu(tree);
+    tray_options tray; tray.menu = tree;
+    const auto status = app.set_tray(tray);
+    CHECK(popup.ok == valid && status.ok == valid);
+    if (!valid) CHECK(popup.code == "invalid_menu" && status.code == "invalid_menu");
+    CHECK(native.counts->popup_calls == popup_calls + (valid ? 1 : 0));
+    CHECK(native.counts->tray_calls == tray_calls + (valid ? 1 : 0));
+  };
+  check_tree({}, true);
+
+  menu_item depth_four{"deep", "Depth four", true, true};
+  for (int i = 0; i < 3; ++i)
+    depth_four = {"", "Level", true, false, false, {std::move(depth_four)}};
+  check_tree({depth_four}, true);
+  CHECK(native.popup_items.front().children.front().children.front().children.front().checked);
+  check_tree({{"", "Depth five", true, false, false, {depth_four}}}, false);
+
+  // The limit counts submenu parents and separators, not only leaf commands.
+  menu_item full{"", "Full tree", true, false, false, {{"", "", true, false, true}}};
+  for (int i = 0; i < 62; ++i) full.children.push_back({"item" + std::to_string(i), "Item"});
+  check_tree({full}, true);  // 1 parent + 1 separator + 62 commands = 64.
+  check_tree({full, {"overflow", "Overflow"}}, false);
+  full.children.pop_back();
+  check_tree({full, {"last", "Last"}}, true);
+  full.children.back().id = "last";
+  check_tree({full, {"last", "Last"}}, false);
+
+  const menu_item leaf{"action", "Action"};
+  check_tree({{"", "One", true, false, false, {leaf}},
+              {"", "Two", false, false, false, {leaf}}}, false);
+  check_tree({{"parent-id", "Parent", true, false, false, {leaf}}}, false);
+  check_tree({{"", "Parent", true, true, false, {leaf}}}, false);
+  check_tree({{"", "", true, false, false, {leaf}}}, false);
+  check_tree({{"", std::string(4097, 'x'), true, false, false, {leaf}}}, false);
+  check_tree({{"", std::string("bad\0label", 9), true, false, false, {leaf}}}, false);
+  check_tree({{"", std::string("\xC0\xAF", 2), true, false, false, {leaf}}}, false);
+  check_tree({{"", "", true, false, true, {leaf}}}, false);
+  check_tree({{"", "Parent", true, false, false, {{"", "No leaf ID"}}}}, false);
+  check_tree({{"", "Parent", true, false, false, {{"bad id", "Bad leaf ID"}}}}, false);
+
+  const std::vector<menu_item> enabled_tree = {
+    {"", "Disabled root", false, false, false, {
+      {"", "Enabled child", true, false, false, {{"root-blocked", "Blocked"}}}}},
+    {"", "Enabled root", true, false, false, {
+      {"", "Disabled child", false, false, false, {{"child-blocked", "Blocked"}}},
+      {"leaf-blocked", "Disabled leaf", false}, {"allowed", "Checked leaf", true, true}}}
+  };
+  CHECK(app.set_tray(tray_options{}).ok);
+  CHECK(app.popup_menu(enabled_tree).ok);
+  const auto issue_commands = [&] {
+    for (const char* id : {"root-blocked", "child-blocked", "leaf-blocked", "", "unknown", "allowed"})
+      native.command(id);
+  };
+  issue_commands();
+  CHECK(commands == std::vector<std::string>{"allowed"});
+  CHECK(app.popup_menu({}).ok);
+  tray_options tray; tray.menu = enabled_tree;
+  CHECK(app.set_tray(tray).ok);
+  issue_commands();
+  CHECK(commands == (std::vector<std::string>{"allowed", "allowed"}));
+  CHECK(app.set_tray(tray_options{}).ok);
+  native.command("allowed");
+  CHECK(commands.size() == 2);  // Empty roots revoke every previous command.
+}
+
 void deferred_native_action_revision_contract(files& fixture) {
   std::shared_ptr<application> child;
   fake_backend* child_native = nullptr;
   int commands = 0;
+  const auto nested = [](std::string label) {
+    return std::vector<menu_item>{{"", "Actions", true, false, false,
+      {{"shared", std::move(label)}}}};
+  };
   callbacks root_handlers;
   root_handlers.invoke = [&](std::string_view method, std::string_view) {
     child_native->command("shared");
     CHECK(commands == 0); // Deferred until the other window's callback returns.
     if (method == "replace") {
-      CHECK(child->popup_menu({{"shared", "Replacement action"}}).ok);
+      CHECK(child->popup_menu(nested("Replacement action")).ok);
     } else if (method == "remove-tray") {
       CHECK(child->clear_tray().ok);
     } else {
       child_native->menu_status = result::failure("test_menu_failure", "Menu rejected.");
-      CHECK(!child->popup_menu({{"shared", "Failed action"}}).ok);
+      CHECK(!child->popup_menu(nested("Failed action")).ok);
     }
     return std::string("{}");
   };
@@ -1172,11 +1253,11 @@ void deferred_native_action_revision_contract(files& fixture) {
   child_native = latest;
   child_native->menu_status = child_native->tray_status =
       child_native->clear_tray_status = result::success();
-  CHECK(child->popup_menu({{"shared", "Original action"}}).ok);
+  CHECK(child->popup_menu(nested("Original action")).ok);
   root_native.send(root_native.envelope(1, "replace"));
   CHECK(commands == 0);
   tray_options tray;
-  tray.menu = {{"shared", "Tray action"}};
+  tray.menu = nested("Tray action");
   CHECK(child->set_tray(tray).ok);
   root_native.send(root_native.envelope(2, "remove-tray"));
   CHECK(commands == 0); // Same ID still exists in popup but old tray event is stale.
@@ -1379,6 +1460,7 @@ int main(int argc, char** argv) {
     window_capacity_contract(fixture);
     cross_window_callbacks_contract(fixture);
     native_actions_contract(fixture);
+    hierarchical_native_actions_contract(fixture);
     deferred_native_action_revision_contract(fixture);
     close_approval_contract(fixture);
     quit_approval_contract(fixture);

@@ -68,6 +68,9 @@ struct menu_item {
   bool enabled{true};
   bool checked{false};
   bool separator{false};
+  // Nonempty children form a submenu: empty ID, nonempty label, not checked.
+  // Appended to preserve existing flat aggregate initializers.
+  std::vector<menu_item> children{};
 };
 
 struct tray_options {
@@ -172,6 +175,8 @@ class application final {
   [[nodiscard]] value_result clipboard_read();
   [[nodiscard]] result clipboard_write(std::string_view text);
   [[nodiscard]] value_result choose_directory();
+  // Popup/tray trees allow 0..64 total nodes and at most 4 levels (root = 1).
+  // Leaf IDs are unique per tree; disabled ancestors suppress leaf commands.
   [[nodiscard]] result popup_menu(const std::vector<menu_item>& items);
   [[nodiscard]] result set_tray(const tray_options& settings);
   [[nodiscard]] result clear_tray();

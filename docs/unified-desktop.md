@@ -129,11 +129,14 @@ node tools/package-desktop.cjs --build-dir out/desktop --output out/desktop-pack
 整个组。根对象析构会关闭剩余窗口，外部尚持有的子窗口句柄失效。销毁必须在
 创建 UI 线程，不能在业务回调中直接析构对象。
 
-`popup_menu(vector<menu_item>)` 显示平面原生弹出菜单，`set_tray(tray_options)`
+`popup_menu(vector<menu_item>)` 显示层级原生弹出菜单，`set_tray(tray_options)`
 设置窗口所属托盘，`clear_tray()` 移除。命令通过该窗口的 `callbacks.command`
 回调交付，`callbacks.lifecycle` 提供带窗口 ID 的 ready/closed 事件。菜单最多
-64 项，命令 ID 唯一有界、文本必须有效 UTF-8；菜单栏、嵌套子菜单和快捷键
-不在本轮契约内。这些接口仅供原生业务显式调用，不给网页任意创建或控制其他
+64 个节点（父项、命令和分隔符均计数），根节点深度 1、最多 4 层；空根列表合法且
+不派发命令。尾部 `children` 非空表示子菜单，父项必须有标题、空 id、checked=false。
+分隔符 id/label/children 必须为空；叶命令 ID 在整棵树中唯一有界、文本必须有效 UTF-8。
+禁用父项同时禁用全部后代，公共层也阻止其命令派发；替换菜单后旧 revision 回调失效。
+popup 与 tray 共享模型；菜单栏和快捷键仍不在本轮契约内。这些接口仅供原生业务显式调用，不给网页任意创建或控制其他
 窗口的权限。
 
 托盘绑定所属窗口生命周期，要保留托盘可隐藏该窗口，显式 `quit()` 结束进程。

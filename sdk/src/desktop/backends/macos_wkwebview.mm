@@ -418,6 +418,27 @@ void schedule_window_state_observation(const std::shared_ptr<macos_state>& state
   });
 }
 
+NSMenu* enabled_command_root(NSMenuItem* sender) {
+  if (!sender || !sender.enabled || sender.separatorItem || sender.submenu) return nil;
+  NSMenu* menu = sender.menu;
+  // A submenu command's immediate menu is not the published popup/tray root.
+  // Bound the walk even if native menu links have been changed unexpectedly.
+  for (std::size_t depth = 1; menu && depth <= 4; ++depth) {
+    NSMenu* parent = menu.supermenu;
+    if (!parent) return menu;
+    NSMenuItem* owner = nil;
+    for (NSMenuItem* candidate in parent.itemArray) {
+      if (candidate.submenu == menu) {
+        owner = candidate;
+        break;
+      }
+    }
+    if (!owner || !owner.enabled || owner.separatorItem) return nil;
+    menu = parent;
+  }
+  return nil;
+}
+
 NSMenu* application_menu() {
   NSMenu* menu = [[NSMenu alloc] initWithTitle:@""];
   NSMenuItem* app_item = [[NSMenuItem alloc] initWithTitle:@"" action:NULL keyEquivalent:@""];
@@ -557,11 +578,12 @@ NSMenu* application_menu() {
 - (void)onNativeMenuCommand:(NSMenuItem*)sender {
   try {
     auto state = _state.lock();
-    if (!is_live(state) || !sender.enabled ||
-        (sender.menu != state->popup && sender.menu != state->tray_menu) ||
+    if (!is_live(state)) return;
+    NSMenu* root = enabled_command_root(sender);
+    if (!root || (root != state->popup && root != state->tray_menu) ||
         ![sender.representedObject isKindOfClass:[NSString class]]) return;
     const auto command = utf8_string((NSString*)sender.representedObject);
-    const bool tray = sender.menu == state->tray_menu;
+    const bool tray = root == state->tray_menu;
     const auto generation = tray ? state->tray_generation : state->popup_generation;
     // Commands belong to the native window lifetime, not a renderer generation.
     const auto status = enqueue_job(state, {job_kind::native_work, 0,
@@ -804,20 +826,41 @@ struct modal_guard {
   }
 };
 
-NSMenu* make_native_menu(const std::vector<menu_item>& items, id target, bool allow_empty) {
-  if (items.size() > 64 || (!allow_empty && items.empty())) return nil;
+NSMenu* make_native_menu_level(const std::vector<menu_item>& items, id target,
+                              std::set<std::string>& ids, std::size_t& count,
+                              std::size_t depth, bool ancestors_enabled) {
+  if (depth > 4 || count > 64 || items.size() > 64 - count) return nil;
   NSMenu* menu = [[NSMenu alloc] initWithTitle:@""];
+  if (!menu) return nil;
   menu.autoenablesItems = NO;
-  std::set<std::string> ids;
   for (const auto& item : items) {
+    if (++count > 64) return nil;
     if (item.separator) {
+      if (!item.id.empty() || !item.label.empty() || !item.children.empty()) return nil;
       [menu addItem:[NSMenuItem separatorItem]];
       continue;
     }
     NSString* label = cocoa_string(item.label);
+    if (item.label.empty() || item.label.size() > 4096 ||
+        item.label.find('\0') != std::string::npos || !label) return nil;
+    const bool enabled = ancestors_enabled && item.enabled;
+    if (!item.children.empty()) {
+      if (!item.id.empty() || item.checked) return nil;
+      NSMenu* submenu = make_native_menu_level(item.children, target, ids, count,
+                                              depth + 1, enabled);
+      if (!submenu) return nil;
+      NSMenuItem* native = [[NSMenuItem alloc] initWithTitle:label
+          action:NULL keyEquivalent:@""];
+      if (!native) return nil;
+      native.enabled = enabled;
+      // NSMenu owns its items, and each item owns its submenu. ARC releases
+      // the entire partial tree if any later node fails validation.
+      native.submenu = submenu;
+      [menu addItem:native];
+      continue;
+    }
     NSString* command = cocoa_string(item.id);
-    if (item.id.empty() || item.id.size() > 64 || item.label.empty() ||
-        item.label.size() > 4096 || !label || !command || !ids.insert(item.id).second)
+    if (item.id.empty() || item.id.size() > 64 || !command || !ids.insert(item.id).second)
       return nil;
     for (unsigned char character : item.id)
       if (!((character >= 'a' && character <= 'z') ||
@@ -826,13 +869,20 @@ NSMenu* make_native_menu(const std::vector<menu_item>& items, id target, bool al
             character == '.' || character == '_' || character == '-')) return nil;
     NSMenuItem* native = [[NSMenuItem alloc] initWithTitle:label
         action:@selector(onNativeMenuCommand:) keyEquivalent:@""];
+    if (!native) return nil;
     native.target = target;
     native.representedObject = command;
-    native.enabled = item.enabled;
+    native.enabled = enabled;
     native.state = item.checked ? NSControlStateValueOn : NSControlStateValueOff;
     [menu addItem:native];
   }
   return menu;
+}
+
+NSMenu* make_native_menu(const std::vector<menu_item>& items, id target) {
+  std::set<std::string> ids;
+  std::size_t count = 0;
+  return make_native_menu_level(items, target, ids, count, 1, true);
 }
 
 class wkwebview_backend final : public backend {
@@ -1246,10 +1296,16 @@ class wkwebview_backend final : public backend {
     if (!open.ok) return open;
     if (state_->application_group->modal_depth)
       return result::failure("E_BUSY", "A native modal operation is already active");
-    if (!state_->window.visible)
-      return result::failure("E_WINDOW_HIDDEN", "Show the owning window before opening a popup");
     @autoreleasepool {
-      NSMenu* menu = make_native_menu(items, state_->delegate, false);
+      if (items.empty()) {
+        [state_->popup cancelTrackingWithoutAnimation];
+        ++state_->popup_generation;
+        state_->popup = nil;
+        return result::success();
+      }
+      if (!state_->window.visible)
+        return result::failure("E_WINDOW_HIDDEN", "Show the owning window before opening a popup");
+      NSMenu* menu = make_native_menu(items, state_->delegate);
       if (!menu) return result::failure("E_ARGUMENT", "Invalid native menu items");
       [state_->popup cancelTrackingWithoutAnimation];
       ++state_->popup_generation;
@@ -1268,7 +1324,7 @@ class wkwebview_backend final : public backend {
     @autoreleasepool {
       NSString* label = cocoa_string(settings.label);
       NSString* tooltip = cocoa_string(settings.tooltip);
-      NSMenu* menu = make_native_menu(settings.menu, state_->delegate, true);
+      NSMenu* menu = make_native_menu(settings.menu, state_->delegate);
       if (!label || !label.length || settings.label.size() > 256 || !tooltip ||
           settings.tooltip.size() > 4096 || !menu)
         return result::failure("E_ARGUMENT", "Invalid native tray options");

@@ -24,24 +24,46 @@ bool valid_text(std::string_view value, std::size_t limit) {
     soui::runtime::detail::valid_utf8(value);
 }
 result unavailable() { return result::failure("closed", "The desktop application is not active."); }
-result validate_menu(const std::vector<menu_item>& items, bool empty_allowed) {
-  if (items.size() > 64 || (!empty_allowed && items.empty()))
-    return result::failure("invalid_menu", "A popup requires 1..64 items; a tray allows 0..64.");
-  std::set<std::string> ids;
+result validate_menu_level(const std::vector<menu_item>& items, unsigned depth,
+                           std::size_t& count, std::set<std::string>& ids) {
+  if (depth > 4 || items.size() > 64 - count)
+    return result::failure("invalid_menu", "Menus allow at most 64 total nodes and 4 levels.");
   for (const auto& item : items) {
+    if (++count > 64)
+      return result::failure("invalid_menu", "Menus allow at most 64 total nodes and 4 levels.");
     if (item.separator) {
-      if (!item.id.empty() || !item.label.empty())
-        return result::failure("invalid_menu", "Separators must have empty ID and label.");
-    } else if (!detail::valid_name(item.id) || item.label.empty() || !valid_text(item.label, 4096) ||
-               !ids.insert(item.id).second) {
-      return result::failure("invalid_menu", "Menu IDs must be unique and labels bounded UTF-8.");
+      if (!item.id.empty() || !item.label.empty() || !item.children.empty())
+        return result::failure("invalid_menu", "Separators must have empty ID, label and children.");
+    } else {
+      if (item.label.empty() || !valid_text(item.label, 4096))
+        return result::failure("invalid_menu", "Menu labels must be nonempty bounded UTF-8.");
+      if (!item.children.empty()) {
+        if (!item.id.empty() || item.checked)
+          return result::failure("invalid_menu", "Submenus must have empty IDs and cannot be checked.");
+        const auto valid = validate_menu_level(item.children, depth + 1, count, ids);
+        if (!valid.ok) return valid;
+      } else if (!detail::valid_name(item.id) || !ids.insert(item.id).second) {
+        return result::failure("invalid_menu", "Leaf menu IDs must be valid and unique across the tree.");
+      }
     }
   }
   return result::success();
 }
+result validate_menu(const std::vector<menu_item>& items) {
+  std::size_t count = 0;
+  std::set<std::string> ids;
+  return validate_menu_level(items, 1, count, ids);
+}
+void collect_enabled_commands(const std::vector<menu_item>& items, std::set<std::string>& ids) {
+  for (const auto& item : items) {
+    if (item.separator || !item.enabled) continue;
+    if (item.children.empty()) ids.insert(item.id);
+    else collect_enabled_commands(item.children, ids);
+  }
+}
 std::set<std::string> enabled_commands(const std::vector<menu_item>& items) {
   std::set<std::string> ids;
-  for (const auto& item : items) if (!item.separator && item.enabled) ids.insert(item.id);
+  collect_enabled_commands(items, ids);
   return ids;
 }
 struct application_state;
@@ -901,7 +923,7 @@ value_result application::choose_directory() {
 result application::popup_menu(const std::vector<menu_item>& items) {
   auto state = impl_->state; const auto checked = state->check();
   if (!checked.ok) return checked;
-  const auto valid = validate_menu(items, false);
+  const auto valid = validate_menu(items);
   if (!valid.ok) return valid;
   auto previous = std::move(state->popup_commands);
   // Backends validate their native menu generation before entering common code.
@@ -921,7 +943,7 @@ result application::popup_menu(const std::vector<menu_item>& items) {
 result application::set_tray(const tray_options& settings) {
   auto state = impl_->state; const auto checked = state->check();
   if (!checked.ok) return checked;
-  const auto valid = validate_menu(settings.menu, true);
+  const auto valid = validate_menu(settings.menu);
   if (!valid.ok) return valid;
   if (settings.label.empty() || !valid_text(settings.label, 32) || !valid_text(settings.tooltip, 4096))
     return result::failure("invalid_tray", "Tray label and tooltip must be bounded UTF-8.");

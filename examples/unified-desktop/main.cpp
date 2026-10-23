@@ -36,7 +36,15 @@ struct example_state {
   std::vector<std::shared_ptr<soui::desktop::application>> children;
 };
 std::vector<soui::desktop::menu_item> native_menu() {
-  return {{"window.focus", "Show this window"}, {"window.close", "Close this window"},
+  // Parents have no command ID; disabled groups disable every descendant.
+  return {{"", "This window", true, false, false, {
+      {"window.focus", "Show this window"},
+      {"", "Close options", true, false, false, {
+        {"window.close", "Close this window (checks unsaved changes)"}}}}},
+    {"", "Unavailable workspace actions", false, false, false, {
+      {"workspace.publish", "Publish workspace"},
+      {"", "Maintenance", true, false, false, {
+        {"workspace.reset", "Reset workspace"}}}}},
     {"", "", true, false, true}, {"app.quit", "Quit all windows"}};
 }
 soui::desktop::callbacks make_callbacks(example_state& state,

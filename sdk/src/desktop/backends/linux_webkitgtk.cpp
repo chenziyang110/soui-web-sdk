@@ -567,13 +567,22 @@ struct modal_guard {
   ~modal_guard() { state.modal_busy = false; }
 };
 
-bool valid_menu(const std::vector<menu_item>& items, bool allow_empty) {
-  if ((!allow_empty && items.empty()) || items.size() > 64) return false;
-  std::set<std::string> commands;
+bool valid_menu_level(const std::vector<menu_item>& items, std::size_t depth,
+                      std::size_t& count, std::set<std::string>& commands) {
+  if (depth > 4 || items.size() > 64 - count) return false;
   for (const auto& item : items) {
-    if (item.separator) continue;
-    if (item.id.empty() || item.id.size() > 64 ||
-        item.label.empty() || !valid_text(item.label, 4096)) return false;
+    if (++count > 64) return false;
+    if (item.separator) {
+      if (!item.id.empty() || !item.label.empty() || !item.children.empty()) return false;
+      continue;
+    }
+    if (item.label.empty() || !valid_text(item.label, 4096)) return false;
+    if (!item.children.empty()) {
+      if (!item.id.empty() || item.checked ||
+          !valid_menu_level(item.children, depth + 1, count, commands)) return false;
+      continue;
+    }
+    if (item.id.empty() || item.id.size() > 64) return false;
     for (unsigned char character : item.id)
       if (!((character >= 'a' && character <= 'z') ||
             (character >= 'A' && character <= 'Z') ||
@@ -584,11 +593,18 @@ bool valid_menu(const std::vector<menu_item>& items, bool allow_empty) {
   return true;
 }
 
+bool valid_menu(const std::vector<menu_item>& items) {
+  std::size_t count = 0;
+  std::set<std::string> commands;
+  return valid_menu_level(items, 1, count, commands);
+}
+
 struct menu_command {
   std::weak_ptr<linux_state> state;
   std::string id;
   std::uint64_t generation;
   bool tray;
+  bool enabled;
 };
 
 bool current_menu(const linux_state& state, bool tray, std::uint64_t generation) noexcept {
@@ -600,7 +616,7 @@ bool current_menu(const linux_state& state, bool tray, std::uint64_t generation)
 void menu_activated(GtkMenuItem* item, gpointer data) noexcept {
   const auto& command = *static_cast<menu_command*>(data);
   auto state = command.state.lock();
-  if (!state || !gtk_widget_is_sensitive(GTK_WIDGET(item)) ||
+  if (!state || !command.enabled || !gtk_widget_is_sensitive(GTK_WIDGET(item)) ||
       !current_menu(*state, command.tray, command.generation)) return;
   try {
     auto status = enqueue(*state, [weak = command.state, id = command.id,
@@ -617,7 +633,8 @@ void menu_activated(GtkMenuItem* item, gpointer data) noexcept {
 }
 
 GtkWidget* make_menu(linux_state& state, const std::vector<menu_item>& items,
-                     bool tray, std::uint64_t generation) {
+                     bool tray, std::uint64_t generation,
+                     bool ancestors_enabled = true, bool root = true) {
   GtkWidget* menu = gtk_menu_new();
   g_object_ref_sink(menu);
   try {
@@ -626,23 +643,35 @@ GtkWidget* make_menu(linux_state& state, const std::vector<menu_item>& items,
       if (item.separator) {
         row = gtk_separator_menu_item_new();
       } else {
-        auto command = std::make_unique<menu_command>(
-            menu_command{state.weak_from_this(), item.id, generation, tray});
         if (item.checked) {
           row = gtk_check_menu_item_new_with_label(item.label.c_str());
           gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(row), TRUE);
         } else {
           row = gtk_menu_item_new_with_label(item.label.c_str());
         }
-        gtk_widget_set_sensitive(row, item.enabled);
+      }
+      // Establish ownership before allocating command data or descending into
+      // a submenu, so clearing the root also cleans up a partial tree.
+      gtk_menu_shell_append(GTK_MENU_SHELL(menu), row);
+      if (item.separator) continue;
+      const bool enabled = ancestors_enabled && item.enabled;
+      gtk_widget_set_sensitive(row, enabled);
+      if (!item.children.empty()) {
+        GtkWidget* submenu = make_menu(state, item.children, tray, generation, enabled, false);
+        gtk_menu_item_set_submenu(GTK_MENU_ITEM(row), submenu);
+        g_object_unref(submenu);  // The parent menu item now owns the submenu.
+      } else {
+        auto command = std::make_unique<menu_command>(
+            menu_command{state.weak_from_this(), item.id, generation, tray, enabled});
         g_signal_connect_data(row, "activate", G_CALLBACK(menu_activated), command.release(),
             [](gpointer value, GClosure*) { delete static_cast<menu_command*>(value); },
             G_CONNECT_DEFAULT);
       }
-      gtk_menu_shell_append(GTK_MENU_SHELL(menu), row);
     }
-    gtk_menu_attach_to_widget(GTK_MENU(menu), state.window, nullptr);
-    gtk_widget_show_all(menu);
+    if (root) {
+      gtk_menu_attach_to_widget(GTK_MENU(menu), state.window, nullptr);
+      gtk_widget_show_all(menu);
+    }
   } catch (...) {
     clear_menu(menu);
     throw;
@@ -1041,8 +1070,13 @@ class linux_backend final : public backend {
   result popup_menu(const std::vector<menu_item>& items) override {
     auto status = check_ui(*state_);
     if (!status.ok) return status;
-    if (!valid_menu(items, false))
-      return result::failure("E_ARGUMENT", "A popup menu needs at most 64 valid, unique commands.");
+    if (!valid_menu(items))
+      return result::failure("E_ARGUMENT", "A popup menu needs a valid tree of at most 64 nodes and 4 levels.");
+    if (items.empty()) {
+      ++state_->popup_generation;
+      clear_menu(state_->popup);
+      return result::success();
+    }
     if (!gtk_widget_get_mapped(state_->window))
       return result::failure("E_WINDOW_HIDDEN", "Show the owning window before opening its popup menu.");
     GtkWidget* menu = make_menu(*state_, items, false, state_->popup_generation + 1);
@@ -1069,7 +1103,7 @@ class linux_backend final : public backend {
     auto status = check_ui(*state_);
     if (!status.ok) return status;
     if (settings.label.empty() || !valid_text(settings.label, 256) ||
-        !valid_text(settings.tooltip, 4096) || !valid_menu(settings.menu, true))
+        !valid_text(settings.tooltip, 4096) || !valid_menu(settings.menu))
       return result::failure("E_ARGUMENT", "Invalid native tray label, tooltip, or menu.");
     return install_tray(*state_, settings);
   }
